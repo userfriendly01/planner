@@ -136,7 +136,6 @@ export const fetchUser = async (nNumber: string, setForm: any, errorMessage: str
 
 export const findMatchingWorker = (sid: string, nNumber: string, email: string, workers: any[]) => {
   //Dynamic to look through triton workers, calabrio qm users and calabrio wfm users
-  console.log("FAITH Find matching worker", sid, nNumber, email, workers);
   let matchingWorker: Worker = null;
   workers.forEach((w: any) => {
     const workerSid = w.sid?.toLowerCase() || w.acdId?.toLowerCase();
@@ -148,41 +147,10 @@ export const findMatchingWorker = (sid: string, nNumber: string, email: string, 
     } else if(nNumber && nNumber.toLowerCase() === workerNNumber){
       matchingWorker = w;
     } else if(email && email.toLowerCase() === workerEmail){
-      console.log("FAITH = do I get here?");
       matchingWorker = w;
     }
   });
   return matchingWorker;
-};
-
-export const identifyProfileDiscrepancies = (form: UserFormState, setForm: any, state: AppState) => {
-  console.log("Faith: Final Form.....", form);
-  const tritonWorker = state.workerContext.workers.find((w: Worker) => w.attributes.n_number);
-  const tritonSid = tritonWorker?.sid || "";
-  const tritonEmail = "";
-  const tritonNNumber = "";
-  const calabrioWfmEmail = "";
-  const calabrioWfmIdentity = "";
-  const calabrioWfmNNumber = "";
-  const calabrioQMEmail = "";
-  const calabrioQmAcdId = "";
-  
-  console.warn("HERE ARE DISCREPANCIES!");
-  //If it was not possible to find an n# - set discrepancy
-  if(!form.nNumber.value){
-    setForm({
-      type: "SET_DISCREPANCIES",
-      payload: {
-        type: discrepancyType.CALABRIO_WFM,
-        message: "No N Number was found for this Calabrio WFM record. This could cause discrepencies when editing your user. Please make sure the Employment Number is populated with a valid nNumber"
-      }
-    });
-  }
-
-  if(form.triton.userFound){
-
-  }
-
 };
 
 export const identifyUserProfiles = async (form: UserFormState, setForm: any, state: AppState) => {

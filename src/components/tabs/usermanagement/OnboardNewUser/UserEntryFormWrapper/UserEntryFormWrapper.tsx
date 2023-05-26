@@ -30,8 +30,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import {
   sortWorkersByFullName,
-  identifyUserProfiles,
-  identifyProfileDiscrepancies
+  identifyUserProfiles
 } from "utils";
 import {
   Worker,
@@ -61,12 +60,6 @@ const UserEntryForm = () => {
     saveStatus: null,
     saveUser: false
   });
-
-  const initiateUpdateForm = async () => {
-    const res = await identifyUserProfiles(form, setForm, state);
-    console.warn("FAITH RES: ", res, form);
-    identifyProfileDiscrepancies(form, setForm, state);
-  };
   
   React.useEffect(() => {
     if(form.formMode === formModes.INSERT){
@@ -105,7 +98,7 @@ const UserEntryForm = () => {
         }
       });
     } else {
-      initiateUpdateForm();
+      identifyUserProfiles(form, setForm, state);
     }
     return () => {
       setForm({ type: userFormActions.RESET_FORM });

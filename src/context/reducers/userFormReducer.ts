@@ -610,12 +610,14 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
           PersonSkills.push(availableSkill);
         }
       });
-      Object.keys(user.OptionalColumns).forEach((id: string) => {
-        const optionalColumn = getWfmOptions(appState)?.Optional_Columns.find((o: any) => o.Id === id);
-        if(optionalColumn){
-          OptionalColumns.push(optionalColumn);
-        }
-      });
+      if(user.OptionalColumns){
+        Object.keys(user.OptionalColumns).forEach((id: string) => {
+          const optionalColumn = getWfmOptions(appState)?.Optional_Columns.find((o: any) => o.Id === id);
+          if(optionalColumn){
+            OptionalColumns.push(optionalColumn);
+          }
+        });
+      }
       console.log("FAITH - reducer PersonSkills", PersonSkills);
 
       return {
