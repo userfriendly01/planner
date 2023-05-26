@@ -248,7 +248,8 @@ describe("<DataGridFlow />", () => {
       renderComponent();
       const openEditModal = EditFlow.mock.calls[0][0].openEditModal;
       act(()=>{ openEditModal(false, true,{},"",true,false); });
-      expect(EditFlow.mock.calls[1][0].openEditModal).toBeTruthy;
+      act(()=>{ openEditModal(false, true,{},"",false,false); });
+      expect(EditFlow.mock.calls[1][0].openEditModal).toBeTruthy();
     });
     test("Simulate the EditFlow openEditModal", ()=>{
       const validFlowDataList = createFlowDataList(15);
