@@ -91,7 +91,7 @@ const SkillGroupInputContainer = (props: any) => {
 
   const isSkillGroupNameInvalid = () => {
     let skillGroupNameExists = false;
-    if (action !== ActionTypes.DELETE && (skillGroupName.trim() === "" || !skillGroupName)) {
+    if (action !== ActionTypes.DELETE && (skillGroupName?.trim() === "" || !skillGroupName)) {
       return false;
     }
     if (action === ActionTypes.ADD) {
@@ -105,7 +105,6 @@ const SkillGroupInputContainer = (props: any) => {
   };
 
   const handleAddSkillGroup = async () => {
-
     const onConfirm =async () => {
       setSaveResult({
         message: "Processing...",
@@ -203,15 +202,15 @@ const SkillGroupInputContainer = (props: any) => {
     try {
       // TODO: Is this really necessary?
       // the contact manager endpoint will just update with the same info if we just add the skillgroupname and skill ids to every body
-
+      console.warn("did i make it here????", skillGroupToEditDelete);
       // determine if name changed. if so, add skillGroupName to requestbody
-      if (skillGroupName !== skillGroupToEditDelete.label) {
+      if (skillGroupName !== skillGroupToEditDelete?.label) {
         requestBody.skillGroupName = skillGroupName.trim();
       }
 
       // determine if skills in the skill group changed
       let skillsHaveChanged = false;
-      const existingSkillInSkillGroup: number[] = skills.filter(sk => sk.ctmSkillGroups.find(skg => skg.skillGroupId === skillGroupToEditDelete.value))?.slice().map(sk => sk.ctmSkillId);
+      const existingSkillInSkillGroup: number[] = skills.filter(sk => sk.ctmSkillGroups.find(skg => skg.skillGroupId === skillGroupToEditDelete?.value))?.slice().map(sk => sk.ctmSkillId);
       const selectedSkills: number[] = tableState.selected.slice().map((sk: Skill) => sk.ctmSkillId);
 
       // check if the selected skills are different from the existing
@@ -227,7 +226,7 @@ const SkillGroupInputContainer = (props: any) => {
 
       const editConfirmationText = <>
         <ConfirmationSkillGroupsDiv>
-        Are you sure you want to edit the skill group <strong>{skillGroupToEditDelete.label}</strong> ?
+        Are you sure you want to edit the skill group <strong>{skillGroupToEditDelete?.label ? skillGroupToEditDelete?.label : ""}</strong> ?
           {requestBody.skillGroupName ? `The name of this skill grouping will become ${skillGroupName}` : ""}
           {skillsHaveChanged && <>
           This skill group will now contain the following skills:
@@ -250,6 +249,7 @@ const SkillGroupInputContainer = (props: any) => {
 
       console.log("LOOK AT MEEEEE", requestBody);
     } catch (err) {
+      console.warn("in the catch!!!!", err);
       console.error("Failed to update skillGroup", err?.message ? err.message : err);
       setSaveResult({
         message: "Request Failed",
@@ -297,7 +297,7 @@ const SkillGroupInputContainer = (props: any) => {
       it will only impact the skill group options available in the Default Skill Selector when onboarding or editing a Triton user.
       The following skills currently make up the selected skill group:
         <ConfirmationSkillList>
-          {skillGroupToEditDelete.skills.map((skill: string) => <li key={skill}>{skill}</li>)}
+          {skillGroupToEditDelete.skills?.map((skill: string) => <li key={skill}>{skill}</li>)}
         </ConfirmationSkillList>
       </ConfirmationSkillGroupsDiv>
     </>;
@@ -327,7 +327,7 @@ const SkillGroupInputContainer = (props: any) => {
       {action !== ActionTypes.ADD && (
         <Dropdown
           options={getSkillGroupOptions()}
-          label={`Skill Group to ${action.label}`}
+          label={`Skill Group to ${action.label}`}  // todo: check this.. is action an obj?
           updateValue={(event: AnalyserNode, val: any) => {
             setSkillGroupToEditDelete(val);
             setSkillGroupName(val.label);

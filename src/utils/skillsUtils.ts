@@ -38,10 +38,7 @@ export const getValidSkillsObject = (skillsObject?: WorkerAttributeSkills): Work
 };
 
 export const formatSkillGroups = (skillsArray: Skill[]): any[] => {
-  // filter through the skills that have skillGroups (and levels so they are legit in twilio)
-  // and group them by skillGroup
-  // TODO: COMMENT THIS BACK IN AND THE ONE BELOW BACK OUT???? or dont. i think i want to just leave it
-  // const skillsWithGroups = skillsArray.filter(s => s.ctmSkillGroups.length > 0 && s.levels);
+  // filter through the skills that have skillGroups and group them by skillGroup
   const skillsWithGroups = skillsArray.filter(s => s.ctmSkillGroups.length > 0);
 
   const groups: any[] = [];
@@ -49,7 +46,7 @@ export const formatSkillGroups = (skillsArray: Skill[]): any[] => {
     sk.ctmSkillGroups.forEach(group => {
       const groupInGroupsArray = groups.find(g => g.skillGroupId === group.skillGroupId);
       const skillCopy = JSON.parse(JSON.stringify(sk));
-      delete skillCopy.ctmSkillGroups; // take of the skillGroups from this layer or we'll have neverending data
+      delete skillCopy.ctmSkillGroups; // take off the skillGroups from this layer or we'll have neverending data
       if (groupInGroupsArray) {
         groupInGroupsArray.skills.push(skillCopy);
       } else {

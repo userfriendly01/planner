@@ -5,11 +5,6 @@ import { myAxios } from "utils";
 export const addSkillGroup = (requestBody: any): Promise<any> => // todo: make a type
   myAxios.post(apiPaths.SKILL_GROUPS, requestBody).then(response => response.data);
 
-// export const addSkillGroupsSkill = (skillGroupId: string | number, skillId: string | number): Promise<any> =>
-//   myAxios.post(`${apiPaths.SKILL_GROUPS}/${skillGroupId}/skills`, {
-//     skill_id: skillId
-//   }).then(response => response.data);
-
 export const deleteSkillGroup = (skillGroupId: string | number): Promise<any> =>
   myAxios.delete(`${apiPaths.SKILL_GROUPS}/${skillGroupId}`).then(response => response.data);
 
