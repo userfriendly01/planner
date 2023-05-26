@@ -335,10 +335,28 @@ const processUpdateManager = async (row: any, template: Template, state: any) =>
   }
 };
 
-const processUpdateSkills = async (row: any, template: Template, state: any) => {
+const processUpdateDefaultSkills = async (row: any, template: Template, state: any) => {
   // todo: expand
   console.log("processing update skills hurr");
-  return Promise.resolve("skills updated");
+  const rowNumber = row.rowNumber;
+  const userNNumber = row.attributes.n_number;
+  const workerSid = row.workerSid; // maybe unnecessary here, use this when calling updateUser
+
+  // from userFormSkills.tsx
+  // const attributes: Partial<Worker["attributes"]> = {};
+  // attributes.default_skills = form.defaultSkills;
+
+  const body = {};
+
+  console.log("**** UPDATE DEFAULT SKILLS RECORD PROCESSING", row, body);
+  try {
+    await updateUser(row.workerSid, body);
+    return Promise.resolve(`${row.workerSid} - Default Skills updated for row ${rowNumber}`);
+  } catch(err){
+    const errorMessage = `Failed to update Triton Worker Default Skills for row ${rowNumber}. ${formatErrorMessage(err)}`;
+    console.error(errorMessage, err);
+    return rejectPromise(errorMessage, rowNumber);
+  }
 };
 
 //Templates
@@ -473,7 +491,7 @@ export const getUpdateTemplates = (state: any): Templates => {
     UPDATE_SKILLS: {
       name: "UPDATE_SKILLS",
       data: {},
-      processFunction: (row: any, template: Template) => processUpdateSkills(row, template, state),
+      processFunction: (row: any, template: Template) => processUpdateDefaultSkills(row, template, state),
       stateUpdateFunctions: [updateTritonUserState, updateCalabrioUserState], // todo: decide which state function needs to be called here
       multiRunDependencies: null,
       validationConcurrencyLimit: 500,
