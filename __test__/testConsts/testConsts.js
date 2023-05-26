@@ -146,6 +146,12 @@ export const calabrioContext = {
     {
       Id: "123-321",
       Name: "WFM Business Unit1",
+      Absences: [
+        {
+          Name: "Absence1",
+          Id: "111"
+        }
+      ],
       Availabilities: [
         {
           Name: "Availability1",
@@ -232,6 +238,12 @@ export const calabrioContext = {
         {
           Name: "Availability2",
           Id: "222"
+        }
+      ],
+      Absences: [
+        {
+          Name: "Absence1",
+          Id: "111"
         }
       ],
       Budget_Groups: [],

@@ -4,10 +4,7 @@ import {
   Row,
   Wrapper
 } from "./WfmForm.Styles";
-import {
-  Dropdown,
-  NNumberInput
-} from "components";
+import { Dropdown } from "components";
 import {
   userFormActions,
   useFormState,
@@ -15,8 +12,6 @@ import {
   useAdminState
 } from "context";
 import {
-  FormGroup,
-  FormControlLabel,
   InputAdornment,
   Switch,
   TextareaAutosize,
@@ -92,8 +87,7 @@ const WfmForm = () => {
         validOptionalColumns.push(c);
       }
     });
-
-    if(validOptionalColumns !== form.calabrio_wfm.OptionalColumns){
+    if(JSON.stringify(validOptionalColumns) !== JSON.stringify(form.calabrio_wfm.OptionalColumns)){
       setForm({
         type: userFormActions.SET_WFM_OPTIONAL_COLUMNS,
         payload: validOptionalColumns.map((o:any) => {
@@ -217,8 +211,8 @@ const WfmForm = () => {
   const generateDropdownOption = (option: any) => {
     if(option){
       return {
-        value: option.Id,
-        label: option.Name,
+        value: option.Id || option,
+        label: option.Name || option.toString(),
         ...option
       }
     } else {
@@ -232,7 +226,7 @@ const WfmForm = () => {
     Object.keys(fields).forEach((key: any) => {
       if(key === field && (!fields[key] || fields[key].length === 0)){
         fieldMissing = true;
-      } else if(fields[key]?.length > 0){
+      } else if(typeof fields[key] === "number" || fields[key]?.length > 0){
         populatedFields = true
       }
     });
@@ -393,7 +387,7 @@ const WfmForm = () => {
             disabled={!isAdd}
             label="Workflow Control Set"
             options={generateDropdownOptionArray(optionsByBusinessUnit["Workflow_Control_Sets"])}
-            value={optionsByBusinessUnit["Workflow_Control_Sets"]?.find((wcs: any) => wcs.value === form.calabrio_wfm.WorkflowControlSetId) || ""}
+            value={generateDropdownOption(optionsByBusinessUnit["Workflow_Control_Sets"]?.find((wcs: any) => wcs.Id === form.calabrio_wfm.WorkflowControlSetId) || "")}
             updateValue={(event: any, newValue: any) => setForm({
               type: userFormActions.SET_WFM_CONTROL_SET,
               payload: newValue.value
@@ -410,7 +404,7 @@ const WfmForm = () => {
               const newOptionalColumns = options.map((o:any) => {
                 const columnExists = optionalColumns.find((c:any) => c.value === o.value);
                 if(columnExists){
-                  return columnExists
+                  return o;
                 } else {
                   return {
                     ...o,
@@ -471,10 +465,10 @@ const WfmForm = () => {
             disabled={!isAdd}
             label="Absence"
             options={generateDropdownOptionArray(optionsByBusinessUnit["Absences"])}
-            value={optionsByBusinessUnit["Absences"]?.find((a: any) => a.value === form.calabrio_wfm.AbsenceId)}
+            value={generateDropdownOption(optionsByBusinessUnit["Absences"]?.find((a: any) => a.Id === form.calabrio_wfm.AbsenceId))}
             updateValue={(event: any, newValue: any) => setForm({
               type: userFormActions.SET_WFM_ABSENCE,
-              payload: newValue
+              payload: newValue.value
             })}
             styles={{ width: "250px" }}
           />
@@ -482,10 +476,10 @@ const WfmForm = () => {
             disabled={!isAdd}
             label="Budget Group"
             options={generateDropdownOptionArray(optionsByBusinessUnit["Budget_Groups"])}
-            value={generateDropdownOptionArray(optionsByBusinessUnit["Budget_Groups"]?.find((bg: any) => bg.value === form.calabrio_wfm.BudgetGroupId))}
+            value={generateDropdownOption(optionsByBusinessUnit["Budget_Groups"]?.find((bg: any) => bg.Id === form.calabrio_wfm.BudgetGroupId))}
             updateValue={(event: any, newValue: any) => setForm({
               type: userFormActions.SET_WFM_BUDGET_GROUP,
-              payload: newValue
+              payload: newValue.value
             })}
             styles={{ width: "250px" }}
           />
@@ -494,10 +488,10 @@ const WfmForm = () => {
             label="Part Time Percentage"
             error={requiredFieldMissing("partTimePercentageId", scheduleFields)}
             options={generateDropdownOptionArray(optionsByBusinessUnit["Part_Time_Percentages"])}
-            value={optionsByBusinessUnit["Part_Time_Percentages"]?.find((ptp: any) => ptp.value === form.calabrio_wfm.PartTimePercentageId)}
+            value={generateDropdownOption(optionsByBusinessUnit["Part_Time_Percentages"]?.find((ptp: any) => ptp.Id === form.calabrio_wfm.PartTimePercentageId))}
             updateValue={(event: any, newValue: any) => setForm({
               type: userFormActions.SET_WFM_PART_TIME_PERCENTAGE,
-              payload: newValue
+              payload: newValue.value
             })}
             styles={{ width: "250px" }}
           />
@@ -508,10 +502,10 @@ const WfmForm = () => {
             label="Contract Schedule"
             error={requiredFieldMissing("contractScheduleId", scheduleFields)}
             options={generateDropdownOptionArray(optionsByBusinessUnit["Contract_Schedules"])}
-            value={optionsByBusinessUnit["Contract_Schedules"]?.find((cs: any) => cs.value === form.calabrio_wfm.ContractScheduleId)}
+            value={generateDropdownOption(optionsByBusinessUnit["Contract_Schedules"]?.find((cs: any) => cs.Id === form.calabrio_wfm.ContractScheduleId))}
             updateValue={(event: any, newValue: any) => setForm({
               type: userFormActions.SET_WFM_CONTRACT_SCHEDULE,
-              payload: newValue
+              payload: newValue.value
             })}
             styles={{ width: "250px" }}
           />
@@ -520,10 +514,10 @@ const WfmForm = () => {
             error={requiredFieldMissing("contractId", scheduleFields)}
             label="Contract"
             options={generateDropdownOptionArray(optionsByBusinessUnit["Contracts"])}
-            value={optionsByBusinessUnit["Contracts"]?.find((c: any) => c.value === form.calabrio_wfm.ContractId)}
+            value={generateDropdownOption(optionsByBusinessUnit["Contracts"]?.find((c: any) => c.Id === form.calabrio_wfm.ContractId))}
             updateValue={(event: any, newValue: any) => setForm({
               type: userFormActions.SET_WFM_CONTRACT,
-              payload: newValue
+              payload: newValue.value
             })}
             styles={{ width: "250px" }}
           />
@@ -531,10 +525,10 @@ const WfmForm = () => {
             disabled={!isAdd}
             label="Shift Bag"
             options={generateDropdownOptionArray(optionsByBusinessUnit["Shift_Bags"])}
-            value={optionsByBusinessUnit["Shift_Bags"]?.find((sb: any) => sb.value === form.calabrio_wfm.ShiftBagId)}
+            value={generateDropdownOption(optionsByBusinessUnit["Shift_Bags"]?.find((sb: any) => sb.Id === form.calabrio_wfm.ShiftBagId))}
             updateValue={(event: any, newValue: any) => setForm({
               type: userFormActions.SET_WFM_SHIFT_BAG,
-              payload: newValue
+              payload: newValue.value
             })}
             styles={{ width: "250px" }}
           />
@@ -545,10 +539,10 @@ const WfmForm = () => {
             label="Rotation"
             error={requiredFieldMissing("id", rotationFields)}
             options={generateDropdownOptionArray(optionsByBusinessUnit["Rotations"])}
-            value={rotationFields.id || ""}
+            value={generateDropdownOption(optionsByBusinessUnit["Rotations"]?.find((r: any) => r.Id === rotationFields.id))}
             updateValue={(event: any, newValue: any) => setRotationFields({
               ...rotationFields,
-              id: newValue
+              id: newValue.value
             })}
             styles={{ width: "250px" }}
           />
@@ -572,12 +566,12 @@ const WfmForm = () => {
               width: "250px",
               margin: "0px 5px"
             }}
-            options={[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56]}
+            options={generateDropdownOptionArray([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55])}
             updateValue={(event: any, newValue: any) => setRotationFields({
               ...rotationFields,
-              startWeek: newValue
+              startWeek: newValue?.value
             })}
-            value={rotationFields.startWeek || ""}
+            value={generateDropdownOption(rotationFields.startWeek)}
           />
         </Row>
         <Row>
@@ -586,10 +580,10 @@ const WfmForm = () => {
             label="Availability"
             error={requiredFieldMissing("id", availabilityFields)}
             options={generateDropdownOptionArray(optionsByBusinessUnit["Availabilities"])}
-            value={generateDropdownOptionArray(optionsByBusinessUnit["Availabilities"])?.find((a: any) => a.value === availabilityFields.id)}
+            value={generateDropdownOption(optionsByBusinessUnit["Availabilities"]?.find((a: any) => a.Id === availabilityFields.id))}
             updateValue={(event: any, newValue: any) => setAvailabilityFields({
               ...availabilityFields,
-              id: newValue
+              id: newValue.value
             })}
             styles={{ width: "250px" }}
           />

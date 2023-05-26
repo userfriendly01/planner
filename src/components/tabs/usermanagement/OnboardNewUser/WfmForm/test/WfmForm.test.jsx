@@ -282,6 +282,16 @@ describe("<WfmForm />", () => {
         teamDatePicker = teamDatePickers[teamDatePickers.length-1][0];
         expect(teamDatePicker.value).toBe("12/23/2023");
       });
+      test("onChange null updates team fields with null", () => {
+        renderComponent();
+        let teamDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Team Start Date");
+        let teamDatePicker = teamDatePickers[teamDatePickers.length-1][0];
+        const onChange = teamDatePicker.onChange;
+        act(() => onChange(null));
+        teamDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Team Start Date");
+        teamDatePicker = teamDatePickers[teamDatePickers.length-1][0];
+        expect(teamDatePicker.value).toBe(null);
+      });
     });
     describe("Error fields", () => {
       describe("team field is populated but team start date is not", () => {
@@ -593,7 +603,7 @@ describe("<WfmForm />", () => {
           expect(skillDatePicker.disabled).toBe(true);
         });
       });
-      test("onChange updates team fields", () => {
+      test("onChange updates skill date field", () => {
         renderComponent();
         let skillDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Skills Start Date");
         let skillDatePicker = skillDatePickers[skillDatePickers.length-1][0];
@@ -602,6 +612,16 @@ describe("<WfmForm />", () => {
         skillDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Skills Start Date");
         skillDatePicker = skillDatePickers[skillDatePickers.length-1][0];
         expect(skillDatePicker.value).toBe("12/23/2023");
+      });
+      test("onChange to null updates skill date field to null", () => {
+        renderComponent();
+        let skillDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Skills Start Date");
+        let skillDatePicker = skillDatePickers[skillDatePickers.length-1][0];
+        const onChange = skillDatePicker.onChange;
+        act(() => onChange(null));
+        skillDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Skills Start Date");
+        skillDatePicker = skillDatePickers[skillDatePickers.length-1][0];
+        expect(skillDatePicker.value).toBe("");
       });
     });
     describe("Error fields", () => {
@@ -838,6 +858,91 @@ describe("<WfmForm />", () => {
         ]
       });
     });
+    test("Adding a column does not delete the value in other columns", () => {
+      renderComponent();
+      const columnOption1 = {
+        value: "111",
+        label: "OptionalCol1",
+        Id: "111",
+        Name: "OptionalCol1"
+      };
+      const columnOption2 = {
+        value: "222",
+        label: "OptionalCol2",
+        Id: "222",
+        Name: "OptionalCol2"
+      };
+      let columnsDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Optional Columns");
+      let columnsDropdown = columnsDropdowns[columnsDropdowns.length-1][0];
+      const updateValue = columnsDropdown.updateValue;
+      act(() => updateValue({}, [ columnOption1 ]));
+      columnsDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Optional Columns");
+      columnsDropdown = columnsDropdowns[columnsDropdowns.length-1][0];
+      const updateValueAgain = columnsDropdown.updateValue;
+      act(() => updateValueAgain({}, [ columnOption1, columnOption2 ]));
+
+      let optionalColumn2Fields = TextField.mock.calls.filter((m) => m[0]?.label === `${columnOption2.Name} value *`);
+      let optionalColumn2Field = optionalColumn2Fields[optionalColumn2Fields.length-1][0];
+      const value2OnChange = optionalColumn2Field.onChange;
+      act(() => value2OnChange({
+        target: {
+          value: "kittens"
+        }
+      }))
+      let optionalColumn1Fields = TextField.mock.calls.filter((m) => m[0]?.label === `${columnOption1.Name} value *`);
+      let optionalColumn1Field = optionalColumn1Fields[optionalColumn1Fields.length-1][0];
+      const value1OnChange = optionalColumn1Field.onChange;
+      act(() => value1OnChange({
+        target: {
+          value: "puppies"
+        }
+      }))
+      columnsDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Optional Columns");
+      columnsDropdown = columnsDropdowns[columnsDropdowns.length-1][0];
+      expect(columnsDropdown.value).toStrictEqual([
+        {
+          ...columnOption1,
+          columnValue: "puppies"
+        },
+        {
+          ...columnOption2,
+          columnValue: "kittens"
+        }
+      ]);
+      expect(mockSetForm).toHaveBeenCalledWith({
+        type: userFormActions.SET_WFM_OPTIONAL_COLUMNS,
+        payload: [
+          {
+            Id: '222',
+            Value: 'kittens'
+          }
+        ]
+      });
+      expect(mockSetForm).toHaveBeenCalledWith({
+        type: userFormActions.SET_WFM_OPTIONAL_COLUMNS,
+        payload: [
+          {
+            Id: '111',
+            Value: 'puppies'
+          },
+          {
+            Id: '222',
+            Value: 'kittens'
+          }
+        ]
+      });
+    });
+    test("when column/value already exist, setForm is not called", () => {
+      renderComponent();
+      let columnsDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Optional Columns");
+      let columnsDropdown = columnsDropdowns[columnsDropdowns.length-1][0];
+      const updateValue = columnsDropdown.updateValue;
+      act(() => updateValue({}, []));
+      expect(mockSetForm).not.toHaveBeenLastCalledWith({
+        type: userFormActions.SET_WFM_OPTIONAL_COLUMNS,
+        payload: []
+      });
+    });
   });
   describe("Notes", () => {
     describe("disable", () => {
@@ -875,11 +980,154 @@ describe("<WfmForm />", () => {
       });
     });
   });
-  describe("Absence", () => {});
-  describe("Budget Group", () => {});
-  describe("Shift Bag", () => {});
+  describe("Absence", () => {
+    describe("disable", () => {
+      test("is not disabled when formmode is insert", () => {
+        renderComponent();
+        const absenceDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Absence");
+        const absenceDropdown = absenceDropdowns[absenceDropdowns.length-1][0];
+        expect(absenceDropdown.disabled).toBe(false);
+      });
+      test("is disabled when formmode is not insert", () => {
+        const formState = {
+          ...initialFormState,
+          formMode: "update"
+        };
+        useFormState.mockReturnValue(formState);
+        renderComponent();
+        const absenceDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Absence");
+        const absenceDropdown = absenceDropdowns[absenceDropdowns.length-1][0];
+        expect(absenceDropdown.disabled).toBe(true);
+      });
+    });
+    test("options", () => {
+      renderComponent();
+      const absenceDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Absence");
+      const absenceDropdown = absenceDropdowns[absenceDropdowns.length-1][0];
+      const expectedRawOptions = initialTestState.calabrioContext.wfmOptions.find(bu => bu.Id === BusinessUnitId).Absences;
+      const expectedDropdownOptions = expectedRawOptions.map(o => {
+        return {
+          ...o,
+          label: o.Name,
+          value: o.Id
+        }
+      });
+      expect(absenceDropdown.options).toStrictEqual(expectedDropdownOptions);
+    });
+    test("updateValue calls setForm", () => {
+      renderComponent();
+      const absenceDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Absence");
+      const absenceDropdown = absenceDropdowns[absenceDropdowns.length-1][0];
+      const updateValue = absenceDropdown.updateValue;
+      act(() => updateValue({}, { value: "111"}));
+      expect(mockSetForm).toHaveBeenLastCalledWith({
+        type: userFormActions.SET_WFM_ABSENCE,
+        payload: "111"
+      });
+    });
+  });
+  describe("Budget Group", () => {
+    describe("disable", () => {
+      test("is not disabled when formmode is insert", () => {
+        renderComponent();
+        const budgetGroupDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Budget Group");
+        const budgetGroupDropdown = budgetGroupDropdowns[budgetGroupDropdowns.length-1][0];
+        expect(budgetGroupDropdown.disabled).toBe(false);
+      });
+      test("is disabled when formmode is not insert", () => {
+        const formState = {
+          ...initialFormState,
+          formMode: "update"
+        };
+        useFormState.mockReturnValue(formState);
+        renderComponent();
+        const budgetGroupDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Budget Group");
+        const budgetGroupDropdown = budgetGroupDropdowns[budgetGroupDropdowns.length-1][0];
+        expect(budgetGroupDropdown.disabled).toBe(true);
+      });
+    });
+    test("options", () => {
+      renderComponent();
+      const budgetGroupDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Budget Group");
+      const budgetGroupDropdown = budgetGroupDropdowns[budgetGroupDropdowns.length-1][0];
+      const expectedRawOptions = initialTestState.calabrioContext.wfmOptions.find(bu => bu.Id === BusinessUnitId).Budget_Groups;
+      const expectedDropdownOptions = expectedRawOptions.map(o => {
+        return {
+          ...o,
+          label: o.Name,
+          value: o.Id
+        }
+      });
+      expect(budgetGroupDropdown.options).toStrictEqual(expectedDropdownOptions);
+    });
+    test("updateValue calls setForm", () => {
+      renderComponent();
+      const budgetGroupDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Budget Group");
+      const budgetGroupDropdown = budgetGroupDropdowns[budgetGroupDropdowns.length-1][0];
+      const updateValue = budgetGroupDropdown.updateValue;
+      act(() => updateValue({}, { value: "000"}));
+      expect(mockSetForm).toHaveBeenLastCalledWith({
+        type: userFormActions.SET_WFM_BUDGET_GROUP,
+        payload: "000"
+      });
+    });
+  });
+  describe("Shift Bag", () => {
+    describe("disable", () => {
+      test("is not disabled when formmode is insert", () => {
+        renderComponent();
+        const shiftBagDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Shift Bag");
+        const shiftBagDropdown = shiftBagDropdowns[shiftBagDropdowns.length-1][0];
+        expect(shiftBagDropdown.disabled).toBe(false);
+      });
+      test("is disabled when formmode is not insert", () => {
+        const formState = {
+          ...initialFormState,
+          formMode: "update"
+        };
+        useFormState.mockReturnValue(formState);
+        renderComponent();
+        const shiftBagDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Shift Bag");
+        const shiftBagDropdown = shiftBagDropdowns[shiftBagDropdowns.length-1][0];
+        expect(shiftBagDropdown.disabled).toBe(true);
+      });
+    });
+    test("options", () => {
+      const formState = {
+        ...initialFormState,
+        calabrio_wfm: {
+          ...initialFormState.calabrio_wfm,
+          BusinessUnitId
+        }
+      };
+      useFormState.mockReturnValue(formState);
+      renderComponent();
+      const shiftBagDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Shift Bag");
+      const shiftBagDropdown = shiftBagDropdowns[shiftBagDropdowns.length-1][0];
+      const expectedRawOptions = initialTestState.calabrioContext.wfmOptions.find(bu => bu.Id === BusinessUnitId).Shift_Bags;
+      const expectedDropdownOptions = expectedRawOptions.map(o => {
+        return {
+          ...o,
+          label: o.Name,
+          value: o.Id
+        }
+      });
+      expect(shiftBagDropdown.options).toStrictEqual(expectedDropdownOptions);
+    });
+    test("updateValue calls setForm", () => {
+      renderComponent();
+      const shiftBagDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Shift Bag");
+      const shiftBagDropdown = shiftBagDropdowns[shiftBagDropdowns.length-1][0];
+      const updateValue = shiftBagDropdown.updateValue;
+      act(() => updateValue({}, { value: "111"}));
+      expect(mockSetForm).toHaveBeenLastCalledWith({
+        type: userFormActions.SET_WFM_SHIFT_BAG,
+        payload: "111"
+      });
+    });
+  });
   describe("Schedule Fields", () => {
-    describe("Person start date", () => {
+    describe("Person Start Date", () => {
       describe("disable", () => {
         test("is not disabled when formmode is insert", () => {
           renderComponent();
@@ -912,62 +1160,526 @@ describe("<WfmForm />", () => {
           payload: "12/23/2023"
         });
       });
-    });
-    describe("Part Time Percentage", () => {});
-    describe("Contract Schedule", () => {});
-    describe("Contract", () => {});
-  });
-  describe("Rotation Fields", () => {});
-  describe("Availability Fields", () => {
-    describe("disable", () => {
-      test("is not disabled when formmode is insert", () => {
+      test("onChange null updates team fields to null", () => {
         renderComponent();
-        const availabilityDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Availability");
-        const availabilityDropdown = availabilityDropdowns[availabilityDropdowns.length-1][0];
-        expect(availabilityDropdown.disabled).toBe(false);
+        let personDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Person Start Date");
+        let personDatePicker = personDatePickers[personDatePickers.length-1][0];
+        const onChange = personDatePicker.onChange;
+        act(() => onChange(null));
+        personDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Person Start Date");
+        personDatePicker = personDatePickers[personDatePickers.length-1][0];
+        expect(mockSetForm).toHaveBeenLastCalledWith({
+          type: userFormActions.SET_WFM_EMP_START_DATE,
+          payload: null
+        });
       });
-      test("is disabled when formmode is not insert", () => {
+      test("error field is true when another schedule field is selected", () => {
+        renderComponent();
+        let teamDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Team");
+        let teamDropdown = teamDropdowns[teamDropdowns.length-1][0];
+        const updateValue = teamDropdown.updateValue;
+        act(() => updateValue({}, { value: "111" }));
+        const personDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Person Start Date");
+        const personDatePicker = personDatePickers[personDatePickers.length-1][0];
+        render(personDatePicker.renderInput());
+        const textFieldLength = TextField.mock.calls.length;
+        const textField = TextField.mock.calls[textFieldLength-1][0];
+        expect(textField.error).toBe(true);
+      });
+    });
+    describe("Part Time Percentage", () => {
+      describe("disable", () => {
+        test("is not disabled when formmode is insert", () => {
+          renderComponent();
+          const partTimeDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Part Time Percentage");
+          const partTimeDropdown = partTimeDropdowns[partTimeDropdowns.length-1][0];
+          expect(partTimeDropdown.disabled).toBe(false);
+        });
+        test("is disabled when formmode is not insert", () => {
+          const formState = {
+            ...initialFormState,
+            formMode: "update"
+          };
+          useFormState.mockReturnValue(formState);
+          renderComponent();
+          const partTimeDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Part Time Percentage");
+          const partTimeDropdown = partTimeDropdowns[partTimeDropdowns.length-1][0];
+          expect(partTimeDropdown.disabled).toBe(true);
+        });
+      });
+      test("options", () => {
         const formState = {
           ...initialFormState,
-          formMode: "update"
+          calabrio_wfm: {
+            ...initialFormState.calabrio_wfm,
+            BusinessUnitId
+          }
+        };
+        useFormState.mockReturnValue(formState);
+        renderComponent();
+        const partTimeDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Part Time Percentage");
+        const partTimeDropdown = partTimeDropdowns[partTimeDropdowns.length-1][0];
+        const expectedRawOptions = initialTestState.calabrioContext.wfmOptions.find(bu => bu.Id === BusinessUnitId).Part_Time_Percentages;
+        const expectedDropdownOptions = expectedRawOptions.map(o => {
+          return {
+            ...o,
+            label: o.Name,
+            value: o.Id
+          }
+        });
+        expect(partTimeDropdown.options).toStrictEqual(expectedDropdownOptions);
+      });
+      test("updateValue calls setForm", () => {
+        renderComponent();
+        const partTimeDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Part Time Percentage");
+        const partTimeDropdown = partTimeDropdowns[partTimeDropdowns.length-1][0];
+        const updateValue = partTimeDropdown.updateValue;
+        act(() => updateValue({}, { value: "111"}));
+        expect(mockSetForm).toHaveBeenLastCalledWith({
+          type: userFormActions.SET_WFM_PART_TIME_PERCENTAGE,
+          payload: "111"
+        });
+      });
+    });
+    describe("Contract Schedule", () => {
+      describe("disable", () => {
+        test("is not disabled when formmode is insert", () => {
+          renderComponent();
+          const contractScheduleDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Contract Schedule");
+          const contractScheduleDropdown = contractScheduleDropdowns[contractScheduleDropdowns.length-1][0];
+          expect(contractScheduleDropdown.disabled).toBe(false);
+        });
+        test("is disabled when formmode is not insert", () => {
+          const formState = {
+            ...initialFormState,
+            formMode: "update"
+          };
+          useFormState.mockReturnValue(formState);
+          renderComponent();
+          const contractScheduleDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Contract Schedule");
+          const contractScheduleDropdown = contractScheduleDropdowns[contractScheduleDropdowns.length-1][0];
+          expect(contractScheduleDropdown.disabled).toBe(true);
+        });
+      });
+      test("options", () => {
+        const formState = {
+          ...initialFormState,
+          calabrio_wfm: {
+            ...initialFormState.calabrio_wfm,
+            BusinessUnitId
+          }
+        };
+        useFormState.mockReturnValue(formState);
+        renderComponent();
+        const contractScheduleDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Contract Schedule");
+        const contractScheduleDropdown = contractScheduleDropdowns[contractScheduleDropdowns.length-1][0];
+        const expectedRawOptions = initialTestState.calabrioContext.wfmOptions.find(bu => bu.Id === BusinessUnitId).Contract_Schedules;
+        const expectedDropdownOptions = expectedRawOptions.map(o => {
+          return {
+            ...o,
+            label: o.Name,
+            value: o.Id
+          }
+        });
+        expect(contractScheduleDropdown.options).toStrictEqual(expectedDropdownOptions);
+      });
+      test("updateValue calls setForm", () => {
+        renderComponent();
+        const contractScheduleDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Contract Schedule");
+        const contractScheduleDropdown = contractScheduleDropdowns[contractScheduleDropdowns.length-1][0];
+        const updateValue = contractScheduleDropdown.updateValue;
+        act(() => updateValue({}, { value: "111"}));
+        expect(mockSetForm).toHaveBeenLastCalledWith({
+          type: userFormActions.SET_WFM_CONTRACT_SCHEDULE,
+          payload: "111"
+        });
+      });
+    });
+    describe("Contract", () => {
+      describe("disable", () => {
+        test("is not disabled when formmode is insert", () => {
+          renderComponent();
+          const contractDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Contract");
+          const contractDropdown = contractDropdowns[contractDropdowns.length-1][0];
+          expect(contractDropdown.disabled).toBe(false);
+        });
+        test("is disabled when formmode is not insert", () => {
+          const formState = {
+            ...initialFormState,
+            formMode: "update"
+          };
+          useFormState.mockReturnValue(formState);
+          renderComponent();
+          const contractDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Contract");
+          const contractDropdown = contractDropdowns[contractDropdowns.length-1][0];
+          expect(contractDropdown.disabled).toBe(true);
+        });
+      });
+      test("options", () => {
+        const formState = {
+          ...initialFormState,
+          calabrio_wfm: {
+            ...initialFormState.calabrio_wfm,
+            BusinessUnitId
+          }
+        };
+        useFormState.mockReturnValue(formState);
+        renderComponent();
+        const contractDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Contract");
+        const contractDropdown = contractDropdowns[contractDropdowns.length-1][0];
+        const expectedRawOptions = initialTestState.calabrioContext.wfmOptions.find(bu => bu.Id === BusinessUnitId).Contracts;
+        const expectedDropdownOptions = expectedRawOptions.map(o => {
+          return {
+            ...o,
+            label: o.Name,
+            value: o.Id
+          }
+        });
+        expect(contractDropdown.options).toStrictEqual(expectedDropdownOptions);
+      });
+      test("updateValue calls setForm", () => {
+        renderComponent();
+        const contractDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Contract");
+        const contractDropdown = contractDropdowns[contractDropdowns.length-1][0];
+        const updateValue = contractDropdown.updateValue;
+        act(() => updateValue({}, { value: "111"}));
+        expect(mockSetForm).toHaveBeenLastCalledWith({
+          type: userFormActions.SET_WFM_CONTRACT,
+          payload: "111"
+        });
+      });
+    });
+  });
+  describe("Rotation Fields", () => {
+    describe("Rotation", () => {
+      describe("disable", () => {
+        test("is not disabled when formmode is insert", () => {
+          renderComponent();
+          const rotationDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Rotation");
+          const rotationDropdown = rotationDropdowns[rotationDropdowns.length-1][0];
+          expect(rotationDropdown.disabled).toBe(false);
+        });
+        test("is disabled when formmode is not insert", () => {
+          const formState = {
+            ...initialFormState,
+            formMode: "update"
+          };
+          useFormState.mockReturnValue(formState);
+          renderComponent();
+          const rotationDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Rotation");
+          const rotationDropdown = rotationDropdowns[rotationDropdowns.length-1][0];
+          expect(rotationDropdown.disabled).toBe(true);
+        });
+      });
+      test("options", () => {
+        renderComponent();
+        const rotationDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Rotation");
+        const rotationDropdown = rotationDropdowns[rotationDropdowns.length-1][0];
+        const expectedRawOptions = initialTestState.calabrioContext.wfmOptions.find(bu => bu.Id === BusinessUnitId).Rotations;
+        const expectedDropdownOptions = expectedRawOptions.map(o => {
+          return {
+            ...o,
+            label: o.Name,
+            value: o.Id
+          }
+        });
+        expect(rotationDropdown.options).toStrictEqual(expectedDropdownOptions);
+      });
+      test("updateValue updates team fields", () => {
+        renderComponent();
+        let rotationDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Rotation");
+        let rotationDropdown = rotationDropdowns[rotationDropdowns.length-1][0];
+        const updateValue = rotationDropdown.updateValue;
+        act(() => updateValue({}, { value: "111" }));
+        rotationDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Rotation");
+        rotationDropdown = rotationDropdowns[rotationDropdowns.length-1][0];
+        expect(rotationDropdown.value.Id).toBe("111");
+      });
+    });
+    describe("Rotation Start Date", () => {
+      describe("disable", () => {
+        test("is not disabled when formmode is insert", () => {
+          renderComponent();
+          const rotationDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Rotation Start Date");
+          const rotationDatePicker = rotationDatePickers[rotationDatePickers.length-1][0];
+          expect(rotationDatePicker.disabled).toBe(false);
+        });
+        test("is disabled when formmode is not insert", () => {
+          const formState = {
+            ...initialFormState,
+            formMode: "update"
+          };
+          useFormState.mockReturnValue(formState);
+          renderComponent();
+          const rotationDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Rotation Start Date");
+          const rotationDatePicker = rotationDatePickers[rotationDatePickers.length-1][0];
+          expect(rotationDatePicker.disabled).toBe(true);
+        });
+      });
+      test("onChange updates rotation start date field", () => {
+        renderComponent();
+        let rotationDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Rotation Start Date");
+        let rotationDatePicker = rotationDatePickers[rotationDatePickers.length-1][0];
+        const onChange = rotationDatePicker.onChange;
+        act(() => onChange("12/23/2023"));
+        rotationDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Rotation Start Date");
+        rotationDatePicker = rotationDatePickers[rotationDatePickers.length-1][0];
+        expect(rotationDatePicker.value).toBe("12/23/2023");
+      });
+      test("onChange to null updates rotation start date field to null", () => {
+        renderComponent();
+        let rotationDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Rotation Start Date");
+        let rotationDatePicker = rotationDatePickers[rotationDatePickers.length-1][0];
+        const onChange = rotationDatePicker.onChange;
+        act(() => onChange(null));
+        rotationDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Rotation Start Date");
+        rotationDatePicker = rotationDatePickers[rotationDatePickers.length-1][0];
+        expect(rotationDatePicker.value).toBe("");
+      });
+    });
+    describe("Error fields", () => {
+      describe("Rotation field only is populated", () => {
+        test("Rotation start date & start week error should === true", () => {
+          renderComponent();
+          let rotationDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Rotation");
+          let rotationDropdown = rotationDropdowns[rotationDropdowns.length-1][0];
+          const updateValue = rotationDropdown.updateValue;
+          act(() => updateValue({}, { value: "111" }));
+          const rotationDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Rotation Start Date");
+          const rotationDatePicker = rotationDatePickers[rotationDatePickers.length-1][0];
+          render(rotationDatePicker.renderInput());
+          const textFieldLength = TextField.mock.calls.length;
+          const textField = TextField.mock.calls[textFieldLength-1][0];
+          expect(textField.error).toBe(true);
+          let rotationWeekDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Rotation Start Week");
+          let rotationWeekDropdown = rotationWeekDropdowns[rotationWeekDropdowns.length-1][0];
+          expect(rotationWeekDropdown.error).toBe(true);
+        })
+      });
+      describe("Rotation start date field only is populated", () => {
+        test("Rotation and rotation start week error should === true", () => {
+          renderComponent();
+          let rotationDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Rotation Start Date");
+          let rotationDatePicker = rotationDatePickers[rotationDatePickers.length-1][0];
+          const onChange = rotationDatePicker.onChange;
+          act(() => onChange("12/23/2023"));
+          const rotationDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Rotation");
+          const rotationDropdown = rotationDropdowns[rotationDropdowns.length-1][0];
+          expect(rotationDropdown.error).toBe(true);
+          let rotationWeekDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Rotation Start Week");
+          let rotationWeekDropdown = rotationWeekDropdowns[rotationWeekDropdowns.length-1][0];
+          expect(rotationWeekDropdown.error).toBe(true);
+        })
+      });
+      describe("Rotation start week only is populated", () => {
+        test("Rotation start date & start week error should === true", () => {
+          renderComponent();
+          let rotationWeekDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Rotation Start Week");
+          let rotationWeekDropdown = rotationWeekDropdowns[rotationWeekDropdowns.length-1][0];
+          const updateValue = rotationWeekDropdown.updateValue;
+          act(() => updateValue({}, { value: 9 }));
+          const rotationDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Rotation Start Date");
+          const rotationDatePicker = rotationDatePickers[rotationDatePickers.length-1][0];
+          render(rotationDatePicker.renderInput());
+          const textFieldLength = TextField.mock.calls.length;
+          const textField = TextField.mock.calls[textFieldLength-1][0];
+          expect(textField.error).toBe(true);
+          let rotationDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Rotation");
+          let rotationDropdown = rotationDropdowns[rotationDropdowns.length-1][0];
+          expect(rotationDropdown.error).toBe(true);
+        })
+      });
+    });
+    describe("All Fields are populated", () => {
+      test("should call setForm", () => {
+        renderComponent();
+        let rotationDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Rotation");
+        let rotationDropdown = rotationDropdowns[rotationDropdowns.length-1][0];
+        const updateValue = rotationDropdown.updateValue;
+        act(() => updateValue({}, { value: "111" }));
+        let rotationWeekDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Rotation Start Week");
+        let rotationWeekDropdown = rotationWeekDropdowns[rotationWeekDropdowns.length-1][0];
+        const updateWeekValue = rotationWeekDropdown.updateValue;
+        act(() => updateWeekValue({}, { value: 1 }));
+        let teamDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Rotation Start Date");
+        let teamDatePicker = teamDatePickers[teamDatePickers.length-1][0];
+        const onChange = teamDatePicker.onChange;
+        act(() => onChange("12/23/2023"));
+        rotationDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Rotation");
+        rotationDropdown = rotationDropdowns[rotationDropdowns.length-1][0];
+        expect(rotationDropdown.error).toBe(false);
+        rotationWeekDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Rotation Start Week");
+        rotationWeekDropdown = rotationWeekDropdowns[rotationWeekDropdowns.length-1][0];
+        expect(rotationWeekDropdown.error).toBe(false);
+        teamDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Rotation Start Date");
+        teamDatePicker = teamDatePickers[teamDatePickers.length-1][0];
+        render(teamDatePicker.renderInput());
+        const textFieldLength = TextField.mock.calls.length;
+        const textField = TextField.mock.calls[textFieldLength-1][0];
+        expect(textField.error).toBe(false);
+        expect(mockSetForm).toHaveBeenLastCalledWith({
+          type: userFormActions.SET_WFM_ROTATION,
+          payload: {
+            id: "111",
+            startDate: "12/23/2023",
+            startWeek: 1
+          }
+        });
+      });
+    });
+  });
+  describe("Availability Fields", () => {
+    describe("Availability", () => {
+      describe("disable", () => {
+        test("is not disabled when formmode is insert", () => {
+          renderComponent();
+          const availabilityDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Availability");
+          const availabilityDropdown = availabilityDropdowns[availabilityDropdowns.length-1][0];
+          expect(availabilityDropdown.disabled).toBe(false);
+        });
+        test("is disabled when formmode is not insert", () => {
+          const formState = {
+            ...initialFormState,
+            formMode: "update"
+          };
+          useFormState.mockReturnValue(formState);
+          renderComponent();
+          const availabilityDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Availability");
+          const availabilityDropdown = availabilityDropdowns[availabilityDropdowns.length-1][0];
+          expect(availabilityDropdown.disabled).toBe(true);
+        });
+      });
+      test("options", () => {
+        const formState = {
+          ...initialFormState,
+          calabrio_wfm: {
+            ...initialFormState.calabrio_wfm,
+            BusinessUnitId
+          }
         };
         useFormState.mockReturnValue(formState);
         renderComponent();
         const availabilityDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Availability");
         const availabilityDropdown = availabilityDropdowns[availabilityDropdowns.length-1][0];
-        expect(availabilityDropdown.disabled).toBe(true);
+        const expectedRawOptions = initialTestState.calabrioContext.wfmOptions.find(bu => bu.Id === BusinessUnitId).Availabilities;
+        const expectedDropdownOptions = expectedRawOptions.map(o => {
+          return {
+            ...o,
+            label: o.Name,
+            value: o.Id
+          }
+        });
+        expect(availabilityDropdown.options).toStrictEqual(expectedDropdownOptions);
+      });
+      test("updateValue updates availability fields", () => {
+        renderComponent();
+        let availabilityDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Availability");
+        let availabilityDropdown = availabilityDropdowns[availabilityDropdowns.length-1][0];
+        const updateValue = availabilityDropdown.updateValue;
+        act(() => updateValue({}, { value: "123123" }));
+        availabilityDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Availability");
+        availabilityDropdown = availabilityDropdowns[availabilityDropdowns.length-1][0];
+        expect(availabilityDropdown.value.Id).toBe("123123");
       });
     });
-    test("options", () => {
-      const formState = {
-        ...initialFormState,
-        calabrio_wfm: {
-          ...initialFormState.calabrio_wfm,
-          BusinessUnitId
-        }
-      };
-      useFormState.mockReturnValue(formState);
-      renderComponent();
-      const availabilityDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Availability");
-      const expectedRawOptions = initialTestState.calabrioContext.wfmOptions.find(bu => bu.Id === BusinessUnitId).Availabilities;
-      const expectedDropdownOptions = expectedRawOptions.map(o => {
-        return {
-          ...o,
-          label: o.Name,
-          value: o.Id
-        }
+    describe("Availability Start Date", () => {
+      describe("disable", () => {
+        test("is not disabled when formmode is insert", () => {
+          renderComponent();
+          const availabilityDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Availability Start Date");
+          const availabilityDatePicker = availabilityDatePickers[availabilityDatePickers.length-1][0];
+          expect(availabilityDatePicker.disabled).toBe(false);
+        });
+        test("is disabled when formmode is not insert", () => {
+          const formState = {
+            ...initialFormState,
+            formMode: "update"
+          };
+          useFormState.mockReturnValue(formState);
+          renderComponent();
+          const availabilityDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Availability Start Date");
+          const availabilityDatePicker = availabilityDatePickers[availabilityDatePickers.length-1][0];
+          expect(availabilityDatePicker.disabled).toBe(true);
+        });
       });
-      expect(availabilityDropdowns[availabilityDropdowns.length-1][0].options).toStrictEqual(expectedDropdownOptions);
+      test("onChange updates availability start date field", () => {
+        renderComponent();
+        let availabilityDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Availability Start Date");
+        let availabilityDatePicker = availabilityDatePickers[availabilityDatePickers.length-1][0];
+        const onChange = availabilityDatePicker.onChange;
+        act(() => onChange("12/23/2023"));
+        availabilityDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Availability Start Date");
+        availabilityDatePicker = availabilityDatePickers[availabilityDatePickers.length-1][0];
+        expect(availabilityDatePicker.value).toBe("12/23/2023");
+      });
+      test("onChange to null updates availability start date field to null", () => {
+        renderComponent();
+        let availabilityDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Availability Start Date");
+        let availabilityDatePicker = availabilityDatePickers[availabilityDatePickers.length-1][0];
+        const onChange = availabilityDatePicker.onChange;
+        act(() => onChange(null));
+        availabilityDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Availability Start Date");
+        availabilityDatePicker = availabilityDatePickers[availabilityDatePickers.length-1][0];
+        expect(availabilityDatePicker.value).toBe("");
+      });
     });
-    test("updateValue calls setForm when Availability and Availability Start date are populated", () => {
-      renderComponent();
-      let availabilityDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Availability");
-      let availabilityDropdown = availabilityDropdowns[availabilityDropdowns.length-1][0];
-      const updateValue = availabilityDropdown.updateValue;
-      act(() => updateValue({}, "boo"));
-      availabilityDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Availability");
-      availabilityDropdown = availabilityDropdowns[availabilityDropdowns.length-1][0];
+    describe("Error fields", () => {
+      describe("availability field is populated but team start date is not", () => {
+        test("availability start date error should === true", () => {
+          renderComponent();
+          let availabilityDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Availability");
+          let availabilityDropdown = availabilityDropdowns[availabilityDropdowns.length-1][0];
+          const updateValue = availabilityDropdown.updateValue;
+          act(() => updateValue({}, { value: "123123" }));
+          const availabilityDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Availability Start Date");
+          const availabilityDatePicker = availabilityDatePickers[availabilityDatePickers.length-1][0];
+          render(availabilityDatePicker.renderInput());
+          const textFieldLength = TextField.mock.calls.length;
+          const textField = TextField.mock.calls[textFieldLength-1][0];
+          expect(textField.error).toBe(true);
+        })
+      });
+      describe("availability start date field is populated but team is not", () => {
+        test("availability error should === true", () => {
+          renderComponent();
+          let availabilityDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Availability Start Date");
+          let availabilityDatePicker = availabilityDatePickers[availabilityDatePickers.length-1][0];
+          const onChange = availabilityDatePicker.onChange;
+          act(() => onChange("12/23/2023"));
+          const availabilityDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Availability");
+          const availabilityDropdown = availabilityDropdowns[availabilityDropdowns.length-1][0];
+          expect(availabilityDropdown.error).toBe(true);
+        })
+      });
+    });
+    describe("Both Fields are populated", () => {
+      test("should call setForm", () => {
+        renderComponent();
+        let availabilityDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Availability");
+        let availabilityDropdown = availabilityDropdowns[availabilityDropdowns.length-1][0];
+        const updateValue = availabilityDropdown.updateValue;
+        act(() => updateValue({}, { value: "123123" }));
+        let availabilityDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Availability Start Date");
+        let availabilityDatePicker = availabilityDatePickers[availabilityDatePickers.length-1][0];
+        const onChange = availabilityDatePicker.onChange;
+        act(() => onChange("12/23/2023"));
+        availabilityDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Availability");
+        availabilityDropdown = availabilityDropdowns[availabilityDropdowns.length-1][0];
+        expect(availabilityDropdown.error).toBe(false);
+        availabilityDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Availability Start Date");
+        availabilityDatePicker = availabilityDatePickers[availabilityDatePickers.length-1][0];
+        render(availabilityDatePicker.renderInput());
+        const textFieldLength = TextField.mock.calls.length;
+        const textField = TextField.mock.calls[textFieldLength-1][0];
+        expect(textField.error).toBe(false);
+        expect(mockSetForm).toHaveBeenLastCalledWith({
+          type: userFormActions.SET_WFM_AVAILABILITY,
+          payload: {
+            id: "123123",
+            startDate: "12/23/2023"
+          }
+        });
+      });
     });
   });
-  describe("Skill Fields", () => {});
 });
