@@ -8,7 +8,7 @@ import {
   formatProfileBooleanData,
   formatProfileBooleanDataTrueFalse,
   formatProfileACWDataEntry,
-  formatOverflowSkillData,
+  formatSimpleText,
   formatActivityData,
   formatCallTagsName,
   formatAggregateQueues,
@@ -105,12 +105,12 @@ describe("profileUtils", () => {
     });
   });
 
-  describe("formatOverflowSkillData", () => {
+  describe("formatSimpleText", () => {
     test("should return overflow skill", () => {
-      expect(formatOverflowSkillData("OverflowSkill")).toBe("OverflowSkill");
+      expect(formatSimpleText("OverflowSkill")).toBe("OverflowSkill");
     });
     test("should return empty string for null overflow skill", () => {
-      expect(formatOverflowSkillData(null)).toBe("");
+      expect(formatSimpleText(null)).toBe("");
     });
   });
 

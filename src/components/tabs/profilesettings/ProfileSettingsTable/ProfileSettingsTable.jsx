@@ -17,8 +17,7 @@ import {
   formatAggregateQueues,
   formatProfileBooleanData,
   formatProfileACWDataEntry,
-  formatOverflowSkillData,
-  formatAccessGroupData,
+  formatSimpleText,
   formatActivityData,
   sortProfilesById,
   formatSelfServiceIndicatorData
@@ -113,7 +112,7 @@ const ProfileSettingsTable = props => {
                       <TableText>{formatProfileBooleanData(profile.agent_assisted_pay_i.data[0])}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatOverflowSkillData(profile.overflow_skill)}</TableText>
+                      <TableText>{formatSimpleText(profile.overflow_skill)}</TableText>
                     </CustomTableData>
                     <CustomTableData>
                       <TableText>{formatProfileBooleanData(profile.policy_number_edit_i.data[0])}</TableText>
@@ -142,7 +141,7 @@ const ProfileSettingsTable = props => {
                       </TableDataFlex>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatAccessGroupData(profile?.access_group_nme)}</TableText>
+                      <TableText>{formatSimpleText(profile?.access_group_nme)}</TableText>
                     </CustomTableData>
                     {
                       checkIfPO(loggedInUser, environment) ?

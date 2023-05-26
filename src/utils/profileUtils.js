@@ -37,18 +37,11 @@ export const formatProfileACWDataEntry = (value, options, BubbleDiv, HighlightRe
   return "";
 };
 
-export const formatOverflowSkillData = overflowSkill => {
-  if (overflowSkill === null) {
+export const formatSimpleText = text => {
+  if (text === null) {
     return  "";
   }
-  return overflowSkill;
-};
-
-export const formatAccessGroupData = accessGroupName => {
-  if (accessGroupName === null) {
-    return  "";
-  }
-  return accessGroupName;
+  return text;
 };
 
 export const formatActivityData = (activity, BubbleDiv) => {
