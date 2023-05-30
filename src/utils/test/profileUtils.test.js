@@ -8,7 +8,7 @@ import {
   formatProfileBooleanData,
   formatProfileBooleanDataTrueFalse,
   formatProfileACWDataEntry,
-  formatOverflowSkillData,
+  formatSimpleText,
   formatActivityData,
   formatCallTagsName,
   formatAggregateQueues,
@@ -105,12 +105,12 @@ describe("profileUtils", () => {
     });
   });
 
-  describe("formatOverflowSkillData", () => {
+  describe("formatSimpleText", () => {
     test("should return overflow skill", () => {
-      expect(formatOverflowSkillData("OverflowSkill")).toBe("OverflowSkill");
+      expect(formatSimpleText("OverflowSkill")).toBe("OverflowSkill");
     });
     test("should return empty string for null overflow skill", () => {
-      expect(formatOverflowSkillData(null)).toBe("");
+      expect(formatSimpleText(null)).toBe("");
     });
   });
 
@@ -282,6 +282,11 @@ describe("profileUtils", () => {
           ctmSkillDisplayName: "Licensed Sales Center"
         }
       ],
+      accessGroup: {
+        value: "FoundEver",
+        updated: false,
+        valid: true
+      },
       operatingUnit: {
         ou_sid: "123",
         ou_name: "hello"
@@ -329,6 +334,7 @@ describe("profileUtils", () => {
           skill_nme: "Gold"
         }
       ],
+      access_group: "FoundEver",
       voice_mail_transcription_i: false
     }
 
@@ -438,6 +444,10 @@ describe("profileUtils", () => {
         }
       ],
       queuesUpdated: true,
+      accessGroup: {
+        value: "FoundEver",
+        updated: true
+      },
       operatingUnit: {
         ou_name: "hello",
         ou_sid: "123"
@@ -484,6 +494,7 @@ describe("profileUtils", () => {
         }
       ],
       voice_mail_transcription_i: false,
+      access_group: "FoundEver",
       operating_unit_sid: "123",
       operating_unit_nme: "hello"
     };
