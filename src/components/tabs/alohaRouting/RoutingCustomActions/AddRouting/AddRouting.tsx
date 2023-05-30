@@ -49,7 +49,7 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
     if (cachedMasterData !== undefined && cachedMasterData !== null) {
       masterData = JSON.parse(cachedMasterData);
     } else {
-      const result: CctSharedCallRoutingDb[] = await retrieveRoutingData(accessToken, graphQlApiUrl);
+      const result: CctSharedCallRoutingDb[] = await retrieveRoutingData(accessToken, graphQlApiUrl,{});
       masterData = getGridMasterData(result);
     }
     routingDropDownList.brand = masterData.brand;

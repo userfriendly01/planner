@@ -1,20 +1,26 @@
 import {
   Dropdown,
-  ExportButton
+  ExportButton,
+  SkillEntryButton
 } from "components";
 import { SkillsHeaderProps } from "../Skills.Interfaces";
 import { StyledHeader } from "../Skills.Styles";
 import { getAuthenticationProfileTemplates } from "authentication";
 import { SearchBox } from "components";
 import { useAdminState } from "context";
-import { TritonProfile } from "globals";
+import {
+  formModes, TritonProfile
+} from "globals";
 import React from "react";
 
 const SkillsHeader = (props: SkillsHeaderProps) => {
 
   const {
     tableState,
-    setTableState
+    setTableState,
+    taskQueues,
+    applications,
+    timeOfDays
   } = props;
 
   const state = useAdminState();
@@ -57,6 +63,13 @@ const SkillsHeader = (props: SkillsHeaderProps) => {
           });
         }}
       />
+      {isAdmin && <SkillEntryButton
+        formMode={formModes.INSERT}
+        taskQueues={taskQueues}
+        applications={applications}
+        timeOfDays={timeOfDays}
+        isAdmin={isAdmin}
+      /> }
       <ExportButton selected={tableState.selected}/>
     </StyledHeader>
   );

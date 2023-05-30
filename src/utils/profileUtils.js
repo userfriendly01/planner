@@ -37,11 +37,11 @@ export const formatProfileACWDataEntry = (value, options, BubbleDiv, HighlightRe
   return "";
 };
 
-export const formatOverflowSkillData = overflowSkill => {
-  if (overflowSkill === null) {
+export const formatSimpleText = text => {
+  if (text === null) {
     return  "";
   }
-  return overflowSkill;
+  return text;
 };
 
 export const formatActivityData = (activity, BubbleDiv) => {
@@ -116,6 +116,7 @@ export const createProfilePayload = form => {
         skill_nme: queue.ctmSkillDisplayName
       };
     }),
+    access_group: form.accessGroup.value || null,
     // Aggregate queues need to be set to a negative ID in order to not clash with single transfer queues / skills. In the payload we need to change that back to a positive integer
     aggregateQueues: form.transferQueues.filter(queue => queue.ctmSkillId < 0).map(queue => Math.abs(queue.ctmSkillId)),
     operating_unit_sid: form.operatingUnit.ou_sid,

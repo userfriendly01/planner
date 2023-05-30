@@ -2,18 +2,17 @@ import { StyledButton } from "components";
 import styled from "styled-components";
 
 export const ControlItem = styled.div`
-  width: 33%;
-  align-items: center;
   display: flex;
-  flex: 1;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: center;
   &:first-child {
+    width:40%;
     justify-content: center;
-    margin-right: auto;
   }
   &:last-child {
-    justify-content: flex-end;
+    width:25%;
     margin-left: auto;
+    justify-content: flex-end;
   }
 `;
 
@@ -29,6 +28,6 @@ export const AddUserButton = styled(StyledButton)`
 
 export const StyledExportButton = styled(StyledButton)`
   height: 50px;
-  width: 35%;
+  width: 100%;
   margin: 10px;
 `;

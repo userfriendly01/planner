@@ -8,7 +8,7 @@ import {
   formatProfileBooleanData,
   formatProfileBooleanDataTrueFalse,
   formatProfileACWDataEntry,
-  formatOverflowSkillData,
+  formatSimpleText,
   formatActivityData,
   formatCallTagsName,
   formatAggregateQueues,
@@ -105,12 +105,12 @@ describe("profileUtils", () => {
     });
   });
 
-  describe("formatOverflowSkillData", () => {
+  describe("formatSimpleText", () => {
     test("should return overflow skill", () => {
-      expect(formatOverflowSkillData("OverflowSkill")).toBe("OverflowSkill");
+      expect(formatSimpleText("OverflowSkill")).toBe("OverflowSkill");
     });
     test("should return empty string for null overflow skill", () => {
-      expect(formatOverflowSkillData(null)).toBe("");
+      expect(formatSimpleText(null)).toBe("");
     });
   });
 
@@ -291,9 +291,8 @@ describe("profileUtils", () => {
         updated: true
       },
       accessGroupId: 2,
-      accessGroupIdUpdated: true
+      accessGroupIdUpdated: true,
     };
-
     const expected = {
       activities: [1,7,12],
       acw_data_entry_i: true,
@@ -335,6 +334,7 @@ describe("profileUtils", () => {
           skill_nme: "Gold"
         }
       ],
+      access_group: true,
       voice_mail_transcription_i: false,
       access_group_id: 2
     };
@@ -497,10 +497,11 @@ describe("profileUtils", () => {
         }
       ],
       voice_mail_transcription_i: false,
+      access_group: true,
       operating_unit_sid: "123",
       operating_unit_nme: "hello",
       access_group_id: 2
-    };
+    }
 
     test("should return a formatted call tag with one underscore", () => {
       expect(createProfilePayload(form)).toStrictEqual(expected);

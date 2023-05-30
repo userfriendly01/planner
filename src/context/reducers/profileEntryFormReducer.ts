@@ -8,7 +8,7 @@ import {
 } from "globals";
 import {
   formatProfileBooleanDataTrueFalse,
-  formatOverflowSkillData
+  formatSimpleText
 } from "utils/profileUtils";
 
 export const profileEntryFormActions = {
@@ -212,7 +212,7 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         voiceMailTranscription: formatProfileBooleanDataTrueFalse(profile.voice_mail_transcription_i.data[0]),
         clickToDial: formatProfileBooleanDataTrueFalse(profile.click_to_dial_i.data[0]),
         overflowSkill: {
-          value: formatOverflowSkillData(profile.overflow_skill),
+          value: formatSimpleText(profile.overflow_skill),
           valid: true
         },
         profileName: {
