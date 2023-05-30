@@ -177,6 +177,7 @@ export const initialUserFormState: UserFormState = {
     TeamId: null,
     TeamStartDate: null,
     PersonSkills: [],
+    SkillsStartDate: null,
     WorkflowControlSetId: null,
     ContractId: null,
     ContractScheduleId: null,
@@ -186,8 +187,11 @@ export const initialUserFormState: UserFormState = {
     Note: null,
     Roles: [],
     AvailabilityId: null,
+    AvailabilityStartDate: null,
     AbsenceId: null,
     RotationId: null,
+    RotationStartDate: null,
+    RotationStartWeek: null,
     FirstDayOfWeek: null,
     ParentTeam: null
   }
@@ -590,7 +594,6 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
       };
     }
     case userFormActions.SET_UPDATE_WFM_FORM_STATE: {
-      console.log("FAITH - We're trying to update the WFM form state", action.payload)
       const user = action.payload.user;
       const appState = action.payload.state;
 
@@ -618,7 +621,6 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
           }
         });
       }
-      console.log("FAITH - reducer PersonSkills", PersonSkills);
 
       return {
         ...state,
@@ -819,7 +821,6 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
           EmploymentNumber: action.payload.nNumber,
           Email: action.payload.email,
           DisplayName: action.payload.fullName
-
         }
       };
     }

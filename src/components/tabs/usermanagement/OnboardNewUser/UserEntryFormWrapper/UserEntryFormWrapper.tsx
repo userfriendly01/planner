@@ -54,6 +54,7 @@ const UserEntryForm = () => {
   const offices = state.officeContext.offices;
 
   const [ forwardToToggle, setForwardToToggle ] = React.useState(false);
+  const [ missingFields, setMissingFields ] = React.useState([]);
   const [loading, updateLoading] = React.useState<LoadingState>({
     lookupUser: false,
     overlayMessage: "",
@@ -194,7 +195,10 @@ const UserEntryForm = () => {
           />
         }
       </HeaderRow>
-      { form.calabrio_qm.userFound && <CallRecordingForm twilioWorker={tritonWorker} /> }
+      { form.calabrio_qm.userFound && <CallRecordingForm
+        twilioWorker={tritonWorker}
+        missingFields={missingFields}
+      /> }
       <StyledDivider />
       <HeaderRow>
         <h2>Calabrio Work Force Management User Settings</h2>
@@ -205,9 +209,12 @@ const UserEntryForm = () => {
           />
         }
       </HeaderRow>
-      { form.calabrio_wfm.userFound && <WfmForm/> }
+      { form.calabrio_wfm.userFound && <WfmForm
+        missingFields={missingFields}
+      /> }
       <StyledDivider />
       { form.formMode !== formModes.DELETE && <UserFormButtons
+        setMissingFields={setMissingFields}
         forwardToToggle={forwardToToggle}
         handleClose={handleResetForm}
         loading={loading}

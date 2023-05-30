@@ -72,9 +72,9 @@ test("boo", () => {
   expect(true).toBe(true);
 });
 
-const renderComponent = () => {
+const renderComponent = (missingFields) => {
   return render(
-    <WfmForm />
+    <WfmForm missingFields={missingFields || []}/>
   );
 };
 
@@ -152,6 +152,34 @@ describe("<WfmForm />", () => {
     });
   });
   describe("Business Unit Dropdown", () => {
+    describe("error", () => {
+      describe("BusinessUnitId is on missingFields array", () => {
+        describe("form.calabrio_wfm.BusinessUnitId === null", () => {
+          test("error should be true", () => {
+            renderComponent(["BusinessUnitId"]);
+            const buDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Business Unit *");
+            const buDropdown = buDropdowns[buDropdowns.length-1][0];
+            expect(buDropdown.error).toBe(true);
+          });
+        });
+        describe("form.calabrio_wfm.BusinessUnitId !== null", () => {
+          test("error should be false", () => {
+            const formState = {
+              ...initialFormState,
+              calabrio_wfm: {
+                ...initialFormState.calabrio_wfm,
+                BusinessUnitId: "123-321"
+              }
+            };
+            useFormState.mockReturnValue(formState);
+            renderComponent(["BusinessUnitId"]);
+            const buDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Business Unit *");
+            const buDropdown = buDropdowns[buDropdowns.length-1][0];
+            expect(buDropdown.error).toBe(false);
+          });
+        });
+      });
+    });
     describe("disable", () => {
       test("is not disabled when formmode is insert", () => {
         renderComponent();
@@ -208,6 +236,34 @@ describe("<WfmForm />", () => {
   });
   describe("Team Fields", () => {
     describe("Team", () => {
+      describe("error", () => {
+        describe("TeamId is on missingFields array", () => {
+          describe("form.calabrio_wfm.TeamStartDate === null", () => {
+            test("error should be true", () => {
+              renderComponent(["TeamId"]);
+              const teamDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Team");
+              const teamDropdown = teamDropdowns[teamDropdowns.length-1][0];
+              expect(teamDropdown.error).toBe(true);
+            });
+          });
+          describe("form.calabrio_wfm.TeamStartDate !== null", () => {
+            test("error should be false", () => {
+              const formState = {
+                ...initialFormState,
+                calabrio_wfm: {
+                  ...initialFormState.calabrio_wfm,
+                  TeamId: "111"
+                }
+              };
+              useFormState.mockReturnValue(formState);
+              renderComponent(["TeamId"]);
+              const teamDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Team");
+              const teamDropdown = teamDropdowns[teamDropdowns.length-1][0];
+              expect(teamDropdown.error).toBe(false);
+            });
+          });
+        });
+      });
       describe("disable", () => {
         test("is not disabled when formmode is insert", () => {
           renderComponent();
@@ -321,6 +377,64 @@ describe("<WfmForm />", () => {
           expect(teamDropdown.error).toBe(true);
         })
       });
+      describe("TeamId is on missingFields array", () => {
+        describe("form.calabrio_wfm.TeamId === null", () => {
+          test("error should be true", () => {
+            renderComponent(["TeamId"]);
+            const teamDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Team");
+            const teamDropdown = teamDropdowns[teamDropdowns.length-1][0];
+            expect(teamDropdown.error).toBe(true);
+          });
+        });
+        describe("form.calabrio_wfm.TeamId !== null", () => {
+          test("error should be false", () => {
+            const formState = {
+              ...initialFormState,
+              calabrio_wfm: {
+                ...initialFormState.calabrio_wfm,
+                TeamId: "111"
+              }
+            };
+            useFormState.mockReturnValue(formState);
+            renderComponent(["TeamId"]);
+            const teamDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Team");
+            const teamDropdown = teamDropdowns[teamDropdowns.length-1][0];
+            expect(teamDropdown.error).toBe(false);
+          });
+        });
+      });
+      describe("TeamStartDate is on missingFields array", () => {
+        describe("form.calabrio_wfm.TeamStartDate === null", () => {
+          test("error should be true", () => {
+            renderComponent(["TeamStartDate"]);
+            const teamDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Team Start Date");
+            const teamDatePicker = teamDatePickers[teamDatePickers.length-1][0];
+            render(teamDatePicker.renderInput());
+            const textFieldLength = TextField.mock.calls.length;
+            const textField = TextField.mock.calls[textFieldLength-1][0];
+            expect(textField.error).toBe(true);
+          });
+        });
+        describe("form.calabrio_wfm.TeamStartDate !== null", () => {
+          test("error should be false", () => {
+            const formState = {
+              ...initialFormState,
+              calabrio_wfm: {
+                ...initialFormState.calabrio_wfm,
+                TeamStartDate: "05/02/1991"
+              }
+            };
+            useFormState.mockReturnValue(formState);
+            renderComponent(["TeamStartDate"]);
+            const teamDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Team Start Date");
+            const teamDatePicker = teamDatePickers[teamDatePickers.length-1][0];
+            render(teamDatePicker.renderInput());
+            const textFieldLength = TextField.mock.calls.length;
+            const textField = TextField.mock.calls[textFieldLength-1][0];
+            expect(textField.error).toBe(false);
+          });
+        });
+      });
     });
     describe("Both Fields are populated", () => {
       test("should call setForm", () => {
@@ -430,6 +544,34 @@ describe("<WfmForm />", () => {
     });
   });
   describe("First Day of the Week Dropdown", () => {
+    describe("error", () => {
+      describe("FirstDayOfWeek is on missingFields array", () => {
+        describe("form.calabrio_wfm.FirstDayOfWeek === null", () => {
+          test("error should be true", () => {
+            renderComponent(["FirstDayOfWeek"]);
+            const teamDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "First Day of the Week *");
+            const teamDropdown = teamDropdowns[teamDropdowns.length-1][0];
+            expect(teamDropdown.error).toBe(true);
+          });
+        });
+        describe("form.calabrio_wfm.FirstDayOfWeek !== null", () => {
+          test("error should be false", () => {
+            const formState = {
+              ...initialFormState,
+              calabrio_wfm: {
+                ...initialFormState.calabrio_wfm,
+                FirstDayOfWeek: 0
+              }
+            };
+            useFormState.mockReturnValue(formState);
+            renderComponent(["FirstDayOfWeek"]);
+            const teamDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "First Day of the Week *");
+            const teamDropdown = teamDropdowns[teamDropdowns.length-1][0];
+            expect(teamDropdown.error).toBe(false);
+          });
+        });
+      });
+    });
     describe("disable", () => {
       test("is not disabled when formmode is insert", () => {
         renderComponent();
@@ -625,7 +767,7 @@ describe("<WfmForm />", () => {
       });
     });
     describe("Error fields", () => {
-      describe("team field is populated but team start date is not", () => {
+      describe("skills field is populated but skill start date is not", () => {
         test("team start date error should === true", () => {
           renderComponent();
           let skillsDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Skills");
@@ -643,7 +785,7 @@ describe("<WfmForm />", () => {
           expect(textField.error).toBe(true);
         })
       });
-      describe("team start date field is populated but team is not", () => {
+      describe("skill start date field is populated but skills is not", () => {
         test("team error should === true", () => {
           renderComponent();
           let skillDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Skills Start Date");
@@ -654,6 +796,64 @@ describe("<WfmForm />", () => {
           let skillsDropdown = skillsDropdowns[skillsDropdowns.length-1][0];
           expect(skillsDropdown.error).toBe(true);
         })
+      });
+      describe("PersonSkills is on missingFields array", () => {
+        describe("form.calabrio_wfm.PersonSkills === null", () => {
+          test("error should be true", () => {
+            renderComponent(["PersonSkills"]);
+            let skillsDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Skills");
+            let skillsDropdown = skillsDropdowns[skillsDropdowns.length-1][0];
+            expect(skillsDropdown.error).toBe(true);
+          });
+        });
+        describe("form.calabrio_wfm.PersonSkills !== null", () => {
+          test("error should be false", () => {
+            const formState = {
+              ...initialFormState,
+              calabrio_wfm: {
+                ...initialFormState.calabrio_wfm,
+                PersonSkills: ["SKILL"]
+              }
+            };
+            useFormState.mockReturnValue(formState);
+            renderComponent(["PersonSkills"]);
+            let skillsDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Skills");
+            let skillsDropdown = skillsDropdowns[skillsDropdowns.length-1][0];
+            expect(skillsDropdown.error).toBe(false);
+          });
+        });
+      });
+      describe("SkillsStartDate is on missingFields array", () => {
+        describe("form.calabrio_wfm.SkillsStartDate === null", () => {
+          test("error should be true", () => {
+            renderComponent(["SkillsStartDate"]);
+            const teamDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Skills Start Date");
+            const teamDatePicker = teamDatePickers[teamDatePickers.length-1][0];
+            render(teamDatePicker.renderInput());
+            const textFieldLength = TextField.mock.calls.length;
+            const textField = TextField.mock.calls[textFieldLength-1][0];
+            expect(textField.error).toBe(true);
+          });
+        });
+        describe("form.calabrio_wfm.SkillsStartDate !== null", () => {
+          test("error should be false", () => {
+            const formState = {
+              ...initialFormState,
+              calabrio_wfm: {
+                ...initialFormState.calabrio_wfm,
+                SkillsStartDate: "05/02/1991"
+              }
+            };
+            useFormState.mockReturnValue(formState);
+            renderComponent(["SkillsStartDate"]);
+            const teamDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Skills Start Date");
+            const teamDatePicker = teamDatePickers[teamDatePickers.length-1][0];
+            render(teamDatePicker.renderInput());
+            const textFieldLength = TextField.mock.calls.length;
+            const textField = TextField.mock.calls[textFieldLength-1][0];
+            expect(textField.error).toBe(false);
+          });
+        });
       });
     });
     describe("Both Fields are populated", () => {
@@ -1128,6 +1328,40 @@ describe("<WfmForm />", () => {
   });
   describe("Schedule Fields", () => {
     describe("Person Start Date", () => {
+      describe("error", () => {
+        describe("Person Start Date is on missingFields array", () => {
+          describe("form.calabrio_wfm.EmploymentStartDate === null", () => {
+            test("error should be true", () => {
+              renderComponent(["EmploymentStartDate"]);
+              const personDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Person Start Date");
+              const personDatePicker = personDatePickers[personDatePickers.length-1][0];
+              render(personDatePicker.renderInput());
+              const textFieldLength = TextField.mock.calls.length;
+              const textField = TextField.mock.calls[textFieldLength-1][0];
+              expect(textField.error).toBe(true);
+            });
+          });
+          describe("form.calabrio_wfm.EmploymentStartDate !== null", () => {
+            test("error should be false", () => {
+              const formState = {
+                ...initialFormState,
+                calabrio_wfm: {
+                  ...initialFormState.calabrio_wfm,
+                  EmploymentStartDate: "05/02/1991"
+                }
+              };
+              useFormState.mockReturnValue(formState);
+              renderComponent(["EmploymentStartDate"]);
+              const personDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Person Start Date");
+              const personDatePicker = personDatePickers[personDatePickers.length-1][0];
+              render(personDatePicker.renderInput());
+              const textFieldLength = TextField.mock.calls.length;
+              const textField = TextField.mock.calls[textFieldLength-1][0];
+              expect(textField.error).toBe(false);
+            });
+          });
+        });
+      });
       describe("disable", () => {
         test("is not disabled when formmode is insert", () => {
           renderComponent();
@@ -1188,6 +1422,34 @@ describe("<WfmForm />", () => {
       });
     });
     describe("Part Time Percentage", () => {
+      describe("error", () => {
+        describe("PartTimePercentageId is on missingFields array", () => {
+          describe("form.calabrio_wfm.PartTimePercentageId === null", () => {
+            test("error should be true", () => {
+              renderComponent(["PartTimePercentageId"]);
+              const partTimeDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Part Time Percentage");
+              const partTimeDropdown = partTimeDropdowns[partTimeDropdowns.length-1][0];
+              expect(partTimeDropdown.error).toBe(true);
+            });
+          });
+          describe("form.calabrio_wfm.PartTimePercentageId !== null", () => {
+            test("error should be false", () => {
+              const formState = {
+                ...initialFormState,
+                calabrio_wfm: {
+                  ...initialFormState.calabrio_wfm,
+                  PartTimePercentageId: "PP510354"
+                }
+              };
+              useFormState.mockReturnValue(formState);
+              renderComponent(["PartTimePercentageId"]);
+              const partTimeDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Part Time Percentage");
+              const partTimeDropdown = partTimeDropdowns[partTimeDropdowns.length-1][0];
+              expect(partTimeDropdown.error).toBe(false);
+            });
+          });
+        });
+      });
       describe("disable", () => {
         test("is not disabled when formmode is insert", () => {
           renderComponent();
@@ -1242,6 +1504,34 @@ describe("<WfmForm />", () => {
       });
     });
     describe("Contract Schedule", () => {
+      describe("error", () => {
+        describe("ContractScheduleId is on missingFields array", () => {
+          describe("form.calabrio_wfm.ContractScheduleId === null", () => {
+            test("error should be true", () => {
+              renderComponent(["ContractScheduleId"]);
+              const contractScheduleDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Contract Schedule");
+              const contractScheduleDropdown = contractScheduleDropdowns[contractScheduleDropdowns.length-1][0];
+              expect(contractScheduleDropdown.error).toBe(true);
+            });
+          });
+          describe("form.calabrio_wfm.ContractScheduleId !== null", () => {
+            test("error should be false", () => {
+              const formState = {
+                ...initialFormState,
+                calabrio_wfm: {
+                  ...initialFormState.calabrio_wfm,
+                  ContractScheduleId: "CS510354"
+                }
+              };
+              useFormState.mockReturnValue(formState);
+              renderComponent(["ContractScheduleId"]);
+              const contractScheduleDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Contract Schedule");
+              const contractScheduleDropdown = contractScheduleDropdowns[contractScheduleDropdowns.length-1][0];
+              expect(contractScheduleDropdown.error).toBe(false);
+            });
+          });
+        });
+      });
       describe("disable", () => {
         test("is not disabled when formmode is insert", () => {
           renderComponent();
@@ -1296,6 +1586,34 @@ describe("<WfmForm />", () => {
       });
     });
     describe("Contract", () => {
+      describe("error", () => {
+        describe("ContractId is on missingFields array", () => {
+          describe("form.calabrio_wfm.ContractId === null", () => {
+            test("error should be true", () => {
+              renderComponent(["ContractId"]);
+              const contractDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Contract");
+              const contractDropdown = contractDropdowns[contractDropdowns.length-1][0];
+              expect(contractDropdown.error).toBe(true);
+            });
+          });
+          describe("form.calabrio_wfm.ContractId !== null", () => {
+            test("error should be false", () => {
+              const formState = {
+                ...initialFormState,
+                calabrio_wfm: {
+                  ...initialFormState.calabrio_wfm,
+                  ContractId: "CS510354"
+                }
+              };
+              useFormState.mockReturnValue(formState);
+              renderComponent(["ContractId"]);
+              const contractDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Contract");
+              const contractDropdown = contractDropdowns[contractDropdowns.length-1][0];
+              expect(contractDropdown.error).toBe(false);
+            });
+          });
+        });
+      });
       describe("disable", () => {
         test("is not disabled when formmode is insert", () => {
           renderComponent();
@@ -1489,6 +1807,90 @@ describe("<WfmForm />", () => {
           expect(rotationDropdown.error).toBe(true);
         })
       });
+      describe("RotationId is on missingFields array", () => {
+        describe("form.calabrio_wfm.RotationId === null", () => {
+          test("error should be true", () => {
+            renderComponent(["RotationId"]);
+            const rotationDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Rotation");
+            const rotationDropdown = rotationDropdowns[rotationDropdowns.length-1][0];
+            expect(rotationDropdown.error).toBe(true);
+          });
+        });
+        describe("form.calabrio_wfm.RotationId !== null", () => {
+          test("error should be false", () => {
+            const formState = {
+              ...initialFormState,
+              calabrio_wfm: {
+                ...initialFormState.calabrio_wfm,
+                RotationId: "111"
+              }
+            };
+            useFormState.mockReturnValue(formState);
+            renderComponent(["RotationId"]);
+            const rotationDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Rotation");
+            const rotationDropdown = rotationDropdowns[rotationDropdowns.length-1][0];
+            expect(rotationDropdown.error).toBe(false);
+          });
+        });
+      });
+      describe("RotationStartDate is on missingFields array", () => {
+        describe("form.calabrio_wfm.RotationStartDate === null", () => {
+          test("error should be true", () => {
+            renderComponent(["RotationStartDate"]);
+            const teamDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Rotation Start Date");
+            const teamDatePicker = teamDatePickers[teamDatePickers.length-1][0];
+            render(teamDatePicker.renderInput());
+            const textFieldLength = TextField.mock.calls.length;
+            const textField = TextField.mock.calls[textFieldLength-1][0];
+            expect(textField.error).toBe(true);
+          });
+        });
+        describe("form.calabrio_wfm.RotationStartDate !== null", () => {
+          test("error should be false", () => {
+            const formState = {
+              ...initialFormState,
+              calabrio_wfm: {
+                ...initialFormState.calabrio_wfm,
+                RotationStartDate: "05/02/1991"
+              }
+            };
+            useFormState.mockReturnValue(formState);
+            renderComponent(["RotationStartDate"]);
+            const rotationDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Rotation Start Date");
+            const rotationDatePicker = rotationDatePickers[rotationDatePickers.length-1][0];
+            render(rotationDatePicker.renderInput());
+            const textFieldLength = TextField.mock.calls.length;
+            const textField = TextField.mock.calls[textFieldLength-1][0];
+            expect(textField.error).toBe(false);
+          });
+        });
+      });
+      describe("RotationStartWeek is on missingFields array", () => {
+        describe("form.calabrio_wfm.RotationStartWeek === null", () => {
+          test("error should be true", () => {
+            renderComponent(["RotationStartWeek"]);
+            const rotationWeekDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Rotation Start Week");
+            const rotationWeekDropdown = rotationWeekDropdowns[rotationWeekDropdowns.length-1][0];
+            expect(rotationWeekDropdown.error).toBe(true);
+          });
+        });
+        describe("form.calabrio_wfm.RotationStartWeek !== null", () => {
+          test("error should be false", () => {
+            const formState = {
+              ...initialFormState,
+              calabrio_wfm: {
+                ...initialFormState.calabrio_wfm,
+                RotationStartWeek: 0
+              }
+            };
+            useFormState.mockReturnValue(formState);
+            renderComponent(["RotationStartWeek"]);
+            const rotationWeekDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Rotation Start Week");
+            const rotationWeekDropdown = rotationWeekDropdowns[rotationWeekDropdowns.length-1][0];
+            expect(rotationWeekDropdown.error).toBe(false);
+          });
+        });
+      });
     });
     describe("All Fields are populated", () => {
       test("should call setForm", () => {
@@ -1650,6 +2052,64 @@ describe("<WfmForm />", () => {
           const availabilityDropdown = availabilityDropdowns[availabilityDropdowns.length-1][0];
           expect(availabilityDropdown.error).toBe(true);
         })
+      });
+      describe("AvailabilityId is on missingFields array", () => {
+        describe("form.calabrio_wfm.AvailabilityId === null", () => {
+          test("error should be true", () => {
+            renderComponent(["AvailabilityId"]);
+            const availabilityDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Availability");
+            const availabilityDropdown = availabilityDropdowns[availabilityDropdowns.length-1][0];
+            expect(availabilityDropdown.error).toBe(true);
+          });
+        });
+        describe("form.calabrio_wfm.AvailabilityId !== null", () => {
+          test("error should be false", () => {
+            const formState = {
+              ...initialFormState,
+              calabrio_wfm: {
+                ...initialFormState.calabrio_wfm,
+                AvailabilityId: "111"
+              }
+            };
+            useFormState.mockReturnValue(formState);
+            renderComponent(["AvailabilityId"]);
+            const availabilityDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Availability");
+            const availabilityDropdown = availabilityDropdowns[availabilityDropdowns.length-1][0];
+            expect(availabilityDropdown.error).toBe(false);
+          });
+        });
+      });
+      describe("AvailabilityStartDate is on missingFields array", () => {
+        describe("form.calabrio_wfm.AvailabilityStartDate === null", () => {
+          test("error should be true", () => {
+            renderComponent(["AvailabilityStartDate"]);
+            const availabilityDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Availability Start Date");
+            const availabilityDatePicker = availabilityDatePickers[availabilityDatePickers.length-1][0];
+            render(availabilityDatePicker.renderInput());
+            const textFieldLength = TextField.mock.calls.length;
+            const textField = TextField.mock.calls[textFieldLength-1][0];
+            expect(textField.error).toBe(true);
+          });
+        });
+        describe("form.calabrio_wfm.AvailabilityStartDate !== null", () => {
+          test("error should be false", () => {
+            const formState = {
+              ...initialFormState,
+              calabrio_wfm: {
+                ...initialFormState.calabrio_wfm,
+                AvailabilityStartDate: "05/02/1991"
+              }
+            };
+            useFormState.mockReturnValue(formState);
+            renderComponent(["AvailabilityStartDate"]);
+            const availabilityDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Availability Start Date");
+            const availabilityDatePicker = availabilityDatePickers[availabilityDatePickers.length-1][0];
+            render(availabilityDatePicker.renderInput());
+            const textFieldLength = TextField.mock.calls.length;
+            const textField = TextField.mock.calls[textFieldLength-1][0];
+            expect(textField.error).toBe(false);
+          });
+        });
       });
     });
     describe("Both Fields are populated", () => {

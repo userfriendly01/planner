@@ -14,13 +14,19 @@ import {
   getNonOverflowSkills,
   isFormUpdated,
   isFormValid,
+  isQMUserValid,
+  isWfmUserValid,
   fetchUser as fetchUserUtil,
   findMatchingWorker,
   identifyProfileDiscrepancies,
   identifyUserProfiles
 } from "../userManagementUtils";
 import { fetchUser } from "services";
-import { initialTestState } from "../../../__test__/testConsts/testConsts";
+import {
+  initialTestState,
+  initialFormState,
+  validFormState
+} from "testUtils";
 
 jest.mock("services", () => ({
   fetchUser: jest.fn()
@@ -43,7 +49,6 @@ const adminStateIsNotAdmin = {
     }
   }
 };
-
 const adminStateIsErroneous = {
   frog: {
     merp: {
@@ -51,7 +56,6 @@ const adminStateIsErroneous = {
     }
   }
 };
-
 const managerList = [
   {
     manager_first_name: "John",
@@ -227,140 +231,6 @@ const mockWorkers = [
     }
   }
 ];
-const validFormState = {
-  formMode: formModes.INSERT,
-  nNumber: {
-    value: "n0263786",
-    blurred: false,
-    updated: true,
-    nNumberFetchedUser: {
-      nNumber: "n0263786",
-      firstName: "Faith",
-      lastName: "Cuneo"
-    }
-  },
-  calabrio_qm: validFormOptions.calabrioUser,
-  triton: {
-    defaultSkills: [],
-    defaultSkillsUpdated: false,
-    didUser: false,
-    extension: {
-      value: "5245",
-      blurred: false,
-      updated: true,
-      valid: true
-    },
-    inactiveForwardTo: {
-      value: null,
-      updated: false
-    },
-    manager: {
-      value: "Rebecca Miller",
-      blurred: false,
-      updated: true
-    },
-    outgoing: {
-      value: "6038518200",
-      blurred: false,
-      e164: "+16038518200",
-      updated: true,
-      valid: true
-    },
-    profileId: {
-      value: "2",
-      blurred: false,
-      updated: true
-    },
-    alternateDid: {
-      value: "6032453160",
-      blurred: false,
-      e164: "+16032453160",
-      updated: true,
-      valid: true
-    },
-    directDialNum: {
-      value: "6032453160",
-      blurred: false,
-      e164: "+16032453160",
-      updated: true,
-      valid: true
-    },
-    zeroOutEnabled: {
-      value: false,
-      updated: false
-    },
-    selfServiceInd: {
-      value: false,
-      updated: false
-    }
-  }
-};
-const initialFormState = {
-  formMode: formModes.INSERT,
-  nNumber: {
-    value: "n",
-    blurred: false,
-    updated: false,
-    nNumberFetchedUser: null
-  },
-  triton: {
-    defaultSkills: [],
-    defaultSkillsUpdated: false,
-    didUser: false,
-    extension: {
-      value: "",
-      blurred: false,
-      updated: false,
-      valid: false
-    },
-    inactiveForwardTo: {
-      value: null,
-      updated: false
-    },
-    manager: {
-      value: "",
-      blurred: false,
-      updated: false
-    },
-    outgoing: {
-      value: "",
-      blurred: false,
-      e164: undefined,
-      updated: false,
-      valid: false
-    },
-    profileId: {
-      value: "",
-      blurred: false,
-      updated: false
-    },
-    alternateDid: {
-      value: "",
-      blurred: false,
-      e164: undefined,
-      updated: false,
-      valid: false
-    },
-    directDialNum: {
-      value: "",
-      blurred: false,
-      e164: undefined,
-      updated: false,
-      valid: false
-    },
-    zeroOutEnabled: {
-      value: false,
-      updated: false
-    },
-    selfServiceInd: {
-      value: false,
-      updated: false
-    }
-  },
-  calabrio_qm: {
-    updated: false
-  }
-};
 
 describe("isProfileIdValid", () => {
   test("should return true when profile is populated", () => {
@@ -386,7 +256,6 @@ describe("isProfileIdValid", () => {
     expect(result).toBe(false);
   });
 });
-
 describe("isManagerValid", () => {
   test("should return true when manager is populated", () => {
     const form = {
@@ -411,7 +280,6 @@ describe("isManagerValid", () => {
     expect(result).toBe(false);
   });
 });
-
 describe("isNNumberValid", () => {
   test("should return true when nNumberFetchedUser is populated", () => {
     const form = {
@@ -434,7 +302,6 @@ describe("isNNumberValid", () => {
     expect(result).toBe(false);
   });
 });
-
 describe("isExtensionValid", () => {
   test("should return true when extension is valid", () => {
     const form = {
@@ -473,7 +340,6 @@ describe("isExtensionValid", () => {
     expect(result).toBe(false);
   });
 });
-
 describe("isInactiveForwardToValid", () => {
   describe("forwardToToggle === true", () => {
     test("should return true when inactiveForwardTo is not null", () => {
@@ -506,7 +372,6 @@ describe("isInactiveForwardToValid", () => {
     });
   });
 });
-
 describe("isDidDifferentValid", () => {
   describe("forwardToToggle === true", () => {
     test("should return true if both outgoing and directDial Num have been changed", () => {
@@ -559,7 +424,6 @@ describe("isDidDifferentValid", () => {
     });
   });
 });
-
 describe("getTargetProfile", () => {
   test("should return profile when found in profile list", () => {
     const result = getTargetProfile(profileList, "2");
@@ -570,7 +434,6 @@ describe("getTargetProfile", () => {
     expect(result).toBe(undefined);
   });
 });
-
 describe("getOverflowSkillFromProfile", () => {
   test("should return skill if profile has overflow skill", () => {
     const result = getOverflowSkillFromProfile(profileList, profileList[1].profile_id);
@@ -581,7 +444,6 @@ describe("getOverflowSkillFromProfile", () => {
     expect(result).toBe(undefined);
   });
 });
-
 describe("removeProfileZeroIfAdminNotInProfileZero", () => {
   test("user is a triton-admin, should return full profile list", () => {
     const result = removeProfileZeroIfAdminNotInProfileZero(adminStateIsAdmin, profileListWithZero);
@@ -596,14 +458,12 @@ describe("removeProfileZeroIfAdminNotInProfileZero", () => {
     expect(result).toEqual(profileList);
   });
 });
-
 describe("getOverflowSkills", () => {
   test("should return overflow skills from profile list", () => {
     const result = getOverflowSkills(profileList);
     expect(result).toStrictEqual(["whateverOverflowSkill", "anotherOverflowSkill"]);
   });
 });
-
 describe("workerHasOverFlowSkill", () => {
   test("should return true if worker has overflow skill", () => {
     const worker = {
@@ -628,7 +488,6 @@ describe("workerHasOverFlowSkill", () => {
     expect(result).toBe(false);
   });
 });
-
 describe("getNonOverflowSkills", () => {
   test("should return non overflow skills", () => {
     const worker = {
@@ -642,7 +501,6 @@ describe("getNonOverflowSkills", () => {
     expect(result).toStrictEqual(["aisgL1"]);
   });
 });
-
 describe("isFormUpdated", () => {
   test("form was not updated", () => {
     const result = isFormUpdated(initialFormState);
@@ -789,7 +647,196 @@ describe("isFormUpdated", () => {
     expect(result).toBe(true);
   });
 });
-
+describe.only("isQMUserValid", () => {
+  test("form.calabrio_qm === false, should return array with all required fields", () => {
+    const form = {
+      calabrio_qm: {
+        userFound: false,
+        team: "Ill be ignored"
+      }
+    }
+    const result = isQMUserValid(form);
+    expect(result).toStrictEqual(["team","roles"]);
+  });
+  test("roles are empty array, should return error", () => {
+    const form = {
+      calabrio_qm: {
+        userFound: true,
+        team: "Team Buffy",
+        roles: []
+      }
+    }
+    const result = isQMUserValid(form);
+    expect(result).toStrictEqual(["roles"]);
+  });
+  test("team is null, should return error", () => {
+    const form = {
+      calabrio_qm: {
+        userFound: true,
+        team: null,
+        roles: [{ name: "Role1"}]
+      }
+    }
+    const result = isQMUserValid(form);
+    expect(result).toStrictEqual(["team"]);
+  });
+  test("team is empty string, should return error", () => {
+    const form = {
+      calabrio_qm: {
+        userFound: true,
+        team: "",
+        roles: [{ name: "Role1"}]
+      }
+    }
+    const result = isQMUserValid(form);
+    expect(result).toStrictEqual(["team"]);
+  });
+  test("all required fields are valid, should return empty array", () => {
+    const form = {
+      calabrio_qm: {
+        userFound: true,
+        team: "Valid Team",
+        roles: [{ name: "Role1"}]
+      }
+    }
+    const result = isQMUserValid(form);
+    expect(result).toStrictEqual([]);
+  });
+});
+describe("isWfmUserValid", () => {
+  const validWfmUser = {
+      userFound: true,
+      FirstName: "Faith",
+      LastName: "Cuneo",
+      EmploymentNumber: "n0263786",
+      Email: "faith.cuneo@libertymutual.com",
+      DisplayName: "Faith Cuneo",
+      BusinessUnitId: "BU123239",
+      FirstDayOfWeek: 2
+  }
+  describe("calabrio_wfm.userFound === false", () => {
+    test("required fields are returned", () => {
+      const form = {
+        calabrio_wfm: {
+          ...validWfmUser,
+          userFound: false
+        }
+      }
+      const result = isWfmUserValid(form);
+      expect(result).toStrictEqual([]);
+    });
+  });
+  describe("required fields", () => {
+    test("required field is null, should return BU in array", () => {
+      const form = {
+        calabrio_wfm: {
+          ...validWfmUser,
+          BusinessUnitId: null
+        }
+      }
+      const result = isWfmUserValid(form);
+      expect(result).toStrictEqual(["BusinessUnitId"]);
+    });
+    test("required field is empty string, should return BU in array", () => {
+      const form = {
+        calabrio_wfm: {
+          ...validWfmUser,
+          BusinessUnitId: ""
+        }
+      }
+      const result = isWfmUserValid(form);
+      expect(result).toStrictEqual(["BusinessUnitId"]);
+    });
+    test("required field is empty array, should return BU in array", () => {
+      const form = {
+        calabrio_wfm: {
+          ...validWfmUser,
+          BusinessUnitId: []
+        }
+      }
+      const result = isWfmUserValid(form);
+      expect(result).toStrictEqual(["BusinessUnitId"]);
+    });
+    test("required field is false, should return empty array", () => {
+      const form = {
+        calabrio_wfm: {
+          ...validWfmUser,
+          BusinessUnitId: false
+        }
+      }
+      const result = isWfmUserValid(form);
+      expect(result).toStrictEqual(["BusinessUnitId"]);
+    });
+  });
+  describe("logicalRequiredFields", () => {
+    test("no fields are populated, should not add to array", () => {
+      const form = {
+        calabrio_wfm: {
+          ...validWfmUser,
+          PersonSkills: [],
+          SkillsStartDate: null
+        }
+      }
+      const result = isWfmUserValid(form);
+      expect(result).toStrictEqual([]);
+    });
+    test("all fields populated, should not add to array", () => {
+      const form = {
+        calabrio_wfm: {
+          ...validWfmUser,
+          PersonSkills: ["Skill1"],
+          SkillsStartDate: "05/02/1991"
+        }
+      }
+      const result = isWfmUserValid(form);
+      expect(result).toStrictEqual([]);
+    });
+    test("all fields populated with a false value, should not add to array", () => {
+      const form = {
+        calabrio_wfm: {
+          ...validWfmUser,
+          AvailabilityId: "AV928371",
+          AvailabilityStartDate: false
+        }
+      }
+      const result = isWfmUserValid(form);
+      expect(result).toStrictEqual([]);
+    });
+    test("partial fields populated - empty string, should add to array", () => {
+      const form = {
+        calabrio_wfm: {
+          ...validWfmUser,
+          PersonSkills: ["Skill1"],
+          SkillsStartDate: ""
+        }
+      }
+      const result = isWfmUserValid(form);
+      expect(result).toStrictEqual(["SkillsStartDate"]);
+    });
+    test("partial fields populated - null, should add to array", () => {
+      const form = {
+        calabrio_wfm: {
+          ...validWfmUser,
+          PersonSkills: ["Skill1"],
+          SkillsStartDate: null
+        }
+      }
+      const result = isWfmUserValid(form);
+      expect(result).toStrictEqual(["SkillsStartDate"]);
+    });
+    test("partial fields populated - empty array, should add to array", () => {
+      const form = {
+        calabrio_wfm: {
+          ...validWfmUser,
+          PersonSkills: [],
+          SkillsStartDate: "05/02/1991"
+        }
+      }
+      const result = isWfmUserValid(form);
+      expect(result).toStrictEqual(["PersonSkills"]);
+    });
+  });
+});
 describe("isFormValid", () => {
   describe("Form is valid", () => {
     describe("forwardToToggle === true", () => {
@@ -988,7 +1035,6 @@ describe("isFormValid", () => {
     });
   });
 });
-
 describe("fetchUser", () => {
   describe("fetchUserServiceCall fails", () => {
     test("setForm is called with 'SET_DISCREPANCIES' and returns nNumber and null fetchedUser", async () => {
@@ -1034,7 +1080,6 @@ describe("fetchUser", () => {
     });
   });
 });
-
 describe("findMatchingWorker", () => {
   test("no matching worker is found, returns null", () => {
     const result = findMatchingWorker("boo", "nope", "nomatch@email.com", initialTestState.workerContext.workers);
@@ -1083,12 +1128,27 @@ describe("findMatchingWorker", () => {
     });
   });
 });
-
-// TODO: test this
-describe("identifyProfileDiscrepancies", () => {});
 describe("identifyUserProfiles", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+  });
+  describe("nNumber has not been fetched yet", () => {
+    const form = {
+      ...initialFormState,
+      nNumber: {
+        ...initialFormState.nNumber,
+        value: "n0263786"
+      },
+      triton: {
+        ...initialFormState.triton,
+        userFound: false
+      }
+    }
+    test("should call fetchUser and set the nNumber object", async () => {
+      await identifyUserProfiles(form, mockSetForm, initialTestState); 
+      expect(fetchUser).toHaveBeenCalledTimes(1);
+      expect(fetchUser).toHaveBeenCalledWith("n0263786");
+    });
   });
   describe("system is triton", () => {
     describe("calabrio qm user and calabrio wfm users not found", () => {
@@ -1170,9 +1230,11 @@ describe("identifyUserProfiles", () => {
           payload: {
             state: initialTestState,
             user: {
+              BusinessUnitId: "123-321",
               ParentTeam: "111",
               EmploymentNumber: "n1111111",
-              Email: "Person@libertymutual.com"
+              Email: "Person@libertymutual.com",
+              TeamId: "111"
             }
           }
         });

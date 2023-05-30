@@ -37,25 +37,103 @@ form.triton.alternateDid.updated || form.triton.directDialNum.updated ||
 form.nNumber.updated || form.triton.extension.updated ||
 form.triton.inactiveForwardTo.updated || form.triton.zeroOutEnabled.updated || form.calabrio_qm.updated || form.triton.selfServiceInd.updated;
 
-export const isFormValid = (form: UserFormState, worker: Worker, forwardToToggle: boolean): boolean =>
-  (form.formMode === formModes.INSERT ? isNNumberValid(form) : true)
-  && isProfileIdValid(form)
-  && isManagerValid(form)
-  && form.triton.outgoing.valid
-  && isExtensionValid(form)
-  && (form.triton.didUser === true ? form.triton.directDialNum.valid && form.triton.alternateDid.valid : true)
-  && isInactiveForwardToValid(form, forwardToToggle)
-  && isDidDifferentValid(form, worker, forwardToToggle)
-  && isCalabrioUserValid(form);
-
 export const isCalabrioUserValid =  (form: UserFormState): boolean => {
   return form.calabrio_qm.team && form.calabrio_qm.roles.length > 0;
 };
 
+export const identifyFormErrors = (form: UserFormState) => {
+  let erroredFields: any[] = ["I'm an error!"];
+  const qmErrors = isQMUserValid(form);
+  const wfmErrors = isWfmUserValid(form);
+  erroredFields = [
+    ...qmErrors,
+    ...wfmErrors
+  ]
+  return erroredFields;
+}
 
-//is Calabrio QM User Valid
-//is Calabrio WFM User Valid
-//has a dependent field been selected
+export const isTritonUserValid = (form: UserFormState, worker: Worker, forwardToToggle: boolean) => {
+  if(!form.triton.userFound){
+    return false;
+  } else {
+    return (form.formMode === formModes.INSERT ? isNNumberValid(form) : true)
+    && isProfileIdValid(form)
+    && isManagerValid(form)
+    && form.triton.outgoing.valid
+    && isExtensionValid(form)
+    && (form.triton.didUser === true ? form.triton.directDialNum.valid && form.triton.alternateDid.valid : true)
+    && isInactiveForwardToValid(form, forwardToToggle)
+    && isDidDifferentValid(form, worker, forwardToToggle)
+  }
+};
+
+export const isQMUserValid = (form: UserFormState) => {
+  const requiredFields: any[] = [
+    {
+      value: "team",
+      alias: "QM Team"
+    }, {
+      value: "roles",
+      alias: "QM Roles"
+    }
+  ];
+  const missingFields: any = [];
+  if(!form.calabrio_qm.userFound){
+    return requiredFields.map((f: any) => f.alias);
+  } else {
+    requiredFields.forEach((f: any) => {
+      const value: any = form.calabrio_qm[f.value];
+      if(!value || value.length === 0){
+        missingFields.push(f.alias);
+      } 
+    });
+    return missingFields;
+  }
+};
+
+export const isUnpopulatedField = (f: any) => (!f && f !== false && f !== 0) || f?.length === 0;
+
+export const isWfmUserValid = (form: UserFormState) => {
+  const user = form.calabrio_wfm;
+  const requiredFields: string[] = ["FirstName", "LastName", "EmploymentNumber", "Email", "DisplayName", "BusinessUnitId", "FirstDayOfWeek"];
+  const logicalRequiredFields: any = {
+    scheduleFields: ["EmploymentStartDate", "TeamId", "TeamStartDate", "ContractId", "ContractScheduleId", "PartTimePercentageId"],
+    teamFields: ["TeamId", "TeamStartDate"],
+    availabilityFields: ["AvailabilityId", "AvailabilityStartDate"],
+    skillFIelds: ["PersonSkills", "SkillsStartDate"],
+    rotationFields: ["RotationId", "RotationStartDate", "RotationStartWeek"]
+  };
+  const missingFields: any = [];
+  if(!form.calabrio_wfm.userFound){
+    return [];
+  } else {
+    requiredFields.forEach((f: any) => {
+      const value: any = form.calabrio_wfm[f];
+      if(!value || value?.length === 0){
+        missingFields.push(f);
+      } 
+    });
+
+    Object.values(logicalRequiredFields).forEach((fields: any[]) => {
+      const allFieldsNull = fields.every((f:any) => isUnpopulatedField(user[f]));
+
+      if(!allFieldsNull){
+        fields.forEach((field: string) => {
+          if(isUnpopulatedField(user[field])){ missingFields.push(user[field]); }
+        });
+      }      
+    });
+
+    if(user.OptionalColumns.length > 0){
+      const validColumns = user.OptionalColumns.every((oc: any) => !isUnpopulatedField(oc.Value));
+      if(!validColumns){
+        missingFields.push("Optional Columns")
+      }
+    }
+    return [...new Set(missingFields)];
+  }
+};
+
 
 export const isManagerValid = (form: UserFormState): boolean => form.triton.manager.value !== "";
 
@@ -108,7 +186,6 @@ export const workerHasOverFlowSkill = (worker: Worker, profiles: TritonProfile[]
 export const fetchUser = async (nNumber: string, setForm: any, errorMessage: string, errorType: string) => {
   try {
     const fetchedUser = await fetchUserServiceCall(nNumber);
-    console.log("FAITH FETCHED USER", fetchedUser);
     const nNumberPayload = {
       nNumber,
       fetchedUser
@@ -163,7 +240,6 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
   let calabrioQmUser = null;
   let calabrioWfmUser = null;
 
-  console.log("FAITH - system", system);
   if(!form.nNumber.nNumberFetchedUser && form.nNumber.value && form.nNumber.value.match(nNumMatcher)){
     //set the nNumber & Triton/Calabrio users based off of the nNumber in the state
     const errorMessage = `Failed to fetch nNumber from HR database. ${form.nNumber.value}. 
@@ -186,24 +262,15 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
     const wfmIdentity = form.calabrio_wfm.Identity?.trim().toLowerCase();
     const wfmEmail = form.calabrio_wfm.Email?.trim().toLowerCase();
 
-    console.log("FAITH starting log", wfmNNumber, wfmIdentity, wfmEmail);
     if(form.nNumber.nNumberFetchedUser && form.nNumber.value){
       tritonWorker = findMatchingWorker(null, form.nNumber.value, form.nNumber.nNumberFetchedUser.email, tritonWorkers);
       calabrioQmUser = findMatchingWorker(null, form.nNumber.value, form.nNumber.nNumberFetchedUser.email, calabrioQmUsers);
     } else if(!form.nNumber.nNumberFetchedUser && wfmNNumber && wfmNNumber.match(nNumMatcher)){
-      //Use the WFM n# field to set the nNumber fetched user and triton/calabrio user
-      console.log("FAITH should land here with an identified wfm n#", wfmNNumber);
-
       const errorMessage = `Failed to fetch nNumber from HR database. Value read from WFM User Record Employment Number field: ${wfmNNumber}. If this nNumber looks accurate and continues to fail, this user may no longer be active in the HR database or needs to reach out to the HR team to investigate the failure. If this nNumber does not look accurate, please correct the WFM Record Employment Number field and try again.`
       nNumberObject = await fetchUser(wfmNNumber, setForm, errorMessage, discrepancyType.CALABRIO_WFM);
-      console.log("NNUMBEROBJECT FAITH", nNumberObject);
-      //should be able to not use fetched worker if we're waiting
       tritonWorker = findMatchingWorker(null, wfmNNumber, nNumberObject.fetchedUser?.email, tritonWorkers);
-      console.log("FAITH - Triton worker", tritonWorker);
       calabrioQmUser = findMatchingWorker(null, wfmNNumber, nNumberObject.fetchedUser?.email, calabrioQmUsers);
-      console.log("FAITH - Calabrio QM worker", calabrioQmUser);
     } else if(!form.nNumber.nNumberFetchedUser) {
-      //WFM Record didnt have an n#, try find the triton & calabrio worker based on the WFM email/identity values
       setForm({
         type: "SET_DISCREPANCIES",
         payload: {
@@ -226,7 +293,6 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
           }
         });
       }
-    
       if(tritonWorker){
         const errorMessage = `Failed to fetch nNumber from HR database. ${tritonWorker.attributes.n_number}. If this nNumber continues to fail, this user may no longer be active in the HR database or needs to reach out to the HR team to investigate the failure.`
         await fetchUser(tritonWorker.attributes.n_number, setForm, errorMessage, discrepancyType.GENERAL);
@@ -279,4 +345,4 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
   }
 
   return Promise.resolve("Faith - we should be done");
-};
+}

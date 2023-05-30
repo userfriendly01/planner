@@ -32,9 +32,10 @@ import {
   DbWorker,
   getNonOverflowSkills,
   getOverflowSkillFromProfile,
+  identifyFormErrors,
   isDidDifferentValid,
   isFormUpdated,
-  isFormValid,
+  isTritonUserValid,
   mapWorkerFromDbWorker,
   wait,
   workerHasOverFlowSkill
@@ -50,7 +51,8 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     offices,
     profiles,
     updateLoading,
-    worker
+    worker,
+    setMissingFields
   } = props;
 
   const {
@@ -413,8 +415,20 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
   };
 
   const isUserFormButtonEnabled = form.formMode === formModes.INSERT
-    ? isFormValid(form, worker, forwardToToggle)
-    : (isFormUpdated(form) || form.discrepancies.length > 0) && isFormValid(form, worker, forwardToToggle);
+    ? isTritonUserValid(form, worker, forwardToToggle)
+    : (isFormUpdated(form) || form.discrepancies.length > 0) && isTritonUserValid(form, worker, forwardToToggle);
+
+  const handleFormOnClick = () => {
+    const formErrors: any = identifyFormErrors(form);
+    if(formErrors.length === 0 && form.formMode === formModes.INSERT){
+      doCreateUser();
+    } else if(formErrors.length === 0){
+      doUpdateUser
+    } else {
+      console.log("UPDATE MISSING FIELDS", formErrors);
+      setMissingFields(formErrors);
+    }
+  }
 
   return (
     <ButtonWrapper>
@@ -436,7 +450,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         <span>
           <UserFormButton
             disabled={!isUserFormButtonEnabled}
-            onClick={form.formMode === formModes.INSERT ? doCreateUser : doUpdateUser}
+            onClick={handleFormOnClick}
           >
             {form.formMode === formModes.INSERT ? "Add User" : "Save User"}
           </UserFormButton>

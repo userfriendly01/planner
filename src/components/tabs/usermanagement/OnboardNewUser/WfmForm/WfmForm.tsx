@@ -32,15 +32,23 @@ import {
   daysOfTheWeekOptions,
   getWfmBusinessUnits,
   getWfmTeams,
-  getWfmOptions
+  getWfmOptions,
+  isUnpopulatedField
 } from "utils";
 import WFMLoadRetryModal from "../../BulkChanges/WFMLoadRetryModal";
 
-const WfmForm = () => {
+interface WfmFormProps {
+  missingFields: string[]
+}
+
+const WfmForm = (props: WfmFormProps) => {
   const state = useAdminState();
   const form = useFormState();
   const setForm = useFormDispatch();
+  const { missingFields } = props;
   const isAdd = form.formMode === formModes.INSERT;
+  const [ optionsByBusinessUnit, setOptionsByBusinessUnit ] = React.useState<any>({});
+  
   const [ availabilityFields, setAvailabilityFields ] = React.useState({
     id: null,
     startDate: null
@@ -60,7 +68,6 @@ const WfmForm = () => {
   });
   const [ optionalColumns, setOptionalColumns ] = React.useState([]);
 
-  const [ optionsByBusinessUnit, setOptionsByBusinessUnit ] = React.useState<any>({});
   const scheduleFields = {
     personStartDate: form.calabrio_wfm.EmploymentStartDate,
     teamId: teamFields.id,
@@ -70,7 +77,6 @@ const WfmForm = () => {
     partTimePercentageId: form.calabrio_wfm.PartTimePercentageId
   };
 
-  console.log("FAITH optionsByBusinessUnit", optionsByBusinessUnit);
   console.log("FAITH form", form);
 
   React.useEffect(() => {
@@ -195,8 +201,6 @@ const WfmForm = () => {
     }
   }, [form.nNumber.nNumberFetchedUser]);
  
-  //options have to be in the applicable BU/team and if the BU/Team changes it has to validate the existing selections
-
   const generateDropdownOptionArray = (optionsArray: any[]) => {
     if(optionsArray){
       return optionsArray?.map((o: any) => {
@@ -240,6 +244,7 @@ const WfmForm = () => {
         <Row>
           <Dropdown
             disabled={!isAdd}
+            error={missingFields.some((f:string) => f === "BusinessUnitId") && isUnpopulatedField(form.calabrio_wfm.BusinessUnitId)}
             label={"Business Unit *"}
             styles={{
               width: "250px",
@@ -254,7 +259,7 @@ const WfmForm = () => {
           />
           <Dropdown
             disabled={!isAdd}
-            error={requiredFieldMissing("id", teamFields)}
+            error={requiredFieldMissing("id", teamFields) || (missingFields.some((f:string) => f === "TeamId") && isUnpopulatedField(form.calabrio_wfm.TeamId))}
             label={"Team"}
             styles={{
               width: "250px"
@@ -276,7 +281,9 @@ const WfmForm = () => {
                 startDate: newValue ? new Date(newValue).toLocaleDateString(): newValue
               })}
             } 
-            renderInput={props => <TextField {...props} error={requiredFieldMissing("startDate", teamFields)} />}
+            renderInput={props => <TextField {...props}
+              error={requiredFieldMissing("startDate", teamFields) || (missingFields.some((f:string) => f === "TeamStartDate") && isUnpopulatedField(form.calabrio_wfm.TeamStartDate))}
+            />}
           />
         </Row>
         <Row>
@@ -316,7 +323,7 @@ const WfmForm = () => {
           />
           <Dropdown
             disabled={!isAdd}
-            error={false}
+            error={missingFields.some((f:string) => f === "FirstDayOfWeek") && isUnpopulatedField(form.calabrio_wfm.FirstDayOfWeek)}
             label={"First Day of the Week *"}
             styles={{
               width: "250px",
@@ -339,7 +346,9 @@ const WfmForm = () => {
                 payload: newValue ? new Date(newValue).toLocaleDateString(): newValue
               })}
             } 
-            renderInput={props => <TextField {...props} error={requiredFieldMissing("personStartDate", scheduleFields)} />}
+            renderInput={props => <TextField {...props}
+              error={requiredFieldMissing("personStartDate", scheduleFields) || (missingFields.some((f:string) => f === "EmploymentStartDate") && isUnpopulatedField(form.calabrio_wfm.EmploymentStartDate))}
+            />}
           />
         </Row>
         <Row>
@@ -358,7 +367,7 @@ const WfmForm = () => {
           <Dropdown
             disabled={!isAdd}
             multiple={true}
-            error={requiredFieldMissing("skills", skillFields)}
+            error={requiredFieldMissing("skills", skillFields) || (missingFields.some((f:string) => f === "PersonSkills") && isUnpopulatedField(form.calabrio_wfm.PersonSkills))}
             label="Skills"
             options={generateDropdownOptionArray(optionsByBusinessUnit["Skills"])}
             value={generateDropdownOptionArray(skillFields.skills)}
@@ -378,7 +387,9 @@ const WfmForm = () => {
                 startDate: newValue ? new Date(newValue).toLocaleDateString(): newValue
               })}
             } 
-            renderInput={props => <TextField {...props} error={requiredFieldMissing("startDate", skillFields)} />}
+            renderInput={props => <TextField {...props}
+              error={requiredFieldMissing("startDate", skillFields) || (missingFields.some((f:string) => f === "SkillsStartDate") && isUnpopulatedField(form.calabrio_wfm.SkillsStartDate))}
+            />}
           />
         </Row>
         <Row>
@@ -485,7 +496,7 @@ const WfmForm = () => {
           <Dropdown
             disabled={!isAdd}
             label="Part Time Percentage"
-            error={requiredFieldMissing("partTimePercentageId", scheduleFields)}
+            error={requiredFieldMissing("partTimePercentageId", scheduleFields) || (missingFields.some((f:string) => f === "PartTimePercentageId") && isUnpopulatedField(form.calabrio_wfm.PartTimePercentageId))}
             options={generateDropdownOptionArray(optionsByBusinessUnit["Part_Time_Percentages"])}
             value={generateDropdownOption(optionsByBusinessUnit["Part_Time_Percentages"]?.find((ptp: any) => ptp.Id === form.calabrio_wfm.PartTimePercentageId))}
             updateValue={(event: any, newValue: any) => setForm({
@@ -499,7 +510,7 @@ const WfmForm = () => {
           <Dropdown
             disabled={!isAdd}
             label="Contract Schedule"
-            error={requiredFieldMissing("contractScheduleId", scheduleFields)}
+            error={requiredFieldMissing("contractScheduleId", scheduleFields) || (missingFields.some((f:string) => f === "ContractScheduleId") && isUnpopulatedField(form.calabrio_wfm.ContractScheduleId))}
             options={generateDropdownOptionArray(optionsByBusinessUnit["Contract_Schedules"])}
             value={generateDropdownOption(optionsByBusinessUnit["Contract_Schedules"]?.find((cs: any) => cs.Id === form.calabrio_wfm.ContractScheduleId))}
             updateValue={(event: any, newValue: any) => setForm({
@@ -510,7 +521,7 @@ const WfmForm = () => {
           />
           <Dropdown
             disabled={!isAdd}
-            error={requiredFieldMissing("contractId", scheduleFields)}
+            error={requiredFieldMissing("contractId", scheduleFields) || (missingFields.some((f:string) => f === "ContractId") && isUnpopulatedField(form.calabrio_wfm.ContractId))}
             label="Contract"
             options={generateDropdownOptionArray(optionsByBusinessUnit["Contracts"])}
             value={generateDropdownOption(optionsByBusinessUnit["Contracts"]?.find((c: any) => c.Id === form.calabrio_wfm.ContractId))}
@@ -536,7 +547,7 @@ const WfmForm = () => {
         <Dropdown
             disabled={!isAdd}
             label="Rotation"
-            error={requiredFieldMissing("id", rotationFields)}
+            error={requiredFieldMissing("id", rotationFields) || (missingFields.some((f:string) => f === "RotationId") && isUnpopulatedField(form.calabrio_wfm.RotationId))}
             options={generateDropdownOptionArray(optionsByBusinessUnit["Rotations"])}
             value={generateDropdownOption(optionsByBusinessUnit["Rotations"]?.find((r: any) => r.Id === rotationFields.id))}
             updateValue={(event: any, newValue: any) => setRotationFields({
@@ -555,11 +566,13 @@ const WfmForm = () => {
                 startDate: newValue ? new Date(newValue).toLocaleDateString(): newValue
               })}
             } 
-            renderInput={props => <TextField {...props} error={requiredFieldMissing("startDate", rotationFields)} />}
+            renderInput={props => <TextField {...props}
+              error={requiredFieldMissing("startDate", rotationFields) || (missingFields.some((f:string) => f === "RotationStartDate") && isUnpopulatedField(form.calabrio_wfm.RotationStartDate))}
+            />}
           />
           <Dropdown
             disabled={!isAdd}
-            error={requiredFieldMissing("startWeek", rotationFields)}
+            error={requiredFieldMissing("startWeek", rotationFields) || (missingFields.some((f:string) => f === "RotationStartWeek") && isUnpopulatedField(form.calabrio_wfm.RotationStartWeek))}
             label={"Rotation Start Week"}
             styles={{
               width: "250px",
@@ -577,7 +590,7 @@ const WfmForm = () => {
           <Dropdown
             disabled={!isAdd}
             label="Availability"
-            error={requiredFieldMissing("id", availabilityFields)}
+            error={requiredFieldMissing("id", availabilityFields) || (missingFields.some((f:string) => f === "AvailabilityId") && isUnpopulatedField(form.calabrio_wfm.AvailabilityId))}
             options={generateDropdownOptionArray(optionsByBusinessUnit["Availabilities"])}
             value={generateDropdownOption(optionsByBusinessUnit["Availabilities"]?.find((a: any) => a.Id === availabilityFields.id))}
             updateValue={(event: any, newValue: any) => setAvailabilityFields({
@@ -595,7 +608,9 @@ const WfmForm = () => {
                 startDate: newValue ? new Date(newValue).toLocaleDateString(): newValue
               })
             }
-            renderInput={props => <TextField {...props} error={requiredFieldMissing("startDate", availabilityFields)} />}
+            renderInput={props => <TextField {...props}
+              error={requiredFieldMissing("startDate", availabilityFields) || (missingFields.some((f:string) => f === "AvailabilityStartDate") && isUnpopulatedField(form.calabrio_wfm.AvailabilityStartDate))}
+            />}
           />
         </Row>
       </>

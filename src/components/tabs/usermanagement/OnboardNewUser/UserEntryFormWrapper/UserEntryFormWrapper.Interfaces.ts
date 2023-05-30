@@ -60,6 +60,7 @@ export interface UserFormButtonsProps {
   profiles: TritonProfile[],
   updateLoading: (payload: any) => void,
   worker: Worker | null,
+  setMissingFields: (missingFields: string[]) => void
 }
 
 
@@ -94,6 +95,7 @@ export interface UserFormState {
     selfServiceInd: FieldState
   },
   calabrio_qm: {
+    [key: string]: any,
     acdId?: string,
     userFound: boolean,
     updated: boolean,
@@ -122,5 +124,6 @@ interface FormExtension extends FieldState {
   status: ExtensionStatusProps,
 }
 interface CALABRIO_WFM extends WfmUser {
-  userFound: boolean
+  userFound: boolean,
+  [key: string]: any
 }

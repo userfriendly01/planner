@@ -231,8 +231,11 @@ export interface WfmUser {
   TeamId: string,
   PersonSkills: any[],
   AvailabilityId: string,
+  AvailabilityStartDate?: string,
   AbsenceId: string,
   RotationId: string,
+  RotationStartDate?: string,
+  RotationStartWeek?: number,
   WorkflowControlSetId: string,
   ContractId: string,
   ContractScheduleId: string,
@@ -243,6 +246,7 @@ export interface WfmUser {
   Roles: any[],
   FirstDayOfWeek: number,
   TeamStartDate?: string,
+  SkillsStartDate?: string,
   ParentTeam?: string //something we add to verify the team Id listed on the worker aligns to the team they were found in
 }
 

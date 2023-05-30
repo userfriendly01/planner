@@ -25,12 +25,13 @@ import {
 } from "utils";
 
 interface CallRecordingFormInterface {
-  twilioWorker: any
+  twilioWorker: any,
+  missingFields: string[]
 }
 
 const CallRecordingForm = (props: CallRecordingFormInterface) => {
   const state = useAdminState();
-  const { twilioWorker } = props;
+  const { twilioWorker, missingFields } = props;
   const {
     groups,
     teams,
@@ -266,7 +267,8 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
       <FormControlsPane>
         <Dropdown
           disabled={form.formMode === formModes.DELETE}
-          label="Roles"
+          error={missingFields.some((f:string) => f === "QM Roles") && form.calabrio_qm.roles.length == 0}
+          label="Roles *"
           multiple={true}
           options={getRoleOptions()}
           value={form.calabrio_qm.roles}
@@ -278,7 +280,8 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
         />
         <Dropdown
           disabled={form.formMode === formModes.DELETE}
-          label="Team"
+          error={missingFields.some((f:string) => f === "QM Team") && !form.calabrio_qm.team}
+          label="Team *"
           options={getTeamOptions()}
           value={form.calabrio_qm.team ? {
             ...form.calabrio_qm.team,
