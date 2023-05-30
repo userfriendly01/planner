@@ -76,6 +76,16 @@ const createFlowDataList = numberOfData =>{
   }
   return dataList;
 };
+const flowFormatList = flowList=>{
+  const flowData= {
+    data: {
+      listCctSharedCallFlowDbs: {
+        items: flowList
+      }
+    }
+  };
+  return flowData;
+};
 
 const filteredItems = {
   brand: "brand1",
@@ -130,7 +140,7 @@ describe("<DataGridFlow />", () => {
   describe("Data Table Footer", ()=>{
     test("Simulate Data Table Pagination", async () =>{
       const validFlowDataList = createFlowDataList(15);
-      queryFlowData.mockResolvedValue(validFlowDataList);
+      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
       retrieveFlowData.mockResolvedValue(validFlowDataList);
       renderComponent();
       expect(DataGrid.mock.calls[0][0].page).toBe(1);
@@ -139,7 +149,7 @@ describe("<DataGridFlow />", () => {
 
     test("Simulate Change Rows Per Page", async () => {
       const validFlowDataList = createFlowDataList(15);
-      queryFlowData.mockResolvedValue(validFlowDataList);
+      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
       retrieveFlowData.mockResolvedValue(validFlowDataList);
       renderComponent();
       const onPageSizeChange = DataGrid.mock.calls[0][0].onPageSizeChange;
@@ -150,7 +160,7 @@ describe("<DataGridFlow />", () => {
 
     test("Simulate Change Go to Next Page", async () => {
       const validFlowDataList = createFlowDataList(15);
-      queryFlowData.mockResolvedValue(validFlowDataList);
+      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
       retrieveFlowData.mockResolvedValue(validFlowDataList);
       renderComponent();
       const onPageChange = DataGrid.mock.calls[0][0].onPageChange;
@@ -161,7 +171,7 @@ describe("<DataGridFlow />", () => {
 
     test("Simulate Change Go to previous Page", async () => {
       const validFlowDataList = createFlowDataList(15);
-      queryFlowData.mockResolvedValue(validFlowDataList);
+      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
       retrieveFlowData.mockResolvedValue(validFlowDataList);
       renderComponent();
       const onPageChange = DataGrid.mock.calls[0][0].onPageChange;
@@ -179,23 +189,23 @@ describe("<DataGridFlow />", () => {
   describe("Check the Add Flow from FlowCustomAction", ()=>{
     test("Simulate the AddFlow Render", ()=>{
       const validFlowDataList = createFlowDataList(15);
-      queryFlowData.mockResolvedValue(validFlowDataList);
+      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
       retrieveFlowData.mockResolvedValue(validFlowDataList);
       renderComponent();
       expect(AddFlow.mock.calls[0][0].newId).toBe(1);
     });
     test("Simulate the AddFlow openModal", ()=>{
       const validFlowDataList = createFlowDataList(15);
-      queryFlowData.mockResolvedValue(validFlowDataList);
+      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
       retrieveFlowData.mockResolvedValue(validFlowDataList);
       renderComponent();
       const openModal = AddFlow.mock.calls[0][0].openAddModal;
-      act(()=>{ openModal(false); });
+      act(()=>{ openModal(false,true,{},true); });
       expect(AddFlow.mock.calls[1][0].openAddModal).toBeTruthy;
     });
     test("Simulate the AddFlow openModal isOpen true", ()=>{
       const validFlowDataList = createFlowDataList(15);
-      queryFlowData.mockResolvedValue(validFlowDataList);
+      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
       retrieveFlowData.mockResolvedValue(validFlowDataList);
       renderComponent();
       const openModal = AddFlow.mock.calls[0][0].openAddModal;
@@ -204,7 +214,7 @@ describe("<DataGridFlow />", () => {
     });
     test("Simulate the AddFlow openModal isOpen false, true", ()=>{
       const validFlowDataList = createFlowDataList(15);
-      queryFlowData.mockResolvedValue(validFlowDataList);
+      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
       retrieveFlowData.mockResolvedValue(validFlowDataList);
       renderComponent();
       const openModal = AddFlow.mock.calls[0][0].openAddModal;
@@ -216,7 +226,7 @@ describe("<DataGridFlow />", () => {
   describe("Check the Edit Flow from FlowCustomAction", ()=>{
     test("Simulate the EditFlow Render", ()=>{
       const validFlowDataList = createFlowDataList(15);
-      queryFlowData.mockResolvedValue(validFlowDataList);
+      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
       retrieveFlowData.mockResolvedValue(validFlowDataList);
       renderComponent();
       expect(EditFlow.mock.calls[0][0].isOpen).toBe(false);
@@ -224,25 +234,52 @@ describe("<DataGridFlow />", () => {
     });
     test("Simulate the EditFlow openEditModal onSubmitted true", ()=>{
       const validFlowDataList = createFlowDataList(15);
-      queryFlowData.mockResolvedValue(validFlowDataList);
+      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
       retrieveFlowData.mockResolvedValue(validFlowDataList);
       renderComponent();
       const openEditModal = EditFlow.mock.calls[0][0].openEditModal;
       act(()=>{ openEditModal(false, true); });
       expect(EditFlow.mock.calls[1][0].openEditModal).toBeTruthy;
     });
+    test("Simulate the EditFlow openEditModal onDeleteRow true", ()=>{
+      const validFlowDataList = createFlowDataList(15);
+      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
+      retrieveFlowData.mockResolvedValue(validFlowDataList);
+      renderComponent();
+      const openEditModal = EditFlow.mock.calls[0][0].openEditModal;
+      act(()=>{ openEditModal(false, true,{},"",true,false); });
+      act(()=>{ openEditModal(false, true,{},"",false,false); });
+      expect(EditFlow.mock.calls[1][0].openEditModal).toBeTruthy();
+    });
     test("Simulate the EditFlow openEditModal", ()=>{
       const validFlowDataList = createFlowDataList(15);
-      queryFlowData.mockResolvedValue(validFlowDataList);
+      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
       retrieveFlowData.mockResolvedValue(validFlowDataList);
       renderComponent();
       const openEditModal = EditFlow.mock.calls[0][0].openEditModal;
       act(()=>{ openEditModal(true, false); });
       expect(EditFlow.mock.calls[1][0].openEditModal).toBeTruthy;
     });
+    test("Simulate the EditFlow openEditModal wih clonedFlowRule", ()=>{
+      const flowData = {
+        id: 1,
+        pkey: "+18005551212",
+        agentId: "agent",
+        brand: "brand",
+        callFlowTemplate: "cft",
+        channel: "channel"
+      };
+      const validFlowDataList = createFlowDataList(15);
+      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
+      retrieveFlowData.mockResolvedValue(validFlowDataList);
+      renderComponent();
+      const openEditModal = EditFlow.mock.calls[0][0].openEditModal;
+      act(()=>{ openEditModal(true, false,flowData,"",false,true); });
+      expect(EditFlow.mock.calls[1][0].openEditModal).toBeTruthy;
+    });
     test("Simulate the CustomFlowGridToolBar Custom Routing Toolbar", async()=>{
       const validFlowDataList = createFlowDataList(15);
-      queryFlowData.mockResolvedValue(validFlowDataList);
+      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
       retrieveFlowData.mockResolvedValue(validFlowDataList);
       renderComponent();
       const exportDataFile = CustomFlowGridToolBar.mock.calls[0][0].exportDataFile;
@@ -260,14 +297,14 @@ describe("<DataGridFlow />", () => {
     });
     test("Simulate Channel in Existing Filtered Item", ()=>{
       const validFlowDataList = createFlowDataList(15);
-      queryFlowData.mockResolvedValue(validFlowDataList);
+      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
       retrieveFlowData.mockResolvedValue(validFlowDataList);
       renderComponent();
       expect(DataGrid.mock.calls[0][0].page).toBe(1);
     });
     test("Simulate Empty Filtered Item",()=>{
       const validFlowDataList = createFlowDataList(15);
-      queryFlowData.mockResolvedValue(validFlowDataList);
+      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
       retrieveFlowData.mockResolvedValue(validFlowDataList);
       localStorage.clear();
       renderComponent();
@@ -275,7 +312,7 @@ describe("<DataGridFlow />", () => {
     });
     test("Simulate openAdvanceSearchModal", ()=>{
       const validFlowDataList = createFlowDataList(15);
-      queryFlowData.mockResolvedValue(validFlowDataList);
+      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
       retrieveFlowData.mockResolvedValue(validFlowDataList);
       renderComponent();
       const openModal = AdvanceSearchModal.mock.calls[0][0].openModal;
@@ -287,7 +324,7 @@ describe("<DataGridFlow />", () => {
     });
     test("Simulate openAdvanceSearchModal applyFilter props", ()=>{
       const validFlowDataList = createFlowDataList(15);
-      queryFlowData.mockResolvedValue(validFlowDataList);
+      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
       retrieveFlowData.mockResolvedValue(validFlowDataList);
       renderComponent();
       const applyFilter = AdvanceSearchModal.mock.calls[0][0].applyFilter;
@@ -297,7 +334,7 @@ describe("<DataGridFlow />", () => {
     test("Simulate openAdvanceSearchModal handleChange", ()=>{
       //TODO I'm not sure this test is working as expected.  I had to set filteredItems = {brand: brand1}
       const validFlowDataList = createFlowDataList(15);
-      queryFlowData.mockResolvedValue(validFlowDataList);
+      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
       retrieveFlowData.mockResolvedValue(validFlowDataList);
       renderComponent();
       const handleChange = AdvanceSearchModal.mock.calls[0][0].handleChange;
@@ -338,7 +375,7 @@ describe("<DataGridFlow />", () => {
     test("Simulate advanceFilter", () => {
       //TODO, this is adding to code coverage - can we validate anything about the filteredItems min max range?
       const validFlowDataList = createFlowDataList(15);
-      queryFlowData.mockResolvedValue(validFlowDataList);
+      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
       retrieveFlowData.mockResolvedValue(validFlowDataList);
       localStorage.setItem(CACHE_FILTER_FLOW, JSON.stringify({
         ...filteredItems,
@@ -353,7 +390,7 @@ describe("<DataGridFlow />", () => {
     });
     test("Simulate advanceFilter error", () => {
       const validFlowDataList = createFlowDataList(15);
-      queryFlowData.mockResolvedValue(validFlowDataList);
+      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
       retrieveFlowData.mockResolvedValue(validFlowDataList);
       localStorage.setItem(CACHE_FILTER_FLOW, "");
       renderComponent();
@@ -361,7 +398,7 @@ describe("<DataGridFlow />", () => {
     });
     test("Simulate advanceFilter empty result", () => {
       const validFlowDataList = createFlowDataList(15);
-      queryFlowData.mockResolvedValue(validFlowDataList);
+      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
       retrieveFlowData.mockResolvedValue(validFlowDataList);
       localStorage.setItem(CACHE_FILTER_FLOW, JSON.stringify({
         ...filteredItems,
@@ -375,7 +412,7 @@ describe("<DataGridFlow />", () => {
   describe("Different Data Load", ()=>{
     test("Simulate DataGrid with Empty Data",()=>{
       const validFlowDataList = createFlowDataList(0);
-      queryFlowData.mockResolvedValue(validFlowDataList);
+      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
       retrieveFlowData.mockResolvedValue(validFlowDataList);
       renderComponent();
       expect(DataGrid.mock.calls[0][0].page).toBe(1);
@@ -391,7 +428,7 @@ describe("<DataGridFlow />", () => {
     });
     test("Simulate CustomToast",()=>{
       const validFlowDataList = createFlowDataList(1);
-      queryFlowData.mockResolvedValue(validFlowDataList);
+      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
       retrieveFlowData.mockResolvedValue(validFlowDataList);
       renderComponent();
       const handleClose = CustomToast.mock.calls[0][0].onClose;

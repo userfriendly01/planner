@@ -5,7 +5,9 @@ import {
   initialUserFormState,
   userFormReducer,
   initialProfileEntryFormState,
-  profileEntryFormReducer
+  profileEntryFormReducer,
+  initialSkillFormState,
+  skillFormReducer
 } from "context";
 import {
   Action,
@@ -14,6 +16,7 @@ import {
 import { UserFormState } from "components/tabs/usermanagement/OnboardNewUser/UserEntryFormWrapper/UserEntryFormWrapper.Interfaces";
 import React, { ReactElement } from "react";
 import { ProfileEntryFormState } from "components/tabs/profilesettings/ProfileEntryForm/ProfileEntryForm.Interfaces";
+import { SkillFormState } from "components/tabs/callflowmanagement/SkillManagement/Skills.Interfaces";
 
 export const StateContext = React.createContext(undefined);
 export const DispatchContext = React.createContext(undefined);
@@ -21,6 +24,8 @@ export const FormStateContext = React.createContext(undefined);
 export const FormDispatchContext = React.createContext(undefined);
 export const ProfileEntryStateContext = React.createContext(undefined);
 export const ProfileEntryDispatchContext = React.createContext(undefined);
+export const SkillFormStateContext = React.createContext(undefined);
+export const SkillFormDispatchContext = React.createContext(undefined);
 
 interface StateProviderProps {
   children: ReactElement
@@ -80,6 +85,20 @@ const ProfileEntryFormStateProvider = (props: ProfileEntryFormStateProviderProps
   );
 };
 
+interface SkillFormStateProviderProps {
+  children: ReactElement
+}
+const SkillFormStateProvider = (props: SkillFormStateProviderProps) => {
+  const [state, dispatch] = React.useReducer(skillFormReducer, initialSkillFormState);
+  return (
+    <SkillFormStateContext.Provider value={state}>
+      <SkillFormDispatchContext.Provider value={dispatch}>
+        {props.children}
+      </SkillFormDispatchContext.Provider>
+    </SkillFormStateContext.Provider>
+  );
+};
+
 const useFormState = (): UserFormState => {
   const context: UserFormState = React.useContext(FormStateContext);
   if (context === undefined) {
@@ -112,6 +131,22 @@ const profileEntryFormDispatch = (): (action: Action) => VoidFunction => {
   return context;
 };
 
+const skillFormState = (): SkillFormState => {
+  const context: any = React.useContext(SkillFormStateContext);
+  if (context === undefined) {
+    throw new Error("SkillFormStateContext must be used within a Context Provider");
+  }
+  return context;
+};
+
+const skillFormDispatch = (): (action: Action) => VoidFunction => {
+  const context: (action: Action) => VoidFunction = React.useContext(SkillFormDispatchContext);
+  if (context === undefined) {
+    throw new Error("SkillFormDispatchContext must be used within a Context Provider");
+  }
+  return context;
+};
+
 export {
   StateProvider,
   FormStateProvider,
@@ -121,5 +156,8 @@ export {
   useFormDispatch,
   profileEntryFormState,
   profileEntryFormDispatch,
-  ProfileEntryFormStateProvider
+  ProfileEntryFormStateProvider,
+  SkillFormStateProvider,
+  skillFormState,
+  skillFormDispatch
 };
