@@ -7,7 +7,9 @@ import { TextField } from "@mui/material";
 import {
   UserFormButton
 } from "../ClosedFlashMessage/ClosedFlashMessage.Styles";
-import { ActionTypes } from "../Skills.Interfaces";
+import {
+  ActionTypes, AddSkillRequestBody, UpdateSkillRequestBody
+} from "../Skills.Interfaces";
 import {
   addSkillGroup,
   deleteSkillGroup,
@@ -23,8 +25,6 @@ import {
 import { Dropdown } from "components";
 import _ from "lodash";
 import { getSkills } from "authentication";
-
-// TODO: Update teh search filter for skillgroups?
 
 const SkillGroupInputContainer = (props: any) => {
   const [ skillGroupName, setSkillGroupName ] = React.useState("");
@@ -113,7 +113,7 @@ const SkillGroupInputContainer = (props: any) => {
       try {
         const skillIds = tableState.selected.map((skill: Skill) => skill.ctmSkillId);
 
-        const requestBody: any = {
+        const requestBody: AddSkillRequestBody = {
           skill_group_nme: skillGroupName.trim(),
           skillIds
         };
@@ -132,10 +132,6 @@ const SkillGroupInputContainer = (props: any) => {
         setTimeout(() => {
           handleCloseConfirmation();
           setAction(null);
-          // setTableState({
-          //   ...tableState,
-          //   selected: []
-          // });
         }, timeouts.MODAL_OVERLAY);
       } catch (err) {
         console.error("Error: Unable to add skill grouping");
@@ -148,7 +144,7 @@ const SkillGroupInputContainer = (props: any) => {
 
     const confirmationText = <>
       <ConfirmationSkillGroupsDiv>
-      Are you sure you want to create the skill group <strong>{skillGroupName}</strong> containing the following skills?
+      Are you sure you want to create the skill group <span style={{ textDecoration: "underline" }}>{skillGroupName}</span> containing the following skills?
         <ConfirmationSkillList>
           {tableState.selected.map((skill: Skill) => <li key={skill.name}>{skill.name}</li>)}
         </ConfirmationSkillList>
@@ -167,7 +163,33 @@ const SkillGroupInputContainer = (props: any) => {
   };
 
   const handleEditSkillGroup = () => {
-    const requestBody: any = {};
+
+    const requestBody: UpdateSkillRequestBody = {};
+    let editConfirmationText;
+
+    try {
+      const selectedSkills: number[] = tableState.selected.slice().map((sk: Skill) => sk.ctmSkillId);
+
+      requestBody.skillGroupName = skillGroupName.trim();
+      requestBody.skillIds = selectedSkills;
+
+      editConfirmationText = <>
+        <ConfirmationSkillGroupsDiv>
+        Are you sure you want to edit the skill group <span style={{ textDecoration: "underline" }}>{skillGroupToEditDelete?.label ? skillGroupToEditDelete?.label : ""}?</span>
+          {requestBody.skillGroupName ? `The name of this skill grouping will become ${skillGroupName}` : ""}
+          This skill group will contain the following skills:
+          <ConfirmationSkillList>
+            {tableState.selected.map((skill: Skill) => <li key={skill.name}>{skill.name}</li>)}
+          </ConfirmationSkillList>
+        </ConfirmationSkillGroupsDiv>
+      </>;
+    } catch (err) {
+      console.error("Failed to update skillGroup", err?.message ? err.message : err);
+      setSaveResult({
+        message: "Request Failed",
+        status: ModalOverlayStatuses.FAIL
+      });
+    }
 
     const onConfirmEdit = async () => {
       setSaveResult({
@@ -195,55 +217,15 @@ const SkillGroupInputContainer = (props: any) => {
       }
     };
 
-    try {
-      requestBody.skillGroupName = skillGroupName.trim();
-
-      // determine if skills in the skill group changed
-      let skillsHaveChanged = false;
-      const existingSkillInSkillGroup: number[] = skills.filter(sk => sk.ctmSkillGroups.find(skg => skg.skillGroupId === skillGroupToEditDelete?.value))?.slice().map(sk => sk.ctmSkillId);
-      const selectedSkills: number[] = tableState.selected.slice().map((sk: Skill) => sk.ctmSkillId);
-
-      // check if the selected skills are different from the existing
-      const difference = _.xor(existingSkillInSkillGroup, selectedSkills);
-
-      if (difference.length > 0) {
-        skillsHaveChanged = true;
+    setConfirmationModalOpts({
+      open: true,
+      exportButton: false,
+      confirmationText: editConfirmationText,
+      callbackMethods: {
+        onConfirm: onConfirmEdit,
+        handleClose: handleCloseConfirmation
       }
-
-      if (skillsHaveChanged) {
-        requestBody.skillIds = selectedSkills;
-      }
-
-      const editConfirmationText = <>
-        <ConfirmationSkillGroupsDiv>
-        Are you sure you want to edit the skill group <strong>{skillGroupToEditDelete?.label ? skillGroupToEditDelete?.label : ""}</strong> ?
-          {requestBody.skillGroupName ? `The name of this skill grouping will become ${skillGroupName}` : ""}
-          {skillsHaveChanged && <>
-          This skill group will now contain the following skills:
-            <ConfirmationSkillList>
-              {tableState.selected.map((skill: Skill) => <li key={skill.name}>{skill.name}</li>)}
-            </ConfirmationSkillList>
-          </>}
-        </ConfirmationSkillGroupsDiv>
-      </>;
-
-      setConfirmationModalOpts({
-        open: true,
-        exportButton: false,
-        confirmationText: editConfirmationText,
-        callbackMethods: {
-          onConfirm: onConfirmEdit,
-          handleClose: handleCloseConfirmation
-        }
-      });
-
-    } catch (err) {
-      console.error("Failed to update skillGroup", err?.message ? err.message : err);
-      setSaveResult({
-        message: "Request Failed",
-        status: ModalOverlayStatuses.FAIL
-      });
-    }
+    });
   };
 
   const handleDeleteSkillGroup = () => {
@@ -265,10 +247,6 @@ const SkillGroupInputContainer = (props: any) => {
         setTimeout(() => {
           handleCloseConfirmation();
           setAction(null);
-          // setTableState({
-          //   ...tableState,
-          //   selected: []
-          // });
         }, timeouts.MODAL_OVERLAY);
       } catch (err) {
         console.error("Unable to delete skill grouping", err);
@@ -281,7 +259,7 @@ const SkillGroupInputContainer = (props: any) => {
 
     const deleteConfirmationText = <>
       <ConfirmationSkillGroupsDiv>
-      You are about to delete the skill group <strong>{skillGroupToEditDelete.label}</strong> Doing this will not affect any users,
+      You are about to delete the skill group <span style={{ textDecoration: "underline" }}>{skillGroupToEditDelete.label}</span> Doing this will not affect any users,
       it will only impact the skill group options available in the Default Skill Selector when onboarding or editing a Triton user.
       The following skills currently make up the selected skill group:
         <ConfirmationSkillList>
@@ -351,7 +329,7 @@ const SkillGroupInputContainer = (props: any) => {
           (action === ActionTypes.DELETE && !skillGroupToEditDelete)
         }
       >{action.label} Skill Group</UserFormButton>
-      <div>
+      <div style={{ marginTop: "5px" }}>
         {generateBottomMsg()}
       </div>
     </>

@@ -526,7 +526,7 @@ describe("<SkillGroupInputContainer />", () => {
           }));
           const userFormOnClick = UserFormButton.mock.calls[1][0].onClick;
           act(() => userFormOnClick());
-          expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(0);
+          expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(1);
 
           await waitFor(() => {
             expect(deleteSkillGroup).toHaveBeenCalledTimes(0);
