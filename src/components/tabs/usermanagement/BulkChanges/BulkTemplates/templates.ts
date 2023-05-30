@@ -31,7 +31,10 @@ import {
   FIELDS,
   isDidUser
 } from "../BulkTemplates";
-import { AppState } from "globals";
+import {
+  AppState,
+  Worker
+} from "globals";
 
 const rejectPromise = (error: string, rowNumber: number) => {
   return Promise.reject(JSON.stringify({
@@ -336,15 +339,18 @@ const processUpdateManager = async (row: any, template: Template, state: any) =>
 };
 
 const processUpdateDefaultSkills = async (row: any, template: Template, state: any) => {
-  // todo: expand
-  console.log("processing update skills hurr");
+  console.log("+++ processing update skills hurr");
   const rowNumber = row.rowNumber;
   const userNNumber = row.attributes.n_number;
   const workerSid = row.workerSid; // maybe unnecessary here, use this when calling updateUser
+  // todo: skills from form go here
 
-  // from userFormSkills.tsx
-  // const attributes: Partial<Worker["attributes"]> = {};
-  // attributes.default_skills = form.defaultSkills;
+  // from userFormButtons.tsx
+  const attributes: Partial<Worker["attributes"]> = {};
+  attributes.default_skills = {
+    levels: {},
+    skills: []
+  };
 
   const body = {};
 
@@ -488,11 +494,11 @@ export const getUpdateTemplates = (state: any): Templates => {
         FIELDS.N_NUMBER_UPDATE
       ]
     },
-    UPDATE_SKILLS: {
-      name: "UPDATE_SKILLS",
+    UPDATE_DEFAULT_SKILLS: {
+      name: "UPDATE_DEFAULT_SKILLS",
       data: {},
       processFunction: (row: any, template: Template) => processUpdateDefaultSkills(row, template, state),
-      stateUpdateFunctions: [updateTritonUserState, updateCalabrioUserState], // todo: decide which state function needs to be called here
+      stateUpdateFunctions: [updateTritonUserState], // todo: decide which state function needs to be called here
       multiRunDependencies: null,
       validationConcurrencyLimit: 500,
       processingConcurrencyLimit: 5,

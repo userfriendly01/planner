@@ -33,61 +33,83 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
 
   const form = useFormState();
 
-  const dropdownOptions = [
-    {
+  const dropdownOptions = {
+    ADD_SKILL: {
       label: "Add Skill",
       value: "Add Skill"
     },
-    {
+    DELETE_SKILL: {
       label: "Delete Skill",
       value: "Delete Skill"
     },
-    {
+    OVERRIDE_SKILL: {
       label: "Override Skill",
       value: "Override Skill"
     }
-  ];
+  };
 
-  const [ option, setOption ] = React.useState({
-    label: null,
-    value: null
+  const [ option, setOption ] = React.useState(dropdownOptions.ADD_SKILL);
+
+  // add keys to template so processing function can adjust payload body
+  React.useEffect(() => {
+    if (option === dropdownOptions.ADD_SKILL) {
+      updateTemplate(template, {
+        action: "ADD"
+      });
+    } else if (option === dropdownOptions.OVERRIDE_SKILL) {
+      replaceTemplate({
+        ...template,
+        data: {
+          action: "OVERRIDE"
+        }
+      });
+    } else {
+      removeTemplate({
+        ...template,
+        data: {
+          action: "DELETE"
+        }
+      });
+    }
   });
 
-  const formatOptionsDropdownEntry = (o: any) => {
-    if (o) {
-      return {
-        label: `${o.label}`,
-        value: `${o.value}`
-      };
-    } else {
-      return "";
-    }
-  };
+  // todo: delete?
+  // const formatOptionsDropdownEntry = (o: any) => {
+  //   if (o) {
+  //     return {
+  //       label: `${o.label}`,
+  //       value: `${o.value}`
+  //     };
+  //   } else {
+  //     return "";
+  //   }
+  // };
 
   return (
     <UpdateWrapper>
       <Dropdown
         label="Options"
         value={option}
-        options={dropdownOptions}
+        options={Object.values(dropdownOptions)}
         updateValue={(event: any, option: any) => {
           console.log("option: ", option);
-          console.log("option[0]: ", dropdownOptions[0]);
-          setOption(option.value);
-          console.log("option again: ", option.label);
-          console.log("compare ", option.label === dropdownOptions[0].label); // this is true......
+          // console.log("option[0]: ", dropdownOptions[0]);
+          setOption(option);
+          console.log("option label again: ", option.label);
+          console.log("FORRRM: ", form);
+          // console.log("compare ", option.label === dropdownOptions[0].label); // this is true......
         }}
         styles={{
-          margin: "40 0 30 0",
-          width: "300px"
+          margin: "40 40 30 0",
+          width: "175px"
         }}
       />
 
-      { option && option.label === dropdownOptions[0].label &&
+      {/* { option === dropdownOptions.ADD_SKILL &&
         <h1> option matches!! </h1>
-      }
+      } */}
 
-      { option && option.label === dropdownOptions[0].label &&
+      { option === dropdownOptions.ADD_SKILL &&
         <DefaultSkillSelector
           defaultSkills={form.defaultSkills}
           setDefaultSkills={(defaultSkills: any) => {

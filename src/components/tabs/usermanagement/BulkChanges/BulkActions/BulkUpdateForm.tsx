@@ -12,7 +12,7 @@ import { updateSelectedTemplates } from "../BulkUtils";
 import {
   BulkUpdateAttributes,
   BulkUpdateManager,
-  BulkUpdateSkills
+  BulkUpdateDefaultSkills
 } from "./";
 import { getUpdateTemplates } from "../BulkTemplates";
 import { Dropdown } from "components";
@@ -82,9 +82,9 @@ const BulkUpdateForm = (props: BulkActionFormProps) => {
           removeTemplate={removeTemplate}
         />
       }
-      { template && template.name === updateTemplates.UPDATE_SKILLS.name &&
-        <BulkUpdateSkills
-          template={updateTemplates.UPDATE_USERS_MANAGER}
+      { template && template.name === updateTemplates.UPDATE_DEFAULT_SKILLS.name &&
+        <BulkUpdateDefaultSkills
+          template={updateTemplates.UPDATE_DEFAULT_SKILLS}
           selectedTemplates={selectedTemplates}
           replaceTemplate={replaceTemplate}
           updateTemplate={updateTemplate}
