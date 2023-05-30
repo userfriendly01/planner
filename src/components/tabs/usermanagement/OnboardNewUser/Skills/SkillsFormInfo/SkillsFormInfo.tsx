@@ -4,7 +4,7 @@ import {
   useFormDispatch,
   userFormActions
 } from "context";
-import React from "react";
+import React, { useState } from "react";
 import {
   Accordion, AccordionSummary, AccordionDetails
 } from "@mui/material";
@@ -14,11 +14,13 @@ const SkillsFormInfo = () => {
 
   const form = useFormState();
   const setForm = useFormDispatch();
+  const [expanded, setExpanded] = useState(true);
 
   return(
-    <Accordion  sx={{
+    <Accordion expanded={expanded} onChange={()=>setExpanded(!expanded)} sx={{
       width: "384px",
-      margin: "8px 0px 5px 0px"
+      margin: "8px 0px 5px 0px",
+      overflow: "overlay"
     }}>
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
