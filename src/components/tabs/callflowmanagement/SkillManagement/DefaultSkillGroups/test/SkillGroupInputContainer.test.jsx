@@ -103,6 +103,19 @@ describe("<SkillGroupInputContainer />", () => {
       UserFormButton
     });
   });
+  describe("action is not ADD, EDIT, or DELETE", () => {
+    test("clicking button does nothing", () => {
+      renderComponent({ selected: []}, "boo");
+      expect(Dropdown.mock.calls.length).toBe(0);
+      expect(TextField.mock.calls.length).toBe(1);
+      expect(UserFormButton.mock.calls.length).toBe(1);
+      const onClick = UserFormButton.mock.calls[0][0].onClick;
+      act(() => onClick());
+      expect(addSkillGroup).toHaveBeenCalledTimes(0);
+      expect(deleteSkillGroup).toHaveBeenCalledTimes(0);
+      expect(updateSkillGroup).toHaveBeenCalledTimes(0);
+    });
+  });
   describe("action is ADD", () => {
     describe("initial render", () => {
       describe("selected length === 0", () => {
@@ -498,7 +511,35 @@ describe("<SkillGroupInputContainer />", () => {
     });
     describe("Skill group is selected for edit", () => {
       describe("skill group name is not changed, only the selected skills, user form button is clicked", () => {
-        test.only("modal is cancelled", () => {
+        test("error occurs when creating the request body, set save result occurs with failed message", async () => {
+          const tableState = {
+            selected: {}  //object will cause error
+          };
+          renderComponent(tableState, ActionTypes.EDIT);
+          expect(Dropdown).toHaveBeenCalled();
+          expect(TextField).toHaveBeenCalled();
+          expect(UserFormButton).toHaveBeenCalled();
+          const dropdownOnChange = Dropdown.mock.calls[0][0].updateValue;
+          act(() => dropdownOnChange({}, {
+            value: 1 ,
+            label: "skillgroup1"
+          }));
+          const userFormOnClick = UserFormButton.mock.calls[1][0].onClick;
+          act(() => userFormOnClick());
+          expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(0);
+
+          await waitFor(() => {
+            expect(deleteSkillGroup).toHaveBeenCalledTimes(0);
+            expect(addSkillGroup).toHaveBeenCalledTimes(0);
+            expect(updateSkillGroup).toHaveBeenCalledTimes(0);
+
+            expect(mockSetSaveResult).toHaveBeenCalledWith({
+              message: "Request Failed",
+              status: "fail"
+            });
+          });
+        });
+        test("modal is cancelled", () => {
           const tableState = {
             selected: [...skillsList]
           };
@@ -529,13 +570,88 @@ describe("<SkillGroupInputContainer />", () => {
           expect(addSkillGroup).toHaveBeenCalledTimes(0);
           expect(updateSkillGroup).toHaveBeenCalledTimes(0);
         });
-        test("confirmation modal is confirmed, editskillgroup succeeds", () => {});
-        test("confirmation modal is confirmed, editskillgroup fails", () => {});
-      });
-      describe("skill group name is changed, user form button is clicked", () => {
-        test("skill group name matches another existing skill group name, edit skill group is not called", () => {});
-        test("confirmation modal is confirmed, editskillgroup succeeds", () => {});
-        test("confirmation modal is confirmed, editskillgroup fails", () => {});
+        test("confirmation modal is confirmed, editskillgroup succeeds", async () => {
+          updateSkillGroup.mockResolvedValueOnce("yay");
+          const tableState = {
+            selected: [...skillsList]
+          };
+          renderComponent(tableState, ActionTypes.EDIT);
+          expect(Dropdown).toHaveBeenCalled();
+          expect(TextField).toHaveBeenCalled();
+          expect(UserFormButton).toHaveBeenCalled();
+          const dropdownOnChange = Dropdown.mock.calls[0][0].updateValue;
+          act(() => dropdownOnChange({}, {
+            value: 1 ,
+            label: "skillgroup1"
+          }));
+          const userFormOnClick = UserFormButton.mock.calls[1][0].onClick;
+          act(() => userFormOnClick());
+          expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(1);
+          const onConfirm = mockSetConfirmationModalOpts.mock.calls[0][0].callbackMethods.onConfirm;
+          act(() => onConfirm());
+
+          await waitFor(() => {
+            expect(deleteSkillGroup).toHaveBeenCalledTimes(0);
+            expect(addSkillGroup).toHaveBeenCalledTimes(0);
+            expect(updateSkillGroup).toHaveBeenCalledTimes(1);
+            expect(updateSkillGroup).toHaveBeenCalledWith(1, {
+              skillGroupName: "skillgroup1",
+              skillIds: [1, 2, 3, 4, 5]
+            });
+            expect(mockSetSaveResult).toHaveBeenCalledWith({
+              message: "Processing...",
+              status: "saving"
+            });
+            expect(mockSetSaveResult).toHaveBeenCalledWith({
+              message: "Request Successfully Processed",
+              status: "success"
+            });
+            expect(getSkills).toHaveBeenCalledTimes(1);
+            expect(mockSetConfirmationModalOpts).toHaveBeenLastCalledWith({
+              ...confirmationModalOpts,
+              open: false
+            });
+          });
+        });
+        test("confirmation modal is confirmed, editskillgroup fails", async () => {
+          updateSkillGroup.mockRejectedValueOnce("fail");
+          const tableState = {
+            selected: [...skillsList]
+          };
+          renderComponent(tableState, ActionTypes.EDIT);
+          expect(Dropdown).toHaveBeenCalled();
+          expect(TextField).toHaveBeenCalled();
+          expect(UserFormButton).toHaveBeenCalled();
+          const dropdownOnChange = Dropdown.mock.calls[0][0].updateValue;
+          act(() => dropdownOnChange({}, {
+            value: 1 ,
+            label: "skillgroup1"
+          }));
+          const userFormOnClick = UserFormButton.mock.calls[1][0].onClick;
+          act(() => userFormOnClick());
+          expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(1);
+          const onConfirm = mockSetConfirmationModalOpts.mock.calls[0][0].callbackMethods.onConfirm;
+          act(() => onConfirm());
+
+          await waitFor(() => {
+            expect(deleteSkillGroup).toHaveBeenCalledTimes(0);
+            expect(addSkillGroup).toHaveBeenCalledTimes(0);
+            expect(updateSkillGroup).toHaveBeenCalledTimes(1);
+            expect(updateSkillGroup).toHaveBeenCalledWith(1, {
+              skillIds: [1, 2, 3, 4, 5],
+              skillGroupName: "skillgroup1"
+            });
+            expect(mockSetSaveResult).toHaveBeenCalledWith({
+              message: "Processing...",
+              status: "saving"
+            });
+            expect(mockSetSaveResult).toHaveBeenCalledWith({
+              message: "Request Failed",
+              status: "fail"
+            });
+            expect(getSkills).toHaveBeenCalledTimes(0);
+          });
+        });
       });
     });
   });

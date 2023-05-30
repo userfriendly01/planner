@@ -185,10 +185,6 @@ const SkillGroupInputContainer = (props: any) => {
         setTimeout(() => {
           handleCloseConfirmation();
           setAction(null);
-          // setTableState({
-          //   ...tableState,
-          //   selected: []
-          // });
         }, timeouts.MODAL_OVERLAY);
       } catch (err) {
         console.error("Error while editing skill grouping", requestBody, err);
@@ -200,13 +196,7 @@ const SkillGroupInputContainer = (props: any) => {
     };
 
     try {
-      // TODO: Is this really necessary?
-      // the contact manager endpoint will just update with the same info if we just add the skillgroupname and skill ids to every body
-      console.warn("did i make it here????", skillGroupToEditDelete);
-      // determine if name changed. if so, add skillGroupName to requestbody
-      if (skillGroupName !== skillGroupToEditDelete?.label) {
-        requestBody.skillGroupName = skillGroupName.trim();
-      }
+      requestBody.skillGroupName = skillGroupName.trim();
 
       // determine if skills in the skill group changed
       let skillsHaveChanged = false;
@@ -247,9 +237,7 @@ const SkillGroupInputContainer = (props: any) => {
         }
       });
 
-      console.log("LOOK AT MEEEEE", requestBody);
     } catch (err) {
-      console.warn("in the catch!!!!", err);
       console.error("Failed to update skillGroup", err?.message ? err.message : err);
       setSaveResult({
         message: "Request Failed",
@@ -283,7 +271,7 @@ const SkillGroupInputContainer = (props: any) => {
           // });
         }, timeouts.MODAL_OVERLAY);
       } catch (err) {
-        console.error("Unable to add skill grouping", err);
+        console.error("Unable to delete skill grouping", err);
         setSaveResult({
           message: "Request Failed",
           status: ModalOverlayStatuses.FAIL
@@ -324,7 +312,7 @@ const SkillGroupInputContainer = (props: any) => {
 
   return (
     <>
-      {action !== ActionTypes.ADD && (
+      {(action === ActionTypes.EDIT || action === ActionTypes.DELETE) && (
         <Dropdown
           options={getSkillGroupOptions()}
           label={`Skill Group to ${action.label}`}  // todo: check this.. is action an obj?
