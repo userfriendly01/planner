@@ -67,5 +67,6 @@ jest.mock("services", () => ({
   getCallTagOptions: jest.fn(),
   getCallTags: jest.fn(),
   getOperatingUnits: jest.fn(),
+  getAccessGroup: jest.fn(),
   wfmActivateExternalLogon: jest.fn()
 }));

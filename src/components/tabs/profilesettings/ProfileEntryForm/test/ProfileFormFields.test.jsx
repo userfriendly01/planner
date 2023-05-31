@@ -9,6 +9,7 @@ import {
   profileEntryFormState
 } from "context";
 import {
+  ProfileAccessGroupField,
   OverflowSkillTextField,
   ProfileActivitiesSelectField,
   ProfileCallTagsSelectField,
@@ -26,10 +27,10 @@ import {
   initialTestState
 } from "testUtils";
 import React from "react";
-import { ToggleContainer } from "../ProfileEntryForm.Styles";
 
 jest.mock("components", () => ({
   __esModule: true,
+  ProfileAccessGroupField: jest.fn(),
   ProfileNameTextField: jest.fn(),
   ProfileActivitiesSelectField: jest.fn(),
   ProfileOperatingUnitField: jest.fn(),
@@ -57,6 +58,7 @@ describe("<ProfileFormFields />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     setupMockedComponents({
+      ProfileAccessGroupField,
       ProfileNameTextField,
       ProfileActivitiesSelectField,
       ProfileCallTagsSelectField,
@@ -82,13 +84,14 @@ describe("<ProfileFormFields />", () => {
     test("Should render the correct initial state", () => {
       const rendered = renderComponent();
       expectMockedComponent(rendered, { ProfileNameTextField });
-      expectMockedComponent(rendered, { FormControlLabel }, 12);
+      expectMockedComponent(rendered, { FormControlLabel }, 13);
       expect(rendered.container).toHaveTextContent(/^ProfileNameTextField/i);
       expectMockedComponent(rendered, { OverflowSkillTextField });
       expectMockedComponent(rendered, { ProfileActivitiesSelectField });
       expectMockedComponent(rendered, { ProfileOperatingUnitField });
       expectMockedComponent(rendered, { ProfileQueuesSelectField });
       expectMockedComponent(rendered, { ProfileCallTagsSelectField });
+      expectMockedComponent(rendered, { ProfileAccessGroupField });
       expectMockedComponent(rendered, { Tooltip }, 1);
     });
     test("Few switch are on by default, like auto answered", () => {
@@ -141,6 +144,27 @@ describe("<ProfileFormFields />", () => {
         setOperatingUnit();
       });
       expect(mockSetForm).toHaveBeenCalledTimes(1);
+    });
+    test("When access group toggle is on, ProfileAccessGroupField should be enabled", () => {
+      renderComponent();
+      render(FormControlLabel.mock.calls[12][0].control);   // 12th control is access group toggle
+      act(() => {
+        const onChange1 = Switch.mock.calls[0][0].onChange;
+        onChange1();
+        expect(mockSetForm).toHaveBeenCalledTimes(1);
+        // eslint-disable-next-line object-curly-spacing, object-curly-newline, object-property-newline
+        expect(mockSetForm).toHaveBeenCalledWith({"fieldKey": "accessGroup", "type": "UPDATE_ACCESS_GROUP"});
+      });
+    });
+    test("When access group drop down is changed, state change should be fired", () => {
+      renderComponent();
+      act(() => {
+        const setAccessGroupId = ProfileAccessGroupField.mock.calls[0][0].setAccessGroupId;
+        setAccessGroupId(123);
+        expect(mockSetForm).toHaveBeenCalledTimes(1);
+        // eslint-disable-next-line object-curly-spacing, object-curly-newline, object-property-newline
+        expect(mockSetForm).toHaveBeenCalledWith({"payload": 123, "type": "UPDATE_ACCESS_GROUP_ID"});
+      });
     });
   });
 });

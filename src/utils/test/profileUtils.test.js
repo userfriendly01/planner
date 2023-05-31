@@ -282,17 +282,17 @@ describe("profileUtils", () => {
           ctmSkillDisplayName: "Licensed Sales Center"
         }
       ],
-      accessGroup: {
-        value: "FoundEver",
-        updated: false,
-        valid: true
-      },
       operatingUnit: {
         ou_sid: "123",
         ou_name: "hello"
-      }
+      },
+      accessGroup: {
+        value: true,
+        updated: true
+      },
+      accessGroupId: 2,
+      accessGroupIdUpdated: true,
     };
-
     const expected = {
       activities: [1,7,12],
       acw_data_entry_i: true,
@@ -334,9 +334,10 @@ describe("profileUtils", () => {
           skill_nme: "Gold"
         }
       ],
-      access_group: "FoundEver",
-      voice_mail_transcription_i: false
-    }
+      access_group: true,
+      voice_mail_transcription_i: false,
+      access_group_id: 2
+    };
 
     test("should return a formatted call tag with one underscore", () => {
       expect(createProfilePayload(form)).toStrictEqual(expected);
@@ -444,14 +445,16 @@ describe("profileUtils", () => {
         }
       ],
       queuesUpdated: true,
-      accessGroup: {
-        value: "FoundEver",
-        updated: true
-      },
       operatingUnit: {
         ou_name: "hello",
         ou_sid: "123"
-      }
+      },
+      accessGroup: {
+        value: true,
+        updated: true
+      },
+      accessGroupId: 2,
+      accessGroupIdUpdated: true
     };
 
     const expected = {
@@ -494,10 +497,11 @@ describe("profileUtils", () => {
         }
       ],
       voice_mail_transcription_i: false,
-      access_group: "FoundEver",
+      access_group: true,
       operating_unit_sid: "123",
-      operating_unit_nme: "hello"
-    };
+      operating_unit_nme: "hello",
+      access_group_id: 2
+    }
 
     test("should return a formatted call tag with one underscore", () => {
       expect(createProfilePayload(form)).toStrictEqual(expected);

@@ -52,7 +52,10 @@ export const initialProfileEntryFormState = {
     updated: false,
     valid: false
   },
-  transferQueues: []
+  transferQueues: [],
+  accessGroup: {
+    value: false
+  }
 };
 
 export const validProfileEntryFormState = {

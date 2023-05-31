@@ -132,6 +132,7 @@ export const apiPaths = {
   GET_CALL_TAGS_OPTIONS: `${CONTACT_MANAGER_BASE_URI}/workertaskinfooptions`,
   GET_CALL_TAGS: `${CONTACT_MANAGER_BASE_URI}/workertaskinfo`,
   GET_ACTIVITIES: `${CONTACT_MANAGER_BASE_URI}/activities`,
+  GET_ACCESS_GROUP: `${CONTACT_MANAGER_BASE_URI}/accessgroup`,
   GET_JOKES: `${SERVICE_BASE_URI}/getJokes`,
   GET_SKILLS: `${SERVICE_BASE_URI}/consolidatedskills`,
   GET_OU: `${SERVICE_BASE_URI}/operatingunit`,

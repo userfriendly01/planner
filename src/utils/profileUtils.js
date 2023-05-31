@@ -120,7 +120,8 @@ export const createProfilePayload = form => {
     // Aggregate queues need to be set to a negative ID in order to not clash with single transfer queues / skills. In the payload we need to change that back to a positive integer
     aggregateQueues: form.transferQueues.filter(queue => queue.ctmSkillId < 0).map(queue => Math.abs(queue.ctmSkillId)),
     operating_unit_sid: form.operatingUnit.ou_sid,
-    operating_unit_nme: form.operatingUnit.ou_name
+    operating_unit_nme: form.operatingUnit.ou_name,
+    access_group_id: form.accessGroup.value ? form.accessGroupId : null
   };
 };
 
@@ -159,6 +160,7 @@ export const updateProfilePayload = form => {
       options_id: callTag.options_id
     };
   }) : null;
-
+  console.log(form.accessGroupIdUpdated,"****form.accessGroupId*****",form.accessGroupId);
+  form.accessGroupIdUpdated ? payload.access_group_id = form.accessGroupId : null;
   return payload;
 };

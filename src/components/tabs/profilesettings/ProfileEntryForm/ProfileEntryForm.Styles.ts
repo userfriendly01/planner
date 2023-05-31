@@ -133,6 +133,20 @@ export const ProfileDropdownRowItem = styled.div`
   }
 `;
 
+export const AccessGroupDropdownRowItem = styled.div`
+  &:nth-child(1) {
+    display: flex;
+    padding-right: 8px;
+    padding-top: 1.5px;
+    width: 90%;
+  }
+  &:nth-child(2) {
+    display: flex;
+    justify-content: center;
+    width: 10%;
+  }
+`;
+
 export const ProfileDropdownRowSeperator = styled.div`
   border-bottom: 1px solid ${props => props.theme.lineSeperatorColor};
   margin-top: 8px;
