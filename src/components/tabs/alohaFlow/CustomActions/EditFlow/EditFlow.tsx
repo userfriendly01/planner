@@ -1,3 +1,4 @@
+
 import React, {
   useState, useEffect
 } from "react";
@@ -44,7 +45,7 @@ import { AzureSPA } from "globals";
 interface EditFlowComponentProps {
     isOpen: boolean;
     selectedRow: CctSharedCallFlowDb;
-    openEditModal: (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallFlowDb, message?: string, deleteRow?: boolean) => void;
+    openEditModal: (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallFlowDb, message?: string, deleteRow?: boolean, isClonedFlowRule?: boolean) => void;
 }
 export const EditFlow = ({
   accessToken, matchedGroups, isOpen, selectedRow, openEditModal
@@ -164,6 +165,10 @@ export const EditFlow = ({
     }
   };
 
+  const handleClone = () =>{
+    openEditModal(false,false,selectedRowLocal,"",false,true);
+  };
+
   const handleOnDelete = async () => {
     const response = await deleteFlowRule(selectedRowLocal, accessToken, graphQLEndPoint);
     if (response) {
@@ -281,6 +286,16 @@ export const EditFlow = ({
             onClick={() => handleOnSave()}
           >
                         Save Rule
+          </Button>
+          <Button
+            variant="contained"
+            value="Clone"
+            color="primary"
+            sx={{ marginRight: 2 }}
+            aria-label="cloneFlowRuleButton"
+            onClick={() => handleClone()}
+          >
+                        Clone Rule
           </Button>
           <Button
             variant="contained"

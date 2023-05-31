@@ -194,6 +194,68 @@ describe("profileEntryFormReducer", () => {
     });
   });
 
+  describe("UPDATE_ACCESS_GROUP", () => {
+    test("should update access group toggle state, and access group id to null, if toggle is off", () => {
+      const expectedState = {
+        ...initialProfileEntryFormState,
+        accessGroup: {
+          value: false,
+          updated: true
+        },
+        accessGroupIdUpdated: true,
+        accessGroupId: null
+      };
+      const action = {
+        type: profileEntryFormActions.UPDATE_ACCESS_GROUP,
+        "fieldKey": "accessGroup"
+      };
+      const result = profileEntryFormReducer({
+        ...initialProfileEntryFormState,
+        accessGroup: {
+          value: true
+        },
+        accessGroupId: 234
+      }, action);
+      expect(result).toStrictEqual(expectedState);
+    });
+    test("should update access group toggle state, and keep access group id unchanged, if toggle is on", () => {
+      const expectedState = {
+        ...initialProfileEntryFormState,
+        accessGroup: {
+          value: true,
+          updated: true
+        },
+        accessGroupIdUpdated: true,
+        accessGroupId: 123
+      };
+      const action = {
+        type: profileEntryFormActions.UPDATE_ACCESS_GROUP,
+        "fieldKey": "accessGroup"
+      };
+      const result = profileEntryFormReducer({
+        ...initialProfileEntryFormState,
+        accessGroupId: 123
+      }, action);
+      expect(result).toStrictEqual(expectedState);
+    });
+  });
+
+  describe("UPDATE_ACCESS_GROUP_ID", () => {
+    test("should update access group id as per payload", () => {
+      const expectedState = {
+        ...initialProfileEntryFormState,
+        accessGroupId: 234,
+        accessGroupIdUpdated: true
+      };
+      const action = {
+        type: profileEntryFormActions.UPDATE_ACCESS_GROUP_ID,
+        "payload": 234
+      };
+      const result = profileEntryFormReducer(initialProfileEntryFormState, action);
+      expect(result).toStrictEqual(expectedState);
+    });
+  });
+
   describe("UPDATE_CALL_TAGS_LIST", () => {
     test("should set callTagsList to payload passed", () => {
       const expectedState = {
@@ -361,7 +423,8 @@ describe("profileEntryFormReducer", () => {
           }
         ],
         operating_unit_sid: "123",
-        operating_unit_nme: "hello"
+        operating_unit_nme: "hello",
+        access_group_id: "testing"
       };
 
       const expectedState = {
@@ -445,6 +508,253 @@ describe("profileEntryFormReducer", () => {
         operatingUnit: {
           ou_name: "hello",
           ou_sid: "123"
+        },
+        accessGroupId: "testing",
+        accessGroup: {
+          value: true
+        }
+      };
+      const action = {
+        type: profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE,
+        payload: {
+          formMode: formModes.UPDATE,
+          profile
+        }
+      };
+      const result = profileEntryFormReducer(initialProfileEntryFormState, action);
+      expect(result).toStrictEqual(expectedState);
+    });
+    test("should return accessGroup true, if access group id is present when editing pofile", () => {
+      const profile = {
+        profile_id: 0,
+        profile_nme: "Game of Phones",
+        recorded_i: {
+          type: "Buffer",
+          data: [0]
+        },
+        auto_answd_i: {
+          type: "Buffer",
+          data: [1]
+        },
+        pmt_prcsg_i: {
+          type: "Buffer",
+          data: [0]
+        },
+        otbnd_recorded_i: {
+          type: "Buffer",
+          data: [0]
+        },
+        acw_option_i: {
+          type: "Buffer",
+          data: [0]
+        },
+        manual_recorded_i: {
+          type: "Buffer",
+          data: [0]
+        },
+        acw_data_entry_i: {
+          type: "Buffer",
+          data: [0]
+        },
+        manual_record_inbound_i: {
+          type: "Buffer",
+          data: [0]
+        },
+        agent_assisted_pay_i: {
+          type: "Buffer",
+          data: [1]
+        },
+        overflow_skill: null,
+        policy_number_edit_i: {
+          type: "Buffer",
+          data: [0]
+        },
+        voice_mail_transcription_i: {
+          type: "Buffer",
+          data: [0]
+        },
+        click_to_dial_i: {
+          type: "Buffer",
+          data: [1]
+        },
+        activities: [{
+          profile_id: 0,
+          activity_id: 1,
+          activity_nme: "Offline",
+          availability: 0
+        }],
+        callTags: [{
+          profile_id: 15,
+          display_nme: "Negotiation Type",
+          wrkr_tsk_info_id: 3,
+          wrkr_tsk_info_nme: "negotiation_type",
+          options_id: 1,
+          options: [
+            "Info Exchange",
+            "Bargaining",
+            "Closing",
+            "N/A",
+            "Offer"
+          ]
+        }],
+        aggregateQueues: [
+          {
+            aggregate_queues_id: 0,
+            aggregate_queues_nme: "PGS - Gold Spanish",
+            aggregate_queues_type: "single",
+            owner_type: "profile",
+            profile_id: 0,
+            queues: [
+              {
+                skill_id: 106,
+                skill_nme: "PGS - Gold Spanish",
+                skill_num: "pgsGoldSpanish",
+                tsk_que_sid: "WQaae7385a70e4c4ef8d74f1f93ebd5c33"
+              }
+            ],
+            workerSid: null
+          },
+          {
+            aggregate_queues_id: 1,
+            aggregate_queues_nme: "Liscensed Sales Center",
+            aggregate_queues_type: "aggregate",
+            owner_type: "profile",
+            profile_id: 0,
+            queues: [
+              {
+                skill_id: 106,
+                skill_nme: "Sales Queue",
+                skill_num: "salesQueue",
+                tsk_que_sid: "WQaae7385a70e4c4ef8d74f1f93ebd5c43"
+              },
+              {
+                skill_id: 134,
+                skill_nme: "Another Sales Queue",
+                skill_num: "anotherSalesQueue",
+                tsk_que_sid: "WQaae7385a70e4c4ef8d74f1f93ebd5c53"
+              }
+            ],
+            workerSid: null
+          },
+          {
+            aggregate_queues_id: 2,
+            aggregate_queues_nme: "Safeco Underwriting",
+            aggregate_queues_type: "aggregate",
+            owner_type: "profile",
+            profile_id: 0,
+            queues: [
+              {
+                skill_id: 44,
+                skill_nme: "PGS - Gold English",
+                skill_num: "pgsGoldEnglish",
+                tsk_que_sid: "WQaae7385a70e4c4ef8d74f1f93ebd5c32"
+              },
+              {
+                skill_id: 49,
+                skill_nme: "PGS - Gold Spanish",
+                skill_num: "pgsGoldSpanish",
+                tsk_que_sid: "WQaae7385a70e4c4ef8d74f1f93ebd5c31"
+              },
+              {
+                skill_id: 170,
+                skill_nme: "PGS - Gold French",
+                skill_num: "pgsGoldFrench",
+                tsk_que_sid: "WQaae7385a70e4c4ef8d74f1f93ebd5c30"
+              }
+            ],
+            workerSid: null
+          }
+        ],
+        operating_unit_sid: "123",
+        operating_unit_nme: "hello",
+        access_group_id: null
+      };
+
+      const expectedState = {
+        ...initialProfileEntryFormState,
+        activitiesList: [{
+          activity_id: 1,
+          activity_nme: "Offline",
+          available_i: {
+            data: [
+              0
+            ],
+            type: "Buffer"
+          }
+        }],
+        callTagsList: [{
+          options_id: 1,
+          wrkr_tsk_info_nme: "Negotiation Type",
+          wrkr_tsk_info_id: 3
+        }],
+        callTagOptions: [],
+        formMode: formModes.UPDATE,
+        autoAnswered: {
+          value: true
+        },
+        inboundRecorded: {
+          value: false
+        },
+        outboundRecorded: {
+          value: false
+        },
+        acwOption: {
+          value: false
+        },
+        manualRecorded: {
+          value: false
+        },
+        acwDataEntry: {
+          value: false
+        },
+        manualRecordedInbound: {
+          value: false
+        },
+        agentAssistedPay: {
+          value: true
+        },
+        paymentProcessing: {
+          value: false
+        },
+        policyNumberEdit: {
+          value: false
+        },
+        voiceMailTranscription: {
+          value: false
+        },
+        clickToDial: {
+          value: true
+        },
+        overflowSkill: {
+          value: "",
+          valid: true
+        },
+        profileId: 0,
+        profileName: {
+          valid: true,
+          value: "Game of Phones"
+        },
+        transferQueues: [
+          {
+            ctmSkillId: 106,
+            ctmSkillDisplayName: "PGS - Gold Spanish"
+          },
+          {
+            ctmSkillId: -1,
+            ctmSkillDisplayName: "Liscensed Sales Center"
+          },
+          {
+            ctmSkillId: -2,
+            ctmSkillDisplayName: "Safeco Underwriting"
+          }
+        ],
+        operatingUnit: {
+          ou_name: "hello",
+          ou_sid: "123"
+        },
+        accessGroupId: null,
+        accessGroup: {
+          value: false
         }
       };
       const action = {

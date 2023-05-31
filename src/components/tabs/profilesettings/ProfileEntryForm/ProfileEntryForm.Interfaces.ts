@@ -52,6 +52,8 @@ export interface ProfileCallTagsSelectFieldProps {
 
 export interface ProfileEntryFormState {
   [index: string]: any,
+  accessGroup: FieldState,
+  accessGroupId: number | null,
   activitiesList: Activity[],
   acwDataEntry: FieldState,
   acwOption: FieldState,
@@ -82,4 +84,10 @@ export interface ToggleFormField {
 
 export interface ProfileOperatingUnitFieldProps {
   setOperatingUnit: (ou: OperatingUnit) => void
+}
+
+export interface ProfileAccessGroupFieldProps {
+  enableDropDown: boolean,
+  accessGroupId: number,
+  setAccessGroupId: (accessGroupId: number) => void
 }

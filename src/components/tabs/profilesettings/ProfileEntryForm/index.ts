@@ -7,3 +7,4 @@ export { default as ProfileFormFields } from "./ProfileFormFields";
 export { default as ProfileNameTextField } from "./ProfileNameTextField";
 export { default as ProfileOperatingUnitField } from "./ProfileOperatingUnitField";
 export { default as ProfileQueuesSelectField } from "./ProfileQueuesSelectField";
+export { default as ProfileAccessGroupField } from "./ProfileAccessGroupField";
