@@ -46,7 +46,7 @@ const WfmForm = (props: WfmFormProps) => {
   const form = useFormState();
   const setForm = useFormDispatch();
   const { missingFields } = props;
-  const isAdd = form.formMode === formModes.INSERT;
+  const isAdd = form.formMode === formModes.INSERT || form.calabrio_wfm.Id === null;
   const [ optionsByBusinessUnit, setOptionsByBusinessUnit ] = React.useState<any>({});
   
   const [ availabilityFields, setAvailabilityFields ] = React.useState({
@@ -332,7 +332,7 @@ const WfmForm = (props: WfmFormProps) => {
             options={daysOfTheWeekOptions}
             updateValue={(event: any, newValue: any) => setForm({
               type: userFormActions.SET_WFM_FIRST_DAY_OF_WEEK,
-              payload: newValue
+              payload: newValue.value
             })}
             value={form.calabrio_wfm.FirstDayOfWeek}
           />
@@ -578,7 +578,7 @@ const WfmForm = (props: WfmFormProps) => {
               width: "250px",
               margin: "0px 5px"
             }}
-            options={generateDropdownOptionArray([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55])}
+            options={generateDropdownOptionArray([1,2,3,4,5])}
             updateValue={(event: any, newValue: any) => setRotationFields({
               ...rotationFields,
               startWeek: newValue?.value
@@ -614,7 +614,13 @@ const WfmForm = (props: WfmFormProps) => {
           />
         </Row>
       </>
-      : <WFMLoadRetryModal handleClose={() => {}}/>}
+      : <WFMLoadRetryModal position={"inherit"} handleClose={() => setForm({
+        type: userFormActions.UPDATE_USER_FOUND,
+        payload: {
+          system: "calabrio_wfm",
+          isFound: false
+        }
+      })}/>}
       </LocalizationProvider>
     </Wrapper>
   )

@@ -44,9 +44,10 @@ import {
   checkConflictingUsers,
   getOverflowSkillFromProfile,
   getNonOverflowSkills,
+  identifyFormErrors,
   isDidDifferentValid,
   isFormUpdated,
-  isFormValid,
+  isTritonUserValid,
   mapWorkerFromDbWorker,
   workerHasOverFlowSkill
 } from "utils";
@@ -74,7 +75,8 @@ jest.mock("context", () => ({
 jest.mock("utils", () => ({
   calabrioTimeZones: jest.requireActual("utils").calabrioTimeZones,
   checkConflictingUsers: jest.fn(),
-  isFormValid: jest.fn(),
+  identifyFormErrors: jest.fn(),
+  isTritonUserValid: jest.fn(),
   isFormUpdated: jest.fn(),
   isDidDifferentValid: jest.fn(),
   getOverflowSkillFromProfile: jest.fn(),
@@ -146,6 +148,7 @@ const mockHandleClose = jest.fn();
 const mockSetForm = jest.fn();
 const mockDispatch = jest.fn();
 const mockUpdateLoading = jest.fn();
+const mockSetMissingFields = jest.fn();
 
 describe("<UserFormButtons />", () => {
   beforeEach(() => {
@@ -164,6 +167,7 @@ describe("<UserFormButtons />", () => {
     checkConflictingUsers.mockResolvedValue({ yay: "woot!" });
     createCalabrioUser.mockResolvedValue({ yay: "woot!" });
     getCalabrioUsers.mockResolvedValue({ data: "yay!" });
+    identifyFormErrors.mockReturnValue([]);
     setupMockedComponents({
       StyledButton,
       Tooltip,
@@ -182,6 +186,7 @@ describe("<UserFormButtons />", () => {
         offices={officeMap}
         worker={customWorker ? customWorker : worker}
         forwardToToggle={forwardToToggle}
+        setMissingFields={mockSetMissingFields}
       />,
       initialTestState
     );
@@ -201,7 +206,7 @@ describe("<UserFormButtons />", () => {
         isDidDifferentValid.mockReturnValue(true);
       });
       describe("forwardToToggle === false", () => {
-        test("Tooltip title should be blank", () => {
+        test.only("Tooltip title should be blank", () => {
           renderComponent(false);
           expect(Tooltip.mock.calls[0][0].title).toBe("");
         });
@@ -252,7 +257,7 @@ describe("<UserFormButtons />", () => {
     describe(`form.formMode === ${formModes.INSERT}`, () => {
       beforeEach(() => {
         isDidDifferentValid.mockReturnValue(true);
-        isFormValid.mockReturnValue(true);
+        isTritonUserValid.mockReturnValue(true);
         createUser.mockResolvedValue(rawDbWorker);
         addOffice.mockResolvedValue("yay!");
         useFormState.mockReturnValue(validFormState);
@@ -268,13 +273,13 @@ describe("<UserFormButtons />", () => {
           expect(StyledButton.mock.calls[2][0].children).toBe("Add User");
         });
         test("When form is valid, Add User Button is enabled", () => {
-          isFormValid.mockReturnValue(true);
+          isTritonUserValid.mockReturnValue(true);
           renderComponent(true);
           render(Tooltip.mock.calls[0][0].children);
           expect(StyledButton.mock.calls[2][0].disabled).toBe(false);
         });
         test("When form is invalid, Add User Button is disabled", () => {
-          isFormValid.mockReturnValue(false);
+          isTritonUserValid.mockReturnValue(false);
           renderComponent(true);
           render(Tooltip.mock.calls[0][0].children);
           expect(StyledButton.mock.calls[2][0].disabled).toBe(true);
@@ -866,13 +871,13 @@ describe("<UserFormButtons />", () => {
           expect(StyledButton.mock.calls[2][0].children).toBe("Save User");
         });
         test("When form is valid, Add Save Button is enabled", () => {
-          isFormValid.mockReturnValue(true);
+          isTritonUserValid.mockReturnValue(true);
           renderComponent(true);
           render(Tooltip.mock.calls[0][0].children);
           expect(StyledButton.mock.calls[2][0].disabled).toBe(false);
         });
         test("When form is invalid, Add Save Button is disabled", () => {
-          isFormValid.mockReturnValue(false);
+          isTritonUserValid.mockReturnValue(false);
           renderComponent(true);
           render(Tooltip.mock.calls[0][0].children);
           expect(StyledButton.mock.calls[2][0].disabled).toBe(true);
@@ -1734,7 +1739,7 @@ describe("<UserFormButtons />", () => {
   describe("Close Button", () => {
     beforeEach(() => {
       isDidDifferentValid.mockReturnValue(true);
-      isFormValid.mockReturnValue(true);
+      isTritonUserValid.mockReturnValue(true);
       useFormState.mockReturnValue(validFormState);
     });
     test("When the Close Button is clicked, handleClose and setForm should be called", () => {

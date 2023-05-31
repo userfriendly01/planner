@@ -85,10 +85,17 @@ export const reducer = (state: AppState, action: Action): AppState => {
           workers: action.payload
         }
       };
+    case "updateWfmOrg":
+      return {
+        ...state,
+        calabrioContext: {
+          ...state.calabrioContext,
+          wfmOrg: action.payload
+        }
+      };
     case "loadWfmOrg": {
       const org = action.payload.org;
       const errors = action.payload.errors;
-
       return {
         ...state,
         calabrioContext: {

@@ -48,6 +48,7 @@ const twilioWorker = {
 describe("CallRecordingForm", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.resetAllMocks();
     useAdminState.mockReturnValue(initialTestState);
     useFormDispatch.mockReturnValue(mockSetForm);
     setupMockedComponents({
@@ -115,7 +116,7 @@ describe("CallRecordingForm", () => {
           useFormState.mockReturnValue(form);
         });
         test("setScopeOnNewUser is called", () => {
-          render(<CallRecordingForm twilioWorker={twilioWorker} />);
+          render(<CallRecordingForm twilioWorker={twilioWorker} missingFields={[]} />);
           expect(mockSetForm).toBeCalledTimes(1);
           expect(mockSetForm).toBeCalledWith({
             type: "SET_CALABRIO_QM_USER",
@@ -141,7 +142,7 @@ describe("CallRecordingForm", () => {
           useFormState.mockReturnValue(form);
         });
         test("setScopeOnNewUser is called", () => {
-          render(<CallRecordingForm twilioWorker={twilioWorker} />);
+          render(<CallRecordingForm twilioWorker={twilioWorker} missingFields={[]}/>);
           expect(mockSetForm).toBeCalledTimes(1);
           expect(mockSetForm).toBeCalledWith({
             type: "SET_CALABRIO_QM_USER",
@@ -164,10 +165,10 @@ describe("CallRecordingForm", () => {
           useFormState.mockReturnValue(form);
         });
         test("Form is rendered as expected", () => {
-          render(<CallRecordingForm twilioWorker={twilioWorker} />);
+          render(<CallRecordingForm twilioWorker={twilioWorker} missingFields={[]}/>);
           expect(Dropdown.mock.calls.length).toBe(3);
           expectOnlyPassedProps(Dropdown, {
-            label: "Roles",
+            label: "Roles *",
             multiple: true,
             options: calabrioContext.roles.map(role => {
               return {
@@ -179,7 +180,7 @@ describe("CallRecordingForm", () => {
             value: []
           }, 0);
           expectOnlyPassedProps(Dropdown, {
-            label: "Team",
+            label: "Team *",
             options: calabrioContext.teams.map(team => {
               return {
                 ...team,
@@ -264,10 +265,10 @@ describe("CallRecordingForm", () => {
           useFormState.mockReturnValue(form);
         });
         test("Form is rendered as expected", () => {
-          render(<CallRecordingForm twilioWorker={twilioWorker} />);
+          render(<CallRecordingForm twilioWorker={twilioWorker} missingFields={[]}/>);
           expect(Dropdown.mock.calls.length).toBe(3);
           expectOnlyPassedProps(Dropdown, {
-            label: "Roles",
+            label: "Roles *",
             multiple: true,
             options: calabrioContext.roles.map(role => {
               return {
@@ -279,7 +280,7 @@ describe("CallRecordingForm", () => {
             value: []
           }, 0);
           expectOnlyPassedProps(Dropdown, {
-            label: "Team",
+            label: "Team *",
             options: calabrioContext.teams.map(team => {
               return {
                 ...team,
@@ -314,7 +315,7 @@ describe("CallRecordingForm", () => {
         }
       };
       beforeEach(() => {
-        useFormState.mockReturnValue(form);
+        useFormState.mockReturnValue({...form});
       });
       describe("Selected Profile in the form is 18 (Workers Comp)", () => {
         const workersCompForm = {
@@ -336,7 +337,7 @@ describe("CallRecordingForm", () => {
         };
         test("New User, No Screen is auto selected", () => {
           useFormState.mockReturnValue(workersCompForm);
-          render(<CallRecordingForm twilioWorker={twilioWorker} />);
+          render(<CallRecordingForm twilioWorker={twilioWorker} missingFields={[]}/>);
           expect(Dropdown.mock.calls[0][0].options).toEqual([{
             id: 1,
             label: "Supervisor",
@@ -372,7 +373,7 @@ describe("CallRecordingForm", () => {
             label: "boo"
           });
           useFormState.mockReturnValue(workersCompForm);
-          render(<CallRecordingForm twilioWorker={twilioWorker} />);
+          render(<CallRecordingForm twilioWorker={twilioWorker} missingFields={[]}/>);
           expect(Dropdown.mock.calls[0][0].options).toEqual([{
             id: 1,
             label: "Supervisor",
@@ -402,9 +403,29 @@ describe("CallRecordingForm", () => {
           });
         });
       });
+      describe("QM Roles is on missingFields array", () => {
+        const form = {
+          ...initialFormState,
+          calabrio_qm: {
+            team: null,
+            scope: {
+              teams: [],
+              groups: []
+            }
+          }
+        };
+        beforeEach(() => {
+          useFormState.mockReturnValue({...form});
+        });
+        test("error should be true", () => {
+          render(<CallRecordingForm twilioWorker={twilioWorker}  missingFields={["QM Roles"]}/>);
+          expect(Dropdown.mock.calls.length).toBe(3);
+          expect(Dropdown.mock.calls[0][0].error).toBe(true);
+        });
+      });
       describe("updateValue is called", () => {
         test("setForm is called with the appropriate params", () => {
-          render(<CallRecordingForm twilioWorker={twilioWorker} />);
+          render(<CallRecordingForm twilioWorker={twilioWorker}  missingFields={[]}/>);
           expect(Dropdown.mock.calls.length).toBe(3);
           const updateRole = Dropdown.mock.calls[0][0].updateValue;
           act(() => {
@@ -435,11 +456,18 @@ describe("CallRecordingForm", () => {
       });
       describe("manager's'calabrio teams is not null", () => {
         test("The dropdown should show only the manager's teams' parent groups' children", () => {
-          render(<CallRecordingForm twilioWorker={twilioWorker} />);
-          expect(Dropdown.mock.calls[1][0].label).toBe("Team");
+          render(<CallRecordingForm twilioWorker={twilioWorker} missingFields={[]}/>);
+          expect(Dropdown.mock.calls[1][0].label).toBe("Team *");
           expect(Dropdown.mock.calls[1][0].options.length).toBe(2);
           expect(Dropdown.mock.calls[1][0].options[0].label).toBe("Hawaii Team 50");
           expect(Dropdown.mock.calls[1][0].options[1].label).toBe("Hawaii Specialty Team");
+        });
+      });
+      describe("QM Team is on missingFields array", () => {
+        test("error should be true", () => {
+          render(<CallRecordingForm twilioWorker={twilioWorker}  missingFields={["QM Team"]}/>);
+          expect(Dropdown.mock.calls.length).toBe(3);
+          expect(Dropdown.mock.calls[1][0].error).toBe(true);
         });
       });
       describe("updateValue is called", () => {
@@ -447,9 +475,9 @@ describe("CallRecordingForm", () => {
           useFormState.mockReturnValue(initialFormState);
         });
         test("setForm is called with the appropriate params", () => {
-          render(<CallRecordingForm twilioWorker={twilioWorker} />);
+          render(<CallRecordingForm twilioWorker={twilioWorker} missingFields={[]}/>);
           expect(Dropdown.mock.calls.length).toBe(3);
-          expect(Dropdown.mock.calls[1][0].label).toBe("Team");
+          expect(Dropdown.mock.calls[1][0].label).toBe("Team *");
           expect(Dropdown.mock.calls[1][0].options.length).toBe(3);
 
           const updateTeam = Dropdown.mock.calls[1][0].updateValue;
@@ -463,41 +491,41 @@ describe("CallRecordingForm", () => {
           });
         });
       });
-      describe("Timezone Dropdown", () => {
-        const form = {
-          ...initialFormState,
-          calabrio_qm: {
-            ...initialFormState.calabrio_qm,
-            scope: {
-              ...initialFormState.calabrio_qm.scope,
-              teams: [{
-                name: "Team 1",
-                id: 2
-              }],
-              groups: [{
-                name: "Group 1",
-                id: 2
-              }]
-            }
+    });
+    describe("Timezone Dropdown", () => {
+      const form = {
+        ...initialFormState,
+        calabrio_qm: {
+          ...initialFormState.calabrio_qm,
+          scope: {
+            ...initialFormState.calabrio_qm.scope,
+            teams: [{
+              name: "Team 1",
+              id: 2
+            }],
+            groups: [{
+              name: "Group 1",
+              id: 2
+            }]
           }
-        };
-        beforeEach(() => {
-          useFormState.mockReturnValue(form);
-        });
-        describe("updateValue is called", () => {
-          test("setForm is called with the appropriate params", () => {
-            render(<CallRecordingForm twilioWorker={twilioWorker} />);
-            expect(Dropdown.mock.calls.length).toBe(3);
-            expect(Dropdown.mock.calls[2][0].options).toBe(calabrioTimeZones);
-            const updateTimeZone = Dropdown.mock.calls[2][0].updateValue;
-            act(() => {
-              updateTimeZone(null, calabrioTimeZones[1]);
-            });
-            expect(mockSetForm).toHaveBeenCalledTimes(1);
-            expect(mockSetForm).toHaveBeenCalledWith({
-              type: "SET_CALABRIO_TIMEZONE",
-              payload: calabrioTimeZones[1]
-            });
+        }
+      };
+      beforeEach(() => {
+        useFormState.mockReturnValue(form);
+      });
+      describe("updateValue is called", () => {
+        test("setForm is called with the appropriate params", () => {
+          render(<CallRecordingForm twilioWorker={twilioWorker} missingFields={[]}/>);
+          expect(Dropdown.mock.calls.length).toBe(3);
+          expect(Dropdown.mock.calls[2][0].options).toBe(calabrioTimeZones);
+          const updateTimeZone = Dropdown.mock.calls[2][0].updateValue;
+          act(() => {
+            updateTimeZone(null, calabrioTimeZones[1]);
+          });
+          expect(mockSetForm).toHaveBeenCalledTimes(1);
+          expect(mockSetForm).toHaveBeenCalledWith({
+            type: "SET_CALABRIO_TIMEZONE",
+            payload: calabrioTimeZones[1]
           });
         });
       });
@@ -537,7 +565,7 @@ describe("CallRecordingForm", () => {
         useFormState.mockReturnValue(formState);
       });
       test("Form is rendered as expected", async () => {
-        render(<CallRecordingForm twilioWorker={twilioWorker} />);
+        render(<CallRecordingForm twilioWorker={twilioWorker} missingFields={[]}/>);
         expect(Dropdown.mock.calls.length).toBe(3);
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(1);
@@ -621,11 +649,11 @@ describe("CallRecordingForm", () => {
         useFormState.mockReturnValue(formState);
       });
       test("should use the form.nNumber.value", () => {
-        render(<CallRecordingForm twilioWorker={null} />);
+        render(<CallRecordingForm twilioWorker={null} missingFields={[]}/>);
         expect(Dropdown.mock.calls.length).toBe(3);
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(0);
-        expect(mockSetForm).toHaveBeenCalledTimes(1);
+        expect(mockSetForm).toHaveBeenCalledTimes(3);
         expect(console.warn).toHaveBeenCalledWith("No matching profile was found in Calabrio for this user");
       });
     });
@@ -658,7 +686,7 @@ describe("CallRecordingForm", () => {
         useFormState.mockReturnValue(formState);
       });
       test("Form is rendered as expected", async () => {
-        render(<CallRecordingForm twilioWorker={{ sid: "WK0000"}} />);
+        render(<CallRecordingForm twilioWorker={{ sid: "WK0000"}} missingFields={[]}/>);
         expect(Dropdown.mock.calls.length).toBe(3);
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(0);
@@ -706,7 +734,7 @@ describe("CallRecordingForm", () => {
         useFormState.mockReturnValue(noRolesFormState);
       });
       test("Form is rendered as expected", async () => {
-        render(<CallRecordingForm twilioWorker={tritonWorker} />);
+        render(<CallRecordingForm twilioWorker={tritonWorker} missingFields={[]}/>);
         expect(Dropdown.mock.calls.length).toBe(3);
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(1);
@@ -827,7 +855,7 @@ describe("CallRecordingForm", () => {
       test("Form is rendered as expected", async () => {
         render(<CallRecordingForm twilioWorker={{
           sid: "WK5678"
-        }} />);
+        }} missingFields={[]}/>);
         expect(Dropdown.mock.calls.length).toBe(3);
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(1);
@@ -937,7 +965,7 @@ describe("CallRecordingForm", () => {
       test("Form is rendered as expected", async () => {
         render(<CallRecordingForm twilioWorker={{
           sid: "WK1234"
-        }} />);
+        }} missingFields={[]}/>);
         expect(Dropdown.mock.calls.length).toBe(3);
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(1);
@@ -1041,7 +1069,7 @@ describe("CallRecordingForm", () => {
         useFormState.mockReturnValue(formState);
       });
       test("Form is rendered as expected", async () => {
-        render(<CallRecordingForm twilioWorker={twilioWorker} />);
+        render(<CallRecordingForm twilioWorker={twilioWorker} missingFields={[]}/>);
         expect(Dropdown.mock.calls.length).toBe(3);
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(1);

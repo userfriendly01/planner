@@ -331,8 +331,48 @@ describe("reducer", () => {
       expect(result.calabrioContext.roles).toEqual(payload);
     });
   });
+  describe("loadWorkers", () => {
+    test("should update wfmOrg only", () => {
+      const payload = [
+        {
+          id: 1,
+          name: "Administrator"
+        },
+        {
+          id: 2,
+          name: "Agent"
+        }
+      ];
+      const action = {
+        type: "loadWorkers",
+        payload
+      };
+      const result = reducer(initialState, action);
+      expect(result.workerContext.workers).toEqual(payload);
+    });
+  });
+  describe("updateWfmOrg", () => {
+    test("should update wfmOrg only", () => {
+      const payload = [
+        {
+          id: 1,
+          name: "Administrator"
+        },
+        {
+          id: 2,
+          name: "Agent"
+        }
+      ];
+      const action = {
+        type: "updateWfmOrg",
+        payload
+      };
+      const result = reducer(initialState, action);
+      expect(result.calabrioContext.wfmOrg).toEqual(payload);
+    });
+  });
   describe("loadWfmOrg", () => {
-    test("should initialize a map from the offices map sent in", () => {
+    test("should format wfmOrg and save to state", () => {
       const payload = {
         org: [
         {
@@ -365,7 +405,6 @@ describe("reducer", () => {
         }
       ]);
       expect(result.calabrioContext.wfmErrors).toEqual(payload.errors);
-
     });
   });
   describe("loadWfmOptions", () => {

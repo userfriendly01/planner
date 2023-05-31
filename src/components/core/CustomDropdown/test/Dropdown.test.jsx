@@ -64,19 +64,20 @@ describe("CustomDropdown", () => {
     });
   });
   describe("initial render", () => {
-    const renderComponent = value => render(<Dropdown
+    const renderComponent = (value, disableClear) => render(<Dropdown
       options={options}
       label={label}
       updateValue={mockUpdateValue}
       value={value}
       onBlur={mockOnBlur}
+      disableClear={disableClear}
     />);
 
     describe("value is an object", () => {
       describe("value.value is a valid option", () => {
         test("Dropdown should render with expected props", () => {
           const value = options[0];
-          renderComponent(value);
+          renderComponent(value, true);
           const renderInput = Autocomplete.mock.calls[0][0].renderInput;
           const handleCheckEqual = Autocomplete.mock.calls[0][0].isOptionEqualToValue;
           const input = renderInput();
@@ -111,7 +112,7 @@ describe("CustomDropdown", () => {
       describe("value.value === '' ", () => {
         test("Dropdown should render with expected props", () => {
           const value = { value: "" };
-          renderComponent(value);
+          renderComponent(value, true);
           const renderInput = Autocomplete.mock.calls[0][0].renderInput;
           const handleCheckEqual = Autocomplete.mock.calls[0][0].isOptionEqualToValue;
           const input = renderInput();
@@ -161,7 +162,7 @@ describe("CustomDropdown", () => {
           expectOnlyPassedProps(Autocomplete, {
             multiple: undefined,
             size: "medium",
-            disableClearable: true,
+            disableClearable: undefined,
             disableCloseOnSelect: undefined,
             limitTags: 1,
             options,
@@ -183,7 +184,7 @@ describe("CustomDropdown", () => {
       describe("value is a valid option", () => {
         test("Dropdown should render with expected props", () => {
           const value = 1;
-          renderComponent(value);
+          renderComponent(value, true);
           const renderInput = Autocomplete.mock.calls[0][0].renderInput;
           const handleCheckEqual = Autocomplete.mock.calls[0][0].isOptionEqualToValue;
           const input = renderInput();
@@ -218,7 +219,7 @@ describe("CustomDropdown", () => {
       describe("value === '' ", () => {
         test("Dropdown should render with expected props", () => {
           const value = "";
-          renderComponent(value);
+          renderComponent(value, true);
           const renderInput = Autocomplete.mock.calls[0][0].renderInput;
           const handleCheckEqual = Autocomplete.mock.calls[0][0].isOptionEqualToValue;
           const input = renderInput();
@@ -253,7 +254,7 @@ describe("CustomDropdown", () => {
       describe("value is not a valid option", () => {
         test("Dropdown should render with expected props", () => {
           const value = "4";
-          renderComponent(value);
+          renderComponent(value, true);
           const renderInput = Autocomplete.mock.calls[0][0].renderInput;
           const handleCheckEqual = Autocomplete.mock.calls[0][0].isOptionEqualToValue;
           const input = renderInput();
@@ -307,7 +308,7 @@ describe("CustomDropdown", () => {
       expectOnlyPassedProps(Autocomplete, {
         multiple: true,
         size: "medium",
-        disableClearable: false,
+        disableClearable: undefined,
         disableCloseOnSelect: true,
         limitTags: 1,
         options,
@@ -336,7 +337,7 @@ describe("CustomDropdown", () => {
       />);
       const renderInput = Autocomplete.mock.calls[0][0].renderInput;
       const input = renderInput();
-      render(input);
+      render(input, true);
       expectOnlyPassedProps(TextField, {
         error: true,
         label
@@ -344,7 +345,7 @@ describe("CustomDropdown", () => {
       expectOnlyPassedProps(Autocomplete, {
         multiple: undefined,
         size: "medium",
-        disableClearable: true,
+        disableClearable: undefined,
         disableCloseOnSelect: undefined,
         limitTags: 1,
         options,
@@ -381,7 +382,7 @@ describe("CustomDropdown", () => {
       />);
       const renderInput = Autocomplete.mock.calls[0][0].renderInput;
       const input = renderInput();
-      render(input);
+      render(input, true);
       expectOnlyPassedProps(TextField, {
         error: undefined,
         label
@@ -389,7 +390,7 @@ describe("CustomDropdown", () => {
       expectOnlyPassedProps(Autocomplete, {
         multiple: undefined,
         size: "small",
-        disableClearable: true,
+        disableClearable: undefined,
         disableCloseOnSelect: undefined,
         limitTags: 1,
         options,

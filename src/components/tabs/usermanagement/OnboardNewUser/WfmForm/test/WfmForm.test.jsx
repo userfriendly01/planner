@@ -117,6 +117,28 @@ describe("<WfmForm />", () => {
         expect(DatePicker).not.toHaveBeenCalled();
         expect(TextField).not.toHaveBeenCalled();
       });
+      test("handleClose is called", () => {
+        const stateWithoutWfm = {
+          ...initialTestState,
+          calabrioContext: {
+            ...initialTestState.calabrioContext,
+            wfmOptions: [],
+            wfmOrg: []
+          }
+        };
+        useAdminState.mockReturnValue(stateWithoutWfm);
+        renderComponent();
+        expect(WFMLoadRetryModal).toHaveBeenCalled();
+        const handleClose = WFMLoadRetryModal.mock.calls[1][0].handleClose;
+        act(() => handleClose());
+        expect(mockSetForm).toHaveBeenCalledWith({
+          type: "UPDATE_USER_FOUND",
+          payload: {
+            system: "calabrio_wfm",
+            isFound: false
+          }
+        });
+      });
     });
     describe("wfmoptions and wfmOrg are loaded", () => {
       test("should render as expected", () => {
@@ -187,10 +209,14 @@ describe("<WfmForm />", () => {
         const buDropdown = buDropdowns[buDropdowns.length-1][0];
         expect(buDropdown.disabled).toBe(false);
       });
-      test("is disabled when formmode is not insert", () => {
+      test("is disabled when formmode is not insert && Id is populated", () => {
         const formState = {
           ...initialFormState,
-          formMode: "update"
+          formMode: "update",
+          calabrio_wfm: {
+            ...initialFormState.calabrio_wfm,
+            Id: "I Exist Already"
+          }
         };
         useFormState.mockReturnValue(formState);
         renderComponent();
@@ -271,10 +297,14 @@ describe("<WfmForm />", () => {
           const teamDropdown = teamDropdowns[teamDropdowns.length-1][0];
           expect(teamDropdown.disabled).toBe(false);
         });
-        test("is disabled when formmode is not insert", () => {
+        test("is disabled when formmode is not insert && Id is populated", () => {
           const formState = {
             ...initialFormState,
-            formMode: "update"
+            formMode: "update",
+            calabrio_wfm: {
+              ...initialFormState.calabrio_wfm,
+              Id: "I Exist Already"
+            }
           };
           useFormState.mockReturnValue(formState);
           renderComponent();
@@ -316,10 +346,14 @@ describe("<WfmForm />", () => {
           const teamDatePicker = teamDatePickers[teamDatePickers.length-1][0];
           expect(teamDatePicker.disabled).toBe(false);
         });
-        test("is disabled when formmode is not insert", () => {
+        test("is disabled when formmode is not insert && Id is populated", () => {
           const formState = {
             ...initialFormState,
-            formMode: "update"
+            formMode: "update",
+            calabrio_wfm: {
+              ...initialFormState.calabrio_wfm,
+              Id: "I Exist Already"
+            }
           };
           useFormState.mockReturnValue(formState);
           renderComponent();
@@ -474,10 +508,14 @@ describe("<WfmForm />", () => {
         const identityField = identityFields[identityFields.length-1][0];
         expect(identityField.disabled).toBe(false);
       });
-      test("is disabled when formmode is not insert", () => {
+      test("is disabled when formmode is not insert && Id is populated", () => {
         const formState = {
           ...initialFormState,
-          formMode: "update"
+          formMode: "update",
+          calabrio_wfm: {
+            ...initialFormState.calabrio_wfm,
+            Id: "I Exist Already"
+          }
         };
         useFormState.mockReturnValue(formState);
         renderComponent();
@@ -579,10 +617,14 @@ describe("<WfmForm />", () => {
         const firstDayDropdown = firstDayDropdowns[firstDayDropdowns.length-1][0];
         expect(firstDayDropdown.disabled).toBe(false);
       });
-      test("is disabled when formmode is not insert", () => {
+      test("is disabled when formmode is not insert && Id is populated", () => {
         const formState = {
           ...initialFormState,
-          formMode: "update"
+          formMode: "update",
+          calabrio_wfm: {
+            ...initialFormState.calabrio_wfm,
+            Id: "I Exist Already"
+          }
         };
         useFormState.mockReturnValue(formState);
         renderComponent();
@@ -602,7 +644,7 @@ describe("<WfmForm />", () => {
       const firstDayDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "First Day of the Week *");
       const firstDayDropdown = firstDayDropdowns[firstDayDropdowns.length-1][0];
       const updateValue = firstDayDropdown.updateValue;
-      act(() => updateValue({}, 1));
+      act(() => updateValue({}, { value: 1 }));
       expect(mockSetForm).toHaveBeenLastCalledWith({
         type: userFormActions.SET_WFM_FIRST_DAY_OF_WEEK,
         payload: 1
@@ -617,10 +659,14 @@ describe("<WfmForm />", () => {
         const rolesDropdown = rolesDropdowns[rolesDropdowns.length-1][0];
         expect(rolesDropdown.disabled).toBe(false);
       });
-      test("is disabled when formmode is not insert", () => {
+      test("is disabled when formmode is not insert && Id is populated", () => {
         const formState = {
           ...initialFormState,
-          formMode: "update"
+          formMode: "update",
+          calabrio_wfm: {
+            ...initialFormState.calabrio_wfm,
+            Id: "I Exist Already"
+          }
         };
         useFormState.mockReturnValue(formState);
         renderComponent();
@@ -672,10 +718,14 @@ describe("<WfmForm />", () => {
           const skillsDropdown = skillsDropdowns[skillsDropdowns.length-1][0];
           expect(skillsDropdown.disabled).toBe(false);
         });
-        test("is disabled when formmode is not insert", () => {
+        test("is disabled when formmode is not insert && Id is populated", () => {
           const formState = {
             ...initialFormState,
-            formMode: "update"
+            formMode: "update",
+            calabrio_wfm: {
+              ...initialFormState.calabrio_wfm,
+              Id: "I Exist Already"
+            }
           };
           useFormState.mockReturnValue(formState);
           renderComponent();
@@ -733,10 +783,14 @@ describe("<WfmForm />", () => {
           const skillDatePicker = skillDatePickers[skillDatePickers.length-1][0];
           expect(skillDatePicker.disabled).toBe(false);
         });
-        test("is disabled when formmode is not insert", () => {
+        test("is disabled when formmode is not insert && Id is populated", () => {
           const formState = {
             ...initialFormState,
-            formMode: "update"
+            formMode: "update",
+            calabrio_wfm: {
+              ...initialFormState.calabrio_wfm,
+              Id: "I Exist Already"
+            }
           };
           useFormState.mockReturnValue(formState);
           renderComponent();
@@ -900,10 +954,14 @@ describe("<WfmForm />", () => {
         const controlSetDropdown = controlSetDropdowns[controlSetDropdowns.length-1][0];
         expect(controlSetDropdown.disabled).toBe(false);
       });
-      test("is disabled when formmode is not insert", () => {
+      test("is disabled when formmode is not insert && Id is populated", () => {
         const formState = {
           ...initialFormState,
-          formMode: "update"
+          formMode: "update",
+          calabrio_wfm: {
+            ...initialFormState.calabrio_wfm,
+            Id: "I Exist Already"
+          }
         };
         useFormState.mockReturnValue(formState);
         renderComponent();
@@ -946,10 +1004,14 @@ describe("<WfmForm />", () => {
         const columnsDropdown = columnsDropdowns[columnsDropdowns.length-1][0];
         expect(columnsDropdown.disabled).toBe(false);
       });
-      test("is disabled when formmode is not insert", () => {
+      test("is disabled when formmode is not insert && Id is populated", () => {
         const formState = {
           ...initialFormState,
-          formMode: "update"
+          formMode: "update",
+          calabrio_wfm: {
+            ...initialFormState.calabrio_wfm,
+            Id: "I Exist Already"
+          }
         };
         useFormState.mockReturnValue(formState);
         renderComponent();
@@ -1152,10 +1214,14 @@ describe("<WfmForm />", () => {
         const noteField = noteFields[noteFields.length-1][0];
         expect(noteField.disabled).toBe(false);
       });
-      test("is disabled when formmode is not insert", () => {
+      test("is disabled when formmode is not insert && Id is populated", () => {
         const formState = {
           ...initialFormState,
-          formMode: "update"
+          formMode: "update",
+          calabrio_wfm: {
+            ...initialFormState.calabrio_wfm,
+            Id: "I Exist Already"
+          }
         };
         useFormState.mockReturnValue(formState);
         renderComponent();
@@ -1188,10 +1254,14 @@ describe("<WfmForm />", () => {
         const absenceDropdown = absenceDropdowns[absenceDropdowns.length-1][0];
         expect(absenceDropdown.disabled).toBe(false);
       });
-      test("is disabled when formmode is not insert", () => {
+      test("is disabled when formmode is not insert && Id is populated", () => {
         const formState = {
           ...initialFormState,
-          formMode: "update"
+          formMode: "update",
+          calabrio_wfm: {
+            ...initialFormState.calabrio_wfm,
+            Id: "I Exist Already"
+          }
         };
         useFormState.mockReturnValue(formState);
         renderComponent();
@@ -1234,10 +1304,14 @@ describe("<WfmForm />", () => {
         const budgetGroupDropdown = budgetGroupDropdowns[budgetGroupDropdowns.length-1][0];
         expect(budgetGroupDropdown.disabled).toBe(false);
       });
-      test("is disabled when formmode is not insert", () => {
+      test("is disabled when formmode is not insert && Id is populated", () => {
         const formState = {
           ...initialFormState,
-          formMode: "update"
+          formMode: "update",
+          calabrio_wfm: {
+            ...initialFormState.calabrio_wfm,
+            Id: "I Exist Already"
+          }
         };
         useFormState.mockReturnValue(formState);
         renderComponent();
@@ -1280,10 +1354,14 @@ describe("<WfmForm />", () => {
         const shiftBagDropdown = shiftBagDropdowns[shiftBagDropdowns.length-1][0];
         expect(shiftBagDropdown.disabled).toBe(false);
       });
-      test("is disabled when formmode is not insert", () => {
+      test("is disabled when formmode is not insert && Id is populated", () => {
         const formState = {
           ...initialFormState,
-          formMode: "update"
+          formMode: "update",
+          calabrio_wfm: {
+            ...initialFormState.calabrio_wfm,
+            Id: "I Exist Already"
+          }
         };
         useFormState.mockReturnValue(formState);
         renderComponent();
@@ -1369,10 +1447,14 @@ describe("<WfmForm />", () => {
           const personDatePicker = personDatePickers[personDatePickers.length-1][0];
           expect(personDatePicker.disabled).toBe(false);
         });
-        test("is disabled when formmode is not insert", () => {
+        test("is disabled when formmode is not insert && Id is populated", () => {
           const formState = {
             ...initialFormState,
-            formMode: "update"
+            formMode: "update",
+            calabrio_wfm: {
+              ...initialFormState.calabrio_wfm,
+              Id: "I Exist Already"
+            }
           };
           useFormState.mockReturnValue(formState);
           renderComponent();
@@ -1457,10 +1539,14 @@ describe("<WfmForm />", () => {
           const partTimeDropdown = partTimeDropdowns[partTimeDropdowns.length-1][0];
           expect(partTimeDropdown.disabled).toBe(false);
         });
-        test("is disabled when formmode is not insert", () => {
+        test("is disabled when formmode is not insert && Id is populated", () => {
           const formState = {
             ...initialFormState,
-            formMode: "update"
+            formMode: "update",
+            calabrio_wfm: {
+              ...initialFormState.calabrio_wfm,
+              Id: "I Exist Already"
+            }
           };
           useFormState.mockReturnValue(formState);
           renderComponent();
@@ -1539,10 +1625,14 @@ describe("<WfmForm />", () => {
           const contractScheduleDropdown = contractScheduleDropdowns[contractScheduleDropdowns.length-1][0];
           expect(contractScheduleDropdown.disabled).toBe(false);
         });
-        test("is disabled when formmode is not insert", () => {
+        test("is disabled when formmode is not insert && Id is populated", () => {
           const formState = {
             ...initialFormState,
-            formMode: "update"
+            formMode: "update",
+            calabrio_wfm: {
+              ...initialFormState.calabrio_wfm,
+              Id: "I Exist Already"
+            }
           };
           useFormState.mockReturnValue(formState);
           renderComponent();
@@ -1621,10 +1711,14 @@ describe("<WfmForm />", () => {
           const contractDropdown = contractDropdowns[contractDropdowns.length-1][0];
           expect(contractDropdown.disabled).toBe(false);
         });
-        test("is disabled when formmode is not insert", () => {
+        test("is disabled when formmode is not insert && Id is populated", () => {
           const formState = {
             ...initialFormState,
-            formMode: "update"
+            formMode: "update",
+            calabrio_wfm: {
+              ...initialFormState.calabrio_wfm,
+              Id: "I Exist Already"
+            }
           };
           useFormState.mockReturnValue(formState);
           renderComponent();
@@ -1677,10 +1771,14 @@ describe("<WfmForm />", () => {
           const rotationDropdown = rotationDropdowns[rotationDropdowns.length-1][0];
           expect(rotationDropdown.disabled).toBe(false);
         });
-        test("is disabled when formmode is not insert", () => {
+        test("is disabled when formmode is not insert && Id is populated", () => {
           const formState = {
             ...initialFormState,
-            formMode: "update"
+            formMode: "update",
+            calabrio_wfm: {
+              ...initialFormState.calabrio_wfm,
+              Id: "I Exist Already"
+            }
           };
           useFormState.mockReturnValue(formState);
           renderComponent();
@@ -1722,10 +1820,14 @@ describe("<WfmForm />", () => {
           const rotationDatePicker = rotationDatePickers[rotationDatePickers.length-1][0];
           expect(rotationDatePicker.disabled).toBe(false);
         });
-        test("is disabled when formmode is not insert", () => {
+        test("is disabled when formmode is not insert && Id is populated", () => {
           const formState = {
             ...initialFormState,
-            formMode: "update"
+            formMode: "update",
+            calabrio_wfm: {
+              ...initialFormState.calabrio_wfm,
+              Id: "I Exist Already"
+            }
           };
           useFormState.mockReturnValue(formState);
           renderComponent();
@@ -1939,10 +2041,14 @@ describe("<WfmForm />", () => {
           const availabilityDropdown = availabilityDropdowns[availabilityDropdowns.length-1][0];
           expect(availabilityDropdown.disabled).toBe(false);
         });
-        test("is disabled when formmode is not insert", () => {
+        test("is disabled when formmode is not insert && Id is populated", () => {
           const formState = {
             ...initialFormState,
-            formMode: "update"
+            formMode: "update",
+            calabrio_wfm: {
+              ...initialFormState.calabrio_wfm,
+              Id: "I Exist Already"
+            }
           };
           useFormState.mockReturnValue(formState);
           renderComponent();
@@ -1992,10 +2098,14 @@ describe("<WfmForm />", () => {
           const availabilityDatePicker = availabilityDatePickers[availabilityDatePickers.length-1][0];
           expect(availabilityDatePicker.disabled).toBe(false);
         });
-        test("is disabled when formmode is not insert", () => {
+        test("is disabled when formmode is not insert && Id is populated", () => {
           const formState = {
             ...initialFormState,
-            formMode: "update"
+            formMode: "update",
+            calabrio_wfm: {
+              ...initialFormState.calabrio_wfm,
+              Id: "I Exist Already"
+            }
           };
           useFormState.mockReturnValue(formState);
           renderComponent();

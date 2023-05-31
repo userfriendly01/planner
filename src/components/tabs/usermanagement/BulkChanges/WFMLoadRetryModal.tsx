@@ -17,7 +17,7 @@ import { theme } from "globals";
 
 const WFMLoadRetryModal = (props: any) => {
   const {
-    label,
+    position,
     handleClose
   } = props;
 
@@ -32,7 +32,7 @@ const WFMLoadRetryModal = (props: any) => {
 
   const dispatch = useAdminDispatch();
 
-  // This handles checking whether to keep calling the retry function
+  //This handles checking whether to keep calling the retry function
   React.useEffect(() => {
 
     if (retryAttempts.cancelClicked || (retryAttempts.successfulWFMOptions && retryAttempts.successfulWFMOrg)) {
@@ -86,7 +86,7 @@ const WFMLoadRetryModal = (props: any) => {
   };
 
   return (
-    <ModalWrapper>
+    <ModalWrapper position={position}>
       <TextWrapper
         styles={{}}
       >

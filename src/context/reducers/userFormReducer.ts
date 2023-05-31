@@ -582,7 +582,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
       };
     }
     case userFormActions.SET_UPDATE_QM_FORM_STATE: {
-      const user = action.payload || {};
+      const user = action.payload;
       return {
         ...state,
         formMode: formModes.UPDATE,

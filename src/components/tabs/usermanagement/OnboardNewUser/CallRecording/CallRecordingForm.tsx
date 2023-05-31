@@ -21,7 +21,8 @@ import { getCalabrioUser } from "services";
 import {
   calabrioTimeZones,
   calabrioAllowedRoles,
-  findMatchingQmProfiles
+  findMatchingQmProfiles,
+  isUnpopulatedField
 } from "utils";
 
 interface CallRecordingFormInterface {
@@ -47,7 +48,6 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
       console.warn("groups and teams are empty");
       setScopeOnNewUser();
     }
-
   }, [form]);
 
   React.useEffect(() => {
@@ -267,7 +267,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
       <FormControlsPane>
         <Dropdown
           disabled={form.formMode === formModes.DELETE}
-          error={missingFields.some((f:string) => f === "QM Roles") && form.calabrio_qm.roles.length == 0}
+          error={missingFields.some((f:string) => f === "QM Roles") && isUnpopulatedField(form.calabrio_qm.roles)}
           label="Roles *"
           multiple={true}
           options={getRoleOptions()}
@@ -280,7 +280,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
         />
         <Dropdown
           disabled={form.formMode === formModes.DELETE}
-          error={missingFields.some((f:string) => f === "QM Team") && !form.calabrio_qm.team}
+          error={missingFields.some((f:string) => f === "QM Team") && isUnpopulatedField(form.calabrio_qm.team)}
           label="Team *"
           options={getTeamOptions()}
           value={form.calabrio_qm.team ? {

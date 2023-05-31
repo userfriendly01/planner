@@ -25,7 +25,9 @@ import {
   createUser,
   getCalabrioUsers,
   updateUser,
-  updateCalabrioUser
+  updateCalabrioUser,
+  createCalabrioWFMPerson,
+  wfmActivateExternalLogon
 } from "services";
 import {
   checkConflictingUsers,
@@ -58,14 +60,15 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
   const {
     users,
     roles,
-    teams
+    teams,
+    wfmOrg
   } = useAdminState().calabrioContext;
 
   const form = useFormState();
   const setForm = useFormDispatch();
   const dispatch = useAdminDispatch();
 
-  const doCreateUser = () => {
+  const doCreateUser = async () => {
     updateLoading({
       ...loading,
       overlayMessage: "Adding new user...",
@@ -144,96 +147,132 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         activateEp: false
       };
 
-    createUser(createUserReqBody)
-      .then(dbWorker => {
-        if (!offices.get(dbWorker.attributes.office_location_number)) {
-          const newOffice = {
-            office_nme: dbWorker.attributes.office_location_name,
-            office_num: dbWorker.attributes.office_location_number
-          };
-          addOffice(newOffice)
-            .then(() => {
-              dispatch({
-                type: "addOffice",
-                payload: newOffice
-              });
-            })
-            .catch(error => {
-              console.error(`Failed to add office: [${error}]`);
+    const errors = [];
+
+    try {
+      let dbWorker;
+      dbWorker = await createUser(createUserReqBody);
+      if (!offices.get(dbWorker.attributes.office_location_number)) {
+        const newOffice = {
+          office_nme: dbWorker.attributes.office_location_name,
+          office_num: dbWorker.attributes.office_location_number
+        };
+        addOffice(newOffice)
+          .then(() => {
+            dispatch({
+              type: "addOffice",
+              payload: newOffice
             });
-        }
+          })
+          .catch(error => {
+            console.error(`Failed to add office: [${error}]`);
+          });
+      }
+      dispatch({
+        type: "addWorkers",
+        payload: [mapWorkerFromDbWorker(dbWorker)]
+      });
 
-        dispatch({
-          type: "addWorkers",
-          payload: [mapWorkerFromDbWorker(dbWorker)]
-        });
-
+      try {
         calabrioAttributes.acdId = dbWorker.workerSid;
+        await checkConflictingUsers(calabrioAttributes, users, roles, teams);
+        console.log("Calabrio Attributes sent for create user", calabrioAttributes);
+        await createCalabrioUser(calabrioAttributes);
+        try {
+          const updatedUsers: any = await getCalabrioUsers();
+          dispatch({
+            type: "loadCalabrioUsers",
+            payload: updatedUsers.data
+          });
+        } catch(err){
+          console.error("Failed to reset state after conflict check & calabrio user add", err)
+          errors.push("Failed to refresh Calabrio state, please refresh Triton Admin")
+        }
+      } catch(err){
+        errors.push(`Failed to create Calabrio QM User. ${err.message}` )
+      }
 
-        checkConflictingUsers(calabrioAttributes, users, roles, teams).then(() => {
-          console.log("Calabrio Attributes sent for create user", calabrioAttributes);
-          createCalabrioUser(calabrioAttributes).then(() => {
-            getCalabrioUsers().then((users: any) => {
-              dispatch({
-                type: "loadCalabrioUsers",
-                payload: users.data
-              });
-            }).catch(err => console.error("Failed to reset state after conflict check & calabrio user add", err));
-            setForm({
-              type: userFormActions.RESET_FORM_AFTER_ADD,
-              payload: {
-                managerValue: form.triton.manager.value,
-                outgoing: {
-                  value: form.triton.outgoing.value,
-                  e164: form.triton.outgoing.e164
-                },
-                profileIdValue: form.triton.profileId.value,
-                didUser: form.triton.didUser
-              }
+      try {
+        if(form.calabrio_wfm.userFound){
+          //Edit is not supported yet but if calabrio_wfm.userFound is true, that means they are creating a new WFM user for an existing Triton User
+          const wfmBody = {
+            ...form.calabrio_wfm,
+            PersonStartDate: form.calabrio_wfm.EmploymentStartDate,
+            RoleIds: form.calabrio_wfm.Roles,
+            NNumber: form.calabrio_wfm.EmploymentNumber,
+            ApplicationLogon: form.calabrio_wfm.Email,
+            TimeZoneId: form.calabrio_qm.timezone
+          }
+          console.log("WFM BODY", wfmBody);
+          try {
+            const res = await createCalabrioWFMPerson(wfmBody);
+            console.log("FAITH - does the ID return as expected", res);
+            dispatch({
+              type: "updateWfmOrg",
+              payload: [ ...wfmOrg, {
+                Id: res.data,
+                ...form.calabrio_wfm
+              }]
             });
-            setForm({ type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
-            updateLoading({
-              ...loading,
-              overlayMessage: "Successfully added new user",
-              saveStatus: ModalOverlayStatuses.SUCCESS,
-              saveUser: true
-            });
-            wait(() => {
-              updateLoading({
-                ...loading,
-                saveUser: false
-              });
-            }, timeouts.MODAL_OVERLAY);
-          }).catch(err => {
-            console.error("Error Creating Calabrio User", err);
-            updateLoading({
-              ...loading,
-              overlayMessage: "Triton User Created. Error Creating Calabrio User",
-              saveStatus: ModalOverlayStatuses.PARTIAL_FAIL,
-              saveUser: true
-            });
-          });
-        }).catch(err => {
-          console.error("Error Creating Calabrio User", err);
-          updateLoading({
-            ...loading,
-            overlayMessage: "Triton User Created. Error Creating Calabrio User",
-            saveStatus: ModalOverlayStatuses.PARTIAL_FAIL,
-            saveUser: true
-          });
+            try {
+              await wfmActivateExternalLogon({ workerNNumbers: [form.calabrio_wfm.EmploymentNumber] })
+            } catch(err){
+              errors.push(`Failed to activate WFM External Logon. ${err.message}` )
+            }
+          } catch(err){
+            errors.push(`Failed to create WFM User. ${err.message}` )
+          }
+        }
+      } catch(err){
+        errors.push(`Failed to create WFM User. ${err.message}` )
+      }
+      
+      if(errors.length === 0){
+        setForm({
+          type: userFormActions.RESET_FORM_AFTER_ADD,
+          payload: {
+            managerValue: form.triton.manager.value,
+            outgoing: {
+              value: form.triton.outgoing.value,
+              e164: form.triton.outgoing.e164
+            },
+            profileIdValue: form.triton.profileId.value,
+            didUser: form.triton.didUser
+          }
         });
-      }).catch(err => {
-        console.error(err.message, err.response.data);
+        setForm({ type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
         updateLoading({
           ...loading,
-          overlayMessage: err.response.data.message || "Failed to add new user.",
-          saveStatus: ModalOverlayStatuses.FAIL,
+          overlayMessage: "Successfully added new user",
+          saveStatus: ModalOverlayStatuses.SUCCESS,
           saveUser: true
         });
+        wait(() => {
+          updateLoading({
+            ...loading,
+            saveUser: false
+          });
+        }, timeouts.MODAL_OVERLAY);
+      } else {
+        updateLoading({
+          ...loading,
+          overlayMessage: `The following errors occurred: ${errors.toString()}`,
+          saveStatus: ModalOverlayStatuses.PARTIAL_FAIL,
+          saveUser: true
+        });
+      }
+    } catch(err){
+      console.error("Errors thrown creating a new user", err.message, err.response?.data);
+      updateLoading({
+        ...loading,
+        overlayMessage: err.response.data.message || "Failed to add new user.",
+        saveStatus: ModalOverlayStatuses.FAIL,
+        saveUser: true
       });
+    }
   };
 
-  const doUpdateUser =  async () => {
+  const doUpdateUser = async () => {
     updateLoading({
       ...loading,
       overlayMessage: `Updating user: ${worker.attributes.full_name}`,
@@ -319,16 +358,21 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       payload.inactiveForwardTo = form.triton.inactiveForwardTo.value;
     }
 
-    updateUser(worker.sid, payload)
-      .then(dbWorker => {
-        dispatch(({
-          type: "updateWorker",
-          payload: mapWorkerFromDbWorker(dbWorker)
-        }));
+    const errors = [];
+    try {
+      const dbWorker = await updateUser(worker.sid, payload);
+      dispatch(({
+        type: "updateWorker",
+        payload: mapWorkerFromDbWorker(dbWorker)
+      }));
+    } catch(err){
+      errors.push(`Failed to update Triton Worker. ${err.message || err.response?.data.message}`);
+    }
 
-        const calabrioAttributes: any = {};
-        if(form.calabrio_qm.updated) {
-          calabrioAttributes.acdId = dbWorker.workerSid;
+    if(form.calabrio_qm.updated) {
+      try {
+          const calabrioAttributes: any = {};
+          calabrioAttributes.acdId = form.calabrio_qm.acdId;
           calabrioAttributes.adLogin = `LM\\${form.nNumber.value.toLowerCase()}`;
           calabrioAttributes.email = form.nNumber.nNumberFetchedUser?.email;
           calabrioAttributes.firstName = form.nNumber.nNumberFetchedUser?.firstName;
@@ -340,78 +384,87 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
             groups: form.calabrio_qm.scope?.groups.filter((group: any) => group.checked).map((g: any) => g.groupId),
             teams: form.calabrio_qm.scope?.teams.filter((team: any) => team.checked).map((g: any) => g.groupId)
           };
-
-          checkConflictingUsers(calabrioAttributes, users, roles, teams).then(() => {
-            console.log("Calabrio Attributes sent for update user", calabrioAttributes);
-            const calabrioCall = form.calabrio_qm.id ? (attributes: any) => updateCalabrioUser(form.calabrio_qm.id, attributes) : (attributes: any) => createCalabrioUser(attributes);
-            calabrioCall(calabrioAttributes).then(() => {
-              getCalabrioUsers().then((users: any) => {
-                dispatch({
-                  type: "loadCalabrioUsers",
-                  payload: users.data
-                });
-              }).catch(err => console.error("Failed to reset state after conflict check & calabrio user add", err));
-              setForm({ type: userFormActions.RESET_FORM });
-              updateLoading({
-                ...loading,
-                overlayMessage: `Successfully updated user: ${worker.attributes.full_name}`,
-                saveStatus: ModalOverlayStatuses.SUCCESS,
-                saveUser: true
-              });
-              wait(() => {
-                updateLoading({
-                  ...loading,
-                  saveUser: false
-                });
-                handleClose();
-              }, timeouts.MODAL_OVERLAY);
-            }).catch(err => {
-              console.error("Error updating Calabrio user", err);
-              let message = "Triton user updated. Error updating Calabrio user";
-              if(!form.calabrio_qm.id){
-                message = "Triton user updated.  **Calabrio User Not Updated**  Missing Calabrio profile was not able to be created. To resolve this issue, go into Calabrio and search for this user in the inactive users. Once found, you can re-activate their old profile and come back here, refresh Triton Admin, and update this worker to be accurate. If that does not work, delete and recreate the user.";
-              }
-              updateLoading({
-                ...loading,
-                overlayMessage: message,
-                saveStatus: ModalOverlayStatuses.PARTIAL_FAIL,
-                saveUser: true
-              });
-            });
-          }).catch(err => {
-            console.error("Error updating Calabrio user", err);
-            updateLoading({
-              ...loading,
-              overlayMessage: "Triton User updated. Error updating Calabrio user",
-              saveStatus: ModalOverlayStatuses.PARTIAL_FAIL,
-              saveUser: true
-            });
-          });
+        console.log("Calabrio QM Payload", calabrioAttributes);
+        if(form.calabrio_qm.id){
+          await updateCalabrioUser(form.calabrio_qm.id, calabrioAttributes)
         } else {
-          setForm({ type: userFormActions.RESET_FORM });
-          updateLoading({
-            ...loading,
-            overlayMessage: `Successfully updated user: ${worker.attributes.full_name}`,
-            saveStatus: ModalOverlayStatuses.SUCCESS,
-            saveUser: true
-          });
-          wait(() => {
-            updateLoading({
-              ...loading,
-              saveUser: false
+          await checkConflictingUsers(calabrioAttributes, users, roles, teams);
+          await createCalabrioUser(calabrioAttributes);
+          try {
+            const updatedUsers: any = await getCalabrioUsers();
+            dispatch({
+              type: "loadCalabrioUsers",
+              payload: updatedUsers.data
             });
-            handleClose();
-          }, timeouts.MODAL_OVERLAY);
+          } catch(err){
+            console.error("Failed to reset state after conflict check & calabrio user add", err)
+            errors.push("Failed to refresh Calabrio state, please refresh Triton Admin");
+          }
         }
-      }).catch(err => {
-        console.error(err);
+      } catch(err) {
+        console.error("Failed to update Calabrio QM user", err)
+        errors.push(`Failed to update Calabrio QM user, ${err.message}`);
+      }
+    }
+
+    if(form.calabrio_wfm.userFound){
+      try {
+          //Edit is not supported yet but if calabrio_wfm.userFound is true, that means they are creating a new WFM user for an existing Triton User
+          const wfmBody = {
+            ...form.calabrio_wfm,
+            PersonStartDate: form.calabrio_wfm.EmploymentStartDate,
+            RoleIds: form.calabrio_wfm.Roles,
+            NNumber: form.calabrio_wfm.EmploymentNumber,
+            ApplicationLogon: form.calabrio_wfm.Email,
+            TimeZoneId: form.calabrio_qm.timezone
+          }
+          console.log("WFM BODY", wfmBody);
+          try {
+            const res = await createCalabrioWFMPerson(wfmBody);
+            console.log("FAITH - does the ID return as expected", res);
+            dispatch({
+              type: "updateWfmOrg",
+              payload: [ ...wfmOrg, {
+                Id: res.data,
+                ...form.calabrio_wfm
+              }]
+            });
+            try {
+              await wfmActivateExternalLogon({ workerNNumbers: [form.calabrio_wfm.EmploymentNumber] })
+            } catch(err){
+              errors.push(`Failed to activate WFM External Logon. ${err.message}` )
+            }
+          } catch(err){
+            errors.push(`Failed to create WFM User. ${err.message}` )
+          }
+      } catch(err){
+        errors.push(`Failed to create WFM User. ${err.message}` )
+      }
+    }
+
+    if(errors.length === 0){
+      setForm({ type: userFormActions.RESET_FORM });
+      updateLoading({
+        ...loading,
+        overlayMessage: `Successfully updated user: ${worker.attributes.full_name}`,
+        saveStatus: ModalOverlayStatuses.SUCCESS,
+        saveUser: true
+      });
+      wait(() => {
         updateLoading({
           ...loading,
-          overlayMessage: err.response?.data.message || `Failed to update user: ${worker.attributes.full_name}`,
-          saveStatus: ModalOverlayStatuses.FAIL,
-          saveUser: true
+          saveUser: false
         });
+        handleClose();
+      }, timeouts.MODAL_OVERLAY);
+    } else {
+      updateLoading({
+        ...loading,
+        overlayMessage: `The following errors occurred: ${errors.toString()}`,
+        saveStatus: ModalOverlayStatuses.PARTIAL_FAIL,
+        saveUser: true
       });
+    }
   };
 
   const isUserFormButtonEnabled = form.formMode === formModes.INSERT
@@ -423,7 +476,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     if(formErrors.length === 0 && form.formMode === formModes.INSERT){
       doCreateUser();
     } else if(formErrors.length === 0){
-      doUpdateUser
+      doUpdateUser();
     } else {
       console.log("UPDATE MISSING FIELDS", formErrors);
       setMissingFields(formErrors);

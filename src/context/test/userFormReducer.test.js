@@ -240,6 +240,26 @@ describe("userFormReducer", () => {
     });
   });
 
+  describe("CLEAR_DISCREPANCY", () => {
+    test("should clear extension", () => {
+      const message = "I'm a discrepency!";
+      const action = {
+        type: userFormActions.CLEAR_DISCREPANCY,
+        payload: message
+      };
+      const initialTestState = {
+        ...initialUserFormState,
+        discrepancies: [{ message }]
+      };
+      const result = userFormReducer(initialTestState, action);
+      const expectedFormState = {
+        ...initialTestState,
+        discrepancies: []
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+
   describe("CLEAR_EXTENSION", () => {
     test("should clear extension", () => {
       const action = { type: userFormActions.CLEAR_EXTENSION };
@@ -688,7 +708,7 @@ describe("userFormReducer", () => {
   });
 
   describe("SET_BLUR_ON_FIELD", () => {
-    test("should reset field blurred property to true", () => {
+    test("system is not null - should reset field blurred property to true", () => {
       const payload = {
         field: "outgoing",
         system: "triton"
@@ -706,6 +726,25 @@ describe("userFormReducer", () => {
             ...initialUserFormState.triton.outgoing,
             blurred: true
           }
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+    test("system is null - should reset field blurred property to true", () => {
+      const payload = {
+        field: "nNumber",
+        system: null
+      };
+      const action = {
+        type: userFormActions.SET_BLUR_ON_FIELD,
+        payload
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        nNumber: {
+          ...initialUserFormState.nNumber,
+          blurred: true
         }
       };
       expect(result).toStrictEqual(expectedFormState);
@@ -1103,6 +1142,83 @@ describe("userFormReducer", () => {
       };
       expect(result).toStrictEqual(expectedFormState);
     });
+    test("should reset form to update state - attributes missing", () => {
+      const worker = {...mockWorkers[2]};
+      delete worker.attributes.n_number;
+      delete worker.attributes.extension;
+      delete worker.attributes.did;
+      delete worker.directDialNum;
+      delete worker.alternateDid;
+      delete worker.zeroOutEnabled;
+      delete worker.selfServiceInd;
+
+      const payload = {
+        worker,
+        managers: managerList
+      };
+      const action = {
+        type: userFormActions.SET_DELETE_FORM_STATE,
+        payload
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        formMode: formModes.DELETE,
+        nNumber: {
+          ...initialUserFormState.nNumber,
+          value: "n"
+        },
+        triton: {
+          ...initialUserFormState.triton,
+          defaultSkills: {
+            updated: false,
+            ...getValidSkillsObject(worker.attributes.default_skills)
+          },
+          extension: {
+            ...initialUserFormState.triton.extension,
+            value: "",
+            valid: true,
+            status: {
+              ...initialUserFormState.triton.extension.status,
+              originalExtension: ""
+            }
+          },
+          manager: {
+            ...initialUserFormState.triton.manager,
+            value: managerList.find(m => m.manager_n_number === worker.attributes.manager_n_number)
+          },
+          outgoing: {
+            ...initialUserFormState.triton.outgoing,
+            value: "",
+            valid: false
+          },
+          profileId: {
+            ...initialUserFormState.triton.profileId,
+            value: worker.attributes.profile_id
+          },
+          alternateDid: {
+            ...initialUserFormState.triton.alternateDid,
+            value: "",
+            valid: false
+          },
+          directDialNum: {
+            ...initialUserFormState.triton.directDialNum,
+            value: "",
+            valid: false
+          },
+          didUser: false,
+          zeroOutEnabled: {
+            ...initialUserFormState.triton.zeroOutEnabled,
+            value: false
+          },
+          selfServiceInd: {
+            ...initialUserFormState.triton.selfServiceInd,
+            value: false
+          }
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
   });
 
   describe("SET_UPDATE_TRITON_FORM_STATE for NonDID User", () => {
@@ -1458,6 +1574,64 @@ describe("userFormReducer", () => {
       };
       expect(result).toStrictEqual(expectedFormState);
     });
+    test("should update state with the existing calabrio user info - skills, roles, & columns not available", () => {
+      const wfmUser = {
+        somanyfields: "i don't want to type them",
+        Roles: [{ RoleId: "1125" }],
+        PersonSkills: [{ SkillId: "9963" }],
+        OptionalColumns: { "0215": "5648" }
+      };
+      const action = {
+        type: userFormActions.SET_UPDATE_WFM_FORM_STATE,
+        payload: {
+          user: wfmUser,
+          state: initialTestState
+        }
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        formMode: formModes.UPDATE,
+        calabrio_wfm: {
+          ...initialUserFormState.calabrio_wfm,
+          somanyfields: "i don't want to type them",
+          Roles: [],
+          PersonSkills: [],
+          OptionalColumns: [],
+          userFound: true
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+    test("should update state with the existing calabrio user info - columns is null", () => {
+      const wfmUser = {
+        somanyfields: "i don't want to type them",
+        Roles: [{ RoleId: "1125" }],
+        PersonSkills: [{ SkillId: "9963" }],
+        OptionalColumns: null
+      };
+      const action = {
+        type: userFormActions.SET_UPDATE_WFM_FORM_STATE,
+        payload: {
+          user: wfmUser,
+          state: initialTestState
+        }
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        formMode: formModes.UPDATE,
+        calabrio_wfm: {
+          ...initialUserFormState.calabrio_wfm,
+          somanyfields: "i don't want to type them",
+          Roles: [],
+          PersonSkills: [],
+          OptionalColumns: [],
+          userFound: true
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
   });
 
   describe("UPDATE_TEAM", () => {
@@ -1611,23 +1785,6 @@ describe("userFormReducer", () => {
           ...initialUserFormState.calabrio_wfm,
           TeamId: "i-am-team-id",
           TeamStartDate: "5-12-2023"
-        }
-      };
-      expect(result).toStrictEqual(expectedFormState);
-    });
-  });
-  describe("SET_WFM_TIME_ZONE", () => {
-    test("should set TimeZoneId in the calabrio_wfm", () => {
-      const action = {
-        type: userFormActions.SET_WFM_TIME_ZONE,
-        payload: "new york EST"
-      };
-      const result = userFormReducer(initialUserFormState, action);
-      const expectedFormState = {
-        ...initialUserFormState,
-        calabrio_wfm: {
-          ...initialUserFormState.calabrio_wfm,
-          TimeZoneId: "new york EST"
         }
       };
       expect(result).toStrictEqual(expectedFormState);
