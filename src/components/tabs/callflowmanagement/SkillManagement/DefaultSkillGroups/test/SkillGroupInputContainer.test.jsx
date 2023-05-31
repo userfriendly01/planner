@@ -595,7 +595,7 @@ describe("<SkillGroupInputContainer />", () => {
             expect(addSkillGroup).toHaveBeenCalledTimes(0);
             expect(updateSkillGroup).toHaveBeenCalledTimes(1);
             expect(updateSkillGroup).toHaveBeenCalledWith(1, {
-              skillGroupName: "skillgroup1",
+              skill_group_nme: "skillgroup1",
               skillIds: [1, 2, 3, 4, 5]
             });
             expect(mockSetSaveResult).toHaveBeenCalledWith({
@@ -639,7 +639,7 @@ describe("<SkillGroupInputContainer />", () => {
             expect(updateSkillGroup).toHaveBeenCalledTimes(1);
             expect(updateSkillGroup).toHaveBeenCalledWith(1, {
               skillIds: [1, 2, 3, 4, 5],
-              skillGroupName: "skillgroup1"
+              skill_group_nme: "skillgroup1"
             });
             expect(mockSetSaveResult).toHaveBeenCalledWith({
               message: "Processing...",

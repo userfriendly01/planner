@@ -8,7 +8,7 @@ import {
   UserFormButton
 } from "../ClosedFlashMessage/ClosedFlashMessage.Styles";
 import {
-  ActionTypes, AddSkillRequestBody, UpdateSkillRequestBody
+  ActionTypes, AddEditSkillGroupBody
 } from "../Skills.Interfaces";
 import {
   addSkillGroup,
@@ -113,7 +113,7 @@ const SkillGroupInputContainer = (props: any) => {
       try {
         const skillIds = tableState.selected.map((skill: Skill) => skill.ctmSkillId);
 
-        const requestBody: AddSkillRequestBody = {
+        const requestBody: AddEditSkillGroupBody = {
           skill_group_nme: skillGroupName.trim(),
           skillIds
         };
@@ -164,19 +164,19 @@ const SkillGroupInputContainer = (props: any) => {
 
   const handleEditSkillGroup = () => {
 
-    const requestBody: UpdateSkillRequestBody = {};
+    const requestBody: AddEditSkillGroupBody = {
+      skill_group_nme: skillGroupName.trim()
+    };
     let editConfirmationText;
 
     try {
       const selectedSkills: number[] = tableState.selected.slice().map((sk: Skill) => sk.ctmSkillId);
-
-      requestBody.skillGroupName = skillGroupName.trim();
       requestBody.skillIds = selectedSkills;
 
       editConfirmationText = <>
         <ConfirmationSkillGroupsDiv>
         Are you sure you want to edit the skill group <span style={{ textDecoration: "underline" }}>{skillGroupToEditDelete?.label ? skillGroupToEditDelete?.label : ""}?</span>
-          {requestBody.skillGroupName ? `The name of this skill grouping will become ${skillGroupName}` : ""}
+          {requestBody.skill_group_nme ? `The name of this skill grouping will become ${skillGroupName}` : ""}
           This skill group will contain the following skills:
           <ConfirmationSkillList>
             {tableState.selected.map((skill: Skill) => <li key={skill.name}>{skill.name}</li>)}

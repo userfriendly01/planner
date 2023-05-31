@@ -95,12 +95,7 @@ export interface SkillsTableProps {
   setTableState: (tableState: TableState) => void
 }
 
-export interface AddSkillRequestBody {
+export interface AddEditSkillGroupBody {
   skill_group_nme: string,
-  skillIds: number[]
-}
-
-export interface UpdateSkillRequestBody {
-  skillGroupName?: string,
   skillIds?: number[]
 }
