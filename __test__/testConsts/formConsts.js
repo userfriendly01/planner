@@ -266,6 +266,7 @@ export const validFormState = {
     }
   },
   calabrio_qm: {
+    userFound: true,
     updated: false,
     team: 225,
     timezone: {
@@ -286,6 +287,9 @@ export const validFormState = {
         checked: true
       }]
     }
+  },
+  calabrio_wfm: {
+    userFound: false
   }
 };
 

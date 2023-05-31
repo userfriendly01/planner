@@ -192,39 +192,35 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         errors.push(`Failed to create Calabrio QM User. ${err.message}` )
       }
 
-      try {
-        if(form.calabrio_wfm.userFound){
-          //Edit is not supported yet but if calabrio_wfm.userFound is true, that means they are creating a new WFM user for an existing Triton User
-          const wfmBody = {
-            ...form.calabrio_wfm,
-            PersonStartDate: form.calabrio_wfm.EmploymentStartDate,
-            RoleIds: form.calabrio_wfm.Roles,
-            NNumber: form.calabrio_wfm.EmploymentNumber,
-            ApplicationLogon: form.calabrio_wfm.Email,
-            TimeZoneId: form.calabrio_qm.timezone
-          }
-          console.log("WFM BODY", wfmBody);
-          try {
-            const res = await createCalabrioWFMPerson(wfmBody);
-            console.log("FAITH - does the ID return as expected", res);
-            dispatch({
-              type: "updateWfmOrg",
-              payload: [ ...wfmOrg, {
-                Id: res.data,
-                ...form.calabrio_wfm
-              }]
-            });
-            try {
-              await wfmActivateExternalLogon({ workerNNumbers: [form.calabrio_wfm.EmploymentNumber] })
-            } catch(err){
-              errors.push(`Failed to activate WFM External Logon. ${err.message}` )
-            }
-          } catch(err){
-            errors.push(`Failed to create WFM User. ${err.message}` )
-          }
+      if(form.calabrio_wfm.userFound){
+        //Edit is not supported yet but if calabrio_wfm.userFound is true, that means they are creating a new WFM user for an existing Triton User
+        const wfmBody = {
+          ...form.calabrio_wfm,
+          PersonStartDate: form.calabrio_wfm.EmploymentStartDate,
+          RoleIds: form.calabrio_wfm.Roles,
+          NNumber: form.calabrio_wfm.EmploymentNumber,
+          ApplicationLogon: form.calabrio_wfm.Email,
+          TimeZoneId: form.calabrio_qm.timezone
         }
-      } catch(err){
-        errors.push(`Failed to create WFM User. ${err.message}` )
+        console.log("WFM BODY", wfmBody);
+        try {
+          const res = await createCalabrioWFMPerson(wfmBody);
+          console.warn("FAITH - does the ID return as expected", res);
+          dispatch({
+            type: "updateWfmOrg",
+            payload: [ ...wfmOrg, {
+              Id: res.data,
+              ...form.calabrio_wfm
+            }]
+          });
+          try {
+            await wfmActivateExternalLogon({ workerNNumbers: [form.calabrio_wfm.EmploymentNumber] })
+          } catch(err){
+            errors.push(`Failed to activate WFM External Logon. ${err.message}` )
+          }
+        } catch(err){
+          errors.push(`Failed to create WFM User. ${err.message}` )
+        }
       }
       
       if(errors.length === 0){
@@ -390,16 +386,16 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         } else {
           await checkConflictingUsers(calabrioAttributes, users, roles, teams);
           await createCalabrioUser(calabrioAttributes);
-          try {
-            const updatedUsers: any = await getCalabrioUsers();
-            dispatch({
-              type: "loadCalabrioUsers",
-              payload: updatedUsers.data
-            });
-          } catch(err){
-            console.error("Failed to reset state after conflict check & calabrio user add", err)
-            errors.push("Failed to refresh Calabrio state, please refresh Triton Admin");
-          }
+        }
+        try {
+          const updatedUsers: any = await getCalabrioUsers();
+          dispatch({
+            type: "loadCalabrioUsers",
+            payload: updatedUsers.data
+          });
+        } catch(err){
+          console.error("Failed to reset state after conflict check & calabrio user add", err)
+          errors.push("Failed to refresh Calabrio state, please refresh Triton Admin");
         }
       } catch(err) {
         console.error("Failed to update Calabrio QM user", err)
@@ -408,35 +404,32 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     }
 
     if(form.calabrio_wfm.userFound){
+      //Edit is not supported yet but if calabrio_wfm.userFound is true, that means they are creating a new WFM user for an existing Triton User
+      const wfmBody = {
+        ...form.calabrio_wfm,
+        PersonStartDate: form.calabrio_wfm.EmploymentStartDate,
+        RoleIds: form.calabrio_wfm.Roles,
+        NNumber: form.calabrio_wfm.EmploymentNumber,
+        ApplicationLogon: form.calabrio_wfm.Email,
+        TimeZoneId: form.calabrio_qm.timezone
+      }
+      console.log("WFM BODY", wfmBody);
       try {
-          //Edit is not supported yet but if calabrio_wfm.userFound is true, that means they are creating a new WFM user for an existing Triton User
-          const wfmBody = {
-            ...form.calabrio_wfm,
-            PersonStartDate: form.calabrio_wfm.EmploymentStartDate,
-            RoleIds: form.calabrio_wfm.Roles,
-            NNumber: form.calabrio_wfm.EmploymentNumber,
-            ApplicationLogon: form.calabrio_wfm.Email,
-            TimeZoneId: form.calabrio_qm.timezone
-          }
-          console.log("WFM BODY", wfmBody);
-          try {
-            const res = await createCalabrioWFMPerson(wfmBody);
-            console.log("FAITH - does the ID return as expected", res);
-            dispatch({
-              type: "updateWfmOrg",
-              payload: [ ...wfmOrg, {
-                Id: res.data,
-                ...form.calabrio_wfm
-              }]
-            });
-            try {
-              await wfmActivateExternalLogon({ workerNNumbers: [form.calabrio_wfm.EmploymentNumber] })
-            } catch(err){
-              errors.push(`Failed to activate WFM External Logon. ${err.message}` )
-            }
-          } catch(err){
-            errors.push(`Failed to create WFM User. ${err.message}` )
-          }
+        const res = await createCalabrioWFMPerson(wfmBody);
+        console.log("FAITH - does the ID return as expected", res);
+
+        dispatch({
+          type: "updateWfmOrg",
+          payload: [ ...wfmOrg, {
+            Id: res.data,
+            ...form.calabrio_wfm
+          }]
+        });
+        try {
+          await wfmActivateExternalLogon({ workerNNumbers: [form.calabrio_wfm.EmploymentNumber] })
+        } catch(err){
+          errors.push(`Failed to activate WFM External Logon. ${err.message}` )
+        }
       } catch(err){
         errors.push(`Failed to create WFM User. ${err.message}` )
       }
