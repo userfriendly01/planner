@@ -107,7 +107,7 @@ const getProfiles = (dispatch: any) => new Promise((resolve, reject) => myAxios.
   })
 );
 
-const getSkills = (dispatch: any) => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_SKILLS)
+export const getSkills = (dispatch: any) => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_SKILLS)
   .then(res => {
     dispatch({
       type: "loadSkills",

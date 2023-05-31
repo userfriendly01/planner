@@ -340,6 +340,16 @@ export interface OperatingUnit {
   ou_name: string
 }
 
+export interface AccessGroup {
+  access_group_id: number,
+  access_group_nme: string,
+  twilio_dashboard_url: string,
+  viewable_profiles: Array<{
+    profile_id: number,
+    name: string
+  }>
+}
+
 export type Control = "input" | "select" | "autoComplete" | "timePicker" | "multiField";
 
 export interface GraphQLErrors {

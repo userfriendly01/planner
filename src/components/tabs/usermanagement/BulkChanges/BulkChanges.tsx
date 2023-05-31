@@ -103,10 +103,11 @@ const BulkChanges = () => {
             </>
           </Modal>
           <Modal open={showWFMLoadModal} onClose={() => { return; }} >
-            <WFMLoadRetryModal
-              label="WFM Bulk Create"
-              handleClose={() => setShowWFMLoadModal(false)}
-            />
+            <>
+              <WFMLoadRetryModal
+                handleClose={() => setShowWFMLoadModal(false)}
+              />
+            </>
           </Modal>
           { view === views.BULK_CREATE_USERS &&
         <BulkCreateForm

@@ -166,6 +166,7 @@ describe("<ProfileSettingsTable />", () => {
       expect(rendered.getByText("Self Service Indicator", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Activities", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Transfer Queues", { selector: "th" })).toBeInTheDocument();
+      expect(rendered.getByText("Access Group", { selector: "th" })).toBeInTheDocument();
       const tableRows = rendered.getAllByTestId("table-row");
       const tableHeaders = rendered.getAllByTestId("table-header");
       expect(tableRows.length).toBe(1);
