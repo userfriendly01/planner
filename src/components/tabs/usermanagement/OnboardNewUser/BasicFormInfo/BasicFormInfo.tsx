@@ -32,6 +32,7 @@ import {
   sortManagersByName,
   sortProfilesByName
 } from "utils";
+import { RoutingAttributes } from "../RoutingAttributes";
 
 const BasicFormInfo = (props: BasicFormInfoProps) => {
 
@@ -57,6 +58,14 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
       return "";
     }
   };
+
+  const isOutgoingDisabled = (): boolean => {
+    if (form.formMode === formModes.INSERT) {
+      return false;
+    } else {
+      return form.editDisabled && worker?.directDialNum ? true : false;
+    }
+  }
 
   const handleOnBlur = (field: string, system: string) => {
     const isFieldValid = system ? form[system][field].valid : form[field].valid;
@@ -159,6 +168,37 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
           }}
           value={form.nNumber.value}
         />
+        <RoutingAttributes />
+        <SkillsFormInfo />
+      </FormControlsPane>
+      <RightColumn>
+        {!form.triton.didUser ?
+          <PhoneNumberInput
+            disabled={isOutgoingDisabled() || form.formMode === formModes.DELETE}
+            allowSevenDigitVdn={false}
+            id="outgoing-number"
+            number={form.triton.outgoing.value}
+            onBlur={() => handleOnBlur("outgoing", "triton")}
+            label="Outgoing Number *"
+            showError={form.triton.outgoing.blurred}
+            updateValue={(maskedValue: string, _unmaskedValue: string, isValid: boolean, e164Number: string) => {
+              setForm({
+                type: userFormActions.UPDATE_PHONE_NUMBER,
+                payload: {
+                  field: "outgoing",
+                  maskedValue,
+                  isValid,
+                  e164Number
+                }
+              });
+            }}
+          /> :
+          <DidFormInfo
+            worker={worker}
+            forwardToToggle={forwardToToggle}
+            setForwardToToggle={setForwardToToggle}
+          />
+        }
         <Tooltip
           title={
             form.formMode === formModes.UPDATE && worker?.directDialNum ?
@@ -226,36 +266,6 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
               <ToggleLabel>Self Service Indicator</ToggleLabel>
             </ToggleContainer>
           </Tooltip>) : null}
-      </FormControlsPane>
-      <RightColumn>
-        {!form.triton.didUser ?
-          <PhoneNumberInput
-            disabled={form.formMode === formModes.DELETE}
-            allowSevenDigitVdn={false}
-            id="outgoing-number"
-            number={form.triton.outgoing.value}
-            onBlur={() => handleOnBlur("outgoing", "triton")}
-            label="Outgoing Number *"
-            showError={form.triton.outgoing.blurred}
-            updateValue={(maskedValue: string, _unmaskedValue: string, isValid: boolean, e164Number: string) => {
-              setForm({
-                type: userFormActions.UPDATE_PHONE_NUMBER,
-                payload: {
-                  field: "outgoing",
-                  maskedValue,
-                  isValid,
-                  e164Number
-                }
-              });
-            }}
-          /> :
-          <DidFormInfo
-            worker={worker}
-            forwardToToggle={forwardToToggle}
-            setForwardToToggle={setForwardToToggle}
-          />
-        }
-        <SkillsFormInfo />
       </RightColumn>
     </FormControlsContainer>
   );
