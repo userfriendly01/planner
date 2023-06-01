@@ -30,13 +30,7 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
     removeTemplate
   } = props;
 
-  const [defaultSkill, setDefaultSkill] = React.useState([]);
-
-  let skillList: any;
-
-  console.log("BulkdUpdateForm - selectedTemplates", selectedTemplates);
-
-  const form = useFormState();
+  console.log("BulkdUpdateForm - defaultSkills - selectedTemplates", selectedTemplates);
 
   const dropdownOptions = {
     ADD_SKILL: {
@@ -53,84 +47,86 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
     }
   };
 
-  const [ option, setOption ] = React.useState(dropdownOptions.ADD_SKILL);
+  const [ option, setOption ] = React.useState("");
+  const [ updatedDefaultSkills, setUpdatedDefaultSkills ] = React.useState<any>({
+    skills: [],
+    levels: {}
+  });
 
   const skills = useAdminState().skillContext.skills.slice().filter(s => s.levels);
   const skillGroups = useAdminState().skillContext.skillGroups.slice();
 
   // add keys to template so processing function can adjust payload body
   React.useEffect(() => {
-    if (option === dropdownOptions.ADD_SKILL) {
-      updateTemplate(template, {
-        action: "ADD",
-        skills: skillList
-      });
-    } else if (option === dropdownOptions.OVERRIDE_SKILL) {
-      replaceTemplate({
-        ...template,
-        data: {
-          action: "OVERRIDE",
-          skills: []
-        }
-      });
+    console.warn("selectedTemplates", selectedTemplates);
+    if (updatedDefaultSkills.skills.length) {
+      const templateFound = selectedTemplates.find((t: Template) => t.name === template.name);
+      if (!templateFound) {
+        replaceTemplate({
+          ...template,
+          data: {
+            key: "default_skills",
+            value: updatedDefaultSkills,
+            location: "attributes"
+          }
+        });
+      } else {
+        updateTemplate(templateFound, {
+          data: {
+            key: "default_skills",
+            value: updatedDefaultSkills,
+            location: "attributes"
+          }
+        });
+      }
     } else {
-      removeTemplate({
-        ...template,
-        data: {
-          action: "DELETE"
-        }
+      if(selectedTemplates.find((t: Template) => t.name === template.name)){
+        removeTemplate(template);
+      }
+    }
+  }, [updatedDefaultSkills]);
+
+  React.useEffect(() => {
+    if(selectedTemplates.length === 0){
+      setUpdatedDefaultSkills({
+        skills: [],
+        levels: {}
       });
     }
-  });
-
-  // todo: delete?
-  // const formatOptionsDropdownEntry = (o: any) => {
-  //   if (o) {
-  //     return {
-  //       label: `${o.label}`,
-  //       value: `${o.value}`
-  //     };
-  //   } else {
-  //     return "";
-  //   }
-  // };
+  }, [selectedTemplates]);
 
   return (
-    <UpdateWrapper>
-      <Dropdown
-        label="Options"
-        value={option}
-        options={Object.values(dropdownOptions)}
-        updateValue={(event: any, option: any) => {
-          console.log("option: ", option);
-          // console.log("option[0]: ", dropdownOptions[0]);
-          setOption(option);
-          console.log("option label again: ", option.label);
-          console.log("FORRRM: ", form);
-          // console.log("compare ", option.label === dropdownOptions[0].label); // this is true......
-        }}
-        styles={{
-          margin: "40 40 30 0",
-          width: "175px"
-        }}
-      />
-
-      {/* { option === dropdownOptions.ADD_SKILL &&
-        <h1> option matches!! </h1>
-      } */}
-
-      { option === dropdownOptions.ADD_SKILL &&
-        <DefaultSkillSelector
-          defaultSkills={form.defaultSkills}
-          setDefaultSkills={(defaultSkills: any) => {
-            // add skills to state array thing here
-            console.log("&&& setting default skills: ", defaultSkills);
-            skillList = defaultSkills;
-            console.log("&&& skillList: ", skillList);
+    <Row>
+      <UpdateWrapper>
+        <Dropdown
+          label="Options"
+          value={option}
+          options={Object.values(dropdownOptions)}
+          updateValue={(event: any, option: any) => {
+            console.log("option: ", option);
+            // console.log("option[0]: ", dropdownOptions[0]);
+            setOption(option.label);
+            console.log("option label again: ", option.label);
+          }}
+          styles={{
+            margin: "40 40 30 0",
+            width: "175px"
           }}
         />
-      }
-    </UpdateWrapper>
+
+        { option === dropdownOptions.OVERRIDE_SKILL.label &&
+        <DefaultSkillSelector
+          defaultSkills={updatedDefaultSkills}
+          setDefaultSkills={(updatedDefaultSkills: any) => {
+            // add skills to state array thing here
+            console.log("&&& setting default skills: ", updatedDefaultSkills);
+            setUpdatedDefaultSkills(updatedDefaultSkills);
+            console.log("&&& updated template: ", selectedTemplates);
+          }}
+        />
+        }
+      </UpdateWrapper>
+    </Row>
   );
 };
 

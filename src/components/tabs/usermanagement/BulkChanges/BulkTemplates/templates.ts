@@ -343,27 +343,19 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: a
   const rowNumber = row.rowNumber;
   const userNNumber = row.attributes.n_number;
   const workerSid = row.workerSid; // maybe unnecessary here, use this when calling updateUser
-  // todo: skills from form go here
-  const action = template.data ? template.data.action : template.action;
 
-  // from userFormButtons.tsx
-  const attributes: Partial<Worker["attributes"]> = {};
-  attributes.default_skills = {
-    levels: {},
-    skills: []
-  };
+  const key = template.data.key;
+  const value = template.data.value;
+  const location = template.data.location;
 
-  if (action === "ADD") {
-    // grab users current default skills and append the new ones
-  } else if (action === "OVERRIDE") {
+  let body: any = {};
 
-  } else {
+  const newAttribute = { [key]: value };
 
-  }
-
-  const body = {};
+  body[location] = newAttribute;
 
   console.log("**** UPDATE DEFAULT SKILLS RECORD PROCESSING", row, body);
+  console.log("new attribute:", newAttribute);
   try {
     await updateUser(row.workerSid, body);
     return Promise.resolve(`${row.workerSid} - Default Skills updated for row ${rowNumber}`);
