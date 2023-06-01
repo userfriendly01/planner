@@ -117,9 +117,8 @@ const SkillGroupInputContainer = (props: any) => {
           skill_group_nme: skillGroupName.trim(),
           skillIds
         };
-        console.log("$$$$$$$ requestBody", requestBody);
-        const addGroupNameResponse = await addSkillGroup(requestBody);
-        console.log("addGroupNameResponse", addGroupNameResponse);
+
+        await addSkillGroup(requestBody);
 
         setSaveResult({
           message: "Request Successfully Processed",
