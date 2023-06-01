@@ -67,7 +67,7 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
           data: {
             key: "default_skills",
             value: updatedDefaultSkills,
-            location: "attributes"
+            option: option
           }
         });
       } else {
@@ -75,7 +75,7 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
           data: {
             key: "default_skills",
             value: updatedDefaultSkills,
-            location: "attributes"
+            option: option
           }
         });
       }

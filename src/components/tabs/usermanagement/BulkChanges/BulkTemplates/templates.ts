@@ -346,16 +346,16 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: a
 
   const key = template.data.key;
   const value = template.data.value;
-  const location = template.data.location;
+  const option = template.data.option;
 
-  let body: any = {};
+  const body: any = {};
 
-  const newAttribute = { [key]: value };
-
-  body[location] = newAttribute;
+  body.attributes = { "default_skills": value };
 
   console.log("**** UPDATE DEFAULT SKILLS RECORD PROCESSING", row, body);
-  console.log("new attribute:", newAttribute);
+  console.log("**** ROW: ", row);
+  console.log("**** updatedSkills:", value);
+  console.log("**** option: ", option);
   try {
     await updateUser(row.workerSid, body);
     return Promise.resolve(`${row.workerSid} - Default Skills updated for row ${rowNumber}`);
