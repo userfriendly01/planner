@@ -704,6 +704,11 @@ describe("<SkillEntryFormModal />", () => {
       expect(createSkill).toHaveBeenCalledTimes(0);
     });
     test("call succeeds, form resets, getSkills is called, and modal displays success overlay, then closes", async () => {
+      const testStateWithUpperNNumberForUser = {
+        ...initialTestState
+      };
+      testStateWithUpperNNumberForUser.userContext.pingIdentity.sub = "N1111111";
+      useAdminState.mockReturnValue(initialTestState);
       createSkill.mockResolvedValueOnce({
         status: 200
       });
@@ -717,6 +722,53 @@ describe("<SkillEntryFormModal />", () => {
         addSkillButton.onClick();
       });
       expect(createSkill).toHaveBeenCalledTimes(1);
+      expect(createSkill).toHaveBeenCalledWith({
+        skillFriendlyName: "test",
+        skillNum: "test",
+        profileIds: [5],
+        applicationId: 3,
+        taskQueueSid: "tqasdf",
+        vhCallTarget: null,
+        vhThreshold: null,
+        updatedBy: "n1111111",
+        timeOfDayIds: [
+          {
+            dayId: 1,
+            timeOfDayId: 4,
+            vhTimeOfDayId: null
+          },
+          {
+            dayId: 2,
+            timeOfDayId: 5,
+            vhTimeOfDayId: null
+          },
+          {
+            dayId: 3,
+            timeOfDayId: 5,
+            vhTimeOfDayId: null
+          },
+          {
+            dayId: 4,
+            timeOfDayId: 5,
+            vhTimeOfDayId: null
+          },
+          {
+            dayId: 5,
+            timeOfDayId: 5,
+            vhTimeOfDayId: null
+          },
+          {
+            dayId: 6,
+            timeOfDayId: 5,
+            vhTimeOfDayId: null
+          },
+          {
+            dayId: 7,
+            timeOfDayId: 4,
+            vhTimeOfDayId: null
+          }
+        ]
+      });
       await waitFor(() => {
         expect(mockSetSaveResult).toHaveBeenCalledWith({
           message: "Request Successfully Processed",
