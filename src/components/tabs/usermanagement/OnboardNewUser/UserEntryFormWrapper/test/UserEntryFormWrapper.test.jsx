@@ -72,7 +72,7 @@ describe("<UserEntryForm />", () => {
     jest.clearAllMocks();
     jest.resetAllMocks();
     useFormDispatch.mockReturnValue(mockSetForm);
-    useFormState.mockReturnValue({ ...initialFormState });
+    useFormState.mockReturnValue({...initialFormState });
     useAdminState.mockReturnValue(initialTestState);
     useNavigate.mockReturnValue(mockNavigate);
     setupMockedComponents({
@@ -181,6 +181,78 @@ describe("<UserEntryForm />", () => {
         expect(container).toHaveTextContent("Discrepencies have been found for this worker. They will be corrected when you hit 'Save User' unless otherwise specified ");
         expect(container).toHaveTextContent("Missing Profile");
         act(() => unmount());
+      });
+      describe("triton user already in state", () => {
+        test("should add discrepancy", () => {
+          const message = "This user already seems to have a Triton Record. Please cancel out of this form and edit their worker instead.";
+          useFormState.mockReturnValue({
+            ...initialFormState,
+            nNumber: {
+              ...initialFormState.nNumber,
+              value: "n0263786"
+            },
+            discrepancies: []
+          });
+          const { unmount } = renderComponent();
+          expect(mockSetForm).toHaveBeenCalledTimes(3);
+          expect(mockSetForm).toHaveBeenCalledWith({
+            type: userFormActions.SET_DISCREPANCIES,
+            payload: {
+              type: "General",
+              message: message
+            }
+          });
+          expect(mockSetForm).toHaveBeenCalledWith({
+            type: userFormActions.UPDATE_USER_FOUND,
+            payload: {
+              system: "triton",
+              isFound: true
+            }
+          });
+          expect(mockSetForm).toHaveBeenCalledWith({
+            type: userFormActions.UPDATE_USER_FOUND,
+            payload: {
+              system: "calabrio_qm",
+              isFound: true
+            }
+          });
+          act(() => unmount());
+        });
+      });
+      describe("duplicate triton user discrepency is listed but nNumber was cleared", () => {
+        test("should clear discrepancy", () => {
+          const message = "This user already seems to have a Triton Record. Please cancel out of this form and edit their worker instead.";
+          useFormState.mockReturnValue({
+            ...initialFormState,
+            discrepancies: [
+              {
+                type: "Calabrio",
+                message
+              }
+            ]
+          });
+          const { unmount } = renderComponent();
+          expect(mockSetForm).toHaveBeenCalledTimes(3);
+          expect(mockSetForm).toHaveBeenCalledWith({
+            type: userFormActions.CLEAR_DISCREPANCY,
+            payload: message
+          });
+          expect(mockSetForm).toHaveBeenCalledWith({
+            type: userFormActions.UPDATE_USER_FOUND,
+            payload: {
+              system: "triton",
+              isFound: true
+            }
+          });
+          expect(mockSetForm).toHaveBeenCalledWith({
+            type: userFormActions.UPDATE_USER_FOUND,
+            payload: {
+              system: "calabrio_qm",
+              isFound: true
+            }
+          });
+          act(() => unmount());
+        });
       });
     });
     describe("check userFound boxes", () => {

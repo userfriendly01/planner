@@ -51,6 +51,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
   }, [form]);
 
   React.useEffect(() => {
+    console.log("FAITH! - WE LIVE");
     if(form.nNumber.nNumberFetchedUser && form.formMode === formModes.UPDATE) {
       initiateEditForm();
     }
@@ -118,6 +119,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
     setForm({
       type: userFormActions.SET_CALABRIO_QM_USER,
       payload: {
+        userFound: true,
         ...form.calabrio_qm,
         scope: {
           groups: userGroups,

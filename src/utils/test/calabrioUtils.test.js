@@ -1064,7 +1064,7 @@ describe("calabrioUtils", () => {
             type: "SET_DISCREPANCIES",
             payload: {
               type: "Calabrio QM",
-              message: "Calabrio QM Record found for user where the ACD ID does not match the Triton Worker. This will require manual review/correction."
+              message: "Calabrio QM Record found for user where the ACD ID does not match the Triton Worker. This will require manual review/correction. Search Calabrio for a record (active or inactive) where the ACD equals wk994832, make that the primary user and deactivate all other users."
             }
           });
         });

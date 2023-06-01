@@ -702,7 +702,8 @@ export const initialTestState = {
           emp_first_name: "Snowball",
           emp_last_name: "Jones",
           extension: "7891",
-          n_number: "n2222222",
+          n_number: "n2223333",
+          email: "snowball.jones@libertymutual.com",
           profile_id: 2,
           manager_n_number: "n0260000"
         }

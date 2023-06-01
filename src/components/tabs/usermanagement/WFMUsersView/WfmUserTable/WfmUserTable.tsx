@@ -62,8 +62,6 @@ const WfmUserTable = (props: WfmUserTableProps) => {
         </thead>
         <tbody>
           {tableState.filteredList.map((user: WfmUser, index: number) => {
-            const isSelected = selectedUsers.some(selectedUser => selectedUser.Id === user.Id);
-            const handleWorkerOnClick = () => setSelectedUsers([ ...selectedUsers, user ]);
             const editButtonOnClick = (event: any) => {
               event.stopPropagation();
               setForm({
@@ -96,7 +94,7 @@ const WfmUserTable = (props: WfmUserTableProps) => {
             const team: WfmTeam | { Name: string } = getWfmTeams(state).find((team: WfmTeam) => team.Id === user.ParentTeam) || { Name: "Not Found" };
 
             return (
-              <CustomTableRow key={user.Id + index} onClick={handleWorkerOnClick} selected={isSelected} data-testid="table-row">
+              <CustomTableRow key={user.Id + index} data-testid="table-row">
                 <CustomTableData><TableText>{user.FirstName} {user.LastName}</TableText></CustomTableData>
                 <CustomTableData><TableText>{user.Id}</TableText></CustomTableData>
                 <CustomTableData><TableText>{user.Email}</TableText></CustomTableData>
@@ -109,11 +107,11 @@ const WfmUserTable = (props: WfmUserTableProps) => {
                     <Edit fontSize={"inherit"}/>
                   </IconWrapper>
                 </CustomTableData>
-                <CustomTableData>
+                {/* <CustomTableData>
                   <IconWrapper onClick={deleteButtonOnClick} data-testid="delete-button">
                     <Delete fontSize={"inherit"}/>
                   </IconWrapper>
-                </CustomTableData>
+                </CustomTableData> */}
               </CustomTableRow>
             );
           })}

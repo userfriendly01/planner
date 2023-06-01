@@ -202,6 +202,7 @@ export const validFormState = {
     nNumberFetchedUser: fetchedUser
   },
   triton: {
+    userFound: true,
     defaultSkills: {
       updated: true,
       levels: {

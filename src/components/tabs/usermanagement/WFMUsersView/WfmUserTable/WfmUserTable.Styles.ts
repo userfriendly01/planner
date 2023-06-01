@@ -50,7 +50,7 @@ export const CustomTableHeader = styled.th`
   }
 `;
 
-export const CustomTableRow = styled.tr<{ selected: boolean }>`
+export const CustomTableRow = styled.tr<{ selected?: boolean }>`
   &:nth-child(odd) {
     background-color: ${props => props.selected ? props.theme.tableRow.selectedColor : props.theme.tableRow.alternateRowColor};
   }

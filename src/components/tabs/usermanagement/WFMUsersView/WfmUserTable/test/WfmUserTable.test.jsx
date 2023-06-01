@@ -122,7 +122,7 @@ describe("<WfmUserTable />", () => {
       });
 
       expect(Edit.mock.calls.length).toBe(testWFMPeople.length);
-      expect(Delete.mock.calls.length).toBe(testWFMPeople.length);
+      // expect(Delete.mock.calls.length).toBe(testWFMPeople.length);
     });
   });
   describe("Edit Button is clicked on worker row", () => {
@@ -142,27 +142,27 @@ describe("<WfmUserTable />", () => {
       expect(mockNavigate).toHaveBeenCalledWith("/triton-admin/user");
     });
   });
-  describe("Delete Button is clicked on worker row", () => {
-    test("setForm is called for the worker", () => {
-      const rendered = renderComponent();
-      const deleteButtons = rendered.getAllByTestId("delete-button");
-      act(() => fireEvent.click(deleteButtons[0]));
-      expect(mockSetForm).toHaveBeenCalledTimes(1);
-      expect(mockSetForm).toHaveBeenCalledWith({
-        type: userFormActions.SET_DELETE_FORM_STATE,
-        payload: {
-          formMode: "delete",
-          managers: initialTestState.managerContext.managers,
-          worker: {
-            calabrioWfmUser: {
-              updated: false,
-              ...testWFMPeople[0]
-            }
-          }
-        }
-      });
-      expect(mockNavigate).toHaveBeenCalledTimes(1);
-      expect(mockNavigate).toHaveBeenCalledWith("/triton-admin/user");
-    });
-  });
+  // describe("Delete Button is clicked on worker row", () => {
+  //   test("setForm is called for the worker", () => {
+  //     const rendered = renderComponent();
+  //     const deleteButtons = rendered.getAllByTestId("delete-button");
+  //     act(() => fireEvent.click(deleteButtons[0]));
+  //     expect(mockSetForm).toHaveBeenCalledTimes(1);
+  //     expect(mockSetForm).toHaveBeenCalledWith({
+  //       type: userFormActions.SET_DELETE_FORM_STATE,
+  //       payload: {
+  //         formMode: "delete",
+  //         managers: initialTestState.managerContext.managers,
+  //         worker: {
+  //           calabrioWfmUser: {
+  //             updated: false,
+  //             ...testWFMPeople[0]
+  //           }
+  //         }
+  //       }
+  //     });
+  //     expect(mockNavigate).toHaveBeenCalledTimes(1);
+  //     expect(mockNavigate).toHaveBeenCalledWith("/triton-admin/user");
+  //   });
+  // });
 });

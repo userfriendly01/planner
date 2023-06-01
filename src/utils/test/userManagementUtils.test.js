@@ -1,11 +1,14 @@
 import { formModes } from "globals";
 import {
+  identifyFormErrors,
   isProfileIdValid,
   isManagerValid,
   isNNumberValid,
   isExtensionValid,
   isInactiveForwardToValid,
   isDidDifferentValid,
+  isTritonUserValid,
+  isUnpopulatedField,
   getTargetProfile,
   getOverflowSkillFromProfile,
   removeProfileZeroIfAdminNotInProfileZero,
@@ -13,12 +16,10 @@ import {
   workerHasOverFlowSkill,
   getNonOverflowSkills,
   isFormUpdated,
-  isFormValid,
   isQMUserValid,
   isWfmUserValid,
   fetchUser as fetchUserUtil,
   findMatchingWorker,
-  identifyProfileDiscrepancies,
   identifyUserProfiles
 } from "../userManagementUtils";
 import { fetchUser } from "services";
@@ -41,7 +42,6 @@ const adminStateIsAdmin = {
     }
   }
 };
-
 const adminStateIsNotAdmin = {
   userContext: {
     pingIdentity: {
@@ -232,6 +232,49 @@ const mockWorkers = [
   }
 ];
 
+describe("isUnpopulatedField", () => {
+  test("value is empty string - should return true", () => {
+    const result = isUnpopulatedField("");
+    expect(result).toBe(true);
+  });
+  test("value is empty array - should return true", () => {
+    const result = isUnpopulatedField([]);
+    expect(result).toBe(true);
+  });
+  test("value is empty object - should return true", () => {
+    const result = isUnpopulatedField({});
+    expect(result).toBe(true);
+  });
+  test("value is null - should return true", () => {
+    const result = isUnpopulatedField(null);
+    expect(result).toBe(true);
+  });
+  test("value is undefined - should return true", () => {
+    const result = isUnpopulatedField(undefined);
+    expect(result).toBe(true);
+  });
+  test("value is false- should return false", () => {
+    const result = isUnpopulatedField(false);
+    expect(result).toBe(false);
+  });
+  test("value is 0 - should return false", () => {
+    const result = isUnpopulatedField(0);
+    expect(result).toBe(false);
+  });
+  test("value is populated string - should return false", () => {
+    const result = isUnpopulatedField("Peter");
+    expect(result).toBe(false);
+  });
+  test("value is populated array - should return false", () => {
+    const result = isUnpopulatedField(["camp"]);
+    expect(result).toBe(false);
+  });
+  test("value is populated object - should return false", () => {
+    const result = isUnpopulatedField({ point: 17 });
+    expect(result).toBe(false);
+  });
+});
+
 describe("isProfileIdValid", () => {
   test("should return true when profile is populated", () => {
     const form = {
@@ -256,6 +299,7 @@ describe("isProfileIdValid", () => {
     expect(result).toBe(false);
   });
 });
+
 describe("isManagerValid", () => {
   test("should return true when manager is populated", () => {
     const form = {
@@ -280,6 +324,7 @@ describe("isManagerValid", () => {
     expect(result).toBe(false);
   });
 });
+
 describe("isNNumberValid", () => {
   test("should return true when nNumberFetchedUser is populated", () => {
     const form = {
@@ -302,6 +347,7 @@ describe("isNNumberValid", () => {
     expect(result).toBe(false);
   });
 });
+
 describe("isExtensionValid", () => {
   test("should return true when extension is valid", () => {
     const form = {
@@ -340,6 +386,7 @@ describe("isExtensionValid", () => {
     expect(result).toBe(false);
   });
 });
+
 describe("isInactiveForwardToValid", () => {
   describe("forwardToToggle === true", () => {
     test("should return true when inactiveForwardTo is not null", () => {
@@ -372,6 +419,7 @@ describe("isInactiveForwardToValid", () => {
     });
   });
 });
+
 describe("isDidDifferentValid", () => {
   describe("forwardToToggle === true", () => {
     test("should return true if both outgoing and directDial Num have been changed", () => {
@@ -424,6 +472,7 @@ describe("isDidDifferentValid", () => {
     });
   });
 });
+
 describe("getTargetProfile", () => {
   test("should return profile when found in profile list", () => {
     const result = getTargetProfile(profileList, "2");
@@ -434,6 +483,7 @@ describe("getTargetProfile", () => {
     expect(result).toBe(undefined);
   });
 });
+
 describe("getOverflowSkillFromProfile", () => {
   test("should return skill if profile has overflow skill", () => {
     const result = getOverflowSkillFromProfile(profileList, profileList[1].profile_id);
@@ -444,6 +494,7 @@ describe("getOverflowSkillFromProfile", () => {
     expect(result).toBe(undefined);
   });
 });
+
 describe("removeProfileZeroIfAdminNotInProfileZero", () => {
   test("user is a triton-admin, should return full profile list", () => {
     const result = removeProfileZeroIfAdminNotInProfileZero(adminStateIsAdmin, profileListWithZero);
@@ -458,12 +509,14 @@ describe("removeProfileZeroIfAdminNotInProfileZero", () => {
     expect(result).toEqual(profileList);
   });
 });
+
 describe("getOverflowSkills", () => {
   test("should return overflow skills from profile list", () => {
     const result = getOverflowSkills(profileList);
     expect(result).toStrictEqual(["whateverOverflowSkill", "anotherOverflowSkill"]);
   });
 });
+
 describe("workerHasOverFlowSkill", () => {
   test("should return true if worker has overflow skill", () => {
     const worker = {
@@ -488,6 +541,7 @@ describe("workerHasOverFlowSkill", () => {
     expect(result).toBe(false);
   });
 });
+
 describe("getNonOverflowSkills", () => {
   test("should return non overflow skills", () => {
     const worker = {
@@ -501,6 +555,7 @@ describe("getNonOverflowSkills", () => {
     expect(result).toStrictEqual(["aisgL1"]);
   });
 });
+
 describe("isFormUpdated", () => {
   test("form was not updated", () => {
     const result = isFormUpdated(initialFormState);
@@ -647,7 +702,260 @@ describe("isFormUpdated", () => {
     expect(result).toBe(true);
   });
 });
-describe.only("isQMUserValid", () => {
+
+describe("identifyFormErrors", () => {
+  const form = {
+    calabrio_qm: {
+      userFound: false
+    },
+    calabrio_wfm: {
+      userFound: true,
+      FirstName: "Faith",
+      LastName: "Cuneo",
+      DisplayName: "Faith Cuneo",
+      Email: "faith.cuneo@libertymutual.com",
+      FirstDayOfWeek: 0,
+      EmploymentNumber: "n0263786"
+    }
+  }
+  test("errors are concatenated into one array", () => {
+    const result = identifyFormErrors(form);
+    expect(result).toStrictEqual(["QM Team", "QM Roles", "BusinessUnitId"]);
+  });
+});
+
+describe("isTritonUserValid", () => {
+  describe("form.triton.userFound === false", () => {
+    const form = {
+      triton: {
+        userFound: false
+      }
+    };
+    test("should return false", () => {
+      expect(isTritonUserValid(form, mockWorkers[2], true)).toBe(false);
+    });
+  });
+  describe("Form is valid", () => {
+    describe("forwardToToggle === true", () => {
+      test("isTritonUserValid should return true", () => {
+        const form = {
+          ...validFormState,
+          triton: {
+            ...validFormState.triton,
+            userFound: true,
+            inactiveForwardTo: {
+              ...validFormState.triton.inactiveForwardTo,
+              value: "WK2345123"
+            }
+          }
+        };
+        expect(isTritonUserValid(form, mockWorkers[2], true)).toBe(true);
+      });
+    });
+    describe("form.didUser === false && forwardToToggle === false", () => {
+      test("isTritonUserValid should return true", () => {
+        expect(isTritonUserValid(validFormState, mockWorkers[0], false)).toBe(true);
+      });
+    });
+    describe("form.didUser === true && form.triton.directDialNum.valid && form.triton.alternateDid.valid", () => {
+      test("isTritonUserValid should return true", () => {
+        const form = {
+          ...validFormState,
+          triton: {
+            ...validFormState.triton,
+            didUser: true,
+            directDialNum: {
+              ...validFormState.triton.directDialNum,
+              valid: true
+            },
+            alternateDid: {
+              ...validFormState.triton.alternateDid,
+              valid: true
+            }
+          }
+        }
+        expect(isTritonUserValid(form, mockWorkers[0], false)).toBe(true);
+      });
+    });
+    describe("extension is empty", () => {
+      test("isTritonUserValid should return true", () => {
+        const form = {
+          ...validFormState,
+          triton: {
+            ...validFormState.triton,
+            userFound: true,
+            extension: {
+              ...validFormState.extension,
+              valid: false,
+              value: ""
+            }
+          }
+        };
+        expect(isTritonUserValid(form, mockWorkers[0], false)).toBe(true);
+      });
+    });
+  });
+  describe("Form is invalid", () => {
+    describe(`form.formMode === ${formModes.INSERT} && nNumberFetchedUser is null`, () => {
+      test("isTritonUserValid should return false", () => {
+        const form = {
+          ...validFormState,
+          nNumber: {
+            ...initialFormState.nNumber,
+            nNumberFetchedUser: null
+          }
+        };
+        expect(isTritonUserValid(form, mockWorkers[0], false)).toBe(false);
+      });
+    });
+    describe("Profile Id is empty string", () => {
+      test("isTritonUserValid should return false", () => {
+        const form = {
+          ...validFormState,
+          formMode: formModes.UPDATE,
+          triton: {
+            ...initialFormState.triton,
+            profileId: {
+              ...validFormState.profileId,
+              value: ""
+            }
+          }
+        };
+        expect(isTritonUserValid(form, mockWorkers[0], false)).toBe(false);
+      });
+    });
+    describe("Manager is empty string", () => {
+      test("isTritonUserValid should return false", () => {
+        const form = {
+          ...validFormState,
+          triton: {
+            ...initialFormState.triton,
+            manager: {
+              ...validFormState.manager,
+              value: ""
+            }
+          }
+        };
+        expect(isTritonUserValid(form, mockWorkers[0], false)).toBe(false);
+      });
+    });
+    describe("Outgoing number is not valid", () => {
+      test("isTritonUserValid should return false", () => {
+        const form = {
+          ...validFormState,
+          triton: {
+            ...initialFormState.triton,
+            outgoing: {
+              ...validFormState.outgoing,
+              valid: false
+            }
+          }
+        };
+        expect(isTritonUserValid(form, mockWorkers[0], false)).toBe(false);
+      });
+    });
+    describe("Extension is not valid", () => {
+      test("isTritonUserValid should return false", () => {
+        const form = {
+          ...validFormState,
+          triton: {
+            ...initialFormState.triton,
+            extension: {
+              ...validFormState.extension,
+              valid: false
+            }
+          }
+        };
+        expect(isTritonUserValid(form, mockWorkers[0], false)).toBe(false);
+      });
+    });
+    describe("inactiveForwardTo is not valid", () => {
+      describe("forwardToToggle === true", () => {
+        const form = {
+          ...validFormState,
+          triton: {
+            ...initialFormState.triton,
+            inactiveForwardTo: {
+              ...validFormState.inactiveForwardTo,
+              value: null
+            }
+          }
+        };
+        expect(isTritonUserValid(form, mockWorkers[0], true)).toBe(false);
+      });
+    });
+    describe("form.didUser === true", () => {
+      describe("Direct Dial Number is not valid", () => {
+        test("isTritonUserValid should return false", () => {
+          const form = {
+            ...validFormState,
+            triton: {
+              ...initialFormState.triton,
+              didUser: true,
+              directDialNum: {
+                ...validFormState.directDialNum,
+                valid: false
+              }
+            }
+          };
+          expect(isTritonUserValid(form, mockWorkers[2], false)).toBe(false);
+        });
+      });
+      describe("Alternate DID is not valid", () => {
+        test("isTritonUserValid should return false", () => {
+          const form = {
+            ...validFormState,
+            triton: {
+              ...initialFormState.triton,
+              didUser: true,
+              alternateDid: {
+                ...validFormState.alternateDid,
+                valid: false
+              }
+            }
+          };
+          expect(isTritonUserValid(form, mockWorkers[2], false)).toBe(false);
+        });
+      });
+      describe("forwardToToggle === true", () => {
+        describe("Outgoing number was updated but Direct Dial Number was not", () => {
+          test("isTritonUserValid should return false", () => {
+            const form = {
+              ...validFormState,
+              triton: {
+                ...initialFormState.triton,
+                directDialNum: {
+                  ...validFormState.directDialNum,
+                  updated: false,
+                  value: validFormOptions.directDialNum
+                }
+              }
+            };
+            expect(isTritonUserValid(form, mockWorkers[2], true)).toBe(false);
+          });
+        });
+        describe("Direct Dial number was updated but Outbound Number was not", () => {
+          test("isTritonUserValid should return false", () => {
+            const form = {
+              ...validFormState,
+              triton: {
+                ...initialFormState.triton,
+                outbound: {
+                  ...validFormState.outbound,
+                  updated: false,
+                  value: validFormOptions.didE164
+                }
+              }
+            };
+            expect(isTritonUserValid(form, mockWorkers[2], true)).toBe(false);
+          });
+        });
+      });
+    });
+  });
+});
+
+describe("isQMUserValid", () => {
   test("form.calabrio_qm === false, should return array with all required fields", () => {
     const form = {
       calabrio_qm: {
@@ -656,7 +964,7 @@ describe.only("isQMUserValid", () => {
       }
     }
     const result = isQMUserValid(form);
-    expect(result).toStrictEqual(["team","roles"]);
+    expect(result).toStrictEqual(["QM Team","QM Roles"]);
   });
   test("roles are empty array, should return error", () => {
     const form = {
@@ -667,7 +975,7 @@ describe.only("isQMUserValid", () => {
       }
     }
     const result = isQMUserValid(form);
-    expect(result).toStrictEqual(["roles"]);
+    expect(result).toStrictEqual(["QM Roles"]);
   });
   test("team is null, should return error", () => {
     const form = {
@@ -678,7 +986,7 @@ describe.only("isQMUserValid", () => {
       }
     }
     const result = isQMUserValid(form);
-    expect(result).toStrictEqual(["team"]);
+    expect(result).toStrictEqual(["QM Team"]);
   });
   test("team is empty string, should return error", () => {
     const form = {
@@ -689,7 +997,7 @@ describe.only("isQMUserValid", () => {
       }
     }
     const result = isQMUserValid(form);
-    expect(result).toStrictEqual(["team"]);
+    expect(result).toStrictEqual(["QM Team"]);
   });
   test("all required fields are valid, should return empty array", () => {
     const form = {
@@ -703,6 +1011,7 @@ describe.only("isQMUserValid", () => {
     expect(result).toStrictEqual([]);
   });
 });
+
 describe("isWfmUserValid", () => {
   const validWfmUser = {
       userFound: true,
@@ -765,7 +1074,7 @@ describe("isWfmUserValid", () => {
         }
       }
       const result = isWfmUserValid(form);
-      expect(result).toStrictEqual(["BusinessUnitId"]);
+      expect(result).toStrictEqual([]);
     });
   });
   describe("logicalRequiredFields", () => {
@@ -836,205 +1145,44 @@ describe("isWfmUserValid", () => {
       expect(result).toStrictEqual(["PersonSkills"]);
     });
   });
-});
-describe("isFormValid", () => {
-  describe("Form is valid", () => {
-    describe("forwardToToggle === true", () => {
-      test("isFormValid should return true", () => {
-        const form = {
-          ...validFormState,
-          triton: {
-            ...validFormState.triton,
-            inactiveForwardTo: {
-              ...validFormState.triton.inactiveForwardTo,
-              value: "WK2345123"
+  describe("Optional Columns", () => {
+    test("all columns are valid - should not add Optional Columns to array", () => {
+      const form = {
+        calabrio_wfm: {
+          ...validWfmUser,
+          OptionalColumns: [
+            {
+              Value: 0
+            },
+            {
+              Value: "heyyyyy"
             }
-          }
-        };
-        expect(isFormValid(form, mockWorkers[2], true)).toBe(true);
-      });
+          ]
+        }
+      }
+      const result = isWfmUserValid(form);
+      expect(result).toStrictEqual([]);
     });
-    describe("form.didUser === true && forwardToToggle === false", () => {
-      test("isFormValid should return true", () => {
-        expect(isFormValid(validFormState, mockWorkers[0], false)).toBe(true);
-      });
-    });
-    describe("extension is empty", () => {
-      test("isFormValid should return true", () => {
-        const form = {
-          ...validFormState,
-          triton: {
-            ...validFormState.triton,
-            extension: {
-              ...validFormState.extension,
-              valid: false,
-              value: ""
+    test("should add Optional Columns to array", () => {
+      const form = {
+        calabrio_wfm: {
+          ...validWfmUser,
+          OptionalColumns: [
+            {
+              Value: null
+            },
+            {
+              Value: "heyyyyy"
             }
-          }
-        };
-        expect(isFormValid(form, mockWorkers[0], false)).toBe(true);
-      });
-    });
-  });
-  describe("Form is invalid", () => {
-    describe(`form.formMode === ${formModes.INSERT} && nNumberFetchedUser is null`, () => {
-      test("isFormValid should return false", () => {
-        const form = {
-          ...validFormState,
-          nNumber: {
-            ...initialFormState.nNumber,
-            nNumberFetchedUser: null
-          }
-        };
-        expect(isFormValid(form, mockWorkers[0], false)).toBe(false);
-      });
-    });
-    describe("Profile Id is empty string", () => {
-      test("isFormValid should return false", () => {
-        const form = {
-          ...validFormState,
-          formMode: formModes.UPDATE,
-          triton: {
-            ...initialFormState.triton,
-            profileId: {
-              ...validFormState.profileId,
-              value: ""
-            }
-          }
-        };
-        expect(isFormValid(form, mockWorkers[0], false)).toBe(false);
-      });
-    });
-    describe("Manager is empty string", () => {
-      test("isFormValid should return false", () => {
-        const form = {
-          ...validFormState,
-          triton: {
-            ...initialFormState.triton,
-            manager: {
-              ...validFormState.manager,
-              value: ""
-            }
-          }
-        };
-        expect(isFormValid(form, mockWorkers[0], false)).toBe(false);
-      });
-    });
-    describe("Outgoing number is not valid", () => {
-      test("isFormValid should return false", () => {
-        const form = {
-          ...validFormState,
-          triton: {
-            ...initialFormState.triton,
-            outgoing: {
-              ...validFormState.outgoing,
-              valid: false
-            }
-          }
-        };
-        expect(isFormValid(form, mockWorkers[0], false)).toBe(false);
-      });
-    });
-    describe("Extension is not valid", () => {
-      test("isFormValid should return false", () => {
-        const form = {
-          ...validFormState,
-          triton: {
-            ...initialFormState.triton,
-            extension: {
-              ...validFormState.extension,
-              valid: false
-            }
-          }
-        };
-        expect(isFormValid(form, mockWorkers[0], false)).toBe(false);
-      });
-    });
-    describe("inactiveForwardTo is not valid", () => {
-      describe("forwardToToggle === true", () => {
-        const form = {
-          ...validFormState,
-          triton: {
-            ...initialFormState.triton,
-            inactiveForwardTo: {
-              ...validFormState.inactiveForwardTo,
-              value: null
-            }
-          }
-        };
-        expect(isFormValid(form, mockWorkers[0], true)).toBe(false);
-      });
-    });
-    describe("form.didUser === true", () => {
-      describe("Direct Dial Number is not valid", () => {
-        test("isFormValid should return false", () => {
-          const form = {
-            ...validFormState,
-            triton: {
-              ...initialFormState.triton,
-              didUser: true,
-              directDialNum: {
-                ...validFormState.directDialNum,
-                valid: false
-              }
-            }
-          };
-          expect(isFormValid(form, mockWorkers[2], false)).toBe(false);
-        });
-      });
-      describe("Alternate DID is not valid", () => {
-        test("isFormValid should return false", () => {
-          const form = {
-            ...validFormState,
-            triton: {
-              ...initialFormState.triton,
-              didUser: true,
-              alternateDid: {
-                ...validFormState.alternateDid,
-                valid: false
-              }
-            }
-          };
-          expect(isFormValid(form, mockWorkers[2], false)).toBe(false);
-        });
-      });
-      describe("forwardToToggle === true", () => {
-        describe("Outgoing number was updated but Direct Dial Number was not", () => {
-          test("isFormValid should return false", () => {
-            const form = {
-              ...validFormState,
-              triton: {
-                ...initialFormState.triton,
-                directDialNum: {
-                  ...validFormState.directDialNum,
-                  updated: false,
-                  value: validFormOptions.directDialNum
-                }
-              }
-            };
-            expect(isFormValid(form, mockWorkers[2], true)).toBe(false);
-          });
-        });
-        describe("Direct Dial number was updated but Outbound Number was not", () => {
-          test("isFormValid should return false", () => {
-            const form = {
-              ...validFormState,
-              triton: {
-                ...initialFormState.triton,
-                outbound: {
-                  ...validFormState.outbound,
-                  updated: false,
-                  value: validFormOptions.didE164
-                }
-              }
-            };
-            expect(isFormValid(form, mockWorkers[2], true)).toBe(false);
-          });
-        });
-      });
+          ]
+        }
+      }
+      const result = isWfmUserValid(form);
+      expect(result).toStrictEqual(["Optional Columns"]);
     });
   });
 });
+
 describe("fetchUser", () => {
   describe("fetchUserServiceCall fails", () => {
     test("setForm is called with 'SET_DISCREPANCIES' and returns nNumber and null fetchedUser", async () => {
@@ -1080,6 +1228,7 @@ describe("fetchUser", () => {
     });
   });
 });
+
 describe("findMatchingWorker", () => {
   test("no matching worker is found, returns null", () => {
     const result = findMatchingWorker("boo", "nope", "nomatch@email.com", initialTestState.workerContext.workers);
@@ -1128,6 +1277,7 @@ describe("findMatchingWorker", () => {
     });
   });
 });
+
 describe("identifyUserProfiles", () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -1163,48 +1313,103 @@ describe("identifyUserProfiles", () => {
             userFound: false
           }
         };
-        const result = await identifyUserProfiles(formState, mockSetForm, initialTestState);
+        await identifyUserProfiles(formState, mockSetForm, initialTestState);
         expect(fetchUser).toHaveBeenCalledTimes(0);
         expect(mockSetForm).toHaveBeenCalledTimes(0);
-        expect(result).toBe("Faith - we should be done"); // lol...
       });
     });
     describe("calabrio qm user is not found but calabrio wfm user found", () => {
-      test("system is calabrio_qm, calls setForm with COMPLETE_N_NUMBER, resolves", async () => {
-        const formState = {
-          ...validFormState,
-          triton: {
-            ...validFormState.triton,
-            sid: "WK1234",
-            attributes: {
-              email: "Brittany.Magee@libertymutual.com"
+      describe("nNumberObject.fetched user !== null", () => {
+        test("calls setForm with COMPLETE_N_NUMBER, resolves", async () => {
+          const formState = {
+            ...validFormState,
+            nNumber: {
+              ...validFormState.nNumber,
+              value: null,
+              nNumberFetchedUser: null
             },
-            userFound: true
-          },
-          calabrio_wfm: {
-            userFound: true
-          }
-        };
-        await identifyUserProfiles(formState, mockSetForm, initialTestState);
-        expect(fetchUser).toHaveBeenCalledTimes(0);
-        expect(mockSetForm).toHaveBeenCalledWith({
-          type: "COMPLETE_N_NUMBER",
-          payload: {
-            nNumber: "n0263786",
-            fetchedUser: {
-              id: 200,
-              acdId: "WK1234",
-              firstName: "Brittany",
-              lastName: "Magee",
-              groupId: 102,
-              adLogin: "LM\\n0222444",
-              email: "Brittany.Magee@libertymutual.com"
+            triton: {
+              ...validFormState.triton,
+              sid: "WK1234",
+              attributes: {
+                email: "Brittany.Magee@libertymutual.com"
+              },
+              userFound: true
+            },
+            calabrio_wfm: {
+              userFound: true
             }
-          }
+          };
+          await identifyUserProfiles(formState, mockSetForm, initialTestState);
+            /* Cannot be tested until we have a Calabrio QM table passing the form
+            through with a calabrio worker */
+          });
+      });
+      describe("nNumberObject.fetched user === null", () => {
+        test("calls setForm with COMPLETE_N_NUMBER, resolves", async () => {
+          const formState = {
+            ...validFormState,
+            nNumber: {
+              value: null,
+              nNumberFetchedUser: null
+            },
+            triton: {
+              ...validFormState.triton,
+              sid: "WK1234",
+              attributes: {
+                email: "Brittany.Magee@libertymutual.com"
+              },
+              userFound: true
+            },
+            calabrio_qm: {
+              userFound: false
+            },
+            calabrio_wfm: {
+              userFound: true
+            }
+          };
+          await identifyUserProfiles(formState, mockSetForm, initialTestState);
+          expect(fetchUser).toHaveBeenCalledTimes(0);
+          expect(mockSetForm).toHaveBeenCalledWith({
+            type: "COMPLETE_N_NUMBER",
+            payload: {
+              nNumber: "n",
+              fetchedUser: {
+                id: 200,
+                acdId: "WK1234",
+                firstName: "Brittany",
+                lastName: "Magee",
+                groupId: 102,
+                adLogin: "LM\\n0222444",
+                email: "Brittany.Magee@libertymutual.com"
+              }
+            }
+          });
+        });
+        test("calls setForm with COMPLETE_N_NUMBER, resolves", async () => {
+          const formState = {
+            ...validFormState,
+            triton: {
+              ...validFormState.triton,
+              sid: "WK1234",
+              attributes: {
+                email: "Brittany.Magee@libertymutual.com"
+              },
+              userFound: true
+            },
+            calabrio_qm: {
+              userFound: false
+            },
+            calabrio_wfm: {
+              userFound: true
+            }
+          };
+          await identifyUserProfiles(formState, mockSetForm, initialTestState);
+          expect(fetchUser).toHaveBeenCalledTimes(0);
         });
       });
     });
-    describe("calabrio wfm users found false in form,", () => {
+    describe("calabrio wfm user is not found but calabrio qm user found,", () => {
       test("calls SET_UPDATE_WFM_FORM_STATE with ", async () => {
         const formState = {
           ...validFormState,
@@ -1239,10 +1444,50 @@ describe("identifyUserProfiles", () => {
           }
         });
       });
+      test("calls SET_UPDATE_WFM_FORM_STATE with ", async () => {
+        const formState = {
+          ...validFormState,
+          nNumber: {
+            value: "n1111111"
+          },
+          triton: {
+            ...validFormState.triton,
+            sid: "WK1234",
+            attributes: {
+              email: "Person@libertymutual.com"
+            },
+            userFound: true
+          },
+          calabrio_wfm: {
+            userFound: false
+          }
+        };
+        fetchUser.mockResolvedValue({
+          nNumber: "n1111111",
+          nNumberFetchedUser: {
+            email: ""
+          }
+        });
+        await identifyUserProfiles(formState, mockSetForm, initialTestState);
+        expect(fetchUser).toHaveBeenCalledTimes(1);
+        expect(mockSetForm).toHaveBeenCalledWith({
+          type: "SET_UPDATE_WFM_FORM_STATE",
+          payload: {
+            state: initialTestState,
+            user: {
+              BusinessUnitId: "123-321",
+              ParentTeam: "111",
+              EmploymentNumber: "n1111111",
+              Email: "Person@libertymutual.com",
+              TeamId: "111"
+            }
+          }
+        });
+      });
     });
   });
   describe("system is calabrio_qm", () => {
-    test("calabrio wfm userFound is false, just resolves?", async () => {
+    test("This test will be built on when we have a Calabrio QM Table", async () => {
       const formState = {
         ...validFormState,
         triton: {
@@ -1266,52 +1511,439 @@ describe("identifyUserProfiles", () => {
     });
   });
   describe("system is calabrio_wfm", () => {
-    test("calabrio wfm userFound is true, finds triton worker, setForm called with SET_UPDATE_TRITON_FORM_STATE", async () => {
-      const formState = {
-        ...validFormState,
-        nNumber: {
-          value: "n1111111",
-          nNumberFetchedUser: {
-            email: "Person@libertymutual.com"
-          }
-        },
-        triton: {
-          ...validFormState.triton,
-          sid: "WK1234",
-          attributes: {
-            email: "Person@libertymutual.com"
-          },
-          userFound: false
-        },
-        calabrio_qm: {
-          userFound: false
-        },
-        calabrio_wfm: {
-          ...validFormState.calabrio_wfm,
-          EmploymentNumber: "n1111111",
-          Identity: "Person@libertymutual.com",
-          Email: "Person@libertymutual.com",
-          userFound: true
-        }
-      };
-      await identifyUserProfiles(formState, mockSetForm, initialTestState);
-      expect(fetchUser).toHaveBeenCalledTimes(0);
-      expect(mockSetForm).toHaveBeenCalledTimes(1);
-      expect(mockSetForm).toHaveBeenCalledWith({
-        type: "SET_UPDATE_TRITON_FORM_STATE",
-        payload: {
-          worker: {
-            attributes: {
-              emp_first_name: "Bree",
-              emp_last_name: "Hodge",
-              extension: "3456",
-              full_name: "Bree Hodge",
-              manager_n_number: "n0263512",
-              n_number: "n1111111"
+    describe("form.nNumber.nNumberFetchedUser && form.nNumber.value", () => {
+      test("form.nNumber is used to find triton/calabrio workers", async () => {
+        const formState = {
+          ...validFormState,
+          nNumber: {
+            value: "n1111111",
+            nNumberFetchedUser: {
+              email: "Person@libertymutual.com"
             }
           },
-          managers: initialTestState.managerContext.managers
-        }
+          triton: {
+            ...validFormState.triton,
+            sid: "WK1234",
+            attributes: {
+              email: "Person@libertymutual.com"
+            },
+            userFound: false
+          },
+          calabrio_qm: {
+            userFound: false
+          },
+          calabrio_wfm: {
+            ...validFormState.calabrio_wfm,
+            EmploymentNumber: "wfmNNumber ",
+            Identity: "WfmIDentity",
+            Email: "WFMEmail",
+            userFound: true
+          }
+        };
+        await identifyUserProfiles(formState, mockSetForm, initialTestState);
+        expect(fetchUser).toHaveBeenCalledTimes(0);
+        expect(mockSetForm).toHaveBeenCalledTimes(1);
+        expect(mockSetForm).toHaveBeenCalledWith({
+          type: "SET_UPDATE_TRITON_FORM_STATE",
+          payload: {
+            worker: {
+              attributes: {
+                emp_first_name: "Bree",
+                emp_last_name: "Hodge",
+                extension: "3456",
+                full_name: "Bree Hodge",
+                manager_n_number: "n0263512",
+                n_number: "n1111111"
+              }
+            },
+            managers: initialTestState.managerContext.managers
+          }
+        });
+      });
+    });
+    describe("!form.nNumber.nNumberFetchedUser && wfmNNumber && wfmNNumber.match(nNumMatcher)", () => {
+      test("form.nNumber is used to find triton/calabrio workers", async () => {
+        fetchUser.mockResolvedValue({
+          nNumberfetchedUser: {
+            email: "faith.cuneo@libertymutual.com"
+          }
+        })
+        const formState = {
+          ...validFormState,
+          nNumber: {
+            value: null,
+            nNumberFetchedUser: null
+          },
+          triton: {
+            ...validFormState.triton,
+            sid: "WK1234",
+            attributes: {
+              email: "Person@libertymutual.com"
+            },
+            userFound: false
+          },
+          calabrio_qm: {
+            userFound: false
+          },
+          calabrio_wfm: {
+            ...validFormState.calabrio_wfm,
+            EmploymentNumber: "n2222222",
+            Identity: "WfmIDentity",
+            Email: "WFMEmail",
+            userFound: true
+          }
+        };
+        await identifyUserProfiles(formState, mockSetForm, initialTestState);
+        expect(fetchUser).toHaveBeenCalledTimes(1);
+        expect(fetchUser).toHaveBeenCalledWith("n2222222");
+        expect(mockSetForm).toHaveBeenCalledTimes(2);
+        expect(mockSetForm).toHaveBeenCalledWith({
+          type: "SET_UPDATE_TRITON_FORM_STATE",
+          payload: {
+            worker: {
+              attributes: {
+                full_name: "Andrew VandeKamp",
+                emp_first_name: "Andrew",
+                emp_last_name: "VandeKamp",
+                extension: "7891",
+                n_number: "n2222222",
+                profile_id: 0,
+                manager_n_number: "n0260000"
+              }
+            },
+            managers: initialTestState.managerContext.managers
+          }
+        });
+      });
+    });
+    describe("!form.nNumber.nNumberFetchedUser", () => {
+      describe("wfmEmail && !wfmIdentity", () => {
+        test("wfmEmail is used to find triton/calabrio workers", async () => {
+          const formState = {
+            ...validFormState,
+            nNumber: {
+              value: null,
+              nNumberFetchedUser: null
+            },
+            triton: {
+              userFound: false
+            },
+            calabrio_qm: {
+              userFound: false
+            },
+            calabrio_wfm: {
+              ...validFormState.calabrio_wfm,
+              EmploymentNumber: "IMNOTRIGHT",
+              Identity: null,
+              Email: "snowball.jones@libertymutual.com",
+              userFound: true
+            }
+          };
+          await identifyUserProfiles(formState, mockSetForm, initialTestState);
+          expect(fetchUser).toHaveBeenCalledTimes(0);
+          expect(mockSetForm).toHaveBeenCalledTimes(2);
+          expect(mockSetForm).toHaveBeenCalledWith({
+            type: "SET_DISCREPANCIES",
+            payload: {
+              type: "Calabrio WFM",
+              message: "WFM User Record is missing a valid nNumber in the Employment Number field. Please correct this and try again."
+            }
+          });
+          expect(mockSetForm).toHaveBeenCalledWith({
+            type: "SET_UPDATE_TRITON_FORM_STATE",
+            payload: {
+              worker: {
+                attributes: {
+                  full_name: "Snowball Jones",
+                  emp_first_name: "Snowball",
+                  emp_last_name: "Jones",
+                  extension: "7891",
+                  n_number: "n2223333",
+                  email: "snowball.jones@libertymutual.com",
+                  profile_id: 2,
+                  manager_n_number: "n0260000"
+                }
+              },
+              managers: initialTestState.managerContext.managers
+            }
+          });
+        });
+        test("no nNumber on triton worker attributes - wfmEmail is used to find triton/calabrio workers", async () => {
+          const formState = {
+            ...validFormState,
+            nNumber: {
+              value: null,
+              nNumberFetchedUser: null
+            },
+            triton: {
+              userFound: false
+            },
+            calabrio_qm: {
+              userFound: false
+            },
+            calabrio_wfm: {
+              ...validFormState.calabrio_wfm,
+              EmploymentNumber: "IMNOTRIGHT",
+              Identity: null,
+              Email: "snowball.jones@libertymutual.com",
+              userFound: true
+            }
+          };
+          await identifyUserProfiles(formState, mockSetForm, {
+            ...initialTestState,
+            workerContext: {
+              ...initialTestState.workerContext,
+              workers: [
+                {
+                  attributes: {
+                    full_name: "Snowball Jones",
+                    emp_first_name: "Snowball",
+                    emp_last_name: "Jones",
+                    extension: "7891",
+                    email: "snowball.jones@libertymutual.com",
+                    profile_id: 2,
+                    manager_n_number: "n0260000"
+                  }
+                }
+              ]
+            }
+          });
+          expect(fetchUser).toHaveBeenCalledTimes(0);
+          expect(mockSetForm).toHaveBeenCalledTimes(2);
+          expect(mockSetForm).toHaveBeenCalledWith({
+            type: "SET_DISCREPANCIES",
+            payload: {
+              type: "Calabrio WFM",
+              message: "WFM User Record is missing a valid nNumber in the Employment Number field. Please correct this and try again."
+            }
+          });
+          expect(mockSetForm).toHaveBeenCalledWith({
+            type: "SET_UPDATE_TRITON_FORM_STATE",
+            payload: {
+              worker: {
+                attributes: {
+                  full_name: "Snowball Jones",
+                  emp_first_name: "Snowball",
+                  emp_last_name: "Jones",
+                  extension: "7891",
+                  email: "snowball.jones@libertymutual.com",
+                  profile_id: 2,
+                  manager_n_number: "n0260000"
+                }
+              },
+              managers: initialTestState.managerContext.managers
+            }
+          });
+        });
+      });
+      describe("!wfmEmail && wfmIdentity", () => {
+        test("wfmIdentity is used to find triton/calabrio workers", async () => {
+          const formState = {
+            ...validFormState,
+            nNumber: {
+              value: null,
+              nNumberFetchedUser: null
+            },
+            triton: {
+              userFound: false
+            },
+            calabrio_qm: {
+              userFound: false
+            },
+            calabrio_wfm: {
+              ...validFormState.calabrio_wfm,
+              EmploymentNumber: "IMNOTRIGHT",
+              Identity: "snowball.jones@libertymutual.com",
+              Email: null,
+              userFound: true
+            }
+          };
+          await identifyUserProfiles(formState, mockSetForm, {
+            ...initialTestState,
+            workerContext: {
+              ...initialTestState.workerContext,
+              workers: [
+                {
+                  attributes: {
+                    full_name: "Snowball Jones",
+                    emp_first_name: "Snowball",
+                    emp_last_name: "Jones",
+                    extension: "7891",
+                    email: "snowball.jones@libertymutual.com",
+                    profile_id: 2,
+                    manager_n_number: "n0260000"
+                  }
+                }
+              ]
+            }
+          });
+          expect(fetchUser).toHaveBeenCalledTimes(0);
+          expect(mockSetForm).toHaveBeenCalledTimes(2);
+          expect(mockSetForm).toHaveBeenCalledWith({
+            type: "SET_DISCREPANCIES",
+            payload: {
+              type: "Calabrio WFM",
+              message: "WFM User Record is missing a valid nNumber in the Employment Number field. Please correct this and try again."
+            }
+          });
+          expect(mockSetForm).toHaveBeenCalledWith({
+            type: "SET_UPDATE_TRITON_FORM_STATE",
+            payload: {
+              worker: {
+                attributes: {
+                  full_name: "Snowball Jones",
+                  emp_first_name: "Snowball",
+                  emp_last_name: "Jones",
+                  extension: "7891",
+                  email: "snowball.jones@libertymutual.com",
+                  profile_id: 2,
+                  manager_n_number: "n0260000"
+                }
+              },
+              managers: initialTestState.managerContext.managers
+            }
+          });
+        });
+      });
+      describe("wfmEmail && wfmIdentity && wfmEmail === wfmIdentity", () => {
+        test("wfmIdentity is used to find triton/calabrio workers", async () => {
+          const formState = {
+            ...validFormState,
+            nNumber: {
+              value: null,
+              nNumberFetchedUser: null
+            },
+            triton: {
+              userFound: false
+            },
+            calabrio_qm: {
+              userFound: false
+            },
+            calabrio_wfm: {
+              ...validFormState.calabrio_wfm,
+              EmploymentNumber: "IMNOTRIGHT",
+              Identity: "snowball.jones@libertymutual.com",
+              Email: "snowball.jones@libertymutual.com",
+              userFound: true
+            }
+          };
+          await identifyUserProfiles(formState, mockSetForm, initialTestState);
+          expect(fetchUser).toHaveBeenCalledTimes(0);
+          expect(mockSetForm).toHaveBeenCalledTimes(2);
+          expect(mockSetForm).toHaveBeenCalledWith({
+            type: "SET_DISCREPANCIES",
+            payload: {
+              type: "Calabrio WFM",
+              message: "WFM User Record is missing a valid nNumber in the Employment Number field. Please correct this and try again."
+            }
+          });
+          expect(mockSetForm).toHaveBeenCalledWith({
+            type: "SET_UPDATE_TRITON_FORM_STATE",
+            payload: {
+              worker: {
+                attributes: {
+                  full_name: "Snowball Jones",
+                  emp_first_name: "Snowball",
+                  emp_last_name: "Jones",
+                  extension: "7891",
+                  n_number: "n2223333",
+                  email: "snowball.jones@libertymutual.com",
+                  profile_id: 2,
+                  manager_n_number: "n0260000"
+                }
+              },
+              managers: initialTestState.managerContext.managers
+            }
+          });
+        });
+      });
+      describe("wfmEmail && wfmIdentity are both empty", () => {
+        test("discrepancies are set", async () => {
+          const formState = {
+            ...validFormState,
+            nNumber: {
+              value: null,
+              nNumberFetchedUser: null
+            },
+            triton: {
+              userFound: false
+            },
+            calabrio_qm: {
+              userFound: false
+            },
+            calabrio_wfm: {
+              ...validFormState.calabrio_wfm,
+              EmploymentNumber: "IMNOTRIGHT",
+              Identity: null,
+              Email: null,
+              userFound: true
+            }
+          };
+          await identifyUserProfiles(formState, mockSetForm, initialTestState);
+          expect(fetchUser).toHaveBeenCalledTimes(0);
+          expect(mockSetForm).toHaveBeenCalledTimes(2);
+          expect(mockSetForm).toHaveBeenCalledWith({
+            type: "SET_DISCREPANCIES",
+            payload: {
+              type: "Calabrio WFM",
+              message: "WFM User Record is missing a valid nNumber in the Employment Number field. Please correct this and try again."
+            }
+          });
+          expect(mockSetForm).toHaveBeenCalledWith({
+            type: "SET_DISCREPANCIES",
+            payload: {
+              type: "Calabrio WFM",
+              message: "WFM User Record Email and Identity are either both empty or do not match. Please verify the emails are correct."
+            }
+          });
+        });
+      });
+    });
+    describe("nNumberFetched user is populated and no WFM fields were useful", () => {
+      test("should find matching workers based on nNumberFetchedUser", async () => {
+        const formState = {
+          ...validFormState,
+          nNumber: {
+            value: null,
+            nNumberFetchedUser: {
+              email: "snowball.jones@libertymutual.com"
+            }
+          },
+          triton: {
+            userFound: false
+          },
+          calabrio_qm: {
+            userFound: false
+          },
+          calabrio_wfm: {
+            ...validFormState.calabrio_wfm,
+            EmploymentNumber: "IMNOTRIGHT",
+            Identity: "snowball.jones@libertymutual.com",
+            Email: "snowball.jones@libertymutual.com",
+            userFound: true
+          }
+        };
+        await identifyUserProfiles(formState, mockSetForm, initialTestState);
+        expect(fetchUser).toHaveBeenCalledTimes(0);
+        expect(mockSetForm).toHaveBeenCalledTimes(1);
+        expect(mockSetForm).toHaveBeenCalledWith({
+          type: "SET_UPDATE_TRITON_FORM_STATE",
+          payload: {
+            worker: {
+              attributes: {
+                full_name: "Snowball Jones",
+                emp_first_name: "Snowball",
+                emp_last_name: "Jones",
+                extension: "7891",
+                n_number: "n2223333",
+                email: "snowball.jones@libertymutual.com",
+                profile_id: 2,
+                manager_n_number: "n0260000"
+              }
+            },
+            managers: initialTestState.managerContext.managers
+          }
+        });
       });
     });
   });

@@ -15,9 +15,10 @@ import {
   formatE164PhoneNumber,
   removeNonNumericCharacters
 } from "./formatNumberUtils";
-import { views } from "components/tabs/usermanagement/UserManagementWrapper/UserManagement.Interfaces";
 import { fetchUser as fetchUserServiceCall } from "services";
 import { getWfmPeople } from "./calabrioUtils";
+
+export const isUnpopulatedField = (f: any) => (!f && f !== false && f !== 0) || f?.length === 0 || (typeof f === "object" && JSON.stringify(f) === JSON.stringify({}));
 
 // For a DID user, the outgoing number is tied to the directDialNum, if you change one you must change both in order for the form to be valid
 export const isDidDifferentValid = (form: UserFormState, worker: Worker, forwardToToggle: boolean): boolean => {
@@ -37,12 +38,8 @@ form.triton.alternateDid.updated || form.triton.directDialNum.updated ||
 form.nNumber.updated || form.triton.extension.updated ||
 form.triton.inactiveForwardTo.updated || form.triton.zeroOutEnabled.updated || form.calabrio_qm.updated || form.triton.selfServiceInd.updated;
 
-export const isCalabrioUserValid =  (form: UserFormState): boolean => {
-  return form.calabrio_qm.team && form.calabrio_qm.roles.length > 0;
-};
-
 export const identifyFormErrors = (form: UserFormState) => {
-  let erroredFields: any[] = ["I'm an error!"];
+  let erroredFields: any[] = [];
   const qmErrors = isQMUserValid(form);
   const wfmErrors = isWfmUserValid(form);
   erroredFields = [
@@ -91,8 +88,6 @@ export const isQMUserValid = (form: UserFormState) => {
   }
 };
 
-export const isUnpopulatedField = (f: any) => (!f && f !== false && f !== 0) || f?.length === 0;
-
 export const isWfmUserValid = (form: UserFormState) => {
   const user = form.calabrio_wfm;
   const requiredFields: string[] = ["FirstName", "LastName", "EmploymentNumber", "Email", "DisplayName", "BusinessUnitId", "FirstDayOfWeek"];
@@ -104,12 +99,12 @@ export const isWfmUserValid = (form: UserFormState) => {
     rotationFields: ["RotationId", "RotationStartDate", "RotationStartWeek"]
   };
   const missingFields: any = [];
-  if(!form.calabrio_wfm.userFound){
+  if(!user.userFound){
     return [];
   } else {
     requiredFields.forEach((f: any) => {
       const value: any = form.calabrio_wfm[f];
-      if(!value || value?.length === 0){
+      if(isUnpopulatedField(value)){
         missingFields.push(f);
       } 
     });
@@ -119,12 +114,12 @@ export const isWfmUserValid = (form: UserFormState) => {
 
       if(!allFieldsNull){
         fields.forEach((field: string) => {
-          if(isUnpopulatedField(user[field])){ missingFields.push(user[field]); }
+          if(isUnpopulatedField(user[field])){ missingFields.push(field); }
         });
       }      
     });
 
-    if(user.OptionalColumns.length > 0){
+    if(user.OptionalColumns?.length > 0){
       const validColumns = user.OptionalColumns.every((oc: any) => !isUnpopulatedField(oc.Value));
       if(!validColumns){
         missingFields.push("Optional Columns")
@@ -133,7 +128,6 @@ export const isWfmUserValid = (form: UserFormState) => {
     return [...new Set(missingFields)];
   }
 };
-
 
 export const isManagerValid = (form: UserFormState): boolean => form.triton.manager.value !== "";
 
@@ -213,6 +207,8 @@ export const fetchUser = async (nNumber: string, setForm: any, errorMessage: str
 
 export const findMatchingWorker = (sid: string, nNumber: string, email: string, workers: any[]) => {
   //Dynamic to look through triton workers, calabrio qm users and calabrio wfm users
+  console.log("FAITH- we're in findMatchingWorker", sid, nNumber, email);
+
   let matchingWorker: Worker = null;
   workers.forEach((w: any) => {
     const workerSid = w.sid?.toLowerCase() || w.acdId?.toLowerCase();
@@ -231,8 +227,11 @@ export const findMatchingWorker = (sid: string, nNumber: string, email: string, 
 };
 
 export const identifyUserProfiles = async (form: UserFormState, setForm: any, state: AppState) => {
-  const system = form.triton.userFound && "triton" || form.calabrio_qm.userFound && "calabrio_qm" || form.calabrio_wfm.userFound && "calabrio_wfm";
-  let nNumberObject: any = form.nNumber;
+  const primarySystem = form.triton.userFound && "triton" || form.calabrio_qm.userFound && "calabrio_qm" || form.calabrio_wfm.userFound && "calabrio_wfm";
+  let nNumberObject: any = {
+    nNumber: form.nNumber.value,
+    fetchedUser: form.nNumber.nNumberFetchedUser
+  };
   const tritonWorkers = state.workerContext.workers;
   const calabrioQmUsers = state.calabrioContext.users;
   const calabrioWfmUsers = getWfmPeople(state);
@@ -247,17 +246,18 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
     nNumberObject = await fetchUser(form.nNumber.value, setForm, errorMessage, discrepancyType.GENERAL);
   } 
 
-  if(system === "triton"){
+  if(primarySystem === "triton"){
+    console.log("FAITH- we're in Triton")
     const acdId = form.triton.sid;
     const nNumber = form.nNumber.value || form.triton.attributes?.n_number;
     const email = form.nNumber.nNumberFetchedUser?.email || form.triton.attributes?.email;
     calabrioWfmUser = findMatchingWorker(acdId, nNumber, email, calabrioWfmUsers);
     calabrioQmUser = findMatchingWorker(acdId, nNumber, email, calabrioQmUsers);
-
-  } else if(system === "calabrio_qm"){
+    console.log("FAITH- calabrioQmUser", calabrioQmUser);
+  } else if(primarySystem === "calabrio_qm"){
     //This condition wont be in play until the calabrio qm table is in place
     //When this condition is fulfilled we can peel some of the code out of the CallRecordingForm
-  } else if(system === "calabrio_wfm"){
+  } else if(primarySystem === "calabrio_wfm"){
     const wfmNNumber = form.calabrio_wfm.EmploymentNumber?.trim().toLowerCase();;
     const wfmIdentity = form.calabrio_wfm.Identity?.trim().toLowerCase();
     const wfmEmail = form.calabrio_wfm.Email?.trim().toLowerCase();
@@ -293,10 +293,6 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
           }
         });
       }
-      if(tritonWorker){
-        const errorMessage = `Failed to fetch nNumber from HR database. ${tritonWorker.attributes.n_number}. If this nNumber continues to fail, this user may no longer be active in the HR database or needs to reach out to the HR team to investigate the failure.`
-        await fetchUser(tritonWorker.attributes.n_number, setForm, errorMessage, discrepancyType.GENERAL);
-      }
     } else {
       //nNumberFetchedUser is populated, save the Triton/Calabrio QM users based off that
       tritonWorker = findMatchingWorker(null, form.nNumber.value, form.nNumber.nNumberFetchedUser.email, tritonWorkers);
@@ -317,17 +313,24 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
 
   //Update state for Calabrio QM if applicable
   if(!form.calabrio_qm.userFound && calabrioQmUser && nNumberObject.fetchedUser){
-    setForm({
-      type: "SET_UPDATE_QM_FORM_STATE",
-      payload: calabrioQmUser
-    });
-    //This conditional will change when we add a Calabrio QM table
+   /*
+      Right now the CallRecordingForm handles the logic of populating the edit form based on the n#
+      When we have a Calabrio WM Table view and hit the edit button, this conditional will come into play
+      This is the action we will take at that point and refactor the populating of the user into this method instead of the callrecording form
+   
+      For now - we need this call to set userFound to true
+    */
+      setForm({
+        type: "SET_UPDATE_QM_FORM_STATE",
+        payload: calabrioQmUser
+      });
+
   } else if(!form.calabrio_qm.userFound && calabrioQmUser && !nNumberObject.fetchedUser){
     //Spoofing the nNumberFetchedUser so the CallRecordingForm still works. When Calabrio QM has its own table this can be re-orged a bit
     setForm({
       type: "COMPLETE_N_NUMBER",
       payload: {
-        nNumber: form.nNumber.value,
+        nNumber: form.nNumber.value || "n",
         fetchedUser: calabrioQmUser
       }
     });

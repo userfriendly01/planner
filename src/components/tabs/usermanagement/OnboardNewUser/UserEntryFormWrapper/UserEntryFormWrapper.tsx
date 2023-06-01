@@ -65,19 +65,23 @@ const UserEntryForm = () => {
   React.useEffect(() => {
     if(form.formMode === formModes.INSERT){
       const workerFound = workers.find((w: Worker) => w.attributes?.n_number?.toLowerCase() === form.nNumber.value?.toLowerCase());
+      const duplicateTritonMessage = "This user already seems to have a Triton Record. Please cancel out of this form and edit their worker instead.";
       if(workerFound){
         setForm({
           type: userFormActions.SET_DISCREPANCIES,
           payload: {
             type: discrepancyType.GENERAL,
-            message: "This user already seems to have a Triton Record. Please cancel out of this form and edit their worker instead."
+            message: duplicateTritonMessage
           }
         });
       } else {
-        setForm({
-          type: userFormActions.CLEAR_DISCREPANCY,
-          payload:"This user already seems to have a Triton Record. Please cancel out of this form and edit their worker instead."
-        });
+        const discrepancyListed = form.discrepancies.find((d: any) => d.message === duplicateTritonMessage);
+        if(discrepancyListed) {
+          setForm({
+            type: userFormActions.CLEAR_DISCREPANCY,
+            payload: duplicateTritonMessage
+          });
+        }
       } 
     }
   }, [form.nNumber.nNumberFetchedUser]);
@@ -107,7 +111,6 @@ const UserEntryForm = () => {
   }, []);
 
   console.log("FORM", form);
-  //FAITH - if it takes a while to populate - set a loaded attribute
 
   const handleResetForm = () => {
     navigate(-1);

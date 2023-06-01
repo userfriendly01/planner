@@ -295,6 +295,8 @@ export const checkConflictingUsers = async (user: any, users: CalabrioQmUser[], 
 };
 
 export const findMatchingQmProfiles = (user: any, users: CalabrioQmUser[], setForm: any): any[] => {
+  console.log("FAITH! ", user);
+
   //Calabrio users should always have a Triton user, the "user" passed through should be a triton user but if that's undefined we can search based on nNumber fetched user
   try {
     const acdId = toLowerCaseString(user.sid);
@@ -316,7 +318,7 @@ export const findMatchingQmProfiles = (user: any, users: CalabrioQmUser[], setFo
             type: "SET_DISCREPANCIES",
             payload: {
               type: discrepancyType.CALABRIO_QM,
-              message: "Calabrio QM Record found for user where the ACD ID does not match the Triton Worker. This will require manual review/correction."
+              message: `Calabrio QM Record found for user where the ACD ID does not match the Triton Worker. This will require manual review/correction. Search Calabrio for a record (active or inactive) where the ACD equals ${acdId}, make that the primary user and deactivate all other users.`
             }
           });
         };

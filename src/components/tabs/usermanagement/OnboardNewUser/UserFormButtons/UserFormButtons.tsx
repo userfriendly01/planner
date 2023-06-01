@@ -481,9 +481,11 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       <UserFormButton onClick={() => handleClose()}>
           Close
       </UserFormButton>
-      <UserFormButton onClick={() => setForm({ type: userFormActions.RESET_FORM })}>
+      { form.formMode === formModes.INSERT &&
+        <UserFormButton onClick={() => setForm({ type: userFormActions.RESET_FORM })}>
           Clear
-      </UserFormButton>
+        </UserFormButton>
+      }
       <Tooltip
         title={
           form.triton.didUser && !isDidDifferentValid(form, worker, forwardToToggle) ?

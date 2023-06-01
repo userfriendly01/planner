@@ -4,7 +4,7 @@ require("jest-styled-components");
 beforeAll(() => {
   console.log = jest.fn();
   console.error = jest.fn();
-  // console.warn = jest.fn();
+  console.warn = jest.fn();
 });
 
 jest.mock("authentication");

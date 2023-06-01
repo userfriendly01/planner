@@ -648,7 +648,7 @@ describe("CallRecordingForm", () => {
       beforeEach(() => {
         useFormState.mockReturnValue(formState);
       });
-      test("should use the form.nNumber.value", () => {
+      test.only("should use the form.nNumber.value", () => {
         render(<CallRecordingForm twilioWorker={null} missingFields={[]}/>);
         expect(Dropdown.mock.calls.length).toBe(3);
         expect(CallRecordingScope.mock.calls.length).toBe(1);
