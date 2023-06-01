@@ -8,7 +8,7 @@ import {
 } from "globals";
 import {
   formatProfileBooleanDataTrueFalse,
-  formatOverflowSkillData
+  formatSimpleText
 } from "utils/profileUtils";
 
 export const profileEntryFormActions = {
@@ -19,6 +19,8 @@ export const profileEntryFormActions = {
   SET_PROFILE_NAME: "SET_PROFILE_NAME",
   SET_UPDATE_PROFILE_FORM_STATE: "SET_UPDATE_PROFILE_FORM_STATE",
   TOGGLE: "TOGGLE",
+  UPDATE_ACCESS_GROUP: "UPDATE_ACCESS_GROUP",
+  UPDATE_ACCESS_GROUP_ID: "UPDATE_ACCESS_GROUP_ID",
   UPDATE_ACTIVITIES_LIST: "UPDATE_ACTIVITIES_LIST",
   UPDATE_CALL_TAGS_LIST: "UPDATE_CALL_TAGS_LIST",
   UPDATE_TRANSFER_QUEUES: "UPDATE_TRANSFER_QUEUES"
@@ -75,7 +77,11 @@ export const initialProfileEntryFormState: ProfileEntryFormState = {
     valid: false
   },
   transferQueues: [],
-  operatingUnit: {} as OperatingUnit
+  operatingUnit: {} as OperatingUnit,
+  accessGroup: {
+    value: false
+  },
+  accessGroupId: null
 };
 
 export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Action): ProfileEntryFormState => {
@@ -139,7 +145,24 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         operatingUnit: action.payload
       };
     }
-
+    case profileEntryFormActions.UPDATE_ACCESS_GROUP: {
+      return {
+        ...state,
+        accessGroup: {
+          value: !state[action.fieldKey].value,
+          updated: true
+        },
+        accessGroupId: state[action.fieldKey].value?null:state.accessGroupId,
+        accessGroupIdUpdated: true
+      };
+    }
+    case profileEntryFormActions.UPDATE_ACCESS_GROUP_ID: {
+      return {
+        ...state,
+        accessGroupId: action.payload,
+        accessGroupIdUpdated: true
+      };
+    }
     case profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE: {
       const profile = action.payload.profile;
 
@@ -189,7 +212,7 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         voiceMailTranscription: formatProfileBooleanDataTrueFalse(profile.voice_mail_transcription_i.data[0]),
         clickToDial: formatProfileBooleanDataTrueFalse(profile.click_to_dial_i.data[0]),
         overflowSkill: {
-          value: formatOverflowSkillData(profile.overflow_skill),
+          value: formatSimpleText(profile.overflow_skill),
           valid: true
         },
         profileName: {
@@ -200,7 +223,9 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         operatingUnit: {
           ou_name: profile.operating_unit_nme,
           ou_sid: profile.operating_unit_sid
-        }
+        },
+        accessGroupId: profile.access_group_id,
+        accessGroup: { value: profile.access_group_id ? true : false }
       };
     }
     default:
