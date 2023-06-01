@@ -176,7 +176,7 @@ const SkillGroupInputContainer = (props: any) => {
       editConfirmationText = <>
         <ConfirmationSkillGroupsDiv>
         Are you sure you want to edit the skill group <span style={{ textDecoration: "underline" }}>{skillGroupToEditDelete?.label ? skillGroupToEditDelete?.label : ""}?</span>
-          {requestBody.skill_group_nme ? `The name of this skill grouping will become ${skillGroupName}` : ""}
+          {requestBody.skill_group_nme ? <>The name of this skill grouping will become <span style={{ textDecoration: "underline" }}>{skillGroupName}</span> </> : ""}
           This skill group will contain the following skills:
           <ConfirmationSkillList>
             {tableState.selected.map((skill: Skill) => <li key={skill.name}>{skill.name}</li>)}
@@ -293,7 +293,7 @@ const SkillGroupInputContainer = (props: any) => {
       {(action === ActionTypes.EDIT || action === ActionTypes.DELETE) && (
         <Dropdown
           options={getSkillGroupOptions()}
-          label={`Skill Group to ${action.label}`}  // todo: check this.. is action an obj?
+          label={`Skill Group to ${action.label}`}
           updateValue={(event: AnalyserNode, val: any) => {
             setSkillGroupToEditDelete(val);
             setSkillGroupName(val.label);
@@ -326,7 +326,8 @@ const SkillGroupInputContainer = (props: any) => {
         disabled={
           (action === ActionTypes.ADD && skillGroupName === "") ||
           (action === ActionTypes.ADD && tableState.selected.length < 1) ||
-          (action === ActionTypes.DELETE && !skillGroupToEditDelete)
+          (action === ActionTypes.DELETE && !skillGroupToEditDelete) ||
+          (action === ActionTypes.EDIT && !skillGroupToEditDelete)
         }
       >{action.label} Skill Group</UserFormButton>
       <div style={{ marginTop: "5px" }}>

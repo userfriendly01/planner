@@ -53,7 +53,6 @@ jest.mock("@mui/material", () => ({
   Checkbox: jest.fn()
 }));
 
-// TODO: what??? Why do I suddenly need all these silly mocks???
 jest.mock("@mui/x-date-pickers/TimePicker", () => ({
   TimePicker: jest.fn()
 }));
