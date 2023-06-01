@@ -401,7 +401,20 @@ describe("reducer", () => {
             {
               name: "billy",
             },
-          ]
+          ],
+          Absences: [],
+          Availabilities: [],
+          Budget_Groups: [],
+          Contracts:[],
+          Contract_Schedules: [],
+          Optional_Columns: [],
+          Part_Time_Percentages: [],
+          Roles: [],
+          Rotations: [],
+          Shift_Bags: [],
+          Skills: [],
+          Teams: [],
+          Workflow_Control_Sets: []
         }
       ]);
       expect(result.calabrioContext.wfmErrors).toEqual(payload.errors);

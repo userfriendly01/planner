@@ -165,12 +165,18 @@ const UserEntryForm = () => {
           </DiscrepancyContainer>
           : null
       }
+      { form.formMode === formModes.UPDATE && !tritonWorker &&
+        <>
+          <StyledDivider />
+          <h4>Edit WFM is not yet supported. To edit Triton or Calabrio QM profiles, please navigate to the worker through the Triton table. </h4>
+        </>
+      }
       <StyledDivider />
       <HeaderRow>
         <h2>Triton User Settings</h2>
         { form.formMode !== formModes.DELETE &&
           <Checkbox
-            disabled={form.triton.userFound}
+            disabled={form.triton.userFound || (form.formMode === formModes.UPDATE && !tritonWorker)}
             checked={form.triton.userFound}
             onChange={(event: any) => handleCheckbox(event.target.checked, "triton")}
           />
@@ -192,7 +198,7 @@ const UserEntryForm = () => {
         <h2>Calabrio Quality Management User Settings</h2>
         { form.formMode !== formModes.DELETE &&
           <Checkbox
-            disabled={form.calabrio_qm.userFound}
+            disabled={form.calabrio_qm.userFound || (form.formMode === formModes.UPDATE && !tritonWorker)}
             checked={form.calabrio_qm.userFound}
             onChange={(event: any) => handleCheckbox(event.target.checked, "calabrio_qm")}
           />

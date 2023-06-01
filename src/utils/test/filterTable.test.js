@@ -189,6 +189,7 @@ describe("filterWfmUserTable", () => {
     LastName: "cuneo",
     Identity: "faith.cuneo@gmail.com",
     Email: "faith.cuneo@yahoo.com",
+    EmploymentNumber: "n0263786",
     Id: "88372-0098"
   }
   test("wfm user is null - should return false", () => {
@@ -222,6 +223,10 @@ describe("filterWfmUserTable", () => {
     });
     test("id contains search value - should return true", () => {
       const result = filterWfmUserTable(user, "0098");
+      expect(result).toBe(true);
+    });
+    test("nNumber contains search value - should return true", () => {
+      const result = filterWfmUserTable(user, "637");
       expect(result).toBe(true);
     });
   });

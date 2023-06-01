@@ -40,30 +40,38 @@ const TritonUserManagementWrapper: any = () => {
   };
 
   const state = useAdminState();
+  const wfmPeople = getWfmPeople(state);
   const [ tableState, setTableState ] = React.useState(defaultTableState);
-  const [ wfmLoaded, setWfmLoaded ] = React.useState(false);
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    const wfmPeople = getWfmPeople(state);
 
     if(wfmPeople.length > 0){
-      setWfmLoaded(true);
       let filteredList = wfmPeople.slice().sort(sortWfmWorkersByFullName);
       console.log("tableState", tableState);
 
       //filter by business unit
       if(tableState.businessUnitFilter && tableState.businessUnitFilter !== "show-all"){
+        console.log("FAITH BUs", getWfmBusinessUnits(state));
         const businessUnit = getWfmBusinessUnits(state).find((bu: WfmBusinessUnit) => bu.Id === tableState.businessUnitFilter)
-        filteredList = filteredList.filter((wfmUser: WfmUser) => wfmUser.BusinessUnitId === businessUnit?.Id);
+        if(tableState.businessUnitFilter === "People_Without_Team"){
+          filteredList = filteredList.filter((wfmUser: WfmUser) => !wfmUser.BusinessUnitId);
+        } else {
+          filteredList = filteredList.filter((wfmUser: WfmUser) => wfmUser.BusinessUnitId === businessUnit?.Id);
+        }
       }
       console.log("**BU FL", filteredList);
 
+
       //filter by team
       if(tableState.teamFilter && tableState.teamFilter !== "show-all"){
-        const team = getWfmTeams(state).find((team: WfmTeam) => team.Id === tableState.teamFilter);
-        if(team){
-          filteredList = filteredList.filter((wfmUser: WfmUser) => wfmUser.TeamId === team.Id);
+        if(tableState.teamFilter === "no-team"){
+          filteredList = filteredList.filter((wfmUser: WfmUser) => wfmUser.TeamId === null);
+        } else {
+          const team = getWfmTeams(state).find((team: WfmTeam) => team.Id === tableState.teamFilter);
+          if(team){
+            filteredList = filteredList.filter((wfmUser: WfmUser) => wfmUser.TeamId === team.Id);
+          }
         }
       }
       console.log("**Team FL", filteredList);
@@ -80,8 +88,6 @@ const TritonUserManagementWrapper: any = () => {
       const startingUserIndex = tableState.pagination.pageNumber !== 1 ? ((tableState.pagination.pageNumber - 1) * tableState.pagination.usersPerPage) : 0;
       const endingUserIndex = tableState.pagination.pageNumber * tableState.pagination.usersPerPage - 1;
       filteredList = filteredList.slice(startingUserIndex, endingUserIndex + 1);
-      console.log("FAITH", startingUserIndex);
-      console.log("FAITH", endingUserIndex);
       console.log("**pagination FL", filteredList.slice());
 
       setTableState({
@@ -96,8 +102,6 @@ const TritonUserManagementWrapper: any = () => {
         }
       });
       console.log("final filtered list", filteredList);
-    } else {
-      setWfmLoaded(false);
     }
   }, [tableState.searchBy, tableState.teamFilter, tableState.businessUnitFilter, tableState.pagination.pageNumber, state.calabrioContext.wfmOrg]);
 
@@ -108,7 +112,7 @@ const TritonUserManagementWrapper: any = () => {
         tableState={tableState}
         setTableState={setTableState}
       />
-      { wfmLoaded ?
+      { wfmPeople.length > 0 ?
         <>
           <StyledPaper elevation={3}>
           <WfmUserTable

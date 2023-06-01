@@ -94,8 +94,9 @@ export const reducer = (state: AppState, action: Action): AppState => {
         }
       };
     case "loadWfmOrg": {
-      const org = action.payload.org;
-      const errors = action.payload.errors;
+      const org = action.payload.org || [];
+      const errors = action.payload.errors || [];
+      const peopleWithoutTeam = action.payload.People_Without_Team || [];
       return {
         ...state,
         calabrioContext: {
@@ -105,7 +106,20 @@ export const reducer = (state: AppState, action: Action): AppState => {
             {
               Id: "People_Without_Team",
               Name: "Lost Souls",
-              People: action.payload.People_Without_Team
+              People: peopleWithoutTeam,
+              Absences: [],
+              Availabilities: [],
+              Budget_Groups: [],
+              Contracts:[],
+              Contract_Schedules: [],
+              Optional_Columns: [],
+              Part_Time_Percentages: [],
+              Roles: [],
+              Rotations: [],
+              Shift_Bags: [],
+              Skills: [],
+              Teams: [],
+              Workflow_Control_Sets: []
             }
           ],
           wfmErrors: errors

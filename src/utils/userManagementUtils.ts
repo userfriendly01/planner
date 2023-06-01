@@ -244,16 +244,14 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
     const errorMessage = `Failed to fetch nNumber from HR database. ${form.nNumber.value}. 
     If this nNumber continues to fail, this user may no longer be active in the HR database or needs to reach out to the HR team to investigate the failure.`
     nNumberObject = await fetchUser(form.nNumber.value, setForm, errorMessage, discrepancyType.GENERAL);
-  } 
+  }
 
   if(primarySystem === "triton"){
-    console.log("FAITH- we're in Triton")
     const acdId = form.triton.sid;
     const nNumber = form.nNumber.value || form.triton.attributes?.n_number;
     const email = form.nNumber.nNumberFetchedUser?.email || form.triton.attributes?.email;
     calabrioWfmUser = findMatchingWorker(acdId, nNumber, email, calabrioWfmUsers);
     calabrioQmUser = findMatchingWorker(acdId, nNumber, email, calabrioQmUsers);
-    console.log("FAITH- calabrioQmUser", calabrioQmUser);
   } else if(primarySystem === "calabrio_qm"){
     //This condition wont be in play until the calabrio qm table is in place
     //When this condition is fulfilled we can peel some of the code out of the CallRecordingForm

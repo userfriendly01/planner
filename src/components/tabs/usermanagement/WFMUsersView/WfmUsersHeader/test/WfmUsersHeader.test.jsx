@@ -36,8 +36,10 @@ const tableState = {
 
 const mockSetTableState = jest.fn();
 
-const renderComponent = () => {
-  render(<WfmUsersHeader tableState={tableState} setTableState={mockSetTableState}/>);
+const renderComponent = (customTableState) => {
+  render(<WfmUsersHeader
+    tableState={customTableState || tableState}
+    setTableState={mockSetTableState}/>);
 };
 
 describe("WfmUsersHeader", () => {
@@ -67,12 +69,34 @@ describe("WfmUsersHeader", () => {
       const BUId = "123-321";
       renderComponent();
       const updateValue = Dropdown.mock.calls[0][0].updateValue;
-      act(() => updateValue({}, BUId));
+      act(() => updateValue({}, { value: BUId }));
       expect(mockSetTableState).toHaveBeenCalledTimes(1);
       expect(mockSetTableState).toHaveBeenCalledWith({
         ...tableState,
         businessUnitFilter: BUId
       });
+    });
+  });
+  describe("show all is called on Business Unit Dropdown", () => {
+    test("should call setTableState", () => {
+      renderComponent();
+      const updateValue = Dropdown.mock.calls[0][0].updateValue;
+      act(() => updateValue({}, { value: "show-all" }));
+      expect(mockSetTableState).toHaveBeenCalledTimes(1);
+      expect(mockSetTableState).toHaveBeenCalledWith({
+        ...tableState,
+        businessUnitFilter: "show-all"
+      });
+    });
+  });
+  describe("existing bu value is unknown", () => {
+    test("should call setTableState", () => {
+      renderComponent({
+        ...tableState,
+        businessUnitFilter: "unknown"
+      });
+      const option = Dropdown.mock.calls[0][0].value;
+      expect(option).toBe("");
     });
   });
   describe("updateValue is called on Team Dropdown", () => {
@@ -86,6 +110,17 @@ describe("WfmUsersHeader", () => {
         ...tableState,
         teamFilter: "111"
       });
+    });
+  });
+  describe("existing team value is populated", () => {
+    test("should call setTableState", () => {
+      renderComponent({
+        ...tableState,
+        teamFilter: "111"
+      });
+      const option = Dropdown.mock.calls[1][0].value;
+      expect(option.label).toBe("Team1");
+      expect(option.value).toBe("111");
     });
   });
   describe("setSearch is called on SearchBox", () => {

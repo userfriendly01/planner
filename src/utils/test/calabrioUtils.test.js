@@ -158,7 +158,7 @@ describe("calabrioUtils", () => {
   });
   describe("getWfmBusinessUnits", () => {
     test("returns list of Business units containing Name and Id", () => {
-      const result = getWfmBusinessUnits({ calabrioContext });
+      const result = getWfmBusinessUnits({ calabrioContext }, true);
       expect(result).toEqual([{
         Name: "Cool WFM Business Unit",
         Id: "123-321"

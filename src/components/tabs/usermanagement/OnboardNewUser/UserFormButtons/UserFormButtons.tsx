@@ -403,7 +403,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       }
     }
 
-    if(form.calabrio_wfm.userFound){
+    if(form.calabrio_wfm.userFound && !form.calabrio_wfm.Id){
       //Edit is not supported yet but if calabrio_wfm.userFound is true, that means they are creating a new WFM user for an existing Triton User
       const wfmBody = {
         ...form.calabrio_wfm,

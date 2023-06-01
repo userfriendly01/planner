@@ -51,7 +51,6 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
   }, [form]);
 
   React.useEffect(() => {
-    console.log("FAITH! - WE LIVE");
     if(form.nNumber.nNumberFetchedUser && form.formMode === formModes.UPDATE) {
       initiateEditForm();
     }

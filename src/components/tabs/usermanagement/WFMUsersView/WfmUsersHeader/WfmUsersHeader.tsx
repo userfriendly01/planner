@@ -40,7 +40,7 @@ const ManagementHeader = (props: WfmUsersHeaderProps) => {
         label: "divider"
       }
     ];
-    getWfmBusinessUnits(state).sort(sortWFMByName).forEach((bu: WfmBusinessUnit) => {
+    getWfmBusinessUnits(state, true).sort(sortWFMByName).forEach((bu: WfmBusinessUnit) => {
       options.push({
         label: bu.Name,
         value: bu.Id,
@@ -65,7 +65,7 @@ const ManagementHeader = (props: WfmUsersHeaderProps) => {
         label: "divider"
       }
     ];
-    getWfmTeams(state, tableState.businessUnitFilter?.Id, true).sort(sortWFMByName).forEach((team: WfmTeam) => {
+    getWfmTeams(state, tableState.businessUnitFilter, true).sort(sortWFMByName).forEach((team: WfmTeam) => {
       options.push({
         label: team.Name,
         value: team.Id,
@@ -73,6 +73,31 @@ const ManagementHeader = (props: WfmUsersHeaderProps) => {
       });
     });
     return options;
+  }
+
+  const getTeamOption = () => {
+    const team = getWfmTeams(state, tableState.businessUnitFilter, true).find((tm: any) => tm.Id === tableState.teamFilter);
+    if(team){
+      return {
+        label: team.Name,
+        value: team.Id,
+        ...team
+      }
+    } else if(tableState.teamFilter === "no-team"){
+      return {
+        value: "no-team",
+        label: "No Team"
+      }
+    } else {
+      console.log("Team Filter not an available option");
+      if(tableState.teamFilter){
+        setTableState({
+          ...tableState,
+          teamFilter: null
+        });
+      }
+      return ""
+    }
   }
   return (
     <Wrapper>
@@ -87,29 +112,30 @@ const ManagementHeader = (props: WfmUsersHeaderProps) => {
       />
       <Dropdown
         label={"Filter Business Unit"}
+        disableClear={true}
         styles={{
           width: "400px",
           margin: "10px 0px"
         }}
         options={getBusinessUnitOptions()}
-        value={tableState.businessUnitFilter || ""}
+        value={getBusinessUnitOptions().find((bu: any) => bu.Id === tableState.businessUnitFilter) || ""}
         updateValue={(event: any, newValue: any) => {
           setTableState({
             ...tableState,
-            businessUnitFilter: newValue
+            businessUnitFilter: newValue.value
           })}
         }
       />
       <Dropdown
         label={"Filter By Team"}
+        disableClear={true}
         styles={{
           width: "400px",
           margin: "10px 0px"
         }}
         options={getTeamOptions()}
-        value={tableState.teamFilter || ""}
+        value={getTeamOption()}
         updateValue={(event: any, newValue: any) => {
-          console.log("Selected Team", newValue);
           setTableState({
             ...tableState,
             teamFilter: newValue.value

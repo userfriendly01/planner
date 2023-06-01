@@ -33,12 +33,10 @@ import {
 
 const WfmUserTable = (props: WfmUserTableProps) => {
   const {
-    tableState,
-    setTableState
+    tableState
   } = props;
 
   const state = useAdminState();
-  const [ selectedUsers, setSelectedUsers ] = React.useState<WfmUser[]>([]);
   const setForm = useFormDispatch();
   const navigate = useNavigate();
 

@@ -240,12 +240,6 @@ describe("<WfmForm />", () => {
         label: "Other WFM Business Unit",
         Id: "999-999",
         Name: "Other WFM Business Unit"
-      },
-      {
-        value: "People_Without_Team",
-        label: "People_Without_Team",
-        Id: "People_Without_Team",
-        Name: "People_Without_Team"
       }]);
     });
     test("updateValue calls setForm", () => {

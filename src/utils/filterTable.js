@@ -50,6 +50,7 @@ export const filterWfmUserTable = (wfmUser, searchValue) => {
   const lastName = wfmUser.LastName?.toLowerCase() || "";
   const identity = wfmUser.Identity?.toLowerCase() || "";
   const email = wfmUser.Email?.toLowerCase() || "";
+  const nNumber = wfmUser.EmploymentNumber?.toLowerCase() || "";
   const id = wfmUser.Id?.toLowerCase() || "";
 
   const lowerCaseSearch = searchValue.toLowerCase();
@@ -63,6 +64,8 @@ export const filterWfmUserTable = (wfmUser, searchValue) => {
   } else if (email.indexOf(lowerCaseSearch) >= 0) {
     return true;
   } else if (id.indexOf(lowerCaseSearch) >= 0) {
+    return true;
+  } else if (nNumber.indexOf(lowerCaseSearch) >= 0) {
     return true;
   }
   return false;

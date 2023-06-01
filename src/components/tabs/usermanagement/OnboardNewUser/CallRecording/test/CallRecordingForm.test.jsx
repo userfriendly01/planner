@@ -439,7 +439,7 @@ describe("CallRecordingForm", () => {
         });
       });
     });
-    describe("Team Dropdown", () => {
+    describe.only("Team Dropdown", () => {
       const form = {
         ...initialFormState,
         triton: {
@@ -648,7 +648,7 @@ describe("CallRecordingForm", () => {
       beforeEach(() => {
         useFormState.mockReturnValue(formState);
       });
-      test.only("should use the form.nNumber.value", () => {
+      test("should use the form.nNumber.value", () => {
         render(<CallRecordingForm twilioWorker={null} missingFields={[]}/>);
         expect(Dropdown.mock.calls.length).toBe(3);
         expect(CallRecordingScope.mock.calls.length).toBe(1);
@@ -745,7 +745,7 @@ describe("CallRecordingForm", () => {
             type: "SET_DISCREPANCIES",
             payload: {
               type: "Calabrio QM",
-              message: "Calabrio QM Record found for user where the ACD ID does not match the Triton Worker. This will require manual review/correction."
+              message: "Calabrio QM Record found for user where the ACD ID does not match the Triton Worker. This will require manual review/correction. Search Calabrio for a record (active or inactive) where the ACD equals wk1234, make that the primary user and deactivate all other users."
             }
           });
           expect(mockSetForm).toHaveBeenCalledWith({

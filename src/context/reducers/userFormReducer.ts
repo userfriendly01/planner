@@ -601,13 +601,13 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
       const PersonSkills: any[] = [];
       const OptionalColumns: any[] = [];
 
-      user.Roles.forEach((ur: any) => {
+      user.Roles?.forEach((ur: any) => {
         const availableRole = getWfmOptions(appState)?.Roles.find((r: any) => r.Id === ur.RoleId);
         if(availableRole){
           Roles.push(availableRole);
         }
       });
-      user.PersonSkills.forEach((us: any) => {
+      user.PersonSkills?.forEach((us: any) => {
         const availableSkill = getWfmOptions(appState)?.Skills.find((s: any) => s.Id === us.SkillId);
         if(availableSkill){
           PersonSkills.push(availableSkill);

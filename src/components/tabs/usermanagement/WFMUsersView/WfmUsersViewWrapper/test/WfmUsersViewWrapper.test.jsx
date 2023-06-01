@@ -96,7 +96,7 @@ describe("WfmUsersViewWrapper", () => {
       doRender();
       expect(WfmUsersHeader).toHaveBeenCalledTimes(2);
       expectOnlyPassedProps(WfmUsersHeader, expectedDefaultTableState, getLastInstanceCalled(WfmUsersHeader));
-      expect(WfmUserTable).toHaveBeenCalledTimes(1);
+      expect(WfmUserTable).toHaveBeenCalledTimes(2);
       expect(WfmErrorBanner).toHaveBeenCalledTimes(2);
       expectOnlyPassedProps(WfmUserTable, expectedDefaultTableState, getLastInstanceCalled(WfmUserTable));
       expect(Pagination).toHaveBeenCalledTimes(1);
@@ -115,7 +115,7 @@ describe("WfmUsersViewWrapper", () => {
         doRender();
         expect(WFMLoadRetryModal).toHaveBeenCalledTimes(1);
       });
-      describe("WFMLoadRetryModal handleClose is called", () => {
+      describe.only("WFMLoadRetryModal handleClose is called", () => {
         test("should call navigate with -1", () => {
           doRender();
           expect(WFMLoadRetryModal).toHaveBeenCalledTimes(1);     

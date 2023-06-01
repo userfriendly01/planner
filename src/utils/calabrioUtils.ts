@@ -72,22 +72,32 @@ export const daysOfTheWeekOptions = [
   }
 ]
 
-export const getWfmBusinessUnits = (state: AppState) => {
+export const getWfmBusinessUnits = (state: AppState, includeLostSouls?: boolean) => {
   const wfmOrg = state.calabrioContext.wfmOrg;
-  return wfmOrg.map((businessUnit: WfmBusinessUnit) => {
-    return {
-      Id: businessUnit.Id,
-      Name: businessUnit.Name
-    }
-  });
+  if(includeLostSouls){
+    return wfmOrg.map((businessUnit: WfmBusinessUnit) => {
+      return {
+        Id: businessUnit.Id,
+        Name: businessUnit.Name
+      }
+    });
+  } else {
+    const peopleWithHomes = wfmOrg.filter((businessUnit: WfmBusinessUnit) => businessUnit.Id !== "People_Without_Team");
+    return peopleWithHomes.map((businessUnit: WfmBusinessUnit) => {
+      return {
+        Id: businessUnit.Id,
+        Name: businessUnit.Name
+      }
+    });
+  }
 };
 
 export const getWfmTeams = (state: AppState, businessUnitId?: string, includeLostSouls?: boolean) => {
   const wfmTeams: WfmTeam[] = [];
   
-  if(businessUnitId){
-    const businessUnit = state.calabrioContext.wfmOrg?.find((bu: WfmBusinessUnit) => bu.Id === businessUnitId);
-    businessUnit.Teams.forEach((team: WfmTeam) => wfmTeams.push(team));
+  const businessUnit = state.calabrioContext.wfmOrg?.find((bu: WfmBusinessUnit) => bu.Id === businessUnitId);
+  if(businessUnit){
+    businessUnit.Teams?.forEach((team: WfmTeam) => wfmTeams.push(team));
   } else {
     if(!includeLostSouls){
       state.calabrioContext.wfmOrg?.forEach((businessUnit: WfmBusinessUnit) => {
@@ -303,6 +313,16 @@ export const findMatchingQmProfiles = (user: any, users: CalabrioQmUser[], setFo
     const email = toLowerCaseString(user.attributes?.email || user.nNumberFetchedUser?.email);
     const adLogin = `lm\\${toLowerCaseString(user.attributes?.n_number || user?.value)}`;
 
+    if(!acdId){
+      setForm({
+        type: "SET_DISCREPANCIES",
+        payload: {
+          type: discrepancyType.CALABRIO_QM,
+          message: "Triton Worker Record not found but is required for Calabrio QM. This will require manual review/correction."
+        }
+      });
+    };
+    
     const matchingProfiles: any[] = [];
     users.forEach(u => {
       const dupUserAcdId = toLowerCaseString(u.acdId);
@@ -323,16 +343,8 @@ export const findMatchingQmProfiles = (user: any, users: CalabrioQmUser[], setFo
           });
         };
         matchingProfiles.push(u)
-      } else if(!acdId){
-        setForm({
-          type: "SET_DISCREPANCIES",
-          payload: {
-            type: discrepancyType.CALABRIO_QM,
-            message: "Triton Worker Record not found but is required for Calabrio QM. This will require manual review/correction."
-          }
-        });
       }
-    });
+    })
     return matchingProfiles;
   } catch(err) {
     console.error("Error thrown trying to find QM profiles", err);
