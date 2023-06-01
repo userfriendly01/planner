@@ -16,7 +16,8 @@ import {
 import {
   useFormState,
   useFormDispatch,
-  userFormActions
+  userFormActions,
+  useAdminState
 } from "context";
 import React from "react";
 
@@ -28,6 +29,10 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
     updateTemplate,
     removeTemplate
   } = props;
+
+  const [defaultSkill, setDefaultSkill] = React.useState([]);
+
+  let skillList: any;
 
   console.log("BulkdUpdateForm - selectedTemplates", selectedTemplates);
 
@@ -50,17 +55,22 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
 
   const [ option, setOption ] = React.useState(dropdownOptions.ADD_SKILL);
 
+  const skills = useAdminState().skillContext.skills.slice().filter(s => s.levels);
+  const skillGroups = useAdminState().skillContext.skillGroups.slice();
+
   // add keys to template so processing function can adjust payload body
   React.useEffect(() => {
     if (option === dropdownOptions.ADD_SKILL) {
       updateTemplate(template, {
-        action: "ADD"
+        action: "ADD",
+        skills: skillList
       });
     } else if (option === dropdownOptions.OVERRIDE_SKILL) {
       replaceTemplate({
         ...template,
         data: {
-          action: "OVERRIDE"
+          action: "OVERRIDE",
+          skills: []
         }
       });
     } else {
@@ -113,7 +123,10 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
         <DefaultSkillSelector
           defaultSkills={form.defaultSkills}
           setDefaultSkills={(defaultSkills: any) => {
-            console.log("setting default skills right hurr");
+            // add skills to state array thing here
+            console.log("&&& setting default skills: ", defaultSkills);
+            skillList = defaultSkills;
+            console.log("&&& skillList: ", skillList);
           }}
         />
       }

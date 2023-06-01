@@ -344,6 +344,7 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: a
   const userNNumber = row.attributes.n_number;
   const workerSid = row.workerSid; // maybe unnecessary here, use this when calling updateUser
   // todo: skills from form go here
+  const action = template.data ? template.data.action : template.action;
 
   // from userFormButtons.tsx
   const attributes: Partial<Worker["attributes"]> = {};
@@ -351,6 +352,14 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: a
     levels: {},
     skills: []
   };
+
+  if (action === "ADD") {
+    // grab users current default skills and append the new ones
+  } else if (action === "OVERRIDE") {
+
+  } else {
+
+  }
 
   const body = {};
 
