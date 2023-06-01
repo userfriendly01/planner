@@ -19,7 +19,6 @@ import {
   ConfirmationSkillList
 } from "./SkillGroup.Styles";
 
-
 const SkillGroupInputContainer = (props: any) => {
   const [ skillGroupName, setSkillGroupName ] = React.useState("");
   const [ skillGroupId, setSkillGroupId ] = React.useState();
