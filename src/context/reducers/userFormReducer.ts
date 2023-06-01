@@ -902,8 +902,8 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
         triton: {
           ...state.triton,
           defaultSkills: {
-            updated: true,
-            ...defaultSkills
+            ...defaultSkills,
+            updated: true
           }
         }
       };
