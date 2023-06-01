@@ -96,6 +96,11 @@ jest.mock("globals", () => ({
   formModes: jest.requireActual("globals").formModes
 }));
 
+jest.mock("../../RoutingAttributes", ()=>({
+  __esModule: true,
+  RoutingAttributes: jest.fn()
+}));
+
 const mockSetForm = jest.fn();
 
 const mockSetForwardToToggle = jest.fn();
