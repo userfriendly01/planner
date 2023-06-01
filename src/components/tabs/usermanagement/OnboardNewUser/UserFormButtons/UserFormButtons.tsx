@@ -476,13 +476,31 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     }
   }
 
+  const clearForm = () => {
+    setForm({ type: userFormActions.RESET_FORM });
+    setForm({
+      type: userFormActions.UPDATE_USER_FOUND,
+      payload: {
+        system: "triton",
+        isFound: true
+      }
+    });
+    setForm({
+      type: userFormActions.UPDATE_USER_FOUND,
+      payload: {
+        system: "calabrio_qm",
+        isFound: true
+      }
+    });
+  }
+
   return (
     <ButtonWrapper>
       <UserFormButton onClick={() => handleClose()}>
           Close
       </UserFormButton>
       { form.formMode === formModes.INSERT &&
-        <UserFormButton onClick={() => setForm({ type: userFormActions.RESET_FORM })}>
+        <UserFormButton onClick={clearForm}>
           Clear
         </UserFormButton>
       }

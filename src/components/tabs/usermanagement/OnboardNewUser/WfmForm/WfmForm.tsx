@@ -253,7 +253,7 @@ const WfmForm = (props: WfmFormProps) => {
             options={generateDropdownOptionArray(getWfmBusinessUnits(state))}
             updateValue={(event: any, newValue: any) => setForm({
               type: userFormActions.SET_WFM_BUSINESS_UNIT,
-              payload: newValue.value
+              payload: newValue?.value || null
             })}
             value={generateDropdownOption(getWfmBusinessUnits(state)?.find((bu: any) => bu.Id === form.calabrio_wfm.BusinessUnitId))}
           />
@@ -267,7 +267,7 @@ const WfmForm = (props: WfmFormProps) => {
             options={generateDropdownOptionArray(getWfmTeams(state, form.calabrio_wfm.BusinessUnitId))}
             updateValue={(event: any, newValue: any) => setTeamFields({
               ...teamFields,
-              id: newValue.value
+              id: newValue?.value || null
             })}
             value={generateDropdownOption(getWfmTeams(state, form.calabrio_wfm.BusinessUnitId).find((t: any) => t.Id === teamFields.id))}
           />
@@ -332,9 +332,9 @@ const WfmForm = (props: WfmFormProps) => {
             options={daysOfTheWeekOptions}
             updateValue={(event: any, newValue: any) => setForm({
               type: userFormActions.SET_WFM_FIRST_DAY_OF_WEEK,
-              payload: newValue.value
+              payload: newValue?.value || null
             })}
-            value={form.calabrio_wfm.FirstDayOfWeek}
+            value={daysOfTheWeekOptions.find((op: any) => op.value === form.calabrio_wfm.FirstDayOfWeek)}
           />
           <DatePicker
             label="Person Start Date"
@@ -400,7 +400,7 @@ const WfmForm = (props: WfmFormProps) => {
             value={generateDropdownOption(optionsByBusinessUnit["Workflow_Control_Sets"]?.find((wcs: any) => wcs.Id === form.calabrio_wfm.WorkflowControlSetId) || "")}
             updateValue={(event: any, newValue: any) => setForm({
               type: userFormActions.SET_WFM_CONTROL_SET,
-              payload: newValue.value
+              payload: newValue?.value || null
             })}
             styles={{ width: "250px" }}
           />
@@ -478,7 +478,7 @@ const WfmForm = (props: WfmFormProps) => {
             value={generateDropdownOption(optionsByBusinessUnit["Absences"]?.find((a: any) => a.Id === form.calabrio_wfm.AbsenceId))}
             updateValue={(event: any, newValue: any) => setForm({
               type: userFormActions.SET_WFM_ABSENCE,
-              payload: newValue.value
+              payload: newValue?.value || null
             })}
             styles={{ width: "250px" }}
           />
@@ -489,7 +489,7 @@ const WfmForm = (props: WfmFormProps) => {
             value={generateDropdownOption(optionsByBusinessUnit["Budget_Groups"]?.find((bg: any) => bg.Id === form.calabrio_wfm.BudgetGroupId))}
             updateValue={(event: any, newValue: any) => setForm({
               type: userFormActions.SET_WFM_BUDGET_GROUP,
-              payload: newValue.value
+              payload: newValue?.value || null
             })}
             styles={{ width: "250px" }}
           />
@@ -501,7 +501,7 @@ const WfmForm = (props: WfmFormProps) => {
             value={generateDropdownOption(optionsByBusinessUnit["Part_Time_Percentages"]?.find((ptp: any) => ptp.Id === form.calabrio_wfm.PartTimePercentageId))}
             updateValue={(event: any, newValue: any) => setForm({
               type: userFormActions.SET_WFM_PART_TIME_PERCENTAGE,
-              payload: newValue.value
+              payload: newValue?.value || null
             })}
             styles={{ width: "250px" }}
           />
@@ -515,7 +515,7 @@ const WfmForm = (props: WfmFormProps) => {
             value={generateDropdownOption(optionsByBusinessUnit["Contract_Schedules"]?.find((cs: any) => cs.Id === form.calabrio_wfm.ContractScheduleId))}
             updateValue={(event: any, newValue: any) => setForm({
               type: userFormActions.SET_WFM_CONTRACT_SCHEDULE,
-              payload: newValue.value
+              payload: newValue?.value || null
             })}
             styles={{ width: "250px" }}
           />
@@ -527,7 +527,7 @@ const WfmForm = (props: WfmFormProps) => {
             value={generateDropdownOption(optionsByBusinessUnit["Contracts"]?.find((c: any) => c.Id === form.calabrio_wfm.ContractId))}
             updateValue={(event: any, newValue: any) => setForm({
               type: userFormActions.SET_WFM_CONTRACT,
-              payload: newValue.value
+              payload: newValue?.value || null
             })}
             styles={{ width: "250px" }}
           />
@@ -538,7 +538,7 @@ const WfmForm = (props: WfmFormProps) => {
             value={generateDropdownOption(optionsByBusinessUnit["Shift_Bags"]?.find((sb: any) => sb.Id === form.calabrio_wfm.ShiftBagId))}
             updateValue={(event: any, newValue: any) => setForm({
               type: userFormActions.SET_WFM_SHIFT_BAG,
-              payload: newValue.value
+              payload: newValue?.value || null
             })}
             styles={{ width: "250px" }}
           />
@@ -552,7 +552,7 @@ const WfmForm = (props: WfmFormProps) => {
             value={generateDropdownOption(optionsByBusinessUnit["Rotations"]?.find((r: any) => r.Id === rotationFields.id))}
             updateValue={(event: any, newValue: any) => setRotationFields({
               ...rotationFields,
-              id: newValue.value
+              id: newValue?.value || null
             })}
             styles={{ width: "250px" }}
           />
@@ -595,7 +595,7 @@ const WfmForm = (props: WfmFormProps) => {
             value={generateDropdownOption(optionsByBusinessUnit["Availabilities"]?.find((a: any) => a.Id === availabilityFields.id))}
             updateValue={(event: any, newValue: any) => setAvailabilityFields({
               ...availabilityFields,
-              id: newValue.value
+              id: newValue?.value || null
             })}
             styles={{ width: "250px" }}
           />
