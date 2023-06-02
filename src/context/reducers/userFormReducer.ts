@@ -366,6 +366,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
       const outgoingPayload = didUser ? { value: "" } : action.payload.outgoing;
       const profileId = action.payload.profileIdValue;
       const manager = action.payload.managerValue;
+      console.log("are we resetting the state?");
       //FAITH make sure default skills reset
       return {
         ...state,

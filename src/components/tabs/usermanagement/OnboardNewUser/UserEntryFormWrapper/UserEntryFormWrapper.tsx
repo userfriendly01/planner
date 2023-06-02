@@ -143,7 +143,7 @@ const UserEntryForm = () => {
       { form.formMode === formModes.INSERT && <Header1>Onboard New User</Header1> }
       { form.formMode === formModes.UPDATE && <Header1>Edit User</Header1> }
       { form.formMode === formModes.DELETE && <Header1>Deactivate User</Header1> }
-      { form.formMode !== formModes.INSERT && <Header2>{`${tritonWorker?.attributes.emp_first_name} ${tritonWorker?.attributes.emp_last_name}`}</Header2> }
+      { form.formMode !== formModes.INSERT && tritonWorker && <Header2>{`${tritonWorker?.attributes.emp_first_name} ${tritonWorker?.attributes.emp_last_name}`}</Header2> }
       { form.formMode === formModes.DELETE &&
         <DeleteTritonUser
           handleClose={handleResetForm}
@@ -221,6 +221,12 @@ const UserEntryForm = () => {
       { form.calabrio_wfm.userFound && <WfmForm
         missingFields={missingFields}
       /> }
+      { form.formMode === formModes.UPDATE && tritonWorker && missingFields.length > 0 && form.calabrio_wfm.userFound &&
+        <>
+          <StyledDivider />
+          <h4>Edit WFM is not yet supported. If there are discrepencies in your WFM record, uncheck the wfm section to continue your edits. Your WFM record will remain unchanged </h4>
+        </>
+      }
       <StyledDivider />
       { form.formMode !== formModes.DELETE && <UserFormButtons
         setMissingFields={setMissingFields}
