@@ -546,6 +546,7 @@ describe("userFormReducer", () => {
       ...initialUserFormState,
       triton: {
         ...initialUserFormState.triton,
+        userFound: true,
         manager: {
           value: managerValue,
           blurred,
@@ -581,6 +582,10 @@ describe("userFormReducer", () => {
           updated: false,
           value: true
         }
+      },
+      calabrio_qm: {
+        ...initialUserFormState.calabrio_qm,
+        userFound: true
       }
     };
     test("should reset all form fields except Manager, Team & Outbound Number", () => {
@@ -647,6 +652,7 @@ describe("userFormReducer", () => {
         ...initialUserFormState,
         triton: {
           ...initialUserFormState.triton,
+          userFound: true,
           manager: {
             value: managerValue,
             blurred: false,
@@ -664,6 +670,10 @@ describe("userFormReducer", () => {
             blurred: false,
             updated: true
           }
+        },
+        calabrio_qm: {
+          ...initialUserFormState.calabrio_qm,
+          userFound: true
         }
       });
     });
@@ -684,6 +694,7 @@ describe("userFormReducer", () => {
         ...initialUserFormState,
         triton: {
           ...initialUserFormState.triton,
+          userFound: true,
           didUser: true,
           manager: {
             value: managerValue,
@@ -702,6 +713,10 @@ describe("userFormReducer", () => {
             blurred: false,
             updated: true
           }
+        },
+        calabrio_qm: {
+          ...initialUserFormState.calabrio_qm,
+          userFound: true
         }
       });
     });

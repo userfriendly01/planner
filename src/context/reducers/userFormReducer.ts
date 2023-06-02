@@ -358,7 +358,15 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
     case userFormActions.RESET_FORM: {
       //FAITH - make sure default skills reset
       return {
-        ...initialUserFormState
+        ...initialUserFormState,
+        triton: {
+          ...initialUserFormState.triton,
+          defaultSkills: {
+            updated: false,
+            skills: [],
+            levels: {}
+          },
+        }
       };
     }
     case userFormActions.RESET_FORM_AFTER_ADD: {
@@ -366,12 +374,16 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
       const outgoingPayload = didUser ? { value: "" } : action.payload.outgoing;
       const profileId = action.payload.profileIdValue;
       const manager = action.payload.managerValue;
-      console.log("are we resetting the state?");
-      //FAITH make sure default skills reset
       return {
         ...initialUserFormState,
         triton: {
           ...initialUserFormState.triton,
+          userFound: true,
+          defaultSkills: {
+            updated: false,
+            skills: [],
+            levels: {}
+          },
           didUser,
           manager: {
             value: manager,
@@ -390,6 +402,10 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
             blurred: false,
             updated: true
           }
+        },
+        calabrio_qm: {
+          ...initialUserFormState.calabrio_qm,
+          userFound: true
         }
       };
     }
