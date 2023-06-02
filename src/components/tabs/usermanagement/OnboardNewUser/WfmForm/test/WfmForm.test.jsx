@@ -143,7 +143,7 @@ describe("<WfmForm />", () => {
     describe("wfmoptions and wfmOrg are loaded", () => {
       test("should render as expected", () => {
         renderComponent();
-        expect(Dropdown.mock.calls.length).toBe(32); //renders twice
+        expect(Dropdown.mock.calls.length).toBe(30); //renders twice
         expect(Dropdown.mock.calls[0][0].label).toBe("Business Unit *");
         expect(Dropdown.mock.calls[1][0].label).toBe("Team");
         expect(Dropdown.mock.calls[2][0].label).toBe("First Day of the Week *");
@@ -151,15 +151,14 @@ describe("<WfmForm />", () => {
         expect(Dropdown.mock.calls[4][0].label).toBe("Skills");
         expect(Dropdown.mock.calls[5][0].label).toBe("Workflow Control Set");
         expect(Dropdown.mock.calls[6][0].label).toBe("Optional Columns");
-        expect(Dropdown.mock.calls[7][0].label).toBe("Absence");
-        expect(Dropdown.mock.calls[8][0].label).toBe("Budget Group");
-        expect(Dropdown.mock.calls[9][0].label).toBe("Part Time Percentage");
-        expect(Dropdown.mock.calls[10][0].label).toBe("Contract Schedule");
-        expect(Dropdown.mock.calls[11][0].label).toBe("Contract");
-        expect(Dropdown.mock.calls[12][0].label).toBe("Shift Bag");
-        expect(Dropdown.mock.calls[13][0].label).toBe("Rotation");
-        expect(Dropdown.mock.calls[14][0].label).toBe("Rotation Start Week");
-        expect(Dropdown.mock.calls[15][0].label).toBe("Availability");
+        expect(Dropdown.mock.calls[7][0].label).toBe("Budget Group");
+        expect(Dropdown.mock.calls[8][0].label).toBe("Part Time Percentage");
+        expect(Dropdown.mock.calls[9][0].label).toBe("Contract Schedule");
+        expect(Dropdown.mock.calls[10][0].label).toBe("Contract");
+        expect(Dropdown.mock.calls[11][0].label).toBe("Shift Bag");
+        expect(Dropdown.mock.calls[12][0].label).toBe("Rotation");
+        expect(Dropdown.mock.calls[13][0].label).toBe("Rotation Start Week");
+        expect(Dropdown.mock.calls[14][0].label).toBe("Availability");
         expect(TextField.mock.calls.length).toBe(2); //renders twice
         expect(TextField.mock.calls[0][0].label).toBe("Identity");
         expect(DatePicker.mock.calls.length).toBe(10); //renders twice
@@ -168,8 +167,6 @@ describe("<WfmForm />", () => {
         expect(DatePicker.mock.calls[2][0].label).toBe("Skills Start Date");
         expect(DatePicker.mock.calls[3][0].label).toBe("Rotation Start Date");
         expect(DatePicker.mock.calls[4][0].label).toBe("Availability Start Date");
-        expect(TextareaAutosize.mock.calls.length).toBe(2); //renders twice
-        expect(TextareaAutosize.mock.calls[0][0].placeholder).toBe("Notes");
       });
     });
   });
@@ -1197,96 +1194,6 @@ describe("<WfmForm />", () => {
       expect(mockSetForm).not.toHaveBeenLastCalledWith({
         type: userFormActions.SET_WFM_OPTIONAL_COLUMNS,
         payload: []
-      });
-    });
-  });
-  describe("Notes", () => {
-    describe("disable", () => {
-      test("is not disabled when formmode is insert", () => {
-        renderComponent();
-        const noteFields = TextareaAutosize.mock.calls;
-        const noteField = noteFields[noteFields.length-1][0];
-        expect(noteField.disabled).toBe(false);
-      });
-      test("is disabled when formmode is not insert && Id is populated", () => {
-        const formState = {
-          ...initialFormState,
-          formMode: "update",
-          calabrio_wfm: {
-            ...initialFormState.calabrio_wfm,
-            Id: "I Exist Already"
-          }
-        };
-        useFormState.mockReturnValue(formState);
-        renderComponent();
-        const noteFields = TextareaAutosize.mock.calls;
-        const noteField = noteFields[noteFields.length-1][0];
-        expect(noteField.disabled).toBe(true);
-      });
-    });
-    test("onChange calls setForm", () => {
-      renderComponent();
-      const noteFields = TextareaAutosize.mock.calls;
-      const noteField = noteFields[noteFields.length-1][0];
-      const onChange = noteField.onChange;
-      act(() => onChange({ 
-        target: {
-          value: "surprise!"
-        }
-       }));
-      expect(mockSetForm).toHaveBeenLastCalledWith({
-        type: userFormActions.SET_WFM_NOTE,
-        payload: "surprise!"
-      });
-    });
-  });
-  describe("Absence", () => {
-    describe("disable", () => {
-      test("is not disabled when formmode is insert", () => {
-        renderComponent();
-        const absenceDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Absence");
-        const absenceDropdown = absenceDropdowns[absenceDropdowns.length-1][0];
-        expect(absenceDropdown.disabled).toBe(false);
-      });
-      test("is disabled when formmode is not insert && Id is populated", () => {
-        const formState = {
-          ...initialFormState,
-          formMode: "update",
-          calabrio_wfm: {
-            ...initialFormState.calabrio_wfm,
-            Id: "I Exist Already"
-          }
-        };
-        useFormState.mockReturnValue(formState);
-        renderComponent();
-        const absenceDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Absence");
-        const absenceDropdown = absenceDropdowns[absenceDropdowns.length-1][0];
-        expect(absenceDropdown.disabled).toBe(true);
-      });
-    });
-    test("options", () => {
-      renderComponent();
-      const absenceDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Absence");
-      const absenceDropdown = absenceDropdowns[absenceDropdowns.length-1][0];
-      const expectedRawOptions = initialTestState.calabrioContext.wfmOptions.find(bu => bu.Id === BusinessUnitId).Absences;
-      const expectedDropdownOptions = expectedRawOptions.map(o => {
-        return {
-          ...o,
-          label: o.Name,
-          value: o.Id
-        }
-      });
-      expect(absenceDropdown.options).toStrictEqual(expectedDropdownOptions);
-    });
-    test("updateValue calls setForm", () => {
-      renderComponent();
-      const absenceDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Absence");
-      const absenceDropdown = absenceDropdowns[absenceDropdowns.length-1][0];
-      const updateValue = absenceDropdown.updateValue;
-      act(() => updateValue({}, { value: "111"}));
-      expect(mockSetForm).toHaveBeenLastCalledWith({
-        type: userFormActions.SET_WFM_ABSENCE,
-        payload: "111"
       });
     });
   });

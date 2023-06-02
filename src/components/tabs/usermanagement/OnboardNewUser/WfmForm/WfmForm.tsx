@@ -13,8 +13,6 @@ import {
 } from "context";
 import {
   InputAdornment,
-  Switch,
-  TextareaAutosize,
   TextField,
   IconButton,
   Tooltip
@@ -453,35 +451,9 @@ const WfmForm = (props: WfmFormProps) => {
             ))}
         </OptionalColumnRow>
         <Row>
-          <TextareaAutosize 
-            disabled={!isAdd}
-            minRows={4}
-            onChange={(event: any) => setForm({
-              type: userFormActions.SET_WFM_NOTE,
-              payload: event.target.value
-            })}
-            placeholder="Notes"
-            style={{
-              width: "90%",
-              marginBottom: "10px"
-            }}
-           />
-        </Row>
-        <Row>
           Schedule Fields
         </Row>
         <Row>
-          <Dropdown
-            disabled={!isAdd}
-            label="Absence"
-            options={generateDropdownOptionArray(optionsByBusinessUnit["Absences"])}
-            value={generateDropdownOption(optionsByBusinessUnit["Absences"]?.find((a: any) => a.Id === form.calabrio_wfm.AbsenceId))}
-            updateValue={(event: any, newValue: any) => setForm({
-              type: userFormActions.SET_WFM_ABSENCE,
-              payload: newValue?.value || null
-            })}
-            styles={{ width: "250px" }}
-          />
           <Dropdown
             disabled={!isAdd}
             label="Budget Group"

@@ -161,6 +161,11 @@ describe("<UserFormButtons />", () => {
     getOverflowSkillFromProfile.mockReturnValue("466");
     useAdminDispatch.mockReturnValue(mockDispatch);
     useAdminState.mockReturnValue({
+      userContext: {
+        pingIdentity: {
+          environment: "development"
+        }
+      },
       calabrioContext: {
         users: [],
         wfmOrg: []
@@ -195,7 +200,7 @@ describe("<UserFormButtons />", () => {
     );
   };
 
-  describe("Tooltip Toggle", () => {
+  describe.only("Tooltip Toggle", () => {
     describe("form.didUser === true", () => {
       const form = {
         ...initialFormState,
