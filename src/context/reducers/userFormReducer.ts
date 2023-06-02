@@ -369,9 +369,9 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
       console.log("are we resetting the state?");
       //FAITH make sure default skills reset
       return {
-        ...state,
+        ...initialUserFormState,
         triton: {
-          ...state.triton,
+          ...initialUserFormState.triton,
           didUser,
           manager: {
             value: manager,

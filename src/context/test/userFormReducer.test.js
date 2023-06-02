@@ -644,9 +644,9 @@ describe("userFormReducer", () => {
         }
       };
       expect(userFormReducer(initialTestState, action)).toStrictEqual({
-        ...initialTestState,
+        ...initialUserFormState,
         triton: {
-          ...initialTestState.triton,
+          ...initialUserFormState.triton,
           manager: {
             value: managerValue,
             blurred: false,
@@ -681,9 +681,9 @@ describe("userFormReducer", () => {
         }
       };
       expect(userFormReducer(initialTestState, action)).toStrictEqual({
-        ...initialTestState,
+        ...initialUserFormState,
         triton: {
-          ...initialTestState.triton,
+          ...initialUserFormState.triton,
           didUser: true,
           manager: {
             value: managerValue,
