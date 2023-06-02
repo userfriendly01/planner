@@ -439,7 +439,7 @@ describe("CallRecordingForm", () => {
         });
       });
     });
-    describe.only("Team Dropdown", () => {
+    describe("Team Dropdown", () => {
       const form = {
         ...initialFormState,
         triton: {
@@ -653,7 +653,7 @@ describe("CallRecordingForm", () => {
         expect(Dropdown.mock.calls.length).toBe(3);
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(0);
-        expect(mockSetForm).toHaveBeenCalledTimes(3);
+        expect(mockSetForm).toHaveBeenCalledTimes(2);
         expect(console.warn).toHaveBeenCalledWith("No matching profile was found in Calabrio for this user");
       });
     });

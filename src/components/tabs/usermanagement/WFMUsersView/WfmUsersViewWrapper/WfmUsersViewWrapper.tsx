@@ -52,7 +52,6 @@ const TritonUserManagementWrapper: any = () => {
 
       //filter by business unit
       if(tableState.businessUnitFilter && tableState.businessUnitFilter !== "show-all"){
-        console.log("FAITH BUs", getWfmBusinessUnits(state));
         const businessUnit = getWfmBusinessUnits(state).find((bu: WfmBusinessUnit) => bu.Id === tableState.businessUnitFilter)
         if(tableState.businessUnitFilter === "People_Without_Team"){
           filteredList = filteredList.filter((wfmUser: WfmUser) => !wfmUser.BusinessUnitId);

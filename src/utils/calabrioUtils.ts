@@ -72,6 +72,51 @@ export const daysOfTheWeekOptions = [
   }
 ]
 
+export const addWorkerToOrg = (user: WfmUser, state: AppState) => {
+  const wfmOrg = state.calabrioContext.wfmOrg;
+  const businessUnitId = user.BusinessUnitId;
+  const team = user.TeamId;
+
+  if(team){
+    return wfmOrg.map((bu: WfmBusinessUnit) => {
+      if(bu.Id === businessUnitId){
+        const team = bu.Teams.find(t => t.Id === user.TeamId);
+        if(team){
+          const teams = bu.Teams.filter(t => t.Id !== team.Id);
+          return {
+            ...bu,
+            Teams: [
+              ...teams,
+              {
+                ...team,
+                People: [
+                  ...team.People,
+                  user
+                ]
+              }
+            ]          
+          }
+        }
+      } else {
+        return bu;
+      }
+    });
+  } else {
+    return wfmOrg.map((bu: WfmBusinessUnit) => {
+      if(bu.Id === "People_Without_Team"){
+        return {
+          ...bu,
+          People: [
+            ...bu.People,
+            user
+          ]
+        }
+      } else {
+        return bu;
+      }
+    });
+  }
+}
 export const getWfmBusinessUnits = (state: AppState, includeLostSouls?: boolean) => {
   const wfmOrg = state.calabrioContext.wfmOrg;
   if(includeLostSouls){

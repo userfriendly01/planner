@@ -1,4 +1,5 @@
 import {
+  addWorkerToOrg,
   findMatchingQmProfiles,
   formatCalabrioTeams,
   formatCalabrioTenant,
@@ -18,7 +19,7 @@ import {
   getWfmOptions,
   getWfmOrg
 } from "services";
-import { calabrioContext } from "testUtils";
+import { calabrioContext, initialTestState } from "testUtils";
 import zlib from "zlib";
 
 Date.now = jest.fn();
@@ -156,8 +157,52 @@ describe("calabrioUtils", () => {
     jest.clearAllMocks(),
     Date.now.mockReturnValue("Right Now");
   });
+
+  describe("addWorkerToOrg", () => {
+    test("team is null - should add to People_Without_Team", () => {
+      const user = { BusinessUnitId: "123-321" };
+      const result = addWorkerToOrg(user, { ...initialTestState });
+      const pwt = initialTestState.calabrioContext.wfmOrg.find(bu => bu.Id === "People_Without_Team");
+      const org = initialTestState.calabrioContext.wfmOrg.filter(bu => bu.Id !== "People_Without_Team");
+      expect(result).toStrictEqual([
+        ...org,
+        {
+          ...pwt,
+          People: [
+            ...pwt.People,
+            user
+          ]
+        }
+      ]);
+    });
+    test("team is populated - should add to appropriate BU", () => {
+      const user = { BusinessUnitId: "123-321", TeamId: "111" };
+      const result = addWorkerToOrg(user, { ...initialTestState });
+      const org = initialTestState.calabrioContext.wfmOrg.filter(bu => bu.Id !== user.BusinessUnitId);
+      const bu = initialTestState.calabrioContext.wfmOrg.find(bu => bu.Id === user.BusinessUnitId);
+      const team = bu.Teams.find(t => t.Id === user.TeamId);
+      const teams = bu.Teams.filter(t => t.Id !== user.TeamId);
+      expect(result).toStrictEqual([
+        {
+          ...bu,
+          Teams: [
+            ...teams,
+            {
+              ...team,
+              People: [
+                ...team.People,
+                user
+              ]
+            }
+          ]
+        },
+        ...org,
+      ]);
+    });
+  });
+
   describe("getWfmBusinessUnits", () => {
-    test("returns list of Business units containing Name and Id", () => {
+    test("lost souls === true - returns list of Business units containing Name and Id", () => {
       const result = getWfmBusinessUnits({ calabrioContext }, true);
       expect(result).toEqual([{
         Name: "Cool WFM Business Unit",
@@ -170,6 +215,17 @@ describe("calabrioUtils", () => {
         Name: "People_Without_Team",
         Id: "People_Without_Team"
       }]);
+    });
+    test("lost souls === false - returns list of Business units containing Name and Id", () => {
+      const result = getWfmBusinessUnits({ calabrioContext }, false);
+      expect(result).toEqual([{
+        Name: "Cool WFM Business Unit",
+        Id: "123-321"
+        }, {
+          Name: "Other WFM Business Unit",
+          Id: "999-999"
+        }
+      ]);
     });
   });
   describe("getWfmTeams", () => {
@@ -184,7 +240,6 @@ describe("calabrioUtils", () => {
               People: [{
                 FirstName: "Faith",
                 EmploymentNumber: "n8765432",
-                Email: "dude@libertymutual.com"
               }]
             },
             {
@@ -226,8 +281,7 @@ describe("calabrioUtils", () => {
               Id: "000",
               People: [{
                 FirstName: "Faith",
-                EmploymentNumber: "n8765432",
-                Email: "dude@libertymutual.com"
+                EmploymentNumber: "n8765432"
               }]
             },
             {
@@ -262,8 +316,7 @@ describe("calabrioUtils", () => {
               Id: "000",
               People: [{
                 FirstName: "Faith",
-                EmploymentNumber: "n8765432",
-                Email: "dude@libertymutual.com"
+                EmploymentNumber: "n8765432"
               }]
             },
             {
@@ -282,7 +335,8 @@ describe("calabrioUtils", () => {
       expect(result).toEqual([
         {
           EmploymentNumber: "n0000000",
-          Email: "ihavenoteam@email.com"
+          Email: "ihavenoteam@email.com",
+          TeamId: null
         },
         {
           BusinessUnitId: "123-321",
@@ -294,7 +348,6 @@ describe("calabrioUtils", () => {
         {
           FirstName: "Faith",
           EmploymentNumber: "n8765432",
-          Email: "dude@libertymutual.com",
           ParentTeam: "000"
         }
       ]);

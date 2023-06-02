@@ -30,6 +30,7 @@ import {
   wfmActivateExternalLogon
 } from "services";
 import {
+  addWorkerToOrg,
   checkConflictingUsers,
   DbWorker,
   getNonOverflowSkills,
@@ -57,16 +58,17 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     setMissingFields
   } = props;
 
+  const form = useFormState();
+  const setForm = useFormDispatch();
+  const dispatch = useAdminDispatch();
+  const state = useAdminState();
   const {
     users,
     roles,
     teams,
     wfmOrg
-  } = useAdminState().calabrioContext;
-
-  const form = useFormState();
-  const setForm = useFormDispatch();
-  const dispatch = useAdminDispatch();
+  } = state.calabrioContext;
+  const environment = state.userContext.pingIdentity.environment;
 
   const doCreateUser = async () => {
     updateLoading({
@@ -203,23 +205,24 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
           TimeZoneId: form.calabrio_qm.timezone
         }
         console.log("WFM BODY", wfmBody);
-        try {
-          const res = await createCalabrioWFMPerson(wfmBody);
-          console.warn("FAITH - does the ID return as expected", res);
-          dispatch({
-            type: "updateWfmOrg",
-            payload: [ ...wfmOrg, {
-              Id: res.data,
-              ...form.calabrio_wfm
-            }]
-          });
+        if(environment !== "production"){
           try {
-            await wfmActivateExternalLogon({ workerNNumbers: [form.calabrio_wfm.EmploymentNumber] })
+            const res = await createCalabrioWFMPerson(wfmBody);
+            console.warn("FAITH - does the ID return as expected", res);
+            dispatch({
+              type: "updateWfmOrg",
+              payload: addWorkerToOrg(form.calabrio_wfm, state)
+            });
+            try {
+              await wfmActivateExternalLogon({ workerNNumbers: [form.calabrio_wfm.EmploymentNumber] })
+            } catch(err){
+              errors.push(`Failed to activate WFM External Logon. ${err.message}` )
+            }
           } catch(err){
-            errors.push(`Failed to activate WFM External Logon. ${err.message}` )
+            errors.push(`Failed to create WFM User. ${err.message}` )
           }
-        } catch(err){
-          errors.push(`Failed to create WFM User. ${err.message}` )
+        } else {
+          errors.push("WFM does not have a non prod environment. WFM form entries were disregarded. ${err.message}")
         }
       }
       
@@ -412,27 +415,29 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         RoleIds: form.calabrio_wfm.Roles,
         NNumber: form.calabrio_wfm.EmploymentNumber,
         ApplicationLogon: form.calabrio_wfm.Email,
-        TimeZoneId: form.calabrio_qm.timezone
+        TimeZoneId: form.calabrio_qm.timezone,
+        Skills: form.calabrio_wfm.PersonSkills.map((s: any) => s.Id)
       }
       console.log("WFM BODY", wfmBody);
-      try {
-        const res = await createCalabrioWFMPerson(wfmBody);
-        console.log("FAITH - does the ID return as expected", res);
 
-        dispatch({
-          type: "updateWfmOrg",
-          payload: [ ...wfmOrg, {
-            Id: res.data,
-            ...form.calabrio_wfm
-          }]
-        });
+      if(environment !== "production"){
         try {
-          await wfmActivateExternalLogon({ workerNNumbers: [form.calabrio_wfm.EmploymentNumber] })
+          const res = await createCalabrioWFMPerson(wfmBody);
+          console.log("FAITH - does the ID return as expected", res);
+          dispatch({
+            type: "updateWfmOrg",
+            payload: addWorkerToOrg(form.calabrio_wfm, state)
+          });
+          try {
+            await wfmActivateExternalLogon({ workerNNumbers: [form.calabrio_wfm.EmploymentNumber] })
+          } catch(err){
+            errors.push(`Failed to activate WFM External Logon. ${err.message}` )
+          }
         } catch(err){
-          errors.push(`Failed to activate WFM External Logon. ${err.message}` )
+          errors.push(`Failed to create WFM User. ${err.message}` )
         }
-      } catch(err){
-        errors.push(`Failed to create WFM User. ${err.message}` )
+      } else {
+        errors.push("WFM does not have a non prod environment. WFM form entries were disregarded." )
       }
     }
 

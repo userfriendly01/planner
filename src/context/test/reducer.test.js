@@ -419,6 +419,39 @@ describe("reducer", () => {
       ]);
       expect(result.calabrioContext.wfmErrors).toEqual(payload.errors);
     });
+    test("calabrio calls return undefined - should format wfmOrg and save to state", () => {
+      const payload = {
+        org: undefined,
+        errors: undefined,
+        People_Without_Team: undefined
+    };
+      const action = {
+        type: "loadWfmOrg",
+        payload
+      };
+      const result = reducer(initialState, action);
+      expect(result.calabrioContext.wfmOrg).toEqual([
+        {
+          Id: "People_Without_Team",
+          Name: "Lost Souls",
+          People: [],
+          Absences: [],
+          Availabilities: [],
+          Budget_Groups: [],
+          Contracts:[],
+          Contract_Schedules: [],
+          Optional_Columns: [],
+          Part_Time_Percentages: [],
+          Roles: [],
+          Rotations: [],
+          Shift_Bags: [],
+          Skills: [],
+          Teams: [],
+          Workflow_Control_Sets: []
+        }
+      ]);
+      expect(result.calabrioContext.wfmErrors).toEqual([]);
+    });
   });
   describe("loadWfmOptions", () => {
     test("should initialize a map from the offices map sent in", () => {

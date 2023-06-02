@@ -26,8 +26,7 @@ export const getWfmOptions = async (): Promise<CalabrioGroup[]> => {
 };
 
 export const createCalabrioWFMPerson = async (payload: any): Promise<any> => {
-  return Promise.resolve({ data: "ID1243234"});
-  // FAITH return await myAxios.post(apiPaths.CREATE_CALABRIO_WFM_PERSON, payload);
+  return await myAxios.post(apiPaths.CREATE_CALABRIO_WFM_PERSON, payload);
 };
 
 export const getCalabrioUsers = async (): Promise<any[]> => {

@@ -123,6 +123,27 @@ describe("WfmUsersHeader", () => {
       expect(option.value).toBe("111");
     });
   });
+  describe("existing team value is unknown", () => {
+    test("should call setTableState", () => {
+      renderComponent({
+        ...tableState,
+        teamFilter: "77655"
+      });
+      const option = Dropdown.mock.calls[1][0].value;
+      expect(option).toBe("");
+    });
+  });
+  describe("existing team value === no-team", () => {
+    test("should call setTableState", () => {
+      renderComponent({
+        ...tableState,
+        teamFilter: "no-team"
+      });
+      const option = Dropdown.mock.calls[1][0].value;
+      expect(option.value).toBe("no-team");
+      expect(option.label).toBe("No Team");
+    });
+  });
   describe("setSearch is called on SearchBox", () => {
     test("should call setTableState", () => {
       const searchBy = "hi";
