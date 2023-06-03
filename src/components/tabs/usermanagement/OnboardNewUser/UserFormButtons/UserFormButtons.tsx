@@ -205,7 +205,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
           Skills: form.calabrio_wfm.PersonSkills?.map((s: any) => s.Id)
         }
         console.log("WFM BODY", wfmBody);
-        if(environment === "production"){
+        if(environment !== "production"){
           try {
             const res = await createCalabrioWFMPerson(wfmBody);
             console.warn("FAITH - does the ID return as expected", res);
@@ -418,6 +418,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         TimeZoneId: form.calabrio_qm.timezone.value,
         Skills: form.calabrio_wfm.PersonSkills?.map((s: any) => s.Id)
       }
+
       console.log("WFM BODY", wfmBody);
 
       if(environment === "production"){

@@ -853,6 +853,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
         },
         triton: {
           ...state.triton,
+          userFound: true,
           defaultSkills: {
             ...state.triton.defaultSkills,
             ...getValidSkillsObject(worker.attributes.default_skills)

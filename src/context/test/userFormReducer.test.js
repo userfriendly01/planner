@@ -1108,6 +1108,7 @@ describe("userFormReducer", () => {
         },
         triton: {
           ...initialUserFormState.triton,
+          userFound: true,
           defaultSkills: {
             updated: false,
             ...getValidSkillsObject(worker.attributes.default_skills)
@@ -1185,6 +1186,7 @@ describe("userFormReducer", () => {
         },
         triton: {
           ...initialUserFormState.triton,
+          userFound: true,
           defaultSkills: {
             updated: false,
             ...getValidSkillsObject(worker.attributes.default_skills)
