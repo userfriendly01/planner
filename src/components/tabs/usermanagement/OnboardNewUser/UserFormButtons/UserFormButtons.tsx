@@ -205,13 +205,16 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
           Skills: form.calabrio_wfm.PersonSkills?.map((s: any) => s.Id)
         }
         console.log("WFM BODY", wfmBody);
-        if(environment !== "production"){
+        if(environment === "production"){
           try {
             const res = await createCalabrioWFMPerson(wfmBody);
-            console.warn("FAITH - does the ID return as expected", res);
             dispatch({
               type: "updateWfmOrg",
-              payload: addWorkerToOrg(form.calabrio_wfm, state)
+              payload: addWorkerToOrg({
+                ...form.calabrio_wfm,
+                Id: res.data.personId,
+                ParentTeam: form.calabrio_wfm.TeamId
+              }, state)
             });
             try {
               await wfmActivateExternalLogon({ workerNNumbers: [form.calabrio_wfm.EmploymentNumber] })
@@ -424,10 +427,13 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       if(environment === "production"){
         try {
           const res = await createCalabrioWFMPerson(wfmBody);
-          console.log("FAITH - does the ID return as expected", res);
           dispatch({
             type: "updateWfmOrg",
-            payload: addWorkerToOrg(form.calabrio_wfm, state)
+            payload: addWorkerToOrg({
+              ...form.calabrio_wfm,
+              Id: res.data.personId,
+              ParentTeam: form.calabrio_wfm.TeamId
+            }, state)
           });
           try {
             await wfmActivateExternalLogon({ workerNNumbers: [form.calabrio_wfm.EmploymentNumber] })

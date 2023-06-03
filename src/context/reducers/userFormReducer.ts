@@ -356,7 +356,6 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
       };
     }
     case userFormActions.RESET_FORM: {
-      //FAITH - make sure default skills reset
       return {
         ...initialUserFormState,
         triton: {

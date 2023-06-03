@@ -21,10 +21,6 @@ describe("Call to activate external logon succeeds", () => {
     failedActivations: {}
   };
   beforeEach(() => axiosMock.onPost(externalLogonServiceEndpoint).replyOnce(200, goodResponse));
-
-  test.only("dummy", () => {
-    expect(true).toBe(true);
-  });
   
   test("should resolve with successful activation", done => {
     wfmActivateExternalLogon(payload).then(resolvedValue => {

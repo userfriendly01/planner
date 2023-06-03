@@ -16,8 +16,8 @@ const DidFormInfo = (props: DidFormInfoProps) => {
 
   const {
     worker,
-    // forwardToToggle,
-    // setForwardToToggle
+    forwardToToggle,
+    setForwardToToggle
   } = props;
 
   const form = useFormState();

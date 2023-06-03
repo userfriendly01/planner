@@ -207,8 +207,6 @@ export const fetchUser = async (nNumber: string, setForm: any, errorMessage: str
 
 export const findMatchingWorker = (sid: string, nNumber: string, email: string, workers: any[]) => {
   //Dynamic to look through triton workers, calabrio qm users and calabrio wfm users
-  console.log("FAITH- we're in findMatchingWorker", sid, nNumber, email);
-
   let matchingWorker: Worker = null;
   workers.forEach((w: any) => {
     const workerSid = w.sid?.toLowerCase() || w.acdId?.toLowerCase();
@@ -345,5 +343,5 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
     });
   }
 
-  return Promise.resolve("Faith - we should be done");
+  return Promise.resolve();
 }

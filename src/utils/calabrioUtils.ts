@@ -80,9 +80,10 @@ export const addWorkerToOrg = (user: WfmUser, state: AppState) => {
   if(team){
     return wfmOrg.map((bu: WfmBusinessUnit) => {
       if(bu.Id === businessUnitId){
-        const team = bu.Teams.find(t => t.Id === user.TeamId);
+        const team: any = bu.Teams?.find(t => t.Id === user.TeamId) || {};
         if(team){
-          const teams = bu.Teams.filter(t => t.Id !== team.Id);
+          const teams = bu.Teams?.filter(t => t.Id !== team.Id) || [];
+          const people = team.People || [];
           return {
             ...bu,
             Teams: [
@@ -90,7 +91,7 @@ export const addWorkerToOrg = (user: WfmUser, state: AppState) => {
               {
                 ...team,
                 People: [
-                  ...team.People,
+                  ...people,
                   user
                 ]
               }
@@ -104,10 +105,11 @@ export const addWorkerToOrg = (user: WfmUser, state: AppState) => {
   } else {
     return wfmOrg.map((bu: WfmBusinessUnit) => {
       if(bu.Id === "People_Without_Team"){
+        const people = bu.People || [];
         return {
           ...bu,
           People: [
-            ...bu.People,
+            ...people,
             user
           ]
         }
@@ -206,7 +208,6 @@ export const getWfmOptions = (state: AppState, businessUnitId?: string) => {
         }
       });
     });
-    console.log("FAITH - getWfmOptions", finalOptions);
     return finalOptions;
   }
 };
@@ -350,8 +351,6 @@ export const checkConflictingUsers = async (user: any, users: CalabrioQmUser[], 
 };
 
 export const findMatchingQmProfiles = (user: any, users: CalabrioQmUser[], setForm: any): any[] => {
-  console.log("FAITH! ", user);
-
   //Calabrio users should always have a Triton user, the "user" passed through should be a triton user but if that's undefined we can search based on nNumber fetched user
   try {
     const acdId = toLowerCaseString(user.sid);

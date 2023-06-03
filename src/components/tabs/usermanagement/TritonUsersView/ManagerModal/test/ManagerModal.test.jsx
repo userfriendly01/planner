@@ -89,8 +89,6 @@ jest.mock("components", () => ({
   ComponentControl: jest.fn()
 }));
 
-//Faith
-
 describe("<ManagerModal />", () => {
   const mockHandleClose = jest.fn();
   const mockSetForm = jest.fn();

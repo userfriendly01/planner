@@ -203,7 +203,7 @@ describe("<UserFormButtons />", () => {
     );
   };
 
-  describe.only("Tooltip Toggle", () => {
+  describe("Tooltip Toggle", () => {
     describe("form.didUser === true", () => {
       const form = {
         ...initialFormState,

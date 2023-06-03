@@ -25,7 +25,7 @@ beforeEach(() => {
   axiosMock.reset();
 });
 
-describe.only("createCalabrioUser", () => {
+describe("createCalabrioUser", () => {
   describe("call succeeds", () => {
     const data = { huzzah: "you are winner" };
     beforeEach(() => axiosMock.onPost(apiPaths.CREATE_CALABRIO_USER).replyOnce(200, data));
