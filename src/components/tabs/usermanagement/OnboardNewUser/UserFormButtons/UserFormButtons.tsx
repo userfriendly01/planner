@@ -202,10 +202,11 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
           RoleIds: form.calabrio_wfm.Roles,
           NNumber: form.calabrio_wfm.EmploymentNumber,
           ApplicationLogon: form.calabrio_wfm.Email,
-          TimeZoneId: form.calabrio_qm.timezone
+          TimeZoneId: form.calabrio_qm.timezone.value,
+          Skills: form.calabrio_wfm.PersonSkills?.map((s: any) => s.Id)
         }
         console.log("WFM BODY", wfmBody);
-        if(environment !== "production"){
+        if(environment === "production"){
           try {
             const res = await createCalabrioWFMPerson(wfmBody);
             console.warn("FAITH - does the ID return as expected", res);
@@ -222,7 +223,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
             errors.push(`Failed to create WFM User. ${err.message}` )
           }
         } else {
-          errors.push("WFM does not have a non prod environment. WFM form entries were disregarded. ${err.message}")
+          errors.push("WFM does not have a non prod environment. WFM form entries were disregarded.")
         }
       }
       
@@ -415,12 +416,12 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         RoleIds: form.calabrio_wfm.Roles,
         NNumber: form.calabrio_wfm.EmploymentNumber,
         ApplicationLogon: form.calabrio_wfm.Email,
-        TimeZoneId: form.calabrio_qm.timezone,
-        Skills: form.calabrio_wfm.PersonSkills.map((s: any) => s.Id)
+        TimeZoneId: form.calabrio_qm.timezone.value,
+        Skills: form.calabrio_wfm.PersonSkills?.map((s: any) => s.Id)
       }
       console.log("WFM BODY", wfmBody);
 
-      if(environment !== "production"){
+      if(environment === "production"){
         try {
           const res = await createCalabrioWFMPerson(wfmBody);
           console.log("FAITH - does the ID return as expected", res);

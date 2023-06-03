@@ -43,6 +43,7 @@ import {
   waitFor
 } from "testUtils";
 import {
+  addWorkerToOrg,
   checkConflictingUsers,
   getOverflowSkillFromProfile,
   getNonOverflowSkills,
@@ -75,6 +76,7 @@ jest.mock("context", () => ({
 }));
 
 jest.mock("utils", () => ({
+  addWorkerToOrg: jest.fn(),
   calabrioTimeZones: jest.requireActual("utils").calabrioTimeZones,
   checkConflictingUsers: jest.fn(),
   identifyFormErrors: jest.fn(),
@@ -175,6 +177,7 @@ describe("<UserFormButtons />", () => {
     checkConflictingUsers.mockResolvedValue({ yay: "woot!" });
     createCalabrioUser.mockResolvedValue({ yay: "woot!" });
     getCalabrioUsers.mockResolvedValue({ data: "yay!" });
+    addWorkerToOrg.mockReturnValue(["newstateyay!"]);
     identifyFormErrors.mockReturnValue([]);
     setupMockedComponents({
       StyledButton,
@@ -200,7 +203,7 @@ describe("<UserFormButtons />", () => {
     );
   };
 
-  describe.only("Tooltip Toggle", () => {
+  describe("Tooltip Toggle", () => {
     describe("form.didUser === true", () => {
       const form = {
         ...initialFormState,
@@ -274,7 +277,6 @@ describe("<UserFormButtons />", () => {
         createCalabrioWFMPerson.mockResolvedValue({ data: "9dase-Owaaskm"});
         wfmActivateExternalLogon.mockResolvedValue();
       });
-
       describe("Initial State", () => {
         test("UserFormButton should be called 'Add User'", () => {
           renderComponent(true);
@@ -880,9 +882,9 @@ describe("<UserFormButtons />", () => {
       });
       describe("calabrio wfm user is added", () => {
         const form = {
-          ...JSON.parse(JSON.stringify(validFormState)),
+          ...validFormState,
           calabrio_qm: {
-            ...JSON.parse(JSON.stringify(validFormState)).calabrio_qm,
+            ...validFormState.calabrio_qm,
             updated: false
           },
           calabrio_wfm: {
@@ -891,112 +893,211 @@ describe("<UserFormButtons />", () => {
             EmploymentStartDate: "05/02/1991",
             Roles: ["Role1"],
             EmploymentNumber: "n0263786",
-            Email: "faith.cuneo@libertymutual.com"
+            Email: "faith.cuneo@libertymutual.com",
+            PersonSkills: [{
+              Id: "2134-5432",
+              Name: "CSC Skill"
+            }]
           }
         };
         beforeEach(() => {
           createCalabrioWFMPerson.mockResolvedValue({ data: "9dase-Owaaskm"});
           useFormState.mockReturnValueOnce(form);
         });
-
         const wfmBody = {
           ...form.calabrio_wfm,
           PersonStartDate: "05/02/1991",
           RoleIds: ["Role1"],
           NNumber: "n0263786",
           ApplicationLogon: "faith.cuneo@libertymutual.com",
-          TimeZoneId: {
-            label: "EST",
-            value: 173
-          }
+          PersonSkills: [{
+            Id: "2134-5432",
+            Name: "CSC Skill"
+          }],
+          Skills: ["2134-5432"],
+          TimeZoneId: 173
         }
-        describe("all wfm calls are successful", () => {
-          test("form is updated as successful", async () => {
-            renderComponent(true);
-            render(Tooltip.mock.calls[0][0].children);
-            act(() => {
-              const onClick = StyledButton.mock.calls[2][0].onClick;
-              onClick();
-            });
-            await waitFor(() => {
-              expect(createUser).toHaveBeenCalledTimes(1);
-              expect(createCalabrioWFMPerson).toHaveBeenCalledWith(wfmBody);
-              expect(wfmActivateExternalLogon).toHaveBeenCalled();
-              expect(mockDispatch)
-              expect(mockDispatch).toHaveBeenCalledTimes(4);
-              expect(mockDispatch.mock.calls[0][0]).toEqual({
-                type: "addWorkers",
-                payload: [formattedWorker]
-              });
-              expect(mockDispatch.mock.calls[1][0]).toEqual({
-                type: "addOffice",
-                payload: {
-                  office_nme: "Springfield 012B",
-                  office_num: "newOffice"
+        describe("environment === production", () => {
+          beforeEach(() => {
+            useAdminState.mockReturnValue({
+              userContext: {
+                pingIdentity: {
+                  environment: "production"
                 }
+              },
+              calabrioContext: {
+                users: [],
+                wfmOrg: []
+              }
+            });
+          });
+          describe("all wfm calls are successful", () => {
+            test("form is updated as successful", async () => {
+              renderComponent(true);
+              render(Tooltip.mock.calls[0][0].children);
+              act(() => {
+                const onClick = StyledButton.mock.calls[2][0].onClick;
+                onClick();
               });
-              expect(mockDispatch.mock.calls[2][0]).toEqual({
-                type: "loadCalabrioUsers",
-                payload: ["agent1", "agent2"]
+              await waitFor(() => {
+                expect(createUser).toHaveBeenCalledTimes(1);
+                expect(createCalabrioWFMPerson).toHaveBeenCalledWith(wfmBody);
+                expect(wfmActivateExternalLogon).toHaveBeenCalled();
+                expect(mockDispatch).toHaveBeenCalledTimes(4);
+                expect(mockDispatch.mock.calls[0][0]).toEqual({
+                  type: "addWorkers",
+                  payload: [formattedWorker]
+                });
+                expect(mockDispatch.mock.calls[1][0]).toEqual({
+                  type: "addOffice",
+                  payload: {
+                    office_nme: "Springfield 012B",
+                    office_num: "newOffice"
+                  }
+                });
+                expect(mockDispatch.mock.calls[2][0]).toEqual({
+                  type: "loadCalabrioUsers",
+                  payload: ["agent1", "agent2"]
+                });
+                expect(mockDispatch.mock.calls[3][0]).toEqual({
+                  type: "updateWfmOrg",
+                  payload: ["newstateyay!"]
+                });
+                jest.runAllTimers();
+                expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
+                expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
+                  overlayMessage: "Adding new user...",
+                  saveStatus: "saving",
+                  saveUser: true
+                });
+                expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
+                  overlayMessage: "Successfully added new user",
+                  saveStatus: "success",
+                  saveUser: true
+                });
+                expect(mockUpdateLoading.mock.calls[2][0]).toEqual({
+                  saveUser: false
+                });
               });
-              expect(mockDispatch.mock.calls[3][0]).toEqual({
-                type: "updateWfmOrg",
-                payload: [{
-                  Id: "9dase-Owaaskm",
-                  ...form.calabrio_wfm
-                }]
+            });
+          });
+          describe("createCalabrioWFMPerson fails", () => {
+            beforeEach(() => {
+              createCalabrioWFMPerson.mockRejectedValue({ message: "bummer"});
+              useFormState.mockReturnValue(form);
+            });
+            test("error is shown on final results", async () => {
+              renderComponent(true);
+              render(Tooltip.mock.calls[0][0].children);
+              act(() => {
+                const onClick = StyledButton.mock.calls[2][0].onClick;
+                onClick();
               });
-              jest.runAllTimers();
-              expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
-              expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
-                overlayMessage: "Adding new user...",
-                saveStatus: "saving",
-                saveUser: true
+              await waitFor(() => {
+                expect(createUser).toHaveBeenCalledTimes(1);
+                expect(createCalabrioWFMPerson).toHaveBeenCalledWith(wfmBody);
+                expect(wfmActivateExternalLogon).not.toHaveBeenCalled();
+                expect(mockDispatch).toHaveBeenCalledTimes(3);
+                expect(mockDispatch.mock.calls[0][0]).toEqual({
+                  type: "addWorkers",
+                  payload: [formattedWorker]
+                });
+                expect(mockDispatch.mock.calls[1][0]).toEqual({
+                  type: "addOffice",
+                  payload: {
+                    office_nme: "Springfield 012B",
+                    office_num: "newOffice"
+                  }
+                });
+                expect(mockDispatch.mock.calls[2][0]).toEqual({
+                  type: "loadCalabrioUsers",
+                  payload: ["agent1", "agent2"]
+                });
+                jest.runAllTimers();
+                expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
+                expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
+                  overlayMessage: "Adding new user...",
+                  saveStatus: "saving",
+                  saveUser: true
+                });
+                expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
+                  overlayMessage: "The following errors occurred: Failed to create WFM User. bummer",
+                  saveStatus: "partial fail",
+                  saveUser: true
+                });
               });
-              expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
-                overlayMessage: "Successfully added new user",
-                saveStatus: "success",
-                saveUser: true
+            });
+          });
+          describe("wfmActivateExternalLogon fails", () => {
+            const form = {
+              ...JSON.parse(JSON.stringify(validFormState)),
+              calabrio_qm: {
+                ...JSON.parse(JSON.stringify(validFormState)).calabrio_qm,
+                updated: false
+              },
+              calabrio_wfm: {
+                userFound: true,
+                BusinessUnitId: "111",
+                EmploymentStartDate: "05/02/1991",
+                Roles: ["Role1"],
+                EmploymentNumber: "n0263786",
+                Email: "faith.cuneo@libertymutual.com"
+              }
+            };
+            beforeEach(() => {
+              createCalabrioWFMPerson.mockResolvedValue({ data: "9dase-Owaaskm"});
+              wfmActivateExternalLogon.mockRejectedValue({ message: "bummer"});
+              useFormState.mockReturnValue(form);
+            });
+            test("error is shown on final results", async () => {
+              renderComponent(true);
+              render(Tooltip.mock.calls[0][0].children);
+              act(() => {
+                const onClick = StyledButton.mock.calls[2][0].onClick;
+                onClick();
               });
-              expect(mockUpdateLoading.mock.calls[2][0]).toEqual({
-                saveUser: false
+              await waitFor(() => {
+                expect(createUser).toHaveBeenCalledTimes(1);
+                expect(createCalabrioWFMPerson).toHaveBeenCalledWith(wfmBody);
+                expect(wfmActivateExternalLogon).toHaveBeenCalled();
+                expect(mockDispatch).toHaveBeenCalledTimes(4);
+                expect(mockDispatch.mock.calls[0][0]).toEqual({
+                  type: "addWorkers",
+                  payload: [formattedWorker]
+                });
+                expect(mockDispatch.mock.calls[1][0]).toEqual({
+                  type: "addOffice",
+                  payload: {
+                    office_nme: "Springfield 012B",
+                    office_num: "newOffice"
+                  }
+                });
+                expect(mockDispatch.mock.calls[2][0]).toEqual({
+                  type: "loadCalabrioUsers",
+                  payload: ["agent1", "agent2"]
+                });
+                expect(mockDispatch.mock.calls[3][0]).toEqual({
+                  type: "updateWfmOrg",
+                  payload: ["newstateyay!"]
+                });
+                jest.runAllTimers();
+                expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
+                expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
+                  overlayMessage: "Adding new user...",
+                  saveStatus: "saving",
+                  saveUser: true
+                });
+                expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
+                  overlayMessage: "The following errors occurred: Failed to activate WFM External Logon. bummer",
+                  saveStatus: "partial fail",
+                  saveUser: true
+                });
               });
             });
           });
         });
-        describe("createCalabrioWFMPerson fails", () => {
-          const form = {
-            ...JSON.parse(JSON.stringify(validFormState)),
-            calabrio_qm: {
-              ...JSON.parse(JSON.stringify(validFormState)).calabrio_qm,
-              updated: false
-            },
-            calabrio_wfm: {
-              userFound: true,
-              BusinessUnitId: "111",
-              EmploymentStartDate: "05/02/1991",
-              Roles: ["Role1"],
-              EmploymentNumber: "n0263786",
-              Email: "faith.cuneo@libertymutual.com"
-            }
-          };
-          beforeEach(() => {
-            createCalabrioWFMPerson.mockRejectedValue({ message: "bummer"});
-            useFormState.mockReturnValue(form);
-          });
-  
-          const wfmBody = {
-            ...form.calabrio_wfm,
-            PersonStartDate: "05/02/1991",
-            RoleIds: ["Role1"],
-            NNumber: "n0263786",
-            ApplicationLogon: "faith.cuneo@libertymutual.com",
-            TimeZoneId: {
-              label: "EST",
-              value: 173
-            }
-          }
-          test("error is shown on final results", async () => {
+        describe("environment !== production", () => {
+          test("wfm calls are not made", async () => {
             renderComponent(true);
             render(Tooltip.mock.calls[0][0].children);
             act(() => {
@@ -1005,7 +1106,7 @@ describe("<UserFormButtons />", () => {
             });
             await waitFor(() => {
               expect(createUser).toHaveBeenCalledTimes(1);
-              expect(createCalabrioWFMPerson).toHaveBeenCalledWith(wfmBody);
+              expect(createCalabrioWFMPerson).not.toHaveBeenCalled();
               expect(wfmActivateExternalLogon).not.toHaveBeenCalled();
               expect(mockDispatch).toHaveBeenCalledTimes(3);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
@@ -1023,103 +1124,14 @@ describe("<UserFormButtons />", () => {
                 type: "loadCalabrioUsers",
                 payload: ["agent1", "agent2"]
               });
-              jest.runAllTimers();
-              expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
-              expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
-                overlayMessage: "Adding new user...",
-                saveStatus: "saving",
-                saveUser: true
-              });
               expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
-                overlayMessage: "The following errors occurred: Failed to create WFM User. bummer",
+                overlayMessage: "The following errors occurred: WFM does not have a non prod environment. WFM form entries were disregarded.",
                 saveStatus: "partial fail",
                 saveUser: true
               });
             });
           });
-        });
-        describe("wfmActivateExternalLogon fails", () => {
-          const form = {
-            ...JSON.parse(JSON.stringify(validFormState)),
-            calabrio_qm: {
-              ...JSON.parse(JSON.stringify(validFormState)).calabrio_qm,
-              updated: false
-            },
-            calabrio_wfm: {
-              userFound: true,
-              BusinessUnitId: "111",
-              EmploymentStartDate: "05/02/1991",
-              Roles: ["Role1"],
-              EmploymentNumber: "n0263786",
-              Email: "faith.cuneo@libertymutual.com"
-            }
-          };
-          beforeEach(() => {
-            createCalabrioWFMPerson.mockResolvedValue({ data: "9dase-Owaaskm"});
-            wfmActivateExternalLogon.mockRejectedValue({ message: "bummer"});
-            useFormState.mockReturnValue(form);
-          });
-  
-          const wfmBody = {
-            ...form.calabrio_wfm,
-            PersonStartDate: "05/02/1991",
-            RoleIds: ["Role1"],
-            NNumber: "n0263786",
-            ApplicationLogon: "faith.cuneo@libertymutual.com",
-            TimeZoneId: {
-              label: "EST",
-              value: 173
-            }
-          }
-          test("error is shown on final results", async () => {
-            renderComponent(true);
-            render(Tooltip.mock.calls[0][0].children);
-            act(() => {
-              const onClick = StyledButton.mock.calls[2][0].onClick;
-              onClick();
-            });
-            await waitFor(() => {
-              expect(createUser).toHaveBeenCalledTimes(1);
-              expect(createCalabrioWFMPerson).toHaveBeenCalledWith(wfmBody);
-              expect(wfmActivateExternalLogon).toHaveBeenCalled();
-              expect(mockDispatch).toHaveBeenCalledTimes(4);
-              expect(mockDispatch.mock.calls[0][0]).toEqual({
-                type: "addWorkers",
-                payload: [formattedWorker]
-              });
-              expect(mockDispatch.mock.calls[1][0]).toEqual({
-                type: "addOffice",
-                payload: {
-                  office_nme: "Springfield 012B",
-                  office_num: "newOffice"
-                }
-              });
-              expect(mockDispatch.mock.calls[2][0]).toEqual({
-                type: "loadCalabrioUsers",
-                payload: ["agent1", "agent2"]
-              });
-              expect(mockDispatch.mock.calls[3][0]).toEqual({
-                type: "updateWfmOrg",
-                payload: [{
-                  Id: "9dase-Owaaskm",
-                  ...form.calabrio_wfm
-                }]
-              });
-              jest.runAllTimers();
-              expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
-              expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
-                overlayMessage: "Adding new user...",
-                saveStatus: "saving",
-                saveUser: true
-              });
-              expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
-                overlayMessage: "The following errors occurred: Failed to activate WFM External Logon. bummer",
-                saveStatus: "partial fail",
-                saveUser: true
-              });
-            });
-          });
-        });
+        })
       });
     });
     describe(`form.formMode === ${formModes.UPDATE}`, () => {
@@ -2032,7 +2044,11 @@ describe("<UserFormButtons />", () => {
             EmploymentStartDate: "05/02/1991",
             Roles: ["Role1"],
             EmploymentNumber: "n0263786",
-            Email: "faith.cuneo@libertymutual.com"
+            Email: "faith.cuneo@libertymutual.com",
+            PersonSkills: [{
+              Id: "2134-5432",
+              Name: "CSC Skill"
+            }]
           }
         };
         const wfmBody = {
@@ -2041,159 +2057,29 @@ describe("<UserFormButtons />", () => {
           RoleIds: ["Role1"],
           NNumber: "n0263786",
           ApplicationLogon: "faith.cuneo@libertymutual.com",
-          TimeZoneId: {
-            label: "EST",
-            value: 173
-          }
+          Skills: ["2134-5432"],
+          TimeZoneId: 173
         }
         beforeEach(() => {
           createCalabrioWFMPerson.mockResolvedValue({ data: "9dase-Owaaskm"});
           wfmActivateExternalLogon.mockResolvedValue();
           useFormState.mockReturnValue(form);
         });
-
-        describe("all wfm calls are successful", () => {
-          test("form is updated as successful", async () => {
-            renderComponent(true);
-            render(Tooltip.mock.calls[0][0].children);
-            act(() => {
-              const onClick = StyledButton.mock.calls[1][0].onClick;
-              onClick();
-            });
-            await waitFor(() => {
-              expect(updateUser).toHaveBeenCalledTimes(1);
-              expect(createCalabrioWFMPerson).toHaveBeenCalledWith(wfmBody);
-              expect(wfmActivateExternalLogon).toHaveBeenCalled();
-              expect(mockDispatch).toHaveBeenCalledTimes(2);
-              expect(mockDispatch.mock.calls[0][0]).toEqual({
-                type: "updateWorker",
-                payload: formattedWorker
-              });
-
-              expect(mockDispatch.mock.calls[1][0]).toEqual({
-                type: "updateWfmOrg",
-                payload: [{
-                  Id: "9dase-Owaaskm",
-                  ...form.calabrio_wfm
-                }]
-              });
-              jest.runAllTimers();
-              expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
-              expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
-                overlayMessage: "Updating user: Faith Cuneo",
-                saveStatus: "saving",
-                saveUser: true
-              });
-              expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
-                overlayMessage: "Successfully updated user: Faith Cuneo",
-                saveStatus: "success",
-                saveUser: true
-              });
-              expect(mockUpdateLoading.mock.calls[2][0]).toEqual({
-                saveUser: false
-              });
-            });
-          });
-        });
-        describe("createCalabrioWFMPerson fails", () => {
-          const form = {
-            ...updateFormState,
-            calabrio_qm: {
-              ...updateFormState.calabrio_qm,
-              updated: false
-            },
-            calabrio_wfm: {
-              userFound: true,
-              BusinessUnitId: "111",
-              EmploymentStartDate: "05/02/1991",
-              Roles: ["Role1"],
-              EmploymentNumber: "n0263786",
-              Email: "faith.cuneo@libertymutual.com"
-            }
-          };
+        describe("environment === production", () => {
           beforeEach(() => {
-            createCalabrioWFMPerson.mockRejectedValue({ message: "bummer"});
-            useFormState.mockReturnValue(form);
-          });
-  
-          const wfmBody = {
-            ...form.calabrio_wfm,
-            PersonStartDate: "05/02/1991",
-            RoleIds: ["Role1"],
-            NNumber: "n0263786",
-            ApplicationLogon: "faith.cuneo@libertymutual.com",
-            TimeZoneId: {
-              label: "EST",
-              value: 173
-            }
-          }
-          describe("error is shown on final results", () => {
-            test("form is updated as successful", async () => {
-              renderComponent(true);
-              render(Tooltip.mock.calls[0][0].children);
-              act(() => {
-                const onClick = StyledButton.mock.calls[1][0].onClick;
-                onClick();
-              });
-              await waitFor(() => {
-                expect(updateUser).toHaveBeenCalledTimes(1);
-                expect(createCalabrioWFMPerson).toHaveBeenCalledWith(wfmBody);
-                expect(wfmActivateExternalLogon).not.toHaveBeenCalled();
-                expect(mockDispatch).toHaveBeenCalledTimes(1);
-                expect(mockDispatch.mock.calls[0][0]).toEqual({
-                  type: "updateWorker",
-                  payload: formattedWorker
-                });
-                jest.runAllTimers();
-                expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
-                expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
-                  overlayMessage: "Updating user: Faith Cuneo",
-                  saveStatus: "saving",
-                  saveUser: true
-                });
-                expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
-                  overlayMessage: "The following errors occurred: Failed to create WFM User. bummer",
-                  saveStatus: "partial fail",
-                  saveUser: true
-                });
-              });
+            useAdminState.mockReturnValue({
+              userContext: {
+                pingIdentity: {
+                  environment: "production"
+                }
+              },
+              calabrioContext: {
+                users: [],
+                wfmOrg: []
+              }
             });
           });
-        });
-        describe("wfmActivateExternalLogon fails", () => {
-          const form = {
-            ...updateFormState,
-            calabrio_qm: {
-              ...updateFormState.calabrio_qm,
-              updated: false
-            },
-            calabrio_wfm: {
-              userFound: true,
-              BusinessUnitId: "111",
-              EmploymentStartDate: "05/02/1991",
-              Roles: ["Role1"],
-              EmploymentNumber: "n0263786",
-              Email: "faith.cuneo@libertymutual.com"
-            }
-          };
-          beforeEach(() => {
-            createCalabrioWFMPerson.mockResolvedValue({ data: "9dase-Owaaskm"});
-            wfmActivateExternalLogon.mockRejectedValue({ message: "bummer"});
-            useFormState.mockReturnValue(form);
-          });
-  
-          const wfmBody = {
-            ...form.calabrio_wfm,
-            PersonStartDate: "05/02/1991",
-            RoleIds: ["Role1"],
-            NNumber: "n0263786",
-            ApplicationLogon: "faith.cuneo@libertymutual.com",
-            TimeZoneId: {
-              label: "EST",
-              value: 173
-            }
-          }
-          describe("error is shown on final results", () => {
+          describe("all wfm calls are successful", () => {
             test("form is updated as successful", async () => {
               renderComponent(true);
               render(Tooltip.mock.calls[0][0].children);
@@ -2210,25 +2096,139 @@ describe("<UserFormButtons />", () => {
                   type: "updateWorker",
                   payload: formattedWorker
                 });
+  
                 expect(mockDispatch.mock.calls[1][0]).toEqual({
                   type: "updateWfmOrg",
-                  payload: [{
-                    Id: "9dase-Owaaskm",
-                    ...form.calabrio_wfm
-                  }]
+                  payload: ["newstateyay!"]
                 });
                 jest.runAllTimers();
-                expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
+                expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
                 expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
                   overlayMessage: "Updating user: Faith Cuneo",
                   saveStatus: "saving",
                   saveUser: true
                 });
                 expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
-                  overlayMessage: "The following errors occurred: Failed to activate WFM External Logon. bummer",
-                  saveStatus: "partial fail",
+                  overlayMessage: "Successfully updated user: Faith Cuneo",
+                  saveStatus: "success",
                   saveUser: true
                 });
+                expect(mockUpdateLoading.mock.calls[2][0]).toEqual({
+                  saveUser: false
+                });
+              });
+            });
+          });
+          describe("createCalabrioWFMPerson fails", () => {
+            beforeEach(() => {
+              createCalabrioWFMPerson.mockRejectedValue({ message: "bummer"});
+              useFormState.mockReturnValue(form);
+            });
+            describe("error is shown on final results", () => {
+              test("form is updated as successful", async () => {
+                renderComponent(true);
+                render(Tooltip.mock.calls[0][0].children);
+                act(() => {
+                  const onClick = StyledButton.mock.calls[1][0].onClick;
+                  onClick();
+                });
+                await waitFor(() => {
+                  expect(updateUser).toHaveBeenCalledTimes(1);
+                  expect(createCalabrioWFMPerson).toHaveBeenCalledWith(wfmBody);
+                  expect(wfmActivateExternalLogon).not.toHaveBeenCalled();
+                  expect(mockDispatch).toHaveBeenCalledTimes(1);
+                  expect(mockDispatch.mock.calls[0][0]).toEqual({
+                    type: "updateWorker",
+                    payload: formattedWorker
+                  });
+                  jest.runAllTimers();
+                  expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
+                  expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
+                    overlayMessage: "Updating user: Faith Cuneo",
+                    saveStatus: "saving",
+                    saveUser: true
+                  });
+                  expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
+                    overlayMessage: "The following errors occurred: Failed to create WFM User. bummer",
+                    saveStatus: "partial fail",
+                    saveUser: true
+                  });
+                });
+              });
+            });
+          });
+          describe("wfmActivateExternalLogon fails", () => {
+            beforeEach(() => {
+              createCalabrioWFMPerson.mockResolvedValue({ data: "9dase-Owaaskm"});
+              wfmActivateExternalLogon.mockRejectedValue({ message: "bummer"});
+              useFormState.mockReturnValue(form);
+            });
+            describe("error is shown on final results", () => {
+              test("form is updated as successful", async () => {
+                renderComponent(true);
+                render(Tooltip.mock.calls[0][0].children);
+                act(() => {
+                  const onClick = StyledButton.mock.calls[1][0].onClick;
+                  onClick();
+                });
+                await waitFor(() => {
+                  expect(updateUser).toHaveBeenCalledTimes(1);
+                  expect(createCalabrioWFMPerson).toHaveBeenCalledWith(wfmBody);
+                  expect(wfmActivateExternalLogon).toHaveBeenCalled();
+                  expect(mockDispatch).toHaveBeenCalledTimes(2);
+                  expect(mockDispatch.mock.calls[0][0]).toEqual({
+                    type: "updateWorker",
+                    payload: formattedWorker
+                  });
+                  expect(mockDispatch.mock.calls[1][0]).toEqual({
+                    type: "updateWfmOrg",
+                    payload: ["newstateyay!"]
+                  });
+                  jest.runAllTimers();
+                  expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
+                  expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
+                    overlayMessage: "Updating user: Faith Cuneo",
+                    saveStatus: "saving",
+                    saveUser: true
+                  });
+                  expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
+                    overlayMessage: "The following errors occurred: Failed to activate WFM External Logon. bummer",
+                    saveStatus: "partial fail",
+                    saveUser: true
+                  });
+                });
+              });
+            });
+          });
+        });
+        describe("environment !== production", () => {
+          test("wfm calls are not made", async () => {
+            renderComponent(true);
+            render(Tooltip.mock.calls[0][0].children);
+            act(() => {
+              const onClick = StyledButton.mock.calls[1][0].onClick;
+              onClick();
+            });
+            await waitFor(() => {
+              expect(updateUser).toHaveBeenCalledTimes(1);
+              expect(createCalabrioWFMPerson).not.toHaveBeenCalled();
+              expect(wfmActivateExternalLogon).not.toHaveBeenCalled();
+              expect(mockDispatch).toHaveBeenCalledTimes(1);
+              expect(mockDispatch.mock.calls[0][0]).toEqual({
+                type: "updateWorker",
+                payload: formattedWorker
+              });
+              jest.runAllTimers();
+              expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
+              expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
+                overlayMessage: "Updating user: Faith Cuneo",
+                saveStatus: "saving",
+                saveUser: true
+              });
+              expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
+                overlayMessage: "The following errors occurred: WFM does not have a non prod environment. WFM form entries were disregarded.",
+                saveStatus: "partial fail",
+                saveUser: true
               });
             });
           });
