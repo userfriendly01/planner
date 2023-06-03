@@ -6,14 +6,8 @@ import {
   useFormState,
   useFormDispatch
 } from "context";
+import { Dropdown } from "components";
 import {
-  Dropdown,
-  NNumberInput
-} from "components";
-import {
-  FormGroup,
-  FormControlLabel,
-  InputAdornment,
   TextareaAutosize,
   TextField,
   IconButton,
@@ -250,6 +244,17 @@ describe("<WfmForm />", () => {
         payload: "123-321"
       });
     });
+    test("clear dropdown updates field calls setForm with null", () => {
+      renderComponent();
+      const buDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Business Unit *");
+      const buDropdown = buDropdowns[buDropdowns.length-1][0];
+      const updateValue = buDropdown.updateValue;
+      act(() => updateValue({}, null));
+      expect(mockSetForm).toHaveBeenLastCalledWith({
+        type: userFormActions.SET_WFM_BUSINESS_UNIT,
+        payload: null
+      });
+    });
   });
   describe("Team Fields", () => {
     describe("Team", () => {
@@ -328,6 +333,16 @@ describe("<WfmForm />", () => {
         teamDropdown = teamDropdowns[teamDropdowns.length-1][0];
         expect(teamDropdown.value.Id).toBe("111");
       });
+      test("clear dropdown updates field calls setForm with null", () => {
+        renderComponent();
+        let teamDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Team");
+        let teamDropdown = teamDropdowns[teamDropdowns.length-1][0];
+        const updateValue = teamDropdown.updateValue;
+        act(() => updateValue({}, null));
+        teamDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Team");
+        teamDropdown = teamDropdowns[teamDropdowns.length-1][0];
+        expect(teamDropdown.value).toBe("");
+      });
     });
     describe("Team Start Date", () => {
       describe("disable", () => {
@@ -361,7 +376,7 @@ describe("<WfmForm />", () => {
         act(() => onChange("12/23/2023"));
         teamDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Team Start Date");
         teamDatePicker = teamDatePickers[teamDatePickers.length-1][0];
-        expect(teamDatePicker.value).toBe("12/23/2023");
+        expect(teamDatePicker.value).toBe("2023-12-23");
       });
       test("onChange null updates team fields with null", () => {
         renderComponent();
@@ -485,7 +500,7 @@ describe("<WfmForm />", () => {
           type: userFormActions.SET_WFM_TEAM,
           payload: {
             id: "111",
-            startDate: "12/23/2023"
+            startDate: "2023-12-23"
           }
         });
       });
@@ -641,6 +656,17 @@ describe("<WfmForm />", () => {
         payload: 1
       });
     });
+    test("clear dropdown updates field calls setForm with null", () => {
+      renderComponent();
+      const firstDayDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "First Day of the Week *");
+      const firstDayDropdown = firstDayDropdowns[firstDayDropdowns.length-1][0];
+      const updateValue = firstDayDropdown.updateValue;
+      act(() => updateValue({}, null));
+      expect(mockSetForm).toHaveBeenLastCalledWith({
+        type: userFormActions.SET_WFM_FIRST_DAY_OF_WEEK,
+        payload: null
+      });
+    });
   });
   describe("Roles", () => {
     describe("disable", () => {
@@ -687,6 +713,17 @@ describe("<WfmForm />", () => {
         }
       })
       expect(rolesDropdown.options).toEqual(expectedDropdownOptions);
+    });
+    test("updateValue calls setForm", () => {
+      renderComponent();
+      const rolesDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Roles");
+      const rolesDropdown = rolesDropdowns[rolesDropdowns.length-1][0];
+      const updateValue = rolesDropdown.updateValue;
+      act(() => updateValue({}, ["111"]));
+      expect(mockSetForm).toHaveBeenLastCalledWith({
+        type: userFormActions.SET_WFM_ROLES,
+        payload: ["111"]
+      });
     });
     test("updateValue calls setForm", () => {
       renderComponent();
@@ -798,7 +835,7 @@ describe("<WfmForm />", () => {
         act(() => onChange("12/23/2023"));
         skillDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Skills Start Date");
         skillDatePicker = skillDatePickers[skillDatePickers.length-1][0];
-        expect(skillDatePicker.value).toBe("12/23/2023");
+        expect(skillDatePicker.value).toBe("2023-12-23");
       });
       test("onChange to null updates skill date field to null", () => {
         renderComponent();
@@ -931,7 +968,7 @@ describe("<WfmForm />", () => {
               Id: "222",
               Name: "Skill2"
             }],
-            startDate: "12/23/2023"
+            startDate: "2023-12-23"
           }
         });
       });
@@ -984,6 +1021,17 @@ describe("<WfmForm />", () => {
       expect(mockSetForm).toHaveBeenLastCalledWith({
         type: userFormActions.SET_WFM_CONTROL_SET,
         payload: "111"
+      });
+    });
+    test("clear dropdown updates field calls setForm with null", () => {
+      renderComponent();
+      const controlSetDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Workflow Control Set");
+      const controlSetDropdown = controlSetDropdowns[controlSetDropdowns.length-1][0];
+      const updateValue = controlSetDropdown.updateValue;
+      act(() => updateValue({}, null));
+      expect(mockSetForm).toHaveBeenLastCalledWith({
+        type: userFormActions.SET_WFM_CONTROL_SET,
+        payload: null
       });
     });
   });
@@ -1246,6 +1294,17 @@ describe("<WfmForm />", () => {
         payload: "000"
       });
     });
+    test("clear dropdown updates field calls setForm with null", () => {
+      renderComponent();
+      const budgetGroupDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Budget Group");
+      const budgetGroupDropdown = budgetGroupDropdowns[budgetGroupDropdowns.length-1][0];
+      const updateValue = budgetGroupDropdown.updateValue;
+      act(() => updateValue({}, null));
+      expect(mockSetForm).toHaveBeenLastCalledWith({
+        type: userFormActions.SET_WFM_BUDGET_GROUP,
+        payload: null
+      });
+    });
   });
   describe("Shift Bag", () => {
     describe("disable", () => {
@@ -1302,6 +1361,17 @@ describe("<WfmForm />", () => {
       expect(mockSetForm).toHaveBeenLastCalledWith({
         type: userFormActions.SET_WFM_SHIFT_BAG,
         payload: "111"
+      });
+    });
+    test("clear dropdown updates field calls setForm with null", () => {
+      renderComponent();
+      const shiftBagDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Shift Bag");
+      const shiftBagDropdown = shiftBagDropdowns[shiftBagDropdowns.length-1][0];
+      const updateValue = shiftBagDropdown.updateValue;
+      act(() => updateValue({}, null));
+      expect(mockSetForm).toHaveBeenLastCalledWith({
+        type: userFormActions.SET_WFM_SHIFT_BAG,
+        payload: null
       });
     });
   });
@@ -1374,7 +1444,7 @@ describe("<WfmForm />", () => {
         personDatePicker = personDatePickers[personDatePickers.length-1][0];
         expect(mockSetForm).toHaveBeenLastCalledWith({
           type: userFormActions.SET_WFM_EMP_START_DATE,
-          payload: "12/23/2023"
+          payload: "2023-12-23"
         });
       });
       test("onChange null updates team fields to null", () => {
@@ -1489,6 +1559,17 @@ describe("<WfmForm />", () => {
           payload: "111"
         });
       });
+      test("clear dropdown updates field calls setForm with null", () => {
+        renderComponent();
+        const partTimeDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Part Time Percentage");
+        const partTimeDropdown = partTimeDropdowns[partTimeDropdowns.length-1][0];
+        const updateValue = partTimeDropdown.updateValue;
+        act(() => updateValue({}, null));
+        expect(mockSetForm).toHaveBeenLastCalledWith({
+          type: userFormActions.SET_WFM_PART_TIME_PERCENTAGE,
+          payload: null
+        });
+      });
     });
     describe("Contract Schedule", () => {
       describe("error", () => {
@@ -1573,6 +1654,17 @@ describe("<WfmForm />", () => {
         expect(mockSetForm).toHaveBeenLastCalledWith({
           type: userFormActions.SET_WFM_CONTRACT_SCHEDULE,
           payload: "111"
+        });
+      });
+      test("clear dropdown updates field calls setForm with null", () => {
+        renderComponent();
+        const contractScheduleDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Contract Schedule");
+        const contractScheduleDropdown = contractScheduleDropdowns[contractScheduleDropdowns.length-1][0];
+        const updateValue = contractScheduleDropdown.updateValue;
+        act(() => updateValue({}, null));
+        expect(mockSetForm).toHaveBeenLastCalledWith({
+          type: userFormActions.SET_WFM_CONTRACT_SCHEDULE,
+          payload: null
         });
       });
     });
@@ -1661,6 +1753,17 @@ describe("<WfmForm />", () => {
           payload: "111"
         });
       });
+      test("clear dropdown updates field calls setForm with null", () => {
+        renderComponent();
+        const contractDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Contract");
+        const contractDropdown = contractDropdowns[contractDropdowns.length-1][0];
+        const updateValue = contractDropdown.updateValue;
+        act(() => updateValue({}, null));
+        expect(mockSetForm).toHaveBeenLastCalledWith({
+          type: userFormActions.SET_WFM_CONTRACT,
+          payload: null
+        });
+      });
     });
   });
   describe("Rotation Fields", () => {
@@ -1712,6 +1815,16 @@ describe("<WfmForm />", () => {
         rotationDropdown = rotationDropdowns[rotationDropdowns.length-1][0];
         expect(rotationDropdown.value.Id).toBe("111");
       });
+      test("clear dropdown updates field calls setForm with null", () => {
+        renderComponent();
+        let rotationDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Rotation");
+        let rotationDropdown = rotationDropdowns[rotationDropdowns.length-1][0];
+        const updateValue = rotationDropdown.updateValue;
+        act(() => updateValue({}, null));
+        rotationDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Rotation");
+        rotationDropdown = rotationDropdowns[rotationDropdowns.length-1][0];
+        expect(rotationDropdown.value).toBe("");
+      });
     });
     describe("Rotation Start Date", () => {
       describe("disable", () => {
@@ -1745,7 +1858,7 @@ describe("<WfmForm />", () => {
         act(() => onChange("12/23/2023"));
         rotationDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Rotation Start Date");
         rotationDatePicker = rotationDatePickers[rotationDatePickers.length-1][0];
-        expect(rotationDatePicker.value).toBe("12/23/2023");
+        expect(rotationDatePicker.value).toBe("2023-12-23");
       });
       test("onChange to null updates rotation start date field to null", () => {
         renderComponent();
@@ -1755,7 +1868,7 @@ describe("<WfmForm />", () => {
         act(() => onChange(null));
         rotationDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Rotation Start Date");
         rotationDatePicker = rotationDatePickers[rotationDatePickers.length-1][0];
-        expect(rotationDatePicker.value).toBe("");
+        expect(rotationDatePicker.value).toBe(null);
       });
     });
     describe("Error fields", () => {
@@ -1926,7 +2039,7 @@ describe("<WfmForm />", () => {
           type: userFormActions.SET_WFM_ROTATION,
           payload: {
             id: "111",
-            startDate: "12/23/2023",
+            startDate: "2023-12-23",
             startWeek: 1
           }
         });
@@ -1990,6 +2103,16 @@ describe("<WfmForm />", () => {
         availabilityDropdown = availabilityDropdowns[availabilityDropdowns.length-1][0];
         expect(availabilityDropdown.value.Id).toBe("123123");
       });
+      test("clear dropdown updates field calls setForm with null", () => {
+        renderComponent();
+        let availabilityDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Availability");
+        let availabilityDropdown = availabilityDropdowns[availabilityDropdowns.length-1][0];
+        const updateValue = availabilityDropdown.updateValue;
+        act(() => updateValue({}, null));
+        availabilityDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Availability");
+        availabilityDropdown = availabilityDropdowns[availabilityDropdowns.length-1][0];
+        expect(availabilityDropdown.value).toBe("");
+      });
     });
     describe("Availability Start Date", () => {
       describe("disable", () => {
@@ -2023,7 +2146,7 @@ describe("<WfmForm />", () => {
         act(() => onChange("12/23/2023"));
         availabilityDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Availability Start Date");
         availabilityDatePicker = availabilityDatePickers[availabilityDatePickers.length-1][0];
-        expect(availabilityDatePicker.value).toBe("12/23/2023");
+        expect(availabilityDatePicker.value).toBe("2023-12-23");
       });
       test("onChange to null updates availability start date field to null", () => {
         renderComponent();
@@ -2033,7 +2156,7 @@ describe("<WfmForm />", () => {
         act(() => onChange(null));
         availabilityDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Availability Start Date");
         availabilityDatePicker = availabilityDatePickers[availabilityDatePickers.length-1][0];
-        expect(availabilityDatePicker.value).toBe("");
+        expect(availabilityDatePicker.value).toBe(null);
       });
     });
     describe("Error fields", () => {
@@ -2147,7 +2270,7 @@ describe("<WfmForm />", () => {
           type: userFormActions.SET_WFM_AVAILABILITY,
           payload: {
             id: "123123",
-            startDate: "12/23/2023"
+            startDate: "2023-12-23"
           }
         });
       });

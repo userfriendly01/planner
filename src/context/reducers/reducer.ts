@@ -94,9 +94,9 @@ export const reducer = (state: AppState, action: Action): AppState => {
         }
       };
     case "loadWfmOrg": {
-      const org = action.payload.org.isArray() ? action.payload.org : [];
-      const errors = action.payload.errors.isArray() || [];
-      const peopleWithoutTeam = action.payload.People_Without_Team.isArray() || [];
+      const org = Array.isArray(action.payload.org) ? action.payload.org : [];
+      const errors = Array.isArray(action.payload.errors) ? action.payload.errors : [];
+      const peopleWithoutTeam = Array.isArray(action.payload.People_Without_Team) ? action.payload.People_Without_Team : [];
       return {
         ...state,
         calabrioContext: {

@@ -1032,7 +1032,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
         return {
           ...state,
           [system]: {
-            ...state[system],
+            ...initialUserFormState[system],
             userFound: isFound
           }
         };

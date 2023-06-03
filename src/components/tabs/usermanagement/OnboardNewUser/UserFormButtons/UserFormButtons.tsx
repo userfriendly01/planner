@@ -65,8 +65,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
   const {
     users,
     roles,
-    teams,
-    wfmOrg
+    teams
   } = state.calabrioContext;
   const environment = state.userContext.pingIdentity.environment;
 
@@ -199,7 +198,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         const wfmBody = {
           ...form.calabrio_wfm,
           PersonStartDate: form.calabrio_wfm.EmploymentStartDate,
-          RoleIds: form.calabrio_wfm.Roles,
+          RoleIds: form.calabrio_wfm.Roles.map((r: any) => r.Id),
           NNumber: form.calabrio_wfm.EmploymentNumber,
           ApplicationLogon: form.calabrio_wfm.Email,
           TimeZoneId: form.calabrio_qm.timezone.value,
@@ -413,7 +412,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       const wfmBody = {
         ...form.calabrio_wfm,
         PersonStartDate: form.calabrio_wfm.EmploymentStartDate,
-        RoleIds: form.calabrio_wfm.Roles,
+        RoleIds: form.calabrio_wfm.Roles.map((r: any) => r.Id),
         NNumber: form.calabrio_wfm.EmploymentNumber,
         ApplicationLogon: form.calabrio_wfm.Email,
         TimeZoneId: form.calabrio_qm.timezone.value,

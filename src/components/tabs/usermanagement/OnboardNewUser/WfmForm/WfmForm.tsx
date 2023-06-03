@@ -75,8 +75,6 @@ const WfmForm = (props: WfmFormProps) => {
     partTimePercentageId: form.calabrio_wfm.PartTimePercentageId
   };
 
-  console.log("FAITH form", form);
-
   React.useEffect(() => {
     const trimmedOptions = getWfmOptions(state, form.calabrio_wfm.BusinessUnitId);
     setOptionsByBusinessUnit(trimmedOptions);
@@ -276,7 +274,7 @@ const WfmForm = (props: WfmFormProps) => {
             onChange={(newValue) => {
               setTeamFields({
                 ...teamFields,
-                startDate: newValue ? new Date(newValue).toLocaleDateString(): newValue
+                startDate: newValue ? new Date(newValue).toISOString().split('T')[0] : newValue
               })}
             } 
             renderInput={props => <TextField {...props}
@@ -341,7 +339,7 @@ const WfmForm = (props: WfmFormProps) => {
             onChange={(newValue) => {
               setForm({
                 type: userFormActions.SET_WFM_EMP_START_DATE,
-                payload: newValue ? new Date(newValue).toLocaleDateString(): newValue
+                payload: newValue ? new Date(newValue).toISOString().split('T')[0] : newValue
               })}
             } 
             renderInput={props => <TextField {...props}
@@ -382,7 +380,7 @@ const WfmForm = (props: WfmFormProps) => {
             onChange={(newValue) => {
               setSkillFields({
                 ...skillFields,
-                startDate: newValue ? new Date(newValue).toLocaleDateString(): newValue
+                startDate: newValue ? new Date(newValue).toISOString().split('T')[0] : newValue
               })}
             } 
             renderInput={props => <TextField {...props}
@@ -395,7 +393,7 @@ const WfmForm = (props: WfmFormProps) => {
             disabled={!isAdd}
             label="Workflow Control Set"
             options={generateDropdownOptionArray(optionsByBusinessUnit["Workflow_Control_Sets"])}
-            value={generateDropdownOption(optionsByBusinessUnit["Workflow_Control_Sets"]?.find((wcs: any) => wcs.Id === form.calabrio_wfm.WorkflowControlSetId) || "")}
+            value={generateDropdownOption(optionsByBusinessUnit["Workflow_Control_Sets"]?.find((wcs: any) => wcs.Id === form.calabrio_wfm.WorkflowControlSetId))}
             updateValue={(event: any, newValue: any) => setForm({
               type: userFormActions.SET_WFM_CONTROL_SET,
               payload: newValue?.value || null
@@ -463,7 +461,7 @@ const WfmForm = (props: WfmFormProps) => {
               type: userFormActions.SET_WFM_BUDGET_GROUP,
               payload: newValue?.value || null
             })}
-            styles={{ width: "250px" }}
+            styles={{ width: "375px" }}
           />
           <Dropdown
             disabled={!isAdd}
@@ -475,7 +473,7 @@ const WfmForm = (props: WfmFormProps) => {
               type: userFormActions.SET_WFM_PART_TIME_PERCENTAGE,
               payload: newValue?.value || null
             })}
-            styles={{ width: "250px" }}
+            styles={{ width: "375px" }}
           />
         </Row>
         <Row>
@@ -531,11 +529,11 @@ const WfmForm = (props: WfmFormProps) => {
           <DatePicker
             disabled={!isAdd}
             label="Rotation Start Date"
-            value={rotationFields.startDate || ""}
+            value={rotationFields.startDate}
             onChange={(newValue) => {
               setRotationFields({
                 ...rotationFields,
-                startDate: newValue ? new Date(newValue).toLocaleDateString(): newValue
+                startDate: newValue ? new Date(newValue).toISOString().split('T')[0] : newValue
               })}
             } 
             renderInput={props => <TextField {...props}
@@ -574,10 +572,10 @@ const WfmForm = (props: WfmFormProps) => {
           <DatePicker
             disabled={!isAdd}
             label="Availability Start Date"
-            value={availabilityFields.startDate || ""}
+            value={availabilityFields.startDate}
             onChange={(newValue) => setAvailabilityFields({
                 ...availabilityFields,
-                startDate: newValue ? new Date(newValue).toLocaleDateString(): newValue
+                startDate: newValue ? new Date(newValue).toISOString().split('T')[0] : newValue
               })
             }
             renderInput={props => <TextField {...props}

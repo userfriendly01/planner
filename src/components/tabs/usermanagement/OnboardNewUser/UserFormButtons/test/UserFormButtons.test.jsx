@@ -891,7 +891,7 @@ describe("<UserFormButtons />", () => {
             userFound: true,
             BusinessUnitId: "111",
             EmploymentStartDate: "05/02/1991",
-            Roles: ["Role1"],
+            Roles: [{ Id: "Role1" }],
             EmploymentNumber: "n0263786",
             Email: "faith.cuneo@libertymutual.com",
             PersonSkills: [{
@@ -2042,7 +2042,7 @@ describe("<UserFormButtons />", () => {
             userFound: true,
             BusinessUnitId: "111",
             EmploymentStartDate: "05/02/1991",
-            Roles: ["Role1"],
+            Roles: [{ Id: "Role1" }],
             EmploymentNumber: "n0263786",
             Email: "faith.cuneo@libertymutual.com",
             PersonSkills: [{
