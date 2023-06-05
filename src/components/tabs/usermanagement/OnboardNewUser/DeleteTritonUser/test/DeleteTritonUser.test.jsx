@@ -12,6 +12,7 @@ import React from "react";
 import { deleteUser } from "services";
 import {
   act,
+  initialFormState,
   initialTestState,
   render,
   waitFor
@@ -36,13 +37,6 @@ const mockDispatch = jest.fn();
 const mockHandleClose = jest.fn();
 const mockUpdateLoading = jest.fn();
 const mockWorker = initialTestState.workerContext.workers[0];
-const mockWorkerOpts = {
-  systems: {
-    triton: true,
-    calabrio_qm: false,
-    calabrio_wfm: false
-  }
-};
 
 jest.useFakeTimers();
 
@@ -51,7 +45,6 @@ const renderComponent = () => {
     handleClose={mockHandleClose}
     loading={{}}
     updateLoading={mockUpdateLoading}
-    workerOpts={mockWorkerOpts}
   />)
 }
 
@@ -62,7 +55,11 @@ describe("DeleteTritonUser", () => {
     useAdminDispatch.mockReturnValue(mockDispatch);
     useAdminState.mockReturnValue(initialTestState);
     useFormState.mockReturnValue({
-      didUser: false,
+      ...initialFormState,
+      triton: {
+        userFound: true,
+        didUser: false,
+      },
       nNumber: {
         value: mockWorker.attributes.n_number
       }
@@ -73,7 +70,11 @@ describe("DeleteTritonUser", () => {
     describe("worker is DID", () => {
       beforeEach(() => {
         useFormState.mockReturnValue({
-          didUser: true,
+          ...initialFormState,
+          triton: {
+            userFound: true,
+            didUser: true,
+          },
           nNumber: {
             value: mockWorker.attributes.n_number
           }

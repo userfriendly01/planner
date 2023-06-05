@@ -24,14 +24,14 @@ export const ProgressBarFiller = styled.div<{progress: string}>`
   border-radius: inherit;
 `;
 
-export const ModalWrapper = styled(Paper)`
+export const ModalWrapper = styled(Paper)<{position?: string}>`
   align-items: center;
   display: flex;
   flex-direction: column;
   justify-content: center;
   width: 900px;
   height: 400px;
-  position: absolute;
+  position: ${props => props.position || "absolute"};
   left: 32vw;
   top: 30vh;
 `;

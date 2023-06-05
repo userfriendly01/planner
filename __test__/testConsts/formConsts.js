@@ -17,67 +17,79 @@ export const fetchedUser = {
 };
 
 export const initialFormState = {
-  alternateDid: {
-    value: "",
-    blurred: false,
-    e164: undefined,
-    updated: false,
-    valid: false
-  },
-  defaultSkills: {},
-  defaultSkillsUpdated: false,
-  didUser: false,
-  directDialNum: {
-    value: "",
-    blurred: false,
-    e164: undefined,
-    updated: false,
-    valid: false
-  },
-  discrepancies: [],
-  editDisabled: false,
-  extension: {
-    value: "",
-    blurred: false,
-    updated: false,
-    valid: false
-  },
-  extensionStatus: {
-    searchStatus: ExtensionSearchStatuses.Idle,
-    retriesRemaining: 5,
-    message: "",
-    isError: false,
-    originalExtension: ""
-  },
   formMode: formModes.INSERT,
-  inactiveForwardTo: {
-    value: null,
-    updated: false
-  },
-  manager: {
-    value: "",
-    blurred: false,
-    updated: false
-  },
+  discrepancies: [],
   nNumber: {
     value: "n",
     blurred: false,
-    updated: false
-  },
-  nNumberFetchedUser: null,
-  outgoing: {
-    value: "",
-    blurred: false,
-    e164: undefined,
     updated: false,
-    valid: false
+    nNumberFetchedUser: null,
   },
-  profileId: {
-    value: "",
-    blurred: false,
-    updated: false
+  triton: {
+    userFound: true,
+    alternateDid: {
+      value: "",
+      blurred: false,
+      e164: undefined,
+      updated: false,
+      valid: false
+    },
+    defaultSkills: {},
+    defaultSkillsUpdated: false,
+    didUser: false,
+    directDialNum: {
+      value: "",
+      blurred: false,
+      e164: undefined,
+      updated: false,
+      valid: false
+    },
+    extension: {
+      value: "",
+      blurred: false,
+      updated: false,
+      valid: false,
+      status: {
+        searchStatus: ExtensionSearchStatuses.Idle,
+        retriesRemaining: 5,
+        message: "",
+        isError: false,
+        originalExtension: ""
+      }
+    },
+    inactiveForwardTo: {
+      value: null,
+      updated: false
+    },
+    manager: {
+      value: "",
+      blurred: false,
+      updated: false
+    },
+    outgoing: {
+      value: "",
+      blurred: false,
+      e164: undefined,
+      updated: false,
+      valid: false
+    },
+    profileId: {
+      value: "",
+      blurred: false,
+      updated: false
+    },
+    userPreviouslyAdded: false,
+    zeroOutEnabled: {
+      value: false,
+      updated: false
+    },
+    selfServiceInd: {
+      value: false,
+      updated: false
+    }
   },
-  calabrioUser: {
+  calabrio_qm: {
+    userFound: false,
     updated: false,
     team: null,
     timezone: {
@@ -99,11 +111,36 @@ export const initialFormState = {
       }]
     }
   },
-  userPreviouslyAdded: false,
-  zeroOutEnabled: false,
-  zeroOutEnabledUpdated: false,
-  selfServiceInd: false,
-  selfServiceIndUpdated: false
+  calabrio_wfm: {
+    userFound: false,
+    OptionalColumns: [],
+    Id: null,
+    Identity: null,
+    FirstName: null,
+    LastName: null,
+    EmploymentNumber: null,
+    Email: null,
+    DisplayName: null,
+    TerminationDate: null,
+    EmploymentStartDate: null,
+    TimeZoneId: null,
+    BusinessUnitId: null,
+    TeamId: null,
+    PersonSkills: [],
+    WorkflowControlSetId: null,
+    ContractId: null,
+    ContractScheduleId: null,
+    BudgetGroupId: null,
+    PartTimePercentageId: null,
+    ShiftBagId: null,
+    Note: null,
+    Roles: [],
+    AvailabilityId: null,
+    AbsenceId: null,
+    RotationId: null,
+    FirstDayOfWeek: null,
+    ParentTeam: null
+  }
 };
 
 export const validFormOptions = {
@@ -157,69 +194,81 @@ export const validFormOptions = {
 
 export const validFormState = {
   formMode: formModes.INSERT,
-  defaultSkills: {
-    "levels": {
-      "a": 1,
-      "b": 3
-    },
-    "skills": [
-      "a",
-      "b",
-      "c"
-    ]
-  },
-  defaultSkillsUpdated: true,
-  didUser: false,
   discrepancies: [],
-  extension: {
-    value: validFormOptions.extension,
-    blurred: false,
-    updated: true,
-    valid: true
-  },
-  inactiveForwardTo: {
-    value: null,
-    updated: false
-  },
-  manager: {
-    value: managerList[0],
-    blurred: false,
-    updated: true
-  },
   nNumber: {
     value: validFormOptions.nNumber,
     blurred: false,
-    updated: true
-  },
-  nNumberFetchedUser: fetchedUser,
-  outgoing: {
-    value: "6038518200",
-    blurred: false,
-    e164: validFormOptions.didE164,
     updated: true,
-    valid: true
+    nNumberFetchedUser: fetchedUser
   },
-  profileId: {
-    value: validFormOptions.profileId,
-    blurred: false,
-    updated: true
+  triton: {
+    userFound: true,
+    defaultSkills: {
+      updated: true,
+      levels: {
+        "a": 1,
+        "b": 3
+      },
+      skills: [
+        "a",
+        "b",
+        "c"
+      ]
+    },
+    didUser: false,
+    extension: {
+      value: validFormOptions.extension,
+      blurred: false,
+      updated: true,
+      valid: true
+    },
+    inactiveForwardTo: {
+      value: null,
+      updated: false
+    },
+    manager: {
+      value: managerList[0],
+      blurred: false,
+      updated: true
+    },
+    outgoing: {
+      value: "6038518200",
+      blurred: false,
+      e164: validFormOptions.didE164,
+      updated: true,
+      valid: true
+    },
+    profileId: {
+      value: validFormOptions.profileId,
+      blurred: false,
+      updated: true
+    },
+    alternateDid: {
+      value: "6032453160",
+      blurred: false,
+      e164: "+16032453160",
+      updated: true,
+      valid: true
+    },
+    directDialNum: {
+      value: "6032453160",
+      blurred: false,
+      e164: "+16032453160",
+      updated: true,
+      valid: true
+    },
+    zeroOutEnabled: {
+      value: false,
+      updated: false
+    },
+    selfServiceInd: {
+      value: false,
+      updated: false
+    }
   },
-  alternateDid: {
-    value: "6032453160",
-    blurred: false,
-    e164: "+16032453160",
-    updated: true,
-    valid: true
-  },
-  directDialNum: {
-    value: "6032453160",
-    blurred: false,
-    e164: "+16032453160",
-    updated: true,
-    valid: true
-  },
-  calabrioUser: {
-    update: false,
+  calabrio_qm: {
+    userFound: true,
+    updated: false,
     team: 225,
     timezone: {
       label: "EST",
@@ -240,16 +289,15 @@ export const validFormState = {
       }]
     }
   },
-  zeroOutEnabled: false,
-  zeroOutEnabledUpdated: false,
-  selfServiceInd: false,
-  selfServiceIndUpdated: false,
-  editDisabled: false
+  calabrio_wfm: {
+    userFound: false
+  }
 };
 
 export const mockWorkers = [
   {
     attributes: {
+      n_number: "n",
       default_skills: {
         skills: [
           "466",
@@ -294,6 +342,7 @@ export const mockWorkers = [
     selfServiceInd: true,
     attributes: {
       default_skills: validFormOptions.defaultSkills,
+      n_number: "n",
       did: validFormOptions.didE164,
       extension: validFormOptions.extension,
       full_name: "Test 3",

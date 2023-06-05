@@ -435,19 +435,19 @@ describe("checkIfConflictingWFMPeople", () => {
     }
   };
   test("No user is passed to function, returns undefined", () => { // in this case we will rely on errors from WFM
-    const result = checkIfConflictingWFMPeople(null, []);
+    const result = checkIfConflictingWFMPeople(null, {});
     expect(result).toBe(undefined);
   });
   test("User passed to function, has no matches in the users list, returns false", () => {
-    const result = checkIfConflictingWFMPeople(cleanUser, initialTestState.calabrioContext.wfmOrg);
+    const result = checkIfConflictingWFMPeople(cleanUser, initialTestState);
     expect(result).toEqual(false);
   });
   test("User passed to function, has nnumber matches in the users list, returns true", () => {
-    const result = checkIfConflictingWFMPeople(userWithConflictingNNumber, initialTestState.calabrioContext.wfmOrg);
+    const result = checkIfConflictingWFMPeople(userWithConflictingNNumber, initialTestState);
     expect(result).toBe(true);
   });
   test("User passed to function, has email matches in the users list, returns true", () => {
-    const result = checkIfConflictingWFMPeople(userWithConflictingEmail, initialTestState.calabrioContext.wfmOrg);
+    const result = checkIfConflictingWFMPeople(userWithConflictingEmail, initialTestState);
     expect(result).toBe(true);
   });
 });

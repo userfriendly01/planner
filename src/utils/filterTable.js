@@ -40,3 +40,33 @@ export const filterSkillsByName = (skill, searchValue) => {
   }
   return false;
 };
+
+export const filterWfmUserTable = (wfmUser, searchValue) => {
+  if (!wfmUser) { return false; }
+
+  if (!searchValue) { return true; }
+
+  const firstName = wfmUser.FirstName?.toLowerCase() || "";
+  const lastName = wfmUser.LastName?.toLowerCase() || "";
+  const identity = wfmUser.Identity?.toLowerCase() || "";
+  const email = wfmUser.Email?.toLowerCase() || "";
+  const nNumber = wfmUser.EmploymentNumber?.toLowerCase() || "";
+  const id = wfmUser.Id?.toLowerCase() || "";
+
+  const lowerCaseSearch = searchValue.toLowerCase();
+
+  if (firstName.indexOf(lowerCaseSearch) >= 0) {
+    return true;
+  } else if (lastName.indexOf(lowerCaseSearch) >= 0) {
+    return true;
+  } else if (identity.indexOf(lowerCaseSearch) >= 0) {
+    return true;
+  } else if (email.indexOf(lowerCaseSearch) >= 0) {
+    return true;
+  } else if (id.indexOf(lowerCaseSearch) >= 0) {
+    return true;
+  } else if (nNumber.indexOf(lowerCaseSearch) >= 0) {
+    return true;
+  }
+  return false;
+};

@@ -30,7 +30,7 @@ const SkillsFormInfo = () => {
       </AccordionSummary>
       <AccordionDetails>
         <DefaultSkillSelector
-          defaultSkills={form.defaultSkills}
+          defaultSkills={form.triton.defaultSkills}
           setDefaultSkills={(defaultSkills: any) => {
             setForm({
               type: userFormActions.UPDATE_DEFAULT_SKILLS,

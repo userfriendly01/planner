@@ -1,5 +1,6 @@
 import ExportUsersButton from "../ExportUsersButton";
 import { StyledExportButton } from "../TritonUsersHeader.Styles";
+import { StyledButton } from "components";
 import React from "react";
 import { ExcelExport } from "@progress/kendo-react-excel-export";
 import { theme } from "globals";
@@ -120,6 +121,26 @@ describe("ExportUsersButton", () => {
           width: "100px"
         }
       ]);
+    });
+  });
+  describe("_export.current === null", () => {
+    beforeEach(() => {
+      useRefSpy.mockReturnValue({ current: null});
+    });
+    test("should not call _export.current.save", () => {
+      render(
+        <ThemeProvider theme={theme}>
+          <ExportUsersButton
+            selected={[initialTestState.workerContext.workers[1]]}
+            label="New Label"
+          />
+        </ThemeProvider>
+      );
+      const rendered = render(StyledExportButton.mock.calls[0][0].children);
+      const onClick = StyledExportButton.mock.calls[0][0].onClick;
+      act(() => onClick());
+      expect(mockSave).toHaveBeenCalledTimes(0);
+      expect(rendered.container).toHaveTextContent("New Label");
     });
   });
 });

@@ -1,6 +1,7 @@
 import {
   Manager,
   TritonProfile,
+  WfmUser,
   Worker
 } from "globals";
 
@@ -56,3 +57,12 @@ export const sortWorkersByFullName = (a: Worker, b: Worker) => {
   const [aName, bName] = [a.attributes.full_name || sortLast, b.attributes.full_name || sortLast];
   return sortStrings(aName, bName);
 };
+
+export const sortWfmWorkersByFullName = (a: WfmUser, b: WfmUser) => {
+  const aFullName = `${a.FirstName} ${a.LastName}`;
+  const bFullName = `${b.FirstName} ${b.LastName}`;
+  const [aName, bName] = [aFullName?.trim() || sortLast, bFullName?.trim() || sortLast];
+  return sortStrings(aName, bName);
+};
+
+export const sortWFMByName = (a: any, b: any) => sortStrings(a.Name?.trim(), b.Name?.trim());

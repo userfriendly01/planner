@@ -2360,7 +2360,8 @@ describe("fields.js", () => {
         test("returns the BU name options", () => {
           const options = optionsFunction(initialTestState);
           expect(options).toEqual([
-            "WFM Business Unit1"
+            "WFM Business Unit1",
+            "Other WFM Business Unit"
           ]);
         });
       });
@@ -2691,7 +2692,7 @@ describe("fields.js", () => {
         const optionsFunction = FIELDS.CALABRIO_WFM_TEAM.options;
         test("State and BU Id are passed into function, returns options", () => {
           const options = optionsFunction(initialTestState, "123-321");
-          expect(options).toEqual(["Team1", "Team2"]);
+          expect(options).toEqual(["Team1", "Team2", "Team3 No ID"]);
         });
         test("No Business unit id is passed into options function, returns unable to generate message", () => {
           const options = optionsFunction(initialTestState);

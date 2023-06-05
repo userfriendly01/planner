@@ -26,12 +26,13 @@ const Pagination = (props: PaginationProps) => {
   const numPages = Math.ceil(length / tableState.pagination.usersPerPage);
   const onFirstPage = tableState.pagination.pageNumber === 1;
   const onLastPage = tableState.pagination.pageNumber === numPages;
-  const endingNumber = tableState.pagination.endingUserIndex > length ? length : tableState.pagination.endingUserIndex;
+  const startingCount = tableState.pagination.startingUserIndex + 1;
+  const endingCount = onLastPage ? length: tableState.pagination.endingUserIndex + 1;
 
   return (
     <PaginationWrapper>
       <ShowingSection>
-        <Highlight>{tableState.pagination.startingUserIndex}</Highlight>-<Highlight>{endingNumber}</Highlight> of <Highlight>{length}</Highlight> workers
+        <Highlight>{startingCount}</Highlight>-<Highlight>{endingCount}</Highlight> of <Highlight>{length}</Highlight> workers
       </ShowingSection>
       <NavArrowsWrapper>
         <NavArrow

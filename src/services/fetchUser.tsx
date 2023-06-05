@@ -16,8 +16,8 @@ export const fetchUser = (nNumber: string): Promise<FetchUserResponse> => myAxio
     if (res.data.length !== 0) {
       return {
         email: res.data[0].person.data.Email,
-        firstName: res.data[0].person.data.FirstName.trim(),
-        lastName: res.data[0].person.data.LastName.trim(),
+        firstName: res.data[0].person.data.FirstName?.trim(),
+        lastName: res.data[0].person.data.LastName?.trim(),
         officeName: res.data[0].person.data.OfficeName,
         officeNumber: res.data[0].person.data.OfficeNumber,
         departmentName: res.data[0].person.data.DepartmentName,
