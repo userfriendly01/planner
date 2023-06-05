@@ -53,8 +53,8 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
     levels: {}
   });
 
-  const skills = useAdminState().skillContext.skills.slice().filter(s => s.levels);
-  const skillGroups = useAdminState().skillContext.skillGroups.slice();
+  // const skills = useAdminState().skillContext.skills.slice().filter(s => s.levels);
+  // const skillGroups = useAdminState().skillContext.skillGroups.slice();
 
   // add keys to template so processing function can adjust payload body
   React.useEffect(() => {
@@ -103,10 +103,8 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
           value={option}
           options={Object.values(dropdownOptions)}
           updateValue={(event: any, option: any) => {
-            console.log("option: ", option);
-            // console.log("option[0]: ", dropdownOptions[0]);
             setOption(option.label);
-            console.log("option label again: ", option.label);
+            console.log("**** option label: ", option.label);
           }}
           styles={{
             margin: "40 40 30 0",
@@ -114,14 +112,14 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
           }}
         />
 
-        { option === dropdownOptions.OVERRIDE_SKILL.label &&
+        { option === dropdownOptions.ADD_SKILL.label &&
         <DefaultSkillSelector
           defaultSkills={updatedDefaultSkills}
           setDefaultSkills={(updatedDefaultSkills: any) => {
-            // add skills to state array thing here
-            console.log("&&& setting default skills: ", updatedDefaultSkills);
+            console.log("**** option: ", option);
+            console.log("**** setting default skills: ", updatedDefaultSkills);
             setUpdatedDefaultSkills(updatedDefaultSkills);
-            console.log("&&& updated template: ", selectedTemplates);
+            console.log("**** updated template: ", selectedTemplates);
           }}
         />
         }

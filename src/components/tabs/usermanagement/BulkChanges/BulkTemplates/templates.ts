@@ -339,25 +339,54 @@ const processUpdateManager = async (row: any, template: Template, state: any) =>
 };
 
 const processUpdateDefaultSkills = async (row: any, template: Template, state: any) => {
-  console.log("+++ processing update skills hurr");
+  console.log("**** processing update skills hurr");
   const rowNumber = row.rowNumber;
-  const userNNumber = row.attributes.n_number;
-  const workerSid = row.workerSid; // maybe unnecessary here, use this when calling updateUser
 
   const key = template.data.key;
   const value = template.data.value;
   const option = template.data.option;
 
-  const body: any = {};
+  console.log("**** key, value, option: ", key, value, option);
 
-  body.attributes = { "default_skills": value };
+  const body: any = {};
+  let updatedDefaultSkills: any = {};
+
+  if (option === "Override Skill") {
+    updatedDefaultSkills = value;
+  } else if (option === "Add Skill") {
+    console.log("inside add skill processing function");
+    const currentDefaultSkills = row.attributes.default_skills;
+    const currentSkillLevels = row.attributes.default_skills.levels;
+    const currentSkills = row.attributes.default_skills.skills;
+
+    // todo: cleanup!!!
+    const newSkillLevels = value.levels;
+    const newSkillLevelsObj = {
+      ...currentSkillLevels,
+      ...newSkillLevels
+    };
+
+    const newSkills = value.skills;
+    console.log("**** currentDefaultSkills: ", currentDefaultSkills);
+
+    const updatedDefaultSkills = {
+      levels: newSkillLevelsObj,
+      skills: [...currentSkills, ...newSkills]
+    };
+    console.log("**** updatedDefaultSkills: ", updatedDefaultSkills);
+  } else {
+    // delete skills hurr
+  }
+
+  body.attributes = { "default_skills": updatedDefaultSkills };
 
   console.log("**** UPDATE DEFAULT SKILLS RECORD PROCESSING", row, body);
   console.log("**** ROW: ", row);
   console.log("**** updatedSkills:", value);
   console.log("**** option: ", option);
   try {
-    await updateUser(row.workerSid, body);
+    // todo: uncomment
+    // await updateUser(row.workerSid, body);
     return Promise.resolve(`${row.workerSid} - Default Skills updated for row ${rowNumber}`);
   } catch(err){
     const errorMessage = `Failed to update Triton Worker Default Skills for row ${rowNumber}. ${formatErrorMessage(err)}`;
