@@ -26,6 +26,7 @@ import { Dropdown } from "components";
 import _ from "lodash";
 import { getSkills } from "authentication";
 
+
 const SkillGroupInputContainer = (props: any) => {
   const [ skillGroupName, setSkillGroupName ] = React.useState("");
   const [ errorText, setErrorText ] = React.useState("");

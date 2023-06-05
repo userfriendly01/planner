@@ -167,7 +167,7 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
       taskQueueSid: skFormState.taskQueueSid,
       vhCallTarget: skFormState.enableVirtualHold ? skFormState.vhCallTarget.e164 : null,
       vhThreshold: skFormState.enableVirtualHold ? parseInt(skFormState.vhThreshold) : null,
-      updatedBy: nNumber,
+      updatedBy: nNumber.toLowerCase(),
       timeOfDayIds: [
         {
           dayId: 1,
