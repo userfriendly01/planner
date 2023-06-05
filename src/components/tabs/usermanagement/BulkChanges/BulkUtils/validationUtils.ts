@@ -6,6 +6,8 @@ import {
   formatErrorMessage
 } from "../BulkUtils";
 import { FIELDS } from "../BulkTemplates/fields";
+import { getWfmPeople } from "utils";
+import { AppState } from "globals";
 
 /**
  * Selected Templates is an array of templates to be processed on a bulk upload.
@@ -172,22 +174,12 @@ export const checkConflictingCalabrioUsers = async (user: any, rowNumber: number
  * @param user user being checked (the row)
  * @param wfmOrg WFM Org in the state containing all People state
  */
-export const checkIfConflictingWFMPeople = (user: any, wfmOrg: any[]): boolean => {
+export const checkIfConflictingWFMPeople = (user: any, state: AppState): boolean => {
   if(user){
     try {
       const nNumber = cleanupField(user.attributes.n_number, "string");
       const email = cleanupField(user.email, "string");
-
-      // create an array of all WFM people to use for comparison
-      const people = wfmOrg[0].People_Without_Team || [];
-
-      wfmOrg.forEach(bu => {
-        bu.Teams.forEach((team: any) => {
-          if (team.People) {
-            people.push(...team.People);
-          }
-        });
-      });
+      const people = getWfmPeople(state);
 
       let hasConflict = false;
 

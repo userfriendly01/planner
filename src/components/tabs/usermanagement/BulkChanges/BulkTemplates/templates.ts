@@ -114,7 +114,7 @@ const processWFMCreateUser = async (row: any, state: any) => {
   const rowNumber = row.rowNumber;
 
   try {
-    const hasPersonConflict = checkIfConflictingWFMPeople(row, state.calabrioContext.wfmOrg);
+    const hasPersonConflict = checkIfConflictingWFMPeople(row, state);
     if (hasPersonConflict) {
       throw (`Calabrio WFM Record already exists with either this user's email or nNumber for row ${rowNumber}`);
     }
