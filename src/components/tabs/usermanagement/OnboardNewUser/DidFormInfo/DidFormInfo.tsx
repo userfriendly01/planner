@@ -47,7 +47,6 @@ const DidFormInfo = (props: DidFormInfoProps) => {
         showError={form.triton.directDialNum.blurred}
         onBlur={() => handleOnBlur("directDialNum", "triton")}
         updateValue={(maskedValue, _unmaskedValue, isValid, e164Number) => {
-          //FAITH - check if changed value is the same and mark it as not updated
           setForm({
             type: userFormActions.UPDATE_PHONE_NUMBER,
             payload: {

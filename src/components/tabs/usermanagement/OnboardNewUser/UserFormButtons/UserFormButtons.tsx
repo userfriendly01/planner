@@ -230,7 +230,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       }
       
       if(errors.length === 0){
-        console.log("Everything went well!");
         setForm({
           type: userFormActions.RESET_FORM_AFTER_ADD,
           payload: {
