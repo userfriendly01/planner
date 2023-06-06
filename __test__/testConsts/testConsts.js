@@ -4,7 +4,7 @@ export const managerList = [
     manager_last_name: "Wick",
     manager_n_number: "n1234567",
     manager_id: "01",
-    profile_id: 11
+    profile_id: 11,
   },
   {
     manager_first_name: "Test",
@@ -146,6 +146,12 @@ export const calabrioContext = {
     {
       Id: "123-321",
       Name: "WFM Business Unit1",
+      Absences: [
+        {
+          Name: "Absence1",
+          Id: "111"
+        }
+      ],
       Availabilities: [
         {
           Name: "Availability1",
@@ -224,28 +230,113 @@ export const calabrioContext = {
           Id: "111"
         }
       ]
+    },
+    {
+      Id: "999-999",
+      Name: "Other WFM Business Unit",
+      Availabilities: [
+        {
+          Name: "Availability2",
+          Id: "222"
+        }
+      ],
+      Absences: [
+        {
+          Name: "Absence1",
+          Id: "111"
+        }
+      ],
+      Budget_Groups: [],
+      Contract_Schedules: [
+        {
+          Name: "ContractSchedule2",
+          Id: "222"
+        }
+      ],
+      Contracts: [
+        {
+          Name: "Contract2",
+          Id: "222"
+        }
+      ],
+      Optional_Columns: [],
+      Part_Time_Percentages: [
+        {
+          Name: "ParttimePercent2",
+          Id: "222"
+        }
+      ],
+      Roles: [
+        {
+          Name: "Role3",
+          Id: "333"
+        },
+        {
+          Name: "Role4",
+          Id: "444"
+        }
+      ],
+      Rotations: [],
+      Shift_Bags: [],
+      Skills: [],
+      Workflow_Control_Sets: []
     }
   ],
   wfmOrg: [
     {
       Id: "123-321",
       Name: "Cool WFM Business Unit",
-      People_Without_Team: [],
       Teams: [
         {
           Name: "Team1",
           Id: "111",
           People: [{
+            BusinessUnitId: "123-321",
             EmploymentNumber: "n1111111",
-            Email: "Person@libertymutual.com"
+            Email: "Person@libertymutual.com",
+            TeamId: "111"
           }]
         },
         {
           Name: "Team2",
           Id: "222",
           People: []
+        },
+        {
+          Name: "Team3 No ID",
+          Id: null,
+          People: []
         }
       ]
+    },
+    {
+      Id: "999-999",
+      Name: "Other WFM Business Unit",
+      Teams: [
+        {
+          Name: "Fake team",
+          Id: "000",
+          People: [{
+            FirstName: "Faith",
+            EmploymentNumber: "n8765432"
+          }]
+        },
+        {
+          Name: "Other Fake team",
+          Id: "999",
+          People: []
+        }
+      ]
+    },
+    {
+      Id: "People_Without_Team",
+      Name: "People_Without_Team",
+      People: [{
+        EmploymentNumber: "n0000000",
+        Email: "ihavenoteam@email.com",
+        TeamId: null
+      }],
+      Teams: []
     }
   ]
 };
@@ -609,7 +700,8 @@ export const initialTestState = {
           emp_first_name: "Snowball",
           emp_last_name: "Jones",
           extension: "7891",
-          n_number: "n2222222",
+          n_number: "n2223333",
+          email: "snowball.jones@libertymutual.com",
           profile_id: 2,
           manager_n_number: "n0260000"
         }

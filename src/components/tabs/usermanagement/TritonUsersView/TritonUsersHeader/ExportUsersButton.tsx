@@ -1,6 +1,5 @@
 
 import { StyledExportButton } from "./TritonUsersHeader.Styles";
-import { StyledButton } from "components";
 import { ExportTritonUserProps } from "./TritonUsersHeader.Interfaces";
 import React from "react";
 import { ExcelExport } from "@progress/kendo-react-excel-export";

@@ -17,7 +17,6 @@ import {
 } from "@mui/icons-material";
 import { ModalOverlay } from "components";
 import {
-  useAdminDispatch,
   useAdminState,
   useFormDispatch,
   userFormActions
@@ -92,11 +91,10 @@ const TritonUserTable = (props: TritonUserTableProps) => {
             const editButtonOnClick = (event: any) => {
               event.stopPropagation();
               setForm({
-                type: userFormActions.SET_UPDATE_FORM_STATE,
+                type: userFormActions.SET_UPDATE_TRITON_FORM_STATE,
                 payload: {
                   worker,
-                  managers: state.managerContext.managers,
-                  formMode: formModes.UPDATE
+                  managers: state.managerContext.managers
                 }
               });
               navigate(`/triton-admin/user`)

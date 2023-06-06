@@ -42,12 +42,13 @@ jest.mock("context", () => ({
 
 const mockSetForm = jest.fn();
 const twilioWorker = {
-  sid: "WK12354345"
+  sid: "WK5678"
 };
 
 describe("CallRecordingForm", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.resetAllMocks();
     useAdminState.mockReturnValue(initialTestState);
     useFormDispatch.mockReturnValue(mockSetForm);
     setupMockedComponents({
@@ -58,7 +59,7 @@ describe("CallRecordingForm", () => {
   describe("User is being created", () => {
     describe("initial render", () => {
       const expectedPayload = {
-        ...initialFormState.calabrioUser,
+        ...initialFormState.calabrio_qm,
         scope: {
           groups: [
             {
@@ -100,8 +101,8 @@ describe("CallRecordingForm", () => {
       describe("groups length is 0 while groups > 0", () => {
         const form = {
           ...initialFormState,
-          calabrioUser: {
-            ...initialFormState.calabrioUser,
+          calabrio_qm: {
+            ...initialFormState.calabrio_qm,
             scope: {
               groups: [],
               teams: [{
@@ -115,10 +116,10 @@ describe("CallRecordingForm", () => {
           useFormState.mockReturnValue(form);
         });
         test("setScopeOnNewUser is called", () => {
-          render(<CallRecordingForm twilioWorker={twilioWorker} />);
+          render(<CallRecordingForm twilioWorker={twilioWorker} missingFields={[]} />);
           expect(mockSetForm).toBeCalledTimes(1);
           expect(mockSetForm).toBeCalledWith({
-            type: "SET_CALABRIO_USER",
+            type: "SET_CALABRIO_QM_USER",
             payload: expectedPayload
           });
         });
@@ -126,8 +127,8 @@ describe("CallRecordingForm", () => {
       describe("teams length is 0 while teams > 0", () => {
         const form = {
           ...initialFormState,
-          calabrioUser: {
-            ...initialFormState.calabrioUser,
+          calabrio_qm: {
+            ...initialFormState.calabrio_qm,
             scope: {
               teams: [],
               groups: [{
@@ -141,10 +142,10 @@ describe("CallRecordingForm", () => {
           useFormState.mockReturnValue(form);
         });
         test("setScopeOnNewUser is called", () => {
-          render(<CallRecordingForm twilioWorker={twilioWorker} />);
+          render(<CallRecordingForm twilioWorker={twilioWorker} missingFields={[]}/>);
           expect(mockSetForm).toBeCalledTimes(1);
           expect(mockSetForm).toBeCalledWith({
-            type: "SET_CALABRIO_USER",
+            type: "SET_CALABRIO_QM_USER",
             payload: expectedPayload
           });
         });
@@ -152,8 +153,8 @@ describe("CallRecordingForm", () => {
       describe("groups and teams are both empty", () => {
         const form = {
           ...initialFormState,
-          calabrioUser: {
-            ...initialFormState.calabrioUser,
+          calabrio_qm: {
+            ...initialFormState.calabrio_qm,
             scope: {
               groups: [],
               teams: []
@@ -164,10 +165,10 @@ describe("CallRecordingForm", () => {
           useFormState.mockReturnValue(form);
         });
         test("Form is rendered as expected", () => {
-          render(<CallRecordingForm twilioWorker={twilioWorker} />);
+          render(<CallRecordingForm twilioWorker={twilioWorker} missingFields={[]}/>);
           expect(Dropdown.mock.calls.length).toBe(3);
           expectOnlyPassedProps(Dropdown, {
-            label: "Roles",
+            label: "Roles *",
             multiple: true,
             options: calabrioContext.roles.map(role => {
               return {
@@ -179,7 +180,7 @@ describe("CallRecordingForm", () => {
             value: []
           }, 0);
           expectOnlyPassedProps(Dropdown, {
-            label: "Team",
+            label: "Team *",
             options: calabrioContext.teams.map(team => {
               return {
                 ...team,
@@ -193,9 +194,10 @@ describe("CallRecordingForm", () => {
           expect(getCalabrioUser).toHaveBeenCalledTimes(0);
           expect(mockSetForm).toHaveBeenCalledTimes(1);
           expect(mockSetForm).toHaveBeenCalledWith({
-            type: "SET_CALABRIO_USER",
+            type: "SET_CALABRIO_QM_USER",
             payload: {
               updated: false,
+              userFound: false,
               roles: [],
               scope: {
                 groups: [{
@@ -244,10 +246,10 @@ describe("CallRecordingForm", () => {
       describe("groups and teams are both length > 0", () => {
         const form = {
           ...initialFormState,
-          calabrioUser: {
-            ...initialFormState.calabrioUser,
+          calabrio_qm: {
+            ...initialFormState.calabrio_qm,
             scope: {
-              ...initialFormState.calabrioUser.scope,
+              ...initialFormState.calabrio_qm.scope,
               teams: [{
                 name: "Team 1",
                 id: 2
@@ -263,10 +265,10 @@ describe("CallRecordingForm", () => {
           useFormState.mockReturnValue(form);
         });
         test("Form is rendered as expected", () => {
-          render(<CallRecordingForm twilioWorker={twilioWorker} />);
+          render(<CallRecordingForm twilioWorker={twilioWorker} missingFields={[]}/>);
           expect(Dropdown.mock.calls.length).toBe(3);
           expectOnlyPassedProps(Dropdown, {
-            label: "Roles",
+            label: "Roles *",
             multiple: true,
             options: calabrioContext.roles.map(role => {
               return {
@@ -278,7 +280,7 @@ describe("CallRecordingForm", () => {
             value: []
           }, 0);
           expectOnlyPassedProps(Dropdown, {
-            label: "Team",
+            label: "Team *",
             options: calabrioContext.teams.map(team => {
               return {
                 ...team,
@@ -297,10 +299,10 @@ describe("CallRecordingForm", () => {
     describe("Role Dropdown", () => {
       const form = {
         ...initialFormState,
-        calabrioUser: {
-          ...initialFormState.calabrioUser,
+        calabrio_qm: {
+          ...initialFormState.calabrio_qm,
           scope: {
-            ...initialFormState.calabrioUser.scope,
+            ...initialFormState.calabrio_qm.scope,
             teams: [{
               name: "Team 1",
               id: 2
@@ -313,14 +315,17 @@ describe("CallRecordingForm", () => {
         }
       };
       beforeEach(() => {
-        useFormState.mockReturnValue(form);
+        useFormState.mockReturnValue({...form});
       });
       describe("Selected Profile in the form is 18 (Workers Comp)", () => {
         const workersCompForm = {
           ...initialFormState,
-          profileId: { value: 18 },
-          calabrioUser: {
-            ...initialFormState.calabrioUser,
+          triton: {
+            ...initialFormState.triton,
+            profileId: { value: 18 },
+          },
+          calabrio_qm: {
+            ...initialFormState.calabrio_qm,
             scope: {
               groups: [],
               teams: [{
@@ -332,7 +337,7 @@ describe("CallRecordingForm", () => {
         };
         test("New User, No Screen is auto selected", () => {
           useFormState.mockReturnValue(workersCompForm);
-          render(<CallRecordingForm twilioWorker={twilioWorker} />);
+          render(<CallRecordingForm twilioWorker={twilioWorker} missingFields={[]}/>);
           expect(Dropdown.mock.calls[0][0].options).toEqual([{
             id: 1,
             label: "Supervisor",
@@ -356,7 +361,7 @@ describe("CallRecordingForm", () => {
           });
         });
         test("Existing user with Supervisor role will auto populate with both No Screen and Supervisor", () => {
-          workersCompForm.calabrioUser.roles.push({
+          workersCompForm.calabrio_qm.roles.push({
             id: 1,
             value: 1,
             name: "Supervisor",
@@ -368,7 +373,7 @@ describe("CallRecordingForm", () => {
             label: "boo"
           });
           useFormState.mockReturnValue(workersCompForm);
-          render(<CallRecordingForm twilioWorker={twilioWorker} />);
+          render(<CallRecordingForm twilioWorker={twilioWorker} missingFields={[]}/>);
           expect(Dropdown.mock.calls[0][0].options).toEqual([{
             id: 1,
             label: "Supervisor",
@@ -398,9 +403,29 @@ describe("CallRecordingForm", () => {
           });
         });
       });
+      describe("QM Roles is on missingFields array", () => {
+        const form = {
+          ...initialFormState,
+          calabrio_qm: {
+            team: null,
+            scope: {
+              teams: [],
+              groups: []
+            }
+          }
+        };
+        beforeEach(() => {
+          useFormState.mockReturnValue({...form});
+        });
+        test("error should be true", () => {
+          render(<CallRecordingForm twilioWorker={twilioWorker}  missingFields={["QM Roles"]}/>);
+          expect(Dropdown.mock.calls.length).toBe(3);
+          expect(Dropdown.mock.calls[0][0].error).toBe(true);
+        });
+      });
       describe("updateValue is called", () => {
         test("setForm is called with the appropriate params", () => {
-          render(<CallRecordingForm twilioWorker={twilioWorker} />);
+          render(<CallRecordingForm twilioWorker={twilioWorker}  missingFields={[]}/>);
           expect(Dropdown.mock.calls.length).toBe(3);
           const updateRole = Dropdown.mock.calls[0][0].updateValue;
           act(() => {
@@ -417,9 +442,12 @@ describe("CallRecordingForm", () => {
     describe("Team Dropdown", () => {
       const form = {
         ...initialFormState,
-        manager: {
-          value: {
-            calabrio_team_ids: [102, 101]
+        triton: {
+          ...initialFormState.triton,
+          manager: {
+            value: {
+              calabrio_team_ids: [102, 101]
+            }
           }
         }
       };
@@ -428,11 +456,18 @@ describe("CallRecordingForm", () => {
       });
       describe("manager's'calabrio teams is not null", () => {
         test("The dropdown should show only the manager's teams' parent groups' children", () => {
-          render(<CallRecordingForm twilioWorker={twilioWorker} />);
-          expect(Dropdown.mock.calls[1][0].label).toBe("Team");
+          render(<CallRecordingForm twilioWorker={twilioWorker} missingFields={[]}/>);
+          expect(Dropdown.mock.calls[1][0].label).toBe("Team *");
           expect(Dropdown.mock.calls[1][0].options.length).toBe(2);
           expect(Dropdown.mock.calls[1][0].options[0].label).toBe("Hawaii Team 50");
           expect(Dropdown.mock.calls[1][0].options[1].label).toBe("Hawaii Specialty Team");
+        });
+      });
+      describe("QM Team is on missingFields array", () => {
+        test("error should be true", () => {
+          render(<CallRecordingForm twilioWorker={twilioWorker}  missingFields={["QM Team"]}/>);
+          expect(Dropdown.mock.calls.length).toBe(3);
+          expect(Dropdown.mock.calls[1][0].error).toBe(true);
         });
       });
       describe("updateValue is called", () => {
@@ -440,9 +475,9 @@ describe("CallRecordingForm", () => {
           useFormState.mockReturnValue(initialFormState);
         });
         test("setForm is called with the appropriate params", () => {
-          render(<CallRecordingForm twilioWorker={twilioWorker} />);
+          render(<CallRecordingForm twilioWorker={twilioWorker} missingFields={[]}/>);
           expect(Dropdown.mock.calls.length).toBe(3);
-          expect(Dropdown.mock.calls[1][0].label).toBe("Team");
+          expect(Dropdown.mock.calls[1][0].label).toBe("Team *");
           expect(Dropdown.mock.calls[1][0].options.length).toBe(3);
 
           const updateTeam = Dropdown.mock.calls[1][0].updateValue;
@@ -460,10 +495,10 @@ describe("CallRecordingForm", () => {
     describe("Timezone Dropdown", () => {
       const form = {
         ...initialFormState,
-        calabrioUser: {
-          ...initialFormState.calabrioUser,
+        calabrio_qm: {
+          ...initialFormState.calabrio_qm,
           scope: {
-            ...initialFormState.calabrioUser.scope,
+            ...initialFormState.calabrio_qm.scope,
             teams: [{
               name: "Team 1",
               id: 2
@@ -480,7 +515,7 @@ describe("CallRecordingForm", () => {
       });
       describe("updateValue is called", () => {
         test("setForm is called with the appropriate params", () => {
-          render(<CallRecordingForm twilioWorker={twilioWorker} />);
+          render(<CallRecordingForm twilioWorker={twilioWorker} missingFields={[]}/>);
           expect(Dropdown.mock.calls.length).toBe(3);
           expect(Dropdown.mock.calls[2][0].options).toBe(calabrioTimeZones);
           const updateTimeZone = Dropdown.mock.calls[2][0].updateValue;
@@ -496,10 +531,11 @@ describe("CallRecordingForm", () => {
       });
     });
   });
-
   describe("User is being updated", () => {
     describe("initial successful render", () => {
       const user = {
+        id: 220,
+        acdId: "WK5678",
         groupId: 201,
         roles: [{
           id: 2,
@@ -513,10 +549,13 @@ describe("CallRecordingForm", () => {
       const formState = {
         ...initialFormState,
         formMode: "update",
-        nNumberFetchedUser: {
-          email: "faith.Cuneo@libertymutual.com",
-          firstName: "Faith",
-          lastName: "Cuneo"
+        nNumber: {
+          ...initialFormState.nNumber,
+          nNumberFetchedUser: {
+            email: "faith.Cuneo@libertymutual.com",
+            firstName: "Faith",
+            lastName: "Cuneo"
+          }
         }
       };
       beforeEach(() => {
@@ -526,7 +565,7 @@ describe("CallRecordingForm", () => {
         useFormState.mockReturnValue(formState);
       });
       test("Form is rendered as expected", async () => {
-        render(<CallRecordingForm twilioWorker={twilioWorker} />);
+        render(<CallRecordingForm twilioWorker={twilioWorker} missingFields={[]}/>);
         expect(Dropdown.mock.calls.length).toBe(3);
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(1);
@@ -534,9 +573,11 @@ describe("CallRecordingForm", () => {
         await waitFor(() => {
           expect(mockSetForm).toHaveBeenCalledTimes(2);
           expect(mockSetForm).toHaveBeenCalledWith({
-            type: "SET_CALABRIO_USER",
+            type: "SET_CALABRIO_QM_USER",
             payload: {
               updated: true,
+              acdId: "WK5678",
+              email: "Faith.Cuneo@libertymutual.com",
               id: 220,
               roles: [{
                 id: 2,
@@ -591,8 +632,197 @@ describe("CallRecordingForm", () => {
         });
       });
     });
+    describe("no twilio worker passed", () => {
+      const formState = {
+        ...initialFormState,
+        formMode: "update",
+        nNumber: {
+          value: "n0122227",
+          nNumberFetchedUser: {
+            email: "Mike.Nieman@libertymutual.com",
+            firstName: "Mike",
+            lastName: "Nieman"
+          }
+        }
+      };
+      beforeEach(() => {
+        useFormState.mockReturnValue(formState);
+      });
+      test("should use the form.nNumber.value", () => {
+        render(<CallRecordingForm twilioWorker={null} missingFields={[]}/>);
+        expect(Dropdown.mock.calls.length).toBe(3);
+        expect(CallRecordingScope.mock.calls.length).toBe(1);
+        expect(getCalabrioUser).toHaveBeenCalledTimes(0);
+        expect(mockSetForm).toHaveBeenCalledTimes(2);
+        expect(console.warn).toHaveBeenCalledWith("No matching profile was found in Calabrio for this user");
+      });
+    });
+    describe("no matching profile was found for Calabrio User", () => {
+      const formState = {
+        ...initialFormState,
+        calabrio_qm: {
+          ...initialFormState.calabrio_qm,
+          team: {
+            value: 225,
+            label: "Team 1"
+          },
+          roles: [],
+          scope: {
+            groups: [],
+            teams: []
+          }
+        },
+        formMode: "update",
+        nNumber: {
+          ...initialFormState.nNumber,
+          nNumberFetchedUser: {
+            email: "Mike.Nieman@libertymutual.com",
+            firstName: "Mike",
+            lastName: "Nieman"
+          }
+        }
+      };
+      beforeEach(() => {
+        useFormState.mockReturnValue(formState);
+      });
+      test("Form is rendered as expected", async () => {
+        render(<CallRecordingForm twilioWorker={{ sid: "WK0000"}} missingFields={[]}/>);
+        expect(Dropdown.mock.calls.length).toBe(3);
+        expect(CallRecordingScope.mock.calls.length).toBe(1);
+        expect(getCalabrioUser).toHaveBeenCalledTimes(0);
+        expect(mockSetForm).toHaveBeenCalledTimes(1);
+        expect(console.warn).toHaveBeenCalledWith("No matching profile was found in Calabrio for this user");
+      });
+    });
+    describe("multiple matching profiles were found for Calabrio User", () => {
+      const noRolesFormState = {
+        ...initialFormState,
+        calabrio_qm: {
+          ...initialFormState.calabrio_qm,
+          roles: []
+        },
+        formMode: "update",
+        nNumber: {
+          value: "n0222444",
+          nNumberFetchedUser: {
+            email: "faith.Cuneo@libertymutual.com",
+            firstName: "Faith",
+            lastName: "Cuneo"
+          }
+        }
+      };
+      const noRolesUser = {
+        id: 200,
+        acdId: "WK1234",
+        groupId: 201,
+        roles: null,
+        scope: {
+          groups: [200],
+          teams: [201]
+        }
+      };
+      const tritonWorker = {
+        sid: "WK1234",
+        attributes: {
+          email: "Faith.Cuneo@libertymutual.com"
+        }
+      };
+      beforeEach(() => {
+        getCalabrioUser.mockResolvedValue({
+          data: noRolesUser
+        });
+        useFormState.mockReturnValue(noRolesFormState);
+      });
+      test("Form is rendered as expected", async () => {
+        render(<CallRecordingForm twilioWorker={tritonWorker} missingFields={[]}/>);
+        expect(Dropdown.mock.calls.length).toBe(3);
+        expect(CallRecordingScope.mock.calls.length).toBe(1);
+        expect(getCalabrioUser).toHaveBeenCalledTimes(1);
+        expect(getCalabrioUser).toHaveBeenCalledWith(200);
+        await waitFor(() => {
+          expect(mockSetForm).toHaveBeenCalledTimes(4);
+          expect(mockSetForm).toHaveBeenCalledWith({
+            type: "SET_DISCREPANCIES",
+            payload: {
+              type: "Calabrio QM",
+              message: "Calabrio QM Record found for user where the ACD ID does not match the Triton Worker. This will require manual review/correction. Search Calabrio for a record (active or inactive) where the ACD equals wk1234, make that the primary user and deactivate all other users."
+            }
+          });
+          expect(mockSetForm).toHaveBeenCalledWith({
+            type: "SET_DISCREPANCIES",
+            payload: {
+              type: "Calabrio QM",
+              message: "Calabrio Email does not match HR email. This could cause Calabrio Login issues. This will require manual review/correction."
+            }
+          });
+          expect(mockSetForm).toHaveBeenCalledWith({
+            type: "SET_CALABRIO_QM_USER",
+            payload: {
+              updated: true,
+              acdId: "WK1234",
+              email: "Brittany.Magee@libertymutual.com",
+              id: 200,
+              roles: [],
+              scope: {
+                groups: [{
+                  checked: false,
+                  groupId: 100,
+                  name: "Hawaii 50 Group",
+                  partial: false
+                }, {
+                  checked: true,
+                  groupId: 200,
+                  name: "FNOL Group",
+                  partial: false
+                },
+                {
+                  checked: false,
+                  groupId: 300,
+                  name: "No Teams Group",
+                  partial: false
+                }],
+                teams: [{
+                  checked: false,
+                  groupId: 101,
+                  name: "Hawaii Team 50",
+                  parentGroupId: 100
+                }, {
+                  checked: false,
+                  groupId: 102,
+                  name: "Hawaii Specialty Team",
+                  parentGroupId: 100
+                }, {
+                  checked: true,
+                  groupId: 201,
+                  name: "FNOL Team",
+                  parentGroupId: 200
+                }]
+              },
+              team: {
+                groupId: 201,
+                name: "FNOL Team",
+                parentGroupId: 200
+              },
+              timezone: {
+                label: "EST",
+                value: 173
+              }
+            }
+          });
+          expect(mockSetForm).toHaveBeenCalledWith({
+            type: "SET_DISCREPANCIES",
+            payload: {
+              type: "Calabrio QM",
+              message: "Multiple (2) Calabrio Records Found for this user. Requires manual review/correction."
+            }
+          });
+        });
+        expect(console.warn).toHaveBeenCalledWith("Multiple matching profiles were found in Calabrio for this user");
+      });
+    });
     describe("Ad Login on User Record does not match form.nNumber.value", () => {
       const user = {
+        acdId: "WK5678",
         groupId: 201,
         roles: [{
           id: 2,
@@ -608,12 +838,12 @@ describe("CallRecordingForm", () => {
         ...initialFormState,
         formMode: "update",
         nNumber: {
-          value: "n023786"
-        },
-        nNumberFetchedUser: {
-          email: "faith.Cuneo@libertymutual.com",
-          firstName: "Faith",
-          lastName: "Cuneo"
+          value: "n023786",
+          nNumberFetchedUser: {
+            email: "faith.Cuneo@libertymutual.com",
+            firstName: "Faith",
+            lastName: "Cuneo"
+          }
         }
       };
       beforeEach(() => {
@@ -624,8 +854,8 @@ describe("CallRecordingForm", () => {
       });
       test("Form is rendered as expected", async () => {
         render(<CallRecordingForm twilioWorker={{
-          sid: "200"
-        }} />);
+          sid: "WK5678"
+        }} missingFields={[]}/>);
         expect(Dropdown.mock.calls.length).toBe(3);
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(1);
@@ -637,13 +867,15 @@ describe("CallRecordingForm", () => {
               type: "SET_DISCREPANCIES",
               payload: {
                 message: "User is not correctly set up for screen recording in Calabrio.",
-                type: "Calabrio"
+                type: "Calabrio QM"
               }
             });
           expect(mockSetForm).toHaveBeenCalledWith({
-            type: "SET_CALABRIO_USER",
+            type: "SET_CALABRIO_QM_USER",
             payload: {
               updated: true,
+              acdId: "WK5678",
+              email: "Faith.Cuneo@libertymutual.com",
               id: 220,
               roles: [{
                 id: 2,
@@ -700,6 +932,7 @@ describe("CallRecordingForm", () => {
     });
     describe("Email on User Record does not match form.nNumberFetchedUser.email", () => {
       const user = {
+        acdId: "WK1234",
         groupId: 201,
         roles: [{
           id: 2,
@@ -715,12 +948,12 @@ describe("CallRecordingForm", () => {
         ...initialFormState,
         formMode: "update",
         nNumber: {
-          value: "n0222444"
-        },
-        nNumberFetchedUser: {
-          email: "faith.cuneo@libertymutual.com",
-          firstName: "Faith",
-          lastName: "Cuneo"
+          value: "n0222444",
+          nNumberFetchedUser: {
+            email: "faith.cuneo@libertymutual.com",
+            firstName: "Faith",
+            lastName: "Cuneo"
+          }
         }
       };
       beforeEach(() => {
@@ -732,7 +965,7 @@ describe("CallRecordingForm", () => {
       test("Form is rendered as expected", async () => {
         render(<CallRecordingForm twilioWorker={{
           sid: "WK1234"
-        }} />);
+        }} missingFields={[]}/>);
         expect(Dropdown.mock.calls.length).toBe(3);
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(1);
@@ -743,13 +976,15 @@ describe("CallRecordingForm", () => {
             {
               type: "SET_DISCREPANCIES",
               payload: {
-                message: "Calabrio Email does not match HR email. This could cause Calabrio Login issues",
-                type: "Calabrio"
+                message: "Calabrio Email does not match HR email. This could cause Calabrio Login issues. This will require manual review/correction.",
+                type: "Calabrio QM"
               }
             });
           expect(mockSetForm.mock.calls[1][0]).toStrictEqual({
-            type: "SET_CALABRIO_USER",
+            type: "SET_CALABRIO_QM_USER",
             payload: {
+              acdId: "WK1234",
+              email: "Brittany.Magee@libertymutual.com",
               updated: true,
               id: 200,
               roles: [{
@@ -805,44 +1040,10 @@ describe("CallRecordingForm", () => {
         });
       });
     });
-    describe("worker was not found in Calabrio User state", () => {
-      const formState = {
-        ...initialFormState,
-        calabrioUser: {
-          ...initialFormState.calabrioUser,
-          team: {
-            value: 225,
-            label: "Team 1"
-          },
-          roles: [],
-          scope: {
-            groups: [],
-            teams: []
-          }
-        },
-        formMode: "update",
-        nNumberFetchedUser: {
-          email: "Mike.Nieman@libertymutual.com",
-          firstName: "Mike",
-          lastName: "Nieman"
-        }
-      };
-      beforeEach(() => {
-        useFormState.mockReturnValue(formState);
-      });
-      test("Form is rendered as expected", async () => {
-        render(<CallRecordingForm twilioWorker={twilioWorker} />);
-        expect(Dropdown.mock.calls.length).toBe(3);
-        expect(CallRecordingScope.mock.calls.length).toBe(1);
-        expect(getCalabrioUser).toHaveBeenCalledTimes(0);
-        expect(mockSetForm).toHaveBeenCalledTimes(3);
-        expect(console.warn).toHaveBeenCalledWith("No user was found in Calabrio with this email");
-      });
-    });
     describe("Worker was found in Calabrio User state but failed to fetch user", () => {
       const formState = {
         ...initialFormState,
-        calabrioUser: {
+        calabrio_qm: {
           team: {
             value: 225,
             label: "Team 1"
@@ -854,10 +1055,13 @@ describe("CallRecordingForm", () => {
           }
         },
         formMode: "update",
-        nNumberFetchedUser: {
-          email: "faith.Cuneo@libertymutual.com",
-          firstName: "Faith",
-          lastName: "Cuneo"
+        nNumber: {
+          ...initialFormState.nNumber,
+          nNumberFetchedUser: {
+            email: "faith.Cuneo@libertymutual.com",
+            firstName: "Faith",
+            lastName: "Cuneo"
+          }
         }
       };
       beforeEach(() => {
@@ -865,12 +1069,12 @@ describe("CallRecordingForm", () => {
         useFormState.mockReturnValue(formState);
       });
       test("Form is rendered as expected", async () => {
-        render(<CallRecordingForm twilioWorker={twilioWorker} />);
+        render(<CallRecordingForm twilioWorker={twilioWorker} missingFields={[]}/>);
         expect(Dropdown.mock.calls.length).toBe(3);
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(1);
         expect(getCalabrioUser).toHaveBeenCalledWith(220);
-        expect(mockSetForm).toHaveBeenCalledTimes(2);
+        expect(mockSetForm).toHaveBeenCalledTimes(1);
         await waitFor(() => {
           //Mocking issue to fix
           // expect(console.error.mock.calls.length).toBe(1);

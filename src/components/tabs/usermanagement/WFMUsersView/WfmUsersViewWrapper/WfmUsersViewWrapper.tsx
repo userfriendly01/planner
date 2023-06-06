@@ -1,0 +1,133 @@
+import {
+  WfmUsersContainer,
+  StyledPaper
+} from "./WfmUsersViewWrapper.Styles";
+import {
+  WfmUsersHeader,
+  Pagination,
+  WfmUserTable,
+  WfmErrorBanner
+} from "components";
+import { useAdminState } from "context";
+import { WfmBusinessUnit, WfmTeam, WfmUser } from "globals";
+import WFMLoadRetryModal from "../../BulkChanges/WFMLoadRetryModal";
+import React from "react";
+import { useNavigate } from 'react-router-dom';
+import {
+  getWfmBusinessUnits,
+  getWfmTeams,
+  getWfmPeople,
+  filterWfmUserTable,
+  sortWfmWorkersByFullName
+} from "utils";
+
+const TritonUserManagementWrapper: any = () => {
+
+  const defaultTableState: any = {
+    searchBy: "",
+    selected: [],
+    teamFilter: null,
+    businessUnitFilter: null,
+    searchResults: [],
+    pagination: {
+      usersPerPage: 25,
+      pageNumber: 1,
+      length: 0,
+      startingUserIndex: null,
+      endingUserIndex: null
+    },
+    filteredList: []
+  };
+
+  const state = useAdminState();
+  const wfmPeople = getWfmPeople(state);
+  const [ tableState, setTableState ] = React.useState(defaultTableState);
+  const navigate = useNavigate();
+
+  React.useEffect(() => {
+
+    if(wfmPeople.length > 0){
+      let filteredList = wfmPeople.slice().sort(sortWfmWorkersByFullName);
+      console.log("tableState", tableState);
+
+      //filter by business unit
+      if(tableState.businessUnitFilter && tableState.businessUnitFilter !== "show-all"){
+        const businessUnit = getWfmBusinessUnits(state).find((bu: WfmBusinessUnit) => bu.Id === tableState.businessUnitFilter)
+        if(tableState.businessUnitFilter === "People_Without_Team"){
+          filteredList = filteredList.filter((wfmUser: WfmUser) => !wfmUser.BusinessUnitId);
+        } else {
+          filteredList = filteredList.filter((wfmUser: WfmUser) => wfmUser.BusinessUnitId === businessUnit?.Id);
+        }
+      }
+      console.log("**BU FL", filteredList);
+
+
+      //filter by team
+      if(tableState.teamFilter && tableState.teamFilter !== "show-all"){
+        if(tableState.teamFilter === "no-team"){
+          filteredList = filteredList.filter((wfmUser: WfmUser) => wfmUser.TeamId === null);
+        } else {
+          const team = getWfmTeams(state).find((team: WfmTeam) => team.Id === tableState.teamFilter);
+          if(team){
+            filteredList = filteredList.filter((wfmUser: WfmUser) => wfmUser.TeamId === team.Id);
+          }
+        }
+      }
+      console.log("**Team FL", filteredList);
+
+      //filter by searchBy
+      const trimmedSearch = tableState.searchBy.trim();
+      const searchResults = filteredList.filter((wfmUser: any) => filterWfmUserTable(wfmUser, trimmedSearch));
+      filteredList = searchResults;
+
+      console.log("**Search FL", filteredList);
+
+      const length = filteredList.slice().length;
+      //filter by pagination
+      const startingUserIndex = tableState.pagination.pageNumber !== 1 ? ((tableState.pagination.pageNumber - 1) * tableState.pagination.usersPerPage) : 0;
+      const endingUserIndex = tableState.pagination.pageNumber * tableState.pagination.usersPerPage - 1;
+      filteredList = filteredList.slice(startingUserIndex, endingUserIndex + 1);
+      console.log("**pagination FL", filteredList.slice());
+
+      setTableState({
+        ...tableState,
+        filteredList,
+        searchResults,
+        pagination: {
+          ...tableState.pagination,
+          length: length,
+          startingUserIndex,
+          endingUserIndex
+        }
+      });
+      console.log("final filtered list", filteredList);
+    }
+  }, [tableState.searchBy, tableState.teamFilter, tableState.businessUnitFilter, tableState.pagination.pageNumber, state.calabrioContext.wfmOrg]);
+
+  return (
+    <WfmUsersContainer>
+      <WfmErrorBanner />
+      <WfmUsersHeader
+        tableState={tableState}
+        setTableState={setTableState}
+      />
+      { wfmPeople.length > 0 ?
+        <>
+          <StyledPaper elevation={3}>
+          <WfmUserTable
+            tableState={tableState}
+            setTableState={setTableState}
+          />
+          </StyledPaper>
+          <Pagination
+            tableState={tableState}
+            setTableState={setTableState}
+          />
+        </>
+        : <WFMLoadRetryModal handleClose={() => navigate(-1)} />
+      }
+    </WfmUsersContainer>
+  );
+};
+
+export default TritonUserManagementWrapper;

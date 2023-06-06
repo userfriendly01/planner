@@ -76,7 +76,6 @@ const getCalabrioOrg = async (dispatch: any) => {
   }
 };
 
-
 const getCalabrioRoles = async (dispatch: any) => {
   try {
     const roles: any = await getCalabrioRolesServiceCall();

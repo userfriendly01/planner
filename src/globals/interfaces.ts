@@ -7,8 +7,10 @@ export interface Action {
 }
 
 export const discrepancyType = {
-  CALABRIO: "Calabrio",
-  TRITON: "Triton"
+  CALABRIO_QM: "Calabrio QM",
+  CALABRIO_WFM: "Calabrio WFM",
+  TRITON: "Triton",
+  GENERAL: "General"
 };
 export interface Discrepancy {
   message: string,
@@ -42,7 +44,8 @@ export interface AppState {
     users: any[],
     roles: any[],
     wfmOrg: any[],
-    wfmOptions: any[]
+    wfmOptions: any[],
+    wfmErrors: any[]
   },
   resettingSkills: false
 }
@@ -193,6 +196,58 @@ export interface CallTag {
 export interface CallTagOptions {
   options_id: number,
   options: string
+}
+
+export interface WfmBusinessUnit {
+  Id: string,
+  Name: string,
+  People_Without_Team?: WfmUser[],
+  Teams?: WfmTeam[],
+  People?: WfmUser[]
+}
+
+export interface WfmTeam {
+  Id: string,
+  Name: string,
+  TeamName: string
+  People: WfmUser[],
+  SiteId?: string,
+  SiteName?: string
+}
+
+export interface WfmUser {
+  OptionalColumns: any[],
+  Id: string,
+  Identity: string | null,
+  FirstName: string,
+  LastName: string,
+  EmploymentNumber: string,
+  Email: string,
+  DisplayName: string,
+  TerminationDate: string,
+  EmploymentStartDate: string,
+  TimeZoneId: string,
+  BusinessUnitId: string,
+  TeamId: string,
+  PersonSkills: any[],
+  AvailabilityId: string,
+  AvailabilityStartDate?: string,
+  AbsenceId: string,
+  RotationId: string,
+  RotationStartDate?: string,
+  RotationStartWeek?: number,
+  WorkflowControlSetId: string,
+  ContractId: string,
+  ContractScheduleId: string,
+  BudgetGroupId: string,
+  PartTimePercentageId: string,
+  ShiftBagId: string,
+  Note: string | null,
+  Roles: any[],
+  FirstDayOfWeek: number,
+  TeamStartDate?: string,
+  SkillsStartDate?: string,
+  ParentTeam?: string //something we add to verify the team Id listed on the worker aligns to the team they were found in
 }
 
 export interface Worker {

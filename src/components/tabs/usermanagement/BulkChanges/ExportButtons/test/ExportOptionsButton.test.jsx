@@ -127,6 +127,7 @@ const expectedWFMRows = [
   {
     wfmRole: "Role2",
     timeZone: "America/Los_Angeles (PST/PDT)",
+    wfmBusinessUnit: "Other WFM Business Unit",
     wfmFirstDayOfWeek: 1,
     wfmTeam: "Team2",
     wfmSkills: "Skill2",
@@ -134,7 +135,8 @@ const expectedWFMRows = [
   },
   {
     timeZone: "America/Denver (MST/MDT)",
-    wfmFirstDayOfWeek: 2
+    wfmFirstDayOfWeek: 2,
+    wfmTeam: "Team3 No ID"
   },
   {
     timeZone: "America/Chicago (CST/CDT)",
@@ -158,7 +160,7 @@ const expectedWFMCols = [
     field: "wfmBusinessUnit",
     title: "WFM Business Unit",
     width: undefined,
-    options: [ "WFM Business Unit1" ],
+    options: [ "WFM Business Unit1", "Other WFM Business Unit" ],
     wrap: true,
     textAlign: "center"
   },
@@ -206,7 +208,7 @@ const expectedWFMCols = [
     field: "wfmTeam",
     title: "WFM Team",
     width: undefined,
-    options: [ "Team1", "Team2" ],
+    options: [ "Team1", "Team2", "Team3 No ID" ],
     wrap: true,
     textAlign: "center"
   },

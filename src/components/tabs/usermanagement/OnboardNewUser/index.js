@@ -1,5 +1,6 @@
 export { default as BasicFormInfo } from "./BasicFormInfo/BasicFormInfo";
 export { default as UserFormButtons } from "./UserFormButtons/UserFormButtons";
+export { default as WfmForm } from "./WfmForm/WfmForm";
 export * from "./CallRecording";
 export * from "./Extension/ExtensionSearchParams";
 export * from "./UserEntryFormWrapper";

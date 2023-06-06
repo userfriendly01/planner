@@ -10,7 +10,7 @@ import { formatE164PhoneNumber } from "utils/formatNumberUtils";
 import { calabrioTimeZones } from "utils/calabrioUtils";
 import { getValidSkillsObject } from "utils/skillsUtils";
 import { getZeroOutEnabledFromProfile } from "utils/userManagementUtils";
-import { fabClasses } from "@mui/material";
+import { getWfmOptions } from "utils/calabrioUtils";
 
 const searchParams = SearchParams.getValues();
 
@@ -18,18 +18,17 @@ export const userFormActions = {
   ASSIGN_EXTENSION: "ASSIGN_EXTENSION",
   CHECK_CALABRIO_TEAM: "CHECK_CALABRIO_TEAM",
   CHECK_CALABRIO_GROUP: "CHECK_CALABRIO_GROUP",
+  CLEAR_DISCREPANCY: "CLEAR_DISCREPANCY",
   CLEAR_EXTENSION: "CLEAR_EXTENSION",
   CLEAR_N_NUMBER: "CLEAR_N_NUMBER",
   CLEAR_OUTGOING_NUMBER: "CLEAR_OUTGOING_NUMBER",
   COMPLETE_N_NUMBER: "COMPLETE_N_NUMBER",
-  EDIT_PEN_CLICK_FORWARD_TO_TOGGLE: "EDIT_PEN_CLICK_FORWARD_TO_TOGGLE",
-  EDIT_PEN_CLICK_NO_FORWARD_TO_TOGGLE: "EDIT_PEN_CLICK_NO_FORWARD_TO_TOGGLE",
   INITIATE_DID_FIELDS: "INITIATE_DID_FIELDS",
   INITIATE_ZERO_OUT_FIELDS: "INITIATE_ZERO_OUT_FIELDS",
   RESET_FORM: "RESET_FORM",
   RESET_FORM_AFTER_ADD: "RESET_FORM_AFTER_ADD",
   SET_BLUR_ON_FIELD: "SET_BLUR_ON_FIELD",
-  SET_CALABRIO_USER: "SET_CALABRIO_USER",
+  SET_CALABRIO_QM_USER: "SET_CALABRIO_QM_USER",
   SET_CALABRIO_TEAM: "SET_CALABRIO_TEAM",
   SET_CALABRIO_TIMEZONE: "SET_CALABRIO_TIMEZONE",
   SET_CALABRIO_ROLES: "SET_CALABRIO_ROLES",
@@ -37,7 +36,29 @@ export const userFormActions = {
   SET_EXTENSION_MESSAGE: "SET_EXTENSION_MESSAGE",
   SET_EXTENSION_RETRIES: "SET_EXTENSION_RETRIES",
   SET_EXTENSION_VERIFIED: "EXTENSION_VERIFIED",
-  SET_UPDATE_FORM_STATE: "SET_UPDATE_FORM_STATE",
+  SET_UPDATE_TRITON_FORM_STATE: "SET_UPDATE_TRITON_FORM_STATE",
+  SET_UPDATE_QM_FORM_STATE: "SET_UPDATE_QM_FORM_STATE",
+  SET_UPDATE_WFM_FORM_STATE: "SET_UPDATE_WFM_FORM_STATE",
+  SET_WFM_BUSINESS_UNIT: "SET_WFM_BUSINESS_UNIT",
+  SET_WFM_AVAILABILITY: "SET_WFM_AVAILABILITY",
+  SET_WFM_ABSENCE: "SET_WFM_ABSENCE",
+  SET_WFM_TEAM: "SET_WFM_TEAM",
+  SET_WFM_SKILLS: "SET_WFM_SKILLS",
+  SET_WFM_CONTROL_SET: "SET_WFM_CONTROL_SET",
+  SET_WFM_CONTRACT: "SET_WFM_CONTRACT",
+  SET_WFM_CONTRACT_SCHEDULE: "SET_WFM_CONTRACT_SCHEDULE",
+  SET_WFM_BUDGET_GROUP: "SET_WFM_BUDGET_GROUP",
+  SET_WFM_EMP_START_DATE: "SET_WFM_EMP_START_DATE",
+  SET_WFM_PART_TIME_PERCENTAGE: "SET_WFM_PART_TIME_PERCENTAGE",
+  SET_WFM_SHIFT_BAG: "SET_WFM_SHIFT_BAG",
+  SET_WFM_NOTE: "SET_WFM_NOTE",
+  SET_WFM_ROLES: "SET_WFM_ROLES",
+  SET_WFM_ROTATION: "SET_WFM_ROTATION",
+  SET_WFM_FIRST_DAY_OF_WEEK: "SET_WFM_FIRST_DAY_OF_WEEK",
+  SET_WFM_OPTIONAL_COLUMNS: "SET_WFM_OPTIONAL_COLUMNS",
+  SET_WFM_IDENTITY: "SET_WFM_IDENTITY",
+  SET_WFM_TERMINATION_DATE: "SET_WFM_TERMINATION_DATE",
+  SET_WFM_USER_DATA: "SET_WFM_USER_DATA",
   SET_DELETE_FORM_STATE: "SET_DELETE_FORM_STATE",
   SET_USER_PREVIOUSLY_ADDED_TRUE: "SET_USER_PREVIOUSLY_ADDED_TRUE",
   UPDATE_DEFAULT_SKILLS: "UPDATE_DEFAULT_SKILLS",
@@ -47,73 +68,88 @@ export const userFormActions = {
   UPDATE_N_NUMBER: "UPDATE_N_NUMBER",
   UPDATE_PHONE_NUMBER: "UPDATE_PHONE_NUMBER",
   UPDATE_TEAM: "UPDATE_TEAM",
-  UPDATE_SELF_SERVICE_INDICATOR: "UPDATE_SELF_SERVICE_INDICATOR"
+  UPDATE_SELF_SERVICE_INDICATOR: "UPDATE_SELF_SERVICE_INDICATOR",
+  UPDATE_USER_FOUND: "UPDATE_USER_FOUND"
 };
 
 export const initialUserFormState: UserFormState = {
   formMode: formModes.INSERT,
   discrepancies: [],
-  defaultSkills: {
-    skills: [],
-    levels: {}
-  },
-  defaultSkillsUpdated: false,
-  didUser: false,
-  extension: {
-    value: "",
-    blurred: false,
-    updated: false,
-    valid: false
-  },
-  extensionStatus: {
-    searchStatus: ExtensionSearchStatuses.Idle,
-    retriesRemaining: searchParams.MaxRetries,
-    message: "",
-    isError: false,
-    originalExtension: ""
-  },
-  inactiveForwardTo: {
-    value: null,
-    updated: false
-  },
-  manager: {
-    value: "",
-    blurred: false,
-    updated: false
-  },
   nNumber: {
     value: "n",
     blurred: false,
-    updated: false
-  },
-  nNumberFetchedUser: null,
-  outgoing: {
-    value: "",
-    blurred: false,
-    e164: undefined,
     updated: false,
-    valid: false
+    nNumberFetchedUser: null
   },
-  profileId: {
-    value: "",
-    blurred: false,
-    updated: false
+  triton: {
+    userFound: false,
+    alternateDid: {
+      value: "",
+      blurred: false,
+      e164: undefined,
+      updated: false,
+      valid: false
+    },
+    attributes: [],
+    defaultSkills: {
+      updated: false,
+      skills: [],
+      levels: {}
+    },
+    didUser: false,
+    directDialNum: {
+      value: "",
+      blurred: false,
+      e164: undefined,
+      updated: false,
+      valid: false
+    },
+    extension: {
+      value: "",
+      blurred: false,
+      updated: false,
+      valid: false,
+      status: {
+        searchStatus: ExtensionSearchStatuses.Idle,
+        retriesRemaining: searchParams.MaxRetries,
+        message: "",
+        isError: false,
+        originalExtension: ""
+      }
+    },
+    inactiveForwardTo: {
+      value: null,
+      updated: false
+    },
+    manager: {
+      value: "",
+      blurred: false,
+      updated: false
+    },
+    outgoing: {
+      value: "",
+      blurred: false,
+      e164: undefined,
+      updated: false,
+      valid: false
+    },
+    profileId: {
+      value: "",
+      blurred: false,
+      updated: false
+    },
+    selfServiceInd: {
+      value: false,
+      updated: false
+    },
+    userPreviouslyAdded: false,
+    zeroOutEnabled: {
+      value: false,
+      updated: false
+    }
   },
-  alternateDid: {
-    value: "",
-    blurred: false,
-    e164: undefined,
-    updated: false,
-    valid: false
-  },
-  directDialNum: {
-    value: "",
-    blurred: false,
-    e164: undefined,
-    updated: false,
-    valid: false
-  },
-  calabrioUser: {
+  calabrio_qm: {
+    userFound: false,
     updated: false,
     id: null,
     team: null,
@@ -124,69 +160,114 @@ export const initialUserFormState: UserFormState = {
       teams: []
     }
   },
-  userPreviouslyAdded: false,
-  zeroOutEnabled: false,
-  zeroOutEnabledUpdated: false,
-  editDisabled: false,
-  selfServiceInd: false,
-  selfServiceIndUpdated: false
+  calabrio_wfm: {
+    userFound: false,
+    OptionalColumns: [],
+    Id: null,
+    Identity: null,
+    FirstName: null,
+    LastName: null,
+    EmploymentNumber: null,
+    Email: null,
+    DisplayName: null,
+    TerminationDate: null,
+    EmploymentStartDate: null,
+    TimeZoneId: null,
+    BusinessUnitId: null,
+    TeamId: null,
+    TeamStartDate: null,
+    PersonSkills: [],
+    SkillsStartDate: null,
+    WorkflowControlSetId: null,
+    ContractId: null,
+    ContractScheduleId: null,
+    BudgetGroupId: null,
+    PartTimePercentageId: null,
+    ShiftBagId: null,
+    Note: null,
+    Roles: [],
+    AvailabilityId: null,
+    AvailabilityStartDate: null,
+    AbsenceId: null,
+    RotationId: null,
+    RotationStartDate: null,
+    RotationStartWeek: null,
+    FirstDayOfWeek: null,
+    ParentTeam: null
+  }
 };
 
-export const userFormReducer = (state: UserFormState, action: Action): UserFormState => {
+export const userFormReducer = (state: any, action: Action): UserFormState => {
   switch (action.type) {
     case userFormActions.ASSIGN_EXTENSION: {
       return {
         ...state,
-        extensionStatus: {
-          ...state.extensionStatus,
-          searchStatus: ExtensionSearchStatuses.PickANumber,
-          message: "Searching..."
+        triton: {
+          ...state.triton,
+          extension: {
+            ...state.triton.extension,
+            status: {
+              ...state.triton.extension.status,
+              searchStatus: ExtensionSearchStatuses.PickANumber,
+              message: "Searching..."
+            }
+          }
         }
       };
     }
     case userFormActions.CHECK_CALABRIO_GROUP: {
-      state.calabrioUser.scope.groups[action.payload.index][action.payload.boxType] = action.payload.checked;
+      state.calabrio_qm.scope.groups[action.payload.index][action.payload.boxType] = action.payload.checked;
       return {
         ...state,
-        calabrioUser: {
-          ...state.calabrioUser,
+        calabrio_qm: {
+          ...state.calabrio_qm,
           scope: {
-            ...state.calabrioUser.scope,
-            groups: state.calabrioUser.scope.groups
+            ...state.calabrio_qm.scope,
+            groups: state.calabrio_qm.scope.groups
           },
           updated: true
         }
       };
     }
     case userFormActions.CHECK_CALABRIO_TEAM: {
-      state.calabrioUser.scope.teams[action.payload.index].checked = action.payload.checked;
+      state.calabrio_qm.scope.teams[action.payload.index].checked = action.payload.checked;
       return {
         ...state,
-        calabrioUser: {
-          ...state.calabrioUser,
+        calabrio_qm: {
+          ...state.calabrio_qm,
           scope: {
-            ...state.calabrioUser.scope,
-            teams: state.calabrioUser.scope.teams
+            ...state.calabrio_qm.scope,
+            teams: state.calabrio_qm.scope.teams
           },
           updated: true
         }
       };
     }
+    case userFormActions.CLEAR_DISCREPANCY: {
+      const message = action.payload;
+      return {
+        ...state,
+        discrepancies: state.discrepancies.filter((d:any) => d.message !== message)
+      };
+    }
     case userFormActions.CLEAR_EXTENSION: {
       return {
         ...state,
-        extension: {
-          ...state.extension,
-          value: "",
-          updated: true,
-          valid: false
-        },
-        extensionStatus: {
-          ...state.extensionStatus,
-          searchStatus: ExtensionSearchStatuses.Idle,
-          retriesRemaining: searchParams.MaxRetries,
-          isError: false,
-          message: ""
+        triton: {
+          ...state.triton,
+          extension: {
+            ...state.triton.extension,
+            value: "",
+            updated: true,
+            valid: false,
+            status: {
+              ...state.triton.extension.status,
+              searchStatus: ExtensionSearchStatuses.Idle,
+              retriesRemaining: searchParams.MaxRetries,
+              isError: false,
+              message: ""
+            }
+          }
         }
       };
     }
@@ -196,15 +277,18 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
         nNumber: {
           ...state.nNumber,
           value: "n",
-          updated: false
-        },
-        nNumberFetchedUser: null
+          updated: false,
+          nNumberFetchedUser: null
+        }
       };
     }
     case userFormActions.CLEAR_OUTGOING_NUMBER: {
       return {
         ...state,
-        outgoing: initialUserFormState.outgoing
+        triton: {
+          ...state.triton,
+          outgoing: initialUserFormState.triton.outgoing
+        }
       };
     }
     case userFormActions.COMPLETE_N_NUMBER: {
@@ -214,87 +298,73 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
         ...state,
         nNumber: {
           ...state.nNumber,
-          value: nNumber
-        },
-        nNumberFetchedUser: fetchedUser
-      };
-    }
-    case userFormActions.EDIT_PEN_CLICK_FORWARD_TO_TOGGLE: {
-      const worker = action.payload;
-      return {
-        ...state,
-        directDialNum: {
-          ...state.directDialNum,
-          value: formatE164PhoneNumber(worker.directDialNum),
-          e164: undefined,
-          updated: false,
-          valid: true
-        },
-        inactiveForwardTo: {
-          value: null,
-          updated: false
-        },
-        outgoing: {
-          ...state.outgoing,
-          value: formatE164PhoneNumber(worker.attributes.did),
-          e164: undefined,
-          updated: false,
-          valid: true
-        },
-        editDisabled: !state.editDisabled
-      };
-    }
-    case userFormActions.EDIT_PEN_CLICK_NO_FORWARD_TO_TOGGLE: {
-      return {
-        ...state,
-        editDisabled: !state.editDisabled
+          value: nNumber,
+          nNumberFetchedUser: fetchedUser
+        }
       };
     }
     case userFormActions.INITIATE_DID_FIELDS: {
-      const zeroOutEnabled = state.didUser ? false : state.zeroOutEnabled;
+      const zeroOutEnabledValue = state.triton.didUser ? false : state.triton.zeroOutEnabled.value;
       return {
         ...state,
-        didUser: !state.didUser,
-        alternateDid: {
-          value: "",
-          blurred: false,
-          e164: undefined,
-          updated: false,
-          valid: false
-        },
-        directDialNum: {
-          value: "",
-          blurred: false,
-          e164: undefined,
-          updated: false,
-          valid: false
-        },
-        zeroOutEnabled
+        triton: {
+          ...state.triton,
+          didUser: !state.triton.didUser,
+          alternateDid: {
+            value: "",
+            blurred: false,
+            e164: undefined,
+            updated: false,
+            valid: false
+          },
+          directDialNum: {
+            value: "",
+            blurred: false,
+            e164: undefined,
+            updated: false,
+            valid: false
+          },
+          zeroOutEnabled: {
+            value: zeroOutEnabledValue,
+            updated: false
+          }
+        }
       };
     }
     case userFormActions.INITIATE_ZERO_OUT_FIELDS: {
       return {
         ...state,
-        zeroOutEnabled: !state.zeroOutEnabled,
-        zeroOutEnabledUpdated: true
+        triton: {
+          ...state.triton,
+          zeroOutEnabled: {
+            updated: true,
+            value: !state.triton.zeroOutEnabled.value
+          }
+        }
       };
     }
-
     case userFormActions.UPDATE_SELF_SERVICE_INDICATOR:{
       return {
         ...state,
-        selfServiceInd: !state.selfServiceInd,
-        selfServiceIndUpdated: true
+        triton: {
+          ...state.triton,
+          selfServiceInd: {
+            value: !state.triton.selfServiceInd.value,
+            updated: true
+          }
+        }
       };
     }
-
     case userFormActions.RESET_FORM: {
-      console.log("initialUserFormState should have empty skill object", initialUserFormState);
       return {
         ...initialUserFormState,
-        defaultSkills: {
-          skills: [],
-          levels: {}
+        triton: {
+          ...initialUserFormState.triton,
+          defaultSkills: {
+            updated: false,
+            skills: [],
+            levels: {}
+          },
         }
       };
     }
@@ -303,54 +373,79 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
       const outgoingPayload = didUser ? { value: "" } : action.payload.outgoing;
       const profileId = action.payload.profileIdValue;
       const manager = action.payload.managerValue;
-
       return {
         ...initialUserFormState,
-        defaultSkills: {
-          skills: [],
-          levels: {}
+        triton: {
+          ...initialUserFormState.triton,
+          userFound: true,
+          defaultSkills: {
+            updated: false,
+            skills: [],
+            levels: {}
+          },
+          didUser,
+          manager: {
+            value: manager,
+            blurred: false,
+            updated: true
+          },
+          outgoing: {
+            value: outgoingPayload.value,
+            blurred: false,
+            e164: outgoingPayload.e164,
+            updated: true,
+            valid: true
+          },
+          profileId: {
+            value: profileId,
+            blurred: false,
+            updated: true
+          }
         },
-        didUser,
-        manager: {
-          value: manager,
-          blurred: false,
-          updated: true
-        },
-        outgoing: {
-          value: outgoingPayload.value,
-          blurred: false,
-          e164: outgoingPayload.e164,
-          updated: true,
-          valid: true
-        },
-        profileId: {
-          value: profileId,
-          blurred: false,
-          updated: true
+        calabrio_qm: {
+          ...initialUserFormState.calabrio_qm,
+          userFound: true
         }
       };
     }
     case userFormActions.SET_BLUR_ON_FIELD: {
-      const field = action.payload;
-      return {
-        ...state,
-        [field]: {
-          ...state[field],
-          blurred: true
-        }
-      };
+      const field = action.payload.field;
+      const system = action.payload.system;
+      if(system){
+        return {
+          ...state,
+          [system]: {
+            ...state[system],
+            [field]: {
+              ...state[system][field],
+              blurred: true
+            }
+          }
+        };
+      } else {
+        return {
+          ...state,
+          [field]: {
+            ...state[field],
+            blurred: true
+          }
+        };
+      }
     }
-    case userFormActions.SET_CALABRIO_USER: {
+    case userFormActions.SET_CALABRIO_QM_USER: {
       return {
         ...state,
-        calabrioUser: action.payload
+        calabrio_qm: {
+          userFound: true,
+          ...action.payload
+        }
       };
     }
     case userFormActions.SET_CALABRIO_ROLES: {
       return {
         ...state,
-        calabrioUser: {
-          ...state.calabrioUser,
+        calabrio_qm: {
+          ...state.calabrio_qm,
           roles: action.payload,
           updated: true
         }
@@ -359,8 +454,8 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
     case userFormActions.SET_CALABRIO_TEAM: {
       return {
         ...state,
-        calabrioUser: {
-          ...state.calabrioUser,
+        calabrio_qm: {
+          ...state.calabrio_qm,
           team: action.payload,
           updated: true
         }
@@ -369,8 +464,8 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
     case userFormActions.SET_CALABRIO_TIMEZONE: {
       return {
         ...state,
-        calabrioUser: {
-          ...state.calabrioUser,
+        calabrio_qm: {
+          ...state.calabrio_qm,
           timezone: action.payload,
           updated: true
         }
@@ -387,156 +482,447 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
       const isError = action.payload.isError;
       return {
         ...state,
-        extensionStatus: {
-          ...state.extensionStatus,
-          message: message,
-          isError: isError,
-          searchStatus: ExtensionSearchStatuses.Idle,
-          retriesRemaining: searchParams.MaxRetries
+        triton: {
+          ...state.triton,
+          extension: {
+            ...state.triton.extension,
+            status: {
+              ...state.triton.extension.status,
+              message: message,
+              isError: isError,
+              searchStatus: ExtensionSearchStatuses.Idle,
+              retriesRemaining: searchParams.MaxRetries
+            }
+          }
         }
       };
     }
     case userFormActions.SET_EXTENSION_RETRIES: {
-      const remaining = state.extensionStatus.retriesRemaining - 1;
+      const remaining = state.triton.extension.status.retriesRemaining - 1;
       return {
         ...state,
-        extensionStatus: {
-          ...state.extensionStatus,
-          searchStatus: remaining ? ExtensionSearchStatuses.PickANumber : ExtensionSearchStatuses.Idle,
-          retriesRemaining: remaining
+        triton: {
+          ...state.triton,
+          extension: {
+            ...state.triton.extension,
+            status: {
+              ...state.triton.extension.status,
+              searchStatus: remaining ? ExtensionSearchStatuses.PickANumber : ExtensionSearchStatuses.Idle,
+              retriesRemaining: remaining
+            }
+          }
         }
       };
     }
     case userFormActions.SET_EXTENSION_VERIFIED: {
       return {
-        ... state,
-        extensionStatus: {
-          ...state.extensionStatus,
-          searchStatus: ExtensionSearchStatuses.Idle,
-          retriesRemaining: searchParams.MaxRetries,
-          message: "Verified",
-          isError: false
+        ...state,
+        triton: {
+          ...state.triton,
+          extension: {
+            ...state.triton.extension,
+            status: {
+              ...state.triton.extension.status,
+              searchStatus: ExtensionSearchStatuses.Idle,
+              retriesRemaining: searchParams.MaxRetries,
+              message: "Verified",
+              isError: false
+            }
+          }
         }
       };
     }
-
-    case userFormActions.SET_UPDATE_FORM_STATE: {
+    case userFormActions.SET_UPDATE_TRITON_FORM_STATE: {
       const worker = action.payload.worker;
       const managers = action.payload.managers;
-      const finalObj = {
+      return {
         ...state,
         formMode: formModes.UPDATE,
-        defaultSkills: getValidSkillsObject(worker.attributes.default_skills),
-        extension: {
-          ...state.extension,
-          value: worker.attributes.extension || "",
-          valid: true
-        },
-        extensionStatus: {
-          ...state.extensionStatus,
-          originalExtension: worker.attributes.extension || "",
-          isError: false,
-          message: ""
-        },
-        manager: {
-          ...state.manager,
-          value: managers.find((m: Manager) => m.manager_n_number === worker.attributes.manager_n_number)
-        },
         nNumber: {
           ...state.nNumber,
-          value: worker.attributes.n_number || "n"
+          value: worker.attributes.n_number
         },
-        outgoing: {
-          ...state.outgoing,
-          value: worker.attributes.did ? formatE164PhoneNumber(worker.attributes.did) : "",
-          valid: worker.attributes.did ? true : false
-        },
-        profileId: {
-          ...state.profileId,
-          value: worker.attributes.profile_id
-        },
-        alternateDid: {
-          ...state.alternateDid,
-          value: worker.alternateDid ? formatE164PhoneNumber(worker.alternateDid) : "",
-          valid: worker.alternateDid ? true : false
-        },
-        directDialNum: {
-          ...state.directDialNum,
-          value: worker.directDialNum ? formatE164PhoneNumber(worker.directDialNum) : "",
-          valid: worker.directDialNum ? true : false
-        },
-        didUser: worker.directDialNum ? true : false,
-        zeroOutEnabled: worker.zeroOutEnabled || false,
-        selfServiceInd: worker. selfServiceInd || false,
-        editDisabled: worker.directDialNum ? true : false
+        triton: {
+          ...state.triton,
+          userFound: true,
+          attributes: worker.attributes,
+          defaultSkills: {
+            ...state.triton.defaultSkills,
+            ...getValidSkillsObject(worker.attributes.default_skills)
+          },
+          didUser: worker.directDialNum ? true : false,
+          extension: {
+            ...state.triton.extension,
+            value: worker.attributes.extension || "",
+            valid: true,
+            status: {
+              ...state.triton.extension.status,
+              originalExtension: worker.attributes.extension || "",
+              isError: false,
+              message: ""
+            }
+          },
+          manager: {
+            ...state.triton.manager,
+            value: managers.find((m: Manager) => m.manager_n_number === worker.attributes.manager_n_number)
+          },
+          outgoing: {
+            ...state.triton.outgoing,
+            value: worker.attributes.did ? formatE164PhoneNumber(worker.attributes.did) : "",
+            valid: worker.attributes.did ? true : false
+          },
+          profileId: {
+            ...state.triton.profileId,
+            value: worker.attributes.profile_id
+          },
+          alternateDid: {
+            ...state.triton.alternateDid,
+            value: worker.alternateDid ? formatE164PhoneNumber(worker.alternateDid) : "",
+            valid: worker.alternateDid ? true : false
+          },
+          directDialNum: {
+            ...state.triton.directDialNum,
+            value: worker.directDialNum ? formatE164PhoneNumber(worker.directDialNum) : "",
+            valid: worker.directDialNum ? true : false
+          },
+          zeroOutEnabled: {
+            ...state.triton.zeroOutEnabled,
+            value: worker.zeroOutEnabled || false
+          },
+          selfServiceInd: {
+            ...state.triton.selfServiceInd,
+            value: worker.selfServiceInd || false
+          },
+          sid: worker.sid
+        }
       };
-      return finalObj;
+    }
+    case userFormActions.SET_UPDATE_QM_FORM_STATE: {
+      const user = action.payload;
+      return {
+        ...state,
+        formMode: formModes.UPDATE,
+        calabrio_qm: {
+          ...state.calabrio_qm,
+          userFound: true,
+          ...user
+        }
+      };
+    }
+    case userFormActions.SET_UPDATE_WFM_FORM_STATE: {
+      const user = action.payload.user;
+      const appState = action.payload.state;
+
+      const Roles: any[] = [];
+      const PersonSkills: any[] = [];
+      const OptionalColumns: any[] = [];
+
+      user.Roles?.forEach((ur: any) => {
+        const availableRole = getWfmOptions(appState)?.Roles.find((r: any) => r.Id === ur.RoleId);
+        if(availableRole){
+          Roles.push(availableRole);
+        }
+      });
+      user.PersonSkills?.forEach((us: any) => {
+        const availableSkill = getWfmOptions(appState)?.Skills.find((s: any) => s.Id === us.SkillId);
+        if(availableSkill){
+          PersonSkills.push(availableSkill);
+        }
+      });
+      if(user.OptionalColumns){
+        Object.keys(user.OptionalColumns).forEach((id: string) => {
+          const optionalColumn = getWfmOptions(appState)?.Optional_Columns.find((o: any) => o.Id === id);
+          if(optionalColumn){
+            OptionalColumns.push(optionalColumn);
+          }
+        });
+      }
+
+      return {
+        ...state,
+        formMode: formModes.UPDATE,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          userFound: true,
+          ...user,
+          Roles,
+          PersonSkills,
+          OptionalColumns
+        }
+      }
+    }
+    case userFormActions.SET_WFM_BUSINESS_UNIT: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          BusinessUnitId: action.payload
+        }
+      };
+    }
+    case userFormActions.SET_WFM_TEAM: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          TeamId: action.payload.id,
+          TeamStartDate: action.payload.startDate
+        }
+      };
+    }
+    case userFormActions.SET_WFM_SKILLS: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          PersonSkills: action.payload.skills,
+          SkillsStartDate: action.payload.startDate
+        }
+      };
+    }
+    case userFormActions.SET_WFM_CONTROL_SET: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          WorkflowControlSetId: action.payload
+        }
+      };
+    }
+    case userFormActions.SET_WFM_CONTRACT: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          ContractId: action.payload
+        }
+      };
+    }
+    case userFormActions.SET_WFM_CONTRACT_SCHEDULE: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          ContractScheduleId: action.payload
+        }
+      };
+    }
+    case userFormActions.SET_WFM_BUDGET_GROUP: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          BudgetGroupId: action.payload
+        }
+      };
+    }
+    case userFormActions.SET_WFM_PART_TIME_PERCENTAGE: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          PartTimePercentageId: action.payload
+        }
+      };
+    }
+    case userFormActions.SET_WFM_SHIFT_BAG: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          ShiftBagId: action.payload
+        }
+      };
+    }
+    case userFormActions.SET_WFM_NOTE: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          Note: action.payload
+        }
+      };
+    }
+    case userFormActions.SET_WFM_ROLES: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          Roles: action.payload
+        }
+      };
+    }
+    case userFormActions.SET_WFM_FIRST_DAY_OF_WEEK: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          FirstDayOfWeek: action.payload
+        }
+      };
+    }
+    case userFormActions.SET_WFM_OPTIONAL_COLUMNS: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          OptionalColumns: action.payload
+        }
+      };
+    }
+    case userFormActions.SET_WFM_IDENTITY: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          Identity: action.payload
+        }
+      };
+    }
+    case userFormActions.SET_WFM_ABSENCE: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          AbsenceId: action.payload
+        }
+      };
+    }
+    case userFormActions.SET_WFM_AVAILABILITY: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          AvailabilityId: action.payload.id,
+          AvailabilityStartDate: action.payload.startDate
+        }
+      };
+    }
+    case userFormActions.SET_WFM_ROTATION: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          RotationId: action.payload.id,
+          RotationStartDate: action.payload.startDate,
+          RotationStartWeek: action.payload.startWeek
+        }
+      };
+    }
+    case userFormActions.SET_WFM_TERMINATION_DATE: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          TerminationDate: action.payload
+        }
+      };
+    }
+    case userFormActions.SET_WFM_EMP_START_DATE: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          EmploymentStartDate: action.payload
+        }
+      };
+    }
+    case userFormActions.SET_WFM_USER_DATA: {
+      return {
+        ...state,
+        calabrio_wfm: {
+          ...state.calabrio_wfm,
+          FirstName: action.payload.firstName,
+          LastName: action.payload.lastName,
+          EmploymentNumber: action.payload.nNumber,
+          Email: action.payload.email,
+          DisplayName: action.payload.fullName
+        }
+      };
     }
     case userFormActions.SET_DELETE_FORM_STATE: {
       const worker = action.payload.worker;
       const managers = action.payload.managers;
-      const finalObj = {
+      return {
         ...state,
         formMode: formModes.DELETE,
-        defaultSkills: getValidSkillsObject(worker.attributes.default_skills),
-        extension: {
-          ...state.extension,
-          value: worker.attributes.extension || "",
-          valid: true
-        },
-        extensionStatus: {
-          ...state.extensionStatus,
-          originalExtension: worker.attributes.extension || "",
-          isError: false,
-          message: ""
-        },
-        manager: {
-          ...state.manager,
-          value: managers.find((m: Manager) => m.manager_n_number === worker.attributes.manager_n_number)
-        },
         nNumber: {
           ...state.nNumber,
           value: worker.attributes.n_number || "n"
         },
-        outgoing: {
-          ...state.outgoing,
-          value: worker.attributes.did ? formatE164PhoneNumber(worker.attributes.did) : "",
-          valid: worker.attributes.did ? true : false
-        },
-        profileId: {
-          ...state.profileId,
-          value: worker.attributes.profile_id
-        },
-        alternateDid: {
-          ...state.alternateDid,
-          value: worker.alternateDid ? formatE164PhoneNumber(worker.alternateDid) : "",
-          valid: worker.alternateDid ? true : false
-        },
-        directDialNum: {
-          ...state.directDialNum,
-          value: worker.directDialNum ? formatE164PhoneNumber(worker.directDialNum) : "",
-          valid: worker.directDialNum ? true : false
-        },
-        didUser: worker.directDialNum ? true : false,
-        zeroOutEnabled: worker.zeroOutEnabled || false,
-        selfServiceInd: worker.selfServiceInd || false,
-        editDisabled: worker.directDialNum ? true : false
+        triton: {
+          ...state.triton,
+          userFound: true,
+          defaultSkills: {
+            ...state.triton.defaultSkills,
+            ...getValidSkillsObject(worker.attributes.default_skills)
+          },
+          extension: {
+            ...state.triton.extension,
+            value: worker.attributes.extension || "",
+            valid: true,
+            status: {
+              ...state.triton.extension.status,
+              originalExtension: worker.attributes.extension || "",
+              isError: false,
+              message: ""
+            }
+          },
+          manager: {
+            ...state.triton.manager,
+            value: managers.find((m: Manager) => m.manager_n_number === worker.attributes.manager_n_number)
+          },
+          outgoing: {
+            ...state.triton.outgoing,
+            value: worker.attributes.did ? formatE164PhoneNumber(worker.attributes.did) : "",
+            valid: worker.attributes.did ? true : false
+          },
+          profileId: {
+            ...state.triton.profileId,
+            value: worker.attributes.profile_id
+          },
+          alternateDid: {
+            ...state.triton.alternateDid,
+            value: worker.alternateDid ? formatE164PhoneNumber(worker.alternateDid) : "",
+            valid: worker.alternateDid ? true : false
+          },
+          directDialNum: {
+            ...state.triton.directDialNum,
+            value: worker.directDialNum ? formatE164PhoneNumber(worker.directDialNum) : "",
+            valid: worker.directDialNum ? true : false
+          },
+          didUser: worker.directDialNum ? true : false,
+          zeroOutEnabled: {
+            ...state.triton.zeroOutEnabled,
+            value: worker.zeroOutEnabled || false
+          },
+          selfServiceInd: {
+            ...state.triton.selfServiceInd,
+            value: worker.selfServiceInd || false
+          }
+        }
       };
-      console.log("FINAL", finalObj);
-      return finalObj;
     }
     case userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE: {
       return {
         ...state,
-        userPreviouslyAdded: true
+        triton: {
+          ...state.triton,
+          userPreviouslyAdded: true
+        }
       };
     }
     case userFormActions.UPDATE_DEFAULT_SKILLS: {
       const defaultSkills = action.payload;
       return {
         ...state,
-        defaultSkillsUpdated: true,
-        defaultSkills
+        triton: {
+          ...state.triton,
+          defaultSkills: {
+            ...defaultSkills,
+            updated: true
+          }
+        }
       };
     }
     case userFormActions.UPDATE_EXTENSION: {
@@ -545,18 +931,21 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
       const message = isValid ? "Extension is valid" : "";
       return {
         ...state,
-        extension: {
-          ...state.extension,
-          value: extension,
-          blurred: isValid,
-          updated: true,
-          valid: isValid
-        },
-        extensionStatus: {
-          ...state.extensionStatus,
-          message,
-          searchStatus: ExtensionSearchStatuses.Idle,
-          retriesRemaining: searchParams.MaxRetries
+        triton: {
+          ...state.triton,
+          extension: {
+            ...state.triton.extension,
+            value: extension,
+            blurred: isValid,
+            updated: true,
+            valid: isValid,
+            status: {
+              ...state.triton.extension.status,
+              message,
+              searchStatus: ExtensionSearchStatuses.Idle,
+              retriesRemaining: searchParams.MaxRetries
+            }
+          }
         }
       };
     }
@@ -564,9 +953,12 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
       const inactiveForwardTo = action.payload;
       return {
         ...state,
-        inactiveForwardTo: {
-          value: inactiveForwardTo,
-          updated: true
+        triton: {
+          ...state.triton,
+          inactiveForwardTo: {
+            value: inactiveForwardTo,
+            updated: true
+          }
         }
       };
     }
@@ -574,10 +966,13 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
       const manager = action.payload;
       return {
         ...state,
-        manager: {
-          ...state.manager,
-          value: manager,
-          updated: true
+        triton: {
+          ...state.triton,
+          manager: {
+            ...state.triton.manager,
+            value: manager,
+            updated: true
+          }
         }
       };
     }
@@ -599,12 +994,15 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
       const e164 = action.payload.e164Number;
       return {
         ...state,
-        [field]: {
-          ...state[field],
-          value,
-          e164,
-          updated: true,
-          valid: isValid && (e164 ? true : false)
+        triton: {
+          ...state.triton,
+          [field]: {
+            ...state.triton[field],
+            value,
+            e164,
+            updated: true,
+            valid: isValid && (e164 ? true : false)
+          }
         }
       };
     }
@@ -613,13 +1011,34 @@ export const userFormReducer = (state: UserFormState, action: Action): UserFormS
       const profiles = action.payload.profiles;
       return {
         ...state,
-        profileId: {
-          ...state.profileId,
-          value: profileId,
-          updated: true
-        },
-        zeroOutEnabled: getZeroOutEnabledFromProfile(profiles, profileId)
+        triton: {
+          ...state.triton,
+          profileId: {
+            ...state.triton.profileId,
+            value: profileId,
+            updated: true
+          },
+          zeroOutEnabled: {
+            ...state.triton.zeroOutEnabled,
+            value: getZeroOutEnabledFromProfile(profiles, profileId)
+          }
+        }
       };
+    }
+    case userFormActions.UPDATE_USER_FOUND: {
+      const system = action.payload.system;
+      const isFound = action.payload.isFound;
+      if (state[system]) {
+        return {
+          ...state,
+          [system]: {
+            ...initialUserFormState[system],
+            userFound: isFound
+          }
+        };
+      } else {
+        return state;
+      }
     }
     default:
       return state;

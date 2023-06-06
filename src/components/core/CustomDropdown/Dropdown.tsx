@@ -27,7 +27,8 @@ export const Dropdown = (props: any) => {
     options,
     styles,
     updateValue,
-    value
+    value,
+    disableClear
   } = props;
 
   const stylesObject = {
@@ -56,7 +57,7 @@ export const Dropdown = (props: any) => {
     <Autocomplete
       multiple={multiple}
       size={styles && styles.small ? "small" :"medium"}
-      disableClearable={!multiple}
+      disableClearable={disableClear}
       disableCloseOnSelect={multiple}
       limitTags={1}
       options={options}

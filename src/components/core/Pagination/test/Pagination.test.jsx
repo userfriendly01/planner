@@ -37,8 +37,8 @@ const defaultTableState = {
     usersPerPage: 25,
     pageNumber: 1,
     length: 100,
-    startingUserIndex: 1,
-    endingUserIndex: 25
+    startingUserIndex: 0,
+    endingUserIndex: 24
   }
 };
 const setTableState = jest.fn();
@@ -85,13 +85,13 @@ describe("Pagination", () => {
           usersPerPage: 25,
           pageNumber: 2,
           length: 100,
-          startingUserIndex: 26,
+          startingUserIndex: 25,
           endingUserIndex: 50
         }
       };
       test("all arrows should be enabled", () => {
         const rendered = renderComponent(tableState);
-        expect(rendered.container).toHaveTextContent("26-50 of 100 workers");
+        expect(rendered.container).toHaveTextContent("26-51 of 100 workers");
         expect(NavArrow.mock.calls.length).toBe(4);
         expect(NavArrow.mock.calls[0][0].disabled).toBe(false);
         expect(NavArrow.mock.calls[1][0].disabled).toBe(false);
@@ -111,7 +111,7 @@ describe("Pagination", () => {
       };
       test("last arrow should be disabled", () => {
         const rendered = renderComponent(tableState);
-        expect(rendered.container).toHaveTextContent("76-100 of 100");
+        expect(rendered.container).toHaveTextContent("77-100 of 100");
         expect(NavArrow.mock.calls.length).toBe(4);
         expect(NavArrow.mock.calls[0][0].disabled).toBe(false);
         expect(NavArrow.mock.calls[1][0].disabled).toBe(false);
@@ -200,8 +200,8 @@ describe("Pagination", () => {
         usersPerPage: 25,
         pageNumber: 4,
         length: 100,
-        startingUserIndex: 76,
-        endingUserIndex: 101
+        startingUserIndex: 75,
+        endingUserIndex: 106
       }
     };
     test("should setTableState to previous pageNumber", () => {

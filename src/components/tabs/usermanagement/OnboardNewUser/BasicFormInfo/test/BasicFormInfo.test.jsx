@@ -193,9 +193,12 @@ describe("<BasicFormInfo />", () => {
       test("error field should be true", () => {
         useFormState.mockReturnValue({
           ...initialFormState,
-          manager: {
-            ...initialFormState.manager,
-            blurred: true
+          triton: {
+            ...initialFormState.triton,
+            manager: {
+              ...initialFormState.manager,
+              blurred: true
+            }
           }
         });
         isManagerValid.mockReturnValue(false);
@@ -211,15 +214,21 @@ describe("<BasicFormInfo />", () => {
       });
       expect(mockSetForm).toBeCalledWith({
         type: userFormActions.SET_BLUR_ON_FIELD,
-        payload: "manager"
+        payload: {
+          field: "manager",
+          system: "triton"
+        }
       });
     });
     test("onBlur - valid manager should not set blur on field", () => {
       useFormState.mockReturnValue({
         ...initialFormState,
-        manager: {
-          ...initialFormState.manager,
-          valid: true
+        triton: {
+          ...initialFormState.triton,
+          manager: {
+            ...initialFormState.manager,
+            valid: true
+          }
         }
       });
       renderComponent(false);
@@ -286,9 +295,12 @@ describe("<BasicFormInfo />", () => {
     test("error field should be true", () => {
       useFormState.mockReturnValue({
         ...initialFormState,
-        profileId: {
-          ...initialFormState.profileId,
-          blurred: true
+        triton: {
+          ...initialFormState.triton,
+          profileId: {
+            ...initialFormState.profileId,
+            blurred: true
+          }
         }
       });
       removeProfileZeroIfAdminNotInProfileZero.mockReturnValue(profileList);
@@ -304,15 +316,21 @@ describe("<BasicFormInfo />", () => {
       });
       expect(mockSetForm).toBeCalledWith({
         type: userFormActions.SET_BLUR_ON_FIELD,
-        payload: "profileId"
+        payload: {
+          field: "profileId",
+          system: "triton"
+        }
       });
     });
     test("onBlur - valid profileId should not set blur on field", () => {
       useFormState.mockReturnValue({
         ...initialFormState,
-        profileId: {
-          ...initialFormState.profileId,
-          valid: true
+        triton: {
+          ...initialFormState.triton,
+          profileId: {
+            ...initialFormState.profileId,
+            valid: true
+          }
         }
       });
       renderComponent(false);
@@ -339,7 +357,13 @@ describe("<BasicFormInfo />", () => {
     test("updateValue - should set selfServiceInd to false if its true and new profileId is less than 39", () => {
       useFormState.mockReturnValue({
         ...initialFormState,
-        selfServiceInd: true
+        triton: {
+          ...initialFormState.triton,
+          selfServiceInd: {
+            ...initialFormState.triton.selfServiceInd,
+            value: true
+          }
+        }
       });
       renderComponent(false);
       act(() => {
@@ -366,7 +390,7 @@ describe("<BasicFormInfo />", () => {
         disabled: false,
         id: "outgoing-number",
         allowSevenDigitVdn: false,
-        showError: initialFormState.outgoing.blurred,
+        showError: initialFormState.triton.outgoing.blurred,
         number: "",
         label: "Outgoing Number *"
       };
@@ -375,8 +399,7 @@ describe("<BasicFormInfo />", () => {
     test("disabled property should be true", () => {
       useFormState.mockReturnValue({
         ...initialFormState,
-        formMode: formModes.UPDATE,
-        editDisabled: true
+        formMode: formModes.DELETE,
       });
       renderComponent(false);
       expect(PhoneNumberInput.mock.calls[0][0].disabled).toBe(true);
@@ -389,15 +412,21 @@ describe("<BasicFormInfo />", () => {
       });
       expect(mockSetForm).toBeCalledWith({
         type: userFormActions.SET_BLUR_ON_FIELD,
-        payload: "outgoing"
+        payload: {
+          field: "outgoing",
+          system: "triton"
+        }
       });
     });
     test("onBlur - valid number should not set blur on field", () => {
       useFormState.mockReturnValue({
         ...initialFormState,
-        outgoing: {
-          ...initialFormState.outgoing,
-          valid: true
+        triton: {
+          ...initialFormState.triton,
+          outgoing: {
+            ...initialFormState.triton.outgoing,
+            valid: true
+          }
         }
       });
       renderComponent(false);
@@ -452,7 +481,10 @@ describe("<BasicFormInfo />", () => {
     test("disabled property should be true on successful fetched user", () => {
       useFormState.mockReturnValue({
         ...initialFormState,
-        nNumberFetchedUser: fetchedUser
+        nNumber: {
+          ...initialFormState,
+          nNumberFetchedUser: fetchedUser
+        }
       });
       renderComponent(false);
       expect(NNumberInput.mock.calls[0][0].disabled).toBe(true);
@@ -465,7 +497,10 @@ describe("<BasicFormInfo />", () => {
       });
       expect(mockSetForm).toBeCalledWith({
         type: userFormActions.SET_BLUR_ON_FIELD,
-        payload: "nNumber"
+        payload: {
+          field: "nNumber",
+          system: null
+        }
       });
     });
     test("onBlur - valid number should not set blur on field", () => {
@@ -565,7 +600,10 @@ describe("<BasicFormInfo />", () => {
         describe("still on add form after at least one user has been added", () => {
           beforeEach(() => useFormState.mockReturnValue({
             ...initialFormState,
-            userPreviouslyAdded: true
+            triton: {
+              ...initialFormState.triton,
+              userPreviouslyAdded: true
+            }
           }));
           test("When onChange is called, setForm is called", () => {
             renderComponent();
@@ -588,7 +626,10 @@ describe("<BasicFormInfo />", () => {
           useFormState.mockReturnValue({
             ...initialFormState,
             formMode: formModes.INSERT,
-            didUser: true
+            triton: {
+              ...initialFormState.triton,
+              didUser: true
+            }
           });
         });
         test("Should render the correct initial state", () => {
@@ -634,7 +675,10 @@ describe("<BasicFormInfo />", () => {
           useFormState.mockReturnValue({
             ...initialFormState,
             formMode: formModes.UPDATE,
-            didUser: true
+            triton: {
+              ...initialFormState.triton,
+              didUser: true
+            }
           });
         });
         test("Should render the correct initial state", () => {
@@ -676,7 +720,10 @@ describe("<BasicFormInfo />", () => {
           useFormState.mockReturnValue({
             ...initialFormState,
             formMode: formModes.INSERT,
-            didUser: true
+            triton: {
+              ...initialFormState.triton,
+              didUser: true
+            }
           });
         });
         test("Should be disabled with overFlowSkills are undefined", () => {
@@ -714,7 +761,10 @@ describe("<BasicFormInfo />", () => {
           useFormState.mockReturnValue({
             ...initialFormState,
             formMode: formModes.INSERT,
-            didUser: true
+            triton: {
+              ...initialFormState.triton,
+              didUser: true
+            }
           });
         });
         test("When onChange is called, setForm is called", () => {
