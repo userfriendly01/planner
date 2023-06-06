@@ -17,7 +17,7 @@ export const emptyInitFields: string[] = ["transferMessage", "twilioSkill", "day
 
 export const dayOfWeek: string[] = ["ALL", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY", "WEEKDAY", "WEEKEND", "HOLIDAY"];
 
-export const priority: string[] = ["1", "2", "3", "4"];
+export const priority: string[] = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
 
 export const routingDropDownList: RoutingDropDownList = {
   brand: [],
