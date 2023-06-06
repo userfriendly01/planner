@@ -32,29 +32,43 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
 
   console.log("BulkdUpdateForm - defaultSkills - selectedTemplates", selectedTemplates);
 
-  const dropdownOptions = {
-    ADD_SKILL: {
+  const dropdownOptions = [
+    {
       label: "Add Skill",
-      value: "Add Skill"
+      value: "ADD"
     },
-    DELETE_SKILL: {
+    {
       label: "Delete Skill",
-      value: "Delete Skill"
+      value: "DELETE"
     },
-    OVERRIDE_SKILL: {
+    {
       label: "Override Skill",
-      value: "Override Skill"
+      value: "OVERRIDE"
     }
-  };
+  ];
 
-  const [ option, setOption ] = React.useState("");
+  const [ skillOption, setSkillOption ] = React.useState("");
   const [ updatedDefaultSkills, setUpdatedDefaultSkills ] = React.useState<any>({
     skills: [],
     levels: {}
   });
 
   const skills = useAdminState().skillContext.skills.slice().filter(s => s.levels);
-  const skillGroups = useAdminState().skillContext.skillGroups.slice();
+
+  const skillsDropdownOptions = skills.map( s => ({
+    label: s.name,
+    value: s.name
+  }));
+
+  const exampleSkill = {
+    skills: ["ccNationalInq24","ccNationalInqSP25","ccNationalWC20","ccNationalWCSP21"],
+    levels: {
+      "ccNationalInqSP25": 2,
+      "ccNationalInq24": 1,
+      "ccNationalWC20": 1,
+      "ccNationalWCSP21": 1
+    }
+  };
 
   // add keys to template so processing function can adjust payload body
   React.useEffect(() => {
@@ -67,7 +81,7 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
           data: {
             key: "default_skills",
             value: updatedDefaultSkills,
-            option: option
+            option: skillOption
           }
         });
       } else {
@@ -75,7 +89,7 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
           data: {
             key: "default_skills",
             value: updatedDefaultSkills,
-            option: option
+            option: skillOption
           }
         });
       }
@@ -100,13 +114,16 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
       <UpdateWrapper>
         <Dropdown
           label="Options"
-          value={option}
-          options={Object.values(dropdownOptions)}
+          value={skillOption}
+          options={dropdownOptions}
           updateValue={(event: any, option: any) => {
             console.log("option: ", option);
-            // console.log("option[0]: ", dropdownOptions[0]);
-            setOption(option.label);
-            console.log("option label again: ", option.label);
+            setSkillOption(option.value);
+            // remove what has been set as default skill when changing option
+            setUpdatedDefaultSkills({
+              skills: [],
+              levels: {}
+            });
           }}
           styles={{
             margin: "40 40 30 0",
@@ -114,7 +131,7 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
           }}
         />
 
-        { option === dropdownOptions.OVERRIDE_SKILL.label &&
+        { skillOption === "OVERRIDE" &&
         <DefaultSkillSelector
           defaultSkills={updatedDefaultSkills}
           setDefaultSkills={(updatedDefaultSkills: any) => {
@@ -122,6 +139,23 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
             console.log("&&& setting default skills: ", updatedDefaultSkills);
             setUpdatedDefaultSkills(updatedDefaultSkills);
             console.log("&&& updated template: ", selectedTemplates);
+          }}
+        />
+        }
+        { skillOption === "DELETE" &&
+        <Dropdown
+          label="Skill to Delete"
+          value={updatedDefaultSkills[0]} // since we are only doing one skill at a time, this will be the first value in the 
+          options={skillsDropdownOptions}
+          updateValue={(event: any, skillOption: any) => {
+            setUpdatedDefaultSkills({
+              skills: [skillOption.value],
+              levels: {}
+            });
+          }}
+          styles={{
+            margin: "40 40 30 0",
+            width: "175px"
           }}
         />
         }

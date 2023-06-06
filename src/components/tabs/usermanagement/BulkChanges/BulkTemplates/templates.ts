@@ -251,11 +251,11 @@ const processUpdateWorkerAttribute = async (row: any, template: Template, state:
       try {
         body[location[0]] = {
           ...parentObject,
-          [location[1]] : {
+          [location[1]]: {
             ...nestedObject,
             ...newAttribute
           }
-        }
+        };
       } catch(err){
         return rejectPromise(`Error thrown when location is array ${err.message}`, rowNumber);
       }
@@ -347,18 +347,43 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: a
   const key = template.data.key;
   const value = template.data.value;
   const option = template.data.option;
-
   const body: any = {};
 
-  body.attributes = { "default_skills": value };
+  if(option === "DELETE"){
+    console.log("WEre in !!!!", value);
+    const skillToDelete = value.skills[0];
+    const currentSkills = row.attributes.default_skills;
+    console.log("skills before", currentSkills);
+    const updatedSkills: any = {};
+    // update skill array to remove skill
+    updatedSkills.skill = currentSkills.skill.filter( (skill : string) => skill !== skillToDelete );
+
+    for( const skillLevel in currentSkills.levels){
+      console.log("SKILL LEVEL!", skillLevel);
+      if(skillLevel !== skillToDelete){
+        updatedSkills.levels[skillLevel] = currentSkills.levels[skillLevel];
+      }
+    }
+
+    console.log("skills after", updatedSkills);
+    body.attributes = { "default_skills": updatedSkills };
+
+
+  }
+
+  if(option === "OVERRIDE"){
+    body.attributes = { "default_skills": value };
+
+
+  }
 
   console.log("**** UPDATE DEFAULT SKILLS RECORD PROCESSING", row, body);
   console.log("**** ROW: ", row);
   console.log("**** updatedSkills:", value);
   console.log("**** option: ", option);
   try {
-    await updateUser(row.workerSid, body);
-    return Promise.resolve(`${row.workerSid} - Default Skills updated for row ${rowNumber}`);
+    await updateUser(workerSid, body);
+    return Promise.resolve(`${workerSid} - Default Skills updated for row ${rowNumber}`);
   } catch(err){
     const errorMessage = `Failed to update Triton Worker Default Skills for row ${rowNumber}. ${formatErrorMessage(err)}`;
     console.error(errorMessage, err);
