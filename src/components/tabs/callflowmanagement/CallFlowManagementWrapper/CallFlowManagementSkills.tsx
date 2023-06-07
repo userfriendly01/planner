@@ -4,7 +4,7 @@ import {
 } from "./CallFlowManagement.Styles";
 import {
   SkillProfile,
-  TableState,
+  TableState
 } from "./CallFlowManagement.Interfaces";
 import {
   ConfirmationModalOptsProps,

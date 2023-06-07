@@ -7,10 +7,14 @@ import { TextField } from "@mui/material";
 import {
   UserFormButton
 } from "../ClosedFlashMessage/ClosedFlashMessage.Styles";
-import { ActionTypes } from "../Skills.Interfaces";
 import {
-  addSkillGroup, addSkillGroupsSkill
-} from "services/skillgroup";
+  ActionTypes, AddEditSkillGroupBody
+} from "../Skills.Interfaces";
+import {
+  addSkillGroup,
+  deleteSkillGroup,
+  updateSkillGroup
+} from "services";
 import {
   Skill, timeouts, ModalOverlayStatuses
 } from "globals";
@@ -18,11 +22,15 @@ import {
   ConfirmationSkillGroupsDiv,
   ConfirmationSkillList
 } from "./SkillGroup.Styles";
+import { Dropdown } from "components";
+import _ from "lodash";
+import { getSkills } from "authentication";
+
 
 const SkillGroupInputContainer = (props: any) => {
   const [ skillGroupName, setSkillGroupName ] = React.useState("");
-  const [ skillGroupId, setSkillGroupId ] = React.useState();
   const [ errorText, setErrorText ] = React.useState("");
+  const [ skillGroupToEditDelete, setSkillGroupToEditDelete ] = React.useState(null);
 
   const {
     action,
@@ -37,10 +45,21 @@ const SkillGroupInputContainer = (props: any) => {
   const state = useAdminState();
   const dispatch = useAdminDispatch();
   const skillGroups = state.skillContext.skillGroups.slice();
+  const skills = state.skillContext.skills.slice();
+
+  const getSkillGroupOptions = () => {
+    return skillGroups.map((skg: any) => {
+      return {
+        label: skg.skillGroupNme,
+        value: skg.skillGroupId,
+        skills: skg.skills.map((sk: any) => sk.name)
+      };
+    });
+  };
 
   const handleOnSave = () => {
-    const isNameValid = validateSkillGroupName();
-    if (!isNameValid) {
+    const nameIsInvalid = isSkillGroupNameInvalid();
+    if (nameIsInvalid) {
       setErrorText("Skill group names must be unique");
     } else {
       setErrorText("");
@@ -48,7 +67,12 @@ const SkillGroupInputContainer = (props: any) => {
         case ActionTypes.ADD:
           handleAddSkillGroup();
           break;
-        // Add more to this when we do Edit and Delete functionality
+        case ActionTypes.DELETE:
+          handleDeleteSkillGroup();
+          break;
+        case ActionTypes.EDIT:
+          handleEditSkillGroup();
+          break;
         default:
           break;
       }
@@ -66,30 +90,51 @@ const SkillGroupInputContainer = (props: any) => {
     });
   };
 
-  const validateSkillGroupName = () => {
-    if (action === ActionTypes.ADD) {
-      const skillGroupExists = skillGroups.find((sg: any) => sg.skillGroupNme.toLowerCase() === skillGroupName.toLowerCase());
-      return !skillGroupExists;
+  const isSkillGroupNameInvalid = () => {
+    let skillGroupNameExists = false;
+    if (action !== ActionTypes.DELETE && (skillGroupName?.trim() === "" || !skillGroupName)) {
+      return false;
     }
-    return true;
+    if (action === ActionTypes.ADD) {
+      skillGroupNameExists = skillGroups.find((sg: any) => sg.skillGroupNme.toLowerCase() === skillGroupName.trim().toLowerCase()) ? true : false;
+    } else if (action === ActionTypes.EDIT) {
+      // it can have the same name as itself, but no other skillgroups
+      const allOtherSkillgroups = skillGroups.filter(sg => sg.skillGroupId !== skillGroupToEditDelete.value);
+      skillGroupNameExists = allOtherSkillgroups.find(sg => sg.skillGroupNme.toLowerCase() === skillGroupName.trim().toLowerCase()) ? true : false;
+    }
+    return skillGroupNameExists;
   };
 
   const handleAddSkillGroup = async () => {
-
     const onConfirm =async () => {
       setSaveResult({
         message: "Processing...",
         status: ModalOverlayStatuses.SAVING
       });
       try {
-        const addGroupNameResponse = await addSkillGroup(skillGroupName);
-        setSkillGroupId(addGroupNameResponse.insertId);
-        const results = await Promise.allSettled(tableState.selected.map((skill: Skill) => {
-          return addSkillGroupsSkill(addGroupNameResponse.insertId, skill.ctmSkillId);
-        }));
-        handleResults(results);
+        const skillIds = tableState.selected.map((skill: Skill) => skill.ctmSkillId);
+
+        const requestBody: AddEditSkillGroupBody = {
+          skill_group_nme: skillGroupName.trim(),
+          skillIds
+        };
+
+        await addSkillGroup(requestBody);
+
+        setSaveResult({
+          message: "Request Successfully Processed",
+          status: ModalOverlayStatuses.SUCCESS
+        });
+
+        // refresh skill state
+        await getSkills(dispatch);
+
+        setTimeout(() => {
+          handleCloseConfirmation();
+          setAction(null);
+        }, timeouts.MODAL_OVERLAY);
       } catch (err) {
-        console.error("Unable to add skill grouping");
+        console.error("Error: Unable to add skill grouping");
         setSaveResult({
           message: "Request Failed",
           status: ModalOverlayStatuses.FAIL
@@ -99,7 +144,7 @@ const SkillGroupInputContainer = (props: any) => {
 
     const confirmationText = <>
       <ConfirmationSkillGroupsDiv>
-      Are you sure you want to create the skill group <strong>{skillGroupName}</strong> containing the following skills?
+      Are you sure you want to create the skill group <span style={{ textDecoration: "underline" }}>{skillGroupName}</span> containing the following skills?
         <ConfirmationSkillList>
           {tableState.selected.map((skill: Skill) => <li key={skill.name}>{skill.name}</li>)}
         </ConfirmationSkillList>
@@ -117,103 +162,176 @@ const SkillGroupInputContainer = (props: any) => {
     });
   };
 
+  const handleEditSkillGroup = () => {
 
-  const handleResults = (results: any[]) => {
-    const successfulPromiseSkills: any[] = [];
-    const rejectedPromiseSkills: any[] = [];
+    const requestBody: AddEditSkillGroupBody = {
+      skill_group_nme: skillGroupName.trim()
+    };
+    let editConfirmationText;
 
-    results.forEach((r, index) => {
-      if(r.status === "fulfilled"){
-        successfulPromiseSkills.push(tableState.selected[index]);
-      }
-      if(r.status === "rejected"){
-        rejectedPromiseSkills.push(tableState.selected[index]);
-      }
-    });
-    if(rejectedPromiseSkills.length === 0){
+    try {
+      const selectedSkills: number[] = tableState.selected.slice().map((sk: Skill) => sk.ctmSkillId);
+      requestBody.skillIds = selectedSkills;
+
+      editConfirmationText = <>
+        <ConfirmationSkillGroupsDiv>
+        Are you sure you want to edit the skill group <span style={{ textDecoration: "underline" }}>{skillGroupToEditDelete?.label ? skillGroupToEditDelete?.label : ""}?</span>
+          {requestBody.skill_group_nme ? <>The name of this skill grouping will become <span style={{ textDecoration: "underline" }}>{skillGroupName}</span> </> : ""}
+          This skill group will contain the following skills:
+          <ConfirmationSkillList>
+            {tableState.selected.map((skill: Skill) => <li key={skill.name}>{skill.name}</li>)}
+          </ConfirmationSkillList>
+        </ConfirmationSkillGroupsDiv>
+      </>;
+    } catch (err) {
+      console.error("Failed to update skillGroup", err?.message ? err.message : err);
       setSaveResult({
-        message: "Request Successfully Processed",
-        status: ModalOverlayStatuses.SUCCESS
-      });
-      updateStateOnResolvedPromises(successfulPromiseSkills);
-      setTimeout(() => {
-        handleCloseConfirmation();
-        setAction(null);
-      }, timeouts.MODAL_OVERLAY);
-    } else if (successfulPromiseSkills.length === 0){
-      setSaveResult({
-        message: "Skill Grouping was created, but all selected skills failed to add",
+        message: "Request Failed",
         status: ModalOverlayStatuses.FAIL
       });
-    } else {
-      let message = "Skill group was created, but the following skills failed to be added: ";
-      rejectedPromiseSkills.forEach((skill: any, index: number) => {
-        if(index !== rejectedPromiseSkills.length - 1){
-          message = message + skill.name + ", ";
-        } else {
-          message = message + skill.name;
-        }
-      });
-      updateStateOnResolvedPromises(successfulPromiseSkills);
-      setSaveResult({
-        message,
-        status: ModalOverlayStatuses.PARTIAL_FAIL
-      });
     }
+
+    const onConfirmEdit = async () => {
+      setSaveResult({
+        message: "Processing...",
+        status: ModalOverlayStatuses.SAVING
+      });
+      try {
+        await updateSkillGroup(skillGroupToEditDelete.value, requestBody);
+        setSaveResult({
+          message: "Request Successfully Processed",
+          status: ModalOverlayStatuses.SUCCESS
+        });
+        // refresh skill state
+        await getSkills(dispatch);
+        setTimeout(() => {
+          handleCloseConfirmation();
+          setAction(null);
+        }, timeouts.MODAL_OVERLAY);
+      } catch (err) {
+        console.error("Error while editing skill grouping", requestBody, err);
+        setSaveResult({
+          message: "Request Failed",
+          status: ModalOverlayStatuses.FAIL
+        });
+      }
+    };
+
+    setConfirmationModalOpts({
+      open: true,
+      exportButton: false,
+      confirmationText: editConfirmationText,
+      callbackMethods: {
+        onConfirm: onConfirmEdit,
+        handleClose: handleCloseConfirmation
+      }
+    });
   };
 
-  const updateStateOnResolvedPromises = (fulfilledSkills: Skill[])=> {
-    const skills = state.skillContext.skills.slice();
-    const updatedSkills = skills.map(s => {
-      let updatedSkill = s;
-      fulfilledSkills.forEach(skill => {
-        if(s.name === skill.name) {
-          updatedSkill = {
-            ...s,
-            ctmSkillGroups: [...s.ctmSkillGroups, {
-              skillGroupId,
-              skillGroupNme: skillGroupName,
-              skills: tableState.selected
-            }]
-          };
-        }
+  const handleDeleteSkillGroup = () => {
+    const onConfirmDelete = async () => {
+      setSaveResult({
+        message: "Processing...",
+        status: ModalOverlayStatuses.SAVING
       });
-      return updatedSkill;
+      try {
+        await deleteSkillGroup(skillGroupToEditDelete.value);
+        setSaveResult({
+          message: "Request Successfully Processed",
+          status: ModalOverlayStatuses.SUCCESS
+        });
+
+        // refresh skill state
+        await getSkills(dispatch);
+
+        setTimeout(() => {
+          handleCloseConfirmation();
+          setAction(null);
+        }, timeouts.MODAL_OVERLAY);
+      } catch (err) {
+        console.error("Unable to delete skill grouping", err);
+        setSaveResult({
+          message: "Request Failed",
+          status: ModalOverlayStatuses.FAIL
+        });
+      }
+    };
+
+    const deleteConfirmationText = <>
+      <ConfirmationSkillGroupsDiv>
+      You are about to delete the skill group <span style={{ textDecoration: "underline" }}>{skillGroupToEditDelete.label}</span> Doing this will not affect any users,
+      it will only impact the skill group options available in the Default Skill Selector when onboarding or editing a Triton user.
+      The following skills currently make up the selected skill group:
+        <ConfirmationSkillList>
+          {skillGroupToEditDelete.skills?.map((skill: string) => <li key={skill}>{skill}</li>)}
+        </ConfirmationSkillList>
+      </ConfirmationSkillGroupsDiv>
+    </>;
+
+    setConfirmationModalOpts({
+      open: true,
+      exportButton: false,
+      confirmationText: deleteConfirmationText,
+      callbackMethods: {
+        onConfirm: onConfirmDelete,
+        handleClose: handleCloseConfirmation
+      }
     });
-    dispatch({
-      type: "updateSkills",
-      payload: updatedSkills
-    });
-    // reload skillGroups so the default skills dropdown will have the new one
-    dispatch({
-      type: "loadSkillGroups",
-      payload: updatedSkills
-    });
-    setTableState({
-      ...tableState,
-      selected: []
-    });
+  };
+
+  const generateBottomMsg = () => {
+    if (action === ActionTypes.ADD) {
+      return "Select skills to add to the default skill grouping";
+    } else if (action === ActionTypes.EDIT) {
+      return "Adjust the selected skills to add or remove them from the skill group";
+    }
+    return "";
   };
 
   return (
     <>
-      <TextField
-        onChange={(event: any) => setSkillGroupName(event.target.value)}
-        label="Skill Group Name"
-        value={skillGroupName}
-        helperText={errorText}
-        error={errorText !== ""}
-        sx={{
-          margin: "10 0",
-          width: "400px"
-        }}
-      />
+      {(action === ActionTypes.EDIT || action === ActionTypes.DELETE) && (
+        <Dropdown
+          options={getSkillGroupOptions()}
+          label={`Skill Group to ${action.label}`}
+          updateValue={(event: AnalyserNode, val: any) => {
+            setSkillGroupToEditDelete(val);
+            setSkillGroupName(val.label);
+            setTableState({
+              ...tableState,
+              selected: skills.filter(sk => sk.ctmSkillGroups.find(skg => skg.skillGroupId === val.value))
+            });
+          }}
+          styles={{
+            margin: "10 0",
+            width: "400px"
+          }}
+        />
+      )}
+      {action !== ActionTypes.DELETE && (
+        <TextField
+          onChange={(event: any) => setSkillGroupName(event.target.value)}
+          label="Skill Group Name"
+          value={skillGroupName}
+          helperText={errorText}
+          error={isSkillGroupNameInvalid()}
+          sx={{
+            margin: "10 0",
+            width: "400px"
+          }}
+        />
+      )}
       <UserFormButton
         onClick={handleOnSave}
-        disabled={skillGroupName === "" || tableState.selected.length < 1}
-      >Save Skill Group</UserFormButton>
-      <div>
-        Select skills to add to default skill grouping
+        disabled={
+          (action === ActionTypes.ADD && skillGroupName === "") ||
+          (action === ActionTypes.ADD && tableState.selected.length < 1) ||
+          (action === ActionTypes.DELETE && !skillGroupToEditDelete) ||
+          (action === ActionTypes.EDIT && !skillGroupToEditDelete)
+        }
+      >{action.label} Skill Group</UserFormButton>
+      <div style={{ marginTop: "5px" }}>
+        {generateBottomMsg()}
       </div>
     </>
   );

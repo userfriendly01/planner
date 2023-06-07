@@ -63,7 +63,9 @@ export const propertyOptions = {
       variable: "skillGroup"
     },
     actions: [
-      ActionTypes.ADD
+      ActionTypes.ADD,
+      ActionTypes.DELETE,
+      ActionTypes.EDIT
     ]
   }
 };
@@ -108,6 +110,10 @@ export interface SkillsTableProps {
   setTableState: (tableState: TableState) => void
 }
 
+export interface AddEditSkillGroupBody {
+  skill_group_nme: string,
+  skillIds?: number[]
+}
 export interface SkillFormState {
   formMode: string,
   skillFriendlyName: string,

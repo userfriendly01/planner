@@ -22,3 +22,4 @@ export * from "./tfnActivation";
 export * from "./timeOfDays";
 export * from "./updateUser";
 export * from "./wfmActivateExternalLogon";
+export * from "./skillgroup";
