@@ -354,6 +354,17 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
       return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["type"]?.value === "DRC";
     }
+  },
+  {
+    label: "Call Intent",
+    key: "callIntent",
+    control: "input",
+    required: false,
+    valueGetter: (params: FormValidationRule)=>`${params?.callIntent || ""}`,
+    valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any)=>({
+      ...currentValue,
+      ...newValue
+    })
   }
 ];
 

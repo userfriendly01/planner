@@ -25,6 +25,7 @@ const validFlowData = {
   callDetails2: "test callDetails2",
   internetPlacement: "test internetPlacement",
   callDetails1: "test callDetails1",
+  callIntent: "test callIntent",
   callTypeDescription: "test callTypeDescription",
   lineOfBusiness: "test lineOfBusiness",
   marketingChannel: "test marketingChannel",
@@ -177,6 +178,10 @@ describe("FlowFieldsConfig", ()=>{
     it("rangeIndicator", ()=>{
       const updatedFlowData = flowFields[27].valueSetter(validFlowData, { rangeIndicator: "99999999" });
       expect(updatedFlowData.rangeIndicator).toBe("99999999");
+    });
+    it("callIntent", ()=>{
+      const updatedFlowData = flowFields[28].valueSetter(validFlowData, { callIntent: "99999999" });
+      expect(updatedFlowData.callIntent).toBe("99999999");
     });
   });
   describe("valueGetter", ()=>{
@@ -346,6 +351,12 @@ describe("FlowFieldsConfig", ()=>{
       const validData = flowFields[27].valueGetter(validFlowData);
       const invalidData = flowFields[27].valueGetter({});
       expect(validData).toBe("test rangeIndicator");
+      expect(invalidData).toBe("");
+    });
+    it("callIntent", ()=>{
+      const validData = flowFields[28].valueGetter(validFlowData);
+      const invalidData = flowFields[28].valueGetter({});
+      expect(validData).toBe("test callIntent");
       expect(invalidData).toBe("");
     });
   });
