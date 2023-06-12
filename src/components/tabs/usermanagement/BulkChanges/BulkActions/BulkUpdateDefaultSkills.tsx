@@ -47,7 +47,10 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
     }
   ];
 
-  const [ skillOption, setSkillOption ] = React.useState("");
+  const [ skillOption, setSkillOption ] = React.useState<any>({
+    value: "",
+    label: ""
+  });
   const [ updatedDefaultSkills, setUpdatedDefaultSkills ] = React.useState<any>({
     skills: [],
     levels: {}
@@ -59,16 +62,6 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
     label: s.name,
     value: s.name
   }));
-
-  const exampleSkill = {
-    skills: ["ccNationalInq24","ccNationalInqSP25","ccNationalWC20","ccNationalWCSP21"],
-    levels: {
-      "ccNationalInqSP25": 2,
-      "ccNationalInq24": 1,
-      "ccNationalWC20": 1,
-      "ccNationalWCSP21": 1
-    }
-  };
 
   // add keys to template so processing function can adjust payload body
   React.useEffect(() => {
@@ -114,11 +107,11 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
       <UpdateWrapper>
         <Dropdown
           label="Options"
-          value={skillOption}
+          value={skillOption.label}
           options={dropdownOptions}
           updateValue={(event: any, option: any) => {
             console.log("option: ", option);
-            setSkillOption(option.value);
+            setSkillOption(option);
             // remove what has been set as default skill when changing option
             setUpdatedDefaultSkills({
               skills: [],
@@ -133,7 +126,7 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
           }}
         />
 
-        { skillOption === "OVERRIDE" &&
+        { skillOption.value === "OVERRIDE" &&
         <DefaultSkillSelector
           defaultSkills={updatedDefaultSkills}
           setDefaultSkills={(updatedDefaultSkills: any) => {
@@ -144,7 +137,7 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
           }}
         />
         }
-        { skillOption === "DELETE" &&
+        { skillOption.value === "DELETE" &&
         <Dropdown
           label="Skill to Delete"
           value={updatedDefaultSkills[0]} // since we are only doing one skill at a time, this will be the first value in the 

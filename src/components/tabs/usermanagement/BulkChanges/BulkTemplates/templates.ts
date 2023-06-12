@@ -339,52 +339,35 @@ const processUpdateManager = async (row: any, template: Template, state: any) =>
 };
 
 const processUpdateDefaultSkills = async (row: any, template: Template, state: any) => {
-  console.log("+++ processing update skills hurr");
   const rowNumber = row.rowNumber;
-  const userNNumber = row.attributes.n_number;
-  const workerSid = row.workerSid; // maybe unnecessary here, use this when calling updateUser
-
-  const key = template.data.key;
+  const workerSid = row.workerSid;
   const value = template.data.value;
   const option = template.data.option;
   const body: any = {};
 
-  if(option === "DELETE"){
-    console.log("WEre in !!!!", value);
+  if(option.value === "DELETE"){
     const skillToDelete = value.skills[0];
     const currentSkills = row.attributes.default_skills;
-    console.log("skills before", currentSkills);
     const updatedSkills: any = {};
     // update skill array to remove skill
     updatedSkills.skills = currentSkills.skills.filter( (s: any) => s !== skillToDelete );
-
-    console.log("updated skills", updatedSkills);
-    // add levels in 
+    // update new updatedSkills object to only include key-value pairs in levels object that dont match the skill to delete
     updatedSkills.levels = {};
     for( const skillLevel in currentSkills.levels){
-      console.log("SKILL LEVEL!", skillLevel);
       if(skillLevel !== skillToDelete){
         updatedSkills.levels[skillLevel] = currentSkills.levels[skillLevel];
       }
     }
-
-    console.log("skills after", updatedSkills);
     body.attributes = { "default_skills": updatedSkills };
-
-
   }
 
-  if(option === "OVERRIDE"){
+  if(option.value === "OVERRIDE"){
     body.attributes = { "default_skills": value };
-
-    console.log("ACCEPTED FORMAT", value);
-
-
   }
 
   console.log("**** UPDATE DEFAULT SKILLS RECORD PROCESSING", row, body);
   console.log("**** ROW: ", row);
-  console.log("**** updatedSkills:", value);
+  console.log("**** updatedSkills:", body.attributes);
   console.log("**** option: ", option);
   try {
     await updateUser(workerSid, body);
