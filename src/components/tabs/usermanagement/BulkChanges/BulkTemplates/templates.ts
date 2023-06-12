@@ -344,28 +344,55 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: a
   const value = template.data.value;
   const option = template.data.option;
   const body: any = {};
+  let updatedDefaultSkills: any = {};
 
-  if(option.value === "DELETE"){
+  console.log("**** processing update skills hurr");
+  console.log("**** key, value, option: ", value, option);
+
+  if (option.value === "OVERRIDE"){
+    updatedDefaultSkills = value;
+  } else if ( option.value === "ADD"){
+    console.log("inside add skill processing function");
+    const currentDefaultSkills = row.attributes.default_skills;
+    const currentSkillLevels = row.attributes.default_skills.levels;
+    const currentSkills = row.attributes.default_skills.skills;
+
+    // todo: cleanup!!!
+    const newSkillLevels = value.levels;
+    const newSkillLevelsObj = {
+      ...currentSkillLevels,
+      ...newSkillLevels
+    };
+
+    const newSkills = value.skills;
+    console.log("**** currentDefaultSkills: ", currentDefaultSkills);
+
+    const updatedDefaultSkills = {
+      levels: newSkillLevelsObj,
+      skills: [...currentSkills, ...newSkills]
+    };
+    console.log("**** updatedDefaultSkills: ", updatedDefaultSkills);
+  } else if(option.value === "DELETE"){
     const skillToDelete = value.skills[0];
     const currentSkills = row.attributes.default_skills;
-    const updatedSkills: any = {};
+    //const updatedSkills: any = {};
     // create new skills array that excludes deleted skill
-    updatedSkills.skills = currentSkills.skills.filter( (s: any) => s !== skillToDelete );
+    updatedDefaultSkills.skills = currentSkills.skills.filter( (s: any) => s !== skillToDelete );
     // create new levels object which excludes levels for deleted skill
-    updatedSkills.levels = {};
+    updatedDefaultSkills.levels = {};
     for( const skillLevel in currentSkills.levels){
       if(skillLevel !== skillToDelete){
-        updatedSkills.levels[skillLevel] = currentSkills.levels[skillLevel];
+        updatedDefaultSkills.levels[skillLevel] = currentSkills.levels[skillLevel];
       }
     }
-    body.attributes = { "default_skills": updatedSkills };
-  } else if (option.value === "OVERRIDE"){
-    body.attributes = { "default_skills": value };
+    body.attributes = { "default_skills": updatedDefaultSkills };
   }
+
+  body.attributes = { "default_skills": updatedDefaultSkills };
 
   console.log("**** UPDATE DEFAULT SKILLS RECORD PROCESSING", row, body);
   console.log("**** ROW: ", row);
-  console.log("**** updatedSkills:", body.attributes);
+  console.log("**** updatedSkills:", updatedDefaultSkills);
   console.log("**** option: ", option);
   try {
     await updateUser(workerSid, body);
