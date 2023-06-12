@@ -356,7 +356,9 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: a
     console.log("skills before", currentSkills);
     const updatedSkills: any = {};
     // update skill array to remove skill
-    updatedSkills.skill = currentSkills.skill.filter( (skill : string) => skill !== skillToDelete );
+    updatedSkills.skills = currentSkills.skills.filter( (s: any) => s !== skillToDelete );
+
+    console.log("updated skills", updatedSkills);
 
     for( const skillLevel in currentSkills.levels){
       console.log("SKILL LEVEL!", skillLevel);
