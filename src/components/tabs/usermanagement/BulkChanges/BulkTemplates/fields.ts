@@ -817,8 +817,7 @@ export const FIELDS: Fields = {
       if(!field){
         return Promise.resolve(`${fieldName} is missing but not required. Skipping validation for row ${rowNumber}`);
       } else {
-        let hrEmail: string;
-        hrEmail = row.attributes.email;
+        const hrEmail = row.attributes.email;
 
         if (field !== cleanupField(hrEmail, "string")) {
           return rejectPromise(`Invalid ${fieldName}.  The email provided does NOT match the email address in this user's HR data. This user needs to update their email so they match prior to being loaded into WFM for row ${rowNumber}`, rowNumber);

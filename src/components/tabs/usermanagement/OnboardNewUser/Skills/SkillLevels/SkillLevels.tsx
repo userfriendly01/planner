@@ -20,10 +20,7 @@ const SkillLevels = (props: PriorityDropdownProps) => {
         label: priority.toString(),
         value: priority
       }))}
-      updateValue={(event: any, selectedLevel: any) => {
-        console.log("FAITH", selectedLevel)
-        updatePriority(selectedLevel.value)}
-      }
+      updateValue={(event: any, selectedLevel: any) => updatePriority(selectedLevel.value)}
       value={{
         label: priorityValue.toString(),
         value: priorityValue
