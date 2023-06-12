@@ -1,22 +1,16 @@
 import {
-  Row,
-  UpdateWrapper
+  UpdateWrapper,
+  FormControlsPane
 } from "../BulkChanges.Styles";
 import {
   Template,
-  BulkUpdateProps,
-  WorkerAttribute
+  BulkUpdateProps
 } from "../BulkChanges.Interfaces";
-import { availableAttributes } from "../BulkTemplates/index";
 import {
-  CustomInput,
   Dropdown,
   DefaultSkillSelector
 } from "components";
 import {
-  useFormState,
-  useFormDispatch,
-  userFormActions,
   useAdminState
 } from "context";
 import React from "react";
@@ -109,7 +103,6 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
         value={skillOption.label}
         options={dropdownOptions}
         updateValue={(event: any, option: any) => {
-          console.log("option: ", option);
           setSkillOption(option);
           // remove what has been set as default skill when changing option
           setUpdatedDefaultSkills({
@@ -118,14 +111,13 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
           });
         }}
         styles={{
-          // margin: "40 40 30 0",
-          // width: "175px"
           width: "230px",
           margin: "10px 20px 0px 20px"
         }}
       />
 
       { skillOption.value === "OVERRIDE" &&
+      <FormControlsPane>
         <DefaultSkillSelector
           defaultSkills={updatedDefaultSkills}
           setDefaultSkills={(updatedDefaultSkills: any) => {
@@ -135,6 +127,7 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
             console.log("&&& updated template: ", selectedTemplates);
           }}
         />
+      </FormControlsPane>
       }
       { skillOption.value === "DELETE" &&
         <Dropdown
@@ -148,8 +141,6 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
             });
           }}
           styles={{
-            // margin: "40 40 30 0",
-            // width: "175px"
             width: "230px",
             margin: "10px 20px 0px 20px"
           }}

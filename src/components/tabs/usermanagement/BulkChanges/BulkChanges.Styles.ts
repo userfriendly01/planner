@@ -123,3 +123,12 @@ export const Button = styled(StyledButton)<{ styles?: any }>`
   font-weight: bold;
   width: ${props => props.styles && props.styles.width ? props.styles.width : "250px"};
 `;
+
+export const FormControlsPane = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-width: 320px;
+  padding: 0 8px;
+  width: 100%;
+  max-width: 400px;
+`;
