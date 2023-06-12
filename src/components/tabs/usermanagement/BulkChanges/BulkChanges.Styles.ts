@@ -126,7 +126,7 @@ export const Button = styled(StyledButton)<{ styles?: any }>`
 
 export const SkillSelectorContainer = styled.div`
   min-width: 320px;
-  margin: "10px 20px 0px 20px"
+  margin: "10px 20px 0px 20px";
   width: 100%;
-  max-width: 400px;
+  max-width: 750px;
 `;
