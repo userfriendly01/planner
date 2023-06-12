@@ -1,6 +1,6 @@
 import {
   UpdateWrapper,
-  FormControlsPane
+  SkillSelectorContainer
 } from "../BulkChanges.Styles";
 import {
   Template,
@@ -97,7 +97,7 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
   }, [selectedTemplates]);
 
   return (
-    <UpdateWrapper>
+    <UpdateWrapper adjustibleHeight={true}>
       <Dropdown
         label="Options"
         value={skillOption.label}
@@ -117,7 +117,7 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
       />
 
       { skillOption.value === "OVERRIDE" &&
-      <FormControlsPane>
+      <SkillSelectorContainer>
         <DefaultSkillSelector
           defaultSkills={updatedDefaultSkills}
           setDefaultSkills={(updatedDefaultSkills: any) => {
@@ -127,7 +127,7 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
             console.log("&&& updated template: ", selectedTemplates);
           }}
         />
-      </FormControlsPane>
+      </SkillSelectorContainer>
       }
       { skillOption.value === "DELETE" &&
         <Dropdown

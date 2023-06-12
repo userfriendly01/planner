@@ -97,12 +97,12 @@ export const SelectionWrapper = styled.div`
 `;
 
 
-export const UpdateWrapper = styled.div`
+export const UpdateWrapper = styled.div<{adjustibleHeight?: boolean}>`
   display: flex;
   width: 800px;
   align-items: center;
   justify-content: space-between;
-  height: 60px;
+  height: ${props => props.adjustibleHeight? "auto": "60px"};
   margin: 0px 50px 0px 150px;
 `;
 
@@ -124,11 +124,9 @@ export const Button = styled(StyledButton)<{ styles?: any }>`
   width: ${props => props.styles && props.styles.width ? props.styles.width : "250px"};
 `;
 
-export const FormControlsPane = styled.div`
-  display: flex;
-  flex-direction: column;
+export const SkillSelectorContainer = styled.div`
   min-width: 320px;
-  padding: 0 8px;
+  margin: "10px 20px 0px 20px"
   width: 100%;
   max-width: 400px;
 `;
