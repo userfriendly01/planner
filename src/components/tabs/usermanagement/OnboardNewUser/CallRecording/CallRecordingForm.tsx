@@ -203,7 +203,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
           email: userRecord.email,
           team: fetchedUser.groupId && teams.find(team => team.groupId === fetchedUser.groupId),
           roles: fetchedUser.roles || form.calabrio_qm.roles,
-          timezone: fetchedUser.timeZone || form.calabrio_qm.timezone,
+          timezone: calabrioTimeZones.find((tz: any) => tz.value === fetchedUser.timeZone) || form.calabrio_qm.timezone,
           scope: {
             groups: userGroups,
             teams: userTeams
