@@ -64,7 +64,7 @@ const WfmForm = (props: WfmFormProps) => {
     startDate: null,
     startWeek: null
   });
-  const [ optionalColumns, setOptionalColumns ] = React.useState([]);
+  const [ optionalColumns, setOptionalColumns ] = React.useState(form.calabrio_wfm.OptionalColumns);
 
   const scheduleFields = {
     personStartDate: form.calabrio_wfm.EmploymentStartDate,
@@ -74,6 +74,20 @@ const WfmForm = (props: WfmFormProps) => {
     contractScheduleId: form.calabrio_wfm.ContractScheduleId,
     partTimePercentageId: form.calabrio_wfm.PartTimePercentageId
   };
+
+  React.useEffect(() => {
+    if(!isAdd){
+      setTeamFields({
+        id: form.calabrio_wfm.TeamId,
+        startDate: isUnpopulatedField(form.calabrio_wfm.TeamId) ? null : "NA"
+      });
+      setSkillFields({
+        skills: form.calabrio_wfm.PersonSkills,
+        startDate: isUnpopulatedField(form.calabrio_wfm.PersonSkills) ? null : "NA"
+      });
+      // Rotation & Availability fields arent returned from the get People endpoint
+    }
+  }, []);
 
   React.useEffect(() => {
     const trimmedOptions = getWfmOptions(state, form.calabrio_wfm.BusinessUnitId);
@@ -267,20 +281,22 @@ const WfmForm = (props: WfmFormProps) => {
             })}
             value={generateDropdownOption(getWfmTeams(state, form.calabrio_wfm.BusinessUnitId).find((t: any) => t.Id === teamFields.id))}
           />
-          <DatePicker
-            label="Team Start Date"
-            disabled={!isAdd}
-            value={teamFields.startDate}
-            onChange={(newValue) => {
-              setTeamFields({
-                ...teamFields,
-                startDate: newValue ? new Date(newValue).toISOString().split('T')[0] : newValue
-              })}
-            } 
-            renderInput={props => <TextField {...props}
-              error={requiredFieldMissing("startDate", teamFields) || (missingFields.some((f:string) => f === "TeamStartDate") && isUnpopulatedField(form.calabrio_wfm.TeamStartDate))}
-            />}
-          />
+          { isAdd && 
+            <DatePicker
+              label="Team Start Date"
+              disabled={!isAdd}
+              value={teamFields.startDate}
+              onChange={(newValue) => {
+                setTeamFields({
+                  ...teamFields,
+                  startDate: newValue ? new Date(newValue).toISOString().split('T')[0] : newValue
+                })}
+              } 
+              renderInput={props => <TextField {...props}
+                error={requiredFieldMissing("startDate", teamFields) || (missingFields.some((f:string) => f === "TeamStartDate") && isUnpopulatedField(form.calabrio_wfm.TeamStartDate))}
+              />}
+            />
+          }
         </Row>
         <Row>
           <TextField
@@ -373,20 +389,22 @@ const WfmForm = (props: WfmFormProps) => {
             })}
             styles={{ width: "250px" }}
           />
-          <DatePicker
-            disabled={!isAdd}
-            label="Skills Start Date"
-            value={skillFields.startDate || ""}
-            onChange={(newValue) => {
-              setSkillFields({
-                ...skillFields,
-                startDate: newValue ? new Date(newValue).toISOString().split('T')[0] : newValue
-              })}
-            } 
-            renderInput={props => <TextField {...props}
-              error={requiredFieldMissing("startDate", skillFields) || (missingFields.some((f:string) => f === "SkillsStartDate") && isUnpopulatedField(form.calabrio_wfm.SkillsStartDate))}
-            />}
-          />
+          { isAdd &&
+            <DatePicker
+              disabled={!isAdd}
+              label="Skills Start Date"
+              value={skillFields.startDate || ""}
+              onChange={(newValue) => {
+                setSkillFields({
+                  ...skillFields,
+                  startDate: newValue ? new Date(newValue).toISOString().split('T')[0] : newValue
+                })}
+              } 
+              renderInput={props => <TextField {...props}
+                error={requiredFieldMissing("startDate", skillFields) || (missingFields.some((f:string) => f === "SkillsStartDate") && isUnpopulatedField(form.calabrio_wfm.SkillsStartDate))}
+              />}
+            />
+          }
         </Row>
         <Row>
         <Dropdown
@@ -513,76 +531,80 @@ const WfmForm = (props: WfmFormProps) => {
             styles={{ width: "250px" }}
           />
         </Row>
-        <Row>
-        <Dropdown
-            disabled={!isAdd}
-            label="Rotation"
-            error={requiredFieldMissing("id", rotationFields) || (missingFields.some((f:string) => f === "RotationId") && isUnpopulatedField(form.calabrio_wfm.RotationId))}
-            options={generateDropdownOptionArray(optionsByBusinessUnit["Rotations"])}
-            value={generateDropdownOption(optionsByBusinessUnit["Rotations"]?.find((r: any) => r.Id === rotationFields.id))}
-            updateValue={(event: any, newValue: any) => setRotationFields({
-              ...rotationFields,
-              id: newValue?.value || null
-            })}
-            styles={{ width: "250px" }}
-          />
-          <DatePicker
-            disabled={!isAdd}
-            label="Rotation Start Date"
-            value={rotationFields.startDate}
-            onChange={(newValue) => {
-              setRotationFields({
-                ...rotationFields,
-                startDate: newValue ? new Date(newValue).toISOString().split('T')[0] : newValue
-              })}
-            } 
-            renderInput={props => <TextField {...props}
-              error={requiredFieldMissing("startDate", rotationFields) || (missingFields.some((f:string) => f === "RotationStartDate") && isUnpopulatedField(form.calabrio_wfm.RotationStartDate))}
-            />}
-          />
-          <Dropdown
-            disabled={!isAdd}
-            error={requiredFieldMissing("startWeek", rotationFields) || (missingFields.some((f:string) => f === "RotationStartWeek") && isUnpopulatedField(form.calabrio_wfm.RotationStartWeek))}
-            label={"Rotation Start Week"}
-            styles={{
-              width: "250px",
-              margin: "0px 5px"
-            }}
-            options={generateDropdownOptionArray([1,2,3,4,5])}
-            updateValue={(event: any, newValue: any) => setRotationFields({
-              ...rotationFields,
-              startWeek: newValue?.value
-            })}
-            value={generateDropdownOption(rotationFields.startWeek)}
-          />
-        </Row>
-        <Row>
-          <Dropdown
-            disabled={!isAdd}
-            label="Availability"
-            error={requiredFieldMissing("id", availabilityFields) || (missingFields.some((f:string) => f === "AvailabilityId") && isUnpopulatedField(form.calabrio_wfm.AvailabilityId))}
-            options={generateDropdownOptionArray(optionsByBusinessUnit["Availabilities"])}
-            value={generateDropdownOption(optionsByBusinessUnit["Availabilities"]?.find((a: any) => a.Id === availabilityFields.id))}
-            updateValue={(event: any, newValue: any) => setAvailabilityFields({
-              ...availabilityFields,
-              id: newValue?.value || null
-            })}
-            styles={{ width: "250px" }}
-          />
-          <DatePicker
-            disabled={!isAdd}
-            label="Availability Start Date"
-            value={availabilityFields.startDate}
-            onChange={(newValue) => setAvailabilityFields({
-                ...availabilityFields,
-                startDate: newValue ? new Date(newValue).toISOString().split('T')[0] : newValue
-              })
-            }
-            renderInput={props => <TextField {...props}
-              error={requiredFieldMissing("startDate", availabilityFields) || (missingFields.some((f:string) => f === "AvailabilityStartDate") && isUnpopulatedField(form.calabrio_wfm.AvailabilityStartDate))}
-            />}
-          />
-        </Row>
+        { isAdd && 
+          <>
+            <Row>
+            <Dropdown
+                disabled={!isAdd}
+                label="Rotation"
+                error={requiredFieldMissing("id", rotationFields) || (missingFields.some((f:string) => f === "RotationId") && isUnpopulatedField(form.calabrio_wfm.RotationId))}
+                options={generateDropdownOptionArray(optionsByBusinessUnit["Rotations"])}
+                value={generateDropdownOption(optionsByBusinessUnit["Rotations"]?.find((r: any) => r.Id === rotationFields.id))}
+                updateValue={(event: any, newValue: any) => setRotationFields({
+                  ...rotationFields,
+                  id: newValue?.value || null
+                })}
+                styles={{ width: "250px" }}
+              />
+              <DatePicker
+                disabled={!isAdd}
+                label="Rotation Start Date"
+                value={rotationFields.startDate}
+                onChange={(newValue) => {
+                  setRotationFields({
+                    ...rotationFields,
+                    startDate: newValue ? new Date(newValue).toISOString().split('T')[0] : newValue
+                  })}
+                } 
+                renderInput={props => <TextField {...props}
+                  error={requiredFieldMissing("startDate", rotationFields) || (missingFields.some((f:string) => f === "RotationStartDate") && isUnpopulatedField(form.calabrio_wfm.RotationStartDate))}
+                />}
+              />
+              <Dropdown
+                disabled={!isAdd}
+                error={requiredFieldMissing("startWeek", rotationFields) || (missingFields.some((f:string) => f === "RotationStartWeek") && isUnpopulatedField(form.calabrio_wfm.RotationStartWeek))}
+                label={"Rotation Start Week"}
+                styles={{
+                  width: "250px",
+                  margin: "0px 5px"
+                }}
+                options={generateDropdownOptionArray([1,2,3,4,5])}
+                updateValue={(event: any, newValue: any) => setRotationFields({
+                  ...rotationFields,
+                  startWeek: newValue?.value
+                })}
+                value={generateDropdownOption(rotationFields.startWeek)}
+              />
+            </Row>
+            <Row>
+              <Dropdown
+                disabled={!isAdd}
+                label="Availability"
+                error={requiredFieldMissing("id", availabilityFields) || (missingFields.some((f:string) => f === "AvailabilityId") && isUnpopulatedField(form.calabrio_wfm.AvailabilityId))}
+                options={generateDropdownOptionArray(optionsByBusinessUnit["Availabilities"])}
+                value={generateDropdownOption(optionsByBusinessUnit["Availabilities"]?.find((a: any) => a.Id === availabilityFields.id))}
+                updateValue={(event: any, newValue: any) => setAvailabilityFields({
+                  ...availabilityFields,
+                  id: newValue?.value || null
+                })}
+                styles={{ width: "250px" }}
+              />
+              <DatePicker
+                disabled={!isAdd}
+                label="Availability Start Date"
+                value={availabilityFields.startDate}
+                onChange={(newValue) => setAvailabilityFields({
+                    ...availabilityFields,
+                    startDate: newValue ? new Date(newValue).toISOString().split('T')[0] : newValue
+                  })
+                }
+                renderInput={props => <TextField {...props}
+                  error={requiredFieldMissing("startDate", availabilityFields) || (missingFields.some((f:string) => f === "AvailabilityStartDate") && isUnpopulatedField(form.calabrio_wfm.AvailabilityStartDate))}
+                />}
+              />
+            </Row>
+          </>
+        }
       </>
       : <WFMLoadRetryModal position={"inherit"} handleClose={() => setForm({
         type: userFormActions.UPDATE_USER_FOUND,

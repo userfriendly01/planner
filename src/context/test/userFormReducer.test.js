@@ -1558,7 +1558,7 @@ describe("userFormReducer", () => {
         somanyfields: "i don't want to type them",
         Roles: [{ RoleId: "333" }],
         PersonSkills: [{ SkillId: "111" }],
-        OptionalColumns: { "111": "111" }
+        OptionalColumns: { "111": "misses!" }
       };
       const action = {
         type: userFormActions.SET_UPDATE_WFM_FORM_STATE,
@@ -1576,15 +1576,22 @@ describe("userFormReducer", () => {
           somanyfields: "i don't want to type them",
           Roles: [{
             Name: "Role3",
-            Id: "333"
+            Id: "333",
+            value: "333",
+            label: "Role3"
           }],
           PersonSkills: [{
             Name: "Skill1",
-            Id: "111"
+            Id: "111",
+            label: "Skill1",
+            value: "111"
           }],
           OptionalColumns: [{
             Name: "OptionalCol1",
-            Id: "111"
+            Id: "111",
+            columnValue: "misses!",
+            label: "OptionalCol1",
+            value: "111"
           }],
           userFound: true
         }
@@ -2119,7 +2126,8 @@ describe("userFormReducer", () => {
         ...initialUserFormState,
         calabrio_wfm: {
           ...initialUserFormState.calabrio_wfm,
-          userFound: true
+          userFound: true,
+          updated: true
         }
       };
       expect(result).toStrictEqual(expectedFormState);
@@ -2137,7 +2145,8 @@ describe("userFormReducer", () => {
         ...initialUserFormState,
         calabrio_qm: {
           ...initialUserFormState.calabrio_qm,
-          userFound: true
+          userFound: true,
+          updated: true
         }
       };
       expect(result).toStrictEqual(expectedFormState);
@@ -2155,7 +2164,8 @@ describe("userFormReducer", () => {
         ...initialUserFormState,
         triton: {
           ...initialUserFormState.triton,
-          userFound: true
+          userFound: true,
+          updated: true
         }
       };
       expect(result).toStrictEqual(expectedFormState);

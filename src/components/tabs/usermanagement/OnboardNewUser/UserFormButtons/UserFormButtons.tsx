@@ -474,7 +474,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
   const isUserFormButtonEnabled = form.formMode === formModes.INSERT
     ? isTritonUserValid(form, worker, forwardToToggle)
-    : (isFormUpdated(form) || form.discrepancies.length > 0) && isTritonUserValid(form, worker, forwardToToggle);
+    : (isFormUpdated(form) || form.discrepancies.length > 0 || form.calabrio_wfm.updated) && isTritonUserValid(form, worker, forwardToToggle);
 
   const handleFormOnClick = () => {
     const formErrors: any = identifyFormErrors(form);

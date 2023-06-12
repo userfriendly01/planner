@@ -620,20 +620,35 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
       user.Roles?.forEach((ur: any) => {
         const availableRole = getWfmOptions(appState)?.Roles.find((r: any) => r.Id === ur.RoleId);
         if(availableRole){
-          Roles.push(availableRole);
+          Roles.push({
+            ...availableRole,
+            value: availableRole.Id,
+            label: availableRole.Name
+          });
         }
       });
+
       user.PersonSkills?.forEach((us: any) => {
         const availableSkill = getWfmOptions(appState)?.Skills.find((s: any) => s.Id === us.SkillId);
         if(availableSkill){
-          PersonSkills.push(availableSkill);
+          PersonSkills.push({
+            ...availableSkill,
+            label: availableSkill.Name,
+            value: availableSkill.Id
+          });
         }
       });
+
       if(user.OptionalColumns){
         Object.keys(user.OptionalColumns).forEach((id: string) => {
           const optionalColumn = getWfmOptions(appState)?.Optional_Columns.find((o: any) => o.Id === id);
           if(optionalColumn){
-            OptionalColumns.push(optionalColumn);
+            OptionalColumns.push({
+              ...optionalColumn,
+              value: optionalColumn.Id,
+              label: optionalColumn.Name,
+              columnValue: user.OptionalColumns[id]
+            });
           }
         });
       }
@@ -1033,7 +1048,8 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
           ...state,
           [system]: {
             ...initialUserFormState[system],
-            userFound: isFound
+            userFound: isFound,
+            updated: true
           }
         };
       } else {

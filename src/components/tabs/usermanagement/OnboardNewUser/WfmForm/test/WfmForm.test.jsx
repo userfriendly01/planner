@@ -352,7 +352,7 @@ describe("<WfmForm />", () => {
           const teamDatePicker = teamDatePickers[teamDatePickers.length-1][0];
           expect(teamDatePicker.disabled).toBe(false);
         });
-        test("is disabled when formmode is not insert && Id is populated", () => {
+        test("is not rendered when formmode is not insert && Id is populated", () => {
           const formState = {
             ...initialFormState,
             formMode: "update",
@@ -364,8 +364,7 @@ describe("<WfmForm />", () => {
           useFormState.mockReturnValue(formState);
           renderComponent();
           const teamDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Team Start Date");
-          const teamDatePicker = teamDatePickers[teamDatePickers.length-1][0];
-          expect(teamDatePicker.disabled).toBe(true);
+          expect(teamDatePickers.length).toBe(0);
         });
       });
       test("onChange updates team fields", () => {
@@ -811,7 +810,7 @@ describe("<WfmForm />", () => {
           const skillDatePicker = skillDatePickers[skillDatePickers.length-1][0];
           expect(skillDatePicker.disabled).toBe(false);
         });
-        test("is disabled when formmode is not insert && Id is populated", () => {
+        test("does not render when formmode is not insert && Id is populated", () => {
           const formState = {
             ...initialFormState,
             formMode: "update",
@@ -823,8 +822,7 @@ describe("<WfmForm />", () => {
           useFormState.mockReturnValue(formState);
           renderComponent();
           const skillDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Skills Start Date");
-          const skillDatePicker = skillDatePickers[skillDatePickers.length-1][0];
-          expect(skillDatePicker.disabled).toBe(true);
+          expect(skillDatePickers.length).toBe(0);
         });
       });
       test("onChange updates skill date field", () => {
@@ -1775,7 +1773,7 @@ describe("<WfmForm />", () => {
           const rotationDropdown = rotationDropdowns[rotationDropdowns.length-1][0];
           expect(rotationDropdown.disabled).toBe(false);
         });
-        test("is disabled when formmode is not insert && Id is populated", () => {
+        test("is not rendered when formmode is not insert && Id is populated", () => {
           const formState = {
             ...initialFormState,
             formMode: "update",
@@ -1787,8 +1785,7 @@ describe("<WfmForm />", () => {
           useFormState.mockReturnValue(formState);
           renderComponent();
           const rotationDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Rotation");
-          const rotationDropdown = rotationDropdowns[rotationDropdowns.length-1][0];
-          expect(rotationDropdown.disabled).toBe(true);
+          expect(rotationDropdowns.length).toBe(0);
         });
       });
       test("options", () => {
@@ -1834,7 +1831,7 @@ describe("<WfmForm />", () => {
           const rotationDatePicker = rotationDatePickers[rotationDatePickers.length-1][0];
           expect(rotationDatePicker.disabled).toBe(false);
         });
-        test("is disabled when formmode is not insert && Id is populated", () => {
+        test("is not rendered when formmode is not insert && Id is populated", () => {
           const formState = {
             ...initialFormState,
             formMode: "update",
@@ -1846,8 +1843,7 @@ describe("<WfmForm />", () => {
           useFormState.mockReturnValue(formState);
           renderComponent();
           const rotationDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Rotation Start Date");
-          const rotationDatePicker = rotationDatePickers[rotationDatePickers.length-1][0];
-          expect(rotationDatePicker.disabled).toBe(true);
+          expect(rotationDatePickers.length).toBe(0);
         });
       });
       test("onChange updates rotation start date field", () => {
@@ -2055,7 +2051,7 @@ describe("<WfmForm />", () => {
           const availabilityDropdown = availabilityDropdowns[availabilityDropdowns.length-1][0];
           expect(availabilityDropdown.disabled).toBe(false);
         });
-        test("is disabled when formmode is not insert && Id is populated", () => {
+        test("is not rendered when formmode is not insert && Id is populated", () => {
           const formState = {
             ...initialFormState,
             formMode: "update",
@@ -2067,8 +2063,7 @@ describe("<WfmForm />", () => {
           useFormState.mockReturnValue(formState);
           renderComponent();
           const availabilityDropdowns = Dropdown.mock.calls.filter((m) => m[0].label === "Availability");
-          const availabilityDropdown = availabilityDropdowns[availabilityDropdowns.length-1][0];
-          expect(availabilityDropdown.disabled).toBe(true);
+          expect(availabilityDropdowns.length).toBe(0);
         });
       });
       test("options", () => {
@@ -2122,7 +2117,7 @@ describe("<WfmForm />", () => {
           const availabilityDatePicker = availabilityDatePickers[availabilityDatePickers.length-1][0];
           expect(availabilityDatePicker.disabled).toBe(false);
         });
-        test("is disabled when formmode is not insert && Id is populated", () => {
+        test("is not rendered when formmode is not insert && Id is populated", () => {
           const formState = {
             ...initialFormState,
             formMode: "update",
@@ -2134,8 +2129,7 @@ describe("<WfmForm />", () => {
           useFormState.mockReturnValue(formState);
           renderComponent();
           const availabilityDatePickers = DatePicker.mock.calls.filter((m) => m[0].label === "Availability Start Date");
-          const availabilityDatePicker = availabilityDatePickers[availabilityDatePickers.length-1][0];
-          expect(availabilityDatePicker.disabled).toBe(true);
+          expect(availabilityDatePickers.length).toBe(0);
         });
       });
       test("onChange updates availability start date field", () => {
