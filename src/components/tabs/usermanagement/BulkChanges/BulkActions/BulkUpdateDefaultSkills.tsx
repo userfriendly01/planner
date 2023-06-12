@@ -126,8 +126,10 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
             });
           }}
           styles={{
-            margin: "40 40 30 0",
-            width: "175px"
+            // margin: "40 40 30 0",
+            // width: "175px"
+            width: "230px",
+            margin: "10px 20px 0px 20px"
           }}
         />
 
@@ -154,8 +156,10 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
             });
           }}
           styles={{
-            margin: "40 40 30 0",
-            width: "175px"
+            // margin: "40 40 30 0",
+            // width: "175px"
+            width: "230px",
+            margin: "10px 20px 0px 20px"
           }}
         />
         }

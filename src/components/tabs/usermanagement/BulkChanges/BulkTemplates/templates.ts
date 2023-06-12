@@ -374,6 +374,8 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: a
   if(option === "OVERRIDE"){
     body.attributes = { "default_skills": value };
 
+    console.log("ACCEPTED FORMAT", value);
+
 
   }
 
