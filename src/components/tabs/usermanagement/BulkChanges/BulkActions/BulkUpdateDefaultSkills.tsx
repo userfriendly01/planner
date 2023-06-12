@@ -103,30 +103,29 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
   }, [selectedTemplates]);
 
   return (
-    <Row>
-      <UpdateWrapper>
-        <Dropdown
-          label="Options"
-          value={skillOption.label}
-          options={dropdownOptions}
-          updateValue={(event: any, option: any) => {
-            console.log("option: ", option);
-            setSkillOption(option);
-            // remove what has been set as default skill when changing option
-            setUpdatedDefaultSkills({
-              skills: [],
-              levels: {}
-            });
-          }}
-          styles={{
-            // margin: "40 40 30 0",
-            // width: "175px"
-            width: "230px",
-            margin: "10px 20px 0px 20px"
-          }}
-        />
+    <UpdateWrapper>
+      <Dropdown
+        label="Options"
+        value={skillOption.label}
+        options={dropdownOptions}
+        updateValue={(event: any, option: any) => {
+          console.log("option: ", option);
+          setSkillOption(option);
+          // remove what has been set as default skill when changing option
+          setUpdatedDefaultSkills({
+            skills: [],
+            levels: {}
+          });
+        }}
+        styles={{
+          // margin: "40 40 30 0",
+          // width: "175px"
+          width: "230px",
+          margin: "10px 20px 0px 20px"
+        }}
+      />
 
-        { skillOption.value === "OVERRIDE" &&
+      { skillOption.value === "OVERRIDE" &&
         <DefaultSkillSelector
           defaultSkills={updatedDefaultSkills}
           setDefaultSkills={(updatedDefaultSkills: any) => {
@@ -136,8 +135,8 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
             console.log("&&& updated template: ", selectedTemplates);
           }}
         />
-        }
-        { skillOption.value === "DELETE" &&
+      }
+      { skillOption.value === "DELETE" &&
         <Dropdown
           label="Skill to Delete"
           value={updatedDefaultSkills[0]} // since we are only doing one skill at a time, this will be the first value in the 
@@ -155,9 +154,8 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
             margin: "10px 20px 0px 20px"
           }}
         />
-        }
-      </UpdateWrapper>
-    </Row>
+      }
+    </UpdateWrapper>
   );
 };
 
