@@ -349,9 +349,9 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: a
     const skillToDelete = value.skills[0];
     const currentSkills = row.attributes.default_skills;
     const updatedSkills: any = {};
-    // update skill array to remove skill
+    // create new skills array that excludes deleted skill
     updatedSkills.skills = currentSkills.skills.filter( (s: any) => s !== skillToDelete );
-    // update new updatedSkills object to only include key-value pairs in levels object that dont match the skill to delete
+    // create new levels object which excludes levels for deleted skill
     updatedSkills.levels = {};
     for( const skillLevel in currentSkills.levels){
       if(skillLevel !== skillToDelete){
@@ -359,9 +359,7 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: a
       }
     }
     body.attributes = { "default_skills": updatedSkills };
-  }
-
-  if(option.value === "OVERRIDE"){
+  } else if (option.value === "OVERRIDE"){
     body.attributes = { "default_skills": value };
   }
 

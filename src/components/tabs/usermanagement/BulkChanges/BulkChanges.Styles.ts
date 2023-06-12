@@ -125,5 +125,5 @@ export const Button = styled(StyledButton)<{ styles?: any }>`
 `;
 
 export const SkillSelectorContainer = styled.div`
-  margin-left: "50px";
+  margin-left: 50px;
 `;

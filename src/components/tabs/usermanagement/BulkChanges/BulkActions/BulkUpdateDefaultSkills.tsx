@@ -104,7 +104,7 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
         options={dropdownOptions}
         updateValue={(event: any, option: any) => {
           setSkillOption(option);
-          // remove what has been set as default skill when changing option
+          // clear existing default skills when changing option
           setUpdatedDefaultSkills({
             skills: [],
             levels: {}
@@ -121,10 +121,7 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
         <DefaultSkillSelector
           defaultSkills={updatedDefaultSkills}
           setDefaultSkills={(updatedDefaultSkills: any) => {
-            // add skills to state array thing here
-            console.log("&&& setting default skills: ", updatedDefaultSkills);
             setUpdatedDefaultSkills(updatedDefaultSkills);
-            console.log("&&& updated template: ", selectedTemplates);
           }}
         />
       </SkillSelectorContainer>
