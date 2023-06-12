@@ -121,7 +121,9 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
         <DefaultSkillSelector
           defaultSkills={updatedDefaultSkills}
           setDefaultSkills={(updatedDefaultSkills: any) => {
+            console.log("**** option: ", skillOption);
             setUpdatedDefaultSkills(updatedDefaultSkills);
+            console.log("**** setting default skills: ", updatedDefaultSkills);
           }}
         />
       </SkillSelectorContainer>
@@ -131,8 +133,8 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
           defaultSkills={updatedDefaultSkills}
           setDefaultSkills={(updatedDefaultSkills: any) => {
             console.log("**** option: ", skillOption);
-            console.log("**** setting default skills: ", updatedDefaultSkills);
             setUpdatedDefaultSkills(updatedDefaultSkills);
+            console.log("**** setting default skills: ", updatedDefaultSkills);
             console.log("**** updated template: ", selectedTemplates);
           }}
         />
@@ -140,11 +142,11 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
       { skillOption.value === "DELETE" &&
         <Dropdown
           label="Skill to Delete"
-          value={updatedDefaultSkills[0]} // since we are only doing one skill at a time, this will be the first value in the 
+          value={updatedDefaultSkills[0]} // since we are only doing one skill at a time, this will always be the first value in the array
           options={skillsDropdownOptions}
-          updateValue={(event: any, skillOption: any) => {
+          updateValue={(event: any, s: any) => {
             setUpdatedDefaultSkills({
-              skills: [skillOption.value],
+              skills: [s.value],
               levels: {}
             });
           }}

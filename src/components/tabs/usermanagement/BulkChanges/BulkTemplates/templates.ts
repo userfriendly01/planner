@@ -347,10 +347,13 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: a
   let updatedDefaultSkills: any = {};
 
   console.log("**** processing update skills hurr");
-  console.log("**** key, value, option: ", value, option);
+  console.log("**** value, option: ", value, option);
 
   if (option.value === "OVERRIDE"){
+    console.log("in override");
+    console.log("value", value);
     updatedDefaultSkills = value;
+    console.log("value", value);
   } else if ( option.value === "ADD"){
     console.log("inside add skill processing function");
     const currentDefaultSkills = row.attributes.default_skills;
@@ -367,7 +370,7 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: a
     const newSkills = value.skills;
     console.log("**** currentDefaultSkills: ", currentDefaultSkills);
 
-    const updatedDefaultSkills = {
+    updatedDefaultSkills = {
       levels: newSkillLevelsObj,
       skills: [...currentSkills, ...newSkills]
     };
