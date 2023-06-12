@@ -385,7 +385,6 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: a
         updatedDefaultSkills.levels[skillLevel] = currentSkills.levels[skillLevel];
       }
     }
-    body.attributes = { "default_skills": updatedDefaultSkills };
   }
 
   body.attributes = { "default_skills": updatedDefaultSkills };
