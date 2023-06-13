@@ -144,7 +144,7 @@ const BulkUpdateAttributes = (props: BulkUpdateProps) => {
           }}
         />
       }
-      { selectedAttribute.type === "default skill" &&
+      {/* { selectedAttribute.type === "default skill" &&
         <DefaultSkillSelector
           defaultSkills={defaultSkills}
           setDefaultSkills={(defaultSkills: any) => {
@@ -155,7 +155,7 @@ const BulkUpdateAttributes = (props: BulkUpdateProps) => {
           }}
         />
 
-      }
+      } */}
     </UpdateWrapper>
   );
 };

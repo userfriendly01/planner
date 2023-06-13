@@ -1,22 +1,16 @@
 import {
-  Row,
-  UpdateWrapper
+  UpdateWrapper,
+  SkillSelectorContainer
 } from "../BulkChanges.Styles";
 import {
   Template,
-  BulkUpdateProps,
-  WorkerAttribute
+  BulkUpdateProps
 } from "../BulkChanges.Interfaces";
-import { availableAttributes } from "../BulkTemplates/index";
 import {
-  CustomInput,
   Dropdown,
   DefaultSkillSelector
 } from "components";
 import {
-  useFormState,
-  useFormDispatch,
-  userFormActions,
   useAdminState
 } from "context";
 import React from "react";
@@ -32,29 +26,36 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
 
   console.log("BulkdUpdateForm - defaultSkills - selectedTemplates", selectedTemplates);
 
-  const dropdownOptions = {
-    ADD_SKILL: {
+  const dropdownOptions = [
+    {
       label: "Add Skill",
-      value: "Add Skill"
+      value: "ADD"
     },
-    DELETE_SKILL: {
+    {
       label: "Delete Skill",
-      value: "Delete Skill"
+      value: "DELETE"
     },
-    OVERRIDE_SKILL: {
+    {
       label: "Override Skill",
-      value: "Override Skill"
+      value: "OVERRIDE"
     }
-  };
+  ];
 
-  const [ option, setOption ] = React.useState("");
+  const [ skillOption, setSkillOption ] = React.useState<any>({
+    value: "",
+    label: ""
+  });
   const [ updatedDefaultSkills, setUpdatedDefaultSkills ] = React.useState<any>({
     skills: [],
     levels: {}
   });
 
-  // const skills = useAdminState().skillContext.skills.slice().filter(s => s.levels);
-  // const skillGroups = useAdminState().skillContext.skillGroups.slice();
+  const skills = useAdminState().skillContext.skills.slice().filter(s => s.levels);
+
+  const skillsDropdownOptions = skills.map( s => ({
+    label: s.name,
+    value: s.name
+  }));
 
   // add keys to template so processing function can adjust payload body
   React.useEffect(() => {
@@ -67,7 +68,7 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
           data: {
             key: "default_skills",
             value: updatedDefaultSkills,
-            option: option
+            option: skillOption
           }
         });
       } else {
@@ -75,7 +76,7 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
           data: {
             key: "default_skills",
             value: updatedDefaultSkills,
-            option: option
+            option: skillOption
           }
         });
       }
@@ -96,35 +97,66 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
   }, [selectedTemplates]);
 
   return (
-    <Row>
-      <UpdateWrapper>
-        <Dropdown
-          label="Options"
-          value={option}
-          options={Object.values(dropdownOptions)}
-          updateValue={(event: any, option: any) => {
-            setOption(option.label);
-            console.log("**** option label: ", option.label);
-          }}
-          styles={{
-            margin: "40 40 30 0",
-            width: "175px"
-          }}
-        />
+    <UpdateWrapper adjustibleHeight={true}>
+      <Dropdown
+        label="Options"
+        value={skillOption.label}
+        options={dropdownOptions}
+        updateValue={(event: any, option: any) => {
+          setSkillOption(option);
+          // clear existing default skills when changing option
+          setUpdatedDefaultSkills({
+            skills: [],
+            levels: {}
+          });
+        }}
+        styles={{
+          width: "230px",
+          margin: "10px 20px 0px 20px"
+        }}
+      />
 
-        { option === dropdownOptions.ADD_SKILL.label &&
+      { skillOption.value === "OVERRIDE" &&
+      <SkillSelectorContainer>
         <DefaultSkillSelector
           defaultSkills={updatedDefaultSkills}
           setDefaultSkills={(updatedDefaultSkills: any) => {
-            console.log("**** option: ", option);
-            console.log("**** setting default skills: ", updatedDefaultSkills);
+            console.log("**** option: ", skillOption);
             setUpdatedDefaultSkills(updatedDefaultSkills);
+            console.log("**** setting default skills: ", updatedDefaultSkills);
+          }}
+        />
+      </SkillSelectorContainer>
+      }
+      { skillOption.value === "ADD" &&
+        <DefaultSkillSelector
+          defaultSkills={updatedDefaultSkills}
+          setDefaultSkills={(updatedDefaultSkills: any) => {
+            console.log("**** option: ", skillOption);
+            setUpdatedDefaultSkills(updatedDefaultSkills);
+            console.log("**** setting default skills: ", updatedDefaultSkills);
             console.log("**** updated template: ", selectedTemplates);
           }}
         />
-        }
-      </UpdateWrapper>
-    </Row>
+      }
+      { skillOption.value === "DELETE" &&
+        <Dropdown
+          label="Skill to Delete"
+          value={updatedDefaultSkills[0]} // since we are only doing one skill at a time, this will always be the first value in the array
+          options={skillsDropdownOptions}
+          updateValue={(event: any, s: any) => {
+            setUpdatedDefaultSkills({
+              skills: [s.value],
+              levels: {}
+            });
+          }}
+          styles={{
+            width: "230px",
+            margin: "10px 20px 0px 20px"
+          }}
+        />
+      }
+    </UpdateWrapper>
   );
 };
 
