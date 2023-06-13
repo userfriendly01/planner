@@ -217,6 +217,7 @@ export const AddFlow = ({
             agentId: stringValue(flowRule,"agentId", ""),
             brand: flowRule.brand.value,
             callFlowTemplate: stringValue(flowRule,"callFlowTemplate", ""),
+            callIntent: stringValue(flowRule, "callIntent", ""),
             channel: flowRule.channel.value,
             dialedDescription: flowRule.dialedDescription.value,
             employeeId: stringValue(flowRule,"employeeId", ""),

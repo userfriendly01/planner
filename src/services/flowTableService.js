@@ -29,6 +29,7 @@ async function queryFlowData(accessToken, nextToken = null, graphQlApiUrl) {
                   callDetails1
                   callDetails2
                   callFlowTemplate
+                  callIntent
                   callTypeDescription
                   channel
                   content {
@@ -113,6 +114,7 @@ function addFlowInput (item, dataRequestsPassed, currentTimePassed){
     agentId: item.agentId?.value || "",
     brand: item.brand.value,
     callFlowTemplate: item.callFlowTemplate?.value || "",
+    callIntent: item.callIntent?.value || "",
     channel: item.channel.value,
     dialedDescription: item.dialedDescription.value,
     accountManager: item.accountManager?.value || "",
@@ -157,6 +159,7 @@ function updateFlowInput(item){
     accountManager: item.accountManager || "",
     affinityVDN: item.affinityVDN || "",
     callTypeDescription: item.callTypeDescription || "",
+    callIntent: item.callIntent?.value || "",
     transferCode: item.transferCode || "",
     internetPlacement: item.internetPlacement || "",
     callDetails1: item.callDetails1 || "",
@@ -216,6 +219,7 @@ async function updateFlowDB(item, accessToken, graphQlApiUrl) {
               employeeId
               accountManager
               affinityVDN
+              callIntent
               callTypeDescription
               transferCode
               internetPlacement
@@ -285,6 +289,7 @@ async function addFlowRule(item, accessToken, graphQlApiUrl, curTime = new Date(
               pkey
               accountManager
               affinityVDN
+              callIntent
               callTypeDescription
               transferCode
               internetPlacement
@@ -355,6 +360,7 @@ async function deleteFlowRule(item, accessToken, graphQlApiUrl) {
               employeeId
               accountManager
               affinityVDN
+              callIntent
               callTypeDescription
               transferCode
               internetPlacement
