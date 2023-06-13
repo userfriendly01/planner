@@ -86,6 +86,10 @@ export const initialFormState = {
     selfServiceInd: {
       value: false,
       updated: false
+    },
+    routingTeam: {
+      value: "",
+      updated: false
     }
   },
   calabrio_qm: {
@@ -229,6 +233,10 @@ export const validFormState = {
     manager: {
       value: managerList[0],
       blurred: false,
+      updated: true
+    },
+    routingTeam: {
+      value: "Sample1",
       updated: true
     },
     outgoing: {

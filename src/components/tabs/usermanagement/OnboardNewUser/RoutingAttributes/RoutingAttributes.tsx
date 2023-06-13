@@ -4,11 +4,23 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SelectContainer from "components/core/SharedComponents/SelectContainer";
+import {
+  useFormDispatch,
+  userFormActions,
+  useFormState
+} from "context";
 const RoutingAttributes = ():JSX.Element =>{
-  const [routingTeam,setRoutingTeam] = useState(null);
-  const routingTeamList = ["sample1", "sample2"];
+
+  const setForm = useFormDispatch();
+  const form = useFormState();
+  const dropDownOptions :string[]= [];
   const handleChange=(event:any)=>{
-    setRoutingTeam(event.target.value);
+    setForm({
+      type: userFormActions.ROUTING_TEAM,
+      payload:{
+        routingTeamName: event.target.value
+      }
+    });
   }
   return (
     <Accordion sx={{
@@ -25,11 +37,11 @@ const RoutingAttributes = ():JSX.Element =>{
       <SelectContainer
           name= {"Routing Team"}
           label={"Routing Team"}
-          value={routingTeam}
+          value= {form.triton.routingTeam.value}
           onChange={handleChange}
-          dropDownOptions={routingTeamList}
+          dropDownOptions={dropDownOptions}
           required = {false}
-          isBlankFirstValue={true}
+          isBlankFirstValue={false}
         />
       </AccordionDetails>
       <AccordionDetails>

@@ -27,6 +27,7 @@ export const userFormActions = {
   INITIATE_ZERO_OUT_FIELDS: "INITIATE_ZERO_OUT_FIELDS",
   RESET_FORM: "RESET_FORM",
   RESET_FORM_AFTER_ADD: "RESET_FORM_AFTER_ADD",
+  ROUTING_TEAM: "ROUTING_TEAM",
   SET_BLUR_ON_FIELD: "SET_BLUR_ON_FIELD",
   SET_CALABRIO_QM_USER: "SET_CALABRIO_QM_USER",
   SET_CALABRIO_TEAM: "SET_CALABRIO_TEAM",
@@ -145,6 +146,10 @@ export const initialUserFormState: UserFormState = {
     userPreviouslyAdded: false,
     zeroOutEnabled: {
       value: false,
+      updated: false
+    },
+    routingTeam: {
+      value: "",
       updated: false
     }
   },
@@ -407,6 +412,20 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
           userFound: true
         }
       };
+    }
+    case userFormActions.ROUTING_TEAM: {
+      const routingTeam = action.payload.routingTeamName;
+      return {
+        ...state,
+        triton: {
+          ...state.triton,
+          routingTeam: {
+            value: routingTeam,
+            updated: true
+          }
+        }
+      };
+
     }
     case userFormActions.SET_BLUR_ON_FIELD: {
       const field = action.payload.field;
