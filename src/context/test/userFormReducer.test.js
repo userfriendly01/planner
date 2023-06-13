@@ -1435,6 +1435,31 @@ describe("userFormReducer", () => {
     });
   });
 
+  describe("UPDATE_ROUTINGTEAM", () => {
+    test("should update routing team", () => {
+      const payload = {
+        routingTeamName:"Sample1"
+      };
+      const action = {
+        type: userFormActions.ROUTING_TEAM,
+        payload
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        triton: {
+          ...initialUserFormState.triton,
+          routingTeam: {
+            ...initialUserFormState.triton.routingTeam,
+            updated: true,
+            value: "Sample1"
+          }
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+
   describe("UPDATE_N_NUMBER", () => {
     test("should update nNumber", () => {
       const payload = "n0263786";
