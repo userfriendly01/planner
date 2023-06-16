@@ -135,7 +135,7 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
             console.log("**** option: ", skillOption);
             setUpdatedDefaultSkills(updatedDefaultSkills);
             console.log("**** setting default skills: ", updatedDefaultSkills);
-            console.log("**** updated template: ", selectedTemplates);
+            // console.log("**** updated template: ", selectedTemplates);
           }}
         />
       }

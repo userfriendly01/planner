@@ -35,13 +35,6 @@ export const availableAttributes: any = {
     type: "string",
     location: ["attributes","routing"]
   }
-  // todo: add default skills here???
-  // DEFAULT_SKILLS: {
-  //   label: "default_skills",
-  //   value: "default_skills",
-  //   type: "default skill",
-  //   location: "attributes"
-  // }
 };
 
 export const jokes: string[] = [
