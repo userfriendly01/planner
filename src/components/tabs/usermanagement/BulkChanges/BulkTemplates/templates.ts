@@ -347,9 +347,9 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: a
   let updatedDefaultSkills: any = {};
 
   // todo: get rid of these logs
-  // console.log("**** template: ", template);
-  // console.log("**** template.data: ", template.data);
-  // console.log("**** template.data.data: ", template.data.data);
+  console.log("**** template: ", template);
+  console.log("**** template.data: ", template.data);
+  console.log("**** template.data.data: ", template.data.data);
 
   console.log("**** processing update skills hurr");
   console.log("**** value, option: ", value, option);

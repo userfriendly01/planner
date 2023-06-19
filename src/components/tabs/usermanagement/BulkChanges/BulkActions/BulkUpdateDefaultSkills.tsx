@@ -63,6 +63,7 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
     if (updatedDefaultSkills.skills.length) {
       const templateFound = selectedTemplates.find((t: Template) => t.name === template.name);
       if (!templateFound) {
+        console.log("**** REPLACE TEMPLATE ACTIVATE", template);
         replaceTemplate({
           ...template,
           data: {
@@ -72,15 +73,15 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
           }
         });
       } else {
+        console.log("**** UPDATE TEMPLATE ACTIVATE", template);
         updateTemplate(templateFound, {
-          data: {
-            key: "default_skills",
-            value: updatedDefaultSkills,
-            option: skillOption
-          }
+          key: "default_skills",
+          value: updatedDefaultSkills,
+          option: skillOption
         });
       }
     } else {
+      console.log("**** ELSE ACTIVATE", template);
       if(selectedTemplates.find((t: Template) => t.name === template.name)){
         removeTemplate(template);
       }
