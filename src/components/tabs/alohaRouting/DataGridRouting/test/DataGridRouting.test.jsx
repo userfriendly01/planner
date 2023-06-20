@@ -81,6 +81,7 @@ const filteredItems = {
   channel: "TestChannel1"
 };
 
+
 const validRoutingData = {
   id: 1,
   all: "test",
@@ -101,6 +102,14 @@ const validRoutingData = {
   twilioSkill: "test",
   crcSkill: "updated"
 };
+const routingPattern=(routingData)=>{
+  const routingPatternReturn={data:{
+    listCctSharedCallRoutingGlobalDbs:{
+      items:routingData
+    }
+  }};
+  return routingPatternReturn;
+}
 
 const renderDataGridRouting = () => render(
   <DataGridRouting accessToken="Token123" matchedGroups="[]"/>,
@@ -298,14 +307,26 @@ describe("<DataGridRouting />", ()=>{
     });
     test("Simulate Channel in Existing Filtered Item", async()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
-      queryRoutingData.mockResolvedValue(validRoutingDataList);
+      const patternList = routingPattern(validRoutingDataList);
+      queryRoutingData.mockResolvedValue(patternList);
+      retrieveRoutingData.mockResolvedValue(validRoutingDataList);
+      renderDataGridRouting();
+      expect(DataGrid.mock.calls[0][0].page).toBe(1);
+    });
+    test("Simulate Channel with invalid object Filtered Item", async()=>{
+      localStorage.removeItem(CACHE_FILTER_ROUTING);
+      localStorage.setItem(CACHE_FILTER_ROUTING, JSON.stringify(filteredItemsInvalid));
+      const validRoutingDataList = createSampleTestRoutingDataList(15);
+      const patternList = routingPattern(validRoutingDataList);
+      queryRoutingData.mockResolvedValue(patternList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
       expect(DataGrid.mock.calls[0][0].page).toBe(1);
     });
     test("Simulate Empty Filtered Item",()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
-      queryRoutingData.mockResolvedValue(validRoutingDataList);
+      const patternList = routingPattern(validRoutingDataList);
+      queryRoutingData.mockResolvedValue(patternList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       localStorage.clear();
       renderDataGridRouting();
@@ -313,7 +334,8 @@ describe("<DataGridRouting />", ()=>{
     });
     test("Simulate openAdvanceSearchModal", ()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
-      queryRoutingData.mockResolvedValue(validRoutingDataList);
+      const patternList = routingPattern(validRoutingDataList);
+      queryRoutingData.mockResolvedValue(patternList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
       const openModal = RoutingAdvanceSearch.mock.calls[0][0].openModal;
@@ -322,7 +344,8 @@ describe("<DataGridRouting />", ()=>{
     });
     test("Simulate close openAdvanceSearchModal from AdvanceSearch", ()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
-      queryRoutingData.mockResolvedValue(validRoutingDataList);
+      const patternList = routingPattern(validRoutingDataList);
+      queryRoutingData.mockResolvedValue(patternList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
       const openModal = RoutingAdvanceSearch.mock.calls[0][0].openModal;
@@ -331,7 +354,8 @@ describe("<DataGridRouting />", ()=>{
     });
     test("Simulate openAdvanceSearchModal applyFilter props", ()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
-      queryRoutingData.mockResolvedValue(validRoutingDataList);
+      const patternList = routingPattern(validRoutingDataList);
+      queryRoutingData.mockResolvedValue(patternList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
       const applyFilter = RoutingAdvanceSearch.mock.calls[0][0].applyFilter;
@@ -340,7 +364,8 @@ describe("<DataGridRouting />", ()=>{
     });
     test("Simulate openAdvanceSearchModal handleChange", ()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
-      queryRoutingData.mockResolvedValue(validRoutingDataList);
+      const patternList = routingPattern(validRoutingDataList);
+      queryRoutingData.mockResolvedValue(patternList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
       const handleChange = RoutingAdvanceSearch.mock.calls[0][0].handleChange;
@@ -360,7 +385,8 @@ describe("<DataGridRouting />", ()=>{
     });
     test("Simulate openAdvanceSearchModal handleChange with blank string", ()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
-      queryRoutingData.mockResolvedValue(validRoutingDataList);
+      const patternList = routingPattern(validRoutingDataList);
+      queryRoutingData.mockResolvedValue(patternList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
       const handleChange = RoutingAdvanceSearch.mock.calls[0][0].handleChange;

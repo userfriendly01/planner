@@ -54,6 +54,7 @@ export interface RoutingFilter {
     policyType?: string;
     transferDestination?: string;
     twilioSkill?: string;
+    id?: number;
 }
 
 export interface RoutingStateVariables {
