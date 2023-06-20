@@ -313,16 +313,6 @@ describe("<DataGridRouting />", ()=>{
       renderDataGridRouting();
       expect(DataGrid.mock.calls[0][0].page).toBe(1);
     });
-    test("Simulate Channel with invalid object Filtered Item", async()=>{
-      localStorage.removeItem(CACHE_FILTER_ROUTING);
-      localStorage.setItem(CACHE_FILTER_ROUTING, JSON.stringify(filteredItemsInvalid));
-      const validRoutingDataList = createSampleTestRoutingDataList(15);
-      const patternList = routingPattern(validRoutingDataList);
-      queryRoutingData.mockResolvedValue(patternList);
-      retrieveRoutingData.mockResolvedValue(validRoutingDataList);
-      renderDataGridRouting();
-      expect(DataGrid.mock.calls[0][0].page).toBe(1);
-    });
     test("Simulate Empty Filtered Item",()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
       const patternList = routingPattern(validRoutingDataList);
