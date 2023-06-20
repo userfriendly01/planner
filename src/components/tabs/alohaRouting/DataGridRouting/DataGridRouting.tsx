@@ -103,8 +103,8 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
         let matched = 0;
         Object.keys(advanceFilter).forEach((key: keyof RoutingFilter) => {
           if(key == "id" && item && item[key]){
-            const itemId = item?.id.toLocaleString();
-            const advanceKey = advanceFilter[key].toLocaleString();
+            const itemId = item?.id.toLocaleString().replace(",","");
+            const advanceKey = advanceFilter[key].toLocaleString().replace(",","");
             if (itemId.includes(advanceKey)) {
               matched += 1;
             }

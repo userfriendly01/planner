@@ -394,7 +394,29 @@ describe("<DataGridRouting />", ()=>{
       const localStorageValue = JSON.parse(localStorage.getItem(CACHE_FILTER_ROUTING));
       expect(localStorageValue[brandKey]).toBeUndefined;
     });
+
+  test("Simulate openAdvanceSearchModal handleChange with id", ()=>{
+    const validRoutingDataList = createSampleTestRoutingDataList(15);
+    const patternList = routingPattern(validRoutingDataList);
+    queryRoutingData.mockResolvedValue(patternList);
+    retrieveRoutingData.mockResolvedValue(validRoutingDataList);
+    renderDataGridRouting();
+    const handleChange = RoutingAdvanceSearch.mock.calls[0][0].handleChange;
+    const idValue = "13";
+    const idKey = "id";
+    const testEvent = {
+      target: {
+        value: idValue,
+        name: idKey
+      }
+    };
+    act(()=>{ handleChange(testEvent); });
+    const openModal = RoutingAdvanceSearch.mock.calls[1][0].openModal;
+    act(()=>{ openModal(true); });
+    const localStorageValue = JSON.parse(localStorage.getItem(CACHE_FILTER_ROUTING));
+    expect(localStorageValue[idKey]).toBe(13);
   });
+});
   describe("Different Data Load", ()=>{
     test("Simulate DataGrid with Empty Data",()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(0);
