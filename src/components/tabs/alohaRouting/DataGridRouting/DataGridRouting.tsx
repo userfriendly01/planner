@@ -1,42 +1,29 @@
-import React, {
-  useEffect, useState, useRef
-} from "react";
 import {
-  DataGrid, GridRenderCellParams, GridToolbar
+  DataGrid, GridRenderCellParams
 } from "@mui/x-data-grid";
-import { RoutingGridColumnDef } from "./GridColumnDef";
-import {
-  CctSharedCallRoutingDb, RoutingFilter, RoutingStateVariables, RoutingMasterData, AddPageFieldConfigProps
-} from "../AlohaRouting.Interfaces";
-import {
-  retrieveRoutingData, queryRoutingData
-} from "services";
+import { CustomToast } from "components";
+import { AzureSPA } from "globals";
+import React, {
+  useEffect, useRef, useState
+} from "react";
+import { queryRoutingData, retrieveRoutingData } from "services";
 import {
   CACHED_CALL_ROUTING_PAGE_NO,
   CACHED_CALL_ROUTING_PER_PAGE,
-  CACHE_FILTER_ROUTING,
-  routingInitState,
-  getGraphQLEndpoint,
-  initializedAlertBar,
-  downloadCSV,
-  EXPORT_FILE_PREFIX,
-  routingInitRule,
-  routingFields
+  CACHE_FILTER_ROUTING, downloadCSV,
+  EXPORT_FILE_PREFIX, getGraphQLEndpoint,
+  initializedAlertBar, routingFields, routingInitRule, routingInitState
 } from "utils";
-import {
-  getGridMasterData
-} from "./GridMaster";
-import { RoutingTableBox } from "../AlohaRouting.Styles";
-import GridSpinner from "./GridSpinner";
-import { CustomToast } from "components";
-import {
-  RoutingAdvanceSearch, AddRouting, EditRouting, CustomRoutingGridToolBar
-} from "../RoutingCustomActions";
 import {
   AlertBarProps, FormValidationRule
 } from "utils/interfaces";
-import { AzureSPA } from "globals";
-
+import { AddPageFieldConfigProps, CctSharedCallRoutingDb, RoutingFilter, RoutingMasterData, RoutingStateVariables } from "../AlohaRouting.Interfaces";
+import { RoutingTableBox } from "../AlohaRouting.Styles";
+import { AddRouting, CustomRoutingGridToolBar, EditRouting, RoutingAdvanceSearch } from "../RoutingCustomActions";
+import { RoutingGridColumnDef } from "./GridColumnDef";
+import {
+  getGridMasterData
+} from "./GridMaster";
 export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
   const {
     accessToken,
@@ -79,16 +66,20 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
     } catch (e) {
       console.log(e);
     }
-    return {};
   };
 
   const handleSearchDDChange = (event: any) => {
+    const name = event.target.name;
+    var value = event.target.value;
+    if(name === "id"){
+      value = parseInt(event.target.value);
+    }
     setState(
       {
         ...state,
         advanceFilter: {
           ...state.advanceFilter,
-          [event.target.name]: event.target.value
+          [name]: value
         }
       });
   };
@@ -111,7 +102,14 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
       result.forEach(item => {
         let matched = 0;
         Object.keys(advanceFilter).forEach((key: keyof RoutingFilter) => {
-          if (item[key] === advanceFilter[key]) {
+          if(key == "id" && item && item[key]){
+            const itemId = item?.id.toLocaleString().toString().replace(",","");
+            const advanceKey = advanceFilter[key].toString().replace(",","");
+            if (itemId.includes(advanceKey)) {
+              matched += 1;
+            }
+          }
+          else if (item[key] === advanceFilter[key]) {
             matched += 1;
           }
         });
@@ -307,12 +305,6 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
           checkboxSelection
           disableSelectionOnClick
           autoHeight
-          components={
-            {
-              Toolbar: GridToolbar,
-              LoadingOverlay: GridSpinner
-            }
-          }
           sx={{
             "& .MuiDataGrid-columnHeaderTitle": {
               fontWeight: 600
