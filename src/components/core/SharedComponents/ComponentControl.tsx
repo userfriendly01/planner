@@ -13,7 +13,7 @@ export interface ComponentControlProps {
   type: string;
   value: any;
   onChange: any;
-  disabled?: boolean;
+  disabled?: boolean ;
   error: boolean;
   required: boolean,
   isBlankFirstValue?: boolean;
@@ -87,6 +87,9 @@ function ComponentControl({
             width: "calc(95%)",
             margin: "0 0 0 0"
           }}
+          error={error}
+          disabled={disabled}
+          required={required}
         />
       );
 

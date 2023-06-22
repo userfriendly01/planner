@@ -202,14 +202,19 @@ describe("<AddFlow />", () => {
       const {
         getByRole
       } = renderAddFlow(true);
-      flowFields[8].valueSetter(validFlowData, { type: "DID" });
+      flowFields[8].valueSetter(validFlowData, { type: "DID1" });
       const ComponentControlMock = ComponentControl.mock;
       const dialedPhoneNumberAttr = ComponentControl.mock.calls[0][0].onChange;
       const descriptionAttr = ComponentControl.mock.calls[1][0].onChange;
       const channelAttr = ComponentControl.mock.calls[3][0].onChange;
       const brandAttr = ComponentControl.mock.calls[4][0].onChange;
-      const callerTypeAttr = ComponentControl.mock.calls[23][0].onChange;
-      const callFlowRouteAttr = ComponentControl.mock.calls[26][0].onChange;
+      const callerTypeAttr = ComponentControl.mock.calls[7][0].onChange;
+      const callFlowRouteAttr = ComponentControl.mock.calls[10][0].onChange;
+      const callFlowTypeAttr = ComponentControl.mock.calls[2][0].onChange;
+      const transferNumberAttr = ComponentControl.mock.calls[9][0].onChange;
+      const languageOfferAttr = ComponentControl.mock.calls[5][0].onChange;
+      const greetingMessagesAttr = ComponentControl.mock.calls[11][0].onChange;
+      const dataRequestsAtr = ComponentControl.mock.calls[6][0].onChange;
       const eventPhoneNumValue = {
         target: {
           name: "pkey",
@@ -243,7 +248,37 @@ describe("<AddFlow />", () => {
       const eventCallerType = {
         target: {
           name: "callerType",
-          value: ""
+          value: /test/i
+        }
+      };
+      const eventCallFlowType = {
+        target: {
+          name: "callFlowType",
+          value: /test/i
+        }
+      };
+      const eventTransferNumber= {
+        target: {
+          name: "transferNumber",
+          value: "4625917"
+        }
+      };
+      const eventLanguageOffer = {
+        target: {
+          name: "languageOffer",
+          value: "English"
+        }
+      };
+      const eventGreetingMessages = {
+        target: {
+          name: "greetingMessages",
+          value: "Welcome to liberty"
+        }
+      };
+      const eventDataRequests = {
+        target: {
+          name: "dataRequests",
+          value: "test1"
         }
       };
       act(()=>{
@@ -253,6 +288,11 @@ describe("<AddFlow />", () => {
         brandAttr(eventBrandValue);
         callFlowRouteAttr(eventCallFlowRoute,"testing");
         callerTypeAttr(eventCallerType,"testing");
+        callFlowTypeAttr(eventCallFlowType);
+        languageOfferAttr(eventLanguageOffer);
+        greetingMessagesAttr(eventGreetingMessages);
+        transferNumberAttr(eventTransferNumber);
+        dataRequestsAtr(eventDataRequests);
       });
       addFlowRule.mockResolvedValue({ data: { "items": []}});
       const saveButton = getByRole("button", { name: "createRuleButton" });

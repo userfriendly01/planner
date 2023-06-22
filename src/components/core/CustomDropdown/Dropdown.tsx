@@ -28,7 +28,8 @@ export const Dropdown = (props: any) => {
     styles,
     updateValue,
     value,
-    disableClear
+    disableClear,
+    required
   } = props;
 
   const stylesObject = {
@@ -67,7 +68,7 @@ export const Dropdown = (props: any) => {
       disabled={disabled}
       onBlur={onBlur}
       sx={stylesObject}
-      renderInput={(params: any) => <TextField {...params} label={label} error={error} key={props["data-option-index"]} />}
+      renderInput={(params: any) => <TextField {...params} label={label} error={error} key={props["data-option-index"]}  required={required}/>}
       renderOption={(props: any, option: any) => {
         if (option?.label === "divider") {
           return <Divider key={props["data-option-index"]} />;
