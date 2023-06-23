@@ -152,6 +152,9 @@ const ProfileSettingsTable = props => {
                         </CustomTableData>
                         : <CustomTableData />
                     }
+                    <CustomTableData>
+                      <TableText>test</TableText>
+                    </CustomTableData>
                   </CustomTableRow>
                 );
               })
