@@ -31,6 +31,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     label: "Call Flow Template",
     key: "callFlowTemplate",
     control: "input",
+    required: true,
     valueGetter: (params: CctSharedCallFlowDb) => `${params?.callFlowTemplate || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
@@ -63,6 +64,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     label: "Language Offer",
     key: "languageOffer",
     control: "select",
+    required: true,
     valueGetter: (params: CctSharedCallFlowDb) => `${params?.content?.languageOffer || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
@@ -76,7 +78,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     label: "Data Requests",
     key: "dataRequests",
     control: "autoComplete",
-    required: false,
+    required: true,
     valueGetter: (params: CctSharedCallFlowDb) => `${params?.content?.dataRequests || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
@@ -92,7 +94,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     label: "Caller Type",
     key: "callerType",
     control: "autoComplete",
-    required: false,
+    required: true,
     valueGetter: (params: CctSharedCallFlowDb) => `${params?.content?.callerType || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
@@ -119,6 +121,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     label: "Transfer Destination",
     key: "transferNumber",
     control: "input",
+    required: true,
     valueGetter: (params: CctSharedCallFlowDb) => `${params?.content?.transferNumber || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
@@ -132,7 +135,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     label: "Call Flow Route",
     key: "callFlowRoute",
     control: "autoComplete",
-    required: false,
+    required: true,
     valueGetter: (params: CctSharedCallFlowDb) => `${params?.content?.callFlowRoute || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
@@ -148,6 +151,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     label: "Greeting",
     key: "greetingMessages",
     control: "input",
+    required: true,
     valueGetter: (params: CctSharedCallFlowDb) => `${params?.content?.greetingMessages || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
