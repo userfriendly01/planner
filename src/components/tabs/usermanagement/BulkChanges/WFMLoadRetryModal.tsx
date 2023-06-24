@@ -5,6 +5,7 @@ import {
   TextWrapper
 } from "./BulkChanges.Styles";
 import {
+  useAdminState,
   useAdminDispatch
 } from "context";
 import {
@@ -30,6 +31,7 @@ const WFMLoadRetryModal = (props: any) => {
     cancelClicked: false
   });
 
+  const state = useAdminState();
   const dispatch = useAdminDispatch();
 
   //This handles checking whether to keep calling the retry function
@@ -51,7 +53,8 @@ const WFMLoadRetryModal = (props: any) => {
 
     if (!successfulOptionsCall && !successfulOrgCall) {
       const optionsCallPromise = getCalabrioWfmOptions(dispatch);
-      const orgCallPromise = getCalabrioWfmOrg(dispatch);
+      //TODO pass through BU selection
+      const orgCallPromise: any = getCalabrioWfmOrg("", state, dispatch);
       const promises = await Promise.allSettled([optionsCallPromise, orgCallPromise]);
 
       if (promises[0].status === "fulfilled") {
@@ -67,7 +70,9 @@ const WFMLoadRetryModal = (props: any) => {
 
     } else if (successfulOptionsCall && !successfulOrgCall) {
       //   call org only
-      successfulOrgCall = await getCalabrioWfmOrg(dispatch);
+            //TODO pass through BU selection
+
+      // successfulOrgCall = await getCalabrioWfmOrg("", state, dispatch);
     }
 
     setRetryAttempts({

@@ -8,9 +8,8 @@ import {
   WfmUserTable,
   WfmErrorBanner
 } from "components";
-import { useAdminState } from "context";
-import { WfmBusinessUnit, WfmTeam, WfmUser } from "globals";
-import WFMLoadRetryModal from "../../BulkChanges/WFMLoadRetryModal";
+import { useAdminDispatch, useAdminState } from "context";
+import { ModalOverlayStatuses, WfmBusinessUnit, WfmTeam, WfmUser } from "globals";
 import React from "react";
 import { useNavigate } from 'react-router-dom';
 import {
@@ -18,8 +17,10 @@ import {
   getWfmTeams,
   getWfmPeople,
   filterWfmUserTable,
-  sortWfmWorkersByFullName
+  sortWfmWorkersByFullName,
+  getCalabrioWfmOrg
 } from "utils";
+import InfoBanner from "../InfoBanner/InfoBanner";
 
 const TritonUserManagementWrapper: any = () => {
 
@@ -40,7 +41,9 @@ const TritonUserManagementWrapper: any = () => {
   };
 
   const state = useAdminState();
+
   const wfmPeople = getWfmPeople(state);
+  const [ status, setStatus ] = React.useState(null);
   const [ tableState, setTableState ] = React.useState(defaultTableState);
   const navigate = useNavigate();
 
@@ -51,7 +54,7 @@ const TritonUserManagementWrapper: any = () => {
       console.log("tableState", tableState);
 
       //filter by business unit
-      if(tableState.businessUnitFilter && tableState.businessUnitFilter !== "show-all"){
+      if(tableState.businessUnitFilter){
         const businessUnit = getWfmBusinessUnits(state).find((bu: WfmBusinessUnit) => bu.Id === tableState.businessUnitFilter)
         if(tableState.businessUnitFilter === "People_Without_Team"){
           filteredList = filteredList.filter((wfmUser: WfmUser) => !wfmUser.BusinessUnitId);
@@ -108,10 +111,11 @@ const TritonUserManagementWrapper: any = () => {
     <WfmUsersContainer>
       <WfmErrorBanner />
       <WfmUsersHeader
+        setStatus={setStatus}
         tableState={tableState}
         setTableState={setTableState}
       />
-      { wfmPeople.length > 0 ?
+      { tableState.businessUnitFilter && status === ModalOverlayStatuses.SUCCESS ?
         <>
           <StyledPaper elevation={3}>
           <WfmUserTable
@@ -124,7 +128,7 @@ const TritonUserManagementWrapper: any = () => {
             setTableState={setTableState}
           />
         </>
-        : <WFMLoadRetryModal handleClose={() => navigate(-1)} />
+        : <InfoBanner status={status}/>
       }
     </WfmUsersContainer>
   );

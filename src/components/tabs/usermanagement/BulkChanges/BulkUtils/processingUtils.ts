@@ -54,8 +54,9 @@ export const updateCalabrioUserState = async (dispatch: any): Promise<void> => {
 /**
  * Refreshes the calabrio WFM person state after a bulk update on users
  */
-export const updateWFMPersonState = async (dispatch: any): Promise<void> => {
-  await getCalabrioWfmOrg(dispatch);
+export const updateWFMPersonState = async (state: any, dispatch: any): Promise<void> => {
+  //TODO pass through BU selection
+  await getCalabrioWfmOrg("", state, dispatch);
   return Promise.resolve();
 };
 
@@ -235,6 +236,7 @@ export const initiateCalls = async (
   rows: any,
   selectedTemplates: any,
   setProcessedRows: any,
+  state: any,
   dispatch: any
 ) => {
   const templateTree = identifyProcessingDependencies(selectedTemplates);
@@ -323,7 +325,7 @@ export const initiateCalls = async (
   const successfulRows = identifySuccessfulRecords(rows, finalErrors);
 
   const stateUpdateResults = await Promise.all(selectedTemplates.map((t: any) => {
-    return Promise.allSettled(t.stateUpdateFunctions.map((f: any) => f(dispatch, successfulRows, selectedTemplates)));
+    return Promise.allSettled(t.stateUpdateFunctions.map((f: any) => f(state, dispatch, successfulRows, selectedTemplates)));
   }));
 
   console.log("state update results: ", stateUpdateResults);

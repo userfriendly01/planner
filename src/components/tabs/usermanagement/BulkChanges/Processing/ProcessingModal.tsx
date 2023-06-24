@@ -78,7 +78,7 @@ const ProcessingModal = (props: ProcessingModalProps) => {
     setProcessedRows(0);
     const rowsToProcess = results.successfullyValidatedRows;
     try {
-      const successfullyProcessedRows = await initiateCalls(rowsToProcess, selectedTemplates, setProcessedRows, dispatch);
+      const successfullyProcessedRows = await initiateCalls(rowsToProcess, selectedTemplates, setProcessedRows, state, dispatch);
       setResults({
         ...results,
         successfullyProcessedRows

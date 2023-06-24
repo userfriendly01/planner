@@ -85,14 +85,6 @@ export const reducer = (state: AppState, action: Action): AppState => {
           workers: action.payload
         }
       };
-    case "updateWfmOrg":
-      return {
-        ...state,
-        calabrioContext: {
-          ...state.calabrioContext,
-          wfmOrg: action.payload
-        }
-      };
     case "loadWfmOrg": {
       const org = Array.isArray(action.payload.org) ? action.payload.org : [];
       const errors = Array.isArray(action.payload.errors) ? action.payload.errors : [];
@@ -122,6 +114,18 @@ export const reducer = (state: AppState, action: Action): AppState => {
               Workflow_Control_Sets: []
             }
           ],
+          wfmErrors: errors
+        }
+      };
+    }
+    case "updateWfmOrg": {
+      const org = Array.isArray(action.payload.org) ? action.payload.org : [];
+      const errors = Array.isArray(action.payload.errors) ? action.payload.errors : state.calabrioContext.wfmErrors;
+      return {
+        ...state,
+        calabrioContext: {
+          ...state.calabrioContext,
+          wfmOrg: org,
           wfmErrors: errors
         }
       };

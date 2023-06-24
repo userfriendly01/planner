@@ -45,6 +45,8 @@ export interface Templates {
 }
 
 export interface BulkActionFormProps {
+  businessUnitId?: string,
+  setBusinessUnitId?: (id: string) => void,
   selectedTemplates: Template[],
   setSelectedTemplates: (template: Template[]) => void;
 }
@@ -73,7 +75,7 @@ export interface ProcessingModalProps {
 
 export interface BusinessUnitModalProps {
   handleClose: () => void;
-  handleExport: (wfmBU: string | null) => void
+  handleConfirm: (wfmBU: string | null) => void
 }
 export interface WorkerAttribute {
   label: string,

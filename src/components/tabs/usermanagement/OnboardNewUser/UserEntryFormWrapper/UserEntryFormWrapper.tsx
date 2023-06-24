@@ -218,9 +218,9 @@ const UserEntryForm = () => {
           />
         }
       </HeaderRow>
-      { form.calabrio_wfm.userFound && <WfmForm
-        missingFields={missingFields}
-      /> }
+      { form.calabrio_wfm.userFound && 
+        <WfmForm missingFields={missingFields} />
+      }
       { form.formMode === formModes.UPDATE && tritonWorker && missingFields.length > 0 && form.calabrio_wfm.userFound &&
         <>
           <StyledDivider />

@@ -122,6 +122,7 @@ export const apiPaths = {
   EMPLOYEE_LOOKUP: (nNumber: string): string => `${SERVICE_BASE_URI}/employeelookup/${nNumber}`,
   FLASH_MESSAGE: `${SERVICE_BASE_URI}/flashmessage`,
   GET_APPLICATIONS: `${SERVICE_BASE_URI}/applications`,
+  GET_CALABRIO_WFM_BUS: `${SERVICE_BASE_URI}/calabrio-api/wfm/Business Units`,
   GET_CALABRIO_WFM_ORG: `${SERVICE_BASE_URI}/calabrio-api/wfm/org/people`,
   GET_CALABRIO_WFM_OPTIONS: `${SERVICE_BASE_URI}/calabrio-api/wfm/org/options`,
   GET_CALABRIO_USERS: `${SERVICE_BASE_URI}/calabrio-get-agents`,

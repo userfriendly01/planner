@@ -4,12 +4,16 @@ import {
   Row,
   Wrapper
 } from "./WfmForm.Styles";
-import { Dropdown } from "components";
+import {
+  Dropdown,
+  ModalFetchingRing
+} from "components";
 import {
   userFormActions,
   useFormState,
   useFormDispatch,
-  useAdminState
+  useAdminState,
+  useAdminDispatch
 } from "context";
 import {
   InputAdornment,
@@ -24,16 +28,18 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import {
-  formModes
+  WfmBusinessUnit,
+  formModes,
+  ModalOverlayStatuses
 } from "globals";
 import {
   daysOfTheWeekOptions,
   getWfmBusinessUnits,
   getWfmTeams,
   getWfmOptions,
-  isUnpopulatedField
+  isUnpopulatedField,
+  getCalabrioWfmOrg
 } from "utils";
-import WFMLoadRetryModal from "../../BulkChanges/WFMLoadRetryModal";
 
 interface WfmFormProps {
   missingFields: string[]
@@ -41,9 +47,13 @@ interface WfmFormProps {
 
 const WfmForm = (props: WfmFormProps) => {
   const state = useAdminState();
+  const dispatch = useAdminDispatch();
   const form = useFormState();
   const setForm = useFormDispatch();
-  const { missingFields } = props;
+  const [ status, setStatus ] = React.useState(null);
+  const {
+    missingFields
+  } = props;
   const isAdd = form.formMode === formModes.INSERT || form.calabrio_wfm.Id === null;
   const [ optionsByBusinessUnit, setOptionsByBusinessUnit ] = React.useState<any>({});
   
@@ -249,24 +259,39 @@ const WfmForm = (props: WfmFormProps) => {
   return (
     <Wrapper>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-      { state.calabrioContext.wfmOptions?.length && state.calabrioContext.wfmOrg?.length ?
+      <Row>
+        <Dropdown
+          disabled={!isAdd}
+          error={missingFields.some((f:string) => f === "BusinessUnitId") && isUnpopulatedField(form.calabrio_wfm.BusinessUnitId)}
+          label={"Business Unit *"}
+          styles={{
+            width: "250px",
+            margin: "0px 5px"
+          }}
+          options={generateDropdownOptionArray(getWfmBusinessUnits(state))}
+          updateValue={async (event: any, newValue: any) => {
+            try {
+              setStatus(ModalOverlayStatuses.SAVING)
+              setForm({
+                type: userFormActions.SET_WFM_BUSINESS_UNIT,
+                payload: newValue?.value || null
+              })
+              await getCalabrioWfmOrg(newValue.value, state, dispatch);
+              setStatus(ModalOverlayStatuses.SUCCESS)
+            } catch(err) {
+              setStatus(ModalOverlayStatuses.FAIL)
+            }
+          }}
+          value={generateDropdownOption(getWfmBusinessUnits(state)?.find((bu: any) => bu.Id === form.calabrio_wfm.BusinessUnitId))}
+        />
+      </Row>
+      { status === ModalOverlayStatuses.SAVING && <ModalFetchingRing/> }
+      { status === ModalOverlayStatuses.FAIL || state.calabrioContext.wfmOptions.length === 0 && <>Business Unit Data failed to load</>}
+      { form.calabrio_wfm.BusinessUnitId && 
+        status === ModalOverlayStatuses.SUCCESS && 
+        state.calabrioContext.wfmOptions.length > 0 &&
       <>
         <Row>
-          <Dropdown
-            disabled={!isAdd}
-            error={missingFields.some((f:string) => f === "BusinessUnitId") && isUnpopulatedField(form.calabrio_wfm.BusinessUnitId)}
-            label={"Business Unit *"}
-            styles={{
-              width: "250px",
-              margin: "0px 5px"
-            }}
-            options={generateDropdownOptionArray(getWfmBusinessUnits(state))}
-            updateValue={(event: any, newValue: any) => setForm({
-              type: userFormActions.SET_WFM_BUSINESS_UNIT,
-              payload: newValue?.value || null
-            })}
-            value={generateDropdownOption(getWfmBusinessUnits(state)?.find((bu: any) => bu.Id === form.calabrio_wfm.BusinessUnitId))}
-          />
           <Dropdown
             disabled={!isAdd}
             error={requiredFieldMissing("id", teamFields) || (missingFields.some((f:string) => f === "TeamId") && isUnpopulatedField(form.calabrio_wfm.TeamId))}
@@ -606,13 +631,7 @@ const WfmForm = (props: WfmFormProps) => {
           </>
         }
       </>
-      : <WFMLoadRetryModal position={"inherit"} handleClose={() => setForm({
-        type: userFormActions.UPDATE_USER_FOUND,
-        payload: {
-          system: "calabrio_wfm",
-          isFound: false
-        }
-      })}/>}
+      }
       </LocalizationProvider>
     </Wrapper>
   )

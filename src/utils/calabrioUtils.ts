@@ -419,30 +419,24 @@ export const getCalabrioWfmOptions = async (dispatch: any) => {
   }
 };
 
-export const getCalabrioWfmOrg = async (dispatch: any) => {
-  try {
-    const org: any = await getWfmOrgServiceCall();
-    let orgData: any = [];
-    try {
-      const buff = Buffer.from(org.data.organization, "base64");
-      const data = await inflate(buff);
-      orgData = JSON.parse(data.toString("utf-8"));
-      console.log("optionsData", orgData);
-    } catch(err) {
-      console.error("Failed to parse and save Calabrio Org data", err);
-      return false;
-    }
+export const getCalabrioWfmOrg = async (businessUnitId: string, state: AppState, dispatch: any) => {
+  let businessUnit = state.calabrioContext.wfmOrg.find((bu: WfmBusinessUnit) => bu.Id === businessUnitId);
+  if(businessUnit && businessUnit.Teams){
+    return;
+  } else {
+    businessUnit = { ...businessUnit };
+    const existingErrors = state.calabrioContext.wfmErrors;
+
+    const org: any = await getWfmOrgServiceCall(businessUnitId);
+    businessUnit.Teams = org.data.Teams;
+    const strippedOrg = state.calabrioContext.wfmOrg.filter((bu: WfmBusinessUnit) => bu.Id !== businessUnitId);
     dispatch({
-      type: "loadWfmOrg",
+      type: "updateWfmOrg",
       payload: {
-        org: orgData.businessUnits,
-        People_Without_Team: orgData.People_Without_Team,
-        errors: org.data.errors
+        org: [ ...strippedOrg, businessUnit ],
+        errors: [ ...existingErrors, ...org.data.errors || [] ]
       }
     });
-    return true;
-  } catch (error) {
-    console.error("Failed to fetch calabrio wfm org from service", error);
-    return false;
+    return;
   }
 };
