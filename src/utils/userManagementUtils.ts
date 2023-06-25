@@ -333,7 +333,7 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
   }
 
   //Update state for WFM user if applicable
-  if(!form.calabrio_wfm.userFound && calabrioWfmUser){
+  if(calabrioWfmUser){
     setForm({
       type: "SET_UPDATE_WFM_FORM_STATE",
       payload: {

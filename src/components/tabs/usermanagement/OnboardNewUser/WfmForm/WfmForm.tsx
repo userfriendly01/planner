@@ -28,7 +28,6 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import {
-  WfmBusinessUnit,
   formModes,
   ModalOverlayStatuses
 } from "globals";
@@ -38,7 +37,8 @@ import {
   getWfmTeams,
   getWfmOptions,
   isUnpopulatedField,
-  getCalabrioWfmOrg
+  getCalabrioWfmOrg,
+  identifyUserProfiles
 } from "utils";
 
 interface WfmFormProps {
@@ -87,22 +87,31 @@ const WfmForm = (props: WfmFormProps) => {
 
   React.useEffect(() => {
     if(!isAdd){
-      setTeamFields({
-        id: form.calabrio_wfm.TeamId,
-        startDate: isUnpopulatedField(form.calabrio_wfm.TeamId) ? null : "NA"
-      });
-      setSkillFields({
-        skills: form.calabrio_wfm.PersonSkills,
-        startDate: isUnpopulatedField(form.calabrio_wfm.PersonSkills) ? null : "NA"
-      });
+      if(teamFields.id !== form.calabrio_wfm.TeamId){
+        setTeamFields({
+          id: form.calabrio_wfm.TeamId,
+          startDate: isUnpopulatedField(form.calabrio_wfm.TeamId) ? null : "NA"
+        });
+      }
+      if(JSON.stringify(skillFields.skills) !== JSON.stringify(form.calabrio_wfm.PersonSkills)){
+        setSkillFields({
+          skills: form.calabrio_wfm.PersonSkills,
+          startDate: isUnpopulatedField(form.calabrio_wfm.PersonSkills) ? null : "NA"
+        });
+      }
       // Rotation & Availability fields arent returned from the get People endpoint
     }
-  }, []);
+  }, [form]);
 
   React.useEffect(() => {
     const trimmedOptions = getWfmOptions(state, form.calabrio_wfm.BusinessUnitId);
     setOptionsByBusinessUnit(trimmedOptions);
   }, [form.calabrio_wfm.BusinessUnitId]);
+
+  React.useEffect(() => {
+    console.log("Faith org user effect was hit", state.calabrioContext.wfmOrg)
+    identifyUserProfiles(form, setForm, state);
+  }, [state.calabrioContext.wfmOrg]);
 
   React.useEffect(() => {
     let validOptionalColumns: any[] = [];
@@ -261,7 +270,6 @@ const WfmForm = (props: WfmFormProps) => {
       <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Row>
         <Dropdown
-          disabled={!isAdd}
           error={missingFields.some((f:string) => f === "BusinessUnitId") && isUnpopulatedField(form.calabrio_wfm.BusinessUnitId)}
           label={"Business Unit *"}
           styles={{
@@ -288,7 +296,7 @@ const WfmForm = (props: WfmFormProps) => {
       { status === ModalOverlayStatuses.SAVING && <ModalFetchingRing/> }
       { status === ModalOverlayStatuses.FAIL || state.calabrioContext.wfmOptions.length === 0 && <>Business Unit Data failed to load</>}
       { form.calabrio_wfm.BusinessUnitId && 
-        status === ModalOverlayStatuses.SUCCESS && 
+        (status === ModalOverlayStatuses.SUCCESS || !status) && 
         state.calabrioContext.wfmOptions.length > 0 &&
       <>
         <Row>
