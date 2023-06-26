@@ -9,12 +9,25 @@ import {
   act,
   render,
   setupMockedComponents,
-  initialTestState
+  initialTestState,
+  waitFor
 } from "testUtils";
 import { useAdminState } from "context";
+import {
+  getCalabrioWfmOrg
+} from "utils";
+import { ModalOverlayStatuses } from "globals";
 
 jest.mock("context", () => ({
-  useAdminState: jest.fn()
+  useAdminState: jest.fn(),
+  useAdminDispatch: jest.fn()
+}));
+
+jest.mock("utils", () => ({
+  getCalabrioWfmOrg: jest.fn(),
+  getWfmTeams: jest.requireActual("utils").getWfmTeams,
+  sortWFMByName: jest.requireActual("utils").sortWFMByName,
+  getWfmBusinessUnits: jest.requireActual("utils").getWfmBusinessUnits
 }));
 
 jest.mock("components", () => ({
@@ -34,10 +47,12 @@ const tableState = {
   searchResults: ["aww edie"]
 };
 
+const mockSetStatus = jest.fn();
 const mockSetTableState = jest.fn();
 
 const renderComponent = (customTableState) => {
   render(<WfmUsersHeader
+    setStatus={mockSetStatus}
     tableState={customTableState || tableState}
     setTableState={mockSetTableState}/>);
 };
@@ -46,6 +61,7 @@ describe("WfmUsersHeader", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     useAdminState.mockReturnValue(initialTestState);
+    getCalabrioWfmOrg.mockResolvedValue("yay!");
     setupMockedComponents({
       Dropdown,
       SearchBox,
@@ -65,27 +81,41 @@ describe("WfmUsersHeader", () => {
     });
   });
   describe("updateValue is called on Business Unit Dropdown", () => {
-    test("should call setTableState", () => {
-      const BUId = "123-321";
-      renderComponent();
-      const updateValue = Dropdown.mock.calls[0][0].updateValue;
-      act(() => updateValue({}, { value: BUId }));
-      expect(mockSetTableState).toHaveBeenCalledTimes(1);
-      expect(mockSetTableState).toHaveBeenCalledWith({
-        ...tableState,
-        businessUnitFilter: BUId
+    describe("getCalabrioWfmOrg is successful", () => {
+      test("should call setTableState", async () => {
+        const BUId = "123-321";
+        renderComponent();
+        const updateValue = Dropdown.mock.calls[0][0].updateValue;
+        act(() => updateValue({}, { value: BUId }));
+        expect(mockSetTableState).toHaveBeenCalledTimes(1);
+        expect(mockSetTableState).toHaveBeenCalledWith({
+          ...tableState,
+          businessUnitFilter: BUId
+        });
+        await waitFor(() => {
+          expect(mockSetStatus).toHaveBeenCalledTimes(2);
+          expect(mockSetStatus).toHaveBeenCalledWith(ModalOverlayStatuses.SAVING);
+          expect(mockSetStatus).toHaveBeenCalledWith(ModalOverlayStatuses.SUCCESS);
+        });
       });
     });
-  });
-  describe("show all is called on Business Unit Dropdown", () => {
-    test("should call setTableState", () => {
-      renderComponent();
-      const updateValue = Dropdown.mock.calls[0][0].updateValue;
-      act(() => updateValue({}, { value: "show-all" }));
-      expect(mockSetTableState).toHaveBeenCalledTimes(1);
-      expect(mockSetTableState).toHaveBeenCalledWith({
-        ...tableState,
-        businessUnitFilter: "show-all"
+    describe("getCalabrioWfmOrg fails", () => {
+      test("should call setTableState", async () => {
+        getCalabrioWfmOrg.mockRejectedValue("yay!");
+        const BUId = "123-321";
+        renderComponent();
+        const updateValue = Dropdown.mock.calls[0][0].updateValue;
+        act(() => updateValue({}, { value: BUId }));
+        expect(mockSetTableState).toHaveBeenCalledTimes(1);
+        expect(mockSetTableState).toHaveBeenCalledWith({
+          ...tableState,
+          businessUnitFilter: BUId
+        });
+        await waitFor(() => {
+          expect(mockSetStatus).toHaveBeenCalledTimes(2);
+          expect(mockSetStatus).toHaveBeenCalledWith(ModalOverlayStatuses.SAVING);
+          expect(mockSetStatus).toHaveBeenCalledWith(ModalOverlayStatuses.FAIL);
+        });
       });
     });
   });
