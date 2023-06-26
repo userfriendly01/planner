@@ -156,7 +156,6 @@ const processWFMCreateUser = async (row: any, state: any) => {
 
     // completely optional
     body.OptionalColumns = row.wfmOptionalColumns;
-
     const environment = state.userContext.pingIdentity.environment;
     if(environment === "production"){
       await createCalabrioWFMPerson(body);

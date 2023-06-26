@@ -20,7 +20,7 @@ const updateTemplates = getUpdateTemplates(initialTestState);
 describe("CREATE_TRITON_USER", () => {
   beforeEach(() => jest.clearAllMocks());
   const createTritonProcessFunction = createTemplates.CREATE_TRITON_USER.processFunction;
-  describe.only("createUser is successful", () => {
+  describe("createUser is successful", () => {
     beforeEach(() => createUser.mockResolvedValue({ workerSid: "WK123456" }));
     describe("user is DID user", () => {
       const row = {
@@ -295,12 +295,31 @@ describe("CREATE_CALABRIO_WFM_PERSON", () => {
       }
     });
   });
-  describe("createCalabrioWFMPerson succeeds", () => {
+  describe("environment is not production", () => {
     beforeEach(() => createCalabrioWFMPerson.mockResolvedValue("yay"));
     test("should resolve", async () => {
       row.attributes.email = "e.mail@lm.com";
       row.attributes.n_number = "n0263445";
       const result = await createWFMProcessFunction(row, initialTestState);
+      expect(createCalabrioWFMPerson).toHaveBeenCalledTimes(0);
+      expect(result).toEqual("No NP environment for WFM. WFM user not created for n0263445 for row 10");
+    });
+  });
+  describe("createCalabrioWFMPerson succeeds", () => {
+    beforeEach(() => createCalabrioWFMPerson.mockResolvedValue("yay"));
+    test("should resolve", async () => {
+      row.attributes.email = "e.mail@lm.com";
+      row.attributes.n_number = "n0263445";
+      const createTemplates = getCreateTemplates({
+        ...initialTestState,
+        userContext: {
+          pingIdentity: {
+            environment: "production"
+          }
+        }
+      });
+
+      const result = await createTemplates.CREATE_CALABRIO_WFM_PERSON.processFunction(row);
       expect(createCalabrioWFMPerson).toHaveBeenCalledTimes(1);
       expect(createCalabrioWFMPerson).toHaveBeenCalledWith({
         Email: "e.mail@lm.com",

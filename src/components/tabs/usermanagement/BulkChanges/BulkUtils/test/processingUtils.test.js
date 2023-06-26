@@ -430,7 +430,7 @@ describe("getLowestConcurrencyLimit", () => {
     processingConcurrencyLimit: null
   };
   describe("type === validation", () => {
-    test.only("lowest validationConcurrencyLimit is returned", () => {
+    test("lowest validationConcurrencyLimit is returned", () => {
       const result = utils.getLowestConcurrencyLimit([ template1, template2, template3 ], "validation");
       expect(result).toBe(5);
     });
@@ -592,7 +592,7 @@ describe("initiateCalls", () => {
                   rowNumber: 3
                 },
                 {
-                  errors: "An error occurred and we were unable to activate these workers",
+                  errors: "An error occurred and we were unable to activate these workers: blep",
                   rowNumber: "multiple",
                   wfmErrors: "n1234563"
                 },
