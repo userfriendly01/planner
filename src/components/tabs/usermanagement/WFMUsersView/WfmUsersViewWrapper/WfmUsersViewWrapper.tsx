@@ -125,7 +125,7 @@ const TritonUserManagementWrapper: any = () => {
             setTableState={setTableState}
           />
         </>
-        : <InfoBanner status={status}/>
+        : <InfoBanner status={status} options={state.calabrioContext.wfmOptions}/>
       }
     </WfmUsersContainer>
   );

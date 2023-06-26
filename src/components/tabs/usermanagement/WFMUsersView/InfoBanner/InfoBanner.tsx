@@ -13,14 +13,21 @@ const InfoWrapper = styled.div`
 
 const InfoBanner = (props: any) => {
   const {
-    status
+    status,
+    options
   } = props;
 
   return (
     <InfoWrapper>
-      { !status && <>Please select a business unit </> }
-      { status === ModalOverlayStatuses.SAVING && <ModalFetchingRing/> }
-      { status === ModalOverlayStatuses.FAIL && <>Users failed to load, please try again</>}
+      { options.length > 0 ?
+        <>
+        { !status && <>Please select a business unit </> }
+        { status === ModalOverlayStatuses.SAVING && <ModalFetchingRing/> }
+        { status === ModalOverlayStatuses.FAIL && <>Users failed to load, please try again</>}
+        </>
+        : <> WFM Options did not load, please refresh triton and try again </>
+      }
+      
     </InfoWrapper>
   )
 };

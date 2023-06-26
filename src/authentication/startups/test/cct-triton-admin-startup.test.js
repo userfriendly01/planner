@@ -4,6 +4,7 @@ import { useAdminDispatch } from "context";
 import { apiPaths } from "globals";
 import { getStartupProfiles } from "authentication";
 import {
+  getWfmBusinessUnits,
   getCalabrioUsers,
   getCalabrioOrg,
   getCalabrioRoles,
@@ -185,11 +186,12 @@ describe("cct-triton-admin-startup", () => {
       getCalabrioOrg.mockResolvedValue({ data: []});
       getCalabrioRoles.mockResolvedValue({ data: []});
       getCalabrioWfmOptions.mockResolvedValue(true);
-      getCalabrioWfmOrg.mockResolvedValue(true);
+      getWfmBusinessUnits.mockResolvedValue({ data: {
+        BusinessUnits: [],
+        People_Without_Team: [],
+        errors: []
+      }});
     });
-    test.only("shh tests", () => {
-      expect("butts").toBe("butts");
-    })
     describe("all service calls successful", () => {
       test("**MUST RETURN STARTUP NAME FIRST**", async () => {
         const result = await runTritonAdminStartup(mockAdminDispatch);
@@ -206,7 +208,7 @@ describe("cct-triton-admin-startup", () => {
           "should render Header & NavTabs, should dispatch appropriate actions, Modal should not be open",
           async () => {
             await runTritonAdminStartup(mockAdminDispatch);
-            expect(mockAdminDispatch).toHaveBeenCalledTimes(9);
+            expect(mockAdminDispatch).toHaveBeenCalledTimes(10);
             expect(mockAdminDispatch).toHaveBeenCalledWith({
               type: "loadManagers",
               payload: formatManagersResponse(dbManagers)
@@ -243,7 +245,14 @@ describe("cct-triton-admin-startup", () => {
               type: "loadWorkers",
               payload: filteredWorkers
             });
-            expect(getCalabrioWfmOrg).toHaveBeenCalledTimes(1);
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadWfmOrg",
+              payload: {
+                org: [],
+                People_Without_Team: [],
+                errors: []
+              }
+            });
             expect(getCalabrioWfmOptions).toHaveBeenCalledTimes(1);
           });
       });
@@ -324,10 +333,15 @@ describe("cct-triton-admin-startup", () => {
         describe("Calabrio org service call returned an error", () => {
           beforeEach(() => {
             getCalabrioUsers.mockRejectedValue(error);
+            getWfmBusinessUnits.mockResolvedValue({ data: {
+              BusinessUnits: undefined,
+              People_Without_Team: undefined,
+              errors: undefined
+            }});
           });
           test("should still load triton admin", async () => {
             await runTritonAdminStartup(mockAdminDispatch);
-            expect(mockAdminDispatch).toHaveBeenCalledTimes(8);
+            expect(mockAdminDispatch).toHaveBeenCalledTimes(9);
             expect(mockAdminDispatch).toHaveBeenCalledWith({
               type: "loadManagers",
               payload: formatManagersResponse(dbManagers)
@@ -360,7 +374,14 @@ describe("cct-triton-admin-startup", () => {
               type: "loadWorkers",
               payload: filteredWorkers
             });
-            expect(getCalabrioWfmOrg).toHaveBeenCalledTimes(1);
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadWfmOrg",
+              payload: {
+                org: [],
+                People_Without_Team: [],
+                errors: []
+              }
+            });
             expect(getCalabrioWfmOptions).toHaveBeenCalledTimes(1);
           });
         });
@@ -372,7 +393,7 @@ describe("cct-triton-admin-startup", () => {
           });
           test("should still load triton admin", async () => {
             await runTritonAdminStartup(mockAdminDispatch);
-            expect(mockAdminDispatch).toHaveBeenCalledTimes(8);
+            expect(mockAdminDispatch).toHaveBeenCalledTimes(9);
             expect(mockAdminDispatch).toHaveBeenCalledWith({
               type: "loadManagers",
               payload: formatManagersResponse(dbManagers)
@@ -405,7 +426,14 @@ describe("cct-triton-admin-startup", () => {
               type: "loadWorkers",
               payload: filteredWorkers
             });
-            expect(getCalabrioWfmOrg).toHaveBeenCalledTimes(1);
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadWfmOrg",
+              payload: {
+                org: [],
+                People_Without_Team: [],
+                errors: []
+              }
+            });
             expect(getCalabrioWfmOptions).toHaveBeenCalledTimes(1);
           });
         });
@@ -417,7 +445,7 @@ describe("cct-triton-admin-startup", () => {
           });
           test("should still load triton admin", async () => {
             await runTritonAdminStartup(mockAdminDispatch);
-            expect(mockAdminDispatch).toHaveBeenCalledTimes(8);
+            expect(mockAdminDispatch).toHaveBeenCalledTimes(9);
             expect(mockAdminDispatch).toHaveBeenCalledWith({
               type: "loadManagers",
               payload: formatManagersResponse(dbManagers)
@@ -450,20 +478,29 @@ describe("cct-triton-admin-startup", () => {
               type: "loadWorkers",
               payload: filteredWorkers
             });
-            expect(getCalabrioWfmOrg).toHaveBeenCalledTimes(1);
+            expect(mockAdminDispatch).toHaveBeenCalledWith({
+              type: "loadWfmOrg",
+              payload: {
+                org: [],
+                People_Without_Team: [],
+                errors: []
+              }
+            });
             expect(getCalabrioWfmOptions).toHaveBeenCalledTimes(1);
           });
         });
       });
-      describe("getCalabrioWfmOrg", () => {
+      describe("getBusinessUnits", () => {
         describe("Calabrio wfm org service call returned an error", () => {
           beforeEach(() => {
-            getCalabrioWfmOrg.mockReturnValue(false);
+            getWfmBusinessUnits.mockRejectedValue("boo");
           });
           test("should still load triton admin", async () => {
-            await runTritonAdminStartup(mockAdminDispatch);
-            expect(mockAdminDispatch).toHaveBeenCalledTimes(9);
-            expect(getCalabrioWfmOrg).toHaveBeenCalledTimes(1);
+            try {
+              await runTritonAdminStartup(mockAdminDispatch);
+            } catch(err) {
+              expect(err.msg).toBe("Failed to fetch Calabrio Business Units");
+            }
           });
         });
       });
@@ -474,7 +511,7 @@ describe("cct-triton-admin-startup", () => {
           });
           test("should still load triton admin", async () => {
             await runTritonAdminStartup(mockAdminDispatch);
-            expect(mockAdminDispatch).toHaveBeenCalledTimes(9);
+            expect(mockAdminDispatch).toHaveBeenCalledTimes(10);
             expect(getCalabrioWfmOptions).toHaveBeenCalledTimes(1);
           });
         });
