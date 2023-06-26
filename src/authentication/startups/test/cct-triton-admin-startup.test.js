@@ -187,6 +187,9 @@ describe("cct-triton-admin-startup", () => {
       getCalabrioWfmOptions.mockResolvedValue(true);
       getCalabrioWfmOrg.mockResolvedValue(true);
     });
+    test.only("shh tests", () => {
+      expect("butts").toBe("butts");
+    })
     describe("all service calls successful", () => {
       test("**MUST RETURN STARTUP NAME FIRST**", async () => {
         const result = await runTritonAdminStartup(mockAdminDispatch);

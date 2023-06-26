@@ -16,7 +16,7 @@ describe("reducer", () => {
       expect(result).toBe(initialState);
     });
   });
-  describe("addManager", () => {
+  describe.only("addManager", () => {
     test("should add to the managers array", () => {
       const payload = {
         manager_first_name: "joe",

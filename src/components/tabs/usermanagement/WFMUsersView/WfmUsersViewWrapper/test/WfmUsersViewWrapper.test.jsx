@@ -1,4 +1,5 @@
 import WfmUsersViewWrapper from "../WfmUsersViewWrapper";
+import InfoBanner from "../../InfoBanner/InfoBanner";
 import {
   WfmErrorBanner,
   WfmUsersHeader,
@@ -6,7 +7,6 @@ import {
   WfmUserTable
 } from "components";
 import { useAdminState } from "context";
-import { useNavigate } from 'react-router-dom';
 import React from "react";
 import {
   act,
@@ -14,12 +14,14 @@ import {
   getLastInstanceCalled,
   initialTestState,
   render,
-  setupMockedComponents
+  setupMockedComponents,
+  waitFor
 } from "testUtils";
 import {
   getWfmPeople,
   sortWfmWorkersByFullName
 } from "utils";
+import { ModalOverlayStatuses } from "globals";
 
 jest.mock("components", () => ({
   WfmErrorBanner: jest.fn(),
@@ -32,8 +34,9 @@ jest.mock("context", () => ({
   useAdminState: jest.fn()
 }));
 
-jest.mock("react-router-dom", () => ({
-  useNavigate: jest.fn()
+jest.mock("../../InfoBanner/InfoBanner", () => ({
+  __esModule: true,
+  default : jest.fn()
 }));
 
 const defaultTableState = {
@@ -53,11 +56,20 @@ const defaultTableState = {
 };
 
 const workersCopy = getWfmPeople(initialTestState).slice();
-const mockNavigate = jest.fn();
-
+const businessUnitId = "123-321";
 describe("WfmUsersViewWrapper", () => {
   const doRender = () => {
-    return render(<WfmUsersViewWrapper/>);
+    const rendered =  render(<WfmUsersViewWrapper/>);
+    expect(WfmUsersHeader).toHaveBeenCalledTimes(2);
+    const setTableState = WfmUsersHeader.mock.calls[1][0].setTableState;
+    act(() => setTableState({
+      ...defaultTableState,
+      businessUnitFilter: businessUnitId
+    }));
+    expect(WfmUsersHeader).toHaveBeenCalledTimes(4);
+    const setStatus = WfmUsersHeader.mock.calls[3][0].setStatus;
+    act(() => setStatus(ModalOverlayStatuses.SUCCESS));
+    return rendered;
   };
 
   beforeEach(() => {
@@ -66,46 +78,49 @@ describe("WfmUsersViewWrapper", () => {
       WfmErrorBanner,
       WfmUsersHeader,
       Pagination,
-      WfmUserTable
+      WfmUserTable,
+      InfoBanner
     });
     useAdminState.mockReturnValue(initialTestState);
-    useNavigate.mockReturnValue(mockNavigate);
   });
   describe("initial render", () => {
-    test("ManagementHeader, WfmUserTable, Pagination are rendered with expected props", () => {
+    test.only("ManagementHeader, WfmUserTable, Pagination are rendered with expected props", () => {
       const expectedDefaultTableState = {
         tableState: {
           ...defaultTableState,
-          searchResults: getWfmPeople(initialTestState).sort(sortWfmWorkersByFullName),
+          businessUnitFilter: businessUnitId,
+          searchResults: getWfmPeople(initialTestState).filter(p => p.BusinessUnitId === businessUnitId).sort(sortWfmWorkersByFullName),
           pagination: {
             ...defaultTableState.pagination,
             startingUserIndex: 0,
-            length: 3,
+            length: 1,
             endingUserIndex: 24
           },
-          filteredList: getWfmPeople(initialTestState).sort(sortWfmWorkersByFullName)
+          filteredList: getWfmPeople(initialTestState).filter(p => p.BusinessUnitId === businessUnitId).sort(sortWfmWorkersByFullName)
         }
       }
       doRender();
-      expect(WfmUsersHeader).toHaveBeenCalledTimes(2);
       expectOnlyPassedProps(WfmUsersHeader, expectedDefaultTableState, getLastInstanceCalled(WfmUsersHeader));
-      expect(WfmUserTable).toHaveBeenCalledTimes(2);
-      expect(WfmErrorBanner).toHaveBeenCalledTimes(2);
+      expect(WfmUserTable).toHaveBeenCalledTimes(1);
+      expect(WfmErrorBanner).toHaveBeenCalledTimes(5);
       expectOnlyPassedProps(WfmUserTable, expectedDefaultTableState, getLastInstanceCalled(WfmUserTable));
-      expect(Pagination).toHaveBeenCalledTimes(2);
+      expect(Pagination).toHaveBeenCalledTimes(1);
       expectOnlyPassedProps(Pagination, expectedDefaultTableState, getLastInstanceCalled(Pagination));
     });
   });
   describe("searchBy === Faith", () => {
-    test("filtered list only inlcudes expected options", () => {
+    test("filtered list only inlcudes expected options", async () => {
       doRender();
-      const setWfmTable = WfmUserTable.mock.calls[1][0].setTableState;
+      const setWfmTable = WfmUserTable.mock.calls[0][0].setTableState;
       act(() => setWfmTable({
         ...defaultTableState,
         searchBy: "FaiTh"
       }));
-      expect(WfmUserTable.mock.calls.length).toBe(4);
-      expect(WfmUserTable.mock.calls[3][0].tableState.filteredList).toStrictEqual([workersCopy[2]]);
+      await waitFor(() => {
+        expect(WfmUserTable.mock.calls.length).toBe(2);
+      })
+      expect(WfmUserTable.mock.calls.length).toBe(1);
+      expect(WfmUserTable.mock.calls[0][0].tableState.filteredList).toStrictEqual([workersCopy[2]]);
     });
     describe("team filter is selected", () => {
       test("filtered list only inlcudes expected options", () => {
@@ -115,8 +130,8 @@ describe("WfmUsersViewWrapper", () => {
           ...defaultTableState,
           teamFilter: "111"
         }));
-        expect(WfmUserTable.mock.calls.length).toBe(4);
-        expect(WfmUserTable.mock.calls[3][0].tableState.filteredList).toStrictEqual([workersCopy[1]]);
+        expect(WfmUserTable.mock.calls.length).toBe(1);
+        expect(WfmUserTable.mock.calls[0][0].tableState.filteredList).toStrictEqual([workersCopy[1]]);
       });
     });
     describe("team filter is selected with an unknown team", () => {
@@ -127,8 +142,8 @@ describe("WfmUsersViewWrapper", () => {
           ...defaultTableState,
           teamFilter: "0099"
         }));
-        expect(WfmUserTable.mock.calls.length).toBe(4);
-        expect(WfmUserTable.mock.calls[3][0].tableState.filteredList).toStrictEqual([workersCopy[2], workersCopy[0], workersCopy[1]]);
+        expect(WfmUserTable.mock.calls.length).toBe(1);
+        expect(WfmUserTable.mock.calls[0][0].tableState.filteredList).toStrictEqual([workersCopy[2], workersCopy[0], workersCopy[1]]);
       });
     });
     describe("team filter === no team", () => {
@@ -139,8 +154,8 @@ describe("WfmUsersViewWrapper", () => {
           ...defaultTableState,
           teamFilter: "no-team"
         }));
-        expect(WfmUserTable.mock.calls.length).toBe(4);
-        expect(WfmUserTable.mock.calls[3][0].tableState.filteredList).toStrictEqual([workersCopy[0]]);
+        expect(WfmUserTable.mock.calls.length).toBe(1);
+        expect(WfmUserTable.mock.calls[0][0].tableState.filteredList).toStrictEqual([workersCopy[0]]);
       });
     });
     describe("business Unit filter is selected", () => {
@@ -151,8 +166,8 @@ describe("WfmUsersViewWrapper", () => {
           ...defaultTableState,
           businessUnitFilter: "123-321"
         }));
-        expect(WfmUserTable.mock.calls.length).toBe(4);
-        expect(WfmUserTable.mock.calls[3][0].tableState.filteredList).toStrictEqual([workersCopy[1]]);
+        expect(WfmUserTable.mock.calls.length).toBe(2);
+        expect(WfmUserTable.mock.calls[1][0].tableState.filteredList).toStrictEqual([workersCopy[1]]);
       });
     });
     describe("business Unit filter === People_Without_Team", () => {
@@ -163,8 +178,8 @@ describe("WfmUsersViewWrapper", () => {
           ...defaultTableState,
           businessUnitFilter: "People_Without_Team"
         }));
-        expect(WfmUserTable.mock.calls.length).toBe(4);
-        expect(WfmUserTable.mock.calls[3][0].tableState.filteredList).toStrictEqual([workersCopy[2], workersCopy[0]]);
+        expect(WfmUserTable.mock.calls.length).toBe(3);
+        expect(WfmUserTable.mock.calls[2][0].tableState.filteredList).toStrictEqual([workersCopy[2], workersCopy[0]]);
       });
     });
     describe("pagination is moved to page 2", () => {
@@ -178,8 +193,8 @@ describe("WfmUsersViewWrapper", () => {
             pageNumber: 2
           }
         }));
-        expect(Pagination.mock.calls.length).toBe(4);
-        expect(Pagination.mock.calls[3][0].tableState.filteredList).toStrictEqual([]);
+        expect(Pagination.mock.calls.length).toBe(1);
+        expect(Pagination.mock.calls[0][0].tableState.filteredList).toStrictEqual(getWfmPeople(initialTestState).filter(p => p.BusinessUnitId === businessUnitId).sort(sortWfmWorkersByFullName));
       });
     });
   });

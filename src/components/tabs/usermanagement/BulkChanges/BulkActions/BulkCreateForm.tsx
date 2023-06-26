@@ -17,7 +17,6 @@ import { Checkbox, Modal } from "@mui/material";
 
 const BulkCreateForm = (props: BulkActionFormProps) => {
   const {
-    businessUnitId,
     setBusinessUnitId,
     selectedTemplates,
     setSelectedTemplates

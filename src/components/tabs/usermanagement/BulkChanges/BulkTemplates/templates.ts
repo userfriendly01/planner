@@ -157,9 +157,15 @@ const processWFMCreateUser = async (row: any, state: any) => {
     // completely optional
     body.OptionalColumns = row.wfmOptionalColumns;
 
-    await createCalabrioWFMPerson(body);
-    console.log(`Person created in Calabrio WFM for ${row.attributes.n_number} for row ${rowNumber}`);
-    return Promise.resolve(`Person created in Calabrio WFM for ${row.attributes.n_number} for row ${rowNumber}`);
+    const environment = state.userContext.pingIdentity.environment;
+    if(environment === "production"){
+      await createCalabrioWFMPerson(body);
+      console.log(`Person created in Calabrio WFM for ${row.attributes.n_number} for row ${rowNumber}`);
+      return Promise.resolve(`Person created in Calabrio WFM for ${row.attributes.n_number} for row ${rowNumber}`);
+    } else {
+      console.log(`No NP environment for WFM. WFM user not created for ${row.attributes.n_number} for row ${rowNumber}`, body);
+      return Promise.resolve(`No NP environment for WFM. WFM user not created for ${row.attributes.n_number} for row ${rowNumber}`);
+    }
   } catch(err) {
     let errorMessage;
     if (err?.response?.data && err?.response?.data?.exception === "com.netflix.zuul.exception.ZuulException") {

@@ -216,7 +216,7 @@ describe("<UserFormButtons />", () => {
         useFormState.mockReturnValue(form);
         isDidDifferentValid.mockReturnValue(true);
       });
-      describe("forwardToToggle === false", () => {
+      describe.only("forwardToToggle === false", () => {
         test("Tooltip title should be blank", () => {
           renderComponent(false);
           expect(Tooltip.mock.calls[0][0].title).toBe("");

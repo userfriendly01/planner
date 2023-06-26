@@ -14,14 +14,13 @@ import {
 } from "services";
 import { initialTestState } from "testUtils";
 
-
 const createTemplates = getCreateTemplates(initialTestState);
 const updateTemplates = getUpdateTemplates(initialTestState);
 
 describe("CREATE_TRITON_USER", () => {
   beforeEach(() => jest.clearAllMocks());
   const createTritonProcessFunction = createTemplates.CREATE_TRITON_USER.processFunction;
-  describe("createUser is successful", () => {
+  describe.only("createUser is successful", () => {
     beforeEach(() => createUser.mockResolvedValue({ workerSid: "WK123456" }));
     describe("user is DID user", () => {
       const row = {

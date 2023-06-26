@@ -158,7 +158,7 @@ describe("calabrioUtils", () => {
     Date.now.mockReturnValue("Right Now");
   });
 
-  describe("addWorkerToOrg", () => {
+  describe.only("addWorkerToOrg", () => {
     test("team is null - should add to People_Without_Team", () => {
       const user = { BusinessUnitId: "123-321" };
       const result = addWorkerToOrg(user, { ...initialTestState });

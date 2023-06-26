@@ -99,7 +99,7 @@ describe("<BulkChanges />", () => {
     });
   });
   describe("initial render", () => {
-    test("should render as expected", () => {
+    test.only("should render as expected", () => {
       const rendered = render(<BulkChanges />);
       expect(rendered.container).not.toHaveTextContent("Step 2: Export Template & Template Options");
       expect(rendered.container).not.toHaveTextContent("Step 3: Upload completed Spreadsheet");

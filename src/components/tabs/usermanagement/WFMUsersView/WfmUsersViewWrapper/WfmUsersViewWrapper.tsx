@@ -8,17 +8,15 @@ import {
   WfmUserTable,
   WfmErrorBanner
 } from "components";
-import { useAdminDispatch, useAdminState } from "context";
+import { useAdminState } from "context";
 import { ModalOverlayStatuses, WfmBusinessUnit, WfmTeam, WfmUser } from "globals";
 import React from "react";
-import { useNavigate } from 'react-router-dom';
 import {
   getWfmBusinessUnits,
   getWfmTeams,
   getWfmPeople,
   filterWfmUserTable,
-  sortWfmWorkersByFullName,
-  getCalabrioWfmOrg
+  sortWfmWorkersByFullName
 } from "utils";
 import InfoBanner from "../InfoBanner/InfoBanner";
 
@@ -45,7 +43,6 @@ const TritonUserManagementWrapper: any = () => {
   const wfmPeople = getWfmPeople(state);
   const [ status, setStatus ] = React.useState(null);
   const [ tableState, setTableState ] = React.useState(defaultTableState);
-  const navigate = useNavigate();
 
   React.useEffect(() => {
 

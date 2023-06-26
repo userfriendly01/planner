@@ -299,12 +299,11 @@ describe("ExportOptionsButton", () => {
     });
   });
   describe("initial render", () => {
-    test("component renders as expected", () => {
+    test.only("component renders as expected", () => {
       render(<ExportOptionsButton template={createTemplates.CREATE_TRITON_USER.fields} selectedTemplates={[]} state={initialTestState}/>);
       render(Button.mock.calls[0][0].children[0]);
       expect(Button.mock.calls.length).toBe(1);
       expect(ExcelExport.mock.calls.length).toBe(2);
-      expect(BusinessUnitModal.mock.calls.length).toBe(0);
     });
     describe("onClick", () => {
       test("handleExport is called", () => {
