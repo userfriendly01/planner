@@ -348,7 +348,7 @@ export const initiateCalls = async (
         if (failedActivations.workersFailedToActivate?.length > 0){
           finalErrors.push({
             rowNumber: "multiple",
-            errors: "An error occurred and we were unable to activate these workers",
+            errors: `An error occurred and we were unable to activate these workers: ${failedActivations.message}`,
             wfmErrors: failedActivations.workersFailedToActivate.toString()
           });
         }
@@ -396,9 +396,7 @@ export const handleWfmExternalLogon = async (state: AppState, dispatch: any, suc
     const totalNNumbers = wfmNNumbers.length;
     const resultsArray: any[] = [];
     let currentIndex = 0;
-    const noWorkers: any = [];
-    const failedToActivate: any = [];
-    const failedToOffline: any = [];
+
 
     const processBatch = async (): Promise<any> => {
       const endingIndex = currentIndex + max;
@@ -410,7 +408,15 @@ export const handleWfmExternalLogon = async (state: AppState, dispatch: any, suc
         });
         resultsArray.push(results);
       } catch(err) {
-        failedToActivate.push(`WFM Activations failed: ${err.message}`);
+        console.error(`WFM Activations failed`, err);
+        resultsArray.push({
+          data: {
+            failedActivations: {
+              message: `${err.message || err} ${err.reason}`,
+              workersFailedToActivate: processingNNumbers
+            }
+          }
+        });
       }
 
       currentIndex = currentIndex + max;
@@ -421,24 +427,29 @@ export const handleWfmExternalLogon = async (state: AppState, dispatch: any, suc
         Promise.resolve();
       }
     };
+    await processBatch();
+    console.log("FAITH RESULTS", resultsArray);
 
-    const failedActivations = resultsArray[0].data?.failedActivations || {};
+    const failedActivations = resultsArray[0]?.data?.failedActivations || {};
+    const noWorkers: any = [];
+    const failedToActivate: any = [];
+    const failedToOffline: any = [];
 
     resultsArray.forEach((result: any) => {
       const {
         nNumbersWithoutTwilioWorkers,
         workersFailedToActivate,
         workersFailedToReturnToOffline
-      } = result.data.failedActivations;
+      } = result?.data?.failedActivations;
 
       if (nNumbersWithoutTwilioWorkers !== undefined || workersFailedToActivate !== undefined || workersFailedToReturnToOffline !== undefined) {
-        const failed1 = result.data.failedActivations.nNumbersWithoutTwilioWorkers;
-        const failed2 = result.data.failedActivations.workersFailedToActivate;
-        const failed3 = result.data.failedActivations.workersFailedToReturnToOffline;
+        const failed1 = result?.data?.failedActivations.nNumbersWithoutTwilioWorkers;
+        const failed2 = result?.data?.failedActivations.workersFailedToActivate;
+        const failed3 = result?.data?.failedActivations.workersFailedToReturnToOffline;
 
-        noWorkers.push(failed1);
-        failedToActivate.push(failed2);
-        failedToOffline.push(failed3);
+        failed1 && noWorkers.push(failed1);
+        failed2 && failedToActivate.push(failed2);
+        failed3 && failedToOffline.push(failed3);
       }
     });
 
