@@ -1,7 +1,8 @@
 import {
   ButtonWrapper,
   Button,
-  ModalWrapper
+  ModalWrapper,
+  CenteredDiv
 } from "./BulkChanges.Styles";
 import {
   useAdminDispatch,
@@ -76,8 +77,9 @@ const BusinessUnitModal = (props: BusinessUnitModalProps) => {
             </Button>
           </ButtonWrapper>
         }
+        { status === ModalOverlayStatuses.FAIL && <CenteredDiv>Business Unit Failed to Load, please try again.</CenteredDiv>}
       </>
-      : <>WFM Options failed to load, please refresh Triton Admin and try again</>
+      : <CenteredDiv>WFM Options failed to load, please refresh Triton Admin and try again</CenteredDiv>
       }
     </ModalWrapper>
   );

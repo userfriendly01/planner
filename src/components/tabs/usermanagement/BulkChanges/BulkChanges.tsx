@@ -26,7 +26,6 @@ import {
   ExportOptionsButton
 } from "./ExportButtons";
 import { ProcessingModal } from "./Processing";
-import WFMLoadRetryModal from "./WFMLoadRetryModal";
 import { checkIfBulkAdmin } from "authentication";
 import { Dropdown } from "components";
 import { useAdminState } from "context";
@@ -43,20 +42,11 @@ const BulkChanges = () => {
   const [ uploadedForm, setUploadedForm ] = React.useState(null);
   const [ filenameText, setFilenameText ] = React.useState(null);
   const [ showProcessingModal , setShowProcessingModal ] = React.useState(false);
-  const [ showWFMLoadModal, setShowWFMLoadModal ] = React.useState(false);
   const [ businessUnitId, setBusinessUnitId ] = React.useState(null);
   const createTemplates = getCreateTemplates(state);
 
   React.useEffect(() => {
     consolidateTemplates(selectedTemplates, setConsolidatedTemplates);
-
-    // If wfm user template is selected, but the options failed to load, try to reload them in the modal
-    if(selectedTemplates.some((t: Template) => t.name === "CREATE_CALABRIO_WFM_PERSON")) {
-      const isLoaded = checkIfWFMLoaded();
-      if (!isLoaded) {
-        setShowWFMLoadModal(true);
-      }
-    }
   }, [selectedTemplates]);
 
   const resetBulkChanges = () => {
@@ -100,13 +90,6 @@ const BulkChanges = () => {
                 handleClose={resetBulkChanges}
                 uploadedForm={uploadedForm}
                 consolidatedFieldsList={consolidatedTemplate}
-              />
-            </>
-          </Modal>
-          <Modal open={showWFMLoadModal} onClose={() => { return; }} >
-            <>
-              <WFMLoadRetryModal
-                handleClose={() => setShowWFMLoadModal(false)}
               />
             </>
           </Modal>

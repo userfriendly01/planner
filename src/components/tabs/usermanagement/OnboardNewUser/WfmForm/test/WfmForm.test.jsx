@@ -14,7 +14,6 @@ import {
   Tooltip
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import WFMLoadRetryModal from "../../../BulkChanges/WFMLoadRetryModal";
 import {
   initialFormState,
   initialTestState,
@@ -55,11 +54,6 @@ jest.mock("@mui/x-date-pickers/DatePicker", () => ({
   DatePicker: jest.fn()
 }));
 
-jest.mock("../../../BulkChanges/WFMLoadRetryModal", () => ({
-  __esModule: true,
-  default: jest.fn()
-}));
-
 const mockSetForm = jest.fn();
 
 test("boo", () => {
@@ -94,46 +88,6 @@ describe("<WfmForm />", () => {
     });
   });
   describe("initial render", () => {
-    describe("wfmoptions and wfmOrg are not loaded", () => {
-      test("should render with the WFM Load Retry Modal", () => {
-        const stateWithoutWfm = {
-          ...initialTestState,
-          calabrioContext: {
-            ...initialTestState.calabrioContext,
-            wfmOptions: [],
-            wfmOrg: []
-          }
-        };
-        useAdminState.mockReturnValue(stateWithoutWfm);
-        renderComponent();
-        expect(WFMLoadRetryModal).toHaveBeenCalled();
-        expect(Dropdown).not.toHaveBeenCalled();
-        expect(DatePicker).not.toHaveBeenCalled();
-        expect(TextField).not.toHaveBeenCalled();
-      });
-      test("handleClose is called", () => {
-        const stateWithoutWfm = {
-          ...initialTestState,
-          calabrioContext: {
-            ...initialTestState.calabrioContext,
-            wfmOptions: [],
-            wfmOrg: []
-          }
-        };
-        useAdminState.mockReturnValue(stateWithoutWfm);
-        renderComponent();
-        expect(WFMLoadRetryModal).toHaveBeenCalled();
-        const handleClose = WFMLoadRetryModal.mock.calls[1][0].handleClose;
-        act(() => handleClose());
-        expect(mockSetForm).toHaveBeenCalledWith({
-          type: "UPDATE_USER_FOUND",
-          payload: {
-            system: "calabrio_wfm",
-            isFound: false
-          }
-        });
-      });
-    });
     describe("wfmoptions and wfmOrg are loaded", () => {
       test("should render as expected", () => {
         renderComponent();

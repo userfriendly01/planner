@@ -7,7 +7,6 @@ import {
 } from "components";
 import { useAdminState } from "context";
 import { useNavigate } from 'react-router-dom';
-import WFMLoadRetryModal from "../../../BulkChanges/WFMLoadRetryModal";
 import React from "react";
 import {
   act,
@@ -27,11 +26,6 @@ jest.mock("components", () => ({
   WfmUsersHeader: jest.fn(),
   Pagination: jest.fn(),
   WfmUserTable: jest.fn()
-}));
-
-jest.mock("../../../BulkChanges/WFMLoadRetryModal", () => ({
-  __esModule: true,
-  default: jest.fn()
 }));
 
 jest.mock("context", () => ({
@@ -72,8 +66,7 @@ describe("WfmUsersViewWrapper", () => {
       WfmErrorBanner,
       WfmUsersHeader,
       Pagination,
-      WfmUserTable,
-      WFMLoadRetryModal
+      WfmUserTable
     });
     useAdminState.mockReturnValue(initialTestState);
     useNavigate.mockReturnValue(mockNavigate);
@@ -101,30 +94,6 @@ describe("WfmUsersViewWrapper", () => {
       expectOnlyPassedProps(WfmUserTable, expectedDefaultTableState, getLastInstanceCalled(WfmUserTable));
       expect(Pagination).toHaveBeenCalledTimes(2);
       expectOnlyPassedProps(Pagination, expectedDefaultTableState, getLastInstanceCalled(Pagination));
-    });
-    describe("WFM state is not loaded", () => {
-      beforeEach(() => {
-        useAdminState.mockReturnValue({
-          ...initialTestState,
-          calabrioContext: {
-            wfmOrg: null
-          }
-        });
-      });
-      test("should render WFMLoadRetryModal", () => {
-        doRender();
-        expect(WFMLoadRetryModal).toHaveBeenCalledTimes(1);
-      });
-      describe("WFMLoadRetryModal handleClose is called", () => {
-        test("should call navigate with -1", () => {
-          doRender();
-          expect(WFMLoadRetryModal).toHaveBeenCalledTimes(1);     
-          const handleClose = WFMLoadRetryModal.mock.calls[0][0].handleClose;
-          act(() => handleClose());
-          expect(mockNavigate).toHaveBeenCalledTimes(1);
-          expect(mockNavigate).toHaveBeenCalledWith(-1);
-        });
-      })
     });
   });
   describe("searchBy === Faith", () => {
