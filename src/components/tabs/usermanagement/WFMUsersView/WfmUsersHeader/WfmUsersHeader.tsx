@@ -106,7 +106,11 @@ const ManagementHeader = (props: WfmUsersHeaderProps) => {
             setStatus(ModalOverlayStatuses.SAVING)
             setTableState({
               ...tableState,
-              businessUnitFilter: newValue.value
+              businessUnitFilter: newValue.value,
+              pagination: {
+                ...tableState.pagination,
+                pageNumber: 1
+              }
             })
             await getCalabrioWfmOrg(newValue.value, state, dispatch);
             setStatus(ModalOverlayStatuses.SUCCESS)

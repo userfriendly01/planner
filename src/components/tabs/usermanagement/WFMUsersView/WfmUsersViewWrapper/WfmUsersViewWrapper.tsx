@@ -48,7 +48,7 @@ const TritonUserManagementWrapper: any = () => {
 
     if(wfmPeople.length > 0){
       let filteredList = wfmPeople.slice().sort(sortWfmWorkersByFullName);
-      console.log("tableState", tableState);
+      console.log("tableState", wfmPeople);
 
       //filter by business unit
       if(tableState.businessUnitFilter){

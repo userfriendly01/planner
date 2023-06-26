@@ -317,6 +317,7 @@ export const calabrioContext = {
           Name: "Fake team",
           Id: "000",
           People: [{
+            BusinessUnitId: "999-999",
             FirstName: "Faith",
             EmploymentNumber: "n8765432"
           }]
