@@ -216,7 +216,7 @@ describe("<UserFormButtons />", () => {
         useFormState.mockReturnValue(form);
         isDidDifferentValid.mockReturnValue(true);
       });
-      describe.only("forwardToToggle === false", () => {
+      describe("forwardToToggle === false", () => {
         test("Tooltip title should be blank", () => {
           renderComponent(false);
           expect(Tooltip.mock.calls[0][0].title).toBe("");
@@ -961,7 +961,10 @@ describe("<UserFormButtons />", () => {
                 });
                 expect(mockDispatch.mock.calls[3][0]).toEqual({
                   type: "updateWfmOrg",
-                  payload: ["newstateyay!"]
+                  payload: {
+                    org: ["newstateyay!"],
+                    errors: []
+                  }
                 });
                 jest.runAllTimers();
                 expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
@@ -1078,7 +1081,10 @@ describe("<UserFormButtons />", () => {
                 });
                 expect(mockDispatch.mock.calls[3][0]).toEqual({
                   type: "updateWfmOrg",
-                  payload: ["newstateyay!"]
+                  payload: {
+                    org: ["newstateyay!"],
+                    errors: []
+                  }
                 });
                 jest.runAllTimers();
                 expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
@@ -2099,7 +2105,10 @@ describe("<UserFormButtons />", () => {
   
                 expect(mockDispatch.mock.calls[1][0]).toEqual({
                   type: "updateWfmOrg",
-                  payload: ["newstateyay!"]
+                  payload: {
+                    org: ["newstateyay!"],
+                    errors: []
+                  }
                 });
                 jest.runAllTimers();
                 expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
@@ -2182,7 +2191,10 @@ describe("<UserFormButtons />", () => {
                   });
                   expect(mockDispatch.mock.calls[1][0]).toEqual({
                     type: "updateWfmOrg",
-                    payload: ["newstateyay!"]
+                    payload: {
+                      org: ["newstateyay!"],
+                      errors: []
+                    }
                   });
                   jest.runAllTimers();
                   expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
