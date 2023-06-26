@@ -98,7 +98,7 @@ export const isWfmUserValid = (form: UserFormState) => {
     skillFIelds: ["PersonSkills", "SkillsStartDate"],
     rotationFields: ["RotationId", "RotationStartDate", "RotationStartWeek"]
   };
-  const missingFields: any = [];
+  const missingFields: string[] = [];
   if(!user.userFound){
     return [];
   } else {
@@ -236,6 +236,8 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
   let tritonWorker: Worker = null;
   let calabrioQmUser = null;
   let calabrioWfmUser = null;
+
+  console.log("faith", state.calabrioContext.wfmOrg);
 
   if(!form.nNumber.nNumberFetchedUser && form.nNumber.value && form.nNumber.value.match(nNumMatcher)){
     //set the nNumber & Triton/Calabrio users based off of the nNumber in the state

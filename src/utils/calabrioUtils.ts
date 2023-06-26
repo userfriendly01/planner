@@ -437,6 +437,12 @@ export const getCalabrioWfmOrg = async (businessUnitId: string, state: AppState,
         errors: [ ...existingErrors, ...org.data.errors || [] ]
       }
     });
-    return;
+    return {
+      ...state,
+      calabrioContext: {
+        ...state.calabrioContext,
+        wfmOrg: [ ...strippedOrg, businessUnit ]
+      }
+    };
   }
 };

@@ -4,6 +4,8 @@ import styled from "styled-components";
 export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
 `;
 export const Row = styled.div<{align?: string}>`
   display: flex;
@@ -12,6 +14,10 @@ export const Row = styled.div<{align?: string}>`
   align-self: center;
   margin-top: 10px;
   width: 100%;
+`;
+
+export const StatusWrapper = styled.div<{align?: string}>`
+  margin-top: 30px;
 `;
 
 export const Button = styled.button`

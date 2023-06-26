@@ -2,6 +2,7 @@ import React from "react";
 import {
   OptionalColumnRow,
   Row,
+  StatusWrapper,
   Wrapper
 } from "./WfmForm.Styles";
 import {
@@ -29,7 +30,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import {
   formModes,
-  ModalOverlayStatuses
+  ModalOverlayStatuses,
+  WfmBusinessUnit
 } from "globals";
 import {
   daysOfTheWeekOptions,
@@ -38,11 +40,13 @@ import {
   getWfmOptions,
   isUnpopulatedField,
   getCalabrioWfmOrg,
-  identifyUserProfiles
+  identifyUserProfiles,
+  isWfmUserValid
 } from "utils";
 
 interface WfmFormProps {
   missingFields: string[]
+  setMissingFields: (missingFields: string[]) => void
 }
 
 const WfmForm = (props: WfmFormProps) => {
@@ -52,66 +56,35 @@ const WfmForm = (props: WfmFormProps) => {
   const setForm = useFormDispatch();
   const [ status, setStatus ] = React.useState(null);
   const {
-    missingFields
+    missingFields,
+    setMissingFields
   } = props;
   const isAdd = form.formMode === formModes.INSERT || form.calabrio_wfm.Id === null;
   const [ optionsByBusinessUnit, setOptionsByBusinessUnit ] = React.useState<any>({});
-  
-  const [ availabilityFields, setAvailabilityFields ] = React.useState({
-    id: null,
-    startDate: null
-  });
-  const [ teamFields, setTeamFields ] = React.useState({
-    id: null,
-    startDate: null
-  });
-  const [ skillFields, setSkillFields ] = React.useState({
-    skills: [],
-    startDate: null
-  });
-  const [ rotationFields, setRotationFields ] = React.useState({
-    id: null,
-    startDate: null,
-    startWeek: null
-  });
+
   const [ optionalColumns, setOptionalColumns ] = React.useState(form.calabrio_wfm.OptionalColumns);
 
   const scheduleFields = {
     personStartDate: form.calabrio_wfm.EmploymentStartDate,
-    teamId: teamFields.id,
-    teamStartDate: teamFields.startDate,
+    teamId: form.calabrio_wfm.TeamId,
+    teamStartDate: form.calabrio_wfm.TeamStartDate,
     contractId: form.calabrio_wfm.ContractId,
     contractScheduleId: form.calabrio_wfm.ContractScheduleId,
     partTimePercentageId: form.calabrio_wfm.PartTimePercentageId
   };
 
   React.useEffect(() => {
-    if(!isAdd){
-      if(teamFields.id !== form.calabrio_wfm.TeamId){
-        setTeamFields({
-          id: form.calabrio_wfm.TeamId,
-          startDate: isUnpopulatedField(form.calabrio_wfm.TeamId) ? null : "NA"
-        });
-      }
-      if(JSON.stringify(skillFields.skills) !== JSON.stringify(form.calabrio_wfm.PersonSkills)){
-        setSkillFields({
-          skills: form.calabrio_wfm.PersonSkills,
-          startDate: isUnpopulatedField(form.calabrio_wfm.PersonSkills) ? null : "NA"
-        });
-      }
-      // Rotation & Availability fields arent returned from the get People endpoint
-    }
-  }, [form]);
-
-  React.useEffect(() => {
     const trimmedOptions = getWfmOptions(state, form.calabrio_wfm.BusinessUnitId);
     setOptionsByBusinessUnit(trimmedOptions);
+
+    if(!isAdd && state.calabrioContext.wfmOrg.find((bu: WfmBusinessUnit) => bu.Id === form.calabrio_wfm.BusinessUnitId)?.Teams){
+      setStatus(ModalOverlayStatuses.SUCCESS)
+    }
   }, [form.calabrio_wfm.BusinessUnitId]);
 
   React.useEffect(() => {
-    console.log("Faith org user effect was hit", state.calabrioContext.wfmOrg)
-    identifyUserProfiles(form, setForm, state);
-  }, [state.calabrioContext.wfmOrg]);
+    setMissingFields(isWfmUserValid(form));
+  }, [form.calabrio_wfm]);
 
   React.useEffect(() => {
     let validOptionalColumns: any[] = [];
@@ -133,75 +106,6 @@ const WfmForm = (props: WfmFormProps) => {
       });
     }
   }, [optionalColumns]);
-
-  React.useEffect(() => {
-    if(teamFields.id && teamFields.startDate){
-      setForm({
-        type: userFormActions.SET_WFM_TEAM,
-        payload: teamFields
-      });
-    } else {
-      setForm({
-        type: userFormActions.SET_WFM_TEAM,
-        payload: {
-          id: null,
-          startDate: null
-        }
-      });
-    }
-  }, [teamFields]);
-
-  React.useEffect(() => {
-    if(skillFields.skills && skillFields.startDate){
-      setForm({
-        type: userFormActions.SET_WFM_SKILLS,
-        payload: skillFields
-      })
-    } else {
-      setForm({
-        type: userFormActions.SET_WFM_SKILLS,
-        payload: {
-          skills: [],
-          startDate: null
-        }
-      });
-    }
-  }, [skillFields]);
-
-  React.useEffect(() => {
-    if(rotationFields.id && rotationFields.startDate && rotationFields.startWeek){
-      setForm({
-        type: userFormActions.SET_WFM_ROTATION,
-        payload: rotationFields
-      })
-    } else {
-      setForm({
-        type: userFormActions.SET_WFM_ROTATION,
-        payload: {
-          id: [],
-          startDate: null,
-          startWeek: null
-        }
-      });
-    }
-  }, [rotationFields]);
-
-  React.useEffect(() => {
-    if(availabilityFields.id && availabilityFields.startDate){
-      setForm({
-        type: userFormActions.SET_WFM_AVAILABILITY,
-        payload: availabilityFields
-      })
-    } else {
-      setForm({
-        type: userFormActions.SET_WFM_AVAILABILITY,
-        payload: {
-          id: "",
-          startDate: null
-        }
-      });
-    }
-  }, [availabilityFields]);
 
   React.useEffect(() => {
     const worker = form.nNumber.nNumberFetchedUser;
@@ -284,7 +188,8 @@ const WfmForm = (props: WfmFormProps) => {
                 type: userFormActions.SET_WFM_BUSINESS_UNIT,
                 payload: newValue?.value || null
               })
-              await getCalabrioWfmOrg(newValue.value, state, dispatch);
+              const newState = await getCalabrioWfmOrg(newValue?.value, state, dispatch);
+              identifyUserProfiles(form, setForm, newState);
               setStatus(ModalOverlayStatuses.SUCCESS)
             } catch(err) {
               setStatus(ModalOverlayStatuses.FAIL)
@@ -293,40 +198,46 @@ const WfmForm = (props: WfmFormProps) => {
           value={generateDropdownOption(getWfmBusinessUnits(state)?.find((bu: any) => bu.Id === form.calabrio_wfm.BusinessUnitId))}
         />
       </Row>
-      { status === ModalOverlayStatuses.SAVING && <ModalFetchingRing/> }
+      { status === ModalOverlayStatuses.SAVING && <StatusWrapper><ModalFetchingRing/></StatusWrapper> }
       { status === ModalOverlayStatuses.FAIL || state.calabrioContext.wfmOptions.length === 0 && <>Business Unit Data failed to load</>}
-      { form.calabrio_wfm.BusinessUnitId && 
-        (status === ModalOverlayStatuses.SUCCESS || !status) && 
+      { status === ModalOverlayStatuses.SUCCESS && 
         state.calabrioContext.wfmOptions.length > 0 &&
       <>
         <Row>
           <Dropdown
             disabled={!isAdd}
-            error={requiredFieldMissing("id", teamFields) || (missingFields.some((f:string) => f === "TeamId") && isUnpopulatedField(form.calabrio_wfm.TeamId))}
+            error={missingFields.some((f:string) => f === "TeamId" && isUnpopulatedField(form.calabrio_wfm.TeamId))}
             label={"Team"}
             styles={{
               width: "250px"
             }}
             options={generateDropdownOptionArray(getWfmTeams(state, form.calabrio_wfm.BusinessUnitId))}
-            updateValue={(event: any, newValue: any) => setTeamFields({
-              ...teamFields,
-              id: newValue?.value || null
+            updateValue={(event: any, newValue: any) => 
+            setForm({
+              type: userFormActions.SET_WFM_TEAM,
+              payload: {
+                id: newValue?.value || null,
+                startDate: form.calabrio_wfm.TeamStartDate
+              }
             })}
-            value={generateDropdownOption(getWfmTeams(state, form.calabrio_wfm.BusinessUnitId).find((t: any) => t.Id === teamFields.id))}
+            value={generateDropdownOption(getWfmTeams(state, form.calabrio_wfm.BusinessUnitId).find((t: any) => t.Id === form.calabrio_wfm.TeamId))}
           />
           { isAdd && 
             <DatePicker
               label="Team Start Date"
               disabled={!isAdd}
-              value={teamFields.startDate}
+              value={form.calabrio_wfm.TeamStartDate}
               onChange={(newValue) => {
-                setTeamFields({
-                  ...teamFields,
-                  startDate: newValue ? new Date(newValue).toISOString().split('T')[0] : newValue
+                setForm({
+                  type: userFormActions.SET_WFM_TEAM,
+                  payload: {
+                    id: form.calabrio_wfm.TeamId,
+                    startDate: newValue ? new Date(newValue).toISOString().split('T')[0] : newValue
+                  }
                 })}
               } 
               renderInput={props => <TextField {...props}
-                error={requiredFieldMissing("startDate", teamFields) || (missingFields.some((f:string) => f === "TeamStartDate") && isUnpopulatedField(form.calabrio_wfm.TeamStartDate))}
+                error={missingFields.some((f:string) => f === "TeamStartDate" && isUnpopulatedField(form.calabrio_wfm.TeamStartDate))}
               />}
             />
           }
@@ -412,13 +323,16 @@ const WfmForm = (props: WfmFormProps) => {
           <Dropdown
             disabled={!isAdd}
             multiple={true}
-            error={requiredFieldMissing("skills", skillFields) || (missingFields.some((f:string) => f === "PersonSkills") && isUnpopulatedField(form.calabrio_wfm.PersonSkills))}
+            error={missingFields.some((f:string) => f === "PersonSkills" && isUnpopulatedField(form.calabrio_wfm.PersonSkills))}
             label="Skills"
             options={generateDropdownOptionArray(optionsByBusinessUnit["Skills"])}
-            value={generateDropdownOptionArray(skillFields.skills)}
-            updateValue={(event: any, options: any) => setSkillFields({
-              ...skillFields,
-              skills: options
+            value={generateDropdownOptionArray(form.calabrio_wfm.PersonSkills)}
+            updateValue={(event: any, options: any) => setForm({
+              type: userFormActions.SET_WFM_SKILLS,
+              payload: {
+                skills: options,
+                startDate: form.calabrio_wfm.PersonSkills
+              }
             })}
             styles={{ width: "250px" }}
           />
@@ -426,15 +340,16 @@ const WfmForm = (props: WfmFormProps) => {
             <DatePicker
               disabled={!isAdd}
               label="Skills Start Date"
-              value={skillFields.startDate || ""}
-              onChange={(newValue) => {
-                setSkillFields({
-                  ...skillFields,
+              value={form.calabrio_wfm.SkillsStartDate}
+              onChange={(newValue) => setForm({
+                type: userFormActions.SET_WFM_SKILLS,
+                payload: {
+                  skills: form.calabrio_wfm.PersonSkills,
                   startDate: newValue ? new Date(newValue).toISOString().split('T')[0] : newValue
-                })}
-              } 
+                }
+              })}
               renderInput={props => <TextField {...props}
-                error={requiredFieldMissing("startDate", skillFields) || (missingFields.some((f:string) => f === "SkillsStartDate") && isUnpopulatedField(form.calabrio_wfm.SkillsStartDate))}
+                error={missingFields.some((f:string) => f === "SkillsStartDate" && isUnpopulatedField(form.calabrio_wfm.SkillsStartDate))}
               />}
             />
           }
@@ -570,69 +485,84 @@ const WfmForm = (props: WfmFormProps) => {
             <Dropdown
                 disabled={!isAdd}
                 label="Rotation"
-                error={requiredFieldMissing("id", rotationFields) || (missingFields.some((f:string) => f === "RotationId") && isUnpopulatedField(form.calabrio_wfm.RotationId))}
+                error={missingFields.some((f:string) => f === "RotationId" && isUnpopulatedField(form.calabrio_wfm.RotationId))}
                 options={generateDropdownOptionArray(optionsByBusinessUnit["Rotations"])}
-                value={generateDropdownOption(optionsByBusinessUnit["Rotations"]?.find((r: any) => r.Id === rotationFields.id))}
-                updateValue={(event: any, newValue: any) => setRotationFields({
-                  ...rotationFields,
-                  id: newValue?.value || null
+                value={generateDropdownOption(optionsByBusinessUnit["Rotations"]?.find((r: any) => r.Id === form.calabrio_wfm.RotationId))}
+                updateValue={(event: any, newValue: any) => setForm({
+                  type: userFormActions.SET_WFM_ROTATION,
+                  payload: {
+                    id: newValue?.value || null,
+                    startDate: form.calabrio_wfm.RotationStartDate,
+                    startWeek: form.calabrio_wfm.RotationStartWeek
+                  }
                 })}
                 styles={{ width: "250px" }}
               />
               <DatePicker
                 disabled={!isAdd}
                 label="Rotation Start Date"
-                value={rotationFields.startDate}
-                onChange={(newValue) => {
-                  setRotationFields({
-                    ...rotationFields,
-                    startDate: newValue ? new Date(newValue).toISOString().split('T')[0] : newValue
-                  })}
-                } 
+                value={form.calabrio_wfm.RotationStartDate}
+                onChange={(newValue) => setForm({
+                  type: userFormActions.SET_WFM_ROTATION,
+                  payload: {
+                    id: form.calabrio_wfm.RotationId,
+                    startDate: newValue ? new Date(newValue).toISOString().split('T')[0] : newValue,
+                    startWeek: form.calabrio_wfm.RotationStartWeek
+                  }
+                })}
                 renderInput={props => <TextField {...props}
-                  error={requiredFieldMissing("startDate", rotationFields) || (missingFields.some((f:string) => f === "RotationStartDate") && isUnpopulatedField(form.calabrio_wfm.RotationStartDate))}
+                  error={missingFields.some((f:string) => f === "RotationStartDate" && isUnpopulatedField(form.calabrio_wfm.RotationStartDate))}
                 />}
               />
               <Dropdown
                 disabled={!isAdd}
-                error={requiredFieldMissing("startWeek", rotationFields) || (missingFields.some((f:string) => f === "RotationStartWeek") && isUnpopulatedField(form.calabrio_wfm.RotationStartWeek))}
+                error={missingFields.some((f:string) => f === "RotationStartWeek" && isUnpopulatedField(form.calabrio_wfm.RotationStartWeek))}
                 label={"Rotation Start Week"}
                 styles={{
                   width: "250px",
                   margin: "0px 5px"
                 }}
                 options={generateDropdownOptionArray([1,2,3,4,5])}
-                updateValue={(event: any, newValue: any) => setRotationFields({
-                  ...rotationFields,
-                  startWeek: newValue?.value
+                updateValue={(event: any, newValue: any) => setForm({
+                  type: userFormActions.SET_WFM_ROTATION,
+                  payload: {
+                    id: form.calabrio_wfm.RotationId,
+                    startDate: form.calabrio_wfm.RotationStartDate,
+                    startWeek: newValue?.value
+                  }
                 })}
-                value={generateDropdownOption(rotationFields.startWeek)}
+                value={generateDropdownOption(form.calabrio_wfm.RotationStartWeek)}
               />
             </Row>
             <Row>
               <Dropdown
                 disabled={!isAdd}
                 label="Availability"
-                error={requiredFieldMissing("id", availabilityFields) || (missingFields.some((f:string) => f === "AvailabilityId") && isUnpopulatedField(form.calabrio_wfm.AvailabilityId))}
+                error={missingFields.some((f:string) => f === "AvailabilityId" && isUnpopulatedField(form.calabrio_wfm.AvailabilityId))}
                 options={generateDropdownOptionArray(optionsByBusinessUnit["Availabilities"])}
-                value={generateDropdownOption(optionsByBusinessUnit["Availabilities"]?.find((a: any) => a.Id === availabilityFields.id))}
-                updateValue={(event: any, newValue: any) => setAvailabilityFields({
-                  ...availabilityFields,
-                  id: newValue?.value || null
+                value={generateDropdownOption(optionsByBusinessUnit["Availabilities"]?.find((a: any) => a.Id === form.calabrio_wfm.AvailabilityId))}
+                updateValue={(event: any, newValue: any) => setForm({
+                  type: userFormActions.SET_WFM_AVAILABILITY,
+                  payload: {
+                    id: newValue?.value || null,
+                    startDate: form.calabrio_wfm.AvailabilityStartDate
+                  }
                 })}
                 styles={{ width: "250px" }}
               />
               <DatePicker
                 disabled={!isAdd}
                 label="Availability Start Date"
-                value={availabilityFields.startDate}
-                onChange={(newValue) => setAvailabilityFields({
-                    ...availabilityFields,
+                value={form.calabrio_wfm.AvailabilityStartDate}
+                onChange={(newValue) => setForm({
+                  type: userFormActions.SET_WFM_AVAILABILITY,
+                  payload: {
+                    id: form.calabrio_wfm.AvailabilityId,
                     startDate: newValue ? new Date(newValue).toISOString().split('T')[0] : newValue
-                  })
-                }
+                  }
+                })}
                 renderInput={props => <TextField {...props}
-                  error={requiredFieldMissing("startDate", availabilityFields) || (missingFields.some((f:string) => f === "AvailabilityStartDate") && isUnpopulatedField(form.calabrio_wfm.AvailabilityStartDate))}
+                  error={missingFields.some((f:string) => f === "AvailabilityStartDate" && isUnpopulatedField(form.calabrio_wfm.AvailabilityStartDate))}
                 />}
               />
             </Row>
