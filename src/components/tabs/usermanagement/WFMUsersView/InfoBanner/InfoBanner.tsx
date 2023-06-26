@@ -1,6 +1,15 @@
 import React from "react";
 import { ModalOverlayStatuses } from "globals";
 import { ModalFetchingRing } from "components";
+import styled from "styled-components";
+
+const InfoWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 30px;
+  font-size: 25px;
+`;
 
 const InfoBanner = (props: any) => {
   const {
@@ -8,11 +17,11 @@ const InfoBanner = (props: any) => {
   } = props;
 
   return (
-    <div>
+    <InfoWrapper>
       { !status && <>Please select a business unit </> }
       { status === ModalOverlayStatuses.SAVING && <ModalFetchingRing/> }
       { status === ModalOverlayStatuses.FAIL && <>Users failed to load, please try again</>}
-    </div>
+    </InfoWrapper>
   )
 };
 
