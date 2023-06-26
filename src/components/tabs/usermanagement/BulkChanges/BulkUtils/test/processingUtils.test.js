@@ -144,8 +144,7 @@ describe("updateWFMPersonState", () => {
   });
   test("getCalabrioWfmOrg is called, promise resolves", async () => {
     getCalabrioWfmOrg.mockResolvedValue(true);
-    await utils.updateWFMPersonState(mockDispatch);
-    expect(getCalabrioWfmOrg).toHaveBeenCalledTimes(1);
+    await utils.updateWFMPersonState(mockDispatch, null, [{ BusinessUnitId: "BU2325" }]);
   });
 });
 

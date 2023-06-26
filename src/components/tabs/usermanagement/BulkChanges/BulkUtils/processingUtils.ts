@@ -54,9 +54,10 @@ export const updateCalabrioUserState = async (dispatch: any): Promise<void> => {
 /**
  * Refreshes the calabrio WFM person state after a bulk update on users
  */
-export const updateWFMPersonState = async (state: any, dispatch: any): Promise<void> => {
-  //TODO pass through BU selection
-  await getCalabrioWfmOrg("", state, dispatch);
+export const updateWFMPersonState = async (state: any, dispatch: any, rows: any[]): Promise<void> => {
+  const businessUnitId = rows[0].BusinessUnitId;
+  console.log("FAITH - Business Unit Id", businessUnitId);
+  //manually update state - dont make another call
   return Promise.resolve();
 };
 
