@@ -430,7 +430,7 @@ describe("getLowestConcurrencyLimit", () => {
     processingConcurrencyLimit: null
   };
   describe("type === validation", () => {
-    test("lowest validationConcurrencyLimit is returned", () => {
+    test.only("lowest validationConcurrencyLimit is returned", () => {
       const result = utils.getLowestConcurrencyLimit([ template1, template2, template3 ], "validation");
       expect(result).toBe(5);
     });

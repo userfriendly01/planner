@@ -412,7 +412,7 @@ export const handleWfmExternalLogon = async (state: AppState, dispatch: any, suc
         resultsArray.push({
           data: {
             failedActivations: {
-              message: `${err.message || err} ${err.reason}`,
+              message: `${err.message || err} ${err.response.data && JSON.stringify(err.response.data)}`,
               workersFailedToActivate: processingNNumbers
             }
           }
