@@ -83,7 +83,7 @@ describe("updateTritonUserState", () => {
     test("dispatch is called, promise resolves", async () => {
       myAxios.get.mockResolvedValue(response);
       formatWorkerResponse.mockReturnValue(response.data);
-      await utils.updateTritonUserState(mockDispatch);
+      await utils.updateTritonUserState(null, mockDispatch);
       expect(myAxios.get).toHaveBeenCalledTimes(1);
       expect(mockDispatch).toHaveBeenCalledTimes(1);
       expect(mockDispatch).toHaveBeenCalledWith({
@@ -95,7 +95,7 @@ describe("updateTritonUserState", () => {
   describe("get workers fails", () => {
     myAxios.get.mockRejectedValue("Aww");
     test("dispatch is not called, promise resolves", async () => {
-      await utils.updateTritonUserState(mockDispatch);
+      await utils.updateTritonUserState(null, mockDispatch);
       expect(console.error).toHaveBeenCalledTimes(1);
       expect(console.error.mock.calls[0][0]).toContain("Failed to update triton user state after bulk upload");
     });
@@ -118,7 +118,7 @@ describe("updateCalabrioUserState", () => {
         }]
       };
       getCalabrioUsers.mockResolvedValue(response);
-      await utils.updateCalabrioUserState(mockDispatch);
+      await utils.updateCalabrioUserState(null, mockDispatch);
       expect(mockDispatch).toHaveBeenCalledTimes(1);
       expect(mockDispatch).toHaveBeenCalledWith({
         type: "loadCalabrioUsers",
@@ -129,7 +129,7 @@ describe("updateCalabrioUserState", () => {
   describe("get users fails", () => {
     test("dispatch is not called, promise resolves", async () => {
       getCalabrioUsers.mockRejectedValue("Aww");
-      await utils.updateCalabrioUserState(mockDispatch);
+      await utils.updateCalabrioUserState(null, mockDispatch);
       expect(console.error).toHaveBeenCalledTimes(1);
       expect(console.error.mock.calls[0][0]).toContain("Failed to update calabrio user state after bulk upload");
     });

@@ -1,4 +1,4 @@
-import { apiPaths } from "globals";
+import { apiPaths, AppState } from "globals";
 import {
   getCalabrioUsers,
   getWfmOrg,
@@ -21,7 +21,7 @@ import * as XLSX from "xlsx";
 /**
  * Refreshes the triton user state after a bulk update on users
  */
-export const updateTritonUserState = async (dispatch: any): Promise<void> => {
+export const updateTritonUserState = async (state: AppState, dispatch: any): Promise<void> => {
   try {
     const response = await myAxios.get(apiPaths.GET_WORKERS);
     const filteredWorkers = formatWorkerResponse(response.data).filter(worker => !worker.inactiveInd && worker.attributes);
@@ -38,7 +38,7 @@ export const updateTritonUserState = async (dispatch: any): Promise<void> => {
 /**
  * Refreshes the calabrio user state after a bulk update on users
  */
-export const updateCalabrioUserState = async (dispatch: any): Promise<void> => {
+export const updateCalabrioUserState = async (state: AppState, dispatch: any): Promise<void> => {
   try {
     const users: any = await getCalabrioUsers();
     dispatch({
