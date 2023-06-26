@@ -381,7 +381,6 @@ export const initiateCalls = async (
  * @param selectedTemplates selected templates to be processed
  */
 export const handleWfmExternalLogon = async (state: AppState, dispatch: any, successfulRows: any, selectedTemplates: any) => {
-  console.log("FAITH are we doing this?");
 
   if(selectedTemplates.some((t: Template) => t.name === "CREATE_TRITON_USER")) {
     const wfmNNumbers: any[] = [];
@@ -397,14 +396,22 @@ export const handleWfmExternalLogon = async (state: AppState, dispatch: any, suc
     const totalNNumbers = wfmNNumbers.length;
     const resultsArray: any[] = [];
     let currentIndex = 0;
+    const noWorkers: any = [];
+    const failedToActivate: any = [];
+    const failedToOffline: any = [];
+
     const processBatch = async (): Promise<any> => {
       const endingIndex = currentIndex + max;
       const processingNNumbers: any[] = wfmNNumbers.slice(currentIndex, endingIndex);
 
-      const results = await wfmActivateExternalLogon({
-        workerNNumbers: processingNNumbers
-      });
-      resultsArray.push(results);
+      try {
+        const results = await wfmActivateExternalLogon({
+          workerNNumbers: processingNNumbers
+        });
+        resultsArray.push(results);
+      } catch(err) {
+        failedToActivate.push(`WFM Activations failed: ${err.message}`);
+      }
 
       currentIndex = currentIndex + max;
 
@@ -414,13 +421,8 @@ export const handleWfmExternalLogon = async (state: AppState, dispatch: any, suc
         Promise.resolve();
       }
     };
-    await processBatch();
 
     const failedActivations = resultsArray[0].data?.failedActivations || {};
-
-    const noWorkers: any = [];
-    const failedToActivate: any = [];
-    const failedToOffline: any = [];
 
     resultsArray.forEach((result: any) => {
       const {
