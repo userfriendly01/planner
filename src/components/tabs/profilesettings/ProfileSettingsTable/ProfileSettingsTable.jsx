@@ -143,7 +143,9 @@ const ProfileSettingsTable = props => {
                     <CustomTableData>
                       <TableText>{formatSimpleText(profile?.access_group_nme)}</TableText>
                     </CustomTableData>
-                    {
+                    <CustomTableData>
+                      <TableText>{formatSimpleText(profile?.operating_unit_nme)}</TableText>
+                    </CustomTableData>{
                       checkIfPO(loggedInUser, environment) ?
                         <CustomTableData>
                           <IconWrapper onClick={editButtonOnClick(profile)} data-testid="edit-button">
@@ -152,9 +154,6 @@ const ProfileSettingsTable = props => {
                         </CustomTableData>
                         : <CustomTableData />
                     }
-                    <CustomTableData>
-                      <TableText>test</TableText>
-                    </CustomTableData>
                   </CustomTableRow>
                 );
               })

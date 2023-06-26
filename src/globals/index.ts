@@ -102,6 +102,10 @@ export const profileTableColumnHeader = [
   {
     COLUMN_NAME: "Access Group",
     TOOLTIP: "Access Group Name for BPO profiles"
+  },
+  {
+    COLUMN_NAME: "Operational Unit",
+    TOOLTIP: "Column to show which OU a profile is assigned to"
   }
 ];
 
