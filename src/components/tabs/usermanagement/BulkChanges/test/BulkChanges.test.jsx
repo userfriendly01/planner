@@ -99,7 +99,7 @@ describe("<BulkChanges />", () => {
     });
   });
   describe("initial render", () => {
-    test.only("should render as expected", () => {
+    test("should render as expected", () => {
       const rendered = render(<BulkChanges />);
       expect(rendered.container).not.toHaveTextContent("Step 2: Export Template & Template Options");
       expect(rendered.container).not.toHaveTextContent("Step 3: Upload completed Spreadsheet");
@@ -326,9 +326,9 @@ describe("<BulkChanges />", () => {
         expect(rendered.container).toHaveTextContent("Step 4: Process Bulk Create");
         const process = StyledButton.mock.calls[3][0].onClick;
         act(() => process());
-        expect(Modal.mock.calls[10][0].open).toBe(true);
-        render(Modal.mock.calls[10][0].children);
-        act(() => Modal.mock.calls[10][0].onClose()); //should do nothing
+        expect(Modal.mock.calls[5][0].open).toBe(true);
+        render(Modal.mock.calls[5][0].children);
+        act(() => Modal.mock.calls[5][0].onClose()); //should do nothing
         expect(ProcessingModal.mock.calls.length).toBe(1);
         expectOnlyPassedProps(ProcessingModal, {
           selectedTemplates: [mockSelectedTemplate],
@@ -355,7 +355,7 @@ describe("<BulkChanges />", () => {
           });
           const process = StyledButton.mock.calls[3][0].onClick;
           act(() => process());
-          render(Modal.mock.calls[10][0].children);
+          render(Modal.mock.calls[5][0].children);
           const handleClose = ProcessingModal.mock.calls[0][0].handleClose;
           act(() => handleClose());
           await waitFor(() => {
