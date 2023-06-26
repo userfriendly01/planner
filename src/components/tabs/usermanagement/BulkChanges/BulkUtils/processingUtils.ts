@@ -336,23 +336,23 @@ export const initiateCalls = async (
     template.forEach((result: any) => {
 
       if (result.value) {
-        const failedActivations = result.value.failedActivations;
+        const failedActivations = result.value.failedActivations || {};
 
-        if (failedActivations.nNumbersWithoutTwilioWorkers.length > 0){
+        if (failedActivations.nNumbersWithoutTwilioWorkers?.length > 0){
           finalErrors.push({
             rowNumber: "multiple",
             errors: "No Twilio workers were found with these n-Numbers",
             wfmErrors: failedActivations.nNumbersWithoutTwilioWorkers.toString()
           });
         }
-        if (failedActivations.workersFailedToActivate.length > 0){
+        if (failedActivations.workersFailedToActivate?.length > 0){
           finalErrors.push({
             rowNumber: "multiple",
             errors: "An error occurred and we were unable to activate these workers",
             wfmErrors: failedActivations.workersFailedToActivate.toString()
           });
         }
-        if (failedActivations.workersFailedToReturnToOffline.length > 0){
+        if (failedActivations.workersFailedToReturnToOffline?.length > 0){
           finalErrors.push({
             rowNumber: "multiple",
             errors: "There was an error returning these workers to offline state",
@@ -375,10 +375,14 @@ export const initiateCalls = async (
 
 /**
  * Inspects rows that were already successfully processed and, if necessary, activates a WFM person's external logon
+ * @param state application state
+ * @param dispatch update state function
  * @param successfulRows rows to be processed
  * @param selectedTemplates selected templates to be processed
  */
-export const handleWfmExternalLogon = async (dispatch: any, successfulRows: any, selectedTemplates: any) => {
+export const handleWfmExternalLogon = async (state: AppState, dispatch: any, successfulRows: any, selectedTemplates: any) => {
+  console.log("FAITH are we doing this?");
+
   if(selectedTemplates.some((t: Template) => t.name === "CREATE_TRITON_USER")) {
     const wfmNNumbers: any[] = [];
 
@@ -393,7 +397,6 @@ export const handleWfmExternalLogon = async (dispatch: any, successfulRows: any,
     const totalNNumbers = wfmNNumbers.length;
     const resultsArray: any[] = [];
     let currentIndex = 0;
-
     const processBatch = async (): Promise<any> => {
       const endingIndex = currentIndex + max;
       const processingNNumbers: any[] = wfmNNumbers.slice(currentIndex, endingIndex);

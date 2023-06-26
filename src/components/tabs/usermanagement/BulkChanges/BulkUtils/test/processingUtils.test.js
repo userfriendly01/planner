@@ -740,7 +740,7 @@ describe("handleWfmExternalLogon", () => {
   });
   describe("CREATE_TRITON_USER template is not selected", () => {
     test("promise resolves with message", async () => {
-      const results = await utils.handleWfmExternalLogon(mockDispatch, successfulRowsNoActivation, selectedTemplates2);
+      const results = await utils.handleWfmExternalLogon({}, mockDispatch, successfulRowsNoActivation, selectedTemplates2);
       expect(results).toBe("Selected template not CREATE_TRITON_USER, skipping handleWfmExternalLogon");
     });
   });
@@ -758,7 +758,7 @@ describe("handleWfmExternalLogon", () => {
     describe("all activations were successful", () => {
       test("batch is less than 25 users", async () => {
         wfmActivateExternalLogon.mockResolvedValue(mockWfmExternalLogonResultsSuccess);
-        const results = await utils.handleWfmExternalLogon(mockDispatch, successfulRowsWithActivation, selectedTemplates1);
+        const results = await utils.handleWfmExternalLogon({}, mockDispatch, successfulRowsWithActivation, selectedTemplates1);
         expect(wfmActivateExternalLogon).toHaveBeenCalledTimes(1);
         expect(results).toEqual({
           failedActivations: {
@@ -800,7 +800,7 @@ describe("handleWfmExternalLogon", () => {
         wfmActivateExternalLogon
           .mockResolvedValueOnce(mockWfmExternalLogonResultsSuccess2)
           .mockResolvedValueOnce(mockWfmExternalLogonResultsSuccess3);
-        const results = await utils.handleWfmExternalLogon(mockDispatch, lotsOfSuccessfulRows, selectedTemplates1);
+        const results = await utils.handleWfmExternalLogon({}, mockDispatch, lotsOfSuccessfulRows, selectedTemplates1);
         await waitFor(() => {
           expect(wfmActivateExternalLogon).toHaveBeenCalledTimes(2);
           expect(results).toEqual({
@@ -827,7 +827,7 @@ describe("handleWfmExternalLogon", () => {
           }
         };
         wfmActivateExternalLogon.mockResolvedValue(mockWfmExternalLogonResultsSomeFailures);
-        const results = await utils.handleWfmExternalLogon(mockDispatch, someFailures, selectedTemplates1);
+        const results = await utils.handleWfmExternalLogon({}, mockDispatch, someFailures, selectedTemplates1);
         expect(wfmActivateExternalLogon).toHaveBeenCalledTimes(1);
         expect(results).toEqual({
           failedActivations: {
@@ -864,7 +864,7 @@ describe("handleWfmExternalLogon", () => {
       wfmActivateExternalLogon
         .mockResolvedValueOnce(mockWfmExternalLogonResultsSomeFailures)
         .mockResolvedValue(mockWfmExternalLogonResultsSomeFailures2);
-      const results = await utils.handleWfmExternalLogon(mockDispatch, bigBatchFailures, selectedTemplates1);
+      const results = await utils.handleWfmExternalLogon({}, mockDispatch, bigBatchFailures, selectedTemplates1);
       expect(wfmActivateExternalLogon).toHaveBeenCalledTimes(2);
       expect(results).toEqual({
         failedActivations: {

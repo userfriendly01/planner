@@ -16,8 +16,7 @@ import {
 import {
   performValidations,
   initiateCalls,
-  identifySuccessfulRecords,
-  handleWfmExternalLogon
+  identifySuccessfulRecords
 } from "../BulkUtils";
 import ProgressBar from "./ProgressBar";
 import {
