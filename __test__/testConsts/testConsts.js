@@ -339,7 +339,8 @@ export const calabrioContext = {
       }],
       Teams: []
     }
-  ]
+  ],
+  wfmErrors: []
 };
 
 export const skillsList = [
