@@ -1,7 +1,6 @@
-import { apiPaths, AppState } from "globals";
+import { apiPaths, AppState, WfmBusinessUnit } from "globals";
 import {
   getCalabrioUsers,
-  getWfmOrg,
   getManagers,
   wfmActivateExternalLogon
 } from "services";
@@ -9,7 +8,6 @@ import {
   UploadedRow,
   Template
 } from "../BulkChanges.Interfaces";
-import { cleanupField } from "../BulkUtils";
 import {
   formatWorkerResponse,
   formatManagersResponse,
@@ -55,9 +53,19 @@ export const updateCalabrioUserState = async (state: AppState, dispatch: any): P
  * Refreshes the calabrio WFM person state after a bulk update on users
  */
 export const updateWFMPersonState = async (state: any, dispatch: any, rows: any[]): Promise<void> => {
-  const businessUnitId = rows[0].BusinessUnitId;
-  console.log("FAITH - Business Unit Id", businessUnitId);
-  //manually update state - dont make another call
+  try {
+    const BusinessUnitId = rows[0]?.BusinessUnitId;
+    const strippedOrg = state.calabrioContext.wfmOrg.filter((bu: WfmBusinessUnit) => bu.Id !== BusinessUnitId);
+    await getCalabrioWfmOrg(BusinessUnitId, {
+      ...state,
+      calabrioContext: {
+        ...state.calabrioContext,
+        wfmOrg: strippedOrg
+      }
+    }, dispatch);
+  } catch(err){
+    console.error("Failed to update calabrio wfm user state after bulk upload", err);
+  }
   return Promise.resolve();
 };
 

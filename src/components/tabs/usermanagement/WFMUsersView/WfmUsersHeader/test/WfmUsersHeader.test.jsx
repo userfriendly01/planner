@@ -90,7 +90,11 @@ describe("WfmUsersHeader", () => {
         expect(mockSetTableState).toHaveBeenCalledTimes(1);
         expect(mockSetTableState).toHaveBeenCalledWith({
           ...tableState,
-          businessUnitFilter: BUId
+          businessUnitFilter: BUId,
+          pagination: {
+            ...tableState.pagination,
+            pageNumber: 1
+          }
         });
         await waitFor(() => {
           expect(mockSetStatus).toHaveBeenCalledTimes(2);
@@ -109,7 +113,11 @@ describe("WfmUsersHeader", () => {
         expect(mockSetTableState).toHaveBeenCalledTimes(1);
         expect(mockSetTableState).toHaveBeenCalledWith({
           ...tableState,
-          businessUnitFilter: BUId
+          businessUnitFilter: BUId,
+          pagination: {
+            ...tableState.pagination,
+            pageNumber: 1
+          }
         });
         await waitFor(() => {
           expect(mockSetStatus).toHaveBeenCalledTimes(2);

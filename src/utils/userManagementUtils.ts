@@ -237,8 +237,6 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
   let calabrioQmUser = null;
   let calabrioWfmUser = null;
 
-  console.log("faith", state.calabrioContext.wfmOrg);
-
   if(!form.nNumber.nNumberFetchedUser && form.nNumber.value && form.nNumber.value.match(nNumMatcher)){
     //set the nNumber & Triton/Calabrio users based off of the nNumber in the state
     const errorMessage = `Failed to fetch nNumber from HR database. ${form.nNumber.value}. 

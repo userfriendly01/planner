@@ -158,7 +158,8 @@ const processWFMCreateUser = async (row: any, state: any) => {
     body.OptionalColumns = row.wfmOptionalColumns;
     const environment = state.userContext.pingIdentity.environment;
     if(environment === "production"){
-      await createCalabrioWFMPerson(body);
+      const result = await createCalabrioWFMPerson(body);
+      row.Id = result?.data?.PersonId
       console.log(`Person created in Calabrio WFM for ${row.attributes.n_number} for row ${rowNumber}`);
       return Promise.resolve(`Person created in Calabrio WFM for ${row.attributes.n_number} for row ${rowNumber}`);
     } else {
