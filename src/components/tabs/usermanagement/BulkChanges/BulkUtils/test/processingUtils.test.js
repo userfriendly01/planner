@@ -7,7 +7,8 @@ import {
 } from "services";
 import {
   act,
-  waitFor
+  waitFor,
+  initialTestState
 } from "testUtils";
 import {
   formatManagersResponse,
@@ -136,7 +137,7 @@ describe("updateCalabrioUserState", () => {
   });
 });
 
-describe("updateWFMPersonState", () => {
+describe.only("updateWFMPersonState", () => {
   const mockDispatch = jest.fn();
   beforeEach(() => {
     jest.clearAllMocks();
@@ -144,7 +145,7 @@ describe("updateWFMPersonState", () => {
   });
   test("getCalabrioWfmOrg is called, promise resolves", async () => {
     getCalabrioWfmOrg.mockResolvedValue(true);
-    await utils.updateWFMPersonState(mockDispatch, null, [{ BusinessUnitId: "BU2325" }]);
+    await utils.updateWFMPersonState(initialTestState, mockDispatch, [{ BusinessUnitId: "123-321" }]);
   });
 });
 

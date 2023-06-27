@@ -429,6 +429,8 @@ export const getCalabrioWfmOrg = async (businessUnitId: string, state: AppState,
 
     const org: any = await getWfmOrgServiceCall(businessUnitId);
     businessUnit.Teams = org.data.Teams;
+    
+    
     const strippedOrg = state.calabrioContext.wfmOrg.filter((bu: WfmBusinessUnit) => bu.Id !== businessUnitId);
     dispatch({
       type: "updateWfmOrg",

@@ -177,6 +177,7 @@ const WfmForm = (props: WfmFormProps) => {
           <Row>
             <Dropdown
               error={missingFields.some((f:string) => f === "BusinessUnitId") && isUnpopulatedField(form.calabrio_wfm.BusinessUnitId)}
+              disabled={!isAdd}
               label={"Business Unit *"}
               styles={{
                 width: "250px",

@@ -55,14 +55,9 @@ export const updateCalabrioUserState = async (state: AppState, dispatch: any): P
 export const updateWFMPersonState = async (state: any, dispatch: any, rows: any[]): Promise<void> => {
   try {
     const BusinessUnitId = rows[0]?.BusinessUnitId;
-    const strippedOrg = state.calabrioContext.wfmOrg.filter((bu: WfmBusinessUnit) => bu.Id !== BusinessUnitId);
-    await getCalabrioWfmOrg(BusinessUnitId, {
-      ...state,
-      calabrioContext: {
-        ...state.calabrioContext,
-        wfmOrg: strippedOrg
-      }
-    }, dispatch);
+    let businessUnit = state.calabrioContext.wfmOrg.find((bu: WfmBusinessUnit) => bu.Id === BusinessUnitId);
+    delete businessUnit.Teams;
+    await getCalabrioWfmOrg(BusinessUnitId, state, dispatch);
   } catch(err){
     console.error("Failed to update calabrio wfm user state after bulk upload", err);
   }
@@ -436,7 +431,6 @@ export const handleWfmExternalLogon = async (state: AppState, dispatch: any, suc
       }
     };
     await processBatch();
-    console.log("FAITH RESULTS", resultsArray);
 
     const failedActivations = resultsArray[0]?.data?.failedActivations || {};
     const noWorkers: any = [];
