@@ -1,133 +1,148 @@
 import BusinessUnitModal from "../BusinessUnitModal";
 import React from "react";
-import { Dropdown } from "components";
 import {
+  Dropdown,
+  ModalFetchingRing,
+  StyledButton
+} from "components";
+import {
+  useAdminDispatch,
   useAdminState
 } from "context";
 import {
   act,
   render,
   setupMockedComponents,
-  initialTestState
+  initialTestState,
+  waitFor
 } from "testUtils";
-import {
-  ButtonWrapper,
-  Button,
-  ModalWrapper
-} from "../BulkChanges.Styles";
-
+import { getCalabrioWfmOrg } from "utils";
+import { ModalOverlayStatuses } from "globals";
 
 jest.mock("context", () => ({
+  useAdminDispatch: jest.fn(),
   useAdminState: jest.fn()
 }));
 
-jest.mock("components", () => ({
-  Dropdown: jest.fn()
+jest.mock("utils", () => ({
+  getCalabrioWfmOrg: jest.fn()
 }));
 
-jest.mock("../BulkChanges.Styles", () => ({
-  ButtonWrapper: jest.fn(),
-  Button: jest.fn(),
-  ModalWrapper: jest.fn()
+jest.mock("components", () => ({
+  Dropdown: jest.fn(),
+  ModalFetchingRing: jest.fn(),
+  StyledButton: jest.fn()
 }));
 
 const mockHandleClose = jest.fn();
-const mockHandleExport = jest.fn();
+const mockHandleConfirm = jest.fn();
+const businessUnit = "BU213215";
 
 const renderComponent = () => {
   return render(<BusinessUnitModal
     handleClose={mockHandleClose}
-    handleExport={mockHandleExport}
+    handleConfirm={mockHandleConfirm}
   />);
 };
 
 describe("<BusinessUnitModal />", () => {
   beforeEach(() => {
-    useAdminState.mockReturnValue(initialTestState);
     jest.clearAllMocks();
+    useAdminState.mockReturnValue(initialTestState);
+    getCalabrioWfmOrg.mockResolvedValue("Yay!");
     setupMockedComponents({
       Dropdown,
-      Button,
-      ModalWrapper
+      StyledButton,
+      ModalFetchingRing
     });
   });
   describe("initial render", () => {
-    test("should render expected components", async () => {
-      renderComponent();
-      render(ModalWrapper.mock.calls[0][0].children);
-      render(ButtonWrapper.mock.calls[0][0].children);
-      expect(ModalWrapper.mock.calls.length).toBe(1);
-      expect(Dropdown.mock.calls.length).toBe(1);
-      expect(Button.mock.calls.length).toBe(2);
-      expect(Button.mock.calls[1][0].disabled).toBe(true);
-      expect(ModalWrapper.mock.calls[0][0].children[0]).toBe("Select a WFM Business unit to generate the template options.");
-    });
-    test("cancel is clicked, handleClose is called", async () => {
-      renderComponent();
-      render(ModalWrapper.mock.calls[0][0].children);
-      render(ButtonWrapper.mock.calls[0][0].children);
-      expect(ModalWrapper.mock.calls.length).toBe(1);
-      expect(Dropdown.mock.calls.length).toBe(1);
-      expect(Button.mock.calls.length).toBe(2);
-      expect(Button.mock.calls[1][0].disabled).toBe(true);
-      const cancelClick = Button.mock.calls[0][0].onClick;
-      act(() => cancelClick());
-      expect(mockHandleClose).toBeCalledTimes(1);
-      expect(mockHandleExport).toBeCalledTimes(0);
-    });
-    test("business unit is selected", async () =>{
-      const mockSetState = jest.fn();
-      React.useState = jest.fn()
-        .mockReturnValueOnce([null, mockSetState]);
-
-      renderComponent();
-      render(ModalWrapper.mock.calls[0][0].children);
-      render(ButtonWrapper.mock.calls[0][0].children);
-      expect(ModalWrapper.mock.calls.length).toBe(1);
-      expect(Dropdown.mock.calls.length).toBe(1);
-      expect(Button.mock.calls.length).toBe(2);
-      expect(Button.mock.calls[1][0].disabled).toBe(true);
-      const updateValue = Dropdown.mock.calls[0][0].updateValue;
-      act(() => updateValue(null, {
-        label: "bu",
-        value: "bu"
-      }));
-      expect(mockSetState).toBeCalledTimes(1);
-      expect(mockSetState).toBeCalledWith({
-        label: "bu",
-        value: "bu"
+    describe("wfm options length is > 0", () => {
+      test("should render expected components", async () => {
+        renderComponent();
+        expect(Dropdown.mock.calls.length).toBe(1);
+        expect(Dropdown.mock.calls[0][0].label).toBe("Select a WFM Business Unit");
+        expect(StyledButton.mock.calls.length).toBe(0);
       });
     });
-    test("handleConfirm cannot be called if no wfmBusinessUnit", async () => {
-      const mockSetState = jest.fn();
-      React.useState = jest.fn()
-        .mockReturnValueOnce([null, mockSetState]);
-      renderComponent();
-      render(ModalWrapper.mock.calls[0][0].children);
-      render(ButtonWrapper.mock.calls[0][0].children);
-      expect(ModalWrapper.mock.calls.length).toBe(1);
-      expect(Dropdown.mock.calls.length).toBe(1);
-      expect(Button.mock.calls.length).toBe(2);
-      const confirmClick = Button.mock.calls[1][0].onClick;
-      act(() => confirmClick());
-      expect(mockHandleExport).toBeCalledTimes(0);
-      expect(mockHandleClose).toBeCalledTimes(0);
+    describe("wfm options length === 0", () => {
+      test("should render expected components", async () => {
+        useAdminState.mockReturnValue({
+          ...initialTestState,
+          calabrioContext: {
+            ...initialTestState.calabrioContext,
+            wfmOptions: []
+          }
+        });
+        const rendered = renderComponent();
+        expect(Dropdown.mock.calls.length).toBe(0);
+        expect(rendered.container).toHaveTextContent("WFM Options failed to load, please refresh Triton Admin and try again");
+      });
     });
-    test("confirm is clicked when there is a value for wfmBusinessUnit", async () => {
-      const mockSetState = jest.fn();
-      React.useState = jest.fn()
-        .mockReturnValueOnce([{ value: "123-321" }, mockSetState]);
+  });
+  describe("business unit is selected", () => {
+    describe("getCalabrioWfmOrg fails", () => {
+      test("loading fetching ring and fail message is rendered", async () => {
+        getCalabrioWfmOrg.mockRejectedValue("Yay!");
+        const rendered = renderComponent();
+        expect(Dropdown.mock.calls.length).toBe(1);
+        const updateValue = Dropdown.mock.calls[0][0].updateValue;
+        act(() => updateValue(null, { value: businessUnit }))
+        await waitFor(() => {
+          expect(ModalFetchingRing).toHaveBeenCalled();
+          expect(getCalabrioWfmOrg).toHaveBeenCalledTimes(1);
+          expect(rendered.container).toHaveTextContent("Business Unit Failed to Load, please try again.")
+        })
+      });
+    });
+    describe("getCalabrioWfmOrg succeeds", () => {
+      test("loading fetching ring is rendered & buttons are rendered", async () => {
+        renderComponent();
+        expect(Dropdown.mock.calls.length).toBe(1);
+        const updateValue = Dropdown.mock.calls[0][0].updateValue;
+        act(() => updateValue(null, { value: businessUnit }))
+        await waitFor(() => {
+          expect(ModalFetchingRing).toHaveBeenCalled();
+          expect(getCalabrioWfmOrg).toHaveBeenCalledTimes(1);
+          expect(StyledButton).toHaveBeenCalledTimes(2);
+          expect(StyledButton.mock.calls[0][0].children).toBe("Cancel");
+          expect(StyledButton.mock.calls[1][0].children).toBe("Confirm");
+        })
+      });
+    });
+  });
+  describe("onConfirm is called", () => {
+    test("loading fetching ring is rendered & buttons are rendered", async () => {
       renderComponent();
-      render(ModalWrapper.mock.calls[0][0].children);
-      render(ButtonWrapper.mock.calls[0][0].children);
-      expect(ModalWrapper.mock.calls.length).toBe(1);
       expect(Dropdown.mock.calls.length).toBe(1);
-      expect(Button.mock.calls.length).toBe(2);
-      expect(Button.mock.calls[1][0].disabled).toBe(false);
-      const confirmClick = Button.mock.calls[1][0].onClick;
-      act(() => confirmClick());
-      expect(mockHandleExport).toBeCalledTimes(1);
-      expect(mockHandleClose).toBeCalledTimes(1);
+      const updateValue = Dropdown.mock.calls[0][0].updateValue;
+      act(() => updateValue(null, { value: businessUnit }))
+      await waitFor(() => {
+        expect(StyledButton).toHaveBeenCalledTimes(2);
+        expect(StyledButton.mock.calls[0][0].children).toBe("Cancel");
+        expect(StyledButton.mock.calls[1][0].children).toBe("Confirm");
+      });
+      const onCancel = StyledButton.mock.calls[0][0].onClick;
+      act(() => onCancel());
+      expect(mockHandleClose).toHaveBeenCalledTimes(1);
+    });
+  });
+  describe("onClose is called", () => {
+    test("loading fetching ring is rendered & buttons are rendered", async () => {
+      renderComponent();
+      expect(Dropdown.mock.calls.length).toBe(1);
+      const updateValue = Dropdown.mock.calls[0][0].updateValue;
+      act(() => updateValue(null, { value: businessUnit }))
+      await waitFor(() => {
+        expect(StyledButton).toHaveBeenCalledTimes(2);
+        expect(StyledButton.mock.calls[0][0].children).toBe("Cancel");
+        expect(StyledButton.mock.calls[1][0].children).toBe("Confirm");
+      });
+      const onConfirm = StyledButton.mock.calls[1][0].onClick;
+      act(() => onConfirm());
+      expect(mockHandleClose).toHaveBeenCalledTimes(1);
+      expect(mockHandleConfirm).toHaveBeenCalledTimes(1);
+      expect(mockHandleConfirm).toHaveBeenCalledWith(businessUnit);
     });
   });
 });

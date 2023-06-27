@@ -200,7 +200,6 @@ describe("calabrioUtils", () => {
       ]);
     });
   });
-
   describe("getWfmBusinessUnits", () => {
     test("lost souls === true - returns list of Business units containing Name and Id", () => {
       const result = getWfmBusinessUnits({ calabrioContext }, true);
@@ -238,6 +237,7 @@ describe("calabrioUtils", () => {
               Name: "Fake team",
               Id: "000",
               People: [{
+                BusinessUnitId: "999-999",
                 FirstName: "Faith",
                 EmploymentNumber: "n8765432",
               }]
@@ -280,6 +280,7 @@ describe("calabrioUtils", () => {
               Name: "Fake team",
               Id: "000",
               People: [{
+                BusinessUnitId: "999-999",
                 FirstName: "Faith",
                 EmploymentNumber: "n8765432"
               }]
@@ -315,6 +316,7 @@ describe("calabrioUtils", () => {
               Name: "Fake team",
               Id: "000",
               People: [{
+                BusinessUnitId: "999-999",
                 FirstName: "Faith",
                 EmploymentNumber: "n8765432"
               }]
@@ -346,6 +348,7 @@ describe("calabrioUtils", () => {
           TeamId: "111"
         },
         {
+          BusinessUnitId: "999-999",
           FirstName: "Faith",
           EmploymentNumber: "n8765432",
           ParentTeam: "000"
@@ -1208,35 +1211,52 @@ describe("calabrioUtils", () => {
     });
   });
   describe("getCalabrioWfmOrg", () => {
+    test("BU already exists in the state - should return", async () => {
+      await getCalabrioWfmOrg("123-321", initialTestState, mockDispatch);
+      expect(getWfmOrg).toHaveBeenCalledTimes(0);
+      expect(mockDispatch).toHaveBeenCalledTimes(0);
+    });
     test("getWfmOrg succeeds, decompress succeeds, dispatches and returns true", async () => {
-      const data = Buffer.from(JSON.stringify({ businessUnits: [ { Id: "111" }, { Id: "222" }], People_Without_Team: []}));
-      getWfmOrg.mockResolvedValueOnce({ data: { organization: "eJyrVkoqLc7MSy0uDs3LLClWsoquVvJMUbJSMjQyVqrVgXJMTM2UamNrAVp8Dd0=", errors: [] }});
-
-      zlib.inflate.mockImplementationOnce((buffer, callback) => {
-        callback(null, data);
+      const newBU = {
+        Id: "newid",
+        Teams: [{
+          Id: "new team",
+          BusinessUnitId: "newid"
+        }]
+      }
+      getWfmOrg.mockResolvedValueOnce({
+        data: newBU, 
+        errors: []
       });
-      const result = await getCalabrioWfmOrg(mockDispatch);
+
+      const result = await getCalabrioWfmOrg("newid", {
+        ...initialTestState,
+        calabrioContext: {
+          ...initialTestState.calabrioContext,
+          wfmOrg: [
+            ...initialTestState.calabrioContext.wfmOrg,
+            {
+              Id: "newid"
+            }
+          ]
+        }
+      }, mockDispatch);
       expect(getWfmOrg).toHaveBeenCalledTimes(1);
       expect(mockDispatch).toHaveBeenCalledTimes(1);
       expect(mockDispatch).toHaveBeenLastCalledWith({
-        type: "loadWfmOrg",
+        type: "updateWfmOrg",
         payload: { 
-          org: [{ Id: "111" }, { Id: "222" }],
-          errors: [],
-          People_Without_Team: []
+          org: [ ...initialTestState.calabrioContext.wfmOrg, newBU ],
+          errors: []
         }
       });
-      expect(result).toBe(true);
-    });
-    test("getWfmOrg succeeds, decompress has an error, does not dispatch, returns false", async () => {
-      getWfmOrg.mockResolvedValueOnce({ data: { organization: "eJyrVkoqLc7MSy0uDs3LLClWsoquVvJMUbJSMjQyVqrVgXJMTM2UamNrAVp8Dd0=" }});
-      zlib.inflate.mockImplementationOnce(() => {
-        throw new Error("boo");
+      expect(result).toStrictEqual({
+        ...initialTestState,
+        calabrioContext: {
+          ...initialTestState.calabrioContext,
+          wfmOrg: [ ...initialTestState.calabrioContext.wfmOrg, newBU ]
+        }
       });
-      const result = await getCalabrioWfmOrg(mockDispatch);
-      expect(getWfmOrg).toHaveBeenCalledTimes(1);
-      expect(mockDispatch).toHaveBeenCalledTimes(0);
-      expect(result).toBe(false);
     });
     test("getWfmOrg call fails, does not dispatch, returns false", async () => {
       getWfmOrg.mockRejectedValueOnce({
@@ -1245,10 +1265,13 @@ describe("calabrioUtils", () => {
           status: 500
         }
       });
-      const result = await getCalabrioWfmOrg(mockDispatch);
-      expect(getWfmOrg).toHaveBeenCalledTimes(1);
-      expect(mockDispatch).toHaveBeenCalledTimes(0);
-      expect(result).toBe(false);
+      try {
+        await getCalabrioWfmOrg("", initialTestState, mockDispatch);
+      } catch(err) {
+        expect(getWfmOrg).toHaveBeenCalledTimes(1);
+        expect(mockDispatch).toHaveBeenCalledTimes(0);
+        expect(err).toStrictEqual({response: {"data": "boo", "status": 500}});
+      }
     });
   });
 });

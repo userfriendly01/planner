@@ -24,6 +24,14 @@ export const ProgressBarFiller = styled.div<{progress: string}>`
   border-radius: inherit;
 `;
 
+export const CenteredDiv = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 30px;
+  font-size: 25px;
+`;
+
 export const ModalWrapper = styled(Paper)<{position?: string}>`
   align-items: center;
   display: flex;

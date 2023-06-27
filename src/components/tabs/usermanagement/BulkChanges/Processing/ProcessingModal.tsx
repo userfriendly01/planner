@@ -16,8 +16,7 @@ import {
 import {
   performValidations,
   initiateCalls,
-  identifySuccessfulRecords,
-  handleWfmExternalLogon
+  identifySuccessfulRecords
 } from "../BulkUtils";
 import ProgressBar from "./ProgressBar";
 import {
@@ -78,7 +77,7 @@ const ProcessingModal = (props: ProcessingModalProps) => {
     setProcessedRows(0);
     const rowsToProcess = results.successfullyValidatedRows;
     try {
-      const successfullyProcessedRows = await initiateCalls(rowsToProcess, selectedTemplates, setProcessedRows, dispatch);
+      const successfullyProcessedRows = await initiateCalls(rowsToProcess, selectedTemplates, setProcessedRows, state, dispatch);
       setResults({
         ...results,
         successfullyProcessedRows
