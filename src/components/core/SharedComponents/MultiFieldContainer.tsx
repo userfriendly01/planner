@@ -33,7 +33,8 @@ interface MultiFieldContainerModalViewProps{
     anchorEl: HTMLDivElement | null;
     formLabel: string;
     onClose: ()=>void;
-    handleOnSet:(formData: any)=> void;
+    handleOnSet:(formData: any, index: number)=> void;
+    indexOf: number;
 }
 
 /**
@@ -94,8 +95,12 @@ const MultiFieldContainer = (
   const [isModalOpen, setModalOpen] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState<HTMLDivElement | null>(null);
   const [listItems, setListItems] = useState([]);
+  const [multiFormFields, setMultiFormFields] = useState<Array<MultiFieldContainerFormProps>>(formFields);
+  const [indexOf, setIndexOf] = useState<number>();
+
   useEffect(()=>{
     setListItems(value);
+    setIndexOf(value.length);
   }, [value]);
   const handleClick =(event: React.MouseEvent<HTMLDivElement>) => {
     setAnchorEl(event.currentTarget);
@@ -104,13 +109,33 @@ const MultiFieldContainer = (
   const handleOnClose =() => {
     setAnchorEl(null);
     setModalOpen(false);
+    setMultiFormFields(formFields);
   };
 
-  const handleOnSet = (formData: any) =>{
-    const updatedListItems = [...listItems, formData];
+  const handleOnEdit = (item: any, index: number) =>{
+    const newFormFields: Array<MultiFieldContainerFormProps> = [];
+    formFields.forEach((field: MultiFieldContainerFormProps)=>{
+      const newFormField = {
+        ...field,
+        value: item[field.name]
+      };
+      newFormFields.push(newFormField);
+    });
+    setMultiFormFields(newFormFields);
+    setIndexOf(index);
+  };
+
+  const handleOnSet = (formData: any, index: number) =>{
+    const updatedListItems = [...listItems];
+    if(index===listItems.length){
+      updatedListItems.push(formData);
+    }else{
+      updatedListItems[index]=formData;
+    }
     setListItems(updatedListItems);
     setAnchorEl(null);
     setModalOpen(false);
+    setMultiFormFields(formFields);
     updateValue({
       target: {
         name,
@@ -144,8 +169,11 @@ const MultiFieldContainer = (
               <Chip
                 key={getTagKey(item, index)}
                 tabIndex={index}
-                label={getTagLabel(item, formFields)}
+                label={getTagLabel(item, multiFormFields)}
                 onDelete={(event: any)=>handleOnDelete(index)}
+                onClick={(event: any)=>{
+                  handleOnEdit(item, index);
+                }}
               />
             ))
           }}
@@ -153,23 +181,36 @@ const MultiFieldContainer = (
         />
       </FormControl>
       <MultiFieldContainerModalView
-        formFields={formFields}
+        formFields={multiFormFields}
         isOpen={isModalOpen}
         anchorEl={anchorEl}
         formLabel={label}
         onClose={handleOnClose}
         handleOnSet={handleOnSet}
+        indexOf={indexOf}
       />
     </>
   );
 };
 
 const MultiFieldContainerModalView = ({
-  formFields,isOpen,anchorEl, formLabel, onClose,handleOnSet
+  formFields,isOpen,anchorEl, formLabel, onClose,handleOnSet,indexOf
 }: MultiFieldContainerModalViewProps): JSX.Element =>{
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState<{[key: string]: any}>({});
+
+  useEffect(()=>{
+    let newFormData: {[key: string]: any}={};
+    formFields.forEach((field:MultiFieldContainerFormProps)=>{
+      newFormData={
+        ...newFormData,
+        [field.name]: field.value
+      };
+    });
+    setFormData(newFormData);
+  },[formFields]);
+
   const handleOnSetModalData = () =>{
-    handleOnSet(formData);
+    handleOnSet(formData, indexOf);
     setFormData({});
   };
 
@@ -224,7 +265,7 @@ const MultiFieldContainerModalView = ({
                         variant="outlined"
                         name={item.name}
                         type={item.type}
-                        value={item.value}
+                        value={formData[item.name]}
                         label={item.label}
                         helperText={item.helperText}
                         onChange={handleOnMultiModalOnChange}

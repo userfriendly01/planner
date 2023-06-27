@@ -8,7 +8,8 @@ const localConfig = merge(
     devServer: {
       contentBase: "./dist",
       hot: true,
-      port: 8084
+      port: 8084,
+      historyApiFallback: true
     }
   }
 );
