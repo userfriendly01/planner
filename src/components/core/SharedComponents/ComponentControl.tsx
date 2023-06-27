@@ -4,7 +4,9 @@ import SelectContainer from "./SelectContainer";
 import TimePickerComponent from "./TimepickerComponent";
 import { Control } from "globals";
 import { Dropdown } from "../index";
-import MultiFieldContainer, { MultiFieldContainerFormProps } from "./MultiFieldContainer";
+import {
+  MultiFieldContainer,MultiFieldContainerFormProps
+} from "./MultiFieldContainer";
 export interface ComponentControlProps {
   control: Control;
   dropDownOptions?: string[];
