@@ -422,7 +422,7 @@ export const getCalabrioWfmOptions = async (dispatch: any) => {
 export const getCalabrioWfmOrg = async (businessUnitId: string, state: AppState, dispatch: any) => {
   let businessUnit = state.calabrioContext.wfmOrg.find((bu: WfmBusinessUnit) => bu.Id === businessUnitId);
   if(businessUnit && businessUnit.Teams){
-    return;
+    return state;
   } else {
     businessUnit = { ...businessUnit };
     const existingErrors = state.calabrioContext.wfmErrors;

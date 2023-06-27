@@ -77,7 +77,7 @@ const WfmForm = (props: WfmFormProps) => {
     const trimmedOptions = getWfmOptions(state, form.calabrio_wfm.BusinessUnitId);
     setOptionsByBusinessUnit(trimmedOptions);
 
-    if(!isAdd && state.calabrioContext.wfmOrg.find((bu: WfmBusinessUnit) => bu.Id === form.calabrio_wfm.BusinessUnitId)?.Teams){
+    if(!isAdd && state.calabrioContext.wfmOrg.find((bu: WfmBusinessUnit) => bu.Id === form.calabrio_wfm.BusinessUnitId)?.Teams?.length > 0){
       setStatus(ModalOverlayStatuses.SUCCESS)
     }
   }, [form.calabrio_wfm.BusinessUnitId]);
@@ -331,7 +331,7 @@ const WfmForm = (props: WfmFormProps) => {
                     type: userFormActions.SET_WFM_SKILLS,
                     payload: {
                       skills: options,
-                      startDate: form.calabrio_wfm.PersonSkills
+                      startDate: form.calabrio_wfm.SkillsStartDate
                     }
                   })}
                   styles={{ width: "250px" }}
