@@ -234,7 +234,7 @@ export const calabrioTimeZones =  [
   },
   {
     label: "America/Phoenix (MST)",
-    value: "America/Pheonix"
+    value: "America/Phoenix"
   },
   {
     label: "Pacific/Honolulu (HST)",
