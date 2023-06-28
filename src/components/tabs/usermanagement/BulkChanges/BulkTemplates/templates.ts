@@ -347,20 +347,16 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: a
   let updatedDefaultSkills: any = {};
 
   // todo: get rid of these logs
-  console.log("**** template: ", template);
-  console.log("**** template.data: ", template.data);
-  console.log("**** template.data.data: ", template.data.data);
-
-  console.log("**** processing update skills hurr");
-  console.log("**** value, option: ", value, option);
+  // console.log("**** processing update skills hurr");
+  // console.log("**** template: ", template);
 
   if (option.value === "OVERRIDE"){
-    console.log("**** in override");
-    console.log("value", value);
+    // console.log("**** in override");
+    // console.log("value", value);
+
     updatedDefaultSkills = value;
-    console.log("updatedDefaultSkills", updatedDefaultSkills);
   } else if ( option.value === "ADD"){
-    console.log("**** inside add skill processing function");
+    // console.log("**** inside add skill processing function");
 
     const currentDefaultSkills = row.attributes.default_skills;
     const currentSkillLevels = row.attributes.default_skills.levels;
@@ -368,27 +364,23 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: a
 
     const newSkills = value.skills.filter( (s: any) => !currentSkills.includes(s)); // remove duplicates
 
-    let newSkillLevelsObj: any = {
-      ...currentSkillLevels
-    };
+    let newSkillLevelsObj: any = {};
 
     if (value.levels) {
-      console.log("**** found new skill levels", value.levels);
-      const newSkillLevels = value.levels; // todo: test if i can just use ...value.levels in the object
+      // console.log("**** found new skill levels", value.levels);
       newSkillLevelsObj = {
-        ...newSkillLevelsObj,
-        ...newSkillLevels
+        ...currentSkillLevels,
+        ...value.levels
       };
-      console.log("**** newSkillLevelsObj: ", newSkillLevelsObj);
     }
 
-    console.log("**** currentDefaultSkills: ", currentDefaultSkills);
+    // console.log("**** newSkillLevelsObj: ", newSkillLevelsObj);
+    // console.log("**** currentDefaultSkills: ", currentDefaultSkills);
 
     updatedDefaultSkills = {
       levels: newSkillLevelsObj,
       skills: [...currentSkills, ...newSkills]
     };
-    console.log("**** updatedDefaultSkills: ", updatedDefaultSkills);
   } else if(option.value === "DELETE"){
     const skillToDelete = value.skills[0];
     const currentSkills = row.attributes.default_skills;
@@ -407,14 +399,14 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: a
   body.attributes = { "default_skills": updatedDefaultSkills };
 
   console.log("**** UPDATE DEFAULT SKILLS RECORD PROCESSING", row, body);
-  console.log("**** ROW: ", row);
-  console.log("**** updatedSkills:", updatedDefaultSkills);
-  console.log("**** option: ", option);
+  // console.log("**** ROW: ", row);
+  // console.log("**** updatedSkills:", updatedDefaultSkills);
+  // console.log("**** option: ", option);
   try {
-    // await updateUser(workerSid, body);
+    await updateUser(workerSid, body);
     return Promise.resolve(`${workerSid} - Default Skills updated for row ${rowNumber}`);
   } catch(err){
-    const errorMessage = `Failed to update Triton Worker Default Skills for row ${rowNumber}. ${formatErrorMessage(err)}`;
+    const errorMessage = `Failed to update Default Skills for row ${rowNumber}. ${formatErrorMessage(err)}`;
     console.error(errorMessage, err);
     return rejectPromise(errorMessage, rowNumber);
   }

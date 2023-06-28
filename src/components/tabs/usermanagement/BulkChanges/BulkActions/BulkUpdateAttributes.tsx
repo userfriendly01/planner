@@ -8,8 +8,7 @@ import { availableAttributes } from "../BulkTemplates";
 import {
   CustomInput,
   Dropdown,
-  PhoneNumberInput,
-  DefaultSkillSelector
+  PhoneNumberInput
 } from "components";
 import {
   useFormState
@@ -29,10 +28,6 @@ const BulkUpdateAttributes = (props: BulkUpdateProps) => {
 
   const [ selectedAttribute, setSelectedAttribute ] = React.useState(availableAttributes.SELF_SERVICE_INDICATOR);
   const [ updatedAttributeValue, setUpdatedAttributeValue ] = React.useState<any>("");
-  const [ defaultSkills, setDefaultSkills ] = React.useState<any>({
-    skills: [],
-    levels: {}
-  });
 
   console.log("BulkUpdateForm - selectedTemplates", selectedTemplates);
 
@@ -144,18 +139,6 @@ const BulkUpdateAttributes = (props: BulkUpdateProps) => {
           }}
         />
       }
-      {/* { selectedAttribute.type === "default skill" &&
-        <DefaultSkillSelector
-          defaultSkills={defaultSkills}
-          setDefaultSkills={(defaultSkills: any) => {
-            setDefaultSkills(defaultSkills);
-            console.log("&&& setting default skills: ", defaultSkills);
-            setUpdatedAttributeValue(defaultSkills);
-            console.log("&&& updated template: ", selectedTemplates);
-          }}
-        />
-
-      } */}
     </UpdateWrapper>
   );
 };

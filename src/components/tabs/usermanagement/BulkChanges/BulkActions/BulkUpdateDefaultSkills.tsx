@@ -52,6 +52,9 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
 
   const skills = useAdminState().skillContext.skills.slice().filter(s => s.levels);
 
+  // const lemmeSeeSkills = useAdminState().skillContext.skills;
+  // const lemmeSeeAdminState = useAdminState();
+
   const skillsDropdownOptions = skills.map( s => ({
     label: s.name,
     value: s.name
@@ -82,6 +85,8 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
       }
     } else {
       console.log("**** ELSE ACTIVATE", template);
+      // console.log("**** skill list: ", lemmeSeeSkills);
+      // console.log("**** full admin state: ", lemmeSeeAdminState);
       if(selectedTemplates.find((t: Template) => t.name === template.name)){
         removeTemplate(template);
       }
