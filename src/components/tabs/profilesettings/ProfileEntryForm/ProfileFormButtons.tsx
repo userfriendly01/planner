@@ -27,6 +27,8 @@ import {
   editProfile
 } from "services";
 
+const createProfileOverlayTimeout = 5000; //5000 ms for 5 second
+
 const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
   const {
     handleClose,
@@ -50,7 +52,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
     createProfile(payload).then(() => {
       updateLoading({
         ...loading,
-        overlayMessage: `Successfully created ${form.profileName.value}`,
+        overlayMessage: `Successfully created profile ${form.profileName.value}. Please notify the data office of this change.`,
         saveStatus: ModalOverlayStatuses.SUCCESS,
         saveProfile: true
       });
@@ -63,7 +65,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
         setForm({
           type: profileEntryFormActions.RESET_FORM
         });
-      }, timeouts.MODAL_OVERLAY);
+      }, createProfileOverlayTimeout);
     }).catch(() => {
       updateLoading({
         ...loading,
