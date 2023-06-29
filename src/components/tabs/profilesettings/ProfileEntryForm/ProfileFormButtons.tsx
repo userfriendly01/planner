@@ -27,7 +27,7 @@ import {
   editProfile
 } from "services";
 
-const createProfileOverlayTimeout = 5000; //5000 ms for 5 second
+const createProfileOverlayTimeout = 5000; //5000 ms
 
 const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
   const {
