@@ -24,7 +24,7 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
     removeTemplate
   } = props;
 
-  console.log("BulkdUpdateForm - defaultSkills - selectedTemplates", selectedTemplates);
+  console.log("BulkdUpdateForm - selectedTemplates", selectedTemplates);
 
   const dropdownOptions = [
     {
@@ -51,22 +51,16 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
   });
 
   const skills = useAdminState().skillContext.skills.slice().filter(s => s.levels);
-
-  // const lemmeSeeSkills = useAdminState().skillContext.skills;
-  // const lemmeSeeAdminState = useAdminState();
-
   const skillsDropdownOptions = skills.map( s => ({
     label: s.name,
     value: s.name
   }));
 
-  // add keys to template so processing function can adjust payload body
   React.useEffect(() => {
     console.warn("selectedTemplates", selectedTemplates);
     if (updatedDefaultSkills.skills.length) {
       const templateFound = selectedTemplates.find((t: Template) => t.name === template.name);
       if (!templateFound) {
-        console.log("**** REPLACE TEMPLATE ACTIVATE", template);
         replaceTemplate({
           ...template,
           data: {
@@ -76,7 +70,6 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
           }
         });
       } else {
-        console.log("**** UPDATE TEMPLATE ACTIVATE", template);
         updateTemplate(templateFound, {
           key: "default_skills",
           value: updatedDefaultSkills,
@@ -84,9 +77,6 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
         });
       }
     } else {
-      console.log("**** ELSE ACTIVATE", template);
-      // console.log("**** skill list: ", lemmeSeeSkills);
-      // console.log("**** full admin state: ", lemmeSeeAdminState);
       if(selectedTemplates.find((t: Template) => t.name === template.name)){
         removeTemplate(template);
       }
@@ -110,7 +100,6 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
         options={dropdownOptions}
         updateValue={(event: any, option: any) => {
           setSkillOption(option);
-          // clear existing default skills when changing option
           setUpdatedDefaultSkills({
             skills: [],
             levels: {}
@@ -127,9 +116,7 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
         <DefaultSkillSelector
           defaultSkills={updatedDefaultSkills}
           setDefaultSkills={(updatedDefaultSkills: any) => {
-            console.log("**** option: ", skillOption);
             setUpdatedDefaultSkills(updatedDefaultSkills);
-            console.log("**** setting default skills: ", updatedDefaultSkills);
           }}
         />
       </SkillSelectorContainer>
@@ -138,17 +125,14 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
         <DefaultSkillSelector
           defaultSkills={updatedDefaultSkills}
           setDefaultSkills={(updatedDefaultSkills: any) => {
-            console.log("**** option: ", skillOption);
             setUpdatedDefaultSkills(updatedDefaultSkills);
-            console.log("**** setting default skills: ", updatedDefaultSkills);
-            // console.log("**** updated template: ", selectedTemplates);
           }}
         />
       }
       { skillOption.value === "DELETE" &&
         <Dropdown
           label="Skill to Delete"
-          value={updatedDefaultSkills[0]} // since we are only doing one skill at a time, this will always be the first value in the array
+          value={updatedDefaultSkills[0]}
           options={skillsDropdownOptions}
           updateValue={(event: any, s: any) => {
             setUpdatedDefaultSkills({

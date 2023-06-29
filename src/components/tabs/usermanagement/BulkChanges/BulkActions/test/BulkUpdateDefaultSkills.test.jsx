@@ -7,15 +7,13 @@ import {
   DefaultSkillSelector
 } from "components";
 import {
-  useAdminState,
-  useAdminDispatch
+  useAdminState
 } from "context";
 import React from "react";
 import {
   act,
   render,
-  setupMockedComponents,
-  initialFormState
+  setupMockedComponents
 } from "testUtils";
 
 jest.mock("components", () => ({
@@ -29,16 +27,6 @@ jest.mock("context", () => ({
   useAdminDispatch: jest.fn()
 }));
 
-// todo: remove
-const mockSetForm = jest.fn();
-const defaultSkills = {
-  levels: {
-    "a": 1,
-    "b": 3
-  },
-  skills: ["a", "b", "c"]
-};
-
 const skills = [
   {
     name: "skillz",
@@ -50,12 +38,10 @@ const skills = [
   }
 ];
 
-const skillContext = {
-  skills
-};
-
 const adminState = {
-  skillContext
+  skillContext: {
+    skills
+  }
 };
 
 const dropdownOptions = [
@@ -83,8 +69,6 @@ describe("<BulkUpdateDefaultSkills />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     useAdminState.mockReturnValue(adminState);
-    useAdminDispatch.mockReturnValue(adminState);
-    console.log("**** CONTEXT: ", adminState);
     setupMockedComponents({
       Dropdown,
       DefaultSkillSelector
@@ -170,7 +154,7 @@ describe("<BulkUpdateDefaultSkills />", () => {
               option: dropdownOptions[0]
             });
             expect(mockReplaceTemplates).toHaveBeenCalledTimes(0);
-            expect(mockRemoveTemplates).toHaveBeenCalledTimes(2); // run once upon render and twice because default skill render?
+            expect(mockRemoveTemplates).toHaveBeenCalledTimes(2);
           });
         });
       });
@@ -182,7 +166,7 @@ describe("<BulkUpdateDefaultSkills />", () => {
         expect(Dropdown.mock.calls[0][0].value).toBe("");
         const onOptionChange = Dropdown.mock.calls[0][0].updateValue;
         act(() => onOptionChange(null, dropdownOptions[1]));
-        expect(Dropdown.mock.calls.length).toBe(4); // 1 more than the other bc we have a second dropdown
+        expect(Dropdown.mock.calls.length).toBe(4);
         expect(Dropdown.mock.calls[1][0].value).toBe("");
         expect(Dropdown.mock.calls[2][0].value).toBe("Delete Skill");
         expect(Dropdown.mock.calls[3][0].options.toString()).toBe([
@@ -240,7 +224,7 @@ describe("<BulkUpdateDefaultSkills />", () => {
               option: dropdownOptions[1]
             });
             expect(mockReplaceTemplates).toHaveBeenCalledTimes(0);
-            expect(mockRemoveTemplates).toHaveBeenCalledTimes(2); // run once upon render and twice because default skill render?
+            expect(mockRemoveTemplates).toHaveBeenCalledTimes(2);
           });
         });
       });
@@ -304,7 +288,7 @@ describe("<BulkUpdateDefaultSkills />", () => {
               option: dropdownOptions[2]
             });
             expect(mockReplaceTemplates).toHaveBeenCalledTimes(0);
-            expect(mockRemoveTemplates).toHaveBeenCalledTimes(2); // run once upon render and twice because default skill render?
+            expect(mockRemoveTemplates).toHaveBeenCalledTimes(2);
           });
         });
       });

@@ -10,9 +10,6 @@ import {
   Dropdown,
   PhoneNumberInput
 } from "components";
-import {
-  useFormState
-} from "context";
 import React from "react";
 import { getE164Number } from "utils";
 
