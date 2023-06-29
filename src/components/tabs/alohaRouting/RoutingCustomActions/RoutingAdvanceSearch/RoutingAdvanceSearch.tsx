@@ -135,7 +135,7 @@ const RoutingAdvanceSearchModal = (props:AdvanceSearchModalProps):JSX.Element =>
             <Grid item xs={10}>
               <Autocomplete
                 id="callIntent-autocomplete"
-                options={masterData?.callIntent}
+                options={masterData?.callIntent || []}
                 getOptionLabel={option => option || ""}
                 value={selection.callIntent || ""}
                 onChange={(event, value) => {
