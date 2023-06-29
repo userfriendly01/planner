@@ -4,7 +4,9 @@ import SelectContainer from "./SelectContainer";
 import TimePickerComponent from "./TimepickerComponent";
 import { Control } from "globals";
 import { Dropdown } from "../index";
-import MultiFieldContainer, { MultiFieldContainerFormProps } from "./MultiFieldContainer";
+import {
+  MultiFieldContainer,MultiFieldContainerFormProps
+} from "./MultiFieldContainer";
 export interface ComponentControlProps {
   control: Control;
   dropDownOptions?: string[];
@@ -13,7 +15,7 @@ export interface ComponentControlProps {
   type: string;
   value: any;
   onChange: any;
-  disabled?: boolean;
+  disabled?: boolean ;
   error: boolean;
   required: boolean,
   isBlankFirstValue?: boolean;
@@ -87,6 +89,9 @@ function ComponentControl({
             width: "calc(95%)",
             margin: "0 0 0 0"
           }}
+          error={error}
+          disabled={disabled}
+          required={required}
         />
       );
 

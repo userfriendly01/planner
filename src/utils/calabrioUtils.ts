@@ -1,16 +1,23 @@
 import {
   calabrioGroupLevels,
-  CalabrioUser,
   CalabrioGroup
 } from "../components/tabs/usermanagement/OnboardNewUser/CallRecording/CallRecording.Interfaces";
 import {
   getCalabrioUser,
   updateCalabrioUser,
-  getWfmOptions,
-  getWfmOrg
+  getWfmOptions as getWfmOptionsServiceCall,
+  getWfmOrg as getWfmOrgServiceCall
 } from "services";
 import util from "util";
 import zlib from "zlib";
+import {
+  AppState,
+  CalabrioQmUser,
+  WfmBusinessUnit,
+  WfmTeam,
+  WfmUser,
+  discrepancyType
+} from "globals";
 
 const inflate = util.promisify(zlib.inflate);
 
@@ -34,6 +41,177 @@ export const calabrioAllowedRoles = [
   "QM Agent_No Live Monitoring"
 ];
 
+export const daysOfTheWeekOptions = [
+  {
+    value: 0,
+    label: "Sunday"
+  },
+  {
+    value: 1,
+    label: "Monday"
+  },
+  {
+    value: 2,
+    label: "Tuesday"
+  },
+  {
+    value: 3,
+    label: "Wednesday"
+  },
+  {
+    value: 4,
+    label: "Thursday"
+  },
+  {
+    value: 5,
+    label: "Friday"
+  },
+  {
+    value: 6,
+    label: "Saturday"
+  }
+]
+
+export const addWorkerToOrg = (user: WfmUser, state: AppState) => {
+  const wfmOrg = state.calabrioContext.wfmOrg;
+  const businessUnitId = user.BusinessUnitId;
+  const team = user.TeamId;
+
+  if(team){
+    return wfmOrg.map((bu: WfmBusinessUnit) => {
+      if(bu.Id === businessUnitId){
+        const team: any = bu.Teams?.find(t => t.Id === user.TeamId) || {};
+        if(team){
+          const teams = bu.Teams?.filter(t => t.Id !== team.Id) || [];
+          const people = team.People || [];
+          return {
+            ...bu,
+            Teams: [
+              ...teams,
+              {
+                ...team,
+                People: [
+                  ...people,
+                  user
+                ]
+              }
+            ]          
+          }
+        }
+      } else {
+        return bu;
+      }
+    });
+  } else {
+    return wfmOrg.map((bu: WfmBusinessUnit) => {
+      if(bu.Id === "People_Without_Team"){
+        const people = bu.People || [];
+        return {
+          ...bu,
+          People: [
+            ...people,
+            user
+          ]
+        }
+      } else {
+        return bu;
+      }
+    });
+  }
+}
+export const getWfmBusinessUnits = (state: AppState, includeLostSouls?: boolean) => {
+  const wfmOrg = state.calabrioContext.wfmOrg;
+  if(includeLostSouls){
+    return wfmOrg.map((businessUnit: WfmBusinessUnit) => {
+      return {
+        Id: businessUnit.Id,
+        Name: businessUnit.Name
+      }
+    });
+  } else {
+    const peopleWithHomes = wfmOrg.filter((businessUnit: WfmBusinessUnit) => businessUnit.Id !== "People_Without_Team");
+    return peopleWithHomes.map((businessUnit: WfmBusinessUnit) => {
+      return {
+        Id: businessUnit.Id,
+        Name: businessUnit.Name
+      }
+    });
+  }
+};
+
+export const getWfmTeams = (state: AppState, businessUnitId?: string, includeLostSouls?: boolean) => {
+  const wfmTeams: WfmTeam[] = [];
+  
+  const businessUnit = state.calabrioContext.wfmOrg?.find((bu: WfmBusinessUnit) => bu.Id === businessUnitId);
+  if(businessUnit){
+    businessUnit.Teams?.forEach((team: WfmTeam) => wfmTeams.push(team));
+  } else {
+    if(!includeLostSouls){
+      state.calabrioContext.wfmOrg?.forEach((businessUnit: WfmBusinessUnit) => {
+        businessUnit.Teams?.forEach((team: WfmTeam) => {
+          if(team.Id){
+            wfmTeams.push(team);
+          }
+        });
+      });
+    } else {
+      state.calabrioContext.wfmOrg?.forEach((businessUnit: WfmBusinessUnit) => {
+        businessUnit.Teams?.forEach((team: WfmTeam) => wfmTeams.push(team));
+      });
+    }
+  }
+  return wfmTeams;
+};
+
+export const getWfmPeople = (state: AppState) => {
+  const wfmPeople: WfmUser[] = [];
+  const wfmTeams: WfmTeam[] = getWfmTeams(state);
+
+  state.calabrioContext.wfmOrg?.forEach((businessUnit: WfmBusinessUnit) => {
+    if(businessUnit.Id === "People_Without_Team"){
+      businessUnit?.People?.forEach((person: WfmUser) => wfmPeople.push(person));
+    }
+  });
+
+  wfmTeams?.forEach((team: WfmTeam) => {
+    team.People?.forEach((person: WfmUser) => wfmPeople.push({
+      ParentTeam: team.Id,
+      ...person
+    }));
+  });
+
+  return wfmPeople;
+};
+
+export const getWfmOptions = (state: AppState, businessUnitId?: string) => {
+  const options = JSON.parse(JSON.stringify(state.calabrioContext.wfmOptions));
+
+  if(businessUnitId){
+    const businessUnit = options.find((bu: WfmBusinessUnit) => bu.Id === businessUnitId);
+    return businessUnit;
+  } else {
+    let finalOptions: any = {};
+
+    options?.forEach((businessUnit: any) => {
+      Object.keys(businessUnit)?.forEach((option: any) => {
+        if(typeof businessUnit[option] === "object"){
+          if(finalOptions[option]){
+            businessUnit[option]?.forEach((buo: any) => {
+              const optionFound = finalOptions[option].find((o: any) => o.Id === buo.Id);
+              if(!optionFound){
+                finalOptions[option].push(buo);
+              }
+            });
+          } else {
+            finalOptions[option] = businessUnit[option];
+          }
+        }
+      });
+    });
+    return finalOptions;
+  }
+};
+
 //Calabrio doesnt offer an API for this, only PST, MNT, CST, and EST were requested so we hardcoded them here as they are unlikely to change
 //They are also the same through environments
 //Update April 2023 : added in the MST, HST and  AKST/AKDT timeszones
@@ -56,7 +234,7 @@ export const calabrioTimeZones =  [
   },
   {
     label: "America/Phoenix (MST)",
-    value: "America/Pheonix"
+    value: "America/Phoenix"
   },
   {
     label: "Pacific/Honolulu (HST)",
@@ -103,7 +281,7 @@ const toLowerCaseString = (variable: any) => {
 /*
   https://forge.lmig.com/wiki/display/CICCT/Calabrio+Form
 */
-export const checkConflictingUsers = async (user: any, users: CalabrioUser[], roles: any[], teams: any[]): Promise<void> => {
+export const checkConflictingUsers = async (user: any, users: CalabrioQmUser[], roles: any[], teams: any[]): Promise<void> => {
   try {
     const {
       acdId
@@ -125,7 +303,7 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[], ro
       const dupUserLastName = toLowerCaseString(u.lastName);
 
       if (dupUserAdLogin === adLogin || dupUserEmail === email) {
-        const res: CalabrioUser = await getCalabrioUser(u.id);
+        const res: any = await getCalabrioUser(u.id);
         const dupUser = res.data;
         console.warn("Conflicting User Found with Duplicate Email or Windows Login: ", dupUser);
 
@@ -147,7 +325,7 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[], ro
       }
 
       if (!dupUserEmail && acdId && firstName === dupUserFirstName && lastName === dupUserLastName) {
-        const res: CalabrioUser = await getCalabrioUser(u.id);
+        const res: any = await getCalabrioUser(u.id);
         const dupUser = res.data;
         console.warn("Conflicting User Found with First and Last Name: ", dupUser);
 
@@ -172,9 +350,55 @@ export const checkConflictingUsers = async (user: any, users: CalabrioUser[], ro
   return;
 };
 
+export const findMatchingQmProfiles = (user: any, users: CalabrioQmUser[], setForm: any): any[] => {
+  //Calabrio users should always have a Triton user, the "user" passed through should be a triton user but if that's undefined we can search based on nNumber fetched user
+  try {
+    const acdId = toLowerCaseString(user.sid);
+    const email = toLowerCaseString(user.attributes?.email || user.nNumberFetchedUser?.email);
+    const adLogin = `lm\\${toLowerCaseString(user.attributes?.n_number || user?.value)}`;
+
+    if(!acdId){
+      setForm({
+        type: "SET_DISCREPANCIES",
+        payload: {
+          type: discrepancyType.CALABRIO_QM,
+          message: "Triton Worker Record not found but is required for Calabrio QM. This will require manual review/correction."
+        }
+      });
+    };
+    
+    const matchingProfiles: any[] = [];
+    users.forEach(u => {
+      const dupUserAcdId = toLowerCaseString(u.acdId);
+      const dupUserAdLogin = toLowerCaseString(u.adLogin);
+      const dupUserEmail = toLowerCaseString(u.email);
+      if(acdId && acdId === dupUserAcdId){
+        console.warn("User Found with ACD Id", u);
+        matchingProfiles.unshift(u);
+      } else if (dupUserAdLogin && dupUserAdLogin === adLogin || dupUserEmail && dupUserEmail === email) {
+        console.warn("User Found with Duplicate Email or Windows Login: ", u);
+        if(acdId){
+          setForm({
+            type: "SET_DISCREPANCIES",
+            payload: {
+              type: discrepancyType.CALABRIO_QM,
+              message: `Calabrio QM Record found for user where the ACD ID does not match the Triton Worker. This will require manual review/correction. Search Calabrio for a record (active or inactive) where the ACD equals ${acdId}, make that the primary user and deactivate all other users.`
+            }
+          });
+        };
+        matchingProfiles.push(u)
+      }
+    })
+    return matchingProfiles;
+  } catch(err) {
+    console.error("Error thrown trying to find QM profiles", err);
+    return [];
+  }
+};
+
 export const getCalabrioWfmOptions = async (dispatch: any) => {
   try {
-    const options: any = await getWfmOptions();
+    const options: any = await getWfmOptionsServiceCall();
     let optionsData: any = [];
     try {
       const buff = Buffer.from(options.data.organization, "base64");
@@ -195,25 +419,32 @@ export const getCalabrioWfmOptions = async (dispatch: any) => {
   }
 };
 
-export const getCalabrioWfmOrg = async (dispatch: any) => {
-  try {
-    const org: any = await getWfmOrg();
-    let orgData: any = [];
-    try {
-      const buff = Buffer.from(org.data.organization, "base64");
-      const data = await inflate(buff);
-      orgData = JSON.parse(data.toString("utf-8"));
-    } catch(err) {
-      console.error("Failed to parse and save Calabrio Org data", err);
-      return false;
-    }
+export const getCalabrioWfmOrg = async (businessUnitId: string, state: AppState, dispatch: any) => {
+  let businessUnit = state.calabrioContext.wfmOrg.find((bu: WfmBusinessUnit) => bu.Id === businessUnitId);
+  if(businessUnit && businessUnit.Teams){
+    return state;
+  } else {
+    businessUnit = { ...businessUnit };
+    const existingErrors = state.calabrioContext.wfmErrors;
+
+    const org: any = await getWfmOrgServiceCall(businessUnitId);
+    businessUnit.Teams = org.data.Teams;
+    
+    
+    const strippedOrg = state.calabrioContext.wfmOrg.filter((bu: WfmBusinessUnit) => bu.Id !== businessUnitId);
     dispatch({
-      type: "loadWfmOrg",
-      payload: orgData.businessUnits
+      type: "updateWfmOrg",
+      payload: {
+        org: [ ...strippedOrg, businessUnit ],
+        errors: [ ...existingErrors, ...org.data.errors || [] ]
+      }
     });
-    return true;
-  } catch (error) {
-    console.error("Failed to fetch calabrio wfm org from service", error);
-    return false;
+    return {
+      ...state,
+      calabrioContext: {
+        ...state.calabrioContext,
+        wfmOrg: [ ...strippedOrg, businessUnit ]
+      }
+    };
   }
 };

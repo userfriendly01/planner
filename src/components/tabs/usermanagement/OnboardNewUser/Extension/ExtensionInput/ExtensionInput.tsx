@@ -41,7 +41,7 @@ const ModalExtension = (props: ModalExtensionProps) => {
       type: userFormActions.UPDATE_EXTENSION,
       payload: {
         extension,
-        isValid: (extension === form.extensionStatus.originalExtension && form.extensionStatus.originalExtension)
+        isValid: (extension === form.triton.extension.status.originalExtension && form.triton.extension.status.originalExtension)
       }
     });
   };
@@ -92,7 +92,7 @@ const ModalExtension = (props: ModalExtensionProps) => {
             }
           });
         } else {
-          if (form.extensionStatus.searchStatus === ExtensionSearchStatuses.PickANumber) {
+          if (form.triton.extension.status.searchStatus === ExtensionSearchStatuses.PickANumber) {
             setForm({
               type: userFormActions.SET_EXTENSION_RETRIES
             });
@@ -124,14 +124,14 @@ const ModalExtension = (props: ModalExtensionProps) => {
   let extensionButtonHandler = assignExtension;
   let extensionButtonEnabled = true;
 
-  if (form.extension.value.length > 0) {
+  if (form.triton.extension.value.length > 0) {
     extensionButtonLabel = "Verify";
-    extensionButtonHandler = () => validateTwilioExtension(form.extension.value);
-    extensionButtonEnabled = extensionMatcher.test(form.extension.value);
+    extensionButtonHandler = () => validateTwilioExtension(form.triton.extension.value);
+    extensionButtonEnabled = extensionMatcher.test(form.triton.extension.value);
   }
 
-  if (form.extensionStatus.searchStatus === ExtensionSearchStatuses.PickANumber) {
-    if (form.extensionStatus.retriesRemaining) {
+  if (form.triton.extension.status.searchStatus === ExtensionSearchStatuses.PickANumber) {
+    if (form.triton.extension.status.retriesRemaining) {
       pickANumber();
     } else {
       setForm({
@@ -171,7 +171,7 @@ const ModalExtension = (props: ModalExtensionProps) => {
       </FlexColumn>
       <ExtensionButtonWrapper>
         <UserFormButton
-          disabled={!extensionButtonEnabled || form.extension.valid}
+          disabled={!extensionButtonEnabled || form.triton.extension.valid}
           onClick={extensionButtonHandler}
           data-testid={"verify-auto-button"}
         >

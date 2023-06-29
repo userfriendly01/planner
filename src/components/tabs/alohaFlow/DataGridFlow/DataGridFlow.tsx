@@ -3,40 +3,39 @@
    no-console,
    react/jsx-props-no-spreading
 */
+import {
+  DataGrid, GridRenderCellParams
+} from "@mui/x-data-grid";
+import { CustomToast } from "components";
+import { AzureSPA } from "globals";
 import React, {
   useEffect, useState
 } from "react";
-import {
-  DataGrid, GridRenderCellParams, GridToolbar
-} from "@mui/x-data-grid";
-import {
-  retrieveFlowData, queryFlowData
-} from "services";
+import { queryFlowData, retrieveFlowData } from "services";
 import {
   CACHE_FILTER_FLOW,
   CALL_FLOW_PAGE_NO,
-  CALL_FLOW_PER_PAGE,
-  getGraphQLEndpoint,
-  initializedAlertBar,
-  downloadCSV,
+  CALL_FLOW_PER_PAGE, downloadCSV,
   EXPORT_FILE_PREFIX,
-  getAdvanceFilter
+  getAdvanceFilter, getGraphQLEndpoint,
+  initializedAlertBar
 } from "utils";
-import { CustomToast } from "components";
 import {
+  AlertBarProps, FormValidationRule
+} from "utils/interfaces";
+import {
+  AddFlowFieldsConfigProps,
   CctSharedCallFlowDb, FlowAdvanceFilter, FlowStateVariables
 } from "../AlohaFlow.Interfaces";
+import {
+  AddFlow, AdvanceSearchModal, CustomFlowGridToolBar, EditFlow
+} from "../CustomActions";
+import { flowFields } from "../CustomActions/FlowFieldsConfig";
 import "./Grid.scss";
 import FlowGridColumnDef from "./GridColumnDef";
 import {
   getGridMasterData
 } from "./GridMaster";
-import GridSpinner from "./GridSpinner";
-import {
-  AddFlow, AdvanceSearchModal, CustomFlowGridToolBar, EditFlow
-} from "../CustomActions";
-import { AlertBarProps } from "utils/interfaces";
-import { AzureSPA } from "globals";
 
 const DataGridFlow = (props: AzureSPA): JSX.Element => {
   const {
@@ -65,10 +64,12 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
   };
   const [dataFlow, setDataFlow] = useState(flowInitState);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
+  const [clonedFlowRule, setClonedFlowRule] = useState({});
+  const [cloneType, setCloneType] = useState(false);
   useEffect(() => {
     const getTableData = async()=>{
       const firstChunkData:any = await queryFlowData(accessToken, null, graphQLEndpoint);
-      const listItems = firstChunkData.data?.listCctSharedCallFlowDbs?.items || [];
+      const listItems = firstChunkData?.data?.listCctSharedCallFlowDbs?.items || [];
       let counter =1;
       const flowData: CctSharedCallFlowDb[] = [];
       listItems.forEach((item: CctSharedCallFlowDb) => flowData.push({
@@ -119,11 +120,12 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     }));
   };
 
-  const openAddModal = (flag: boolean, isSubmitted?: boolean, row?:CctSharedCallFlowDb) => {
+  const openAddModal = (flag: boolean, isSubmitted?: boolean, row?:CctSharedCallFlowDb, openCloneAddModal?: boolean) => {
     const newData: Array<CctSharedCallFlowDb> = [...dataFlow.data];
     const newFilteredItems: Array<CctSharedCallFlowDb> = [...dataFlow.filteredItems];
-
-    if (!flag && isSubmitted) {
+    if(!openCloneAddModal){
+      setCloneType(openCloneAddModal);
+    }else if(!flag && isSubmitted ){
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
         open: flag,
@@ -262,9 +264,33 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     downloadCSV(EXPORT_FILE_PREFIX.FLOW, dataFlow.filteredItems);
   };
 
-  const openEditModal = (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallFlowDb, message?: string, deleteRow?: boolean) => {
+  const cloneRule=(flag:boolean,row:CctSharedCallFlowDb)=>{
+    const clonedRow = {
+      ...row,
+      pkey: ""
+    };
+    const flowInitRule: FormValidationRule = flowFields.reduce((a: FormValidationRule, v: AddFlowFieldsConfigProps) => ({
+      ...a,
+      [v.key]: {
+        error: false,
+        value: v.valueGetter(clonedRow),
+        required: v.required || false
+      }
+    }), {});
+    setCloneType(!flag);
+    setClonedFlowRule(flowInitRule);
+    setDataFlow((dataFlowProps: FlowStateVariables) => ({
+      ...dataFlowProps,
+      isEditModalOpen: flag,
+      isAddModalOpen: !flag
+    }));
+  };
 
-    if (!flag && isSubmitted) {
+  const openEditModal = (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallFlowDb, message?: string, deleteRow?: boolean, isClonedFlowRule?: boolean) => {
+    if(isClonedFlowRule){
+      cloneRule(flag,row);
+    }
+    else if (!flag && isSubmitted) {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
         open: true,
@@ -317,12 +343,6 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
             checkboxSelection
             disableSelectionOnClick
             autoHeight
-            components={
-              {
-                Toolbar: GridToolbar,
-                LoadingOverlay: GridSpinner
-              }
-            }
             sx={{
               "& .MuiDataGrid-columnHeaderTitle": {
                 fontWeight: 600
@@ -338,6 +358,8 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         isOpen={dataFlow.isAddModalOpen}
         newId={dataFlow.maxId + 1}
         openAddModal={openAddModal}
+        cloneType={cloneType}
+        flowRuleCloned={clonedFlowRule}
       />
 
       <EditFlow

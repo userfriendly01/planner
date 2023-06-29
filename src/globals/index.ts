@@ -100,8 +100,12 @@ export const profileTableColumnHeader = [
     TOOLTIP: "UI Feature: Additional transfer queues that will appear in the Triton queue ticker"
   },
   {
-    COLUMN_NAME: "",
-    TOOLTIP: ""
+    COLUMN_NAME: "Access Group",
+    TOOLTIP: "Access Group Name for BPO profiles"
+  },
+  {
+    COLUMN_NAME: "Operating Unit",
+    TOOLTIP: "Column to show which OU a profile is assigned to"
   }
 ];
 
@@ -112,6 +116,7 @@ export const apiPaths = {
   CREATE_CALABRIO_USER: `${SERVICE_BASE_URI}/calabrio-add-user`,
   CREATE_CALABRIO_WFM_PERSON: `${SERVICE_BASE_URI}/calabrio-api/wfm/person`,
   CLOSED_MESSAGE: `${SERVICE_BASE_URI}/closedmessage`,
+  CREATE_SKILL: `${SERVICE_BASE_URI}/createskill`,
   CREATE_WORKER: `${SERVICE_BASE_URI}/createworker`,
   DELETE_WORKER: (workerSid: string): string => `${SERVICE_BASE_URI}/deleteworker/${workerSid}`,
   DIAL_LIST: `${CONTACT_MANAGER_BASE_URI}/diallist`,
@@ -120,6 +125,8 @@ export const apiPaths = {
   DIRECTORY_ENTRY: (directoryId: string | number): string => `${CONTACT_MANAGER_BASE_URI}/directory/${directoryId}`,
   EMPLOYEE_LOOKUP: (nNumber: string): string => `${SERVICE_BASE_URI}/employeelookup/${nNumber}`,
   FLASH_MESSAGE: `${SERVICE_BASE_URI}/flashmessage`,
+  GET_APPLICATIONS: `${SERVICE_BASE_URI}/applications`,
+  GET_CALABRIO_WFM_BUS: `${SERVICE_BASE_URI}/calabrio-api/wfm/Business Units`,
   GET_CALABRIO_WFM_ORG: `${SERVICE_BASE_URI}/calabrio-api/wfm/org/people`,
   GET_CALABRIO_WFM_OPTIONS: `${SERVICE_BASE_URI}/calabrio-api/wfm/org/options`,
   GET_CALABRIO_USERS: `${SERVICE_BASE_URI}/calabrio-get-agents`,
@@ -130,9 +137,12 @@ export const apiPaths = {
   GET_CALL_TAGS_OPTIONS: `${CONTACT_MANAGER_BASE_URI}/workertaskinfooptions`,
   GET_CALL_TAGS: `${CONTACT_MANAGER_BASE_URI}/workertaskinfo`,
   GET_ACTIVITIES: `${CONTACT_MANAGER_BASE_URI}/activities`,
+  GET_ACCESS_GROUP: `${CONTACT_MANAGER_BASE_URI}/accessgroup`,
   GET_JOKES: `${SERVICE_BASE_URI}/getJokes`,
   GET_SKILLS: `${SERVICE_BASE_URI}/consolidatedskills`,
   GET_OU: `${SERVICE_BASE_URI}/operatingunit`,
+  GET_TASK_QUEUES: `${SERVICE_BASE_URI}/taskqueues`,
+  GET_TIME_OF_DAYS: `${SERVICE_BASE_URI}/timeofday`,
   GET_WORKERS: `${SERVICE_BASE_URI}/workers`,
   MANAGERS: `${CONTACT_MANAGER_BASE_URI}/managers`,
   OFFICES: `${CONTACT_MANAGER_BASE_URI}/offices`,

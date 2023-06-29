@@ -83,25 +83,25 @@ const processCreateTritonUser = async (row: any, state: any) => {
 const processCreateCalabrioUser = async (row: any, state: any) => {
   console.warn("****CALABRIO RECORD PROCESSING for", row);
   const rowNumber = row.rowNumber;
-  await checkConflictingCalabrioUsers(row, rowNumber, state.calabrioContext.users);
-  const existingTritonWorker = state.workerContext.workers.find((w:any) => w.attributes?.n_number && w.attributes.n_number === row.attributes.n_number);
-  const acdId = row.acdId || existingTritonWorker?.sid || undefined;
-  if(!acdId){
-    return rejectPromise(`Failed to create Calabrio user for row ${rowNumber}. Missing ACD Id, validate this user already exists in Triton`, rowNumber);
-  }
-  const body: any = {};
-
-  body.acdId = acdId;
-  body.adLogin = `LM\\${row.attributes.n_number}`;
-  body.email = row.attributes.email;
-  body.firstName = row.attributes.emp_first_name;
-  body.lastName = row.attributes.emp_last_name;
-  body.groupId = row.groupId;
-  body.timeZone = row.timeZone;
-  body.roles = row.roles;
-  body.scope = row.scope;
-
   try {
+    await checkConflictingCalabrioUsers(row, rowNumber, state.calabrioContext.users);
+    const existingTritonWorker = state.workerContext.workers.find((w:any) => w.attributes?.n_number && w.attributes.n_number === row.attributes.n_number);
+    const acdId = row.acdId || existingTritonWorker?.sid || undefined;
+    if(!acdId){
+      return rejectPromise(`Failed to create Calabrio user for row ${rowNumber}. Missing ACD Id, validate this user already exists in Triton`, rowNumber);
+    }
+    const body: any = {};
+
+    body.acdId = acdId;
+    body.adLogin = `LM\\${row.attributes.n_number}`;
+    body.email = row.attributes.email;
+    body.firstName = row.attributes.emp_first_name;
+    body.lastName = row.attributes.emp_last_name;
+    body.groupId = row.groupId;
+    body.timeZone = row.timeZone;
+    body.roles = row.roles;
+    body.scope = row.scope;
+
     await createCalabrioUser(body);
     console.log(`User created in Calabrio for ${row.attributes.n_number} for row ${rowNumber}`);
     return Promise.resolve(`User created in Calabrio for ${row.attributes.n_number} for row ${rowNumber}`);
@@ -117,7 +117,7 @@ const processWFMCreateUser = async (row: any, state: any) => {
   const rowNumber = row.rowNumber;
 
   try {
-    const hasPersonConflict = checkIfConflictingWFMPeople(row, state.calabrioContext.wfmOrg);
+    const hasPersonConflict = checkIfConflictingWFMPeople(row, state);
     if (hasPersonConflict) {
       throw (`Calabrio WFM Record already exists with either this user's email or nNumber for row ${rowNumber}`);
     }
@@ -159,10 +159,16 @@ const processWFMCreateUser = async (row: any, state: any) => {
 
     // completely optional
     body.OptionalColumns = row.wfmOptionalColumns;
-
-    await createCalabrioWFMPerson(body);
-    console.log(`Person created in Calabrio WFM for ${row.attributes.n_number} for row ${rowNumber}`);
-    return Promise.resolve(`Person created in Calabrio WFM for ${row.attributes.n_number} for row ${rowNumber}`);
+    const environment = state.userContext.pingIdentity.environment;
+    if(environment === "production"){
+      const result = await createCalabrioWFMPerson(body);
+      row.Id = result?.data?.PersonId
+      console.log(`Person created in Calabrio WFM for ${row.attributes.n_number} for row ${rowNumber}`);
+      return Promise.resolve(`Person created in Calabrio WFM for ${row.attributes.n_number} for row ${rowNumber}`);
+    } else {
+      console.log(`No NP environment for WFM. WFM user not created for ${row.attributes.n_number} for row ${rowNumber}`, body);
+      return Promise.resolve(`No NP environment for WFM. WFM user not created for ${row.attributes.n_number} for row ${rowNumber}`);
+    }
   } catch(err) {
     let errorMessage;
     if (err?.response?.data && err?.response?.data?.exception === "com.netflix.zuul.exception.ZuulException") {

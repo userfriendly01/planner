@@ -247,6 +247,7 @@ describe("reducer", () => {
         },
         users: [],
         roles: [],
+        wfmErrors: [],
         wfmOptions: [],
         wfmOrg: []
       };
@@ -272,6 +273,7 @@ describe("reducer", () => {
         tenant: {},
         users: [],
         roles: [],
+        wfmErrors: [],
         wfmOptions: [],
         wfmOrg: []
       };
@@ -301,6 +303,7 @@ describe("reducer", () => {
         tenant: {},
         users: payload,
         roles: [],
+        wfmErrors: [],
         wfmOptions: [],
         wfmOrg: []
       };
@@ -328,8 +331,8 @@ describe("reducer", () => {
       expect(result.calabrioContext.roles).toEqual(payload);
     });
   });
-  describe("loadWfmOrg", () => {
-    test("should initialize a map from the offices map sent in", () => {
+  describe("loadWorkers", () => {
+    test("should update wfmOrg only", () => {
       const payload = [
         {
           id: 1,
@@ -341,11 +344,128 @@ describe("reducer", () => {
         }
       ];
       const action = {
+        type: "loadWorkers",
+        payload
+      };
+      const result = reducer(initialState, action);
+      expect(result.workerContext.workers).toEqual(payload);
+    });
+  });
+  describe("updateWfmOrg", () => {
+    test("should update wfmOrg only", () => {
+      const payload = {
+        org: [{
+          id: 1,
+          name: "Administrator"
+        },
+        {
+          id: 2,
+          name: "Agent"
+        }],
+        errors: []
+      };
+      const action = {
+        type: "updateWfmOrg",
+        payload
+      };
+      const result = reducer(initialState, action);
+      expect(result.calabrioContext.wfmOrg).toEqual(payload.org);
+      expect(result.calabrioContext.wfmErrors).toEqual(payload.errors);
+    });
+    test("should update wfmOrg only", () => {
+      const payload = {
+        org: undefined,
+        errors: undefined
+      };
+      const action = {
+        type: "updateWfmOrg",
+        payload
+      };
+      const result = reducer(initialState, action);
+      expect(result.calabrioContext.wfmOrg).toEqual([]);
+      expect(result.calabrioContext.wfmErrors).toEqual([]);
+    });
+  });
+  describe("loadWfmOrg", () => {
+    test("should format wfmOrg and save to state", () => {
+      const payload = {
+        org: [
+        {
+          id: 1,
+          name: "Administrator"
+        },
+        {
+          id: 2,
+          name: "Agent"
+        }
+      ],
+      errors: [ "oh no" ],
+      People_Without_Team: [{ name: "billy" }]
+    };
+      const action = {
         type: "loadWfmOrg",
         payload
       };
       const result = reducer(initialState, action);
-      expect(result.calabrioContext.wfmOrg).toEqual(payload);
+      expect(result.calabrioContext.wfmOrg).toEqual([
+        ...payload.org,
+        {
+          Id: "People_Without_Team",
+          Name: "Lost Souls",
+          People: [
+            {
+              name: "billy",
+            },
+          ],
+          Absences: [],
+          Availabilities: [],
+          Budget_Groups: [],
+          Contracts:[],
+          Contract_Schedules: [],
+          Optional_Columns: [],
+          Part_Time_Percentages: [],
+          Roles: [],
+          Rotations: [],
+          Shift_Bags: [],
+          Skills: [],
+          Teams: [],
+          Workflow_Control_Sets: []
+        }
+      ]);
+      expect(result.calabrioContext.wfmErrors).toEqual(payload.errors);
+    });
+    test("calabrio calls return undefined - should format wfmOrg and save to state", () => {
+      const payload = {
+        org: undefined,
+        errors: undefined,
+        People_Without_Team: undefined
+    };
+      const action = {
+        type: "loadWfmOrg",
+        payload
+      };
+      const result = reducer(initialState, action);
+      expect(result.calabrioContext.wfmOrg).toEqual([
+        {
+          Id: "People_Without_Team",
+          Name: "Lost Souls",
+          People: [],
+          Absences: [],
+          Availabilities: [],
+          Budget_Groups: [],
+          Contracts:[],
+          Contract_Schedules: [],
+          Optional_Columns: [],
+          Part_Time_Percentages: [],
+          Roles: [],
+          Rotations: [],
+          Shift_Bags: [],
+          Skills: [],
+          Teams: [],
+          Workflow_Control_Sets: []
+        }
+      ]);
+      expect(result.calabrioContext.wfmErrors).toEqual([]);
     });
   });
   describe("loadWfmOptions", () => {

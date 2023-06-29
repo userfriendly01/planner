@@ -1,7 +1,6 @@
 import {
   UserAction,
-  LoadingState,
-  WorkerOpts
+  LoadingState
 } from "./UserEntryFormWrapper.Interfaces";
 import {
   DiscrepancyContainer,
@@ -18,7 +17,8 @@ import {
   ModalOverlay,
   BasicFormInfo,
   CallRecordingForm,
-  UserFormButtons
+  UserFormButtons,
+  WfmForm
 } from "components";
 import {
   useFormState,
@@ -28,20 +28,18 @@ import {
 } from "context";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { sortWorkersByFullName } from "utils";
-import { formModes } from "globals";
+import {
+  sortWorkersByFullName,
+  identifyUserProfiles
+} from "utils";
+import {
+  Worker,
+  formModes,
+  discrepancyType
+} from "globals";
 import { Checkbox } from "@mui/material";
 
 const UserEntryForm = () => {
-
-  const defaultWorkerOpts: WorkerOpts = {
-    action: UserAction.ADD,
-    systems: {
-      triton: true,
-      calabrio_qm: true,
-      calabrio_wfm: false
-    }
-  };
 
   const state = useAdminState();
   const form = useFormState();
@@ -50,22 +48,63 @@ const UserEntryForm = () => {
 
   const skills = state.skillContext.skills;
   const workers = state.workerContext.workers.sort(sortWorkersByFullName);
-  const tritonWorker = workers.find((w: any) => w?.attributes.n_number === form.nNumber.value);
+  const tritonWorker = workers.find((w: any) => w?.attributes?.n_number === form.nNumber?.value);
   const managers = state.managerContext.managers;
   const profiles = state.profileContext.profiles;
   const offices = state.officeContext.offices;
 
-  const [ workerOpts, setWorkerOpts ] = React.useState(defaultWorkerOpts);
   const [ forwardToToggle, setForwardToToggle ] = React.useState(false);
+  const [ missingFields, setMissingFields ] = React.useState([]);
   const [loading, updateLoading] = React.useState<LoadingState>({
     lookupUser: false,
     overlayMessage: "",
     saveStatus: null,
     saveUser: false
   });
+  
+  React.useEffect(() => {
+    if(form.formMode === formModes.INSERT){
+      const workerFound = workers.find((w: Worker) => w.attributes?.n_number?.toLowerCase() === form.nNumber.value?.toLowerCase());
+      const duplicateTritonMessage = "This user already seems to have a Triton Record. Please cancel out of this form and edit their worker instead.";
+      if(workerFound){
+        setForm({
+          type: userFormActions.SET_DISCREPANCIES,
+          payload: {
+            type: discrepancyType.GENERAL,
+            message: duplicateTritonMessage
+          }
+        });
+      } else {
+        const discrepancyListed = form.discrepancies.find((d: any) => d.message === duplicateTritonMessage);
+        if(discrepancyListed) {
+          setForm({
+            type: userFormActions.CLEAR_DISCREPANCY,
+            payload: duplicateTritonMessage
+          });
+        }
+      } 
+    }
+  }, [form.nNumber.nNumberFetchedUser]);
 
   React.useEffect(() => {
-
+    if(form.formMode === formModes.INSERT){
+      setForm({
+        type: userFormActions.UPDATE_USER_FOUND,
+        payload: {
+          system: "triton",
+          isFound: true
+        }
+      });
+      setForm({
+        type: userFormActions.UPDATE_USER_FOUND,
+        payload: {
+          system: "calabrio_qm",
+          isFound: true
+        }
+      });
+    } else {
+      identifyUserProfiles(form, setForm, state);
+    }
     return () => {
       setForm({ type: userFormActions.RESET_FORM });
     };
@@ -79,24 +118,13 @@ const UserEntryForm = () => {
   };
 
   const handleCheckbox = (checked: boolean, system: string) => {
-    if(!checked && system === "calabrio_qm"){
-      console.log("Please select a reason for skipping the calabrio profile.", checked);
-      setWorkerOpts({
-        ...workerOpts,
-        systems: {
-          ...workerOpts.systems,
-          [system]: checked
-        }
-      });
-    } else {
-      setWorkerOpts({
-        ...workerOpts,
-        systems: {
-          ...workerOpts.systems,
-          [system]: checked
-        }
-      });
-    }
+    setForm({
+      type: userFormActions.UPDATE_USER_FOUND,
+      payload: {
+        system,
+        isFound: checked
+      }
+    });
   };
 
   return (
@@ -115,19 +143,18 @@ const UserEntryForm = () => {
       { form.formMode === formModes.INSERT && <Header1>Onboard New User</Header1> }
       { form.formMode === formModes.UPDATE && <Header1>Edit User</Header1> }
       { form.formMode === formModes.DELETE && <Header1>Deactivate User</Header1> }
-      { form.formMode !== formModes.INSERT && <Header2>{`${tritonWorker?.attributes.emp_first_name} ${tritonWorker?.attributes.emp_last_name}`}</Header2> }
+      { form.formMode !== formModes.INSERT && tritonWorker && <Header2>{`${tritonWorker?.attributes.emp_first_name} ${tritonWorker?.attributes.emp_last_name}`}</Header2> }
       { form.formMode === formModes.DELETE &&
         <DeleteTritonUser
           handleClose={handleResetForm}
           loading={loading}
-          workerOpts={workerOpts}
           updateLoading={updateLoading}
         />
       }
       {
         form.discrepancies.length > 0
           ? <DiscrepancyContainer>
-            <Header4>Discrepencies have been found for this worker. They will be corrected when you hit Save User </Header4>
+            <Header4>Discrepencies have been found for this worker. They will be corrected when you hit 'Save User' unless otherwise specified </Header4>
             {
               form.discrepancies.map((d:any, index: number) => {
                 return (
@@ -138,39 +165,74 @@ const UserEntryForm = () => {
           </DiscrepancyContainer>
           : null
       }
+      { form.formMode === formModes.UPDATE && !tritonWorker &&
+        <>
+          <StyledDivider />
+          <h4>Edit WFM is not yet supported. To edit Triton or Calabrio QM profiles, please navigate to the worker through the Triton table. </h4>
+        </>
+      }
       <StyledDivider />
       <HeaderRow>
         <h2>Triton User Settings</h2>
         { form.formMode !== formModes.DELETE &&
           <Checkbox
-            checked={workerOpts.systems.triton}
+            disabled={form.triton.userFound || (form.formMode === formModes.UPDATE && !tritonWorker)}
+            checked={form.triton.userFound}
             onChange={(event: any) => handleCheckbox(event.target.checked, "triton")}
           />
         }
       </HeaderRow>
-      { workerOpts.systems.triton && <BasicFormInfo
-        skills={skills}
-        worker={tritonWorker}
-        workers={workers}
-        profiles={profiles}
-        managers={managers}
-        forwardToToggle={forwardToToggle}
-        setForwardToToggle={setForwardToToggle}
-      /> }
-
+      { form.triton.userFound && 
+        <BasicFormInfo
+          skills={skills}
+          worker={tritonWorker}
+          workers={workers}
+          profiles={profiles}
+          managers={managers}
+          forwardToToggle={forwardToToggle}
+          setForwardToToggle={setForwardToToggle}
+        /> 
+      }
       <StyledDivider />
       <HeaderRow>
         <h2>Calabrio Quality Management User Settings</h2>
         { form.formMode !== formModes.DELETE &&
           <Checkbox
-            checked={workerOpts.systems.calabrio_qm}
+            disabled={form.calabrio_qm.userFound || (form.formMode === formModes.UPDATE && !tritonWorker)}
+            checked={form.calabrio_qm.userFound}
             onChange={(event: any) => handleCheckbox(event.target.checked, "calabrio_qm")}
           />
         }
       </HeaderRow>
-      { workerOpts.systems.calabrio_qm && <CallRecordingForm twilioWorker={tritonWorker} /> }
+      { form.calabrio_qm.userFound && <CallRecordingForm
+        twilioWorker={tritonWorker}
+        missingFields={missingFields}
+      /> }
+      <StyledDivider />
+      <HeaderRow>
+        <h2>Calabrio Work Force Management User Settings</h2>
+        { form.formMode !== formModes.DELETE &&
+          <Checkbox
+            checked={form.calabrio_wfm.userFound}
+            onChange={(event: any) => handleCheckbox(event.target.checked, "calabrio_wfm")}
+          />
+        }
+      </HeaderRow>
+      { form.calabrio_wfm.userFound && 
+        <WfmForm
+          missingFields={missingFields}
+          setMissingFields={setMissingFields}
+        />
+      }
+      { form.formMode === formModes.UPDATE && tritonWorker && missingFields.length > 0 && form.calabrio_wfm.userFound &&
+        <>
+          <StyledDivider />
+          <h4>Edit WFM is not yet supported. If there are discrepencies in your WFM record, uncheck the wfm section to continue your edits. Your WFM record will remain unchanged </h4>
+        </>
+      }
       <StyledDivider />
       { form.formMode !== formModes.DELETE && <UserFormButtons
+        setMissingFields={setMissingFields}
         forwardToToggle={forwardToToggle}
         handleClose={handleResetForm}
         loading={loading}

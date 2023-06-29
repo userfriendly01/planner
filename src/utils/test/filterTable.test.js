@@ -1,6 +1,7 @@
 import {
   filterSkillsByName,
-  filterWorkerSearch
+  filterWorkerSearch,
+  filterWfmUserTable
 } from "utils";
 import { initialTestState } from "testUtils";
 
@@ -179,5 +180,60 @@ describe("filterSkillsByName", () => {
   });
   test("Skill has no name", () => {
     expect(filterSkillsByName({}, "butter")).toEqual(false);
+  });
+});
+
+describe("filterWfmUserTable", () => {
+  const user = {
+    FirstName: "faith",
+    LastName: "cuneo",
+    Identity: "faith.cuneo@gmail.com",
+    Email: "faith.cuneo@yahoo.com",
+    EmploymentNumber: "n0263786",
+    Id: "88372-0098"
+  }
+  test("wfm user is null - should return false", () => {
+    const result = filterWfmUserTable(null, "chip");
+    expect(result).toBe(false);
+  });
+  test("wfm user is null - should return false", () => {
+    const result = filterWfmUserTable({}, null);
+    expect(result).toBe(true);
+  });
+  test("wfm user is has empty values - should return false", () => {
+    const result = filterWfmUserTable({}, "none");
+    expect(result).toBe(false);
+  });
+  describe("search value is found", () => {
+    test("firstName contains search value - should return true", () => {
+      const result = filterWfmUserTable(user, "Ait");
+      expect(result).toBe(true);
+    });
+    test("lastName contains search value - should return true", () => {
+      const result = filterWfmUserTable(user, "EO");
+      expect(result).toBe(true);
+    });
+    test("identity contains search value - should return true", () => {
+      const result = filterWfmUserTable(user, "gmail");
+      expect(result).toBe(true);
+    });
+    test("email contains search value - should return true", () => {
+      const result = filterWfmUserTable(user, "yahoo");
+      expect(result).toBe(true);
+    });
+    test("id contains search value - should return true", () => {
+      const result = filterWfmUserTable(user, "0098");
+      expect(result).toBe(true);
+    });
+    test("nNumber contains search value - should return true", () => {
+      const result = filterWfmUserTable(user, "637");
+      expect(result).toBe(true);
+    });
+  });
+  describe("search value is not found", () => {
+    test("should return false", () => {
+      const result = filterWfmUserTable(user, "snap");
+      expect(result).toBe(false);
+    });
   });
 });

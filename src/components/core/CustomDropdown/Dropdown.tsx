@@ -27,7 +27,9 @@ export const Dropdown = (props: any) => {
     options,
     styles,
     updateValue,
-    value
+    value,
+    disableClear,
+    required
   } = props;
 
   const stylesObject = {
@@ -56,7 +58,7 @@ export const Dropdown = (props: any) => {
     <Autocomplete
       multiple={multiple}
       size={styles && styles.small ? "small" :"medium"}
-      disableClearable={!multiple}
+      disableClearable={disableClear}
       disableCloseOnSelect={multiple}
       limitTags={1}
       options={options}
@@ -66,7 +68,7 @@ export const Dropdown = (props: any) => {
       disabled={disabled}
       onBlur={onBlur}
       sx={stylesObject}
-      renderInput={(params: any) => <TextField {...params} label={label} error={error} key={props["data-option-index"]} />}
+      renderInput={(params: any) => <TextField {...params} label={label} error={error} key={props["data-option-index"]}  required={required}/>}
       renderOption={(props: any, option: any) => {
         if (option?.label === "divider") {
           return <Divider key={props["data-option-index"]} />;

@@ -49,6 +49,10 @@ jest.mock("@mui/x-date-pickers/TimePicker", () => ({
   TimePicker: jest.fn()
 }));
 
+jest.mock("@mui/x-date-pickers/DatePicker", () => ({
+  DatePicker: jest.fn()
+}));
+
 jest.mock("../../Skills.Styles", () => ({
   CustomTable: jest.requireActual("../../Skills.Styles").CustomTable,
   CustomTableData: jest.requireActual("../../Skills.Styles").CustomTableData,

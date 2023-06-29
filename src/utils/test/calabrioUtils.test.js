@@ -1,11 +1,17 @@
 import {
+  addWorkerToOrg,
+  findMatchingQmProfiles,
   formatCalabrioTeams,
   formatCalabrioTenant,
   formatCalabrioGroups,
   formatCalabrioRoles,
   checkConflictingUsers,
   getCalabrioWfmOptions,
-  getCalabrioWfmOrg
+  getCalabrioWfmOrg,
+  getWfmBusinessUnits,
+  getWfmTeams,
+  getWfmPeople,
+  getWfmOptions as getWfmOptionsUtil
 } from "utils";
 import {
   getCalabrioUser,
@@ -13,9 +19,7 @@ import {
   getWfmOptions,
   getWfmOrg
 } from "services";
-import {
-  calabrioContext
-} from "testUtils";
+import { calabrioContext, initialTestState } from "testUtils";
 import zlib from "zlib";
 
 Date.now = jest.fn();
@@ -143,13 +147,422 @@ const users = [
 ];
 
 const mockDispatch = jest.fn();
+const mockSetForm = jest.fn();
 
 let userResponse;
 
 describe("calabrioUtils", () => {
   beforeEach(() => {
     jest.resetAllMocks(),
+    jest.clearAllMocks(),
     Date.now.mockReturnValue("Right Now");
+  });
+
+  describe("addWorkerToOrg", () => {
+    test("team is null - should add to People_Without_Team", () => {
+      const user = { BusinessUnitId: "123-321" };
+      const result = addWorkerToOrg(user, { ...initialTestState });
+      const pwt = initialTestState.calabrioContext.wfmOrg.find(bu => bu.Id === "People_Without_Team");
+      const org = initialTestState.calabrioContext.wfmOrg.filter(bu => bu.Id !== "People_Without_Team");
+      expect(result).toStrictEqual([
+        ...org,
+        {
+          ...pwt,
+          People: [
+            ...pwt.People,
+            user
+          ]
+        }
+      ]);
+    });
+    test("team is populated - should add to appropriate BU", () => {
+      const user = { BusinessUnitId: "123-321", TeamId: "111" };
+      const result = addWorkerToOrg(user, { ...initialTestState });
+      const org = initialTestState.calabrioContext.wfmOrg.filter(bu => bu.Id !== user.BusinessUnitId);
+      const bu = initialTestState.calabrioContext.wfmOrg.find(bu => bu.Id === user.BusinessUnitId);
+      const team = bu.Teams.find(t => t.Id === user.TeamId);
+      const teams = bu.Teams.filter(t => t.Id !== user.TeamId);
+      expect(result).toStrictEqual([
+        {
+          ...bu,
+          Teams: [
+            ...teams,
+            {
+              ...team,
+              People: [
+                ...team.People,
+                user
+              ]
+            }
+          ]
+        },
+        ...org,
+      ]);
+    });
+  });
+  describe("getWfmBusinessUnits", () => {
+    test("lost souls === true - returns list of Business units containing Name and Id", () => {
+      const result = getWfmBusinessUnits({ calabrioContext }, true);
+      expect(result).toEqual([{
+        Name: "Cool WFM Business Unit",
+        Id: "123-321"
+      }, {
+        Name: "Other WFM Business Unit",
+        Id: "999-999"
+      },
+      {
+        Name: "People_Without_Team",
+        Id: "People_Without_Team"
+      }]);
+    });
+    test("lost souls === false - returns list of Business units containing Name and Id", () => {
+      const result = getWfmBusinessUnits({ calabrioContext }, false);
+      expect(result).toEqual([{
+        Name: "Cool WFM Business Unit",
+        Id: "123-321"
+        }, {
+          Name: "Other WFM Business Unit",
+          Id: "999-999"
+        }
+      ]);
+    });
+  });
+  describe("getWfmTeams", () => {
+    describe("Business Unit id is provided", () => {
+      describe("includeLostSouls is true", () => {
+        test("should return teams from the provided bu", () => {
+          const result = getWfmTeams({ calabrioContext }, "999-999");
+          expect(result).toEqual([
+            {
+              Name: "Fake team",
+              Id: "000",
+              People: [{
+                BusinessUnitId: "999-999",
+                FirstName: "Faith",
+                EmploymentNumber: "n8765432",
+              }]
+            },
+            {
+              Name: "Other Fake team",
+              Id: "999",
+              People: []
+            }
+          ]);
+        });
+      });
+    });
+    describe("Business Unit id is NOT provided", () => {
+      describe("includeLostSouls is true", () => {
+        test("should return teams from all BUs and will include teams without ids", () => {
+          const result = getWfmTeams({ calabrioContext }, null, true);
+          expect(result).toEqual([
+            {
+              Name: "Team1",
+              Id: "111",
+              People: [{
+                BusinessUnitId: "123-321",
+                EmploymentNumber: "n1111111",
+                Email: "Person@libertymutual.com",
+                TeamId: "111"
+              }]
+            },
+            {
+              Name: "Team2",
+              Id: "222",
+              People: []
+            },
+            {
+              Name: "Team3 No ID",
+              Id: null,
+              People: []
+            },
+            {
+              Name: "Fake team",
+              Id: "000",
+              People: [{
+                BusinessUnitId: "999-999",
+                FirstName: "Faith",
+                EmploymentNumber: "n8765432"
+              }]
+            },
+            {
+              Name: "Other Fake team",
+              Id: "999",
+              People: []
+            }
+          ]);
+        });
+      });
+      describe("includeLostSouls is false", () => {
+        test("should return a list of teams from all BUs, not including teams without ids", () => {
+          const result = getWfmTeams({ calabrioContext }, null, false);
+          expect(result).toEqual([
+            {
+              Name: "Team1",
+              Id: "111",
+              People: [{
+                BusinessUnitId: "123-321",
+                EmploymentNumber: "n1111111",
+                Email: "Person@libertymutual.com",
+                TeamId: "111"
+              }]
+            },
+            {
+              Name: "Team2",
+              Id: "222",
+              People: []
+            },
+            {
+              Name: "Fake team",
+              Id: "000",
+              People: [{
+                BusinessUnitId: "999-999",
+                FirstName: "Faith",
+                EmploymentNumber: "n8765432"
+              }]
+            },
+            {
+              Name: "Other Fake team",
+              Id: "999",
+              People: []
+            }
+          ]);
+        });
+      });
+    });
+  });
+  describe("getWfmPeople", () => {
+    test("returns all WFM People in wfmOrg and adds team.id as ParentTeam on each person", () => {
+      const result = getWfmPeople({ calabrioContext });
+      expect(result).toEqual([
+        {
+          EmploymentNumber: "n0000000",
+          Email: "ihavenoteam@email.com",
+          TeamId: null
+        },
+        {
+          BusinessUnitId: "123-321",
+          EmploymentNumber: "n1111111",
+          Email: "Person@libertymutual.com",
+          ParentTeam: "111",
+          TeamId: "111"
+        },
+        {
+          BusinessUnitId: "999-999",
+          FirstName: "Faith",
+          EmploymentNumber: "n8765432",
+          ParentTeam: "000"
+        }
+      ]);
+    });
+  });
+  describe("getWfmOptions", () => {
+    describe("busniess unit id is passed to function", () => {
+      test("returns list of options for the specified Business unit", () => {
+        const result = getWfmOptionsUtil({ calabrioContext },  "123-321");
+        expect(result).toEqual({
+          Id: "123-321",
+          Name: "WFM Business Unit1",
+          Absences: [
+            {
+              Name: "Absence1",
+              Id: "111"
+            }
+          ],
+          Availabilities: [
+            {
+              Name: "Availability1",
+              Id: "123123"
+            }
+          ],
+          Budget_Groups: [
+            {
+              Name: "BudgetGroup1",
+              Id: "000"
+            }
+          ],
+          Contract_Schedules: [
+            {
+              Name: "ContractSchedule1",
+              Id: "111"
+            }
+          ],
+          Contracts: [
+            {
+              Name: "Contract1",
+              Id: "111"
+            }
+          ],
+          Optional_Columns: [
+            {
+              Name: "OptionalCol1",
+              Id: "111"
+            },
+            {
+              Name: "OptionalCol2",
+              Id: "222"
+            }
+          ],
+          Part_Time_Percentages: [
+            {
+              Name: "ParttimePercent1",
+              Id: "111"
+            }
+          ],
+          Roles: [
+            {
+              Name: "Role1",
+              Id: "111"
+            },
+            {
+              Name: "Role2",
+              Id: "222"
+            }
+          ],
+          Rotations: [
+            {
+              Name: "Rotation1",
+              Id: "111"
+            }
+          ],
+          Shift_Bags: [
+            {
+              Name: "ShiftBag1",
+              Id: "111"
+            }
+          ],
+          Skills: [
+            {
+              Name: "Skill1",
+              Id: "111"
+            },
+            {
+              Name: "Skill2",
+              Id: "222"
+            }
+          ],
+          Workflow_Control_Sets: [
+            {
+              Name: "WFCSet1",
+              Id: "111"
+            }
+          ]
+      })
+      });
+      test("returns list of options for all Business units", () => {
+        const result = getWfmOptionsUtil({ calabrioContext });
+        expect(result).toEqual({
+          Absences: [
+            {
+              Name: "Absence1",
+              Id: "111"
+            }
+          ],
+          Availabilities: [
+            {
+              Name: "Availability1",
+              Id: "123123"
+            },
+            {
+              Name: "Availability2",
+              Id: "222"
+            }
+          ],
+          Budget_Groups: [
+            {
+              Name: "BudgetGroup1",
+              Id: "000"
+            }
+          ],
+          Contract_Schedules: [
+            {
+              Name: "ContractSchedule1",
+              Id: "111"
+            },
+            {
+              Name: "ContractSchedule2",
+              Id: "222"
+            }
+          ],
+          Contracts: [
+            {
+              Name: "Contract1",
+              Id: "111"
+            },
+            {
+              Name: "Contract2",
+              Id: "222"
+            }
+          ],
+          Optional_Columns: [
+            {
+              Name: "OptionalCol1",
+              Id: "111"
+            },
+            {
+              Name: "OptionalCol2",
+              Id: "222"
+            }
+          ],
+          Part_Time_Percentages: [
+            {
+              Name: "ParttimePercent1",
+              Id: "111"
+            },
+            {
+              Name: "ParttimePercent2",
+              Id: "222"
+            }
+          ],
+          Roles: [
+            {
+              Name: "Role1",
+              Id: "111"
+            },
+            {
+              Name: "Role2",
+              Id: "222"
+            },
+            {
+              Name: "Role3",
+              Id: "333"
+            },
+            {
+              Name: "Role4",
+              Id: "444"
+            }
+          ],
+          Rotations: [
+            {
+              Name: "Rotation1",
+              Id: "111"
+            }
+          ],
+          Shift_Bags: [
+            {
+              Name: "ShiftBag1",
+              Id: "111"
+            }
+          ],
+          Skills: [
+            {
+              Name: "Skill1",
+              Id: "111"
+            },
+            {
+              Name: "Skill2",
+              Id: "222"
+            }
+          ],
+          Workflow_Control_Sets: [
+            {
+              Name: "WFCSet1",
+              Id: "111"
+            }
+          ]
+        });
+      });
+    });
   });
   describe("formatCalabrioTeams", () => {
     test("Calabrio payload is filtered as expected", () => {
@@ -642,6 +1055,121 @@ describe("calabrioUtils", () => {
       });
     });
   });
+  describe("findMatchingQmProfiles", () => {
+    const users = [
+      {
+        acdId: "",
+        adLogin: "",
+        email: "Roy.Anderson@libertymutual.com"
+      },
+      {
+      acdId: "WK123456",
+      adLogin: "Lm\\n3582215",
+      email: "Roy.Anderson@libertymutual.com"
+      }
+    ]
+    describe("Error is thrown", () => {
+      test("empty array is returned", () => {
+        const result = findMatchingQmProfiles(null, [], mockSetForm);
+        expect(result).toStrictEqual([]);
+        expect(console.error.mock.calls[0][0]).toContain("Error thrown trying to find QM profiles");
+      });
+    });
+    describe("Triton User is passed through", () => {
+      describe("user found with matching ACD Id & additional profile", () => {
+        test("should be first in the array of matching profiles", () => {
+          const tritonUser = {
+            sid: "WK123456",
+            attributes: {
+              email: "Roy.Anderson@libertymutual.com",
+              n_number: ""
+            }
+          };
+          const result = findMatchingQmProfiles(tritonUser, users, mockSetForm);
+          expect(result[0]).toBe(users[1]);
+        });
+      });
+      describe("user found with duplicate email", () => {
+        test("should return in matching profiles array", () => {
+          const tritonUser = {
+            sid: "WK123456",
+            attributes: {
+              email: "Roy.Anderson@libertymutual.com",
+              n_number: ""
+            }
+          };
+          const result = findMatchingQmProfiles(tritonUser, users, mockSetForm);
+          expect(result.length).toBe(2);
+          expect(result).toStrictEqual([users[1], users[0]]);
+        });
+      });
+      describe("user found with duplicate ad Login", () => {
+        test("should return in matching profiles array", () => {
+          const tritonUser = {
+            sid: "WK994832",
+            attributes: {
+              email: "",
+              n_number: "n3582215"
+            }
+          };
+          const result = findMatchingQmProfiles(tritonUser, users, mockSetForm);
+          expect(result.length).toBe(1);
+          expect(result).toStrictEqual([users[1]]);
+          expect(mockSetForm).toHaveBeenCalledTimes(1);
+          expect(mockSetForm).toBeCalledWith({
+            type: "SET_DISCREPANCIES",
+            payload: {
+              type: "Calabrio QM",
+              message: "Calabrio QM Record found for user where the ACD ID does not match the Triton Worker. This will require manual review/correction. Search Calabrio for a record (active or inactive) where the ACD equals wk994832, make that the primary user and deactivate all other users."
+            }
+          });
+        });
+      });
+      describe("no Acd Id was passed through", () => {
+        test("should set no Triton User discrepency", () => {
+          const tritonUser = {
+            sid: "",
+            attributes: {
+              email: "",
+              n_number: "n3582215"
+            }
+          };
+          const result = findMatchingQmProfiles(tritonUser, users, mockSetForm);
+          expect(result.length).toBe(1);
+          expect(result).toStrictEqual([users[1]]);
+          expect(mockSetForm).toHaveBeenCalledTimes(1);
+          expect(mockSetForm).toBeCalledWith({
+            type: "SET_DISCREPANCIES",
+            payload: {
+              type: "Calabrio QM",
+              message: "Triton Worker Record not found but is required for Calabrio QM. This will require manual review/correction."
+            }
+          });
+        });
+      })
+    });
+    describe("form.nNumber is passed through", () => {
+      test("should set no Triton User discrepency", () => {
+        const nNumber = {
+          nNumberFetchedUser: {
+            email: ""
+          },
+          value: "n3582215"
+        };
+        const result = findMatchingQmProfiles(nNumber, users, mockSetForm);
+        expect(result.length).toBe(1);
+        expect(result).toStrictEqual([users[1]]);
+        expect(mockSetForm).toHaveBeenCalledTimes(1);
+        expect(mockSetForm).toBeCalledWith({
+          type: "SET_DISCREPANCIES",
+          payload: {
+            type: "Calabrio QM",
+            message: "Triton Worker Record not found but is required for Calabrio QM. This will require manual review/correction."
+          }
+        });
+      });
+    });
+  });
   describe("getCalabrioWfmOptions", () => {
     test("getWFMOptions succeeds, decompress succeeds, dispatches and returns true", async () => {
       const data = Buffer.from(JSON.stringify({ businessUnits: [ { Id: "123" }, { Id: "456" }]}));
@@ -683,31 +1211,52 @@ describe("calabrioUtils", () => {
     });
   });
   describe("getCalabrioWfmOrg", () => {
+    test("BU already exists in the state - should return", async () => {
+      await getCalabrioWfmOrg("123-321", initialTestState, mockDispatch);
+      expect(getWfmOrg).toHaveBeenCalledTimes(0);
+      expect(mockDispatch).toHaveBeenCalledTimes(0);
+    });
     test("getWfmOrg succeeds, decompress succeeds, dispatches and returns true", async () => {
-      const data = Buffer.from(JSON.stringify({ businessUnits: [ { Id: "111" }, { Id: "222" }]}));
-      getWfmOrg.mockResolvedValueOnce({ data: { organization: "eJyrVkoqLc7MSy0uDs3LLClWsoquVvJMUbJSMjQyVqrVgXJMTM2UamNrAVp8Dd0=" }});
-
-      zlib.inflate.mockImplementationOnce((buffer, callback) => {
-        callback(null, data);
+      const newBU = {
+        Id: "newid",
+        Teams: [{
+          Id: "new team",
+          BusinessUnitId: "newid"
+        }]
+      }
+      getWfmOrg.mockResolvedValueOnce({
+        data: newBU, 
+        errors: []
       });
-      const result = await getCalabrioWfmOrg(mockDispatch);
+
+      const result = await getCalabrioWfmOrg("newid", {
+        ...initialTestState,
+        calabrioContext: {
+          ...initialTestState.calabrioContext,
+          wfmOrg: [
+            ...initialTestState.calabrioContext.wfmOrg,
+            {
+              Id: "newid"
+            }
+          ]
+        }
+      }, mockDispatch);
       expect(getWfmOrg).toHaveBeenCalledTimes(1);
       expect(mockDispatch).toHaveBeenCalledTimes(1);
       expect(mockDispatch).toHaveBeenLastCalledWith({
-        type: "loadWfmOrg",
-        payload: [{ Id: "111" }, { Id: "222" }]
+        type: "updateWfmOrg",
+        payload: { 
+          org: [ ...initialTestState.calabrioContext.wfmOrg, newBU ],
+          errors: []
+        }
       });
-      expect(result).toBe(true);
-    });
-    test("getWfmOrg succeeds, decompress has an error, does not dispatch, returns false", async () => {
-      getWfmOrg.mockResolvedValueOnce({ data: { organization: "eJyrVkoqLc7MSy0uDs3LLClWsoquVvJMUbJSMjQyVqrVgXJMTM2UamNrAVp8Dd0=" }});
-      zlib.inflate.mockImplementationOnce(() => {
-        throw new Error("boo");
+      expect(result).toStrictEqual({
+        ...initialTestState,
+        calabrioContext: {
+          ...initialTestState.calabrioContext,
+          wfmOrg: [ ...initialTestState.calabrioContext.wfmOrg, newBU ]
+        }
       });
-      const result = await getCalabrioWfmOrg(mockDispatch);
-      expect(getWfmOrg).toHaveBeenCalledTimes(1);
-      expect(mockDispatch).toHaveBeenCalledTimes(0);
-      expect(result).toBe(false);
     });
     test("getWfmOrg call fails, does not dispatch, returns false", async () => {
       getWfmOrg.mockRejectedValueOnce({
@@ -716,10 +1265,13 @@ describe("calabrioUtils", () => {
           status: 500
         }
       });
-      const result = await getCalabrioWfmOrg(mockDispatch);
-      expect(getWfmOrg).toHaveBeenCalledTimes(1);
-      expect(mockDispatch).toHaveBeenCalledTimes(0);
-      expect(result).toBe(false);
+      try {
+        await getCalabrioWfmOrg("", initialTestState, mockDispatch);
+      } catch(err) {
+        expect(getWfmOrg).toHaveBeenCalledTimes(1);
+        expect(mockDispatch).toHaveBeenCalledTimes(0);
+        expect(err).toStrictEqual({response: {"data": "boo", "status": 500}});
+      }
     });
   });
 });

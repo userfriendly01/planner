@@ -38,7 +38,8 @@ export const initialState: AppState = {
     users: [],
     roles: [],
     wfmOrg: [],
-    wfmOptions: []
+    wfmOptions: [],
+    wfmErrors: []
   },
   resettingSkills: false
 };
@@ -84,14 +85,51 @@ export const reducer = (state: AppState, action: Action): AppState => {
           workers: action.payload
         }
       };
-    case "loadWfmOrg":
+    case "loadWfmOrg": {
+      const org = Array.isArray(action.payload.org) ? action.payload.org : [];
+      const errors = Array.isArray(action.payload.errors) ? action.payload.errors : [];
+      const peopleWithoutTeam = Array.isArray(action.payload.People_Without_Team) ? action.payload.People_Without_Team : [];
       return {
         ...state,
         calabrioContext: {
           ...state.calabrioContext,
-          wfmOrg: action.payload
+          wfmOrg: [
+            ...org,
+            {
+              Id: "People_Without_Team",
+              Name: "Lost Souls",
+              People: peopleWithoutTeam,
+              Absences: [],
+              Availabilities: [],
+              Budget_Groups: [],
+              Contracts:[],
+              Contract_Schedules: [],
+              Optional_Columns: [],
+              Part_Time_Percentages: [],
+              Roles: [],
+              Rotations: [],
+              Shift_Bags: [],
+              Skills: [],
+              Teams: [],
+              Workflow_Control_Sets: []
+            }
+          ],
+          wfmErrors: errors
         }
       };
+    }
+    case "updateWfmOrg": {
+      const org = Array.isArray(action.payload.org) ? action.payload.org : [];
+      const errors = Array.isArray(action.payload.errors) ? action.payload.errors : state.calabrioContext.wfmErrors;
+      return {
+        ...state,
+        calabrioContext: {
+          ...state.calabrioContext,
+          wfmOrg: org,
+          wfmErrors: errors
+        }
+      };
+    }
     case "loadWfmOptions":
       return {
         ...state,

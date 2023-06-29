@@ -3,6 +3,7 @@ import { apiPaths } from "globals";
 import {
   getManagers as getManagersServiceCall,
   getOffices as getOfficesServiceCall,
+  getWfmBusinessUnits,
   getCalabrioUsers as getCalabrioUsersServiceCall,
   getCalabrioRoles as getCalabrioRolesServiceCall,
   getCalabrioOrg as getCalabrioOrgServiceCall
@@ -12,7 +13,6 @@ import {
   formatOfficesResponse,
   formatWorkerResponse,
   getCalabrioWfmOptions,
-  getCalabrioWfmOrg,
   myAxios
 } from "utils";
 
@@ -76,7 +76,6 @@ const getCalabrioOrg = async (dispatch: any) => {
   }
 };
 
-
 const getCalabrioRoles = async (dispatch: any) => {
   try {
     const roles: any = await getCalabrioRolesServiceCall();
@@ -108,7 +107,7 @@ const getProfiles = (dispatch: any) => new Promise((resolve, reject) => myAxios.
   })
 );
 
-const getSkills = (dispatch: any) => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_SKILLS)
+export const getSkills = (dispatch: any) => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_SKILLS)
   .then(res => {
     dispatch({
       type: "loadSkills",
@@ -146,6 +145,27 @@ const getWorkers = async (dispatch: any) => {
   }
 };
 
+const getBusinessUnits = async (dispatch: any) => {
+  try {
+    const response: any = await getWfmBusinessUnits();
+    dispatch({
+      type: "loadWfmOrg",
+      payload: {
+        org: response.data.BusinessUnits || [],
+        People_Without_Team: response.data.People_Without_Team || [],
+        errors: response.data.Errors || []
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch Calabrio Business Units");
+    throw ({
+      msg: "Failed to fetch Calabrio Business Units",
+      error
+    });
+  }
+};
+
 export const runTritonAdminStartup = (dispatch: any) => {
   /* Please add new service calls to the end of this Promise.all,
   the existing order is important */
@@ -159,7 +179,7 @@ export const runTritonAdminStartup = (dispatch: any) => {
     getCalabrioUsers(dispatch),
     getCalabrioOrg(dispatch),
     getCalabrioRoles(dispatch),
+    getBusinessUnits(dispatch),
     getCalabrioWfmOptions(dispatch),
-    getCalabrioWfmOrg(dispatch)
   ]);
 };

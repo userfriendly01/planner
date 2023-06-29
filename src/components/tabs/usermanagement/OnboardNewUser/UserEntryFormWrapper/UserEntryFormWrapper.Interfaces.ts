@@ -6,10 +6,13 @@ import {
   Skill,
   TritonProfile,
   Worker,
-  WorkerAttributeSkills
+  WfmUser,
+  WorkerAttributeSkills,
+  formModes
 } from "globals";
 import { FetchUserResponse } from "services";
 import { ExtensionStatusProps } from "../Extension/ExtensionInput/ExtensionInput.Interfaces";
+import { CalabrioGroup } from "..";
 
 export interface LoadingState {
   lookupUser: boolean;
@@ -30,25 +33,8 @@ export interface UserSystem {
   calabrio_wfm: boolean
 }
 
-export interface WorkerOpts {
-  action: UserAction,
-  systems: UserSystem
-}
-
 export interface UserEntryFormProps {
-  workerOpts: WorkerOpts,
-  setWorkerOpts: (opts: WorkerOpts) => void,
   handleClose: () => void
-}
-
-export interface UserFormAccordionProps {
-  skills: Skill[],
-  worker: Worker | null,
-  workers: Worker[],
-  profiles: TritonProfile[],
-  managers: Manager[]
-  forwardToToggle: boolean,
-  setForwardToToggle: (value: boolean) => void,
 }
 
 export interface BasicFormInfoProps {
@@ -74,6 +60,7 @@ export interface UserFormButtonsProps {
   profiles: TritonProfile[],
   updateLoading: (payload: any) => void,
   worker: Worker | null,
+  setMissingFields: (missingFields: string[]) => void
 }
 
 
@@ -84,26 +71,59 @@ export interface FieldState {
   updated: boolean,
   valid?: boolean
 }
+
 export interface UserFormState {
-  [index: string]: any;
-  alternateDid: FieldState,
-  defaultSkills: WorkerAttributeSkills,
-  defaultSkillsUpdated: boolean,
-  didUser: boolean,
-  directDialNum: FieldState,
-  editDisabled: boolean,
-  extension: FieldState,
-  extensionStatus: ExtensionStatusProps,
+  [key: string]: any,
   formMode: string,
-  inactiveForwardTo: FieldState,
-  manager: FieldState,
-  nNumber: FieldState,
+  discrepancies: string[],
+  nNumber: FormNNumber
+  triton: {
+    [key: string]: any,
+    userFound: boolean,
+    alternateDid: FieldState,
+    attributes: any,
+    defaultSkills: FormDefaultSkills,
+    didUser: boolean,
+    directDialNum: FieldState,
+    extension: FormExtension
+    inactiveForwardTo: FieldState,
+    manager: FieldState,
+    outgoing: FieldState,
+    profileId: FieldState,
+    userPreviouslyAdded: boolean,
+    zeroOutEnabled: FieldState,
+    selfServiceInd: FieldState
+  },
+  calabrio_qm: {
+    [key: string]: any,
+    acdId?: string,
+    userFound: boolean,
+    updated: boolean,
+    id: number,
+    team: CalabrioGroup,
+    timezone: {
+      label: string
+      value: string
+    },
+    roles: any[],
+    scope: {
+      groups: CalabrioGroup[],
+      teams: CalabrioGroup[]
+    }
+  },
+  calabrio_wfm: CALABRIO_WFM
+}
+
+interface FormDefaultSkills extends WorkerAttributeSkills {
+  updated: boolean
+}
+interface FormNNumber extends FieldState {
   nNumberFetchedUser: FetchUserResponse,
-  outgoing: FieldState,
-  profileId: FieldState,
-  userPreviouslyAdded: boolean,
-  zeroOutEnabled: boolean,
-  zeroOutEnabledUpdated: boolean,
-  selfServiceInd?: boolean,
-  selfServiceIndUpdated?: boolean
+}
+interface FormExtension extends FieldState {
+  status: ExtensionStatusProps,
+}
+interface CALABRIO_WFM extends WfmUser {
+  userFound: boolean,
+  [key: string]: any
 }

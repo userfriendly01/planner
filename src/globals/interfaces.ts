@@ -7,8 +7,10 @@ export interface Action {
 }
 
 export const discrepancyType = {
-  CALABRIO: "Calabrio",
-  TRITON: "Triton"
+  CALABRIO_QM: "Calabrio QM",
+  CALABRIO_WFM: "Calabrio WFM",
+  TRITON: "Triton",
+  GENERAL: "General"
 };
 export interface Discrepancy {
   message: string,
@@ -42,7 +44,8 @@ export interface AppState {
     users: any[],
     roles: any[],
     wfmOrg: any[],
-    wfmOptions: any[]
+    wfmOptions: any[],
+    wfmErrors: any[]
   },
   resettingSkills: false
 }
@@ -195,6 +198,58 @@ export interface CallTagOptions {
   options: string
 }
 
+export interface WfmBusinessUnit {
+  Id: string,
+  Name: string,
+  People_Without_Team?: WfmUser[],
+  Teams?: WfmTeam[],
+  People?: WfmUser[]
+}
+
+export interface WfmTeam {
+  Id: string,
+  Name: string,
+  TeamName: string
+  People: WfmUser[],
+  SiteId?: string,
+  SiteName?: string
+}
+
+export interface WfmUser {
+  OptionalColumns: any[],
+  Id: string,
+  Identity: string | null,
+  FirstName: string,
+  LastName: string,
+  EmploymentNumber: string,
+  Email: string,
+  DisplayName: string,
+  TerminationDate: string,
+  EmploymentStartDate: string,
+  TimeZoneId: string,
+  BusinessUnitId: string,
+  TeamId: string,
+  PersonSkills: any[],
+  AvailabilityId: string,
+  AvailabilityStartDate?: string,
+  AbsenceId: string,
+  RotationId: string,
+  RotationStartDate?: string,
+  RotationStartWeek?: number,
+  WorkflowControlSetId: string,
+  ContractId: string,
+  ContractScheduleId: string,
+  BudgetGroupId: string,
+  PartTimePercentageId: string,
+  ShiftBagId: string,
+  Note: string | null,
+  Roles: any[],
+  FirstDayOfWeek: number,
+  TeamStartDate?: string,
+  SkillsStartDate?: string,
+  ParentTeam?: string //something we add to verify the team Id listed on the worker aligns to the team they were found in
+}
+
 export interface Worker {
   attributes: {
     contact_uri?: string,
@@ -283,6 +338,16 @@ export interface TableStateProps {
 export interface OperatingUnit {
   ou_sid: string,
   ou_name: string
+}
+
+export interface AccessGroup {
+  access_group_id: number,
+  access_group_nme: string,
+  twilio_dashboard_url: string,
+  viewable_profiles: Array<{
+    profile_id: number,
+    name: string
+  }>
 }
 
 export type Control = "input" | "select" | "autoComplete" | "timePicker" | "multiField";

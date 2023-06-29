@@ -9,7 +9,8 @@ import {
     ProfileDialListContainer,
     ProfileSettingsContainer,
     TritonUsersViewWrapper,
-    UserEntryForm
+    UserEntryForm,
+    WfmUsersViewWrapper
 } from "components";
 import { AppState } from "./interfaces";
 
@@ -21,6 +22,10 @@ export const getRoutes = (state: AppState, Home: any, azureClientId: string) => 
   {
     path: "/triton-admin/triton-users",
     element: TritonUsersViewWrapper
+  },
+  {
+    path: "/triton-admin/wfm-users",
+    element: WfmUsersViewWrapper
   },
   {
     path: "/triton-admin/user",

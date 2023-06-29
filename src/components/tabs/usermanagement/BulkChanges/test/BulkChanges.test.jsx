@@ -23,7 +23,6 @@ import {
   setupMockedComponents,
   waitFor
 } from "testUtils";
-import WFMLoadRetryModal from "../WFMLoadRetryModal";
 import * as XLSX from "xlsx";
 import { Modal } from "@mui/material";
 import { useAdminState } from "context";
@@ -62,11 +61,6 @@ jest.mock("xlsx",() => ({
   utils: {
     sheet_to_json: jest.fn()
   }
-}));
-
-jest.mock("../WFMLoadRetryModal", () => ({
-  __esModule: true,
-  default: jest.fn()
 }));
 
 const mockSelectedTemplate = {
@@ -156,27 +150,6 @@ describe("<BulkChanges />", () => {
           expect(rendered.container).not.toHaveTextContent("Step 2: Export Template & Template Options");
           expect(rendered.container).not.toHaveTextContent("Step 3: Upload completed Spreadsheet");
           expect(Dropdown.mock.calls[4][0].value).toBe(views.BULK_CREATE_USERS);
-        });
-      });
-      describe("wfm options and people are NOT loaded", () => {
-        test("should open the WFMLoadRetryModal,  handleclose is clicked, modal closes", async () => {
-          const initialStateWithoutWFM = { ...initialTestState };
-          initialStateWithoutWFM.calabrioContext.wfmOptions = [];
-          useAdminState.mockReturnValue(initialStateWithoutWFM);
-          render(<BulkChanges />);
-
-          expect(BulkCreateForm.mock.calls.length).toBe(2);
-          const setSelectedTemplates = BulkCreateForm.mock.calls[1][0].setSelectedTemplates;
-          act(() => setSelectedTemplates([mockSelectedWFMTemplate]));
-          expect(Modal.mock.calls.length).toBe(8);
-          expect(Modal.mock.calls[7][0].open).toBe(true);
-          render(Modal.mock.calls[7][0].children);
-          expect(WFMLoadRetryModal.mock.calls.length).toBe(1);
-          const closeModal = WFMLoadRetryModal.mock.calls[0][0].handleClose;
-          act(() => closeModal());
-          expect(ExportOptionsButton.mock.calls[0][0].disabled).toBe(true);
-          expect(Modal.mock.calls.length).toBe(10);
-          expect(Modal.mock.calls[9][0].open).toBe(false);
         });
       });
     });
@@ -353,9 +326,9 @@ describe("<BulkChanges />", () => {
         expect(rendered.container).toHaveTextContent("Step 4: Process Bulk Create");
         const process = StyledButton.mock.calls[3][0].onClick;
         act(() => process());
-        expect(Modal.mock.calls[10][0].open).toBe(true);
-        render(Modal.mock.calls[10][0].children);
-        act(() => Modal.mock.calls[10][0].onClose()); //should do nothing
+        expect(Modal.mock.calls[5][0].open).toBe(true);
+        render(Modal.mock.calls[5][0].children);
+        act(() => Modal.mock.calls[5][0].onClose()); //should do nothing
         expect(ProcessingModal.mock.calls.length).toBe(1);
         expectOnlyPassedProps(ProcessingModal, {
           selectedTemplates: [mockSelectedTemplate],
@@ -382,7 +355,7 @@ describe("<BulkChanges />", () => {
           });
           const process = StyledButton.mock.calls[3][0].onClick;
           act(() => process());
-          render(Modal.mock.calls[10][0].children);
+          render(Modal.mock.calls[5][0].children);
           const handleClose = ProcessingModal.mock.calls[0][0].handleClose;
           act(() => handleClose());
           await waitFor(() => {

@@ -1,6 +1,5 @@
 import DidFormInfo from "../DidFormInfo";
 import {
-  InputAdornment,
   Switch,
   Tooltip
 } from "@mui/material";
@@ -48,7 +47,6 @@ jest.mock("components", () => ({
 
 jest.mock("@mui/material", () => ({
   __esModule: true,
-  InputAdornment: jest.fn(),
   Tabs: jest.fn(),
   Divider: jest.fn(),
   Switch: jest.fn(),
@@ -102,14 +100,16 @@ describe("<DidFormInfo />", () => {
     getOverflowSkillFromProfile.mockReturnValue("466");
     useFormState.mockReturnValue({
       ...initialFormState,
-      didUser: true
+      triton: {
+        ...initialFormState.triton,
+        didUser: true
+      }
     });
     setupMockedComponents({
       ModalExtension,
       ModalNNumber,
       PhoneNumberInput,
       ForwardToEntryForm,
-      InputAdornment,
       Edit,
       Switch,
       Tooltip
@@ -138,7 +138,7 @@ describe("<DidFormInfo />", () => {
         id: "direct-dial-number",
         number: "",
         label: "Direct Dial Number *",
-        showError: initialFormState.directDialNum.blurred
+        showError: initialFormState.triton.directDialNum.blurred
       };
       expectOnlyPassedProps(PhoneNumberInput, expectedInternalRoutingNumberProps, 0);
 
@@ -148,7 +148,7 @@ describe("<DidFormInfo />", () => {
         id: "skype-teams-did",
         number: "",
         label: "Skype/Teams DID *",
-        showError: initialFormState.alternateDid.blurred
+        showError: initialFormState.triton.alternateDid.blurred
       };
       expectOnlyPassedProps(PhoneNumberInput, expectedAlternateOutgoingProps, 1);
     });
@@ -163,14 +163,20 @@ describe("<DidFormInfo />", () => {
       expect(mockSetForm).toBeCalledTimes(1);
       expect(mockSetForm).toBeCalledWith({
         type: userFormActions.SET_BLUR_ON_FIELD,
-        payload: "directDialNum"
+        payload: {
+          field: "directDialNum",
+          system: "triton"
+        }
       });
     });
     test("onBlur - when number is valid, blur should not be set", () => {
       useFormState.mockReturnValue({
         ...initialFormState,
-        directDialNum: {
-          valid: true
+        triton: {
+          ...initialFormState.triton,
+          directDialNum: {
+            valid: true
+          }
         }
       });
       renderComponent();
@@ -206,87 +212,25 @@ describe("<DidFormInfo />", () => {
         }
       });
     });
-    describe(`worker.directDialNum && form.formMode !== ${formModes.INSERT}`, () => {
+    describe(`directDialNum updated && form.formMode === ${formModes.UPDATE}`, () => {
       beforeEach(() => {
         useFormState.mockReturnValue({
           ...initialFormState,
-          formMode: formModes.UPDATE
-        });
-      });
-      test("StyledIcon is rendered with the correct props", () => {
-        renderComponent(true);
-        render(
-          <ThemeProvider theme={theme}>{
-            PhoneNumberInput.mock.calls[0][0].icon
-          }</ThemeProvider>
-        );
-        render(
-          <ThemeProvider theme={theme}>{
-            InputAdornment.mock.calls[0][0].children
-          }</ThemeProvider>
-        );
-
-        const expectedStyledIconProps = {
-          fontSize: "large"
-        };
-        expectOnlyPassedProps(Edit, expectedStyledIconProps, 0);
-      });
-      test("forwardToToggle === true", () => {
-        renderComponent(true);
-        render(
-          <ThemeProvider theme={theme}>{
-            PhoneNumberInput.mock.calls[0][0].icon
-          }</ThemeProvider>
-        );
-        render(
-          <ThemeProvider theme={theme}>{
-            InputAdornment.mock.calls[0][0].children
-          }</ThemeProvider>
-        );
-        act(() => {
-          const onClick = Edit.mock.calls[0][0].onClick;
-          onClick();
-        });
-        expect(mockSetForm).toBeCalledWith({
-          type: userFormActions.EDIT_PEN_CLICK_FORWARD_TO_TOGGLE,
-          payload: mockWorkers[2]
-        });
-        expect(mockSetForwardToToggle).toBeCalledTimes(1);
-        expect(mockSetForwardToToggle).toBeCalledWith(false);
-      });
-      test("forwardToToggle === false", () => {
-        renderComponent(false);
-        render(
-          <ThemeProvider theme={theme}>{
-            PhoneNumberInput.mock.calls[0][0].icon
-          }</ThemeProvider>
-        );
-        render(
-          <ThemeProvider theme={theme}>{
-            InputAdornment.mock.calls[0][0].children
-          }</ThemeProvider>
-        );
-        act(() => {
-          const onClick = Edit.mock.calls[0][0].onClick;
-          onClick();
-        });
-        expect(mockSetForm).toBeCalledWith({ type: userFormActions.EDIT_PEN_CLICK_NO_FORWARD_TO_TOGGLE });
-        expect(mockSetForwardToToggle).toBeCalledTimes(1);
-        expect(mockSetForwardToToggle).toBeCalledWith(true);
-      });
-    });
-    describe(`forwardToToggle === true && form.formMode === ${formModes.UPDATE}`, () => {
-      beforeEach(() => {
-        useFormState.mockReturnValue({
-          ...initialFormState,
-          formMode: formModes.UPDATE
+          formMode: formModes.UPDATE,
+          triton: {
+            ...initialFormState.triton,
+            directDialNum: {
+              ...initialFormState.triton.directDialNum,
+              updated: true
+            }
+          }
         });
       });
       test("ForwardToEntryForm is rendered with the correct props", () => {
         const rendered = renderComponent(true);
         expectMockedComponent(rendered, { ForwardToEntryForm }, 1);
         const expectedForwardToEntryProps = {
-          label: "Please choose a forward to option for the existing outgoing number"
+          label: "Please choose a forward to option for the existing direct dial number"
         };
         expectOnlyPassedProps(ForwardToEntryForm, expectedForwardToEntryProps, 0);
       });
@@ -308,7 +252,10 @@ describe("<DidFormInfo />", () => {
       useFormState.mockReturnValue({
         ...initialFormState,
         formMode: formModes.UPDATE,
-        didUser: true
+        triton: {
+          ...initialFormState.triton,
+          didUser: true
+        }
       });
       renderComponent();
       expect(PhoneNumberInput.mock.calls[1][0].disabled).toBe(true);
@@ -322,7 +269,10 @@ describe("<DidFormInfo />", () => {
       expect(mockSetForm).toBeCalledTimes(1);
       expect(mockSetForm).toBeCalledWith({
         type: userFormActions.SET_BLUR_ON_FIELD,
-        payload: "alternateDid"
+        payload: {
+          field: "alternateDid",
+          system: "triton"
+        }
       });
     });
     test("updateValue - should set internal routing number to correct value", () => {

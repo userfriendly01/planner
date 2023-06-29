@@ -184,6 +184,10 @@ describe("authenticationProfiles", () => {
               label: "Triton User Management"
             },
             {
+              route: "triton-admin/wfm-users",
+              label: "WFM User Management"
+            },
+            {
               route: "triton-admin/user",
               label: "Onboard New User"
             },

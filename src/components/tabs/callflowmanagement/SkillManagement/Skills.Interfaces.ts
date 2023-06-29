@@ -1,4 +1,6 @@
-import { Skill } from "globals";
+import {
+  Skill
+} from "globals";
 import { TableState } from "../CallFlowManagementWrapper/CallFlowManagement.Interfaces";
 import { messageTypes } from "../SkillManagement/ClosedFlashMessage/ClosedFlashMessage.Interfaces";
 import {
@@ -61,7 +63,9 @@ export const propertyOptions = {
       variable: "skillGroup"
     },
     actions: [
-      ActionTypes.ADD
+      ActionTypes.ADD,
+      ActionTypes.DELETE,
+      ActionTypes.EDIT
     ]
   }
 };
@@ -85,10 +89,82 @@ export interface SkillsExportButtonProps {
 }
 export interface SkillsHeaderProps {
   tableState: TableState,
-  setTableState: (tableState: TableState) => void
+  setTableState: (tableState: TableState) => void,
+  applications: any[],
+  taskQueues: any[],
+  timeOfDays: any[]
+}
+
+export interface SkillEntryFormModalProps {
+  closeModal: () => void,
+  taskQueues: any[],
+  applications: any[],
+  timeOfDays: any[],
+  setSaveResult: (saveResult: SaveResultProps) => void,
+  saveResult: SaveResultProps,
+  isAdmin: boolean
 }
 
 export interface SkillsTableProps {
   tableState: TableState,
   setTableState: (tableState: TableState) => void
+}
+
+export interface AddEditSkillGroupBody {
+  skill_group_nme: string,
+  skillIds?: number[]
+}
+export interface SkillFormState {
+  formMode: string,
+  skillFriendlyName: string,
+  skillNum: string,
+  applicationId: number | null,
+  taskQueueSid: string,
+  profileIds: any[],
+  enableVirtualHold: boolean,
+  vhCallTarget: {
+    value: string,
+    valid: boolean,
+    e164: string,
+    blurred: boolean
+  },
+  vhThreshold: string | null,
+  timeOfDay: {
+    skill: {
+      sunday: number | null,
+      monday: number | null,
+      tuesday: number | null,
+      wednesday: number | null,
+      thursday: number | null,
+      friday: number | null,
+      saturday: number | null
+    },
+    vh: {
+      sunday: number | null,
+      monday: number | null,
+      tuesday: number | null,
+      wednesday: number | null,
+      thursday: number | null,
+      friday: number | null,
+      saturday: number | null
+    }
+  }
+}
+
+interface TimeOfDay {
+  dayId: number,
+  timeOfDayId: number,
+  vhTimeOfDayId: number | null
+}
+
+export interface AddEditSkill {
+  skillFriendlyName: string,
+  skillNum: string,
+  applicationId: number,
+  taskQueueSid: string,
+  profileIds: number[],
+  vhCallTarget: string | null,
+  vhThreshold: number | null,
+  updatedBy: string,
+  timeOfDayIds: TimeOfDay[]
 }

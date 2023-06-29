@@ -47,7 +47,7 @@ describe("isOverflowSkillValid", () => {
 });
 
 describe("isProfileFormValid", () => {
-  test("should return true when activitiesList, profileName, overflowSkill, acwDataEntry(disabled) and callTagsList(empty) are valid", () => {
+  test("should return true when activitiesList, profileName, overflowSkill, acwDataEntry(disabled), callTagsList(empty) and accessGrouptoggle(true) are valid", () => {
     const form = {
       activitiesList: [2,3],
       profileName: { valid: true },
@@ -56,12 +56,18 @@ describe("isProfileFormValid", () => {
       callTagsList: [],
       operatingUnit: {
         ou_name: "nothing"
-      }
+      },
+      accessGroup: {
+        value: true,
+        updated: true
+      },
+      accessGroupId: 2,
+      accessGroupIdUpdated: true
     };
     const result = isProfileFormValid(form);
     expect(result).toBe(true);
   });
-  test("should return true when activitiesList, profileName, overflowSkill, acwDataEntry(enabled) and callTagsList(not empty) are valid", () => {
+  test("should return true when activitiesList, profileName, overflowSkill, acwDataEntry(enabled), callTagsList(not empty) and accessGrouptoggle(false) are valid", () => {
     const form = {
       activitiesList: [2,3],
       profileName: { valid: true },
@@ -74,7 +80,13 @@ describe("isProfileFormValid", () => {
       }],
       operatingUnit: {
         ou_name: "nothing"
-      }
+      },
+      accessGroup: {
+        value: false,
+        updated: false
+      },
+      accessGroupId: null,
+      accessGroupIdUpdated: false
     };
     const result = isProfileFormValid(form);
     expect(result).toBe(true);
@@ -89,6 +101,10 @@ describe("isProfileFormValid", () => {
       callTagsList: [],
       operatingUnit: {
         ou_name: "nothing"
+      },
+      accessGroup: {
+        value: false,
+        updated: false
       }
     };
     const result = isProfileFormValid(form);
@@ -164,6 +180,26 @@ describe("isProfileFormValid", () => {
       operatingUnit: {
         ou_name: "nothing"
       }
+    };
+    const result = isProfileFormValid(form);
+    expect(result).toBe(false);
+  });
+  test("should return false when accessGroup toggle is enabled and accessGroup dropdown is not selected", () => {
+    const form = {
+      activitiesList: [2,3],
+      profileName: { valid: true },
+      overflowSkill: { valid: true },
+      acwDataEntry: { value: true },
+      callTagsList: [],
+      operatingUnit: {
+        ou_name: "nothing"
+      },
+      accessGroup: {
+        value: true,
+        updated: true
+      },
+      accessGroupId: null,
+      accessGroupIdUpdated: true
     };
     const result = isProfileFormValid(form);
     expect(result).toBe(false);

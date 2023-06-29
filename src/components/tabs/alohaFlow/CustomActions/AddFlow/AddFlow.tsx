@@ -54,10 +54,12 @@ export interface AddFlowModalProps {
   isOpen: boolean;
   newId: number;
   openAddModal: (flag: boolean, isSubmitted?: boolean, row?:CctSharedCallFlowDb) => void;
+  cloneType?: boolean;
+  flowRuleCloned?: FormValidationRule;
 }
 
 export const AddFlow = ({
-  accessToken, matchedGroups, isOpen = false, newId, openAddModal
+  accessToken, matchedGroups, isOpen = false, newId, openAddModal, cloneType, flowRuleCloned
 }: AddFlowModalProps & AzureSPA):JSX.Element => {
 
   const graphQlApiUrl: string = getGraphQLEndpoint();
@@ -98,6 +100,15 @@ export const AddFlow = ({
       callFlowRoute: false
     });
   }, []);
+
+  useEffect(()=>{
+    setFlowRule((rule: FormValidationRule) => ({
+      ...rule
+    }));
+    if(cloneType) {
+      setFlowRule({ ...flowRuleCloned });
+    }
+  },[openAddModal]);
 
   const handleClose = (flag: boolean) => {
     setAlertBar((alertBarProps: AlertBarProps) => ({
@@ -168,7 +179,7 @@ export const AddFlow = ({
     openAddModal(false);
   }
   function stringValue(obj: {[index: string]:any}, prop: string, defaultValue: string) {
-    if(obj[prop]) {
+    if(obj[prop].value) {
       return obj[prop].value;
     }
     return defaultValue;
@@ -185,11 +196,10 @@ export const AddFlow = ({
     const isValidForm: boolean = validateRoute();
     if (isValidForm) {
       const curTime = new Date().toISOString();
-      const dataRequests = (flowRule.dataRequests.value as string)
+      const dataRequests = (flowRule?.dataRequests?.value as string)
         ?.split(",")
         ?.map(a => a.trim())
-        ?.filter(a => a.length > 0)
-      || [];
+        ?.filter(a => a.length > 0);
 
       addFlowRule(flowRule, accessToken, graphQlApiUrl, curTime, dataRequests).then(apiResponse => {
         if (!apiResponse.errors) {
@@ -207,6 +217,7 @@ export const AddFlow = ({
             agentId: stringValue(flowRule,"agentId", ""),
             brand: flowRule.brand.value,
             callFlowTemplate: stringValue(flowRule,"callFlowTemplate", ""),
+            callIntent: stringValue(flowRule, "callIntent", ""),
             channel: flowRule.channel.value,
             dialedDescription: flowRule.dialedDescription.value,
             employeeId: stringValue(flowRule,"employeeId", ""),

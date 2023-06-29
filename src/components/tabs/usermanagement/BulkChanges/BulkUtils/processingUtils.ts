@@ -1,7 +1,6 @@
-import { apiPaths } from "globals";
+import { apiPaths, AppState, WfmBusinessUnit } from "globals";
 import {
   getCalabrioUsers,
-  getWfmOrg,
   getManagers,
   wfmActivateExternalLogon
 } from "services";
@@ -9,7 +8,6 @@ import {
   UploadedRow,
   Template
 } from "../BulkChanges.Interfaces";
-import { cleanupField } from "../BulkUtils";
 import {
   formatWorkerResponse,
   formatManagersResponse,
@@ -21,7 +19,7 @@ import * as XLSX from "xlsx";
 /**
  * Refreshes the triton user state after a bulk update on users
  */
-export const updateTritonUserState = async (dispatch: any): Promise<void> => {
+export const updateTritonUserState = async (state: AppState, dispatch: any): Promise<void> => {
   try {
     const response = await myAxios.get(apiPaths.GET_WORKERS);
     const filteredWorkers = formatWorkerResponse(response.data).filter(worker => !worker.inactiveInd && worker.attributes);
@@ -38,7 +36,7 @@ export const updateTritonUserState = async (dispatch: any): Promise<void> => {
 /**
  * Refreshes the calabrio user state after a bulk update on users
  */
-export const updateCalabrioUserState = async (dispatch: any): Promise<void> => {
+export const updateCalabrioUserState = async (state: AppState, dispatch: any): Promise<void> => {
   try {
     const users: any = await getCalabrioUsers();
     dispatch({
@@ -54,8 +52,15 @@ export const updateCalabrioUserState = async (dispatch: any): Promise<void> => {
 /**
  * Refreshes the calabrio WFM person state after a bulk update on users
  */
-export const updateWFMPersonState = async (dispatch: any): Promise<void> => {
-  await getCalabrioWfmOrg(dispatch);
+export const updateWFMPersonState = async (state: any, dispatch: any, rows: any[]): Promise<void> => {
+  try {
+    const BusinessUnitId = rows[0]?.BusinessUnitId;
+    let businessUnit = state.calabrioContext.wfmOrg.find((bu: WfmBusinessUnit) => bu.Id === BusinessUnitId);
+    delete businessUnit.Teams;
+    await getCalabrioWfmOrg(BusinessUnitId, state, dispatch);
+  } catch(err){
+    console.error("Failed to update calabrio wfm user state after bulk upload", err);
+  }
   return Promise.resolve();
 };
 
@@ -235,6 +240,7 @@ export const initiateCalls = async (
   rows: any,
   selectedTemplates: any,
   setProcessedRows: any,
+  state: any,
   dispatch: any
 ) => {
   const templateTree = identifyProcessingDependencies(selectedTemplates);
@@ -323,7 +329,7 @@ export const initiateCalls = async (
   const successfulRows = identifySuccessfulRecords(rows, finalErrors);
 
   const stateUpdateResults = await Promise.all(selectedTemplates.map((t: any) => {
-    return Promise.allSettled(t.stateUpdateFunctions.map((f: any) => f(dispatch, successfulRows, selectedTemplates)));
+    return Promise.allSettled(t.stateUpdateFunctions.map((f: any) => f(state, dispatch, successfulRows, selectedTemplates)));
   }));
 
   console.log("state update results: ", stateUpdateResults);
@@ -333,23 +339,23 @@ export const initiateCalls = async (
     template.forEach((result: any) => {
 
       if (result.value) {
-        const failedActivations = result.value.failedActivations;
+        const failedActivations = result.value.failedActivations || {};
 
-        if (failedActivations.nNumbersWithoutTwilioWorkers.length > 0){
+        if (failedActivations.nNumbersWithoutTwilioWorkers?.length > 0){
           finalErrors.push({
             rowNumber: "multiple",
             errors: "No Twilio workers were found with these n-Numbers",
             wfmErrors: failedActivations.nNumbersWithoutTwilioWorkers.toString()
           });
         }
-        if (failedActivations.workersFailedToActivate.length > 0){
+        if (failedActivations.workersFailedToActivate?.length > 0){
           finalErrors.push({
             rowNumber: "multiple",
-            errors: "An error occurred and we were unable to activate these workers",
+            errors: `An error occurred and we were unable to activate these workers: ${failedActivations.message}`,
             wfmErrors: failedActivations.workersFailedToActivate.toString()
           });
         }
-        if (failedActivations.workersFailedToReturnToOffline.length > 0){
+        if (failedActivations.workersFailedToReturnToOffline?.length > 0){
           finalErrors.push({
             rowNumber: "multiple",
             errors: "There was an error returning these workers to offline state",
@@ -372,10 +378,13 @@ export const initiateCalls = async (
 
 /**
  * Inspects rows that were already successfully processed and, if necessary, activates a WFM person's external logon
+ * @param state application state
+ * @param dispatch update state function
  * @param successfulRows rows to be processed
  * @param selectedTemplates selected templates to be processed
  */
-export const handleWfmExternalLogon = async (dispatch: any, successfulRows: any, selectedTemplates: any) => {
+export const handleWfmExternalLogon = async (state: AppState, dispatch: any, successfulRows: any, selectedTemplates: any) => {
+
   if(selectedTemplates.some((t: Template) => t.name === "CREATE_TRITON_USER")) {
     const wfmNNumbers: any[] = [];
 
@@ -391,14 +400,27 @@ export const handleWfmExternalLogon = async (dispatch: any, successfulRows: any,
     const resultsArray: any[] = [];
     let currentIndex = 0;
 
+
     const processBatch = async (): Promise<any> => {
       const endingIndex = currentIndex + max;
       const processingNNumbers: any[] = wfmNNumbers.slice(currentIndex, endingIndex);
 
-      const results = await wfmActivateExternalLogon({
-        workerNNumbers: processingNNumbers
-      });
-      resultsArray.push(results);
+      try {
+        const results = await wfmActivateExternalLogon({
+          workerNNumbers: processingNNumbers
+        });
+        resultsArray.push(results);
+      } catch(err) {
+        console.error(`WFM Activations failed`, err);
+        resultsArray.push({
+          data: {
+            failedActivations: {
+              message: `${err.message || err} ${err.response.data && JSON.stringify(err.response.data)}`,
+              workersFailedToActivate: processingNNumbers
+            }
+          }
+        });
+      }
 
       currentIndex = currentIndex + max;
 
@@ -410,8 +432,7 @@ export const handleWfmExternalLogon = async (dispatch: any, successfulRows: any,
     };
     await processBatch();
 
-    const failedActivations = resultsArray[0].data?.failedActivations || {};
-
+    const failedActivations = resultsArray[0]?.data?.failedActivations || {};
     const noWorkers: any = [];
     const failedToActivate: any = [];
     const failedToOffline: any = [];
@@ -421,16 +442,16 @@ export const handleWfmExternalLogon = async (dispatch: any, successfulRows: any,
         nNumbersWithoutTwilioWorkers,
         workersFailedToActivate,
         workersFailedToReturnToOffline
-      } = result.data.failedActivations;
+      } = result?.data?.failedActivations;
 
       if (nNumbersWithoutTwilioWorkers !== undefined || workersFailedToActivate !== undefined || workersFailedToReturnToOffline !== undefined) {
-        const failed1 = result.data.failedActivations.nNumbersWithoutTwilioWorkers;
-        const failed2 = result.data.failedActivations.workersFailedToActivate;
-        const failed3 = result.data.failedActivations.workersFailedToReturnToOffline;
+        const failed1 = result?.data?.failedActivations.nNumbersWithoutTwilioWorkers;
+        const failed2 = result?.data?.failedActivations.workersFailedToActivate;
+        const failed3 = result?.data?.failedActivations.workersFailedToReturnToOffline;
 
-        noWorkers.push(failed1);
-        failedToActivate.push(failed2);
-        failedToOffline.push(failed3);
+        failed1 && noWorkers.push(failed1);
+        failed2 && failedToActivate.push(failed2);
+        failed3 && failedToOffline.push(failed3);
       }
     });
 

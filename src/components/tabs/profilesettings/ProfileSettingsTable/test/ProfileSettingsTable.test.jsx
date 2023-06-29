@@ -166,10 +166,12 @@ describe("<ProfileSettingsTable />", () => {
       expect(rendered.getByText("Self Service Indicator", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Activities", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Transfer Queues", { selector: "th" })).toBeInTheDocument();
+      expect(rendered.getByText("Access Group", { selector: "th" })).toBeInTheDocument();
+      expect(rendered.getByText("Operating Unit", { selector: "th" })).toBeInTheDocument();
       const tableRows = rendered.getAllByTestId("table-row");
       const tableHeaders = rendered.getAllByTestId("table-header");
       expect(tableRows.length).toBe(1);
-      expect(tableHeaders.length).toBe(19);
+      expect(tableHeaders.length).toBe(20);
     });
 
     test("should render correct tooltips", async () => {
@@ -192,6 +194,7 @@ describe("<ProfileSettingsTable />", () => {
       expect(rendered.getByLabelText("Self service indicator is applicable to profiles with an id of 39 and above, but is actually set at the worker attribute level")).toBeInTheDocument();
       expect(rendered.getByLabelText("Profile Activities")).toBeInTheDocument();
       expect(rendered.getByLabelText("UI Feature: Additional transfer queues that will appear in the Triton queue ticker")).toBeInTheDocument();
+      expect(rendered.getByLabelText("Column to show which OU a profile is assigned to")).toBeInTheDocument();
     });
 
     test("should render row data", async () => {
