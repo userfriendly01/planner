@@ -105,7 +105,6 @@ const expectedColumns = [
   //   wrap: true
   // } //Not ready to go yet
 ];
-
 const expectedWFMRows = [
   {
     wfmBusinessUnit: "WFM Business Unit1",
@@ -300,58 +299,30 @@ describe("ExportOptionsButton", () => {
   });
   describe("initial render", () => {
     test("component renders as expected", () => {
-      render(<ExportOptionsButton template={createTemplates.CREATE_TRITON_USER.fields} selectedTemplates={[]} state={initialTestState}/>);
+      render(<ExportOptionsButton template={createTemplates.CREATE_TRITON_USER.fields} state={initialTestState} businessUnitId={"123-321"}/>);
       render(Button.mock.calls[0][0].children[0]);
       expect(Button.mock.calls.length).toBe(1);
       expect(ExcelExport.mock.calls.length).toBe(2);
-      expect(BusinessUnitModal.mock.calls.length).toBe(0);
+    });
+    describe("teamplate === CREATE_CALABRIO_WFM_PERSON", () => {
+      test("should render BU specific options", () => {
+        render(<ExportOptionsButton template={createTemplates.CREATE_CALABRIO_WFM_PERSON.fields} state={initialTestState} businessUnitId={"123-321"}/>);
+        render(Button.mock.calls[0][0].children[0]);
+        const onClick = Button.mock.calls[0][0].onClick;
+        act(() => onClick());
+        expect(mockSave).toHaveBeenCalledTimes(1);
+        expect(mockSave).toHaveBeenCalledWith(expectedWFMRows, expectedWFMCols);
+      });
     });
     describe("onClick", () => {
       test("handleExport is called", () => {
-        render(<ExportOptionsButton template={createTemplates.CREATE_TRITON_USER.fields} selectedTemplates={[]} state={initialTestState}/>);
+        render(<ExportOptionsButton template={createTemplates.CREATE_TRITON_USER.fields} state={initialTestState} businessUnitId={"123-321"}/>);
         render(Button.mock.calls[0][0].children[0]);
         const onClick = Button.mock.calls[0][0].onClick;
         act(() => onClick());
         expect(mockSave).toHaveBeenCalledTimes(1);
         expect(mockSave).toHaveBeenCalledWith(expectedRows, expectedColumns);
         expect(BusinessUnitModal.mock.calls.length).toBe(0);
-      });
-      describe("WFM is a selected template", () => {
-        test("business unit modal opens, cancel is clicked, modal closes", () => {
-          render(<ExportOptionsButton template={createTemplates.CREATE_CALABRIO_WFM_PERSON.fields} selectedTemplates={[{ name: "CREATE_CALABRIO_WFM_PERSON" }]} state={initialTestState}/>);
-          render(Button.mock.calls[0][0].children[0]);
-          const onClick = Button.mock.calls[0][0].onClick;
-
-          act(() => onClick());
-          expect(mockSave).toHaveBeenCalledTimes(0);
-          expect(Modal.mock.calls[0][0].open).toBe(false);
-          expect(Modal.mock.calls[1][0].open).toBe(true);
-          render(Modal.mock.calls[1][0].children);
-          expect(BusinessUnitModal.mock.calls.length).toBe(1);
-          const handleClose = BusinessUnitModal.mock.calls[0][0].handleClose;
-          act(() => handleClose());
-          expect(Modal.mock.calls[2][0].open).toBe(false);
-          expect(mockSave).toHaveBeenCalledTimes(0);
-        });
-        test("modal is open, option is Business unit option selected", async () => {
-          render(<ExportOptionsButton template={createTemplates.CREATE_CALABRIO_WFM_PERSON.fields} selectedTemplates={[{ name: "CREATE_CALABRIO_WFM_PERSON" }]} state={initialTestState}/>);
-          render(Button.mock.calls[0][0].children[0]);
-          const onClick = Button.mock.calls[0][0].onClick;
-
-          act(() => onClick());
-          expect(mockSave).toHaveBeenCalledTimes(0);
-          expect(Modal.mock.calls[0][0].open).toBe(false);
-          expect(Modal.mock.calls[1][0].open).toBe(true);
-          render(Modal.mock.calls[1][0].children);
-          expect(BusinessUnitModal.mock.calls.length).toBe(1);
-
-          const modalHandleExport = BusinessUnitModal.mock.calls[0][0].handleExport;
-          act(() => modalHandleExport("123-321"));
-
-          expect(mockSave).toHaveBeenCalledTimes(1);
-          expect(mockSave).toHaveBeenCalledWith(expectedWFMRows, expectedWFMCols);
-
-        });
       });
       describe("_export is null", () => {
         beforeEach(() => {
@@ -364,7 +335,7 @@ describe("ExportOptionsButton", () => {
               field: "empty options",
               options: () => []
             }
-          ]} selectedTemplates={[]} state={initialTestState}/>);
+          ]} state={initialTestState}/>);
           render(Button.mock.calls[0][0].children);
           const onClick = Button.mock.calls[0][0].onClick;
           act(() => onClick());

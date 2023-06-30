@@ -63,7 +63,7 @@ describe("<CustomFlowGridToolBar/>",()=>{
   test("render component for AddFlow",()=>{
     renderCustomToolBar();
     const GridMock = Grid.mock.calls[0][0];
-    const ActionsAttr = GridMock.children[1].props.children.props.children[1].props.onChange;
+    const ActionsAttr = GridMock.children[2].props.children.props.children[1].props.onChange;
     const eventAddFlowValue = {
       target: {
         value: "addFlow"
@@ -78,16 +78,26 @@ describe("<CustomFlowGridToolBar/>",()=>{
   test("render component for Export",()=>{
     renderCustomToolBar();
     const GridMock = Grid.mock.calls[0][0];
-    const ActionsAttr = GridMock.children[1].props.children.props.children[1].props.onChange;
-    const eventExportFlowValue = {
+    const ExportFlowUI = GridMock.children[1].props.children[1].props.children.props.children.props.onClick;
+    act(()=>{
+      ExportFlowUI();
+    });
+    expect(exportDataFile).toBeCalledTimes(1);
+  });
+  test("render component for Default",()=>{
+    renderCustomToolBar();
+    const GridMock = Grid.mock.calls[0][0];
+    const ActionsAttr = GridMock.children[2].props.children.props.children[1].props.onChange;
+    const eventAddFlowValue = {
       target: {
-        value: "Export"
+        value: "default"
       }
     };
     act(()=>{
-      ActionsAttr(eventExportFlowValue);
+      ActionsAttr(eventAddFlowValue);
     });
-    expect(exportDataFile).toBeCalledTimes(1);
+    expect(GridMock).toBeTruthy();
+    expect(openAddModal).toBeCalledTimes(0);
   });
   test("render search Component", ()=>{
     renderCustomToolBar();

@@ -1,5 +1,5 @@
 import {
-  Chip, FormControl, InputLabel, MenuItem, Select, Grid, TextField
+  Chip, FormControl, InputLabel, MenuItem, Select, Grid, TextField, IconButton, Paper, Tooltip
 } from "@mui/material";
 import React, {
   useState, useEffect
@@ -36,9 +36,6 @@ const CustomFlowGridToolBar = ({
       case "addFlow":
         openAddModal(true);
         break;
-      case "Export":
-        exportDataFile();
-        break;
       default:
         break;
     }
@@ -54,7 +51,7 @@ const CustomFlowGridToolBar = ({
 
   return (
     <Grid container>
-      <Grid item key="flow-search-box" xs={10}>
+      <Grid item key="flow-search-box" xs={9}>
         <TextField
           sx={{ marginLeft: 1 }}
           placeholder="Click here to apply filter"
@@ -81,6 +78,20 @@ const CustomFlowGridToolBar = ({
           onClick={()=>openAdvanceSearchModal(true)}
         />
       </Grid>
+      <Grid item key = "Export FlowUI" xs={1}>
+        <Grid><div><br/><br/></div></Grid>
+        <Tooltip title="Export Flow Records" sx={{left:"calc(76%)",marginLeft:"24"}}>
+        <Paper variant="outlined" >
+        <IconButton 
+          onClick={exportDataFile}
+          color = "primary" 
+          size = "small"
+          sx ={{left:"calc(20%)"}}
+        > <FileDownloadIcon /> 
+      </IconButton>
+      </Paper>
+      </Tooltip>
+      </Grid>
       <Grid item key="flow-action-box" xs={2}>
         <FormControl sx={{
           marginTop: "16px",
@@ -103,9 +114,6 @@ const CustomFlowGridToolBar = ({
           >
             <MenuItem key="addFlow" value="addFlow">
               <PlaylistAddIcon />&nbsp;&nbsp; Add Flow
-            </MenuItem>
-            <MenuItem key="Export" value="Export">
-              <FileDownloadIcon /> &nbsp;&nbsp; Export
             </MenuItem>
           </Select>
         </FormControl>

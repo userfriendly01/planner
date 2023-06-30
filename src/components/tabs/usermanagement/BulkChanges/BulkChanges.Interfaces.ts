@@ -1,3 +1,4 @@
+import { AppState } from "globals";
 
 export interface Field {
   field: string,
@@ -31,7 +32,7 @@ export interface Template {
   name: string,
   data?: { [key: string]: any }
   processFunction: (row: Row, template?: Template) => Promise<string>,
-  stateUpdateFunctions: ((dispatch: any, successfulRows?: any, selectedTemplates?: any) => Promise<any>)[],
+  stateUpdateFunctions: ((state: AppState, dispatch: any, successfulRows?: any, selectedTemplates?: any) => Promise<any>)[],
   multiRunDependencies: MultiRunDependency[] | null,
   validationConcurrencyLimit: number,
   processingConcurrencyLimit: number,
@@ -45,6 +46,8 @@ export interface Templates {
 }
 
 export interface BulkActionFormProps {
+  businessUnitId?: string,
+  setBusinessUnitId?: (id: string) => void,
   selectedTemplates: Template[],
   setSelectedTemplates: (template: Template[]) => void;
 }
@@ -73,7 +76,7 @@ export interface ProcessingModalProps {
 
 export interface BusinessUnitModalProps {
   handleClose: () => void;
-  handleExport: (wfmBU: string | null) => void
+  handleConfirm: (wfmBU: string | null) => void
 }
 export interface WorkerAttribute {
   label: string,

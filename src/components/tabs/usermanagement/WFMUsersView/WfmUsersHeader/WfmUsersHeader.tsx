@@ -5,8 +5,9 @@ import {
   Dropdown,
   SearchBox
 } from "components";
-import { useAdminState } from "context";
+import { useAdminDispatch, useAdminState } from "context";
 import {
+  ModalOverlayStatuses,
   WfmBusinessUnit,
   WfmTeam
 } from "globals";
@@ -14,32 +15,22 @@ import React from "react";
 import {
   getWfmBusinessUnits,
   getWfmTeams,
-  sortWFMByName
+  sortWFMByName,
+  getCalabrioWfmOrg
 } from "utils";
 
 const ManagementHeader = (props: WfmUsersHeaderProps) => {
   const {
+    setStatus,
     tableState,
     setTableState
   } = props;
 
   const state = useAdminState();
+  const dispatch = useAdminDispatch();
 
   const getBusinessUnitOptions = () => {
-    const options: any[] = [
-      {
-        value: "show-all",
-        label: "Show All"
-      },
-      {
-        value: "no-business-unit",
-        label: "No Business Unit"
-      },
-      {
-        value: "divider",
-        label: "divider"
-      }
-    ];
+    const options: any[] = [];
     getWfmBusinessUnits(state, true).sort(sortWFMByName).forEach((bu: WfmBusinessUnit) => {
       options.push({
         label: bu.Name,
@@ -101,15 +92,6 @@ const ManagementHeader = (props: WfmUsersHeaderProps) => {
   }
   return (
     <Wrapper>
-      <SearchBox searchBy={tableState.searchBy} setSearch={(searchBy: string) => setTableState({
-        ...tableState,
-        searchBy,
-        pagination: {
-          ...tableState.pagination,
-          pageNumber: 1
-        }
-      })}
-      />
       <Dropdown
         label={"Filter Business Unit"}
         disableClear={true}
@@ -119,12 +101,23 @@ const ManagementHeader = (props: WfmUsersHeaderProps) => {
         }}
         options={getBusinessUnitOptions()}
         value={getBusinessUnitOptions().find((bu: any) => bu.Id === tableState.businessUnitFilter) || ""}
-        updateValue={(event: any, newValue: any) => {
-          setTableState({
-            ...tableState,
-            businessUnitFilter: newValue.value
-          })}
-        }
+        updateValue={async (event: any, newValue: any) => {
+          try {
+            setStatus(ModalOverlayStatuses.SAVING)
+            setTableState({
+              ...tableState,
+              businessUnitFilter: newValue.value,
+              pagination: {
+                ...tableState.pagination,
+                pageNumber: 1
+              }
+            })
+            await getCalabrioWfmOrg(newValue.value, state, dispatch);
+            setStatus(ModalOverlayStatuses.SUCCESS)
+          } catch(err) {
+            setStatus(ModalOverlayStatuses.FAIL)
+          }
+        }}
       />
       <Dropdown
         label={"Filter By Team"}
@@ -141,6 +134,15 @@ const ManagementHeader = (props: WfmUsersHeaderProps) => {
             teamFilter: newValue.value
           })}
         }
+      />
+      <SearchBox searchBy={tableState.searchBy} setSearch={(searchBy: string) => setTableState({
+        ...tableState,
+        searchBy,
+        pagination: {
+          ...tableState.pagination,
+          pageNumber: 1
+        }
+      })}
       />
       <ExportButton selected={tableState.searchResults} label="Export"/>
     </Wrapper>
