@@ -27,7 +27,6 @@ import {
   editProfile
 } from "services";
 
-
 const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
   const {
     handleClose,
