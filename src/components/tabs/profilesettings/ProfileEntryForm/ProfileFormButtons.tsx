@@ -27,7 +27,6 @@ import {
   editProfile
 } from "services";
 
-const createProfileOverlayTimeout = 5000; //5000 ms
 
 const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
   const {
@@ -65,7 +64,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
         setForm({
           type: profileEntryFormActions.RESET_FORM
         });
-      }, createProfileOverlayTimeout);
+      }, timeouts.MODAL_OVERLAY_ATTENTION);
     }).catch(() => {
       updateLoading({
         ...loading,
