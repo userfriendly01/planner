@@ -19,7 +19,8 @@ export const formModes: FormModes = {
 
 export const timeouts = {
   AUTH: 3600 * 1000,
-  MODAL_OVERLAY: 2000
+  MODAL_OVERLAY: 2000,
+  MODAL_OVERLAY_ATTENTION: 5000
 };
 
 export const resetResponses = {

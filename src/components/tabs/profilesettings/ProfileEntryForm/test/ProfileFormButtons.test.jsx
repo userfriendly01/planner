@@ -103,8 +103,23 @@ describe("<ProfileFormButtons />", () => {
           await waitFor(() => {
             expect(createProfile).toHaveBeenCalledTimes(1);
             jest.runAllTimers();
+            expect(mockUpdateLoading).toHaveBeenCalledWith({
+              "saveStatus": ModalOverlayStatuses.SAVING,
+              "overlayMessage": "Creating new profile...",
+              "saveProfile": true
+            });
+            expect(mockUpdateLoading).toHaveBeenCalledWith({
+              "saveStatus": ModalOverlayStatuses.SUCCESS,
+              "overlayMessage": "Successfully created profile GRS Claims. Please notify the data office of this change.",
+              "saveProfile": true
+            });
+            expect(mockUpdateLoading).toHaveBeenCalledWith({
+              "saveProfile": false
+            });
             expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
             expect(mockHandleClose).toHaveBeenCalledTimes(1);
+            expect(mockSetForm).toHaveBeenCalledTimes(1);
+            expect(mockSetForm).toHaveBeenCalledWith({ type: profileEntryFormActions.RESET_FORM });
           });
         });
         test("service call to create profile is unsuccessful", async () => {
@@ -124,11 +139,21 @@ describe("<ProfileFormButtons />", () => {
             jest.runAllTimers();
             expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
             expect(mockUpdateLoading).toHaveBeenCalledWith({
+              "saveStatus": ModalOverlayStatuses.SAVING,
+              "overlayMessage": "Creating new profile...",
+              "saveProfile": true
+            });
+            expect(mockUpdateLoading).toHaveBeenCalledWith({
               "saveStatus": ModalOverlayStatuses.FAIL,
               "overlayMessage": "Error creating GRS Claims",
               "saveProfile": true
             });
+            expect(mockUpdateLoading).toHaveBeenCalledWith({
+              "saveProfile": false
+            });
             expect(mockHandleClose).toHaveBeenCalledTimes(0);
+            expect(mockSetForm).toHaveBeenCalledTimes(0);
+            expect(mockSetForm).not.toHaveBeenCalledWith({ type: profileEntryFormActions.RESET_FORM });
           });
         });
       });
