@@ -7,6 +7,7 @@ import {
   AggregateQueue,
   Skill
 } from "globals";
+import { Tooltip } from "@mui/material";
 import {
   IconButtonWrapper,
   ProfileDropdownControlWrapper,
@@ -111,10 +112,10 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
             // @ts-ignore
             <ProfileDropdownRow highlightOnHover={true} key={`queue-row-${index}`}>
               <Tooltip
-                title={activity.available_i.data[0]? "Available": "Unavailable"}
+                title={queue.available_i.data[0]? "Available": "Unavailable"}
                 placement={"bottom"}
               >
-                <ProfileDropdownRowItem>{activity.activity_nme}</ProfileDropdownRowItem>
+                <ProfileDropdownRowItem>{queue.activity_nme}</ProfileDropdownRowItem>
               </Tooltip>
               <ProfileDropdownRowItem>{queue.ctmSkillDisplayName}</ProfileDropdownRowItem>
               <ProfileDropdownRowItem>
