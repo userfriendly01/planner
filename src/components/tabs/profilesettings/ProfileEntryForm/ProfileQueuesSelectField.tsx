@@ -110,6 +110,12 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
           return (
             // @ts-ignore
             <ProfileDropdownRow highlightOnHover={true} key={`queue-row-${index}`}>
+              <Tooltip
+                title={activity.available_i.data[0]? "Available": "Unavailable"}
+                placement={"bottom"}
+              >
+                <ProfileDropdownRowItem>{activity.activity_nme}</ProfileDropdownRowItem>
+              </Tooltip>
               <ProfileDropdownRowItem>{queue.ctmSkillDisplayName}</ProfileDropdownRowItem>
               <ProfileDropdownRowItem>
                 <IconButtonWrapper onClick={() => removeProfileQueueClicked(queue)} data-testid="delete-queue-button">
