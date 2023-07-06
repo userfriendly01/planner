@@ -390,7 +390,7 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: a
   body.attributes = { "default_skills": updatedDefaultSkills };
   console.log("**** UPDATE DEFAULT SKILLS RECORD PROCESSING", row, body);
   try {
-    // await updateUser(workerSid, body);
+    await updateUser(workerSid, body);
     return Promise.resolve(`${workerSid} - Default Skills updated for row ${rowNumber}`);
   } catch(err){
     const errorMessage = `Failed to update Default Skills for row ${rowNumber}. ${formatErrorMessage(err)}`;
