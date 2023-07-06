@@ -21,20 +21,36 @@ describe("<RoutingGridColumnDef />", () => {
   });
   describe("renderCell", ()=>{
     it("brand", ()=>{
-      const renderedCell = render(RoutingGridColumnDef[1].renderCell({ row: { brand: "Liberty Mutual" }}));
-      expect(renderedCell.findByDisplayValue("Liberty Mutual")).toBeTruthy();
+      const { findByDisplayValue } = render(RoutingGridColumnDef[1].renderCell({ row: { brand: "Liberty Mutual" }}));
+      expect(findByDisplayValue("Liberty Mutual")).toBeTruthy();
+    });
+    it("brand with null value", ()=>{
+      const { findByDisplayValue } = render(RoutingGridColumnDef[1].renderCell({ row: { brand: null }}));
+      expect(findByDisplayValue("")).toBeTruthy();
     });
     it("callerType", ()=>{
       const renderedCell = render(RoutingGridColumnDef[3].renderCell({ row: { callerType: "Claims" }}));
       expect(renderedCell.findByDisplayValue("Claims")).toBeTruthy();
     });
+    it("callerType with null value", ()=>{
+      const renderedCell = render(RoutingGridColumnDef[3].renderCell({ row: { callerType: null }}));
+      expect(renderedCell.findByDisplayValue("")).toBeTruthy();
+    });
     it("callIntent", ()=>{
       const renderedCell = render(RoutingGridColumnDef[4].renderCell({ row: { callIntent: "Test INTENT" }}));
       expect(renderedCell.findByDisplayValue("Test INTENT")).toBeTruthy();
     });
+    it("callIntent with null value", ()=>{
+      const renderedCell = render(RoutingGridColumnDef[4].renderCell({ row: { callIntent: null }}));
+      expect(renderedCell.findByDisplayValue("")).toBeTruthy();
+    });
     it("transferMessage", ()=>{
       const renderedCell = render(RoutingGridColumnDef[14].renderCell({ row: { transferMessage: "Test Transfer Message" }}));
       expect(renderedCell.findByDisplayValue("Test Transfer Message")).toBeTruthy();
+    });
+    it("transferMessage with null value", ()=>{
+      const renderedCell = render(RoutingGridColumnDef[14].renderCell({ row: { transferMessage: null }}));
+      expect(renderedCell.findByDisplayValue("")).toBeTruthy();
     });
     it("occupancyCheck", ()=>{
       const renderedCell = render(RoutingGridColumnDef[16].renderCell({
