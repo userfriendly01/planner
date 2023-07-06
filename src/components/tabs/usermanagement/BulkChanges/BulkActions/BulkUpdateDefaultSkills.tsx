@@ -122,12 +122,14 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
       </SkillSelectorContainer>
       }
       { skillOption.value === "ADD" &&
+      <SkillSelectorContainer>
         <DefaultSkillSelector
           defaultSkills={updatedDefaultSkills}
           setDefaultSkills={(updatedDefaultSkills: any) => {
             setUpdatedDefaultSkills(updatedDefaultSkills);
           }}
         />
+      </SkillSelectorContainer>
       }
       { skillOption.value === "DELETE" &&
         <Dropdown
