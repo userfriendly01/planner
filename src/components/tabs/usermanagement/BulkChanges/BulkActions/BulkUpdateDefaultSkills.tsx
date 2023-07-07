@@ -28,7 +28,7 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
 
   const dropdownOptions = [
     {
-      label: "Add Skill",
+      label: "Add Skills",
       value: "ADD"
     },
     {
@@ -36,7 +36,7 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
       value: "DELETE"
     },
     {
-      label: "Override Skill",
+      label: "Override Skills",
       value: "OVERRIDE"
     }
   ];

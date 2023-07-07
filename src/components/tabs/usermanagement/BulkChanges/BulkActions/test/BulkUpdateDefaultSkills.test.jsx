@@ -46,7 +46,7 @@ const adminState = {
 
 const dropdownOptions = [
   {
-    label: "Add Skill",
+    label: "Add Skills",
     value: "ADD"
   },
   {
@@ -54,7 +54,7 @@ const dropdownOptions = [
     value: "DELETE"
   },
   {
-    label: "Override Skill",
+    label: "Override Skills",
     value: "OVERRIDE"
   }
 ];
@@ -104,7 +104,7 @@ describe("<BulkUpdateDefaultSkills />", () => {
         act(() => onOptionChange(null, dropdownOptions[0]));
         expect(Dropdown.mock.calls.length).toBe(3);
         expect(Dropdown.mock.calls[1][0].value).toBe("");
-        expect(Dropdown.mock.calls[2][0].value).toBe("Add Skill");
+        expect(Dropdown.mock.calls[2][0].value).toBe("Add Skills");
         expect(DefaultSkillSelector.mock.calls[0][0].defaultSkills).toStrictEqual({
           levels: {},
           skills: []
@@ -238,7 +238,7 @@ describe("<BulkUpdateDefaultSkills />", () => {
         act(() => onOptionChange(null, dropdownOptions[2]));
         expect(Dropdown.mock.calls.length).toBe(3);
         expect(Dropdown.mock.calls[1][0].value).toBe("");
-        expect(Dropdown.mock.calls[2][0].value).toBe("Override Skill");
+        expect(Dropdown.mock.calls[2][0].value).toBe("Override Skills");
         expect(DefaultSkillSelector.mock.calls[0][0].defaultSkills).toStrictEqual({
           levels: {},
           skills: []
