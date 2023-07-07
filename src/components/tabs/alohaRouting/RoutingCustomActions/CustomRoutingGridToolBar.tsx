@@ -86,7 +86,7 @@ export const CustomRoutingGridToolBar = ({
           onClick={exportDataFile}
           color = "primary" 
           size = "small"
-          sx ={{left:"calc(20%)"}}
+          sx ={{position:"fixed"}}
         > <FileDownloadIcon /> 
       </IconButton>
       </Paper>

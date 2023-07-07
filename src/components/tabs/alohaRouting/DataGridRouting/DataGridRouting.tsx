@@ -232,7 +232,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
     setClonedRule(!flag);
     row.id = maxRef.current + 1;
     const skey = row.brand+"__"+row.channel+"__"+row.id;
-    row.skey = skey;
+    row.skey = skey.split(" ").join("").toLocaleLowerCase();
     const routeInitRule = routingFields.reduce((a: FormValidationRule, v: AddPageFieldConfigProps) => ({
       ...a,
       [v.key]: {
