@@ -31,7 +31,10 @@ import {
   FIELDS,
   isDidUser
 } from "../BulkTemplates";
-import { AppState } from "globals";
+import {
+  AppState,
+  Worker
+} from "globals";
 
 const rejectPromise = (error: string, rowNumber: number) => {
   return Promise.reject(JSON.stringify({
@@ -254,11 +257,11 @@ const processUpdateWorkerAttribute = async (row: any, template: Template, state:
       try {
         body[location[0]] = {
           ...parentObject,
-          [location[1]] : {
+          [location[1]]: {
             ...nestedObject,
             ...newAttribute
           }
-        }
+        };
       } catch(err){
         return rejectPromise(`Error thrown when location is array ${err.message}`, rowNumber);
       }
@@ -336,6 +339,61 @@ const processUpdateManager = async (row: any, template: Template, state: any) =>
     return Promise.resolve(`${userNNumber} - Manager & Calabrio Team updated for row ${rowNumber}`);
   } catch(err){
     const errorMessage = `Failed to update Manager and Calabrio Team for user for row ${rowNumber}. ${formatErrorMessage(err)}`;
+    console.error(errorMessage, err);
+    return rejectPromise(errorMessage, rowNumber);
+  }
+};
+
+const processUpdateDefaultSkills = async (row: any, template: Template, state: any) => {
+  const rowNumber = row.rowNumber;
+  const workerSid = row.workerSid;
+  const value = template.data.value;
+  const option = template.data.option;
+  const body: any = {};
+  let updatedDefaultSkills: any = {};
+
+  if (option.value === "OVERRIDE"){
+    updatedDefaultSkills = value;
+  } else if ( option.value === "ADD"){
+    const currentSkillLevels = row.attributes.default_skills.levels;
+    const currentSkills = row.attributes.default_skills.skills;
+
+    const newSkills = value.skills.filter( (s: any) => !currentSkills.includes(s));
+    let newSkillLevels: any = {
+      ...currentSkillLevels
+    };
+
+    if (value.levels) {
+      newSkillLevels = {
+        ...newSkillLevels,
+        ...value.levels
+      };
+    }
+
+    updatedDefaultSkills = {
+      levels: newSkillLevels,
+      skills: [...currentSkills, ...newSkills]
+    };
+  } else if(option.value === "DELETE"){
+    const skillToDelete = value.skills[0];
+    const currentSkills = row.attributes.default_skills;
+
+    updatedDefaultSkills.skills = currentSkills.skills.filter( (s: any) => s !== skillToDelete );
+    updatedDefaultSkills.levels = {};
+    for( const skillLevel in currentSkills.levels){
+      if(skillLevel !== skillToDelete){
+        updatedDefaultSkills.levels[skillLevel] = currentSkills.levels[skillLevel];
+      }
+    }
+  }
+
+  body.attributes = { "default_skills": updatedDefaultSkills };
+  console.log("**** UPDATE DEFAULT SKILLS RECORD PROCESSING", row, body);
+  try {
+    await updateUser(workerSid, body);
+    return Promise.resolve(`${workerSid} - Default Skills updated for row ${rowNumber}`);
+  } catch(err){
+    const errorMessage = `Failed to update Default Skills for row ${rowNumber}. ${formatErrorMessage(err)}`;
     console.error(errorMessage, err);
     return rejectPromise(errorMessage, rowNumber);
   }
@@ -463,6 +521,18 @@ export const getUpdateTemplates = (state: any): Templates => {
       data: {},
       processFunction: (row: any, template: Template) => processUpdateManager(row, template, state),
       stateUpdateFunctions: [updateTritonUserState, updateCalabrioUserState],
+      multiRunDependencies: null,
+      validationConcurrencyLimit: 500,
+      processingConcurrencyLimit: 5,
+      fields: [
+        FIELDS.N_NUMBER_UPDATE
+      ]
+    },
+    UPDATE_DEFAULT_SKILLS: {
+      name: "UPDATE_DEFAULT_SKILLS",
+      data: {},
+      processFunction: (row: any, template: Template) => processUpdateDefaultSkills(row, template, state),
+      stateUpdateFunctions: [updateTritonUserState],
       multiRunDependencies: null,
       validationConcurrencyLimit: 500,
       processingConcurrencyLimit: 5,

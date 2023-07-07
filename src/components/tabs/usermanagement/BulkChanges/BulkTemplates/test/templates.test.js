@@ -966,3 +966,182 @@ describe("UPDATE_USERS_MANAGER", () => {
     });
   });
 });
+describe("UPDATE_DEFAULT_SKILLS", () => {
+  const updateDefaultSkillsProcessFunction = updateTemplates.UPDATE_DEFAULT_SKILLS.processFunction;
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+  describe("updateUser is successful", () => {
+    beforeEach(() => updateUser.mockResolvedValue("Wowee!"));
+    describe("add skill", () => {
+      const template = {
+        data: {
+          key: "default_skills",
+          value: {
+            skills: ["skillz"],
+            levels: {
+              skillz: 1
+            }
+          },
+          option: {
+            label: "Add Skill",
+            value: "ADD"
+          }
+        }
+      };
+      const row = {
+        rowNumber: 4,
+        workerSid: "WK1234",
+        attributes: {
+          default_skills: {
+            skills: ["currentSkill"],
+            levels: {}
+          }
+        }
+      };
+      test("should call updateUser with correct body", async () => {
+        const result = await updateDefaultSkillsProcessFunction(row, template);
+        expect(updateUser).toHaveBeenCalledTimes(1);
+        expect(updateUser).toHaveBeenCalledWith("WK1234", {
+          attributes: {
+            default_skills: {
+              levels: {
+                skillz: 1
+              },
+              skills: ["currentSkill", "skillz"]
+            }
+          }
+        });
+        expect(result).toBe("WK1234 - Default Skills updated for row 4");
+      });
+    });
+    describe("override skill", () => {
+      const template = {
+        data: {
+          key: "default_skills",
+          value: {
+            skills: ["skillz"],
+            levels: {
+              skillz: 1
+            }
+          },
+          option: {
+            label: "Override Skill",
+            value: "OVERRIDE"
+          }
+        }
+      };
+      const row = {
+        rowNumber: 4,
+        workerSid: "WK1234",
+        attributes: {
+          default_skills: {
+            skills: ["currentSkill"],
+            levels: {}
+          }
+        }
+      };
+      test("should call updateUser with correct body", async () => {
+        const result = await updateDefaultSkillsProcessFunction(row, template);
+        expect(updateUser).toHaveBeenCalledTimes(1);
+        expect(updateUser).toHaveBeenCalledWith("WK1234", {
+          attributes: {
+            default_skills: {
+              levels: {
+                skillz: 1
+              },
+              skills: ["skillz"]
+            }
+          }
+        });
+        expect(result).toBe("WK1234 - Default Skills updated for row 4");
+      });
+    });
+    describe("delete skill", () => {
+      const template = {
+        data: {
+          key: "default_skills",
+          value: {
+            skills: ["deleteThis"],
+            levels: {
+              deleteThis: 1
+            }
+          },
+          option: {
+            label: "Delete Skill",
+            value: "DELETE"
+          }
+        }
+      };
+      const row = {
+        rowNumber: 4,
+        workerSid: "WK1234",
+        attributes: {
+          default_skills: {
+            skills: ["currentSkill", "deleteThis"],
+            levels: {
+              deleteThis: 1,
+              currentSkill: 4
+            }
+          }
+        }
+      };
+      test("should call updateUser with correct body", async () => {
+        const result = await updateDefaultSkillsProcessFunction(row, template);
+        expect(updateUser).toHaveBeenCalledTimes(1);
+        expect(updateUser).toHaveBeenCalledWith("WK1234", {
+          attributes: {
+            default_skills: {
+              levels: {
+                currentSkill: 4
+              },
+              skills: ["currentSkill"]
+            }
+          }
+        });
+        expect(result).toBe("WK1234 - Default Skills updated for row 4");
+      });
+    });
+  });
+  describe("updateUser throws an error", () => {
+    beforeEach(() => updateUser.mockRejectedValue("Aww"));
+    const template = {
+      data: {
+        key: "default_skills",
+        value: {
+          skills: ["deleteThis"],
+          levels: {
+            deleteThis: 1
+          }
+        },
+        option: {
+          label: "Delete Skill",
+          value: "DELETE"
+        }
+      }
+    };
+    const row = {
+      rowNumber: 4,
+      workerSid: "WK1234",
+      attributes: {
+        default_skills: {
+          skills: ["currentSkill", "deleteThis"],
+          levels: {
+            deleteThis: 1
+          }
+        }
+      }
+    };
+    test("should reject", async () => {
+      try {
+        await updateDefaultSkillsProcessFunction(row, template);
+      } catch(err) {
+        expect(updateUser).toHaveBeenCalledTimes(1);
+        expect(err).toBe(JSON.stringify({
+          rowNumber: 4,
+          error: "Failed to update Default Skills for row 4. Aww"
+        }));
+      }
+    });
+  });
+});
