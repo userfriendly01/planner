@@ -301,6 +301,7 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
     setForm({
       type: "SET_UPDATE_TRITON_FORM_STATE",
       payload: {
+        formMode: form.formMode,
         worker: tritonWorker,
         managers: state.managerContext.managers
       }
@@ -318,7 +319,10 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
     */
       setForm({
         type: "SET_UPDATE_QM_FORM_STATE",
-        payload: calabrioQmUser
+        payload: {
+          user: calabrioQmUser,
+          formMode: form.formMode
+        }
       });
 
   } else if(!form.calabrio_qm.userFound && calabrioQmUser && !nNumberObject.fetchedUser){
@@ -337,6 +341,7 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
     setForm({
       type: "SET_UPDATE_WFM_FORM_STATE",
       payload: {
+        formMode: form.formMode,
         user: calabrioWfmUser,
         state
       }

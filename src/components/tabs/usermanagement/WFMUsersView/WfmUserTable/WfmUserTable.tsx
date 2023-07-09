@@ -66,6 +66,7 @@ const WfmUserTable = (props: WfmUserTableProps) => {
                 type: userFormActions.SET_UPDATE_WFM_FORM_STATE,
                 payload: {
                   user,
+                  formMode: formModes.UPDATE,
                   state
                 }
               });
