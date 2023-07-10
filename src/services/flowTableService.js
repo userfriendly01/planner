@@ -159,7 +159,7 @@ function updateFlowInput(item){
     accountManager: item.accountManager || "",
     affinityVDN: item.affinityVDN || "",
     callTypeDescription: item.callTypeDescription || "",
-    callIntent: item.callIntent?.value || "",
+    callIntent: item.callIntent || "",
     transferCode: item.transferCode || "",
     internetPlacement: item.internetPlacement || "",
     callDetails1: item.callDetails1 || "",
