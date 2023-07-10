@@ -1016,6 +1016,7 @@ describe("userFormReducer", () => {
     test("should reset form to update state", () => {
       const worker = mockWorkers[2];
       const payload = {
+        formMode: formModes.UPDATE,
         worker,
         managers: managerList
       };
@@ -1536,7 +1537,10 @@ describe("userFormReducer", () => {
       };
       const action = {
         type: userFormActions.SET_UPDATE_QM_FORM_STATE,
-        payload: calabrioUser
+        payload: {
+          user: calabrioUser,
+          formMode: formModes.UPDATE,
+        }
       };
       const result = userFormReducer(initialUserFormState, action);
       const expectedFormState = {
@@ -1563,6 +1567,7 @@ describe("userFormReducer", () => {
       const action = {
         type: userFormActions.SET_UPDATE_WFM_FORM_STATE,
         payload: {
+          formMode: formModes.UPDATE,
           user: wfmUser,
           state: initialTestState
         }
@@ -1608,6 +1613,7 @@ describe("userFormReducer", () => {
       const action = {
         type: userFormActions.SET_UPDATE_WFM_FORM_STATE,
         payload: {
+          formMode: formModes.UPDATE,
           user: wfmUser,
           state: initialTestState
         }
@@ -1637,6 +1643,7 @@ describe("userFormReducer", () => {
       const action = {
         type: userFormActions.SET_UPDATE_WFM_FORM_STATE,
         payload: {
+          formMode: formModes.UPDATE,
           user: wfmUser,
           state: initialTestState
         }

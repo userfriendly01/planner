@@ -1434,6 +1434,7 @@ describe("identifyUserProfiles", () => {
           type: "SET_UPDATE_WFM_FORM_STATE",
           payload: {
             state: initialTestState,
+            formMode: "insert",
             user: {
               BusinessUnitId: "123-321",
               ParentTeam: "111",
@@ -1474,6 +1475,7 @@ describe("identifyUserProfiles", () => {
           type: "SET_UPDATE_WFM_FORM_STATE",
           payload: {
             state: initialTestState,
+            formMode: "insert",
             user: {
               BusinessUnitId: "123-321",
               ParentTeam: "111",
@@ -1546,6 +1548,7 @@ describe("identifyUserProfiles", () => {
         expect(mockSetForm).toHaveBeenCalledWith({
           type: "SET_UPDATE_TRITON_FORM_STATE",
           payload: {
+            formMode: "insert",
             worker: {
               attributes: {
                 emp_first_name: "Bree",
@@ -1600,6 +1603,7 @@ describe("identifyUserProfiles", () => {
         expect(mockSetForm).toHaveBeenCalledWith({
           type: "SET_UPDATE_TRITON_FORM_STATE",
           payload: {
+            formMode: "insert",
             worker: {
               attributes: {
                 full_name: "Andrew VandeKamp",
@@ -1652,6 +1656,7 @@ describe("identifyUserProfiles", () => {
           expect(mockSetForm).toHaveBeenCalledWith({
             type: "SET_UPDATE_TRITON_FORM_STATE",
             payload: {
+              formMode: "insert",
               worker: {
                 attributes: {
                   full_name: "Snowball Jones",
@@ -1720,6 +1725,7 @@ describe("identifyUserProfiles", () => {
           expect(mockSetForm).toHaveBeenCalledWith({
             type: "SET_UPDATE_TRITON_FORM_STATE",
             payload: {
+              formMode: "insert",
               worker: {
                 attributes: {
                   full_name: "Snowball Jones",
@@ -1789,6 +1795,7 @@ describe("identifyUserProfiles", () => {
           expect(mockSetForm).toHaveBeenCalledWith({
             type: "SET_UPDATE_TRITON_FORM_STATE",
             payload: {
+              formMode: "insert",
               worker: {
                 attributes: {
                   full_name: "Snowball Jones",
@@ -1840,6 +1847,7 @@ describe("identifyUserProfiles", () => {
           expect(mockSetForm).toHaveBeenCalledWith({
             type: "SET_UPDATE_TRITON_FORM_STATE",
             payload: {
+              formMode: "insert",
               worker: {
                 attributes: {
                   full_name: "Snowball Jones",
@@ -1929,6 +1937,7 @@ describe("identifyUserProfiles", () => {
         expect(mockSetForm).toHaveBeenCalledWith({
           type: "SET_UPDATE_TRITON_FORM_STATE",
           payload: {
+            formMode: "insert",
             worker: {
               attributes: {
                 full_name: "Snowball Jones",

@@ -14,7 +14,7 @@ import {
   render,
   setupMockedComponents
 } from "testUtils";
-import { theme } from "globals";
+import { formModes, theme } from "globals";
 import { useNavigate } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import { formatWorkerAttributeSkillsToHTML } from "utils";
@@ -210,6 +210,7 @@ describe("<TritonUserTable />", () => {
       expect(mockSetForm).toHaveBeenCalledWith({
         type: userFormActions.SET_UPDATE_TRITON_FORM_STATE,
         payload: {
+          formMode: formModes.UPDATE,
           managers: initialTestState.managerContext.managers,
           worker: initialTestState.workerContext.workers[0]
         }
@@ -228,7 +229,6 @@ describe("<TritonUserTable />", () => {
         type: userFormActions.SET_DELETE_FORM_STATE,
         payload: {
           managers: initialTestState.managerContext.managers,
-          formMode: "delete",
           worker: initialTestState.workerContext.workers[0]
         }
       });

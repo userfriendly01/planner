@@ -537,7 +537,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
       const managers = action.payload.managers;
       return {
         ...state,
-        formMode: formModes.UPDATE,
+        formMode: action.payload.formMode,
         nNumber: {
           ...state.nNumber,
           value: worker.attributes.n_number
@@ -598,10 +598,10 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
       };
     }
     case userFormActions.SET_UPDATE_QM_FORM_STATE: {
-      const user = action.payload;
+      const user = action.payload.user;
       return {
         ...state,
-        formMode: formModes.UPDATE,
+        formMode: action.payload.formMode,
         calabrio_qm: {
           ...state.calabrio_qm,
           userFound: true,
@@ -655,7 +655,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
 
       return {
         ...state,
-        formMode: formModes.UPDATE,
+        formMode: action.payload.formMode,
         calabrio_wfm: {
           ...state.calabrio_wfm,
           userFound: true,

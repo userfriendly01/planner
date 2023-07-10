@@ -93,6 +93,7 @@ const TritonUserTable = (props: TritonUserTableProps) => {
               setForm({
                 type: userFormActions.SET_UPDATE_TRITON_FORM_STATE,
                 payload: {
+                  formMode: formModes.UPDATE,
                   worker,
                   managers: state.managerContext.managers
                 }
@@ -105,8 +106,7 @@ const TritonUserTable = (props: TritonUserTableProps) => {
                 type: userFormActions.SET_DELETE_FORM_STATE,
                 payload: {
                   worker,
-                  managers: state.managerContext.managers,
-                  formMode: formModes.DELETE
+                  managers: state.managerContext.managers
                 }
               });
               navigate(`/triton-admin/user`)

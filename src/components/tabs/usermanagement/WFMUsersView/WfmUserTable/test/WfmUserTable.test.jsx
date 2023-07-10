@@ -12,7 +12,7 @@ import {
   render,
   setupMockedComponents
 } from "testUtils";
-import { theme } from "globals";
+import { formModes, theme } from "globals";
 import { useNavigate } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import {
@@ -134,6 +134,7 @@ describe("<WfmUserTable />", () => {
       expect(mockSetForm).toHaveBeenCalledWith({
         type: userFormActions.SET_UPDATE_WFM_FORM_STATE,
         payload: {
+          formMode: formModes.UPDATE,
           user: testWFMPeople[0],
           state: initialTestState
         }
