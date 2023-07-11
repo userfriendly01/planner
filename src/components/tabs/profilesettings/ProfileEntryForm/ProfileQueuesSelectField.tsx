@@ -111,12 +111,14 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
           return (
             // @ts-ignore
             <ProfileDropdownRow highlightOnHover={true} key={`queue-row-${index}`}>
-              <Tooltip
-                title={queue.ctmSkillId < 0 ? "Aggregate Queue": ""}
-                placement={"bottom"}
-              >
-                <ProfileDropdownRowItem>{queue.ctmSkillDisplayName}</ProfileDropdownRowItem>
-              </Tooltip>
+              {queue.ctmSkillID < 0 ?
+                <Tooltip
+                  title={"Aggregate Queue"}
+                  placement={"bottom"}
+                >
+                  <ProfileDropdownRowItem>{queue.ctmSkillDisplayName}</ProfileDropdownRowItem>
+                </Tooltip>
+                : ""}
               <ProfileDropdownRowItem>
                 <IconButtonWrapper onClick={() => removeProfileQueueClicked(queue)} data-testid="delete-queue-button">
                   <Delete fontSize="inherit"/>
