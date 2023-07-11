@@ -119,7 +119,7 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
                 >
                   <ProfileDropdownRowItem>{queue.ctmSkillDisplayName}</ProfileDropdownRowItem>
                 </Tooltip>
-                : null}
+                : <ProfileDropdownRowItem>{queue.ctmSkillDisplayName}</ProfileDropdownRowItem>}
               <ProfileDropdownRowItem>
                 <IconButtonWrapper onClick={() => removeProfileQueueClicked(queue)} data-testid="delete-queue-button">
                   <Delete fontSize="inherit"/>
