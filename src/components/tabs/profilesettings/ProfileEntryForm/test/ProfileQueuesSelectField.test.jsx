@@ -86,6 +86,7 @@ describe("<ProfileQueuesSelectField />", () => {
       expectMockedComponent(rendered, { Dropdown });
       expectMockedComponent(rendered, { Add });
       expectMockedComponent(rendered, { Delete }, 0);
+      expectMockedComponent(rendered, { Tooltip }, 0);
     });
   });
 
@@ -108,7 +109,7 @@ describe("<ProfileQueuesSelectField />", () => {
     beforeEach(() => {
       const mockNewSkill = [{
         name: "lscOBDialer1",
-        ctmSkillId: 1,
+        ctmSkillId: -1,
         ctmSkillDisplayName: "lsc OB Dialer 1",
         profiles: [{
           profileName: "Licensed Sales Center",
@@ -172,11 +173,11 @@ describe("<ProfileQueuesSelectField />", () => {
         },
         {
           aggregate_queues_id: 4,
-          aggregate_queues_nme: 'Licensed Sales Center',
-          aggregate_queues_type: 'aggregate',
-          owner_type: 'profile',
+          aggregate_queues_nme: "Licensed Sales Center",
+          aggregate_queues_type: "aggregate",
+          owner_type: "profile",
           worker_sid: null,
-          row_crtn_dtm: '',
+          row_crtn_dtm: "",
           row_updt_dtm: null
         }
       ]);
