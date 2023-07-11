@@ -110,7 +110,7 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
         {transferQueues.map((queue: Skill, index: number) => {
           return (
             // @ts-ignore
-            // Aggregate queues have a negative ID (ctmSkillID) in order not to clash with single transfer queues
+            // Aggregate queues have a negative ID (ctmSkillId) in order not to clash with single transfer queues
             <ProfileDropdownRow highlightOnHover={true} key={`queue-row-${index}`}>
               {queue.ctmSkillId < 0 ?
                 <Tooltip
