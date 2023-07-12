@@ -115,7 +115,7 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
               {queue.ctmSkillId < 0 ?
                 <Tooltip
                   title={"Aggregate Queue"}
-                  placement={"right"}
+                  placement={"bottom"}
                 >
                   <ProfileDropdownRowItem>{queue.ctmSkillDisplayName}</ProfileDropdownRowItem>
                 </Tooltip>
