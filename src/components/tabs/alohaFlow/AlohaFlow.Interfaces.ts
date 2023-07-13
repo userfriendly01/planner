@@ -1,6 +1,7 @@
 import { Control } from "globals";
 import { FormValidationRule } from "utils/interfaces";
 export interface FlowContent {
+    callIntent?: string;
     callerType?: string;
     callFlowRoute?: string;
     dataRequests?: Array<string>;
@@ -56,7 +57,6 @@ export interface CctSharedCallFlowDb {
     callDetails1?: string;
     callDetails2?: string;
     callFlowTemplate?: string;
-    callIntent?: string;
     callTypeDescription?: string;
     channel?: string;
     content?: FlowContent;
@@ -85,7 +85,6 @@ export interface FlowKeys {
     callerType?: string;
     callFlowRoute?: string;
     callFlowTemplate?: string;
-    callIntent?: string;
     callTypeDescription?: string;
     channel?: string;
     content?: FlowContent;
