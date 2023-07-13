@@ -868,6 +868,8 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
         triton: {
           ...state.triton,
           userFound: true,
+          sid: worker.sid,
+          attributes: worker.attributes,
           defaultSkills: {
             ...state.triton.defaultSkills,
             ...getValidSkillsObject(worker.attributes.default_skills)
@@ -915,7 +917,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
             ...state.triton.selfServiceInd,
             value: worker.selfServiceInd || false
           }
-        }
+        },
       };
     }
     case userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE: {

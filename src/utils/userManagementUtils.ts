@@ -243,7 +243,6 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
     If this nNumber continues to fail, this user may no longer be active in the HR database or needs to reach out to the HR team to investigate the failure.`
     nNumberObject = await fetchUser(form.nNumber.value, setForm, errorMessage, discrepancyType.GENERAL);
   }
-
   if(primarySystem === "triton"){
     const acdId = form.triton.sid;
     const nNumber = form.nNumber.value || form.triton.attributes?.n_number;

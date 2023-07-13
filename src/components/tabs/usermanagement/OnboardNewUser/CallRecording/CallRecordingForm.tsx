@@ -13,7 +13,6 @@ import {
 } from "context";
 import {
   Discrepancy,
-  Worker,
   discrepancyType,
   formModes
 } from "globals";
@@ -51,7 +50,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
   }, [form]);
 
   React.useEffect(() => {
-    if(form.nNumber.nNumberFetchedUser && form.formMode === formModes.UPDATE) {
+    if(form.nNumber.nNumberFetchedUser && form.formMode !== formModes.INSERT) {
       initiateEditForm();
     }
   }, [form.nNumber.nNumberFetchedUser]);

@@ -13,15 +13,15 @@ export const CustomTableData = styled.td`
   color: ${props => props.theme.textColor};
   padding: 2px 4px;
   vertical-align: top;
-  &:nth-child(7) {
-    text-align: -webkit-center;
-    vertical-align: middle;
-  }
-  &:nth-child(9) {
-    text-align: -webkit-center;
-    vertical-align: middle;
-  }
   &:nth-child(10) {
+    text-align: -webkit-center;
+    vertical-align: middle;
+  }
+  &:nth-child(11) {
+    text-align: -webkit-center;
+    vertical-align: middle;
+  }
+  &:nth-child(12) {
     text-align: -webkit-center;
     vertical-align: middle;
   }
@@ -39,18 +39,18 @@ export const CustomTableHeader = styled.th`
     width: 10%;
   }
   &:nth-child(3) {
-    width: 10%;
+    width: 5%;
   }
   &:nth-child(4) {
     width: 18%;
   }
-  &:nth-child(8) {
-    width: ${headerIconWidth};
-  }
-  &:nth-child(9) {
-    width: ${headerIconWidth};
-  }
   &:nth-child(10) {
+    width: ${headerIconWidth};
+  }
+  &:nth-child(11) {
+    width: ${headerIconWidth};
+  }
+  &:nth-child(12) {
     width: ${headerIconWidth};
   }
 `;

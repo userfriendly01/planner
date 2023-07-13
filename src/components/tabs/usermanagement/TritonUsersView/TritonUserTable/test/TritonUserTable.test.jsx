@@ -102,8 +102,10 @@ describe("<TritonUserTable />", () => {
       expect(rendered.container).toHaveTextContent("EXTENSION");
       expect(rendered.container).toHaveTextContent("TEAM/PROFILE");
       expect(rendered.container).toHaveTextContent("OU");
-      expect(rendered.container).toHaveTextContent("SKILLS (Current)");
-      expect(rendered.container).toHaveTextContent("SKILLS (Default)");
+      expect(rendered.container).toHaveTextContent("ROUTING TEAM");
+      expect(rendered.container).toHaveTextContent("CURRENT SKILLS");
+      expect(rendered.container).toHaveTextContent("DEFAULT SKILLS");
+      expect(rendered.container).toHaveTextContent("DISABLED SKILLS");
       initialTestState.workerContext.workers.forEach(w => {
         expect(rendered.container).toHaveTextContent(w.attributes.emp_first_name);
         expect(rendered.container).toHaveTextContent(w.attributes.emp_last_name);
@@ -118,10 +120,13 @@ describe("<TritonUserTable />", () => {
           expect(rendered.container).toHaveTextContent(w.attributes.office_location_name);
         }
         if(w.attributes.routing){
-          expect(rendered.container).toHaveTextContent(w.attributes.routing);
+          expect(rendered.container).toHaveTextContent(w.attributes.routing?.team);
         }
         if(w.attributes.default_skills){
           expect(rendered.container).toHaveTextContent(w.attributes.default_skills);
+        }
+        if(w.attributes.disabled_skills){
+          expect(rendered.container).toHaveTextContent(w.attributes.disabled_skills);
         }
       });
       expect(Switch.mock.calls.length).toBe(1);
