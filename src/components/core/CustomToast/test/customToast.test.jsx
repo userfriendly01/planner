@@ -5,14 +5,21 @@ import {
   setupMockedComponents
 } from "testUtils";
 import { Stack }from "@mui/material";
+import MuiAlert from "@mui/material/Alert";
 jest.mock("@mui/material", () => ({
   __esModule: true,
   Stack:jest.fn()
 })); 
+jest.mock("@mui/material/Alert", () => ({
+  __esModule: true,
+  MuiAlert:jest.fn()
+})); 
+const onCloseChange = jest.fn();
+const openChange = true;
 const renderCustomToast = () => {
     return render(
-      <CustomToast open = {true}
-      onClose = {jest.fn()}
+      <CustomToast open = {openChange}
+      onClose = {onCloseChange}
       msg = "customToast"
       severityType = "success" />
     );
@@ -25,13 +32,12 @@ describe("CustomToast",()=>{
   })
   it("Custom Toast",()=>{
     renderCustomToast();
-    expect(true).toBeTruthy();
+    expect(openChange).toBeTruthy();
   });
   it("Custom Toast onClose",()=>{
     renderCustomToast();
-    const StackEvent = Stack.mock;
     const onCloseEvent = Stack.mock.calls[0][0].children.props.children.props.onClose;
     onCloseEvent();
-    expect(onCloseEvent).toBeTruthy();
+    expect(onCloseChange).toBeCalledTimes(1);
    });
 });
