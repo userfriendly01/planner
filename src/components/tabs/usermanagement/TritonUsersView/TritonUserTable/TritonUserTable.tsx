@@ -51,8 +51,10 @@ const TritonUserTable = (props: TritonUserTableProps) => {
             <CustomTableHeader>EXTENSION</CustomTableHeader>
             <CustomTableHeader>TEAM/PROFILE</CustomTableHeader>
             <CustomTableHeader>OU</CustomTableHeader>
-            <CustomTableHeader>SKILLS (Current)</CustomTableHeader>
-            <CustomTableHeader>SKILLS (Default)</CustomTableHeader>
+            <CustomTableHeader>ROUTING TEAM</CustomTableHeader>
+            <CustomTableHeader>CURRENT SKILLS</CustomTableHeader>
+            <CustomTableHeader>DEFAULT SKILLS</CustomTableHeader>
+            <CustomTableHeader>DISABLED SKILLS</CustomTableHeader>
             <CustomTableHeader>
               <Switch checked={tableState.deltaFilter} onChange={() =>
                 setTableState({
@@ -119,8 +121,10 @@ const TritonUserTable = (props: TritonUserTableProps) => {
                 <CustomTableData><TableText>{worker.attributes.extension}</TableText></CustomTableData>
                 <CustomTableData><TableText>{profile.profile_nme} - {profile.profile_id}</TableText></CustomTableData>
                 <CustomTableData><TableText>{profile.operating_unit_nme}</TableText></CustomTableData>
+                <CustomTableData><TableText>{worker.attributes.routing?.team || ""}</TableText></CustomTableData>
                 <CustomTableData><TableDataFlex>{formatWorkerAttributeSkillsToHTML(worker.attributes.routing)}</TableDataFlex></CustomTableData>
                 <CustomTableData><TableDataFlex>{formatWorkerAttributeSkillsToHTML(worker.attributes.default_skills)}</TableDataFlex></CustomTableData>
+                <CustomTableData><TableDataFlex>{formatWorkerAttributeSkillsToHTML(worker.attributes.disabled_skills)}</TableDataFlex></CustomTableData>
                 <CustomTableData>
                   {
                     worker.skillsDifferent ? <DeltaWrapper data-testid="delta-icon"><ChangeHistoryRounded fontSize={"inherit"}/></DeltaWrapper> : null

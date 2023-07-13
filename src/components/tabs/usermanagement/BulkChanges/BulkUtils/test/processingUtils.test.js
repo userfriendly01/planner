@@ -137,7 +137,7 @@ describe("updateCalabrioUserState", () => {
   });
 });
 
-describe.only("updateWFMPersonState", () => {
+describe("updateWFMPersonState", () => {
   const mockDispatch = jest.fn();
   beforeEach(() => {
     jest.clearAllMocks();

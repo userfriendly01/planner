@@ -1,4 +1,7 @@
-import { formatWorkerAttributeSkillsToHTML } from "utils";
+import {
+  formatWorkerAttributeSkillsToHTML,
+  formatWorkerAttributeSkillsToString
+} from "utils";
 import { render } from "testUtils";
 
 describe("formatWorkerAttributeSkillsToHTML()", () => {
@@ -42,5 +45,23 @@ describe("formatWorkerAttributeSkillsToHTML()", () => {
     expect(rendered.getByText("3", { selector: "span" })).toBeInTheDocument();
     expect(rendered.getByText("3", { selector: "span" })).toHaveStyleRule("color", "#28A3AF");
   });
+});
 
+describe("formatWorkerAttributeSkillsToString", () => {
+  test("skills/level object formats correctly", () => {
+    const testData = {
+      "skills": [
+          "ccSharedAGLFNOL38",
+          "psu-l1"
+      ],
+      "levels": {
+          "ccSharedAGLFNOL38": 1
+      }
+    }
+    expect(formatWorkerAttributeSkillsToString(testData)).toEqual(["ccSharedAGLFNOL38 - 1", "psu-l1"]);
+  });
+
+  test("null returns empty string", () => {
+    expect(formatWorkerAttributeSkillsToString(null)).toEqual("");
+  });
 });

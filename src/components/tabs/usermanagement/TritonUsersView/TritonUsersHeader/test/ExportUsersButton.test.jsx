@@ -23,11 +23,33 @@ jest.mock("../TritonUsersHeader.Styles", () => ({
 const useRefSpy = jest.spyOn(React, "useRef");
 const mockSave = jest.fn();
 
+const fullWorker = {
+  ...initialTestState.workerContext.workers[1],
+  attributes: {
+    ...initialTestState.workerContext.workers[1].attributes,
+    did: "6038518200",
+    roles: ["agent"],
+    routing: {
+      team: "Kitties",
+      skills: ["psul1", "466"],
+      levels: {"466": 1}
+    },
+    default_skills: {
+      skills: ["dsul1", "4d66"],
+      levels: {"4d66": 1}
+    },
+    disabled_skills: {
+      skills: ["disul1", "4di66"],
+      levels: {"4di66": 1}
+    }
+  }
+}
+
 const renderComponent = () => {
   const rendered = render(
     <ThemeProvider theme={theme}>
       <ExportUsersButton
-        selected={[initialTestState.workerContext.workers[1]]}
+        selected={[fullWorker]}
         label="Export"
       />
     </ThemeProvider>
@@ -59,17 +81,33 @@ describe("ExportUsersButton", () => {
       act(() => onClick());
       expect(mockSave).toHaveBeenCalledTimes(1);
       expect(mockSave).toHaveBeenCalledWith([{
-        ...initialTestState.workerContext.workers[1],
         "emp_first_name": "Gloria",
         "emp_last_name": "Sake",
         "extension": "2345",
         "full_name": "Gloria Sake",
+        "did": "6038518200",
+        "outbound_number": "6038518200",
         "manager_n_number": "n0263786",
         "n_number": "n0000000",
         "profile_id": "12",
-        "sid": "WK1234"}
-      ], 
+        "sid": "WK1234",
+        "current_skills": "psul1,466 - 1",
+        "default_skills": "dsul1,4d66 - 1",
+        "disabled_skills": "disul1,4di66 - 1",
+        "routing_team": "Kitties",
+        "roles": "agent",
+        routing: {
+          team: "Kitties",
+          skills: ["psul1", "466"],
+          levels: {"466": 1}
+        },
+      }], 
       [
+        {
+          field: "sid",
+          title: "Worker Sid",
+          width: "100px"
+        },
         {
           field: "emp_first_name",
           title: "First Name",
@@ -111,13 +149,169 @@ describe("ExportUsersButton", () => {
           width: "100px"
         },
         {
+          field: "department_name",
+          title: "Department",
+          width: "100px"
+        },
+        {
+          field: "routing_team",
+          title: "Routing Team",
+          width: "100px"
+        },
+        {
+          field: "roles",
+          title: "Roles",
+          width: "100px"
+        },
+        {
+          field: "outbound_number",
+          title: "Outbound Number",
+          width: "100px"
+        },
+        {
           field: "directDialNum",
           title: "Direct Dial Number",
           width: "100px"
         },
         {
+          field: "current_skills",
+          title: "Current Skills",
+          width: "100px"
+        },
+        {
+          field: "default_skills",
+          title: "Default Skills",
+          width: "100px"
+        },
+        {
+          field: "disabled_skills",
+          title: "Disabled Skills",
+          width: "100px"
+        }
+      ]);
+    });
+    test("did - renders with ExcelExport", () => {
+      render(
+        <ThemeProvider theme={theme}>
+          <ExportUsersButton
+            selected={[{
+              ...fullWorker,
+              directDialNum: "603242345"
+            }]}
+            label="Export"
+          />
+        </ThemeProvider>
+      );
+      render(StyledExportButton.mock.calls[0][0].children);
+      const onClick = StyledExportButton.mock.calls[0][0].onClick;
+      act(() => onClick());
+      expect(mockSave).toHaveBeenCalledTimes(1);
+      expect(mockSave).toHaveBeenCalledWith([{
+        "emp_first_name": "Gloria",
+        "emp_last_name": "Sake",
+        "extension": "2345",
+        "full_name": "Gloria Sake",
+        "manager_n_number": "n0263786",
+        "n_number": "n0000000",
+        "profile_id": "12",
+        "did": "6038518200",
+        "directDialNum": "603242345",
+        "sid": "WK1234",
+        "current_skills": "psul1,466 - 1",
+        "default_skills": "dsul1,4d66 - 1",
+        "disabled_skills": "disul1,4di66 - 1",
+        "routing_team": "Kitties",
+        "roles": "agent",
+        routing: {
+          team: "Kitties",
+          skills: ["psul1", "466"],
+          levels: {"466": 1}
+        },
+      }], 
+      [
+        {
           field: "sid",
           title: "Worker Sid",
+          width: "100px"
+        },
+        {
+          field: "emp_first_name",
+          title: "First Name",
+          width: "100px"
+        },
+        {
+          field: "emp_last_name",
+          title: "Last Name",
+          width: "100px"
+        },
+        {
+          field: "n_number",
+          title: "N Number",
+          width: "100px"
+        },
+        {
+          field: "email",
+          title: "Email",
+          width: "100px"
+        },
+        {
+          field: "extension",
+          title: "Extension",
+          width: "100px"
+        },
+        {
+          field: "profile_id",
+          title: "Profile Id",
+          width: "100px"
+        },
+        {
+          field: "manager_n_number",
+          title: "Manager N Number",
+          width: "100px"
+        },
+        {
+          field: "manager",
+          title: "Manager",
+          width: "100px"
+        },
+        {
+          field: "department_name",
+          title: "Department",
+          width: "100px"
+        },
+        {
+          field: "routing_team",
+          title: "Routing Team",
+          width: "100px"
+        },
+        {
+          field: "roles",
+          title: "Roles",
+          width: "100px"
+        },
+        {
+          field: "outbound_number",
+          title: "Outbound Number",
+          width: "100px"
+        },
+        {
+          field: "directDialNum",
+          title: "Direct Dial Number",
+          width: "100px"
+        },
+        {
+          field: "current_skills",
+          title: "Current Skills",
+          width: "100px"
+        },
+        {
+          field: "default_skills",
+          title: "Default Skills",
+          width: "100px"
+        },
+        {
+          field: "disabled_skills",
+          title: "Disabled Skills",
           width: "100px"
         }
       ]);
