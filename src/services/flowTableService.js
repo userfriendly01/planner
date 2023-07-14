@@ -147,7 +147,7 @@ function updateFlowInput(item){
     callFlowTemplate: item.callFlowTemplate || "",
     channel: item.channel,
     content: {
-      callIntent: item.content.callIntent || "",
+      callIntent: item.content?.callIntent || "",
       callFlowRoute: item.content?.callFlowRoute || "",
       callerType: item.content?.callerType || "",
       greetingMessages: item.content?.greetingMessages || "",
