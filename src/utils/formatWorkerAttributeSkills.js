@@ -28,3 +28,17 @@ export const formatWorkerAttributeSkillsToHTML = routingObj => {
     return null;
   }
 };
+
+export const formatWorkerAttributeSkillsToString = routingObj => {
+  if (routingObj && Array.isArray(routingObj.skills) && routingObj.skills.length > 0) {
+    return routingObj.skills.map(skill => {
+      if (routingObj.levels && routingObj.levels[skill]) {
+        return `${skill} - ${routingObj.levels[skill]}`;
+      } else {
+        return `${skill}`;
+      }
+    });
+  } else {
+    return "";
+  }
+};

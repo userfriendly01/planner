@@ -21,7 +21,8 @@ describe("filterWorkerSearch", () => {
         skills: ["test", "fake"],
         levels: {
           "466": 3
-        }
+        },
+        team: "Kitties"
       },
       office_location_name: "Office 4",
       n_number: "N666"
@@ -150,15 +151,19 @@ describe("filterWorkerSearch", () => {
   });
 
   test("should find the profile id", () => {
-    expect(filterWorkerSearch(goodWorkerData, "396", initialTestState)).toEqual(false); // removed profile filter ability from search so changing value to false
+    expect(filterWorkerSearch(goodWorkerData, "396", initialTestState)).toEqual(false); 
   });
 
   test("should find the profile name", () => {
-    expect(filterWorkerSearch(goodWorkerData, "test4", initialTestState)).toEqual(false); // removed profile filter ability from search so changing value to false
+    expect(filterWorkerSearch(goodWorkerData, "test4", initialTestState)).toEqual(false); 
   });
 
   test("should find the ou name", () => {
-    expect(filterWorkerSearch(goodWorkerData, "operatingUnitName", initialTestState)).toEqual(false); // removed OU filter ability from search so changing value to false
+    expect(filterWorkerSearch(goodWorkerData, "operatingUnitName", initialTestState)).toEqual(false); 
+  });
+  
+  test("should find the routing team", () => {
+    expect(filterWorkerSearch(goodWorkerData, "kitt", initialTestState)).toEqual(true);
   });
 });
 

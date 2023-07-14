@@ -11,6 +11,7 @@ export const filterWorkerSearch = (worker, searchValue) => {
   const defaultSkills = worker.attributes.default_skills?.skills?.toString() || "";
   const nNumber = worker.attributes.n_number?.toLowerCase() || "";
   const office = worker.attributes.office_location_name?.toLowerCase() || "";
+  const routingTeam = worker.attributes.routing?.team?.toLowerCase() || "";
   const lowerCaseSearch = searchValue.toLowerCase();
   if (name.indexOf(lowerCaseSearch) >= 0) {
     return true;
@@ -21,6 +22,8 @@ export const filterWorkerSearch = (worker, searchValue) => {
   } else if (nNumber.indexOf(lowerCaseSearch) >= 0) {
     return true;
   } else if (office.indexOf(lowerCaseSearch) >= 0) {
+    return true;
+  } else if (routingTeam.indexOf(lowerCaseSearch) >= 0) {
     return true;
   }
   return false;
