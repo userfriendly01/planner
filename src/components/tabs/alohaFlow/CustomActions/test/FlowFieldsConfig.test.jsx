@@ -13,6 +13,7 @@ const validFlowData = {
   employeeId: "n1234567",
   userDestination: "test userDestination",
   content: {
+    callIntent: "test callIntent",
     callerType: "test callerType",
     callFlowRoute: "test callFlowRoute",
     dataRequests: ["test1", "test2"],
@@ -25,7 +26,6 @@ const validFlowData = {
   callDetails2: "test callDetails2",
   internetPlacement: "test internetPlacement",
   callDetails1: "test callDetails1",
-  callIntent: "test callIntent",
   callTypeDescription: "test callTypeDescription",
   lineOfBusiness: "test lineOfBusiness",
   marketingChannel: "test marketingChannel",
@@ -181,7 +181,7 @@ describe("FlowFieldsConfig", ()=>{
     });
     it("callIntent", ()=>{
       const updatedFlowData = flowFields[28].valueSetter(validFlowData, { callIntent: "99999999" });
-      expect(updatedFlowData.callIntent).toBe("99999999");
+      expect(updatedFlowData.content.callIntent).toBe("99999999");
     });
   });
   describe("valueGetter", ()=>{

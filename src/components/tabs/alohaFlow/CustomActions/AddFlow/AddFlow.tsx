@@ -206,6 +206,7 @@ export const AddFlow = ({
           const newFlowRule: CctSharedCallFlowDb = {
             pkey: flowRule.pkey.value,
             content: {
+              callIntent: stringValue(flowRule, "callIntent", ""),
               callFlowRoute: stringValue(flowRule,"callFlowRoute", ""),
               callerType: stringValue(flowRule,"callerType", ""),
               greetingMessages: stringValue(flowRule,"greetingMessages", ""),
@@ -217,7 +218,6 @@ export const AddFlow = ({
             agentId: stringValue(flowRule,"agentId", ""),
             brand: flowRule.brand.value,
             callFlowTemplate: stringValue(flowRule,"callFlowTemplate", ""),
-            callIntent: stringValue(flowRule, "callIntent", ""),
             channel: flowRule.channel.value,
             dialedDescription: flowRule.dialedDescription.value,
             employeeId: stringValue(flowRule,"employeeId", ""),

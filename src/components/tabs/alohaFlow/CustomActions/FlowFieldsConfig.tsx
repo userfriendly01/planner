@@ -364,10 +364,13 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     key: "callIntent",
     control: "input",
     required: false,
-    valueGetter: (params: FormValidationRule)=>`${params?.callIntent || ""}`,
-    valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any)=>({
+    valueGetter: (params: CctSharedCallFlowDb) => `${params?.content?.callIntent || ""}`,
+    valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
-      ...newValue
+      content: {
+        ...currentValue.content || {},
+        ...newValue
+      }
     })
   }
 ];
