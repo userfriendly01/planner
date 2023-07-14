@@ -37,6 +37,7 @@ export interface FlowStateVariables {
     fetching?: boolean;
     selectedRow?: CctSharedCallFlowDb;
     isEditModalOpen?: boolean;
+    isBulkEditModalOpen?: boolean;
     isAddModalOpen?: boolean;
     isAdvanceSearchModalOpen?: boolean;
     idStart?: number;

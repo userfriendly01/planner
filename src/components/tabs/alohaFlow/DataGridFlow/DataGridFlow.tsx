@@ -4,14 +4,16 @@
    react/jsx-props-no-spreading
 */
 import {
-  DataGrid, GridRenderCellParams
+  DataGrid, GridRenderCellParams, GridSelectionModel
 } from "@mui/x-data-grid";
 import { CustomToast } from "components";
 import { AzureSPA } from "globals";
 import React, {
   useEffect, useState
 } from "react";
-import { queryFlowData, retrieveFlowData } from "services";
+import {
+  queryFlowData, retrieveFlowData
+} from "services";
 import {
   CACHE_FILTER_FLOW,
   CALL_FLOW_PAGE_NO,
@@ -36,6 +38,7 @@ import FlowGridColumnDef from "./GridColumnDef";
 import {
   getGridMasterData
 } from "./GridMaster";
+import { PreviewModal } from "../PreviewModal";
 
 const DataGridFlow = (props: AzureSPA): JSX.Element => {
   const {
@@ -52,6 +55,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     fetching: true,
     selectedRow: undefined,
     isEditModalOpen: false,
+    isBulkEditModalOpen: false,
     isAddModalOpen: false,
     isAdvanceSearchModalOpen: false,
     idStart: 0,
@@ -66,6 +70,8 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
   const [clonedFlowRule, setClonedFlowRule] = useState({});
   const [cloneType, setCloneType] = useState(false);
+  const [selectionModel, setSelectionModel] = useState<GridSelectionModel>([]);
+  console.log("selectionModel",selectionModel);
   useEffect(() => {
     const getTableData = async()=>{
       const firstChunkData:any = await queryFlowData(accessToken, null, graphQLEndpoint);
@@ -286,6 +292,13 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     }));
   };
 
+  const openBulkEditModal = (flag: boolean) =>{
+    setDataFlow((dataFlowProps: FlowStateVariables) => ({
+      ...dataFlowProps,
+      isBulkEditModalOpen: flag
+    }));
+  };
+
   const openEditModal = (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallFlowDb, message?: string, deleteRow?: boolean, isClonedFlowRule?: boolean) => {
     if(isClonedFlowRule){
       cloneRule(flag,row);
@@ -324,6 +337,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         <div className="data-grid-wrapper">
           <CustomFlowGridToolBar
             openAddModal={openAddModal}
+            openEditModal={openBulkEditModal}
             openAdvanceSearchModal={openAdvanceSearchModal}
             exportDataFile={exportDataFile}
             applyFilter={filterRecords}
@@ -343,6 +357,9 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
             checkboxSelection
             disableSelectionOnClick
             autoHeight
+            getRowId={(row: CctSharedCallFlowDb)=>row.pkey}
+            onSelectionModelChange={(newSelectionModel:GridSelectionModel)=>{ setSelectionModel(newSelectionModel); }}
+            selectionModel={selectionModel}
             sx={{
               "& .MuiDataGrid-columnHeaderTitle": {
                 fontWeight: 600
@@ -387,6 +404,10 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         onClose={handleClose}
         msg={alertBar.msg}
         severityType={alertBar.severityType}
+      />
+      <PreviewModal
+        open={dataFlow.isBulkEditModalOpen}
+        rows={dataFlow.filteredItems}
       />
     </div>
   );

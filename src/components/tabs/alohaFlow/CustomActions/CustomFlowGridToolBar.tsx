@@ -10,10 +10,12 @@ import {
 import { FlowAdvanceFilter } from "../AlohaFlow.Interfaces";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 
 interface CustomFlowGridToolBarProps {
-  openAddModal: (flag: boolean, isSubmitted?: boolean) => void,
-  openAdvanceSearchModal: (flag: boolean, advanceFilter?: FlowAdvanceFilter) => void
+  openAddModal: (flag: boolean, isSubmitted?: boolean) => void;
+  openEditModal: (flag: boolean) =>void;
+  openAdvanceSearchModal: (flag: boolean, advanceFilter?: FlowAdvanceFilter) => void;
   exportDataFile: ()=> void;
   applyFilter?: () => void;
   isAdvanceSearchOpen?: boolean;
@@ -21,7 +23,7 @@ interface CustomFlowGridToolBarProps {
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const CustomFlowGridToolBar = ({
-  openAddModal, openAdvanceSearchModal, exportDataFile, applyFilter, isAdvanceSearchOpen
+  openAddModal, openEditModal, openAdvanceSearchModal, exportDataFile, applyFilter, isAdvanceSearchOpen
 }:CustomFlowGridToolBarProps) =>{
   const [flowFilter, setFlowFilter] = useState<FlowAdvanceFilter>();
 
@@ -35,6 +37,9 @@ const CustomFlowGridToolBar = ({
     switch (value) {
       case "addFlow":
         openAddModal(true);
+        break;
+      case "editFlow":
+        openEditModal(true);
         break;
       default:
         break;
@@ -80,17 +85,20 @@ const CustomFlowGridToolBar = ({
       </Grid>
       <Grid item key = "Export FlowUI" xs={1}>
         <Grid><div><br/><br/></div></Grid>
-        <Tooltip title="Export Flow Records" sx={{left:"calc(76%)",marginLeft:"24"}}>
-        <Paper variant="outlined" >
-        <IconButton 
-          onClick={exportDataFile}
-          color = "primary" 
-          size = "small"
-          sx ={{position:"fixed"}}
-        > <FileDownloadIcon /> 
-      </IconButton>
-      </Paper>
-      </Tooltip>
+        <Tooltip title="Export Flow Records" sx={{
+          left: "calc(76%)",
+          marginLeft: "24"
+        }}>
+          <Paper variant="outlined" >
+            <IconButton
+              onClick={exportDataFile}
+              color = "primary"
+              size = "small"
+              sx ={{ position: "fixed" }}
+            > <FileDownloadIcon />
+            </IconButton>
+          </Paper>
+        </Tooltip>
       </Grid>
       <Grid item key="flow-action-box" xs={2}>
         <FormControl sx={{
@@ -114,6 +122,9 @@ const CustomFlowGridToolBar = ({
           >
             <MenuItem key="addFlow" value="addFlow">
               <PlaylistAddIcon />&nbsp;&nbsp; Add Flow
+            </MenuItem>
+            <MenuItem key="editFlow" value="editFlow">
+              <EditOutlinedIcon />&nbsp;&nbsp; Edit Flow
             </MenuItem>
           </Select>
         </FormControl>
