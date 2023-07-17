@@ -69,7 +69,9 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   });
 
   const callTagOptionsForDropdown = callTagOptions.filter(callTagOption => {
+    console.log("My error log for callTagOption:" + callTagOption);
     return !callTagOptionsList.find(item => {
+      console.log("Console log for item: " + item);
       return item.options_id === callTagOption.options_id;
     });
   });
@@ -98,6 +100,8 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   };
 
   const getCallTagOptionsDropDownOptions = (optionsList: CallTagOptions[]) => {
+    console.log("My error log for optionsList: " + optionsList);
+    console.log("My error log for JSON.stringify(optionsList): " + JSON.stringify(optionsList));
     return optionsList.map(option => ({
       value: option.options_id,
       label: option.options_id === null ? "" : option.options_id
@@ -105,6 +109,9 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   };
 
   const callTagOptionsChanged = (inputCallTagOptions: { value: number; }, wrkr_tsk_info_id: number) => {
+    console.log("Console log for inputCallTagOptions: " + inputCallTagOptions);
+    console.log("Console log for JSON.stringify(inputCallTagOptions: " + JSON.stringify(inputCallTagOptions));
+    console.log("Console log for wrkr_tsk_info_id: " + wrkr_tsk_info_id);
     const updatedCallTagsList = callTagsList.map(callTag => {
       if (callTag.wrkr_tsk_info_id === wrkr_tsk_info_id) {
         callTag.options_id = inputCallTagOptions.value;
@@ -112,6 +119,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
       }
       return callTag;
     });
+    console.log("Console log for updatedCallTagsList:" + updatedCallTagsList);
     setCallTagsList(updatedCallTagsList);
   };
 
@@ -143,6 +151,8 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
       <ProfileDropdownRowSeperator />
       <ProfileDropdownWrapper>
         {callTagsList.map((callTag: CallTag, index: number) => {
+          console.log("Console log for callTag: " + callTag);
+          console.log("Console log for index: " + index);
           return (
             // @ts-ignore
             <ProfileDropdownRow highlightOnHover={true} key={`callTag-row-${index}`}>
