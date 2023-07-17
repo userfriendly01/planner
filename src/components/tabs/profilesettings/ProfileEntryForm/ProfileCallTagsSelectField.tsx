@@ -69,7 +69,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   });
 
   const callTagOptionsForDropdown = callTagOptions.filter(callTagOption => {
-    console.log("My error log for callTagOption:" + callTagOption);
+    console.log("My error log for callTagOption:" + JSON.stringify(callTagOption));
     return !callTagOptionsList.find(item => {
       console.log("Console log for item: " + item);
       return item.options_id === callTagOption.options_id;
@@ -103,7 +103,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
     console.log("My error log for optionsList: " + optionsList);
     console.log("My error log for JSON.stringify(optionsList): " + JSON.stringify(optionsList));
     return optionsList.map(option => ({
-      value: option.options_id,
+      value: option.options_id === null ? "" : option.options_id,
       label: option.options_id === null ? "" : option.options_id
     }));
   };
@@ -151,7 +151,7 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
       <ProfileDropdownRowSeperator />
       <ProfileDropdownWrapper>
         {callTagsList.map((callTag: CallTag, index: number) => {
-          console.log("Console log for callTag: " + callTag);
+          console.log("Console log for callTag: " + JSON.stringify(callTag));
           console.log("Console log for index: " + index);
           return (
             // @ts-ignore
