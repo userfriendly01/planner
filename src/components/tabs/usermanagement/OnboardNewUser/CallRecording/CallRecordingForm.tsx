@@ -86,7 +86,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
   const setWorkersCompRoles = () => {
     let selectedRoles:any = [];
     // If existing user and already has Supervisor role, keep it
-    if (form.calabrio_qm.roles.find((role: any) => role.name === "Supervisor")) {
+    if (form.calabrio_qm.roles.find((role: any) => role.name === "Supervisor-Sync Only")) {
       selectedRoles = getRoleOptions();
     } else {
       // for new users, or existing users without a supervisor role, auto populate role to No Screen
@@ -219,7 +219,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
 
     // temporary blocking of roles for Workers Comp Profile 18
     if (parseInt(form.triton.profileId.value) === 18) {
-      allowed = allowed.filter(role => role.name === "No Screen" || role.name === "Supervisor");
+      allowed = allowed.filter(role => role.name === "No Screen" || role.name === "Supervisor-Sync Only");
     }
 
     return allowed.map(role => {

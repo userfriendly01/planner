@@ -2108,7 +2108,7 @@ describe("fields.js", () => {
         test("Multiple roles provided, all are good, resolve with message", async () => {
           const row = {
             rowNumber: 1,
-            "Calabrio Role": "Supervisor, QM Agent"
+            "Calabrio Role": "Supervisor-Sync Only, QM Agent"
           };
           const result = await calabrioRolesValidation(row, initialTestState);
           expect(result).toEqual("Calabrio Role valid for row 1");
@@ -2117,7 +2117,7 @@ describe("fields.js", () => {
             roles: [
               {
                 id: 1,
-                name: "Supervisor"
+                name: "Supervisor-Sync Only"
               },
               {
                 id: 2,
@@ -2129,7 +2129,7 @@ describe("fields.js", () => {
         test("Multiple roles provided, 1 is bad, reject with message", async () => {
           const row = {
             rowNumber: 1,
-            "Calabrio Role": "Supervisor,fake"
+            "Calabrio Role": "Supervisor-Sync Only, fake"
           };
           try {
             await calabrioRolesValidation(row, initialTestState);
@@ -2143,7 +2143,7 @@ describe("fields.js", () => {
               roles: [
                 {
                   id: 1,
-                  name: "Supervisor"
+                  name: "Supervisor-Sync Only"
                 }
               ]
             });
@@ -2152,7 +2152,7 @@ describe("fields.js", () => {
         test("1 good role provided, resolves with message", async () => {
           const row = {
             rowNumber: 1,
-            "Calabrio Role": "Supervisor"
+            "Calabrio Role": "Supervisor-Sync Only"
           };
           const result = await calabrioRolesValidation(row, initialTestState);
           expect(result).toEqual("Calabrio Role valid for row 1");
@@ -2161,7 +2161,7 @@ describe("fields.js", () => {
             roles: [
               {
                 id: 1,
-                name: "Supervisor"
+                name: "Supervisor-Sync Only"
               }
             ]
           });
@@ -2190,9 +2190,10 @@ describe("fields.js", () => {
         test("returns the profile id options", () => {
           const options = optionsFunction();
           expect(options).toEqual([
-            "Supervisor",
+            "Supervisor-Sync Only",
             "Agent-Sync Only",
             "No Screen",
+            "QM Supervisor",
             "QM Agent",
             "WFM_Agent_TT_Dashboards",
             "WFM_Supervisor_TT_Dashboards",
