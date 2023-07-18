@@ -67,6 +67,7 @@ export interface RoutingStateVariables {
     isAddModalOpen?: boolean;
     isAdvanceSearchModalOpen?: boolean;
     isEditModalOpen?: boolean;
+    isBulkEditModalOpen?: boolean;
     masterData?: RoutingMasterData;
     maxId?: number;
     minId?: number;

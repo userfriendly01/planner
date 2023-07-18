@@ -6,6 +6,7 @@ import {
 } from "@mui/material";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { RoutingFilter } from "../AlohaRouting.Interfaces";
 import {
   CACHE_FILTER_ROUTING, getAdvanceFilter
@@ -13,6 +14,7 @@ import {
 
 interface CustomRoutingGridToolBarProps {
   openAddModal: (flag: boolean) => void;
+  openEditModal: (flag: boolean) =>void;
   openAdvanceSearchModal:(flag: boolean)=>void;
   exportDataFile: ()=> void;
   applyFilter?: () => void;
@@ -20,7 +22,7 @@ interface CustomRoutingGridToolBarProps {
 }
 
 export const CustomRoutingGridToolBar = ({
-  openAddModal, openAdvanceSearchModal, exportDataFile, applyFilter, isAdvanceSearchOpen
+  openAddModal, openEditModal, openAdvanceSearchModal, exportDataFile, applyFilter, isAdvanceSearchOpen
 }: CustomRoutingGridToolBarProps):JSX.Element => {
 
   const [routingFilter, setRoutingFilter] = useState<RoutingFilter>();
@@ -35,6 +37,9 @@ export const CustomRoutingGridToolBar = ({
     switch (value) {
       case "addRouting":
         openAddModal(true);
+        break;
+      case "editRouting":
+        openEditModal(true);
         break;
       default:
         break;
@@ -80,18 +85,20 @@ export const CustomRoutingGridToolBar = ({
       </Grid>
       <Grid item key = "Export RoutingUI" xs={1}>
         <Grid><div><br/><br/></div></Grid>
-        <Tooltip title="Export Routing Records" sx={{left:"calc(76%)",marginLeft:"24"}}>
-        <Paper variant="outlined" >
-        <IconButton 
-          onClick={exportDataFile}
-          color = "primary" 
-          size = "small"
-          sx ={{position:"fixed"}}
-        > <FileDownloadIcon /> 
-      </IconButton>
-      </Paper>
-      </Tooltip>
-      </Grid>
+        <Tooltip title="Export Routing Records" sx={{
+          left: "calc(76%)",
+          marginLeft: "24"
+        }}>
+          <Paper variant="outlined" >
+            <IconButton
+              onClick={exportDataFile}
+              color = "primary"
+              size = "small"
+              sx ={{ position: "fixed" }}
+            > <FileDownloadIcon />
+            </IconButton>
+          </Paper>
+        </Tooltip>      </Grid>
       <Grid item key="routing-action-box" xs={2}>
         <FormControl sx={{
           marginTop: "16px",
@@ -113,6 +120,9 @@ export const CustomRoutingGridToolBar = ({
           >
             <MenuItem key="addRouting" value="addRouting">
               <PlaylistAddIcon/> &nbsp;&nbsp;Add Routing
+            </MenuItem>
+            <MenuItem key="editRouting" value="editRouting">
+              <EditOutlinedIcon/> &nbsp;&nbsp;Edit Routing
             </MenuItem>
           </Select>
         </FormControl>

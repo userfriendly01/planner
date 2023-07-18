@@ -1,29 +1,53 @@
 import {
-  DataGrid, GridRenderCellParams
-} from "@mui/x-data-grid";
-import { CustomToast } from "components";
-import { AzureSPA } from "globals";
-import React, {
-  useEffect, useRef, useState
-} from "react";
-import { queryRoutingData, retrieveRoutingData } from "services";
+  AddPageFieldConfigProps,
+  CctSharedCallRoutingDb,
+  RoutingFilter,
+  RoutingMasterData,
+  RoutingStateVariables
+} from "../AlohaRouting.Interfaces";
+import {
+  AddRouting,
+  CustomRoutingGridToolBar,
+  EditRouting,
+  RoutingAdvanceSearch
+} from "../RoutingCustomActions";
+import {
+  AlertBarProps,
+  FormValidationRule
+} from "utils/interfaces";
 import {
   CACHED_CALL_ROUTING_PAGE_NO,
   CACHED_CALL_ROUTING_PER_PAGE,
-  CACHE_FILTER_ROUTING, downloadCSV,
-  EXPORT_FILE_PREFIX, getGraphQLEndpoint,
-  initializedAlertBar, routingFields, routingInitRule, routingInitState
+  CACHE_FILTER_ROUTING,
+  EXPORT_FILE_PREFIX,
+  downloadCSV,
+  getGraphQLEndpoint,
+  initializedAlertBar,
+  routingFields,
+  routingInitRule,
+  routingInitState
 } from "utils";
 import {
-  AlertBarProps, FormValidationRule
-} from "utils/interfaces";
-import { AddPageFieldConfigProps, CctSharedCallRoutingDb, RoutingFilter, RoutingMasterData, RoutingStateVariables } from "../AlohaRouting.Interfaces";
-import { RoutingTableBox } from "../AlohaRouting.Styles";
-import { AddRouting, CustomRoutingGridToolBar, EditRouting, RoutingAdvanceSearch } from "../RoutingCustomActions";
-import { RoutingGridColumnDef } from "./GridColumnDef";
+  DataGrid,
+  GridRenderCellParams,
+  GridSelectionModel
+} from "@mui/x-data-grid";
+import React, {
+  useEffect,
+  useRef,
+  useState
+} from "react";
 import {
-  getGridMasterData
-} from "./GridMaster";
+  queryRoutingData,
+  retrieveRoutingData
+} from "services";
+import { AzureSPA } from "globals";
+import { CustomToast } from "components";
+import { PreviewModal } from "../PreviewModal";
+import { RoutingGridColumnDef } from "./GridColumnDef";
+import { RoutingTableBox } from "../AlohaRouting.Styles";
+import { getGridMasterData } from "./GridMaster";
+
 export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
   const {
     accessToken,
@@ -36,6 +60,8 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
   const [routingRule, setRoutingRule] = useState({ ...routingInitRule });
   const [clonedRule, setClonedRule] = useState(false);
   const maxRef = useRef(0);
+  const [selectionModel, setSelectionModel] = useState<GridSelectionModel>([]);
+
   useEffect(() => {
     const getTableData = async()=>{
       const routingData: CctSharedCallRoutingDb[] = [];
@@ -70,7 +96,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
 
   const handleSearchDDChange = (event: any) => {
     const name = event.target.name;
-    var value = event.target.value;
+    let value = event.target.value;
     if(name === "id"){
       value = parseInt(event.target.value);
     }
@@ -102,7 +128,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
       result.forEach(item => {
         let matched = 0;
         Object.keys(advanceFilter).forEach((key: keyof RoutingFilter) => {
-          if(key == "id" && item && item[key]){
+          if(key === "id" && item && item[key]){
             const itemId = item?.id.toLocaleString().toString().replace(",","");
             const advanceKey = advanceFilter[key].toString().replace(",","");
             if (itemId.includes(advanceKey)) {
@@ -155,6 +181,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
         masterData,
         isAddModalOpen: false,
         isEditModalOpen: false,
+        isBulkEditModalOpen: false,
         isAdvanceSearchModalOpen: false
       });
     } else {
@@ -167,6 +194,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
         fetching: false,
         isAddModalOpen: false,
         isEditModalOpen: false,
+        isBulkEditModalOpen: false,
         isAdvanceSearchModalOpen: false
       });
     }
@@ -249,6 +277,13 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
     }));
   };
 
+  const openBulkEditModal = (flag: boolean) =>{
+    setState((dataFlowProps: RoutingStateVariables) => ({
+      ...dataFlowProps,
+      isBulkEditModalOpen: flag
+    }));
+  };
+
   const openEditModal = (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallRoutingDb, message?: string, deleteRow?: boolean,type?: boolean) => {
     let newData;
     if(type){
@@ -285,6 +320,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
     <div>
       <CustomRoutingGridToolBar
         openAddModal={openAddModal}
+        openEditModal={openBulkEditModal}
         openAdvanceSearchModal={openAdvanceSearchModal}
         exportDataFile={exportDataFile}
         applyFilter={applyFilter}
@@ -305,6 +341,9 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
           checkboxSelection
           disableSelectionOnClick
           autoHeight
+          getRowId={(row: CctSharedCallRoutingDb)=>row.pkey}
+          onSelectionModelChange={(newSelectionModel:GridSelectionModel)=>{ setSelectionModel(newSelectionModel); }}
+          selectionModel={selectionModel}
           sx={{
             "& .MuiDataGrid-columnHeaderTitle": {
               fontWeight: 600
@@ -341,6 +380,10 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
         onClose={handleClose}
         msg={alertBar.msg}
         severityType={alertBar.severityType}
+      />
+      <PreviewModal
+        open={state.isBulkEditModalOpen}
+        rows={state.filteredItems}
       />
     </div>
   );
