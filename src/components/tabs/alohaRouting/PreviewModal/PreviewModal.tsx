@@ -1,35 +1,52 @@
-import React from "react";
-import { Modal } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+import {
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter
+} from "@lmig/lmds-react-modal";
+import { Button } from "@mui/material";
 import { CctSharedCallRoutingDb } from "../AlohaRouting.Interfaces";
-import { RoutingGridColumnDef } from "../DataGridRouting/GridColumnDef";
+import { DataGrid } from "@mui/x-data-grid";
+import "PreviewModal.css";
+import React from "react";
+import { TableGridColumnDef } from "./TableGridColumnDef";
 
 interface PreviewModalProps {
-    open: boolean;
-    rows: Array<CctSharedCallRoutingDb>
+  isOpen: boolean;
+  rows: Array<CctSharedCallRoutingDb>;
+  onClose: () => void;
 }
 
 const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   const {
-    open, rows
+    isOpen,
+    onClose,
+    rows
   } = props;
   return (
     <Modal
-      open={open}
-      sx={{
-        opacity: 1
-      }}
+      isOpen={isOpen}
+      takeover={["base", "sm", "md", "lg"]}
+      onClose={()=>{ onClose(); }}
+      size="large"
     >
-      <DataGrid
-        rows={rows}
-        columns={RoutingGridColumnDef}
-        editMode="row"
-        sx={{
-          "& .MuiDataGrid-columnHeaderTitle": {
-            fontWeight: 600
-          }
-        }}
-      />
+      <ModalHeader>Delete Multiple Routes</ModalHeader>
+      <ModalBody className="preview-grid-modal">
+        <DataGrid
+          rows={rows}
+          columns={TableGridColumnDef}
+          editMode="row"
+          sx={{
+            "& .MuiDataGrid-columnHeaderTitle": {
+              fontWeight: 600
+            }
+          }}
+        />
+      </ModalBody>
+      <ModalFooter>
+        <Button variant="contained" color="warning">Delete</Button>
+        <Button variant="contained" color="info" onClick={()=>{ onClose(); }}>Cancel</Button>
+      </ModalFooter>
     </Modal>
   );
 };

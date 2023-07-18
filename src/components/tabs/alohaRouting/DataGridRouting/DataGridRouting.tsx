@@ -314,6 +314,13 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
     downloadCSV(EXPORT_FILE_PREFIX.ROUTING, state.filteredItems);
   };
 
+  const handleMultiEditOnClose = () =>{
+    setState((dataFlowProps: RoutingStateVariables) => ({
+      ...dataFlowProps,
+      isBulkEditModalOpen: false
+    }));
+  };
+
   RoutingGridColumnDef[0].renderCell = (params: GridRenderCellParams<CctSharedCallRoutingDb>) => (<a href="#" onClick={() => openEditModal(true, false, params.row)}>{`${params.value}`}</a>);
 
   return (
@@ -382,8 +389,9 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
         severityType={alertBar.severityType}
       />
       <PreviewModal
-        open={state.isBulkEditModalOpen}
+        isOpen={state.isBulkEditModalOpen}
         rows={state.filteredItems}
+        onClose={handleMultiEditOnClose}
       />
     </div>
   );
