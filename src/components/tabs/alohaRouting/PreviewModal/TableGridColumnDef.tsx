@@ -30,7 +30,7 @@ const getFormFields = (key: string): Array<MultiFieldContainerFormProps> =>{
   return filteredField[0].formFields || [];
 };
 
-export const RoutingGridColumnDef: GridColDef[] = [
+export const TableGridColumnDef: GridColDef[] = [
   {
     headerName: "ID",
     field: "id",
@@ -220,3 +220,5 @@ export const RoutingGridColumnDef: GridColDef[] = [
     editable: true
   }
 ];
+
+exports.TableGridColumnDef = TableGridColumnDef;

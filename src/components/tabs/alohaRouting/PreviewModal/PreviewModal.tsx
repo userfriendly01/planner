@@ -7,7 +7,7 @@ import {
 import { Button } from "@mui/material";
 import { CctSharedCallRoutingDb } from "../AlohaRouting.Interfaces";
 import { DataGrid } from "@mui/x-data-grid";
-import "PreviewModal.css";
+import "./PreviewModal.css";
 import React from "react";
 import { TableGridColumnDef } from "./TableGridColumnDef";
 
