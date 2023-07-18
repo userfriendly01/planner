@@ -328,6 +328,13 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     ));
   };
 
+  const handleMultiEditOnClose = () =>{
+    setDataFlow((dataFlowProps: FlowStateVariables) => ({
+      ...dataFlowProps,
+      isBulkEditModalOpen: false
+    }));
+  };
+
   FlowGridColumnDef[0].renderCell = (params: GridRenderCellParams<CctSharedCallFlowDb>) => (<a href="#" onClick={() => openEditModal(true, false, params.row)}>{`${params.value}`}</a>);
 
 
@@ -406,8 +413,9 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         severityType={alertBar.severityType}
       />
       <PreviewModal
-        open={dataFlow.isBulkEditModalOpen}
+        isOpen={dataFlow.isBulkEditModalOpen}
         rows={dataFlow.filteredItems}
+        onClose={handleMultiEditOnClose}
       />
     </div>
   );

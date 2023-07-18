@@ -1,35 +1,48 @@
 import React from "react";
-import { Modal } from "@mui/material";
+import {
+  Modal,ModalHeader, ModalBody, ModalFooter
+} from "@lmig/lmds-react-modal";
+import { Button } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { CctSharedCallFlowDb } from "../AlohaFlow.Interfaces";
 import { TableGridColumnDef } from "./TableColumnDef";
+import "./PreviewModal.css";
 
 interface PreviewModalProps {
-    open: boolean;
-    rows: Array<CctSharedCallFlowDb>
+    isOpen: boolean;
+    rows: Array<CctSharedCallFlowDb>;
+    onClose: () => void;
 }
 
 const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   const {
-    open, rows
+    isOpen, rows, onClose
   } = props;
+
   return (
     <Modal
-      open={open}
-      sx={{
-        opacity: 1
-      }}
+      isOpen={isOpen}
+      takeover={["base", "sm", "md", "lg"]}
+      onClose={()=>{ onClose(); }}
+      size="large"
     >
-      <DataGrid
-        rows={rows}
-        columns={TableGridColumnDef}
-        editMode="row"
-        sx={{
-          "& .MuiDataGrid-columnHeaderTitle": {
-            fontWeight: 600
-          }
-        }}
-      />
+      <ModalHeader>Delete Multiple Flow</ModalHeader>
+      <ModalBody className="preview-grid-modal">
+        <DataGrid
+          rows={rows}
+          columns={TableGridColumnDef}
+          editMode="row"
+          sx={{
+            "& .MuiDataGrid-columnHeaderTitle": {
+              fontWeight: 600
+            }
+          }}
+        />
+      </ModalBody>
+      <ModalFooter>
+        <Button variant="contained" color="warning">Delete</Button>
+        <Button variant="contained" color="info" onClick={()=>{ onClose(); }}>Cancel</Button>
+      </ModalFooter>
     </Modal>
   );
 };

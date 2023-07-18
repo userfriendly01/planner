@@ -7,7 +7,8 @@ export const TableGridColumnDef: GridColDef[] = [
     field: "pkey",
     sortable: true,
     width: 110,
-    align: "left"
+    align: "left",
+    editable: true
   },
   {
     headerName: "Description",
@@ -19,7 +20,8 @@ export const TableGridColumnDef: GridColDef[] = [
       <Tooltip title={params.row.dialedDescription} >
         <div className="table-cell-trucate">{params.row.dialedDescription}</div>
       </Tooltip>
-    )
+    ),
+    editable: true
   },
   {
     headerName: "Template",
@@ -31,14 +33,16 @@ export const TableGridColumnDef: GridColDef[] = [
       <Tooltip title={params.row.callFlowTemplate} >
         <div className="table-cell-trucate">{params.row.callFlowTemplate}</div>
       </Tooltip>
-    )
+    ),
+    editable: true
   },
   {
     headerName: "Channel",
     field: "channel",
     sortable: true,
     width: 110,
-    align: "left"
+    align: "left",
+    editable: true
   },
   {
     headerName: "Brand",
@@ -50,7 +54,8 @@ export const TableGridColumnDef: GridColDef[] = [
       <Tooltip title={params.row.brand} >
         <div className="table-cell-trucate">{params.row.brand}</div>
       </Tooltip>
-    )
+    ),
+    editable: true
   },
   {
     headerName: "Language Offer",
@@ -58,7 +63,8 @@ export const TableGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params => `${params.row.content?.languageOffer || ""}`
+    valueGetter: params => `${params.row.content?.languageOffer || ""}`,
+    editable: true
   },
   {
     headerName: "Data Requests",
@@ -66,7 +72,8 @@ export const TableGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params => `${params.row.content?.dataRequests || ""}`
+    valueGetter: params => `${params.row.content?.dataRequests || ""}`,
+    editable: true
   },
   {
     headerName: "Caller Type",
@@ -74,7 +81,8 @@ export const TableGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params => `${params.row.content?.callerType || ""}`
+    valueGetter: params => `${params.row.content?.callerType || ""}`,
+    editable: true
   },
   {
     headerName: "Transfer Destination",
@@ -82,7 +90,8 @@ export const TableGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params => `${params.row.content?.transferNumber || ""}`
+    valueGetter: params => `${params.row.content?.transferNumber || ""}`,
+    editable: true
   },
   {
     headerName: "Route",
@@ -90,7 +99,8 @@ export const TableGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params => `${params.row.content?.callFlowRoute || ""}`
+    valueGetter: params => `${params.row.content?.callFlowRoute || ""}`,
+    editable: true
   },
   {
     headerName: "Greeting",
@@ -103,42 +113,48 @@ export const TableGridColumnDef: GridColDef[] = [
       <Tooltip title={params.row.content?.greetingMessages || ""} >
         <div className="table-cell-trucate">{params.row.content?.greetingMessages || ""}</div>
       </Tooltip>
-    )
+    ),
+    editable: true
   },
   {
     headerName: "Agent Id",
     field: "agentId",
     sortable: true,
     width: 110,
-    align: "left"
+    align: "left",
+    editable: true
   },
   {
     headerName: "Employee ID",
     field: "employeeId",
     sortable: true,
     width: 110,
-    align: "left"
+    align: "left",
+    editable: true
   },
   {
     headerName: "Create Time",
     field: "createTime",
     sortable: true,
     width: 110,
-    align: "left"
+    align: "left",
+    editable: true
   },
   {
     headerName: "User Destination",
     field: "userDestination",
     sortable: true,
     width: 110,
-    align: "left"
+    align: "left",
+    editable: true
   },
   {
     headerName: "Type",
     field: "type",
     sortable: true,
     width: 80,
-    align: "left"
+    align: "left",
+    editable: true
   },
   {
     headerName: "Account Manager",
@@ -150,21 +166,24 @@ export const TableGridColumnDef: GridColDef[] = [
       <Tooltip title={params.row.accountManager || ""} >
         <div className="table-cell-trucate">{params.row.accountManager || ""}</div>
       </Tooltip>
-    )
+    ),
+    editable: true
   },
   {
     headerName: "Affinity VDN",
     field: "affinityVDN",
     sortable: true,
     width: 110,
-    align: "left"
+    align: "left",
+    editable: true
   },
   {
     headerName: "Transfer Code",
     field: "transferCode",
     sortable: true,
     width: 110,
-    align: "left"
+    align: "left",
+    editable: true
   },
   {
     headerName: "Internet Placement",
@@ -176,7 +195,8 @@ export const TableGridColumnDef: GridColDef[] = [
       <Tooltip title={params.row.internetPlacement || ""} >
         <div className="table-cell-trucate">{params.row.internetPlacement || ""}</div>
       </Tooltip>
-    )
+    ),
+    editable: true
   },
   {
     headerName: "Call Details1",
@@ -188,7 +208,8 @@ export const TableGridColumnDef: GridColDef[] = [
       <Tooltip title={params.row.callDetails1 || ""} >
         <div className="table-cell-trucate">{params.row.callDetails1 || ""}</div>
       </Tooltip>
-    )
+    ),
+    editable: true
   },
   {
     headerName: "Call Details2",
@@ -200,7 +221,8 @@ export const TableGridColumnDef: GridColDef[] = [
       <Tooltip title={params.row.callDetails2 || ""} >
         <div className="table-cell-trucate">{params.row.callDetails2 || ""}</div>
       </Tooltip>
-    )
+    ),
+    editable: true
   },
   {
     headerName: "Call Type Description",
@@ -212,49 +234,56 @@ export const TableGridColumnDef: GridColDef[] = [
       <Tooltip title={params.row.callTypeDescription || ""} >
         <div className="table-cell-trucate">{params.row.callTypeDescription || ""}</div>
       </Tooltip>
-    )
+    ),
+    editable: true
   },
   {
     headerName: "Line Of Business",
     field: "lineOfBusiness",
     sortable: true,
     width: 110,
-    align: "left"
+    align: "left",
+    editable: true
   },
   {
     headerName: "Marketing Channel",
     field: "marketingChannel",
     sortable: true,
     width: 110,
-    align: "left"
+    align: "left",
+    editable: true
   },
   {
     headerName: "Whisper",
     field: "whisper",
     sortable: true,
     width: 110,
-    align: "left"
+    align: "left",
+    editable: true
   },
   {
     headerName: "Request ID",
     field: "requestID",
     sortable: true,
     width: 110,
-    align: "left"
+    align: "left",
+    editable: true
   },
   {
     headerName: "Range Indicator",
     field: "rangeIndicator",
     sortable: true,
     width: 110,
-    align: "left"
+    align: "left",
+    editable: true
   },
   {
     headerName: "Toll Free Number",
     field: "tollFreeNumber",
     sortable: true,
     width: 110,
-    align: "left"
+    align: "left",
+    editable: true
   },
   {
     headerName: "Call Intent",
@@ -262,7 +291,8 @@ export const TableGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params => `${params.row.content?.callIntent || ""}`
+    valueGetter: params => `${params.row.content?.callIntent || ""}`,
+    editable: true
   }
 ];
 
