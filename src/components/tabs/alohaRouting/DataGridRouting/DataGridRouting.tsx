@@ -30,6 +30,7 @@ import {
 import {
   DataGrid,
   GridRenderCellParams,
+  GridRowId,
   GridSelectionModel
 } from "@mui/x-data-grid";
 import React, {
@@ -60,7 +61,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
   const [routingRule, setRoutingRule] = useState({ ...routingInitRule });
   const [clonedRule, setClonedRule] = useState(false);
   const maxRef = useRef(0);
-  const [selectionModel, setSelectionModel] = useState<GridSelectionModel>([]);
+  const [selectedList, setSelectedList] = useState<Array<CctSharedCallRoutingDb>>([]);
 
   useEffect(() => {
     const getTableData = async()=>{
@@ -321,6 +322,11 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
     }));
   };
 
+  const handleSelectionChanges = (gridSelectionModel: GridSelectionModel) =>{
+    const selectedRowsData = gridSelectionModel.map((id: GridRowId)=>state.filteredItems.find((row: CctSharedCallRoutingDb)=>row.pkey === id));
+    setSelectedList(selectedRowsData);
+
+  };
   RoutingGridColumnDef[0].renderCell = (params: GridRenderCellParams<CctSharedCallRoutingDb>) => (<a href="#" onClick={() => openEditModal(true, false, params.row)}>{`${params.value}`}</a>);
 
   return (
@@ -349,8 +355,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
           disableSelectionOnClick
           autoHeight
           getRowId={(row: CctSharedCallRoutingDb)=>row.pkey}
-          onSelectionModelChange={(newSelectionModel:GridSelectionModel)=>{ setSelectionModel(newSelectionModel); }}
-          selectionModel={selectionModel}
+          onSelectionModelChange={handleSelectionChanges}
           sx={{
             "& .MuiDataGrid-columnHeaderTitle": {
               fontWeight: 600
@@ -390,7 +395,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
       />
       <PreviewModal
         isOpen={state.isBulkEditModalOpen}
-        rows={state.filteredItems}
+        rows={selectedList}
         onClose={handleMultiEditOnClose}
       />
     </div>
