@@ -4,7 +4,7 @@
    react/jsx-props-no-spreading
 */
 import {
-  DataGrid, GridRenderCellParams, GridSelectionModel
+  DataGrid, GridRenderCellParams, GridRowId, GridSelectionModel
 } from "@mui/x-data-grid";
 import { CustomToast } from "components";
 import { AzureSPA } from "globals";
@@ -70,8 +70,8 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
   const [clonedFlowRule, setClonedFlowRule] = useState({});
   const [cloneType, setCloneType] = useState(false);
-  const [selectionModel, setSelectionModel] = useState<GridSelectionModel>([]);
-  console.log("selectionModel",selectionModel);
+  const [selectedList, setSelectedList] = useState<Array<CctSharedCallFlowDb>>([]);
+
   useEffect(() => {
     const getTableData = async()=>{
       const firstChunkData:any = await queryFlowData(accessToken, null, graphQLEndpoint);
@@ -335,6 +335,12 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     }));
   };
 
+  const handleSelectionChanges = (gridSelectionModel: GridSelectionModel) =>{
+    const selectedRowsData = gridSelectionModel.map((id: GridRowId)=>dataFlow.filteredItems.find((row: CctSharedCallFlowDb)=>row.pkey === id));
+    setSelectedList(selectedRowsData);
+
+  };
+
   FlowGridColumnDef[0].renderCell = (params: GridRenderCellParams<CctSharedCallFlowDb>) => (<a href="#" onClick={() => openEditModal(true, false, params.row)}>{`${params.value}`}</a>);
 
 
@@ -365,8 +371,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
             disableSelectionOnClick
             autoHeight
             getRowId={(row: CctSharedCallFlowDb)=>row.pkey}
-            onSelectionModelChange={(newSelectionModel:GridSelectionModel)=>{ setSelectionModel(newSelectionModel); }}
-            selectionModel={selectionModel}
+            onSelectionModelChange={handleSelectionChanges}
             sx={{
               "& .MuiDataGrid-columnHeaderTitle": {
                 fontWeight: 600
@@ -414,7 +419,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       />
       <PreviewModal
         isOpen={dataFlow.isBulkEditModalOpen}
-        rows={dataFlow.filteredItems}
+        rows={selectedList}
         onClose={handleMultiEditOnClose}
       />
     </div>
