@@ -323,7 +323,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
   };
 
   const handleSelectionChanges = (gridSelectionModel: GridSelectionModel) =>{
-    const selectedRowsData = gridSelectionModel.map((id: GridRowId)=>state.filteredItems.find((row: CctSharedCallRoutingDb)=>row.pkey === id));
+    const selectedRowsData = gridSelectionModel.map((id: GridRowId)=>state.filteredItems.find((row: CctSharedCallRoutingDb)=>row.id === id));
     setSelectedList(selectedRowsData);
 
   };
@@ -354,7 +354,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
           checkboxSelection
           disableSelectionOnClick
           autoHeight
-          getRowId={(row: CctSharedCallRoutingDb)=>row.pkey}
+          getRowId={(row: CctSharedCallRoutingDb)=>row.id}
           onSelectionModelChange={handleSelectionChanges}
           sx={{
             "& .MuiDataGrid-columnHeaderTitle": {
