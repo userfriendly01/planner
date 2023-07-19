@@ -340,8 +340,8 @@ describe("CallRecordingForm", () => {
           render(<CallRecordingForm twilioWorker={twilioWorker} missingFields={[]}/>);
           expect(Dropdown.mock.calls[0][0].options).toEqual([{
             id: 1,
-            label: "Supervisor-Sync Only",
-            name: "Supervisor-Sync Only",
+            label: "QM Supervisor",
+            name: "QM Supervisor",
             value: 1
           },
           {
@@ -360,12 +360,12 @@ describe("CallRecordingForm", () => {
             }]
           });
         });
-        test("Existing user with Supervisor-Sync Only role will auto populate with both No Screen and Supervisor-Sync Only", () => {
+        test("Existing user with QM Supervisor role will auto populate with both No Screen and QM Supervisor", () => {
           workersCompForm.calabrio_qm.roles.push({
             id: 1,
             value: 1,
-            name: "Supervisor-Sync Only",
-            label: "Supervisor-Sync Only"
+            name: "QM Supervisor",
+            label: "QM Supervisor"
           }, {
             id: 12,
             value: 12,
@@ -376,8 +376,8 @@ describe("CallRecordingForm", () => {
           render(<CallRecordingForm twilioWorker={twilioWorker} missingFields={[]}/>);
           expect(Dropdown.mock.calls[0][0].options).toEqual([{
             id: 1,
-            label: "Supervisor-Sync Only",
-            name: "Supervisor-Sync Only",
+            label: "QM Supervisor",
+            name: "QM Supervisor",
             value: 1
           },
           {
@@ -391,8 +391,8 @@ describe("CallRecordingForm", () => {
             payload: [{
               id: 1,
               value: 1,
-              name: "Supervisor-Sync Only",
-              label: "Supervisor-Sync Only"
+              name: "QM Supervisor",
+              label: "QM Supervisor"
             },
             {
               id: 4,

@@ -2108,7 +2108,7 @@ describe("fields.js", () => {
         test("Multiple roles provided, all are good, resolve with message", async () => {
           const row = {
             rowNumber: 1,
-            "Calabrio Role": "Supervisor-Sync Only, QM Agent"
+            "Calabrio Role": "QM Supervisor, QM Agent"
           };
           const result = await calabrioRolesValidation(row, initialTestState);
           expect(result).toEqual("Calabrio Role valid for row 1");
@@ -2117,7 +2117,7 @@ describe("fields.js", () => {
             roles: [
               {
                 id: 1,
-                name: "Supervisor-Sync Only"
+                name: "QM Supervisor"
               },
               {
                 id: 2,
@@ -2142,7 +2142,7 @@ describe("fields.js", () => {
               ...row,
               roles: [
                 {
-                  id: 1,
+                  id: 5,
                   name: "Supervisor-Sync Only"
                 }
               ]
@@ -2160,7 +2160,7 @@ describe("fields.js", () => {
             ...row,
             roles: [
               {
-                id: 1,
+                id: 5,
                 name: "Supervisor-Sync Only"
               }
             ]

@@ -108,7 +108,7 @@ export const calabrioContext = {
   roles: [
     {
       id: 1,
-      name: "Supervisor-Sync Only"
+      name: "QM Supervisor"
     },
     {
       id: 2,
@@ -121,6 +121,10 @@ export const calabrioContext = {
     {
       id: 4,
       name: "No Screen"
+    },
+    {
+      id: 5,
+      name: "Supervisor-Sync Only"
     }
   ],
   users: [
