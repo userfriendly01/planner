@@ -229,4 +229,5 @@ describe("routingTableService",()=>{
       const response = await batchDelete(batchDeleteItems,"1233-3245","http://localhost:3000");
       expect(response).toEqual(undefined);
     });
-  });});
+  });
+});
