@@ -324,10 +324,49 @@ async function deleteRoutingRule(item, accessToken, graphQlApiUrl) {
   return response;
 }
 
+/**
+ * This is the Function to delete the Routing Object ]to the DB
+ * @param {routingData[]} item Routing object that need to delete
+ * @param {String} accessToken token to use while calling graphql query 
+ * @param {String} graphQlApiUrl Endpoint URL 
+ * @returns 
+ */
+async function batchDelete(items, accessToken, graphQlApiUrl) {
+  let response;
+  try {
+    const fetchResponse = await fetch(graphQlApiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: accessToken
+      },
+      body: JSON.stringify({
+        query: `
+          mutation DeleteMany {
+            batchDeleteCctSharedCallFlowDb(input: {
+                routingKey: ${JSON.stringify(items)}
+              }) {
+              pkey
+              skey
+            }
+          }
+      `,
+        variables: {
+        }
+      })
+    });
+    response = await fetchResponse.json();
+    console.log("Batch Delete Routing Rule Response:", response);
+  } catch (error) {
+    console.error("Error in Routing Batch Delete", error);
+  }
+  return response;
+}
 export {
   addRoutingRule,
+  batchDelete,
   deleteRoutingRule,
+  queryRoutingData,
   retrieveRoutingData,
-  updateRoutingDB,
-  queryRoutingData
+  updateRoutingDB
 };

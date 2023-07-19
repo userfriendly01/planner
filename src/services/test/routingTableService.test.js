@@ -1,5 +1,6 @@
 import {
   addRoutingRule,
+  batchDelete,
   deleteRoutingRule,
   retrieveRoutingData,
   updateRoutingDB
@@ -190,4 +191,42 @@ describe("routingTableService",()=>{
       expect(response).toBeDefined;
     });
   });
-});
+  const batchDeleteItems = [ {
+    pkey: "pkey1",
+    "skey": "skey1"
+  },{
+    pkey: "pkey2",
+    "skey": "skey2"
+  }];
+  const batchDeleteResponse = {
+    data: {
+      listCctSharedCallRoutingGlobalDbs: {
+        items: batchDeleteItems,
+        nextToken: undefined
+      }
+    }
+  };
+
+  describe("Batch Delete Routing", ()=>{
+    beforeEach(()=>{
+      window.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve(batchDeleteResponse)
+        })
+      );
+    });
+    afterEach(()=>{
+      jest.restoreAllMocks();
+    });
+    test("Success",async()=>{
+      const response = await batchDelete(batchDeleteItems,"1233-3245","http://localhost:3000");
+      expect(response).toEqual(batchDeleteResponse);
+    });
+    test("Error",async()=>{
+      jest.spyOn(JSON, "stringify").mockImplementation(()=>{
+        throw new Error();
+      });
+      const response = await batchDelete(batchDeleteItems,"1233-3245","http://localhost:3000");
+      expect(response).toEqual(undefined);
+    });
+  });});
