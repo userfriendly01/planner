@@ -333,24 +333,25 @@ async function deleteRoutingRule(item, accessToken, graphQlApiUrl) {
  */
 async function batchDelete(items, accessToken, graphQlApiUrl) {
   let response;
-  const body = JSON.stringify({
-    query: `
-      mutation DeleteMany {
-        batchDeleteCctSharedCallRoutingGlobalDb(input: {
-            routingKey: ${JSON.stringify(items)}
-          }) {
-          items {
-            pkey
-            skey
-          }
-        }
-      }
-  `,
-    variables: {
-    }
-  }).replace(/\\"pkey\\":/g, "pkey:").replace(/\\"skey\\":/g, "skey:");
 
   try {
+    const body = JSON.stringify({
+      query: `
+        mutation DeleteMany {
+          batchDeleteCctSharedCallRoutingGlobalDb(input: {
+              routingKey: ${JSON.stringify(items)}
+            }) {
+            items {
+              pkey
+              skey
+            }
+          }
+        }
+    `,
+      variables: {
+      }
+    }).replace(/\\"pkey\\":/g, "pkey:").replace(/\\"skey\\":/g, "skey:");
+
     const fetchResponse = await fetch(graphQlApiUrl, {
       method: "POST",
       headers: {
