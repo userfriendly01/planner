@@ -2,7 +2,7 @@ import React, {
   useState, useEffect
 } from "react";
 import {
-  Chip, FormControl, InputLabel, MenuItem, Select, Grid, TextField
+  Chip, FormControl, InputLabel, MenuItem, Select, Grid, TextField, IconButton, Tooltip, Paper
 } from "@mui/material";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
@@ -36,9 +36,6 @@ export const CustomRoutingGridToolBar = ({
       case "addRouting":
         openAddModal(true);
         break;
-      case "Export":
-        exportDataFile();
-        break;
       default:
         break;
     }
@@ -54,7 +51,7 @@ export const CustomRoutingGridToolBar = ({
 
   return (
     <Grid container>
-      <Grid item key="routing-search-box" xs={10}>
+      <Grid item key="routing-search-box" xs={9}>
         <TextField
           sx={{ marginLeft: 1 }}
           placeholder="Click here to apply filter"
@@ -81,6 +78,20 @@ export const CustomRoutingGridToolBar = ({
           onClick={()=>openAdvanceSearchModal(true)}
         />
       </Grid>
+      <Grid item key = "Export RoutingUI" xs={1}>
+        <Grid><div><br/><br/></div></Grid>
+        <Tooltip title="Export Routing Records" sx={{left:"calc(76%)",marginLeft:"24"}}>
+        <Paper variant="outlined" >
+        <IconButton 
+          onClick={exportDataFile}
+          color = "primary" 
+          size = "small"
+          sx ={{position:"fixed"}}
+        > <FileDownloadIcon /> 
+      </IconButton>
+      </Paper>
+      </Tooltip>
+      </Grid>
       <Grid item key="routing-action-box" xs={2}>
         <FormControl sx={{
           marginTop: "16px",
@@ -102,9 +113,6 @@ export const CustomRoutingGridToolBar = ({
           >
             <MenuItem key="addRouting" value="addRouting">
               <PlaylistAddIcon/> &nbsp;&nbsp;Add Routing
-            </MenuItem>
-            <MenuItem key="Export" value="Export">
-              <FileDownloadIcon /> &nbsp;&nbsp; Export
             </MenuItem>
           </Select>
         </FormControl>

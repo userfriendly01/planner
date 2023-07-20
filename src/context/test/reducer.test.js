@@ -353,22 +353,37 @@ describe("reducer", () => {
   });
   describe("updateWfmOrg", () => {
     test("should update wfmOrg only", () => {
-      const payload = [
-        {
+      const payload = {
+        org: [{
           id: 1,
           name: "Administrator"
         },
         {
           id: 2,
           name: "Agent"
-        }
-      ];
+        }],
+        errors: []
+      };
       const action = {
         type: "updateWfmOrg",
         payload
       };
       const result = reducer(initialState, action);
-      expect(result.calabrioContext.wfmOrg).toEqual(payload);
+      expect(result.calabrioContext.wfmOrg).toEqual(payload.org);
+      expect(result.calabrioContext.wfmErrors).toEqual(payload.errors);
+    });
+    test("should update wfmOrg only", () => {
+      const payload = {
+        org: undefined,
+        errors: undefined
+      };
+      const action = {
+        type: "updateWfmOrg",
+        payload
+      };
+      const result = reducer(initialState, action);
+      expect(result.calabrioContext.wfmOrg).toEqual([]);
+      expect(result.calabrioContext.wfmErrors).toEqual([]);
     });
   });
   describe("loadWfmOrg", () => {

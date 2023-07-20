@@ -15,7 +15,7 @@ export const FlowGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 150,
     align: "left",
-    renderCell: (params: any) =>  (
+    renderCell: (params: any) => (
       <Tooltip title={params.row.dialedDescription} >
         <div className="table-cell-trucate">{params.row.dialedDescription}</div>
       </Tooltip>
@@ -27,7 +27,7 @@ export const FlowGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left",
-    renderCell: (params: any) =>  (
+    renderCell: (params: any) => (
       <Tooltip title={params.row.callFlowTemplate} >
         <div className="table-cell-trucate">{params.row.callFlowTemplate}</div>
       </Tooltip>
@@ -46,7 +46,7 @@ export const FlowGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left",
-    renderCell: (params: any) =>  (
+    renderCell: (params: any) => (
       <Tooltip title={params.row.brand} >
         <div className="table-cell-trucate">{params.row.brand}</div>
       </Tooltip>
@@ -58,7 +58,7 @@ export const FlowGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params=>`${params.row.content?.languageOffer || ""}`
+    valueGetter: params => `${params.row.content?.languageOffer || ""}`
   },
   {
     headerName: "Data Requests",
@@ -66,7 +66,7 @@ export const FlowGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params=>`${params.row.content?.dataRequests || ""}`
+    valueGetter: params => `${params.row.content?.dataRequests || ""}`
   },
   {
     headerName: "Caller Type",
@@ -74,7 +74,7 @@ export const FlowGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params=>`${params.row.content?.callerType || ""}`
+    valueGetter: params => `${params.row.content?.callerType || ""}`
   },
   {
     headerName: "Transfer Destination",
@@ -82,7 +82,7 @@ export const FlowGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params=>`${params.row.content?.transferNumber || ""}`
+    valueGetter: params => `${params.row.content?.transferNumber || ""}`
   },
   {
     headerName: "Route",
@@ -90,7 +90,7 @@ export const FlowGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params=>`${params.row.content?.callFlowRoute || ""}`
+    valueGetter: params => `${params.row.content?.callFlowRoute || ""}`
   },
   {
     headerName: "Greeting",
@@ -98,8 +98,8 @@ export const FlowGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params=>`${params.row.content?.greetingMessages || ""}`,
-    renderCell: (params: any) =>  (
+    valueGetter: params => `${params.row.content?.greetingMessages || ""}`,
+    renderCell: (params: any) => (
       <Tooltip title={params.row.content?.greetingMessages || ""} >
         <div className="table-cell-trucate">{params.row.content?.greetingMessages || ""}</div>
       </Tooltip>
@@ -146,7 +146,7 @@ export const FlowGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left",
-    renderCell: (params: any) =>  (
+    renderCell: (params: any) => (
       <Tooltip title={params.row.accountManager || ""} >
         <div className="table-cell-trucate">{params.row.accountManager || ""}</div>
       </Tooltip>
@@ -172,7 +172,7 @@ export const FlowGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left",
-    renderCell: (params: any) =>  (
+    renderCell: (params: any) => (
       <Tooltip title={params.row.internetPlacement || ""} >
         <div className="table-cell-trucate">{params.row.internetPlacement || ""}</div>
       </Tooltip>
@@ -184,7 +184,7 @@ export const FlowGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left",
-    renderCell: (params: any) =>  (
+    renderCell: (params: any) => (
       <Tooltip title={params.row.callDetails1 || ""} >
         <div className="table-cell-trucate">{params.row.callDetails1 || ""}</div>
       </Tooltip>
@@ -196,7 +196,7 @@ export const FlowGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left",
-    renderCell: (params: any) =>  (
+    renderCell: (params: any) => (
       <Tooltip title={params.row.callDetails2 || ""} >
         <div className="table-cell-trucate">{params.row.callDetails2 || ""}</div>
       </Tooltip>
@@ -208,7 +208,7 @@ export const FlowGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left",
-    renderCell: (params: any) =>  (
+    renderCell: (params: any) => (
       <Tooltip title={params.row.callTypeDescription || ""} >
         <div className="table-cell-trucate">{params.row.callTypeDescription || ""}</div>
       </Tooltip>
@@ -255,6 +255,14 @@ export const FlowGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left"
+  },
+  {
+    headerName: "Call Intent",
+    field: "callIntent",
+    sortable: true,
+    width: 110,
+    align: "left",
+    valueGetter: params => `${params.row.content?.callIntent || ""}`
   }
 ];
 

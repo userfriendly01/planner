@@ -206,6 +206,7 @@ export const AddFlow = ({
           const newFlowRule: CctSharedCallFlowDb = {
             pkey: flowRule.pkey.value,
             content: {
+              callIntent: stringValue(flowRule, "callIntent", ""),
               callFlowRoute: stringValue(flowRule,"callFlowRoute", ""),
               callerType: stringValue(flowRule,"callerType", ""),
               greetingMessages: stringValue(flowRule,"greetingMessages", ""),

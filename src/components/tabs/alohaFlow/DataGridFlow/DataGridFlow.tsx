@@ -3,45 +3,39 @@
    no-console,
    react/jsx-props-no-spreading
 */
+import {
+  DataGrid, GridRenderCellParams
+} from "@mui/x-data-grid";
+import { CustomToast } from "components";
+import { AzureSPA } from "globals";
 import React, {
   useEffect, useState
 } from "react";
-import {
-  DataGrid, GridRenderCellParams, GridToolbar
-} from "@mui/x-data-grid";
-import {
-  retrieveFlowData, queryFlowData
-} from "services";
+import { queryFlowData, retrieveFlowData } from "services";
 import {
   CACHE_FILTER_FLOW,
   CALL_FLOW_PAGE_NO,
-  CALL_FLOW_PER_PAGE,
-  getGraphQLEndpoint,
-  initializedAlertBar,
-  downloadCSV,
+  CALL_FLOW_PER_PAGE, downloadCSV,
   EXPORT_FILE_PREFIX,
-  getAdvanceFilter
+  getAdvanceFilter, getGraphQLEndpoint,
+  initializedAlertBar
 } from "utils";
-import { CustomToast } from "components";
+import {
+  AlertBarProps, FormValidationRule
+} from "utils/interfaces";
 import {
   AddFlowFieldsConfigProps,
   CctSharedCallFlowDb, FlowAdvanceFilter, FlowStateVariables
 } from "../AlohaFlow.Interfaces";
+import {
+  AddFlow, AdvanceSearchModal, CustomFlowGridToolBar, EditFlow
+} from "../CustomActions";
+import { flowFields } from "../CustomActions/FlowFieldsConfig";
 import "./Grid.scss";
 import FlowGridColumnDef from "./GridColumnDef";
 import {
   getGridMasterData
 } from "./GridMaster";
-import GridSpinner from "./GridSpinner";
-import {
-  AddFlow, AdvanceSearchModal, CustomFlowGridToolBar, EditFlow
-} from "../CustomActions";
-import {
-  AlertBarProps, FormValidationRule
-} from "utils/interfaces";
-import { AzureSPA } from "globals";
-import { flowFields } from "../CustomActions/FlowFieldsConfig";
-import { RowingOutlined } from "@mui/icons-material";
 
 const DataGridFlow = (props: AzureSPA): JSX.Element => {
   const {
@@ -349,12 +343,6 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
             checkboxSelection
             disableSelectionOnClick
             autoHeight
-            components={
-              {
-                Toolbar: GridToolbar,
-                LoadingOverlay: GridSpinner
-              }
-            }
             sx={{
               "& .MuiDataGrid-columnHeaderTitle": {
                 fontWeight: 600

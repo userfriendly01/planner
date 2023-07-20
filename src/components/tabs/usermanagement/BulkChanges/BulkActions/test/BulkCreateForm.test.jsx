@@ -1,15 +1,21 @@
 import BulkCreateForm from "../BulkCreateForm";
 import { updateSelectedTemplates } from "../../BulkUtils";
 import { getCreateTemplates } from "../../BulkTemplates";
+import BusinessUnitModal from "../../BusinessUnitModal";
 import React from "react";
 import {
   act,
   render
 } from "testUtils";
-import { Checkbox } from "@mui/material";
+import { Checkbox, Modal } from "@mui/material";
 
 jest.mock("../../BulkUtils", () => ({
   updateSelectedTemplates: jest.fn()
+}));
+
+jest.mock("../../BusinessUnitModal", () => ({
+  __esModule: true,
+  default: jest.fn()
 }));
 
 jest.mock("context", () => ({
@@ -18,7 +24,8 @@ jest.mock("context", () => ({
 
 jest.mock("@mui/material", () => ({
   Checkbox: jest.fn(),
-  Paper: jest.fn()
+  Paper: jest.fn(),
+  Modal: jest.fn()
 }));
 
 jest.mock("@mui/x-data-grid", () => ({
@@ -36,6 +43,8 @@ jest.mock("components", () => ({
 }));
 
 const mockSetSelectedTemplates = jest.fn();
+const mockSetBusinessUnitId = jest.fn();
+
 const createTemplates = getCreateTemplates();
 
 describe("<BulkCreateForm />", () => {
@@ -46,6 +55,7 @@ describe("<BulkCreateForm />", () => {
   const renderComponent = selectedTemplates => {
     return render(
       <BulkCreateForm
+        setBusinessUnitId={mockSetBusinessUnitId}
         selectedTemplates={selectedTemplates}
         setSelectedTemplates={mockSetSelectedTemplates}
       />

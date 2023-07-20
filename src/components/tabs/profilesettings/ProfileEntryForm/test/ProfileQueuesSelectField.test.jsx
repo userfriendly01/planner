@@ -25,6 +25,7 @@ import {
 import { ThemeProvider } from "styled-components";
 import { act } from "react-dom/test-utils";
 import { getAggregateQueuesType } from "services";
+import { Tooltip } from "@mui/material";
 
 jest.mock("@mui/icons-material", () => ({
   __esModule: true,
@@ -40,6 +41,10 @@ jest.mock("components", () => ({
 
 jest.mock("context", () => ({
   useAdminState: jest.fn()
+}));
+
+jest.mock("@mui/material", () => ({
+  Tooltip: jest.fn()
 }));
 
 const mockSetQueueList = jest.fn();
@@ -68,7 +73,8 @@ describe("<ProfileQueuesSelectField />", () => {
     setupMockedComponents({
       Add,
       Delete,
-      Dropdown
+      Dropdown,
+      Tooltip
     });
     axiosMock.onGet(aggregateQueueTypeEndpoint).reply(200, mockAggregateQueues);
     mockSetQueueList.mockClear();
@@ -80,6 +86,7 @@ describe("<ProfileQueuesSelectField />", () => {
       expectMockedComponent(rendered, { Dropdown });
       expectMockedComponent(rendered, { Add });
       expectMockedComponent(rendered, { Delete }, 0);
+      expectMockedComponent(rendered, { Tooltip }, 0);
     });
   });
 
@@ -102,7 +109,7 @@ describe("<ProfileQueuesSelectField />", () => {
     beforeEach(() => {
       const mockNewSkill = [{
         name: "lscOBDialer1",
-        ctmSkillId: 1,
+        ctmSkillId: -1,
         ctmSkillDisplayName: "lsc OB Dialer 1",
         profiles: [{
           profileName: "Licensed Sales Center",
@@ -166,11 +173,11 @@ describe("<ProfileQueuesSelectField />", () => {
         },
         {
           aggregate_queues_id: 4,
-          aggregate_queues_nme: 'Licensed Sales Center',
-          aggregate_queues_type: 'aggregate',
-          owner_type: 'profile',
+          aggregate_queues_nme: "Licensed Sales Center",
+          aggregate_queues_type: "aggregate",
+          owner_type: "profile",
           worker_sid: null,
-          row_crtn_dtm: '',
+          row_crtn_dtm: "",
           row_updt_dtm: null
         }
       ]);
@@ -181,7 +188,7 @@ describe("<ProfileQueuesSelectField />", () => {
     beforeEach(() => {
       const mockNewSkill = [{
         name: "lscOBDialer1",
-        ctmSkillId: 1,
+        ctmSkillId: -1,
         ctmSkillDisplayName: "lsc OB Dialer 1",
         profiles: [{
           profileName: "Licensed Sales Center",
@@ -221,7 +228,7 @@ describe("<ProfileQueuesSelectField />", () => {
         },
         {
           name: "lscOBDialer1",
-          ctmSkillId: 1,
+          ctmSkillId: -1,
           ctmSkillDisplayName: "lsc OB Dialer 1",
           profiles: [{
             profileName: "Licensed Sales Center",
@@ -236,6 +243,7 @@ describe("<ProfileQueuesSelectField />", () => {
           vhThreshold: null
         }
       ]);
+      expectMockedComponent(rendered, { Tooltip }, 1);
       expectMockedComponent(rendered, { Delete }, 2);
       act(() => {
         fireEvent.click(getDeleteTransferQueuesButton(rendered, 1));

@@ -98,7 +98,7 @@ export const isWfmUserValid = (form: UserFormState) => {
     skillFIelds: ["PersonSkills", "SkillsStartDate"],
     rotationFields: ["RotationId", "RotationStartDate", "RotationStartWeek"]
   };
-  const missingFields: any = [];
+  const missingFields: string[] = [];
   if(!user.userFound){
     return [];
   } else {
@@ -243,7 +243,6 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
     If this nNumber continues to fail, this user may no longer be active in the HR database or needs to reach out to the HR team to investigate the failure.`
     nNumberObject = await fetchUser(form.nNumber.value, setForm, errorMessage, discrepancyType.GENERAL);
   }
-
   if(primarySystem === "triton"){
     const acdId = form.triton.sid;
     const nNumber = form.nNumber.value || form.triton.attributes?.n_number;
@@ -301,6 +300,7 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
     setForm({
       type: "SET_UPDATE_TRITON_FORM_STATE",
       payload: {
+        formMode: form.formMode,
         worker: tritonWorker,
         managers: state.managerContext.managers
       }
@@ -318,7 +318,10 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
     */
       setForm({
         type: "SET_UPDATE_QM_FORM_STATE",
-        payload: calabrioQmUser
+        payload: {
+          user: calabrioQmUser,
+          formMode: form.formMode
+        }
       });
 
   } else if(!form.calabrio_qm.userFound && calabrioQmUser && !nNumberObject.fetchedUser){
@@ -333,10 +336,11 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
   }
 
   //Update state for WFM user if applicable
-  if(!form.calabrio_wfm.userFound && calabrioWfmUser){
+  if(calabrioWfmUser){
     setForm({
       type: "SET_UPDATE_WFM_FORM_STATE",
       payload: {
+        formMode: form.formMode,
         user: calabrioWfmUser,
         state
       }

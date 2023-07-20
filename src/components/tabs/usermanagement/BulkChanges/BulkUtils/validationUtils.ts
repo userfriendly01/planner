@@ -73,11 +73,23 @@ export const performValidations = async (
   const concurrencyLimit: any = getLowestConcurrencyLimit(selectedTemplates, "validation");
 
   const processValidationsOnRows = async (row: any, progressCallback: any): Promise<any> => {
-    const fieldPromises = await Promise.allSettled(consolidatedFieldsList.map((field: any) => {
+    const nNumberFields = consolidatedFieldsList.filter((f: any) => f.field === "nNumber");
+    const otherFields = consolidatedFieldsList.filter((f: any) => f.field !== "nNumber");
+
+    const nNumberPromises = await Promise.allSettled(nNumberFields.map((field: any) => {
       return field.validateFunction(row, state);
     }));
+    
+    const fieldPromises = await Promise.allSettled(otherFields.map((field: any) => {
+      return field.validateFunction(row, state);
+    }));
+
     progressCallback((previousCount: number) => (previousCount + 1));
-    return fieldPromises;
+    
+    return [
+      ...nNumberPromises,
+      ...fieldPromises
+    ];
   };
 
   if(concurrencyLimit){

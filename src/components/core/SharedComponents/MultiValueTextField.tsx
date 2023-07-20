@@ -31,6 +31,13 @@ const MultiValueTextField = ({
     const newChipList = [...chipList];
     newChipList.splice(index, 1);
     setChipList(newChipList);
+    const newEvent = {
+      target: {
+        value: newChipList,
+        name
+      }
+    };
+    onChange(newEvent);
   };
 
   const handleOnChange = (event: any) =>{

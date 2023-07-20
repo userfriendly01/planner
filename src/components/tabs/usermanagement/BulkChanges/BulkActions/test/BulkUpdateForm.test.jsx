@@ -73,6 +73,10 @@ describe("<BulkUpdateForm />", () => {
           {
             label: "Update Users Manager",
             value: updateTemplates.UPDATE_USERS_MANAGER
+          },
+          {
+            label: "Update Default Skills",
+            value: updateTemplates.UPDATE_DEFAULT_SKILLS
           }
         ]));
       });

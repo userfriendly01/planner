@@ -32,6 +32,7 @@ async function queryFlowData(accessToken, nextToken = null, graphQlApiUrl) {
                   callTypeDescription
                   channel
                   content {
+                    callIntent
                     callerType
                     callFlowRoute
                     dataRequests
@@ -102,6 +103,7 @@ function addFlowInput (item, dataRequestsPassed, currentTimePassed){
   const input = {
     pkey: item.pkey.value,
     content: {
+      callIntent: item.callIntent?.value,
       callFlowRoute: item.callFlowRoute?.value,
       callerType: item.callerType?.value,
       greetingMessages: item.greetingMessages?.value,
@@ -145,6 +147,7 @@ function updateFlowInput(item){
     callFlowTemplate: item.callFlowTemplate || "",
     channel: item.channel,
     content: {
+      callIntent: item.content?.callIntent || "",
       callFlowRoute: item.content?.callFlowRoute || "",
       callerType: item.content?.callerType || "",
       greetingMessages: item.content?.greetingMessages || "",
@@ -204,6 +207,7 @@ async function updateFlowDB(item, accessToken, graphQlApiUrl) {
               callFlowTemplate
               channel
               content {
+                callIntent
                 callerType
                 callFlowRoute
                 dataRequests
@@ -272,6 +276,7 @@ async function addFlowRule(item, accessToken, graphQlApiUrl, curTime = new Date(
               callFlowTemplate
               channel
               content  {
+                callIntent
                 callerType
                 callFlowRoute
                 dataRequests
@@ -343,6 +348,7 @@ async function deleteFlowRule(item, accessToken, graphQlApiUrl) {
               callFlowTemplate
               channel
               content {
+                callIntent
                 callerType
                 callFlowRoute
                 dataRequests

@@ -7,7 +7,7 @@ export * from "./profileUtils";
 export * from "./flowUtils";
 export * from "./formatNumberUtils";
 export * from "./formatWorkerResponse";
-export * from "./formatWorkerAttributeSkillsToHTML";
+export * from "./formatWorkerAttributeSkills";
 export * from "./isErrorIn400s";
 export * from "./myAxios";
 export * from "./routingUtils";

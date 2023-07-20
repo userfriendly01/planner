@@ -1,6 +1,7 @@
 import { Control } from "globals";
 import { FormValidationRule } from "utils/interfaces";
 export interface FlowContent {
+    callIntent?: string;
     callerType?: string;
     callFlowRoute?: string;
     dataRequests?: Array<string>;

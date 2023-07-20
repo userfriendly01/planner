@@ -3,8 +3,8 @@ import { render } from "testUtils";
 
 describe("<FlowGridColumnDef />", () => {
 
-  it("has 16 columns", () => {
-    expect(FlowGridColumnDef.length).toBe(29);
+  it("has 30 columns", () => {
+    expect(FlowGridColumnDef.length).toBe(30);
   });
 
   describe("valueGetter", ()=>{
@@ -36,6 +36,10 @@ describe("<FlowGridColumnDef />", () => {
     it("greetingMessages", () => {
       expect(FlowGridColumnDef[10].valueGetter({ row: { content: { greetingMessages: "hi" }}})).toBe("hi");
       expect(FlowGridColumnDef[10].valueGetter({ row: {}})).toBe("");
+    });
+    it("callIntent", () => {
+      expect(FlowGridColumnDef[29].valueGetter({ row: { content: { callIntent: "TEST_CALL_INTENT" }}})).toBe("TEST_CALL_INTENT");
+      expect(FlowGridColumnDef[29].valueGetter({ row: {}})).toBe("");
     });
   });
   describe("renderCell", ()=>{

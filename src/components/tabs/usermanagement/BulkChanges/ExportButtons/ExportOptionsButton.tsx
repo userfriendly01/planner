@@ -1,8 +1,6 @@
 
 import { Button } from "../BulkChanges.Styles";
 import { Template } from "../BulkChanges.Interfaces";
-import BusinessUnitModal from "../BusinessUnitModal";
-import { Modal } from "@mui/material";
 import React from "react";
 import {
   ExcelExport
@@ -12,17 +10,14 @@ const ExportOptionsButton = (props: any) => {
   const {
     template,
     state,
-    selectedTemplates,
-    disabled
+    disabled,
+    businessUnitId
   } = props;
-
-  const [ showBusinessUnitModal, setShowBusinessUnitModal ] = React.useState(false);
-
-  const isWFMSelected: boolean = selectedTemplates.some((t: Template) => t.name === "CREATE_CALABRIO_WFM_PERSON");
 
   const _export = React.useRef(null);
   console.log("ExportOptionsButton Template", template);
-  const handleExport = (wfmBU: string | undefined) => {
+
+  const handleExport = () => {
     const rows: any = [];
     const columns: any = [];
     template.forEach((t: any) => {
@@ -32,7 +27,7 @@ const ExportOptionsButton = (props: any) => {
         // in order to generate the appropriate list of options
         // all wfm fields are prefixed with wfm
         if (t.field.includes("wfm")) {
-          options = t.options(state, wfmBU);
+          options = t.options(state, businessUnitId);
         } else {
           options = t.options(state);
         }
@@ -71,34 +66,11 @@ const ExportOptionsButton = (props: any) => {
     }
   };
 
-  const handleClick = () => {
-    if (isWFMSelected) {
-      setShowBusinessUnitModal(true);
-    } else {
-      handleExport(null);
-    }
-  };
-
-
-  const handleClose = () => {
-    setShowBusinessUnitModal(false);
-  };
-
   return (
-    <>
-      { isWFMSelected && (
-        <Modal open={showBusinessUnitModal} onClose={() => { return; }} >
-          <BusinessUnitModal
-            handleClose={handleClose}
-            handleExport={handleExport}
-          />
-        </Modal>
-      )}
-      <Button onClick={handleClick} disabled={disabled}>
-        <ExcelExport ref={_export}/>
-        Export Template Options
-      </Button>
-    </>
+    <Button onClick={handleExport} disabled={disabled}>
+      <ExcelExport ref={_export}/>
+      Export Template Options
+    </Button>
   );
 };
 

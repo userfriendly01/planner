@@ -31,7 +31,10 @@ import {
   FIELDS,
   isDidUser
 } from "../BulkTemplates";
-import { AppState } from "globals";
+import {
+  AppState,
+  Worker
+} from "globals";
 
 const rejectPromise = (error: string, rowNumber: number) => {
   return Promise.reject(JSON.stringify({
@@ -80,25 +83,25 @@ const processCreateTritonUser = async (row: any, state: any) => {
 const processCreateCalabrioUser = async (row: any, state: any) => {
   console.warn("****CALABRIO RECORD PROCESSING for", row);
   const rowNumber = row.rowNumber;
-  await checkConflictingCalabrioUsers(row, rowNumber, state.calabrioContext.users);
-  const existingTritonWorker = state.workerContext.workers.find((w:any) => w.attributes?.n_number && w.attributes.n_number === row.attributes.n_number);
-  const acdId = row.acdId || existingTritonWorker?.sid || undefined;
-  if(!acdId){
-    return rejectPromise(`Failed to create Calabrio user for row ${rowNumber}. Missing ACD Id, validate this user already exists in Triton`, rowNumber);
-  }
-  const body: any = {};
-
-  body.acdId = acdId;
-  body.adLogin = `LM\\${row.attributes.n_number}`;
-  body.email = row.attributes.email;
-  body.firstName = row.attributes.emp_first_name;
-  body.lastName = row.attributes.emp_last_name;
-  body.groupId = row.groupId;
-  body.timeZone = row.timeZone;
-  body.roles = row.roles;
-  body.scope = row.scope;
-
   try {
+    await checkConflictingCalabrioUsers(row, rowNumber, state.calabrioContext.users);
+    const existingTritonWorker = state.workerContext.workers.find((w:any) => w.attributes?.n_number && w.attributes.n_number === row.attributes.n_number);
+    const acdId = row.acdId || existingTritonWorker?.sid || undefined;
+    if(!acdId){
+      return rejectPromise(`Failed to create Calabrio user for row ${rowNumber}. Missing ACD Id, validate this user already exists in Triton`, rowNumber);
+    }
+    const body: any = {};
+
+    body.acdId = acdId;
+    body.adLogin = `LM\\${row.attributes.n_number}`;
+    body.email = row.attributes.email;
+    body.firstName = row.attributes.emp_first_name;
+    body.lastName = row.attributes.emp_last_name;
+    body.groupId = row.groupId;
+    body.timeZone = row.timeZone;
+    body.roles = row.roles;
+    body.scope = row.scope;
+
     await createCalabrioUser(body);
     console.log(`User created in Calabrio for ${row.attributes.n_number} for row ${rowNumber}`);
     return Promise.resolve(`User created in Calabrio for ${row.attributes.n_number} for row ${rowNumber}`);
@@ -156,10 +159,16 @@ const processWFMCreateUser = async (row: any, state: any) => {
 
     // completely optional
     body.OptionalColumns = row.wfmOptionalColumns;
-
-    await createCalabrioWFMPerson(body);
-    console.log(`Person created in Calabrio WFM for ${row.attributes.n_number} for row ${rowNumber}`);
-    return Promise.resolve(`Person created in Calabrio WFM for ${row.attributes.n_number} for row ${rowNumber}`);
+    const environment = state.userContext.pingIdentity.environment;
+    if(environment === "production"){
+      const result = await createCalabrioWFMPerson(body);
+      row.Id = result?.data?.PersonId
+      console.log(`Person created in Calabrio WFM for ${row.attributes.n_number} for row ${rowNumber}`);
+      return Promise.resolve(`Person created in Calabrio WFM for ${row.attributes.n_number} for row ${rowNumber}`);
+    } else {
+      console.log(`No NP environment for WFM. WFM user not created for ${row.attributes.n_number} for row ${rowNumber}`, body);
+      return Promise.resolve(`No NP environment for WFM. WFM user not created for ${row.attributes.n_number} for row ${rowNumber}`);
+    }
   } catch(err) {
     let errorMessage;
     if (err?.response?.data && err?.response?.data?.exception === "com.netflix.zuul.exception.ZuulException") {
@@ -248,11 +257,11 @@ const processUpdateWorkerAttribute = async (row: any, template: Template, state:
       try {
         body[location[0]] = {
           ...parentObject,
-          [location[1]] : {
+          [location[1]]: {
             ...nestedObject,
             ...newAttribute
           }
-        }
+        };
       } catch(err){
         return rejectPromise(`Error thrown when location is array ${err.message}`, rowNumber);
       }
@@ -330,6 +339,61 @@ const processUpdateManager = async (row: any, template: Template, state: any) =>
     return Promise.resolve(`${userNNumber} - Manager & Calabrio Team updated for row ${rowNumber}`);
   } catch(err){
     const errorMessage = `Failed to update Manager and Calabrio Team for user for row ${rowNumber}. ${formatErrorMessage(err)}`;
+    console.error(errorMessage, err);
+    return rejectPromise(errorMessage, rowNumber);
+  }
+};
+
+const processUpdateDefaultSkills = async (row: any, template: Template, state: any) => {
+  const rowNumber = row.rowNumber;
+  const workerSid = row.workerSid;
+  const value = template.data.value;
+  const option = template.data.option;
+  const body: any = {};
+  let updatedDefaultSkills: any = {};
+
+  if (option.value === "OVERRIDE"){
+    updatedDefaultSkills = value;
+  } else if ( option.value === "ADD"){
+    const currentSkillLevels = row.attributes.default_skills.levels;
+    const currentSkills = row.attributes.default_skills.skills;
+
+    const newSkills = value.skills.filter( (s: any) => !currentSkills.includes(s));
+    let newSkillLevels: any = {
+      ...currentSkillLevels
+    };
+
+    if (value.levels) {
+      newSkillLevels = {
+        ...newSkillLevels,
+        ...value.levels
+      };
+    }
+
+    updatedDefaultSkills = {
+      levels: newSkillLevels,
+      skills: [...currentSkills, ...newSkills]
+    };
+  } else if(option.value === "DELETE"){
+    const skillToDelete = value.skills[0];
+    const currentSkills = row.attributes.default_skills;
+
+    updatedDefaultSkills.skills = currentSkills.skills.filter( (s: any) => s !== skillToDelete );
+    updatedDefaultSkills.levels = {};
+    for( const skillLevel in currentSkills.levels){
+      if(skillLevel !== skillToDelete){
+        updatedDefaultSkills.levels[skillLevel] = currentSkills.levels[skillLevel];
+      }
+    }
+  }
+
+  body.attributes = { "default_skills": updatedDefaultSkills };
+  console.log("**** UPDATE DEFAULT SKILLS RECORD PROCESSING", row, body);
+  try {
+    await updateUser(workerSid, body);
+    return Promise.resolve(`${workerSid} - Default Skills updated for row ${rowNumber}`);
+  } catch(err){
+    const errorMessage = `Failed to update Default Skills for row ${rowNumber}. ${formatErrorMessage(err)}`;
     console.error(errorMessage, err);
     return rejectPromise(errorMessage, rowNumber);
   }
@@ -457,6 +521,18 @@ export const getUpdateTemplates = (state: any): Templates => {
       data: {},
       processFunction: (row: any, template: Template) => processUpdateManager(row, template, state),
       stateUpdateFunctions: [updateTritonUserState, updateCalabrioUserState],
+      multiRunDependencies: null,
+      validationConcurrencyLimit: 500,
+      processingConcurrencyLimit: 5,
+      fields: [
+        FIELDS.N_NUMBER_UPDATE
+      ]
+    },
+    UPDATE_DEFAULT_SKILLS: {
+      name: "UPDATE_DEFAULT_SKILLS",
+      data: {},
+      processFunction: (row: any, template: Template) => processUpdateDefaultSkills(row, template, state),
+      stateUpdateFunctions: [updateTritonUserState],
       multiRunDependencies: null,
       validationConcurrencyLimit: 500,
       processingConcurrencyLimit: 5,

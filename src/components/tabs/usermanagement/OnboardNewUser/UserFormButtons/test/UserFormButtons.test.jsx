@@ -961,7 +961,10 @@ describe("<UserFormButtons />", () => {
                 });
                 expect(mockDispatch.mock.calls[3][0]).toEqual({
                   type: "updateWfmOrg",
-                  payload: ["newstateyay!"]
+                  payload: {
+                    org: ["newstateyay!"],
+                    errors: []
+                  }
                 });
                 jest.runAllTimers();
                 expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
@@ -1078,7 +1081,10 @@ describe("<UserFormButtons />", () => {
                 });
                 expect(mockDispatch.mock.calls[3][0]).toEqual({
                   type: "updateWfmOrg",
-                  payload: ["newstateyay!"]
+                  payload: {
+                    org: ["newstateyay!"],
+                    errors: []
+                  }
                 });
                 jest.runAllTimers();
                 expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
@@ -2099,7 +2105,10 @@ describe("<UserFormButtons />", () => {
   
                 expect(mockDispatch.mock.calls[1][0]).toEqual({
                   type: "updateWfmOrg",
-                  payload: ["newstateyay!"]
+                  payload: {
+                    org: ["newstateyay!"],
+                    errors: []
+                  }
                 });
                 jest.runAllTimers();
                 expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
@@ -2182,7 +2191,10 @@ describe("<UserFormButtons />", () => {
                   });
                   expect(mockDispatch.mock.calls[1][0]).toEqual({
                     type: "updateWfmOrg",
-                    payload: ["newstateyay!"]
+                    payload: {
+                      org: ["newstateyay!"],
+                      errors: []
+                    }
                   });
                   jest.runAllTimers();
                   expect(mockUpdateLoading).toHaveBeenCalledTimes(2);

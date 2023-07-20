@@ -50,7 +50,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
     createProfile(payload).then(() => {
       updateLoading({
         ...loading,
-        overlayMessage: `Successfully created ${form.profileName.value}`,
+        overlayMessage: `Successfully created profile ${form.profileName.value}. Please notify the data office of this change.`,
         saveStatus: ModalOverlayStatuses.SUCCESS,
         saveProfile: true
       });
@@ -63,7 +63,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
         setForm({
           type: profileEntryFormActions.RESET_FORM
         });
-      }, timeouts.MODAL_OVERLAY);
+      }, timeouts.MODAL_OVERLAY_ATTENTION);
     }).catch(() => {
       updateLoading({
         ...loading,

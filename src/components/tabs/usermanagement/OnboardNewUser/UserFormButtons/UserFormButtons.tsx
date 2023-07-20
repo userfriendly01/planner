@@ -210,11 +210,14 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
             const res = await createCalabrioWFMPerson(wfmBody);
             dispatch({
               type: "updateWfmOrg",
-              payload: addWorkerToOrg({
+              payload: {
+                org: addWorkerToOrg({
                 ...form.calabrio_wfm,
                 Id: res.data.personId,
                 ParentTeam: form.calabrio_wfm.TeamId
-              }, state)
+              }, state),
+                errors: []
+              }
             });
             try {
               await wfmActivateExternalLogon({ workerNNumbers: [form.calabrio_wfm.EmploymentNumber] })
@@ -428,11 +431,14 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
           const res = await createCalabrioWFMPerson(wfmBody);
           dispatch({
             type: "updateWfmOrg",
-            payload: addWorkerToOrg({
-              ...form.calabrio_wfm,
-              Id: res.data.personId,
-              ParentTeam: form.calabrio_wfm.TeamId
-            }, state)
+            payload: {
+              org: addWorkerToOrg({
+                ...form.calabrio_wfm,
+                Id: res.data.personId,
+                ParentTeam: form.calabrio_wfm.TeamId
+              }, state),
+              errors: []
+            }
           });
           try {
             await wfmActivateExternalLogon({ workerNNumbers: [form.calabrio_wfm.EmploymentNumber] })
@@ -474,7 +480,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
   const isUserFormButtonEnabled = form.formMode === formModes.INSERT
     ? isTritonUserValid(form, worker, forwardToToggle)
-    : (isFormUpdated(form) || form.discrepancies.length > 0) && isTritonUserValid(form, worker, forwardToToggle);
+    : (isFormUpdated(form) || form.discrepancies.length > 0 || form.calabrio_wfm.updated) && isTritonUserValid(form, worker, forwardToToggle);
 
   const handleFormOnClick = () => {
     const formErrors: any = identifyFormErrors(form);

@@ -24,6 +24,14 @@ export const ProgressBarFiller = styled.div<{progress: string}>`
   border-radius: inherit;
 `;
 
+export const CenteredDiv = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 30px;
+  font-size: 25px;
+`;
+
 export const ModalWrapper = styled(Paper)<{position?: string}>`
   align-items: center;
   display: flex;
@@ -97,12 +105,12 @@ export const SelectionWrapper = styled.div`
 `;
 
 
-export const UpdateWrapper = styled.div`
+export const UpdateWrapper = styled.div<{adjustibleHeight?: boolean}>`
   display: flex;
   width: 800px;
   align-items: center;
   justify-content: space-between;
-  height: 60px;
+  height: ${props => props.adjustibleHeight? "auto": "60px"};
   margin: 0px 50px 0px 150px;
 `;
 
@@ -122,4 +130,9 @@ export const Button = styled(StyledButton)<{ styles?: any }>`
   height: 50px;
   font-weight: bold;
   width: ${props => props.styles && props.styles.width ? props.styles.width : "250px"};
+`;
+
+export const SkillSelectorContainer = styled.div`
+  margin-left: 50px;
+  max-width: 300px;
 `;

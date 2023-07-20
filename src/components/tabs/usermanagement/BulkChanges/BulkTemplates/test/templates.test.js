@@ -14,7 +14,6 @@ import {
 } from "services";
 import { initialTestState } from "testUtils";
 
-
 const createTemplates = getCreateTemplates(initialTestState);
 const updateTemplates = getUpdateTemplates(initialTestState);
 
@@ -296,12 +295,31 @@ describe("CREATE_CALABRIO_WFM_PERSON", () => {
       }
     });
   });
-  describe("createCalabrioWFMPerson succeeds", () => {
+  describe("environment is not production", () => {
     beforeEach(() => createCalabrioWFMPerson.mockResolvedValue("yay"));
     test("should resolve", async () => {
       row.attributes.email = "e.mail@lm.com";
       row.attributes.n_number = "n0263445";
       const result = await createWFMProcessFunction(row, initialTestState);
+      expect(createCalabrioWFMPerson).toHaveBeenCalledTimes(0);
+      expect(result).toEqual("No NP environment for WFM. WFM user not created for n0263445 for row 10");
+    });
+  });
+  describe("createCalabrioWFMPerson succeeds", () => {
+    beforeEach(() => createCalabrioWFMPerson.mockResolvedValue("yay"));
+    test("should resolve", async () => {
+      row.attributes.email = "e.mail@lm.com";
+      row.attributes.n_number = "n0263445";
+      const createTemplates = getCreateTemplates({
+        ...initialTestState,
+        userContext: {
+          pingIdentity: {
+            environment: "production"
+          }
+        }
+      });
+
+      const result = await createTemplates.CREATE_CALABRIO_WFM_PERSON.processFunction(row);
       expect(createCalabrioWFMPerson).toHaveBeenCalledTimes(1);
       expect(createCalabrioWFMPerson).toHaveBeenCalledWith({
         Email: "e.mail@lm.com",
@@ -943,6 +961,185 @@ describe("UPDATE_USERS_MANAGER", () => {
         expect(err).toBe(JSON.stringify({
           rowNumber: 4,
           error: "Errors thrown for row 4. boo"
+        }));
+      }
+    });
+  });
+});
+describe("UPDATE_DEFAULT_SKILLS", () => {
+  const updateDefaultSkillsProcessFunction = updateTemplates.UPDATE_DEFAULT_SKILLS.processFunction;
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+  describe("updateUser is successful", () => {
+    beforeEach(() => updateUser.mockResolvedValue("Wowee!"));
+    describe("add skill", () => {
+      const template = {
+        data: {
+          key: "default_skills",
+          value: {
+            skills: ["skillz"],
+            levels: {
+              skillz: 1
+            }
+          },
+          option: {
+            label: "Add Skill",
+            value: "ADD"
+          }
+        }
+      };
+      const row = {
+        rowNumber: 4,
+        workerSid: "WK1234",
+        attributes: {
+          default_skills: {
+            skills: ["currentSkill"],
+            levels: {}
+          }
+        }
+      };
+      test("should call updateUser with correct body", async () => {
+        const result = await updateDefaultSkillsProcessFunction(row, template);
+        expect(updateUser).toHaveBeenCalledTimes(1);
+        expect(updateUser).toHaveBeenCalledWith("WK1234", {
+          attributes: {
+            default_skills: {
+              levels: {
+                skillz: 1
+              },
+              skills: ["currentSkill", "skillz"]
+            }
+          }
+        });
+        expect(result).toBe("WK1234 - Default Skills updated for row 4");
+      });
+    });
+    describe("override skill", () => {
+      const template = {
+        data: {
+          key: "default_skills",
+          value: {
+            skills: ["skillz"],
+            levels: {
+              skillz: 1
+            }
+          },
+          option: {
+            label: "Override Skill",
+            value: "OVERRIDE"
+          }
+        }
+      };
+      const row = {
+        rowNumber: 4,
+        workerSid: "WK1234",
+        attributes: {
+          default_skills: {
+            skills: ["currentSkill"],
+            levels: {}
+          }
+        }
+      };
+      test("should call updateUser with correct body", async () => {
+        const result = await updateDefaultSkillsProcessFunction(row, template);
+        expect(updateUser).toHaveBeenCalledTimes(1);
+        expect(updateUser).toHaveBeenCalledWith("WK1234", {
+          attributes: {
+            default_skills: {
+              levels: {
+                skillz: 1
+              },
+              skills: ["skillz"]
+            }
+          }
+        });
+        expect(result).toBe("WK1234 - Default Skills updated for row 4");
+      });
+    });
+    describe("delete skill", () => {
+      const template = {
+        data: {
+          key: "default_skills",
+          value: {
+            skills: ["deleteThis"],
+            levels: {
+              deleteThis: 1
+            }
+          },
+          option: {
+            label: "Delete Skill",
+            value: "DELETE"
+          }
+        }
+      };
+      const row = {
+        rowNumber: 4,
+        workerSid: "WK1234",
+        attributes: {
+          default_skills: {
+            skills: ["currentSkill", "deleteThis"],
+            levels: {
+              deleteThis: 1,
+              currentSkill: 4
+            }
+          }
+        }
+      };
+      test("should call updateUser with correct body", async () => {
+        const result = await updateDefaultSkillsProcessFunction(row, template);
+        expect(updateUser).toHaveBeenCalledTimes(1);
+        expect(updateUser).toHaveBeenCalledWith("WK1234", {
+          attributes: {
+            default_skills: {
+              levels: {
+                currentSkill: 4
+              },
+              skills: ["currentSkill"]
+            }
+          }
+        });
+        expect(result).toBe("WK1234 - Default Skills updated for row 4");
+      });
+    });
+  });
+  describe("updateUser throws an error", () => {
+    beforeEach(() => updateUser.mockRejectedValue("Aww"));
+    const template = {
+      data: {
+        key: "default_skills",
+        value: {
+          skills: ["deleteThis"],
+          levels: {
+            deleteThis: 1
+          }
+        },
+        option: {
+          label: "Delete Skill",
+          value: "DELETE"
+        }
+      }
+    };
+    const row = {
+      rowNumber: 4,
+      workerSid: "WK1234",
+      attributes: {
+        default_skills: {
+          skills: ["currentSkill", "deleteThis"],
+          levels: {
+            deleteThis: 1
+          }
+        }
+      }
+    };
+    test("should reject", async () => {
+      try {
+        await updateDefaultSkillsProcessFunction(row, template);
+      } catch(err) {
+        expect(updateUser).toHaveBeenCalledTimes(1);
+        expect(err).toBe(JSON.stringify({
+          rowNumber: 4,
+          error: "Failed to update Default Skills for row 4. Aww"
         }));
       }
     });

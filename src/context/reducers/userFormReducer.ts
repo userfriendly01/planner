@@ -556,7 +556,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
       const managers = action.payload.managers;
       return {
         ...state,
-        formMode: formModes.UPDATE,
+        formMode: action.payload.formMode,
         nNumber: {
           ...state.nNumber,
           value: worker.attributes.n_number
@@ -617,10 +617,10 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
       };
     }
     case userFormActions.SET_UPDATE_QM_FORM_STATE: {
-      const user = action.payload;
+      const user = action.payload.user;
       return {
         ...state,
-        formMode: formModes.UPDATE,
+        formMode: action.payload.formMode,
         calabrio_qm: {
           ...state.calabrio_qm,
           userFound: true,
@@ -639,27 +639,42 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
       user.Roles?.forEach((ur: any) => {
         const availableRole = getWfmOptions(appState)?.Roles.find((r: any) => r.Id === ur.RoleId);
         if(availableRole){
-          Roles.push(availableRole);
+          Roles.push({
+            ...availableRole,
+            value: availableRole.Id,
+            label: availableRole.Name
+          });
         }
       });
+
       user.PersonSkills?.forEach((us: any) => {
-        const availableSkill = getWfmOptions(appState)?.Skills.find((s: any) => s.Id === us.SkillId);
+        const availableSkill = getWfmOptions(appState)?.Skills?.find((s: any) => s.Id === us.SkillId);
         if(availableSkill){
-          PersonSkills.push(availableSkill);
+          PersonSkills.push({
+            ...availableSkill,
+            label: availableSkill.Name,
+            value: availableSkill.Id
+          });
         }
       });
+
       if(user.OptionalColumns){
         Object.keys(user.OptionalColumns).forEach((id: string) => {
           const optionalColumn = getWfmOptions(appState)?.Optional_Columns.find((o: any) => o.Id === id);
           if(optionalColumn){
-            OptionalColumns.push(optionalColumn);
+            OptionalColumns.push({
+              ...optionalColumn,
+              value: optionalColumn.Id,
+              label: optionalColumn.Name,
+              columnValue: user.OptionalColumns[id]
+            });
           }
         });
       }
 
       return {
         ...state,
-        formMode: formModes.UPDATE,
+        formMode: action.payload.formMode,
         calabrio_wfm: {
           ...state.calabrio_wfm,
           userFound: true,
@@ -872,6 +887,8 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
         triton: {
           ...state.triton,
           userFound: true,
+          sid: worker.sid,
+          attributes: worker.attributes,
           defaultSkills: {
             ...state.triton.defaultSkills,
             ...getValidSkillsObject(worker.attributes.default_skills)
@@ -919,7 +936,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
             ...state.triton.selfServiceInd,
             value: worker.selfServiceInd || false
           }
-        }
+        },
       };
     }
     case userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE: {
@@ -1052,7 +1069,8 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
           ...state,
           [system]: {
             ...initialUserFormState[system],
-            userFound: isFound
+            userFound: isFound,
+            updated: true
           }
         };
       } else {

@@ -19,7 +19,8 @@ export const formModes: FormModes = {
 
 export const timeouts = {
   AUTH: 3600 * 1000,
-  MODAL_OVERLAY: 2000
+  MODAL_OVERLAY: 2000,
+  MODAL_OVERLAY_ATTENTION: 5000
 };
 
 export const resetResponses = {
@@ -102,6 +103,10 @@ export const profileTableColumnHeader = [
   {
     COLUMN_NAME: "Access Group",
     TOOLTIP: "Access Group Name for BPO profiles"
+  },
+  {
+    COLUMN_NAME: "Operating Unit",
+    TOOLTIP: "Column to show which OU a profile is assigned to"
   }
 ];
 
@@ -122,6 +127,7 @@ export const apiPaths = {
   EMPLOYEE_LOOKUP: (nNumber: string): string => `${SERVICE_BASE_URI}/employeelookup/${nNumber}`,
   FLASH_MESSAGE: `${SERVICE_BASE_URI}/flashmessage`,
   GET_APPLICATIONS: `${SERVICE_BASE_URI}/applications`,
+  GET_CALABRIO_WFM_BUS: `${SERVICE_BASE_URI}/calabrio-api/wfm/Business Units`,
   GET_CALABRIO_WFM_ORG: `${SERVICE_BASE_URI}/calabrio-api/wfm/org/people`,
   GET_CALABRIO_WFM_OPTIONS: `${SERVICE_BASE_URI}/calabrio-api/wfm/org/options`,
   GET_CALABRIO_USERS: `${SERVICE_BASE_URI}/calabrio-get-agents`,

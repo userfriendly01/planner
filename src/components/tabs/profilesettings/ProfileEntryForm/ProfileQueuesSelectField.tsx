@@ -7,6 +7,7 @@ import {
   AggregateQueue,
   Skill
 } from "globals";
+import { Tooltip } from "@mui/material";
 import {
   IconButtonWrapper,
   ProfileDropdownControlWrapper,
@@ -109,8 +110,16 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
         {transferQueues.map((queue: Skill, index: number) => {
           return (
             // @ts-ignore
+            // Aggregate queues have a negative ID (ctmSkillId) in order not to clash with single transfer queues
             <ProfileDropdownRow highlightOnHover={true} key={`queue-row-${index}`}>
-              <ProfileDropdownRowItem>{queue.ctmSkillDisplayName}</ProfileDropdownRowItem>
+              {queue.ctmSkillId < 0 ?
+                <Tooltip
+                  title={"Aggregate Queue"}
+                  placement={"bottom"}
+                >
+                  <ProfileDropdownRowItem>{queue.ctmSkillDisplayName}</ProfileDropdownRowItem>
+                </Tooltip>
+                : <ProfileDropdownRowItem>{queue.ctmSkillDisplayName}</ProfileDropdownRowItem>}
               <ProfileDropdownRowItem>
                 <IconButtonWrapper onClick={() => removeProfileQueueClicked(queue)} data-testid="delete-queue-button">
                   <Delete fontSize="inherit"/>
