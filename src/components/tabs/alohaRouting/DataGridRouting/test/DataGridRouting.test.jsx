@@ -435,7 +435,7 @@ describe("<DataGridRouting />", ()=>{
       renderDataGridRouting();
       const handleClose = CustomToast.mock.calls[0][0].onClose;
       act(()=>{ handleClose(true); });
-      expect(CustomToast.mock.calls[1][0].open).toBe(true);
+      expect(CustomToast.mock.calls[2][0].open).toBe(true);
     });
     test("Simulate openAdvanceSearchModal applyFilter with no filter", ()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
