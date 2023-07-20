@@ -20,6 +20,8 @@ const ExportButton = (props: ExportTritonUserProps) => {
     });
     workerObj.roles = worker.attributes?.roles?.toString();
     workerObj.routing_team = worker.attributes?.routing?.team;
+    const callerStates = worker.attributes?.routing?.callerStates;
+    workerObj.routing_caller_states = callerStates ? callerStates.join(", ") : "";
     workerObj.current_skills = formatWorkerAttributeSkillsToString(worker.attributes?.routing).toString();
     workerObj.default_skills = formatWorkerAttributeSkillsToString(worker.attributes?.default_skills).toString();
     workerObj.disabled_skills = formatWorkerAttributeSkillsToString(worker.attributes?.disabled_skills).toString();
@@ -86,6 +88,11 @@ const ExportButton = (props: ExportTritonUserProps) => {
       {
         field: "routing_team",
         title: "Routing Team",
+        width: "100px"
+      },
+      {
+        field: "routing_caller_states",
+        title: "Routing Caller States",
         width: "100px"
       },
       {

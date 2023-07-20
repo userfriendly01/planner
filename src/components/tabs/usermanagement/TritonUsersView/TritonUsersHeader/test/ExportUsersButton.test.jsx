@@ -32,15 +32,16 @@ const fullWorker = {
     routing: {
       team: "Kitties",
       skills: ["psul1", "466"],
-      levels: {"466": 1}
+      levels: { "466": 1 },
+      callerStates: ["boo"]
     },
     default_skills: {
       skills: ["dsul1", "4d66"],
-      levels: {"4d66": 1}
+      levels: { "4d66": 1 }
     },
     disabled_skills: {
       skills: ["disul1", "4di66"],
-      levels: {"4di66": 1}
+      levels: { "4di66": 1 }
     }
   }
 }
@@ -94,14 +95,16 @@ describe("ExportUsersButton", () => {
         "current_skills": "psul1,466 - 1",
         "default_skills": "dsul1,4d66 - 1",
         "disabled_skills": "disul1,4di66 - 1",
+        "routing_caller_states": "boo",
         "routing_team": "Kitties",
         "roles": "agent",
         routing: {
           team: "Kitties",
           skills: ["psul1", "466"],
-          levels: {"466": 1}
-        },
-      }], 
+          levels: { "466": 1 },
+          callerStates: ["boo"]
+        }
+      }],
       [
         {
           field: "sid",
@@ -156,6 +159,11 @@ describe("ExportUsersButton", () => {
         {
           field: "routing_team",
           title: "Routing Team",
+          width: "100px"
+        },
+        {
+          field: "routing_caller_states",
+          title: "Routing Caller States",
           width: "100px"
         },
         {
@@ -220,14 +228,16 @@ describe("ExportUsersButton", () => {
         "current_skills": "psul1,466 - 1",
         "default_skills": "dsul1,4d66 - 1",
         "disabled_skills": "disul1,4di66 - 1",
+        "routing_caller_states": "boo",
         "routing_team": "Kitties",
         "roles": "agent",
         routing: {
           team: "Kitties",
           skills: ["psul1", "466"],
-          levels: {"466": 1}
-        },
-      }], 
+          levels: { "466": 1 },
+          callerStates: ["boo"]
+        }
+      }],
       [
         {
           field: "sid",
@@ -282,6 +292,11 @@ describe("ExportUsersButton", () => {
         {
           field: "routing_team",
           title: "Routing Team",
+          width: "100px"
+        },
+        {
+          field: "routing_caller_states",
+          title: "Routing Caller States",
           width: "100px"
         },
         {

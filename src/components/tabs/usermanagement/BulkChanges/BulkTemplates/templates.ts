@@ -162,7 +162,7 @@ const processWFMCreateUser = async (row: any, state: any) => {
     const environment = state.userContext.pingIdentity.environment;
     if(environment === "production"){
       const result = await createCalabrioWFMPerson(body);
-      row.Id = result?.data?.PersonId
+      row.Id = result?.data?.PersonId;
       console.log(`Person created in Calabrio WFM for ${row.attributes.n_number} for row ${rowNumber}`);
       return Promise.resolve(`Person created in Calabrio WFM for ${row.attributes.n_number} for row ${rowNumber}`);
     } else {
@@ -236,7 +236,6 @@ const processUpdateWorkerAttribute = async (row: any, template: Template, state:
   const key = template.data.key;
   const value = template.data.value;
   const location = template.data.location;
-
   const newAttribute = { [key]: value };
   let body: any = {};
 
@@ -251,6 +250,11 @@ const processUpdateWorkerAttribute = async (row: any, template: Template, state:
     if(typeof location === "string"){
       body[location] = newAttribute;
     } else {
+      if (key === "callerStates") {
+        const callerStatesArray = value.split(",");
+        newAttribute[key] = callerStatesArray.map((state: string) => state.trim());
+      }
+
       //Allowing for addition of routing object nested within attributes on update.  Will only allow for 2 items being added (attributes and a nested object)
       const parentObject: any = row[location[0]] || {}; //attributes
       const nestedObject: any = row[location[0]] && row[location[0]][location[1]] || {};
