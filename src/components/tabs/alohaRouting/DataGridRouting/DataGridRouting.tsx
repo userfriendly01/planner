@@ -285,16 +285,16 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
     }));
   };
 
-  const openEditModal = (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallRoutingDb, message?: string, deleteRow?: boolean,type?: boolean) => {
+  const openEditModal = (flag: boolean, isSubmitted?: boolean, rows?: CctSharedCallRoutingDb[], message?: string, deleteRow?: boolean,type?: boolean) => {
     let newData;
     if(type){
-      cloneRule(flag,row);
+      cloneRule(flag,rows && rows[0]);
     }
     else if (!flag && isSubmitted) {
-      if(deleteRow) {
-        newData = state.data.filter(x=> x.skey !== row.skey);
-      } else {
-        newData = row ? state.data.map(x=> x.skey === row.skey ? row : x) : undefined;
+      const rowIds = rows.map(x => x.id);
+      newData = state.data.filter(x=> !rowIds.includes(x.id));
+      if(!deleteRow) {
+        newData.concat(rows);
       }
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
@@ -307,7 +307,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
     setState((currentDataRouting: RoutingStateVariables)=>({
       ...currentDataRouting,
       isEditModalOpen: flag,
-      selectedRow: row
+      selectedRow: rows[0]
     }));
   };
 
@@ -327,7 +327,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
     setSelectedList(selectedRowsData);
 
   };
-  RoutingGridColumnDef[0].renderCell = (params: GridRenderCellParams<CctSharedCallRoutingDb>) => (<a href="#" onClick={() => openEditModal(true, false, params.row)}>{`${params.value}`}</a>);
+  RoutingGridColumnDef[0].renderCell = (params: GridRenderCellParams<CctSharedCallRoutingDb>) => (<a href="#" onClick={() => openEditModal(true, false, [params.row])}>{`${params.value}`}</a>);
 
   return (
     <div>
@@ -397,6 +397,8 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
         isOpen={state.isBulkEditModalOpen}
         rows={selectedList}
         onClose={handleMultiEditOnClose}
+        openEditModal={openEditModal}
+        accessToken={accessToken}
       />
     </div>
   );

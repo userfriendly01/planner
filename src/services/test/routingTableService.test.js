@@ -220,7 +220,7 @@ describe("routingTableService",()=>{
     });
     test("Success",async()=>{
       const response = await batchDelete(batchDeleteItems,"1233-3245","http://localhost:3000");
-      expect(response).toEqual(batchDeleteResponse);
+      expect(response).toBe(batchDeleteResponse);
     });
     test("Error",async()=>{
       jest.spyOn(JSON, "stringify").mockImplementation(()=>{
