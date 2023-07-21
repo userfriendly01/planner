@@ -105,7 +105,10 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       primary_dept_name: form.nNumber.nNumberFetchedUser.departmentName,
       primary_dept_number: form.nNumber.nNumberFetchedUser.departmentNumber,
       profile_id: form.triton.profileId.value,
-      unique_id: form.nNumber.value.toLowerCase()
+      unique_id: form.nNumber.value.toLowerCase(),
+      routing:{
+        team: form.routing.team
+      }
     };
 
     const calabrioAttributes = {
@@ -315,6 +318,9 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         skills: form.triton.defaultSkills.skills,
         levels: form.triton.defaultSkills.levels
       };
+    }
+    if(form.routing.team.updated){
+      attributes.routing.team = form.routing.team
     }
     if(nNumberFetchedUser){
       nNumberFetchedUser.departmentNumber ? attributes.department_id = nNumberFetchedUser.departmentNumber : null;

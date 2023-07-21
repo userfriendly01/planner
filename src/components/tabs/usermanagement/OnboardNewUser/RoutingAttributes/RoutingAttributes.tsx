@@ -13,7 +13,7 @@ const RoutingAttributes = ():JSX.Element =>{
 
   const setForm = useFormDispatch();
   const form = useFormState();
-  const dropDownOptions :string[]= [];
+  const dropDownOptions :string[]= ["Sample1","Sample2"];
   const handleChange=(event:any)=>{
     setForm({
       type: userFormActions.ROUTING_TEAM,
@@ -37,7 +37,7 @@ const RoutingAttributes = ():JSX.Element =>{
       <SelectContainer
           name= {"Routing Team"}
           label={"Routing Team"}
-          value= {form.triton.routingTeam.value}
+          value= {form.routing.team}
           onChange={handleChange}
           dropDownOptions={dropDownOptions}
           required = {false}

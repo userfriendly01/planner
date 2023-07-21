@@ -82,6 +82,10 @@ export const initialUserFormState: UserFormState = {
     updated: false,
     nNumberFetchedUser: null
   },
+  routing: {
+    team: "",
+    updated: false
+  },
   triton: {
     userFound: false,
     alternateDid: {
@@ -146,10 +150,6 @@ export const initialUserFormState: UserFormState = {
     userPreviouslyAdded: false,
     zeroOutEnabled: {
       value: false,
-      updated: false
-    },
-    routingTeam: {
-      value: "",
       updated: false
     }
   },
@@ -417,16 +417,12 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
       const routingTeam = action.payload.routingTeamName;
       return {
         ...state,
-        triton: {
-          ...state.triton,
-          routingTeam: {
-            value: routingTeam,
+          routing: {
+            team: routingTeam,
             updated: true
           }
-        }
-      };
-
-    }
+        };
+      }
     case userFormActions.SET_BLUR_ON_FIELD: {
       const field = action.payload.field;
       const system = action.payload.system;
