@@ -334,6 +334,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     const levels = worker.attributes?.routing?.levels ? worker.attributes.routing.levels : {};
     if ((form.triton.zeroOutEnabled.updated || form.triton.profileId.updated) && form.triton.zeroOutEnabled.value) {
       attributes.routing = {
+        ...worker.attributes.routing,
         skills: [
           ...nonOverflowSkills,
           overflowSkill
@@ -344,6 +345,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     // remove overflow skill
     if (!form.triton.zeroOutEnabled.value && workerHasOverFlowSkill(worker, profiles)) {
       attributes.routing = {
+        ...worker.attributes.routing,
         skills: nonOverflowSkills,
         levels: levels
       };

@@ -26,11 +26,13 @@ const FilterButton = (props: FilterButtonProps) => {
   return (
     <div>
       <Modal onClose={() => { return; }} open={isFilterModalOpen}>
-        <FilterModal handleClose={()=>setIsFilterModalOpen(false)}
-          handleClear = {handleClearFilters}
-          tableState= {tableState}
-          setTableState={setTableState}
-        />
+        <>
+          <FilterModal handleClose={()=>setIsFilterModalOpen(false)}
+            handleClear = {handleClearFilters}
+            tableState= {tableState}
+            setTableState={setTableState}
+          />
+        </>
       </Modal>
       <StyledButton style={{
         width: "100%",
