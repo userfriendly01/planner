@@ -7,14 +7,19 @@ import React, {
 import {
   CACHE_FILTER_FLOW, getAdvanceFilter
 } from "utils";
-import { FlowAdvanceFilter } from "../AlohaFlow.Interfaces";
+import {
+  FlowAdvanceFilter, PreviewModalAction
+} from "../AlohaFlow.Interfaces";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
-import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import DeleteSweepOutlinedIcon from "@mui/icons-material/DeleteSweepOutlined";
+import EditNoteOutlinedIcon from "@mui/icons-material/EditNoteOutlined";
+import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+
 
 interface CustomFlowGridToolBarProps {
   openAddModal: (flag: boolean, isSubmitted?: boolean) => void;
-  openEditModal: (flag: boolean) =>void;
+  openPreviewModal: (flag: boolean, action: PreviewModalAction) =>void;
   openAdvanceSearchModal: (flag: boolean, advanceFilter?: FlowAdvanceFilter) => void;
   exportDataFile: ()=> void;
   applyFilter?: () => void;
@@ -23,7 +28,7 @@ interface CustomFlowGridToolBarProps {
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const CustomFlowGridToolBar = ({
-  openAddModal, openEditModal, openAdvanceSearchModal, exportDataFile, applyFilter, isAdvanceSearchOpen
+  openAddModal, openPreviewModal, openAdvanceSearchModal, exportDataFile, applyFilter, isAdvanceSearchOpen
 }:CustomFlowGridToolBarProps) =>{
   const [flowFilter, setFlowFilter] = useState<FlowAdvanceFilter>();
 
@@ -38,8 +43,14 @@ const CustomFlowGridToolBar = ({
       case "addFlow":
         openAddModal(true);
         break;
-      case "editFlow":
-        openEditModal(true);
+      case "bulkDeleteFlow":
+        openPreviewModal(true, "delete");
+        break;
+      case "bulkAddFlow":
+        openPreviewModal(true, "add");
+        break;
+      case "bulkEditFlow":
+        openPreviewModal(true, "edit");
         break;
       default:
         break;
@@ -121,10 +132,16 @@ const CustomFlowGridToolBar = ({
             displayEmpty
           >
             <MenuItem key="addFlow" value="addFlow">
-              <PlaylistAddIcon />&nbsp;&nbsp; Add Flow
+              <AddOutlinedIcon />&nbsp;&nbsp; Add Flow
             </MenuItem>
-            <MenuItem key="editFlow" value="editFlow">
-              <EditOutlinedIcon />&nbsp;&nbsp; Edit Flow
+            <MenuItem key="bulkDeleteFlow" value="bulkDeleteFlow">
+              <DeleteSweepOutlinedIcon />&nbsp;&nbsp; Multi Delete Flow
+            </MenuItem>
+            <MenuItem key="bulkAddFlow" value="bulkAddFlow">
+              <PlaylistAddIcon />&nbsp;&nbsp; Multi Add Flow
+            </MenuItem>
+            <MenuItem key="bulkEditFlow" value="bulkEditFlow">
+              <EditNoteOutlinedIcon />&nbsp;&nbsp; Multi Edit Flow
             </MenuItem>
           </Select>
         </FormControl>

@@ -27,7 +27,7 @@ import {
 } from "utils/interfaces";
 import {
   AddFlowFieldsConfigProps,
-  CctSharedCallFlowDb, FlowAdvanceFilter, FlowStateVariables
+  CctSharedCallFlowDb, FlowAdvanceFilter, FlowStateVariables, PreviewModalAction
 } from "../AlohaFlow.Interfaces";
 import {
   AddFlow, AdvanceSearchModal, CustomFlowGridToolBar, EditFlow
@@ -55,7 +55,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     fetching: true,
     selectedRow: undefined,
     isEditModalOpen: false,
-    isBulkEditModalOpen: false,
+    isPreviewModalOpen: false,
     isAddModalOpen: false,
     isAdvanceSearchModalOpen: false,
     idStart: 0,
@@ -292,10 +292,11 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     }));
   };
 
-  const openBulkEditModal = (flag: boolean) =>{
+  const openPreviewModal = (flag: boolean, action: PreviewModalAction) =>{
     setDataFlow((dataFlowProps: FlowStateVariables) => ({
       ...dataFlowProps,
-      isBulkEditModalOpen: flag
+      isPreviewModalOpen: flag,
+      previewModalAction: action
     }));
   };
 
@@ -328,10 +329,10 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     ));
   };
 
-  const handleMultiEditOnClose = () =>{
+  const handlePreviewModalOnClose = () =>{
     setDataFlow((dataFlowProps: FlowStateVariables) => ({
       ...dataFlowProps,
-      isBulkEditModalOpen: false
+      isPreviewModalOpen: false
     }));
   };
 
@@ -350,7 +351,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         <div className="data-grid-wrapper">
           <CustomFlowGridToolBar
             openAddModal={openAddModal}
-            openEditModal={openBulkEditModal}
+            openPreviewModal={openPreviewModal}
             openAdvanceSearchModal={openAdvanceSearchModal}
             exportDataFile={exportDataFile}
             applyFilter={filterRecords}
@@ -418,9 +419,10 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         severityType={alertBar.severityType}
       />
       <PreviewModal
-        isOpen={dataFlow.isBulkEditModalOpen}
+        isOpen={dataFlow.isPreviewModalOpen}
         rows={selectedList}
-        onClose={handleMultiEditOnClose}
+        onClose={handlePreviewModalOnClose}
+        action={dataFlow.previewModalAction}
       />
     </div>
   );

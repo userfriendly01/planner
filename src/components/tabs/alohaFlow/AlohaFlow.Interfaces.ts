@@ -1,5 +1,7 @@
 import { Control } from "globals";
 import { FormValidationRule } from "utils/interfaces";
+
+export type PreviewModalAction = "add" | "edit" | "delete"
 export interface FlowContent {
     callIntent?: string;
     callerType?: string;
@@ -37,7 +39,8 @@ export interface FlowStateVariables {
     fetching?: boolean;
     selectedRow?: CctSharedCallFlowDb;
     isEditModalOpen?: boolean;
-    isBulkEditModalOpen?: boolean;
+    isPreviewModalOpen?: boolean;
+    previewModalAction?: PreviewModalAction;
     isAddModalOpen?: boolean;
     isAdvanceSearchModalOpen?: boolean;
     idStart?: number;
