@@ -1452,15 +1452,12 @@ describe("userFormReducer", () => {
       const result = userFormReducer(initialUserFormState, action);
       const expectedFormState = {
         ...initialUserFormState,
-        triton: {
-          ...initialUserFormState.triton,
-          routingTeam: {
+          routing: {
             ...initialUserFormState.triton.routingTeam,
             updated: true,
-            value: "Sample1"
+            team: "Sample1"
           }
         }
-      };
       expect(result).toStrictEqual(expectedFormState);
     });
   });

@@ -37,7 +37,7 @@ const RoutingAttributes = ():JSX.Element =>{
       <SelectContainer
           name= {"Routing Team"}
           label={"Routing Team"}
-          value= {form.routing.team}
+          value= {form?.routing?.team}
           onChange={handleChange}
           dropDownOptions={dropDownOptions}
           required = {false}
