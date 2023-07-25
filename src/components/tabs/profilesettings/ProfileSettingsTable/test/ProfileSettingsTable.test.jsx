@@ -194,7 +194,7 @@ describe("<ProfileSettingsTable />", () => {
       expect(rendered.getByLabelText("Self service indicator is applicable to profiles with an id of 39 and above, but is actually set at the worker attribute level")).toBeInTheDocument();
       expect(rendered.getByLabelText("Profile Activities")).toBeInTheDocument();
       expect(rendered.getByLabelText("UI Feature: Additional transfer queues that will appear in the Triton queue ticker")).toBeInTheDocument();
-      expect(rendered.getByLabelText("Column to show which OU a profile is assigned to")).toBeInTheDocument();
+      expect(rendered.getByLabelText("Which OU a profile is assigned to")).toBeInTheDocument();
     });
 
     test("should render row data", async () => {

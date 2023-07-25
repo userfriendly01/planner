@@ -65,7 +65,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
     } else {
       return form.editDisabled && worker?.directDialNum ? true : false;
     }
-  }
+  };
 
   const handleOnBlur = (field: string, system: string) => {
     const isFieldValid = system ? form[system][field].valid : form[field].valid;

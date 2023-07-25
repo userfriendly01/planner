@@ -106,7 +106,7 @@ export const profileTableColumnHeader = [
   },
   {
     COLUMN_NAME: "Operating Unit",
-    TOOLTIP: "Column to show which OU a profile is assigned to"
+    TOOLTIP: "Which OU a profile is assigned to"
   }
 ];
 
