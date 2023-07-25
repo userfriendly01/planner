@@ -136,12 +136,12 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
                 profiles
               }
             });
-            // reset selfServiceInd value to false if set to true and then profile chnaged to value of 39 and below
+            // reset selfServiceInd value to false if set to true and then profile changed to value of 39 and below
             if(newValue.value < 39 && form.triton.selfServiceInd.value){
               setForm({ type: userFormActions.UPDATE_SELF_SERVICE_INDICATOR });
             }
           }}
-          value={profiles.find(p => p.profile_id === form.triton.profileId.value)?.profile_nme || ""}
+          value={form.triton.profileId.value ? `${profiles.find(p => p.profile_id === form.triton.profileId.value)?.profile_nme} - ${form.triton.profileId.value}` : ""}
         />
         <NNumberInput
           disabled={
