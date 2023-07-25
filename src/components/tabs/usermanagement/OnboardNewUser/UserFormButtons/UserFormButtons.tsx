@@ -319,8 +319,10 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         levels: form.triton.defaultSkills.levels
       };
     }
-    if(form.routing.team.updated){
-      attributes.routing.team = form.routing.team
+    if(form.routing.updated){
+      attributes.routing = {
+        team: form.routing.team
+      }
     }
     if(nNumberFetchedUser){
       nNumberFetchedUser.departmentNumber ? attributes.department_id = nNumberFetchedUser.departmentNumber : null;
