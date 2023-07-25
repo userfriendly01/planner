@@ -27,9 +27,10 @@ export const calabrioTenants = {
 };
 
 export const calabrioAllowedRoles = [
-  "Supervisor",
+  "Supervisor-Sync Only",
   "Agent-Sync Only",
   "No Screen",
+  "QM Supervisor",
   "QM Agent",
   "WFM_Agent_TT_Dashboards",
   "WFM_Supervisor_TT_Dashboards",
