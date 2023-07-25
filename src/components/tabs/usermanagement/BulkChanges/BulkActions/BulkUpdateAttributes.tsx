@@ -68,7 +68,7 @@ const BulkUpdateAttributes = (props: BulkUpdateProps) => {
     <UpdateWrapper>
       <Dropdown
         label="Attribute"
-        value={selectedAttribute.label ? selectedAttribute.label : ""} // 
+        value={selectedAttribute}
         options={Object.values(availableAttributes)}
         updateValue={(event: any, attribute: WorkerAttribute ) => {
           setUpdatedAttributeValue("");
