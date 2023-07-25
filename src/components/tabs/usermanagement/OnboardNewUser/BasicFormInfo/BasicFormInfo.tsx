@@ -127,7 +127,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
             margin: "10px 0px"
           }}
           onBlur={() => handleOnBlur("profileId", "triton")}
-          options={profiles.sort(sortProfilesByName).map((profile: any) => formatDropdownOption(profile.profile_id, profile.profile_nme, profile, profile.profileCallTag))}
+          options={profiles.sort(sortProfilesByName).map((profile: any) => formatDropdownOption(profile.profile_id, `${profile.profile_nme} - ${profile.profile_id}`, profile))}
           updateValue={(event: any, newValue: any) => {
             setForm({
               type: userFormActions.UPDATE_TEAM,
