@@ -52,10 +52,6 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
     if(!callTagOptions.length) {
       getCallTagOptions()
         .then((allCallTagOptions: CallTagOptions[]) => {
-          allCallTagOptions.unshift({
-            options_id: null,
-            options: null
-          });
           setCallTagOptions(allCallTagOptions);
         })
         .catch(error => console.error(error.msg));
@@ -100,14 +96,14 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   const getCallTagOptionsDropDownOptions = (optionsList: CallTagOptions[]) => {
     return optionsList.map(option => ({
       value: option.options_id,
-      label: option.options_id === null ? "" : option.options_id
+      label: option.options_id
     }));
   };
 
-  const callTagOptionsChanged = (inputCallTagOptions: { value: number; }, wrkr_tsk_info_id: number) => {
+  const callTagOptionsChanged = (inputCallTagOptions: { value: any; }, wrkr_tsk_info_id: number) => {
     const updatedCallTagsList = callTagsList.map(callTag => {
       if (callTag.wrkr_tsk_info_id === wrkr_tsk_info_id) {
-        callTag.options_id = inputCallTagOptions.value;
+        callTag.options_id = inputCallTagOptions !== null ? inputCallTagOptions.value : null;
         return callTag;
       }
       return callTag;
