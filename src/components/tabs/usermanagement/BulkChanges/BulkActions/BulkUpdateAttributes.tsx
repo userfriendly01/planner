@@ -70,7 +70,7 @@ const BulkUpdateAttributes = (props: BulkUpdateProps) => {
         label="Attribute"
         value={selectedAttribute}
         options={Object.values(availableAttributes)}
-        updateValue={(event: any, attribute: WorkerAttribute ) => {
+        updateValue={(event: any, attribute: WorkerAttribute) => {
           setUpdatedAttributeValue("");
           attribute ? setSelectedAttribute(attribute) : setSelectedAttribute({
             label: "",
