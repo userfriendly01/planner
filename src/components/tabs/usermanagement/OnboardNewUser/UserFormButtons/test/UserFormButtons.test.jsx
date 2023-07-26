@@ -126,7 +126,10 @@ const workerAttributesAfterFormValid = {
   primary_dept_name: fetchedUser.departmentName,
   primary_dept_number: fetchedUser.departmentNumber,
   profile_id: validFormOptions.profileId,
-  unique_id: validFormOptions.nNumber.toLowerCase()
+  unique_id: validFormOptions.nNumber.toLowerCase(),
+  routing:{
+    team: validFormOptions.routing.team
+  }
 };
 
 const rawDbWorker = {
@@ -1469,6 +1472,10 @@ describe("<UserFormButtons />", () => {
               selfServiceInd: {
                 value: true,
                 updated: false
+              },
+              routing: {
+                team: "Sample1",
+                updated: false
               }
             }
           };
@@ -1484,7 +1491,8 @@ describe("<UserFormButtons />", () => {
                 ...worker.attributes,
                 routing: {
                   skills: ["466"],
-                  levels: []
+                  levels: [],
+                  team:"Sample1"
                 }
               }
             };
@@ -1504,7 +1512,10 @@ describe("<UserFormButtons />", () => {
                   email_address: "test@abc.com",
                   emp_first_name: "Frank",
                   emp_last_name: "Rizzo",
-                  full_name: "Frank Rizzo"
+                  full_name: "Frank Rizzo",
+                  routing: {
+                    team:"Sample1"
+                  }
                 },
                 zeroOutEnabled: true,
                 selfServiceInd: true
@@ -1754,7 +1765,10 @@ describe("<UserFormButtons />", () => {
           manager_last_name: validFormOptions.manager.manager_last_name,
           manager_n_number: validFormOptions.manager.manager_n_number,
           manager: `${validFormOptions.manager.manager_first_name} ${validFormOptions.manager.manager_last_name}`,
-          profile_id: validFormOptions.profileId
+          profile_id: validFormOptions.profileId,
+          routing:{
+            team: "Sample1"
+          }
         };
         beforeEach(() => {
           workerHasOverFlowSkill.mockReturnValue(false);

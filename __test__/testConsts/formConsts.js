@@ -167,6 +167,9 @@ export const validFormOptions = {
     masked: "(800)234-5678",
     tenDig: "8002345678"
   },
+  routing:{
+    team:"Sample1"
+  },
   discrepancies: [],
   extension: "1234",
   manager: managerList[0],
@@ -205,6 +208,10 @@ export const validFormState = {
     updated: true,
     nNumberFetchedUser: fetchedUser
   },
+  routing:{
+    updated: true,
+    team: "Sample1"
+  },
   triton: {
     userFound: true,
     defaultSkills: {
@@ -233,10 +240,6 @@ export const validFormState = {
     manager: {
       value: managerList[0],
       blurred: false,
-      updated: true
-    },
-    routingTeam: {
-      value: "Sample1",
       updated: true
     },
     outgoing: {
@@ -366,7 +369,8 @@ export const mockWorkers = [
         ],
         levels: {
           "whatever": 1
-        }
+        },
+        team:"Sample1"
       }
     }
   },
