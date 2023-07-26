@@ -237,9 +237,14 @@ describe("skillsUtils", () => {
         test("should return default object if skillsObject does not contain levels or skills", () => {
           expect(getValidSkillsObject({
             random: "not cool",
-            useless: "wahhh",
-            whatever: [1,2,3,4,5]
-          })).toEqual(defaultObject);
+            team: "wahhh",
+            callerStates: ["boo"]
+          })).toEqual({
+            ...defaultObject,
+            random: "not cool",
+            team: "wahhh",
+            callerStates: ["boo"]
+          });
         });
       });
 

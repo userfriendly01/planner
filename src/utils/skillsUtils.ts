@@ -22,7 +22,9 @@ export interface RawTaskRotuterSkill {
 }
 
 export const getValidSkillsObject = (skillsObject?: WorkerAttributeSkills): WorkerAttributeSkills => {
+  const spreadSkillObject = typeof skillsObject === "object" ? skillsObject : {};
   const validObject: WorkerAttributeSkills = {
+    ...spreadSkillObject,
     skills: [],
     levels: {}
   };

@@ -12,6 +12,7 @@ import {
 } from "components";
 import React from "react";
 import { getE164Number } from "utils";
+import { Tooltip } from "@mui/material";
 
 
 const BulkUpdateAttributes = (props: BulkUpdateProps) => {
@@ -72,7 +73,12 @@ const BulkUpdateAttributes = (props: BulkUpdateProps) => {
         options={Object.values(availableAttributes)}
         updateValue={(event: any, attribute: WorkerAttribute) => {
           setUpdatedAttributeValue("");
-          setSelectedAttribute(attribute);
+          attribute ? setSelectedAttribute(attribute) : setSelectedAttribute({
+            label: "",
+            value: "",
+            type: "",
+            location: null
+          });
         }}
         styles={{
           width: "230px",
@@ -80,16 +86,20 @@ const BulkUpdateAttributes = (props: BulkUpdateProps) => {
         }}
       />
       { selectedAttribute.type === "string" &&
-        <CustomInput
-          label="Attribute Value"
-          name="attribute-value"
-          value={updatedAttributeValue}
-          updateValue={(value: string) => setUpdatedAttributeValue(value)}
-          styles={{
-            width: "230px",
-            margin: "10px 20px 0px 20px"
-          }}
-        />
+          <Tooltip title={selectedAttribute.value === "callerStates" ? "Comma separated list of states" : ""}>
+            <div>
+              <CustomInput
+                label="Attribute Value"
+                name="attribute-value"
+                value={updatedAttributeValue}
+                updateValue={(value: string) => setUpdatedAttributeValue(value)}
+                styles={{
+                  width: "230px",
+                  margin: "10px 20px 0px 20px"
+                }}
+              />
+            </div>
+          </Tooltip>
       }
       { selectedAttribute.type === "number" &&
         <CustomInput

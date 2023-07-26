@@ -65,7 +65,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
     } else {
       return form.editDisabled && worker?.directDialNum ? true : false;
     }
-  }
+  };
 
   const handleOnBlur = (field: string, system: string) => {
     const isFieldValid = system ? form[system][field].valid : form[field].valid;
@@ -127,7 +127,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
             margin: "10px 0px"
           }}
           onBlur={() => handleOnBlur("profileId", "triton")}
-          options={profiles.sort(sortProfilesByName).map((profile: any) => formatDropdownOption(profile.profile_id, profile.profile_nme, profile))}
+          options={profiles.sort(sortProfilesByName).map((profile: any) => formatDropdownOption(profile.profile_id, `${profile.profile_nme} - ${profile.profile_id}`, profile))}
           updateValue={(event: any, newValue: any) => {
             setForm({
               type: userFormActions.UPDATE_TEAM,
@@ -136,12 +136,12 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
                 profiles
               }
             });
-            // reset selfServiceInd value to false if set to true and then profile chnaged to value of 39 and below
+            // reset selfServiceInd value to false if set to true and then profile changed to value of 39 and below
             if(newValue.value < 39 && form.triton.selfServiceInd.value){
               setForm({ type: userFormActions.UPDATE_SELF_SERVICE_INDICATOR });
             }
           }}
-          value={profiles.find(p => p.profile_id === form.triton.profileId.value)?.profile_nme || ""}
+          value={(form.triton.profileId.value || form.triton.profileId.value === 0) ? `${profiles.find(p => p.profile_id === form.triton.profileId.value)?.profile_nme} - ${profiles.find(p => p.profile_id === form.triton.profileId.value)?.profile_id}` : ""}
         />
         <NNumberInput
           disabled={

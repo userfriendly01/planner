@@ -99,7 +99,10 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
         value={skillOption.label}
         options={dropdownOptions}
         updateValue={(event: any, option: any) => {
-          setSkillOption(option);
+          option ? setSkillOption(option) : {
+            value: "",
+            label: ""
+          };
           setUpdatedDefaultSkills({
             skills: [],
             levels: {}
