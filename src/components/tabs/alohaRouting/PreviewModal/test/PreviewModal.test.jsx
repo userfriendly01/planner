@@ -115,7 +115,7 @@ describe("<PreviewModal />", () => {
     expect(batchDelete).toBeCalledTimes(0);
     expect(batchDelete.mock.calls.length).toBe(0);
     expect(onCloseMock).toBeCalledTimes(1);
-    // expect(openEditModalMock).toBeCalledTimes(1);
+    expect(openEditModalMock).toBeCalledTimes(0);
   });
   test("click Delete, error", () => {
     batchDelete.mockResolvedValue({
@@ -131,5 +131,6 @@ describe("<PreviewModal />", () => {
     expect(batchDelete).toBeCalledTimes(1);
     expect(batchDelete.mock.calls.length).toBe(1);
     expect(openEditModalMock).toBeCalledTimes(0);
+    expect(CustomToast).toBeCalledTimes(1);
   });
 });
