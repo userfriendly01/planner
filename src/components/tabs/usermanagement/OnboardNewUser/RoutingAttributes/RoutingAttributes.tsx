@@ -13,7 +13,7 @@ const RoutingAttributes = ():JSX.Element =>{
 
   const setForm = useFormDispatch();
   const form = useFormState();
-  const dropDownOptions :string[]= ["Sample1","Sample2"];
+  const dropDownOptions :string[]= ["LicCSC","LicPart","UnlicCSC","UnlicPartSitel","UnlicPartTP","BL","Property","Spanish","Unlicensed","FoundeverUnlicensed","TeleperformanceUnlicensed","FoundeverUnlicensedEService","TeleperformanceUnlicensedEService","FoundeverLicensed","TelepeformanceLicensed","FoundeverLicensedAE","TeleperformanceLicensedAE","Primary","Expanded","ExpandedPlus","Advanced","SpanishRewriteRetention","Retention","FoundeverRightTrack","RetentionNest","Inbound","TruStage","ACT","Asset","CAT","Digital"];
   const handleChange=(event:any)=>{
     setForm({
       type: userFormActions.ROUTING_TEAM,
