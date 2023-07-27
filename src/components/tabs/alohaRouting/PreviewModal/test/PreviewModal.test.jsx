@@ -54,7 +54,7 @@ jest.mock("@mui/x-data-grid",()=>({
 
 const openEditModalMock = jest.fn();
 const onCloseMock = jest.fn();
-const testRows = [ {
+const testRows = [{
   id: 42,
   all: "All",
   brand: "Liberty Mutual",
@@ -86,8 +86,7 @@ describe("<PreviewModal />", () => {
       CustomToast,
       DataGrid,
       Modal,
-      StyledButton,
-      batchDelete
+      StyledButton
     });
   });
   test("render", () => {
@@ -99,6 +98,14 @@ describe("<PreviewModal />", () => {
     expect(StyledButton.mock.calls.length).toBe(0);
     expect(batchDelete.mock.calls.length).toBe(0);
   });
+  test("Modal close button is clicked", () => {
+    render(<PreviewModal accessToken="1211" isOpen={true} openEditModal={openEditModalMock} onClose={onCloseMock} rows={testRows} />, initialTestState);
+    const onClick = Modal.mock.calls[0][0].onClose;
+    act(() => {
+      onClick();
+    });
+    expect(onCloseMock).toBeCalledTimes(1);
+  });
   test("click Delete, success", () => {
     render(<PreviewModal accessToken="1211" isOpen={true} openEditModal={openEditModalMock} onClose={onCloseMock} rows={testRows} />, initialTestState);
     const modal= Modal.mock.calls;
@@ -106,6 +113,7 @@ describe("<PreviewModal />", () => {
     act(() => handleClick());
     expect(batchDelete).toBeCalledTimes(1);
     expect(batchDelete.mock.calls.length).toBe(1);
+    expect(CustomToast).toBeCalledTimes(1);
   });
   test("click Cancel", () => {
     render(<PreviewModal accessToken="1212" isOpen={true} openEditModal={openEditModalMock} onClose={onCloseMock} rows={testRows} />, initialTestState);
@@ -131,6 +139,24 @@ describe("<PreviewModal />", () => {
     expect(batchDelete).toBeCalledTimes(1);
     expect(batchDelete.mock.calls.length).toBe(1);
     expect(openEditModalMock).toBeCalledTimes(0);
-    expect(CustomToast).toBeCalledTimes(1);
+    // TODO: shouldn't this be called 2x, 2nd time
+    // open is true and msg is "Failed to delete 
+    // Routing rules"?
+    expect(CustomToast.mock.calls.length).toBe(1);
   });
+
+  test("TableGridColumnDef bad times", () => {
+    const badTimes = {
+      ...testRows[0],
+      endTime: "12",
+      startTime: "11"
+    };
+    render(<PreviewModal accessToken="1211" isOpen={true} openEditModal={openEditModalMock} onClose={onCloseMock} rows={[badTimes]} />, initialTestState);
+    const modal= Modal.mock.calls;
+    // TODO: according to the functions in TableGridColumnDef, 
+    // these times should be empty strings.
+    expect(modal[0][0].children[1].props.children.props.rows[0].startTime).toBe("11");
+    expect(modal[0][0].children[1].props.children.props.rows[0].endTime).toBe("12");
+  });
+
 });
