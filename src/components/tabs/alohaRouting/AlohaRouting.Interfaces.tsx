@@ -7,6 +7,7 @@ export interface RoutingOccupancyCheck {
     percentage: number;
   }
 export interface RoutingStep {
+    callerState: string;
     teams: Array<string>;
     time: number;
   }
@@ -83,6 +84,7 @@ export interface RoutingDropDownList {
     channel?: string[];
     policyType?: string[];
     priority?: string[];
+    callerState?: string[];
 }
 
 export interface AddPageFieldConfigProps {
