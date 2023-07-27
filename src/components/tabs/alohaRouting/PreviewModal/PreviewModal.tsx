@@ -56,7 +56,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
     );
     const response = await batchDelete(keysToDelete, accessToken, graphQLEndPoint);
 
-    if (response || !response.errors) {
+    if (response && !response.errors) {
       openEditModal(false, true, rows, `${rows.length} Routing Rules deleted!! `, true);
       return true;
     }
