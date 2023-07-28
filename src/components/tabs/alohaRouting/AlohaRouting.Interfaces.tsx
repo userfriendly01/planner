@@ -107,3 +107,8 @@ export interface AddRoutingModalProps {
     cloneRouteRule?: boolean;
     routeRule?: FormValidationRule;
 }
+
+export interface AutocompleteOptions {
+    id: string;
+    label: string;
+}

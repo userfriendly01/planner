@@ -303,7 +303,7 @@ export const routingFields: AddRoutingFieldConfigProps[] = [
         helperText: "min: 1,  max: 100"
       },
       {
-        label: "State",
+        label: "Caller State",
         name: "callerState",
         type: "select",
         helperText: "Caller's State or Overflow (OF)"
