@@ -16,7 +16,7 @@ const RoutingAttributes = ():JSX.Element =>{
   const dropDownOptions :string[]= ["LicCSC","LicPart","UnlicCSC","UnlicPartSitel","UnlicPartTP","BL","Property","Spanish","Unlicensed","FoundeverUnlicensed","TeleperformanceUnlicensed","FoundeverUnlicensedEService","TeleperformanceUnlicensedEService","FoundeverLicensed","TelepeformanceLicensed","FoundeverLicensedAE","TeleperformanceLicensedAE","Primary","Expanded","ExpandedPlus","Advanced","SpanishRewriteRetention","Retention","FoundeverRightTrack","RetentionNest","Inbound","TruStage","ACT","Asset","CAT","Digital"];
   const handleChange=(event:any)=>{
     setForm({
-      type: userFormActions.ROUTING_TEAM,
+      type: userFormActions.ADD_ROUTING_TEAM,
       payload:{
         routingTeamName: event.target.value
       }
@@ -37,15 +37,12 @@ const RoutingAttributes = ():JSX.Element =>{
       <SelectContainer
           name= {"Routing Team"}
           label={"Routing Team"}
-          value= {form?.routing?.team}
+          value= {form.routing.team}
           onChange={handleChange}
           dropDownOptions={dropDownOptions}
           required = {false}
-          isBlankFirstValue={false}
+          isBlankFirstValue={true}
         />
-      </AccordionDetails>
-      <AccordionDetails>
-           Upcoming Routing Attributes
       </AccordionDetails>
     </Accordion>
   ); };

@@ -25,6 +25,15 @@ export const initialFormState = {
     updated: false,
     nNumberFetchedUser: null,
   },
+  routing:{
+    team: "Sample1",
+    skills: [
+      "466"
+    ],
+    levels: {
+      "466": 3
+    }
+  },
   triton: {
     userFound: true,
     alternateDid: {
@@ -85,10 +94,6 @@ export const initialFormState = {
     },
     selfServiceInd: {
       value: false,
-      updated: false
-    },
-    routingTeam: {
-      value: "",
       updated: false
     }
   },
@@ -168,7 +173,13 @@ export const validFormOptions = {
     tenDig: "8002345678"
   },
   routing:{
-    team:"Sample1"
+    team:"Sample1",
+    skills: [
+      "466"
+    ],
+    levels: {
+      "466": 3
+    }
   },
   discrepancies: [],
   extension: "1234",
@@ -210,6 +221,12 @@ export const validFormState = {
   },
   routing:{
     updated: true,
+    skills: [
+      "466"
+    ],
+    levels: {
+      "466": 3
+    },
     team: "Sample1"
   },
   triton: {
@@ -322,12 +339,12 @@ export const mockWorkers = [
       office_location_name: "Neptune",
       routing: {
         skills: [
-          "466",
-          "psuUm"
+          "466"
         ],
         levels: {
           "466": 3
-        }
+        },
+        team:"Sample1"
       },
       profile_id: 15
     },
@@ -364,11 +381,10 @@ export const mockWorkers = [
       profile_id: profileList[1].profile_id,
       routing: {
         skills: [
-          profileList[1].overflow_skill,
-          "whatever"
+          "466"
         ],
         levels: {
-          "whatever": 1
+          "466": 3
         },
         team:"Sample1"
       }
@@ -394,11 +410,12 @@ export const mockWorkers = [
       profile_id: profileList[1].profile_id,
       routing: {
         skills: [
-          "payinBills"
+         "466"
         ],
         levels: {
-          "payinBills": 1
-        }
+          "466": 3
+        },
+        team: "Sample1"
       }
     }
   },
@@ -421,11 +438,12 @@ export const mockWorkers = [
       profile_id: profileList[1].profile_id,
       routing: {
         skills: [
-          "payinBills"
+          "466"
         ],
         levels: {
-          "payinBills": 1
-        }
+          "466": 3
+        },
+        team: "Sample1"
       }
     }
   }

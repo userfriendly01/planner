@@ -291,10 +291,10 @@ export interface Worker {
 }
 
 export interface WorkerAttributeSkills {
-  levels?: {
+  levels: {
     [key: string]: number
   },
-  skills?: string[],
+  skills: string[],
   team?:string
 }
 

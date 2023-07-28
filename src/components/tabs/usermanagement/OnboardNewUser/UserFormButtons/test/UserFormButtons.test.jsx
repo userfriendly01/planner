@@ -97,7 +97,12 @@ export const worker = {
   attributes: {
     full_name: "Faith Cuneo",
     office_location_name: "Uranus",
-    profile_id: 15
+    profile_id: 15,
+    routing:{
+      team:"Sample1",
+      skills:["466"],
+      levels:{"466":3}
+    }
   },
   sid: "WK1",
   skillsDifferent: false
@@ -128,7 +133,9 @@ const workerAttributesAfterFormValid = {
   profile_id: validFormOptions.profileId,
   unique_id: validFormOptions.nNumber.toLowerCase(),
   routing:{
-    team: validFormOptions.routing.team
+    team: validFormOptions.routing.team,
+    skills: validFormOptions.routing.skills,
+    levels: validFormOptions.routing.levels
   }
 };
 
@@ -497,10 +504,9 @@ describe("<UserFormButtons />", () => {
                 attributes: {
                   ...createWorkerAttributesAfterFormValid,
                   routing: {
-                    levels: {},
-                    skills: [
-                      "466"
-                    ]
+                    skills: ["466"],
+                    levels: {"466":3},
+                    team: "Sample1"
                   }
                 },
                 alternateDid: validFormState.triton.alternateDid.e164,
@@ -563,10 +569,11 @@ describe("<UserFormButtons />", () => {
                   attributes: {
                     ...createWorkerAttributesAfterFormValid,
                     routing: {
-                      levels: {},
+                      levels: {"466":3},
                       skills: [
                         "466"
-                      ]
+                      ],
+                      team:"Sample1"
                     }
                   },
                   alternateDid: validFormState.triton.alternateDid.e164,
@@ -1214,8 +1221,9 @@ describe("<UserFormButtons />", () => {
               attributes: {
                 ...worker.attributes,
                 routing: {
-                  skills: ["466"],
-                  levels: []
+                  skills: [],
+                  levels: {"466":3},
+                  team:"Sample1"
                 }
               }
             };
@@ -1238,7 +1246,8 @@ describe("<UserFormButtons />", () => {
               profile_id: validFormOptions.profileId,
               routing: {
                 skills: ["nonSkillL1","466"],
-                levels: []
+                levels: {"466": 3},
+                team: "Sample1"
               }
             };
             renderComponent(true, updateWorker);
@@ -1306,7 +1315,8 @@ describe("<UserFormButtons />", () => {
             profile_id: validFormOptions.profileId,
             routing: {
               skills: ["nonSkillL1"],
-              levels: []
+              levels: {"466": 3},
+              team: "Sample1"
             }
           };
           const updateWorker = {
@@ -1314,8 +1324,9 @@ describe("<UserFormButtons />", () => {
             attributes: {
               ...worker.attributes,
               routing: {
-                skills: ["466"],
-                levels: []
+                skills: [],
+                levels: {"466":3},
+                team:"Sample1"
               }
             }
           };
@@ -1385,8 +1396,9 @@ describe("<UserFormButtons />", () => {
                   attributes: {
                     ...updateWorkerAttributesAfterFormValid,
                     routing: {
-                      ...updateWorkerAttributesAfterFormValid.routing,
-                      skills: []
+                      team:updateWorkerAttributesAfterFormValid.routing.team,
+                      skills: [],
+                      levels:updateWorkerAttributesAfterFormValid.routing.levels
                     },
                     email: "test@abc.com",
                     email_address: "test@abc.com",
@@ -1475,6 +1487,8 @@ describe("<UserFormButtons />", () => {
               },
               routing: {
                 team: "Sample1",
+                skills:["466"],
+                levels: {"466":3},
                 updated: false
               }
             }
@@ -1491,7 +1505,7 @@ describe("<UserFormButtons />", () => {
                 ...worker.attributes,
                 routing: {
                   skills: ["466"],
-                  levels: [],
+                  levels: {"466":3},
                   team:"Sample1"
                 }
               }
@@ -1514,7 +1528,9 @@ describe("<UserFormButtons />", () => {
                   emp_last_name: "Rizzo",
                   full_name: "Frank Rizzo",
                   routing: {
-                    team:"Sample1"
+                    team:"Sample1",
+                    skills: ["466"],
+                    levels: {"466":3}
                   }
                 },
                 zeroOutEnabled: true,
@@ -1564,7 +1580,8 @@ describe("<UserFormButtons />", () => {
             profile_id: validFormOptions.profileId,
             routing: {
               skills: ["nonSkillL1"],
-              levels: []
+              levels: {"466":3},
+              team: "Sample1"
             }
           };
           const updateWorker = {
@@ -1573,7 +1590,8 @@ describe("<UserFormButtons />", () => {
               ...worker.attributes,
               routing: {
                 skills: ["466"],
-                levels: []
+                levels: {"466":3},
+                team: "Sample1"
               }
             }
           };
@@ -1649,17 +1667,14 @@ describe("<UserFormButtons />", () => {
             profile_id: validFormOptions.profileId,
             routing: {
               skills: ["nonSkillL1"],
-              levels: []
+              levels: {"466":3},
+              team: "Sample1"
             }
           };
           const updateWorker = {
             ...worker,
             attributes: {
-              ...worker.attributes,
-              routing: {
-                skills: ["466"],
-                levels: []
-              }
+              ...worker.attributes
             }
           };
           beforeEach(() => {
@@ -1766,7 +1781,9 @@ describe("<UserFormButtons />", () => {
           manager_n_number: validFormOptions.manager.manager_n_number,
           manager: `${validFormOptions.manager.manager_first_name} ${validFormOptions.manager.manager_last_name}`,
           profile_id: validFormOptions.profileId,
-          routing:{
+          routing: {
+            skills: ["466"],
+            levels: {"466":3},
             team: "Sample1"
           }
         };

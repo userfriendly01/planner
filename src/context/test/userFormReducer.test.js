@@ -1032,6 +1032,7 @@ describe("userFormReducer", () => {
           ...initialUserFormState.nNumber,
           value: "n"
         },
+        routing:worker.attributes.routing,
         triton: {
           ...initialUserFormState.triton,
           userFound: true,
@@ -1259,6 +1260,7 @@ describe("userFormReducer", () => {
       const expectedFormState = {
         ...initialUserFormState,
         formMode: payload.formMode,
+        routing:worker.attributes.routing,
         triton: {
           ...initialUserFormState.triton,
           userFound: true,
@@ -1454,8 +1456,10 @@ describe("userFormReducer", () => {
         ...initialUserFormState,
           routing: {
             ...initialUserFormState.triton.routingTeam,
-            updated: true,
-            team: "Sample1"
+            level:{},
+            skills: [],
+            team: "Sample1",
+            updated: false,
           }
         }
       expect(result).toStrictEqual(expectedFormState);

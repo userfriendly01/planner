@@ -44,11 +44,6 @@ describe("<RoutingAttributes />", ()=>{
       <RoutingAttributes />
     );
   };
-  test("Simulate Component", ()=>{
-    renderComponent();
-    const upcomingAttributes = Accordion.mock.calls[0][0].children[2].props.children;
-    expect(upcomingAttributes).toBe('Upcoming Routing Attributes');
-  });
   test("Simulate Routing Team Component", ()=>{
     const eventOnChange={
       target: {

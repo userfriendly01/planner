@@ -27,7 +27,7 @@ export const userFormActions = {
   INITIATE_ZERO_OUT_FIELDS: "INITIATE_ZERO_OUT_FIELDS",
   RESET_FORM: "RESET_FORM",
   RESET_FORM_AFTER_ADD: "RESET_FORM_AFTER_ADD",
-  ROUTING_TEAM: "ROUTING_TEAM",
+  ADD_ROUTING_TEAM: "ADD_ROUTING_TEAM",
   SET_BLUR_ON_FIELD: "SET_BLUR_ON_FIELD",
   SET_CALABRIO_QM_USER: "SET_CALABRIO_QM_USER",
   SET_CALABRIO_TEAM: "SET_CALABRIO_TEAM",
@@ -83,7 +83,9 @@ export const initialUserFormState: UserFormState = {
     nNumberFetchedUser: null
   },
   routing: {
-    team: "",
+    team: "Sample1",
+    skills: [],
+    level: {},
     updated: false
   },
   triton: {
@@ -413,12 +415,14 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
         }
       };
     }
-    case userFormActions.ROUTING_TEAM: {
+    case userFormActions.ADD_ROUTING_TEAM: {
       const routingTeam = action.payload.routingTeamName;
       return {
         ...state,
           routing: {
             team: routingTeam,
+            skills:[],
+            level: {},
             updated: true
           }
         };
@@ -550,12 +554,18 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
     case userFormActions.SET_UPDATE_TRITON_FORM_STATE: {
       const worker = action.payload.worker;
       const managers = action.payload.managers;
+      const routingTeam = action.payload.routingTeamName;
       return {
         ...state,
         formMode: action.payload.formMode,
         nNumber: {
           ...state.nNumber,
           value: worker.attributes.n_number
+        },
+        routing:{
+          team: worker.attributes.routing.team,
+          skills:worker.attributes.routing.skills,
+          levels:worker.attributes.routing.levels
         },
         triton: {
           ...state.triton,

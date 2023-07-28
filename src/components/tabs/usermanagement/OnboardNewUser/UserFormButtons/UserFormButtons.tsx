@@ -68,7 +68,9 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     teams
   } = state.calabrioContext;
   const environment = state.userContext.pingIdentity.environment;
-
+  const overflowSkill = getOverflowSkillFromProfile(profiles, form.triton.profileId.value);
+  const nonOverflowSkills: string[] = getNonOverflowSkills(worker, profiles) ? getNonOverflowSkills(worker, profiles) : [];
+    
   const doCreateUser = async () => {
     updateLoading({
       ...loading,
@@ -107,7 +109,9 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       profile_id: form.triton.profileId.value,
       unique_id: form.nNumber.value.toLowerCase(),
       routing:{
-        team: form.routing.team
+        team: form.routing.team,
+        skills:[overflowSkill],
+        levels:form.routing.levels
       }
     };
 
@@ -126,11 +130,12 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       }
     };
 
-    const overflowSkill = getOverflowSkillFromProfile(profiles, form.triton.profileId.value);
+
     if (overflowSkill !== undefined && form.triton.zeroOutEnabled.value && form.triton.directDialNum.value) {
       attributes.routing = {
         skills: [overflowSkill],
-        levels: {}
+        levels: form.routing.levels,
+        team: form.routing.team
       };
     }
 
@@ -321,7 +326,9 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     }
     if(form.routing.updated){
       attributes.routing = {
-        team: form.routing.team
+        team: form.routing.team,
+        skills:[overflowSkill],
+        levels:form.routing.levels
       }
     }
     if(nNumberFetchedUser){
@@ -331,8 +338,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     }
 
     // update overflow skill
-    const overflowSkill = getOverflowSkillFromProfile(profiles, form.triton.profileId.value);
-    const nonOverflowSkills: string[] = getNonOverflowSkills(worker, profiles) ? getNonOverflowSkills(worker, profiles) : [];
     const levels = worker.attributes?.routing?.levels ? worker.attributes.routing.levels : {};
     if ((form.triton.zeroOutEnabled.updated || form.triton.profileId.updated) && form.triton.zeroOutEnabled.value) {
       attributes.routing = {
