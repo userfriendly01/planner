@@ -19,7 +19,7 @@ export const dayOfWeek: string[] = ["ALL", "MONDAY", "TUESDAY", "WEDNESDAY", "TH
 
 export const priority: string[] = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
 
-export const callerState: string[] = ["State", "OF"];
+export const callerState: string[] = ["State", "OF", "HI"];
 
 export const routingDropDownList: RoutingDropDownList = {
   brand: [],

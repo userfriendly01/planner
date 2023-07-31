@@ -96,6 +96,7 @@ const MultiFieldContainerModalView = ({
           options={options}
           renderInput={(params: any) => <TextField
             {...params}
+            helperText={item.helperText}
             label={item.label}
           />}
           value={item.value}
