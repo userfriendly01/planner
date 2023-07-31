@@ -68,9 +68,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     teams
   } = state.calabrioContext;
   const environment = state.userContext.pingIdentity.environment;
-  const overflowSkill = getOverflowSkillFromProfile(profiles, form.triton.profileId.value);
-  const nonOverflowSkills: string[] = getNonOverflowSkills(worker, profiles) ? getNonOverflowSkills(worker, profiles) : [];
-    
+
   const doCreateUser = async () => {
     updateLoading({
       ...loading,
@@ -108,10 +106,12 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       primary_dept_number: form.nNumber.nNumberFetchedUser.departmentNumber,
       profile_id: form.triton.profileId.value,
       unique_id: form.nNumber.value.toLowerCase(),
-      routing:{
-        team: form.routing.team,
-        skills:[overflowSkill],
-        levels:form.routing.levels
+      //@Ankitha: by spreading the routing object, you will encompass all future routing attributes you need to add
+      //Since we dont set routing on initial creation, I moved these back to be empty skills and levels
+      routing: {
+        ...form.triton.routing,
+        skills: [],
+        levels: {}
       }
     };
 
@@ -130,13 +130,12 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       }
     };
 
+    const overflowSkill = getOverflowSkillFromProfile(profiles, form.triton.profileId.value);
 
     if (overflowSkill !== undefined && form.triton.zeroOutEnabled.value && form.triton.directDialNum.value) {
-      attributes.routing = {
-        skills: [overflowSkill],
-        levels: form.routing.levels,
-        team: form.routing.team
-      };
+      //@ankitha - I reverted this back to what it was before, except I am specifically only changing the skills & levels since this part shouldnt
+      //care about the rest of the routing attributes
+      attributes.routing.skills = [overflowSkill];
     }
 
     const operatingUnitSid = profiles.find(profile => profile.profile_id === form.triton.profileId.value).operating_unit_sid;
@@ -193,15 +192,15 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
             type: "loadCalabrioUsers",
             payload: updatedUsers.data
           });
-        } catch(err){
+        } catch (err) {
           console.error("Failed to reset state after conflict check & calabrio user add", err)
           errors.push("Failed to refresh Calabrio state, please refresh Triton Admin")
         }
-      } catch(err){
-        errors.push(`Failed to create Calabrio QM User. ${err.message}` )
+      } catch (err) {
+        errors.push(`Failed to create Calabrio QM User. ${err.message}`)
       }
 
-      if(form.calabrio_wfm.userFound){
+      if (form.calabrio_wfm.userFound) {
         //Edit is not supported yet but if calabrio_wfm.userFound is true, that means they are creating a new WFM user for an existing Triton User
         const wfmBody = {
           ...form.calabrio_wfm,
@@ -213,34 +212,34 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
           Skills: form.calabrio_wfm.PersonSkills?.map((s: any) => s.Id)
         }
         console.log("WFM BODY", wfmBody);
-        if(environment === "production"){
+        if (environment === "production") {
           try {
             const res = await createCalabrioWFMPerson(wfmBody);
             dispatch({
               type: "updateWfmOrg",
               payload: {
                 org: addWorkerToOrg({
-                ...form.calabrio_wfm,
-                Id: res.data.personId,
-                ParentTeam: form.calabrio_wfm.TeamId
-              }, state),
+                  ...form.calabrio_wfm,
+                  Id: res.data.personId,
+                  ParentTeam: form.calabrio_wfm.TeamId
+                }, state),
                 errors: []
               }
             });
             try {
               await wfmActivateExternalLogon({ workerNNumbers: [form.calabrio_wfm.EmploymentNumber] })
-            } catch(err){
-              errors.push(`Failed to activate WFM External Logon. ${err.message}` )
+            } catch (err) {
+              errors.push(`Failed to activate WFM External Logon. ${err.message}`)
             }
-          } catch(err){
-            errors.push(`Failed to create WFM User. ${err.message}` )
+          } catch (err) {
+            errors.push(`Failed to create WFM User. ${err.message}`)
           }
         } else {
           errors.push("WFM does not have a non prod environment. WFM form entries were disregarded.")
         }
       }
-      
-      if(errors.length === 0){
+
+      if (errors.length === 0) {
         setForm({
           type: userFormActions.RESET_FORM_AFTER_ADD,
           payload: {
@@ -274,7 +273,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
           saveUser: true
         });
       }
-    } catch(err){
+    } catch (err) {
       console.error("Errors thrown creating a new user", err.message, err.response?.data);
       updateLoading({
         ...loading,
@@ -324,39 +323,41 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         levels: form.triton.defaultSkills.levels
       };
     }
-    if(form.routing.updated){
-      attributes.routing = {
-        team: form.routing.team,
-        skills:[overflowSkill],
-        levels:form.routing.levels
-      }
+    if (form.triton.routing.updated) {
+      attributes.routing = form.triton.routing;
     }
-    if(nNumberFetchedUser){
+    if (nNumberFetchedUser) {
       nNumberFetchedUser.departmentNumber ? attributes.department_id = nNumberFetchedUser.departmentNumber : null;
-      nNumberFetchedUser.departmentName ? attributes.department_name = nNumberFetchedUser.departmentName: null;
-      nNumberFetchedUser.departmentName ? attributes.location = nNumberFetchedUser.departmentName: null;
+      nNumberFetchedUser.departmentName ? attributes.department_name = nNumberFetchedUser.departmentName : null;
+      nNumberFetchedUser.departmentName ? attributes.location = nNumberFetchedUser.departmentName : null;
     }
+
+
+    const overflowSkill = getOverflowSkillFromProfile(profiles, form.triton.profileId.value);
+    const nonOverflowSkills: string[] = getNonOverflowSkills(worker, profiles) ? getNonOverflowSkills(worker, profiles) : [];
 
     // update overflow skill
     const levels = worker.attributes?.routing?.levels ? worker.attributes.routing.levels : {};
     if ((form.triton.zeroOutEnabled.updated || form.triton.profileId.updated) && form.triton.zeroOutEnabled.value) {
-      attributes.routing = {
-        ...worker.attributes.routing,
-        skills: [
-          ...nonOverflowSkills,
-          overflowSkill
-        ],
-        levels: levels
-      };
-    }
+      if (!attributes.routing) {
+        attributes.routing = form.triton.routing;
+      }
+
+      attributes.routing.skills = [
+        ...nonOverflowSkills,
+        overflowSkill
+      ];
+      attributes.routing.levels = levels
+    };
+
     // remove overflow skill
     if (!form.triton.zeroOutEnabled.value && workerHasOverFlowSkill(worker, profiles)) {
-      attributes.routing = {
-        ...worker.attributes.routing,
-        skills: nonOverflowSkills,
-        levels: levels
-      };
-    }
+      if (!attributes.routing) {
+        attributes.routing = form.triton.routing;
+      }
+      attributes.routing.skills = nonOverflowSkills;
+      attributes.routing.levels = levels
+    };
 
     const payload: Partial<DbWorker> = {
       attributes,
@@ -364,7 +365,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       selfServiceInd: form.triton.selfServiceInd.value
     };
 
-    if(operatingUnitSid){
+    if (operatingUnitSid) {
       payload.operatingUnitSid = operatingUnitSid;
     }
     if (form.triton.alternateDid.updated) {
@@ -385,27 +386,27 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         type: "updateWorker",
         payload: mapWorkerFromDbWorker(dbWorker)
       }));
-    } catch(err){
+    } catch (err) {
       errors.push(`Failed to update Triton Worker. ${err.message || err.response?.data.message}`);
     }
 
-    if(form.calabrio_qm.updated) {
+    if (form.calabrio_qm.updated) {
       try {
-          const calabrioAttributes: any = {};
-          calabrioAttributes.acdId = form.calabrio_qm.acdId;
-          calabrioAttributes.adLogin = `LM\\${form.nNumber.value.toLowerCase()}`;
-          calabrioAttributes.email = form.nNumber.nNumberFetchedUser?.email;
-          calabrioAttributes.firstName = form.nNumber.nNumberFetchedUser?.firstName;
-          calabrioAttributes.lastName = form.nNumber.nNumberFetchedUser?.lastName;
-          calabrioAttributes.groupId = form.calabrio_qm.team?.groupId;
-          calabrioAttributes.timeZone = form.calabrio_qm.timezone?.value;
-          calabrioAttributes.roles = form.calabrio_qm.roles;
-          calabrioAttributes.scope = {
-            groups: form.calabrio_qm.scope?.groups.filter((group: any) => group.checked).map((g: any) => g.groupId),
-            teams: form.calabrio_qm.scope?.teams.filter((team: any) => team.checked).map((g: any) => g.groupId)
-          };
+        const calabrioAttributes: any = {};
+        calabrioAttributes.acdId = form.calabrio_qm.acdId;
+        calabrioAttributes.adLogin = `LM\\${form.nNumber.value.toLowerCase()}`;
+        calabrioAttributes.email = form.nNumber.nNumberFetchedUser?.email;
+        calabrioAttributes.firstName = form.nNumber.nNumberFetchedUser?.firstName;
+        calabrioAttributes.lastName = form.nNumber.nNumberFetchedUser?.lastName;
+        calabrioAttributes.groupId = form.calabrio_qm.team?.groupId;
+        calabrioAttributes.timeZone = form.calabrio_qm.timezone?.value;
+        calabrioAttributes.roles = form.calabrio_qm.roles;
+        calabrioAttributes.scope = {
+          groups: form.calabrio_qm.scope?.groups.filter((group: any) => group.checked).map((g: any) => g.groupId),
+          teams: form.calabrio_qm.scope?.teams.filter((team: any) => team.checked).map((g: any) => g.groupId)
+        };
         console.log("Calabrio QM Payload", calabrioAttributes);
-        if(form.calabrio_qm.id){
+        if (form.calabrio_qm.id) {
           await updateCalabrioUser(form.calabrio_qm.id, calabrioAttributes)
         } else {
           await checkConflictingUsers(calabrioAttributes, users, roles, teams);
@@ -417,17 +418,17 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
             type: "loadCalabrioUsers",
             payload: updatedUsers.data
           });
-        } catch(err){
+        } catch (err) {
           console.error("Failed to reset state after conflict check & calabrio user add", err)
           errors.push("Failed to refresh Calabrio state, please refresh Triton Admin");
         }
-      } catch(err) {
+      } catch (err) {
         console.error("Failed to update Calabrio QM user", err)
         errors.push(`Failed to update Calabrio QM user, ${err.message}`);
       }
     }
 
-    if(form.calabrio_wfm.userFound && !form.calabrio_wfm.Id){
+    if (form.calabrio_wfm.userFound && !form.calabrio_wfm.Id) {
       //Edit is not supported yet but if calabrio_wfm.userFound is true, that means they are creating a new WFM user for an existing Triton User
       const wfmBody = {
         ...form.calabrio_wfm,
@@ -441,7 +442,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
       console.log("WFM BODY", wfmBody);
 
-      if(environment === "production"){
+      if (environment === "production") {
         try {
           const res = await createCalabrioWFMPerson(wfmBody);
           dispatch({
@@ -457,18 +458,18 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
           });
           try {
             await wfmActivateExternalLogon({ workerNNumbers: [form.calabrio_wfm.EmploymentNumber] })
-          } catch(err){
-            errors.push(`Failed to activate WFM External Logon. ${err.message}` )
+          } catch (err) {
+            errors.push(`Failed to activate WFM External Logon. ${err.message}`)
           }
-        } catch(err){
-          errors.push(`Failed to create WFM User. ${err.message}` )
+        } catch (err) {
+          errors.push(`Failed to create WFM User. ${err.message}`)
         }
       } else {
-        errors.push("WFM does not have a non prod environment. WFM form entries were disregarded." )
+        errors.push("WFM does not have a non prod environment. WFM form entries were disregarded.")
       }
     }
 
-    if(errors.length === 0){
+    if (errors.length === 0) {
       setForm({ type: userFormActions.RESET_FORM });
       updateLoading({
         ...loading,
@@ -499,9 +500,9 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
   const handleFormOnClick = () => {
     const formErrors: any = identifyFormErrors(form);
-    if(formErrors.length === 0 && form.formMode === formModes.INSERT){
+    if (formErrors.length === 0 && form.formMode === formModes.INSERT) {
       doCreateUser();
-    } else if(formErrors.length === 0){
+    } else if (formErrors.length === 0) {
       doUpdateUser();
     } else {
       console.log("UPDATE MISSING FIELDS", formErrors);
@@ -530,9 +531,9 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
   return (
     <ButtonWrapper>
       <UserFormButton onClick={() => handleClose()}>
-          Close
+        Close
       </UserFormButton>
-      { form.formMode === formModes.INSERT &&
+      {form.formMode === formModes.INSERT &&
         <UserFormButton onClick={clearForm}>
           Clear
         </UserFormButton>
