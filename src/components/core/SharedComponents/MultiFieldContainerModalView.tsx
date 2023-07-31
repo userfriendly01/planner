@@ -51,14 +51,13 @@ const MultiFieldContainerModalView = ({
 
   const handleOnMultiModalOnChange = (event: any, values: any = "") =>{
     let key: string = event.target.name;
-    const role: string = event.target.role;
     let value = event.target.value;
     const type = event.target.type;
     console.log("handling multimodal", event);
     if(type === "number" ){
       value=parseInt(value);
     }
-    if(role === "option") {
+    if(values) {
       const keyValueArray = values.id.split("-");
 
       key = keyValueArray[0];
@@ -92,6 +91,7 @@ const MultiFieldContainerModalView = ({
       }
       return (
         <Autocomplete
+          data-testid={"auto" + item.name}
           onChange={handleOnMultiModalOnChange}
           options={options}
           renderInput={(params: any) => <TextField
