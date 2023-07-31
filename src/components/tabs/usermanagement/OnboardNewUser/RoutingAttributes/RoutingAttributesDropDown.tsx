@@ -14,7 +14,7 @@ export const RoutingAttrDropDownOptions: DropdownOption[] = [
       value: "UnlicCSC"
     },
     {
-      label: "Un License Part",
+      label: "UnLicense Part",
       value: "UnlicPartSitel"
     },
     {

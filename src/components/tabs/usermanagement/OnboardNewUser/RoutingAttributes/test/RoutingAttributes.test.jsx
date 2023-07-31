@@ -63,4 +63,13 @@ describe("<RoutingAttributes />", ()=>{
     })
     expect(routingTeamChange).toBeTruthy();
   });
+  test("Auto close the Accordian", ()=>{
+    
+    renderComponent();
+    const accordianChange = Accordion.mock.calls[0][0].onChange;
+    act(()=>{
+      accordianChange();
+    })
+    expect(accordianChange).toBeTruthy();
+  });
 });

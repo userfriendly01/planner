@@ -15,6 +15,8 @@ const RoutingAttributes = ():JSX.Element =>{
 
   const setForm = useFormDispatch();
   const form = useFormState();
+  const accordianExpansion = form.routing.team?true:false;
+  const [expanded, setExpanded] = useState(accordianExpansion);
   const handleChange=(event:any,value:any)=>{
     setForm({
       type: userFormActions.ADD_ROUTING_TEAM,
@@ -24,10 +26,13 @@ const RoutingAttributes = ():JSX.Element =>{
     });
   }
   return (
-    <Accordion sx={{
+    <Accordion 
+      expanded={expanded}
+      onChange={()=>setExpanded(!expanded)}
+      sx={{
       width: "395px",
-      margin: "8px 0px 5px 0px"
-    }}>
+      margin: "8px 0px 5px 0px",
+      }}>
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
         aria-controls="panel1a-content"
