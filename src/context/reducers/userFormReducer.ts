@@ -83,7 +83,7 @@ export const initialUserFormState: UserFormState = {
     nNumberFetchedUser: null
   },
   routing: {
-    team: "Sample1",
+    team: "",
     skills: [],
     level: {},
     updated: false

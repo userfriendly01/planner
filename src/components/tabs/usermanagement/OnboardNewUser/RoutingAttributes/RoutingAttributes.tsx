@@ -9,16 +9,17 @@ import {
   userFormActions,
   useFormState
 } from "context";
+import { Dropdown } from "components";
+import { RoutingAttrDropDownOptions } from "./RoutingAttributesDropDown";
 const RoutingAttributes = ():JSX.Element =>{
 
   const setForm = useFormDispatch();
   const form = useFormState();
-  const dropDownOptions :string[]= ["LicCSC","LicPart","UnlicCSC","UnlicPartSitel","UnlicPartTP","BL","Property","Spanish","Unlicensed","FoundeverUnlicensed","TeleperformanceUnlicensed","FoundeverUnlicensedEService","TeleperformanceUnlicensedEService","FoundeverLicensed","TelepeformanceLicensed","FoundeverLicensedAE","TeleperformanceLicensedAE","Primary","Expanded","ExpandedPlus","Advanced","SpanishRewriteRetention","Retention","FoundeverRightTrack","RetentionNest","Inbound","TruStage","ACT","Asset","CAT","Digital"];
-  const handleChange=(event:any)=>{
+  const handleChange=(event:any,value:any)=>{
     setForm({
       type: userFormActions.ADD_ROUTING_TEAM,
       payload:{
-        routingTeamName: event.target.value
+        routingTeamName: value?.value
       }
     });
   }
@@ -34,14 +35,17 @@ const RoutingAttributes = ():JSX.Element =>{
       >Routing Attributes
       </AccordionSummary>
       <AccordionDetails>
-      <SelectContainer
-          name= {"Routing Team"}
+      <Dropdown
           label={"Routing Team"}
-          value= {form.routing.team}
-          onChange={handleChange}
-          dropDownOptions={dropDownOptions}
-          required = {false}
-          isBlankFirstValue={true}
+          value={form.routing.team}
+          options={RoutingAttrDropDownOptions}
+          updateValue= {(event: any, value: any) =>handleChange(event,value)}
+          styles={{
+            width: "calc(95%)",
+            margin: "0 0 0 0"
+          }}
+          disabled={false}
+          required={false}
         />
       </AccordionDetails>
     </Accordion>

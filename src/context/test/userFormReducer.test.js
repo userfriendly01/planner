@@ -1458,7 +1458,7 @@ describe("userFormReducer", () => {
             ...initialUserFormState.triton.routingTeam,
             level:{},
             skills: [],
-            team: "Sample1",
+            team: "",
             updated: false,
           }
         }

@@ -51,10 +51,15 @@ describe("<RoutingAttributes />", ()=>{
         value: "sample1"
       }
     }
+    const valueChanged ={
+      label: "sample1",
+      value: "sample1"
+    }
     renderComponent();
-    const routingTeamChange = Accordion.mock.calls[0][0].children[1].props.children.props.onChange;
+    const teamChange = Accordion.mock.calls[0][0];
+    const routingTeamChange = Accordion.mock.calls[0][0].children[1].props.children.props.updateValue;
     act(()=>{
-      routingTeamChange(eventOnChange);
+      routingTeamChange(eventOnChange,valueChanged);
     })
     expect(routingTeamChange).toBeTruthy();
   });

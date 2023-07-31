@@ -26,13 +26,9 @@ export const initialFormState = {
     nNumberFetchedUser: null,
   },
   routing:{
-    team: "Sample1",
-    skills: [
-      "466"
-    ],
-    levels: {
-      "466": 3
-    }
+    team: "",
+    skills: [],
+    levels: {}
   },
   triton: {
     userFound: true,
