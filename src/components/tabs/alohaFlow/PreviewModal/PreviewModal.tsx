@@ -5,11 +5,11 @@ import {
   Modal,ModalHeader, ModalBody, ModalFooter
 } from "@lmig/lmds-react-modal";
 import {
-  DataGrid, GridColDef, useGridApiRef, GridRowEditStopParams, MuiEvent, GridRowEditStopReasons
+  DataGrid, GridColDef, useGridApiRef
 } from "@mui/x-data-grid";
 import { StyledButton } from "components";
 import {
-  CctSharedCallFlowDb
+  CctSharedCallFlowDb, FlowContent
 } from "../AlohaFlow.Interfaces";
 import { TableGridColumnDef } from "./TableColumnDef";
 import "./PreviewModal.css";
@@ -40,7 +40,12 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
     const newRows: Array<CctSharedCallFlowDb>=[...rows].map((row: CctSharedCallFlowDb)=>{
       const updatedFlow: CctSharedCallFlowDb = {};
       Object.keys(row).forEach((key: string)=>{
-        updatedFlow[key as keyof CctSharedCallFlowDb] = apiRef.current.getCellValue(row.pkey, key);
+        if(Object.keys(row.content).includes(key)){
+          updatedFlow.content[key as keyof FlowContent] = apiRef.current.getCellValue(row.pkey, key);
+        }else
+        {
+          updatedFlow[key as keyof CctSharedCallFlowDb] = apiRef.current.getCellValue(row.pkey, key);
+        }
       });
       return updatedFlow;
     });
@@ -76,6 +81,9 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
           sx={{
             "& .MuiDataGrid-columnHeaderTitle": {
               fontWeight: 600
+            },
+            "& .MuiDataGrid-columnHeaders": {
+              backgroundColor: "rgb(255,226,128)"
             }
           }}
         />

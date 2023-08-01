@@ -58,7 +58,14 @@ export const TableGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params => `${params.row.content?.languageOffer || ""}`
+    valueGetter: params => `${params.row.content?.languageOffer || ""}`,
+    valueSetter: params => ({
+      ...params.row,
+      content: {
+        ...params.row.content,
+        languageOffer: params.value
+      }
+    })
   },
   {
     headerName: "Data Requests",
@@ -66,7 +73,14 @@ export const TableGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params => `${params.row.content?.dataRequests || ""}`
+    valueGetter: params => `${params.row.content?.dataRequests || ""}`,
+    valueSetter: params => ({
+      ...params.row,
+      content: {
+        ...params.row.content,
+        dataRequests: params.value
+      }
+    })
   },
   {
     headerName: "Caller Type",
@@ -74,7 +88,14 @@ export const TableGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params => `${params.row.content?.callerType || ""}`
+    valueGetter: params => `${params.row.content?.callerType || ""}`,
+    valueSetter: params => ({
+      ...params.row,
+      content: {
+        ...params.row.content,
+        callerType: params.value
+      }
+    })
   },
   {
     headerName: "Transfer Destination",
@@ -82,7 +103,14 @@ export const TableGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params => `${params.row.content?.transferNumber || ""}`
+    valueGetter: params => `${params.row.content?.transferNumber || ""}`,
+    valueSetter: params => ({
+      ...params.row,
+      content: {
+        ...params.row.content,
+        transferNumber: params.value
+      }
+    })
   },
   {
     headerName: "Route",
@@ -90,7 +118,14 @@ export const TableGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params => `${params.row.content?.callFlowRoute || ""}`
+    valueGetter: params => `${params.row.content?.callFlowRoute || ""}`,
+    valueSetter: params => ({
+      ...params.row,
+      content: {
+        ...params.row.content,
+        callFlowRoute: params.value
+      }
+    })
   },
   {
     headerName: "Greeting",
@@ -99,6 +134,13 @@ export const TableGridColumnDef: GridColDef[] = [
     width: 110,
     align: "left",
     valueGetter: params => `${params.row.content?.greetingMessages || ""}`,
+    valueSetter: params => ({
+      ...params.row,
+      content: {
+        ...params.row.content,
+        greetingMessages: params.value
+      }
+    }),
     renderCell: (params: any) => (
       <Tooltip title={params.row.content?.greetingMessages || ""} >
         <div className="table-cell-trucate">{params.row.content?.greetingMessages || ""}</div>
@@ -262,7 +304,14 @@ export const TableGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params => `${params.row.content?.callIntent || ""}`
+    valueGetter: params => `${params.row.content?.callIntent || ""}`,
+    valueSetter: params => ({
+      ...params.row,
+      content: {
+        ...params.row.content,
+        callIntent: params.value
+      }
+    })
   }
 ];
 
