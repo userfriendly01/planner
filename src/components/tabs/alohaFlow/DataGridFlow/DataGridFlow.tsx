@@ -4,7 +4,7 @@
    react/jsx-props-no-spreading
 */
 import {
-  DataGrid, GridRenderCellParams, GridRowId, GridSelectionModel
+  DataGrid, GridRenderCellParams, GridRowId, GridRowSelectionModel, GridPaginationModel, GridCallbackDetails
 } from "@mui/x-data-grid";
 import { CustomToast } from "components";
 import { AzureSPA } from "globals";
@@ -62,10 +62,12 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     idEnd: 0,
     maxId: 0,
     minId: 0,
-    saveSuccess: 0,
-    page: sessionStorage.getItem(CALL_FLOW_PAGE_NO) ? +sessionStorage.getItem(CALL_FLOW_PAGE_NO) : 1,
-    perPage: sessionStorage.getItem(CALL_FLOW_PER_PAGE) ? +sessionStorage.getItem(CALL_FLOW_PER_PAGE) : 10
+    saveSuccess: 0
   };
+  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
+    pageSize: sessionStorage.getItem(CALL_FLOW_PER_PAGE) ? +sessionStorage.getItem(CALL_FLOW_PER_PAGE) : 10,
+    page: sessionStorage.getItem(CALL_FLOW_PAGE_NO) ? +sessionStorage.getItem(CALL_FLOW_PAGE_NO) : 1
+  });
   const [dataFlow, setDataFlow] = useState(flowInitState);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
   const [clonedFlowRule, setClonedFlowRule] = useState({});
@@ -93,20 +95,10 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     getTableData();
   }, []);
 
-  const setPage = (newPage: number) => {
-    sessionStorage.setItem(CALL_FLOW_PAGE_NO, newPage.toString());
-    setDataFlow((dataFlowProps: FlowStateVariables) => ({
-      ...dataFlowProps,
-      page: newPage
-    }));
-  };
-
-  const setPerPage = (newPerPage: number) => {
-    sessionStorage.setItem(CALL_FLOW_PER_PAGE, newPerPage.toString());
-    setDataFlow((dataFlowProps: FlowStateVariables) => ({
-      ...dataFlowProps,
-      perPage: newPerPage
-    }));
+  const handlePaginationModelChange = (model: GridPaginationModel, details:GridCallbackDetails<any>) =>{
+    sessionStorage.setItem(CALL_FLOW_PAGE_NO, model.page.toString());
+    sessionStorage.setItem(CALL_FLOW_PER_PAGE, model.pageSize.toString());
+    setPaginationModel(model);
   };
 
   const handleClose = (flag: boolean) => {
@@ -336,10 +328,21 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     }));
   };
 
-  const handleSelectionChanges = (gridSelectionModel: GridSelectionModel) =>{
+  const handleSelectionChanges = (gridSelectionModel: GridRowSelectionModel) =>{
     const selectedRowsData = gridSelectionModel.map((id: GridRowId)=>dataFlow.filteredItems.find((row: CctSharedCallFlowDb)=>row.pkey === id));
     setSelectedList(selectedRowsData);
+  };
 
+  const handleOnBulkCreate = (rows: Array<CctSharedCallFlowDb> ) =>{
+    console.log("Bulk Create: ", rows);
+  };
+
+  const handleOnBulkUpdate = (rows: Array<CctSharedCallFlowDb> ) =>{
+    console.log("Bulk Update: ", rows);
+  };
+
+  const handleOnBulkDelete = (rows: Array<CctSharedCallFlowDb> ) =>{
+    console.log("Bulk Delete: ", rows);
   };
 
   FlowGridColumnDef[0].renderCell = (params: GridRenderCellParams<CctSharedCallFlowDb>) => (<a href="#" onClick={() => openEditModal(true, false, params.row)}>{`${params.value}`}</a>);
@@ -360,19 +363,17 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
           <DataGrid
             rows={dataFlow.filteredItems}
             columns={FlowGridColumnDef}
-            page={dataFlow.page}
-            pageSize={dataFlow.perPage}
-            onPageChange={(newPage: number) => setPage(newPage)}
-            onPageSizeChange={(newPageSize: number) => setPerPage(newPageSize)}
-            rowsPerPageOptions={[10, 20, 50, 100]}
+            paginationModel={paginationModel}
+            onPaginationModelChange={handlePaginationModelChange}
+            pageSizeOptions={[10, 20, 50, 100]}
             paginationMode="client"
             pagination
             loading={dataFlow.fetching}
             checkboxSelection
-            disableSelectionOnClick
+            disableRowSelectionOnClick
             autoHeight
             getRowId={(row: CctSharedCallFlowDb)=>row.pkey}
-            onSelectionModelChange={handleSelectionChanges}
+            onRowSelectionModelChange={handleSelectionChanges}
             sx={{
               "& .MuiDataGrid-columnHeaderTitle": {
                 fontWeight: 600
@@ -423,6 +424,9 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         rows={selectedList}
         onClose={handlePreviewModalOnClose}
         action={dataFlow.previewModalAction}
+        onCreate={handleOnBulkCreate}
+        onUpdate={handleOnBulkUpdate}
+        onDelete={handleOnBulkDelete}
       />
     </div>
   );

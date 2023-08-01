@@ -48,8 +48,6 @@ export interface FlowStateVariables {
     maxId?: number;
     minId?: number;
     saveSuccess?: number;
-    page?: number;
-    perPage?: number;
 }
 
 export interface CctSharedCallFlowDb {

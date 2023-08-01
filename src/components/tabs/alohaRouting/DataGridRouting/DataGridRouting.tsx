@@ -1,12 +1,14 @@
 import {
-  DataGrid, GridRenderCellParams
+  DataGrid, GridCallbackDetails, GridPaginationModel, GridRenderCellParams
 } from "@mui/x-data-grid";
 import { CustomToast } from "components";
 import { AzureSPA } from "globals";
 import React, {
   useEffect, useRef, useState
 } from "react";
-import { queryRoutingData, retrieveRoutingData } from "services";
+import {
+  queryRoutingData, retrieveRoutingData
+} from "services";
 import {
   CACHED_CALL_ROUTING_PAGE_NO,
   CACHED_CALL_ROUTING_PER_PAGE,
@@ -17,9 +19,13 @@ import {
 import {
   AlertBarProps, FormValidationRule
 } from "utils/interfaces";
-import { AddPageFieldConfigProps, CctSharedCallRoutingDb, RoutingFilter, RoutingMasterData, RoutingStateVariables } from "../AlohaRouting.Interfaces";
+import {
+  AddPageFieldConfigProps, CctSharedCallRoutingDb, RoutingFilter, RoutingMasterData, RoutingStateVariables
+} from "../AlohaRouting.Interfaces";
 import { RoutingTableBox } from "../AlohaRouting.Styles";
-import { AddRouting, CustomRoutingGridToolBar, EditRouting, RoutingAdvanceSearch } from "../RoutingCustomActions";
+import {
+  AddRouting, CustomRoutingGridToolBar, EditRouting, RoutingAdvanceSearch
+} from "../RoutingCustomActions";
 import { RoutingGridColumnDef } from "./GridColumnDef";
 import {
   getGridMasterData
@@ -32,6 +38,10 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
 
   const graphQlApiUrl: string = getGraphQLEndpoint();
   const [state, setState] = useState<RoutingStateVariables>(routingInitState);
+  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
+    pageSize: sessionStorage.getItem(CACHED_CALL_ROUTING_PER_PAGE) ? +sessionStorage.getItem(CACHED_CALL_ROUTING_PER_PAGE) : 10,
+    page: sessionStorage.getItem(CACHED_CALL_ROUTING_PAGE_NO) ? +sessionStorage.getItem(CACHED_CALL_ROUTING_PAGE_NO) : 1
+  });
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
   const [routingRule, setRoutingRule] = useState({ ...routingInitRule });
   const [clonedRule, setClonedRule] = useState(false);
@@ -70,7 +80,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
 
   const handleSearchDDChange = (event: any) => {
     const name = event.target.name;
-    var value = event.target.value;
+    let value = event.target.value;
     if(name === "id"){
       value = parseInt(event.target.value);
     }
@@ -102,7 +112,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
       result.forEach(item => {
         let matched = 0;
         Object.keys(advanceFilter).forEach((key: keyof RoutingFilter) => {
-          if(key == "id" && item && item[key]){
+          if(key === "id" && item && item[key]){
             const itemId = item?.id.toLocaleString().toString().replace(",","");
             const advanceKey = advanceFilter[key].toString().replace(",","");
             if (itemId.includes(advanceKey)) {
@@ -195,20 +205,10 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
     });
   };
 
-  const setPerPage = (newPageSize: number) => {
-    sessionStorage.setItem(CACHED_CALL_ROUTING_PER_PAGE, newPageSize.toString());
-    setState({
-      ...state,
-      perPage: newPageSize
-    });
-  };
-
-  const setPage = (newPage: number) => {
-    sessionStorage.setItem(CACHED_CALL_ROUTING_PAGE_NO, newPage.toString());
-    setState({
-      ...state ,
-      page: newPage
-    });
+  const handlePaginationModelChange = (model: GridPaginationModel, details:GridCallbackDetails<any>) =>{
+    sessionStorage.setItem(CACHED_CALL_ROUTING_PAGE_NO, model.page.toString());
+    sessionStorage.setItem(CACHED_CALL_ROUTING_PER_PAGE, model.pageSize.toString());
+    setPaginationModel(model);
   };
 
   const handleClose = (flag: boolean) => {
@@ -294,16 +294,14 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
         <DataGrid
           rows={state.filteredItems}
           columns={RoutingGridColumnDef}
-          page={state.page}
-          pageSize={state.perPage}
-          onPageChange={(newPage: number) => setPage(newPage)}
-          onPageSizeChange={(newPageSize: number) => setPerPage(newPageSize)}
-          rowsPerPageOptions={[10, 20, 50, 100]}
+          paginationModel={paginationModel}
+          onPaginationModelChange={handlePaginationModelChange}
+          pageSizeOptions={[10, 20, 50, 100]}
           paginationMode="client"
           pagination
           loading={state.fetching}
           checkboxSelection
-          disableSelectionOnClick
+          disableRowSelectionOnClick
           autoHeight
           sx={{
             "& .MuiDataGrid-columnHeaderTitle": {
