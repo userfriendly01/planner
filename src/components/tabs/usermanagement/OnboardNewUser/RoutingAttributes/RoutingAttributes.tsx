@@ -3,7 +3,6 @@ import {
   Accordion, AccordionSummary, AccordionDetails
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import SelectContainer from "components/core/SharedComponents/SelectContainer";
 import {
   useFormDispatch,
   userFormActions,
@@ -11,27 +10,28 @@ import {
 } from "context";
 import { Dropdown } from "components";
 import { RoutingAttrDropDownOptions } from "./RoutingAttributesDropDown";
-const RoutingAttributes = ():JSX.Element =>{
+
+const RoutingAttributes = (): JSX.Element => {
 
   const setForm = useFormDispatch();
   const form = useFormState();
-  const accordianExpansion = form.routing.team?true:false;
+  const accordianExpansion = form.triton.routing.team ? true : false;
   const [expanded, setExpanded] = useState(accordianExpansion);
-  const handleChange=(event:any,value:any)=>{
+  const handleChange = (event: any, value: any) => {
     setForm({
       type: userFormActions.ADD_ROUTING_TEAM,
-      payload:{
-        routingTeamName: value?.value
+      payload: {
+        routingTeamName: value ? value.value : null
       }
     });
   }
   return (
-    <Accordion 
+    <Accordion
       expanded={expanded}
-      onChange={()=>setExpanded(!expanded)}
+      onChange={() => setExpanded(!expanded)}
       sx={{
-      width: "395px",
-      margin: "8px 0px 5px 0px",
+        width: "395px",
+        margin: "8px 0px 5px 0px",
       }}>
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
@@ -40,11 +40,11 @@ const RoutingAttributes = ():JSX.Element =>{
       >Routing Attributes
       </AccordionSummary>
       <AccordionDetails>
-      <Dropdown
+        <Dropdown
           label={"Routing Team"}
-          value={form.routing.team}
+          value={form.triton.routing.team}
           options={RoutingAttrDropDownOptions}
-          updateValue= {(event: any, value: any) =>handleChange(event,value)}
+          updateValue={(event: any, value: any) => handleChange(event, value)}
           styles={{
             width: "calc(95%)",
             margin: "0 0 0 0"
@@ -54,6 +54,7 @@ const RoutingAttributes = ():JSX.Element =>{
         />
       </AccordionDetails>
     </Accordion>
-  ); };
+  );
+};
 
 export default RoutingAttributes;
