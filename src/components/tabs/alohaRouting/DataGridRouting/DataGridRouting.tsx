@@ -1,6 +1,7 @@
 import {
   AddPageFieldConfigProps,
   CctSharedCallRoutingDb,
+  PreviewModalAction,
   RoutingFilter,
   RoutingMasterData,
   RoutingStateVariables
@@ -29,9 +30,11 @@ import {
 } from "utils";
 import {
   DataGrid,
+  GridCallbackDetails,
+  GridPaginationModel,
   GridRenderCellParams,
   GridRowId,
-  GridSelectionModel
+  GridRowSelectionModel
 } from "@mui/x-data-grid";
 import React, {
   useEffect,
@@ -171,19 +174,21 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
       maxRef.current = maxId;
       setState({
         ...state,
-        maxId: maxId,
         advanceFilter,
-        filteredItems,
         data: result,
         fetching: false,
-        idStart: minId,
+        filteredItems,
         idEnd: maxId,
-        minId: minId,
-        masterData,
+        idStart: minId,
         isAddModalOpen: false,
-        isEditModalOpen: false,
+        isAdvanceSearchModalOpen: false,
         isBulkEditModalOpen: false,
-        isAdvanceSearchModalOpen: false
+        isEditModalOpen: false,
+        isPreviewModalOpen: false,
+        masterData,
+        maxId: maxId,
+        minId: minId,
+        saveSuccess: false
       });
     } else {
       setState({
@@ -201,6 +206,10 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
     }
   };
 
+  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
+    pageSize: sessionStorage.getItem(CACHED_CALL_ROUTING_PER_PAGE) ? +sessionStorage.getItem(CACHED_CALL_ROUTING_PER_PAGE) : 10,
+    page: sessionStorage.getItem(CACHED_CALL_ROUTING_PAGE_NO) ? +sessionStorage.getItem(CACHED_CALL_ROUTING_PAGE_NO) : 1
+  });
 
   const openAddModal = (flag: boolean,openAddModal?:boolean, row?: CctSharedCallRoutingDb) => {
     let newData;
@@ -221,22 +230,6 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
     setState({
       ...state,
       isAddModalOpen: flag
-    });
-  };
-
-  const setPerPage = (newPageSize: number) => {
-    sessionStorage.setItem(CACHED_CALL_ROUTING_PER_PAGE, newPageSize.toString());
-    setState({
-      ...state,
-      perPage: newPageSize
-    });
-  };
-
-  const setPage = (newPage: number) => {
-    sessionStorage.setItem(CACHED_CALL_ROUTING_PAGE_NO, newPage.toString());
-    setState({
-      ...state ,
-      page: newPage
     });
   };
 
@@ -311,51 +304,77 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
     }));
   };
 
+  const openPreviewModal = (flag: boolean, action: PreviewModalAction) =>{
+    setState((dataFlowProps: RoutingStateVariables) => ({
+      ...dataFlowProps,
+      isPreviewModalOpen: flag,
+      previewModalAction: action
+    }));
+  };
+
   const exportDataFile = () =>{
     downloadCSV(EXPORT_FILE_PREFIX.ROUTING, state.filteredItems);
   };
 
-  const handleMultiEditOnClose = () =>{
+  const handlePreviewModalOnClose = () =>{
     setState((dataFlowProps: RoutingStateVariables) => ({
       ...dataFlowProps,
-      isBulkEditModalOpen: false
+      isPreviewModalOpen: false
     }));
   };
 
-  const handleSelectionChanges = (gridSelectionModel: GridSelectionModel) =>{
+  const handleSelectionChanges = (gridSelectionModel: GridRowSelectionModel) =>{
     const selectedRowsData = gridSelectionModel.map((id: GridRowId)=>state.filteredItems.find((row: CctSharedCallRoutingDb)=>row.id === id));
     setSelectedList(selectedRowsData);
-
   };
+
+  const handleOnBulkCreate = (rows: Array<CctSharedCallRoutingDb> ) =>{
+    console.log("Bulk Create: ", rows);
+  };
+
+  const handleOnBulkUpdate = (rows: Array<CctSharedCallRoutingDb> ) =>{
+    console.log("Bulk Update: ", rows);
+  };
+
+  const handleOnBulkDelete = (rows: Array<CctSharedCallRoutingDb> ) =>{
+    console.log("Bulk Delete: ", rows);
+  };
+
   RoutingGridColumnDef[0].renderCell = (params: GridRenderCellParams<CctSharedCallRoutingDb>) => (<a href="#" onClick={() => openEditModal(true, false, [params.row])}>{`${params.value}`}</a>);
+
+  const handlePaginationModelChange = (model: GridPaginationModel, details:GridCallbackDetails<any>) =>{
+    sessionStorage.setItem(CACHED_CALL_ROUTING_PAGE_NO, model.page.toString());
+    sessionStorage.setItem(CACHED_CALL_ROUTING_PER_PAGE, model.pageSize.toString());
+    setPaginationModel(model);
+  };
 
   return (
     <div>
       <CustomRoutingGridToolBar
-        openAddModal={openAddModal}
-        openEditModal={openBulkEditModal}
-        openAdvanceSearchModal={openAdvanceSearchModal}
-        exportDataFile={exportDataFile}
         applyFilter={applyFilter}
+        exportDataFile={exportDataFile}
         isAdvanceSearchOpen={state.isAdvanceSearchModalOpen}
+        openAddModal={openAddModal}
+        openAdvanceSearchModal={openAdvanceSearchModal}
+        openEditModal={openBulkEditModal}
+        openPreviewModal={openPreviewModal}
       />
       <RoutingTableBox>
         <DataGrid
-          rows={state.filteredItems}
-          columns={RoutingGridColumnDef}
-          page={state.page}
-          pageSize={state.perPage}
-          onPageChange={(newPage: number) => setPage(newPage)}
-          onPageSizeChange={(newPageSize: number) => setPerPage(newPageSize)}
-          rowsPerPageOptions={[10, 20, 50, 100]}
-          paginationMode="client"
-          pagination
-          loading={state.fetching}
-          checkboxSelection
-          disableSelectionOnClick
           autoHeight
+          checkboxSelection
+          columns={RoutingGridColumnDef}
+          disableRowSelectionOnClick
           getRowId={(row: CctSharedCallRoutingDb)=>row.id}
+          loading={state.fetching}
+          onPaginationModelChange={handlePaginationModelChange}
           onSelectionModelChange={handleSelectionChanges}
+          pageSizeOptions={[10, 20, 50, 100]}
+          pagination
+          paginationMode="client"
+          paginationModel={paginationModel}
+          rows={state.filteredItems}
+          rowsPerPageOptions={[10, 20, 50, 100]}
           sx={{
             "& .MuiDataGrid-columnHeaderTitle": {
               fontWeight: 600
@@ -394,11 +413,14 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
         severityType={alertBar.severityType}
       />
       <PreviewModal
-        isOpen={state.isBulkEditModalOpen}
-        rows={selectedList}
-        onClose={handleMultiEditOnClose}
-        openEditModal={openEditModal}
         accessToken={accessToken}
+        action={state.previewModalAction}
+        isOpen={state.isPreviewModalOpen}
+        onClose={handlePreviewModalOnClose}
+        onCreate={handleOnBulkCreate}
+        onDelete={handleOnBulkDelete}
+        onUpdate={handleOnBulkUpdate}
+        rows={selectedList}
       />
     </div>
   );

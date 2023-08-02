@@ -41,9 +41,7 @@ export const routingInitState: RoutingStateVariables = {
   idEnd: 0,
   maxId: 0,
   minId: 0,
-  saveSuccess: false,
-  page: sessionStorage.getItem(CACHED_CALL_ROUTING_PAGE_NO) ? +sessionStorage.getItem(CACHED_CALL_ROUTING_PAGE_NO) : 1,
-  perPage: sessionStorage.getItem(CACHED_CALL_ROUTING_PER_PAGE) ? +sessionStorage.getItem(CACHED_CALL_ROUTING_PER_PAGE) : 10
+  saveSuccess: false
 };
 
 export const routingFields: AddRoutingFieldConfigProps[] = [
