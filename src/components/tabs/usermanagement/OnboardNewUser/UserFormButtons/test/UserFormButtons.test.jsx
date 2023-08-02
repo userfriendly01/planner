@@ -98,10 +98,13 @@ export const worker = {
     full_name: "Faith Cuneo",
     office_location_name: "Uranus",
     profile_id: 15,
-    routing:{
-      team:"Sample1",
-      skills:["466"],
-      levels:{"466":3}
+    triton:{
+      routing:{
+        team:"Sample1",
+        skills:["466"],
+        levels:{"466":3},
+        updated: true
+      }
     }
   },
   sid: "WK1",
@@ -133,9 +136,8 @@ const workerAttributesAfterFormValid = {
   profile_id: validFormOptions.profileId,
   unique_id: validFormOptions.nNumber.toLowerCase(),
   routing:{
-    team: validFormOptions.routing.team,
-    skills: validFormOptions.routing.skills,
-    levels: validFormOptions.routing.levels
+    ...validFormOptions.routing,
+    updated: true
   }
 };
 
@@ -504,9 +506,10 @@ describe("<UserFormButtons />", () => {
                 attributes: {
                   ...createWorkerAttributesAfterFormValid,
                   routing: {
-                    skills: ["466"],
-                    levels: {"466":3},
-                    team: "Sample1"
+                    ...validFormState.triton.routing,
+                    skills: [
+                      "466"
+                    ]
                   }
                 },
                 alternateDid: validFormState.triton.alternateDid.e164,
@@ -569,11 +572,10 @@ describe("<UserFormButtons />", () => {
                   attributes: {
                     ...createWorkerAttributesAfterFormValid,
                     routing: {
-                      levels: {"466":3},
+                      ...validFormState.triton.routing,
                       skills: [
                         "466"
-                      ],
-                      team:"Sample1"
+                      ]
                     }
                   },
                   alternateDid: validFormState.triton.alternateDid.e164,
@@ -1223,7 +1225,8 @@ describe("<UserFormButtons />", () => {
                 routing: {
                   skills: [],
                   levels: {"466":3},
-                  team:"Sample1"
+                  team:"Sample1",
+                  updated: "true"
                 }
               }
             };
@@ -1247,7 +1250,8 @@ describe("<UserFormButtons />", () => {
               routing: {
                 skills: ["nonSkillL1","466"],
                 levels: {"466": 3},
-                team: "Sample1"
+                team: "Sample1",
+                updated: true
               }
             };
             renderComponent(true, updateWorker);
@@ -1295,6 +1299,7 @@ describe("<UserFormButtons />", () => {
             });
           });
         });
+        
         describe("Worker is a DID user", () => {
           const updateWorkerAttributesAfterFormValid = {
             default_skills: validFormOptions.defaultSkills,
@@ -1314,9 +1319,8 @@ describe("<UserFormButtons />", () => {
             manager: `${validFormOptions.manager.manager_first_name} ${validFormOptions.manager.manager_last_name}`,
             profile_id: validFormOptions.profileId,
             routing: {
-              skills: ["nonSkillL1"],
-              levels: {"466": 3},
-              team: "Sample1"
+              ...validFormState.triton.routing,
+              skills: ["nonSkillL1"]
             }
           };
           const updateWorker = {
@@ -1325,7 +1329,7 @@ describe("<UserFormButtons />", () => {
               ...worker.attributes,
               routing: {
                 skills: [],
-                levels: {"466":3},
+                levels: {},
                 team:"Sample1"
               }
             }
@@ -1398,7 +1402,8 @@ describe("<UserFormButtons />", () => {
                     routing: {
                       team:updateWorkerAttributesAfterFormValid.routing.team,
                       skills: [],
-                      levels:updateWorkerAttributesAfterFormValid.routing.levels
+                      levels:updateWorkerAttributesAfterFormValid.routing.levels,
+                      updated: true
                     },
                     email: "test@abc.com",
                     email_address: "test@abc.com",
@@ -1503,11 +1508,15 @@ describe("<UserFormButtons />", () => {
               ...worker,
               attributes: {
                 ...worker.attributes,
+              triton:
+              {
+                ...worker.attributes.triton,
                 routing: {
                   skills: ["466"],
                   levels: {"466":3},
                   team:"Sample1"
                 }
+              },
               }
             };
             renderComponent(true, updateWorker);
@@ -1526,12 +1535,7 @@ describe("<UserFormButtons />", () => {
                   email_address: "test@abc.com",
                   emp_first_name: "Frank",
                   emp_last_name: "Rizzo",
-                  full_name: "Frank Rizzo",
-                  routing: {
-                    team:"Sample1",
-                    skills: ["466"],
-                    levels: {"466":3}
-                  }
+                  full_name: "Frank Rizzo"
                 },
                 zeroOutEnabled: true,
                 selfServiceInd: true
@@ -1579,20 +1583,22 @@ describe("<UserFormButtons />", () => {
             manager: `${validFormOptions.manager.manager_first_name} ${validFormOptions.manager.manager_last_name}`,
             profile_id: validFormOptions.profileId,
             routing: {
+              ...validFormState.triton.routing,
               skills: ["nonSkillL1"],
-              levels: {"466":3},
-              team: "Sample1"
             }
           };
           const updateWorker = {
             ...worker,
             attributes: {
               ...worker.attributes,
-              routing: {
-                skills: ["466"],
-                levels: {"466":3},
-                team: "Sample1"
-              }
+              triton:{
+                ...worker.attributes.triton,
+                routing: {
+                  skills: ["466"],
+                  levels: {"466":3},
+                  team: "Sample1"
+                }
+              } 
             }
           };
           beforeEach(() => {
@@ -1666,9 +1672,8 @@ describe("<UserFormButtons />", () => {
             manager: `${validFormOptions.manager.manager_first_name} ${validFormOptions.manager.manager_last_name}`,
             profile_id: validFormOptions.profileId,
             routing: {
-              skills: ["nonSkillL1"],
-              levels: {"466":3},
-              team: "Sample1"
+              ...validFormState.triton.routing,
+              skills: ["nonSkillL1"]
             }
           };
           const updateWorker = {
@@ -1737,6 +1742,143 @@ describe("<UserFormButtons />", () => {
           });
         });
       });
+      describe("",()=>{
+        const updateWorker = {
+          ...worker,
+          attributes: {
+            ...worker.attributes,
+            routing: {
+              skills: [],
+              levels: {},
+              team:"",
+              updated: "true"
+            }
+          }
+        };
+        const updateWorkerAttributesAfterFormValid = {
+          default_skills: validFormOptions.defaultSkills,
+          did: validFormOptions.didE164,
+          email: "test@abc.com",
+          email_address: "test@abc.com",
+          emp_first_name: "Frank",
+          emp_last_name: "Rizzo",
+          full_name: "Frank Rizzo",
+          department_id: validFormState.nNumber.nNumberFetchedUser.departmentNumber,
+          department_name: validFormState.nNumber.nNumberFetchedUser.departmentName,
+          extension: validFormOptions.extension,
+          location: validFormState.nNumber.nNumberFetchedUser.departmentName,
+          manager_first_name: validFormOptions.manager.manager_first_name,
+          manager_last_name: validFormOptions.manager.manager_last_name,
+          manager_n_number: validFormOptions.manager.manager_n_number,
+          manager: `${validFormOptions.manager.manager_first_name} ${validFormOptions.manager.manager_last_name}`,
+          profile_id: validFormOptions.profileId,
+        };
+        const rawDbWorker = {
+          attributes: {
+            ...updateWorkerAttributesAfterFormValid,
+            office_location_number: "newOffice"
+          },
+          workerSid: "WK1234"
+        };
+        const nonDidValidFormState = {
+          ...updateFormState,
+          calabrio_qm: {
+            ...updateFormState.calabrio_qm,
+            updated: true,
+            id: 1
+          },
+          triton: {
+            ...updateFormState.triton,
+              routing: {
+                skills: [],
+                levels: {},
+                team:"",
+                updated: "true"
+              },
+            directDialNum: {
+              ...updateFormState.triton.directDialNum,
+              value: "",
+              updated: false
+            },
+            zeroOutEnabled: {
+              value: true,
+              updated: true
+            },
+            selfServiceInd: {
+              value: false
+            }
+          }
+        }
+        beforeEach(() => {
+          updateUser.mockResolvedValue(rawDbWorker);
+          workerHasOverFlowSkill.mockReturnValue(true);
+          updateCalabrioUser.mockResolvedValue({ data: ["agent1", "agent2"]});
+          })
+        test("update overflow skill", async () => {
+          useFormState.mockReturnValue(nonDidValidFormState);
+          renderComponent(true, updateWorker);
+          render(Tooltip.mock.calls[0][0].children);
+          act(() => {
+            const onClick = StyledButton.mock.calls[1][0].onClick;
+            onClick();
+          });
+          await waitFor(() => {
+            expect(updateUser).toHaveBeenCalledWith(worker.sid, {
+              alternateDid: updateFormState.triton.alternateDid.e164,
+              attributes: {
+                ...updateWorkerAttributesAfterFormValid,
+                routing: {
+                  skills: ["nonSkillL1","466"],
+                  levels: {},
+                  team:"",
+                  updated: "true"
+                }
+              },
+              operatingUnitSid: validOperatingUnitId,
+              zeroOutEnabled: true,
+              selfServiceInd: false
+            });
+          });
+          jest.clearAllMocks();
+        });
+        test("remove overflow skill", async () => {
+          const nonDidValidFormStateEdited = {
+            ...nonDidValidFormState,
+            triton:{
+              ...nonDidValidFormState.triton,
+              zeroOutEnabled: {
+                value: false,
+                updated: true
+              }
+            }
+
+          }
+          useFormState.mockReturnValue(nonDidValidFormStateEdited);
+          renderComponent(true, updateWorker);
+          render(Tooltip.mock.calls[0][0].children);
+          act(() => {
+            const onClick = StyledButton.mock.calls[1][0].onClick;
+            onClick();
+          });
+          await waitFor(() => {
+            expect(updateUser).toHaveBeenCalledWith(worker.sid, {
+              alternateDid: updateFormState.triton.alternateDid.e164,
+              attributes: {
+                ...updateWorkerAttributesAfterFormValid,
+                routing: {
+                  skills: ["nonSkillL1"],
+                  levels: {},
+                  team:"",
+                  updated: "true"
+                }
+              },
+              operatingUnitSid: validOperatingUnitId,
+              zeroOutEnabled: false,
+              selfServiceInd: false
+            });
+          });
+        });
+      })
       describe("doUpdateUser fails", () => {
         const nonDidValidFormState = {
           ...updateFormState,
@@ -1782,9 +1924,10 @@ describe("<UserFormButtons />", () => {
           manager: `${validFormOptions.manager.manager_first_name} ${validFormOptions.manager.manager_last_name}`,
           profile_id: validFormOptions.profileId,
           routing: {
-            skills: ["466"],
-            levels: {"466":3},
-            team: "Sample1"
+            skills: ["nonSkillL1"],
+            levels: {},
+            team: "Sample1",
+            updated: true
           }
         };
         beforeEach(() => {
@@ -1823,7 +1966,7 @@ describe("<UserFormButtons />", () => {
               ]
             });
             jest.runAllTimers();
-            expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
+            expect(mockUpdateLoading).toHaveBeenCalledTimes(4);
             expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
               overlayMessage: "Updating user: Faith Cuneo",
               saveStatus: "saving",

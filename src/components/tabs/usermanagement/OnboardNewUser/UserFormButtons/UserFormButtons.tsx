@@ -106,8 +106,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       primary_dept_number: form.nNumber.nNumberFetchedUser.departmentNumber,
       profile_id: form.triton.profileId.value,
       unique_id: form.nNumber.value.toLowerCase(),
-      //@Ankitha: by spreading the routing object, you will encompass all future routing attributes you need to add
-      //Since we dont set routing on initial creation, I moved these back to be empty skills and levels
       routing: {
         ...form.triton.routing,
         skills: [],
@@ -133,8 +131,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     const overflowSkill = getOverflowSkillFromProfile(profiles, form.triton.profileId.value);
 
     if (overflowSkill !== undefined && form.triton.zeroOutEnabled.value && form.triton.directDialNum.value) {
-      //@ankitha - I reverted this back to what it was before, except I am specifically only changing the skills & levels since this part shouldnt
-      //care about the rest of the routing attributes
       attributes.routing.skills = [overflowSkill];
     }
 
@@ -339,7 +335,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     // update overflow skill
     const levels = worker.attributes?.routing?.levels ? worker.attributes.routing.levels : {};
     if ((form.triton.zeroOutEnabled.updated || form.triton.profileId.updated) && form.triton.zeroOutEnabled.value) {
-      if (!attributes.routing) {
+      if (!attributes.routing.team) {
         attributes.routing = form.triton.routing;
       }
 
@@ -352,10 +348,11 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
     // remove overflow skill
     if (!form.triton.zeroOutEnabled.value && workerHasOverFlowSkill(worker, profiles)) {
-      if (!attributes.routing) {
+      if (!attributes.routing.team) {
         attributes.routing = form.triton.routing;
       }
       attributes.routing.skills = nonOverflowSkills;
+      
       attributes.routing.levels = levels
     };
 

@@ -1032,12 +1032,12 @@ describe("userFormReducer", () => {
           ...initialUserFormState.nNumber,
           value: "n"
         },
-        routing:worker.attributes.routing,
         triton: {
           ...initialUserFormState.triton,
           userFound: true,
           sid: "WK2",
           attributes: worker.attributes,
+          routing:worker.attributes.routing,
           defaultSkills: {
             updated: false,
             ...getValidSkillsObject(worker.attributes.default_skills)
@@ -1260,12 +1260,12 @@ describe("userFormReducer", () => {
       const expectedFormState = {
         ...initialUserFormState,
         formMode: payload.formMode,
-        routing:worker.attributes.routing,
         triton: {
           ...initialUserFormState.triton,
           userFound: true,
           attributes: worker.attributes,
           sid: "WK0",
+          routing: worker.attributes.routing,
           defaultSkills: {
             ...getValidSkillsObject(worker.attributes.default_skills),
             updated: false
@@ -1448,19 +1448,20 @@ describe("userFormReducer", () => {
         routingTeamName:"Sample1"
       };
       const action = {
-        type: userFormActions.ROUTING_TEAM,
+        type: userFormActions.ADD_ROUTING_TEAM,
         payload
       };
       const result = userFormReducer(initialUserFormState, action);
       const expectedFormState = {
         ...initialUserFormState,
-          routing: {
-            ...initialUserFormState.triton.routingTeam,
-            level:{},
-            skills: [],
-            team: "",
-            updated: false,
+        triton:{
+          ...initialUserFormState.triton,
+          routing:{
+            ...initialUserFormState.triton.routing,
+            team:"Sample1",
+            updated: true
           }
+        }
         }
       expect(result).toStrictEqual(expectedFormState);
     });

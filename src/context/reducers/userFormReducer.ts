@@ -417,13 +417,11 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
     }
     case userFormActions.ADD_ROUTING_TEAM: {
       const routingTeam = action.payload.routingTeamName;
-      //@Ankitha routing should live inside the triton object so made a few tweaks here
       return {
         ...state,
         triton: {
           ...state.triton,
           routing: {
-            //@Ankitha - you want to spread the routing object here, when you set skills & levels, you are overriding a users routing skills when you added a team which we dont want to do
             ...state.triton.routing,
             team: routingTeam,
             updated: true
@@ -574,7 +572,6 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
             ...state.triton.defaultSkills,
             ...getValidSkillsObject(worker.attributes.default_skills)
           },
-          //@ankitha - routing should live inside triton and I spread the object as well so when you all add more routing attributes it should cover them as well
           routing: {
             ...getValidSkillsObject(worker.attributes.routing)
           },

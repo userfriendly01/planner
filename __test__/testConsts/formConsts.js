@@ -25,11 +25,6 @@ export const initialFormState = {
     updated: false,
     nNumberFetchedUser: null,
   },
-  routing:{
-    team: "",
-    skills: [],
-    levels: {}
-  },
   triton: {
     userFound: true,
     alternateDid: {
@@ -38,6 +33,11 @@ export const initialFormState = {
       e164: undefined,
       updated: false,
       valid: false
+    },
+    routing:{
+      team: "",
+      skills: [],
+      levels: {}
     },
     defaultSkills: {},
     defaultSkillsUpdated: false,
@@ -170,11 +170,8 @@ export const validFormOptions = {
   },
   routing:{
     team:"Sample1",
-    skills: [
-      "466"
-    ],
+    skills: [],
     levels: {
-      "466": 3
     }
   },
   discrepancies: [],
@@ -215,16 +212,6 @@ export const validFormState = {
     updated: true,
     nNumberFetchedUser: fetchedUser
   },
-  routing:{
-    updated: true,
-    skills: [
-      "466"
-    ],
-    levels: {
-      "466": 3
-    },
-    team: "Sample1"
-  },
   triton: {
     userFound: true,
     defaultSkills: {
@@ -238,6 +225,12 @@ export const validFormState = {
         "b",
         "c"
       ]
+    },
+    routing:{
+      team: "Sample1",
+      levels: {},
+      skills: [],
+      updated: true
     },
     didUser: false,
     extension: {
