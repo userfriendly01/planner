@@ -168,7 +168,6 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
           }}
           value={form.nNumber.value}
         />
-        <RoutingAttributes />
         <SkillsFormInfo />
       </FormControlsPane>
       <RightColumn>
@@ -265,7 +264,8 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
               />
               <ToggleLabel>Self Service Indicator</ToggleLabel>
             </ToggleContainer>
-          </Tooltip>) : null}
+            </Tooltip>) : null}
+          <RoutingAttributes />
       </RightColumn>
     </FormControlsContainer>
   );

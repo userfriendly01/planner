@@ -27,6 +27,7 @@ export const userFormActions = {
   INITIATE_ZERO_OUT_FIELDS: "INITIATE_ZERO_OUT_FIELDS",
   RESET_FORM: "RESET_FORM",
   RESET_FORM_AFTER_ADD: "RESET_FORM_AFTER_ADD",
+  ADD_ROUTING_TEAM: "ADD_ROUTING_TEAM",
   SET_BLUR_ON_FIELD: "SET_BLUR_ON_FIELD",
   SET_CALABRIO_QM_USER: "SET_CALABRIO_QM_USER",
   SET_CALABRIO_TEAM: "SET_CALABRIO_TEAM",
@@ -95,6 +96,12 @@ export const initialUserFormState: UserFormState = {
       updated: false,
       skills: [],
       levels: {}
+    },
+    routing: {
+      team: "",
+      skills: [],
+      level: {},
+      updated: false
     },
     didUser: false,
     directDialNum: {
@@ -247,7 +254,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
       const message = action.payload;
       return {
         ...state,
-        discrepancies: state.discrepancies.filter((d:any) => d.message !== message)
+        discrepancies: state.discrepancies.filter((d: any) => d.message !== message)
       };
     }
     case userFormActions.CLEAR_EXTENSION: {
@@ -343,7 +350,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
         }
       };
     }
-    case userFormActions.UPDATE_SELF_SERVICE_INDICATOR:{
+    case userFormActions.UPDATE_SELF_SERVICE_INDICATOR: {
       return {
         ...state,
         triton: {
@@ -408,10 +415,25 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
         }
       };
     }
+    case userFormActions.ADD_ROUTING_TEAM: {
+      const routingTeam = action.payload.routingTeamName;
+      return {
+        ...state,
+        triton: {
+          ...state.triton,
+          routing: {
+            ...state.triton.routing,
+            team: routingTeam,
+            updated: true
+          }
+        }
+
+      };
+    }
     case userFormActions.SET_BLUR_ON_FIELD: {
       const field = action.payload.field;
       const system = action.payload.system;
-      if(system){
+      if (system) {
         return {
           ...state,
           [system]: {
@@ -550,6 +572,9 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
             ...state.triton.defaultSkills,
             ...getValidSkillsObject(worker.attributes.default_skills)
           },
+          routing: {
+            ...getValidSkillsObject(worker.attributes.routing)
+          },
           didUser: worker.directDialNum ? true : false,
           extension: {
             ...state.triton.extension,
@@ -619,7 +644,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
 
       user.Roles?.forEach((ur: any) => {
         const availableRole = getWfmOptions(appState)?.Roles.find((r: any) => r.Id === ur.RoleId);
-        if(availableRole){
+        if (availableRole) {
           Roles.push({
             ...availableRole,
             value: availableRole.Id,
@@ -630,7 +655,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
 
       user.PersonSkills?.forEach((us: any) => {
         const availableSkill = getWfmOptions(appState)?.Skills?.find((s: any) => s.Id === us.SkillId);
-        if(availableSkill){
+        if (availableSkill) {
           PersonSkills.push({
             ...availableSkill,
             label: availableSkill.Name,
@@ -639,10 +664,10 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
         }
       });
 
-      if(user.OptionalColumns){
+      if (user.OptionalColumns) {
         Object.keys(user.OptionalColumns).forEach((id: string) => {
           const optionalColumn = getWfmOptions(appState)?.Optional_Columns.find((o: any) => o.Id === id);
-          if(optionalColumn){
+          if (optionalColumn) {
             OptionalColumns.push({
               ...optionalColumn,
               value: optionalColumn.Id,
