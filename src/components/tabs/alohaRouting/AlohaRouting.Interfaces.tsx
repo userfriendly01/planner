@@ -70,8 +70,6 @@ export interface RoutingStateVariables {
     masterData?: RoutingMasterData;
     maxId?: number;
     minId?: number;
-    page?: number;
-    perPage?: number;
     saveSuccess?: boolean;
     selectedRow?: CctSharedCallRoutingDb;
 }
