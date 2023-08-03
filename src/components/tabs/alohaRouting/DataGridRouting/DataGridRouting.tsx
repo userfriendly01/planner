@@ -22,7 +22,9 @@ import {
   FormValidationRule
 } from "utils/interfaces";
 import {
-  queryRoutingData, retrieveRoutingData
+  batchDelete,
+  queryRoutingData,
+  retrieveRoutingData
 } from "services";
 import {
   CACHED_CALL_ROUTING_PAGE_NO,
@@ -40,7 +42,9 @@ import {
   DataGrid,
   GridCallbackDetails,
   GridPaginationModel,
-  GridRenderCellParams
+  GridRenderCellParams,
+  GridRowId,
+  GridRowSelectionModel
 } from "@mui/x-data-grid";
 import { RoutingGridColumnDef } from "./GridColumnDef";
 import { AzureSPA } from "globals";
@@ -64,6 +68,8 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
   const [routingRule, setRoutingRule] = useState({ ...routingInitRule });
   const [clonedRule, setClonedRule] = useState(false);
+  const [selectedList, setSelectedList] = useState<Array<CctSharedCallRoutingDb>>([]);
+
   const maxRef = useRef(0);
 
   useEffect(() => {
@@ -324,6 +330,11 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
     }));
   };
 
+  const handleSelectionChanges = (gridSelectionModel: GridRowSelectionModel) =>{
+    const selectedRowsData = gridSelectionModel.map((id: GridRowId)=>state.filteredItems.find((row: CctSharedCallRoutingDb)=>row.id === id));
+    setSelectedList(selectedRowsData);
+  };
+
   const handleOnBulkCreate = (rows: Array<CctSharedCallRoutingDb> ) =>{
     console.log("Bulk Create: ", rows);
   };
@@ -332,8 +343,36 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
     console.log("Bulk Update: ", rows);
   };
 
-  const handleOnBulkDelete = (rows: Array<CctSharedCallRoutingDb> ) =>{
-    console.log("Bulk Delete: ", rows);
+  const handleOnBulkDelete = async (rows: Array<CctSharedCallRoutingDb> ) =>{
+    const keysToDelete = rows.map(x => {
+      return {
+        pkey: x.pkey,
+        skey: x.skey
+      };
+    }
+    );
+    const response = await batchDelete(keysToDelete, accessToken, graphQlApiUrl);
+
+    if(!response || response.errors) {
+      setAlertBar((alertBarProps: AlertBarProps) => ({
+        ...alertBarProps,
+        open: true,
+        msg: "Error deleting records.",
+        severityType: "error"
+      }));
+      throw new Error("Error deleting records.");
+    }
+
+    setSelectedList([]);
+
+    const deletedIds = rows.map(x => x.id);
+    const filteredItems = state.filteredItems.filter(x=> deletedIds.indexOf(x.id) === -1);
+
+    setState({
+      ...state,
+      filteredItems
+    });
+
   };
 
   RoutingGridColumnDef[0].renderCell = (params: GridRenderCellParams<CctSharedCallRoutingDb>) => (<a href="#" onClick={() => openEditModal(true, false, [params.row])}>{`${params.value}`}</a>);
@@ -363,6 +402,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
           paginationModel={paginationModel}
           rows={state.filteredItems}
           onPaginationModelChange={handlePaginationModelChange}
+          onRowSelectionModelChange={handleSelectionChanges}
           sx={{
             "& .MuiDataGrid-columnHeaderTitle": {
               fontWeight: 600
@@ -401,14 +441,13 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
         severityType={alertBar.severityType}
       />
       <PreviewModal
-        accessToken={accessToken}
         action={state.previewModalAction}
         isOpen={state.isPreviewModalOpen}
         onClose={handlePreviewModalOnClose}
         onCreate={handleOnBulkCreate}
         onDelete={handleOnBulkDelete}
         onUpdate={handleOnBulkUpdate}
-        rows={state.filteredItems}
+        rows={selectedList}
       />
     </div>
   );

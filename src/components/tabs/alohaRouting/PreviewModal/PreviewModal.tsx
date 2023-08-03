@@ -14,15 +14,11 @@ import {
 import { Box } from "@mui/material";
 import { CctSharedCallRoutingDb } from "../AlohaRouting.Interfaces";
 import { TableGridColumnDef } from "./TableGridColumnDef";
-import { batchDelete } from "services";
-import {
-  getGraphQLEndpoint
-} from "utils";
+
 import { reconstructTableColumnDef } from "./previewUtils";
 import "./PreviewModal.css";
 
 interface PreviewModalProps {
-  accessToken: string;
   action: "delete" | "add" | "edit"
   isOpen: boolean;
   onClose: () => void;
@@ -34,7 +30,6 @@ interface PreviewModalProps {
 
 const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   const {
-    accessToken,
     action,
     isOpen,
     onClose,
@@ -44,7 +39,6 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
     rows
   } = props;
   const apiRef = useGridApiRef();
-  const graphQLEndPoint: string = getGraphQLEndpoint();
   const tableGridColumnDef: Array<GridColDef> = useMemo<Array<GridColDef>>(()=>{
     return reconstructTableColumnDef(action, [...TableGridColumnDef]); },[action]);
 
@@ -52,7 +46,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
     const newRows: Array<CctSharedCallRoutingDb>=[...rows].map((row: CctSharedCallRoutingDb)=>{
       const updated: CctSharedCallRoutingDb = {} as unknown as CctSharedCallRoutingDb;
       Object.keys(row).forEach((key: string)=>{
-        updated[key as keyof CctSharedCallRoutingDb] = apiRef.current.getCellValue(row.pkey, key);
+        updated[key as keyof CctSharedCallRoutingDb] = apiRef.current.getCellValue(row.id, key);
       });
       return updated;
     });
@@ -69,18 +63,11 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
     onUpdate(newRows);
   };
   const handleOnDelete = async () => {
-    const keysToDelete = rows.map(x => {
-      return {
-        pkey: x.pkey,
-        skey: x.skey
-      };
-    }
-    );
-    const response = await batchDelete(keysToDelete, accessToken, graphQLEndPoint);
-
-    if (response && !response.errors) {
-      // openEditModal(false, true, rows, `${rows.length} Routing Rules deleted!! `, true);
-      return true;
+    try {
+      await onDelete(rows);
+      onClose();
+    } catch(e) {
+      console.error(e.message);
     }
   };
 
@@ -98,6 +85,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
             rows={rows}
             columns={tableGridColumnDef}
             editMode="row"
+            isCellEditable={params => action !== "delete"}
             sx={{
               "& .MuiDataGrid-columnHeaderTitle": {
                 fontWeight: 600
@@ -111,7 +99,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
             justifyContent: "center"
           }}>
             {action==="delete" &&
-            <StyledButton sx={{ marginRight: "15px" }} onClick={()=>{ onDelete(rows); }}>Delete</StyledButton>
+            <StyledButton sx={{ marginRight: "15px" }} onClick={()=>{ handleOnDelete(); }}>Delete</StyledButton>
             }
             {action === "add" &&
             <StyledButton sx={{ marginRight: "15px" }} onClick={()=>handleOnCreate()}>Save</StyledButton>
