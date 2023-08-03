@@ -72,10 +72,12 @@ const BulkCreateForm = (props: BulkActionFormProps) => {
         </SelectionWrapper>
       </Row>
       <Modal open={showBusinessUnitModal} onClose={() => { return; }} >
-        <BusinessUnitModal
-          handleClose={() => setShowBusinessUnitModal(false)}
-          handleConfirm={setBusinessUnitId}
-        />
+        <>
+          <BusinessUnitModal
+            handleClose={() => setShowBusinessUnitModal(false)}
+            handleConfirm={setBusinessUnitId}
+          />
+        </>
       </Modal>
     </>
   );

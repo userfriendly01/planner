@@ -1,3 +1,8 @@
+import React, {
+  useEffect,
+  useRef,
+  useState
+} from "react";
 import {
   AddPageFieldConfigProps,
   CctSharedCallRoutingDb,
@@ -17,6 +22,9 @@ import {
   FormValidationRule
 } from "utils/interfaces";
 import {
+  queryRoutingData, retrieveRoutingData
+} from "services";
+import {
   CACHED_CALL_ROUTING_PAGE_NO,
   CACHED_CALL_ROUTING_PER_PAGE,
   CACHE_FILTER_ROUTING,
@@ -34,19 +42,10 @@ import {
   GridPaginationModel,
   GridRenderCellParams
 } from "@mui/x-data-grid";
-import React, {
-  useEffect,
-  useRef,
-  useState
-} from "react";
-import {
-  queryRoutingData,
-  retrieveRoutingData
-} from "services";
+import { RoutingGridColumnDef } from "./GridColumnDef";
 import { AzureSPA } from "globals";
 import { CustomToast } from "components";
 import { PreviewModal } from "../PreviewModal";
-import { RoutingGridColumnDef } from "./GridColumnDef";
 import { RoutingTableBox } from "../AlohaRouting.Styles";
 import { getGridMasterData } from "./GridMaster";
 
@@ -58,6 +57,10 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
 
   const graphQlApiUrl: string = getGraphQLEndpoint();
   const [state, setState] = useState<RoutingStateVariables>(routingInitState);
+  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
+    pageSize: sessionStorage.getItem(CACHED_CALL_ROUTING_PER_PAGE) ? +sessionStorage.getItem(CACHED_CALL_ROUTING_PER_PAGE) : 10,
+    page: sessionStorage.getItem(CACHED_CALL_ROUTING_PAGE_NO) ? +sessionStorage.getItem(CACHED_CALL_ROUTING_PAGE_NO) : 1
+  });
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
   const [routingRule, setRoutingRule] = useState({ ...routingInitRule });
   const [clonedRule, setClonedRule] = useState(false);
@@ -203,11 +206,6 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
     }
   };
 
-  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
-    pageSize: sessionStorage.getItem(CACHED_CALL_ROUTING_PER_PAGE) ? +sessionStorage.getItem(CACHED_CALL_ROUTING_PER_PAGE) : 10,
-    page: sessionStorage.getItem(CACHED_CALL_ROUTING_PAGE_NO) ? +sessionStorage.getItem(CACHED_CALL_ROUTING_PAGE_NO) : 1
-  });
-
   const openAddModal = (flag: boolean,openAddModal?:boolean, row?: CctSharedCallRoutingDb) => {
     let newData;
     if(!openAddModal){
@@ -228,6 +226,12 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
       ...state,
       isAddModalOpen: flag
     });
+  };
+
+  const handlePaginationModelChange = (model: GridPaginationModel, details:GridCallbackDetails<any>) =>{
+    sessionStorage.setItem(CACHED_CALL_ROUTING_PAGE_NO, model.page.toString());
+    sessionStorage.setItem(CACHED_CALL_ROUTING_PER_PAGE, model.pageSize.toString());
+    setPaginationModel(model);
   };
 
   const handleClose = (flag: boolean) => {
@@ -334,12 +338,6 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
 
   RoutingGridColumnDef[0].renderCell = (params: GridRenderCellParams<CctSharedCallRoutingDb>) => (<a href="#" onClick={() => openEditModal(true, false, [params.row])}>{`${params.value}`}</a>);
 
-  const handlePaginationModelChange = (model: GridPaginationModel, details:GridCallbackDetails<any>) =>{
-    sessionStorage.setItem(CACHED_CALL_ROUTING_PAGE_NO, model.page.toString());
-    sessionStorage.setItem(CACHED_CALL_ROUTING_PER_PAGE, model.pageSize.toString());
-    setPaginationModel(model);
-  };
-
   return (
     <div>
       <CustomRoutingGridToolBar
@@ -359,12 +357,12 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
           disableRowSelectionOnClick
           getRowId={(row: CctSharedCallRoutingDb)=>row.id}
           loading={state.fetching}
-          onPaginationModelChange={handlePaginationModelChange}
           pageSizeOptions={[10, 20, 50, 100]}
           pagination
           paginationMode="client"
           paginationModel={paginationModel}
           rows={state.filteredItems}
+          onPaginationModelChange={handlePaginationModelChange}
           sx={{
             "& .MuiDataGrid-columnHeaderTitle": {
               fontWeight: 600

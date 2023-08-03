@@ -29,7 +29,8 @@ jest.mock("@mui/x-data-grid",()=>({
   __esModule: true,
   DataGrid: jest.fn(),
   GridToolbar: jest.fn(),
-  GridRenderCellParams: jest.fn()
+  GridRenderCellParams: jest.fn(),
+  useGridApiRef: jest.fn()
 }));
 
 jest.mock("components", ()=>({
@@ -143,8 +144,8 @@ describe("<DataGridFlow />", () => {
       queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
       retrieveFlowData.mockResolvedValue(validFlowDataList);
       renderComponent();
-      expect(DataGrid.mock.calls[0][0].page).toBe(1);
-      expect(DataGrid.mock.calls[0][0].pageSize).toBe(10);
+      expect(DataGrid.mock.calls[0][0].paginationModel.page).toBe(1);
+      expect(DataGrid.mock.calls[0][0].paginationModel.pageSize).toBe(10);
     });
 
     test("Simulate Change Rows Per Page", async () => {
@@ -152,10 +153,13 @@ describe("<DataGridFlow />", () => {
       queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
       retrieveFlowData.mockResolvedValue(validFlowDataList);
       renderComponent();
-      const onPageSizeChange = DataGrid.mock.calls[0][0].onPageSizeChange;
-      act(()=>{ onPageSizeChange(20); });
-      expect(DataGrid.mock.calls[1][0].page).toBe(1);
-      expect(DataGrid.mock.calls[1][0].pageSize).toBe(20);
+      const onPageSizeChange = DataGrid.mock.calls[0][0].onPaginationModelChange;
+      act(()=>{ onPageSizeChange({
+        page: 1,
+        pageSize: 20
+      }); });
+      expect(DataGrid.mock.calls[1][0].paginationModel.page).toBe(1);
+      expect(DataGrid.mock.calls[1][0].paginationModel.pageSize).toBe(20);
     });
 
     test("Simulate Change Go to Next Page", async () => {
@@ -163,10 +167,13 @@ describe("<DataGridFlow />", () => {
       queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
       retrieveFlowData.mockResolvedValue(validFlowDataList);
       renderComponent();
-      const onPageChange = DataGrid.mock.calls[0][0].onPageChange;
-      act(()=>{ onPageChange(2); });
-      expect(DataGrid.mock.calls[1][0].page).toBe(2);
-      expect(DataGrid.mock.calls[1][0].pageSize).toBe(10);
+      const onPageChange = DataGrid.mock.calls[0][0].onPaginationModelChange;
+      act(()=>{ onPageChange({
+        page: 2,
+        pageSize: 10
+      }); });
+      expect(DataGrid.mock.calls[1][0].paginationModel.page).toBe(2);
+      expect(DataGrid.mock.calls[1][0].paginationModel.pageSize).toBe(10);
     });
 
     test("Simulate Change Go to previous Page", async () => {
@@ -174,15 +181,21 @@ describe("<DataGridFlow />", () => {
       queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
       retrieveFlowData.mockResolvedValue(validFlowDataList);
       renderComponent();
-      const onPageChange = DataGrid.mock.calls[0][0].onPageChange;
+      const onPageChange = DataGrid.mock.calls[0][0].onPaginationModelChange;
       act(()=>{
-        onPageChange(2);
+        onPageChange({
+          page: 2,
+          pageSize: 10
+        });
       });
-      const onPageChangeSecond = DataGrid.mock.calls[1][0].onPageChange;
+      const onPageChangeSecond = DataGrid.mock.calls[1][0].onPaginationModelChange;
       act(()=>{
-        onPageChangeSecond(1);
+        onPageChangeSecond({
+          page: 1,
+          pageSize: 10
+        });
       });
-      expect(DataGrid.mock.calls[2][0].page).toBe(1);
+      expect(DataGrid.mock.calls[2][0].paginationModel.page).toBe(1);
     });
   });
 
@@ -300,7 +313,7 @@ describe("<DataGridFlow />", () => {
       queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
       retrieveFlowData.mockResolvedValue(validFlowDataList);
       renderComponent();
-      expect(DataGrid.mock.calls[0][0].page).toBe(1);
+      expect(DataGrid.mock.calls[0][0].paginationModel.page).toBe(1);
     });
     test("Simulate Empty Filtered Item",()=>{
       const validFlowDataList = createFlowDataList(15);
@@ -308,7 +321,7 @@ describe("<DataGridFlow />", () => {
       retrieveFlowData.mockResolvedValue(validFlowDataList);
       localStorage.clear();
       renderComponent();
-      expect(DataGrid.mock.calls[0][0].page).toBe(1);
+      expect(DataGrid.mock.calls[0][0].paginationModel.page).toBe(1);
     });
     test("Simulate openAdvanceSearchModal", ()=>{
       const validFlowDataList = createFlowDataList(15);
@@ -383,7 +396,7 @@ describe("<DataGridFlow />", () => {
         pkey: "+18005551212x1"
       }));
       renderComponent();
-      expect(DataGrid.mock.calls[0][0].page).toBe(1);
+      expect(DataGrid.mock.calls[0][0].paginationModel.page).toBe(1);
       const applyFilter = AdvanceSearchModal.mock.calls[0][0].applyFilter;
       act(()=>{ applyFilter(); });
       expect(AdvanceSearchModal.mock.calls[1][0].isOpen).toBe(false);
@@ -394,7 +407,7 @@ describe("<DataGridFlow />", () => {
       retrieveFlowData.mockResolvedValue(validFlowDataList);
       localStorage.setItem(CACHE_FILTER_FLOW, "");
       renderComponent();
-      expect(DataGrid.mock.calls[0][0].page).toBe(1);
+      expect(DataGrid.mock.calls[0][0].paginationModel.page).toBe(1);
     });
     test("Simulate advanceFilter empty result", () => {
       const validFlowDataList = createFlowDataList(15);
@@ -405,7 +418,7 @@ describe("<DataGridFlow />", () => {
         brand: "brandXYZ not in list"
       }));
       renderComponent();
-      expect(DataGrid.mock.calls[0][0].page).toBe(1);
+      expect(DataGrid.mock.calls[0][0].paginationModel.page).toBe(1);
     });
   });
 
@@ -415,7 +428,7 @@ describe("<DataGridFlow />", () => {
       queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
       retrieveFlowData.mockResolvedValue(validFlowDataList);
       renderComponent();
-      expect(DataGrid.mock.calls[0][0].page).toBe(1);
+      expect(DataGrid.mock.calls[0][0].paginationModel.page).toBe(1);
     });
     test("Simulate AdvanceSearchModal applyFilter with no filter", ()=>{
       const validRoutingDataList = createFlowDataList(15);

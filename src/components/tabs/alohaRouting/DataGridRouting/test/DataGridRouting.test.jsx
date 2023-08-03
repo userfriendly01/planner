@@ -102,7 +102,7 @@ const validRoutingData = {
   twilioSkill: "test",
   crcSkill: "updated"
 };
-const routingPattern= routingData =>{
+const routingPattern=routingData=>{
   const routingPatternReturn={
     data: {
       listCctSharedCallRoutingGlobalDbs: {
@@ -110,7 +110,6 @@ const routingPattern= routingData =>{
       }
     }
   };
-
   return routingPatternReturn;
 };
 
@@ -166,8 +165,8 @@ describe("<DataGridRouting />", ()=>{
       queryRoutingData.mockResolvedValue(validRoutingDataList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
-      expect(DataGrid.mock.calls[0][0].page).toBe(1);
-      expect(DataGrid.mock.calls[0][0].pageSize).toBe(10);
+      expect(DataGrid.mock.calls[0][0].paginationModel.page).toBe(1);
+      expect(DataGrid.mock.calls[0][0].paginationModel.pageSize).toBe(10);
     });
 
     test("Simulate Change Rows Per Page", async () => {
@@ -175,10 +174,13 @@ describe("<DataGridRouting />", ()=>{
       queryRoutingData.mockResolvedValue(validRoutingDataList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
-      const onPageSizeChange = DataGrid.mock.calls[0][0].onPageSizeChange;
-      act(()=>{ onPageSizeChange(20); });
-      expect(DataGrid.mock.calls[1][0].page).toBe(1);
-      expect(DataGrid.mock.calls[1][0].pageSize).toBe(20);
+      const onPageSizeChange = DataGrid.mock.calls[0][0].onPaginationModelChange;
+      act(()=>{ onPageSizeChange({
+        page: 1,
+        pageSize: 20
+      }); });
+      expect(DataGrid.mock.calls[1][0].paginationModel.page).toBe(1);
+      expect(DataGrid.mock.calls[1][0].paginationModel.pageSize).toBe(20);
     });
 
     test("Simulate Change Go to Next Page", async () => {
@@ -186,10 +188,13 @@ describe("<DataGridRouting />", ()=>{
       queryRoutingData.mockResolvedValue(validRoutingDataList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
-      const onPageChange = DataGrid.mock.calls[0][0].onPageChange;
-      act(()=>{ onPageChange(2); });
-      expect(DataGrid.mock.calls[1][0].page).toBe(2);
-      expect(DataGrid.mock.calls[1][0].pageSize).toBe(10);
+      const onPageChange = DataGrid.mock.calls[0][0].onPaginationModelChange;
+      act(()=>{ onPageChange({
+        page: 2,
+        pageSize: 10
+      }); });
+      expect(DataGrid.mock.calls[1][0].paginationModel.page).toBe(2);
+      expect(DataGrid.mock.calls[1][0].paginationModel.pageSize).toBe(10);
     });
 
     test("Simulate Change Go to previous Page", async () => {
@@ -197,15 +202,21 @@ describe("<DataGridRouting />", ()=>{
       queryRoutingData.mockResolvedValue(validRoutingDataList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
-      const onPageChange = DataGrid.mock.calls[0][0].onPageChange;
+      const onPageChange = DataGrid.mock.calls[0][0].onPaginationModelChange;
       act(()=>{
-        onPageChange(2);
+        onPageChange({
+          page: 2,
+          pageSize: 10
+        });
       });
-      const onPageChangeSecond = DataGrid.mock.calls[1][0].onPageChange;
+      const onPageChangeSecond = DataGrid.mock.calls[1][0].onPaginationModelChange;
       act(()=>{
-        onPageChangeSecond(1);
+        onPageChangeSecond({
+          page: 1,
+          pageSize: 10
+        });
       });
-      expect(DataGrid.mock.calls[2][0].page).toBe(1);
+      expect(DataGrid.mock.calls[2][0].paginationModel.page).toBe(1);
     });
   });
 
@@ -314,7 +325,7 @@ describe("<DataGridRouting />", ()=>{
       queryRoutingData.mockResolvedValue(patternList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
-      expect(DataGrid.mock.calls[0][0].page).toBe(1);
+      expect(DataGrid.mock.calls[0][0].paginationModel.page).toBe(1);
     });
     test("Simulate Empty Filtered Item",()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
@@ -323,7 +334,7 @@ describe("<DataGridRouting />", ()=>{
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       localStorage.clear();
       renderDataGridRouting();
-      expect(DataGrid.mock.calls[0][0].page).toBe(1);
+      expect(DataGrid.mock.calls[0][0].paginationModel.page).toBe(1);
     });
     test("Simulate openAdvanceSearchModal", ()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
@@ -426,7 +437,7 @@ describe("<DataGridRouting />", ()=>{
       queryRoutingData.mockResolvedValue(validRoutingDataList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
-      expect(DataGrid.mock.calls[0][0].page).toBe(1);
+      expect(DataGrid.mock.calls[0][0].paginationModel.page).toBe(1);
     });
     test("Simulate CustomToast",()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(1);
