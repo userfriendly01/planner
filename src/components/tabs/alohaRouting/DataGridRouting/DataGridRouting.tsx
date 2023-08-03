@@ -32,9 +32,7 @@ import {
   DataGrid,
   GridCallbackDetails,
   GridPaginationModel,
-  GridRenderCellParams,
-  GridRowId,
-  GridRowSelectionModel
+  GridRenderCellParams
 } from "@mui/x-data-grid";
 import React, {
   useEffect,
@@ -64,7 +62,6 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
   const [routingRule, setRoutingRule] = useState({ ...routingInitRule });
   const [clonedRule, setClonedRule] = useState(false);
   const maxRef = useRef(0);
-  const [selectedList, setSelectedList] = useState<Array<CctSharedCallRoutingDb>>([]);
 
   useEffect(() => {
     const getTableData = async()=>{
@@ -323,11 +320,6 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
     }));
   };
 
-  const handleSelectionChanges = (gridSelectionModel: GridRowSelectionModel) =>{
-    const selectedRowsData = gridSelectionModel.map((id: GridRowId)=>state.filteredItems.find((row: CctSharedCallRoutingDb)=>row.id === id));
-    setSelectedList(selectedRowsData);
-  };
-
   const handleOnBulkCreate = (rows: Array<CctSharedCallRoutingDb> ) =>{
     console.log("Bulk Create: ", rows);
   };
@@ -368,13 +360,11 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
           getRowId={(row: CctSharedCallRoutingDb)=>row.id}
           loading={state.fetching}
           onPaginationModelChange={handlePaginationModelChange}
-          onSelectionModelChange={handleSelectionChanges}
           pageSizeOptions={[10, 20, 50, 100]}
           pagination
           paginationMode="client"
           paginationModel={paginationModel}
           rows={state.filteredItems}
-          rowsPerPageOptions={[10, 20, 50, 100]}
           sx={{
             "& .MuiDataGrid-columnHeaderTitle": {
               fontWeight: 600
@@ -420,7 +410,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
         onCreate={handleOnBulkCreate}
         onDelete={handleOnBulkDelete}
         onUpdate={handleOnBulkUpdate}
-        rows={selectedList}
+        rows={state.filteredItems}
       />
     </div>
   );

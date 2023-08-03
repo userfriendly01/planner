@@ -42,6 +42,7 @@ export interface RoutingMasterData {
     callerState?: Array<string>;
     callIntent?: Array<string>;
     policyType?: Array<string>;
+    priority?: Array<string>;
     transferDestination?: Array<string>;
     twilioSkill?: Array<string>;
 }

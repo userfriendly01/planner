@@ -21,14 +21,14 @@ const reconstructTableColumnDef = (action: PreviewModalAction, columnDef: Array<
 };
 
 const manageEditColumnDef = (columnDef: Array<GridColDef>): Array<GridColDef> =>{
-  const flowDropDownList:RoutingDropDownList = fetchData();
+  const routingDropDownList:RoutingDropDownList = fetchData();
   const updatedColDef: Array<GridColDef> = columnDef.map((item:GridColDef)=>{
-    if(Object.keys(flowDropDownList).includes(item.field)){
+    if(Object.keys(routingDropDownList).includes(item.field)){
       return {
         ...item,
         editable: true,
         type: "singleSelect",
-        valueOptions: RoutingDropDownList[item.field as keyof RoutingDropDownList]
+        valueOptions: routingDropDownList[item.field as keyof RoutingDropDownList]
       };
     }
     return {
@@ -51,7 +51,7 @@ const fetchData = (): RoutingDropDownList =>{
     dayOfWeek: dayOfWeek,
     language: languageOffer,
     policyType: masterDataObject?.policyType,
-    priority: priority
+    priority: masterDataObject.priority
   };
   return dropDownValue;
 };

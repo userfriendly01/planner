@@ -11,7 +11,9 @@ import { AzureSPA } from "globals";
 import React, {
   useEffect, useState
 } from "react";
-import { queryFlowData, retrieveFlowData } from "services";
+import {
+  queryFlowData, retrieveFlowData
+} from "services";
 import {
   CACHE_FILTER_FLOW,
   CALL_FLOW_PAGE_NO,

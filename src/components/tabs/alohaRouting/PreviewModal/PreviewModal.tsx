@@ -1,8 +1,7 @@
-import React, { useMemo } from "react";
 import {
-  CustomToast,
-  StyledButton
-} from "components";
+  DataGrid, GridColDef, useGridApiRef
+} from "@mui/x-data-grid";
+import React, { useMemo } from "react";
 import {
   Modal,
   ModalHeader,
@@ -10,19 +9,17 @@ import {
   ModalFooter
 } from "@lmig/lmds-react-modal";
 import {
-  getGraphQLEndpoint,
-  initializedAlertBar
-} from "utils";
+  StyledButton
+} from "components";
 import { Box } from "@mui/material";
 import { CctSharedCallRoutingDb } from "../AlohaRouting.Interfaces";
-import {
-  DataGrid, GridColDef, useGridApiRef
-} from "@mui/x-data-grid";
-import "./PreviewModal.css";
 import { TableGridColumnDef } from "./TableGridColumnDef";
 import { batchDelete } from "services";
-import { AlertBarProps } from "utils/interfaces";
+import {
+  getGraphQLEndpoint
+} from "utils";
 import { reconstructTableColumnDef } from "./previewUtils";
+import "./PreviewModal.css";
 
 interface PreviewModalProps {
   accessToken: string;
@@ -32,7 +29,6 @@ interface PreviewModalProps {
   onCreate?: (rows: Array<CctSharedCallRoutingDb>) => void;
   onDelete?: (rows: Array<CctSharedCallRoutingDb>) => void;
   onUpdate?: (rows: Array<CctSharedCallRoutingDb>) => void;
-  openEditModal: (flag: boolean, isSubmitted?: boolean, rows?: CctSharedCallRoutingDb[], message?: string, deleteRow?: boolean,isCloneRule?: boolean) => void;
   rows: Array<CctSharedCallRoutingDb>;
 }
 
@@ -52,6 +48,26 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   const tableGridColumnDef: Array<GridColDef> = useMemo<Array<GridColDef>>(()=>{
     return reconstructTableColumnDef(action, [...TableGridColumnDef]); },[action]);
 
+  const getUpdatedRoutingDb = () =>{
+    const newRows: Array<CctSharedCallRoutingDb>=[...rows].map((row: CctSharedCallRoutingDb)=>{
+      const updated: CctSharedCallRoutingDb = {} as unknown as CctSharedCallRoutingDb;
+      Object.keys(row).forEach((key: string)=>{
+        updated[key as keyof CctSharedCallRoutingDb] = apiRef.current.getCellValue(row.pkey, key);
+      });
+      return updated;
+    });
+    return newRows;
+  };
+
+  const handleOnCreate = () =>{
+    const newRows:Array<CctSharedCallRoutingDb> = getUpdatedRoutingDb();
+    onCreate(newRows);
+  };
+
+  const handleOnUpdate = () =>{
+    const newRows:Array<CctSharedCallRoutingDb> = getUpdatedRoutingDb();
+    onUpdate(newRows);
+  };
   const handleOnDelete = async () => {
     const keysToDelete = rows.map(x => {
       return {
@@ -63,7 +79,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
     const response = await batchDelete(keysToDelete, accessToken, graphQLEndPoint);
 
     if (response && !response.errors) {
-      openEditModal(false, true, rows, `${rows.length} Routing Rules deleted!! `, true);
+      // openEditModal(false, true, rows, `${rows.length} Routing Rules deleted!! `, true);
       return true;
     }
   };
@@ -80,7 +96,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
         <ModalBody className="preview-grid-modal">
           <DataGrid
             rows={rows}
-            columns={TableGridColumnDef}
+            columns={tableGridColumnDef}
             editMode="row"
             sx={{
               "& .MuiDataGrid-columnHeaderTitle": {
@@ -94,7 +110,15 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
             display: "flex",
             justifyContent: "center"
           }}>
-            <StyledButton onClick={()=>{ handleOnDelete(); }} sx={{ marginRight: "15px" }}>Delete</StyledButton>
+            {action==="delete" &&
+            <StyledButton sx={{ marginRight: "15px" }} onClick={()=>{ onDelete(rows); }}>Delete</StyledButton>
+            }
+            {action === "add" &&
+            <StyledButton sx={{ marginRight: "15px" }} onClick={()=>handleOnCreate()}>Save</StyledButton>
+            }
+            {action === "edit" &&
+            <StyledButton sx={{ marginRight: "15px" }} onClick={()=>{ handleOnUpdate(); }}>Update</StyledButton>
+            }
             <StyledButton onClick={()=>{ onClose(); }}>Cancel</StyledButton>
           </Box>
         </ModalFooter>
