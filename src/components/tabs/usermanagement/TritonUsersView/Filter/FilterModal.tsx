@@ -39,8 +39,8 @@ const FilterModal = (props: FilterModalProps) => {
           <ManagerDropdown />
         </DropdownWrapper>
         <FilterButtonWrapper>
-          <StyledButton onClick={handleClose}>Apply Filters</StyledButton>
-          <StyledButton onClick={handleClear}>Clear Filters</StyledButton>
+          <StyledButton onClick={handleClose}>Done</StyledButton>
+          <StyledButton onClick={handleClear}>Clear</StyledButton>
         </FilterButtonWrapper>
       </PaperContainer>
     </ModalContainer>

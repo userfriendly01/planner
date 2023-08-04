@@ -86,7 +86,7 @@ const ManagementHeader = (props: ManagementHeaderProps) => {
                   maxWidth: "150px",
                   marginBottom: "3px"
                 }}
-                label={x.label}
+                label={`OU: ${x.label}`}
                 size="small"
                 onDelete={() => {
                   const updatedOus = state.userManagementTableFilters.ouFilterArray.filter(o => o.value !== x.value);
