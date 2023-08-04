@@ -1,13 +1,16 @@
 import React from "react";
 import { render as quickRender } from "@testing-library/react";
 import { DataGridRouting } from "../DataGridRouting";
+import { PreviewModal } from "../../PreviewModal";
 import {
   DataGrid, GridRenderCellParams, GridToolbar
 } from "@mui/x-data-grid";
 import {
   RoutingAdvanceSearch, EditRouting, AddRouting, CustomRoutingGridToolBar
 } from "../../RoutingCustomActions";
-import { CustomToast } from "components";
+import {
+  CustomToast
+} from "components";
 import { useAdminState } from "context";
 import {
   act,
@@ -34,6 +37,11 @@ jest.mock("@mui/x-data-grid",()=>({
 jest.mock("components", ()=>({
   __esModule: true,
   CustomToast: jest.fn()
+}));
+
+jest.mock("../../PreviewModal", ()=>({
+  __esModule: true,
+  PreviewModal: jest.fn()
 }));
 
 jest.mock("../../RoutingCustomActions", ()=>({
@@ -126,14 +134,15 @@ describe("<DataGridRouting />", ()=>{
     retrieveRoutingData.mockReset();
     useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
-      DataGrid,
-      GridToolbar,
-      GridRenderCellParams,
-      RoutingAdvanceSearch,
-      EditRouting,
       AddRouting,
+      CustomRoutingGridToolBar: CustomRoutingGridToolBar,
       CustomToast,
-      CustomRoutingGridToolBar: CustomRoutingGridToolBar
+      DataGrid,
+      EditRouting,
+      GridRenderCellParams,
+      GridToolbar,
+      PreviewModal,
+      RoutingAdvanceSearch
     }),
     Object.defineProperty(window, "matchMedia", {
       writable: true,
@@ -446,7 +455,8 @@ describe("<DataGridRouting />", ()=>{
       renderDataGridRouting();
       const handleClose = CustomToast.mock.calls[0][0].onClose;
       act(()=>{ handleClose(true); });
-      expect(CustomToast.mock.calls[2][0].open).toBe(true);
+      const ctCalls = CustomToast.mock.calls;
+      expect(ctCalls[1][0].open).toBe(true);
     });
     test("Simulate openAdvanceSearchModal applyFilter with no filter", ()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
