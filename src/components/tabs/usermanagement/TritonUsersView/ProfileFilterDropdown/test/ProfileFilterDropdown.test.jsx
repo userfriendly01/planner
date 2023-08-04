@@ -96,7 +96,7 @@ describe("<ProfileDropdown />", () => {
         value: typeof profile.profile_id === "number" ? profile.profile_id.toString() : profile.profile_id
       }))
     ]);
-    expect(Dropdown.mock.calls[0][0].value).toBe("show-all");
+    expect(Dropdown.mock.calls[0][0].value).toEqual([]);
   });
 
   test("When an option is clicked in the filter, the dispatch method is fired with the correct parameters", () => {
@@ -112,7 +112,7 @@ describe("<ProfileDropdown />", () => {
       Dropdown.mock.calls[0][0].updateValue(null, selection);
     });
     expect(mockAdminDispatch).toHaveBeenCalledWith({
-      type: "updateProfilefilter",
+      type: "updateProfileFilter",
       payload: selection
     });
   });

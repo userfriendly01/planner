@@ -674,5 +674,75 @@ describe("reducer", () => {
       });
     });
   });
-  // TODO: FILTER REDUCER TESTS
+  describe("updateManageFilter", () => {
+    test("should set the manager filter on the userManagementTableFilters", () => {
+      const action = {
+        type: "updateManagerFilter",
+        payload: "n1234567"
+      };
+      const result = reducer(initialState, action);
+      expect(result).toEqual({
+        ...initialState,
+        userManagementTableFilters: {
+          ...initialState.userManagementTableFilters,
+          managerFilter: "n1234567"
+        }
+      });
+    });
+  });
+  describe("updateProfileFilter", () => {
+    test("should set the profile filter on the userManagementTableFilters", () => {
+      const action = {
+        type: "updateProfileFilter",
+        payload: [{
+          value: "butts",
+          label: "stuff"
+        }]
+      };
+      const result = reducer(initialState, action);
+      expect(result).toEqual({
+        ...initialState,
+        userManagementTableFilters: {
+          ...initialState.userManagementTableFilters,
+          profileFilterArray: [{
+            value: "butts",
+            label: "stuff"
+          }]
+        }
+      });
+    });
+  });
+  describe("updateOuFilter", () => {
+    test("should set the ou filter on the userManagementTableFilters", () => {
+      const action = {
+        type: "updateOuFilter",
+        payload: [{ stuff: "butts" }]
+      };
+      const result = reducer(initialState, action);
+      expect(result).toEqual({
+        ...initialState,
+        userManagementTableFilters: {
+          ...initialState.userManagementTableFilters,
+          ouFilterArray: [{ stuff: "butts" }]
+        }
+      });
+    });
+  });
+  describe("resetFilters", () => {
+    test("should set the filters back to initial filter state", () => {
+      const action = {
+        type: "resetFilters"
+      };
+      const startingState = {
+        ...initialState,
+        userManagementTableFilters: {
+          manager: "n1231232",
+          profileFilterArray: [{ hi: "yo" }],
+          ouFilterArray: [{ more: "stuff" }]
+        }
+      };
+      const result = reducer(startingState, action);
+      expect(result).toEqual(initialState);
+    });
+  });
 });
