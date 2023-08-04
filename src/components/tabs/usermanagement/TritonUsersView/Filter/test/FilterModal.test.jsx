@@ -34,12 +34,6 @@ jest.mock("components", () => ({
 
 const mockHandleClose = jest.fn();
 const mockHandleClear = jest.fn();
-// const mockSetTableState = jest.fn();
-// const tableState = {
-//   managerFilter: null,
-//   profileFilter: null,
-//   ouFilter: null
-// };
 
 describe("<FilterModal />", () => {
 

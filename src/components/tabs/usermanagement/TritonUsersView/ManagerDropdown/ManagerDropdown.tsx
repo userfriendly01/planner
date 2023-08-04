@@ -134,14 +134,14 @@ const ManagerDropdown = () => {
         }}
         value={filterBy ? options.find((option: DropdownOption) => { if(option.value === filterBy){ return option.label; } }) : ""}
         updateValue={(event: any, newInputValue: any) => {
-          if(newInputValue.value === "add-manager"){
-            handleOpenManager();
-          } else if(newInputValue.value === "show-all") {
+          if (newInputValue === null || newInputValue.value === "show-all") {
             dispatch({
               type: "updateManagerFilter",
               payload: null
             });
-          } else if(newInputValue.value !== "divider") {
+          } else if (newInputValue.value === "add-manager") {
+            handleOpenManager();
+          } else if (newInputValue.value !== "divider") {
             dispatch({
               type: "updateManagerFilter",
               payload: newInputValue.value

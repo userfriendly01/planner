@@ -69,12 +69,12 @@ const ProfileFilterDropdown = () => {
         multiple={true}
         value= {filterBy}
         updateValue={(event: any, optionsArray: any[]) => {
-          if(optionsArray.find( (o: any) => o.value === "show-all")){
+          if (optionsArray.length === 0 || optionsArray.find( (o: any) => o.value === "show-all")) {
             dispatch({
               type: "updateProfileFilter",
               payload: []
             });
-          } else if(optionsArray.find( (o: any) => o.value !== "divider")) {
+          } else if (optionsArray.find( (o: any) => o.value !== "divider")) {
             dispatch({
               type: "updateProfileFilter",
               payload: optionsArray

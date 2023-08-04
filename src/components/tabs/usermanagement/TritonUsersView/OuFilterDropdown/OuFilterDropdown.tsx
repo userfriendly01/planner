@@ -76,12 +76,12 @@ const OuFilterDropdown = () => {
         multiple={true}
         value={filterBy}
         updateValue={(event: any, optionsArray: any[]) => {
-          if(optionsArray.find( (o: any) => o.value === "show-all")){
+          if (optionsArray.length === 0 || optionsArray.find( (o: any) => o.value === "show-all")) {
             dispatch({
               type: "updateOuFilter",
               payload: []
             });
-          }else if(optionsArray.find( (o: any) => o.value !== "divider")) {
+          } else if (optionsArray.find( (o: any) => o.value !== "divider")) {
             dispatch({
               type: "updateOuFilter",
               payload: optionsArray

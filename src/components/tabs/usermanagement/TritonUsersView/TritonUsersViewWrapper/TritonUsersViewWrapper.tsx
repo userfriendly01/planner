@@ -40,7 +40,6 @@ const TritonUserManagementWrapper: any = () => {
     ouFilterArray
   } = state.userManagementTableFilters;
   const [ tableState, setTableState ] = React.useState(defaultTableState);
-  console.log("KALEIGH TABLESTATE", tableState);
 
   React.useEffect(() => {
     let filteredList = state.workerContext.workers.slice().sort(sortWorkersByFullName);

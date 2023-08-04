@@ -29,8 +29,6 @@ const ManagementHeader = (props: ManagementHeaderProps) => {
     return `${manager.manager_first_name} ${manager.manager_last_name}`;
   };
 
-  console.log("KALEIGH FILTERSTATE", state.userManagementTableFilters);
-
   return (
     <ControlsWrapper>
       <ControlItem >
