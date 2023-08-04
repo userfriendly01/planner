@@ -5,7 +5,9 @@ import {
   ManagerModal
 } from "components";
 import { IconWrapper } from "../ManagerDropdown.Styles";
-import { useAdminState } from "context";
+import {
+  useAdminState, useAdminDispatch
+} from "context";
 import { Modal } from "@mui/material";
 import React from "react";
 import { sortManagersByName } from "utils";
@@ -26,7 +28,8 @@ jest.mock("components", () => ({
 }));
 
 jest.mock("context", () => ({
-  useAdminState: jest.fn()
+  useAdminState: jest.fn(),
+  useAdminDispatch: jest.fn()
 }));
 
 jest.mock("../ManagerDropdown.Styles", () => ({
@@ -39,8 +42,6 @@ jest.mock("@mui/material", () => ({
   Modal: jest.fn()
 }));
 
-const filterBy = "show-all";
-const setFilter = jest.fn();
 const mockManagerData = [
   {
     manager_n_number: "n0444444",
@@ -69,6 +70,8 @@ const mockManagerData = [
   }
 ];
 
+const mockAdminDispatch = jest.fn();
+
 const sortedManagers = [ ...mockManagerData ].sort(sortManagersByName);
 
 const initialTestState  = {
@@ -78,7 +81,7 @@ const initialTestState  = {
 
 const renderComponent = () => render(
   <ThemeProvider theme={theme}>
-    <ManagerDropdown filterBy={filterBy} setFilter={setFilter} />
+    <ManagerDropdown />
   </ThemeProvider>
 );
 
@@ -86,6 +89,7 @@ describe("<ManagerDropdown />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     useAdminState.mockReturnValue(initialTestState);
+    useAdminDispatch.mockReturnValue(mockAdminDispatch);
     setupMockedComponents({
       Dropdown,
       IconWrapper,
@@ -116,10 +120,6 @@ describe("<ManagerDropdown />", () => {
         value: manager.manager_n_number
       }))
     ]);
-    expect(Dropdown.mock.calls[0][0].value).toStrictEqual({
-      value: "show-all",
-      label: "Show All"
-    });
   });
 
   test("When an option is clicked in the filter, the setFilter method is fired with the correct parameters", () => {
@@ -131,7 +131,11 @@ describe("<ManagerDropdown />", () => {
     act(() => {
       Dropdown.mock.calls[0][0].updateValue(null, selection);
     });
-    expect(setFilter).toHaveBeenCalledWith(selection.value);
+    expect(mockAdminDispatch).toHaveBeenCalledTimes(1);
+    expect(mockAdminDispatch).toHaveBeenCalledWith({
+      type: "updateManagerFilter",
+      payload: selection.value
+    });
   });
   describe("Add Manger Modal", () => {
     test("When filterBy is add-manager, the Add Manager Modal is set to open", () => {
@@ -164,7 +168,11 @@ describe("<ManagerDropdown />", () => {
         Modal.mock.calls[3][0].onClose();
         ManagerModal.mock.calls[0][0].handleClose();
       });
-      expect(setFilter.mock.calls[0][0]).toBe(null);
+      expect(mockAdminDispatch).toHaveBeenCalledTimes(1);
+      expect(mockAdminDispatch).toHaveBeenCalledWith({
+        type: "updateManagerFilter",
+        payload: null
+      });
       expect(Modal.mock.calls[1][0].open).toBe(false);
     });
   });
@@ -177,8 +185,11 @@ describe("<ManagerDropdown />", () => {
         };
         renderComponent();
         act(() => Dropdown.mock.calls[0][0].updateValue(null, option));
-        expect(setFilter).toHaveBeenCalledTimes(1);
-        expect(setFilter).toHaveBeenCalledWith(null);
+        expect(mockAdminDispatch).toHaveBeenCalledTimes(1);
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "updateManagerFilter",
+          payload: null
+        });
         const rendered = render(Dropdown.mock.calls[0][0].CustomRender({ option }));
         const button = rendered.queryByTestId("edit-button");
         expect(button).toBe(null);
@@ -244,7 +255,7 @@ describe("<ManagerDropdown />", () => {
         expect(Modal.mock.calls[5][0].open).toBe(false);
       });
     });
-    describe("Edit Manger Modal", () => {
+    describe("Edit Manager Modal", () => {
       test("When edit icon is clicked, ManagerModal Is opened", async () => {
         const managerOption = {
           value: "n0555555",

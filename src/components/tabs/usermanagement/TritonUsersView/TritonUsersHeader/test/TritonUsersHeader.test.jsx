@@ -8,20 +8,30 @@ import {
 import React from "react";
 import {
   act,
+  initialTestState,
   render,
   setupMockedComponents
 } from "testUtils";
+import {
+  useAdminState, useAdminDispatch
+} from "context";
 
 jest.mock("components", () => ({
   FilterButton: jest.fn(),
   ResetSkillsButton: jest.fn(),
   SearchBox: jest.fn(),
-  StyledButton: jest.fn()
+  StyledButton: jest.fn(),
+  Chip: jest.fn()
 }));
 
 jest.mock("../ExportUsersButton", () => ({
   __esModule: true,
   default: jest.fn()
+}));
+
+jest.mock("context", () => ({
+  useAdminDispatch: jest.fn(),
+  useAdminState: jest.fn()
 }));
 
 const tableState = {
@@ -31,6 +41,9 @@ const tableState = {
 
 const mockSetTableState = jest.fn();
 
+const mockAdminDispatch = jest.fn()
+
+
 const renderComponent = () => {
   render(<TritonUsersHeader tableState={tableState} setTableState={mockSetTableState}/>);
 };
@@ -38,6 +51,8 @@ const renderComponent = () => {
 describe("TritonUsersHeader", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    useAdminDispatch.mockReturnValue(mockAdminDispatch);
+    useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
       FilterButton,
       ResetSkillsButton,
@@ -71,4 +86,7 @@ describe("TritonUsersHeader", () => {
       });
     });
   });
+
+  // TODO - unit test the chips
+  // describe("")
 });

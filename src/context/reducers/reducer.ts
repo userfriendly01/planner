@@ -107,7 +107,7 @@ export const reducer = (state: AppState, action: Action): AppState => {
               Absences: [],
               Availabilities: [],
               Budget_Groups: [],
-              Contracts:[],
+              Contracts: [],
               Contract_Schedules: [],
               Optional_Columns: [],
               Part_Time_Percentages: [],

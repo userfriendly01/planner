@@ -32,9 +32,6 @@ const defaultTableState = {
   searchBy: "",
   searchResults: initialTestState.workerContext.workers,
   selected: [],
-  managerFilter: null,
-  ouFilterArray: [],
-  profileFilterArray: [],
   deltaFilter: false,
   pagination: {
     usersPerPage: 25,
@@ -47,7 +44,6 @@ const defaultTableState = {
 };
 
 const workersCopy = initialTestState.workerContext.workers.slice();
-const state = initialTestState;
 
 describe("TritonUsersViewWrapper", () => {
   const doRender = () => {
@@ -113,46 +109,58 @@ describe("TritonUsersViewWrapper", () => {
     });
   });
   describe("managerFilter === true", () => {
-    test("filtered list only inlcudes expected options", () => {
+    test("filtered list only includes expected options", () => {
+      const testState = {
+        ...initialTestState,
+        userManagementTableFilters: {
+          managerFilter: "n0263786",
+          profileFilterArray: [],
+          ouFilterArray: []
+        }
+      };
+      useAdminState.mockReturnValue(testState);
       doRender();
-      const setTritonTable = TritonUsersHeader.mock.calls[1][0].setTableState;
-      act(() => setTritonTable({
-        ...defaultTableState,
-        managerFilter: "n0263786"
-      }));
-      expect(TritonUsersHeader.mock.calls.length).toBe(4);
-      expect(TritonUsersHeader.mock.calls[3][0].tableState.filteredList).toStrictEqual([workersCopy[1]]);
+      expect(TritonUsersHeader.mock.calls.length).toBe(2);
+      expect(TritonUsersHeader.mock.calls[1][0].tableState.filteredList).toStrictEqual([workersCopy[1]]);
     });
   });
   describe("profileFilterArray === true", () => {
     test("filtered list only inlcudes expected options", () => {
+      const testState = {
+        ...initialTestState,
+        userManagementTableFilters: {
+          managerFilter: null,
+          profileFilterArray: [{
+            label: "0 - profile0",
+            value: "0"
+          }],
+          ouFilterArray: []
+        }
+      };
+      useAdminState.mockReturnValue(testState);
       doRender();
-      const setTritonTable = TritonUsersHeader.mock.calls[1][0].setTableState;
-      act(() => setTritonTable({
-        ...defaultTableState,
-        profileFilterArray: [{
-          label: "0 - profile0",
-          value: "0"
-        }]
-      }));
-      expect(TritonUsersHeader.mock.calls.length).toBe(4);
-      expect(TritonUsersHeader.mock.calls[3][0].tableState.filteredList).toStrictEqual([workersCopy[3], workersCopy[4]]);
+      expect(TritonUsersHeader.mock.calls.length).toBe(2);
+      expect(TritonUsersHeader.mock.calls[1][0].tableState.filteredList).toStrictEqual([workersCopy[3], workersCopy[4]]);
     });
   });
 
   describe("ouFilterArray === true", () => {
     test("filtered list only inlcudes expected options", () => {
+      const testState = {
+        ...initialTestState,
+        userManagementTableFilters: {
+          managerFilter: null,
+          profileFilterArray: [],
+          ouFilterArray: [{
+            label: "operatingUnitName",
+            value: "operatingUnitSid1"
+          }]
+        }
+      };
+      useAdminState.mockReturnValue(testState);
       doRender();
-      const setTritonTable = TritonUsersHeader.mock.calls[1][0].setTableState;
-      act(() => setTritonTable({
-        ...defaultTableState,
-        ouFilterArray: [{
-          label: "operatingUnitName",
-          value: "operatingUnitSid1"
-        }]
-      }));
-      expect(TritonUsersHeader.mock.calls.length).toBe(4);
-      expect(TritonUsersHeader.mock.calls[3][0].tableState.filteredList).toStrictEqual([workersCopy[5]]);
+      expect(TritonUsersHeader.mock.calls.length).toBe(2);
+      expect(TritonUsersHeader.mock.calls[1][0].tableState.filteredList).toStrictEqual([workersCopy[5]]);
     });
   });
   describe("searchBy === Faith", () => {

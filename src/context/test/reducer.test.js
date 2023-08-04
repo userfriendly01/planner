@@ -390,18 +390,18 @@ describe("reducer", () => {
     test("should format wfmOrg and save to state", () => {
       const payload = {
         org: [
-        {
-          id: 1,
-          name: "Administrator"
-        },
-        {
-          id: 2,
-          name: "Agent"
-        }
-      ],
-      errors: [ "oh no" ],
-      People_Without_Team: [{ name: "billy" }]
-    };
+          {
+            id: 1,
+            name: "Administrator"
+          },
+          {
+            id: 2,
+            name: "Agent"
+          }
+        ],
+        errors: [ "oh no" ],
+        People_Without_Team: [{ name: "billy" }]
+      };
       const action = {
         type: "loadWfmOrg",
         payload
@@ -414,13 +414,13 @@ describe("reducer", () => {
           Name: "Lost Souls",
           People: [
             {
-              name: "billy",
-            },
+              name: "billy"
+            }
           ],
           Absences: [],
           Availabilities: [],
           Budget_Groups: [],
-          Contracts:[],
+          Contracts: [],
           Contract_Schedules: [],
           Optional_Columns: [],
           Part_Time_Percentages: [],
@@ -439,7 +439,7 @@ describe("reducer", () => {
         org: undefined,
         errors: undefined,
         People_Without_Team: undefined
-    };
+      };
       const action = {
         type: "loadWfmOrg",
         payload
@@ -453,7 +453,7 @@ describe("reducer", () => {
           Absences: [],
           Availabilities: [],
           Budget_Groups: [],
-          Contracts:[],
+          Contracts: [],
           Contract_Schedules: [],
           Optional_Columns: [],
           Part_Time_Percentages: [],
@@ -674,4 +674,5 @@ describe("reducer", () => {
       });
     });
   });
+  // TODO: FILTER REDUCER TESTS
 });
