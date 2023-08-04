@@ -182,7 +182,7 @@ describe("TritonUsersHeader", () => {
       test("Selected ou shows in Chip", () => {
         renderComponent();
         expect(Chip.mock.calls.length).toBe(1);
-        expect(Chip.mock.calls[0][0].label).toEqual("testname");
+        expect(Chip.mock.calls[0][0].label).toEqual("OU: testname");
       });
       test("Selected ou Chip clicked, calls dispatch to remove filter", () => {
         renderComponent();
