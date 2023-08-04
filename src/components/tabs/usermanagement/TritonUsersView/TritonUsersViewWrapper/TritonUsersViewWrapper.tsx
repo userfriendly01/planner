@@ -17,12 +17,10 @@ import {
 
 const TritonUserManagementWrapper: any = () => {
 
+  // Note: The table filters are kept in context so they can be retained across pages
   const defaultTableState: any = {
     searchBy: "",
     selected: [],
-    managerFilter: null,
-    profileFilterArray: [],
-    ouFilterArray: [],
     searchResults: [],
     deltaFilter: false,
     pagination: {
@@ -36,38 +34,46 @@ const TritonUserManagementWrapper: any = () => {
   };
 
   const state = useAdminState();
+  const {
+    managerFilter,
+    profileFilterArray,
+    ouFilterArray
+  } = state.userManagementTableFilters;
   const [ tableState, setTableState ] = React.useState(defaultTableState);
+  console.log("KALEIGH TABLESTATE", tableState);
 
   React.useEffect(() => {
     let filteredList = state.workerContext.workers.slice().sort(sortWorkersByFullName);
 
     //filter by manager
-    if(tableState.managerFilter && tableState.managerFilter !== "show-all"){
-      filteredList = filteredList.filter((worker: Worker) => worker.attributes.manager_n_number === tableState.managerFilter);
+    if(managerFilter && managerFilter !== "show-all"){
+      filteredList = filteredList.filter((worker: Worker) => worker.attributes.manager_n_number === managerFilter);
     }
     console.log("**Manager FL", filteredList);
 
     //filter by profile
-    if(tableState.profileFilterArray.length > 0){
+    if(profileFilterArray.length > 0){
       filteredList = filteredList.filter((worker: Worker) => {
         const workerProfileId = typeof worker.attributes.profile_id === "number" ? worker.attributes.profile_id.toString() : worker.attributes.profile_id;
-        const profileFound = tableState.profileFilterArray.some((p:any) => p.value === workerProfileId);
+        const profileFound = profileFilterArray.some((p:any) => p.value === workerProfileId);
         return profileFound;
       });
     }
     console.log("**Profile FL", filteredList);
 
     //filter by Ou
-    if(tableState.ouFilterArray.length > 0){
+    if(ouFilterArray.length > 0){
       filteredList = filteredList.filter((worker: Worker) => {
         const profile = state.profileContext.profiles.find(p => p.profile_id === worker.attributes.profile_id);
         const ouSid = profile ? profile.operating_unit_sid : "";
-        const ouFound = tableState.ouFilterArray.some((o:any) => o.value === ouSid);
+        const ouFound = ouFilterArray.some((o:any) => o.value === ouSid);
         return ouFound;
       });
     }
+
     console.log("**Ou FL", filteredList);
 
+    // TODO - Move deltafilter to context????
     //filter by deltaFilter
     if(tableState.deltaFilter){
       filteredList = filteredList.filter(worker => worker.skillsDifferent);
@@ -101,7 +107,7 @@ const TritonUserManagementWrapper: any = () => {
       }
     });
     console.log("final filtered list", filteredList);
-  }, [tableState.searchBy, tableState.deltaFilter, tableState.managerFilter, tableState.profileFilterArray, tableState.ouFilterArray, tableState.pagination.pageNumber, state.workerContext]);
+  }, [tableState.searchBy, tableState.deltaFilter, managerFilter, profileFilterArray, ouFilterArray, tableState.pagination.pageNumber, state.workerContext]);
 
   return (
     <ManagementContainer>

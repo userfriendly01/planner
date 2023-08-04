@@ -41,7 +41,12 @@ export const initialState: AppState = {
     wfmOptions: [],
     wfmErrors: []
   },
-  resettingSkills: false
+  resettingSkills: false,
+  userManagementTableFilters: {
+    managerFilter: null,
+    profileFilterArray: [],
+    ouFilterArray: []
+  }
 };
 
 export const reducer = (state: AppState, action: Action): AppState => {
@@ -246,6 +251,35 @@ export const reducer = (state: AppState, action: Action): AppState => {
           ...state.skillContext,
           skills: action.payload
         }
+      };
+    case "updateManagerFilter":
+      return {
+        ...state,
+        userManagementTableFilters: {
+          ...state.userManagementTableFilters,
+          managerFilter: action.payload
+        }
+      };
+    case "updateProfileFilter":
+      return {
+        ...state,
+        userManagementTableFilters: {
+          ...state.userManagementTableFilters,
+          profileFilterArray: action.payload
+        }
+      };
+    case "updateOuFilter":
+      return {
+        ...state,
+        userManagementTableFilters: {
+          ...state.userManagementTableFilters,
+          ouFilterArray: action.payload
+        }
+      };
+    case "resetFilters":
+      return {
+        ...state,
+        userManagementTableFilters: initialState.userManagementTableFilters
       };
     default:
       return state;

@@ -1,4 +1,7 @@
-import { DropdownOption } from "../../TritonUsersView/ManagerDropdown/ManagerDropdown.Interfaces";
+export interface DropdownOption {
+  label: string,
+  value: any
+}
 
 export const RoutingAttrDropDownOptions: DropdownOption[] = [
     {

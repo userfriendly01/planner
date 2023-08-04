@@ -1,8 +1,4 @@
 import {
-  DropdownOption,
-  ManagerDropDownProps
-} from "./ManagerDropdown.Interfaces";
-import {
   Label,
   IconWrapper,
   Wrapper
@@ -12,7 +8,10 @@ import {
   ManagerDelete,
   Dropdown
 } from "components";
-import { useAdminState } from "context";
+import {
+  useAdminState,
+  useAdminDispatch
+} from "context";
 import React, { useState } from "react";
 import { sortManagersByName } from "utils";
 import {
@@ -21,13 +20,17 @@ import {
 } from "@mui/icons-material";
 import { Modal } from "@mui/material";
 
-const ManagerDropdown = (props: ManagerDropDownProps) => {
-  const {
-    filterBy,
-    setFilter
-  } = props;
+export interface DropdownOption {
+  label: string,
+  value: any
+}
+
+const ManagerDropdown = () => {
+
 
   const state = useAdminState();
+  const filterBy = state.userManagementTableFilters.managerFilter;
+  const dispatch = useAdminDispatch();
   const managers = state.managerContext.managers;
   const sortedManagers = [ ...managers ].sort(sortManagersByName);
   const [isManagerModalOpen, setIsManagerModalOpen] = useState(false);
@@ -40,27 +43,39 @@ const ManagerDropdown = (props: ManagerDropDownProps) => {
   };
 
   const handleEditManager = async (option: DropdownOption) => {
-    setFilter(option.value);
+    dispatch({
+      type: "updateManagerFilter",
+      payload: option.value
+    });
     setSelectedManager(managers.find(manager => manager.manager_n_number === option.value));
     setIsManagerModalOpen(true);
   };
 
   const handleOpenDeleteManager = async (option: DropdownOption) => {
-    setFilter(option.value);
+    dispatch({
+      type: "updateManagerFilter",
+      payload: option.value
+    });
     setSelectedManager(managers.find(manager => manager.manager_n_number === option.value));
     setIsManagerDeleteOpen(true);
   };
 
   const handleCloseManager = () => {
     setSelectedManager(null);
-    setFilter(null);
+    dispatch({
+      type: "updateManagerFilter",
+      payload: null
+    });
     setIsManagerModalOpen(false);
     setIsManagerDeleteOpen(false);
   };
 
   const handleCloseManagerDelete = () => {
     setSelectedManager(null);
-    setFilter(null);
+    dispatch({
+      type: "updateManagerFilter",
+      payload: null
+    });
     setIsManagerDeleteOpen(false);
   };
 
@@ -122,9 +137,15 @@ const ManagerDropdown = (props: ManagerDropDownProps) => {
           if(newInputValue.value === "add-manager"){
             handleOpenManager();
           } else if(newInputValue.value === "show-all") {
-            setFilter(null);
+            dispatch({
+              type: "updateManagerFilter",
+              payload: null
+            });
           } else if(newInputValue.value !== "divider") {
-            setFilter(newInputValue.value);
+            dispatch({
+              type: "updateManagerFilter",
+              payload: newInputValue.value
+            });
           }
         }}
         CustomRender={DropdownOption}

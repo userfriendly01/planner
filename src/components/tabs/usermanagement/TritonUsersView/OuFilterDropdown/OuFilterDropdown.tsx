@@ -1,25 +1,28 @@
 import {
-  DropdownOption,
-  OuFilterDropdownProps
-} from "./OuFilterDropdown.Interfaces";
-import {
   Label,
   Wrapper
 } from "./OuFilterDropdown.Styles";
 import {
   Dropdown
 } from "components";
+import {
+  useAdminState, useAdminDispatch
+} from "context";
 import React from "react";
 import { getOperatingUnits } from "services";
 import { OperatingUnit } from "globals";
 
-const OuFilterDropdown = (props: OuFilterDropdownProps) => {
-  const {
-    filterBy,
-    setFilter
-  } = props;
+export interface DropdownOption {
+  label: string,
+  value: any
+}
+
+const OuFilterDropdown = () => {
 
   const [operatingUnitList, setOperatingUnitList] = React.useState([]);
+
+  const filterBy = useAdminState().userManagementTableFilters.ouFilterArray;
+  const dispatch = useAdminDispatch();
 
   if(!operatingUnitList.length) {
     getOperatingUnits().then((allOUs: OperatingUnit[])  => {
@@ -74,9 +77,15 @@ const OuFilterDropdown = (props: OuFilterDropdownProps) => {
         value={filterBy}
         updateValue={(event: any, optionsArray: any[]) => {
           if(optionsArray.find( (o: any) => o.value === "show-all")){
-            setFilter([]);
+            dispatch({
+              type: "updateOuFilter",
+              payload: []
+            });
           }else if(optionsArray.find( (o: any) => o.value !== "divider")) {
-            setFilter(optionsArray);
+            dispatch({
+              type: "updateOuFilter",
+              payload: optionsArray
+            });
           }
         }}
         CustomRender={DropdownOption}

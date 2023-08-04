@@ -1,25 +1,25 @@
 import {
-  DropdownOption,
-  ProfileFilterDropDownProps
-} from "./ProfileFilterDropdown.Interfaces";
-import {
   Label,
   Wrapper
 } from "./ProfileFilterDropdown.Styles";
 import {
   Dropdown
 } from "components";
-import { useAdminState } from "context";
+import {
+  useAdminState, useAdminDispatch
+} from "context";
 import React from "react";
 import { sortProfilesById } from "utils";
 
-const ProfileFilterDropdown = (props: ProfileFilterDropDownProps) => {
-  const {
-    filterBy,
-    setFilter
-  } = props;
+export interface DropdownOption {
+  label: string,
+  value: any
+}
 
+const ProfileFilterDropdown = () => {
   const state = useAdminState();
+  const filterBy = state.userManagementTableFilters.profileFilterArray;
+  const dispatch = useAdminDispatch();
   const profiles = state.profileContext.profiles;
   const sortedProfiles = [ ...profiles ].sort(sortProfilesById);
 
@@ -70,9 +70,15 @@ const ProfileFilterDropdown = (props: ProfileFilterDropDownProps) => {
         value= {filterBy}
         updateValue={(event: any, optionsArray: any[]) => {
           if(optionsArray.find( (o: any) => o.value === "show-all")){
-            setFilter([]);
+            dispatch({
+              type: "updateProfileFilter",
+              payload: []
+            });
           } else if(optionsArray.find( (o: any) => o.value !== "divider")) {
-            setFilter(optionsArray);
+            dispatch({
+              type: "updateProfileFilter",
+              payload: optionsArray
+            });
           }
         }}
         CustomRender={DropdownOption}
