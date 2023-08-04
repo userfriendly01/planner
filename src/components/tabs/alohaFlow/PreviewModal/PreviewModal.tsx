@@ -62,6 +62,14 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
     onUpdate(newRows);
   };
 
+  const handleOnDelete = async () => {
+    try {
+      await onDelete(rows);
+    } catch(e) {
+      console.error(e.message);
+    }
+  };
+
 
   return (
     <Modal
@@ -94,7 +102,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
           justifyContent: "center"
         }}>
           {action==="delete" &&
-          <StyledButton sx={{ marginRight: "15px" }} onClick={()=>{ onDelete(rows); }}>Delete</StyledButton>
+          <StyledButton sx={{ marginRight: "15px" }} onClick={()=>{ handleOnDelete(); }}>Delete</StyledButton>
           }
           {action === "add" &&
           <StyledButton sx={{ marginRight: "15px" }} onClick={()=>handleOnCreate()}>Save</StyledButton>
