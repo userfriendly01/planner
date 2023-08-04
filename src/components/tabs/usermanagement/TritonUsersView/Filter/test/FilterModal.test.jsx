@@ -63,8 +63,8 @@ describe("<FilterModal />", () => {
       expect(ProfileFilterDropdown.mock.calls.length).toBe(1);
       expectMockedComponent(rendered, { OuFilterDropdown });
       expect(OuFilterDropdown.mock.calls.length).toBe(1);
-      expect(StyledButton.mock.calls[0][0].children).toBe("Apply Filters");
-      expect(StyledButton.mock.calls[1][0].children).toBe("Clear Filters");
+      expect(StyledButton.mock.calls[0][0].children).toBe("Done");
+      expect(StyledButton.mock.calls[1][0].children).toBe("Clear");
     });
   });
 
@@ -72,7 +72,7 @@ describe("<FilterModal />", () => {
     test("should render whenever modal is open", () => {
       const rendered = renderComponent();
       expectMockedComponent(rendered, { CloseRounded }, 1);
-      expect(StyledButton.mock.calls[0][0].children).toBe("Apply Filters");
+      expect(StyledButton.mock.calls[0][0].children).toBe("Done");
     });
     describe("when clicked", () => {
       test("close rounded button should close the modal", () => {
@@ -94,7 +94,7 @@ describe("<FilterModal />", () => {
   describe("clear filter behaviour", () => {
     test("should render whenever modal is open", () => {
       renderComponent();
-      expect(StyledButton.mock.calls[1][0].children).toBe("Clear Filters");
+      expect(StyledButton.mock.calls[1][0].children).toBe("Clear");
     });
     test("should clear filters when clicked", () => {
       renderComponent();
