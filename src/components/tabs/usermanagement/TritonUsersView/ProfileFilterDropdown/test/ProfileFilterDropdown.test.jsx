@@ -1,6 +1,6 @@
 import ProfileFilterDropdown from "../ProfileFilterDropdown";
 import { Dropdown } from "components";
-import { useAdminState } from "context";
+import { useAdminState, useAdminDispatch } from "context";
 import React from "react";
 import { sortProfilesById } from "utils";
 import {
@@ -17,7 +17,8 @@ jest.mock("components", () => ({
 }));
 
 jest.mock("context", () => ({
-  useAdminState: jest.fn()
+  useAdminState: jest.fn(),
+  useAdminDispatch: jest.fn()
 }));
 
 jest.mock("../ProfileFilterDropdown.Styles", () => ({
@@ -25,9 +26,7 @@ jest.mock("../ProfileFilterDropdown.Styles", () => ({
   Wrapper: jest.requireActual("../ProfileFilterDropdown.Styles").Wrapper
 }));
 
-
-const filterBy = "show-all";
-const setFilter = jest.fn();
+const mockAdminDispatch = jest.fn();
 
 const mockProfileData = [
   {
@@ -65,7 +64,7 @@ const initialTestState = {
 
 const renderComponent = () => render(
   <ThemeProvider theme={theme}>
-    <ProfileFilterDropdown filterBy={filterBy} setFilter={setFilter} />
+    <ProfileFilterDropdown />
   </ThemeProvider>
 );
 
@@ -74,6 +73,7 @@ describe("<ProfileDropdown />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     useAdminState.mockReturnValue(initialTestState);
+    useAdminDispatch.mockReturnValue(mockAdminDispatch);
     setupMockedComponents({
       Dropdown
     });
@@ -96,10 +96,10 @@ describe("<ProfileDropdown />", () => {
         value: typeof profile.profile_id === "number" ? profile.profile_id.toString() : profile.profile_id
       }))
     ]);
-    expect(Dropdown.mock.calls[0][0].value).toBe("show-all");
+    expect(Dropdown.mock.calls[0][0].value).toEqual([]);
   });
 
-  test("When an option is clicked in the filter, the setFilter method is fired with the correct parameters", () => {
+  test("When an option is clicked in the filter, the dispatch method is fired with the correct parameters", () => {
     const selection = [{
       label: "1 - test1",
       value: "1"
@@ -111,7 +111,10 @@ describe("<ProfileDropdown />", () => {
     act(() => {
       Dropdown.mock.calls[0][0].updateValue(null, selection);
     });
-    expect(setFilter).toHaveBeenCalledWith(selection);
+    expect(mockAdminDispatch).toHaveBeenCalledWith({
+      type: "updateProfileFilter",
+      payload: selection
+    });
   });
   describe("Custom Render", () => {
     describe("Non Profile Option is passed through", () => {
@@ -122,8 +125,11 @@ describe("<ProfileDropdown />", () => {
         };
         renderComponent();
         act(() => Dropdown.mock.calls[0][0].updateValue(null, [option]));
-        expect(setFilter).toHaveBeenCalledTimes(1);
-        expect(setFilter).toHaveBeenCalledWith([]);
+        expect(mockAdminDispatch).toHaveBeenCalledTimes(1);
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "updateProfileFilter",
+          payload: []
+        });
         const rendered = render(Dropdown.mock.calls[0][0].CustomRender({ option }));
         expect(rendered.container).toHaveTextContent("Show All");
       });
@@ -135,7 +141,7 @@ describe("<ProfileDropdown />", () => {
         renderComponent();
         const rendered = render(Dropdown.mock.calls[0][0].CustomRender({ option }));
         act(() => Dropdown.mock.calls[0][0].updateValue(null, [option]));
-        expect(setFilter).toHaveBeenCalledTimes(0);
+        expect(mockAdminDispatch).toHaveBeenCalledTimes(0);
         expect(rendered.container).toHaveTextContent("divider");
       });
     });

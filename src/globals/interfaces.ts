@@ -47,7 +47,12 @@ export interface AppState {
     wfmOptions: any[],
     wfmErrors: any[]
   },
-  resettingSkills: false
+  resettingSkills: false,
+  userManagementTableFilters: {
+    managerFilter: string,
+    profileFilterArray: any[],
+    ouFilterArray: any[]
+  }
 }
 
 export interface PingIdentity {

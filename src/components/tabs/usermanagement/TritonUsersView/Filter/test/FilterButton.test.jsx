@@ -12,6 +12,7 @@ import {
   setupMockedComponents
 } from "testUtils";
 import { Modal } from "@mui/material";
+import { useAdminDispatch } from "context";
 
 
 jest.mock("components", () => ({
@@ -23,21 +24,20 @@ jest.mock("@mui/material", () => ({
   Modal: jest.fn()
 }));
 
-const mockSetTableState = jest.fn();
-let tableState = {
-  managerFilter: "n123456",
-  profileFilterArray: ["7"],
-  ouFilterArray: ["claims"]
-};
+jest.mock("context", () => ({
+  useAdminDispatch: jest.fn()
+}));
 
+const mockAdminDispatch = jest.fn();
 
 const renderComponent = () => render(
-  <FilterButton tableState={tableState} setTableState={mockSetTableState} />
+  <FilterButton />
 );
 
 describe("FilterButton", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    useAdminDispatch.mockReturnValue(mockAdminDispatch);
     setupMockedComponents({
       FilterModal,
       StyledButton,
@@ -59,40 +59,33 @@ describe("FilterButton", () => {
       act(() => onClick());
       act(() => render(Modal.mock.calls[0][0].children));
       await waitFor(() => {
-        expect(FilterModal.mock.calls[0][0].tableState).toBe(tableState);
+        expect(FilterModal.mock.calls.length).toBe(1);
       });
     });
     test("when filter modal handleClose is called, modal is closed", async () => {
       renderComponent();
+      expect(FilterModal.mock.calls.length).toBe(0);
       const onClick = StyledButton.mock.calls[0][0].onClick;
       act(() => onClick());
       act(() => render(Modal.mock.calls[0][0].children));
       await waitFor(() => {
-        expect(FilterModal.mock.calls[0][0].tableState).toBe(tableState);
+        expect(FilterModal.mock.calls.length).toBe(1);
+        expect(Modal.mock.calls[1][0].open).toBe(true);
       });
       act(() => FilterModal.mock.calls[0][0].handleClose());
       expect(Modal.mock.calls.length).toBe(3);
       expect(Modal.mock.calls[2][0].open).toBe(false);
     });
-    test("when filter modal handleClear is called, tableState reset", async () => {
-      tableState = {
-        managerFilter: "n123456",
-        profileFilterArray: ["7"],
-        ouFilterArray: ["claims"]
-      };
+    test("when filter modal handleClear is called, dispatch called to reset filters", async () => {
       renderComponent();
       const onClick = StyledButton.mock.calls[0][0].onClick;
       act(() => onClick());
       act(() => render(Modal.mock.calls[0][0].children));
-      await waitFor(() => {
-        expect(FilterModal.mock.calls[0][0].tableState).toBe(tableState);
-      });
       act(() => FilterModal.mock.calls[0][0].handleClear());
       await waitFor(() => {
-        expect(mockSetTableState).toHaveBeenCalledWith({
-          managerFilter: null,
-          profileFilterArray: [],
-          ouFilterArray: []
+        expect(mockAdminDispatch).toHaveBeenCalledTimes(1);
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "resetFilters"
         });
       });
     });

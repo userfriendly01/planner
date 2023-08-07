@@ -7,11 +7,15 @@ import {
   render,
   setupMockedComponents,
   mockOperatingUnits,
-  waitFor
+  waitFor,
+  initialTestState
 } from "testUtils";
 import {
   theme
 } from "globals";
+import {
+  useAdminState, useAdminDispatch
+} from "context";
 import { ThemeProvider } from "styled-components";
 
 jest.mock("components", () => ({
@@ -19,7 +23,8 @@ jest.mock("components", () => ({
 }));
 
 jest.mock("context", () => ({
-  useAdminState: jest.fn()
+  useAdminState: jest.fn(),
+  useAdminDispatch: jest.fn()
 }));
 
 const statusCode = 500;
@@ -29,13 +34,11 @@ jest.mock("../OuFilterDropdown.Styles", () => ({
   Wrapper: jest.requireActual("../OuFilterDropdown.Styles").Wrapper
 }));
 
-
-const filterBy = [];
-const setFilter = jest.fn();
+const mockAdminDispatch = jest.fn();
 
 const renderComponent = () => render(
   <ThemeProvider theme={theme}>
-    <OuFilterDropdown filterBy={filterBy} setFilter={setFilter} />
+    <OuFilterDropdown />
   </ThemeProvider>
 );
 
@@ -44,6 +47,8 @@ describe("<OuDropdown />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     getOperatingUnits.mockResolvedValue(mockOperatingUnits);
+    useAdminDispatch.mockReturnValue(mockAdminDispatch);
+    useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
       Dropdown
     });
@@ -93,7 +98,7 @@ describe("<OuDropdown />", () => {
     expect(Dropdown.mock.calls[1][0].value).toStrictEqual([]);
   });
 
-  test("When an option is clicked in the filter, the setFilter method is fired with the correct parameters", () => {
+  test("When an option is clicked in the filter, the dispatch is fired with the correct parameters", () => {
     const selection = [{
       label: "testname1",
       value: "OuSidTest1"
@@ -105,7 +110,10 @@ describe("<OuDropdown />", () => {
     act(() => {
       Dropdown.mock.calls[0][0].updateValue(null, selection);
     });
-    expect(setFilter).toHaveBeenCalledWith(selection);
+    expect(mockAdminDispatch).toHaveBeenCalledWith({
+      type: "updateOuFilter",
+      payload: selection
+    });
   });
   describe("Custom Render", () => {
     describe("Non OU Option is passed through", () => {
@@ -116,8 +124,11 @@ describe("<OuDropdown />", () => {
         };
         renderComponent();
         act(() => Dropdown.mock.calls[0][0].updateValue(null, [option]));
-        expect(setFilter).toHaveBeenCalledTimes(1);
-        expect(setFilter).toHaveBeenCalledWith([]);
+        expect(mockAdminDispatch).toHaveBeenCalledTimes(1);
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "updateOuFilter",
+          payload: []
+        });
         const rendered = render(Dropdown.mock.calls[0][0].CustomRender({ option }));
         expect(rendered.container).toHaveTextContent("Show All");
       });
@@ -127,9 +138,9 @@ describe("<OuDropdown />", () => {
           value: "divider"
         };
         renderComponent();
-        const rendered = render(Dropdown.mock.calls[0][0].CustomRender({option}));
+        const rendered = render(Dropdown.mock.calls[0][0].CustomRender({ option }));
         act(() => Dropdown.mock.calls[0][0].updateValue(null, [option]));
-        expect(setFilter).toHaveBeenCalledTimes(0);
+        expect(mockAdminDispatch).toHaveBeenCalledTimes(0);
         expect(rendered.container).toHaveTextContent("divider");
       });
     });
