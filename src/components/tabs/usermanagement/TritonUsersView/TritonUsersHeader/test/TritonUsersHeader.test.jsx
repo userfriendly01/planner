@@ -91,7 +91,6 @@ describe("TritonUsersHeader", () => {
     });
   });
 
-  // TODO - unit test the chips
   describe("Filters are displayed", () => {
     describe("Manager filter", () => {
       const testState = {

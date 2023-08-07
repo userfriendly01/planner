@@ -72,7 +72,6 @@ const TritonUserManagementWrapper: any = () => {
 
     console.log("**Ou FL", filteredList);
 
-    // TODO - Move deltafilter to context????
     //filter by deltaFilter
     if(tableState.deltaFilter){
       filteredList = filteredList.filter(worker => worker.skillsDifferent);
