@@ -40,7 +40,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   } = props;
   const apiRef = useGridApiRef();
   const tableGridColumnDef: Array<GridColDef> = useMemo<Array<GridColDef>>(()=>{
-    return reconstructTableColumnDef(action, [...TableGridColumnDef]); },[action]);
+    return reconstructTableColumnDef(action, [...TableGridColumnDef], apiRef); },[action]);
 
   const getUpdatedRoutingDb = () =>{
     const newRows: Array<CctSharedCallRoutingDb>=[...rows].map((row: CctSharedCallRoutingDb)=>{
@@ -82,7 +82,9 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
         <ModalHeader>Delete Routes - {rows.length} rows selected</ModalHeader>
         <ModalBody className="preview-grid-modal">
           <DataGrid
+            apiRef={apiRef}
             rows={rows}
+            getRowId={(row: CctSharedCallRoutingDb)=>row.id}
             columns={tableGridColumnDef}
             editMode="row"
             isCellEditable={() => action !== "delete"}

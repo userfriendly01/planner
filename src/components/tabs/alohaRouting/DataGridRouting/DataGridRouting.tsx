@@ -79,10 +79,8 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
       const listItems = firstChunkData.data?.listCctSharedCallRoutingGlobalDbs?.items || [];
       listItems.map((item:CctSharedCallRoutingDb) => routingData.push({
         ...item,
-        id: item &&
-            item.skey &&
-            parseInt(item.skey.split("__")[2], 10)
-      }) ) || [];
+        id: parseInt(item?.skey?.split("__")[2], 10)
+      }));
       loadDataTable(routingData);
       const result: CctSharedCallRoutingDb[] = await retrieveRoutingData(accessToken, graphQlApiUrl,firstChunkData);
       loadDataTable(result);
@@ -369,7 +367,6 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
     const filteredItems = state.filteredItems.filter(x=> deletedIds.indexOf(x.id) === -1);
 
     setState({
-      ...state,
       filteredItems
     });
 

@@ -179,7 +179,7 @@ export const TableGridColumnDef: GridColDef[] = [
     headerName: "Occupancy Check",
     field: "occupancyCheck",
     sortable: true,
-    minWidth: 220,
+    minWidth: 300,
     flex: 1,
     align: "left",
     renderCell: (params: any) =>(
@@ -202,7 +202,7 @@ export const TableGridColumnDef: GridColDef[] = [
     headerName: "Routing Steps",
     field: "routingSteps",
     sortable: false,
-    minWidth: 220,
+    minWidth: 300,
     flex: 1,
     align: "left",
     renderCell: (params: any) =>(
