@@ -183,12 +183,12 @@ export const TableGridColumnDef: GridColDef[] = [
     flex: 1,
     align: "left",
     renderCell: (params: any) =>(
-      <Grid container rowSpacing={1}>
+      <Grid container  rowSpacing={1}>
         {
-          params.row.occupancyCheck && params.row.occupancyCheck.map((item: RoutingOccupancyCheck, index: number)=>(
-            <Grid item xs={6} key={`grid-occupancyCheck-${params.row.id}-${index}`}>
+          params.row.occupancyCheck?.map((item: RoutingOccupancyCheck)=>(
+            <Grid item xs={6} key={`grid-occupancyCheck-${params.row.id}-${item.team}-${item.percentage}`} aria-multiline="true">
               <Chip
-                key={`chip-occupancyCheck-${params.row.id}-${index}`}
+                key={`chip-occupancyCheck-${params.row.id}-${item.team}-${item.percentage}`}
                 tabIndex={-1}
                 label={getTagLabel(item,getFormFields("occupancyCheck"))}
               />
@@ -208,9 +208,9 @@ export const TableGridColumnDef: GridColDef[] = [
     renderCell: (params: any) =>(
       <div>
         {
-          params.row.routingSteps && params.row.routingSteps.map((item: RoutingStep, index: number)=>(
+          params.row.routingSteps?.map((item: RoutingStep)=>(
             <Chip
-              key={`routingSteps-${params.row.id}-${index}`}
+              key={`routingSteps-${params.row.id}-${item.teams.join("")}-${item.time}`}
               tabIndex={-1}
               label={getTagLabel(item,getFormFields("routingSteps"))}
             />

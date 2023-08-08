@@ -85,7 +85,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
             rows={rows}
             columns={tableGridColumnDef}
             editMode="row"
-            isCellEditable={params => action !== "delete"}
+            isCellEditable={() => action !== "delete"}
             sx={{
               "& .MuiDataGrid-columnHeaderTitle": {
                 fontWeight: 600
