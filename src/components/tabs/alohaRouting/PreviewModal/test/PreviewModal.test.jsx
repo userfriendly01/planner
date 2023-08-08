@@ -1,5 +1,6 @@
 import {
   act,
+  fireEvent,
   initialTestState,
   render,
   setupMockedComponents
@@ -143,11 +144,20 @@ describe("<PreviewModal />", () => {
     const calls = StyledButton.mock.calls;
     expect(calls[0][0].children).toBe("Update");
     expect(calls[1][0].children).toBe("Cancel");
+    act(() => calls[0][0].onClick());
+    expect(onUpdateMock).toBeCalledTimes(1);
   });
   test("render Add preview", () => {
-    renderComponent("add", onDeleteMock);
+    const rendered = renderComponent("add", onDeleteMock);
     const calls = StyledButton.mock.calls;
     expect(calls[0][0].children).toBe("Save");
     expect(calls[1][0].children).toBe("Cancel");
+    act(() => calls[0][0].onClick());
+    expect(onCreateMock).toBeCalledTimes(1);
+    fireEvent.click(rendered.getByText("Close"));
+    expect(onCloseMock).toBeCalledTimes(1);
   });
+  // describe("TableGridColumnDev", () => {
+
+  // });
 });
