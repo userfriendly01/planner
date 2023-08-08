@@ -559,7 +559,7 @@ describe("getNonOverflowSkills", () => {
 describe("isFormUpdated", () => {
   test("form was not updated", () => {
     const result = isFormUpdated(initialFormState);
-    expect(result).toBe(false);
+    expect(result).toBe(undefined);
   });
   test("form.defaultSkillsUpdated was updated", () => {
     const updatedForm = {

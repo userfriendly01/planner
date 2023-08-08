@@ -1,25 +1,25 @@
 import {
-  DropdownOption,
-  ProfileFilterDropDownProps
-} from "./ProfileFilterDropdown.Interfaces";
-import {
   Label,
   Wrapper
 } from "./ProfileFilterDropdown.Styles";
 import {
   Dropdown
 } from "components";
-import { useAdminState } from "context";
+import {
+  useAdminState, useAdminDispatch
+} from "context";
 import React from "react";
 import { sortProfilesById } from "utils";
 
-const ProfileFilterDropdown = (props: ProfileFilterDropDownProps) => {
-  const {
-    filterBy,
-    setFilter
-  } = props;
+export interface DropdownOption {
+  label: string,
+  value: any
+}
 
+const ProfileFilterDropdown = () => {
   const state = useAdminState();
+  const filterBy = state.userManagementTableFilters.profileFilterArray;
+  const dispatch = useAdminDispatch();
   const profiles = state.profileContext.profiles;
   const sortedProfiles = [ ...profiles ].sort(sortProfilesById);
 
@@ -69,10 +69,16 @@ const ProfileFilterDropdown = (props: ProfileFilterDropDownProps) => {
         multiple={true}
         value= {filterBy}
         updateValue={(event: any, optionsArray: any[]) => {
-          if(optionsArray.find( (o: any) => o.value === "show-all")){
-            setFilter([]);
-          } else if(optionsArray.find( (o: any) => o.value !== "divider")) {
-            setFilter(optionsArray);
+          if (optionsArray.length === 0 || optionsArray.find( (o: any) => o.value === "show-all")) {
+            dispatch({
+              type: "updateProfileFilter",
+              payload: []
+            });
+          } else if (optionsArray.find( (o: any) => o.value !== "divider")) {
+            dispatch({
+              type: "updateProfileFilter",
+              payload: optionsArray
+            });
           }
         }}
         CustomRender={DropdownOption}

@@ -1037,6 +1037,7 @@ describe("userFormReducer", () => {
           userFound: true,
           sid: "WK2",
           attributes: worker.attributes,
+          routing:worker.attributes.routing,
           defaultSkills: {
             updated: false,
             ...getValidSkillsObject(worker.attributes.default_skills)
@@ -1264,6 +1265,7 @@ describe("userFormReducer", () => {
           userFound: true,
           attributes: worker.attributes,
           sid: "WK0",
+          routing: worker.attributes.routing,
           defaultSkills: {
             ...getValidSkillsObject(worker.attributes.default_skills),
             updated: false
@@ -1436,6 +1438,31 @@ describe("userFormReducer", () => {
           }
         }
       };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+
+  describe("UPDATE_ROUTINGTEAM", () => {
+    test("should update routing team", () => {
+      const payload = {
+        routingTeamName:"Sample1"
+      };
+      const action = {
+        type: userFormActions.ADD_ROUTING_TEAM,
+        payload
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        triton:{
+          ...initialUserFormState.triton,
+          routing:{
+            ...initialUserFormState.triton.routing,
+            team:"Sample1",
+            updated: true
+          }
+        }
+        }
       expect(result).toStrictEqual(expectedFormState);
     });
   });

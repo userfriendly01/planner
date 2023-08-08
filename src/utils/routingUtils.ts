@@ -19,8 +19,11 @@ export const dayOfWeek: string[] = ["ALL", "MONDAY", "TUESDAY", "WEDNESDAY", "TH
 
 export const priority: string[] = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
 
+export const callerState: string[] = ["State", "OF", "HI"];
+
 export const routingDropDownList: RoutingDropDownList = {
   brand: [],
+  callerState,
   language: [],
   dayOfWeek,
   channel: [],
@@ -296,6 +299,12 @@ export const routingFields: AddRoutingFieldConfigProps[] = [
         name: "time",
         type: "number",
         helperText: "min: 1,  max: 100"
+      },
+      {
+        label: "Caller State",
+        name: "callerState",
+        type: "select",
+        helperText: "Caller's State or Overflow (OF)"
       }
     ]
   }
