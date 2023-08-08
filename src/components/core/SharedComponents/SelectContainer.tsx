@@ -10,8 +10,8 @@ export interface SelectContainerProps{
   label: string,
   value: unknown,
   onChange: any,
-  disabled: boolean,
-  error: boolean,
+  disabled?: boolean,
+  error?: boolean,
   required: boolean;
   isBlankFirstValue?: boolean
 }

@@ -3,23 +3,16 @@ import {
   StyledButton
 } from "components";
 import React, { useState } from "react";
+import { useAdminDispatch } from "context";
 import { Modal } from "@mui/material";
-import { FilterButtonProps } from "./Filter.Interfaces";
 
-const FilterButton = (props: FilterButtonProps) => {
-  const {
-    tableState,
-    setTableState
-  } = props;
-
+const FilterButton = () => {
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const dispatch = useAdminDispatch();
 
   const handleClearFilters = () => {
-    setTableState({
-      ...tableState,
-      managerFilter: null,
-      profileFilterArray: [],
-      ouFilterArray: []
+    dispatch({
+      type: "resetFilters"
     });
   };
 
@@ -27,10 +20,9 @@ const FilterButton = (props: FilterButtonProps) => {
     <div>
       <Modal onClose={() => { return; }} open={isFilterModalOpen}>
         <>
-          <FilterModal handleClose={()=>setIsFilterModalOpen(false)}
+          <FilterModal
+            handleClose={()=>setIsFilterModalOpen(false)}
             handleClear = {handleClearFilters}
-            tableState= {tableState}
-            setTableState={setTableState}
           />
         </>
       </Modal>

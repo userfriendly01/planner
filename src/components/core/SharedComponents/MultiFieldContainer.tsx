@@ -10,7 +10,7 @@ interface MultiFieldContainerFormProps{
     label: string;
     name: string;
     value?: any;
-    type: React.HTMLInputTypeAttribute | "multiValueText";
+    type: React.HTMLInputTypeAttribute | "multiValueText" | "select";
     helperText?: string;
 }
 interface MultiFieldContainerProps{

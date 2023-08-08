@@ -8,6 +8,7 @@ export interface RoutingOccupancyCheck {
     percentage: number;
   }
 export interface RoutingStep {
+    callerState: string;
     teams: Array<string>;
     time: number;
   }
@@ -86,6 +87,7 @@ export interface RoutingDropDownList {
     channel?: string[];
     policyType?: string[];
     priority?: string[];
+    callerState?: string[];
 }
 
 export interface AddPageFieldConfigProps {
@@ -107,4 +109,9 @@ export interface AddRoutingModalProps {
     openModal: (flag: boolean, addCloneRule?: boolean, row?: CctSharedCallRoutingDb) => void;
     cloneRouteRule?: boolean;
     routeRule?: FormValidationRule;
+}
+
+export interface AutocompleteOptions {
+    id: string;
+    label: string;
 }

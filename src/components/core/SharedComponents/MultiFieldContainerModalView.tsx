@@ -2,11 +2,17 @@ import React, {
   useEffect, useState
 } from "react";
 import {
-  Button,Fade,Grid,Paper, Popper, TextField
+  Autocomplete,
+  Button,
+  Fade,
+  Grid,
+  Paper,
+  Popper,
+  TextField
 } from "@mui/material";
 import { MultiFieldContainerFormProps } from "./MultiFieldContainer";
 import { MultiValueTextField } from "./MultiValueTextField";
-
+import { routingDropDownList } from "utils";
 interface MultiFieldContainerModalViewProps{
     formFields:Array<MultiFieldContainerFormProps>;
     isOpen: boolean;
@@ -43,17 +49,71 @@ const MultiFieldContainerModalView = ({
     onClose();
   };
 
-  const handleOnMultiModalOnChange = (event: any) =>{
-    const key: string = event.target.name;
+  const handleOnMultiModalOnChange = (event: any, values: any = "") =>{
+    let key: string = event.target.name;
     let value = event.target.value;
     const type = event.target.type;
+    console.log("handling multimodal", event);
     if(type === "number" ){
       value=parseInt(value);
     }
-    setFormData(existingData=>({
+    if(values) {
+      const keyValueArray = values.id.split("-");
+
+      key = keyValueArray[0];
+      value = keyValueArray[1];
+    }
+    { setFormData(existingData=>({
       ...existingData,
       [key]: value
-    }));
+    })); }
+  };
+
+  const getGridItem = (item:MultiFieldContainerFormProps) => {
+    if (item.type === "multiValueText")  {
+      return (
+        <MultiValueTextField
+          name={item.name}
+          value={item.value}
+          label={item.label}
+          onChange={handleOnMultiModalOnChange}
+          helperText={item.helperText}
+        />
+      ); } else if (item.type === "select")  {
+      let options: any = [];
+
+      if (item.name === "callerState") {
+        options = routingDropDownList.callerState.map(x => {
+          return {
+            id: `${item.name}-${x}`,
+            label: x
+          }; });
+      }
+      return (
+        <Autocomplete
+          data-testid={"auto" + item.name}
+          onChange={handleOnMultiModalOnChange}
+          options={options}
+          renderInput={(params: any) => <TextField
+            {...params}
+            helperText={item.helperText}
+            label={item.label}
+          />}
+          value={item.value}
+        />
+      ); } else {
+      return (
+        <TextField
+          variant="outlined"
+          name={item.name}
+          type={item.type}
+          value={formData[item.name]}
+          label={item.label}
+          helperText={item.helperText}
+          onChange={handleOnMultiModalOnChange}
+        />
+      ); }
+
   };
 
   return (
@@ -76,25 +136,7 @@ const MultiFieldContainerModalView = ({
               <Grid container rowSpacing={1}>
                 {formFields && formFields.map((item: MultiFieldContainerFormProps)=>(
                   <Grid key={item.label} item xs={12}>
-                    {(item.type === "multiValueText") ? (
-                      <MultiValueTextField
-                        name={item.name}
-                        value={item.value}
-                        label={item.label}
-                        onChange={handleOnMultiModalOnChange}
-                        helperText={item.helperText}
-                      />
-                    ):(
-                      <TextField
-                        variant="outlined"
-                        name={item.name}
-                        type={item.type}
-                        value={formData[item.name]}
-                        label={item.label}
-                        helperText={item.helperText}
-                        onChange={handleOnMultiModalOnChange}
-                      />
-                    ) }
+                    {getGridItem(item)}
                   </Grid>))}
                 <Grid key={`set-button-${formLabel}`} item xs={6}>
                   <Button

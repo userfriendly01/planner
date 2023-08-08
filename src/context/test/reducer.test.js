@@ -390,18 +390,18 @@ describe("reducer", () => {
     test("should format wfmOrg and save to state", () => {
       const payload = {
         org: [
-        {
-          id: 1,
-          name: "Administrator"
-        },
-        {
-          id: 2,
-          name: "Agent"
-        }
-      ],
-      errors: [ "oh no" ],
-      People_Without_Team: [{ name: "billy" }]
-    };
+          {
+            id: 1,
+            name: "Administrator"
+          },
+          {
+            id: 2,
+            name: "Agent"
+          }
+        ],
+        errors: [ "oh no" ],
+        People_Without_Team: [{ name: "billy" }]
+      };
       const action = {
         type: "loadWfmOrg",
         payload
@@ -414,13 +414,13 @@ describe("reducer", () => {
           Name: "Lost Souls",
           People: [
             {
-              name: "billy",
-            },
+              name: "billy"
+            }
           ],
           Absences: [],
           Availabilities: [],
           Budget_Groups: [],
-          Contracts:[],
+          Contracts: [],
           Contract_Schedules: [],
           Optional_Columns: [],
           Part_Time_Percentages: [],
@@ -439,7 +439,7 @@ describe("reducer", () => {
         org: undefined,
         errors: undefined,
         People_Without_Team: undefined
-    };
+      };
       const action = {
         type: "loadWfmOrg",
         payload
@@ -453,7 +453,7 @@ describe("reducer", () => {
           Absences: [],
           Availabilities: [],
           Budget_Groups: [],
-          Contracts:[],
+          Contracts: [],
           Contract_Schedules: [],
           Optional_Columns: [],
           Part_Time_Percentages: [],
@@ -672,6 +672,77 @@ describe("reducer", () => {
           skills: skillsList
         }
       });
+    });
+  });
+  describe("updateManageFilter", () => {
+    test("should set the manager filter on the userManagementTableFilters", () => {
+      const action = {
+        type: "updateManagerFilter",
+        payload: "n1234567"
+      };
+      const result = reducer(initialState, action);
+      expect(result).toEqual({
+        ...initialState,
+        userManagementTableFilters: {
+          ...initialState.userManagementTableFilters,
+          managerFilter: "n1234567"
+        }
+      });
+    });
+  });
+  describe("updateProfileFilter", () => {
+    test("should set the profile filter on the userManagementTableFilters", () => {
+      const action = {
+        type: "updateProfileFilter",
+        payload: [{
+          value: "butts",
+          label: "stuff"
+        }]
+      };
+      const result = reducer(initialState, action);
+      expect(result).toEqual({
+        ...initialState,
+        userManagementTableFilters: {
+          ...initialState.userManagementTableFilters,
+          profileFilterArray: [{
+            value: "butts",
+            label: "stuff"
+          }]
+        }
+      });
+    });
+  });
+  describe("updateOuFilter", () => {
+    test("should set the ou filter on the userManagementTableFilters", () => {
+      const action = {
+        type: "updateOuFilter",
+        payload: [{ stuff: "butts" }]
+      };
+      const result = reducer(initialState, action);
+      expect(result).toEqual({
+        ...initialState,
+        userManagementTableFilters: {
+          ...initialState.userManagementTableFilters,
+          ouFilterArray: [{ stuff: "butts" }]
+        }
+      });
+    });
+  });
+  describe("resetFilters", () => {
+    test("should set the filters back to initial filter state", () => {
+      const action = {
+        type: "resetFilters"
+      };
+      const startingState = {
+        ...initialState,
+        userManagementTableFilters: {
+          manager: "n1231232",
+          profileFilterArray: [{ hi: "yo" }],
+          ouFilterArray: [{ more: "stuff" }]
+        }
+      };
+      const result = reducer(startingState, action);
+      expect(result).toEqual(initialState);
     });
   });
 });

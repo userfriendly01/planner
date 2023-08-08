@@ -45,6 +45,7 @@ async function queryRoutingData(accessToken, nextToken = null, graphQlApiUrl) {
                           team
                         }
                         routingSteps {
+                          callerState
                           teams
                           time
                         }
@@ -160,6 +161,7 @@ async function updateRoutingDB(item, accessToken, graphQlApiUrl) {
                 team
               }
               routingSteps {
+                callerState
                 teams
                 time
               }
@@ -243,6 +245,7 @@ async function addRoutingRule(item, accessToken, graphQlApiUrl) {
                 team
               }
               routingSteps {
+                callerState
                 teams
                 time
               }
@@ -306,6 +309,7 @@ async function deleteRoutingRule(item, accessToken, graphQlApiUrl) {
                 team
               }
               routingSteps {
+                callerState
                 teams
                 time
               }
