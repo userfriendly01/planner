@@ -2,6 +2,7 @@ import { Control } from "globals";
 import { MultiFieldContainerFormProps } from "components/core/SharedComponents/MultiFieldContainer";
 import { FormValidationRule } from "utils/interfaces";
 
+export type PreviewModalAction = "add" | "edit" | "delete"
 export interface RoutingOccupancyCheck {
     team: string;
     percentage: number;
@@ -42,6 +43,7 @@ export interface RoutingMasterData {
     callerState?: Array<string>;
     callIntent?: Array<string>;
     policyType?: Array<string>;
+    priority?: Array<string>;
     transferDestination?: Array<string>;
     twilioSkill?: Array<string>;
 }
@@ -68,9 +70,12 @@ export interface RoutingStateVariables {
     isAddModalOpen?: boolean;
     isAdvanceSearchModalOpen?: boolean;
     isEditModalOpen?: boolean;
+    isBulkEditModalOpen?: boolean;
+    isPreviewModalOpen?: boolean;
     masterData?: RoutingMasterData;
     maxId?: number;
     minId?: number;
+    previewModalAction?: PreviewModalAction;
     saveSuccess?: boolean;
     selectedRow?: CctSharedCallRoutingDb;
 }

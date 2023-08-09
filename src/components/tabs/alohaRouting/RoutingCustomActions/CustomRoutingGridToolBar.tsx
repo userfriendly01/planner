@@ -6,21 +6,29 @@ import {
 } from "@mui/material";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
-import { RoutingFilter } from "../AlohaRouting.Interfaces";
+import {
+  PreviewModalAction,
+  RoutingFilter
+} from "../AlohaRouting.Interfaces";
 import {
   CACHE_FILTER_ROUTING, getAdvanceFilter
 } from "utils";
+import DeleteSweepOutlinedIcon from "@mui/icons-material/DeleteSweepOutlined";
+import EditNoteOutlinedIcon from "@mui/icons-material/EditNoteOutlined";
+import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 
 interface CustomRoutingGridToolBarProps {
   openAddModal: (flag: boolean) => void;
-  openAdvanceSearchModal:(flag: boolean)=>void;
+  openEditModal: (flag: boolean) => void;
+  openPreviewModal: (flag: boolean, action: PreviewModalAction) => void;
+  openAdvanceSearchModal:(flag: boolean) => void;
   exportDataFile: ()=> void;
   applyFilter?: () => void;
   isAdvanceSearchOpen?: boolean;
 }
 
 export const CustomRoutingGridToolBar = ({
-  openAddModal, openAdvanceSearchModal, exportDataFile, applyFilter, isAdvanceSearchOpen
+  openAddModal, openEditModal, openPreviewModal, openAdvanceSearchModal, exportDataFile, applyFilter, isAdvanceSearchOpen
 }: CustomRoutingGridToolBarProps):JSX.Element => {
 
   const [routingFilter, setRoutingFilter] = useState<RoutingFilter>();
@@ -35,6 +43,15 @@ export const CustomRoutingGridToolBar = ({
     switch (value) {
       case "addRouting":
         openAddModal(true);
+        break;
+      case "bulkDeleteRouting":
+        openPreviewModal(true, "delete");
+        break;
+      case "bulkAddRouting":
+        openPreviewModal(true, "add");
+        break;
+      case "bulkEditRouting":
+        openPreviewModal(true, "edit");
         break;
       default:
         break;
@@ -80,18 +97,20 @@ export const CustomRoutingGridToolBar = ({
       </Grid>
       <Grid item key = "Export RoutingUI" xs={1}>
         <Grid><div><br/><br/></div></Grid>
-        <Tooltip title="Export Routing Records" sx={{left:"calc(76%)",marginLeft:"24"}}>
-        <Paper variant="outlined" >
-        <IconButton 
-          onClick={exportDataFile}
-          color = "primary" 
-          size = "small"
-          sx ={{position:"fixed"}}
-        > <FileDownloadIcon /> 
-      </IconButton>
-      </Paper>
-      </Tooltip>
-      </Grid>
+        <Tooltip title="Export Routing Records" sx={{
+          left: "calc(76%)",
+          marginLeft: "24"
+        }}>
+          <Paper variant="outlined" >
+            <IconButton
+              onClick={exportDataFile}
+              color = "primary"
+              size = "small"
+              sx ={{ position: "fixed" }}
+            > <FileDownloadIcon />
+            </IconButton>
+          </Paper>
+        </Tooltip>      </Grid>
       <Grid item key="routing-action-box" xs={2}>
         <FormControl sx={{
           marginTop: "16px",
@@ -112,7 +131,16 @@ export const CustomRoutingGridToolBar = ({
             size="small"
           >
             <MenuItem key="addRouting" value="addRouting">
-              <PlaylistAddIcon/> &nbsp;&nbsp;Add Routing
+              <AddOutlinedIcon/> &nbsp;&nbsp;Add Routing
+            </MenuItem>
+            <MenuItem key="bulkDeleteRouting" value="bulkDeleteRouting">
+              <DeleteSweepOutlinedIcon />&nbsp;&nbsp; Multi Delete
+            </MenuItem>
+            <MenuItem key="bulkAddRouting" value="bulkAddRouting">
+              <PlaylistAddIcon />&nbsp;&nbsp; Multi Add
+            </MenuItem>
+            <MenuItem key="bulkEditRouting" value="bulkEditRouting">
+              <EditNoteOutlinedIcon />&nbsp;&nbsp; Multi Edit
             </MenuItem>
           </Select>
         </FormControl>
