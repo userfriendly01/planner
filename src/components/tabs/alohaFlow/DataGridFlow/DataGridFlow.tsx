@@ -12,7 +12,7 @@ import React, {
   useEffect, useState
 } from "react";
 import {
-  queryFlowData, retrieveFlowData
+  queryFlowData, retrieveFlowData, flowBatchDelete
 } from "services";
 import {
   CACHE_FILTER_FLOW,
@@ -130,14 +130,9 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         severityType: "success",
         msg: "New flow has been successfully added!! "
       }));
-      const updatedRow: CctSharedCallFlowDb  = {
-        ...row,
-        id: dataFlow.data.length
-      };
-      newData.push(updatedRow);
-      newFilteredItems.push(updatedRow);
+      newData.push(row);
+      newFilteredItems.push(row);
     }
-
     setDataFlow((dataFlowProps: FlowStateVariables) => ({
       ...dataFlowProps,
       ...(!flag && isSubmitted && row) && {
@@ -341,8 +336,30 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     console.log("Bulk Update: ", rows);
   };
 
-  const handleOnBulkDelete = (rows: Array<CctSharedCallFlowDb> ) =>{
-    console.log("Bulk Delete: ", rows);
+  const handleOnBulkDelete = async(rows: Array<CctSharedCallFlowDb> ) =>{
+    const keysToDelete = rows.map(x => x.pkey);
+    const response = await flowBatchDelete(keysToDelete, accessToken, graphQLEndpoint);
+
+    if(!response || response.errors) {
+      setAlertBar((alertBarProps: AlertBarProps) => ({
+        ...alertBarProps,
+        open: true,
+        msg: "Error deleting records.",
+        severityType: "error"
+      }));
+      throw new Error("Error deleting records.");
+    }
+    setSelectedList([]);
+    const deletedIds = rows.map(x => x.pkey);
+    const filteredItems = dataFlow.filteredItems.filter(x=> deletedIds.indexOf(x.pkey) === -1);
+    const filteredData = dataFlow.data.filter(x=> deletedIds.indexOf(x.pkey) === -1);
+
+    setDataFlow((dataFlowProps: FlowStateVariables) => ({
+      ...dataFlowProps,
+      filteredItems,
+      data: filteredData,
+      isPreviewModalOpen: false
+    }));
   };
 
   FlowGridColumnDef[0].renderCell = (params: GridRenderCellParams<CctSharedCallFlowDb>) => (<a href="#" onClick={() => openEditModal(true, false, params.row)}>{`${params.value}`}</a>);
