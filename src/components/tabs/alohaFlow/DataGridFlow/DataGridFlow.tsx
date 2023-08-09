@@ -130,14 +130,9 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         severityType: "success",
         msg: "New flow has been successfully added!! "
       }));
-      const updatedRow: CctSharedCallFlowDb  = {
-        ...row,
-        id: dataFlow.data.length
-      };
-      newData.push(updatedRow);
-      newFilteredItems.push(updatedRow);
+      newData.push(row);
+      newFilteredItems.push(row);
     }
-
     setDataFlow((dataFlowProps: FlowStateVariables) => ({
       ...dataFlowProps,
       ...(!flag && isSubmitted && row) && {
@@ -357,10 +352,12 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     setSelectedList([]);
     const deletedIds = rows.map(x => x.pkey);
     const filteredItems = dataFlow.filteredItems.filter(x=> deletedIds.indexOf(x.pkey) === -1);
+    const filteredData = dataFlow.data.filter(x=> deletedIds.indexOf(x.pkey) === -1);
 
     setDataFlow((dataFlowProps: FlowStateVariables) => ({
       ...dataFlowProps,
       filteredItems,
+      data: filteredData,
       isPreviewModalOpen: false
     }));
   };
