@@ -34,6 +34,11 @@ export const initialFormState = {
       updated: false,
       valid: false
     },
+    routing:{
+      team: "",
+      skills: [],
+      levels: {}
+    },
     defaultSkills: {},
     defaultSkillsUpdated: false,
     didUser: false,
@@ -163,6 +168,12 @@ export const validFormOptions = {
     masked: "(800)234-5678",
     tenDig: "8002345678"
   },
+  routing:{
+    team:"Sample1",
+    skills: [],
+    levels: {
+    }
+  },
   discrepancies: [],
   extension: "1234",
   manager: managerList[0],
@@ -214,6 +225,12 @@ export const validFormState = {
         "b",
         "c"
       ]
+    },
+    routing:{
+      team: "Sample1",
+      levels: {},
+      skills: [],
+      updated: true
     },
     didUser: false,
     extension: {
@@ -311,12 +328,12 @@ export const mockWorkers = [
       office_location_name: "Neptune",
       routing: {
         skills: [
-          "466",
-          "psuUm"
+          "466"
         ],
         levels: {
           "466": 3
-        }
+        },
+        team:"Sample1"
       },
       profile_id: 15
     },
@@ -353,12 +370,12 @@ export const mockWorkers = [
       profile_id: profileList[1].profile_id,
       routing: {
         skills: [
-          profileList[1].overflow_skill,
-          "whatever"
+          "466"
         ],
         levels: {
-          "whatever": 1
-        }
+          "466": 3
+        },
+        team:"Sample1"
       }
     }
   },
@@ -382,11 +399,12 @@ export const mockWorkers = [
       profile_id: profileList[1].profile_id,
       routing: {
         skills: [
-          "payinBills"
+         "466"
         ],
         levels: {
-          "payinBills": 1
-        }
+          "466": 3
+        },
+        team: "Sample1"
       }
     }
   },
@@ -409,11 +427,12 @@ export const mockWorkers = [
       profile_id: profileList[1].profile_id,
       routing: {
         skills: [
-          "payinBills"
+          "466"
         ],
         levels: {
-          "payinBills": 1
-        }
+          "466": 3
+        },
+        team: "Sample1"
       }
     }
   }

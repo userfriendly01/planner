@@ -47,7 +47,12 @@ export interface AppState {
     wfmOptions: any[],
     wfmErrors: any[]
   },
-  resettingSkills: false
+  resettingSkills: false,
+  userManagementTableFilters: {
+    managerFilter: string,
+    profileFilterArray: any[],
+    ouFilterArray: any[]
+  }
 }
 
 export interface PingIdentity {
@@ -294,8 +299,10 @@ export interface WorkerAttributeSkills {
   levels: {
     [key: string]: number
   },
-  skills: string[]
+  skills: string[],
+  team?:string
 }
+
 
 export interface AzureSPA {
   accessToken: string;

@@ -22,9 +22,9 @@ export const isUnpopulatedField = (f: any) => (!f && f !== false && f !== 0) || 
 
 // For a DID user, the outgoing number is tied to the directDialNum, if you change one you must change both in order for the form to be valid
 export const isDidDifferentValid = (form: UserFormState, worker: Worker, forwardToToggle: boolean): boolean => {
-  if(forwardToToggle === true) {
+  if (forwardToToggle === true) {
     return removeNonNumericCharacters(form.triton.outgoing.value) !== formatE164PhoneNumber(worker?.attributes?.did)
-    && removeNonNumericCharacters(form.triton.directDialNum.value) !== formatE164PhoneNumber(worker?.directDialNum);
+      && removeNonNumericCharacters(form.triton.directDialNum.value) !== formatE164PhoneNumber(worker?.directDialNum);
   } else {
     return true;
   }
@@ -33,10 +33,10 @@ export const isDidDifferentValid = (form: UserFormState, worker: Worker, forward
 export const isExtensionValid = (form: UserFormState): boolean => form.triton.extension.valid || form.triton.extension.value === "";
 
 export const isFormUpdated = (form: UserFormState): boolean => form.triton.defaultSkills.updated || form.triton.manager.updated ||
-form.triton.profileId.updated || form.triton.outgoing.updated ||
-form.triton.alternateDid.updated || form.triton.directDialNum.updated ||
-form.nNumber.updated || form.triton.extension.updated ||
-form.triton.inactiveForwardTo.updated || form.triton.zeroOutEnabled.updated || form.calabrio_qm.updated || form.triton.selfServiceInd.updated;
+  form.triton.profileId.updated || form.triton.outgoing.updated ||
+  form.triton.alternateDid.updated || form.triton.directDialNum.updated ||
+  form.nNumber.updated || form.triton.extension.updated ||
+  form.triton.inactiveForwardTo.updated || form.triton.zeroOutEnabled.updated || form.calabrio_qm.updated || form.triton.selfServiceInd.updated || form.triton.routing.updated;
 
 export const identifyFormErrors = (form: UserFormState) => {
   let erroredFields: any[] = [];
@@ -50,17 +50,17 @@ export const identifyFormErrors = (form: UserFormState) => {
 }
 
 export const isTritonUserValid = (form: UserFormState, worker: Worker, forwardToToggle: boolean) => {
-  if(!form.triton.userFound){
+  if (!form.triton.userFound) {
     return false;
   } else {
     return (form.formMode === formModes.INSERT ? isNNumberValid(form) : true)
-    && isProfileIdValid(form)
-    && isManagerValid(form)
-    && form.triton.outgoing.valid
-    && isExtensionValid(form)
-    && (form.triton.didUser === true ? form.triton.directDialNum.valid && form.triton.alternateDid.valid : true)
-    && isInactiveForwardToValid(form, forwardToToggle)
-    && isDidDifferentValid(form, worker, forwardToToggle)
+      && isProfileIdValid(form)
+      && isManagerValid(form)
+      && form.triton.outgoing.valid
+      && isExtensionValid(form)
+      && (form.triton.didUser === true ? form.triton.directDialNum.valid && form.triton.alternateDid.valid : true)
+      && isInactiveForwardToValid(form, forwardToToggle)
+      && isDidDifferentValid(form, worker, forwardToToggle)
   }
 };
 
@@ -75,14 +75,14 @@ export const isQMUserValid = (form: UserFormState) => {
     }
   ];
   const missingFields: any = [];
-  if(!form.calabrio_qm.userFound){
+  if (!form.calabrio_qm.userFound) {
     return requiredFields.map((f: any) => f.alias);
   } else {
     requiredFields.forEach((f: any) => {
       const value: any = form.calabrio_qm[f.value];
-      if(!value || value.length === 0){
+      if (!value || value.length === 0) {
         missingFields.push(f.alias);
-      } 
+      }
     });
     return missingFields;
   }
@@ -99,29 +99,29 @@ export const isWfmUserValid = (form: UserFormState) => {
     rotationFields: ["RotationId", "RotationStartDate", "RotationStartWeek"]
   };
   const missingFields: string[] = [];
-  if(!user.userFound){
+  if (!user.userFound) {
     return [];
   } else {
     requiredFields.forEach((f: any) => {
       const value: any = form.calabrio_wfm[f];
-      if(isUnpopulatedField(value)){
+      if (isUnpopulatedField(value)) {
         missingFields.push(f);
-      } 
+      }
     });
 
     Object.values(logicalRequiredFields).forEach((fields: any[]) => {
-      const allFieldsNull = fields.every((f:any) => isUnpopulatedField(user[f]));
+      const allFieldsNull = fields.every((f: any) => isUnpopulatedField(user[f]));
 
-      if(!allFieldsNull){
+      if (!allFieldsNull) {
         fields.forEach((field: string) => {
-          if(isUnpopulatedField(user[field])){ missingFields.push(field); }
+          if (isUnpopulatedField(user[field])) { missingFields.push(field); }
         });
-      }      
+      }
     });
 
-    if(user.OptionalColumns?.length > 0){
+    if (user.OptionalColumns?.length > 0) {
       const validColumns = user.OptionalColumns.every((oc: any) => !isUnpopulatedField(oc.Value));
-      if(!validColumns){
+      if (!validColumns) {
         missingFields.push("Optional Columns")
       }
     }
@@ -147,7 +147,7 @@ export const getOverflowSkills = (profiles: TritonProfile[]): string[] => {
 
 export const getOverflowSkillFromProfile = (profiles: TritonProfile[], profileValue: string): string | undefined => {
   const profile = getTargetProfile(profiles, profileValue);
-  if(!profile || profile?.overflow_skill === null || profile?.overflow_skill === ""){
+  if (!profile || profile?.overflow_skill === null || profile?.overflow_skill === "") {
     return undefined;
   } else {
     return profile.overflow_skill;
@@ -155,16 +155,16 @@ export const getOverflowSkillFromProfile = (profiles: TritonProfile[], profileVa
 };
 
 export const removeProfileZeroIfAdminNotInProfileZero = (adminState: AppState, profiles: TritonProfile[]) => {
-  const adGroups: string[] = adminState && adminState.userContext && adminState.userContext.pingIdentity ? adminState.userContext.pingIdentity.groups: [];
+  const adGroups: string[] = adminState && adminState.userContext && adminState.userContext.pingIdentity ? adminState.userContext.pingIdentity.groups : [];
 
   let adminGroup = false;
-  adGroups.forEach(group =>{
-    if(group.includes("gci-cicct-triton-prod-admin") || group.includes("gci-cicct-triton-test-admin") || group.includes("gci-cicct-triton-dev-admin")){
+  adGroups.forEach(group => {
+    if (group.includes("gci-cicct-triton-prod-admin") || group.includes("gci-cicct-triton-test-admin") || group.includes("gci-cicct-triton-dev-admin")) {
       adminGroup = true;
     }
   });
 
-  if(!adminGroup){
+  if (!adminGroup) {
     const filteredProfiles = profiles.filter(e => e.profile_id !== 0);
     return filteredProfiles;
   }
@@ -189,7 +189,7 @@ export const fetchUser = async (nNumber: string, setForm: any, errorMessage: str
       payload: nNumberPayload
     });
     return nNumberPayload;
-  } catch(err) {
+  } catch (err) {
     console.error(errorMessage, err);
     setForm({
       type: "SET_DISCREPANCIES",
@@ -213,11 +213,11 @@ export const findMatchingWorker = (sid: string, nNumber: string, email: string, 
     const workerNNumber = w.attributes?.n_number?.toLowerCase() || w.EmploymentNumber?.toLowerCase();
     const workerEmail = w.attributes?.email?.toLowerCase() || w.email?.toLowerCase() || w.Identity?.toLowerCase() || w.Email?.toLowerCase();
 
-    if(sid && sid.toLowerCase() === workerSid){
+    if (sid && sid.toLowerCase() === workerSid) {
       matchingWorker = w;
-    } else if(nNumber && nNumber.toLowerCase() === workerNNumber){
+    } else if (nNumber && nNumber.toLowerCase() === workerNNumber) {
       matchingWorker = w;
-    } else if(email && email.toLowerCase() === workerEmail){
+    } else if (email && email.toLowerCase() === workerEmail) {
       matchingWorker = w;
     }
   });
@@ -237,35 +237,35 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
   let calabrioQmUser = null;
   let calabrioWfmUser = null;
 
-  if(!form.nNumber.nNumberFetchedUser && form.nNumber.value && form.nNumber.value.match(nNumMatcher)){
+  if (!form.nNumber.nNumberFetchedUser && form.nNumber.value && form.nNumber.value.match(nNumMatcher)) {
     //set the nNumber & Triton/Calabrio users based off of the nNumber in the state
     const errorMessage = `Failed to fetch nNumber from HR database. ${form.nNumber.value}. 
     If this nNumber continues to fail, this user may no longer be active in the HR database or needs to reach out to the HR team to investigate the failure.`
     nNumberObject = await fetchUser(form.nNumber.value, setForm, errorMessage, discrepancyType.GENERAL);
   }
-  if(primarySystem === "triton"){
+  if (primarySystem === "triton") {
     const acdId = form.triton.sid;
     const nNumber = form.nNumber.value || form.triton.attributes?.n_number;
     const email = form.nNumber.nNumberFetchedUser?.email || form.triton.attributes?.email;
     calabrioWfmUser = findMatchingWorker(acdId, nNumber, email, calabrioWfmUsers);
     calabrioQmUser = findMatchingWorker(acdId, nNumber, email, calabrioQmUsers);
-  } else if(primarySystem === "calabrio_qm"){
+  } else if (primarySystem === "calabrio_qm") {
     //This condition wont be in play until the calabrio qm table is in place
     //When this condition is fulfilled we can peel some of the code out of the CallRecordingForm
-  } else if(primarySystem === "calabrio_wfm"){
+  } else if (primarySystem === "calabrio_wfm") {
     const wfmNNumber = form.calabrio_wfm.EmploymentNumber?.trim().toLowerCase();;
     const wfmIdentity = form.calabrio_wfm.Identity?.trim().toLowerCase();
     const wfmEmail = form.calabrio_wfm.Email?.trim().toLowerCase();
 
-    if(form.nNumber.nNumberFetchedUser && form.nNumber.value){
+    if (form.nNumber.nNumberFetchedUser && form.nNumber.value) {
       tritonWorker = findMatchingWorker(null, form.nNumber.value, form.nNumber.nNumberFetchedUser.email, tritonWorkers);
       calabrioQmUser = findMatchingWorker(null, form.nNumber.value, form.nNumber.nNumberFetchedUser.email, calabrioQmUsers);
-    } else if(!form.nNumber.nNumberFetchedUser && wfmNNumber && wfmNNumber.match(nNumMatcher)){
+    } else if (!form.nNumber.nNumberFetchedUser && wfmNNumber && wfmNNumber.match(nNumMatcher)) {
       const errorMessage = `Failed to fetch nNumber from HR database. Value read from WFM User Record Employment Number field: ${wfmNNumber}. If this nNumber looks accurate and continues to fail, this user may no longer be active in the HR database or needs to reach out to the HR team to investigate the failure. If this nNumber does not look accurate, please correct the WFM Record Employment Number field and try again.`
       nNumberObject = await fetchUser(wfmNNumber, setForm, errorMessage, discrepancyType.CALABRIO_WFM);
       tritonWorker = findMatchingWorker(null, wfmNNumber, nNumberObject.fetchedUser?.email, tritonWorkers);
       calabrioQmUser = findMatchingWorker(null, wfmNNumber, nNumberObject.fetchedUser?.email, calabrioQmUsers);
-    } else if(!form.nNumber.nNumberFetchedUser) {
+    } else if (!form.nNumber.nNumberFetchedUser) {
       setForm({
         type: "SET_DISCREPANCIES",
         payload: {
@@ -273,10 +273,10 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
           message: "WFM User Record is missing a valid nNumber in the Employment Number field. Please correct this and try again."
         }
       });
-      if(wfmEmail && !wfmIdentity){
+      if (wfmEmail && !wfmIdentity) {
         tritonWorker = findMatchingWorker(null, form.nNumber.value, wfmEmail, tritonWorkers);
         calabrioQmUser = findMatchingWorker(tritonWorker?.sid, tritonWorker?.attributes.n_number || form.nNumber.value, wfmEmail, calabrioQmUsers);
-      } else if(!wfmEmail && wfmIdentity || (wfmEmail && wfmIdentity && wfmEmail === wfmIdentity)){
+      } else if (!wfmEmail && wfmIdentity || (wfmEmail && wfmIdentity && wfmEmail === wfmIdentity)) {
         tritonWorker = findMatchingWorker(null, form.nNumber.value, wfmIdentity, tritonWorkers);
         calabrioQmUser = findMatchingWorker(tritonWorker?.sid, tritonWorker?.attributes.n_number || form.nNumber.value, wfmIdentity, calabrioQmUsers);
       } else {
@@ -296,7 +296,7 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
   }
 
   //Update state for Triton Worker if applicable
-  if(!form.triton.userFound && tritonWorker){
+  if (!form.triton.userFound && tritonWorker) {
     setForm({
       type: "SET_UPDATE_TRITON_FORM_STATE",
       payload: {
@@ -308,23 +308,23 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
   }
 
   //Update state for Calabrio QM if applicable
-  if(!form.calabrio_qm.userFound && calabrioQmUser && nNumberObject.fetchedUser){
-   /*
-      Right now the CallRecordingForm handles the logic of populating the edit form based on the n#
-      When we have a Calabrio WM Table view and hit the edit button, this conditional will come into play
-      This is the action we will take at that point and refactor the populating of the user into this method instead of the callrecording form
-   
-      For now - we need this call to set userFound to true
-    */
-      setForm({
-        type: "SET_UPDATE_QM_FORM_STATE",
-        payload: {
-          user: calabrioQmUser,
-          formMode: form.formMode
-        }
-      });
+  if (!form.calabrio_qm.userFound && calabrioQmUser && nNumberObject.fetchedUser) {
+    /*
+       Right now the CallRecordingForm handles the logic of populating the edit form based on the n#
+       When we have a Calabrio WM Table view and hit the edit button, this conditional will come into play
+       This is the action we will take at that point and refactor the populating of the user into this method instead of the callrecording form
+    
+       For now - we need this call to set userFound to true
+     */
+    setForm({
+      type: "SET_UPDATE_QM_FORM_STATE",
+      payload: {
+        user: calabrioQmUser,
+        formMode: form.formMode
+      }
+    });
 
-  } else if(!form.calabrio_qm.userFound && calabrioQmUser && !nNumberObject.fetchedUser){
+  } else if (!form.calabrio_qm.userFound && calabrioQmUser && !nNumberObject.fetchedUser) {
     //Spoofing the nNumberFetchedUser so the CallRecordingForm still works. When Calabrio QM has its own table this can be re-orged a bit
     setForm({
       type: "COMPLETE_N_NUMBER",
@@ -336,7 +336,7 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
   }
 
   //Update state for WFM user if applicable
-  if(calabrioWfmUser){
+  if (calabrioWfmUser) {
     setForm({
       type: "SET_UPDATE_WFM_FORM_STATE",
       payload: {

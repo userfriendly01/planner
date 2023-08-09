@@ -34,16 +34,10 @@ jest.mock("components", () => ({
 
 const mockHandleClose = jest.fn();
 const mockHandleClear = jest.fn();
-const mockSetTableState = jest.fn();
-const tableState = {
-  managerFilter: null,
-  profileFilter: null,
-  ouFilter: null
-};
 
 describe("<FilterModal />", () => {
 
-  const renderComponent = () => render(<FilterModal handleClose={mockHandleClose} handleClear={mockHandleClear} tableState={tableState} setTableState={mockSetTableState} />);
+  const renderComponent = () => render(<FilterModal handleClose={mockHandleClose} handleClear={mockHandleClear} />);
   beforeEach(() => {
     jest.clearAllMocks();
     setupMockedComponents({
@@ -57,7 +51,6 @@ describe("<FilterModal />", () => {
     PaperContainer.mockImplementation(props => <div>{props.children}</div>);
     mockHandleClose.mockClear();
     mockHandleClear.mockClear();
-    mockSetTableState.mockClear();
   });
 
   describe("initial state of the modal", () => {
@@ -65,55 +58,13 @@ describe("<FilterModal />", () => {
       const rendered = renderComponent();
       expectMockedComponent(rendered, { CloseRounded });
       expectMockedComponent(rendered, { ManagerDropdown });
-      expect(ManagerDropdown.mock.calls[0][0].filterBy).toBe(tableState.managerFilter);
+      expect(ManagerDropdown.mock.calls.length).toBe(1);
       expectMockedComponent(rendered, { ProfileFilterDropdown });
-      expect(ProfileFilterDropdown.mock.calls[0][0].filterBy).toBe(tableState.profileFilterArray);
+      expect(ProfileFilterDropdown.mock.calls.length).toBe(1);
       expectMockedComponent(rendered, { OuFilterDropdown });
-      expect(OuFilterDropdown.mock.calls[0][0].filterBy).toBe(tableState.ouFilterArray);
-      expect(StyledButton.mock.calls[0][0].children).toBe("Apply Filters");
-      expect(StyledButton.mock.calls[1][0].children).toBe("Clear Filters");
-    });
-  });
-
-  describe("setFilter is called on Manager Dropdown", () => {
-    test("should call setTableState", () => {
-      const managerNNumber = "n0263786";
-      renderComponent();
-      const setFilter = ManagerDropdown.mock.calls[0][0].setFilter;
-      act(() => setFilter(managerNNumber));
-      expect(mockSetTableState).toHaveBeenCalledTimes(1);
-      expect(mockSetTableState).toHaveBeenCalledWith({
-        ...tableState,
-        managerFilter: managerNNumber
-      });
-    });
-  });
-
-  describe("setFilter is called on Ou Dropdown", () => {
-    test("should call setTableState", () => {
-      const ou = ["claims", "nonsense"];
-      renderComponent();
-      const setFilter = OuFilterDropdown.mock.calls[0][0].setFilter;
-      act(() => setFilter(ou));
-      expect(mockSetTableState).toHaveBeenCalledTimes(1);
-      expect(mockSetTableState).toHaveBeenCalledWith({
-        ...tableState,
-        ouFilterArray: ou
-      });
-    });
-  });
-
-  describe("setFilter is called on Profile Dropdown", () => {
-    test("should call setTableState", () => {
-      const profileId = ["12", "14"];
-      renderComponent();
-      const setFilter = ProfileFilterDropdown.mock.calls[0][0].setFilter;
-      act(() => setFilter(profileId));
-      expect(mockSetTableState).toHaveBeenCalledTimes(1);
-      expect(mockSetTableState).toHaveBeenCalledWith({
-        ...tableState,
-        profileFilterArray: profileId
-      });
+      expect(OuFilterDropdown.mock.calls.length).toBe(1);
+      expect(StyledButton.mock.calls[0][0].children).toBe("Done");
+      expect(StyledButton.mock.calls[1][0].children).toBe("Clear");
     });
   });
 
@@ -121,7 +72,7 @@ describe("<FilterModal />", () => {
     test("should render whenever modal is open", () => {
       const rendered = renderComponent();
       expectMockedComponent(rendered, { CloseRounded }, 1);
-      expect(StyledButton.mock.calls[0][0].children).toBe("Apply Filters");
+      expect(StyledButton.mock.calls[0][0].children).toBe("Done");
     });
     describe("when clicked", () => {
       test("close rounded button should close the modal", () => {
@@ -143,7 +94,7 @@ describe("<FilterModal />", () => {
   describe("clear filter behaviour", () => {
     test("should render whenever modal is open", () => {
       renderComponent();
-      expect(StyledButton.mock.calls[1][0].children).toBe("Clear Filters");
+      expect(StyledButton.mock.calls[1][0].children).toBe("Clear");
     });
     test("should clear filters when clicked", () => {
       renderComponent();

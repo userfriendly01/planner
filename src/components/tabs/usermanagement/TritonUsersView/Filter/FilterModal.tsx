@@ -5,7 +5,6 @@ import {
   DropdownWrapper,
   CloseButtonContainer
 } from "./Filter.Styles";
-import { FilterModalProps } from "./Filter.Interfaces";
 import {
   PaperContainer,
   StyledButton,
@@ -16,12 +15,15 @@ import {
 import React from "react";
 import { CloseRounded } from "@mui/icons-material";
 
+export interface FilterModalProps {
+  handleClear: ()=> void
+  handleClose: () => void
+}
+
 const FilterModal = (props: FilterModalProps) => {
   const {
     handleClose,
-    handleClear,
-    tableState,
-    setTableState
+    handleClear
   } = props;
 
   return (
@@ -32,25 +34,13 @@ const FilterModal = (props: FilterModalProps) => {
         </CloseButtonContainer>
         <Header>Filters</Header>
         <DropdownWrapper>
-          <ProfileFilterDropdown filterBy={tableState.profileFilterArray} setFilter={(profileIdArray: any[]) => setTableState({
-            ...tableState,
-            profileFilterArray: profileIdArray
-          })}
-          />
-          <OuFilterDropdown filterBy={tableState.ouFilterArray} setFilter={(ouArray: any[]) => setTableState({
-            ...tableState,
-            ouFilterArray: ouArray
-          })}
-          />
-          <ManagerDropdown filterBy={tableState.managerFilter} setFilter={(manager_n_number: string) => setTableState({
-            ...tableState,
-            managerFilter: manager_n_number
-          })}
-          />
+          <ProfileFilterDropdown />
+          <OuFilterDropdown />
+          <ManagerDropdown />
         </DropdownWrapper>
         <FilterButtonWrapper>
-          <StyledButton onClick={handleClose}>Apply Filters</StyledButton>
-          <StyledButton onClick={handleClear}>Clear Filters</StyledButton>
+          <StyledButton onClick={handleClose}>Done</StyledButton>
+          <StyledButton onClick={handleClear}>Clear</StyledButton>
         </FilterButtonWrapper>
       </PaperContainer>
     </ModalContainer>

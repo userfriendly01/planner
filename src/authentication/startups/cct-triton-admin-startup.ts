@@ -180,6 +180,6 @@ export const runTritonAdminStartup = (dispatch: any) => {
     getCalabrioOrg(dispatch),
     getCalabrioRoles(dispatch),
     getBusinessUnits(dispatch),
-    getCalabrioWfmOptions(dispatch),
+    getCalabrioWfmOptions(dispatch)
   ]);
 };

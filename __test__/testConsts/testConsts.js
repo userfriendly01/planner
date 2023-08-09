@@ -715,7 +715,12 @@ export const initialTestState = {
     ]
   },
   calabrioContext,
-  resettingSkills: false
+  resettingSkills: false,
+  userManagementTableFilters: {
+    managerFilter: null,
+    profileFilterArray: [],
+    ouFilterArray: []
+  }
 };
 
 export const mockOperatingUnits = [
