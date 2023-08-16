@@ -1466,6 +1466,30 @@ describe("userFormReducer", () => {
       expect(result).toStrictEqual(expectedFormState);
     });
   });
+  describe("UPDATE_CALLERSTATE", () => {
+    test("should update caller State", () => {
+      const payload = {
+        callerStateRouting:["Test1", "Test2"]
+      };
+      const action = {
+        type: userFormActions.ADD_CALLER_STATE,
+        payload
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        triton:{
+          ...initialUserFormState.triton,
+          callerStateAttr: {
+            ...initialUserFormState.triton.callerStateAttr.callerState,
+            callerState:payload.callerStateRouting,
+            updated: true
+          }
+        }
+        }
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
 
   describe("UPDATE_N_NUMBER", () => {
     test("should update nNumber", () => {
