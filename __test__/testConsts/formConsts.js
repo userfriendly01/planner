@@ -39,6 +39,9 @@ export const initialFormState = {
       skills: [],
       levels: {}
     },
+    callerStateAttr:{
+      callerState: [],
+    },
     defaultSkills: {},
     defaultSkillsUpdated: false,
     didUser: false,
@@ -174,6 +177,9 @@ export const validFormOptions = {
     levels: {
     }
   },
+  callerStateAttr:{
+    callerState: ["Test1", "Test2"]
+  },
   discrepancies: [],
   extension: "1234",
   manager: managerList[0],
@@ -230,6 +236,10 @@ export const validFormState = {
       team: "Sample1",
       levels: {},
       skills: [],
+      updated: true
+    },
+    callerStateAttr:{
+      callerState: ["Test1", "Test2"],
       updated: true
     },
     didUser: false,
@@ -335,6 +345,10 @@ export const mockWorkers = [
         },
         team:"Sample1"
       },
+      callerStateAttr:{
+        callerState: ["Test1", "Test2"],
+        updated: false
+      },
       profile_id: 15
     },
     sid: "WK0",
@@ -376,7 +390,7 @@ export const mockWorkers = [
           "466": 3
         },
         team:"Sample1"
-      }
+      },
     }
   },
   {

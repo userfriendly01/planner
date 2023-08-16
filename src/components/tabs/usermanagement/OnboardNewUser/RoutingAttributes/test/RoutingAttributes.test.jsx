@@ -58,7 +58,8 @@ const workerAttributesAfterFormValid = {
   routing:{
     ...validFormOptions.routing,
     updated: true
-  }
+  },
+  callerState: validFormOptions.callerStateAttr.callerState
 };
 
 const rawDbWorker = {
@@ -108,10 +109,6 @@ describe("<RoutingAttributes />", ()=>{
         value: "sample1"
       }
     }
-    const valueChanged ={
-      label: "sample1",
-      value: null
-    }
     const validFormStateEdit={
       ...validFormState,
       triton:{
@@ -139,10 +136,42 @@ describe("<RoutingAttributes />", ()=>{
     renderComponent();
     const routingTeamChange = Accordion.mock.calls[0][0].children[1].props.children.props.updateValue;
     act(()=>{
-      routingTeamChange(eventOnChange,valueChanged);
+      routingTeamChange(eventOnChange,null);
     })
     const routingStateResult = useFormState.mock.results[0].value.triton.routing;
     expect(routingStateResult).toEqual(routingResult);  
+  });
+  test("Simulate Caller State Component", ()=>{
+    const eventOnChange={
+      target: {
+        name: "callerState",
+        value: "callerState"
+      }
+    }
+    const valueChanged ={
+      label: "sample1",
+      value: "sample1"
+    }
+    renderComponent();
+    const callerStateChange = Accordion.mock.calls[0][0].children[2].props.children.props.updateValue;
+    act(()=>{
+      callerStateChange(eventOnChange,valueChanged);
+    })
+    expect(callerStateChange).toBeTruthy();
+  });
+  test("Simulate Caller State Component", ()=>{
+    const eventOnChange={
+      target: {
+        name: "callerState",
+        value: "callerState"
+      }
+    }
+    renderComponent();
+    const callerStateChange = Accordion.mock.calls[0][0].children[2].props.children.props.updateValue;
+    act(()=>{
+      callerStateChange(eventOnChange,null);
+    })
+    expect(callerStateChange).toBeTruthy();
   });
   test("Auto close the Accordian", ()=>{
     
