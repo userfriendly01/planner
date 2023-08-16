@@ -40,12 +40,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
     const newRows: Array<CctSharedCallFlowDb>=[...rows].map((row: CctSharedCallFlowDb)=>{
       const updatedFlow: CctSharedCallFlowDb = {};
       Object.keys(row).forEach((key: string)=>{
-        if(Object.keys(row.content).includes(key)){
-          updatedFlow.content[key as keyof FlowContent] = apiRef.current.getCellValue(row.pkey, key);
-        }else
-        {
-          updatedFlow[key as keyof CctSharedCallFlowDb] = apiRef.current.getCellValue(row.pkey, key);
-        }
+        updatedFlow[key as keyof CctSharedCallFlowDb] = apiRef.current.getCellValue(row.pkey, key);
       });
       return updatedFlow;
     });

@@ -62,7 +62,7 @@ export const TableGridColumnDef: GridColDef[] = [
     valueSetter: params => ({
       ...params.row,
       content: {
-        ...params.row.content,
+        ...params.row.content || {},
         languageOffer: params.value
       }
     })
@@ -77,7 +77,7 @@ export const TableGridColumnDef: GridColDef[] = [
     valueSetter: params => ({
       ...params.row,
       content: {
-        ...params.row.content,
+        ...params.row.content || {},
         dataRequests: params.value
       }
     })
@@ -92,7 +92,7 @@ export const TableGridColumnDef: GridColDef[] = [
     valueSetter: params => ({
       ...params.row,
       content: {
-        ...params.row.content,
+        ...params.row.content || {},
         callerType: params.value
       }
     })
@@ -107,7 +107,7 @@ export const TableGridColumnDef: GridColDef[] = [
     valueSetter: params => ({
       ...params.row,
       content: {
-        ...params.row.content,
+        ...params.row.content || {},
         transferNumber: params.value
       }
     })
@@ -122,7 +122,7 @@ export const TableGridColumnDef: GridColDef[] = [
     valueSetter: params => ({
       ...params.row,
       content: {
-        ...params.row.content,
+        ...params.row.content || {},
         callFlowRoute: params.value
       }
     })
@@ -137,7 +137,7 @@ export const TableGridColumnDef: GridColDef[] = [
     valueSetter: params => ({
       ...params.row,
       content: {
-        ...params.row.content,
+        ...params.row.content || {},
         greetingMessages: params.value
       }
     }),
@@ -308,7 +308,7 @@ export const TableGridColumnDef: GridColDef[] = [
     valueSetter: params => ({
       ...params.row,
       content: {
-        ...params.row.content,
+        ...params.row.content || {},
         callIntent: params.value
       }
     })

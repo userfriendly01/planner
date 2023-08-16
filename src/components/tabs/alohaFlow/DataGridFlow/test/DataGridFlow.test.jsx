@@ -22,8 +22,9 @@ import { useAdminState } from "context";
 import { CustomToast } from "components";
 import DataGridFlow from "../DataGridFlow";
 import {
-  retrieveFlowData,queryFlowData
+  retrieveFlowData,queryFlowData, flowBatchDelete
 } from "services";
+import { PreviewModal } from "../../PreviewModal";
 
 jest.mock("@mui/x-data-grid",()=>({
   __esModule: true,
@@ -48,6 +49,11 @@ jest.mock("../../CustomActions", () => ({
 
 jest.mock("context", () => ({
   useAdminState: jest.fn()
+}));
+
+jest.mock("../../PreviewModal", ()=>({
+  __esModule: true,
+  PreviewModal: jest.fn()
 }));
 
 const createFlowDataList = numberOfData =>{
@@ -104,6 +110,7 @@ describe("<DataGridFlow />", () => {
     jest.clearAllMocks();
     retrieveFlowData.mockReset();
     queryFlowData.mockReset();
+    flowBatchDelete.mockReset();
     useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
       DataGrid,
@@ -113,7 +120,8 @@ describe("<DataGridFlow />", () => {
       EditFlow,
       AddFlow,
       CustomToast,
-      CustomFlowGridToolBar
+      CustomFlowGridToolBar,
+      PreviewModal
     });
     Object.defineProperty(window, "matchMedia", {
       writable: true,
@@ -462,6 +470,54 @@ describe("<DataGridFlow />", () => {
       const renderedHyperLink = quickRender(hyperlink);
       fireEvent.click(renderedHyperLink.getByRole("link"));
       expect(EditFlow.mock.calls[0][0].isOpen).toBe(false);
+    });
+  });
+  describe("PreviewModal", ()=>{
+    it("Preview Modal onClose", ()=>{
+      const validFlowDataList = createFlowDataList(15);
+      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
+      retrieveFlowData.mockResolvedValue(validFlowDataList);
+      renderComponent();
+      const previewModalOnClose = PreviewModal.mock.calls[0][0].onClose;
+      act(()=>{
+        previewModalOnClose();
+      });
+      expect(PreviewModal.mock.calls.length).toBe(2);
+    });
+    it("Preview Modal onUpdate", ()=>{
+      const validFlowDataList = createFlowDataList(15);
+      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
+      retrieveFlowData.mockResolvedValue(validFlowDataList);
+      renderComponent();
+      const previewModalOnUpdate = PreviewModal.mock.calls[0][0].onUpdate;
+      act(()=>{
+        previewModalOnUpdate();
+      });
+      expect(DataGrid.mock.calls.length).toBe(1);
+    });
+    it("Preview Modal onCreate", ()=>{
+      const validFlowDataList = createFlowDataList(15);
+      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
+      retrieveFlowData.mockResolvedValue(validFlowDataList);
+      renderComponent();
+      const previewModalOnCreate = PreviewModal.mock.calls[0][0].onCreate;
+      act(()=>{
+        previewModalOnCreate();
+      });
+      expect(DataGrid.mock.calls.length).toBe(1);
+    });
+    it("Preview Modal onDelete", ()=>{
+      const validFlowDataList = createFlowDataList(15);
+      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
+      retrieveFlowData.mockResolvedValue(validFlowDataList);
+      renderComponent();
+      const previewModalOnDelete = PreviewModal.mock.calls[0][0].onDelete;
+      const selectedRow = createFlowDataList(2);
+      flowBatchDelete.mockResolvedValue({ data: []});
+      act(()=>{
+        previewModalOnDelete(selectedRow);
+      });
+      expect(DataGrid.mock.calls.length).toBe(1);
     });
   });
 });
