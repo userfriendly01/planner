@@ -19,7 +19,8 @@ const validFlowData = {
     dataRequests: ["test1", "test2"],
     greetingMessages: "Hello Test Message",
     languageOffer: "English",
-    transferNumber: "123456789"
+    transferNumber: "123456789",
+    officeNumber: "#2710"
   },
   accountManager: "test accountManager",
   affinityVDN: "test affinityVDN",
@@ -182,6 +183,14 @@ describe("FlowFieldsConfig", ()=>{
     it("callIntent", ()=>{
       const updatedFlowData = flowFields[28].valueSetter(validFlowData, { callIntent: "99999999" });
       expect(updatedFlowData.content.callIntent).toBe("99999999");
+      const updateDefaultFlowData = flowFields[28].valueSetter(invalidFLowData, { callIntent: "99999999" });
+      expect(updateDefaultFlowData.content.callIntent).toBe("99999999");
+    });
+    it("officeNumber", ()=>{
+      const updatedFlowData = flowFields[29].valueSetter(validFlowData, { officeNumber: "#9999" });
+      expect(updatedFlowData.content.officeNumber).toBe("#9999");
+      const updateDefaultFlowData = flowFields[29].valueSetter(invalidFLowData, { officeNumber: "#9999" });
+      expect(updateDefaultFlowData.content.officeNumber).toBe("#9999");
     });
   });
   describe("valueGetter", ()=>{
@@ -357,6 +366,12 @@ describe("FlowFieldsConfig", ()=>{
       const validData = flowFields[28].valueGetter(validFlowData);
       const invalidData = flowFields[28].valueGetter({});
       expect(validData).toBe("test callIntent");
+      expect(invalidData).toBe("");
+    });
+    it("officeNumber", ()=>{
+      const validData = flowFields[29].valueGetter(validFlowData);
+      const invalidData = flowFields[29].valueGetter({});
+      expect(validData).toBe("#2710");
       expect(invalidData).toBe("");
     });
   });

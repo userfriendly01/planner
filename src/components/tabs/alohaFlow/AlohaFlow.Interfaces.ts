@@ -8,6 +8,7 @@ export interface FlowContent {
     greetingMessages?: string;
     languageOffer?: string;
     transferNumber?: string;
+    officeNumber?: string;
 }
 
 
@@ -95,6 +96,7 @@ export interface FlowKeys {
     greetingMessages?: string;
     internetPlacement?: string;
     languageOffer?: string;
+    officeNumber?: string;
     lineOfBusiness?: string;
     marketingChannel?: string;
     pkey?: string;
