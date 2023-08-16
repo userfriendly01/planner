@@ -3,7 +3,7 @@ export interface DropdownOption {
   value: any
 }
 
-export const RoutingAttrDropDownOptions: DropdownOption[] = [
+export const RoutingTeamAttrDropDownOptions: DropdownOption[] = [
     {
       label: "License CSC",
       value: "LicCSC"
@@ -129,3 +129,15 @@ export const RoutingAttrDropDownOptions: DropdownOption[] = [
       value: "Digital"
     }
 ];
+
+export const CallerStateDropDownOptions:any[] = [
+  {
+    label: "CAT",
+    value: "CAT"
+  },
+  {
+    label: "Digital",
+    value: "Digital"
+  }]
+  
+

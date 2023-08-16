@@ -15,6 +15,8 @@ import { getWfmOptions } from "utils/calabrioUtils";
 const searchParams = SearchParams.getValues();
 
 export const userFormActions = {
+  ADD_CALLER_STATE: "ADD_CALLER_STATE",
+  ADD_ROUTING_TEAM: "ADD_ROUTING_TEAM",
   ASSIGN_EXTENSION: "ASSIGN_EXTENSION",
   CHECK_CALABRIO_TEAM: "CHECK_CALABRIO_TEAM",
   CHECK_CALABRIO_GROUP: "CHECK_CALABRIO_GROUP",
@@ -27,7 +29,6 @@ export const userFormActions = {
   INITIATE_ZERO_OUT_FIELDS: "INITIATE_ZERO_OUT_FIELDS",
   RESET_FORM: "RESET_FORM",
   RESET_FORM_AFTER_ADD: "RESET_FORM_AFTER_ADD",
-  ADD_ROUTING_TEAM: "ADD_ROUTING_TEAM",
   SET_BLUR_ON_FIELD: "SET_BLUR_ON_FIELD",
   SET_CALABRIO_QM_USER: "SET_CALABRIO_QM_USER",
   SET_CALABRIO_TEAM: "SET_CALABRIO_TEAM",
@@ -101,6 +102,10 @@ export const initialUserFormState: UserFormState = {
       team: "",
       skills: [],
       level: {},
+      updated: false
+    },
+    callerStateAttr:{
+      callerState: [],
       updated: false
     },
     didUser: false,
@@ -428,6 +433,20 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
           }
         }
 
+      };
+    }
+    case userFormActions.ADD_CALLER_STATE: {
+      const callerStateRoutingAttr = action.payload.callerStateRouting;
+      return {
+        ...state,
+        triton: {
+          ...state.triton,
+          callerStateAttr: {
+            ...state.triton.callerStateAttr.callerState,
+            callerState: callerStateRoutingAttr,
+            updated: true
+          }
+        }
       };
     }
     case userFormActions.SET_BLUR_ON_FIELD: {

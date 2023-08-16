@@ -36,7 +36,8 @@ export const isFormUpdated = (form: UserFormState): boolean => form.triton.defau
   form.triton.profileId.updated || form.triton.outgoing.updated ||
   form.triton.alternateDid.updated || form.triton.directDialNum.updated ||
   form.nNumber.updated || form.triton.extension.updated ||
-  form.triton.inactiveForwardTo.updated || form.triton.zeroOutEnabled.updated || form.calabrio_qm.updated || form.triton.selfServiceInd.updated || form.triton.routing.updated;
+  form.triton.inactiveForwardTo.updated || form.triton.zeroOutEnabled.updated || form.calabrio_qm.updated || form.triton.selfServiceInd.updated || form.triton.routing.updated||
+  form.triton.callerStateAttr.updated;
 
 export const identifyFormErrors = (form: UserFormState) => {
   let erroredFields: any[] = [];

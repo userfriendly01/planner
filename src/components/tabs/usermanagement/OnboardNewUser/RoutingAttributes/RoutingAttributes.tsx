@@ -9,21 +9,33 @@ import {
   useFormState
 } from "context";
 import { Dropdown } from "components";
-import { RoutingAttrDropDownOptions } from "./RoutingAttributesDropDown";
+import { RoutingTeamAttrDropDownOptions,CallerStateDropDownOptions } from "./RoutingAttributesDropDown";
 
 const RoutingAttributes = (): JSX.Element => {
-
   const setForm = useFormDispatch();
   const form = useFormState();
   const accordianExpansion = form.triton.routing.team ? true : false;
   const [expanded, setExpanded] = useState(accordianExpansion);
-  const handleChange = (event: any, value: any) => {
-    setForm({
-      type: userFormActions.ADD_ROUTING_TEAM,
-      payload: {
-        routingTeamName: value ? value.value : null
-      }
-    });
+  const handleChange = (event: any, value: any, keyName:String) => {
+    switch(keyName){
+      case "routingTeam":
+        setForm({
+          type: userFormActions.ADD_ROUTING_TEAM,
+          payload: {
+            routingTeamName: value ? value.value : null
+          }
+        });
+        break;
+      case "callerState":
+        setForm({
+          type: userFormActions.ADD_CALLER_STATE,
+          payload: {
+            callerStateRouting: value ? value: null
+          }
+        });
+        break;
+    }
+    
   }
   return (
     <Accordion
@@ -43,14 +55,29 @@ const RoutingAttributes = (): JSX.Element => {
         <Dropdown
           label={"Routing Team"}
           value={form.triton.routing.team}
-          options={RoutingAttrDropDownOptions}
-          updateValue={(event: any, value: any) => handleChange(event, value)}
+          options={RoutingTeamAttrDropDownOptions}
+          updateValue={(event: any, value: any) => handleChange(event, value, "routingTeam")}
           styles={{
             width: "calc(95%)",
             margin: "0 0 0 0"
           }}
           disabled={false}
           required={false}
+        />
+      </AccordionDetails>
+      <AccordionDetails>
+        <Dropdown
+          label="Caller State"
+          value={form.triton.callerStateAttr.callerState}
+          options={RoutingTeamAttrDropDownOptions}
+          updateValue={(event: any, value: any) => handleChange(event, value, "callerState")}
+          styles={{
+            width: "calc(95%)",
+            margin: "0 0 0 0"
+          }}
+          disabled={false}
+          required={false}
+          multiple = {true}
         />
       </AccordionDetails>
     </Accordion>

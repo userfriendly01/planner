@@ -110,7 +110,8 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         ...form.triton.routing,
         skills: [],
         levels: {}
-      }
+      },
+      callerState:form.triton.callerStateAttr.callerState
     };
 
     const calabrioAttributes = {
@@ -321,6 +322,9 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     }
     if (form.triton.routing.updated) {
       attributes.routing = form.triton.routing;
+    }
+    if( form.triton.callerStateAttr.updated){
+      attributes.callerState = form.triton.callerStateAttr.callerState;
     }
     if (nNumberFetchedUser) {
       nNumberFetchedUser.departmentNumber ? attributes.department_id = nNumberFetchedUser.departmentNumber : null;
