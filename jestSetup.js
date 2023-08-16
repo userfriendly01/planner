@@ -27,6 +27,7 @@ jest.mock("services", () => ({
   addSkillGroup: jest.fn(),
   addSkillGroupSkill: jest.fn(),
   batchDelete: jest.fn(),
+  flowBatchDelete: jest.fn(),
   checkExtension: jest.fn(),
   createCalabrioTeam: jest.fn(),
   createCalabrioUser: jest.fn(),
