@@ -168,7 +168,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
   };
 
   const loadDataTable = (result?: CctSharedCallRoutingDb[]) => {
-    if (result?.length > 0) {
+    if (result?.length > 0 && result[0]) {
       const sortedResult: CctSharedCallRoutingDb[] = result.sort(((a: CctSharedCallRoutingDb, b: CctSharedCallRoutingDb) => a.id - b.id));
       const minId: number = sortedResult[0].id;
       const maxId: number = sortedResult[result.length - 1].id;
