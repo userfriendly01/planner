@@ -367,10 +367,11 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
     setSelectedList([]);
 
     const deletedIds = rows.map(x => x.id);
-    const filteredItems = state.filteredItems.filter(x=> deletedIds.indexOf(x.id) === -1);
+    const filteredItems = state?.filteredItems?.filter(x=> deletedIds.indexOf(x.id) === -1);
 
     setState({
-      filteredItems
+      ...state,
+      ...filteredItems && { filteredItems }
     });
 
   };
