@@ -225,7 +225,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
         ...alertBarProps,
         open: flag,
         severityType: "success",
-        msg: "New flow has been successfully added!! "
+        msg: "New route has been successfully added."
       }));
     }
     loadDataTable([newData]);

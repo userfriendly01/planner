@@ -128,7 +128,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         ...alertBarProps,
         open: flag,
         severityType: "success",
-        msg: "New flow has been successfully added!! "
+        msg: "New flow has been successfully added. "
       }));
       newData.push(row);
       newFilteredItems.push(row);

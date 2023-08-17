@@ -242,7 +242,7 @@ export const AddFlow = ({
             ...alertBarProps,
             open: true,
             severityType: "success",
-            msg: "New flow has been successfully added!! "
+            msg: "New flow has been successfully added. "
           }));
           setFlowRule({ ...initRule });
           return true;
