@@ -211,12 +211,15 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
   };
 
   const openAddModal = (flag: boolean,openAddModal?:boolean, row?: CctSharedCallRoutingDb) => {
-    let newData;
+    let newData: CctSharedCallRoutingDb;
     if(!openAddModal){
       setClonedRule(openAddModal);
     }
     if (!flag) {
-      newData = row? state.data.concat(row) : undefined;
+      if (row) {
+        state.data.concat(row);
+        newData = row;
+      }
 
       setAlertBar(alertBarProps => ({
         ...alertBarProps,
@@ -225,7 +228,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
         msg: "New flow has been successfully added!! "
       }));
     }
-    loadDataTable(newData);
+    loadDataTable([newData]);
     setState({
       ...state,
       isAddModalOpen: flag
@@ -303,9 +306,10 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
       loadDataTable(newData);
     }
     setState((currentDataRouting: RoutingStateVariables)=>({
+      foo: "boo",
       ...currentDataRouting,
       isEditModalOpen: flag,
-      selectedRow: rows[0]
+      ...(rows && { selectedRow: rows[0] })
     }));
   };
 
