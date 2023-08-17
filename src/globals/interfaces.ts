@@ -283,7 +283,7 @@ export interface Worker {
     roles?: string[],
     routing?: WorkerAttributeSkills,
     unique_id?: string,
-    callerState?: string[]
+    callerStateAttr?: WorkerAttributeSkills
   },
   alternateDid?: string,
   directDialNum?: string,
@@ -301,7 +301,8 @@ export interface WorkerAttributeSkills {
     [key: string]: number
   },
   skills: string[],
-  team?:string
+  team?:string,
+  callerState?: string[]
 }
 
 

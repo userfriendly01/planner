@@ -143,7 +143,10 @@ const workerAttributesAfterFormValid = {
     ...validFormOptions.routing,
     updated: true
   },
-  callerState:validFormOptions.callerStateAttr.callerState
+  callerStateAttr:{
+    ...validFormOptions.callerStateAttr,
+    updated:true
+  }
 };
 
 const rawDbWorker = {
@@ -581,8 +584,7 @@ describe("<UserFormButtons />", () => {
                       skills: [
                         "466"
                       ]
-                    },
-                    callerState: validFormOptions.callerStateAttr.callerState
+                    }
                   },
                   alternateDid: validFormState.triton.alternateDid.e164,
                   directDialNum: validFormState.triton.directDialNum.e164,
@@ -1234,7 +1236,10 @@ describe("<UserFormButtons />", () => {
                   team:"Sample1",
                   updated: "true"
                 },
-                callerState: validFormOptions.callerStateAttr.callerState
+                callerStateAttr: {
+                  ...validFormOptions.callerStateAttr,
+                  updated: true
+                }
               }
             };
             const updateWorkerAttributesAfterFormValid = {
@@ -1260,7 +1265,10 @@ describe("<UserFormButtons />", () => {
                 team: "Sample1",
                 updated: true
               },
-              callerState: validFormOptions.callerStateAttr.callerState
+              callerStateAttr: {
+                ...validFormOptions.callerStateAttr,
+                updated: true
+              }
             };
             renderComponent(true, updateWorker);
             render(Tooltip.mock.calls[0][0].children);
@@ -1330,7 +1338,10 @@ describe("<UserFormButtons />", () => {
               ...validFormState.triton.routing,
               skills: ["nonSkillL1"]
             },
-            callerState: validFormOptions.callerStateAttr.callerState
+            callerStateAttr: {
+              ...validFormOptions.callerStateAttr,
+              updated: true
+            }
           };
           const updateWorker = {
             ...worker,
@@ -1525,7 +1536,9 @@ describe("<UserFormButtons />", () => {
                   levels: {"466":3},
                   team:"Sample1"
                 },
-                callerState: validFormOptions.callerStateAttr.callerState
+                callerStateAttr: {
+                  ...validFormOptions.callerStateAttr
+                }
               },
               }
             };
@@ -1538,7 +1551,10 @@ describe("<UserFormButtons />", () => {
             await waitFor(() => {
               expect(updateUser).toHaveBeenCalledWith(worker.sid, {
                 attributes: {
-                  callerState: validFormOptions.callerStateAttr.callerState,
+                  callerStateAttr: {
+                    ...validFormOptions.callerStateAttr,
+                    updated: true
+                  },
                   department_id: fetchedUser.departmentNumber,
                   department_name: fetchedUser.departmentName,
                   location: fetchedUser.departmentName,
@@ -1597,7 +1613,10 @@ describe("<UserFormButtons />", () => {
               ...validFormState.triton.routing,
               skills: ["nonSkillL1"],
             },
-            callerState: validFormOptions.callerStateAttr.callerState
+            callerStateAttr: {
+              ...validFormOptions.callerStateAttr,
+              updated: true
+            }
           };
           const updateWorker = {
             ...worker,
@@ -1687,7 +1706,10 @@ describe("<UserFormButtons />", () => {
               ...validFormState.triton.routing,
               skills: ["nonSkillL1"]
             },
-            callerState: validFormOptions.callerStateAttr.callerState
+            callerStateAttr: {
+              ...validFormOptions.callerStateAttr,
+              updated: true
+            }
           };
           const updateWorker = {
             ...worker,
@@ -1808,7 +1830,10 @@ describe("<UserFormButtons />", () => {
                 team:"",
                 updated: "true"
               },
-              callerState: validFormOptions.callerStateAttr.callerState,
+              callerStateAttr: {
+                ...validFormOptions.callerStateAttr,
+                updated: true
+              },
             directDialNum: {
               ...updateFormState.triton.directDialNum,
               value: "",
@@ -1847,7 +1872,10 @@ describe("<UserFormButtons />", () => {
                   team:"",
                   updated: "true"
                 },
-                callerState: validFormOptions.callerStateAttr.callerState
+                callerStateAttr: {
+                  ...validFormOptions.callerStateAttr,
+                  updated: true
+                }
               },
               operatingUnitSid: validOperatingUnitId,
               zeroOutEnabled: true,
@@ -1886,7 +1914,10 @@ describe("<UserFormButtons />", () => {
                   team:"",
                   updated: "true"
                 },
-                callerState: validFormOptions.callerStateAttr.callerState
+                callerStateAttr: {
+                  ...validFormOptions.callerStateAttr,
+                  updated: true
+                }
               },
               operatingUnitSid: validOperatingUnitId,
               zeroOutEnabled: false,
@@ -1945,7 +1976,10 @@ describe("<UserFormButtons />", () => {
             team: "Sample1",
             updated: true
           },
-          callerState: validFormOptions.callerStateAttr.callerState
+          callerStateAttr: {
+            ...validFormOptions.callerStateAttr,
+            updated: true
+          }
         };
         beforeEach(() => {
           workerHasOverFlowSkill.mockReturnValue(false);

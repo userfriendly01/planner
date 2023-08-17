@@ -41,6 +41,8 @@ export const initialFormState = {
     },
     callerStateAttr:{
       callerState: [],
+      skills: [],
+      levels: {}
     },
     defaultSkills: {},
     defaultSkillsUpdated: false,
@@ -174,11 +176,12 @@ export const validFormOptions = {
   routing:{
     team:"Sample1",
     skills: [],
-    levels: {
-    }
+    levels: {}
   },
   callerStateAttr:{
-    callerState: ["Test1", "Test2"]
+    callerState: ["Test1", "Test2"],
+    skills: [],
+    levels: {}
   },
   discrepancies: [],
   extension: "1234",
@@ -240,6 +243,8 @@ export const validFormState = {
     },
     callerStateAttr:{
       callerState: ["Test1", "Test2"],
+      skills: [],
+      levels: {},
       updated: true
     },
     didUser: false,
