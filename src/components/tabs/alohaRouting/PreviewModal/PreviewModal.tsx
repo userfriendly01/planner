@@ -91,6 +91,9 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
             sx={{
               "& .MuiDataGrid-columnHeaderTitle": {
                 fontWeight: 600
+              },
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: "rgb(255,226,128)"
               }
             }}
           />
