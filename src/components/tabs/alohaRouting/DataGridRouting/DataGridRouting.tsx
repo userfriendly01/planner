@@ -306,7 +306,6 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
       loadDataTable(newData);
     }
     setState((currentDataRouting: RoutingStateVariables)=>({
-      foo: "boo",
       ...currentDataRouting,
       isEditModalOpen: flag,
       ...(rows && { selectedRow: rows[0] })
