@@ -106,7 +106,7 @@ export const worker = {
         updated: true
       },
       callerStateAttr:{
-        callerState: ["Test1", "Test2"],
+        callerStates: ["Test1", "Test2"],
         updated: true
       }
     }

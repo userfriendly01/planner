@@ -302,7 +302,7 @@ export interface WorkerAttributeSkills {
   },
   skills: string[],
   team?:string,
-  callerState?: string[]
+  callerStates?: string[]
 }
 
 
