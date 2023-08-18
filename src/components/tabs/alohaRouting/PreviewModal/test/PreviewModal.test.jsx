@@ -56,12 +56,45 @@ const testRows = [{
   callerType: "Customer",
   channel: "Service",
   dayOfWeek: "M",
-  endTime: "11:59 PM",
+  endTime: "11:59",
+  occupancyCheck: [{
+    "percentage": 100,
+    "team": "Inbound"
+  }],
+  percentOfCallers: "100",
+  pkey: "service",
+  policyType: "x",
+  routingSteps: [{
+    "callerState": "State",
+    "teams": [
+      "Inbound",
+      "TruStage",
+      "ACT",
+      "Spanish"
+    ],
+    "time": null
+  }],
+  skey: "libertymutual__service_1235",
+  startTime: "12:00",
+  transferDestination: "hangup",
+  transferMessage: "Sorry, we're closed right now.",
+  twilioSkill: "crcXxYy",
+  crcSkill: "XyXy",
+  priority: "1"
+},{
+  id: 1236,
+  all: "All",
+  brand: "Liberty Mutual",
+  callerState: "ALL",
+  channel: "Service",
+  dayOfWeek: "M",
+  endTime: "11:59",
+
   percentOfCallers: "100",
   pkey: "service",
   policyType: "x",
   skey: "libertymutual__service_1235",
-  startTime: "12:00 AM",
+  startTime: "12:00",
   transferDestination: "hangup",
   transferMessage: "Sorry, we're closed right now.",
   twilioSkill: "crcXxYy",
