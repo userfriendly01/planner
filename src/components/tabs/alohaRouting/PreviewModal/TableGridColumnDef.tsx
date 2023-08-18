@@ -218,6 +218,14 @@ export const TableGridColumnDef: GridColDef[] = [
       </div>
     ),
     editable: true
+  },
+  {
+    headerName: "Office Number",
+    field: "officeNumber",
+    sortable: true,
+    width: 110,
+    align: "left",
+    valueGetter: params => `${params.row.content?.officeNumber || ""}`
   }
 ];
 

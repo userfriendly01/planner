@@ -15,6 +15,7 @@ import {
 } from "@mui/x-data-grid";
 
 import { ComponentControl } from "components";
+import { MultiFieldContainerFormProps } from "components/core/SharedComponents/MultiFieldContainer";
 import { GridApiCommunity } from "@mui/x-data-grid/internals";
 
 const reconstructTableColumnDef = (
@@ -31,7 +32,11 @@ const reconstructTableColumnDef = (
   }
 };
 
-const multiFields = routingFields.filter(x => x.control === "multiField").map(x => x.key);
+const formFields: {[key:string]: Array<MultiFieldContainerFormProps>}={};
+const multiFields = routingFields.filter(x => x.control === "multiField").map(x => {
+  formFields[x.key]=x.formFields;
+  return x.key;
+});
 
 const manageEditColumnDef = (
   columnDef: Array<GridColDef>,
@@ -50,19 +55,18 @@ const manageEditColumnDef = (
     if(multiFields.includes(item.field)){
       return {
         ...item,
-        editable: false,
-        renderCell: params => (
+        editable: true,
+        renderEditCell: params => (
           <ComponentControl
             control="multiField"
             label=""
             name={item.field}
-            formFields={getFormFields(item.field)}
+            formFields={formFields[item.field]}
             error={false}
             required={false}
             type="text"
             value={params.value}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              console.info("onChange", event);
               apiRef.current.setEditCellValue({
                 id: params.row.id,
                 field: item.field,
@@ -96,38 +100,6 @@ const fetchData = (): RoutingDropDownList =>{
     priority: masterDataObject.priority
   };
   return dropDownValue;
-};
-
-const getFormFields = (field: string) =>{
-  return {
-    "routingSteps": [
-      {
-        label: "Teams",
-        name: "teams",
-        type: "multiValueText",
-        helperText: "Please use Enter to add team"
-      },
-      {
-        label: "Time",
-        name: "time",
-        type: "number",
-        helperText: "min: 1,  max: 100"
-      }
-    ],
-    "occupancyCheck": [
-      {
-        label: "Team",
-        name: "team",
-        type: "text"
-      },
-      {
-        label: "Percentage (%)",
-        name: "percentage",
-        type: "number",
-        helperText: "min: 1,  max: 100"
-      }
-    ]
-  }[field];
 };
 
 export {
