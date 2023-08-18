@@ -86,7 +86,7 @@ const createSampleTestRoutingDataList = numberOfData =>{
 };
 
 const filteredItems = {
-  channel: "TestChannel1"
+  dayOfWeek: "ALL"
 };
 
 
@@ -417,7 +417,61 @@ describe("<DataGridRouting />", ()=>{
       const localStorageValue = JSON.parse(localStorage.getItem(CACHE_FILTER_ROUTING));
       expect(localStorageValue[brandKey]).toBeUndefined;
     });
-
+    test.only("Simulate advanceFilter", () => {
+      const validRoutingDataList = createSampleTestRoutingDataList(15);
+      const num = 1234;
+      validRoutingDataList.push ({
+        id: num,
+        all: "ALL",
+        brand: `TestBrand${num}`,
+        callIntent: `TestCallIntent${num}`,
+        callerState: `TestCallState${num}`,
+        callerType: `TestCallType${num}`,
+        channel: `TestChannel${num}`,
+        dayOfWeek: "ALL",
+        endTime: "12:00:00 PM",
+        percentOfCallers: "10",
+        pkey: "testcallintent",
+        policyType: `TestPolicyType${num}`,
+        skey: `TestBrand${num}_TestChannel${num}_${num}`,
+        startTime: "05:00:00 PM",
+        transferDestination: `1234567${num}`,
+        transferMessage: `Test Transfer Message ${num}`,
+        twilioSkill: `Test Twilio Skill${num}`,
+        crcSkill: null
+      });
+      queryRoutingData.mockResolvedValue(routingPattern(validRoutingDataList));
+      retrieveRoutingData.mockResolvedValue(validRoutingDataList);
+      localStorage.setItem(CACHE_FILTER_ROUTING, JSON.stringify({
+        ...filteredItems,
+        dayOfWeek: "ALL",
+        id: "1,234"
+      }));
+      renderDataGridRouting();
+      expect(DataGrid.mock.calls[0][0].paginationModel.page).toBe(1);
+      const applyFilter = RoutingAdvanceSearch.mock.calls[0][0].applyFilter;
+      act(()=>{ applyFilter(); });
+      expect(RoutingAdvanceSearch.mock.calls[1][0].isOpen).toBe(false);
+    });
+    test("Simulate advanceFilter error", () => {
+      const validRoutingDataList = createSampleTestRoutingDataList(15);
+      queryRoutingData.mockResolvedValue(routingPattern(validRoutingDataList));
+      retrieveRoutingData.mockResolvedValue(validRoutingDataList);
+      localStorage.setItem(CACHE_FILTER_ROUTING, "");
+      renderDataGridRouting();
+      expect(DataGrid.mock.calls[0][0].paginationModel.page).toBe(1);
+    });
+    test("Simulate advanceFilter empty result", () => {
+      const validRoutingDataList = createSampleTestRoutingDataList(15);
+      queryRoutingData.mockResolvedValue(routingPattern(validRoutingDataList));
+      retrieveRoutingData.mockResolvedValue(validRoutingDataList);
+      localStorage.setItem(CACHE_FILTER_ROUTING, JSON.stringify({
+        ...filteredItems,
+        dayOfWeek: "XXX-doesnt-exist"
+      }));
+      renderDataGridRouting();
+      expect(DataGrid.mock.calls[0][0].paginationModel.page).toBe(1);
+    });
     test("Simulate openAdvanceSearchModal handleChange with id", ()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
       const patternList = routingPattern(validRoutingDataList);
