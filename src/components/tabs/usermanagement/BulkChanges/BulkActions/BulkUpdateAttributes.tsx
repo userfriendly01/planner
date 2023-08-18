@@ -86,7 +86,7 @@ const BulkUpdateAttributes = (props: BulkUpdateProps) => {
         }}
       />
       { selectedAttribute.type === "string" &&
-          <Tooltip title={selectedAttribute.value === "callerStates" ? "Comma separated list of states" : ""}>
+          <Tooltip title={selectedAttribute.value === "callerStates" ? "Comma separated list of states" : selectedAttribute.value === "sales_assoc_workers" ? "Comma separated list of nNumbers" : ""}>
             <div>
               <CustomInput
                 label="Attribute Value"
