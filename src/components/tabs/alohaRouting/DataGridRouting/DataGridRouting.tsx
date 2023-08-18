@@ -87,19 +87,21 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
     };
     getTableData();
   }, []);
-  const getAdvanceFilter = (): RoutingFilter => {
+  const getAdvanceFilter = (): { [key: string]: undefined; } => {
+    let advanceFilter: { [key: string]: undefined; };
     try {
       const cachedFilter: string | null = localStorage.getItem(CACHE_FILTER_ROUTING);
-      const advanceFilter: RoutingFilter = JSON.parse(cachedFilter) || {};
+      advanceFilter = JSON.parse(cachedFilter) || {};
       Object.keys(advanceFilter).forEach((key: keyof RoutingFilter) => {
         if (advanceFilter[key] === "" || advanceFilter[key] === null) {
           delete advanceFilter[key];
         }
       });
-      return advanceFilter;
     } catch (e) {
-      console.log(e);
+      advanceFilter = {};
     }
+
+    return advanceFilter;
   };
 
   const handleSearchDDChange = (event: any) => {
