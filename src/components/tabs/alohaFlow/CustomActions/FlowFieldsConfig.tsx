@@ -372,6 +372,20 @@ const flowFields: AddFlowFieldsConfigProps[] = [
         ...newValue
       }
     })
+  },
+  {
+    label: "Office Number",
+    key: "officeNumber",
+    control: "input",
+    required: false,
+    valueGetter: (params: CctSharedCallFlowDb) => `${params?.content?.officeNumber || ""}`,
+    valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
+      ...currentValue,
+      content: {
+        ...currentValue.content || {},
+        ...newValue
+      }
+    })
   }
 ];
 

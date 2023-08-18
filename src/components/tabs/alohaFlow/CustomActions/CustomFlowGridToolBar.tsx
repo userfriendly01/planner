@@ -80,17 +80,20 @@ const CustomFlowGridToolBar = ({
       </Grid>
       <Grid item key = "Export FlowUI" xs={1}>
         <Grid><div><br/><br/></div></Grid>
-        <Tooltip title="Export Flow Records" sx={{left:"calc(76%)",marginLeft:"24"}}>
-        <Paper variant="outlined" >
-        <IconButton 
-          onClick={exportDataFile}
-          color = "primary" 
-          size = "small"
-          sx ={{position:"fixed"}}
-        > <FileDownloadIcon /> 
-      </IconButton>
-      </Paper>
-      </Tooltip>
+        <Tooltip title="Export Flow Records" sx={{
+          left: "calc(76%)",
+          marginLeft: "24"
+        }}>
+          <Paper variant="outlined" >
+            <IconButton
+              onClick={exportDataFile}
+              color = "primary"
+              size = "small"
+              sx ={{ position: "fixed" }}
+            > <FileDownloadIcon />
+            </IconButton>
+          </Paper>
+        </Tooltip>
       </Grid>
       <Grid item key="flow-action-box" xs={2}>
         <FormControl sx={{

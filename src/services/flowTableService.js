@@ -39,6 +39,7 @@ async function queryFlowData(accessToken, nextToken = null, graphQlApiUrl) {
                     greetingMessages
                     languageOffer
                     transferNumber
+                    officeNumber
                   }
                   createTime
                   dialedDescription
@@ -109,7 +110,8 @@ function addFlowInput (item, dataRequestsPassed, currentTimePassed){
       greetingMessages: item.greetingMessages?.value,
       transferNumber: item.transferNumber?.value,
       languageOffer: item.languageOffer?.value,
-      dataRequests: dataRequestsPassed
+      dataRequests: dataRequestsPassed,
+      officeNumber: item.officeNumber?.value
     },
     createTime: currentTimePassed,
     agentId: item.agentId?.value || "",
@@ -153,7 +155,8 @@ function updateFlowInput(item){
       greetingMessages: item.content?.greetingMessages || "",
       transferNumber: item.content?.transferNumber || "",
       languageOffer: item.content?.languageOffer || "",
-      dataRequests: item.content?.dataRequests
+      dataRequests: item.content?.dataRequests,
+      officeNumber: item.content?.officeNumber
     },
     createTime: item.createTime,
     dialedDescription: item.dialedDescription,
@@ -214,6 +217,7 @@ async function updateFlowDB(item, accessToken, graphQlApiUrl) {
                 greetingMessages
                 languageOffer
                 transferNumber
+                officeNumber
               }
               createTime
               dialedDescription
@@ -283,6 +287,7 @@ async function addFlowRule(item, accessToken, graphQlApiUrl, curTime = new Date(
                 greetingMessages
                 languageOffer
                 transferNumber
+                officeNumber
               }
               createTime
               dialedDescription
@@ -355,6 +360,7 @@ async function deleteFlowRule(item, accessToken, graphQlApiUrl) {
                 greetingMessages
                 languageOffer
                 transferNumber
+                officeNumber
               }
               createTime
               dialedDescription
