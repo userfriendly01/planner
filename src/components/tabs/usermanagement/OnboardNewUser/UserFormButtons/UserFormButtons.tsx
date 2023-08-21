@@ -327,8 +327,9 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     if (form.triton.routing.updated) {
       attributes.routing = form.triton.routing;
     }
-    if( form.triton.callerStateAttr.updated){
+    if (form.triton.callerStateAttr.updated){
       attributes.callerStateAttr = form.triton.callerStateAttr;
+
     }
     if (nNumberFetchedUser) {
       nNumberFetchedUser.departmentNumber ? attributes.department_id = nNumberFetchedUser.departmentNumber : null;
@@ -351,7 +352,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         ...nonOverflowSkills,
         overflowSkill
       ];
-      attributes.routing.levels = levels
+            attributes.routing.levels = levels
     };
 
     // remove overflow skill

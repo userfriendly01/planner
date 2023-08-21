@@ -40,7 +40,7 @@ export const initialFormState = {
       levels: {}
     },
     callerStateAttr:{
-      callerState: [],
+      callerStates: [],
       skills: [],
       levels: {}
     },
@@ -242,7 +242,7 @@ export const validFormState = {
       updated: true
     },
     callerStateAttr:{
-      callerState: ["Test1", "Test2"],
+      callerStates: ["Test1", "Test2"],
       skills: [],
       levels: {},
       updated: true
@@ -351,7 +351,7 @@ export const mockWorkers = [
         team:"Sample1"
       },
       callerStateAttr:{
-        callerState: ["Test1", "Test2"],
+        callerStates: ["Test1", "Test2"],
         updated: false
       },
       profile_id: 15

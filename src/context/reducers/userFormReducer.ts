@@ -105,7 +105,7 @@ export const initialUserFormState: UserFormState = {
       updated: false
     },
     callerStateAttr:{
-      callerState: [],
+      callerStates: [],
       updated: false
     },
     didUser: false,
@@ -442,8 +442,8 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
         triton: {
           ...state.triton,
           callerStateAttr: {
-            ...state.triton.callerStateAttr.callerState,
-            callerState: callerStateRoutingAttr,
+            ...state.triton.callerStateAttr,
+            callerStates: callerStateRoutingAttr,
             updated: true
           }
         }

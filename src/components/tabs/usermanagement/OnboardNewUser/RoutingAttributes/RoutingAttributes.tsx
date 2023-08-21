@@ -9,7 +9,7 @@ import {
   useFormState
 } from "context";
 import { Dropdown } from "components";
-import { RoutingTeamAttrDropDownOptions,CallerStateDropDownOptions } from "./RoutingAttributesDropDown";
+import { RoutingTeamAttrDropDownOptions,CallerStateAttrDropDownOptions } from "./RoutingAttributesDropDown";
 
 const RoutingAttributes = (): JSX.Element => {
   const setForm = useFormDispatch();
@@ -26,7 +26,7 @@ const RoutingAttributes = (): JSX.Element => {
           }
         });
         break;
-      case "callerState":
+      case "callerStates":
         setForm({
           type: userFormActions.ADD_CALLER_STATE,
           payload: {
@@ -68,9 +68,9 @@ const RoutingAttributes = (): JSX.Element => {
       <AccordionDetails>
         <Dropdown
           label="Caller State"
-          value={form.triton.callerStateAttr.callerState}
-          options={RoutingTeamAttrDropDownOptions}
-          updateValue={(event: any, value: any) => handleChange(event, value, "callerState")}
+          value={form.triton.callerStateAttr.callerStates}
+          options={CallerStateAttrDropDownOptions}
+          updateValue={(event: any, value: any) => handleChange(event, value, "callerStates")}
           styles={{
             width: "calc(95%)",
             margin: "0 0 0 0"
