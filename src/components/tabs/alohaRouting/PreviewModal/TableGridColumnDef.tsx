@@ -6,15 +6,12 @@ import Tooltip from "@mui/material/Tooltip";
 import Chip from "@mui/material/Chip";
 import Grid from "@mui/material/Grid";
 import {
-  AddPageFieldConfigProps,
   CctSharedCallRoutingDb, RoutingOccupancyCheck, RoutingStep
 } from "../AlohaRouting.Interfaces";
 import {
-  getTagLabel, MultiFieldContainerFormProps
+  getTagLabel
 } from "../../../../components/core/SharedComponents/MultiFieldContainer";
-import {
-  routingFields
-} from "../../../../utils";
+import { formFields } from "./previewUtils";
 
 const formatDateTime = (dateTime: string) => {
   if(dateTime.includes("AM") || dateTime.includes("PM")){
@@ -24,10 +21,6 @@ const formatDateTime = (dateTime: string) => {
   } else {
     return "";
   }
-};
-const getFormFields = (key: string): Array<MultiFieldContainerFormProps> =>{
-  const filteredField: Array<AddPageFieldConfigProps> = routingFields.filter((field: AddPageFieldConfigProps)=>field.key === key);
-  return filteredField[0].formFields || [];
 };
 
 export const TableGridColumnDef: GridColDef[] = [
@@ -190,7 +183,7 @@ export const TableGridColumnDef: GridColDef[] = [
               <Chip
                 key={`chip-occupancyCheck-${params.row.id}-${item.team}-${item.percentage}`}
                 tabIndex={-1}
-                label={getTagLabel(item,getFormFields("occupancyCheck"))}
+                label={getTagLabel(item,formFields["occupancyCheck"])}
               />
             </Grid>
           ))}
@@ -212,20 +205,12 @@ export const TableGridColumnDef: GridColDef[] = [
             <Chip
               key={`routingSteps-${params.row.id}-${item.teams.join("")}-${item.time}`}
               tabIndex={-1}
-              label={getTagLabel(item,getFormFields("routingSteps"))}
+              label={getTagLabel(item,formFields["routingSteps"])}
             />
           ))}
       </div>
     ),
     editable: true
-  },
-  {
-    headerName: "Office Number",
-    field: "officeNumber",
-    sortable: true,
-    width: 110,
-    align: "left",
-    valueGetter: params => `${params.row.content?.officeNumber || ""}`
   }
 ];
 

@@ -103,5 +103,6 @@ const fetchData = (): RoutingDropDownList =>{
 };
 
 export {
-  reconstructTableColumnDef
+  reconstructTableColumnDef,
+  formFields
 };
