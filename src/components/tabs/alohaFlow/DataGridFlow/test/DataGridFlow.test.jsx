@@ -25,6 +25,7 @@ import {
   retrieveFlowData,queryFlowData, flowBatchDelete
 } from "services";
 import { PreviewModal } from "../../PreviewModal";
+import { createFlowDataList } from "../../PreviewModal/test/PreviewUtil.test";
 
 jest.mock("@mui/x-data-grid",()=>({
   __esModule: true,
@@ -56,33 +57,6 @@ jest.mock("../../PreviewModal", ()=>({
   PreviewModal: jest.fn()
 }));
 
-const createFlowDataList = numberOfData =>{
-  const dataList = [];
-  for (let num=1; num<=numberOfData; num++) {
-    const flowData = {
-      id: num,
-      pkey: `+18005551212x${num}`,
-      agentId: `agent${num}`,
-      brand: `brand${num}`,
-      callFlowTemplate: `cft${num}`,
-      channel: `channel${num}`,
-      content: {
-        callerType: "Customer",
-        callFlowRoute: `route A${num}`,
-        dataRequests: ["Classify"],
-        greetingMessages: "Hello and welcome!",
-        transferNumber: `+12223334444x${num}`
-      },
-      createTime: "2020-01-01T15:14:13.${num}Z",
-      dialedDescription: `Test case ${num}`,
-      employeeId: `n${num}`,
-      userDestination: "Avaya"
-
-    };
-    dataList.push(flowData);
-  }
-  return dataList;
-};
 const flowFormatList = flowList=>{
   const flowData= {
     data: {
