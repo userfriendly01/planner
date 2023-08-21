@@ -14,7 +14,7 @@ import {
 import { TableGridColumnDef } from "./TableColumnDef";
 import "./PreviewModal.css";
 import { Box } from "@mui/material";
-import { reconstructTableColumnDef } from "./previewUtils";
+import { reconstructTableColumnDef } from "./PreviewUtil";
 
 interface PreviewModalProps {
     isOpen: boolean;

@@ -2,7 +2,7 @@ import { CctSharedCallFlowDb } from "../..";
 import { TableGridColumnDef } from "../TableColumnDef";
 import {
   reconstructTableColumnDef
-} from "../previewUtils";
+} from "../PreviewUtil";
 import { PreviewModalAction } from "../../AlohaFlow.Interfaces";
 import { FLOW_MASTER_DATA } from "utils";
 
