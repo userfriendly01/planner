@@ -70,7 +70,8 @@ describe("<BulkUpdateAttributes />", () => {
           availableAttributes.PROFILE,
           availableAttributes.DID,
           availableAttributes.ROUTING_TEAM,
-          availableAttributes.ROUTING_CALLER_STATES
+          availableAttributes.ROUTING_CALLER_STATES,
+          availableAttributes.ROUTING_SALES_ASSOC_WORKERS
         ]);
         //Choose an value Dropdown
         expect(Dropdown.mock.calls[1][0].label).toBe("Boolean");
@@ -88,22 +89,15 @@ describe("<BulkUpdateAttributes />", () => {
       });
     });
     describe("UpdateWorker Attributes", () => {
-      describe("Currently we dont have any options for a string but the logic is ready", () => {
-        //should update this test if we ever have a string example
-        const dummyFutureOption = {
-          label: "string",
-          value: "string",
-          type: "string",
-          location: "attributes"
-        };
+      describe("Attribute Dropdown is updated to availableAttributes.ROUTING_SALES_ASSOC_WORKERS", () => {
         test("CustomInput is rendered", () => {
           renderComponent([]);
           expect(Dropdown.mock.calls.length).toBe(2);
           expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
           const onAttributeChange = Dropdown.mock.calls[0][0].updateValue;
-          act(() => onAttributeChange(null, dummyFutureOption));
+          act(() => onAttributeChange(null, availableAttributes.ROUTING_SALES_ASSOC_WORKERS));
           expect(Dropdown.mock.calls.length).toBe(3);
-          expect(Dropdown.mock.calls[2][0].value).toBe(dummyFutureOption);
+          expect(Dropdown.mock.calls[2][0].value).toBe(availableAttributes.ROUTING_SALES_ASSOC_WORKERS);
           expect(CustomInput.mock.calls.length).toBe(1);
           expect(CustomInput.mock.calls[0][0].value).toBe("");
         });
@@ -114,7 +108,7 @@ describe("<BulkUpdateAttributes />", () => {
               expect(Dropdown.mock.calls.length).toBe(2);
               expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
               const onAttributeChange = Dropdown.mock.calls[0][0].updateValue;
-              act(() => onAttributeChange(null, dummyFutureOption));
+              act(() => onAttributeChange(null, availableAttributes.ROUTING_SALES_ASSOC_WORKERS));
               const onValueChange = CustomInput.mock.calls[0][0].updateValue;
               act(() => onValueChange(null, ""));
               expect(mockReplaceTemplates).toHaveBeenCalledTimes(0);
@@ -130,7 +124,7 @@ describe("<BulkUpdateAttributes />", () => {
               expect(Dropdown.mock.calls.length).toBe(2);
               expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
               const onAttributeChange = Dropdown.mock.calls[0][0].updateValue;
-              act(() => onAttributeChange(null, dummyFutureOption));
+              act(() => onAttributeChange(null, availableAttributes.ROUTING_SALES_ASSOC_WORKERS));
               const onValueChange = CustomInput.mock.calls[0][0].updateValue;
               act(() => onValueChange(""));
               expect(mockReplaceTemplates).toHaveBeenCalledTimes(0);
@@ -147,16 +141,16 @@ describe("<BulkUpdateAttributes />", () => {
               expect(Dropdown.mock.calls.length).toBe(2);
               expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
               const onAttributeChange = Dropdown.mock.calls[0][0].updateValue;
-              act(() => onAttributeChange(null, dummyFutureOption));
+              act(() => onAttributeChange(null, availableAttributes.ROUTING_SALES_ASSOC_WORKERS));
               const onValueChange = CustomInput.mock.calls[0][0].updateValue;
-              act(() => onValueChange("Snowball"));
+              act(() => onValueChange("Snowball, n1234567, weeeeee"));
               expect(mockReplaceTemplates).toHaveBeenCalledTimes(1);
               expect(mockReplaceTemplates).toHaveBeenCalledWith({
                 ...updateTemplates.UPDATE_WORKER_ATTRIBUTE,
                 data: {
-                  key: "string",
-                  value: "Snowball",
-                  location: "attributes"
+                  key: "sales_assoc_workers",
+                  value: "Snowball, n1234567, weeeeee",
+                  location: ["attributes","routing"]
                 }
               });
               expect(mockUpdateTemplates).toHaveBeenCalledTimes(0);
@@ -170,22 +164,21 @@ describe("<BulkUpdateAttributes />", () => {
               expect(Dropdown.mock.calls.length).toBe(2);
               expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
               const onAttributeChange = Dropdown.mock.calls[0][0].updateValue;
-              act(() => onAttributeChange(null, dummyFutureOption));
+              act(() => onAttributeChange(null, availableAttributes.ROUTING_SALES_ASSOC_WORKERS));
               const onValueChange = CustomInput.mock.calls[0][0].updateValue;
-              act(() => onValueChange("Comet"));
+              act(() => onValueChange("Comet, n12Ellen, wow"));
               expect(mockReplaceTemplates).toHaveBeenCalledTimes(0);
               expect(mockUpdateTemplates).toHaveBeenCalledTimes(1);
               expect(mockUpdateTemplates).toHaveBeenCalledWith(selectedTemplate, {
-                key: "string",
-                value: "Comet",
-                location: "attributes"
+                key: "sales_assoc_workers",
+                value: "Comet, n12Ellen, wow",
+                location: ["attributes","routing"]
               });
               //remove is run upon first render since the initial value is not valid
               expect(mockRemoveTemplates).toHaveBeenCalledTimes(1);
             });
           });
         });
-
       });
       describe("Attribute Dropdown is updated to availableAttributes.ZERO_OUT_ENABLED", () => {
         test("Boolean Dropdown is rendered", () => {
