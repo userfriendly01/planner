@@ -288,16 +288,16 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
     }));
   };
 
-  const openEditModal = (flag: boolean, isSubmitted?: boolean, rows?: CctSharedCallRoutingDb[], message?: string, deleteRow?: boolean,type?: boolean) => {
+  const openEditModal = (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallRoutingDb, message?: string, deleteRow?: boolean,type?: boolean) => {
     let newData;
     if(type){
-      cloneRule(flag,rows && rows[0]);
+      cloneRule(flag,row);
     }
     else if (!flag && isSubmitted) {
-      const rowIds = rows.map(x => x.id);
-      newData = state.data.filter(x=> !rowIds.includes(x.id));
-      if(!deleteRow) {
-        newData.concat(rows);
+      if(deleteRow) {
+        newData = state.data.filter(x=> x.skey !== row.skey);
+      } else {
+        newData = row ? state.data.map(x=> x.skey === row.skey ? row : x) : undefined;
       }
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
@@ -310,7 +310,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
     setState((currentDataRouting: RoutingStateVariables)=>({
       ...currentDataRouting,
       isEditModalOpen: flag,
-      ...(rows && { selectedRow: rows[0] })
+      selectedRow: row
     }));
   };
 
@@ -387,7 +387,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
 
   };
 
-  RoutingGridColumnDef[0].renderCell = (params: GridRenderCellParams<CctSharedCallRoutingDb>) => (<a href="#" onClick={() => openEditModal(true, false, [params.row])}>{`${params.value}`}</a>);
+  RoutingGridColumnDef[0].renderCell = (params: GridRenderCellParams<CctSharedCallRoutingDb>) => (<a href="#" onClick={() => openEditModal(true, false, params.row)}>{`${params.value}`}</a>);
 
   return (
     <div>

@@ -31,7 +31,7 @@ interface EditRoutingComponentProps {
   isOpen: boolean;
   matchedGroups: string;
   selectedRow: CctSharedCallRoutingDb;
-  openEditModal: (flag: boolean, isSubmitted?: boolean, rows?: CctSharedCallRoutingDb[], message?: string, deleteRow?: boolean,isCloneRule?: boolean) => void;
+  openEditModal: (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallRoutingDb, message?: string, deleteRow?: boolean,isCloneRule?: boolean) => void;
 }
 
 
@@ -92,7 +92,7 @@ export const EditRouting = ({
   };
 
   const handleClone = () =>{
-    openEditModal(false,false,[selectedRowLocal],"",false,true);
+    openEditModal(false,false,selectedRowLocal,"",false,true);
   };
 
   const handleClose = (flag: boolean) => {
@@ -105,7 +105,7 @@ export const EditRouting = ({
   const handleOnDelete = async () => {
     const response = await deleteRoutingRule(selectedRowLocal, accessToken, graphQLEndPoint);
     if (response) {
-      openEditModal(false, true, [selectedRowLocal], `Routing Rule ID ${selectedRow.id} has been successfully deleted. `, true);
+      openEditModal(false, true, selectedRowLocal, `Routing Rule ID ${selectedRow.id} has been successfully deleted. `, true);
       return true;
     }
     setRoutingRule({ ...routingInitRule });
@@ -162,7 +162,7 @@ export const EditRouting = ({
       };
       const response = await updateRoutingDB(updatedRow, accessToken, graphQLEndPoint);
       if (response && !response.errors) {
-        openEditModal(false, true, [updatedRow], `Routing Rule ID ${selectedRow.id} has been successfully updated. `, false);
+        openEditModal(false, true, updatedRow, `Routing Rule ID ${selectedRow.id} has been successfully updated. `, false);
         return true;
       }
       setAlertBar((alertBarProps: AlertBarProps) => ({
