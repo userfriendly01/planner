@@ -307,6 +307,14 @@ describe("<DataGridFlow />", () => {
       act(()=>{ exportDataFile(); });
       expect(CustomFlowGridToolBar.mock.calls.length).toBe(1);
     });
+    test("Simulate the CustomFlowGridToolBar Preview Modal Open", ()=>{
+      const validFlowDataList = createFlowDataList(15);
+      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
+      retrieveFlowData.mockResolvedValue(validFlowDataList);
+      renderComponent();
+      const openPreviewModal = CustomFlowGridToolBar.mock.calls[0][0].openPreviewModal;
+      act(()=>{ openPreviewModal(true, "delete"); });
+    });
   });
 
   describe("Check Existing Filter", ()=>{
@@ -518,6 +526,31 @@ describe("<DataGridFlow />", () => {
         previewModalOnDelete(selectedRow);
       });
       expect(DataGrid.mock.calls.length).toBe(1);
+    });
+  });
+
+  describe("Selection", ()=>{
+    it("Select row checkbox", ()=>{
+      const validFlowDataList = createFlowDataList(15);
+      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
+      retrieveFlowData.mockResolvedValue(validFlowDataList);
+      renderComponent();
+      const onRowSelectionModelChange = DataGrid.mock.calls[0][0].onRowSelectionModelChange;
+      const selectedRows = [validFlowDataList[1].pkey];
+      act(()=>{
+        onRowSelectionModelChange(selectedRows);
+      });
+      expect(DataGrid.mock.calls.length).toBe(2);
+    });
+    it("Select row checkbox", ()=>{
+      const validFlowDataList = createFlowDataList(15);
+      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
+      retrieveFlowData.mockResolvedValue(validFlowDataList);
+      renderComponent();
+      const getRowId = DataGrid.mock.calls[0][0].getRowId;
+      const selectedRows = validFlowDataList[1];
+      const rowId = getRowId(selectedRows);
+      expect(rowId).toBe(validFlowDataList[1].pkey);
     });
   });
 });
