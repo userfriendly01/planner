@@ -179,7 +179,7 @@ export const validFormOptions = {
     levels: {}
   },
   callerStateAttr:{
-    callerState: ["Test1", "Test2"],
+    callerStates: ["Test1", "Test2"],
     skills: [],
     levels: {}
   },
