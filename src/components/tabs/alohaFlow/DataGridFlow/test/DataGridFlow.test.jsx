@@ -542,7 +542,7 @@ describe("<DataGridFlow />", () => {
       });
       expect(DataGrid.mock.calls.length).toBe(2);
     });
-    it("Select row checkbox", ()=>{
+    it("getRowId", ()=>{
       const validFlowDataList = createFlowDataList(15);
       queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
       retrieveFlowData.mockResolvedValue(validFlowDataList);

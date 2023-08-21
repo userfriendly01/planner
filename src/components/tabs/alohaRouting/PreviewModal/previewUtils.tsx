@@ -16,6 +16,7 @@ import {
 
 import { ComponentControl } from "components";
 import { GridApiCommunity } from "@mui/x-data-grid/internals";
+import { MultiFieldContainerFormProps } from "components/core/SharedComponents/MultiFieldContainer";
 
 const reconstructTableColumnDef = (
   action: PreviewModalAction,
@@ -30,8 +31,11 @@ const reconstructTableColumnDef = (
     return columnDef;
   }
 };
-
-const multiFields = routingFields.filter(x => x.control === "multiField").map(x => x.key);
+const formFields: {[key:string]: Array<MultiFieldContainerFormProps>}={};
+const multiFields = routingFields.filter(x => x.control === "multiField").map(x => {
+  formFields[x.key]=x.formFields;
+  return x.key;
+});
 
 const manageEditColumnDef = (
   columnDef: Array<GridColDef>,
@@ -56,7 +60,7 @@ const manageEditColumnDef = (
             control="multiField"
             label=""
             name={item.field}
-            formFields={getFormFields(item.field)}
+            formFields={formFields[item.field]}
             error={false}
             required={false}
             type="text"
@@ -98,38 +102,7 @@ const fetchData = (): RoutingDropDownList =>{
   return dropDownValue;
 };
 
-const getFormFields = (field: string) =>{
-  return {
-    "routingSteps": [
-      {
-        label: "Teams",
-        name: "teams",
-        type: "multiValueText",
-        helperText: "Please use Enter to add team"
-      },
-      {
-        label: "Time",
-        name: "time",
-        type: "number",
-        helperText: "min: 1,  max: 100"
-      }
-    ],
-    "occupancyCheck": [
-      {
-        label: "Team",
-        name: "team",
-        type: "text"
-      },
-      {
-        label: "Percentage (%)",
-        name: "percentage",
-        type: "number",
-        helperText: "min: 1,  max: 100"
-      }
-    ]
-  }[field];
-};
-
 export {
-  reconstructTableColumnDef
+  reconstructTableColumnDef,
+  formFields
 };

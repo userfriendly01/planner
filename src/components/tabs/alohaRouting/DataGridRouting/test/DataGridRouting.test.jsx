@@ -593,5 +593,15 @@ describe("<DataGridRouting />", ()=>{
         onClose();
       });
     });
+    it("getRowId", ()=>{
+      const validRoutingDataList = createSampleTestRoutingDataList(15);
+      queryRoutingData.mockResolvedValue(validRoutingDataList);
+      retrieveRoutingData.mockResolvedValue(validRoutingDataList);
+      renderDataGridRouting();
+      const getRowId = DataGrid.mock.calls[0][0].getRowId;
+      const selectedRows = validRoutingDataList[1];
+      const rowId = getRowId(selectedRows);
+      expect(rowId).toBe(validRoutingDataList[1].id);
+    });
   });
 });
