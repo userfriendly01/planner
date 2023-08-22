@@ -28,7 +28,7 @@ interface CustomRoutingGridToolBarProps {
 }
 
 export const CustomRoutingGridToolBar = ({
-  openAddModal, openEditModal, openPreviewModal, openAdvanceSearchModal, exportDataFile, applyFilter, isAdvanceSearchOpen
+  openAddModal, openPreviewModal, openAdvanceSearchModal, exportDataFile, applyFilter, isAdvanceSearchOpen
 }: CustomRoutingGridToolBarProps):JSX.Element => {
 
   const [routingFilter, setRoutingFilter] = useState<RoutingFilter>();

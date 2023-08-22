@@ -20,7 +20,9 @@ import {
   fireEvent
 } from "testUtils";
 import {
-  retrieveRoutingData,queryRoutingData
+  batchDelete,
+  queryRoutingData,
+  retrieveRoutingData
 } from "services";
 import {
   CACHED_CALL_ROUTING_PER_PAGE, CACHED_CALL_ROUTING_PAGE_NO, CACHE_FILTER_ROUTING
@@ -56,37 +58,39 @@ jest.mock("context", () => ({
   useAdminState: jest.fn()
 }));
 
+const createRoutingRule = num => {
+  return {
+    id: num,
+    all: "ALL",
+    brand: `TestBrand${num}`,
+    callIntent: `TestCallIntent${num}`,
+    callerState: `TestCallState${num}`,
+    callerType: `TestCallType${num}`,
+    channel: `TestChannel${num}`,
+    dayOfWeek: "ALL",
+    endTime: "12:00:00 PM",
+    percentOfCallers: "10",
+    pkey: "testcallintent",
+    policyType: `TestPolicyType${num}`,
+    skey: `TestBrand${num}_TestChannel${num}_${num}`,
+    startTime: "05:00:00 PM",
+    transferDestination: `1234567${num}`,
+    transferMessage: `Test Transfer Message ${num}`,
+    twilioSkill: `Test Twilio Skill${num}`,
+    crcSkill: null
+  };
+};
 
 const createSampleTestRoutingDataList = numberOfData =>{
   const dataList = [];
   for (let num=1; num<=numberOfData; num++) {
-    const routingData = {
-      id: num,
-      all: "ALL",
-      brand: `TestBrand${num}`,
-      callIntent: `TestCallIntent${num}`,
-      callerState: `TestCallState${num}`,
-      callerType: `TestCallType${num}`,
-      channel: `TestChannel${num}`,
-      dayOfWeek: "ALL",
-      endTime: "12:00:00 PM",
-      percentOfCallers: "10",
-      pkey: "testcallintent",
-      policyType: `TestPolicyType${num}`,
-      skey: `TestBrand${num}_TestChannel${num}_${num}`,
-      startTime: "05:00:00 PM",
-      transferDestination: `1234567${num}`,
-      transferMessage: `Test Transfer Message ${num}`,
-      twilioSkill: `Test Twilio Skill${num}`,
-      crcSkill: null
-    };
-    dataList.push(routingData);
+    dataList.push(createRoutingRule(num));
   }
   return dataList;
 };
 
 const filteredItems = {
-  channel: "TestChannel1"
+  dayOfWeek: "ALL"
 };
 
 
@@ -130,6 +134,7 @@ describe("<DataGridRouting />", ()=>{
   const matchMedia = window.matchMedia;
   beforeEach(()=>{
     jest.clearAllMocks();
+    batchDelete.mockReset();
     queryRoutingData.mockReset();
     retrieveRoutingData.mockReset();
     useAdminState.mockReturnValue(initialTestState);
@@ -244,7 +249,11 @@ describe("<DataGridRouting />", ()=>{
       renderDataGridRouting();
       const openModal = AddRouting.mock.calls[0][0].openModal;
       act(()=>{ openModal(false, validRoutingData); });
-      expect(AddRouting.mock.calls[1][0].openModal).toBeTruthy;
+
+      const openModal2 = AddRouting.mock.calls[1][0].openModal;
+      expect(openModal2).toBeTruthy;
+      act(()=>{ openModal(false, false, createRoutingRule(999)); });
+
     });
     test("Simulate the AddRouting openModal isOpen true", ()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
@@ -318,15 +327,17 @@ describe("<DataGridRouting />", ()=>{
       const exportDataFile = CustomRoutingGridToolBar.mock.calls[0][0].exportDataFile;
       act(()=>{ exportDataFile(); });
       expect(CustomRoutingGridToolBar.mock.calls.length).toBe(1);
+
+      act(() => { CustomRoutingGridToolBar.mock.calls[0][0].openPreviewModal(); });
+
+      act(() => { CustomRoutingGridToolBar.mock.calls[0][0].openEditModal(false); });
+
     });
   });
 
   describe("Check Existing Filter", ()=>{
     beforeEach(()=>{
       localStorage.setItem(CACHE_FILTER_ROUTING, JSON.stringify(filteredItems));
-    });
-    afterEach(()=>{
-      localStorage.removeItem(CACHE_FILTER_ROUTING);
     });
     test("Simulate Channel in Existing Filtered Item", async()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
@@ -417,7 +428,41 @@ describe("<DataGridRouting />", ()=>{
       const localStorageValue = JSON.parse(localStorage.getItem(CACHE_FILTER_ROUTING));
       expect(localStorageValue[brandKey]).toBeUndefined;
     });
-
+    test("Simulate advanceFilter", () => {
+      const validRoutingDataList = createSampleTestRoutingDataList(15);
+      validRoutingDataList.push (createRoutingRule(1234));
+      queryRoutingData.mockResolvedValue(routingPattern(validRoutingDataList));
+      retrieveRoutingData.mockResolvedValue(validRoutingDataList);
+      localStorage.setItem(CACHE_FILTER_ROUTING, JSON.stringify({
+        ...filteredItems,
+        dayOfWeek: "ALL",
+        id: "1,234"
+      }));
+      renderDataGridRouting();
+      expect(DataGrid.mock.calls[0][0].paginationModel.page).toBe(1);
+      const applyFilter = RoutingAdvanceSearch.mock.calls[0][0].applyFilter;
+      act(()=>{ applyFilter(); });
+      expect(RoutingAdvanceSearch.mock.calls[1][0].isOpen).toBe(false);
+    });
+    test("Simulate advanceFilter error", () => {
+      const validRoutingDataList = createSampleTestRoutingDataList(15);
+      queryRoutingData.mockResolvedValue(routingPattern(validRoutingDataList));
+      retrieveRoutingData.mockResolvedValue(validRoutingDataList);
+      localStorage.setItem(CACHE_FILTER_ROUTING, "");
+      renderDataGridRouting();
+      expect(DataGrid.mock.calls[0][0].paginationModel.page).toBe(1);
+    });
+    test("Simulate advanceFilter empty result", () => {
+      const validRoutingDataList = createSampleTestRoutingDataList(15);
+      queryRoutingData.mockResolvedValue(routingPattern(validRoutingDataList));
+      retrieveRoutingData.mockResolvedValue(validRoutingDataList);
+      localStorage.setItem(CACHE_FILTER_ROUTING, JSON.stringify({
+        ...filteredItems,
+        dayOfWeek: "XXX-doesnt-exist"
+      }));
+      renderDataGridRouting();
+      expect(DataGrid.mock.calls[0][0].paginationModel.page).toBe(1);
+    });
     test("Simulate openAdvanceSearchModal handleChange with id", ()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
       const patternList = routingPattern(validRoutingDataList);
@@ -472,7 +517,8 @@ describe("<DataGridRouting />", ()=>{
       queryRoutingData.mockResolvedValue(validRoutingDataList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
-      const hyperLinkFunction = DataGrid.mock.calls[0][0].columns[0].renderCell;
+      const datagridMockCalls = DataGrid.mock.calls;
+      const hyperLinkFunction = datagridMockCalls[0][0].columns[0].renderCell;
       const hyperLinkParams = {
         row: validRoutingDataList[0],
         value: validRoutingDataList[0].id
@@ -481,6 +527,8 @@ describe("<DataGridRouting />", ()=>{
       const renderedHyperLink = quickRender(hyperlink);
       fireEvent.click(renderedHyperLink.getByRole("link"));
       expect(EditRouting.mock.calls[0][0].isOpen).toBe(false);
+
+      act(() => { datagridMockCalls[0][0].onRowSelectionModelChange([1,2,3]); });
     });
   });
   describe("Test with junk filter data", ()=>{
@@ -496,6 +544,64 @@ describe("<DataGridRouting />", ()=>{
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       renderDataGridRouting();
       expect(DataGrid.mock.calls.length).toBe(1);
+    });
+  });
+  describe("<PreviewModal />", () => {
+    test("Handle bulkCreate", () => {
+      const validRoutingDataList = createSampleTestRoutingDataList(15);
+      queryRoutingData.mockResolvedValue(validRoutingDataList);
+      retrieveRoutingData.mockResolvedValue(validRoutingDataList);
+      renderDataGridRouting();
+
+      const onCreate = PreviewModal.mock.calls[0][0].onCreate;
+      act(() => {
+        onCreate([validRoutingDataList[0]]);
+      });
+    });
+    test("Handle bulkUpdate", () => {
+      const validRoutingDataList = createSampleTestRoutingDataList(15);
+      queryRoutingData.mockResolvedValue(validRoutingDataList);
+      retrieveRoutingData.mockResolvedValue(validRoutingDataList);
+      renderDataGridRouting();
+
+      const onUpdate = PreviewModal.mock.calls[0][0].onUpdate;
+      act(() => {
+        onUpdate([validRoutingDataList[0]]);
+      });
+    });
+    test("Handle bulkDelete", () => {
+      const validRoutingDataList = createSampleTestRoutingDataList(15);
+      queryRoutingData.mockResolvedValue(validRoutingDataList);
+      retrieveRoutingData.mockResolvedValue(validRoutingDataList);
+      batchDelete.mockResolvedValue("OK");
+      renderDataGridRouting();
+
+      const onDelete = PreviewModal.mock.calls[0][0].onDelete;
+      act(() => {
+        onDelete([validRoutingDataList[0]]);
+      });
+    });
+    test("Handle onClose", () => {
+      const validRoutingDataList = createSampleTestRoutingDataList(15);
+      queryRoutingData.mockResolvedValue(validRoutingDataList);
+      retrieveRoutingData.mockResolvedValue(validRoutingDataList);
+      batchDelete.mockResolvedValue("OK");
+      renderDataGridRouting();
+
+      const onClose = PreviewModal.mock.calls[0][0].onClose;
+      act(() => {
+        onClose();
+      });
+    });
+    it("getRowId", ()=>{
+      const validRoutingDataList = createSampleTestRoutingDataList(15);
+      queryRoutingData.mockResolvedValue(validRoutingDataList);
+      retrieveRoutingData.mockResolvedValue(validRoutingDataList);
+      renderDataGridRouting();
+      const getRowId = DataGrid.mock.calls[0][0].getRowId;
+      const selectedRows = validRoutingDataList[1];
+      const rowId = getRowId(selectedRows);
+      expect(rowId).toBe(validRoutingDataList[1].id);
     });
   });
 });

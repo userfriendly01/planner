@@ -128,7 +128,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         ...alertBarProps,
         open: flag,
         severityType: "success",
-        msg: "New flow has been successfully added!! "
+        msg: "New flow has been successfully added. "
       }));
       newData.push(row);
       newFilteredItems.push(row);
@@ -348,6 +348,13 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         severityType: "error"
       }));
       throw new Error("Error deleting records.");
+    } else {
+      setAlertBar((alertBarProps: AlertBarProps) => ({
+        ...alertBarProps,
+        open: true,
+        msg: "Routing Rules have been successfully deleted.",
+        severityType: "success"
+      }));
     }
     setSelectedList([]);
     const deletedIds = rows.map(x => x.pkey);

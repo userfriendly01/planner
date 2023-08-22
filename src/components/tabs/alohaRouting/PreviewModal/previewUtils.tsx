@@ -31,7 +31,6 @@ const reconstructTableColumnDef = (
     return columnDef;
   }
 };
-
 const formFields: {[key:string]: Array<MultiFieldContainerFormProps>}={};
 const multiFields = routingFields.filter(x => x.control === "multiField").map(x => {
   formFields[x.key]=x.formFields;

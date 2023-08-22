@@ -87,19 +87,21 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
     };
     getTableData();
   }, []);
-  const getAdvanceFilter = (): RoutingFilter => {
+  const getAdvanceFilter = (): { [key: string]: undefined; } => {
+    let advanceFilter: { [key: string]: undefined; };
     try {
       const cachedFilter: string | null = localStorage.getItem(CACHE_FILTER_ROUTING);
-      const advanceFilter: RoutingFilter = JSON.parse(cachedFilter) || {};
+      advanceFilter = JSON.parse(cachedFilter) || {};
       Object.keys(advanceFilter).forEach((key: keyof RoutingFilter) => {
         if (advanceFilter[key] === "" || advanceFilter[key] === null) {
           delete advanceFilter[key];
         }
       });
-      return advanceFilter;
     } catch (e) {
-      console.log(e);
+      advanceFilter = {};
     }
+
+    return advanceFilter;
   };
 
   const handleSearchDDChange = (event: any) => {
@@ -168,7 +170,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
   };
 
   const loadDataTable = (result?: CctSharedCallRoutingDb[]) => {
-    if (result?.length > 0) {
+    if (result?.length > 0 && result[0]) {
       const sortedResult: CctSharedCallRoutingDb[] = result.sort(((a: CctSharedCallRoutingDb, b: CctSharedCallRoutingDb) => a.id - b.id));
       const minId: number = sortedResult[0].id;
       const maxId: number = sortedResult[result.length - 1].id;
@@ -211,21 +213,24 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
   };
 
   const openAddModal = (flag: boolean,openAddModal?:boolean, row?: CctSharedCallRoutingDb) => {
-    let newData;
+    let newData: CctSharedCallRoutingDb;
     if(!openAddModal){
       setClonedRule(openAddModal);
     }
     if (!flag) {
-      newData = row? state.data.concat(row) : undefined;
+      if (row) {
+        state.data.concat(row);
+        newData = row;
+      }
 
       setAlertBar(alertBarProps => ({
         ...alertBarProps,
         open: flag,
         severityType: "success",
-        msg: "New flow has been successfully added!! "
+        msg: "New route has been successfully added."
       }));
     }
-    loadDataTable(newData);
+    loadDataTable([newData]);
     setState({
       ...state,
       isAddModalOpen: flag
@@ -283,16 +288,16 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
     }));
   };
 
-  const openEditModal = (flag: boolean, isSubmitted?: boolean, rows?: CctSharedCallRoutingDb[], message?: string, deleteRow?: boolean,type?: boolean) => {
+  const openEditModal = (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallRoutingDb, message?: string, deleteRow?: boolean,type?: boolean) => {
     let newData;
     if(type){
-      cloneRule(flag,rows && rows[0]);
+      cloneRule(flag,row);
     }
     else if (!flag && isSubmitted) {
-      const rowIds = rows.map(x => x.id);
-      newData = state.data.filter(x=> !rowIds.includes(x.id));
-      if(!deleteRow) {
-        newData.concat(rows);
+      if(deleteRow) {
+        newData = state.data.filter(x=> x.skey !== row.skey);
+      } else {
+        newData = row ? state.data.map(x=> x.skey === row.skey ? row : x) : undefined;
       }
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
@@ -305,7 +310,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
     setState((currentDataRouting: RoutingStateVariables)=>({
       ...currentDataRouting,
       isEditModalOpen: flag,
-      selectedRow: rows[0]
+      selectedRow: row
     }));
   };
 
@@ -359,20 +364,30 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
         severityType: "error"
       }));
       throw new Error("Error deleting records.");
+    } else {
+      setAlertBar((alertBarProps: AlertBarProps) => ({
+        ...alertBarProps,
+        open: true,
+        msg: "Routing Rules have been successfully deleted.",
+        severityType: "success"
+      }));
     }
 
     setSelectedList([]);
 
     const deletedIds = rows.map(x => x.id);
-    const filteredItems = state.filteredItems.filter(x=> deletedIds.indexOf(x.id) === -1);
+    const filteredItems = state?.filteredItems?.filter(x=> deletedIds.indexOf(x.id) === -1);
+    const filteredData = state?.data?.filter(x=> deletedIds.indexOf(x.id) === -1);
 
     setState({
-      filteredItems
+      ...state,
+      ...filteredItems && { filteredItems },
+      data: filteredData
     });
 
   };
 
-  RoutingGridColumnDef[0].renderCell = (params: GridRenderCellParams<CctSharedCallRoutingDb>) => (<a href="#" onClick={() => openEditModal(true, false, [params.row])}>{`${params.value}`}</a>);
+  RoutingGridColumnDef[0].renderCell = (params: GridRenderCellParams<CctSharedCallRoutingDb>) => (<a href="#" onClick={() => openEditModal(true, false, params.row)}>{`${params.value}`}</a>);
 
   return (
     <div>
