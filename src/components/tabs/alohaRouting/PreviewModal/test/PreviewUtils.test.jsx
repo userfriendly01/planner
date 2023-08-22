@@ -54,23 +54,17 @@ describe("PreviewUtils", () => {
       localStorage.removeItem(ROUTING_CACHE_MASTER_DATA);
     });
 
-    describe.skip("add", () => {
+    it("should be editable", () => {
       const rows = reconstructTableColumnDef("add", [...TableGridColumnDef], apiRef);
-      it("should be editable", () => {
-        expect(rows[0].editable).toBeTruthy();
-      });
+      expect(rows[0].editable).toBeTruthy();
     });
-    describe.skip("edit", () => {
+    it("should be editable", () => {
       const rows = reconstructTableColumnDef("edit", [...TableGridColumnDef], apiRef);
-      it("should be editable", () => {
-        expect(rows[0].editable).toBeTruthy();
-      });
+      expect(rows[0].editable).toBeTruthy();
     });
-    describe("delete", () => {
+    it("should be editable", () => {
       const rows = reconstructTableColumnDef("delete", [...TableGridColumnDef], apiRef);
-      it("should be editable", () => {
-        expect(rows[0].editable).toBeFalsy();
-      });
+      expect(rows[0].editable).toBeFalsy();
     });
   });
 });
