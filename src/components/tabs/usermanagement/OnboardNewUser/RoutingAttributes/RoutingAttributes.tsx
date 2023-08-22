@@ -43,7 +43,7 @@ const RoutingAttributes = (): JSX.Element => {
           callerStatesArray.push(value[i].value);
         }
         setForm({
-          type: userFormActions.ADD_CALLER_STATE,
+          type: userFormActions.SET_CALLER_STATES,
           payload: {
             callerStateRouting: callerStatesArray.length>0 ? callerStatesArray: null
           }

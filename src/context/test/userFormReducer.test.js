@@ -1472,7 +1472,7 @@ describe("userFormReducer", () => {
         callerStateRouting:["Test1", "Test2"]
       };
       const action = {
-        type: userFormActions.ADD_CALLER_STATE,
+        type: userFormActions.SET_CALLER_STATES,
         payload
       };
       const result = userFormReducer(initialUserFormState, action);

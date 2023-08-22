@@ -15,7 +15,6 @@ import { getWfmOptions } from "utils/calabrioUtils";
 const searchParams = SearchParams.getValues();
 
 export const userFormActions = {
-  ADD_CALLER_STATE: "ADD_CALLER_STATE",
   ADD_ROUTING_TEAM: "ADD_ROUTING_TEAM",
   ASSIGN_EXTENSION: "ASSIGN_EXTENSION",
   CHECK_CALABRIO_TEAM: "CHECK_CALABRIO_TEAM",
@@ -34,6 +33,7 @@ export const userFormActions = {
   SET_CALABRIO_TEAM: "SET_CALABRIO_TEAM",
   SET_CALABRIO_TIMEZONE: "SET_CALABRIO_TIMEZONE",
   SET_CALABRIO_ROLES: "SET_CALABRIO_ROLES",
+  SET_CALLER_STATES: "SET_CALLER_STATES",
   SET_DISCREPANCIES: "SET_DISCREPANCIES",
   SET_EXTENSION_MESSAGE: "SET_EXTENSION_MESSAGE",
   SET_EXTENSION_RETRIES: "SET_EXTENSION_RETRIES",
@@ -432,7 +432,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
 
       };
     }
-    case userFormActions.ADD_CALLER_STATE: {
+    case userFormActions.SET_CALLER_STATES: {
       const callerStateRoutingAttr = action.payload.callerStateRouting;
       return {
         ...state,
