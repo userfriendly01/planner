@@ -62,7 +62,7 @@ describe("PreviewUtils", () => {
       const rows = reconstructTableColumnDef("edit", [...TableGridColumnDef], apiRef);
       expect(rows[0].editable).toBeTruthy();
     });
-    it("should be editable", () => {
+    it("should NOT be editable", () => {
       const rows = reconstructTableColumnDef("delete", [...TableGridColumnDef], apiRef);
       expect(rows[0].editable).toBeFalsy();
     });
