@@ -1,0 +1,76 @@
+import React from "react";
+import { TableGridColumnDef } from "../TableGridColumnDef";
+import { reconstructTableColumnDef } from "../previewUtils";
+import { ROUTING_CACHE_MASTER_DATA } from "../../../../../utils";
+
+const routingDropDownData = {
+  brand: ["Liberty Mutual", "Safeco"],
+  channel: ["Sales", "Service"],
+  dayOfWeek: ["MONDAY","TUESDAY","WEDNESDAY"],
+  language: ["ENGLISH", "SPANISH"],
+  policyType: ["PTYPE1", "PTYPE2"],
+  priority: ["1","2","3"]
+};
+
+export const createRoutingRule = num => {
+  return {
+    id: num,
+    all: "ALL",
+    brand: `TestBrand${num}`,
+    callIntent: `TestCallIntent${num}`,
+    callerState: `TestCallState${num}`,
+    callerType: `TestCallType${num}`,
+    channel: `TestChannel${num}`,
+    dayOfWeek: "ALL",
+    endTime: "12:00:00 PM",
+    percentOfCallers: "10",
+    pkey: "testcallintent",
+    policyType: `TestPolicyType${num}`,
+    skey: `TestBrand${num}_TestChannel${num}_${num}`,
+    startTime: "05:00:00 PM",
+    transferDestination: `1234567${num}`,
+    transferMessage: `Test Transfer Message ${num}`,
+    twilioSkill: `Test Twilio Skill${num}`,
+    crcSkill: null
+  };
+};
+
+export const createSampleTestRoutingDataList = numberOfData =>{
+  const dataList = [];
+  for (let num=1; num<=numberOfData; num++) {
+    dataList.push(createRoutingRule(num));
+  }
+  return dataList;
+};
+const apiRef = jest.fn();
+
+describe("PreviewUtils", () => {
+  describe("reconstructTableColumnDef", () => {
+    beforeEach(()=>{
+      jest.clearAllMocks();
+      localStorage.setItem(ROUTING_CACHE_MASTER_DATA, JSON.stringify(routingDropDownData));
+    });
+    afterEach(()=>{
+      localStorage.removeItem(ROUTING_CACHE_MASTER_DATA);
+    });
+
+    describe.skip("add", () => {
+      const rows = reconstructTableColumnDef("add", [...TableGridColumnDef], apiRef);
+      it("should be editable", () => {
+        expect(rows[0].editable).toBeTruthy();
+      });
+    });
+    describe.skip("edit", () => {
+      const rows = reconstructTableColumnDef("edit", [...TableGridColumnDef], apiRef);
+      it("should be editable", () => {
+        expect(rows[0].editable).toBeTruthy();
+      });
+    });
+    describe("delete", () => {
+      const rows = reconstructTableColumnDef("delete", [...TableGridColumnDef], apiRef);
+      it("should be editable", () => {
+        expect(rows[0].editable).toBeFalsy();
+      });
+    });
+  });
+});
