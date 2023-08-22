@@ -1480,8 +1480,8 @@ describe("userFormReducer", () => {
         ...initialUserFormState,
         triton:{
           ...initialUserFormState.triton,
-          callerStateAttr: {
-            ...initialUserFormState.triton.callerStateAttr.callerState,
+          routing: {
+            ...initialUserFormState.triton.routing,
             callerStates:payload.callerStateRouting,
             updated: true
           }

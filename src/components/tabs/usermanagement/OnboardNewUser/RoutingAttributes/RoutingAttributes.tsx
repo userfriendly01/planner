@@ -14,10 +14,10 @@ import { RoutingTeamAttrDropDownOptions,CallerStateAttrDropDownOptions } from ".
 const RoutingAttributes = (): JSX.Element => {
   const setForm = useFormDispatch();
   const form = useFormState();
-  const accordianExpansion = form.triton.routing.team ? true : false;
+  const accordianExpansion = form.triton.routing.team ? true : form.triton.routing?.callerStates?.length>0?true:false;
   const [expanded, setExpanded] = useState(accordianExpansion);
   const getlabelValuePair=()=>{
-    const callerStateList = form.triton.routing.callerStates||[];
+    const callerStateList = form.triton.routing?.callerStates||[];
     return callerStateList.map((callerState:String) => {
       return {
         ...callerState,
@@ -39,7 +39,7 @@ const RoutingAttributes = (): JSX.Element => {
         break;
       case "callerStates":
         var callerStatesArray:String[] =[];
-        for(let i=0;i<value.length;i++){
+        for(let i=0;i<value?.length;i++){
           callerStatesArray.push(value[i].value);
         }
         setForm({
