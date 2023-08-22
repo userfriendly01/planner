@@ -100,12 +100,9 @@ export const initialUserFormState: UserFormState = {
     },
     routing: {
       team: "",
+      callerStates: [],
       skills: [],
       level: {},
-      updated: false
-    },
-    callerStateAttr:{
-      callerStates: [],
       updated: false
     },
     didUser: false,
@@ -441,8 +438,8 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
         ...state,
         triton: {
           ...state.triton,
-          callerStateAttr: {
-            ...state.triton.callerStateAttr,
+          routing: {
+            ...state.triton.routing,
             callerStates: callerStateRoutingAttr,
             updated: true
           }

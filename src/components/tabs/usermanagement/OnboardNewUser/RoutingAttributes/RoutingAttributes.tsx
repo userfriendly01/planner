@@ -16,6 +16,17 @@ const RoutingAttributes = (): JSX.Element => {
   const form = useFormState();
   const accordianExpansion = form.triton.routing.team ? true : false;
   const [expanded, setExpanded] = useState(accordianExpansion);
+  const getlabelValuePair=()=>{
+    const callerStateList = form.triton.routing.callerStates||[];
+    return callerStateList.map((callerState:String) => {
+      return {
+        ...callerState,
+        label: callerState,
+        value: callerState
+      };
+    });
+
+  }
   const handleChange = (event: any, value: any, keyName:String) => {
     switch(keyName){
       case "routingTeam":
@@ -27,10 +38,14 @@ const RoutingAttributes = (): JSX.Element => {
         });
         break;
       case "callerStates":
+        var callerStatesArray:String[] =[];
+        for(let i=0;i<value.length;i++){
+          callerStatesArray.push(value[i].value);
+        }
         setForm({
           type: userFormActions.ADD_CALLER_STATE,
           payload: {
-            callerStateRouting: value ? value: null
+            callerStateRouting: callerStatesArray.length>0 ? callerStatesArray: null
           }
         });
         break;
@@ -68,7 +83,7 @@ const RoutingAttributes = (): JSX.Element => {
       <AccordionDetails>
         <Dropdown
           label="Caller State"
-          value={form.triton.callerStateAttr.callerStates}
+          value={getlabelValuePair()}
           options={CallerStateAttrDropDownOptions}
           updateValue={(event: any, value: any) => handleChange(event, value, "callerStates")}
           styles={{

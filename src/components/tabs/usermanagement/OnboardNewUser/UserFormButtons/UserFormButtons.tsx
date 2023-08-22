@@ -110,11 +110,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         ...form.triton.routing,
         skills: [],
         levels: {}
-      },
-      callerStateAttr:{
-        ...form.triton.callerStateAttr,
-        skills: [],
-        levels: {}
       }
   }
 
@@ -326,10 +321,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     }
     if (form.triton.routing.updated) {
       attributes.routing = form.triton.routing;
-    }
-    if (form.triton.callerStateAttr.updated){
-      attributes.callerStateAttr = form.triton.callerStateAttr;
-
     }
     if (nNumberFetchedUser) {
       nNumberFetchedUser.departmentNumber ? attributes.department_id = nNumberFetchedUser.departmentNumber : null;
