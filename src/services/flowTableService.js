@@ -89,8 +89,8 @@ async function retrieveFlowData(accessToken, graphQlApiUrl,firstChunkData) {
         listItems = result.data?.listCctSharedCallFlowDbs?.items || [];
       }
       listItems.forEach(item => flowData.push({
-        id: counter++,
-        ...item
+        ...item,
+        id: counter++
       }));
       isFirstTime = false;
     }
