@@ -395,10 +395,47 @@ async function deleteFlowRule(item, accessToken, graphQlApiUrl) {
   return response;
 }
 
+async function flowBatchDelete(items, accessToken, graphQlApiUrl) {
+  let response;
+
+  try {
+    const body = JSON.stringify({
+      query: `
+        mutation DeleteManyFlow {
+          batchDeleteCctSharedCallFlowDb(input: {
+            pkey: ${JSON.stringify(items)}
+            }) {
+            items {
+              pkey
+            }
+          }
+        }
+    `,
+      variables: {
+      }
+    }).replace(/\\"pkey\\":/g, "pkey:");
+
+    const fetchResponse = await fetch(graphQlApiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: accessToken
+      },
+      body
+    });
+    response = await fetchResponse.json();
+    console.log("Batch Delete Flow Rule Response:", response);
+  } catch (error) {
+    console.error("Error in Flow Batch Delete", error);
+  }
+  return response;
+}
+
 export {
   addFlowRule,
   deleteFlowRule,
   retrieveFlowData,
   updateFlowDB,
-  queryFlowData
+  queryFlowData,
+  flowBatchDelete
 };

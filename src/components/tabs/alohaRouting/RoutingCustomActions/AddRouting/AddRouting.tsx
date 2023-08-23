@@ -144,7 +144,7 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
             ...alertBarProps,
             "open": true,
             "severityType": "success",
-            "msg": "New Routing Rule has been successfully added!!"
+            "msg": "New Routing Rule has been successfully added."
           }));
           return true;
         }

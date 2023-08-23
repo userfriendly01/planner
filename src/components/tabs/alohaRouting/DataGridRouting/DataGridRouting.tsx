@@ -1,29 +1,58 @@
-import {
-  DataGrid, GridRenderCellParams
-} from "@mui/x-data-grid";
-import { CustomToast } from "components";
-import { AzureSPA } from "globals";
 import React, {
-  useEffect, useRef, useState
+  useEffect,
+  useRef,
+  useState
 } from "react";
-import { queryRoutingData, retrieveRoutingData } from "services";
+import {
+  AddPageFieldConfigProps,
+  CctSharedCallRoutingDb,
+  PreviewModalAction,
+  RoutingFilter,
+  RoutingMasterData,
+  RoutingStateVariables
+} from "../AlohaRouting.Interfaces";
+import {
+  AddRouting,
+  CustomRoutingGridToolBar,
+  EditRouting,
+  RoutingAdvanceSearch
+} from "../RoutingCustomActions";
+import {
+  AlertBarProps,
+  FormValidationRule
+} from "utils/interfaces";
+import {
+  batchDelete,
+  queryRoutingData,
+  retrieveRoutingData
+} from "services";
 import {
   CACHED_CALL_ROUTING_PAGE_NO,
   CACHED_CALL_ROUTING_PER_PAGE,
-  CACHE_FILTER_ROUTING, downloadCSV,
-  EXPORT_FILE_PREFIX, getGraphQLEndpoint,
-  initializedAlertBar, routingFields, routingInitRule, routingInitState
+  CACHE_FILTER_ROUTING,
+  EXPORT_FILE_PREFIX,
+  downloadCSV,
+  getGraphQLEndpoint,
+  initializedAlertBar,
+  routingFields,
+  routingInitRule,
+  routingInitState
 } from "utils";
 import {
-  AlertBarProps, FormValidationRule
-} from "utils/interfaces";
-import { AddPageFieldConfigProps, CctSharedCallRoutingDb, RoutingFilter, RoutingMasterData, RoutingStateVariables } from "../AlohaRouting.Interfaces";
-import { RoutingTableBox } from "../AlohaRouting.Styles";
-import { AddRouting, CustomRoutingGridToolBar, EditRouting, RoutingAdvanceSearch } from "../RoutingCustomActions";
+  DataGrid,
+  GridCallbackDetails,
+  GridPaginationModel,
+  GridRenderCellParams,
+  GridRowId,
+  GridRowSelectionModel
+} from "@mui/x-data-grid";
 import { RoutingGridColumnDef } from "./GridColumnDef";
-import {
-  getGridMasterData
-} from "./GridMaster";
+import { AzureSPA } from "globals";
+import { CustomToast } from "components";
+import { PreviewModal } from "../PreviewModal";
+import { RoutingTableBox } from "../AlohaRouting.Styles";
+import { getGridMasterData } from "./GridMaster";
+
 export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
   const {
     accessToken,
@@ -32,10 +61,17 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
 
   const graphQlApiUrl: string = getGraphQLEndpoint();
   const [state, setState] = useState<RoutingStateVariables>(routingInitState);
+  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
+    pageSize: sessionStorage.getItem(CACHED_CALL_ROUTING_PER_PAGE) ? +sessionStorage.getItem(CACHED_CALL_ROUTING_PER_PAGE) : 10,
+    page: sessionStorage.getItem(CACHED_CALL_ROUTING_PAGE_NO) ? +sessionStorage.getItem(CACHED_CALL_ROUTING_PAGE_NO) : 1
+  });
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
   const [routingRule, setRoutingRule] = useState({ ...routingInitRule });
   const [clonedRule, setClonedRule] = useState(false);
+  const [selectedList, setSelectedList] = useState<Array<CctSharedCallRoutingDb>>([]);
+
   const maxRef = useRef(0);
+
   useEffect(() => {
     const getTableData = async()=>{
       const routingData: CctSharedCallRoutingDb[] = [];
@@ -43,34 +79,34 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
       const listItems = firstChunkData.data?.listCctSharedCallRoutingGlobalDbs?.items || [];
       listItems.map((item:CctSharedCallRoutingDb) => routingData.push({
         ...item,
-        id: item &&
-            item.skey &&
-            parseInt(item.skey.split("__")[2], 10)
-      }) ) || [];
+        id: parseInt(item?.skey?.split("__")[2], 10)
+      }));
       loadDataTable(routingData);
       const result: CctSharedCallRoutingDb[] = await retrieveRoutingData(accessToken, graphQlApiUrl,firstChunkData);
       loadDataTable(result);
     };
     getTableData();
   }, []);
-  const getAdvanceFilter = (): RoutingFilter => {
+  const getAdvanceFilter = (): { [key: string]: undefined; } => {
+    let advanceFilter: { [key: string]: undefined; };
     try {
       const cachedFilter: string | null = localStorage.getItem(CACHE_FILTER_ROUTING);
-      const advanceFilter: RoutingFilter = JSON.parse(cachedFilter) || {};
+      advanceFilter = JSON.parse(cachedFilter) || {};
       Object.keys(advanceFilter).forEach((key: keyof RoutingFilter) => {
         if (advanceFilter[key] === "" || advanceFilter[key] === null) {
           delete advanceFilter[key];
         }
       });
-      return advanceFilter;
     } catch (e) {
-      console.log(e);
+      advanceFilter = {};
     }
+
+    return advanceFilter;
   };
 
   const handleSearchDDChange = (event: any) => {
     const name = event.target.name;
-    var value = event.target.value;
+    let value = event.target.value;
     if(name === "id"){
       value = parseInt(event.target.value);
     }
@@ -102,7 +138,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
       result.forEach(item => {
         let matched = 0;
         Object.keys(advanceFilter).forEach((key: keyof RoutingFilter) => {
-          if(key == "id" && item && item[key]){
+          if(key === "id" && item && item[key]){
             const itemId = item?.id.toLocaleString().toString().replace(",","");
             const advanceKey = advanceFilter[key].toString().replace(",","");
             if (itemId.includes(advanceKey)) {
@@ -134,7 +170,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
   };
 
   const loadDataTable = (result?: CctSharedCallRoutingDb[]) => {
-    if (result?.length > 0) {
+    if (result?.length > 0 && result[0]) {
       const sortedResult: CctSharedCallRoutingDb[] = result.sort(((a: CctSharedCallRoutingDb, b: CctSharedCallRoutingDb) => a.id - b.id));
       const minId: number = sortedResult[0].id;
       const maxId: number = sortedResult[result.length - 1].id;
@@ -144,18 +180,21 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
       maxRef.current = maxId;
       setState({
         ...state,
-        maxId: maxId,
         advanceFilter,
-        filteredItems,
         data: result,
         fetching: false,
-        idStart: minId,
+        filteredItems,
         idEnd: maxId,
-        minId: minId,
-        masterData,
+        idStart: minId,
         isAddModalOpen: false,
+        isAdvanceSearchModalOpen: false,
+        isBulkEditModalOpen: false,
         isEditModalOpen: false,
-        isAdvanceSearchModalOpen: false
+        isPreviewModalOpen: false,
+        masterData,
+        maxId: maxId,
+        minId: minId,
+        saveSuccess: false
       });
     } else {
       setState({
@@ -167,48 +206,41 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
         fetching: false,
         isAddModalOpen: false,
         isEditModalOpen: false,
+        isBulkEditModalOpen: false,
         isAdvanceSearchModalOpen: false
       });
     }
   };
 
-
   const openAddModal = (flag: boolean,openAddModal?:boolean, row?: CctSharedCallRoutingDb) => {
-    let newData;
+    let newData: CctSharedCallRoutingDb;
     if(!openAddModal){
       setClonedRule(openAddModal);
     }
     if (!flag) {
-      newData = row? state.data.concat(row) : undefined;
+      if (row) {
+        state.data.concat(row);
+        newData = row;
+      }
 
       setAlertBar(alertBarProps => ({
         ...alertBarProps,
         open: flag,
         severityType: "success",
-        msg: "New flow has been successfully added!! "
+        msg: "New route has been successfully added."
       }));
     }
-    loadDataTable(newData);
+    loadDataTable([newData]);
     setState({
       ...state,
       isAddModalOpen: flag
     });
   };
 
-  const setPerPage = (newPageSize: number) => {
-    sessionStorage.setItem(CACHED_CALL_ROUTING_PER_PAGE, newPageSize.toString());
-    setState({
-      ...state,
-      perPage: newPageSize
-    });
-  };
-
-  const setPage = (newPage: number) => {
-    sessionStorage.setItem(CACHED_CALL_ROUTING_PAGE_NO, newPage.toString());
-    setState({
-      ...state ,
-      page: newPage
-    });
+  const handlePaginationModelChange = (model: GridPaginationModel, details:GridCallbackDetails<any>) =>{
+    sessionStorage.setItem(CACHED_CALL_ROUTING_PAGE_NO, model.page.toString());
+    sessionStorage.setItem(CACHED_CALL_ROUTING_PER_PAGE, model.pageSize.toString());
+    setPaginationModel(model);
   };
 
   const handleClose = (flag: boolean) => {
@@ -249,6 +281,13 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
     }));
   };
 
+  const openBulkEditModal = (flag: boolean) =>{
+    setState((dataFlowProps: RoutingStateVariables) => ({
+      ...dataFlowProps,
+      isBulkEditModalOpen: flag
+    }));
+  };
+
   const openEditModal = (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallRoutingDb, message?: string, deleteRow?: boolean,type?: boolean) => {
     let newData;
     if(type){
@@ -275,8 +314,77 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
     }));
   };
 
+  const openPreviewModal = (flag: boolean, action: PreviewModalAction) =>{
+    setState((dataFlowProps: RoutingStateVariables) => ({
+      ...dataFlowProps,
+      isPreviewModalOpen: flag,
+      previewModalAction: action
+    }));
+  };
+
   const exportDataFile = () =>{
     downloadCSV(EXPORT_FILE_PREFIX.ROUTING, state.filteredItems);
+  };
+
+  const handlePreviewModalOnClose = () =>{
+    setState((dataFlowProps: RoutingStateVariables) => ({
+      ...dataFlowProps,
+      isPreviewModalOpen: false
+    }));
+  };
+
+  const handleSelectionChanges = (gridSelectionModel: GridRowSelectionModel) =>{
+    const selectedRowsData = gridSelectionModel.map((id: GridRowId)=>state.filteredItems.find((row: CctSharedCallRoutingDb)=>row.id === id));
+    setSelectedList(selectedRowsData);
+  };
+
+  const handleOnBulkCreate = (rows: Array<CctSharedCallRoutingDb> ) =>{
+    console.log("Bulk Create: ", rows);
+  };
+
+  const handleOnBulkUpdate = (rows: Array<CctSharedCallRoutingDb> ) =>{
+    console.log("Bulk Update: ", rows);
+  };
+
+  const handleOnBulkDelete = async (rows: Array<CctSharedCallRoutingDb> ) =>{
+    const keysToDelete = rows.map(x => {
+      return {
+        pkey: x.pkey,
+        skey: x.skey
+      };
+    }
+    );
+    const response = await batchDelete(keysToDelete, accessToken, graphQlApiUrl);
+
+    if(!response || response.errors) {
+      setAlertBar((alertBarProps: AlertBarProps) => ({
+        ...alertBarProps,
+        open: true,
+        msg: "Error deleting records.",
+        severityType: "error"
+      }));
+      throw new Error("Error deleting records.");
+    } else {
+      setAlertBar((alertBarProps: AlertBarProps) => ({
+        ...alertBarProps,
+        open: true,
+        msg: "Routing Rules have been successfully deleted.",
+        severityType: "success"
+      }));
+    }
+
+    setSelectedList([]);
+
+    const deletedIds = rows.map(x => x.id);
+    const filteredItems = state?.filteredItems?.filter(x=> deletedIds.indexOf(x.id) === -1);
+    const filteredData = state?.data?.filter(x=> deletedIds.indexOf(x.id) === -1);
+
+    setState({
+      ...state,
+      ...filteredItems && { filteredItems },
+      data: filteredData
+    });
+
   };
 
   RoutingGridColumnDef[0].renderCell = (params: GridRenderCellParams<CctSharedCallRoutingDb>) => (<a href="#" onClick={() => openEditModal(true, false, params.row)}>{`${params.value}`}</a>);
@@ -284,27 +392,29 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
   return (
     <div>
       <CustomRoutingGridToolBar
+        applyFilter={applyFilter}
+        exportDataFile={exportDataFile}
+        isAdvanceSearchOpen={state.isAdvanceSearchModalOpen}
         openAddModal={openAddModal}
         openAdvanceSearchModal={openAdvanceSearchModal}
-        exportDataFile={exportDataFile}
-        applyFilter={applyFilter}
-        isAdvanceSearchOpen={state.isAdvanceSearchModalOpen}
+        openEditModal={openBulkEditModal}
+        openPreviewModal={openPreviewModal}
       />
       <RoutingTableBox>
         <DataGrid
-          rows={state.filteredItems}
-          columns={RoutingGridColumnDef}
-          page={state.page}
-          pageSize={state.perPage}
-          onPageChange={(newPage: number) => setPage(newPage)}
-          onPageSizeChange={(newPageSize: number) => setPerPage(newPageSize)}
-          rowsPerPageOptions={[10, 20, 50, 100]}
-          paginationMode="client"
-          pagination
-          loading={state.fetching}
-          checkboxSelection
-          disableSelectionOnClick
           autoHeight
+          checkboxSelection
+          columns={RoutingGridColumnDef}
+          disableRowSelectionOnClick
+          getRowId={(row: CctSharedCallRoutingDb)=>row.id}
+          loading={state.fetching}
+          pageSizeOptions={[10, 20, 50, 100]}
+          pagination
+          paginationMode="client"
+          paginationModel={paginationModel}
+          rows={state.filteredItems}
+          onPaginationModelChange={handlePaginationModelChange}
+          onRowSelectionModelChange={handleSelectionChanges}
           sx={{
             "& .MuiDataGrid-columnHeaderTitle": {
               fontWeight: 600
@@ -341,6 +451,15 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
         onClose={handleClose}
         msg={alertBar.msg}
         severityType={alertBar.severityType}
+      />
+      <PreviewModal
+        action={state.previewModalAction}
+        isOpen={state.isPreviewModalOpen}
+        onClose={handlePreviewModalOnClose}
+        onCreate={handleOnBulkCreate}
+        onDelete={handleOnBulkDelete}
+        onUpdate={handleOnBulkUpdate}
+        rows={selectedList}
       />
     </div>
   );

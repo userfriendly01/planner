@@ -4,14 +4,16 @@
    react/jsx-props-no-spreading
 */
 import {
-  DataGrid, GridRenderCellParams
+  DataGrid, GridRenderCellParams, GridRowId, GridRowSelectionModel, GridPaginationModel, GridCallbackDetails
 } from "@mui/x-data-grid";
 import { CustomToast } from "components";
 import { AzureSPA } from "globals";
 import React, {
   useEffect, useState
 } from "react";
-import { queryFlowData, retrieveFlowData } from "services";
+import {
+  queryFlowData, retrieveFlowData, flowBatchDelete
+} from "services";
 import {
   CACHE_FILTER_FLOW,
   CALL_FLOW_PAGE_NO,
@@ -25,7 +27,7 @@ import {
 } from "utils/interfaces";
 import {
   AddFlowFieldsConfigProps,
-  CctSharedCallFlowDb, FlowAdvanceFilter, FlowStateVariables
+  CctSharedCallFlowDb, FlowAdvanceFilter, FlowStateVariables, PreviewModalAction
 } from "../AlohaFlow.Interfaces";
 import {
   AddFlow, AdvanceSearchModal, CustomFlowGridToolBar, EditFlow
@@ -36,6 +38,7 @@ import FlowGridColumnDef from "./GridColumnDef";
 import {
   getGridMasterData
 } from "./GridMaster";
+import { PreviewModal } from "../PreviewModal";
 
 const DataGridFlow = (props: AzureSPA): JSX.Element => {
   const {
@@ -52,20 +55,25 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     fetching: true,
     selectedRow: undefined,
     isEditModalOpen: false,
+    isPreviewModalOpen: false,
     isAddModalOpen: false,
     isAdvanceSearchModalOpen: false,
     idStart: 0,
     idEnd: 0,
     maxId: 0,
     minId: 0,
-    saveSuccess: 0,
-    page: sessionStorage.getItem(CALL_FLOW_PAGE_NO) ? +sessionStorage.getItem(CALL_FLOW_PAGE_NO) : 1,
-    perPage: sessionStorage.getItem(CALL_FLOW_PER_PAGE) ? +sessionStorage.getItem(CALL_FLOW_PER_PAGE) : 10
+    saveSuccess: 0
   };
+  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
+    pageSize: sessionStorage.getItem(CALL_FLOW_PER_PAGE) ? +sessionStorage.getItem(CALL_FLOW_PER_PAGE) : 10,
+    page: sessionStorage.getItem(CALL_FLOW_PAGE_NO) ? +sessionStorage.getItem(CALL_FLOW_PAGE_NO) : 1
+  });
   const [dataFlow, setDataFlow] = useState(flowInitState);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
   const [clonedFlowRule, setClonedFlowRule] = useState({});
   const [cloneType, setCloneType] = useState(false);
+  const [selectedList, setSelectedList] = useState<Array<CctSharedCallFlowDb>>([]);
+
   useEffect(() => {
     const getTableData = async()=>{
       const firstChunkData:any = await queryFlowData(accessToken, null, graphQLEndpoint);
@@ -87,20 +95,10 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     getTableData();
   }, []);
 
-  const setPage = (newPage: number) => {
-    sessionStorage.setItem(CALL_FLOW_PAGE_NO, newPage.toString());
-    setDataFlow((dataFlowProps: FlowStateVariables) => ({
-      ...dataFlowProps,
-      page: newPage
-    }));
-  };
-
-  const setPerPage = (newPerPage: number) => {
-    sessionStorage.setItem(CALL_FLOW_PER_PAGE, newPerPage.toString());
-    setDataFlow((dataFlowProps: FlowStateVariables) => ({
-      ...dataFlowProps,
-      perPage: newPerPage
-    }));
+  const handlePaginationModelChange = (model: GridPaginationModel, details:GridCallbackDetails<any>) =>{
+    sessionStorage.setItem(CALL_FLOW_PAGE_NO, model.page.toString());
+    sessionStorage.setItem(CALL_FLOW_PER_PAGE, model.pageSize.toString());
+    setPaginationModel(model);
   };
 
   const handleClose = (flag: boolean) => {
@@ -130,16 +128,11 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         ...alertBarProps,
         open: flag,
         severityType: "success",
-        msg: "New flow has been successfully added!! "
+        msg: "New flow has been successfully added. "
       }));
-      const updatedRow: CctSharedCallFlowDb  = {
-        ...row,
-        id: dataFlow.data.length
-      };
-      newData.push(updatedRow);
-      newFilteredItems.push(updatedRow);
+      newData.push(row);
+      newFilteredItems.push(row);
     }
-
     setDataFlow((dataFlowProps: FlowStateVariables) => ({
       ...dataFlowProps,
       ...(!flag && isSubmitted && row) && {
@@ -286,6 +279,14 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     }));
   };
 
+  const openPreviewModal = (flag: boolean, action: PreviewModalAction) =>{
+    setDataFlow((dataFlowProps: FlowStateVariables) => ({
+      ...dataFlowProps,
+      isPreviewModalOpen: flag,
+      previewModalAction: action
+    }));
+  };
+
   const openEditModal = (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallFlowDb, message?: string, deleteRow?: boolean, isClonedFlowRule?: boolean) => {
     if(isClonedFlowRule){
       cloneRule(flag,row);
@@ -315,6 +316,59 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     ));
   };
 
+  const handlePreviewModalOnClose = () =>{
+    setDataFlow((dataFlowProps: FlowStateVariables) => ({
+      ...dataFlowProps,
+      isPreviewModalOpen: false
+    }));
+  };
+
+  const handleSelectionChanges = (gridSelectionModel: GridRowSelectionModel) =>{
+    const selectedRowsData = gridSelectionModel.map((id: GridRowId)=>dataFlow.filteredItems.find((row: CctSharedCallFlowDb)=>row.pkey === id));
+    setSelectedList(selectedRowsData);
+  };
+
+  const handleOnBulkCreate = (rows: Array<CctSharedCallFlowDb> ) =>{
+    console.log("Bulk Create: ", rows);
+  };
+
+  const handleOnBulkUpdate = (rows: Array<CctSharedCallFlowDb> ) =>{
+    console.log("Bulk Update: ", rows);
+  };
+
+  const handleOnBulkDelete = async(rows: Array<CctSharedCallFlowDb> ) =>{
+    const keysToDelete = rows.map(x => x.pkey);
+    const response = await flowBatchDelete(keysToDelete, accessToken, graphQLEndpoint);
+
+    if(!response || response.errors) {
+      setAlertBar((alertBarProps: AlertBarProps) => ({
+        ...alertBarProps,
+        open: true,
+        msg: "Error deleting records.",
+        severityType: "error"
+      }));
+      throw new Error("Error deleting records.");
+    } else {
+      setAlertBar((alertBarProps: AlertBarProps) => ({
+        ...alertBarProps,
+        open: true,
+        msg: "Routing Rules have been successfully deleted.",
+        severityType: "success"
+      }));
+    }
+    setSelectedList([]);
+    const deletedIds = rows.map(x => x.pkey);
+    const filteredItems = dataFlow.filteredItems.filter(x=> deletedIds.indexOf(x.pkey) === -1);
+    const filteredData = dataFlow.data.filter(x=> deletedIds.indexOf(x.pkey) === -1);
+
+    setDataFlow((dataFlowProps: FlowStateVariables) => ({
+      ...dataFlowProps,
+      filteredItems,
+      data: filteredData,
+      isPreviewModalOpen: false
+    }));
+  };
+
   FlowGridColumnDef[0].renderCell = (params: GridRenderCellParams<CctSharedCallFlowDb>) => (<a href="#" onClick={() => openEditModal(true, false, params.row)}>{`${params.value}`}</a>);
 
 
@@ -324,6 +378,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         <div className="data-grid-wrapper">
           <CustomFlowGridToolBar
             openAddModal={openAddModal}
+            openPreviewModal={openPreviewModal}
             openAdvanceSearchModal={openAdvanceSearchModal}
             exportDataFile={exportDataFile}
             applyFilter={filterRecords}
@@ -332,17 +387,17 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
           <DataGrid
             rows={dataFlow.filteredItems}
             columns={FlowGridColumnDef}
-            page={dataFlow.page}
-            pageSize={dataFlow.perPage}
-            onPageChange={(newPage: number) => setPage(newPage)}
-            onPageSizeChange={(newPageSize: number) => setPerPage(newPageSize)}
-            rowsPerPageOptions={[10, 20, 50, 100]}
+            paginationModel={paginationModel}
+            onPaginationModelChange={handlePaginationModelChange}
+            pageSizeOptions={[10, 20, 50, 100]}
             paginationMode="client"
             pagination
             loading={dataFlow.fetching}
             checkboxSelection
-            disableSelectionOnClick
+            disableRowSelectionOnClick
             autoHeight
+            getRowId={(row: CctSharedCallFlowDb)=>row.pkey}
+            onRowSelectionModelChange={handleSelectionChanges}
             sx={{
               "& .MuiDataGrid-columnHeaderTitle": {
                 fontWeight: 600
@@ -387,6 +442,15 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         onClose={handleClose}
         msg={alertBar.msg}
         severityType={alertBar.severityType}
+      />
+      <PreviewModal
+        isOpen={dataFlow.isPreviewModalOpen}
+        rows={selectedList}
+        onClose={handlePreviewModalOnClose}
+        action={dataFlow.previewModalAction}
+        onCreate={handleOnBulkCreate}
+        onUpdate={handleOnBulkUpdate}
+        onDelete={handleOnBulkDelete}
       />
     </div>
   );

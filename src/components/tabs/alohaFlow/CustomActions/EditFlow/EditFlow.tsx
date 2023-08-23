@@ -161,7 +161,7 @@ export const EditFlow = ({
         return;
       }
       setFlowRule({ ...initRule });
-      openEditModal(false, isSubmitted, selectedRowLocal, `Phone Number ${selectedRow.pkey} has been successfully updated!!`, false);
+      openEditModal(false, isSubmitted, selectedRowLocal, `Phone Number ${selectedRow.pkey} has been successfully updated.`, false);
     }
   };
 
@@ -172,7 +172,7 @@ export const EditFlow = ({
   const handleOnDelete = async () => {
     const response = await deleteFlowRule(selectedRowLocal, accessToken, graphQLEndPoint);
     if (response) {
-      openEditModal(false, true, selectedRowLocal, `Phone Number ${selectedRow.pkey} has been successfully deleted!!`, true);
+      openEditModal(false, true, selectedRowLocal, `Phone Number ${selectedRow.pkey} has been successfully deleted.`, true);
     }
     setFlowRule({ ...initRule });
   };
