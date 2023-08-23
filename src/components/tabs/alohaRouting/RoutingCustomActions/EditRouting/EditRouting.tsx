@@ -5,7 +5,7 @@ import {
   RoutingHeadingStyled, RoutingModalBodyStyled, RoutingModalFooterStyled
 } from "../../AlohaRouting.Styles";
 import React, {
-  useState, useRef, useEffect
+  useState, useEffect
 } from "react";
 import {
   convertTime12to24,convertTime24to12, getGraphQLEndpoint, routingFields, routingInitRule, initializedAlertBar, routingDropDownList, dayOfWeek
@@ -27,14 +27,16 @@ import {
 } from "services";
 import { AzureSPA } from "globals";
 interface EditRoutingComponentProps {
-    isOpen: boolean;
-    selectedRow: CctSharedCallRoutingDb;
-    openEditModal: (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallRoutingDb, message?: string, deleteRow?: boolean,isCloneRule?: boolean) => void;
+  accessToken: string;
+  isOpen: boolean;
+  matchedGroups: string;
+  selectedRow: CctSharedCallRoutingDb;
+  openEditModal: (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallRoutingDb, message?: string, deleteRow?: boolean,isCloneRule?: boolean) => void;
 }
 
 
 export const EditRouting = ({
-  accessToken, matchedGroups, isOpen, selectedRow, openEditModal
+  accessToken, isOpen, matchedGroups, selectedRow, openEditModal
 }: EditRoutingComponentProps & AzureSPA): JSX.Element => {
   const graphQLEndPoint: string = getGraphQLEndpoint();
   const [selectedRowLocal, setSelectedRowLocal] = useState({} as CctSharedCallRoutingDb);
@@ -103,7 +105,7 @@ export const EditRouting = ({
   const handleOnDelete = async () => {
     const response = await deleteRoutingRule(selectedRowLocal, accessToken, graphQLEndPoint);
     if (response) {
-      openEditModal(false, true, selectedRowLocal, `Routing Rule ID ${selectedRow.id} has been successfully deleted!! `, true);
+      openEditModal(false, true, selectedRowLocal, `Routing Rule ID ${selectedRow.id} has been successfully deleted. `, true);
       return true;
     }
     setRoutingRule({ ...routingInitRule });
@@ -160,7 +162,7 @@ export const EditRouting = ({
       };
       const response = await updateRoutingDB(updatedRow, accessToken, graphQLEndPoint);
       if (response && !response.errors) {
-        openEditModal(false, true, updatedRow, `Routing Rule ID ${selectedRow.id} has been successfully updated!! `, false);
+        openEditModal(false, true, updatedRow, `Routing Rule ID ${selectedRow.id} has been successfully updated. `, false);
         return true;
       }
       setAlertBar((alertBarProps: AlertBarProps) => ({
