@@ -134,6 +134,25 @@ describe("flowTableService",()=>{
       const listFlow = await retrieveFlowData("12345","",{});
       expect(listFlow).toEqual(jsonFlowData);
     });
+    test("retrieveFlowData creates the IDs",async()=>{
+      const items = JSON.parse(JSON.stringify(jsonFlowData));
+      items[0].id = undefined;
+      items[1].id = undefined;
+      window.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve({
+            data: {
+              listCctSharedCallFlowDbs: {
+                items,
+                nextToken: undefined
+              }
+            }
+          })
+        })
+      );
+      const listFlow = await retrieveFlowData("12345","",{});
+      expect(listFlow).toEqual(jsonFlowData);
+    });
     test("CallFlow list not found",async()=>{
       window.fetch = jest.fn(() =>
         Promise.resolve({
