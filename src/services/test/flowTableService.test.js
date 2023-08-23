@@ -145,6 +145,22 @@ describe("flowTableService",()=>{
       const listFlow = await retrieveFlowData("12345","",{});
       expect(listFlow).toEqual(jsonFlowData);
     });
+    test("CallFlow list finds 2",async()=>{
+      window.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve({
+            data: {
+              listCctSharedCallFlowDbs: {
+                items: jsonFlowData,
+                nextToken: undefined
+              }
+            }
+          })
+        })
+      );
+      const listFlow = await queryFlowData("12345","TEST","http://localhost:8082");
+      expect(listFlow.data.listCctSharedCallFlowDbs.items).toEqual(jsonFlowData);
+    });
     test("retrieveFlowData creates the IDs",async()=>{
       const items = JSON.parse(JSON.stringify(jsonFlowData));
       items[0].id = undefined;
@@ -163,6 +179,20 @@ describe("flowTableService",()=>{
       );
       const listFlow = await retrieveFlowData("12345","",{});
       expect(listFlow).toEqual(jsonFlowData);
+    });
+    test("CallFlow list finds error",async()=>{
+      window.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve({
+            data: []
+          })
+        })
+      );
+      jest.spyOn(JSON, "stringify").mockImplementation(()=>{
+        throw new Error();
+      });
+      const listFlow = await queryFlowData("12345","TEST","http://localhost:8082");
+      expect(listFlow).toBeDefined;
     });
     test("CallFlow list not found",async()=>{
       window.fetch = jest.fn(() =>
