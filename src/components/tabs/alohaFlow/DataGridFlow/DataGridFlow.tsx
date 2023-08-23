@@ -12,7 +12,7 @@ import React, {
   useEffect, useState
 } from "react";
 import {
-  queryFlowData, retrieveFlowData, flowBatchDelete
+  queryFlowData, retrieveFlowData, flowBatchDelete, batchFlowUpdate
 } from "services";
 import {
   CACHE_FILTER_FLOW,
@@ -332,8 +332,50 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     console.log("Bulk Create: ", rows);
   };
 
-  const handleOnBulkUpdate = (rows: Array<CctSharedCallFlowDb> ) =>{
-    console.log("Bulk Update: ", rows);
+  const handleOnBulkUpdate = async(rows: Array<CctSharedCallFlowDb> ) =>{
+    const response = await batchFlowUpdate(rows, accessToken, graphQLEndpoint);
+    if(!response || response.errors) {
+      setAlertBar((alertBarProps: AlertBarProps) => ({
+        ...alertBarProps,
+        open: true,
+        msg: "Error while updating the records.",
+        severityType: "error"
+      }));
+      throw new Error("Error while updating the records.");
+    } else {
+      setAlertBar((alertBarProps: AlertBarProps) => ({
+        ...alertBarProps,
+        open: true,
+        msg: "Flow Rules have been successfully updated.",
+        severityType: "success"
+      }));
+    }
+
+    const filteredItems = dataFlow.filteredItems.map(x=> {
+      const fi = rows.filter(r=> r.pkey === x.pkey);
+      if(fi.length >0){
+        return fi[0];
+      }
+      else{
+        return x;
+      }
+    });
+    const filteredData = dataFlow.data.map(x=> {
+      const fi = rows.filter(r=> r.pkey === x.pkey);
+      if(fi.length >0){
+        return fi[0];
+      }
+      else{
+        return x;
+      }
+    });
+    setSelectedList([]);
+    setDataFlow({
+      ...dataFlow,
+      ...filteredItems && { filteredItems },
+      data: filteredData,
+      isPreviewModalOpen: false
+    });
   };
 
   const handleOnBulkDelete = async(rows: Array<CctSharedCallFlowDb> ) =>{
@@ -352,7 +394,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
         open: true,
-        msg: "Routing Rules have been successfully deleted.",
+        msg: "Flow Rules have been successfully deleted.",
         severityType: "success"
       }));
     }
