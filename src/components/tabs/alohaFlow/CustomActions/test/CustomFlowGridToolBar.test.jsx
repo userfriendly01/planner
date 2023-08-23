@@ -20,6 +20,7 @@ jest.mock("@mui/material", () => ({
 }));
 
 const openAddModal=jest.fn();
+const openPreviewModal=jest.fn();
 const openAdvanceSearchModal = jest.fn();
 const exportDataFile = jest.fn();
 const applyFilter = jest.fn();
@@ -34,6 +35,7 @@ const renderCustomToolBar = () =>{
     <CustomFlowGridToolBar
       openAddModal={openAddModal}
       openAdvanceSearchModal={openAdvanceSearchModal}
+      openPreviewModal={openPreviewModal}
       exportDataFile={exportDataFile}
       applyFilter={applyFilter}
       isAdvanceSearchOpen={isAdvanceSearchModalOpen}
@@ -117,5 +119,37 @@ describe("<CustomFlowGridToolBar/>",()=>{
     });
     const chipTags = Grid.mock.calls[2][0].children[0].props.children.props.InputProps.startAdornment;
     expect(chipTags.length).toBe(0);
+  });
+  test("Choose the multi-actions", () => {
+    renderCustomToolBar();
+    const GridMock = Grid.mock.calls[0][0];
+    const ActionsAttr = GridMock.children[2].props.children.props.children[1].props.onChange;
+
+    act(()=>{
+      ActionsAttr({
+        target: {
+          value: "bulkDeleteFlow"
+        }
+      });
+    });
+
+    act(()=>{
+      ActionsAttr({
+        target: {
+          value: "bulkAddFlow"
+        }
+      });
+    });
+    act(()=>{
+      ActionsAttr({
+        target: {
+          value: "bulkEditFlow"
+        }
+      });
+    });
+    expect(GridMock).toBeTruthy();
+    expect(openAddModal).toBeCalledTimes(0);
+    expect(openPreviewModal).toBeCalledTimes(3);
+
   });
 });

@@ -7,13 +7,20 @@ import React, {
 import {
   CACHE_FILTER_FLOW, getAdvanceFilter
 } from "utils";
-import { FlowAdvanceFilter } from "../AlohaFlow.Interfaces";
+import {
+  FlowAdvanceFilter, PreviewModalAction
+} from "../AlohaFlow.Interfaces";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import DeleteSweepOutlinedIcon from "@mui/icons-material/DeleteSweepOutlined";
+import EditNoteOutlinedIcon from "@mui/icons-material/EditNoteOutlined";
+import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+
 
 interface CustomFlowGridToolBarProps {
-  openAddModal: (flag: boolean, isSubmitted?: boolean) => void,
-  openAdvanceSearchModal: (flag: boolean, advanceFilter?: FlowAdvanceFilter) => void
+  openAddModal: (flag: boolean, isSubmitted?: boolean) => void;
+  openPreviewModal: (flag: boolean, action: PreviewModalAction) =>void;
+  openAdvanceSearchModal: (flag: boolean, advanceFilter?: FlowAdvanceFilter) => void;
   exportDataFile: ()=> void;
   applyFilter?: () => void;
   isAdvanceSearchOpen?: boolean;
@@ -21,7 +28,7 @@ interface CustomFlowGridToolBarProps {
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const CustomFlowGridToolBar = ({
-  openAddModal, openAdvanceSearchModal, exportDataFile, applyFilter, isAdvanceSearchOpen
+  openAddModal, openPreviewModal, openAdvanceSearchModal, exportDataFile, applyFilter, isAdvanceSearchOpen
 }:CustomFlowGridToolBarProps) =>{
   const [flowFilter, setFlowFilter] = useState<FlowAdvanceFilter>();
 
@@ -35,6 +42,15 @@ const CustomFlowGridToolBar = ({
     switch (value) {
       case "addFlow":
         openAddModal(true);
+        break;
+      case "bulkDeleteFlow":
+        openPreviewModal(true, "delete");
+        break;
+      case "bulkAddFlow":
+        openPreviewModal(true, "add");
+        break;
+      case "bulkEditFlow":
+        openPreviewModal(true, "edit");
         break;
       default:
         break;
@@ -80,17 +96,20 @@ const CustomFlowGridToolBar = ({
       </Grid>
       <Grid item key = "Export FlowUI" xs={1}>
         <Grid><div><br/><br/></div></Grid>
-        <Tooltip title="Export Flow Records" sx={{left:"calc(76%)",marginLeft:"24"}}>
-        <Paper variant="outlined" >
-        <IconButton 
-          onClick={exportDataFile}
-          color = "primary" 
-          size = "small"
-          sx ={{position:"fixed"}}
-        > <FileDownloadIcon /> 
-      </IconButton>
-      </Paper>
-      </Tooltip>
+        <Tooltip title="Export Flow Records" sx={{
+          left: "calc(76%)",
+          marginLeft: "24"
+        }}>
+          <Paper variant="outlined" >
+            <IconButton
+              onClick={exportDataFile}
+              color = "primary"
+              size = "small"
+              sx ={{ position: "fixed" }}
+            > <FileDownloadIcon />
+            </IconButton>
+          </Paper>
+        </Tooltip>
       </Grid>
       <Grid item key="flow-action-box" xs={2}>
         <FormControl sx={{
@@ -113,7 +132,16 @@ const CustomFlowGridToolBar = ({
             displayEmpty
           >
             <MenuItem key="addFlow" value="addFlow">
-              <PlaylistAddIcon />&nbsp;&nbsp; Add Flow
+              <AddOutlinedIcon />&nbsp;&nbsp; Add Flow
+            </MenuItem>
+            <MenuItem key="bulkDeleteFlow" value="bulkDeleteFlow">
+              <DeleteSweepOutlinedIcon />&nbsp;&nbsp; Multi Delete Flow
+            </MenuItem>
+            <MenuItem key="bulkAddFlow" value="bulkAddFlow">
+              <PlaylistAddIcon />&nbsp;&nbsp; Multi Add Flow
+            </MenuItem>
+            <MenuItem key="bulkEditFlow" value="bulkEditFlow">
+              <EditNoteOutlinedIcon />&nbsp;&nbsp; Multi Edit Flow
             </MenuItem>
           </Select>
         </FormControl>
