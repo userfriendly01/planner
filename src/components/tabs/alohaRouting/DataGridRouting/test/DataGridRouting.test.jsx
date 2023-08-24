@@ -566,7 +566,7 @@ describe("<DataGridRouting />", ()=>{
 
       const onUpdate = PreviewModal.mock.calls[0][0].onUpdate;
       act(() => {
-        onUpdate([validRoutingDataList[0]]);
+        onUpdate();
       });
     });
     test("Handle bulkDelete", () => {
