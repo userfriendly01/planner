@@ -88,10 +88,14 @@ async function retrieveFlowData(accessToken, graphQlApiUrl,firstChunkData) {
         result = await queryFlowData(accessToken, result.data?.listCctSharedCallFlowDbs.nextToken, graphQlApiUrl);
         listItems = result.data?.listCctSharedCallFlowDbs?.items || [];
       }
-      listItems.forEach(item => flowData.push({
-        ...item,
-        id: counter++
-      }));
+      listItems.forEach(item => {
+        if(item) {
+          flowData.push({
+            ...item,
+            id: counter++
+          });
+        }
+      });
       isFirstTime = false;
     }
   } catch (error) {

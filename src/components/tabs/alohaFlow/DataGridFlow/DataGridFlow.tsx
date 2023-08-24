@@ -80,10 +80,15 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       const listItems = firstChunkData?.data?.listCctSharedCallFlowDbs?.items || [];
       let counter =1;
       const flowData: CctSharedCallFlowDb[] = [];
-      listItems.forEach((item: CctSharedCallFlowDb) => flowData.push({
-        id: counter++,
-        ...item
-      }));
+      listItems.forEach((item: CctSharedCallFlowDb) => {
+        if (item) {
+          flowData.push({
+            ...item,
+            id: counter++
+          });
+        }
+      });
+
       await loadDataTable(flowData);
       const result: CctSharedCallFlowDb[] = await retrieveFlowData(
         accessToken,
