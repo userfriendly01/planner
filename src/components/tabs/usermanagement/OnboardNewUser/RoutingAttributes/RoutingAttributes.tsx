@@ -9,21 +9,48 @@ import {
   useFormState
 } from "context";
 import { Dropdown } from "components";
-import { RoutingAttrDropDownOptions } from "./RoutingAttributesDropDown";
+import { RoutingTeamAttrDropDownOptions,CallerStateAttrDropDownOptions } from "./RoutingAttributesDropDown";
 
 const RoutingAttributes = (): JSX.Element => {
-
   const setForm = useFormDispatch();
   const form = useFormState();
-  const accordianExpansion = form.triton.routing.team ? true : false;
+  const accordianExpansion = form.triton.routing.team ? true : form.triton.routing?.callerStates?.length>0?true:false;
   const [expanded, setExpanded] = useState(accordianExpansion);
-  const handleChange = (event: any, value: any) => {
-    setForm({
-      type: userFormActions.ADD_ROUTING_TEAM,
-      payload: {
-        routingTeamName: value ? value.value : null
-      }
+  const getlabelValuePair=()=>{
+    const callerStateList = form.triton.routing?.callerStates||[];
+    return callerStateList.map((callerState:String) => {
+      return {
+        ...callerState,
+        label: callerState,
+        value: callerState
+      };
     });
+
+  }
+  const handleChange = (event: any, value: any, keyName:String) => {
+    switch(keyName){
+      case "routingTeam":
+        setForm({
+          type: userFormActions.ADD_ROUTING_TEAM,
+          payload: {
+            routingTeamName: value ? value.value : null
+          }
+        });
+        break;
+      case "callerStates":
+        var callerStatesArray:String[] =[];
+        for(let i=0;i<value?.length;i++){
+          callerStatesArray.push(value[i].value);
+        }
+        setForm({
+          type: userFormActions.SET_CALLER_STATES,
+          payload: {
+            callerStateRouting: callerStatesArray
+          }
+        });
+        break;
+    }
+    
   }
   return (
     <Accordion
@@ -43,14 +70,29 @@ const RoutingAttributes = (): JSX.Element => {
         <Dropdown
           label={"Routing Team"}
           value={form.triton.routing.team}
-          options={RoutingAttrDropDownOptions}
-          updateValue={(event: any, value: any) => handleChange(event, value)}
+          options={RoutingTeamAttrDropDownOptions}
+          updateValue={(event: any, value: any) => handleChange(event, value, "routingTeam")}
           styles={{
             width: "calc(95%)",
             margin: "0 0 0 0"
           }}
           disabled={false}
           required={false}
+        />
+      </AccordionDetails>
+      <AccordionDetails>
+        <Dropdown
+          label="Caller State"
+          value={getlabelValuePair()}
+          options={CallerStateAttrDropDownOptions}
+          updateValue={(event: any, value: any) => handleChange(event, value, "callerStates")}
+          styles={{
+            width: "calc(95%)",
+            margin: "0 0 0 0"
+          }}
+          disabled={false}
+          required={false}
+          multiple = {true}
         />
       </AccordionDetails>
     </Accordion>

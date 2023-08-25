@@ -58,7 +58,7 @@ const workerAttributesAfterFormValid = {
   routing:{
     ...validFormOptions.routing,
     updated: true
-  }
+  },
 };
 
 const rawDbWorker = {
@@ -69,88 +69,185 @@ const rawDbWorker = {
   workerSid: "WK1234"
 };
 
+const renderComponent = () => {
+  return render(
+    <RoutingAttributes />
+  );
+};
+
 describe("<RoutingAttributes />", ()=>{
-  beforeEach(()=>{
-    jest.clearAllMocks();
-    useFormDispatch.mockReturnValue(jest.fn());
-    useFormState.mockReturnValue(initialFormState);
-  });
-  setupMockedComponents({
-    Accordion
-  });
-  const renderComponent = () => {
-    return render(
-      <RoutingAttributes />
-    );
-  };
-  test("Simulate Routing Team Component", ()=>{
-    const eventOnChange={
-      target: {
-        name: "routing Team",
-        value: "sample1"
-      }
-    }
-    const valueChanged ={
-      label: "sample1",
-      value: "sample1"
-    }
-    renderComponent();
-    const routingTeamChange = Accordion.mock.calls[0][0].children[1].props.children.props.updateValue;
-    act(()=>{
-      routingTeamChange(eventOnChange,valueChanged);
-    })
-    expect(routingTeamChange).toBeTruthy();
-  });
-  test("Simulate Routing Team Component with team value as null",()=>{
-    const eventOnChange={
-      target: {
-        name: "routing Team",
-        value: "sample1"
-      }
-    }
-    const valueChanged ={
-      label: "sample1",
-      value: null
-    }
-    const validFormStateEdit={
-      ...validFormState,
-      triton:{
-        ...validFormState.triton,
-        zeroOutEnabled: {
-          value: true,
-          updated: true
-        },
-        routing:{
-          team:"",
-          levels:{},
-          skills:[],
-          updated:true
+  describe("<Routing Team />",()=>{
+    beforeEach(()=>{
+      jest.clearAllMocks();
+      useFormDispatch.mockReturnValue(jest.fn());
+      useFormState.mockReturnValue(initialFormState);
+    });
+    setupMockedComponents({
+      Accordion
+    });
+   
+    test("Simulate Routing Team Component", ()=>{
+      const eventOnChange={
+        target: {
+          name: "routing Team",
+          value: "sample1"
         }
       }
-    }
-    const routingResult = {
-      team:"",
-      skills: [],
-      levels: {},
-      updated: true
-    }
-    updateUser.mockResolvedValue(rawDbWorker);
-    useFormState.mockReturnValue(validFormStateEdit);
-    renderComponent();
-    const routingTeamChange = Accordion.mock.calls[0][0].children[1].props.children.props.updateValue;
-    act(()=>{
-      routingTeamChange(eventOnChange,valueChanged);
-    })
-    const routingStateResult = useFormState.mock.results[0].value.triton.routing;
-    expect(routingStateResult).toEqual(routingResult);  
-  });
-  test("Auto close the Accordian", ()=>{
+      const valueChanged ={
+        label: "sample1",
+        value: "sample1"
+      }
+      renderComponent();
+      const routingTeamChange = Accordion.mock.calls[0][0].children[1].props.children.props.updateValue;
+      act(()=>{
+        routingTeamChange(eventOnChange,valueChanged);
+      })
+      expect(routingTeamChange).toBeTruthy();
+    });
+    test("Simulate Routing Team Component with team value as null",()=>{
+      const eventOnChange={
+        target: {
+          name: "routing Team",
+          value: "sample1"
+        }
+      }
+      const validFormStateEdit={
+        ...validFormState,
+        triton:{
+          ...validFormState.triton,
+          zeroOutEnabled: {
+            value: true,
+            updated: true
+          },
+          routing:{
+            team:"",
+            levels:{},
+            skills:[],
+            updated:true,
+            callerStates:[]
+          }
+        }
+      }
+      const routingResult = {
+        team:"",
+        skills: [],
+        levels: {},
+        updated: true,
+        callerStates:[]
+      }
+      updateUser.mockResolvedValue(rawDbWorker);
+      useFormState.mockReturnValue(validFormStateEdit);
+      renderComponent();
+      const routingTeamChange = Accordion.mock.calls[0][0].children[1].props.children.props.updateValue;
+      act(()=>{
+        routingTeamChange(eventOnChange,null);
+      })
+      const routingStateResult = useFormState.mock.results[0].value.triton.routing;
+      expect(routingStateResult).toEqual(routingResult);  
+    });
+    test("Auto close the Accordian", ()=>{
     
-    renderComponent();
-    const accordianChange = Accordion.mock.calls[0][0].onChange;
-    act(()=>{
-      accordianChange();
-    })
-    expect(accordianChange).toBeTruthy();
-  });
+      renderComponent();
+      const accordianChange = Accordion.mock.calls[0][0].onChange;
+      act(()=>{
+        accordianChange();
+      })
+      expect(accordianChange).toBeTruthy();
+    });
+  })
+  describe("CallerStates",()=>{
+    beforeEach(()=>{
+      jest.clearAllMocks();
+      useFormDispatch.mockReturnValue(jest.fn());
+      useFormState.mockReturnValue(initialFormState);
+    });
+    test("Simulate CallerState Component with callerState attr as null",()=>{
+      const eventOnChange={
+        target: {
+          name: "routing Team",
+          value: "sample1"
+        }
+      }
+      const validFormStateEdit={
+        ...validFormState,
+        triton:{
+          ...validFormState.triton,
+          zeroOutEnabled: {
+            value: true,
+            updated: true
+          },
+          routing:{
+            team:"",
+            levels:{},
+            skills:[],
+            updated:true,
+            callerStates:["Test1","Test2"]
+          }
+        }
+      }
+      const routingResult = {
+        team:"",
+        skills: [],
+        levels: {},
+        updated: true,
+        callerStates:["Test1","Test2"]
+      }
+      const valueChanged ={
+        value:[
+          {
+            label: "sample1",
+            value: ["test2"]
+          }
+        ]
+      }
+      updateUser.mockResolvedValue(rawDbWorker);
+      useFormState.mockReturnValue(validFormStateEdit);
+      renderComponent();
+      const callerStateTeamChange = Accordion.mock.calls[0][0].children[2].props.children.props.updateValue;
+      act(()=>{
+        callerStateTeamChange(eventOnChange,valueChanged);
+      })
+      const callerStateResult = useFormState.mock.results[0].value.triton.routing;
+      expect(callerStateResult).toEqual(routingResult);  
+    });
+    test("Simulate Caller State Component", ()=>{
+      const eventOnChange={
+        target: {
+          name: "callerState",
+          value: "callerState"
+        }
+      }
+      const valueChanged ={
+        value:[
+          {
+            label: "sample1",
+            value: ["test2"]
+          }
+        ]
+      }
+      renderComponent();
+      const callerStateChange = Accordion.mock.calls[0][0].children[2].props.children.props.updateValue;
+      act(()=>{
+        callerStateChange(eventOnChange,valueChanged);
+      })
+      expect(callerStateChange).toBeTruthy();
+    });
+    test("Simulate Caller State Component", ()=>{
+      const eventOnChange={
+        target: {
+          name: "callerState",
+          value: "callerState"
+        }
+      }
+      renderComponent();
+      const callerStateChange = Accordion.mock.calls[0][0].children[2].props.children.props.updateValue;
+      act(()=>{
+        callerStateChange(eventOnChange,null);
+      })
+      expect(callerStateChange).toBeTruthy();
+    });
+  })
+ 
+ 
+  
 });

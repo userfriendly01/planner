@@ -170,6 +170,26 @@ describe("flowTableService",()=>{
       const listFlow = await queryFlowData("12345","TEST","http://localhost:8082");
       expect(listFlow.data.listCctSharedCallFlowDbs.items).toEqual(jsonFlowData);
     });
+    test("retrieveFlowData creates the IDs and skips nulls",async()=>{
+      const items = JSON.parse(JSON.stringify(jsonFlowData));
+      items[0].id = undefined;
+      items[1].id = undefined;
+      items[2] = null;
+      window.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve({
+            data: {
+              listCctSharedCallFlowDbs: {
+                items,
+                nextToken: undefined
+              }
+            }
+          })
+        })
+      );
+      const listFlow = await retrieveFlowData("12345","",{});
+      expect(listFlow).toEqual(jsonFlowData);
+    });
     test("CallFlow list finds error",async()=>{
       window.fetch = jest.fn(() =>
         Promise.resolve({

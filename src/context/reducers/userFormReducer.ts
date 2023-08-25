@@ -15,6 +15,7 @@ import { getWfmOptions } from "utils/calabrioUtils";
 const searchParams = SearchParams.getValues();
 
 export const userFormActions = {
+  ADD_ROUTING_TEAM: "ADD_ROUTING_TEAM",
   ASSIGN_EXTENSION: "ASSIGN_EXTENSION",
   CHECK_CALABRIO_TEAM: "CHECK_CALABRIO_TEAM",
   CHECK_CALABRIO_GROUP: "CHECK_CALABRIO_GROUP",
@@ -27,12 +28,12 @@ export const userFormActions = {
   INITIATE_ZERO_OUT_FIELDS: "INITIATE_ZERO_OUT_FIELDS",
   RESET_FORM: "RESET_FORM",
   RESET_FORM_AFTER_ADD: "RESET_FORM_AFTER_ADD",
-  ADD_ROUTING_TEAM: "ADD_ROUTING_TEAM",
   SET_BLUR_ON_FIELD: "SET_BLUR_ON_FIELD",
   SET_CALABRIO_QM_USER: "SET_CALABRIO_QM_USER",
   SET_CALABRIO_TEAM: "SET_CALABRIO_TEAM",
   SET_CALABRIO_TIMEZONE: "SET_CALABRIO_TIMEZONE",
   SET_CALABRIO_ROLES: "SET_CALABRIO_ROLES",
+  SET_CALLER_STATES: "SET_CALLER_STATES",
   SET_DISCREPANCIES: "SET_DISCREPANCIES",
   SET_EXTENSION_MESSAGE: "SET_EXTENSION_MESSAGE",
   SET_EXTENSION_RETRIES: "SET_EXTENSION_RETRIES",
@@ -99,6 +100,7 @@ export const initialUserFormState: UserFormState = {
     },
     routing: {
       team: "",
+      callerStates: [],
       skills: [],
       level: {},
       updated: false
@@ -428,6 +430,20 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
           }
         }
 
+      };
+    }
+    case userFormActions.SET_CALLER_STATES: {
+      const callerStateRoutingAttr = action.payload.callerStateRouting;
+      return {
+        ...state,
+        triton: {
+          ...state.triton,
+          routing: {
+            ...state.triton.routing,
+            callerStates: callerStateRoutingAttr,
+            updated: true
+          }
+        }
       };
     }
     case userFormActions.SET_BLUR_ON_FIELD: {

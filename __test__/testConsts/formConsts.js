@@ -37,7 +37,8 @@ export const initialFormState = {
     routing:{
       team: "",
       skills: [],
-      levels: {}
+      levels: {},
+      callerStates: []
     },
     defaultSkills: {},
     defaultSkillsUpdated: false,
@@ -170,9 +171,9 @@ export const validFormOptions = {
   },
   routing:{
     team:"Sample1",
+    callerStates: ["Test1", "Test2"],
     skills: [],
-    levels: {
-    }
+    levels: {}
   },
   discrepancies: [],
   extension: "1234",
@@ -228,6 +229,7 @@ export const validFormState = {
     },
     routing:{
       team: "Sample1",
+      callerStates: ["Test1", "Test2"],
       levels: {},
       skills: [],
       updated: true
@@ -333,7 +335,8 @@ export const mockWorkers = [
         levels: {
           "466": 3
         },
-        team:"Sample1"
+        team:"Sample1",
+        callerStates: ["Test1", "Test2"]
       },
       profile_id: 15
     },
@@ -375,8 +378,9 @@ export const mockWorkers = [
         levels: {
           "466": 3
         },
-        team:"Sample1"
-      }
+        team:"Sample1",
+        callerStates: ["Test1", "Test2"]
+      },
     }
   },
   {
@@ -404,7 +408,8 @@ export const mockWorkers = [
         levels: {
           "466": 3
         },
-        team: "Sample1"
+        team: "Sample1",
+        callerStates: ["Test1", "Test2"]
       }
     }
   },
@@ -432,7 +437,8 @@ export const mockWorkers = [
         levels: {
           "466": 3
         },
-        team: "Sample1"
+        team: "Sample1",
+        callerStates: ["Test1", "Test2"]
       }
     }
   }

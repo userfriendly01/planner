@@ -29,8 +29,7 @@ export const TableGridColumnDef: GridColDef[] = [
     field: "id",
     sortable: true,
     width: 60,
-    align: "left",
-    editable: true
+    align: "left"
   },
   {
     headerName: "Brand",
@@ -42,16 +41,14 @@ export const TableGridColumnDef: GridColDef[] = [
       <Tooltip title={params.row.brand || ""} >
         <div>{params.row.brand || ""}</div>
       </Tooltip>
-    ),
-    editable: true
+    )
   },
   {
     headerName: "Caller State",
     field: "callerState",
     sortable: true,
     width: 110,
-    align: "left",
-    editable: true
+    align: "left"
   },
   {
     headerName: "Caller Type",
@@ -63,8 +60,7 @@ export const TableGridColumnDef: GridColDef[] = [
       <Tooltip title={params.row.callerType || ""} >
         <div>{params.row.callerType || ""}</div>
       </Tooltip>
-    ),
-    editable: true
+    )
   },
   {
     headerName: "Caller Intent",
@@ -76,75 +72,65 @@ export const TableGridColumnDef: GridColDef[] = [
       <Tooltip title={params.row.callIntent || ""} >
         <div>{params.row.callIntent || ""}</div>
       </Tooltip>
-    ),
-    editable: true
+    )
   },
   {
     headerName: "Channel",
     field: "channel",
     sortable: true,
     width: 110,
-    align: "left",
-    editable: true
+    align: "left"
   },
   {
     headerName: "Day Of Week",
     field: "dayOfWeek",
     sortable: true,
     align: "left",
-    width: 80,
-    editable: true
+    width: 80
   },
   {
     headerName: "Transfer Dest.",
     field: "transferDestination",
     sortable: true,
-    align: "left",
-    editable: true
+    align: "left"
   },
   {
     headerName: "Twilio Skill",
     field: "twilioSkill",
     sortable: true,
-    align: "left",
-    editable: true
+    align: "left"
   },
   {
     headerName: "CRC Skill",
     field: "crcSkill",
     sortable: true,
-    align: "left",
-    editable: true
+    align: "left"
   },
   {
     headerName: "Pct. Of Callers",
     field: "percentOfCallers",
     sortable: true,
-    align: "left",
-    editable: true
+    align: "left"
   },
   {
     headerName: "Policy Type",
     field: "policyType",
     sortable: true,
-    align: "left",
-    editable: true
+    align: "left"
   },
   {
     headerName: "Start Time",
     field: "startTime",
     sortable: true,
     align: "left",
-    valueGetter: (params: GridRenderCellParams<CctSharedCallRoutingDb>) => (formatDateTime(params.row.startTime)),
-    editable: true
+    valueGetter: (params: GridRenderCellParams<CctSharedCallRoutingDb>) => (formatDateTime(params.row.startTime))
   },
   {
     headerName: "End Time",
     field: "endTime",
     sortable: true,
     align: "left",
-    valueGetter: (params: GridRenderCellParams<CctSharedCallRoutingDb>) => (formatDateTime(params.row.endTime)),
-    editable: true
+    valueGetter: (params: GridRenderCellParams<CctSharedCallRoutingDb>) => (formatDateTime(params.row.endTime))
   },
 
   {
@@ -157,16 +143,14 @@ export const TableGridColumnDef: GridColDef[] = [
       <Tooltip title={params.row.transferMessage || ""} >
         <div>{params.row.transferMessage || ""}</div>
       </Tooltip>
-    ),
-    editable: true
+    )
   },
   {
     headerName: "Priority",
     field: "priority",
     sortable: true,
     width: 110,
-    align: "left",
-    editable: true
+    align: "left"
   },
   {
     headerName: "Occupancy Check",
@@ -188,8 +172,7 @@ export const TableGridColumnDef: GridColDef[] = [
             </Grid>
           ))}
       </Grid>
-    ),
-    editable: true
+    )
   },
   {
     headerName: "Routing Steps",
@@ -209,8 +192,7 @@ export const TableGridColumnDef: GridColDef[] = [
             />
           ))}
       </div>
-    ),
-    editable: true
+    )
   }
 ];
 

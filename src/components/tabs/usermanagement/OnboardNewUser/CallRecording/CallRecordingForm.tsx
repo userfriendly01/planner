@@ -38,7 +38,6 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
     roles,
     users
   } = state.calabrioContext;
-
   const form = useFormState();
   const setForm = useFormDispatch();
 

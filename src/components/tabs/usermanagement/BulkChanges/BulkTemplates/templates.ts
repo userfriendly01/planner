@@ -253,6 +253,9 @@ const processUpdateWorkerAttribute = async (row: any, template: Template, state:
       if (key === "callerStates") {
         const callerStatesArray = value.split(",");
         newAttribute[key] = callerStatesArray.map((state: string) => state.trim());
+      } else if (key === "sales_assoc_workers") {
+        const salesAssocWorkersArray = value.split(",");
+        newAttribute[key] = salesAssocWorkersArray.map((nNum: string) => nNum.trim());
       }
 
       //Allowing for addition of routing object nested within attributes on update.  Will only allow for 2 items being added (attributes and a nested object)

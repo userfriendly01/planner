@@ -212,7 +212,8 @@ export const AddFlow = ({
               greetingMessages: stringValue(flowRule,"greetingMessages", ""),
               transferNumber: stringValue(flowRule,"transferNumber", ""),
               languageOffer: stringValue(flowRule,"languageOffer", ""),
-              dataRequests: dataRequests
+              dataRequests: dataRequests,
+              officeNumber: stringValue(flowRule,"officeNumber", "")
             },
             createTime: curTime,
             agentId: stringValue(flowRule,"agentId", ""),

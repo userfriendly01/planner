@@ -263,6 +263,14 @@ export const FlowGridColumnDef: GridColDef[] = [
     width: 110,
     align: "left",
     valueGetter: params => `${params.row.content?.callIntent || ""}`
+  },
+  {
+    headerName: "Office Number",
+    field: "officeNumber",
+    sortable: true,
+    width: 110,
+    align: "left",
+    valueGetter: params => `${params.row.content?.officeNumber || ""}`
   }
 ];
 
