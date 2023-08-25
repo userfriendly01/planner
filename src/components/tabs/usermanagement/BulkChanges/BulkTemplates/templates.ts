@@ -403,6 +403,49 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: a
   }
 };
 
+export const processUpdateCallerStates =  async (row: any, template: Template, state: any) => {
+  console.log("wsx processUpdateCallerStates: row, template, state", row, template, state);
+  const rowNumber = row.rowNumber;
+  const workerSid = row.workerSid;
+  const value = template.data.value;
+  const option = template.data.option;
+  const body: any = {};
+  const updatedCallerStates: any = [];
+
+  if (option.value === "ADD") {
+    // Merge the specified skill(s) with the existing
+  } else if (option.value === "DELETE") {
+    // Delete the specified skill(s) from the existing skills
+  } else if (option.value === "OVERRIDE") {
+    // Replace the existing skills completely
+  } else {
+    // Some kind of error
+  }
+
+  // row.routing.callerStates
+  // const currentSkillLevels = row.attributes.default_skills.levels;
+  // const currentSkills = row.attributes.default_skills.skills;
+
+  // const newSkills = value.skills.filter( (s: any) => !currentSkills.includes(s));
+  // let newSkillLevels: any = {
+  //   ...currentSkillLevels
+  // };
+
+  // if (value.levels) {
+  //   newSkillLevels = {
+  //     ...newSkillLevels,
+  //     ...value.levels
+  //   };
+  // }
+
+  // updatedDefaultSkills = {
+  //   levels: newSkillLevels,
+  //   skills: [...currentSkills, ...newSkills]
+  // };
+
+  return Promise.resolve("wsx processUpdateCallerStates");
+};
+
 //Templates
 export const getCreateTemplates = (state: any): Templates => {
   return {
@@ -543,6 +586,19 @@ export const getUpdateTemplates = (state: any): Templates => {
       fields: [
         FIELDS.N_NUMBER_UPDATE
       ]
+    },
+    UPDATE_CALLER_STATES: {
+      name: "UPDATE_CALLER_STATES",
+      data: {},
+      processFunction: (row: any, template: Template) => processUpdateCallerStates(row, template, state),
+      stateUpdateFunctions: [],
+      multiRunDependencies: null,
+      validationConcurrencyLimit: 500,
+      processingConcurrencyLimit: 5,
+      fields: [
+        FIELDS.N_NUMBER_UPDATE
+      ]
     }
+
   };
 };

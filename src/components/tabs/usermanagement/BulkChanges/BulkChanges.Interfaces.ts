@@ -59,6 +59,13 @@ export interface BulkUpdateProps {
   updateTemplate: (template: Template, data: any) => void;
   removeTemplate: (template: Template) => void;
 }
+export interface BulkCallerStatesProps {
+  template: Template,
+  selectedTemplates: Template[],
+  replaceTemplate: (template: Template) => void;
+  updateTemplate: (template: Template, data: any) => void;
+  removeTemplate: (template: Template) => void;
+}
 
 export enum PROCESSING_STATES {
   VALIDATING = "validating",

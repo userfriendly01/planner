@@ -55,7 +55,7 @@ export const updateCalabrioUserState = async (state: AppState, dispatch: any): P
 export const updateWFMPersonState = async (state: any, dispatch: any, rows: any[]): Promise<void> => {
   try {
     const BusinessUnitId = rows[0]?.BusinessUnitId;
-    let businessUnit = state.calabrioContext.wfmOrg.find((bu: WfmBusinessUnit) => bu.Id === BusinessUnitId);
+    const businessUnit = state.calabrioContext.wfmOrg.find((bu: WfmBusinessUnit) => bu.Id === BusinessUnitId);
     delete businessUnit.Teams;
     await getCalabrioWfmOrg(BusinessUnitId, state, dispatch);
   } catch(err){
@@ -79,6 +79,24 @@ export const updateManagerUserState = async (dispatch: any): Promise<void> => {
   }
   return Promise.resolve();
 };
+
+/** 
+ * Refreshes callerStates after a bulk update on users wsx - may not be needed
+ */
+// export const updateCallerStates = async (state: AppState, dispatch: any): Promise<void> => {
+//   try {
+//     // const response = await myAxios.get(apiPaths.GET_WORKERS);
+//     // const filteredWorkers = formatWorkerResponse(response.data).filter(worker => !worker.inactiveInd && worker.attributes);
+//     const filteredWorkers = ["once", "twice", "3 times"];
+//     dispatch(({
+//       type: "loadCallerStates",
+//       payload: filteredWorkers
+//     }));
+//   } catch (error) {
+//     console.error("Failed to update triton user state after bulk upload", error);
+//   }
+//   return Promise.resolve();
+// };
 
 /**
  * Triggers a file upload from an input onChange. onload of the file, the first tab within an excel will be converted to a JSON.
@@ -243,6 +261,7 @@ export const initiateCalls = async (
   state: any,
   dispatch: any
 ) => {
+  console.log("wsx processing template", selectedTemplates);
   const templateTree = identifyProcessingDependencies(selectedTemplates);
   const concurrencyLimit: any = getLowestConcurrencyLimit(selectedTemplates, "processing");
 
@@ -327,7 +346,7 @@ export const initiateCalls = async (
   });
 
   const successfulRows = identifySuccessfulRecords(rows, finalErrors);
-
+  // wsx Re-read our state after applying updates to the data stores
   const stateUpdateResults = await Promise.all(selectedTemplates.map((t: any) => {
     return Promise.allSettled(t.stateUpdateFunctions.map((f: any) => f(state, dispatch, successfulRows, selectedTemplates)));
   }));

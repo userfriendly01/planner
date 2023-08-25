@@ -55,7 +55,7 @@ const getCalabrioUsers = async (dispatch: any) => {
       payload: users.data
     });
   } catch (error) {
-    console.error("Failed to fetch calabrio org from service");
+    console.error("Failed to fetch calabrio users from service");
     //We're not throwing an error here so that we can still load Triton Admin and use its other features if this fails
     //Additionally - there can be local issues we have to work out when trying to call this 
   }

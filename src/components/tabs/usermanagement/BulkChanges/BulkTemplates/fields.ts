@@ -21,6 +21,9 @@ import {
 import {
   Fields
 } from "../BulkChanges.Interfaces";
+import {
+  CallerStateAttrDropDownOptions
+} from "../BulkActions/callerStateList";
 
 const rejectPromise = (error: string, rowNumber: number) => {
   return Promise.reject(JSON.stringify({
@@ -248,15 +251,15 @@ export const FIELDS: Fields = {
             }
             defaultSkills.skills.push(key);
           });
-  
+
           const availableSkills = state.skillContext.skills;
-  
+
           defaultSkills.skills.forEach((ds: any) => {
             if(!availableSkills.some((as: any) => cleanupField(as.name, "string") === cleanupField(ds, "string"))){
               skillErrors.push(`${ds} is not an available skill `);
             }
           });
-  
+
           Object.keys(defaultSkills.levels).forEach((skill: any) => {
             const matchingSkill = availableSkills.find((as: any) => cleanupField(as.name, "string") === cleanupField(skill, "string"));
             const level = defaultSkills.levels[skill];
@@ -1609,6 +1612,69 @@ export const FIELDS: Fields = {
         } catch(err) {
           return rejectPromise(err.message, rowNumber);
         }
+      }
+    }
+  },
+  CALLER_STATES: {
+    field: "routingCallerStates",
+    name: "Caller States",
+    type: "string",
+    description: "Comma deliminated list of states an agent can receive calls from",
+    example: "AZ, NY, TX, WY",
+    options: () => CallerStateAttrDropDownOptions,
+    validateFunction: (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName = "Caller States";
+      const field: any = row[fieldName];
+      console.log("wsx Validating row", row);
+      return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+      if (!row.attributes) {
+        row.attributes = {};
+      }
+      const defaultSkills: any = {
+        skills: [],
+        levels: {}
+      };
+      if (field) {
+        const skillErrors: any = [];
+        try {
+          const fieldArray = field.replace(" ","").split(",");
+          fieldArray.forEach((objString: string) => {
+            const objKeyValueArray = objString.replace(" ","").split(":");
+            const key: any = objKeyValueArray[0];
+            const value: any = cleanupField(objKeyValueArray[1], "number");
+            if(value){
+              defaultSkills.levels[key] = value;
+            }
+            defaultSkills.skills.push(key);
+          });
+
+          const availableSkills = state.skillContext.skills;
+
+          defaultSkills.skills.forEach((ds: any) => {
+            if(!availableSkills.some((as: any) => cleanupField(as.name, "string") === cleanupField(ds, "string"))){
+              skillErrors.push(`${ds} is not an available skill `);
+            }
+          });
+
+          Object.keys(defaultSkills.levels).forEach((skill: any) => {
+            const matchingSkill = availableSkills.find((as: any) => cleanupField(as.name, "string") === cleanupField(skill, "string"));
+            const level = defaultSkills.levels[skill];
+            if(!matchingSkill?.levels.includes(level)){
+              skillErrors.push(`${skill} does not support Level ${level}.`);
+            }
+          });
+        } catch(err){
+          skillErrors.push(err.message);
+        }
+        if(skillErrors.length > 0){
+          return rejectPromise(`${fieldName} Errors found for row ${rowNumber} ${skillErrors.toString()}`, rowNumber);
+        } else {
+          row.attributes.default_skills = defaultSkills;
+          return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+        }
+      } else {
+        return Promise.resolve(`${fieldName} is empty but not required. Skipping validation for row ${rowNumber}`);
       }
     }
   }

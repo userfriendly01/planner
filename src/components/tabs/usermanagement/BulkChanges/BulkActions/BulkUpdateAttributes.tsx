@@ -31,9 +31,9 @@ const BulkUpdateAttributes = (props: BulkUpdateProps) => {
 
   React.useEffect(() => {
     console.warn("selectedTemplates", selectedTemplates);
-    //If the entries are valid, update/add the template to the selected templates.
-    //If they arent valid, remove the template from the selected templates
-    //Valid templates will drive the display of the processing buttons
+    // If the entries are valid, update/add the template to the selected templates.
+    // If they aren't valid, remove the template from the selected templates
+    // Valid templates will drive the display of the processing buttons
     if((updatedAttributeValue || updatedAttributeValue === false || updatedAttributeValue === 0) && (!selectedAttribute.validator || selectedAttribute.validator(updatedAttributeValue))){
       const templateFound = selectedTemplates.find((t: Template) => t.name === template.name);
       if(!templateFound){
