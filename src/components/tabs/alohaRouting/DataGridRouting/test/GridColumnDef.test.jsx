@@ -4,7 +4,7 @@ import { render } from "testUtils";
 describe("<RoutingGridColumnDef />", () => {
 
   it("has no of columns", () => {
-    expect(RoutingGridColumnDef.length).toBe(18);
+    expect(RoutingGridColumnDef.length).toBe(19);
   });
 
   describe("valueGetter", ()=>{

@@ -35,6 +35,7 @@ export interface CctSharedCallRoutingDb {
     priority?: string;
     occupancyCheck?: Array<RoutingOccupancyCheck>;
     routingSteps?: Array<RoutingStep>;
+    alternateTransferDestination?: string;
 }
 export interface RoutingMasterData {
     channel?: Array<string>;
