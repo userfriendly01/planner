@@ -113,7 +113,7 @@ const BulkUpdateCallerStates = (props: BulkCallerStatesProps): any => {
           options={CallerStateAttrDropDownOptions}
           multiple={true}
           updateValue={(event: any, s: any) => {
-            setUpdatedCallerStates(s.value);
+            setUpdatedCallerStates(s);
           }}
           styles={{
             width: "230px",
@@ -131,7 +131,7 @@ const BulkUpdateCallerStates = (props: BulkCallerStatesProps): any => {
           multiple={true}
           updateValue={(event: any, s: any) => {
             console.log("wsx here's what got selected", s);
-            setUpdatedCallerStates(s.value);
+            setUpdatedCallerStates(s);
           }}
           styles={{
             width: "230px",
@@ -147,7 +147,7 @@ const BulkUpdateCallerStates = (props: BulkCallerStatesProps): any => {
           options={CallerStateAttrDropDownOptions}
           multiple={true}
           updateValue={(event: any, s: any) => {
-            setUpdatedCallerStates(s.value);
+            setUpdatedCallerStates(s);
           }}
           styles={{
             width: "230px",

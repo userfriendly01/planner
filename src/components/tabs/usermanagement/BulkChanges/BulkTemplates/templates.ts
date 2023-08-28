@@ -407,19 +407,39 @@ export const processUpdateCallerStates =  async (row: any, template: Template, s
   console.log("wsx processUpdateCallerStates: row, template, state", row, template, state);
   const rowNumber = row.rowNumber;
   const workerSid = row.workerSid;
-  const value = template.data.value;
+  const selectedCallerStates = template.data.value;
   const option = template.data.option;
   const body: any = {};
-  const updatedCallerStates: any = [];
+
+  const currentCallerStates = row.attributes.routing?.callerStates;
+  console.log("wsx currentCallerStates, selectedCallerStates:", currentCallerStates, selectedCallerStates);
+  let finalCallerStates;
 
   if (option.value === "ADD") {
-    // Merge the specified skill(s) with the existing
+    const newCallerStates = selectedCallerStates.map((item:any) => item.value);
+    finalCallerStates = [...currentCallerStates, ...newCallerStates].sort();
   } else if (option.value === "DELETE") {
-    // Delete the specified skill(s) from the existing skills
+    const deleteTheseStates = selectedCallerStates.map((item:any) => item.value);
+    finalCallerStates = currentCallerStates.filter((state:any) => !deleteTheseStates.includes(state));
   } else if (option.value === "OVERRIDE") {
-    // Replace the existing skills completely
-  } else {
-    // Some kind of error
+    finalCallerStates = selectedCallerStates.map((item:any) => item.value);
+  }
+  console.log("wsx finalCallerStates", finalCallerStates);
+
+  body.attributes = {
+    routing: {
+      callerStates: finalCallerStates
+    }
+  };
+
+  console.log("**** UPDATE DEFAULT SKILLS RECORD PROCESSING", row, body);
+  try {
+    await updateUser(workerSid, body);
+    return Promise.resolve(`${workerSid} - Default Skills updated for row ${rowNumber}`);
+  } catch(err){
+    const errorMessage = `Failed to update Default Skills for row ${rowNumber}. ${formatErrorMessage(err)}`;
+    console.error(errorMessage, err);
+    return rejectPromise(errorMessage, rowNumber);
   }
 
   // row.routing.callerStates
@@ -591,7 +611,7 @@ export const getUpdateTemplates = (state: any): Templates => {
       name: "UPDATE_CALLER_STATES",
       data: {},
       processFunction: (row: any, template: Template) => processUpdateCallerStates(row, template, state),
-      stateUpdateFunctions: [],
+      stateUpdateFunctions: [updateTritonUserState],
       multiRunDependencies: null,
       validationConcurrencyLimit: 500,
       processingConcurrencyLimit: 5,
