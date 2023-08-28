@@ -11,7 +11,7 @@ export interface FlowContent {
     greetingMessages?: string;
     languageOffer?: string;
     transferNumber?: string;
-    officeNumber?: Array<string>;
+    officeNumbers?: Array<string>;
 }
 
 
@@ -99,7 +99,7 @@ export interface FlowKeys {
     greetingMessages?: string;
     internetPlacement?: string;
     languageOffer?: string;
-    officeNumber?: Array<string>;
+    officeNumbers?: Array<string>;
     lineOfBusiness?: string;
     marketingChannel?: string;
     pkey?: string;

@@ -266,18 +266,18 @@ export const FlowGridColumnDef: GridColDef[] = [
     valueGetter: params => `${params.row.content?.callIntent || ""}`
   },
   {
-    headerName: "Office Number",
-    field: "officeNumber",
+    headerName: "Office Numbers",
+    field: "officeNumbers",
     sortable: true,
     width: 220,
     align: "left",
-    valueGetter: params => params.row.content?.officeNumber || [],
+    valueGetter: params => params.row.content?.officeNumbers || [],
     renderCell: (params: any) =>(
       <div>
         {
-          params.row.content?.officeNumber && params.row.content?.officeNumber.map((item: string, index: number)=>(
+          params.row.content?.officeNumbers && params.row.content?.officeNumbers.map((item: string, index: number)=>(
             <Chip
-              key={`officeNumber-${params.row.pkey}-${index}`}
+              key={`officeNumbers-${params.row.pkey}-${index}`}
               tabIndex={-1}
               label={item}
             />
