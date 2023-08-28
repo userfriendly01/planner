@@ -1,6 +1,7 @@
 import { GridColDef } from "@mui/x-data-grid";
 import Tooltip from "@mui/material/Tooltip";
 import React from "react";
+import { Chip } from "@mui/material";
 export const FlowGridColumnDef: GridColDef[] = [
   {
     headerName: "Dialed",
@@ -268,9 +269,21 @@ export const FlowGridColumnDef: GridColDef[] = [
     headerName: "Office Number",
     field: "officeNumber",
     sortable: true,
-    width: 110,
+    width: 220,
     align: "left",
-    valueGetter: params => `${params.row.content?.officeNumber || ""}`
+    valueGetter: params => params.row.content?.officeNumber || [],
+    renderCell: (params: any) =>(
+      <div>
+        {
+          params.row.content.officeNumber && params.row.content.officeNumber.map((item: string, index: number)=>(
+            <Chip
+              key={`officeNumber-${params.row.pkey}-${index}`}
+              tabIndex={-1}
+              label={item}
+            />
+          ))}
+      </div>
+    )
   }
 ];
 
