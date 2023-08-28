@@ -275,7 +275,7 @@ export const FlowGridColumnDef: GridColDef[] = [
     renderCell: (params: any) =>(
       <div>
         {
-          params.row.content.officeNumber && params.row.content.officeNumber.map((item: string, index: number)=>(
+          params.row.content?.officeNumber && params.row.content?.officeNumber.map((item: string, index: number)=>(
             <Chip
               key={`officeNumber-${params.row.pkey}-${index}`}
               tabIndex={-1}
