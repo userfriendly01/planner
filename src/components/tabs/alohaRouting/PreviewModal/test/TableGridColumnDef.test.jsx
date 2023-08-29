@@ -4,7 +4,7 @@ import { render } from "testUtils";
 describe("<TableColumnDef />", () => {
 
   it("has no of columns", () => {
-    expect(TableGridColumnDef.length).toBe(18);
+    expect(TableGridColumnDef.length).toBe(19);
   });
 
   describe("valueGetter", ()=>{
@@ -74,6 +74,14 @@ describe("<TableColumnDef />", () => {
       }));
       expect(renderedCell.findByDisplayValue("Team1-10")).toBeTruthy();
     });
+  });
+  it("Alternate Dest", ()=>{
+    const renderedCell = render(TableGridColumnDef[18].renderCell({ row: { alternateTransferDestination: "Destination" }}));
+    expect(renderedCell.findByDisplayValue("Destination")).toBeTruthy();
+  });
+  it("Alternate Dest with null value", ()=>{
+    const renderedCell = render(TableGridColumnDef[18].renderCell({ row: { alternateTransferDestination: null }}));
+    expect(renderedCell.findByDisplayValue("")).toBeTruthy();
   });
 
 });
