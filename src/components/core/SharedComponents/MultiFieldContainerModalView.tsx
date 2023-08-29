@@ -119,7 +119,7 @@ const MultiFieldContainerModalView = ({
   return (
     <Popper
       disablePortal={true}
-      placement="right-start"
+      placement="bottom-end"
       open={isOpen}
       anchorEl={anchorEl}
       transition
