@@ -74,6 +74,14 @@ describe("<RoutingGridColumnDef />", () => {
       }));
       expect(renderedCell.findByDisplayValue("Team1-10")).toBeTruthy();
     });
+    it("AlternateTransferDest", ()=>{
+      const renderedCell = render(RoutingGridColumnDef[18].renderCell({ row: { alternateTransferDestination: "Claims" }}));
+      expect(renderedCell.findByDisplayValue("Claims")).toBeTruthy();
+    });
+    it("AlternateTransferDest with null value", ()=>{
+      const renderedCell = render(RoutingGridColumnDef[18].renderCell({ row: { alternateTransferDestination: null }}));
+      expect(renderedCell.findByDisplayValue("")).toBeTruthy();
+    });
   });
 
 });
