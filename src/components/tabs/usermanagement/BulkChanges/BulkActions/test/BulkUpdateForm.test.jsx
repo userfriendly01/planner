@@ -60,7 +60,7 @@ describe("<BulkUpdateForm />", () => {
 
   describe("initial render", () => {
     describe("component is rendered as expected", () => {
-      test("should render options in default state", () => {
+      test("wsx should render options in default state", () => {
         renderComponent([]);
         expect(Dropdown.mock.calls.length).toBe(1);
         expect(Dropdown.mock.calls[0][0].label).toBe("Choose a field to update");
@@ -77,6 +77,10 @@ describe("<BulkUpdateForm />", () => {
           {
             label: "Update Default Skills",
             value: updateTemplates.UPDATE_DEFAULT_SKILLS
+          },
+          {
+            label: "Update Caller States",
+            value: updateTemplates.UPDATE_CALLER_STATES
           }
         ]));
       });

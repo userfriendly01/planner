@@ -407,11 +407,11 @@ export const processUpdateCallerStates =  async (row: any, template: Template, s
   console.log("wsx processUpdateCallerStates: row, template, state", row, template, state);
   const rowNumber = row.rowNumber;
   const workerSid = row.workerSid;
+  const existingRouting = row.attributes.routing;
   const selectedCallerStates = template.data.value;
   const option = template.data.option;
-  const body: any = {};
 
-  const currentCallerStates = row.attributes.routing?.callerStates;
+  const currentCallerStates = row.attributes.routing?.callerStates || [];
   console.log("wsx currentCallerStates, selectedCallerStates:", currentCallerStates, selectedCallerStates);
   let finalCallerStates;
 
@@ -426,44 +426,25 @@ export const processUpdateCallerStates =  async (row: any, template: Template, s
   }
   console.log("wsx finalCallerStates", finalCallerStates);
 
-  body.attributes = {
-    routing: {
-      callerStates: finalCallerStates
+  const body = {
+    attributes: {
+      routing: {
+        ...existingRouting,
+        callerStates: finalCallerStates
+      }
     }
   };
-
-  console.log("**** UPDATE DEFAULT SKILLS RECORD PROCESSING", row, body);
+  console.log("**** UPDATE CALLER STATES RECORD PROCESSING", row, body);
   try {
     await updateUser(workerSid, body);
-    return Promise.resolve(`${workerSid} - Default Skills updated for row ${rowNumber}`);
+    console.log("wsx updateUser() succeded", workerSid);
+    return Promise.resolve(`${workerSid} - Caller States updated for row ${rowNumber}`);
   } catch(err){
-    const errorMessage = `Failed to update Default Skills for row ${rowNumber}. ${formatErrorMessage(err)}`;
+    const errorMessage = `Failed to update Caller States for row ${rowNumber}. ${formatErrorMessage(err)}`;
+    console.log("wsx updateUser() failed", workerSid);
     console.error(errorMessage, err);
     return rejectPromise(errorMessage, rowNumber);
   }
-
-  // row.routing.callerStates
-  // const currentSkillLevels = row.attributes.default_skills.levels;
-  // const currentSkills = row.attributes.default_skills.skills;
-
-  // const newSkills = value.skills.filter( (s: any) => !currentSkills.includes(s));
-  // let newSkillLevels: any = {
-  //   ...currentSkillLevels
-  // };
-
-  // if (value.levels) {
-  //   newSkillLevels = {
-  //     ...newSkillLevels,
-  //     ...value.levels
-  //   };
-  // }
-
-  // updatedDefaultSkills = {
-  //   levels: newSkillLevels,
-  //   skills: [...currentSkills, ...newSkills]
-  // };
-
-  return Promise.resolve("wsx processUpdateCallerStates");
 };
 
 //Templates
