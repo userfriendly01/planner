@@ -50,7 +50,6 @@ const BulkChanges = () => {
   }, [selectedTemplates]);
 
   const resetBulkChanges = () => {
-    console.log("wsx resetBulkChanges");
     setShowProcessingModal(false);
     setSelectedTemplates([]);
     setConsolidatedTemplates([]);

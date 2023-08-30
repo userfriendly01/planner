@@ -413,24 +413,25 @@ export const processUpdateCallerStates =  async (row: any, template: Template, s
 
   const currentCallerStates = row.attributes.routing?.callerStates || [];
   console.log("wsx currentCallerStates, selectedCallerStates:", currentCallerStates, selectedCallerStates);
-  let finalCallerStates;
+  let combinedCallerStates;
 
   if (option.value === "ADD") {
     const newCallerStates = selectedCallerStates.map((item:any) => item.value);
-    finalCallerStates = [...currentCallerStates, ...newCallerStates].sort();
+    combinedCallerStates = [...currentCallerStates, ...newCallerStates].sort();
   } else if (option.value === "DELETE") {
     const deleteTheseStates = selectedCallerStates.map((item:any) => item.value);
-    finalCallerStates = currentCallerStates.filter((state:any) => !deleteTheseStates.includes(state));
+    combinedCallerStates = currentCallerStates.filter((state:any) => !deleteTheseStates.includes(state));
   } else if (option.value === "OVERRIDE") {
-    finalCallerStates = selectedCallerStates.map((item:any) => item.value);
+    combinedCallerStates = selectedCallerStates.map((item:any) => item.value);
   }
+  const finalCallerStates = [...new Set(combinedCallerStates)]; // Remove duplicate elements
   console.log("wsx finalCallerStates", finalCallerStates);
 
   const body = {
     attributes: {
       routing: {
         ...existingRouting,
-        callerStates: finalCallerStates
+        callerStates: finalCallerStates.sort() // It's only polite to keep them in order
       }
     }
   };
@@ -600,6 +601,5 @@ export const getUpdateTemplates = (state: any): Templates => {
         FIELDS.N_NUMBER_UPDATE
       ]
     }
-
   };
 };

@@ -28,7 +28,6 @@ const BulkUpdateForm = (props: BulkActionFormProps) => {
 
   const state = useAdminState();
   const updateTemplates = getUpdateTemplates(state);
-  console.log("wsx Available Update Templates", updateTemplates);
   const [ template, setTemplate ] = React.useState(selectedTemplates.length === 1 ? selectedTemplates[0] : null);
 
   const replaceTemplate = (template: Template) => updateSelectedTemplates(true, template, [], setSelectedTemplates);
@@ -59,7 +58,6 @@ const BulkUpdateForm = (props: BulkActionFormProps) => {
           options={Object.values(updateTemplates).map((t: Template) => constructDropdownOption(t))}
           updateValue={(event: any, t: Template) => {
             setTemplate(t.value);
-            console.log("wsx Selected template", t);
           }}
           styles={{
             margin: "40 0 30 0",

@@ -47,12 +47,6 @@ const BulkUpdateCallerStates = (props: BulkCallerStatesProps): any => {
   });
   const [ updatedCallerStates, setUpdatedCallerStates ] = React.useState<any>([]);
 
-  // const skills = useAdminState().skillContext.skills.slice().filter(s => s.levels);
-  // const skillsDropdownOptions = skills.map( s => ({
-  //   label: s.name,
-  //   value: s.name
-  // }));
-
   React.useEffect(() => {
     console.warn("selectedTemplates", selectedTemplates);
     if (updatedCallerStates.length) {
@@ -130,7 +124,6 @@ const BulkUpdateCallerStates = (props: BulkCallerStatesProps): any => {
           options={CallerStateAttrDropDownOptions}
           multiple={true}
           updateValue={(event: any, s: any) => {
-            console.log("wsx here's what got selected", s);
             setUpdatedCallerStates(s);
           }}
           styles={{
