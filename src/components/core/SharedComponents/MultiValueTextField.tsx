@@ -25,7 +25,7 @@ const MultiValueTextField = ({
 
   useEffect(()=>{
     setChipList(value);
-  }, []);
+  }, [value]);
 
   const handleOnDelete = (index: number) =>{
     const newChipList = [...chipList];

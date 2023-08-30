@@ -39,7 +39,7 @@ async function queryFlowData(accessToken, nextToken = null, graphQlApiUrl) {
                     greetingMessages
                     languageOffer
                     transferNumber
-                    officeNumber
+                    officeNumbers
                   }
                   createTime
                   dialedDescription
@@ -115,7 +115,7 @@ function addFlowInput (item, dataRequestsPassed, currentTimePassed){
       transferNumber: item.transferNumber?.value,
       languageOffer: item.languageOffer?.value,
       dataRequests: dataRequestsPassed,
-      officeNumber: item.officeNumber?.value
+      officeNumbers: item.officeNumbers?.value
     },
     createTime: currentTimePassed,
     agentId: item.agentId?.value || "",
@@ -160,7 +160,7 @@ function updateFlowInput(item){
       transferNumber: item.content?.transferNumber || "",
       languageOffer: item.content?.languageOffer || "",
       dataRequests: item.content?.dataRequests,
-      officeNumber: item.content?.officeNumber
+      officeNumbers: item.content?.officeNumbers
     },
     createTime: item.createTime,
     dialedDescription: item.dialedDescription,
@@ -221,7 +221,7 @@ async function updateFlowDB(item, accessToken, graphQlApiUrl) {
                 greetingMessages
                 languageOffer
                 transferNumber
-                officeNumber
+                officeNumbers
               }
               createTime
               dialedDescription
@@ -291,7 +291,7 @@ async function addFlowRule(item, accessToken, graphQlApiUrl, curTime = new Date(
                 greetingMessages
                 languageOffer
                 transferNumber
-                officeNumber
+                officeNumbers
               }
               createTime
               dialedDescription
@@ -364,7 +364,7 @@ async function deleteFlowRule(item, accessToken, graphQlApiUrl) {
                 greetingMessages
                 languageOffer
                 transferNumber
-                officeNumber
+                officeNumbers
               }
               createTime
               dialedDescription
