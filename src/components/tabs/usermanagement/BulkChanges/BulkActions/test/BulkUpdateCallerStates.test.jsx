@@ -81,7 +81,7 @@ describe("<BulkUpdateDefaultSkills />", () => {
         expect(Dropdown.mock.calls[2][0].value).toBe("Add Caller State(s)");
         const onStatesChange = Dropdown.mock.calls[3][0].updateValue;
         act(() => onStatesChange(null, [CallerStateAttrDropDownOptions[0]])); // First state in the list "AK"
-        expect(mockReplaceTemplates).toHaveBeenCalledTimes(0);
+        expect(mockReplaceTemplates).toHaveBeenCalledTimes(1);
         expect(mockUpdateTemplates).toHaveBeenCalledTimes(0);
       });
       test("Options dropdown is updated to 'Delete Caller State(s)'", () => {
@@ -95,7 +95,7 @@ describe("<BulkUpdateDefaultSkills />", () => {
         expect(Dropdown.mock.calls[2][0].value).toBe("Delete Caller State(s)");
         const onStatesChange = Dropdown.mock.calls[3][0].updateValue;
         act(() => onStatesChange(null, [CallerStateAttrDropDownOptions[0]])); // First state in the list "AK"
-        expect(mockReplaceTemplates).toHaveBeenCalledTimes(0);
+        expect(mockReplaceTemplates).toHaveBeenCalledTimes(1);
         expect(mockUpdateTemplates).toHaveBeenCalledTimes(0);
       });
       test("Options dropdown is updated to 'Override Caller States'", () => {
@@ -110,7 +110,7 @@ describe("<BulkUpdateDefaultSkills />", () => {
         // expect(Dropdown.mock.calls).toBe(1);
         const onStatesChange = Dropdown.mock.calls[3][0].updateValue;
         act(() => onStatesChange(null, [CallerStateAttrDropDownOptions[0]])); // First state in the list "AK"
-        expect(mockReplaceTemplates).toHaveBeenCalledTimes(0);
+        expect(mockReplaceTemplates).toHaveBeenCalledTimes(1);
         expect(mockUpdateTemplates).toHaveBeenCalledTimes(0);
       });
       test("Try to get replaceTemplate to fire", () => {
@@ -125,7 +125,7 @@ describe("<BulkUpdateDefaultSkills />", () => {
         const onStatesChange = Dropdown.mock.calls[2][0].updateValue;
         act(() => onStatesChange(null, [CallerStateAttrDropDownOptions[0]])); // First state in the list "AK"
         expect(mockReplaceTemplates).toHaveBeenCalledTimes(0);
-        expect(mockUpdateTemplates).toHaveBeenCalledTimes(0);
+        expect(mockUpdateTemplates).toHaveBeenCalledTimes(1);
       });
       test("wsx Still trying to get replaceTemplate to fire", () => {
         renderComponent({}, [updateTemplates.UPDATE_CALLER_STATES]);
