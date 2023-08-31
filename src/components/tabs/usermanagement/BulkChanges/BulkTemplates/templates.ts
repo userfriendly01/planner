@@ -407,7 +407,6 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: a
 };
 
 export const processUpdateCallerStates =  async (row: any, template: Template, state: any) => {
-  console.log("wsx processUpdateCallerStates: row, template, state", row, template, state);
   const rowNumber = row.rowNumber;
   const workerSid = row.workerSid;
   const existingRouting = row.attributes.routing;
@@ -415,7 +414,6 @@ export const processUpdateCallerStates =  async (row: any, template: Template, s
   const option = template.data.option;
 
   const currentCallerStates = row.attributes.routing?.callerStates || [];
-  console.log("wsx currentCallerStates, selectedCallerStates:", currentCallerStates, selectedCallerStates);
   let combinedCallerStates;
 
   if (option.value === "ADD") {
@@ -428,7 +426,6 @@ export const processUpdateCallerStates =  async (row: any, template: Template, s
     combinedCallerStates = selectedCallerStates.map((item:any) => item.value);
   }
   const finalCallerStates = [...new Set(combinedCallerStates)]; // Remove duplicate elements
-  console.log("wsx finalCallerStates", finalCallerStates);
 
   const body = {
     attributes: {
@@ -441,11 +438,9 @@ export const processUpdateCallerStates =  async (row: any, template: Template, s
   console.log("**** UPDATE CALLER STATES RECORD PROCESSING", row, body);
   try {
     await updateUser(workerSid, body);
-    console.log("wsx updateUser() succeded", workerSid);
     return Promise.resolve(`${workerSid} - Caller States updated for row ${rowNumber}`);
   } catch(err){
     const errorMessage = `Failed to update Caller States for row ${rowNumber}. ${formatErrorMessage(err)}`;
-    console.log("wsx updateUser() failed", workerSid);
     console.error(errorMessage, err);
     return rejectPromise(errorMessage, rowNumber);
   }

@@ -49,7 +49,6 @@ const BulkUpdateCallerStates = (props: BulkCallerStatesProps): any => {
     if (updatedCallerStates.length) {
       const templateFound = selectedTemplates.find((t: Template) => t.name === template.name);
       if (!templateFound) {
-        console.log("wsx REPLACE TEMPLATE!");
         replaceTemplate({
           ...template,
           data: {
