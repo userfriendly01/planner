@@ -1614,18 +1614,5 @@ export const FIELDS: Fields = {
         }
       }
     }
-  },
-  CALLER_STATES: {
-    field: "routingCallerStates",
-    name: "Caller States",
-    type: "string",
-    description: "Comma deliminated list of states an agent can receive calls from",
-    example: "AZ, NY, TX, WY",
-    options: () => CallerStateAttrDropDownOptions,
-    validateFunction: (row: any, state: any): Promise<any> => {
-      const rowNumber = row.rowNumber;
-      const fieldName = "Caller States";
-      return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
-    }
   }
 };
