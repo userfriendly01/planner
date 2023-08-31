@@ -1,0 +1,152 @@
+import { CallerStateAttrDropDownOptions } from "../../OnboardNewUser/RoutingAttributes/RoutingAttributesDropDown";
+import {
+  UpdateWrapper,
+  CallerStatesSelectorContainer
+} from "../BulkChanges.Styles";
+import {
+  Template,
+  BulkCallerStatesProps
+} from "../BulkChanges.Interfaces";
+import {
+  Dropdown
+} from "components";
+import React from "react";
+
+const BulkUpdateCallerStates = (props: BulkCallerStatesProps): any => {
+  const {
+    template,
+    selectedTemplates,
+    replaceTemplate,
+    updateTemplate,
+    removeTemplate
+  } = props;
+
+  console.log("BulkUpdateForm - selectedTemplates", selectedTemplates);
+
+  const dropdownOptions = [
+    {
+      label: "Add Caller State(s)",
+      value: "ADD"
+    },
+    {
+      label: "Delete Caller State(s)",
+      value: "DELETE"
+    },
+    {
+      label: "Override Caller States",
+      value: "OVERRIDE"
+    }
+  ];
+
+  const [ callerStatesOption, setCallerStatesOption ] = React.useState<any>({
+    value: "",
+    label: ""
+  });
+  const [ updatedCallerStates, setUpdatedCallerStates ] = React.useState<any>([]);
+
+  React.useEffect(() => {
+    console.warn("selectedTemplates, updatedCallerStates", selectedTemplates, updatedCallerStates);
+    if (updatedCallerStates.length) {
+      const templateFound = selectedTemplates.find((t: Template) => t.name === template.name);
+      if (!templateFound) {
+        replaceTemplate({
+          ...template,
+          data: {
+            key: "callerStates",
+            value: updatedCallerStates,
+            option: callerStatesOption
+          }
+        });
+      } else {
+        updateTemplate(templateFound, {
+          key: "callerStates",
+          value: updatedCallerStates,
+          option: callerStatesOption
+        });
+      }
+    } else {
+      if (selectedTemplates.find((t: Template) => t.name === template.name)) {
+        removeTemplate(template);
+      }
+    }
+  }, [updatedCallerStates]);
+
+  React.useEffect(() => {
+    if(selectedTemplates.length === 0){
+      setUpdatedCallerStates([]);
+    }
+  }, [selectedTemplates]);
+
+  return (
+    <UpdateWrapper adjustibleHeight={true}>
+      <Dropdown
+        label="Options"
+        value={callerStatesOption.label}
+        options={dropdownOptions}
+        updateValue={(event: any, option: any) => {
+          option ? setCallerStatesOption(option) : {
+            value: "",
+            label: ""
+          };
+          setUpdatedCallerStates([]);
+        }}
+        styles={{
+          width: "230px",
+          margin: "10px 20px 0px 20px"
+        }}
+      />
+
+      { callerStatesOption.value === "OVERRIDE" &&
+      <CallerStatesSelectorContainer>
+        <Dropdown
+          label="New value(s) for Caller State"
+          value={updatedCallerStates}
+          options={CallerStateAttrDropDownOptions}
+          multiple={true}
+          updateValue={(event: any, s: any) => {
+            setUpdatedCallerStates(s);
+          }}
+          styles={{
+            width: "230px",
+            margin: "10px 20px 0px 20px"
+          }}
+        />
+      </CallerStatesSelectorContainer>
+      }
+      { callerStatesOption.value === "ADD" &&
+      <CallerStatesSelectorContainer>
+        <Dropdown
+          label="Caller State(s) to Add"
+          value={updatedCallerStates}
+          options={CallerStateAttrDropDownOptions}
+          multiple={true}
+          updateValue={(event: any, s: any) => {
+            setUpdatedCallerStates(s);
+          }}
+          styles={{
+            width: "230px",
+            margin: "10px 20px 0px 20px"
+          }}
+        />
+      </CallerStatesSelectorContainer>
+      }
+      { callerStatesOption.value === "DELETE" &&
+        <Dropdown
+          label="Caller State(s) to Delete"
+          value={updatedCallerStates}
+          options={CallerStateAttrDropDownOptions}
+          multiple={true}
+          updateValue={(event: any, s: any) => {
+            setUpdatedCallerStates(s);
+          }}
+          styles={{
+            width: "230px",
+            margin: "10px 20px 0px 20px"
+          }}
+        />
+      }
+    </UpdateWrapper>
+  );
+};
+
+export default BulkUpdateCallerStates;

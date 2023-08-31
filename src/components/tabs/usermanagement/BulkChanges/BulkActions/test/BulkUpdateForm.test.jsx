@@ -77,6 +77,10 @@ describe("<BulkUpdateForm />", () => {
           {
             label: "Update Default Skills",
             value: updateTemplates.UPDATE_DEFAULT_SKILLS
+          },
+          {
+            label: "Update Caller States",
+            value: updateTemplates.UPDATE_CALLER_STATES
           }
         ]));
       });

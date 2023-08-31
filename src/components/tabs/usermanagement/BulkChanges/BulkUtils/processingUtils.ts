@@ -55,7 +55,7 @@ export const updateCalabrioUserState = async (state: AppState, dispatch: any): P
 export const updateWFMPersonState = async (state: any, dispatch: any, rows: any[]): Promise<void> => {
   try {
     const BusinessUnitId = rows[0]?.BusinessUnitId;
-    let businessUnit = state.calabrioContext.wfmOrg.find((bu: WfmBusinessUnit) => bu.Id === BusinessUnitId);
+    const businessUnit = state.calabrioContext.wfmOrg.find((bu: WfmBusinessUnit) => bu.Id === BusinessUnitId);
     delete businessUnit.Teams;
     await getCalabrioWfmOrg(BusinessUnitId, state, dispatch);
   } catch(err){
@@ -327,7 +327,6 @@ export const initiateCalls = async (
   });
 
   const successfulRows = identifySuccessfulRecords(rows, finalErrors);
-
   const stateUpdateResults = await Promise.all(selectedTemplates.map((t: any) => {
     return Promise.allSettled(t.stateUpdateFunctions.map((f: any) => f(state, dispatch, successfulRows, selectedTemplates)));
   }));

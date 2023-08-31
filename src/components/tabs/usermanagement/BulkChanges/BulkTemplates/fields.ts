@@ -21,6 +21,9 @@ import {
 import {
   Fields
 } from "../BulkChanges.Interfaces";
+import {
+  CallerStateAttrDropDownOptions
+} from "../../OnboardNewUser/RoutingAttributes/RoutingAttributesDropDown";
 
 const rejectPromise = (error: string, rowNumber: number) => {
   return Promise.reject(JSON.stringify({
@@ -248,15 +251,15 @@ export const FIELDS: Fields = {
             }
             defaultSkills.skills.push(key);
           });
-  
+
           const availableSkills = state.skillContext.skills;
-  
+
           defaultSkills.skills.forEach((ds: any) => {
             if(!availableSkills.some((as: any) => cleanupField(as.name, "string") === cleanupField(ds, "string"))){
               skillErrors.push(`${ds} is not an available skill `);
             }
           });
-  
+
           Object.keys(defaultSkills.levels).forEach((skill: any) => {
             const matchingSkill = availableSkills.find((as: any) => cleanupField(as.name, "string") === cleanupField(skill, "string"));
             const level = defaultSkills.levels[skill];

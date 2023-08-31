@@ -406,6 +406,46 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: a
   }
 };
 
+export const processUpdateCallerStates =  async (row: any, template: Template, state: any) => {
+  const rowNumber = row.rowNumber;
+  const workerSid = row.workerSid;
+  const existingRouting = row.attributes.routing;
+  const selectedCallerStates = template.data.value;
+  const option = template.data.option;
+
+  const currentCallerStates = row.attributes.routing?.callerStates || [];
+  let combinedCallerStates;
+
+  if (option.value === "ADD") {
+    const newCallerStates = selectedCallerStates.map((item:any) => item.value);
+    combinedCallerStates = [...currentCallerStates, ...newCallerStates].sort();
+  } else if (option.value === "DELETE") {
+    const deleteTheseStates = selectedCallerStates.map((item:any) => item.value);
+    combinedCallerStates = currentCallerStates.filter((state:any) => !deleteTheseStates.includes(state));
+  } else if (option.value === "OVERRIDE") {
+    combinedCallerStates = selectedCallerStates.map((item:any) => item.value);
+  }
+  const finalCallerStates = [...new Set(combinedCallerStates)]; // Remove duplicate elements
+
+  const body = {
+    attributes: {
+      routing: {
+        ...existingRouting,
+        callerStates: finalCallerStates.sort() // It's only polite to keep them in order
+      }
+    }
+  };
+  console.log("**** UPDATE CALLER STATES RECORD PROCESSING", row, body);
+  try {
+    await updateUser(workerSid, body);
+    return Promise.resolve(`${workerSid} - Caller States updated for row ${rowNumber}`);
+  } catch(err){
+    const errorMessage = `Failed to update Caller States for row ${rowNumber}. ${formatErrorMessage(err)}`;
+    console.error(errorMessage, err);
+    return rejectPromise(errorMessage, rowNumber);
+  }
+};
+
 //Templates
 export const getCreateTemplates = (state: any): Templates => {
   return {
@@ -539,6 +579,18 @@ export const getUpdateTemplates = (state: any): Templates => {
       name: "UPDATE_DEFAULT_SKILLS",
       data: {},
       processFunction: (row: any, template: Template) => processUpdateDefaultSkills(row, template, state),
+      stateUpdateFunctions: [updateTritonUserState],
+      multiRunDependencies: null,
+      validationConcurrencyLimit: 500,
+      processingConcurrencyLimit: 5,
+      fields: [
+        FIELDS.N_NUMBER_UPDATE
+      ]
+    },
+    UPDATE_CALLER_STATES: {
+      name: "UPDATE_CALLER_STATES",
+      data: {},
+      processFunction: (row: any, template: Template) => processUpdateCallerStates(row, template, state),
       stateUpdateFunctions: [updateTritonUserState],
       multiRunDependencies: null,
       validationConcurrencyLimit: 500,
