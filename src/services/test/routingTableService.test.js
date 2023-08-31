@@ -26,7 +26,7 @@ const jsonRouteData =[
     transferDestination: "Twilo",
     transferMessage: "HOLD ON while we transfer the call",
     twilioSkill: "test",
-    crcSkill: "updated"
+    crcSkill: "updated",
   },
   {
     id: 1,

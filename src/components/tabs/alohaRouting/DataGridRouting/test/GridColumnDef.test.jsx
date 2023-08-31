@@ -4,7 +4,7 @@ import { render } from "testUtils";
 describe("<RoutingGridColumnDef />", () => {
 
   it("has no of columns", () => {
-    expect(RoutingGridColumnDef.length).toBe(18);
+    expect(RoutingGridColumnDef.length).toBe(19);
   });
 
   describe("valueGetter", ()=>{
@@ -73,6 +73,14 @@ describe("<RoutingGridColumnDef />", () => {
         }
       }));
       expect(renderedCell.findByDisplayValue("Team1-10")).toBeTruthy();
+    });
+    it("AlternateTransferDest", ()=>{
+      const renderedCell = render(RoutingGridColumnDef[18].renderCell({ row: { alternateTransferDestination: "Claims" }}));
+      expect(renderedCell.findByDisplayValue("Claims")).toBeTruthy();
+    });
+    it("AlternateTransferDest with null value", ()=>{
+      const renderedCell = render(RoutingGridColumnDef[18].renderCell({ row: { alternateTransferDestination: null }}));
+      expect(renderedCell.findByDisplayValue("")).toBeTruthy();
     });
   });
 

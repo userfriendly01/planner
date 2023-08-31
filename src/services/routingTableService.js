@@ -40,6 +40,7 @@ async function queryRoutingData(accessToken, nextToken = null, graphQlApiUrl) {
                         endTime
                         crcSkill
                         priority
+                        alternateTransferDestination
                         occupancyCheck {
                           percentage
                           team
@@ -123,6 +124,7 @@ async function updateRoutingDB(item, accessToken, graphQlApiUrl) {
     policyType: item.policyType,
     startTime: item.startTime,
     endTime: item.endTime,
+    alternateTransferDestination: item?.alternateTransferDestination,
     crcSkill: item.crcSkill || "",
     priority: item?.priority || "",
     occupancyCheck: item?.occupancyCheck || [],
@@ -156,6 +158,7 @@ async function updateRoutingDB(item, accessToken, graphQlApiUrl) {
               twilioSkill
               crcSkill
               priority
+              alternateTransferDestination
               occupancyCheck {
                 percentage
                 team
@@ -207,6 +210,7 @@ async function addRoutingRule(item, accessToken, graphQlApiUrl) {
     policyType: item.policyType.value,
     startTime: item.startTime.value,
     endTime: item.endTime.value,
+    alternateTransferDestination: item.alternateTransferDestination?.value || "",
     crcSkill: item.crcSkill?.value || "",
     priority: item.priority?.value || "",
     occupancyCheck: item.occupancyCheck?.value || [],
@@ -240,6 +244,7 @@ async function addRoutingRule(item, accessToken, graphQlApiUrl) {
               twilioSkill
               crcSkill
               priority
+              alternateTransferDestination
               occupancyCheck {
                 percentage
                 team
@@ -304,6 +309,7 @@ async function deleteRoutingRule(item, accessToken, graphQlApiUrl) {
               twilioSkill
               crcSkill
               priority
+              alternateTransferDestination
               occupancyCheck {
                 percentage
                 team
