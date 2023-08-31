@@ -342,7 +342,7 @@ export const convertTime12to24 = (time12h: string): string => {
     timeSplit[0] = (parseInt(timeSplit[0], 10) + 12).toString();
   }
   const todayDate = new Date().toISOString().split("T")[0];
-  const hmsTime = `${timeSplit[0]}:${timeSplit[1]}:${timeSplit[2]}`;
+  const hmsTime = `${timeSplit[0]}:${timeSplit[1]}:${timeSplit[2] || "00"}`;
   const targetStartTime: Date = new Date(`${todayDate}T${hmsTime}`);
     return targetStartTime.toISOString();
 };

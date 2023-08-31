@@ -1,3 +1,4 @@
+import { MultiFieldContainerFormProps } from "components/core/SharedComponents/MultiFieldContainer";
 import { Control } from "globals";
 import { FormValidationRule } from "utils/interfaces";
 
@@ -10,7 +11,7 @@ export interface FlowContent {
     greetingMessages?: string;
     languageOffer?: string;
     transferNumber?: string;
-    officeNumber?: string;
+    officeNumbers?: Array<string>;
 }
 
 
@@ -98,7 +99,7 @@ export interface FlowKeys {
     greetingMessages?: string;
     internetPlacement?: string;
     languageOffer?: string;
-    officeNumber?: string;
+    officeNumbers?: Array<string>;
     lineOfBusiness?: string;
     marketingChannel?: string;
     pkey?: string;
@@ -129,9 +130,10 @@ export interface AddFlowFieldsConfigProps {
     control: Control;
     required?: boolean;
     disableEdit?: boolean;
-    valueGetter?: (params: CctSharedCallFlowDb) => string;
+    valueGetter?: (params: CctSharedCallFlowDb) => any;
     valueSetter?: (currentValue: CctSharedCallFlowDb, newValue: any) => CctSharedCallFlowDb;
-    dynamicFieldConditionCheck?: (params: FormValidationRule) => boolean
+    dynamicFieldConditionCheck?: (params: FormValidationRule) => boolean;
+    formFields?: Array<MultiFieldContainerFormProps>;
     fieldType?: "viewAndAdd";
     gridSize?: number;
 }

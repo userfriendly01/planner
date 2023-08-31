@@ -41,9 +41,9 @@ describe("<FlowGridColumnDef />", () => {
       expect(FlowGridColumnDef[29].valueGetter({ row: { content: { callIntent: "TEST_CALL_INTENT" }}})).toBe("TEST_CALL_INTENT");
       expect(FlowGridColumnDef[29].valueGetter({ row: {}})).toBe("");
     });
-    it("officeNumber", () => {
-      expect(FlowGridColumnDef[30].valueGetter({ row: { content: { officeNumber: "#2710" }}})).toBe("#2710");
-      expect(FlowGridColumnDef[30].valueGetter({ row: {}})).toBe("");
+    it("officeNumbers", () => {
+      expect(FlowGridColumnDef[30].valueGetter({ row: { content: { officeNumbers: ["#2710"]}}})).toEqual(["#2710"]);
+      expect(FlowGridColumnDef[30].valueGetter({ row: {}})).toEqual([]);
     });
   });
   describe("renderCell", ()=>{
@@ -82,6 +82,10 @@ describe("<FlowGridColumnDef />", () => {
     it("callTypeDescription", ()=>{
       const renderedCell = render(FlowGridColumnDef[22].renderCell({ row: { dialedDescription: "Test Call Type Description" }}));
       expect(renderedCell.findByDisplayValue("Test Call Type Description")).toBeTruthy();
+    });
+    it("officeNumbers", ()=>{
+      const renderedCell = render(FlowGridColumnDef[30].renderCell({ row: { officeNumbers: ["#9999"]}}));
+      expect(renderedCell.findByDisplayValue("#9999")).toBeTruthy();
     });
   });
 
