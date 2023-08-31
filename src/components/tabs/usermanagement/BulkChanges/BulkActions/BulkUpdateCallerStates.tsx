@@ -10,9 +10,6 @@ import {
 import {
   Dropdown
 } from "components";
-import {
-  useAdminState
-} from "context";
 import React from "react";
 
 const BulkUpdateCallerStates = (props: BulkCallerStatesProps): any => {
@@ -52,6 +49,7 @@ const BulkUpdateCallerStates = (props: BulkCallerStatesProps): any => {
     if (updatedCallerStates.length) {
       const templateFound = selectedTemplates.find((t: Template) => t.name === template.name);
       if (!templateFound) {
+        console.log("wsx REPLACE TEMPLATE!");
         replaceTemplate({
           ...template,
           data: {
@@ -68,7 +66,7 @@ const BulkUpdateCallerStates = (props: BulkCallerStatesProps): any => {
         });
       }
     } else {
-      if(selectedTemplates.find((t: Template) => t.name === template.name)){
+      if (selectedTemplates.find((t: Template) => t.name === template.name)) {
         removeTemplate(template);
       }
     }
