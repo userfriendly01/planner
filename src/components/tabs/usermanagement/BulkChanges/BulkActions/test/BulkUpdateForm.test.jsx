@@ -60,7 +60,7 @@ describe("<BulkUpdateForm />", () => {
 
   describe("initial render", () => {
     describe("component is rendered as expected", () => {
-      test("wsx should render options in default state", () => {
+      test("should render options in default state", () => {
         renderComponent([]);
         expect(Dropdown.mock.calls.length).toBe(1);
         expect(Dropdown.mock.calls[0][0].label).toBe("Choose a field to update");

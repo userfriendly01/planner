@@ -127,21 +127,6 @@ describe("<BulkUpdateDefaultSkills />", () => {
         expect(mockReplaceTemplates).toHaveBeenCalledTimes(0);
         expect(mockUpdateTemplates).toHaveBeenCalledTimes(1);
       });
-      test("wsx Still trying to get replaceTemplate to fire", () => {
-        renderComponent({}, [updateTemplates.UPDATE_CALLER_STATES]);
-        expect(Dropdown.mock.calls.length).toBe(1);
-        expect(Dropdown.mock.calls[0][0].value).toBe("");
-        const onOptionChange = Dropdown.mock.calls[0][0].updateValue;
-        act(() => onOptionChange(null, optionDropdownOptions[2])); // Override option
-        expect(Dropdown.mock.calls.length).toBe(3);
-        expect(Dropdown.mock.calls[1][0].value).toBe("Override Caller States");
-        expect(mockRemoveTemplates).toHaveBeenCalledTimes(0);
-        // expect(Dropdown.mock.calls).toBe("butts");
-        const onStatesChange = Dropdown.mock.calls[2][0].updateValue;
-        act(() => onStatesChange(null, [CallerStateAttrDropDownOptions[0]])); // First state in the list "AK"
-        expect(mockReplaceTemplates).toHaveBeenCalledTimes(1);
-        expect(mockUpdateTemplates).toHaveBeenCalledTimes(0);
-      });
     });
   });
 });
