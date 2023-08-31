@@ -80,24 +80,6 @@ export const updateManagerUserState = async (dispatch: any): Promise<void> => {
   return Promise.resolve();
 };
 
-/** 
- * Refreshes callerStates after a bulk update on users wsx - may not be needed
- */
-// export const updateCallerStates = async (state: AppState, dispatch: any): Promise<void> => {
-//   try {
-//     // const response = await myAxios.get(apiPaths.GET_WORKERS);
-//     // const filteredWorkers = formatWorkerResponse(response.data).filter(worker => !worker.inactiveInd && worker.attributes);
-//     const filteredWorkers = ["once", "twice", "3 times"];
-//     dispatch(({
-//       type: "loadCallerStates",
-//       payload: filteredWorkers
-//     }));
-//   } catch (error) {
-//     console.error("Failed to update triton user state after bulk upload", error);
-//   }
-//   return Promise.resolve();
-// };
-
 /**
  * Triggers a file upload from an input onChange. onload of the file, the first tab within an excel will be converted to a JSON.
  * @param e input object that holds the uploaded file

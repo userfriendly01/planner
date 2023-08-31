@@ -53,8 +53,6 @@ const ProcessingModal = (props: ProcessingModalProps) => {
   React.useEffect(() => {
     const initiateValidations = async () => {
       try {
-        console.log("wsx performValidations(uploadedForm, selectedTemplates, consolidatedFieldsList, state)",
-          uploadedForm, selectedTemplates, consolidatedFieldsList, state);
         await performValidations(uploadedForm, selectedTemplates, consolidatedFieldsList, setProcessedRows, state);
         setResults({
           ...results,
