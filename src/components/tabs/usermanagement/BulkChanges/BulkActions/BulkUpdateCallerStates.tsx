@@ -45,9 +45,10 @@ const BulkUpdateCallerStates = (props: BulkCallerStatesProps): any => {
   const [ updatedCallerStates, setUpdatedCallerStates ] = React.useState<any>([]);
 
   React.useEffect(() => {
-    console.warn("selectedTemplates", selectedTemplates);
+    console.warn("selectedTemplates, updatedCallerStates", selectedTemplates, updatedCallerStates);
     if (updatedCallerStates.length) {
       const templateFound = selectedTemplates.find((t: Template) => t.name === template.name);
+      console.warn("wsx templateFound", templateFound);
       if (!templateFound) {
         replaceTemplate({
           ...template,
@@ -65,6 +66,7 @@ const BulkUpdateCallerStates = (props: BulkCallerStatesProps): any => {
         });
       }
     } else {
+      console.warn("wsx template", template);
       if (selectedTemplates.find((t: Template) => t.name === template.name)) {
         removeTemplate(template);
       }
@@ -104,6 +106,7 @@ const BulkUpdateCallerStates = (props: BulkCallerStatesProps): any => {
           options={CallerStateAttrDropDownOptions}
           multiple={true}
           updateValue={(event: any, s: any) => {
+            console.warn("wsx We've been hit 1!", s);
             setUpdatedCallerStates(s);
           }}
           styles={{
@@ -121,6 +124,7 @@ const BulkUpdateCallerStates = (props: BulkCallerStatesProps): any => {
           options={CallerStateAttrDropDownOptions}
           multiple={true}
           updateValue={(event: any, s: any) => {
+            console.warn("wsx We've been hi 2!");
             setUpdatedCallerStates(s);
           }}
           styles={{
@@ -137,6 +141,7 @@ const BulkUpdateCallerStates = (props: BulkCallerStatesProps): any => {
           options={CallerStateAttrDropDownOptions}
           multiple={true}
           updateValue={(event: any, s: any) => {
+            console.warn("wsx We've been hit 3!");
             setUpdatedCallerStates(s);
           }}
           styles={{
