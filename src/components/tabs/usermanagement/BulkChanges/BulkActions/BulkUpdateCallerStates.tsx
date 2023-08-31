@@ -1,4 +1,4 @@
-import { CallerStateAttrDropDownOptions } from "./callerStateList";
+import { CallerStateAttrDropDownOptions } from "../../OnboardNewUser/RoutingAttributes/RoutingAttributesDropDown";
 import {
   UpdateWrapper,
   CallerStatesSelectorContainer

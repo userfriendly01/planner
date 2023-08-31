@@ -243,7 +243,6 @@ export const initiateCalls = async (
   state: any,
   dispatch: any
 ) => {
-  console.log("wsx processing template", selectedTemplates);
   const templateTree = identifyProcessingDependencies(selectedTemplates);
   const concurrencyLimit: any = getLowestConcurrencyLimit(selectedTemplates, "processing");
 
@@ -328,7 +327,6 @@ export const initiateCalls = async (
   });
 
   const successfulRows = identifySuccessfulRecords(rows, finalErrors);
-  // wsx Re-read our state after applying updates to the data stores
   const stateUpdateResults = await Promise.all(selectedTemplates.map((t: any) => {
     return Promise.allSettled(t.stateUpdateFunctions.map((f: any) => f(state, dispatch, successfulRows, selectedTemplates)));
   }));
