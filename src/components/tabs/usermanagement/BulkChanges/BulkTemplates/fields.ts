@@ -23,7 +23,7 @@ import {
 } from "../BulkChanges.Interfaces";
 import {
   CallerStateAttrDropDownOptions
-} from "../BulkActions/callerStateList";
+} from "../../OnboardNewUser/RoutingAttributes/RoutingAttributesDropDown";
 
 const rejectPromise = (error: string, rowNumber: number) => {
   return Promise.reject(JSON.stringify({

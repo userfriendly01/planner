@@ -1,5 +1,5 @@
 import BulkUpdateCallerStates from "../BulkUpdateCallerStates";
-import { CallerStateAttrDropDownOptions } from "../callerStateList";
+import { CallerStateAttrDropDownOptions } from "../../../OnboardNewUser/RoutingAttributes/RoutingAttributesDropDown";
 import {
   getUpdateTemplates
 } from "../../BulkTemplates";
