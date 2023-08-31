@@ -1,6 +1,7 @@
 import { GridColDef } from "@mui/x-data-grid";
 import Tooltip from "@mui/material/Tooltip";
 import React from "react";
+import { Chip } from "@mui/material";
 export const TableGridColumnDef: GridColDef[] = [
   {
     headerName: "Dialed",
@@ -312,6 +313,26 @@ export const TableGridColumnDef: GridColDef[] = [
         callIntent: params.value
       }
     })
+  },
+  {
+    headerName: "Office Numbers",
+    field: "officeNumbers",
+    sortable: true,
+    width: 220,
+    align: "left",
+    valueGetter: params => params.row.content?.officeNumbers || [],
+    renderCell: (params: any) =>(
+      <div>
+        {
+          params.row.content?.officeNumbers && params.row.content?.officeNumbers.map((item: string, index: number)=>(
+            <Chip
+              key={`officeNumbers-${params.row.pkey}-${index}`}
+              tabIndex={-1}
+              label={item}
+            />
+          ))}
+      </div>
+    )
   }
 ];
 

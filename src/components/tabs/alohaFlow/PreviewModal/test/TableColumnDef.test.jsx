@@ -40,7 +40,7 @@ const validFlowData = {
 describe("<TableGridColumnDef />", () => {
 
   it("has 30 columns", () => {
-    expect(TableGridColumnDef.length).toBe(30);
+    expect(TableGridColumnDef.length).toBe(31);
   });
 
   describe("valueGetter", ()=>{
@@ -76,6 +76,10 @@ describe("<TableGridColumnDef />", () => {
     it("callIntent", () => {
       expect(TableGridColumnDef[29].valueGetter({ row: { content: { callIntent: "TEST_CALL_INTENT" }}})).toBe("TEST_CALL_INTENT");
       expect(TableGridColumnDef[29].valueGetter({ row: {}})).toBe("");
+    });
+    it("officeNumbers", () => {
+      expect(TableGridColumnDef[30].valueGetter({ row: { content: { officeNumbers: ["#9999"]}}})).toEqual(["#9999"]);
+      expect(TableGridColumnDef[30].valueGetter({ row: {}})).toEqual([]);
     });
   });
   describe("renderCell", ()=>{
@@ -114,6 +118,10 @@ describe("<TableGridColumnDef />", () => {
     it("callTypeDescription", ()=>{
       const renderedCell = render(TableGridColumnDef[22].renderCell({ row: { dialedDescription: "Test Call Type Description" }}));
       expect(renderedCell.findByDisplayValue("Test Call Type Description")).toBeTruthy();
+    });
+    it("officeNumbers", ()=>{
+      const renderedCell = render(TableGridColumnDef[30].renderCell({ row: { officeNumbers: ["#9999"]}}));
+      expect(renderedCell.findByDisplayValue("#9999")).toBeTruthy();
     });
   });
   describe("valueSetter", ()=>{
