@@ -7,6 +7,7 @@ import { Dropdown } from "../index";
 import {
   MultiFieldContainer,MultiFieldContainerFormProps
 } from "./MultiFieldContainer";
+import { MultiValueTextField } from "./MultiValueTextField";
 export interface ComponentControlProps {
   control: Control;
   dropDownOptions?: string[];
@@ -105,6 +106,20 @@ function ComponentControl({
         formFields={formFields}
         updateValue={(event: any, value: any)=>onChange(event,value)}
       />);
+    case "multiTextField":
+      return (
+        <MultiValueTextField
+          label={label}
+          name={name}
+          onChange={onChange}
+          value={value}
+          disabled={disabled}
+          error={error}
+          key={name}
+          required={required}
+          helperText={`Please add Enter after each ${label}`}
+        />
+      );
     default:
       return null;
   }

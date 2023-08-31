@@ -213,7 +213,7 @@ export const AddFlow = ({
               transferNumber: stringValue(flowRule,"transferNumber", ""),
               languageOffer: stringValue(flowRule,"languageOffer", ""),
               dataRequests: dataRequests,
-              officeNumber: stringValue(flowRule,"officeNumber", "")
+              officeNumbers: stringValue(flowRule,"officeNumbers", "")
             },
             createTime: curTime,
             agentId: stringValue(flowRule,"agentId", ""),
@@ -243,7 +243,7 @@ export const AddFlow = ({
             ...alertBarProps,
             open: true,
             severityType: "success",
-            msg: "New flow has been successfully added!! "
+            msg: "New flow has been successfully added. "
           }));
           setFlowRule({ ...initRule });
           return true;

@@ -1,5 +1,8 @@
+import { MultiFieldContainerFormProps } from "components/core/SharedComponents/MultiFieldContainer";
 import { Control } from "globals";
 import { FormValidationRule } from "utils/interfaces";
+
+export type PreviewModalAction = "add" | "edit" | "delete"
 export interface FlowContent {
     callIntent?: string;
     callerType?: string;
@@ -8,7 +11,7 @@ export interface FlowContent {
     greetingMessages?: string;
     languageOffer?: string;
     transferNumber?: string;
-    officeNumber?: string;
+    officeNumbers?: Array<string>;
 }
 
 
@@ -38,6 +41,8 @@ export interface FlowStateVariables {
     fetching?: boolean;
     selectedRow?: CctSharedCallFlowDb;
     isEditModalOpen?: boolean;
+    isPreviewModalOpen?: boolean;
+    previewModalAction?: PreviewModalAction;
     isAddModalOpen?: boolean;
     isAdvanceSearchModalOpen?: boolean;
     idStart?: number;
@@ -45,8 +50,6 @@ export interface FlowStateVariables {
     maxId?: number;
     minId?: number;
     saveSuccess?: number;
-    page?: number;
-    perPage?: number;
 }
 
 export interface CctSharedCallFlowDb {
@@ -96,7 +99,7 @@ export interface FlowKeys {
     greetingMessages?: string;
     internetPlacement?: string;
     languageOffer?: string;
-    officeNumber?: string;
+    officeNumbers?: Array<string>;
     lineOfBusiness?: string;
     marketingChannel?: string;
     pkey?: string;
@@ -127,9 +130,10 @@ export interface AddFlowFieldsConfigProps {
     control: Control;
     required?: boolean;
     disableEdit?: boolean;
-    valueGetter?: (params: CctSharedCallFlowDb) => string;
+    valueGetter?: (params: CctSharedCallFlowDb) => any;
     valueSetter?: (currentValue: CctSharedCallFlowDb, newValue: any) => CctSharedCallFlowDb;
-    dynamicFieldConditionCheck?: (params: FormValidationRule) => boolean
+    dynamicFieldConditionCheck?: (params: FormValidationRule) => boolean;
+    formFields?: Array<MultiFieldContainerFormProps>;
     fieldType?: "viewAndAdd";
     gridSize?: number;
 }

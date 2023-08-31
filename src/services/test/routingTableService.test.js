@@ -1,5 +1,6 @@
 import {
   addRoutingRule,
+  batchDelete,
   deleteRoutingRule,
   retrieveRoutingData,
   updateRoutingDB
@@ -188,6 +189,46 @@ describe("routingTableService",()=>{
       });
       const response = await deleteRoutingRule(item,"1233-3245","http://localhost:3000");
       expect(response).toBeDefined;
+    });
+  });
+  const batchDeleteItems = [ {
+    pkey: "pkey1",
+    "skey": "skey1"
+  },{
+    pkey: "pkey2",
+    "skey": "skey2"
+  }];
+  const batchDeleteResponse = {
+    data: {
+      listCctSharedCallRoutingGlobalDbs: {
+        items: batchDeleteItems,
+        nextToken: undefined
+      }
+    }
+  };
+
+  describe("Batch Delete Routing", ()=>{
+    beforeEach(()=>{
+      window.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve(batchDeleteResponse)
+        })
+      );
+    });
+    afterEach(()=>{
+      jest.restoreAllMocks();
+    });
+    test("Success",async()=>{
+      const response = await batchDelete(batchDeleteItems,"1233-3245","http://localhost:3000");
+      expect(response).toBe(batchDeleteResponse);
+      expect(window.fetch).toBeCalledWith("http://localhost:3000", {"body": "{\"query\":\"\\n        mutation DeleteMany {\\n          batchDeleteCctSharedCallRoutingGlobalDb(input: {\\n              routingKey: [{pkey:\\\"pkey1\\\",skey:\\\"skey1\\\"},{pkey:\\\"pkey2\\\",skey:\\\"skey2\\\"}]\\n            }) {\\n            items {\\n              pkey\\n              skey\\n            }\\n          }\\n        }\\n    \",\"variables\":{}}", "headers": {"Authorization": "1233-3245", "Content-Type": "application/json"}, "method": "POST"});
+    });
+    test("Error",async()=>{
+      jest.spyOn(JSON, "stringify").mockImplementation(()=>{
+        throw new Error();
+      });
+      const response = await batchDelete(batchDeleteItems,"1233-3245","http://localhost:3000");
+      expect(response).toEqual(undefined);
     });
   });
 });

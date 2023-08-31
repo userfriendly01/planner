@@ -1,5 +1,5 @@
 import  {
-  retrieveFlowData,addFlowRule, deleteFlowRule, updateFlowDB
+  retrieveFlowData,addFlowRule, deleteFlowRule, updateFlowDB, flowBatchDelete, queryFlowData
 }  from "../flowTableService";
 
 const jsonFlowData = {
@@ -18,6 +18,17 @@ const jsonFlowData = {
   greetingMessages: { value: "Hello Test Message" },
   languageOffer: { value: "English" },
   transferNumber: { value: "123456789" }
+};
+
+const batchDeleteItems = ["pkey1","pkey1"];
+
+const batchDeleteResponse = {
+  data: {
+    listCctSharedCallFlowDbs: {
+      items: batchDeleteItems,
+      nextToken: undefined
+    }
+  }
 };
 
 describe("flowTableService",()=>{
@@ -134,6 +145,56 @@ describe("flowTableService",()=>{
       const listFlow = await retrieveFlowData("12345","",{});
       expect(listFlow).toEqual(jsonFlowData);
     });
+    test("CallFlow list finds 2",async()=>{
+      window.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve({
+            data: {
+              listCctSharedCallFlowDbs: {
+                items: jsonFlowData,
+                nextToken: undefined
+              }
+            }
+          })
+        })
+      );
+      const listFlow = await queryFlowData("12345","TEST","http://localhost:8082");
+      expect(listFlow.data.listCctSharedCallFlowDbs.items).toEqual(jsonFlowData);
+    });
+    test("retrieveFlowData creates the IDs and skips nulls",async()=>{
+      const items = JSON.parse(JSON.stringify(jsonFlowData));
+      items[0].id = undefined;
+      items[1].id = undefined;
+      items[2] = null;
+      window.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve({
+            data: {
+              listCctSharedCallFlowDbs: {
+                items,
+                nextToken: undefined
+              }
+            }
+          })
+        })
+      );
+      const listFlow = await retrieveFlowData("12345","",{});
+      expect(listFlow).toEqual(jsonFlowData);
+    });
+    test("CallFlow list finds error",async()=>{
+      window.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve({
+            data: []
+          })
+        })
+      );
+      jest.spyOn(JSON, "stringify").mockImplementation(()=>{
+        throw new Error();
+      });
+      const listFlow = await queryFlowData("12345","TEST","http://localhost:8082");
+      expect(listFlow).toBeDefined;
+    });
     test("CallFlow list not found",async()=>{
       window.fetch = jest.fn(() =>
         Promise.resolve({
@@ -245,6 +306,37 @@ describe("flowTableService",()=>{
       });
       const updateFlow = await updateFlowDB(item,"1233-3245","http://localhost:3000");
       expect(updateFlow).toBeUndefined();
+    });
+  });
+  describe("Batch Delete Flow", ()=>{
+    beforeEach(()=>{
+      window.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve(batchDeleteResponse)
+        })
+      );
+    });
+    afterEach(()=>{
+      jest.restoreAllMocks();
+    });
+    test("Success",async()=>{
+      const response = await flowBatchDelete(batchDeleteItems,"1233-3245","http://localhost:3000");
+      expect(response).toBe(batchDeleteResponse);
+      expect(window.fetch).toBeCalledWith("http://localhost:3000", {
+        "body": "{\"query\":\"\\n        mutation DeleteManyFlow {\\n          batchDeleteCctSharedCallFlowDb(input: {\\n            pkey: [\\\"pkey1\\\",\\\"pkey1\\\"]\\n            }) {\\n            items {\\n              pkey\\n            }\\n          }\\n        }\\n    \",\"variables\":{}}",
+        "headers": {
+          "Authorization": "1233-3245",
+          "Content-Type": "application/json"
+        },
+        "method": "POST"
+      });
+    });
+    test("Error",async()=>{
+      jest.spyOn(JSON, "stringify").mockImplementation(()=>{
+        throw new Error();
+      });
+      const response = await flowBatchDelete(batchDeleteItems,"1233-3245","http://localhost:3000");
+      expect(response).toEqual(undefined);
     });
   });
 });

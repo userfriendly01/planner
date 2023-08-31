@@ -39,7 +39,7 @@ async function queryFlowData(accessToken, nextToken = null, graphQlApiUrl) {
                     greetingMessages
                     languageOffer
                     transferNumber
-                    officeNumber
+                    officeNumbers
                   }
                   createTime
                   dialedDescription
@@ -88,10 +88,14 @@ async function retrieveFlowData(accessToken, graphQlApiUrl,firstChunkData) {
         result = await queryFlowData(accessToken, result.data?.listCctSharedCallFlowDbs.nextToken, graphQlApiUrl);
         listItems = result.data?.listCctSharedCallFlowDbs?.items || [];
       }
-      listItems.forEach(item => flowData.push({
-        id: counter++,
-        ...item
-      }));
+      listItems.forEach(item => {
+        if(item) {
+          flowData.push({
+            ...item,
+            id: counter++
+          });
+        }
+      });
       isFirstTime = false;
     }
   } catch (error) {
@@ -111,7 +115,7 @@ function addFlowInput (item, dataRequestsPassed, currentTimePassed){
       transferNumber: item.transferNumber?.value,
       languageOffer: item.languageOffer?.value,
       dataRequests: dataRequestsPassed,
-      officeNumber: item.officeNumber?.value
+      officeNumbers: item.officeNumbers?.value
     },
     createTime: currentTimePassed,
     agentId: item.agentId?.value || "",
@@ -156,7 +160,7 @@ function updateFlowInput(item){
       transferNumber: item.content?.transferNumber || "",
       languageOffer: item.content?.languageOffer || "",
       dataRequests: item.content?.dataRequests,
-      officeNumber: item.content?.officeNumber
+      officeNumbers: item.content?.officeNumbers
     },
     createTime: item.createTime,
     dialedDescription: item.dialedDescription,
@@ -217,7 +221,7 @@ async function updateFlowDB(item, accessToken, graphQlApiUrl) {
                 greetingMessages
                 languageOffer
                 transferNumber
-                officeNumber
+                officeNumbers
               }
               createTime
               dialedDescription
@@ -287,7 +291,7 @@ async function addFlowRule(item, accessToken, graphQlApiUrl, curTime = new Date(
                 greetingMessages
                 languageOffer
                 transferNumber
-                officeNumber
+                officeNumbers
               }
               createTime
               dialedDescription
@@ -360,7 +364,7 @@ async function deleteFlowRule(item, accessToken, graphQlApiUrl) {
                 greetingMessages
                 languageOffer
                 transferNumber
-                officeNumber
+                officeNumbers
               }
               createTime
               dialedDescription
@@ -395,10 +399,47 @@ async function deleteFlowRule(item, accessToken, graphQlApiUrl) {
   return response;
 }
 
+async function flowBatchDelete(items, accessToken, graphQlApiUrl) {
+  let response;
+
+  try {
+    const body = JSON.stringify({
+      query: `
+        mutation DeleteManyFlow {
+          batchDeleteCctSharedCallFlowDb(input: {
+            pkey: ${JSON.stringify(items)}
+            }) {
+            items {
+              pkey
+            }
+          }
+        }
+    `,
+      variables: {
+      }
+    }).replace(/\\"pkey\\":/g, "pkey:");
+
+    const fetchResponse = await fetch(graphQlApiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: accessToken
+      },
+      body
+    });
+    response = await fetchResponse.json();
+    console.log("Batch Delete Flow Rule Response:", response);
+  } catch (error) {
+    console.error("Error in Flow Batch Delete", error);
+  }
+  return response;
+}
+
 export {
   addFlowRule,
   deleteFlowRule,
   retrieveFlowData,
   updateFlowDB,
-  queryFlowData
+  queryFlowData,
+  flowBatchDelete
 };

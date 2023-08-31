@@ -103,8 +103,9 @@ export const worker = {
         team:"Sample1",
         skills:["466"],
         levels:{"466":3},
+        callerStates: ["Test1", "Test2"],
         updated: true
-      }
+      },
     }
   },
   sid: "WK1",
@@ -1226,8 +1227,9 @@ describe("<UserFormButtons />", () => {
                   skills: [],
                   levels: {"466":3},
                   team:"Sample1",
+                  callerStates: ["Test1", "Test2"],
                   updated: "true"
-                }
+                },
               }
             };
             const updateWorkerAttributesAfterFormValid = {
@@ -1251,6 +1253,7 @@ describe("<UserFormButtons />", () => {
                 skills: ["nonSkillL1","466"],
                 levels: {"466": 3},
                 team: "Sample1",
+                callerStates: ["Test1", "Test2"],
                 updated: true
               }
             };
@@ -1321,7 +1324,7 @@ describe("<UserFormButtons />", () => {
             routing: {
               ...validFormState.triton.routing,
               skills: ["nonSkillL1"]
-            }
+            },
           };
           const updateWorker = {
             ...worker,
@@ -1403,6 +1406,7 @@ describe("<UserFormButtons />", () => {
                       team:updateWorkerAttributesAfterFormValid.routing.team,
                       skills: [],
                       levels:updateWorkerAttributesAfterFormValid.routing.levels,
+                      callerStates: updateWorkerAttributesAfterFormValid.routing.callerStates,
                       updated: true
                     },
                     email: "test@abc.com",
@@ -1514,8 +1518,9 @@ describe("<UserFormButtons />", () => {
                 routing: {
                   skills: ["466"],
                   levels: {"466":3},
-                  team:"Sample1"
-                }
+                  team:"Sample1",
+                  callerStates: ["Test1", "Test2"]
+                },
               },
               }
             };
@@ -1596,7 +1601,8 @@ describe("<UserFormButtons />", () => {
                 routing: {
                   skills: ["466"],
                   levels: {"466":3},
-                  team: "Sample1"
+                  team: "Sample1",
+                  callerStates: ["Test1", "Test2"]
                 }
               } 
             }
@@ -1742,7 +1748,7 @@ describe("<UserFormButtons />", () => {
           });
         });
       });
-      describe("",()=>{
+      describe("Routing Team with empty null value",()=>{
         const updateWorker = {
           ...worker,
           attributes: {
@@ -1793,6 +1799,7 @@ describe("<UserFormButtons />", () => {
                 skills: [],
                 levels: {},
                 team:"",
+                callerStates: [],
                 updated: "true"
               },
             directDialNum: {
@@ -1831,6 +1838,7 @@ describe("<UserFormButtons />", () => {
                   skills: ["nonSkillL1","466"],
                   levels: {},
                   team:"",
+                  callerStates: [],
                   updated: "true"
                 }
               },
@@ -1869,6 +1877,7 @@ describe("<UserFormButtons />", () => {
                   skills: ["nonSkillL1"],
                   levels: {},
                   team:"",
+                  callerStates: [],
                   updated: "true"
                 }
               },
@@ -1927,8 +1936,9 @@ describe("<UserFormButtons />", () => {
             skills: ["nonSkillL1"],
             levels: {},
             team: "Sample1",
-            updated: true
-          }
+            updated: true,
+            callerStates: validFormOptions.routing.callerStates
+          },
         };
         beforeEach(() => {
           workerHasOverFlowSkill.mockReturnValue(false);

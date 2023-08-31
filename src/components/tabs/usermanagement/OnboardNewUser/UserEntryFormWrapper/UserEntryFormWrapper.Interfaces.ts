@@ -92,7 +92,7 @@ export interface UserFormState {
     profileId: FieldState,
     userPreviouslyAdded: boolean,
     zeroOutEnabled: FieldState,
-    selfServiceInd: FieldState
+    selfServiceInd: FieldState 
   },
   calabrio_qm: {
     [key: string]: any,

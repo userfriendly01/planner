@@ -111,7 +111,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         skills: [],
         levels: {}
       }
-    };
+  }
 
     const calabrioAttributes = {
       acdId: "", //populate with workerSid returned
@@ -343,7 +343,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         ...nonOverflowSkills,
         overflowSkill
       ];
-      attributes.routing.levels = levels
+            attributes.routing.levels = levels
     };
 
     // remove overflow skill

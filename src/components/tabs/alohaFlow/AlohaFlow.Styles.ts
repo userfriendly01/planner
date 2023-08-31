@@ -15,7 +15,8 @@ export const ModalBodyStyled = styled(ModalBody)`
 export const ModalFooterStyled = styled(ModalFooter)`
   margin-top: 5px !important;
   margin-bottom: 5px !important;
-  margin-left: 40%;
+  display: flex;
+  justify-content: center;
   padding-top: 10px !important;
 `;
 

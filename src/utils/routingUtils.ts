@@ -44,9 +44,7 @@ export const routingInitState: RoutingStateVariables = {
   idEnd: 0,
   maxId: 0,
   minId: 0,
-  saveSuccess: false,
-  page: sessionStorage.getItem(CACHED_CALL_ROUTING_PAGE_NO) ? +sessionStorage.getItem(CACHED_CALL_ROUTING_PAGE_NO) : 1,
-  perPage: sessionStorage.getItem(CACHED_CALL_ROUTING_PER_PAGE) ? +sessionStorage.getItem(CACHED_CALL_ROUTING_PER_PAGE) : 10
+  saveSuccess: false
 };
 
 export const routingFields: AddRoutingFieldConfigProps[] = [
@@ -334,7 +332,7 @@ export const convertTime12to24 = (time12h: string): string => {
     timeSplit[0] = (parseInt(timeSplit[0], 10) + 12).toString();
   }
   const todayDate = new Date().toISOString().split("T")[0];
-  const hmsTime = `${timeSplit[0]}:${timeSplit[1]}:${timeSplit[2]}`;
+  const hmsTime = `${timeSplit[0]}:${timeSplit[1]}:${timeSplit[2] || "00"}`;
   const targetStartTime: Date = new Date(`${todayDate}T${hmsTime}`);
   return targetStartTime.toISOString();
 };
