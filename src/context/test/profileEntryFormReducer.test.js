@@ -334,6 +334,10 @@ describe("profileEntryFormReducer", () => {
           type: "Buffer",
           data: [1]
         },
+        eft_authorization_i: {
+          type: "Buffer",
+          data: [1]
+        },
         activities: [{
           profile_id: 0,
           activity_id: 1,
@@ -482,6 +486,9 @@ describe("profileEntryFormReducer", () => {
         clickToDial: {
           value: true
         },
+        eftAuthorization: {
+          value: true
+        },
         overflowSkill: {
           value: "",
           valid: true
@@ -574,6 +581,10 @@ describe("profileEntryFormReducer", () => {
           data: [0]
         },
         click_to_dial_i: {
+          type: "Buffer",
+          data: [1]
+        },
+        eft_authorization_i: {
           type: "Buffer",
           data: [1]
         },
@@ -723,6 +734,9 @@ describe("profileEntryFormReducer", () => {
           value: false
         },
         clickToDial: {
+          value: true
+        },
+        eftAuthorization: {
           value: true
         },
         overflowSkill: {

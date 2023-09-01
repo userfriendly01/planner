@@ -258,6 +258,9 @@ describe("profileUtils", () => {
       clickToDial: {
         value: false
       },
+      eftAuthorization: {
+        value: false
+      },
       overflowSkill: {
         value: "OverflowTestSKill",
         updated: false,
@@ -313,6 +316,7 @@ describe("profileUtils", () => {
         }
       ],
       click_to_dial_i: false,
+      eft_authorization_i: false,
       manual_record_inbound_i: true,
       manual_recorded_i: false,
       operating_unit_nme: "hello",
@@ -420,6 +424,10 @@ describe("profileUtils", () => {
         value: false,
         updated: true
       },
+      eftAuthorization: {
+        value: false,
+        updated: true
+      },
       overflowSkill: {
         value: "OverflowTestSKill",
         updated: true,
@@ -477,6 +485,7 @@ describe("profileUtils", () => {
         }
       ],
       click_to_dial_i: false,
+      eft_authorization_i: false,
       manual_record_inbound_i: true,
       manual_recorded_i: false,
       otbnd_recorded_i: true,
@@ -497,14 +506,11 @@ describe("profileUtils", () => {
         }
       ],
       voice_mail_transcription_i: false,
-      access_group: true,
-      operating_unit_sid: "123",
-      operating_unit_nme: "hello",
       access_group_id: 2
-    }
+    };
 
     test("should return a formatted call tag with one underscore", () => {
-      expect(createProfilePayload(form)).toStrictEqual(expected);
+      expect(updateProfilePayload(form)).toStrictEqual(expected);
     });
   });
 });
