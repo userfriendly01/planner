@@ -13,6 +13,7 @@ import {
   updateUser
 } from "services";
 import { initialTestState } from "testUtils";
+import { CallerStateAttrDropDownOptions } from "../../../OnboardNewUser/RoutingAttributes/RoutingAttributesDropDown";
 
 const createTemplates = getCreateTemplates(initialTestState);
 const updateTemplates = getUpdateTemplates(initialTestState);
@@ -1158,6 +1159,188 @@ describe("UPDATE_DEFAULT_SKILLS", () => {
           error: "Failed to update Default Skills for row 4. Aww"
         }));
       }
+    });
+  });
+});
+describe("UPDATE_CALLER_STATES", () => {
+  const updateCallerStatesProcessFunction = updateTemplates.UPDATE_CALLER_STATES.processFunction;
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+  describe("updateUser is successful", () => {
+    beforeEach(() => updateUser.mockResolvedValue("Wowee!"));
+    describe("add caller states", () => {
+      const template = { // Transaction
+        data: {
+          key: "Not used",
+          value: [
+            CallerStateAttrDropDownOptions[1],
+            CallerStateAttrDropDownOptions[2]
+          ],
+          option: {
+            label: "Add Caller State(s)",
+            value: "ADD"
+          }
+        }
+      };
+      const row = { // Current attributes
+        rowNumber: 4,
+        workerSid: "WK1234",
+        attributes: {
+          routing: {
+            callerStates: [CallerStateAttrDropDownOptions[0].value]
+          }
+        }
+      };
+      test("wsx1 should call updateUser with correct body", async () => {
+        const result = await updateCallerStatesProcessFunction(row, template);
+        expect(updateUser).toHaveBeenCalledTimes(1);
+        expect(updateUser).toHaveBeenCalledWith("WK1234", {
+          attributes: {
+            routing: {
+              callerStates: [
+                CallerStateAttrDropDownOptions[0].value,
+                CallerStateAttrDropDownOptions[1].value,
+                CallerStateAttrDropDownOptions[2].value
+              ]
+            }
+          }
+        });
+        expect(result).toBe("WK1234 - Caller States updated for row 4");
+      });
+    });
+    describe("override caller states", () => {
+      const template = {
+        data: {
+          key: "Not used",
+          value: [
+            CallerStateAttrDropDownOptions[15],
+            CallerStateAttrDropDownOptions[16],
+            CallerStateAttrDropDownOptions[17]
+          ],
+          option: {
+            label: "Add Caller State(s)",
+            value: "OVERRIDE"
+          }
+        }
+      };
+      const row = {
+        rowNumber: 4,
+        workerSid: "WK1234",
+        attributes: {
+          routing: {
+            callerStates: ["AK"]
+          }
+        }
+      };
+      test("wsx2 should call updateUser with correct body", async () => {
+        const result = await updateCallerStatesProcessFunction(row, template);
+        expect(updateUser).toHaveBeenCalledTimes(1);
+        expect(updateUser).toHaveBeenCalledWith("WK1234", {
+          attributes: {
+            routing: {
+              callerStates: [
+                CallerStateAttrDropDownOptions[15].value,
+                CallerStateAttrDropDownOptions[16].value,
+                CallerStateAttrDropDownOptions[17].value
+              ]
+            }
+          }
+        });
+        expect(result).toBe("WK1234 - Caller States updated for row 4");
+      });
+    });
+    describe("delete caller states", () => {
+      const template = {
+        data: {
+          key: "Not used",
+          value: [
+            CallerStateAttrDropDownOptions[15],
+            CallerStateAttrDropDownOptions[17]
+          ],
+          option: {
+            label: "Delete Caller State(s)",
+            value: "DELETE"
+          }
+        }
+      };
+      const row = {
+        rowNumber: 4,
+        workerSid: "WK1234",
+        attributes: {
+          routing: {
+            callerStates: [
+              CallerStateAttrDropDownOptions[15].value,
+              CallerStateAttrDropDownOptions[16].value,
+              CallerStateAttrDropDownOptions[17].value
+            ]
+          }
+        }
+      };
+      test("wsx3 should call updateUser with correct body", async () => {
+        const result = await updateCallerStatesProcessFunction(row, template);
+        expect(updateUser).toHaveBeenCalledTimes(1);
+        expect(updateUser).toHaveBeenCalledWith("WK1234", {
+          attributes: {
+            routing: {
+              callerStates: [
+                CallerStateAttrDropDownOptions[16].value
+              ]
+            }
+          }
+        });
+        expect(result).toBe("WK1234 - Caller States updated for row 4");
+      });
+    });
+  });
+  describe("update user fails", () => {
+    describe("ADD should fail with an appropriate message", () => {
+      beforeEach(() => updateUser.mockRejectedValue("I did a digital face-plant"));
+      const template = { // Transaction
+        data: {
+          key: "Not used",
+          value: [
+            CallerStateAttrDropDownOptions[1],
+            CallerStateAttrDropDownOptions[2]
+          ],
+          option: {
+            label: "Add Caller State(s)",
+            value: "ADD"
+          }
+        }
+      };
+      const row = { // Current attributes
+        rowNumber: 4,
+        workerSid: "WK1234",
+        attributes: {
+          routing: {
+            callerStates: [CallerStateAttrDropDownOptions[0].value]
+          }
+        }
+      };
+      test("wsx4 ADD should fail", async () => {
+        try {
+          await updateCallerStatesProcessFunction(row, template);
+          expect("I should").toBe("never get here");
+        } catch (err) {
+          expect(updateUser).toHaveBeenCalledTimes(1);
+          expect(updateUser).toHaveBeenCalledWith("WK1234", {
+            attributes: {
+              routing: {
+                callerStates: [
+                  CallerStateAttrDropDownOptions[0].value,
+                  CallerStateAttrDropDownOptions[1].value,
+                  CallerStateAttrDropDownOptions[2].value
+                ]
+              }
+            }
+          });
+          expect(err).toBe(JSON.stringify({
+            rowNumber: 4,
+            error: "Failed to update Caller States for row 4. I did a digital face-plant"
+          }));
+        }
+      });
     });
   });
 });
