@@ -21,6 +21,7 @@ import {
 } from "testUtils";
 import {
   batchDelete,
+  batchRoutingUpdate,
   queryRoutingData,
   retrieveRoutingData
 } from "services";
@@ -137,6 +138,7 @@ describe("<DataGridRouting />", ()=>{
     batchDelete.mockReset();
     queryRoutingData.mockReset();
     retrieveRoutingData.mockReset();
+    batchRoutingUpdate.mockReset();
     useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
       AddRouting,
@@ -562,11 +564,12 @@ describe("<DataGridRouting />", ()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
       queryRoutingData.mockResolvedValue(validRoutingDataList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
+      batchRoutingUpdate.mockResolvedValue({ data: { items: validRoutingDataList }});
       renderDataGridRouting();
 
       const onUpdate = PreviewModal.mock.calls[0][0].onUpdate;
       act(() => {
-        onUpdate([validRoutingDataList[0]]);
+        onUpdate(validRoutingDataList.slice(0,3));
       });
     });
     test("Handle bulkDelete", () => {

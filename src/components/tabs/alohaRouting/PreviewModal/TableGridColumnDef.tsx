@@ -6,15 +6,11 @@ import Tooltip from "@mui/material/Tooltip";
 import Chip from "@mui/material/Chip";
 import Grid from "@mui/material/Grid";
 import {
-  AddPageFieldConfigProps,
   CctSharedCallRoutingDb, RoutingOccupancyCheck, RoutingStep
 } from "../AlohaRouting.Interfaces";
 import {
-  getTagLabel, MultiFieldContainerFormProps
+  getTagLabel
 } from "../../../../components/core/SharedComponents/MultiFieldContainer";
-import {
-  routingFields
-} from "../../../../utils";
 import { formFields } from "./previewUtils";
 
 const formatDateTime = (dateTime: string) => {

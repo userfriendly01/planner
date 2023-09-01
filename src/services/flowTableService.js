@@ -435,11 +435,124 @@ async function flowBatchDelete(items, accessToken, graphQlApiUrl) {
   return response;
 }
 
+/**
+ * This is the Function to batch update the Flow Object to the DB
+ * @param {flowData} items List of Flow object that need to update
+ * @param {String} accessToken token to use while calling graphql query 
+ * @param {String} graphQlApiUrl Endpoint URL 
+ * @returns 
+ */
+const batchFlowUpdate = async(items, accessToken, graphQlApiUrl) =>{
+  if(items.length === 0){
+    return {
+      errors: [
+        "Please Select Something to Edit"
+      ]
+    };
+  }
+  let response;
+  const input = items.map(item=>{
+    return {
+      pkey: item.pkey,
+      agentId: item.agentId || "",
+      brand: item.brand,
+      callFlowTemplate: item.callFlowTemplate || "",
+      channel: item.channel,
+      content: {
+        callIntent: item.content?.callIntent || "",
+        callFlowRoute: item.content?.callFlowRoute || "",
+        callerType: item.content?.callerType || "",
+        greetingMessages: item.content?.greetingMessages || "",
+        transferNumber: item.content?.transferNumber || "",
+        languageOffer: item.content?.languageOffer || "",
+        dataRequests: item.content?.dataRequests
+      },
+      createTime: item.createTime,
+      dialedDescription: item.dialedDescription,
+      accountManager: item.accountManager || "",
+      affinityVDN: item.affinityVDN || "",
+      callTypeDescription: item.callTypeDescription || "",
+      transferCode: item.transferCode || "",
+      internetPlacement: item.internetPlacement || "",
+      callDetails1: item.callDetails1 || "",
+      callDetails2: item.callDetails2 || "",
+      tollFreeNumber: item.tollFreeNumber || "",
+      lineOfBusiness: item.lineOfBusiness || "",
+      marketingChannel: item.marketingChannel || "",
+      whisper: item.whisper || "",
+      requestID: item.requestID || "",
+      userDestination: item.userDestination || "",
+      rangeIndicator: item.rangeIndicator || "",
+      type: item.type || ""
+    };
+  });
+  try {
+    const fetchResponse = await fetch(graphQlApiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: accessToken
+      },
+      body: JSON.stringify({
+        query: `
+        mutation batchUpdateCctSharedCallFlowDb($input: CctSharedCallFlowDbBatchUpdateInput!) {
+          batchUpdateCctSharedCallFlowDb(input: $input) {
+            items {
+              accountManager
+              affinityVDN
+              agentId
+              brand
+              callDetails1
+              callDetails2
+              callFlowTemplate
+              callTypeDescription
+              channel
+              content {
+                callFlowRoute
+                callIntent
+                callerType
+                dataRequests
+                greetingMessages
+                languageOffer
+                transferNumber
+              }
+              createTime
+              dialedDescription
+              employeeId
+              internetPlacement
+              lineOfBusiness
+              marketingChannel
+              pkey
+              rangeIndicator
+              requestID
+              tollFreeNumber
+              transferCode
+              type
+              userDestination
+              whisper
+            }
+          }
+        }
+      `,
+        variables: {
+          input: { batchFlowUpdateInput: input }
+        }
+      })
+    });
+    response = await fetchResponse.json();
+    console.log("Update Batch Flow DB Response:", response);
+  } catch (error) {
+    console.error("Error in Update Batch Flow DB", error);
+  }
+  return response;
+};
+
 export {
   addFlowRule,
   deleteFlowRule,
   retrieveFlowData,
   updateFlowDB,
   queryFlowData,
-  flowBatchDelete
+  flowBatchDelete,
+  batchFlowUpdate
 };
