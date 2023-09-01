@@ -15,8 +15,8 @@ import {
 } from "@mui/x-data-grid";
 
 import { ComponentControl } from "components";
-import { GridApiCommunity } from "@mui/x-data-grid/internals";
 import { MultiFieldContainerFormProps } from "components/core/SharedComponents/MultiFieldContainer";
+import { GridApiCommunity } from "@mui/x-data-grid/internals";
 
 const reconstructTableColumnDef = (
   action: PreviewModalAction,
@@ -54,8 +54,8 @@ const manageEditColumnDef = (
     if(multiFields.includes(item.field)){
       return {
         ...item,
-        editable: false,
-        renderCell: params => (
+        editable: true,
+        renderEditCell: params => (
           <ComponentControl
             control="multiField"
             label=""
@@ -66,7 +66,6 @@ const manageEditColumnDef = (
             type="text"
             value={params.value}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              console.info("onChange", event);
               apiRef.current.setEditCellValue({
                 id: params.row.id,
                 field: item.field,

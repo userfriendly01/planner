@@ -22,7 +22,7 @@ import { useAdminState } from "context";
 import { CustomToast } from "components";
 import DataGridFlow from "../DataGridFlow";
 import {
-  retrieveFlowData,queryFlowData, flowBatchDelete
+  retrieveFlowData,queryFlowData, flowBatchDelete, batchFlowUpdate
 } from "services";
 import { PreviewModal } from "../../PreviewModal";
 import { createFlowDataList } from "../../PreviewModal/test/PreviewUtil.test";
@@ -470,10 +470,11 @@ describe("<DataGridFlow />", () => {
       const validFlowDataList = createFlowDataList(15);
       queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
       retrieveFlowData.mockResolvedValue(validFlowDataList);
+      batchFlowUpdate.mockResolvedValue({});
       renderComponent();
       const previewModalOnUpdate = PreviewModal.mock.calls[0][0].onUpdate;
       act(()=>{
-        previewModalOnUpdate();
+        previewModalOnUpdate([{ ...validFlowDataList[1] }]);
       });
       expect(DataGrid.mock.calls.length).toBe(1);
     });
