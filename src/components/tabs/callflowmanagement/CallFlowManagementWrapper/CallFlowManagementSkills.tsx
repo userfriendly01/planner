@@ -58,7 +58,6 @@ const CallFlowManagementSkills = () => {
   const [ tableState, setTableState ] = React.useState(defaultTableState);
   const [ confirmationModalOpts, setConfirmationModalOpts ] = React.useState(defaultConfirmationModalOpts);
   const [ saveResult, setSaveResult ] = React.useState(defaultSaveResult);
-  console.log("Filtered State: ", tableState);
 
   React.useEffect(() => {
     let filteredList = state.skillContext.skills.slice();

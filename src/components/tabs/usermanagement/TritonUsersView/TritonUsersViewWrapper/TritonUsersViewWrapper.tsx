@@ -48,7 +48,6 @@ const TritonUserManagementWrapper: any = () => {
     if(managerFilter && managerFilter !== "show-all"){
       filteredList = filteredList.filter((worker: Worker) => worker.attributes.manager_n_number === managerFilter);
     }
-    console.log("**Manager FL", filteredList);
 
     //filter by profile
     if(profileFilterArray.length > 0){
@@ -58,7 +57,6 @@ const TritonUserManagementWrapper: any = () => {
         return profileFound;
       });
     }
-    console.log("**Profile FL", filteredList);
 
     //filter by Ou
     if(ouFilterArray.length > 0){
@@ -70,20 +68,17 @@ const TritonUserManagementWrapper: any = () => {
       });
     }
 
-    console.log("**Ou FL", filteredList);
 
     //filter by deltaFilter
     if(tableState.deltaFilter){
       filteredList = filteredList.filter(worker => worker.skillsDifferent);
     }
 
-    console.log("**Delta FL", filteredList);
 
     //filter by searchBy
     const trimmedSearch = tableState.searchBy.trim();
     const searchResults = filteredList.filter((worker: any) => filterWorkerSearch(worker, trimmedSearch));
     filteredList = searchResults;
-    console.log("**Search FL", filteredList);
 
     const length = filteredList.slice().length;
     //filter by pagination
@@ -91,7 +86,6 @@ const TritonUserManagementWrapper: any = () => {
     const endingUserIndex = tableState.pagination.pageNumber * tableState.pagination.usersPerPage - 1;
     filteredList = filteredList.slice(startingUserIndex, endingUserIndex + 1);
 
-    console.log("**pagination FL", filteredList);
 
     setTableState({
       ...tableState,
@@ -104,7 +98,6 @@ const TritonUserManagementWrapper: any = () => {
         endingUserIndex
       }
     });
-    console.log("final filtered list", filteredList);
   }, [tableState.searchBy, tableState.deltaFilter, managerFilter, profileFilterArray, ouFilterArray, tableState.pagination.pageNumber, state.workerContext]);
 
   return (

@@ -4,6 +4,7 @@ import {
   PhoneNumberTable,
   StyledButton
 } from "components";
+import { useAdminState } from "context";
 import {
   formModes,
   ModalOverlayStatuses,
@@ -13,6 +14,7 @@ import PropTypes from "prop-types";
 import React, { useState } from "react";
 import { deleteDirectory } from "services";
 import styled from "styled-components";
+import { logger } from "utils";
 
 const AddContactButtonContainer = styled.div`
   display: flex;
@@ -35,6 +37,9 @@ const Directory = props => {
     profileId,
     refreshProfileData
   } = props;
+
+  const state = useAdminState();
+  const identity = state.userContext.pingIdentity.sub;
 
   const [directoryState, setDirectoryState] = useState({
     directoryId: null,
@@ -70,6 +75,11 @@ const Directory = props => {
       });
       deleteDirectory(directoryId)
         .then(() => {
+          logger.info(`Successfully deleted directory ${directoryId}`, {
+            identity,
+            directoryId
+          });
+
           refreshProfileData();
           setDirectoryState({
             ...directoryState,
@@ -80,10 +90,13 @@ const Directory = props => {
           });
           waitAndHideOverlay();
         })
-        .catch(err => {
-          console.error(`Failed to delete directory entry with directoryId ${directoryId}`, {
-            err
+        .catch(error => {
+          logger.error(`Failed to delete directory entry with directoryId ${directoryId}`, {
+            identity,
+            directoryId,
+            error
           });
+
           setDirectoryState({
             ...directoryState,
             saveState: {

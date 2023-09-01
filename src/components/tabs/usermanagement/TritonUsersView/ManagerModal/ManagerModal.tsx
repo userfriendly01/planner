@@ -34,7 +34,10 @@ import {
   editManager,
   FetchUserResponse
 } from "services";
-import { sortProfilesByName } from "utils";
+import {
+  logger,
+  sortProfilesByName
+} from "utils";
 import { Modal } from "@mui/material";
 import { CloseRounded } from "@mui/icons-material";
 
@@ -45,6 +48,7 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
   } = props;
 
   const state = useAdminState();
+  const identity = state.userContext.pingIdentity.sub;
   const profiles = state.profileContext.profiles;
   const calabrioTeams = state.calabrioContext.teams;
   const options: DropdownOption[] = [
@@ -99,7 +103,11 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
       setSaveStatus(ModalOverlayStatuses.FAIL);
       setTimeout(() => setSaveStatus(null), 2000);
       setErrorMessage("Manager already exists");
-      console.warn("addManager - Failure - Manager Already exists");
+
+      logger.warn("addManager - Failure - Manager Already exists", {
+        managerNNumber: manager.manager_n_number
+      }, false);
+
       return Promise.resolve("addManager - Failure - Manager Already exists");
     }
     const profileId = profile ? profile.profile_id : null;
@@ -123,13 +131,23 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
         }));
         setSaveStatus(ModalOverlayStatuses.SUCCESS);
         setTimeout(handleClose, 2000);
-        console.log("addManager - Success", res);
+
+        logger.info("Successfully created manager", {
+          res,
+          identity,
+          managerNNumber: manager.manager_n_number
+        });
       })
-      .catch(err => {
+      .catch(error => {
         setSaveStatus(ModalOverlayStatuses.FAIL);
         setTimeout(() => setSaveStatus(null), 2000);
         setErrorMessage("Failed to Create Manager");
-        console.error("addManager - Failure", err);
+
+        logger.error("Failed to create manager", {
+          error,
+          identity,
+          managerNNumber: manager.manager_n_number
+        });
       });
   };
 
@@ -142,7 +160,7 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
       profile_id: profileId,
       calabrio_team_ids: teams
     })
-      .then((res: any) => {
+      .then(res => {
         const updatedArray = state.managerContext.managers.map(m => {
           if(m.manager_id === manager.manager_id){
             return {
@@ -160,13 +178,23 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
         }));
         setSaveStatus(ModalOverlayStatuses.SUCCESS);
         setTimeout(handleClose, 2000);
-        console.log("editManager - Success", res);
+
+        logger.info("Successfully updated manager", {
+          identity,
+          managerNNumber: manager.manager_n_number,
+          res
+        });
       })
-      .catch((err: any) => {
+      .catch(error => {
         setSaveStatus(ModalOverlayStatuses.FAIL);
         setTimeout(() => setSaveStatus(null), 2000);
         setErrorMessage("Failed to update Manager");
-        console.error("editManager - Failure", err);
+
+        logger.error("Failed to update manager", {
+          error,
+          identity,
+          managerNNumber: manager.manager_n_number
+        });
       });
   };
 

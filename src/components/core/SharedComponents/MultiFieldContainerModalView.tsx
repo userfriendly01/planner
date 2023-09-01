@@ -12,7 +12,9 @@ import {
 } from "@mui/material";
 import { MultiFieldContainerFormProps } from "./MultiFieldContainer";
 import { MultiValueTextField } from "./MultiValueTextField";
-import { routingDropDownList } from "utils";
+import {
+  logger, routingDropDownList
+} from "utils";
 interface MultiFieldContainerModalViewProps{
     formFields:Array<MultiFieldContainerFormProps>;
     isOpen: boolean;
@@ -53,7 +55,9 @@ const MultiFieldContainerModalView = ({
     let key: string = event.target.name;
     let value = event.target.value;
     const type = event.target.type;
-    console.log("handling multimodal", event);
+
+    logger.log("handling multimodal", event);
+
     if(type === "number" ){
       value=parseInt(value);
     }

@@ -6,23 +6,6 @@ import {
   initDataDogRum, Logger
 } from "../logger";
 
-jest.mock("@datadog/browser-rum", () => ({
-  datadogRum: {
-    init: jest.fn(),
-    setGlobalContextProperty: jest.fn()
-  }
-}));
-
-jest.mock("@datadog/browser-logs", () => ({
-  datadogLogs: {
-    init: jest.fn(),
-    setLoggerGlobalContext: jest.fn(),
-    logger: {
-      log: jest.fn()
-    }
-  }
-}));
-
 describe("logger", () => {
   describe("initDataDogRum", () => {
     test("should initialize datadog appropriately", () => {
@@ -37,6 +20,13 @@ describe("logger", () => {
   describe("Logger", () => {
     let logger;
 
+    beforeEach(() => {
+      console.log = jest.fn();
+      console.info = jest.fn();
+      console.warn = jest.fn();
+      console.error = jest.fn();
+    });
+
     afterEach(() => {
       jest.resetAllMocks();
       logger = undefined;
@@ -47,6 +37,18 @@ describe("logger", () => {
 
       expect(datadogLogs.init).toHaveBeenCalled();
       expect(datadogLogs.setLoggerGlobalContext).toHaveBeenCalled();
+    });
+
+    test("should not call datadog when level is log", () => {
+      logger = new Logger();
+
+      const message = "Test that log is working";
+      const body = { id: "test" };
+
+      logger.log(message, body);
+
+      expect(console.log).toBeCalledWith(`[CCT]: ${message}`, body);
+      expect(datadogLogs.logger.log).not.toHaveBeenCalled();
     });
 
     describe.each([
@@ -62,20 +64,6 @@ describe("logger", () => {
     ])("$level", ({
       level
     }) => {
-      let infoFn;
-      let warnFn;
-      let errorFn;
-
-      beforeEach(() => {
-        infoFn = jest.fn();
-        warnFn = jest.fn();
-        errorFn = jest.fn();
-
-        console.info = infoFn;
-        console.warn = warnFn;
-        console.error = errorFn;
-      });
-
       test("should call datadog logger at level $level", () => {
         logger = new Logger();
 
@@ -87,6 +75,19 @@ describe("logger", () => {
 
         expect(console[level]).toBeCalledWith(`[CCT]: ${message}`, body);
         expect(datadogLogs.logger.log).toHaveBeenCalled();
+      });
+
+      test("should not send log to datadog if sendToDataDog is set to false", () => {
+        logger = new Logger();
+
+        const message = `Test that ${level} is working`;
+        const body = { id: "test" };
+
+        logger[level](message, body, false);
+
+
+        expect(console[level]).toBeCalledWith(`[CCT]: ${message}`, body);
+        expect(datadogLogs.logger.log).not.toHaveBeenCalled();
       });
 
       test("should log error if datadog function throws an error", () => {

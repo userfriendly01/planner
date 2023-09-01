@@ -6,6 +6,7 @@ import { useAdminState } from "context";
 import { apiPaths } from "globals";
 import React, { useState } from "react";
 import {
+  logger,
   myAxios,
   sortDirectoryListEntriesByName
 } from "utils";
@@ -36,11 +37,15 @@ const ProfileDirectoryContainer = () => {
           profileId
         });
       })
-      .catch(err => {
-        console.error("Failed to fetch dial list for profile", {
-          err,
-          profileId
-        });
+      .catch(error => {
+        logger.error(
+          "Failed to fetch dial list for profile",
+          {
+            error,
+            profileId
+          },
+          false
+        );
         setProfileSettingsState({
           ...initialProfileState,
           message: "Failed to fetch data for selected profile"
@@ -83,7 +88,7 @@ const ProfileDirectoryContainer = () => {
           :
           null
       }
-      </ProfileSettingsContainerDiv>
+    </ProfileSettingsContainerDiv>
   );
 };
 

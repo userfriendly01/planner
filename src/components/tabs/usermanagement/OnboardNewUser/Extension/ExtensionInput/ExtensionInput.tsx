@@ -21,6 +21,7 @@ import { extensionMatcher } from "globals";
 import React from "react";
 import { checkExtension } from "services";
 import { SearchParams } from "../ExtensionSearchParams";
+import { logger } from "utils";
 
 const ModalExtension = (props: ModalExtensionProps) => {
   const {
@@ -107,8 +108,8 @@ const ModalExtension = (props: ModalExtensionProps) => {
           }
         }
       })
-      .catch (err => {
-        console.error("Failed to contact Twilio", err);
+      .catch (error => {
+        logger.error("Failed to contact Twilio to check extension", { error });
       });
 
     setForm({

@@ -1,11 +1,36 @@
 require("@testing-library/jest-dom/extend-expect");
 require("jest-styled-components");
+const { logger } = require("utils/logger");
 
 beforeAll(() => {
   console.log = jest.fn();
-  console.error = jest.fn();
+  console.info = jest.fn();
   console.warn = jest.fn();
+  console.error = jest.fn();
+
+  logger.log = jest.fn();
+  logger.info = jest.fn();
+  logger.warn = jest.fn();
+  logger.error = jest.fn();
 });
+
+// Mock Data Dog globally so it doesn't try to start
+jest.mock("@datadog/browser-rum", () => ({
+  datadogRum: {
+    init: jest.fn(),
+    setGlobalContextProperty: jest.fn()
+  }
+}));
+
+jest.mock("@datadog/browser-logs", () => ({
+  datadogLogs: {
+    init: jest.fn(),
+    setLoggerGlobalContext: jest.fn(),
+    logger: {
+      log: jest.fn()
+    }
+  }
+}));
 
 jest.mock("authentication");
 

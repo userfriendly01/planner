@@ -22,6 +22,7 @@ import {
 } from "globals";
 import React, { useState } from "react";
 import { createCalabrioTeam } from "services";
+import { logger } from "utils";
 export interface TeamModalProps {
   handleClose: (res: any) => void
 }
@@ -29,6 +30,8 @@ export interface TeamModalProps {
 const CalabrioTeamModal = (props: TeamModalProps) => {
   const state = useAdminState();
   const dispatch = useAdminDispatch();
+
+  const identity = state.userContext.pingIdentity.sub;
   const {
     groups,
     teams
@@ -60,9 +63,20 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
         });
         setSaveStatus(ModalOverlayStatuses.SUCCESS);
         setTimeout(() => handleClose(res.data), timeouts.MODAL_OVERLAY);
-      }).catch(err => {
+
+        logger.info("Successfully added Calabrio Team", {
+          name: newTeam.name,
+          parentGroupId: newTeam.parentGroupId.groupId,
+          identity
+        });
+      }).catch(error => {
         const msg = "Unable to Add Calabrio Team";
-        console.error(msg, err);
+
+        logger.error(msg, {
+          error,
+          identity
+        });
+
         setSaveStatus(ModalOverlayStatuses.FAIL);
         setErrorMessage(msg);
       });

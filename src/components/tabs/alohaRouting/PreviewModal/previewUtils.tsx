@@ -66,7 +66,6 @@ const manageEditColumnDef = (
             type="text"
             value={params.value}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              console.info("onChange", event);
               apiRef.current.setEditCellValue({
                 id: params.row.id,
                 field: item.field,

@@ -14,7 +14,6 @@ import React from "react";
 import { getE164Number } from "utils";
 import { Tooltip } from "@mui/material";
 
-
 const BulkUpdateAttributes = (props: BulkUpdateProps) => {
   const {
     template,
@@ -27,10 +26,8 @@ const BulkUpdateAttributes = (props: BulkUpdateProps) => {
   const [ selectedAttribute, setSelectedAttribute ] = React.useState(availableAttributes.SELF_SERVICE_INDICATOR);
   const [ updatedAttributeValue, setUpdatedAttributeValue ] = React.useState<any>("");
 
-  console.log("BulkUpdateForm - selectedTemplates", selectedTemplates);
 
   React.useEffect(() => {
-    console.warn("selectedTemplates", selectedTemplates);
     //If the entries are valid, update/add the template to the selected templates.
     //If they arent valid, remove the template from the selected templates
     //Valid templates will drive the display of the processing buttons

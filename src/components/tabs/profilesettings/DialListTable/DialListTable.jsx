@@ -21,9 +21,11 @@ import PropTypes from "prop-types";
 import React, { useState } from "react";
 import {
   formatTenDigitNumber,
+  logger,
   myAxios
 } from "utils";
 import styled from "styled-components";
+import { useAdminState } from "context";
 
 const AddContactButtonContainer = styled.div`
   display: flex;
@@ -128,6 +130,9 @@ const DialListTable = props => {
     refreshProfileData
   } = props;
 
+  const state = useAdminState();
+  const identity = state.userContext.pingIdentity.sub;
+
   const [dialListTableState, setDialListTableState] = useState({
     dialListId: null,
     dialListEntryFormInitialValues: {}, // populated with diallist entry data and passed to DialListEntryForm
@@ -156,8 +161,9 @@ const DialListTable = props => {
       });
       myAxios.delete(apiPaths.DIAL_LIST_ENTRY(diallistId))
         .then(res => {
-          console.log(`Successfully deleted dial list entry with diallist_id ${diallistId}`, {
-            responseData: res.data
+          logger.info(`Successfully deleted dial list entry with diallist_id ${diallistId}`, {
+            responseData: res.data,
+            identity
           });
           refreshProfileData();
           setDialListTableState({
@@ -167,9 +173,10 @@ const DialListTable = props => {
           });
           waitAndHideOverlay();
         })
-        .catch(err => {
-          console.error(`Failed to delete dial list entry with diallist_id ${diallistId}`, {
-            err
+        .catch(error => {
+          logger.error(`Failed to delete dial list entry with diallist_id ${diallistId}`, {
+            error,
+            identity
           });
           setDialListTableState({
             ...dialListTableState,

@@ -24,6 +24,7 @@ import {
   useAdminDispatch
 } from "context";
 import React from "react";
+import { logger } from "utils";
 
 const ProcessingModal = (props: ProcessingModalProps) => {
   const {
@@ -45,10 +46,12 @@ const ProcessingModal = (props: ProcessingModalProps) => {
   const [ status, setStatus ] = React.useState<PROCESSING_STATES>(PROCESSING_STATES.VALIDATING);
   const [ processedRows, setProcessedRows ] = React.useState(0);
 
-  console.log("we're in the processing modal! results", results );
-  console.log("we're in the processing modal! status", status );
-  console.log("we're in the processing modal! processedRows", processedRows );
-  console.log("we're in the processing modal! uploadedForm", uploadedForm );
+  logger.log("we're in the processing modal!", {
+    results,
+    status,
+    processedRows,
+    uploadedForm
+  });
 
   React.useEffect(() => {
     const initiateValidations = async () => {
@@ -84,13 +87,13 @@ const ProcessingModal = (props: ProcessingModalProps) => {
       });
 
       setStatus(PROCESSING_STATES.PROCESSED);
-      console.log("PROCESSING IS DONE!!", results);
-    } catch(err){
-      console.log("PROCESSING IS DONE BUT FAILED!!", err);
+      logger.log("PROCESSING IS DONE!!", results);
+    } catch(error){
+      logger.log("PROCESSING IS DONE BUT FAILED!!", error);
       setResults({
         ...results,
-        processingErrors: err.errors,
-        successfullyProcessedRows: err.success
+        processingErrors: error.errors,
+        successfullyProcessedRows: error.success
       });
       setStatus(PROCESSING_STATES.PROCESSED);
     }

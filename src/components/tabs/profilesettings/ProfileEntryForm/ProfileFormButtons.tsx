@@ -2,7 +2,8 @@ import React from "react";
 import {
   profileEntryFormDispatch,
   profileEntryFormState,
-  profileEntryFormActions
+  profileEntryFormActions,
+  useAdminState
 } from "context";
 import { ProfileFormButtonsProps } from "./ProfileEntryForm.Interfaces";
 import {
@@ -19,8 +20,8 @@ import {
   isProfileFormValid,
   createProfilePayload,
   updateProfilePayload,
-  formatCallTagsName,
-  wait
+  wait,
+  logger
 } from "utils";
 import {
   createProfile,
@@ -34,6 +35,8 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
     updateLoading
   } = props;
 
+  const state = useAdminState();
+  const identity = state.userContext.pingIdentity.sub;
   const form = profileEntryFormState();
   const setForm = profileEntryFormDispatch();
 
@@ -48,6 +51,11 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
     const payload: ProfilePayload = createProfilePayload(form);
 
     createProfile(payload).then(() => {
+      logger.info(`Successfully created profile ${form.profileName.value}`, {
+        identity,
+        profileId: payload.profile_id
+      });
+
       updateLoading({
         ...loading,
         overlayMessage: `Successfully created profile ${form.profileName.value}. Please notify the data office of this change.`,
@@ -64,7 +72,13 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
           type: profileEntryFormActions.RESET_FORM
         });
       }, timeouts.MODAL_OVERLAY_ATTENTION);
-    }).catch(() => {
+    }).catch(error => {
+      logger.error(`Failed to create profile ${form.profileName.value}`, {
+        error,
+        identity,
+        profileId: payload.profile_id
+      });
+
       updateLoading({
         ...loading,
         overlayMessage: `Error creating ${form.profileName.value}`,
@@ -91,6 +105,11 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
     const payload: Partial<ProfilePayload> = updateProfilePayload(form);
 
     editProfile(payload).then(() => {
+      logger.info(`Successfully updated profile ${form.profileName.value}`, {
+        identity,
+        profileId: payload.profile_id
+      });
+
       updateLoading({
         ...loading,
         overlayMessage: `Successfully updated ${form.profileName.value}`,
@@ -107,7 +126,13 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
           type: profileEntryFormActions.RESET_FORM
         });
       }, timeouts.MODAL_OVERLAY);
-    }).catch(() => {
+    }).catch(error => {
+      logger.error(`Failed to create profile ${form.profileName.value}`, {
+        error,
+        identity,
+        profileId: payload.profile_id
+      });
+
       updateLoading({
         ...loading,
         overlayMessage: `Error updating ${form.profileName.value}`,

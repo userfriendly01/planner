@@ -1,9 +1,11 @@
 import { apiPaths } from "globals";
-import { myAxios } from "utils";
+import {
+  logger, myAxios
+} from "utils";
 
 export const deleteDirectory = directoryId => {
   return myAxios.delete(apiPaths.DIRECTORY_ENTRY(directoryId)).then(res => {
-    console.log(
+    logger.log(
       `Successfully deleted directory entry with directoryId ${directoryId}`,
       {
         responseData: res.data
@@ -22,7 +24,7 @@ export const insertDirectory = (firstName, lastName, phoneNumber, profileId) => 
   };
   return myAxios.post(apiPaths.DIRECTORY, requestBody)
     .then(res => {
-      console.log("Successfully added directory entry", {
+      logger.log("Successfully added directory entry", {
         responseData: res.data,
         requestBody
       });
@@ -38,7 +40,7 @@ export const updateDirectory = (directoryId, firstName, lastName, phoneNumber) =
   };
   return myAxios.put(apiPaths.DIRECTORY_ENTRY(directoryId), requestBody)
     .then(res => {
-      console.log(`Successfully updated directory entry with directoryId ${directoryId}`, {
+      logger.log(`Successfully updated directory entry with directoryId ${directoryId}`, {
         responseData: res.data,
         requestBody
       });

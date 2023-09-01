@@ -19,6 +19,7 @@ import { ModalOverlayStatuses } from "globals";
 import React from "react";
 import { deleteManager } from "services";
 import { CloseRounded } from "@mui/icons-material";
+import { logger } from "utils";
 
 const ManagerDelete = (props: ManagerDeleteProps): any => {
   const {
@@ -27,6 +28,7 @@ const ManagerDelete = (props: ManagerDeleteProps): any => {
   } = props;
 
   const state = useAdminState();
+  const identity = state.userContext.pingIdentity.sub;
   const workers = useAdminState().workerContext.workers;
   const dispatch = useAdminDispatch();
   const [errorMessage, setErrorMessage] = React.useState<string>(null);
@@ -52,7 +54,7 @@ const ManagerDelete = (props: ManagerDeleteProps): any => {
     setSaveStatus(ModalOverlayStatuses.SAVING);
 
     return deleteManager(selectedManager.manager_id)
-      .then((res: any) => {
+      .then(res => {
         // Remove the deleted manager from our local state
         const idx = state.managerContext.managers.findIndex(mgr => mgr.manager_n_number === selectedManager.manager_n_number);
         const lowerHalf = state.managerContext.managers.slice(0, idx);
@@ -65,13 +67,23 @@ const ManagerDelete = (props: ManagerDeleteProps): any => {
 
         setSaveStatus(ModalOverlayStatuses.SUCCESS);
         setTimeout(handleClose, 2000);
-        console.log("deleteManager() successful", res);
+
+        logger.info("Successfully deleted manager", {
+          res,
+          identity,
+          managerNNumber: selectedManager.manager_n_number
+        });
       })
-      .catch((err: any) => {
+      .catch(error => {
         setErrorMessage("Failed to delete Manager");
         setSaveStatus(ModalOverlayStatuses.FAIL);
         setTimeout(() => setSaveStatus(null), 2000);
-        console.error("deleteManager() failed:", err);
+
+        logger.error("Failed to delete Manager", {
+          error,
+          identity,
+          managerNNumber: selectedManager.manager_n_number
+        });
       });
   };
 

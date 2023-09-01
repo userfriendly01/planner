@@ -45,7 +45,7 @@ export class Logger {
       tags: {
         lm_org: "cct",
         deployment_guid: process.env.DEPLOYMENT_GUID,
-        cct_squad: "pod",
+        cct_squad: "tpod",
         cct_domain: "shared"
       }
     };
@@ -79,17 +79,38 @@ export class Logger {
   }
 
   /**
+   * logger.log
+   * Logs only to native console
+   * 
+   * @param {string} message - The message to be logged
+   * @param {object} body - The log context, all information 
+   * should be included in an object
+   * @param {boolean} sendToDataDog - If this should be sent to Data Dog
+   */
+  log(message: string, ...args: any[]): void {
+    try {
+      console.log(`${APP_ORG_TAG}: ${message}`, ...args);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  /**
    * logger.info
    * Logs both to native console and datadog
    * 
    * @param {string} message - The message to be logged
    * @param {object} body - The log context, all information 
    * should be included in an object
+   * @param {boolean} sendToDataDog - If this should be sent to Data Dog
    */
-  info(message: string, body: Record<string, unknown>): void {
+  info(message: string, body: Record<string, unknown>, sendToDataDog = true): void {
     try {
       console.info(`${APP_ORG_TAG}: ${message}`, body);
-      this.sendLogToDataDog(message, body, "info");
+
+      if(sendToDataDog) {
+        this.sendLogToDataDog(message, body, "info");
+      }
     } catch (e) {
       console.error(e);
     }
@@ -102,11 +123,15 @@ export class Logger {
    * @param {string} message - The message to be logged
    * @param {object} body - The log context, all information 
    * should be included in an object
+   * @param {boolean} sendToDataDog - If this should be sent to Data Dog
    */
-  warn(message: string, body: Record<string, unknown>): void {
+  warn(message: string, body: Record<string, unknown>, sendToDataDog = true): void {
     try {
       console.warn(`${APP_ORG_TAG}: ${message}`, body);
-      this.sendLogToDataDog(message, body, "warn");
+
+      if(sendToDataDog) {
+        this.sendLogToDataDog(message, body, "warn");
+      }
     } catch (e) {
       console.error(e);
     }
@@ -119,11 +144,15 @@ export class Logger {
    * @param {string} message - The message to be logged
    * @param {object} body - The log context, all information 
    * should be included in an object
+   * @param {boolean} sendToDataDog - If this should be sent to Data Dog
    */
-  error(message: string, body: Record<string, unknown>): void {
+  error(message: string, body: Record<string, unknown>, sendToDataDog = true): void {
     try {
       console.error(`${APP_ORG_TAG}: ${message}`, body);
-      this.sendLogToDataDog(message, body, "error");
+
+      if(sendToDataDog) {
+        this.sendLogToDataDog(message, body, "error");
+      }
     } catch (e) {
       console.error(e);
     }

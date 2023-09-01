@@ -36,7 +36,6 @@ const ManagerDropdown = () => {
   const [isManagerModalOpen, setIsManagerModalOpen] = useState(false);
   const [isManagerDeleteOpen, setIsManagerDeleteOpen] = useState(false);
   const [ selectedManager, setSelectedManager ] = useState(null);
-  console.log("Manager Dropdown filterBy", filterBy);
 
   const handleOpenManager = () => {
     setIsManagerModalOpen(true);

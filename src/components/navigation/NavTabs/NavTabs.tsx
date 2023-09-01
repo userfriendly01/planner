@@ -22,24 +22,22 @@ const NavTabs = () => {
       return {
         ...originalValue,
         [value]: true
-      }
+      };
     });
-  }
+  };
 
   const handleDropdownClosed = (value: string) => {
     setDropdownOpen((originalValue: any) => {
       return {
         ...originalValue,
         [value]: false
-      }
+      };
     });
-  }
-
-  console.log("STATE", state);
+  };
 
   React.useEffect(() => {
     const allowedTabs: any[] = [];
-    const tabsOpen: any = {}
+    const tabsOpen: any = {};
     authenticationProfiles.forEach(p => {
       p.tabs.forEach((t: any) => {
         const value = t.value;
@@ -48,38 +46,38 @@ const NavTabs = () => {
       });
     });
     setTabs(allowedTabs);
-    setDropdownOpen(tabsOpen)
+    setDropdownOpen(tabsOpen);
   }, []);
 
   return (
-      <Content>
-        <StyledTabContainer>
-          { tabs.map((t: any) => (
-              <div
-                data-testid="dropdown-action"
-                onMouseEnter={() => handleDropdownOpen(t.value)}
-                onMouseLeave={() => handleDropdownClosed(t.value)}
-                key={t.value}
-              >
-                <StyledTab
-                  key={t.value}
-                  id={`nav-tab-${t.value}`}
-                  aria-controls={`nav-tabpanel-${t.value}`}
-                  onClick={() => navigate(t.route)}
-                >
-                  {t.label}
-                </StyledTab>
-                {t.dropdown && dropdownOpen[t.value] &&
+    <Content>
+      <StyledTabContainer>
+        { tabs.map((t: any) => (
+          <div
+            data-testid="dropdown-action"
+            onMouseEnter={() => handleDropdownOpen(t.value)}
+            onMouseLeave={() => handleDropdownClosed(t.value)}
+            key={t.value}
+          >
+            <StyledTab
+              key={t.value}
+              id={`nav-tab-${t.value}`}
+              aria-controls={`nav-tabpanel-${t.value}`}
+              onClick={() => navigate(t.route)}
+            >
+              {t.label}
+            </StyledTab>
+            {t.dropdown && dropdownOpen[t.value] &&
                   <DropdownContainer>
                     { t.dropdown.map((d: any) => (
                       <StyledLink key={d.label} to={d.route}>{d.label}</StyledLink>
                     ))
                     }
                   </DropdownContainer>
-                }
-              </div>
-            )) }
-        </StyledTabContainer>
+            }
+          </div>
+        )) }
+      </StyledTabContainer>
     </Content>
   );
 };

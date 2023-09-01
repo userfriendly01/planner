@@ -21,7 +21,8 @@ import {
   calabrioTimeZones,
   calabrioAllowedRoles,
   findMatchingQmProfiles,
-  isUnpopulatedField
+  isUnpopulatedField,
+  logger
 } from "utils";
 
 interface CallRecordingFormInterface {
@@ -31,7 +32,9 @@ interface CallRecordingFormInterface {
 
 const CallRecordingForm = (props: CallRecordingFormInterface) => {
   const state = useAdminState();
-  const { twilioWorker, missingFields } = props;
+  const {
+    twilioWorker, missingFields
+  } = props;
   const {
     groups,
     teams,
@@ -43,7 +46,7 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
 
   React.useEffect(() => {
     if((form.calabrio_qm.scope.groups.length === 0 || form.calabrio_qm.scope.teams.length === 0) && form.formMode === formModes.INSERT) {
-      console.warn("groups and teams are empty");
+      logger.warn("groups and teams are empty", {}, false);
       setScopeOnNewUser();
     }
   }, [form]);
@@ -57,20 +60,20 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
   // * Workers Comp restricted Roles
   React.useEffect(() => {
     if(parseInt(form.triton.profileId.value) === 18) {
-      console.log("Profile 18, setting role to 'No Screen'");
+      logger.log("Profile 18, setting role to 'No Screen'");
       setWorkersCompRoles();
     }
   }, [form.triton.profileId.value]);
 
   const initiateEditForm = () => {
-    const matchingProfiles = findMatchingQmProfiles(twilioWorker || form.nNumber, users, setForm)
+    const matchingProfiles = findMatchingQmProfiles(twilioWorker || form.nNumber, users, setForm);
     if(matchingProfiles.length === 0){
-      console.warn("No matching profile was found in Calabrio for this user");
+      logger.warn("No matching profile was found in Calabrio for this user", {}, false);
       setScopeOnNewUser();
     } else if(matchingProfiles.length === 1){
       setScopeOnExistingUser(matchingProfiles[0]);
     } else {
-      console.warn("Multiple matching profiles were found in Calabrio for this user");
+      logger.warn("Multiple matching profiles were found in Calabrio for this user", {}, false);
       setScopeOnExistingUser(matchingProfiles[0]);
       setForm({
         type: "SET_DISCREPANCIES",
@@ -129,10 +132,10 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
   const setScopeOnExistingUser = (userRecord: any) => {
     const email = form.nNumber.nNumberFetchedUser.email?.toLowerCase();
     let updated = false;
-    console.log("User Record Found in Calabrio Users", userRecord);
+    logger.log("User Record Found in Calabrio Users", userRecord);
 
     if(userRecord.adLogin?.toLowerCase() !== `lm\\${form.nNumber.value.toLowerCase()}`){
-      console.warn("Windows Login does not match calabrio record");
+      logger.warn("Windows Login does not match calabrio record", {}, false);
       const discrepancy: Discrepancy = {
         type: discrepancyType.CALABRIO_QM,
         message: "User is not correctly set up for screen recording in Calabrio."
@@ -153,13 +156,12 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
         payload: discrepancy
       });
       updated = true;
-      console.warn("Email does not match calabrio record");
+      logger.warn("Email does not match calabrio record", {}, false);
     }
     getCalabrioUser(userRecord.id).then((res: any) => {
       const userGroups: any[] = [];
       const userTeams: any[] = [];
       const fetchedUser = res.data;
-      console.warn("Fetched Calabrio User: ", res);
 
       groups.forEach(group => {
         if(fetchedUser.scope.groups.some((groupId: number) => group.groupId === groupId)){
@@ -191,7 +193,6 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
         }
       });
 
-      console.warn("FORM", form);
       setForm({
         type: userFormActions.SET_CALABRIO_QM_USER,
         payload: {
@@ -208,8 +209,8 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
           }
         }
       });
-    }).catch(err => {
-      console.error("Failed to fetch Calabrio User.", err);
+    }).catch(error => {
+      logger.error("Failed to fetch Calabrio User.", { error }, false);
     });
   };
 

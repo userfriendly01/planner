@@ -18,6 +18,7 @@ import {
   WfmUser,
   discrepancyType
 } from "globals";
+import { logger } from "./logger";
 
 const inflate = util.promisify(zlib.inflate);
 
@@ -71,7 +72,7 @@ export const daysOfTheWeekOptions = [
     value: 6,
     label: "Saturday"
   }
-]
+];
 
 export const addWorkerToOrg = (user: WfmUser, state: AppState) => {
   const wfmOrg = state.calabrioContext.wfmOrg;
@@ -96,8 +97,8 @@ export const addWorkerToOrg = (user: WfmUser, state: AppState) => {
                   user
                 ]
               }
-            ]          
-          }
+            ]
+          };
         }
       } else {
         return bu;
@@ -113,13 +114,13 @@ export const addWorkerToOrg = (user: WfmUser, state: AppState) => {
             ...people,
             user
           ]
-        }
+        };
       } else {
         return bu;
       }
     });
   }
-}
+};
 export const getWfmBusinessUnits = (state: AppState, includeLostSouls?: boolean) => {
   const wfmOrg = state.calabrioContext.wfmOrg;
   if(includeLostSouls){
@@ -127,7 +128,7 @@ export const getWfmBusinessUnits = (state: AppState, includeLostSouls?: boolean)
       return {
         Id: businessUnit.Id,
         Name: businessUnit.Name
-      }
+      };
     });
   } else {
     const peopleWithHomes = wfmOrg.filter((businessUnit: WfmBusinessUnit) => businessUnit.Id !== "People_Without_Team");
@@ -135,14 +136,14 @@ export const getWfmBusinessUnits = (state: AppState, includeLostSouls?: boolean)
       return {
         Id: businessUnit.Id,
         Name: businessUnit.Name
-      }
+      };
     });
   }
 };
 
 export const getWfmTeams = (state: AppState, businessUnitId?: string, includeLostSouls?: boolean) => {
   const wfmTeams: WfmTeam[] = [];
-  
+
   const businessUnit = state.calabrioContext.wfmOrg?.find((bu: WfmBusinessUnit) => bu.Id === businessUnitId);
   if(businessUnit){
     businessUnit.Teams?.forEach((team: WfmTeam) => wfmTeams.push(team));
@@ -191,7 +192,7 @@ export const getWfmOptions = (state: AppState, businessUnitId?: string) => {
     const businessUnit = options.find((bu: WfmBusinessUnit) => bu.Id === businessUnitId);
     return businessUnit;
   } else {
-    let finalOptions: any = {};
+    const finalOptions: any = {};
 
     options?.forEach((businessUnit: any) => {
       Object.keys(businessUnit)?.forEach((option: any) => {
@@ -306,7 +307,8 @@ export const checkConflictingUsers = async (user: any, users: CalabrioQmUser[], 
       if (dupUserAdLogin === adLogin || dupUserEmail === email) {
         const res: any = await getCalabrioUser(u.id);
         const dupUser = res.data;
-        console.warn("Conflicting User Found with Duplicate Email or Windows Login: ", dupUser);
+
+        logger.warn("Conflicting User Found with Duplicate Email or Windows Login: ", { dupUser }, false);
 
         dupUser.deactivated = Date.now();
         dupUser.adLogin = `xx-${dupUser.id}-${dupUser.adLogin}`;
@@ -317,7 +319,7 @@ export const checkConflictingUsers = async (user: any, users: CalabrioQmUser[], 
           dupUser.roles = roles.filter(role => role.name.toLowerCase().includes("agent-sync"));
         }
         if(!dupUser.team){
-          console.warn("do we get in here?", teams.find(team => team.name.toLowerCase().includes("default")));
+          logger.warn("do we get in here?", { teams: teams.find(team => team.name.toLowerCase().includes("default")) }, false);
           dupUser.team = teams.find(team => team.name.toLowerCase().includes("default"))?.groupId;
         }
 
@@ -328,7 +330,8 @@ export const checkConflictingUsers = async (user: any, users: CalabrioQmUser[], 
       if (!dupUserEmail && acdId && firstName === dupUserFirstName && lastName === dupUserLastName) {
         const res: any = await getCalabrioUser(u.id);
         const dupUser = res.data;
-        console.warn("Conflicting User Found with First and Last Name: ", dupUser);
+
+        logger.warn("Conflicting User Found with First and Last Name: ", { dupUser }, false);
 
         dupUser.deactivated = Date.now();
         dupUser.adLogin = `SHELLUSER-${dupUser.id}`;
@@ -345,8 +348,8 @@ export const checkConflictingUsers = async (user: any, users: CalabrioQmUser[], 
         return;
       }
     }));
-  } catch(err) {
-    console.error("Error thrown trying to fetch and validate Conflicting Users", err);
+  } catch(error) {
+    logger.error("Error thrown trying to fetch and validate Conflicting Users", { error });
   }
   return;
 };
@@ -366,18 +369,20 @@ export const findMatchingQmProfiles = (user: any, users: CalabrioQmUser[], setFo
           message: "Triton Worker Record not found but is required for Calabrio QM. This will require manual review/correction."
         }
       });
-    };
-    
+    }
+
     const matchingProfiles: any[] = [];
     users.forEach(u => {
       const dupUserAcdId = toLowerCaseString(u.acdId);
       const dupUserAdLogin = toLowerCaseString(u.adLogin);
       const dupUserEmail = toLowerCaseString(u.email);
       if(acdId && acdId === dupUserAcdId){
-        console.warn("User Found with ACD Id", u);
+        logger.log("User Found with ACD Id", u);
         matchingProfiles.unshift(u);
       } else if (dupUserAdLogin && dupUserAdLogin === adLogin || dupUserEmail && dupUserEmail === email) {
-        console.warn("User Found with Duplicate Email or Windows Login: ", u);
+
+        logger.warn("User Found with Duplicate Email or Windows Login: ", { user: u }, false);
+
         if(acdId){
           setForm({
             type: "SET_DISCREPANCIES",
@@ -386,13 +391,13 @@ export const findMatchingQmProfiles = (user: any, users: CalabrioQmUser[], setFo
               message: `Calabrio QM Record found for user where the ACD ID does not match the Triton Worker. This will require manual review/correction. Search Calabrio for a record (active or inactive) where the ACD equals ${acdId}, make that the primary user and deactivate all other users.`
             }
           });
-        };
-        matchingProfiles.push(u)
+        }
+        matchingProfiles.push(u);
       }
-    })
+    });
     return matchingProfiles;
-  } catch(err) {
-    console.error("Error thrown trying to find QM profiles", err);
+  } catch(error) {
+    logger.error("Error thrown trying to find QM profiles", { error });
     return [];
   }
 };
@@ -405,8 +410,8 @@ export const getCalabrioWfmOptions = async (dispatch: any) => {
       const buff = Buffer.from(options.data.organization, "base64");
       const data = await inflate(buff);
       optionsData = JSON.parse(data.toString("utf-8"));
-    } catch(err) {
-      console.error("Failed to parse and save Calabrio Org data", err);
+    } catch(error) {
+      logger.error("Failed to parse and save Calabrio Org data", { error });
       return false;
     }
     dispatch({
@@ -415,7 +420,7 @@ export const getCalabrioWfmOptions = async (dispatch: any) => {
     });
     return true;
   } catch (error) {
-    console.error("Failed to fetch calabrio wfm options from service");
+    logger.error("Failed to fetch calabrio wfm options from service", { error });
     return false;
   }
 };
@@ -430,8 +435,8 @@ export const getCalabrioWfmOrg = async (businessUnitId: string, state: AppState,
 
     const org: any = await getWfmOrgServiceCall(businessUnitId);
     businessUnit.Teams = org.data.Teams;
-    
-    
+
+
     const strippedOrg = state.calabrioContext.wfmOrg.filter((bu: WfmBusinessUnit) => bu.Id !== businessUnitId);
     dispatch({
       type: "updateWfmOrg",

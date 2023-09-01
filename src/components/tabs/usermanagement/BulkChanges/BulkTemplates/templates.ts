@@ -25,15 +25,15 @@ import {
   updateManagerUserState
 } from "../BulkUtils";
 import {
-  getTargetProfile
+  getTargetProfile,
+  logger
 } from "utils";
 import {
   FIELDS,
   isDidUser
 } from "../BulkTemplates";
 import {
-  AppState,
-  Worker
+  AppState
 } from "globals";
 
 const rejectPromise = (error: string, rowNumber: number) => {
@@ -43,9 +43,11 @@ const rejectPromise = (error: string, rowNumber: number) => {
   }));
 };
 
-const processCreateTritonUser = async (row: any, state: any) => {
-  console.log("**** TRITON RECORD PROCESSING", row);
+const processCreateTritonUser = async (row: any, state: AppState) => {
+  logger.log("**** TRITON RECORD PROCESSING", row);
+
   const rowNumber = row.rowNumber;
+  const identity = state.userContext.pingIdentity.sub;
   try {
     const didFieldName = "Did User";
     const didField = cleanupField(row[didFieldName], "string");
@@ -68,21 +70,38 @@ const processCreateTritonUser = async (row: any, state: any) => {
 
     const res = await createUser(body);
     const workerSid = res.workerSid;
-    console.log("TRITON RESPONSE", res);
+
+    logger.log("TRITON RESPONSE FROM CREATE USER", res);
+
     row.workerSid = workerSid;
     row.acdId = workerSid;
-    console.log(`${workerSid} created in Triton for ${row.attributes.n_number} for row ${rowNumber}`);
-    return Promise.resolve(`${workerSid} created in Triton for ${row.attributes.n_number} for row ${rowNumber}`);
-  } catch(err) {
-    const errorMessage = `Failed to create Triton user for row ${rowNumber}. ${formatErrorMessage(err)}`;
-    console.error(errorMessage, err);
+
+    const message = `${workerSid} created in Triton for ${row.attributes.n_number} for row ${rowNumber}`;
+
+    logger.info(message, {
+      identity,
+      userNNumber: row.attributes.n_number
+    });
+
+    return Promise.resolve(message);
+  } catch(error) {
+    const errorMessage = `Failed to create Triton user for row ${rowNumber}. ${formatErrorMessage(error)}`;
+
+    logger.error(errorMessage, {
+      error,
+      identity,
+      row
+    });
+
     return rejectPromise(errorMessage, rowNumber);
   }
 };
 
-const processCreateCalabrioUser = async (row: any, state: any) => {
-  console.warn("****CALABRIO RECORD PROCESSING for", row);
+const processCreateCalabrioUser = async (row: any, state: AppState) => {
+  logger.log("****CALABRIO RECORD PROCESSING for", row);
+
   const rowNumber = row.rowNumber;
+  const identity = state.userContext.pingIdentity.sub;
   try {
     await checkConflictingCalabrioUsers(row, rowNumber, state.calabrioContext.users);
     const existingTritonWorker = state.workerContext.workers.find((w:any) => w.attributes?.n_number && w.attributes.n_number === row.attributes.n_number);
@@ -103,18 +122,33 @@ const processCreateCalabrioUser = async (row: any, state: any) => {
     body.scope = row.scope;
 
     await createCalabrioUser(body);
-    console.log(`User created in Calabrio for ${row.attributes.n_number} for row ${rowNumber}`);
-    return Promise.resolve(`User created in Calabrio for ${row.attributes.n_number} for row ${rowNumber}`);
-  } catch(err) {
-    const errorMessage = `Failed to create Calabrio user for row ${rowNumber}. ${formatErrorMessage(err)}`;
-    console.error(errorMessage, err);
+
+    const message = `User created in Calabrio for ${row.attributes.n_number} for row ${rowNumber}`;
+
+    logger.info(message, {
+      identity,
+      userNNumber: row.attributes.n_number
+    });
+
+    return Promise.resolve(message);
+  } catch(error) {
+    const errorMessage = `Failed to create Calabrio user for row ${rowNumber}. ${formatErrorMessage(error)}`;
+
+    logger.error(errorMessage, {
+      error,
+      identity,
+      row
+    });
+
     return rejectPromise(errorMessage, rowNumber);
   }
 };
 
-const processWFMCreateUser = async (row: any, state: any) => {
-  console.warn("****WFM RECORD PROCESSING for", row);
+const processWFMCreateUser = async (row: any, state: AppState) => {
+  logger.info("****WFM RECORD PROCESSING for", row);
+
   const rowNumber = row.rowNumber;
+  const identity = state.userContext.pingIdentity.sub;
 
   try {
     const hasPersonConflict = checkIfConflictingWFMPeople(row, state);
@@ -163,28 +197,48 @@ const processWFMCreateUser = async (row: any, state: any) => {
     if(environment === "production"){
       const result = await createCalabrioWFMPerson(body);
       row.Id = result?.data?.PersonId;
-      console.log(`Person created in Calabrio WFM for ${row.attributes.n_number} for row ${rowNumber}`);
-      return Promise.resolve(`Person created in Calabrio WFM for ${row.attributes.n_number} for row ${rowNumber}`);
+
+      const message = `Person created in Calabrio WFM for ${row.attributes.n_number} for row ${rowNumber}`;
+
+      logger.info(message, {
+        identity,
+        userNNumber: row.attributes.n_number
+      });
+
+      return Promise.resolve(message);
     } else {
-      console.log(`No NP environment for WFM. WFM user not created for ${row.attributes.n_number} for row ${rowNumber}`, body);
-      return Promise.resolve(`No NP environment for WFM. WFM user not created for ${row.attributes.n_number} for row ${rowNumber}`);
+      const message = `No NP environment for WFM. WFM user not created for ${row.attributes.n_number} for row ${rowNumber}`;
+
+      logger.log(message, {
+        identity,
+        body
+      });
+
+      return Promise.resolve(message);
     }
-  } catch(err) {
+  } catch(error) {
     let errorMessage;
-    if (err?.response?.data && err?.response?.data?.exception === "com.netflix.zuul.exception.ZuulException") {
+    if (error?.response?.data && error?.response?.data?.exception === "com.netflix.zuul.exception.ZuulException") {
       errorMessage = `A timeout occured while creating WFM Person ${row.attributes.emp_first_name} ${row.attributes.emp_last_name} for row ${rowNumber}. They may still have been successfully added to WFM. Please verify in WFM.`;
-      console.error(errorMessage, err);
     } else {
-      errorMessage = `Failed to create Calabrio WFM person for row ${rowNumber}. ${formatErrorMessage(err)}`;
-      console.error(errorMessage, err);
+      errorMessage = `Failed to create Calabrio WFM person for row ${rowNumber}. ${formatErrorMessage(error)}`;
     }
+
+    logger.error(errorMessage, {
+      error,
+      identity,
+      row
+    });
+
     return rejectPromise(errorMessage, rowNumber);
   }
 };
 
-const processCreateManager = async (row: any, state: any) => {
-  console.warn("****MANAGER RECORD PROCESSING for", row);
+const processCreateManager = async (row: any, state: AppState) => {
+  logger.log("****MANAGER RECORD PROCESSING for", row);
+
   const rowNumber = row.rowNumber;
+  const identity = state.userContext.pingIdentity.sub;
 
   const managerNNumberFieldName = "Manager N Number";
   const managerNNumberField = cleanupField(row[managerNNumberFieldName], "string");
@@ -204,9 +258,18 @@ const processCreateManager = async (row: any, state: any) => {
       const newTeamId = response.data.groupId;
       row.groupId = newTeamId;
 
-    } catch (err) {
-      const errorMessage = `Failed to create Team for row ${rowNumber}. ${formatErrorMessage(err)}`;
-      console.error(errorMessage, err);
+      logger.info("Successfully added Calabrio Team", {
+        identity
+      });
+    } catch (error) {
+      const errorMessage = `Failed to create Team for row ${rowNumber}. ${formatErrorMessage(error)}`;
+
+      logger.error(errorMessage, {
+        error,
+        identity,
+        row
+      });
+
       return rejectPromise(errorMessage, rowNumber);
     }
   }
@@ -222,17 +285,31 @@ const processCreateManager = async (row: any, state: any) => {
 
   try {
     await addManager(body);
-    console.log(`Manager created for ${managerNNumberField} for row ${rowNumber}`);
-    return Promise.resolve(`Manager created for ${managerNNumberField} for row ${rowNumber}`);
-  } catch (err) {
-    const errorMessage = `Failed to create Manager for row ${rowNumber}. ${formatErrorMessage(err)}`;
-    console.error(errorMessage, err);
+
+    const message = `Manager created for ${managerNNumberField} for row ${rowNumber}`;
+
+    logger.info(message, {
+      identity,
+      managerNNumber: managerNNumberField
+    });
+
+    return Promise.resolve(message);
+  } catch (error) {
+    const errorMessage = `Failed to create Manager for row ${rowNumber}. ${formatErrorMessage(error)}`;
+
+    logger.error(errorMessage, {
+      error,
+      identity,
+      row
+    });
+
     return rejectPromise(errorMessage, rowNumber);
   }
 };
 
 const processUpdateWorkerAttribute = async (row: any, template: Template, state: AppState) => {
   const rowNumber = row.rowNumber;
+  const identity = state.userContext.pingIdentity.sub;
   const key = template.data.key;
   const value = template.data.value;
   const location = template.data.location;
@@ -277,19 +354,40 @@ const processUpdateWorkerAttribute = async (row: any, template: Template, state:
     body = newAttribute;
   }
 
-  console.log("**** UPDATE WORKER ATTRIBUTE RECORD PROCESSING", row, body, value);
+  logger.log("**** UPDATE WORKER ATTRIBUTE RECORD PROCESSING", {
+    row,
+    body,
+    value
+  });
+
   try {
     await updateUser(row.workerSid, body);
-    return Promise.resolve(`${row.workerSid} - Worker Attributes updated for row ${rowNumber}`);
-  } catch(err){
-    const errorMessage = `Failed to update Triton Worker Attributes for row ${rowNumber}. ${formatErrorMessage(err)}`;
-    console.error(errorMessage, err);
+
+    const message = `${row.workerSid} - Worker Attributes updated for row ${rowNumber}`;
+
+    logger.info(message, {
+      identity,
+      workerSid: row.workerSid
+    });
+
+    return Promise.resolve(message);
+  } catch(error){
+    const errorMessage = `Failed to update Triton Worker Attributes for row ${rowNumber}. ${formatErrorMessage(error)}`;
+
+    logger.error(errorMessage, {
+      error,
+      identity,
+      row
+    });
+
     return rejectPromise(errorMessage, rowNumber);
   }
 };
 
-const processUpdateManager = async (row: any, template: Template, state: any) => {
+const processUpdateManager = async (row: any, template: Template, state: AppState) => {
   const rowNumber = row.rowNumber;
+  const identity = state.userContext.pingIdentity.sub;
+
   try {
     const userNNumber = row.attributes.n_number;
     const managerNNumber = template.data.nNumber;
@@ -318,9 +416,18 @@ const processUpdateManager = async (row: any, template: Template, state: any) =>
       try {
         const res = await getCalabrioUser(userCalabrioRecord.id);
         fetchedCalabrioUser = res.data;
-      } catch(err){
-        const errorMessage = `No updates made, Failed to fetch calabrio user for row ${rowNumber}. ${formatErrorMessage(err)}`;
-        console.error(errorMessage, err);
+      } catch(error){
+        const errorMessage = `No updates made, Failed to fetch calabrio user for row ${rowNumber}. ${formatErrorMessage(error)}`;
+
+        logger.error(
+          errorMessage,
+          {
+            error,
+            row
+          },
+          false
+        );
+
         return rejectPromise(errorMessage, rowNumber);
       }
       calabrioBody = {
@@ -343,16 +450,31 @@ const processUpdateManager = async (row: any, template: Template, state: any) =>
     if(errors.length > 0){
       return rejectPromise(`Errors thrown for row ${rowNumber}. ${errors.toString()}`, rowNumber);
     }
-    return Promise.resolve(`${userNNumber} - Manager & Calabrio Team updated for row ${rowNumber}`);
-  } catch(err){
-    const errorMessage = `Failed to update Manager and Calabrio Team for user for row ${rowNumber}. ${formatErrorMessage(err)}`;
-    console.error(errorMessage, err);
+
+    const message = `${userNNumber} - Manager & Calabrio Team updated for row ${rowNumber}`;
+
+    logger.info(message, {
+      identity,
+      userNNumber
+    });
+
+    return Promise.resolve(message);
+  } catch(error){
+    const errorMessage = `Failed to update Manager and Calabrio Team for user for row ${rowNumber}. ${formatErrorMessage(error)}`;
+
+    logger.error(errorMessage, {
+      identity,
+      error,
+      row
+    });
+
     return rejectPromise(errorMessage, rowNumber);
   }
 };
 
-const processUpdateDefaultSkills = async (row: any, template: Template, state: any) => {
+const processUpdateDefaultSkills = async (row: any, template: Template, state: AppState) => {
   const rowNumber = row.rowNumber;
+  const identity = state.userContext.pingIdentity.sub;
   const workerSid = row.workerSid;
   const value = template.data.value;
   const option = template.data.option;
@@ -395,19 +517,38 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: a
   }
 
   body.attributes = { "default_skills": updatedDefaultSkills };
-  console.log("**** UPDATE DEFAULT SKILLS RECORD PROCESSING", row, body);
+
+  logger.log("**** UPDATE DEFAULT SKILLS RECORD PROCESSING", {
+    row,
+    body
+  });
+
   try {
     await updateUser(workerSid, body);
-    return Promise.resolve(`${workerSid} - Default Skills updated for row ${rowNumber}`);
-  } catch(err){
-    const errorMessage = `Failed to update Default Skills for row ${rowNumber}. ${formatErrorMessage(err)}`;
-    console.error(errorMessage, err);
+
+    const message = `${workerSid} - Default Skills updated for row ${rowNumber}`;
+
+    logger.info(message, {
+      identity,
+      workerSid
+    });
+
+    return Promise.resolve(message);
+  } catch(error){
+    const errorMessage = `Failed to update Default Skills for row ${rowNumber}. ${formatErrorMessage(error)}`;
+
+    logger.error(errorMessage, {
+      error,
+      identity,
+      row
+    });
+
     return rejectPromise(errorMessage, rowNumber);
   }
 };
 
 //Templates
-export const getCreateTemplates = (state: any): Templates => {
+export const getCreateTemplates = (state: AppState): Templates => {
   return {
     CREATE_TRITON_USER: {
       name: "CREATE_TRITON_USER",
@@ -509,7 +650,7 @@ export const getCreateTemplates = (state: any): Templates => {
   };
 };
 
-export const getUpdateTemplates = (state: any): Templates => {
+export const getUpdateTemplates = (state: AppState): Templates => {
   return {
     UPDATE_WORKER_ATTRIBUTE: {
       name: "UPDATE_WORKER_ATTRIBUTE",

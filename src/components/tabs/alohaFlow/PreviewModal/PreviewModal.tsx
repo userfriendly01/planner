@@ -15,6 +15,7 @@ import { TableGridColumnDef } from "./TableColumnDef";
 import "./PreviewModal.css";
 import { Box } from "@mui/material";
 import { reconstructTableColumnDef } from "./PreviewUtil";
+import { logger } from "utils";
 
 interface PreviewModalProps {
     isOpen: boolean;
@@ -60,8 +61,8 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   const handleOnDelete = async () => {
     try {
       await onDelete(rows);
-    } catch(e) {
-      console.error(e.message);
+    } catch(error) {
+      logger.error("onDelete call failed", { error }, false);
     }
   };
 

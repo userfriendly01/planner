@@ -19,7 +19,10 @@ import {
 } from "globals";
 import React from "react";
 import { deleteUser } from "services";
-import { wait } from "utils";
+import {
+  logger,
+  wait
+} from "utils";
 
 const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
   const {
@@ -29,11 +32,11 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
   } = props;
 
   const state = useAdminState();
+  const identity = state.userContext.pingIdentity.sub;
   const dispatch = useAdminDispatch();
   const form = useFormState();
-  const tritonWorker: any = state.workerContext.workers.find((w: any) => w.attributes.n_number === form.nNumber.value);;
+  const tritonWorker: any = state.workerContext.workers.find((w: any) => w.attributes.n_number === form.nNumber.value);
 
-  console.log("TRITON WORKER", tritonWorker);
   const isWorkerDid = form.triton.didUser;
   const [deleteTriton, setDeleteTriton] = React.useState(form.triton.userFound);
   const [deleteCalabrioQm, setDeleteClabrioQm] = React.useState(form.calabrio_qm.userFound);
@@ -52,7 +55,13 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
     deleteUser(tritonWorker)
       .then(() => {
         resultMessage = `Successfully deleted Triton worker with sid ${tritonWorker.sid}`;
-        console.log(resultMessage);
+
+        logger.info(resultMessage, {
+          identity,
+          workerSid: tritonWorker.sid,
+          userNNumber: tritonWorker.attributes?.n_number
+        });
+
         dispatch({
           type: "deleteWorker",
           payload: tritonWorker.sid
@@ -71,15 +80,19 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
           handleClose();
         }, timeouts.MODAL_OVERLAY);
       })
-      .catch(err => {
-        if (typeof err.response?.data?.error === "object" ){
+      .catch(error => {
+        if (typeof error.response?.data?.error === "object" ){
           resultMessage = `Failed to delete worker ${tritonWorker.sid}`;
         } else {
-          resultMessage = err.response.data.error;
+          resultMessage = error.response.data.error;
         }
-        console.error(resultMessage, {
-          error: err
+
+        logger.error(resultMessage, {
+          error,
+          identity,
+          tritonWorker
         });
+
         updateLoading({
           ...loading,
           overlayMessage: `Error Deleting Triton User. ${resultMessage}`,

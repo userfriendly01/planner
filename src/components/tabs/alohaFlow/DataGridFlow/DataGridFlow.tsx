@@ -20,7 +20,8 @@ import {
   CALL_FLOW_PER_PAGE, downloadCSV,
   EXPORT_FILE_PREFIX,
   getAdvanceFilter, getGraphQLEndpoint,
-  initializedAlertBar
+  initializedAlertBar,
+  logger
 } from "utils";
 import {
   AlertBarProps, FormValidationRule
@@ -334,11 +335,11 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
   };
 
   const handleOnBulkCreate = (rows: Array<CctSharedCallFlowDb> ) =>{
-    console.log("Bulk Create: ", rows);
+    logger.log("Bulk Create: ", rows);
   };
 
   const handleOnBulkUpdate = (rows: Array<CctSharedCallFlowDb> ) =>{
-    console.log("Bulk Update: ", rows);
+    logger.log("Bulk Update: ", rows);
   };
 
   const handleOnBulkDelete = async(rows: Array<CctSharedCallFlowDb> ) =>{

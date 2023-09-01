@@ -5,6 +5,7 @@ import React from "react";
 import {
   ExcelExport
 } from "@progress/kendo-react-excel-export";
+import { logger } from "utils";
 
 const ExportOptionsButton = (props: any) => {
   const {
@@ -15,7 +16,7 @@ const ExportOptionsButton = (props: any) => {
   } = props;
 
   const _export = React.useRef(null);
-  console.log("ExportOptionsButton Template", template);
+  logger.log("ExportOptionsButton Template", template);
 
   const handleExport = () => {
     const rows: any = [];
@@ -58,8 +59,8 @@ const ExportOptionsButton = (props: any) => {
       });
     });
 
-    console.log("rows", rows);
-    console.log("columns", columns);
+    logger.log("rows", rows);
+    logger.log("columns", columns);
 
     if (_export !== null) {
       _export.current.save(rows, columns);
