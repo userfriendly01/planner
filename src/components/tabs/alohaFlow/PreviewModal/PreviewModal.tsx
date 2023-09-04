@@ -42,7 +42,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
 
   useEffect(()=>{
     setFlowRows(rows);
-  });
+  }, [rows]);
 
   const getUpdatedFlowDb = () =>{
     const newRows: Array<CctSharedCallFlowDb>=[...flowRows].map((row: CctSharedCallFlowDb)=>{

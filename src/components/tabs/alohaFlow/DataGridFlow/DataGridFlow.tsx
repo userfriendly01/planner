@@ -90,12 +90,12 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       });
 
       await loadDataTable(flowData);
-      const result: CctSharedCallFlowDb[] = await retrieveFlowData(
-        accessToken,
-        graphQLEndpoint,
-        firstChunkData
-      );
-      await loadDataTable(result);
+      // const result: CctSharedCallFlowDb[] = await retrieveFlowData(
+      //   accessToken,
+      //   graphQLEndpoint,
+      //   firstChunkData
+      // );
+      // await loadDataTable(result);
     };
     getTableData();
   }, []);
@@ -420,7 +420,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         msg: "Error deleting records.",
         severityType: "error"
       }));
-      throw new Error("Error deleting records.");
+      throw new Error("Error while deleting records.");
     } else {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
