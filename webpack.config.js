@@ -1,4 +1,5 @@
 const ESLintPlugin = require("eslint-webpack-plugin");
+const webpack = require("webpack");
 const path = require("path");
 
 const resolvePathInSrc = resourceInSrc => {
@@ -6,6 +7,8 @@ const resolvePathInSrc = resourceInSrc => {
     ? path.resolve(__dirname, "src", resourceInSrc)
     : path.resolve(__dirname, "src");
 };
+
+console.log(process.env);
 
 const config = {
   entry: resolvePathInSrc("index"),
@@ -15,7 +18,12 @@ const config = {
     // publicPath: "/triton-admin/"
   },
   plugins: [
-    new ESLintPlugin({ failOnWarning: true })
+    new ESLintPlugin({ failOnWarning: true }),
+    new webpack.DefinePlugin({
+      process: {
+        env: process.env
+      }
+    })
   ],
   module: {
     rules: [
@@ -36,11 +44,11 @@ const config = {
       {
         test: /\.(sa|sc|c)ss$/,
         use: [
-          'style-loader',
-          'css-loader',
-          'sass-loader',
-        ],
-      },
+          "style-loader",
+          "css-loader",
+          "sass-loader"
+        ]
+      }
     ]
   },
   resolve: {
