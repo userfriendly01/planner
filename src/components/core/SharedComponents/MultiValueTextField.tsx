@@ -69,6 +69,7 @@ const MultiValueTextField = ({
       onChange={e => {
         setTextFieldValue(e.target.value);
       }}
+      onKeyDown={event => { event.stopPropagation(); }}
       onKeyPress={(e: any) => { handleOnChange(e); }}
       InputProps={{
         startAdornment:

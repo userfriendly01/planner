@@ -330,7 +330,6 @@ export const initiateCalls = async (
   });
 
   const successfulRows = identifySuccessfulRecords(rows, finalErrors);
-
   const stateUpdateResults = await Promise.all(selectedTemplates.map((t: any) => {
     return Promise.allSettled(t.stateUpdateFunctions.map((f: any) => f(state, dispatch, successfulRows, selectedTemplates)));
   }));

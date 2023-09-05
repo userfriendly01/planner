@@ -86,7 +86,7 @@ const MultiFieldContainer = (
 
   useEffect(()=>{
     setListItems(value);
-    setIndexOf(value.length);
+    setIndexOf(value?.length);
   }, [value]);
   const handleClick =(event: React.MouseEvent<HTMLDivElement>) => {
     setAnchorEl(event.currentTarget);

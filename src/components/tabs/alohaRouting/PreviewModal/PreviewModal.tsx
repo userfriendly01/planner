@@ -80,7 +80,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
         onClose={()=>{ onClose(); }}
         size="large"
       >
-        <ModalHeader>Delete Routes - {rows.length} rows selected</ModalHeader>
+        <ModalHeader>{action?.toUpperCase()} Routing - {rows.length} rows selected</ModalHeader>
         <ModalBody className="preview-grid-modal">
           <DataGrid
             apiRef={apiRef}

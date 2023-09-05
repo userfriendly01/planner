@@ -42,6 +42,7 @@ async function queryRoutingData(accessToken, nextToken = null, graphQlApiUrl) {
                         endTime
                         crcSkill
                         priority
+                        alternateTransferDestination
                         occupancyCheck {
                           percentage
                           team
@@ -125,6 +126,7 @@ async function updateRoutingDB(item, accessToken, graphQlApiUrl) {
     policyType: item.policyType,
     startTime: item.startTime,
     endTime: item.endTime,
+    alternateTransferDestination: item?.alternateTransferDestination,
     crcSkill: item.crcSkill || "",
     priority: item?.priority || "",
     occupancyCheck: item?.occupancyCheck || [],
@@ -158,6 +160,7 @@ async function updateRoutingDB(item, accessToken, graphQlApiUrl) {
               twilioSkill
               crcSkill
               priority
+              alternateTransferDestination
               occupancyCheck {
                 percentage
                 team
@@ -209,6 +212,7 @@ async function addRoutingRule(item, accessToken, graphQlApiUrl) {
     policyType: item.policyType.value,
     startTime: item.startTime.value,
     endTime: item.endTime.value,
+    alternateTransferDestination: item.alternateTransferDestination?.value || "",
     crcSkill: item.crcSkill?.value || "",
     priority: item.priority?.value || "",
     occupancyCheck: item.occupancyCheck?.value || [],
@@ -242,6 +246,7 @@ async function addRoutingRule(item, accessToken, graphQlApiUrl) {
               twilioSkill
               crcSkill
               priority
+              alternateTransferDestination
               occupancyCheck {
                 percentage
                 team
@@ -306,6 +311,7 @@ async function deleteRoutingRule(item, accessToken, graphQlApiUrl) {
               twilioSkill
               crcSkill
               priority
+              alternateTransferDestination
               occupancyCheck {
                 percentage
                 team
@@ -373,11 +379,111 @@ async function batchDelete(items, accessToken, graphQlApiUrl) {
   }
   return response;
 }
+
+
+/**
+ * This is the Function to batch update the Routing Object to the DB
+ * @param {routingData} items List of Routing object that need to update
+ * @param {String} accessToken token to use while calling graphql query 
+ * @param {String} graphQlApiUrl Endpoint URL 
+ * @returns 
+ */
+const batchRoutingUpdate = async(items, accessToken, graphQlApiUrl) =>{
+  if(items.length === 0){
+    return {
+      errors: [
+        "Please Select Something to Edit"
+      ]
+    };
+  }
+  let response;
+  const input = items.map(item=>{
+    return {
+      all: "ALL",
+      pkey: item.pkey,
+      skey: item.skey,
+      brand: item.brand,
+      channel: item.channel,
+      callIntent: item.callIntent,
+      dayOfWeek: item.dayOfWeek,
+      callerState: item.callerState,
+      callerType: item.callerType,
+      twilioSkill: item.twilioSkill || "",
+      transferDestination: item.transferDestination || "",
+      percentOfCallers: item.percentOfCallers,
+      transferMessage: item.transferMessage || "",
+      policyType: item.policyType,
+      startTime: item.startTime,
+      endTime: item.endTime,
+      crcSkill: item.crcSkill || "",
+      priority: item?.priority || "",
+      occupancyCheck: item?.occupancyCheck || [],
+      routingSteps: item?.routingSteps || []
+    };
+  });
+  try {
+    const fetchResponse = await fetch(graphQlApiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: accessToken
+      },
+      body: JSON.stringify({
+        query: `
+        mutation batchUpdateCctSharedCallRoutingDb($input: CctSharedCallRoutingDbBatchUpdateInput!) {
+          batchUpdateCctSharedCallRoutingDb(input: $input) {
+            items {
+              all
+              brand
+              callIntent
+              callerState
+              callerType
+              channel
+              crcSkill
+              dayOfWeek
+              endTime
+              occupancyCheck {
+                percentage
+                team
+              }
+              percentOfCallers
+              pkey
+              policyType
+              priority
+              routingSteps {
+                callerState
+                teams
+                time
+              }
+              skey
+              startTime
+              transferDestination
+              transferMessage
+              twilioSkill
+            }
+            nextToken
+          }
+        }
+      `,
+        variables: {
+          input: { batchRoutingUpdateInput: input }
+        }
+      })
+    });
+    response = await fetchResponse.json();
+    console.log("Update Batch RoutingDB Response:", response);
+  } catch (error) {
+    console.error("Error in Update Batch RoutingDB", error);
+  }
+  return response;
+};
+
 export {
   addRoutingRule,
   batchDelete,
   deleteRoutingRule,
   queryRoutingData,
   retrieveRoutingData,
-  updateRoutingDB
+  updateRoutingDB,
+  batchRoutingUpdate
 };

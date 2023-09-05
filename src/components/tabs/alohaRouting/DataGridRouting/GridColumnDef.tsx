@@ -202,5 +202,18 @@ export const RoutingGridColumnDef: GridColDef[] = [
           ))}
       </div>
     )
+  },
+  {
+    headerName: "Alternate Transfer Destination",
+    field: "alternateTransferDestination",
+    sortable: false,
+    minWidth: 100,
+    flex: 1,
+    align: "left",
+    renderCell: (params: any) =>  (
+      <Tooltip title={params.row.alternateTransferDestination || ""} >
+        <div>{params.row?.alternateTransferDestination || ""}</div>
+      </Tooltip>
+    )
   }
 ];

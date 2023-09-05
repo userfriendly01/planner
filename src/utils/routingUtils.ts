@@ -307,6 +307,16 @@ export const routingFields: AddRoutingFieldConfigProps[] = [
         helperText: "Caller's State or Overflow (OF)"
       }
     ]
+  },
+  {
+    label: "Alternate Transfer Destination",
+    key: "alternateTransferDestination",
+    control: "input",
+    valueGetter: (params: CctSharedCallRoutingDb) => `${params?.alternateTransferDestination || ""}`,
+    valueSetter: (currentValue: CctSharedCallRoutingDb, newValue: any) => ({
+      ...currentValue,
+      ...newValue
+    })
   }
 ];
 
@@ -334,7 +344,7 @@ export const convertTime12to24 = (time12h: string): string => {
   const todayDate = new Date().toISOString().split("T")[0];
   const hmsTime = `${timeSplit[0]}:${timeSplit[1]}:${timeSplit[2] || "00"}`;
   const targetStartTime: Date = new Date(`${todayDate}T${hmsTime}`);
-  return targetStartTime.toISOString();
+    return targetStartTime.toISOString();
 };
 
 export const convertTime24to12 = (time24h: string): string =>{

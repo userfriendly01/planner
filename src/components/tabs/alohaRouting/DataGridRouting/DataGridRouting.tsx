@@ -23,6 +23,7 @@ import {
 } from "utils/interfaces";
 import {
   batchDelete,
+  batchRoutingUpdate,
   queryRoutingData,
   retrieveRoutingData
 } from "services";
@@ -343,8 +344,50 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
     logger.log("Bulk Create: ", rows);
   };
 
-  const handleOnBulkUpdate = (rows: Array<CctSharedCallRoutingDb> ) =>{
-    logger.log("Bulk Update: ", rows);
+  const handleOnBulkUpdate = async(rows: Array<CctSharedCallRoutingDb> ) =>{
+    const response = await batchRoutingUpdate(rows, accessToken, graphQlApiUrl);
+    if(!response || response.errors) {
+      setAlertBar((alertBarProps: AlertBarProps) => ({
+        ...alertBarProps,
+        open: true,
+        msg: "Error while updating the records.",
+        severityType: "error"
+      }));
+      throw new Error("Error while updating the records.");
+    } else {
+      setAlertBar((alertBarProps: AlertBarProps) => ({
+        ...alertBarProps,
+        open: true,
+        msg: "Routing Rules have been successfully updated.",
+        severityType: "success"
+      }));
+    }
+
+    const filteredItems = state.filteredItems.map(x=> {
+      const fi = rows.filter(r=> r.skey === x.skey);
+      if(fi.length >0){
+        return fi[0];
+      }
+      else{
+        return x;
+      }
+    });
+    const filteredData = state.data.map(x=> {
+      const fi = rows.filter(r=> r.skey === x.skey);
+      if(fi.length >0){
+        return fi[0];
+      }
+      else{
+        return x;
+      }
+    });
+    setSelectedList([]);
+    setState({
+      ...state,
+      ...filteredItems && { filteredItems },
+      data: filteredData,
+      isPreviewModalOpen: false
+    });
   };
 
   const handleOnBulkDelete = async (rows: Array<CctSharedCallRoutingDb> ) =>{

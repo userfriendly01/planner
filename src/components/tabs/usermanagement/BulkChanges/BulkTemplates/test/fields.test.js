@@ -648,6 +648,22 @@ describe("fields.js", () => {
             }
           });
         });
+        test("throws an exception when an invalid state is provided", async () => {
+          const row = {
+            rowNumber: 5,
+            "Default Skills": "aisgL1, lscOBDialer1:2"
+          };
+          const corruptedState = Object.assign({}, initialTestState);
+          delete corruptedState.skillContext;
+          try {
+            await defaultSkillValidation(row, corruptedState);
+          } catch (err) {
+            expect(err).toBe(JSON.stringify({
+              rowNumber: 5,
+              error: "Default Skills Errors found for row 5 Cannot read properties of undefined (reading 'skills')"
+            }));
+          }
+        });
       });
       describe("options", () => {
         const optionsFunction = FIELDS.DEFAULT_SKILLS.options;

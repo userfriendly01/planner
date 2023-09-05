@@ -24,12 +24,12 @@ const validRoutingData = {
   callerType: "test",
   channel: "test",
   dayOfWeek: "Monday",
-  endTime: "2022-02-20",
+  endTime: "11:00:00 PM",
   percentOfCallers: "100",
   pkey: "+12353245",
   policyType: "Liberty",
   skey: "liberty_test_test",
-  startTime: "2022-02-20",
+  startTime: "11:00:00 AM",
   transferDestination: "Twilo",
   transferMessage: "HOLD ON while we transfer the call",
   twilioSkill: "test",
@@ -157,7 +157,7 @@ describe("<AddRouting/>",()=>{
       const dayOfWeekAttr = ComponentControl.mock.calls[8][0].onChange;
       const startTimeAttr = ComponentControl.mock.calls[12][0].onChange;
       const endTimeAttr = ComponentControl.mock.calls[13][0].onChange;
-      const policyTypeAttr = ComponentControl.mock.calls[15][0].onChange;
+      const policyTypeAttr = ComponentControl.mock.calls[14][0].onChange;
       const percentAttr = ComponentControl.mock.calls[11][0].onChange;
       const channelOnChange = { target: { value: "Test1 Channel" }};
       const brandOnChange = { target: { value: "Test Brand" }};
