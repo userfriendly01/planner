@@ -302,7 +302,8 @@ export interface WorkerAttributeSkills {
   },
   skills: string[],
   team?:string,
-  callerStates?: string[]
+  callerStates?: string[],
+  sales_assoc_worker?: string[]
 }
 
 

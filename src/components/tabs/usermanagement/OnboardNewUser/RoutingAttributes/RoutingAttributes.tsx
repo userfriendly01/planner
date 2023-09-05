@@ -14,18 +14,29 @@ import { RoutingTeamAttrDropDownOptions,CallerStateAttrDropDownOptions } from ".
 const RoutingAttributes = (): JSX.Element => {
   const setForm = useFormDispatch();
   const form = useFormState();
-  const accordianExpansion = form.triton.routing.team ? true : form.triton.routing?.callerStates?.length>0?true:false;
+  const accordianExpansion= ()=>{
+    if(form.triton.routing.team || form.triton.routing?.callerStates.length>0 || form.triton.routing?.sales_assoc_workers?.length>0){
+      return true
+    }
+    return false
+  }
   const [expanded, setExpanded] = useState(accordianExpansion);
-  const getlabelValuePair=()=>{
-    const callerStateList = form.triton.routing?.callerStates||[];
-    return callerStateList.map((callerState:String) => {
+  const getlabelValuePair=(key:string)=>{
+    let RoutingAttrList:String[] = [];
+    if(key === "callerStates"){
+      RoutingAttrList = form.triton.routing?.callerStates || []
+    }
+    else if(key === "salesAssociateWorker"){
+      RoutingAttrList = form.triton.routing?.sales_assoc_workers|| []
+    }
+    
+    return RoutingAttrList.map((routingAttr:String) => {
       return {
-        ...callerState,
-        label: callerState,
-        value: callerState
+        ...routingAttr,
+        label: routingAttr,
+        value: routingAttr
       };
     });
-
   }
   const handleChange = (event: any, value: any, keyName:String) => {
     switch(keyName){
@@ -49,6 +60,18 @@ const RoutingAttributes = (): JSX.Element => {
           }
         });
         break;
+        case "salesAssociateWorker":
+          var salesAssociateWorkerArray:String[] =[];
+          for(let i=0;i<value?.length;i++){
+            salesAssociateWorkerArray.push(value[i].value);
+          }
+          setForm({
+            type: userFormActions.SET_SALES_ASSOCIATE_WORKER,
+            payload: {
+              salesAssociateWorkerRouting: salesAssociateWorkerArray
+            }
+          });
+          break;
     }
     
   }
@@ -83,9 +106,24 @@ const RoutingAttributes = (): JSX.Element => {
       <AccordionDetails>
         <Dropdown
           label="Caller State"
-          value={getlabelValuePair()}
+          value={getlabelValuePair("callerStates")}
           options={CallerStateAttrDropDownOptions}
           updateValue={(event: any, value: any) => handleChange(event, value, "callerStates")}
+          styles={{
+            width: "calc(95%)",
+            margin: "0 0 0 0"
+          }}
+          disabled={false}
+          required={false}
+          multiple = {true}
+        />
+      </AccordionDetails>
+      <AccordionDetails>
+        <Dropdown
+          label="Sales Associate Workers"
+          value={getlabelValuePair("salesAssociateWorker")}
+          options={CallerStateAttrDropDownOptions}
+          updateValue={(event: any, value: any) => handleChange(event, value, "salesAssociateWorker")}
           styles={{
             width: "calc(95%)",
             margin: "0 0 0 0"
