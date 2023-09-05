@@ -33,7 +33,7 @@ export const TfnActivation = (props: TfnActivationProps) => {
     setSaveResult
   } = props;
   const state = useAdminState();
-  const identity = state.userContext.pingIdentity.sub;
+  const identity = state.userContext.pingIdentity?.sub;
   const [ showFields, setShowFields ] = React.useState(false);
   const defaultEntryMessage = "Thank you for calling Liberty Mutual Insurance";
   const defaultTfnState: any = {

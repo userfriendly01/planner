@@ -87,7 +87,7 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
   const adminDispatch = useAdminDispatch();
 
   const state = useAdminState();
-  const identity = state.userContext.pingIdentity.sub;
+  const identity = state.userContext.pingIdentity?.sub;
   const profiles = state.profileContext.profiles;
   const skills = state.skillContext.skills;
 

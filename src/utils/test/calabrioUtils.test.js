@@ -11,7 +11,8 @@ import {
   getWfmBusinessUnits,
   getWfmTeams,
   getWfmPeople,
-  getWfmOptions as getWfmOptionsUtil
+  getWfmOptions as getWfmOptionsUtil,
+  logger
 } from "utils";
 import {
   getCalabrioUser,
@@ -19,7 +20,9 @@ import {
   getWfmOptions,
   getWfmOrg
 } from "services";
-import { calabrioContext, initialTestState } from "testUtils";
+import {
+  calabrioContext, initialTestState
+} from "testUtils";
 import zlib from "zlib";
 
 Date.now = jest.fn();
@@ -176,7 +179,10 @@ describe("calabrioUtils", () => {
       ]);
     });
     test("team is populated - should add to appropriate BU", () => {
-      const user = { BusinessUnitId: "123-321", TeamId: "111" };
+      const user = {
+        BusinessUnitId: "123-321",
+        TeamId: "111"
+      };
       const result = addWorkerToOrg(user, { ...initialTestState });
       const org = initialTestState.calabrioContext.wfmOrg.filter(bu => bu.Id !== user.BusinessUnitId);
       const bu = initialTestState.calabrioContext.wfmOrg.find(bu => bu.Id === user.BusinessUnitId);
@@ -196,7 +202,7 @@ describe("calabrioUtils", () => {
             }
           ]
         },
-        ...org,
+        ...org
       ]);
     });
   });
@@ -220,11 +226,10 @@ describe("calabrioUtils", () => {
       expect(result).toEqual([{
         Name: "Cool WFM Business Unit",
         Id: "123-321"
-        }, {
-          Name: "Other WFM Business Unit",
-          Id: "999-999"
-        }
-      ]);
+      }, {
+        Name: "Other WFM Business Unit",
+        Id: "999-999"
+      }]);
     });
   });
   describe("getWfmTeams", () => {
@@ -239,7 +244,7 @@ describe("calabrioUtils", () => {
               People: [{
                 BusinessUnitId: "999-999",
                 FirstName: "Faith",
-                EmploymentNumber: "n8765432",
+                EmploymentNumber: "n8765432"
               }]
             },
             {
@@ -447,7 +452,7 @@ describe("calabrioUtils", () => {
               Id: "111"
             }
           ]
-      })
+        });
       });
       test("returns list of options for all Business units", () => {
         const result = getWfmOptionsUtil({ calabrioContext });
@@ -679,8 +684,8 @@ describe("calabrioUtils", () => {
           await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
           expect(getCalabrioUser).toBeCalledTimes(1);
           expect(getCalabrioUser).toBeCalledWith("1");
-          expect(console.error).toBeCalledTimes(1);
-          expect(console.error.mock.calls[0][0]).toContain("Error thrown trying to fetch and validate Conflicting Users");
+          expect(logger.error).toBeCalledTimes(1);
+          expect(logger.error.mock.calls[0][0]).toContain("Error thrown trying to fetch and validate Conflicting Users");
         });
       });
       describe("updateCalabrioUser fails", () => {
@@ -706,8 +711,8 @@ describe("calabrioUtils", () => {
           expect(getCalabrioUser).toBeCalledWith("1");
           expect(updateCalabrioUser).toBeCalledTimes(1);
           expect(updateCalabrioUser).toBeCalledWith("1", updatedUser);
-          expect(console.error).toBeCalledTimes(1);
-          expect(console.error.mock.calls[0][0]).toContain("Error thrown trying to fetch and validate Conflicting Users");
+          expect(logger.error).toBeCalledTimes(1);
+          expect(logger.error.mock.calls[0][0]).toContain("Error thrown trying to fetch and validate Conflicting Users");
         });
       });
       describe("getCalabrioUser and updateCalabrioUser succeeds", () => {
@@ -733,7 +738,7 @@ describe("calabrioUtils", () => {
           expect(getCalabrioUser).toBeCalledWith("1");
           expect(updateCalabrioUser).toBeCalledTimes(1);
           expect(updateCalabrioUser).toBeCalledWith("1", updatedUser);
-          expect(console.error).toBeCalledTimes(0);
+          expect(logger.error).toBeCalledTimes(0);
         });
         describe("Dup User has no team", () => {
           beforeEach(() => {
@@ -759,7 +764,7 @@ describe("calabrioUtils", () => {
             expect(getCalabrioUser).toBeCalledWith("1");
             expect(updateCalabrioUser).toBeCalledTimes(1);
             expect(updateCalabrioUser).toBeCalledWith("1", updatedUser);
-            expect(console.error).toBeCalledTimes(0);
+            expect(logger.error).toBeCalledTimes(0);
           });
         });
       });
@@ -797,8 +802,8 @@ describe("calabrioUtils", () => {
           await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
           expect(getCalabrioUser).toBeCalledTimes(1);
           expect(getCalabrioUser).toBeCalledWith("5");
-          expect(console.error).toBeCalledTimes(1);
-          expect(console.error.mock.calls[0][0]).toContain("Error thrown trying to fetch and validate Conflicting Users");
+          expect(logger.error).toBeCalledTimes(1);
+          expect(logger.error.mock.calls[0][0]).toContain("Error thrown trying to fetch and validate Conflicting Users");
         });
       });
       describe("updateCalabrioUser fails", () => {
@@ -824,8 +829,8 @@ describe("calabrioUtils", () => {
           expect(getCalabrioUser).toBeCalledWith("5");
           expect(updateCalabrioUser).toBeCalledTimes(1);
           expect(updateCalabrioUser).toBeCalledWith("5", updatedUser);
-          expect(console.error).toBeCalledTimes(1);
-          expect(console.error.mock.calls[0][0]).toContain("Error thrown trying to fetch and validate Conflicting Users");
+          expect(logger.error).toBeCalledTimes(1);
+          expect(logger.error.mock.calls[0][0]).toContain("Error thrown trying to fetch and validate Conflicting Users");
         });
       });
       describe("getCalabrioUser and updateCalabrioUser succeeds", () => {
@@ -851,7 +856,7 @@ describe("calabrioUtils", () => {
           expect(getCalabrioUser).toBeCalledWith("5");
           expect(updateCalabrioUser).toBeCalledTimes(1);
           expect(updateCalabrioUser).toBeCalledWith("5", updatedUser);
-          expect(console.error).toBeCalledTimes(0);
+          expect(logger.error).toBeCalledTimes(0);
         });
         describe("Dup User has no team", () => {
           beforeEach(() => {
@@ -877,7 +882,7 @@ describe("calabrioUtils", () => {
             expect(getCalabrioUser).toBeCalledWith("5");
             expect(updateCalabrioUser).toBeCalledTimes(1);
             expect(updateCalabrioUser).toBeCalledWith("5", updatedUser);
-            expect(console.error).toBeCalledTimes(0);
+            expect(logger.error).toBeCalledTimes(0);
           });
         });
         describe("Dup User has no roles", () => {
@@ -904,7 +909,7 @@ describe("calabrioUtils", () => {
             expect(getCalabrioUser).toBeCalledWith("5");
             expect(updateCalabrioUser).toBeCalledTimes(1);
             expect(updateCalabrioUser).toBeCalledWith("5", updatedUser);
-            expect(console.error).toBeCalledTimes(0);
+            expect(logger.error).toBeCalledTimes(0);
           });
         });
       });
@@ -942,8 +947,8 @@ describe("calabrioUtils", () => {
           await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
           expect(getCalabrioUser).toBeCalledTimes(1);
           expect(getCalabrioUser).toBeCalledWith("4");
-          expect(console.error).toBeCalledTimes(1);
-          expect(console.error.mock.calls[0][0]).toContain("Error thrown trying to fetch and validate Conflicting Users");
+          expect(logger.error).toBeCalledTimes(1);
+          expect(logger.error.mock.calls[0][0]).toContain("Error thrown trying to fetch and validate Conflicting Users");
         });
       });
       describe("updateCalabrioUser fails", () => {
@@ -969,8 +974,8 @@ describe("calabrioUtils", () => {
           expect(getCalabrioUser).toBeCalledWith("4");
           expect(updateCalabrioUser).toBeCalledTimes(1);
           expect(updateCalabrioUser).toBeCalledWith("4", updatedUser);
-          expect(console.error).toBeCalledTimes(1);
-          expect(console.error.mock.calls[0][0]).toContain("Error thrown trying to fetch and validate Conflicting Users");
+          expect(logger.error).toBeCalledTimes(1);
+          expect(logger.error.mock.calls[0][0]).toContain("Error thrown trying to fetch and validate Conflicting Users");
         });
       });
       describe("getCalabrioUser and updateCalabrioUser succeeds", () => {
@@ -996,7 +1001,7 @@ describe("calabrioUtils", () => {
           expect(getCalabrioUser).toBeCalledWith("4");
           expect(updateCalabrioUser).toBeCalledTimes(1);
           expect(updateCalabrioUser).toBeCalledWith("4", updatedUser);
-          expect(console.error).toBeCalledTimes(0);
+          expect(logger.error).toBeCalledTimes(0);
         });
         describe("Dup User has no roles", () => {
           beforeEach(() => {
@@ -1022,7 +1027,7 @@ describe("calabrioUtils", () => {
             expect(getCalabrioUser).toBeCalledWith("4");
             expect(updateCalabrioUser).toBeCalledTimes(1);
             expect(updateCalabrioUser).toBeCalledWith("4", updatedUser);
-            expect(console.error).toBeCalledTimes(0);
+            expect(logger.error).toBeCalledTimes(0);
           });
         });
         describe("Dup User has no team", () => {
@@ -1049,7 +1054,7 @@ describe("calabrioUtils", () => {
             expect(getCalabrioUser).toBeCalledWith("4");
             expect(updateCalabrioUser).toBeCalledTimes(1);
             expect(updateCalabrioUser).toBeCalledWith("4", updatedUser);
-            expect(console.error).toBeCalledTimes(0);
+            expect(logger.error).toBeCalledTimes(0);
           });
         });
       });
@@ -1063,16 +1068,16 @@ describe("calabrioUtils", () => {
         email: "Roy.Anderson@libertymutual.com"
       },
       {
-      acdId: "WK123456",
-      adLogin: "Lm\\n3582215",
-      email: "Roy.Anderson@libertymutual.com"
+        acdId: "WK123456",
+        adLogin: "Lm\\n3582215",
+        email: "Roy.Anderson@libertymutual.com"
       }
-    ]
+    ];
     describe("Error is thrown", () => {
       test("empty array is returned", () => {
         const result = findMatchingQmProfiles(null, [], mockSetForm);
         expect(result).toStrictEqual([]);
-        expect(console.error.mock.calls[0][0]).toContain("Error thrown trying to find QM profiles");
+        expect(logger.error.mock.calls[0][0]).toContain("Error thrown trying to find QM profiles");
       });
     });
     describe("Triton User is passed through", () => {
@@ -1146,7 +1151,7 @@ describe("calabrioUtils", () => {
             }
           });
         });
-      })
+      });
     });
     describe("form.nNumber is passed through", () => {
       test("should set no Triton User discrepency", () => {
@@ -1223,9 +1228,9 @@ describe("calabrioUtils", () => {
           Id: "new team",
           BusinessUnitId: "newid"
         }]
-      }
+      };
       getWfmOrg.mockResolvedValueOnce({
-        data: newBU, 
+        data: newBU,
         errors: []
       });
 
@@ -1245,7 +1250,7 @@ describe("calabrioUtils", () => {
       expect(mockDispatch).toHaveBeenCalledTimes(1);
       expect(mockDispatch).toHaveBeenLastCalledWith({
         type: "updateWfmOrg",
-        payload: { 
+        payload: {
           org: [ ...initialTestState.calabrioContext.wfmOrg, newBU ],
           errors: []
         }
@@ -1270,7 +1275,12 @@ describe("calabrioUtils", () => {
       } catch(err) {
         expect(getWfmOrg).toHaveBeenCalledTimes(1);
         expect(mockDispatch).toHaveBeenCalledTimes(0);
-        expect(err).toStrictEqual({response: {"data": "boo", "status": 500}});
+        expect(err).toStrictEqual({
+          response: {
+            "data": "boo",
+            "status": 500
+          }
+        });
       }
     });
   });

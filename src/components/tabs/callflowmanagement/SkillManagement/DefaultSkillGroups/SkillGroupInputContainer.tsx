@@ -47,7 +47,7 @@ const SkillGroupInputContainer = (props: any) => {
   const dispatch = useAdminDispatch();
   const skillGroups = state.skillContext.skillGroups.slice();
   const skills = state.skillContext.skills.slice();
-  const identity = state.userContext.pingIdentity.sub;
+  const identity = state.userContext.pingIdentity?.sub;
 
   const getSkillGroupOptions = () => {
     return skillGroups.map((skg: any) => {
@@ -114,13 +114,13 @@ const SkillGroupInputContainer = (props: any) => {
         status: ModalOverlayStatuses.SAVING
       });
 
-      const skillIds = tableState.selected.map((skill: Skill) => skill.ctmSkillId);
-      const requestBody: AddEditSkillGroupBody = {
-        skill_group_nme: skillGroupName.trim(),
-        skillIds
-      };
-
       try {
+        const skillIds = tableState.selected.map((skill: Skill) => skill.ctmSkillId);
+
+        const requestBody: AddEditSkillGroupBody = {
+          skill_group_nme: skillGroupName.trim(),
+          skillIds
+        };
         await addSkillGroup(requestBody);
 
         logger.info("Successfully created skill group(s)", {
@@ -143,10 +143,8 @@ const SkillGroupInputContainer = (props: any) => {
         }, timeouts.MODAL_OVERLAY);
       } catch (error) {
         logger.error("Failed to created skill group(s)", {
-          skillGroupName: skillGroupName.trim(),
           identity,
-          error,
-          requestBody
+          error
         });
 
         setSaveResult({
@@ -181,20 +179,32 @@ const SkillGroupInputContainer = (props: any) => {
     const requestBody: AddEditSkillGroupBody = {
       skill_group_nme: skillGroupName.trim()
     };
+    let editConfirmationText;
 
-    const selectedSkills: number[] = tableState.selected.slice().map((sk: Skill) => sk.ctmSkillId);
-    requestBody.skillIds = selectedSkills;
+    try {
+      const selectedSkills: number[] = tableState.selected.slice().map((sk: Skill) => sk.ctmSkillId);
+      requestBody.skillIds = selectedSkills;
 
-    const editConfirmationText = <>
-      <ConfirmationSkillGroupsDiv>
+      editConfirmationText = <>
+        <ConfirmationSkillGroupsDiv>
         Are you sure you want to edit the skill group <span style={{ textDecoration: "underline" }}>{skillGroupToEditDelete?.label ? skillGroupToEditDelete?.label : ""}?</span>
-        {requestBody.skill_group_nme ? <>The name of this skill grouping will become <span style={{ textDecoration: "underline" }}>{skillGroupName}</span> </> : ""}
+          {requestBody.skill_group_nme ? <>The name of this skill grouping will become <span style={{ textDecoration: "underline" }}>{skillGroupName}</span> </> : ""}
           This skill group will contain the following skills:
-        <ConfirmationSkillList>
-          {tableState.selected.map((skill: Skill) => <li key={skill.name}>{skill.name}</li>)}
-        </ConfirmationSkillList>
-      </ConfirmationSkillGroupsDiv>
-    </>;
+          <ConfirmationSkillList>
+            {tableState.selected.map((skill: Skill) => <li key={skill.name}>{skill.name}</li>)}
+          </ConfirmationSkillList>
+        </ConfirmationSkillGroupsDiv>
+      </>;
+    } catch (error) {
+      logger.error("Failed to update skillGroup", {
+        error,
+        identity
+      });
+      setSaveResult({
+        message: "Request Failed",
+        status: ModalOverlayStatuses.FAIL
+      });
+    }
 
     const onConfirmEdit = async () => {
       setSaveResult({
@@ -204,8 +214,7 @@ const SkillGroupInputContainer = (props: any) => {
       try {
         await updateSkillGroup(skillGroupToEditDelete.value, requestBody);
 
-        logger.info("Successfully updated skill group(s)", {
-          skillIds: selectedSkills,
+        logger.info("Successfully updated skill group", {
           skillGroupName: skillGroupName.trim(),
           identity
         });

@@ -6,6 +6,11 @@ import {
   initDataDogRum, Logger
 } from "../logger";
 
+// Suppresses global mock
+jest.mock("../logger", () => ({
+  ...jest.requireActual("../logger")
+}));
+
 describe("logger", () => {
   describe("initDataDogRum", () => {
     test("should initialize datadog appropriately", () => {
@@ -72,7 +77,6 @@ describe("logger", () => {
 
         logger[level](message, body);
 
-
         expect(console[level]).toBeCalledWith(`[CCT]: ${message}`, body);
         expect(datadogLogs.logger.log).toHaveBeenCalled();
       });
@@ -84,7 +88,6 @@ describe("logger", () => {
         const body = { id: "test" };
 
         logger[level](message, body, false);
-
 
         expect(console[level]).toBeCalledWith(`[CCT]: ${message}`, body);
         expect(datadogLogs.logger.log).not.toHaveBeenCalled();
@@ -98,7 +101,7 @@ describe("logger", () => {
         logger = new Logger();
 
         const message = "An error will occur";
-        const body = { };
+        const body = {};
 
         logger[level](message, body);
 

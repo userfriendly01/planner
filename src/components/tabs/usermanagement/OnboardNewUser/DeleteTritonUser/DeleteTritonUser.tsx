@@ -32,7 +32,7 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
   } = props;
 
   const state = useAdminState();
-  const identity = state.userContext.pingIdentity.sub;
+  const identity = state.userContext.pingIdentity?.sub;
   const dispatch = useAdminDispatch();
   const form = useFormState();
   const tritonWorker: any = state.workerContext.workers.find((w: any) => w.attributes.n_number === form.nNumber.value);

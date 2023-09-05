@@ -48,7 +48,7 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
   } = props;
 
   const state = useAdminState();
-  const identity = state.userContext.pingIdentity.sub;
+  const identity = state.userContext.pingIdentity?.sub;
   const profiles = state.profileContext.profiles;
   const calabrioTeams = state.calabrioContext.teams;
   const options: DropdownOption[] = [

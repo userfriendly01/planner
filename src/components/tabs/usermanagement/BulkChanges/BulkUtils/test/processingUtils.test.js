@@ -1,7 +1,7 @@
+import { useAdminState } from "context";
 import * as utils from "../processingUtils";
 import {
   getCalabrioUsers,
-  getWfmOrg,
   getManagers,
   wfmActivateExternalLogon
 } from "services";
@@ -14,12 +14,14 @@ import {
   formatManagersResponse,
   formatWorkerResponse,
   myAxios,
-  getCalabrioWfmOrg
+  getCalabrioWfmOrg,
+  logger
 } from "utils";
 import * as XLSX from "xlsx";
 
 
 jest.mock("utils",() => ({
+  ...jest.requireActual("utils"),
   formatManagersResponse: jest.fn(),
   formatWorkerResponse: jest.fn(),
   myAxios: {
@@ -35,11 +37,16 @@ jest.mock("xlsx",() => ({
   }
 }));
 
+jest.mock("context", () => ({
+  useAdminState: jest.fn()
+}));
+
 describe("updateManagerUserState", () => {
   const mockDispatch = jest.fn();
   beforeEach(() => {
     jest.clearAllMocks();
     jest.resetAllMocks();
+    useAdminState.mockReturnValue(initialTestState);
   });
   describe("get managers succeeds", () => {
     const response = [{
@@ -61,8 +68,8 @@ describe("updateManagerUserState", () => {
     test("dispatch is not called, promise resolves", async () => {
       getManagers.mockRejectedValue("Aww");
       await utils.updateManagerUserState(mockDispatch);
-      expect(console.error).toHaveBeenCalledTimes(1);
-      expect(console.error.mock.calls[0][0]).toContain("Failed to update manager state after bulk upload");
+      expect(logger.error).toHaveBeenCalledTimes(1);
+      expect(logger.error.mock.calls[0][0]).toContain("Failed to update manager state after bulk upload");
     });
   });
 });
@@ -97,8 +104,8 @@ describe("updateTritonUserState", () => {
     myAxios.get.mockRejectedValue("Aww");
     test("dispatch is not called, promise resolves", async () => {
       await utils.updateTritonUserState(null, mockDispatch);
-      expect(console.error).toHaveBeenCalledTimes(1);
-      expect(console.error.mock.calls[0][0]).toContain("Failed to update triton user state after bulk upload");
+      expect(logger.error).toHaveBeenCalledTimes(1);
+      expect(logger.error.mock.calls[0][0]).toContain("Failed to update triton user state after bulk upload");
     });
   });
 });
@@ -131,8 +138,8 @@ describe("updateCalabrioUserState", () => {
     test("dispatch is not called, promise resolves", async () => {
       getCalabrioUsers.mockRejectedValue("Aww");
       await utils.updateCalabrioUserState(null, mockDispatch);
-      expect(console.error).toHaveBeenCalledTimes(1);
-      expect(console.error.mock.calls[0][0]).toContain("Failed to update calabrio user state after bulk upload");
+      expect(logger.error).toHaveBeenCalledTimes(1);
+      expect(logger.error.mock.calls[0][0]).toContain("Failed to update calabrio user state after bulk upload");
     });
   });
 });
@@ -741,7 +748,7 @@ describe("handleWfmExternalLogon", () => {
   });
   describe("CREATE_TRITON_USER template is not selected", () => {
     test("promise resolves with message", async () => {
-      const results = await utils.handleWfmExternalLogon({}, mockDispatch, successfulRowsNoActivation, selectedTemplates2);
+      const results = await utils.handleWfmExternalLogon(initialTestState, mockDispatch, successfulRowsNoActivation, selectedTemplates2);
       expect(results).toBe("Selected template not CREATE_TRITON_USER, skipping handleWfmExternalLogon");
     });
   });
@@ -759,7 +766,7 @@ describe("handleWfmExternalLogon", () => {
     describe("all activations were successful", () => {
       test("batch is less than 25 users", async () => {
         wfmActivateExternalLogon.mockResolvedValue(mockWfmExternalLogonResultsSuccess);
-        const results = await utils.handleWfmExternalLogon({}, mockDispatch, successfulRowsWithActivation, selectedTemplates1);
+        const results = await utils.handleWfmExternalLogon(initialTestState, mockDispatch, successfulRowsWithActivation, selectedTemplates1);
         expect(wfmActivateExternalLogon).toHaveBeenCalledTimes(1);
         expect(results).toEqual({
           failedActivations: {
@@ -801,7 +808,7 @@ describe("handleWfmExternalLogon", () => {
         wfmActivateExternalLogon
           .mockResolvedValueOnce(mockWfmExternalLogonResultsSuccess2)
           .mockResolvedValueOnce(mockWfmExternalLogonResultsSuccess3);
-        const results = await utils.handleWfmExternalLogon({}, mockDispatch, lotsOfSuccessfulRows, selectedTemplates1);
+        const results = await utils.handleWfmExternalLogon(initialTestState, mockDispatch, lotsOfSuccessfulRows, selectedTemplates1);
         await waitFor(() => {
           expect(wfmActivateExternalLogon).toHaveBeenCalledTimes(2);
           expect(results).toEqual({
@@ -828,7 +835,7 @@ describe("handleWfmExternalLogon", () => {
           }
         };
         wfmActivateExternalLogon.mockResolvedValue(mockWfmExternalLogonResultsSomeFailures);
-        const results = await utils.handleWfmExternalLogon({}, mockDispatch, someFailures, selectedTemplates1);
+        const results = await utils.handleWfmExternalLogon(initialTestState, mockDispatch, someFailures, selectedTemplates1);
         expect(wfmActivateExternalLogon).toHaveBeenCalledTimes(1);
         expect(results).toEqual({
           failedActivations: {
@@ -865,7 +872,7 @@ describe("handleWfmExternalLogon", () => {
       wfmActivateExternalLogon
         .mockResolvedValueOnce(mockWfmExternalLogonResultsSomeFailures)
         .mockResolvedValue(mockWfmExternalLogonResultsSomeFailures2);
-      const results = await utils.handleWfmExternalLogon({}, mockDispatch, bigBatchFailures, selectedTemplates1);
+      const results = await utils.handleWfmExternalLogon(initialTestState, mockDispatch, bigBatchFailures, selectedTemplates1);
       expect(wfmActivateExternalLogon).toHaveBeenCalledTimes(2);
       expect(results).toEqual({
         failedActivations: {

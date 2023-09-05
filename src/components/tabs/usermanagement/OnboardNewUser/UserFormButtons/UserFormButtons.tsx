@@ -69,7 +69,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     teams
   } = state.calabrioContext;
   const environment = state.userContext.pingIdentity.environment;
-  const identity = state.userContext.pingIdentity.sub;
+  const identity = state.userContext.pingIdentity?.sub;
 
   const doCreateUser = async () => {
     updateLoading({

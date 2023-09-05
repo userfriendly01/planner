@@ -131,7 +131,7 @@ const DialListTable = props => {
   } = props;
 
   const state = useAdminState();
-  const identity = state.userContext.pingIdentity.sub;
+  const identity = state.userContext.pingIdentity?.sub;
 
   const [dialListTableState, setDialListTableState] = useState({
     dialListId: null,

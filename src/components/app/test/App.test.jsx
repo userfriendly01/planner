@@ -74,6 +74,7 @@ jest.mock("context", () => ({
 }));
 
 jest.mock("utils", () => ({
+  ...jest.requireActual("utils"),
   getAuthenticationProfiles: jest.fn(),
   getPermissions: jest.fn(),
   getStartups: jest.fn(),
@@ -91,7 +92,7 @@ describe("<App />", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    document.getElementById.mockReturnValue({scrollTo : jest.fn()});
+    document.getElementById.mockReturnValue({ scrollTo: jest.fn() });
     useAdminState.mockReturnValue({});
     useAdminDispatch.mockReturnValue(mockAdminDispatch);
     axiosMock.onGet(authEndpoint).reply(200, auth);

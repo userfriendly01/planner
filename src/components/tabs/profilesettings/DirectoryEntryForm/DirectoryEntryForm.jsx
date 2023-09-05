@@ -60,7 +60,7 @@ const DirectoryEntryForm = props => {
   } = props;
 
   const state = useAdminState();
-  const identity = state.userContext.pingIdentity.sub;
+  const identity = state.userContext.pingIdentity?.sub;
 
   const getInitialFormState = () => {
     const first_nme = directoryState.directoryEntryFormInitialValues.first_nme || "";

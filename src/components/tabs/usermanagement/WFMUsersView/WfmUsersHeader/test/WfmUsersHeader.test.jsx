@@ -24,6 +24,7 @@ jest.mock("context", () => ({
 }));
 
 jest.mock("utils", () => ({
+  ...jest.requireActual("utils"),
   getCalabrioWfmOrg: jest.fn(),
   getWfmTeams: jest.requireActual("utils").getWfmTeams,
   sortWFMByName: jest.requireActual("utils").sortWFMByName,
@@ -50,7 +51,7 @@ const tableState = {
 const mockSetStatus = jest.fn();
 const mockSetTableState = jest.fn();
 
-const renderComponent = (customTableState) => {
+const renderComponent = customTableState => {
   render(<WfmUsersHeader
     setStatus={mockSetStatus}
     tableState={customTableState || tableState}

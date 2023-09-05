@@ -36,7 +36,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
   } = props;
 
   const state = useAdminState();
-  const identity = state.userContext.pingIdentity.sub;
+  const identity = state.userContext.pingIdentity?.sub;
   const form = profileEntryFormState();
   const setForm = profileEntryFormDispatch();
 
@@ -53,7 +53,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
     createProfile(payload).then(() => {
       logger.info(`Successfully created profile ${form.profileName.value}`, {
         identity,
-        profileId: payload.profile_id
+        profileId: payload?.profile_id
       });
 
       updateLoading({
@@ -76,7 +76,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
       logger.error(`Failed to create profile ${form.profileName.value}`, {
         error,
         identity,
-        profileId: payload.profile_id
+        profileId: payload?.profile_id
       });
 
       updateLoading({
@@ -107,7 +107,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
     editProfile(payload).then(() => {
       logger.info(`Successfully updated profile ${form.profileName.value}`, {
         identity,
-        profileId: payload.profile_id
+        profileId: payload?.profile_id
       });
 
       updateLoading({
@@ -130,7 +130,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
       logger.error(`Failed to create profile ${form.profileName.value}`, {
         error,
         identity,
-        profileId: payload.profile_id
+        profileId: payload?.profile_id
       });
 
       updateLoading({

@@ -28,7 +28,7 @@ const ManagerDelete = (props: ManagerDeleteProps): any => {
   } = props;
 
   const state = useAdminState();
-  const identity = state.userContext.pingIdentity.sub;
+  const identity = state.userContext.pingIdentity?.sub;
   const workers = useAdminState().workerContext.workers;
   const dispatch = useAdminDispatch();
   const [errorMessage, setErrorMessage] = React.useState<string>(null);

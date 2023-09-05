@@ -14,10 +14,7 @@ import {
   useFormDispatch,
   userFormActions
 } from "context";
-import {
-  discrepancyType,
-  formModes
-} from "globals";
+import { formModes } from "globals";
 import React from "react";
 import {
   addOffice,
@@ -76,6 +73,7 @@ jest.mock("context", () => ({
 }));
 
 jest.mock("utils", () => ({
+  ...jest.requireActual("utils"),
   addWorkerToOrg: jest.fn(),
   calabrioTimeZones: jest.requireActual("utils").calabrioTimeZones,
   checkConflictingUsers: jest.fn(),
@@ -98,14 +96,14 @@ export const worker = {
     full_name: "Faith Cuneo",
     office_location_name: "Uranus",
     profile_id: 15,
-    triton:{
-      routing:{
-        team:"Sample1",
-        skills:["466"],
-        levels:{"466":3},
+    triton: {
+      routing: {
+        team: "Sample1",
+        skills: ["466"],
+        levels: { "466": 3 },
         callerStates: ["Test1", "Test2"],
         updated: true
-      },
+      }
     }
   },
   sid: "WK1",
@@ -136,7 +134,7 @@ const workerAttributesAfterFormValid = {
   primary_dept_number: fetchedUser.departmentNumber,
   profile_id: validFormOptions.profileId,
   unique_id: validFormOptions.nNumber.toLowerCase(),
-  routing:{
+  routing: {
     ...validFormOptions.routing,
     updated: true
   }
@@ -178,7 +176,8 @@ describe("<UserFormButtons />", () => {
     useAdminState.mockReturnValue({
       userContext: {
         pingIdentity: {
-          environment: "development"
+          environment: "development",
+          sub: "n1234567"
         }
       },
       calabrioContext: {
@@ -287,7 +286,7 @@ describe("<UserFormButtons />", () => {
         checkConflictingUsers.mockResolvedValue("Yay!");
         updateCalabrioUser.mockResolvedValue("yay!");
         getCalabrioUsers.mockResolvedValue({ data: ["agent1", "agent2"]});
-        createCalabrioWFMPerson.mockResolvedValue({ data: "9dase-Owaaskm"});
+        createCalabrioWFMPerson.mockResolvedValue({ data: "9dase-Owaaskm" });
         wfmActivateExternalLogon.mockResolvedValue();
       });
       describe("Initial State", () => {
@@ -914,7 +913,7 @@ describe("<UserFormButtons />", () => {
           }
         };
         beforeEach(() => {
-          createCalabrioWFMPerson.mockResolvedValue({ data: "9dase-Owaaskm"});
+          createCalabrioWFMPerson.mockResolvedValue({ data: "9dase-Owaaskm" });
           useFormState.mockReturnValueOnce(form);
         });
         const wfmBody = {
@@ -929,7 +928,7 @@ describe("<UserFormButtons />", () => {
           }],
           Skills: ["2134-5432"],
           TimeZoneId: 173
-        }
+        };
         describe("environment === production", () => {
           beforeEach(() => {
             useAdminState.mockReturnValue({
@@ -999,7 +998,7 @@ describe("<UserFormButtons />", () => {
           });
           describe("createCalabrioWFMPerson fails", () => {
             beforeEach(() => {
-              createCalabrioWFMPerson.mockRejectedValue({ message: "bummer"});
+              createCalabrioWFMPerson.mockRejectedValue({ message: "bummer" });
               useFormState.mockReturnValue(form);
             });
             test("error is shown on final results", async () => {
@@ -1061,8 +1060,8 @@ describe("<UserFormButtons />", () => {
               }
             };
             beforeEach(() => {
-              createCalabrioWFMPerson.mockResolvedValue({ data: "9dase-Owaaskm"});
-              wfmActivateExternalLogon.mockRejectedValue({ message: "bummer"});
+              createCalabrioWFMPerson.mockResolvedValue({ data: "9dase-Owaaskm" });
+              wfmActivateExternalLogon.mockRejectedValue({ message: "bummer" });
               useFormState.mockReturnValue(form);
             });
             test("error is shown on final results", async () => {
@@ -1150,7 +1149,7 @@ describe("<UserFormButtons />", () => {
               });
             });
           });
-        })
+        });
       });
     });
     describe(`form.formMode === ${formModes.UPDATE}`, () => {
@@ -1225,11 +1224,11 @@ describe("<UserFormButtons />", () => {
                 ...worker.attributes,
                 routing: {
                   skills: [],
-                  levels: {"466":3},
-                  team:"Sample1",
+                  levels: { "466": 3 },
+                  team: "Sample1",
                   callerStates: ["Test1", "Test2"],
                   updated: "true"
-                },
+                }
               }
             };
             const updateWorkerAttributesAfterFormValid = {
@@ -1251,7 +1250,7 @@ describe("<UserFormButtons />", () => {
               profile_id: validFormOptions.profileId,
               routing: {
                 skills: ["nonSkillL1","466"],
-                levels: {"466": 3},
+                levels: { "466": 3 },
                 team: "Sample1",
                 callerStates: ["Test1", "Test2"],
                 updated: true
@@ -1302,7 +1301,7 @@ describe("<UserFormButtons />", () => {
             });
           });
         });
-        
+
         describe("Worker is a DID user", () => {
           const updateWorkerAttributesAfterFormValid = {
             default_skills: validFormOptions.defaultSkills,
@@ -1324,7 +1323,7 @@ describe("<UserFormButtons />", () => {
             routing: {
               ...validFormState.triton.routing,
               skills: ["nonSkillL1"]
-            },
+            }
           };
           const updateWorker = {
             ...worker,
@@ -1333,7 +1332,7 @@ describe("<UserFormButtons />", () => {
               routing: {
                 skills: [],
                 levels: {},
-                team:"Sample1"
+                team: "Sample1"
               }
             }
           };
@@ -1403,9 +1402,9 @@ describe("<UserFormButtons />", () => {
                   attributes: {
                     ...updateWorkerAttributesAfterFormValid,
                     routing: {
-                      team:updateWorkerAttributesAfterFormValid.routing.team,
+                      team: updateWorkerAttributesAfterFormValid.routing.team,
                       skills: [],
-                      levels:updateWorkerAttributesAfterFormValid.routing.levels,
+                      levels: updateWorkerAttributesAfterFormValid.routing.levels,
                       callerStates: updateWorkerAttributesAfterFormValid.routing.callerStates,
                       updated: true
                     },
@@ -1496,8 +1495,8 @@ describe("<UserFormButtons />", () => {
               },
               routing: {
                 team: "Sample1",
-                skills:["466"],
-                levels: {"466":3},
+                skills: ["466"],
+                levels: { "466": 3 },
                 updated: false
               }
             }
@@ -1512,16 +1511,16 @@ describe("<UserFormButtons />", () => {
               ...worker,
               attributes: {
                 ...worker.attributes,
-              triton:
+                triton:
               {
                 ...worker.attributes.triton,
                 routing: {
                   skills: ["466"],
-                  levels: {"466":3},
-                  team:"Sample1",
+                  levels: { "466": 3 },
+                  team: "Sample1",
                   callerStates: ["Test1", "Test2"]
-                },
-              },
+                }
+              }
               }
             };
             renderComponent(true, updateWorker);
@@ -1589,22 +1588,22 @@ describe("<UserFormButtons />", () => {
             profile_id: validFormOptions.profileId,
             routing: {
               ...validFormState.triton.routing,
-              skills: ["nonSkillL1"],
+              skills: ["nonSkillL1"]
             }
           };
           const updateWorker = {
             ...worker,
             attributes: {
               ...worker.attributes,
-              triton:{
+              triton: {
                 ...worker.attributes.triton,
                 routing: {
                   skills: ["466"],
-                  levels: {"466":3},
+                  levels: { "466": 3 },
                   team: "Sample1",
                   callerStates: ["Test1", "Test2"]
                 }
-              } 
+              }
             }
           };
           beforeEach(() => {
@@ -1756,7 +1755,7 @@ describe("<UserFormButtons />", () => {
             routing: {
               skills: [],
               levels: {},
-              team:"",
+              team: "",
               updated: "true"
             }
           }
@@ -1777,7 +1776,7 @@ describe("<UserFormButtons />", () => {
           manager_last_name: validFormOptions.manager.manager_last_name,
           manager_n_number: validFormOptions.manager.manager_n_number,
           manager: `${validFormOptions.manager.manager_first_name} ${validFormOptions.manager.manager_last_name}`,
-          profile_id: validFormOptions.profileId,
+          profile_id: validFormOptions.profileId
         };
         const rawDbWorker = {
           attributes: {
@@ -1795,13 +1794,13 @@ describe("<UserFormButtons />", () => {
           },
           triton: {
             ...updateFormState.triton,
-              routing: {
-                skills: [],
-                levels: {},
-                team:"",
-                callerStates: [],
-                updated: "true"
-              },
+            routing: {
+              skills: [],
+              levels: {},
+              team: "",
+              callerStates: [],
+              updated: "true"
+            },
             directDialNum: {
               ...updateFormState.triton.directDialNum,
               value: "",
@@ -1815,12 +1814,12 @@ describe("<UserFormButtons />", () => {
               value: false
             }
           }
-        }
+        };
         beforeEach(() => {
           updateUser.mockResolvedValue(rawDbWorker);
           workerHasOverFlowSkill.mockReturnValue(true);
           updateCalabrioUser.mockResolvedValue({ data: ["agent1", "agent2"]});
-          })
+        });
         test("update overflow skill", async () => {
           useFormState.mockReturnValue(nonDidValidFormState);
           renderComponent(true, updateWorker);
@@ -1837,7 +1836,7 @@ describe("<UserFormButtons />", () => {
                 routing: {
                   skills: ["nonSkillL1","466"],
                   levels: {},
-                  team:"",
+                  team: "",
                   callerStates: [],
                   updated: "true"
                 }
@@ -1852,7 +1851,7 @@ describe("<UserFormButtons />", () => {
         test("remove overflow skill", async () => {
           const nonDidValidFormStateEdited = {
             ...nonDidValidFormState,
-            triton:{
+            triton: {
               ...nonDidValidFormState.triton,
               zeroOutEnabled: {
                 value: false,
@@ -1860,7 +1859,7 @@ describe("<UserFormButtons />", () => {
               }
             }
 
-          }
+          };
           useFormState.mockReturnValue(nonDidValidFormStateEdited);
           renderComponent(true, updateWorker);
           render(Tooltip.mock.calls[0][0].children);
@@ -1876,7 +1875,7 @@ describe("<UserFormButtons />", () => {
                 routing: {
                   skills: ["nonSkillL1"],
                   levels: {},
-                  team:"",
+                  team: "",
                   callerStates: [],
                   updated: "true"
                 }
@@ -1887,7 +1886,7 @@ describe("<UserFormButtons />", () => {
             });
           });
         });
-      })
+      });
       describe("doUpdateUser fails", () => {
         const nonDidValidFormState = {
           ...updateFormState,
@@ -1938,7 +1937,7 @@ describe("<UserFormButtons />", () => {
             team: "Sample1",
             updated: true,
             callerStates: validFormOptions.routing.callerStates
-          },
+          }
         };
         beforeEach(() => {
           workerHasOverFlowSkill.mockReturnValue(false);
@@ -1972,7 +1971,7 @@ describe("<UserFormButtons />", () => {
               type: "loadCalabrioUsers",
               payload: [
                 "agent1",
-                "agent2",
+                "agent2"
               ]
             });
             jest.runAllTimers();
@@ -2016,7 +2015,7 @@ describe("<UserFormButtons />", () => {
               type: "loadCalabrioUsers",
               payload: [
                 "agent1",
-                "agent2",
+                "agent2"
               ]
             });
             jest.runAllTimers();
@@ -2249,9 +2248,9 @@ describe("<UserFormButtons />", () => {
           ApplicationLogon: "faith.cuneo@libertymutual.com",
           Skills: ["2134-5432"],
           TimeZoneId: 173
-        }
+        };
         beforeEach(() => {
-          createCalabrioWFMPerson.mockResolvedValue({ data: "9dase-Owaaskm"});
+          createCalabrioWFMPerson.mockResolvedValue({ data: "9dase-Owaaskm" });
           wfmActivateExternalLogon.mockResolvedValue();
           useFormState.mockReturnValue(form);
         });
@@ -2286,7 +2285,7 @@ describe("<UserFormButtons />", () => {
                   type: "updateWorker",
                   payload: formattedWorker
                 });
-  
+
                 expect(mockDispatch.mock.calls[1][0]).toEqual({
                   type: "updateWfmOrg",
                   payload: {
@@ -2314,7 +2313,7 @@ describe("<UserFormButtons />", () => {
           });
           describe("createCalabrioWFMPerson fails", () => {
             beforeEach(() => {
-              createCalabrioWFMPerson.mockRejectedValue({ message: "bummer"});
+              createCalabrioWFMPerson.mockRejectedValue({ message: "bummer" });
               useFormState.mockReturnValue(form);
             });
             describe("error is shown on final results", () => {
@@ -2352,8 +2351,8 @@ describe("<UserFormButtons />", () => {
           });
           describe("wfmActivateExternalLogon fails", () => {
             beforeEach(() => {
-              createCalabrioWFMPerson.mockResolvedValue({ data: "9dase-Owaaskm"});
-              wfmActivateExternalLogon.mockRejectedValue({ message: "bummer"});
+              createCalabrioWFMPerson.mockResolvedValue({ data: "9dase-Owaaskm" });
+              wfmActivateExternalLogon.mockRejectedValue({ message: "bummer" });
               useFormState.mockReturnValue(form);
             });
             describe("error is shown on final results", () => {

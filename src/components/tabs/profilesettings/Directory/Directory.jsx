@@ -39,7 +39,7 @@ const Directory = props => {
   } = props;
 
   const state = useAdminState();
-  const identity = state.userContext.pingIdentity.sub;
+  const identity = state.userContext.pingIdentity?.sub;
 
   const [directoryState, setDirectoryState] = useState({
     directoryId: null,

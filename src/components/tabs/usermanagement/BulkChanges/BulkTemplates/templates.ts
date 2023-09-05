@@ -47,7 +47,7 @@ const processCreateTritonUser = async (row: any, state: AppState) => {
   logger.log("**** TRITON RECORD PROCESSING", row);
 
   const rowNumber = row.rowNumber;
-  const identity = state.userContext.pingIdentity.sub;
+  const identity = state.userContext.pingIdentity?.sub;
   try {
     const didFieldName = "Did User";
     const didField = cleanupField(row[didFieldName], "string");
@@ -101,7 +101,7 @@ const processCreateCalabrioUser = async (row: any, state: AppState) => {
   logger.log("****CALABRIO RECORD PROCESSING for", row);
 
   const rowNumber = row.rowNumber;
-  const identity = state.userContext.pingIdentity.sub;
+  const identity = state.userContext.pingIdentity?.sub;
   try {
     await checkConflictingCalabrioUsers(row, rowNumber, state.calabrioContext.users);
     const existingTritonWorker = state.workerContext.workers.find((w:any) => w.attributes?.n_number && w.attributes.n_number === row.attributes.n_number);
@@ -148,7 +148,7 @@ const processWFMCreateUser = async (row: any, state: AppState) => {
   logger.info("****WFM RECORD PROCESSING for", row);
 
   const rowNumber = row.rowNumber;
-  const identity = state.userContext.pingIdentity.sub;
+  const identity = state.userContext.pingIdentity?.sub;
 
   try {
     const hasPersonConflict = checkIfConflictingWFMPeople(row, state);
@@ -238,7 +238,7 @@ const processCreateManager = async (row: any, state: AppState) => {
   logger.log("****MANAGER RECORD PROCESSING for", row);
 
   const rowNumber = row.rowNumber;
-  const identity = state.userContext.pingIdentity.sub;
+  const identity = state.userContext.pingIdentity?.sub;
 
   const managerNNumberFieldName = "Manager N Number";
   const managerNNumberField = cleanupField(row[managerNNumberFieldName], "string");
@@ -309,7 +309,7 @@ const processCreateManager = async (row: any, state: AppState) => {
 
 const processUpdateWorkerAttribute = async (row: any, template: Template, state: AppState) => {
   const rowNumber = row.rowNumber;
-  const identity = state.userContext.pingIdentity.sub;
+  const identity = state.userContext.pingIdentity?.sub;
   const key = template.data.key;
   const value = template.data.value;
   const location = template.data.location;
@@ -386,7 +386,7 @@ const processUpdateWorkerAttribute = async (row: any, template: Template, state:
 
 const processUpdateManager = async (row: any, template: Template, state: AppState) => {
   const rowNumber = row.rowNumber;
-  const identity = state.userContext.pingIdentity.sub;
+  const identity = state.userContext.pingIdentity?.sub;
 
   try {
     const userNNumber = row.attributes.n_number;
@@ -474,7 +474,7 @@ const processUpdateManager = async (row: any, template: Template, state: AppStat
 
 const processUpdateDefaultSkills = async (row: any, template: Template, state: AppState) => {
   const rowNumber = row.rowNumber;
-  const identity = state.userContext.pingIdentity.sub;
+  const identity = state.userContext.pingIdentity?.sub;
   const workerSid = row.workerSid;
   const value = template.data.value;
   const option = template.data.option;

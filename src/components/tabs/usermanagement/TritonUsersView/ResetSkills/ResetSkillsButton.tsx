@@ -29,7 +29,7 @@ const ResetSkillsButton = (props: any) => {
   } = props;
 
   const state = useAdminState();
-  const identity = state.userContext.pingIdentity.sub || "Unknown";
+  const identity = state.userContext.pingIdentity?.sub;
 
   const dispatch = useAdminDispatch();
   const [ resultsModalOpts, setResultsModalOpts ] = useState(defaultResetInformation);
