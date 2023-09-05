@@ -87,7 +87,7 @@ const ProfileActivitiesSelectField = (props: ProfileActivitiesSelectFieldProps) 
 
   return (
     <ProfileDropdownControlWrapper>
-      <Label>Add Activities</Label>
+      <Label>Add Activities *</Label>
       <ProfileDropdownRow>
         <ProfileDropdownRowItem>
           <Dropdown

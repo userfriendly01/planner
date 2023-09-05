@@ -93,6 +93,10 @@ const ProfileFormFields = () => {
     {
       fieldKey: "clickToDial",
       label: "Click To Dial"
+    },
+    {
+      fieldKey: "eftAuthorization",
+      label: "EFT Authorization"
     }
   ];
 

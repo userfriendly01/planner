@@ -42,6 +42,9 @@ export const initialProfileEntryFormState = {
   clickToDial: {
     value: false
   },
+  eftAuthorization: {
+    value: false
+  },
   overflowSkill: {
     value: "",
     updated: false,
@@ -101,6 +104,9 @@ export const validProfileEntryFormState = {
   clickToDial: {
     value: false
   },
+  eftAuthorization: {
+    value: false
+  },
   overflowSkill: {
     value: "validskill",
     updated: true,
@@ -157,6 +163,9 @@ export const invalidProfileEntryFormState = {
   clickToDial: {
     value: false
   },
+  eftAuthorization: {
+    value: false
+  },
   overflowSkill: {
     value: "validskill$$",
     updated: true,
@@ -210,6 +219,9 @@ export const initialProfileEditEntryFormState = {
     value: false
   },
   clickToDial: {
+    value: false
+  },
+  eftAuthorization: {
     value: false
   },
   overflowSkill: {

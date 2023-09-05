@@ -62,6 +62,7 @@ export interface ProfileEntryFormState {
   callTagOptions: CallTagOptions[],
   callTagsList: CallTag[],
   clickToDial: FieldState,
+  eftAuthorization: FieldState,
   formMode: string,
   inboundRecorded: FieldState,
   manualRecorded: FieldState,

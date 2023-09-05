@@ -25,24 +25,6 @@ export const CustomTableHeader = styled.th`
   position: sticky;
   top: 0px;
   background-color: white;
-  &:nth-child(1) {
-    width: 2%;
-  }
-  &:nth-child(2) {
-    width: 10%;
-  }
-  &:nth-child(9) {
-    width: 7%;
-  }
-  &:nth-child(16) {
-    width: 14%;
-  }
-  &:nth-child(17) {
-    width: 14%;
-  }
-  &:nth-child(18) {
-    width: 2%;
-  }
 `;
 
 export const CustomTableRow = styled.tr`

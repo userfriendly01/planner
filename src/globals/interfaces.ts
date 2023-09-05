@@ -131,6 +131,7 @@ export interface TritonProfile {
   agent_assisted_pay_i: MySqlBoolean,
   auto_answd_i: MySqlBoolean,
   click_to_dial_i: MySqlBoolean,
+  eft_authorization_i: MySqlBoolean,
   manual_record_inbound_i: MySqlBoolean,
   manual_recorded_i: MySqlBoolean,
   otbnd_recorded_i: MySqlBoolean,
@@ -167,6 +168,7 @@ export interface ProfilePayload {
   policy_number_edit_i: boolean,
   voice_mail_transcription_i: boolean,
   click_to_dial_i: boolean,
+  eft_authorization_i: boolean,
   transferQueues: Array<object>,
   aggregateQueues: Array<number>
 }
