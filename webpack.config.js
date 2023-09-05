@@ -1,5 +1,5 @@
 const ESLintPlugin = require("eslint-webpack-plugin");
-const webpack = require("webpack");
+const { DefinePlugin } = require("webpack");
 const path = require("path");
 
 const resolvePathInSrc = resourceInSrc => {
@@ -13,14 +13,14 @@ const config = {
   output: {
     filename: "admin-ui.js",
     path: path.resolve(__dirname, "dist")
-    // publicPath: "/triton-admin/"
   },
   plugins: [
     new ESLintPlugin({ failOnWarning: true }),
-    new webpack.DefinePlugin({
-      process: {
-        env: process.env
-      }
+    new DefinePlugin({
+      "process.env.APP_ENV": JSON.stringify(process.env.APP_ENV) || JSON.stringify("local"),
+      "process.env.DATADOG_APPLICATION_ID": JSON.stringify(process.env.DATADOG_APPLICATION_ID) || JSON.stringify("youNeedToSetThisLocally"),
+      "process.env.DATADOG_CLIENT_TOKEN": JSON.stringify(process.env.DATADOG_CLIENT_TOKEN) || JSON.stringify("youNeedToSetThisLocally"),
+      "process.env.TROUX_ID": JSON.stringify(process.env.TROUX_ID) || JSON.stringify("00000000-0000-0000-0000-000000000000")
     })
   ],
   module: {
