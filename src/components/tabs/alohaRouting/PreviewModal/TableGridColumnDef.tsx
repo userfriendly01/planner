@@ -123,14 +123,14 @@ export const TableGridColumnDef: GridColDef[] = [
     field: "startTime",
     sortable: true,
     align: "left",
-    valueGetter: (params: GridRenderCellParams<CctSharedCallRoutingDb>) => (formatDateTime(params.row.startTime))
+    valueGetter: (params: GridRenderCellParams<CctSharedCallRoutingDb>) => (params.row.startTime && formatDateTime(params.row.startTime))
   },
   {
     headerName: "End Time",
     field: "endTime",
     sortable: true,
     align: "left",
-    valueGetter: (params: GridRenderCellParams<CctSharedCallRoutingDb>) => (formatDateTime(params.row.endTime))
+    valueGetter: (params: GridRenderCellParams<CctSharedCallRoutingDb>) => (params.row.endTime && formatDateTime(params.row.endTime))
   },
 
   {
