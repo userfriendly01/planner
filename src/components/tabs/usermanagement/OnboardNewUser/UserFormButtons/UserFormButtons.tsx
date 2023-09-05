@@ -448,7 +448,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
       logger.info("Successfully Updated Triton user", {
         identity,
-        userNNumber: nNumberFetchedUser
+        userNNumber: form.nNumber.value
       });
 
       dispatch(({
@@ -459,7 +459,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       logger.error("Failed to update Triton Worker", {
         error,
         identity,
-        userNNumber: nNumberFetchedUser
+        userNNumber: form.nNumber.value
       });
 
       errors.push(`Failed to update Triton Worker. ${error.message || error.response?.data.message}`);
@@ -486,7 +486,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
           logger.info("Successfully Updated Calabrio user", {
             identity,
-            userNNumber: nNumberFetchedUser
+            userNNumber: form.nNumber.value
           });
         } else {
           await checkConflictingUsers(calabrioAttributes, users, roles, teams);
@@ -494,7 +494,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
           logger.info("Successfully Created Calabrio user", {
             identity,
-            userNNumber: nNumberFetchedUser
+            userNNumber: form.nNumber.value
           });
         }
         try {
