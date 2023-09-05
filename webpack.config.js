@@ -8,8 +8,6 @@ const resolvePathInSrc = resourceInSrc => {
     : path.resolve(__dirname, "src");
 };
 
-console.log(process.env);
-
 const config = {
   entry: resolvePathInSrc("index"),
   output: {
