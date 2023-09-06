@@ -35,7 +35,7 @@ export default function AutoCompleteContainer(): JSX.Element{
      if (!input.match(pattern)){
         setFormValidations({
             ...formValidations,
-            errorMessage: "please enter Id start with n followed by 7 digits",
+            errorMessage: "please enter Id starts with n followed by 7 digits",
             error: true
         });
         return false
@@ -57,7 +57,7 @@ export default function AutoCompleteContainer(): JSX.Element{
           options={[]}
           freeSolo = {true}
           multiple
-          value = {form.triton.routing?.sales_assoc_workers}
+          value = {form.triton.routing?.sales_assoc_workers||[]}
           renderTags={(value, props) =>
             value.map((option, index) => (
               <Chip label={option} {...props({ index })} />
