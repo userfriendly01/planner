@@ -84,7 +84,7 @@ describe("<ProfileFormFields />", () => {
     test("Should render the correct initial state", () => {
       const rendered = renderComponent();
       expectMockedComponent(rendered, { ProfileNameTextField });
-      expectMockedComponent(rendered, { FormControlLabel }, 13);
+      expectMockedComponent(rendered, { FormControlLabel }, 14);
       expect(rendered.container).toHaveTextContent(/^ProfileNameTextField/i);
       expectMockedComponent(rendered, { OverflowSkillTextField });
       expectMockedComponent(rendered, { ProfileActivitiesSelectField });
@@ -147,7 +147,7 @@ describe("<ProfileFormFields />", () => {
     });
     test("When access group toggle is on, ProfileAccessGroupField should be enabled", () => {
       renderComponent();
-      render(FormControlLabel.mock.calls[12][0].control);   // 12th control is access group toggle
+      render(FormControlLabel.mock.calls[13][0].control);   // 13th control is access group toggle
       act(() => {
         const onChange1 = Switch.mock.calls[0][0].onChange;
         onChange1();
