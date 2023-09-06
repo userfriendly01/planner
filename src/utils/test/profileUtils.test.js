@@ -255,6 +255,9 @@ describe("profileUtils", () => {
       policyNumberEdit: {
         value: false
       },
+      callReason: {
+        value: false
+      },
       clickToDial: {
         value: false
       },
@@ -315,6 +318,7 @@ describe("profileUtils", () => {
           wrkr_tsk_info_id: 2
         }
       ],
+      call_reason_i: false,
       click_to_dial_i: false,
       eft_authorization_i: false,
       manual_record_inbound_i: true,
@@ -420,6 +424,10 @@ describe("profileUtils", () => {
         value: false,
         updated: true
       },
+      callReason: {
+        value: false,
+        updated: true
+      },
       clickToDial: {
         value: false,
         updated: true
@@ -484,6 +492,7 @@ describe("profileUtils", () => {
           wrkr_tsk_info_id: 2
         }
       ],
+      call_Reason_i: false,
       click_to_dial_i: false,
       eft_authorization_i: false,
       manual_record_inbound_i: true,
