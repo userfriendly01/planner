@@ -208,17 +208,17 @@ describe("profileUtils", () => {
         },
         {
           activity_id: 12
-        },
+        }
       ],
       callTagsList: [
         {
           wrkr_tsk_info_id: 1,
-          wrkr_tsk_info_nme:'claim_number',
+          wrkr_tsk_info_nme: "claim_number",
           options_id: 1
         },
         {
           wrkr_tsk_info_id: 2,
-          wrkr_tsk_info_nme:'aces_claim_number',
+          wrkr_tsk_info_nme: "aces_claim_number",
           options_id: 1
         }
       ],
@@ -297,7 +297,7 @@ describe("profileUtils", () => {
         updated: true
       },
       accessGroupId: 2,
-      accessGroupIdUpdated: true,
+      accessGroupIdUpdated: true
     };
     const expected = {
       activities: [1,7,12],
@@ -364,18 +364,18 @@ describe("profileUtils", () => {
         },
         {
           activity_id: 12
-        },
+        }
       ],
       activitiesUpdated: true,
       callTagsList: [
         {
           wrkr_tsk_info_id: 1,
-          wrkr_tsk_info_nme:'claim_number',
+          wrkr_tsk_info_nme: "claim_number",
           options_id: 1
         },
         {
           wrkr_tsk_info_id: 2,
-          wrkr_tsk_info_nme:'aces_claim_number',
+          wrkr_tsk_info_nme: "aces_claim_number",
           options_id: 1
         }
       ],
