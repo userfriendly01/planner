@@ -542,9 +542,9 @@ const batchFlowUpdate = async(items, accessToken, graphQlApiUrl) =>{
       })
     });
     response = await fetchResponse.json();
-    console.log("Update Batch Flow DB Response:", response);
+    logger.info("Update Batch Flow DB Response:", { response });
   } catch (error) {
-    console.error("Error in Update Batch Flow DB", error);
+    logger.error("Error in Update Batch Flow DB", { error });
   }
   return response;
 };

@@ -15,6 +15,17 @@ const healthCheckEndpoint = "/health";
 app.use(healthCheckEndpoint, healthCheck());
 // Expose dir to serve serveDir as static
 app.use(express.static(serveDir));
+
+// Route to get env variables
+app.get("/config/env", (_req, res) => {
+  res.json({
+    DATADOG_APPLICATION_ID: process.env.DATADOG_APPLICATION_ID || "youNeedToSetThisLocally",
+    DATADOG_CLIENT_TOKEN: process.env.DATADOG_CLIENT_TOKEN || "youNeedToSetThisLocally",
+    APP_ENV: process.env.APP_ENV || "local",
+    TROUX_ID: process.env.TROUX_ID || "youNeedToSetThisLocally"
+  }).status(200);
+});
+
 // Wildcard route to always serve index.html regardless of URL routes
 app.get("/*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "dist", "index.html"));

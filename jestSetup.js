@@ -37,6 +37,10 @@ jest.mock("utils/logger", () => ({
   }
 }));
 
+jest.mock("utils/getEnvVariables", () => ({
+  getEnvVariables: () => new Promise(resolve => resolve(new Map()))
+}));
+
 /* Services are mocked at a global level.
 We did this because of a WEIRD glitch where the utils folder cant mock files within the project.
 If you need to use the real file in your test, use jest.requireActual for the function you need like below

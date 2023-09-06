@@ -547,8 +547,9 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: A
   }
 };
 
-export const processUpdateCallerStates =  async (row: any, template: Template, state: any) => {
+export const processUpdateCallerStates =  async (row: any, template: Template, state: AppState) => {
   const rowNumber = row.rowNumber;
+  const identity = state.userContext.pingIdentity?.sub;
   const workerSid = row.workerSid;
   const existingRouting = row.attributes.routing;
   const selectedCallerStates: [] = template.data.value;
@@ -576,13 +577,23 @@ export const processUpdateCallerStates =  async (row: any, template: Template, s
       }
     }
   };
-  console.log("**** UPDATE CALLER STATES RECORD PROCESSING", row, body);
+
   try {
     await updateUser(workerSid, body);
+
+    logger.info("Caller States updated", {
+      workerSid,
+      identity
+    });
+
     return Promise.resolve(`${workerSid} - Caller States updated for row ${rowNumber}`);
-  } catch(err){
-    const errorMessage = `Failed to update Caller States for row ${rowNumber}. ${formatErrorMessage(err)}`;
-    console.error(errorMessage, err);
+  } catch(error){
+    const errorMessage = `Failed to update Caller States for row ${rowNumber}. ${formatErrorMessage(error)}`;
+    logger.error(errorMessage, {
+      error,
+      identity,
+      workerSid
+    });
     return rejectPromise(errorMessage, rowNumber);
   }
 };

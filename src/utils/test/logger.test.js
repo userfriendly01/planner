@@ -5,6 +5,7 @@ import {
 import {
   initDataDogRum, Logger
 } from "../logger";
+import { waitFor } from "testUtils";
 
 // Suppresses global mock
 jest.mock("../logger", () => ({
@@ -13,11 +14,13 @@ jest.mock("../logger", () => ({
 
 describe("logger", () => {
   describe("initDataDogRum", () => {
-    test("should initialize datadog appropriately", () => {
+    test("should initialize datadog appropriately", async () => {
       initDataDogRum();
 
-      expect(datadogRum.setGlobalContextProperty).toHaveBeenCalled();
-      expect(datadogRum.init).toHaveBeenCalled();
+      await waitFor(() => {
+        expect(datadogRum.setGlobalContextProperty).toHaveBeenCalled();
+        expect(datadogRum.init).toHaveBeenCalled();
+      });
     });
   });
 
@@ -25,23 +28,18 @@ describe("logger", () => {
   describe("Logger", () => {
     let logger;
 
-    beforeEach(() => {
-      console.log = jest.fn();
-      console.info = jest.fn();
-      console.warn = jest.fn();
-      console.error = jest.fn();
-    });
-
     afterEach(() => {
       jest.resetAllMocks();
       logger = undefined;
     });
 
-    test("should initialize datadog on create", () => {
+    test("should initialize datadog on create", async () => {
       logger = new Logger();
 
-      expect(datadogLogs.init).toHaveBeenCalled();
-      expect(datadogLogs.setLoggerGlobalContext).toHaveBeenCalled();
+      await waitFor(() => {
+        expect(datadogLogs.init).toHaveBeenCalled();
+        expect(datadogLogs.setLoggerGlobalContext).toHaveBeenCalled();
+      });
     });
 
     test("should not call datadog when level is log", () => {

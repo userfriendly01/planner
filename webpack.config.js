@@ -1,5 +1,4 @@
 const ESLintPlugin = require("eslint-webpack-plugin");
-const { DefinePlugin } = require("webpack");
 const path = require("path");
 
 const resolvePathInSrc = resourceInSrc => {
@@ -8,8 +7,6 @@ const resolvePathInSrc = resourceInSrc => {
     : path.resolve(__dirname, "src");
 };
 
-console.log(process.env);
-
 const config = {
   entry: resolvePathInSrc("index"),
   output: {
@@ -17,15 +14,7 @@ const config = {
     path: path.resolve(__dirname, "dist")
   },
   plugins: [
-    new ESLintPlugin({ failOnWarning: true }),
-    new DefinePlugin({
-      "process.env": {
-        APP_ENV: JSON.stringify(process.env.APP_ENV) || JSON.stringify("local"),
-        DATADOG_APPLICATION_ID: JSON.stringify(process.env.DATADOG_APPLICATION_ID) || JSON.stringify("youNeedToSetThisLocally"),
-        DATADOG_CLIENT_TOKEN: JSON.stringify(process.env.DATADOG_CLIENT_TOKEN) || JSON.stringify("youNeedToSetThisLocally"),
-        TROUX_ID: JSON.stringify(process.env.TROUX_ID) || JSON.stringify("00000000-0000-0000-0000-000000000000")
-      }
-    })
+    new ESLintPlugin({ failOnWarning: true })
   ],
   module: {
     rules: [

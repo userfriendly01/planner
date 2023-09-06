@@ -2,34 +2,39 @@ import { datadogRum } from "@datadog/browser-rum";
 import {
   datadogLogs, StatusType
 } from "@datadog/browser-logs";
+import { getEnvVariables } from "./getEnvVariables";
 
-const DATADOG_APPLICATION_ID = process.env.DATADOG_APPLICATION_ID;
-const DATADOG_CLIENT_TOKEN = process.env.DATADOG_CLIENT_TOKEN;
 const DATADOG_SITE = "datadoghq.com";
 const DATADOG_USE_SECURE_SESSION_COOKIE = true;
 const DATADOG_SAMPLE_RATE = 100;
 const DATADOG_REPLAY_SAMPLE_RATE = 0;
 const DATADOG_SILENT_MULTIPLE_INIT = true;
-const APP_ENV = process.env.APP_ENV;
 const APP_ORG_TAG = "[CCT]";
 const SERVICE_NAME = "cicct-softphone-admin-ui";
-const TROUX_ID = process.env.TROUX_ID;
 
 // Helper Function to start up RUM for automatic event collection
 export const initDataDogRum = (): void => {
-  datadogRum.setGlobalContextProperty("troux_uuid", TROUX_ID);
-  datadogRum.init({
-    applicationId: DATADOG_APPLICATION_ID,
-    clientToken: DATADOG_CLIENT_TOKEN,
-    site: DATADOG_SITE,
-    service: SERVICE_NAME,
-    env: APP_ENV,
-    useSecureSessionCookie: DATADOG_USE_SECURE_SESSION_COOKIE,
-    sessionSampleRate: DATADOG_SAMPLE_RATE,
-    silentMultipleInit: DATADOG_SILENT_MULTIPLE_INIT,
-    sessionReplaySampleRate: DATADOG_REPLAY_SAMPLE_RATE,
-    defaultPrivacyLevel: "mask"
-  });
+  getEnvVariables()
+    .then(env => {
+      const TROUX_ID = env.get("TROUX_ID");
+      const DATADOG_APPLICATION_ID = env.get("DATADOG_APPLICATION_ID");
+      const DATADOG_CLIENT_TOKEN = env.get("DATADOG_CLIENT_TOKEN");
+      const APP_ENV = env.get("APP_ENV");
+
+      datadogRum.setGlobalContextProperty("troux_uuid", TROUX_ID);
+      datadogRum.init({
+        applicationId: DATADOG_APPLICATION_ID,
+        clientToken: DATADOG_CLIENT_TOKEN,
+        site: DATADOG_SITE,
+        service: SERVICE_NAME,
+        env: APP_ENV,
+        useSecureSessionCookie: DATADOG_USE_SECURE_SESSION_COOKIE,
+        sessionSampleRate: DATADOG_SAMPLE_RATE,
+        silentMultipleInit: DATADOG_SILENT_MULTIPLE_INIT,
+        sessionReplaySampleRate: DATADOG_REPLAY_SAMPLE_RATE,
+        defaultPrivacyLevel: "mask"
+      });
+    });
 };
 
 export class Logger {
@@ -40,31 +45,37 @@ export class Logger {
   }
 
   private init() {
-    this.defaultContext = {
-      component: SERVICE_NAME,
-      tags: {
-        lm_org: "cct",
-        deployment_guid: process.env.DEPLOYMENT_GUID,
-        cct_squad: "tpod",
-        cct_domain: "shared"
-      }
-    };
+    getEnvVariables()
+      .then(env => {
+        const DATADOG_CLIENT_TOKEN = env.get("DATADOG_CLIENT_TOKEN");
+        const APP_ENV = env.get("APP_ENV");
 
-    datadogLogs.init({
-      clientToken: DATADOG_CLIENT_TOKEN,
-      site: DATADOG_SITE,
-      env: APP_ENV,
-      service: SERVICE_NAME,
-      forwardErrorsToLogs: true,
-      sampleRate: DATADOG_SAMPLE_RATE,
-      useSecureSessionCookie: DATADOG_USE_SECURE_SESSION_COOKIE,
-      silentMultipleInit: DATADOG_SILENT_MULTIPLE_INIT
-    });
+        this.defaultContext = {
+          component: SERVICE_NAME,
+          tags: {
+            lm_org: "cct",
+            deployment_guid: process.env.DEPLOYMENT_GUID,
+            cct_squad: "tpod",
+            cct_domain: "shared"
+          }
+        };
 
-    datadogLogs.setLoggerGlobalContext({
-      ...this.defaultContext,
-      component: "global"
-    });
+        datadogLogs.init({
+          clientToken: DATADOG_CLIENT_TOKEN,
+          site: DATADOG_SITE,
+          env: APP_ENV,
+          service: SERVICE_NAME,
+          forwardErrorsToLogs: true,
+          sampleRate: DATADOG_SAMPLE_RATE,
+          useSecureSessionCookie: DATADOG_USE_SECURE_SESSION_COOKIE,
+          silentMultipleInit: DATADOG_SILENT_MULTIPLE_INIT
+        });
+
+        datadogLogs.setLoggerGlobalContext({
+          ...this.defaultContext,
+          component: "global"
+        });
+      });
   }
 
   private sendLogToDataDog(message: string, body: Record<string, unknown>, level: StatusType): void {
@@ -88,11 +99,7 @@ export class Logger {
    * @param {boolean} sendToDataDog - If this should be sent to Data Dog
    */
   log(message: string, ...args: any[]): void {
-    try {
-      console.log(`${APP_ORG_TAG}: ${message}`, ...args);
-    } catch (e) {
-      console.error(e);
-    }
+    console.log(`${APP_ORG_TAG}: ${message}`, ...args);
   }
 
   /**

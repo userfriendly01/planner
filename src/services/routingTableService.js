@@ -471,9 +471,9 @@ const batchRoutingUpdate = async(items, accessToken, graphQlApiUrl) =>{
       })
     });
     response = await fetchResponse.json();
-    console.log("Update Batch RoutingDB Response:", response);
+    logger.info("Update Batch RoutingDB Response:", { response });
   } catch (error) {
-    console.error("Error in Update Batch RoutingDB", error);
+    logger.error("Error in Update Batch RoutingDB", { error });
   }
   return response;
 };

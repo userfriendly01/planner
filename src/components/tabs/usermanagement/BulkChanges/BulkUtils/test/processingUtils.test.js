@@ -550,7 +550,6 @@ describe("initiateCalls", () => {
         test("should call process function for each successful dependency row", async () => {
           const handleWfmExternalLogon = jest.fn();
           templates[0].stateUpdateFunctions = [jest.fn(), handleWfmExternalLogon];
-          console.log("template", templates[0]);
           handleWfmExternalLogon
             .mockResolvedValueOnce({
               failedActivations: {
