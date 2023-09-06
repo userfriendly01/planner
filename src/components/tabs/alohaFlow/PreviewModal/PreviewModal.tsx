@@ -78,7 +78,40 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
       [
         ...previousRows,
         {
-          id: previousRows.length>0? previousRows[previousRows.length -1 ].id +1 : maxId
+          id: previousRows.length>0? previousRows[previousRows.length -1 ].id +1 : maxId,
+          pkey: "",
+          content: {
+            callIntent: "",
+            callFlowRoute: "",
+            callerType: "",
+            greetingMessages: "",
+            transferNumber: "",
+            languageOffer: "",
+            dataRequests: [],
+            officeNumbers: []
+          },
+          accountManager: "",
+          affinityVDN: "",
+          agentId: "",
+          brand: "",
+          callDetails1: "",
+          callDetails2: "",
+          callFlowTemplate: "",
+          callTypeDescription: "",
+          channel: "",
+          createTime: "",
+          dialedDescription: "",
+          employeeId: "",
+          internetPlacement: "",
+          lineOfBusiness: "",
+          marketingChannel: "",
+          rangeIndicator: "",
+          requestID: "",
+          tollFreeNumber: "",
+          transferCode: "",
+          type: "",
+          userDestination: "",
+          whisper: ""
         }
       ]
     ));

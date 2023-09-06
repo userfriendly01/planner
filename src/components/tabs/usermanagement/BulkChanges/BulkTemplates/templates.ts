@@ -32,8 +32,7 @@ import {
   isDidUser
 } from "../BulkTemplates";
 import {
-  AppState,
-  Worker
+  AppState
 } from "globals";
 
 const rejectPromise = (error: string, rowNumber: number) => {
@@ -410,7 +409,7 @@ export const processUpdateCallerStates =  async (row: any, template: Template, s
   const rowNumber = row.rowNumber;
   const workerSid = row.workerSid;
   const existingRouting = row.attributes.routing;
-  const selectedCallerStates = template.data.value;
+  const selectedCallerStates: [] = template.data.value;
   const option = template.data.option;
 
   const currentCallerStates = row.attributes.routing?.callerStates || [];

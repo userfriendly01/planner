@@ -100,6 +100,10 @@ describe("<ProfileSettingsTable />", () => {
         data: [1],
         type: "Buffer"
       },
+      eft_authorization_i: {
+        data: [1],
+        type: "Buffer"
+      },
       manual_record_inbound_i: {
         data: [1],
         type: "Buffer"
@@ -163,6 +167,7 @@ describe("<ProfileSettingsTable />", () => {
       expect(rendered.getByText("Policy Number Edit", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Voice Mail Transcription", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Click To Dial", { selector: "th" })).toBeInTheDocument();
+      expect(rendered.getByText("EFT Authorization", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Self Service Indicator", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Activities", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Transfer Queues", { selector: "th" })).toBeInTheDocument();
@@ -171,7 +176,7 @@ describe("<ProfileSettingsTable />", () => {
       const tableRows = rendered.getAllByTestId("table-row");
       const tableHeaders = rendered.getAllByTestId("table-header");
       expect(tableRows.length).toBe(1);
-      expect(tableHeaders.length).toBe(20);
+      expect(tableHeaders.length).toBe(21);
     });
 
     test("should render correct tooltips", async () => {
@@ -191,6 +196,7 @@ describe("<ProfileSettingsTable />", () => {
       expect(rendered.getByLabelText("UI Feature: An agent can capture and save a different policy number than what the IVR previously loaded")).toBeInTheDocument();
       expect(rendered.getByLabelText("Voice mail will be transcribed and sent within the notification email to the user")).toBeInTheDocument();
       expect(rendered.getByLabelText("Enable click-to-dial/transfer from external application")).toBeInTheDocument();
+      expect(rendered.getByLabelText("Enable EFT authorization tagging on recordings")).toBeInTheDocument();
       expect(rendered.getByLabelText("Self service indicator is applicable to profiles with an id of 39 and above, but is actually set at the worker attribute level")).toBeInTheDocument();
       expect(rendered.getByLabelText("Profile Activities")).toBeInTheDocument();
       expect(rendered.getByLabelText("UI Feature: Additional transfer queues that will appear in the Triton queue ticker")).toBeInTheDocument();
