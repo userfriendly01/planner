@@ -22,7 +22,7 @@ import { useAdminState } from "context";
 import { CustomToast } from "components";
 import DataGridFlow from "../DataGridFlow";
 import {
-  retrieveFlowData,queryFlowData, flowBatchDelete, batchFlowUpdate
+  retrieveFlowData,queryFlowData, flowBatchDelete, batchFlowUpdate, batchFlowCreate
 } from "services";
 import { PreviewModal } from "../../PreviewModal";
 import { createFlowDataList } from "../../PreviewModal/test/PreviewUtil.test";
@@ -478,16 +478,43 @@ describe("<DataGridFlow />", () => {
       });
       expect(DataGrid.mock.calls.length).toBe(1);
     });
+    it("Preview Modal onUpdate on failure", ()=>{
+      const validFlowDataList = createFlowDataList(15);
+      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
+      retrieveFlowData.mockResolvedValue(validFlowDataList);
+      batchFlowUpdate.mockResolvedValue({ errors: [{ message: "unknown error" }]});
+      renderComponent();
+      const previewModalOnUpdate = PreviewModal.mock.calls[0][0].onUpdate;
+      expect(previewModalOnUpdate([{ ...validFlowDataList[1] }])).rejects.toThrowError("Error while updating the records.");
+    });
     it("Preview Modal onCreate", ()=>{
       const validFlowDataList = createFlowDataList(15);
       queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
       retrieveFlowData.mockResolvedValue(validFlowDataList);
+      batchFlowCreate.mockResolvedValue({ data: { items: []}});
       renderComponent();
       const previewModalOnCreate = PreviewModal.mock.calls[0][0].onCreate;
+      const createFlowObject = {
+        ...validFlowDataList[1],
+        pkey: "+19876543210"
+      };
       act(()=>{
-        previewModalOnCreate();
+        previewModalOnCreate([{ ...createFlowObject }]);
       });
       expect(DataGrid.mock.calls.length).toBe(1);
+    });
+    it("Preview Modal onCreate on failure", ()=>{
+      const validFlowDataList = createFlowDataList(15);
+      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
+      retrieveFlowData.mockResolvedValue(validFlowDataList);
+      batchFlowCreate.mockResolvedValue({ errors: [{ "message": "Unknown Error" }]});
+      renderComponent();
+      const previewModalOnCreate = PreviewModal.mock.calls[0][0].onCreate;
+      const createFlowObject = {
+        ...validFlowDataList[1],
+        pkey: "+19876543210"
+      };
+      expect(previewModalOnCreate([{ ...createFlowObject }])).rejects.toThrowError("Error while creating the records.");
     });
     it("Preview Modal onDelete", ()=>{
       const validFlowDataList = createFlowDataList(15);
@@ -501,6 +528,16 @@ describe("<DataGridFlow />", () => {
         previewModalOnDelete(selectedRow);
       });
       expect(DataGrid.mock.calls.length).toBe(1);
+    });
+    it("Preview Modal onDelete", ()=>{
+      const validFlowDataList = createFlowDataList(15);
+      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
+      retrieveFlowData.mockResolvedValue(validFlowDataList);
+      renderComponent();
+      const previewModalOnDelete = PreviewModal.mock.calls[0][0].onDelete;
+      const selectedRow = createFlowDataList(2);
+      flowBatchDelete.mockResolvedValue({ errors: [{ message: "unknown error" }]});
+      expect(previewModalOnDelete(selectedRow)).rejects.toThrowError("Error while deleting records.");
     });
   });
 
