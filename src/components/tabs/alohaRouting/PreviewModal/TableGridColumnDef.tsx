@@ -15,6 +15,12 @@ import { formFields } from "./previewUtils";
 
 const formatDateTime = (dateTime: string) => {
   if(dateTime.includes("AM") || dateTime.includes("PM")){
+    const dateTimeList: string[] = dateTime.split(" ");
+    if(dateTimeList.length === 3){
+      const [date, time, modifier] = dateTime.split(" ");
+      const timeSplit: string[] = time.split(":");
+      return `${timeSplit[0]}:${timeSplit[1]} ${modifier}`;
+    }
     const [time, modifier] = dateTime.split(" ");
     const timeSplit: string[] = time.split(":");
     return `${timeSplit[0]}:${timeSplit[1]} ${modifier}`;

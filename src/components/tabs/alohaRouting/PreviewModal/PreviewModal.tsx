@@ -48,7 +48,16 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
     return reconstructTableColumnDef(action, [...TableGridColumnDef], apiRef); },[action]);
 
   useEffect(()=>{
-    setRoutingRows(rows);
+    if(action === "add"){
+      const modifiedRow = rows.map((row: CctSharedCallRoutingDb, index:  number)=>({
+        ...row,
+        id: maxId+ index+ 1
+      }));
+      setRoutingRows(modifiedRow);
+    }
+    else{
+      setRoutingRows(rows);
+    }
   }, [rows]);
 
   const getUpdatedRoutingDb = () =>{

@@ -1,6 +1,7 @@
 import React from "react";
 import {
   ROUTING_CACHE_MASTER_DATA,
+  convertTime24to12,
   dayOfWeek,
   languageOffer,
   routingFields
@@ -37,6 +38,16 @@ const multiFields = routingFields.filter(x => x.control === "multiField").map(x 
   return x.key;
 });
 
+const TimeEvaluator = (event: any, keyType: string): string => {
+  console.log("Event :", event);
+  const timePicked = new Date(event.$d.toString());
+  timePicked.setSeconds(0);
+  if (keyType === "endTime") {
+    timePicked.setSeconds(timePicked.getSeconds() - 1);
+  }
+  return timePicked.toLocaleString();
+};
+
 const manageEditColumnDef = (
   columnDef: Array<GridColDef>,
   apiRef: React.MutableRefObject<GridApiCommunity>
@@ -70,6 +81,31 @@ const manageEditColumnDef = (
                 id: params.row.id,
                 field: item.field,
                 value: event.target.value
+              });
+            }}
+          />
+        )
+      };
+    }
+    if(["startTime", "endTime"].includes(item.field)){
+      return {
+        ...item,
+        editable: true,
+        renderEditCell: params => (
+          <ComponentControl
+            control="timePicker"
+            label=""
+            name={item.field}
+            formFields={formFields[item.field]}
+            error={false}
+            required={false}
+            type="text"
+            value={params.value}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              apiRef.current.setEditCellValue({
+                id: params.row.id,
+                field: item.field,
+                value: TimeEvaluator(event, item.field)
               });
             }}
           />
