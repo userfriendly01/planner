@@ -146,7 +146,6 @@ describe("<RoutingAttributes />", ()=>{
       expect(routingStateResult).toEqual(routingResult);  
     });
     test("Auto close the Accordian", ()=>{
-    
       renderComponent();
       const accordianChange = Accordion.mock.calls[0][0].onChange;
       act(()=>{
@@ -245,100 +244,6 @@ describe("<RoutingAttributes />", ()=>{
         callerStateChange(eventOnChange,null);
       })
       expect(callerStateChange).toBeTruthy();
-    });
-  })
-  describe("< Sales Associate workers/>",()=>{
-    beforeEach(()=>{
-      jest.clearAllMocks();
-      useFormDispatch.mockReturnValue(jest.fn());
-      useFormState.mockReturnValue(initialFormState);
-    });
-    test("Simulate sales assoc Component with salesassoc attr as null",()=>{
-      const eventOnChange={
-        target: {
-          name: "sales_ass",
-          value: "sample1"
-        }
-      }
-      const validFormStateEdit={
-        ...validFormState,
-        triton:{
-          ...validFormState.triton,
-          zeroOutEnabled: {
-            value: true,
-            updated: true
-          },
-          routing:{
-            team:"",
-            levels:{},
-            skills:[],
-            updated:true,
-            callerStates:[],
-            sales_assoc_workers: ["Test1","Test2"]
-          }
-        }
-      }
-      const routingResult = {
-        team:"",
-        skills: [],
-        levels: {},
-        updated: true,
-        callerStates:[],
-        sales_assoc_workers: ["Test1","Test2"]
-      }
-      const valueChanged ={
-        value:[
-          {
-            label: "sample1",
-            value: ["Test3"]
-          }
-        ]
-      }
-      updateUser.mockResolvedValue(rawDbWorker);
-      useFormState.mockReturnValue(validFormStateEdit);
-      renderComponent();
-      const salesAssocChange = Accordion.mock.calls[0][0].children[3].props.children.props.updateValue;
-      act(()=>{
-        salesAssocChange(eventOnChange,valueChanged);
-      })
-      const salesAssocResult = useFormState.mock.results[0].value.triton.routing;
-      expect(salesAssocResult).toEqual(routingResult);  
-    });
-    test("Simulate Caller State Component", ()=>{
-      const eventOnChange={
-        target: {
-          name: "salesAssoc",
-          value: "salesAssoc"
-        }
-      }
-      const valueChanged ={
-        value:[
-          {
-            label: "sample1",
-            value: ["test2"]
-          }
-        ]
-      }
-      renderComponent();
-      const salesAssocStateChange = Accordion.mock.calls[0][0].children[3].props.children.props.updateValue;
-      act(()=>{
-        salesAssocStateChange(eventOnChange,valueChanged);
-      })
-      expect(salesAssocStateChange).toBeTruthy();
-    });
-    test("Simulate sales assoc Component with null val", ()=>{
-      const eventOnChange={
-        target: {
-          name: "salesAssoc",
-          value: "salesAssoc"
-        }
-      }
-      renderComponent();
-      const salesAssocStateChange = Accordion.mock.calls[0][0].children[3].props.children.props.updateValue;
-      act(()=>{
-        salesAssocStateChange(eventOnChange,null);
-      })
-      expect(salesAssocStateChange).toBeTruthy();
     });
   })
 });

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import {
-  Accordion, AccordionSummary, AccordionDetails
+  Accordion, AccordionSummary, AccordionDetails, Autocomplete, Chip, TextField
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
@@ -10,6 +10,7 @@ import {
 } from "context";
 import { Dropdown } from "components";
 import { RoutingTeamAttrDropDownOptions,CallerStateAttrDropDownOptions } from "./RoutingAttributesDropDown";
+import AutoCompleteContainer from "../../../../core/SharedComponents/AutoCompleteContainer"
 
 const RoutingAttributes = (): JSX.Element => {
   const setForm = useFormDispatch();
@@ -26,10 +27,6 @@ const RoutingAttributes = (): JSX.Element => {
     if(key === "callerStates"){
       RoutingAttrList = form.triton.routing?.callerStates || []
     }
-    else if(key === "salesAssociateWorker"){
-      RoutingAttrList = form.triton.routing?.sales_assoc_workers|| []
-    }
-    
     return RoutingAttrList.map((routingAttr:String) => {
       return {
         ...routingAttr,
@@ -60,18 +57,6 @@ const RoutingAttributes = (): JSX.Element => {
           }
         });
         break;
-        case "salesAssociateWorker":
-          var salesAssociateWorkerArray:String[] =[];
-          for(let i=0;i<value?.length;i++){
-            salesAssociateWorkerArray.push(value[i].value);
-          }
-          setForm({
-            type: userFormActions.SET_SALES_ASSOCIATE_WORKER,
-            payload: {
-              salesAssociateWorkerRouting: salesAssociateWorkerArray
-            }
-          });
-          break;
     }
     
   }
@@ -119,19 +104,7 @@ const RoutingAttributes = (): JSX.Element => {
         />
       </AccordionDetails>
       <AccordionDetails>
-        <Dropdown
-          label="Sales Associate Workers"
-          value={getlabelValuePair("salesAssociateWorker")}
-          options={CallerStateAttrDropDownOptions}
-          updateValue={(event: any, value: any) => handleChange(event, value, "salesAssociateWorker")}
-          styles={{
-            width: "calc(95%)",
-            margin: "0 0 0 0"
-          }}
-          disabled={false}
-          required={false}
-          multiple = {true}
-        />
+        <AutoCompleteContainer />
       </AccordionDetails>
     </Accordion>
   );
