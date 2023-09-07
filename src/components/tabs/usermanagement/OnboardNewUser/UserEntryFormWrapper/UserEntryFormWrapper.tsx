@@ -27,7 +27,8 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import {
   sortWorkersByFullName,
-  identifyUserProfiles
+  identifyUserProfiles,
+  logger
 } from "utils";
 import {
   Worker,
@@ -106,6 +107,8 @@ const UserEntryForm = () => {
       setForm({ type: userFormActions.RESET_FORM });
     };
   }, []);
+
+  logger.log("FORM", form);
 
   const handleResetForm = () => {
     navigate(-1);

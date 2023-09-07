@@ -8,6 +8,7 @@ import {
 import React from "react";
 import { useAdminState } from "context";
 import { useNavigate } from "react-router-dom";
+import { logger } from "utils";
 
 const NavTabs = () => {
   const state = useAdminState();
@@ -34,6 +35,8 @@ const NavTabs = () => {
       };
     });
   };
+
+  logger.log("STATE", state);
 
   React.useEffect(() => {
     const allowedTabs: any[] = [];

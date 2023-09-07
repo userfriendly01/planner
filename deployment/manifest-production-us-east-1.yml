@@ -11,6 +11,7 @@ applications:
     NODE_ENV: production
     DATADOG_APPLICATION_ID: ${bamboo.secret.datadog.applicationId}
     DATADOG_CLIENT_TOKEN: ${bamboo.secret.datadog.clientToken}
-    TROUX_ID: ${bamboo.forge.troux_deployable_uuid}
+    TROUX_ID: ${bamboo.forge.troux_application_uuid}
+    APP_ENV: production
   blue-green:
     health-check-endpoint: /health

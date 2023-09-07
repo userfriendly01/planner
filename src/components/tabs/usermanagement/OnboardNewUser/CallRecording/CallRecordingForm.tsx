@@ -116,6 +116,8 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
       checked: false
     }));
 
+    logger.log("FORM", form);
+
     setForm({
       type: userFormActions.SET_CALABRIO_QM_USER,
       payload: {
