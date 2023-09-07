@@ -7,7 +7,7 @@ import {
   Modal, ModalHeader
 } from "@lmig/lmds-react-modal";
 import {
-  routingDropDownList, routingInitRule, routingFields, initializedAlertBar, getGraphQLEndpoint, convertTime24to12, cleanErrorMessage
+  routingDropDownList, routingInitRule, routingFields, initializedAlertBar, getGraphQLEndpoint, convertTime24to12, cleanErrorMessage, removeAllWhiteSpace
 } from "utils";
 import { getGridMasterData } from "../../DataGridRouting/GridMaster";
 import {
@@ -166,10 +166,6 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
       timePicked.setSeconds(timePicked.getSeconds() - 1);
     }
     return timePicked.toLocaleString();
-  };
-
-  const removeAllWhiteSpace = (value: string): string => {
-    return value.split(" ").join("");
   };
 
   const handleInputChange = (event: any, key: string, disableEdit: boolean) => {

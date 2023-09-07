@@ -5,7 +5,8 @@ import {
   retrieveRoutingData,
   updateRoutingDB,
   batchRoutingUpdate,
-  queryRoutingData
+  queryRoutingData,
+  batchRoutingCreate
 } from "../routingTableService";
 const jsonRouteData =[
   {
@@ -26,7 +27,7 @@ const jsonRouteData =[
     transferDestination: "Twilo",
     transferMessage: "HOLD ON while we transfer the call",
     twilioSkill: "test",
-    crcSkill: "updated",
+    crcSkill: "updated"
   },
   {
     id: 1,
@@ -223,7 +224,7 @@ describe("routingTableService",()=>{
       callIntent: "call",
       dayOfWeek: "Monday",
       callerState: "callerstate",
-      callerType:"CT",
+      callerType: "CT",
       percentOfCallers: "10",
       transferMessage: "message",
       policyType: "polcy",
@@ -238,13 +239,14 @@ describe("routingTableService",()=>{
       callIntent: "call",
       dayOfWeek: "Monday",
       callerState: "callerstate",
-      callerType:"CT",
+      callerType: "CT",
       percentOfCallers: "10",
       transferMessage: "message",
       policyType: "policy",
       startTime: "2022-02-20",
       endTime: "2022-02-20"
-    }]
+    }
+  ];
   const batchDeleteResponse = {
     data: {
       listCctSharedCallRoutingGlobalDbs: {
@@ -254,7 +256,7 @@ describe("routingTableService",()=>{
     }
   };
 
-  const batchUpdateResponse = {
+  const batchMutationResponse = {
     data: {
       listCctSharedCallRoutingGlobalDbs: {
         items: batchUpdateItems,
@@ -278,7 +280,14 @@ describe("routingTableService",()=>{
     test("Success",async()=>{
       const response = await batchDelete(batchDeleteItems,"1233-3245","http://localhost:3000");
       expect(response).toBe(batchDeleteResponse);
-      expect(window.fetch).toBeCalledWith("http://localhost:3000", {"body": "{\"query\":\"\\n        mutation DeleteMany {\\n          batchDeleteCctSharedCallRoutingGlobalDb(input: {\\n              routingKey: [{pkey:\\\"pkey1\\\",skey:\\\"skey1\\\"},{pkey:\\\"pkey2\\\",skey:\\\"skey2\\\"}]\\n            }) {\\n            items {\\n              pkey\\n              skey\\n            }\\n          }\\n        }\\n    \",\"variables\":{}}", "headers": {"Authorization": "1233-3245", "Content-Type": "application/json"}, "method": "POST"});
+      expect(window.fetch).toBeCalledWith("http://localhost:3000", {
+        "body": "{\"query\":\"\\n        mutation DeleteMany {\\n          batchDeleteCctSharedCallRoutingGlobalDb(input: {\\n              routingKey: [{pkey:\\\"pkey1\\\",skey:\\\"skey1\\\"},{pkey:\\\"pkey2\\\",skey:\\\"skey2\\\"}]\\n            }) {\\n            items {\\n              pkey\\n              skey\\n            }\\n          }\\n        }\\n    \",\"variables\":{}}",
+        "headers": {
+          "Authorization": "1233-3245",
+          "Content-Type": "application/json"
+        },
+        "method": "POST"
+      });
     });
     test("Error",async()=>{
       jest.spyOn(JSON, "stringify").mockImplementation(()=>{
@@ -292,7 +301,7 @@ describe("routingTableService",()=>{
     beforeEach(()=>{
       window.fetch = jest.fn(() =>
         Promise.resolve({
-          json: () => Promise.resolve(batchUpdateResponse)
+          json: () => Promise.resolve(batchMutationResponse)
         })
       );
     });
@@ -301,19 +310,61 @@ describe("routingTableService",()=>{
     });
     test("Success",async()=>{
       const response = await batchRoutingUpdate(batchUpdateItems,"1233-3245","http://localhost:3000");
-      expect(response).toBe(batchUpdateResponse);
-      expect(window.fetch).toBeCalledWith("http://localhost:3000", {"body": "{\"query\":\"\\n        mutation batchUpdateCctSharedCallRoutingDb($input: CctSharedCallRoutingDbBatchUpdateInput!) {\\n          batchUpdateCctSharedCallRoutingDb(input: $input) {\\n            items {\\n              all\\n              brand\\n              callIntent\\n              callerState\\n              callerType\\n              channel\\n              crcSkill\\n              dayOfWeek\\n              endTime\\n              occupancyCheck {\\n                percentage\\n                team\\n              }\\n              percentOfCallers\\n              pkey\\n              policyType\\n              priority\\n              routingSteps {\\n                callerState\\n                teams\\n                time\\n              }\\n              skey\\n              startTime\\n              transferDestination\\n              transferMessage\\n              twilioSkill\\n            }\\n            nextToken\\n          }\\n        }\\n      \",\"variables\":{\"input\":{\"batchRoutingUpdateInput\":[{\"all\":\"ALL\",\"pkey\":\"pkey1\",\"skey\":\"skey1\",\"brand\":\"Liberty\",\"channel\":\"safeco\",\"callIntent\":\"call\",\"dayOfWeek\":\"Monday\",\"callerState\":\"callerstate\",\"callerType\":\"CT\",\"twilioSkill\":\"\",\"transferDestination\":\"\",\"percentOfCallers\":\"10\",\"transferMessage\":\"message\",\"policyType\":\"polcy\",\"startTime\":\"2022-02-20\",\"endTime\":\"2022-02-20\",\"crcSkill\":\"\",\"priority\":\"\",\"occupancyCheck\":[],\"routingSteps\":[]},{\"all\":\"ALL\",\"pkey\":\"pkey2\",\"skey\":\"skey2\",\"brand\":\"Liberty\",\"channel\":\"safeco\",\"callIntent\":\"call\",\"dayOfWeek\":\"Monday\",\"callerState\":\"callerstate\",\"callerType\":\"CT\",\"twilioSkill\":\"\",\"transferDestination\":\"\",\"percentOfCallers\":\"10\",\"transferMessage\":\"message\",\"policyType\":\"policy\",\"startTime\":\"2022-02-20\",\"endTime\":\"2022-02-20\",\"crcSkill\":\"\",\"priority\":\"\",\"occupancyCheck\":[],\"routingSteps\":[]}]}}}","headers": {"Authorization": "1233-3245", "Content-Type": "application/json"}, "method": "POST"});
-    })
-      test("Error",async()=>{
+      expect(response).toBe(batchMutationResponse);
+      expect(window.fetch).toBeCalledWith("http://localhost:3000", {
+        "body": "{\"query\":\"\\n        mutation batchUpdateCctSharedCallRoutingDb($input: CctSharedCallRoutingDbBatchUpdateInput!) {\\n          batchUpdateCctSharedCallRoutingDb(input: $input) {\\n            items {\\n              all\\n              brand\\n              callIntent\\n              callerState\\n              callerType\\n              channel\\n              crcSkill\\n              dayOfWeek\\n              endTime\\n              occupancyCheck {\\n                percentage\\n                team\\n              }\\n              percentOfCallers\\n              pkey\\n              policyType\\n              priority\\n              routingSteps {\\n                callerState\\n                teams\\n                time\\n              }\\n              skey\\n              startTime\\n              transferDestination\\n              transferMessage\\n              twilioSkill\\n            }\\n            nextToken\\n          }\\n        }\\n      \",\"variables\":{\"input\":{\"batchRoutingUpdateInput\":[{\"all\":\"ALL\",\"pkey\":\"pkey1\",\"skey\":\"skey1\",\"brand\":\"Liberty\",\"channel\":\"safeco\",\"callIntent\":\"call\",\"dayOfWeek\":\"Monday\",\"callerState\":\"callerstate\",\"callerType\":\"CT\",\"twilioSkill\":\"\",\"transferDestination\":\"\",\"percentOfCallers\":\"10\",\"transferMessage\":\"message\",\"policyType\":\"polcy\",\"startTime\":\"2022-02-20\",\"endTime\":\"2022-02-20\",\"crcSkill\":\"\",\"priority\":\"\",\"occupancyCheck\":[],\"routingSteps\":[]},{\"all\":\"ALL\",\"pkey\":\"pkey2\",\"skey\":\"skey2\",\"brand\":\"Liberty\",\"channel\":\"safeco\",\"callIntent\":\"call\",\"dayOfWeek\":\"Monday\",\"callerState\":\"callerstate\",\"callerType\":\"CT\",\"twilioSkill\":\"\",\"transferDestination\":\"\",\"percentOfCallers\":\"10\",\"transferMessage\":\"message\",\"policyType\":\"policy\",\"startTime\":\"2022-02-20\",\"endTime\":\"2022-02-20\",\"crcSkill\":\"\",\"priority\":\"\",\"occupancyCheck\":[],\"routingSteps\":[]}]}}}",
+        "headers": {
+          "Authorization": "1233-3245",
+          "Content-Type": "application/json"
+        },
+        "method": "POST"
+      });
+    });
+    test("Error",async()=>{
       jest.spyOn(JSON, "stringify").mockImplementation(()=>{
         throw new Error();
       });
       const response = await batchRoutingUpdate(batchUpdateItems,"1233-3245","http://localhost:3000");
       expect(response).toEqual(undefined);
     });
-      test("Error null Items",async()=>{
+    test("Error null Items",async()=>{
       const response = await batchRoutingUpdate([],"1233-3245","http://localhost:3000");
-      expect(response).toEqual({"errors": ["Please Select Something to Edit"]});
+      expect(response).toEqual({ "errors": ["Please Select Something to Edit"]});
+    });
+  });
+  describe("Batch Create Routing", ()=>{
+    beforeEach(()=>{
+      window.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve(batchMutationResponse)
+        })
+      );
+    });
+    afterEach(()=>{
+      jest.restoreAllMocks();
+    });
+    test("Success",async()=>{
+      const response = await batchRoutingCreate(batchUpdateItems,"1233-3245","http://localhost:3000");
+      expect(response).toBe(batchMutationResponse);
+      expect(window.fetch).toBeCalledWith("http://localhost:3000", {
+        "body": "{\"query\":\"\\n        mutation batchCreateCctSharedCallRoutingGlobalDb($input: CctSharedCallRoutingGlobalDbBatchCreateInput!) {\\n          batchCreateCctSharedCallRoutingGlobalDb(input: $input) {\\n            items {\\n              all\\n              brand\\n              callIntent\\n              callerState\\n              callerType\\n              channel\\n              crcSkill\\n              dayOfWeek\\n              endTime\\n              occupancyCheck {\\n                percentage\\n                team\\n              }\\n              percentOfCallers\\n              pkey\\n              policyType\\n              priority\\n              routingSteps {\\n                callerState\\n                teams\\n                time\\n              }\\n              skey\\n              startTime\\n              transferDestination\\n              transferMessage\\n              twilioSkill\\n            }\\n            nextToken\\n          }\\n        }\\n      \",\"variables\":{\"input\":{\"batchRoutingCreateInput\":[{\"all\":\"ALL\",\"pkey\":\"call\",\"skey\":\"liberty__safeco__undefined\",\"brand\":\"Liberty\",\"channel\":\"safeco\",\"callIntent\":\"call\",\"dayOfWeek\":\"Monday\",\"callerState\":\"callerstate\",\"callerType\":\"CT\",\"twilioSkill\":\"\",\"transferDestination\":\"\",\"percentOfCallers\":\"10\",\"transferMessage\":\"message\",\"policyType\":\"polcy\",\"startTime\":\"2022-02-20\",\"endTime\":\"2022-02-20\",\"crcSkill\":\"\",\"priority\":\"\",\"occupancyCheck\":[],\"routingSteps\":[]},{\"all\":\"ALL\",\"pkey\":\"call\",\"skey\":\"liberty__safeco__undefined\",\"brand\":\"Liberty\",\"channel\":\"safeco\",\"callIntent\":\"call\",\"dayOfWeek\":\"Monday\",\"callerState\":\"callerstate\",\"callerType\":\"CT\",\"twilioSkill\":\"\",\"transferDestination\":\"\",\"percentOfCallers\":\"10\",\"transferMessage\":\"message\",\"policyType\":\"policy\",\"startTime\":\"2022-02-20\",\"endTime\":\"2022-02-20\",\"crcSkill\":\"\",\"priority\":\"\",\"occupancyCheck\":[],\"routingSteps\":[]}]}}}",
+        "headers": {
+          "Authorization": "1233-3245",
+          "Content-Type": "application/json"
+        },
+        "method": "POST"
       });
+    });
+    test("Error",async()=>{
+      jest.spyOn(JSON, "stringify").mockImplementation(()=>{
+        throw new Error();
+      });
+      const response = await batchRoutingCreate(batchUpdateItems,"1233-3245","http://localhost:3000");
+      expect(response).toEqual(undefined);
+    });
+    test("Error null Items",async()=>{
+      const response = await batchRoutingCreate([],"1233-3245","http://localhost:3000");
+      expect(response).toEqual({ "errors": ["Please Select Something to Add"]});
+    });
   });
 });
