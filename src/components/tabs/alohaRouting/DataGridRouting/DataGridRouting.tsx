@@ -341,7 +341,6 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
   };
 
   const handleOnBulkCreate = async(rows: Array<CctSharedCallRoutingDb> ) =>{
-    console.log("Rows for Add: ", rows);
     const response = await batchRoutingCreate(rows, accessToken, graphQlApiUrl);
     if(!response || response.errors) {
       setAlertBar((alertBarProps: AlertBarProps) => ({

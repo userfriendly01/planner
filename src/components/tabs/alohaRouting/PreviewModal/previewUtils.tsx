@@ -4,7 +4,8 @@ import {
   convertTime24to12,
   dayOfWeek,
   languageOffer,
-  routingFields
+  routingFields,
+  priority
 } from "utils";
 import {
   PreviewModalAction,
@@ -39,7 +40,6 @@ const multiFields = routingFields.filter(x => x.control === "multiField").map(x 
 });
 
 const TimeEvaluator = (event: any, keyType: string): string => {
-  console.log("Event :", event);
   const timePicked = new Date(event.$d.toString());
   timePicked.setSeconds(0);
   if (keyType === "endTime") {
@@ -132,7 +132,7 @@ const fetchData = (): RoutingDropDownList =>{
     dayOfWeek: dayOfWeek,
     language: languageOffer,
     policyType: masterDataObject?.policyType,
-    priority: masterDataObject.priority
+    priority: priority
   };
   return dropDownValue;
 };
