@@ -255,10 +255,10 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
               type: "updateWfmOrg",
               payload: {
                 org: addWorkerToOrg({
-                  ...form.calabrio_wfm,
-                  Id: res.data.personId,
-                  ParentTeam: form.calabrio_wfm.TeamId
-                }, state),
+                ...form.calabrio_wfm,
+                Id: res.data.personId,
+                ParentTeam: form.calabrio_wfm.TeamId
+              }, state),
                 errors: []
               }
             });
