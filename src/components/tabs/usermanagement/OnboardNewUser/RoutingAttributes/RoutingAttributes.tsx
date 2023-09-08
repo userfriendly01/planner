@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import {
-  Accordion, AccordionSummary, AccordionDetails
+  Accordion, AccordionSummary, AccordionDetails, Autocomplete, Chip, TextField
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
@@ -10,22 +10,30 @@ import {
 } from "context";
 import { Dropdown } from "components";
 import { RoutingTeamAttrDropDownOptions,CallerStateAttrDropDownOptions } from "./RoutingAttributesDropDown";
+import AutoCompleteContainer from "../../../../core/SharedComponents/AutoCompleteContainer"
 
 const RoutingAttributes = (): JSX.Element => {
   const setForm = useFormDispatch();
   const form = useFormState();
-  const accordianExpansion = form.triton.routing.team ? true : form.triton.routing?.callerStates?.length>0?true:false;
+  const accordianExpansion= ()=>{
+    if(form.triton.routing.team || form.triton.routing?.callerStates?.length>0 || form.triton.routing?.sales_assoc_workers?.length>0){
+      return true
+    }
+    return false
+  }
   const [expanded, setExpanded] = useState(accordianExpansion);
-  const getlabelValuePair=()=>{
-    const callerStateList = form.triton.routing?.callerStates||[];
-    return callerStateList.map((callerState:String) => {
+  const getlabelValuePair=(key:string)=>{
+    let RoutingAttrList:String[] = [];
+    if(key === "callerStates"){
+      RoutingAttrList = form.triton.routing?.callerStates || []
+    }
+    return RoutingAttrList.map((routingAttr:String) => {
       return {
-        ...callerState,
-        label: callerState,
-        value: callerState
+        ...routingAttr,
+        label: routingAttr,
+        value: routingAttr
       };
     });
-
   }
   const handleChange = (event: any, value: any, keyName:String) => {
     switch(keyName){
@@ -83,7 +91,7 @@ const RoutingAttributes = (): JSX.Element => {
       <AccordionDetails>
         <Dropdown
           label="Caller State"
-          value={getlabelValuePair()}
+          value={getlabelValuePair("callerStates")}
           options={CallerStateAttrDropDownOptions}
           updateValue={(event: any, value: any) => handleChange(event, value, "callerStates")}
           styles={{
@@ -94,6 +102,9 @@ const RoutingAttributes = (): JSX.Element => {
           required={false}
           multiple = {true}
         />
+      </AccordionDetails>
+      <AccordionDetails>
+        <AutoCompleteContainer />
       </AccordionDetails>
     </Accordion>
   );
