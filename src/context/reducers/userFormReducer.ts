@@ -34,6 +34,7 @@ export const userFormActions = {
   SET_CALABRIO_TIMEZONE: "SET_CALABRIO_TIMEZONE",
   SET_CALABRIO_ROLES: "SET_CALABRIO_ROLES",
   SET_CALLER_STATES: "SET_CALLER_STATES",
+  SET_SALES_ASSOCIATE_WORKER: "SET_SALES_ASSOCIATE_WORKER",
   SET_DISCREPANCIES: "SET_DISCREPANCIES",
   SET_EXTENSION_MESSAGE: "SET_EXTENSION_MESSAGE",
   SET_EXTENSION_RETRIES: "SET_EXTENSION_RETRIES",
@@ -101,6 +102,7 @@ export const initialUserFormState: UserFormState = {
     routing: {
       team: "",
       callerStates: [],
+      sales_assoc_workers: [],
       skills: [],
       level: {},
       updated: false
@@ -441,6 +443,20 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
           routing: {
             ...state.triton.routing,
             callerStates: callerStateRoutingAttr,
+            updated: true
+          }
+        }
+      };
+    }
+    case userFormActions.SET_SALES_ASSOCIATE_WORKER: {
+      const salesAssociateWorkerAttr = action.payload.salesAssociateWorkerRouting;
+      return {
+        ...state,
+        triton: {
+          ...state.triton,
+          routing: {
+            ...state.triton.routing,
+            sales_assoc_workers: salesAssociateWorkerAttr,
             updated: true
           }
         }
