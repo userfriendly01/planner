@@ -1,9 +1,11 @@
 import React from "react";
 import {
   ROUTING_CACHE_MASTER_DATA,
+  convertTime24to12,
   dayOfWeek,
   languageOffer,
-  routingFields
+  routingFields,
+  priority
 } from "utils";
 import {
   PreviewModalAction,
@@ -36,6 +38,15 @@ const multiFields = routingFields.filter(x => x.control === "multiField").map(x 
   formFields[x.key]=x.formFields;
   return x.key;
 });
+
+const TimeEvaluator = (event: any, keyType: string): string => {
+  const timePicked = new Date(event.$d.toString());
+  timePicked.setSeconds(0);
+  if (keyType === "endTime") {
+    timePicked.setSeconds(timePicked.getSeconds() - 1);
+  }
+  return timePicked.toLocaleString();
+};
 
 const manageEditColumnDef = (
   columnDef: Array<GridColDef>,
@@ -76,6 +87,31 @@ const manageEditColumnDef = (
         )
       };
     }
+    if(["startTime", "endTime"].includes(item.field)){
+      return {
+        ...item,
+        editable: true,
+        renderEditCell: params => (
+          <ComponentControl
+            control="timePicker"
+            label=""
+            name={item.field}
+            formFields={formFields[item.field]}
+            error={false}
+            required={false}
+            type="text"
+            value={params.value}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              apiRef.current.setEditCellValue({
+                id: params.row.id,
+                field: item.field,
+                value: TimeEvaluator(event, item.field)
+              });
+            }}
+          />
+        )
+      };
+    }
     return {
       ...item,
       editable: true
@@ -96,7 +132,7 @@ const fetchData = (): RoutingDropDownList =>{
     dayOfWeek: dayOfWeek,
     language: languageOffer,
     policyType: masterDataObject?.policyType,
-    priority: masterDataObject.priority
+    priority: priority
   };
   return dropDownValue;
 };

@@ -15,6 +15,12 @@ import { formFields } from "./previewUtils";
 
 const formatDateTime = (dateTime: string) => {
   if(dateTime.includes("AM") || dateTime.includes("PM")){
+    const dateTimeList: string[] = dateTime.split(" ");
+    if(dateTimeList.length === 3){
+      const [date, time, modifier] = dateTime.split(" ");
+      const timeSplit: string[] = time.split(":");
+      return `${timeSplit[0]}:${timeSplit[1]} ${modifier}`;
+    }
     const [time, modifier] = dateTime.split(" ");
     const timeSplit: string[] = time.split(":");
     return `${timeSplit[0]}:${timeSplit[1]} ${modifier}`;
@@ -123,14 +129,14 @@ export const TableGridColumnDef: GridColDef[] = [
     field: "startTime",
     sortable: true,
     align: "left",
-    valueGetter: (params: GridRenderCellParams<CctSharedCallRoutingDb>) => (formatDateTime(params.row.startTime))
+    valueGetter: (params: GridRenderCellParams<CctSharedCallRoutingDb>) => (params.row.startTime && formatDateTime(params.row.startTime))
   },
   {
     headerName: "End Time",
     field: "endTime",
     sortable: true,
     align: "left",
-    valueGetter: (params: GridRenderCellParams<CctSharedCallRoutingDb>) => (formatDateTime(params.row.endTime))
+    valueGetter: (params: GridRenderCellParams<CctSharedCallRoutingDb>) => (params.row.endTime && formatDateTime(params.row.endTime))
   },
 
   {
