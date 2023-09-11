@@ -488,7 +488,7 @@ describe("profileEntryFormReducer", () => {
           value: false
         },
         callReason: {
-          value: false
+          value: true
         },
         clickToDial: {
           value: true
@@ -745,7 +745,7 @@ describe("profileEntryFormReducer", () => {
           value: false
         },
         callReason: {
-          value: false
+          value: true
         },
         clickToDial: {
           value: true
