@@ -146,7 +146,6 @@ describe("<RoutingAttributes />", ()=>{
       expect(routingStateResult).toEqual(routingResult);  
     });
     test("Auto close the Accordian", ()=>{
-    
       renderComponent();
       const accordianChange = Accordion.mock.calls[0][0].onChange;
       act(()=>{
@@ -247,7 +246,4 @@ describe("<RoutingAttributes />", ()=>{
       expect(callerStateChange).toBeTruthy();
     });
   })
- 
- 
-  
 });

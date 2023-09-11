@@ -1491,6 +1491,31 @@ describe("userFormReducer", () => {
     });
   });
 
+  describe("UPDATE_SALES_ASSOC_WORKER", () => {
+    test("should update sales Assoc worker", () => {
+      const payload = {
+        salesAssociateWorkerRouting:["Test1", "Test2"]
+      };
+      const action = {
+        type: userFormActions.SET_SALES_ASSOCIATE_WORKER,
+        payload
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        triton:{
+          ...initialUserFormState.triton,
+          routing: {
+            ...initialUserFormState.triton.routing,
+            sales_assoc_workers: payload.salesAssociateWorkerRouting,
+            updated: true
+          }
+        }
+        }
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+
   describe("UPDATE_N_NUMBER", () => {
     test("should update nNumber", () => {
       const payload = "n0263786";
