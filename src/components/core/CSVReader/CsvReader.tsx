@@ -25,6 +25,7 @@ export const CsvReader = (e: any, setUploadedForm: any): void => {
   e.preventDefault();
   if (e.target.files) {
     const reader = new FileReader();
+    const fileName = e.target.files[0].name || "";
     reader.onload = e => {
       const data = e.target?.result;
       const workbook = XLSX.read(data, { type: "array" });
@@ -36,7 +37,10 @@ export const CsvReader = (e: any, setUploadedForm: any): void => {
       const headerRows = 1;
       if(typeof json ==="object"){
         setUploadedForm(json.map((r:any) => {
-          const jsonMap = mapValuesToObj(r);
+          let jsonMap = r
+          if(fileName.startsWith('call-flow')){
+            jsonMap = mapValuesToObj(r);
+          }
           return {
             ...jsonMap,
             rowNumber: jsonMap[rowNum] + headerRows
