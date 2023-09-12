@@ -1,0 +1,49 @@
+import { CctSharedCallFlowDb } from "components"
+import * as XLSX from "xlsx";
+const contentKeys = ["callIntent","callerType","callFlowRoute","greetingMessages","languageOffer","transferNumber"];
+const contentArrayKeys =["dataRequests","officeNumbers"]
+const mapValuesToObj=(jsonValues:any):any=>{
+let jsonFlowObj:any={
+  content:{}
+ };
+ Object.keys(jsonValues).forEach(key=>{
+    if (contentKeys.includes(key)){
+      const value= jsonValues[key]||""
+      jsonFlowObj.content[key]=value;
+    }
+    else if(contentArrayKeys.includes(key)){
+      const value= jsonValues[key].split(",")||[]
+      jsonFlowObj.content[key]=value;
+    }
+    else{
+      jsonFlowObj[key]=jsonValues[key]?jsonValues[key]:""
+    }
+  });
+  return jsonFlowObj;
+}
+export const CsvReader = (e: any, setUploadedForm: any): void => {
+  e.preventDefault();
+  if (e.target.files) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const data = e.target?.result;
+      const workbook = XLSX.read(data, { type: "array" });
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const json = XLSX.utils.sheet_to_json(worksheet);
+      console.warn(json);
+      const rowNum = "__rowNum__";
+      const headerRows = 1;
+      if(typeof json ==="object"){
+        setUploadedForm(json.map((r:any) => {
+          const jsonMap = mapValuesToObj(r);
+          return {
+            ...jsonMap,
+            rowNumber: jsonMap[rowNum] + headerRows
+          };
+        }));
+      }
+    };
+    reader.readAsArrayBuffer(e.target.files[0]);
+  }
+};
