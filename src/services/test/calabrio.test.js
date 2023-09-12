@@ -107,12 +107,12 @@ describe("createCalabrioWFMPerson", () => {
 describe("getWfmOrg", () => {
   const businessUnitId = "123-321";
   const fakeDate = "2023-07-01";
-  const url = `${apiPaths.GET_CALABRIO_WFM_ORG}/${businessUnitId}/${fakeDate}/${fakeDate}`
-  
+  const url = `${apiPaths.GET_CALABRIO_WFM_ORG}/${businessUnitId}/${fakeDate}/${fakeDate}`;
+
   beforeAll(() => {
-    jest.useFakeTimers('modern');
+    jest.useFakeTimers("modern");
     jest.setSystemTime(new Date(2023, 6, 1));
-  });;
+  });
 
   afterAll(() => {
     jest.useRealTimers();

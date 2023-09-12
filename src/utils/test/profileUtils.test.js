@@ -208,17 +208,17 @@ describe("profileUtils", () => {
         },
         {
           activity_id: 12
-        },
+        }
       ],
       callTagsList: [
         {
           wrkr_tsk_info_id: 1,
-          wrkr_tsk_info_nme:'claim_number',
+          wrkr_tsk_info_nme: "claim_number",
           options_id: 1
         },
         {
           wrkr_tsk_info_id: 2,
-          wrkr_tsk_info_nme:'aces_claim_number',
+          wrkr_tsk_info_nme: "aces_claim_number",
           options_id: 1
         }
       ],
@@ -253,6 +253,9 @@ describe("profileUtils", () => {
         value: true
       },
       policyNumberEdit: {
+        value: false
+      },
+      callReason: {
         value: false
       },
       clickToDial: {
@@ -294,7 +297,7 @@ describe("profileUtils", () => {
         updated: true
       },
       accessGroupId: 2,
-      accessGroupIdUpdated: true,
+      accessGroupIdUpdated: true
     };
     const expected = {
       activities: [1,7,12],
@@ -315,6 +318,7 @@ describe("profileUtils", () => {
           wrkr_tsk_info_id: 2
         }
       ],
+      call_reason_i: false,
       click_to_dial_i: false,
       eft_authorization_i: false,
       manual_record_inbound_i: true,
@@ -360,18 +364,18 @@ describe("profileUtils", () => {
         },
         {
           activity_id: 12
-        },
+        }
       ],
       activitiesUpdated: true,
       callTagsList: [
         {
           wrkr_tsk_info_id: 1,
-          wrkr_tsk_info_nme:'claim_number',
+          wrkr_tsk_info_nme: "claim_number",
           options_id: 1
         },
         {
           wrkr_tsk_info_id: 2,
-          wrkr_tsk_info_nme:'aces_claim_number',
+          wrkr_tsk_info_nme: "aces_claim_number",
           options_id: 1
         }
       ],
@@ -417,6 +421,10 @@ describe("profileUtils", () => {
         updated: true
       },
       policyNumberEdit: {
+        value: false,
+        updated: true
+      },
+      callReason: {
         value: false,
         updated: true
       },
@@ -484,6 +492,7 @@ describe("profileUtils", () => {
           wrkr_tsk_info_id: 2
         }
       ],
+      call_reason_i: false,
       click_to_dial_i: false,
       eft_authorization_i: false,
       manual_record_inbound_i: true,
