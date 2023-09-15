@@ -15,7 +15,7 @@ import {
 } from "globals";
 import { UserFormState } from "components/tabs/usermanagement/OnboardNewUser/UserEntryFormWrapper/UserEntryFormWrapper.Interfaces";
 import React, { ReactElement } from "react";
-import { ProfileEntryFormState } from "components/tabs/profilesettings/ProfileEntryForm/ProfileEntryForm.Interfaces";
+import { ProfileEntryFormState } from "components/tabs/orgmanagement/triton/ProfileEntryForm/ProfileEntryForm.Interfaces";
 import { SkillFormState } from "components/tabs/callflowmanagement/SkillManagement/Skills.Interfaces";
 
 export const StateContext = React.createContext(undefined);

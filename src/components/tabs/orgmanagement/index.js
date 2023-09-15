@@ -1,1 +1,1 @@
-export * from "./CalabrioTeamModal";
+export * from "./calabrio/CalabrioTeamModal";
