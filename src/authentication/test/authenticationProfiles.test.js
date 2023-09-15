@@ -213,6 +213,10 @@ describe("authenticationProfiles", () => {
             {
               route: "triton-admin/profile-directory",
               label: "Triton Profile Directory"
+            },
+            {
+              route: "triton-admin/calabrio-roles",
+              label: "Calabrio Roles"
             }
           ]
         },
