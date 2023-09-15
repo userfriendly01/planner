@@ -13,7 +13,7 @@ const mapValuesToObj=(jsonValues:any, type:string):any=>{
         }
         else if(contentArrayKeys.includes(key)){
           const value= jsonValues[key]||"";
-          jsonFlowObj.content[key]=value?.split(",")||[]
+          jsonFlowObj.content[key]=value?.split(",")
         }
         else{
           jsonFlowObj[key]=jsonValues[key]?jsonValues[key]:""
