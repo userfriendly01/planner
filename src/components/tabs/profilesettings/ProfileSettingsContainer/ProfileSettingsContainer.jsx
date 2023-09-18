@@ -43,25 +43,25 @@ const ProfileSettingsContainer = () => {
             />
           </>
         </Modal>
-          <SettingsContainer>
-            {
-              checkIfPO(loggedInUser, environment) ?
-                <ControlsWrapper>
-                  <ControlItem>
-                    <CreateProfileButton onClick={createProfileOnClick} data-testid={"create-profile-button"}>
+        <SettingsContainer>
+          {
+            checkIfPO(loggedInUser, environment) ?
+              <ControlsWrapper>
+                <ControlItem>
+                  <CreateProfileButton onClick={createProfileOnClick} data-testid={"create-profile-button"}>
                       Create Profile
-                    </CreateProfileButton>
-                  </ControlItem>
-                </ControlsWrapper>
-                : null
-            }
-            <ProfileSettingsTable
-              environment={environment}
-              profileList={profilesFromContext}
-              setProfileModalState={setProfileModalState}
-              loggedInUser={loggedInUser}
-            />
-          </SettingsContainer>
+                  </CreateProfileButton>
+                </ControlItem>
+              </ControlsWrapper>
+              : null
+          }
+          <ProfileSettingsTable
+            environment={environment}
+            profileList={profilesFromContext}
+            setProfileModalState={setProfileModalState}
+            loggedInUser={loggedInUser}
+          />
+        </SettingsContainer>
       </ProfileSettingsContainerDiv>
     </ProfileEntryFormStateProvider>
   );

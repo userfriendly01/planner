@@ -65,6 +65,9 @@ export const initialProfileEntryFormState: ProfileEntryFormState = {
   voiceMailTranscription: {
     value: false
   },
+  callReason: {
+    value: false
+  },
   clickToDial: {
     value: false
   },
@@ -213,6 +216,7 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         paymentProcessing: formatProfileBooleanDataTrueFalse(profile.pmt_prcsg_i.data[0]),
         policyNumberEdit: formatProfileBooleanDataTrueFalse(profile.policy_number_edit_i.data[0]),
         voiceMailTranscription: formatProfileBooleanDataTrueFalse(profile.voice_mail_transcription_i.data[0]),
+        callReason: formatProfileBooleanDataTrueFalse(profile.call_reason_i.data[0]),
         clickToDial: formatProfileBooleanDataTrueFalse(profile.click_to_dial_i.data[0]),
         eftAuthorization: formatProfileBooleanDataTrueFalse(profile.eft_authorization_i.data[0]),
         overflowSkill: {
