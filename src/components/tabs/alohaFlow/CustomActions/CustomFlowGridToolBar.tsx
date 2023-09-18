@@ -1,5 +1,5 @@
 import {
-  Chip, FormControl, InputLabel, MenuItem, Select, Grid, TextField, IconButton, Paper, Tooltip, Button
+  Chip, FormControl, InputLabel, MenuItem, Select, Grid, TextField, IconButton, Paper, Tooltip
 } from "@mui/material";
 import React, {
   useState, useEffect
@@ -15,7 +15,8 @@ import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import DeleteSweepOutlinedIcon from "@mui/icons-material/DeleteSweepOutlined";
 import EditNoteOutlinedIcon from "@mui/icons-material/EditNoteOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
-import { CsvReader } from "components";
+
+
 interface CustomFlowGridToolBarProps {
   openAddModal: (flag: boolean, isSubmitted?: boolean) => void;
   openPreviewModal: (flag: boolean, action: PreviewModalAction) =>void;
@@ -30,16 +31,11 @@ const CustomFlowGridToolBar = ({
   openAddModal, openPreviewModal, openAdvanceSearchModal, exportDataFile, applyFilter, isAdvanceSearchOpen
 }:CustomFlowGridToolBarProps) =>{
   const [flowFilter, setFlowFilter] = useState<FlowAdvanceFilter>();
-  const [ uploadedForm, setUploadedForm ] = React.useState(null);
 
   useEffect(()=>{
     const localFilter = getAdvanceFilter(CACHE_FILTER_FLOW);
     setFlowFilter(localFilter);
   },[isAdvanceSearchOpen]);
-
-  useEffect(()=>{
-    console.log("uploaded csv", uploadedForm);
-  },[uploadedForm]);
 
   const handleChange=(event:any):void=> {
     const { value } = event.target;
@@ -60,9 +56,6 @@ const CustomFlowGridToolBar = ({
         break;
     }
   };
-  const handleUploadChange =(event:any)=>{
-    CsvReader(event, setUploadedForm);
-  }
 
   const handleOnDelete = (key: string) =>{
     const filterItem: FlowAdvanceFilter = { ...flowFilter };
@@ -118,20 +111,6 @@ const CustomFlowGridToolBar = ({
           </Paper>
         </Tooltip>
       </Grid>
-      <Grid>
-        <Button
-          variant="contained"
-          component="label"
-        >
-          Upload File
-          <input
-            type="file"
-            hidden
-            accept= ".csv"
-            onChange={handleUploadChange}
-          />
-        </Button>
-        </Grid>
       <Grid item key="flow-action-box" xs={2}>
         <FormControl sx={{
           marginTop: "16px",

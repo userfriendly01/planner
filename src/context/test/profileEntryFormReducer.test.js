@@ -330,6 +330,10 @@ describe("profileEntryFormReducer", () => {
           type: "Buffer",
           data: [0]
         },
+        call_reason_i: {
+          type: "Buffer",
+          data: [1]
+        },
         click_to_dial_i: {
           type: "Buffer",
           data: [1]
@@ -483,6 +487,9 @@ describe("profileEntryFormReducer", () => {
         voiceMailTranscription: {
           value: false
         },
+        callReason: {
+          value: true
+        },
         clickToDial: {
           value: true
         },
@@ -579,6 +586,10 @@ describe("profileEntryFormReducer", () => {
         voice_mail_transcription_i: {
           type: "Buffer",
           data: [0]
+        },
+        call_reason_i: {
+          type: "Buffer",
+          data: [1]
         },
         click_to_dial_i: {
           type: "Buffer",
@@ -732,6 +743,9 @@ describe("profileEntryFormReducer", () => {
         },
         voiceMailTranscription: {
           value: false
+        },
+        callReason: {
+          value: true
         },
         clickToDial: {
           value: true

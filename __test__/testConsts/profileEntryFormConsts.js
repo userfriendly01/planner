@@ -39,6 +39,9 @@ export const initialProfileEntryFormState = {
   policyNumberEdit: {
     value: false
   },
+  callReason: {
+    value: false
+  },
   clickToDial: {
     value: false
   },
@@ -101,6 +104,9 @@ export const validProfileEntryFormState = {
   policyNumberEdit: {
     value: false
   },
+  callReason: {
+    value: false
+  },
   clickToDial: {
     value: false
   },
@@ -117,7 +123,13 @@ export const validProfileEntryFormState = {
     updated: true,
     valid: true
   },
-  transferQueues: [{skill_id: 1, skill_nme: "PSU Claims - Level 1"},{skill_id: 2, skill_nme: "PSU Claims - Level 2"}]
+  transferQueues: [{
+    skill_id: 1,
+    skill_nme: "PSU Claims - Level 1"
+  },{
+    skill_id: 2,
+    skill_nme: "PSU Claims - Level 2"
+  }]
 };
 
 export const invalidProfileEntryFormState = {
@@ -160,6 +172,9 @@ export const invalidProfileEntryFormState = {
   policyNumberEdit: {
     value: false
   },
+  callReason: {
+    value: false
+  },
   clickToDial: {
     value: false
   },
@@ -176,7 +191,13 @@ export const invalidProfileEntryFormState = {
     updated: true,
     valid: false
   },
-  transferQueues: [{skill_id: 1, skill_nme: "PSU Claims - Level 1"},{skill_id: 2, skill_nme: "PSU Claims - Level 2"}]
+  transferQueues: [{
+    skill_id: 1,
+    skill_nme: "PSU Claims - Level 1"
+  },{
+    skill_id: 2,
+    skill_nme: "PSU Claims - Level 2"
+  }]
 };
 
 export const initialProfileEditEntryFormState = {
@@ -218,6 +239,9 @@ export const initialProfileEditEntryFormState = {
   policyNumberEdit: {
     value: false
   },
+  callReason: {
+    value: false
+  },
   clickToDial: {
     value: false
   },
@@ -234,5 +258,11 @@ export const initialProfileEditEntryFormState = {
     updated: false,
     valid: true
   },
-  transferQueues: [{skill_id: 1, skill_nme: "PSU Claims - Level 1"},{skill_id: 2, skill_nme: "PSU Claims - Level 2"}]
+  transferQueues: [{
+    skill_id: 1,
+    skill_nme: "PSU Claims - Level 1"
+  },{
+    skill_id: 2,
+    skill_nme: "PSU Claims - Level 2"
+  }]
 };
