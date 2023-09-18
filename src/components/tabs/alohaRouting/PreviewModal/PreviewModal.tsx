@@ -11,7 +11,7 @@ import {
   ModalFooter
 } from "@lmig/lmds-react-modal";
 import {
-  StyledButton
+  StyledButton, CsvReader
 } from "components";
 import { Box } from "@mui/material";
 import { CctSharedCallRoutingDb } from "../AlohaRouting.Interfaces";
@@ -44,6 +44,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   } = props;
   const apiRef = useGridApiRef();
   const [routingRows, setRoutingRows] = useState<CctSharedCallRoutingDb[]>([]);
+  const [uploadedForm , setUploadedForm] = useState([]);
   const tableGridColumnDef: Array<GridColDef> = useMemo<Array<GridColDef>>(()=>{
     return reconstructTableColumnDef(action, [...TableGridColumnDef], apiRef); },[action]);
 
@@ -59,6 +60,16 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
       setRoutingRows(rows);
     }
   }, [rows]);
+
+  useEffect(()=>{
+    if(action === "add" && uploadedForm.length>0){
+      const modifiedRow = uploadedForm.map((row: CctSharedCallRoutingDb, index:  number)=>({
+        ...row,
+        id: maxId+ index+ 1
+      }));
+      setRoutingRows(modifiedRow);
+    }
+  }, [uploadedForm]);
 
   const getUpdatedRoutingDb = () =>{
     const newRows: Array<CctSharedCallRoutingDb>=[...routingRows].map((row: CctSharedCallRoutingDb)=>{
@@ -119,6 +130,10 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
     ));
   };
 
+  const handleUploadedFile = (event: any) =>{
+    CsvReader(event, setUploadedForm);
+  };
+
   return (
     <div>
       <Modal
@@ -135,7 +150,9 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
           marginBottom: "10px"
         }}>
           <StyledButton  onClick={()=>{ createNewRecord(); }}>Add New +</StyledButton>
-          <StyledButton sx={{ marginLeft: "10px" }}>Upload</StyledButton>
+          <StyledButton sx={{ marginLeft: "10px" }}>
+            <input type="file" onChange={event=>handleUploadedFile(event)} />
+          </StyledButton>
         </Box>
           }
           <DataGrid
