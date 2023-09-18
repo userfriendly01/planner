@@ -31,7 +31,7 @@ const CalabrioRolesWrapper = () => {
         }
       </RolesColumn>
       <PermissionsColumn>
-        {selectedRole.permissions.sort(sortCalabrioObject).map((p: any) => ((
+        {selectedRole.permissions?.sort(sortCalabrioObject).map((p: any) => ((
           <Permission>
             {p.name}
           </Permission>

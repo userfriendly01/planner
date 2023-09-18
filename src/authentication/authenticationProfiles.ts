@@ -187,6 +187,10 @@ export const getTabs = (): any => {
           label: "Triton Profile Directory"
         },
         {
+          route: "triton-admin/calabrio-org",
+          label: "Calabrio Organization"
+        },
+        {
           route: "triton-admin/calabrio-roles",
           label: "Calabrio Roles"
         }

@@ -10,10 +10,11 @@ import {
   ProfileSettingsContainer,
   TritonUsersViewWrapper,
   UserEntryForm,
-  WfmUsersViewWrapper
+  WfmUsersViewWrapper,
+  CalabrioOrgWrapper,
+  CalabrioRolesWrapper
 } from "components";
 import { AppState } from "./interfaces";
-import CalabrioRolesWrapper from "components/tabs/orgmanagement/calabrio/CalabrioRolesWrapper/CalabrioRolesWrapper";
 
 export const getRoutes = (state: AppState, Home: any, azureClientId: string) => [
   {
@@ -47,6 +48,10 @@ export const getRoutes = (state: AppState, Home: any, azureClientId: string) => 
   {
     path: "/triton-admin/profile-settings",
     element: ProfileSettingsContainer
+  },
+  {
+    path: "/triton-admin/calabrio-org",
+    element: CalabrioOrgWrapper
   },
   {
     path: "/triton-admin/calabrio-roles",

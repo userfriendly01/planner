@@ -23,14 +23,14 @@ describe("fields.js", () => {
     test("didField is not a string, reject with message", () => {
       try {
         isDidUser(12, 3);
-      } catch(err) {
+      } catch (err) {
         expect(err).toEqual(new Error("Did User field needs to be 'Y' or 'N' for row 3"));
       }
     });
     test("didField is not y or n, reject with message", () => {
       try {
         isDidUser("hello", 1);
-      } catch(err) {
+      } catch (err) {
         expect(err).toEqual(new Error("Did User field needs to be 'Y' or 'N' for row 1"));
       }
     });
@@ -783,7 +783,7 @@ describe("fields.js", () => {
             await exetensionValidateFunction({
               rowNumber: 6,
               "Extension": 1234
-            }, { workerContext: { workers: null }});
+            }, { workerContext: { workers: null } });
           } catch (e) {
             expect(e).toEqual(JSON.stringify({
               rowNumber: 6,
@@ -1557,10 +1557,10 @@ describe("fields.js", () => {
               "Routing Team": null,
               "Profile Id": 2
             }
-            test("return rejected promise", async() => {
+            test("return rejected promise", async () => {
               try {
                 await routingTeamValidateFunction(row, initialTestState);
-              } catch(err){
+              } catch (err) {
                 expect(err).toBe(JSON.stringify({
                   rowNumber: 2,
                   error: "Routing Team is missing for row 2"
@@ -1577,12 +1577,12 @@ describe("fields.js", () => {
             test("return rejected promise", async () => {
               try {
                 await routingTeamValidateFunction(row, initialTestState);
-              } catch(err){
+              } catch (err) {
                 expect(err).toBe(JSON.stringify({
                   rowNumber: 2,
                   error: "Routing Team is not a valid option for profile for row 2"
                 }));
-              }            
+              }
             });
           });
           describe("field is valid", () => {
@@ -1612,12 +1612,12 @@ describe("fields.js", () => {
           test("return rejected promise", async () => {
             try {
               await routingTeamValidateFunction(row, initialTestState);
-            } catch(err){
+            } catch (err) {
               expect(err).toBe(JSON.stringify({
                 rowNumber: 2,
                 error: "Routing Team is not applicable to profile id 800 for row 2"
               }));
-            }          
+            }
           });
         });
         describe("profile not found and field is null", () => {
@@ -1693,7 +1693,7 @@ describe("fields.js", () => {
           const result = await wfmActivateExternalLogonValidateFunction(row, initialTestState);
           expect(result).toEqual("WFM Activate External Logon y set for row 4");
           expect(row).toEqual({
-            ... row,
+            ...row,
             rowNumber: 4,
             "WFM Activate External Logon": "Y",
             wfmActivateExternalLogon: true
@@ -1707,7 +1707,7 @@ describe("fields.js", () => {
           const result = await wfmActivateExternalLogonValidateFunction(row, initialTestState);
           expect(result).toEqual("WFM Activate External Logon n set for row 4");
           expect(row).toEqual({
-            ... row,
+            ...row,
             rowNumber: 4,
             "WFM Activate External Logon": "N",
             wfmActivateExternalLogon: false
@@ -1890,7 +1890,7 @@ describe("fields.js", () => {
                 }]
               }
             });
-          } catch(e){
+          } catch (e) {
             expect(e).toEqual(JSON.stringify({
               rowNumber: 9,
               error: "New Teams require a valid Calabrio Group for row 9"
@@ -1905,7 +1905,7 @@ describe("fields.js", () => {
           };
           try {
             await calabrioTeamValidation(row, initialTestState);
-          } catch(e){
+          } catch (e) {
             expect(e).toEqual(JSON.stringify({
               rowNumber: 9,
               error: "New Teams require a valid Calabrio Group for row 9"
@@ -2050,7 +2050,7 @@ describe("fields.js", () => {
                 }]
               }
             });
-          } catch(e){
+          } catch (e) {
             expect(e).toEqual(JSON.stringify({
               rowNumber: 9,
               error: "New Teams require a valid Calabrio Group for row 9"
@@ -2065,7 +2065,7 @@ describe("fields.js", () => {
           };
           try {
             await calabrioGroupValidation(row, initialTestState);
-          } catch(e){
+          } catch (e) {
             expect(e).toEqual(JSON.stringify({
               rowNumber: 9,
               error: "New Teams require a valid Calabrio Group for row 9"
@@ -2133,11 +2133,13 @@ describe("fields.js", () => {
             roles: [
               {
                 id: 1,
-                name: "QM Supervisor"
+                name: "QM Supervisor",
+                permissions: [{ name: "permission 1" }]
               },
               {
                 id: 2,
-                name: "QM Agent"
+                name: "QM Agent",
+                permissions: [{ name: "permission 2" }, { name: "permission 3" }]
               }
             ]
           });
