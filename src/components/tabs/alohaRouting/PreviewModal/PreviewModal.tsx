@@ -50,11 +50,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
 
   useEffect(()=>{
     if(action === "add"){
-      const modifiedRow = rows.map((row: CctSharedCallRoutingDb, index:  number)=>({
-        ...row,
-        id: maxId+ index+ 1
-      }));
-      setRoutingRows(modifiedRow);
+      updateRoutingRows(rows);
     }
     else{
       setRoutingRows(rows);
@@ -63,13 +59,17 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
 
   useEffect(()=>{
     if(action === "add" && uploadedForm.length>0){
-      const modifiedRow = uploadedForm.map((row: CctSharedCallRoutingDb, index:  number)=>({
-        ...row,
-        id: maxId+ index+ 1
-      }));
-      setRoutingRows(modifiedRow);
+      updateRoutingRows(uploadedForm);
     }
   }, [uploadedForm]);
+
+  const updateRoutingRows = (rows: Array<any>) =>{
+    const modifiedRow = rows.map((row: CctSharedCallRoutingDb, index:  number)=>({
+      ...row,
+      id: maxId+ index+ 1
+    }));
+    setRoutingRows(modifiedRow);
+  };
 
   const getUpdatedRoutingDb = () =>{
     const newRows: Array<CctSharedCallRoutingDb>=[...routingRows].map((row: CctSharedCallRoutingDb)=>{
@@ -134,6 +134,11 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
     CsvReader(event, setUploadedForm);
   };
 
+  const handleOnClose = () =>{
+    setRoutingRows([]);
+    onClose();
+  };
+
   return (
     <div>
       <Modal
@@ -186,7 +191,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
             {action === "edit" &&
             <StyledButton sx={{ marginRight: "15px" }} onClick={()=>{ handleOnUpdate(); }}>Update</StyledButton>
             }
-            <StyledButton onClick={()=>{ onClose(); }}>Cancel</StyledButton>
+            <StyledButton onClick={()=>{ handleOnClose(); }}>Cancel</StyledButton>
           </Box>
         </ModalFooter>
       </Modal>
