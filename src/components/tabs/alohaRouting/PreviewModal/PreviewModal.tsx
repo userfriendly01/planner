@@ -130,10 +130,13 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
         <ModalHeader>{action?.toUpperCase()} Routing - {routingRows.length} rows selected</ModalHeader>
         <ModalBody className="preview-grid-modal">
           {action === "add" &&
-          <StyledButton sx={{
-            marginRight: "10px",
-            marginBottom: "10px"
-          }} onClick={()=>{ createNewRecord(); }}>Add New +</StyledButton>
+        <Box sx={{
+          marginRight: "10px",
+          marginBottom: "10px"
+        }}>
+          <StyledButton  onClick={()=>{ createNewRecord(); }}>Add New +</StyledButton>
+          <StyledButton sx={{ marginLeft: "10px" }}>Upload</StyledButton>
+        </Box>
           }
           <DataGrid
             apiRef={apiRef}
