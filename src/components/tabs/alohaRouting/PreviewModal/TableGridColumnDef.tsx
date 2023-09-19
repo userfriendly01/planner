@@ -19,11 +19,11 @@ const formatDateTime = (dateTime: string) => {
     if(dateTimeList.length === 3){
       const [date, time, modifier] = dateTime.split(" ");
       const timeSplit: string[] = time.split(":");
-      return `${timeSplit[0]}:${timeSplit[1]} ${modifier}`;
+      return `${timeSplit[0]}:${timeSplit[1]}:${timeSplit[2] || "00"} ${modifier}`;
     }
     const [time, modifier] = dateTime.split(" ");
     const timeSplit: string[] = time.split(":");
-    return `${timeSplit[0]}:${timeSplit[1]} ${modifier}`;
+    return `${timeSplit[0]}:${timeSplit[1]}:${timeSplit[2] || "00"} ${modifier}`;
   } else {
     return "";
   }

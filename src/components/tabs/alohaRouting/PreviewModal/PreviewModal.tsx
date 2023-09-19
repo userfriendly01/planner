@@ -143,7 +143,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
     <div>
       <Modal
         isOpen={isOpen}
-        takeover={["base", "sm", "md", "lg"]}
+        takeover={["base", "sm", "md", "lg", "xl"]}
         onClose={()=>{ onClose(); }}
         size="large"
       >
