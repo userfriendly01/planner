@@ -336,6 +336,8 @@ export const initiateCalls = async (
     return Promise.allSettled(t.stateUpdateFunctions.map((f: any) => f(state, dispatch, successfulRows, selectedTemplates)));
   }));
 
+  logger.log("state update results: ", stateUpdateResults);
+
   // looks for any WFM external logon activations that didn't go through and add them to the exported errors file
   stateUpdateResults.forEach((template: any) => {
     template.forEach((result: any) => {
