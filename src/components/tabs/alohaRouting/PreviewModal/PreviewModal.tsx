@@ -173,6 +173,9 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
               },
               "& .MuiDataGrid-columnHeaders": {
                 backgroundColor: "rgb(255,226,128)"
+              },
+              "& .MuiDataGrid-Custom-Cell-Format": {
+                backgroundColor: "#ff6060"
               }
             }}
           />

@@ -1,7 +1,6 @@
 import React from "react";
 import {
   ROUTING_CACHE_MASTER_DATA,
-  convertTime24to12,
   dayOfWeek,
   languageOffer,
   routingFields,
@@ -13,6 +12,7 @@ import {
   RoutingMasterData
 } from "../AlohaRouting.Interfaces";
 import {
+  GridCellParams,
   GridColDef
 } from "@mui/x-data-grid";
 
@@ -39,6 +39,11 @@ const multiFields = routingFields.filter(x => x.control === "multiField").map(x 
   return x.key;
 });
 
+const mandatoryField = routingFields.filter(x => x.required).map(x => {
+  formFields[x.key]=x.formFields;
+  return x.key;
+});
+
 const TimeEvaluator = (event: any, keyType: string): string => {
   const timePicked = new Date(event.$d.toString());
   timePicked.setSeconds(0);
@@ -59,7 +64,14 @@ const manageEditColumnDef = (
         ...item,
         editable: true,
         type: "singleSelect",
-        valueOptions: routingDropDownList[item.field as keyof RoutingDropDownList]
+        valueOptions: routingDropDownList[item.field as keyof RoutingDropDownList],
+        cellClassName: (params: GridCellParams<any, string>)=> {
+          if(!routingDropDownList[item.field as keyof RoutingDropDownList].includes(params.value) &&
+          mandatoryField.includes(item.field)){
+            return "MuiDataGrid-Custom-Cell-Format";
+          }
+          return "";
+        }
       };
     }
     if(multiFields.includes(item.field)){
@@ -84,7 +96,13 @@ const manageEditColumnDef = (
               });
             }}
           />
-        )
+        ),
+        cellClassName: (params: GridCellParams<any, string>)=> {
+          if(!params.value && mandatoryField.includes(item.field)){
+            return "MuiDataGrid-Custom-Cell-Format";
+          }
+          return "";
+        }
       };
     }
     if(["startTime", "endTime"].includes(item.field)){
@@ -109,12 +127,24 @@ const manageEditColumnDef = (
               });
             }}
           />
-        )
+        ),
+        cellClassName: (params: GridCellParams<any, string>)=> {
+          if(!params.value && mandatoryField.includes(item.field)){
+            return "MuiDataGrid-Custom-Cell-Format";
+          }
+          return "";
+        }
       };
     }
     return {
       ...item,
-      editable: true
+      editable: true,
+      cellClassName: (params: GridCellParams<any, string>)=> {
+        if(!params.value && mandatoryField.includes(item.field)){
+          return "MuiDataGrid-Custom-Cell-Format";
+        }
+        return "";
+      }
     };
   });
   return updatedColDef;
