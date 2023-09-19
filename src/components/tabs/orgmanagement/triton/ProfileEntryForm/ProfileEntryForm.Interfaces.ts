@@ -59,6 +59,7 @@ export interface ProfileEntryFormState {
   acwOption: FieldState,
   agentAssistedPay: FieldState,
   autoAnswered: FieldState,
+  callReason: FieldState
   callTagOptions: CallTagOptions[],
   callTagsList: CallTag[],
   clickToDial: FieldState,

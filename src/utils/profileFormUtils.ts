@@ -1,4 +1,4 @@
-import { ProfileEntryFormState } from "components/tabs/profilesettings/ProfileEntryForm/ProfileEntryForm.Interfaces";
+import { ProfileEntryFormState } from "components/tabs/orgmanagement/triton/ProfileEntryForm/ProfileEntryForm.Interfaces";
 
 export const isProfileFormValid = (form: ProfileEntryFormState): boolean => {
   if (form.operatingUnit.ou_name && form.activitiesList.length

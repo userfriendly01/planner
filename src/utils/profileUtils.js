@@ -110,6 +110,7 @@ export const createProfilePayload = form => {
     policy_number_edit_i: form.policyNumberEdit.value,
     voice_mail_transcription_i: form.voiceMailTranscription.value,
     click_to_dial_i: form.clickToDial.value,
+    call_reason_i: form.callReason.value,
     eft_authorization_i: form.eftAuthorization.value,
     transferQueues: form.transferQueues.filter(queue => queue.ctmSkillId > 0).map(queue => {
       return {
@@ -153,6 +154,7 @@ export const updateProfilePayload = form => {
   form.agentAssistedPay.updated ? payload.agent_assisted_pay_i = form.agentAssistedPay.value : null;
   form.policyNumberEdit.updated ? payload.policy_number_edit_i = form.policyNumberEdit.value : null;
   form.voiceMailTranscription.updated ? payload.voice_mail_transcription_i = form.voiceMailTranscription.value : null;
+  form.callReason.updated ? payload.call_reason_i = form.callReason.value : null;
   form.clickToDial.updated ? payload.click_to_dial_i = form.clickToDial.value : null;
   form.eftAuthorization.updated ? payload.eft_authorization_i = form.eftAuthorization.value : null;
   form.callTagsUpdated ? payload.callTags = form.callTagsList.map(callTag => {

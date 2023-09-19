@@ -89,6 +89,10 @@ export const profileTableColumnHeader = [
     TOOLTIP: "Enable click-to-dial/transfer from external application"
   },
   {
+    COLUMN_NAME: "Call Reason",
+    TOOLTIP: "UI Feature: Allows agent to record call reason data."
+  },
+  {
     COLUMN_NAME: "EFT Authorization",
     TOOLTIP: "Enable EFT authorization tagging on recordings"
   },

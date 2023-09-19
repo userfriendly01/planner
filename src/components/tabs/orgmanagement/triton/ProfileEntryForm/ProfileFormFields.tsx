@@ -64,6 +64,10 @@ const ProfileFormFields = () => {
       label: "Voice Mail Transcription"
     },
     {
+      fieldKey: "callReason",
+      label: "Call Reason"
+    },
+    {
       fieldKey: "selfServiceInd",
       label: "Self Service Indicator"
     }
