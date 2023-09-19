@@ -1,5 +1,7 @@
 import React from "react";
-import { GridColDef } from "@mui/x-data-grid";
+import {
+  GridCellParams, GridColDef
+} from "@mui/x-data-grid";
 import {
   FlowDropDownList,
   FlowMasterData, PreviewModalAction
@@ -8,6 +10,13 @@ import {
   FLOW_MASTER_DATA,
   flowType, languageOffer, userDestination
 } from "utils";
+
+import { flowFields } from "../CustomActions/FlowFieldsConfig";
+
+
+const mandatoryField = flowFields.filter(x => x.required).map(x => {
+  return x.key;
+});
 
 const reconstructTableColumnDef = (action: PreviewModalAction, columnDef: Array<GridColDef>): Array<GridColDef> =>{
   if(action==="edit" || action === "add")
@@ -27,12 +36,25 @@ const manageEditColumnDef = (columnDef: Array<GridColDef>): Array<GridColDef> =>
         ...item,
         editable: true,
         type: "singleSelect",
-        valueOptions: flowDropDownList[item.field as keyof FlowDropDownList]
+        valueOptions: flowDropDownList[item.field as keyof FlowDropDownList],
+        cellClassName: (params: GridCellParams<any, string>)=> {
+          if(!flowDropDownList[item.field as keyof FlowDropDownList].includes(params.value) &&
+          mandatoryField.includes(item.field)){
+            return "MuiDataGrid-Custom-Cell-Format";
+          }
+          return "";
+        }
       };
     }
     return {
       ...item,
-      editable: true
+      editable: true,
+      cellClassName: (params: GridCellParams<any, string>)=> {
+        if(!params.value && mandatoryField.includes(item.field)){
+          return "MuiDataGrid-Custom-Cell-Format";
+        }
+        return "";
+      }
     };
   });
   return updatedColDef;

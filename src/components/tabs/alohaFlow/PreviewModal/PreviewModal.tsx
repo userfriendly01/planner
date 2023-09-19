@@ -7,7 +7,9 @@ import {
 import {
   DataGrid, GridColDef, useGridApiRef
 } from "@mui/x-data-grid";
-import { CctSharedCallRoutingDb, StyledButton } from "components";
+import {
+  CctSharedCallRoutingDb, StyledButton
+} from "components";
 import {
   CctSharedCallFlowDb
 } from "../AlohaFlow.Interfaces";
@@ -130,7 +132,12 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
 
   const handleOnChange=(event:any)=>{
     CsvReader(event, setUploadedForm);
-  }
+  };
+
+  const handleOnClose =()=>{
+    setFlowRows([]);
+    onClose();
+  };
 
   return (
     <Modal
@@ -147,16 +154,16 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
             marginBottom: "10px"
           }} onClick={()=>{ createNewRecord(); }}>Add New +</StyledButton>
         }
-         {action === "add" &&
+        {action === "add" &&
           <StyledButton sx={{
             marginRight: "10px",
             marginBottom: "10px"
           }}>
-          <input
-            type="file"
-            accept=".csv"
-            onChange={handleOnChange}
-          /> </StyledButton>
+            <input
+              type="file"
+              accept=".csv"
+              onChange={handleOnChange}
+            /> </StyledButton>
         }
         <DataGrid
           apiRef={apiRef}
@@ -170,6 +177,9 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
             },
             "& .MuiDataGrid-columnHeaders": {
               backgroundColor: "rgb(255,226,128)"
+            },
+            "& .MuiDataGrid-Custom-Cell-Format": {
+              backgroundColor: "#ff6060"
             }
           }}
         />
@@ -188,7 +198,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
           {action === "edit" &&
           <StyledButton sx={{ marginRight: "15px" }} onClick={()=>{ handleOnUpdate(); }}>Update</StyledButton>
           }
-          <StyledButton onClick={()=>{ onClose(); }}>Cancel</StyledButton>
+          <StyledButton onClick={()=>{ handleOnClose(); }}>Cancel</StyledButton>
         </Box>
       </ModalFooter>
     </Modal>
