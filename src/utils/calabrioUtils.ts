@@ -78,11 +78,11 @@ export const addWorkerToOrg = (user: WfmUser, state: AppState) => {
   const businessUnitId = user.BusinessUnitId;
   const team = user.TeamId;
 
-  if(team){
+  if (team) {
     return wfmOrg.map((bu: WfmBusinessUnit) => {
-      if(bu.Id === businessUnitId){
+      if (bu.Id === businessUnitId) {
         const team: any = bu.Teams?.find(t => t.Id === user.TeamId) || {};
-        if(team){
+        if (team) {
           const teams = bu.Teams?.filter(t => t.Id !== team.Id) || [];
           const people = team.People || [];
           return {
@@ -96,7 +96,7 @@ export const addWorkerToOrg = (user: WfmUser, state: AppState) => {
                   user
                 ]
               }
-            ]          
+            ]
           }
         }
       } else {
@@ -105,7 +105,7 @@ export const addWorkerToOrg = (user: WfmUser, state: AppState) => {
     });
   } else {
     return wfmOrg.map((bu: WfmBusinessUnit) => {
-      if(bu.Id === "People_Without_Team"){
+      if (bu.Id === "People_Without_Team") {
         const people = bu.People || [];
         return {
           ...bu,
@@ -122,7 +122,7 @@ export const addWorkerToOrg = (user: WfmUser, state: AppState) => {
 }
 export const getWfmBusinessUnits = (state: AppState, includeLostSouls?: boolean) => {
   const wfmOrg = state.calabrioContext.wfmOrg;
-  if(includeLostSouls){
+  if (includeLostSouls) {
     return wfmOrg.map((businessUnit: WfmBusinessUnit) => {
       return {
         Id: businessUnit.Id,
@@ -142,15 +142,15 @@ export const getWfmBusinessUnits = (state: AppState, includeLostSouls?: boolean)
 
 export const getWfmTeams = (state: AppState, businessUnitId?: string, includeLostSouls?: boolean) => {
   const wfmTeams: WfmTeam[] = [];
-  
+
   const businessUnit = state.calabrioContext.wfmOrg?.find((bu: WfmBusinessUnit) => bu.Id === businessUnitId);
-  if(businessUnit){
+  if (businessUnit) {
     businessUnit.Teams?.forEach((team: WfmTeam) => wfmTeams.push(team));
   } else {
-    if(!includeLostSouls){
+    if (!includeLostSouls) {
       state.calabrioContext.wfmOrg?.forEach((businessUnit: WfmBusinessUnit) => {
         businessUnit.Teams?.forEach((team: WfmTeam) => {
-          if(team.Id){
+          if (team.Id) {
             wfmTeams.push(team);
           }
         });
@@ -169,7 +169,7 @@ export const getWfmPeople = (state: AppState) => {
   const wfmTeams: WfmTeam[] = getWfmTeams(state);
 
   state.calabrioContext.wfmOrg?.forEach((businessUnit: WfmBusinessUnit) => {
-    if(businessUnit.Id === "People_Without_Team"){
+    if (businessUnit.Id === "People_Without_Team") {
       businessUnit?.People?.forEach((person: WfmUser) => wfmPeople.push(person));
     }
   });
@@ -187,7 +187,7 @@ export const getWfmPeople = (state: AppState) => {
 export const getWfmOptions = (state: AppState, businessUnitId?: string) => {
   const options = JSON.parse(JSON.stringify(state.calabrioContext.wfmOptions));
 
-  if(businessUnitId){
+  if (businessUnitId) {
     const businessUnit = options.find((bu: WfmBusinessUnit) => bu.Id === businessUnitId);
     return businessUnit;
   } else {
@@ -195,11 +195,11 @@ export const getWfmOptions = (state: AppState, businessUnitId?: string) => {
 
     options?.forEach((businessUnit: any) => {
       Object.keys(businessUnit)?.forEach((option: any) => {
-        if(typeof businessUnit[option] === "object"){
-          if(finalOptions[option]){
+        if (typeof businessUnit[option] === "object") {
+          if (finalOptions[option]) {
             businessUnit[option]?.forEach((buo: any) => {
               const optionFound = finalOptions[option].find((o: any) => o.Id === buo.Id);
-              if(!optionFound){
+              if (!optionFound) {
                 finalOptions[option].push(buo);
               }
             });
@@ -216,7 +216,7 @@ export const getWfmOptions = (state: AppState, businessUnitId?: string) => {
 //Calabrio doesnt offer an API for this, only PST, MNT, CST, and EST were requested so we hardcoded them here as they are unlikely to change
 //They are also the same through environments
 //Update April 2023 : added in the MST, HST and  AKST/AKDT timeszones
-export const calabrioTimeZones =  [
+export const calabrioTimeZones = [
   {
     label: "America/New_York (EST/EDT)",
     value: "America/New_York"
@@ -270,7 +270,6 @@ export const formatCalabrioTenant = (groupsArray: CalabrioGroup[]): CalabrioGrou
 
 export const formatCalabrioRoles = (rolesArray: any[]): any[] => {
   return rolesArray.map((role: any) => {
-    delete role.permissions;
     return role;
   });
 };
@@ -294,7 +293,7 @@ export const checkConflictingUsers = async (user: any, users: CalabrioQmUser[], 
     const adLogin = toLowerCaseString(user.adLogin);
 
     await Promise.all(users.map(async u => {
-      if(u.acdId === acdId){
+      if (u.acdId === acdId) {
         return;
       }
 
@@ -313,10 +312,10 @@ export const checkConflictingUsers = async (user: any, users: CalabrioQmUser[], 
         dupUser.email = `xx-${dupUser.id}-${dupUser.email}`;
         dupUser.acdId = `xx-${dupUser.acdId}`;
 
-        if(dupUser.roles.length === 0){
+        if (dupUser.roles.length === 0) {
           dupUser.roles = roles.filter(role => role.name.toLowerCase().includes("agent-sync"));
         }
-        if(!dupUser.team){
+        if (!dupUser.team) {
           console.warn("do we get in here?", teams.find(team => team.name.toLowerCase().includes("default")));
           dupUser.team = teams.find(team => team.name.toLowerCase().includes("default"))?.groupId;
         }
@@ -335,17 +334,17 @@ export const checkConflictingUsers = async (user: any, users: CalabrioQmUser[], 
         dupUser.email = `SHELLUSER-${dupUser.id}@libertymutual.com`;
         dupUser.acdId = `SH-${dupUser.acdId}`;
 
-        if(dupUser.roles.length === 0){
+        if (dupUser.roles.length === 0) {
           dupUser.roles = roles.filter(role => role.name.toLowerCase().includes("agent-sync"));
         }
-        if(!dupUser.team){
+        if (!dupUser.team) {
           dupUser.team = teams.find(team => team.name.toLowerCase().includes("default"))?.groupId;
         }
         await updateCalabrioUser(dupUser.id, dupUser);
         return;
       }
     }));
-  } catch(err) {
+  } catch (err) {
     console.error("Error thrown trying to fetch and validate Conflicting Users", err);
   }
   return;
@@ -358,7 +357,7 @@ export const findMatchingQmProfiles = (user: any, users: CalabrioQmUser[], setFo
     const email = toLowerCaseString(user.attributes?.email || user.nNumberFetchedUser?.email);
     const adLogin = `lm\\${toLowerCaseString(user.attributes?.n_number || user?.value)}`;
 
-    if(!acdId){
+    if (!acdId) {
       setForm({
         type: "SET_DISCREPANCIES",
         payload: {
@@ -367,18 +366,18 @@ export const findMatchingQmProfiles = (user: any, users: CalabrioQmUser[], setFo
         }
       });
     };
-    
+
     const matchingProfiles: any[] = [];
     users.forEach(u => {
       const dupUserAcdId = toLowerCaseString(u.acdId);
       const dupUserAdLogin = toLowerCaseString(u.adLogin);
       const dupUserEmail = toLowerCaseString(u.email);
-      if(acdId && acdId === dupUserAcdId){
+      if (acdId && acdId === dupUserAcdId) {
         console.warn("User Found with ACD Id", u);
         matchingProfiles.unshift(u);
       } else if (dupUserAdLogin && dupUserAdLogin === adLogin || dupUserEmail && dupUserEmail === email) {
         console.warn("User Found with Duplicate Email or Windows Login: ", u);
-        if(acdId){
+        if (acdId) {
           setForm({
             type: "SET_DISCREPANCIES",
             payload: {
@@ -391,7 +390,7 @@ export const findMatchingQmProfiles = (user: any, users: CalabrioQmUser[], setFo
       }
     })
     return matchingProfiles;
-  } catch(err) {
+  } catch (err) {
     console.error("Error thrown trying to find QM profiles", err);
     return [];
   }
@@ -405,7 +404,7 @@ export const getCalabrioWfmOptions = async (dispatch: any) => {
       const buff = Buffer.from(options.data.organization, "base64");
       const data = await inflate(buff);
       optionsData = JSON.parse(data.toString("utf-8"));
-    } catch(err) {
+    } catch (err) {
       console.error("Failed to parse and save Calabrio Org data", err);
       return false;
     }
@@ -422,7 +421,7 @@ export const getCalabrioWfmOptions = async (dispatch: any) => {
 
 export const getCalabrioWfmOrg = async (businessUnitId: string, state: AppState, dispatch: any) => {
   let businessUnit = state.calabrioContext.wfmOrg.find((bu: WfmBusinessUnit) => bu.Id === businessUnitId);
-  if(businessUnit && businessUnit.Teams){
+  if (businessUnit && businessUnit.Teams) {
     return state;
   } else {
     businessUnit = { ...businessUnit };
@@ -430,21 +429,21 @@ export const getCalabrioWfmOrg = async (businessUnitId: string, state: AppState,
 
     const org: any = await getWfmOrgServiceCall(businessUnitId);
     businessUnit.Teams = org.data.Teams;
-    
-    
+
+
     const strippedOrg = state.calabrioContext.wfmOrg.filter((bu: WfmBusinessUnit) => bu.Id !== businessUnitId);
     dispatch({
       type: "updateWfmOrg",
       payload: {
-        org: [ ...strippedOrg, businessUnit ],
-        errors: [ ...existingErrors, ...org.data.errors || [] ]
+        org: [...strippedOrg, businessUnit],
+        errors: [...existingErrors, ...org.data.errors || []]
       }
     });
     return {
       ...state,
       calabrioContext: {
         ...state.calabrioContext,
-        wfmOrg: [ ...strippedOrg, businessUnit ]
+        wfmOrg: [...strippedOrg, businessUnit]
       }
     };
   }

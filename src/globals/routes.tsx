@@ -1,23 +1,25 @@
 import React from "react";
 import {
-    AlohaFlowContainer,
-    AlohaRoutingContainer,
-    BulkChanges,
-    CallFlowManagementSkills,
-    CallFlowManagementTfn,
-    ProfileDirectoryContainer,
-    ProfileDialListContainer,
-    ProfileSettingsContainer,
-    TritonUsersViewWrapper,
-    UserEntryForm,
-    WfmUsersViewWrapper
+  AlohaFlowContainer,
+  AlohaRoutingContainer,
+  BulkChanges,
+  CallFlowManagementSkills,
+  CallFlowManagementTfn,
+  ProfileDirectoryContainer,
+  ProfileDialListContainer,
+  ProfileSettingsContainer,
+  TritonUsersViewWrapper,
+  UserEntryForm,
+  WfmUsersViewWrapper,
+  CalabrioOrgWrapper,
+  CalabrioRolesWrapper
 } from "components";
 import { AppState } from "./interfaces";
 
 export const getRoutes = (state: AppState, Home: any, azureClientId: string) => [
   {
     path: "/triton-admin",
-    render: (props: any) => <Home { ...props } state={state} azureClientId={azureClientId}/>
+    render: (props: any) => <Home {...props} state={state} azureClientId={azureClientId} />
   },
   {
     path: "/triton-admin/triton-users",
@@ -48,6 +50,14 @@ export const getRoutes = (state: AppState, Home: any, azureClientId: string) => 
     element: ProfileSettingsContainer
   },
   {
+    path: "/triton-admin/calabrio-org",
+    element: CalabrioOrgWrapper
+  },
+  {
+    path: "/triton-admin/calabrio-roles",
+    element: CalabrioRolesWrapper
+  },
+  {
     path: "/triton-admin/tfn-activation",
     element: CallFlowManagementTfn
   },
@@ -57,10 +67,10 @@ export const getRoutes = (state: AppState, Home: any, azureClientId: string) => 
   },
   {
     path: "/triton-admin/aloha-flow",
-    render: (props: any) => <AlohaFlowContainer { ...props } state={state} azureClientId={azureClientId}/>
+    render: (props: any) => <AlohaFlowContainer {...props} state={state} azureClientId={azureClientId} />
   },
   {
     path: "/triton-admin/aloha-routing",
-    render: (props: any) => <AlohaRoutingContainer { ...props } state={state} azureClientId={azureClientId}/>
+    render: (props: any) => <AlohaRoutingContainer {...props} state={state} azureClientId={azureClientId} />
   }
 ];

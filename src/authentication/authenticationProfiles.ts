@@ -24,7 +24,7 @@ export const getAuthenticationProfileTemplates = (): AuthenticationProfileOption
       home: TritonUsersViewWrapper,
       tabs: [
         Tabs.TRITON_USER_MANAGEMENT,
-        Tabs.TRITON_PROFILE_SETTINGS,
+        Tabs.ORG_MANAGEMENT,
         Tabs.TRITON_CALL_FLOW_MANAGEMENT
       ]
     },
@@ -169,22 +169,30 @@ export const getTabs = (): any => {
         }
       ]
     },
-    TRITON_PROFILE_SETTINGS: {
-      value: "triton-profile-settings",
-      label: "Profile Settings",
+    ORG_MANAGEMENT: {
+      value: "org-management",
+      label: "Org Management",
       route: "/triton-admin/profile-settings",
       dropdown: [
         {
           route: "triton-admin/profile-settings",
-          label: "Profile Settings"
+          label: "Triton Profile Settings"
         },
         {
           route: "triton-admin/profile-dial-list",
-          label: "Profile Dial List"
+          label: "Triton Profile Dial List"
         },
         {
           route: "triton-admin/profile-directory",
-          label: "Profile Directory"
+          label: "Triton Profile Directory"
+        },
+        {
+          route: "triton-admin/calabrio-org",
+          label: "Calabrio Organization"
+        },
+        {
+          route: "triton-admin/calabrio-roles",
+          label: "Calabrio Roles"
         }
       ]
     },
