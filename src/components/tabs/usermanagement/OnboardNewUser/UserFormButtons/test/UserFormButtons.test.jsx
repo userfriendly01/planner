@@ -73,7 +73,6 @@ jest.mock("context", () => ({
 }));
 
 jest.mock("utils", () => ({
-  ...jest.requireActual("utils"),
   addWorkerToOrg: jest.fn(),
   calabrioTimeZones: jest.requireActual("utils").calabrioTimeZones,
   checkConflictingUsers: jest.fn(),
@@ -88,7 +87,8 @@ jest.mock("utils", () => ({
   getNonOverflowSkills: jest.fn(),
   getValidSkillsObject: jest.fn(),
   formatE164PhoneNumber: jest.fn(),
-  getZeroOutEnabledFromProfile: jest.fn()
+  getZeroOutEnabledFromProfile: jest.fn(),
+  logger: jest.requireActual("utils").logger
 }));
 
 export const worker = {

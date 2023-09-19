@@ -25,6 +25,8 @@ import {
 } from "testUtils";
 import { createProfile } from "services";
 
+jest.useFakeTimers();
+
 jest.mock("components", () => ({
   StyledButton: jest.fn()
 }));
@@ -43,11 +45,11 @@ jest.mock("@mui/material", () => ({
 }));
 
 jest.mock("utils", () => ({
-  ...jest.requireActual("utils"),
   isProfileFormValid: jest.fn(),
   createProfilePayload: jest.fn(),
   updateProfilePayload: jest.fn(),
-  wait: jest.requireActual("utils").wait
+  wait: jest.requireActual("utils").wait,
+  logger: jest.requireActual("utils").logger
 }));
 
 const mockSetForm = jest.fn();
@@ -56,13 +58,7 @@ const mockUpdateLoading = jest.fn();
 
 describe("<ProfileFormButtons />", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
-    jest.useFakeTimers();
     useAdminState.mockReturnValue(initialTestState);
-  });
-
-  afterEach(() => {
-    jest.useRealTimers();
   });
 
   const renderComponent = () => {

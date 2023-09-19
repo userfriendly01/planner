@@ -58,7 +58,6 @@ export const formatCallTagsName = name => {
 
 export const formatSelfServiceIndicatorData = profileId => {
   const formattedProfileId = typeof profileId === "string" ? parseInt(profileId) : profileId; // do we need this extra step? 
-  logger.log("formattted profile ID", formattedProfileId);
   if(formattedProfileId >= 39){
     return  <Check />;
   }

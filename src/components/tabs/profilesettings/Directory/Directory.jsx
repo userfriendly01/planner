@@ -39,7 +39,7 @@ const Directory = props => {
   } = props;
 
   const state = useAdminState();
-  const identity = state.userContext.pingIdentity?.sub;
+  const nNumber = state.userContext.pingIdentity?.sub;
 
   const [directoryState, setDirectoryState] = useState({
     directoryId: null,
@@ -76,7 +76,7 @@ const Directory = props => {
       deleteDirectory(directoryId)
         .then(() => {
           logger.info(`Successfully deleted directory ${directoryId}`, {
-            identity,
+            nNumber,
             directoryId
           });
 
@@ -92,7 +92,7 @@ const Directory = props => {
         })
         .catch(error => {
           logger.error(`Failed to delete directory entry with directoryId ${directoryId}`, {
-            identity,
+            nNumber,
             directoryId,
             error
           });

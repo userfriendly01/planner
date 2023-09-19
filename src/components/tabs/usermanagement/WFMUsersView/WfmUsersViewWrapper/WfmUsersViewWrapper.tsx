@@ -18,7 +18,8 @@ import {
   getWfmTeams,
   getWfmPeople,
   filterWfmUserTable,
-  sortWfmWorkersByFullName
+  sortWfmWorkersByFullName,
+  logger
 } from "utils";
 import InfoBanner from "../InfoBanner/InfoBanner";
 
@@ -50,6 +51,7 @@ const TritonUserManagementWrapper: any = () => {
 
     if(wfmPeople.length > 0){
       let filteredList = wfmPeople.slice().sort(sortWfmWorkersByFullName);
+      logger.log("TritonUserManagementWrapper: tableState ", wfmPeople);
 
       //filter by business unit
       if(tableState.businessUnitFilter){

@@ -69,7 +69,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     teams
   } = state.calabrioContext;
   const environment = state.userContext.pingIdentity.environment;
-  const identity = state.userContext.pingIdentity?.sub;
+  const nNumber = state.userContext.pingIdentity?.sub;
 
   const doCreateUser = async () => {
     updateLoading({
@@ -161,7 +161,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       const dbWorker = await createUser(createUserReqBody);
 
       logger.info("Successfully created user", {
-        identity,
+        nNumber,
         userNNumber
       });
 
@@ -173,7 +173,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         addOffice(newOffice)
           .then(() => {
             logger.info("Successfully added office", {
-              identity,
+              nNumber,
               newOffice
             });
 
@@ -184,7 +184,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
           })
           .catch(error => {
             logger.error("Failed to add office", {
-              identity,
+              nNumber,
               error
             });
           });
@@ -200,7 +200,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         await createCalabrioUser(calabrioAttributes);
 
         logger.info("Successfully created Calabrio User", {
-          identity,
+          nNumber,
           workerSid: dbWorker.workerSid
         });
 
@@ -224,7 +224,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       } catch (error) {
         logger.error("Failed to create Calabrio QM User.", {
           error,
-          identity
+          nNumber
         });
 
         errors.push(`Failed to create Calabrio QM User. ${error.message}`);
@@ -247,7 +247,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
             const res = await createCalabrioWFMPerson(wfmBody);
 
             logger.info("Successfully created Calabrio WFM Person", {
-              identity,
+              nNumber,
               userNNumber: form.calabrio_wfm.EmploymentNumber
             });
 
@@ -255,10 +255,10 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
               type: "updateWfmOrg",
               payload: {
                 org: addWorkerToOrg({
-                ...form.calabrio_wfm,
-                Id: res.data.personId,
-                ParentTeam: form.calabrio_wfm.TeamId
-              }, state),
+                  ...form.calabrio_wfm,
+                  Id: res.data.personId,
+                  ParentTeam: form.calabrio_wfm.TeamId
+                }, state),
                 errors: []
               }
             });
@@ -266,13 +266,13 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
               await wfmActivateExternalLogon({ workerNNumbers: [form.calabrio_wfm.EmploymentNumber]});
 
               logger.info("Successfully activated WFM external login", {
-                identity,
+                nNumber,
                 userNNumber: form.calabrio_wfm.EmploymentNumber
               });
             } catch (error) {
               logger.error("Failed to activate WFM external login", {
                 error,
-                identity,
+                nNumber,
                 userNNumber: form.calabrio_wfm.EmploymentNumber
               });
 
@@ -281,7 +281,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
           } catch (error) {
             logger.error("Failed to create WFM User", {
               error,
-              identity,
+              nNumber,
               userNNumber: form.calabrio_wfm.EmploymentNumber
             });
 
@@ -333,7 +333,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         {
           error,
           data: error.response?.data,
-          identity
+          nNumber
         },
         false
       );
@@ -447,7 +447,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       const dbWorker = await updateUser(worker.sid, payload);
 
       logger.info("Successfully Updated Triton user", {
-        identity,
+        nNumber,
         userNNumber: form.nNumber.value
       });
 
@@ -458,7 +458,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     } catch (error) {
       logger.error("Failed to update Triton Worker", {
         error,
-        identity,
+        nNumber,
         userNNumber: form.nNumber.value
       });
 
@@ -485,7 +485,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
           await updateCalabrioUser(form.calabrio_qm.id, calabrioAttributes);
 
           logger.info("Successfully Updated Calabrio user", {
-            identity,
+            nNumber,
             userNNumber: form.nNumber.value
           });
         } else {
@@ -493,7 +493,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
           await createCalabrioUser(calabrioAttributes);
 
           logger.info("Successfully Created Calabrio user", {
-            identity,
+            nNumber,
             userNNumber: form.nNumber.value
           });
         }
@@ -530,7 +530,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
           const res = await createCalabrioWFMPerson(wfmBody);
 
           logger.info("Successfully created Calabrio WFM Person", {
-            identity,
+            nNumber,
             userNNumber: form.calabrio_wfm.EmploymentNumber
           });
 
@@ -549,13 +549,13 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
             await wfmActivateExternalLogon({ workerNNumbers: [form.calabrio_wfm.EmploymentNumber]});
 
             logger.info("Successfully activated WFM external login", {
-              identity,
+              nNumber,
               userNNumber: form.calabrio_wfm.EmploymentNumber
             });
           } catch (error) {
             logger.error("Failed to activate WFM external login", {
               error,
-              identity,
+              nNumber,
               userNNumber: form.calabrio_wfm.EmploymentNumber
             });
 
@@ -564,7 +564,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         } catch (error) {
           logger.error("Failed to create WFM User", {
             error,
-            identity,
+            nNumber,
             userNNumber: form.calabrio_wfm.EmploymentNumber
           });
 

@@ -377,7 +377,7 @@ export const findMatchingQmProfiles = (user: any, users: CalabrioQmUser[], setFo
       const dupUserAdLogin = toLowerCaseString(u.adLogin);
       const dupUserEmail = toLowerCaseString(u.email);
       if(acdId && acdId === dupUserAcdId){
-        logger.log("User Found with ACD Id", u);
+        logger.warn("User Found with ACD Id", { user: u }, false);
         matchingProfiles.unshift(u);
       } else if (dupUserAdLogin && dupUserAdLogin === adLogin || dupUserEmail && dupUserEmail === email) {
 

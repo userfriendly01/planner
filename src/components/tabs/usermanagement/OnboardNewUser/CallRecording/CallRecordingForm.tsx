@@ -116,8 +116,6 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
       checked: false
     }));
 
-    logger.log("FORM", form);
-
     setForm({
       type: userFormActions.SET_CALABRIO_QM_USER,
       payload: {
@@ -164,6 +162,8 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
       const userGroups: any[] = [];
       const userTeams: any[] = [];
       const fetchedUser = res.data;
+
+      logger.log("Fetched Calabrio User: ", res);
 
       groups.forEach(group => {
         if(fetchedUser.scope.groups.some((groupId: number) => group.groupId === groupId)){

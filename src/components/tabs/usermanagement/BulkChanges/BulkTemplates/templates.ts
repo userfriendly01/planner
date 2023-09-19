@@ -47,7 +47,7 @@ const processCreateTritonUser = async (row: any, state: AppState) => {
   logger.log("**** TRITON RECORD PROCESSING", row);
 
   const rowNumber = row.rowNumber;
-  const identity = state.userContext.pingIdentity?.sub;
+  const nNumber = state.userContext.pingIdentity?.sub;
   try {
     const didFieldName = "Did User";
     const didField = cleanupField(row[didFieldName], "string");
@@ -79,7 +79,7 @@ const processCreateTritonUser = async (row: any, state: AppState) => {
     const message = `${workerSid} created in Triton for ${row.attributes.n_number} for row ${rowNumber}`;
 
     logger.info(message, {
-      identity,
+      nNumber,
       userNNumber: row.attributes.n_number
     });
 
@@ -89,7 +89,7 @@ const processCreateTritonUser = async (row: any, state: AppState) => {
 
     logger.error(errorMessage, {
       error,
-      identity,
+      nNumber,
       row
     });
 
@@ -101,7 +101,7 @@ const processCreateCalabrioUser = async (row: any, state: AppState) => {
   logger.log("****CALABRIO RECORD PROCESSING for", row);
 
   const rowNumber = row.rowNumber;
-  const identity = state.userContext.pingIdentity?.sub;
+  const nNumber = state.userContext.pingIdentity?.sub;
   try {
     await checkConflictingCalabrioUsers(row, rowNumber, state.calabrioContext.users);
     const existingTritonWorker = state.workerContext.workers.find((w:any) => w.attributes?.n_number && w.attributes.n_number === row.attributes.n_number);
@@ -126,7 +126,7 @@ const processCreateCalabrioUser = async (row: any, state: AppState) => {
     const message = `User created in Calabrio for ${row.attributes.n_number} for row ${rowNumber}`;
 
     logger.info(message, {
-      identity,
+      nNumber,
       userNNumber: row.attributes.n_number
     });
 
@@ -136,7 +136,7 @@ const processCreateCalabrioUser = async (row: any, state: AppState) => {
 
     logger.error(errorMessage, {
       error,
-      identity,
+      nNumber,
       row
     });
 
@@ -148,7 +148,7 @@ const processWFMCreateUser = async (row: any, state: AppState) => {
   logger.info("****WFM RECORD PROCESSING for", row);
 
   const rowNumber = row.rowNumber;
-  const identity = state.userContext.pingIdentity?.sub;
+  const nNumber = state.userContext.pingIdentity?.sub;
 
   try {
     const hasPersonConflict = checkIfConflictingWFMPeople(row, state);
@@ -201,7 +201,7 @@ const processWFMCreateUser = async (row: any, state: AppState) => {
       const message = `Person created in Calabrio WFM for ${row.attributes.n_number} for row ${rowNumber}`;
 
       logger.info(message, {
-        identity,
+        nNumber,
         userNNumber: row.attributes.n_number
       });
 
@@ -210,7 +210,7 @@ const processWFMCreateUser = async (row: any, state: AppState) => {
       const message = `No NP environment for WFM. WFM user not created for ${row.attributes.n_number} for row ${rowNumber}`;
 
       logger.log(message, {
-        identity,
+        nNumber,
         body
       });
 
@@ -226,7 +226,7 @@ const processWFMCreateUser = async (row: any, state: AppState) => {
 
     logger.error(errorMessage, {
       error,
-      identity,
+      nNumber,
       row
     });
 
@@ -238,7 +238,7 @@ const processCreateManager = async (row: any, state: AppState) => {
   logger.log("****MANAGER RECORD PROCESSING for", row);
 
   const rowNumber = row.rowNumber;
-  const identity = state.userContext.pingIdentity?.sub;
+  const nNumber = state.userContext.pingIdentity?.sub;
 
   const managerNNumberFieldName = "Manager N Number";
   const managerNNumberField = cleanupField(row[managerNNumberFieldName], "string");
@@ -259,14 +259,14 @@ const processCreateManager = async (row: any, state: AppState) => {
       row.groupId = newTeamId;
 
       logger.info("Successfully added Calabrio Team", {
-        identity
+        nNumber
       });
     } catch (error) {
       const errorMessage = `Failed to create Team for row ${rowNumber}. ${formatErrorMessage(error)}`;
 
       logger.error(errorMessage, {
         error,
-        identity,
+        nNumber,
         row
       });
 
@@ -289,7 +289,7 @@ const processCreateManager = async (row: any, state: AppState) => {
     const message = `Manager created for ${managerNNumberField} for row ${rowNumber}`;
 
     logger.info(message, {
-      identity,
+      nNumber,
       managerNNumber: managerNNumberField
     });
 
@@ -299,7 +299,7 @@ const processCreateManager = async (row: any, state: AppState) => {
 
     logger.error(errorMessage, {
       error,
-      identity,
+      nNumber,
       row
     });
 
@@ -309,7 +309,7 @@ const processCreateManager = async (row: any, state: AppState) => {
 
 const processUpdateWorkerAttribute = async (row: any, template: Template, state: AppState) => {
   const rowNumber = row.rowNumber;
-  const identity = state.userContext.pingIdentity?.sub;
+  const nNumber = state.userContext.pingIdentity?.sub;
   const key = template.data.key;
   const value = template.data.value;
   const location = template.data.location;
@@ -366,7 +366,7 @@ const processUpdateWorkerAttribute = async (row: any, template: Template, state:
     const message = `${row.workerSid} - Worker Attributes updated for row ${rowNumber}`;
 
     logger.info(message, {
-      identity,
+      nNumber,
       workerSid: row.workerSid
     });
 
@@ -376,7 +376,7 @@ const processUpdateWorkerAttribute = async (row: any, template: Template, state:
 
     logger.error(errorMessage, {
       error,
-      identity,
+      nNumber,
       row
     });
 
@@ -386,7 +386,7 @@ const processUpdateWorkerAttribute = async (row: any, template: Template, state:
 
 const processUpdateManager = async (row: any, template: Template, state: AppState) => {
   const rowNumber = row.rowNumber;
-  const identity = state.userContext.pingIdentity?.sub;
+  const nNumber = state.userContext.pingIdentity?.sub;
 
   try {
     const userNNumber = row.attributes.n_number;
@@ -454,7 +454,7 @@ const processUpdateManager = async (row: any, template: Template, state: AppStat
     const message = `${userNNumber} - Manager & Calabrio Team updated for row ${rowNumber}`;
 
     logger.info(message, {
-      identity,
+      nNumber,
       userNNumber
     });
 
@@ -463,7 +463,7 @@ const processUpdateManager = async (row: any, template: Template, state: AppStat
     const errorMessage = `Failed to update Manager and Calabrio Team for user for row ${rowNumber}. ${formatErrorMessage(error)}`;
 
     logger.error(errorMessage, {
-      identity,
+      nNumber,
       error,
       row
     });
@@ -474,7 +474,7 @@ const processUpdateManager = async (row: any, template: Template, state: AppStat
 
 const processUpdateDefaultSkills = async (row: any, template: Template, state: AppState) => {
   const rowNumber = row.rowNumber;
-  const identity = state.userContext.pingIdentity?.sub;
+  const nNumber = state.userContext.pingIdentity?.sub;
   const workerSid = row.workerSid;
   const value = template.data.value;
   const option = template.data.option;
@@ -529,7 +529,7 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: A
     const message = `${workerSid} - Default Skills updated for row ${rowNumber}`;
 
     logger.info(message, {
-      identity,
+      nNumber,
       workerSid
     });
 
@@ -539,7 +539,7 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: A
 
     logger.error(errorMessage, {
       error,
-      identity,
+      nNumber,
       row
     });
 
@@ -549,7 +549,7 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: A
 
 export const processUpdateCallerStates =  async (row: any, template: Template, state: AppState) => {
   const rowNumber = row.rowNumber;
-  const identity = state.userContext.pingIdentity?.sub;
+  const nNumber = state.userContext.pingIdentity?.sub;
   const workerSid = row.workerSid;
   const existingRouting = row.attributes.routing;
   const selectedCallerStates: [] = template.data.value;
@@ -583,7 +583,7 @@ export const processUpdateCallerStates =  async (row: any, template: Template, s
 
     logger.info("Caller States updated", {
       workerSid,
-      identity
+      nNumber
     });
 
     return Promise.resolve(`${workerSid} - Caller States updated for row ${rowNumber}`);
@@ -591,7 +591,7 @@ export const processUpdateCallerStates =  async (row: any, template: Template, s
     const errorMessage = `Failed to update Caller States for row ${rowNumber}. ${formatErrorMessage(error)}`;
     logger.error(errorMessage, {
       error,
-      identity,
+      nNumber,
       workerSid
     });
     return rejectPromise(errorMessage, rowNumber);

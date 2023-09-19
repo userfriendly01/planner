@@ -87,7 +87,7 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
   const adminDispatch = useAdminDispatch();
 
   const state = useAdminState();
-  const identity = state.userContext.pingIdentity?.sub;
+  const nNumber = state.userContext.pingIdentity?.sub;
   const profiles = state.profileContext.profiles;
   const skills = state.skillContext.skills;
 
@@ -162,7 +162,7 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
       taskQueueSid: skFormState.taskQueueSid,
       vhCallTarget: skFormState.enableVirtualHold ? skFormState.vhCallTarget.e164 : null,
       vhThreshold: skFormState.enableVirtualHold ? parseInt(skFormState.vhThreshold) : null,
-      updatedBy: identity.toLowerCase(),
+      updatedBy: nNumber.toLowerCase(),
       timeOfDayIds: [
         {
           dayId: 1,
@@ -208,7 +208,7 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
 
       if (response.status === 200) {
         logger.info(`Successfully created new skill ${skFormState.skillFriendlyName}`, {
-          identity,
+          nNumber,
           skillFriendlyName: skFormState.skillFriendlyName,
           skillNum: skFormState.skillNum
         });
@@ -230,7 +230,7 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
         }, timeouts.MODAL_OVERLAY);
       } else {
         logger.warn(`Partially created new skill ${skFormState.skillFriendlyName}`, {
-          identity,
+          nNumber,
           skillFriendlyName: skFormState.skillFriendlyName,
           skillNum: skFormState.skillNum,
           error: response.data.result.message
@@ -251,7 +251,7 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
     } catch (error) {
       logger.error("Error when adding Skill", {
         error,
-        identity,
+        nNumber,
         skill: body
       });
       setSaveResult({

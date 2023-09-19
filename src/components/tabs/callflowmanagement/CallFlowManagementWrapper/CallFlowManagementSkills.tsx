@@ -22,7 +22,9 @@ import {
 } from "globals";
 import React from "react";
 import { getAuthenticationProfileTemplates } from "authentication";
-import { filterSkillsByName } from "utils";
+import {
+  filterSkillsByName, logger
+} from "utils";
 import { Modal } from "@mui/material";
 
 const CallFlowManagementSkills = () => {
@@ -58,6 +60,8 @@ const CallFlowManagementSkills = () => {
   const [ tableState, setTableState ] = React.useState(defaultTableState);
   const [ confirmationModalOpts, setConfirmationModalOpts ] = React.useState(defaultConfirmationModalOpts);
   const [ saveResult, setSaveResult ] = React.useState(defaultSaveResult);
+
+  logger.log("CallFlowManagementSkills Filtered State: ", tableState);
 
   React.useEffect(() => {
     let filteredList = state.skillContext.skills.slice();

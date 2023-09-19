@@ -100,6 +100,8 @@ export const readUploadFile = (e: any, setUploadedForm: any): void => {
       const sheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];
       const json: UploadedRow[] = XLSX.utils.sheet_to_json(worksheet);
+
+      logger.log("Spreadsheet json conversion", json);
       const rowNum = "__rowNum__";
       const headerRows = 1;
       if(typeof json ==="object"){
@@ -384,7 +386,7 @@ export const initiateCalls = async (
  * @param selectedTemplates selected templates to be processed
  */
 export const handleWfmExternalLogon = async (state: AppState, dispatch: any, successfulRows: any, selectedTemplates: any) => {
-  const identity = state.userContext.pingIdentity?.sub;
+  const nNumber = state.userContext.pingIdentity?.sub;
 
   if(selectedTemplates.some((t: Template) => t.name === "CREATE_TRITON_USER")) {
     const wfmNNumbers: any[] = [];
@@ -412,14 +414,14 @@ export const handleWfmExternalLogon = async (state: AppState, dispatch: any, suc
         });
 
         logger.info("Successfully activated WFM external logon", {
-          identity,
+          nNumber,
           workerNNumbers: processingNNumbers
         });
 
         resultsArray.push(results);
       } catch(error) {
         logger.info("Failed to activate WFM external logon", {
-          identity,
+          nNumber,
           workerNNumbers: processingNNumbers,
           error
         });
@@ -475,6 +477,8 @@ export const handleWfmExternalLogon = async (state: AppState, dispatch: any, suc
         workersFailedToReturnToOffline: failedToOffline.flat()
       }
     };
+
+    logger.log("*** External logon results: ", wfmExternalLogonResults);
 
     return wfmExternalLogonResults;
   } else {

@@ -28,7 +28,7 @@ const ManagerDelete = (props: ManagerDeleteProps): any => {
   } = props;
 
   const state = useAdminState();
-  const identity = state.userContext.pingIdentity?.sub;
+  const nNumber = state.userContext.pingIdentity?.sub;
   const workers = useAdminState().workerContext.workers;
   const dispatch = useAdminDispatch();
   const [errorMessage, setErrorMessage] = React.useState<string>(null);
@@ -70,7 +70,7 @@ const ManagerDelete = (props: ManagerDeleteProps): any => {
 
         logger.info("Successfully deleted manager", {
           res,
-          identity,
+          nNumber,
           managerNNumber: selectedManager.manager_n_number
         });
       })
@@ -81,7 +81,7 @@ const ManagerDelete = (props: ManagerDeleteProps): any => {
 
         logger.error("Failed to delete Manager", {
           error,
-          identity,
+          nNumber,
           managerNNumber: selectedManager.manager_n_number
         });
       });

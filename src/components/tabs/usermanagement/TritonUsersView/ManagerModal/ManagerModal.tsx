@@ -48,7 +48,7 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
   } = props;
 
   const state = useAdminState();
-  const identity = state.userContext.pingIdentity?.sub;
+  const nNumber = state.userContext.pingIdentity?.sub;
   const profiles = state.profileContext.profiles;
   const calabrioTeams = state.calabrioContext.teams;
   const options: DropdownOption[] = [
@@ -69,7 +69,7 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
   const [manager, setManager] = useState<Manager>(selectedManager ? selectedManager : null);
   const [errorMessage, setErrorMessage] = useState<string>(null);
   const [saveStatus, setSaveStatus] = useState<ModalOverlayStatuses>(null);
-  const [nNumber, setNNumber] = useState<string>(selectedManager ? selectedManager.manager_n_number : defaultNNumber);
+  const [managerNNumber, setManagerNNumber] = useState<string>(selectedManager ? selectedManager.manager_n_number : defaultNNumber);
   const [fetchedUser, setFetchedUser] = useState<FetchUserResponse>(null);
   const [ profile, setProfile ] = useState<any>(selectedManager ? profiles.find(p => p.profile_id === selectedManager.profile_id) : null);
   const [ selectedCalabrioTeams, setSelectedCalabrioTeams ] = useState<number[]>(selectedManager ? selectedManager.calabrio_team_ids :[]);
@@ -134,7 +134,7 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
 
         logger.info("Successfully created manager", {
           res,
-          identity,
+          nNumber,
           managerNNumber: manager.manager_n_number
         });
       })
@@ -145,7 +145,7 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
 
         logger.error("Failed to create manager", {
           error,
-          identity,
+          nNumber,
           managerNNumber: manager.manager_n_number
         });
       });
@@ -180,7 +180,7 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
         setTimeout(handleClose, 2000);
 
         logger.info("Successfully updated manager", {
-          identity,
+          nNumber,
           managerNNumber: manager.manager_n_number,
           res
         });
@@ -192,7 +192,7 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
 
         logger.error("Failed to update manager", {
           error,
-          identity,
+          nNumber,
           managerNNumber: manager.manager_n_number
         });
       });
@@ -226,23 +226,23 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
             disabled={saveStatus || selectedManager ? true : false}
             fetchedUser={fetchedUser}
             label="N Number"
-            onComplete={(fetchedUser, nNumber) => {
-              setNNumber(nNumber);
+            onComplete={(fetchedUser, newNNumber) => {
+              setManagerNNumber(newNNumber);
               setManager({
-                manager_n_number: nNumber.toLowerCase(),
+                manager_n_number: newNNumber.toLowerCase(),
                 manager_first_name: fetchedUser.firstName,
                 manager_last_name: fetchedUser.lastName
               });
               setFetchedUser(fetchedUser);
             }}
             onClear={() => {
-              setNNumber(defaultNNumber);
+              setManagerNNumber(defaultNNumber);
               setManager(null);
             }}
-            onUpdate={nNumber => {
-              setNNumber(nNumber);
+            onUpdate={newNNumber => {
+              setManagerNNumber(newNNumber);
             }}
-            value={nNumber}
+            value={managerNNumber}
           />
           <Dropdown
             label={"Team *"}

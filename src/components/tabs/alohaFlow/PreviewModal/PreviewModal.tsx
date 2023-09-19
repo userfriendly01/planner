@@ -8,9 +8,7 @@ import {
   DataGrid, GridColDef, useGridApiRef
 } from "@mui/x-data-grid";
 import { StyledButton } from "components";
-import {
-  CctSharedCallFlowDb, FlowContent
-} from "../AlohaFlow.Interfaces";
+import { CctSharedCallFlowDb } from "../AlohaFlow.Interfaces";
 import { TableGridColumnDef } from "./TableColumnDef";
 import "./PreviewModal.css";
 import { Box } from "@mui/material";
@@ -62,7 +60,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
     try {
       await onDelete(rows);
     } catch(error) {
-      logger.error("onDelete call failed", { error }, false);
+      logger.error("Flow: Preview Modal onDelete call failed", { error }, false);
     }
   };
 

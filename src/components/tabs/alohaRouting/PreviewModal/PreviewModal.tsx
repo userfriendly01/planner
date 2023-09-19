@@ -68,7 +68,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
       await onDelete(rows);
       onClose();
     } catch(error) {
-      logger.error("PreviewModal.onDelete failed", { error }, false);
+      logger.error("Routing: PreviewModal onDelete failed", { error }, false);
     }
   };
 

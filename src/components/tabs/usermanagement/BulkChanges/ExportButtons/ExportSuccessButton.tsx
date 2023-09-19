@@ -4,13 +4,11 @@ import React from "react";
 import {
   ExcelExport
 } from "@progress/kendo-react-excel-export";
-import { logger } from "utils";
 
 const ExportSuccessButton = (props: any) => {
   const { successfulRows } = props;
 
   const _export = React.useRef(null);
-  logger.log("ExportSuccessButton successfulRows", successfulRows);
 
   const handleExport = () => {
     const rows: any = successfulRows;
@@ -35,9 +33,6 @@ const ExportSuccessButton = (props: any) => {
         }
       });
     });
-
-    logger.log("rows", rows);
-    logger.log("columns", columns);
 
     if (_export !== null) {
       _export.current.save(rows, columns);

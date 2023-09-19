@@ -1,11 +1,9 @@
 
 import { Button } from "../BulkChanges.Styles";
-import { Template } from "../BulkChanges.Interfaces";
 import React from "react";
 import {
   ExcelExport
 } from "@progress/kendo-react-excel-export";
-import { logger } from "utils";
 
 const ExportOptionsButton = (props: any) => {
   const {
@@ -16,7 +14,6 @@ const ExportOptionsButton = (props: any) => {
   } = props;
 
   const _export = React.useRef(null);
-  logger.log("ExportOptionsButton Template", template);
 
   const handleExport = () => {
     const rows: any = [];
@@ -58,9 +55,6 @@ const ExportOptionsButton = (props: any) => {
         }
       });
     });
-
-    logger.log("rows", rows);
-    logger.log("columns", columns);
 
     if (_export !== null) {
       _export.current.save(rows, columns);

@@ -21,13 +21,13 @@ import * as XLSX from "xlsx";
 
 
 jest.mock("utils",() => ({
-  ...jest.requireActual("utils"),
   formatManagersResponse: jest.fn(),
   formatWorkerResponse: jest.fn(),
   myAxios: {
     get: jest.fn()
   },
-  getCalabrioWfmOrg: jest.fn()
+  getCalabrioWfmOrg: jest.fn(),
+  logger: jest.requireActual("utils").logger
 }));
 
 jest.mock("xlsx",() => ({

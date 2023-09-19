@@ -47,7 +47,7 @@ const SkillGroupInputContainer = (props: any) => {
   const dispatch = useAdminDispatch();
   const skillGroups = state.skillContext.skillGroups.slice();
   const skills = state.skillContext.skills.slice();
-  const identity = state.userContext.pingIdentity?.sub;
+  const nNumber = state.userContext.pingIdentity?.sub;
 
   const getSkillGroupOptions = () => {
     return skillGroups.map((skg: any) => {
@@ -126,7 +126,7 @@ const SkillGroupInputContainer = (props: any) => {
         logger.info("Successfully created skill group(s)", {
           skillIds,
           skillGroupName: skillGroupName.trim(),
-          identity
+          nNumber
         });
 
         setSaveResult({
@@ -143,7 +143,7 @@ const SkillGroupInputContainer = (props: any) => {
         }, timeouts.MODAL_OVERLAY);
       } catch (error) {
         logger.error("Failed to created skill group(s)", {
-          identity,
+          nNumber,
           error
         });
 
@@ -198,7 +198,7 @@ const SkillGroupInputContainer = (props: any) => {
     } catch (error) {
       logger.error("Failed to update skillGroup", {
         error,
-        identity
+        nNumber
       });
       setSaveResult({
         message: "Request Failed",
@@ -216,7 +216,7 @@ const SkillGroupInputContainer = (props: any) => {
 
         logger.info("Successfully updated skill group", {
           skillGroupName: skillGroupName.trim(),
-          identity
+          nNumber
         });
 
         setSaveResult({
@@ -232,7 +232,7 @@ const SkillGroupInputContainer = (props: any) => {
       } catch (error) {
         logger.error("Failed to edit skill group(s)", {
           skillGroupName: skillGroupName.trim(),
-          identity,
+          nNumber,
           requestBody,
           error
         });
@@ -266,7 +266,7 @@ const SkillGroupInputContainer = (props: any) => {
 
         logger.info("Successfully deleted skill group(s)", {
           skillGroup: skillGroupToEditDelete.value,
-          identity
+          nNumber
         });
 
         setSaveResult({
@@ -284,7 +284,7 @@ const SkillGroupInputContainer = (props: any) => {
       } catch (error) {
         logger.error("Failed to deleted skill grouping", {
           skillGroup: skillGroupToEditDelete.value,
-          identity,
+          nNumber,
           error
         });
 

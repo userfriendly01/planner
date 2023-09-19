@@ -32,11 +32,12 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
   } = props;
 
   const state = useAdminState();
-  const identity = state.userContext.pingIdentity?.sub;
+  const nNumber = state.userContext.pingIdentity?.sub;
   const dispatch = useAdminDispatch();
   const form = useFormState();
   const tritonWorker: any = state.workerContext.workers.find((w: any) => w.attributes.n_number === form.nNumber.value);
 
+  logger.log("TRITON WORKER", tritonWorker);
   const isWorkerDid = form.triton.didUser;
   const [deleteTriton, setDeleteTriton] = React.useState(form.triton.userFound);
   const [deleteCalabrioQm, setDeleteClabrioQm] = React.useState(form.calabrio_qm.userFound);
@@ -57,7 +58,7 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
         resultMessage = `Successfully deleted Triton worker with sid ${tritonWorker.sid}`;
 
         logger.info(resultMessage, {
-          identity,
+          nNumber,
           workerSid: tritonWorker.sid,
           userNNumber: tritonWorker.attributes?.n_number
         });
@@ -89,7 +90,7 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
 
         logger.error(resultMessage, {
           error,
-          identity,
+          nNumber,
           tritonWorker
         });
 

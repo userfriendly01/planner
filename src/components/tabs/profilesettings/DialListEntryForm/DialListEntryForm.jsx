@@ -82,7 +82,7 @@ const DialListEntryForm = props => {
   } = props;
 
   const state = useAdminState();
-  const identity = state.userContext.pingIdentity?.sub;
+  const nNumber = state.userContext.pingIdentity?.sub;
 
   const getInitialFormState = () => {
     const contact_nme = dialListTableState.dialListEntryFormInitialValues.contact_nme || "";
@@ -142,7 +142,7 @@ const DialListEntryForm = props => {
         logger.info("Successfully added dial list entry", {
           responseData: res.data,
           requestBody,
-          identity
+          nNumber
         });
         refreshProfileData();
         setLoading({
@@ -155,7 +155,7 @@ const DialListEntryForm = props => {
         logger.error("Failed to insert dial list entry", {
           error,
           requestBody,
-          identity
+          nNumber
         });
         setLoading({
           overlayMessage: "Failed to add dial list entry",
@@ -180,7 +180,7 @@ const DialListEntryForm = props => {
         logger.info(`Successfully updated dial list entry with diallist_id ${dialListTableState.dialListId}`, {
           responseData: res.data,
           requestBody,
-          identity
+          nNumber
         });
         refreshProfileData();
         setLoading({
@@ -193,7 +193,7 @@ const DialListEntryForm = props => {
         logger.error(`Failed to update dial list entry with diallist_id ${dialListTableState.dialListId}`, {
           error,
           requestBody,
-          identity
+          nNumber
         });
         setLoading({
           overlayMessage: "Failed to update dial list entry",

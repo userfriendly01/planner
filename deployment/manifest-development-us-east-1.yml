@@ -5,7 +5,7 @@ applications:
   buildpack: nodejs_current
   command: node server.js
   instances: 1
-  memory: 2048M
+  memory: 1024M
   timeout: 600
   env:
     NODE_ENV: production

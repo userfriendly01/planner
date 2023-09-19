@@ -29,7 +29,7 @@ const ResetSkillsButton = (props: any) => {
   } = props;
 
   const state = useAdminState();
-  const identity = state.userContext.pingIdentity?.sub;
+  const nNumber = state.userContext.pingIdentity?.sub;
 
   const dispatch = useAdminDispatch();
   const [ resultsModalOpts, setResultsModalOpts ] = useState(defaultResetInformation);
@@ -74,14 +74,14 @@ const ResetSkillsButton = (props: any) => {
 
         logger.info("Successfully reset worker skills", {
           workerSids,
-          identity
+          nNumber
         });
       })
       .catch(error => {
         logger.error("Failed to reset worker skills", {
           error,
           workerSids,
-          identity
+          nNumber
         });
         dispatchResettingSkills(false);
         setResultsModalOpts({

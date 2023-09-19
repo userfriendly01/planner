@@ -131,7 +131,7 @@ const DialListTable = props => {
   } = props;
 
   const state = useAdminState();
-  const identity = state.userContext.pingIdentity?.sub;
+  const nNumber = state.userContext.pingIdentity?.sub;
 
   const [dialListTableState, setDialListTableState] = useState({
     dialListId: null,
@@ -163,7 +163,7 @@ const DialListTable = props => {
         .then(res => {
           logger.info(`Successfully deleted dial list entry with diallist_id ${diallistId}`, {
             responseData: res.data,
-            identity
+            nNumber
           });
           refreshProfileData();
           setDialListTableState({
@@ -176,7 +176,7 @@ const DialListTable = props => {
         .catch(error => {
           logger.error(`Failed to delete dial list entry with diallist_id ${diallistId}`, {
             error,
-            identity
+            nNumber
           });
           setDialListTableState({
             ...dialListTableState,

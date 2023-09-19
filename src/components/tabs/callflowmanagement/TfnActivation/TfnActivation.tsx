@@ -33,7 +33,7 @@ export const TfnActivation = (props: TfnActivationProps) => {
     setSaveResult
   } = props;
   const state = useAdminState();
-  const identity = state.userContext.pingIdentity?.sub;
+  const nNumber = state.userContext.pingIdentity?.sub;
   const [ showFields, setShowFields ] = React.useState(false);
   const defaultEntryMessage = "Thank you for calling Liberty Mutual Insurance";
   const defaultTfnState: any = {
@@ -107,10 +107,10 @@ export const TfnActivation = (props: TfnActivationProps) => {
       message: "Processing...",
       status: ModalOverlayStatuses.SAVING
     });
-    updateTfn(tfnState.number.e164, tfnState, identity).then(() => {
+    updateTfn(tfnState.number.e164, tfnState, nNumber).then(() => {
       logger.info(`Successfully updated TFN, ${tfnState.number.e164}`, {
         tfnState,
-        identity
+        nNumber
       });
 
       setSaveResult({
@@ -132,7 +132,7 @@ export const TfnActivation = (props: TfnActivationProps) => {
     }).catch(error => {
       logger.error(`Failed to update TFN, ${tfnState.number.e164}`, {
         tfnState,
-        identity,
+        nNumber,
         error
       });
 
@@ -179,7 +179,6 @@ export const TfnActivation = (props: TfnActivationProps) => {
           }
         })}
         updateValue={(maskedValue: string, unmaskedValue: string, isValid: boolean, e164Number: string) => {
-          logger.log(`maskedValue: ${maskedValue} - "unmaskedValue: ${unmaskedValue} - isValid: ${isValid} - e164Number: ${e164Number}`);
           setTfnState({
             ...tfnState,
             number: {

@@ -24,8 +24,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import {
   getWfmBusinessUnits,
-  getWfmTeams,
-  logger
+  getWfmTeams
 } from "utils";
 
 const WfmUserTable = (props: WfmUserTableProps) => {
@@ -102,6 +101,11 @@ const WfmUserTable = (props: WfmUserTableProps) => {
                     <Edit fontSize={"inherit"}/>
                   </IconWrapper>
                 </CustomTableData>
+                {/* <CustomTableData>
+                  <IconWrapper onClick={deleteButtonOnClick} data-testid="delete-button">
+                    <Delete fontSize={"inherit"}/>
+                  </IconWrapper>
+                </CustomTableData> */}
               </CustomTableRow>
             );
           })}

@@ -74,14 +74,14 @@ jest.mock("context", () => ({
 }));
 
 jest.mock("utils", () => ({
-  ...jest.requireActual("utils"),
   getAuthenticationProfiles: jest.fn(),
   getPermissions: jest.fn(),
   getStartups: jest.fn(),
   getAzureSPAClientId: jest.fn(),
   myAxios: jest.requireActual("utils").myAxios,
   wait: jest.requireActual("utils").wait,
-  isErrorIn400s: jest.requireActual("utils").isErrorIn400s
+  isErrorIn400s: jest.requireActual("utils").isErrorIn400s,
+  logger: jest.requireActual("utils").logger
 }));
 
 const mockAdminDispatch = jest.fn();

@@ -103,6 +103,8 @@ export const performValidations = async (
     }));
   }
 
+  logger.log("***performValidations results: ", validationPromises);
+
   validationPromises.forEach((rowPromise: any) => {
     let rowNumber: any;
     const rowErrors: any = [];

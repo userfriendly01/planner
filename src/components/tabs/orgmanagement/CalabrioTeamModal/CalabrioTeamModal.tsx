@@ -31,7 +31,7 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
   const state = useAdminState();
   const dispatch = useAdminDispatch();
 
-  const identity = state.userContext.pingIdentity?.sub;
+  const nNumber = state.userContext.pingIdentity?.sub;
   const {
     groups,
     teams
@@ -67,14 +67,14 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
         logger.info("Successfully added Calabrio Team", {
           name: newTeam.name,
           parentGroupId: newTeam.parentGroupId.groupId,
-          identity
+          nNumber
         });
       }).catch(error => {
         const msg = "Unable to Add Calabrio Team";
 
         logger.error(msg, {
           error,
-          identity
+          nNumber
         });
 
         setSaveStatus(ModalOverlayStatuses.FAIL);

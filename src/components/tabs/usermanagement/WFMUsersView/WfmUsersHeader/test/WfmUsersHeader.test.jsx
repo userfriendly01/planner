@@ -24,11 +24,11 @@ jest.mock("context", () => ({
 }));
 
 jest.mock("utils", () => ({
-  ...jest.requireActual("utils"),
   getCalabrioWfmOrg: jest.fn(),
   getWfmTeams: jest.requireActual("utils").getWfmTeams,
   sortWFMByName: jest.requireActual("utils").sortWFMByName,
-  getWfmBusinessUnits: jest.requireActual("utils").getWfmBusinessUnits
+  getWfmBusinessUnits: jest.requireActual("utils").getWfmBusinessUnits,
+  logger: jest.requireActual("utils").logger
 }));
 
 jest.mock("components", () => ({
