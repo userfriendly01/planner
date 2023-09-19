@@ -40,7 +40,6 @@ const multiFields = routingFields.filter(x => x.control === "multiField").map(x 
 });
 
 const mandatoryField = routingFields.filter(x => x.required).map(x => {
-  formFields[x.key]=x.formFields;
   return x.key;
 });
 
