@@ -12,7 +12,7 @@ import React, {
   useEffect, useState
 } from "react";
 import {
-  queryFlowData, retrieveFlowData, flowBatchDelete, batchFlowUpdate
+  queryFlowData, retrieveFlowData, flowBatchDelete, batchFlowUpdate, batchDeleteItems
 } from "services";
 import {
   CACHE_FILTER_FLOW,
@@ -385,7 +385,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
 
   const handleOnBulkDelete = async(rows: Array<CctSharedCallFlowDb> ) =>{
     const keysToDelete = rows.map(x => x.pkey);
-    const response = await flowBatchDelete(keysToDelete, accessToken, graphQLEndpoint);
+    const response = await batchDeleteItems(keysToDelete, accessToken, graphQLEndpoint);
 
     if(!response || response.errors) {
       setAlertBar((alertBarProps: AlertBarProps) => ({

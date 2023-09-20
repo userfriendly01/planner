@@ -398,10 +398,21 @@ async function deleteFlowRule(item, accessToken, graphQlApiUrl) {
   }
   return response;
 }
+async function batchDeleteItems(items,accessToken,graphQlApiUrl){
+  var flowDeleteArray=[];
+  const size=24;
+  let response;
+  while (items.length > 0){
+    flowDeleteArray.push(items.splice(0, size));
+  }
+  for(let i=0; i<flowDeleteArray.length; i++){
+    response=await flowBatchDelete(flowDeleteArray[i],accessToken,graphQlApiUrl);
+  }
+  return response;
+}
 
 async function flowBatchDelete(items, accessToken, graphQlApiUrl) {
   let response;
-
   try {
     const body = JSON.stringify({
       query: `
@@ -554,5 +565,6 @@ export {
   updateFlowDB,
   queryFlowData,
   flowBatchDelete,
-  batchFlowUpdate
+  batchFlowUpdate,
+  batchDeleteItems
 };
