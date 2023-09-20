@@ -108,11 +108,13 @@ export const calabrioContext = {
   roles: [
     {
       id: 1,
-      name: "QM Supervisor"
+      name: "QM Supervisor",
+      permissions: [{ name: "permission 1" }]
     },
     {
       id: 2,
-      name: "QM Agent"
+      name: "QM Agent",
+      permissions: [{ name: "permission 2" }, { name: "permission 3" }]
     },
     {
       id: 3,
@@ -369,7 +371,7 @@ export const skillsList = [
     }],
     flashMessage: "",
     closedMessage: "",
-    levels: [ 1, 2, 3],
+    levels: [1, 2, 3],
     timeOfDays: [],
     vhCallTarget: null,
     vhCallerId: null,
@@ -472,7 +474,7 @@ export const skillGroups = [
       }],
       flashMessage: "",
       closedMessage: "",
-      levels: [ 1, 2, 3],
+      levels: [1, 2, 3],
       timeOfDays: [],
       vhCallTarget: null,
       vhCallerId: null,
