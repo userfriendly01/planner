@@ -1,3 +1,4 @@
+import { useAdminState } from "context";
 import Directory from "../Directory";
 import {
   DirectoryEntryForm,
@@ -16,6 +17,7 @@ import {
   expectMockedComponent,
   expectOnlyPassedProps,
   getMockedComponentProps,
+  initialTestState,
   render,
   setupMockedComponents,
   waitFor
@@ -27,6 +29,10 @@ jest.mock("components", () => ({
   DirectoryEntryForm: jest.fn(),
   PhoneNumberTable: jest.fn(),
   StyledButton: jest.fn()
+}));
+
+jest.mock("context", () => ({
+  useAdminState: jest.fn()
 }));
 
 const profileId = "89";
@@ -67,6 +73,8 @@ describe("<Directory />", () => {
       PhoneNumberTable,
       StyledButton
     });
+
+    useAdminState.mockReturnValue(initialTestState);
   });
 
   test("initial render should just be the button and the table", () => {

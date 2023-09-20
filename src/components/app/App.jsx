@@ -37,9 +37,12 @@ import React, {
   useState
 } from "react";
 import { getAzureSPAClientId } from "utils";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter, Routes, Route
+} from "react-router-dom";
 import {
   isErrorIn400s,
+  logger,
   myAxios,
   wait
 } from "utils";
@@ -98,17 +101,17 @@ const App = () => {
 
   useEffect(() => {
     authenticateAndStartup(dispatch)
-      .then((authenticationProfiles) => {
+      .then(authenticationProfiles => {
         setLoadResult({
           azureClientId: authenticationProfiles.azureClientId,
           home: authenticationProfiles[0].home,
           status: success
         });
       })
-      .catch(err => {
-        console.error(err.msg, { error: err.error });
+      .catch(error => {
+        logger.error("Failed to authenticate", { error });
         setLoadResult({
-          status: err
+          status: error
         });
       });
   }, []);
@@ -125,12 +128,12 @@ const App = () => {
           <AppWrapper data-testid="app-wrapper">
             <Header/>
             <NavTabs/>
-              <Routes>
-                {getRoutes(state, loadResult.home, loadResult.azureClientId).map(r => {
-                  const Component = r.element || r.render;
-                  return <Route key={r.path} path={r.path} element={<Component/>}/>
-                })}
-              </Routes>
+            <Routes>
+              {getRoutes(state, loadResult.home, loadResult.azureClientId).map(r => {
+                const Component = r.element || r.render;
+                return <Route key={r.path} path={r.path} element={<Component/>}/>;
+              })}
+            </Routes>
             <Modal onClose={() => { return; }} open={showModal === true}>
               <>
                 <NotificationModal

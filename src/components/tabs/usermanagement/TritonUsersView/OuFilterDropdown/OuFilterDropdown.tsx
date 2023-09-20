@@ -11,6 +11,7 @@ import {
 import React from "react";
 import { getOperatingUnits } from "services";
 import { OperatingUnit } from "globals";
+import { logger } from "utils";
 
 export interface DropdownOption {
   label: string,
@@ -27,7 +28,7 @@ const OuFilterDropdown = () => {
   if(!operatingUnitList.length) {
     getOperatingUnits().then((allOUs: OperatingUnit[])  => {
       setOperatingUnitList(allOUs);
-    }).catch(error => console.error(error.msg));
+    }).catch(error => logger.error(error.msg, { error }, false));
   }
 
   const options: DropdownOption[] = [

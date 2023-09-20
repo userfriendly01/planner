@@ -12,8 +12,10 @@ import { updateSelectedTemplates } from "../BulkUtils";
 import { getCreateTemplates } from "../BulkTemplates";
 import { useAdminState } from "context";
 import React from "react";
-import { Checkbox, Modal } from "@mui/material";
-
+import {
+  Checkbox,
+  Modal
+} from "@mui/material";
 
 const BulkCreateForm = (props: BulkActionFormProps) => {
   const {
@@ -25,8 +27,6 @@ const BulkCreateForm = (props: BulkActionFormProps) => {
   const state = useAdminState();
   const createTemplates = getCreateTemplates(state);
   const [ showBusinessUnitModal, setShowBusinessUnitModal ] = React.useState(false);
-
-  console.log("BulkCreateForm - selectedTemplates", selectedTemplates);
 
   return (
     <>

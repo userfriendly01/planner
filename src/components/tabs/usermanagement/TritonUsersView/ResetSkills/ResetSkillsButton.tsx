@@ -3,10 +3,14 @@ import {
   ResetSkillsResultsModal,
   StyledButton
 } from "components";
-import { useAdminDispatch } from "context";
+import {
+  useAdminDispatch,
+  useAdminState
+} from "context";
 import { apiPaths } from "globals";
 import React, { useState } from "react";
 import {
+  logger,
   mapWorkerFromDbWorker,
   myAxios
 } from "utils";
@@ -23,6 +27,9 @@ const ResetSkillsButton = (props: any) => {
   const {
     selected
   } = props;
+
+  const state = useAdminState();
+  const nNumber = state.userContext.pingIdentity?.sub;
 
   const dispatch = useAdminDispatch();
   const [ resultsModalOpts, setResultsModalOpts ] = useState(defaultResetInformation);
@@ -64,11 +71,17 @@ const ResetSkillsButton = (props: any) => {
           successfulResets: passedWorkers,
           unsuccessfulResets: failedWorkers
         });
+
+        logger.info("Successfully reset worker skills", {
+          workerSids,
+          nNumber
+        });
       })
       .catch(error => {
-        console.error("Failed to reset worker skills", {
+        logger.error("Failed to reset worker skills", {
           error,
-          workerSids
+          workerSids,
+          nNumber
         });
         dispatchResettingSkills(false);
         setResultsModalOpts({
@@ -93,7 +106,10 @@ const ResetSkillsButton = (props: any) => {
             unsuccessfulWorkers={resultsModalOpts.unsuccessfulResets} />
         </>
       </Modal>
-      <StyledButton style={{ width: "100%", height: "50px" }} disabled={selected.length === 0} onClick={resetWorkers}>
+      <StyledButton style={{
+        width: "100%",
+        height: "50px"
+      }} disabled={selected.length === 0} onClick={resetWorkers}>
         Reset Skills
       </StyledButton>
     </div>

@@ -21,6 +21,7 @@ import {
 } from "testUtils";
 import { Close } from "@mui/icons-material";
 import { TextField } from "@mui/material";
+import { logger } from "utils";
 
 jest.mock("@mui/material", () => ({
   TextField: jest.fn(),
@@ -101,9 +102,11 @@ describe("TfnActivation", () => {
     beforeEach(() => {
       getTfn.mockRejectedValue("aww");
     });
-    test("error is swallowed and logged - default information is used", () => {
+    test("error is swallowed and logged - default information is used", async () => {
       renderComponentWithAdditionalFields();
-      expect(console.error).toHaveBeenCalledTimes(1);
+      await waitFor(() => {
+        expect(logger.error).toHaveBeenCalledTimes(1);
+      });
     });
   });
   describe("Non Valid Phone Number is Entered", () => {

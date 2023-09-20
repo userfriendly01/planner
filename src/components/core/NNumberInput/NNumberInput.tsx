@@ -6,6 +6,7 @@ import {
 import { nNumMatcher } from "globals";
 import React, { useState } from "react";
 import { fetchUser } from "services";
+import { logger } from "utils";
 
 const NNumberEntryField = (props: ModalNNumberProps) => {
   const {
@@ -28,9 +29,9 @@ const NNumberEntryField = (props: ModalNNumberProps) => {
       .then(newlyFetchedUser => {
         onComplete(newlyFetchedUser, nNumber);
       })
-      .catch(err => {
-        console.error("Failed to fetch user from employee lookup service", {
-          error: err,
+      .catch(error => {
+        logger.error("Failed to fetch user from employee lookup service", {
+          error,
           nNumber
         });
         setLookupError("Error calling employee lookup service");

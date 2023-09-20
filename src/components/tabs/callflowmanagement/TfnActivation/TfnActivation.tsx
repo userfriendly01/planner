@@ -22,6 +22,7 @@ import {
   timeouts
 } from "globals";
 import { InputAdornment } from "@mui/material";
+import { logger } from "utils";
 
 
 
@@ -32,7 +33,7 @@ export const TfnActivation = (props: TfnActivationProps) => {
     setSaveResult
   } = props;
   const state = useAdminState();
-  const nNumber = state.userContext.pingIdentity.sub;
+  const nNumber = state.userContext.pingIdentity?.sub;
   const [ showFields, setShowFields ] = React.useState(false);
   const defaultEntryMessage = "Thank you for calling Liberty Mutual Insurance";
   const defaultTfnState: any = {
@@ -63,8 +64,8 @@ export const TfnActivation = (props: TfnActivationProps) => {
           entryMessage: res.data?.entry_msg || defaultEntryMessage
         };
         setTfnState(fetchedTfnState);
-      }).catch((err: any) => {
-        console.error("TFN GET RESPONSE: ", err);
+      }).catch(error => {
+        logger.error("TFN GET RESPONSE: ", { error }, false);
       });
       setShowFields(true);
     } else {
@@ -107,6 +108,11 @@ export const TfnActivation = (props: TfnActivationProps) => {
       status: ModalOverlayStatuses.SAVING
     });
     updateTfn(tfnState.number.e164, tfnState, nNumber).then(() => {
+      logger.info(`Successfully updated TFN, ${tfnState.number.e164}`, {
+        tfnState,
+        nNumber
+      });
+
       setSaveResult({
         message: "Request Successfully Processed",
         status: ModalOverlayStatuses.SUCCESS
@@ -123,8 +129,13 @@ export const TfnActivation = (props: TfnActivationProps) => {
           open: false
         });
       }, timeouts.MODAL_OVERLAY);
-    }).catch((err: any) => {
-      console.error("Update TFN Failed: ", err);
+    }).catch(error => {
+      logger.error(`Failed to update TFN, ${tfnState.number.e164}`, {
+        tfnState,
+        nNumber,
+        error
+      });
+
       setSaveResult({
         message: "Request Failed",
         status: ModalOverlayStatuses.FAIL
@@ -168,7 +179,6 @@ export const TfnActivation = (props: TfnActivationProps) => {
           }
         })}
         updateValue={(maskedValue: string, unmaskedValue: string, isValid: boolean, e164Number: string) => {
-          console.log(`maskedValue: ${maskedValue} - "unmaskedValue: ${unmaskedValue} - isValid: ${isValid} - e164Number: ${e164Number}`);
           setTfnState({
             ...tfnState,
             number: {

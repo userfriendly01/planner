@@ -17,6 +17,7 @@ import { TableGridColumnDef } from "./TableGridColumnDef";
 
 import { reconstructTableColumnDef } from "./previewUtils";
 import "./PreviewModal.css";
+import { logger } from "utils";
 
 interface PreviewModalProps {
   action: "delete" | "add" | "edit"
@@ -66,8 +67,8 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
     try {
       await onDelete(rows);
       onClose();
-    } catch(e) {
-      console.error(e.message);
+    } catch(error) {
+      logger.error("Routing: PreviewModal onDelete failed", { error }, false);
     }
   };
 

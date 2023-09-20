@@ -12,7 +12,6 @@ const config = {
   output: {
     filename: "admin-ui.js",
     path: path.resolve(__dirname, "dist")
-    // publicPath: "/triton-admin/"
   },
   plugins: [
     new ESLintPlugin({ failOnWarning: true })
@@ -36,11 +35,11 @@ const config = {
       {
         test: /\.(sa|sc|c)ss$/,
         use: [
-          'style-loader',
-          'css-loader',
-          'sass-loader',
-        ],
-      },
+          "style-loader",
+          "css-loader",
+          "sass-loader"
+        ]
+      }
     ]
   },
   resolve: {

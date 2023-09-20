@@ -9,14 +9,17 @@ import {
   WfmErrorBanner
 } from "components";
 import { useAdminState } from "context";
-import { ModalOverlayStatuses, WfmBusinessUnit, WfmTeam, WfmUser } from "globals";
+import {
+  ModalOverlayStatuses, WfmBusinessUnit, WfmTeam, WfmUser
+} from "globals";
 import React from "react";
 import {
   getWfmBusinessUnits,
   getWfmTeams,
   getWfmPeople,
   filterWfmUserTable,
-  sortWfmWorkersByFullName
+  sortWfmWorkersByFullName,
+  logger
 } from "utils";
 import InfoBanner from "../InfoBanner/InfoBanner";
 
@@ -48,19 +51,17 @@ const TritonUserManagementWrapper: any = () => {
 
     if(wfmPeople.length > 0){
       let filteredList = wfmPeople.slice().sort(sortWfmWorkersByFullName);
-      console.log("tableState", wfmPeople);
+      logger.log("TritonUserManagementWrapper: tableState ", wfmPeople);
 
       //filter by business unit
       if(tableState.businessUnitFilter){
-        const businessUnit = getWfmBusinessUnits(state).find((bu: WfmBusinessUnit) => bu.Id === tableState.businessUnitFilter)
+        const businessUnit = getWfmBusinessUnits(state).find((bu: WfmBusinessUnit) => bu.Id === tableState.businessUnitFilter);
         if(tableState.businessUnitFilter === "People_Without_Team"){
           filteredList = filteredList.filter((wfmUser: WfmUser) => !wfmUser.BusinessUnitId);
         } else {
           filteredList = filteredList.filter((wfmUser: WfmUser) => wfmUser.BusinessUnitId === businessUnit?.Id);
         }
       }
-      console.log("**BU FL", filteredList);
-
 
       //filter by team
       if(tableState.teamFilter && tableState.teamFilter !== "show-all"){
@@ -73,21 +74,18 @@ const TritonUserManagementWrapper: any = () => {
           }
         }
       }
-      console.log("**Team FL", filteredList);
 
       //filter by searchBy
       const trimmedSearch = tableState.searchBy.trim();
       const searchResults = filteredList.filter((wfmUser: any) => filterWfmUserTable(wfmUser, trimmedSearch));
       filteredList = searchResults;
 
-      console.log("**Search FL", filteredList);
 
       const length = filteredList.slice().length;
       //filter by pagination
       const startingUserIndex = tableState.pagination.pageNumber !== 1 ? ((tableState.pagination.pageNumber - 1) * tableState.pagination.usersPerPage) : 0;
       const endingUserIndex = tableState.pagination.pageNumber * tableState.pagination.usersPerPage - 1;
       filteredList = filteredList.slice(startingUserIndex, endingUserIndex + 1);
-      console.log("**pagination FL", filteredList.slice());
 
       setTableState({
         ...tableState,
@@ -100,7 +98,6 @@ const TritonUserManagementWrapper: any = () => {
           endingUserIndex
         }
       });
-      console.log("final filtered list", filteredList);
     }
   }, [tableState.searchBy, tableState.teamFilter, tableState.businessUnitFilter, tableState.pagination.pageNumber, state.calabrioContext.wfmOrg]);
 
@@ -115,10 +112,10 @@ const TritonUserManagementWrapper: any = () => {
       { tableState.businessUnitFilter && status === ModalOverlayStatuses.SUCCESS ?
         <>
           <StyledPaper elevation={3}>
-          <WfmUserTable
-            tableState={tableState}
-            setTableState={setTableState}
-          />
+            <WfmUserTable
+              tableState={tableState}
+              setTableState={setTableState}
+            />
           </StyledPaper>
           <Pagination
             tableState={tableState}

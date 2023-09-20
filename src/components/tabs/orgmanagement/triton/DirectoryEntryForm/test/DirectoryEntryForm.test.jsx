@@ -9,6 +9,7 @@ import {
   PaperContainer,
   StyledButton
 } from "components";
+import { useAdminState } from "context";
 import {
   formModes,
   ModalOverlayStatuses,
@@ -21,6 +22,7 @@ import {
 } from "services";
 import {
   act,
+  initialTestState,
   expectMockedComponent,
   expectOnlyPassedProps,
   getLastInstanceCalled,
@@ -44,6 +46,10 @@ jest.mock("components", () => ({
   PhoneNumberInput: jest.fn(),
   ModalOverlay: jest.fn(),
   StyledButton: jest.fn()
+}));
+
+jest.mock("context", () => ({
+  useAdminState: jest.fn()
 }));
 
 const first_nme = "Some";
@@ -75,6 +81,7 @@ describe("<DirectoryEntryForm />", () => {
       TextField,
       Tooltip
     });
+    useAdminState.mockReturnValue(initialTestState);
     PaperContainer.mockImplementation(props => <div>{props.children}</div>);
   });
 

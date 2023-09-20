@@ -1,4 +1,8 @@
-import { apiPaths, AppState, WfmBusinessUnit } from "globals";
+import {
+  apiPaths,
+  AppState,
+  WfmBusinessUnit
+} from "globals";
 import {
   getCalabrioUsers,
   getManagers,
@@ -12,7 +16,8 @@ import {
   formatWorkerResponse,
   formatManagersResponse,
   myAxios,
-  getCalabrioWfmOrg
+  getCalabrioWfmOrg,
+  logger
 } from "utils";
 import * as XLSX from "xlsx";
 
@@ -28,7 +33,7 @@ export const updateTritonUserState = async (state: AppState, dispatch: any): Pro
       payload: filteredWorkers
     }));
   } catch (error) {
-    console.error("Failed to update triton user state after bulk upload", error);
+    logger.error("Failed to update triton user state after bulk upload", { error }, false);
   }
   return Promise.resolve();
 };
@@ -44,7 +49,7 @@ export const updateCalabrioUserState = async (state: AppState, dispatch: any): P
       payload: users.data
     });
   } catch (error) {
-    console.error("Failed to update calabrio user state after bulk upload", error);
+    logger.error("Failed to update calabrio user state after bulk upload", { error }, false);
   }
   return Promise.resolve();
 };
@@ -58,8 +63,8 @@ export const updateWFMPersonState = async (state: any, dispatch: any, rows: any[
     const businessUnit = state.calabrioContext.wfmOrg.find((bu: WfmBusinessUnit) => bu.Id === BusinessUnitId);
     delete businessUnit.Teams;
     await getCalabrioWfmOrg(BusinessUnitId, state, dispatch);
-  } catch(err){
-    console.error("Failed to update calabrio wfm user state after bulk upload", err);
+  } catch(error){
+    logger.error("Failed to update calabrio wfm user state after bulk upload", { error }, false);
   }
   return Promise.resolve();
 };
@@ -75,7 +80,7 @@ export const updateManagerUserState = async (dispatch: any): Promise<void> => {
       payload: formatManagersResponse(managers)
     });
   } catch (error) {
-    console.error("Failed to update manager state after bulk upload", error);
+    logger.error("Failed to update manager state after bulk upload", { error }, false);
   }
   return Promise.resolve();
 };
@@ -95,7 +100,8 @@ export const readUploadFile = (e: any, setUploadedForm: any): void => {
       const sheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];
       const json: UploadedRow[] = XLSX.utils.sheet_to_json(worksheet);
-      console.warn(json);
+
+      logger.log("Spreadsheet json conversion", json);
       const rowNum = "__rowNum__";
       const headerRows = 1;
       if(typeof json ==="object"){
@@ -157,7 +163,6 @@ export const identifyProcessingDependencies = (selectedTemplates: any) => {
         dependencyTree.push(t);
       }
     });
-    console.log("updated dependencyTree", dependencyTree);
   }
 
   return dependencyTree;
@@ -202,7 +207,7 @@ export const handleConcurrentCalls = async (
   };
 
   await processBatch();
-  console.log("***handleConcurrentCalls - processingResults", processingResults.slice());
+  logger.log("***handleConcurrentCalls - processingResults", processingResults.slice());
   return processingResults;
 };
 
@@ -294,10 +299,10 @@ export const initiateCalls = async (
   };
 
   if(concurrencyLimit){
-    console.warn("Concurrency Limit found", concurrencyLimit);
+    logger.warn("Concurrency Limit found", { concurrencyLimit }, false);
     processingPromises = await handleConcurrentCalls(concurrencyLimit, processRow, rows, setProcessedRows);
   } else {
-    console.warn("No Concurrency Limit found");
+    logger.warn("No Concurrency Limit found", {}, false);
     processingPromises = await Promise.allSettled(rows.map(async (row: any) => {
       return processRow(row, setProcessedRows);
     }));
@@ -331,7 +336,7 @@ export const initiateCalls = async (
     return Promise.allSettled(t.stateUpdateFunctions.map((f: any) => f(state, dispatch, successfulRows, selectedTemplates)));
   }));
 
-  console.log("state update results: ", stateUpdateResults);
+  logger.log("state update results: ", stateUpdateResults);
 
   // looks for any WFM external logon activations that didn't go through and add them to the exported errors file
   stateUpdateResults.forEach((template: any) => {
@@ -383,6 +388,7 @@ export const initiateCalls = async (
  * @param selectedTemplates selected templates to be processed
  */
 export const handleWfmExternalLogon = async (state: AppState, dispatch: any, successfulRows: any, selectedTemplates: any) => {
+  const nNumber = state.userContext.pingIdentity?.sub;
 
   if(selectedTemplates.some((t: Template) => t.name === "CREATE_TRITON_USER")) {
     const wfmNNumbers: any[] = [];
@@ -408,13 +414,24 @@ export const handleWfmExternalLogon = async (state: AppState, dispatch: any, suc
         const results = await wfmActivateExternalLogon({
           workerNNumbers: processingNNumbers
         });
+
+        logger.info("Successfully activated WFM external logon", {
+          nNumber,
+          workerNNumbers: processingNNumbers
+        });
+
         resultsArray.push(results);
-      } catch(err) {
-        console.error(`WFM Activations failed`, err);
+      } catch(error) {
+        logger.info("Failed to activate WFM external logon", {
+          nNumber,
+          workerNNumbers: processingNNumbers,
+          error
+        });
+
         resultsArray.push({
           data: {
             failedActivations: {
-              message: `${err.message || err} ${err.response.data && JSON.stringify(err.response.data)}`,
+              message: `${error.message || error} ${error.response.data && JSON.stringify(error.response.data)}`,
               workersFailedToActivate: processingNNumbers
             }
           }
@@ -462,7 +479,8 @@ export const handleWfmExternalLogon = async (state: AppState, dispatch: any, suc
         workersFailedToReturnToOffline: failedToOffline.flat()
       }
     };
-    console.log("***external logon results: ", wfmExternalLogonResults);
+
+    logger.log("*** External logon results: ", wfmExternalLogonResults);
 
     return wfmExternalLogonResults;
   } else {

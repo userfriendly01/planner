@@ -1,6 +1,9 @@
 import { apiPaths } from "globals";
 import { SearchParams } from "../components/tabs/usermanagement/OnboardNewUser/Extension/ExtensionSearchParams";
-import { myAxios } from "utils";
+import {
+  logger,
+  myAxios
+} from "utils";
 
 export const checkExtension = extension => myAxios.post(apiPaths.CHECK_EXTENSION, { extension })
   .then(res => {
@@ -30,7 +33,7 @@ export const generateExtension = workers => {
     if(validExtension){
       return Promise.resolve(extension);
     } else if(attemptNumber === maxAttempts) {
-      console.log("Extension Max number reached");
+      logger.log("Extension Max number reached");
       return Promise.reject("Unable to generate extension");
     } else {
       return validateGeneratedNumber(attemptNumber + 1 );

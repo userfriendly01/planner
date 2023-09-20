@@ -30,14 +30,13 @@ import {
 import {
   FormControlLabel,
   Switch,
-  Paper,
-  Tooltip
+  Paper
 } from "@mui/material";
 import {
   createSkill
 } from "services";
 import { getSkills } from "authentication";
-
+import { logger } from "utils";
 
 const ModalContainer = styled.div`
   display: flex;
@@ -85,16 +84,12 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
 
   const skFormState: SkillFormState = skillFormState();
   const skFormDispatch = skillFormDispatch();
-  console.log("skill form state", skFormState);
-
   const adminDispatch = useAdminDispatch();
 
-
   const state = useAdminState();
+  const nNumber = state.userContext.pingIdentity?.sub;
   const profiles = state.profileContext.profiles;
   const skills = state.skillContext.skills;
-  const nNumber = state.userContext.pingIdentity.sub;
-
 
   const getDropdownOptions = (list: any[], labelKey: string, valueKey: string) => {
     if (labelKey === "openTime") {
@@ -212,6 +207,12 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
       const response = await createSkill(body);
 
       if (response.status === 200) {
+        logger.info(`Successfully created new skill ${skFormState.skillFriendlyName}`, {
+          nNumber,
+          skillFriendlyName: skFormState.skillFriendlyName,
+          skillNum: skFormState.skillNum
+        });
+
         setSaveResult({
           message: "Request Successfully Processed",
           status: ModalOverlayStatuses.SUCCESS
@@ -228,6 +229,13 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
           });
         }, timeouts.MODAL_OVERLAY);
       } else {
+        logger.warn(`Partially created new skill ${skFormState.skillFriendlyName}`, {
+          nNumber,
+          skillFriendlyName: skFormState.skillFriendlyName,
+          skillNum: skFormState.skillNum,
+          error: response.data.result.message
+        });
+
         // a partial success will return 206
         // meaning either the creation in contactmanager OR the callflow db was sucessful
         setSaveResult({
@@ -240,10 +248,14 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
         await getSkills(adminDispatch);
 
       }
-    } catch (err) {
-      console.error("ERROR WHEN ADDING SKILL", err);
+    } catch (error) {
+      logger.error("Error when adding Skill", {
+        error,
+        nNumber,
+        skill: body
+      });
       setSaveResult({
-        message: `Request Failed: ${err.message}`,
+        message: `Request Failed: ${error.message}`,
         status: ModalOverlayStatuses.FAIL
       });
     }

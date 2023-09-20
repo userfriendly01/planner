@@ -80,7 +80,8 @@ jest.mock("utils", () => ({
   getAzureSPAClientId: jest.fn(),
   myAxios: jest.requireActual("utils").myAxios,
   wait: jest.requireActual("utils").wait,
-  isErrorIn400s: jest.requireActual("utils").isErrorIn400s
+  isErrorIn400s: jest.requireActual("utils").isErrorIn400s,
+  logger: jest.requireActual("utils").logger
 }));
 
 const mockAdminDispatch = jest.fn();
@@ -91,7 +92,7 @@ describe("<App />", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    document.getElementById.mockReturnValue({scrollTo : jest.fn()});
+    document.getElementById.mockReturnValue({ scrollTo: jest.fn() });
     useAdminState.mockReturnValue({});
     useAdminDispatch.mockReturnValue(mockAdminDispatch);
     axiosMock.onGet(authEndpoint).reply(200, auth);

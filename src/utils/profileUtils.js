@@ -5,6 +5,7 @@ import {
   AutoAwesomeMotion
 } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
+import { logger } from "./logger";
 
 export const formatProfileBooleanData = value => {
   if (value === 1) {
@@ -57,7 +58,6 @@ export const formatCallTagsName = name => {
 
 export const formatSelfServiceIndicatorData = profileId => {
   const formattedProfileId = typeof profileId === "string" ? parseInt(profileId) : profileId; // do we need this extra step? 
-  console.log("formattted profile ID", formattedProfileId);
   if(formattedProfileId >= 39){
     return  <Check />;
   }
@@ -164,7 +164,7 @@ export const updateProfilePayload = form => {
       options_id: callTag.options_id
     };
   }) : null;
-  console.log(form.accessGroupIdUpdated,"****form.accessGroupId*****",form.accessGroupId);
+  logger.log(form.accessGroupIdUpdated,"****form.accessGroupId*****",form.accessGroupId);
   form.accessGroupIdUpdated ? payload.access_group_id = form.accessGroupId : null;
   return payload;
 };

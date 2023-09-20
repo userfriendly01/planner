@@ -10,6 +10,7 @@ export * from "./formatWorkerResponse";
 export * from "./formatWorkerAttributeSkills";
 export * from "./isErrorIn400s";
 export * from "./myAxios";
+export * from "./logger";
 export * from "./routingUtils";
 export * from "./skillsUtils";
 export * from "./sortUtils";

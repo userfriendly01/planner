@@ -24,11 +24,13 @@ import {
   expectOnlyPassedProps,
   getLastInstanceCalled,
   getMockedComponentProps,
+  initialTestState,
   render,
   setupMockedComponents,
   waitFor
 } from "testUtils";
 import { myAxios } from "utils";
+import { useAdminState } from "context";
 
 jest.useFakeTimers();
 
@@ -49,6 +51,10 @@ jest.mock("components", () => ({
   PhoneNumberInput: jest.fn(),
   ModalOverlay: jest.fn(),
   StyledButton: jest.fn()
+}));
+
+jest.mock("context", () => ({
+  useAdminState: jest.fn()
 }));
 
 const axiosMock = new MockAdapter(myAxios);
@@ -84,6 +90,7 @@ describe("<DialListEntryForm />", () => {
       TextField,
       Tooltip
     });
+    useAdminState.mockReturnValue(initialTestState);
     PaperContainer.mockImplementation(props => <div>{props.children}</div>);
   });
 

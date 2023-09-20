@@ -1,5 +1,6 @@
 import {
   isNumberValid,
+  logger,
   unMaskPhoneNumber
 } from "utils";
 import { TextField } from "@mui/material";
@@ -21,6 +22,7 @@ import {
   updateDirectory
 } from "services";
 import styled from "styled-components";
+import { useAdminState } from "context";
 
 const FlexRow = styled.div`
   display: flex;
@@ -56,6 +58,9 @@ const DirectoryEntryForm = props => {
     profileId,
     refreshProfileData
   } = props;
+
+  const state = useAdminState();
+  const nNumber = state.userContext.pingIdentity?.sub;
 
   const getInitialFormState = () => {
     const first_nme = directoryState.directoryEntryFormInitialValues.first_nme || "";
@@ -121,9 +126,17 @@ const DirectoryEntryForm = props => {
     });
     insertDirectory(form.first_nme, form.last_nme, form.phone_num, profileId)
       .then(() => {
+        logger.info(`Successfully inserted directory ${directoryState.directoryId}`, {
+          nNumber,
+          directoryId: directoryState.directoryId
+        });
         updateStateFromService(true, true);
       })
       .catch(() => {
+        logger.info(`Failed to insert directory ${directoryState.directoryId}`, {
+          nNumber,
+          directoryId: directoryState.directoryId
+        });
         updateStateFromService(false, true);
       });
   };
@@ -135,9 +148,17 @@ const DirectoryEntryForm = props => {
     });
     updateDirectory(directoryState.directoryId, form.first_nme, form.last_nme, form.phone_num)
       .then(() => {
+        logger.info(`Successfully updated directory ${directoryState.directoryId}`, {
+          nNumber,
+          directoryId: directoryState.directoryId
+        });
         updateStateFromService(true, false);
       })
       .catch(() => {
+        logger.info(`Failed to update directory ${directoryState.directoryId}`, {
+          nNumber,
+          directoryId: directoryState.directoryId
+        });
         updateStateFromService(false, false);
       });
   };
