@@ -26,6 +26,8 @@ export const sortProfilesById = (a: TritonProfile, b: TritonProfile) => sortNumb
 
 export const sortProfilesByName = (a: TritonProfile, b: TritonProfile) => sortStrings(a.profile_nme, b.profile_nme);
 
+export const sortCalabrioObject = (a: any, b: any) => sortStrings(a.name, b.name);
+
 export const sortStrings = (a: string, b: string) => {
   const _a = a.toLowerCase();
   const _b = b.toLowerCase();

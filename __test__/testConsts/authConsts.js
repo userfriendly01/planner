@@ -13,29 +13,29 @@ export const tabs = {
     value: "triton-user-management",
     label: "User Management",
     route: "triton-admin/triton-users",
-      dropdown: [
-        {
-          route: "triton-admin/triton-users",
-          label: "Triton User Management"
-        },
-        {
-          route: "triton-admin/user",
-          label: "Onboard New User"
-        },
-        {
-          route: "triton-admin/bulk",
-          label: "Bulk Changes"
-        }
-      ]
+    dropdown: [
+      {
+        route: "triton-admin/triton-users",
+        label: "Triton User Management"
+      },
+      {
+        route: "triton-admin/user",
+        label: "Onboard New User"
+      },
+      {
+        route: "triton-admin/bulk",
+        label: "Bulk Changes"
+      }
+    ]
   },
-  TRITON_PROFILE_SETTINGS: {
-    value: "triton-profile-settings",
-    label: "Profile Settings",
+  ORG_MANAGEMENT: {
+    value: "org-management",
+    label: "Org Management",
     route: "/triton-admin/profile-settings",
     dropdown: [
       {
         route: "triton-admin/profile-settings",
-        label: "Profile Settings"
+        label: "Triton Profile Settings"
       },
       {
         route: "triton-admin/profile-dial-list",
@@ -44,6 +44,14 @@ export const tabs = {
       {
         route: "triton-admin/profile-directory",
         label: "Profile Directory"
+      },
+      {
+        route: "triton-admin/calabrio-org",
+        label: "Calabrio Organization"
+      },
+      {
+        route: "triton-admin/calabrio-roles",
+        label: "Calabrio Roles"
       }
     ]
   },
@@ -96,7 +104,7 @@ export const authenticationProfileTemplates = {
     profileId: null,
     tabs: [
       tabs.TRITON_USER_MANAGEMENT,
-      tabs.TRITON_PROFILE_SETTINGS,
+      tabs.ORG_MANAGEMENT,
       tabs.TRITON_CALL_FLOW_MANAGEMENT
     ]
   },

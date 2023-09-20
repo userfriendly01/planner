@@ -59,6 +59,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
 
   useEffect(()=>{
     if(action === "add" && uploadedForm.length>0){
+      console.log("uploadedForm: ", uploadedForm);
       updateRoutingRows(uploadedForm);
     }
   }, [uploadedForm]);
@@ -130,8 +131,8 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
     ));
   };
 
-  const handleUploadedFile = (event: any) =>{
-    CsvReader(event, setUploadedForm);
+  const handleUploadedFile = (event: React.ChangeEvent<HTMLInputElement>) =>{
+    CsvReader(event, setUploadedForm, "ROUTING");
   };
 
   const handleOnClose = () =>{
@@ -156,7 +157,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
         }}>
           <StyledButton  onClick={()=>{ createNewRecord(); }}>Add New +</StyledButton>
           <StyledButton sx={{ marginLeft: "10px" }}>
-            <input type="file" onChange={event=>handleUploadedFile(event)} />
+            <input type="file" onChange={(event:React.ChangeEvent<HTMLInputElement>)=>handleUploadedFile(event)} />
           </StyledButton>
         </Box>
           }

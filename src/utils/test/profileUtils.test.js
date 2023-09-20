@@ -19,7 +19,7 @@ import {
 import {
   BubbleDiv,
   HighlightRed
-} from "../../components/tabs/profilesettings/ProfileSettingsTable/ProfileSettingsTable.Styles";
+} from "../../components/tabs/orgmanagement/triton/ProfileSettingsTable/ProfileSettingsTable.Styles";
 
 describe("profileUtils", () => {
   describe("formatProfileBooleanData", () => {
@@ -188,7 +188,7 @@ describe("profileUtils", () => {
           ]
         }
       ];
-      expect(formatAggregateQueues(aggrQueue, BubbleDiv)).toStrictEqual([<BubbleDiv key={"PSU Claims - Level 1"}>{"PSU Claims - Level 1"} <AutoAwesomeMotion fontSize="1 rem"/></BubbleDiv>]);
+      expect(formatAggregateQueues(aggrQueue, BubbleDiv)).toStrictEqual([<BubbleDiv key={"PSU Claims - Level 1"}>{"PSU Claims - Level 1"} <AutoAwesomeMotion fontSize="1 rem" /></BubbleDiv>]);
     });
     test("no queues, test should be empty array", () => {
       const aggrQueue = [];
@@ -300,7 +300,7 @@ describe("profileUtils", () => {
       accessGroupIdUpdated: true
     };
     const expected = {
-      activities: [1,7,12],
+      activities: [1, 7, 12],
       acw_data_entry_i: true,
       acw_option_i: false,
       agent_assisted_pay_i: true,
@@ -474,7 +474,7 @@ describe("profileUtils", () => {
     };
 
     const expected = {
-      activities: [1,7,12],
+      activities: [1, 7, 12],
       acw_data_entry_i: true,
       acw_option_i: false,
       agent_assisted_pay_i: true,

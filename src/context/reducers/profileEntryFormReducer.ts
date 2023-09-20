@@ -1,6 +1,6 @@
 import {
   ProfileEntryFormState
-} from "components/tabs/profilesettings/ProfileEntryForm/ProfileEntryForm.Interfaces";
+} from "components/tabs/orgmanagement/triton/ProfileEntryForm/ProfileEntryForm.Interfaces";
 import {
   Action,
   formModes,
@@ -145,7 +145,7 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         queuesUpdated: true
       };
     }
-    case profileEntryFormActions.SET_OPERATING_UINIT:{
+    case profileEntryFormActions.SET_OPERATING_UINIT: {
       return {
         ...state,
         operatingUnit: action.payload
@@ -158,7 +158,7 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
           value: !state[action.fieldKey].value,
           updated: true
         },
-        accessGroupId: state[action.fieldKey].value?null:state.accessGroupId,
+        accessGroupId: state[action.fieldKey].value ? null : state.accessGroupId,
         accessGroupIdUpdated: true
       };
     }
@@ -172,7 +172,7 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
     case profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE: {
       const profile = action.payload.profile;
 
-      const callTagsList = profile.callTags.map((callTag: { display_nme: string; wrkr_tsk_info_id: number; options_id: number;}) => {
+      const callTagsList = profile.callTags.map((callTag: { display_nme: string; wrkr_tsk_info_id: number; options_id: number; }) => {
         return {
           wrkr_tsk_info_nme: callTag.display_nme,
           wrkr_tsk_info_id: callTag.wrkr_tsk_info_id,
