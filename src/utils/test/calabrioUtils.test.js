@@ -154,8 +154,8 @@ let userResponse;
 describe("calabrioUtils", () => {
   beforeEach(() => {
     jest.resetAllMocks(),
-    jest.clearAllMocks(),
-    Date.now.mockReturnValue("Right Now");
+      jest.clearAllMocks(),
+      Date.now.mockReturnValue("Right Now");
   });
 
   describe("addWorkerToOrg", () => {
@@ -220,10 +220,10 @@ describe("calabrioUtils", () => {
       expect(result).toEqual([{
         Name: "Cool WFM Business Unit",
         Id: "123-321"
-        }, {
-          Name: "Other WFM Business Unit",
-          Id: "999-999"
-        }
+      }, {
+        Name: "Other WFM Business Unit",
+        Id: "999-999"
+      }
       ]);
     });
   });
@@ -359,7 +359,7 @@ describe("calabrioUtils", () => {
   describe("getWfmOptions", () => {
     describe("busniess unit id is passed to function", () => {
       test("returns list of options for the specified Business unit", () => {
-        const result = getWfmOptionsUtil({ calabrioContext },  "123-321");
+        const result = getWfmOptionsUtil({ calabrioContext }, "123-321");
         expect(result).toEqual({
           Id: "123-321",
           Name: "WFM Business Unit1",
@@ -447,7 +447,7 @@ describe("calabrioUtils", () => {
               Id: "111"
             }
           ]
-      })
+        })
       });
       test("returns list of options for all Business units", () => {
         const result = getWfmOptionsUtil({ calabrioContext });
@@ -599,10 +599,10 @@ describe("calabrioUtils", () => {
   describe("formatCalabrioTenant", () => {
     test("Calabrio payload is filtered as expected", () => {
       const expectedResult =
-        {
-          name: "Tenant",
-          groupLevel: "TENANT"
-        };
+      {
+        name: "Tenant",
+        groupLevel: "TENANT"
+      };
       const result = formatCalabrioTenant(orgPayload);
       expect(result).toStrictEqual(expectedResult);
     });
@@ -624,8 +624,8 @@ describe("calabrioUtils", () => {
     ];
     test("Calabrio payload is filtered as expected", () => {
       const expectedResult = [
-        { name: "I'm a Role!" },
-        { name: "I'm another Role!" }
+        { name: "I'm a Role!", permissions: [{ name: "I'm a permission!" }] },
+        { name: "I'm another Role!", permissions: [{ name: "I'm another permission!" }] }
       ];
       const result = formatCalabrioRoles(roles);
       expect(result).toStrictEqual(expectedResult);
@@ -1063,9 +1063,9 @@ describe("calabrioUtils", () => {
         email: "Roy.Anderson@libertymutual.com"
       },
       {
-      acdId: "WK123456",
-      adLogin: "Lm\\n3582215",
-      email: "Roy.Anderson@libertymutual.com"
+        acdId: "WK123456",
+        adLogin: "Lm\\n3582215",
+        email: "Roy.Anderson@libertymutual.com"
       }
     ]
     describe("Error is thrown", () => {
@@ -1172,8 +1172,8 @@ describe("calabrioUtils", () => {
   });
   describe("getCalabrioWfmOptions", () => {
     test("getWFMOptions succeeds, decompress succeeds, dispatches and returns true", async () => {
-      const data = Buffer.from(JSON.stringify({ businessUnits: [ { Id: "123" }, { Id: "456" }]}));
-      getWfmOptions.mockResolvedValueOnce({ data: { organization: "eJyrVkoqLc7MSy0uDs3LLClWsoquVvJMUbJSMjQyVqrVgXJMTM2UamNrAVp8Dd0=" }});
+      const data = Buffer.from(JSON.stringify({ businessUnits: [{ Id: "123" }, { Id: "456" }] }));
+      getWfmOptions.mockResolvedValueOnce({ data: { organization: "eJyrVkoqLc7MSy0uDs3LLClWsoquVvJMUbJSMjQyVqrVgXJMTM2UamNrAVp8Dd0=" } });
 
       zlib.inflate.mockImplementationOnce((buffer, callback) => {
         callback(null, data);
@@ -1188,7 +1188,7 @@ describe("calabrioUtils", () => {
       expect(result).toBe(true);
     });
     test("getWFMOptions succeeds, decompress has an error, does not dispatch, returns false", async () => {
-      getWfmOptions.mockResolvedValueOnce({ data: { organization: "eJyrVkoqLc7MSy0uDs3LLClWsoquVvJMUbJSMjQyVqrVgXJMTM2UamNrAVp8Dd0=" }});
+      getWfmOptions.mockResolvedValueOnce({ data: { organization: "eJyrVkoqLc7MSy0uDs3LLClWsoquVvJMUbJSMjQyVqrVgXJMTM2UamNrAVp8Dd0=" } });
       zlib.inflate.mockImplementationOnce(() => {
         throw new Error("boo");
       });
@@ -1225,7 +1225,7 @@ describe("calabrioUtils", () => {
         }]
       }
       getWfmOrg.mockResolvedValueOnce({
-        data: newBU, 
+        data: newBU,
         errors: []
       });
 
@@ -1245,8 +1245,8 @@ describe("calabrioUtils", () => {
       expect(mockDispatch).toHaveBeenCalledTimes(1);
       expect(mockDispatch).toHaveBeenLastCalledWith({
         type: "updateWfmOrg",
-        payload: { 
-          org: [ ...initialTestState.calabrioContext.wfmOrg, newBU ],
+        payload: {
+          org: [...initialTestState.calabrioContext.wfmOrg, newBU],
           errors: []
         }
       });
@@ -1254,7 +1254,7 @@ describe("calabrioUtils", () => {
         ...initialTestState,
         calabrioContext: {
           ...initialTestState.calabrioContext,
-          wfmOrg: [ ...initialTestState.calabrioContext.wfmOrg, newBU ]
+          wfmOrg: [...initialTestState.calabrioContext.wfmOrg, newBU]
         }
       });
     });
@@ -1267,10 +1267,10 @@ describe("calabrioUtils", () => {
       });
       try {
         await getCalabrioWfmOrg("", initialTestState, mockDispatch);
-      } catch(err) {
+      } catch (err) {
         expect(getWfmOrg).toHaveBeenCalledTimes(1);
         expect(mockDispatch).toHaveBeenCalledTimes(0);
-        expect(err).toStrictEqual({response: {"data": "boo", "status": 500}});
+        expect(err).toStrictEqual({ response: { "data": "boo", "status": 500 } });
       }
     });
   });

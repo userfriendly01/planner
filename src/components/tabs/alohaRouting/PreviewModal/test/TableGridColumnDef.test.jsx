@@ -9,12 +9,12 @@ describe("<TableColumnDef />", () => {
 
   describe("valueGetter", ()=>{
     it("startTime", () => {
-      expect(TableGridColumnDef[12].valueGetter({ row: { startTime: "11:25:00 AM" }})).toBe("11:25 AM");
+      expect(TableGridColumnDef[12].valueGetter({ row: { startTime: "11:25:00 AM" }})).toBe("11:25:00 AM");
       expect(TableGridColumnDef[12].valueGetter({ row: { startTime: "2023-11-20" }})).toBe("");
     });
 
     it("endTime", () => {
-      expect(TableGridColumnDef[13].valueGetter({ row: { endTime: "12:55:00 PM" }})).toBe("12:55 PM");
+      expect(TableGridColumnDef[13].valueGetter({ row: { endTime: "12:55:00 PM" }})).toBe("12:55:00 PM");
       expect(TableGridColumnDef[13].valueGetter({ row: { endTime: "2023-11-20" }})).toBe("");
     });
 
