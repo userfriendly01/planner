@@ -174,6 +174,13 @@ describe("<TableGridColumnDef />", () => {
       }).content.callIntent).toBe("TEST_CI");
       expect(TableGridColumnDef[29].valueSetter({ row: {}}).content.callIntent).toBe(undefined);
     });
+    it("officeNumbers", ()=>{
+      expect(TableGridColumnDef[30].valueSetter({
+        row: { ...validFlowData },
+        value: ["9999"]
+      }).content.officeNumbers).toEqual(["9999"]);
+      expect(TableGridColumnDef[30].valueSetter({ row: {}}).content.officeNumbers).toEqual([]);
+    });
   });
 
 });

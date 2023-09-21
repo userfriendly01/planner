@@ -7,7 +7,9 @@ import {
 import {
   DataGrid, GridColDef, useGridApiRef
 } from "@mui/x-data-grid";
-import { StyledButton } from "components";
+import {
+  StyledButton
+} from "components";
 import {
   CctSharedCallFlowDb
 } from "../AlohaFlow.Interfaces";
@@ -17,11 +19,11 @@ import {
   Box
 } from "@mui/material";
 import { reconstructTableColumnDef } from "./PreviewUtil";
-
+import { CsvReader } from "components";
 interface PreviewModalProps {
     isOpen: boolean;
     rows: Array<CctSharedCallFlowDb>;
-    action: "delete" | "add" | "edit"
+    action: "delete" | "add" | "edit" ;
     maxId?: number;
     onClose: () => void;
     onDelete?: (rows: Array<CctSharedCallFlowDb>) => void;
@@ -36,13 +38,23 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
 
   const apiRef = useGridApiRef();
   const [flowRows, setFlowRows] = useState<CctSharedCallFlowDb[]>([]);
-
+  const [ uploadedForm, setUploadedForm ] = React.useState([]);
   const tableGridColumnDef: Array<GridColDef> = useMemo<Array<GridColDef>>(()=>{
-    return reconstructTableColumnDef(action, [...TableGridColumnDef]); },[action]);
+    return reconstructTableColumnDef(action, [...TableGridColumnDef], apiRef); },[action]);
 
   useEffect(()=>{
     setFlowRows(rows);
   }, [rows]);
+
+  useEffect(()=>{
+    if(uploadedForm.length>0){
+      const modifiedRow = uploadedForm.map((row:any, index:  number)=>({
+        ...row,
+        id: maxId+ index+ 1
+      }));
+      setFlowRows(modifiedRow);
+    }
+  }, [uploadedForm]);
 
   const getUpdatedFlowDb = () =>{
     const newRows: Array<CctSharedCallFlowDb>=[...flowRows].map((row: CctSharedCallFlowDb)=>{
@@ -117,6 +129,14 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
     ));
   };
 
+  const handleOnChange=(event:any)=>{
+    CsvReader(event, setUploadedForm, "FLOW");
+  };
+
+  const handleOnClose =()=>{
+    setFlowRows([]);
+    onClose();
+  };
 
   return (
     <Modal
@@ -133,6 +153,17 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
             marginBottom: "10px"
           }} onClick={()=>{ createNewRecord(); }}>Add New +</StyledButton>
         }
+        {action === "add" &&
+          <StyledButton sx={{
+            marginRight: "10px",
+            marginBottom: "10px"
+          }}>
+            <input
+              type="file"
+              accept=".csv"
+              onChange={handleOnChange}
+            /> </StyledButton>
+        }
         <DataGrid
           apiRef={apiRef}
           rows={flowRows}
@@ -145,6 +176,9 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
             },
             "& .MuiDataGrid-columnHeaders": {
               backgroundColor: "rgb(255,226,128)"
+            },
+            "& .MuiDataGrid-Custom-Cell-Format": {
+              backgroundColor: "#ff6060"
             }
           }}
         />
@@ -163,7 +197,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
           {action === "edit" &&
           <StyledButton sx={{ marginRight: "15px" }} onClick={()=>{ handleOnUpdate(); }}>Update</StyledButton>
           }
-          <StyledButton onClick={()=>{ onClose(); }}>Cancel</StyledButton>
+          <StyledButton onClick={()=>{ handleOnClose(); }}>Cancel</StyledButton>
         </Box>
       </ModalFooter>
     </Modal>
