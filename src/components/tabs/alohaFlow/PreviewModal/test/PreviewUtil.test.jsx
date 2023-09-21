@@ -1,12 +1,10 @@
-import { CctSharedCallFlowDb } from "../..";
 import { TableGridColumnDef } from "../TableColumnDef";
 import {
   reconstructTableColumnDef
 } from "../PreviewUtil";
-import { PreviewModalAction } from "../../AlohaFlow.Interfaces";
 import { FLOW_MASTER_DATA } from "utils";
 
-export const createFlowDataItem = (num: number): CctSharedCallFlowDb => {
+export const createFlowDataItem = num => {
   return {
     id: num,
     pkey: `+18005551212x${num}`,
@@ -28,8 +26,8 @@ export const createFlowDataItem = (num: number): CctSharedCallFlowDb => {
   };
 };
 
-export const createFlowDataList = (numberOfData: number): Array<CctSharedCallFlowDb> =>{
-  const dataList: Array<CctSharedCallFlowDb> = [];
+export const createFlowDataList = numberOfData =>{
+  const dataList = [];
   for (let num=1; num<=numberOfData; num++) {
     dataList.push(createFlowDataItem(num));
   }
@@ -48,25 +46,27 @@ export const flowDropDownData = {
 
 localStorage.setItem(FLOW_MASTER_DATA, JSON.stringify(flowDropDownData));
 
+const apiRef = jest.fn();
+
 describe("PreviewUtils", () => {
   describe("reconstructTableColumnDef", () => {
     describe("edit", () => {
-      const action:  PreviewModalAction = "edit";
-      const reconstructed = reconstructTableColumnDef(action, [...TableGridColumnDef]);
+      const action = "edit";
+      const reconstructed = reconstructTableColumnDef(action, [...TableGridColumnDef], apiRef);
       it("should be editable", () => {
         expect(reconstructed[0].editable).toEqual(true);
       });
     });
     describe("add", () => {
-      const action:  PreviewModalAction = "add";
-      const reconstructed = reconstructTableColumnDef(action, [...TableGridColumnDef]);
+      const action = "add";
+      const reconstructed = reconstructTableColumnDef(action, [...TableGridColumnDef],apiRef);
       it("should be editable", () => {
         expect(reconstructed[0].editable).toEqual(true);
       });
     });
     describe("delete", () => {
-      const action:  PreviewModalAction = "delete";
-      const reconstructed = reconstructTableColumnDef(action, [...TableGridColumnDef]);
+      const action = "delete";
+      const reconstructed = reconstructTableColumnDef(action, [...TableGridColumnDef],apiRef);
       it("should be editable", () => {
         expect(reconstructed[0].editable).toBeFalsy();
       });

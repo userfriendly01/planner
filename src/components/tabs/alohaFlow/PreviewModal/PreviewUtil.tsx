@@ -12,23 +12,25 @@ import {
 } from "utils";
 
 import { flowFields } from "../CustomActions/FlowFieldsConfig";
+import { ComponentControl } from "components";
+import { GridApiCommunity } from "@mui/x-data-grid/internals";
 
 
 const mandatoryField = flowFields.filter(x => x.required).map(x => {
   return x.key;
 });
 
-const reconstructTableColumnDef = (action: PreviewModalAction, columnDef: Array<GridColDef>): Array<GridColDef> =>{
+const reconstructTableColumnDef = (action: PreviewModalAction, columnDef: Array<GridColDef>,apiRef: React.MutableRefObject<GridApiCommunity>): Array<GridColDef> =>{
   if(action==="edit" || action === "add")
   {
-    return manageEditColumnDef(columnDef);
+    return manageEditColumnDef(columnDef,apiRef);
   }
   else{
     return columnDef;
   }
 };
 
-const manageEditColumnDef = (columnDef: Array<GridColDef>): Array<GridColDef> =>{
+const manageEditColumnDef = (columnDef: Array<GridColDef>, apiRef: React.MutableRefObject<GridApiCommunity>): Array<GridColDef> =>{
   const flowDropDownList:FlowDropDownList = fetchData();
   const updatedColDef: Array<GridColDef> = columnDef.map((item:GridColDef)=>{
     if(Object.keys(flowDropDownList).includes(item.field)){
@@ -44,6 +46,29 @@ const manageEditColumnDef = (columnDef: Array<GridColDef>): Array<GridColDef> =>
           }
           return "";
         }
+      };
+    }
+    if(item.field === "officeNumbers"){
+      return {
+        ...item,
+        editable: true,
+        renderEditCell: params =>
+          <ComponentControl
+            control="multiTextField"
+            label=""
+            name={item.field}
+            error={false}
+            required={false}
+            type="text"
+            value={params.value}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              apiRef.current.setEditCellValue({
+                id: params.row.id,
+                field: item.field,
+                value: event.target.value
+              });
+            }}
+          />
       };
     }
     return {

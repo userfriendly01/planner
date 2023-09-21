@@ -152,4 +152,11 @@ describe("<PreviewModal />", () => {
     const calls2 = StyledButton.mock.calls;
     expect(calls2.length).toBe(12);
   });
+  // test("Upload CSV File", () => {
+  //   renderComponent("add", onDeleteMock);
+  //   const onChange = StyledButton.mock.calls[5][0].children[0].props.onChange;
+  //   act(() => onChange());
+  //   const calls2 = StyledButton.mock.calls;
+  //   expect(calls2.length).toBe(12);
+  // });
 });

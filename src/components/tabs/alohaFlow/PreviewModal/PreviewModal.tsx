@@ -8,7 +8,7 @@ import {
   DataGrid, GridColDef, useGridApiRef
 } from "@mui/x-data-grid";
 import {
-  CctSharedCallRoutingDb, StyledButton
+  StyledButton
 } from "components";
 import {
   CctSharedCallFlowDb
@@ -40,7 +40,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   const [flowRows, setFlowRows] = useState<CctSharedCallFlowDb[]>([]);
   const [ uploadedForm, setUploadedForm ] = React.useState([]);
   const tableGridColumnDef: Array<GridColDef> = useMemo<Array<GridColDef>>(()=>{
-    return reconstructTableColumnDef(action, [...TableGridColumnDef]); },[action]);
+    return reconstructTableColumnDef(action, [...TableGridColumnDef], apiRef); },[action]);
 
   useEffect(()=>{
     setFlowRows(rows);
@@ -50,7 +50,6 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
     if(uploadedForm.length>0){
       const modifiedRow = uploadedForm.map((row:any, index:  number)=>({
         ...row,
-        pkey: row?.dialedPhoneNumber,
         id: maxId+ index+ 1
       }));
       setFlowRows(modifiedRow);
@@ -131,7 +130,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   };
 
   const handleOnChange=(event:any)=>{
-    CsvReader(event, setUploadedForm);
+    CsvReader(event, setUploadedForm, "FLOW");
   };
 
   const handleOnClose =()=>{

@@ -321,6 +321,13 @@ export const TableGridColumnDef: GridColDef[] = [
     width: 220,
     align: "left",
     valueGetter: params => params.row.content?.officeNumbers || [],
+    valueSetter: params => ({
+      ...params.row,
+      content: {
+        ...params.row.content || {},
+        officeNumbers: params.value || []
+      }
+    }),
     renderCell: (params: any) =>(
       <div>
         {

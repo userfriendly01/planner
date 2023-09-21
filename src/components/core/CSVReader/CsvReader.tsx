@@ -7,18 +7,22 @@ import { AddFlowFieldsConfigProps } from "components";
 export type CSVFileType = "FLOW" | "ROUTING";
 
 const mapValuesToObj=(jsonValues:any, type?:CSVFileType):any=>{
-  console.log("jsonValues:", jsonValues);
   if(type ==="FLOW"){
     let jsonFlowObj:any={
       content: {}
     };
     flowFields.map((value:AddFlowFieldsConfigProps)=>{
-      let key = value.key;
+      const key = value.key;
+      let jsonValue = jsonValues[key];
       if(key === "pkey")
       {
-        key = "dialedPhoneNumber";
+        jsonValue = jsonValues["dialedPhoneNumber"];
       }
-      jsonFlowObj=value.valueSetter(jsonFlowObj,{ [key]: jsonValues[key] });
+      else if(key === "officeNumbers") {
+        jsonValue = jsonValues[key]? jsonValues[key].split(",") : [];
+
+      }
+      jsonFlowObj=value.valueSetter(jsonFlowObj,{ [key]: jsonValue });
     });
     return jsonFlowObj;
   }
@@ -34,7 +38,6 @@ const mapValuesToObj=(jsonValues:any, type?:CSVFileType):any=>{
       }
       else{
         const routeValue=jsonValues[value.key]||"";
-        console.log("routeValue: ", routeValue);
         jsonRouteObj = {
           ...jsonRouteObj,
           [value.key]: routeValue
@@ -60,11 +63,9 @@ export const CsvReader = (e: React.ChangeEvent<HTMLInputElement>, setUploadedFor
       console.warn(json);
       const rowNum = "__rowNum__";
       const headerRows = 1;
-      console.log("typeof json: ", typeof json);
       if(typeof json ==="object"){
         setUploadedForm(json.map((r:any) => {
           const jsonMap = mapValuesToObj(r,flowType);
-          console.log("jsonMap: ", jsonMap);
           return {
             ...jsonMap,
             rowNumber: jsonMap[rowNum] + headerRows
