@@ -12,7 +12,7 @@ import React, {
   useEffect, useState
 } from "react";
 import {
-  queryFlowData, retrieveFlowData, flowBatchDelete, batchFlowUpdate, batchDeleteItems
+  queryFlowData, retrieveFlowData,batchFlowUpdate, batchDeleteItems, batchFlowCreate
 } from "services";
 import {
   CACHE_FILTER_FLOW,
@@ -333,8 +333,34 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     setSelectedList(selectedRowsData);
   };
 
-  const handleOnBulkCreate = (rows: Array<CctSharedCallFlowDb> ) =>{
-    console.log("Bulk Create: ", rows);
+  const handleOnBulkCreate = async(rows: Array<CctSharedCallFlowDb> ) =>{
+    const response = await batchFlowCreate(rows, accessToken, graphQLEndpoint);
+    if(!response || response.errors) {
+      setAlertBar((alertBarProps: AlertBarProps) => ({
+        ...alertBarProps,
+        open: true,
+        msg: "Error while creating the records.",
+        severityType: "error"
+      }));
+      throw new Error("Error while creating the records.");
+    } else {
+      setAlertBar((alertBarProps: AlertBarProps) => ({
+        ...alertBarProps,
+        open: true,
+        msg: "Flow Rules have been successfully created.",
+        severityType: "success"
+      }));
+    }
+
+    const filteredItems = [...dataFlow.filteredItems, ...rows];
+    const filteredData = [...dataFlow.data, ...rows];
+    setSelectedList([]);
+    setDataFlow({
+      ...dataFlow,
+      ...filteredItems && { filteredItems },
+      data: filteredData,
+      isPreviewModalOpen: false
+    });
   };
 
   const handleOnBulkUpdate = async(rows: Array<CctSharedCallFlowDb> ) =>{
@@ -394,7 +420,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         msg: "Error deleting records.",
         severityType: "error"
       }));
-      throw new Error("Error deleting records.");
+      throw new Error("Error while deleting records.");
     } else {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
@@ -495,6 +521,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         rows={selectedList}
         onClose={handlePreviewModalOnClose}
         action={dataFlow.previewModalAction}
+        maxId={dataFlow.maxId}
         onCreate={handleOnBulkCreate}
         onUpdate={handleOnBulkUpdate}
         onDelete={handleOnBulkDelete}

@@ -1,7 +1,9 @@
 import {
   DataGrid, GridColDef, useGridApiRef
 } from "@mui/x-data-grid";
-import React, { useMemo } from "react";
+import React, {
+  useMemo, useState, useEffect
+} from "react";
 import {
   Modal,
   ModalHeader,
@@ -9,7 +11,7 @@ import {
   ModalFooter
 } from "@lmig/lmds-react-modal";
 import {
-  StyledButton
+  StyledButton, CsvReader
 } from "components";
 import { Box } from "@mui/material";
 import { CctSharedCallRoutingDb } from "../AlohaRouting.Interfaces";
@@ -26,6 +28,7 @@ interface PreviewModalProps {
   onDelete?: (rows: Array<CctSharedCallRoutingDb>) => void;
   onUpdate?: (rows: Array<CctSharedCallRoutingDb>) => void;
   rows: Array<CctSharedCallRoutingDb>;
+  maxId?: number;
 }
 
 const PreviewModal = (props: PreviewModalProps): JSX.Element => {
@@ -36,14 +39,41 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
     onCreate,
     onDelete,
     onUpdate,
-    rows
+    rows,
+    maxId
   } = props;
   const apiRef = useGridApiRef();
+  const [routingRows, setRoutingRows] = useState<CctSharedCallRoutingDb[]>([]);
+  const [uploadedForm , setUploadedForm] = useState([]);
   const tableGridColumnDef: Array<GridColDef> = useMemo<Array<GridColDef>>(()=>{
     return reconstructTableColumnDef(action, [...TableGridColumnDef], apiRef); },[action]);
 
+  useEffect(()=>{
+    if(action === "add"){
+      updateRoutingRows(rows);
+    }
+    else{
+      setRoutingRows(rows);
+    }
+  }, [rows]);
+
+  useEffect(()=>{
+    if(action === "add" && uploadedForm.length>0){
+      console.log("uploadedForm: ", uploadedForm);
+      updateRoutingRows(uploadedForm);
+    }
+  }, [uploadedForm]);
+
+  const updateRoutingRows = (rows: Array<any>) =>{
+    const modifiedRow = rows.map((row: CctSharedCallRoutingDb, index:  number)=>({
+      ...row,
+      id: maxId+ index+ 1
+    }));
+    setRoutingRows(modifiedRow);
+  };
+
   const getUpdatedRoutingDb = () =>{
-    const newRows: Array<CctSharedCallRoutingDb>=[...rows].map((row: CctSharedCallRoutingDb)=>{
+    const newRows: Array<CctSharedCallRoutingDb>=[...routingRows].map((row: CctSharedCallRoutingDb)=>{
       const updated: CctSharedCallRoutingDb = {} as unknown as CctSharedCallRoutingDb;
       Object.keys(row).forEach((key: string)=>{
         updated[key as keyof CctSharedCallRoutingDb] = apiRef.current.getCellValue(row.id, key);
@@ -64,26 +94,76 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   };
   const handleOnDelete = async () => {
     try {
-      await onDelete(rows);
+      await onDelete(routingRows);
       onClose();
     } catch(e) {
       console.error(e.message);
     }
   };
 
+  const createNewRecord = () =>{
+    setRoutingRows((previousRows: CctSharedCallRoutingDb[])=>(
+      [
+        ...previousRows,
+        {
+          id: previousRows.length>0? previousRows[previousRows.length -1 ].id +1 : maxId+1,
+          all: "",
+          brand: "",
+          callIntent: "",
+          callerState: "",
+          callerType: "",
+          channel: "",
+          dayOfWeek: "",
+          endTime: "",
+          percentOfCallers: "",
+          policyType: "",
+          startTime: "",
+          transferDestination: "",
+          transferMessage: "",
+          twilioSkill: "",
+          crcSkill: "",
+          priority: "",
+          occupancyCheck: [],
+          routingSteps: [],
+          alternateTransferDestination: ""
+        }
+      ]
+    ));
+  };
+
+  const handleUploadedFile = (event: React.ChangeEvent<HTMLInputElement>) =>{
+    CsvReader(event, setUploadedForm, "ROUTING");
+  };
+
+  const handleOnClose = () =>{
+    setRoutingRows([]);
+    onClose();
+  };
+
   return (
     <div>
       <Modal
         isOpen={isOpen}
-        takeover={["base", "sm", "md", "lg"]}
+        takeover={["base", "sm", "md", "lg", "xl"]}
         onClose={()=>{ onClose(); }}
         size="large"
       >
-        <ModalHeader>{action?.toUpperCase()} Routing - {rows.length} rows selected</ModalHeader>
+        <ModalHeader>{action?.toUpperCase()} Routing - {routingRows.length} rows selected</ModalHeader>
         <ModalBody className="preview-grid-modal">
+          {action === "add" &&
+        <Box sx={{
+          marginRight: "10px",
+          marginBottom: "10px"
+        }}>
+          <StyledButton  onClick={()=>{ createNewRecord(); }}>Add New +</StyledButton>
+          <StyledButton sx={{ marginLeft: "10px" }}>
+            <input type="file" onChange={(event:React.ChangeEvent<HTMLInputElement>)=>handleUploadedFile(event)} />
+          </StyledButton>
+        </Box>
+          }
           <DataGrid
             apiRef={apiRef}
-            rows={rows}
+            rows={routingRows}
             getRowId={(row: CctSharedCallRoutingDb)=>row.id}
             columns={tableGridColumnDef}
             editMode="row"
@@ -94,6 +174,9 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
               },
               "& .MuiDataGrid-columnHeaders": {
                 backgroundColor: "rgb(255,226,128)"
+              },
+              "& .MuiDataGrid-Custom-Cell-Format": {
+                backgroundColor: "#ff6060"
               }
             }}
           />
@@ -112,7 +195,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
             {action === "edit" &&
             <StyledButton sx={{ marginRight: "15px" }} onClick={()=>{ handleOnUpdate(); }}>Update</StyledButton>
             }
-            <StyledButton onClick={()=>{ onClose(); }}>Cancel</StyledButton>
+            <StyledButton onClick={()=>{ handleOnClose(); }}>Cancel</StyledButton>
           </Box>
         </ModalFooter>
       </Modal>
