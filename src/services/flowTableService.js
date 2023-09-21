@@ -405,17 +405,19 @@ async function batchDeleteItems(items,accessToken,graphQlApiUrl){
   while (items.length > 0){
     flowDeleteArray.push(items.splice(0, size));
   }
-  for(let i=0; i<flowDeleteArray.length; i++){
-    response=await flowBatchDelete(flowDeleteArray[i],accessToken,graphQlApiUrl);
+  try{
+    for(let i=0; i<flowDeleteArray.length; i++){
+      response=await flowBatchDelete(flowDeleteArray[i],accessToken,graphQlApiUrl);
+    }
+  }catch(error){
+    console.error("error while deleting the records", error);
   }
   return response;
 }
 
-async function flowBatchDelete(items, accessToken, graphQlApiUrl) {
-  let response;
-  try {
-    const body = JSON.stringify({
-      query: `
+async function flowBatchDelete(items, accessToken, graphQlApiUrl){
+  const body = JSON.stringify({
+    query: `
         mutation DeleteManyFlow {
           batchDeleteCctSharedCallFlowDb(input: {
             pkey: ${JSON.stringify(items)}
@@ -426,23 +428,20 @@ async function flowBatchDelete(items, accessToken, graphQlApiUrl) {
           }
         }
     `,
-      variables: {
-      }
-    }).replace(/\\"pkey\\":/g, "pkey:");
+    variables: {
+    }
+  }).replace(/\\"pkey\\":/g, "pkey:");
 
-    const fetchResponse = await fetch(graphQlApiUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: accessToken
-      },
-      body
-    });
-    response = await fetchResponse.json();
-    console.log("Batch Delete Flow Rule Response:", response);
-  } catch (error) {
-    console.error("Error in Flow Batch Delete", error);
-  }
+  const fetchResponse = await fetch(graphQlApiUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: accessToken
+    },
+    body
+  });
+  const response = await fetchResponse.json();
+  console.log("Batch Delete Flow Rule Response:", response);
   return response;
 }
 
