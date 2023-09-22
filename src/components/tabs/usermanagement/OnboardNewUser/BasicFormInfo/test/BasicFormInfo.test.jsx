@@ -392,17 +392,9 @@ describe("<BasicFormInfo />", () => {
         allowSevenDigitVdn: false,
         showError: initialFormState.triton.outgoing.blurred,
         number: "",
-        label: "Outgoing Number *"
+        label: "Outbound Caller ID *"
       };
       expectOnlyPassedProps(PhoneNumberInput, expectedOutgoingProps, 0);
-    });
-    test("disabled property should be true", () => {
-      useFormState.mockReturnValue({
-        ...initialFormState,
-        formMode: formModes.DELETE,
-      });
-      renderComponent(false);
-      expect(PhoneNumberInput.mock.calls[0][0].disabled).toBe(true);
     });
     test("onBlur - invalid number should set blur on field", () => {
       renderComponent(false);
@@ -450,6 +442,25 @@ describe("<BasicFormInfo />", () => {
           isValid: true,
           e164Number: "+16038518200"
         }
+      });
+    });
+
+    describe("disabled property should be true", () => {
+      test("formMode is DELETE", () => {
+        useFormState.mockReturnValue({
+          ...initialFormState,
+          formMode: formModes.DELETE
+        });
+        renderComponent(false);
+        expect(PhoneNumberInput.mock.calls[0][0].disabled).toBe(true);
+      });
+      test("editDisabled is true", () => {
+        useFormState.mockReturnValue({
+          ...initialFormState,
+          editDisabled: true
+        });
+        renderComponent(false);
+        expect(PhoneNumberInput.mock.calls[0][0].disabled).toBe(true);
       });
     });
   });

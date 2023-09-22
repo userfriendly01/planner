@@ -56,15 +56,18 @@ const DidFormInfo = (props: DidFormInfoProps) => {
               e164Number
             }
           });
-          setForm({
-            type: userFormActions.UPDATE_PHONE_NUMBER,
-            payload: {
-              field: "outgoing",
-              maskedValue,
-              isValid,
-              e164Number
-            }
-          });
+
+          if(isValid && !form.triton.outgoing.value) {
+            setForm({
+              type: userFormActions.UPDATE_PHONE_NUMBER,
+              payload: {
+                field: "outgoing",
+                maskedValue,
+                isValid,
+                e164Number
+              }
+            });
+          }
         }}
       />
       {form.formMode === formModes.UPDATE && form.triton.directDialNum.updated && (

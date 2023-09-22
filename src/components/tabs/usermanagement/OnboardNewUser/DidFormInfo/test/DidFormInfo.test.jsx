@@ -186,32 +186,87 @@ describe("<DidFormInfo />", () => {
       });
       expect(mockSetForm).toBeCalledTimes(0);
     });
-    test("updateValue - should set internal routing number to correct value", () => {
-      renderComponent();
-      act(() => {
-        const updateValue = PhoneNumberInput.mock.calls[0][0].updateValue;
-        updateValue("(603) 851-8200", null, true, "+16038518200");
+
+    describe("updateValue", () => {
+      test("should set directDialNum number and outgoing to correct value when outgoing is unset", () => {
+        renderComponent();
+        act(() => {
+          const updateValue = PhoneNumberInput.mock.calls[0][0].updateValue;
+          updateValue("(603) 851-8200", null, true, "+16038518200");
+        });
+        expect(mockSetForm).toBeCalledTimes(2);
+        expect(mockSetForm.mock.calls[0][0]).toEqual({
+          type: userFormActions.UPDATE_PHONE_NUMBER,
+          payload: {
+            field: "directDialNum",
+            maskedValue: "(603) 851-8200",
+            isValid: true,
+            e164Number: "+16038518200"
+          }
+        });
+        expect(mockSetForm.mock.calls[1][0]).toEqual({
+          type: userFormActions.UPDATE_PHONE_NUMBER,
+          payload: {
+            field: "outgoing",
+            maskedValue: "(603) 851-8200",
+            isValid: true,
+            e164Number: "+16038518200"
+          }
+        });
       });
-      expect(mockSetForm).toBeCalledTimes(2);
-      expect(mockSetForm.mock.calls[0][0]).toEqual({
-        type: userFormActions.UPDATE_PHONE_NUMBER,
-        payload: {
-          field: "directDialNum",
-          maskedValue: "(603) 851-8200",
-          isValid: true,
-          e164Number: "+16038518200"
-        }
+
+      test("should set directDialNum number and not outgoing to correct value when outgoing is set", () => {
+        useFormState.mockReturnValue({
+          ...initialFormState,
+          triton: {
+            ...initialFormState.triton,
+            outgoing: {
+              blurred: true,
+              e164: "+16038518201",
+              updated: true,
+              valid: true,
+              value: "(603) 851-8201"
+            },
+            didUser: true
+          }
+        });
+
+        renderComponent();
+        act(() => {
+          const updateValue = PhoneNumberInput.mock.calls[0][0].updateValue;
+          updateValue("(603) 851-8200", null, true, "+16038518200");
+        });
+        expect(mockSetForm).toBeCalledTimes(1);
+        expect(mockSetForm.mock.calls[0][0]).toEqual({
+          type: userFormActions.UPDATE_PHONE_NUMBER,
+          payload: {
+            field: "directDialNum",
+            maskedValue: "(603) 851-8200",
+            isValid: true,
+            e164Number: "+16038518200"
+          }
+        });
       });
-      expect(mockSetForm.mock.calls[1][0]).toEqual({
-        type: userFormActions.UPDATE_PHONE_NUMBER,
-        payload: {
-          field: "outgoing",
-          maskedValue: "(603) 851-8200",
-          isValid: true,
-          e164Number: "+16038518200"
-        }
+
+      test("should not set outgoing number if input is invalid", () => {
+        renderComponent();
+        act(() => {
+          const updateValue = PhoneNumberInput.mock.calls[0][0].updateValue;
+          updateValue("(603) 851-82", null, false, "+160385182");
+        });
+        expect(mockSetForm).toBeCalledTimes(1);
+        expect(mockSetForm.mock.calls[0][0]).toEqual({
+          type: userFormActions.UPDATE_PHONE_NUMBER,
+          payload: {
+            field: "directDialNum",
+            maskedValue: "(603) 851-82",
+            isValid: false,
+            e164Number: "+160385182"
+          }
+        });
       });
     });
+
     describe(`directDialNum updated && form.formMode === ${formModes.UPDATE}`, () => {
       beforeEach(() => {
         useFormState.mockReturnValue({
