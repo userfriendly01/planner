@@ -42,7 +42,8 @@ import {
   initializedAlertBar,
   languageOffer,
   userDestination,
-  flowType
+  flowType,
+  checkGreetingMessageRegExp
 } from "utils";
 import { getGridMasterData } from "../../DataGridFlow/GridMaster";
 import {
@@ -140,6 +141,9 @@ export const AddFlow = ({
   }
 
   const isInvalidField =(key: string, value: string): boolean =>{
+    if(key === "greetingMessages"){
+      return checkGreetingMessageRegExp(value);
+    }
     return flowRule[key].required && [undefined, "", null].includes(value);
   };
   const findFieldValue = (key: string): boolean => {
