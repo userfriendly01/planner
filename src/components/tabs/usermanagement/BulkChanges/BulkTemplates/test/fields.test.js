@@ -372,7 +372,7 @@ describe("fields.js", () => {
         test("returns the profile id options", () => {
           const options = optionsFunction(initialTestState);
           expect(options).toEqual([
-            1, 2, 3, 396
+            1, 2, 3, 396, 12
           ]);
         });
       });
@@ -783,7 +783,7 @@ describe("fields.js", () => {
             await exetensionValidateFunction({
               rowNumber: 6,
               "Extension": 1234
-            }, { workerContext: { workers: null } });
+            }, { workerContext: { workers: null }});
           } catch (e) {
             expect(e).toEqual(JSON.stringify({
               rowNumber: 6,
@@ -1556,7 +1556,7 @@ describe("fields.js", () => {
               rowNumber: 2,
               "Routing Team": null,
               "Profile Id": 2
-            }
+            };
             test("return rejected promise", async () => {
               try {
                 await routingTeamValidateFunction(row, initialTestState);
@@ -1573,7 +1573,7 @@ describe("fields.js", () => {
               rowNumber: 2,
               "Routing Team": "Butts",
               "Profile Id": 2
-            }
+            };
             test("return rejected promise", async () => {
               try {
                 await routingTeamValidateFunction(row, initialTestState);
@@ -1590,7 +1590,7 @@ describe("fields.js", () => {
               rowNumber: 2,
               "Routing Team": "licencedCsC",
               "Profile Id": 2
-            }
+            };
             test("return resolved promise & update row", async () => {
               const res = await routingTeamValidateFunction(row, initialTestState);
               expect(res).toBe("Routing Team Valid for row 2");
@@ -1599,7 +1599,7 @@ describe("fields.js", () => {
                 attributes: {
                   routing_team: "licencedCsC"
                 }
-              })
+              });
             });
           });
         });
@@ -1608,7 +1608,7 @@ describe("fields.js", () => {
             rowNumber: 2,
             "Routing Team": "Hi Im Here",
             "Profile Id": 800
-          }
+          };
           test("return rejected promise", async () => {
             try {
               await routingTeamValidateFunction(row, initialTestState);
@@ -1625,7 +1625,7 @@ describe("fields.js", () => {
             rowNumber: 2,
             "Routing Team": "",
             "Profile Id": 1
-          }
+          };
           test("return resolved promise", async () => {
             const res = await routingTeamValidateFunction(row, initialTestState);
             expect(res).toBe("Bypassing Routing Team. Unapplicable for profile id 1 for row 2");
