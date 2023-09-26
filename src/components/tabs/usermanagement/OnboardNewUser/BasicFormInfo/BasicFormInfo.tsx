@@ -24,7 +24,7 @@ import {
   userFormActions
 } from "context";
 import { formModes } from "globals";
-import React from "react";
+import React, { useState } from "react";
 import {
   getOverflowSkillFromProfile,
   isProfileIdValid,
@@ -46,6 +46,8 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
 
   const form = useFormState();
   const setForm = useFormDispatch();
+
+  const [autoUpdateOutgoing, setAutoUpdateOutgoing] = useState(!form.triton.outgoing.value);
 
   const formatDropdownOption = (value: any, label: string, option: any) => {
     if(typeof option === "object"){
@@ -184,7 +186,8 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
                   }
                 });
 
-                if(isValid && !form.triton.outgoing.value) {
+                if(isValid && (!form.triton.outgoing.value || autoUpdateOutgoing)) {
+                  setAutoUpdateOutgoing(true);
                   setForm({
                     type: userFormActions.UPDATE_PHONE_NUMBER,
                     payload: {
@@ -198,17 +201,22 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
               }}
             />
           )}
-          {form.triton.didUser && form.formMode === formModes.UPDATE && form.triton.directDialNum.updated && (
-            <ForwardToEntryForm
-              label={"Please choose a forward to option for the existing direct dial number"}
-              updateForwardTo={(value: string) => {
-                setForm({
-                  type: userFormActions.UPDATE_INACTIVE_FORWARD_TO,
-                  payload: value
-                });
-              }}
-            />
-          )}
+          {form.triton.didUser
+            && form.formMode === formModes.UPDATE
+            && form.triton.directDialNum.updated
+            && form.triton.directDialNum.e164 !== worker.directDialNum
+            && (
+              <ForwardToEntryForm
+                label={"Please choose a forward to option for the existing direct dial number"}
+                updateForwardTo={(value: string) => {
+                  setForm({
+                    type: userFormActions.UPDATE_INACTIVE_FORWARD_TO,
+                    payload: value
+                  });
+                }}
+              />
+            )
+          }
           <PhoneNumberInput
             disabled={form.formMode === formModes.DELETE}
             allowSevenDigitVdn={false}
@@ -227,6 +235,12 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
                   e164Number
                 }
               });
+
+              if(isValid) {
+                setAutoUpdateOutgoing(false);
+              } else {
+                setAutoUpdateOutgoing(true);
+              }
             }}
           />
           {form.triton.didUser && (

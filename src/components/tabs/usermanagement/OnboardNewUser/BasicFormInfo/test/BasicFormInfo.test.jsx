@@ -830,6 +830,26 @@ describe("<BasicFormInfo />", () => {
               }
             });
           });
+
+          test("should hide ForwardToEntryForm when user enters the number on the worker", async () => {
+            useFormState.mockReturnValue({
+              ...initialFormState,
+              formMode: formModes.UPDATE,
+              triton: {
+                ...initialFormState.triton,
+                didUser: true,
+                directDialNum: {
+                  ...initialFormState.triton.directDialNum,
+                  e164: mockWorkers[2].directDialNum,
+                  updated: true
+                }
+              }
+            });
+
+            const rendered = renderComponent();
+
+            expectMockedComponent(rendered, { ForwardToEntryForm }, 0);
+          });
         });
 
         describe(`directDialNum updated && form.formMode === ${formModes.UPDATE}`, () => {
