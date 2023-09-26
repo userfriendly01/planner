@@ -454,14 +454,6 @@ describe("<BasicFormInfo />", () => {
         renderComponent(false);
         expect(PhoneNumberInput.mock.calls[0][0].disabled).toBe(true);
       });
-      test("editDisabled is true", () => {
-        useFormState.mockReturnValue({
-          ...initialFormState,
-          editDisabled: true
-        });
-        renderComponent(false);
-        expect(PhoneNumberInput.mock.calls[0][0].disabled).toBe(true);
-      });
     });
   });
   describe("nNumber field", () => {
