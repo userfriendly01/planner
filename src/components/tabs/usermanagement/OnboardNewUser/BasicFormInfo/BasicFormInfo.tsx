@@ -11,9 +11,9 @@ import {
   Tooltip
 } from "@mui/material";
 import {
-  DidFormInfo,
   Dropdown,
   ExtensionInput,
+  ForwardToEntryForm,
   NNumberInput,
   PhoneNumberInput,
   SkillsFormInfo
@@ -163,33 +163,99 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
         <SkillsFormInfo />
       </FormControlsPane>
       <RightColumn>
-        <PhoneNumberInput
-          disabled={form.formMode === formModes.DELETE}
-          allowSevenDigitVdn={false}
-          id="outgoing-number"
-          number={form.triton.outgoing.value}
-          onBlur={() => handleOnBlur("outgoing", "triton")}
-          label="Outbound Caller ID *"
-          showError={form.triton.outgoing.blurred}
-          updateValue={(maskedValue: string, _unmaskedValue: string, isValid: boolean, e164Number: string) => {
-            setForm({
-              type: userFormActions.UPDATE_PHONE_NUMBER,
-              payload: {
-                field: "outgoing",
-                maskedValue,
-                isValid,
-                e164Number
-              }
-            });
-          }}
-        />
-        {form.triton.didUser && (
-          <DidFormInfo
-            worker={worker}
-            forwardToToggle={forwardToToggle}
-            setForwardToToggle={setForwardToToggle}
+        <FormControlsPane>
+          {form.triton.didUser && (
+            <PhoneNumberInput
+              disabled={form.formMode === formModes.DELETE}
+              allowSevenDigitVdn={false}
+              id="direct-dial-number"
+              number={form.triton.directDialNum.value}
+              label="Direct Dial Number *"
+              showError={form.triton.directDialNum.blurred}
+              onBlur={() => handleOnBlur("directDialNum", "triton")}
+              updateValue={(maskedValue, _unmaskedValue, isValid, e164Number) => {
+                setForm({
+                  type: userFormActions.UPDATE_PHONE_NUMBER,
+                  payload: {
+                    field: "directDialNum",
+                    maskedValue,
+                    isValid,
+                    e164Number
+                  }
+                });
+
+                if(isValid && !form.triton.outgoing.value) {
+                  setForm({
+                    type: userFormActions.UPDATE_PHONE_NUMBER,
+                    payload: {
+                      field: "outgoing",
+                      maskedValue,
+                      isValid,
+                      e164Number
+                    }
+                  });
+                }
+              }}
+            />
+          )}
+          {form.triton.didUser && form.formMode === formModes.UPDATE && form.triton.directDialNum.updated && (
+            <ForwardToEntryForm
+              label={"Please choose a forward to option for the existing direct dial number"}
+              updateForwardTo={(value: string) => {
+                setForm({
+                  type: userFormActions.UPDATE_INACTIVE_FORWARD_TO,
+                  payload: value
+                });
+              }}
+            />
+          )}
+          <PhoneNumberInput
+            disabled={form.formMode === formModes.DELETE}
+            allowSevenDigitVdn={false}
+            id="outgoing-number"
+            number={form.triton.outgoing.value}
+            onBlur={() => handleOnBlur("outgoing", "triton")}
+            label="Outbound Caller ID *"
+            showError={form.triton.outgoing.blurred}
+            updateValue={(maskedValue: string, _unmaskedValue: string, isValid: boolean, e164Number: string) => {
+              setForm({
+                type: userFormActions.UPDATE_PHONE_NUMBER,
+                payload: {
+                  field: "outgoing",
+                  maskedValue,
+                  isValid,
+                  e164Number
+                }
+              });
+            }}
           />
-        )}
+          {form.triton.didUser && (
+            <PhoneNumberInput
+              disabled={
+                !worker?.alternateDid ||
+              form.formMode === formModes.INSERT ? false : true ||
+              form.formMode === formModes.DELETE
+              }
+              allowSevenDigitVdn={false}
+              id="skype-teams-did"
+              number={form.triton.alternateDid.value}
+              label="Skype/Teams DID *"
+              showError={form.triton.alternateDid.blurred}
+              onBlur={() => handleOnBlur("alternateDid", "triton")}
+              updateValue={(maskedValue, _unmaskedValue, isValid, e164Number) => {
+                setForm({
+                  type: userFormActions.UPDATE_PHONE_NUMBER,
+                  payload: {
+                    field: "alternateDid",
+                    maskedValue,
+                    isValid,
+                    e164Number
+                  }
+                });
+              }}
+            />
+          )}
+        </FormControlsPane>
         <Tooltip
           title={
             form.formMode === formModes.UPDATE && worker?.directDialNum ?

@@ -5,11 +5,11 @@ import {
 } from "@mui/material";
 import { Edit } from "@mui/icons-material";
 import {
+  ForwardToEntryForm,
   ExtensionInput,
   NNumberInput,
   PhoneNumberInput,
-  Dropdown,
-  DidFormInfo
+  Dropdown
 } from "components";
 import {
   useFormDispatch,
@@ -43,13 +43,13 @@ jest.useFakeTimers();
 
 jest.mock("components", () => ({
   __esModule: true,
-  DidFormInfo: jest.fn(),
   Dropdown: jest.fn(),
   ExtensionInput: jest.fn(),
   NNumberInput: jest.fn(),
   PhoneNumberInput: jest.fn(),
   SkillsFormInfo: jest.fn(),
-  StyledButton: jest.fn()
+  StyledButton: jest.fn(),
+  ForwardToEntryForm: jest.fn()
 }));
 
 jest.mock("@mui/material", () => ({
@@ -113,12 +113,12 @@ describe("<BasicFormInfo />", () => {
     getOverflowSkillFromProfile.mockReturnValue("466");
     useFormState.mockReturnValue(initialFormState);
     setupMockedComponents({
-      DidFormInfo,
       ExtensionInput,
       NNumberInput,
       PhoneNumberInput,
       Dropdown,
       Edit,
+      ForwardToEntryForm,
       Switch,
       Tooltip,
       StyledButton
@@ -660,12 +660,6 @@ describe("<BasicFormInfo />", () => {
           const renderedSelfServiceIndTT = render(selfServiceIndToolTip.children);
           expect(renderedSelfServiceIndTT.container).toHaveTextContent("Self Service Indicator");
 
-          const expectedDidFormInfoProps = {
-            worker: mockWorkers[2],
-            forwardToToggle: false,
-            setForwardToToggle: mockSetForwardToToggle
-          };
-          expectOnlyPassedProps(DidFormInfo, expectedDidFormInfoProps, 0);
         });
         test("Overflow Tooltip Title should be message when overflowSkill is not undefined", () => {
           getOverflowSkillFromProfile.mockReturnValue(undefined);
@@ -708,15 +702,229 @@ describe("<BasicFormInfo />", () => {
           expect(selfServiceIndToolTip.placement).toBe("bottom-start");
           const renderedSelfServiceIndTT = render(selfServiceIndToolTip.children);
           expect(renderedSelfServiceIndTT.container).toHaveTextContent("Self Service Indicator");
-
-          const expectedDidFormInfoProps = {
-            worker: mockWorkers[2],
-            forwardToToggle: false,
-            setForwardToToggle: mockSetForwardToToggle
-          };
-          expectOnlyPassedProps(DidFormInfo, expectedDidFormInfoProps, 0);
         });
       });
+
+      describe("Direct Dial Number", () => {
+        beforeEach(() => {
+          getOverflowSkillFromProfile.mockReturnValue(undefined);
+          useFormState.mockReturnValue({
+            ...initialFormState,
+            formMode: formModes.INSERT,
+            triton: {
+              ...initialFormState.triton,
+              didUser: true
+            }
+          });
+        });
+
+        test("onBlur - should set blur on field", () => {
+          renderComponent();
+          act(() => {
+            const onBlur = PhoneNumberInput.mock.calls[0][0].onBlur;
+            onBlur();
+          });
+          expect(mockSetForm).toBeCalledTimes(1);
+          expect(mockSetForm).toBeCalledWith({
+            type: userFormActions.SET_BLUR_ON_FIELD,
+            payload: {
+              field: "directDialNum",
+              system: "triton"
+            }
+          });
+        });
+        test("onBlur - when number is valid, blur should not be set", () => {
+          useFormState.mockReturnValue({
+            ...initialFormState,
+            triton: {
+              ...initialFormState.triton,
+              didUser: true,
+              directDialNum: {
+                valid: true
+              }
+            }
+          });
+          renderComponent();
+          act(() => {
+            const onBlur = PhoneNumberInput.mock.calls[0][0].onBlur;
+            onBlur();
+          });
+          expect(mockSetForm).toBeCalledTimes(0);
+        });
+
+        describe("updateValue", () => {
+          test("should set directDialNum number and outgoing to correct value when outgoing is unset", () => {
+            renderComponent();
+            act(() => {
+              const updateValue = PhoneNumberInput.mock.calls[0][0].updateValue;
+              updateValue("(603) 851-8200", null, true, "+16038518200");
+            });
+            expect(mockSetForm).toBeCalledTimes(2);
+            expect(mockSetForm.mock.calls[0][0]).toEqual({
+              type: userFormActions.UPDATE_PHONE_NUMBER,
+              payload: {
+                field: "directDialNum",
+                maskedValue: "(603) 851-8200",
+                isValid: true,
+                e164Number: "+16038518200"
+              }
+            });
+            expect(mockSetForm.mock.calls[1][0]).toEqual({
+              type: userFormActions.UPDATE_PHONE_NUMBER,
+              payload: {
+                field: "outgoing",
+                maskedValue: "(603) 851-8200",
+                isValid: true,
+                e164Number: "+16038518200"
+              }
+            });
+          });
+
+          test("should set directDialNum number and not outgoing to correct value when outgoing is set", () => {
+            useFormState.mockReturnValue({
+              ...initialFormState,
+              triton: {
+                ...initialFormState.triton,
+                outgoing: {
+                  blurred: true,
+                  e164: "+16038518201",
+                  updated: true,
+                  valid: true,
+                  value: "(603) 851-8201"
+                },
+                didUser: true
+              }
+            });
+
+            renderComponent();
+            act(() => {
+              const updateValue = PhoneNumberInput.mock.calls[0][0].updateValue;
+              updateValue("(603) 851-8200", null, true, "+16038518200");
+            });
+            expect(mockSetForm).toBeCalledTimes(1);
+            expect(mockSetForm.mock.calls[0][0]).toEqual({
+              type: userFormActions.UPDATE_PHONE_NUMBER,
+              payload: {
+                field: "directDialNum",
+                maskedValue: "(603) 851-8200",
+                isValid: true,
+                e164Number: "+16038518200"
+              }
+            });
+          });
+
+          test("should not set outgoing number if input is invalid", () => {
+            renderComponent();
+            act(() => {
+              const updateValue = PhoneNumberInput.mock.calls[0][0].updateValue;
+              updateValue("(603) 851-82", null, false, "+160385182");
+            });
+            expect(mockSetForm).toBeCalledTimes(1);
+            expect(mockSetForm.mock.calls[0][0]).toEqual({
+              type: userFormActions.UPDATE_PHONE_NUMBER,
+              payload: {
+                field: "directDialNum",
+                maskedValue: "(603) 851-82",
+                isValid: false,
+                e164Number: "+160385182"
+              }
+            });
+          });
+        });
+
+        describe(`directDialNum updated && form.formMode === ${formModes.UPDATE}`, () => {
+          beforeEach(() => {
+            useFormState.mockReturnValue({
+              ...initialFormState,
+              formMode: formModes.UPDATE,
+              triton: {
+                ...initialFormState.triton,
+                didUser: true,
+                directDialNum: {
+                  ...initialFormState.triton.directDialNum,
+                  updated: true
+                }
+              }
+            });
+          });
+          test("ForwardToEntryForm is rendered with the correct props", () => {
+            const rendered = renderComponent(true);
+            expectMockedComponent(rendered, { ForwardToEntryForm }, 1);
+            const expectedForwardToEntryProps = {
+              label: "Please choose a forward to option for the existing direct dial number"
+            };
+            expectOnlyPassedProps(ForwardToEntryForm, expectedForwardToEntryProps, 0);
+          });
+          test("updateForwardTo - should update inactiveForwardTo", () => {
+            renderComponent(true);
+            act(() => {
+              const updateForwardTo = ForwardToEntryForm.mock.calls[0][0].updateForwardTo;
+              updateForwardTo("WK123456");
+            });
+            expect(mockSetForm).toBeCalledWith({
+              type: userFormActions.UPDATE_INACTIVE_FORWARD_TO,
+              payload: "WK123456"
+            });
+          });
+        });
+      });
+
+      describe("Alternate DID", () => {
+        beforeEach(() => {
+          useFormState.mockReturnValue({
+            ...initialFormState,
+            triton: {
+              ...initialFormState.triton,
+              didUser: true
+            }
+          });
+        });
+
+        test("disabled property should be true", () => {
+          useFormState.mockReturnValue({
+            ...initialFormState,
+            formMode: formModes.UPDATE,
+            triton: {
+              ...initialFormState.triton,
+              didUser: true
+            }
+          });
+          renderComponent();
+          expect(PhoneNumberInput.mock.calls[2][0].disabled).toBe(true);
+        });
+        test("onBlur - should set blur on field", () => {
+          renderComponent();
+          act(() => {
+            const onBlur = PhoneNumberInput.mock.calls[2][0].onBlur;
+            onBlur();
+          });
+          expect(mockSetForm).toBeCalledTimes(1);
+          expect(mockSetForm).toBeCalledWith({
+            type: userFormActions.SET_BLUR_ON_FIELD,
+            payload: {
+              field: "alternateDid",
+              system: "triton"
+            }
+          });
+        });
+        test("updateValue - should set internal routing number to correct value", () => {
+          renderComponent();
+          act(() => {
+            const updateValue = PhoneNumberInput.mock.calls[2][0].updateValue;
+            updateValue("(603) 851-8200", null, true, "+16038518200");
+          });
+          expect(mockSetForm).toBeCalledWith({
+            type: userFormActions.UPDATE_PHONE_NUMBER,
+            payload: {
+              field: "alternateDid",
+              maskedValue: "(603) 851-8200",
+              isValid: true,
+              e164Number: "+16038518200"
+            }
+          });
+        });
+      });
+
       describe("Overflow Skill Switch", () => {
         beforeEach(() => {
           getOverflowSkillFromProfile.mockReturnValue(undefined);
@@ -758,6 +966,7 @@ describe("<BasicFormInfo />", () => {
           });
         });
       });
+
       describe("Self Service Indicator Switch", () => {
         beforeEach(() => {
           getOverflowSkillFromProfile.mockReturnValue(undefined);
