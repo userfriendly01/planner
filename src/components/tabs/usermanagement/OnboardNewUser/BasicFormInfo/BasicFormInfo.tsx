@@ -182,7 +182,8 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
                     field: "directDialNum",
                     maskedValue,
                     isValid,
-                    e164Number
+                    e164Number,
+                    initialValue: worker?.directDialNum || null
                   }
                 });
 
@@ -194,7 +195,8 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
                       field: "outgoing",
                       maskedValue,
                       isValid,
-                      e164Number
+                      e164Number,
+                      initialValue: worker?.attributes?.did || null
                     }
                   });
                 }
@@ -204,7 +206,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
           {form.triton.didUser
             && form.formMode === formModes.UPDATE
             && form.triton.directDialNum.updated
-            && form.triton.directDialNum.e164 !== worker.directDialNum
+            && form.triton.directDialNum.e164 !== worker?.directDialNum
             && (
               <ForwardToEntryForm
                 label={"Please choose a forward to option for the existing direct dial number"}
@@ -232,7 +234,8 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
                   field: "outgoing",
                   maskedValue,
                   isValid,
-                  e164Number
+                  e164Number,
+                  initialValue: worker?.attributes?.did || null
                 }
               });
 

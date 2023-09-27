@@ -440,7 +440,8 @@ describe("<BasicFormInfo />", () => {
           field: "outgoing",
           maskedValue: "(603) 851-8200",
           isValid: true,
-          e164Number: "+16038518200"
+          e164Number: "+16038518200",
+          initialValue: "+16034567890"
         }
       });
     });
@@ -766,7 +767,8 @@ describe("<BasicFormInfo />", () => {
                 field: "directDialNum",
                 maskedValue: "(603) 851-8200",
                 isValid: true,
-                e164Number: "+16038518200"
+                e164Number: "+16038518200",
+                initialValue: "+18002345678"
               }
             });
             expect(mockSetForm.mock.calls[1][0]).toEqual({
@@ -775,7 +777,8 @@ describe("<BasicFormInfo />", () => {
                 field: "outgoing",
                 maskedValue: "(603) 851-8200",
                 isValid: true,
-                e164Number: "+16038518200"
+                e164Number: "+16038518200",
+                initialValue: "+16034567890"
               }
             });
           });
@@ -808,7 +811,8 @@ describe("<BasicFormInfo />", () => {
                 field: "directDialNum",
                 maskedValue: "(603) 851-8200",
                 isValid: true,
-                e164Number: "+16038518200"
+                e164Number: "+16038518200",
+                initialValue: "+18002345678"
               }
             });
           });
@@ -826,7 +830,8 @@ describe("<BasicFormInfo />", () => {
                 field: "directDialNum",
                 maskedValue: "(603) 851-82",
                 isValid: false,
-                e164Number: "+160385182"
+                e164Number: "+160385182",
+                initialValue: "+18002345678"
               }
             });
           });
