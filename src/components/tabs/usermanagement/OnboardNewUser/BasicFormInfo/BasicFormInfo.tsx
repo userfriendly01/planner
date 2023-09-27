@@ -47,7 +47,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
   const form = useFormState();
   const setForm = useFormDispatch();
 
-  const [autoUpdateOutgoing, setAutoUpdateOutgoing] = useState(!form.triton.outgoing.value);
+  const [autoUpdateOutgoing, setAutoUpdateOutgoing] = useState(form.triton.outgoing.value === form.triton.directDialNum.value || !form.triton.outgoing.value);
 
   const formatDropdownOption = (value: any, label: string, option: any) => {
     if(typeof option === "object"){

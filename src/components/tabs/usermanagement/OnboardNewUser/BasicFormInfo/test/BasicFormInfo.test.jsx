@@ -858,37 +858,82 @@ describe("<BasicFormInfo />", () => {
         });
 
         describe(`directDialNum updated && form.formMode === ${formModes.UPDATE}`, () => {
-          beforeEach(() => {
+          describe("ForwardToEntryForm", () => {
+            beforeEach(() => {
+              useFormState.mockReturnValue({
+                ...initialFormState,
+                formMode: formModes.UPDATE,
+                triton: {
+                  ...initialFormState.triton,
+                  didUser: true,
+                  directDialNum: {
+                    ...initialFormState.triton.directDialNum,
+                    updated: true
+                  }
+                }
+              });
+            });
+            test("ForwardToEntryForm is rendered with the correct props", () => {
+              const rendered = renderComponent(true);
+              expectMockedComponent(rendered, { ForwardToEntryForm }, 1);
+              const expectedForwardToEntryProps = {
+                label: "Please choose a forward to option for the existing direct dial number"
+              };
+              expectOnlyPassedProps(ForwardToEntryForm, expectedForwardToEntryProps, 0);
+            });
+
+            test("updateForwardTo - should update inactiveForwardTo", () => {
+              renderComponent(true);
+              act(() => {
+                const updateForwardTo = ForwardToEntryForm.mock.calls[0][0].updateForwardTo;
+                updateForwardTo("WK123456");
+              });
+              expect(mockSetForm).toBeCalledWith({
+                type: userFormActions.UPDATE_INACTIVE_FORWARD_TO,
+                payload: "WK123456"
+              });
+            });
+          });
+
+
+          test("should update outgoing when directDialNum matches outgoing number", () => {
             useFormState.mockReturnValue({
               ...initialFormState,
               formMode: formModes.UPDATE,
               triton: {
                 ...initialFormState.triton,
                 didUser: true,
-                directDialNum: {
-                  ...initialFormState.triton.directDialNum,
-                  updated: true
-                }
+                outgoing: initialFormState.triton.directDialNum
               }
             });
-          });
-          test("ForwardToEntryForm is rendered with the correct props", () => {
-            const rendered = renderComponent(true);
-            expectMockedComponent(rendered, { ForwardToEntryForm }, 1);
-            const expectedForwardToEntryProps = {
-              label: "Please choose a forward to option for the existing direct dial number"
-            };
-            expectOnlyPassedProps(ForwardToEntryForm, expectedForwardToEntryProps, 0);
-          });
-          test("updateForwardTo - should update inactiveForwardTo", () => {
-            renderComponent(true);
+
+            renderComponent();
+
             act(() => {
-              const updateForwardTo = ForwardToEntryForm.mock.calls[0][0].updateForwardTo;
-              updateForwardTo("WK123456");
+              const updateValue = PhoneNumberInput.mock.calls[0][0].updateValue;
+              updateValue("(603) 851-8200", null, true, "+16038518200");
             });
-            expect(mockSetForm).toBeCalledWith({
-              type: userFormActions.UPDATE_INACTIVE_FORWARD_TO,
-              payload: "WK123456"
+
+            expect(mockSetForm).toBeCalledTimes(2);
+            expect(mockSetForm.mock.calls[0][0]).toEqual({
+              type: userFormActions.UPDATE_PHONE_NUMBER,
+              payload: {
+                field: "directDialNum",
+                maskedValue: "(603) 851-8200",
+                isValid: true,
+                e164Number: "+16038518200",
+                initialValue: "+18002345678"
+              }
+            });
+            expect(mockSetForm.mock.calls[1][0]).toEqual({
+              type: userFormActions.UPDATE_PHONE_NUMBER,
+              payload: {
+                field: "outgoing",
+                maskedValue: "(603) 851-8200",
+                isValid: true,
+                e164Number: "+16038518200",
+                initialValue: "+16034567890"
+              }
             });
           });
         });
