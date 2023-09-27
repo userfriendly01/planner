@@ -17,9 +17,9 @@ export const updateCalabrioUser = async (personId: number, payload: any): Promis
   return await myAxios.put(apiPaths.UPDATE_CALABRIO_USER(personId), payload);
 };
 
-export const getWfmOrg = async (businessUnitId: string): Promise<CalabrioGroup[]> => {  
-  const startDate = new Date().toISOString().split('T')[0];
-  const endDate = new Date().toISOString().split('T')[0];
+export const getWfmOrg = async (businessUnitId: string): Promise<CalabrioGroup[]> => {
+  const startDate = new Date().toISOString().split("T")[0];
+  const endDate = new Date().toISOString().split("T")[0];
   return await myAxios.get(`${apiPaths.GET_CALABRIO_WFM_ORG}/${businessUnitId}/${startDate}/${endDate}`);
 };
 

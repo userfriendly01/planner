@@ -400,17 +400,34 @@ async function deleteFlowRule(item, accessToken, graphQlApiUrl) {
 }
 async function batchDeleteItems(items,accessToken,graphQlApiUrl){
   var flowDeleteArray=[];
-  const size=24;
-  let response;
+  const size=3;
+  let response =[];
   while (items.length > 0){
     flowDeleteArray.push(items.splice(0, size));
   }
-  try{
-    for(let i=0; i<flowDeleteArray.length; i++){
-      response=await flowBatchDelete(flowDeleteArray[i],accessToken,graphQlApiUrl);
+
+  for(let i=0; i<flowDeleteArray.length; i++){
+    response = {
+      "success": [],
+      "failure": [],
+      "flag": false
+    };
+    const listObj={};
+    try{
+
+      if(i===0){
+        await flowBatchDelete(flowDeleteArray[i],accessToken,graphQlApiUrl);
+      }
+      else{
+        response=await flowBatchDelete1(flowDeleteArray[i],accessToken,graphQlApiUrl);
+      }
+      response.success.push(flowDeleteArray[i].forEach(x=>listObj.key=x));
+
     }
-  }catch(error){
-    console.error("error while deleting the records", error);
+    catch(error){
+      console.error("error while deleting the records", error);
+      response.failure.push(flowDeleteArray[i].forEach(x=>listObj.key=x));
+    }
   }
   return response;
 }
@@ -420,6 +437,35 @@ async function flowBatchDelete(items, accessToken, graphQlApiUrl){
     query: `
         mutation DeleteManyFlow {
           batchDeleteCctSharedCallFlowDb(input: {
+            pkey: ${JSON.stringify(items)}
+            }) {
+            items {
+              pkey
+            }
+          }
+        }
+    `,
+    variables: {
+    }
+  }).replace(/\\"pkey\\":/g, "pkey:");
+
+  const fetchResponse = await fetch(graphQlApiUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: accessToken
+    },
+    body
+  });
+  const response = await fetchResponse.json();
+  console.log("Batch Delete Flow Rule Response:", response);
+  return response;
+}
+async function flowBatchDelete1(items, accessToken, graphQlApiUrl){
+  const body = JSON.stringify({
+    query: `
+        mutation DeleteManyFlow1 {
+          batchDeleteCctSharedCallFlowDb1(input: {
             pkey: ${JSON.stringify(items)}
             }) {
             items {
