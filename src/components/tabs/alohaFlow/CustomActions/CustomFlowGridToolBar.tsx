@@ -1,5 +1,5 @@
 import {
-  Chip, FormControl, InputLabel, MenuItem, Select, Grid, TextField, IconButton, Paper, Tooltip
+  Chip, FormControl, InputLabel, MenuItem, Select, Grid, TextField, IconButton, Tooltip
 } from "@mui/material";
 import React, {
   useState, useEffect
@@ -11,7 +11,7 @@ import {
   FlowAdvanceFilter, PreviewModalAction
 } from "../AlohaFlow.Interfaces";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
-import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import DeleteSweepOutlinedIcon from "@mui/icons-material/DeleteSweepOutlined";
 import EditNoteOutlinedIcon from "@mui/icons-material/EditNoteOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
@@ -94,21 +94,25 @@ const CustomFlowGridToolBar = ({
           onClick={()=>openAdvanceSearchModal(true)}
         />
       </Grid>
-      <Grid item key = "Export FlowUI" xs={1}>
-        <Grid><div><br/><br/></div></Grid>
-        <Tooltip title="Export Flow Records" sx={{
-          left: "calc(76%)",
-          marginLeft: "24"
+      <Grid item key = "Export FlowUI" xs={1} >
+        <Tooltip title="Export Flow Records" placement="right-start"  sx={{
+          left: "calc(76%)"
         }}>
-          <Paper variant="outlined" >
-            <IconButton
-              onClick={exportDataFile}
-              color = "primary"
-              size = "small"
-              sx ={{ position: "fixed" }}
-            > <FileDownloadIcon />
-            </IconButton>
-          </Paper>
+          <IconButton
+            onClick={exportDataFile}
+            color = "primary"
+            size = "small"
+            sx ={{
+              position: "relative",
+              marginTop: "36px",
+              marginLeft: "36px",
+              ":hover": {
+                backgroundColor: "grey",
+                color: "white"
+              }
+            }}
+          > <SaveAltIcon />
+          </IconButton>
         </Tooltip>
       </Grid>
       <Grid item key="flow-action-box" xs={2}>

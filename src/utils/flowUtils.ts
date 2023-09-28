@@ -33,3 +33,8 @@ export const getAdvanceFilter = (storageKeyName: string): { [key: string]: undef
   }
   return advanceFilter;
 };
+
+export const checkGreetingMessageRegExp = (value: string): boolean => {
+  const reg = new RegExp("^[a-zA-Z0-9,@:=<>./\\-\\'\" ñáéíóú]+$");
+  return value && !reg.test(value);
+};

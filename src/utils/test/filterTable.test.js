@@ -13,7 +13,7 @@ describe("filterWorkerSearch", () => {
         skills: ["466", "psuUm"],
         levels: {
           "466": 3
-        },
+        }
       },
       profile_id: 396,
       full_name: "Aldo the Apache",
@@ -151,17 +151,17 @@ describe("filterWorkerSearch", () => {
   });
 
   test("should find the profile id", () => {
-    expect(filterWorkerSearch(goodWorkerData, "396", initialTestState)).toEqual(false); 
+    expect(filterWorkerSearch(goodWorkerData, "396", initialTestState)).toEqual(false);
   });
 
   test("should find the profile name", () => {
-    expect(filterWorkerSearch(goodWorkerData, "test4", initialTestState)).toEqual(false); 
+    expect(filterWorkerSearch(goodWorkerData, "test4", initialTestState)).toEqual(false);
   });
 
   test("should find the ou name", () => {
-    expect(filterWorkerSearch(goodWorkerData, "operatingUnitName", initialTestState)).toEqual(false); 
+    expect(filterWorkerSearch(goodWorkerData, "operatingUnitName", initialTestState)).toEqual(false);
   });
-  
+
   test("should find the routing team", () => {
     expect(filterWorkerSearch(goodWorkerData, "kitt", initialTestState)).toEqual(true);
   });
@@ -196,7 +196,7 @@ describe("filterWfmUserTable", () => {
     Email: "faith.cuneo@yahoo.com",
     EmploymentNumber: "n0263786",
     Id: "88372-0098"
-  }
+  };
   test("wfm user is null - should return false", () => {
     const result = filterWfmUserTable(null, "chip");
     expect(result).toBe(false);

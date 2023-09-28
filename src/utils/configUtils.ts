@@ -46,7 +46,7 @@ export const EXPORT_FILE_PREFIX: {
 
 const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb |CctSharedCallRoutingDb>): string => {
   let result: string;
-  const columnDelimiter = ",";
+  const columnDelimiter = "|";
   const lineDelimiter = "\n";
   if(array.length ===0){
     return;
@@ -74,7 +74,8 @@ const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb |CctSharedCa
     keys = contentStore;
   }
   result = "";
-  result += keys.join(columnDelimiter);
+  const header = keys.map((key: string)=>key === "pkey"? "dialedPhoneNumber": key);
+  result += header.join(columnDelimiter);
   result += lineDelimiter;
   array.forEach((item:CctSharedCallFlowDb & CctSharedCallRoutingDb) => {
     let ctr = 0;
@@ -94,7 +95,6 @@ const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb |CctSharedCa
       }
       else if(itemValue){
         itemValue = itemValue.toString();
-        itemValue = itemValue.replace(/,/g,"");
       }
       result += itemValue;
       ctr += 1;

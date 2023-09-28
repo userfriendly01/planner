@@ -35,7 +35,7 @@ const expectedRows = [
   {
     defaultSkills: "lscOBDialer1 Available levels: 1,2,3",
     managerNNumber: "n1234567",
-    profileId: 1,
+    profileId: 1
     // routing_team: "Profile 2: licencedCSC",
   },
   {
@@ -52,7 +52,8 @@ const expectedRows = [
     profileId: 396
   },
   {
-    defaultSkills: "lscUSAA"
+    defaultSkills: "lscUSAA",
+    profileId: 12
   }
 ];
 const expectedColumns = [
@@ -62,7 +63,8 @@ const expectedColumns = [
       1,
       2,
       3,
-      396
+      396,
+      12
     ],
     textAlign: "center",
     title: "Profile Id",

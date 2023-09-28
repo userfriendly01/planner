@@ -1,9 +1,10 @@
 import ExportUsersButton from "../ExportUsersButton";
 import { StyledExportButton } from "../TritonUsersHeader.Styles";
-import { StyledButton } from "components";
 import React from "react";
 import { ExcelExport } from "@progress/kendo-react-excel-export";
-import { theme } from "globals";
+import {
+  exportColumns, theme
+} from "globals";
 import {
   act,
   render,
@@ -11,9 +12,14 @@ import {
   setupMockedComponents
 } from "testUtils";
 import { ThemeProvider } from "styled-components";
+import { useAdminState } from "context";
 
 jest.mock("@progress/kendo-react-excel-export", () => ({
-  ExcelExport: jest.fn(),
+  ExcelExport: jest.fn()
+}));
+
+jest.mock("context", () => ({
+  useAdminState: jest.fn()
 }));
 
 jest.mock("../TritonUsersHeader.Styles", () => ({
@@ -33,7 +39,8 @@ const fullWorker = {
       team: "Kitties",
       skills: ["psul1", "466"],
       levels: { "466": 1 },
-      callerStates: ["boo"]
+      callerStates: ["boo"],
+      sales_assoc_workers: ["hi", "there"]
     },
     default_skills: {
       skills: ["dsul1", "4d66"],
@@ -44,7 +51,7 @@ const fullWorker = {
       levels: { "4di66": 1 }
     }
   }
-}
+};
 
 const renderComponent = () => {
   const rendered = render(
@@ -62,11 +69,12 @@ const renderComponent = () => {
 describe("ExportUsersButton", () => {
   beforeEach(() => {
     useRefSpy.mockReturnValue({ current: { save: mockSave }});
+    useAdminState.mockReturnValue(initialTestState);
     jest.clearAllMocks();
     setupMockedComponents({
       StyledExportButton,
       ExcelExport
-    })
+    });
   });
   describe("initial render", () => {
     test("renders with ExcelExport", () => {
@@ -90,7 +98,9 @@ describe("ExportUsersButton", () => {
         "outbound_number": "6038518200",
         "manager_n_number": "n0263786",
         "n_number": "n0000000",
+        "ou": "Claims",
         "profile_id": "12",
+        "sales_assoc_workers": "hi, there",
         "sid": "WK1234",
         "current_skills": "psul1,466 - 1",
         "default_skills": "dsul1,4d66 - 1",
@@ -102,101 +112,10 @@ describe("ExportUsersButton", () => {
           team: "Kitties",
           skills: ["psul1", "466"],
           levels: { "466": 1 },
-          callerStates: ["boo"]
+          callerStates: ["boo"],
+          sales_assoc_workers: ["hi", "there"]
         }
-      }],
-      [
-        {
-          field: "sid",
-          title: "Worker Sid",
-          width: "100px"
-        },
-        {
-          field: "emp_first_name",
-          title: "First Name",
-          width: "100px"
-        },
-        {
-          field: "emp_last_name",
-          title: "Last Name",
-          width: "100px"
-        },
-        {
-          field: "n_number",
-          title: "N Number",
-          width: "100px"
-        },
-        {
-          field: "email",
-          title: "Email",
-          width: "100px"
-        },
-        {
-          field: "extension",
-          title: "Extension",
-          width: "100px"
-        },
-        {
-          field: "profile_id",
-          title: "Profile Id",
-          width: "100px"
-        },
-        {
-          field: "manager_n_number",
-          title: "Manager N Number",
-          width: "100px"
-        },
-        {
-          field: "manager",
-          title: "Manager",
-          width: "100px"
-        },
-        {
-          field: "department_name",
-          title: "Department",
-          width: "100px"
-        },
-        {
-          field: "routing_team",
-          title: "Routing Team",
-          width: "100px"
-        },
-        {
-          field: "routing_caller_states",
-          title: "Routing Caller States",
-          width: "100px"
-        },
-        {
-          field: "roles",
-          title: "Roles",
-          width: "100px"
-        },
-        {
-          field: "outbound_number",
-          title: "Outbound Number",
-          width: "100px"
-        },
-        {
-          field: "directDialNum",
-          title: "Direct Dial Number",
-          width: "100px"
-        },
-        {
-          field: "current_skills",
-          title: "Current Skills",
-          width: "100px"
-        },
-        {
-          field: "default_skills",
-          title: "Default Skills",
-          width: "100px"
-        },
-        {
-          field: "disabled_skills",
-          title: "Disabled Skills",
-          width: "100px"
-        }
-      ]);
+      }], exportColumns);
     });
     test("did - renders with ExcelExport", () => {
       render(
@@ -221,7 +140,9 @@ describe("ExportUsersButton", () => {
         "full_name": "Gloria Sake",
         "manager_n_number": "n0263786",
         "n_number": "n0000000",
+        "ou": "Claims",
         "profile_id": "12",
+        "sales_assoc_workers": "hi, there",
         "did": "6038518200",
         "directDialNum": "603242345",
         "sid": "WK1234",
@@ -235,106 +156,15 @@ describe("ExportUsersButton", () => {
           team: "Kitties",
           skills: ["psul1", "466"],
           levels: { "466": 1 },
-          callerStates: ["boo"]
+          callerStates: ["boo"],
+          sales_assoc_workers: ["hi", "there"]
         }
-      }],
-      [
-        {
-          field: "sid",
-          title: "Worker Sid",
-          width: "100px"
-        },
-        {
-          field: "emp_first_name",
-          title: "First Name",
-          width: "100px"
-        },
-        {
-          field: "emp_last_name",
-          title: "Last Name",
-          width: "100px"
-        },
-        {
-          field: "n_number",
-          title: "N Number",
-          width: "100px"
-        },
-        {
-          field: "email",
-          title: "Email",
-          width: "100px"
-        },
-        {
-          field: "extension",
-          title: "Extension",
-          width: "100px"
-        },
-        {
-          field: "profile_id",
-          title: "Profile Id",
-          width: "100px"
-        },
-        {
-          field: "manager_n_number",
-          title: "Manager N Number",
-          width: "100px"
-        },
-        {
-          field: "manager",
-          title: "Manager",
-          width: "100px"
-        },
-        {
-          field: "department_name",
-          title: "Department",
-          width: "100px"
-        },
-        {
-          field: "routing_team",
-          title: "Routing Team",
-          width: "100px"
-        },
-        {
-          field: "routing_caller_states",
-          title: "Routing Caller States",
-          width: "100px"
-        },
-        {
-          field: "roles",
-          title: "Roles",
-          width: "100px"
-        },
-        {
-          field: "outbound_number",
-          title: "Outbound Number",
-          width: "100px"
-        },
-        {
-          field: "directDialNum",
-          title: "Direct Dial Number",
-          width: "100px"
-        },
-        {
-          field: "current_skills",
-          title: "Current Skills",
-          width: "100px"
-        },
-        {
-          field: "default_skills",
-          title: "Default Skills",
-          width: "100px"
-        },
-        {
-          field: "disabled_skills",
-          title: "Disabled Skills",
-          width: "100px"
-        }
-      ]);
+      }], exportColumns);
     });
   });
   describe("_export.current === null", () => {
     beforeEach(() => {
-      useRefSpy.mockReturnValue({ current: null});
+      useRefSpy.mockReturnValue({ current: null });
     });
     test("should not call _export.current.save", () => {
       render(
