@@ -141,6 +141,7 @@ describe("ExportUsersButton", () => {
         "manager_n_number": "n0263786",
         "n_number": "n0000000",
         "ou": "Claims",
+        "outbound_number": "6038518200",
         "profile_id": "12",
         "sales_assoc_workers": "hi, there",
         "did": "6038518200",
