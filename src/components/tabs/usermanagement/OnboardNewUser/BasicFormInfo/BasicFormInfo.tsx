@@ -187,6 +187,16 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
                   }
                 });
 
+                setForm({
+                  type: userFormActions.UPDATE_PHONE_NUMBER,
+                  payload: {
+                    field: "alternateDid",
+                    maskedValue,
+                    isValid,
+                    e164Number
+                  }
+                });
+
                 if(isValid && (!form.triton.outgoing.value || autoUpdateOutgoing)) {
                   setAutoUpdateOutgoing(true);
                   setForm({
@@ -246,32 +256,6 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
               }
             }}
           />
-          {form.triton.didUser && (
-            <PhoneNumberInput
-              disabled={
-                !worker?.alternateDid ||
-              form.formMode === formModes.INSERT ? false : true ||
-              form.formMode === formModes.DELETE
-              }
-              allowSevenDigitVdn={false}
-              id="skype-teams-did"
-              number={form.triton.alternateDid.value}
-              label="Skype/Teams DID *"
-              showError={form.triton.alternateDid.blurred}
-              onBlur={() => handleOnBlur("alternateDid", "triton")}
-              updateValue={(maskedValue, _unmaskedValue, isValid, e164Number) => {
-                setForm({
-                  type: userFormActions.UPDATE_PHONE_NUMBER,
-                  payload: {
-                    field: "alternateDid",
-                    maskedValue,
-                    isValid,
-                    e164Number
-                  }
-                });
-              }}
-            />
-          )}
         </FormControlsPane>
         <Tooltip
           title={

@@ -754,13 +754,13 @@ describe("<BasicFormInfo />", () => {
         });
 
         describe("updateValue", () => {
-          test("should set directDialNum number and outgoing to correct value when outgoing is unset", () => {
+          test("should set directDialNum number, alternate DID, and outgoing to correct value when outgoing is unset", () => {
             renderComponent();
             act(() => {
               const updateValue = PhoneNumberInput.mock.calls[0][0].updateValue;
               updateValue("(603) 851-8200", null, true, "+16038518200");
             });
-            expect(mockSetForm).toBeCalledTimes(2);
+            expect(mockSetForm).toBeCalledTimes(3);
             expect(mockSetForm.mock.calls[0][0]).toEqual({
               type: userFormActions.UPDATE_PHONE_NUMBER,
               payload: {
@@ -772,6 +772,15 @@ describe("<BasicFormInfo />", () => {
               }
             });
             expect(mockSetForm.mock.calls[1][0]).toEqual({
+              type: userFormActions.UPDATE_PHONE_NUMBER,
+              payload: {
+                field: "alternateDid",
+                maskedValue: "(603) 851-8200",
+                isValid: true,
+                e164Number: "+16038518200"
+              }
+            });
+            expect(mockSetForm.mock.calls[2][0]).toEqual({
               type: userFormActions.UPDATE_PHONE_NUMBER,
               payload: {
                 field: "outgoing",
@@ -804,7 +813,7 @@ describe("<BasicFormInfo />", () => {
               const updateValue = PhoneNumberInput.mock.calls[0][0].updateValue;
               updateValue("(603) 851-8200", null, true, "+16038518200");
             });
-            expect(mockSetForm).toBeCalledTimes(1);
+            expect(mockSetForm).toBeCalledTimes(2);
             expect(mockSetForm.mock.calls[0][0]).toEqual({
               type: userFormActions.UPDATE_PHONE_NUMBER,
               payload: {
@@ -815,6 +824,15 @@ describe("<BasicFormInfo />", () => {
                 initialValue: "+18002345678"
               }
             });
+            expect(mockSetForm.mock.calls[1][0]).toEqual({
+              type: userFormActions.UPDATE_PHONE_NUMBER,
+              payload: {
+                field: "alternateDid",
+                maskedValue: "(603) 851-8200",
+                isValid: true,
+                e164Number: "+16038518200"
+              }
+            });
           });
 
           test("should not set outgoing number if input is invalid", () => {
@@ -823,7 +841,7 @@ describe("<BasicFormInfo />", () => {
               const updateValue = PhoneNumberInput.mock.calls[0][0].updateValue;
               updateValue("(603) 851-82", null, false, "+160385182");
             });
-            expect(mockSetForm).toBeCalledTimes(1);
+            expect(mockSetForm).toBeCalledTimes(2);
             expect(mockSetForm.mock.calls[0][0]).toEqual({
               type: userFormActions.UPDATE_PHONE_NUMBER,
               payload: {
@@ -832,6 +850,15 @@ describe("<BasicFormInfo />", () => {
                 isValid: false,
                 e164Number: "+160385182",
                 initialValue: "+18002345678"
+              }
+            });
+            expect(mockSetForm.mock.calls[1][0]).toEqual({
+              type: userFormActions.UPDATE_PHONE_NUMBER,
+              payload: {
+                field: "alternateDid",
+                maskedValue: "(603) 851-82",
+                isValid: false,
+                e164Number: "+160385182"
               }
             });
           });
@@ -914,7 +941,7 @@ describe("<BasicFormInfo />", () => {
               updateValue("(603) 851-8200", null, true, "+16038518200");
             });
 
-            expect(mockSetForm).toBeCalledTimes(2);
+            expect(mockSetForm).toBeCalledTimes(3);
             expect(mockSetForm.mock.calls[0][0]).toEqual({
               type: userFormActions.UPDATE_PHONE_NUMBER,
               payload: {
@@ -928,6 +955,15 @@ describe("<BasicFormInfo />", () => {
             expect(mockSetForm.mock.calls[1][0]).toEqual({
               type: userFormActions.UPDATE_PHONE_NUMBER,
               payload: {
+                field: "alternateDid",
+                maskedValue: "(603) 851-8200",
+                isValid: true,
+                e164Number: "+16038518200"
+              }
+            });
+            expect(mockSetForm.mock.calls[2][0]).toEqual({
+              type: userFormActions.UPDATE_PHONE_NUMBER,
+              payload: {
                 field: "outgoing",
                 maskedValue: "(603) 851-8200",
                 isValid: true,
@@ -935,62 +971,6 @@ describe("<BasicFormInfo />", () => {
                 initialValue: "+16034567890"
               }
             });
-          });
-        });
-      });
-
-      describe("Alternate DID", () => {
-        beforeEach(() => {
-          useFormState.mockReturnValue({
-            ...initialFormState,
-            triton: {
-              ...initialFormState.triton,
-              didUser: true
-            }
-          });
-        });
-
-        test("disabled property should be true", () => {
-          useFormState.mockReturnValue({
-            ...initialFormState,
-            formMode: formModes.UPDATE,
-            triton: {
-              ...initialFormState.triton,
-              didUser: true
-            }
-          });
-          renderComponent();
-          expect(PhoneNumberInput.mock.calls[2][0].disabled).toBe(true);
-        });
-        test("onBlur - should set blur on field", () => {
-          renderComponent();
-          act(() => {
-            const onBlur = PhoneNumberInput.mock.calls[2][0].onBlur;
-            onBlur();
-          });
-          expect(mockSetForm).toBeCalledTimes(1);
-          expect(mockSetForm).toBeCalledWith({
-            type: userFormActions.SET_BLUR_ON_FIELD,
-            payload: {
-              field: "alternateDid",
-              system: "triton"
-            }
-          });
-        });
-        test("updateValue - should set internal routing number to correct value", () => {
-          renderComponent();
-          act(() => {
-            const updateValue = PhoneNumberInput.mock.calls[2][0].updateValue;
-            updateValue("(603) 851-8200", null, true, "+16038518200");
-          });
-          expect(mockSetForm).toBeCalledWith({
-            type: userFormActions.UPDATE_PHONE_NUMBER,
-            payload: {
-              field: "alternateDid",
-              maskedValue: "(603) 851-8200",
-              isValid: true,
-              e164Number: "+16038518200"
-            }
           });
         });
       });
