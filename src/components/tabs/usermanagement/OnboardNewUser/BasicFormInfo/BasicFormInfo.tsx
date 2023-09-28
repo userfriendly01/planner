@@ -11,9 +11,9 @@ import {
   Tooltip
 } from "@mui/material";
 import {
-  DidFormInfo,
   Dropdown,
   ExtensionInput,
+  ForwardToEntryForm,
   NNumberInput,
   PhoneNumberInput,
   SkillsFormInfo
@@ -24,7 +24,7 @@ import {
   userFormActions
 } from "context";
 import { formModes } from "globals";
-import React from "react";
+import React, { useState } from "react";
 import {
   getOverflowSkillFromProfile,
   isProfileIdValid,
@@ -47,6 +47,8 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
   const form = useFormState();
   const setForm = useFormDispatch();
 
+  const [autoUpdateOutgoing, setAutoUpdateOutgoing] = useState(form.triton.outgoing.value === form.triton.directDialNum.value || !form.triton.outgoing.value);
+
   const formatDropdownOption = (value: any, label: string, option: any) => {
     if(typeof option === "object"){
       return {
@@ -56,14 +58,6 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
       };
     } else {
       return "";
-    }
-  };
-
-  const isOutgoingDisabled = (): boolean => {
-    if (form.formMode === formModes.INSERT) {
-      return false;
-    } else {
-      return form.editDisabled && worker?.directDialNum ? true : false;
     }
   };
 
@@ -171,14 +165,67 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
         <SkillsFormInfo />
       </FormControlsPane>
       <RightColumn>
-        {!form.triton.didUser ?
+        <FormControlsPane>
+          {form.triton.didUser && (
+            <PhoneNumberInput
+              disabled={form.formMode === formModes.DELETE}
+              allowSevenDigitVdn={false}
+              id="direct-dial-number"
+              number={form.triton.directDialNum.value}
+              label="Direct Dial Number *"
+              showError={form.triton.directDialNum.blurred}
+              onBlur={() => handleOnBlur("directDialNum", "triton")}
+              updateValue={(maskedValue, _unmaskedValue, isValid, e164Number) => {
+                setForm({
+                  type: userFormActions.UPDATE_PHONE_NUMBER,
+                  payload: {
+                    field: "directDialNum",
+                    maskedValue,
+                    isValid,
+                    e164Number,
+                    initialValue: worker?.directDialNum || null
+                  }
+                });
+
+                if(isValid && (!form.triton.outgoing.value || autoUpdateOutgoing)) {
+                  setAutoUpdateOutgoing(true);
+                  setForm({
+                    type: userFormActions.UPDATE_PHONE_NUMBER,
+                    payload: {
+                      field: "outgoing",
+                      maskedValue,
+                      isValid,
+                      e164Number,
+                      initialValue: worker?.attributes?.did || null
+                    }
+                  });
+                }
+              }}
+            />
+          )}
+          {form.triton.didUser
+            && form.formMode === formModes.UPDATE
+            && form.triton.directDialNum.updated
+            && form.triton.directDialNum.e164 !== worker?.directDialNum
+            && (
+              <ForwardToEntryForm
+                label={"Please choose a forward to option for the existing direct dial number"}
+                updateForwardTo={(value: string) => {
+                  setForm({
+                    type: userFormActions.UPDATE_INACTIVE_FORWARD_TO,
+                    payload: value
+                  });
+                }}
+              />
+            )
+          }
           <PhoneNumberInput
-            disabled={isOutgoingDisabled() || form.formMode === formModes.DELETE}
+            disabled={form.formMode === formModes.DELETE}
             allowSevenDigitVdn={false}
             id="outgoing-number"
             number={form.triton.outgoing.value}
             onBlur={() => handleOnBlur("outgoing", "triton")}
-            label="Outgoing Number *"
+            label="Outbound Caller ID *"
             showError={form.triton.outgoing.blurred}
             updateValue={(maskedValue: string, _unmaskedValue: string, isValid: boolean, e164Number: string) => {
               setForm({
@@ -187,17 +234,45 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
                   field: "outgoing",
                   maskedValue,
                   isValid,
-                  e164Number
+                  e164Number,
+                  initialValue: worker?.attributes?.did || null
                 }
               });
+
+              if(isValid) {
+                setAutoUpdateOutgoing(false);
+              } else {
+                setAutoUpdateOutgoing(true);
+              }
             }}
-          /> :
-          <DidFormInfo
-            worker={worker}
-            forwardToToggle={forwardToToggle}
-            setForwardToToggle={setForwardToToggle}
           />
-        }
+          {form.triton.didUser && (
+            <PhoneNumberInput
+              disabled={
+                !worker?.alternateDid ||
+              form.formMode === formModes.INSERT ? false : true ||
+              form.formMode === formModes.DELETE
+              }
+              allowSevenDigitVdn={false}
+              id="skype-teams-did"
+              number={form.triton.alternateDid.value}
+              label="Skype/Teams DID *"
+              showError={form.triton.alternateDid.blurred}
+              onBlur={() => handleOnBlur("alternateDid", "triton")}
+              updateValue={(maskedValue, _unmaskedValue, isValid, e164Number) => {
+                setForm({
+                  type: userFormActions.UPDATE_PHONE_NUMBER,
+                  payload: {
+                    field: "alternateDid",
+                    maskedValue,
+                    isValid,
+                    e164Number
+                  }
+                });
+              }}
+            />
+          )}
+        </FormControlsPane>
         <Tooltip
           title={
             form.formMode === formModes.UPDATE && worker?.directDialNum ?
@@ -264,8 +339,8 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
               />
               <ToggleLabel>Self Service Indicator</ToggleLabel>
             </ToggleContainer>
-            </Tooltip>) : null}
-          <RoutingAttributes />
+          </Tooltip>) : null}
+        <RoutingAttributes />
       </RightColumn>
     </FormControlsContainer>
   );

@@ -375,7 +375,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
             updated: false,
             skills: [],
             levels: {}
-          },
+          }
         }
       };
     }
@@ -721,7 +721,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
           PersonSkills,
           OptionalColumns
         }
-      }
+      };
     }
     case userFormActions.SET_WFM_BUSINESS_UNIT: {
       return {
@@ -974,7 +974,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
             ...state.triton.selfServiceInd,
             value: worker.selfServiceInd || false
           }
-        },
+        }
       };
     }
     case userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE: {
@@ -1066,6 +1066,8 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
       const value = action.payload.maskedValue;
       const isValid = action.payload.isValid;
       const e164 = action.payload.e164Number;
+      const initialValue = action.payload.initialValue;
+
       return {
         ...state,
         triton: {
@@ -1074,7 +1076,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
             ...state.triton[field],
             value,
             e164,
-            updated: true,
+            updated: initialValue !== e164,
             valid: isValid && (e164 ? true : false)
           }
         }

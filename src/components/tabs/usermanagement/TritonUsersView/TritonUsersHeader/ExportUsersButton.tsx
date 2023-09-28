@@ -36,10 +36,8 @@ const ExportButton = (props: ExportTritonUserProps) => {
     workerObj.disabled_skills = formatWorkerAttributeSkillsToString(worker.attributes?.disabled_skills).toString();
     workerObj.ou = profile ? profile.operating_unit_nme : "";
     workerObj.sales_assoc_workers = salesAssociateWorkers ? salesAssociateWorkers.join(", ") : "";
+    workerObj.outbound_number = workerObj.did;
 
-    if(!workerObj.directDialNum){
-      workerObj.outbound_number = workerObj.did;
-    }
     delete workerObj.attributes;
     return workerObj;
   });
