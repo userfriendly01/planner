@@ -91,7 +91,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       },
       department_id: form.nNumber.nNumberFetchedUser.departmentNumber,// need this value otherwise the department_name will not appear in flex insights,
       department_name: form.nNumber.nNumberFetchedUser.departmentName,
-      did: form.triton.outgoing.e164, //if this is a did user it should be the direct dial num
+      did: form.triton.outgoing.e164,
       email: form.nNumber.nNumberFetchedUser.email,
       email_address: form.nNumber.nNumberFetchedUser.email,
       emp_first_name: form.nNumber.nNumberFetchedUser.firstName,

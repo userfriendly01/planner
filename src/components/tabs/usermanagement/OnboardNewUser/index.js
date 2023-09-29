@@ -5,6 +5,6 @@ export * from "./CallRecording";
 export * from "./Extension/ExtensionSearchParams";
 export * from "./UserEntryFormWrapper";
 export * from "./DeleteTritonUser";
-export * from "./DidFormInfo";
+export * from "./ForwardToEntryForm";
 export * from "./Skills";
 export * from "./Extension";

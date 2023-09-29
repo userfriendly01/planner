@@ -38,7 +38,6 @@ export const FormControlsPane = styled.div`
   display: flex;
   flex-direction: column;
   min-width: 320px;
-  padding: 0 8px;
   width: 100%;
   max-width: 400px;
 `;
