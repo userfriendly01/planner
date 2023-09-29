@@ -96,6 +96,11 @@ export const profileTableColumnHeader = [
     COLUMN_NAME: "EFT Authorization",
     TOOLTIP: "Enable EFT authorization tagging on recordings"
   },
+
+  {
+    COLUMN_NAME: "Claim Number",
+    TOOLTIP: "Enable Claim Number tagging on recordings"
+  },
   {
     COLUMN_NAME: "Self Service Indicator",
     TOOLTIP: "Self service indicator is applicable to profiles with an id of 39 and above, but is actually set at the worker attribute level"

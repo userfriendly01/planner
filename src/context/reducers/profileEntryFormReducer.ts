@@ -73,6 +73,9 @@ export const initialProfileEntryFormState: ProfileEntryFormState = {
   },
   eftAuthorization: {
     value: false
+  },  
+  claimNumber: {
+    value: false
   },
   overflowSkill: {
     value: "",
@@ -219,6 +222,7 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         callReason: formatProfileBooleanDataTrueFalse(profile.call_reason_i.data[0]),
         clickToDial: formatProfileBooleanDataTrueFalse(profile.click_to_dial_i.data[0]),
         eftAuthorization: formatProfileBooleanDataTrueFalse(profile.eft_authorization_i.data[0]),
+        claimNumber: formatProfileBooleanDataTrueFalse(profile.claim_number_i.data[0]),
         overflowSkill: {
           value: formatSimpleText(profile.overflow_skill),
           valid: true

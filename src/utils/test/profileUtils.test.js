@@ -264,6 +264,9 @@ describe("profileUtils", () => {
       eftAuthorization: {
         value: false
       },
+      claimNumber: {
+        value: false
+      },
       overflowSkill: {
         value: "OverflowTestSKill",
         updated: false,
@@ -321,6 +324,7 @@ describe("profileUtils", () => {
       call_reason_i: false,
       click_to_dial_i: false,
       eft_authorization_i: false,
+      claim_number_i: false,
       manual_record_inbound_i: true,
       manual_recorded_i: false,
       operating_unit_nme: "hello",
@@ -436,6 +440,10 @@ describe("profileUtils", () => {
         value: false,
         updated: true
       },
+      claimNumber: {
+        value: false,
+        updated: true
+      },
       overflowSkill: {
         value: "OverflowTestSKill",
         updated: true,
@@ -495,6 +503,7 @@ describe("profileUtils", () => {
       call_reason_i: false,
       click_to_dial_i: false,
       eft_authorization_i: false,
+      claim_number_i: false,
       manual_record_inbound_i: true,
       manual_recorded_i: false,
       otbnd_recorded_i: true,

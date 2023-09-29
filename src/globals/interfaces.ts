@@ -133,6 +133,7 @@ export interface TritonProfile {
   call_reason_i: MySqlBoolean,
   click_to_dial_i: MySqlBoolean,
   eft_authorization_i: MySqlBoolean,
+  claim_number_i: MySqlBoolean,
   manual_record_inbound_i: MySqlBoolean,
   manual_recorded_i: MySqlBoolean,
   otbnd_recorded_i: MySqlBoolean,
@@ -171,6 +172,7 @@ export interface ProfilePayload {
   call_reason_i: boolean,
   click_to_dial_i: boolean,
   eft_authorization_i: boolean,
+  claim_number_i: boolean,
   transferQueues: Array<object>,
   aggregateQueues: Array<number>
 }
