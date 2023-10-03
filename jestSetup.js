@@ -96,6 +96,7 @@ jest.mock("services", () => ({
   queryRoutingData: jest.fn(),
   retrieveFlowData: jest.fn(),
   retrieveRoutingData: jest.fn(),
+  routingBatchDelete: jest.fn(),
   updateCalabrioUser: jest.fn(),
   updateClosedMessage: jest.fn(),
   updateDirectory: jest.fn(),
