@@ -98,8 +98,8 @@ export const profileTableColumnHeader = [
   },
 
   {
-    COLUMN_NAME: "Claim Number",
-    TOOLTIP: "Enable Claim Number tagging on recordings"
+    COLUMN_NAME: "Claim Number Edit",
+    TOOLTIP: "Enable Claim Number Edit tagging on recordings"
   },
   {
     COLUMN_NAME: "Self Service Indicator",

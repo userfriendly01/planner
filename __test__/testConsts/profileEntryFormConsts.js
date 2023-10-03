@@ -48,7 +48,7 @@ export const initialProfileEntryFormState = {
   eftAuthorization: {
     value: false
   },
-  claimNumber: {
+  claimNumberEdit: {
     value: false
   },
   overflowSkill: {
@@ -116,7 +116,7 @@ export const validProfileEntryFormState = {
   eftAuthorization: {
     value: false
   },
-  claimNumber: {
+  claimNumberEdit: {
     value: false
   },
   overflowSkill: {
@@ -187,7 +187,7 @@ export const invalidProfileEntryFormState = {
   eftAuthorization: {
     value: false
   },
-  claimNumber: {
+  claimNumberEdit: {
     value: false
   },
   overflowSkill: {
@@ -257,7 +257,7 @@ export const initialProfileEditEntryFormState = {
   eftAuthorization: {
     value: false
   },
-  claimNumber: {
+  claimNumberEdit: {
     value: false
   },
   overflowSkill: {

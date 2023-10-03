@@ -172,7 +172,7 @@ export interface ProfilePayload {
   call_reason_i: boolean,
   click_to_dial_i: boolean,
   eft_authorization_i: boolean,
-  claim_number_i: boolean,
+  claim_number_edit_i: boolean,
   transferQueues: Array<object>,
   aggregateQueues: Array<number>
 }
