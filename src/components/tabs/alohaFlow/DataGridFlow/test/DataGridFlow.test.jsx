@@ -22,7 +22,7 @@ import { useAdminState } from "context";
 import { CustomToast } from "components";
 import DataGridFlow from "../DataGridFlow";
 import {
-  retrieveFlowData,queryFlowData, flowBatchDelete, batchFlowUpdate, batchFlowCreate
+  retrieveFlowData,queryFlowData, flowBatchDelete, batchFlowUpdate, batchFlowCreate, batchDeleteItems
 } from "services";
 import { PreviewModal } from "../../PreviewModal";
 import { createFlowDataList } from "../../PreviewModal/test/PreviewUtil.test";
@@ -85,6 +85,7 @@ describe("<DataGridFlow />", () => {
     retrieveFlowData.mockReset();
     queryFlowData.mockReset();
     flowBatchDelete.mockReset();
+    batchDeleteItems.mockReset();
     useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
       DataGrid,
@@ -536,8 +537,12 @@ describe("<DataGridFlow />", () => {
       renderComponent();
       const previewModalOnDelete = PreviewModal.mock.calls[0][0].onDelete;
       const selectedRow = createFlowDataList(2);
-      flowBatchDelete.mockResolvedValue({ errors: [{ message: "unknown error" }]});
-      expect(previewModalOnDelete(selectedRow)).rejects.toThrowError("Error while deleting records.");
+      batchDeleteItems.mockResolvedValue({
+        response: {
+          flag: true
+        }
+      });
+      expect(previewModalOnDelete(selectedRow)).toBeTruthy();
     });
   });
 

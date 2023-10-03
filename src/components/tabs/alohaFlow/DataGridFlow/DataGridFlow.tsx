@@ -412,7 +412,6 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
   const handleOnBulkDelete = async(rows: Array<CctSharedCallFlowDb> ) =>{
     const keysToDelete = rows.map(x => x.pkey);
     const response = await batchDeleteItems(keysToDelete, accessToken, graphQLEndpoint);
-    console.log("response", response);
     if(response?.flag) {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
@@ -430,7 +429,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       }));
     }
     setSelectedList([]);
-    const deletedIds = response.success.map((x:any) => x.pkey);
+    const deletedIds = response?.success?.map((x:any) => x.pkey);
     const filteredItems = dataFlow.filteredItems.filter(x=> deletedIds.indexOf(x.pkey) === -1);
     const filteredData = dataFlow.data.filter(x=> deletedIds.indexOf(x.pkey) === -1);
 
@@ -438,7 +437,8 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       ...dataFlowProps,
       filteredItems,
       data: filteredData,
-      isPreviewModalOpen: response?.flag || false
+      isPreviewModalOpen: response?.flag || false,
+      fetching: false
     }));
   };
 
@@ -525,10 +525,13 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         onCreate={handleOnBulkCreate}
         onUpdate={handleOnBulkUpdate}
         onDelete={handleOnBulkDelete}
+        loading={dataFlow.fetching}
       />
     </div>
   );
 };
 
 export default DataGridFlow;
+
+
 

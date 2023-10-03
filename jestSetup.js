@@ -27,6 +27,7 @@ jest.mock("services", () => ({
   addSkillGroup: jest.fn(),
   addSkillGroupSkill: jest.fn(),
   batchDelete: jest.fn(),
+  batchDeleteItems: jest.fn(),
   batchFlowUpdate: jest.fn(),
   batchFlowCreate: jest.fn(),
   batchRoutingCreate: jest.fn(),
