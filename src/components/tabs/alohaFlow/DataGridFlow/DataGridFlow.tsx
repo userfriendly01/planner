@@ -412,7 +412,6 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
   const handleOnBulkDelete = async(rows: Array<CctSharedCallFlowDb> ) =>{
     const keysToDelete = rows.map(x => x.pkey);
     const response = await batchDeleteItems(keysToDelete, accessToken, graphQLEndpoint);
-    console.log("response", response);
     if(response?.flag) {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
