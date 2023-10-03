@@ -64,7 +64,7 @@ export interface ProfileEntryFormState {
   callTagsList: CallTag[],
   clickToDial: FieldState,
   eftAuthorization: FieldState,
-  claimNumber: FieldState,
+  claimNumberEdit: FieldState,
   formMode: string,
   inboundRecorded: FieldState,
   manualRecorded: FieldState,

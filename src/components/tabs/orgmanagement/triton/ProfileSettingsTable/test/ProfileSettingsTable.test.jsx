@@ -108,7 +108,7 @@ describe("<ProfileSettingsTable />", () => {
         data: [1],
         type: "Buffer"
       },
-      claim_number_i: {
+      claim_number_edit_i: {
         data: [1],
         type: "Buffer"
       },
@@ -177,7 +177,7 @@ describe("<ProfileSettingsTable />", () => {
       expect(rendered.getByText("Call Reason", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Click To Dial", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("EFT Authorization", { selector: "th" })).toBeInTheDocument();
-      expect(rendered.getByText("Claim Number", { selector: "th" })).toBeInTheDocument();
+      expect(rendered.getByText("Claim Number Edit", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Self Service Indicator", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Activities", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Transfer Queues", { selector: "th" })).toBeInTheDocument();
@@ -207,7 +207,7 @@ describe("<ProfileSettingsTable />", () => {
       expect(rendered.getByLabelText("Voice mail will be transcribed and sent within the notification email to the user")).toBeInTheDocument();
       expect(rendered.getByLabelText("Enable click-to-dial/transfer from external application")).toBeInTheDocument();
       expect(rendered.getByLabelText("Enable EFT authorization tagging on recordings")).toBeInTheDocument();
-      expect(rendered.getByLabelText("Enable Claim Number tagging on recordings")).toBeInTheDocument();
+      expect(rendered.getByLabelText("Enable Claim Number  Edit tagging on recordings")).toBeInTheDocument();
       expect(rendered.getByLabelText("UI Feature: Allows agent to record call reason data.")).toBeInTheDocument();
       expect(rendered.getByLabelText("Self service indicator is applicable to profiles with an id of 39 and above, but is actually set at the worker attribute level")).toBeInTheDocument();
       expect(rendered.getByLabelText("Profile Activities")).toBeInTheDocument();

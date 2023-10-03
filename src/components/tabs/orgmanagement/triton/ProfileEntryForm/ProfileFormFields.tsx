@@ -103,8 +103,8 @@ const ProfileFormFields = () => {
       label: "EFT Authorization"
     },
     {
-      fieldKey: "claimNumber",
-      label: "Claim Number"
+      fieldKey: "claimNumberEdit",
+      label: "Claim Number Edit"
     }
   ];
 

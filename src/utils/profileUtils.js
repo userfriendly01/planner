@@ -112,7 +112,7 @@ export const createProfilePayload = form => {
     click_to_dial_i: form.clickToDial.value,
     call_reason_i: form.callReason.value,
     eft_authorization_i: form.eftAuthorization.value,
-    claim_number_i: form.claimNumber.value,
+    claim_number_edit_i: form.claimNumberEdit.value,
     transferQueues: form.transferQueues.filter(queue => queue.ctmSkillId > 0).map(queue => {
       return {
         skill_id: queue.ctmSkillId,
@@ -158,7 +158,7 @@ export const updateProfilePayload = form => {
   form.callReason.updated ? payload.call_reason_i = form.callReason.value : null;
   form.clickToDial.updated ? payload.click_to_dial_i = form.clickToDial.value : null;
   form.eftAuthorization.updated ? payload.eft_authorization_i = form.eftAuthorization.value : null;
-  form.claimNumber.updated ? payload.claim_number_i = form.claimNumber.value : null;
+  form.claimNumberEdit.updated ? payload.claim_number_edit_i = form.claimNumberEdit.value : null;
   form.callTagsUpdated ? payload.callTags = form.callTagsList.map(callTag => {
     return {
       wrkr_tsk_info_id: callTag.wrkr_tsk_info_id,

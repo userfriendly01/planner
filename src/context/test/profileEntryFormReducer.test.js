@@ -342,7 +342,7 @@ describe("profileEntryFormReducer", () => {
           type: "Buffer",
           data: [1]
         },
-        claim_number_i: {
+        claim_number_edit_i: {
           type: "Buffer",
           data: [1]
         },
@@ -500,7 +500,7 @@ describe("profileEntryFormReducer", () => {
         eftAuthorization: {
           value: true
         },
-        claimNumber: {
+        claimNumberEdit: {
           value: true
         },
         overflowSkill: {
@@ -606,7 +606,7 @@ describe("profileEntryFormReducer", () => {
           type: "Buffer",
           data: [1]
         },
-        claim_number_i: {
+        claim_number_edit_i: {
           type: "Buffer",
           data: [1]
         },
@@ -764,7 +764,7 @@ describe("profileEntryFormReducer", () => {
         eftAuthorization: {
           value: true
         },
-        claimNumber: {
+        claimNumberEdit: {
           value: true
         },
         overflowSkill: {
