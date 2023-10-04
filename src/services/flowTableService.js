@@ -411,11 +411,11 @@ async function batchDeleteItems(items,accessToken,graphQlApiUrl){
   while (items.length > 0){
     flowDeleteArray.push(items.splice(0, size));
   }
-  for(let i=0; i<flowDeleteArray.length; i++){
+  for(const flowValue of flowDeleteArray){
     const successResponse=response.success;
     const failureResponse= response.failure;
-    const flowRespKeys = flowDeleteArray[i].map(x=>({ "pkey": x }));
-    await flowBatchDelete(flowDeleteArray[i],accessToken,graphQlApiUrl).then(resp=>{
+    const flowRespKeys = flowValue.map(x=>({ "pkey": x }));
+    await flowBatchDelete(flowValue,accessToken,graphQlApiUrl).then(resp=>{
       if(!resp?.errors){
         response.success = successResponse.concat(flowRespKeys);
       }

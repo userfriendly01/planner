@@ -24,12 +24,11 @@ interface PreviewModalProps {
     onCreate?: (rows: Array<CctSharedCallFlowDb>) => void;
     onUpdate?: (rows: Array<CctSharedCallFlowDb>) => void;
     loading?: boolean;
-    maxId?: number;
 }
 
 const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   const {
-    isOpen, rows, onClose, action,maxId , onDelete, onCreate, onUpdate, loading
+    isOpen, rows, onClose, action , onDelete, onCreate, onUpdate, loading
   } = props;
 
   const apiRef = useGridApiRef();
