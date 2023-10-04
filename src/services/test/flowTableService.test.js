@@ -1,10 +1,6 @@
 import { act } from "@testing-library/react";
 import  {
-<<<<<<< HEAD
-  retrieveFlowData,addFlowRule, deleteFlowRule, updateFlowDB, flowBatchDelete, queryFlowData, batchDeleteItems, batchFlowUpdate, batchFlowCreate
-=======
-  retrieveFlowData,addFlowRule, deleteFlowRule, updateFlowDB, flowBatchDelete, queryFlowData, batchFlowUpdate
->>>>>>> parent of 2585569f... Merge branch 'multi-add-flow-routing' of https://github.com/lmigtech/cicct-softphone-admin-ui into feature/CCTP-8797-batch-delete-fix
+  retrieveFlowData,addFlowRule, deleteFlowRule, updateFlowDB, flowBatchDelete, queryFlowData, batchDeleteItems, batchFlowUpdate
 }  from "../flowTableService";
 
 const jsonFlowData = {
