@@ -35,6 +35,7 @@ import {
   downloadCSV,
   getGraphQLEndpoint,
   initializedAlertBar,
+  logger,
   routingFields,
   routingInitRule,
   routingInitState
@@ -340,7 +341,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
   };
 
   const handleOnBulkCreate = (rows: Array<CctSharedCallRoutingDb> ) =>{
-    console.log("Bulk Create: ", rows);
+    logger.log("Bulk Create: ", rows);
   };
 
   const handleOnBulkUpdate = async(rows: Array<CctSharedCallRoutingDb> ) =>{

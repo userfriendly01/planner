@@ -21,8 +21,6 @@ const BulkUpdateCallerStates = (props: BulkCallerStatesProps): any => {
     removeTemplate
   } = props;
 
-  console.log("BulkUpdateForm - selectedTemplates", selectedTemplates);
-
   const dropdownOptions = [
     {
       label: "Add Caller State(s)",

@@ -3,7 +3,7 @@
 These instructions will get you up and running on your local machine for development and testing purposes.
 
 ## Wiki
-For a detailed explanation of running Triton Admin Locally go here: https://forge.lmig.com/wiki/display/CICCT/Guide+to+Running+Triton+Admin+Locally
+For a detailed explanation of running Triton Admin Locally go here: https://libertymutual.atlassian.net/wiki/spaces/UCCT/pages/270470435/Guide+to+Running+Triton+Admin+Locally
 
 ### Overview
 

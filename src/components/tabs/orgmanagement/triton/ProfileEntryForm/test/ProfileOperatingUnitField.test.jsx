@@ -7,10 +7,12 @@ import {
   setupMockedComponents,
   getMockedComponentProps,
   initialTestState,
-  mockOperatingUnits
+  mockOperatingUnits,
+  waitFor
 } from "testUtils";
 import { getOperatingUnits } from "services";
 import { act } from "react-dom/test-utils";
+import { logger } from "utils";
 
 jest.mock("components", () => ({
   __esModule: true,
@@ -55,12 +57,10 @@ describe("<ProfileOperatingUnitField />", () => {
         });
       });
       test("should return 'An error occurred while logging in.'", async () => {
-        try {
-          renderComponent();
-          expect(console.error).toHaveBeenCalledTimes(1);
-        } catch (err) {
-          expect(err.msg).toBe("Failed to fetch ou from service");
-        }
+        renderComponent();
+        await waitFor(() => {
+          expect(logger.error).toHaveBeenCalledTimes(1);
+        });
       });
     });
   });

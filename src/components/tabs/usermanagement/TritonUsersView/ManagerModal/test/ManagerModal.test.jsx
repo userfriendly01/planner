@@ -15,7 +15,6 @@ import {
 import React from "react";
 import { act } from "react-dom/test-utils";
 import { Modal } from "@mui/material";
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import {
   addManager,
   editManager
@@ -131,6 +130,11 @@ describe("<ManagerModal />", () => {
             manager_n_number: "n0262226"
           }
         ]
+      },
+      userContext: {
+        pingIdentity: {
+          sub: "n0138110"
+        }
       }
     });
   });
@@ -285,6 +289,11 @@ describe("<ManagerModal />", () => {
               manager_last_name: "Exist",
               manager_n_number: managerNNumber
             }]
+          },
+          userContext: {
+            pingIdentity: {
+              sub: "n0138110"
+            }
           }
         });
       });

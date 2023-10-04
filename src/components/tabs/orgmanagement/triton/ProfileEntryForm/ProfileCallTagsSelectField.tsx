@@ -22,6 +22,7 @@ import {
 } from "globals";
 import {
   formatCallTagsName,
+  logger,
   sortCallTagByName
 } from "utils";
 import {
@@ -47,14 +48,14 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
         .then((allCallTags: CallTag[]) => {
           setCallTags(allCallTags);
         })
-        .catch(error => console.error(error.msg));
+        .catch(error => logger.error(error.msg, { error }, false));
     }
     if(!callTagOptions.length) {
       getCallTagOptions()
         .then((allCallTagOptions: CallTagOptions[]) => {
           setCallTagOptions(allCallTagOptions);
         })
-        .catch(error => console.error(error.msg));
+        .catch(error => logger.error(error.msg, { error }, false));
     }
   }, []);
 

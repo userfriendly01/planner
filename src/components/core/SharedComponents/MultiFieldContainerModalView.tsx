@@ -53,7 +53,7 @@ const MultiFieldContainerModalView = ({
     let key: string = event.target.name;
     let value = event.target.value;
     const type = event.target.type;
-    console.log("handling multimodal", event);
+
     if(type === "number" ){
       value=parseInt(value);
     }

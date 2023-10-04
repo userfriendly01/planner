@@ -5,23 +5,23 @@ export interface DropdownOption {
 
 export const RoutingTeamAttrDropDownOptions: DropdownOption[] = [
   {
-    label: "License CSC",
+    label: "LicCSC",
     value: "LicCSC"
   },
   {
-    label: "License Part",
+    label: "LicPart",
     value: "LicPart"
   },
   {
-    label: "UnLicence CSC",
+    label: "UnLicCSC",
     value: "UnlicCSC"
   },
   {
-    label: "UnLicense Part",
+    label: "UnlicPartSitel",
     value: "UnlicPartSitel"
   },
   {
-    label: "UnLicense PartTP",
+    label: "UnlicPartTP",
     value: "UnlicPartTP"
   },
   {
@@ -45,7 +45,7 @@ export const RoutingTeamAttrDropDownOptions: DropdownOption[] = [
     value: "FoundeverUnlicensed"
   },
   {
-    label: "Teleperformance Unlicenced",
+    label: "TeleperformanceUnlicenced",
     value: "TeleperformanceUnlicensed"
   },
   {
@@ -61,15 +61,15 @@ export const RoutingTeamAttrDropDownOptions: DropdownOption[] = [
     value: "FoundeverLicensed"
   },
   {
-    label: "Telepeformance Licensed",
+    label: "TelepeformanceLicensed",
     value: "TelepeformanceLicensed"
   },
   {
-    label: "Found Ever Licensed AE",
+    label: "FoundEverLicensedAE",
     value: "FoundeverLicensedAE"
   },
   {
-    label: "Teleperformance LicensedAE",
+    label: "TeleperformanceLicensedAE",
     value: "TeleperformanceLicensedAE"
   },
   {
@@ -81,7 +81,7 @@ export const RoutingTeamAttrDropDownOptions: DropdownOption[] = [
     value: "Expanded"
   },
   {
-    label: "Expanded Plus",
+    label: "ExpandedPlus",
     value: "ExpandedPlus"
   },
   {
@@ -97,19 +97,19 @@ export const RoutingTeamAttrDropDownOptions: DropdownOption[] = [
     value: "Retention"
   },
   {
-    label: "Foundever Right Track",
+    label: "FoundeverRightTrack",
     value: "FoundeverRightTrack"
   },
   {
-    label: "Retention Nest",
+    label: "RetentionNest",
     value: "RetentionNest"
   },
   {
-    label: "In bound",
+    label: "Inbound",
     value: "Inbound"
   },
   {
-    label: "Tru Stage",
+    label: "TruStage",
     value: "TruStage"
   },
   {

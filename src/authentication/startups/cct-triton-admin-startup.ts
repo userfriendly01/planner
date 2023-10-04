@@ -13,6 +13,7 @@ import {
   formatOfficesResponse,
   formatWorkerResponse,
   getCalabrioWfmOptions,
+  logger,
   myAxios
 } from "utils";
 
@@ -24,6 +25,8 @@ const getManagers = async (dispatch: any) => {
       payload: formatManagersResponse(managers)
     });
   } catch (error) {
+    logger.error("Failed to fetch managers from service", { error });
+
     throw ({
       msg: "Failed to fetch managers from service",
       error
@@ -39,6 +42,8 @@ const getOffices = async (dispatch: any) => {
       payload: formatOfficesResponse(offices)
     });
   } catch (error) {
+    logger.error("Failed to fetch offices from service", { error });
+
     throw ({
       msg: "Failed to fetch offices from service",
       error
@@ -49,13 +54,13 @@ const getOffices = async (dispatch: any) => {
 const getCalabrioUsers = async (dispatch: any) => {
   try {
     const users: any = await getCalabrioUsersServiceCall();
-    console.log("Calabrio Users", users);
+    logger.log("Calabrio Users", users);
     dispatch({
       type: "loadCalabrioUsers",
       payload: users.data
     });
   } catch (error) {
-    console.error("Failed to fetch calabrio users from service");
+    logger.error("Failed to fetch Calabrio Users from service", { error });
     //We're not throwing an error here so that we can still load Triton Admin and use its other features if this fails
     //Additionally - there can be local issues we have to work out when trying to call this 
   }
@@ -64,13 +69,13 @@ const getCalabrioUsers = async (dispatch: any) => {
 const getCalabrioOrg = async (dispatch: any) => {
   try {
     const org: any = await getCalabrioOrgServiceCall();
-    console.log("Calabrio Org", org);
+    logger.log("Calabrio Org", org);
     dispatch({
       type: "loadCalabrioOrg",
       payload: org.data
     });
   } catch (error) {
-    console.error("Failed to fetch calabrio org from service");
+    logger.error("Failed to fetch Calabrio org from service", { error });
     //We're not throwing an error here so that we can still load Triton Admin and use its other features if this fails
     //Additionally - there can be local issues we have to work out when trying to call this 
   }
@@ -79,13 +84,13 @@ const getCalabrioOrg = async (dispatch: any) => {
 const getCalabrioRoles = async (dispatch: any) => {
   try {
     const roles: any = await getCalabrioRolesServiceCall();
-    console.log("Calabrio Roles", roles);
+    logger.log("Calabrio Roles", roles);
     dispatch({
       type: "loadCalabrioRoles",
       payload: roles.data
     });
   } catch (error) {
-    console.error("Failed to fetch calabrio Roles from service");
+    logger.error("Failed to fetch Calabrio Roles from service", { error });
     //We're not throwing an error here so that we can still load Triton Admin and use its other features if this fails
     //Additionally - there can be local issues we have to work out when trying to call this 
   }
@@ -100,6 +105,8 @@ const getProfiles = (dispatch: any) => new Promise((resolve, reject) => myAxios.
     resolve(true);
   })
   .catch(error => {
+    logger.error("Failed to fetch profiles from service", { error });
+
     reject({
       msg: "Failed to fetch profiles from service",
       error
@@ -120,6 +127,8 @@ export const getSkills = (dispatch: any) => new Promise((resolve, reject) => myA
     resolve(true);
   })
   .catch(error => {
+    logger.error("Failed to fetch skills from service", { error });
+
     reject({
       msg: "Failed to fetch skills from service",
       error
@@ -138,6 +147,8 @@ const getWorkers = async (dispatch: any) => {
     }));
     return filteredWorkers;
   } catch (error) {
+    logger.error("Failed to fetch workers from service", { error });
+
     throw ({
       msg: "Failed to fetch workers from service",
       error
@@ -158,7 +169,8 @@ const getBusinessUnits = async (dispatch: any) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Failed to fetch Calabrio Business Units");
+    logger.error("Failed to fetch Calabrio Business Units", { error });
+
     throw ({
       msg: "Failed to fetch Calabrio Business Units",
       error

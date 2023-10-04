@@ -1,6 +1,5 @@
 
 import { Button } from "../BulkChanges.Styles";
-import { Template } from "../BulkChanges.Interfaces";
 import React from "react";
 import {
   ExcelExport
@@ -15,7 +14,6 @@ const ExportOptionsButton = (props: any) => {
   } = props;
 
   const _export = React.useRef(null);
-  console.log("ExportOptionsButton Template", template);
 
   const handleExport = () => {
     const rows: any = [];
@@ -57,9 +55,6 @@ const ExportOptionsButton = (props: any) => {
         }
       });
     });
-
-    console.log("rows", rows);
-    console.log("columns", columns);
 
     if (_export !== null) {
       _export.current.save(rows, columns);

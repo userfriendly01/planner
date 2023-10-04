@@ -31,7 +31,8 @@ import {
   initializedAlertBar,
   languageOffer,
   userDestination,
-  flowType
+  flowType,
+  checkGreetingMessageRegExp
 } from "utils";
 import ComponentControl from "components/core/SharedComponents/ComponentControl";
 import {
@@ -93,6 +94,9 @@ export const EditFlow = ({
   }, [selectedRow]);
 
   const isInvalidField =(key: string, value: string): boolean =>{
+    if(key === "greetingMessages"){
+      return checkGreetingMessageRegExp(value);
+    }
     return flowRule[key].required && [undefined, "", null, "null"].includes(value);
   };
 

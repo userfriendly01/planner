@@ -3,7 +3,8 @@ import React from "react";
 import {
   profileEntryFormDispatch,
   profileEntryFormState,
-  profileEntryFormActions
+  profileEntryFormActions,
+  useAdminState
 } from "context";
 import { Modal } from "@mui/material";
 import { StyledButton } from "components";
@@ -19,7 +20,8 @@ import {
   initialProfileEntryFormState,
   initialProfileEditEntryFormState,
   waitFor,
-  validProfileEntryFormState
+  validProfileEntryFormState,
+  initialTestState
 } from "testUtils";
 import { createProfile } from "services";
 
@@ -33,7 +35,8 @@ jest.mock("context", () => ({
   __esModule: true,
   profileEntryFormState: jest.fn(),
   profileEntryFormDispatch: jest.fn(),
-  profileEntryFormActions: { RESET_FORM: "RESET_FORM" }
+  profileEntryFormActions: { RESET_FORM: "RESET_FORM" },
+  useAdminState: jest.fn()
 }));
 
 jest.mock("@mui/material", () => ({
@@ -45,7 +48,8 @@ jest.mock("utils", () => ({
   isProfileFormValid: jest.fn(),
   createProfilePayload: jest.fn(),
   updateProfilePayload: jest.fn(),
-  wait: jest.requireActual("utils").wait
+  wait: jest.requireActual("utils").wait,
+  logger: jest.requireActual("utils").logger
 }));
 
 const mockSetForm = jest.fn();
@@ -53,6 +57,10 @@ const mockHandleClose = jest.fn();
 const mockUpdateLoading = jest.fn();
 
 describe("<ProfileFormButtons />", () => {
+  beforeEach(() => {
+    useAdminState.mockReturnValue(initialTestState);
+  });
+
   const renderComponent = () => {
     return render(
       <ProfileFormButtons

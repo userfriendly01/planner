@@ -25,6 +25,7 @@ import {
 import { Dropdown } from "components";
 import _ from "lodash";
 import { getSkills } from "authentication";
+import { logger } from "utils";
 
 
 const SkillGroupInputContainer = (props: any) => {
@@ -46,6 +47,7 @@ const SkillGroupInputContainer = (props: any) => {
   const dispatch = useAdminDispatch();
   const skillGroups = state.skillContext.skillGroups.slice();
   const skills = state.skillContext.skills.slice();
+  const nNumber = state.userContext.pingIdentity?.sub;
 
   const getSkillGroupOptions = () => {
     return skillGroups.map((skg: any) => {
@@ -111,6 +113,7 @@ const SkillGroupInputContainer = (props: any) => {
         message: "Processing...",
         status: ModalOverlayStatuses.SAVING
       });
+
       try {
         const skillIds = tableState.selected.map((skill: Skill) => skill.ctmSkillId);
 
@@ -118,8 +121,13 @@ const SkillGroupInputContainer = (props: any) => {
           skill_group_nme: skillGroupName.trim(),
           skillIds
         };
-
         await addSkillGroup(requestBody);
+
+        logger.info("Successfully created skill group(s)", {
+          skillIds,
+          skillGroupName: skillGroupName.trim(),
+          nNumber
+        });
 
         setSaveResult({
           message: "Request Successfully Processed",
@@ -133,8 +141,12 @@ const SkillGroupInputContainer = (props: any) => {
           handleCloseConfirmation();
           setAction(null);
         }, timeouts.MODAL_OVERLAY);
-      } catch (err) {
-        console.error("Error: Unable to add skill grouping");
+      } catch (error) {
+        logger.error("Failed to created skill group(s)", {
+          nNumber,
+          error
+        });
+
         setSaveResult({
           message: "Request Failed",
           status: ModalOverlayStatuses.FAIL
@@ -183,8 +195,11 @@ const SkillGroupInputContainer = (props: any) => {
           </ConfirmationSkillList>
         </ConfirmationSkillGroupsDiv>
       </>;
-    } catch (err) {
-      console.error("Failed to update skillGroup", err?.message ? err.message : err);
+    } catch (error) {
+      logger.error("Failed to update skillGroup", {
+        error,
+        nNumber
+      });
       setSaveResult({
         message: "Request Failed",
         status: ModalOverlayStatuses.FAIL
@@ -198,6 +213,12 @@ const SkillGroupInputContainer = (props: any) => {
       });
       try {
         await updateSkillGroup(skillGroupToEditDelete.value, requestBody);
+
+        logger.info("Successfully updated skill group", {
+          skillGroupName: skillGroupName.trim(),
+          nNumber
+        });
+
         setSaveResult({
           message: "Request Successfully Processed",
           status: ModalOverlayStatuses.SUCCESS
@@ -208,8 +229,14 @@ const SkillGroupInputContainer = (props: any) => {
           handleCloseConfirmation();
           setAction(null);
         }, timeouts.MODAL_OVERLAY);
-      } catch (err) {
-        console.error("Error while editing skill grouping", requestBody, err);
+      } catch (error) {
+        logger.error("Failed to edit skill group(s)", {
+          skillGroupName: skillGroupName.trim(),
+          nNumber,
+          requestBody,
+          error
+        });
+
         setSaveResult({
           message: "Request Failed",
           status: ModalOverlayStatuses.FAIL
@@ -236,6 +263,12 @@ const SkillGroupInputContainer = (props: any) => {
       });
       try {
         await deleteSkillGroup(skillGroupToEditDelete.value);
+
+        logger.info("Successfully deleted skill group(s)", {
+          skillGroup: skillGroupToEditDelete.value,
+          nNumber
+        });
+
         setSaveResult({
           message: "Request Successfully Processed",
           status: ModalOverlayStatuses.SUCCESS
@@ -248,8 +281,13 @@ const SkillGroupInputContainer = (props: any) => {
           handleCloseConfirmation();
           setAction(null);
         }, timeouts.MODAL_OVERLAY);
-      } catch (err) {
-        console.error("Unable to delete skill grouping", err);
+      } catch (error) {
+        logger.error("Failed to deleted skill grouping", {
+          skillGroup: skillGroupToEditDelete.value,
+          nNumber,
+          error
+        });
+
         setSaveResult({
           message: "Request Failed",
           status: ModalOverlayStatuses.FAIL

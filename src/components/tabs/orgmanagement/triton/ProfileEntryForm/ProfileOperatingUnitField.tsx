@@ -3,6 +3,7 @@ import { Dropdown } from "components";
 import { getOperatingUnits } from "services";
 import { OperatingUnit } from "globals";
 import { ProfileOperatingUnitFieldProps } from "./ProfileEntryForm.Interfaces";
+import { logger } from "utils";
 
 const ProfileOperatingUnitField = (props: ProfileOperatingUnitFieldProps) => {
 
@@ -17,7 +18,7 @@ const ProfileOperatingUnitField = (props: ProfileOperatingUnitFieldProps) => {
       getOperatingUnits().then((allOUs: OperatingUnit[])  => {
         setOperatingUnitList(allOUs);
         setOuDropDownOptions(getOperatingUnitDropDownOptions(allOUs));
-      }).catch(error => console.error(error.msg));
+      }).catch(error => logger.error(error.msg, { error }, false));
     }
   }, []);
 

@@ -9,6 +9,10 @@ applications:
   timeout: 180
   env:
     NODE_ENV: production
+    DATADOG_APPLICATION_ID: ${secret.datadog.applicationId}
+    DATADOG_CLIENT_TOKEN: ${secret.datadog.clientToken}
+    TROUX_ID: ${forge.troux_application_uuid}
+    APP_ENV: test
   services:
     - everyday-curfew
   blue-green:

@@ -9,7 +9,6 @@ const ExportSuccessButton = (props: any) => {
   const { successfulRows } = props;
 
   const _export = React.useRef(null);
-  console.log("ExportSuccessButton successfulRows", successfulRows);
 
   const handleExport = () => {
     const rows: any = successfulRows;
@@ -34,9 +33,6 @@ const ExportSuccessButton = (props: any) => {
         }
       });
     });
-
-    console.log("rows", rows);
-    console.log("columns", columns);
 
     if (_export !== null) {
       _export.current.save(rows, columns);

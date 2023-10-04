@@ -34,5 +34,5 @@ export const Group = styled.div<{ selected: boolean }>`
 export const Team = styled(FlexColumn)`
   padding: 4px;
   font-size: 17px;
-  border:
+  flex: none;
 `;

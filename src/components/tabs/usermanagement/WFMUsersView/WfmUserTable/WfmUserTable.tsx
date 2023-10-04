@@ -8,14 +8,10 @@ import {
   TableContainer,
   TableText
 } from "./WfmUserTable.Styles";
-import {
-  Delete,
-  Edit
-} from "@mui/icons-material";
+import { Edit } from "@mui/icons-material";
 import {
   useAdminState,
   useFormDispatch,
-  useFormState,
   userFormActions
 } from "context";
 import {
@@ -25,7 +21,7 @@ import {
   WfmUser
 } from "globals";
 import React from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import {
   getWfmBusinessUnits,
   getWfmTeams
@@ -40,7 +36,6 @@ const WfmUserTable = (props: WfmUserTableProps) => {
   const setForm = useFormDispatch();
   const navigate = useNavigate();
 
-  console.log("****tableState in wfm table", tableState.filteredList);
 
   return (
     <TableContainer>
@@ -70,7 +65,7 @@ const WfmUserTable = (props: WfmUserTableProps) => {
                   state
                 }
               });
-              navigate(`/triton-admin/user`)
+              navigate("/triton-admin/user");
             };
             const deleteButtonOnClick = (event: any) => {
               event.stopPropagation();
@@ -87,7 +82,7 @@ const WfmUserTable = (props: WfmUserTableProps) => {
                   formMode: formModes.DELETE
                 }
               });
-              navigate(`/triton-admin/user`)
+              navigate("/triton-admin/user");
             };
             const businessUnit: WfmBusinessUnit | { Name: string } = getWfmBusinessUnits(state).find((bu: WfmBusinessUnit) => bu.Id === user.BusinessUnitId) || { Name: "Not Found" };
             const team: WfmTeam | { Name: string } = getWfmTeams(state).find((team: WfmTeam) => team.Id === user.ParentTeam) || { Name: "Not Found" };

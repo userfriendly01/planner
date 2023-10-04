@@ -47,11 +47,6 @@ export interface BasicFormInfoProps {
   setForwardToToggle: (value: boolean) => void,
 }
 
-export interface DidFormInfoProps {
-  worker: Worker | null,
-  forwardToToggle: boolean,
-  setForwardToToggle: (value: boolean) => void,
-}
 export interface UserFormButtonsProps {
   forwardToToggle: boolean,
   handleClose: () => void,
@@ -92,7 +87,7 @@ export interface UserFormState {
     profileId: FieldState,
     userPreviouslyAdded: boolean,
     zeroOutEnabled: FieldState,
-    selfServiceInd: FieldState 
+    selfServiceInd: FieldState
   },
   calabrio_qm: {
     [key: string]: any,

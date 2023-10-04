@@ -1,4 +1,5 @@
 /* eslint-disable no-console, max-len,  no-return-assign */
+import { logger } from "utils";
 import {
   CctSharedCallFlowDb, FlowContent, FlowMasterData, FlowListMasterData
 } from "../AlohaFlow.Interfaces";
@@ -50,8 +51,8 @@ const getGridMasterData = (data:CctSharedCallFlowDb[] = []):FlowMasterData  => {
       Object.keys(masterData).forEach(key => masterData[key as keyof FlowMasterData] = [...new Set(masterData[key as keyof FlowMasterData])].sort());
       localStorage.setItem(CACHE_MASTER_DATA, JSON.stringify(masterData));
     }
-  } catch (err) {
-    console.error("Error in parsing master data", err);
+  } catch (error) {
+    logger.error("Error in parsing master data", { error }, false);
   }
   return masterData;
 };

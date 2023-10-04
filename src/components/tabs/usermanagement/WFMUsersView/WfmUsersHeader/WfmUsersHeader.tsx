@@ -5,7 +5,9 @@ import {
   Dropdown,
   SearchBox
 } from "components";
-import { useAdminDispatch, useAdminState } from "context";
+import {
+  useAdminDispatch, useAdminState
+} from "context";
 import {
   ModalOverlayStatuses,
   WfmBusinessUnit,
@@ -16,7 +18,8 @@ import {
   getWfmBusinessUnits,
   getWfmTeams,
   sortWFMByName,
-  getCalabrioWfmOrg
+  getCalabrioWfmOrg,
+  logger
 } from "utils";
 
 const ManagementHeader = (props: WfmUsersHeaderProps) => {
@@ -39,7 +42,7 @@ const ManagementHeader = (props: WfmUsersHeaderProps) => {
       });
     });
     return options;
-  }
+  };
 
   const getTeamOptions = () => {
     const options: any[] = [
@@ -64,7 +67,7 @@ const ManagementHeader = (props: WfmUsersHeaderProps) => {
       });
     });
     return options;
-  }
+  };
 
   const getTeamOption = () => {
     const team = getWfmTeams(state, tableState.businessUnitFilter, true).find((tm: any) => tm.Id === tableState.teamFilter);
@@ -73,23 +76,23 @@ const ManagementHeader = (props: WfmUsersHeaderProps) => {
         label: team.Name,
         value: team.Id,
         ...team
-      }
+      };
     } else if(tableState.teamFilter === "no-team"){
       return {
         value: "no-team",
         label: "No Team"
-      }
+      };
     } else {
-      console.log("Team Filter not an available option");
+      logger.log("Team Filter not an available option");
       if(tableState.teamFilter){
         setTableState({
           ...tableState,
           teamFilter: null
         });
       }
-      return ""
+      return "";
     }
-  }
+  };
   return (
     <Wrapper>
       <Dropdown
@@ -103,7 +106,7 @@ const ManagementHeader = (props: WfmUsersHeaderProps) => {
         value={getBusinessUnitOptions().find((bu: any) => bu.Id === tableState.businessUnitFilter) || ""}
         updateValue={async (event: any, newValue: any) => {
           try {
-            setStatus(ModalOverlayStatuses.SAVING)
+            setStatus(ModalOverlayStatuses.SAVING);
             setTableState({
               ...tableState,
               businessUnitFilter: newValue.value,
@@ -111,11 +114,11 @@ const ManagementHeader = (props: WfmUsersHeaderProps) => {
                 ...tableState.pagination,
                 pageNumber: 1
               }
-            })
+            });
             await getCalabrioWfmOrg(newValue.value, state, dispatch);
-            setStatus(ModalOverlayStatuses.SUCCESS)
+            setStatus(ModalOverlayStatuses.SUCCESS);
           } catch(err) {
-            setStatus(ModalOverlayStatuses.FAIL)
+            setStatus(ModalOverlayStatuses.FAIL);
           }
         }}
       />
@@ -132,8 +135,8 @@ const ManagementHeader = (props: WfmUsersHeaderProps) => {
           setTableState({
             ...tableState,
             teamFilter: newValue.value
-          })}
-        }
+          });
+        }}
       />
       <SearchBox searchBy={tableState.searchBy} setSearch={(searchBy: string) => setTableState({
         ...tableState,

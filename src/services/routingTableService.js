@@ -1,5 +1,7 @@
 /* eslint-disable no-console */
 
+import { logger } from "utils";
+
 /**
  * This is the function use to query the appsync API to get the data from DB
  * @param {String} accessToken token to use while calling graphql query
@@ -59,7 +61,7 @@ async function queryRoutingData(accessToken, nextToken = null, graphQlApiUrl) {
     });
     result = await response.json();
   } catch (error) {
-    console.error("Error in queryRoutingData", error);
+    logger.error("Error in queryRoutingData", error);
   }
   return result;
 }
@@ -94,7 +96,7 @@ async function retrieveRoutingData(accessToken, graphQlApiUrl,firstChunkData) {
       isFirstTime = false;
     }
   } catch (error) {
-    console.error("Error in retrieveRoutingData", error);
+    logger.error("Error in retrieveRoutingData", error);
   }
   return routingData;
 }
@@ -177,9 +179,9 @@ async function updateRoutingDB(item, accessToken, graphQlApiUrl) {
       })
     });
     response = await fetchResponse.json();
-    console.log("updateRoutingDB Response:", response);
+    logger.log("updateRoutingDB Response:", response);
   } catch (error) {
-    console.error("Error in updateRoutingDB", error);
+    logger.error("Error in updateRoutingDB", error);
   }
   return response;
 }
@@ -263,9 +265,9 @@ async function addRoutingRule(item, accessToken, graphQlApiUrl) {
       })
     });
     response = await fetchResponse.json();
-    console.log("Add Routing Rule Response:", response);
+    logger.log("Add Routing Rule Response:", response);
   } catch (error) {
-    console.error("Error in Adding Routing Rule", error);
+    logger.error("Error in Adding Routing Rule", error);
   }
   return response;
 }
@@ -327,9 +329,9 @@ async function deleteRoutingRule(item, accessToken, graphQlApiUrl) {
       })
     });
     response = await fetchResponse.json();
-    console.log("Delete Routing Rule Response:", response);
+    logger.log("Delete Routing Rule Response:", response);
   } catch (error) {
-    console.error("Error in Deleting Routing Rule", error);
+    logger.error("Error in Deleting Routing Rule", error);
   }
   return response;
 }
@@ -371,9 +373,9 @@ async function batchDelete(items, accessToken, graphQlApiUrl) {
       body
     });
     response = await fetchResponse.json();
-    console.log("Batch Delete Routing Rule Response:", response);
+    logger.log("Batch Delete Routing Rule Response:", response);
   } catch (error) {
-    console.error("Error in Routing Batch Delete", error);
+    logger.error("Error in Routing Batch Delete", error);
   }
   return response;
 }
@@ -469,9 +471,9 @@ const batchRoutingUpdate = async(items, accessToken, graphQlApiUrl) =>{
       })
     });
     response = await fetchResponse.json();
-    console.log("Update Batch RoutingDB Response:", response);
+    logger.info("Update Batch RoutingDB Response:", { response });
   } catch (error) {
-    console.error("Error in Update Batch RoutingDB", error);
+    logger.error("Error in Update Batch RoutingDB", { error });
   }
   return response;
 };

@@ -1,7 +1,4 @@
-import {
-  UserAction,
-  LoadingState
-} from "./UserEntryFormWrapper.Interfaces";
+import { LoadingState } from "./UserEntryFormWrapper.Interfaces";
 import {
   DiscrepancyContainer,
   Header1,
@@ -30,7 +27,8 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import {
   sortWorkersByFullName,
-  identifyUserProfiles
+  identifyUserProfiles,
+  logger
 } from "utils";
 import {
   Worker,
@@ -61,7 +59,7 @@ const UserEntryForm = () => {
     saveStatus: null,
     saveUser: false
   });
-  
+
   React.useEffect(() => {
     if(form.formMode === formModes.INSERT){
       const workerFound = workers.find((w: Worker) => w.attributes?.n_number?.toLowerCase() === form.nNumber.value?.toLowerCase());
@@ -82,7 +80,7 @@ const UserEntryForm = () => {
             payload: duplicateTritonMessage
           });
         }
-      } 
+      }
     }
   }, [form.nNumber.nNumberFetchedUser]);
 
@@ -110,7 +108,7 @@ const UserEntryForm = () => {
     };
   }, []);
 
-  console.log("FORM", form);
+  logger.log("FORM", form);
 
   const handleResetForm = () => {
     navigate(-1);
@@ -182,7 +180,7 @@ const UserEntryForm = () => {
           />
         }
       </HeaderRow>
-      { form.triton.userFound && 
+      { form.triton.userFound &&
         <BasicFormInfo
           skills={skills}
           worker={tritonWorker}
@@ -191,7 +189,7 @@ const UserEntryForm = () => {
           managers={managers}
           forwardToToggle={forwardToToggle}
           setForwardToToggle={setForwardToToggle}
-        /> 
+        />
       }
       <StyledDivider />
       <HeaderRow>
@@ -218,7 +216,7 @@ const UserEntryForm = () => {
           />
         }
       </HeaderRow>
-      { form.calabrio_wfm.userFound && 
+      { form.calabrio_wfm.userFound &&
         <WfmForm
           missingFields={missingFields}
           setMissingFields={setMissingFields}

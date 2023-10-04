@@ -1,5 +1,7 @@
 /* eslint-disable no-console */
 
+import { logger } from "utils";
+
 /**
  * This is the function use to query the appsync API to get the data from DB
  * @param {String} accessToken OAuth tokent to use while calling graphql query
@@ -64,7 +66,7 @@ async function queryFlowData(accessToken, nextToken = null, graphQlApiUrl) {
     });
     result = await response.json();
   } catch (error) {
-    console.error("Error in queryFlowData", error);
+    logger.error("Error in queryFlowData", { error }, false);
   }
   return result;
 }
@@ -99,7 +101,7 @@ async function retrieveFlowData(accessToken, graphQlApiUrl,firstChunkData) {
       isFirstTime = false;
     }
   } catch (error) {
-    console.error("Error in retrieveFlowData", error);
+    logger.error("Error in retrieveFlowData", { error }, false);
   }
   return flowData;
 }
@@ -252,7 +254,7 @@ async function updateFlowDB(item, accessToken, graphQlApiUrl) {
 
     response = await fetchResponse.json();
   } catch (error) {
-    console.error("Error in updateFlowDB", error);
+    logger.error("Error in updateFlowDB", { error }, false);
   }
   return response;
 }
@@ -321,9 +323,9 @@ async function addFlowRule(item, accessToken, graphQlApiUrl, curTime = new Date(
       })
     });
     response = await fetchResponse.json();
-    console.log("Add Flow Rule Response:", response);
+    logger.log("Add Flow Rule Response:", response);
   } catch (error) {
-    console.error("Error in Adding Flow Rule", error);
+    logger.error("Error in Adding Flow Rule", { error }, false);
   }
   return response;
 }
@@ -392,9 +394,9 @@ async function deleteFlowRule(item, accessToken, graphQlApiUrl) {
       })
     });
     response = await fetchResponse.json();
-    console.log("Delete Flow Rule Response:", response);
+    logger.log("Delete Flow Rule Response:", response);
   } catch (error) {
-    console.error("Error in Deleting Flow Rule", error);
+    logger.error("Error in Deleting Flow Rule", { error }, false);
   }
   return response;
 }
@@ -456,9 +458,9 @@ async function flowBatchDelete(items, accessToken, graphQlApiUrl){
       body
     });
     response = await fetchResponse.json();
-    console.log("Batch Delete Flow Rule Response:", response);
-  }catch(error){
-    console.log("error occured while deleting records", error);
+    logger.log("Batch Delete Flow Rule Response:", response);
+  } catch (error) {
+    logger.error("Error in Flow Batch Delete", { error }, false);
   }
   return response;
 }
@@ -568,9 +570,9 @@ const batchFlowUpdate = async(items, accessToken, graphQlApiUrl) =>{
       })
     });
     response = await fetchResponse.json();
-    console.log("Update Batch Flow DB Response:", response);
+    logger.info("Update Batch Flow DB Response:", { response });
   } catch (error) {
-    console.error("Error in Update Batch Flow DB", error);
+    logger.error("Error in Update Batch Flow DB", { error });
   }
   return response;
 };

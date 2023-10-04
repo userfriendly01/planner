@@ -1,5 +1,6 @@
 import {
   isNumberValid,
+  logger,
   unMaskPhoneNumber
 } from "utils";
 import {
@@ -23,6 +24,7 @@ import PropTypes from "prop-types";
 import React, { useState } from "react";
 import styled from "styled-components";
 import { myAxios } from "utils";
+import { useAdminState } from "context";
 
 const FlexRow = styled.div`
   display: flex;
@@ -79,6 +81,9 @@ const DialListEntryForm = props => {
     setDialListTableState
   } = props;
 
+  const state = useAdminState();
+  const nNumber = state.userContext.pingIdentity?.sub;
+
   const getInitialFormState = () => {
     const contact_nme = dialListTableState.dialListEntryFormInitialValues.contact_nme || "";
     const contact_num = dialListTableState.dialListEntryFormInitialValues.contact_num || "";
@@ -134,9 +139,10 @@ const DialListEntryForm = props => {
     });
     myAxios.post(apiPaths.DIAL_LIST, requestBody)
       .then(res => {
-        console.log("Successfully added dial list entry", {
+        logger.info("Successfully added dial list entry", {
           responseData: res.data,
-          requestBody
+          requestBody,
+          nNumber
         });
         refreshProfileData();
         setLoading({
@@ -145,10 +151,11 @@ const DialListEntryForm = props => {
         });
         waitAndHideOverlay(true);
       })
-      .catch(err => {
-        console.error("Failed to insert dial list entry", {
-          err,
-          requestBody
+      .catch(error => {
+        logger.error("Failed to insert dial list entry", {
+          error,
+          requestBody,
+          nNumber
         });
         setLoading({
           overlayMessage: "Failed to add dial list entry",
@@ -170,9 +177,10 @@ const DialListEntryForm = props => {
     });
     myAxios.put(apiPaths.DIAL_LIST_ENTRY(dialListTableState.dialListId), requestBody)
       .then(res => {
-        console.log(`Successfully updated dial list entry with diallist_id ${dialListTableState.dialListId}`, {
+        logger.info(`Successfully updated dial list entry with diallist_id ${dialListTableState.dialListId}`, {
           responseData: res.data,
-          requestBody
+          requestBody,
+          nNumber
         });
         refreshProfileData();
         setLoading({
@@ -181,10 +189,11 @@ const DialListEntryForm = props => {
         });
         waitAndHideOverlay(true);
       })
-      .catch(err => {
-        console.error(`Failed to update dial list entry with diallist_id ${dialListTableState.dialListId}`, {
-          err,
-          requestBody
+      .catch(error => {
+        logger.error(`Failed to update dial list entry with diallist_id ${dialListTableState.dialListId}`, {
+          error,
+          requestBody,
+          nNumber
         });
         setLoading({
           overlayMessage: "Failed to update dial list entry",

@@ -5,6 +5,7 @@ import { LoginInProgress } from "./LoginInProgress";
 import {
   Environments,getAdGroupPermissionMapping
 } from "authentication";
+import { logger } from "utils";
 
 let msalInstance: UserAgentApplication;
 const allDone = "DONE";
@@ -74,7 +75,7 @@ export function authWrapper(
                 errorMessage: "Login unsuccessful.  Make sure you are not blocking popups, and reload the window."
               });
             } else {
-              console.warn("login already in progress, waiting 2 seconds and trying again");
+              logger.warn("Login already in progress, waiting 2 seconds and trying again", {}, false);
               setTimeout(() => {
                 this.acquireToken(tokenRequest, counter+1);
               }, 2000);

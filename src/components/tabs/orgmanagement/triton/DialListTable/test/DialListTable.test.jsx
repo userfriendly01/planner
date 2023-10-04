@@ -20,6 +20,7 @@ import {
   fireEvent,
   getLastInstanceCalled,
   getMockedComponentProps,
+  initialTestState,
   render,
   setupMockedComponents,
   waitFor,
@@ -28,6 +29,7 @@ import {
 import { ThemeProvider } from "styled-components";
 import { myAxios } from "utils";
 import { Modal } from "@mui/material";
+import { useAdminState } from "context";
 
 jest.useFakeTimers();
 
@@ -42,6 +44,10 @@ jest.mock("@mui/material", () => ({
   __esModule: true,
   Modal: jest.fn(),
   Paper: jest.requireActual("@mui/material").Paper
+}));
+
+jest.mock("context", () => ({
+  useAdminState: jest.fn()
 }));
 
 const axiosMock = new MockAdapter(myAxios);
@@ -72,6 +78,7 @@ describe("<DialListTable />", () => {
       StyledButton,
       Modal
     });
+    useAdminState.mockReturnValue(initialTestState);
   });
 
   describe("profile does not have entries in its dial list", () => {

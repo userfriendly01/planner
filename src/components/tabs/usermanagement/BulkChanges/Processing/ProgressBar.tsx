@@ -1,3 +1,4 @@
+import { logger } from "utils";
 import {
   ProgressBarContainer,
   ProgressBarWrapper,
@@ -17,7 +18,11 @@ const ProgressBar = (props: any) => {
   const [ selectedJokeIndex, setSelectedJokeIndex ] = React.useState(Math.floor((Math.random() * jokesIndexLength)));
   const percentageComplete =  Math.floor((completedRows/totalRowCount) * 100);
 
-  console.log("***Progress Bar", percentageComplete, totalRowCount, completedRows);
+  logger.log("***Progress Bar", {
+    percentageComplete,
+    totalRowCount,
+    completedRows
+  });
 
   React.useEffect(() => {
     const updateJoke = () => {

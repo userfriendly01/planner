@@ -24,8 +24,6 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
     removeTemplate
   } = props;
 
-  console.log("BulkdUpdateForm - selectedTemplates", selectedTemplates);
-
   const dropdownOptions = [
     {
       label: "Add Skills",
@@ -57,7 +55,6 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
   }));
 
   React.useEffect(() => {
-    console.warn("selectedTemplates", selectedTemplates);
     if (updatedDefaultSkills.skills.length) {
       const templateFound = selectedTemplates.find((t: Template) => t.name === template.name);
       if (!templateFound) {

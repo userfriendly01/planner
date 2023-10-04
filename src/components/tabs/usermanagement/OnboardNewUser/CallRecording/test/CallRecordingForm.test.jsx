@@ -19,7 +19,7 @@ import {
   waitFor
 } from "testUtils";
 import {
-  calabrioTimeZones
+  calabrioTimeZones, logger
 } from "utils";
 
 
@@ -322,7 +322,7 @@ describe("CallRecordingForm", () => {
           ...initialFormState,
           triton: {
             ...initialFormState.triton,
-            profileId: { value: 18 },
+            profileId: { value: 18 }
           },
           calabrio_qm: {
             ...initialFormState.calabrio_qm,
@@ -396,14 +396,14 @@ describe("CallRecordingForm", () => {
               value: 1,
               name: "QM Supervisor",
               label: "QM Supervisor",
-              permissions: [{ name: "permission 1" }],
+              permissions: [{ name: "permission 1" }]
             },
             {
               id: 4,
               label: "No Screen",
               name: "No Screen",
               value: 4
-            },]
+            }]
           });
         });
       });
@@ -658,7 +658,7 @@ describe("CallRecordingForm", () => {
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(0);
         expect(mockSetForm).toHaveBeenCalledTimes(2);
-        expect(console.warn).toHaveBeenCalledWith("No matching profile was found in Calabrio for this user");
+        expect(logger.warn).toHaveBeenCalledWith("No matching profile was found in Calabrio for this user", {}, false);
       });
     });
     describe("no matching profile was found for Calabrio User", () => {
@@ -690,12 +690,12 @@ describe("CallRecordingForm", () => {
         useFormState.mockReturnValue(formState);
       });
       test("Form is rendered as expected", async () => {
-        render(<CallRecordingForm twilioWorker={{ sid: "WK0000" }} missingFields={[]} />);
+        render(<CallRecordingForm twilioWorker={{ sid: "WK0000" }} missingFields={[]}/>);
         expect(Dropdown.mock.calls.length).toBe(3);
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(0);
         expect(mockSetForm).toHaveBeenCalledTimes(1);
-        expect(console.warn).toHaveBeenCalledWith("No matching profile was found in Calabrio for this user");
+        expect(logger.warn).toHaveBeenCalledWith("No matching profile was found in Calabrio for this user", {}, false);
       });
     });
     describe("multiple matching profiles were found for Calabrio User", () => {
@@ -821,7 +821,7 @@ describe("CallRecordingForm", () => {
             }
           });
         });
-        expect(console.warn).toHaveBeenCalledWith("Multiple matching profiles were found in Calabrio for this user");
+        expect(logger.warn).toHaveBeenCalledWith("Multiple matching profiles were found in Calabrio for this user", {}, false);
       });
     });
     describe("Ad Login on User Record does not match form.nNumber.value", () => {
@@ -1081,7 +1081,7 @@ describe("CallRecordingForm", () => {
         expect(mockSetForm).toHaveBeenCalledTimes(1);
         await waitFor(() => {
           //Mocking issue to fix
-          // expect(console.error.mock.calls.length).toBe(1);
+          expect(logger.error.mock.calls.length).toBe(1);
         });
       });
     });
