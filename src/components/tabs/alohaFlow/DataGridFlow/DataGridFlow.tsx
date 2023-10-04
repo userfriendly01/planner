@@ -413,6 +413,8 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     const keysToDelete = rows.map(x => x.pkey);
     const response = await batchDeleteItems(keysToDelete, accessToken, graphQLEndpoint);
     if(response?.flag) {
+      const selectedRowsData = response?.failure?.map(x=>dataFlow.filteredItems.find((row: CctSharedCallFlowDb)=>row.pkey === x.pkey));
+      setSelectedList(selectedRowsData);
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
         open: true,

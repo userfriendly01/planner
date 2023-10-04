@@ -403,21 +403,23 @@ async function batchDeleteItems(items,accessToken,graphQlApiUrl){
   const size=24;
   const response = {
     "success": [],
-    "flag": false
+    "flag": false,
+    "failure": []
   };
   while (items.length > 0){
     flowDeleteArray.push(items.splice(0, size));
   }
-
   for(let i=0; i<flowDeleteArray.length; i++){
     const successResponse=response.success;
+    const failureResponse= response.failure;
+    const flowRespKeys = flowDeleteArray[i].map(x=>({ "pkey": x }));
     await flowBatchDelete(flowDeleteArray[i],accessToken,graphQlApiUrl).then(resp=>{
       if(!resp?.errors){
-        const flowSuccessResp = flowDeleteArray[i].map(x=>({ "pkey": x }));
-        response.success = successResponse.concat(flowSuccessResp);
+        response.success = successResponse.concat(flowRespKeys);
       }
       else{
         console.error("error while deleting the records", resp.errors);
+        response.failure = failureResponse.concat(flowRespKeys);
         response.flag = true;
       }
     });
