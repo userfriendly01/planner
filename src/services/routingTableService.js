@@ -347,17 +347,17 @@ async function routingBatchDelete(items, accessToken, graphQlApiUrl){
   while (items.length > 0){
     routingDeleteArray.push(items.splice(0, size));
   }
-  for(let i=0; i<routingDeleteArray.length; i++){
+  for(const routeValue of routingDeleteArray){
     const successResponse=response.success;
     const failureResponse = response.failure;
-    const keysToDelete = routingDeleteArray[i].map(x => {
+    const keysToDelete = routeValue.map(x => {
       return {
         pkey: x.pkey,
         skey: x.skey
       };
     }
     );
-    const routingRespId = routingDeleteArray[i].map(x=>({ "id": x.id }));
+    const routingRespId = routeValue.map(x=>({ "id": x.id }));
 
     await batchDelete(keysToDelete,accessToken,graphQlApiUrl).then(resp=>{
       if(!resp?.errors){

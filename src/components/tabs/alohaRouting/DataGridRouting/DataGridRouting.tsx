@@ -400,7 +400,6 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
     }
     );
     const response = await routingBatchDelete(keysToDelete, accessToken, graphQlApiUrl);
-    console.log("response", response);
     if(response?.flag) {
       const selectedRowsData = response?.failure?.map(x=>state.filteredItems.find((row: CctSharedCallRoutingDb)=>row.id === x.id));
       setSelectedList(selectedRowsData);
