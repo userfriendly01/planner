@@ -2,10 +2,9 @@ import React, {
   useState, useEffect
 } from "react";
 import {
-  Chip, FormControl, InputLabel, MenuItem, Select, Grid, TextField, IconButton, Tooltip, Paper
+  Chip, FormControl, InputLabel, MenuItem, Select, Grid, TextField, IconButton, Tooltip
 } from "@mui/material";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
-import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import {
   PreviewModalAction,
   RoutingFilter
@@ -13,6 +12,7 @@ import {
 import {
   CACHE_FILTER_ROUTING, getAdvanceFilter
 } from "utils";
+import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import DeleteSweepOutlinedIcon from "@mui/icons-material/DeleteSweepOutlined";
 import EditNoteOutlinedIcon from "@mui/icons-material/EditNoteOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
@@ -96,20 +96,25 @@ export const CustomRoutingGridToolBar = ({
         />
       </Grid>
       <Grid item key = "Export RoutingUI" xs={1}>
-        <Grid><div><br/><br/></div></Grid>
-        <Tooltip title="Export Routing Records" sx={{
+        <Tooltip title="Export Routing Records" placement="right-start" sx={{
           left: "calc(76%)",
           marginLeft: "24"
         }}>
-          <Paper variant="outlined" >
-            <IconButton
-              onClick={exportDataFile}
-              color = "primary"
-              size = "small"
-              sx ={{ position: "fixed" }}
-            > <FileDownloadIcon />
-            </IconButton>
-          </Paper>
+          <IconButton
+            onClick={exportDataFile}
+            color = "primary"
+            size = "small"
+            sx ={{
+              position: "relative",
+              marginTop: "36px",
+              marginLeft: "36px",
+              ":hover": {
+                backgroundColor: "grey",
+                color: "white"
+              }
+            }}
+          > <SaveAltIcon />
+          </IconButton>
         </Tooltip>      </Grid>
       <Grid item key="routing-action-box" xs={2}>
         <FormControl sx={{
