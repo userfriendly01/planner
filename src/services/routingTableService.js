@@ -341,13 +341,15 @@ async function routingBatchDelete(items, accessToken, graphQlApiUrl){
   const size=24;
   const response = {
     "success": [],
-    "flag": false
+    "flag": false,
+    "failure": []
   };
   while (items.length > 0){
     routingDeleteArray.push(items.splice(0, size));
   }
   for(let i=0; i<routingDeleteArray.length; i++){
     const successResponse=response.success;
+    const failureResponse = response.failure;
     const keysToDelete = routingDeleteArray[i].map(x => {
       return {
         pkey: x.pkey,
@@ -355,16 +357,19 @@ async function routingBatchDelete(items, accessToken, graphQlApiUrl){
       };
     }
     );
+    const routingRespId = routingDeleteArray[i].map(x=>({ "id": x.id }));
+
     await batchDelete(keysToDelete,accessToken,graphQlApiUrl).then(resp=>{
       if(!resp?.errors){
-        const routingSuccessResp = routingDeleteArray[i].map(x=>({ "id": x.id }));
-        response.success = successResponse.concat(routingSuccessResp);
+        response.success = successResponse.concat(routingRespId);
       }
       else{
         console.error("error while deleting the records", resp.errors);
+        response.failure = failureResponse.concat(routingRespId);
         response.flag = true;
       }
     });
+
   }
   return response;
 }
