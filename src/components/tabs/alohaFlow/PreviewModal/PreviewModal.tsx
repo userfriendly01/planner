@@ -81,7 +81,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
           rows={rows}
           columns={tableGridColumnDef}
           editMode="row"
-          getRowId={(row: CctSharedCallFlowDb)=>row.id}
+          getRowId={(row: CctSharedCallFlowDb)=>row.pkey}
           loading = {loading}
           sx={{
             "& .MuiDataGrid-columnHeaderTitle": {
