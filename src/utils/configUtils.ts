@@ -44,7 +44,7 @@ export const EXPORT_FILE_PREFIX: {
   FLOW: "call-flow"
 };
 
-const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb |CctSharedCallRoutingDb>): string => {
+const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb |CctSharedCallRoutingDb>, prefix: string): string => {
   let result: string;
   const columnDelimiter = "|";
   const lineDelimiter = "\n";
@@ -74,7 +74,7 @@ const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb |CctSharedCa
     keys = contentStore;
   }
   result = "";
-  const header = keys.map((key: string)=>key === "pkey"? "dialedPhoneNumber": key);
+  const header = keys.map((key: string)=>key === "pkey" && prefix === EXPORT_FILE_PREFIX.FLOW? "dialedPhoneNumber": key);
   result += header.join(columnDelimiter);
   result += lineDelimiter;
   array.forEach((item:CctSharedCallFlowDb & CctSharedCallRoutingDb) => {
@@ -106,7 +106,7 @@ const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb |CctSharedCa
 
 export const  downloadCSV = (prefix: string, array:Array<CctSharedCallFlowDb |CctSharedCallRoutingDb>): JSX.Element => {
   const link: HTMLAnchorElement = document.createElement("a");
-  let csv: string = convertArrayOfObjectsToCSV(array);
+  let csv: string = convertArrayOfObjectsToCSV(array, prefix);
   if (csv === null || csv===undefined) { return; }
   const filename = `${prefix}-${Date.now()}.csv`;
   if (!csv.match(/^data:text\/csv/i)) {

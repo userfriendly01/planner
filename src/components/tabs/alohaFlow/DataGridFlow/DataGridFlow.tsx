@@ -12,7 +12,7 @@ import React, {
   useEffect, useState
 } from "react";
 import {
-  queryFlowData, retrieveFlowData, flowBatchDelete, batchFlowUpdate
+  queryFlowData, retrieveFlowData, flowBatchDelete, batchFlowUpdate, batchDeleteItems
 } from "services";
 import {
   CACHE_FILTER_FLOW,
@@ -386,9 +386,10 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
 
   const handleOnBulkDelete = async(rows: Array<CctSharedCallFlowDb> ) =>{
     const keysToDelete = rows.map(x => x.pkey);
-    const response = await flowBatchDelete(keysToDelete, accessToken, graphQLEndpoint);
-
-    if(!response || response.errors) {
+    const response = await batchDeleteItems(keysToDelete, accessToken, graphQLEndpoint);
+    if(response?.flag) {
+      const selectedRowsData = response?.failure?.map(x=>dataFlow.filteredItems.find((row: CctSharedCallFlowDb)=>row.pkey === x.pkey));
+      setSelectedList(selectedRowsData);
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
         open: true,
@@ -405,7 +406,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       }));
     }
     setSelectedList([]);
-    const deletedIds = rows.map(x => x.pkey);
+    const deletedIds = response?.success?.map((x:any) => x.pkey);
     const filteredItems = dataFlow.filteredItems.filter(x=> deletedIds.indexOf(x.pkey) === -1);
     const filteredData = dataFlow.data.filter(x=> deletedIds.indexOf(x.pkey) === -1);
 
@@ -413,7 +414,8 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       ...dataFlowProps,
       filteredItems,
       data: filteredData,
-      isPreviewModalOpen: false
+      isPreviewModalOpen: response?.flag || false,
+      fetching: false
     }));
   };
 
@@ -499,10 +501,13 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         onCreate={handleOnBulkCreate}
         onUpdate={handleOnBulkUpdate}
         onDelete={handleOnBulkDelete}
+        loading={dataFlow.fetching}
       />
     </div>
   );
 };
 
 export default DataGridFlow;
+
+
 

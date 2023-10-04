@@ -1,5 +1,6 @@
+import { act } from "@testing-library/react";
 import  {
-  retrieveFlowData,addFlowRule, deleteFlowRule, updateFlowDB, flowBatchDelete, queryFlowData, batchFlowUpdate
+  retrieveFlowData,addFlowRule, deleteFlowRule, updateFlowDB, flowBatchDelete, queryFlowData, batchDeleteItems, batchFlowUpdate
 }  from "../flowTableService";
 
 const jsonFlowData = {
@@ -20,12 +21,12 @@ const jsonFlowData = {
   transferNumber: { value: "123456789" }
 };
 
-const batchDeleteItems = ["pkey1","pkey1"];
+const batchDeleteItemsList = ["pkey1","pkey1","pkey3"];
 
 const batchDeleteResponse = {
   data: {
     listCctSharedCallFlowDbs: {
-      items: batchDeleteItems,
+      items: batchDeleteItemsList,
       nextToken: undefined
     }
   }
@@ -329,10 +330,10 @@ describe("flowTableService",()=>{
       jest.restoreAllMocks();
     });
     test("Success",async()=>{
-      const response = await flowBatchDelete(batchDeleteItems,"1233-3245","http://localhost:3000");
+      const response = await flowBatchDelete(batchDeleteItemsList,"1233-3245","http://localhost:3000");
       expect(response).toBe(batchDeleteResponse);
       expect(window.fetch).toBeCalledWith("http://localhost:3000", {
-        "body": "{\"query\":\"\\n        mutation DeleteManyFlow {\\n          batchDeleteCctSharedCallFlowDb(input: {\\n            pkey: [\\\"pkey1\\\",\\\"pkey1\\\"]\\n            }) {\\n            items {\\n              pkey\\n            }\\n          }\\n        }\\n    \",\"variables\":{}}",
+        "body": "{\"query\":\"\\n        mutation DeleteManyFlow {\\n          batchDeleteCctSharedCallFlowDb(input: {\\n            pkey: [\\\"pkey1\\\",\\\"pkey1\\\",\\\"pkey3\\\"]\\n            }) {\\n            items {\\n              pkey\\n            }\\n          }\\n        }\\n    \",\"variables\":{}}",
         "headers": {
           "Authorization": "1233-3245",
           "Content-Type": "application/json"
@@ -340,12 +341,27 @@ describe("flowTableService",()=>{
         "method": "POST"
       });
     });
+    test("batch Delete",async()=>{
+      await flowBatchDelete(batchDeleteItemsList,"1233-3245","http://localhost:3000");
+      const response=batchDeleteItems(batchDeleteItemsList,"3245","http://localhost:3000");
+      act(()=>{
+        expect(response).toBeTruthy();
+      });
+    });
     test("Error",async()=>{
       jest.spyOn(JSON, "stringify").mockImplementation(()=>{
         throw new Error();
       });
-      const response = await flowBatchDelete(batchDeleteItems,"1233-3245","http://localhost:3000");
+      const response = await flowBatchDelete(batchDeleteItemsList,"1233-3245","http://localhost:3000");
       expect(response).toEqual(undefined);
+    });
+    test("Batch Delete Error",async()=>{
+      jest.spyOn(JSON, "stringify").mockImplementation(()=>{
+        throw new Error();
+      });
+      await flowBatchDelete(batchDeleteItemsList,"1233-3245","http://localhost:3000");
+      const response = await batchDeleteItems(batchDeleteItemsList,"3245","http://localhost:3000");
+      expect(response).toBeTruthy();
     });
   });
   describe("Batch Update Flow", ()=>{

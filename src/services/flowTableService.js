@@ -400,11 +400,39 @@ async function deleteFlowRule(item, accessToken, graphQlApiUrl) {
   }
   return response;
 }
+async function batchDeleteItems(items,accessToken,graphQlApiUrl){
+  var flowDeleteArray=[];
+  const size=24;
+  const response = {
+    "success": [],
+    "flag": false,
+    "failure": []
+  };
+  while (items.length > 0){
+    flowDeleteArray.push(items.splice(0, size));
+  }
+  for(const flowValue of flowDeleteArray){
+    const successResponse=response.success;
+    const failureResponse= response.failure;
+    const flowRespKeys = flowValue.map(x=>({ "pkey": x }));
+    await flowBatchDelete(flowValue,accessToken,graphQlApiUrl).then(resp=>{
+      if(!resp?.errors){
+        response.success = successResponse.concat(flowRespKeys);
+      }
+      else{
+        console.error("error while deleting the records", resp.errors);
+        response.failure = failureResponse.concat(flowRespKeys);
+        response.flag = true;
+      }
+    });
+  }
+  return response;
+}
 
-async function flowBatchDelete(items, accessToken, graphQlApiUrl) {
+
+async function flowBatchDelete(items, accessToken, graphQlApiUrl){
   let response;
-
-  try {
+  try{
     const body = JSON.stringify({
       query: `
         mutation DeleteManyFlow {
@@ -556,5 +584,6 @@ export {
   updateFlowDB,
   queryFlowData,
   flowBatchDelete,
-  batchFlowUpdate
+  batchFlowUpdate,
+  batchDeleteItems
 };
