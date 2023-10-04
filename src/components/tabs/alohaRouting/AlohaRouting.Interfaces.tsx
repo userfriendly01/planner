@@ -14,7 +14,7 @@ export interface RoutingStep {
   }
 
 export interface CctSharedCallRoutingDb {
-    id?: number;
+    id: number;
     all?: string;
     brand?: string;
     callIntent?: string;
@@ -24,9 +24,9 @@ export interface CctSharedCallRoutingDb {
     dayOfWeek?: string;
     endTime?: string;
     percentOfCallers?: string;
-    pkey?: string;
+    pkey: string;
     policyType?: string;
-    skey?: string;
+    skey: string;
     startTime?: string;
     transferDestination?: string;
     transferMessage?: string;

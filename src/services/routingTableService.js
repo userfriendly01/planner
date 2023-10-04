@@ -1,7 +1,5 @@
 /* eslint-disable no-console */
 
-import { removeAllWhiteSpace } from "utils";
-
 /**
  * This is the function use to query the appsync API to get the data from DB
  * @param {String} accessToken token to use while calling graphql query
@@ -478,103 +476,6 @@ const batchRoutingUpdate = async(items, accessToken, graphQlApiUrl) =>{
   return response;
 };
 
-/**
- * This is the Function to batch Create the Routing Object to the DB
- * @param {routingData} items List of Routing object that need to update
- * @param {String} accessToken token to use while calling graphql query 
- * @param {String} graphQlApiUrl Endpoint URL 
- * @returns 
- */
-const batchRoutingCreate = async(items, accessToken, graphQlApiUrl) =>{
-  if(items.length === 0){
-    return {
-      errors: [
-        "Please Select Something to Add"
-      ]
-    };
-  }
-  let response;
-  const input = items.map(item=>{
-    return {
-      all: "ALL",
-      pkey: removeAllWhiteSpace(item.callIntent).toLocaleLowerCase(),
-      skey: removeAllWhiteSpace(`${item.brand}__${item.channel}__${item.id}`).toLocaleLowerCase(),
-      brand: item.brand,
-      channel: item.channel,
-      callIntent: item.callIntent,
-      dayOfWeek: item.dayOfWeek,
-      callerState: item.callerState,
-      callerType: item.callerType,
-      twilioSkill: item.twilioSkill || "",
-      transferDestination: item.transferDestination || "",
-      percentOfCallers: item.percentOfCallers,
-      transferMessage: item.transferMessage || "",
-      policyType: item.policyType,
-      startTime: item.startTime,
-      endTime: item.endTime,
-      crcSkill: item.crcSkill || "",
-      priority: item?.priority || "",
-      occupancyCheck: item?.occupancyCheck || [],
-      routingSteps: item?.routingSteps || []
-    };
-  });
-  try {
-    const fetchResponse = await fetch(graphQlApiUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: accessToken
-      },
-      body: JSON.stringify({
-        query: `
-        mutation batchCreateCctSharedCallRoutingGlobalDb($input: CctSharedCallRoutingGlobalDbBatchCreateInput!) {
-          batchCreateCctSharedCallRoutingGlobalDb(input: $input) {
-            items {
-              all
-              brand
-              callIntent
-              callerState
-              callerType
-              channel
-              crcSkill
-              dayOfWeek
-              endTime
-              occupancyCheck {
-                percentage
-                team
-              }
-              percentOfCallers
-              pkey
-              policyType
-              priority
-              routingSteps {
-                callerState
-                teams
-                time
-              }
-              skey
-              startTime
-              transferDestination
-              transferMessage
-              twilioSkill
-            }
-            nextToken
-          }
-        }
-      `,
-        variables: {
-          input: { batchRoutingCreateInput: input }
-        }
-      })
-    });
-    response = await fetchResponse.json();
-    console.log("Update Batch RoutingDB Response:", response);
-  } catch (error) {
-    console.error("Error in Update Batch RoutingDB", error);
-  }
-  return response;
-};
-
 export {
   addRoutingRule,
   batchDelete,
@@ -582,6 +483,5 @@ export {
   queryRoutingData,
   retrieveRoutingData,
   updateRoutingDB,
-  batchRoutingUpdate,
-  batchRoutingCreate
+  batchRoutingUpdate
 };

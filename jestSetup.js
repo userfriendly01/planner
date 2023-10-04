@@ -29,8 +29,6 @@ jest.mock("services", () => ({
   batchDelete: jest.fn(),
   batchDeleteItems: jest.fn(),
   batchFlowUpdate: jest.fn(),
-  batchFlowCreate: jest.fn(),
-  batchRoutingCreate: jest.fn(),
   batchRoutingUpdate: jest.fn(),
   flowBatchDelete: jest.fn(),
   checkExtension: jest.fn(),

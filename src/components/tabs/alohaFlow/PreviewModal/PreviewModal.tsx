@@ -1,5 +1,5 @@
 import React, {
-  useMemo, useState, useEffect
+  useMemo
 } from "react";
 import {
   Modal,ModalHeader, ModalBody, ModalFooter
@@ -9,25 +9,23 @@ import {
 } from "@mui/x-data-grid";
 import { StyledButton } from "components";
 import {
-  CctSharedCallFlowDb
+  CctSharedCallFlowDb, FlowContent
 } from "../AlohaFlow.Interfaces";
 import { TableGridColumnDef } from "./TableColumnDef";
 import "./PreviewModal.css";
-import {
-  Box
-} from "@mui/material";
+import { Box } from "@mui/material";
 import { reconstructTableColumnDef } from "./PreviewUtil";
 
 interface PreviewModalProps {
     isOpen: boolean;
     rows: Array<CctSharedCallFlowDb>;
     action: "delete" | "add" | "edit"
-    maxId?: number;
     onClose: () => void;
     onDelete?: (rows: Array<CctSharedCallFlowDb>) => void;
     onCreate?: (rows: Array<CctSharedCallFlowDb>) => void;
     onUpdate?: (rows: Array<CctSharedCallFlowDb>) => void;
     loading?: boolean;
+    maxId?: number;
 }
 
 const PreviewModal = (props: PreviewModalProps): JSX.Element => {
@@ -36,20 +34,15 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   } = props;
 
   const apiRef = useGridApiRef();
-  const [flowRows, setFlowRows] = useState<CctSharedCallFlowDb[]>([]);
 
   const tableGridColumnDef: Array<GridColDef> = useMemo<Array<GridColDef>>(()=>{
     return reconstructTableColumnDef(action, [...TableGridColumnDef]); },[action]);
 
-  useEffect(()=>{
-    setFlowRows(rows);
-  }, [rows]);
-
   const getUpdatedFlowDb = () =>{
-    const newRows: Array<CctSharedCallFlowDb>=[...flowRows].map((row: CctSharedCallFlowDb)=>{
+    const newRows: Array<CctSharedCallFlowDb>=[...rows].map((row: CctSharedCallFlowDb)=>{
       const updatedFlow: CctSharedCallFlowDb = {};
       Object.keys(row).forEach((key: string)=>{
-        updatedFlow[key as keyof CctSharedCallFlowDb] = apiRef.current.getCellValue(row.id, key);
+        updatedFlow[key as keyof CctSharedCallFlowDb] = apiRef.current.getCellValue(row.pkey, key);
       });
       return updatedFlow;
     });
@@ -68,54 +61,10 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
 
   const handleOnDelete = async () => {
     try {
-      await onDelete(flowRows);
+      await onDelete(rows);
     } catch(e) {
       console.error(e.message);
     }
-  };
-
-  const createNewRecord = () =>{
-    setFlowRows((previousRows: CctSharedCallFlowDb[])=>(
-      [
-        ...previousRows,
-        {
-          id: previousRows.length>0? previousRows[previousRows.length -1 ].id +1 : maxId,
-          pkey: "",
-          content: {
-            callIntent: "",
-            callFlowRoute: "",
-            callerType: "",
-            greetingMessages: "",
-            transferNumber: "",
-            languageOffer: "",
-            dataRequests: [],
-            officeNumbers: []
-          },
-          accountManager: "",
-          affinityVDN: "",
-          agentId: "",
-          brand: "",
-          callDetails1: "",
-          callDetails2: "",
-          callFlowTemplate: "",
-          callTypeDescription: "",
-          channel: "",
-          createTime: "",
-          dialedDescription: "",
-          employeeId: "",
-          internetPlacement: "",
-          lineOfBusiness: "",
-          marketingChannel: "",
-          rangeIndicator: "",
-          requestID: "",
-          tollFreeNumber: "",
-          transferCode: "",
-          type: "",
-          userDestination: "",
-          whisper: ""
-        }
-      ]
-    ));
   };
 
 
@@ -126,17 +75,11 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
       onClose={()=>{ onClose(); }}
       size="large"
     >
-      <ModalHeader>{action?.toUpperCase()} Flow - {flowRows.length} rows selected</ModalHeader>
+      <ModalHeader>{action?.toUpperCase()} Flow - {rows.length} rows selected</ModalHeader>
       <ModalBody className="preview-grid-modal">
-        {action === "add" &&
-          <StyledButton sx={{
-            marginRight: "10px",
-            marginBottom: "10px"
-          }} onClick={()=>{ createNewRecord(); }}>Add New +</StyledButton>
-        }
         <DataGrid
           apiRef={apiRef}
-          rows={flowRows}
+          rows={rows}
           columns={tableGridColumnDef}
           editMode="row"
           getRowId={(row: CctSharedCallFlowDb)=>row.id}

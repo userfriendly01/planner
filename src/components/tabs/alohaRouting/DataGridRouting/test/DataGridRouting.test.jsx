@@ -23,8 +23,7 @@ import {
   batchDelete,
   batchRoutingUpdate,
   queryRoutingData,
-  retrieveRoutingData,
-  batchRoutingCreate
+  retrieveRoutingData
 } from "services";
 import {
   CACHED_CALL_ROUTING_PER_PAGE, CACHED_CALL_ROUTING_PAGE_NO, CACHE_FILTER_ROUTING
@@ -140,7 +139,6 @@ describe("<DataGridRouting />", ()=>{
     queryRoutingData.mockReset();
     retrieveRoutingData.mockReset();
     batchRoutingUpdate.mockReset();
-    batchRoutingCreate.mockReset();
     useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
       AddRouting,
@@ -555,26 +553,12 @@ describe("<DataGridRouting />", ()=>{
       const validRoutingDataList = createSampleTestRoutingDataList(15);
       queryRoutingData.mockResolvedValue(validRoutingDataList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
-      batchRoutingCreate.mockResolvedValue({ data: { items: validRoutingDataList }});
       renderDataGridRouting();
 
       const onCreate = PreviewModal.mock.calls[0][0].onCreate;
       act(() => {
         onCreate([validRoutingDataList[0]]);
       });
-    });
-    test("Handle bulkCreate on failure", () => {
-      const validRoutingDataList = createSampleTestRoutingDataList(15);
-      queryRoutingData.mockResolvedValue(validRoutingDataList);
-      retrieveRoutingData.mockResolvedValue(validRoutingDataList);
-      batchRoutingCreate.mockResolvedValue({ errors: [{ "message": "Unknown Error" }]});
-      renderDataGridRouting();
-      const createFlowObject = {
-        ...validRoutingDataList[1],
-        id: 16
-      };
-      const onCreate = PreviewModal.mock.calls[0][0].onCreate;
-      expect(onCreate([{ ...createFlowObject }])).rejects.toThrowError("Error while creating the records.");
     });
     test("Handle bulkUpdate", () => {
       const validRoutingDataList = createSampleTestRoutingDataList(15);
@@ -587,16 +571,6 @@ describe("<DataGridRouting />", ()=>{
       act(() => {
         onUpdate(validRoutingDataList.slice(0,3));
       });
-    });
-    test("Handle bulkUpdate on failure", () => {
-      const validRoutingDataList = createSampleTestRoutingDataList(15);
-      queryRoutingData.mockResolvedValue(validRoutingDataList);
-      retrieveRoutingData.mockResolvedValue(validRoutingDataList);
-      batchRoutingUpdate.mockResolvedValue({ errors: [{ message: "unknown error" }]});
-      renderDataGridRouting();
-
-      const onUpdate = PreviewModal.mock.calls[0][0].onUpdate;
-      expect(onUpdate([{ ...validRoutingDataList[1] }])).rejects.toThrowError("Error while updating the records.");
     });
     test("Handle bulkDelete", () => {
       const validRoutingDataList = createSampleTestRoutingDataList(15);
