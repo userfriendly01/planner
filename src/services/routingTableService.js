@@ -336,6 +336,44 @@ async function deleteRoutingRule(item, accessToken, graphQlApiUrl) {
   return response;
 }
 
+async function routingBatchDelete(items, accessToken, graphQlApiUrl){
+  var routingDeleteArray=[];
+  const size=24;
+  const response = {
+    "success": [],
+    "flag": false,
+    "failure": []
+  };
+  while (items.length > 0){
+    routingDeleteArray.push(items.splice(0, size));
+  }
+  for(const routeValue of routingDeleteArray){
+    const successResponse=response.success;
+    const failureResponse = response.failure;
+    const keysToDelete = routeValue.map(x => {
+      return {
+        pkey: x.pkey,
+        skey: x.skey
+      };
+    }
+    );
+    const routingRespId = routeValue.map(x=>({ "id": x.id }));
+
+    await batchDelete(keysToDelete,accessToken,graphQlApiUrl).then(resp=>{
+      if(!resp?.errors){
+        response.success = successResponse.concat(routingRespId);
+      }
+      else{
+        console.error("error while deleting the records", resp.errors);
+        response.failure = failureResponse.concat(routingRespId);
+        response.flag = true;
+      }
+    });
+
+  }
+  return response;
+}
+
 /**
  * This is the Function to delete the Routing Object ]to the DB
  * @param {routingData[]} item Routing object that need to delete
@@ -485,5 +523,6 @@ export {
   queryRoutingData,
   retrieveRoutingData,
   updateRoutingDB,
-  batchRoutingUpdate
+  batchRoutingUpdate,
+  routingBatchDelete
 };

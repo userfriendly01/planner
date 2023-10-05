@@ -27,6 +27,7 @@ interface PreviewModalProps {
   onDelete?: (rows: Array<CctSharedCallRoutingDb>) => void;
   onUpdate?: (rows: Array<CctSharedCallRoutingDb>) => void;
   rows: Array<CctSharedCallRoutingDb>;
+  loading?: boolean;
 }
 
 const PreviewModal = (props: PreviewModalProps): JSX.Element => {
@@ -37,7 +38,8 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
     onCreate,
     onDelete,
     onUpdate,
-    rows
+    rows,
+    loading
   } = props;
   const apiRef = useGridApiRef();
   const tableGridColumnDef: Array<GridColDef> = useMemo<Array<GridColDef>>(()=>{
@@ -88,6 +90,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
             getRowId={(row: CctSharedCallRoutingDb)=>row.id}
             columns={tableGridColumnDef}
             editMode="row"
+            loading={loading}
             isCellEditable={() => action !== "delete"}
             sx={{
               "& .MuiDataGrid-columnHeaderTitle": {
