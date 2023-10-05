@@ -133,7 +133,7 @@ export interface TritonProfile {
   call_reason_i: MySqlBoolean,
   click_to_dial_i: MySqlBoolean,
   eft_authorization_i: MySqlBoolean,
-  claim_number_i: MySqlBoolean,
+  claim_number_edit_i: MySqlBoolean,
   manual_record_inbound_i: MySqlBoolean,
   manual_recorded_i: MySqlBoolean,
   otbnd_recorded_i: MySqlBoolean,

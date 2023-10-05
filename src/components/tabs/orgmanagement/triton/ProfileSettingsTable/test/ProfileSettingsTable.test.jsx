@@ -207,7 +207,7 @@ describe("<ProfileSettingsTable />", () => {
       expect(rendered.getByLabelText("Voice mail will be transcribed and sent within the notification email to the user")).toBeInTheDocument();
       expect(rendered.getByLabelText("Enable click-to-dial/transfer from external application")).toBeInTheDocument();
       expect(rendered.getByLabelText("Enable EFT authorization tagging on recordings")).toBeInTheDocument();
-      expect(rendered.getByLabelText("Enable Claim Number Edit tagging on recordings")).toBeInTheDocument();
+      expect(rendered.getByLabelText("UI Feature: An agent can capture and save a different claim number than what the IVR previously loaded")).toBeInTheDocument();
       expect(rendered.getByLabelText("UI Feature: Allows agent to record call reason data.")).toBeInTheDocument();
       expect(rendered.getByLabelText("Self service indicator is applicable to profiles with an id of 39 and above, but is actually set at the worker attribute level")).toBeInTheDocument();
       expect(rendered.getByLabelText("Profile Activities")).toBeInTheDocument();

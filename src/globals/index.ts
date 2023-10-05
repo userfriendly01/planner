@@ -99,7 +99,7 @@ export const profileTableColumnHeader = [
 
   {
     COLUMN_NAME: "Claim Number Edit",
-    TOOLTIP: "Enable Claim Number Edit tagging on recordings"
+    TOOLTIP: "UI Feature: An agent can capture and save a different claim number than what the IVR previously loaded"
   },
   {
     COLUMN_NAME: "Self Service Indicator",
