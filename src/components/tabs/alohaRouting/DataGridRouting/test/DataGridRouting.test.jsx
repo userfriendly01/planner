@@ -23,7 +23,8 @@ import {
   batchDelete,
   batchRoutingUpdate,
   queryRoutingData,
-  retrieveRoutingData
+  retrieveRoutingData,
+  routingBatchDelete
 } from "services";
 import {
   CACHED_CALL_ROUTING_PER_PAGE, CACHED_CALL_ROUTING_PAGE_NO, CACHE_FILTER_ROUTING
@@ -139,6 +140,7 @@ describe("<DataGridRouting />", ()=>{
     queryRoutingData.mockReset();
     retrieveRoutingData.mockReset();
     batchRoutingUpdate.mockReset();
+    batchDelete.mockReset();
     useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
       AddRouting,
@@ -577,8 +579,15 @@ describe("<DataGridRouting />", ()=>{
       queryRoutingData.mockResolvedValue(validRoutingDataList);
       retrieveRoutingData.mockResolvedValue(validRoutingDataList);
       batchDelete.mockResolvedValue("OK");
+      routingBatchDelete.mockResolvedValue(
+        {
+          response: {
+            flag: true,
+            success: [{ "id": 1 },{ "id": 2 }]
+          }
+        }
+      );
       renderDataGridRouting();
-
       const onDelete = PreviewModal.mock.calls[0][0].onDelete;
       act(() => {
         onDelete([validRoutingDataList[0]]);
