@@ -1,4 +1,4 @@
-import { apiPaths }from "globals";
+import { apiPaths } from "globals";
 import {
   CalabrioGroup,
   CalabrioUser
@@ -17,7 +17,7 @@ export const updateCalabrioUser = async (personId: number, payload: any): Promis
   return await myAxios.put(apiPaths.UPDATE_CALABRIO_USER(personId), payload);
 };
 
-export const getWfmOrg = async (businessUnitId: string): Promise<CalabrioGroup[]> => {  
+export const getWfmOrg = async (businessUnitId: string): Promise<CalabrioGroup[]> => {
   const startDate = new Date().toISOString().split('T')[0];
   const endDate = new Date().toISOString().split('T')[0];
   return await myAxios.get(`${apiPaths.GET_CALABRIO_WFM_ORG}/${businessUnitId}/${startDate}/${endDate}`);
@@ -25,6 +25,10 @@ export const getWfmOrg = async (businessUnitId: string): Promise<CalabrioGroup[]
 
 export const getWfmOptions = async (): Promise<CalabrioGroup[]> => {
   return await myAxios.get(apiPaths.GET_CALABRIO_WFM_OPTIONS);
+};
+
+export const getWfmUserByNNumber = async (nNumber: string): Promise<CalabrioUser> => {
+  return await myAxios.get(apiPaths.GET_CALABRIO_WFM_USER_BY_NNUMBER(nNumber));
 };
 
 export const getWfmBusinessUnits = async (): Promise<CalabrioGroup[]> => {
@@ -49,4 +53,14 @@ export const getCalabrioRoles = async (): Promise<CalabrioGroup[]> => {
 
 export const getCalabrioUser = async (personId: number): Promise<any> => {
   return await myAxios.get(apiPaths.GET_CALABRIO_USER(personId));
+};
+
+export const getQmUserProfiles = async (workerSid: string, nNumber: string, email: string, firstName?: string, lastName?: string): Promise<CalabrioUser> => {
+  let url = `${apiPaths.GET_CALABRIO_USER_PROFILES}/${workerSid}/${nNumber}/${email}`;
+
+  if (firstName && lastName) {
+    url = url + `/${firstName}/${lastName}`
+  }
+
+  return await myAxios.get(url);
 };

@@ -5,6 +5,7 @@ import {
   BulkChanges,
   CallFlowManagementSkills,
   CallFlowManagementTfn,
+  CompareProfiles,
   ProfileDirectoryContainer,
   ProfileDialListContainer,
   ProfileSettingsContainer,
@@ -32,6 +33,10 @@ export const getRoutes = (state: AppState, Home: any, azureClientId: string) => 
   {
     path: "/triton-admin/user",
     element: UserEntryForm
+  },
+  {
+    path: "/triton-admin/profiles",
+    element: CompareProfiles
   },
   {
     path: "/triton-admin/bulk",
