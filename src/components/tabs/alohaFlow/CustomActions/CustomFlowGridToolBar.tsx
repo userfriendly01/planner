@@ -84,7 +84,6 @@ const CustomFlowGridToolBar = ({
               />
             ))
           }}
-
           fullWidth
           id="flow-SearchBox-input"
           label="Search"
