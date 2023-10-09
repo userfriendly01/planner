@@ -52,7 +52,7 @@ describe("configUtils.js", ()=>{
     const routingDataList = createSampleTestRoutingDataList(1);
     downloadCSV(routingPrefix, routingDataList);
     expect(link.download).toContain("TEST_ROUTING");
-    const href = "data:text/csv;charset%3Dutf-8,id%7Call%7Cbrand%7CcallIntent%7CcallerState%7CcallerType%7Cchannel%7CdayOfWeek%7CendTime%7CpercentOfCallers%7CdialedPhoneNumber%7CpolicyType%7Cskey%7CstartTime%7CtransferDestination%7CtransferMessage%7CtwilioSkill%7CcrcSkill%0A1%7CALL%7CTestBrand1%7CTestCallIntent1%7CTestCallState1%7CTestCallType1%7CTestChannel1%7CALL%7C12:00:00%20PM%7C10%7Ctestcallintent%7CTestPolicyType1%7CTestBrand1_TestChannel1_1%7C05:00:00%20PM%7C12345671%7CTest%20Transfer%20Message%201%7CTest%20Twilio%20Skill1%7C%0A";
+    const href = "data:text/csv;charset%3Dutf-8,id%7Call%7Cbrand%7CcallIntent%7CcallerState%7CcallerType%7Cchannel%7CdayOfWeek%7CendTime%7CpercentOfCallers%7Cpkey%7CpolicyType%7Cskey%7CstartTime%7CtransferDestination%7CtransferMessage%7CtwilioSkill%7CcrcSkill%0A1%7CALL%7CTestBrand1%7CTestCallIntent1%7CTestCallState1%7CTestCallType1%7CTestChannel1%7CALL%7C12:00:00%20PM%7C10%7Ctestcallintent%7CTestPolicyType1%7CTestBrand1_TestChannel1_1%7C05:00:00%20PM%7C12345671%7CTest%20Transfer%20Message%201%7CTest%20Twilio%20Skill1%7C%0A";
     expect(link.href).toBe(href);
   });
 

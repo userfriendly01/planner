@@ -63,7 +63,7 @@ describe("<CustomRoutingGridToolBar />", ()=>{
   test("Simulate Custom Routing Toolbar For Routing Export",()=>{
     renderCustomToolBar();
     const GridMock = Grid.mock.calls[0][0];
-    const ExportFlowUI = GridMock.children[1].props.children[1].props.children.props.children.props.onClick;
+    const ExportFlowUI = GridMock.children[1].props.children[0].props.children.props.onClick;
     act(()=>{
       ExportFlowUI();
     });

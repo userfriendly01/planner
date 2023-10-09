@@ -207,7 +207,7 @@ describe("<EditFlow />", () => {
       const {
         getByRole, queryByRole
       } = renderEditFlow(true, invalidFlowData);
-      const chanelDropdown = getByRole("button", { name: /Channel/i });
+      const chanelDropdown = getByRole("combobox", { name: /Channel/i });
       fireEvent.mouseDown(chanelDropdown);
       const listBox = within(getByRole("listbox", { name: /Channel/i }));
       act(() => {

@@ -22,7 +22,7 @@ import { useAdminState } from "context";
 import { CustomToast } from "components";
 import DataGridFlow from "../DataGridFlow";
 import {
-  retrieveFlowData,queryFlowData, flowBatchDelete, batchFlowUpdate
+  retrieveFlowData,queryFlowData, flowBatchDelete, batchFlowUpdate, batchDeleteItems
 } from "services";
 import { PreviewModal } from "../../PreviewModal";
 import { createFlowDataList } from "../../PreviewModal/test/PreviewUtil.test";
@@ -85,6 +85,7 @@ describe("<DataGridFlow />", () => {
     retrieveFlowData.mockReset();
     queryFlowData.mockReset();
     flowBatchDelete.mockReset();
+    batchDeleteItems.mockReset();
     useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
       DataGrid,
@@ -501,6 +502,20 @@ describe("<DataGridFlow />", () => {
         previewModalOnDelete(selectedRow);
       });
       expect(DataGrid.mock.calls.length).toBe(1);
+    });
+    it("Preview Modal onDelete", ()=>{
+      const validFlowDataList = createFlowDataList(15);
+      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
+      retrieveFlowData.mockResolvedValue(validFlowDataList);
+      renderComponent();
+      const previewModalOnDelete = PreviewModal.mock.calls[0][0].onDelete;
+      const selectedRow = createFlowDataList(2);
+      batchDeleteItems.mockResolvedValue({
+        response: {
+          flag: true
+        }
+      });
+      expect(previewModalOnDelete(selectedRow)).toBeTruthy();
     });
   });
 
