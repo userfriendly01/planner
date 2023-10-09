@@ -18,13 +18,8 @@ export const updateCalabrioUser = async (personId: number, payload: any): Promis
 };
 
 export const getWfmOrg = async (businessUnitId: string): Promise<CalabrioGroup[]> => {
-<<<<<<< HEAD
-  const startDate = new Date().toISOString().split('T')[0];
-  const endDate = new Date().toISOString().split('T')[0];
-=======
   const startDate = new Date().toISOString().split("T")[0];
   const endDate = new Date().toISOString().split("T")[0];
->>>>>>> master
   return await myAxios.get(`${apiPaths.GET_CALABRIO_WFM_ORG}/${businessUnitId}/${startDate}/${endDate}`);
 };
 
