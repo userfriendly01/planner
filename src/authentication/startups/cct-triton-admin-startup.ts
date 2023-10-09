@@ -1,5 +1,6 @@
 import { getStartupProfiles } from "authentication";
 import { apiPaths } from "globals";
+import { fetchLogsFromDataDog } from "utils";
 import {
   getManagers as getManagersServiceCall,
   getOffices as getOfficesServiceCall,
@@ -181,6 +182,7 @@ const getBusinessUnits = async (dispatch: any) => {
 export const runTritonAdminStartup = (dispatch: any) => {
   /* Please add new service calls to the end of this Promise.all,
   the existing order is important */
+  fetchLogsFromDataDog();
   return Promise.all([
     Promise.resolve(getStartupProfiles().TRITON.name),
     getWorkers(dispatch),

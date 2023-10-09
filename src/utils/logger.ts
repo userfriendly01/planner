@@ -2,6 +2,8 @@ import { datadogRum } from "@datadog/browser-rum";
 import {
   datadogLogs, StatusType
 } from "@datadog/browser-logs";
+import { client, v2 } from "@datadog/datadog-api-client";
+import { LogsApi } from '@datadog/datadog-api-client/dist/packages/datadog-api-client-v2';
 import { getEnvVariables } from "./getEnvVariables";
 
 const DATADOG_SITE = "datadoghq.com";
@@ -37,8 +39,61 @@ export const initDataDogRum = (): void => {
     });
 };
 
+
+export const fetchLogsFromDataDog = (): void => {
+  const apiInstanceDD = new v2.LogsApi(client.createConfiguration());
+  const formatTimeZone = (timestamp: Date) => {
+    const timeEst = timestamp.toLocaleString('en-gb', {
+      timeZone: 'America/New_York',
+      hour12: false,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit"
+    }); // "15/08/2023, 20:12:31 PM"
+
+    const split = timeEst.split(","); // ['15/08/2023', ' 17:13:05']
+    const time = split[1].trim(); // '17:13:05'
+    const splitDate = split[0].split('/'); // ['15', '08', '2023']
+    const day = splitDate[0];
+    const month = splitDate[1];
+    const year = splitDate[2]
+
+    const formattedTime = `${year}-${month}-${day}T${time}:00`; // 2023-06-07T17:13:05.00
+    return formattedTime
+  };
+
+  const to = formatTimeZone(new Date());
+  const from = formatTimeZone(new Date(new Date().getTime() - 15 * 60000));
+
+  const params: v2.LogsApiListLogsRequest = {
+    body: {
+      filter: {
+        query: "lm_app:aws-cct-shared-admin-service @sharedAdminAPILog n0263786 Final Results lm_app_env:test",
+        from,
+        to,
+      },
+      sort: "timestamp",
+      page: {
+        limit: 5,
+      },
+    },
+  };
+
+  apiInstanceDD
+    .listLogs(params)
+    .then((data: v2.LogsListResponse) => {
+      console.log(
+        "FAITH API called successfully. Returned data: " + JSON.stringify(data)
+      );
+    })
+    .catch((error: any) => console.error("FAITH", error));
+}
+
 export class Logger {
   private defaultContext: Record<string, unknown>;
+  private apiInstanceDD: LogsApi;
 
   constructor() {
     this.init();
@@ -78,6 +133,7 @@ export class Logger {
       });
   }
 
+
   private sendLogToDataDog(message: string, body: Record<string, unknown>, level: StatusType): void {
     const messageContext = Object.assign(body, this.defaultContext);
     const dataDogMessage = `${message} ${JSON.stringify(body)}`;
@@ -115,7 +171,7 @@ export class Logger {
     try {
       console.info(`${APP_ORG_TAG}: ${message}`, body);
 
-      if(sendToDataDog) {
+      if (sendToDataDog) {
         this.sendLogToDataDog(message, body, "info");
       }
     } catch (e) {
@@ -136,7 +192,7 @@ export class Logger {
     try {
       console.warn(`${APP_ORG_TAG}: ${message}`, body);
 
-      if(sendToDataDog) {
+      if (sendToDataDog) {
         this.sendLogToDataDog(message, body, "warn");
       }
     } catch (e) {
@@ -157,7 +213,7 @@ export class Logger {
     try {
       console.error(`${APP_ORG_TAG}: ${message}`, body);
 
-      if(sendToDataDog) {
+      if (sendToDataDog) {
         this.sendLogToDataDog(message, body, "error");
       }
     } catch (e) {
