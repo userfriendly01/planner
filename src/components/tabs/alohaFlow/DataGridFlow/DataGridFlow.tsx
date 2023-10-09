@@ -341,6 +341,18 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
   };
 
   const handleOnBulkUpdate = async(rows: Array<CctSharedCallFlowDb> ) =>{
+    const {
+      isDuplicate, message
+    } = checkForDuplicateBulkEdit(rows);
+    if(isDuplicate){
+      setAlertBar((alertBarProps: AlertBarProps) => ({
+        ...alertBarProps,
+        open: true,
+        msg: message,
+        severityType: "error"
+      }));
+      return;
+    }
     const response = await batchFlowUpdate(rows, accessToken, graphQLEndpoint);
     if(!response || response.errors) {
       setAlertBar((alertBarProps: AlertBarProps) => ({
@@ -419,6 +431,24 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       isPreviewModalOpen: response?.flag || false,
       fetching: false
     }));
+  };
+
+  const checkForDuplicateBulkEdit = (rows: Array<CctSharedCallFlowDb>): DuplicateCheck =>{
+    const duplicateRecord = dataFlow.data.filter((flow: CctSharedCallFlowDb)=>{
+      const match = rows.filter((row: CctSharedCallFlowDb)=>row.employeeId && row.pkey !== flow.pkey && row.employeeId === flow.employeeId);
+      return match.length>0;
+    });
+    const duplicateEmployeeId: Array<string> = [];
+    const pkeys: Array<string> = [];
+    duplicateRecord.map((record: CctSharedCallFlowDb)=>{
+      duplicateEmployeeId.push(record.employeeId);
+      pkeys.push(record.pkey);
+    });
+
+    return {
+      isDuplicate: duplicateRecord.length>0? true: false,
+      message: `Duplicate Employee Ids ${duplicateEmployeeId.join("\n")} found for the record of ${pkeys.join("\n")}`
+    };
   };
 
   const checkForDuplicateAdd = (params: FormValidationRule): DuplicateCheck =>{
