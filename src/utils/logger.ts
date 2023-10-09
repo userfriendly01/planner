@@ -39,7 +39,6 @@ export const initDataDogRum = (): void => {
     });
 };
 
-
 export const fetchLogsFromDataDog = (): void => {
   const apiInstanceDD = new v2.LogsApi(client.createConfiguration());
   const formatTimeZone = (timestamp: Date) => {

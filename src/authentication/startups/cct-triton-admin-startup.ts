@@ -1,6 +1,5 @@
 import { getStartupProfiles } from "authentication";
 import { apiPaths } from "globals";
-import { fetchLogsFromDataDog } from "utils";
 import {
   getManagers as getManagersServiceCall,
   getOffices as getOfficesServiceCall,
@@ -17,6 +16,8 @@ import {
   logger,
   myAxios
 } from "utils";
+
+import { fetchLogsFromDataDog } from "../../utils/logger";
 
 const getManagers = async (dispatch: any) => {
   try {
