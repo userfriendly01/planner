@@ -7,12 +7,14 @@ import {
   DataGrid, GridRenderCellParams, GridRowId, GridRowSelectionModel, GridPaginationModel, GridCallbackDetails
 } from "@mui/x-data-grid";
 import { CustomToast } from "components";
-import { AzureSPA } from "globals";
+import {
+  AzureSPA, DuplicateCheck
+} from "globals";
 import React, {
   useEffect, useState
 } from "react";
 import {
-  queryFlowData, retrieveFlowData, flowBatchDelete, batchFlowUpdate, batchDeleteItems
+  queryFlowData, retrieveFlowData, batchFlowUpdate, batchDeleteItems
 } from "services";
 import {
   CACHE_FILTER_FLOW,
@@ -419,6 +421,36 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     }));
   };
 
+  const checkForDuplicateAdd = (params: FormValidationRule): DuplicateCheck =>{
+    const duplicateRecord = dataFlow.data.filter((flow: CctSharedCallFlowDb)=>params?.pkey?.value && params?.pkey?.value !== flow.pkey && params?.employeeId?.value === flow.employeeId);
+    let isDuplicate = false;
+    let message = "";
+    if(duplicateRecord.length>0){
+      isDuplicate = true;
+      const duplicateDialedPhoneNumber = duplicateRecord.map((record: CctSharedCallFlowDb)=>(record.pkey));
+      message = `Duplicate Employee ID - ${params?.employeeId?.value} - found for ${duplicateDialedPhoneNumber.join("\n")}`;
+    }
+    return {
+      isDuplicate,
+      message
+    };
+  };
+
+  const checkForDuplicateEdit = (params: CctSharedCallFlowDb): DuplicateCheck =>{
+    const duplicateRecord = dataFlow.data.filter((flow: CctSharedCallFlowDb)=>params?.pkey && params?.pkey !== flow.pkey && params?.employeeId === flow.employeeId);
+    let isDuplicate = false;
+    let message = "";
+    if(duplicateRecord.length>0){
+      isDuplicate = true;
+      const duplicateDialedPhoneNumber = duplicateRecord.map((record: CctSharedCallFlowDb)=>(record.pkey));
+      message = `Duplicate Employee ID - ${params?.employeeId} - found for ${duplicateDialedPhoneNumber.join("\n")}`;
+    }
+    return {
+      isDuplicate,
+      message
+    };
+  };
+
   FlowGridColumnDef[0].renderCell = (params: GridRenderCellParams<CctSharedCallFlowDb>) => (<a href="#" onClick={() => openEditModal(true, false, params.row)}>{`${params.value}`}</a>);
 
 
@@ -465,6 +497,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         openAddModal={openAddModal}
         cloneType={cloneType}
         flowRuleCloned={clonedFlowRule}
+        duplicateCheck={checkForDuplicateAdd}
       />
 
       <EditFlow
@@ -473,6 +506,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         isOpen={dataFlow.isEditModalOpen}
         selectedRow={dataFlow.selectedRow}
         openEditModal={openEditModal}
+        duplicateCheck={checkForDuplicateEdit}
       />
 
       <AdvanceSearchModal

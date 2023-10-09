@@ -370,3 +370,8 @@ export interface GraphQLErrors {
   errorType:string;
   message:string;
 }
+
+export interface DuplicateCheck{
+  isDuplicate: boolean;
+  message: string;
+}
