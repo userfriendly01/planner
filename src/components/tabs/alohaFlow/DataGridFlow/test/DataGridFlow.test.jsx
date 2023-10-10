@@ -217,6 +217,42 @@ describe("<DataGridFlow />", () => {
       act(()=>{ openModal(false, true); });
       expect(CustomToast.mock.calls[1][0].open).toBe(false);
     });
+    test("Simulate the AddFlow duplicate Check", ()=>{
+      const validFlowDataList = createFlowDataList(15);
+      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
+      retrieveFlowData.mockResolvedValue(validFlowDataList);
+      renderComponent();
+      const duplicateCheck = AddFlow.mock.calls[0][0].duplicateCheck;
+      const params = {
+        ...validFlowDataList[2],
+        employeeId: {
+          value: "n3"
+        },
+        pkey: {
+          value: validFlowDataList[2].pkey
+        }
+      };
+      const duplicateCheckObj = duplicateCheck(params);
+      expect(duplicateCheckObj.isDuplicate).toBe(false);
+    });
+    test("Simulate the AddFlow duplicate Check", ()=>{
+      const validFlowDataList = createFlowDataList(15);
+      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
+      retrieveFlowData.mockResolvedValue(validFlowDataList);
+      renderComponent();
+      const duplicateCheck = EditFlow.mock.calls[0][0].duplicateCheck;
+      const params = {
+        ...validFlowDataList[2],
+        employeeId: {
+          value: "n3"
+        },
+        pkey: {
+          value: validFlowDataList[2].pkey
+        }
+      };
+      const duplicateCheckObj = duplicateCheck(params);
+      expect(duplicateCheckObj.isDuplicate).toBe(false);
+    });
   });
 
   describe("Check the Edit Flow from FlowCustomAction", ()=>{

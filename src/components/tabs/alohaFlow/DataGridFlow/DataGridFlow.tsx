@@ -447,7 +447,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
 
     return {
       isDuplicate: duplicateRecord.length>0? true: false,
-      message: `Duplicate Employee Ids ${duplicateEmployeeId.join("\n")} found for the record of ${pkeys.join("\n")}`
+      message: `Duplicate Employee Ids ${[...new Set(duplicateEmployeeId)].join("\n")} found for the record of ${[...new Set(pkeys)].join("\n")}`
     };
   };
 
