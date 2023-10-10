@@ -81,10 +81,24 @@ const mockMasterData = {
 };
 
 const openEditModal = jest.fn();
+const duplicateCheck = jest.fn().mockReturnValue({
+  isDuplicate: false,
+  message: ""
+});
+const duplicateCheckTrue = jest.fn().mockReturnValue({
+  isDuplicate: true,
+  message: "Duplicate Employee Id"
+});
 
 const renderEditFlow = (isOpen, data) => {
   return render(
-    <EditFlow openEditModal={openEditModal} selectedRow={data} isOpen={isOpen} />
+    <EditFlow openEditModal={openEditModal} selectedRow={data} isOpen={isOpen} duplicateCheck={duplicateCheck} />
+  );
+};
+
+const renderEditFlowWithDuplicateChecks = (isOpen, data) => {
+  return render(
+    <EditFlow openEditModal={openEditModal} selectedRow={data} isOpen={isOpen} duplicateCheck={duplicateCheckTrue} />
   );
 };
 
@@ -135,6 +149,17 @@ describe("<EditFlow />", () => {
       });
       waitFor(() => {
         expect(openEditModal).toBeCalledTimes(1);
+      });
+    });
+    test("Simulate the SaveRule Button with true Duplicate Checks", () => {
+      updateFlowDB.mockResolvedValue({ data: { "items": []}});
+      const { getByRole } = renderEditFlowWithDuplicateChecks(true, validFlowData);
+      const saveButton = getByRole("button", { name: "saveFlowRuleButton" });
+      act(() => {
+        fireEvent.click(saveButton);
+      });
+      waitFor(() => {
+        expect(openEditModal).toBeCalledTimes(0);
       });
     });
     test("Simulate the SaveRule Button with Failed API Response", () => {
@@ -207,7 +232,8 @@ describe("<EditFlow />", () => {
       const {
         getByRole, queryByRole
       } = renderEditFlow(true, invalidFlowData);
-      const chanelDropdown = getByRole("combobox", { name: /Channel/i });
+      setTimeout(()=>{},300);
+      const chanelDropdown = getByRole("button", { name: /Channel/i });
       fireEvent.mouseDown(chanelDropdown);
       const listBox = within(getByRole("listbox", { name: /Channel/i }));
       act(() => {
