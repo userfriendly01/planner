@@ -322,7 +322,7 @@ describe("<AddFlow />", () => {
         expect(ComponentControlMock).toBeTruthy();
       });
     });
-    test("Simulate teh duplicate check", ()=>{
+    test("Simulate the duplicate check", ()=>{
       const { getByRole } = renderAddFlowDuplicateCreate();
       flowFields[8].valueSetter(validFlowData, { type: "DID1" });
       const dialedPhoneNumberAttr = ComponentControl.mock.calls[0][0].onChange;

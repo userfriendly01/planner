@@ -235,7 +235,7 @@ describe("<DataGridFlow />", () => {
       const duplicateCheckObj = duplicateCheck(params);
       expect(duplicateCheckObj.isDuplicate).toBe(false);
     });
-    test("Simulate the AddFlow duplicate Check", ()=>{
+    test("Simulate the Edit Flow duplicate Check", ()=>{
       const validFlowDataList = createFlowDataList(15);
       queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
       retrieveFlowData.mockResolvedValue(validFlowDataList);

@@ -233,8 +233,8 @@ describe("<EditFlow />", () => {
         getByRole, queryByRole
       } = renderEditFlow(true, invalidFlowData);
       setTimeout(()=>{},300);
-      const chanelDropdown = getByRole("button", { name: /Channel/i });
-      fireEvent.mouseDown(chanelDropdown);
+      const channelDropdown = getByRole("button", { name: /Channel/i });
+      fireEvent.mouseDown(channelDropdown);
       const listBox = within(getByRole("listbox", { name: /Channel/i }));
       act(() => {
         fireEvent.click(listBox.getByRole("option", {
@@ -243,8 +243,8 @@ describe("<EditFlow />", () => {
         }));
       });
       expect(queryByRole("listbox")).toEqual(null);
-      expect(chanelDropdown).toHaveFocus();
-      expect(chanelDropdown).toHaveTextContent("Test2 Channel");
+      expect(channelDropdown).toHaveFocus();
+      expect(channelDropdown).toHaveTextContent("Test2 Channel");
       act(()=>{
         fireEvent.click(getByRole("button", { name: "saveFlowRuleButton" }));
       });
