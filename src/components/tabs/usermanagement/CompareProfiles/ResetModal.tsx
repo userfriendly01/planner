@@ -3,6 +3,7 @@ import { ButtonWrapper, InformationText, InformationWapper, ModalContainer } fro
 import { StyledButton } from "components";
 import { ProgressBar } from "../BulkChanges/Processing";
 import { ReportGmailerrorred } from "@mui/icons-material";
+import { fetchResetProfileDatadogLogs, resetProfiles } from "services";
 
 const ResetModal = (props: any) => {
   const {
@@ -21,31 +22,86 @@ const ResetModal = (props: any) => {
   }
 
   const totalWaitSeconds = 300;
+  const progressIntervalId = React.useRef<any>();
+  const datadogIntervalId = React.useRef<any>();
+
   const [emailsConfirmed, setEmailsConfirmed] = React.useState(false);
   const [status, setStatus] = React.useState(null);
   const [noAccess, setNoAccess] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
+  const [results, setResults] = React.useState(null);
 
-  const initiateReset = () => {
+  console.log("PROGRESS INTERVAL ID", progressIntervalId);
+  console.log("DATAGOD INTERVAL ID", datadogIntervalId);
+
+  React.useEffect(() => {
+    if (progress >= totalWaitSeconds) {
+      setStatus(StatusOptions.FAIL);
+      //Initiate failure steps
+    }
+
+  }, [progress]);
+
+  React.useEffect(() => {
+    console.log("FAITH STATUS", status);
+    const timeout = 3000;
+    if (status === StatusOptions.STARTED || status === StatusOptions.TIME_OUT) {
+      progressIntervalId.current = setInterval(() => {
+        console.log("We are running the progress interval");
+        setProgress(progress => progress + 15)
+      }, timeout);
+      if (status === StatusOptions.TIME_OUT) {
+        datadogIntervalId.current = setInterval(() => {
+          console.log("We are running the datadog interval");
+          fetchDatadogLog()
+        }, timeout);
+      }
+    } else {
+      clearInterval(progressIntervalId.current);
+      progressIntervalId.current = null;
+      clearInterval(datadogIntervalId.current);
+      datadogIntervalId.current = null;
+    }
+    return () => {
+      clearInterval(progressIntervalId.current);
+      clearInterval(datadogIntervalId.current);
+    };
+  }, [status]);
+
+  const initiateReset = async () => {
     setEmailsConfirmed(true);
     setStatus(StatusOptions.STARTED);
     const body = {
       wfmPersonId,
       email,
       workerSid,
+      steps: [1]
     }
     console.log("Reset Request", nNumber, body);
-    runProgressBar();
+    try {
+      const res = await resetProfiles(nNumber, body);
+      console.log("RESET PROFILES RESPONSE", res);
+    } catch (err) {
+      //check for timeout
+      if (err.response?.data?.message?.toLowerCase().trim() === "read timed out") {
+        console.warn("Call to reset profiles timed out. Trying to fetch datadog log");
+        setStatus(StatusOptions.TIME_OUT);
+      } else {
+        console.log("RESET PROFILES AWW", err, err.message, err.response, err.response.message);
+        setProgress(totalWaitSeconds);
+      }
+    }
   }
 
-  const runProgressBar = async () => {
-    const increments = 60;
-    const timeout = 3000;
-
-    for (let i = 0; increments < i; i++) {
-      await setTimeout(() => setProgress(progress => progress + 5), timeout);
+  const fetchDatadogLog = async () => {
+    const res: any = await fetchResetProfileDatadogLogs(nNumber);
+    console.log("FETCH LOG RES", res);
+    if (res.data.length > 0) {
+      console.log("yay cancel everything and show the results!", res.data);
+      setStatus(StatusOptions.SUCCESS);
+      setResults(res.data[res.data.length - 1].attributes.attributes.sharedAdminAPILog.results);
     }
-  };
+  }
 
   return (
     <ModalContainer>
@@ -77,7 +133,34 @@ const ResetModal = (props: any) => {
           </ButtonWrapper>
 
         </InformationWapper>
-      }{status === StatusOptions.STARTED && <ProgressBar completedRows={progress} totalRowCount={totalWaitSeconds} />}
+      }
+      {(status === StatusOptions.STARTED || status === StatusOptions.TIME_OUT) && <ProgressBar completedRows={progress} totalRowCount={totalWaitSeconds} />}
+      {status === StatusOptions.FAIL &&
+        <InformationWapper>
+          <InformationText>
+            Calabrio sucks sorry
+          </InformationText>
+          <ButtonWrapper>
+            <StyledButton onClick={onClose}>Close</StyledButton>
+          </ButtonWrapper>
+        </InformationWapper>
+      }
+      {status === StatusOptions.SUCCESS && results &&
+        <InformationWapper>
+          <InformationText>
+            WE DID IT!!
+          </InformationText>
+          {results.map((r: any) => ((
+            <InformationText>
+              <div>{r.description}</div>
+              <div>{r.result}</div>
+            </InformationText>
+          )))}
+          <ButtonWrapper>
+            <StyledButton onClick={onClose}>Close</StyledButton>
+          </ButtonWrapper>
+        </InformationWapper>
+      }
     </ModalContainer>
   );
 };
