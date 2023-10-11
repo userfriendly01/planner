@@ -17,8 +17,6 @@ import {
   myAxios
 } from "utils";
 
-import { fetchLogsFromDataDog } from "../../utils/logger";
-
 const getManagers = async (dispatch: any) => {
   try {
     const managers = await getManagersServiceCall();
@@ -183,7 +181,7 @@ const getBusinessUnits = async (dispatch: any) => {
 export const runTritonAdminStartup = (dispatch: any) => {
   /* Please add new service calls to the end of this Promise.all,
   the existing order is important */
-  fetchLogsFromDataDog();
+
   return Promise.all([
     Promise.resolve(getStartupProfiles().TRITON.name),
     getWorkers(dispatch),

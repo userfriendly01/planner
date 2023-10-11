@@ -51,6 +51,7 @@ const success = "success";
 
 const authenticateAndStartup = dispatch => new Promise((resolve, reject) => myAxios.get(apiPaths.AUTH)
   .then(res => {
+    console.log("AUTH RESPONSE", res);
     const pingIdentity = res.data;
     const permissions = getPermissions(pingIdentity.groups);
     const startupFiles = getStartups(permissions);
@@ -78,7 +79,7 @@ const authenticateAndStartup = dispatch => new Promise((resolve, reject) => myAx
   })
   .catch(error => {
     let msg = "An error occurred when trying to authenticate";
-    if(error.response && isErrorIn400s(error.response.status)) {
+    if (error.response && isErrorIn400s(error.response.status)) {
       msg = "You are not authorized to view this page";
     }
     reject({
@@ -126,12 +127,12 @@ const App = () => {
         <BrowserRouter>
           <ScrollToTop />
           <AppWrapper data-testid="app-wrapper">
-            <Header/>
-            <NavTabs/>
+            <Header />
+            <NavTabs />
             <Routes>
               {getRoutes(state, loadResult.home, loadResult.azureClientId).map(r => {
                 const Component = r.element || r.render;
-                return <Route key={r.path} path={r.path} element={<Component/>}/>;
+                return <Route key={r.path} path={r.path} element={<Component />} />;
               })}
             </Routes>
             <Modal onClose={() => { return; }} open={showModal === true}>

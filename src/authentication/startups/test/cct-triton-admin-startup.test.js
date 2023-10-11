@@ -13,7 +13,6 @@ import {
 } from "services";
 import {
   formatManagersResponse,
-  fetchLogsFromDataDog,
   formatOfficesResponse,
   myAxios
 } from "utils";
@@ -28,11 +27,6 @@ jest.mock("../../../utils/calabrioUtils", () => ({
   getCalabrioWfmOptions: jest.fn(),
   getCalabrioWfmOrg: jest.fn()
 }));
-
-jest.mock("../../../utils/logger", () => ({
-  fetchLogsFromDataDog: jest.fn().mockResolvedValue("Yay")
-}));
-
 
 const axiosMock = new MockAdapter(myAxios);
 const profilesEndpoint = apiPaths.PROFILES;

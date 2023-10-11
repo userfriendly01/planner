@@ -3,34 +3,40 @@ import MessageBanner from "./MessageBanner";
 import ProfileColumn from "./ProfileColumn";
 import {
   CompareProfilesWrapper,
-  ProfileColumnsWrapper
+  ProfileColumnsWrapper,
+  ResetButton,
+  StyledLoadSpinner
 } from "./CompareProfiles.Styles";
-import { NNumberInput } from "components";
+import { CalabrioGroup, NNumberInput } from "components";
 import { useAdminState } from "context";
-import { ProfilePayload, Worker } from "globals";
+import { ProfilePayload, WfmUser, Worker } from "globals";
 import { getWfmUserByNNumber, getQmUserProfiles } from "services";
+import { messageConsts } from "./messages";
+import { Modal } from "@mui/material";
+import ResetModal from "./ResetModal";
 
 const CompareProfiles = () => {
   const state = useAdminState();
   const environment = state.userContext.pingIdentity.environment;
   const profiles = state.profileContext.profiles;
+  const calabrioTeams = state.calabrioContext.teams;
+  const [showModal, setShowModal] = React.useState(false);
+  const [showColumns, setShowColumns] = React.useState(false);
+  const [showResetButton, setShowResetButton] = React.useState(false);
+  const [messages, setMessages] = React.useState([]);
+
   const [tritonProfiles, setTritonProfile] = React.useState([]);
-  const [messageArray, setMessageArray] = React.useState([
-    {
-      level: "warning",
-      message: "Any user being compared/corrected via this page should first be searched within the Security Identity Portal first to confirm their email's are aligned throughout all Systems. The reset Profiles functionality will NOT work unless all the emails mentioned are aligned. "
-    }
-  ]);
   const [calabrioQMProfiles, setCalabrioQMProfiles] = React.useState([]);
-  const [calabrioWFMProfile, setCalabrioWFMProfile] = React.useState<any>({});
+  const [calabrioWFMProfiles, setCalabrioWFMProfiles] = React.useState<any>([]);
 
   const [nNumberDetails, setNNumberDetails] = React.useState({
     fetchedUser: null,
     nNumber: null
   });
 
+  console.log("FAITH MESSAGES", messages);
   console.log("FAITH ENV", environment);
-  console.log("FAITH WFM PERSON", calabrioWFMProfile);
+  console.log("FAITH WFM PERSON", calabrioWFMProfiles);
   console.log("FAITH TRITON", tritonProfiles);
 
   React.useEffect(() => {
@@ -39,11 +45,28 @@ const CompareProfiles = () => {
     }
   }, [nNumberDetails.fetchedUser]);
 
+  const updateMessages = (action: string, id?: number, message?: string, level?: string) => {
+    let newArray;
+    if (action === "add") {
+      newArray = [
+        ...messages,
+        {
+          id: null,
+          message,
+          level
+        }
+      ]
+    } else {
+      newArray = messages.filter(m => m.id !== id);
+    }
+    newArray.forEach((m, index) => m.id = index);
+    setMessages(newArray);
+  };
+
   const trimProfiles = (profiles: any[], system: string) => {
     if (system === "triton") {
       return profiles.map((p: Worker, index: number) => {
         return {
-          ["id"]: index,
           ["Worker Sid"]: p.sid,
           ["N Number"]: p.attributes?.n_number || "",
           ["Email"]: p.attributes?.email || "",
@@ -60,13 +83,28 @@ const CompareProfiles = () => {
     } else if (system === "qm") {
       return profiles.map((p: any) => {
         return {
-
+          ["Acd Id"]: p.acdId,
+          ["Ad Login"]: p.adLogin,
+          ["Email"]: p.email,
+          ["First Name"]: p.firstName,
+          ["Last Name"]: p.lastName,
+          ["Team"]: calabrioTeams.find((c: CalabrioGroup) => c.groupId === p.groupId)?.name || "Not Found",
+          ["User Id"]: p.id,
+          ["Active"]: p.deactivated === 32503593600000
         }
       });
     } else if (system === "wfm") {
       return profiles.map((p: any) => {
         return {
-
+          ["Employment Number"]: p.EmploymentNumber,
+          ["Identity"]: p.Identity,
+          ["Email"]: p.Email,
+          ["First Name"]: p.FirstName,
+          ["Last Name"]: p.LastName,
+          ["Business Unit Id"]: p.BusinessUnitId,
+          ["Team Id"]: p.TeamId,
+          ["Person Id"]: p.Id,
+          ["Active"]: true
         }
       });
     }
@@ -78,24 +116,11 @@ const CompareProfiles = () => {
 
     try {
       const matchingTritonProfiles = workers.filter((w: Worker) => w?.attributes?.n_number?.toLowerCase() === nNumberDetails?.nNumber?.toLowerCase());
-      //make this a filter with a profile count check
 
       if (matchingTritonProfiles.length > 1) {
-        setMessageArray((current: any) => [
-          {
-            level: "error",
-            message: "It looks like this user has multiple Triton profiles. It's not recommended you use this functionality until you deactivate profiles you dont need, leaving one master Triton profile for this environment."
-          },
-          ...current
-        ]);
+        updateMessages("add", null, messageConsts.MULTIPLE_TRITON_PROFILES, "error");
       } else if (matchingTritonProfiles.length === 0) {
-        setMessageArray((current: any) => [
-          {
-            level: "error",
-            message: "It looks like this user has no Triton profiles. A Triton profile is needed to align with Calabrio WM and Calabrio WFM"
-          },
-          ...current
-        ]);
+        updateMessages("add", null, messageConsts.MISSING_TRITON_PROFILE, "error");
       } else {
         const workerSid = matchingTritonProfiles[0].sid;
         const email = nNumberDetails.fetchedUser.email;
@@ -108,34 +133,50 @@ const CompareProfiles = () => {
         const [wfmResponse, calabrioProfilesResponse] = await Promise.all([wfmUserPromise, calabrioProfilesPromise]);
 
         const wfmProfiles = wfmResponse?.data?.Result || [];
-        if (wfmProfiles.length > 0) {
-          setCalabrioWFMProfile(wfmProfiles[0])
+        if (wfmProfiles.length === 1) {
+          setCalabrioWFMProfiles(wfmProfiles)
+        } else if (wfmProfiles.length > 1) {
+          const personIds = wfmProfiles.map((p: WfmUser) => p.Id);
+          updateMessages("add", null, `${messageConsts.WFM_MULTIPLE_PROFILES} Person Ids: ${JSON.stringify(personIds)}`, "error");
+        } else {
+          updateMessages("add", null, messageConsts.WFM_NO_PROFILE_FOUND, "warning");
         }
 
         const qmProfiles = calabrioProfilesResponse.data || [];
+        console.log("FAITH QM Profiles", qmProfiles);
+
         const activeQmProfiles = qmProfiles.filter((p: any) => p.deactivated === 32503593600000);
-        const masterQmProfile = activeQmProfiles.find((p: any) => p.acdId.toUpperCase() === workerSid.toUpperCase() && p.isSynchronized);
+        const masterQmProfile = qmProfiles.find((p: any) => p.acdId.toUpperCase() === workerSid.toUpperCase() && p.isSynchronized);
 
         console.log("FAITH Active Profile", activeQmProfiles);
         console.log("FAITH Master Profile", masterQmProfile);
 
-        if (masterQmProfile) {
-
+        if (masterQmProfile || true) {
+          // if (masterQmProfile) {
+          qmProfiles.forEach((p: any, i: number) => {
+            if (p.id === masterQmProfile?.id) {
+              qmProfiles.splice(i, 1);
+              qmProfiles.unshift(p);
+            }
+          });
+          setCalabrioQMProfiles(qmProfiles);
+          setShowResetButton(true);
         } else {
-
+          updateMessages("add", null, messageConsts.MISSING_CALABRIO_MASTER_PROFILE, "error");
         }
+        setShowColumns(true);
       }
     } catch (err) {
-
+      updateMessages("add", null, `${messageConsts.ERROR}: ${err.message}}`, "error");
     }
-  }
+  };
 
   return (
     <CompareProfilesWrapper>
       <MessageBanner
         environment={environment}
-        messageArray={messageArray}
-        setMessageArray={setMessageArray}
+        messages={messages}
+        updateMessages={updateMessages}
       />
       {environment !== "development" &&
         <>
@@ -160,16 +201,33 @@ const CompareProfiles = () => {
             }
             value={nNumberDetails.nNumber}
           />
-          {nNumberDetails.fetchedUser &&
+          {showResetButton &&
+            <ResetButton
+              sx={{ marginTop: "40px" }}
+              onClick={() => setShowModal(true)}>
+              Reset Profiles
+            </ResetButton>}
+          {nNumberDetails.fetchedUser && !showColumns && <StyledLoadSpinner />}
+          {nNumberDetails.fetchedUser && showColumns &&
             <ProfileColumnsWrapper>
               <ProfileColumn people={trimProfiles(tritonProfiles, "triton")} />
-              <ProfileColumn />
-              {environment === "production" &&
-                <ProfileColumn />
-              }
+              <ProfileColumn people={trimProfiles(calabrioQMProfiles, "qm")} />
+              {/* {environment === "production" && */}
+              <ProfileColumn people={trimProfiles(calabrioWFMProfiles, "wfm")} />
+              {/* } */}
             </ProfileColumnsWrapper>
-
           }
+          <Modal onClose={() => { return; }} open={showModal === true}>
+            <>
+              <ResetModal
+                nNumber={nNumberDetails?.nNumber}
+                email={nNumberDetails?.fetchedUser?.email}
+                workerSid={tritonProfiles[0] && tritonProfiles[0].sid}
+                wfmPersonId={calabrioWFMProfiles[0] && calabrioWFMProfiles[0].Id}
+                onClose={() => setShowModal(false)}
+              />
+            </>
+          </Modal>
         </>
       }
 
