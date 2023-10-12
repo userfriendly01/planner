@@ -159,11 +159,11 @@ const ResetModal = (props: any) => {
           <h1 style={{ alignSelf: "center" }}>Reset Results</h1>
           {results.map((r: any) => ((
             <ResultWrapper>
-              <InformationText>
-                <Key>Step {r.stepNumber}:</Key> <div style={{ textAlign: "left", marginLeft: "5px" }}>{r.description}</div>
+              <InformationText style={{ justifyContent: "flex-start" }}>
+                <Key style={{ width: "85px" }}>Step {r.stepNumber}:</Key> <div style={{ textAlign: "left", marginLeft: "5px" }}>{r.description}</div>
               </InformationText>
-              <InformationText>
-                <Key>Results:</Key>
+              <InformationText style={{ justifyContent: "flex-start" }}>
+                <Key>Result:</Key>
                 {typeof r.result === "string" ?
                   <div style={{ textAlign: "left", maxWidth: "90%", marginLeft: "5px" }}>{r.result}</div>
                   :
@@ -174,7 +174,7 @@ const ResetModal = (props: any) => {
                   </ResultWrapper>
                 }
               </InformationText>
-              <Divider flexItem style={{ width: "100%", margin: "10px 0px" }} />
+              <Divider flexItem style={{ width: "100vw", margin: "10px 0px" }} />
             </ResultWrapper>
           )))}
           <ButtonWrapper>

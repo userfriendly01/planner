@@ -154,7 +154,7 @@ export const ButtonWrapper = styled.div`
   display: flex;
   flex-direction: column;
   height: 50%;
-  width: 55%;
+  width: 100%;
   justify-content: space-between;
   min-height: 130px;
   margin-top: 20px;
