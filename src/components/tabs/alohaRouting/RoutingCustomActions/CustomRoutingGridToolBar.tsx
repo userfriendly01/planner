@@ -25,14 +25,23 @@ interface CustomRoutingGridToolBarProps {
   exportDataFile: ()=> void;
   applyFilter?: () => void;
   isAdvanceSearchOpen?: boolean;
+  matchedGroups?:string;
 }
 
 export const CustomRoutingGridToolBar = ({
-  openAddModal, openPreviewModal, openAdvanceSearchModal, exportDataFile, applyFilter, isAdvanceSearchOpen
+  openAddModal, openPreviewModal, openAdvanceSearchModal, exportDataFile, applyFilter, isAdvanceSearchOpen, matchedGroups
 }: CustomRoutingGridToolBarProps):JSX.Element => {
 
   const [routingFilter, setRoutingFilter] = useState<RoutingFilter>();
-
+  const [enableRouting, setEnableRouting] = useState(false);
+  useEffect(()=>{
+    const env = process.env.APP_ENV;
+    if(env === "production" && matchedGroups?.includes("gpi-cct-config-route-readwrite-prod")){
+      setEnableRouting(true);
+    } else if( env !== "production" && matchedGroups?.includes("gpi-cct-config-route-readwrite-np")){
+      setEnableRouting(true);
+    }
+  },[]);
   useEffect(()=>{
     const localFilter = getAdvanceFilter(CACHE_FILTER_ROUTING);
     setRoutingFilter(localFilter);
@@ -134,6 +143,7 @@ export const CustomRoutingGridToolBar = ({
             onChange={handleChange}
             variant="filled"
             size="small"
+            disabled={!enableRouting}
           >
             <MenuItem key="addRouting" value="addRouting">
               <AddOutlinedIcon/> &nbsp;&nbsp;Add Routing

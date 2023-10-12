@@ -47,6 +47,8 @@ const validStartTime =  {
 };
 
 const openEditModal = jest.fn();
+const matchedGroupsProd = "gpi-cct-config-route-readwrite-prod";
+const matchedGroupsNonProd = "gpi-cct-config-route-readwrite-np";
 
 jest.mock("@mui/material", () => ({
   __esModule: true,
@@ -75,9 +77,9 @@ const mockMasterData = {
   channel: ["Test1 Channel", "Test2 Channel"]
 };
 
-const renderEditRouting = (isOpen, data) => {
+const renderEditRouting = (isOpen, data,matchedGroups) => {
   return render(
-    <EditRouting openEditModal={openEditModal} selectedRow={data} isOpen={isOpen} />
+    <EditRouting openEditModal={openEditModal} selectedRow={data} isOpen={isOpen} matchedGroups={matchedGroups} />
   );
 };
 
@@ -116,12 +118,34 @@ describe("<EditRouting />", () => {
 
   // Cleanup mock
   afterEach(() => {
+    delete process.env.APP_ENV;
     localStorage.removeItem(ROUTING_CACHE_MASTER_DATA);
   });
 
+  describe("Basic Simualte the Component", () => {
+    test("Simulate the component with prod as environment", () => {
+      process.env.APP_ENV = "production";
+      renderEditRouting(true, validRoutingData,matchedGroupsProd);
+      const saveButtonClick = Button.mock.calls[0][0].onClick;
+      const saveButton = Button.mock.calls[0][0];
+      act(() => {
+        saveButtonClick();
+      });
+      expect(saveButton.disabled).toBe(true);
+    });
+    test("Simulate the component with prod as environment with read only access", () => {
+      renderEditRouting(true, validRoutingData,matchedGroupsNonProd);
+      const saveButtonClick = Button.mock.calls[0][0].onClick;
+      const saveButton = Button.mock.calls[0][0];
+      act(() => {
+        saveButtonClick();
+      });
+      expect(saveButton.disabled).toBe(true);
+    });
+  });
   describe("Edit Routing Modal Block", () => {
     test("Simulate Close Modal By Clicking Close Icon", () => {
-      const { getByRole } = renderEditRouting(true, validRoutingData);
+      const { getByRole } = renderEditRouting(true, validRoutingData,matchedGroupsNonProd);
       const closeModalButton = getByRole("img", { name: "Close" });
       act(() => {
         fireEvent.click(closeModalButton);

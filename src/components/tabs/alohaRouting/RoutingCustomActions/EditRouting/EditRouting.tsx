@@ -29,7 +29,7 @@ import { AzureSPA } from "globals";
 interface EditRoutingComponentProps {
   accessToken: string;
   isOpen: boolean;
-  matchedGroups: string;
+  matchedGroups?: string;
   selectedRow: CctSharedCallRoutingDb;
   openEditModal: (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallRoutingDb, message?: string, deleteRow?: boolean,isCloneRule?: boolean) => void;
 }
@@ -43,7 +43,17 @@ export const EditRouting = ({
   const [routingRule, setRoutingRule] = useState({ ...routingInitRule });
   const [dropDownValues, setDropDownValues] = useState(routingDropDownList);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
+  const [enableRouting, setEnableRouting] = useState(false);
   const defaultValue: { [key: string]: any } = {};
+  useEffect(()=>{
+    const env = process.env.APP_ENV;
+    console.log("environment", env);
+    if(env === "production" && matchedGroups?.includes("gpi-cct-config-route-readwrite-prod")){
+      setEnableRouting(true);
+    } else if( env !== "production" && matchedGroups?.includes("gpi-cct-config-route-readwrite-np")){
+      setEnableRouting(true);
+    }
+  },[]);
   useEffect(() => {
     setDropDownValues((dropDownOptions: RoutingDropDownList) => ({
       ...dropDownOptions,
@@ -265,6 +275,7 @@ export const EditRouting = ({
             value="Save"
             color="primary"
             sx={{ marginRight: 2 }}
+            disabled={!enableRouting}
             onClick={() => handleOnSave()}
           >
                         Save Rule
@@ -273,6 +284,7 @@ export const EditRouting = ({
             variant="contained"
             value="Clone"
             color="primary"
+            disabled={!enableRouting}
             sx={{ marginRight: 2 }}
             onClick={() => handleClone()}
           >
@@ -282,6 +294,7 @@ export const EditRouting = ({
             variant="contained"
             color="error"
             value="Delete"
+            disabled={!enableRouting}
             sx={{ marginRight: 2 }}
             onClick={() => handleOnDelete()}
           >

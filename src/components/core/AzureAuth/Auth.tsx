@@ -37,10 +37,7 @@ const authenticationProfiles =()=>{
   authProfiles?.forEach(item=>{
     if(item.startup.name === "aloha-route" || item.startup.name === "aloha-flow"){
       // eslint-disable-next-line no-empty
-      if (item.environments.includes(Environments.PROD) && item.permissionLevel ==="write" ){}
-      else{
-        authGroups.push(item.adGroup.toLowerCase());
-      }
+      authGroups.push(item.adGroup.toLowerCase());
     } });
   return authGroups;
 };
@@ -173,11 +170,9 @@ export function authWrapper(
       callback: CallbackComponent,
       membershipArray: string[]) {
       const graphData = this.getMembershipValues(accessToken);
-
       const matchedGroups = graphData
         .filter(group => membershipArray.includes(group.displayName))
         .map(group => group.displayName) || [];
-
       callback.setState({
         accessToken,
         authenticated: matchedGroups.length > 0,
