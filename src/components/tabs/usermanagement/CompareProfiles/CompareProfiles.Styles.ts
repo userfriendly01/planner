@@ -187,6 +187,5 @@ export const ResultWrapper = styled.div`
   flex-direction: column;
   justify-content: space-evenly;
   align-items: baseline;
-  min-height: 100px;
   margin: 10px;
 `;
