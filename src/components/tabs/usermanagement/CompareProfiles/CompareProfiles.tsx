@@ -156,8 +156,8 @@ const CompareProfiles = () => {
         console.log("FAITH Active Profile", activeQmProfiles);
         console.log("FAITH Master Profile", masterQmProfile);
 
-        if (masterQmProfile || true) {
-          // if (masterQmProfile) {
+        // if (masterQmProfile || true) {
+        if (masterQmProfile) {
           qmProfiles.forEach((p: any, i: number) => {
             if (p.id === masterQmProfile?.id) {
               qmProfiles.splice(i, 1);
