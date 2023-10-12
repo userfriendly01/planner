@@ -116,7 +116,7 @@ const ResetModal = (props: any) => {
     <ModalContainer>
       {!emailsConfirmed && !noAccess &&
         <InformationWapper>
-          <InformationText>
+          <InformationText style={{ alignItems: "center" }}>
             <ReportGmailerrorred sx={{ fontSize: "40px" }} />
             Before you reset profiles you have to go to this site and confirm that all 4 emails for {nNumber} match EXACTLY.
           </InformationText>
@@ -163,9 +163,18 @@ const ResetModal = (props: any) => {
                 <Key>Step {r.stepNumber}:</Key> <div style={{ textAlign: "left", marginLeft: "5px" }}>{r.description}</div>
               </InformationText>
               <InformationText>
-                <Key>Results:</Key> <div style={{ textAlign: "left", maxWidth: "90%", marginLeft: "5px" }}>{r.result}</div>
+                <Key>Results:</Key>
+                {typeof r.result === "string" ?
+                  <div style={{ textAlign: "left", maxWidth: "90%", marginLeft: "5px" }}>{r.result}</div>
+                  :
+                  <ResultWrapper>
+                    {r.result.map((result: string) => ((
+                      <div style={{ textAlign: "left", maxWidth: "90%", marginLeft: "5px" }}>{result}</div>
+                    )))}
+                  </ResultWrapper>
+                }
               </InformationText>
-              <Divider flexItem style={{ width: "80%", margin: "10px 0px", alignSelf: "center" }} />
+              <Divider flexItem style={{ width: "100%", margin: "10px 0px" }} />
             </ResultWrapper>
           )))}
           <ButtonWrapper>

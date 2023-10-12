@@ -77,7 +77,7 @@ const CompareProfiles = () => {
           ["Email"]: p.attributes?.email || "",
           ["First Name"]: p.attributes?.emp_first_name || "",
           ["Last Name"]: p.attributes?.emp_last_name || "",
-          ["Profile Id"]: p.attributes?.profile_id || "",
+          ["Profile Id"]: p.attributes?.profile_id.toString() || "",
           ["Profile Name"]: profiles.find((prof: any) => prof.profile_id === p.attributes?.profile_id)?.profile_nme || "",
           ["Manager N Number"]: p.attributes?.manager_n_number || "",
           ["Manager First Name"]: p.attributes?.manager_first_name || "",
