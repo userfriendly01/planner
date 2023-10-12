@@ -74,8 +74,7 @@ const ResetModal = (props: any) => {
     const body = {
       wfmPersonId,
       email,
-      workerSid,
-      steps: [1]
+      workerSid
     }
     console.log("Reset Request", nNumber, body);
     try {

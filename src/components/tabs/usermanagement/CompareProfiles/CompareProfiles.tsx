@@ -132,6 +132,7 @@ const CompareProfiles = () => {
 
         setTritonProfile(matchingTritonProfiles);
 
+
         const wfmUserPromise = getWfmUserByNNumber(nNumberDetails.nNumber);
         const calabrioProfilesPromise = getQmUserProfiles(workerSid, nNumberDetails.nNumber, email);
 
@@ -143,6 +144,8 @@ const CompareProfiles = () => {
         } else if (wfmProfiles.length > 1) {
           const personIds = wfmProfiles.map((p: WfmUser) => p.Id);
           updateMessages("add", null, `${messageConsts.WFM_MULTIPLE_PROFILES} Person Ids: ${JSON.stringify(personIds)}`, "error");
+        } else if (environment !== "production") {
+          console.log("thats ok")
         } else {
           updateMessages("add", null, messageConsts.WFM_NO_PROFILE_FOUND, "warning");
         }
