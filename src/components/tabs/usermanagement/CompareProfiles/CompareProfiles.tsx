@@ -42,6 +42,11 @@ const CompareProfiles = () => {
   React.useEffect(() => {
     if (nNumberDetails.fetchedUser) {
       fetchProfiles();
+    } else {
+      console.log("nNUmber?", nNumberDetails);
+      setTritonProfile([]);
+      setCalabrioQMProfiles([]);
+      setCalabrioWFMProfiles([]);
     }
   }, [nNumberDetails.fetchedUser]);
 
@@ -63,9 +68,9 @@ const CompareProfiles = () => {
     setMessages(newArray);
   };
 
-  const trimProfiles = (profiles: any[], system: string) => {
+  const trimProfiles = (userProfiles: any[], system: string) => {
     if (system === "triton") {
-      return profiles.map((p: Worker, index: number) => {
+      return userProfiles.map((p: Worker, index: number) => {
         return {
           ["Worker Sid"]: p.sid,
           ["N Number"]: p.attributes?.n_number || "",
@@ -73,7 +78,7 @@ const CompareProfiles = () => {
           ["First Name"]: p.attributes?.emp_first_name || "",
           ["Last Name"]: p.attributes?.emp_last_name || "",
           ["Profile Id"]: p.attributes?.profile_id || "",
-          ["Profile Name"]: profiles.find((prof: ProfilePayload) => prof.profile_id === p.attributes?.profile_id)?.profile_nme || "",
+          ["Profile Name"]: profiles.find((prof: any) => prof.profile_id === p.attributes?.profile_id)?.profile_nme || "",
           ["Manager N Number"]: p.attributes?.manager_n_number || "",
           ["Manager First Name"]: p.attributes?.manager_first_name || "",
           ["Manager Last Name"]: p.attributes?.manager_last_name || "",
@@ -81,7 +86,7 @@ const CompareProfiles = () => {
         }
       });
     } else if (system === "qm") {
-      return profiles.map((p: any) => {
+      return userProfiles.map((p: any) => {
         return {
           ["Acd Id"]: p.acdId,
           ["Ad Login"]: p.adLogin,
@@ -94,7 +99,7 @@ const CompareProfiles = () => {
         }
       });
     } else if (system === "wfm") {
-      return profiles.map((p: any) => {
+      return userProfiles.map((p: any) => {
         return {
           ["Employment Number"]: p.EmploymentNumber,
           ["Identity"]: p.Identity,
@@ -108,7 +113,7 @@ const CompareProfiles = () => {
         }
       });
     }
-    return profiles;
+    return userProfiles;
   };
 
   const fetchProfiles = async () => {
@@ -210,10 +215,10 @@ const CompareProfiles = () => {
           {nNumberDetails.fetchedUser && !showColumns && <StyledLoadSpinner />}
           {nNumberDetails.fetchedUser && showColumns &&
             <ProfileColumnsWrapper>
-              <ProfileColumn people={trimProfiles(tritonProfiles, "triton")} />
-              <ProfileColumn people={trimProfiles(calabrioQMProfiles, "qm")} />
+              <ProfileColumn people={trimProfiles(tritonProfiles, "triton")} title="Triton" />
+              <ProfileColumn people={trimProfiles(calabrioQMProfiles, "qm")} title="Calabrio QM" />
               {/* {environment === "production" && */}
-              <ProfileColumn people={trimProfiles(calabrioWFMProfiles, "wfm")} />
+              <ProfileColumn people={trimProfiles(calabrioWFMProfiles, "wfm")} title="Calabrio WFM" />
               {/* } */}
             </ProfileColumnsWrapper>
           }

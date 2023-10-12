@@ -80,9 +80,9 @@ const ResetModal = (props: any) => {
     console.log("Reset Request", nNumber, body);
     try {
       const res = await resetProfiles(nNumber, body);
-      console.log("RESET PROFILES RESPONSE", res);
+      setResults(res.data);
+      setStatus(StatusOptions.SUCCESS);
     } catch (err) {
-      //check for timeout
       if (err.response?.data?.message?.toLowerCase().trim() === "read timed out") {
         console.warn("Call to reset profiles timed out. Trying to fetch datadog log");
         setStatus(StatusOptions.TIME_OUT);

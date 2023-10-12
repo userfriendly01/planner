@@ -14,12 +14,34 @@ export const ProfileColumnsWrapper = styled.div`
   margin-top: 40px;
 `;
 
+export const ProfileColumnsHeaderWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const ProfileColumnsHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 23px;
+  width: 100%
+  margin: 0px 10px;
+`;
+
+export const ProfileColumnContainer = styled.div`
+  display: flex;
+  height: 60vh;
+  width: 30vw;
+  margin: 10px;
+`;
+
 export const ProfileColumnWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   border: solid black 3px;
-  height: 60vh;
+  min-height: 55vh;
+  max-height: 55vh;
   width: 30vw;
   margin: 10px;
 `;

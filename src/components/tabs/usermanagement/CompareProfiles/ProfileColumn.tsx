@@ -1,5 +1,8 @@
 import React from "react";
 import {
+  ProfileColumnContainer,
+  ProfileColumnsHeader,
+  ProfileColumnsHeaderWrapper,
   ProfileColumnWrapper,
   ProfileColumnDetails,
   ProfileColumnSideNav,
@@ -13,62 +16,65 @@ import { Divider } from "@mui/material";
 
 const ProfileColumn = (props: any) => {
   const {
-    people
+    people,
+    title
   } = props;
   //pass in an array of objects
   const [selectedProfile, setSelectedProfile] = React.useState<any>({});
-  console.log("PEOPLE OBJECTS", people);
-  console.log("SELECTED PROFILE", selectedProfile);
 
   React.useEffect(() => {
-    console.log("INITIAL PEOPLE", people);
     setSelectedProfile(people[0]);
   }, [people]);
   return (
-    <ProfileColumnWrapper>
-      <ProfileColumnSideNav>
-        {people.map((p: any) => ((
-          <ProfileColumnNavOption
-            key={p.id}
-            selected={selectedProfile?.id === p.id}
-            onClick={() => setSelectedProfile(p)}>
-            {p.Active ? <Person style={{ font: "20px" }} /> : <PersonOutline />}
-          </ProfileColumnNavOption>
-        )))
-        }
-      </ProfileColumnSideNav>
-      <ProfileColumnDetails>
-        {selectedProfile &&
-          Object.keys(selectedProfile).map((key: string) => {
-            if (key === "Active") {
-              if (selectedProfile[key]) {
-                return (
-                  <ProfileAttribute>
-                    <ProfileKey>Active</ProfileKey>
-                    <Divider flexItem style={{ width: "80%", margin: "5px 0px", alignSelf: "center" }} />
-                  </ProfileAttribute>
-                )
-              } else {
-                return (
-                  <ProfileAttribute>
-                    <ProfileKey>Inactive</ProfileKey>
-                    <Divider flexItem style={{ width: "80%", margin: "5px 0px", alignSelf: "center" }} />
-                  </ProfileAttribute>
-                )
-              }
-            } else {
-              return (
-                <ProfileAttribute>
-                  <ProfileKey>{key}</ProfileKey>
-                  <ProfileValue>{selectedProfile[key]}</ProfileValue>
-                  <Divider flexItem style={{ width: "80%", margin: "5px 0px", alignSelf: "center" }} />
-                </ProfileAttribute>
-              )
+    <ProfileColumnContainer>
+      <ProfileColumnsHeaderWrapper>
+        <ProfileColumnsHeader>{title}</ProfileColumnsHeader>
+        <ProfileColumnWrapper>
+          <ProfileColumnSideNav>
+            {people.map((p: any) => ((
+              <ProfileColumnNavOption
+                key={p.id}
+                selected={selectedProfile?.id === p.id}
+                onClick={() => setSelectedProfile(p)}>
+                {p.Active ? <Person style={{ font: "20px" }} /> : <PersonOutline />}
+              </ProfileColumnNavOption>
+            )))
             }
-          })
-        }
-      </ProfileColumnDetails>
-    </ProfileColumnWrapper>
+          </ProfileColumnSideNav>
+          <ProfileColumnDetails>
+            {selectedProfile &&
+              Object.keys(selectedProfile).map((key: string) => {
+                if (key === "Active") {
+                  if (selectedProfile[key]) {
+                    return (
+                      <ProfileAttribute>
+                        <ProfileKey>Active</ProfileKey>
+                        <Divider flexItem style={{ width: "80%", margin: "5px 0px", alignSelf: "center" }} />
+                      </ProfileAttribute>
+                    )
+                  } else {
+                    return (
+                      <ProfileAttribute>
+                        <ProfileKey>Inactive</ProfileKey>
+                        <Divider flexItem style={{ width: "80%", margin: "5px 0px", alignSelf: "center" }} />
+                      </ProfileAttribute>
+                    )
+                  }
+                } else {
+                  return (
+                    <ProfileAttribute>
+                      <ProfileKey>{key}</ProfileKey>
+                      <ProfileValue>{selectedProfile[key]}</ProfileValue>
+                      <Divider flexItem style={{ width: "80%", margin: "5px 0px", alignSelf: "center" }} />
+                    </ProfileAttribute>
+                  )
+                }
+              })
+            }
+          </ProfileColumnDetails>
+        </ProfileColumnWrapper>
+      </ProfileColumnsHeaderWrapper>
+    </ProfileColumnContainer>
   )
 };
 
