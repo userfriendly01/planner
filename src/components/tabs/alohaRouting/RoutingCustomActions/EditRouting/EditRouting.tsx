@@ -26,6 +26,7 @@ import {
   deleteRoutingRule, updateRoutingDB
 } from "services";
 import { AzureSPA } from "globals";
+import { useAdminState } from "context";
 interface EditRoutingComponentProps {
   accessToken: string;
   isOpen: boolean;
@@ -45,12 +46,13 @@ export const EditRouting = ({
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
   const [enableRouting, setEnableRouting] = useState(false);
   const defaultValue: { [key: string]: any } = {};
+  const env = useAdminState().userContext.pingIdentity.environment;
   useEffect(()=>{
     const env = process.env.APP_ENV;
     console.log("environment", env);
     if(env === "production" && matchedGroups?.includes("gpi-cct-config-route-readwrite-prod")){
       setEnableRouting(true);
-    } else if( env !== "production" && matchedGroups?.includes("gpi-cct-config-route-readwrite-np")){
+    } else if( env === "development" && matchedGroups?.includes("gpi-cct-config-route-readwrite-np")){
       setEnableRouting(true);
     }
   },[]);

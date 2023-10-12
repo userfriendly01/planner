@@ -16,6 +16,7 @@ import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import DeleteSweepOutlinedIcon from "@mui/icons-material/DeleteSweepOutlined";
 import EditNoteOutlinedIcon from "@mui/icons-material/EditNoteOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import { useAdminState } from "context";
 
 interface CustomRoutingGridToolBarProps {
   openAddModal: (flag: boolean) => void;
@@ -34,11 +35,11 @@ export const CustomRoutingGridToolBar = ({
 
   const [routingFilter, setRoutingFilter] = useState<RoutingFilter>();
   const [enableRouting, setEnableRouting] = useState(false);
+  const env = useAdminState().userContext.pingIdentity.environment;
   useEffect(()=>{
-    const env = process.env.APP_ENV;
     if(env === "production" && matchedGroups?.includes("gpi-cct-config-route-readwrite-prod")){
       setEnableRouting(true);
-    } else if( env !== "production" && matchedGroups?.includes("gpi-cct-config-route-readwrite-np")){
+    } else if( env === "development" && matchedGroups?.includes("gpi-cct-config-route-readwrite-np")){
       setEnableRouting(true);
     }
   },[]);

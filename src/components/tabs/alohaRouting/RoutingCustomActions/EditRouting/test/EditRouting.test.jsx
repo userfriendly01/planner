@@ -46,6 +46,17 @@ const validStartTime =  {
   endTime: "12:00:00 PM"
 };
 
+const initDataProd={
+  userContext: {
+    pingIdentity: {
+      sub: "n0263786",
+      groups: [],
+      aud: "ciciccttritondev1",
+      environment: "production"
+    }
+  }
+};
+
 const openEditModal = jest.fn();
 const matchedGroupsProd = "gpi-cct-config-route-readwrite-prod";
 const matchedGroupsNonProd = "gpi-cct-config-route-readwrite-np";
@@ -118,13 +129,12 @@ describe("<EditRouting />", () => {
 
   // Cleanup mock
   afterEach(() => {
-    delete process.env.APP_ENV;
     localStorage.removeItem(ROUTING_CACHE_MASTER_DATA);
   });
 
   describe("Basic Simualte the Component", () => {
     test("Simulate the component with prod as environment", () => {
-      process.env.APP_ENV = "production";
+      useAdminState.mockReturnValue(initDataProd);
       renderEditRouting(true, validRoutingData,matchedGroupsProd);
       const saveButtonClick = Button.mock.calls[0][0].onClick;
       const saveButton = Button.mock.calls[0][0];

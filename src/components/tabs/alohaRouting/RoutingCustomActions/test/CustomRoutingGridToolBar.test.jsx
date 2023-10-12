@@ -7,6 +7,7 @@ import {
   render, setupMockedComponents, act
 } from "testUtils";
 import { CACHE_FILTER_ROUTING } from "utils";
+import { useAdminState } from "context";
 
 jest.mock("@mui/material", () => ({
   __esModule: true,
@@ -17,6 +18,10 @@ jest.mock("@mui/material", () => ({
   InputLabel: jest.fn(),
   Select: jest.fn(),
   MenuItem: jest.fn()
+}));
+
+jest.mock("context", () => ({
+  useAdminState: jest.fn()
 }));
 
 const openAddModal=jest.fn();
@@ -33,6 +38,26 @@ const mockedRoutingFilter = {
   brand: "Liberty Mutual"
 };
 
+const initData={
+  userContext: {
+    pingIdentity: {
+      sub: "n0263786",
+      groups: [],
+      aud: "ciciccttritondev1",
+      environment: "development"
+    }
+  }
+};
+const initDataProd={
+  userContext: {
+    pingIdentity: {
+      sub: "n0263786",
+      groups: [],
+      aud: "ciciccttritondev1",
+      environment: "production"
+    }
+  }
+};
 const renderCustomToolBar = matchedGroups =>{
   const rendered =render(
     <CustomRoutingGridToolBar
@@ -63,12 +88,9 @@ describe("<CustomRoutingGridToolBar />", ()=>{
   });
   afterEach(() => {
     localStorage.removeItem(CACHE_FILTER_ROUTING);
-    // eslint-disable-next-line no-undef
-    delete process.env.APP_ENV;
   });
   test("Simulate Custom Routing Toolbar For Routing Export",()=>{
-    // eslint-disable-next-line no-undef
-    process.env.APP_ENV = "development";
+    useAdminState.mockReturnValue(initData);
     renderCustomToolBar(matchedGroupsNonProd);
     const GridMock = Grid.mock.calls[0][0];
     const ExportFlowUI = GridMock.children[1].props.children[0].props.children.props.onClick;
@@ -79,8 +101,7 @@ describe("<CustomRoutingGridToolBar />", ()=>{
     expect(exportDataFile).toBeCalledTimes(1);
   });
   test("Simulate Custom Routing Toolbar with production as Env",()=>{
-    // eslint-disable-next-line no-undef
-    process.env.APP_ENV = "production";
+    useAdminState.mockReturnValue(initDataProd);
     renderCustomToolBar(matchedGroupsProd);
     const GridMock = Grid.mock.calls[0][0];
     const ExportFlowUI = GridMock.children[1].props.children[0].props.children.props.onClick;
