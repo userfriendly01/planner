@@ -132,8 +132,8 @@ const CompareProfiles = () => {
 
         setTritonProfile(matchingTritonProfiles);
 
-
-        const wfmUserPromise = getWfmUserByNNumber(nNumberDetails.nNumber);
+        const isProduction = environment === "production";
+        const wfmUserPromise = isProduction ? getWfmUserByNNumber(nNumberDetails.nNumber) : Promise.resolve({ data: [] });
         const calabrioProfilesPromise = getQmUserProfiles(workerSid, nNumberDetails.nNumber, email);
 
         const [wfmResponse, calabrioProfilesResponse] = await Promise.all([wfmUserPromise, calabrioProfilesPromise]);
@@ -144,9 +144,7 @@ const CompareProfiles = () => {
         } else if (wfmProfiles.length > 1) {
           const personIds = wfmProfiles.map((p: WfmUser) => p.Id);
           updateMessages("add", null, `${messageConsts.WFM_MULTIPLE_PROFILES} Person Ids: ${JSON.stringify(personIds)}`, "error");
-        } else if (environment !== "production") {
-          console.log("thats ok")
-        } else {
+        } else if (isProduction) {
           updateMessages("add", null, messageConsts.WFM_NO_PROFILE_FOUND, "warning");
         }
 
@@ -159,8 +157,8 @@ const CompareProfiles = () => {
         console.log("FAITH Active Profile", activeQmProfiles);
         console.log("FAITH Master Profile", masterQmProfile);
 
-        // if (masterQmProfile || true) {
-        if (masterQmProfile) {
+        if (masterQmProfile || true) {
+          // if (masterQmProfile) {
           qmProfiles.forEach((p: any, i: number) => {
             if (p.id === masterQmProfile?.id) {
               qmProfiles.splice(i, 1);
@@ -168,7 +166,9 @@ const CompareProfiles = () => {
             }
           });
           setCalabrioQMProfiles(qmProfiles);
-          setShowResetButton(true);
+          if (environment !== "development") {
+            setShowResetButton(true);
+          }
         } else {
           updateMessages("add", null, messageConsts.MISSING_CALABRIO_MASTER_PROFILE, "error");
         }
@@ -220,9 +220,9 @@ const CompareProfiles = () => {
             <ProfileColumnsWrapper>
               <ProfileColumn people={trimProfiles(tritonProfiles, "triton")} title="Triton" />
               <ProfileColumn people={trimProfiles(calabrioQMProfiles, "qm")} title="Calabrio QM" />
-              {/* {environment === "production" && */}
-              <ProfileColumn people={trimProfiles(calabrioWFMProfiles, "wfm")} title="Calabrio WFM" />
-              {/* } */}
+              {environment === "production" &&
+                <ProfileColumn people={trimProfiles(calabrioWFMProfiles, "wfm")} title="Calabrio WFM" />
+              }
             </ProfileColumnsWrapper>
           }
           <Modal onClose={() => { return; }} open={showModal === true}>

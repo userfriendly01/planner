@@ -1,8 +1,18 @@
 import React from "react";
-import { ButtonWrapper, InformationText, InformationWapper, ModalContainer } from "./CompareProfiles.Styles";
+import {
+  Attribute,
+  ButtonWrapper,
+  InformationText,
+  InformationWapper,
+  Key,
+  ModalContainer,
+  ResultWrapper,
+  ResultsWrapper
+} from "./CompareProfiles.Styles";
 import { StyledButton } from "components";
 import { ProgressBar } from "../BulkChanges/Processing";
 import { ReportGmailerrorred } from "@mui/icons-material";
+import { Divider } from "@mui/material";
 import { fetchResetProfileDatadogLogs, resetProfiles } from "services";
 
 const ResetModal = (props: any) => {
@@ -145,20 +155,23 @@ const ResetModal = (props: any) => {
         </InformationWapper>
       }
       {status === StatusOptions.SUCCESS && results &&
-        <InformationWapper>
-          <InformationText>
-            WE DID IT!!
-          </InformationText>
+        <ResultsWrapper>
+          <h1 style={{ alignSelf: "center" }}>Reset Results</h1>
           {results.map((r: any) => ((
-            <InformationText>
-              <div>{r.description}</div>
-              <div>{r.result}</div>
-            </InformationText>
+            <ResultWrapper>
+              <InformationText>
+                <Key>Step {r.stepNumber}:</Key> <div style={{ textAlign: "left", marginLeft: "5px" }}>{r.description}</div>
+              </InformationText>
+              <InformationText>
+                <Key>Results:</Key> <div style={{ textAlign: "left", maxWidth: "90%", marginLeft: "5px" }}>{r.result}</div>
+              </InformationText>
+              <Divider flexItem style={{ width: "80%", margin: "10px 0px", alignSelf: "center" }} />
+            </ResultWrapper>
           )))}
           <ButtonWrapper>
-            <StyledButton onClick={onClose}>Close</StyledButton>
+            <StyledButton style={{ alignSelf: "center" }} onClick={onClose}>Close</StyledButton>
           </ButtonWrapper>
-        </InformationWapper>
+        </ResultsWrapper>
       }
     </ModalContainer>
   );

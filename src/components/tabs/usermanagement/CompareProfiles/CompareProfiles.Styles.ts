@@ -66,13 +66,13 @@ export const ProfileColumnSideNav = styled.div`
   margin: 5px;
 `;
 
-export const ProfileAttribute = styled.div`
+export const Attribute = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
 `;
 
-export const ProfileKey = styled.div`
+export const Key = styled.div`
   display: flex;
   padding: 5px;
   font-size: 22px;
@@ -144,7 +144,7 @@ export const InformationText = styled.div`
   flex-direction: row;
   justify-content: center;
   height: 100%;
-  align-items: center;
+  align-items: baseline;
   text-align: center;
   font-size: 20px;
   letter-spacing: .2px;
@@ -170,4 +170,23 @@ export const ModalContainer = styled(Paper)`
   top: 50%;
   transform: translate(-50%, -50%);
   width: 60%
+`;
+
+export const ResultsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 70%;
+  justify-content: flex-start;
+  align-items: baseline;
+  overflow-y: scroll;
+  max-height: 900px;
+`;
+
+export const ResultWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: baseline;
+  min-height: 100px;
+  margin: 10px;
 `;

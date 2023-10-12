@@ -7,8 +7,8 @@ import {
   ProfileColumnDetails,
   ProfileColumnSideNav,
   ProfileColumnNavOption,
-  ProfileAttribute,
-  ProfileKey,
+  Attribute,
+  Key,
   ProfileValue
 } from "./CompareProfiles.Styles";
 import { Person, PersonOutline } from "@mui/icons-material";
@@ -47,26 +47,26 @@ const ProfileColumn = (props: any) => {
                 if (key === "Active") {
                   if (selectedProfile[key]) {
                     return (
-                      <ProfileAttribute>
-                        <ProfileKey>Active</ProfileKey>
+                      <Attribute>
+                        <Key>Active</Key>
                         <Divider flexItem style={{ width: "80%", margin: "5px 0px", alignSelf: "center" }} />
-                      </ProfileAttribute>
+                      </Attribute>
                     )
                   } else {
                     return (
-                      <ProfileAttribute>
-                        <ProfileKey>Inactive</ProfileKey>
+                      <Attribute>
+                        <Key>Inactive</Key>
                         <Divider flexItem style={{ width: "80%", margin: "5px 0px", alignSelf: "center" }} />
-                      </ProfileAttribute>
+                      </Attribute>
                     )
                   }
                 } else {
                   return (
-                    <ProfileAttribute>
-                      <ProfileKey>{key}</ProfileKey>
+                    <Attribute>
+                      <Key>{key}</Key>
                       <ProfileValue>{selectedProfile[key]}</ProfileValue>
                       <Divider flexItem style={{ width: "80%", margin: "5px 0px", alignSelf: "center" }} />
-                    </ProfileAttribute>
+                    </Attribute>
                   )
                 }
               })
