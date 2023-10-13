@@ -81,10 +81,24 @@ const mockMasterData = {
 };
 
 const openEditModal = jest.fn();
+const duplicateCheck = jest.fn().mockReturnValue({
+  isDuplicate: false,
+  message: ""
+});
+const duplicateCheckTrue = jest.fn().mockReturnValue({
+  isDuplicate: true,
+  message: "Duplicate Employee Id"
+});
 
 const renderEditFlow = (isOpen, data) => {
   return render(
-    <EditFlow openEditModal={openEditModal} selectedRow={data} isOpen={isOpen} />
+    <EditFlow openEditModal={openEditModal} selectedRow={data} isOpen={isOpen} duplicateCheck={duplicateCheck} />
+  );
+};
+
+const renderEditFlowWithDuplicateChecks = (isOpen, data) => {
+  return render(
+    <EditFlow openEditModal={openEditModal} selectedRow={data} isOpen={isOpen} duplicateCheck={duplicateCheckTrue} />
   );
 };
 
@@ -135,6 +149,17 @@ describe("<EditFlow />", () => {
       });
       waitFor(() => {
         expect(openEditModal).toBeCalledTimes(1);
+      });
+    });
+    test("Simulate the SaveRule Button with true Duplicate Checks", () => {
+      updateFlowDB.mockResolvedValue({ data: { "items": []}});
+      const { getByRole } = renderEditFlowWithDuplicateChecks(true, validFlowData);
+      const saveButton = getByRole("button", { name: "saveFlowRuleButton" });
+      act(() => {
+        fireEvent.click(saveButton);
+      });
+      waitFor(() => {
+        expect(openEditModal).toBeCalledTimes(0);
       });
     });
     test("Simulate the SaveRule Button with Failed API Response", () => {
@@ -207,8 +232,8 @@ describe("<EditFlow />", () => {
       const {
         getByRole, queryByRole
       } = renderEditFlow(true, invalidFlowData);
-      const chanelDropdown = getByRole("combobox", { name: /Channel/i });
-      fireEvent.mouseDown(chanelDropdown);
+      const channelDropdown = getByRole("combobox", { name: /Channel/i });
+      fireEvent.mouseDown(channelDropdown);
       const listBox = within(getByRole("listbox", { name: /Channel/i }));
       act(() => {
         fireEvent.click(listBox.getByRole("option", {
@@ -217,8 +242,8 @@ describe("<EditFlow />", () => {
         }));
       });
       expect(queryByRole("listbox")).toEqual(null);
-      expect(chanelDropdown).toHaveFocus();
-      expect(chanelDropdown).toHaveTextContent("Test2 Channel");
+      expect(channelDropdown).toHaveFocus();
+      expect(channelDropdown).toHaveTextContent("Test2 Channel");
       act(()=>{
         fireEvent.click(getByRole("button", { name: "saveFlowRuleButton" }));
       });

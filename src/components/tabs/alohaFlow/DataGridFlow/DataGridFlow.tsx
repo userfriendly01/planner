@@ -7,12 +7,14 @@ import {
   DataGrid, GridRenderCellParams, GridRowId, GridRowSelectionModel, GridPaginationModel, GridCallbackDetails
 } from "@mui/x-data-grid";
 import { CustomToast } from "components";
-import { AzureSPA } from "globals";
+import {
+  AzureSPA, DuplicateCheck
+} from "globals";
 import React, {
   useEffect, useState
 } from "react";
 import {
-  queryFlowData, retrieveFlowData, flowBatchDelete, batchFlowUpdate, batchDeleteItems
+  queryFlowData, retrieveFlowData, batchFlowUpdate, batchDeleteItems
 } from "services";
 import {
   CACHE_FILTER_FLOW,
@@ -339,6 +341,18 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
   };
 
   const handleOnBulkUpdate = async(rows: Array<CctSharedCallFlowDb> ) =>{
+    const {
+      isDuplicate, message
+    } = checkForDuplicateBulkEdit(rows);
+    if(isDuplicate){
+      setAlertBar((alertBarProps: AlertBarProps) => ({
+        ...alertBarProps,
+        open: true,
+        msg: message,
+        severityType: "error"
+      }));
+      return;
+    }
     const response = await batchFlowUpdate(rows, accessToken, graphQLEndpoint);
     if(!response || response.errors) {
       setAlertBar((alertBarProps: AlertBarProps) => ({
@@ -419,6 +433,54 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     }));
   };
 
+  const checkForDuplicateBulkEdit = (rows: Array<CctSharedCallFlowDb>): DuplicateCheck =>{
+    const duplicateRecord = dataFlow.data.filter((flow: CctSharedCallFlowDb)=>{
+      const match = rows.filter((row: CctSharedCallFlowDb)=>row.employeeId && row.pkey !== flow.pkey && row.employeeId === flow.employeeId);
+      return match.length>0;
+    });
+    const duplicateEmployeeId: Array<string> = [];
+    const pkeys: Array<string> = [];
+    duplicateRecord.map((record: CctSharedCallFlowDb)=>{
+      duplicateEmployeeId.push(record.employeeId);
+      pkeys.push(record.pkey);
+    });
+
+    return {
+      isDuplicate: duplicateRecord.length>0? true: false,
+      message: `Duplicate Employee Ids ${[...new Set(duplicateEmployeeId)].join("\n")} found for the record of ${[...new Set(pkeys)].join("\n")}`
+    };
+  };
+
+  const checkForDuplicateAdd = (params: FormValidationRule): DuplicateCheck =>{
+    const duplicateRecord = dataFlow.data.filter((flow: CctSharedCallFlowDb)=>params?.pkey?.value && params?.pkey?.value !== flow.pkey && params?.employeeId?.value === flow.employeeId);
+    let isDuplicate = false;
+    let message = "";
+    if(duplicateRecord.length>0){
+      isDuplicate = true;
+      const duplicateDialedPhoneNumber = duplicateRecord.map((record: CctSharedCallFlowDb)=>(record.pkey));
+      message = `Duplicate Employee ID - ${params?.employeeId?.value} - found for ${duplicateDialedPhoneNumber.join("\n")}`;
+    }
+    return {
+      isDuplicate,
+      message
+    };
+  };
+
+  const checkForDuplicateEdit = (params: CctSharedCallFlowDb): DuplicateCheck =>{
+    const duplicateRecord = dataFlow.data.filter((flow: CctSharedCallFlowDb)=>params?.pkey && params?.pkey !== flow.pkey && params?.employeeId === flow.employeeId);
+    let isDuplicate = false;
+    let message = "";
+    if(duplicateRecord.length>0){
+      isDuplicate = true;
+      const duplicateDialedPhoneNumber = duplicateRecord.map((record: CctSharedCallFlowDb)=>(record.pkey));
+      message = `Duplicate Employee ID - ${params?.employeeId} - found for ${duplicateDialedPhoneNumber.join("\n")}`;
+    }
+    return {
+      isDuplicate,
+      message
+    };
+  };
+
   FlowGridColumnDef[0].renderCell = (params: GridRenderCellParams<CctSharedCallFlowDb>) => (<a href="#" onClick={() => openEditModal(true, false, params.row)}>{`${params.value}`}</a>);
 
 
@@ -465,6 +527,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         openAddModal={openAddModal}
         cloneType={cloneType}
         flowRuleCloned={clonedFlowRule}
+        duplicateCheck={checkForDuplicateAdd}
       />
 
       <EditFlow
@@ -473,6 +536,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         isOpen={dataFlow.isEditModalOpen}
         selectedRow={dataFlow.selectedRow}
         openEditModal={openEditModal}
+        duplicateCheck={checkForDuplicateEdit}
       />
 
       <AdvanceSearchModal
