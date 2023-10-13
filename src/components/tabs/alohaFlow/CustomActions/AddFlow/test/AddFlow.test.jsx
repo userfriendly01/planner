@@ -46,7 +46,8 @@ const validFlowData = {
   marketingChannel: "test",
   requestID: "test",
   transferCode: "test",
-  whisper: "test"
+  whisper: "test",
+  tfnRoutingGroup: "Core"
 };
 
 
@@ -229,6 +230,7 @@ describe("<AddFlow />", () => {
       const languageOfferAttr = ComponentControl.mock.calls[5][0].onChange;
       const greetingMessagesAttr = ComponentControl.mock.calls[11][0].onChange;
       const dataRequestsAtr = ComponentControl.mock.calls[6][0].onChange;
+      const tfnRoutingGroupAtr = ComponentControl.mock.calls[19][0].onChange;
       const eventPhoneNumValue = {
         target: {
           name: "pkey",
@@ -295,6 +297,12 @@ describe("<AddFlow />", () => {
           value: "test1"
         }
       };
+      const eventTfnRoutingGroup = {
+        target: {
+          name: "tfnRoutingGroup",
+          value: "Core"
+        }
+      };
       act(()=>{
         dialedPhoneNumberAttr(eventPhoneNumValue);
         descriptionAttr(eventDescriptionValue);
@@ -307,6 +315,7 @@ describe("<AddFlow />", () => {
         greetingMessagesAttr(eventGreetingMessages);
         transferNumberAttr(eventTransferNumber);
         dataRequestsAtr(eventDataRequests);
+        tfnRoutingGroupAtr(eventTfnRoutingGroup);
       });
       addFlowRule.mockResolvedValue({ data: { "items": []}});
       const saveButton = getByRole("button", { name: "createRuleButton" });
@@ -336,6 +345,7 @@ describe("<AddFlow />", () => {
       const languageOfferAttr = ComponentControl.mock.calls[5][0].onChange;
       const greetingMessagesAttr = ComponentControl.mock.calls[11][0].onChange;
       const dataRequestsAtr = ComponentControl.mock.calls[6][0].onChange;
+      const tfnRoutingGroupAtr = ComponentControl.mock.calls[19][0].onChange;
       const eventPhoneNumValue = {
         target: {
           name: "pkey",
@@ -402,6 +412,12 @@ describe("<AddFlow />", () => {
           value: "test1"
         }
       };
+      const eventTfnRoutingGroup = {
+        target: {
+          name: "tfnRoutingGroup",
+          value: "Core"
+        }
+      };
       act(()=>{
         dialedPhoneNumberAttr(eventPhoneNumValue);
         descriptionAttr(eventDescriptionValue);
@@ -414,6 +430,7 @@ describe("<AddFlow />", () => {
         greetingMessagesAttr(eventGreetingMessages);
         transferNumberAttr(eventTransferNumber);
         dataRequestsAtr(eventDataRequests);
+        tfnRoutingGroupAtr(eventTfnRoutingGroup);
       });
       const saveButton = getByRole("button", { name: "createRuleButton" });
       act(() => {

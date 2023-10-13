@@ -41,6 +41,7 @@ import {
   getGraphQLEndpoint,
   initializedAlertBar,
   languageOffer,
+  tfnRoutingGroup,
   userDestination,
   flowType,
   checkGreetingMessageRegExp
@@ -94,6 +95,7 @@ export const AddFlow = ({
         callFlowRoute: masterDataObject?.callFlowRoute,
         callerType: masterDataObject?.callerType,
         dataRequests: masterDataObject?.dataRequests,
+        tfnRoutingGroup: tfnRoutingGroup,
         type: flowType
       }));
     }
@@ -254,6 +256,7 @@ export const AddFlow = ({
             requestID: stringValue(flowRule,"requestID", ""),
             userDestination: flowRule.userDestination.value || "",
             rangeIndicator: stringValue(flowRule,"rangeIndicator", ""),
+            tfnRoutingGroup: stringValue(flowRule,"tfnRoutingGroup", ""),
             type: flowRule.type.value || ""
           };
           openAddModal(false, true, newFlowRule);
