@@ -452,13 +452,15 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
   };
 
   const checkForDuplicateAdd = (params: FormValidationRule): DuplicateCheck =>{
-    const duplicateRecord = dataFlow.data.filter((flow: CctSharedCallFlowDb)=>params?.pkey?.value && params?.pkey?.value !== flow.pkey && params?.employeeId?.value === flow.employeeId);
     let isDuplicate = false;
     let message = "";
-    if(duplicateRecord.length>0){
-      isDuplicate = true;
-      const duplicateDialedPhoneNumber = duplicateRecord.map((record: CctSharedCallFlowDb)=>(record.pkey));
-      message = `Duplicate Employee ID - ${params?.employeeId?.value} - found for ${duplicateDialedPhoneNumber.join("\n")}`;
+    if(params?.employeeId?.value){
+      const duplicateRecord = dataFlow.data.filter((flow: CctSharedCallFlowDb)=>params?.pkey?.value && params?.pkey?.value !== flow.pkey && params?.employeeId?.value === flow.employeeId);
+      if(duplicateRecord.length>0){
+        isDuplicate = true;
+        const duplicateDialedPhoneNumber = duplicateRecord.map((record: CctSharedCallFlowDb)=>(record.pkey));
+        message = `Duplicate Employee ID - ${params?.employeeId?.value} - found for ${duplicateDialedPhoneNumber.join("\n")}`;
+      }
     }
     return {
       isDuplicate,
@@ -467,13 +469,15 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
   };
 
   const checkForDuplicateEdit = (params: CctSharedCallFlowDb): DuplicateCheck =>{
-    const duplicateRecord = dataFlow.data.filter((flow: CctSharedCallFlowDb)=>params?.pkey && params?.pkey !== flow.pkey && params?.employeeId === flow.employeeId);
     let isDuplicate = false;
     let message = "";
-    if(duplicateRecord.length>0){
-      isDuplicate = true;
-      const duplicateDialedPhoneNumber = duplicateRecord.map((record: CctSharedCallFlowDb)=>(record.pkey));
-      message = `Duplicate Employee ID - ${params?.employeeId} - found for ${duplicateDialedPhoneNumber.join("\n")}`;
+    if(params?.employeeId){
+      const duplicateRecord = dataFlow.data.filter((flow: CctSharedCallFlowDb)=>params?.pkey  &&  params?.pkey !== flow.pkey && params?.employeeId === flow.employeeId);
+      if(duplicateRecord.length>0){
+        isDuplicate = true;
+        const duplicateDialedPhoneNumber = duplicateRecord.map((record: CctSharedCallFlowDb)=>(record.pkey));
+        message = `Duplicate Employee ID - ${params?.employeeId} - found for ${duplicateDialedPhoneNumber.join("\n")}`;
+      }
     }
     return {
       isDuplicate,
