@@ -48,7 +48,6 @@ export const EditRouting = ({
   const defaultValue: { [key: string]: any } = {};
   const env = useAdminState().userContext.pingIdentity.environment;
   useEffect(()=>{
-    console.log("environment", env);
     if(env === "production" && matchedGroups?.includes("gpi-cct-config-route-readwrite-prod")){
       setEnableRouting(true);
     } else if( env === "development" && matchedGroups?.includes("gpi-cct-config-route-readwrite-np")){
