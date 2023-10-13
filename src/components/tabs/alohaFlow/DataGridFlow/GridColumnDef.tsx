@@ -1,7 +1,10 @@
 import { GridColDef } from "@mui/x-data-grid";
 import Tooltip from "@mui/material/Tooltip";
 import React from "react";
-import { Chip } from "@mui/material";
+import {
+  Box, Chip, Switch
+} from "@mui/material";
+
 export const FlowGridColumnDef: GridColDef[] = [
   {
     headerName: "Dialed",
@@ -283,6 +286,18 @@ export const FlowGridColumnDef: GridColDef[] = [
             />
           ))}
       </div>
+    )
+  },
+  {
+    headerName: "Predictive Caller",
+    field: "predictiveCaller",
+    sortable: false,
+    width: 110,
+    align: "center",
+    renderCell: (params: any) =>(
+      <Box>
+        <Switch defaultChecked={params.row?.predictiveCaller || true} sx={{ "& .Mui-checked": { color: "yellow" }}} disabled size="small" />
+      </Box>
     )
   }
 ];

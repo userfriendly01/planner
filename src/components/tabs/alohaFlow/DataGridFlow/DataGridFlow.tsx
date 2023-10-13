@@ -91,12 +91,12 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       });
 
       await loadDataTable(flowData);
-      const result: CctSharedCallFlowDb[] = await retrieveFlowData(
-        accessToken,
-        graphQLEndpoint,
-        firstChunkData
-      );
-      await loadDataTable(result);
+      // const result: CctSharedCallFlowDb[] = await retrieveFlowData(
+      //   accessToken,
+      //   graphQLEndpoint,
+      //   firstChunkData
+      // );
+      // await loadDataTable(result);
     };
     getTableData();
   }, []);
