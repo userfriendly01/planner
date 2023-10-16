@@ -23,7 +23,9 @@ import {
 import {
   flowFields, initRule
 } from "../FlowFieldsConfig";
-import { CustomToast } from "components";
+import {
+  CctSharedCallRoutingDb, CustomToast
+} from "components";
 import {
   flowDropDownList,
   FLOW_MASTER_DATA,
@@ -41,15 +43,18 @@ import {
 import {
   deleteFlowRule, updateFlowDB
 } from "services";
-import { AzureSPA } from "globals";
+import {
+  AzureSPA, DuplicateCheck
+} from "globals";
 
 interface EditFlowComponentProps {
     isOpen: boolean;
     selectedRow: CctSharedCallFlowDb;
     openEditModal: (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallFlowDb, message?: string, deleteRow?: boolean, isClonedFlowRule?: boolean) => void;
+    duplicateCheck: (params: CctSharedCallFlowDb) => DuplicateCheck
 }
 export const EditFlow = ({
-  accessToken, matchedGroups, isOpen, selectedRow, openEditModal
+  accessToken, matchedGroups, isOpen, selectedRow, openEditModal, duplicateCheck
 }: EditFlowComponentProps & AzureSPA): JSX.Element => {
 
   const graphQLEndPoint: string = getGraphQLEndpoint();
@@ -152,6 +157,18 @@ export const EditFlow = ({
   const handleOnSave = async () => {
     const isValidForm = await validateFlow();
     if (isValidForm) {
+      const {
+        isDuplicate, message
+      } = duplicateCheck(selectedRowLocal);
+      if(isDuplicate){
+        setAlertBar((alertBarProps: AlertBarProps) => ({
+          ...alertBarProps,
+          "open": true,
+          "severityType": "error",
+          "msg": message
+        }));
+        return;
+      }
       const response = await updateFlowDB(selectedRowLocal, accessToken, graphQLEndPoint);
       let isSubmitted = true;
       if (response?.errors) {
