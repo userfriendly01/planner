@@ -34,13 +34,14 @@ const validFlowData = {
   tollFreeNumber: "test tollFreeNumber",
   transferCode: "test transferCode",
   type: "DID",
-  whisper: "test whisper"
+  whisper: "test whisper",
+  tfnRoutingGroup: "Core"
 };
 
 describe("<TableGridColumnDef />", () => {
 
-  it("has 30 columns", () => {
-    expect(TableGridColumnDef.length).toBe(31);
+  it("has 32 columns", () => {
+    expect(TableGridColumnDef.length).toBe(32);
   });
 
   describe("valueGetter", ()=>{
@@ -81,6 +82,10 @@ describe("<TableGridColumnDef />", () => {
       expect(TableGridColumnDef[30].valueGetter({ row: { content: { officeNumbers: ["#9999"]}}})).toEqual(["#9999"]);
       expect(TableGridColumnDef[30].valueGetter({ row: {}})).toEqual([]);
     });
+    it("tfnRoutingGroup", () => {
+      expect(TableGridColumnDef[31].valueGetter({ row: { content: { tfnRoutingGroup: "Core"}}})).toEqual("Core");
+      expect(TableGridColumnDef[31].valueGetter({ row: {}})).toEqual("");
+    });
   });
   describe("renderCell", ()=>{
     it("Dialed Description", ()=>{
@@ -88,40 +93,44 @@ describe("<TableGridColumnDef />", () => {
       expect(renderedCell.findByDisplayValue("Test Dialed Description")).toBeTruthy();
     });
     it("callFlowTemplate", ()=>{
-      const renderedCell = render(TableGridColumnDef[2].renderCell({ row: { dialedDescription: "Test Call Flow Template" }}));
+      const renderedCell = render(TableGridColumnDef[2].renderCell({ row: { callFlowTemplate: "Test Call Flow Template" }}));
       expect(renderedCell.findByDisplayValue("Test Call Flow Template")).toBeTruthy();
     });
     it("brand", ()=>{
-      const renderedCell = render(TableGridColumnDef[4].renderCell({ row: { dialedDescription: "Test Brand" }}));
+      const renderedCell = render(TableGridColumnDef[4].renderCell({ row: { brand: "Test Brand" }}));
       expect(renderedCell.findByDisplayValue("Test Brand")).toBeTruthy();
     });
     it("greetingMessages", ()=>{
-      const renderedCell = render(TableGridColumnDef[10].renderCell({ row: { dialedDescription: "Test Greeting" }}));
+      const renderedCell = render(TableGridColumnDef[10].renderCell({ row: { greetingMessages: "Test Greeting" }}));
       expect(renderedCell.findByDisplayValue("Test Greeting")).toBeTruthy();
     });
     it("accountManager", ()=>{
-      const renderedCell = render(TableGridColumnDef[16].renderCell({ row: { dialedDescription: "Test Account Manager" }}));
+      const renderedCell = render(TableGridColumnDef[16].renderCell({ row: { accountManager: "Test Account Manager" }}));
       expect(renderedCell.findByDisplayValue("Test Account Manager")).toBeTruthy();
     });
     it("internetPlacement", ()=>{
-      const renderedCell = render(TableGridColumnDef[19].renderCell({ row: { dialedDescription: "Test Internet Placement" }}));
+      const renderedCell = render(TableGridColumnDef[19].renderCell({ row: { internetPlacement: "Test Internet Placement" }}));
       expect(renderedCell.findByDisplayValue("Test Internet Placement")).toBeTruthy();
     });
     it("callDetails1", ()=>{
-      const renderedCell = render(TableGridColumnDef[20].renderCell({ row: { dialedDescription: "Test Call Details1" }}));
+      const renderedCell = render(TableGridColumnDef[20].renderCell({ row: { callDetails1: "Test Call Details1" }}));
       expect(renderedCell.findByDisplayValue("Test Call Details1")).toBeTruthy();
     });
     it("callDetails2", ()=>{
-      const renderedCell = render(TableGridColumnDef[21].renderCell({ row: { dialedDescription: "Test Call Details2" }}));
-      expect(renderedCell.findByDisplayValue("Test Call Details1")).toBeTruthy();
+      const renderedCell = render(TableGridColumnDef[21].renderCell({ row: { callDetails2: "Test Call Details2" }}));
+      expect(renderedCell.findByDisplayValue("Test Call Details2")).toBeTruthy();
     });
     it("callTypeDescription", ()=>{
-      const renderedCell = render(TableGridColumnDef[22].renderCell({ row: { dialedDescription: "Test Call Type Description" }}));
+      const renderedCell = render(TableGridColumnDef[22].renderCell({ row: { callTypeDescription: "Test Call Type Description" }}));
       expect(renderedCell.findByDisplayValue("Test Call Type Description")).toBeTruthy();
     });
     it("officeNumbers", ()=>{
       const renderedCell = render(TableGridColumnDef[30].renderCell({ row: { officeNumbers: ["#9999"]}}));
       expect(renderedCell.findByDisplayValue("#9999")).toBeTruthy();
+    });
+    it("tfnRoutingGroup", ()=>{
+      const renderedCell = render(TableGridColumnDef[31].renderCell({ row: { tfnRoutingGroup: "Core" }}));
+      expect(renderedCell.findByDisplayValue("Core")).toBeTruthy();
     });
   });
   describe("valueSetter", ()=>{
