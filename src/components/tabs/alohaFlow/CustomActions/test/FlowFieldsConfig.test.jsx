@@ -35,7 +35,8 @@ const validFlowData = {
   tollFreeNumber: "test tollFreeNumber",
   transferCode: "test transferCode",
   type: "DID",
-  whisper: "test whisper"
+  whisper: "test whisper",
+  tfnRoutingGroup: "Core"
 };
 
 const invalidFLowData = {
@@ -191,6 +192,10 @@ describe("FlowFieldsConfig", ()=>{
       expect(updatedFlowData.content.officeNumbers).toEqual(["#9999"]);
       const updateDefaultFlowData = flowFields[29].valueSetter(invalidFLowData, { officeNumbers: ["#9999"]});
       expect(updateDefaultFlowData.content.officeNumbers).toEqual(["#9999"]);
+    });
+    it("tfnRoutingGroup", ()=>{
+      const updatedFlowData = flowFields[30].valueSetter(validFlowData, { tfnRoutingGroup: "Core" });
+      expect(updatedFlowData.tfnRoutingGroup).toBe("Core");
     });
   });
   describe("valueGetter", ()=>{
@@ -423,6 +428,12 @@ describe("FlowFieldsConfig", ()=>{
     it("userDestination",()=>{
       const isFiledIncluded = flowFields[26].dynamicFieldConditionCheck(DIDFlowData);
       expect(isFiledIncluded).toBeTruthy();
+    });
+    it("tfnRoutingGroup", ()=>{
+      const validData = flowFields[29].valueGetter(validFlowData);
+      const invalidData = flowFields[29].valueGetter({});
+      expect(validData).toBe("Core");
+      expect(invalidData).toBe("");
     });
   });
 });
