@@ -296,7 +296,7 @@ export const FlowGridColumnDef: GridColDef[] = [
     align: "center",
     renderCell: (params: any) =>(
       <Box>
-        <Switch defaultChecked={params.row?.predictiveCaller || true} sx={{ "& .Mui-checked": { color: "yellow" }}} disabled size="small" />
+        <Switch defaultChecked={params.row?.predictiveCaller || false} color="warning" disabled size="medium" />
       </Box>
     )
   }

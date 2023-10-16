@@ -4,7 +4,7 @@ import { render } from "testUtils";
 describe("<FlowGridColumnDef />", () => {
 
   it("has 30 columns", () => {
-    expect(FlowGridColumnDef.length).toBe(31);
+    expect(FlowGridColumnDef.length).toBe(32);
   });
 
   describe("valueGetter", ()=>{
@@ -86,6 +86,10 @@ describe("<FlowGridColumnDef />", () => {
     it("officeNumbers", ()=>{
       const renderedCell = render(FlowGridColumnDef[30].renderCell({ row: { officeNumbers: ["#9999"]}}));
       expect(renderedCell.findByDisplayValue("#9999")).toBeTruthy();
+    });
+    it("predictiveCaller", ()=>{
+      const renderedCell = render(FlowGridColumnDef[31].renderCell({ row: { predictiveCaller: true }}));
+      expect(renderedCell.container).toBeInTheDocument();
     });
   });
 

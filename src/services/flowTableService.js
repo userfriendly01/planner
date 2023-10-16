@@ -50,6 +50,7 @@ async function queryFlowData(accessToken, nextToken = null, graphQlApiUrl) {
                   lineOfBusiness
                   marketingChannel
                   pkey
+                  predictiveCaller
                   rangeIndicator
                   requestID
                   tollFreeNumber
