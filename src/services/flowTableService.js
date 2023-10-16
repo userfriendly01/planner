@@ -141,7 +141,7 @@ function addFlowInput (item, dataRequestsPassed, currentTimePassed){
     userDestination: item.userDestination?.value||"",
     rangeIndicator: item.rangeIndicator?.value || "",
     type: item.type?.value || "",
-    tfnRoutingGroup: item.tfnRoutingGroup || ""
+    tfnRoutingGroup: item.tfnRoutingGroup?.value || ""
   };
   if(item.employeeId?.value){
     input.employeeId = item.employeeId.value;

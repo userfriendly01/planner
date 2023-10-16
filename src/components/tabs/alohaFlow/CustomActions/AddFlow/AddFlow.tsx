@@ -90,12 +90,12 @@ export const AddFlow = ({
         ...dropDownValuesProps,
         brand: masterDataObject.brand,
         channel: masterDataObject.channel,
-        languageOffer: languageOffer,
-        userDestination: userDestination,
+        languageOffer,
+        userDestination,
         callFlowRoute: masterDataObject?.callFlowRoute,
         callerType: masterDataObject?.callerType,
         dataRequests: masterDataObject?.dataRequests,
-        tfnRoutingGroup: tfnRoutingGroup,
+        tfnRoutingGroup,
         type: flowType
       }));
     }

@@ -386,6 +386,16 @@ const flowFields: AddFlowFieldsConfigProps[] = [
         ...newValue
       }
     })
+  },{
+    label: "TFN Routing Group",
+    key: "tfnRoutingGroup",
+    control: "select",
+    required: true,
+    valueGetter: (params: CctSharedCallFlowDb) => `${params?.tfnRoutingGroup || ""}`,
+    valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
+      ...currentValue,
+      ...newValue
+    })
   }
 ];
 
