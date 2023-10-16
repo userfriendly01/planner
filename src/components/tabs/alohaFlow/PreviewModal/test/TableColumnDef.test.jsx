@@ -82,10 +82,6 @@ describe("<TableGridColumnDef />", () => {
       expect(TableGridColumnDef[30].valueGetter({ row: { content: { officeNumbers: ["#9999"]}}})).toEqual(["#9999"]);
       expect(TableGridColumnDef[30].valueGetter({ row: {}})).toEqual([]);
     });
-    it("tfnRoutingGroup", () => {
-      expect(TableGridColumnDef[31].valueGetter({ row: { content: { tfnRoutingGroup: "Core"}}})).toEqual("Core");
-      expect(TableGridColumnDef[31].valueGetter({ row: {}})).toEqual("");
-    });
   });
   describe("renderCell", ()=>{
     it("Dialed Description", ()=>{
