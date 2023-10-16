@@ -30,9 +30,9 @@ const openAdvanceSearchModal = jest.fn();
 const exportDataFile = jest.fn();
 const applyFilter = jest.fn();
 const isAdvanceSearchModalOpen = true;
-const matchedGroupsProd = "gpi-cct-config-route-readwrite-prod";
-const matchedGroupsNonProd = "gpi-cct-config-route-readwrite-np";
-const unMatchedGroupsNonProd = "gpi-cct-config-route-read-np";
+const matchedGroupsProd = ["gpi-cct-config-route-readwrite-prod"];
+const matchedGroupsNonProd = ["gpi-cct-config-route-readwrite-np"];
+const unMatchedGroupsNonProd = ["gpi-cct-config-route-read-np"];
 
 const mockedRoutingFilter = {
   brand: "Liberty Mutual"

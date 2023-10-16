@@ -5,7 +5,7 @@ import {
   RoutingHeadingStyled, RoutingModalBodyStyled, RoutingModalFooterStyled
 } from "../../AlohaRouting.Styles";
 import React, {
-  useState, useEffect
+  useState, useEffect, useMemo
 } from "react";
 import {
   convertTime12to24,convertTime24to12, getGraphQLEndpoint, routingFields, routingInitRule, initializedAlertBar, routingDropDownList, dayOfWeek
@@ -26,11 +26,10 @@ import {
   deleteRoutingRule, updateRoutingDB
 } from "services";
 import { AzureSPA } from "globals";
-import { useAdminState } from "context";
+import { readWriteAccess } from "utils/configUtils";
 interface EditRoutingComponentProps {
   accessToken: string;
   isOpen: boolean;
-  matchedGroups?: string;
   selectedRow: CctSharedCallRoutingDb;
   openEditModal: (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallRoutingDb, message?: string, deleteRow?: boolean,isCloneRule?: boolean) => void;
 }
@@ -44,16 +43,9 @@ export const EditRouting = ({
   const [routingRule, setRoutingRule] = useState({ ...routingInitRule });
   const [dropDownValues, setDropDownValues] = useState(routingDropDownList);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
-  const [enableRouting, setEnableRouting] = useState(false);
   const defaultValue: { [key: string]: any } = {};
-  const env = useAdminState().userContext.pingIdentity.environment;
-  useEffect(()=>{
-    if(env === "production" && matchedGroups?.includes("gpi-cct-config-route-readwrite-prod")){
-      setEnableRouting(true);
-    } else if( env === "development" && matchedGroups?.includes("gpi-cct-config-route-readwrite-np")){
-      setEnableRouting(true);
-    }
-  },[]);
+  const enableRouting = useMemo(() => readWriteAccess(matchedGroups,"aloha-route"), []);
+
   useEffect(() => {
     setDropDownValues((dropDownOptions: RoutingDropDownList) => ({
       ...dropDownOptions,

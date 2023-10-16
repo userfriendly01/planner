@@ -1,6 +1,6 @@
 
 import React, {
-  useState, useEffect
+  useState, useEffect, useMemo
 } from "react";
 import {
   Modal, ModalHeader
@@ -32,7 +32,8 @@ import {
   languageOffer,
   userDestination,
   flowType,
-  checkGreetingMessageRegExp
+  checkGreetingMessageRegExp,
+  readWriteAccess
 } from "utils";
 import ComponentControl from "components/core/SharedComponents/ComponentControl";
 import {
@@ -63,6 +64,7 @@ export const EditFlow = ({
   const [flowRule, setFlowRule] = useState({ ...initRule });
   const [dropDownValues, setDropDownValues] = useState(flowDropDownList);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
+  const enableRouting = useMemo(() => readWriteAccess(matchedGroups,"aloha-flow"), []);
 
 
   useEffect(() => {
@@ -285,6 +287,7 @@ export const EditFlow = ({
             variant="contained"
             value="Save"
             color="primary"
+            disabled = {!enableRouting}
             sx={{ marginRight: 2 }}
             aria-label="saveFlowRuleButton"
             onClick={() => handleOnSave()}

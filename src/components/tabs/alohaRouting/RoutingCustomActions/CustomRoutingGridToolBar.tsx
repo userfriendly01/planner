@@ -1,5 +1,5 @@
 import React, {
-  useState, useEffect
+  useState, useEffect, useMemo
 } from "react";
 import {
   Chip, FormControl, InputLabel, MenuItem, Select, Grid, TextField, IconButton, Tooltip
@@ -10,13 +10,12 @@ import {
   RoutingFilter
 } from "../AlohaRouting.Interfaces";
 import {
-  CACHE_FILTER_ROUTING, getAdvanceFilter
+  CACHE_FILTER_ROUTING, getAdvanceFilter, readWriteAccess
 } from "utils";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import DeleteSweepOutlinedIcon from "@mui/icons-material/DeleteSweepOutlined";
 import EditNoteOutlinedIcon from "@mui/icons-material/EditNoteOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
-import { useAdminState } from "context";
 
 interface CustomRoutingGridToolBarProps {
   openAddModal: (flag: boolean) => void;
@@ -26,7 +25,7 @@ interface CustomRoutingGridToolBarProps {
   exportDataFile: ()=> void;
   applyFilter?: () => void;
   isAdvanceSearchOpen?: boolean;
-  matchedGroups?:string;
+  matchedGroups?:string[];
 }
 
 export const CustomRoutingGridToolBar = ({
@@ -34,15 +33,8 @@ export const CustomRoutingGridToolBar = ({
 }: CustomRoutingGridToolBarProps):JSX.Element => {
 
   const [routingFilter, setRoutingFilter] = useState<RoutingFilter>();
-  const [enableRouting, setEnableRouting] = useState(false);
-  const env = useAdminState().userContext.pingIdentity.environment;
-  useEffect(()=>{
-    if(env === "production" && matchedGroups?.includes("gpi-cct-config-route-readwrite-prod")){
-      setEnableRouting(true);
-    } else if( env === "development" && matchedGroups?.includes("gpi-cct-config-route-readwrite-np")){
-      setEnableRouting(true);
-    }
-  },[]);
+  const enableRouting = useMemo(() => readWriteAccess(matchedGroups,"aloha-route"), []);
+
   useEffect(()=>{
     const localFilter = getAdvanceFilter(CACHE_FILTER_ROUTING);
     setRoutingFilter(localFilter);

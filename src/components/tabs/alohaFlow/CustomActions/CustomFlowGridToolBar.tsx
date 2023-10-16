@@ -2,10 +2,10 @@ import {
   Chip, FormControl, InputLabel, MenuItem, Select, Grid, TextField, IconButton, Tooltip
 } from "@mui/material";
 import React, {
-  useState, useEffect
+  useState, useEffect, useMemo
 } from "react";
 import {
-  CACHE_FILTER_FLOW, getAdvanceFilter
+  CACHE_FILTER_FLOW, getAdvanceFilter, readWriteAccess
 } from "utils";
 import {
   FlowAdvanceFilter, PreviewModalAction
@@ -24,14 +24,15 @@ interface CustomFlowGridToolBarProps {
   exportDataFile: ()=> void;
   applyFilter?: () => void;
   isAdvanceSearchOpen?: boolean;
+  matchedGroups?: string[];
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const CustomFlowGridToolBar = ({
-  openAddModal, openPreviewModal, openAdvanceSearchModal, exportDataFile, applyFilter, isAdvanceSearchOpen
+  openAddModal, openPreviewModal, openAdvanceSearchModal, exportDataFile, applyFilter, matchedGroups,isAdvanceSearchOpen
 }:CustomFlowGridToolBarProps) =>{
   const [flowFilter, setFlowFilter] = useState<FlowAdvanceFilter>();
-
+  const enableRouting = useMemo(() => readWriteAccess(matchedGroups,"aloha-flow"), []);
   useEffect(()=>{
     const localFilter = getAdvanceFilter(CACHE_FILTER_FLOW);
     setFlowFilter(localFilter);
@@ -129,6 +130,7 @@ const CustomFlowGridToolBar = ({
             }}
             label="Actions"
             value=""
+            disabled = {!enableRouting}
             onChange={handleChange}
             variant="filled"
             size="small"

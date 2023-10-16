@@ -58,8 +58,8 @@ const initDataProd={
 };
 
 const openEditModal = jest.fn();
-const matchedGroupsProd = "gpi-cct-config-route-readwrite-prod";
-const matchedGroupsNonProd = "gpi-cct-config-route-readwrite-np";
+const matchedGroupsProd = ["gpi-cct-config-route-readwrite-prod"];
+const matchedGroupsNonProd =[ "gpi-cct-config-route-readwrite-np"];
 
 jest.mock("@mui/material", () => ({
   __esModule: true,
