@@ -430,8 +430,8 @@ describe("FlowFieldsConfig", ()=>{
       expect(isFiledIncluded).toBeTruthy();
     });
     it("tfnRoutingGroup", ()=>{
-      const validData = flowFields[29].valueGetter(validFlowData);
-      const invalidData = flowFields[29].valueGetter({});
+      const validData = flowFields[30].valueGetter(validFlowData);
+      const invalidData = flowFields[30].valueGetter({});
       expect(validData).toBe("Core");
       expect(invalidData).toBe("");
     });
