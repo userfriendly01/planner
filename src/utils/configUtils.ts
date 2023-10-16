@@ -135,7 +135,6 @@ export const readWriteAccess=(matchedGroups:string[], alohaTabType:string):boole
   const env: string = useAdminState().userContext.pingIdentity.environment;
   let flag = false;
   authProfiles?.forEach((item: any)=>{
-    console.log("item", item);
     if(item.startup.name === alohaTabType && item.permissionLevel === "write"){
       item.environments.forEach((envVar: string)=>{
         if(envVar === env){

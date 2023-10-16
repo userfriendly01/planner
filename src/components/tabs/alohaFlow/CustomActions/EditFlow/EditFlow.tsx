@@ -64,7 +64,7 @@ export const EditFlow = ({
   const [flowRule, setFlowRule] = useState({ ...initRule });
   const [dropDownValues, setDropDownValues] = useState(flowDropDownList);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
-  const enableRouting = useMemo(() => readWriteAccess(matchedGroups,"aloha-flow"), []);
+  const enableFlow = useMemo(() => readWriteAccess(matchedGroups,"aloha-flow"), []);
 
 
   useEffect(() => {
@@ -287,7 +287,7 @@ export const EditFlow = ({
             variant="contained"
             value="Save"
             color="primary"
-            disabled = {!enableRouting}
+            disabled = {!enableFlow}
             sx={{ marginRight: 2 }}
             aria-label="saveFlowRuleButton"
             onClick={() => handleOnSave()}
@@ -298,6 +298,7 @@ export const EditFlow = ({
             variant="contained"
             value="Clone"
             color="primary"
+            disabled = {!enableFlow}
             sx={{ marginRight: 2 }}
             aria-label="cloneFlowRuleButton"
             onClick={() => handleClone()}
@@ -308,6 +309,7 @@ export const EditFlow = ({
             variant="contained"
             color="error"
             value="Delete"
+            disabled = {!enableFlow}
             sx={{ marginRight: 2 }}
             aria-label="deleteFlowRuleButton"
             onClick={() => handleOnDelete()}
