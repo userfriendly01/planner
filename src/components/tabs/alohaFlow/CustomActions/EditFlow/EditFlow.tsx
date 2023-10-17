@@ -34,6 +34,7 @@ import {
   languageOffer,
   userDestination,
   flowType,
+  tfnRoutingGroup,
   checkGreetingMessageRegExp
 } from "utils";
 import ComponentControl from "components/core/SharedComponents/ComponentControl";
@@ -89,6 +90,7 @@ export const EditFlow = ({
         callFlowRoute: masterData?.callFlowRoute,
         callerType: masterData?.callerType,
         dataRequests: masterData?.dataRequests,
+        tfnRoutingGroup: tfnRoutingGroup,
         type: flowType
       })
     );

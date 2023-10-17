@@ -53,6 +53,7 @@ async function queryFlowData(accessToken, nextToken = null, graphQlApiUrl) {
                   predictiveCaller
                   rangeIndicator
                   requestID
+                  tfnRoutingGroup
                   tollFreeNumber
                   transferCode
                   type
@@ -140,7 +141,8 @@ function addFlowInput (item, dataRequestsPassed, currentTimePassed){
     requestID: item.requestID?.value || "",
     userDestination: item.userDestination?.value||"",
     rangeIndicator: item.rangeIndicator?.value || "",
-    type: item.type?.value || ""
+    type: item.type?.value || "",
+    tfnRoutingGroup: item.tfnRoutingGroup?.value || ""
   };
   if(item.employeeId?.value){
     input.employeeId = item.employeeId.value;
@@ -181,7 +183,8 @@ function updateFlowInput(item){
     requestID: item.requestID || "",
     userDestination: item.userDestination || "",
     rangeIndicator: item.rangeIndicator || "",
-    type: item.type || ""
+    type: item.type || "",
+    tfnRoutingGroup: item.tfnRoutingGroup || ""
   };
   if(item.employeeId){
     input.employeeId = item.employeeId;
@@ -243,6 +246,7 @@ async function updateFlowDB(item, accessToken, graphQlApiUrl) {
               requestID
               userDestination
               rangeIndicator
+              tfnRoutingGroup
               type
       }
           }
@@ -314,6 +318,7 @@ async function addFlowRule(item, accessToken, graphQlApiUrl, curTime = new Date(
               requestID
               userDestination
               rangeIndicator
+              tfnRoutingGroup
               type
             }
           }
@@ -385,6 +390,7 @@ async function deleteFlowRule(item, accessToken, graphQlApiUrl) {
               whisper
               requestID
               rangeIndicator
+              tfnRoutingGroup
               type
             }
           }
@@ -469,9 +475,9 @@ async function flowBatchDelete(items, accessToken, graphQlApiUrl){
 /**
  * This is the Function to batch update the Flow Object to the DB
  * @param {flowData} items List of Flow object that need to update
- * @param {String} accessToken token to use while calling graphql query 
- * @param {String} graphQlApiUrl Endpoint URL 
- * @returns 
+ * @param {String} accessToken token to use while calling graphql query
+ * @param {String} graphQlApiUrl Endpoint URL
+ * @returns
  */
 const batchFlowUpdate = async(items, accessToken, graphQlApiUrl) =>{
   if(items.length === 0){
@@ -514,6 +520,7 @@ const batchFlowUpdate = async(items, accessToken, graphQlApiUrl) =>{
       requestID: item.requestID || "",
       userDestination: item.userDestination || "",
       rangeIndicator: item.rangeIndicator || "",
+      tfnRoutingGroup: item.tfnRoutingGroup || "",
       type: item.type || ""
     };
   });
@@ -557,6 +564,7 @@ const batchFlowUpdate = async(items, accessToken, graphQlApiUrl) =>{
               rangeIndicator
               requestID
               tollFreeNumber
+              tfnRoutingGroup
               transferCode
               type
               userDestination
