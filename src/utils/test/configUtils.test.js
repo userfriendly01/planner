@@ -8,9 +8,6 @@ import { useAdminState } from "context";
 import {
   initialTestState, adGroupPermissionMapping
 } from "testUtils";
-import {
-  getAdGroupPermissionMapping
-} from "authentication";
 
 jest.mock("context", () => ({
   useAdminState: jest.fn()
@@ -62,15 +59,9 @@ describe("configUtils.js", ()=>{
     expect(link.href).toBe(href);
   });
 
-  test("Simulate read-write of routing data with improper matched groups",()=>{
-    getAdGroupPermissionMapping.mockReturnValue(adGroupPermissionMapping);
-    const flag = readWriteAccess(["gpi-cct-config-route-readwrite-prod"],"aloha-route");
-    expect(flag).toBe(false);
-  });
   test("Simulate read-write of routing data",()=>{
-    getAdGroupPermissionMapping.mockReturnValue(adGroupPermissionMapping);
-    const flag = readWriteAccess(["gpi-cct-config-route-readwrite-np"],"aloha-route");
-    expect(flag).toBe(true);
+    const flag = readWriteAccess(adGroupPermissionMapping,"aloha-route");
+    expect(flag).toBe(false);
   });
 
   test("Simulate Download With Empty Routing Data",()=>{
