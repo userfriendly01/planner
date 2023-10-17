@@ -11,6 +11,12 @@ jest.mock("globals", () => ({
   formModes: jest.requireActual("globals").formModes
 }));
 
+jest.mock("components",()=>({
+  AlohaFlowContainer: jest.fn(),
+  AlohaRoutingContainer: jest.fn(),
+  TritonUsersViewWrapper: jest.fn()
+}));
+
 const axiosMock = new MockAdapter(myAxios);
 
 describe("fetchUser", () => {

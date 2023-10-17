@@ -11,7 +11,6 @@ import {
 } from "testUtils";
 import BusinessUnitModal from "../../BusinessUnitModal";
 import { Modal } from "@mui/material";
-
 jest.mock("../../BulkChanges.Styles", () => ({
   Button: jest.fn()
 }));
@@ -24,6 +23,12 @@ jest.mock("../../BusinessUnitModal", () => jest.fn());
 
 jest.mock("@mui/material", () => ({
   Modal: jest.fn()
+}));
+
+jest.mock("components",()=>({
+  AlohaFlowContainer: jest.fn(),
+  AlohaRoutingContainer: jest.fn(),
+  TritonUsersViewWrapper: jest.fn()
 }));
 
 jest.useFakeTimers();

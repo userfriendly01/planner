@@ -1,13 +1,21 @@
 import React from "react";
 import { CustomRoutingGridToolBar } from "../CustomRoutingGridToolBar";
 import {
-  Chip, FormControl, InputLabel, MenuItem, Select, Grid, TextField
+  Chip, FormControl, InputLabel, MenuItem, Select, Grid, TextField, Button
 } from "@mui/material";
 import {
-  render, setupMockedComponents, act
+  render, setupMockedComponents, act, adGroupPermissionMapping
 } from "testUtils";
 import { CACHE_FILTER_ROUTING } from "utils";
 import { useAdminState } from "context";
+import {
+  getAdGroupPermissionMapping
+} from "authentication";
+import {
+  AlohaFlowContainer,
+  AlohaRoutingContainer,
+  TritonUsersViewWrapper
+} from "components";
 
 jest.mock("@mui/material", () => ({
   __esModule: true,
@@ -17,7 +25,14 @@ jest.mock("@mui/material", () => ({
   FormControl: jest.fn(),
   InputLabel: jest.fn(),
   Select: jest.fn(),
-  MenuItem: jest.fn()
+  MenuItem: jest.fn(),
+  Button: jest.fn()
+}));
+
+jest.mock("components",()=>({
+  AlohaFlowContainer: jest.fn(),
+  AlohaRoutingContainer: jest.fn(),
+  TritonUsersViewWrapper: jest.fn()
 }));
 
 jest.mock("context", () => ({
@@ -82,8 +97,13 @@ describe("<CustomRoutingGridToolBar />", ()=>{
       Chip,
       InputLabel,
       Select,
-      MenuItem
+      MenuItem,
+      Button,
+      AlohaFlowContainer,
+      AlohaRoutingContainer,
+      TritonUsersViewWrapper
     });
+    getAdGroupPermissionMapping.mockReturnValue(adGroupPermissionMapping);
     localStorage.setItem(CACHE_FILTER_ROUTING, JSON.stringify(mockedRoutingFilter));
   });
   afterEach(() => {

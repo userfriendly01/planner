@@ -17,6 +17,7 @@ import {
   getCalabrioWfmOrg,
   logger
 } from "utils";
+
 import * as XLSX from "xlsx";
 
 
@@ -39,6 +40,12 @@ jest.mock("xlsx",() => ({
 
 jest.mock("context", () => ({
   useAdminState: jest.fn()
+}));
+
+jest.mock("components",()=>({
+  AlohaFlowContainer: jest.fn(),
+  AlohaRoutingContainer: jest.fn(),
+  TritonUsersViewWrapper: jest.fn()
 }));
 
 describe("updateManagerUserState", () => {
