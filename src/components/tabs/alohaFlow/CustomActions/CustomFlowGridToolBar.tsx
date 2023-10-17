@@ -24,7 +24,7 @@ interface CustomFlowGridToolBarProps {
   exportDataFile: ()=> void;
   applyFilter?: () => void;
   isAdvanceSearchOpen?: boolean;
-  matchedGroups?: string[];
+  matchedGroups?: any[];
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types

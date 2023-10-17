@@ -42,12 +42,6 @@ jest.mock("context", () => ({
   useAdminState: jest.fn()
 }));
 
-jest.mock("components",()=>({
-  AlohaFlowContainer: jest.fn(),
-  AlohaRoutingContainer: jest.fn(),
-  TritonUsersViewWrapper: jest.fn()
-}));
-
 describe("updateManagerUserState", () => {
   const mockDispatch = jest.fn();
   beforeEach(() => {

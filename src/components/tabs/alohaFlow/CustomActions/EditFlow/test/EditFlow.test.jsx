@@ -10,9 +10,6 @@ import {
 import { useAdminState } from "context";
 import { CustomToast } from "components";
 import { AddOrView } from "../../CustomActionsCommon/AddOrView";
-import {
-  getAdGroupPermissionMapping
-} from "authentication";
 
 jest.mock("components", () => {
   return{
@@ -83,7 +80,6 @@ const mockMasterData = {
   callerType: ["TestCallerType"]
 };
 
-const matchedGroupsNonProd =[ "gpi-cct-config-flow-readwrite-np"];
 
 const openEditModal = jest.fn();
 const duplicateCheck = jest.fn().mockReturnValue({
@@ -97,13 +93,13 @@ const duplicateCheckTrue = jest.fn().mockReturnValue({
 
 const renderEditFlow = (isOpen, data) => {
   return render(
-    <EditFlow openEditModal={openEditModal} selectedRow={data} isOpen={isOpen} duplicateCheck={duplicateCheck} matchedGroups={matchedGroupsNonProd} />
+    <EditFlow openEditModal={openEditModal} selectedRow={data} isOpen={isOpen} duplicateCheck={duplicateCheck} matchedGroups={adGroupPermissionMapping} />
   );
 };
 
 const renderEditFlowWithDuplicateChecks = (isOpen, data) => {
   return render(
-    <EditFlow openEditModal={openEditModal} selectedRow={data} isOpen={isOpen} duplicateCheck={duplicateCheckTrue} matchedGroups={matchedGroupsNonProd} />
+    <EditFlow openEditModal={openEditModal} selectedRow={data} isOpen={isOpen} duplicateCheck={duplicateCheckTrue} matchedGroups={adGroupPermissionMapping} />
   );
 };
 
@@ -125,7 +121,6 @@ describe("<EditFlow />", () => {
         dispatchEvent: jest.fn()
       }))
     });
-    getAdGroupPermissionMapping.mockReturnValue(adGroupPermissionMapping);
     localStorage.setItem(FLOW_MASTER_DATA, JSON.stringify(mockMasterData));
   });
 

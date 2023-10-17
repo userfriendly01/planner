@@ -14,7 +14,6 @@ import {
 } from "utils";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import DeleteSweepOutlinedIcon from "@mui/icons-material/DeleteSweepOutlined";
-import EditNoteOutlinedIcon from "@mui/icons-material/EditNoteOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 
 interface CustomRoutingGridToolBarProps {
@@ -25,7 +24,7 @@ interface CustomRoutingGridToolBarProps {
   exportDataFile: ()=> void;
   applyFilter?: () => void;
   isAdvanceSearchOpen?: boolean;
-  matchedGroups?:string[];
+  matchedGroups?:any[];
 }
 
 export const CustomRoutingGridToolBar = ({
@@ -148,7 +147,7 @@ export const CustomRoutingGridToolBar = ({
               <PlaylistAddIcon />&nbsp;&nbsp; Multi Add
             </MenuItem>
             <MenuItem key="bulkEditRouting" value="bulkEditRouting">
-              <EditNoteOutlinedIcon />&nbsp;&nbsp; Multi Edit
+              <AddOutlinedIcon />&nbsp;&nbsp; Multi Edit
             </MenuItem>
           </Select>
         </FormControl>

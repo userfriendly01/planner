@@ -25,12 +25,6 @@ jest.mock("@mui/material", () => ({
   Modal: jest.fn()
 }));
 
-jest.mock("components",()=>({
-  AlohaFlowContainer: jest.fn(),
-  AlohaRoutingContainer: jest.fn(),
-  TritonUsersViewWrapper: jest.fn()
-}));
-
 jest.useFakeTimers();
 const useRefSpy = jest.spyOn(React, "useRef");
 const mockSave = jest.fn();

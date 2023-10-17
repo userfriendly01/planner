@@ -130,11 +130,10 @@ export const cleanErrorMessage = (graphQLErrors: GraphQLErrors[]): string => {
   return graphQLErrors[0].message;
 };
 
-export const readWriteAccess=(matchedGroups:string[], alohaTabType:string):boolean=>{
-  const authProfiles = getAdGroupPermissionMapping();
+export const readWriteAccess=(matchedGroups:any[], alohaTabType:string):boolean=>{
   const env: string = useAdminState().userContext.pingIdentity.environment;
   let flag = false;
-  authProfiles?.forEach((item: any)=>{
+  matchedGroups?.forEach((item: any)=>{
     if(item.startup.name === alohaTabType && item.permissionLevel === "write"){
       item.environments.forEach((envVar: string)=>{
         if(envVar === env){

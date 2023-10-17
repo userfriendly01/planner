@@ -8,14 +8,6 @@ import {
 } from "testUtils";
 import { CACHE_FILTER_ROUTING } from "utils";
 import { useAdminState } from "context";
-import {
-  getAdGroupPermissionMapping
-} from "authentication";
-import {
-  AlohaFlowContainer,
-  AlohaRoutingContainer,
-  TritonUsersViewWrapper
-} from "components";
 
 jest.mock("@mui/material", () => ({
   __esModule: true,
@@ -29,11 +21,6 @@ jest.mock("@mui/material", () => ({
   Button: jest.fn()
 }));
 
-jest.mock("components",()=>({
-  AlohaFlowContainer: jest.fn(),
-  AlohaRoutingContainer: jest.fn(),
-  TritonUsersViewWrapper: jest.fn()
-}));
 
 jest.mock("context", () => ({
   useAdminState: jest.fn()
@@ -45,9 +32,6 @@ const openAdvanceSearchModal = jest.fn();
 const exportDataFile = jest.fn();
 const applyFilter = jest.fn();
 const isAdvanceSearchModalOpen = true;
-const matchedGroupsProd = ["gpi-cct-config-route-readwrite-prod"];
-const matchedGroupsNonProd = ["gpi-cct-config-route-readwrite-np"];
-const unMatchedGroupsNonProd = ["gpi-cct-config-route-read-np"];
 
 const mockedRoutingFilter = {
   brand: "Liberty Mutual"
@@ -73,7 +57,7 @@ const initDataProd={
     }
   }
 };
-const renderCustomToolBar = matchedGroups =>{
+const renderCustomToolBar = () =>{
   const rendered =render(
     <CustomRoutingGridToolBar
       openAddModal={openAddModal}
@@ -82,7 +66,7 @@ const renderCustomToolBar = matchedGroups =>{
       exportDataFile={exportDataFile}
       applyFilter={applyFilter}
       isAdvanceSearchOpen={isAdvanceSearchModalOpen}
-      matchedGroups={matchedGroups}
+      matchedGroups={adGroupPermissionMapping}
     />
   );
   return rendered;
@@ -98,12 +82,8 @@ describe("<CustomRoutingGridToolBar />", ()=>{
       InputLabel,
       Select,
       MenuItem,
-      Button,
-      AlohaFlowContainer,
-      AlohaRoutingContainer,
-      TritonUsersViewWrapper
+      Button
     });
-    getAdGroupPermissionMapping.mockReturnValue(adGroupPermissionMapping);
     localStorage.setItem(CACHE_FILTER_ROUTING, JSON.stringify(mockedRoutingFilter));
   });
   afterEach(() => {
@@ -111,7 +91,7 @@ describe("<CustomRoutingGridToolBar />", ()=>{
   });
   test("Simulate Custom Routing Toolbar For Routing Export",()=>{
     useAdminState.mockReturnValue(initData);
-    renderCustomToolBar(matchedGroupsNonProd);
+    renderCustomToolBar();
     const GridMock = Grid.mock.calls[0][0];
     const ExportFlowUI = GridMock.children[1].props.children[0].props.children.props.onClick;
     act(()=>{
@@ -122,7 +102,7 @@ describe("<CustomRoutingGridToolBar />", ()=>{
   });
   test("Simulate Custom Routing Toolbar with production as Env",()=>{
     useAdminState.mockReturnValue(initDataProd);
-    renderCustomToolBar(matchedGroupsProd);
+    renderCustomToolBar();
     const GridMock = Grid.mock.calls[0][0];
     const ExportFlowUI = GridMock.children[1].props.children[0].props.children.props.onClick;
     act(()=>{
@@ -132,7 +112,7 @@ describe("<CustomRoutingGridToolBar />", ()=>{
     expect(exportDataFile).toBeCalledTimes(1);
   });
   test("Simulate Custom Routing Toolbar Advance Search",()=>{
-    renderCustomToolBar(matchedGroupsNonProd);
+    renderCustomToolBar();
     const GridMock = Grid.mock.calls[0][0];
     const ActionsAttr = GridMock.children[0].props.children.props.onClick;
     act(()=>{
@@ -141,7 +121,7 @@ describe("<CustomRoutingGridToolBar />", ()=>{
     expect(openAdvanceSearchModal).toBeCalledTimes(1);
   });
   test("Simulate Custom Routing Toolbar Add Routing",()=>{
-    renderCustomToolBar(unMatchedGroupsNonProd);
+    renderCustomToolBar();
     const GridMock = Grid.mock.calls[0][0];
     const ActionsAttr = GridMock.children[2].props.children.props.children[1].props.onChange;
     const eventaddFlowValue = {
@@ -155,7 +135,7 @@ describe("<CustomRoutingGridToolBar />", ()=>{
     expect(openAddModal).toBeCalledTimes(1);
   });
   test("Simulate Custom Routing Toolbar Default block",()=>{
-    renderCustomToolBar(matchedGroupsNonProd);
+    renderCustomToolBar();
     const GridMock = Grid.mock.calls[0][0];
     const ActionsAttr = GridMock.children[2].props.children.props.children[1].props.onChange;
     const eventaddFlowValue = {
@@ -169,7 +149,7 @@ describe("<CustomRoutingGridToolBar />", ()=>{
     expect(openAddModal).toBeCalledTimes(0);
   });
   test("Simulate Existing Filter Delete Functionality", ()=>{
-    renderCustomToolBar(matchedGroupsNonProd);
+    renderCustomToolBar();
     const GridMock = Grid.mock.calls[1][0];
     const onDelete = GridMock.children[0].props.children.props.InputProps.startAdornment[0].props.onDelete;
     act(()=>{
@@ -179,7 +159,7 @@ describe("<CustomRoutingGridToolBar />", ()=>{
     expect(chipTags.length).toBe(0);
   });
   test("Choose the multi-actions", () => {
-    renderCustomToolBar(matchedGroupsNonProd);
+    renderCustomToolBar();
     const GridMock = Grid.mock.calls[0][0];
     const ActionsAttr = GridMock.children[2].props.children.props.children[1].props.onChange;
 

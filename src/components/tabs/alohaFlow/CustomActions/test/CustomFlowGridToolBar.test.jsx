@@ -23,12 +23,6 @@ jest.mock("context", () => ({
   useAdminState: jest.fn()
 }));
 
-jest.mock("components",()=>({
-  AlohaFlowContainer: jest.fn(),
-  AlohaRoutingContainer: jest.fn(),
-  TritonUsersViewWrapper: jest.fn()
-}));
-
 const openAddModal=jest.fn();
 const openPreviewModal=jest.fn();
 const openAdvanceSearchModal = jest.fn();

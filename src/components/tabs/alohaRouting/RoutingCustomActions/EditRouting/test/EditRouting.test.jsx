@@ -4,7 +4,7 @@ import {
   ROUTING_CACHE_MASTER_DATA
 } from "utils";
 import {
-  fireEvent, render, initialTestState, act, setupMockedComponents
+  fireEvent, render, initialTestState, act, setupMockedComponents, adGroupPermissionMapping
 } from "testUtils";
 import {
   updateRoutingDB, deleteRoutingRule
@@ -58,8 +58,6 @@ const initDataProd={
 };
 
 const openEditModal = jest.fn();
-const matchedGroupsProd = ["gpi-cct-config-route-readwrite-prod"];
-const matchedGroupsNonProd =[ "gpi-cct-config-route-readwrite-np"];
 
 jest.mock("@mui/material", () => ({
   __esModule: true,
@@ -88,9 +86,9 @@ const mockMasterData = {
   channel: ["Test1 Channel", "Test2 Channel"]
 };
 
-const renderEditRouting = (isOpen, data,matchedGroups) => {
+const renderEditRouting = (isOpen, data) => {
   return render(
-    <EditRouting openEditModal={openEditModal} selectedRow={data} isOpen={isOpen} matchedGroups={matchedGroups} />
+    <EditRouting openEditModal={openEditModal} selectedRow={data} isOpen={isOpen} matchedGroups={adGroupPermissionMapping} />
   );
 };
 
@@ -135,7 +133,7 @@ describe("<EditRouting />", () => {
   describe("Basic Simualte the Component", () => {
     test("Simulate the component with prod as environment", () => {
       useAdminState.mockReturnValue(initDataProd);
-      renderEditRouting(true, validRoutingData,matchedGroupsProd);
+      renderEditRouting(true, validRoutingData);
       const saveButtonClick = Button.mock.calls[0][0].onClick;
       const saveButton = Button.mock.calls[0][0];
       act(() => {
@@ -144,7 +142,7 @@ describe("<EditRouting />", () => {
       expect(saveButton.disabled).toBe(true);
     });
     test("Simulate the component with prod as environment with read only access", () => {
-      renderEditRouting(true, validRoutingData,matchedGroupsNonProd);
+      renderEditRouting(true, validRoutingData);
       const saveButtonClick = Button.mock.calls[0][0].onClick;
       const saveButton = Button.mock.calls[0][0];
       act(() => {
@@ -155,7 +153,7 @@ describe("<EditRouting />", () => {
   });
   describe("Edit Routing Modal Block", () => {
     test("Simulate Close Modal By Clicking Close Icon", () => {
-      const { getByRole } = renderEditRouting(true, validRoutingData,matchedGroupsNonProd);
+      const { getByRole } = renderEditRouting(true, validRoutingData);
       const closeModalButton = getByRole("img", { name: "Close" });
       act(() => {
         fireEvent.click(closeModalButton);
