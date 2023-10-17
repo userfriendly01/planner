@@ -289,7 +289,7 @@ export const FlowGridColumnDef: GridColDef[] = [
     headerName: "TFN Routing Group",
     field: "tfnRoutingGroup",
     sortable: true,
-    width: 220,
+    width: 110,
     align: "left",
     renderCell: (params: any) => (
             <Tooltip title={params.row.tfnRoutingGroup} >
