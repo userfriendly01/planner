@@ -2,7 +2,7 @@ import React from "react";
 import { EditFlow } from "../index";
 import { FLOW_MASTER_DATA } from "utils";
 import {
-  fireEvent, render, initialTestState, waitFor, act, within, setupMockedComponents
+  fireEvent, render, initialTestState, waitFor, act, within, setupMockedComponents, adGroupPermissionMapping
 } from "testUtils";
 import {
   deleteFlowRule, updateFlowDB
@@ -10,6 +10,9 @@ import {
 import { useAdminState } from "context";
 import { CustomToast } from "components";
 import { AddOrView } from "../../CustomActionsCommon/AddOrView";
+import {
+  getAdGroupPermissionMapping
+} from "authentication";
 
 jest.mock("components", () => {
   return{
@@ -80,6 +83,8 @@ const mockMasterData = {
   callerType: ["TestCallerType"]
 };
 
+const matchedGroupsNonProd =[ "gpi-cct-config-flow-readwrite-np"];
+
 const openEditModal = jest.fn();
 const duplicateCheck = jest.fn().mockReturnValue({
   isDuplicate: false,
@@ -92,13 +97,13 @@ const duplicateCheckTrue = jest.fn().mockReturnValue({
 
 const renderEditFlow = (isOpen, data) => {
   return render(
-    <EditFlow openEditModal={openEditModal} selectedRow={data} isOpen={isOpen} duplicateCheck={duplicateCheck} />
+    <EditFlow openEditModal={openEditModal} selectedRow={data} isOpen={isOpen} duplicateCheck={duplicateCheck} matchedGroups={matchedGroupsNonProd} />
   );
 };
 
 const renderEditFlowWithDuplicateChecks = (isOpen, data) => {
   return render(
-    <EditFlow openEditModal={openEditModal} selectedRow={data} isOpen={isOpen} duplicateCheck={duplicateCheckTrue} />
+    <EditFlow openEditModal={openEditModal} selectedRow={data} isOpen={isOpen} duplicateCheck={duplicateCheckTrue} matchedGroups={matchedGroupsNonProd} />
   );
 };
 
@@ -120,6 +125,7 @@ describe("<EditFlow />", () => {
         dispatchEvent: jest.fn()
       }))
     });
+    getAdGroupPermissionMapping.mockReturnValue(adGroupPermissionMapping);
     localStorage.setItem(FLOW_MASTER_DATA, JSON.stringify(mockMasterData));
   });
 
@@ -232,7 +238,7 @@ describe("<EditFlow />", () => {
       const {
         getByRole, queryByRole
       } = renderEditFlow(true, invalidFlowData);
-      const channelDropdown = getByRole("combobox", { name: /Channel/i });
+      const channelDropdown = getByRole("button", { name: /Channel/i });
       fireEvent.mouseDown(channelDropdown);
       const listBox = within(getByRole("listbox", { name: /Channel/i }));
       act(() => {
@@ -250,6 +256,7 @@ describe("<EditFlow />", () => {
       waitFor(() => {
         expect(openEditModal).toBeCalledTimes(0);
       });
+
     });
     test("Simulate to callerType field",()=>{
       const {
