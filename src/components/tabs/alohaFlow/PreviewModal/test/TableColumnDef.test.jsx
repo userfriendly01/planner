@@ -40,7 +40,7 @@ const validFlowData = {
 describe("<TableGridColumnDef />", () => {
 
   it("has 30 columns", () => {
-    expect(TableGridColumnDef.length).toBe(31);
+    expect(TableGridColumnDef.length).toBe(32);
   });
 
   describe("valueGetter", ()=>{
@@ -80,6 +80,10 @@ describe("<TableGridColumnDef />", () => {
     it("officeNumbers", () => {
       expect(TableGridColumnDef[30].valueGetter({ row: { content: { officeNumbers: ["#9999"]}}})).toEqual(["#9999"]);
       expect(TableGridColumnDef[30].valueGetter({ row: {}})).toEqual([]);
+    });
+    it("predictiveCaller", () => {
+      expect(TableGridColumnDef[31].valueGetter({ row: { predictiveCaller: true }})).toBe(true);
+      expect(TableGridColumnDef[31].valueGetter({ row: {}})).toEqual(false);
     });
   });
   describe("renderCell", ()=>{
@@ -122,6 +126,10 @@ describe("<TableGridColumnDef />", () => {
     it("officeNumbers", ()=>{
       const renderedCell = render(TableGridColumnDef[30].renderCell({ row: { officeNumbers: ["#9999"]}}));
       expect(renderedCell.findByDisplayValue("#9999")).toBeTruthy();
+    });
+    it("predictiveCaller", ()=>{
+      const renderedCell = render(TableGridColumnDef[31].renderCell({ row: { predictiveCaller: true }}));
+      expect(renderedCell.container).toBeInTheDocument();
     });
   });
   describe("valueSetter", ()=>{

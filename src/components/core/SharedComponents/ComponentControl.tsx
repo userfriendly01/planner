@@ -1,5 +1,7 @@
 import React from "react";
-import TextField from "@mui/material/TextField";
+import {
+  TextField, Switch, FormControlLabel
+} from "@mui/material";
 import SelectContainer from "./SelectContainer";
 import TimePickerComponent from "./TimepickerComponent";
 import { Control } from "globals";
@@ -118,6 +120,23 @@ function ComponentControl({
           key={name}
           required={required}
           helperText={`Please add Enter after each ${label}`}
+        />
+      );
+    case "switch":
+      return (
+        <FormControlLabel
+          label={label}
+          required={required}
+          labelPlacement="start"
+          control={<Switch checked={value} disabled={disabled} name={name} onChange={(event,checked)=>{
+            const newEvent = {
+              target: {
+                name: event.target.name,
+                value: checked
+              }
+            };
+            onChange(newEvent);
+          }} size="medium" color="warning"/>}
         />
       );
     default:
