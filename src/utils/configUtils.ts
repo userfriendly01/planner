@@ -132,14 +132,14 @@ export const cleanErrorMessage = (graphQLErrors: GraphQLErrors[]): string => {
 
 export const readWriteAccess=(matchedGroups:any[], alohaTabType:string):boolean=>{
   const env: string = useAdminState().userContext.pingIdentity.environment;
-  let flag = false;
+  let flag = true;
   matchedGroups?.forEach((item: any)=>{
     if(item.startup.name === alohaTabType && item.permissionLevel === "write"){
       item.environments.forEach((envVar: string)=>{
         if(envVar === env){
           const adGroup=item.adGroup.toLowerCase();
           if(matchedGroups.includes(adGroup)){
-            flag = true;
+            flag = false;
           }
         }
       });

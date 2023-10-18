@@ -267,7 +267,7 @@ export const EditRouting = ({
             value="Save"
             color="primary"
             sx={{ marginRight: 2 }}
-            disabled={!enableRouting}
+            disabled={enableRouting}
             onClick={() => handleOnSave()}
           >
                         Save Rule
@@ -276,7 +276,7 @@ export const EditRouting = ({
             variant="contained"
             value="Clone"
             color="primary"
-            disabled={!enableRouting}
+            disabled={enableRouting}
             sx={{ marginRight: 2 }}
             onClick={() => handleClone()}
           >
@@ -286,7 +286,7 @@ export const EditRouting = ({
             variant="contained"
             color="error"
             value="Delete"
-            disabled={!enableRouting}
+            disabled={enableRouting}
             sx={{ marginRight: 2 }}
             onClick={() => handleOnDelete()}
           >

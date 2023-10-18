@@ -130,7 +130,7 @@ const CustomFlowGridToolBar = ({
             }}
             label="Actions"
             value=""
-            disabled = {!enableFlow}
+            disabled = {enableFlow}
             onChange={handleChange}
             variant="filled"
             size="small"

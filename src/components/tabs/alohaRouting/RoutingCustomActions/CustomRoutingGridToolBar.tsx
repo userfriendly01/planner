@@ -135,7 +135,7 @@ export const CustomRoutingGridToolBar = ({
             onChange={handleChange}
             variant="filled"
             size="small"
-            disabled={!enableRouting}
+            disabled={enableRouting}
           >
             <MenuItem key="addRouting" value="addRouting">
               <AddOutlinedIcon/> &nbsp;&nbsp;Add Routing
