@@ -18,11 +18,12 @@ import {
   timeouts
 } from "globals";
 import React from "react";
-import { deleteUser } from "services";
+import { terminateWorker } from "services";
 import {
   logger,
   wait
 } from "utils";
+import { Checkbox } from "@mui/material";
 
 const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
   const {
@@ -30,6 +31,11 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
     loading,
     updateLoading
   } = props;
+
+  interface profilesToDeleteState {
+    triton: boolean,
+    calabrioQm: boolean
+  }
 
   const state = useAdminState();
   const nNumber = state.userContext.pingIdentity?.sub;
@@ -42,10 +48,32 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
   const [deleteTriton, setDeleteTriton] = React.useState(form.triton.userFound);
   const [deleteCalabrioQm, setDeleteClabrioQm] = React.useState(form.calabrio_qm.userFound);
   const [deleteCalabrioWfm, setDeleteCalabrioWfm ] = React.useState(form.calabrio_wfm.userFound);
+  const [profilesToDelete, setProfilesToDelete] = React.useState<profilesToDeleteState>({
+    triton: true,
+    calabrioQm: true
+  });
+
+  const handleCheckboxes = (profile: string) => {
+    if (profile === "triton") {
+      setProfilesToDelete(
+        {
+          ...profilesToDelete,
+          triton: !profilesToDelete.triton
+        });
+    } else if (profile === "calabrioQm") {
+      setProfilesToDelete(
+        {
+          ...profilesToDelete,
+          calabrioQm: !profilesToDelete.calabrioQm
+        });
+    }
+  };
 
   const handleDeleteUser = () => {
     const tritonWorkerName =  tritonWorker.attributes ? `${tritonWorker.attributes?.emp_first_name} ${tritonWorker.attributes?.emp_last_name}` : null;
     const workerName = tritonWorkerName  || tritonWorker.displayId || tritonWorker.DisplayName;
+    const termDate = Date.now();
+
     updateLoading({
       ...loading,
       overlayMessage: `Deleting user: ${workerName}`,
@@ -53,9 +81,27 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
       saveUser: true
     });
     let resultMessage;
-    deleteUser(tritonWorker)
+
+    const body: any = {
+      nNumber: tritonWorker.attributes?.n_number,
+      workerSid: tritonWorker.sid,
+      email: tritonWorker.attributes?.email_address || tritonWorker.attributes?.email,
+      firstName: tritonWorker.attributes?.emp_first_name,
+      lastName: tritonWorker.attributes?.emp_last_name,
+      systems: [],
+      terminationDate: termDate
+    };
+    if (profilesToDelete.triton) {
+      body.systems.push("TRITON");
+    }
+    if (profilesToDelete.calabrioQm) {
+      body.systems.push("QM");
+    }
+    console.log("REQUEST BODY:", body);
+
+    terminateWorker(body)
       .then(() => {
-        resultMessage = `Successfully deleted Triton worker with sid ${tritonWorker.sid}`;
+        resultMessage = `Successfully marked Triton worker for delete in ${body.systems}`;
 
         logger.info(resultMessage, {
           nNumber,
@@ -82,8 +128,9 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
         }, timeouts.MODAL_OVERLAY);
       })
       .catch(error => {
+        console.log(error);
         if (typeof error.response?.data?.error === "object" ){
-          resultMessage = `Failed to delete worker ${tritonWorker.sid}`;
+          resultMessage = `Failed to terminate worker ${tritonWorker.sid}`; //todo what's the responses?
         } else {
           resultMessage = error.response.data.error;
         }
@@ -105,7 +152,20 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
 
   return (
     <DeleteTritonUserWrapper>
-      <Text>This user will be deactivated in Triton.</Text>
+      <Text>This user will be deactivated in the following systems:</Text>
+      <Text></Text>
+      <div>
+        <Checkbox
+          checked={profilesToDelete.triton}
+          onChange={ () => handleCheckboxes("triton") }
+        />
+        Triton
+
+        <Checkbox
+          checked={profilesToDelete.calabrioQm}
+          onChange={ () => handleCheckboxes("calabrioQm") }
+        /> Calabrio QM
+      </div>
       { isWorkerDid ?
         <ForwardToEntryForm
           label="This user has a direct dial number. Please choose a forward to option before confirming."
@@ -118,7 +178,7 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
           Close
         </UserFormButton>
         <UserFormButton
-          disabled={!deleteTriton && !deleteCalabrioQm && !deleteCalabrioWfm}
+          disabled={(!deleteTriton && !deleteCalabrioQm && !deleteCalabrioWfm) || (!profilesToDelete.triton && !profilesToDelete.calabrioQm)}
           onClick={handleDeleteUser}
         >
           Confirm Delete
