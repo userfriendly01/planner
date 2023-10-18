@@ -24,9 +24,6 @@ jest.mock("../../CustomActionsCommon/AddOrView", () => {
   };
 });
 
-jest.mock("@mui/x-date-pickers/TimePicker", () => ({
-  TimePicker: jest.fn()
-}));
 
 jest.mock("context", () => ({
   useAdminState: jest.fn()

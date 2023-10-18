@@ -15,6 +15,7 @@ import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import DeleteSweepOutlinedIcon from "@mui/icons-material/DeleteSweepOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import { useAdminState } from "context";
+import EditNoteOutlinedIcon from "@mui/icons-material/EditNoteOutlined";
 
 
 interface CustomFlowGridToolBarProps {
@@ -147,7 +148,7 @@ const CustomFlowGridToolBar = ({
               <PlaylistAddIcon />&nbsp;&nbsp; Multi Add Flow
             </MenuItem>
             <MenuItem key="bulkEditFlow" value="bulkEditFlow">
-              <AddOutlinedIcon />&nbsp;&nbsp; Multi Edit Flow
+              <EditNoteOutlinedIcon />&nbsp;&nbsp; Multi Edit Flow
             </MenuItem>
           </Select>
         </FormControl>

@@ -11,7 +11,6 @@ jest.mock("globals", () => ({
   formModes: jest.requireActual("globals").formModes
 }));
 
-
 const axiosMock = new MockAdapter(myAxios);
 
 describe("deleteUser", () => {

@@ -1,7 +1,7 @@
 import React from "react";
 import { CustomRoutingGridToolBar } from "../CustomRoutingGridToolBar";
 import {
-  Chip, FormControl, InputLabel, MenuItem, Select, Grid, TextField, Button
+  Chip, FormControl, InputLabel, MenuItem, Select, Grid, TextField
 } from "@mui/material";
 import {
   render, setupMockedComponents, act, adGroupPermissionMapping
@@ -17,8 +17,7 @@ jest.mock("@mui/material", () => ({
   FormControl: jest.fn(),
   InputLabel: jest.fn(),
   Select: jest.fn(),
-  MenuItem: jest.fn(),
-  Button: jest.fn()
+  MenuItem: jest.fn()
 }));
 
 
@@ -81,8 +80,7 @@ describe("<CustomRoutingGridToolBar />", ()=>{
       Chip,
       InputLabel,
       Select,
-      MenuItem,
-      Button
+      MenuItem
     });
     localStorage.setItem(CACHE_FILTER_ROUTING, JSON.stringify(mockedRoutingFilter));
   });
