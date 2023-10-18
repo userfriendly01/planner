@@ -284,7 +284,19 @@ export const FlowGridColumnDef: GridColDef[] = [
           ))}
       </div>
     )
-  }
+  },
+  {
+    headerName: "TFN Routing Group",
+    field: "tfnRoutingGroup",
+    sortable: true,
+    width: 110,
+    align: "left",
+    renderCell: (params: any) => (
+            <Tooltip title={params.row.tfnRoutingGroup} >
+              <div className="table-cell-trucate">{params.row.tfnRoutingGroup}</div>
+            </Tooltip>
+    )
+  },
 ];
 
 export default FlowGridColumnDef;

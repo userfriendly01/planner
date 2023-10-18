@@ -3,8 +3,8 @@ import { render } from "testUtils";
 
 describe("<FlowGridColumnDef />", () => {
 
-  it("has 30 columns", () => {
-    expect(FlowGridColumnDef.length).toBe(31);
+  it("has 32 columns", () => {
+    expect(FlowGridColumnDef.length).toBe(32);
   });
 
   describe("valueGetter", ()=>{
@@ -52,40 +52,44 @@ describe("<FlowGridColumnDef />", () => {
       expect(renderedCell.findByDisplayValue("Test Dialed Description")).toBeTruthy();
     });
     it("callFlowTemplate", ()=>{
-      const renderedCell = render(FlowGridColumnDef[2].renderCell({ row: { dialedDescription: "Test Call Flow Template" }}));
+      const renderedCell = render(FlowGridColumnDef[2].renderCell({ row: { callFlowTemplate: "Test Call Flow Template" }}));
       expect(renderedCell.findByDisplayValue("Test Call Flow Template")).toBeTruthy();
     });
     it("brand", ()=>{
-      const renderedCell = render(FlowGridColumnDef[4].renderCell({ row: { dialedDescription: "Test Brand" }}));
+      const renderedCell = render(FlowGridColumnDef[4].renderCell({ row: { brand: "Test Brand" }}));
       expect(renderedCell.findByDisplayValue("Test Brand")).toBeTruthy();
     });
     it("greetingMessages", ()=>{
-      const renderedCell = render(FlowGridColumnDef[10].renderCell({ row: { dialedDescription: "Test Greeting" }}));
+      const renderedCell = render(FlowGridColumnDef[10].renderCell({ row: { greetingMessages: "Test Greeting" }}));
       expect(renderedCell.findByDisplayValue("Test Greeting")).toBeTruthy();
     });
     it("accountManager", ()=>{
-      const renderedCell = render(FlowGridColumnDef[16].renderCell({ row: { dialedDescription: "Test Account Manager" }}));
+      const renderedCell = render(FlowGridColumnDef[16].renderCell({ row: { accountManager: "Test Account Manager" }}));
       expect(renderedCell.findByDisplayValue("Test Account Manager")).toBeTruthy();
     });
     it("internetPlacement", ()=>{
-      const renderedCell = render(FlowGridColumnDef[19].renderCell({ row: { dialedDescription: "Test Internet Placement" }}));
+      const renderedCell = render(FlowGridColumnDef[19].renderCell({ row: { internetPlacement: "Test Internet Placement" }}));
       expect(renderedCell.findByDisplayValue("Test Internet Placement")).toBeTruthy();
     });
     it("callDetails1", ()=>{
-      const renderedCell = render(FlowGridColumnDef[20].renderCell({ row: { dialedDescription: "Test Call Details1" }}));
+      const renderedCell = render(FlowGridColumnDef[20].renderCell({ row: { callDetails1: "Test Call Details1" }}));
       expect(renderedCell.findByDisplayValue("Test Call Details1")).toBeTruthy();
     });
     it("callDetails2", ()=>{
-      const renderedCell = render(FlowGridColumnDef[21].renderCell({ row: { dialedDescription: "Test Call Details2" }}));
+      const renderedCell = render(FlowGridColumnDef[21].renderCell({ row: { callDetails2: "Test Call Details2" }}));
       expect(renderedCell.findByDisplayValue("Test Call Details1")).toBeTruthy();
     });
     it("callTypeDescription", ()=>{
-      const renderedCell = render(FlowGridColumnDef[22].renderCell({ row: { dialedDescription: "Test Call Type Description" }}));
+      const renderedCell = render(FlowGridColumnDef[22].renderCell({ row: { callTypeDescription: "Test Call Type Description" }}));
       expect(renderedCell.findByDisplayValue("Test Call Type Description")).toBeTruthy();
     });
     it("officeNumbers", ()=>{
       const renderedCell = render(FlowGridColumnDef[30].renderCell({ row: { officeNumbers: ["#9999"]}}));
       expect(renderedCell.findByDisplayValue("#9999")).toBeTruthy();
+    });
+    it("tfnRoutingGroup", ()=>{
+      const renderedCell = render(FlowGridColumnDef[31].renderCell({ row: { tfnRoutingGroup: "Core" }}));
+      expect(renderedCell.findByDisplayValue("Core")).toBeTruthy();
     });
   });
 
