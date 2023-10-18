@@ -1,5 +1,5 @@
 import React, {
-  useState, useEffect
+  useState, useEffect, useMemo
 } from "react";
 import {
   Chip, FormControl, InputLabel, MenuItem, Select, Grid, TextField, IconButton, Tooltip
@@ -10,12 +10,13 @@ import {
   RoutingFilter
 } from "../AlohaRouting.Interfaces";
 import {
-  CACHE_FILTER_ROUTING, getAdvanceFilter
+  CACHE_FILTER_ROUTING, getAdvanceFilter, readWriteAccess
 } from "utils";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import DeleteSweepOutlinedIcon from "@mui/icons-material/DeleteSweepOutlined";
-import EditNoteOutlinedIcon from "@mui/icons-material/EditNoteOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import { useAdminState } from "context";
+import EditNoteOutlinedIcon from "@mui/icons-material/EditNoteOutlined";
 
 interface CustomRoutingGridToolBarProps {
   openAddModal: (flag: boolean) => void;
@@ -25,13 +26,16 @@ interface CustomRoutingGridToolBarProps {
   exportDataFile: ()=> void;
   applyFilter?: () => void;
   isAdvanceSearchOpen?: boolean;
+  matchedGroups?:any[];
 }
 
 export const CustomRoutingGridToolBar = ({
-  openAddModal, openPreviewModal, openAdvanceSearchModal, exportDataFile, applyFilter, isAdvanceSearchOpen
+  openAddModal, openPreviewModal, openAdvanceSearchModal, exportDataFile, applyFilter, isAdvanceSearchOpen, matchedGroups
 }: CustomRoutingGridToolBarProps):JSX.Element => {
 
   const [routingFilter, setRoutingFilter] = useState<RoutingFilter>();
+  const env: string = useAdminState().userContext.pingIdentity.environment;
+  const enableRouting = useMemo(() => readWriteAccess(matchedGroups,"aloha-route",env), []);
 
   useEffect(()=>{
     const localFilter = getAdvanceFilter(CACHE_FILTER_ROUTING);
@@ -134,6 +138,7 @@ export const CustomRoutingGridToolBar = ({
             onChange={handleChange}
             variant="filled"
             size="small"
+            disabled={enableRouting}
           >
             <MenuItem key="addRouting" value="addRouting">
               <AddOutlinedIcon/> &nbsp;&nbsp;Add Routing

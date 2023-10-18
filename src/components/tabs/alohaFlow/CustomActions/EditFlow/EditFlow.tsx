@@ -1,6 +1,6 @@
 
 import React, {
-  useState, useEffect
+  useState, useEffect, useMemo
 } from "react";
 import {
   Modal, ModalHeader
@@ -34,8 +34,9 @@ import {
   languageOffer,
   userDestination,
   flowType,
-  tfnRoutingGroup,
-  checkGreetingMessageRegExp
+  checkGreetingMessageRegExp,
+  readWriteAccess,
+  tfnRoutingGroup
 } from "utils";
 import ComponentControl from "components/core/SharedComponents/ComponentControl";
 import {
@@ -47,6 +48,7 @@ import {
 import {
   AzureSPA, DuplicateCheck
 } from "globals";
+import { useAdminState } from "context";
 
 interface EditFlowComponentProps {
     isOpen: boolean;
@@ -69,7 +71,8 @@ export const EditFlow = ({
   const [flowRule, setFlowRule] = useState({ ...initRule });
   const [dropDownValues, setDropDownValues] = useState(flowDropDownList);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
-
+  const env: string = useAdminState().userContext.pingIdentity.environment;
+  const enableFlow = useMemo<boolean>(() => readWriteAccess(matchedGroups,"aloha-flow",env), []);
 
   useEffect(() => {
     setSelectedRowLocal(selectedRow);
@@ -304,6 +307,7 @@ export const EditFlow = ({
             variant="contained"
             value="Save"
             color="primary"
+            disabled = {enableFlow}
             sx={{ marginRight: 2 }}
             aria-label="saveFlowRuleButton"
             onClick={() => handleOnSave()}
@@ -314,6 +318,7 @@ export const EditFlow = ({
             variant="contained"
             value="Clone"
             color="primary"
+            disabled = {enableFlow}
             sx={{ marginRight: 2 }}
             aria-label="cloneFlowRuleButton"
             onClick={() => handleClone()}
@@ -324,6 +329,7 @@ export const EditFlow = ({
             variant="contained"
             color="error"
             value="Delete"
+            disabled = {enableFlow }
             sx={{ marginRight: 2 }}
             aria-label="deleteFlowRuleButton"
             onClick={() => handleOnDelete()}
