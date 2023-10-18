@@ -50,6 +50,7 @@ async function queryFlowData(accessToken, nextToken = null, graphQlApiUrl) {
                   lineOfBusiness
                   marketingChannel
                   pkey
+                  predictiveCaller
                   rangeIndicator
                   requestID
                   tfnRoutingGroup
@@ -141,7 +142,8 @@ function addFlowInput (item, dataRequestsPassed, currentTimePassed){
     userDestination: item.userDestination?.value||"",
     rangeIndicator: item.rangeIndicator?.value || "",
     type: item.type?.value || "",
-    tfnRoutingGroup: item.tfnRoutingGroup?.value || ""
+    tfnRoutingGroup: item.tfnRoutingGroup?.value || "",
+    predictiveCaller: item.predictiveCaller?.value || false
   };
   if(item.employeeId?.value){
     input.employeeId = item.employeeId.value;
@@ -183,7 +185,8 @@ function updateFlowInput(item){
     userDestination: item.userDestination || "",
     rangeIndicator: item.rangeIndicator || "",
     type: item.type || "",
-    tfnRoutingGroup: item.tfnRoutingGroup || ""
+    tfnRoutingGroup: item.tfnRoutingGroup || "",
+    predictiveCaller: item.predictiveCaller || false
   };
   if(item.employeeId){
     input.employeeId = item.employeeId;
@@ -241,6 +244,7 @@ async function updateFlowDB(item, accessToken, graphQlApiUrl) {
               tollFreeNumber
               lineOfBusiness
               marketingChannel
+              predictiveCaller
               whisper
               requestID
               userDestination
@@ -313,6 +317,7 @@ async function addFlowRule(item, accessToken, graphQlApiUrl, curTime = new Date(
               tollFreeNumber
               lineOfBusiness
               marketingChannel
+              predictiveCaller
               whisper
               requestID
               userDestination
@@ -386,6 +391,7 @@ async function deleteFlowRule(item, accessToken, graphQlApiUrl) {
               tollFreeNumber
               lineOfBusiness
               marketingChannel
+              predictiveCaller
               whisper
               requestID
               rangeIndicator
@@ -515,6 +521,7 @@ const batchFlowUpdate = async(items, accessToken, graphQlApiUrl) =>{
       tollFreeNumber: item.tollFreeNumber || "",
       lineOfBusiness: item.lineOfBusiness || "",
       marketingChannel: item.marketingChannel || "",
+      predictiveCaller: item.predictiveCaller || false,
       whisper: item.whisper || "",
       requestID: item.requestID || "",
       userDestination: item.userDestination || "",
@@ -560,6 +567,7 @@ const batchFlowUpdate = async(items, accessToken, graphQlApiUrl) =>{
               lineOfBusiness
               marketingChannel
               pkey
+              predictiveCaller
               rangeIndicator
               requestID
               tollFreeNumber

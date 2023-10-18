@@ -27,6 +27,22 @@ const MultiFieldFromComponentControlProps = {
   required: false
 };
 
+const MultiTextFieldFromComponentControlProps = {
+  type: "text",
+  onChange: eventOnChange,
+  disabled: false,
+  error: false,
+  required: false
+};
+
+const SwitchFromComponentControlProps = {
+  type: "checkbox",
+  onChange: eventOnChange,
+  disabled: false,
+  error: false,
+  required: false
+};
+
 const renderComponentControl  = (control, value, isBlankFirstValue = true) => {
   return render(
     <ComponentControl {...ComponentControlProps} control={control} value={value} isBlankFirstValue = {isBlankFirstValue}/>
@@ -42,6 +58,18 @@ const renderComponentControlNullVal  = control => {
 const renderComponentControlForMultiFormField = (name, label, value, formFields) => {
   return render(
     <ComponentControl {...MultiFieldFromComponentControlProps} name={name} label={label} value={value} control="multiField" formFields={formFields}/>
+  );
+};
+
+const renderComponentControlForMultiTextField = (name, label, value) =>{
+  return render(
+    <ComponentControl {...MultiTextFieldFromComponentControlProps} name={name} label={label} value={value} control="multiTextField"/>
+  );
+};
+
+const renderComponentControlForSwitch = (name, label, value) =>{
+  return render(
+    <ComponentControl {...SwitchFromComponentControlProps} name={name} label={label} value={value} control="switch"/>
   );
 };
 
@@ -105,5 +133,18 @@ describe(" <ComponentControl />",()=>{
     }]);
     const inputButton = getByText(/Test Field 1 - 1/i);
     expect(inputButton).toBeInTheDocument();
+  });
+  test("multiTextField", ()=>{
+    const {
+      getByText
+    } = renderComponentControlForMultiTextField("Field1", "field1" ,["#00001", "#00009"]);
+    expect(getByText("#00001")).toBeInTheDocument();
+
+  });
+  test("switch", ()=>{
+    const { getByText } = renderComponentControlForSwitch("Field1", "filed1", false);
+    const switchButton = getByText("filed1");
+    act(()=>{ fireEvent.click(switchButton); });
+    expect(switchButton).toBeInTheDocument();
   });
 });

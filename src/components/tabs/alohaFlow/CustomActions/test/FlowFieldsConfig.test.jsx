@@ -36,7 +36,8 @@ const validFlowData = {
   transferCode: "test transferCode",
   type: "DID",
   whisper: "test whisper",
-  tfnRoutingGroup: "Core"
+  tfnRoutingGroup: "Core",
+  predictiveCaller: true
 };
 
 const invalidFLowData = {
@@ -196,6 +197,10 @@ describe("FlowFieldsConfig", ()=>{
     it("tfnRoutingGroup", ()=>{
       const updatedFlowData = flowFields[30].valueSetter(validFlowData, { tfnRoutingGroup: "Core" });
       expect(updatedFlowData.tfnRoutingGroup).toBe("Core");
+    });
+    it("predictiveCaller", ()=>{
+      const updatedFlowData = flowFields[31].valueSetter(validFlowData, { predictiveCaller: false });
+      expect(updatedFlowData.predictiveCaller).toBe(false);
     });
   });
   describe("valueGetter", ()=>{
@@ -379,6 +384,18 @@ describe("FlowFieldsConfig", ()=>{
       expect(validData).toEqual(["#2710"]);
       expect(invalidData).toEqual([]);
     });
+    it("tfnRoutingGroup", ()=>{
+      const validData = flowFields[30].valueGetter(validFlowData);
+      const invalidData = flowFields[30].valueGetter({});
+      expect(validData).toBe("Core");
+      expect(invalidData).toBe("");
+    });
+    it("predictiveCaller", ()=>{
+      const validData = flowFields[31].valueGetter(validFlowData);
+      const invalidData = flowFields[31].valueGetter({});
+      expect(validData).toBe(true);
+      expect(invalidData).toBe(false);
+    });
   });
   describe("dynamicFieldConditionCheck",()=>{
     it("accountManager",()=>{
@@ -429,11 +446,9 @@ describe("FlowFieldsConfig", ()=>{
       const isFiledIncluded = flowFields[26].dynamicFieldConditionCheck(DIDFlowData);
       expect(isFiledIncluded).toBeTruthy();
     });
-    it("tfnRoutingGroup", ()=>{
-      const validData = flowFields[30].valueGetter(validFlowData);
-      const invalidData = flowFields[30].valueGetter({});
-      expect(validData).toBe("Core");
-      expect(invalidData).toBe("");
+    it("predictiveCaller", ()=>{
+      const isFiledIncluded = flowFields[31].dynamicFieldConditionCheck(drcFlowData);
+      expect(isFiledIncluded).toBe(true);
     });
   });
 });

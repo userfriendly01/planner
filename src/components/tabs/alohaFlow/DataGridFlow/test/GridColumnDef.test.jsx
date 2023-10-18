@@ -3,8 +3,8 @@ import { render } from "testUtils";
 
 describe("<FlowGridColumnDef />", () => {
 
-  it("has 32 columns", () => {
-    expect(FlowGridColumnDef.length).toBe(32);
+  it("has 33 columns", () => {
+    expect(FlowGridColumnDef.length).toBe(33);
   });
 
   describe("valueGetter", ()=>{
@@ -84,13 +84,16 @@ describe("<FlowGridColumnDef />", () => {
       expect(renderedCell.findByDisplayValue("Test Call Type Description")).toBeTruthy();
     });
     it("officeNumbers", ()=>{
-      const renderedCell = render(FlowGridColumnDef[30].renderCell({ row: { officeNumbers: ["#9999"]}}));
+      const renderedCell = render(FlowGridColumnDef[30].renderCell({ row: { content: { officeNumbers: ["#9999"]}}}));
       expect(renderedCell.findByDisplayValue("#9999")).toBeTruthy();
     });
     it("tfnRoutingGroup", ()=>{
       const renderedCell = render(FlowGridColumnDef[31].renderCell({ row: { tfnRoutingGroup: "Core" }}));
       expect(renderedCell.findByDisplayValue("Core")).toBeTruthy();
     });
+    it("predictiveCaller", ()=>{
+      const renderedCell = render(FlowGridColumnDef[32].renderCell({ row: { predictiveCaller: true }}));
+      expect(renderedCell.container).toBeInTheDocument();
+    });
   });
-
 });

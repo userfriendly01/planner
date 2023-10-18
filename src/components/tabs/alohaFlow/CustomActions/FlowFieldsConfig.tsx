@@ -386,7 +386,8 @@ const flowFields: AddFlowFieldsConfigProps[] = [
         ...newValue
       }
     })
-  },{
+  },
+  {
     label: "TFN Routing Group",
     key: "tfnRoutingGroup",
     control: "select",
@@ -396,6 +397,20 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...currentValue,
       ...newValue
     })
+  },
+  {
+    label: "Predictive Caller",
+    key: "predictiveCaller",
+    control: "switch",
+    required: false,
+    valueGetter: (params: CctSharedCallFlowDb) => params?.predictiveCaller || false,
+    valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
+      ...currentValue,
+      ...newValue
+    }),
+    dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
+      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["type"]?.value === "DRC";
+    }
   }
 ];
 

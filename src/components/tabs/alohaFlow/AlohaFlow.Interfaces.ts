@@ -71,6 +71,7 @@ export interface CctSharedCallFlowDb {
     lineOfBusiness?: string;
     marketingChannel?: string;
     pkey?: string;
+    predictiveCaller?: boolean;
     rangeIndicator?: string;
     requestID?: string;
     tfnRoutingGroup?:string;
@@ -104,6 +105,7 @@ export interface FlowKeys {
     lineOfBusiness?: string;
     marketingChannel?: string;
     pkey?: string;
+    predictiveCaller?: boolean;
     rangeIndicator?: string;
     requestID?: string;
     tfnRoutingGroup?: string;

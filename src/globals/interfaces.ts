@@ -366,7 +366,7 @@ export interface AccessGroup {
   }>
 }
 
-export type Control = "input" | "select" | "autoComplete" | "timePicker" | "multiField" | "multiTextField";
+export type Control = "input" | "select" | "autoComplete" | "timePicker" | "multiField" | "multiTextField" | "switch";
 
 export interface GraphQLErrors {
   errorType:string;

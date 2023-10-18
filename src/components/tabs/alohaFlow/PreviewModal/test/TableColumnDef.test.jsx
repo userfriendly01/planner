@@ -1,5 +1,16 @@
 import { TableGridColumnDef } from "../TableColumnDef";
-import { render } from "testUtils";
+import {
+  render, setupMockedComponents
+} from "testUtils";
+import {
+  Tooltip, Switch, Chip
+} from "@mui/material";
+
+jest.mock("@mui/material",()=>({
+  Tooltip: jest.fn(),
+  Switch: jest.fn(),
+  Chip: jest.fn()
+}));
 
 const validFlowData = {
   id: 1,
@@ -40,8 +51,8 @@ const validFlowData = {
 
 describe("<TableGridColumnDef />", () => {
 
-  it("has 32 columns", () => {
-    expect(TableGridColumnDef.length).toBe(32);
+  it("has 33 columns", () => {
+    expect(TableGridColumnDef.length).toBe(33);
   });
 
   describe("valueGetter", ()=>{
@@ -82,8 +93,20 @@ describe("<TableGridColumnDef />", () => {
       expect(TableGridColumnDef[30].valueGetter({ row: { content: { officeNumbers: ["#9999"]}}})).toEqual(["#9999"]);
       expect(TableGridColumnDef[30].valueGetter({ row: {}})).toEqual([]);
     });
+    it("predictiveCaller", () => {
+      expect(TableGridColumnDef[32].valueGetter({ row: { predictiveCaller: true }})).toBe(true);
+      expect(TableGridColumnDef[32].valueGetter({ row: {}})).toEqual(false);
+    });
   });
   describe("renderCell", ()=>{
+    beforeEach(()=>{
+      jest.clearAllMocks();
+      setupMockedComponents({
+        Tooltip,
+        Switch,
+        Chip
+      });
+    });
     it("Dialed Description", ()=>{
       const renderedCell = render(TableGridColumnDef[1].renderCell({ row: { dialedDescription: "Test Dialed Description" }}));
       expect(renderedCell.findByDisplayValue("Test Dialed Description")).toBeTruthy();
@@ -121,12 +144,16 @@ describe("<TableGridColumnDef />", () => {
       expect(renderedCell.findByDisplayValue("Test Call Type Description")).toBeTruthy();
     });
     it("officeNumbers", ()=>{
-      const renderedCell = render(TableGridColumnDef[30].renderCell({ row: { officeNumbers: ["#9999"]}}));
+      const renderedCell = render(TableGridColumnDef[30].renderCell({ row: { content: { officeNumbers: ["#9999"]}}}));
       expect(renderedCell.findByDisplayValue("#9999")).toBeTruthy();
     });
     it("tfnRoutingGroup", ()=>{
       const renderedCell = render(TableGridColumnDef[31].renderCell({ row: { tfnRoutingGroup: "Core" }}));
       expect(renderedCell.findByDisplayValue("Core")).toBeTruthy();
+    });
+    it("predictiveCaller", ()=>{
+      const renderedCell = render(TableGridColumnDef[32].renderCell({ row: { predictiveCaller: true }}));
+      expect(renderedCell.container).toBeInTheDocument();
     });
   });
   describe("valueSetter", ()=>{
