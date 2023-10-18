@@ -1,5 +1,16 @@
 import { TableGridColumnDef } from "../TableColumnDef";
-import { render } from "testUtils";
+import {
+  render, setupMockedComponents
+} from "testUtils";
+import {
+  Tooltip, Switch, Chip
+} from "@mui/material";
+
+jest.mock("@mui/material",()=>({
+  Tooltip: jest.fn(),
+  Switch: jest.fn(),
+  Chip: jest.fn()
+}));
 
 const validFlowData = {
   id: 1,
@@ -88,6 +99,14 @@ describe("<TableGridColumnDef />", () => {
     });
   });
   describe("renderCell", ()=>{
+    beforeEach(()=>{
+      jest.clearAllMocks();
+      setupMockedComponents({
+        Tooltip,
+        Switch,
+        Chip
+      });
+    });
     it("Dialed Description", ()=>{
       const renderedCell = render(TableGridColumnDef[1].renderCell({ row: { dialedDescription: "Test Dialed Description" }}));
       expect(renderedCell.findByDisplayValue("Test Dialed Description")).toBeTruthy();

@@ -84,7 +84,7 @@ describe("<FlowGridColumnDef />", () => {
       expect(renderedCell.findByDisplayValue("Test Call Type Description")).toBeTruthy();
     });
     it("officeNumbers", ()=>{
-      const renderedCell = render(FlowGridColumnDef[30].renderCell({ row: { officeNumbers: ["#9999"]}}));
+      const renderedCell = render(FlowGridColumnDef[30].renderCell({ row: { content: { officeNumbers: ["#9999"]}}}));
       expect(renderedCell.findByDisplayValue("#9999")).toBeTruthy();
     });
     it("tfnRoutingGroup", ()=>{
