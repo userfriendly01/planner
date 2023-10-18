@@ -499,6 +499,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
             exportDataFile={exportDataFile}
             applyFilter={filterRecords}
             isAdvanceSearchOpen={dataFlow.isAdvanceSearchModalOpen}
+            matchedGroups={matchedGroups}
           />
           <DataGrid
             rows={dataFlow.filteredItems}

@@ -49,15 +49,15 @@ const RoutingAdvanceSearchModal = (props:AdvanceSearchModalProps):JSX.Element =>
         <ModalBody>
           <Grid container rowSpacing={3}>
             <Grid item xs = {10}>
-            <TextField
-              variant="outlined"
-              label= "id"
-              name= "id"
-              type= "number"
-              value={selection?.id }
-              onChange={handleChange}
-              disabled={false}
-              error={false}
+              <TextField
+                variant="outlined"
+                label= "id"
+                name= "id"
+                type= "number"
+                value={selection?.id }
+                onChange={handleChange}
+                disabled={false}
+                error={false}
               />
             </Grid>
             <Grid item xs={10}>

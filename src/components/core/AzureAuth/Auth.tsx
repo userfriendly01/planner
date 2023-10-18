@@ -27,20 +27,16 @@ interface AuthState {
   authenticated: boolean;
   errorMessage: string;
   hasError: boolean;
-  matchedGroups?: string[];
+  matchedGroups?: any[];
   renewIframe: boolean;
 }
 
 const authenticationProfiles =()=>{
   const authProfiles = getAdGroupPermissionMapping();
-  const authGroups: string[] = [];
+  const authGroups: any[] = [];
   authProfiles?.forEach(item=>{
     if(item.startup.name === "aloha-route" || item.startup.name === "aloha-flow"){
-      // eslint-disable-next-line no-empty
-      if (item.environments.includes(Environments.PROD) && item.permissionLevel ==="write" ){}
-      else{
-        authGroups.push(item.adGroup.toLowerCase());
-      }
+      authGroups.push(item);
     } });
   return authGroups;
 };
@@ -171,13 +167,16 @@ export function authWrapper(
     // eslint-disable-next-line class-methods-use-this
     checkMembership(accessToken: string,
       callback: CallbackComponent,
-      membershipArray: string[]) {
+      membershipArray: any[]) {
       const graphData = this.getMembershipValues(accessToken);
-
-      const matchedGroups = graphData
-        .filter(group => membershipArray.includes(group.displayName))
-        .map(group => group.displayName) || [];
-
+      const matchedGroups: any[] = [];
+      graphData.map(group=>{
+        membershipArray.map(member=>{
+          if(member.adGroup.toLowerCase() === group.displayName.toLowerCase()){
+            matchedGroups.push(member);
+          }
+        });
+      });
       callback.setState({
         accessToken,
         authenticated: matchedGroups.length > 0,
