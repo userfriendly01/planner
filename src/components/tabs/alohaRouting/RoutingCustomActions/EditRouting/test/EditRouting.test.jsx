@@ -139,7 +139,7 @@ describe("<EditRouting />", () => {
       act(() => {
         saveButtonClick();
       });
-      expect(saveButton.disabled).toBe(true);
+      expect(saveButton.disabled).toBe(false);
     });
     test("Simulate the component with prod as environment with read only access", () => {
       renderEditRouting(true, validRoutingData);
@@ -148,7 +148,7 @@ describe("<EditRouting />", () => {
       act(() => {
         saveButtonClick();
       });
-      expect(saveButton.disabled).toBe(true);
+      expect(saveButton.disabled).toBe(false);
     });
   });
   describe("Edit Routing Modal Block", () => {

@@ -48,6 +48,7 @@ import {
 import {
   AzureSPA, DuplicateCheck
 } from "globals";
+import { useAdminState } from "context";
 
 interface EditFlowComponentProps {
     isOpen: boolean;
@@ -70,7 +71,8 @@ export const EditFlow = ({
   const [flowRule, setFlowRule] = useState({ ...initRule });
   const [dropDownValues, setDropDownValues] = useState(flowDropDownList);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
-  const enableFlow = useMemo<boolean>(() => readWriteAccess(matchedGroups,"aloha-flow"), []);
+  const env: string = useAdminState().userContext.pingIdentity.environment;
+  const enableFlow = useMemo<boolean>(() => readWriteAccess(matchedGroups,"aloha-flow",env), []);
 
   useEffect(() => {
     setSelectedRowLocal(selectedRow);

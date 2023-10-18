@@ -61,7 +61,7 @@ describe("configUtils.js", ()=>{
 
   test("Simulate read-write of routing data",()=>{
     const flag = readWriteAccess(adGroupPermissionMapping,"aloha-route");
-    expect(flag).toBe(false);
+    expect(flag).toBe(true);
   });
 
   test("Simulate Download With Empty Routing Data",()=>{

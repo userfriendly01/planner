@@ -14,6 +14,7 @@ import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import DeleteSweepOutlinedIcon from "@mui/icons-material/DeleteSweepOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import { useAdminState } from "context";
 
 
 interface CustomFlowGridToolBarProps {
@@ -31,7 +32,8 @@ const CustomFlowGridToolBar = ({
   openAddModal, openPreviewModal, openAdvanceSearchModal, exportDataFile, applyFilter, matchedGroups,isAdvanceSearchOpen
 }:CustomFlowGridToolBarProps) =>{
   const [flowFilter, setFlowFilter] = useState<FlowAdvanceFilter>();
-  const enableFlow = useMemo(() => readWriteAccess(matchedGroups,"aloha-flow"), []);
+  const env: string = useAdminState().userContext.pingIdentity.environment;
+  const enableFlow = useMemo(() => readWriteAccess(matchedGroups,"aloha-flow",env), []);
   useEffect(()=>{
     const localFilter = getAdvanceFilter(CACHE_FILTER_FLOW);
     setFlowFilter(localFilter);

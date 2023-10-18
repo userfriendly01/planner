@@ -15,6 +15,7 @@ import {
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import DeleteSweepOutlinedIcon from "@mui/icons-material/DeleteSweepOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import { useAdminState } from "context";
 
 interface CustomRoutingGridToolBarProps {
   openAddModal: (flag: boolean) => void;
@@ -32,7 +33,8 @@ export const CustomRoutingGridToolBar = ({
 }: CustomRoutingGridToolBarProps):JSX.Element => {
 
   const [routingFilter, setRoutingFilter] = useState<RoutingFilter>();
-  const enableRouting = useMemo(() => readWriteAccess(matchedGroups,"aloha-route"), []);
+  const env: string = useAdminState().userContext.pingIdentity.environment;
+  const enableRouting = useMemo(() => readWriteAccess(matchedGroups,"aloha-route",env), []);
 
   useEffect(()=>{
     const localFilter = getAdvanceFilter(CACHE_FILTER_ROUTING);

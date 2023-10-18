@@ -169,8 +169,14 @@ export function authWrapper(
       callback: CallbackComponent,
       membershipArray: any[]) {
       const graphData = this.getMembershipValues(accessToken);
-      const adGroupDisplayName = graphData.map(group=>group.displayName);
-      const matchedGroups = membershipArray.filter(member => adGroupDisplayName.includes(member.adGroup));
+      const matchedGroups: any[] = [];
+      graphData.map(group=>{
+        membershipArray.map(member=>{
+          if(member.adGroup.toLowerCase() === group.displayName.toLowerCase()){
+            matchedGroups.push(member);
+          }
+        });
+      });
       callback.setState({
         accessToken,
         authenticated: matchedGroups.length > 0,

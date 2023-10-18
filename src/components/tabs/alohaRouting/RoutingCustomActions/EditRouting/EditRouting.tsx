@@ -27,6 +27,7 @@ import {
 } from "services";
 import { AzureSPA } from "globals";
 import { readWriteAccess } from "utils/configUtils";
+import { useAdminState } from "context";
 interface EditRoutingComponentProps {
   accessToken: string;
   isOpen: boolean;
@@ -44,7 +45,8 @@ export const EditRouting = ({
   const [dropDownValues, setDropDownValues] = useState(routingDropDownList);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
   const defaultValue: { [key: string]: any } = {};
-  const enableRouting = useMemo(() => readWriteAccess(matchedGroups,"aloha-route"), []);
+  const env: string = useAdminState().userContext.pingIdentity.environment;
+  const enableRouting = useMemo(() => readWriteAccess(matchedGroups,"aloha-route",env), []);
 
   useEffect(() => {
     setDropDownValues((dropDownOptions: RoutingDropDownList) => ({

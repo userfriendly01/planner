@@ -130,17 +130,13 @@ export const cleanErrorMessage = (graphQLErrors: GraphQLErrors[]): string => {
   return graphQLErrors[0].message;
 };
 
-export const readWriteAccess=(matchedGroups:any[], alohaTabType:string):boolean=>{
-  const env: string = useAdminState().userContext.pingIdentity.environment;
+export const readWriteAccess=(matchedGroups:any[], alohaTabType:string, env:string):boolean=>{
   let flag = true;
   matchedGroups?.forEach((item: any)=>{
     if(item.startup.name === alohaTabType && item.permissionLevel === "write"){
       item.environments.forEach((envVar: string)=>{
         if(envVar === env){
-          const adGroup=item.adGroup.toLowerCase();
-          if(matchedGroups.includes(adGroup)){
-            flag = false;
-          }
+          flag = false;
         }
       });
     } });
