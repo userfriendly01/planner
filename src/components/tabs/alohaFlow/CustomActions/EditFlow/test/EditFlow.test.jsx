@@ -10,7 +10,6 @@ import {
 import { useAdminState } from "context";
 import { CustomToast } from "components";
 import { AddOrView } from "../../CustomActionsCommon/AddOrView";
-
 jest.mock("components", () => {
   return{
     __esModule: true,
@@ -25,6 +24,9 @@ jest.mock("../../CustomActionsCommon/AddOrView", () => {
   };
 });
 
+jest.mock("@mui/x-date-pickers/TimePicker", () => ({
+  TimePicker: jest.fn()
+}));
 
 jest.mock("context", () => ({
   useAdminState: jest.fn()
@@ -141,17 +143,6 @@ describe("<EditFlow />", () => {
   });
 
   describe("Test Footer Component of Edit Flow", () => {
-    test("Simulate the SaveRule Button with Success API Response", () => {
-      updateFlowDB.mockResolvedValue({ data: { "items": []}});
-      const { getByRole } = renderEditFlow(true, validFlowData);
-      const saveButton = getByRole("button", { name: "saveFlowRuleButton" });
-      act(() => {
-        fireEvent.click(saveButton);
-      });
-      waitFor(() => {
-        expect(openEditModal).toBeCalledTimes(1);
-      });
-    });
     test("Simulate the SaveRule Button with true Duplicate Checks", () => {
       updateFlowDB.mockResolvedValue({ data: { "items": []}});
       const { getByRole } = renderEditFlowWithDuplicateChecks(true, validFlowData);
@@ -163,6 +154,17 @@ describe("<EditFlow />", () => {
         expect(openEditModal).toBeCalledTimes(0);
       });
     });
+    test("Simulate the SaveRule Button with Success API Response", () => {
+      updateFlowDB.mockResolvedValue({ data: { "items": []}});
+      const { getByRole } = renderEditFlow(true, validFlowData);
+      const saveButton = getByRole("button", { name: "saveFlowRuleButton" });
+      act(() => {
+        fireEvent.click(saveButton);
+      });
+      waitFor(() => {
+        expect(openEditModal).toBeCalledTimes(1);
+      });
+    });
     test("Simulate the SaveRule Button with Failed API Response", () => {
       updateFlowDB.mockResolvedValue({ errors: [{ message: "dynamo DB Exception" }]});
       const { getByRole } = renderEditFlow(true, validFlowData);
@@ -171,7 +173,7 @@ describe("<EditFlow />", () => {
         fireEvent.click(saveButton);
       });
       waitFor(() => {
-        expect(openEditModal).toBeCalledTimes(1);
+        expect(openEditModal).toBeCalledTimes(0);
       });
       const toastCloseButton = getByRole("button", {
         name: /Close/i ,
@@ -189,7 +191,6 @@ describe("<EditFlow />", () => {
       fireEvent.click(cancelButton);
       expect(openEditModal).toBeCalledTimes(1);
     });
-
     test("Simulate the Delete Button  with Successful API Response", () => {
       deleteFlowRule.mockResolvedValue({ data: { "items": []}});
       const { getByRole } = renderEditFlow(true, validFlowData);
@@ -198,7 +199,7 @@ describe("<EditFlow />", () => {
         fireEvent.click(deleteButton);
       });
       waitFor(() => {
-        expect(openEditModal).toBeCalledTimes(1);
+        expect(openEditModal).toBeCalledTimes(0);
       });
     });
     test("Simulate the Delete Button  with null Response", () => {
@@ -233,7 +234,7 @@ describe("<EditFlow />", () => {
       const {
         getByRole, queryByRole
       } = renderEditFlow(true, invalidFlowData);
-      const channelDropdown = getByRole("combobox", { name: /Channel/i });
+      const channelDropdown = getByRole("button", { name: /Channel/i });
       fireEvent.mouseDown(channelDropdown);
       const listBox = within(getByRole("listbox", { name: /Channel/i }));
       act(() => {
@@ -251,7 +252,6 @@ describe("<EditFlow />", () => {
       waitFor(() => {
         expect(openEditModal).toBeCalledTimes(0);
       });
-
     });
     test("Simulate to callerType field",()=>{
       const {

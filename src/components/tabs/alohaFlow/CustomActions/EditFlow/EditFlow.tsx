@@ -72,7 +72,6 @@ export const EditFlow = ({
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
   const enableFlow = useMemo<boolean>(() => readWriteAccess(matchedGroups,"aloha-flow"), []);
 
-
   useEffect(() => {
     setSelectedRowLocal(selectedRow);
     setDisplayRecords({
