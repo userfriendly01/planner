@@ -83,8 +83,8 @@ describe("<TableGridColumnDef />", () => {
       expect(TableGridColumnDef[30].valueGetter({ row: {}})).toEqual([]);
     });
     it("predictiveCaller", () => {
-      expect(TableGridColumnDef[31].valueGetter({ row: { predictiveCaller: true }})).toBe(true);
-      expect(TableGridColumnDef[31].valueGetter({ row: {}})).toEqual(false);
+      expect(TableGridColumnDef[32].valueGetter({ row: { predictiveCaller: true }})).toBe(true);
+      expect(TableGridColumnDef[32].valueGetter({ row: {}})).toEqual(false);
     });
   });
   describe("renderCell", ()=>{
@@ -125,7 +125,7 @@ describe("<TableGridColumnDef />", () => {
       expect(renderedCell.findByDisplayValue("Test Call Type Description")).toBeTruthy();
     });
     it("officeNumbers", ()=>{
-      const renderedCell = render(TableGridColumnDef[30].renderCell({ row: { officeNumbers: ["#9999"]}}));
+      const renderedCell = render(TableGridColumnDef[30].renderCell({ row: { content: { officeNumbers: ["#9999"]}}}));
       expect(renderedCell.findByDisplayValue("#9999")).toBeTruthy();
     });
     it("tfnRoutingGroup", ()=>{
