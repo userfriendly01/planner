@@ -48,7 +48,8 @@ jest.mock("@mui/material", () => ({
   Tab: jest.fn(),
   Tabs: jest.fn(),
   Divider: jest.fn(),
-  Checkbox: jest.fn()
+  Checkbox: jest.fn(),
+  IconButton: jest.requireActual("@mui/material").IconButton
 }));
 
 jest.mock("@mui/x-date-pickers/DatePicker",()=>({
@@ -222,7 +223,7 @@ describe("<ManagerModal />", () => {
                   status: "success",
                   message: "Manager saved successfully"
                 });
-                expect(mockSetForm).toHaveBeenCalledTimes(1);
+                expect(mockSetForm).toHaveBeenCalledTimes(2);
                 expect(mockSetForm).toHaveBeenCalledWith({
                   type: "addManager",
                   payload: {
@@ -233,6 +234,10 @@ describe("<ManagerModal />", () => {
                     manager_n_number: "n0000000",
                     profile_id: 4
                   }
+                });
+                expect(mockSetForm).toHaveBeenCalledWith({
+                  type: "updateManagerFilter",
+                  payload: "n0000000"
                 });
                 expect(mockHandleClose).toHaveBeenCalledTimes(1);
               });
