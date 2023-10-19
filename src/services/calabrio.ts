@@ -28,7 +28,7 @@ export const getWfmOptions = async (): Promise<CalabrioGroup[]> => {
 };
 
 export const getWfmUserByNNumber = async (nNumber: string): Promise<CalabrioUser> => {
-  return await myAxios.get(apiPaths.GET_CALABRIO_WFM_USER_BY_NNUMBER(nNumber));
+  return await myAxios.get(apiPaths.GET_CALABRIO_WFM_USER_BY_NNUMBER(nNumber.toLowerCase()));
 };
 
 export const getWfmBusinessUnits = async (): Promise<CalabrioGroup[]> => {

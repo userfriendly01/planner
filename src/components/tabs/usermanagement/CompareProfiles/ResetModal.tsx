@@ -165,7 +165,7 @@ const ResetModal = (props: any) => {
               <InformationText style={{ justifyContent: "flex-start" }}>
                 <Key>Result:</Key>
                 {typeof r.result === "string" ?
-                  <div style={{ textAlign: "left", maxWidth: "90%", marginLeft: "5px" }}>{r.result}</div>
+                  <div style={{ textAlign: "left", maxWidth: "90%", marginLeft: "13px" }}>{r.result}</div>
                   :
                   <ResultWrapper>
                     {r.result.map((result: string) => ((
