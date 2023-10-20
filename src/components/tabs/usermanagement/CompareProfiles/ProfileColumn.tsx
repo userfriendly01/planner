@@ -1,5 +1,11 @@
 import React from "react";
 import {
+  ProfileColumnProps,
+  TritonPerson,
+  QmPerson,
+  WfmPerson
+} from "./CompareProfiles.Interfaces";
+import {
   ProfileColumnContainer,
   ProfileColumnsHeader,
   ProfileColumnsHeaderWrapper,
@@ -14,28 +20,39 @@ import {
 import { Person, PersonOutline } from "@mui/icons-material";
 import { Divider } from "@mui/material";
 
-const ProfileColumn = (props: any) => {
+const ProfileColumn = (props: ProfileColumnProps) => {
   const {
     people,
     title
   } = props;
-  //pass in an array of objects
-  const [selectedProfile, setSelectedProfile] = React.useState<any>({});
 
-  React.useEffect(() => {
-    setSelectedProfile(people[0]);
-  }, [people]);
+  const [selectedProfile, setSelectedProfile] = React.useState<TritonPerson | QmPerson | WfmPerson>({
+    index: 0,
+    ...people[0]
+  });
+
+  // React.useEffect(() => {
+  //   setSelectedProfile({
+  //     index: 0,
+  //     ...people[0]
+  //   });
+  // }, [people]);
+
   return (
     <ProfileColumnContainer>
       <ProfileColumnsHeaderWrapper>
         <ProfileColumnsHeader>{title}</ProfileColumnsHeader>
         <ProfileColumnWrapper>
           <ProfileColumnSideNav>
-            {people.map((p: any) => ((
+            {people.map((p: TritonPerson | QmPerson | WfmPerson, index: number) => ((
               <ProfileColumnNavOption
-                key={p.id}
-                selected={selectedProfile?.id === p.id}
-                onClick={() => setSelectedProfile(p)}>
+                key={index}
+                data-testid={`user-${index}`}
+                selected={selectedProfile?.index === index}
+                onClick={() => setSelectedProfile({
+                  index,
+                  ...p,
+                })}>
                 {p.Active ? <Person style={{ font: "20px" }} /> : <PersonOutline />}
               </ProfileColumnNavOption>
             )))
@@ -60,7 +77,7 @@ const ProfileColumn = (props: any) => {
                       </Attribute>
                     )
                   }
-                } else {
+                } else if (key !== "index") {
                   return (
                     <Attribute>
                       <Key>{key}</Key>

@@ -88,11 +88,11 @@ const CompareProfiles = () => {
     } else if (system === "qm") {
       return userProfiles.map((p: any) => {
         return {
-          ["Acd Id"]: p.acdId,
-          ["Ad Login"]: p.adLogin,
-          ["Email"]: p.email,
-          ["First Name"]: p.firstName,
-          ["Last Name"]: p.lastName,
+          ["Acd Id"]: p.acdId || "",
+          ["Ad Login"]: p.adLogin || "",
+          ["Email"]: p.email || "",
+          ["First Name"]: p.firstName || "",
+          ["Last Name"]: p.lastName || "",
           ["Team"]: calabrioTeams.find((c: CalabrioGroup) => c.groupId === p.groupId)?.name || "Not Found",
           ["User Id"]: p.id,
           ["Active"]: p.deactivated === 32503593600000
@@ -101,14 +101,14 @@ const CompareProfiles = () => {
     } else if (system === "wfm") {
       return userProfiles.map((p: any) => {
         return {
-          ["Employment Number"]: p.EmploymentNumber,
-          ["Identity"]: p.Identity,
-          ["Email"]: p.Email,
-          ["First Name"]: p.FirstName,
-          ["Last Name"]: p.LastName,
-          ["Business Unit Id"]: p.BusinessUnitId,
-          ["Team Id"]: p.TeamId,
-          ["Person Id"]: p.Id,
+          ["Employment Number"]: p.EmploymentNumber || "",
+          ["Identity"]: p.Identity || "",
+          ["Email"]: p.Email || "",
+          ["First Name"]: p.FirstName || "",
+          ["Last Name"]: p.LastName || "",
+          ["Business Unit Id"]: p.BusinessUnitId || "",
+          ["Team Id"]: p.TeamId || "",
+          ["Person Id"]: p.Id || "",
           ["Active"]: true
         }
       });
@@ -149,16 +149,9 @@ const CompareProfiles = () => {
         }
 
         const qmProfiles = calabrioProfilesResponse.data || [];
-        console.log("FAITH QM Profiles", qmProfiles);
-
-        const activeQmProfiles = qmProfiles.filter((p: any) => p.deactivated === 32503593600000);
         const masterQmProfile = qmProfiles.find((p: any) => p.acdId.toUpperCase() === workerSid.toUpperCase() && p.isSynchronized);
 
-        console.log("FAITH Active Profile", activeQmProfiles);
-        console.log("FAITH Master Profile", masterQmProfile);
-
-        if (masterQmProfile || true) {
-          // if (masterQmProfile) {
+        if (masterQmProfile) {
           qmProfiles.forEach((p: any, i: number) => {
             if (p.id === masterQmProfile?.id) {
               qmProfiles.splice(i, 1);
