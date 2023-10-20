@@ -209,10 +209,14 @@ describe("<ManagerDelete />", () => {
         const handleDeleteManager = ConfirmationForm.mock.calls[0][0].DeleteManagerClicked;
         act(() => handleDeleteManager());
         await waitFor(() => {
-          expect(mockDispatch).toHaveBeenCalledTimes(1);
+          expect(mockDispatch).toHaveBeenCalledTimes(2);
           expect(mockDispatch).toHaveBeenCalledWith({
             type: "editManager",
             payload: [ defaultAdminState.managerContext.managers[0] ]
+          });
+          expect(mockDispatch).toHaveBeenCalledWith({
+            type: "updateManagerFilter",
+            payload: null
           });
         });
         act(() => render(PaperContainer.mock.calls[1][0].children));

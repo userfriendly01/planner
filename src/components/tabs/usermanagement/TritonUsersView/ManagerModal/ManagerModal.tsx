@@ -1,8 +1,7 @@
 import {
   ManagerModalButtonWrapper,
   Header,
-  HeaderAndCloseButtonWrapper,
-  LeftDiv,
+  CloseButtonContainer,
   ModalContainer,
   Wrapper
 } from "./ManagerModal.Styles";
@@ -38,7 +37,10 @@ import {
   logger,
   sortProfilesByName
 } from "utils";
-import { Modal } from "@mui/material";
+import {
+  IconButton,
+  Modal
+} from "@mui/material";
 import { CloseRounded } from "@mui/icons-material";
 
 const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any => {
@@ -129,6 +131,10 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
             calabrio_team_ids: selectedCalabrioTeams
           }
         }));
+        dispatch({
+          type: "updateManagerFilter",
+          payload: manager.manager_n_number
+        });
         setSaveStatus(ModalOverlayStatuses.SUCCESS);
         setTimeout(handleClose, 2000);
 
@@ -213,14 +219,15 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
             message={overlayMessage}
             status={saveStatus}
           /> : null}
-        <HeaderAndCloseButtonWrapper>
-          <LeftDiv></LeftDiv>
-          { selectedManager ?
-            <Header>Edit {manager.manager_first_name} {manager.manager_last_name}</Header>
-            : <Header>Add a Manager</Header>
-          }
-          <CloseRounded data-testid={"close-button"} onClick={handleClose}/>
-        </HeaderAndCloseButtonWrapper>
+        <CloseButtonContainer>
+          <IconButton>
+            <CloseRounded data-testid="close-button" onClick={handleClose} />
+          </IconButton>
+        </CloseButtonContainer>
+        {selectedManager
+          ? <Header>Edit {manager.manager_first_name} {manager.manager_last_name}</Header>
+          : <Header>Add a Manager</Header>
+        }
         <FlexColumn>
           <NNumberInput
             disabled={saveStatus || selectedManager ? true : false}

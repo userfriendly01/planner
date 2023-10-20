@@ -16,11 +16,7 @@ import {
 } from "components";
 import { AppState } from "./interfaces";
 
-export const getRoutes = (state: AppState, Home: any, azureClientId: string) => [
-  {
-    path: "/triton-admin",
-    render: (props: any) => <Home {...props} state={state} azureClientId={azureClientId} />
-  },
+export const getRoutes = (state: AppState, azureClientId: string) => [
   {
     path: "/triton-admin/triton-users",
     element: TritonUsersViewWrapper

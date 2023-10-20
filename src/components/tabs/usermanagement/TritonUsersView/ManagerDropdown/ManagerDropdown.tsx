@@ -42,39 +42,18 @@ const ManagerDropdown = () => {
   };
 
   const handleEditManager = async (option: DropdownOption) => {
-    dispatch({
-      type: "updateManagerFilter",
-      payload: option.value
-    });
     setSelectedManager(managers.find(manager => manager.manager_n_number === option.value));
     setIsManagerModalOpen(true);
   };
 
   const handleOpenDeleteManager = async (option: DropdownOption) => {
-    dispatch({
-      type: "updateManagerFilter",
-      payload: option.value
-    });
     setSelectedManager(managers.find(manager => manager.manager_n_number === option.value));
     setIsManagerDeleteOpen(true);
   };
 
   const handleCloseManager = () => {
     setSelectedManager(null);
-    dispatch({
-      type: "updateManagerFilter",
-      payload: null
-    });
     setIsManagerModalOpen(false);
-    setIsManagerDeleteOpen(false);
-  };
-
-  const handleCloseManagerDelete = () => {
-    setSelectedManager(null);
-    dispatch({
-      type: "updateManagerFilter",
-      payload: null
-    });
     setIsManagerDeleteOpen(false);
   };
 
@@ -156,7 +135,7 @@ const ManagerDropdown = () => {
       </Modal>
       <Modal onClose={() => { return; }} open={isManagerDeleteOpen}>
         <>
-          <ManagerDelete handleClose={handleCloseManagerDelete} selectedManager={selectedManager}/>
+          <ManagerDelete handleClose={handleCloseManager} selectedManager={selectedManager}/>
         </>
       </Modal>
     </Wrapper>
