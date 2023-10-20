@@ -1,6 +1,10 @@
 import React from "react";
 import {
-  Attribute,
+  ResetModalProps,
+  Result,
+  StatusOptions
+} from "./CompareProfiles.Interfaces";
+import {
   ButtonWrapper,
   InformationText,
   InformationWapper,
@@ -14,8 +18,10 @@ import { ProgressBar } from "../BulkChanges/Processing";
 import { ReportGmailerrorred } from "@mui/icons-material";
 import { Divider } from "@mui/material";
 import { fetchResetProfileDatadogLogs, resetProfiles } from "services";
+import { logger } from "utils";
+import util from "util";
 
-const ResetModal = (props: any) => {
+const ResetModal = (props: ResetModalProps) => {
   const {
     nNumber,
     email,
@@ -23,13 +29,6 @@ const ResetModal = (props: any) => {
     wfmPersonId,
     onClose
   } = props;
-
-  const enum StatusOptions {
-    STARTED = "started",
-    TIME_OUT = "timeout",
-    FAIL = "fail",
-    SUCCESS = "success"
-  }
 
   const totalWaitSeconds = 300;
   const progressIntervalId = React.useRef<any>();
@@ -41,28 +40,21 @@ const ResetModal = (props: any) => {
   const [progress, setProgress] = React.useState(0);
   const [results, setResults] = React.useState(null);
 
-  console.log("PROGRESS INTERVAL ID", progressIntervalId);
-  console.log("DATAGOD INTERVAL ID", datadogIntervalId);
-
   React.useEffect(() => {
     if (progress >= totalWaitSeconds) {
+      setResults("We waited a while but the log was not found in datadog. We're unable to confirm this process succeeded. Please try again.");
       setStatus(StatusOptions.FAIL);
-      //Initiate failure steps
     }
-
   }, [progress]);
 
   React.useEffect(() => {
-    console.log("FAITH STATUS", status);
     const timeout = 3000;
     if (status === StatusOptions.STARTED || status === StatusOptions.TIME_OUT) {
       progressIntervalId.current = setInterval(() => {
-        console.log("We are running the progress interval");
         setProgress(progress => progress + 15)
       }, timeout);
       if (status === StatusOptions.TIME_OUT) {
         datadogIntervalId.current = setInterval(() => {
-          console.log("We are running the datadog interval");
           fetchDatadogLog()
         }, timeout);
       }
@@ -81,34 +73,43 @@ const ResetModal = (props: any) => {
   const initiateReset = async () => {
     setEmailsConfirmed(true);
     setStatus(StatusOptions.STARTED);
+
     const body = {
       wfmPersonId,
       email,
       workerSid
     }
-    console.log("Reset Request", nNumber, body);
     try {
       const res = await resetProfiles(nNumber, body);
       setResults(res.data);
       setStatus(StatusOptions.SUCCESS);
-    } catch (err) {
-      if (err.response?.data?.message?.toLowerCase().trim() === "read timed out") {
-        console.warn("Call to reset profiles timed out. Trying to fetch datadog log");
+    } catch (error) {
+      if (error?.response?.data?.message?.toLowerCase().trim() === "read timed out") {
+        logger.warn("Call to reset profiles timed out. Trying to fetch datadog log", { nNumber });
         setStatus(StatusOptions.TIME_OUT);
       } else {
-        console.log("RESET PROFILES AWW", err, err.message, err.response, err.response.message);
-        setProgress(totalWaitSeconds);
+        const errorString = error.message || error.response?.message || util.format(error);
+        const errorMessage = "Reset Profiles failed calling the Calabrio service";
+        logger.error(errorMessage, { error, message: errorString, nNumber });
+        setResults(`${errorMessage} - ${errorString}`);
+        setStatus(StatusOptions.FAIL);
       }
     }
   }
 
   const fetchDatadogLog = async () => {
-    const res: any = await fetchResetProfileDatadogLogs(nNumber);
-    console.log("FETCH LOG RES", res);
-    if (res.data.length > 0) {
-      console.log("yay cancel everything and show the results!", res.data);
-      setStatus(StatusOptions.SUCCESS);
-      setResults(res.data[res.data.length - 1].attributes.attributes.sharedAdminAPILog.results);
+    try {
+      const res: any = await fetchResetProfileDatadogLogs(nNumber);
+      if (res.data.length > 0) {
+        setStatus(StatusOptions.SUCCESS);
+        setResults(res.data[res.data.length - 1].attributes.attributes.sharedAdminAPILog.results);
+      }
+    } catch (error) {
+      const errorString = error.message || error.response?.message || util.format(error);
+      const errorMessage = "Reset Profiles failed calling Datadog";
+      logger.error(errorMessage, { error, message: errorString });
+      setResults(`${errorMessage} - ${errorString}`);
+      setStatus(StatusOptions.FAIL);
     }
   }
 
@@ -140,14 +141,14 @@ const ResetModal = (props: any) => {
           <ButtonWrapper>
             <StyledButton onClick={onClose}>Close</StyledButton>
           </ButtonWrapper>
-
         </InformationWapper>
       }
       {(status === StatusOptions.STARTED || status === StatusOptions.TIME_OUT) && <ProgressBar completedRows={progress} totalRowCount={totalWaitSeconds} />}
       {status === StatusOptions.FAIL &&
         <InformationWapper>
           <InformationText>
-            Calabrio sucks sorry
+            Calabrio... is the worst we're sorry
+            {results}
           </InformationText>
           <ButtonWrapper>
             <StyledButton onClick={onClose}>Close</StyledButton>
@@ -157,7 +158,7 @@ const ResetModal = (props: any) => {
       {status === StatusOptions.SUCCESS && results &&
         <ResultsWrapper>
           <h1 style={{ alignSelf: "center" }}>Reset Results</h1>
-          {results.map((r: any) => ((
+          {results.map((r: Result) => ((
             <ResultWrapper>
               <InformationText style={{ justifyContent: "flex-start" }}>
                 <Key style={{ width: "85px" }}>Step {r.stepNumber}:</Key> <div style={{ textAlign: "left", marginLeft: "5px" }}>{r.description}</div>

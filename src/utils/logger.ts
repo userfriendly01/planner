@@ -11,7 +11,6 @@ const DATADOG_REPLAY_SAMPLE_RATE = 0;
 const DATADOG_SILENT_MULTIPLE_INIT = true;
 const APP_ORG_TAG = "[CCT]";
 const SERVICE_NAME = "cicct-softphone-admin-ui";
-let DATADOG_CLIENT_TOKEN = "";
 
 // Helper Function to start up RUM for automatic event collection
 export const initDataDogRum = (): void => {
@@ -19,7 +18,7 @@ export const initDataDogRum = (): void => {
     .then(env => {
       const TROUX_ID = env.get("TROUX_ID");
       const DATADOG_APPLICATION_ID = env.get("DATADOG_APPLICATION_ID");
-      DATADOG_CLIENT_TOKEN = env.get("DATADOG_CLIENT_TOKEN");
+      const DATADOG_CLIENT_TOKEN = env.get("DATADOG_CLIENT_TOKEN");
       const APP_ENV = env.get("APP_ENV");
 
       datadogRum.setGlobalContextProperty("troux_uuid", TROUX_ID);

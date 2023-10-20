@@ -51,7 +51,6 @@ const success = "success";
 
 const authenticateAndStartup = dispatch => new Promise((resolve, reject) => myAxios.get(apiPaths.AUTH)
   .then(res => {
-    console.log("AUTH RESPONSE", res);
     const pingIdentity = res.data;
     const permissions = getPermissions(pingIdentity.groups);
     const startupFiles = getStartups(permissions);
