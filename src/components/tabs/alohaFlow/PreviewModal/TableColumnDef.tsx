@@ -1,7 +1,9 @@
 import { GridColDef } from "@mui/x-data-grid";
 import Tooltip from "@mui/material/Tooltip";
 import React from "react";
-import { Chip } from "@mui/material";
+import {
+  Chip, Switch
+} from "@mui/material";
 export const TableGridColumnDef: GridColDef[] = [
   {
     headerName: "Dialed",
@@ -333,6 +335,28 @@ export const TableGridColumnDef: GridColDef[] = [
           ))}
       </div>
     )
+  },
+  {
+    headerName: "TFN Routing Group",
+    field: "tfnRoutingGroup",
+    sortable: true,
+    width: 110,
+    align: "left",
+    renderCell: (params: any) => (
+      <Tooltip title={params.row.tfnRoutingGroup} >
+        <div className="table-cell-trucate">{params.row.tfnRoutingGroup}</div>
+      </Tooltip>
+    )
+  },
+  {
+    headerName: "Predictive Caller",
+    field: "predictiveCaller",
+    sortable: true,
+    width: 110,
+    align: "center",
+    valueGetter: params => params.row?.predictiveCaller || false,
+    renderCell: (params: any) =>(
+      <Switch checked={params.row?.predictiveCaller || false} defaultChecked={false} color="warning" disabled size="medium" />)
   }
 ];
 

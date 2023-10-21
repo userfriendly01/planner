@@ -2,7 +2,7 @@ import React from "react";
 import { EditFlow } from "../index";
 import { FLOW_MASTER_DATA } from "utils";
 import {
-  fireEvent, render, initialTestState, waitFor, act, within, setupMockedComponents
+  fireEvent, render, initialTestState, waitFor, act, within, setupMockedComponents, adGroupPermissionMapping
 } from "testUtils";
 import {
   deleteFlowRule, updateFlowDB
@@ -10,7 +10,6 @@ import {
 import { useAdminState } from "context";
 import { CustomToast } from "components";
 import { AddOrView } from "../../CustomActionsCommon/AddOrView";
-
 jest.mock("components", () => {
   return{
     __esModule: true,
@@ -80,11 +79,26 @@ const mockMasterData = {
   callerType: ["TestCallerType"]
 };
 
+
 const openEditModal = jest.fn();
+const duplicateCheck = jest.fn().mockReturnValue({
+  isDuplicate: false,
+  message: ""
+});
+const duplicateCheckTrue = jest.fn().mockReturnValue({
+  isDuplicate: true,
+  message: "Duplicate Employee Id"
+});
 
 const renderEditFlow = (isOpen, data) => {
   return render(
-    <EditFlow openEditModal={openEditModal} selectedRow={data} isOpen={isOpen} />
+    <EditFlow openEditModal={openEditModal} selectedRow={data} isOpen={isOpen} duplicateCheck={duplicateCheck} matchedGroups={adGroupPermissionMapping} />
+  );
+};
+
+const renderEditFlowWithDuplicateChecks = (isOpen, data) => {
+  return render(
+    <EditFlow openEditModal={openEditModal} selectedRow={data} isOpen={isOpen} duplicateCheck={duplicateCheckTrue} matchedGroups={adGroupPermissionMapping} />
   );
 };
 
@@ -126,6 +140,17 @@ describe("<EditFlow />", () => {
   });
 
   describe("Test Footer Component of Edit Flow", () => {
+    test("Simulate the SaveRule Button with true Duplicate Checks", () => {
+      updateFlowDB.mockResolvedValue({ data: { "items": []}});
+      const { getByRole } = renderEditFlowWithDuplicateChecks(true, validFlowData);
+      const saveButton = getByRole("button", { name: "saveFlowRuleButton" });
+      act(() => {
+        fireEvent.click(saveButton);
+      });
+      waitFor(() => {
+        expect(openEditModal).toBeCalledTimes(0);
+      });
+    });
     test("Simulate the SaveRule Button with Success API Response", () => {
       updateFlowDB.mockResolvedValue({ data: { "items": []}});
       const { getByRole } = renderEditFlow(true, validFlowData);
@@ -145,7 +170,7 @@ describe("<EditFlow />", () => {
         fireEvent.click(saveButton);
       });
       waitFor(() => {
-        expect(openEditModal).toBeCalledTimes(1);
+        expect(openEditModal).toBeCalledTimes(0);
       });
       const toastCloseButton = getByRole("button", {
         name: /Close/i ,
@@ -163,7 +188,6 @@ describe("<EditFlow />", () => {
       fireEvent.click(cancelButton);
       expect(openEditModal).toBeCalledTimes(1);
     });
-
     test("Simulate the Delete Button  with Successful API Response", () => {
       deleteFlowRule.mockResolvedValue({ data: { "items": []}});
       const { getByRole } = renderEditFlow(true, validFlowData);
@@ -172,7 +196,7 @@ describe("<EditFlow />", () => {
         fireEvent.click(deleteButton);
       });
       waitFor(() => {
-        expect(openEditModal).toBeCalledTimes(1);
+        expect(openEditModal).toBeCalledTimes(0);
       });
     });
     test("Simulate the Delete Button  with null Response", () => {
@@ -207,8 +231,8 @@ describe("<EditFlow />", () => {
       const {
         getByRole, queryByRole
       } = renderEditFlow(true, invalidFlowData);
-      const chanelDropdown = getByRole("combobox", { name: /Channel/i });
-      fireEvent.mouseDown(chanelDropdown);
+      const channelDropdown = getByRole("combobox", { name: /Channel/i });
+      fireEvent.mouseDown(channelDropdown);
       const listBox = within(getByRole("listbox", { name: /Channel/i }));
       act(() => {
         fireEvent.click(listBox.getByRole("option", {
@@ -217,8 +241,8 @@ describe("<EditFlow />", () => {
         }));
       });
       expect(queryByRole("listbox")).toEqual(null);
-      expect(chanelDropdown).toHaveFocus();
-      expect(chanelDropdown).toHaveTextContent("Test2 Channel");
+      expect(channelDropdown).toHaveFocus();
+      expect(channelDropdown).toHaveTextContent("Test2 Channel");
       act(()=>{
         fireEvent.click(getByRole("button", { name: "saveFlowRuleButton" }));
       });

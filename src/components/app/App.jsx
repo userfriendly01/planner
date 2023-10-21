@@ -129,7 +129,8 @@ const App = () => {
             <Header />
             <NavTabs />
             <Routes>
-              {getRoutes(state, loadResult.home, loadResult.azureClientId).map(r => {
+              <Route path="/triton-admin" element={<loadResult.home state={state} azureClientId={loadResult.azureClientId} />} />
+              {getRoutes(state, loadResult.azureClientId).map(r => {
                 const Component = r.element || r.render;
                 return <Route key={r.path} path={r.path} element={<Component />} />;
               })}

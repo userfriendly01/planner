@@ -315,7 +315,7 @@ export interface WorkerAttributeSkills {
 
 export interface AzureSPA {
   accessToken: string;
-  matchedGroups: string;
+  matchedGroups: any[];
   azureClientId?: string;
 }
 
@@ -366,9 +366,14 @@ export interface AccessGroup {
   }>
 }
 
-export type Control = "input" | "select" | "autoComplete" | "timePicker" | "multiField" | "multiTextField";
+export type Control = "input" | "select" | "autoComplete" | "timePicker" | "multiField" | "multiTextField" | "switch";
 
 export interface GraphQLErrors {
   errorType:string;
   message:string;
+}
+
+export interface DuplicateCheck{
+  isDuplicate: boolean;
+  message: string;
 }

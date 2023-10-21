@@ -1,6 +1,6 @@
 
 import React, {
-  useState, useEffect
+  useState, useEffect, useMemo
 } from "react";
 import {
   Modal, ModalHeader
@@ -23,7 +23,9 @@ import {
 import {
   flowFields, initRule
 } from "../FlowFieldsConfig";
-import { CustomToast } from "components";
+import {
+  CctSharedCallRoutingDb, CustomToast
+} from "components";
 import {
   flowDropDownList,
   FLOW_MASTER_DATA,
@@ -32,7 +34,9 @@ import {
   languageOffer,
   userDestination,
   flowType,
-  checkGreetingMessageRegExp
+  checkGreetingMessageRegExp,
+  readWriteAccess,
+  tfnRoutingGroup
 } from "utils";
 import ComponentControl from "components/core/SharedComponents/ComponentControl";
 import {
@@ -41,15 +45,19 @@ import {
 import {
   deleteFlowRule, updateFlowDB
 } from "services";
-import { AzureSPA } from "globals";
+import {
+  AzureSPA, DuplicateCheck
+} from "globals";
+import { useAdminState } from "context";
 
 interface EditFlowComponentProps {
     isOpen: boolean;
     selectedRow: CctSharedCallFlowDb;
     openEditModal: (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallFlowDb, message?: string, deleteRow?: boolean, isClonedFlowRule?: boolean) => void;
+    duplicateCheck: (params: CctSharedCallFlowDb) => DuplicateCheck
 }
 export const EditFlow = ({
-  accessToken, matchedGroups, isOpen, selectedRow, openEditModal
+  accessToken, matchedGroups, isOpen, selectedRow, openEditModal, duplicateCheck
 }: EditFlowComponentProps & AzureSPA): JSX.Element => {
 
   const graphQLEndPoint: string = getGraphQLEndpoint();
@@ -63,7 +71,8 @@ export const EditFlow = ({
   const [flowRule, setFlowRule] = useState({ ...initRule });
   const [dropDownValues, setDropDownValues] = useState(flowDropDownList);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
-
+  const env: string = useAdminState().userContext.pingIdentity.environment;
+  const enableFlow = useMemo<boolean>(() => readWriteAccess(matchedGroups,"aloha-flow",env), []);
 
   useEffect(() => {
     setSelectedRowLocal(selectedRow);
@@ -84,6 +93,7 @@ export const EditFlow = ({
         callFlowRoute: masterData?.callFlowRoute,
         callerType: masterData?.callerType,
         dataRequests: masterData?.dataRequests,
+        tfnRoutingGroup: tfnRoutingGroup,
         type: flowType
       })
     );
@@ -152,6 +162,18 @@ export const EditFlow = ({
   const handleOnSave = async () => {
     const isValidForm = await validateFlow();
     if (isValidForm) {
+      const {
+        isDuplicate, message
+      } = duplicateCheck(selectedRowLocal);
+      if(isDuplicate){
+        setAlertBar((alertBarProps: AlertBarProps) => ({
+          ...alertBarProps,
+          "open": true,
+          "severityType": "error",
+          "msg": message
+        }));
+        return;
+      }
       const response = await updateFlowDB(selectedRowLocal, accessToken, graphQLEndPoint);
       let isSubmitted = true;
       if (response?.errors) {
@@ -285,6 +307,7 @@ export const EditFlow = ({
             variant="contained"
             value="Save"
             color="primary"
+            disabled = {enableFlow}
             sx={{ marginRight: 2 }}
             aria-label="saveFlowRuleButton"
             onClick={() => handleOnSave()}
@@ -295,6 +318,7 @@ export const EditFlow = ({
             variant="contained"
             value="Clone"
             color="primary"
+            disabled = {enableFlow}
             sx={{ marginRight: 2 }}
             aria-label="cloneFlowRuleButton"
             onClick={() => handleClone()}
@@ -305,6 +329,7 @@ export const EditFlow = ({
             variant="contained"
             color="error"
             value="Delete"
+            disabled = {enableFlow }
             sx={{ marginRight: 2 }}
             aria-label="deleteFlowRuleButton"
             onClick={() => handleOnDelete()}

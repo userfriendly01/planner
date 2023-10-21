@@ -20,13 +20,9 @@ export const Header = styled.h1`
   align-self: center;
 `;
 
-export const HeaderAndCloseButtonWrapper = styled.div`
+export const CloseButtonContainer = styled.div`
   display: flex;
-  justify-content: space-between;
-`;
-
-export const LeftDiv = styled.div`
-  width: 1em;
+  justify-content: flex-end
 `;
 
 export const ModalContainer = styled(FlexColumn)`
