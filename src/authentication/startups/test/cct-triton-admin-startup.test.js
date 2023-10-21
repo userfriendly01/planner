@@ -195,9 +195,6 @@ describe("cct-triton-admin-startup", () => {
       });
     });
     describe("all service calls successful", () => {
-      test.only("dumb", () => {
-        expect(true).toBe(true);
-      });
       test("**MUST RETURN STARTUP NAME FIRST**", async () => {
         const result = await runTritonAdminStartup(mockAdminDispatch);
         const firstResponse = result[0];

@@ -1,23 +1,22 @@
-import React from "react";
-import MessageBanner from "./MessageBanner";
-import ProfileColumn from "./ProfileColumn";
-import ResetModal from "./ResetModal";
+import { TritonPerson, QmPerson, WfmPerson } from "./CompareProfiles.Interfaces";
 import {
   CompareProfilesWrapper,
   ProfileColumnsWrapper,
   ResetButton,
   StyledLoadSpinner
 } from "./CompareProfiles.Styles";
+import MessageBanner from "./MessageBanner";
+import { messageConsts } from "./messages";
+import ProfileColumn from "./ProfileColumn";
+import ResetModal from "./ResetModal";
+import { WfmUser, Worker, nNumMatcher } from "globals";
 import { CalabrioGroup, NNumberInput } from "components";
 import { useAdminState } from "context";
-import { WfmUser, Worker, nNumMatcher } from "globals";
+import React from "react";
 import { getWfmUserByNNumber, getQmUserProfiles } from "services";
-import { messageConsts } from "./messages";
-import { Modal } from "@mui/material";
-import { logger } from "utils";
 import util from "util";
-import { TritonPerson, QmPerson, WfmPerson } from "./CompareProfiles.Interfaces";
-
+import { logger } from "utils";
+import { Modal } from "@mui/material";
 
 const CompareProfiles = () => {
   //State
@@ -203,19 +202,11 @@ const CompareProfiles = () => {
               const isValid = nNumber.match(nNumMatcher) !== null;
               if (!isValid) {
                 resetForm();
-                setNNumberDetails({
-                  nNumber,
-                  fetchedUser: null
-                })
-              } else {
-                //Validate - I might not need this?
-                setNNumberDetails(og => {
-                  return {
-                    nNumber,
-                    fetchedUser: og.fetchedUser
-                  }
-                })
               }
+              setNNumberDetails({
+                nNumber,
+                fetchedUser: null
+              })
             }}
             value={nNumberDetails.nNumber || ""}
           />
