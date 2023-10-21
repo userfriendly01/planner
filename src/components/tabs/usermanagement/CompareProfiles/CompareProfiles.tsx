@@ -1,6 +1,7 @@
 import React from "react";
 import MessageBanner from "./MessageBanner";
 import ProfileColumn from "./ProfileColumn";
+import ResetModal from "./ResetModal";
 import {
   CompareProfilesWrapper,
   ProfileColumnsWrapper,
@@ -9,46 +10,58 @@ import {
 } from "./CompareProfiles.Styles";
 import { CalabrioGroup, NNumberInput } from "components";
 import { useAdminState } from "context";
-import { ProfilePayload, WfmUser, Worker } from "globals";
+import { WfmUser, Worker, nNumMatcher } from "globals";
 import { getWfmUserByNNumber, getQmUserProfiles } from "services";
 import { messageConsts } from "./messages";
 import { Modal } from "@mui/material";
-import ResetModal from "./ResetModal";
+import { logger } from "utils";
+import util from "util";
+import { TritonPerson, QmPerson, WfmPerson } from "./CompareProfiles.Interfaces";
+
 
 const CompareProfiles = () => {
+  //State
   const state = useAdminState();
-  const environment = state.userContext.pingIdentity.environment;
   const profiles = state.profileContext.profiles;
   const calabrioTeams = state.calabrioContext.teams;
+
+  //Environment Control
+  const environment = state.userContext.pingIdentity.environment;
+  const isProduction = environment === "production";
+  const isDevelopment = environment === "development";
+
+  //Form Control
   const [showModal, setShowModal] = React.useState(false);
   const [showColumns, setShowColumns] = React.useState(false);
   const [showResetButton, setShowResetButton] = React.useState(false);
   const [messages, setMessages] = React.useState([]);
 
+  //User Management
   const [tritonProfiles, setTritonProfile] = React.useState([]);
   const [calabrioQMProfiles, setCalabrioQMProfiles] = React.useState([]);
   const [calabrioWFMProfiles, setCalabrioWFMProfiles] = React.useState<any>([]);
-
   const [nNumberDetails, setNNumberDetails] = React.useState({
     fetchedUser: null,
     nNumber: null
   });
 
-  console.log("FAITH MESSAGES", messages);
-  console.log("FAITH ENV", environment);
-  console.log("FAITH WFM PERSON", calabrioWFMProfiles);
-  console.log("FAITH TRITON", tritonProfiles);
+  logger.info("Reset User Details", { nNumberDetails, tritonProfiles, calabrioQMProfiles, calabrioWFMProfiles });
 
   React.useEffect(() => {
     if (nNumberDetails.fetchedUser) {
       fetchProfiles();
-    } else {
-      console.log("nNUmber?", nNumberDetails);
-      setTritonProfile([]);
-      setCalabrioQMProfiles([]);
-      setCalabrioWFMProfiles([]);
     }
   }, [nNumberDetails.fetchedUser]);
+
+  const resetForm = (clearNNumber = true) => {
+    setShowModal(false);
+    setShowColumns(false);
+    setShowResetButton(false);
+    setNNumberDetails({
+      fetchedUser: null,
+      nNumber: null
+    });
+  };
 
   const updateMessages = (action: string, id?: number, message?: string, level?: string) => {
     let newArray;
@@ -68,16 +81,16 @@ const CompareProfiles = () => {
     setMessages(newArray);
   };
 
-  const trimProfiles = (userProfiles: any[], system: string) => {
+  const trimProfiles = (userProfiles: any[], system: string): TritonPerson[] | QmPerson[] | WfmPerson[] | any[] => {
     if (system === "triton") {
-      return userProfiles.map((p: Worker, index: number) => {
+      return userProfiles.map((p: Worker) => {
         return {
           ["Worker Sid"]: p.sid,
-          ["N Number"]: p.attributes?.n_number || "",
+          ["N Number"]: p.attributes?.n_number,
           ["Email"]: p.attributes?.email || "",
           ["First Name"]: p.attributes?.emp_first_name || "",
           ["Last Name"]: p.attributes?.emp_last_name || "",
-          ["Profile Id"]: p.attributes?.profile_id.toString() || "",
+          ["Profile Id"]: p.attributes?.profile_id?.toString() || "",
           ["Profile Name"]: profiles.find((prof: any) => prof.profile_id === p.attributes?.profile_id)?.profile_nme || "",
           ["Manager N Number"]: p.attributes?.manager_n_number || "",
           ["Manager First Name"]: p.attributes?.manager_first_name || "",
@@ -98,7 +111,7 @@ const CompareProfiles = () => {
           ["Active"]: p.deactivated === 32503593600000
         }
       });
-    } else if (system === "wfm") {
+    } else {
       return userProfiles.map((p: any) => {
         return {
           ["Employment Number"]: p.EmploymentNumber || "",
@@ -113,7 +126,6 @@ const CompareProfiles = () => {
         }
       });
     }
-    return userProfiles;
   };
 
   const fetchProfiles = async () => {
@@ -121,7 +133,6 @@ const CompareProfiles = () => {
 
     try {
       const matchingTritonProfiles = workers.filter((w: Worker) => w?.attributes?.n_number?.toLowerCase() === nNumberDetails?.nNumber?.toLowerCase());
-
       if (matchingTritonProfiles.length > 1) {
         updateMessages("add", null, messageConsts.MULTIPLE_TRITON_PROFILES, "error");
       } else if (matchingTritonProfiles.length === 0) {
@@ -132,7 +143,6 @@ const CompareProfiles = () => {
 
         setTritonProfile(matchingTritonProfiles);
 
-        const isProduction = environment === "production";
         const wfmUserPromise = isProduction ? getWfmUserByNNumber(nNumberDetails.nNumber) : Promise.resolve({ data: [] });
         const calabrioProfilesPromise = getQmUserProfiles(workerSid, nNumberDetails.nNumber, email);
 
@@ -149,8 +159,7 @@ const CompareProfiles = () => {
         }
 
         const qmProfiles = calabrioProfilesResponse.data || [];
-        const masterQmProfile = qmProfiles.find((p: any) => p.acdId.toUpperCase() === workerSid.toUpperCase() && p.isSynchronized);
-
+        const masterQmProfile = qmProfiles.find((p: any) => p.acdId?.toUpperCase() === workerSid?.toUpperCase() && p.isSynchronized);
         if (masterQmProfile) {
           qmProfiles.forEach((p: any, i: number) => {
             if (p.id === masterQmProfile?.id) {
@@ -159,16 +168,16 @@ const CompareProfiles = () => {
             }
           });
           setCalabrioQMProfiles(qmProfiles);
-          if (environment !== "development") {
-            setShowResetButton(true);
-          }
+          setShowResetButton(true);
         } else {
           updateMessages("add", null, messageConsts.MISSING_CALABRIO_MASTER_PROFILE, "error");
         }
         setShowColumns(true);
       }
-    } catch (err) {
-      updateMessages("add", null, `${messageConsts.ERROR}: ${err.message}}`, "error");
+    } catch (error) {
+      const errorString = error.message || error.response?.message || util.format(error);
+      logger.error(messageConsts.ERROR, { error, message: errorString, nNumber: nNumberDetails.nNumber });
+      updateMessages("add", null, `${messageConsts.ERROR}: ${errorString}`, "error");
     }
   };
 
@@ -179,28 +188,36 @@ const CompareProfiles = () => {
         messages={messages}
         updateMessages={updateMessages}
       />
-      {environment !== "development" &&
+      {!isDevelopment &&
         <>
           <NNumberInput
             disabled={false}
             fetchedUser={nNumberDetails.fetchedUser}
             label="N Number *"
-            onClear={() => setNNumberDetails({
-              fetchedUser: null,
-              nNumber: null
-            })}
+            onClear={resetForm}
             onComplete={(fetchedUser: any, nNumber: any) => setNNumberDetails({
               nNumber,
               fetchedUser
             })}
             onUpdate={(nNumber: string) => {
-              setNNumberDetails({
-                nNumber,
-                fetchedUser: nNumberDetails.fetchedUser
-              })
-            }
-            }
-            value={nNumberDetails.nNumber}
+              const isValid = nNumber.match(nNumMatcher) !== null;
+              if (!isValid) {
+                resetForm();
+                setNNumberDetails({
+                  nNumber,
+                  fetchedUser: null
+                })
+              } else {
+                //Validate - I might not need this?
+                setNNumberDetails(og => {
+                  return {
+                    nNumber,
+                    fetchedUser: og.fetchedUser
+                  }
+                })
+              }
+            }}
+            value={nNumberDetails.nNumber || ""}
           />
           {showResetButton &&
             <ResetButton
@@ -213,19 +230,19 @@ const CompareProfiles = () => {
             <ProfileColumnsWrapper>
               <ProfileColumn people={trimProfiles(tritonProfiles, "triton")} title="Triton" />
               <ProfileColumn people={trimProfiles(calabrioQMProfiles, "qm")} title="Calabrio QM" />
-              {environment === "production" &&
+              {isProduction && calabrioWFMProfiles.length > 0 &&
                 <ProfileColumn people={trimProfiles(calabrioWFMProfiles, "wfm")} title="Calabrio WFM" />
               }
             </ProfileColumnsWrapper>
           }
-          <Modal onClose={() => { return; }} open={showModal === true}>
+          <Modal onClose={() => { return; }} open={showModal}>
             <>
               <ResetModal
                 nNumber={nNumberDetails?.nNumber}
                 email={nNumberDetails?.fetchedUser?.email}
                 workerSid={tritonProfiles[0] && tritonProfiles[0].sid}
                 wfmPersonId={calabrioWFMProfiles[0] && calabrioWFMProfiles[0].Id}
-                onClose={() => setShowModal(false)}
+                onClose={resetForm}
               />
             </>
           </Modal>

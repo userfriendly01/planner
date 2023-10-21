@@ -75,7 +75,6 @@ describe("ProfileColumn", () => {
           <ProfileColumn people={people} title={title} />
         </ThemeProvider>
       )
-      container
       expect(container).toHaveTextContent(people[0]["Acd Id"]);
       expect(container).toHaveTextContent("Active");
       expect(container).not.toHaveTextContent(people[1]["Acd Id"]);

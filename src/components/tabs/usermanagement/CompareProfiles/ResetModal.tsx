@@ -145,12 +145,14 @@ const ResetModal = (props: ResetModalProps) => {
       }
       {(status === StatusOptions.STARTED || status === StatusOptions.TIME_OUT) && <ProgressBar completedRows={progress} totalRowCount={totalWaitSeconds} />}
       {status === StatusOptions.FAIL &&
-        <InformationWapper>
+        <InformationWapper style={{ marginTop: "10", minHeight: "200px", height: "auto" }}>
           <InformationText>
             Calabrio... is the worst we're sorry
+          </InformationText>
+          <InformationText>
             {results}
           </InformationText>
-          <ButtonWrapper>
+          <ButtonWrapper style={{ minHeight: "30%" }}>
             <StyledButton onClick={onClose}>Close</StyledButton>
           </ButtonWrapper>
         </InformationWapper>

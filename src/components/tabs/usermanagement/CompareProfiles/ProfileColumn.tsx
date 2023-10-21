@@ -26,17 +26,15 @@ const ProfileColumn = (props: ProfileColumnProps) => {
     title
   } = props;
 
-  const [selectedProfile, setSelectedProfile] = React.useState<TritonPerson | QmPerson | WfmPerson>({
+  const defaultPerson = {
     index: 0,
     ...people[0]
-  });
+  };
+  const [selectedProfile, setSelectedProfile] = React.useState<TritonPerson | QmPerson | WfmPerson>(defaultPerson);
 
-  // React.useEffect(() => {
-  //   setSelectedProfile({
-  //     index: 0,
-  //     ...people[0]
-  //   });
-  // }, [people]);
+  React.useEffect(() => {
+    setSelectedProfile(defaultPerson);
+  }, [people]);
 
   return (
     <ProfileColumnContainer>
