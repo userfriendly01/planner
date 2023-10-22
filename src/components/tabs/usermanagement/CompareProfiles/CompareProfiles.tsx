@@ -36,7 +36,7 @@ const CompareProfiles = () => {
   const [messages, setMessages] = React.useState([]);
 
   //User Management
-  const [tritonProfiles, setTritonProfile] = React.useState([]);
+  const [tritonProfiles, setTritonProfiles] = React.useState([]);
   const [calabrioQMProfiles, setCalabrioQMProfiles] = React.useState([]);
   const [calabrioWFMProfiles, setCalabrioWFMProfiles] = React.useState<any>([]);
   const [nNumberDetails, setNNumberDetails] = React.useState({
@@ -55,6 +55,9 @@ const CompareProfiles = () => {
   const resetForm = (clearNNumber = true) => {
     setShowModal(false);
     setShowColumns(false);
+    setTritonProfiles([]);
+    setCalabrioQMProfiles([]);
+    setCalabrioWFMProfiles([]);
     setShowResetButton(false);
     setNNumberDetails({
       fetchedUser: null,
@@ -140,7 +143,7 @@ const CompareProfiles = () => {
         const workerSid = matchingTritonProfiles[0].sid;
         const email = nNumberDetails.fetchedUser.email;
 
-        setTritonProfile(matchingTritonProfiles);
+        setTritonProfiles(matchingTritonProfiles);
 
         const wfmUserPromise = isProduction ? getWfmUserByNNumber(nNumberDetails.nNumber) : Promise.resolve({ data: [] });
         const calabrioProfilesPromise = getQmUserProfiles(workerSid, nNumberDetails.nNumber, email);
