@@ -84,7 +84,8 @@ const ResetModal = (props: ResetModalProps) => {
       setResults(res.data);
       setStatus(StatusOptions.SUCCESS);
     } catch (error) {
-      if (error?.response?.data?.message?.toLowerCase().trim() === "read timed out") {
+      const isTimeout = error?.response?.data?.message?.toLowerCase().trim() === "read timed out" || error?.response?.data?.error?.message?.toLowerCase().trim() === "endpoint request timed out";
+      if (isTimeout) {
         logger.warn("Call to reset profiles timed out. Trying to fetch datadog log", { nNumber });
         setStatus(StatusOptions.TIME_OUT);
       } else {
