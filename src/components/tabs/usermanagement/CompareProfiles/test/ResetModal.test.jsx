@@ -178,7 +178,7 @@ describe("ResetModal", () => {
             expect(ProgressBar).toHaveBeenCalledTimes(1);
             jest.advanceTimersByTime(6000);
             await waitFor(() => {
-              expect(fetchResetProfileDatadogLogs).toHaveBeenCalledTimes(37);
+              expect(fetchResetProfileDatadogLogs).toHaveBeenCalledTimes(33);
               expect(rendered.container).toHaveTextContent("Calabrio... is the worst we're sorry");
               expect(rendered.container).toHaveTextContent("We waited a while but the log was not found in datadog. We're unable to confirm this process succeeded. Please try again.");
             });
