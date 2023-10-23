@@ -30,7 +30,7 @@ const ResetModal = (props: ResetModalProps) => {
     onClose
   } = props;
 
-  const totalWaitSeconds = 300;
+  const totalWaitSeconds = 600;
   const progressIntervalId = React.useRef<any>();
   const datadogIntervalId = React.useRef<any>();
 
