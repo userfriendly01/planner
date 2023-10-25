@@ -1,11 +1,13 @@
 import { DeleteTritonUserProps } from "./DeleteTritonUser.Interfaces";
 import {
   ButtonWrapper,
-  UserFormButton
+  UserFormButton,
+  StyledDivider
 } from "../UserEntryFormWrapper/UserEntryFormWrapper.Styles";
 import {
   DeleteTritonUserWrapper,
-  Text
+  Text,
+  CheckboxWrapper
 } from "./DeleteTritonUser.Styles";
 import { ForwardToEntryForm } from "components";
 import {
@@ -53,7 +55,7 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
     calabrioQm: true
   });
 
-  const handleCheckboxes = (profile: string) => {
+  const handleSystemSelection = (profile: string) => {
     if (profile === "triton") {
       setProfilesToDelete(
         {
@@ -72,7 +74,7 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
   const handleDeleteUser = () => {
     const tritonWorkerName =  tritonWorker.attributes ? `${tritonWorker.attributes?.emp_first_name} ${tritonWorker.attributes?.emp_last_name}` : null;
     const workerName = tritonWorkerName  || tritonWorker.displayId || tritonWorker.DisplayName;
-    const termDate = Date.now();
+    const termDate = new Date().toISOString().split("T")[0];
 
     updateLoading({
       ...loading,
@@ -89,7 +91,8 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
       firstName: tritonWorker.attributes?.emp_first_name,
       lastName: tritonWorker.attributes?.emp_last_name,
       systems: [],
-      terminationDate: termDate
+      terminationDate: termDate,
+      inactiveForwardTo: isWorkerDid ? tritonWorker.inactiveForwardTo : ""
     };
     if (profilesToDelete.triton) {
       body.systems.push("TRITON");
@@ -97,11 +100,12 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
     if (profilesToDelete.calabrioQm) {
       body.systems.push("QM");
     }
-    console.log("REQUEST BODY:", body);
+    console.log("***REQUEST BODY:", body);
 
     terminateWorker(body)
-      .then(() => {
+      .then(response => {
         resultMessage = `Successfully marked Triton worker for delete in ${body.systems}`;
+        console.log("***RESPONSE: ", response);
 
         logger.info(resultMessage, {
           nNumber,
@@ -125,12 +129,12 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
             saveUser: false
           });
           handleClose();
-        }, timeouts.MODAL_OVERLAY);
+        }, timeouts.MODAL_OVERLAY_ATTENTION);
       })
       .catch(error => {
-        console.log(error);
+        console.log("***ERROR RESPONSE: ", error);
         if (typeof error.response?.data?.error === "object" ){
-          resultMessage = `Failed to terminate worker ${tritonWorker.sid}`; //todo what's the responses?
+          resultMessage = `Failed to terminate worker ${tritonWorker.sid}`;
         } else {
           resultMessage = error.response.data.error;
         }
@@ -152,19 +156,31 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
 
   return (
     <DeleteTritonUserWrapper>
-      <Text>This user will be deactivated in the following systems:</Text>
-      <Text></Text>
-      <div>
-        <Checkbox
-          checked={profilesToDelete.triton}
-          onChange={ () => handleCheckboxes("triton") }
-        />
-        Triton
-
-        <Checkbox
-          checked={profilesToDelete.calabrioQm}
-          onChange={ () => handleCheckboxes("calabrioQm") }
-        /> Calabrio QM
+      <Text>Note: there is a grace period of 2 days before this user will be permanently deleted</Text>
+      <StyledDivider />
+      <Text>User will be deactivated in the following systems: </Text>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center"
+        }}
+      >
+        <CheckboxWrapper>
+          <Checkbox
+            checked={profilesToDelete.triton}
+            onChange={ () => handleSystemSelection("triton") }
+          />
+          <Text>Triton</Text>
+        </CheckboxWrapper>
+        <CheckboxWrapper>
+          <Checkbox
+            checked={profilesToDelete.calabrioQm}
+            onChange={ () => handleSystemSelection("calabrioQm") }
+            style={{
+              marginLeft: "125px"
+            }}
+          /> <Text>Calabrio QM</Text>
+        </CheckboxWrapper>
       </div>
       { isWorkerDid ?
         <ForwardToEntryForm

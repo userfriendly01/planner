@@ -74,7 +74,7 @@ describe("TritonUsersViewWrapper", () => {
           pagination: {
             ...defaultTableState.pagination,
             startingUserIndex: 0,
-            length: 6,
+            length: 7,
             endingUserIndex: 24
           },
           filteredList: initialTestState.workerContext.workers.sort(sortWorkersByFullName)
@@ -87,7 +87,7 @@ describe("TritonUsersViewWrapper", () => {
           pagination: {
             ...defaultTableState.pagination,
             startingUserIndex: 0,
-            length: 6,
+            length: 7,
             endingUserIndex: 24
           },
           filteredList: initialTestState.workerContext.workers.sort(sortWorkersByFullName)
@@ -100,7 +100,7 @@ describe("TritonUsersViewWrapper", () => {
           pagination: {
             ...defaultTableState.pagination,
             startingUserIndex: 0,
-            length: 6,
+            length: 7,
             endingUserIndex: 24
           },
           filteredList: initialTestState.workerContext.workers.sort(sortWorkersByFullName)
