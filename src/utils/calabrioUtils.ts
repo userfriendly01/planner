@@ -317,7 +317,7 @@ export const checkConflictingUsers = async (user: any, users: CalabrioQmUser[], 
         if (dupUser.roles.length === 0) {
           dupUser.roles = roles.filter(role => role.name.toLowerCase().includes("agent-sync"));
         }
-        if(!dupUser.team){
+        if (!dupUser.team) {
           logger.warn("do we get in here?", { teams: teams.find(team => team.name.toLowerCase().includes("default")) }, false);
           dupUser.team = teams.find(team => team.name.toLowerCase().includes("default"))?.groupId;
         }
@@ -347,7 +347,7 @@ export const checkConflictingUsers = async (user: any, users: CalabrioQmUser[], 
         return;
       }
     }));
-  } catch(error) {
+  } catch (error) {
     logger.error("Error thrown trying to fetch and validate Conflicting Users", { error });
   }
   return;
@@ -375,14 +375,14 @@ export const findMatchingQmProfiles = (user: any, users: CalabrioQmUser[], setFo
       const dupUserAcdId = toLowerCaseString(u.acdId);
       const dupUserAdLogin = toLowerCaseString(u.adLogin);
       const dupUserEmail = toLowerCaseString(u.email);
-      if(acdId && acdId === dupUserAcdId){
+      if (acdId && acdId === dupUserAcdId) {
         logger.warn("User Found with ACD Id", { user: u }, false);
         matchingProfiles.unshift(u);
       } else if (dupUserAdLogin && dupUserAdLogin === adLogin || dupUserEmail && dupUserEmail === email) {
 
         logger.warn("User Found with Duplicate Email or Windows Login: ", { user: u }, false);
 
-        if(acdId){
+        if (acdId) {
           setForm({
             type: "SET_DISCREPANCIES",
             payload: {
@@ -395,21 +395,30 @@ export const findMatchingQmProfiles = (user: any, users: CalabrioQmUser[], setFo
       }
     });
     return matchingProfiles;
-  } catch(error) {
+  } catch (error) {
     logger.error("Error thrown trying to find QM profiles", { error });
     return [];
   }
 };
 
+export const decompressResponse = async (body: any) => {
+  const buff = Buffer.from(body, "base64");
+  const data = await inflate(buff);
+  return JSON.parse(data.toString("utf-8"));
+}
+
 export const getCalabrioWfmOptions = async (dispatch: any) => {
   try {
-    const options: any = await getWfmOptionsServiceCall();
+    const res: any = await getWfmOptionsServiceCall();
     let optionsData: any = [];
     try {
-      const buff = Buffer.from(options.data.organization, "base64");
-      const data = await inflate(buff);
-      optionsData = JSON.parse(data.toString("utf-8"));
-    } catch(error) {
+      if (res.data.compressed) {
+        const data = await decompressResponse(res.data.data);
+        optionsData = data.organization || [];
+      } else {
+        optionsData = res.data.organization || [];
+      }
+    } catch (error) {
       logger.error("Failed to parse and save Calabrio Org data", { error });
       return false;
     }
@@ -432,16 +441,27 @@ export const getCalabrioWfmOrg = async (businessUnitId: string, state: AppState,
     businessUnit = { ...businessUnit };
     const existingErrors = state.calabrioContext.wfmErrors;
 
-    const org: any = await getWfmOrgServiceCall(businessUnitId);
-    businessUnit.Teams = org.data.Teams;
+    const res: any = await getWfmOrgServiceCall(businessUnitId);
+    let org;
+    let errors = [];
 
+    if (res.data.compressed) {
+      const data = await decompressResponse(res.data.data);
+      org = data.Teams || [];
+      errors = data.errors;
+    } else {
+      org = res.data.Teams || [];
+      errors = res.data.errors;
+    }
+
+    businessUnit.Teams = org;
 
     const strippedOrg = state.calabrioContext.wfmOrg.filter((bu: WfmBusinessUnit) => bu.Id !== businessUnitId);
     dispatch({
       type: "updateWfmOrg",
       payload: {
         org: [...strippedOrg, businessUnit],
-        errors: [...existingErrors, ...org.data.errors || []]
+        errors: [...existingErrors, ...errors || []]
       }
     });
     return {
