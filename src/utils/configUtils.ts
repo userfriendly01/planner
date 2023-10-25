@@ -4,6 +4,9 @@ import {
 import { useAdminState } from "context";
 import { AlertBarProps } from "./interfaces";
 import { GraphQLErrors } from "globals";
+import {
+  getAdGroupPermissionMapping
+} from "authentication";
 
 /**
  *  This function return graphQL endpoint based on running environment  
@@ -125,4 +128,17 @@ export const cleanErrorMessage = (graphQLErrors: GraphQLErrors[]): string => {
     return ErrorDuplicateRecord;
   }
   return graphQLErrors[0].message;
+};
+
+export const readWriteAccess=(matchedGroups:any[], alohaTabType:string, env:string):boolean=>{
+  let flag = true;
+  matchedGroups?.forEach((item: any)=>{
+    if(item.startup.name === alohaTabType && item.permissionLevel === "write"){
+      item.environments.forEach((envVar: string)=>{
+        if(envVar === env){
+          flag = false;
+        }
+      });
+    } });
+  return flag;
 };

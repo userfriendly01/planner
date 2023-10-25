@@ -446,6 +446,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
         openAdvanceSearchModal={openAdvanceSearchModal}
         openEditModal={openBulkEditModal}
         openPreviewModal={openPreviewModal}
+        matchedGroups={matchedGroups}
       />
       <RoutingTableBox>
         <DataGrid

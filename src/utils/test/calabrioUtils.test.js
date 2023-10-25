@@ -157,8 +157,8 @@ let userResponse;
 describe("calabrioUtils", () => {
   beforeEach(() => {
     jest.resetAllMocks(),
-    jest.clearAllMocks(),
-    Date.now.mockReturnValue("Right Now");
+      jest.clearAllMocks(),
+      Date.now.mockReturnValue("Right Now");
   });
 
   describe("addWorkerToOrg", () => {
@@ -1183,8 +1183,8 @@ describe("calabrioUtils", () => {
   });
   describe("getCalabrioWfmOptions", () => {
     test("getWFMOptions succeeds, decompress succeeds, dispatches and returns true", async () => {
-      const data = Buffer.from(JSON.stringify({ businessUnits: [{ Id: "123" }, { Id: "456" }]}));
-      getWfmOptions.mockResolvedValueOnce({ data: { organization: "eJyrVkoqLc7MSy0uDs3LLClWsoquVvJMUbJSMjQyVqrVgXJMTM2UamNrAVp8Dd0=" }});
+      const data = Buffer.from(JSON.stringify({ organization: { businessUnits: [{ Id: "123" }, { Id: "456" }] } }));
+      getWfmOptions.mockResolvedValueOnce({ data: { compressed: true, data: "eJyrVkoqLc7MSy0uDs3LLClWsoquVvJMUbJSMjQyVqrVgXJMTM2UamNrAVp8Dd0=" } });
 
       zlib.inflate.mockImplementationOnce((buffer, callback) => {
         callback(null, data);
@@ -1199,7 +1199,7 @@ describe("calabrioUtils", () => {
       expect(result).toBe(true);
     });
     test("getWFMOptions succeeds, decompress has an error, does not dispatch, returns false", async () => {
-      getWfmOptions.mockResolvedValueOnce({ data: { organization: "eJyrVkoqLc7MSy0uDs3LLClWsoquVvJMUbJSMjQyVqrVgXJMTM2UamNrAVp8Dd0=" }});
+      getWfmOptions.mockResolvedValueOnce({ data: { compressed: true, data: "eJyrVkoqLc7MSy0uDs3LLClWsoquVvJMUbJSMjQyVqrVgXJMTM2UamNrAVp8Dd0=" } });
       zlib.inflate.mockImplementationOnce(() => {
         throw new Error("boo");
       });

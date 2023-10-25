@@ -20,7 +20,7 @@ const NNumberEntryField = (props: ModalNNumberProps) => {
     value
   } = props;
 
-  const [ lookupError, setLookupError ] = useState<string>("");
+  const [lookupError, setLookupError] = useState<string>("");
 
   const validator = (nNumber: string) => nNumber.match(nNumMatcher) !== null;
 
@@ -43,7 +43,7 @@ const NNumberEntryField = (props: ModalNNumberProps) => {
       <CustomInput
         disabled={disabled}
         error={lookupError ? true : false}
-        label= {label}
+        label={label}
         name="N Number"
         onBlur={onBlur}
         maxLength="8"

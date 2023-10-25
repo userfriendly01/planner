@@ -96,6 +96,11 @@ export const profileTableColumnHeader = [
     COLUMN_NAME: "EFT Authorization",
     TOOLTIP: "Enable EFT authorization tagging on recordings"
   },
+
+  {
+    COLUMN_NAME: "Claim Number Edit",
+    TOOLTIP: "UI Feature: An agent can capture and save a different claim number than what the IVR previously loaded"
+  },
   {
     COLUMN_NAME: "Self Service Indicator",
     TOOLTIP: "Self service indicator is applicable to profiles with an id of 39 and above, but is actually set at the worker attribute level"
@@ -241,24 +246,27 @@ export const apiPaths = {
   GET_CALABRIO_WFM_BUS: `${SERVICE_BASE_URI}/calabrio-api/wfm/Business Units`,
   GET_CALABRIO_WFM_ORG: `${SERVICE_BASE_URI}/calabrio-api/wfm/org/people`,
   GET_CALABRIO_WFM_OPTIONS: `${SERVICE_BASE_URI}/calabrio-api/wfm/org/options`,
+  GET_CALABRIO_WFM_USER_BY_NNUMBER: (nNumber: string) => `${SERVICE_BASE_URI}/calabrio-api/wfm-people-by-nnumber/${nNumber}`,
   GET_CALABRIO_USERS: `${SERVICE_BASE_URI}/calabrio-get-agents`,
   GET_CALABRIO_ORG: `${SERVICE_BASE_URI}/calabrio-get-org`,
   GET_CALABRIO_ROLES: `${SERVICE_BASE_URI}/calabrio-get-roles`,
   GET_CALABRIO_USER: (personId: number): any => `${SERVICE_BASE_URI}/calabrio-get-user/${personId}`,
+  GET_CALABRIO_USER_PROFILES: `${SERVICE_BASE_URI}/calabrio-api/qm-user-profiles`,
   GET_PROFILE_DATA: (profileId: string | number): string => `${CONTACT_MANAGER_BASE_URI}/triton/${profileId}`,
   GET_CALL_TAGS_OPTIONS: `${CONTACT_MANAGER_BASE_URI}/workertaskinfooptions`,
   GET_CALL_TAGS: `${CONTACT_MANAGER_BASE_URI}/workertaskinfo`,
   GET_ACTIVITIES: `${CONTACT_MANAGER_BASE_URI}/activities`,
   GET_ACCESS_GROUP: `${CONTACT_MANAGER_BASE_URI}/accessgroup`,
-  GET_JOKES: `${SERVICE_BASE_URI}/getJokes`,
   GET_SKILLS: `${SERVICE_BASE_URI}/consolidatedskills`,
   GET_OU: `${SERVICE_BASE_URI}/operatingunit`,
   GET_TASK_QUEUES: `${SERVICE_BASE_URI}/taskqueues`,
   GET_TIME_OF_DAYS: `${SERVICE_BASE_URI}/timeofday`,
   GET_WORKERS: `${SERVICE_BASE_URI}/workers`,
+  GET_RESET_PROFILE_DATADOG_LOGS: (nNumber: string) => `${SERVICE_BASE_URI}/datadogresetprofileslogs/${nNumber}`,
   MANAGERS: `${CONTACT_MANAGER_BASE_URI}/managers`,
   OFFICES: `${CONTACT_MANAGER_BASE_URI}/offices`,
   PROFILES: `${CONTACT_MANAGER_BASE_URI}/profiles`,
+  RESET_PROFILES: (nNumber: string) => `${SERVICE_BASE_URI}/resetprofiles/${nNumber}`,
   RESET_WORKER_SKILLS: `${SERVICE_BASE_URI}/resetworkerskills`,
   SKILL_GROUPS: `${CONTACT_MANAGER_BASE_URI}/skillgroups`,
   TERMINATE_WORKER: (nNumber: string): string => `${SERVICE_BASE_URI}/terminateworker/${nNumber}`,

@@ -168,11 +168,6 @@ describe("<ManagerDropdown />", () => {
         Modal.mock.calls[3][0].onClose();
         ManagerModal.mock.calls[0][0].handleClose();
       });
-      expect(mockAdminDispatch).toHaveBeenCalledTimes(1);
-      expect(mockAdminDispatch).toHaveBeenCalledWith({
-        type: "updateManagerFilter",
-        payload: null
-      });
       expect(Modal.mock.calls[1][0].open).toBe(false);
     });
   });

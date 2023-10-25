@@ -6,7 +6,7 @@ import {
 } from "../AlohaFlow.Interfaces";
 import {
   FLOW_MASTER_DATA,
-  flowType, languageOffer, userDestination
+  flowType, languageOffer, tfnRoutingGroup, userDestination
 } from "utils";
 
 const reconstructTableColumnDef = (action: PreviewModalAction, columnDef: Array<GridColDef>): Array<GridColDef> =>{
@@ -47,11 +47,12 @@ const fetchData = (): FlowDropDownList =>{
   const dropDownValue: FlowDropDownList = {
     brand: masterDataObject.brand,
     channel: masterDataObject.channel,
-    languageOffer: languageOffer,
-    userDestination: userDestination,
+    languageOffer,
+    userDestination,
     callFlowRoute: masterDataObject?.callFlowRoute,
     callerType: masterDataObject?.callerType,
     dataRequests: masterDataObject?.dataRequests,
+    tfnRoutingGroup,
     type: flowType
   };
   return dropDownValue;

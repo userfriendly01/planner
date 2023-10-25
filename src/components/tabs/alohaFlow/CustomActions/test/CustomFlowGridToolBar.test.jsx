@@ -1,13 +1,12 @@
 import React from "react";
 import { CustomFlowGridToolBar } from "../CustomFlowGridToolBar";
 import {
-  render, setupMockedComponents, act
+  render, setupMockedComponents, act, initialTestState
 } from "testUtils";
 import {
   Chip, FormControl, InputLabel, MenuItem, Select, Grid, TextField
 } from "@mui/material";
 import { CACHE_FILTER_FLOW } from "utils";
-
 jest.mock("@mui/material", () => ({
   __esModule: true,
   Grid: jest.fn(),
@@ -17,6 +16,11 @@ jest.mock("@mui/material", () => ({
   InputLabel: jest.fn(),
   Select: jest.fn(),
   MenuItem: jest.fn()
+}));
+import { useAdminState } from "context";
+
+jest.mock("context", () => ({
+  useAdminState: jest.fn()
 }));
 
 const openAddModal=jest.fn();
@@ -56,6 +60,7 @@ describe("<CustomFlowGridToolBar/>",()=>{
       Select,
       MenuItem
     });
+    useAdminState.mockReturnValue(initialTestState);
     localStorage.setItem(CACHE_FILTER_FLOW, JSON.stringify(mockedFlowFilter));
   });
   afterEach(() => {

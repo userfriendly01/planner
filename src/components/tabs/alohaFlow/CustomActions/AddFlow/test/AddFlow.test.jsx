@@ -46,7 +46,8 @@ const validFlowData = {
   marketingChannel: "test",
   requestID: "test",
   transferCode: "test",
-  whisper: "test"
+  whisper: "test",
+  tfnRoutingGroup: "Core"
 };
 
 
@@ -89,23 +90,37 @@ jest.mock("context", () => ({
 }));
 
 const openAddModal = jest.fn();
+const duplicateCheck = jest.fn().mockReturnValue({
+  isDuplicate: false,
+  message: ""
+});
+
+const duplicateCheckReturnTrue = jest.fn().mockReturnValue({
+  isDuplicate: true,
+  message: "Duplicate Employee Id found"
+});
 
 const renderAddFlow = isOpen => {
   return render(
-    <AddFlow openAddModal={openAddModal} newID={1} isOpen={isOpen} />
+    <AddFlow openAddModal={openAddModal} newID={1} isOpen={isOpen} duplicateCheck={duplicateCheck} />
   );
 };
 
 const renderAddFlowDefaultOpen = () => {
   return render(
-    <AddFlow openAddModal={openAddModal} newID={1} />
+    <AddFlow openAddModal={openAddModal} newID={1} duplicateCheck={duplicateCheck}/>
   );
 };
 
 const renderAddFlowCloneType = flowRule => {
   return render(
-    <AddFlow openAddModal={openAddModal} newID={1} cloneType = {true} flowRuleCloned = {flowRule} />
+    <AddFlow openAddModal={openAddModal} newID={1} cloneType = {true} flowRuleCloned = {flowRule} duplicateCheck={duplicateCheck}/>
   );
+};
+
+const renderAddFlowDuplicateCreate = () =>{
+  return render(
+    <AddFlow openAddModal={openAddModal} newID={1} isOpen={true} duplicateCheck={duplicateCheckReturnTrue} />);
 };
 
 describe("<AddFlow />", () => {
@@ -215,6 +230,7 @@ describe("<AddFlow />", () => {
       const languageOfferAttr = ComponentControl.mock.calls[5][0].onChange;
       const greetingMessagesAttr = ComponentControl.mock.calls[11][0].onChange;
       const dataRequestsAtr = ComponentControl.mock.calls[6][0].onChange;
+      const tfnRoutingGroupAtr = ComponentControl.mock.calls[19][0].onChange;
       const eventPhoneNumValue = {
         target: {
           name: "pkey",
@@ -281,6 +297,12 @@ describe("<AddFlow />", () => {
           value: "test1"
         }
       };
+      const eventTfnRoutingGroup = {
+        target: {
+          name: "tfnRoutingGroup",
+          value: "Core"
+        }
+      };
       act(()=>{
         dialedPhoneNumberAttr(eventPhoneNumValue);
         descriptionAttr(eventDescriptionValue);
@@ -293,6 +315,7 @@ describe("<AddFlow />", () => {
         greetingMessagesAttr(eventGreetingMessages);
         transferNumberAttr(eventTransferNumber);
         dataRequestsAtr(eventDataRequests);
+        tfnRoutingGroupAtr(eventTfnRoutingGroup);
       });
       addFlowRule.mockResolvedValue({ data: { "items": []}});
       const saveButton = getByRole("button", { name: "createRuleButton" });
@@ -307,6 +330,113 @@ describe("<AddFlow />", () => {
       waitFor(() => {
         expect(ComponentControlMock).toBeTruthy();
       });
+    });
+    test("Simulate the duplicate check", ()=>{
+      const { getByRole } = renderAddFlowDuplicateCreate();
+      flowFields[8].valueSetter(validFlowData, { type: "DID1" });
+      const dialedPhoneNumberAttr = ComponentControl.mock.calls[0][0].onChange;
+      const descriptionAttr = ComponentControl.mock.calls[1][0].onChange;
+      const channelAttr = ComponentControl.mock.calls[3][0].onChange;
+      const brandAttr = ComponentControl.mock.calls[4][0].onChange;
+      const callerTypeAttr = ComponentControl.mock.calls[7][0].onChange;
+      const callFlowRouteAttr = ComponentControl.mock.calls[10][0].onChange;
+      const callFlowTypeAttr = ComponentControl.mock.calls[2][0].onChange;
+      const transferNumberAttr = ComponentControl.mock.calls[9][0].onChange;
+      const languageOfferAttr = ComponentControl.mock.calls[5][0].onChange;
+      const greetingMessagesAttr = ComponentControl.mock.calls[11][0].onChange;
+      const dataRequestsAtr = ComponentControl.mock.calls[6][0].onChange;
+      const tfnRoutingGroupAtr = ComponentControl.mock.calls[19][0].onChange;
+      const eventPhoneNumValue = {
+        target: {
+          name: "pkey",
+          value: "+18334625917"
+        }
+      };
+      const eventDescriptionValue = {
+        target: {
+          name: "dialedDescription",
+          value: /AAFD property/i
+        }
+      };
+      const eventBrandValue = {
+        target: {
+          name: "brand",
+          value: /Test Brand/i
+        }
+      };
+      const eventChannelValue = {
+        target: {
+          name: "channel",
+          value: /Test2 Channel/i
+        }
+      };
+      const eventCallFlowRoute = {
+        target: {
+          name: "callFlowRoute",
+          value: /Flow Route/i
+        }
+      };
+      const eventCallerType = {
+        target: {
+          name: "callerType",
+          value: /test/i
+        }
+      };
+      const eventCallFlowType = {
+        target: {
+          name: "callFlowType",
+          value: /test/i
+        }
+      };
+      const eventTransferNumber= {
+        target: {
+          name: "transferNumber",
+          value: "4625917"
+        }
+      };
+      const eventLanguageOffer = {
+        target: {
+          name: "languageOffer",
+          value: "English"
+        }
+      };
+      const eventGreetingMessages = {
+        target: {
+          name: "greetingMessages",
+          value: "Welcome to liberty"
+        }
+      };
+      const eventDataRequests = {
+        target: {
+          name: "dataRequests",
+          value: "test1"
+        }
+      };
+      const eventTfnRoutingGroup = {
+        target: {
+          name: "tfnRoutingGroup",
+          value: "Core"
+        }
+      };
+      act(()=>{
+        dialedPhoneNumberAttr(eventPhoneNumValue);
+        descriptionAttr(eventDescriptionValue);
+        channelAttr(eventChannelValue);
+        brandAttr(eventBrandValue);
+        callFlowRouteAttr(eventCallFlowRoute,"testing");
+        callerTypeAttr(eventCallerType,"testing");
+        callFlowTypeAttr(eventCallFlowType);
+        languageOfferAttr(eventLanguageOffer);
+        greetingMessagesAttr(eventGreetingMessages);
+        transferNumberAttr(eventTransferNumber);
+        dataRequestsAtr(eventDataRequests);
+        tfnRoutingGroupAtr(eventTfnRoutingGroup);
+      });
+      const saveButton = getByRole("button", { name: "createRuleButton" });
+      act(() => {
+        fireEvent.click(saveButton);
+      });
+      expect(openAddModal).toBeCalledTimes(0);
     });
     test("Validate create Rule with Invalid fields ",()=>{
       const { getByRole } = renderAddFlow(true);
