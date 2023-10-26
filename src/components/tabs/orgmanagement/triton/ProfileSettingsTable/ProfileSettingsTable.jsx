@@ -130,6 +130,9 @@ const ProfileSettingsTable = props => {
                       <TableText>{formatProfileBooleanData(profile.eft_authorization_i.data[0])}</TableText>
                     </CustomTableData>
                     <CustomTableData>
+                      <TableText>{formatProfileBooleanData(profile.claim_number_edit_i.data[0])}</TableText>
+                    </CustomTableData>
+                    <CustomTableData>
                       <TableText>{formatSelfServiceIndicatorData(profile.profile_id)}</TableText>
                     </CustomTableData>
                     <CustomTableData>

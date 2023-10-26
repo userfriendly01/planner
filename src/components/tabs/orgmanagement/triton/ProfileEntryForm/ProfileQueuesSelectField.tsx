@@ -2,7 +2,10 @@ import React from "react";
 import { ProfileQueuesSelectFieldProps } from "./ProfileEntryForm.Interfaces";
 import { Dropdown } from "components";
 import { useAdminState } from "context";
-import { sortQueueByName } from "utils";
+import {
+  logger,
+  sortQueueByName
+} from "utils";
 import {
   AggregateQueue,
   Skill
@@ -34,24 +37,24 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
   const queues = useAdminState().skillContext.skills;
   const [filteredQueues, setFilteredQueues] = React.useState<Skill[]>(defaultNewQueue);
   const [aggregateQueues, setAggregateQueues] = React.useState([]);
-  const aggregateQueuesType = 'aggregate';
+  const aggregateQueuesType = "aggregate";
 
   React.useEffect(() => {
     if(!aggregateQueues.length) {
       getAggregateQueuesType(aggregateQueuesType)
         .then((allAggregateQueues: AggregateQueue[]) => {
-          let allQueues = queues.filter(queue => queue.ctmSkillId !== null).sort(sortQueueByName);
+          const allQueues = queues.filter(queue => queue.ctmSkillId !== null).sort(sortQueueByName);
           allQueues.unshift.apply(allQueues, allAggregateQueues.map(queue => {
             return {
               ctmSkillDisplayName: queue.aggregate_queues_nme,
               // Aggregate queues need to be set to a negative ID in order to not clash with single transfer queues / skills
               ctmSkillId: -Math.abs(queue.aggregate_queues_id)
-            }
+            };
           }));
           setFilteredQueues(allQueues);
           setAggregateQueues(allAggregateQueues);
         })
-        .catch((error: { msg: any; }) => console.error(error.msg));
+        .catch((error: { msg: any; }) => logger.error(error.msg, { error }, false));
     }
   }, []);
 

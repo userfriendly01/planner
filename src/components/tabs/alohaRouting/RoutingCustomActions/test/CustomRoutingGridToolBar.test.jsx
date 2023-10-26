@@ -4,9 +4,10 @@ import {
   Chip, FormControl, InputLabel, MenuItem, Select, Grid, TextField
 } from "@mui/material";
 import {
-  render, setupMockedComponents, act
+  render, setupMockedComponents, act, adGroupPermissionMapping
 } from "testUtils";
 import { CACHE_FILTER_ROUTING } from "utils";
+import { useAdminState } from "context";
 
 jest.mock("@mui/material", () => ({
   __esModule: true,
@@ -17,6 +18,11 @@ jest.mock("@mui/material", () => ({
   InputLabel: jest.fn(),
   Select: jest.fn(),
   MenuItem: jest.fn()
+}));
+
+
+jest.mock("context", () => ({
+  useAdminState: jest.fn()
 }));
 
 const openAddModal=jest.fn();
@@ -30,6 +36,26 @@ const mockedRoutingFilter = {
   brand: "Liberty Mutual"
 };
 
+const initData={
+  userContext: {
+    pingIdentity: {
+      sub: "n0263786",
+      groups: [],
+      aud: "ciciccttritondev1",
+      environment: "development"
+    }
+  }
+};
+const initDataProd={
+  userContext: {
+    pingIdentity: {
+      sub: "n0263786",
+      groups: [],
+      aud: "ciciccttritondev1",
+      environment: "production"
+    }
+  }
+};
 const renderCustomToolBar = () =>{
   const rendered =render(
     <CustomRoutingGridToolBar
@@ -39,6 +65,7 @@ const renderCustomToolBar = () =>{
       exportDataFile={exportDataFile}
       applyFilter={applyFilter}
       isAdvanceSearchOpen={isAdvanceSearchModalOpen}
+      matchedGroups={adGroupPermissionMapping}
     />
   );
   return rendered;
@@ -61,9 +88,21 @@ describe("<CustomRoutingGridToolBar />", ()=>{
     localStorage.removeItem(CACHE_FILTER_ROUTING);
   });
   test("Simulate Custom Routing Toolbar For Routing Export",()=>{
+    useAdminState.mockReturnValue(initData);
     renderCustomToolBar();
     const GridMock = Grid.mock.calls[0][0];
-    const ExportFlowUI = GridMock.children[1].props.children[1].props.children.props.children.props.onClick;
+    const ExportFlowUI = GridMock.children[1].props.children[0].props.children.props.onClick;
+    act(()=>{
+      ExportFlowUI();
+    });
+    expect(GridMock).toBeTruthy();
+    expect(exportDataFile).toBeCalledTimes(1);
+  });
+  test("Simulate Custom Routing Toolbar with production as Env",()=>{
+    useAdminState.mockReturnValue(initDataProd);
+    renderCustomToolBar();
+    const GridMock = Grid.mock.calls[0][0];
+    const ExportFlowUI = GridMock.children[1].props.children[0].props.children.props.onClick;
     act(()=>{
       ExportFlowUI();
     });

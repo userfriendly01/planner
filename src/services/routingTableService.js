@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-import { removeAllWhiteSpace } from "utils";
+import { logger } from "utils";
 
 /**
  * This is the function use to query the appsync API to get the data from DB
@@ -61,7 +61,7 @@ async function queryRoutingData(accessToken, nextToken = null, graphQlApiUrl) {
     });
     result = await response.json();
   } catch (error) {
-    console.error("Error in queryRoutingData", error);
+    logger.error("Error in queryRoutingData", error);
   }
   return result;
 }
@@ -96,7 +96,7 @@ async function retrieveRoutingData(accessToken, graphQlApiUrl,firstChunkData) {
       isFirstTime = false;
     }
   } catch (error) {
-    console.error("Error in retrieveRoutingData", error);
+    logger.error("Error in retrieveRoutingData", error);
   }
   return routingData;
 }
@@ -179,9 +179,9 @@ async function updateRoutingDB(item, accessToken, graphQlApiUrl) {
       })
     });
     response = await fetchResponse.json();
-    console.log("updateRoutingDB Response:", response);
+    logger.log("updateRoutingDB Response:", response);
   } catch (error) {
-    console.error("Error in updateRoutingDB", error);
+    logger.error("Error in updateRoutingDB", error);
   }
   return response;
 }
@@ -265,9 +265,9 @@ async function addRoutingRule(item, accessToken, graphQlApiUrl) {
       })
     });
     response = await fetchResponse.json();
-    console.log("Add Routing Rule Response:", response);
+    logger.log("Add Routing Rule Response:", response);
   } catch (error) {
-    console.error("Error in Adding Routing Rule", error);
+    logger.error("Error in Adding Routing Rule", error);
   }
   return response;
 }
@@ -329,9 +329,47 @@ async function deleteRoutingRule(item, accessToken, graphQlApiUrl) {
       })
     });
     response = await fetchResponse.json();
-    console.log("Delete Routing Rule Response:", response);
+    logger.log("Delete Routing Rule Response:", response);
   } catch (error) {
-    console.error("Error in Deleting Routing Rule", error);
+    logger.error("Error in Deleting Routing Rule", error);
+  }
+  return response;
+}
+
+async function routingBatchDelete(items, accessToken, graphQlApiUrl){
+  var routingDeleteArray=[];
+  const size=24;
+  const response = {
+    "success": [],
+    "flag": false,
+    "failure": []
+  };
+  while (items.length > 0){
+    routingDeleteArray.push(items.splice(0, size));
+  }
+  for(const routeValue of routingDeleteArray){
+    const successResponse=response.success;
+    const failureResponse = response.failure;
+    const keysToDelete = routeValue.map(x => {
+      return {
+        pkey: x.pkey,
+        skey: x.skey
+      };
+    }
+    );
+    const routingRespId = routeValue.map(x=>({ "id": x.id }));
+
+    await batchDelete(keysToDelete,accessToken,graphQlApiUrl).then(resp=>{
+      if(!resp?.errors){
+        response.success = successResponse.concat(routingRespId);
+      }
+      else{
+        console.error("error while deleting the records", resp.errors);
+        response.failure = failureResponse.concat(routingRespId);
+        response.flag = true;
+      }
+    });
+
   }
   return response;
 }
@@ -373,9 +411,9 @@ async function batchDelete(items, accessToken, graphQlApiUrl) {
       body
     });
     response = await fetchResponse.json();
-    console.log("Batch Delete Routing Rule Response:", response);
+    logger.log("Batch Delete Routing Rule Response:", response);
   } catch (error) {
-    console.error("Error in Routing Batch Delete", error);
+    logger.error("Error in Routing Batch Delete", error);
   }
   return response;
 }
@@ -471,106 +509,9 @@ const batchRoutingUpdate = async(items, accessToken, graphQlApiUrl) =>{
       })
     });
     response = await fetchResponse.json();
-    console.log("Update Batch RoutingDB Response:", response);
+    logger.info("Update Batch RoutingDB Response:", { response });
   } catch (error) {
-    console.error("Error in Update Batch RoutingDB", error);
-  }
-  return response;
-};
-
-/**
- * This is the Function to batch Create the Routing Object to the DB
- * @param {routingData} items List of Routing object that need to update
- * @param {String} accessToken token to use while calling graphql query 
- * @param {String} graphQlApiUrl Endpoint URL 
- * @returns 
- */
-const batchRoutingCreate = async(items, accessToken, graphQlApiUrl) =>{
-  if(items.length === 0){
-    return {
-      errors: [
-        "Please Select Something to Add"
-      ]
-    };
-  }
-  let response;
-  const input = items.map(item=>{
-    return {
-      all: "ALL",
-      pkey: removeAllWhiteSpace(item.callIntent).toLocaleLowerCase(),
-      skey: removeAllWhiteSpace(`${item.brand}__${item.channel}__${item.id}`).toLocaleLowerCase(),
-      brand: item.brand,
-      channel: item.channel,
-      callIntent: item.callIntent,
-      dayOfWeek: item.dayOfWeek,
-      callerState: item.callerState,
-      callerType: item.callerType,
-      twilioSkill: item.twilioSkill || "",
-      transferDestination: item.transferDestination || "",
-      percentOfCallers: item.percentOfCallers,
-      transferMessage: item.transferMessage || "",
-      policyType: item.policyType,
-      startTime: item.startTime,
-      endTime: item.endTime,
-      crcSkill: item.crcSkill || "",
-      priority: item?.priority || "",
-      occupancyCheck: item?.occupancyCheck || [],
-      routingSteps: item?.routingSteps || []
-    };
-  });
-  try {
-    const fetchResponse = await fetch(graphQlApiUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: accessToken
-      },
-      body: JSON.stringify({
-        query: `
-        mutation batchCreateCctSharedCallRoutingGlobalDb($input: CctSharedCallRoutingGlobalDbBatchCreateInput!) {
-          batchCreateCctSharedCallRoutingGlobalDb(input: $input) {
-            items {
-              all
-              brand
-              callIntent
-              callerState
-              callerType
-              channel
-              crcSkill
-              dayOfWeek
-              endTime
-              occupancyCheck {
-                percentage
-                team
-              }
-              percentOfCallers
-              pkey
-              policyType
-              priority
-              routingSteps {
-                callerState
-                teams
-                time
-              }
-              skey
-              startTime
-              transferDestination
-              transferMessage
-              twilioSkill
-            }
-            nextToken
-          }
-        }
-      `,
-        variables: {
-          input: { batchRoutingCreateInput: input }
-        }
-      })
-    });
-    response = await fetchResponse.json();
-    console.log("Update Batch RoutingDB Response:", response);
-  } catch (error) {
-    console.error("Error in Update Batch RoutingDB", error);
+    logger.error("Error in Update Batch RoutingDB", { error });
   }
   return response;
 };
@@ -583,5 +524,5 @@ export {
   retrieveRoutingData,
   updateRoutingDB,
   batchRoutingUpdate,
-  batchRoutingCreate
+  routingBatchDelete
 };

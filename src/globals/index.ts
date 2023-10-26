@@ -96,6 +96,11 @@ export const profileTableColumnHeader = [
     COLUMN_NAME: "EFT Authorization",
     TOOLTIP: "Enable EFT authorization tagging on recordings"
   },
+
+  {
+    COLUMN_NAME: "Claim Number Edit",
+    TOOLTIP: "UI Feature: An agent can capture and save a different claim number than what the IVR previously loaded"
+  },
   {
     COLUMN_NAME: "Self Service Indicator",
     TOOLTIP: "Self service indicator is applicable to profiles with an id of 39 and above, but is actually set at the worker attribute level"
@@ -115,6 +120,109 @@ export const profileTableColumnHeader = [
   {
     COLUMN_NAME: "Operating Unit",
     TOOLTIP: "Which OU a profile is assigned to"
+  }
+];
+
+export const exportColumns = [
+  {
+    field: "sid",
+    title: "Worker Sid",
+    width: "100px"
+  },
+  {
+    field: "emp_first_name",
+    title: "First Name",
+    width: "100px"
+  },
+  {
+    field: "emp_last_name",
+    title: "Last Name",
+    width: "100px"
+  },
+  {
+    field: "n_number",
+    title: "N Number",
+    width: "100px"
+  },
+  {
+    field: "email",
+    title: "Email",
+    width: "100px"
+  },
+  {
+    field: "extension",
+    title: "Extension",
+    width: "100px"
+  },
+  {
+    field: "profile_id",
+    title: "Profile Id",
+    width: "100px"
+  },
+  {
+    field: "manager_n_number",
+    title: "Manager N Number",
+    width: "100px"
+  },
+  {
+    field: "manager",
+    title: "Manager",
+    width: "100px"
+  },
+  {
+    field: "department_name",
+    title: "Department",
+    width: "100px"
+  },
+  {
+    field: "routing_team",
+    title: "Routing Team",
+    width: "100px"
+  },
+  {
+    field: "routing_caller_states",
+    title: "Routing Caller States",
+    width: "100px"
+  },
+  {
+    field: "ou",
+    title: "OU",
+    width: "100px"
+  },
+  {
+    field: "sales_assoc_workers",
+    title: "Sales Associate Workers",
+    width: "100px"
+  },
+  {
+    field: "roles",
+    title: "Roles",
+    width: "100px"
+  },
+  {
+    field: "outbound_number",
+    title: "Outbound Number",
+    width: "100px"
+  },
+  {
+    field: "directDialNum",
+    title: "Direct Dial Number",
+    width: "100px"
+  },
+  {
+    field: "current_skills",
+    title: "Current Skills",
+    width: "100px"
+  },
+  {
+    field: "default_skills",
+    title: "Default Skills",
+    width: "100px"
+  },
+  {
+    field: "disabled_skills",
+    title: "Disabled Skills",
+    width: "100px"
   }
 ];
 

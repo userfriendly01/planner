@@ -22,8 +22,7 @@ import {
   FormValidationRule
 } from "utils/interfaces";
 import {
-  batchDelete,
-  batchRoutingCreate,
+  routingBatchDelete,
   batchRoutingUpdate,
   queryRoutingData,
   retrieveRoutingData
@@ -36,6 +35,7 @@ import {
   downloadCSV,
   getGraphQLEndpoint,
   initializedAlertBar,
+  logger,
   routingFields,
   routingInitRule,
   routingInitState
@@ -340,34 +340,8 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
     setSelectedList(selectedRowsData);
   };
 
-  const handleOnBulkCreate = async(rows: Array<CctSharedCallRoutingDb> ) =>{
-    const response = await batchRoutingCreate(rows, accessToken, graphQlApiUrl);
-    if(!response || response.errors) {
-      setAlertBar((alertBarProps: AlertBarProps) => ({
-        ...alertBarProps,
-        open: true,
-        msg: "Error while creating the records.",
-        severityType: "error"
-      }));
-      throw new Error("Error while creating the records.");
-    } else {
-      setAlertBar((alertBarProps: AlertBarProps) => ({
-        ...alertBarProps,
-        open: true,
-        msg: "Routing Rules have been successfully created.",
-        severityType: "success"
-      }));
-    }
-
-    const filteredItems = [...state.filteredItems, ...rows];
-    const filteredData = [...state.data, ...rows];
-    setSelectedList([]);
-    setState({
-      ...state,
-      ...filteredItems && { filteredItems },
-      data: filteredData,
-      isPreviewModalOpen: false
-    });
+  const handleOnBulkCreate = (rows: Array<CctSharedCallRoutingDb> ) =>{
+    logger.log("Bulk Create: ", rows);
   };
 
   const handleOnBulkUpdate = async(rows: Array<CctSharedCallRoutingDb> ) =>{
@@ -420,13 +394,15 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
     const keysToDelete = rows.map(x => {
       return {
         pkey: x.pkey,
-        skey: x.skey
+        skey: x.skey,
+        id: x.id
       };
     }
     );
-    const response = await batchDelete(keysToDelete, accessToken, graphQlApiUrl);
-
-    if(!response || response.errors) {
+    const response = await routingBatchDelete(keysToDelete, accessToken, graphQlApiUrl);
+    if(response?.flag) {
+      const selectedRowsData = response?.failure?.map(x=>state.filteredItems.find((row: CctSharedCallRoutingDb)=>row.id === x.id));
+      setSelectedList(selectedRowsData);
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
         open: true,
@@ -445,16 +421,17 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
 
     setSelectedList([]);
 
-    const deletedIds = rows.map(x => x.id);
+    const deletedIds = response?.success?.map(x => x.id);
     const filteredItems = state?.filteredItems?.filter(x=> deletedIds.indexOf(x.id) === -1);
     const filteredData = state?.data?.filter(x=> deletedIds.indexOf(x.id) === -1);
 
     setState({
       ...state,
       ...filteredItems && { filteredItems },
-      data: filteredData
+      data: filteredData,
+      isPreviewModalOpen: response?.flag || false,
+      fetching: false
     });
-
   };
 
   RoutingGridColumnDef[0].renderCell = (params: GridRenderCellParams<CctSharedCallRoutingDb>) => (<a href="#" onClick={() => openEditModal(true, false, params.row)}>{`${params.value}`}</a>);
@@ -469,6 +446,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
         openAdvanceSearchModal={openAdvanceSearchModal}
         openEditModal={openBulkEditModal}
         openPreviewModal={openPreviewModal}
+        matchedGroups={matchedGroups}
       />
       <RoutingTableBox>
         <DataGrid
@@ -530,7 +508,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
         onDelete={handleOnBulkDelete}
         onUpdate={handleOnBulkUpdate}
         rows={selectedList}
-        maxId={maxRef.current}
+        loading={state.fetching}
       />
     </div>
   );

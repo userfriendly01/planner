@@ -209,6 +209,9 @@ describe("<SkillEntryFormModal />", () => {
       }, {
         label: "test4",
         value: 396
+      }, {
+        label: "test5",
+        value: 12
       }]);
       expect(Dropdown.mock.calls[1][0].options).toEqual([{
         label: "task queue 1",

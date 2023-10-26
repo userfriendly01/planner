@@ -5,6 +5,7 @@ import {
   AutoAwesomeMotion
 } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
+import { logger } from "./logger";
 
 export const formatProfileBooleanData = value => {
   if (value === 1) {
@@ -57,7 +58,6 @@ export const formatCallTagsName = name => {
 
 export const formatSelfServiceIndicatorData = profileId => {
   const formattedProfileId = typeof profileId === "string" ? parseInt(profileId) : profileId; // do we need this extra step? 
-  console.log("formattted profile ID", formattedProfileId);
   if(formattedProfileId >= 39){
     return  <Check />;
   }
@@ -112,6 +112,7 @@ export const createProfilePayload = form => {
     click_to_dial_i: form.clickToDial.value,
     call_reason_i: form.callReason.value,
     eft_authorization_i: form.eftAuthorization.value,
+    claim_number_edit_i: form.claimNumberEdit.value,
     transferQueues: form.transferQueues.filter(queue => queue.ctmSkillId > 0).map(queue => {
       return {
         skill_id: queue.ctmSkillId,
@@ -157,6 +158,7 @@ export const updateProfilePayload = form => {
   form.callReason.updated ? payload.call_reason_i = form.callReason.value : null;
   form.clickToDial.updated ? payload.click_to_dial_i = form.clickToDial.value : null;
   form.eftAuthorization.updated ? payload.eft_authorization_i = form.eftAuthorization.value : null;
+  form.claimNumberEdit.updated ? payload.claim_number_edit_i = form.claimNumberEdit.value : null;
   form.callTagsUpdated ? payload.callTags = form.callTagsList.map(callTag => {
     return {
       wrkr_tsk_info_id: callTag.wrkr_tsk_info_id,
@@ -164,7 +166,7 @@ export const updateProfilePayload = form => {
       options_id: callTag.options_id
     };
   }) : null;
-  console.log(form.accessGroupIdUpdated,"****form.accessGroupId*****",form.accessGroupId);
+  logger.log(form.accessGroupIdUpdated,"****form.accessGroupId*****",form.accessGroupId);
   form.accessGroupIdUpdated ? payload.access_group_id = form.accessGroupId : null;
   return payload;
 };

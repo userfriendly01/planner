@@ -22,8 +22,6 @@ const BulkUpdateManager = (props: BulkUpdateProps) => {
     calabrioTeamId: ""
   });
 
-  console.log("BulkUpdateForm - selectedTemplates", selectedTemplates);
-
   React.useEffect(() => {
     //If the entries are valid, update/add the template to the selected templates.
     //If they arent valid, remove the template from the selected templates

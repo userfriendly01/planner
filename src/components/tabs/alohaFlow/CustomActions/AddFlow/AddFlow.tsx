@@ -41,14 +41,18 @@ import {
   getGraphQLEndpoint,
   initializedAlertBar,
   languageOffer,
+  tfnRoutingGroup,
   userDestination,
-  flowType
+  flowType,
+  checkGreetingMessageRegExp
 } from "utils";
 import { getGridMasterData } from "../../DataGridFlow/GridMaster";
 import {
   AlertBarProps, FormValidationRule
 } from "utils/interfaces";
-import { AzureSPA } from "globals";
+import {
+  AzureSPA, DuplicateCheck
+} from "globals";
 import { AddOrView } from "../CustomActionsCommon/AddOrView";
 export interface AddFlowModalProps {
   isOpen: boolean;
@@ -56,10 +60,11 @@ export interface AddFlowModalProps {
   openAddModal: (flag: boolean, isSubmitted?: boolean, row?:CctSharedCallFlowDb) => void;
   cloneType?: boolean;
   flowRuleCloned?: FormValidationRule;
+  duplicateCheck?: (params: FormValidationRule) => DuplicateCheck
 }
 
 export const AddFlow = ({
-  accessToken, matchedGroups, isOpen = false, newId, openAddModal, cloneType, flowRuleCloned
+  accessToken, matchedGroups, isOpen = false, newId, openAddModal, cloneType, flowRuleCloned, duplicateCheck
 }: AddFlowModalProps & AzureSPA):JSX.Element => {
 
   const graphQlApiUrl: string = getGraphQLEndpoint();
@@ -85,11 +90,12 @@ export const AddFlow = ({
         ...dropDownValuesProps,
         brand: masterDataObject.brand,
         channel: masterDataObject.channel,
-        languageOffer: languageOffer,
-        userDestination: userDestination,
+        languageOffer,
+        userDestination,
         callFlowRoute: masterDataObject?.callFlowRoute,
         callerType: masterDataObject?.callerType,
         dataRequests: masterDataObject?.dataRequests,
+        tfnRoutingGroup,
         type: flowType
       }));
     }
@@ -140,6 +146,9 @@ export const AddFlow = ({
   }
 
   const isInvalidField =(key: string, value: string): boolean =>{
+    if(key === "greetingMessages"){
+      return checkGreetingMessageRegExp(value);
+    }
     return flowRule[key].required && [undefined, "", null].includes(value);
   };
   const findFieldValue = (key: string): boolean => {
@@ -200,7 +209,18 @@ export const AddFlow = ({
         ?.split(",")
         ?.map(a => a.trim())
         ?.filter(a => a.length > 0);
-
+      const {
+        isDuplicate, message
+      } = duplicateCheck(flowRule);
+      if(isDuplicate){
+        setAlertBar((alertBarProps: AlertBarProps) => ({
+          ...alertBarProps,
+          "open": true,
+          "severityType": "error",
+          "msg": message
+        }));
+        return;
+      }
       addFlowRule(flowRule, accessToken, graphQlApiUrl, curTime, dataRequests).then(apiResponse => {
         if (!apiResponse.errors) {
           const newFlowRule: CctSharedCallFlowDb = {
@@ -236,7 +256,9 @@ export const AddFlow = ({
             requestID: stringValue(flowRule,"requestID", ""),
             userDestination: flowRule.userDestination.value || "",
             rangeIndicator: stringValue(flowRule,"rangeIndicator", ""),
-            type: flowRule.type.value || ""
+            tfnRoutingGroup: stringValue(flowRule,"tfnRoutingGroup", ""),
+            type: flowRule.type.value || "",
+            predictiveCaller: flowRule.predictiveCaller.value || false
           };
           openAddModal(false, true, newFlowRule);
           setAlertBar((alertBarProps: AlertBarProps) => ({

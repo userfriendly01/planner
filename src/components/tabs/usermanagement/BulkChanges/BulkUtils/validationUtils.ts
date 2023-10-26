@@ -6,7 +6,10 @@ import {
   formatErrorMessage
 } from "../BulkUtils";
 import { FIELDS } from "../BulkTemplates/fields";
-import { getWfmPeople } from "utils";
+import {
+  getWfmPeople,
+  logger
+} from "utils";
 import { AppState } from "globals";
 
 /**
@@ -79,13 +82,13 @@ export const performValidations = async (
     const nNumberPromises = await Promise.allSettled(nNumberFields.map((field: any) => {
       return field.validateFunction(row, state);
     }));
-    
+
     const fieldPromises = await Promise.allSettled(otherFields.map((field: any) => {
       return field.validateFunction(row, state);
     }));
 
     progressCallback((previousCount: number) => (previousCount + 1));
-    
+
     return [
       ...nNumberPromises,
       ...fieldPromises
@@ -100,7 +103,8 @@ export const performValidations = async (
     }));
   }
 
-  console.log("***performValidations results: ", validationPromises);
+  logger.log("***performValidations results: ", validationPromises);
+
   validationPromises.forEach((rowPromise: any) => {
     let rowNumber: any;
     const rowErrors: any = [];
@@ -150,26 +154,35 @@ export const checkConflictingCalabrioUsers = async (user: any, rowNumber: number
         const dupUserEmail = cleanupField(u.email, "string");
 
         if (acdId && dupUserAcdId === acdId) {
-          console.log("CALABRIO CONFLICTING USERS: ", acdId, dupUserAcdId);
+          logger.log("CALABRIO CONFLICTING USERS: ", {
+            acdId,
+            dupUserAcdId
+          });
           throw(`Calabrio Record already exists with this user's acdId for row ${rowNumber}.`);
         }
 
         if (adLogin && dupUserAdLogin === adLogin) {
-          console.log("CALABRIO CONFLICTING USERS: ", dupUserAdLogin, adLogin);
+          logger.log("CALABRIO CONFLICTING USERS: ", {
+            dupUserAdLogin,
+            adLogin
+          });
           throw(`Calabrio Record already exists with this user's nNumber in the AdLogin field for row ${rowNumber}.`);
         }
 
         if (email && dupUserEmail === email) {
-          console.log("CALABRIO CONFLICTING USERS: ", dupUserEmail, email);
+          logger.log("CALABRIO CONFLICTING USERS: ", {
+            dupUserEmail,
+            email
+          });
           throw(`Calabrio Record already exists with this user's email for row ${rowNumber}.`);
         }
       }));
       return Promise.resolve(`Calabrio Checks passed for ${rowNumber}`);
-    } catch(err) {
-      console.error("Error thrown trying to fetch and validate Conflicting Users", err);
+    } catch(error) {
+      logger.error("Error thrown trying to fetch and validate Conflicting Users", { error }, false);
       return Promise.reject(JSON.stringify({
         rowNumber: rowNumber,
-        error: formatErrorMessage(err)
+        error: formatErrorMessage(error)
       }));
     }
   } else {
@@ -200,13 +213,19 @@ export const checkIfConflictingWFMPeople = (user: any, state: AppState): boolean
         const dupUserEmail = cleanupField(people[i].Email, "string");
 
         if (nNumber && dupUserNNumber === nNumber) {
-          console.log("CALABRIO WFM CONFLICTING USERS: ", dupUserNNumber, nNumber);
+          logger.log("CALABRIO WFM CONFLICTING USERS: ", {
+            dupUserNNumber,
+            nNumber
+          });
           hasConflict = true;
           break;
         }
 
         if (email && dupUserEmail === email) {
-          console.log("CALABRIO WFM CONFLICTING USERS: ", dupUserEmail, email);
+          logger.log("CALABRIO WFM CONFLICTING USERS: ", {
+            dupUserEmail,
+            email
+          });
           hasConflict = true;
           break;
         }
@@ -214,8 +233,8 @@ export const checkIfConflictingWFMPeople = (user: any, state: AppState): boolean
 
       return hasConflict;
 
-    } catch(err) {
-      console.error("Error thrown trying to fetch and validate Conflicting Users", err);
+    } catch(error) {
+      logger.error("Error thrown trying to fetch and validate Conflicting Users", { error }, false);
     }
   }
 };
@@ -244,7 +263,7 @@ export const allowedEmptyScheduleField = (row: any, fieldName: string) => {
   if (fieldIsAllOrNothing) {
     allOrNothingFields.forEach((field: string) => {
       if (row[field]) {
-        console.log(`INVALID EMPTY FIELD ${fieldName} cannot be empty due to the following field being populated: ${field}`);
+        logger.log(`INVALID EMPTY FIELD ${fieldName} cannot be empty due to the following field being populated: ${field}`, {});
         isValid = false;
       }
     });

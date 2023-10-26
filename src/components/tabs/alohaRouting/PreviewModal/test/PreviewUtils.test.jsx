@@ -1,3 +1,4 @@
+import React from "react";
 import { TableGridColumnDef } from "../TableGridColumnDef";
 import { reconstructTableColumnDef } from "../previewUtils";
 import { ROUTING_CACHE_MASTER_DATA } from "../../../../../utils";

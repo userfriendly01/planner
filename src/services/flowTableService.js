@@ -1,5 +1,7 @@
 /* eslint-disable no-console */
 
+import { logger } from "utils";
+
 /**
  * This is the function use to query the appsync API to get the data from DB
  * @param {String} accessToken OAuth tokent to use while calling graphql query
@@ -48,8 +50,10 @@ async function queryFlowData(accessToken, nextToken = null, graphQlApiUrl) {
                   lineOfBusiness
                   marketingChannel
                   pkey
+                  predictiveCaller
                   rangeIndicator
                   requestID
+                  tfnRoutingGroup
                   tollFreeNumber
                   transferCode
                   type
@@ -64,7 +68,7 @@ async function queryFlowData(accessToken, nextToken = null, graphQlApiUrl) {
     });
     result = await response.json();
   } catch (error) {
-    console.error("Error in queryFlowData", error);
+    logger.error("Error in queryFlowData", { error }, false);
   }
   return result;
 }
@@ -99,7 +103,7 @@ async function retrieveFlowData(accessToken, graphQlApiUrl,firstChunkData) {
       isFirstTime = false;
     }
   } catch (error) {
-    console.error("Error in retrieveFlowData", error);
+    logger.error("Error in retrieveFlowData", { error }, false);
   }
   return flowData;
 }
@@ -137,7 +141,9 @@ function addFlowInput (item, dataRequestsPassed, currentTimePassed){
     requestID: item.requestID?.value || "",
     userDestination: item.userDestination?.value||"",
     rangeIndicator: item.rangeIndicator?.value || "",
-    type: item.type?.value || ""
+    type: item.type?.value || "",
+    tfnRoutingGroup: item.tfnRoutingGroup?.value || "",
+    predictiveCaller: item.predictiveCaller?.value || false
   };
   if(item.employeeId?.value){
     input.employeeId = item.employeeId.value;
@@ -178,7 +184,9 @@ function updateFlowInput(item){
     requestID: item.requestID || "",
     userDestination: item.userDestination || "",
     rangeIndicator: item.rangeIndicator || "",
-    type: item.type || ""
+    type: item.type || "",
+    tfnRoutingGroup: item.tfnRoutingGroup || "",
+    predictiveCaller: item.predictiveCaller || false
   };
   if(item.employeeId){
     input.employeeId = item.employeeId;
@@ -236,10 +244,12 @@ async function updateFlowDB(item, accessToken, graphQlApiUrl) {
               tollFreeNumber
               lineOfBusiness
               marketingChannel
+              predictiveCaller
               whisper
               requestID
               userDestination
               rangeIndicator
+              tfnRoutingGroup
               type
       }
           }
@@ -252,7 +262,7 @@ async function updateFlowDB(item, accessToken, graphQlApiUrl) {
 
     response = await fetchResponse.json();
   } catch (error) {
-    console.error("Error in updateFlowDB", error);
+    logger.error("Error in updateFlowDB", { error }, false);
   }
   return response;
 }
@@ -307,10 +317,12 @@ async function addFlowRule(item, accessToken, graphQlApiUrl, curTime = new Date(
               tollFreeNumber
               lineOfBusiness
               marketingChannel
+              predictiveCaller
               whisper
               requestID
               userDestination
               rangeIndicator
+              tfnRoutingGroup
               type
             }
           }
@@ -321,9 +333,9 @@ async function addFlowRule(item, accessToken, graphQlApiUrl, curTime = new Date(
       })
     });
     response = await fetchResponse.json();
-    console.log("Add Flow Rule Response:", response);
+    logger.log("Add Flow Rule Response:", response);
   } catch (error) {
-    console.error("Error in Adding Flow Rule", error);
+    logger.error("Error in Adding Flow Rule", { error }, false);
   }
   return response;
 }
@@ -379,9 +391,11 @@ async function deleteFlowRule(item, accessToken, graphQlApiUrl) {
               tollFreeNumber
               lineOfBusiness
               marketingChannel
+              predictiveCaller
               whisper
               requestID
               rangeIndicator
+              tfnRoutingGroup
               type
             }
           }
@@ -392,17 +406,45 @@ async function deleteFlowRule(item, accessToken, graphQlApiUrl) {
       })
     });
     response = await fetchResponse.json();
-    console.log("Delete Flow Rule Response:", response);
+    logger.log("Delete Flow Rule Response:", response);
   } catch (error) {
-    console.error("Error in Deleting Flow Rule", error);
+    logger.error("Error in Deleting Flow Rule", { error }, false);
+  }
+  return response;
+}
+async function batchDeleteItems(items,accessToken,graphQlApiUrl){
+  var flowDeleteArray=[];
+  const size=24;
+  const response = {
+    "success": [],
+    "flag": false,
+    "failure": []
+  };
+  while (items.length > 0){
+    flowDeleteArray.push(items.splice(0, size));
+  }
+  for(const flowValue of flowDeleteArray){
+    const successResponse=response.success;
+    const failureResponse= response.failure;
+    const flowRespKeys = flowValue.map(x=>({ "pkey": x }));
+    await flowBatchDelete(flowValue,accessToken,graphQlApiUrl).then(resp=>{
+      if(!resp?.errors){
+        response.success = successResponse.concat(flowRespKeys);
+      }
+      else{
+        console.error("error while deleting the records", resp.errors);
+        response.failure = failureResponse.concat(flowRespKeys);
+        response.flag = true;
+      }
+    });
   }
   return response;
 }
 
-async function flowBatchDelete(items, accessToken, graphQlApiUrl) {
-  let response;
 
-  try {
+async function flowBatchDelete(items, accessToken, graphQlApiUrl){
+  let response;
+  try{
     const body = JSON.stringify({
       query: `
         mutation DeleteManyFlow {
@@ -428,9 +470,9 @@ async function flowBatchDelete(items, accessToken, graphQlApiUrl) {
       body
     });
     response = await fetchResponse.json();
-    console.log("Batch Delete Flow Rule Response:", response);
+    logger.log("Batch Delete Flow Rule Response:", response);
   } catch (error) {
-    console.error("Error in Flow Batch Delete", error);
+    logger.error("Error in Flow Batch Delete", { error }, false);
   }
   return response;
 }
@@ -438,9 +480,9 @@ async function flowBatchDelete(items, accessToken, graphQlApiUrl) {
 /**
  * This is the Function to batch update the Flow Object to the DB
  * @param {flowData} items List of Flow object that need to update
- * @param {String} accessToken token to use while calling graphql query 
- * @param {String} graphQlApiUrl Endpoint URL 
- * @returns 
+ * @param {String} accessToken token to use while calling graphql query
+ * @param {String} graphQlApiUrl Endpoint URL
+ * @returns
  */
 const batchFlowUpdate = async(items, accessToken, graphQlApiUrl) =>{
   if(items.length === 0){
@@ -479,10 +521,12 @@ const batchFlowUpdate = async(items, accessToken, graphQlApiUrl) =>{
       tollFreeNumber: item.tollFreeNumber || "",
       lineOfBusiness: item.lineOfBusiness || "",
       marketingChannel: item.marketingChannel || "",
+      predictiveCaller: item.predictiveCaller || false,
       whisper: item.whisper || "",
       requestID: item.requestID || "",
       userDestination: item.userDestination || "",
       rangeIndicator: item.rangeIndicator || "",
+      tfnRoutingGroup: item.tfnRoutingGroup || "",
       type: item.type || ""
     };
   });
@@ -523,9 +567,11 @@ const batchFlowUpdate = async(items, accessToken, graphQlApiUrl) =>{
               lineOfBusiness
               marketingChannel
               pkey
+              predictiveCaller
               rangeIndicator
               requestID
               tollFreeNumber
+              tfnRoutingGroup
               transferCode
               type
               userDestination
@@ -540,121 +586,9 @@ const batchFlowUpdate = async(items, accessToken, graphQlApiUrl) =>{
       })
     });
     response = await fetchResponse.json();
-    console.log("Update Batch Flow DB Response:", response);
+    logger.info("Update Batch Flow DB Response:", { response });
   } catch (error) {
-    console.error("Error in Update Batch Flow DB", error);
-  }
-  return response;
-};
-
-/**
- * This is the Function to batch create the Flow Object to the DB
- * @param {flowData} items List of Flow object that need to update
- * @param {String} accessToken token to use while calling graphql query 
- * @param {String} graphQlApiUrl Endpoint URL 
- * @returns 
- */
-const batchFlowCreate = async(items, accessToken, graphQlApiUrl) =>{
-  if(items.length === 0){
-    return {
-      errors: [
-        "Please Select Something to Add"
-      ]
-    };
-  }
-  let response;
-  const input = items.map(item=>{
-    return {
-      pkey: item.pkey,
-      agentId: item.agentId || "",
-      brand: item.brand,
-      callFlowTemplate: item.callFlowTemplate || "",
-      channel: item.channel,
-      content: {
-        callIntent: item.content?.callIntent || "",
-        callFlowRoute: item.content?.callFlowRoute || "",
-        callerType: item.content?.callerType || "",
-        greetingMessages: item.content?.greetingMessages || "",
-        transferNumber: item.content?.transferNumber || "",
-        languageOffer: item.content?.languageOffer || "",
-        dataRequests: item.content?.dataRequests
-      },
-      createTime: item.createTime,
-      dialedDescription: item.dialedDescription,
-      accountManager: item.accountManager || "",
-      affinityVDN: item.affinityVDN || "",
-      callTypeDescription: item.callTypeDescription || "",
-      transferCode: item.transferCode || "",
-      internetPlacement: item.internetPlacement || "",
-      callDetails1: item.callDetails1 || "",
-      callDetails2: item.callDetails2 || "",
-      tollFreeNumber: item.tollFreeNumber || "",
-      lineOfBusiness: item.lineOfBusiness || "",
-      marketingChannel: item.marketingChannel || "",
-      whisper: item.whisper || "",
-      requestID: item.requestID || "",
-      userDestination: item.userDestination || "",
-      rangeIndicator: item.rangeIndicator || "",
-      type: item.type || ""
-    };
-  });
-  try {
-    const fetchResponse = await fetch(graphQlApiUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: accessToken
-      },
-      body: JSON.stringify({
-        query: `
-        mutation batchCreateCctSharedCallFlowDb($input: CctSharedCallFlowDbBatchCreateInput!) {
-          batchCreateCctSharedCallFlowDb(input: $input) {
-            items {
-              accountManager
-              affinityVDN
-              agentId
-              brand
-              callDetails1
-              callDetails2
-              callFlowTemplate
-              callTypeDescription
-              channel
-              content {
-                callFlowRoute
-                callIntent
-                callerType
-                dataRequests
-                greetingMessages
-                languageOffer
-                transferNumber
-              }
-              createTime
-              dialedDescription
-              employeeId
-              internetPlacement
-              lineOfBusiness
-              marketingChannel
-              pkey
-              rangeIndicator
-              requestID
-              tollFreeNumber
-              transferCode
-              type
-              userDestination
-              whisper
-            }
-          }
-        }
-      `,
-        variables: {
-          input: { batchFlowCreateInput: input }
-        }
-      })
-    });
-    response = await fetchResponse.json();
-    console.log("Create Batch Flow DB Response:", response);
-  } catch (error) {
-    console.error("Error in Create Batch Flow DB", error);
+    logger.error("Error in Update Batch Flow DB", { error });
   }
   return response;
 };
@@ -667,5 +601,5 @@ export {
   queryFlowData,
   flowBatchDelete,
   batchFlowUpdate,
-  batchFlowCreate
+  batchDeleteItems
 };

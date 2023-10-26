@@ -10,7 +10,8 @@ import {
   getE164Number,
   calabrioAllowedRoles,
   calabrioTimeZones,
-  getOverflowSkillFromProfile
+  getOverflowSkillFromProfile,
+  logger
 } from "utils";
 import {
   formatDateFromExcelDate
@@ -89,8 +90,8 @@ export const FIELDS: Fields = {
           row.attributes.firstName = fetchedUser.firstName;
           row.attributes.lastName = fetchedUser.lastName;
           return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
-        } catch(err) {
-          console.error(err.message, err);
+        } catch(error) {
+          logger.error(error.message, { error }, false);
           return rejectPromise(`Error thrown fetching ${fieldName} from HR Database for row ${rowNumber}`, rowNumber);
         }
       }
@@ -122,8 +123,8 @@ export const FIELDS: Fields = {
           } else {
             return rejectPromise(`${field} is not an existing setup worker in Triton for row ${rowNumber}`, rowNumber);
           }
-        } catch(err) {
-          console.error(err.message, err);
+        } catch(error) {
+          logger.error(error.message, { error }, false);
           return rejectPromise(`Error thrown fetching ${fieldName} from state for row ${rowNumber}`, rowNumber);
         }
       }
@@ -178,8 +179,8 @@ export const FIELDS: Fields = {
 
           row.attributes.manager_first_name = fetchedUser.firstName;
           row.attributes.manager_last_name = fetchedUser.lastName;
-        } catch (err) {
-          console.error(err.message, err);
+        } catch (error) {
+          logger.error(error.message, { error }, false);
           return rejectPromise(`Error thrown fetching ${fieldName} from HR Database for row ${rowNumber}`, rowNumber);
         }
         return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
@@ -305,8 +306,9 @@ export const FIELDS: Fields = {
         try {
           extension = await generateExtension(workers);
           row.attributes.extension = cleanupField(extension, "number");
-        } catch (err) {
-          console.error("Error generating extension", err);
+        } catch (error) {
+          logger.error("Error generating extension", { error }, false);
+
           return rejectPromise(`Unable to generate ${fieldName} for row ${rowNumber}`, rowNumber);
         }
         return Promise.resolve(`${fieldName} ${extension} set for row ${rowNumber}`);
@@ -550,7 +552,7 @@ export const FIELDS: Fields = {
       state.profileContext.profiles.map((p: any) => {
         const profileId = p.profile_id;
         if(p.routing_teams){
-          p.routing_teams.forEach((t: any) => optionsArray.push(`Profile ${profileId}: ${t.routing_team_nme}`))
+          p.routing_teams.forEach((t: any) => optionsArray.push(`Profile ${profileId}: ${t.routing_team_nme}`));
         }
       });
       return optionsArray;
@@ -646,9 +648,9 @@ export const FIELDS: Fields = {
             }
           });
           return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
-        } catch(err) {
-          console.error("Error Thrown validating calabrio scope", err);
-          return rejectPromise(err.message, rowNumber);
+        } catch(error) {
+          logger.error("Error Thrown validating calabrio scope", { error }, false);
+          return rejectPromise(error.message, rowNumber);
         }
       }
     }

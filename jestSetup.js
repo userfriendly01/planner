@@ -3,11 +3,43 @@ require("jest-styled-components");
 
 beforeAll(() => {
   console.log = jest.fn();
-  console.error = jest.fn();
+  console.info = jest.fn();
   console.warn = jest.fn();
+  console.error = jest.fn();
 });
 
+// Mock Data Dog globally so it doesn't try to start
+jest.mock("@datadog/browser-rum", () => ({
+  datadogRum: {
+    init: jest.fn(),
+    setGlobalContextProperty: jest.fn()
+  }
+}));
+
+jest.mock("@datadog/browser-logs", () => ({
+  datadogLogs: {
+    init: jest.fn(),
+    setLoggerGlobalContext: jest.fn(),
+    logger: {
+      log: jest.fn()
+    }
+  }
+}));
+
 jest.mock("authentication");
+
+jest.mock("utils/logger", () => ({
+  logger: {
+    log: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn()
+  }
+}));
+
+jest.mock("utils/getEnvVariables", () => ({
+  getEnvVariables: () => new Promise(resolve => resolve(new Map()))
+}));
 
 /* Services are mocked at a global level.
 We did this because of a WEIRD glitch where the utils folder cant mock files within the project.
@@ -27,9 +59,8 @@ jest.mock("services", () => ({
   addSkillGroup: jest.fn(),
   addSkillGroupSkill: jest.fn(),
   batchDelete: jest.fn(),
+  batchDeleteItems: jest.fn(),
   batchFlowUpdate: jest.fn(),
-  batchFlowCreate: jest.fn(),
-  batchRoutingCreate: jest.fn(),
   batchRoutingUpdate: jest.fn(),
   flowBatchDelete: jest.fn(),
   checkExtension: jest.fn(),
@@ -66,6 +97,7 @@ jest.mock("services", () => ({
   queryRoutingData: jest.fn(),
   retrieveFlowData: jest.fn(),
   retrieveRoutingData: jest.fn(),
+  routingBatchDelete: jest.fn(),
   updateCalabrioUser: jest.fn(),
   updateClosedMessage: jest.fn(),
   updateDirectory: jest.fn(),

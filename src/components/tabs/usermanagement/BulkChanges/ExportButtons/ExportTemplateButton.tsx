@@ -9,7 +9,6 @@ const ExportTemplateButton = (props: any) => {
   const { template } = props;
 
   const _export = React.useRef(null);
-  console.log("ExportTemplateButton Template", template);
 
   const handleExport = () => {
     const rows: any = [];
@@ -38,9 +37,6 @@ const ExportTemplateButton = (props: any) => {
 
     rows.push(description);
     rows.push(example);
-
-    console.log("rows", rows);
-    console.log("columns", columns);
 
     if (_export !== null) {
       _export.current.save(rows, columns);

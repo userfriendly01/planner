@@ -20,6 +20,7 @@ import {
 } from "globals";
 import { Tooltip } from "@mui/material";
 import {
+  logger,
   myAxios,
   sortActivityByName
 } from "utils";
@@ -52,7 +53,7 @@ const ProfileActivitiesSelectField = (props: ProfileActivitiesSelectFieldProps) 
         .then((allActivities: Activity[]) => {
           setActivities(allActivities);
         })
-        .catch(error => console.error(error.msg));
+        .catch(error => logger.error(error.msg, { error }, false));
     }
   }, []);
 

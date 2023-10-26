@@ -8,7 +8,9 @@ export const flowDropDownList: FlowDropDownList = {
   "callFlowRoute": [],
   "callerType": [],
   "dataRequests": [],
+  "tfnRoutingGroup" : [],
   "type": []
+
 };
 export const CACHE_FILTER_FLOW = "SEARCH_FILTER_FLOW";
 export const CALL_FLOW_PAGE_NO = "CALL_FLOW_PAGE_NO";
@@ -17,6 +19,7 @@ export const FLOW_MASTER_DATA = "FLOW_MASTER_DATA";
 export const languageOffer = ["English", "Spanish"];
 export const userDestination = ["Avaya", "Twilio"];
 export const flowType = ["DID", "DRC", "LSC", "TFN"];
+export const tfnRoutingGroup = ["Premier Partners", "TruStage", "TruStageNavy", "USAA", "High Touch Products", "Online Inbound", "Core"];
 
 export const getAdvanceFilter = (storageKeyName: string): { [key: string]: undefined; } => {
   let advanceFilter: { [key: string]: undefined; };
@@ -32,4 +35,9 @@ export const getAdvanceFilter = (storageKeyName: string): { [key: string]: undef
     advanceFilter = {};
   }
   return advanceFilter;
+};
+
+export const checkGreetingMessageRegExp = (value: string): boolean => {
+  const reg = new RegExp("^[a-zA-Z0-9,@:=<>./\\-\\'\" ñáéíóú]+$");
+  return value && !reg.test(value);
 };

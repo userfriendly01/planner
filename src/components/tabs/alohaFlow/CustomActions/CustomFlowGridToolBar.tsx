@@ -1,20 +1,21 @@
 import {
-  Chip, FormControl, InputLabel, MenuItem, Select, Grid, TextField, IconButton, Paper, Tooltip
+  Chip, FormControl, InputLabel, MenuItem, Select, Grid, TextField, IconButton, Tooltip
 } from "@mui/material";
 import React, {
-  useState, useEffect
+  useState, useEffect, useMemo
 } from "react";
 import {
-  CACHE_FILTER_FLOW, getAdvanceFilter
+  CACHE_FILTER_FLOW, getAdvanceFilter, readWriteAccess
 } from "utils";
 import {
   FlowAdvanceFilter, PreviewModalAction
 } from "../AlohaFlow.Interfaces";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
-import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import DeleteSweepOutlinedIcon from "@mui/icons-material/DeleteSweepOutlined";
-import EditNoteOutlinedIcon from "@mui/icons-material/EditNoteOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import { useAdminState } from "context";
+import EditNoteOutlinedIcon from "@mui/icons-material/EditNoteOutlined";
 
 
 interface CustomFlowGridToolBarProps {
@@ -24,14 +25,16 @@ interface CustomFlowGridToolBarProps {
   exportDataFile: ()=> void;
   applyFilter?: () => void;
   isAdvanceSearchOpen?: boolean;
+  matchedGroups?: any[];
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const CustomFlowGridToolBar = ({
-  openAddModal, openPreviewModal, openAdvanceSearchModal, exportDataFile, applyFilter, isAdvanceSearchOpen
+  openAddModal, openPreviewModal, openAdvanceSearchModal, exportDataFile, applyFilter, matchedGroups,isAdvanceSearchOpen
 }:CustomFlowGridToolBarProps) =>{
   const [flowFilter, setFlowFilter] = useState<FlowAdvanceFilter>();
-
+  const env: string = useAdminState().userContext.pingIdentity.environment;
+  const enableFlow = useMemo(() => readWriteAccess(matchedGroups,"aloha-flow",env), []);
   useEffect(()=>{
     const localFilter = getAdvanceFilter(CACHE_FILTER_FLOW);
     setFlowFilter(localFilter);
@@ -84,7 +87,6 @@ const CustomFlowGridToolBar = ({
               />
             ))
           }}
-
           fullWidth
           id="flow-SearchBox-input"
           label="Search"
@@ -94,21 +96,25 @@ const CustomFlowGridToolBar = ({
           onClick={()=>openAdvanceSearchModal(true)}
         />
       </Grid>
-      <Grid item key = "Export FlowUI" xs={1}>
-        <Grid><div><br/><br/></div></Grid>
-        <Tooltip title="Export Flow Records" sx={{
-          left: "calc(76%)",
-          marginLeft: "24"
+      <Grid item key = "Export FlowUI" xs={1} >
+        <Tooltip title="Export Flow Records" placement="right-start"  sx={{
+          left: "calc(76%)"
         }}>
-          <Paper variant="outlined" >
-            <IconButton
-              onClick={exportDataFile}
-              color = "primary"
-              size = "small"
-              sx ={{ position: "fixed" }}
-            > <FileDownloadIcon />
-            </IconButton>
-          </Paper>
+          <IconButton
+            onClick={exportDataFile}
+            color = "primary"
+            size = "small"
+            sx ={{
+              position: "relative",
+              marginTop: "36px",
+              marginLeft: "36px",
+              ":hover": {
+                backgroundColor: "grey",
+                color: "white"
+              }
+            }}
+          > <SaveAltIcon />
+          </IconButton>
         </Tooltip>
       </Grid>
       <Grid item key="flow-action-box" xs={2}>
@@ -126,6 +132,7 @@ const CustomFlowGridToolBar = ({
             }}
             label="Actions"
             value=""
+            disabled = {enableFlow}
             onChange={handleChange}
             variant="filled"
             size="small"

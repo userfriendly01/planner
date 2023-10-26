@@ -5,7 +5,7 @@ import {
   RoutingHeadingStyled, RoutingModalBodyStyled, RoutingModalFooterStyled
 } from "../../AlohaRouting.Styles";
 import React, {
-  useState, useEffect
+  useState, useEffect, useMemo
 } from "react";
 import {
   convertTime12to24,convertTime24to12, getGraphQLEndpoint, routingFields, routingInitRule, initializedAlertBar, routingDropDownList, dayOfWeek
@@ -26,10 +26,11 @@ import {
   deleteRoutingRule, updateRoutingDB
 } from "services";
 import { AzureSPA } from "globals";
+import { readWriteAccess } from "utils/configUtils";
+import { useAdminState } from "context";
 interface EditRoutingComponentProps {
   accessToken: string;
   isOpen: boolean;
-  matchedGroups: string;
   selectedRow: CctSharedCallRoutingDb;
   openEditModal: (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallRoutingDb, message?: string, deleteRow?: boolean,isCloneRule?: boolean) => void;
 }
@@ -44,6 +45,9 @@ export const EditRouting = ({
   const [dropDownValues, setDropDownValues] = useState(routingDropDownList);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
   const defaultValue: { [key: string]: any } = {};
+  const env: string = useAdminState().userContext.pingIdentity.environment;
+  const enableRouting = useMemo(() => readWriteAccess(matchedGroups,"aloha-route",env), []);
+
   useEffect(() => {
     setDropDownValues((dropDownOptions: RoutingDropDownList) => ({
       ...dropDownOptions,
@@ -265,6 +269,7 @@ export const EditRouting = ({
             value="Save"
             color="primary"
             sx={{ marginRight: 2 }}
+            disabled={enableRouting}
             onClick={() => handleOnSave()}
           >
                         Save Rule
@@ -273,6 +278,7 @@ export const EditRouting = ({
             variant="contained"
             value="Clone"
             color="primary"
+            disabled={enableRouting}
             sx={{ marginRight: 2 }}
             onClick={() => handleClone()}
           >
@@ -282,6 +288,7 @@ export const EditRouting = ({
             variant="contained"
             color="error"
             value="Delete"
+            disabled={enableRouting}
             sx={{ marginRight: 2 }}
             onClick={() => handleOnDelete()}
           >

@@ -4,6 +4,9 @@ import {
 import { useAdminState } from "context";
 import { AlertBarProps } from "./interfaces";
 import { GraphQLErrors } from "globals";
+import {
+  getAdGroupPermissionMapping
+} from "authentication";
 
 /**
  *  This function return graphQL endpoint based on running environment  
@@ -44,9 +47,9 @@ export const EXPORT_FILE_PREFIX: {
   FLOW: "call-flow"
 };
 
-const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb |CctSharedCallRoutingDb>): string => {
+const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb |CctSharedCallRoutingDb>, prefix: string): string => {
   let result: string;
-  const columnDelimiter = ",";
+  const columnDelimiter = "|";
   const lineDelimiter = "\n";
   if(array.length ===0){
     return;
@@ -74,7 +77,8 @@ const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb |CctSharedCa
     keys = contentStore;
   }
   result = "";
-  result += keys.join(columnDelimiter);
+  const header = keys.map((key: string)=>key === "pkey" && prefix === EXPORT_FILE_PREFIX.FLOW? "dialedPhoneNumber": key);
+  result += header.join(columnDelimiter);
   result += lineDelimiter;
   array.forEach((item:CctSharedCallFlowDb & CctSharedCallRoutingDb) => {
     let ctr = 0;
@@ -94,7 +98,6 @@ const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb |CctSharedCa
       }
       else if(itemValue){
         itemValue = itemValue.toString();
-        itemValue = itemValue.replace(/,/g,"");
       }
       result += itemValue;
       ctr += 1;
@@ -106,7 +109,7 @@ const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb |CctSharedCa
 
 export const  downloadCSV = (prefix: string, array:Array<CctSharedCallFlowDb |CctSharedCallRoutingDb>): JSX.Element => {
   const link: HTMLAnchorElement = document.createElement("a");
-  let csv: string = convertArrayOfObjectsToCSV(array);
+  let csv: string = convertArrayOfObjectsToCSV(array, prefix);
   if (csv === null || csv===undefined) { return; }
   const filename = `${prefix}-${Date.now()}.csv`;
   if (!csv.match(/^data:text\/csv/i)) {
@@ -125,4 +128,17 @@ export const cleanErrorMessage = (graphQLErrors: GraphQLErrors[]): string => {
     return ErrorDuplicateRecord;
   }
   return graphQLErrors[0].message;
+};
+
+export const readWriteAccess=(matchedGroups:any[], alohaTabType:string, env:string):boolean=>{
+  let flag = true;
+  matchedGroups?.forEach((item: any)=>{
+    if(item.startup.name === alohaTabType && item.permissionLevel === "write"){
+      item.environments.forEach((envVar: string)=>{
+        if(envVar === env){
+          flag = false;
+        }
+      });
+    } });
+  return flag;
 };

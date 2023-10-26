@@ -53,6 +53,7 @@ const MultiFieldContainerModalView = ({
     let key: string = event.target.name;
     let value = event.target.value;
     const type = event.target.type;
+
     if(type === "number" ){
       value=parseInt(value);
     }

@@ -7,7 +7,6 @@ const ExportErrorsButton = (props: any) => {
   const { errors } = props;
 
   const _export = React.useRef(null);
-  console.log("ExportErrorsButton Template", errors);
 
   const handleExport = () => {
     const rows: any = [];
@@ -37,8 +36,6 @@ const ExportErrorsButton = (props: any) => {
       });
     });
 
-    console.log("rows", rows);
-    console.log("columns", columns);
     if (_export !== null) {
       _export.current.save(rows, columns);
     }

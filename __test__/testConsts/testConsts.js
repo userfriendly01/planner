@@ -4,7 +4,7 @@ export const managerList = [
     manager_last_name: "Wick",
     manager_n_number: "n1234567",
     manager_id: "01",
-    profile_id: 11,
+    profile_id: 11
   },
   {
     manager_first_name: "Test",
@@ -70,6 +70,13 @@ export const profileList = [
     overflow_skill: "weirdNumberSkill",
     operating_unit_nme: "operatingUnitName",
     operating_unit_sid: "operatingUnitSid2"
+  },
+  {
+    profile_nme: "test5",
+    profile_id: 12,
+    overflow_skill: "anotherOverflowSkill",
+    operating_unit_sid: "operatingUnitSid2",
+    operating_unit_nme: "Claims"
   }
 ];
 

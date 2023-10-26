@@ -1,12 +1,10 @@
 import {
   Row,
-  UpdateWrapper,
   StepWrapper
 } from "../BulkChanges.Styles";
 import {
   Template,
-  BulkActionFormProps,
-  WorkerAttribute
+  BulkActionFormProps
 } from "../BulkChanges.Interfaces";
 import { updateSelectedTemplates } from "../BulkUtils";
 import {
@@ -33,9 +31,6 @@ const BulkUpdateForm = (props: BulkActionFormProps) => {
   const replaceTemplate = (template: Template) => updateSelectedTemplates(true, template, [], setSelectedTemplates);
   const updateTemplate = (template: Template, data: any) => template.data = data;
   const removeTemplate = (template: Template) => updateSelectedTemplates(false, template, selectedTemplates, setSelectedTemplates);
-
-  // Update Functionality should only have one selected template in the array
-  console.log("BulkUpdateForm - selectedTemplates", selectedTemplates);
 
   // Convert template name like "UPDATE_USERS_MANAGER" to dropdown label like "Update Users Manager"
   const constructDropdownOption = (t: Template) => {

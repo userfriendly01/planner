@@ -1,6 +1,9 @@
 /* eslint-disable no-console, max-len,  no-return-assign */
 
-import { ROUTING_CACHE_MASTER_DATA } from "utils";
+import {
+  ROUTING_CACHE_MASTER_DATA,
+  logger
+} from "utils";
 import {
   CctSharedCallRoutingDb, RoutingMasterData
 } from "../AlohaRouting.Interfaces";
@@ -21,8 +24,8 @@ const getGridMasterData = (data: CctSharedCallRoutingDb[]): RoutingMasterData =>
       localStorage.setItem(ROUTING_CACHE_MASTER_DATA, JSON.stringify(masterData));
       return masterData as RoutingMasterData;
     }
-  } catch (err) {
-    console.error("Error in parsing master data", err);
+  } catch (error) {
+    logger.error("Error in parsing master data", { error }, false);
   }
   return {};
 };

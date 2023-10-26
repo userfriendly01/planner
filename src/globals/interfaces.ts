@@ -133,6 +133,7 @@ export interface TritonProfile {
   call_reason_i: MySqlBoolean,
   click_to_dial_i: MySqlBoolean,
   eft_authorization_i: MySqlBoolean,
+  claim_number_edit_i: MySqlBoolean,
   manual_record_inbound_i: MySqlBoolean,
   manual_recorded_i: MySqlBoolean,
   otbnd_recorded_i: MySqlBoolean,
@@ -171,6 +172,7 @@ export interface ProfilePayload {
   call_reason_i: boolean,
   click_to_dial_i: boolean,
   eft_authorization_i: boolean,
+  claim_number_edit_i: boolean,
   transferQueues: Array<object>,
   aggregateQueues: Array<number>
 }
@@ -313,7 +315,7 @@ export interface WorkerAttributeSkills {
 
 export interface AzureSPA {
   accessToken: string;
-  matchedGroups: string;
+  matchedGroups: any[];
   azureClientId?: string;
 }
 
@@ -364,9 +366,14 @@ export interface AccessGroup {
   }>
 }
 
-export type Control = "input" | "select" | "autoComplete" | "timePicker" | "multiField" | "multiTextField";
+export type Control = "input" | "select" | "autoComplete" | "timePicker" | "multiField" | "multiTextField" | "switch";
 
 export interface GraphQLErrors {
   errorType:string;
   message:string;
+}
+
+export interface DuplicateCheck{
+  isDuplicate: boolean;
+  message: string;
 }
