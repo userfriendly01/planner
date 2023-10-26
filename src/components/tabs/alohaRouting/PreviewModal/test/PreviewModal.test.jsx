@@ -36,12 +36,12 @@ const testRows = [{
   callerType: "Customer",
   channel: "Service",
   dayOfWeek: "M",
-  endTime: "11:21 PM",
+  endTime: "11:21:00 PM",
   percentOfCallers: "100",
   pkey: "service",
   policyType: "x",
   skey: "libertymutual__service_1234",
-  startTime: "12:00 AM",
+  startTime: "12:00:00 AM",
   transferDestination: "1234567",
   transferMessage: "Please hold",
   twilioSkill: "crcXxYy",
@@ -56,7 +56,7 @@ const testRows = [{
   callerType: "Customer",
   channel: "Service",
   dayOfWeek: "M",
-  endTime: "11:59",
+  endTime: "9/6/2023 11:59 PM",
   occupancyCheck: [{
     "percentage": 100,
     "team": "Inbound"
@@ -88,7 +88,7 @@ const testRows = [{
   callerState: "ALL",
   channel: "Service",
   dayOfWeek: "M",
-  endTime: "11:59",
+  endTime: "9/6/2023 11:59 PM",
 
   percentOfCallers: "100",
   pkey: "service",
@@ -183,14 +183,18 @@ describe("<PreviewModal />", () => {
   test("render Add preview", () => {
     const rendered = renderComponent("add", onDeleteMock);
     const calls = StyledButton.mock.calls;
-    expect(calls[0][0].children).toBe("Save");
-    expect(calls[1][0].children).toBe("Cancel");
-    act(() => calls[0][0].onClick());
+    expect(calls[2][0].children).toBe("Save");
+    expect(calls[3][0].children).toBe("Cancel");
+    act(() => calls[6][0].onClick());
     expect(onCreateMock).toBeCalledTimes(1);
     fireEvent.click(rendered.getByText("Close"));
     expect(onCloseMock).toBeCalledTimes(1);
   });
-  // describe("TableGridColumnDev", () => {
-
-  // });
+  test("Add new +", () => {
+    renderComponent("add", onDeleteMock);
+    const calls = StyledButton.mock.calls;
+    act(() => calls[4][0].onClick());
+    const calls2 = StyledButton.mock.calls;
+    expect(calls2.length).toBe(12);
+  });
 });

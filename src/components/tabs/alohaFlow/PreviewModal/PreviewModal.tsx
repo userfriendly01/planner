@@ -1,5 +1,5 @@
 import React, {
-    useMemo, useState, useEffect
+  useMemo, useState, useEffect
 } from "react";
 import {
   Modal,ModalHeader, ModalBody, ModalFooter
@@ -39,25 +39,25 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   const tableGridColumnDef: Array<GridColDef> = useMemo<Array<GridColDef>>(()=>{
     return reconstructTableColumnDef(action, [...TableGridColumnDef], apiRef); },[action]);
 
-    useEffect(()=>{
-        setFlowRows(rows);
-    }, [rows]);
+  useEffect(()=>{
+    setFlowRows(rows);
+  }, [rows]);
 
-    useEffect(()=>{
-        if(uploadedForm.length>0){
-            const modifiedRow = uploadedForm.map((row:any, index:  number)=>({
-                ...row,
-                id: maxId+ index+ 1
-            }));
-            setFlowRows(modifiedRow);
-        }
-    }, [uploadedForm]);
+  useEffect(()=>{
+    if(uploadedForm.length>0){
+      const modifiedRow = uploadedForm.map((row:any, index:  number)=>({
+        ...row,
+        id: maxId+ index+ 1
+      }));
+      setFlowRows(modifiedRow);
+    }
+  }, [uploadedForm]);
 
   const getUpdatedFlowDb = () =>{
-    const newRows: Array<CctSharedCallFlowDb>=[...rows].map((row: CctSharedCallFlowDb)=>{
+    const newRows: Array<CctSharedCallFlowDb>=[...flowRows].map((row: CctSharedCallFlowDb)=>{
       const updatedFlow: CctSharedCallFlowDb = {};
       Object.keys(row).forEach((key: string)=>{
-        updatedFlow[key as keyof CctSharedCallFlowDb] = apiRef.current.getCellValue(row.pkey, key);
+        updatedFlow[key as keyof CctSharedCallFlowDb] = apiRef.current.getCellValue(row.id, key);
       });
       return updatedFlow;
     });
@@ -76,63 +76,63 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
 
   const handleOnDelete = async () => {
     try {
-      await onDelete(rows);
+      await onDelete(flowRows);
     } catch(error) {
       logger.error("Flow: Preview Modal onDelete call failed", { error }, false);
     }
   };
-    const createNewRecord = () =>{
-        setFlowRows((previousRows: CctSharedCallFlowDb[])=>(
-            [
-                ...previousRows,
-                {
-                    id: previousRows.length>0? previousRows[previousRows.length -1 ].id +1 : maxId,
-                    pkey: "",
-                    content: {
-                        callIntent: "",
-                        callFlowRoute: "",
-                        callerType: "",
-                        greetingMessages: "",
-                        transferNumber: "",
-                        languageOffer: "",
-                        dataRequests: [],
-                        officeNumbers: []
-                    },
-                    accountManager: "",
-                    affinityVDN: "",
-                    agentId: "",
-                    brand: "",
-                    callDetails1: "",
-                    callDetails2: "",
-                    callFlowTemplate: "",
-                    callTypeDescription: "",
-                    channel: "",
-                    createTime: "",
-                    dialedDescription: "",
-                    employeeId: "",
-                    internetPlacement: "",
-                    lineOfBusiness: "",
-                    marketingChannel: "",
-                    rangeIndicator: "",
-                    requestID: "",
-                    tollFreeNumber: "",
-                    transferCode: "",
-                    type: "",
-                    userDestination: "",
-                    whisper: ""
-                }
-            ]
-        ));
-    };
+  const createNewRecord = () =>{
+    setFlowRows((previousRows: CctSharedCallFlowDb[])=>(
+      [
+        ...previousRows,
+        {
+          id: previousRows.length>0? previousRows[previousRows.length -1 ].id +1 : maxId+1,
+          pkey: "",
+          content: {
+            callIntent: "",
+            callFlowRoute: "",
+            callerType: "",
+            greetingMessages: "",
+            transferNumber: "",
+            languageOffer: "",
+            dataRequests: [],
+            officeNumbers: []
+          },
+          accountManager: "",
+          affinityVDN: "",
+          agentId: "",
+          brand: "",
+          callDetails1: "",
+          callDetails2: "",
+          callFlowTemplate: "",
+          callTypeDescription: "",
+          channel: "",
+          createTime: "",
+          dialedDescription: "",
+          employeeId: "",
+          internetPlacement: "",
+          lineOfBusiness: "",
+          marketingChannel: "",
+          rangeIndicator: "",
+          requestID: "",
+          tollFreeNumber: "",
+          transferCode: "",
+          type: "",
+          userDestination: "",
+          whisper: ""
+        }
+      ]
+    ));
+  };
 
-    const handleOnChange=(event:any)=>{
-        CsvReader(event, setUploadedForm, "FLOW");
-    };
+  const handleOnChange=(event:any)=>{
+    CsvReader(event, setUploadedForm, "FLOW");
+  };
 
-    const handleOnClose =()=>{
-        setFlowRows([]);
-        onClose();
-    };
+  const handleOnClose =()=>{
+    setFlowRows([]);
+    onClose();
+  };
 
   return (
     <Modal
@@ -141,31 +141,31 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
       onClose={()=>{ onClose(); }}
       size="large"
     >
-      <ModalHeader>{action?.toUpperCase()} Flow - {rows.length} rows selected</ModalHeader>
+      <ModalHeader>{action?.toUpperCase()} Flow - {flowRows.length} rows selected</ModalHeader>
       <ModalBody className="preview-grid-modal">
-          {action === "add" &&
+        {action === "add" &&
               <StyledButton sx={{
-                  marginRight: "10px",
-                  marginBottom: "10px"
+                marginRight: "10px",
+                marginBottom: "10px"
               }} onClick={()=>{ createNewRecord(); }}>Add New +</StyledButton>
-          }
-          {action === "add" &&
+        }
+        {action === "add" &&
               <StyledButton sx={{
-                  marginRight: "10px",
-                  marginBottom: "10px"
+                marginRight: "10px",
+                marginBottom: "10px"
               }}>
-                  <input
-                      type="file"
-                      accept=".csv"
-                      onChange={handleOnChange}
-                  /> </StyledButton>
-          }
-          <DataGrid
+                <input
+                  type="file"
+                  accept=".csv"
+                  onChange={handleOnChange}
+                /> </StyledButton>
+        }
+        <DataGrid
           apiRef={apiRef}
-          rows={rows}
+          rows={flowRows}
           columns={tableGridColumnDef}
           editMode="row"
-          getRowId={(row: CctSharedCallFlowDb)=>row.pkey}
+          getRowId={(row: CctSharedCallFlowDb)=>row.id}
           loading = {loading}
           sx={{
             "& .MuiDataGrid-columnHeaderTitle": {
