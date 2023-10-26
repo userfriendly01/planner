@@ -100,12 +100,12 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
     if (profilesToDelete.calabrioQm) {
       body.systems.push("QM");
     }
-    console.log("***REQUEST BODY:", body);
 
     terminateWorker(body)
       .then(response => {
         resultMessage = `Successfully marked Triton worker for delete in ${body.systems}`;
-        console.log("***RESPONSE: ", response);
+        const indexEnd = response.data.indexOf("+");
+        const overlayMessage = "U" + response.data.slice(1, indexEnd);
 
         logger.info(resultMessage, {
           nNumber,
@@ -119,7 +119,7 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
         });
         updateLoading({
           ...loading,
-          overlayMessage: "Successfully Deleted User",
+          overlayMessage: overlayMessage,
           saveStatus: ModalOverlayStatuses.SUCCESS,
           saveUser: true
         });
@@ -132,7 +132,6 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
         }, timeouts.MODAL_OVERLAY_ATTENTION);
       })
       .catch(error => {
-        console.log("***ERROR RESPONSE: ", error);
         if (typeof error.response?.data?.error === "object" ){
           resultMessage = `Failed to terminate worker ${tritonWorker.sid}`;
         } else {
