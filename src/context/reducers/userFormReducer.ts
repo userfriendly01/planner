@@ -675,7 +675,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
       const OptionalColumns: any[] = [];
 
       user.Roles?.forEach((ur: any) => {
-        const availableRole = getWfmOptions(appState)?.Roles.find((r: any) => r.Id === ur.RoleId);
+        const availableRole = getWfmOptions(appState)?.Roles?.find((r: any) => r.Id === ur.RoleId);
         if (availableRole) {
           Roles.push({
             ...availableRole,
@@ -698,7 +698,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
 
       if (user.OptionalColumns) {
         Object.keys(user.OptionalColumns).forEach((id: string) => {
-          const optionalColumn = getWfmOptions(appState)?.Optional_Columns.find((o: any) => o.Id === id);
+          const optionalColumn = getWfmOptions(appState)?.Optional_Columns?.find((o: any) => o.Id === id);
           if (optionalColumn) {
             OptionalColumns.push({
               ...optionalColumn,

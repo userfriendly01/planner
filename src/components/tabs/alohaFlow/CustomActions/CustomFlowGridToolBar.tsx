@@ -10,12 +10,14 @@ import {
 import {
   FlowAdvanceFilter, PreviewModalAction
 } from "../AlohaFlow.Interfaces";
-import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
-import SaveAltIcon from "@mui/icons-material/SaveAlt";
-import DeleteSweepOutlinedIcon from "@mui/icons-material/DeleteSweepOutlined";
-import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import {
+  PlaylistAdd,
+  SaveAlt,
+  DeleteSweepOutlined,
+  AddOutlined,
+  EditNoteOutlined
+} from "@mui/icons-material";
 import { useAdminState } from "context";
-import EditNoteOutlinedIcon from "@mui/icons-material/EditNoteOutlined";
 
 
 interface CustomFlowGridToolBarProps {
@@ -113,7 +115,7 @@ const CustomFlowGridToolBar = ({
                 color: "white"
               }
             }}
-          > <SaveAltIcon />
+          > <SaveAlt />
           </IconButton>
         </Tooltip>
       </Grid>
@@ -139,16 +141,16 @@ const CustomFlowGridToolBar = ({
             displayEmpty
           >
             <MenuItem key="addFlow" value="addFlow">
-              <AddOutlinedIcon />&nbsp;&nbsp; Add Flow
+              <AddOutlined />&nbsp;&nbsp; Add Flow
             </MenuItem>
             <MenuItem key="bulkDeleteFlow" value="bulkDeleteFlow">
-              <DeleteSweepOutlinedIcon />&nbsp;&nbsp; Multi Delete Flow
+              <DeleteSweepOutlined />&nbsp;&nbsp; Multi Delete Flow
             </MenuItem>
             <MenuItem key="bulkAddFlow" value="bulkAddFlow">
-              <PlaylistAddIcon />&nbsp;&nbsp; Multi Add Flow
+              <PlaylistAdd />&nbsp;&nbsp; Multi Add Flow
             </MenuItem>
             <MenuItem key="bulkEditFlow" value="bulkEditFlow">
-              <EditNoteOutlinedIcon />&nbsp;&nbsp; Multi Edit Flow
+              <EditNoteOutlined />&nbsp;&nbsp; Multi Edit Flow
             </MenuItem>
           </Select>
         </FormControl>

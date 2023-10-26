@@ -1,4 +1,6 @@
 const ESLintPlugin = require("eslint-webpack-plugin");
+const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
+const webpack = require("webpack");
 const path = require("path");
 
 const resolvePathInSrc = resourceInSrc => {
@@ -14,7 +16,15 @@ const config = {
     path: path.resolve(__dirname, "dist")
   },
   plugins: [
-    new ESLintPlugin({ failOnWarning: true })
+    new ESLintPlugin({ failOnWarning: true }),
+    new webpack.ProvidePlugin({
+      process: "process/browser.js"
+    }),
+    new BundleAnalyzerPlugin({
+      openAnalyzer: false,
+      analyzerMode: "static",
+      reportFilename: "report.html"
+    })
   ],
   module: {
     rules: [
@@ -36,8 +46,7 @@ const config = {
         test: /\.(sa|sc|c)ss$/,
         use: [
           "style-loader",
-          "css-loader",
-          "sass-loader"
+          "css-loader"
         ]
       }
     ]
@@ -52,7 +61,15 @@ const config = {
       globals: resolvePathInSrc("globals"),
       icons: resolvePathInSrc("assets/icons"),
       services: resolvePathInSrc("services"),
-      utils: resolvePathInSrc("utils")
+      utils: resolvePathInSrc("utils"),
+      process: "process/browser.js"
+    },
+    fallback: {
+      zlib: require.resolve("browserify-zlib"),
+      util: require.resolve("util/"),
+      assert: require.resolve("assert"),
+      stream: require.resolve("stream-browserify"),
+      buffer: require.resolve("buffer/")
     },
     extensions: [ ".js", ".jsx", ".ts", ".tsx",".scss" ],
     mainFiles: [ "index" ]
