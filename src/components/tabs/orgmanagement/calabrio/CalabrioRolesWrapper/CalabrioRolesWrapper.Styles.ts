@@ -18,6 +18,8 @@ export const PermissionsColumn = styled(FlexColumn)`
   align-items: start;
   margin: 0px 20px;
   width: 150px;
+  align-self: baseline;
+  margin-top: 30px;
 `;
 
 export const Role = styled.div<{ selected: boolean }>`
