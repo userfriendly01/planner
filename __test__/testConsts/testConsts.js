@@ -729,7 +729,7 @@ export const initialTestState = {
           extension: "9872",
           n_number: "n1234568",
           email: "worker.mcgee@libertymutual.com",
-          // profile_id: 3,
+          profile_id: 10,
           didUser: false
         },
         sid: "WK1234"
