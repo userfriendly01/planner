@@ -37,6 +37,7 @@ const mockDispatch = jest.fn();
 const mockHandleClose = jest.fn();
 const mockUpdateLoading = jest.fn();
 const mockWorker = initialTestState.workerContext.workers[6];
+const termDate = new Date().toISOString().split("T")[0];
 const expectedTerminatePayload = {
   nNumber: "n1234568",
   workerSid: "WK1234",
@@ -44,7 +45,7 @@ const expectedTerminatePayload = {
   firstName: "Worker",
   lastName: "McGee",
   systems: ["TRITON", "QM"],
-  terminationDate: "2023-10-25",
+  terminationDate: termDate,
   inactiveForwardTo: ""
 };
 
@@ -125,6 +126,7 @@ describe("DeleteTritonUser", () => {
   describe("handleDeleteUser is clicked", () => {
     describe("service call succeeds", () => {
       test("terminateWorker is called", async () => {
+        terminateWorker.mockResolvedValueOnce({ data: "user n1234568 successfully added to the termination database. Will be terminated at Sat Oct 28 2023 13:44:29 GMT+0000 (stuff)" });
         renderComponent();
         expect(StyledButton).toHaveBeenCalledTimes(2);
         const confirmDelete = StyledButton.mock.calls[1][0].onClick;
@@ -140,7 +142,7 @@ describe("DeleteTritonUser", () => {
             saveUser: true
           });
           expect(mockUpdateLoading).toHaveBeenCalledWith({
-            overlayMessage: "Successfully Deleted User",
+            overlayMessage: "user n1234568 successfully added to the termination database. Will be terminated at Sat Oct 28 2023 13:44:29 GMT",
             saveStatus: "success",
             saveUser: true
           });

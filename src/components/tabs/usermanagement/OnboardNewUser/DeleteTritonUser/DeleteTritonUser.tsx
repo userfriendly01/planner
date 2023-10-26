@@ -104,8 +104,7 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
     terminateWorker(body)
       .then(response => {
         resultMessage = `Successfully marked Triton worker for delete in ${body.systems}`;
-        const indexEnd = response.data.indexOf("+");
-        const overlayMessage = "U" + response.data.slice(1, indexEnd);
+        const overlayMessage = response.data?.split("+")[0] ? response.data?.split("+")[0] : "Successfully Deleted User";
 
         logger.info(resultMessage, {
           nNumber,
