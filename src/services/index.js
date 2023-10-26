@@ -15,6 +15,7 @@ export * from "./office";
 export * from "./routingTableService";
 export * from "./operatingUnits";
 export * from "./profile";
+export * from "./resetprofiles";
 export * from "./skill";
 export * from "./skillgroup";
 export * from "./taskQueues";

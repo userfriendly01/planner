@@ -78,6 +78,7 @@ export class Logger {
       });
   }
 
+
   private sendLogToDataDog(message: string, body: Record<string, unknown>, level: StatusType): void {
     const messageContext = Object.assign(body, this.defaultContext);
     const dataDogMessage = `${message} ${JSON.stringify(body)}`;
@@ -115,7 +116,7 @@ export class Logger {
     try {
       console.info(`${APP_ORG_TAG}: ${message}`, body);
 
-      if(sendToDataDog) {
+      if (sendToDataDog) {
         this.sendLogToDataDog(message, body, "info");
       }
     } catch (e) {
@@ -136,7 +137,7 @@ export class Logger {
     try {
       console.warn(`${APP_ORG_TAG}: ${message}`, body);
 
-      if(sendToDataDog) {
+      if (sendToDataDog) {
         this.sendLogToDataDog(message, body, "warn");
       }
     } catch (e) {
@@ -157,7 +158,7 @@ export class Logger {
     try {
       console.error(`${APP_ORG_TAG}: ${message}`, body);
 
-      if(sendToDataDog) {
+      if (sendToDataDog) {
         this.sendLogToDataDog(message, body, "error");
       }
     } catch (e) {

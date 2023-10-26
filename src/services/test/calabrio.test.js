@@ -7,12 +7,14 @@ import {
   getCalabrioOrg,
   getCalabrioRoles,
   getCalabrioUser,
+  getQmUserProfiles,
   getWfmOrg,
   getWfmOptions,
+  getWfmUserByNNumber,
   updateCalabrioUser
 } from "../calabrio";
 import MockAdapter from "axios-mock-adapter";
-import { apiPaths }from "globals";
+import { apiPaths } from "globals";
 import { myAxios } from "utils";
 
 const axiosMock = new MockAdapter(myAxios);
@@ -318,6 +320,80 @@ describe("updateCalabrioUser", () => {
     test("should reject with error", done => {
       updateCalabrioUser(67).catch(rejectedVal => {
         expect(axiosMock.history.put.length).toEqual(1);
+        expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
+        done();
+      });
+    });
+  });
+});
+
+describe("getWfmUserByNNumber", () => {
+  const nNumber = "n0263786";
+
+  describe("call succeeds", () => {
+    const data = { huzzah: "you are winner" };
+    beforeEach(() => axiosMock.onGet(apiPaths.GET_CALABRIO_WFM_USER_BY_NNUMBER(nNumber)).replyOnce(200, data));
+    test("should resolve with any successful response", done => {
+      getWfmUserByNNumber(nNumber)
+        .then(resolvedValue => {
+          expect(axiosMock.history.get.length).toEqual(1);
+          expect(resolvedValue.data).toEqual(data);
+          done();
+        });
+    });
+  });
+  describe("call fails", () => {
+    const badResponse = { wahh: "boo" };
+    beforeEach(() => axiosMock.onGet(apiPaths.GET_CALABRIO_WFM_USER_BY_NNUMBER(nNumber)).replyOnce(500, badResponse));
+    test("should reject with error", done => {
+      getWfmUserByNNumber(nNumber).catch(rejectedVal => {
+        expect(axiosMock.history.get.length).toEqual(1);
+        expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
+        done();
+      });
+    });
+  });
+});
+
+describe("getQmUserProfiles", () => {
+  const workerSid = "WK2342";
+  const nNumber = "n0263786";
+  const email = "faith.cuneo@libertymutual.com";
+  const firstName = "Faith";
+  const lastName = "Cuneo";
+
+  const axiosUrl = `${apiPaths.GET_CALABRIO_USER_PROFILES}/${workerSid}/${nNumber}/${email}`;
+  describe("call succeeds", () => {
+    const data = { huzzah: "you are winner" };
+    beforeEach(() => axiosMock.onGet(axiosUrl).replyOnce(200, data));
+    test("should resolve with any successful response", done => {
+      getQmUserProfiles(workerSid, nNumber, email)
+        .then(resolvedValue => {
+          expect(axiosMock.history.get.length).toEqual(1);
+          expect(resolvedValue.data).toEqual(data);
+          done();
+        });
+    });
+    describe("first & last name are included", () => {
+      const data = { huzzah: "you are winner" };
+      const axiosUrl = `${apiPaths.GET_CALABRIO_USER_PROFILES}/${workerSid}/${nNumber}/${email}/Faith/Cuneo`;
+      beforeEach(() => axiosMock.onGet(axiosUrl).replyOnce(200, data));
+      test("should resolve with any successful response", done => {
+        getQmUserProfiles(workerSid, nNumber, email, firstName, lastName)
+          .then(resolvedValue => {
+            expect(axiosMock.history.get.length).toEqual(1);
+            expect(resolvedValue.data).toEqual(data);
+            done();
+          });
+      });
+    });
+  });
+  describe("call fails", () => {
+    const badResponse = { wahh: "boo" };
+    beforeEach(() => axiosMock.onGet(axiosUrl).replyOnce(500, badResponse));
+    test("should reject with error", done => {
+      getQmUserProfiles(workerSid, nNumber, email).catch(rejectedVal => {
+        expect(axiosMock.history.get.length).toEqual(1);
         expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
         done();
       });

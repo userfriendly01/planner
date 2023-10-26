@@ -48,14 +48,15 @@ jest.mock("@mui/material", () => ({
   Tab: jest.fn(),
   Tabs: jest.fn(),
   Divider: jest.fn(),
-  Checkbox: jest.fn()
+  Checkbox: jest.fn(),
+  IconButton: jest.requireActual("@mui/material").IconButton
 }));
 
-jest.mock("@mui/x-date-pickers/DatePicker",()=>({
+jest.mock("@mui/x-date-pickers/DatePicker", () => ({
   DatePicker: jest.fn()
 }));
 
-jest.mock("@mui/x-data-grid",()=>({
+jest.mock("@mui/x-data-grid", () => ({
   __esModule: true,
   DataGrid: jest.fn(),
   GridToolbar: jest.fn(),
@@ -85,13 +86,14 @@ jest.mock("components", () => ({
   PaperContainer: jest.requireActual("components").PaperContainer,
   StyledButton: jest.fn(),
   CalabrioTeamModal: jest.fn(),
-  ComponentControl: jest.fn()
+  ComponentControl: jest.fn(),
+  ModalFetchingRing: jest.fn()
 }));
 
 describe("<ManagerModal />", () => {
   const mockHandleClose = jest.fn();
   const mockSetForm = jest.fn();
-  const renderComponent = () => render(<ManagerModal handleClose={mockHandleClose} selectedManager={null}/>);
+  const renderComponent = () => render(<ManagerModal handleClose={mockHandleClose} selectedManager={null} />);
   beforeEach(() => {
     jest.clearAllMocks();
     setupMockedComponents({
@@ -222,7 +224,7 @@ describe("<ManagerModal />", () => {
                   status: "success",
                   message: "Manager saved successfully"
                 });
-                expect(mockSetForm).toHaveBeenCalledTimes(1);
+                expect(mockSetForm).toHaveBeenCalledTimes(2);
                 expect(mockSetForm).toHaveBeenCalledWith({
                   type: "addManager",
                   payload: {
@@ -233,6 +235,10 @@ describe("<ManagerModal />", () => {
                     manager_n_number: "n0000000",
                     profile_id: 4
                   }
+                });
+                expect(mockSetForm).toHaveBeenCalledWith({
+                  type: "updateManagerFilter",
+                  payload: "n0000000"
                 });
                 expect(mockHandleClose).toHaveBeenCalledTimes(1);
               });
@@ -298,7 +304,7 @@ describe("<ManagerModal />", () => {
         });
       });
       test("ModalOverlay should render 'Failed to Create Manager' & modal should remain open (handleClose should not be called)", async () => {
-        const rendered = render(<ManagerModal handleClose={mockHandleClose} editManager={null}/>);
+        const rendered = render(<ManagerModal handleClose={mockHandleClose} editManager={null} />);
         updateFormSoValid(fetchedManager, managerNNumber);
         const { onClick } = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton));
         act(() => onClick());
@@ -364,7 +370,7 @@ describe("<ManagerModal />", () => {
   });
 
   describe("Update Manager", () => {
-    const renderComponent = manager => render(<ManagerModal handleClose={mockHandleClose} selectedManager={manager}/>);
+    const renderComponent = manager => render(<ManagerModal handleClose={mockHandleClose} selectedManager={manager} />);
     beforeEach(() => {
 
     });

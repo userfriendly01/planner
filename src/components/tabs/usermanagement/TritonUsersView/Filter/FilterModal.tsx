@@ -14,6 +14,7 @@ import {
 } from "components";
 import React from "react";
 import { CloseRounded } from "@mui/icons-material";
+import { IconButton } from "@mui/material";
 
 export interface FilterModalProps {
   handleClear: ()=> void
@@ -30,7 +31,9 @@ const FilterModal = (props: FilterModalProps) => {
     <ModalContainer>
       <PaperContainer>
         <CloseButtonContainer>
-          <CloseRounded data-testid={"close-button"} onClick={handleClose}/>
+          <IconButton>
+            <CloseRounded data-testid="close-button" onClick={handleClose}/>
+          </IconButton>
         </CloseButtonContainer>
         <Header>Filters</Header>
         <DropdownWrapper>

@@ -1,7 +1,6 @@
 import {
   Header,
-  HeaderAndCloseButtonWrapper,
-  LeftDiv,
+  CloseButtonContainer,
   ModalContainer
 } from "./ManagerDelete.Styles";
 import { ManagerDeleteProps } from "./ManagerDelete.Interfaces";
@@ -20,6 +19,7 @@ import React from "react";
 import { deleteManager } from "services";
 import { CloseRounded } from "@mui/icons-material";
 import { logger } from "utils";
+import { IconButton } from "@mui/material";
 
 const ManagerDelete = (props: ManagerDeleteProps): any => {
   const {
@@ -56,15 +56,19 @@ const ManagerDelete = (props: ManagerDeleteProps): any => {
     return deleteManager(selectedManager.manager_id)
       .then(res => {
         // Remove the deleted manager from our local state
-        const idx = state.managerContext.managers.findIndex(mgr => mgr.manager_n_number === selectedManager.manager_n_number);
-        const lowerHalf = state.managerContext.managers.slice(0, idx);
-        const upperHalf = state.managerContext.managers.slice(idx + 1);
-        const updatedArray = [...lowerHalf, ...upperHalf];
+        const updatedArray = state.managerContext.managers.filter(
+          mgr => mgr.manager_n_number !== selectedManager.manager_n_number
+        );
+
         dispatch(({
           type: "editManager",
           payload: updatedArray
         }));
 
+        dispatch({
+          type: "updateManagerFilter",
+          payload: null
+        });
         setSaveStatus(ModalOverlayStatuses.SUCCESS);
         setTimeout(handleClose, 2000);
 
@@ -105,11 +109,12 @@ const ManagerDelete = (props: ManagerDeleteProps): any => {
               message={overlayMessage}
               status={saveStatus}
             /> : null}
-          <HeaderAndCloseButtonWrapper>
-            <LeftDiv></LeftDiv>
-            <Header>Delete Manager {selectedManager.manager_first_name} {selectedManager.manager_last_name}</Header>
-            <CloseRounded onClick={handleClose}/>
-          </HeaderAndCloseButtonWrapper>
+          <CloseButtonContainer>
+            <IconButton>
+              <CloseRounded data-testid="close-button" onClick={handleClose} />
+            </IconButton>
+          </CloseButtonContainer>
+          <Header>Delete Manager {selectedManager.manager_first_name} {selectedManager.manager_last_name}</Header>
           { teamMembers.length ?
             <ErrorForm TeamMembers={teamMembers} HandleClose={handleClose}/>
             :
