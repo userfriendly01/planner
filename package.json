@@ -61,6 +61,7 @@
     "@babel/helper-module-transforms": "^7.21.2",
     "@datadog/browser-logs": "^4.47.0",
     "@datadog/browser-rum": "^4.47.0",
+    "@datadog/datadog-api-client": "^1.17.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@lmig/lmds-react-modal": "^2.8.5",

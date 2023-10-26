@@ -52,11 +52,11 @@ jest.mock("@mui/material", () => ({
   IconButton: jest.requireActual("@mui/material").IconButton
 }));
 
-jest.mock("@mui/x-date-pickers/DatePicker",()=>({
+jest.mock("@mui/x-date-pickers/DatePicker", () => ({
   DatePicker: jest.fn()
 }));
 
-jest.mock("@mui/x-data-grid",()=>({
+jest.mock("@mui/x-data-grid", () => ({
   __esModule: true,
   DataGrid: jest.fn(),
   GridToolbar: jest.fn(),
@@ -86,13 +86,14 @@ jest.mock("components", () => ({
   PaperContainer: jest.requireActual("components").PaperContainer,
   StyledButton: jest.fn(),
   CalabrioTeamModal: jest.fn(),
-  ComponentControl: jest.fn()
+  ComponentControl: jest.fn(),
+  ModalFetchingRing: jest.fn()
 }));
 
 describe("<ManagerModal />", () => {
   const mockHandleClose = jest.fn();
   const mockSetForm = jest.fn();
-  const renderComponent = () => render(<ManagerModal handleClose={mockHandleClose} selectedManager={null}/>);
+  const renderComponent = () => render(<ManagerModal handleClose={mockHandleClose} selectedManager={null} />);
   beforeEach(() => {
     jest.clearAllMocks();
     setupMockedComponents({
@@ -303,7 +304,7 @@ describe("<ManagerModal />", () => {
         });
       });
       test("ModalOverlay should render 'Failed to Create Manager' & modal should remain open (handleClose should not be called)", async () => {
-        const rendered = render(<ManagerModal handleClose={mockHandleClose} editManager={null}/>);
+        const rendered = render(<ManagerModal handleClose={mockHandleClose} editManager={null} />);
         updateFormSoValid(fetchedManager, managerNNumber);
         const { onClick } = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton));
         act(() => onClick());
@@ -369,7 +370,7 @@ describe("<ManagerModal />", () => {
   });
 
   describe("Update Manager", () => {
-    const renderComponent = manager => render(<ManagerModal handleClose={mockHandleClose} selectedManager={manager}/>);
+    const renderComponent = manager => render(<ManagerModal handleClose={mockHandleClose} selectedManager={manager} />);
     beforeEach(() => {
 
     });

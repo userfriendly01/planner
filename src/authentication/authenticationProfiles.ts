@@ -164,6 +164,10 @@ export const getTabs = (): any => {
           label: "Onboard New User"
         },
         {
+          route: "triton-admin/profiles",
+          label: "Compare User Profiles"
+        },
+        {
           route: "triton-admin/bulk",
           label: "Bulk Changes"
         }
