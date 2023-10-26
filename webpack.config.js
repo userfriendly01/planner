@@ -18,7 +18,8 @@ const config = {
   plugins: [
     new ESLintPlugin({ failOnWarning: true }),
     new webpack.ProvidePlugin({
-      process: "process/browser.js"
+      process: "process/browser.js",
+      Buffer: ["buffer", "Buffer"]
     }),
     new BundleAnalyzerPlugin({
       openAnalyzer: false,
