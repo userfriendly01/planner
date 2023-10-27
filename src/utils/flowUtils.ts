@@ -8,7 +8,7 @@ export const flowDropDownList: FlowDropDownList = {
   "callFlowRoute": [],
   "callerType": [],
   "dataRequests": [],
-  "tfnRoutingGroup" : [],
+  "tfnRoutingGroup": [],
   "type": []
 
 };

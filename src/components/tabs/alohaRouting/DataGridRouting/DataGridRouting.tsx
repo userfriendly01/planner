@@ -23,6 +23,7 @@ import {
 } from "utils/interfaces";
 import {
   routingBatchDelete,
+  batchRoutingCreate,
   batchRoutingUpdate,
   queryRoutingData,
   retrieveRoutingData
@@ -340,8 +341,34 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
     setSelectedList(selectedRowsData);
   };
 
-  const handleOnBulkCreate = (rows: Array<CctSharedCallRoutingDb> ) =>{
-    logger.log("Bulk Create: ", rows);
+  const handleOnBulkCreate = async(rows: Array<CctSharedCallRoutingDb> ) =>{
+    const response = await batchRoutingCreate(rows, accessToken, graphQlApiUrl);
+    if(!response || response.errors) {
+      setAlertBar((alertBarProps: AlertBarProps) => ({
+        ...alertBarProps,
+        open: true,
+        msg: "Error while creating the records.",
+        severityType: "error"
+      }));
+      throw new Error("Error while creating the records.");
+    } else {
+      setAlertBar((alertBarProps: AlertBarProps) => ({
+        ...alertBarProps,
+        open: true,
+        msg: "Routing Rules have been successfully created.",
+        severityType: "success"
+      }));
+    }
+
+    const filteredItems = [...state.filteredItems, ...rows];
+    const filteredData = [...state.data, ...rows];
+    setSelectedList([]);
+    setState({
+      ...state,
+      ...filteredItems && { filteredItems },
+      data: filteredData,
+      isPreviewModalOpen: false
+    });
   };
 
   const handleOnBulkUpdate = async(rows: Array<CctSharedCallRoutingDb> ) =>{
@@ -508,6 +535,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
         onDelete={handleOnBulkDelete}
         onUpdate={handleOnBulkUpdate}
         rows={selectedList}
+        maxId={maxRef.current}
         loading={state.fetching}
       />
     </div>

@@ -7,7 +7,7 @@ import {
   Modal, ModalHeader
 } from "@lmig/lmds-react-modal";
 import {
-  routingDropDownList, routingInitRule, routingFields, initializedAlertBar, getGraphQLEndpoint, convertTime24to12, cleanErrorMessage
+  routingDropDownList, routingInitRule, routingFields, initializedAlertBar, getGraphQLEndpoint, convertTime24to12, cleanErrorMessage, removeAllWhiteSpace
 } from "utils";
 import { getGridMasterData } from "../../DataGridRouting/GridMaster";
 import {
