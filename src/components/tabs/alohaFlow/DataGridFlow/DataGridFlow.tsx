@@ -14,7 +14,7 @@ import React, {
   useEffect, useState
 } from "react";
 import {
-  queryFlowData, retrieveFlowData, batchFlowUpdate, batchDeleteItems
+  queryFlowData, retrieveFlowData, batchFlowUpdate, batchDeleteItems, batchFlowCreate
 } from "services";
 import {
   CACHE_FILTER_FLOW,
@@ -336,14 +336,52 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     setSelectedList(selectedRowsData);
   };
 
-  const handleOnBulkCreate = (rows: Array<CctSharedCallFlowDb> ) =>{
-    logger.log("Bulk Create: ", rows);
+  const handleOnBulkCreate = async(rows: Array<CctSharedCallFlowDb> ) =>{
+    const {
+      isDuplicate, message
+    } = checkForDuplicateBulkPutItems(rows);
+    if(isDuplicate){
+      setAlertBar((alertBarProps: AlertBarProps) => ({
+        ...alertBarProps,
+        open: true,
+        msg: message,
+        severityType: "error"
+      }));
+      return;
+    }
+    const response = await batchFlowCreate(rows, accessToken, graphQLEndpoint);
+    if(!response || response.errors) {
+      setAlertBar((alertBarProps: AlertBarProps) => ({
+        ...alertBarProps,
+        open: true,
+        msg: "Error while creating the records.",
+        severityType: "error"
+      }));
+      throw new Error("Error while creating the records.");
+    } else {
+      setAlertBar((alertBarProps: AlertBarProps) => ({
+        ...alertBarProps,
+        open: true,
+        msg: "Flow Rules have been successfully created.",
+        severityType: "success"
+      }));
+    }
+
+    const filteredItems = [...dataFlow.filteredItems, ...rows];
+    const filteredData = [...dataFlow.data, ...rows];
+    setSelectedList([]);
+    setDataFlow({
+      ...dataFlow,
+      ...filteredItems && { filteredItems },
+      data: filteredData,
+      isPreviewModalOpen: false
+    });
   };
 
   const handleOnBulkUpdate = async(rows: Array<CctSharedCallFlowDb> ) =>{
     const {
       isDuplicate, message
-    } = checkForDuplicateBulkEdit(rows);
+    } = checkForDuplicateBulkPutItems(rows);
     if(isDuplicate){
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
@@ -410,7 +448,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         msg: "Error deleting records.",
         severityType: "error"
       }));
-      throw new Error("Error deleting records.");
+      throw new Error("Error while deleting records.");
     } else {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
@@ -433,9 +471,12 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     }));
   };
 
-  const checkForDuplicateBulkEdit = (rows: Array<CctSharedCallFlowDb>): DuplicateCheck =>{
+  const checkForDuplicateBulkPutItems = (rows: Array<CctSharedCallFlowDb>): DuplicateCheck =>{
     const duplicateRecord = dataFlow.data.filter((flow: CctSharedCallFlowDb)=>{
-      const match = rows.filter((row: CctSharedCallFlowDb)=>row.employeeId && row.pkey !== flow.pkey && row.employeeId === flow.employeeId);
+      const match = rows.filter((row: CctSharedCallFlowDb)=>row.employeeId &&
+      row.pkey !== flow.pkey &&
+      row.employeeId[0].toLowerCase() === "n" &&
+      row.employeeId === flow.employeeId);
       return match.length>0;
     });
     const duplicateEmployeeId: Array<string> = [];
@@ -455,7 +496,10 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     let isDuplicate = false;
     let message = "";
     if(params?.employeeId?.value){
-      const duplicateRecord = dataFlow.data.filter((flow: CctSharedCallFlowDb)=>params?.pkey?.value && params?.pkey?.value !== flow.pkey && params?.employeeId?.value === flow.employeeId);
+      const duplicateRecord = dataFlow.data.filter((flow: CctSharedCallFlowDb)=>
+        params?.pkey?.value && params?.pkey?.value !== flow.pkey &&
+        params?.employeeId?.value[0].toLowerCase() === "n" &&
+        params?.employeeId?.value === flow.employeeId);
       if(duplicateRecord.length>0){
         isDuplicate = true;
         const duplicateDialedPhoneNumber = duplicateRecord.map((record: CctSharedCallFlowDb)=>(record.pkey));
@@ -472,7 +516,10 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     let isDuplicate = false;
     let message = "";
     if(params?.employeeId){
-      const duplicateRecord = dataFlow.data.filter((flow: CctSharedCallFlowDb)=>params?.pkey  &&  params?.pkey !== flow.pkey && params?.employeeId === flow.employeeId);
+      const duplicateRecord = dataFlow.data.filter((flow: CctSharedCallFlowDb)=>params?.pkey  &&
+        params?.pkey !== flow.pkey &&
+        params?.employeeId[0].toLowerCase() === "n" &&
+        params?.employeeId === flow.employeeId);
       if(duplicateRecord.length>0){
         isDuplicate = true;
         const duplicateDialedPhoneNumber = duplicateRecord.map((record: CctSharedCallFlowDb)=>(record.pkey));
@@ -567,6 +614,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         rows={selectedList}
         onClose={handlePreviewModalOnClose}
         action={dataFlow.previewModalAction}
+        maxId={dataFlow.maxId}
         onCreate={handleOnBulkCreate}
         onUpdate={handleOnBulkUpdate}
         onDelete={handleOnBulkDelete}

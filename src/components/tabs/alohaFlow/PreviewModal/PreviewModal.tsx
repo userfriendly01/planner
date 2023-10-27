@@ -1,5 +1,5 @@
 import React, {
-  useMemo
+  useMemo, useState, useEffect
 } from "react";
 import {
   Modal,ModalHeader, ModalBody, ModalFooter
@@ -14,11 +14,13 @@ import "./PreviewModal.css";
 import { Box } from "@mui/material";
 import { reconstructTableColumnDef } from "./PreviewUtil";
 import { logger } from "utils";
+import { CsvReader } from "components";
 
 interface PreviewModalProps {
     isOpen: boolean;
     rows: Array<CctSharedCallFlowDb>;
-    action: "delete" | "add" | "edit"
+    action: "delete" | "add" | "edit";
+    maxId?: number;
     onClose: () => void;
     onDelete?: (rows: Array<CctSharedCallFlowDb>) => void;
     onCreate?: (rows: Array<CctSharedCallFlowDb>) => void;
@@ -28,19 +30,34 @@ interface PreviewModalProps {
 
 const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   const {
-    isOpen, rows, onClose, action , onDelete, onCreate, onUpdate, loading
+    isOpen, rows, onClose, action , maxId , onDelete, onCreate, onUpdate, loading
   } = props;
 
   const apiRef = useGridApiRef();
-
+  const [flowRows, setFlowRows] = useState<CctSharedCallFlowDb[]>([]);
+  const [ uploadedForm, setUploadedForm ] = React.useState([]);
   const tableGridColumnDef: Array<GridColDef> = useMemo<Array<GridColDef>>(()=>{
-    return reconstructTableColumnDef(action, [...TableGridColumnDef]); },[action]);
+    return reconstructTableColumnDef(action, [...TableGridColumnDef], apiRef); },[action]);
+
+  useEffect(()=>{
+    setFlowRows(rows);
+  }, [rows]);
+
+  useEffect(()=>{
+    if(uploadedForm.length>0){
+      const modifiedRow = uploadedForm.map((row:any, index:  number)=>({
+        ...row,
+        id: maxId+ index+ 1
+      }));
+      setFlowRows(modifiedRow);
+    }
+  }, [uploadedForm]);
 
   const getUpdatedFlowDb = () =>{
-    const newRows: Array<CctSharedCallFlowDb>=[...rows].map((row: CctSharedCallFlowDb)=>{
+    const newRows: Array<CctSharedCallFlowDb>=[...flowRows].map((row: CctSharedCallFlowDb)=>{
       const updatedFlow: CctSharedCallFlowDb = {};
       Object.keys(row).forEach((key: string)=>{
-        updatedFlow[key as keyof CctSharedCallFlowDb] = apiRef.current.getCellValue(row.pkey, key);
+        updatedFlow[key as keyof CctSharedCallFlowDb] = apiRef.current.getCellValue(row.id, key);
       });
       return updatedFlow;
     });
@@ -59,12 +76,63 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
 
   const handleOnDelete = async () => {
     try {
-      await onDelete(rows);
+      await onDelete(flowRows);
     } catch(error) {
       logger.error("Flow: Preview Modal onDelete call failed", { error }, false);
     }
   };
+  const createNewRecord = () =>{
+    setFlowRows((previousRows: CctSharedCallFlowDb[])=>(
+      [
+        ...previousRows,
+        {
+          id: previousRows.length>0? previousRows[previousRows.length -1 ].id +1 : maxId+1,
+          pkey: "",
+          content: {
+            callIntent: "",
+            callFlowRoute: "",
+            callerType: "",
+            greetingMessages: "",
+            transferNumber: "",
+            languageOffer: "",
+            dataRequests: [],
+            officeNumbers: []
+          },
+          accountManager: "",
+          affinityVDN: "",
+          agentId: "",
+          brand: "",
+          callDetails1: "",
+          callDetails2: "",
+          callFlowTemplate: "",
+          callTypeDescription: "",
+          channel: "",
+          createTime: "",
+          dialedDescription: "",
+          employeeId: "",
+          internetPlacement: "",
+          lineOfBusiness: "",
+          marketingChannel: "",
+          rangeIndicator: "",
+          requestID: "",
+          tollFreeNumber: "",
+          transferCode: "",
+          type: "",
+          userDestination: "",
+          whisper: ""
+        }
+      ]
+    ));
+  };
 
+  const handleOnChange=(event:any)=>{
+    CsvReader(event, setUploadedForm, "FLOW");
+  };
+
+  const handleOnClose =()=>{
+    setFlowRows([]);
+    onClose();
+  };
 
   return (
     <Modal
@@ -73,14 +141,31 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
       onClose={()=>{ onClose(); }}
       size="large"
     >
-      <ModalHeader>{action?.toUpperCase()} Flow - {rows.length} rows selected</ModalHeader>
+      <ModalHeader>{action?.toUpperCase()} Flow - {flowRows.length} rows selected</ModalHeader>
       <ModalBody className="preview-grid-modal">
+        {action === "add" &&
+              <StyledButton sx={{
+                marginRight: "10px",
+                marginBottom: "10px"
+              }} onClick={()=>{ createNewRecord(); }}>Add New +</StyledButton>
+        }
+        {action === "add" &&
+              <StyledButton sx={{
+                marginRight: "10px",
+                marginBottom: "10px"
+              }}>
+                <input
+                  type="file"
+                  accept=".csv"
+                  onChange={handleOnChange}
+                /> </StyledButton>
+        }
         <DataGrid
           apiRef={apiRef}
-          rows={rows}
+          rows={flowRows}
           columns={tableGridColumnDef}
           editMode="row"
-          getRowId={(row: CctSharedCallFlowDb)=>row.pkey}
+          getRowId={(row: CctSharedCallFlowDb)=>row.id}
           loading = {loading}
           sx={{
             "& .MuiDataGrid-columnHeaderTitle": {
@@ -88,6 +173,9 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
             },
             "& .MuiDataGrid-columnHeaders": {
               backgroundColor: "rgb(255,226,128)"
+            },
+            "& .MuiDataGrid-Custom-Cell-Format": {
+              backgroundColor: "#ff6060"
             }
           }}
         />
@@ -106,7 +194,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
           {action === "edit" &&
           <StyledButton sx={{ marginRight: "15px" }} onClick={()=>{ handleOnUpdate(); }}>Update</StyledButton>
           }
-          <StyledButton onClick={()=>{ onClose(); }}>Cancel</StyledButton>
+          <StyledButton onClick={()=>{ handleOnClose(); }}>Cancel</StyledButton>
         </Box>
       </ModalFooter>
     </Modal>
