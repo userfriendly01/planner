@@ -45,6 +45,7 @@ async function queryRoutingData(accessToken, nextToken = null, graphQlApiUrl) {
                         crcSkill
                         priority
                         alternateTransferDestination
+                        tfnRoutingGroup
                         occupancyCheck {
                           percentage
                           team
@@ -132,7 +133,8 @@ async function updateRoutingDB(item, accessToken, graphQlApiUrl) {
     crcSkill: item.crcSkill || "",
     priority: item?.priority || "",
     occupancyCheck: item?.occupancyCheck || [],
-    routingSteps: item?.routingSteps || []
+    routingSteps: item?.routingSteps || [],
+    tfnRoutingGroup: item?.tfnRoutingGroup || ""
   };
   try {
     const fetchResponse = await fetch(graphQlApiUrl, {
@@ -163,6 +165,7 @@ async function updateRoutingDB(item, accessToken, graphQlApiUrl) {
               crcSkill
               priority
               alternateTransferDestination
+              tfnRoutingGroup
               occupancyCheck {
                 percentage
                 team
@@ -218,7 +221,8 @@ async function addRoutingRule(item, accessToken, graphQlApiUrl) {
     crcSkill: item.crcSkill?.value || "",
     priority: item.priority?.value || "",
     occupancyCheck: item.occupancyCheck?.value || [],
-    routingSteps: item.routingSteps?.value || []
+    routingSteps: item.routingSteps?.value || [],
+    tfnRoutingGroup: item?.tfnRoutingGroup?.value || ""
   };
   try {
     const fetchResponse = await fetch(graphQlApiUrl, {
@@ -249,6 +253,7 @@ async function addRoutingRule(item, accessToken, graphQlApiUrl) {
               crcSkill
               priority
               alternateTransferDestination
+              tfnRoutingGroup
               occupancyCheck {
                 percentage
                 team
@@ -314,6 +319,7 @@ async function deleteRoutingRule(item, accessToken, graphQlApiUrl) {
               crcSkill
               priority
               alternateTransferDestination
+              tfnRoutingGroup
               occupancyCheck {
                 percentage
                 team
@@ -458,7 +464,8 @@ const batchRoutingUpdate = async(items, accessToken, graphQlApiUrl) =>{
       crcSkill: item.crcSkill || "",
       priority: item?.priority || "",
       occupancyCheck: item?.occupancyCheck || [],
-      routingSteps: item?.routingSteps || []
+      routingSteps: item?.routingSteps || [],
+      tfnRoutingGroup: item?.tfnRoutingGroup || ""
     };
   });
   try {
@@ -500,6 +507,7 @@ const batchRoutingUpdate = async(items, accessToken, graphQlApiUrl) =>{
               transferDestination
               transferMessage
               twilioSkill
+              tfnRoutingGroup
             }
             nextToken
           }
