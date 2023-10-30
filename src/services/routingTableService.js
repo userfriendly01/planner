@@ -563,7 +563,8 @@ const batchRoutingCreate = async(items, accessToken, graphQlApiUrl) =>{
       crcSkill: item.crcSkill || "",
       priority: item?.priority || "",
       occupancyCheck: item?.occupancyCheck || [],
-      routingSteps: item?.routingSteps || []
+      routingSteps: item?.routingSteps || [],
+      tfnRoutingGroup: item?.tfnRoutingGroup || ""
     };
   });
   try {
@@ -605,6 +606,7 @@ const batchRoutingCreate = async(items, accessToken, graphQlApiUrl) =>{
               transferDestination
               transferMessage
               twilioSkill
+              tfnRoutingGroup
             }
             nextToken
           }
