@@ -1,8 +1,10 @@
 import {
   IconButton
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import ViewListIcon from "@mui/icons-material/ViewList";
+import {
+  Add,
+  ViewList
+} from "@mui/icons-material";
 import React, { useState } from "react";
 
 export interface AddOrViewProps{
@@ -20,9 +22,9 @@ export const AddOrView = ({
   return (
     <div>
       {navButton?<IconButton  onClick={()=>{ navigateButton(false); }} aria-label="displayDataRequestButton" edge="start">
-        <ViewListIcon />
+        <ViewList />
       </IconButton>:<IconButton  onClick={()=>{ navigateButton(true); }} aria-label="addDataRequestButton" edge="start">
-        <AddIcon />
+        <Add />
       </IconButton>}
     </div>
   );

@@ -8,7 +8,7 @@ import React, { useState } from "react";
 import {
   Accordion, AccordionSummary, AccordionDetails
 } from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { ExpandMore } from "@mui/icons-material";
 
 const SkillsFormInfo = () => {
 
@@ -23,7 +23,7 @@ const SkillsFormInfo = () => {
       overflow: "overlay"
     }}>
       <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
+        expandIcon={<ExpandMore />}
         aria-controls="panel1a-content"
         id="panel1a-header"
       >Default Skill Profile (Optional)

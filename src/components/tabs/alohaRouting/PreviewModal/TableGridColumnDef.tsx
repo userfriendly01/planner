@@ -214,5 +214,3 @@ export const TableGridColumnDef: GridColDef[] = [
     )
   }
 ];
-
-exports.TableGridColumnDef = TableGridColumnDef;

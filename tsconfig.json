@@ -4,6 +4,7 @@
     "baseUrl": "./src",
     "esModuleInterop": true,
     "jsx": "react",
+    "lib": ["ESNext", "DOM"],
     "noImplicitAny": true,
     "outDir": "./dist/",
     "paths": {
@@ -17,8 +18,8 @@
       "utils": ["./utils/index.js"]
     },
     "sourceMap": true,
-    "target": "ES2016",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext"
+    "target": "ES2017",
+    "module": "es2022",
+    "moduleResolution": "node",
   }
 }
