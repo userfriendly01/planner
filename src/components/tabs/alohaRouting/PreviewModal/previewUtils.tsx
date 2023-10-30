@@ -4,7 +4,8 @@ import {
   dayOfWeek,
   languageOffer,
   routingFields,
-  priority
+  priority,
+  tfnRoutingGroupAttr
 } from "utils";
 import {
   PreviewModalAction,
@@ -161,7 +162,8 @@ const fetchData = (): RoutingDropDownList =>{
     dayOfWeek: dayOfWeek,
     language: languageOffer,
     policyType: masterDataObject?.policyType,
-    priority: priority
+    priority: priority,
+    tfnRoutingGroup: tfnRoutingGroupAttr
   };
   return dropDownValue;
 };
