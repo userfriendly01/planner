@@ -2,40 +2,42 @@ import React, { useState } from "react";
 import {
   Accordion, AccordionSummary, AccordionDetails, Autocomplete, Chip, TextField
 } from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { ExpandMore } from "@mui/icons-material";
 import {
   useFormDispatch,
   userFormActions,
   useFormState
 } from "context";
 import { Dropdown } from "components";
-import { RoutingTeamAttrDropDownOptions,CallerStateAttrDropDownOptions } from "./RoutingAttributesDropDown";
-import AutoCompleteContainer from "../../../../core/SharedComponents/AutoCompleteContainer"
+import {
+  RoutingTeamAttrDropDownOptions,
+  CallerStateAttrDropDownOptions
+} from "./RoutingAttributesDropDown";
+import AutoCompleteContainer from "../../../../core/SharedComponents/AutoCompleteContainer";
 
 const RoutingAttributes = (): JSX.Element => {
   const setForm = useFormDispatch();
   const form = useFormState();
   const accordianExpansion= ()=>{
     if(form.triton.routing.team || form.triton.routing?.callerStates?.length>0 || form.triton.routing?.sales_assoc_workers?.length>0){
-      return true
+      return true;
     }
-    return false
-  }
+    return false;
+  };
   const [expanded, setExpanded] = useState(accordianExpansion);
   const getlabelValuePair=(key:string)=>{
-    let RoutingAttrList:String[] = [];
+    let RoutingAttrList:string[] = [];
     if(key === "callerStates"){
-      RoutingAttrList = form.triton.routing?.callerStates || []
+      RoutingAttrList = form.triton.routing?.callerStates || [];
     }
-    return RoutingAttrList.map((routingAttr:String) => {
+    return RoutingAttrList.map((routingAttr:string) => {
       return {
-        ...routingAttr,
         label: routingAttr,
         value: routingAttr
       };
     });
-  }
-  const handleChange = (event: any, value: any, keyName:String) => {
+  };
+  const handleChange = (event: any, value: any, keyName:string) => {
     switch(keyName){
       case "routingTeam":
         setForm({
@@ -45,9 +47,9 @@ const RoutingAttributes = (): JSX.Element => {
           }
         });
         break;
-      case "callerStates":
-        var callerStatesArray:String[] =[];
-        for(let i=0;i<value?.length;i++){
+      case "callerStates": {
+        const callerStatesArray:string[] =[];
+        for(let i=0; i<value?.length; i++){
           callerStatesArray.push(value[i].value);
         }
         setForm({
@@ -57,19 +59,22 @@ const RoutingAttributes = (): JSX.Element => {
           }
         });
         break;
+      }
+      default:
+        break;
     }
-    
-  }
+
+  };
   return (
     <Accordion
       expanded={expanded}
       onChange={() => setExpanded(!expanded)}
       sx={{
         width: "395px",
-        margin: "8px 0px 5px 0px",
+        margin: "8px 0px 5px 0px"
       }}>
       <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
+        expandIcon={<ExpandMore />}
         aria-controls="panel1a-content"
         id="panel1a-header"
       >Routing Attributes

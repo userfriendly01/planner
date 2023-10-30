@@ -25,9 +25,9 @@ import {
 import {
   AutoFixHigh
 } from "@mui/icons-material";
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import {
   formModes,
   ModalOverlayStatuses,
@@ -78,7 +78,7 @@ const WfmForm = (props: WfmFormProps) => {
     setOptionsByBusinessUnit(trimmedOptions);
 
     if(!isAdd && state.calabrioContext.wfmOrg.find((bu: WfmBusinessUnit) => bu.Id === form.calabrio_wfm.BusinessUnitId)?.Teams?.length > 0){
-      setStatus(ModalOverlayStatuses.SUCCESS)
+      setStatus(ModalOverlayStatuses.SUCCESS);
     }
   }, [form.calabrio_wfm.BusinessUnitId]);
 
@@ -87,7 +87,7 @@ const WfmForm = (props: WfmFormProps) => {
   }, [form.calabrio_wfm]);
 
   React.useEffect(() => {
-    let validOptionalColumns: any[] = [];
+    const validOptionalColumns: any[] = [];
 
     optionalColumns.forEach((c:any) => {
       if(c.columnValue && c.columnValue.length > 0){
@@ -101,7 +101,7 @@ const WfmForm = (props: WfmFormProps) => {
           return {
             Id: o.Id,
             Value: o.columnValue
-          }
+          };
         })
       });
     }
@@ -133,7 +133,7 @@ const WfmForm = (props: WfmFormProps) => {
       });
     }
   }, [form.nNumber.nNumberFetchedUser]);
- 
+
   const generateDropdownOptionArray = (optionsArray: any[]) => {
     if(optionsArray){
       return optionsArray?.map((o: any) => {
@@ -150,9 +150,9 @@ const WfmForm = (props: WfmFormProps) => {
         value: option.Id || option,
         label: option.Name || option.toString(),
         ...option
-      }
+      };
     } else {
-      return ""
+      return "";
     }
   };
 
@@ -163,7 +163,7 @@ const WfmForm = (props: WfmFormProps) => {
       if(key === field && (!fields[key] || fields[key].length === 0)){
         fieldMissing = true;
       } else if(typeof fields[key] === "number" || fields[key]?.length > 0){
-        populatedFields = true
+        populatedFields = true;
       }
     });
     return populatedFields && fieldMissing;
@@ -173,36 +173,36 @@ const WfmForm = (props: WfmFormProps) => {
     <Wrapper>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         { state.calabrioContext.wfmOptions.length > 0 ?
-        <>
-          <Row>
-            <Dropdown
-              error={missingFields.some((f:string) => f === "BusinessUnitId") && isUnpopulatedField(form.calabrio_wfm.BusinessUnitId)}
-              disabled={!isAdd}
-              label={"Business Unit *"}
-              styles={{
-                width: "250px",
-                margin: "0px 5px"
-              }}
-              options={generateDropdownOptionArray(getWfmBusinessUnits(state))}
-              updateValue={async (event: any, newValue: any) => {
-                try {
-                  setStatus(ModalOverlayStatuses.SAVING)
-                  setForm({
-                    type: userFormActions.SET_WFM_BUSINESS_UNIT,
-                    payload: newValue?.value || null
-                  })
-                  const newState = await getCalabrioWfmOrg(newValue?.value, state, dispatch);
-                  identifyUserProfiles(form, setForm, newState);
-                  setStatus(ModalOverlayStatuses.SUCCESS)
-                } catch(err) {
-                  setStatus(ModalOverlayStatuses.FAIL)
-                }
-              }}
-              value={generateDropdownOption(getWfmBusinessUnits(state)?.find((bu: any) => bu.Id === form.calabrio_wfm.BusinessUnitId))}
-            />
-          </Row>
-          { status === ModalOverlayStatuses.SAVING && <StatusWrapper><ModalFetchingRing/></StatusWrapper> }
-          { status === ModalOverlayStatuses.SUCCESS &&
+          <>
+            <Row>
+              <Dropdown
+                error={missingFields.some((f:string) => f === "BusinessUnitId") && isUnpopulatedField(form.calabrio_wfm.BusinessUnitId)}
+                disabled={!isAdd}
+                label={"Business Unit *"}
+                styles={{
+                  width: "250px",
+                  margin: "0px 5px"
+                }}
+                options={generateDropdownOptionArray(getWfmBusinessUnits(state))}
+                updateValue={async (event: any, newValue: any) => {
+                  try {
+                    setStatus(ModalOverlayStatuses.SAVING);
+                    setForm({
+                      type: userFormActions.SET_WFM_BUSINESS_UNIT,
+                      payload: newValue?.value || null
+                    });
+                    const newState = await getCalabrioWfmOrg(newValue?.value, state, dispatch);
+                    identifyUserProfiles(form, setForm, newState);
+                    setStatus(ModalOverlayStatuses.SUCCESS);
+                  } catch(err) {
+                    setStatus(ModalOverlayStatuses.FAIL);
+                  }
+                }}
+                value={generateDropdownOption(getWfmBusinessUnits(state)?.find((bu: any) => bu.Id === form.calabrio_wfm.BusinessUnitId))}
+              />
+            </Row>
+            { status === ModalOverlayStatuses.SAVING && <StatusWrapper><ModalFetchingRing/></StatusWrapper> }
+            { status === ModalOverlayStatuses.SUCCESS &&
             <>
               <Row>
                 <Dropdown
@@ -213,30 +213,30 @@ const WfmForm = (props: WfmFormProps) => {
                     width: "250px"
                   }}
                   options={generateDropdownOptionArray(getWfmTeams(state, form.calabrio_wfm.BusinessUnitId))}
-                  updateValue={(event: any, newValue: any) => 
-                  setForm({
-                    type: userFormActions.SET_WFM_TEAM,
-                    payload: {
-                      id: newValue?.value || null,
-                      startDate: form.calabrio_wfm.TeamStartDate
-                    }
-                  })}
+                  updateValue={(event: any, newValue: any) =>
+                    setForm({
+                      type: userFormActions.SET_WFM_TEAM,
+                      payload: {
+                        id: newValue?.value || null,
+                        startDate: form.calabrio_wfm.TeamStartDate
+                      }
+                    })}
                   value={generateDropdownOption(getWfmTeams(state, form.calabrio_wfm.BusinessUnitId).find((t: any) => t.Id === form.calabrio_wfm.TeamId))}
                 />
-                { isAdd && 
+                { isAdd &&
                   <DatePicker
                     label="Team Start Date"
                     disabled={!isAdd}
                     value={form.calabrio_wfm.TeamStartDate}
-                    onChange={(newValue) => {
+                    onChange={newValue => {
                       setForm({
                         type: userFormActions.SET_WFM_TEAM,
                         payload: {
                           id: form.calabrio_wfm.TeamId,
-                          startDate: newValue ? new Date(newValue).toISOString().split('T')[0] : newValue
+                          startDate: newValue ? new Date(newValue).toISOString().split("T")[0] : newValue
                         }
-                      })}
-                    } 
+                      }); }
+                    }
                     renderInput={props => <TextField {...props}
                       error={missingFields.some((f:string) => f === "TeamStartDate" && isUnpopulatedField(form.calabrio_wfm.TeamStartDate))}
                     />}
@@ -261,20 +261,20 @@ const WfmForm = (props: WfmFormProps) => {
                     <InputAdornment
                       position="end"
                     >
-                    <Tooltip
-                      placement="right"
-                      title="Use HR Email">
-                      <IconButton
-                        edge="end"
-                        onClick={() => 
-                          setForm({
-                            type: userFormActions.SET_WFM_IDENTITY,
-                            payload: form.nNumber.nNumberFetchedUser?.email
-                          })}
-                      >
-                        <AutoFixHigh/>
-                      </IconButton>
-                    </Tooltip>
+                      <Tooltip
+                        placement="right"
+                        title="Use HR Email">
+                        <IconButton
+                          edge="end"
+                          onClick={() =>
+                            setForm({
+                              type: userFormActions.SET_WFM_IDENTITY,
+                              payload: form.nNumber.nNumberFetchedUser?.email
+                            })}
+                        >
+                          <AutoFixHigh/>
+                        </IconButton>
+                      </Tooltip>
                     </InputAdornment>
                   }}
                 />
@@ -297,12 +297,12 @@ const WfmForm = (props: WfmFormProps) => {
                   label="Person Start Date"
                   disabled={!isAdd}
                   value={form.calabrio_wfm.EmploymentStartDate || ""}
-                  onChange={(newValue) => {
+                  onChange={newValue => {
                     setForm({
                       type: userFormActions.SET_WFM_EMP_START_DATE,
-                      payload: newValue ? new Date(newValue).toISOString().split('T')[0] : newValue
-                    })}
-                  } 
+                      payload: newValue ? new Date(newValue).toISOString().split("T")[0] : newValue
+                    }); }
+                  }
                   renderInput={props => <TextField {...props}
                     error={requiredFieldMissing("personStartDate", scheduleFields) || (missingFields.some((f:string) => f === "EmploymentStartDate") && isUnpopulatedField(form.calabrio_wfm.EmploymentStartDate))}
                   />}
@@ -342,11 +342,11 @@ const WfmForm = (props: WfmFormProps) => {
                     disabled={!isAdd}
                     label="Skills Start Date"
                     value={form.calabrio_wfm.SkillsStartDate}
-                    onChange={(newValue) => setForm({
+                    onChange={newValue => setForm({
                       type: userFormActions.SET_WFM_SKILLS,
                       payload: {
                         skills: form.calabrio_wfm.PersonSkills,
-                        startDate: newValue ? new Date(newValue).toISOString().split('T')[0] : newValue
+                        startDate: newValue ? new Date(newValue).toISOString().split("T")[0] : newValue
                       }
                     })}
                     renderInput={props => <TextField {...props}
@@ -356,7 +356,7 @@ const WfmForm = (props: WfmFormProps) => {
                 }
               </Row>
               <Row>
-              <Dropdown
+                <Dropdown
                   disabled={!isAdd}
                   label="Workflow Control Set"
                   options={generateDropdownOptionArray(optionsByBusinessUnit["Workflow_Control_Sets"])}
@@ -382,7 +382,7 @@ const WfmForm = (props: WfmFormProps) => {
                         return {
                           ...o,
                           columnValue: ""
-                        }
+                        };
                       }
                     });
                     setOptionalColumns(newOptionalColumns);
@@ -392,28 +392,29 @@ const WfmForm = (props: WfmFormProps) => {
               </Row>
               <OptionalColumnRow>
                 { optionalColumns.map(c => (
-                    <TextField
-                      disabled={!isAdd}
-                      error={!c.columnValue || c.columnValue === ""}
-                      label={`${c.Name} value *`}
-                      value={c.columnValue || ""}
-                      onChange={(event: any) => {
-                        const newOptionalColumns = optionalColumns.map((o: any) => {
-                          if(o.Id === c.Id){
-                            return {
-                              ...o,
-                              columnValue: event.target.value
-                            }
-                          } else { return o; }
-                        });
-                        setOptionalColumns(newOptionalColumns);
-                      }}
-                      sx={{
-                        width: "250px",
-                        margin: "5px 5px"
-                      }}
-                    />
-                  ))}
+                  <TextField
+                    key={c.Id}
+                    disabled={!isAdd}
+                    error={!c.columnValue || c.columnValue === ""}
+                    label={`${c.Name} value *`}
+                    value={c.columnValue || ""}
+                    onChange={(event: any) => {
+                      const newOptionalColumns = optionalColumns.map((o: any) => {
+                        if(o.Id === c.Id){
+                          return {
+                            ...o,
+                            columnValue: event.target.value
+                          };
+                        } else { return o; }
+                      });
+                      setOptionalColumns(newOptionalColumns);
+                    }}
+                    sx={{
+                      width: "250px",
+                      margin: "5px 5px"
+                    }}
+                  />
+                ))}
               </OptionalColumnRow>
               <Row>
                 Schedule Fields
@@ -480,10 +481,10 @@ const WfmForm = (props: WfmFormProps) => {
                   styles={{ width: "250px" }}
                 />
               </Row>
-              { isAdd && 
+              { isAdd &&
                 <>
                   <Row>
-                  <Dropdown
+                    <Dropdown
                       disabled={!isAdd}
                       label="Rotation"
                       error={missingFields.some((f:string) => f === "RotationId" && isUnpopulatedField(form.calabrio_wfm.RotationId))}
@@ -503,11 +504,11 @@ const WfmForm = (props: WfmFormProps) => {
                       disabled={!isAdd}
                       label="Rotation Start Date"
                       value={form.calabrio_wfm.RotationStartDate}
-                      onChange={(newValue) => setForm({
+                      onChange={newValue => setForm({
                         type: userFormActions.SET_WFM_ROTATION,
                         payload: {
                           id: form.calabrio_wfm.RotationId,
-                          startDate: newValue ? new Date(newValue).toISOString().split('T')[0] : newValue,
+                          startDate: newValue ? new Date(newValue).toISOString().split("T")[0] : newValue,
                           startWeek: form.calabrio_wfm.RotationStartWeek
                         }
                       })}
@@ -555,11 +556,11 @@ const WfmForm = (props: WfmFormProps) => {
                       disabled={!isAdd}
                       label="Availability Start Date"
                       value={form.calabrio_wfm.AvailabilityStartDate}
-                      onChange={(newValue) => setForm({
+                      onChange={newValue => setForm({
                         type: userFormActions.SET_WFM_AVAILABILITY,
                         payload: {
                           id: form.calabrio_wfm.AvailabilityId,
-                          startDate: newValue ? new Date(newValue).toISOString().split('T')[0] : newValue
+                          startDate: newValue ? new Date(newValue).toISOString().split("T")[0] : newValue
                         }
                       })}
                       renderInput={props => <TextField {...props}
@@ -570,14 +571,14 @@ const WfmForm = (props: WfmFormProps) => {
                 </>
               }
             </>
-          }
-          { status === ModalOverlayStatuses.FAIL && <StatusWrapper>Business Unit Data failed to load</StatusWrapper>}
-        </>
-        : <StatusWrapper>WFM Options did not load, please refresh triton and try again</StatusWrapper>
-      }
+            }
+            { status === ModalOverlayStatuses.FAIL && <StatusWrapper>Business Unit Data failed to load</StatusWrapper>}
+          </>
+          : <StatusWrapper>WFM Options did not load, please refresh triton and try again</StatusWrapper>
+        }
       </LocalizationProvider>
     </Wrapper>
-  )
-}
+  );
+};
 
 export default WfmForm;

@@ -4,7 +4,6 @@ import React, {
 import {
   Chip, FormControl, InputLabel, MenuItem, Select, Grid, TextField, IconButton, Tooltip
 } from "@mui/material";
-import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import {
   PreviewModalAction,
   RoutingFilter
@@ -12,11 +11,14 @@ import {
 import {
   CACHE_FILTER_ROUTING, getAdvanceFilter, readWriteAccess
 } from "utils";
-import SaveAltIcon from "@mui/icons-material/SaveAlt";
-import DeleteSweepOutlinedIcon from "@mui/icons-material/DeleteSweepOutlined";
-import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import {
+  PlaylistAdd,
+  SaveAlt,
+  DeleteSweepOutlined,
+  AddOutlined,
+  EditNoteOutlined
+} from "@mui/icons-material";
 import { useAdminState } from "context";
-import EditNoteOutlinedIcon from "@mui/icons-material/EditNoteOutlined";
 
 interface CustomRoutingGridToolBarProps {
   openAddModal: (flag: boolean) => void;
@@ -117,7 +119,7 @@ export const CustomRoutingGridToolBar = ({
                 color: "white"
               }
             }}
-          > <SaveAltIcon />
+          > <SaveAlt />
           </IconButton>
         </Tooltip>      </Grid>
       <Grid item key="routing-action-box" xs={2}>
@@ -141,16 +143,16 @@ export const CustomRoutingGridToolBar = ({
             disabled={enableRouting}
           >
             <MenuItem key="addRouting" value="addRouting">
-              <AddOutlinedIcon/> &nbsp;&nbsp;Add Routing
+              <AddOutlined /> &nbsp;&nbsp;Add Routing
             </MenuItem>
             <MenuItem key="bulkDeleteRouting" value="bulkDeleteRouting">
-              <DeleteSweepOutlinedIcon />&nbsp;&nbsp; Multi Delete
+              <DeleteSweepOutlined />&nbsp;&nbsp; Multi Delete
             </MenuItem>
             <MenuItem key="bulkAddRouting" value="bulkAddRouting">
-              <PlaylistAddIcon />&nbsp;&nbsp; Multi Add
+              <PlaylistAdd />&nbsp;&nbsp; Multi Add
             </MenuItem>
             <MenuItem key="bulkEditRouting" value="bulkEditRouting">
-              <EditNoteOutlinedIcon />&nbsp;&nbsp; Multi Edit
+              <EditNoteOutlined />&nbsp;&nbsp; Multi Edit
             </MenuItem>
           </Select>
         </FormControl>

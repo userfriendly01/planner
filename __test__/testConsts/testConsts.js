@@ -720,6 +720,19 @@ export const initialTestState = {
           profile_id: 2,
           manager_n_number: "n0260000"
         }
+      },
+      {
+        attributes: {
+          full_name: "Worker McGee",
+          emp_first_name: "Worker",
+          emp_last_name: "McGee",
+          extension: "9872",
+          n_number: "n1234568",
+          email: "worker.mcgee@libertymutual.com",
+          profile_id: 10,
+          didUser: false
+        },
+        sid: "WK1234"
       }
     ]
   },

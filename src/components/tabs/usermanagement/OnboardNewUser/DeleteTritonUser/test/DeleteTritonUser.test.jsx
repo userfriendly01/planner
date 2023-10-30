@@ -9,7 +9,7 @@ import {
   useAdminDispatch
 } from "context";
 import React from "react";
-import { deleteUser } from "services";
+import { terminateWorker } from "services";
 import {
   act,
   initialFormState,
@@ -30,13 +30,24 @@ jest.mock("context", () => ({
 }));
 
 jest.mock("services", () => ({
-  deleteUser: jest.fn()
+  terminateWorker: jest.fn()
 }));
 
 const mockDispatch = jest.fn();
 const mockHandleClose = jest.fn();
 const mockUpdateLoading = jest.fn();
-const mockWorker = initialTestState.workerContext.workers[0];
+const mockWorker = initialTestState.workerContext.workers[6];
+const termDate = new Date().toISOString().split("T")[0];
+const expectedTerminatePayload = {
+  nNumber: "n1234568",
+  workerSid: "WK1234",
+  email: "worker.mcgee@libertymutual.com",
+  firstName: "Worker",
+  lastName: "McGee",
+  systems: ["TRITON", "QM"],
+  terminationDate: termDate,
+  inactiveForwardTo: ""
+};
 
 jest.useFakeTimers();
 
@@ -45,8 +56,8 @@ const renderComponent = () => {
     handleClose={mockHandleClose}
     loading={{}}
     updateLoading={mockUpdateLoading}
-  />)
-}
+  />);
+};
 
 describe("DeleteTritonUser", () => {
   beforeEach(() => {
@@ -58,13 +69,13 @@ describe("DeleteTritonUser", () => {
       ...initialFormState,
       triton: {
         userFound: true,
-        didUser: false,
+        didUser: false
       },
       nNumber: {
         value: mockWorker.attributes.n_number
       }
     });
-    deleteUser.mockResolvedValue("Yay!");
+    terminateWorker.mockResolvedValue("Yay!");
   });
   describe("initial render", () => {
     describe("worker is DID", () => {
@@ -73,18 +84,18 @@ describe("DeleteTritonUser", () => {
           ...initialFormState,
           triton: {
             userFound: true,
-            didUser: true,
+            didUser: true
           },
           nNumber: {
             value: mockWorker.attributes.n_number
           }
-        })
+        });
       });
       test("component renders with ForwardToEntryForm", () => {
         const rendered = renderComponent();
-        expect(rendered.container).toHaveTextContent("This user will be deactivated in Triton.");
+        expect(rendered.container).toHaveTextContent("Note: there is a grace period of 2 days before this user will be permanently deleted");
         expect(ForwardToEntryForm).toHaveBeenCalledTimes(1);
-        expect(ForwardToEntryForm.mock.calls[0][0].label).toBe("This user has a direct dial number. Please choose a forward to option before confirming.")
+        expect(ForwardToEntryForm.mock.calls[0][0].label).toBe("This user has a direct dial number. Please choose a forward to option before confirming.");
         expect(StyledButton).toHaveBeenCalledTimes(2);
         expect(StyledButton.mock.calls[1][0].disabled).toBe(false);
       });
@@ -92,19 +103,19 @@ describe("DeleteTritonUser", () => {
         test("inactiveForwardTo is set when delete is submitted", () => {
           renderComponent();
           const updateForwardTo = ForwardToEntryForm.mock.calls[0][0].updateForwardTo;
-          act(() => updateForwardTo("callmebeepme"))
+          act(() => updateForwardTo("callmebeepme"));
           expect(StyledButton).toHaveBeenCalledTimes(2);
           const confirmDelete = StyledButton.mock.calls[1][0].onClick;
           act(() => confirmDelete());
-          expect(deleteUser).toHaveBeenCalledTimes(1);
-          expect(deleteUser.mock.calls[0][0].inactiveForwardTo).toBe("callmebeepme");
+          expect(terminateWorker).toHaveBeenCalledTimes(1);
+          expect(terminateWorker.mock.calls[0][0].inactiveForwardTo).toBe("callmebeepme");
         });
       });
     });
     describe("worker is not DID", () => {
       test("component renders without ForwardToEntryForm", () => {
-        const rendered = renderComponent()
-        expect(rendered.container).toHaveTextContent("This user will be deactivated in Triton.");
+        const rendered = renderComponent();
+        expect(rendered.container).toHaveTextContent("Note: there is a grace period of 2 days before this user will be permanently deleted");
         expect(ForwardToEntryForm).toHaveBeenCalledTimes(0);
         expect(StyledButton).toHaveBeenCalledTimes(2);
         expect(StyledButton.mock.calls[1][0].disabled).toBe(false);
@@ -114,23 +125,24 @@ describe("DeleteTritonUser", () => {
 
   describe("handleDeleteUser is clicked", () => {
     describe("service call succeeds", () => {
-      test("deleteUser is called", async () => {
+      test("terminateWorker is called", async () => {
+        terminateWorker.mockResolvedValueOnce({ data: "user n1234568 successfully added to the termination database. Will be terminated at Sat Oct 28 2023 13:44:29 GMT+0000 (stuff)" });
         renderComponent();
         expect(StyledButton).toHaveBeenCalledTimes(2);
         const confirmDelete = StyledButton.mock.calls[1][0].onClick;
         act(() => confirmDelete());
-        expect(deleteUser).toHaveBeenCalledTimes(1);
-        expect(deleteUser.mock.calls[0][0]).toBe(mockWorker);
+        expect(terminateWorker).toHaveBeenCalledTimes(1);
+        expect(terminateWorker.mock.calls[0][0]).toEqual(expectedTerminatePayload);
         jest.runAllTimers();
         await waitFor(() => {
           expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
           expect(mockUpdateLoading).toHaveBeenCalledWith({
-            overlayMessage: "Deleting user: Faith Cuneo",
-            saveStatus: "saving", 
+            overlayMessage: "Deleting user: Worker McGee",
+            saveStatus: "saving",
             saveUser: true
           });
           expect(mockUpdateLoading).toHaveBeenCalledWith({
-            overlayMessage: "Successfully Deleted User",
+            overlayMessage: "user n1234568 successfully added to the termination database. Will be terminated at Sat Oct 28 2023 13:44:29 GMT",
             saveStatus: "success",
             saveUser: true
           });
@@ -147,26 +159,26 @@ describe("DeleteTritonUser", () => {
     });
     describe("service call fails", () => {
       beforeEach(() => {
-        deleteUser.mockRejectedValue({
+        terminateWorker.mockRejectedValue({
           response: {
             data: {
               error: "Boo"
             }
           }
         });
-      })
+      });
       test("error is handled", async () => {
         renderComponent();
         expect(StyledButton).toHaveBeenCalledTimes(2);
         const confirmDelete = StyledButton.mock.calls[1][0].onClick;
         act(() => confirmDelete());
-        expect(deleteUser).toHaveBeenCalledTimes(1);
-        expect(deleteUser.mock.calls[0][0]).toBe(mockWorker);
+        expect(terminateWorker).toHaveBeenCalledTimes(1);
+        expect(terminateWorker.mock.calls[0][0]).toEqual(expectedTerminatePayload);
         await waitFor(() => {
           expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
           expect(mockUpdateLoading).toHaveBeenCalledWith({
-            overlayMessage: "Deleting user: Faith Cuneo",
-            saveStatus: "saving", 
+            overlayMessage: "Deleting user: Worker McGee",
+            saveStatus: "saving",
             saveUser: true
           });
           expect(mockUpdateLoading).toHaveBeenCalledWith({
@@ -179,7 +191,7 @@ describe("DeleteTritonUser", () => {
       });
       describe("error is an object", () => {
         beforeEach(() => {
-          deleteUser.mockRejectedValue({
+          terminateWorker.mockRejectedValue({
             response: {
               data: {
                 error: {
@@ -188,23 +200,23 @@ describe("DeleteTritonUser", () => {
               }
             }
           });
-        })
+        });
         test("error is handled", async () => {
           renderComponent();
           expect(StyledButton).toHaveBeenCalledTimes(2);
           const confirmDelete = StyledButton.mock.calls[1][0].onClick;
           act(() => confirmDelete());
-          expect(deleteUser).toHaveBeenCalledTimes(1);
-          expect(deleteUser.mock.calls[0][0]).toBe(mockWorker);
+          expect(terminateWorker).toHaveBeenCalledTimes(1);
+          expect(terminateWorker.mock.calls[0][0]).toEqual(expectedTerminatePayload);
           await waitFor(() => {
             expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
             expect(mockUpdateLoading).toHaveBeenCalledWith({
-              overlayMessage: "Deleting user: Faith Cuneo",
-              saveStatus: "saving", 
+              overlayMessage: "Deleting user: Worker McGee",
+              saveStatus: "saving",
               saveUser: true
             });
             expect(mockUpdateLoading).toHaveBeenCalledWith({
-              overlayMessage: `Error Deleting Triton User. Failed to delete worker ${mockWorker.sid}`,
+              overlayMessage: `Error Deleting Triton User. Failed to terminate worker ${mockWorker.sid}`,
               saveStatus: "fail",
               saveUser: true
             });
@@ -215,7 +227,7 @@ describe("DeleteTritonUser", () => {
     });
   });
   describe("handleClose is called", () => {
-    test("deleteUser is called", () => {
+    test("terminateWorker is called", () => {
       renderComponent();
       expect(StyledButton).toHaveBeenCalledTimes(2);
       const onClose = StyledButton.mock.calls[0][0].onClick;
