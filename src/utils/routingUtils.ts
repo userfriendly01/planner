@@ -325,6 +325,7 @@ export const routingFields: AddRoutingFieldConfigProps[] = [
     label: "TFN Routing Group",
     key: "tfnRoutingGroup",
     control: "select",
+    isBlankFirstValue: true,
     valueGetter: (params: CctSharedCallRoutingDb) => `${params?.tfnRoutingGroup || ""}`,
     valueSetter: (currentValue: CctSharedCallRoutingDb, newValue: any) => ({
       ...currentValue,
