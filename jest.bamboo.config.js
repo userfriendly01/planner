@@ -1,5 +1,5 @@
 const commonConfig = require("./jest.config");
-const merge = require("webpack-merge");
+const { merge } = require("webpack-merge");
 
 const bambooConfig = {
   "testResultsProcessor": "jest-bamboo-reporter"

@@ -18,6 +18,8 @@ export const TeamColumn = styled(FlexColumn)`
   align-items: start;
   margin: 0px 20px;
   width: 150px;
+  align-self: baseline;
+  margin-top: 30px;
 `;
 
 export const Group = styled.div<{ selected: boolean }>`
@@ -34,5 +36,4 @@ export const Group = styled.div<{ selected: boolean }>`
 export const Team = styled(FlexColumn)`
   padding: 4px;
   font-size: 17px;
-  flex: none;
 `;
