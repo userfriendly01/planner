@@ -36,6 +36,7 @@ export interface CctSharedCallRoutingDb {
     occupancyCheck?: Array<RoutingOccupancyCheck>;
     routingSteps?: Array<RoutingStep>;
     alternateTransferDestination?: string;
+    tfnRoutingGroup?: string;
 }
 export interface RoutingMasterData {
     channel?: Array<string>;
@@ -89,6 +90,7 @@ export interface RoutingDropDownList {
     policyType?: string[];
     priority?: string[];
     callerState?: string[];
+    tfnRoutingGroup?: string[];
 }
 
 export interface AddPageFieldConfigProps {

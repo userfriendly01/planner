@@ -1,4 +1,3 @@
-import React from "react";
 import { TableGridColumnDef } from "../TableGridColumnDef";
 import { reconstructTableColumnDef } from "../previewUtils";
 import { ROUTING_CACHE_MASTER_DATA } from "../../../../../utils";
@@ -9,7 +8,8 @@ const routingDropDownData = {
   dayOfWeek: ["MONDAY","TUESDAY","WEDNESDAY"],
   language: ["ENGLISH", "SPANISH"],
   policyType: ["PTYPE1", "PTYPE2"],
-  priority: ["1","2","3"]
+  priority: ["1","2","3"],
+  tfnRoutingGroup: ["test","test1"]
 };
 
 export const createRoutingRule = num => {

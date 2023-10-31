@@ -4,7 +4,7 @@ import { render } from "testUtils";
 describe("<TableColumnDef />", () => {
 
   it("has no of columns", () => {
-    expect(TableGridColumnDef.length).toBe(19);
+    expect(TableGridColumnDef.length).toBe(20);
   });
 
   describe("valueGetter", ()=>{
@@ -83,5 +83,12 @@ describe("<TableColumnDef />", () => {
     const renderedCell = render(TableGridColumnDef[18].renderCell({ row: { alternateTransferDestination: null }}));
     expect(renderedCell.findByDisplayValue("")).toBeTruthy();
   });
-
+  it("tfnRoutingGroup", () => {
+    const renderedCell = render(TableGridColumnDef[19].renderCell({ row: { tfnRoutingGroup: "Core" }}));
+    expect(renderedCell.findByDisplayValue("Core")).toBeTruthy();
+  });
+  it("tfnRoutingGroup", () => {
+    const renderedCell = render(TableGridColumnDef[19].renderCell({ row: { tfnRoutingGroup: null  }}));
+    expect(renderedCell.findByDisplayValue("")).toBeTruthy();
+  });
 });
