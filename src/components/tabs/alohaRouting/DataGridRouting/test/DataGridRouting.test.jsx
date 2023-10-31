@@ -80,7 +80,8 @@ export const createRoutingRule = num => {
     transferDestination: `1234567${num}`,
     transferMessage: `Test Transfer Message ${num}`,
     twilioSkill: `Test Twilio Skill${num}`,
-    crcSkill: null
+    crcSkill: null,
+    tfnRoutingGroup: `Test routing ${num}`
   };
 };
 
@@ -115,7 +116,8 @@ const validRoutingData = {
   transferDestination: "Twilo",
   transferMessage: "HOLD ON while we transfer the call",
   twilioSkill: "test",
-  crcSkill: "updated"
+  crcSkill: "updated",
+  tfnRoutingGroup: "Test routing"
 };
 const routingPattern=routingData=>{
   const routingPatternReturn={

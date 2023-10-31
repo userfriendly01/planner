@@ -21,6 +21,8 @@ export const priority: string[] = ["1", "2", "3", "4", "5", "6", "7", "8", "9", 
 
 export const callerState: string[] = ["State", "OF", "HI"];
 
+export const tfnRoutingGroupAttr = ["Premier Partners", "TruStage", "TruStageNavy", "USAA", "High Touch Products", "Online Inbound", "Core"];
+
 export const routingDropDownList: RoutingDropDownList = {
   brand: [],
   callerState,
@@ -28,7 +30,8 @@ export const routingDropDownList: RoutingDropDownList = {
   dayOfWeek,
   channel: [],
   policyType: [],
-  priority
+  priority,
+  tfnRoutingGroup: tfnRoutingGroupAttr
 };
 
 export const routingInitState: RoutingStateVariables = {
@@ -313,6 +316,17 @@ export const routingFields: AddRoutingFieldConfigProps[] = [
     key: "alternateTransferDestination",
     control: "input",
     valueGetter: (params: CctSharedCallRoutingDb) => `${params?.alternateTransferDestination || ""}`,
+    valueSetter: (currentValue: CctSharedCallRoutingDb, newValue: any) => ({
+      ...currentValue,
+      ...newValue
+    })
+  },
+  {
+    label: "TFN Routing Group",
+    key: "tfnRoutingGroup",
+    control: "select",
+    isBlankFirstValue: true,
+    valueGetter: (params: CctSharedCallRoutingDb) => `${params?.tfnRoutingGroup || ""}`,
     valueSetter: (currentValue: CctSharedCallRoutingDb, newValue: any) => ({
       ...currentValue,
       ...newValue

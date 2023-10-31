@@ -136,7 +136,8 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
             startTime: routingRule.startTime.value,
             transferDestination: routingRule.transferDestination.value,
             transferMessage: routingRule.transferMessage.value,
-            twilioSkill: routingRule.twilioSkill.value
+            twilioSkill: routingRule.twilioSkill.value,
+            tfnRoutingGroup: routingRule.tfnRoutingGroup.value
           };
           openModal(false,false, newRoutingRule);
           setRoutingRule({ ...routingInitRule });

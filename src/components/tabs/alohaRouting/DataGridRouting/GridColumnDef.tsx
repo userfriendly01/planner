@@ -215,5 +215,17 @@ export const RoutingGridColumnDef: GridColDef[] = [
         <div>{params.row?.alternateTransferDestination || ""}</div>
       </Tooltip>
     )
+  },
+  {
+    headerName: "TFN Routing Group",
+    field: "tfnRoutingGroup",
+    sortable: true,
+    width: 130,
+    align: "left",
+    renderCell: (params: any) =>  (
+      <Tooltip title={params.row?.tfnRoutingGroup || ""} >
+        <div>{params.row?.tfnRoutingGroup || ""}</div>
+      </Tooltip>
+    )
   }
 ];

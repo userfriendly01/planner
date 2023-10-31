@@ -192,7 +192,7 @@ export const TableGridColumnDef: GridColDef[] = [
         {
           params.row.routingSteps?.map((item: RoutingStep)=>(
             <Chip
-              key={`routingSteps-${params.row.id}-${item.teams.join("")}-${item.time}`}
+              key={`routingSteps-${params.row.id}-${item.teams?.join("")}-${item.time}`}
               tabIndex={-1}
               label={getTagLabel(item,formFields["routingSteps"])}
             />
@@ -210,6 +210,18 @@ export const TableGridColumnDef: GridColDef[] = [
     renderCell: (params: any) =>  (
       <Tooltip title={params.row.alternateTransferDestination || ""} >
         <div>{params.row?.alternateTransferDestination || ""}</div>
+      </Tooltip>
+    )
+  },
+  {
+    headerName: "TFN Routing Group",
+    field: "tfnRoutingGroup",
+    sortable: true,
+    width: 110,
+    align: "left",
+    renderCell: (params: any) => (
+      <Tooltip title={params.row.tfnRoutingGroup} >
+        <div className="table-cell-trucate">{params.row.tfnRoutingGroup}</div>
       </Tooltip>
     )
   }
