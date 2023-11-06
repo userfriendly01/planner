@@ -53,6 +53,7 @@ async function queryFlowData(accessToken, nextToken = null, graphQlApiUrl) {
                   predictiveCaller
                   rangeIndicator
                   requestID
+                  selfServiceIndicator
                   tfnRoutingGroup
                   tollFreeNumber
                   transferCode
@@ -143,7 +144,8 @@ function addFlowInput (item, dataRequestsPassed, currentTimePassed){
     rangeIndicator: item.rangeIndicator?.value || "",
     type: item.type?.value || "",
     tfnRoutingGroup: item.tfnRoutingGroup?.value || "",
-    predictiveCaller: item.predictiveCaller?.value || false
+    predictiveCaller: item.predictiveCaller?.value || false,
+    selfServiceIndicator: item.selfServiceIndicator?.value || false
   };
   if(item.employeeId?.value){
     input.employeeId = item.employeeId.value;
@@ -186,7 +188,8 @@ function updateFlowInput(item){
     rangeIndicator: item.rangeIndicator || "",
     type: item.type || "",
     tfnRoutingGroup: item.tfnRoutingGroup || "",
-    predictiveCaller: item.predictiveCaller || false
+    predictiveCaller: item.predictiveCaller || false,
+    selfServiceIndicator: item.selfServiceIndicator || false
   };
   if(item.employeeId){
     input.employeeId = item.employeeId;
@@ -247,6 +250,7 @@ async function updateFlowDB(item, accessToken, graphQlApiUrl) {
               predictiveCaller
               whisper
               requestID
+              selfServiceIndicator
               userDestination
               rangeIndicator
               tfnRoutingGroup
@@ -320,6 +324,7 @@ async function addFlowRule(item, accessToken, graphQlApiUrl, curTime = new Date(
               predictiveCaller
               whisper
               requestID
+              selfServiceIndicator
               userDestination
               rangeIndicator
               tfnRoutingGroup
@@ -394,6 +399,7 @@ async function deleteFlowRule(item, accessToken, graphQlApiUrl) {
               predictiveCaller
               whisper
               requestID
+              selfServiceIndicator
               rangeIndicator
               tfnRoutingGroup
               type
