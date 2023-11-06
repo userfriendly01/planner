@@ -71,6 +71,36 @@ const manageEditColumnDef = (columnDef: Array<GridColDef>, apiRef: React.Mutable
           />
       };
     }
+    if(item.field === "selfServiceIndicator"){
+      return {
+        ...item,
+        editable: true,
+        renderEditCell: params =>
+                <ComponentControl
+                        control="switch"
+                        label=""
+                        name={item.field}
+                        error={false}
+                        required={false}
+                        type="boolean"
+                        value={params.value}
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                          apiRef.current.setEditCellValue({
+                            id: params.row.id,
+                            field: item.field,
+                            value: event.target.value
+                          });
+                        }}
+                />,
+        cellClassName: (params: GridCellParams<any, string>)=> {
+          if(!params.value && mandatoryField.includes(item.field)){
+            return "MuiDataGrid-Custom-Cell-Format";
+          }
+          return "";
+        }
+
+      };
+    }
     return {
       ...item,
       editable: true,

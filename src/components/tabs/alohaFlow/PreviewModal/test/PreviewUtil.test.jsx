@@ -22,7 +22,8 @@ export const createFlowDataItem = num => {
     createTime: "2020-01-01T15:14:13.${num}Z",
     dialedDescription: `Test case ${num}`,
     employeeId: `n${num}`,
-    userDestination: "Avaya"
+    userDestination: "Avaya",
+    selfServiceIndicator: true
   };
 };
 
