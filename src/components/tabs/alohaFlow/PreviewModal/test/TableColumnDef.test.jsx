@@ -155,6 +155,10 @@ describe("<TableGridColumnDef />", () => {
       const renderedCell = render(TableGridColumnDef[32].renderCell({ row: { predictiveCaller: true }}));
       expect(renderedCell.container).toBeInTheDocument();
     });
+    it("selfServiceIndicator", ()=>{
+      const renderedCell = render(TableGridColumnDef[33].renderCell({ row: { selfServiceIndicator: true }}));
+      expect(renderedCell.container).toBeInTheDocument();
+    });
   });
   describe("valueSetter", ()=>{
     it("languageOffer", ()=>{
