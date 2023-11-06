@@ -53,6 +53,7 @@ async function queryFlowData(accessToken, nextToken = null, graphQlApiUrl) {
                   predictiveCaller
                   rangeIndicator
                   requestID
+                  selfServiceIndicator
                   tfnRoutingGroup
                   tollFreeNumber
                   transferCode

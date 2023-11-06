@@ -411,17 +411,6 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
       return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["type"]?.value === "DRC";
     }
-  },
-  {
-    label: "Self Service Indicator",
-    key: "selfServiceIndicator",
-    control: "switch",
-    required: false,
-    valueGetter: (params: CctSharedCallFlowDb) => params?.selfServiceIndicator || false,
-    valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
-      ...currentValue,
-      ...newValue
-    })
   }
 ];
 
