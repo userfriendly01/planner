@@ -23,7 +23,8 @@ export const createFlowDataItem = num => {
     dialedDescription: `Test case ${num}`,
     employeeId: `n${num}`,
     userDestination: "Avaya",
-    predictiveCaller: true
+    predictiveCaller: true,
+    selfServiceIndicator: true
   };
 };
 

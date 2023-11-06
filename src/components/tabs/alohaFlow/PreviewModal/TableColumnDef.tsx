@@ -364,6 +364,16 @@ export const TableGridColumnDef: GridColDef[] = [
     valueGetter: params => params.row?.predictiveCaller || false,
     renderCell: (params: any) =>(
       <Switch checked={params.row?.predictiveCaller || false} defaultChecked={false} color="warning" disabled size="medium" />)
+  },
+  {
+    headerName: "Self Service",
+    field: "selfServiceIndicator",
+    sortable: true,
+    width: 110,
+    align: "center",
+    valueGetter: params => params.row?.selfServiceIndicator || false,
+    renderCell: (params: any) =>(
+            <Switch checked={params.row?.selfServiceIndicator || false} defaultChecked={false} color="warning" disabled size="medium" />)
   }
 ];
 
