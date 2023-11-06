@@ -528,6 +528,7 @@ const batchFlowUpdate = async(items, accessToken, graphQlApiUrl) =>{
       lineOfBusiness: item.lineOfBusiness || "",
       marketingChannel: item.marketingChannel || "",
       predictiveCaller: item.predictiveCaller || false,
+      selfServiceIndicator: item.selfServiceIndicator || false,
       whisper: item.whisper || "",
       requestID: item.requestID || "",
       userDestination: item.userDestination || "",
@@ -576,6 +577,7 @@ const batchFlowUpdate = async(items, accessToken, graphQlApiUrl) =>{
               predictiveCaller
               rangeIndicator
               requestID
+              selfServiceIndicator
               tollFreeNumber
               tfnRoutingGroup
               transferCode
@@ -647,7 +649,9 @@ const batchFlowCreate = async(items, accessToken, graphQlApiUrl) =>{
       requestID: item.requestID || "",
       userDestination: item.userDestination || "",
       rangeIndicator: item.rangeIndicator || "",
-      type: item.type || ""
+      type: item.type || "",
+      predictiveCaller: item.predictiveCaller || false,
+      selfServiceIndicator: item.selfServiceIndicator || false
     };
   });
   try {
@@ -689,6 +693,7 @@ const batchFlowCreate = async(items, accessToken, graphQlApiUrl) =>{
               pkey
               rangeIndicator
               requestID
+              selfServiceIndicator
               tollFreeNumber
               transferCode
               type
