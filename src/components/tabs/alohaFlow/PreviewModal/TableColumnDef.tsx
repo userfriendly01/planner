@@ -373,7 +373,7 @@ export const TableGridColumnDef: GridColDef[] = [
     align: "center",
     valueGetter: params => params.row?.selfServiceIndicator || false,
     renderCell: (params: any) =>(
-            <Switch checked={params.row?.selfServiceIndicator || false} defaultChecked={false} color="warning" disabled size="medium" />)
+      <Switch checked={params.row?.selfServiceIndicator || false} defaultChecked={false} color="warning" disabled size="medium" />)
   }
 ];
 

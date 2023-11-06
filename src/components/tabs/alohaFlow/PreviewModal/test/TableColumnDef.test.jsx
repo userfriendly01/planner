@@ -51,8 +51,8 @@ const validFlowData = {
 
 describe("<TableGridColumnDef />", () => {
 
-  it("has 33 columns", () => {
-    expect(TableGridColumnDef.length).toBe(33);
+  it("has 34 columns", () => {
+    expect(TableGridColumnDef.length).toBe(34);
   });
 
   describe("valueGetter", ()=>{
@@ -96,6 +96,10 @@ describe("<TableGridColumnDef />", () => {
     it("predictiveCaller", () => {
       expect(TableGridColumnDef[32].valueGetter({ row: { predictiveCaller: true }})).toBe(true);
       expect(TableGridColumnDef[32].valueGetter({ row: {}})).toEqual(false);
+    });
+    it("selfServiceIndicator", () => {
+      expect(TableGridColumnDef[33].valueGetter({ row: { selfServiceIndicator: true }})).toBe(true);
+      expect(TableGridColumnDef[33].valueGetter({ row: {}})).toEqual(false);
     });
   });
   describe("renderCell", ()=>{
