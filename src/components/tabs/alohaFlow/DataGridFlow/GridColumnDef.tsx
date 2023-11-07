@@ -311,6 +311,18 @@ export const FlowGridColumnDef: GridColDef[] = [
         <Switch checked={params.row?.predictiveCaller || false} defaultChecked={false} color="warning" disabled size="medium" />
       </Box>
     )
+  },
+  {
+    headerName: "Self Service Indicator",
+    field: "selfServiceIndicator",
+    sortable: false,
+    width: 110,
+    align: "center",
+    renderCell: (params: any) =>(
+      <Box>
+        <Switch checked={params.row?.selfServiceIndicator || false} defaultChecked={false} color="warning" disabled size="medium" />
+      </Box>
+    )
   }
 ];
 

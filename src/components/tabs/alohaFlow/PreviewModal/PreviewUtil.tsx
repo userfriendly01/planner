@@ -71,7 +71,7 @@ const manageEditColumnDef = (columnDef: Array<GridColDef>, apiRef: React.Mutable
           />
       };
     }
-    if(item.field === "predictiveCaller"){
+    if(["predictiveCaller", "selfServiceIndicator"].includes(item.field)){
       return {
         ...item,
         editable: true,
