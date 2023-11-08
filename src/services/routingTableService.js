@@ -426,6 +426,34 @@ async function batchDelete(items, accessToken, graphQlApiUrl) {
   return response;
 }
 
+async function routingBatchUpdate(items, accessToken, graphQlApiUrl){
+  var routingDeleteArray=[];
+  const size=2;
+  const response = {
+    "success": [],
+    "flag": false,
+    "failure": []
+  };
+  while (items.length > 0){
+    routingDeleteArray.push(items.splice(0, size));
+  }
+  for(var i=0; i<routingDeleteArray.length; i++){
+    const successResponse=response.success;
+    const failureResponse = response.failure;
+    await batchRoutingUpdate(routingDeleteArray[i],accessToken,graphQlApiUrl).then(resp=>{
+      if(!resp?.errors){
+        response.success = successResponse.concat(routingDeleteArray[i]);
+      }
+      else{
+        console.error("error while updating the records", resp.errors);
+        response.failure = failureResponse.concat(routingDeleteArray[i]);
+        response.flag = true;
+      }
+    });
+  }
+  return response;
+}
+
 
 /**
  * This is the Function to batch update the Routing Object to the DB
@@ -525,6 +553,34 @@ const batchRoutingUpdate = async(items, accessToken, graphQlApiUrl) =>{
   }
   return response;
 };
+
+async function routingBatchCreate(items, accessToken, graphQlApiUrl){
+  var routingDeleteArray=[];
+  const size=24;
+  const response = {
+    "success": [],
+    "flag": false,
+    "failure": []
+  };
+  while (items.length > 0){
+    routingDeleteArray.push(items.splice(0, size));
+  }
+  for(var i=0; i<routingDeleteArray.length; i++){
+    const successResponse=response.success;
+    const failureResponse = response.failure;
+    await batchRoutingCreate(routingDeleteArray[i],accessToken,graphQlApiUrl).then(resp=>{
+      if(!resp?.errors){
+        response.success = successResponse.concat(routingDeleteArray[i]);
+      }
+      else{
+        console.error("error while creating the records", resp.errors);
+        response.failure = failureResponse.concat(routingDeleteArray[i]);
+        response.flag = true;
+      }
+    });
+  }
+  return response;
+}
 
 /**
  * This is the Function to batch Create the Routing Object to the DB
@@ -634,5 +690,7 @@ export {
   updateRoutingDB,
   batchRoutingUpdate,
   batchRoutingCreate,
-  routingBatchDelete
+  routingBatchDelete,
+  routingBatchCreate,
+  routingBatchUpdate
 };
