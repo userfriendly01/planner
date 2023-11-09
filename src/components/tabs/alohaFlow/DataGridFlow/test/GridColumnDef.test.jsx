@@ -3,8 +3,8 @@ import { render } from "testUtils";
 
 describe("<FlowGridColumnDef />", () => {
 
-  it("has 33 columns", () => {
-    expect(FlowGridColumnDef.length).toBe(33);
+  it("has 34 columns", () => {
+    expect(FlowGridColumnDef.length).toBe(34);
   });
 
   describe("valueGetter", ()=>{
@@ -93,6 +93,10 @@ describe("<FlowGridColumnDef />", () => {
     });
     it("predictiveCaller", ()=>{
       const renderedCell = render(FlowGridColumnDef[32].renderCell({ row: { predictiveCaller: true }}));
+      expect(renderedCell.container).toBeInTheDocument();
+    });
+    it("selfServiceIndicator", ()=>{
+      const renderedCell = render(FlowGridColumnDef[33].renderCell({ row: { selfServiceIndicator: true }}));
       expect(renderedCell.container).toBeInTheDocument();
     });
   });

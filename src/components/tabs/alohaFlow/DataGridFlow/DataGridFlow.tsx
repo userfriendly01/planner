@@ -392,7 +392,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       return;
     }
     const response = await batchFlowUpdate(rows, accessToken, graphQLEndpoint);
-    if(!response || response.errors) {
+    if(response?.flag) {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
         open: true,
@@ -410,7 +410,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     }
 
     const filteredItems = dataFlow.filteredItems.map(x=> {
-      const fi = rows.filter(r=> r.pkey === x.pkey);
+      const fi = response.success.filter(r=> r.pkey === x.pkey);
       if(fi.length >0){
         return fi[0];
       }
@@ -419,7 +419,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       }
     });
     const filteredData = dataFlow.data.map(x=> {
-      const fi = rows.filter(r=> r.pkey === x.pkey);
+      const fi = response.success.filter(r=> r.pkey === x.pkey);
       if(fi.length >0){
         return fi[0];
       }
@@ -427,7 +427,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         return x;
       }
     });
-    setSelectedList([]);
+    setSelectedList(response.failure);
     setDataFlow({
       ...dataFlow,
       ...filteredItems && { filteredItems },

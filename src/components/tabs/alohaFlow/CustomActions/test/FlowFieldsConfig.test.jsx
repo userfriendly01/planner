@@ -37,7 +37,8 @@ const validFlowData = {
   type: "DID",
   whisper: "test whisper",
   tfnRoutingGroup: "Core",
-  predictiveCaller: true
+  predictiveCaller: true,
+  selfServiceIndicator: true
 };
 
 const invalidFLowData = {
@@ -201,6 +202,10 @@ describe("FlowFieldsConfig", ()=>{
     it("predictiveCaller", ()=>{
       const updatedFlowData = flowFields[31].valueSetter(validFlowData, { predictiveCaller: false });
       expect(updatedFlowData.predictiveCaller).toBe(false);
+    });
+    it("selfServiceIndicator", ()=>{
+      const updatedFlowData = flowFields[32].valueSetter(validFlowData, { selfServiceIndicator: false });
+      expect(updatedFlowData.selfServiceIndicator).toBe(false);
     });
   });
   describe("valueGetter", ()=>{
@@ -393,6 +398,12 @@ describe("FlowFieldsConfig", ()=>{
     it("predictiveCaller", ()=>{
       const validData = flowFields[31].valueGetter(validFlowData);
       const invalidData = flowFields[31].valueGetter({});
+      expect(validData).toBe(true);
+      expect(invalidData).toBe(false);
+    });
+    it("selfServiceIndicator", ()=>{
+      const validData = flowFields[32].valueGetter(validFlowData);
+      const invalidData = flowFields[32].valueGetter({});
       expect(validData).toBe(true);
       expect(invalidData).toBe(false);
     });

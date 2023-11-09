@@ -491,7 +491,8 @@ const batchRoutingUpdate = async(items, accessToken, graphQlApiUrl) =>{
       priority: item?.priority || "",
       occupancyCheck: item?.occupancyCheck || [],
       routingSteps: item?.routingSteps || [],
-      tfnRoutingGroup: item?.tfnRoutingGroup || ""
+      tfnRoutingGroup: item?.tfnRoutingGroup || "",
+      alternateTransferDestination: item?.alternateTransferDestination || ""
     };
   });
   try {
@@ -534,6 +535,7 @@ const batchRoutingUpdate = async(items, accessToken, graphQlApiUrl) =>{
               transferMessage
               twilioSkill
               tfnRoutingGroup
+              alternateTransferDestination
             }
             nextToken
           }
@@ -617,7 +619,8 @@ const batchRoutingCreate = async(items, accessToken, graphQlApiUrl) =>{
       priority: item?.priority || "",
       occupancyCheck: item?.occupancyCheck || [],
       routingSteps: item?.routingSteps || [],
-      tfnRoutingGroup: item?.tfnRoutingGroup || ""
+      tfnRoutingGroup: item?.tfnRoutingGroup || "",
+      alternateTransferDestination: item?.alternateTransferDestination || ""
     };
   });
   try {
@@ -660,6 +663,7 @@ const batchRoutingCreate = async(items, accessToken, graphQlApiUrl) =>{
               transferMessage
               twilioSkill
               tfnRoutingGroup
+              alternateTransferDestination
             }
             nextToken
           }

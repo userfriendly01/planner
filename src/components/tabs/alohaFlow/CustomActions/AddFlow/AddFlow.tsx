@@ -258,7 +258,8 @@ export const AddFlow = ({
             rangeIndicator: stringValue(flowRule,"rangeIndicator", ""),
             tfnRoutingGroup: stringValue(flowRule,"tfnRoutingGroup", ""),
             type: flowRule.type.value || "",
-            predictiveCaller: flowRule.predictiveCaller.value || false
+            predictiveCaller: flowRule.predictiveCaller.value || false,
+            selfServiceIndicator: flowRule.selfServiceIndicator.value || false
           };
           openAddModal(false, true, newFlowRule);
           setAlertBar((alertBarProps: AlertBarProps) => ({
