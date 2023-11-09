@@ -23,8 +23,6 @@ import {
 } from "utils/interfaces";
 import {
   routingBatchDelete,
-  batchRoutingCreate,
-  batchRoutingUpdate,
   queryRoutingData,
   retrieveRoutingData,
   routingBatchCreate,
@@ -38,7 +36,6 @@ import {
   downloadCSV,
   getGraphQLEndpoint,
   initializedAlertBar,
-  logger,
   routingFields,
   routingInitRule,
   routingInitState
@@ -350,7 +347,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
         open: true,
-        msg: "Error while creating the records.",
+        msg: response.alertMsg || "Error while creating the records.",
         severityType: "error"
       }));
     } else {
@@ -362,8 +359,8 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
       }));
     }
 
-    const filteredItems = [...state.filteredItems, ...response.success];
-    const filteredData = [...state.data, ...response.success];
+    const filteredItems = [...state.filteredItems , ...response.success];
+    const filteredData = [...state.data , ...response.success];
     setSelectedList([...response.failure]);
     setState({
       ...state,
@@ -379,7 +376,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
         open: true,
-        msg: "Error while updating the records.",
+        msg: response.alertMsg || "Error while updating the records.",
         severityType: "error"
       }));
     } else {
@@ -414,7 +411,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
       ...state,
       ...filteredItems && { filteredItems },
       data: filteredData,
-      isPreviewModalOpen: false
+      isPreviewModalOpen: response?.flag || false
     });
   };
 

@@ -428,12 +428,17 @@ async function batchDelete(items, accessToken, graphQlApiUrl) {
 
 async function routingBatchUpdate(items, accessToken, graphQlApiUrl){
   var routingDeleteArray=[];
-  const size=2;
+  const size=24;
   const response = {
-    "success": [],
-    "flag": false,
-    "failure": []
+    success: [],
+    flag: false,
+    failure: [],
+    alertMsg: ""
   };
+  if(items.length === 0){
+    response.alertMsg = "Please Select Something to Edit";
+    response.flag=true;
+  }
   while (items.length > 0){
     routingDeleteArray.push(items.splice(0, size));
   }
@@ -463,13 +468,6 @@ async function routingBatchUpdate(items, accessToken, graphQlApiUrl){
  * @returns 
  */
 const batchRoutingUpdate = async(items, accessToken, graphQlApiUrl) =>{
-  if(items.length === 0){
-    return {
-      errors: [
-        "Please Select Something to Edit"
-      ]
-    };
-  }
   let response;
   const input = items.map(item=>{
     return {
@@ -558,10 +556,15 @@ async function routingBatchCreate(items, accessToken, graphQlApiUrl){
   var routingDeleteArray=[];
   const size=24;
   const response = {
-    "success": [],
-    "flag": false,
-    "failure": []
+    success: [],
+    flag: false,
+    failure: [],
+    alertMsg: ""
   };
+  if(items.length === 0){
+    response.alertMsg="Please Select Something to Add";
+    response.flag = true;
+  }
   while (items.length > 0){
     routingDeleteArray.push(items.splice(0, size));
   }
@@ -576,6 +579,7 @@ async function routingBatchCreate(items, accessToken, graphQlApiUrl){
         console.error("error while creating the records", resp.errors);
         response.failure = failureResponse.concat(routingDeleteArray[i]);
         response.flag = true;
+        response.alertMsg = "error while creating the records";
       }
     });
   }
@@ -590,13 +594,6 @@ async function routingBatchCreate(items, accessToken, graphQlApiUrl){
  * @returns
  */
 const batchRoutingCreate = async(items, accessToken, graphQlApiUrl) =>{
-  if(items.length === 0){
-    return {
-      errors: [
-        "Please Select Something to Add"
-      ]
-    };
-  }
   let response;
   const input = items.map(item=>{
     return {

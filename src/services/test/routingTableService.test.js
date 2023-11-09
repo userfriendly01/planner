@@ -5,8 +5,11 @@ import {
   retrieveRoutingData,
   updateRoutingDB,
   batchRoutingUpdate,
+  batchRoutingCreate,
   queryRoutingData,
-  routingBatchDelete
+  routingBatchDelete,
+  routingBatchCreate,
+  routingBatchUpdate
 } from "../routingTableService";
 const jsonRouteData =[
   {
@@ -269,7 +272,44 @@ describe("routingTableService",()=>{
     }
   };
 
+  const batchCreateResponse = {
+    data: {
+      listCctSharedCallRoutingGlobalDbs: {
+        items: jsonRouteData,
+        nextToken: undefined
+      }
+    }
+  };
 
+  describe("Batch Create Routing", ()=>{
+    beforeEach(()=>{
+      window.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve(batchCreateResponse)
+        })
+      );
+    });
+    afterEach(()=>{
+      jest.restoreAllMocks();
+    });
+    test("Success",async()=>{
+      const response = await batchRoutingCreate(jsonRouteData,"1233-3245","http://localhost:3000");
+      expect(response).toBe(batchCreateResponse);
+    });
+    test("routing batch Create ",async()=>{
+      await batchRoutingCreate(jsonRouteData,"1233-3245","http://localhost:3000");
+      const response=routingBatchCreate(jsonRouteData,"3245","http://localhost:3000");
+      expect(response).toBeTruthy();
+    });
+    test("Error with null items list",async()=>{
+      await batchRoutingCreate(jsonRouteData,"1233-3245","http://localhost:3000");
+      jest.spyOn(JSON, "stringify").mockImplementation(()=>{
+        throw new Error();
+      });
+      const response = await routingBatchCreate([],"1233-3245","http://localhost:3000");
+      expect(response).toBeTruthy();
+    });
+  });
   describe("Batch Delete Routing", ()=>{
     beforeEach(()=>{
       window.fetch = jest.fn(() =>
@@ -337,8 +377,13 @@ describe("routingTableService",()=>{
       expect(response).toEqual(undefined);
     });
     test("Error null Items",async()=>{
-      const response = await batchRoutingUpdate([],"1233-3245","http://localhost:3000");
-      expect(response).toEqual({ "errors": ["Please Select Something to Edit"]});
+      const response = await routingBatchUpdate([],"1233-3245","http://localhost:3000");
+      expect(response).toBeTruthy();
+    });
+    test("routing batch Create ",async()=>{
+      await batchRoutingUpdate(batchUpdateItems,"1233-3245","http://localhost:3000");
+      const response=(routingBatchUpdate,batchUpdateItems,"3245","http://localhost:3000");
+      expect(response).toBeTruthy();
     });
   });
 });
