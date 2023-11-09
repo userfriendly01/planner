@@ -346,7 +346,7 @@ async function deleteRoutingRule(item, accessToken, graphQlApiUrl) {
 
 async function routingBatchDelete(items, accessToken, graphQlApiUrl){
   var routingDeleteArray=[];
-  const size=24;
+  const size=25;
   const response = {
     "success": [],
     "flag": false,
@@ -356,8 +356,6 @@ async function routingBatchDelete(items, accessToken, graphQlApiUrl){
     routingDeleteArray.push(items.splice(0, size));
   }
   for(const routeValue of routingDeleteArray){
-    const successResponse=response.success;
-    const failureResponse = response.failure;
     const keysToDelete = routeValue.map(x => {
       return {
         pkey: x.pkey,
@@ -369,11 +367,11 @@ async function routingBatchDelete(items, accessToken, graphQlApiUrl){
 
     await batchDelete(keysToDelete,accessToken,graphQlApiUrl).then(resp=>{
       if(!resp?.errors){
-        response.success = successResponse.concat(routingRespId);
+        response.success = response.success.concat(routingRespId);
       }
       else{
         console.error("error while deleting the records", resp.errors);
-        response.failure = failureResponse.concat(routingRespId);
+        response.failure = response.failure.concat(routingRespId);
         response.flag = true;
       }
     });
@@ -428,7 +426,7 @@ async function batchDelete(items, accessToken, graphQlApiUrl) {
 
 async function routingBatchUpdate(items, accessToken, graphQlApiUrl){
   var routingDeleteArray=[];
-  const size=24;
+  const size=25;
   const response = {
     success: [],
     flag: false,
@@ -443,15 +441,13 @@ async function routingBatchUpdate(items, accessToken, graphQlApiUrl){
     routingDeleteArray.push(items.splice(0, size));
   }
   for(var i=0; i<routingDeleteArray.length; i++){
-    const successResponse=response.success;
-    const failureResponse = response.failure;
     await batchRoutingUpdate(routingDeleteArray[i],accessToken,graphQlApiUrl).then(resp=>{
       if(!resp?.errors){
-        response.success = successResponse.concat(routingDeleteArray[i]);
+        response.success = response.success.concat(routingDeleteArray[i]);
       }
       else{
         console.error("error while updating the records", resp.errors);
-        response.failure = failureResponse.concat(routingDeleteArray[i]);
+        response.failure = response.failure.concat(routingDeleteArray[i]);
         response.flag = true;
       }
     });
@@ -556,7 +552,7 @@ const batchRoutingUpdate = async(items, accessToken, graphQlApiUrl) =>{
 
 async function routingBatchCreate(items, accessToken, graphQlApiUrl){
   var routingDeleteArray=[];
-  const size=24;
+  const size=25;
   const response = {
     success: [],
     flag: false,
@@ -571,15 +567,13 @@ async function routingBatchCreate(items, accessToken, graphQlApiUrl){
     routingDeleteArray.push(items.splice(0, size));
   }
   for(var i=0; i<routingDeleteArray.length; i++){
-    const successResponse=response.success;
-    const failureResponse = response.failure;
     await batchRoutingCreate(routingDeleteArray[i],accessToken,graphQlApiUrl).then(resp=>{
       if(!resp?.errors){
-        response.success = successResponse.concat(routingDeleteArray[i]);
+        response.success = response.success.concat(routingDeleteArray[i]);
       }
       else{
         console.error("error while creating the records", resp.errors);
-        response.failure = failureResponse.concat(routingDeleteArray[i]);
+        response.failure = response.failure.concat(routingDeleteArray[i]);
         response.flag = true;
         response.alertMsg = "error while creating the records";
       }

@@ -426,15 +426,12 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
     );
     const response = await routingBatchDelete(keysToDelete, accessToken, graphQlApiUrl);
     if(response?.flag) {
-      const selectedRowsData = response?.failure?.map(x=>state.filteredItems.find((row: CctSharedCallRoutingDb)=>row.id === x.id));
-      setSelectedList(selectedRowsData);
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
         open: true,
         msg: "Error deleting records.",
         severityType: "error"
       }));
-      throw new Error("Error deleting records.");
     } else {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
@@ -443,10 +440,11 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
         severityType: "success"
       }));
     }
+    const selectedRowsData = response?.failure?.map(x=>state.filteredItems.find((row: CctSharedCallRoutingDb)=>row.id === x.id));
+    setSelectedList(selectedRowsData);
     const deletedIds = response?.success?.map(x => x.id);
     const filteredItems = state?.filteredItems?.filter(x=> deletedIds.indexOf(x.id) === -1);
     const filteredData = state?.data?.filter(x=> deletedIds.indexOf(x.id) === -1);
-
     setState({
       ...state,
       ...filteredItems && { filteredItems },
