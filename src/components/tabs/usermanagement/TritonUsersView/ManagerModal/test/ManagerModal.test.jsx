@@ -207,6 +207,20 @@ describe("<ManagerModal />", () => {
               expect(mockHandleClose).toHaveBeenCalledTimes(1);
             });
           });
+          // test.only("button is disabled while processing", () => {
+          //   renderComponent();
+          //   const fetchedManager = {
+          //     firstName: "Bob",
+          //     lastName: "Bobson"
+          //   };
+          //   updateFormSoValid(fetchedManager, "n0000000");
+          //   const { onClick } = getMockedComponentProps(StyledButton, getLastInstanceCalled(StyledButton));
+          //   const { disabled } = getMockedComponentProps(StyledButton);
+          //   // expect(disabled).toBe(false);
+          //   act(() => onClick());
+          //   expect(disabled).toBe(true);
+          //   // jest.clearAllMocks();
+          // });
           describe("Manager name has an ' ", () => {
             const fetchedManager = {
               firstName: "B'ob",
