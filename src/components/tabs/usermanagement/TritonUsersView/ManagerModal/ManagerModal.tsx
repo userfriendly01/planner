@@ -101,10 +101,7 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
   };
 
   const addManagerClicked = (): Promise<any> => {
-    // disable button here
-    setTimeout(() => { console.log("waiting..."); }, 2000);
     setIsDisabled(true);
-    console.log("****DISABLING BUTTON");
     setSaveStatus(ModalOverlayStatuses.SAVING);
     if (state.managerContext.managers.some((savedManager: Manager) => savedManager.manager_n_number.toLowerCase() === manager.manager_n_number)) {
       setSaveStatus(ModalOverlayStatuses.FAIL);
@@ -115,9 +112,7 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
         managerNNumber: manager.manager_n_number
       }, false);
 
-      // re enable here
       setIsDisabled(false);
-      console.log("****ENABLING BUTTON");
       return Promise.resolve("addManager - Failure - Manager Already exists");
     }
     const profileId = profile ? profile.profile_id : null;
@@ -146,7 +141,6 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
         setSaveStatus(ModalOverlayStatuses.SUCCESS);
         setTimeout(handleClose, 2000);
         setIsDisabled(false);
-        console.log("****ENABLING BUTTON");
 
         logger.info("Successfully created manager", {
           res,
@@ -159,7 +153,6 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
         setTimeout(() => setSaveStatus(null), 2000);
         setErrorMessage("Failed to Create Manager");
         setIsDisabled(false);
-        console.log("****ENABLING BUTTON");
 
         logger.error("Failed to create manager", {
           error,
