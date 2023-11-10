@@ -47,7 +47,8 @@ import {
   GridPaginationModel,
   GridRenderCellParams,
   GridRowId,
-  GridRowSelectionModel
+  GridRowSelectionModel,
+  useGridApiRef
 } from "@mui/x-data-grid";
 import { RoutingGridColumnDef } from "./GridColumnDef";
 import { AzureSPA } from "globals";
@@ -72,8 +73,8 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
   const [routingRule, setRoutingRule] = useState({ ...routingInitRule });
   const [clonedRule, setClonedRule] = useState(false);
   const [selectedList, setSelectedList] = useState<Array<CctSharedCallRoutingDb>>([]);
-
   const maxRef = useRef(0);
+  const apiRef = useGridApiRef();
 
   useEffect(() => {
     const getTableData = async()=>{
@@ -369,6 +370,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
       data: filteredData,
       isPreviewModalOpen: false
     });
+    apiRef.current.setRowSelectionModel([]);
   };
 
   const handleOnBulkUpdate = async(rows: Array<CctSharedCallRoutingDb> ) =>{
@@ -415,6 +417,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
       data: filteredData,
       isPreviewModalOpen: false
     });
+    apiRef.current.setRowSelectionModel([]);
   };
 
   const handleOnBulkDelete = async (rows: Array<CctSharedCallRoutingDb> ) =>{
@@ -459,6 +462,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
       isPreviewModalOpen: response?.flag || false,
       fetching: false
     });
+    apiRef.current.setRowSelectionModel([]);
   };
 
   RoutingGridColumnDef[0].renderCell = (params: GridRenderCellParams<CctSharedCallRoutingDb>) => (<a href="#" onClick={() => openEditModal(true, false, params.row)}>{`${params.value}`}</a>);
@@ -477,6 +481,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
       />
       <RoutingTableBox>
         <DataGrid
+          apiRef={apiRef}
           autoHeight
           checkboxSelection
           columns={RoutingGridColumnDef}
