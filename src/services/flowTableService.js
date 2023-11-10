@@ -53,6 +53,7 @@ async function queryFlowData(accessToken, nextToken = null, graphQlApiUrl) {
                   predictiveCaller
                   rangeIndicator
                   requestID
+                  selfServiceIndicator
                   tfnRoutingGroup
                   tollFreeNumber
                   transferCode
@@ -143,7 +144,8 @@ function addFlowInput (item, dataRequestsPassed, currentTimePassed){
     rangeIndicator: item.rangeIndicator?.value || "",
     type: item.type?.value || "",
     tfnRoutingGroup: item.tfnRoutingGroup?.value || "",
-    predictiveCaller: item.predictiveCaller?.value || false
+    predictiveCaller: item.predictiveCaller?.value || false,
+    selfServiceIndicator: item.selfServiceIndicator?.value || false
   };
   if(item.employeeId?.value){
     input.employeeId = item.employeeId.value;
@@ -186,7 +188,8 @@ function updateFlowInput(item){
     rangeIndicator: item.rangeIndicator || "",
     type: item.type || "",
     tfnRoutingGroup: item.tfnRoutingGroup || "",
-    predictiveCaller: item.predictiveCaller || false
+    predictiveCaller: item.predictiveCaller || false,
+    selfServiceIndicator: item.selfServiceIndicator || false
   };
   if(item.employeeId){
     input.employeeId = item.employeeId;
@@ -247,6 +250,7 @@ async function updateFlowDB(item, accessToken, graphQlApiUrl) {
               predictiveCaller
               whisper
               requestID
+              selfServiceIndicator
               userDestination
               rangeIndicator
               tfnRoutingGroup
@@ -320,6 +324,7 @@ async function addFlowRule(item, accessToken, graphQlApiUrl, curTime = new Date(
               predictiveCaller
               whisper
               requestID
+              selfServiceIndicator
               userDestination
               rangeIndicator
               tfnRoutingGroup
@@ -394,6 +399,7 @@ async function deleteFlowRule(item, accessToken, graphQlApiUrl) {
               predictiveCaller
               whisper
               requestID
+              selfServiceIndicator
               rangeIndicator
               tfnRoutingGroup
               type
@@ -487,12 +493,40 @@ async function flowBatchDelete(items, accessToken, graphQlApiUrl){
 const batchFlowUpdate = async(items, accessToken, graphQlApiUrl) =>{
   if(items.length === 0){
     return {
+      flag: true,
+      success: [],
+      failure: [],
       errors: [
         "Please Select Something to Edit"
       ]
     };
   }
-  let response;
+  const flowUpdateArray=[];
+  const size = 25;
+  const response = {
+    success: [],
+    flag: false,
+    failure: []
+  };
+  while(items.length>0){
+    flowUpdateArray.push(items.splice(0,size));
+  }
+  flowUpdateArray.map(async flowUpdate =>{
+    const flowUpdateBatchRunResponse = await updateFlowBatchRun(flowUpdate, accessToken, graphQlApiUrl);
+    if(!flowUpdateBatchRunResponse?.errors){
+      response.success = response.success.concat(flowUpdate);
+    }
+    else{
+      response.failure = response.failure.concat(flowUpdate);
+      response.flag = true;
+    }
+
+  });
+  logger.info("Update Batch Flow DB Response:", { response });
+  return response;
+};
+
+const updateFlowBatchRun = async(items, accessToken, graphQlApiUrl) =>{
   const input = items.map(item=>{
     return {
       pkey: item.pkey,
@@ -522,6 +556,7 @@ const batchFlowUpdate = async(items, accessToken, graphQlApiUrl) =>{
       lineOfBusiness: item.lineOfBusiness || "",
       marketingChannel: item.marketingChannel || "",
       predictiveCaller: item.predictiveCaller || false,
+      selfServiceIndicator: item.selfServiceIndicator || false,
       whisper: item.whisper || "",
       requestID: item.requestID || "",
       userDestination: item.userDestination || "",
@@ -570,6 +605,7 @@ const batchFlowUpdate = async(items, accessToken, graphQlApiUrl) =>{
               predictiveCaller
               rangeIndicator
               requestID
+              selfServiceIndicator
               tollFreeNumber
               tfnRoutingGroup
               transferCode
@@ -585,12 +621,11 @@ const batchFlowUpdate = async(items, accessToken, graphQlApiUrl) =>{
         }
       })
     });
-    response = await fetchResponse.json();
-    logger.info("Update Batch Flow DB Response:", { response });
+    return await fetchResponse.json();
   } catch (error) {
     logger.error("Error in Update Batch Flow DB", { error });
+    return { errors: [{ message: error }]};
   }
-  return response;
 };
 
 /**
@@ -641,7 +676,9 @@ const batchFlowCreate = async(items, accessToken, graphQlApiUrl) =>{
       requestID: item.requestID || "",
       userDestination: item.userDestination || "",
       rangeIndicator: item.rangeIndicator || "",
-      type: item.type || ""
+      type: item.type || "",
+      predictiveCaller: item.predictiveCaller || false,
+      selfServiceIndicator: item.selfServiceIndicator || false
     };
   });
   try {
@@ -683,6 +720,7 @@ const batchFlowCreate = async(items, accessToken, graphQlApiUrl) =>{
               pkey
               rangeIndicator
               requestID
+              selfServiceIndicator
               tollFreeNumber
               transferCode
               type

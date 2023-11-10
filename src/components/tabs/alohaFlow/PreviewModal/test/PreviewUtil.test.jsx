@@ -22,7 +22,9 @@ export const createFlowDataItem = num => {
     createTime: "2020-01-01T15:14:13.${num}Z",
     dialedDescription: `Test case ${num}`,
     employeeId: `n${num}`,
-    userDestination: "Avaya"
+    userDestination: "Avaya",
+    predictiveCaller: true,
+    selfServiceIndicator: true
   };
 };
 
@@ -42,7 +44,7 @@ export const flowDropDownData = {
   callerType: ["CT1","CT2","CT3"],
   dataRequests: ["DR1","DR2","DR3"],
   type: ["DID", "DRC", "CRC"],
-  tfnRoutingGroup:["Group1","Group2","Group3"]
+  tfnRoutingGroup: ["Group1","Group2","Group3"]
 };
 
 localStorage.setItem(FLOW_MASTER_DATA, JSON.stringify(flowDropDownData));

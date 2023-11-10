@@ -4,7 +4,6 @@ import React from "react";
 import {
   Box, Chip, Switch
 } from "@mui/material";
-
 export const FlowGridColumnDef: GridColDef[] = [
   {
     headerName: "Dialed",
@@ -309,6 +308,18 @@ export const FlowGridColumnDef: GridColDef[] = [
     renderCell: (params: any) =>(
       <Box>
         <Switch checked={params.row?.predictiveCaller || false} defaultChecked={false} color="warning" disabled size="medium" />
+      </Box>
+    )
+  },
+  {
+    headerName: "Self Service Indicator",
+    field: "selfServiceIndicator",
+    sortable: false,
+    width: 110,
+    align: "center",
+    renderCell: (params: any) =>(
+      <Box>
+        <Switch checked={params.row?.selfServiceIndicator || false} defaultChecked={false} color="warning" disabled size="medium" />
       </Box>
     )
   }

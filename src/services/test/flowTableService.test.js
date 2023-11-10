@@ -32,15 +32,6 @@ const batchDeleteResponse = {
   }
 };
 
-const batchUpdateResponse = {
-  data: {
-    listCctSharedCallFlowDbs: {
-      items: [{ ...jsonFlowData }],
-      nextToken: undefined
-    }
-  }
-};
-
 describe("flowTableService",()=>{
   describe("AddFlow", ()=>{
     beforeEach(()=>{
@@ -365,6 +356,11 @@ describe("flowTableService",()=>{
     });
   });
   describe("Batch Update Flow", ()=>{
+    const batchUpdateResponse = {
+      failure: [],
+      flag: false,
+      success: []
+    };
     beforeEach(()=>{
       window.fetch = jest.fn(() =>
         Promise.resolve({
@@ -376,10 +372,15 @@ describe("flowTableService",()=>{
       jest.restoreAllMocks();
     });
     test("Success",async()=>{
+      const batchUpdateResponse = {
+        failure: [],
+        flag: false,
+        success: []
+      };
       const response = await batchFlowUpdate([{ ...jsonFlowData }],"1233-3245","http://localhost:3000");
-      expect(response).toBe(batchUpdateResponse);
+      expect(response).toEqual(batchUpdateResponse);
       expect(window.fetch).toBeCalledWith("http://localhost:3000", {
-        "body": "{\"query\":\"\\n        mutation batchUpdateCctSharedCallFlowDb($input: CctSharedCallFlowDbBatchUpdateInput!) {\\n          batchUpdateCctSharedCallFlowDb(input: $input) {\\n            items {\\n              accountManager\\n              affinityVDN\\n              agentId\\n              brand\\n              callDetails1\\n              callDetails2\\n              callFlowTemplate\\n              callTypeDescription\\n              channel\\n              content {\\n                callFlowRoute\\n                callIntent\\n                callerType\\n                dataRequests\\n                greetingMessages\\n                languageOffer\\n                transferNumber\\n              }\\n              createTime\\n              dialedDescription\\n              employeeId\\n              internetPlacement\\n              lineOfBusiness\\n              marketingChannel\\n              pkey\\n              predictiveCaller\\n              rangeIndicator\\n              requestID\\n              tollFreeNumber\\n              tfnRoutingGroup\\n              transferCode\\n              type\\n              userDestination\\n              whisper\\n            }\\n          }\\n        }\\n      \",\"variables\":{\"input\":{\"batchFlowUpdateInput\":[{\"pkey\":{\"value\":\"12345\"},\"agentId\":{\"value\":\"123455\"},\"brand\":{\"value\":\"LM\"},\"callFlowTemplate\":{\"value\":\"temp\"},\"channel\":{\"value\":\"Test1 Channel\"},\"content\":{\"callIntent\":\"\",\"callFlowRoute\":\"\",\"callerType\":\"\",\"greetingMessages\":\"\",\"transferNumber\":\"\",\"languageOffer\":\"\"},\"createTime\":{\"value\":\"2022-24-08\"},\"dialedDescription\":{\"value\":\"test\"},\"accountManager\":\"\",\"affinityVDN\":\"\",\"callTypeDescription\":\"\",\"transferCode\":\"\",\"internetPlacement\":\"\",\"callDetails1\":\"\",\"callDetails2\":\"\",\"tollFreeNumber\":\"\",\"lineOfBusiness\":\"\",\"marketingChannel\":\"\",\"predictiveCaller\":false,\"whisper\":\"\",\"requestID\":\"\",\"userDestination\":{\"value\":\"dest\"},\"rangeIndicator\":\"\",\"tfnRoutingGroup\":\"\",\"type\":\"\"}]}}}",
+        "body": "{\"query\":\"\\n        mutation batchUpdateCctSharedCallFlowDb($input: CctSharedCallFlowDbBatchUpdateInput!) {\\n          batchUpdateCctSharedCallFlowDb(input: $input) {\\n            items {\\n              accountManager\\n              affinityVDN\\n              agentId\\n              brand\\n              callDetails1\\n              callDetails2\\n              callFlowTemplate\\n              callTypeDescription\\n              channel\\n              content {\\n                callFlowRoute\\n                callIntent\\n                callerType\\n                dataRequests\\n                greetingMessages\\n                languageOffer\\n                transferNumber\\n              }\\n              createTime\\n              dialedDescription\\n              employeeId\\n              internetPlacement\\n              lineOfBusiness\\n              marketingChannel\\n              pkey\\n              predictiveCaller\\n              rangeIndicator\\n              requestID\\n              selfServiceIndicator\\n              tollFreeNumber\\n              tfnRoutingGroup\\n              transferCode\\n              type\\n              userDestination\\n              whisper\\n            }\\n          }\\n        }\\n      \",\"variables\":{\"input\":{\"batchFlowUpdateInput\":[{\"pkey\":{\"value\":\"12345\"},\"agentId\":{\"value\":\"123455\"},\"brand\":{\"value\":\"LM\"},\"callFlowTemplate\":{\"value\":\"temp\"},\"channel\":{\"value\":\"Test1 Channel\"},\"content\":{\"callIntent\":\"\",\"callFlowRoute\":\"\",\"callerType\":\"\",\"greetingMessages\":\"\",\"transferNumber\":\"\",\"languageOffer\":\"\"},\"createTime\":{\"value\":\"2022-24-08\"},\"dialedDescription\":{\"value\":\"test\"},\"accountManager\":\"\",\"affinityVDN\":\"\",\"callTypeDescription\":\"\",\"transferCode\":\"\",\"internetPlacement\":\"\",\"callDetails1\":\"\",\"callDetails2\":\"\",\"tollFreeNumber\":\"\",\"lineOfBusiness\":\"\",\"marketingChannel\":\"\",\"predictiveCaller\":false,\"selfServiceIndicator\":false,\"whisper\":\"\",\"requestID\":\"\",\"userDestination\":{\"value\":\"dest\"},\"rangeIndicator\":\"\",\"tfnRoutingGroup\":\"\",\"type\":\"\"}]}}}",
         "headers": {
           "Authorization": "1233-3245",
           "Content-Type": "application/json"
@@ -388,18 +389,26 @@ describe("flowTableService",()=>{
       });
     });
     test("Error",async()=>{
+      const batchUpdateResponse = {
+        failure: [{ ...jsonFlowData }],
+        flag: true,
+        success: []
+      };
       jest.spyOn(JSON, "stringify").mockImplementation(()=>{
         throw new Error();
       });
       const response = await batchFlowUpdate([{ ...jsonFlowData }],"1233-3245","http://localhost:3000");
-      expect(response).toEqual(undefined);
+      expect(response).toEqual(batchUpdateResponse);
     });
     test("Call with an Empty List", async()=>{
       const response = await batchFlowUpdate([],"1233-3245","http://localhost:3000");
       const errorResponse = {
         errors: [
           "Please Select Something to Edit"
-        ]
+        ],
+        flag: true,
+        success: [],
+        failure: []
       };
       expect(response).toEqual(errorResponse);
     });
