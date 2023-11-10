@@ -4,7 +4,6 @@ import React from "react";
 import {
   Box, Chip, Switch
 } from "@mui/material";
-
 export const FlowGridColumnDef: GridColDef[] = [
   {
     headerName: "Dialed",

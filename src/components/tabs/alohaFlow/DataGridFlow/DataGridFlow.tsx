@@ -407,7 +407,6 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         msg: "Error while updating the records.",
         severityType: "error"
       }));
-      throw new Error("Error while updating the records.");
     } else {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,

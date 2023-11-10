@@ -23,10 +23,10 @@ import {
 } from "utils/interfaces";
 import {
   routingBatchDelete,
-  batchRoutingCreate,
-  batchRoutingUpdate,
   queryRoutingData,
-  retrieveRoutingData
+  retrieveRoutingData,
+  routingBatchCreate,
+  routingBatchUpdate
 } from "services";
 import {
   CACHED_CALL_ROUTING_PAGE_NO,
@@ -36,7 +36,6 @@ import {
   downloadCSV,
   getGraphQLEndpoint,
   initializedAlertBar,
-  logger,
   routingFields,
   routingInitRule,
   routingInitState
@@ -343,15 +342,14 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
   };
 
   const handleOnBulkCreate = async(rows: Array<CctSharedCallRoutingDb> ) =>{
-    const response = await batchRoutingCreate(rows, accessToken, graphQlApiUrl);
-    if(!response || response.errors) {
+    const response = await routingBatchCreate(rows, accessToken, graphQlApiUrl);
+    if(response?.flag) {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
         open: true,
-        msg: "Error while creating the records.",
+        msg: response.alertMsg || "Error while creating the records.",
         severityType: "error"
       }));
-      throw new Error("Error while creating the records.");
     } else {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
@@ -361,28 +359,27 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
       }));
     }
 
-    const filteredItems = [...state.filteredItems, ...rows];
-    const filteredData = [...state.data, ...rows];
-    setSelectedList([]);
+    const filteredItems = [...state.filteredItems , ...response.success];
+    const filteredData = [...state.data , ...response.success];
+    setSelectedList([...response.failure]);
     setState({
       ...state,
       ...filteredItems && { filteredItems },
       data: filteredData,
-      isPreviewModalOpen: false
+      isPreviewModalOpen: response?.flag || false
     });
     apiRef.current.setRowSelectionModel([]);
   };
 
   const handleOnBulkUpdate = async(rows: Array<CctSharedCallRoutingDb> ) =>{
-    const response = await batchRoutingUpdate(rows, accessToken, graphQlApiUrl);
-    if(!response || response.errors) {
+    const response = await routingBatchUpdate(rows, accessToken, graphQlApiUrl);
+    if(response?.flag) {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
         open: true,
-        msg: "Error while updating the records.",
+        msg: response.alertMsg || "Error while updating the records.",
         severityType: "error"
       }));
-      throw new Error("Error while updating the records.");
     } else {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
@@ -391,9 +388,10 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
         severityType: "success"
       }));
     }
-
+    const selectedRowsData = response?.failure;
+    setSelectedList(selectedRowsData);
     const filteredItems = state.filteredItems.map(x=> {
-      const fi = rows.filter(r=> r.skey === x.skey);
+      const fi = response.success.filter(r=> r.skey === x.skey);
       if(fi.length >0){
         return fi[0];
       }
@@ -402,7 +400,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
       }
     });
     const filteredData = state.data.map(x=> {
-      const fi = rows.filter(r=> r.skey === x.skey);
+      const fi = response.success.filter(r=> r.skey === x.skey);
       if(fi.length >0){
         return fi[0];
       }
@@ -410,12 +408,11 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
         return x;
       }
     });
-    setSelectedList([]);
     setState({
       ...state,
       ...filteredItems && { filteredItems },
       data: filteredData,
-      isPreviewModalOpen: false
+      isPreviewModalOpen: response?.flag || false
     });
     apiRef.current.setRowSelectionModel([]);
   };
@@ -431,15 +428,12 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
     );
     const response = await routingBatchDelete(keysToDelete, accessToken, graphQlApiUrl);
     if(response?.flag) {
-      const selectedRowsData = response?.failure?.map(x=>state.filteredItems.find((row: CctSharedCallRoutingDb)=>row.id === x.id));
-      setSelectedList(selectedRowsData);
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
         open: true,
         msg: "Error deleting records.",
         severityType: "error"
       }));
-      throw new Error("Error deleting records.");
     } else {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
@@ -448,13 +442,11 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
         severityType: "success"
       }));
     }
-
-    setSelectedList([]);
-
+    const selectedRowsData = response?.failure?.map(x=>state.filteredItems.find((row: CctSharedCallRoutingDb)=>row.id === x.id));
+    setSelectedList(selectedRowsData);
     const deletedIds = response?.success?.map(x => x.id);
     const filteredItems = state?.filteredItems?.filter(x=> deletedIds.indexOf(x.id) === -1);
     const filteredData = state?.data?.filter(x=> deletedIds.indexOf(x.id) === -1);
-
     setState({
       ...state,
       ...filteredItems && { filteredItems },
