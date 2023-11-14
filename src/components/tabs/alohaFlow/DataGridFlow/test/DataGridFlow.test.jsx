@@ -525,11 +525,31 @@ describe("<DataGridFlow />", () => {
       expect(previewModalOnUpdate).toBeTruthy();
       expect(DataGrid.mock.calls.length).toBe(1);
     });
-    it("Preview Modal onCreate", ()=>{
+    it("Preview Modal onCreate Success", ()=>{
       const validFlowDataList = createFlowDataList(15);
       queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
       retrieveFlowData.mockResolvedValue(validFlowDataList);
-      batchFlowCreate.mockResolvedValue({});
+      batchFlowCreate.mockResolvedValue({
+        flag: false,
+        success: validFlowDataList,
+        failure: []
+      });
+      renderComponent();
+      const previewModalOnCreate = PreviewModal.mock.calls[0][0].onCreate;
+      act(()=>{
+        previewModalOnCreate([{ ...validFlowDataList[1] }]);
+      });
+      expect(DataGrid.mock.calls.length).toBe(1);
+    });
+    it("Preview Modal onCreate Failure", ()=>{
+      const validFlowDataList = createFlowDataList(15);
+      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
+      retrieveFlowData.mockResolvedValue(validFlowDataList);
+      batchFlowCreate.mockResolvedValue({
+        flag: true,
+        failure: validFlowDataList,
+        success: []
+      });
       renderComponent();
       const previewModalOnCreate = PreviewModal.mock.calls[0][0].onCreate;
       act(()=>{

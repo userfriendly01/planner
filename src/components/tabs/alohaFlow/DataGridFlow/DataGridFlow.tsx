@@ -350,14 +350,13 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       return;
     }
     const response = await batchFlowCreate(rows, accessToken, graphQLEndpoint);
-    if(!response || response.errors) {
+    if(response?.flag) {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
         open: true,
-        msg: "Error while creating the records.",
+        msg: response?.alertMsg || "Error while creating the records.",
         severityType: "error"
       }));
-      throw new Error("Error while creating the records.");
     } else {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
@@ -366,10 +365,9 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         severityType: "success"
       }));
     }
-
-    const filteredItems = [...dataFlow.filteredItems, ...rows];
-    const filteredData = [...dataFlow.data, ...rows];
-    setSelectedList([]);
+    setSelectedList([...response.failure]);
+    const filteredItems = [...dataFlow.filteredItems, ...response.success];
+    const filteredData = [...dataFlow.data, ...response.success];
     setDataFlow({
       ...dataFlow,
       ...filteredItems && { filteredItems },
@@ -439,15 +437,12 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     const keysToDelete = rows.map(x => x.pkey);
     const response = await batchDeleteItems(keysToDelete, accessToken, graphQLEndpoint);
     if(response?.flag) {
-      const selectedRowsData = response?.failure?.map(x=>dataFlow.filteredItems.find((row: CctSharedCallFlowDb)=>row.pkey === x.pkey));
-      setSelectedList(selectedRowsData);
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
         open: true,
         msg: "Error deleting records.",
         severityType: "error"
       }));
-      throw new Error("Error while deleting records.");
     } else {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
@@ -456,7 +451,8 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         severityType: "success"
       }));
     }
-    setSelectedList([]);
+    const selectedRowsData = response?.failure?.map(x=>dataFlow.filteredItems.find((row: CctSharedCallFlowDb)=>row.pkey === x.pkey));
+    setSelectedList(selectedRowsData);
     const deletedIds = response?.success?.map((x:any) => x.pkey);
     const filteredItems = dataFlow.filteredItems.filter(x=> deletedIds.indexOf(x.pkey) === -1);
     const filteredData = dataFlow.data.filter(x=> deletedIds.indexOf(x.pkey) === -1);

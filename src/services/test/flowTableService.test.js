@@ -1,6 +1,6 @@
 import { act } from "@testing-library/react";
 import  {
-  retrieveFlowData,addFlowRule, deleteFlowRule, updateFlowDB, flowBatchDelete, queryFlowData, batchDeleteItems, batchFlowUpdate
+  retrieveFlowData,addFlowRule, deleteFlowRule, updateFlowDB, flowBatchDelete, queryFlowData, batchDeleteItems, batchFlowUpdate, batchFlowCreate
 }  from "../flowTableService";
 
 const jsonFlowData = {
@@ -411,6 +411,47 @@ describe("flowTableService",()=>{
         failure: []
       };
       expect(response).toEqual(errorResponse);
+    });
+  });
+
+  describe("Batch Create Flow", ()=>{
+    const batchCreateResponse = {
+      failure: [],
+      flag: false,
+      success: [],
+      alertMsg: ""
+    };
+    beforeEach(()=>{
+      window.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve(batchCreateResponse)
+        })
+      );
+    });
+    afterEach(()=>{
+      jest.restoreAllMocks();
+    });
+    test("Success",async()=>{
+      const batchCreateResponse = {
+        failure: [],
+        flag: false,
+        success: [],
+        alertMsg: ""
+      };
+      const response = await batchFlowCreate([{ ...jsonFlowData }],"1233-3245","http://localhost:3000");
+      expect(response).toEqual(batchCreateResponse);
+      expect(window.fetch).toBeCalledWith("http://localhost:3000", {
+        "body": "{\"query\":\"\\n        mutation batchCreateCctSharedCallFlowDb($input: CctSharedCallFlowDbBatchCreateInput!) {\\n          batchCreateCctSharedCallFlowDb(input: $input) {\\n            items {\\n              accountManager\\n              affinityVDN\\n              agentId\\n              brand\\n              callDetails1\\n              callDetails2\\n              callFlowTemplate\\n              callTypeDescription\\n              channel\\n              content {\\n                callFlowRoute\\n                callIntent\\n                callerType\\n                dataRequests\\n                greetingMessages\\n                languageOffer\\n                transferNumber\\n              }\\n              createTime\\n              dialedDescription\\n              employeeId\\n              internetPlacement\\n              lineOfBusiness\\n              marketingChannel\\n              pkey\\n              rangeIndicator\\n              requestID\\n              selfServiceIndicator\\n              tollFreeNumber\\n              transferCode\\n              type\\n              userDestination\\n              whisper\\n            }\\n          }\\n        }\\n      \",\"variables\":{\"input\":{\"batchFlowCreateInput\":[{\"pkey\":{\"value\":\"12345\"},\"agentId\":{\"value\":\"123455\"},\"brand\":{\"value\":\"LM\"},\"callFlowTemplate\":{\"value\":\"temp\"},\"channel\":{\"value\":\"Test1 Channel\"},\"content\":{\"callIntent\":\"\",\"callFlowRoute\":\"\",\"callerType\":\"\",\"greetingMessages\":\"\",\"transferNumber\":\"\",\"languageOffer\":\"\"},\"createTime\":{\"value\":\"2022-24-08\"},\"dialedDescription\":{\"value\":\"test\"},\"accountManager\":\"\",\"affinityVDN\":\"\",\"callTypeDescription\":\"\",\"transferCode\":\"\",\"internetPlacement\":\"\",\"callDetails1\":\"\",\"callDetails2\":\"\",\"tollFreeNumber\":\"\",\"lineOfBusiness\":\"\",\"marketingChannel\":\"\",\"whisper\":\"\",\"requestID\":\"\",\"userDestination\":{\"value\":\"dest\"},\"rangeIndicator\":\"\",\"type\":\"\",\"predictiveCaller\":false,\"selfServiceIndicator\":false}]}}}",
+        "headers": {
+          "Authorization": "1233-3245",
+          "Content-Type": "application/json"
+        },
+        "method": "POST"
+      });
+    });
+    test("empty records insertion",async()=>{
+      const response = await batchFlowCreate([],"1233-3245","http://localhost:3000");
+      expect(response.alertMsg).toEqual("Please Select Something to Add");
     });
   });
 });
