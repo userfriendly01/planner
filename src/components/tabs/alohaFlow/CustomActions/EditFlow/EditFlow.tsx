@@ -6,7 +6,12 @@ import {
   Modal, ModalHeader
 } from "@lmig/lmds-react-modal";
 import {
-  Button,Grid
+  FloatingHeader
+} from "@lmig/lmds-react-floating-header";
+import {
+  Box,
+  Button,
+  Grid
 } from "@mui/material";
 import { AddOrView } from "../CustomActionsCommon/AddOrView";
 import {
@@ -24,7 +29,7 @@ import {
   flowFields, initRule
 } from "../FlowFieldsConfig";
 import {
-  CctSharedCallRoutingDb, CustomToast
+  CustomToast
 } from "components";
 import {
   flowDropDownList,
@@ -36,7 +41,8 @@ import {
   flowType,
   checkGreetingMessageRegExp,
   readWriteAccess,
-  tfnRoutingGroup
+  tfnRoutingGroup,
+  BrandName
 } from "utils";
 import ComponentControl from "components/core/SharedComponents/ComponentControl";
 import {
@@ -56,6 +62,7 @@ interface EditFlowComponentProps {
     openEditModal: (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallFlowDb, message?: string, deleteRow?: boolean, isClonedFlowRule?: boolean) => void;
     duplicateCheck: (params: CctSharedCallFlowDb) => DuplicateCheck
 }
+
 export const EditFlow = ({
   accessToken, matchedGroups, isOpen, selectedRow, openEditModal, duplicateCheck
 }: EditFlowComponentProps & AzureSPA): JSX.Element => {
@@ -253,7 +260,13 @@ export const EditFlow = ({
   };
 
   return (
-    <div>
+    <Box
+      sx={{
+        "& lmig-Modal-container": {
+          borderRadius: "25px"
+        }
+      }}
+    >
       <Modal
         isOpen={isOpen}
         size="large"
@@ -264,7 +277,19 @@ export const EditFlow = ({
         }}
         id ="modalId"
       >
-        <ModalHeader><HeadingStyled type="h4-light">{`Update Flow Rule ${selectedRow && selectedRow.pkey}`}</HeadingStyled></ModalHeader>
+        <ModalHeader>
+          {
+            ["Liberty Mutual", "Safeco"].includes(selectedRowLocal?.brand)?
+              (<FloatingHeader brand={BrandName[selectedRowLocal?.brand]} overlayIsOpen>
+                <HeadingStyled type="h4-light">{`Update Flow Rule ${selectedRow && selectedRow.pkey}`}
+                </HeadingStyled>
+              </FloatingHeader>):
+              (
+                <HeadingStyled type="h4-light">{`Update Flow Rule ${selectedRow && selectedRow.pkey}`}
+                </HeadingStyled>
+              )
+          }
+        </ModalHeader>
         <ModalBodyStyled>
           <Grid container rowSpacing={3}>
             {
@@ -353,6 +378,6 @@ export const EditFlow = ({
         msg={alertBar.msg}
         severityType={alertBar.severityType}
       />
-    </div>
+    </Box>
   );
 };

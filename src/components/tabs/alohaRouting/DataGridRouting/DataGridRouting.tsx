@@ -334,6 +334,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
       ...dataFlowProps,
       isPreviewModalOpen: false
     }));
+    apiRef.current.setRowSelectionModel([]);
   };
 
   const handleSelectionChanges = (gridSelectionModel: GridRowSelectionModel) =>{

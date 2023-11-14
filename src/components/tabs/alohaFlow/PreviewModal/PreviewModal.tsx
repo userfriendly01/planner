@@ -149,7 +149,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
                 marginBottom: "10px"
               }} onClick={()=>{ createNewRecord(); }}>Add New +</StyledButton>
         }
-        {action === "add" &&
+        {["add", "edit"].includes(action) &&
               <StyledButton sx={{
                 marginRight: "10px",
                 marginBottom: "10px"
