@@ -628,6 +628,37 @@ const updateFlowBatchRun = async(items, accessToken, graphQlApiUrl) =>{
   }
 };
 
+const batchFlowCreate = async(items, accessToken, graphQlApiUrl) =>{
+  const flowCreateArray=[];
+  const size = 25;
+  const response = {
+    success: [],
+    flag: false,
+    failure: [],
+    alertMsg: ""
+  };
+  if(items.length === 0){
+    response.flag=true,
+    response.alertMsg = "Please Select Something to Add";
+  }
+  while(items.length>0){
+    flowCreateArray.push(items.splice(0,size));
+  }
+  flowCreateArray.map(async flowCreate =>{
+    const flowUpdateBatchRunResponse = await createFlowRunItem(flowCreate, accessToken, graphQlApiUrl);
+    if(!flowUpdateBatchRunResponse?.errors){
+      response.success = response.success.concat(flowCreate);
+    }
+    else{
+      response.failure = response.failure.concat(flowCreate);
+      response.flag = true;
+      response.alertMsg = "Error Occured while creating Records";
+    }
+  });
+  logger.info("Create Batch Flow DB Response:", { response });
+  return response;
+};
+
 /**
  * This is the Function to batch create the Flow Object to the DB
  * @param {flowData} items List of Flow object that need to update
@@ -635,14 +666,7 @@ const updateFlowBatchRun = async(items, accessToken, graphQlApiUrl) =>{
  * @param {String} graphQlApiUrl Endpoint URL
  * @returns
  */
-const batchFlowCreate = async(items, accessToken, graphQlApiUrl) =>{
-  if(items.length === 0){
-    return {
-      errors: [
-        "Please Select Something to Add"
-      ]
-    };
-  }
+const createFlowRunItem = async(items, accessToken, graphQlApiUrl) =>{
   let response;
   const input = items.map(item=>{
     return {
