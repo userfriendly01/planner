@@ -76,6 +76,7 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
   const [ profile, setProfile ] = useState<any>(selectedManager ? profiles.find(p => p.profile_id === selectedManager.profile_id) : null);
   const [ selectedCalabrioTeams, setSelectedCalabrioTeams ] = useState<number[]>(selectedManager ? selectedManager.calabrio_team_ids :[]);
   const [isTeamModalOpen, setIsTeamModalOpen] = useState<boolean>(false);
+  const [isDisabled, setIsDisabled] = useState<boolean>(false);
 
   const getCalabrioOption = (teamId: number): any => {
     const team = calabrioTeams.find(team => team.groupId === teamId);
@@ -100,6 +101,7 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
   };
 
   const addManagerClicked = (): Promise<any> => {
+    setIsDisabled(true);
     setSaveStatus(ModalOverlayStatuses.SAVING);
     if (state.managerContext.managers.some((savedManager: Manager) => savedManager.manager_n_number.toLowerCase() === manager.manager_n_number)) {
       setSaveStatus(ModalOverlayStatuses.FAIL);
@@ -110,6 +112,7 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
         managerNNumber: manager.manager_n_number
       }, false);
 
+      setIsDisabled(false);
       return Promise.resolve("addManager - Failure - Manager Already exists");
     }
     const profileId = profile ? profile.profile_id : null;
@@ -137,6 +140,7 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
         });
         setSaveStatus(ModalOverlayStatuses.SUCCESS);
         setTimeout(handleClose, 2000);
+        setIsDisabled(false);
 
         logger.info("Successfully created manager", {
           res,
@@ -148,6 +152,7 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
         setSaveStatus(ModalOverlayStatuses.FAIL);
         setTimeout(() => setSaveStatus(null), 2000);
         setErrorMessage("Failed to Create Manager");
+        setIsDisabled(false);
 
         logger.error("Failed to create manager", {
           error,
@@ -295,7 +300,7 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
             <StyledButton disabled={!manager || !profile || selectedCalabrioTeams.length === 0} onClick={editManagerClicked} data-testid={"edit-manager-button"}>
                 Save
             </StyledButton>
-            : <StyledButton disabled={!manager || !profile || selectedCalabrioTeams.length === 0} onClick={addManagerClicked} data-testid={"add-manager-button"}>
+            : <StyledButton disabled={!manager || !profile || selectedCalabrioTeams.length === 0 || isDisabled} onClick={addManagerClicked} data-testid={"add-manager-button"}>
                 Add Manager
             </StyledButton>
           }
