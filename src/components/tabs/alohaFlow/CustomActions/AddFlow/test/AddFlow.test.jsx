@@ -16,6 +16,7 @@ import {
 } from "components";
 import { AddOrView } from "../../CustomActionsCommon/AddOrView";
 import { flowFields } from "../../FlowFieldsConfig";
+import { FloatingHeader } from "@lmig/lmds-react-floating-header";
 
 const validFlowData = {
   id: 1,
@@ -89,6 +90,13 @@ jest.mock("context", () => ({
   useAdminState: jest.fn()
 }));
 
+jest.mock("@lmig/lmds-react-floating-header", ()=>{
+  return {
+    __esModule: true,
+    FloatingHeader: jest.fn()
+  };
+});
+
 const openAddModal = jest.fn();
 const duplicateCheck = jest.fn().mockReturnValue({
   isDuplicate: false,
@@ -147,7 +155,8 @@ describe("<AddFlow />", () => {
       ComponentControl,
       CustomToast,
       Dropdown,
-      AddOrView
+      AddOrView,
+      FloatingHeader
     });
     localStorage.setItem(FLOW_MASTER_DATA, JSON.stringify(mockMasterData));
   });

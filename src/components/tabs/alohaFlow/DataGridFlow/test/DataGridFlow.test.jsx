@@ -32,7 +32,15 @@ jest.mock("@mui/x-data-grid",()=>({
   DataGrid: jest.fn(),
   GridToolbar: jest.fn(),
   GridRenderCellParams: jest.fn(),
-  useGridApiRef: jest.fn()
+  useGridApiRef: jest.fn().mockReturnValue({
+    current: {
+      setRowSelectionModel: jest.fn().mockImplementation(({
+        failure, success, flag
+      })=>{
+        return flag? failure : success;
+      })
+    }
+  })
 }));
 
 jest.mock("components", ()=>({

@@ -260,13 +260,7 @@ export const EditFlow = ({
   };
 
   return (
-    <Box
-      sx={{
-        "& lmig-Modal-container": {
-          borderRadius: "25px"
-        }
-      }}
-    >
+    <div>
       <Modal
         isOpen={isOpen}
         size="large"
@@ -378,6 +372,6 @@ export const EditFlow = ({
         msg={alertBar.msg}
         severityType={alertBar.severityType}
       />
-    </Box>
+    </div>
   );
 };

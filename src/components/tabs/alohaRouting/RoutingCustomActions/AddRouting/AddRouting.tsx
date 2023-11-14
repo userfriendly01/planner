@@ -7,7 +7,7 @@ import {
   Modal, ModalHeader
 } from "@lmig/lmds-react-modal";
 import {
-  routingDropDownList, routingInitRule, routingFields, initializedAlertBar, getGraphQLEndpoint, convertTime24to12, cleanErrorMessage, removeAllWhiteSpace
+  routingDropDownList, routingInitRule, routingFields, initializedAlertBar, getGraphQLEndpoint, convertTime24to12, cleanErrorMessage, removeAllWhiteSpace, BrandName
 } from "utils";
 import { getGridMasterData } from "../../DataGridRouting/GridMaster";
 import {
@@ -24,6 +24,7 @@ import {
 } from "components";
 import { FormValidationRule } from "utils/interfaces";
 import { AzureSPA } from "globals";
+import { FloatingHeader } from "@lmig/lmds-react-floating-header";
 
 
 export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element => {
@@ -232,7 +233,18 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
           resetRoutingRule();
         }}
       >
-        <ModalHeader><RoutingHeadingStyled type="h4-light">{`Add Routing Rule (Rule ID #${newId})`}</RoutingHeadingStyled></ModalHeader>
+        <ModalHeader>
+          {
+            ["Liberty Mutual", "Safeco"].includes(routingRule?.brand?.value)?
+              (<FloatingHeader brand={BrandName[routingRule?.brand?.value]} overlayIsOpen>
+                <RoutingHeadingStyled type="h4-light">{`Add Routing Rule (Rule ID #${newId})`}</RoutingHeadingStyled>
+              </FloatingHeader>):
+              (
+                <RoutingHeadingStyled type="h4-light">{`Add Routing Rule (Rule ID #${newId})`}
+                </RoutingHeadingStyled>
+              )
+          }
+        </ModalHeader>
         <RoutingModalBodyStyled>
           <Grid container rowSpacing={3}>
             {

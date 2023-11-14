@@ -285,13 +285,7 @@ export const AddFlow = ({
   }
 
   return (
-    <Box
-      sx={{
-        "& lmig-Modal-container": {
-          borderRadius: "25px"
-        }
-      }}
-    >
+    <div>
       <Modal
         size="large"
         className="route-table-modal-wrapper"
@@ -377,7 +371,7 @@ export const AddFlow = ({
         msg={alertBar.msg}
         severityType={alertBar.severityType}
       />
-    </Box>
+    </div>
   );
 };
 
