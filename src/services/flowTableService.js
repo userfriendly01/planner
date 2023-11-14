@@ -655,7 +655,7 @@ const batchFlowCreate = async(items, accessToken, graphQlApiUrl) =>{
       response.alertMsg = "Error Occured while creating Records";
     }
   });
-  logger.info("Update Batch Flow DB Response:", { response });
+  logger.info("Create Batch Flow DB Response:", { response });
   return response;
 };
 
