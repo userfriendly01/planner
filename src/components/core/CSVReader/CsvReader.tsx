@@ -22,6 +22,9 @@ const mapValuesToObj=(jsonValues:any, type?:CSVFileType):any=>{
         jsonValue = jsonValues[key]? jsonValues[key].split(",") : [];
 
       }
+      else if(["predictiveCaller", "selfServiceIndicator"].includes(key)){
+        jsonValue = jsonValues[key]? Boolean(jsonValues[key]) : false;
+      }
       jsonFlowObj=value.valueSetter(jsonFlowObj,{ [key]: jsonValue });
     });
     return jsonFlowObj;
