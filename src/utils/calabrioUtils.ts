@@ -37,7 +37,6 @@ export const calabrioAllowedRoles = [
   "WFM_Supervisor_TT_Dashboards",
   "WFM_Supervisor_NT_Dashboards",
   "WFM_Agent_NT_Dashboards",
-  "Live Monitoring",
   "Recording Access",
   "EXL_Genpact",
   "QM Agent_No Live Monitoring"
