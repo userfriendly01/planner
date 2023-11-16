@@ -404,7 +404,7 @@ export const decompressResponse = async (body: any) => {
   const buff = Buffer.from(body, "base64");
   const data = await inflate(buff);
   return JSON.parse(data.toString("utf-8"));
-}
+};
 
 export const getCalabrioWfmOptions = async (dispatch: any) => {
   try {
