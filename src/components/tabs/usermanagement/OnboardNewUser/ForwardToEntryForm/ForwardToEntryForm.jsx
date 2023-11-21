@@ -136,9 +136,7 @@ const ForwardToEntryForm = props => {
             margin: "16px 0px 8px 0px"
           }}
           options={getWorkerOptions()}
-          updateValue={(event, worker) => {
-            updateForwardTo(worker.value);
-          }}
+          updateValue={(event, worker) => updateForwardTo(worker ? worker.value : "")}
         />
       }
       {forwardToType === "skill" &&
@@ -148,8 +146,8 @@ const ForwardToEntryForm = props => {
             margin: "16px 0px 8px 0px"
           }}
           options={getSkillOptions()}
-          updateValue={(event, skill) => updateForwardTo(skill.value)}
-        />
+          updateValue={(event, skill) => updateForwardTo(skill ? skill.value : "")}
+      />
       }
       {forwardToType === "phoneNum" &&
         <PhoneNumberInput
