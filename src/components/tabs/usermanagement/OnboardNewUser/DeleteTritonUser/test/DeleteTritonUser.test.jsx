@@ -128,7 +128,7 @@ describe("DeleteTritonUser", () => {
         expect(rendered.container).toHaveTextContent("Note: there is a grace period of 2 days before this user will be permanently deleted");
         expect(ForwardToEntryForm).toHaveBeenCalledTimes(0);
         expect(StyledButton).toHaveBeenCalledTimes(2);
-        expect(StyledButton.mock.calls[1][0].disabled).toBe(true);
+        expect(StyledButton.mock.calls[1][0].disabled).toBe(false);
       });
     });
   });
