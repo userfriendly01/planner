@@ -47,10 +47,10 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
 
   logger.log("TRITON WORKER", tritonWorker);
   const isWorkerDid = form.triton.didUser;
-  const [isDeleteEnabled, setIsDeleteEnabled] = React.useState(false);
-  const [deleteTriton, setDeleteTriton] = React.useState(form.triton.userFound);
-  const [deleteCalabrioQm, setDeleteClabrioQm] = React.useState(form.calabrio_qm.userFound);
-  const [deleteCalabrioWfm, setDeleteCalabrioWfm ] = React.useState(form.calabrio_wfm.userFound);
+  const [isDeleteEnabled, setIsDeleteEnabled] = React.useState(isWorkerDid ? false : true);
+  // const [deleteTriton, setDeleteTriton] = React.useState(form.triton.userFound);
+  // const [deleteCalabrioQm, setDeleteClabrioQm] = React.useState(form.calabrio_qm.userFound);
+  // const [deleteCalabrioWfm, setDeleteCalabrioWfm ] = React.useState(form.calabrio_wfm.userFound);
   const [profilesToDelete, setProfilesToDelete] = React.useState<profilesToDeleteState>({
     triton: true,
     calabrioQm: true
