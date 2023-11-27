@@ -61,8 +61,8 @@ export const RoutingTeamAttrDropDownOptions: DropdownOption[] = [
     value: "FoundeverLicensed"
   },
   {
-    label: "TelepeformanceLicensed",
-    value: "TelepeformanceLicensed"
+    label: "TeleperformanceLicensed",
+    value: "TeleperformanceLicensed"
   },
   {
     label: "FoundEverLicensedAE",
