@@ -742,6 +742,7 @@ const createFlowRunItem = async(items, accessToken, graphQlApiUrl) =>{
               lineOfBusiness
               marketingChannel
               pkey
+              predictiveCaller
               rangeIndicator
               requestID
               selfServiceIndicator

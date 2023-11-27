@@ -149,23 +149,25 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
     <div>
       <Modal
         isOpen={isOpen}
-        takeover={["base", "sm", "md", "lg", "xl"]}
+        takeover={["base", "sm", "md", "lg"]}
         onClose={()=>{ onClose(); }}
         size="large"
       >
         <ModalHeader>{action?.toUpperCase()} Routing - {routingRows.length} rows selected</ModalHeader>
         <ModalBody className="preview-grid-modal">
-          {action === "add" &&
-        <Box sx={{
-          marginRight: "10px",
-          marginBottom: "10px"
-        }}>
+          <Box sx={{
+            marginRight: "10px",
+            marginBottom: "10px"
+          }}>
+            {action === "add" &&
           <StyledButton  onClick={()=>{ createNewRecord(); }}>Add New +</StyledButton>
+            }
+            {["add", "edit"].includes(action) &&
           <StyledButton sx={{ marginLeft: "10px" }}>
             <input type="file" onChange={(event:React.ChangeEvent<HTMLInputElement>)=>handleUploadedFile(event)} />
           </StyledButton>
-        </Box>
-          }
+            }
+          </Box>
           <DataGrid
             apiRef={apiRef}
             rows={routingRows}

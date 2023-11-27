@@ -12,9 +12,9 @@ width: 100%;
 
 
 export const RoutingModalBodyStyled = styled(ModalBody)`
-  margin-top: 10px !important;
   overflow: auto;
-  padding-top: 5px;
+  padding-top: 8px;
+  margin-top: none !important;
 `;
 
 export const RoutingModalFooterStyled = styled(ModalFooter)`
@@ -26,7 +26,7 @@ export const RoutingModalFooterStyled = styled(ModalFooter)`
 `;
 
 export const RoutingHeadingStyled = styled(Heading)`
-  margin-top:50px !important
+  padding: 30px 0px 20px 20px
 `;
 
 export const RoutingModalSearchStyled = styled(Modal)`

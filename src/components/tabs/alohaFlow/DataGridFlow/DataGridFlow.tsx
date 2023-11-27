@@ -4,7 +4,13 @@
    react/jsx-props-no-spreading
 */
 import {
-  DataGrid, GridRenderCellParams, GridRowId, GridRowSelectionModel, GridPaginationModel, GridCallbackDetails
+  DataGrid,
+  GridRenderCellParams,
+  GridRowId,
+  GridRowSelectionModel,
+  GridPaginationModel,
+  GridCallbackDetails,
+  useGridApiRef
 } from "@mui/x-data-grid";
 import { CustomToast } from "components";
 import {
@@ -76,6 +82,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
   const [clonedFlowRule, setClonedFlowRule] = useState({});
   const [cloneType, setCloneType] = useState(false);
   const [selectedList, setSelectedList] = useState<Array<CctSharedCallFlowDb>>([]);
+  const apiRef = useGridApiRef();
 
   useEffect(() => {
     const getTableData = async()=>{
@@ -329,6 +336,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       ...dataFlowProps,
       isPreviewModalOpen: false
     }));
+    apiRef.current.setRowSelectionModel([]);
   };
 
   const handleSelectionChanges = (gridSelectionModel: GridRowSelectionModel) =>{
@@ -374,6 +382,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       data: filteredData,
       isPreviewModalOpen: false
     });
+    apiRef.current.setRowSelectionModel([]);
   };
 
   const handleOnBulkUpdate = async(rows: Array<CctSharedCallFlowDb> ) =>{
@@ -431,6 +440,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       data: filteredData,
       isPreviewModalOpen: false
     });
+    apiRef.current.setRowSelectionModel(response.failure);
   };
 
   const handleOnBulkDelete = async(rows: Array<CctSharedCallFlowDb> ) =>{
@@ -464,6 +474,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       isPreviewModalOpen: response?.flag || false,
       fetching: false
     }));
+    apiRef.current.setRowSelectionModel(response.failure);
   };
 
   const checkForDuplicateBulkPutItems = (rows: Array<CctSharedCallFlowDb>): DuplicateCheck =>{
@@ -544,6 +555,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
             matchedGroups={matchedGroups}
           />
           <DataGrid
+            apiRef={apiRef}
             rows={dataFlow.filteredItems}
             columns={FlowGridColumnDef}
             paginationModel={paginationModel}

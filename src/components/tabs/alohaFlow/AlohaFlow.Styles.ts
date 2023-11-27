@@ -21,7 +21,7 @@ export const ModalFooterStyled = styled(ModalFooter)`
 `;
 
 export const HeadingStyled = styled(Heading)`
-  margin-top:50px !important
+  padding: 30px 0px 20px 20px
 `;
 export const ModalSearchStyled = styled(Modal)`
   width:60%

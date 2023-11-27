@@ -32,7 +32,15 @@ jest.mock("@mui/x-data-grid",()=>({
   DataGrid: jest.fn(),
   GridToolbar: jest.fn(),
   GridRenderCellParams: jest.fn(),
-  useGridApiRef: jest.fn()
+  useGridApiRef: jest.fn().mockReturnValue({
+    current: {
+      setRowSelectionModel: jest.fn().mockReturnValue({
+        failure: [],
+        success: [],
+        flag: false
+      })
+    }
+  })
 }));
 
 jest.mock("components", ()=>({
@@ -564,7 +572,11 @@ describe("<DataGridFlow />", () => {
       renderComponent();
       const previewModalOnDelete = PreviewModal.mock.calls[0][0].onDelete;
       const selectedRow = createFlowDataList(2);
-      flowBatchDelete.mockResolvedValue({ data: []});
+      batchDeleteItems.mockResolvedValue({
+        failure: [],
+        success: [],
+        flag: false
+      });
       act(()=>{
         previewModalOnDelete(selectedRow);
       });

@@ -3,7 +3,9 @@ import {
 } from "components";
 import { useAdminState } from "context";
 import { AlertBarProps } from "./interfaces";
-import { GraphQLErrors } from "globals";
+import {
+  BrandNameMap, GraphQLErrors
+} from "globals";
 import {
   getAdGroupPermissionMapping
 } from "authentication";
@@ -141,4 +143,9 @@ export const readWriteAccess=(matchedGroups:any[], alohaTabType:string, env:stri
       });
     } });
   return flag;
+};
+
+export const BrandName:BrandNameMap={
+  "Liberty Mutual": "liberty",
+  "Safeco": "safeco"
 };

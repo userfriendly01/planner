@@ -26,8 +26,11 @@ import {
   deleteRoutingRule, updateRoutingDB
 } from "services";
 import { AzureSPA } from "globals";
-import { readWriteAccess } from "utils/configUtils";
+import {
+  BrandName, readWriteAccess
+} from "utils/configUtils";
 import { useAdminState } from "context";
+import { FloatingHeader } from "@lmig/lmds-react-floating-header";
 interface EditRoutingComponentProps {
   accessToken: string;
   isOpen: boolean;
@@ -230,7 +233,19 @@ export const EditRouting = ({
           openEditModal(false);
         }}
       >
-        <ModalHeader><RoutingHeadingStyled type="h4-light">{`Update Routing Rule (Rule ID#${selectedRow && selectedRow.id})`}</RoutingHeadingStyled></ModalHeader>
+        <ModalHeader>
+          {
+            ["Liberty Mutual", "Safeco"].includes(selectedRowLocal?.brand)?
+              (<FloatingHeader brand={BrandName[selectedRowLocal?.brand]} overlayIsOpen>
+                <RoutingHeadingStyled type="h4-light">{`Update Routing Rule (Rule ID#${selectedRow && selectedRow.id})`}
+                </RoutingHeadingStyled>
+              </FloatingHeader>):
+              (
+                <RoutingHeadingStyled type="h4-light">{`Update Routing Rule (Rule ID#${selectedRow && selectedRow.id})`}
+                </RoutingHeadingStyled>
+              )
+          }
+        </ModalHeader>
         <RoutingModalBodyStyled>
           <Grid container rowSpacing={3}>
             {

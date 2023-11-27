@@ -377,3 +377,6 @@ export interface DuplicateCheck{
   isDuplicate: boolean;
   message: string;
 }
+export interface BrandNameMap{
+  [key:string]: "liberty" | "safeco"
+}

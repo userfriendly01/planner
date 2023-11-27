@@ -175,9 +175,9 @@ describe("<PreviewModal />", () => {
   test("render Update preview", () => {
     renderComponent("edit", onDeleteMock);
     const calls = StyledButton.mock.calls;
-    expect(calls[0][0].children).toBe("Update");
-    expect(calls[1][0].children).toBe("Cancel");
-    act(() => calls[0][0].onClick());
+    expect(calls[4][0].children).toBe("Update");
+    expect(calls[5][0].children).toBe("Cancel");
+    act(() => calls[4][0].onClick());
     expect(onUpdateMock).toBeCalledTimes(1);
   });
   test("render Add preview", () => {

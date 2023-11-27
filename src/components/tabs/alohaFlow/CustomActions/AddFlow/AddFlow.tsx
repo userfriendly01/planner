@@ -5,8 +5,7 @@ import React, {
   useEffect
 } from "react";
 import {
-  Modal,
-  ModalHeader
+  Modal, ModalHeader
 } from "@lmig/lmds-react-modal";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
@@ -44,7 +43,8 @@ import {
   tfnRoutingGroup,
   userDestination,
   flowType,
-  checkGreetingMessageRegExp
+  checkGreetingMessageRegExp,
+  BrandName
 } from "utils";
 import { getGridMasterData } from "../../DataGridFlow/GridMaster";
 import {
@@ -54,6 +54,8 @@ import {
   AzureSPA, DuplicateCheck
 } from "globals";
 import { AddOrView } from "../CustomActionsCommon/AddOrView";
+import { FloatingHeader } from "@lmig/lmds-react-floating-header";
+import { Box } from "@mui/material";
 export interface AddFlowModalProps {
   isOpen: boolean;
   newId: number;
@@ -292,8 +294,18 @@ export const AddFlow = ({
         onClose={() => {
           resetFlowRule();
         }}
-      >
-        <ModalHeader><HeadingStyled type="h4-light">Add Flow Rule</HeadingStyled></ModalHeader>
+      ><ModalHeader>
+          {
+            ["Liberty Mutual", "Safeco"].includes(flowRule?.brand?.value)?
+              (<FloatingHeader brand={BrandName[flowRule?.brand?.value]} overlayIsOpen>
+                <HeadingStyled type="h4-light">Add Flow Rule</HeadingStyled>
+              </FloatingHeader>):
+              (
+                <HeadingStyled type="h4-light">Add Flow Rule
+                </HeadingStyled>
+              )
+          }
+        </ModalHeader>
         <ModalBodyStyled >
           <Grid container rowSpacing={3}>
             {
