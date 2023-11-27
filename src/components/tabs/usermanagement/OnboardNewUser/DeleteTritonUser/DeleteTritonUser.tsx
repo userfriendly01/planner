@@ -47,9 +47,7 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
 
   logger.log("TRITON WORKER", tritonWorker);
   const isWorkerDid = form.triton.didUser;
-  const [deleteTriton, setDeleteTriton] = React.useState(form.triton.userFound);
-  const [deleteCalabrioQm, setDeleteClabrioQm] = React.useState(form.calabrio_qm.userFound);
-  const [deleteCalabrioWfm, setDeleteCalabrioWfm ] = React.useState(form.calabrio_wfm.userFound);
+  const [isDeleteEnabled, setIsDeleteEnabled] = React.useState(isWorkerDid ? false : true);
   const [profilesToDelete, setProfilesToDelete] = React.useState<profilesToDeleteState>({
     triton: true,
     calabrioQm: true
@@ -183,7 +181,16 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
       { isWorkerDid ?
         <ForwardToEntryForm
           label="This user has a direct dial number. Please choose a forward to option before confirming."
-          updateForwardTo={(inactiveForwardTo: string) => tritonWorker.inactiveForwardTo = inactiveForwardTo}
+          updateForwardTo={
+            (inactiveForwardTo: string) => {
+              tritonWorker.inactiveForwardTo = inactiveForwardTo;
+              if (inactiveForwardTo) {
+                setIsDeleteEnabled(true);
+              } else {
+                setIsDeleteEnabled(false);
+              }
+            }
+          }
         />
         : null
       }
@@ -192,7 +199,7 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
           Close
         </UserFormButton>
         <UserFormButton
-          disabled={(!deleteTriton && !deleteCalabrioQm && !deleteCalabrioWfm) || (!profilesToDelete.triton && !profilesToDelete.calabrioQm)}
+          disabled={!isDeleteEnabled}
           onClick={handleDeleteUser}
         >
           Confirm Delete

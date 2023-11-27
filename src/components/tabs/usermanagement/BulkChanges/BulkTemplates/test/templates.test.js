@@ -1192,7 +1192,7 @@ describe("UPDATE_CALLER_STATES", () => {
           }
         }
       };
-      test("wsx1 should call updateUser with correct body", async () => {
+      test("should call updateUser with correct body", async () => {
         const result = await updateCallerStatesProcessFunction(row, template);
         expect(updateUser).toHaveBeenCalledTimes(1);
         expect(updateUser).toHaveBeenCalledWith("WK1234", {
@@ -1233,7 +1233,7 @@ describe("UPDATE_CALLER_STATES", () => {
           }
         }
       };
-      test("wsx2 should call updateUser with correct body", async () => {
+      test("should call updateUser with correct body", async () => {
         const result = await updateCallerStatesProcessFunction(row, template);
         expect(updateUser).toHaveBeenCalledTimes(1);
         expect(updateUser).toHaveBeenCalledWith("WK1234", {
@@ -1277,7 +1277,7 @@ describe("UPDATE_CALLER_STATES", () => {
           }
         }
       };
-      test("wsx3 should call updateUser with correct body", async () => {
+      test("should call updateUser with correct body", async () => {
         const result = await updateCallerStatesProcessFunction(row, template);
         expect(updateUser).toHaveBeenCalledTimes(1);
         expect(updateUser).toHaveBeenCalledWith("WK1234", {
@@ -1318,7 +1318,7 @@ describe("UPDATE_CALLER_STATES", () => {
           }
         }
       };
-      test("wsx4 ADD should fail", async () => {
+      test("ADD should fail", async () => {
         try {
           await updateCallerStatesProcessFunction(row, template);
           expect("I should").toBe("never get here");

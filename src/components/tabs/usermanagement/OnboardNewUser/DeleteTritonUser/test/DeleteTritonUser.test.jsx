@@ -97,18 +97,28 @@ describe("DeleteTritonUser", () => {
         expect(ForwardToEntryForm).toHaveBeenCalledTimes(1);
         expect(ForwardToEntryForm.mock.calls[0][0].label).toBe("This user has a direct dial number. Please choose a forward to option before confirming.");
         expect(StyledButton).toHaveBeenCalledTimes(2);
-        expect(StyledButton.mock.calls[1][0].disabled).toBe(false);
+        expect(StyledButton.mock.calls[1][0].disabled).toBe(true);
       });
       describe("updateForwardTo is called", () => {
         test("inactiveForwardTo is set when delete is submitted", () => {
           renderComponent();
           const updateForwardTo = ForwardToEntryForm.mock.calls[0][0].updateForwardTo;
           act(() => updateForwardTo("callmebeepme"));
-          expect(StyledButton).toHaveBeenCalledTimes(2);
+          expect(StyledButton).toHaveBeenCalledTimes(4);
           const confirmDelete = StyledButton.mock.calls[1][0].onClick;
           act(() => confirmDelete());
           expect(terminateWorker).toHaveBeenCalledTimes(1);
           expect(terminateWorker.mock.calls[0][0].inactiveForwardTo).toBe("callmebeepme");
+        });
+        test("inactiveForwardTo is cleared when delete is submitted", () => {
+          renderComponent();
+          const updateForwardTo = ForwardToEntryForm.mock.calls[0][0].updateForwardTo;
+          act(() => updateForwardTo(""));
+          expect(StyledButton).toHaveBeenCalledTimes(2);
+          const confirmDelete = StyledButton.mock.calls[1][0].onClick;
+          act(() => confirmDelete());
+          expect(terminateWorker).toHaveBeenCalledTimes(1);
+          expect(terminateWorker.mock.calls[0][0].inactiveForwardTo).toBe("");
         });
       });
     });
