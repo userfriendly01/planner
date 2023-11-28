@@ -84,14 +84,14 @@ const MultiFieldContainer = (
   const [listItems, setListItems] = useState([]);
   const [multiFormFields, setMultiFormFields] = useState<Array<MultiFieldContainerFormProps>>(formFields);
   const [indexOf, setIndexOf] = useState<number>();
+  const spanRef = React.useRef();
 
   useEffect(()=>{
     setListItems(value);
     setIndexOf(value?.length);
   }, [value]);
-  const handleClick =(event:any) => {
-    console.log(event);
-    setAnchorEl(event);
+  const handleClick =() => {
+    setAnchorEl(spanRef.current);
     setModalOpen(!isModalOpen);
   };
   const handleOnClose =() => {
@@ -153,6 +153,7 @@ const MultiFieldContainer = (
           freeSolo
           multiple
           value = {listItems}
+          ref={spanRef}
           renderTags={(value:any, props:any) =>
             value.map((item:any, index:any) => (
               <Chip
@@ -168,7 +169,7 @@ const MultiFieldContainer = (
             ))
           }
           renderInput={params => <TextField label={label} {...params} />}
-          onHighlightChange={(event:any)=>{ handleClick(event); }}
+          onHighlightChange={handleClick}
         />
       </FormControl>
       <MultiFieldContainerModalView
