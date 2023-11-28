@@ -127,6 +127,30 @@ export const RoutingTeamAttrDropDownOptions: DropdownOption[] = [
   {
     label: "Digital",
     value: "Digital"
+  },
+  {
+    label: "PremierPartners",
+    value: "PremierPartners"
+  },
+  {
+    label: "HighTouchProducts",
+    value: "HighTouchProducts"
+  },
+  {
+    label: "HighTouchStates",
+    value: "HighTouchStates"
+  },
+  {
+    label: "Core",
+    value: "Core"
+  },
+  {
+    label: "CorePlus",
+    value: "CorePlus"
+  },
+  {
+    label: "Online",
+    value: "Online"
   }
 ];
 
