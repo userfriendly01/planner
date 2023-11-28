@@ -49,7 +49,7 @@ export const EXPORT_FILE_PREFIX: {
 
 const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb |CctSharedCallRoutingDb>, prefix: string): string => {
   let result: string;
-  const columnDelimiter = "|";
+  const columnDelimiter = ",";
   const lineDelimiter = "\n";
   if(array.length ===0){
     return;
@@ -97,7 +97,10 @@ const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb |CctSharedCa
         itemValue = "";
       }
       else if(itemValue){
-        itemValue = itemValue.toString();
+        itemValue = itemValue.toString().replaceAll("\"", "\\\"");
+        if (itemValue.includes(",")) {
+          itemValue = `"${itemValue.toString()}"`;
+        }
       }
       result += itemValue;
       ctr += 1;
