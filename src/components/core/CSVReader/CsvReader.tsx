@@ -55,7 +55,7 @@ export const CsvReader = (e: React.ChangeEvent<HTMLInputElement>, setUploadedFor
       const data = e.target?.result;
       const workbook = XLSX.read(data, {
         type: "array",
-        FS: "|"
+        FS: ","
       });
       const sheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];

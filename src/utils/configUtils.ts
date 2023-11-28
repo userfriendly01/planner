@@ -97,9 +97,9 @@ const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb |CctSharedCa
         itemValue = "";
       }
       else if(itemValue){
-        itemValue = itemValue.toString().replaceAll("\"", "\\\"");
+        itemValue = itemValue.toString().replaceAll(/"/g, "\"\"");
         if (itemValue.includes(",")) {
-          itemValue = `"${itemValue.toString()}"`;
+          itemValue = `"${itemValue}"`;
         }
       }
       result += itemValue;
