@@ -2,7 +2,8 @@ import React, {
   useState, useEffect
 } from "react";
 import {
-  Chip,FormControl,TextField
+  Autocomplete,
+  Chip,FormControl,ListItem,TextField
 } from "@mui/material";
 import { MultiFieldContainerModalView } from "./MultiFieldContainerModalView";
 
@@ -88,8 +89,9 @@ const MultiFieldContainer = (
     setListItems(value);
     setIndexOf(value?.length);
   }, [value]);
-  const handleClick =(event: React.MouseEvent<HTMLDivElement>) => {
-    setAnchorEl(event.currentTarget);
+  const handleClick =(event:any) => {
+    console.log(event);
+    setAnchorEl(event);
     setModalOpen(!isModalOpen);
   };
   const handleOnClose =() => {
@@ -145,25 +147,28 @@ const MultiFieldContainer = (
   return (
     <>
       <FormControl sx={{ width: "calc(95%)" }} error={error} required={required}>
-        <TextField
-          variant="outlined"
-          label={label}
-          name={name}
-          type="button"
-          InputProps={{
-            startAdornment: listItems && listItems.map((item:any, index: number)=>(
+        <Autocomplete
+          clearIcon={false}
+          options={[]}
+          freeSolo
+          multiple
+          value = {listItems}
+          renderTags={(value:any, props:any) =>
+            value.map((item:any, index:any) => (
               <Chip
                 key={getTagKey(item, index)}
                 tabIndex={index}
                 label={getTagLabel(item, multiFormFields)}
-                onDelete={(event: any)=>handleOnDelete(index)}
-                onClick={(event: any)=>{
+                {...props({ index })}
+                onClick={()=>{
                   handleOnEdit(item, index);
                 }}
+                onDelete={()=>handleOnDelete(index)}
               />
             ))
-          }}
-          onClick={handleClick}
+          }
+          renderInput={params => <TextField label={label} {...params} />}
+          onHighlightChange={(event:any)=>{ handleClick(event); }}
         />
       </FormControl>
       <MultiFieldContainerModalView
