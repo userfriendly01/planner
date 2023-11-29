@@ -98,7 +98,7 @@ const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb |CctSharedCa
       }
       else if(itemValue){
         itemValue = itemValue.toString().replaceAll(/"/g, "\"\"");
-        if (itemValue.includes(",")) {
+        if (itemValue.includes(",") || itemValue.includes("\"")) {
           itemValue = `"${itemValue}"`;
         }
       }
