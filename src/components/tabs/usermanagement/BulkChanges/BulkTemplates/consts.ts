@@ -1,4 +1,5 @@
 import { isNumberValid } from "utils";
+import { RoutingTeamAttrDropDownOptions } from "../../OnboardNewUser/RoutingAttributes/RoutingAttributesDropDown";
 
 //Not all worker attribute fields would logically be bulk updated. 
 //Future stories will bulk update routing and default skills in addition to inactive fields to bulk disable users
@@ -32,13 +33,8 @@ export const availableAttributes: any = {
   ROUTING_TEAM: {
     label: "team",
     value: "team",
-    type: "string",
-    location: ["attributes","routing"]
-  },
-  ROUTING_CALLER_STATES: {
-    label: "callerStates",
-    value: "callerStates",
-    type: "string",
+    type: "dropdown list",
+    options: RoutingTeamAttrDropDownOptions,
     location: ["attributes","routing"]
   },
   ROUTING_SALES_ASSOC_WORKERS: {

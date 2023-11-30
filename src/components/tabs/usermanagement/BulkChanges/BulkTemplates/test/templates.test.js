@@ -615,7 +615,7 @@ describe("UPDATE_WORKER_ATTRIBUTE", () => {
           }
         }
       };
-      test("key is not callerStates should call update user with correct body", async () => {
+      test("key is not sales_assoc_workers should call update user with correct body", async () => {
         const result = await updateWorkerAttributesProcessFunction(row, template);
         expect(updateUser).toHaveBeenCalledTimes(1);
         expect(updateUser).toHaveBeenCalledWith("WK1234", {
@@ -629,8 +629,8 @@ describe("UPDATE_WORKER_ATTRIBUTE", () => {
         });
         expect(result).toBe("WK1234 - Worker Attributes updated for row 4");
       });
-      test("key IS callerStates should call update user with correct body", async () => {
-        template.data.key = "callerStates";
+      test("key IS sales_assoc_workers should call update user with correct body", async () => {
+        template.data.key = "sales_assoc_workers";
         template.data.value = "boo, yo";
         const result = await updateWorkerAttributesProcessFunction(row, template);
         expect(updateUser).toHaveBeenCalledTimes(1);
@@ -639,7 +639,7 @@ describe("UPDATE_WORKER_ATTRIBUTE", () => {
             n_number: "n1234",
             routing: {
               levels: [],
-              callerStates: ["boo", "yo"]
+              sales_assoc_workers: ["boo", "yo"]
             }
           }
         });

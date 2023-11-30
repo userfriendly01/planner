@@ -82,21 +82,35 @@ const BulkUpdateAttributes = (props: BulkUpdateProps) => {
           margin: "10px 20px 0px 20px"
         }}
       />
+      { selectedAttribute.type === "dropdown list" &&
+        <Dropdown
+          label={selectedAttribute.label}
+          value={updatedAttributeValue}
+          options={selectedAttribute.options}
+          updateValue={(event: any, option: any) => {
+            setUpdatedAttributeValue(option?.value);
+          }}
+          styles={{
+            width: "230px",
+            margin: "10px 20px 0px 20px"
+          }}
+        />
+      }
       { selectedAttribute.type === "string" &&
-          <Tooltip title={selectedAttribute.value === "callerStates" ? "Comma separated list of states" : selectedAttribute.value === "sales_assoc_workers" ? "Comma separated list of nNumbers" : ""}>
-            <div>
-              <CustomInput
-                label="Attribute Value"
-                name="attribute-value"
-                value={updatedAttributeValue}
-                updateValue={(value: string) => setUpdatedAttributeValue(value)}
-                styles={{
-                  width: "230px",
-                  margin: "10px 20px 0px 20px"
-                }}
-              />
-            </div>
-          </Tooltip>
+        <Tooltip title={selectedAttribute.value === "sales_assoc_workers" ? "Comma separated list of nNumbers" : ""}>
+          <div>
+            <CustomInput
+              label="Attribute Value"
+              name="attribute-value"
+              value={updatedAttributeValue}
+              updateValue={(value: string) => setUpdatedAttributeValue(value)}
+              styles={{
+                width: "230px",
+                margin: "10px 20px 0px 20px"
+              }}
+            />
+          </div>
+        </Tooltip>
       }
       { selectedAttribute.type === "number" &&
         <CustomInput

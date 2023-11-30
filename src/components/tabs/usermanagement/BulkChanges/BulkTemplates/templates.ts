@@ -327,10 +327,7 @@ const processUpdateWorkerAttribute = async (row: any, template: Template, state:
     if(typeof location === "string"){
       body[location] = newAttribute;
     } else {
-      if (key === "callerStates") {
-        const callerStatesArray = value.split(",");
-        newAttribute[key] = callerStatesArray.map((state: string) => state.trim());
-      } else if (key === "sales_assoc_workers") {
+      if (key === "sales_assoc_workers") {
         const salesAssocWorkersArray = value.split(",");
         newAttribute[key] = salesAssocWorkersArray.map((nNum: string) => nNum.trim());
       }
