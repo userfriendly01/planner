@@ -35,12 +35,6 @@ export const availableAttributes: any = {
     type: "string",
     location: ["attributes","routing"]
   },
-  ROUTING_CALLER_STATES: {
-    label: "callerStates",
-    value: "callerStates",
-    type: "string",
-    location: ["attributes","routing"]
-  },
   ROUTING_SALES_ASSOC_WORKERS: {
     label: "sales_assoc_workers",
     value: "sales_assoc_workers",

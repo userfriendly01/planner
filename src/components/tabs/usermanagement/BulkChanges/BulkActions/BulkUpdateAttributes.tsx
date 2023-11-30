@@ -13,6 +13,7 @@ import {
 import React from "react";
 import { getE164Number } from "utils";
 import { Tooltip } from "@mui/material";
+import { RoutingTeamAttrDropDownOptions } from "../../OnboardNewUser/RoutingAttributes/RoutingAttributesDropDown";
 
 const BulkUpdateAttributes = (props: BulkUpdateProps) => {
   const {
@@ -61,7 +62,8 @@ const BulkUpdateAttributes = (props: BulkUpdateProps) => {
       setUpdatedAttributeValue("");
     }
   }, [selectedTemplates]);
-
+  console.log("selectedAttribute", selectedAttribute);
+  console.log("updatedAttributeValue", updatedAttributeValue);
   return (
     <UpdateWrapper>
       <Dropdown
@@ -82,21 +84,34 @@ const BulkUpdateAttributes = (props: BulkUpdateProps) => {
           margin: "10px 20px 0px 20px"
         }}
       />
-      { selectedAttribute.type === "string" &&
-          <Tooltip title={selectedAttribute.value === "callerStates" ? "Comma separated list of states" : selectedAttribute.value === "sales_assoc_workers" ? "Comma separated list of nNumbers" : ""}>
-            <div>
-              <CustomInput
-                label="Attribute Value"
-                name="attribute-value"
-                value={updatedAttributeValue}
-                updateValue={(value: string) => setUpdatedAttributeValue(value)}
-                styles={{
-                  width: "230px",
-                  margin: "10px 20px 0px 20px"
-                }}
-              />
-            </div>
-          </Tooltip>
+      { selectedAttribute.type === "string" && selectedAttribute.value === "team" ? (
+        <Dropdown
+          label="Routing Team"
+          value={updatedAttributeValue}
+          options={RoutingTeamAttrDropDownOptions}
+          updateValue={(event: any, option: any) => {
+            setUpdatedAttributeValue(option?.value);
+          }}
+          styles={{
+            width: "230px",
+            margin: "10px 20px 0px 20px"
+          }}
+        />
+      ) : selectedAttribute.type === "string" ?
+        (<Tooltip title={selectedAttribute.value === "sales_assoc_workers" ? "Comma separated list of nNumbers" : ""}>
+          <div>
+            <CustomInput
+              label="Attribute Value"
+              name="attribute-value"
+              value={updatedAttributeValue}
+              updateValue={(value: string) => setUpdatedAttributeValue(value)}
+              styles={{
+                width: "230px",
+                margin: "10px 20px 0px 20px"
+              }}
+            />
+          </div>
+        </Tooltip>) : null
       }
       { selectedAttribute.type === "number" &&
         <CustomInput

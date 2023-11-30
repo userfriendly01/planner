@@ -70,7 +70,6 @@ describe("<BulkUpdateAttributes />", () => {
           availableAttributes.PROFILE,
           availableAttributes.DID,
           availableAttributes.ROUTING_TEAM,
-          availableAttributes.ROUTING_CALLER_STATES,
           availableAttributes.ROUTING_SALES_ASSOC_WORKERS
         ]);
         //Choose an value Dropdown
@@ -530,6 +529,103 @@ describe("<BulkUpdateAttributes />", () => {
                 key: "did",
                 value: "+16038518200",
                 location: "attributes"
+              });
+              //remove is run upon first render since the initial value is not valid
+              expect(mockRemoveTemplates).toHaveBeenCalledTimes(1);
+            });
+          });
+        });
+      });
+      describe("Attribute Dropdown is updated to availableAttributes.ROUTING_TEAM", () => {
+        test("Routing Team Dropdown is rendered", () => {
+          renderComponent([]);
+          expect(Dropdown.mock.calls.length).toBe(2);
+          expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
+          const onAttributeChange = Dropdown.mock.calls[0][0].updateValue;
+          act(() => onAttributeChange(null, availableAttributes.ROUTING_TEAM));
+          expect(Dropdown.mock.calls.length).toBe(4);
+          expect(Dropdown.mock.calls[2][0].value).toBe(availableAttributes.ROUTING_TEAM);
+          expect(Dropdown.mock.calls[3][0].value).toBe("");
+          expect(Dropdown.mock.calls[3][0].label).toBe("Routing Team");
+        });
+        describe("attribute value is updated to an invalid value", () => {
+          describe("template is not already in the selected Templates list", () => {
+            test("no template update function is called", () => {
+              renderComponent([]);
+              expect(Dropdown.mock.calls.length).toBe(2);
+              expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
+              const onAttributeChange = Dropdown.mock.calls[0][0].updateValue;
+              act(() => onAttributeChange(null, availableAttributes.ROUTING_TEAM));
+              const onValueChange = Dropdown.mock.calls[3][0].updateValue;
+              act(() => onValueChange(null, ""));
+              expect(mockReplaceTemplates).toHaveBeenCalledTimes(0);
+              expect(mockUpdateTemplates).toHaveBeenCalledTimes(0);
+              expect(mockRemoveTemplates).toHaveBeenCalledTimes(0);
+            });
+          });
+          describe("template is already in the selected Templates list", () => {
+            test("removeTemplate function is called", () => {
+              const template = { ...updateTemplates.UPDATE_WORKER_ATTRIBUTE };
+              renderComponent([template]);
+              expect(mockRemoveTemplates).toHaveBeenCalledTimes(1);
+              expect(Dropdown.mock.calls.length).toBe(2);
+              expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
+              const onAttributeChange = Dropdown.mock.calls[0][0].updateValue;
+              act(() => onAttributeChange(null, availableAttributes.ROUTING_TEAM));
+              const onValueChange = Dropdown.mock.calls[3][0].updateValue;
+              act(() => onValueChange(null, ""));
+              expect(mockReplaceTemplates).toHaveBeenCalledTimes(0);
+              expect(mockUpdateTemplates).toHaveBeenCalledTimes(0);
+              expect(mockRemoveTemplates).toHaveBeenCalledTimes(2);
+              expect(mockRemoveTemplates).toHaveBeenCalledWith(updateTemplates.UPDATE_WORKER_ATTRIBUTE);
+            });
+          });
+        });
+        describe("attribute value is updated to a valid value", () => {
+          describe("template is not already in the selected Templates list", () => {
+            test("replaceTemplate is called", () => {
+              renderComponent([]);
+              expect(Dropdown.mock.calls.length).toBe(2);
+              expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
+              const onAttributeChange = Dropdown.mock.calls[0][0].updateValue;
+              act(() => onAttributeChange(null, availableAttributes.ROUTING_TEAM));
+              const onValueChange = Dropdown.mock.calls[3][0].updateValue;
+              act(() => onValueChange(null, { value: "Property" }));
+              expect(mockReplaceTemplates).toHaveBeenCalledTimes(1);
+              expect(mockReplaceTemplates).toHaveBeenCalledWith({
+                ...updateTemplates.UPDATE_WORKER_ATTRIBUTE,
+                data: {
+                  key: "team",
+                  value: "Property",
+                  location: [
+                    "attributes",
+                    "routing"
+                  ]
+                }
+              });
+              expect(mockUpdateTemplates).toHaveBeenCalledTimes(0);
+              expect(mockRemoveTemplates).toHaveBeenCalledTimes(0);
+            });
+          });
+          describe("template is already in the selected Templates list", () => {
+            test("updateTemplate function is called", () => {
+              const selectedTemplate = { ...updateTemplates.UPDATE_WORKER_ATTRIBUTE };
+              renderComponent([selectedTemplate]);
+              expect(Dropdown.mock.calls.length).toBe(2);
+              expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
+              const onAttributeChange = Dropdown.mock.calls[0][0].updateValue;
+              act(() => onAttributeChange(null, availableAttributes.ROUTING_TEAM));
+              const onValueChange = Dropdown.mock.calls[3][0].updateValue;
+              act(() => onValueChange(null, { value: "Property" }));
+              expect(mockReplaceTemplates).toHaveBeenCalledTimes(0);
+              expect(mockUpdateTemplates).toHaveBeenCalledTimes(1);
+              expect(mockUpdateTemplates).toHaveBeenCalledWith(selectedTemplate, {
+                key: "team",
+                value: "Property",
+                location: [
+                  "attributes",
+                  "routing"
+                ]
               });
               //remove is run upon first render since the initial value is not valid
               expect(mockRemoveTemplates).toHaveBeenCalledTimes(1);
