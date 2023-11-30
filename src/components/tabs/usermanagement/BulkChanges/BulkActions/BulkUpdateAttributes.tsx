@@ -62,8 +62,7 @@ const BulkUpdateAttributes = (props: BulkUpdateProps) => {
       setUpdatedAttributeValue("");
     }
   }, [selectedTemplates]);
-  console.log("selectedAttribute", selectedAttribute);
-  console.log("updatedAttributeValue", updatedAttributeValue);
+
   return (
     <UpdateWrapper>
       <Dropdown
