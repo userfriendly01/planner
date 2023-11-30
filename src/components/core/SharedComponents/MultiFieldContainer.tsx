@@ -101,7 +101,6 @@ const MultiFieldContainer = (
   };
 
   const handleOnEdit = (item: any, index: number) =>{
-    console.log("clicked");
     const newFormFields: Array<MultiFieldContainerFormProps> = [];
     formFields.forEach((field: MultiFieldContainerFormProps)=>{
       const newFormField = {
