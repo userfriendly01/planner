@@ -95,7 +95,7 @@ describe("<MultiFieldContainer />", ()=>{
       label2: 10
     }];
     renderComponent(value, simpleTestFormField);
-    const chipOnClick = FormControl.mock.calls[1][0].children.props.renderTags(["test1", "test2"],props)[0].props.onClick;
+    const chipOnClick = FormControl.mock.calls[1][0].children.props.renderTags(["test1", "test2"],props)[0].props.children.props.onClick;
     act(()=>{
       chipOnClick();
     });
@@ -106,7 +106,7 @@ describe("<MultiFieldContainer />", ()=>{
       label2: 10
     }];
     renderComponent(value, simpleTestFormField);
-    const chipOnDelete = FormControl.mock.calls[1][0].children.props.renderTags(["test1", "test2"],props)[0].props.onDelete;
+    const chipOnDelete = FormControl.mock.calls[1][0].children.props.renderTags(["test1", "test2"],props)[0].props.children.props.onDelete;
     act(()=>{
       chipOnDelete();
     });
@@ -160,7 +160,7 @@ describe("<MultiFieldContainer />", ()=>{
       ["Test007", "Test008"]
     ];
     renderComponent(value, simpleTestFormField);
-    const chipOnClick = FormControl.mock.calls[1][0].children.props.renderTags([["test1"], ["test2"]],props)[0].props.onClick;
+    const chipOnClick = FormControl.mock.calls[1][0].children.props.renderTags([["test1"], ["test2"]],props)[0].props.children.props.onClick;
     act(()=>{
       chipOnClick();
     });
@@ -174,7 +174,7 @@ describe("<MultiFieldContainer />", ()=>{
     const chipOnClick = FormControl.mock.calls[1][0].children.props.renderTags([{
       label1: "test",
       label2: "test2"
-    }],props)[0].props.onClick;
+    }],props)[0].props.children.props.onClick;
     act(()=>{
       chipOnClick();
     });
