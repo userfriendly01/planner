@@ -546,7 +546,7 @@ describe("<BulkUpdateAttributes />", () => {
           expect(Dropdown.mock.calls.length).toBe(4);
           expect(Dropdown.mock.calls[2][0].value).toBe(availableAttributes.ROUTING_TEAM);
           expect(Dropdown.mock.calls[3][0].value).toBe("");
-          expect(Dropdown.mock.calls[3][0].label).toBe("Routing Team");
+          expect(Dropdown.mock.calls[3][0].label).toBe("team");
         });
         describe("attribute value is updated to an invalid value", () => {
           describe("template is not already in the selected Templates list", () => {

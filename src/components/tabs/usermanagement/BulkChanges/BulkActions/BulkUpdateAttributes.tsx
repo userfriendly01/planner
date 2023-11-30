@@ -13,7 +13,6 @@ import {
 import React from "react";
 import { getE164Number } from "utils";
 import { Tooltip } from "@mui/material";
-import { RoutingTeamAttrDropDownOptions } from "../../OnboardNewUser/RoutingAttributes/RoutingAttributesDropDown";
 
 const BulkUpdateAttributes = (props: BulkUpdateProps) => {
   const {
@@ -83,11 +82,11 @@ const BulkUpdateAttributes = (props: BulkUpdateProps) => {
           margin: "10px 20px 0px 20px"
         }}
       />
-      { selectedAttribute.type === "string" && selectedAttribute.value === "team" ? (
+      { selectedAttribute.type === "dropdown list" &&
         <Dropdown
-          label="Routing Team"
+          label={selectedAttribute.label}
           value={updatedAttributeValue}
-          options={RoutingTeamAttrDropDownOptions}
+          options={selectedAttribute.options}
           updateValue={(event: any, option: any) => {
             setUpdatedAttributeValue(option?.value);
           }}
@@ -96,8 +95,9 @@ const BulkUpdateAttributes = (props: BulkUpdateProps) => {
             margin: "10px 20px 0px 20px"
           }}
         />
-      ) : selectedAttribute.type === "string" ?
-        (<Tooltip title={selectedAttribute.value === "sales_assoc_workers" ? "Comma separated list of nNumbers" : ""}>
+      }
+      { selectedAttribute.type === "string" &&
+        <Tooltip title={selectedAttribute.value === "sales_assoc_workers" ? "Comma separated list of nNumbers" : ""}>
           <div>
             <CustomInput
               label="Attribute Value"
@@ -110,7 +110,7 @@ const BulkUpdateAttributes = (props: BulkUpdateProps) => {
               }}
             />
           </div>
-        </Tooltip>) : null
+        </Tooltip>
       }
       { selectedAttribute.type === "number" &&
         <CustomInput
