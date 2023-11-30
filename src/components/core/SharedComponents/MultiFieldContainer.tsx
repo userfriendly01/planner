@@ -2,7 +2,8 @@ import React, {
   useState, useEffect
 } from "react";
 import {
-  Chip,FormControl,TextField
+  Autocomplete,
+  Chip,FormControl,ListItem,TextField, Tooltip
 } from "@mui/material";
 import { MultiFieldContainerModalView } from "./MultiFieldContainerModalView";
 
@@ -83,13 +84,14 @@ const MultiFieldContainer = (
   const [listItems, setListItems] = useState([]);
   const [multiFormFields, setMultiFormFields] = useState<Array<MultiFieldContainerFormProps>>(formFields);
   const [indexOf, setIndexOf] = useState<number>();
+  const spanRef = React.useRef();
 
   useEffect(()=>{
     setListItems(value);
     setIndexOf(value?.length);
   }, [value]);
-  const handleClick =(event: React.MouseEvent<HTMLDivElement>) => {
-    setAnchorEl(event.currentTarget);
+  const handleClick =() => {
+    setAnchorEl(spanRef.current);
     setModalOpen(!isModalOpen);
   };
   const handleOnClose =() => {
@@ -109,6 +111,7 @@ const MultiFieldContainer = (
     });
     setMultiFormFields(newFormFields);
     setIndexOf(index);
+    handleClick();
   };
 
   const handleOnSet = (formData: any, index: number) =>{
@@ -145,25 +148,32 @@ const MultiFieldContainer = (
   return (
     <>
       <FormControl sx={{ width: "calc(95%)" }} error={error} required={required}>
-        <TextField
-          variant="outlined"
-          label={label}
-          name={name}
-          type="button"
-          InputProps={{
-            startAdornment: listItems && listItems.map((item:any, index: number)=>(
-              <Chip
-                key={getTagKey(item, index)}
-                tabIndex={index}
-                label={getTagLabel(item, multiFormFields)}
-                onDelete={(event: any)=>handleOnDelete(index)}
-                onClick={(event: any)=>{
-                  handleOnEdit(item, index);
-                }}
-              />
+        <Autocomplete
+          clearIcon={false}
+          options={[]}
+          freeSolo
+          multiple
+          value = {listItems}
+          ref={spanRef}
+          renderTags={(value:any, props:any) =>
+            value.map((item:any, index:any) => (
+              <Tooltip key = {index} title={getTagLabel(item, multiFormFields)}>
+                <Chip
+                  key={getTagKey(item, index)}
+                  tabIndex={index}
+                  label={getTagLabel(item, multiFormFields)}
+                  {...props({ index })}
+                  clickable={true}
+                  onClick={()=>{
+                    handleOnEdit(item, index);
+                  }}
+                  onDelete={()=>handleOnDelete(index)}
+                />
+              </Tooltip>
             ))
-          }}
-          onClick={handleClick}
+          }
+          renderInput={params => <TextField label={label} {...params} />}
+          onHighlightChange={handleClick}
         />
       </FormControl>
       <MultiFieldContainerModalView

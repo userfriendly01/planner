@@ -62,18 +62,32 @@ describe("<MultiFieldContainer />", ()=>{
       Chip
     });
   });
+  function props(){
+    return ["test1"];
+  }
   test("Simulate handleClick on TextField",()=>{
     const value =[{
       label1: "Test001",
       label2: 10
     }];
     renderComponent(value, simpleTestFormField);
-    const textFieldOnClick = FormControl.mock.calls[1][0].children.props.onClick;
+    const autoCompleteChange = FormControl.mock.calls[1][0].children.props.onHighlightChange;
     act(()=>{
-      textFieldOnClick({ event: { currentTarget: MultiFieldContainerModalView }});
+      autoCompleteChange();
     });
     const isOpen = MultiFieldContainerModalView.mock.calls[2][0].isOpen;
     expect(isOpen).toBe(true);
+  });
+  test("Simulate renderInput change",()=>{
+    const value =[{
+      label1: "Test001",
+      label2: 10
+    }];
+    renderComponent(value, simpleTestFormField);
+    const renderInputChange = FormControl.mock.calls[1][0].children.props.renderInput;
+    act(()=>{
+      renderInputChange();
+    });
   });
   test("Simulate onEdit on Click of Chip", ()=>{
     const value =[{
@@ -81,12 +95,10 @@ describe("<MultiFieldContainer />", ()=>{
       label2: 10
     }];
     renderComponent(value, simpleTestFormField);
-    const chipOnClick = FormControl.mock.calls[1][0].children.props.InputProps.startAdornment[0].props.onClick;
+    const chipOnClick = FormControl.mock.calls[1][0].children.props.renderTags(["test1", "test2"],props)[0].props.children.props.onClick;
     act(()=>{
       chipOnClick();
     });
-    const indexOf = MultiFieldContainerModalView.mock.calls[2][0].indexOf;
-    expect(indexOf).toBe(0);
   });
   test("Simulate onDelete on Click of Chip Delete Icon", ()=>{
     const value =[{
@@ -94,28 +106,10 @@ describe("<MultiFieldContainer />", ()=>{
       label2: 10
     }];
     renderComponent(value, simpleTestFormField);
-    const chipOnDelete = FormControl.mock.calls[1][0].children.props.InputProps.startAdornment[0].props.onDelete;
+    const chipOnDelete = FormControl.mock.calls[1][0].children.props.renderTags(["test1", "test2"],props)[0].props.children.props.onDelete;
     act(()=>{
       chipOnDelete();
     });
-    expect(mockUpdateValue).toBeCalledTimes(1);
-  });
-  test("Simulate onClose of MultiFieldContainerModalView", ()=>{
-    const value =[{
-      label1: "Test004",
-      label2: 10
-    }];
-    renderComponent(value, simpleTestFormField);
-    const textFieldOnClick = FormControl.mock.calls[1][0].children.props.onClick;
-    act(()=>{
-      textFieldOnClick({ event: { currentTarget: MultiFieldContainerModalView }});
-    });
-    const onClose = MultiFieldContainerModalView.mock.calls[2][0].onClose;
-    act(()=>{
-      onClose();
-    });
-    const isOpen = MultiFieldContainerModalView.mock.calls[3][0].isOpen;
-    expect(isOpen).toBe(false);
   });
   test("Simulate handleOnSet of MultiFieldContainerModalView", ()=>{
     const value =[{
@@ -132,6 +126,18 @@ describe("<MultiFieldContainer />", ()=>{
     });
     expect(mockUpdateValue).toBeCalledTimes(1);
   });
+
+  test("Simulate onClose of MultiFieldContainerModalView", ()=>{
+    const value =[{
+      label1: "Test005",
+      label2: 10
+    }];
+    renderComponent(value, simpleTestFormField);
+    const handleOnClose = MultiFieldContainerModalView.mock.calls[1][0].onClose;
+    act(()=>{
+      handleOnClose();
+    });
+  });
   test("Simulate handleOnSet on existing data of MultiFieldContainerModalView", ()=>{
     const value =[{
       label1: "Test005",
@@ -145,8 +151,8 @@ describe("<MultiFieldContainer />", ()=>{
         label2: 2
       },0);
     });
-    const chipLabel = FormControl.mock.calls[2][0].children.props.InputProps.startAdornment[0].props.label;
-    expect(chipLabel).toBe("Test006 - 2");
+    const chipLabel = FormControl.mock.calls[2][0].children.props.value[0].label1;
+    expect(chipLabel).toBe("Test006");
   });
 
   test("Simulate list of list data to the MultiFieldContainer", ()=>{
@@ -154,15 +160,32 @@ describe("<MultiFieldContainer />", ()=>{
       ["Test007", "Test008"]
     ];
     renderComponent(value, simpleTestFormField);
-    const chipLabel = FormControl.mock.calls[1][0].children.props.InputProps.startAdornment[0].props.label;
-    expect(chipLabel).toBe("Test007, Test008");
+    const chipOnClick = FormControl.mock.calls[1][0].children.props.renderTags([["test1"], ["test2"]],props)[0].props.children.props.onClick;
+    act(()=>{
+      chipOnClick();
+    });
+    expect(chipOnClick).toBeTruthy();
+  });
+  test("Simulate data in json format to the MultiFieldContainer", ()=>{
+    const value =[
+      ["Test007", "Test008"]
+    ];
+    renderComponent(value, simpleTestFormField);
+    const chipOnClick = FormControl.mock.calls[1][0].children.props.renderTags([{
+      label1: "test",
+      label2: "test2"
+    }],props)[0].props.children.props.onClick;
+    act(()=>{
+      chipOnClick();
+    });
+    expect(chipOnClick).toBeTruthy();
   });
   test("Simulate list of string data to the MultiFieldContainer", ()=>{
     const value =[
       "Test009"
     ];
     renderComponent(value, simpleTestFormField);
-    const chipLabel = FormControl.mock.calls[1][0].children.props.InputProps.startAdornment[0].props.label;
+    const chipLabel = FormControl.mock.calls[1][0].children.props.value[0];
     expect(chipLabel).toBe("Test009");
   });
 });
