@@ -47,13 +47,14 @@ const processCreateTritonUser = async (row: any, state: AppState) => {
   logger.log("**** TRITON RECORD PROCESSING", row);
 
   const rowNumber = row.rowNumber;
-  const nNumber = state.userContext.pingIdentity?.sub;
+  const nNumber = state.userContext?.pingIdentity?.sub;
+
   try {
     const didFieldName = "Did User";
     const didField = cleanupField(row[didFieldName], "string");
     const didUser = isDidUser(didField, rowNumber);
     const body: any = {};
-    if(didUser) {
+    if (didUser) {
       body.attributes = row.attributes;
       body.activateEp = true;
       body.alternateDid = row.directDialNum;
@@ -84,7 +85,7 @@ const processCreateTritonUser = async (row: any, state: AppState) => {
     });
 
     return Promise.resolve(message);
-  } catch(error) {
+  } catch (error) {
     const errorMessage = `Failed to create Triton user for row ${rowNumber}. ${formatErrorMessage(error)}`;
 
     logger.error(errorMessage, {
@@ -101,12 +102,13 @@ const processCreateCalabrioUser = async (row: any, state: AppState) => {
   logger.log("****CALABRIO RECORD PROCESSING for", row);
 
   const rowNumber = row.rowNumber;
-  const nNumber = state.userContext.pingIdentity?.sub;
+  const nNumber = state.userContext?.pingIdentity?.sub;
+
   try {
     await checkConflictingCalabrioUsers(row, rowNumber, state.calabrioContext.users);
-    const existingTritonWorker = state.workerContext.workers.find((w:any) => w.attributes?.n_number && w.attributes.n_number === row.attributes.n_number);
+    const existingTritonWorker = state.workerContext.workers.find((w: any) => w.attributes?.n_number && w.attributes.n_number === row.attributes.n_number);
     const acdId = row.acdId || existingTritonWorker?.sid || undefined;
-    if(!acdId){
+    if (!acdId) {
       return rejectPromise(`Failed to create Calabrio user for row ${rowNumber}. Missing ACD Id, validate this user already exists in Triton`, rowNumber);
     }
     const body: any = {};
@@ -131,7 +133,7 @@ const processCreateCalabrioUser = async (row: any, state: AppState) => {
     });
 
     return Promise.resolve(message);
-  } catch(error) {
+  } catch (error) {
     const errorMessage = `Failed to create Calabrio user for row ${rowNumber}. ${formatErrorMessage(error)}`;
 
     logger.error(errorMessage, {
@@ -148,7 +150,7 @@ const processWFMCreateUser = async (row: any, state: AppState) => {
   logger.info("****WFM RECORD PROCESSING for", row);
 
   const rowNumber = row.rowNumber;
-  const nNumber = state.userContext.pingIdentity?.sub;
+  const nNumber = state.userContext?.pingIdentity?.sub;
 
   try {
     const hasPersonConflict = checkIfConflictingWFMPeople(row, state);
@@ -194,7 +196,7 @@ const processWFMCreateUser = async (row: any, state: AppState) => {
     // completely optional
     body.OptionalColumns = row.wfmOptionalColumns;
     const environment = state.userContext.pingIdentity.environment;
-    if(environment === "production"){
+    if (environment === "production") {
       const result = await createCalabrioWFMPerson(body);
       row.Id = result?.data?.PersonId;
 
@@ -216,7 +218,7 @@ const processWFMCreateUser = async (row: any, state: AppState) => {
 
       return Promise.resolve(message);
     }
-  } catch(error) {
+  } catch (error) {
     let errorMessage;
     if (error?.response?.data && error?.response?.data?.exception === "com.netflix.zuul.exception.ZuulException") {
       errorMessage = `A timeout occured while creating WFM Person ${row.attributes.emp_first_name} ${row.attributes.emp_last_name} for row ${rowNumber}. They may still have been successfully added to WFM. Please verify in WFM.`;
@@ -236,54 +238,53 @@ const processWFMCreateUser = async (row: any, state: AppState) => {
 
 const processCreateManager = async (row: any, state: AppState) => {
   logger.log("****MANAGER RECORD PROCESSING for", row);
-
   const rowNumber = row.rowNumber;
-  const nNumber = state.userContext.pingIdentity?.sub;
-
-  const managerNNumberFieldName = "Manager N Number";
-  const managerNNumberField = cleanupField(row[managerNNumberFieldName], "string");
-
-  // create new team
-  const isNewTeam = row.newTeam;
-  if (isNewTeam) {
-    const teamFieldName = "Calabrio Team";
-    const teamField = toProperCase(cleanupField(row[teamFieldName], "string"));
-
-    try {
-      const response: any = await createCalabrioTeam({
-        name: teamField,
-        parentGroupId: row.parentGroupId
-      });
-
-      const newTeamId = response.data.groupId;
-      row.groupId = newTeamId;
-
-      logger.info("Successfully added Calabrio Team", {
-        nNumber
-      });
-    } catch (error) {
-      const errorMessage = `Failed to create Team for row ${rowNumber}. ${formatErrorMessage(error)}`;
-
-      logger.error(errorMessage, {
-        error,
-        nNumber,
-        row
-      });
-
-      return rejectPromise(errorMessage, rowNumber);
-    }
-  }
-
-  // add manager
-  const body: any = {};
-
-  body.manager_first_nme = row.attributes.manager_first_name;
-  body.manager_last_nme = row.attributes.manager_last_name;
-  body.manager_n_num = managerNNumberField;
-  body.profile_id = row.attributes.profile_id;
-  body.calabrio_team_ids = JSON.stringify([row.groupId]);
+  const nNumber = state.userContext?.pingIdentity?.sub;
 
   try {
+    const managerNNumberFieldName = "Manager N Number";
+    const managerNNumberField = cleanupField(row[managerNNumberFieldName], "string");
+
+    // create new team
+    const isNewTeam = row.newTeam;
+    if (isNewTeam) {
+      const teamFieldName = "Calabrio Team";
+      const teamField = toProperCase(cleanupField(row[teamFieldName], "string"));
+
+      try {
+        const response: any = await createCalabrioTeam({
+          name: teamField,
+          parentGroupId: row.parentGroupId
+        });
+
+        const newTeamId = response.data.groupId;
+        row.groupId = newTeamId;
+
+        logger.info("Successfully added Calabrio Team", {
+          nNumber
+        });
+      } catch (error) {
+        const errorMessage = `Failed to create Team for row ${rowNumber}. ${formatErrorMessage(error)}`;
+
+        logger.error(errorMessage, {
+          error,
+          nNumber,
+          row
+        });
+
+        return rejectPromise(errorMessage, rowNumber);
+      }
+    }
+
+    // add manager
+    const body: any = {};
+
+    body.manager_first_nme = row.attributes.manager_first_name;
+    body.manager_last_nme = row.attributes.manager_last_name;
+    body.manager_n_num = managerNNumberField;
+    body.profile_id = row.attributes.profile_id;
+    body.calabrio_team_ids = JSON.stringify([row.groupId]);
+
     await addManager(body);
 
     const message = `Manager created for ${managerNNumberField} for row ${rowNumber}`;
@@ -309,55 +310,56 @@ const processCreateManager = async (row: any, state: AppState) => {
 
 const processUpdateWorkerAttribute = async (row: any, template: Template, state: AppState) => {
   const rowNumber = row.rowNumber;
-  const nNumber = state.userContext.pingIdentity?.sub;
-  const key = template.data.key;
-  const value = template.data.value;
-  const location = template.data.location;
-  const newAttribute = { [key]: value };
-  let body: any = {};
-
-  if(key === "profile_id"){
-    body[location] = {
-      agent_attribute_1: parseInt(value),
-      profile_id: parseInt(value)
-    };
-    const profile = getTargetProfile(state.profileContext.profiles, value);
-    body.operatingUnitSid = profile?.operating_unit_sid;
-  } else if(location){
-    if(typeof location === "string"){
-      body[location] = newAttribute;
-    } else {
-      if (key === "sales_assoc_workers") {
-        const salesAssocWorkersArray = value.split(",");
-        newAttribute[key] = salesAssocWorkersArray.map((nNum: string) => nNum.trim());
-      }
-
-      //Allowing for addition of routing object nested within attributes on update.  Will only allow for 2 items being added (attributes and a nested object)
-      const parentObject: any = row[location[0]] || {}; //attributes
-      const nestedObject: any = row[location[0]] && row[location[0]][location[1]] || {};
-      try {
-        body[location[0]] = {
-          ...parentObject,
-          [location[1]]: {
-            ...nestedObject,
-            ...newAttribute
-          }
-        };
-      } catch(err){
-        return rejectPromise(`Error thrown when location is array ${err.message}`, rowNumber);
-      }
-    }
-  } else {
-    body = newAttribute;
-  }
-
-  logger.log("**** UPDATE WORKER ATTRIBUTE RECORD PROCESSING", {
-    row,
-    body,
-    value
-  });
+  const nNumber = state.userContext?.pingIdentity?.sub;
 
   try {
+    const key = template.data.key;
+    const value = template.data.value;
+    const location = template.data.location;
+    const newAttribute = { [key]: value };
+    let body: any = {};
+
+    if (key === "profile_id") {
+      body[location] = {
+        agent_attribute_1: parseInt(value),
+        profile_id: parseInt(value)
+      };
+      const profile = getTargetProfile(state.profileContext.profiles, value);
+      body.operatingUnitSid = profile?.operating_unit_sid;
+    } else if (location) {
+      if (typeof location === "string") {
+        body[location] = newAttribute;
+      } else {
+        if (key === "sales_assoc_workers") {
+          const salesAssocWorkersArray = value.split(",");
+          newAttribute[key] = salesAssocWorkersArray.map((nNum: string) => nNum.trim());
+        }
+
+        //Allowing for addition of routing object nested within attributes on update.  Will only allow for 2 items being added (attributes and a nested object)
+        const parentObject: any = row[location[0]] || {}; //attributes
+        const nestedObject: any = row[location[0]] && row[location[0]][location[1]] || {};
+        try {
+          body[location[0]] = {
+            ...parentObject,
+            [location[1]]: {
+              ...nestedObject,
+              ...newAttribute
+            }
+          };
+        } catch (err) {
+          return rejectPromise(`Error thrown when location is array ${err.message}`, rowNumber);
+        }
+      }
+    } else {
+      body = newAttribute;
+    }
+
+    logger.log("**** UPDATE WORKER ATTRIBUTE RECORD PROCESSING", {
+      row,
+      body,
+      value
+    });
+
     await updateUser(row.workerSid, body);
 
     const message = `${row.workerSid} - Worker Attributes updated for row ${rowNumber}`;
@@ -368,7 +370,7 @@ const processUpdateWorkerAttribute = async (row: any, template: Template, state:
     });
 
     return Promise.resolve(message);
-  } catch(error){
+  } catch (error) {
     const errorMessage = `Failed to update Triton Worker Attributes for row ${rowNumber}. ${formatErrorMessage(error)}`;
 
     logger.error(errorMessage, {
@@ -383,7 +385,7 @@ const processUpdateWorkerAttribute = async (row: any, template: Template, state:
 
 const processUpdateManager = async (row: any, template: Template, state: AppState) => {
   const rowNumber = row.rowNumber;
-  const nNumber = state.userContext.pingIdentity?.sub;
+  const nNumber = state.userContext?.pingIdentity?.sub;
 
   try {
     const userNNumber = row.attributes.n_number;
@@ -394,8 +396,8 @@ const processUpdateManager = async (row: any, template: Template, state: AppStat
     let calabrioBody: any = {};
     let calabrioFunction: any = () => Promise.resolve("Bypassing Calabrio Team Change, not selected");
 
-    const managerObject = state.managerContext.managers.find((m:any) => m.manager_n_number && cleanupField(m.manager_n_number, "string") === managerNNumber);
-    if(!managerObject){
+    const managerObject = state.managerContext.managers.find((m: any) => m.manager_n_number && cleanupField(m.manager_n_number, "string") === managerNNumber);
+    if (!managerObject) {
       return rejectPromise(`${managerNNumber} is not a valid manager nNumber for row ${rowNumber}`, rowNumber);
     } else {
       tritonBody.attributes = {
@@ -408,12 +410,12 @@ const processUpdateManager = async (row: any, template: Template, state: AppStat
 
     const userTritonRecord = state.workerContext.workers.find((w: any) => w.attributes?.n_number && w.attributes?.n_number === userNNumber);
     const userCalabrioRecord = state.calabrioContext.users.find((u: any) => cleanupField(u?.acdId, "string") === cleanupField(userTritonRecord?.sid, "string") || cleanupField(u?.email, "string") === cleanupField(userTritonRecord?.attributes?.email, "string"));
-    if(userCalabrioRecord){
+    if (userCalabrioRecord) {
       let fetchedCalabrioUser;
       try {
         const res = await getCalabrioUser(userCalabrioRecord.id);
         fetchedCalabrioUser = res.data;
-      } catch(error){
+      } catch (error) {
         const errorMessage = `No updates made, Failed to fetch calabrio user for row ${rowNumber}. ${formatErrorMessage(error)}`;
 
         logger.error(
@@ -444,7 +446,7 @@ const processUpdateManager = async (row: any, template: Template, state: AppStat
 
     const errors: string[] = [];
     results.forEach((p: any) => p.status === "rejected" && errors.push(p.reason));
-    if(errors.length > 0){
+    if (errors.length > 0) {
       return rejectPromise(`Errors thrown for row ${rowNumber}. ${errors.toString()}`, rowNumber);
     }
 
@@ -456,7 +458,7 @@ const processUpdateManager = async (row: any, template: Template, state: AppStat
     });
 
     return Promise.resolve(message);
-  } catch(error){
+  } catch (error) {
     const errorMessage = `Failed to update Manager and Calabrio Team for user for row ${rowNumber}. ${formatErrorMessage(error)}`;
 
     logger.error(errorMessage, {
@@ -471,56 +473,58 @@ const processUpdateManager = async (row: any, template: Template, state: AppStat
 
 const processUpdateDefaultSkills = async (row: any, template: Template, state: AppState) => {
   const rowNumber = row.rowNumber;
-  const nNumber = state.userContext.pingIdentity?.sub;
-  const workerSid = row.workerSid;
-  const value = template.data.value;
-  const option = template.data.option;
-  const body: any = {};
-  let updatedDefaultSkills: any = {};
-
-  if (option.value === "OVERRIDE"){
-    updatedDefaultSkills = value;
-  } else if ( option.value === "ADD"){
-    const currentSkillLevels = row.attributes.default_skills.levels;
-    const currentSkills = row.attributes.default_skills.skills;
-
-    const newSkills = value.skills.filter( (s: any) => !currentSkills.includes(s));
-    let newSkillLevels: any = {
-      ...currentSkillLevels
-    };
-
-    if (value.levels) {
-      newSkillLevels = {
-        ...newSkillLevels,
-        ...value.levels
-      };
-    }
-
-    updatedDefaultSkills = {
-      levels: newSkillLevels,
-      skills: [...currentSkills, ...newSkills]
-    };
-  } else if(option.value === "DELETE"){
-    const skillToDelete = value.skills[0];
-    const currentSkills = row.attributes.default_skills;
-
-    updatedDefaultSkills.skills = currentSkills.skills.filter( (s: any) => s !== skillToDelete );
-    updatedDefaultSkills.levels = {};
-    for( const skillLevel in currentSkills.levels){
-      if(skillLevel !== skillToDelete){
-        updatedDefaultSkills.levels[skillLevel] = currentSkills.levels[skillLevel];
-      }
-    }
-  }
-
-  body.attributes = { "default_skills": updatedDefaultSkills };
-
-  logger.log("**** UPDATE DEFAULT SKILLS RECORD PROCESSING", {
-    row,
-    body
-  });
+  const nNumber = state.userContext?.pingIdentity?.sub;
 
   try {
+    const workerSid = row.workerSid;
+    const value = template.data.value;
+    const option = template.data.option;
+    const body: any = {};
+    let updatedDefaultSkills: any = {};
+
+
+    if (option.value === "OVERRIDE") {
+      updatedDefaultSkills = value;
+    } else if (option.value === "ADD") {
+      const currentSkillLevels = row.attributes.default_skills.levels;
+      const currentSkills = row.attributes.default_skills.skills;
+
+      const newSkills = value.skills.filter((s: any) => !currentSkills.includes(s));
+      let newSkillLevels: any = {
+        ...currentSkillLevels
+      };
+
+      if (value.levels) {
+        newSkillLevels = {
+          ...newSkillLevels,
+          ...value.levels
+        };
+      }
+
+      updatedDefaultSkills = {
+        levels: newSkillLevels,
+        skills: [...currentSkills, ...newSkills]
+      };
+    } else if (option.value === "DELETE") {
+      const skillToDelete = value.skills[0];
+      const currentSkills = row.attributes.default_skills;
+
+      updatedDefaultSkills.skills = currentSkills.skills.filter((s: any) => s !== skillToDelete);
+      updatedDefaultSkills.levels = {};
+      for (const skillLevel in currentSkills.levels) {
+        if (skillLevel !== skillToDelete) {
+          updatedDefaultSkills.levels[skillLevel] = currentSkills.levels[skillLevel];
+        }
+      }
+    }
+
+    body.attributes = { "default_skills": updatedDefaultSkills };
+
+    logger.log("**** UPDATE DEFAULT SKILLS RECORD PROCESSING", {
+      row,
+      body
+    });
+
     await updateUser(workerSid, body);
 
     const message = `${workerSid} - Default Skills updated for row ${rowNumber}`;
@@ -531,7 +535,7 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: A
     });
 
     return Promise.resolve(message);
-  } catch(error){
+  } catch (error) {
     const errorMessage = `Failed to update Default Skills for row ${rowNumber}. ${formatErrorMessage(error)}`;
 
     logger.error(errorMessage, {
@@ -544,38 +548,39 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: A
   }
 };
 
-export const processUpdateCallerStates =  async (row: any, template: Template, state: AppState) => {
+const processUpdateCallerStates = async (row: any, template: Template, state: AppState) => {
   const rowNumber = row.rowNumber;
-  const nNumber = state.userContext.pingIdentity?.sub;
+  const nNumber = state.userContext?.pingIdentity?.sub;
   const workerSid = row.workerSid;
-  const existingRouting = row.attributes.routing;
-  const selectedCallerStates: [] = template.data.value;
-  const option = template.data.option;
-
-  const currentCallerStates = row.attributes.routing?.callerStates || [];
-  let combinedCallerStates;
-
-  if (option.value === "ADD") {
-    const newCallerStates = selectedCallerStates.map((item:any) => item.value);
-    combinedCallerStates = [...currentCallerStates, ...newCallerStates].sort();
-  } else if (option.value === "DELETE") {
-    const deleteTheseStates = selectedCallerStates.map((item:any) => item.value);
-    combinedCallerStates = currentCallerStates.filter((state:any) => !deleteTheseStates.includes(state));
-  } else if (option.value === "OVERRIDE") {
-    combinedCallerStates = selectedCallerStates.map((item:any) => item.value);
-  }
-  const finalCallerStates = [...new Set(combinedCallerStates)]; // Remove duplicate elements
-
-  const body = {
-    attributes: {
-      routing: {
-        ...existingRouting,
-        callerStates: finalCallerStates.sort() // It's only polite to keep them in order
-      }
-    }
-  };
 
   try {
+    const existingRouting = row.attributes.routing;
+    const selectedCallerStates: [] = template.data.value;
+    const option = template.data.option;
+
+    const currentCallerStates = row.attributes.routing?.callerStates || [];
+    let combinedCallerStates;
+
+    if (option.value === "ADD") {
+      const newCallerStates = selectedCallerStates.map((item: any) => item.value);
+      combinedCallerStates = [...currentCallerStates, ...newCallerStates].sort();
+    } else if (option.value === "DELETE") {
+      const deleteTheseStates = selectedCallerStates.map((item: any) => item.value);
+      combinedCallerStates = currentCallerStates.filter((state: any) => !deleteTheseStates.includes(state));
+    } else if (option.value === "OVERRIDE") {
+      combinedCallerStates = selectedCallerStates.map((item: any) => item.value);
+    }
+    const finalCallerStates = [...new Set(combinedCallerStates)]; // Remove duplicate elements
+
+    const body = {
+      attributes: {
+        routing: {
+          ...existingRouting,
+          callerStates: finalCallerStates.sort() // It's only polite to keep them in order
+        }
+      }
+    };
+
     await updateUser(workerSid, body);
 
     logger.info("Caller States updated", {
@@ -584,7 +589,7 @@ export const processUpdateCallerStates =  async (row: any, template: Template, s
     });
 
     return Promise.resolve(`${workerSid} - Caller States updated for row ${rowNumber}`);
-  } catch(error){
+  } catch (error) {
     const errorMessage = `Failed to update Caller States for row ${rowNumber}. ${formatErrorMessage(error)}`;
     logger.error(errorMessage, {
       error,
