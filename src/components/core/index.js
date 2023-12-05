@@ -7,6 +7,7 @@ export { default as NotificationModal } from "./NotificationModal/NotificationMo
 export { default as StyledButton } from "./StyledButton/StyledButton";
 export { default as CustomToast } from "./CustomToast/CustomToast";
 export { default as ComponentControl } from "./SharedComponents/ComponentControl";
+export { default  as ModalOnHover } from "./SharedComponents/ModalOnHover";
 export { default as NNumberInput } from "./NNumberInput/NNumberInput";
 export { default as SearchBox } from "./SearchBox/SearchBox";
 export * from "./PaperContainer/PaperContainer";

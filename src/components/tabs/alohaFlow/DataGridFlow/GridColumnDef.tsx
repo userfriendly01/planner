@@ -4,6 +4,7 @@ import React from "react";
 import {
   Box, Chip, Switch
 } from "@mui/material";
+import { ModalOnHover } from "components";
 export const FlowGridColumnDef: GridColDef[] = [
   {
     headerName: "Dialed",
@@ -271,20 +272,31 @@ export const FlowGridColumnDef: GridColDef[] = [
     headerName: "Office Numbers",
     field: "officeNumbers",
     sortable: true,
-    width: 220,
+    width: 110,
     align: "left",
     valueGetter: params => params.row.content?.officeNumbers || [],
     renderCell: (params: any) =>(
-      <div>
-        {
-          params.row.content?.officeNumbers && params.row.content?.officeNumbers.map((item: string, index: number)=>(
-            <Chip
-              key={`officeNumbers-${params.row.pkey}-${index}`}
-              tabIndex={-1}
-              label={item}
-            />
-          ))}
-      </div>
+      params.row.content?.officeNumbers && params.row.content?.officeNumbers.length===1?(
+        <Chip
+          key={`officeNumbers-${params.row.pkey}-${0}`}
+          tabIndex={-1}
+          label={params.row.content?.officeNumbers[0]}
+        />
+      ):
+        params.row.content?.officeNumbers && params.row.content?.officeNumbers.length!==0?(
+          <ModalOnHover label="...">
+            <Box sx={{ padding: "10px" }}>
+              {
+                params.row.content?.officeNumbers && params.row.content?.officeNumbers.map((item: string, index: number)=>(
+                  <Chip
+                    key={`officeNumbers-${params.row.pkey}-${index}`}
+                    tabIndex={-1}
+                    label={item}
+                  />
+                ))}
+            </Box>
+          </ModalOnHover>
+        ): ""
     )
   },
   {
