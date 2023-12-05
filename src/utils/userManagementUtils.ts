@@ -13,9 +13,12 @@ import {
   formatE164PhoneNumber,
   removeNonNumericCharacters
 } from "./formatNumberUtils";
-import { fetchUser as fetchUserServiceCall } from "services";
-import { getWfmPeople } from "./calabrioUtils";
+import {
+  fetchUser as fetchUserServiceCall,
+  getWfmUserByNNumber
+} from "services";
 import { logger } from "./logger";
+import { CalabrioUser } from "components";
 
 export const isUnpopulatedField = (f: any) => (!f && f !== false && f !== 0) || f?.length === 0 || (typeof f === "object" && JSON.stringify(f) === JSON.stringify({}));
 
@@ -223,6 +226,20 @@ export const findMatchingWorker = (sid: string, nNumber: string, email: string, 
   return matchingWorker;
 };
 
+export const findExistingWFMUser = async (nNumber: string): Promise<CalabrioUser> => {
+  try {
+    const wfmUserRes = await getWfmUserByNNumber(nNumber);
+    if (wfmUserRes?.data?.Result.length > 0) {
+      const wfmUser: CalabrioUser = wfmUserRes.data.Result[0];
+      return wfmUser;
+    } else {
+      return null;
+    }
+  } catch (err) {
+    return null;
+  }
+}
+
 export const identifyUserProfiles = async (form: UserFormState, setForm: any, state: AppState) => {
   const primarySystem = form.triton.userFound && "triton" || form.calabrio_qm.userFound && "calabrio_qm" || form.calabrio_wfm.userFound && "calabrio_wfm";
   let nNumberObject: any = {
@@ -231,7 +248,6 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
   };
   const tritonWorkers = state.workerContext.workers;
   const calabrioQmUsers = state.calabrioContext.users;
-  const calabrioWfmUsers = getWfmPeople(state);
   let tritonWorker: Worker = null;
   let calabrioQmUser = null;
   let calabrioWfmUser = null;
@@ -246,7 +262,7 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
     const acdId = form.triton.sid;
     const nNumber = form.nNumber.value || form.triton.attributes?.n_number;
     const email = form.nNumber.nNumberFetchedUser?.email || form.triton.attributes?.email;
-    calabrioWfmUser = findMatchingWorker(acdId, nNumber, email, calabrioWfmUsers);
+    calabrioWfmUser = await findExistingWFMUser(nNumber);
     calabrioQmUser = findMatchingWorker(acdId, nNumber, email, calabrioQmUsers);
   } else if (primarySystem === "calabrio_qm") {
     //This condition wont be in play until the calabrio qm table is in place

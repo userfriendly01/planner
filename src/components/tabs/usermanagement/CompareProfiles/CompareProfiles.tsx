@@ -148,9 +148,9 @@ const CompareProfiles = () => {
         const wfmUserPromise = isProduction ? getWfmUserByNNumber(nNumberDetails.nNumber) : Promise.resolve({ data: [] });
         const calabrioProfilesPromise = getQmUserProfiles(workerSid, nNumberDetails.nNumber, email);
 
-        const [wfmResponse, calabrioProfilesResponse] = await Promise.all([wfmUserPromise, calabrioProfilesPromise]);
+        const [wfmResponse, calabrioProfilesResponse]: [any, any] = await Promise.all([wfmUserPromise, calabrioProfilesPromise]);
 
-        const wfmProfiles = wfmResponse?.data?.Result || [];
+        const wfmProfiles: any[] = wfmResponse?.data?.Result || [];
         if (wfmProfiles.length === 1) {
           setCalabrioWFMProfiles(wfmProfiles)
         } else if (wfmProfiles.length > 1) {

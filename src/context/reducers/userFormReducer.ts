@@ -684,7 +684,6 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
           });
         }
       });
-
       user.PersonSkills?.forEach((us: any) => {
         const availableSkill = getWfmOptions(appState)?.Skills?.find((s: any) => s.Id === us.SkillId);
         if (availableSkill) {

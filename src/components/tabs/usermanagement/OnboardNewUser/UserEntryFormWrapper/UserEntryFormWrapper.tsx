@@ -51,8 +51,8 @@ const UserEntryForm = () => {
   const profiles = state.profileContext.profiles;
   const offices = state.officeContext.offices;
 
-  const [ forwardToToggle, setForwardToToggle ] = React.useState(false);
-  const [ missingFields, setMissingFields ] = React.useState([]);
+  const [forwardToToggle, setForwardToToggle] = React.useState(false);
+  const [missingFields, setMissingFields] = React.useState([]);
   const [loading, updateLoading] = React.useState<LoadingState>({
     lookupUser: false,
     overlayMessage: "",
@@ -61,10 +61,10 @@ const UserEntryForm = () => {
   });
 
   React.useEffect(() => {
-    if(form.formMode === formModes.INSERT){
+    if (form.formMode === formModes.INSERT) {
       const workerFound = workers.find((w: Worker) => w.attributes?.n_number?.toLowerCase() === form.nNumber.value?.toLowerCase());
       const duplicateTritonMessage = "This user already seems to have a Triton Record. Please cancel out of this form and edit their worker instead.";
-      if(workerFound){
+      if (workerFound) {
         setForm({
           type: userFormActions.SET_DISCREPANCIES,
           payload: {
@@ -74,7 +74,7 @@ const UserEntryForm = () => {
         });
       } else {
         const discrepancyListed = form.discrepancies.find((d: any) => d.message === duplicateTritonMessage);
-        if(discrepancyListed) {
+        if (discrepancyListed) {
           setForm({
             type: userFormActions.CLEAR_DISCREPANCY,
             payload: duplicateTritonMessage
@@ -85,7 +85,7 @@ const UserEntryForm = () => {
   }, [form.nNumber.nNumberFetchedUser]);
 
   React.useEffect(() => {
-    if(form.formMode === formModes.INSERT){
+    if (form.formMode === formModes.INSERT) {
       setForm({
         type: userFormActions.UPDATE_USER_FOUND,
         payload: {
@@ -116,6 +116,7 @@ const UserEntryForm = () => {
   };
 
   const handleCheckbox = (checked: boolean, system: string) => {
+    console.log("We should be setting to false here", checked);
     setForm({
       type: userFormActions.UPDATE_USER_FOUND,
       payload: {
@@ -138,11 +139,11 @@ const UserEntryForm = () => {
             });
           }}
         /> : null}
-      { form.formMode === formModes.INSERT && <Header1>Onboard New User</Header1> }
-      { form.formMode === formModes.UPDATE && <Header1>Edit User</Header1> }
-      { form.formMode === formModes.DELETE && <Header1>Deactivate User</Header1> }
-      { form.formMode !== formModes.INSERT && tritonWorker && <Header2>{`${tritonWorker?.attributes.emp_first_name} ${tritonWorker?.attributes.emp_last_name}`}</Header2> }
-      { form.formMode === formModes.DELETE &&
+      {form.formMode === formModes.INSERT && <Header1>Onboard New User</Header1>}
+      {form.formMode === formModes.UPDATE && <Header1>Edit User</Header1>}
+      {form.formMode === formModes.DELETE && <Header1>Deactivate User</Header1>}
+      {form.formMode !== formModes.INSERT && tritonWorker && <Header2>{`${tritonWorker?.attributes.emp_first_name} ${tritonWorker?.attributes.emp_last_name}`}</Header2>}
+      {form.formMode === formModes.DELETE &&
         <DeleteTritonUser
           handleClose={handleResetForm}
           loading={loading}
@@ -154,7 +155,7 @@ const UserEntryForm = () => {
           ? <DiscrepancyContainer>
             <Header4>Discrepencies have been found for this worker. They will be corrected when you hit 'Save User' unless otherwise specified </Header4>
             {
-              form.discrepancies.map((d:any, index: number) => {
+              form.discrepancies.map((d: any, index: number) => {
                 return (
                   <Text key={index}>{d.message}</Text>
                 );
@@ -163,7 +164,7 @@ const UserEntryForm = () => {
           </DiscrepancyContainer>
           : null
       }
-      { form.formMode === formModes.UPDATE && !tritonWorker &&
+      {form.formMode === formModes.UPDATE && !tritonWorker &&
         <>
           <StyledDivider />
           <h4>Edit WFM is not yet supported. To edit Triton or Calabrio QM profiles, please navigate to the worker through the Triton table. </h4>
@@ -172,7 +173,7 @@ const UserEntryForm = () => {
       <StyledDivider />
       <HeaderRow>
         <h2>Triton User Settings</h2>
-        { form.formMode !== formModes.DELETE &&
+        {form.formMode !== formModes.DELETE &&
           <Checkbox
             disabled={form.triton.userFound || (form.formMode === formModes.UPDATE && !tritonWorker)}
             checked={form.triton.userFound}
@@ -180,7 +181,7 @@ const UserEntryForm = () => {
           />
         }
       </HeaderRow>
-      { form.triton.userFound &&
+      {form.triton.userFound &&
         <BasicFormInfo
           skills={skills}
           worker={tritonWorker}
@@ -194,7 +195,7 @@ const UserEntryForm = () => {
       <StyledDivider />
       <HeaderRow>
         <h2>Calabrio Quality Management User Settings</h2>
-        { form.formMode !== formModes.DELETE &&
+        {form.formMode !== formModes.DELETE &&
           <Checkbox
             disabled={form.calabrio_qm.userFound || (form.formMode === formModes.UPDATE && !tritonWorker)}
             checked={form.calabrio_qm.userFound}
@@ -202,34 +203,34 @@ const UserEntryForm = () => {
           />
         }
       </HeaderRow>
-      { form.calabrio_qm.userFound && <CallRecordingForm
+      {form.calabrio_qm.userFound && <CallRecordingForm
         twilioWorker={tritonWorker}
         missingFields={missingFields}
-      /> }
+      />}
       <StyledDivider />
       <HeaderRow>
         <h2>Calabrio Work Force Management User Settings</h2>
-        { form.formMode !== formModes.DELETE &&
+        {form.formMode !== formModes.DELETE &&
           <Checkbox
             checked={form.calabrio_wfm.userFound}
             onChange={(event: any) => handleCheckbox(event.target.checked, "calabrio_wfm")}
           />
         }
       </HeaderRow>
-      { form.calabrio_wfm.userFound &&
+      {form.calabrio_wfm.userFound &&
         <WfmForm
           missingFields={missingFields}
           setMissingFields={setMissingFields}
         />
       }
-      { form.formMode === formModes.UPDATE && tritonWorker && missingFields.length > 0 && form.calabrio_wfm.userFound &&
+      {form.formMode === formModes.UPDATE && tritonWorker && missingFields.length > 0 && form.calabrio_wfm.userFound &&
         <>
           <StyledDivider />
           <h4>Edit WFM is not yet supported. If there are discrepencies in your WFM record, uncheck the wfm section to continue your edits. Your WFM record will remain unchanged </h4>
         </>
       }
       <StyledDivider />
-      { form.formMode !== formModes.DELETE && <UserFormButtons
+      {form.formMode !== formModes.DELETE && <UserFormButtons
         setMissingFields={setMissingFields}
         forwardToToggle={forwardToToggle}
         handleClose={handleResetForm}
