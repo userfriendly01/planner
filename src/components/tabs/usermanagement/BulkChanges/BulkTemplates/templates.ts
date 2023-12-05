@@ -486,10 +486,10 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: A
     if (option.value === "OVERRIDE") {
       updatedDefaultSkills = value;
     } else if (option.value === "ADD") {
-      const currentSkillLevels = row.attributes.default_skills.levels;
-      const currentSkills = row.attributes.default_skills.skills;
+      const currentSkillLevels = row.attributes?.default_skills?.levels || {};
+      const currentSkills = row.attributes?.default_skills?.skills || [];
 
-      const newSkills = value.skills.filter((s: any) => !currentSkills.includes(s));
+      const newSkills = value.skills?.filter((s: any) => !currentSkills.includes(s));
       let newSkillLevels: any = {
         ...currentSkillLevels
       };
@@ -507,13 +507,15 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: A
       };
     } else if (option.value === "DELETE") {
       const skillToDelete = value.skills[0];
-      const currentSkills = row.attributes.default_skills;
+      const currentSkills = row.attributes?.default_skills || {};
 
-      updatedDefaultSkills.skills = currentSkills.skills.filter((s: any) => s !== skillToDelete);
+      updatedDefaultSkills.skills = currentSkills.skills?.filter((s: any) => s !== skillToDelete);
       updatedDefaultSkills.levels = {};
-      for (const skillLevel in currentSkills.levels) {
-        if (skillLevel !== skillToDelete) {
-          updatedDefaultSkills.levels[skillLevel] = currentSkills.levels[skillLevel];
+      if (currentSkills.levels) {
+        for (const skillLevel in currentSkills.levels) {
+          if (skillLevel !== skillToDelete) {
+            updatedDefaultSkills.levels[skillLevel] = currentSkills.levels[skillLevel];
+          }
         }
       }
     }
