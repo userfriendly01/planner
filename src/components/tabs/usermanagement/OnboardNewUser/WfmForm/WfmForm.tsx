@@ -86,27 +86,6 @@ const WfmForm = (props: WfmFormProps) => {
     }
   }, [form.calabrio_wfm.userFound]);
 
-  const checkForWfmWorker = async () => {
-    try {
-      const wfmUserRes = await getWfmUserByNNumber(form.nNumber.value);
-      if (wfmUserRes?.data?.Result.length > 0) {
-        const wfmUser: CalabrioUser = wfmUserRes.data.Result[0];
-        setForm({
-          type: "SET_UPDATE_WFM_FORM_STATE",
-          payload: {
-            formMode: form.formMode,
-            user: wfmUser,
-            state
-          }
-        });
-      }
-      setStatus(ModalOverlayStatuses.SUCCESS);
-    } catch (err) {
-      console.error("Error thrown fetching WFM user", err);
-      setStatus(ModalOverlayStatuses.SUCCESS);
-    }
-  };
-
   React.useEffect(() => {
     setMissingFields(isWfmUserValid(form));
   }, [form.calabrio_wfm]);
@@ -159,6 +138,27 @@ const WfmForm = (props: WfmFormProps) => {
       });
     }
   }, [form.nNumber.nNumberFetchedUser]);
+
+  const checkForWfmWorker = async () => {
+    try {
+      const wfmUserRes = await getWfmUserByNNumber(form.nNumber.value);
+      if (wfmUserRes?.data?.Result.length > 0) {
+        const wfmUser: CalabrioUser = wfmUserRes.data.Result[0];
+        setForm({
+          type: "SET_UPDATE_WFM_FORM_STATE",
+          payload: {
+            formMode: form.formMode,
+            user: wfmUser,
+            state
+          }
+        });
+      }
+      // setStatus(ModalOverlayStatuses.SUCCESS);
+    } catch (err) {
+      console.error("Error thrown fetching WFM user", err);
+      // setStatus(ModalOverlayStatuses.SUCCESS);
+    }
+  };
 
   const generateDropdownOptionArray = (optionsArray: any[]) => {
     if (optionsArray) {

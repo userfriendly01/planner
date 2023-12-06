@@ -94,6 +94,7 @@ jest.mock("services", () => ({
   getWfmBusinessUnits: jest.fn(),
   getWfmOrg: jest.fn(),
   getWfmOptions: jest.fn(),
+  getWfmUserByNNumber: jest.fn(),
   insertDirectory: jest.fn(),
   queryFlowData: jest.fn(),
   queryRoutingData: jest.fn(),
