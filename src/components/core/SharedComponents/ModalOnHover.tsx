@@ -3,9 +3,13 @@ import {
   Chip, Popover
 } from "@mui/material";
 
+interface MouseOverPopoverProps{
+    children: React.ReactElement;
+    label: string;
+}
 export default function MouseOverPopover({
   children, label
-}: {children: React.ReactElement, label: string}): JSX.Element {
+}: MouseOverPopoverProps): JSX.Element {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 
   const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
