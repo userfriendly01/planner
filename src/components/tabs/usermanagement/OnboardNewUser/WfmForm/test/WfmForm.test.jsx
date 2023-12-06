@@ -227,9 +227,23 @@ describe("<WfmForm />", () => {
         });
       });
       describe("form.calabrio_wfm.Id is not null", () => {
-
+        test("should not call getWfmUserByNNumber", async () => {
+          useFormState.mockReturnValue({
+            ...formState,
+            calabrio_wfm: {
+              ...formState.calabrio_wfm,
+              Id: "32164856"
+            }
+          });
+          render(
+            <WfmForm missingFields={[]} setMissingFields={mockSetMissingFields} />
+          );
+          await waitFor(() => {
+            expect(getWfmUserByNNumber).toHaveBeenCalledTimes(0);
+            expect(mockSetForm).toHaveBeenCalledTimes(1);
+          });
+        });
       });
-
     });
     describe("business units fail", () => {
       test("should render failed message", async () => {
