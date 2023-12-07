@@ -63,6 +63,30 @@ describe("<RoutingGridColumnDef />", () => {
       }));
       expect(renderedCell.findByDisplayValue("Aloha-30")).toBeTruthy();
     });
+    it("occupancyCheck Multi values", () => {
+      const renderedCell = render(RoutingGridColumnDef[16].renderCell({
+        row: {
+          occupancyCheck: [{
+            team: "Aloha",
+            percentage: 30
+          },
+          {
+            team: "test",
+            percentage: 100
+
+          }]
+        }
+      }));
+      expect(renderedCell.findByDisplayValue("Aloha-30")).toBeTruthy();
+    });
+    it("occupancyCheck with null values", () => {
+      const renderedCell = render(RoutingGridColumnDef[16].renderCell({
+        row: {
+          occupancyCheck: []
+        }
+      }));
+      expect(renderedCell.findByDisplayValue("Aloha-30")).toBeTruthy();
+    });
     it("routingSteps", () => {
       const renderedCell = render(RoutingGridColumnDef[17].renderCell({
         row: {
@@ -70,6 +94,29 @@ describe("<RoutingGridColumnDef />", () => {
             teams: ["Team1"],
             time: 10
           }]
+        }
+      }));
+      expect(renderedCell.findByDisplayValue("Team1-10")).toBeTruthy();
+    });
+    it("routingSteps with multi list", () => {
+      const renderedCell = render(RoutingGridColumnDef[17].renderCell({
+        row: {
+          routingSteps: [{
+            teams: ["Team1"],
+            time: 10
+          },
+          {
+            teams: ["Team1test"],
+            time: 100
+          }]
+        }
+      }));
+      expect(renderedCell.findByDisplayValue("Team1-10")).toBeTruthy();
+    });
+    it("routingSteps with null/Empty list", () => {
+      const renderedCell = render(RoutingGridColumnDef[17].renderCell({
+        row: {
+          routingSteps: []
         }
       }));
       expect(renderedCell.findByDisplayValue("Team1-10")).toBeTruthy();

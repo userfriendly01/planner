@@ -15,6 +15,8 @@ import {
 import {
   routingFields
 } from "utils";
+import { ModalOnHover } from "components";
+import { Box } from "@mui/material";
 const formatDateTime = (dateTime: string) => {
   if(dateTime.includes("AM") || dateTime.includes("PM")){
     const [time, modifier] = dateTime.split(" ");
@@ -169,19 +171,29 @@ export const RoutingGridColumnDef: GridColDef[] = [
     flex: 1,
     align: "left",
     renderCell: (params: any) =>(
-      <Grid container rowSpacing={1}>
-        {
-          params.row.occupancyCheck && params.row.occupancyCheck.map((item: RoutingOccupancyCheck, index: number)=>(
-            <Grid item xs={6} key={`grid-occupancyCheck-${params.row.id}-${index}`}>
-              <Chip
-                key={`chip-occupancyCheck-${params.row.id}-${index}`}
-                tabIndex={-1}
-                label={getTagLabel(item,getFormFields("occupancyCheck"))}
-              />
-            </Grid>
-          ))}
-      </Grid>
+      params.row.occupancyCheck && params.row.occupancyCheck.length===1?(
+        <Chip
+          key={`occupancyCheck-${0}`}
+          tabIndex={-1}
+          label={getTagLabel(params.row.occupancyCheck[0],getFormFields("occupancyCheck"))}
+        />
+      ):
+        params.row.occupancyCheck && params.row.occupancyCheck.length!==0?(
+          <ModalOnHover label="...">
+            <Box sx={{ padding: "10px" }}>
+              {
+                params.row.occupancyCheck && params.row.occupancyCheck.map((item: any, index: number)=>(
+                  <Chip
+                    key={`occupancyCheck-${index}`}
+                    tabIndex={-1}
+                    label={getTagLabel(item,getFormFields("occupancyCheck"))}
+                  />
+                ))}
+            </Box>
+          </ModalOnHover>
+        ): ""
     )
+
   },
   {
     headerName: "Routing Steps",
@@ -191,16 +203,26 @@ export const RoutingGridColumnDef: GridColDef[] = [
     flex: 1,
     align: "left",
     renderCell: (params: any) =>(
-      <div>
-        {
-          params.row.routingSteps && params.row.routingSteps.map((item: RoutingStep, index: number)=>(
-            <Chip
-              key={`routingSteps-${params.row.id}-${index}`}
-              tabIndex={-1}
-              label={getTagLabel(item,getFormFields("routingSteps"))}
-            />
-          ))}
-      </div>
+      params.row.routingSteps && params.row.routingSteps.length ===1?(
+        <Chip
+          key={`routingSteps-${0}`}
+          tabIndex={-1}
+          label={getTagLabel(params.row.routingSteps[0],getFormFields("routingSteps"))}
+        />
+      ):
+        params.row.routingSteps && params.row.routingSteps.length !==0?(
+          <ModalOnHover label="...">
+            <Box sx={{ padding: "10px" }}>
+              {
+                params.row.routingSteps && params.row.routingSteps.map((item: any, index: number)=>(
+                  <Chip
+                    key={`routingSteps-${index}`}
+                    tabIndex={-1}
+                    label={getTagLabel(item,getFormFields("routingSteps"))}
+                  />
+                ))}
+            </Box>
+          </ModalOnHover>):""
     )
   },
   {
