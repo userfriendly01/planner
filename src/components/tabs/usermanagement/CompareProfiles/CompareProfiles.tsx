@@ -13,9 +13,13 @@ import { WfmUser, Worker, nNumMatcher } from "globals";
 import { CalabrioGroup, NNumberInput } from "components";
 import { useAdminState } from "context";
 import React from "react";
-import { getWfmUserByNNumber, getQmUserProfiles } from "services";
+import { getWfmUserByNNumber, getQmUserProfiles, getWfmTeam } from "services";
 import util from "util";
-import { logger } from "utils";
+import {
+  logger,
+  getWfmBusinessUnits,
+  getWfmTeams
+} from "utils";
 import { Modal } from "@mui/material";
 
 const CompareProfiles = () => {
@@ -52,7 +56,7 @@ const CompareProfiles = () => {
     }
   }, [nNumberDetails.fetchedUser]);
 
-  const resetForm = (clearNNumber = true) => {
+  const resetForm = () => {
     setShowModal(false);
     setShowColumns(false);
     setTritonProfiles([]);
@@ -81,6 +85,27 @@ const CompareProfiles = () => {
     }
     newArray.forEach((m, index) => m.id = index);
     setMessages(newArray);
+  };
+
+  const fetchTeam = async (p: WfmPerson) => {
+    try {
+      const teamInState = getWfmTeams(state).find(tm => tm.Id === p.TeamId);
+      if (teamInState) {
+        return teamInState.Name;
+      } else if (p.BusinessUnitId && p.TeamId) {
+        const res = await getWfmTeam(p.BusinessUnitId, p.TeamId)
+        if (res.data.Result.length > 0) {
+          return res.data.Result[0].Name;
+        } else {
+          throw Error("Fetch Team Results array was empty");
+        }
+      } else {
+        throw Error("Business Unit or Team Id were invalid to fetch Team");
+      }
+    } catch (error) {
+      logger.error(messageConsts.ERROR, { error, message: `Failed to fetch WFM Team for BU ${p.BusinessUnitId}: Team ${p.TeamId}` }, false);
+      return p.TeamId || ""
+    }
   };
 
   const trimProfiles = (userProfiles: any[], system: string): TritonPerson[] | QmPerson[] | WfmPerson[] | any[] => {
@@ -115,14 +140,15 @@ const CompareProfiles = () => {
       });
     } else {
       return userProfiles.map((p: any) => {
+        console.log("FAITH?", p);
         return {
           ["Employment Number"]: p.EmploymentNumber || "",
           ["Identity"]: p.Identity || "",
           ["Email"]: p.Email || "",
           ["First Name"]: p.FirstName || "",
           ["Last Name"]: p.LastName || "",
-          ["Business Unit Id"]: p.BusinessUnitId || "",
-          ["Team Id"]: p.TeamId || "",
+          ["Business Unit Id"]: getWfmBusinessUnits(state).find(bu => bu.Id === p.BusinessUnitId)?.Name || "",
+          ["Team Id"]: p.TeamName || "",
           ["Person Id"]: p.Id || "",
           ["Active"]: true
         }
@@ -152,6 +178,10 @@ const CompareProfiles = () => {
 
         const wfmProfiles: any[] = wfmResponse?.data?.Result || [];
         if (wfmProfiles.length === 1) {
+          console.warn("before", wfmProfiles);
+          const team = await fetchTeam(wfmProfiles[0]);
+          wfmProfiles[0].TeamName = team;
+          console.warn("after", wfmProfiles);
           setCalabrioWFMProfiles(wfmProfiles)
         } else if (wfmProfiles.length > 1) {
           const personIds = wfmProfiles.map((p: WfmUser) => p.Id);

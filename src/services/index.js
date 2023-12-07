@@ -5,7 +5,7 @@ export * from "./calabrio";
 export * from "./callTags";
 export * from "./checkExtension";
 export * from "./createUser";
-export * from "./deleteUser";
+export * from "./terminateUser";
 export * from "./directory";
 export * from "./fetchUser";
 export * from "./flowTableService";

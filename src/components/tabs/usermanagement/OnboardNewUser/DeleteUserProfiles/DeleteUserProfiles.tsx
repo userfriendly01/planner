@@ -1,4 +1,4 @@
-import { DeleteTritonUserProps } from "./DeleteTritonUser.Interfaces";
+import { DeleteTritonUserProps } from "./DeleteUserProfiles.Interfaces";
 import {
   ButtonWrapper,
   UserFormButton,
@@ -8,7 +8,7 @@ import {
   DeleteTritonUserWrapper,
   Text,
   CheckboxWrapper
-} from "./DeleteTritonUser.Styles";
+} from "./DeleteUserProfiles.Styles";
 import { ForwardToEntryForm } from "components";
 import {
   useAdminState,
@@ -20,7 +20,7 @@ import {
   timeouts
 } from "globals";
 import React from "react";
-import { terminateWorker } from "services";
+import { terminateUser } from "services";
 import {
   logger,
   wait
@@ -70,8 +70,8 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
   };
 
   const handleDeleteUser = () => {
-    const tritonWorkerName =  tritonWorker.attributes ? `${tritonWorker.attributes?.emp_first_name} ${tritonWorker.attributes?.emp_last_name}` : null;
-    const workerName = tritonWorkerName  || tritonWorker.displayId || tritonWorker.DisplayName;
+    const tritonWorkerName = tritonWorker.attributes ? `${tritonWorker.attributes?.emp_first_name} ${tritonWorker.attributes?.emp_last_name}` : null;
+    const workerName = tritonWorkerName || tritonWorker.displayId || tritonWorker.DisplayName;
     const termDate = new Date().toISOString().split("T")[0];
 
     updateLoading({
@@ -99,10 +99,11 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
       body.systems.push("QM");
     }
 
-    terminateWorker(body)
+    terminateUser(body)
       .then(response => {
+        console.log("FAITH - WHATS THIS?", response);
         resultMessage = `Successfully marked Triton worker for delete in ${body.systems}`;
-        const overlayMessage = response.data?.split("+")[0] ? response.data?.split("+")[0] : "Successfully Deleted User";
+        const overlayMessage = response.data?.results ? response.data?.results[0] : "Successfully Deleted User";
 
         logger.info(resultMessage, {
           nNumber,
@@ -129,7 +130,7 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
         }, timeouts.MODAL_OVERLAY_ATTENTION);
       })
       .catch(error => {
-        if (typeof error.response?.data?.error === "object" ){
+        if (typeof error.response?.data?.error === "object") {
           resultMessage = `Failed to terminate worker ${tritonWorker.sid}`;
         } else {
           resultMessage = error.response.data.error;
@@ -164,21 +165,21 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
         <CheckboxWrapper>
           <Checkbox
             checked={profilesToDelete.triton}
-            onChange={ () => handleSystemSelection("triton") }
+            onChange={() => handleSystemSelection("triton")}
           />
           <Text>Triton</Text>
         </CheckboxWrapper>
         <CheckboxWrapper>
           <Checkbox
             checked={profilesToDelete.calabrioQm}
-            onChange={ () => handleSystemSelection("calabrioQm") }
+            onChange={() => handleSystemSelection("calabrioQm")}
             style={{
               marginLeft: "125px"
             }}
           /> <Text>Calabrio QM</Text>
         </CheckboxWrapper>
       </div>
-      { isWorkerDid ?
+      {isWorkerDid ?
         <ForwardToEntryForm
           label="This user has a direct dial number. Please choose a forward to option before confirming."
           updateForwardTo={

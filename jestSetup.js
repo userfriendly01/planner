@@ -4,7 +4,7 @@ require("jest-styled-components");
 beforeAll(() => {
   console.log = jest.fn();
   console.info = jest.fn();
-  console.warn = jest.fn();
+  // console.warn = jest.fn();
   console.error = jest.fn();
 });
 
@@ -91,9 +91,11 @@ jest.mock("services", () => ({
   getTaskQueues: jest.fn(),
   getTfn: jest.fn(),
   getTimeOfDays: jest.fn(),
+  getQmUserProfiles: jest.fn(),
   getWfmBusinessUnits: jest.fn(),
   getWfmOrg: jest.fn(),
   getWfmOptions: jest.fn(),
+  getWfmTeam: jest.fn(),
   getWfmUserByNNumber: jest.fn(),
   insertDirectory: jest.fn(),
   queryFlowData: jest.fn(),
@@ -103,6 +105,7 @@ jest.mock("services", () => ({
   routingBatchCreate: jest.fn(),
   routingBatchDelete: jest.fn(),
   routingBatchUpdate: jest.fn(),
+  terminateUser: jest.fn(),
   updateCalabrioUser: jest.fn(),
   updateClosedMessage: jest.fn(),
   updateDirectory: jest.fn(),
