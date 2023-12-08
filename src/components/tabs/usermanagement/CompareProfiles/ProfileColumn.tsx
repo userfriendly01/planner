@@ -32,7 +32,6 @@ const ProfileColumn = (props: ProfileColumnProps) => {
   };
   const [selectedProfile, setSelectedProfile] = React.useState<TritonPerson | QmPerson | WfmPerson>(defaultPerson);
 
-  console.log("FAITH PEOPLE", people);
   React.useEffect(() => {
     setSelectedProfile(defaultPerson);
   }, [people]);

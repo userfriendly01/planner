@@ -113,7 +113,6 @@ const WfmForm = (props: WfmFormProps) => {
 
   React.useEffect(() => {
     const worker = form.nNumber.nNumberFetchedUser;
-    //check if there's already a fetched WFM user before we do this
     if (worker) {
       setForm({
         type: userFormActions.SET_WFM_USER_DATA,
@@ -153,10 +152,8 @@ const WfmForm = (props: WfmFormProps) => {
           }
         });
       }
-      // setStatus(ModalOverlayStatuses.SUCCESS);
     } catch (err) {
       console.error("Error thrown fetching WFM user", err);
-      // setStatus(ModalOverlayStatuses.SUCCESS);
     }
   };
 

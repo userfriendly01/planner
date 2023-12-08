@@ -140,7 +140,6 @@ const CompareProfiles = () => {
       });
     } else {
       return userProfiles.map((p: any) => {
-        console.log("FAITH?", p);
         return {
           ["Employment Number"]: p.EmploymentNumber || "",
           ["Identity"]: p.Identity || "",
@@ -178,10 +177,8 @@ const CompareProfiles = () => {
 
         const wfmProfiles: any[] = wfmResponse?.data?.Result || [];
         if (wfmProfiles.length === 1) {
-          console.warn("before", wfmProfiles);
           const team = await fetchTeam(wfmProfiles[0]);
           wfmProfiles[0].TeamName = team;
-          console.warn("after", wfmProfiles);
           setCalabrioWFMProfiles(wfmProfiles)
         } else if (wfmProfiles.length > 1) {
           const personIds = wfmProfiles.map((p: WfmUser) => p.Id);
