@@ -117,7 +117,6 @@ const UserEntryForm = () => {
   };
 
   const handleCheckbox = (checked: boolean, system: string) => {
-    console.log("We should be setting to false here", checked);
     setForm({
       type: userFormActions.UPDATE_USER_FOUND,
       payload: {
