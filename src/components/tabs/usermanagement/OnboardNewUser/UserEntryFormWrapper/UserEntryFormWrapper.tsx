@@ -33,7 +33,8 @@ import {
 import {
   Worker,
   formModes,
-  discrepancyType
+  discrepancyType,
+  ModalOverlayStatuses
 } from "globals";
 import { Checkbox } from "@mui/material";
 
@@ -133,10 +134,15 @@ const UserEntryForm = () => {
           status={loading.saveStatus}
           message={loading.overlayMessage}
           handleClose={() => {
-            updateLoading({
-              ...loading,
-              saveUser: false
-            });
+            if (loading.saveStatus === ModalOverlayStatuses.PARTIAL_FAIL) {
+              handleResetForm();
+            } else {
+              updateLoading({
+                ...loading,
+                saveUser: false
+              });
+            }
+
           }}
         /> : null}
       {form.formMode === formModes.INSERT && <Header1>Onboard New User</Header1>}
