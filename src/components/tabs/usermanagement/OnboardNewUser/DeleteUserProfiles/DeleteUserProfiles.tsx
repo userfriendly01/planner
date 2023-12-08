@@ -54,8 +54,6 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
     calabrioQm: true
   });
 
-  console.log("Whats dis", forwardToError, requireForwardTo);
-
   const handleSystemSelection = (profile: string) => {
     if (profile === "triton") {
       setProfilesToDelete(
@@ -133,10 +131,10 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
       })
       .catch(error => {
         const resultDivs = [<div>Failed to Terminate Worker. </div>];
-        const results = error.response?.data?.error?.results || [];
-        const forwardToFailure = JSON.parse(results[0].body).forwardToFailure;
+        let results = error.response?.data?.error?.results;
+        results = typeof results === "object" ? results : [];
+        const forwardToFailure = results[0] && JSON.parse(results[0].body).forwardToFailure;
         if (forwardToFailure) {
-          console.log("FAITH forward to initiation");
           setRequireForwardTo(true);
           setForwardToError(true);
           updateLoading({
@@ -145,7 +143,6 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
             saveStatus: null,
             saveUser: false
           });
-          //initiate retry
         } else {
           if (results.length > 0) {
             results.forEach((r: any) => {
@@ -166,7 +163,7 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
             tritonWorker
           });
 
-          if (results[0].statusCode === 200) {
+          if (results[0]?.statusCode === 200) {
             updateLoading({
               ...loading,
               overlayMessage: resultMessage,
