@@ -3,7 +3,6 @@ export * from "./CustomDropdown/Dropdown";
 export { default as ModalOverlay } from "./ModalOverlay/ModalOverlay";
 export { default as Pagination } from "./Pagination/Pagination";
 export { default as PhoneNumberInput } from "./PhoneNumberInput/PhoneNumberInput";
-export { default  as ModalOnHover } from "./SharedComponents/ModalOnHover";
 export { default as NotificationModal } from "./NotificationModal/NotificationModal";
 export { default as StyledButton } from "./StyledButton/StyledButton";
 export { default as CustomToast } from "./CustomToast/CustomToast";
