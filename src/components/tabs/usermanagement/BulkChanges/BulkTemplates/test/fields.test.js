@@ -563,7 +563,12 @@ describe("fields.js", () => {
           expect(result).toEqual("Default Skills is empty but not required. Skipping validation for row 5");
           expect(row).toEqual({
             ...row,
-            attributes: {}
+            attributes: {
+              default_skills: {
+                levels: {},
+                skills: []
+              }
+            }
           });
         });
         test("Default skills provided, but contain skill in wrong format with level not a number, reject with message", async () => {
@@ -783,7 +788,7 @@ describe("fields.js", () => {
             await exetensionValidateFunction({
               rowNumber: 6,
               "Extension": 1234
-            }, { workerContext: { workers: null }});
+            }, { workerContext: { workers: null } });
           } catch (e) {
             expect(e).toEqual(JSON.stringify({
               rowNumber: 6,
