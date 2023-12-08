@@ -22,16 +22,12 @@ import {
   findMatchingWorker,
   identifyUserProfiles
 } from "../userManagementUtils";
-import { fetchUser } from "services";
+import { fetchUser, getWfmUserByNNumber } from "services";
 import {
   initialTestState,
   initialFormState,
   validFormState
 } from "testUtils";
-
-jest.mock("services", () => ({
-  fetchUser: jest.fn()
-}));
 
 const mockSetForm = jest.fn();
 
@@ -964,7 +960,7 @@ describe("isQMUserValid", () => {
       }
     }
     const result = isQMUserValid(form);
-    expect(result).toStrictEqual(["QM Team","QM Roles"]);
+    expect(result).toStrictEqual(["QM Team", "QM Roles"]);
   });
   test("roles are empty array, should return error", () => {
     const form = {
@@ -982,7 +978,7 @@ describe("isQMUserValid", () => {
       calabrio_qm: {
         userFound: true,
         team: null,
-        roles: [{ name: "Role1"}]
+        roles: [{ name: "Role1" }]
       }
     }
     const result = isQMUserValid(form);
@@ -993,7 +989,7 @@ describe("isQMUserValid", () => {
       calabrio_qm: {
         userFound: true,
         team: "",
-        roles: [{ name: "Role1"}]
+        roles: [{ name: "Role1" }]
       }
     }
     const result = isQMUserValid(form);
@@ -1004,7 +1000,7 @@ describe("isQMUserValid", () => {
       calabrio_qm: {
         userFound: true,
         team: "Valid Team",
-        roles: [{ name: "Role1"}]
+        roles: [{ name: "Role1" }]
       }
     }
     const result = isQMUserValid(form);
@@ -1014,14 +1010,14 @@ describe("isQMUserValid", () => {
 
 describe("isWfmUserValid", () => {
   const validWfmUser = {
-      userFound: true,
-      FirstName: "Faith",
-      LastName: "Cuneo",
-      EmploymentNumber: "n0263786",
-      Email: "faith.cuneo@libertymutual.com",
-      DisplayName: "Faith Cuneo",
-      BusinessUnitId: "BU123239",
-      FirstDayOfWeek: 2
+    userFound: true,
+    FirstName: "Faith",
+    LastName: "Cuneo",
+    EmploymentNumber: "n0263786",
+    Email: "faith.cuneo@libertymutual.com",
+    DisplayName: "Faith Cuneo",
+    BusinessUnitId: "BU123239",
+    FirstDayOfWeek: 2
   }
   describe("calabrio_wfm.userFound === false", () => {
     test("required fields are returned", () => {
@@ -1295,7 +1291,7 @@ describe("identifyUserProfiles", () => {
       }
     }
     test("should call fetchUser and set the nNumber object", async () => {
-      await identifyUserProfiles(form, mockSetForm, initialTestState); 
+      await identifyUserProfiles(form, mockSetForm, initialTestState);
       expect(fetchUser).toHaveBeenCalledTimes(1);
       expect(fetchUser).toHaveBeenCalledWith("n0263786");
     });
@@ -1341,9 +1337,9 @@ describe("identifyUserProfiles", () => {
             }
           };
           await identifyUserProfiles(formState, mockSetForm, initialTestState);
-            /* Cannot be tested until we have a Calabrio QM table passing the form
-            through with a calabrio worker */
-          });
+          /* Cannot be tested until we have a Calabrio QM table passing the form
+          through with a calabrio worker */
+        });
       });
       describe("nNumberObject.fetched user === null", () => {
         test("calls setForm with COMPLETE_N_NUMBER, resolves", async () => {
@@ -1428,20 +1424,27 @@ describe("identifyUserProfiles", () => {
             userFound: false
           }
         };
+        const wfmUser = {
+          BusinessUnitId: "123-321",
+          ParentTeam: "111",
+          EmploymentNumber: "n1111111",
+          Email: "Person@libertymutual.com",
+          TeamId: "111"
+        }
+        getWfmUserByNNumber.mockResolvedValue({
+          data: {
+            Result: [wfmUser]
+          }
+        });
         await identifyUserProfiles(formState, mockSetForm, initialTestState);
         expect(fetchUser).toHaveBeenCalledTimes(1);
+        expect(mockSetForm).toHaveBeenCalledTimes(2);
         expect(mockSetForm).toHaveBeenCalledWith({
           type: "SET_UPDATE_WFM_FORM_STATE",
           payload: {
             state: initialTestState,
             formMode: "insert",
-            user: {
-              BusinessUnitId: "123-321",
-              ParentTeam: "111",
-              EmploymentNumber: "n1111111",
-              Email: "Person@libertymutual.com",
-              TeamId: "111"
-            }
+            user: wfmUser
           }
         });
       });
@@ -1463,10 +1466,95 @@ describe("identifyUserProfiles", () => {
             userFound: false
           }
         };
+        const wfmUser = {
+          BusinessUnitId: "123-321",
+          ParentTeam: "111",
+          EmploymentNumber: "n1111111",
+          Email: "Person@libertymutual.com",
+          TeamId: "111"
+        };
         fetchUser.mockResolvedValue({
           nNumber: "n1111111",
           nNumberFetchedUser: {
             email: ""
+          }
+        });
+        getWfmUserByNNumber.mockResolvedValue({
+          data: {
+            Result: [wfmUser]
+          }
+        });
+        await identifyUserProfiles(formState, mockSetForm, initialTestState);
+        expect(fetchUser).toHaveBeenCalledTimes(1);
+        expect(mockSetForm).toHaveBeenCalledTimes(2);
+        expect(mockSetForm).toHaveBeenCalledWith({
+          type: "SET_UPDATE_WFM_FORM_STATE",
+          payload: {
+            state: initialTestState,
+            formMode: "insert",
+            user: wfmUser
+          }
+        });
+      });
+    });
+    describe("calabrio wfm error is thrown but calabrio qm user found,", () => {
+      test("calls SET_UPDATE_WFM_FORM_STATE with ", async () => {
+        const formState = {
+          ...validFormState,
+          nNumber: {
+            value: "n1111111"
+          },
+          triton: {
+            ...validFormState.triton,
+            sid: "WK1234",
+            attributes: {
+              email: "Person@libertymutual.com"
+            },
+            userFound: true
+          },
+          calabrio_wfm: {
+            userFound: false
+          }
+        };
+        getWfmUserByNNumber.mockRejectedValue("boo");
+        await identifyUserProfiles(formState, mockSetForm, initialTestState);
+        expect(fetchUser).toHaveBeenCalledTimes(1);
+        expect(mockSetForm).toHaveBeenCalledTimes(1);
+      });
+      test("calls SET_UPDATE_WFM_FORM_STATE with ", async () => {
+        const formState = {
+          ...validFormState,
+          nNumber: {
+            value: "n1111111"
+          },
+          triton: {
+            ...validFormState.triton,
+            sid: "WK1234",
+            attributes: {
+              email: "Person@libertymutual.com"
+            },
+            userFound: true
+          },
+          calabrio_wfm: {
+            userFound: false
+          }
+        };
+        const wfmUser = {
+          BusinessUnitId: "123-321",
+          ParentTeam: "111",
+          EmploymentNumber: "n1111111",
+          Email: "Person@libertymutual.com",
+          TeamId: "111"
+        };
+        fetchUser.mockResolvedValue({
+          nNumber: "n1111111",
+          nNumberFetchedUser: {
+            email: ""
+          }
+        });
+        getWfmUserByNNumber.mockResolvedValue({
+          data: {
+            Result: [wfmUser]
           }
         });
         await identifyUserProfiles(formState, mockSetForm, initialTestState);
@@ -1476,13 +1564,7 @@ describe("identifyUserProfiles", () => {
           payload: {
             state: initialTestState,
             formMode: "insert",
-            user: {
-              BusinessUnitId: "123-321",
-              ParentTeam: "111",
-              EmploymentNumber: "n1111111",
-              Email: "Person@libertymutual.com",
-              TeamId: "111"
-            }
+            user: wfmUser
           }
         });
       });

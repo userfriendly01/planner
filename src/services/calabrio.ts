@@ -27,12 +27,30 @@ export const getWfmOptions = async (): Promise<CalabrioGroup[]> => {
   return await myAxios.get(apiPaths.GET_CALABRIO_WFM_OPTIONS);
 };
 
-export const getWfmUserByNNumber = async (nNumber: string): Promise<CalabrioUser> => {
+export const getWfmTeam = async (BusinessUnitId: string, TeamId: string): Promise<any> => {
+  return await myAxios.get(`${apiPaths.GET_CALABRIO_WFM}`, {
+    params: {
+      api: "Team",
+      BusinessUnitId,
+      TeamId
+    }
+  });
+};
+
+export const getWfmUserByNNumber = async (nNumber: string): Promise<{
+  data: {
+    Result: [CalabrioUser] | []
+  }
+}> => {
   return await myAxios.get(apiPaths.GET_CALABRIO_WFM_USER_BY_NNUMBER(nNumber.toLowerCase()));
 };
 
 export const getWfmBusinessUnits = async (): Promise<CalabrioGroup[]> => {
-  return await myAxios.get(apiPaths.GET_CALABRIO_WFM_BUS);
+  return await myAxios.get(apiPaths.GET_CALABRIO_WFM, {
+    params: {
+      api: "Business Units"
+    }
+  });
 };
 
 export const createCalabrioWFMPerson = async (payload: any): Promise<any> => {
