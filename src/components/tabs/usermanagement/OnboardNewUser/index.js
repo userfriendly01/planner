@@ -4,7 +4,7 @@ export { default as WfmForm } from "./WfmForm/WfmForm";
 export * from "./CallRecording";
 export * from "./Extension/ExtensionSearchParams";
 export * from "./UserEntryFormWrapper";
-export * from "./DeleteTritonUser";
+export * from "./DeleteUserProfiles";
 export * from "./ForwardToEntryForm";
 export * from "./Skills";
 export * from "./Extension";

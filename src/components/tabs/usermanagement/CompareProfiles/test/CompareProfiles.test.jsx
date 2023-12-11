@@ -3,13 +3,16 @@ import MessageBanner from "../MessageBanner";
 import ProfileColumn from "../ProfileColumn";
 import ResetModal from "../ResetModal";
 import {
-  ModalFetchingRing,
   NNumberInput,
   StyledButton
 } from "components";
 import { useAdminState } from "context";
 import React from "react";
-import { getWfmUserByNNumber, getQmUserProfiles } from "services";
+import {
+  getWfmTeam,
+  getWfmUserByNNumber,
+  getQmUserProfiles
+} from "services";
 import {
   act,
   render,
@@ -29,11 +32,6 @@ jest.mock("components", () => ({
 
 jest.mock("context", () => ({
   useAdminState: jest.fn()
-}));
-
-jest.mock("services", () => ({
-  getWfmUserByNNumber: jest.fn(),
-  getQmUserProfiles: jest.fn()
 }));
 
 jest.mock("@mui/material", () => ({
@@ -324,7 +322,7 @@ describe("CompareProfiles", () => {
               FirstName: "Faith",
               LastName: "Cuneo",
               TeamId: "TEAMMMM",
-              BusinessUnitId: "BUSSINESSS UNITT"
+              BusinessUnitId: "123-321"
             };
             beforeEach(() => {
               useAdminState.mockReturnValue(productionState);
@@ -532,7 +530,7 @@ describe("CompareProfiles", () => {
                       title: "Calabrio WFM",
                       people: [{
                         "Active": true,
-                        "Business Unit Id": "BUSSINESSS UNITT",
+                        "Business Unit Id": "Cool WFM Business Unit",
                         "Email": "Faith.Cuneo@libertymutual.com",
                         "Employment Number": "n0263786",
                         "First Name": "Faith",
@@ -543,6 +541,127 @@ describe("CompareProfiles", () => {
                       }]
                     });
                   });
+                });
+                describe("Team name is fetched for WFM worker", () => {
+                  const worker = productionState.workerContext.workers[0];
+                  const fetchedUser = { email: worker.attributes.email };
+                  describe("Team exists in state already", () => {
+                    test("should not call getWfmTeam", async () => {
+                      getWfmUserByNNumber.mockResolvedValue({
+                        data: {
+                          Result: [{
+                            ...wfmResponse,
+                            TeamId: "111"
+                          }]
+                        }
+                      });
+                      initiateResetProcess(worker.attributes.n_number, fetchedUser);
+                      await waitFor(() => {
+                        expect(getWfmTeam).not.toHaveBeenCalled();
+                        expect(ProfileColumn.mock.calls[2][0]).toStrictEqual({
+                          title: "Calabrio WFM",
+                          people: [{
+                            "Active": true,
+                            "Business Unit Id": "Cool WFM Business Unit",
+                            "Email": "Faith.Cuneo@libertymutual.com",
+                            "Employment Number": "n0263786",
+                            "First Name": "Faith",
+                            "Identity": "Faith.Cuneo@libertymutual.com",
+                            "Last Name": "Cuneo",
+                            "Person Id": "32187-68465-11210-46582",
+                            "Team Id": "Team1"
+                          }]
+                        });
+                      });
+                    });
+                  });
+                  describe("Team does not exist in state already", () => {
+                    describe("Team is returned successfully from getWfmTeam", () => {
+                      test("should set Team Name from results", async () => {
+                        getWfmTeam.mockResolvedValue({
+                          data: {
+                            Result: [{
+                              Name: "Returned Name",
+                              Id: "111"
+                            }]
+                          }
+                        });
+                        initiateResetProcess(worker.attributes.n_number, fetchedUser);
+                        await waitFor(() => {
+                          expect(getWfmTeam).toHaveBeenCalledTimes(1);
+                          expect(ProfileColumn.mock.calls[2][0]).toStrictEqual({
+                            title: "Calabrio WFM",
+                            people: [{
+                              "Active": true,
+                              "Business Unit Id": "Cool WFM Business Unit",
+                              "Email": "Faith.Cuneo@libertymutual.com",
+                              "Employment Number": "n0263786",
+                              "First Name": "Faith",
+                              "Identity": "Faith.Cuneo@libertymutual.com",
+                              "Last Name": "Cuneo",
+                              "Person Id": "32187-68465-11210-46582",
+                              "Team Id": "Returned Name"
+                            }]
+                          });
+                        });
+                      });
+                    });
+                    describe("Empty results are returned from getWfmTeam", () => {
+                      test("should set Team Id as Team Name", async () => {
+                        getWfmTeam.mockResolvedValue({
+                          data: {
+                            Result: []
+                          }
+                        });
+                        initiateResetProcess(worker.attributes.n_number, fetchedUser);
+                        await waitFor(() => {
+                          expect(getWfmTeam).toHaveBeenCalledTimes(1);
+                          expect(ProfileColumn.mock.calls[2][0]).toStrictEqual({
+                            title: "Calabrio WFM",
+                            people: [{
+                              "Active": true,
+                              "Business Unit Id": "Cool WFM Business Unit",
+                              "Email": "Faith.Cuneo@libertymutual.com",
+                              "Employment Number": "n0263786",
+                              "First Name": "Faith",
+                              "Identity": "Faith.Cuneo@libertymutual.com",
+                              "Last Name": "Cuneo",
+                              "Person Id": "32187-68465-11210-46582",
+                              "Team Id": "TEAMMMM"
+                            }]
+                          });
+                        });
+                      });
+                    });
+                    describe("Error is thrown from getWfmTeam", () => {
+                      test("should set Team Id as Team Name", async () => {
+                        getWfmTeam.mockRejectedValue("aww");
+                        initiateResetProcess(worker.attributes.n_number, fetchedUser);
+                        await waitFor(() => {
+                          expect(getWfmTeam).toHaveBeenCalledTimes(1);
+                          expect(ProfileColumn.mock.calls[2][0]).toStrictEqual({
+                            title: "Calabrio WFM",
+                            people: [{
+                              "Active": true,
+                              "Business Unit Id": "Cool WFM Business Unit",
+                              "Email": "Faith.Cuneo@libertymutual.com",
+                              "Employment Number": "n0263786",
+                              "First Name": "Faith",
+                              "Identity": "Faith.Cuneo@libertymutual.com",
+                              "Last Name": "Cuneo",
+                              "Person Id": "32187-68465-11210-46582",
+                              "Team Id": "TEAMMMM"
+                            }]
+                          });
+                        });
+                      });
+                    });
+                  });
+                  describe("Business Unit or Team Id isnt valid to identify Team Name", () => {
+                    test("should set Team Id as Team Name", () => {
+
+                    });
+                  })
                 });
               });
               describe("Users have no details", () => {
