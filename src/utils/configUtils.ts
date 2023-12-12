@@ -38,7 +38,8 @@ export const getAzureSPAClientId = (env: string): string => {
 export const initializedAlertBar: AlertBarProps = {
   open: false,
   msg: "",
-  severityType: ""
+  severityType: "info",
+  duration: 6000
 };
 
 export const EXPORT_FILE_PREFIX: {

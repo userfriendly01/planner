@@ -100,12 +100,25 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       });
 
       await loadDataTable(flowData);
+      setAlertBar((alertBarProps: AlertBarProps) => ({
+        ...alertBarProps,
+        open: true,
+        severityType: "info",
+        msg: "Data loading in progress. Please wait for the complete set of data to be loaded.",
+        duration: 15000
+      }));
       const result: CctSharedCallFlowDb[] = await retrieveFlowData(
         accessToken,
         graphQLEndpoint,
         firstChunkData
       );
       await loadDataTable(result);
+      setAlertBar((alertBarProps: AlertBarProps) => ({
+        ...alertBarProps,
+        open: true,
+        severityType: "success",
+        msg: "Successfully loaded the flow data!!"
+      }));
     };
     getTableData();
   }, []);
@@ -615,6 +628,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         onClose={handleClose}
         msg={alertBar.msg}
         severityType={alertBar.severityType}
+        duration={alertBar.duration}
       />
       <PreviewModal
         isOpen={dataFlow.isPreviewModalOpen}

@@ -85,8 +85,21 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
         id: parseInt(item?.skey?.split("__")[2], 10)
       }));
       loadDataTable(routingData);
+      setAlertBar((alertBarProps: AlertBarProps) => ({
+        ...alertBarProps,
+        open: true,
+        severityType: "info",
+        msg: "Data loading in progress. Please wait for the complete set of data to be loaded.",
+        duration: 15000
+      }));
       const result: CctSharedCallRoutingDb[] = await retrieveRoutingData(accessToken, graphQlApiUrl,firstChunkData);
       loadDataTable(result);
+      setAlertBar((alertBarProps: AlertBarProps) => ({
+        ...alertBarProps,
+        open: true,
+        severityType: "success",
+        msg: "Successfully loaded the routing data!!"
+      }));
     };
     getTableData();
   }, []);
@@ -524,6 +537,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
         onClose={handleClose}
         msg={alertBar.msg}
         severityType={alertBar.severityType}
+        duration={alertBar.duration}
       />
       <PreviewModal
         action={state.previewModalAction}

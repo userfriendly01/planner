@@ -1,7 +1,10 @@
 import * as React from "react";
-import {Stack,Snackbar }from "@mui/material";
+import {
+  Stack,Snackbar
+}from "@mui/material";
 import MuiAlert, {
-  AlertProps
+  AlertProps,
+  AlertColor
 } from "@mui/material/Alert";
 import {
   useEffect,
@@ -19,15 +22,17 @@ export interface CustomToastProps {
   open: boolean,
   onClose: any,
   msg: string,
-  severityType: any
+  severityType: AlertColor,
+  duration?: number
 }
 
 export default ({
   open,
   onClose,
   msg,
-  severityType
-}: CustomToastProps) => {
+  severityType,
+  duration
+}: CustomToastProps): JSX.Element => {
   const [alertFlag, setAlertFlag] = useState(open);
   const changeHandleClose = () => {
     setAlertFlag(false);
@@ -40,7 +45,7 @@ export default ({
     <Stack spacing={2} sx={{ width: "100%" }}>
       <Snackbar
         open={alertFlag}
-        autoHideDuration={6000}
+        autoHideDuration={duration || 6000}
         onClose={changeHandleClose}
         anchorOrigin={{
           vertical: "top",
