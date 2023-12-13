@@ -58,8 +58,7 @@ const MultiFieldContainerModalView = ({
       value=parseInt(value);
     }
     if(values) {
-      const keyValueArray = values.id.split("-");
-
+      const keyValueArray = values.id?.split("-");
       key = keyValueArray[0];
       value = keyValueArray[1];
     }
