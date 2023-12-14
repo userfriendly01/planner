@@ -2,7 +2,9 @@ import React, {
   useState, useEffect
 } from "react";
 import {
-  Chip, TextField
+  Autocomplete,
+  Chip,
+  TextField
 } from "@mui/material";
 
 export interface MultiValueTextFieldProps{
@@ -21,70 +23,37 @@ const MultiValueTextField = ({
 }:MultiValueTextFieldProps ): JSX.Element => {
 
   const [chipList, setChipList] = useState([]);
-  const [textFieldValue, setTextFieldValue] = useState("");
 
   useEffect(()=>{
     setChipList(value);
   }, [value]);
 
-  const handleOnDelete = (index: number) =>{
-    const newChipList = [...chipList];
-    newChipList.splice(index, 1);
-    setChipList(newChipList);
+  const handleOnChange = (event: any) =>{
+    const updatedChipList = [...(chipList? chipList : []), event.target.value];
+    setChipList(updatedChipList);
     const newEvent = {
       target: {
-        value: newChipList,
+        value: updatedChipList,
         name
       }
     };
     onChange(newEvent);
   };
-
-  const handleOnChange = (event: any) =>{
-    if (event.code === "Enter" && event.target.value) {
-      const updatedChipList = [...(chipList? chipList : []), event.target.value];
-      setChipList(updatedChipList);
-      setTextFieldValue("");
-      const newEvent = {
-        target: {
-          value: updatedChipList,
-          name
-        }
-      };
-      onChange(newEvent);
-    }
-  };
-
   return (
-    <TextField
-      id="outlined-basic"
-      name={name}
-      label={label}
-      variant="outlined"
-      value={textFieldValue}
-      error={error}
-      disabled={disabled}
-      required={required}
-      helperText={helperText}
-      onChange={e => {
-        setTextFieldValue(e.target.value);
-      }}
-      onKeyDown={event => { event.stopPropagation(); }}
-      onKeyPress={(e: any) => { handleOnChange(e); }}
-      InputProps={{
-        startAdornment:
-            chipList &&
-            chipList.map((chip: string, index: number) => (
-              <Chip
-                key={`chip-${index}`}
-                tabIndex={index}
-                label={chip}
-                onDelete={(event: any) => {
-                  handleOnDelete(index);
-                }}
-              />
-            ))
-      }}
+    <Autocomplete
+      clearIcon={false}
+      options={[]}
+      freeSolo
+      multiple
+      disabled = {disabled}
+      value={chipList||[]}
+      renderTags={(value, props) =>
+        value.map((item, index) => (
+          <Chip  key = {index} label={item} {...props({ index })} />
+        ))
+      }
+      onChange = {handleOnChange}
+      renderInput={params => <TextField label={label}  helperText={helperText}{...params} />}
     />
   );
 };

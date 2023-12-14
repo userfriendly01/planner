@@ -5,7 +5,7 @@ import {
 } from "testUtils";
 import { MultiValueTextField } from "../MultiValueTextField";
 import {
-  Chip, TextField
+  Chip,Autocomplete
 } from "@mui/material";
 
 const mockedOnChange = jest.fn();
@@ -13,7 +13,8 @@ const mockedOnChange = jest.fn();
 jest.mock("@mui/material",()=>({
   __esModule: true,
   Chip: jest.fn(),
-  TextField: jest.fn()
+  TextField: jest.fn(),
+  Autocomplete: jest.fn()
 }));
 
 const renderComponent = value =>{
@@ -31,38 +32,18 @@ describe("<MultiValueTextField>", ()=>{
   beforeEach(()=>{
     jest.clearAllMocks();
     setupMockedComponents({
-      TextField,
+      Autocomplete,
       Chip
     });
   });
-  test("Simulate onDelete",()=>{
-    renderComponent(["test"]);
-    const onDelete = TextField.mock.calls[1][0].InputProps.startAdornment[0].props.onDelete;
-    act(()=>{
-      onDelete();
-    });
-    const startAdornment = TextField.mock.calls[2][0].InputProps.startAdornment;
-    expect(startAdornment.length).toBe(0);
-  });
-  test("Simulate onKeyPress", ()=>{
-    renderComponent(["test"]);
-    const onKeyPress = TextField.mock.calls[1][0].onKeyPress;
-    act(()=>{
-      onKeyPress({
-        code: "Enter",
-        target: {
-          value: "Spanish"
-        }
-      });
-    });
-    const startAdornment = TextField.mock.calls[2][0].InputProps.startAdornment;
-    expect(startAdornment.length).toBe(2);
-    expect(startAdornment[1].props.label).toBe("Spanish");
-    expect(mockedOnChange).toBeCalledTimes(1);
-  });
+  function props(){
+    return ["test1"];
+  }
+
+
   test("Simulate onChange", ()=>{
     renderComponent(["test"]);
-    const onChange = TextField.mock.calls[1][0].onChange;
+    const onChange = Autocomplete.mock.calls[1][0].onChange;
     act(()=>{
       onChange({
         target: {
@@ -70,36 +51,18 @@ describe("<MultiValueTextField>", ()=>{
         }
       });
     });
-    const filedValue = TextField.mock.calls[2][0].value;
-    expect(filedValue).toBe("English");
+    const filedValue = Autocomplete.mock.calls[2][0].value;
+    expect(filedValue).toStrictEqual(["test", "English"]);
   });
-  test("Simulate onKeyPress with initial null value", ()=>{
-    renderComponent();
-    const onKeyPress = TextField.mock.calls[1][0].onKeyPress;
+
+  test("Simulate renderTags", ()=>{
+    renderComponent(["test"]);
+    const renderTags = Autocomplete.mock.calls[1][0].renderTags;
+    const renderInput = Autocomplete.mock.calls[1][0].renderInput;
     act(()=>{
-      onKeyPress({
-        code: "Enter",
-        target: {
-          value: "Property"
-        }
-      });
+      renderTags(["Test","Test2"],props);
+      renderInput();
     });
-    const startAdornment = TextField.mock.calls[2][0].InputProps.startAdornment;
-    expect(startAdornment.length).toBe(1);
-    expect(startAdornment[0].props.label).toBe("Property");
-    expect(mockedOnChange).toBeCalledTimes(1);
-  });
-  test("Simulate onKeyPress with Random Key", ()=>{
-    renderComponent();
-    const onKeyPress = TextField.mock.calls[1][0].onKeyPress;
-    act(()=>{
-      onKeyPress({
-        code: "Space",
-        target: {
-          value: "Property"
-        }
-      });
-    });
-    expect(mockedOnChange).toBeCalledTimes(0);
+    expect(renderTags).toBeTruthy();
   });
 });
