@@ -151,6 +151,14 @@ export const RoutingTeamAttrDropDownOptions: DropdownOption[] = [
   {
     label: "Online",
     value: "Online"
+  },
+  {
+    label: "Life",
+    value: "Life"
+  },
+  {
+    label: "AssetService",
+    value: "AssetService"
   }
 ];
 
@@ -306,6 +314,10 @@ export const CallerStateAttrDropDownOptions: DropdownOption[] = [
   {
     label: "OK",
     value: "OK"
+  },
+  {
+    label: "OF",
+    value: "OF"
   },
   {
     label: "OR",
