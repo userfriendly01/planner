@@ -24,7 +24,7 @@ describe("<GridMaster />", () => {
   });
   it("handles error and returns nothing", () => {
     const masterData2 = getGridMasterData("this is an unexpected data format");
-    expect(masterData2).toEqual(masterData || {});  //or empty object, if this test runs first, async
+    expect(masterData2).toEqual({});  //or empty object, if this test runs first, async
   });
   it("handles null and returns 'cleared' masterData", () => {
     const masterData2 = getGridMasterData([null]);

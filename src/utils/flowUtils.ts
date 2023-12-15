@@ -20,6 +20,7 @@ export const languageOffer = ["English", "Spanish"];
 export const userDestination = ["Avaya", "Twilio"];
 export const flowType = ["DID", "DRC", "LSC", "TFN"];
 export const tfnRoutingGroup = ["Premier Partners", "TruStage", "TruStageNavy", "USAA", "High Touch Products", "Online Inbound", "Core"];
+export const LAST_FLOW_MASTER_DATA_CACHED_DATE="LAST_FLOW_MASTER_DATA_CACHED_DATE";
 
 export const getAdvanceFilter = (storageKeyName: string): { [key: string]: undefined; } => {
   let advanceFilter: { [key: string]: undefined; };

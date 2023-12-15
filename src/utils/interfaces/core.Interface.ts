@@ -1,7 +1,10 @@
+import { AlertColor } from "@mui/material";
+
 export interface AlertBarProps {
     open: boolean;
     msg: string;
-    severityType: string;
+    severityType: AlertColor;
+    duration?: number
 }
 
 export interface FormValidationProps {

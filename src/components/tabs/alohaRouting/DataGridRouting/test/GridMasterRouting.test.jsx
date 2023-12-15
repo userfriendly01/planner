@@ -56,29 +56,11 @@ describe("<GridMaster />", () => {
   });
   it("handles error and returns nothing", () => {
     const masterData2 = getGridMasterData("this is an unexpected data format");
-    expect(masterData2).toEqual({
-      "channel": [null],
-      "callerType": [null],
-      "callerState": [null],
-      "transferDestination": [null],
-      "twilioSkill": [null],
-      "callIntent": [null],
-      "policyType": [null],
-      "brand": ["safeco"]
-    });  //or empty object, if this test runs first, async
+    expect(masterData2).toEqual({});  //or empty object, if this test runs first, async
   });
   it("handles null and returns 'cleared' masterData", () => {
     const masterData2 = getGridMasterData([null]);
-    expect(masterData2).toEqual({
-      "channel": [null],
-      "callerType": [null],
-      "callerState": [null],
-      "transferDestination": [null],
-      "twilioSkill": [null],
-      "callIntent": [null],
-      "policyType": [null],
-      "brand": ["safeco"]
-    });
+    expect(masterData2).toEqual({});
   });
 
   it("handles clearGridMasterData", () => {
