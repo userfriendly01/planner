@@ -602,6 +602,60 @@ const processUpdateCallerStates = async (row: any, template: Template, state: Ap
   }
 };
 
+const processSyncHrAttributes = async (row: any, template: Template, state: AppState) => {
+  logger.log("*** Syncing HR Attributes for ***", row);
+  const rowNumber = row.rowNumber;
+  const nNumber = row["N Number"];
+  try {
+    let syncNeeded = false;
+    let originalAttributes = row.originalWorker.attributes || {}
+    let hrAttributes = row.attributes || {}
+
+    console.log("OG Attributes", originalAttributes);
+
+    const doesFieldMatch = (field: string) => {
+      console.log("FIELD", originalAttributes[field], hrAttributes[field]);
+      if (cleanupField(originalAttributes[field], "string") !== cleanupField(hrAttributes[field], "string")) {
+        syncNeeded = true;
+      }
+    };
+
+    doesFieldMatch("department_id");
+    doesFieldMatch("department_name");
+    doesFieldMatch("primary_dept_name");
+    doesFieldMatch("primary_dept_number");
+    doesFieldMatch("location");
+    doesFieldMatch("office_location_name");
+    doesFieldMatch("office_location_number");
+    doesFieldMatch("email");
+    doesFieldMatch("email_address");
+    doesFieldMatch("emp_first_name");
+    doesFieldMatch("emp_last_name");
+    doesFieldMatch("full_name");
+
+    delete row.originalWorker;
+    let message = '';
+    if (syncNeeded) {
+      console.log("SYNC NEEDED", hrAttributes);
+      await await updateUser(row.workerSid, { attributes: hrAttributes });
+      message = `Successfully synced worker for row ${rowNumber}. ${row.workerSid} : ${nNumber}.`;
+    } else {
+      message = `Sync not required for row ${rowNumber}. ${row.workerSid} : ${nNumber}.`;
+    }
+    row.result = message;
+    return Promise.resolve(message);
+  } catch (error) {
+    const errorMessage = `Failed to sync worker for row ${rowNumber}. ${row.workerSid} : ${nNumber}. ${formatErrorMessage(error)}`;
+    logger.error(errorMessage, {
+      error,
+      nNumber: row["N Number"],
+      workerSid: row.workerSid
+    });
+    return rejectPromise(errorMessage, rowNumber);
+  }
+
+};
+
 //Templates
 export const getCreateTemplates = (state: AppState): Templates => {
   return {
@@ -753,6 +807,18 @@ export const getUpdateTemplates = (state: AppState): Templates => {
       processingConcurrencyLimit: 5,
       fields: [
         FIELDS.N_NUMBER_UPDATE
+      ]
+    },
+    SYNC_HR_ATTRIBUTES: {
+      name: "SYNC_HR_ATTRIBUTES",
+      data: {},
+      processFunction: (row: any, template: Template) => processSyncHrAttributes(row, template, state),
+      stateUpdateFunctions: [updateTritonUserState],
+      multiRunDependencies: null,
+      validationConcurrencyLimit: 500,
+      processingConcurrencyLimit: 5,
+      fields: [
+        FIELDS.N_NUMBER_SYNC
       ]
     }
   };

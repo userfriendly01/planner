@@ -127,6 +127,57 @@ export const FIELDS: Fields = {
       }
     }
   },
+  N_NUMBER_SYNC: {
+    field: "nNumber",
+    name: "N Number",
+    type: "string",
+    description: "Agents N Number",
+    example: "n0263786",
+    options: null,
+    validateFunction: async (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+      const fieldName = "N Number";
+      const field = cleanupField(row[fieldName], "string");
+      const worker = state.workerContext.workers.find((w: any) => cleanupField(w.attributes.n_number, "string") === field);
+      if (!row.attributes) {
+        row.attributes = {};
+      }
+      if (!field) {
+        return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
+      } else if (typeof field !== "string" || field.length !== 8) {
+        return rejectPromise(`${fieldName} is not in the valid n number format for row ${rowNumber}`, rowNumber);
+      } else if (!worker) {
+        return rejectPromise(`${field} does not have a Triton record to sync ${rowNumber}`, rowNumber);
+      } else {
+        try {
+          const fetchedUser = await fetchUser(field);
+
+          row.attributes.contact_uri = `client:${field.toLowerCase()}`;
+          row.attributes.department_id = fetchedUser.departmentNumber;
+          row.attributes.department_name = fetchedUser.departmentName;
+          row.attributes.email = fetchedUser.email;
+          row.attributes.email_address = fetchedUser.email;
+          row.attributes.emp_first_name = fetchedUser.firstName;
+          row.attributes.emp_last_name = fetchedUser.lastName;
+          row.attributes.full_name = `${fetchedUser.firstName} ${fetchedUser.lastName}`;
+          row.attributes.location = fetchedUser.officeName;
+          row.attributes.n_number = field.toLowerCase();
+          row.attributes.office_location_name = fetchedUser.officeName;
+          row.attributes.office_location_number = fetchedUser.officeNumber;
+          row.attributes.primary_dept_name = fetchedUser.departmentName;
+          row.attributes.primary_dept_number = fetchedUser.departmentName;
+          row.attributes.unique_id = field.toLowerCase();
+          row.attributes.adLogin = `LM\\${field.toLowerCase()}`;
+          row.attributes.firstName = fetchedUser.firstName;
+          row.attributes.lastName = fetchedUser.lastName;
+          return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
+        } catch (error) {
+          logger.error(error.message, { error }, false);
+          return rejectPromise(`Error thrown fetching ${fieldName} from HR Database for row ${rowNumber}`, rowNumber);
+        }
+      }
+    }
+  },
   PROFILE_ID: {
     field: "profileId",
     name: "Profile Id",
