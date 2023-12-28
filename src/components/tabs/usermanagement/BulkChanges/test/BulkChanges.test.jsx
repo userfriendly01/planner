@@ -56,7 +56,7 @@ jest.mock("@mui/material", () => ({
   Paper: jest.fn()
 }));
 
-jest.mock("xlsx",() => ({
+jest.mock("xlsx", () => ({
   read: jest.fn(),
   utils: {
     sheet_to_json: jest.fn()
@@ -245,7 +245,7 @@ describe("<BulkChanges />", () => {
       });
       expect(rendered.container).toHaveTextContent("Step 2: Export Template & Template Options");
       expect(rendered.container).toHaveTextContent("Step 3: Upload completed Spreadsheet");
-      expect(rendered.container).toHaveTextContent("Step 4: Process Bulk Create");
+      expect(rendered.container).toHaveTextContent("Step 4: Process");
       expect(StyledButton.mock.calls.length).toBe(4);
     });
     describe("e.target.files is not an array of files", () => {
@@ -275,7 +275,7 @@ describe("<BulkChanges />", () => {
         const uploadForm = rendered.getByTestId("file-upload");
         act(() => fireEvent.change(uploadForm, event));
         await waitFor(() => {
-          expect(rendered.container).toHaveTextContent("Step 4: Process Bulk Create");
+          expect(rendered.container).toHaveTextContent("Step 4: Process");
         });
         expect(rendered.container).not.toHaveTextContent("yo.xlsx has been uploaded");
       });
@@ -323,7 +323,7 @@ describe("<BulkChanges />", () => {
         });
         expect(rendered.container).toHaveTextContent("Step 2: Export Template & Template Options");
         expect(rendered.container).toHaveTextContent("Step 3: Upload completed Spreadsheet");
-        expect(rendered.container).toHaveTextContent("Step 4: Process Bulk Create");
+        expect(rendered.container).toHaveTextContent("Step 4: Process");
         const process = StyledButton.mock.calls[3][0].onClick;
         act(() => process());
         expect(Modal.mock.calls[5][0].open).toBe(true);
@@ -350,7 +350,7 @@ describe("<BulkChanges />", () => {
           await waitFor(() => {
             expect(rendered.container).toHaveTextContent("Step 2: Export Template & Template Options");
             expect(rendered.container).toHaveTextContent("Step 3: Upload completed Spreadsheet");
-            expect(rendered.container).toHaveTextContent("Step 4: Process Bulk Create");
+            expect(rendered.container).toHaveTextContent("Step 4: Process");
             expect(rendered.container).toHaveTextContent("yo.xlsx has been uploaded");
           });
           const process = StyledButton.mock.calls[3][0].onClick;

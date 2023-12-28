@@ -284,6 +284,148 @@ describe("fields.js", () => {
       });
 
     });
+    describe("N_NUMBER_SYNC", () => {
+      describe("validateFunction", () => {
+        const NNumberValidateFunction = FIELDS.N_NUMBER_SYNC.validateFunction;
+        test("No matching N number field, rejects with N Number is missing from row message", async () => {
+          try {
+            await NNumberValidateFunction({
+              boo: "ya",
+              rowNumber: 1
+            }, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 1,
+              error: "N Number is missing from row 1"
+            }));
+            expect(fetchUser).toHaveBeenCalledTimes(0);
+          }
+        });
+        test("N Number is not a string, rejects with invalid n nubmer message", async () => {
+          try {
+            await NNumberValidateFunction({
+              rowNumber: 1,
+              "N Number": 12
+            }, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 1,
+              error: "N Number is not in the valid n number format for row 1"
+            }));
+            expect(fetchUser).toHaveBeenCalledTimes(0);
+          }
+        });
+        test("N Number is not 8 characters, rejects with invalid n nubmer message", async () => {
+          try {
+            await NNumberValidateFunction({
+              rowNumber: 1,
+              "N Number": "superlongnnumber"
+            }, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 1,
+              error: "N Number is not in the valid n number format for row 1"
+            }));
+            expect(fetchUser).toHaveBeenCalledTimes(0);
+          }
+        });
+        test("Error while calling fetchUser, rejects with Error message", async () => {
+          fetchUser.mockRejectedValue("nope");
+          try {
+            await NNumberValidateFunction({
+              rowNumber: 4,
+              "N Number": "n1234568"
+            }, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 4,
+              error: "Error thrown fetching N Number from HR Database for row 4"
+            }));
+            expect(fetchUser).toHaveBeenCalledTimes(1);
+          }
+        });
+        test("worker doesnt exist, reject with error", async () => {
+          try {
+            await NNumberValidateFunction({
+              rowNumber: 4,
+              "N Number": "n0002342"
+            }, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 4,
+              error: "n0002342 does not have a Triton record to sync row 4"
+            }));
+            expect(fetchUser).toHaveBeenCalledTimes(0);
+          }
+        });
+        test("fetch returns successful response, resolves with field is valid message", async () => {
+          fetchUser.mockResolvedValue({
+            departmentNumber: "123",
+            email: "hi@lmig.com",
+            departmentName: "grm",
+            full_name: "Bob Smith",
+            n_number: "n1234568",
+            officeName: "hi",
+            officeNumber: 12,
+            unique_id: "n1234568",
+            adLogin: "LM\\n1234568",
+            firstName: "Bob",
+            lastName: "Smith"
+          });
+          const row = {
+            rowNumber: 1,
+            "N Number": "n1234568"
+          };
+          const result = await NNumberValidateFunction(row, initialTestState);
+          expect(result).toEqual("N Number Valid for row 1");
+          expect(row).toEqual({
+            ...row,
+            attributes: {
+              contact_uri: "client:n1234568",
+              department_id: "123",
+              email: "hi@lmig.com",
+              department_name: "grm",
+              email_address: "hi@lmig.com",
+              emp_first_name: "Bob",
+              emp_last_name: "Smith",
+              full_name: "Bob Smith",
+              firstName: "Bob",
+              lastName: "Smith",
+              location: "hi",
+              n_number: "n1234568",
+              office_location_name: "hi",
+              office_location_number: 12,
+              primary_dept_name: "grm",
+              primary_dept_number: "grm",
+              unique_id: "n1234568",
+              adLogin: "LM\\n1234568"
+            }
+          });
+        });
+        test("attributes is already on successful row, returns successful response, resolves with field is valid message", async () => {
+          const existingAttributes = {
+            did: "16038518200"
+          };
+          fetchUser.mockResolvedValue({
+            departmentNumber: "123"
+          });
+          const row = {
+            rowNumber: 1,
+            "N Number": "n1234568",
+            attributes: existingAttributes
+          };
+          const result = await NNumberValidateFunction(row, initialTestState);
+          expect(result).toEqual("N Number Valid for row 1");
+          expect(row).toEqual({
+            ...row,
+            attributes: {
+              department_id: "123",
+              ...existingAttributes
+            }
+          });
+        });
+      });
+    });
     describe("PROFILE_ID", () => {
       describe("validateFunction", () => {
         const profileValidateFunction = FIELDS.PROFILE_ID.validateFunction;
@@ -1635,6 +1777,25 @@ describe("fields.js", () => {
             const res = await routingTeamValidateFunction(row, initialTestState);
             expect(res).toBe("Bypassing Routing Team. Unapplicable for profile id 1 for row 2");
             expect(row).toEqual(row);
+          });
+        });
+        describe("attributes is already on successful row", () => {
+          const existingAttributes = {
+            did: "16038518200"
+          };
+          const row = {
+            rowNumber: 1,
+            "Routing Team": "licencedCSC",
+            "Profile Id": 2,
+            attributes: existingAttributes
+          };
+          test("resolves with field is valid message", async () => {
+            const result = await routingTeamValidateFunction(row, initialTestState);
+            expect(result).toEqual("Routing Team Valid for row 1");
+            expect(row).toEqual({
+              ...row,
+              attributes: existingAttributes
+            });
           });
         });
       });

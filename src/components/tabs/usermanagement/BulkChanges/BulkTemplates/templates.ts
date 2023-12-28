@@ -611,10 +611,7 @@ const processSyncHrAttributes = async (row: any, template: Template, state: AppS
     let originalAttributes = row.originalWorker.attributes || {}
     let hrAttributes = row.attributes || {}
 
-    console.log("OG Attributes", originalAttributes);
-
     const doesFieldMatch = (field: string) => {
-      console.log("FIELD", originalAttributes[field], hrAttributes[field]);
       if (cleanupField(originalAttributes[field], "string") !== cleanupField(hrAttributes[field], "string")) {
         syncNeeded = true;
       }
@@ -636,7 +633,6 @@ const processSyncHrAttributes = async (row: any, template: Template, state: AppS
     delete row.originalWorker;
     let message = '';
     if (syncNeeded) {
-      console.log("SYNC NEEDED", hrAttributes);
       await await updateUser(row.workerSid, { attributes: hrAttributes });
       message = `Successfully synced worker for row ${rowNumber}. ${row.workerSid} : ${nNumber}.`;
     } else {

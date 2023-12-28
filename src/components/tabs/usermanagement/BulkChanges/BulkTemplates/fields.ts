@@ -147,7 +147,7 @@ export const FIELDS: Fields = {
       } else if (typeof field !== "string" || field.length !== 8) {
         return rejectPromise(`${fieldName} is not in the valid n number format for row ${rowNumber}`, rowNumber);
       } else if (!worker) {
-        return rejectPromise(`${field} does not have a Triton record to sync ${rowNumber}`, rowNumber);
+        return rejectPromise(`${field} does not have a Triton record to sync row ${rowNumber}`, rowNumber);
       } else {
         try {
           const fetchedUser = await fetchUser(field);

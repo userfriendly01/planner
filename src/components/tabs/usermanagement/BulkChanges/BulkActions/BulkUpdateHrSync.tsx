@@ -27,6 +27,7 @@ const BulkUpdateHrSync = (props: BulkUpdateProps) => {
     //If the entries are valid, update/add the template to the selected templates.
     //If they arent valid, remove the template from the selected templates
     //Valid templates will drive the display of the processing buttons
+    // console.warn("SELECTED TEMPLATES", selectedTemplates);
     if (selectedProfile) {
       setShowTemplates(false);
       const templateFound = selectedTemplates.find((t: Template) => t.name === template.name);
@@ -39,7 +40,6 @@ const BulkUpdateHrSync = (props: BulkUpdateProps) => {
           originalWorker: w
         }
       });
-      console.log("FAITH! ", nNumbers);
       if (!templateFound) {
         replaceTemplate(template);
       };
@@ -75,7 +75,7 @@ const BulkUpdateHrSync = (props: BulkUpdateProps) => {
     <UpdateWrapper>
       <Dropdown
         label="Triton Profile"
-        value={formatDropdownOption(profiles.find((p: any) => p.profile_id === selectedProfile?.value))}
+        value={formatDropdownOption(profiles.find((p: any) => p.profile_id === selectedProfile?.profile_id))}
         options={profiles.sort(sortProfilesByName).map((profile: any) => formatDropdownOption(profile))}
         updateValue={(event: any, profile: any) => setSelectedProfile(profile)}
         styles={{
