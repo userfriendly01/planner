@@ -31,7 +31,6 @@ import { Dropdown } from "components";
 import { useAdminState } from "context";
 import React from "react";
 import { Modal } from "@mui/material";
-import BulkUpdateHrSync from "./BulkActions/BulkUpdateHrSync";
 
 const BulkChanges = () => {
 
@@ -46,8 +45,6 @@ const BulkChanges = () => {
   const [showProcessingModal, setShowProcessingModal] = React.useState(false);
   const [businessUnitId, setBusinessUnitId] = React.useState(null);
   const createTemplates = getCreateTemplates(state);
-
-  console.log("setp 2 logic", showTemplates, selectedTemplates.length > 0);
 
   React.useEffect(() => {
     consolidateTemplates(selectedTemplates, setConsolidatedTemplates);

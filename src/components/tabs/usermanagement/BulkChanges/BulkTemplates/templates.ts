@@ -633,7 +633,7 @@ const processSyncHrAttributes = async (row: any, template: Template, state: AppS
     delete row.originalWorker;
     let message = '';
     if (syncNeeded) {
-      await await updateUser(row.workerSid, { attributes: hrAttributes });
+      await updateUser(row.workerSid, { attributes: hrAttributes });
       message = `Successfully synced worker for row ${rowNumber}. ${row.workerSid} : ${nNumber}.`;
     } else {
       message = `Sync not required for row ${rowNumber}. ${row.workerSid} : ${nNumber}.`;

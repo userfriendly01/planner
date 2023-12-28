@@ -35,8 +35,6 @@ const BulkUpdateForm = (props: BulkActionFormProps) => {
   const updateTemplate = (template: Template, data: any) => template.data = data;
   const removeTemplate = (template: Template) => updateSelectedTemplates(false, template, selectedTemplates, setSelectedTemplates);
 
-  console.log("SELECTED TEMPLATES", selectedTemplates);
-
   // Convert template name like "UPDATE_USERS_MANAGER" to dropdown label like "Update Users Manager"
   const constructDropdownOption = (t: Template) => {
     const name = t.name.split("_").map((w: string) => {
