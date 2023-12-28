@@ -50,15 +50,29 @@ export interface BulkActionFormProps {
   setBusinessUnitId?: (id: string) => void,
   selectedTemplates: Template[],
   setSelectedTemplates: (template: Template[]) => void;
+  setShowTemplates?: (show: boolean) => void;
+  setUploadedForm?: (show: any[]) => void;
 }
 
 export interface BulkUpdateProps {
+  template: Template,
+  selectedTemplates: Template[],
+  setUploadedForm?: (show: any[]) => void;
+  setShowTemplates?: (show: boolean) => void;
+  replaceTemplate: (template: Template) => void;
+  updateTemplate: (template: Template, data: any) => void;
+  removeTemplate: (template: Template) => void;
+}
+
+
+export interface BulkUpdateHrProps {
   template: Template,
   selectedTemplates: Template[],
   replaceTemplate: (template: Template) => void;
   updateTemplate: (template: Template, data: any) => void;
   removeTemplate: (template: Template) => void;
 }
+
 export interface BulkCallerStatesProps {
   template: Template,
   selectedTemplates: Template[],
@@ -94,11 +108,11 @@ export interface WorkerAttribute {
 }
 
 export interface WorkerAttributes {
-  [key: string] : WorkerAttribute
+  [key: string]: WorkerAttribute
 }
 
 export interface View {
-  [key: string] : {
+  [key: string]: {
     value: string,
     label: string
   }

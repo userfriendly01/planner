@@ -95,7 +95,7 @@ describe("CREATE_TRITON_USER", () => {
     test("should reject with err", async () => {
       try {
         await createTritonProcessFunction(row, initialTestState);
-      } catch(err){
+      } catch (err) {
         expect(createUser).toHaveBeenCalledTimes(1);
         expect(createUser).toHaveBeenCalledWith({
           activateEp: false,
@@ -141,7 +141,7 @@ describe("CREATE_CALABRIO_QM_USER", () => {
       delete missingAcdId.acdId;
       try {
         await createCalabrioProcessFunction(missingAcdId, initialTestState);
-      } catch(err){
+      } catch (err) {
         expect(createCalabrioUser).toHaveBeenCalledTimes(0);
         expect(err).toBe(JSON.stringify({
           rowNumber: 2,
@@ -208,7 +208,7 @@ describe("CREATE_CALABRIO_QM_USER", () => {
     test("should reject with err", async () => {
       try {
         await createCalabrioProcessFunction(row, initialTestState);
-      } catch(err){
+      } catch (err) {
         expect(createCalabrioUser).toHaveBeenCalledTimes(1);
         expect(createCalabrioUser).toHaveBeenCalledWith({
           acdId: "WK13248",
@@ -272,7 +272,7 @@ describe("CREATE_CALABRIO_WFM_PERSON", () => {
       nNumberDup.attributes.n_number = "n1111111";
       try {
         await createWFMProcessFunction(nNumberDup, initialTestState);
-      } catch(err){
+      } catch (err) {
         expect(createCalabrioWFMPerson).toHaveBeenCalledTimes(0);
         expect(err).toBe(JSON.stringify({
           rowNumber: 10,
@@ -287,7 +287,7 @@ describe("CREATE_CALABRIO_WFM_PERSON", () => {
       emailDup.attributes.email = "Person@libertymutual.com";
       try {
         await createWFMProcessFunction(emailDup, initialTestState);
-      } catch(err){
+      } catch (err) {
         expect(createCalabrioWFMPerson).toHaveBeenCalledTimes(0);
         expect(err).toBe(JSON.stringify({
           rowNumber: 10,
@@ -355,11 +355,11 @@ describe("CREATE_CALABRIO_WFM_PERSON", () => {
   });
 
   describe("User gateway timeout occurs while waiting for a response from adding a person in createCalabrioWFMPerson", () => {
-    beforeEach(() => createCalabrioWFMPerson.mockRejectedValue({ response: { data: { exception: "com.netflix.zuul.exception.ZuulException" }}}));
+    beforeEach(() => createCalabrioWFMPerson.mockRejectedValue({ response: { data: { exception: "com.netflix.zuul.exception.ZuulException" } } }));
     test("should reject with err message that timeout occured and user should verify creation in wfm", async () => {
       try {
         await createWFMProcessFunction(row, initialTestState);
-      } catch(err){
+      } catch (err) {
         expect(createCalabrioWFMPerson).toHaveBeenCalledTimes(1);
         expect(createCalabrioWFMPerson).toHaveBeenCalledWith({
           Email: "e.mail@lm.com",
@@ -402,7 +402,7 @@ describe("CREATE_CALABRIO_WFM_PERSON", () => {
     test("should reject with err", async () => {
       try {
         await createWFMProcessFunction(row, initialTestState);
-      } catch(err){
+      } catch (err) {
         expect(createCalabrioWFMPerson).toHaveBeenCalledTimes(1);
         expect(createCalabrioWFMPerson).toHaveBeenCalledWith({
           Email: "e.mail@lm.com",
@@ -464,7 +464,7 @@ describe("CREATE_MANAGER", () => {
             "Calabrio Team": "New Team",
             ...row
           });
-        } catch(e){
+        } catch (e) {
           expect(e).toBe(JSON.stringify({
             rowNumber: 2,
             error: "Failed to create Team for row 2. Aww"
@@ -498,7 +498,7 @@ describe("CREATE_MANAGER", () => {
   });
   describe("newTeam === false", () => {
     describe("addManager throws an error", () => {
-      test("rejected promise is returned", async() => {
+      test("rejected promise is returned", async () => {
         addManager.mockRejectedValue("Aww!");
         try {
           await createManagerProcessFunction({
@@ -506,7 +506,7 @@ describe("CREATE_MANAGER", () => {
             newTeam: false,
             groupId: 101
           });
-        } catch(e) {
+        } catch (e) {
           expect(addManager).toHaveBeenCalledTimes(1);
           expect(addManager).toHaveBeenCalledWith({
             manager_first_nme: "Michael",
@@ -684,7 +684,7 @@ describe("UPDATE_WORKER_ATTRIBUTE", () => {
       };
       try {
         await updateWorkerAttributesProcessFunction(row, template);
-      } catch(err){
+      } catch (err) {
         expect(updateUser).toHaveBeenCalledTimes(1);
         expect(err).toBe(JSON.stringify({
           rowNumber: 4,
@@ -719,7 +719,7 @@ describe("UPDATE_USERS_MANAGER", () => {
       };
       try {
         await updateUsersManagerProcessFunction(row, template, initialTestState);
-      } catch(err){
+      } catch (err) {
         expect(updateUser).toHaveBeenCalledTimes(0);
         expect(err).toBe(JSON.stringify({
           rowNumber: 4,
@@ -736,7 +736,7 @@ describe("UPDATE_USERS_MANAGER", () => {
       };
       try {
         await updateUsersManagerProcessFunction(row, null);
-      } catch(err){
+      } catch (err) {
         expect(updateUser).toHaveBeenCalledTimes(0);
         expect(JSON.parse(err).rowNumber).toBe(4);
         expect(JSON.parse(err).error).toContain("Failed to update Manager and Calabrio Team for user for row 4.");
@@ -763,7 +763,7 @@ describe("UPDATE_USERS_MANAGER", () => {
       getCalabrioUser.mockRejectedValue("Aww");
       try {
         await updateUsersManagerProcessFunction(row, template);
-      } catch(err){
+      } catch (err) {
         expect(updateUser).toHaveBeenCalledTimes(0);
         expect(JSON.parse(err).rowNumber).toBe(4);
         expect(JSON.parse(err).error).toContain("No updates made, Failed to fetch calabrio user for row 4. Aww");
@@ -792,7 +792,7 @@ describe("UPDATE_USERS_MANAGER", () => {
         };
         try {
           await updateUsersManagerProcessFunction(row, template, initialTestState);
-        } catch(err){
+        } catch (err) {
           expect(updateUser).toHaveBeenCalledTimes(1);
           expect(updateUser).toHaveBeenCalledWith("WK1234", {
             attributes: {
@@ -827,7 +827,7 @@ describe("UPDATE_USERS_MANAGER", () => {
         };
         try {
           await updateUsersManagerProcessFunction(row, template, initialTestState);
-        } catch(err){
+        } catch (err) {
           expect(updateUser).toHaveBeenCalledTimes(1);
           expect(updateUser).toHaveBeenCalledWith("WK1234", {
             attributes: {
@@ -907,7 +907,7 @@ describe("UPDATE_USERS_MANAGER", () => {
       };
       try {
         await updateUsersManagerProcessFunction(row, template, initialTestState);
-      } catch(err){
+      } catch (err) {
         expect(updateUser).toHaveBeenCalledTimes(1);
         expect(updateUser).toHaveBeenCalledWith("WK1234", {
           attributes: {
@@ -955,7 +955,7 @@ describe("UPDATE_USERS_MANAGER", () => {
       };
       try {
         await updateUsersManagerProcessFunction(row, template, initialTestState);
-      } catch(err){
+      } catch (err) {
         expect(updateUser).toHaveBeenCalledTimes(1);
         expect(updateUser).toHaveBeenCalledWith("WK1234", {
           attributes: {
@@ -1152,7 +1152,7 @@ describe("UPDATE_DEFAULT_SKILLS", () => {
     test("should reject", async () => {
       try {
         await updateDefaultSkillsProcessFunction(row, template);
-      } catch(err) {
+      } catch (err) {
         expect(updateUser).toHaveBeenCalledTimes(1);
         expect(err).toBe(JSON.stringify({
           rowNumber: 4,
@@ -1338,6 +1338,87 @@ describe("UPDATE_CALLER_STATES", () => {
           expect(err).toBe(JSON.stringify({
             rowNumber: 4,
             error: "Failed to update Caller States for row 4. I did a digital face-plant"
+          }));
+        }
+      });
+    });
+  });
+});
+describe("SYNC_HR_ATTRIBUTES", () => {
+  const syncHrAttributesProcessFunction = updateTemplates.SYNC_HR_ATTRIBUTES.processFunction;
+  beforeEach(() => jest.clearAllMocks());
+  describe("sync is not needed", () => {
+    const row = {
+      rowNumber: 4,
+      workerSid: "WK1234",
+      "N Number": "n0263786",
+      attributes: {
+        primary_dept_number: "CRC",
+      },
+      originalWorker: {
+        attributes: {
+          primary_dept_number: "CRC"
+        }
+      }
+    };
+    test("should call update user with correct body", async () => {
+      const result = await syncHrAttributesProcessFunction(row);
+      expect(updateUser).toHaveBeenCalledTimes(0);
+      expect(result).toBe("Sync not required for row 4. WK1234 : n0263786.");
+    });
+  });
+  describe("sync is needed", () => {
+    describe("primary_dept_number does not match", () => {
+      beforeEach(() => updateUser.mockResolvedValue("Yay!"));
+      const row = {
+        rowNumber: 4,
+        workerSid: "WK1234",
+        attributes: {
+          primary_dept_number: "CRC",
+          n_number: "n0263786"
+        },
+        originalWorker: {
+          attributes: {
+            primary_dept_number: "DRC"
+          }
+        }
+      };
+      test("should call update user with correct body", async () => {
+        const result = await syncHrAttributesProcessFunction(row);
+        expect(updateUser).toHaveBeenCalledTimes(1);
+        expect(updateUser).toHaveBeenCalledWith("WK1234", {
+          attributes: {
+            primary_dept_number: "CRC",
+            n_number: "n0263786"
+          },
+        });
+        expect(result).toBe("Successfully synced worker for row 4. WK1234 : undefined.");
+      });
+    });
+    describe("updateUser throws an error", () => {
+      beforeEach(() => updateUser.mockRejectedValue("Aww"));
+      test("should reject", async () => {
+        const row = {
+          rowNumber: 4,
+          workerSid: "WK1234",
+          "N Number": "n0263786",
+          attributes: {
+            primary_dept_number: "CRC",
+            n_number: "n0263786"
+          },
+          originalWorker: {
+            attributes: {
+              primary_dept_number: "DRC"
+            }
+          }
+        };
+        try {
+          await syncHrAttributesProcessFunction(row);
+        } catch (err) {
+          expect(updateUser).toHaveBeenCalledTimes(1);
+          expect(err).toBe(JSON.stringify({
+            rowNumber: 4,
+            error: "Failed to sync worker for row 4. WK1234 : n0263786. Aww"
           }));
         }
       });

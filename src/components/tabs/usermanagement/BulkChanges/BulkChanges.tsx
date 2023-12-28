@@ -36,13 +36,14 @@ const BulkChanges = () => {
 
   const state = useAdminState();
   const uploadButtonRef = React.useRef<HTMLInputElement>();
-  const [ view, setView ] = React.useState(views.BULK_CREATE_USERS);
-  const [ selectedTemplates, setSelectedTemplates ] = React.useState<Template[]>([]);
-  const [ consolidatedTemplate, setConsolidatedTemplates ] = React.useState([]);
-  const [ uploadedForm, setUploadedForm ] = React.useState(null);
-  const [ filenameText, setFilenameText ] = React.useState(null);
-  const [ showProcessingModal , setShowProcessingModal ] = React.useState(false);
-  const [ businessUnitId, setBusinessUnitId ] = React.useState(null);
+  const [view, setView] = React.useState(views.BULK_CREATE_USERS);
+  const [showTemplates, setShowTemplates] = React.useState(true);
+  const [selectedTemplates, setSelectedTemplates] = React.useState<Template[]>([]);
+  const [consolidatedTemplate, setConsolidatedTemplates] = React.useState([]);
+  const [uploadedForm, setUploadedForm] = React.useState(null);
+  const [filenameText, setFilenameText] = React.useState(null);
+  const [showProcessingModal, setShowProcessingModal] = React.useState(false);
+  const [businessUnitId, setBusinessUnitId] = React.useState(null);
   const createTemplates = getCreateTemplates(state);
 
   React.useEffect(() => {
@@ -65,7 +66,7 @@ const BulkChanges = () => {
 
   return (
     <>
-      { checkIfBulkAdmin ?
+      {checkIfBulkAdmin ?
         <BulkChangesWrapper>
           <Dropdown
             label="Select a change type"
@@ -74,7 +75,7 @@ const BulkChanges = () => {
             updateValue={(event: any, view: View) => {
               setView(view);
               resetBulkChanges();
-              if(view === views.BULK_ADD_MANAGER){
+              if (view === views.BULK_ADD_MANAGER) {
                 setSelectedTemplates([createTemplates.CREATE_MANAGER]);
               }
             }}
@@ -93,28 +94,30 @@ const BulkChanges = () => {
               />
             </>
           </Modal>
-          { view === views.BULK_CREATE_USERS &&
+          {view === views.BULK_CREATE_USERS &&
             <BulkCreateForm
               businessUnitId={businessUnitId}
               setBusinessUnitId={setBusinessUnitId}
-              selectedTemplates= {selectedTemplates}
-              setSelectedTemplates= {setSelectedTemplates}
+              selectedTemplates={selectedTemplates}
+              setSelectedTemplates={setSelectedTemplates}
             />
           }
-          { view === views.BULK_UPDATE &&
+          {view === views.BULK_UPDATE &&
             <BulkUpdateForm
-              selectedTemplates= {selectedTemplates}
-              setSelectedTemplates= {setSelectedTemplates}
+              setUploadedForm={setUploadedForm}
+              setShowTemplates={setShowTemplates}
+              selectedTemplates={selectedTemplates}
+              setSelectedTemplates={setSelectedTemplates}
             />
           }
-          { view === views.BULK_ADD_MANAGER &&
+          {view === views.BULK_ADD_MANAGER &&
             <Row>
               <StepWrapper>
                 Step 1: Mentally Prepare
               </StepWrapper>
             </Row>
           }
-          { selectedTemplates.length > 0 &&
+          {selectedTemplates.length > 0 && showTemplates &&
             <>
               <Row>
                 <StepWrapper>
@@ -150,11 +153,9 @@ const BulkChanges = () => {
               </Row>
             </>
           }
-          { uploadedForm &&
+          {uploadedForm &&
             <Row>
-              <StepWrapper>
-                Step 4: Process Bulk Create
-              </StepWrapper>
+              {showTemplates ? <StepWrapper> Step 4: Process </StepWrapper> : <StepWrapper> Step 2: Process </StepWrapper>}
               <Wrapper center={true}>
                 <ImportButton
                   onClick={() => setShowProcessingModal(true)}
@@ -173,17 +174,17 @@ const BulkChanges = () => {
             hidden={true}
             onChange={(e: any) => {
               readUploadFile(e, setUploadedForm);
-              if(e.target.files && e.target.files.length){
+              if (e.target.files && e.target.files.length) {
                 setFilenameText(`${e.target.files[0].name} has been uploaded`);
               }
             }}
             onClick={(e: any) => {
-              e.target.value=null;
+              e.target.value = null;
             }}
           />
         </BulkChangesWrapper>
         : <div>
-      This view is temporarily restricted to Game of Phones Product Owners and Admins
+          This view is temporarily restricted to Game of Phones Product Owners and Admins
         </div>
       }
     </>

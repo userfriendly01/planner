@@ -2,7 +2,10 @@ import BulkUpdateForm from "../BulkUpdateForm";
 import { updateSelectedTemplates } from "../../BulkUtils";
 import {
   BulkUpdateAttributes,
-  BulkUpdateManager
+  BulkUpdateDefaultSkills,
+  BulkUpdateManager,
+  BulkUpdateCallerStates,
+  BulkUpdateHrSync
 } from "../";
 import { getUpdateTemplates } from "../../BulkTemplates";
 import { Dropdown } from "components";
@@ -19,7 +22,10 @@ jest.mock("../../BulkUtils", () => ({
 
 jest.mock("../", () => ({
   BulkUpdateAttributes: jest.fn(),
-  BulkUpdateManager: jest.fn()
+  BulkUpdateManager: jest.fn(),
+  BulkUpdateDefaultSkills: jest.fn(),
+  BulkUpdateCallerStates: jest.fn(),
+  BulkUpdateHrSync: jest.fn(),
 }));
 
 jest.mock("components", () => ({
@@ -38,6 +44,8 @@ jest.mock("@mui/material", () => ({
 const mockTemplate = { name: "active template" };
 const mockSetSelectedTemplates = jest.fn();
 const updateTemplates = getUpdateTemplates();
+const mockSetUploadedForm = jest.fn();
+const mockSetShowTemplates = jest.fn();
 
 describe("<BulkUpdateForm />", () => {
   beforeEach(() => {
@@ -45,13 +53,18 @@ describe("<BulkUpdateForm />", () => {
     setupMockedComponents({
       Dropdown,
       BulkUpdateAttributes,
-      BulkUpdateManager
+      BulkUpdateManager,
+      BulkUpdateDefaultSkills,
+      BulkUpdateCallerStates,
+      BulkUpdateHrSync
     });
   });
 
   const renderComponent = selectedTemplates => {
     return render(
       <BulkUpdateForm
+        setUploadedForm={mockSetUploadedForm}
+        setShowTemplates={mockSetShowTemplates}
         selectedTemplates={selectedTemplates}
         setSelectedTemplates={mockSetSelectedTemplates}
       />
@@ -81,6 +94,10 @@ describe("<BulkUpdateForm />", () => {
           {
             label: "Update Caller States",
             value: updateTemplates.UPDATE_CALLER_STATES
+          },
+          {
+            label: "Sync Hr Attributes",
+            value: updateTemplates.SYNC_HR_ATTRIBUTES
           }
         ]));
       });
@@ -102,6 +119,8 @@ describe("<BulkUpdateForm />", () => {
       expect(BulkUpdateAttributes).toHaveBeenCalledTimes(1);
       expect(JSON.stringify(BulkUpdateAttributes.mock.calls[0][0].template)).toBe(JSON.stringify(updateTemplates.UPDATE_WORKER_ATTRIBUTE));
       expect(BulkUpdateAttributes.mock.calls[0][0].selectedTemplates).toStrictEqual([]);
+      expect(mockSetSelectedTemplates).toHaveBeenCalledTimes(1);
+      expect(mockSetUploadedForm).toHaveBeenCalledTimes(1);
     });
     describe("replaceTemplate is called", () => {
       test("should call updateSetTemplates with expected parameters", () => {
@@ -217,6 +236,71 @@ describe("<BulkUpdateForm />", () => {
         expect(updateSelectedTemplates).toHaveBeenCalledTimes(1);
         expect(updateSelectedTemplates).toHaveBeenCalledWith(false, mockTemplate, [updateTemplates.UPDATE_WORKER_ATTRIBUTE], mockSetSelectedTemplates);
       });
+    });
+  });
+  describe("Template Dropdown is updated to UPDATE_DEFAULT_SKILLS", () => {
+    test("Should update dropdown with updated value", () => {
+      renderComponent([]);
+      expect(Dropdown.mock.calls.length).toBe(1);
+      expect(Dropdown.mock.calls[0][0].value).toBe("");
+      const onTemplateChange = Dropdown.mock.calls[0][0].updateValue;
+      act(() => onTemplateChange(null, { value: updateTemplates.UPDATE_DEFAULT_SKILLS }));
+      expect(Dropdown.mock.calls.length).toBe(2);
+      expect(JSON.stringify(Dropdown.mock.calls[1][0].value)).toBe(JSON.stringify({
+        label: "Update Default Skills",
+        value: updateTemplates.UPDATE_DEFAULT_SKILLS
+      }));
+      expect(BulkUpdateAttributes).toHaveBeenCalledTimes(0);
+      expect(BulkUpdateDefaultSkills).toHaveBeenCalledTimes(1);
+      expect(JSON.stringify(BulkUpdateDefaultSkills.mock.calls[0][0].template)).toBe(JSON.stringify(updateTemplates.UPDATE_DEFAULT_SKILLS));
+      expect(BulkUpdateDefaultSkills.mock.calls[0][0].selectedTemplates).toStrictEqual([]);
+    });
+  });
+  describe("Template Dropdown is updated to UPDATE_CALLER_STATES", () => {
+    test("Should update dropdown with updated value", () => {
+      renderComponent([]);
+      expect(Dropdown.mock.calls.length).toBe(1);
+      expect(Dropdown.mock.calls[0][0].value).toBe("");
+      const onTemplateChange = Dropdown.mock.calls[0][0].updateValue;
+      act(() => onTemplateChange(null, { value: updateTemplates.UPDATE_CALLER_STATES }));
+      expect(Dropdown.mock.calls.length).toBe(2);
+      expect(JSON.stringify(Dropdown.mock.calls[1][0].value)).toBe(JSON.stringify({
+        label: "Update Caller States",
+        value: updateTemplates.UPDATE_CALLER_STATES
+      }));
+      expect(BulkUpdateAttributes).toHaveBeenCalledTimes(0);
+      expect(BulkUpdateCallerStates).toHaveBeenCalledTimes(1);
+      expect(JSON.stringify(BulkUpdateCallerStates.mock.calls[0][0].template)).toBe(JSON.stringify(updateTemplates.UPDATE_CALLER_STATES));
+      expect(BulkUpdateCallerStates.mock.calls[0][0].selectedTemplates).toStrictEqual([]);
+    });
+  });
+  describe("Template Dropdown is updated to SYNC_HR_ATTRIBUTES", () => {
+    test("Should update dropdown with updated value", () => {
+      renderComponent([]);
+      expect(Dropdown.mock.calls.length).toBe(1);
+      expect(Dropdown.mock.calls[0][0].value).toBe("");
+      const onTemplateChange = Dropdown.mock.calls[0][0].updateValue;
+      act(() => onTemplateChange(null, { value: updateTemplates.SYNC_HR_ATTRIBUTES }));
+      expect(Dropdown.mock.calls.length).toBe(2);
+      expect(JSON.stringify(Dropdown.mock.calls[1][0].value)).toBe(JSON.stringify({
+        label: "Sync Hr Attributes",
+        value: updateTemplates.SYNC_HR_ATTRIBUTES
+      }));
+      expect(BulkUpdateAttributes).toHaveBeenCalledTimes(0);
+      expect(BulkUpdateHrSync).toHaveBeenCalledTimes(1);
+      expect(JSON.stringify(BulkUpdateHrSync.mock.calls[0][0].template)).toBe(JSON.stringify(updateTemplates.SYNC_HR_ATTRIBUTES));
+      expect(BulkUpdateHrSync.mock.calls[0][0].selectedTemplates).toStrictEqual([]);
+    });
+  });
+  describe("Template Dropdown is updated to null", () => {
+    test("Should update dropdown with updated value", () => {
+      renderComponent([]);
+      expect(Dropdown.mock.calls.length).toBe(1);
+      expect(Dropdown.mock.calls[0][0].value).toBe("");
+      const onTemplateChange = Dropdown.mock.calls[0][0].updateValue;
+      act(() => onTemplateChange(null, null));
+      expect(mockSetSelectedTemplates).toHaveBeenCalledTimes(1);
+      expect(mockSetUploadedForm).toHaveBeenCalledTimes(1);
     });
   });
 });
