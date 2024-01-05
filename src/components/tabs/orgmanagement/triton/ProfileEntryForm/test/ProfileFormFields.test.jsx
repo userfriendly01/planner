@@ -16,7 +16,8 @@ import {
   ProfileNameTextField,
   ProfileOperatingUnitField,
   ProfileQueuesSelectField,
-  StyledButton
+  StyledButton,
+  PhoneNumberInput
 } from "components";
 import {
   act,
@@ -37,7 +38,8 @@ jest.mock("components", () => ({
   ProfileQueuesSelectField: jest.fn(),
   ProfileCallTagsSelectField: jest.fn(),
   OverflowSkillTextField: jest.fn(),
-  StyledButton: jest.fn()
+  StyledButton: jest.fn(),
+  PhoneNumberInput: jest.fn()
 }));
 
 jest.mock("context", () => ({
@@ -66,6 +68,7 @@ describe("<ProfileFormFields />", () => {
       ProfileQueuesSelectField,
       OverflowSkillTextField,
       FormControlLabel,
+      PhoneNumberInput,
       Switch,
       Tooltip,
       StyledButton
@@ -92,6 +95,7 @@ describe("<ProfileFormFields />", () => {
       expectMockedComponent(rendered, { ProfileQueuesSelectField });
       expectMockedComponent(rendered, { ProfileCallTagsSelectField });
       expectMockedComponent(rendered, { ProfileAccessGroupField });
+      expectMockedComponent(rendered, { PhoneNumberInput });
       expectMockedComponent(rendered, { Tooltip }, 1);
     });
     test("Few switch are on by default, like auto answered", () => {
@@ -164,6 +168,22 @@ describe("<ProfileFormFields />", () => {
         expect(mockSetForm).toHaveBeenCalledTimes(1);
         // eslint-disable-next-line object-curly-spacing, object-curly-newline, object-property-newline
         expect(mockSetForm).toHaveBeenCalledWith({"payload": 123, "type": "UPDATE_ACCESS_GROUP_ID"});
+      });
+    });
+    test("When phone number input is changed, state change should be fired", () => {
+      renderComponent();
+      act(() => {
+        const updateForwardToNum = PhoneNumberInput.mock.calls[0][0].updateValue;
+        updateForwardToNum("(123) 123-1234", "1231231234", true, "+11231231234");
+        expect(mockSetForm).toHaveBeenCalledTimes(1);
+        expect(mockSetForm).toHaveBeenCalledWith({"payload": {
+          maskedValue: "(123) 123-1234",
+          unmaskedValue: "1231231234",
+          isValid: true,
+          e164Number: "+11231231234"
+        },
+        "type": "UPDATE_FORWARD_TO_NUM"
+        });
       });
     });
   });

@@ -27,7 +27,9 @@ export interface ProfileFormButtonsProps {
 export interface FieldState {
   value: any,
   updated?: boolean,
-  valid?: boolean
+  valid?: boolean,
+  e164?: string,
+  unmaskedValue?: string,
 }
 
 export interface TextFieldProps {
@@ -66,6 +68,7 @@ export interface ProfileEntryFormState {
   eftAuthorization: FieldState,
   claimNumberEdit: FieldState,
   formMode: string,
+  forwardToNum: FieldState,
   inboundRecorded: FieldState,
   manualRecorded: FieldState,
   manualRecordedInbound: FieldState,

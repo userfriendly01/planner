@@ -120,6 +120,10 @@ export const profileTableColumnHeader = [
   {
     COLUMN_NAME: "Operating Unit",
     TOOLTIP: "Which OU a profile is assigned to"
+  },
+  {
+    COLUMN_NAME: "Forward to Number",
+    TOOLTIP: "Default forward to number to be used when no overflow skill exists"
   }
 ];
 

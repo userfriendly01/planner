@@ -64,6 +64,13 @@ export const initialProfileEntryFormState = {
   transferQueues: [],
   accessGroup: {
     value: false
+  },
+  forwardToNum: {
+    value: "",
+    e164: "",
+    unmaskedValue: null,
+    updated: false,
+    valid: false
   }
 };
 

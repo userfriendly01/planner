@@ -300,7 +300,11 @@ describe("profileUtils", () => {
         updated: true
       },
       accessGroupId: 2,
-      accessGroupIdUpdated: true
+      accessGroupIdUpdated: true,
+      forwardToNum: {
+        updated: true,
+        unmaskedValue: "5555551234"
+      }
     };
     const expected = {
       activities: [1, 7, 12],
@@ -348,7 +352,8 @@ describe("profileUtils", () => {
       ],
       access_group: true,
       voice_mail_transcription_i: false,
-      access_group_id: 2
+      access_group_id: 2,
+      fwd_to_num: "5555551234"
     };
 
     test("should return a formatted call tag with one underscore", () => {
@@ -478,7 +483,11 @@ describe("profileUtils", () => {
         updated: true
       },
       accessGroupId: 2,
-      accessGroupIdUpdated: true
+      accessGroupIdUpdated: true,
+      forwardToNum: {
+        updated: true,
+        unmaskedValue: "8881231234"
+      }
     };
 
     const expected = {
@@ -524,7 +533,8 @@ describe("profileUtils", () => {
         }
       ],
       voice_mail_transcription_i: false,
-      access_group_id: 2
+      access_group_id: 2,
+      fwd_to_num: "8881231234"
     };
 
     test("should return a formatted call tag with one underscore", () => {

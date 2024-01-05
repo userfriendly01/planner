@@ -23,7 +23,8 @@ export const profileEntryFormActions = {
   UPDATE_ACCESS_GROUP_ID: "UPDATE_ACCESS_GROUP_ID",
   UPDATE_ACTIVITIES_LIST: "UPDATE_ACTIVITIES_LIST",
   UPDATE_CALL_TAGS_LIST: "UPDATE_CALL_TAGS_LIST",
-  UPDATE_TRANSFER_QUEUES: "UPDATE_TRANSFER_QUEUES"
+  UPDATE_TRANSFER_QUEUES: "UPDATE_TRANSFER_QUEUES",
+  UPDATE_FORWARD_TO_NUM: "UPDATE_FORWARD_TO_NUM"
 };
 
 export const initialProfileEntryFormState: ProfileEntryFormState = {
@@ -73,7 +74,7 @@ export const initialProfileEntryFormState: ProfileEntryFormState = {
   },
   eftAuthorization: {
     value: false
-  },  
+  },
   claimNumberEdit: {
     value: false
   },
@@ -90,7 +91,13 @@ export const initialProfileEntryFormState: ProfileEntryFormState = {
   accessGroup: {
     value: false
   },
-  accessGroupId: null
+  accessGroupId: null,
+  forwardToNum: {
+    value: "",
+    unmaskedValue: null,
+    e164: "",
+    updated: false
+  }
 };
 
 export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Action): ProfileEntryFormState => {
@@ -172,6 +179,22 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         accessGroupIdUpdated: true
       };
     }
+    case profileEntryFormActions.UPDATE_FORWARD_TO_NUM: {
+      const value = action.payload.maskedValue;
+      const isValid = action.payload.isValid;
+      const e164 = action.payload.e164Number;
+      const unmaskedValue = action.payload.unmaskedValue || null;
+      return {
+        ...state,
+        forwardToNum: {
+          value,
+          e164,
+          unmaskedValue,
+          updated: true,
+          valid: isValid && (e164 ? true : false)
+        }
+      };
+    }
     case profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE: {
       const profile = action.payload.profile;
 
@@ -201,7 +224,7 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
           ctmSkillDisplayName: queue.aggregate_queues_nme
         };
       });
-
+      console.log("EDIT FORM", profile)
       return {
         ...state,
         profileId: profile.profile_id,
@@ -237,7 +260,13 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
           ou_sid: profile.operating_unit_sid
         },
         accessGroupId: profile.access_group_id,
-        accessGroup: { value: profile.access_group_id ? true : false }
+        accessGroup: { value: profile.access_group_id ? true : false },
+        forwardToNum: {
+          value: profile.fwd_to_num ? profile.fwd_to_num : "",
+          e164: profile.fwd_to_num ? `+1${profile.fwd_to_num}` : "",
+          unmaskedValue: profile.fwd_to_num ? profile.fwd_to_num : null,
+          updated: false
+        }
       };
     }
     default:
