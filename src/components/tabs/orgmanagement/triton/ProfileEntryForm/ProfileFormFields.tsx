@@ -108,7 +108,7 @@ const ProfileFormFields = () => {
       label: "Claim Number Edit"
     }
   ];
-console.log("PROFILE FORM", form);
+
   return (
     <FormControlsContainer>
       <FormControlsPane>
@@ -224,7 +224,6 @@ console.log("PROFILE FORM", form);
           });
         }} />
         <PhoneNumberInput
-          disabled={form.formMode === formModes.DELETE}
           allowSevenDigitVdn={false}
           id="forward-to-num"
           number={form["forwardToNum"].value}

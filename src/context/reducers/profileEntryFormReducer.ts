@@ -224,7 +224,7 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
           ctmSkillDisplayName: queue.aggregate_queues_nme
         };
       });
-      console.log("EDIT FORM", profile)
+
       return {
         ...state,
         profileId: profile.profile_id,
