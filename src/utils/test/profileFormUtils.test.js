@@ -62,7 +62,11 @@ describe("isProfileFormValid", () => {
         updated: true
       },
       accessGroupId: 2,
-      accessGroupIdUpdated: true
+      accessGroupIdUpdated: true,
+      forwardToNum: {
+        unmaskedValue: "8005551212",
+        valid: true
+      }
     };
     const result = isProfileFormValid(form);
     expect(result).toBe(true);
@@ -86,7 +90,11 @@ describe("isProfileFormValid", () => {
         updated: false
       },
       accessGroupId: null,
-      accessGroupIdUpdated: false
+      accessGroupIdUpdated: false,
+      forwardToNum: {
+        unmaskedValue: "8005551212",
+        valid: true
+      }
     };
     const result = isProfileFormValid(form);
     expect(result).toBe(true);
@@ -105,6 +113,10 @@ describe("isProfileFormValid", () => {
       accessGroup: {
         value: false,
         updated: false
+      },
+      forwardToNum: {
+        unmaskedValue: "8005551212",
+        valid: true
       }
     };
     const result = isProfileFormValid(form);
@@ -119,6 +131,10 @@ describe("isProfileFormValid", () => {
       callTagsList: [],
       operatingUnit: {
         ou_name: "nothing"
+      },
+      forwardToNum: {
+        unmaskedValue: "8005551212",
+        valid: true
       }
     };
     const result = isProfileFormValid(form);
@@ -133,6 +149,10 @@ describe("isProfileFormValid", () => {
       callTagsList: [],
       operatingUnit: {
         ou_name: "nothing"
+      },
+      forwardToNum: {
+        unmaskedValue: "8005551212",
+        valid: true
       }
     };
     const result = isProfileFormValid(form);
@@ -147,6 +167,10 @@ describe("isProfileFormValid", () => {
       callTagsList: [],
       operatingUnit: {
         ou_name: "nothing"
+      },
+      forwardToNum: {
+        unmaskedValue: "8005551212",
+        valid: true
       }
     };
     const result = isProfileFormValid(form);
@@ -161,6 +185,10 @@ describe("isProfileFormValid", () => {
       callTagsList: [],
       operatingUnit: {
         ou_name: "nothing"
+      },
+      forwardToNum: {
+        unmaskedValue: "8005551212",
+        valid: true
       }
     };
     const result = isProfileFormValid(form);
@@ -179,6 +207,10 @@ describe("isProfileFormValid", () => {
       }],
       operatingUnit: {
         ou_name: "nothing"
+      },
+      forwardToNum: {
+        unmaskedValue: "8005551212",
+        valid: true
       }
     };
     const result = isProfileFormValid(form);
@@ -199,9 +231,61 @@ describe("isProfileFormValid", () => {
         updated: true
       },
       accessGroupId: null,
-      accessGroupIdUpdated: true
+      accessGroupIdUpdated: true,
+      forwardToNum: {
+        unmaskedValue: "8005551212",
+        valid: true
+      }
     };
     const result = isProfileFormValid(form);
     expect(result).toBe(false);
+  });
+  test("should return false when forwardToNum valid is false", () => {
+    const form = {
+      activitiesList: [2,3],
+      profileName: { valid: true },
+      overflowSkill: { valid: true },
+      acwDataEntry: { value: false },
+      callTagsList: [],
+      operatingUnit: {
+        ou_name: "nothing"
+      },
+      accessGroup: {
+        value: false,
+        updated: false
+      },
+      accessGroupId: null,
+      accessGroupIdUpdated: true,
+      forwardToNum: {
+        unmaskedValue: "blargh",
+        valid: false
+      }
+    };
+    const result = isProfileFormValid(form);
+    expect(result).toBe(false);
+  });
+  test("should return true when forwardToNum unmasked value is null", () => {
+    const form = {
+      activitiesList: [2,3],
+      profileName: { valid: true },
+      overflowSkill: { valid: true },
+      acwDataEntry: { value: false },
+      callTagsList: [],
+      operatingUnit: {
+        ou_name: "nothing"
+      },
+      accessGroup: {
+        value: false,
+        updated: false
+      },
+      accessGroupId: null,
+      accessGroupIdUpdated: true,
+      forwardToNum: {
+        unmaskedValue: null,
+        valid: false
+      }
+    };
+    const result = isProfileFormValid(form);
+    expect(result).toBe(true);
   });
 });
