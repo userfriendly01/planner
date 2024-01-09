@@ -112,6 +112,7 @@ describe("<ProfileSettingsTable />", () => {
         data: [1],
         type: "Buffer"
       },
+      fwd_to_num: null,
       manual_record_inbound_i: {
         data: [1],
         type: "Buffer"
@@ -152,14 +153,14 @@ describe("<ProfileSettingsTable />", () => {
     }
   ];
 
-  const renderComponent = Nid => {
-    const rendered = render(<ProfileSettingsTable profileList={profiles} loggedInRep={Nid} setProfileModalState={setProfileModalState}/>);
+  const renderComponent = (Nid, profileList) => {
+    const rendered = render(<ProfileSettingsTable profileList={profileList} loggedInRep={Nid} setProfileModalState={setProfileModalState}/>);
     return rendered;
   };
 
   describe("profile settings table", () => {
     test("should render correct column headers and number of rows", async () => {
-      const rendered = renderComponent(validNid);
+      const rendered = renderComponent(validNid, profiles);
       expect(rendered.getByText("ID", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Name", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Inbound Recorded", { selector: "th" })).toBeInTheDocument();
@@ -186,11 +187,11 @@ describe("<ProfileSettingsTable />", () => {
       const tableRows = rendered.getAllByTestId("table-row");
       const tableHeaders = rendered.getAllByTestId("table-header");
       expect(tableRows.length).toBe(1);
-      expect(tableHeaders.length).toBe(23);
+      expect(tableHeaders.length).toBe(24);
     });
 
     test("should render correct tooltips", async () => {
-      const rendered = renderComponent(validNid);
+      const rendered = renderComponent(validNid, profiles);
       expect(rendered.getByLabelText("Unique Profile Identification")).toBeInTheDocument();
       expect(rendered.getByLabelText("Profile Name")).toBeInTheDocument();
       expect(rendered.getByLabelText("All inbound calls are automatically recorded")).toBeInTheDocument();
@@ -213,13 +214,23 @@ describe("<ProfileSettingsTable />", () => {
       expect(rendered.getByLabelText("Profile Activities")).toBeInTheDocument();
       expect(rendered.getByLabelText("UI Feature: Additional transfer queues that will appear in the Triton queue ticker")).toBeInTheDocument();
       expect(rendered.getByLabelText("Which OU a profile is assigned to")).toBeInTheDocument();
+      expect(rendered.getByLabelText("Default forward to number to be used when no overflow skill exists")).toBeInTheDocument();
     });
 
     test("should render row data", async () => {
-      const rendered = renderComponent(validNid);
+      const rendered = renderComponent(validNid, profiles);
       expect(rendered.container).toHaveTextContent("1");
       expect(rendered.container).toHaveTextContent("Game of Phones");
       expect(rendered.container).toHaveTextContent("Test Overflow Skill");
+    });
+    test("should render row data, null fwd_to_num", async () => {
+      const noForwardTo = [...profiles];
+      noForwardTo[0].fwd_to_num = "5555551234";
+      const rendered = renderComponent(validNid, profiles);
+      expect(rendered.container).toHaveTextContent("1");
+      expect(rendered.container).toHaveTextContent("Game of Phones");
+      expect(rendered.container).toHaveTextContent("Test Overflow Skill");
+      expect(rendered.container).toHaveTextContent("(555) 555-1234");
     });
   });
 
@@ -227,7 +238,7 @@ describe("<ProfileSettingsTable />", () => {
     describe("invalid NNumber", () => {
       test("does not render any edit icons for an invalidNid", () => {
         const invalidNid = "n0288362";
-        const rendered = renderComponent(invalidNid);
+        const rendered = renderComponent(invalidNid, profiles);
         expect(rendered.queryAllByTestId("edit-button")).toHaveLength(0);
       });
     });
@@ -236,7 +247,7 @@ describe("<ProfileSettingsTable />", () => {
         checkIfPO.mockReturnValue(true);
       });
       test("when clicked in row should show ProfileEntryForm for corresponding profile", () => {
-        const rendered = renderComponent(validNid);
+        const rendered = renderComponent(validNid, profiles);
         const editButtons = rendered.getAllByTestId("edit-button");
         expectMockedComponent(rendered, { ProfileEntryForm }, 0);
         const indexClicked = 0;
@@ -246,7 +257,7 @@ describe("<ProfileSettingsTable />", () => {
         });
       });
       test("renders an edit icon per profile for a validNid", () => {
-        const rendered = renderComponent(validNid);
+        const rendered = renderComponent(validNid, profiles);
         expect(rendered.queryAllByTestId("edit-button")).toHaveLength(1);
       });
     });

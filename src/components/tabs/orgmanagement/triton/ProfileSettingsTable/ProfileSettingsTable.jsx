@@ -20,7 +20,8 @@ import {
   formatSimpleText,
   formatActivityData,
   sortProfilesById,
-  formatSelfServiceIndicatorData
+  formatSelfServiceIndicatorData,
+  formatTenDigitNumber
 } from "utils";
 import { Tooltip } from "@mui/material";
 import { Edit } from "@mui/icons-material";
@@ -154,7 +155,11 @@ const ProfileSettingsTable = props => {
                     </CustomTableData>
                     <CustomTableData>
                       <TableText>{formatSimpleText(profile?.operating_unit_nme)}</TableText>
-                    </CustomTableData>{
+                    </CustomTableData>
+                    <CustomTableData>
+                      <TableText style={{ "text-wrap": "nowrap" }}>{profile.fwd_to_num ? formatTenDigitNumber(profile.fwd_to_num) : ""}</TableText>
+                    </CustomTableData>
+                    {
                       checkIfPO(loggedInUser, environment) ?
                         <CustomTableData>
                           <IconWrapper onClick={editButtonOnClick(profile)} data-testid="edit-button">

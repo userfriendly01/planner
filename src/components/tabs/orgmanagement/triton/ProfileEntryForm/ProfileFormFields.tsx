@@ -30,7 +30,8 @@ import {
   ProfileCallTagsSelectField,
   ProfileQueuesSelectField,
   ProfileOperatingUnitField,
-  OverflowSkillTextField
+  OverflowSkillTextField,
+  PhoneNumberInput
 } from "components";
 
 const ProfileFormFields = () => {
@@ -222,6 +223,24 @@ const ProfileFormFields = () => {
             payload: accessGroupId
           });
         }} />
+        <PhoneNumberInput
+          allowSevenDigitVdn={false}
+          id="forward-to-num"
+          number={form["forwardToNum"].value}
+          label="Forward To Number"
+          showError={form["forwardToNum"].value && !form["forwardToNum"].valid}
+          updateValue={(maskedValue: string, _unmaskedValue: string, isValid: boolean, e164Number: string) => {
+            setForm({
+              type: profileEntryFormActions.UPDATE_FORWARD_TO_NUM,
+              payload: {
+                maskedValue,
+                unmaskedValue: _unmaskedValue,
+                isValid,
+                e164Number
+              }
+            });
+          }}
+        />
       </RightColumn>
     </FormControlsContainer>
   );

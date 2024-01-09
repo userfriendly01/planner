@@ -124,7 +124,8 @@ export const createProfilePayload = form => {
     aggregateQueues: form.transferQueues.filter(queue => queue.ctmSkillId < 0).map(queue => Math.abs(queue.ctmSkillId)),
     operating_unit_sid: form.operatingUnit.ou_sid,
     operating_unit_nme: form.operatingUnit.ou_name,
-    access_group_id: form.accessGroup.value ? form.accessGroupId : null
+    access_group_id: form.accessGroup.value ? form.accessGroupId : null,
+    fwd_to_num: form.forwardToNum.unmaskedValue ? form.forwardToNum.unmaskedValue : null
   };
 };
 
@@ -168,5 +169,6 @@ export const updateProfilePayload = form => {
   }) : null;
   logger.log(form.accessGroupIdUpdated,"****form.accessGroupId*****",form.accessGroupId);
   form.accessGroupIdUpdated ? payload.access_group_id = form.accessGroupId : null;
+  form.forwardToNum.updated ? payload.fwd_to_num = form.forwardToNum.unmaskedValue : null;
   return payload;
 };
