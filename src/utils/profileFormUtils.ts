@@ -3,6 +3,7 @@ import { ProfileEntryFormState } from "components/tabs/orgmanagement/triton/Prof
 export const isProfileFormValid = (form: ProfileEntryFormState): boolean => {
   if (form.operatingUnit.ou_name && form.activitiesList.length
     && form.profileName.valid && form.overflowSkill.valid
+    && (form.forwardToNum.valid || !form.forwardToNum.unmaskedValue) // allow null
     && ((form.acwDataEntry.value === true && form.callTagsList.length) || (form.acwDataEntry.value === false && !form.callTagsList.length))
     && ((form.accessGroup.value === true && form.accessGroupId) || form.accessGroup.value === false)) {
     return true;
