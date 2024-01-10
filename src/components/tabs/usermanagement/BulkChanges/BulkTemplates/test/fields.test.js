@@ -291,12 +291,13 @@ describe("fields.js", () => {
           try {
             await NNumberValidateFunction({
               boo: "ya",
-              rowNumber: 1
+              rowNumber: 1,
+              workerSid: "WK12345"
             }, initialTestState);
           } catch (e) {
             expect(e).toEqual(JSON.stringify({
-              rowNumber: 1,
-              error: "N Number is missing from row 1"
+              rowNumber: "NA",
+              error: "N Number is missing from Triton Worker WK12345"
             }));
             expect(fetchUser).toHaveBeenCalledTimes(0);
           }
@@ -305,12 +306,13 @@ describe("fields.js", () => {
           try {
             await NNumberValidateFunction({
               rowNumber: 1,
-              "N Number": 12
+              "N Number": 12,
+              workerSid: "WK12345"
             }, initialTestState);
           } catch (e) {
             expect(e).toEqual(JSON.stringify({
-              rowNumber: 1,
-              error: "N Number is not in the valid n number format for row 1"
+              rowNumber: "NA",
+              error: "N Number is not in the valid n number format on Triton worker WK12345"
             }));
             expect(fetchUser).toHaveBeenCalledTimes(0);
           }
@@ -319,12 +321,13 @@ describe("fields.js", () => {
           try {
             await NNumberValidateFunction({
               rowNumber: 1,
+              workerSid: "WK12345",
               "N Number": "superlongnnumber"
             }, initialTestState);
           } catch (e) {
             expect(e).toEqual(JSON.stringify({
-              rowNumber: 1,
-              error: "N Number is not in the valid n number format for row 1"
+              rowNumber: "NA",
+              error: "N Number is not in the valid n number format on Triton worker WK12345"
             }));
             expect(fetchUser).toHaveBeenCalledTimes(0);
           }
@@ -334,28 +337,15 @@ describe("fields.js", () => {
           try {
             await NNumberValidateFunction({
               rowNumber: 4,
+              workerSid: "WK12345",
               "N Number": "n1234568"
             }, initialTestState);
           } catch (e) {
             expect(e).toEqual(JSON.stringify({
-              rowNumber: 4,
-              error: "Error thrown fetching N Number from HR Database for row 4"
+              rowNumber: "NA",
+              error: "Error thrown fetching N Number from HR Database for n1234568"
             }));
             expect(fetchUser).toHaveBeenCalledTimes(1);
-          }
-        });
-        test("worker doesnt exist, reject with error", async () => {
-          try {
-            await NNumberValidateFunction({
-              rowNumber: 4,
-              "N Number": "n0002342"
-            }, initialTestState);
-          } catch (e) {
-            expect(e).toEqual(JSON.stringify({
-              rowNumber: 4,
-              error: "n0002342 does not have a Triton record to sync row 4"
-            }));
-            expect(fetchUser).toHaveBeenCalledTimes(0);
           }
         });
         test("fetch returns successful response, resolves with field is valid message", async () => {
@@ -374,10 +364,11 @@ describe("fields.js", () => {
           });
           const row = {
             rowNumber: 1,
+            workerSid: "WK12345",
             "N Number": "n1234568"
           };
           const result = await NNumberValidateFunction(row, initialTestState);
-          expect(result).toEqual("N Number Valid for row 1");
+          expect(result).toEqual("N Number Valid for WK12345");
           expect(row).toEqual({
             ...row,
             attributes: {
@@ -412,10 +403,11 @@ describe("fields.js", () => {
           const row = {
             rowNumber: 1,
             "N Number": "n1234568",
+            workerSid: "WK12345",
             attributes: existingAttributes
           };
           const result = await NNumberValidateFunction(row, initialTestState);
-          expect(result).toEqual("N Number Valid for row 1");
+          expect(result).toEqual("N Number Valid for WK12345");
           expect(row).toEqual({
             ...row,
             attributes: {

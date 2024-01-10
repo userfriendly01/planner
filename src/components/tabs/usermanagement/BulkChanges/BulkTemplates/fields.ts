@@ -23,7 +23,7 @@ import {
   Fields
 } from "../BulkChanges.Interfaces";
 
-const rejectPromise = (error: string, rowNumber: number) => {
+const rejectPromise = (error: string, rowNumber: number | string) => {
   return Promise.reject(JSON.stringify({
     rowNumber: rowNumber,
     error
@@ -135,19 +135,16 @@ export const FIELDS: Fields = {
     example: "n0263786",
     options: null,
     validateFunction: async (row: any, state: any): Promise<any> => {
-      const rowNumber = row.rowNumber;
       const fieldName = "N Number";
       const field = cleanupField(row[fieldName], "string");
-      const worker = state.workerContext.workers.find((w: any) => cleanupField(w.attributes.n_number, "string") === field);
+
       if (!row.attributes) {
         row.attributes = {};
       }
       if (!field) {
-        return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
+        return rejectPromise(`${fieldName} is missing from Triton Worker ${row.workerSid}`, "NA");
       } else if (typeof field !== "string" || field.length !== 8) {
-        return rejectPromise(`${fieldName} is not in the valid n number format for row ${rowNumber}`, rowNumber);
-      } else if (!worker) {
-        return rejectPromise(`${field} does not have a Triton record to sync row ${rowNumber}`, rowNumber);
+        return rejectPromise(`${fieldName} is not in the valid n number format on Triton worker ${row.workerSid}`, "NA");
       } else {
         try {
           const fetchedUser = await fetchUser(field);
@@ -170,10 +167,10 @@ export const FIELDS: Fields = {
           row.attributes.adLogin = `LM\\${field.toLowerCase()}`;
           row.attributes.firstName = fetchedUser.firstName;
           row.attributes.lastName = fetchedUser.lastName;
-          return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
+          return Promise.resolve(`${fieldName} Valid for ${row.workerSid}`);
         } catch (error) {
           logger.error(error.message, { error }, false);
-          return rejectPromise(`Error thrown fetching ${fieldName} from HR Database for row ${rowNumber}`, rowNumber);
+          return rejectPromise(`Error thrown fetching ${fieldName} from HR Database for ${field}`, "NA");
         }
       }
     }
