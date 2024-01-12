@@ -19,7 +19,8 @@ export const FLOW_MASTER_DATA = "FLOW_MASTER_DATA";
 export const languageOffer = ["English", "Spanish"];
 export const userDestination = ["Avaya", "Twilio"];
 export const flowType = ["DID", "DRC", "LSC", "TFN"];
-export const tfnRoutingGroup = ["Premier Partners", "TruStage", "TruStageNavy", "USAA", "High Touch Products", "Online Inbound", "Core"];
+export const tfnRoutingGroup = ["Premier Partners", "TruStage", "TruStageNavy", "USAA", "High Touch Products", "Online Inbound", "Core",
+  "LSCAgentSales", "LSCBookTransfer", "LSCDirectSales", "LSCHomeInsDotCom", "LSCPriorityAgent", "LSCPriorityCampaigns", "LSCUSAA"];
 export const LAST_FLOW_MASTER_DATA_CACHED_DATE="LAST_FLOW_MASTER_DATA_CACHED_DATE";
 
 export const getAdvanceFilter = (storageKeyName: string): { [key: string]: undefined; } => {
