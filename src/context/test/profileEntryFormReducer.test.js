@@ -588,7 +588,8 @@ describe("profileEntryFormReducer", () => {
           value: "",
           e164: "",
           unmaskedValue: null,
-          updated: false
+          updated: false,
+          valid: true
         }
       };
       const action = {
@@ -859,7 +860,8 @@ describe("profileEntryFormReducer", () => {
           value: "5555551234",
           e164: "+15555551234",
           unmaskedValue: "5555551234",
-          updated: false
+          updated: false,
+          valid: true
         }
       };
       const action = {

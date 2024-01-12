@@ -96,7 +96,8 @@ export const initialProfileEntryFormState: ProfileEntryFormState = {
     value: "",
     unmaskedValue: null,
     e164: "",
-    updated: false
+    updated: false,
+    valid: true
   }
 };
 
@@ -265,7 +266,8 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
           value: profile.fwd_to_num ? profile.fwd_to_num : "",
           e164: profile.fwd_to_num ? `+1${profile.fwd_to_num}` : "",
           unmaskedValue: profile.fwd_to_num ? profile.fwd_to_num : null,
-          updated: false
+          updated: false,
+          valid: true
         }
       };
     }
