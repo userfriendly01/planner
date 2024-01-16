@@ -21,7 +21,8 @@ export const priority: string[] = ["1", "2", "3", "4", "5", "6", "7", "8", "9", 
 
 export const callerState: string[] = ["State", "OF", "HI"];
 
-export const tfnRoutingGroupAttr = ["Premier Partners", "TruStage", "TruStageNavy", "USAA", "High Touch Products", "Online Inbound", "Core"];
+export const tfnRoutingGroupAttr = ["Premier Partners", "TruStage", "TruStageNavy", "USAA", "High Touch Products", "Online Inbound", "Core",
+  "LSCAgentSales", "LSCBookTransfer", "LSCDirectSales", "LSCHomeInsDotCom", "LSCPriorityAgent", "LSCPriorityCampaigns", "LSCUSAA"];
 
 export const LAST_ROUTING_MASTER_DATA_CACHED_DATE="LAST_ROUTING_MASTER_DATA_CACHED_DATE";
 
