@@ -77,9 +77,9 @@ describe("configUtils.js", ()=>{
     const env = useAdminState().userContext.pingIdentity.environment;
     const endpoint = getGraphQLEndpoint();
     const endPointURI = new Map();
-    endPointURI.set("development","https://flyyckd74fauthoxf5fj23ko6m.appsync-api.us-east-1.amazonaws.com/graphql");
-    endPointURI.set("test","https://molg2ylkqrhtpniyfncvue57ha.appsync-api.us-east-1.amazonaws.com/graphql");
-    endPointURI.set("production", "https://23gxrcju6rfgvlzp6onvg2az5q.appsync-api.us-east-1.amazonaws.com/graphql");
+    endPointURI.set("development","https://tgufpgkyxvacrntvgb75iuo3pi.appsync-api.us-east-1.amazonaws.com/graphql");
+    endPointURI.set("test","https://bz5ilxf2ercznouchavqvh26nm.appsync-api.us-east-1.amazonaws.com/graphql");
+    endPointURI.set("production", "https://3k2iegyjmnfwxheh65ugy2vjt4.appsync-api.us-east-1.amazonaws.com/graphql");
     expect(endpoint).toBe(endPointURI.get(env));
   });
   test("Simulate cleanErrorMessage", ()=>{
