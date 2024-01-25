@@ -6,8 +6,6 @@ import { AlertBarProps } from "./interfaces";
 import {
   BrandNameMap, GraphQLErrors
 } from "globals";
-import {
-} from "authentication";
 
 /**
  *  This function return graphQL endpoint based on running environment  
