@@ -6,9 +6,6 @@ import { AlertBarProps } from "./interfaces";
 import {
   BrandNameMap, GraphQLErrors
 } from "globals";
-import {
-  getAdGroupPermissionMapping
-} from "authentication";
 
 /**
  *  This function return graphQL endpoint based on running environment  
@@ -17,9 +14,9 @@ import {
 export const getGraphQLEndpoint = (): string => {
   const env: string = useAdminState().userContext.pingIdentity.environment;
   return {
-    "development": "https://flyyckd74fauthoxf5fj23ko6m.appsync-api.us-east-1.amazonaws.com/graphql",
-    "test": "https://molg2ylkqrhtpniyfncvue57ha.appsync-api.us-east-1.amazonaws.com/graphql",
-    "production": "https://23gxrcju6rfgvlzp6onvg2az5q.appsync-api.us-east-1.amazonaws.com/graphql"
+    "development": "https://tgufpgkyxvacrntvgb75iuo3pi.appsync-api.us-east-1.amazonaws.com/graphql",
+    "test": "https://bz5ilxf2ercznouchavqvh26nm.appsync-api.us-east-1.amazonaws.com/graphql",
+    "production": "https://3k2iegyjmnfwxheh65ugy2vjt4.appsync-api.us-east-1.amazonaws.com/graphql"
   }[env];
 };
 
