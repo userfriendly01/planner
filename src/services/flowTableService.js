@@ -171,6 +171,7 @@ function updateFlowInput(item){
       officeNumbers: item.content?.officeNumbers
     },
     createTime: item.createTime,
+    updateTime: new Date().toISOString(),
     dialedDescription: item.dialedDescription,
     accountManager: item.accountManager || "",
     affinityVDN: item.affinityVDN || "",
@@ -544,6 +545,7 @@ const updateFlowBatchRun = async(items, accessToken, graphQlApiUrl) =>{
         dataRequests: item.content?.dataRequests
       },
       createTime: item.createTime,
+      updateTime: new Date().toISOString(),
       dialedDescription: item.dialedDescription,
       accountManager: item.accountManager || "",
       affinityVDN: item.affinityVDN || "",
