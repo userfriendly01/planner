@@ -1,0 +1,197 @@
+.data-grid-wrapper {
+    .data-grid-subhead {
+        padding-bottom: 10px;
+    }
+    .lm-Heading2 {
+        line-height: 0.3em;
+    }
+    .rdt_TableHeader {
+        background-color: #fff;
+        color: #343741;
+
+        & > :first-child {
+            display: none;
+        }
+        & > :last-child {
+            display: none;
+        }
+        & > div {
+            justify-content: space-between;
+        }
+    }
+
+    .rdt_Table {
+        &:hover {
+            border-width: 1px;
+        }
+    }
+
+    .succssMessage {
+        padding: 5px 10px;
+        margin-bottom: 11px;
+        font-size: 15px;
+        color: #270;
+        background-color: #DFF2BF;
+        border-radius: 5px;
+        display:flex;
+        justify-content: space-between;
+        .message {
+            display:flex;
+        }
+        .close-icon {
+            display:flex;
+            cursor: pointer;
+        }
+    }
+}
+
+.data-grid-modal {
+    width: 700px !important;
+}
+
+input {
+    height: 35px;
+    padding: 5px;
+    font-size: 14px;
+    border: 1px solid #0000003b;
+    width:95%;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+textarea {
+    height: 70px;
+    padding: 5px;
+    margin: 5px 2px;
+    width:95%;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #0000003b;
+    font-family: inherit;
+    color:inherit;
+    box-sizing: border-box;
+    resize: none;
+}
+
+button {
+    padding: 10px 22px;
+    margin-right: 10px;
+    border-radius: 5px;
+    color: #fff;
+    font-weight: bold;
+    background-color:#167F92;
+    border:1px solid #fff;
+    &:hover {
+        cursor:pointer;
+        color: #fff;
+        background-color:#017084e0;
+    }
+}
+
+
+.Toastify {
+    .success-toast {
+        width: 480px;
+    }
+}
+
+button:disabled,
+button[disabled]{
+    color: #ffffffad;
+    cursor: not-allowed;
+    pointer-events: all !important;
+}
+
+.rdt_TableBody {
+    box-shadow: 0px 2px 30px 0px rgba(0,0,0,0.4);
+    .rdt_TableRow {
+        box-shadow: 0px 0px 5px 0px RGB(0 0 0 / 10%) !important;
+        border-bottom: 1px solid #EAF3F3;
+        cursor: pointer;
+        transition: all .25s ease;
+        transition-property: box-shadow, transform, border-color;
+        &:hover {
+            cursor: pointer;
+            border-bottom: 1px solid #EAF3F3;
+            box-shadow: 0 0px 7px 0px hsl(225, 7%, 89%);
+            transform: translateY(-2px);
+        }
+    }
+
+    div.rdt_TableRow:nth-child(even) {
+        background-color: #EAF3F3;
+    }
+
+    &:hover {
+        cursor: pointer;
+        border-bottom: 1px solid #EAF3F3;
+        box-shadow: 0 0px 7px 0px hsl(225, 7%, 89%);
+        transform: translateY(-1px);
+    }
+
+}
+
+/*** GRID NAB BAR***/
+.data-table-top-bar {
+    display: flex;
+    flex: 0 0 100%;
+    margin-bottom: 3px;
+    margin-top: 10px;
+    justify-content: space-between;
+    .data-table-filter {
+        display: flex;
+       .select-range {
+            font-size: 15px;
+            text-align: center;
+            margin-top: 2px;
+            font-weight: bold;
+       }
+    }
+    .data-table-right {
+        display: flex;
+        .data-table-export{
+            display: flex;
+        }
+
+    }
+    input {
+        width: 90px;
+        text-align:center;
+        margin-right: 10px;
+    }
+
+}
+
+@media only screen and (max-width:800px) {
+    .data-table-wrapper {
+        .rdt_TableHeader {
+            padding-left:0 !important;
+        }
+    }
+
+    .data-grid-modal  {
+        width: 440px !important;
+        min-width: 440px !important;
+    }
+
+    .data-table-top-bar {
+        display: block;
+        .data-table-filter {
+            display: inline-block;
+        }
+        .data-table-export {
+            margin-top: 7px;
+            button {
+                width:120px;
+                text-align: center;
+            }
+        }
+        .data-table-right {
+            margin-top: 7px;
+            button {
+                width:180px;
+                text-align: center;
+            }
+            margin-top: 5px;
+        }
+    }
+}
