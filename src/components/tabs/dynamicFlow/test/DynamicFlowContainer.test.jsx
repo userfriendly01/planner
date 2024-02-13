@@ -4,7 +4,7 @@ import {
   initialTestState
 } from "testUtils";
 import { useAdminState } from "context";
-import { AlohaFlowContainer } from "../index";
+import { DynamicFlowContainer } from "../index";
 import { LoginInProgress } from "../../../core/AzureAuth/LoginInProgress";
 
 jest.mock("../../../core/AzureAuth/LoginInProgress", () => ({
@@ -34,29 +34,17 @@ const xhrMockClass = () => ({
 });
 
 window.XMLHttpRequest = jest.fn().mockImplementation(xhrMockClass);
-import DataGridFlow from "../DataGridFlow/DataGridFlow";
-
-
-jest.mock("../DataGridFlow/DataGridFlow", () => {
-  const originalModule = jest.requireActual("../DataGridFlow/DataGridFlow");
-
-  return {
-    __esModule: true,
-    ...originalModule,
-    default: jest.fn()
-  };
-});
 
 jest.mock("context", () => ({
   useAdminState: jest.fn()
 }));
 
 const renderComponent = () => render(
-  <AlohaFlowContainer />,
+  <DynamicFlowContainer />,
   initialTestState
 );
 
-describe("<AlohaFlowContainer />", () => {
+describe("<DynamicFlowContainer />", () => {
   beforeEach(()=>{
     jest.clearAllMocks();
     useAdminState.mockReturnValue(initialTestState);

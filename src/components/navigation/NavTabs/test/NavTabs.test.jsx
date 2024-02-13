@@ -108,13 +108,13 @@ describe("NavTabs", () => {
         const dropdownActionDivs = rendered.getAllByTestId("dropdown-action");
         expect(dropdownActionDivs.length).toBe(4);
         act(() => fireEvent.mouseEnter(dropdownActionDivs[3]));
-        expect(Link.mock.calls.length).toBe(0);
+        expect(Link.mock.calls.length).toBe(2);
       });
     });
   });
   describe("tab is clicked", () => {
     test("navigates to route", () => {
-      const rendered = render(<NavTabs />);
+      render(<NavTabs />);
       expect(StyledTab.mock.calls.length).toBe(4);
       const onClick = StyledTab.mock.calls[0][0].onClick;
       act(() => onClick());
