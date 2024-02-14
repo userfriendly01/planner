@@ -6,6 +6,7 @@ import {
   CallFlowManagementSkills,
   CallFlowManagementTfn,
   CompareProfiles,
+  DynamicFlowContainer,
   ProfileDirectoryContainer,
   ProfileDialListContainer,
   ProfileSettingsContainer,
@@ -69,6 +70,10 @@ export const getRoutes = (state: AppState, azureClientId: string) => [
   {
     path: "/triton-admin/aloha-flow",
     render: (props: any) => <AlohaFlowContainer {...props} state={state} azureClientId={azureClientId} />
+  },
+  {
+    path: "/triton-admin/dyn-flow",
+    render: (props: any) => <DynamicFlowContainer {...props} state={state} azureClientId={azureClientId} />
   },
   {
     path: "/triton-admin/aloha-routing",
