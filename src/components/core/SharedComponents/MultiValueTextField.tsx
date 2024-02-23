@@ -28,12 +28,11 @@ const MultiValueTextField = ({
     setChipList(value);
   }, [value]);
 
-  const handleOnChange = (event: any) =>{
-    const updatedChipList = [...(chipList? chipList : []), event.target.value];
-    setChipList(updatedChipList);
+  const handleOnChange = (event: any, value: any) =>{
+    setChipList(value);
     const newEvent = {
       target: {
-        value: updatedChipList,
+        value: value,
         name
       }
     };
