@@ -11,6 +11,5 @@ idp:
           - type: spa
             reply_urls:
               - http://localhost:8082/triton-admin/*
-              - http://CVDE16X-0000227.mis.lmig.com:8082/triton-admin/*
               - https://triton-dev.lmig.com/triton-admin/*
         rotate_secret_enabled: true
