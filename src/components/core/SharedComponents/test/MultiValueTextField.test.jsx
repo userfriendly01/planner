@@ -45,11 +45,7 @@ describe("<MultiValueTextField>", ()=>{
     renderComponent(["test"]);
     const onChange = Autocomplete.mock.calls[1][0].onChange;
     act(()=>{
-      onChange({
-        target: {
-          value: "English"
-        }
-      });
+      onChange(null, ["test", "English"]);
     });
     const filedValue = Autocomplete.mock.calls[2][0].value;
     expect(filedValue).toStrictEqual(["test", "English"]);
