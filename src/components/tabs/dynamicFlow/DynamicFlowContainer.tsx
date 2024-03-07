@@ -1,8 +1,15 @@
 import React from "react";
 import { authWrapper } from "../../core/AzureAuth";
-const DynamicFlowContainer = () => {
+import { AzureSPA } from "globals";
+import DataGridFlow from "./DataGridFlow/DataGridFlow";
+const DynamicFlowContainer = (props:AzureSPA) => {
+  const {
+    accessToken,
+    matchedGroups
+  } = props;
+
   return (
-    <div>Dynamic Tab</div>
+    <DataGridFlow accessToken={accessToken} matchedGroups={matchedGroups} />
   );
 };
 
