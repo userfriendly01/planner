@@ -14,7 +14,6 @@ import "./PreviewModal.css";
 import { Box } from "@mui/material";
 import { reconstructTableColumnDef } from "./PreviewUtil";
 import { CsvReader } from "components";
-import { GridApiCommunity } from "@mui/x-data-grid/models/api/gridApiCommunity";
 
   interface PreviewModalProps {
       isOpen: boolean;
@@ -33,11 +32,11 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
     isOpen, rows, onClose, action , maxId , onCreate, loading
   } = props;
 
-  const apiRef = {}; // useGridApiRef();
+  const apiRef =  useGridApiRef();
   const [flowRows, setFlowRows] = useState<Action[]>([]);
   const [ uploadedForm, setUploadedForm ] = React.useState([]);
   const tableGridColumnDef: Array<GridColDef> = useMemo<Array<GridColDef>>(()=>{
-    return reconstructTableColumnDef([...TableGridColumnDef], apiRef as React.MutableRefObject<GridApiCommunity>);
+    return reconstructTableColumnDef([...TableGridColumnDef], apiRef);
   },[action]);
 
   useEffect(()=>{
@@ -56,10 +55,30 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
 
   const getUpdatedFlowDb = () =>{
     const newRows: Array<Action>=[...flowRows].map((row: Action)=>{
-      const updatedFlow: Action = { id: "" };
-      // Object.keys(row).forEach((key: string)=>{
-      //   updatedFlow[key as keyof Action] = apiRef.current.getCellValue(row.id, key);
-      // });
+      const updatedFlow: Action = {
+        id: "",
+        skey: "",
+        actionId: "",
+        actionType: "",
+        callFlowName: "",
+        createTime: "",
+        updateTime: "",
+        speech: "",
+        allowBargeIn: true,
+        finishOnKey: "",
+        minDigits: 0,
+        maxDigits: 0,
+        timeout: 0,
+        repeat: {},
+        nextActionType: "",
+        nextActionId: "",
+        options: {}
+      };
+      Object.keys(row).forEach((key: string)=>{
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        updatedFlow[key as keyof Action] = apiRef.current.getCellValue(row.id, key);
+      });
       return updatedFlow;
     });
     return newRows;
@@ -75,7 +94,23 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
       [
         ...previousRows,
         {
-          id: ""
+          id: "",
+          skey: "",
+          actionId: "",
+          actionType: "",
+          callFlowName: "",
+          createTime: "",
+          updateTime: "",
+          speech: "",
+          allowBargeIn: true,
+          finishOnKey: "",
+          minDigits: 0,
+          maxDigits: 0,
+          timeout: 0,
+          repeat: {},
+          nextActionType: "",
+          nextActionId: "",
+          options: {}
         }
       ]
     ));
@@ -113,7 +148,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
             onChange={handleOnChange}
           /> </StyledButton>
         <DataGrid
-          // apiRef={apiRef}
+          apiRef={apiRef}
           rows={flowRows}
           columns={tableGridColumnDef}
           editMode="row"

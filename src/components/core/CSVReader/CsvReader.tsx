@@ -4,6 +4,7 @@ import { flowFields as dynamicFlowFields } from "../../tabs/dynamicFlow/CustomAc
 import { routingFields } from "utils";
 import { AddPageFieldConfigProps as AddRoutingFieldConfigProps } from "components";
 import { AddFlowFieldsConfigProps } from "components";
+import { AddDynamicFlowFieldsConfigProps } from "../../tabs/dynamicFlow/DynamicFlow.Interfaces";
 
 export type CSVFileType = "FLOW" | "ROUTING" | "DYNFLOW";
 
@@ -34,7 +35,7 @@ const mapValuesToObj=(jsonValues:any, type?:CSVFileType):any=>{
     let jsonFlowObj:any={
       content: {}
     };
-    flowFields.map((value:AddFlowFieldsConfigProps)=>{
+    dynamicFlowFields.map((value:AddDynamicFlowFieldsConfigProps)=>{
       const key = value.key;
       let jsonValue = jsonValues[key];
       if(key === "pkey")

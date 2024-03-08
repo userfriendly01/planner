@@ -19,10 +19,18 @@ export const TableGridColumnDef: GridColDef[] = [
     field: "actionType",
     sortable: true,
     width: 110,
-    align: "left"
+    align: "left",
+    valueGetter: params => `${params.row?.actionType || ""}`,
+    valueSetter: params => ({
+      ...params.row,
+      content: {
+        ...params.row || {},
+        actionType: params.value
+      }
+    })
   },
   {
-    headerName: "allow bargein",
+    headerName: "allow barge-in",
     field: "allowBargeIn",
     sortable: true,
     width: 110,
