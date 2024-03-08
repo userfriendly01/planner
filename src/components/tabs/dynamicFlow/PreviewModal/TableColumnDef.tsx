@@ -23,10 +23,7 @@ export const TableGridColumnDef: GridColDef[] = [
     valueGetter: params => `${params.row?.actionType || ""}`,
     valueSetter: params => ({
       ...params.row,
-      content: {
-        ...params.row || {},
-        actionType: params.value
-      }
+      actionType: params.value
     })
   },
   {
@@ -60,13 +57,6 @@ export const TableGridColumnDef: GridColDef[] = [
   {
     headerName: "min digits",
     field: "minDigits",
-    sortable: true,
-    width: 110,
-    align: "left"
-  },
-  {
-    headerName: "next action",
-    field: "nextActionId",
     sortable: true,
     width: 110,
     align: "left"

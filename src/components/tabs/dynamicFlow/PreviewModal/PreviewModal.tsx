@@ -7,19 +7,19 @@ import {
 import {
   DataGrid, GridColDef, useGridApiRef
 } from "@mui/x-data-grid";
-import { StyledButton } from "components";
+import {
+  CsvReader, StyledButton
+} from "components";
 import { Action } from "../DynamicFlow.Interfaces";
 import  TableGridColumnDef  from "./TableColumnDef";
 import "./PreviewModal.css";
 import { Box } from "@mui/material";
 import { reconstructTableColumnDef } from "./PreviewUtil";
-import { CsvReader } from "components";
 
   interface PreviewModalProps {
       isOpen: boolean;
       rows: Array<Action>;
       action: "add";
-      maxId?: number;
       onClose: () => void;
       onDelete?: (rows: Array<Action>) => void;
       onCreate?: (rows: Array<Action>) => void;
@@ -29,7 +29,7 @@ import { CsvReader } from "components";
 
 const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   const {
-    isOpen, rows, onClose, action , maxId , onCreate, loading
+    isOpen, rows, onClose, action , onCreate, loading
   } = props;
 
   const apiRef =  useGridApiRef();
@@ -46,8 +46,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   useEffect(()=>{
     if(uploadedForm.length>0){
       const modifiedRow = uploadedForm.map((row:any, index:  number)=>({
-        ...row,
-        id: maxId+ index+ 1
+        ...row
       }));
       setFlowRows(modifiedRow);
     }
@@ -75,8 +74,6 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
         options: {}
       };
       Object.keys(row).forEach((key: string)=>{
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         updatedFlow[key as keyof Action] = apiRef.current.getCellValue(row.id, key);
       });
       return updatedFlow;
