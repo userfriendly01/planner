@@ -14,6 +14,7 @@ import "./PreviewModal.css";
 import { Box } from "@mui/material";
 import { reconstructTableColumnDef } from "./PreviewUtil";
 import { CsvReader } from "components";
+import { GridApiCommunity } from "@mui/x-data-grid/models/api/gridApiCommunity";
 
   interface PreviewModalProps {
       isOpen: boolean;
@@ -32,11 +33,11 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
     isOpen, rows, onClose, action , maxId , onCreate, loading
   } = props;
 
-  const apiRef = useGridApiRef();
+  const apiRef = {}; // useGridApiRef();
   const [flowRows, setFlowRows] = useState<Action[]>([]);
   const [ uploadedForm, setUploadedForm ] = React.useState([]);
   const tableGridColumnDef: Array<GridColDef> = useMemo<Array<GridColDef>>(()=>{
-    return reconstructTableColumnDef([...TableGridColumnDef], apiRef);
+    return reconstructTableColumnDef([...TableGridColumnDef], apiRef as React.MutableRefObject<GridApiCommunity>);
   },[action]);
 
   useEffect(()=>{
@@ -56,9 +57,9 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   const getUpdatedFlowDb = () =>{
     const newRows: Array<Action>=[...flowRows].map((row: Action)=>{
       const updatedFlow: Action = { id: "" };
-      Object.keys(row).forEach((key: string)=>{
-        updatedFlow[key as keyof Action] = apiRef.current.getCellValue(row.id, key);
-      });
+      // Object.keys(row).forEach((key: string)=>{
+      //   updatedFlow[key as keyof Action] = apiRef.current.getCellValue(row.id, key);
+      // });
       return updatedFlow;
     });
     return newRows;
@@ -81,7 +82,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   };
 
   const handleOnChange=(event:any)=>{
-    CsvReader(event, setUploadedForm, "FLOW");
+    CsvReader(event, setUploadedForm, "DYNFLOW");
   };
 
   const handleOnClose =()=>{
@@ -112,7 +113,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
             onChange={handleOnChange}
           /> </StyledButton>
         <DataGrid
-          apiRef={apiRef}
+          // apiRef={apiRef}
           rows={flowRows}
           columns={tableGridColumnDef}
           editMode="row"
