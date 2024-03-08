@@ -9,7 +9,7 @@ import {
 } from "@mui/x-data-grid";
 import { StyledButton } from "components";
 import { Action } from "../DynamicFlow.Interfaces";
-import { TableGridColumnDef } from "./TableColumnDef";
+import  TableGridColumnDef  from "./TableColumnDef";
 import "./PreviewModal.css";
 import { Box } from "@mui/material";
 import { reconstructTableColumnDef } from "./PreviewUtil";

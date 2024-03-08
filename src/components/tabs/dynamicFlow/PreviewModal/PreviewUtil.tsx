@@ -14,7 +14,16 @@ const mandatoryField = flowFields.filter(x => x.required).map(x => {
 const reconstructTableColumnDef = (columnDef: Array<GridColDef>,apiRef: React.MutableRefObject<GridApiCommunity>): Array<GridColDef> =>{
   return manageEditColumnDef(columnDef,apiRef);
 };
-
+/*{
+      ...item,
+      editable: true,
+      cellClassName: (params: GridCellParams<any, string>)=> {
+        if(!params.value && mandatoryField.includes(item.field)){
+          return "MuiDataGrid-Custom-Cell-Format";
+        }
+        return "";
+      }
+    }*/
 const manageEditColumnDef = (columnDef: Array<GridColDef>, apiRef: React.MutableRefObject<GridApiCommunity>): Array<GridColDef> =>{
   const updatedColDef: Array<GridColDef> = columnDef.map((item:GridColDef)=>{
     return {
