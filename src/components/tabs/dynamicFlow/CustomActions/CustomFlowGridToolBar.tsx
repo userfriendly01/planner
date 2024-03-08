@@ -17,8 +17,8 @@ import { useAdminState } from "context";
 
 
 interface CustomFlowGridToolBarProps {
-  openPreviewModal: (flag: boolean, action: PreviewModalAction) =>void;
   matchedGroups?: any[];
+  openPreviewModal: (flag: boolean, action: PreviewModalAction) =>void;
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types

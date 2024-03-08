@@ -74,6 +74,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       <div className="data-grid-wrapper">
         <div className="data-grid-wrapper">
           <CustomFlowGridToolBar
+            matchedGroups={matchedGroups}
             openPreviewModal={openPreviewModal}
           />
 
