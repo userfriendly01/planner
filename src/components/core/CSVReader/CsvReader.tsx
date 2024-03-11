@@ -1,10 +1,12 @@
 import * as XLSX from "xlsx";
 import { flowFields } from "../../tabs/alohaFlow/CustomActions/FlowFieldsConfig";
+import { flowFields as dynamicFlowFields } from "../../tabs/dynamicFlow/CustomActions/FlowFieldsConfig";
 import { routingFields } from "utils";
 import { AddPageFieldConfigProps as AddRoutingFieldConfigProps } from "components";
 import { AddFlowFieldsConfigProps } from "components";
+import { AddDynamicFlowFieldsConfigProps } from "../../tabs/dynamicFlow/DynamicFlow.Interfaces";
 
-export type CSVFileType = "FLOW" | "ROUTING";
+export type CSVFileType = "FLOW" | "ROUTING" | "DYNFLOW";
 
 const mapValuesToObj=(jsonValues:any, type?:CSVFileType):any=>{
   if(type ==="FLOW"){
@@ -29,7 +31,22 @@ const mapValuesToObj=(jsonValues:any, type?:CSVFileType):any=>{
     });
     return jsonFlowObj;
   }
-  else{
+  else   if(type ==="DYNFLOW"){
+    let jsonFlowObj:any={
+      content: {}
+    };
+    dynamicFlowFields.map((value:AddDynamicFlowFieldsConfigProps)=>{
+      const key = value.key;
+      let jsonValue = jsonValues[key];
+      if(key === "pkey")
+      {
+        jsonValue = jsonValues["id"];
+      }
+      jsonFlowObj=value.valueSetter(jsonFlowObj,{ [key]: jsonValue });
+    });
+    return jsonFlowObj;
+  }
+  else {
     let jsonRouteObj={};
     routingFields.map((value:AddRoutingFieldConfigProps)=>{
       if(value.key==="occupancyCheck" || value.key === "routingSteps"){
