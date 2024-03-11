@@ -5,6 +5,9 @@ import { routingFields } from "utils";
 import { AddPageFieldConfigProps as AddRoutingFieldConfigProps } from "components";
 import { AddFlowFieldsConfigProps } from "components";
 import { AddDynamicFlowFieldsConfigProps } from "../../tabs/dynamicFlow/DynamicFlow.Interfaces";
+import {
+  Action, ActionPreview
+} from "../../tabs/dynamicFlow/DynamicFlow.Interfaces";
 
 export type CSVFileType = "FLOW" | "ROUTING" | "DYNFLOW";
 
@@ -49,8 +52,9 @@ const mapValuesToObj=(jsonValues:any, type?:CSVFileType):any=>{
       }
     });
     jsonFlowObj.skey = `${jsonValues["callFlowName"]}:ACTION:${jsonValues["actionType"]}`;
+    jsonFlowObj.errors = validateActionRow(jsonFlowObj);
 
-    return jsonFlowObj;
+    return jsonFlowObj as ActionPreview;
   }
   else {
     let jsonRouteObj={};
@@ -73,6 +77,35 @@ const mapValuesToObj=(jsonValues:any, type?:CSVFileType):any=>{
     return jsonRouteObj;
   }
 };
+
+export const validateActionRow = (action: Action): string => {
+  const errors: Array<string> = [];
+  switch(action.actionType) {
+    case "MENU":
+      if(!action.speech) {
+        errors.push("* Speech is required for MENU.");
+      }
+      if(!action.nextActionId || !action.nextActionType) {
+        errors.push("* Next Action ID and Type are required.");
+      }
+      break;
+    case "MENUOPTIONS":
+      if(action.options.length===0) {
+        errors.push("* Options is required for MENUOPTIONS.");
+      }
+      break;
+    case "ANNOUNCEMENT":
+      if(!action.nextActionId || !action.nextActionType) {
+        errors.push("* Next Action ID and Type are required.");
+      }
+      break;
+    default:
+      break;
+  }
+  return errors.join("  ");
+
+};
+
 export const CsvReader = (e: React.ChangeEvent<HTMLInputElement>, setUploadedForm: any, flowType?:CSVFileType): void => {
   e.preventDefault();
   if (e.target.files) {

@@ -8,6 +8,18 @@ export const TableGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 220,
     align: "left"
+  },{
+    headerName: "Errors",
+    field: "errors",
+    sortable: true,
+    width: 50,
+    align: "left",
+    valueGetter: params => `${params.row?.actionType || ""}`,
+    renderCell: (params: any) =>  (
+      <Tooltip title={params.row.errors || ""} className="validation-error" >
+        <div>{params.row.errors?"...":""}</div>
+      </Tooltip>
+    )
   },
   {
     headerName: "skey",

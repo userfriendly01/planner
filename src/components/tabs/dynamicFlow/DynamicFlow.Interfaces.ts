@@ -15,11 +15,12 @@ export interface DynamicStateVariables {
     saveSuccess?: number;
 }
 
+export type ActionType = "MENU"|"MENUOPTIONS"|"ANNOUNCEMENT"|"TRANSFER"|"HANGUP";
 export interface Action {
     pkey: string;
     skey: string;
     actionId: string;
-    actionType: string;
+    actionType: ActionType;
     callFlowName: string;
     createTime: string;
     updateTime: string;
@@ -33,6 +34,10 @@ export interface Action {
     nextActionType: string;
     nextActionId: string;
     options?: any;
+}
+
+export interface ActionPreview extends Action {
+    errors: string;
 }
 export interface AddFlowFieldsConfigProps {
     label: string;
