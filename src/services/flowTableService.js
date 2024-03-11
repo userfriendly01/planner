@@ -76,11 +76,10 @@ async function queryFlowData(accessToken, nextToken = null, graphQlApiUrl) {
 /**
  * This is the function use to query the appsync API to get the data from DB
  * @param {String} accessToken OAuth tokent to use while calling graphql query
- * @param {String} nextToken Token for next set of data
  * @param {String} graphQlApiUrl Endpoint URL
  * @returns list of data and nextToken if any
  */
-async function queryLSCDynamicFlowData(accessToken, nextToken = null, graphQlApiUrl) {
+export async function queryLSCDynamicFlowData(accessToken, graphQlApiUrl) {
   let result = {};
   try {
     const response = await fetch(graphQlApiUrl, {
