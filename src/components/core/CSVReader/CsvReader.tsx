@@ -39,7 +39,7 @@ const mapValuesToObj=(jsonValues:any, type?:CSVFileType):any=>{
       if(key === "pkey") {
         jsonFlowObj[key] = jsonValues["id"];
       } else if(value.key==="options" || value.key === "repeat"){
-        const routeValue=jsonValues[value.key]||value.key==="options"?"[]":"{}";
+        const routeValue=jsonValues[value.key]||(value.key==="options"?"[]":"{}");
         jsonFlowObj = {
           ...jsonFlowObj,
           [value.key]: JSON.parse(routeValue)
@@ -49,7 +49,6 @@ const mapValuesToObj=(jsonValues:any, type?:CSVFileType):any=>{
       }
     });
     jsonFlowObj.skey = `${jsonValues["callFlowName"]}:ACTION:${jsonValues["actionType"]}`;
-    console.warn("After", jsonFlowObj);
 
     return jsonFlowObj;
   }

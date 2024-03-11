@@ -82,7 +82,12 @@ export const TableGridColumnDef: GridColDef[] = [
     field: "options",
     sortable: true,
     width: 330,
-    align: "left"
+    align: "left",
+    renderCell: (params: any) =>  (
+      <Tooltip title={JSON.stringify(params.row.options) || ""} >
+        <div>{JSON.stringify(params.row.options) || ""}</div>
+      </Tooltip>
+    )
   },
   {
     headerName: "repeat",
@@ -91,8 +96,8 @@ export const TableGridColumnDef: GridColDef[] = [
     width: 110,
     align: "left",
     renderCell: (params: any) =>  (
-      <Tooltip title={params.repeat || ""} >
-        <div>{params.repeat || ""}</div>
+      <Tooltip title={JSON.stringify(params.row.repeat) || ""} >
+        <div>{JSON.stringify(params.row.repeat) || ""}</div>
       </Tooltip>
     )
   },
