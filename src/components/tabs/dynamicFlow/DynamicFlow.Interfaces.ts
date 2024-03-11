@@ -16,7 +16,7 @@ export interface DynamicStateVariables {
 }
 
 export interface Action {
-    id: string;
+    pkey: string;
     skey: string;
     actionId: string;
     actionType: string;

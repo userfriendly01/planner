@@ -45,7 +45,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
 
   useEffect(()=>{
     if(uploadedForm.length>0){
-      const modifiedRow = uploadedForm.map((row:any, index:  number)=>({
+      const modifiedRow = uploadedForm.map((row:any, index: number)=>({
         ...row
       }));
       setFlowRows(modifiedRow);
@@ -55,7 +55,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   const getUpdatedFlowDb = () =>{
     const newRows: Array<Action>=[...flowRows].map((row: Action)=>{
       const updatedFlow: Action = {
-        id: "",
+        pkey: "",
         skey: "",
         actionId: "",
         actionType: "",
@@ -71,10 +71,10 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
         repeat: {},
         nextActionType: "",
         nextActionId: "",
-        options: {}
+        options: []
       };
       Object.keys(row).forEach((key: string)=>{
-        updatedFlow[key as keyof Action] = apiRef.current.getCellValue(row.id, key);
+        updatedFlow[key as keyof Action] = apiRef.current.getCellValue(row.pkey, key);
       });
       return updatedFlow;
     });
@@ -91,7 +91,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
       [
         ...previousRows,
         {
-          id: "",
+          pkey: previousRows.length.toString(),
           skey: "",
           actionId: "",
           actionType: "",
@@ -107,7 +107,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
           repeat: {},
           nextActionType: "",
           nextActionId: "",
-          options: {}
+          options: []
         }
       ]
     ));
@@ -149,8 +149,8 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
           rows={flowRows}
           columns={tableGridColumnDef}
           editMode="row"
-          getRowId={(row: Action)=>row.id}
-          loading = {loading}
+          getRowId={(row: Action)=>row.pkey}
+          loading = {false}
           sx={{
             "& .MuiDataGrid-columnHeaderTitle": {
               fontWeight: 600

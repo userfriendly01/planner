@@ -1,10 +1,12 @@
+import { Tooltip } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
+import React from "react";
 export const TableGridColumnDef: GridColDef[] = [
   {
     headerName: "id",
     field: "pkey",
     sortable: true,
-    width: 110,
+    width: 220,
     align: "left"
   },
   {
@@ -18,7 +20,7 @@ export const TableGridColumnDef: GridColDef[] = [
     headerName: "action type",
     field: "actionType",
     sortable: true,
-    width: 110,
+    width: 150,
     align: "left",
     valueGetter: params => `${params.row?.actionType || ""}`,
     valueSetter: params => ({
@@ -65,21 +67,21 @@ export const TableGridColumnDef: GridColDef[] = [
     headerName: "next action",
     field: "nextActionId",
     sortable: true,
-    width: 110,
+    width: 220,
     align: "left"
   },
   {
     headerName: "next action type",
     field: "nextActionType",
     sortable: true,
-    width: 110,
+    width: 150,
     align: "left"
   },
   {
     headerName: "options",
     field: "options",
     sortable: true,
-    width: 110,
+    width: 330,
     align: "left"
   },
   {
@@ -87,13 +89,18 @@ export const TableGridColumnDef: GridColDef[] = [
     field: "repeat",
     sortable: true,
     width: 110,
-    align: "left"
+    align: "left",
+    renderCell: (params: any) =>  (
+      <Tooltip title={params.repeat || ""} >
+        <div>{params.repeat || ""}</div>
+      </Tooltip>
+    )
   },
   {
     headerName: "speech",
     field: "speech",
     sortable: true,
-    width: 110,
+    width: 330,
     align: "left"
   },
   {

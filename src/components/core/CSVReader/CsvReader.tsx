@@ -31,19 +31,26 @@ const mapValuesToObj=(jsonValues:any, type?:CSVFileType):any=>{
     });
     return jsonFlowObj;
   }
-  else   if(type ==="DYNFLOW"){
+  else if(type ==="DYNFLOW"){
     let jsonFlowObj:any={
-      content: {}
     };
     dynamicFlowFields.map((value:AddDynamicFlowFieldsConfigProps)=>{
       const key = value.key;
-      let jsonValue = jsonValues[key];
-      if(key === "pkey")
-      {
-        jsonValue = jsonValues["id"];
+      if(key === "pkey") {
+        jsonFlowObj[key] = jsonValues["id"];
+      } else if(value.key==="options" || value.key === "repeat"){
+        const routeValue=jsonValues[value.key]||value.key==="options"?"[]":"{}";
+        jsonFlowObj = {
+          ...jsonFlowObj,
+          [value.key]: JSON.parse(routeValue)
+        };
+      } else {
+        jsonFlowObj[key] = jsonValues[key];
       }
-      jsonFlowObj=value.valueSetter(jsonFlowObj,{ [key]: jsonValue });
     });
+    jsonFlowObj.skey = `${jsonValues["callFlowName"]}:ACTION:${jsonValues["actionType"]}`;
+    console.warn("After", jsonFlowObj);
+
     return jsonFlowObj;
   }
   else {
@@ -80,7 +87,7 @@ export const CsvReader = (e: React.ChangeEvent<HTMLInputElement>, setUploadedFor
       const sheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];
       const json = XLSX.utils.sheet_to_json(worksheet,{ raw: false });
-      console.warn(json);
+      console.warn("Before", json);
       const rowNum = "__rowNum__";
       const headerRows = 1;
       if(typeof json ==="object"){
