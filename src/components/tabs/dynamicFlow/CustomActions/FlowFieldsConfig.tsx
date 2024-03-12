@@ -9,7 +9,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     key: "pkey",
     control: "input",
     required: true,
-    valueGetter: (params: Action) => `${params?.id || ""}`,
+    valueGetter: (params: Action) => `${params?.pkey || ""}`,
     valueSetter: (currentValue: Action, newValue: any) => ({
       ...currentValue,
       ...newValue
@@ -38,7 +38,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     label: "allow barge-in",
     key: "allowBargeIn",
     control: "input",
-    required: true,
+    required: false,
     valueGetter: (params: Action) => `${params?.allowBargeIn || ""}`,
     valueSetter: (currentValue: Action, newValue: any) => ({
       ...currentValue,
@@ -58,7 +58,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     label: "Finish On Key",
     key: "finishOnKey",
     control: "input",
-    required: true,
+    required: false,
     valueGetter: (params: Action) => `${params?.finishOnKey || ""}`,
     valueSetter: (currentValue: Action, newValue: any) => ({
       ...currentValue,
@@ -68,7 +68,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     label: "Max Digits",
     key: "maxDigits",
     control: "input",
-    required: true,
+    required: false,
     valueGetter: (params: Action) => `${params?.maxDigits || ""}`,
     valueSetter: (currentValue: Action, newValue: any) => ({
       ...currentValue,
@@ -78,7 +78,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     label: "Min Digits",
     key: "minDigits",
     control: "input",
-    required: true,
+    required: false,
     valueGetter: (params: Action) => `${params?.minDigits || ""}`,
     valueSetter: (currentValue: Action, newValue: any) => ({
       ...currentValue,
@@ -88,7 +88,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     label: "Next Action ID",
     key: "nextActionId",
     control: "input",
-    required: true,
+    required: false,
     valueGetter: (params: Action) => `${params?.nextActionId || ""}`,
     valueSetter: (currentValue: Action, newValue: any) => ({
       ...currentValue,
@@ -98,7 +98,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     label: "Next Action Type",
     key: "nextActionType",
     control: "input",
-    required: true,
+    required: false,
     valueGetter: (params: Action) => `${params?.nextActionType || ""}`,
     valueSetter: (currentValue: Action, newValue: any) => ({
       ...currentValue,
@@ -108,7 +108,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     label: "options",
     key: "options",
     control: "input",
-    required: true,
+    required: false,
     valueGetter: (params: Action) => `${params?.options || ""}`,
     valueSetter: (currentValue: Action, newValue: any) => ({
       ...currentValue,
@@ -118,7 +118,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     label: "repeat",
     key: "repeat",
     control: "input",
-    required: true,
+    required: false,
     valueGetter: (params: Action) => `${params?.repeat || ""}`,
     valueSetter: (currentValue: Action, newValue: any) => ({
       ...currentValue,
@@ -128,7 +128,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     label: "speech",
     key: "speech",
     control: "input",
-    required: true,
+    required: false,
     valueGetter: (params: Action) => `${params?.speech || ""}`,
     valueSetter: (currentValue: Action, newValue: any) => ({
       ...currentValue,
@@ -138,7 +138,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     label: "timeout",
     key: "timeout",
     control: "input",
-    required: true,
+    required: false,
     valueGetter: (params: Action) => `${params?.timeout || ""}`,
     valueSetter: (currentValue: Action, newValue: any) => ({
       ...currentValue,
