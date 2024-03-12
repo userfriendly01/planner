@@ -99,6 +99,22 @@ export const TfnActivation = (props: TfnActivationProps) => {
       voiceWebhookUrl: "https://cicct-app-gateway.libertymutual.com/claimsintake/vanity/entry/jc",
       label: "Claims Intake Vanity",
       value: 20
+    },
+    COMPARION_OFFICE_TFN: {
+      name: "Comparion - TFN",
+      callflowId: 74,
+      defaultSkill: "comparionOffice",
+      voiceWebhookUrl: "https://cicct-app-gateway.libertymutual.com/comparion/general/enqueue/queue/comparionOffice",
+      label: "Comparion Office TFN",
+      value: 74
+    },
+    COMPARION_OFFICE_MLN: {
+      name: "Comparion - MLN",
+      callflowId: 74,
+      defaultSkill: "comparionOffice",
+      voiceWebhookUrl: "https://cicct-app-gateway.libertymutual.com/comparion/general/enqueue/queue/comparionOffice",
+      label: "Comparion Office MLN",
+      value: 74
     }
   };
 
