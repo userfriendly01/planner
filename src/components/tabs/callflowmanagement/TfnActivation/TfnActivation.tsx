@@ -105,7 +105,6 @@ export const TfnActivation = (props: TfnActivationProps) => {
       callflowId: 74,
       defaultSkill: "comparionOffice",
       voiceWebhookUrl: "https://cicct-app-gateway.libertymutual.com/comparion/general/enqueue/queue/comparionOffice",
-      entryMessage: "",
       label: "Comparion Office",
       value: 74
     }
@@ -238,7 +237,7 @@ export const TfnActivation = (props: TfnActivationProps) => {
             label="Entry Message"
             multiline={true}
             minRows={4}
-            value={tfnState.entryMessage}
+            value={tfnState.group && tfnState.group.name === tfnActivationGroups.COMPARION_OFFICE.name ? "" : tfnState.entryMessage}
             onChange={e => setTfnState({
               ...tfnState,
               entryMessage: e.target.value
