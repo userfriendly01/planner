@@ -1,26 +1,17 @@
 import { FormValidationRule } from "utils/interfaces";
 import {
-  AddFlowFieldsConfigProps, Action
+  AddFlowFieldsConfigProps,
+  DynamicAction
 } from "../DynamicFlow.Interfaces";
 
 const flowFields: AddFlowFieldsConfigProps[] = [
   {
-    label: "ID",
-    key: "pkey",
+    label: "Action ID",
+    key: "actionId",
     control: "input",
     required: true,
-    valueGetter: (params: Action) => `${params?.pkey || ""}`,
-    valueSetter: (currentValue: Action, newValue: any) => ({
-      ...currentValue,
-      ...newValue
-    })
-  }, {
-    label: "skey",
-    key: "skey",
-    control: "input",
-    required: true,
-    valueGetter: (params: Action) => `${params?.skey || ""}`,
-    valueSetter: (currentValue: Action, newValue: any) => ({
+    valueGetter: (params: DynamicAction) => `${params?.actionId || ""}`,
+    valueSetter: (currentValue: DynamicAction, newValue: any) => ({
       ...currentValue,
       ...newValue
     })
@@ -29,8 +20,8 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     key: "actionType",
     control: "input",
     required: true,
-    valueGetter: (params: Action) => `${params?.actionType || ""}`,
-    valueSetter: (currentValue: Action, newValue: any) => ({
+    valueGetter: (params: DynamicAction) => `${params?.actionType || ""}`,
+    valueSetter: (currentValue: DynamicAction, newValue: any) => ({
       ...currentValue,
       ...newValue
     })
@@ -39,8 +30,8 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     key: "allowBargeIn",
     control: "input",
     required: false,
-    valueGetter: (params: Action) => `${params?.allowBargeIn || ""}`,
-    valueSetter: (currentValue: Action, newValue: any) => ({
+    valueGetter: (params: DynamicAction) => `${params?.allowBargeIn || ""}`,
+    valueSetter: (currentValue: DynamicAction, newValue: any) => ({
       ...currentValue,
       ...newValue
     })
@@ -49,8 +40,8 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     key: "callFlowName",
     control: "input",
     required: true,
-    valueGetter: (params: Action) => `${params?.callFlowName || ""}`,
-    valueSetter: (currentValue: Action, newValue: any) => ({
+    valueGetter: (params: DynamicAction) => `${params?.callFlowName || ""}`,
+    valueSetter: (currentValue: DynamicAction, newValue: any) => ({
       ...currentValue,
       ...newValue
     })
@@ -59,8 +50,8 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     key: "finishOnKey",
     control: "input",
     required: false,
-    valueGetter: (params: Action) => `${params?.finishOnKey || ""}`,
-    valueSetter: (currentValue: Action, newValue: any) => ({
+    valueGetter: (params: DynamicAction) => `${params?.finishOnKey || ""}`,
+    valueSetter: (currentValue: DynamicAction, newValue: any) => ({
       ...currentValue,
       ...newValue
     })
@@ -69,8 +60,8 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     key: "maxDigits",
     control: "input",
     required: false,
-    valueGetter: (params: Action) => `${params?.maxDigits || ""}`,
-    valueSetter: (currentValue: Action, newValue: any) => ({
+    valueGetter: (params: DynamicAction) => `${params?.maxDigits || ""}`,
+    valueSetter: (currentValue: DynamicAction, newValue: any) => ({
       ...currentValue,
       ...newValue
     })
@@ -79,8 +70,8 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     key: "minDigits",
     control: "input",
     required: false,
-    valueGetter: (params: Action) => `${params?.minDigits || ""}`,
-    valueSetter: (currentValue: Action, newValue: any) => ({
+    valueGetter: (params: DynamicAction) => `${params?.minDigits || ""}`,
+    valueSetter: (currentValue: DynamicAction, newValue: any) => ({
       ...currentValue,
       ...newValue
     })
@@ -89,8 +80,8 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     key: "nextActionId",
     control: "input",
     required: false,
-    valueGetter: (params: Action) => `${params?.nextActionId || ""}`,
-    valueSetter: (currentValue: Action, newValue: any) => ({
+    valueGetter: (params: DynamicAction) => `${params?.nextActionId || ""}`,
+    valueSetter: (currentValue: DynamicAction, newValue: any) => ({
       ...currentValue,
       ...newValue
     })
@@ -99,8 +90,8 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     key: "nextActionType",
     control: "input",
     required: false,
-    valueGetter: (params: Action) => `${params?.nextActionType || ""}`,
-    valueSetter: (currentValue: Action, newValue: any) => ({
+    valueGetter: (params: DynamicAction) => `${params?.nextActionType || ""}`,
+    valueSetter: (currentValue: DynamicAction, newValue: any) => ({
       ...currentValue,
       ...newValue
     })
@@ -109,8 +100,8 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     key: "options",
     control: "input",
     required: false,
-    valueGetter: (params: Action) => `${params?.options || ""}`,
-    valueSetter: (currentValue: Action, newValue: any) => ({
+    valueGetter: (params: DynamicAction) => `${params?.options || ""}`,
+    valueSetter: (currentValue: DynamicAction, newValue: any) => ({
       ...currentValue,
       ...newValue
     })
@@ -119,8 +110,8 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     key: "repeat",
     control: "input",
     required: false,
-    valueGetter: (params: Action) => `${params?.repeat || ""}`,
-    valueSetter: (currentValue: Action, newValue: any) => ({
+    valueGetter: (params: DynamicAction) => `${params?.repeat || ""}`,
+    valueSetter: (currentValue: DynamicAction, newValue: any) => ({
       ...currentValue,
       ...newValue
     })
@@ -129,8 +120,8 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     key: "speech",
     control: "input",
     required: false,
-    valueGetter: (params: Action) => `${params?.speech || ""}`,
-    valueSetter: (currentValue: Action, newValue: any) => ({
+    valueGetter: (params: DynamicAction) => `${params?.speech || ""}`,
+    valueSetter: (currentValue: DynamicAction, newValue: any) => ({
       ...currentValue,
       ...newValue
     })
@@ -139,8 +130,8 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     key: "timeout",
     control: "input",
     required: false,
-    valueGetter: (params: Action) => `${params?.timeout || ""}`,
-    valueSetter: (currentValue: Action, newValue: any) => ({
+    valueGetter: (params: DynamicAction) => `${params?.timeout || ""}`,
+    valueSetter: (currentValue: DynamicAction, newValue: any) => ({
       ...currentValue,
       ...newValue
     })

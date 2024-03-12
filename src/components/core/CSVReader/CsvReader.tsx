@@ -4,9 +4,10 @@ import { flowFields as dynamicFlowFields } from "../../tabs/dynamicFlow/CustomAc
 import { routingFields } from "utils";
 import { AddPageFieldConfigProps as AddRoutingFieldConfigProps } from "components";
 import { AddFlowFieldsConfigProps } from "components";
-import { AddDynamicFlowFieldsConfigProps } from "../../tabs/dynamicFlow/DynamicFlow.Interfaces";
 import {
-  Action, ActionPreview
+  ActionPreview,
+  AddDynamicFlowFieldsConfigProps,
+  DynamicAction
 } from "../../tabs/dynamicFlow/DynamicFlow.Interfaces";
 
 export type CSVFileType = "FLOW" | "ROUTING" | "DYNFLOW";
@@ -78,32 +79,44 @@ const mapValuesToObj=(jsonValues:any, type?:CSVFileType):any=>{
   }
 };
 
-export const validateActionRow = (action: Action): string => {
+export const validateActionRow = (action: DynamicAction): string => {
   const errors: Array<string> = [];
+
+  checkRequiredFields(["actionId", "actionType", "callFlowName"], action)
+    .forEach(x => errors.push(x));
+
   switch(action.actionType) {
     case "MENU":
-      if(!action.speech) {
-        errors.push("* Speech is required for MENU.");
-      }
-      if(!action.nextActionId || !action.nextActionType) {
-        errors.push("* Next Action ID and Type are required.");
-      }
+      checkRequiredFields(["speech"], action)
+        .forEach(x => errors.push(x));
       break;
     case "MENUOPTIONS":
-      if(action.options.length===0) {
-        errors.push("* Options is required for MENUOPTIONS.");
+      if(action.options.length === 0) {
+        errors.push("* Field options is required.");
       }
       break;
     case "ANNOUNCEMENT":
-      if(!action.nextActionId || !action.nextActionType) {
-        errors.push("* Next Action ID and Type are required.");
-      }
+      checkRequiredFields(["speech"], action)
+        .forEach(x => errors.push(x));
       break;
     default:
+      errors.push("* Field actionType must be one of MENU, MENUOPTIONS, ANNOUNCEMENT");
       break;
   }
   return errors.join("  ");
 
+};
+
+const checkRequiredFields = (requiredFields: string[], obj: any ): string[] => {
+  const errors: Array<string> = [];
+
+  requiredFields.forEach(x => {
+    if(!obj[x]) {
+      errors.push(`* Field ${x} is required.`);
+    }
+  });
+
+  return errors;
 };
 
 export const CsvReader = (e: React.ChangeEvent<HTMLInputElement>, setUploadedForm: any, flowType?:CSVFileType): void => {
