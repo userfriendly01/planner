@@ -4,7 +4,9 @@ import React, {
 } from "react";
 import { CustomFlowGridToolBar } from "../CustomActions/CustomFlowGridToolBar";
 import {
-  Action, DynamicStateVariables, PreviewModalAction
+  DynamicAction,
+  DynamicStateVariables,
+  PreviewModalAction
 } from "../DynamicFlow.Interfaces";
 import { AlertBarProps } from "utils/interfaces";
 import {
@@ -31,7 +33,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     saveSuccess: 0
   };
   const [dataFlow, setDataFlow] = useState(flowInitState);
-  const [selectedList, setSelectedList] = useState<Array<Action>>([]);
+  const [selectedList, setSelectedList] = useState<Array<DynamicAction>>([]);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
   // Get GraphQL Endpoint. TODO check url
   const graphQLEndpoint = getGraphQLEndpoint();
@@ -42,7 +44,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       previewModalAction: action
     }));
   };
-  const handleOnBulkCreate = async(rows: Array<Action> ) =>{
+  const handleOnBulkCreate = async(rows: Array<DynamicAction> ) =>{
 
     // const response = await batchFlowCreate(rows, accessToken, graphQLEndpoint);
     // if(response?.flag) {

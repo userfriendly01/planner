@@ -1,29 +1,32 @@
-import React, {
-  useMemo, useState, useEffect
-} from "react";
 import {
-  Modal,ModalHeader, ModalBody, ModalFooter
-} from "@lmig/lmds-react-modal";
+  CsvReader, StyledButton
+} from "components";
 import {
   DataGrid, GridColDef, useGridApiRef
 } from "@mui/x-data-grid";
 import {
-  CsvReader, StyledButton
-} from "components";
-import { Action } from "../DynamicFlow.Interfaces";
-import  TableGridColumnDef  from "./TableColumnDef";
+  DynamicAction,
+  MenuOption
+} from "../DynamicFlow.Interfaces";
+import {
+  Modal,ModalHeader, ModalBody, ModalFooter
+} from "@lmig/lmds-react-modal";
+import React, {
+  useMemo, useState, useEffect
+} from "react";
 import "./PreviewModal.css";
 import { Box } from "@mui/material";
+import  TableGridColumnDef  from "./TableColumnDef";
 import { reconstructTableColumnDef } from "./PreviewUtil";
 
   interface PreviewModalProps {
       isOpen: boolean;
-      rows: Array<Action>;
+      rows: Array<DynamicAction>;
       action: "add";
       onClose: () => void;
-      onDelete?: (rows: Array<Action>) => void;
-      onCreate?: (rows: Array<Action>) => void;
-      onUpdate?: (rows: Array<Action>) => void;
+      onDelete?: (rows: Array<DynamicAction>) => void;
+      onCreate?: (rows: Array<DynamicAction>) => void;
+      onUpdate?: (rows: Array<DynamicAction>) => void;
       loading?: boolean;
   }
 
@@ -33,7 +36,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   } = props;
 
   const apiRef =  useGridApiRef();
-  const [flowRows, setFlowRows] = useState<Action[]>([]);
+  const [flowRows, setFlowRows] = useState<DynamicAction[]>([]);
   const [ uploadedForm, setUploadedForm ] = React.useState([]);
   const tableGridColumnDef: Array<GridColDef> = useMemo<Array<GridColDef>>(()=>{
     return reconstructTableColumnDef([...TableGridColumnDef], apiRef);
@@ -53,10 +56,8 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   }, [uploadedForm]);
 
   const getUpdatedFlowDb = () =>{
-    const newRows: Array<Action>=[...flowRows].map((row: Action)=>{
-      const updatedFlow: Action = {
-        pkey: "",
-        skey: "",
+    const newRows: Array<DynamicAction>=[...flowRows].map((row: DynamicAction)=>{
+      const updatedFlow: DynamicAction = {
         actionId: "",
         actionType: "ANNOUNCEMENT",
         callFlowName: "",
@@ -68,13 +69,15 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
         minDigits: 0,
         maxDigits: 0,
         timeout: 0,
-        repeat: {},
-        nextActionType: "",
+        repeat: {
+          nextActionType: "ANNOUNCEMENT"
+        },
+        nextActionType: "ANNOUNCEMENT",
         nextActionId: "",
-        options: []
+        options: [] as unknown as [MenuOption]
       };
       Object.keys(row).forEach((key: string)=>{
-        updatedFlow[key as keyof Action] = apiRef.current.getCellValue(row.pkey, key);
+        updatedFlow[key as keyof DynamicAction] = apiRef.current.getCellValue(row.actionId, key);
       });
       return updatedFlow;
     });
@@ -82,17 +85,15 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   };
 
   const handleOnCreate = () =>{
-    const newRows:Array<Action> = getUpdatedFlowDb();
+    const newRows:Array<DynamicAction> = getUpdatedFlowDb();
     onCreate(newRows);
   };
 
   const createNewRecord = () =>{
-    setFlowRows((previousRows: Action[])=>(
+    setFlowRows((previousRows: DynamicAction[])=>(
       [
         ...previousRows,
         {
-          pkey: previousRows.length.toString(),
-          skey: "",
           actionId: "",
           actionType: "ANNOUNCEMENT",
           callFlowName: "",
@@ -104,10 +105,12 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
           minDigits: 0,
           maxDigits: 0,
           timeout: 0,
-          repeat: {},
-          nextActionType: "",
+          repeat: {
+            nextActionType: "ANNOUNCEMENT"
+          },
+          nextActionType: "ANNOUNCEMENT",
           nextActionId: "",
-          options: []
+          options: [] as unknown as [MenuOption]
         }
       ]
     ));
@@ -149,7 +152,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
           rows={flowRows}
           columns={tableGridColumnDef}
           editMode="row"
-          getRowId={(row: Action)=>row.pkey}
+          getRowId={(row: DynamicAction)=>row.actionId}
           loading = {false}
           sx={{
             "& .MuiDataGrid-columnHeaderTitle": {

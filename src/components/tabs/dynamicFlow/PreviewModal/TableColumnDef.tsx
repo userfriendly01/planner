@@ -3,8 +3,8 @@ import { GridColDef } from "@mui/x-data-grid";
 import React from "react";
 export const TableGridColumnDef: GridColDef[] = [
   {
-    headerName: "id",
-    field: "pkey",
+    headerName: "Action ID",
+    field: "actionId",
     sortable: true,
     width: 220,
     align: "left"
@@ -22,14 +22,7 @@ export const TableGridColumnDef: GridColDef[] = [
     )
   },
   {
-    headerName: "skey",
-    field: "skey",
-    sortable: true,
-    width: 110,
-    align: "left"
-  },
-  {
-    headerName: "action type",
+    headerName: "Action Type",
     field: "actionType",
     sortable: true,
     width: 150,
@@ -41,56 +34,56 @@ export const TableGridColumnDef: GridColDef[] = [
     })
   },
   {
-    headerName: "allow barge-in",
+    headerName: "Allow Barge-in",
     field: "allowBargeIn",
     sortable: true,
     width: 110,
     align: "left"
   },
   {
-    headerName: "call flow name",
+    headerName: "Callflow Name",
     field: "callFlowName",
     sortable: true,
     width: 110,
     align: "left"
   },
   {
-    headerName: "finish on key",
+    headerName: "Finish on Key",
     field: "finishOnKey",
     sortable: true,
     width: 110,
     align: "left"
   },
   {
-    headerName: "max digits",
+    headerName: "Max Digits",
     field: "maxDigits",
     sortable: true,
     width: 110,
     align: "left"
   },
   {
-    headerName: "min digits",
+    headerName: "Min Digits",
     field: "minDigits",
     sortable: true,
     width: 110,
     align: "left"
   },
   {
-    headerName: "next action",
+    headerName: "Next Action",
     field: "nextActionId",
     sortable: true,
     width: 220,
     align: "left"
   },
   {
-    headerName: "next action type",
+    headerName: "Next Action Type",
     field: "nextActionType",
     sortable: true,
     width: 150,
     align: "left"
   },
   {
-    headerName: "options",
+    headerName: "Options",
     field: "options",
     sortable: true,
     width: 330,
@@ -102,7 +95,7 @@ export const TableGridColumnDef: GridColDef[] = [
     )
   },
   {
-    headerName: "repeat",
+    headerName: "Repeat",
     field: "repeat",
     sortable: true,
     width: 110,
@@ -114,14 +107,14 @@ export const TableGridColumnDef: GridColDef[] = [
     )
   },
   {
-    headerName: "speech",
+    headerName: "Speech",
     field: "speech",
     sortable: true,
     width: 330,
     align: "left"
   },
   {
-    headerName: "timeout",
+    headerName: "Timeout",
     field: "timeout",
     sortable: true,
     width: 110,
