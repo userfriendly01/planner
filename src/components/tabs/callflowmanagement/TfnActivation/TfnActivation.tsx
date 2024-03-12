@@ -105,6 +105,7 @@ export const TfnActivation = (props: TfnActivationProps) => {
       callflowId: 74,
       defaultSkill: "comparionOffice",
       voiceWebhookUrl: "https://cicct-app-gateway.libertymutual.com/comparion/general/enqueue/queue/comparionOffice",
+      entryMessage: "",
       label: "Comparion Office",
       value: 74
     }
