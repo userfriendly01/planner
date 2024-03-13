@@ -6,6 +6,7 @@ export type PreviewModalAction = "add";
 
 export type ActionType = "MENU"|"MENUOPTIONS"|"ANNOUNCEMENT"|"TRANSFER"|"HANGUP";
 export interface Action {
+    id: number;
     actionId: string;
     actionType: ActionType;
     callFlowName: string;

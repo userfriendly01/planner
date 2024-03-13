@@ -10,13 +10,19 @@ import {
 } from "../DynamicFlow.Interfaces";
 import { AlertBarProps } from "utils/interfaces";
 import {
+  CACHE_FILTER_FLOW,
+  getAdvanceFilter,
   getGraphQLEndpoint, initializedAlertBar
 } from "utils";
 import { PreviewModal } from "../PreviewModal/PreviewModal";
 import {
   queryFlowData, queryLSCDynamicFlowData, retrieveFlowData
 } from "services";
-import { CctSharedCallFlowDb } from "components";
+import {
+  CctSharedCallFlowDb, FlowAdvanceFilter, FlowStateVariables
+} from "components";
+import { getDynamicGridMasterData } from "./DynamicGridMaster";
+
 
 const DataGridFlow = (props: AzureSPA): JSX.Element => {
   const {
@@ -46,50 +52,36 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
   };
   const handleOnBulkCreate = async(rows: Array<DynamicAction> ) =>{
 
-    // const response = await batchFlowCreate(rows, accessToken, graphQLEndpoint);
-    // if(response?.flag) {
-    //   setAlertBar((alertBarProps: AlertBarProps) => ({
-    //     ...alertBarProps,
-    //     open: true,
-    //     msg: response?.alertMsg || "Error while creating the records.",
-    //     severityType: "error"
-    //   }));
-    // } else {
     setAlertBar((alertBarProps: AlertBarProps) => ({
       ...alertBarProps,
       open: true,
       msg: "Dyanmic Flows have been successfully created.",
       severityType: "success"
     }));
-    // }
-    //setSelectedList([...response.failure]);
-    // const filteredItems = [...dataFlow.filteredItems, ...response.success];
-    // const filteredData = [...dataFlow.data, ...response.success];
-    // setDataFlow({
-    //   ...dataFlow,
-    //   ...filteredItems && { filteredItems },
-    //   data: filteredData,
-    //   isPreviewModalOpen: false
-    // });
-    // apiRef.current.setRowSelectionModel([]);
   };
 
   useEffect(() => {
     const getTableData = async()=>{
+
+      // Dynamodb GraphQl Query
       const firstChunkData:any = await queryLSCDynamicFlowData(accessToken,  graphQLEndpoint);
+
+      // Build an array from objects return from dynamo.
       const listItems = firstChunkData?.data?.getCallFlowConfig?.items || [];
       let counter =1;
-      const flowData: Action[] = [];
-      listItems.forEach((item: Action) => {
+      const dynamicFlowData: DynamicAction[] = [];
+      listItems.forEach((item: DynamicAction) => {
         if (item) {
-          flowData.push({
+          dynamicFlowData.push({
             ...item,
             id: counter++
           });
         }
       });
 
-      await loadDataTable(flowData);
+      // Load Table Data into grid
+      await loadDataTable(dynamicFlowData);
+
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
         open: true,
@@ -97,12 +89,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         msg: "Data loading in progress. Please wait for the complete set of data to be loaded.",
         duration: 15000
       }));
-      const result: CctSharedCallFlowDb[] = await retrieveFlowData(
-        accessToken,
-        graphQLEndpoint,
-        firstChunkData
-      );
-      await loadDataTable(result);
+
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
         open: true,
@@ -112,6 +99,27 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     };
     getTableData();
   }, []);
+
+  const loadDataTable = async (result?: DynamicAction[]) => {
+    if (result?.length > 0) {
+      result = result.sort((a: DynamicAction, b: DynamicAction) => (a.id - b.id));
+      result = result.map((item: DynamicAction, index: number) => ({
+        ...item,
+        id: index + 1
+      }));
+      const minId: number = result[0].id;
+      const maxId: number = result[result.length - 1].id;
+      const masterData = getDynamicGridMasterData(result);
+
+    } else {
+      setAlertBar((alertBarProps: AlertBarProps) => ({
+        ...alertBarProps,
+        open: true,
+        msg: "Error in retrieving Flow record. Please check the API Key",
+        severityType: "error"
+      }));
+    }
+  };
 
   const handlePreviewModalOnClose = () =>{
     setDataFlow((dataFlowProps: DynamicStateVariables) => ({
