@@ -1617,8 +1617,8 @@ export const FIELDS: Fields = {
     field: "wfmOptionalCols",
     name: "WFM Optional Columns",
     type: "string",
-    description: "Comma delimited list of optional columns. Column names and value are colon delimited. Optional",
-    example: "SAF Agent Status, SAF Agent Location State:NH",
+    description: "Comma delimited list of optional columns. Column names and values are colon delimited. Optional",
+    example: "SAF Agent Status:Ready, SAF Agent Location State:NH",
     options: (state: any, businessUnitId: string) => {
       const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
       if (businessUnit) {
@@ -1651,7 +1651,7 @@ export const FIELDS: Fields = {
 
             const optionalColumnObj = businessUnitObj.Optional_Columns.find((r: any) => cleanupField(r.Name, "string") === cleanOptionalColumnName);
             if (!optionalColumnObj) {
-              optionalColumnErrors.push(`${cleanOptionalColumnName} is not a valid WFM Optional Column for row ${rowNumber}`);
+              optionalColumnErrors.push(`${cleanOptionalColumnName} is not valid for the selected business unit for row ${rowNumber}`);
             } else {
               // check for duplicate column names
               if (uniqueColumnNames.has(cleanOptionalColumnName)) {
