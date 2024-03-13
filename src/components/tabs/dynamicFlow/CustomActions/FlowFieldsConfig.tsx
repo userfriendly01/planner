@@ -16,7 +16,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...newValue
     })
   }, {
-    label: "action type",
+    label: "Action Type",
     key: "actionType",
     control: "input",
     required: true,
@@ -26,7 +26,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...newValue
     })
   }, {
-    label: "allow barge-in",
+    label: "Allow Barge-in",
     key: "allowBargeIn",
     control: "input",
     required: false,
@@ -36,7 +36,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...newValue
     })
   }, {
-    label: "CallFlow Name",
+    label: "Callflow Name",
     key: "callFlowName",
     control: "input",
     required: true,
@@ -46,7 +46,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...newValue
     })
   }, {
-    label: "Finish On Key",
+    label: "Finish on Key",
     key: "finishOnKey",
     control: "input",
     required: false,
@@ -96,7 +96,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...newValue
     })
   }, {
-    label: "options",
+    label: "Options",
     key: "options",
     control: "input",
     required: false,
@@ -106,7 +106,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...newValue
     })
   }, {
-    label: "repeat",
+    label: "Repeat",
     key: "repeat",
     control: "input",
     required: false,
@@ -116,7 +116,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...newValue
     })
   }, {
-    label: "speech",
+    label: "Speech",
     key: "speech",
     control: "input",
     required: false,
@@ -126,7 +126,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...newValue
     })
   }, {
-    label: "timeout",
+    label: "Timeout",
     key: "timeout",
     control: "input",
     required: false,

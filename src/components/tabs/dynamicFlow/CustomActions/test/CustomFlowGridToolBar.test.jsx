@@ -1,0 +1,75 @@
+import {
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select
+} from "@mui/material";
+import {
+  act,
+  initialTestState,
+  render,
+  setupMockedComponents
+} from "testUtils";
+import { CustomFlowGridToolBar } from "../CustomFlowGridToolBar";
+import React from "react";
+import { useAdminState } from "context";
+
+jest.mock("@mui/material", () => ({
+  __esModule: true,
+  FormControl: jest.fn(),
+  Grid: jest.fn(),
+  InputLabel: jest.fn(),
+  MenuItem: jest.fn(),
+  Select: jest.fn()
+}));
+jest.mock("context", () => ({
+  useAdminState: jest.fn()
+}));
+
+const openPreviewModal=jest.fn();
+
+const matchedGroups = ["a"];
+
+const renderCustomToolBar = () =>{
+  const rendered =render(
+    <CustomFlowGridToolBar
+      matchedGroups={matchedGroups}
+      openPreviewModal={openPreviewModal}
+    />
+  );
+  return rendered;
+};
+
+describe("<CustomFlowGridToolBar/>",()=>{
+  beforeEach(()=>{
+    jest.clearAllMocks();
+    setupMockedComponents({
+      FormControl,
+      Grid,
+      InputLabel,
+      MenuItem,
+      Select
+    });
+    useAdminState.mockReturnValue(initialTestState);
+  });
+
+  test("Choose the multi-actions", () => {
+    renderCustomToolBar();
+    const GridMock = Grid.mock.calls[0][0];
+    const ActionsAttr = GridMock.children[0].props.children.props.children[0].props.onChange;
+
+    act(()=>{
+      ActionsAttr({
+        target: {
+          value: "bulkAddFlow"
+        }
+      });
+    });
+
+    expect(GridMock.children).toBe(1);
+    expect(GridMock).toBeTruthy();
+    expect(openPreviewModal).toBeCalledTimes(1);
+
+  });
+});

@@ -29,8 +29,8 @@ export interface AddFlowFieldsConfigProps {
     control: Control;
     required?: boolean;
     disableEdit?: boolean;
-    valueGetter?: (params: Action) => any;
-    valueSetter?: (currentValue: Action, newValue: any) => Action;
+    valueGetter?: (params: DynamicAction) => any;
+    valueSetter?: (currentValue: DynamicAction, newValue: any) => DynamicAction;
     dynamicFieldConditionCheck?: (params: FormValidationRule) => boolean;
     formFields?: Array<MultiFieldContainerFormProps>;
     fieldType?: "viewAndAdd";
@@ -43,8 +43,8 @@ export interface AddDynamicFlowFieldsConfigProps {
     control: Control;
     required?: boolean;
     disableEdit?: boolean;
-    valueGetter?: (params: Action) => any;
-    valueSetter?: (currentValue: Action, newValue: any) => Action;
+    valueGetter?: (params: DynamicAction) => any;
+    valueSetter?: (currentValue: DynamicAction, newValue: any) => DynamicAction;
     dynamicFieldConditionCheck?: (params: FormValidationRule) => boolean;
     formFields?: Array<MultiFieldContainerFormProps>;
     fieldType?: "viewAndAdd";
