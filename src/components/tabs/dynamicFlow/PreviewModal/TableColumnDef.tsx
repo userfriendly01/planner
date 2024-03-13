@@ -14,7 +14,7 @@ export const TableGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 50,
     align: "left",
-    valueGetter: params => `${params.row?.actionType || ""}`,
+    valueGetter: params => `${params.row?.errors || ""}`,
     renderCell: (params: any) =>  (
       <Tooltip title={params.row.errors || ""} className="validation-error" >
         <div>{params.row.errors?"...":""}</div>

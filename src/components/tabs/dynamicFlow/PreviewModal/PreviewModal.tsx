@@ -24,9 +24,7 @@ import { reconstructTableColumnDef } from "./PreviewUtil";
       rows: Array<DynamicAction>;
       action: "add";
       onClose: () => void;
-      onDelete?: (rows: Array<DynamicAction>) => void;
       onCreate?: (rows: Array<DynamicAction>) => void;
-      onUpdate?: (rows: Array<DynamicAction>) => void;
       loading?: boolean;
   }
 
@@ -153,7 +151,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
           columns={tableGridColumnDef}
           editMode="row"
           getRowId={(row: DynamicAction)=>row.actionId}
-          loading = {false}
+          loading = {loading}
           sx={{
             "& .MuiDataGrid-columnHeaderTitle": {
               fontWeight: 600
