@@ -7,17 +7,10 @@ import {
 import { ModalOnHover } from "components";
 export const DynamicFlowGridColumnDef: GridColDef[] = [
   {
-    headerName: "pkey",
-    field: "pkey",
+    headerName: "actionId",
+    field: "actionId",
     sortable: true,
     width: 110,
-    align: "left"
-  },
-  {
-    headerName: "skey",
-    field: "skey",
-    sortable: true,
-    width: 150,
     align: "left"
   },
   {
@@ -48,13 +41,6 @@ export const DynamicFlowGridColumnDef: GridColDef[] = [
     width: 110,
     align: "left",
     valueGetter: params => `${params.row.content?.languageOffer || ""}`
-  },
-  {
-    headerName: "all",
-    field: "all",
-    sortable: true,
-    width: 110,
-    align: "left"
   },
   {
     headerName: "speech",
