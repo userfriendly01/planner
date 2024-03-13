@@ -56,6 +56,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   const getUpdatedFlowDb = () =>{
     const newRows: Array<DynamicAction>=[...flowRows].map((row: DynamicAction)=>{
       const updatedFlow: DynamicAction = {
+        id: 0,
         actionId: "",
         actionType: "ANNOUNCEMENT",
         callFlowName: "",
@@ -92,6 +93,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
       [
         ...previousRows,
         {
+          id: 0,
           actionId: "",
           actionType: "ANNOUNCEMENT",
           callFlowName: "",
