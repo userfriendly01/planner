@@ -4,7 +4,7 @@ import React, {
 } from "react";
 import { CustomFlowGridToolBar } from "../CustomActions/CustomFlowGridToolBar";
 import {
-  DynamicAction,
+  DynamicAction, DynamicFlowStateVariables,
   DynamicStateVariables,
   PreviewModalAction
 } from "../DynamicFlow.Interfaces";
@@ -115,6 +115,19 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       const minId: number = result[0].id;
       const maxId: number = result[result.length - 1].id;
       const masterData = getDynamicGridMasterData(result);
+
+      // Set Data Flow
+      setDataFlow((dynamicDataFlowProps: DynamicFlowStateVariables) => ({
+        ...dynamicDataFlowProps,
+        data: result,
+        filteredItems: result,
+        fetching: false,
+        idStart: minId,
+        idEnd: maxId,
+        maxId,
+        minId,
+        masterData
+      }));
 
     } else {
       setAlertBar((alertBarProps: AlertBarProps) => ({

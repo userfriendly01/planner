@@ -8,7 +8,7 @@ import {
 } from "../DynamicFlow.Interfaces";
 
 const CACHE_MASTER_DATA = "FLOW_MASTER_DATA";
-const masterDataItems = ["pkey", "skey", "actionType", "callFlowName", "createTime", "updateTime", "all","speech","timeout","finishOnKey","minDigits","maxDigits","nextActionType","options"];
+const masterDataItems = ["actionId", "actionType", "callFlowName", "createTime", "updateTime", "speech","timeout","finishOnKey","minDigits","maxDigits","nextActionType","nextActionId","options","repeat"];
 
 const filteredItems = [null, "null", "", undefined];
 
@@ -20,7 +20,6 @@ const getValueFromKeyPath = (element:DynamicAction, key:string) => {
   }
   return element[key as keyof DynamicAction];
 };
-// Check with Team TODO
 const constructMasterData = (data: DynamicAction[],masterData: any={}):any =>{
   data.forEach((elem: DynamicAction) => masterDataItems.forEach((key: string) => {
     const value: string|string[] = getValueFromKeyPath(elem, key) as string|string[];
