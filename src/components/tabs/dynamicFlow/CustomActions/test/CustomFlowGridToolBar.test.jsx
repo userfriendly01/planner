@@ -7,6 +7,7 @@ import {
 } from "@mui/material";
 import {
   act,
+  adGroupPermissionMapping,
   initialTestState,
   render,
   setupMockedComponents
@@ -29,12 +30,11 @@ jest.mock("context", () => ({
 
 const openPreviewModal=jest.fn();
 
-const matchedGroups = ["a"];
 
 const renderCustomToolBar = () =>{
   const rendered =render(
     <CustomFlowGridToolBar
-      matchedGroups={matchedGroups}
+      matchedGroups={adGroupPermissionMapping}
       openPreviewModal={openPreviewModal}
     />
   );

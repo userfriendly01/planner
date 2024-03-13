@@ -74,7 +74,7 @@ describe("<PreviewModal />", () => {
   test("render Add preview - create failure", () => {
     renderComponent("add", onCreateMockBad);
     const calls = StyledButton.mock.calls;
-    act(async () => calls[0][0].onClick());
+    act(async () => calls[0][2].onClick());
     expect(onCreateMockBad).toBeCalledTimes(1);
     expect(onCloseMock).toBeCalledTimes(0);
   });
@@ -95,11 +95,5 @@ describe("<PreviewModal />", () => {
     const calls2 = StyledButton.mock.calls;
     expect(calls2.length).toBe(12);
   });
-  // test("Upload CSV File", () => {
-  //   renderComponent("add", onDeleteMock);
-  //   const onChange = StyledButton.mock.calls[5][0].children[0].props.onChange;
-  //   act(() => onChange());
-  //   const calls2 = StyledButton.mock.calls;
-  //   expect(calls2.length).toBe(12);
-  // });
+
 });

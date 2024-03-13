@@ -50,8 +50,7 @@ const apiRef = jest.fn();
 describe("PreviewUtils", () => {
   describe("reconstructTableColumnDef", () => {
     describe("add", () => {
-      const action = "add";
-      const reconstructed = reconstructTableColumnDef(action, [...TableGridColumnDef],apiRef);
+      const reconstructed = reconstructTableColumnDef([...TableGridColumnDef],apiRef);
       it("should be editable", () => {
         expect(reconstructed[0].editable).toEqual(true);
       });

@@ -51,7 +51,7 @@ jest.mock("../../PreviewModal", ()=>({
 }));
 
 const renderComponent = () => render(
-  <DataGridFlow accessToken="Token123" matchedGroups="[]"/>,
+  <DataGridFlow accessToken={"Token123"} matchedGroups={[]}/>,
   initialTestState
 );
 
