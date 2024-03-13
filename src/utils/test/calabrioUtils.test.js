@@ -362,7 +362,7 @@ describe("calabrioUtils", () => {
     });
   });
   describe("getWfmOptions", () => {
-    describe("busniess unit id is passed to function", () => {
+    describe("business unit id is passed to function", () => {
       test("returns list of options for the specified Business unit", () => {
         const result = getWfmOptionsUtil({ calabrioContext }, "123-321");
         expect(result).toEqual({
@@ -406,6 +406,10 @@ describe("calabrioUtils", () => {
             {
               Name: "OptionalCol2",
               Id: "222"
+            },
+            {
+              Name: "OptionalCol3",
+              Id: "333"
             }
           ],
           Part_Time_Percentages: [
@@ -507,6 +511,10 @@ describe("calabrioUtils", () => {
             {
               Name: "OptionalCol2",
               Id: "222"
+            },
+            {
+              Name: "OptionalCol3",
+              Id: "333"
             }
           ],
           Part_Time_Percentages: [

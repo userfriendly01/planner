@@ -4134,7 +4134,7 @@ describe("fields.js", () => {
         });
         test("Optional columns provided, but BU is invalid for the row, reject with invalid bu message", async () => {
           const row = {
-            "WFM Optional Columns": "OptionalCol1",
+            "WFM Optional Columns": "OptionalCol1:OptionalColValue1",
             businessUnitId: "fake bu",
             rowNumber: 4
           };
@@ -4149,7 +4149,7 @@ describe("fields.js", () => {
         });
         test("One optional column provided, is valid, resolve and add id to row", async () => {
           const row = {
-            "WFM Optional Columns": "OptionalCol1",
+            "WFM Optional Columns": "OptionalCol1:OptionalColValue1",
             businessUnitId: "123-321",
             rowNumber: 4
           };
@@ -4159,13 +4159,13 @@ describe("fields.js", () => {
             ...row,
             wfmOptionalColumns: [{
               Id: "111",
-              Value: "OptionalCol1"
+              Value: "OptionalColValue1"
             }]
           });
         });
         test("Multiple op columns provided, one is bad, reject with invalid message", async () => {
           const row = {
-            "WFM Optional Columns": "OptionalCol1, fakeCol",
+            "WFM Optional Columns": "OptionalCol1:OptionalColValue1, fakeCol:fakeColValue",
             businessUnitId: "123-321",
             rowNumber: 4
           };
@@ -4174,13 +4174,46 @@ describe("fields.js", () => {
           } catch (e) {
             expect(e).toEqual(JSON.stringify({
               rowNumber: 4,
-              error: "fakecol is not a valid WFM Optional Column for row 4"
+              error: "fakecol is not valid for the selected business unit for row 4"
+            }));
+          }
+        });
+        test("Duplicate op columns provided, reject with invalid message", async () => {
+          const row = {
+            "WFM Optional Columns": "OptionalCol1:OptionalColValue1, OptionalCol1:OptionalColValue1",
+            businessUnitId: "123-321",
+            rowNumber: 4
+          };
+          try {
+            await optionalColsValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 4,
+              error: "Duplicate WFM Optional Column optionalcol1 for row 4"
+            }));
+          }
+        });
+        test("Lots of problems, reject with invalid message", async () => {
+          const row = {
+            "WFM Optional Columns": "  OptionalCol1   , OptionalCol2:OptionalColValue2, OptionalCol3   :   , fakeCol:fakeColValue          ,OptionalCol1:OptionalColValue1",
+            businessUnitId: "123-321",
+            rowNumber: 4
+          };
+          try {
+            await optionalColsValidation(row, initialTestState);
+          } catch (e) {
+            expect(e).toEqual(JSON.stringify({
+              rowNumber: 4,
+              error: "No value given for WFM Optional Column optionalcol1 for row 4,"
+              + "No value given for WFM Optional Column optionalcol3 for row 4,"
+              + "fakecol is not valid for the selected business unit for row 4,"
+              + "Duplicate WFM Optional Column optionalcol1 for row 4"
             }));
           }
         });
         test("Multiple op columns provided, all are valid, resolve with message and add ids to the row", async () => {
           const row = {
-            "WFM Optional Columns": "OptionalCol1, OptionalCol2",
+            "WFM Optional Columns": "OptionalCol1:OptionalColValue1, OptionalCol2:OptionalColValue2",
             businessUnitId: "123-321",
             rowNumber: 4
           };
@@ -4190,11 +4223,11 @@ describe("fields.js", () => {
             ...row,
             wfmOptionalColumns: [{
               Id: "111",
-              Value: "OptionalCol1"
+              Value: "OptionalColValue1"
             },
             {
               Id: "222",
-              Value: "OptionalCol2"
+              Value: "OptionalColValue2"
             }]
           });
         });
@@ -4203,7 +4236,7 @@ describe("fields.js", () => {
         const optionsFunction = FIELDS.CALABRIO_WFM_OPTIONAL_COLUMNS.options;
         test("State and BU Id are passed into function, returns options", () => {
           const options = optionsFunction(initialTestState, "123-321");
-          expect(options).toEqual(["OptionalCol1", "OptionalCol2"]);
+          expect(options).toEqual(["OptionalCol1", "OptionalCol2", "OptionalCol3"]);
         });
         test("No Business unit id is passed into options function, returns unable to generate message", () => {
           const options = optionsFunction(initialTestState);

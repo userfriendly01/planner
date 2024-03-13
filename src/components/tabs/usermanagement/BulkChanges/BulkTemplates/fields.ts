@@ -272,7 +272,7 @@ export const FIELDS: Fields = {
       /*
         skills object: {
          levels: {asig: 2},
-         skills: [466, aisg]   
+         skills: [466, aisg]
         }
       */
       const fieldName = "Default Skills";
@@ -1212,7 +1212,7 @@ export const FIELDS: Fields = {
         return Promise.resolve(`${fieldName} is empty but not required. Skipping validation for row ${rowNumber}`);
 
       } else {
-        // If this field is provided, but no other scheduling fields are, throw an error saying 
+        // If this field is provided, but no other scheduling fields are, throw an error saying
         // shiftbag can only be provided if the other schedule fields are given
         if (
           !cleanupField(row[FIELDS.CALABRIO_WFM_PERSON_START_DATE.name], "string") &&
@@ -1265,7 +1265,7 @@ export const FIELDS: Fields = {
       if (!field) {
         return Promise.resolve(`${fieldName} is empty but not required. Skipping validation for row ${rowNumber}`);
       } else {
-        // If this field is provided, but no other scheduling fields are, throw an error saying 
+        // If this field is provided, but no other scheduling fields are, throw an error saying
         // budgetGroup can only be provided if the other schedule fields are given
         if (
           !cleanupField(row[FIELDS.CALABRIO_WFM_PERSON_START_DATE.name], "string") &&
@@ -1382,7 +1382,7 @@ export const FIELDS: Fields = {
           return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
         }
       } else {
-        // this would mean we have this skills start date field, but no skills field.  
+        // this would mean we have this skills start date field, but no skills field.
         return rejectPromise(`${fieldName} was provided but WFM Skills is empty.`, rowNumber);
       }
     }
@@ -1462,7 +1462,7 @@ export const FIELDS: Fields = {
           return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
         }
       } else {
-        // this would mean we have this rotation start date field, but no rotation field.  
+        // this would mean we have this rotation start date field, but no rotation field.
         return rejectPromise(`${fieldName} was provided but WFM Rotation is empty.`, rowNumber);
       }
     }
@@ -1534,7 +1534,7 @@ export const FIELDS: Fields = {
           return rejectPromise(`${fieldName} is invalid for row ${rowNumber}`, rowNumber);
         }
       } else {
-        // this would mean we have this Rotation start week field, but no rotation field.  
+        // this would mean we have this Rotation start week field, but no rotation field.
         return rejectPromise(`${fieldName} was provided but WFM Rotation is empty.`, rowNumber);
       }
     }
@@ -1568,7 +1568,7 @@ export const FIELDS: Fields = {
           return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
         }
       } else {
-        // this would mean we have this availability start date field, but no availability field.  
+        // this would mean we have this availability start date field, but no availability field.
         return rejectPromise(`${fieldName} was provided but WFM Availability is empty.`, rowNumber);
       }
     }
@@ -1617,8 +1617,8 @@ export const FIELDS: Fields = {
     field: "wfmOptionalCols",
     name: "WFM Optional Columns",
     type: "string",
-    description: "Comma deliminated list of optional columns. Optional",
-    example: "SAF Agent Status, SAF Agent Location State",
+    description: "Comma delimited list of optional columns. Column names and values are colon delimited. Optional",
+    example: "SAF Agent Status:Ready, SAF Agent Location State:NH",
     options: (state: any, businessUnitId: string) => {
       const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
       if (businessUnit) {
@@ -1629,7 +1629,9 @@ export const FIELDS: Fields = {
     validateFunction: (row: any, state: any): Promise<any> => {
       const rowNumber = row.rowNumber;
       const fieldName = FIELDS.CALABRIO_WFM_OPTIONAL_COLUMNS.name;
-      const field = cleanupField(row[fieldName], "string");
+      const field = (row[fieldName]) ? row[fieldName].trim() : "";
+      const uniqueColumnNames : Set<string> = new Set<string>();
+      const optionalColumnErrors : string[] = [];
       row.wfmOptionalColumns = [];
 
       if (!field) {
@@ -1643,20 +1645,37 @@ export const FIELDS: Fields = {
           }
           const fieldArray = field.split(",");
           fieldArray.forEach((oc: any) => {
-            const cleanOptionalColumn = cleanupField(oc, "string");
+            const columnKeyValuePair = oc.split(":");
+            const cleanOptionalColumnName = cleanupField(columnKeyValuePair[0], "string");
+            const trimmedOptionalColumnValue = (columnKeyValuePair[1]) ? columnKeyValuePair[1].trim() : "";
 
-            const optionalColumnObj = businessUnitObj.Optional_Columns.find((r: any) => cleanupField(r.Name, "string") === cleanOptionalColumn);
+            const optionalColumnObj = businessUnitObj.Optional_Columns.find((r: any) => cleanupField(r.Name, "string") === cleanOptionalColumnName);
             if (!optionalColumnObj) {
-              throw new Error(`${cleanOptionalColumn} is not a valid WFM Optional Column for row ${rowNumber}`);
+              optionalColumnErrors.push(`${cleanOptionalColumnName} is not valid for the selected business unit for row ${rowNumber}`);
             } else {
+              // check for duplicate column names
+              if (uniqueColumnNames.has(cleanOptionalColumnName)) {
+                optionalColumnErrors.push(`Duplicate WFM Optional Column ${cleanOptionalColumnName} for row ${rowNumber}`);
+              } else {
+                uniqueColumnNames.add(cleanOptionalColumnName);
+              }
+
               // reformat - Teleopti api wants Id and Value
-              const optionalColumn = {
-                Id: optionalColumnObj.Id,
-                Value: optionalColumnObj.Name
-              };
-              row.wfmOptionalColumns.push(optionalColumn);
+              if (trimmedOptionalColumnValue) {
+                const optionalColumn = {
+                  Id: optionalColumnObj.Id,
+                  Value: trimmedOptionalColumnValue
+                };
+                row.wfmOptionalColumns.push(optionalColumn);
+              } else {
+                optionalColumnErrors.push(`No value given for WFM Optional Column ${cleanOptionalColumnName} for row ${rowNumber}`);
+              }
             }
           });
+
+          if (optionalColumnErrors.length > 0 ) {
+            throw new Error(optionalColumnErrors.toString());
+          }
           return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
         } catch (err) {
           return rejectPromise(err.message, rowNumber);
