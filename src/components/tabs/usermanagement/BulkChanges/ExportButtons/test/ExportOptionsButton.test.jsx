@@ -137,6 +137,7 @@ const expectedWFMRows = [
   {
     timeZone: "America/Denver (MST/MDT)",
     wfmFirstDayOfWeek: 2,
+    wfmOptionalCols: "OptionalCol3",
     wfmTeam: "Team3 No ID"
   },
   {
@@ -281,7 +282,7 @@ const expectedWFMCols = [
     field: "wfmOptionalCols",
     title: "WFM Optional Columns",
     width: undefined,
-    options: [ "OptionalCol1", "OptionalCol2" ],
+    options: [ "OptionalCol1", "OptionalCol2", "OptionalCol3" ],
     wrap: true,
     textAlign: "center"
   }
