@@ -22,6 +22,11 @@ import {
   CctSharedCallFlowDb, FlowAdvanceFilter, FlowStateVariables
 } from "components";
 import { getDynamicGridMasterData } from "./DynamicGridMaster";
+import {
+  DataGrid, useGridApiRef
+} from "@mui/x-data-grid";
+import FlowGridColumnDef from "../../alohaFlow/DataGridFlow/GridColumnDef";
+import DynamicFlowGridColumnDef from "./DynamicGridColumnDef";
 
 
 const DataGridFlow = (props: AzureSPA): JSX.Element => {
@@ -59,7 +64,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       severityType: "success"
     }));
   };
-
+  const apiRef = useGridApiRef();
   useEffect(() => {
     const getTableData = async()=>{
 
@@ -135,6 +140,21 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
           <CustomFlowGridToolBar
             matchedGroups={matchedGroups}
             openPreviewModal={openPreviewModal}
+          />
+          <DataGrid
+            apiRef={apiRef}
+            rows={dataFlow.filteredItems}
+            columns={DynamicFlowGridColumnDef}
+            loading={dataFlow.fetching}
+            checkboxSelection
+            disableRowSelectionOnClick
+            autoHeight
+            getRowId={(row: DynamicAction)=>row.actionId}
+            sx={{
+              "& .MuiDataGrid-columnHeaderTitle": {
+                fontWeight: 600
+              }
+            }}
           />
 
         </div>
