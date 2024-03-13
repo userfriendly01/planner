@@ -4174,7 +4174,7 @@ describe("fields.js", () => {
           } catch (e) {
             expect(e).toEqual(JSON.stringify({
               rowNumber: 4,
-              error: "fakecol is not a valid WFM Optional Column for row 4"
+              error: "fakecol is not valid for the selected business unit for row 4"
             }));
           }
         });
@@ -4206,7 +4206,7 @@ describe("fields.js", () => {
               rowNumber: 4,
               error: "No value given for WFM Optional Column optionalcol1 for row 4,"
               + "No value given for WFM Optional Column optionalcol3 for row 4,"
-              + "fakecol is not a valid WFM Optional Column for row 4,"
+              + "fakecol is not valid for the selected business unit for row 4,"
               + "Duplicate WFM Optional Column optionalcol1 for row 4"
             }));
           }
