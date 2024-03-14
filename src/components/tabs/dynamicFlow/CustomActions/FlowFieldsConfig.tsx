@@ -10,7 +10,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     key: "actionId",
     control: "input",
     required: true,
-    valueGetter: (params: DynamicAction) => `${params?.actionId || ""}`,
+    valueGetter: (params: DynamicAction) => params?.actionId ?? "",
     valueSetter: (currentValue: DynamicAction, newValue: any) => ({
       ...currentValue,
       ...newValue
@@ -20,7 +20,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     key: "actionType",
     control: "input",
     required: true,
-    valueGetter: (params: DynamicAction) => `${params?.actionType || ""}`,
+    valueGetter: (params: DynamicAction) => params?.actionType ?? "",
     valueSetter: (currentValue: DynamicAction, newValue: any) => ({
       ...currentValue,
       ...newValue
@@ -30,7 +30,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     key: "allowBargeIn",
     control: "input",
     required: false,
-    valueGetter: (params: DynamicAction) => `${params?.allowBargeIn || false}`,
+    valueGetter: (params: DynamicAction) => params?.allowBargeIn ?? false,
     valueSetter: (currentValue: DynamicAction, newValue: any) => ({
       ...currentValue,
       ...newValue
@@ -40,7 +40,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     key: "callFlowName",
     control: "input",
     required: true,
-    valueGetter: (params: DynamicAction) => `${params?.callFlowName || ""}`,
+    valueGetter: (params: DynamicAction) => params?.callFlowName ?? "",
     valueSetter: (currentValue: DynamicAction, newValue: any) => ({
       ...currentValue,
       ...newValue
@@ -50,7 +50,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     key: "finishOnKey",
     control: "input",
     required: false,
-    valueGetter: (params: DynamicAction) => `${params?.finishOnKey || ""}`,
+    valueGetter: (params: DynamicAction) => params?.finishOnKey ?? "",
     valueSetter: (currentValue: DynamicAction, newValue: any) => ({
       ...currentValue,
       ...newValue
@@ -60,7 +60,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     key: "maxDigits",
     control: "input",
     required: false,
-    valueGetter: (params: DynamicAction) => `${params?.maxDigits || ""}`,
+    valueGetter: (params: DynamicAction) => params?.maxDigits ?? 0,
     valueSetter: (currentValue: DynamicAction, newValue: any) => ({
       ...currentValue,
       ...newValue
@@ -70,7 +70,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     key: "minDigits",
     control: "input",
     required: false,
-    valueGetter: (params: DynamicAction) => `${params?.minDigits || ""}`,
+    valueGetter: (params: DynamicAction) => params?.minDigits ?? 0,
     valueSetter: (currentValue: DynamicAction, newValue: any) => ({
       ...currentValue,
       ...newValue
@@ -80,7 +80,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     key: "nextActionId",
     control: "input",
     required: false,
-    valueGetter: (params: DynamicAction) => `${params?.nextActionId || ""}`,
+    valueGetter: (params: DynamicAction) => params?.nextActionId ?? "",
     valueSetter: (currentValue: DynamicAction, newValue: any) => ({
       ...currentValue,
       ...newValue
@@ -90,7 +90,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     key: "nextActionType",
     control: "input",
     required: false,
-    valueGetter: (params: DynamicAction) => `${params?.nextActionType || ""}`,
+    valueGetter: (params: DynamicAction) => params?.nextActionType ?? "",
     valueSetter: (currentValue: DynamicAction, newValue: any) => ({
       ...currentValue,
       ...newValue
@@ -100,7 +100,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     key: "options",
     control: "input",
     required: false,
-    valueGetter: (params: DynamicAction) => `${params?.options || ""}`,
+    valueGetter: (params: DynamicAction) => params?.options ?? [],
     valueSetter: (currentValue: DynamicAction, newValue: any) => ({
       ...currentValue,
       ...newValue
@@ -110,7 +110,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     key: "repeat",
     control: "input",
     required: false,
-    valueGetter: (params: DynamicAction) => `${params?.repeat || ""}`,
+    valueGetter: (params: DynamicAction) => params?.repeat ?? {},
     valueSetter: (currentValue: DynamicAction, newValue: any) => ({
       ...currentValue,
       ...newValue
@@ -120,7 +120,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     key: "speech",
     control: "input",
     required: false,
-    valueGetter: (params: DynamicAction) => `${params?.speech || ""}`,
+    valueGetter: (params: DynamicAction) => params?.speech ?? "",
     valueSetter: (currentValue: DynamicAction, newValue: any) => ({
       ...currentValue,
       ...newValue
@@ -130,7 +130,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     key: "timeout",
     control: "input",
     required: false,
-    valueGetter: (params: DynamicAction) => `${params?.timeout || ""}`,
+    valueGetter: (params: DynamicAction) => params?.timeout ?? 0,
     valueSetter: (currentValue: DynamicAction, newValue: any) => ({
       ...currentValue,
       ...newValue

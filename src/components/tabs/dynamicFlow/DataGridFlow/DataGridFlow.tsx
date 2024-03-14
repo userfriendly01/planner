@@ -19,7 +19,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
   const flowInitState: DynamicStateVariables = {
     data: [],
     filteredItems: [] ,
-    fetching: true,
+    fetching: false,
     selectedRow: undefined,
     isPreviewModalOpen: false,
     saveSuccess: 0
