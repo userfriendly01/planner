@@ -780,8 +780,10 @@ const createDynamicFlowRunItem = async(items, accessToken, graphQlApiUrl) =>{
   const announcements = [];
   const menus = [];
   const menuOptions = [];
+  const options =[];
   let callFlowName = "";
-  const input = items.map(item=>{
+
+  items.map(item=>{
     if(item.actionType === "ANNOUNCEMENT")
     {
       announcements.push({
@@ -810,10 +812,10 @@ const createDynamicFlowRunItem = async(items, accessToken, graphQlApiUrl) =>{
         nextActionId: item.nextActionId,
         nextActionType: item.nextActionType,
         repeat: {
-          callerContextAttributes: item.callerContextAttributes,
-          loop: item.loop,
-          nextActionId: item.nextActionId,
-          nextActionType: item.nextActionType
+          callerContextAttributes: JSON.stringify(item.repeat.callerContextAttributes),
+          loop: item.repeat.loop,
+          nextActionId: item.repeat.nextActionId,
+          nextActionType: item.repeat.nextActionType
         },
         speech: item.speech,
         timeout: item.timeout,
@@ -829,12 +831,12 @@ const createDynamicFlowRunItem = async(items, accessToken, graphQlApiUrl) =>{
         callFlowName: item.callFlowName,
         createTime: new Date().getTime(),
         updateTime: new Date().getTime(),
-        options: {
-          callerContextAttributes: item.callerContextAttributes,
-          digit: item.digit,
-          nextActionId: item.nextActionId,
-          nextActionType: item.nextActionType
-        }
+        options: options.push({
+          callerContextAttributes: JSON.stringify(item.options.callerContextAttributes),
+          digit: item.options.digit,
+          nextActionId: item.options.nextActionId,
+          nextActionType: item.options.nextActionType
+        })
       });
     }
     callFlowName = item.callFlowName;
@@ -855,67 +857,22 @@ const createDynamicFlowRunItem = async(items, accessToken, graphQlApiUrl) =>{
       },
       body: JSON.stringify({
         query: `
-        mutation createCallFlowConfig($input: {announcements, menus, menuOptions, callFlowName} ) {
+        mutation createCallFlowConfig($input: CallFlowConfigInput! ) {
           createCallFlowConfig(input: $input) {
-              callFlowName,
-              announcements: [
-                nextActionId
-                actionId
-                actionType
-                callFlowName
-                createTime
-                nextActionType
-                speech
-                updateTime
-                ],
-              menus: [
-                 allowBargeIn
-                  finishOnKey
-                  actionId
-                  actionType
-                  callFlowName
-                  createTime
-                  maxDigits
-                  minDigits
-                  nextActionId
-                  nextActionType
-                  repeat {
-                    callerContextAttributes
-                    loop
-                    nextActionId
-                    nextActionType
-                  }
-                  speech
-                  timeout
-                  updateTime
-              ],
-              menuOptions: [
-                  actionId
-                  actionType
-                  callFlowName
-                  createTime
-                  updateTime
-                  options {
-                    callerContextAttributes
-                    digit
-                    nextActionId
-                    nextActionType
-                  } 
-               ],
+              callFlowName
             }
           }
       `,
         variables: {
           input: {
-            announcements: announcements ,
+            callFlowName: callFlowName,
+            announcements: announcements,
             menus: menus,
-            menuOptions: menuOptions,
-            callFlowName: callFlowName
+            menuOptions: menuOptions
           }
         }
       })
     });
-    logger.log("Input", input);
     response = await fetchResponse.json();
     logger.log("Create Batch Dynamic Flow DB Response:", response);
   } catch (error) {
