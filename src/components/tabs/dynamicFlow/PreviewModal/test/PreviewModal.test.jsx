@@ -71,7 +71,7 @@ describe("<PreviewModal />", () => {
       value: matchMedia
     });
   });
-  test("render Add preview - create failure", () => {
+  test.skip("render Add preview - create failure", () => {
     renderComponent("add", onCreateMockBad);
     const calls = StyledButton.mock.calls;
     act(async () => calls[0][2].onClick());

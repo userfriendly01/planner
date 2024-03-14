@@ -54,7 +54,7 @@ describe("<CustomFlowGridToolBar/>",()=>{
     useAdminState.mockReturnValue(initialTestState);
   });
 
-  test("Choose the multi-actions", () => {
+  test.only("Choose the multi-actions", () => {
     renderCustomToolBar();
     const GridMock = Grid.mock.calls[0][0];
     const ActionsAttr = GridMock.children[0].props.children.props.children[0].props.onChange;

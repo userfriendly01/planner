@@ -30,7 +30,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     key: "allowBargeIn",
     control: "input",
     required: false,
-    valueGetter: (params: DynamicAction) => `${params?.allowBargeIn || ""}`,
+    valueGetter: (params: DynamicAction) => `${params?.allowBargeIn || false}`,
     valueSetter: (currentValue: DynamicAction, newValue: any) => ({
       ...currentValue,
       ...newValue

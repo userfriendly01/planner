@@ -2,7 +2,7 @@ import { AzureSPA } from "globals";
 import React, { useState } from "react";
 import { CustomFlowGridToolBar } from "../CustomActions/CustomFlowGridToolBar";
 import {
-  DynamicAction,
+  ActionPreview,
   DynamicStateVariables,
   PreviewModalAction
 } from "../DynamicFlow.Interfaces";
@@ -25,7 +25,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     saveSuccess: 0
   };
   const [dataFlow, setDataFlow] = useState(flowInitState);
-  const [selectedList, setSelectedList] = useState<Array<DynamicAction>>([]);
+  const [selectedList, setSelectedList] = useState<Array<ActionPreview>>([]);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
 
   const openPreviewModal = (flag: boolean, action: PreviewModalAction) =>{
@@ -35,7 +35,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       previewModalAction: action
     }));
   };
-  const handleOnBulkCreate = async(rows: Array<DynamicAction> ) =>{
+  const handleOnBulkCreate = async(rows: Array<ActionPreview> ) =>{
 
     // const response = await batchFlowCreate(rows, accessToken, graphQLEndpoint);
     // if(response?.flag) {

@@ -5,7 +5,7 @@ import {
   DataGrid, GridColDef, useGridApiRef
 } from "@mui/x-data-grid";
 import {
-  DynamicAction,
+  ActionPreview,
   MenuOption
 } from "../DynamicFlow.Interfaces";
 import {
@@ -19,14 +19,14 @@ import { Box } from "@mui/material";
 import  TableGridColumnDef  from "./TableColumnDef";
 import { reconstructTableColumnDef } from "./PreviewUtil";
 
-  interface PreviewModalProps {
-      isOpen: boolean;
-      rows: Array<DynamicAction>;
-      action: "add";
-      onClose: () => void;
-      onCreate?: (rows: Array<DynamicAction>) => void;
-      loading?: boolean;
-  }
+interface PreviewModalProps {
+    isOpen: boolean;
+    rows: Array<ActionPreview>;
+    action: "add";
+    onClose: () => void;
+    onCreate?: (rows: Array<ActionPreview>) => void;
+    loading?: boolean;
+}
 
 const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   const {
@@ -34,7 +34,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   } = props;
 
   const apiRef =  useGridApiRef();
-  const [flowRows, setFlowRows] = useState<DynamicAction[]>([]);
+  const [flowRows, setFlowRows] = useState<ActionPreview[]>([]);
   const [ uploadedForm, setUploadedForm ] = React.useState([]);
   const tableGridColumnDef: Array<GridColDef> = useMemo<Array<GridColDef>>(()=>{
     return reconstructTableColumnDef([...TableGridColumnDef], apiRef);
@@ -54,8 +54,9 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   }, [uploadedForm]);
 
   const getUpdatedFlowDb = () =>{
-    const newRows: Array<DynamicAction>=[...flowRows].map((row: DynamicAction)=>{
-      const updatedFlow: DynamicAction = {
+    const newRows: Array<ActionPreview>=[...flowRows].map((row: ActionPreview)=>{
+      const updatedFlow: ActionPreview = {
+        errors: "",
         actionId: "",
         actionType: "ANNOUNCEMENT",
         callFlowName: "",
@@ -72,10 +73,10 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
         },
         nextActionType: "ANNOUNCEMENT",
         nextActionId: "",
-        options: [] as unknown as [MenuOption]
+        options: [] as unknown as MenuOption[]
       };
       Object.keys(row).forEach((key: string)=>{
-        updatedFlow[key as keyof DynamicAction] = apiRef.current.getCellValue(row.actionId, key);
+        updatedFlow[key as keyof ActionPreview] = apiRef.current.getCellValue(row.actionId, key);
       });
       return updatedFlow;
     });
@@ -83,15 +84,16 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   };
 
   const handleOnCreate = () =>{
-    const newRows:Array<DynamicAction> = getUpdatedFlowDb();
+    const newRows:Array<ActionPreview> = getUpdatedFlowDb();
     onCreate(newRows);
   };
 
   const createNewRecord = () =>{
-    setFlowRows((previousRows: DynamicAction[])=>(
+    setFlowRows((previousRows: ActionPreview[])=>(
       [
         ...previousRows,
         {
+          errors: "",
           actionId: "",
           actionType: "ANNOUNCEMENT",
           callFlowName: "",
@@ -108,7 +110,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
           },
           nextActionType: "ANNOUNCEMENT",
           nextActionId: "",
-          options: [] as unknown as [MenuOption]
+          options: [] as unknown as MenuOption[]
         }
       ]
     ));
@@ -150,7 +152,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
           rows={flowRows}
           columns={tableGridColumnDef}
           editMode="row"
-          getRowId={(row: DynamicAction)=>row.actionId}
+          getRowId={(row: ActionPreview)=>row.actionId}
           loading = {loading}
           sx={{
             "& .MuiDataGrid-columnHeaderTitle": {
