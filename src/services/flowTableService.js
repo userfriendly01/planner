@@ -737,6 +737,193 @@ const batchFlowCreate = async(items, accessToken, graphQlApiUrl) =>{
   return response;
 };
 
+const batchDynamicFlowCreate = async(items, accessToken, graphQlApiUrl) =>{
+  const dynamicFlowCreateArray=[];
+  const size = 25;
+  const response = {
+    success: [],
+    flag: false,
+    failure: [],
+    alertMsg: ""
+  };
+  if(items.length === 0){
+    response.flag=true,
+    response.alertMsg = "Please Select Something to Add";
+  }
+  while(items.length>0){
+    dynamicFlowCreateArray.push(items.splice(0,size));
+  }
+  dynamicFlowCreateArray.map(async dynamicFlowCreate =>{
+    const dynamicFlowUpdateBatchRunResponse = await createDynamicFlowRunItem(dynamicFlowCreate, accessToken, graphQlApiUrl);
+    if(!dynamicFlowUpdateBatchRunResponse?.errors){
+      response.success = response.success.concat(dynamicFlowCreate);
+    }
+    else{
+      response.failure = response.failure.concat(dynamicFlowCreate);
+      response.flag = true;
+      response.alertMsg = "Error Occurred while creating dynamic flowRecords";
+    }
+  });
+  logger.info("Create Batch Dynamic Flow DB Response:", { response });
+  return response;
+};
+
+/**
+ * This is the Function to batch create the Flow Object to the DB
+ * @param {flowData} items List of Flow object that need to update
+ * @param {String} accessToken token to use while calling graphql query
+ * @param {String} graphQlApiUrl Endpoint URL
+ * @returns
+ */
+const createDynamicFlowRunItem = async(items, accessToken, graphQlApiUrl) =>{
+  let response;
+  const announcements = [];
+  const menus = [];
+  const menuOptions = [];
+  let callFlowName = "";
+  const input = items.map(item=>{
+    if(item.actionType === "ANNOUNCEMENT")
+    {
+      announcements.push({
+        nextActionId: item.nextActionId,
+        actionId: item.actionId,
+        actionType: item.actionType,
+        callFlowName: item.callFlowName,
+        createTime: new Date().getTime(),
+        nextActionType: item.nextActionType,
+        speech: item.speech,
+        updateTime: new Date().getTime()
+      });
+    }
+
+    if(item.actionType === "MENU")
+    {
+      menus.push({
+        allowBargeIn: item.allowBargeIn,
+        finishOnKey: item.finishOnKey,
+        actionId: item.actionId,
+        actionType: item.actionType,
+        callFlowName: item.callFlowName,
+        createTime: new Date().getTime(),
+        maxDigits: item.maxDigits,
+        minDigits: item.minDigits,
+        nextActionId: item.nextActionId,
+        nextActionType: item.nextActionType,
+        repeat: {
+          callerContextAttributes: item.callerContextAttributes,
+          loop: item.loop,
+          nextActionId: item.nextActionId,
+          nextActionType: item.nextActionType
+        },
+        speech: item.speech,
+        timeout: item.timeout,
+        updateTime: new Date().getTime()
+      }
+      );
+    }
+
+    if(item.actionType === "MENUOPTIONS") {
+      menuOptions.push({
+        actionId: item.actionId,
+        actionType: item.actionType,
+        callFlowName: item.callFlowName,
+        createTime: new Date().getTime(),
+        updateTime: new Date().getTime(),
+        options: {
+          callerContextAttributes: item.callerContextAttributes,
+          digit: item.digit,
+          nextActionId: item.nextActionId,
+          nextActionType: item.nextActionType
+        }
+      });
+    }
+    callFlowName = item.callFlowName;
+    return {
+      callFlowName: callFlowName,
+      announcements: announcements,
+      menus: menus,
+      menuOptions: menuOptions
+    };
+  });
+
+  try {
+    const fetchResponse = await fetch(graphQlApiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: accessToken
+      },
+      body: JSON.stringify({
+        query: `
+        mutation createCallFlowConfig($input: {announcements, menus, menuOptions, callFlowName} ) {
+          createCallFlowConfig(input: $input) {
+              callFlowName,
+              announcements: [
+                nextActionId
+                actionId
+                actionType
+                callFlowName
+                createTime
+                nextActionType
+                speech
+                updateTime
+                ],
+              menus: [
+                 allowBargeIn
+                  finishOnKey
+                  actionId
+                  actionType
+                  callFlowName
+                  createTime
+                  maxDigits
+                  minDigits
+                  nextActionId
+                  nextActionType
+                  repeat {
+                    callerContextAttributes
+                    loop
+                    nextActionId
+                    nextActionType
+                  }
+                  speech
+                  timeout
+                  updateTime
+              ],
+              menuOptions: [
+                  actionId
+                  actionType
+                  callFlowName
+                  createTime
+                  updateTime
+                  options {
+                    callerContextAttributes
+                    digit
+                    nextActionId
+                    nextActionType
+                  } 
+               ],
+            }
+          }
+      `,
+        variables: {
+          input: {
+            announcements: announcements ,
+            menus: menus,
+            menuOptions: menuOptions,
+            callFlowName: callFlowName
+          }
+        }
+      })
+    });
+    logger.log("Input", input);
+    response = await fetchResponse.json();
+    logger.log("Create Batch Dynamic Flow DB Response:", response);
+  } catch (error) {
+    logger.error("Error in Create Batch Dynamic Flow DB", error);
+  }
+  return response;
+};
+
 /**
  * This is the Function to batch create the Flow Object to the DB
  * @param {flowData} items List of Flow object that need to update
@@ -855,5 +1042,6 @@ export {
   flowBatchDelete,
   batchFlowUpdate,
   batchDeleteItems,
-  batchFlowCreate
+  batchFlowCreate,
+  batchDynamicFlowCreate
 };
