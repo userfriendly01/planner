@@ -780,9 +780,7 @@ const createDynamicFlowRunItem = async(items, accessToken, graphQlApiUrl) =>{
   const announcements = [];
   const menus = [];
   const menuOptions = [];
-  const options =[];
   let callFlowName = "";
-
   items.map(item=>{
     if(item.actionType === "ANNOUNCEMENT")
     {
@@ -831,14 +829,16 @@ const createDynamicFlowRunItem = async(items, accessToken, graphQlApiUrl) =>{
         callFlowName: item.callFlowName,
         createTime: new Date().getTime(),
         updateTime: new Date().getTime(),
-        options: options.push({
-          callerContextAttributes: JSON.stringify(item.options.callerContextAttributes),
-          digit: item.options.digit,
-          nextActionId: item.options.nextActionId,
-          nextActionType: item.options.nextActionType
-        })
+        options:
+          item.options.forEach(option => {
+            JSON.stringify(option.callerContextAttributes);
+            option.digit;
+            option.nextActionId;
+            option.nextActionType;
+          })
       });
     }
+
     callFlowName = item.callFlowName;
     return {
       callFlowName: callFlowName,
