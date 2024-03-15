@@ -487,9 +487,8 @@ describe("flowTableService",()=>{
       const response = await batchDynamicFlowCreate([{ ...jsonFlowData }],"1233-3245","http://localhost:3000");
       expect(response).toEqual(batchDynamicCreateResponse);
       expect(window.fetch).toBeCalledWith("http://localhost:3000", {
-         "body": "{\"query\":\"\n        mutation createCallFlowConfig($input: CallFlowConfigInput! ) {\n          createCallFlowConfig(input: $input) {\n              callFlowName\n            }\n          }\n      \",\"variables\":{\"input\":{\"callFlowName\":\"LSC\",\"announcements\":[{\"nextActionId\":\"LSC1MENU\",\"actionId\":\"LSC1INVALID\",\"actionType\":\"ANNOUNCEMENT\",\"callFlowName\":\"LSC\",\"createTime\":1710520287652,\"nextActionType\":\"MENU\",\"speech\":\"Invalid choice\",\"updateTime\":1710520287652}],\"menus\":[{\"allowBargeIn\":\"TRUE\",\"actionId\":\"LSC1MENU\",\"actionType\":\"MENU\",\"callFlowName\":\"LSC\",\"createTime\":1710520287652,\"maxDigits\":\"1\",\"minDigits\":\"1\",\"nextActionId\":\"LSC1MENUOPTIONS\",\"nextActionType\":\"MENUOPTIONS\",\"repeat\":{\"callerContextAttributes\":\"{\"reasonForReturning\":\"hangup\"}\",\"loop\":3,\"nextActionId\":\"LSC1MENUOPTIONS\",\"nextActionType\":\"MENUOPTIONS\"},\"speech\":\"Press 1 to speak to representative\",\"timeout\":\"10\",\"updateTime\":1710520287652}],\"menuOptions\":[{\"actionId\":\"LSC1MENUOPTIONS\",\"actionType\":\"MENUOPTIONS\",\"callFlowName\":\"LSC\",\"createTime\":1710520287652,\"updateTime\":1710520287652,\"options\":[{\"callerContextAttributes\":\"{\"reasonForReturning\":\"transfer\"}\",\"digit\":\"1\",\"nextActionType\":\"TRANSFER\"},{\"digit\":\"other\",\"nextActionId\":\"LSC1INVALID\",\"nextActionType\":\"ANNOUNCEMENT\"}]}]}}}",
-
-      "headers": {
+        "body": "{\"query\":\"\\n        mutation createCallFlowConfig($input: CallFlowConfigInput! ) {\\n          createCallFlowConfig(input: $input) {\\n              callFlowName\\n            }\\n          }\\n      \",\"variables\":{\"input\":{\"announcements\":[],\"menus\":[],\"menuOptions\":[]}}}",
+        "headers": {
           "Authorization": "1233-3245",
           "Content-Type": "application/json"
         },
