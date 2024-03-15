@@ -10,22 +10,17 @@ import {
 } from "../DynamicFlow.Interfaces";
 import { AlertBarProps } from "utils/interfaces";
 import {
-  CACHE_FILTER_FLOW,
-  getAdvanceFilter,
   getGraphQLEndpoint, initializedAlertBar
 } from "utils";
 import { PreviewModal } from "../PreviewModal/PreviewModal";
 import {
-  queryFlowData, queryLSCDynamicFlowData, retrieveFlowData
+  queryLSCDynamicFlowData
 } from "services";
-import {
-  CctSharedCallFlowDb, FlowAdvanceFilter, FlowStateVariables
-} from "components";
+
 import { getDynamicGridMasterData } from "./DynamicGridMaster";
 import {
   DataGrid, useGridApiRef
 } from "@mui/x-data-grid";
-import FlowGridColumnDef from "../../alohaFlow/DataGridFlow/GridColumnDef";
 import DynamicFlowGridColumnDef from "./DynamicGridColumnDef";
 
 
@@ -46,7 +41,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
   const [dataFlow, setDataFlow] = useState(flowInitState);
   const [selectedList, setSelectedList] = useState<Array<DynamicAction>>([]);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
-  // Get GraphQL Endpoint. TODO check url
+  // Get GraphQL Endpoint to call
   const graphQLEndpoint = getGraphQLEndpoint();
   const openPreviewModal = (flag: boolean, action: PreviewModalAction) =>{
     setDataFlow((dataFlowProps: DynamicStateVariables) => ({
@@ -65,10 +60,14 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     }));
   };
   const apiRef = useGridApiRef();
+  /**
+   * Below function Query new Dynamo db (V1) table
+   * and prepare array to display in the data grid
+   */
   useEffect(() => {
     const getTableData = async()=>{
 
-      // Dynamodb GraphQl Query
+      // GraphQL Query
       const firstChunkData:any = await queryLSCDynamicFlowData(accessToken,  graphQLEndpoint);
 
       // Build an array from objects return from dynamo.
@@ -84,7 +83,6 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         }
       });
 
-      // Load Table Data into grid
       await loadDataTable(dynamicFlowData);
 
       setAlertBar((alertBarProps: AlertBarProps) => ({
