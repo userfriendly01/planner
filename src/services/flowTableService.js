@@ -830,11 +830,13 @@ const createDynamicFlowRunItem = async(items, accessToken, graphQlApiUrl) =>{
         createTime: new Date().getTime(),
         updateTime: new Date().getTime(),
         options:
-          item.options.forEach(option => {
-            JSON.stringify(option.callerContextAttributes);
-            option.digit;
-            option.nextActionId;
-            option.nextActionType;
+          item.options.map(option => {
+            return {
+              callerContextAttributes: JSON.stringify(option.callerContextAttributes),
+              digit: option.digit,
+              nextActionId: option.nextActionId,
+              nextActionType: option.nextActionType
+            };
           })
       });
     }
