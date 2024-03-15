@@ -5,6 +5,7 @@ import React, {
 import { CustomFlowGridToolBar } from "../CustomActions/CustomFlowGridToolBar";
 import {
   DynamicAction, DynamicFlowStateVariables,
+  ActionPreview,
   DynamicStateVariables,
   PreviewModalAction
 } from "../DynamicFlow.Interfaces";
@@ -33,13 +34,13 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
   const flowInitState: DynamicStateVariables = {
     data: [],
     filteredItems: [] ,
-    fetching: true,
+    fetching: false,
     selectedRow: undefined,
     isPreviewModalOpen: false,
     saveSuccess: 0
   };
   const [dataFlow, setDataFlow] = useState(flowInitState);
-  const [selectedList, setSelectedList] = useState<Array<DynamicAction>>([]);
+  const [selectedList, setSelectedList] = useState<Array<ActionPreview>>([]);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
   // Get GraphQL Endpoint to call
   const graphQLEndpoint = getGraphQLEndpoint();
@@ -50,7 +51,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       previewModalAction: action
     }));
   };
-  const handleOnBulkCreate = async(rows: Array<DynamicAction> ) =>{
+  const handleOnBulkCreate = async(rows: Array<ActionPreview> ) =>{
 
     setAlertBar((alertBarProps: AlertBarProps) => ({
       ...alertBarProps,
