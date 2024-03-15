@@ -32,7 +32,7 @@ export const TableGridColumnDef: GridColDef[] = [
     align: "left",
     renderCell: (params: any) => (
       <Tooltip title={params.row.callFlowTemplate} >
-        <div className="table-cell-trucate">{params.row.callFlowTemplate}</div>
+        <div className="table-cell-truncate">{params.row.callFlowTemplate}</div>
       </Tooltip>
     )
   },

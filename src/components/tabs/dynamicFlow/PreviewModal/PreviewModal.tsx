@@ -56,6 +56,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   const getUpdatedFlowDb = () =>{
     const newRows: Array<ActionPreview>=[...flowRows].map((row: ActionPreview)=>{
       const updatedFlow: ActionPreview = {
+        id:0,
         errors: "",
         actionId: "",
         actionType: "ANNOUNCEMENT",
@@ -93,6 +94,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
       [
         ...previousRows,
         {
+          id: 0,
           errors: "",
           actionId: "",
           actionType: "ANNOUNCEMENT",
