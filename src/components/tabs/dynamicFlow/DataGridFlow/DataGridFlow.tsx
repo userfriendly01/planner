@@ -5,13 +5,12 @@ import React, {
 import { CustomFlowGridToolBar } from "../CustomActions/CustomFlowGridToolBar";
 import {
   DynamicAction, DynamicFlowStateVariables,
+  ActionPreview,
   DynamicStateVariables,
   PreviewModalAction
 } from "../DynamicFlow.Interfaces";
 import { AlertBarProps } from "utils/interfaces";
 import {
-  CACHE_FILTER_FLOW,
-  getAdvanceFilter,
   getGraphQLEndpoint, initializedAlertBar
 } from "utils";
 import { PreviewModal } from "../PreviewModal/PreviewModal";
@@ -23,7 +22,6 @@ import { getDynamicGridMasterData } from "./DynamicGridMaster";
 import {
   DataGrid, useGridApiRef
 } from "@mui/x-data-grid";
-import FlowGridColumnDef from "../../alohaFlow/DataGridFlow/GridColumnDef";
 import DynamicFlowGridColumnDef from "./DynamicGridColumnDef";
 
 
@@ -36,15 +34,15 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
   const flowInitState: DynamicStateVariables = {
     data: [],
     filteredItems: [] ,
-    fetching: true,
+    fetching: false,
     selectedRow: undefined,
     isPreviewModalOpen: false,
     saveSuccess: 0
   };
   const [dataFlow, setDataFlow] = useState(flowInitState);
-  const [selectedList, setSelectedList] = useState<Array<DynamicAction>>([]);
+  const [selectedList, setSelectedList] = useState<Array<ActionPreview>>([]);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
-  // Get GraphQL Endpoint. TODO check url
+  // Get GraphQL Endpoint to call
   const graphQLEndpoint = getGraphQLEndpoint();
   const openPreviewModal = (flag: boolean, action: PreviewModalAction) =>{
     setDataFlow((dataFlowProps: DynamicStateVariables) => ({
@@ -53,20 +51,16 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       previewModalAction: action
     }));
   };
-  // const handleOnBulkCreate = async(rows: Array<DynamicAction> ) =>{
-  //
-  //   setAlertBar((alertBarProps: AlertBarProps) => ({
-  //     ...alertBarProps,
-  //     open: true,
-  //     msg: "Dyanmic Flows have been successfully created.",
-  //     severityType: "success"
-  //   }));
-  // };
+
   const apiRef = useGridApiRef();
+  /**
+   * Below function Query new Dynamo db (V1) table
+   * and prepare array to display in the data grid
+   */
   useEffect(() => {
     const getTableData = async()=>{
 
-      // Dynamodb GraphQl Query
+      // GraphQL Query
       const firstChunkData:any = await queryLSCDynamicFlowData(accessToken,  graphQLEndpoint);
 
       // Build an array from objects return from dynamo.
@@ -82,7 +76,6 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         }
       });
 
-      // Load Table Data into grid
       await loadDataTable(dynamicFlowData);
 
       setAlertBar((alertBarProps: AlertBarProps) => ({

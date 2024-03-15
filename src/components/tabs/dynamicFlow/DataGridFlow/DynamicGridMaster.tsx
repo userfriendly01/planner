@@ -1,18 +1,15 @@
 /* eslint-disable no-console, max-len,  no-return-assign */
 import {
-  LAST_FLOW_MASTER_DATA_CACHED_DATE, logger
+  logger
 } from "utils";
 
 import {
-  Announcement, DynamicAction, Menu, MenuOptions
+  DynamicAction
 } from "../DynamicFlow.Interfaces";
 
-const CACHE_MASTER_DATA = "FLOW_MASTER_DATA";
 const masterDataItems = ["actionId", "actionType", "callFlowName", "createTime", "updateTime", "speech","timeout","finishOnKey","minDigits","maxDigits","nextActionType","nextActionId","options","repeat"];
 
 const filteredItems = [null, "null", "", undefined];
-
-const clearGridMasterData = ():void => localStorage.removeItem(CACHE_MASTER_DATA);
 
 const getValueFromKeyPath = (element:DynamicAction, key:string) => {
   if (element === null) {
@@ -20,6 +17,11 @@ const getValueFromKeyPath = (element:DynamicAction, key:string) => {
   }
   return element[key as keyof DynamicAction];
 };
+/**
+ *  Below function reads db object and creates an array of key - values.
+ * @param data
+ * @param masterData
+ */
 const constructMasterData = (data: DynamicAction[],masterData: any={}):any =>{
   data.forEach((elem: DynamicAction) => masterDataItems.forEach((key: string) => {
     const value: string|string[] = getValueFromKeyPath(elem, key) as string|string[];
@@ -49,6 +51,5 @@ const getDynamicGridMasterData = (data:DynamicAction[] = []):any  => {
 };
 
 export {
-  getDynamicGridMasterData,
-  clearGridMasterData
+  getDynamicGridMasterData
 };
