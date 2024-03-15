@@ -1,6 +1,6 @@
 import { act } from "@testing-library/react";
 import  {
-  retrieveFlowData,addFlowRule, deleteFlowRule, updateFlowDB, flowBatchDelete, queryFlowData, batchDeleteItems, batchFlowUpdate, batchFlowCreate
+  retrieveFlowData,addFlowRule, deleteFlowRule, updateFlowDB, flowBatchDelete, queryFlowData, batchDeleteItems, batchFlowUpdate, batchFlowCreate, batchDynamicFlowCreate
 }  from "../flowTableService";
 
 const jsonFlowData = {
@@ -457,6 +457,46 @@ describe("flowTableService",()=>{
     });
     test("empty records insertion",async()=>{
       const response = await batchFlowCreate([],"1233-3245","http://localhost:3000");
+      expect(response.alertMsg).toEqual("Please Select Something to Add");
+    });
+  });
+  describe("Batch Create Dynamic Flow", ()=>{
+    const batchDynamicCreateResponse = {
+      failure: [],
+      flag: false,
+      success: [],
+      alertMsg: ""
+    };
+    beforeEach(()=>{
+      window.fetch = jest.fn(() =>
+          Promise.resolve({
+            json: () => Promise.resolve(batchDynamicCreateResponse)
+          })
+      );
+    });
+    afterEach(()=>{
+      jest.restoreAllMocks();
+    });
+    test("Success",async()=>{
+      const batchDynamicCreateResponse = {
+        failure: [],
+        flag: false,
+        success: [],
+        alertMsg: ""
+      };
+      const response = await batchDynamicFlowCreate([{ ...jsonFlowData }],"1233-3245","http://localhost:3000");
+      expect(response).toEqual(batchDynamicCreateResponse);
+      expect(window.fetch).toBeCalledWith("http://localhost:3000", {
+        "body": "{\"query\":\"\\n        mutation createCallFlowConfig($input: CallFlowConfigInput! ) {\\n          createCallFlowConfig(input: $input) {\\n              callFlowName\\n            }\\n          }\\n      \",\"variables\":{\"input\":{\"announcements\":[],\"menus\":[],\"menuOptions\":[]}}}",
+        "headers": {
+          "Authorization": "1233-3245",
+          "Content-Type": "application/json"
+        },
+        "method": "POST"
+      });
+    });
+    test("empty records insertion",async()=>{
+      const response = await batchDynamicFlowCreate([],"1233-3245","http://localhost:3000");
       expect(response.alertMsg).toEqual("Please Select Something to Add");
     });
   });

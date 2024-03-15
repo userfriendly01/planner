@@ -15,9 +15,9 @@ import {
 } from "utils";
 import { PreviewModal } from "../PreviewModal/PreviewModal";
 import {
-  queryLSCDynamicFlowData
+  batchDynamicFlowCreate,
+  queryLSCDynamicFlowData,
 } from "services";
-
 import { getDynamicGridMasterData } from "./DynamicGridMaster";
 import {
   DataGrid, useGridApiRef
@@ -51,15 +51,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       previewModalAction: action
     }));
   };
-  const handleOnBulkCreate = async(rows: Array<ActionPreview> ) =>{
 
-    setAlertBar((alertBarProps: AlertBarProps) => ({
-      ...alertBarProps,
-      open: true,
-      msg: "Dyanmic Flows have been successfully created.",
-      severityType: "success"
-    }));
-  };
   const apiRef = useGridApiRef();
   /**
    * Below function Query new Dynamo db (V1) table
@@ -143,6 +135,35 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       ...dataFlowProps,
       isPreviewModalOpen: false
     }));
+  };
+
+  const handleOnBulkCreate = async(rows: Array<DynamicAction> ) =>{
+     const response = await batchDynamicFlowCreate(rows, accessToken, graphQLEndpoint);
+    if(response?.flag) {
+      setAlertBar((alertBarProps: AlertBarProps) => ({
+        ...alertBarProps,
+        open: true,
+        msg: response?.alertMsg || "Error while creating the records.",
+        severityType: "error"
+      }));
+    } else {
+      setAlertBar((alertBarProps: AlertBarProps) => ({
+        ...alertBarProps,
+        open: true,
+        msg: "Flow Rules have been successfully created.",
+        severityType: "success"
+      }));
+    }
+    setSelectedList([...response.failure]);
+    const filteredItems = [...dataFlow.filteredItems, ...response.success];
+    const filteredData = [...dataFlow.data, ...response.success];
+    setDataFlow({
+      ...dataFlow,
+      ...filteredItems && { filteredItems },
+      data: filteredData,
+      isPreviewModalOpen: false
+    });
+    apiRef.current.setRowSelectionModel([]);
   };
 
   return (
