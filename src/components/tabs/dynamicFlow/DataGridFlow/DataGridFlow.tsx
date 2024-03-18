@@ -23,6 +23,7 @@ import {
   DataGrid, useGridApiRef
 } from "@mui/x-data-grid";
 import DynamicFlowGridColumnDef from "./DynamicGridColumnDef";
+import {CustomToast} from "components";
 
 
 const DataGridFlow = (props: AzureSPA): JSX.Element => {
@@ -130,6 +131,13 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     }
   };
 
+  const handleClose = (flag: boolean) => {
+    setAlertBar((alertBarProps: AlertBarProps) => ({
+      ...alertBarProps,
+      open: flag
+    }));
+  };
+
   const handlePreviewModalOnClose = () =>{
     setDataFlow((dataFlowProps: DynamicStateVariables) => ({
       ...dataFlowProps,
@@ -150,7 +158,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
         open: true,
-        msg: "Flow Rules have been successfully created.",
+        msg: "Dynamic Flow Rules have been successfully created.",
         severityType: "success"
       }));
     }
@@ -192,7 +200,13 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
 
         </div>
       </div>
-
+      <CustomToast
+              open={alertBar.open}
+              onClose={handleClose}
+              msg={alertBar.msg}
+              severityType={alertBar.severityType}
+              duration={alertBar.duration}
+      />
       <PreviewModal
         action={dataFlow.previewModalAction}
         isOpen={dataFlow.isPreviewModalOpen}
