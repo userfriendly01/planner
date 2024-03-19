@@ -9,7 +9,6 @@ import {
   FloatingHeader
 } from "@lmig/lmds-react-floating-header";
 import {
-  Box,
   Button,
   Grid
 } from "@mui/material";
@@ -50,7 +49,7 @@ import {
 } from "utils/interfaces";
 import {
   deleteFlowRule, updateFlowDB
-} from "services";
+} from "../../Utils/FlowTableServiceUtil";
 import {
   AzureSPA, DuplicateCheck
 } from "globals";

@@ -23,7 +23,7 @@ import { CustomToast } from "components";
 import DataGridFlow from "../DataGridFlow";
 import {
   retrieveFlowData,queryFlowData, flowBatchDelete, batchFlowUpdate, batchDeleteItems,batchFlowCreate
-} from "services";
+} from "../../Utils/FlowTableServiceUtil";
 import { PreviewModal } from "../../PreviewModal";
 import { createFlowDataList } from "../../PreviewModal/test/PreviewUtil.test";
 

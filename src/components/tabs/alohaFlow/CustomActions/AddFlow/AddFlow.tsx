@@ -27,7 +27,7 @@ import {
 import {
   addFlowRule,
   retrieveFlowData
-} from "services";
+} from "../../Utils/FlowTableServiceUtil";
 import {
   ModalBodyStyled,
   ModalFooterStyled,
@@ -55,7 +55,6 @@ import {
 } from "globals";
 import { AddOrView } from "../CustomActionsCommon/AddOrView";
 import { FloatingHeader } from "@lmig/lmds-react-floating-header";
-import { Box } from "@mui/material";
 export interface AddFlowModalProps {
   isOpen: boolean;
   newId: number;
@@ -66,7 +65,7 @@ export interface AddFlowModalProps {
 }
 
 export const AddFlow = ({
-  accessToken, matchedGroups, isOpen = false, newId, openAddModal, cloneType, flowRuleCloned, duplicateCheck
+  accessToken, isOpen = false, openAddModal, cloneType, flowRuleCloned, duplicateCheck
 }: AddFlowModalProps & AzureSPA):JSX.Element => {
 
   const graphQlApiUrl: string = getGraphQLEndpoint();

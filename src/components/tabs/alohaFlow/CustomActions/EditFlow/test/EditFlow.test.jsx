@@ -6,7 +6,7 @@ import {
 } from "testUtils";
 import {
   deleteFlowRule, updateFlowDB
-} from "services";
+} from "../../../Utils/FlowTableServiceUtil";
 import { useAdminState } from "context";
 import { CustomToast } from "components";
 import { AddOrView } from "../../CustomActionsCommon/AddOrView";

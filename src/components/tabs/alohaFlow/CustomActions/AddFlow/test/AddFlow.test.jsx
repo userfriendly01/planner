@@ -6,7 +6,7 @@ import {
 } from "testUtils";
 import {
   addFlowRule, retrieveFlowData
-} from "services";
+} from "../../../Utils/FlowTableServiceUtil";
 import { useAdminState } from "context";
 import {
   Grid, Button

@@ -14,7 +14,10 @@ import {
   updateFlowDB as v1UpdateFlowDB,
   updateFlowDB as v2UpdateFlowDB
 } from "services";
-import { CctSharedCallFlowDb } from "../AlohaFlow.Interfaces";
+import {
+  CctSharedCallFlowDb,
+  FlowMasterData
+} from "../AlohaFlow.Interfaces";
 
 /**
  * This is the function to use to call queryFlowData function multiple time
@@ -30,10 +33,11 @@ export const retrieveFlowData = async (
   graphQlApiUrl: string,
   counter = 1,
   nextToken = "",
-  rowInsert: (result?: CctSharedCallFlowDb[]) => Promise<void>
+  rowInsert: (result?: CctSharedCallFlowDb[]) => FlowMasterData
 ): Promise<void> => {
-  const firstLoad = await v1RetrieveFlowData(accessToken, graphQlApiUrl, counter, nextToken, rowInsert) as any;
-  await v2RetrieveFlowData(accessToken, graphQlApiUrl, firstLoad.counter, "", rowInsert, firstLoad.flowData);
+  // const firstLoad = 
+  await v1RetrieveFlowData(accessToken, graphQlApiUrl, counter, nextToken, rowInsert) as any;
+  // await v2RetrieveFlowData(accessToken, graphQlApiUrl, firstLoad.counter, "", rowInsert, firstLoad.flowData);
 };
 
 export type BatchResponse = {
@@ -84,10 +88,13 @@ const commonProcessing = async (
   });
 
   const response = await batchFunction1(items1, accessToken, graphQlApiUrl) as BatchResponse;
-  const response2 = await batchFunction2(items2, accessToken, graphQlApiUrl)as BatchResponse;
 
-  response2.failure.forEach(x => response.failure.push(x));
-  response2.success.forEach(x => response.success.push(x));
+  if(items2.length) {
+    const response2 = await batchFunction2(items2, accessToken, graphQlApiUrl)as BatchResponse;
+
+    response2.failure.forEach(x => response.failure.push(x));
+    response2.success.forEach(x => response.success.push(x));
+  }
 
   return response;
 };
@@ -156,7 +163,7 @@ export const addFlowRule = (item: CctSharedCallFlowDb,
  * @param {String} graphQlApiUrl Endpoint URL
  * @returns
  */
-export const updateFlowRule = (item: CctSharedCallFlowDb,
+export const updateFlowDB = (item: CctSharedCallFlowDb,
   accessToken: string,
   graphQlApiUrl: string): Promise<any> => {
   if(item.nextActionId) {
