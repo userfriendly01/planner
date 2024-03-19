@@ -1,3 +1,5 @@
+import {queryLSCDynamicFlowData} from "services";
+
 require("@testing-library/jest-dom/extend-expect");
 require("jest-styled-components");
 
@@ -63,6 +65,7 @@ jest.mock("services", () => ({
   batchRoutingCreate: jest.fn(),
   batchFlowCreate: jest.fn(),
   batchFlowUpdate: jest.fn(),
+  batchDynamicFlowCreate: jest.fn(),
   batchRoutingUpdate: jest.fn(),
   flowBatchDelete: jest.fn(),
   checkExtension: jest.fn(),
@@ -100,6 +103,7 @@ jest.mock("services", () => ({
   insertDirectory: jest.fn(),
   queryFlowData: jest.fn(),
   queryRoutingData: jest.fn(),
+  queryLSCDynamicFlowData: jest.fn(),
   retrieveFlowData: jest.fn(),
   retrieveRoutingData: jest.fn(),
   routingBatchCreate: jest.fn(),

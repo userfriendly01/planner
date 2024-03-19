@@ -54,6 +54,8 @@ const mapValuesToObj=(jsonValues:any, type?:CSVFileType):any=>{
     });
     jsonFlowObj.skey = `${jsonValues["callFlowName"]}:ACTION:${jsonValues["actionType"]}`;
     jsonFlowObj.errors = validateActionRow(jsonFlowObj);
+    jsonFlowObj.createTime = new Date().getTime();
+    jsonFlowObj.updateTime = new Date().getTime();
 
     return jsonFlowObj as ActionPreview;
   }

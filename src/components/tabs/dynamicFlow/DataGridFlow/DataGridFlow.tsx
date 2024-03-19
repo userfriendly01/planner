@@ -91,7 +91,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         ...alertBarProps,
         open: true,
         severityType: "success",
-        msg: "Successfully loaded the flow data!!"
+        msg: "Successfully loaded the dynamic flow data!!"
       }));
     };
     getTableData();
@@ -163,8 +163,12 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       }));
     }
     setSelectedList([...response.failure]);
-    const filteredItems = [...dataFlow.filteredItems, ...response.success];
-    const filteredData = [...dataFlow.data, ...response.success];
+    const SuccessObj: any = { };
+    response.success.forEach( x => SuccessObj[x.actionId] = x);
+    const filteredItems = dataFlow.filteredItems.map( x=> SuccessObj[x.actionId] || x);
+          //  [...dataFlow.filteredItems, ...response.success];
+    const filteredData = dataFlow.data.map(y => SuccessObj[y.actionId] || y);
+            //[...dataFlow.data, ...response.success];
     setDataFlow({
       ...dataFlow,
       ...filteredItems && { filteredItems },
