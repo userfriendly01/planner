@@ -16,14 +16,14 @@ import {
 import { PreviewModal } from "../PreviewModal/PreviewModal";
 import {
   batchDynamicFlowCreate,
-  queryLSCDynamicFlowData,
+  queryLSCDynamicFlowData
 } from "services";
 import { getDynamicGridMasterData } from "./DynamicGridMaster";
 import {
   DataGrid, useGridApiRef
 } from "@mui/x-data-grid";
 import DynamicFlowGridColumnDef from "./DynamicGridColumnDef";
-import {CustomToast} from "components";
+import { CustomToast } from "components";
 
 
 const DataGridFlow = (props: AzureSPA): JSX.Element => {
@@ -146,7 +146,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
   };
 
   const handleOnBulkCreate = async(rows: Array<DynamicAction> ) =>{
-     const response = await batchDynamicFlowCreate(rows, accessToken, graphQLEndpoint);
+    const response = await batchDynamicFlowCreate(rows, accessToken, graphQLEndpoint);
     if(response?.flag) {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
@@ -166,9 +166,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     const SuccessObj: any = { };
     response.success.forEach( x => SuccessObj[x.actionId] = x);
     const filteredItems = dataFlow.filteredItems.map( x=> SuccessObj[x.actionId] || x);
-          //  [...dataFlow.filteredItems, ...response.success];
     const filteredData = dataFlow.data.map(y => SuccessObj[y.actionId] || y);
-            //[...dataFlow.data, ...response.success];
     setDataFlow({
       ...dataFlow,
       ...filteredItems && { filteredItems },
@@ -205,11 +203,11 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         </div>
       </div>
       <CustomToast
-              open={alertBar.open}
-              onClose={handleClose}
-              msg={alertBar.msg}
-              severityType={alertBar.severityType}
-              duration={alertBar.duration}
+        open={alertBar.open}
+        onClose={handleClose}
+        msg={alertBar.msg}
+        severityType={alertBar.severityType}
+        duration={alertBar.duration}
       />
       <PreviewModal
         action={dataFlow.previewModalAction}
