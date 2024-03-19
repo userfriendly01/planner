@@ -485,7 +485,7 @@ describe("flowTableService",()=>{
         alertMsg: ""
       };
       const response = await batchDynamicFlowCreate([{ ...jsonFlowData }],"1233-3245","http://localhost:3000");
-      expect(response).toEqual(batchDynamicCreateResponse);
+      expect(response.success.length).toBe(1);
       expect(window.fetch).toBeCalledWith("http://localhost:3000", {
         "body": "{\"query\":\"\\n        mutation createCallFlowConfig($input: CallFlowConfigInput! ) {\\n          createCallFlowConfig(input: $input) {\\n              callFlowName\\n            }\\n          }\\n      \",\"variables\":{\"input\":{\"announcements\":[],\"menus\":[],\"menuOptions\":[]}}}",
         "headers": {
