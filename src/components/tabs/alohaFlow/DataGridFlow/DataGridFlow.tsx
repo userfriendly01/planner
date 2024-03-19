@@ -20,16 +20,15 @@ import React, {
   useEffect, useState
 } from "react";
 import {
-  queryFlowData, retrieveFlowData, batchFlowUpdate, batchDeleteItems, batchFlowCreate
-} from "services";
+  retrieveFlowData, batchFlowUpdate, batchDeleteItems, batchFlowCreate
+} from "../Utils/FlowTableServiceUtil";
 import {
   CACHE_FILTER_FLOW,
   CALL_FLOW_PAGE_NO,
   CALL_FLOW_PER_PAGE, downloadCSV,
   EXPORT_FILE_PREFIX,
   getAdvanceFilter, getGraphQLEndpoint,
-  initializedAlertBar,
-  logger
+  initializedAlertBar
 } from "utils";
 import {
   AlertBarProps, FormValidationRule
@@ -84,22 +83,10 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
   const [selectedList, setSelectedList] = useState<Array<CctSharedCallFlowDb>>([]);
   const apiRef = useGridApiRef();
 
+  //TODO: change this to be a single function that submits the token until complete, instead of queryFlowData+retrieveFlowData
+  //TODO: add new fields to types.
   useEffect(() => {
     const getTableData = async()=>{
-      const firstChunkData:any = await queryFlowData(accessToken, null, graphQLEndpoint);
-      const listItems = firstChunkData?.data?.listCctSharedCallFlowDbs?.items || [];
-      let counter =1;
-      const flowData: CctSharedCallFlowDb[] = [];
-      listItems.forEach((item: CctSharedCallFlowDb) => {
-        if (item) {
-          flowData.push({
-            ...item,
-            id: counter++
-          });
-        }
-      });
-
-      await loadDataTable(flowData);
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
         open: true,
@@ -107,12 +94,13 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         msg: "Data loading in progress. Please wait for the complete set of data to be loaded.",
         duration: 15000
       }));
-      const result: CctSharedCallFlowDb[] = await retrieveFlowData(
+      await retrieveFlowData(
         accessToken,
         graphQLEndpoint,
-        firstChunkData
+        1,
+        null,
+        loadDataTable
       );
-      await loadDataTable(result);
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
         open: true,

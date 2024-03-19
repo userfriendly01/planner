@@ -5,6 +5,7 @@ import {
   Box, Chip, Switch
 } from "@mui/material";
 import { ModalOnHover } from "components";
+//TODO add the new columns
 export const FlowGridColumnDef: GridColDef[] = [
   {
     headerName: "Dialed",
@@ -138,8 +139,8 @@ export const FlowGridColumnDef: GridColDef[] = [
     align: "left"
   },
   {
-    headerName: "Type",
-    field: "type",
+    headerName: "Phone Number Type",
+    field: "phoneNumberType",
     sortable: true,
     width: 80,
     align: "left"
@@ -324,16 +325,34 @@ export const FlowGridColumnDef: GridColDef[] = [
     )
   },
   {
-    headerName: "Self Service Indicator",
-    field: "selfServiceIndicator",
-    sortable: false,
+    headerName: "Call Flow Name",
+    field: "callFlowName",
+    sortable: true,
     width: 110,
-    align: "center",
-    renderCell: (params: any) =>(
-      <Box>
-        <Switch checked={params.row?.selfServiceIndicator || false} defaultChecked={false} color="warning" disabled size="medium" />
-      </Box>
+    align: "left",
+    renderCell: (params: any) => (
+      <Tooltip title={params.row.brand} >
+        <div className="table-cell-trucate">{params.row.callFlowName}</div>
+      </Tooltip>
     )
+  },
+  {
+    headerName: "Call Flow Type",
+    field: "callFlowType",
+    sortable: true,
+    width: 110,
+    align: "left",
+    renderCell: (params: any) => (
+      <Tooltip title={params.row.brand} >
+        <div className="table-cell-trucate">{params.row.callFlowType}</div>
+      </Tooltip>
+    )
+  },{
+    headerName: "Next Action ID",
+    field: "nextActionId",
+    sortable: true,
+    width: 110,
+    align: "left"
   }
 ];
 

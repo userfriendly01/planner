@@ -70,6 +70,7 @@ export interface CctSharedCallFlowDb {
     internetPlacement?: string;
     lineOfBusiness?: string;
     marketingChannel?: string;
+    nextActionId?: string;
     pkey?: string;
     predictiveCaller?: boolean;
     rangeIndicator?: string;

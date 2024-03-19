@@ -10,6 +10,9 @@ import { logger } from "utils";
  * @returns list of data and nextToken if any
  */
 async function queryFlowData(accessToken, nextToken = null, graphQlApiUrl) {
+  //TODO: translate the self service indicator (TRUE vs EMPTY/FALSE in one table.  Text in another)
+  //TODO: move this TODO to the proper function where, when writing, decide which table, also translate self-service indicator for old table.
+
   let result = {};
   try {
     const response = await fetch(graphQlApiUrl, {
@@ -155,20 +158,17 @@ export async function queryLSCDynamicFlowData(accessToken, graphQlApiUrl) {
  * until nextToken become null
  * @param {String} accessToken OAuth Access Token
  * @param {String} graphQlApiUrl Endpoint URL
- * @returns {flowData} list of data contain all the result present in DB
+ * @param {Number} counter - counter for the row ID
+ * @param {String} nextToken - the page token to grab the next batch/page of records
+ * @param {object} rowInsert - the insert function used in this function that will insert the completed row into the component
+ * @param {object} flowData - the accumulated flow records in the table
+ * @returns {object} the counter and the flowData
  */
-async function retrieveFlowData(accessToken, graphQlApiUrl,firstChunkData) {
-  const flowData = [];
-  let isFirstTime = true;
-  let result = firstChunkData;
-  let counter = firstChunkData?.data?.listCctSharedCallFlowDbs?.items?.length+1 || 1;
-  let listItems = firstChunkData?.data?.listCctSharedCallFlowDbs?.items || [];
+async function retrieveFlowData(accessToken, graphQlApiUrl,counter = 1, nextToken = null, rowInsert, flowData = []) {
   try {
-    while (isFirstTime || result.data?.listCctSharedCallFlowDbs.nextToken) {
-      if(!isFirstTime || Object.keys(firstChunkData).length === 0){
-        result = await queryFlowData(accessToken, result.data?.listCctSharedCallFlowDbs.nextToken, graphQlApiUrl);
-        listItems = result.data?.listCctSharedCallFlowDbs?.items || [];
-      }
+    while (nextToken !== null || counter === 1) {
+      const result = await queryFlowData(accessToken, nextToken, graphQlApiUrl);
+      const listItems = result.data?.listCctSharedCallFlowDbs?.items || [];
       listItems.forEach(item => {
         if(item) {
           flowData.push({
@@ -177,12 +177,14 @@ async function retrieveFlowData(accessToken, graphQlApiUrl,firstChunkData) {
           });
         }
       });
-      isFirstTime = false;
+      rowInsert(flowData);
+
+      nextToken = result.data?.listCctSharedCallFlowDbs.nextToken;
     }
   } catch (error) {
     logger.error("Error in retrieveFlowData", { error }, false);
   }
-  return flowData;
+  return counter;
 }
 
 function addFlowInput (item, dataRequestsPassed, currentTimePassed){
@@ -354,6 +356,7 @@ async function updateFlowDB(item, accessToken, graphQlApiUrl) {
  * @param {String} accessToken token to use while calling graphql query
  * @param {String} graphQlApiUrl Endpoint URL
  * @param {String} curTime the current time, for the db record's create time
+ * @param {Array} dataRequests list of data requests.
  * @returns
  */
 async function addFlowRule(item, accessToken, graphQlApiUrl, curTime = new Date().toISOString(), dataRequests=[]) {
@@ -565,7 +568,7 @@ async function flowBatchDelete(items, accessToken, graphQlApiUrl){
  * @param {flowData} items List of Flow object that need to update
  * @param {String} accessToken token to use while calling graphql query
  * @param {String} graphQlApiUrl Endpoint URL
- * @returns
+ * @returns {Object} flag, success rows and failure rows
  */
 const batchFlowUpdate = async(items, accessToken, graphQlApiUrl) =>{
   if(items.length === 0){

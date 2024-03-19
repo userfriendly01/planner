@@ -16,7 +16,7 @@ import {
 import { PreviewModal } from "../PreviewModal/PreviewModal";
 import {
   batchDynamicFlowCreate,
-  queryLSCDynamicFlowData,
+  queryLSCDynamicFlowData
 } from "services";
 import { getDynamicGridMasterData } from "./DynamicGridMaster";
 import {
