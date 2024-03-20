@@ -21,7 +21,6 @@ import { FloatingHeader } from "@lmig/lmds-react-floating-header";
 const validFlowData = {
   id: 1,
   pkey: "12345",
-  agentId: "123455",
   brand: "LM",
   callFlowTemplate: "temp",
   channel: "Test1 Channel",
@@ -35,7 +34,7 @@ const validFlowData = {
     dataRequests: ["test1", "test2"],
     greetingMessages: "Hello Test Message",
     languageOffer: "English",
-    transferNumber: "123456789"
+    transferDestination: "123456789"
   },
   accountManager: "test",
   affinityVDN: "test",
@@ -235,7 +234,7 @@ describe("<AddFlow />", () => {
       const callerTypeAttr = ComponentControl.mock.calls[7][0].onChange;
       const callFlowRouteAttr = ComponentControl.mock.calls[10][0].onChange;
       const callFlowTypeAttr = ComponentControl.mock.calls[2][0].onChange;
-      const transferNumberAttr = ComponentControl.mock.calls[9][0].onChange;
+      const transferDestinationAttr = ComponentControl.mock.calls[9][0].onChange;
       const languageOfferAttr = ComponentControl.mock.calls[5][0].onChange;
       const greetingMessagesAttr = ComponentControl.mock.calls[11][0].onChange;
       const dataRequestsAtr = ComponentControl.mock.calls[6][0].onChange;
@@ -282,9 +281,9 @@ describe("<AddFlow />", () => {
           value: /test/i
         }
       };
-      const eventTransferNumber= {
+      const eventTransferDestination= {
         target: {
-          name: "transferNumber",
+          name: "transferDestination",
           value: "4625917"
         }
       };
@@ -322,7 +321,7 @@ describe("<AddFlow />", () => {
         callFlowTypeAttr(eventCallFlowType);
         languageOfferAttr(eventLanguageOffer);
         greetingMessagesAttr(eventGreetingMessages);
-        transferNumberAttr(eventTransferNumber);
+        transferDestinationAttr(eventTransferDestination);
         dataRequestsAtr(eventDataRequests);
         tfnRoutingGroupAtr(eventTfnRoutingGroup);
       });
@@ -350,7 +349,7 @@ describe("<AddFlow />", () => {
       const callerTypeAttr = ComponentControl.mock.calls[7][0].onChange;
       const callFlowRouteAttr = ComponentControl.mock.calls[10][0].onChange;
       const callFlowTypeAttr = ComponentControl.mock.calls[2][0].onChange;
-      const transferNumberAttr = ComponentControl.mock.calls[9][0].onChange;
+      const transferDestinationAttr = ComponentControl.mock.calls[9][0].onChange;
       const languageOfferAttr = ComponentControl.mock.calls[5][0].onChange;
       const greetingMessagesAttr = ComponentControl.mock.calls[11][0].onChange;
       const dataRequestsAtr = ComponentControl.mock.calls[6][0].onChange;
@@ -397,9 +396,9 @@ describe("<AddFlow />", () => {
           value: /test/i
         }
       };
-      const eventTransferNumber= {
+      const eventTransferDestination= {
         target: {
-          name: "transferNumber",
+          name: "transferDestination",
           value: "4625917"
         }
       };
@@ -437,7 +436,7 @@ describe("<AddFlow />", () => {
         callFlowTypeAttr(eventCallFlowType);
         languageOfferAttr(eventLanguageOffer);
         greetingMessagesAttr(eventGreetingMessages);
-        transferNumberAttr(eventTransferNumber);
+        transferDestinationAttr(eventTransferDestination);
         dataRequestsAtr(eventDataRequests);
         tfnRoutingGroupAtr(eventTfnRoutingGroup);
       });

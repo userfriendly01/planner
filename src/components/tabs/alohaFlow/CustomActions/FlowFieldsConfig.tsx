@@ -119,10 +119,10 @@ const flowFields: AddFlowFieldsConfigProps[] = [
   },
   {
     label: "Transfer Destination",
-    key: "transferNumber",
+    key: "transferDestination",
     control: "input",
     required: true,
-    valueGetter: (params: CctSharedCallFlowDb) => `${params?.content?.transferNumber || ""}`,
+    valueGetter: (params: CctSharedCallFlowDb) => `${params?.content?.transferDestination || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
       content: {
@@ -159,16 +159,6 @@ const flowFields: AddFlowFieldsConfigProps[] = [
         ...currentValue.content || {},
         ...newValue
       }
-    })
-  },
-  {
-    label: "Agent ID",
-    key: "agentId",
-    control: "input",
-    valueGetter: (params: CctSharedCallFlowDb) => `${params?.agentId || ""}`,
-    valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
-      ...currentValue,
-      ...newValue
     })
   },
   {
@@ -296,16 +286,6 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     }
   },
   {
-    label: "Toll Free Number",
-    key: "tollFreeNumber",
-    control: "input",
-    valueGetter: (params: CctSharedCallFlowDb) => `${params?.tollFreeNumber || ""}`,
-    valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
-      ...currentValue,
-      ...newValue
-    })
-  },
-  {
     label: "Whisper",
     key: "whisper",
     control: "input",
@@ -415,7 +395,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
   {
     label: "Call Flow Type",
     key: "callFlowType",
-    control: "select",
+    control: "autoComplete",
     required: false,
     valueGetter: (params: CctSharedCallFlowDb): string => params?.callFlowType ?? "",
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
@@ -426,8 +406,11 @@ const flowFields: AddFlowFieldsConfigProps[] = [
   {
     label: "Call Flow Name",
     key: "callFlowName",
-    control: "select",
+    control: "autoComplete",
     required: false,
+    dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
+      return params["callFlowType"]?.value === "DTMF";
+    },
     valueGetter: (params: CctSharedCallFlowDb) => `${params?.callFlowName || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,

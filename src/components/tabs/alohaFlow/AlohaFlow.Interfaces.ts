@@ -10,7 +10,7 @@ export interface FlowContent {
     dataRequests?: Array<string>;
     greetingMessages?: string;
     languageOffer?: string;
-    transferNumber?: string;
+    transferDestination?: string;
     officeNumbers?: Array<string>;
 }
 
@@ -58,7 +58,6 @@ export interface CctSharedCallFlowDb {
     id?: number;
     accountManager?: string;
     affinityVDN?: string;
-    agentId?: string;
     brand?: string;
     callDetails1?: string;
     callDetails2?: string;
@@ -80,7 +79,6 @@ export interface CctSharedCallFlowDb {
     rangeIndicator?: string;
     requestID?: string;
     tfnRoutingGroup?:string;
-    tollFreeNumber?: string;
     transferCode?: string;
     type?: string;
     userDestination?: string;
@@ -89,7 +87,6 @@ export interface CctSharedCallFlowDb {
 export interface FlowKeys {
     accountManager?: string;
     affinityVDN?: string;
-    agentId?: string;
     brand?: string;
     callDetails1?: string;
     callDetails2?: string;
@@ -114,9 +111,8 @@ export interface FlowKeys {
     rangeIndicator?: string;
     requestID?: string;
     tfnRoutingGroup?: string;
-    tollFreeNumber?: string;
     transferCode?: string;
-    transferNumber?: string;
+    transferDestination?: string;
     type?: string;
     userDestination?: string;
     whisper?: string;

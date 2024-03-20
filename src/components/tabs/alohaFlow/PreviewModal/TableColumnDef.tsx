@@ -102,16 +102,16 @@ export const TableGridColumnDef: GridColDef[] = [
   },
   {
     headerName: "Transfer Destination",
-    field: "transferNumber",
+    field: "transferDestination",
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params => `${params.row.content?.transferNumber || ""}`,
+    valueGetter: params => `${params.row.content?.transferDestination || ""}`,
     valueSetter: params => ({
       ...params.row,
       content: {
         ...params.row.content || {},
-        transferNumber: params.value
+        transferDestination: params.value
       }
     })
   },
@@ -149,13 +149,6 @@ export const TableGridColumnDef: GridColDef[] = [
         <div className="table-cell-trucate">{params.row.content?.greetingMessages || ""}</div>
       </Tooltip>
     )
-  },
-  {
-    headerName: "Agent Id",
-    field: "agentId",
-    sortable: true,
-    width: 110,
-    align: "left"
   },
   {
     headerName: "Employee ID",
@@ -290,13 +283,6 @@ export const TableGridColumnDef: GridColDef[] = [
   {
     headerName: "Range Indicator",
     field: "rangeIndicator",
-    sortable: true,
-    width: 110,
-    align: "left"
-  },
-  {
-    headerName: "Toll Free Number",
-    field: "tollFreeNumber",
     sortable: true,
     width: 110,
     align: "left"

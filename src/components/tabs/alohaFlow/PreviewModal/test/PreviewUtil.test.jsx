@@ -8,7 +8,6 @@ export const createFlowDataItem = num => {
   return {
     id: num,
     pkey: `+18005551212x${num}`,
-    agentId: `agent${num}`,
     brand: `brand${num}`,
     callFlowName: "LSC",
     callFlowTemplate: `cft${num}`,
@@ -19,7 +18,7 @@ export const createFlowDataItem = num => {
       callFlowRoute: `route A${num}`,
       dataRequests: ["Classify"],
       greetingMessages: "Hello and welcome!",
-      transferNumber: `+12223334444x${num}`
+      transferDestination: `+12223334444x${num}`
     },
     createTime: "2020-01-01T15:14:13.${num}Z",
     dialedDescription: `Test case ${num}`,

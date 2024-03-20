@@ -32,7 +32,6 @@ jest.mock("context", () => ({
 const validFlowData = {
   id: 1,
   pkey: "12345",
-  agentId: "123455",
   brand: "LM",
   callFlowTemplate: "temp",
   channel: "Test1 Channel",
@@ -46,7 +45,7 @@ const validFlowData = {
     dataRequests: ["test1", "test2"],
     greetingMessages: "Hello Test Message",
     languageOffer: "English",
-    transferNumber: "123456789"
+    transferDestination: "123456789"
   },
   accountManager: "test",
   affinityVDN: "test",
@@ -64,7 +63,6 @@ const validFlowData = {
 const invalidFlowData={
   id: 1,
   pkey: "12345",
-  agentId: "123455",
   callFlowTemplate: "temp",
   createTime: "2022-24-08",
   dialedDescription: "test",

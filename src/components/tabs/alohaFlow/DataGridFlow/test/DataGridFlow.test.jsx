@@ -304,7 +304,6 @@ describe("<DataGridFlow />", () => {
       const flowData = {
         id: 1,
         pkey: "+18005551212",
-        agentId: "agent",
         brand: "brand",
         callFlowTemplate: "cft",
         channel: "channel"

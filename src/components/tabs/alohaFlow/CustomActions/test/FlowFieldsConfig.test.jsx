@@ -4,7 +4,6 @@ import { flowFields } from "../FlowFieldsConfig";
 const validFlowData = {
   id: 1,
   pkey: "12345",
-  agentId: "123455",
   brand: "LM",
   callFlowName: "LSC",
   callFlowTemplate: "test callFlowTemplate",
@@ -21,7 +20,7 @@ const validFlowData = {
     dataRequests: ["test1", "test2"],
     greetingMessages: "Hello Test Message",
     languageOffer: "English",
-    transferNumber: "123456789",
+    transferDestination: "123456789",
     officeNumbers: ["#2710"]
   },
   accountManager: "test accountManager",
@@ -34,7 +33,6 @@ const validFlowData = {
   marketingChannel: "test marketingChannel",
   requestID: "test requestID",
   rangeIndicator: "test rangeIndicator",
-  tollFreeNumber: "test tollFreeNumber",
   transferCode: "test transferCode",
   type: "DID",
   whisper: "test whisper",
@@ -46,7 +44,6 @@ const validFlowData = {
 const invalidFLowData = {
   id: 1,
   pkey: "98765",
-  agentId: "987654321",
   brand: "LM"
 };
 
@@ -103,11 +100,11 @@ describe("FlowFieldsConfig", ()=>{
       const updatedFlowData = flowFields[8].valueSetter(validFlowData, { type: "99999999" });
       expect(updatedFlowData.type).toBe("99999999");
     });
-    it("transferNumber", ()=>{
-      const updatedFlowData = flowFields[9].valueSetter(validFlowData, { transferNumber: "99999999" });
-      const updatedFlowDataWithInvalidData = flowFields[9].valueSetter(invalidFLowData, { transferNumber: "99999999" });
-      expect(updatedFlowData.content.transferNumber).toBe("99999999");
-      expect(updatedFlowDataWithInvalidData.content.transferNumber).toBe("99999999");
+    it("transferDestination", ()=>{
+      const updatedFlowData = flowFields[9].valueSetter(validFlowData, { transferDestination: "99999999" });
+      const updatedFlowDataWithInvalidData = flowFields[9].valueSetter(invalidFLowData, { transferDestination: "99999999" });
+      expect(updatedFlowData.content.transferDestination).toBe("99999999");
+      expect(updatedFlowDataWithInvalidData.content.transferDestination).toBe("99999999");
     });
     it("callFlowRoute", ()=>{
       const updatedFlowData = flowFields[10].valueSetter(validFlowData, { callFlowRoute: "99999999" });
@@ -120,10 +117,6 @@ describe("FlowFieldsConfig", ()=>{
       const updatedFlowDataWithInvalidData = flowFields[11].valueSetter(invalidFLowData, { greetingMessages: "99999999" });
       expect(updatedFlowData.content.greetingMessages).toBe("99999999");
       expect(updatedFlowDataWithInvalidData.content.greetingMessages).toBe("99999999");
-    });
-    it("agentId", ()=>{
-      const updatedFlowData = flowFields[12].valueSetter(validFlowData, { agentId: "99999999" });
-      expect(updatedFlowData.agentId).toBe("99999999");
     });
     it("employeeId", ()=>{
       const updatedFlowData = flowFields[13].valueSetter(validFlowData, { employeeId: "99999999" });
@@ -164,10 +157,6 @@ describe("FlowFieldsConfig", ()=>{
     it("marketingChannel", ()=>{
       const updatedFlowData = flowFields[22].valueSetter(validFlowData, { marketingChannel: "99999999" });
       expect(updatedFlowData.marketingChannel).toBe("99999999");
-    });
-    it("tollFreeNumber", ()=>{
-      const updatedFlowData = flowFields[23].valueSetter(validFlowData, { tollFreeNumber: "99999999" });
-      expect(updatedFlowData.tollFreeNumber).toBe("99999999");
     });
     it("whisper", ()=>{
       const updatedFlowData = flowFields[24].valueSetter(validFlowData, { whisper: "99999999" });
@@ -273,7 +262,7 @@ describe("FlowFieldsConfig", ()=>{
       expect(validData).toBe("DID");
       expect(invalidData).toBe("");
     });
-    it("transferNumber", ()=>{
+    it("transferDestination", ()=>{
       const validData = flowFields[9].valueGetter(validFlowData);
       const invalidData = flowFields[9].valueGetter({});
       expect(validData).toBe("123456789");
@@ -289,12 +278,6 @@ describe("FlowFieldsConfig", ()=>{
       const validData = flowFields[11].valueGetter(validFlowData);
       const invalidData = flowFields[11].valueGetter({});
       expect(validData).toBe("Hello Test Message");
-      expect(invalidData).toBe("");
-    });
-    it("agentId", ()=>{
-      const validData = flowFields[12].valueGetter(validFlowData);
-      const invalidData = flowFields[12].valueGetter({});
-      expect(validData).toBe("123455");
       expect(invalidData).toBe("");
     });
     it("employeeId", ()=>{
@@ -355,12 +338,6 @@ describe("FlowFieldsConfig", ()=>{
       const validData = flowFields[22].valueGetter(validFlowData);
       const invalidData = flowFields[22].valueGetter({});
       expect(validData).toBe("test marketingChannel");
-      expect(invalidData).toBe("");
-    });
-    it("tollFreeNumber", ()=>{
-      const validData = flowFields[23].valueGetter(validFlowData);
-      const invalidData = flowFields[23].valueGetter({});
-      expect(validData).toBe("test tollFreeNumber");
       expect(invalidData).toBe("");
     });
     it("whisper", ()=>{

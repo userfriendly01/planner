@@ -83,11 +83,11 @@ export const FlowGridColumnDef: GridColDef[] = [
   },
   {
     headerName: "Transfer Destination",
-    field: "transferNumber",
+    field: "transferDestination",
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params => `${params.row.content?.transferNumber || ""}`
+    valueGetter: params => `${params.row.content?.transferDestination || ""}`
   },
   {
     headerName: "Route",
@@ -110,13 +110,7 @@ export const FlowGridColumnDef: GridColDef[] = [
       </Tooltip>
     )
   },
-  {
-    headerName: "Agent Id",
-    field: "agentId",
-    sortable: true,
-    width: 110,
-    align: "left"
-  },
+
   {
     headerName: "Employee ID",
     field: "employeeId",
@@ -250,13 +244,6 @@ export const FlowGridColumnDef: GridColDef[] = [
   {
     headerName: "Range Indicator",
     field: "rangeIndicator",
-    sortable: true,
-    width: 110,
-    align: "left"
-  },
-  {
-    headerName: "Toll Free Number",
-    field: "tollFreeNumber",
     sortable: true,
     width: 110,
     align: "left"

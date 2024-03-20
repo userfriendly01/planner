@@ -23,8 +23,8 @@ describe("<FlowGridColumnDef />", () => {
       expect(FlowGridColumnDef[7].valueGetter({ row: {}})).toBe("");
     });
 
-    it("transferNumber", () => {
-      expect(FlowGridColumnDef[8].valueGetter({ row: { content: { transferNumber: "123" }}})).toBe("123");
+    it("transferDestination", () => {
+      expect(FlowGridColumnDef[8].valueGetter({ row: { content: { transferDestination: "123" }}})).toBe("123");
       expect(FlowGridColumnDef[8].valueGetter({ row: {}})).toBe("");
     });
 

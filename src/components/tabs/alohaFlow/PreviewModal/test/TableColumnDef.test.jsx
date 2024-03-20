@@ -15,7 +15,6 @@ jest.mock("@mui/material",()=>({
 const validFlowData = {
   id: 1,
   pkey: "12345",
-  agentId: "123455",
   brand: "LM",
   callFlowTemplate: "test callFlowTemplate",
   channel: "Test1 Channel",
@@ -30,7 +29,7 @@ const validFlowData = {
     dataRequests: ["test1", "test2"],
     greetingMessages: "Hello Test Message",
     languageOffer: "English",
-    transferNumber: "123456789"
+    transferDestination: "123456789"
   },
   accountManager: "test accountManager",
   affinityVDN: "test affinityVDN",
@@ -42,7 +41,6 @@ const validFlowData = {
   marketingChannel: "test marketingChannel",
   requestID: "test requestID",
   rangeIndicator: "test rangeIndicator",
-  tollFreeNumber: "test tollFreeNumber",
   transferCode: "test transferCode",
   type: "DID",
   whisper: "test whisper",
@@ -71,8 +69,8 @@ describe("<TableGridColumnDef />", () => {
       expect(TableGridColumnDef[7].valueGetter({ row: {}})).toBe("");
     });
 
-    it("transferNumber", () => {
-      expect(TableGridColumnDef[8].valueGetter({ row: { content: { transferNumber: "123" }}})).toBe("123");
+    it("transferDestination", () => {
+      expect(TableGridColumnDef[8].valueGetter({ row: { content: { transferDestination: "123" }}})).toBe("123");
       expect(TableGridColumnDef[8].valueGetter({ row: {}})).toBe("");
     });
 
@@ -202,12 +200,12 @@ describe("<TableGridColumnDef />", () => {
       }).content.callerType).toBe("TEST_CT");
       expect(TableGridColumnDef[7].valueSetter({ row: {}}).content.callerType).toBe(undefined);
     });
-    it("transferNumber", ()=>{
+    it("transferDestination", ()=>{
       expect(TableGridColumnDef[8].valueSetter({
         row: { ...validFlowData },
         value: "TEST_TN"
-      }).content.transferNumber).toBe("TEST_TN");
-      expect(TableGridColumnDef[8].valueSetter({ row: {}}).content.transferNumber).toBe(undefined);
+      }).content.transferDestination).toBe("TEST_TN");
+      expect(TableGridColumnDef[8].valueSetter({ row: {}}).content.transferDestination).toBe(undefined);
     });
     it("callFlowRoute", ()=>{
       expect(TableGridColumnDef[9].valueSetter({
