@@ -95,8 +95,16 @@ describe("<FlowGridColumnDef />", () => {
       const renderedCell = render(FlowGridColumnDef[32].renderCell({ row: { predictiveCaller: true }}));
       expect(renderedCell.container).toBeInTheDocument();
     });
-    it("selfServiceIndicator", ()=>{
-      const renderedCell = render(FlowGridColumnDef[33].renderCell({ row: { selfServiceIndicator: true }}));
+    it("callFlowName", ()=>{
+      const renderedCell = render(FlowGridColumnDef[33].renderCell({ row: { callFlowName: "LSC" }}));
+      expect(renderedCell.container).toBeInTheDocument();
+    });
+    it("callFlowType", ()=>{
+      const renderedCell = render(FlowGridColumnDef[34].renderCell({ row: { callFlowType: "DTMF" }}));
+      expect(renderedCell.container).toBeInTheDocument();
+    });
+    it("nextActionId", ()=>{
+      const renderedCell = render(FlowGridColumnDef[35].renderCell({ row: { nextActionId: "id123" }}));
       expect(renderedCell.container).toBeInTheDocument();
     });
   });

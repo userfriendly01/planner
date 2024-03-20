@@ -97,9 +97,17 @@ describe("<TableGridColumnDef />", () => {
       expect(TableGridColumnDef[32].valueGetter({ row: { predictiveCaller: true }})).toBe(true);
       expect(TableGridColumnDef[32].valueGetter({ row: {}})).toEqual(false);
     });
-    it("selfServiceIndicator", () => {
-      expect(TableGridColumnDef[33].valueGetter({ row: { selfServiceIndicator: true }})).toBe(true);
-      expect(TableGridColumnDef[33].valueGetter({ row: {}})).toEqual(false);
+    it("callFlowName", () => {
+      expect(TableGridColumnDef[33].valueGetter({ row: { callFlowName: "Self Service" }})).toBe("Self Service");
+      expect(TableGridColumnDef[33].valueGetter({ row: {}})).toEqual("");
+    });
+    it("callFlowType", () => {
+      expect(TableGridColumnDef[34].valueGetter({ row: { callFlowType: "LSC" }})).toBe("LSC");
+      expect(TableGridColumnDef[34].valueGetter({ row: {}})).toEqual("");
+    });
+    it("nextActionId", () => {
+      expect(TableGridColumnDef[35].valueGetter({ row: { nextActionId: "next333" }})).toBe("next333");
+      expect(TableGridColumnDef[35].valueGetter({ row: {}})).toEqual("");
     });
   });
   describe("renderCell", ()=>{
@@ -159,8 +167,16 @@ describe("<TableGridColumnDef />", () => {
       const renderedCell = render(TableGridColumnDef[32].renderCell({ row: { predictiveCaller: true }}));
       expect(renderedCell.container).toBeInTheDocument();
     });
-    it("selfServiceIndicator", ()=>{
-      const renderedCell = render(TableGridColumnDef[33].renderCell({ row: { selfServiceIndicator: true }}));
+    it("callFlowName", ()=>{
+      const renderedCell = render(TableGridColumnDef[33].renderCell({ row: { callFlowName: "LSC" }}));
+      expect(renderedCell.container).toBeInTheDocument();
+    });
+    it("callFlowType", ()=>{
+      const renderedCell = render(TableGridColumnDef[34].renderCell({ row: { callFlowType: "Self Service" }}));
+      expect(renderedCell.container).toBeInTheDocument();
+    });
+    it("nextActionId", ()=>{
+      const renderedCell = render(TableGridColumnDef[35].renderCell({ row: { nextActionId: "Self Service" }}));
       expect(renderedCell.container).toBeInTheDocument();
     });
   });

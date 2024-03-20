@@ -414,10 +414,10 @@ const flowFields: AddFlowFieldsConfigProps[] = [
   },
   {
     label: "Call Flow Type",
-    key: "selfServiceIndicator",
+    key: "callFlowType",
     control: "select",
     required: false,
-    valueGetter: (params: CctSharedCallFlowDb) => params?.selfServiceIndicator || "",
+    valueGetter: (params: CctSharedCallFlowDb): string => params?.callFlowType ?? "",
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
       ...newValue
@@ -435,15 +435,16 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     })
   },
   {
-    label: "TFN Routing Group",
-    key: "tfnRoutingGroup",
-    control: "select",
+    label: "Next Action ID",
+    key: "nextActionId",
+    control: "input",
     required: false,
-    valueGetter: (params: CctSharedCallFlowDb) => `${params?.tfnRoutingGroup || ""}`,
+    valueGetter: (params: CctSharedCallFlowDb) => `${params?.nextActionId || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
       ...newValue
     })
+
   }
 ];
 

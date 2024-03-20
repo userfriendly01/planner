@@ -20,7 +20,8 @@ import {
 } from "../AlohaFlow.Interfaces";
 
 /**
- * This is the function to use to call queryFlowData function multiple time
+ * Retrieve all of the Call Flow records and use the rowInsert function to persist
+ * the complete recordset - for example, into a DataGrid.  
  * until nextToken become null
  * @param {String} accessToken OAuth Access Token
  * @param {String} graphQlApiUrl Endpoint URL
@@ -33,7 +34,7 @@ export const retrieveFlowData = async (
   graphQlApiUrl: string,
   counter = 1,
   nextToken = "",
-  rowInsert: (result?: CctSharedCallFlowDb[]) => Promise<FlowMasterData> | Promise<void>
+  rowInsert: (result?: CctSharedCallFlowDb[]) => FlowMasterData | Promise<void>
 ): Promise<void> => {
   // const firstLoad = 
   await v1RetrieveFlowData(accessToken, graphQlApiUrl, counter, nextToken, rowInsert) as any;
@@ -64,10 +65,15 @@ export const batchFlowUpdate = async (
 };
 
 /**
- * This is the Function to batch update the Flow Object to the DB
- * @param {flowData} items List of Flow object that need to update
+ * This process for insert and update is exactly the same, so we can code for it just 
+ * once.  It splits the list of items into 2 - 1 for the legacy call flow table, and one 
+ * for the dynamic call flow table.  After running the appropriate service function, 
+ * it merges the results into 1 BatchResponse object.
+ * @param {flowData} items List of Flow objects that need to update, or list of pkeys to delete
  * @param {String} accessToken token to use while calling graphql query
  * @param {String} graphQlApiUrl Endpoint URL
+ * @param {Function} batchFunction1 - legacy batchFlowCreate or batchFlowUpdate
+ * @param {Function} batchFunction2 - dynamic batchFlowCreate or batchFlowUpdate
  * @returns
  */
 const commonProcessing = async (
@@ -102,18 +108,26 @@ const commonProcessing = async (
 
 /**
  * This is the Function to batch delete the Flow Objects
- * @param {flowData} items List of Flow object that need to update
+ * @param {Array<String>} items List of Flow object that need to update
  * @param {String} accessToken token to use while calling graphql query
  * @param {String} graphQlApiUrl Endpoint URL
  * @returns
  */
 export const batchDeleteItems = async (
-  items: Array<CctSharedCallFlowDb>,
+  items: Array<string>,
   accessToken: string,
   graphQlApiUrl: string
 ): Promise<BatchResponse> =>  {
 
-  return await commonProcessing(items, accessToken, graphQlApiUrl, v1BatchDeleteItems, v2BatchDeleteItems);
+  const response = await v1BatchDeleteItems(items, accessToken, graphQlApiUrl) as BatchResponse;
+  const response2 = await v2BatchDeleteItems(items, accessToken, graphQlApiUrl)as BatchResponse;
+
+  response2.failure.forEach(x => response.failure.push(x));
+  response2.success.forEach(x => response.success.push(x));
+  response.failure = response.failure ?? response2.failure;
+  response.alertMsg  = response.alertMsg ?? response2.alertMsg;
+
+  return response;
 
 };
 

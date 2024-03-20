@@ -366,16 +366,6 @@ export const TableGridColumnDef: GridColDef[] = [
       <Switch checked={params.row?.predictiveCaller || false} defaultChecked={false} color="warning" disabled size="medium" />)
   },
   {
-    headerName: "Self Service",
-    field: "selfServiceIndicator",
-    sortable: true,
-    width: 110,
-    align: "center",
-    valueGetter: params => params.row?.selfServiceIndicator || false,
-    renderCell: (params: any) =>(
-      <Switch checked={params.row?.selfServiceIndicator || false} defaultChecked={false} color="warning" disabled size="medium" />)
-  },
-  {
     headerName: "Call Flow Name",
     field: "callFlowName",
     sortable: true,
@@ -398,6 +388,13 @@ export const TableGridColumnDef: GridColDef[] = [
         <div className="table-cell-trucate">{params.row.callFlowType}</div>
       </Tooltip>
     )
+  },
+  {
+    headerName: "Next Action ID",
+    field: "nextActionId",
+    sortable: true,
+    width: 110,
+    align: "left"
   }
 ];
 

@@ -10,7 +10,9 @@ export const createFlowDataItem = num => {
     pkey: `+18005551212x${num}`,
     agentId: `agent${num}`,
     brand: `brand${num}`,
+    callFlowName: "LSC",
     callFlowTemplate: `cft${num}`,
+    callFlowType: "Self Service",
     channel: `channel${num}`,
     content: {
       callerType: "Customer",
@@ -23,8 +25,7 @@ export const createFlowDataItem = num => {
     dialedDescription: `Test case ${num}`,
     employeeId: `n${num}`,
     userDestination: "Avaya",
-    predictiveCaller: true,
-    selfServiceIndicator: true
+    predictiveCaller: true
   };
 };
 

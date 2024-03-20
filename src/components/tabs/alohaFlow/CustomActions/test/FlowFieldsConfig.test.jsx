@@ -6,7 +6,9 @@ const validFlowData = {
   pkey: "12345",
   agentId: "123455",
   brand: "LM",
+  callFlowName: "LSC",
   callFlowTemplate: "test callFlowTemplate",
+  callFlowType: "Self Service",
   channel: "Test1 Channel",
   createTime: "2022-24-08",
   dialedDescription: "test dialedDescription",
@@ -38,7 +40,7 @@ const validFlowData = {
   whisper: "test whisper",
   tfnRoutingGroup: "Core",
   predictiveCaller: true,
-  selfServiceIndicator: true
+  nextActionId: "next123"
 };
 
 const invalidFLowData = {
@@ -203,9 +205,17 @@ describe("FlowFieldsConfig", ()=>{
       const updatedFlowData = flowFields[31].valueSetter(validFlowData, { predictiveCaller: false });
       expect(updatedFlowData.predictiveCaller).toBe(false);
     });
-    it("selfServiceIndicator", ()=>{
-      const updatedFlowData = flowFields[32].valueSetter(validFlowData, { selfServiceIndicator: false });
-      expect(updatedFlowData.selfServiceIndicator).toBe(false);
+    it("callFlowType", ()=>{
+      const updatedFlowData = flowFields[32].valueSetter(validFlowData, { callFlowType: "Self Service" });
+      expect(updatedFlowData.callFlowType).toBe("Self Service");
+    });
+    it("callFlowName", ()=>{
+      const updatedFlowData = flowFields[33].valueSetter(validFlowData, { callFlowName: "LSC" });
+      expect(updatedFlowData.callFlowName).toBe("LSC");
+    });
+    it("nextActionId", ()=>{
+      const updatedFlowData = flowFields[45].valueSetter(validFlowData, { nextActionId: "nextId123" });
+      expect(updatedFlowData.nextActionId).toBe("nextId123");
     });
   });
   describe("valueGetter", ()=>{
@@ -401,11 +411,23 @@ describe("FlowFieldsConfig", ()=>{
       expect(validData).toBe(true);
       expect(invalidData).toBe(false);
     });
-    it("selfServiceIndicator", ()=>{
+    it("callFlowType", ()=>{
       const validData = flowFields[32].valueGetter(validFlowData);
       const invalidData = flowFields[32].valueGetter({});
-      expect(validData).toBe(true);
-      expect(invalidData).toBe(false);
+      expect(validData).toBe(validFlowData.callFlowType);
+      expect(invalidData).toBe("");
+    });
+    it("callFlowName", ()=>{
+      const validData = flowFields[33].valueGetter(validFlowData);
+      const invalidData = flowFields[33].valueGetter({});
+      expect(validData).toBe(validFlowData.callFlowName);
+      expect(invalidData).toBe("");
+    });
+    it("nextActionId", ()=>{
+      const validData = flowFields[34].valueGetter(validFlowData);
+      const invalidData = flowFields[34].valueGetter({});
+      expect(validData).toBe(validFlowData.nextActionId);
+      expect(invalidData).toBe("");
     });
   });
   describe("dynamicFieldConditionCheck",()=>{

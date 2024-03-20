@@ -79,7 +79,6 @@ export interface CctSharedCallFlowDb {
     predictiveCaller?: boolean;
     rangeIndicator?: string;
     requestID?: string;
-    selfServiceIndicator?: string;
     tfnRoutingGroup?:string;
     tollFreeNumber?: string;
     transferCode?: string;
@@ -114,7 +113,6 @@ export interface FlowKeys {
     predictiveCaller?: boolean;
     rangeIndicator?: string;
     requestID?: string;
-    selfServiceIndicator?: string;
     tfnRoutingGroup?: string;
     tollFreeNumber?: string;
     transferCode?: string;

@@ -34,17 +34,19 @@ import {
   HeadingStyled
 } from "../../AlohaFlow.Styles";
 import {
+  BrandName,
+  FLOW_MASTER_DATA,
+  callFlowName,
+  callFlowType,
+  checkGreetingMessageRegExp,
   cleanErrorMessage,
   flowDropDownList,
-  FLOW_MASTER_DATA,
+  flowType,
   getGraphQLEndpoint,
   initializedAlertBar,
   languageOffer,
   tfnRoutingGroup,
-  userDestination,
-  flowType,
-  checkGreetingMessageRegExp,
-  BrandName
+  userDestination
 } from "utils";
 import { getGridMasterData } from "../../DataGridFlow/GridMaster";
 import {
@@ -93,9 +95,9 @@ export const AddFlow = ({
         channel: masterDataObject.channel,
         languageOffer,
         userDestination,
-        callFlowName: masterDataObject?.callFlowName,
+        callFlowName: callFlowName,
         callFlowRoute: masterDataObject?.callFlowRoute,
-        callFlowType: masterDataObject?.callFlowType,
+        callFlowType: callFlowType,
         callerType: masterDataObject?.callerType,
         dataRequests: masterDataObject?.dataRequests,
         tfnRoutingGroup,
@@ -264,7 +266,7 @@ export const AddFlow = ({
             tfnRoutingGroup: stringValue(flowRule,"tfnRoutingGroup", ""),
             type: flowRule.type.value ?? "",
             predictiveCaller: flowRule.predictiveCaller.value ?? false,
-            selfServiceIndicator: flowRule.selfServiceIndicator.value ?? ""
+            nextActionId: flowRule.nextActionId.value ?? ""
           };
           openAddModal(false, true, newFlowRule);
           setAlertBar((alertBarProps: AlertBarProps) => ({

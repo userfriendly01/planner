@@ -8,7 +8,12 @@ import {
 } from "../AlohaFlow.Interfaces";
 import {
   FLOW_MASTER_DATA,
-  flowType, languageOffer, tfnRoutingGroup, userDestination
+  callFlowName,
+  callFlowType,
+  flowType,
+  languageOffer,
+  tfnRoutingGroup,
+  userDestination
 } from "utils";
 
 import { flowFields } from "../CustomActions/FlowFieldsConfig";
@@ -71,7 +76,7 @@ const manageEditColumnDef = (columnDef: Array<GridColDef>, apiRef: React.Mutable
           />
       };
     }
-    if(["predictiveCaller", "selfServiceIndicator"].includes(item.field)){
+    if(["predictiveCaller"].includes(item.field)){
       return {
         ...item,
         editable: true,
@@ -126,9 +131,9 @@ const fetchData = (): FlowDropDownList =>{
     channel: masterDataObject.channel,
     languageOffer,
     userDestination,
-    callFlowName: masterDataObject?.callFlowName,
+    callFlowName: callFlowName,
     callFlowRoute: masterDataObject?.callFlowRoute,
-    callFlowType: masterDataObject?.callFlowType,
+    callFlowType: callFlowType,
     callerType: masterDataObject?.callerType,
     dataRequests: masterDataObject?.dataRequests,
     tfnRoutingGroup,
