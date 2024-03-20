@@ -5,7 +5,7 @@ import {
   Box, Chip, Switch
 } from "@mui/material";
 import { ModalOnHover } from "components";
-//TODO add the new columns
+
 export const FlowGridColumnDef: GridColDef[] = [
   {
     headerName: "Dialed",

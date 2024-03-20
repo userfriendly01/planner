@@ -83,8 +83,6 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
   const [selectedList, setSelectedList] = useState<Array<CctSharedCallFlowDb>>([]);
   const apiRef = useGridApiRef();
 
-  //TODO: change this to be a single function that submits the token until complete, instead of queryFlowData+retrieveFlowData
-  //TODO: add new fields to types.
   useEffect(() => {
     const getTableData = async()=>{
       setAlertBar((alertBarProps: AlertBarProps) => ({

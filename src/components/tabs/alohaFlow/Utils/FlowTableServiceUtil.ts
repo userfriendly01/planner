@@ -3,16 +3,16 @@ import {
   batchFlowUpdate as v1BatchFlowUpdate,
   batchDeleteItems as v1BatchDeleteItems,
   batchFlowCreate as v1BatchFlowCreate,
-  retrieveFlowData as v2RetrieveFlowData,
-  batchFlowUpdate as v2BatchFlowUpdate,
-  batchDeleteItems as v2BatchDeleteItems,
-  batchFlowCreate as v2BatchFlowCreate,
+  retrieveDynamicFlowData as v2RetrieveFlowData,
+  batchDynamicFlowUpdate as v2BatchFlowUpdate,
+  batchDynamicDeleteItems as v2BatchDeleteItems,
+  batchDynamicFlowCreate as v2BatchFlowCreate,
   addFlowRule as v1AddFlowRule,
-  addFlowRule as v2AddFlowRule,
+  addDynamicFlowRule as v2AddFlowRule,
   deleteFlowRule as v1DeleteFlowRule,
-  deleteFlowRule as v2DeleteFlowRule,
+  deleteDynamicFlowRule as v2DeleteFlowRule,
   updateFlowDB as v1UpdateFlowDB,
-  updateFlowDB as v2UpdateFlowDB
+  updateDynamicFlowDB as v2UpdateFlowDB
 } from "services";
 import {
   CctSharedCallFlowDb,
@@ -36,9 +36,8 @@ export const retrieveFlowData = async (
   nextToken = "",
   rowInsert: (result?: CctSharedCallFlowDb[]) => FlowMasterData | Promise<void>
 ): Promise<void> => {
-  // const firstLoad = 
-  await v1RetrieveFlowData(accessToken, graphQlApiUrl, counter, nextToken, rowInsert) as any;
-  // await v2RetrieveFlowData(accessToken, graphQlApiUrl, firstLoad.counter, "", rowInsert, firstLoad.flowData);
+  const firstLoad = v1RetrieveFlowData(accessToken, graphQlApiUrl, counter, nextToken, rowInsert) as any;
+  await v2RetrieveFlowData(accessToken, graphQlApiUrl, firstLoad.counter, null, rowInsert, firstLoad.flowData);
 };
 
 export type BatchResponse = {
