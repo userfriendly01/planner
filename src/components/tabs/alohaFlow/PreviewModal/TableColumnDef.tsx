@@ -374,6 +374,30 @@ export const TableGridColumnDef: GridColDef[] = [
     valueGetter: params => params.row?.selfServiceIndicator || false,
     renderCell: (params: any) =>(
       <Switch checked={params.row?.selfServiceIndicator || false} defaultChecked={false} color="warning" disabled size="medium" />)
+  },
+  {
+    headerName: "Call Flow Name",
+    field: "callFlowName",
+    sortable: true,
+    width: 110,
+    align: "left",
+    renderCell: (params: any) => (
+      <Tooltip title={params.row.callFlowName} >
+        <div className="table-cell-trucate">{params.row.callFlowName}</div>
+      </Tooltip>
+    )
+  },
+  {
+    headerName: "Call Flow Type",
+    field: "callFlowType",
+    sortable: true,
+    width: 110,
+    align: "left",
+    renderCell: (params: any) => (
+      <Tooltip title={params.row.callFlowType} >
+        <div className="table-cell-trucate">{params.row.callFlowType}</div>
+      </Tooltip>
+    )
   }
 ];
 

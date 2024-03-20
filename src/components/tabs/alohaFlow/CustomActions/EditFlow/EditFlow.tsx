@@ -31,17 +31,17 @@ import {
   CustomToast
 } from "components";
 import {
-  flowDropDownList,
+  BrandName,
   FLOW_MASTER_DATA,
+  checkGreetingMessageRegExp,
+  flowDropDownList,
+  flowType,
   getGraphQLEndpoint,
   initializedAlertBar,
   languageOffer,
-  userDestination,
-  flowType,
-  checkGreetingMessageRegExp,
   readWriteAccess,
   tfnRoutingGroup,
-  BrandName
+  userDestination
 } from "utils";
 import ComponentControl from "components/core/SharedComponents/ComponentControl";
 import {
@@ -96,7 +96,9 @@ export const EditFlow = ({
         channel: masterData?.channel,
         languageOffer: languageOffer,
         userDestination: userDestination,
+        callFlowName: masterData?.callFlowName,
         callFlowRoute: masterData?.callFlowRoute,
+        callFlowType: masterData?.callFlowType,
         callerType: masterData?.callerType,
         dataRequests: masterData?.dataRequests,
         tfnRoutingGroup: tfnRoutingGroup,

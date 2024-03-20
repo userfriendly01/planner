@@ -16,13 +16,15 @@ export interface FlowContent {
 
 
 export interface FlowMasterData {
-    channel?: Array<string>;
     brand?: Array<string>;
-    callerType?: Array<string>;
-    callFlowTemplate?: Array<string>;
+    callFlowName?: Array<string>;
     callFlowRoute?: Array<string>;
-    pkey?: Array<string>;
+    callFlowTemplate?: Array<string>;
+    callFlowType?: Array<string>;
+    callerType?: Array<string>;
+    channel?: Array<string>;
     dataRequests?: Array<string>;
+    pkey?: Array<string>;
 }
 
 export interface FlowAdvanceFilter {
@@ -60,7 +62,9 @@ export interface CctSharedCallFlowDb {
     brand?: string;
     callDetails1?: string;
     callDetails2?: string;
+    callFlowName?: string;
     callFlowTemplate?: string;
+    callFlowType?: string;
     callTypeDescription?: string;
     channel?: string;
     content?: FlowContent;
@@ -75,7 +79,7 @@ export interface CctSharedCallFlowDb {
     predictiveCaller?: boolean;
     rangeIndicator?: string;
     requestID?: string;
-    selfServiceIndicator?: boolean;
+    selfServiceIndicator?: string;
     tfnRoutingGroup?:string;
     tollFreeNumber?: string;
     transferCode?: string;
@@ -110,7 +114,7 @@ export interface FlowKeys {
     predictiveCaller?: boolean;
     rangeIndicator?: string;
     requestID?: string;
-    selfServiceIndicator?: boolean;
+    selfServiceIndicator?: string;
     tfnRoutingGroup?: string;
     tollFreeNumber?: string;
     transferCode?: string;
@@ -125,7 +129,9 @@ export interface FlowDropDownList {
     channel: string[];
     languageOffer: string[];
     userDestination: string[];
+    callFlowName: string[];
     callFlowRoute:string[];
+    callFlowType: string[];
     callerType: string[];
     dataRequests: string[];
     tfnRoutingGroup : string[];

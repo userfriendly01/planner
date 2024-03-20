@@ -33,7 +33,7 @@ export const retrieveFlowData = async (
   graphQlApiUrl: string,
   counter = 1,
   nextToken = "",
-  rowInsert: (result?: CctSharedCallFlowDb[]) => FlowMasterData
+  rowInsert: (result?: CctSharedCallFlowDb[]) => Promise<FlowMasterData> | Promise<void>
 ): Promise<void> => {
   // const firstLoad = 
   await v1RetrieveFlowData(accessToken, graphQlApiUrl, counter, nextToken, rowInsert) as any;
@@ -43,7 +43,8 @@ export const retrieveFlowData = async (
 export type BatchResponse = {
     failure: Array<any>,
     flag: boolean,
-    success: Array<any>
+    success: Array<any>,
+    alertMsg?: string
 }
 
 /**

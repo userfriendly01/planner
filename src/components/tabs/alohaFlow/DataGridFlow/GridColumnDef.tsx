@@ -331,7 +331,7 @@ export const FlowGridColumnDef: GridColDef[] = [
     width: 110,
     align: "left",
     renderCell: (params: any) => (
-      <Tooltip title={params.row.brand} >
+      <Tooltip title={params.row.callFlowName} >
         <div className="table-cell-trucate">{params.row.callFlowName}</div>
       </Tooltip>
     )
@@ -343,7 +343,7 @@ export const FlowGridColumnDef: GridColDef[] = [
     width: 110,
     align: "left",
     renderCell: (params: any) => (
-      <Tooltip title={params.row.brand} >
+      <Tooltip title={params.row.callFlowType} >
         <div className="table-cell-trucate">{params.row.callFlowType}</div>
       </Tooltip>
     )

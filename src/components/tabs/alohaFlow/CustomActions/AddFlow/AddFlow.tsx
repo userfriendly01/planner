@@ -93,7 +93,9 @@ export const AddFlow = ({
         channel: masterDataObject.channel,
         languageOffer,
         userDestination,
+        callFlowName: masterDataObject?.callFlowName,
         callFlowRoute: masterDataObject?.callFlowRoute,
+        callFlowType: masterDataObject?.callFlowType,
         callerType: masterDataObject?.callerType,
         dataRequests: masterDataObject?.dataRequests,
         tfnRoutingGroup,
@@ -239,7 +241,9 @@ export const AddFlow = ({
             createTime: curTime,
             agentId: stringValue(flowRule,"agentId", ""),
             brand: flowRule.brand.value,
+            callFlowName: stringValue(flowRule,"callFlowName", ""),
             callFlowTemplate: stringValue(flowRule,"callFlowTemplate", ""),
+            callFlowType: stringValue(flowRule,"callFlowType", ""),
             channel: flowRule.channel.value,
             dialedDescription: flowRule.dialedDescription.value,
             employeeId: stringValue(flowRule,"employeeId", ""),
@@ -255,12 +259,12 @@ export const AddFlow = ({
             tollFreeNumber: stringValue(flowRule,"tollFreeNumber", ""),
             whisper: stringValue(flowRule,"whisper", ""),
             requestID: stringValue(flowRule,"requestID", ""),
-            userDestination: flowRule.userDestination.value || "",
+            userDestination: flowRule.userDestination.value ?? "",
             rangeIndicator: stringValue(flowRule,"rangeIndicator", ""),
             tfnRoutingGroup: stringValue(flowRule,"tfnRoutingGroup", ""),
-            type: flowRule.type.value || "",
-            predictiveCaller: flowRule.predictiveCaller.value || false,
-            selfServiceIndicator: flowRule.selfServiceIndicator.value || false
+            type: flowRule.type.value ?? "",
+            predictiveCaller: flowRule.predictiveCaller.value ?? false,
+            selfServiceIndicator: flowRule.selfServiceIndicator.value ?? ""
           };
           openAddModal(false, true, newFlowRule);
           setAlertBar((alertBarProps: AlertBarProps) => ({

@@ -107,7 +107,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     gridSize: 10
   },
   {
-    label: "Type",
+    label: "Phone Number Type",
     key: "type",
     control: "autoComplete",
     required: false,
@@ -413,11 +413,33 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     }
   },
   {
-    label: "Self Service Indicator",
+    label: "Call Flow Type",
     key: "selfServiceIndicator",
-    control: "switch",
+    control: "select",
     required: false,
-    valueGetter: (params: CctSharedCallFlowDb) => params?.selfServiceIndicator || false,
+    valueGetter: (params: CctSharedCallFlowDb) => params?.selfServiceIndicator || "",
+    valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
+      ...currentValue,
+      ...newValue
+    })
+  },
+  {
+    label: "Call Flow Name",
+    key: "callFlowName",
+    control: "select",
+    required: false,
+    valueGetter: (params: CctSharedCallFlowDb) => `${params?.callFlowName || ""}`,
+    valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
+      ...currentValue,
+      ...newValue
+    })
+  },
+  {
+    label: "TFN Routing Group",
+    key: "tfnRoutingGroup",
+    control: "select",
+    required: false,
+    valueGetter: (params: CctSharedCallFlowDb) => `${params?.tfnRoutingGroup || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
       ...newValue
