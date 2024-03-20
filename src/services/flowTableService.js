@@ -733,8 +733,9 @@ const batchFlowCreate = async(items, accessToken, graphQlApiUrl) =>{
     else{
       response.failure = response.failure.concat(flowCreate);
       response.flag = true;
-      response.alertMsg = "Error Occured while creating Records";
+      response.alertMsg = "Error Occurred while creating Records";
     }
+
   });
   logger.info("Create Batch Flow DB Response:", { response });
   return response;
@@ -756,7 +757,7 @@ const batchDynamicFlowCreate = async(items, accessToken, graphQlApiUrl) =>{
   while(items.length>0){
     dynamicFlowCreateArray.push(items.splice(0,size));
   }
-  dynamicFlowCreateArray.map(async dynamicFlowCreate =>{
+  const allResults = await Promise.all(dynamicFlowCreateArray.map(async dynamicFlowCreate =>{
     const dynamicFlowUpdateBatchRunResponse = await createDynamicFlowRunItem(dynamicFlowCreate, accessToken, graphQlApiUrl);
     if(!dynamicFlowUpdateBatchRunResponse?.errors){
       response.success = response.success.concat(dynamicFlowCreate);
@@ -766,8 +767,13 @@ const batchDynamicFlowCreate = async(items, accessToken, graphQlApiUrl) =>{
       response.flag = true;
       response.alertMsg = "Error Occurred while creating dynamic flowRecords";
     }
+    return dynamicFlowUpdateBatchRunResponse;
+  }));
+  allResults.forEach(x=>{
+    x?.errors?.forEach( y => response?.errors?.push(y));
+    x?.success?.forEach( y => response?.success?.push(y));
   });
-  logger.info("Create Batch Dynamic Flow DB Response:", { response });
+  logger.info("Create Dynamic Batch Flow DB Response:", { response });
   return response;
 };
 

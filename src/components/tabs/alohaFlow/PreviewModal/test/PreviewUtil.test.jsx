@@ -35,6 +35,7 @@ export const createFlowDataList = numberOfData =>{
   }
   return dataList;
 };
+
 export const flowDropDownData = {
   brand: ["Liberty Mutual", "Safeco"],
   channel: ["Sales", "Service"],

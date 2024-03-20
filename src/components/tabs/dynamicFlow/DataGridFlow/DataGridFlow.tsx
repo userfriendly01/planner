@@ -23,6 +23,7 @@ import {
   DataGrid, useGridApiRef
 } from "@mui/x-data-grid";
 import DynamicFlowGridColumnDef from "./DynamicGridColumnDef";
+import { CustomToast } from "components";
 
 
 const DataGridFlow = (props: AzureSPA): JSX.Element => {
@@ -90,7 +91,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         ...alertBarProps,
         open: true,
         severityType: "success",
-        msg: "Successfully loaded the flow data!!"
+        msg: "Successfully loaded the dynamic flow data!!"
       }));
     };
     getTableData();
@@ -130,6 +131,13 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     }
   };
 
+  const handleClose = (flag: boolean) => {
+    setAlertBar((alertBarProps: AlertBarProps) => ({
+      ...alertBarProps,
+      open: flag
+    }));
+  };
+
   const handlePreviewModalOnClose = () =>{
     setDataFlow((dataFlowProps: DynamicStateVariables) => ({
       ...dataFlowProps,
@@ -138,7 +146,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
   };
 
   const handleOnBulkCreate = async(rows: Array<DynamicAction> ) =>{
-     const response = await batchDynamicFlowCreate(rows, accessToken, graphQLEndpoint);
+    const response = await batchDynamicFlowCreate(rows, accessToken, graphQLEndpoint);
     if(response?.flag) {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
@@ -150,13 +158,15 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
         open: true,
-        msg: "Flow Rules have been successfully created.",
+        msg: "Dynamic Flow Rules have been successfully created.",
         severityType: "success"
       }));
     }
     setSelectedList([...response.failure]);
-    const filteredItems = [...dataFlow.filteredItems, ...response.success];
-    const filteredData = [...dataFlow.data, ...response.success];
+    const SuccessObj: any = { };
+    response.success.forEach( x => SuccessObj[x.actionId] = x);
+    const filteredItems = dataFlow.filteredItems.map( x=> SuccessObj[x.actionId] || x);
+    const filteredData = dataFlow.data.map(y => SuccessObj[y.actionId] || y);
     setDataFlow({
       ...dataFlow,
       ...filteredItems && { filteredItems },
@@ -192,7 +202,13 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
 
         </div>
       </div>
-
+      <CustomToast
+        open={alertBar.open}
+        onClose={handleClose}
+        msg={alertBar.msg}
+        severityType={alertBar.severityType}
+        duration={alertBar.duration}
+      />
       <PreviewModal
         action={dataFlow.previewModalAction}
         isOpen={dataFlow.isPreviewModalOpen}
