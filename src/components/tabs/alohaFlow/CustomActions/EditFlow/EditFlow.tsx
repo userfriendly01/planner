@@ -239,8 +239,8 @@ export const EditFlow = ({
   ) => {
     let value: string;
     let key : string;
-    if(valuePassed && typeof valuePassed === "string" && !displayRecords[key as keyof ViewOrAddProps]){
-      value = valuePassed;
+    if(((valuePassed && typeof valuePassed === "string") || valuePassed === null) && !displayRecords[keyPassed as keyof ViewOrAddProps]){
+      value = valuePassed ?? "";
       key = keyPassed;
     } else{
       value = event.target.value;

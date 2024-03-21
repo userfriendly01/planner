@@ -198,6 +198,48 @@ async function retrieveFlowData(accessToken, graphQlApiUrl, counter = 1, nextTok
 
 }
 
+function createFlowFromAction (item) {
+  return {
+    pkey: item.phoneNumber,
+    brand: item.brand,
+    callFlowName: item.callFlowName ?? "",
+    callFlowTemplate: item.callFlowTemplate ?? "",
+    callFlowType: item.callFlowType ?? "",
+    callTypeDescription: item.callTypeDescription ?? "",
+    channel: item.channel,
+    content: {
+      callFlowRoute: item.callFlowRoute,
+      callIntent: item.callIntent,
+      callerType: item.callerType,
+      dataRequests: item.dataRequests,
+      greetingMessages: item.greetingMessages,
+      languageOffer: item.languageOffer,
+      officeNumbers: item.officeNumbers,
+      transferDestination: item.transferDestination
+    },
+    createTime: item.createTime,
+    dialedDescription: item.dialedDescription,
+    ...item.employeeId && {
+      employeeId: item.employeeId
+    },
+    internetPlacement: item.internetPlacement ?? "",
+    lineOfBusiness: item.lineOfBusiness ?? "",
+    marketingChannel: item.marketingChannel ?? "",
+    nextActionId: item.nextActionId ?? "",
+    nextActionType: item.nextActionType ?? "",
+    predictiveCaller: item.predictiveCaller ?? false,
+    rangeIndicator: item.rangeIndicator ?? "",
+    requestID: item.requestID ?? "",
+    selfServiceIndicator: item.callFlowType ?? false,
+    tfnRoutingGroup: item.tfnRoutingGroup ?? "",
+    tollFreeNumber: item.tollFreeNumber ?? "",
+    transferCode: item.transferCode ?? "",
+    phoneNumberType: item.phoneNumberType ?? "",
+    userDestination: item.userDestination ?? "",
+    whisper: item.whisper ?? ""
+  };
+}
+
 function addFlowInput (item, dataRequestsPassed, currentTimePassed){
   const input = {
     pkey: item.pkey.value,
@@ -1019,7 +1061,8 @@ const createFlowRunItem = async(items, accessToken, graphQlApiUrl) =>{
  * @returns list of data and nextToken if any
  */
 async function queryDynamicFlowData(accessToken, nextToken = null, graphQlApiUrl) {
-  let result = {};
+  let result = nextToken ? undefined : {};
+
   try {
     const response = await fetch(graphQlApiUrl, {
       method: "POST",
@@ -1030,41 +1073,41 @@ async function queryDynamicFlowData(accessToken, nextToken = null, graphQlApiUrl
       body: JSON.stringify({
         query: `
             query listPhoneNumbers {
-              listPhoneNumbers(limit: 10000, nextToken: ${nextToken ? JSON.stringify(nextToken) : nextToken}) {
+              listPhoneNumbers(limit: 10000) {
                 nextToken
                 items {
-                      phone_number
-                      callFlowName
-                      createTime
-                      updateTime
-                      nextActionType
-                      nextActionId
-                      callFlowTemplate
-                      dialedDescription
-                      phoneNumberType
-                      tfnRoutingGroup
                       brand
-                      dataRequests
-                      greetingMessages
-                      languageOffer
-                      transferDestination
-                      callerType
+                      callFlowName
                       callFlowRoute
-                      callIntent
+                      callFlowTemplate
                       callFlowType
-                      channel
-                      predictiveCaller
-                      employeeId
+                      callIntent
                       callTypeDescription
+                      callerType
+                      channel
+                      createTime
+                      dataRequests
+                      dialedDescription
+                      employeeId
+                      greetingMessages
                       internetPlacement
+                      languageOffer
                       lineOfBusiness
                       marketingChannel
+                      nextActionId
+                      nextActionType
+                      officeNumbers
+                      phoneNumber
+                      phoneNumberType
+                      predictiveCaller
                       rangeIndicator
                       requestID
+                      tfnRoutingGroup
                       tollFreeNumber
                       transferCode
+                      transferDestination
+                      updateTime
                       whisper
-                      officeNumbers
                 }
               }
             }
@@ -1101,7 +1144,7 @@ async function retrieveDynamicFlowData(accessToken, graphQlApiUrl, counter = 1, 
       listItems.forEach(item => {
         if(item) {
           flowData.push({
-            ...item,
+            ...createFlowFromAction(item),
             id: counter++
           });
         }
@@ -1109,12 +1152,6 @@ async function retrieveDynamicFlowData(accessToken, graphQlApiUrl, counter = 1, 
       rowInsert(flowData);
 
       nextToken = result.data?.listPhoneNumbers?.nextToken;
-      result.errors.forEach(err => {
-        logger.error("Error in retrieveDynamicFlowData", err?.message, false);
-      });
-      if(result?.errors?.length > 0) {
-        break;
-      }
     }
   } catch (error) {
     logger.error("Error in retrieveDynamicFlowData", { error }, false);
