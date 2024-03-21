@@ -161,11 +161,20 @@ export async function queryLSCDynamicFlowData(accessToken, graphQlApiUrl) {
  * @param {object} flowData - the accumulated flow records in the table
  * @returns {object} the counter and the flowData
  */
-async function retrieveFlowData(accessToken, graphQlApiUrl,counter = 1, nextToken = null, rowInsert, flowData = []) {
+async function retrieveFlowData(accessToken, graphQlApiUrl, counter = 1, nextToken = null, rowInsert, flowData = [], errors = false) {
   try {
-    while (nextToken !== null || counter === 1) {
+    while (nextToken || counter === 1) {
       const result = await queryFlowData(accessToken, nextToken, graphQlApiUrl);
+
+      if(result?.errors?.length > 0) {
+        errors = true;
+        result.errors.forEach(err => {
+          logger.error("Error in retrieveFlowData", err?.message, false);
+        });
+      }
+
       const listItems = result.data?.listCctSharedCallFlowDbs?.items || [];
+
       listItems.forEach(item => {
         if(item) {
           flowData.push({
@@ -176,12 +185,17 @@ async function retrieveFlowData(accessToken, graphQlApiUrl,counter = 1, nextToke
       });
       rowInsert(flowData);
 
-      nextToken = result.data?.listCctSharedCallFlowDbs.nextToken;
+      nextToken = result.data?.listCctSharedCallFlowDbs?.nextToken;
     }
   } catch (error) {
     logger.error("Error in retrieveFlowData", { error }, false);
   }
-  return counter;
+  return {
+    counter,
+    errors,
+    flowData
+  };
+
 }
 
 function addFlowInput (item, dataRequestsPassed, currentTimePassed){
@@ -1071,10 +1085,18 @@ async function queryDynamicFlowData(accessToken, nextToken = null, graphQlApiUrl
  * @param {String} graphQlApiUrl Endpoint URL
  * @returns {flowData} list of data contain all the result present in DB
  */
-async function retrieveDynamicFlowData(accessToken, graphQlApiUrl,counter = 1, nextToken = null, rowInsert, flowData = []) {
+async function retrieveDynamicFlowData(accessToken, graphQlApiUrl, counter = 1, nextToken = null, rowInsert, flowData = [], errors = false) {
   try {
-    while (nextToken !== null || counter === 1) {
+    while (nextToken || counter === 1) {
       const result = await queryDynamicFlowData(accessToken, nextToken, graphQlApiUrl);
+
+      if(result?.errors?.length > 0) {
+        errors = true;
+        result.errors.forEach(err => {
+          logger.error("Error in retrieveDynamicFlowData", err?.message, false);
+        });
+      }
+
       const listItems = result.data?.listPhoneNumbers?.items || [];
       listItems.forEach(item => {
         if(item) {
@@ -1086,12 +1108,23 @@ async function retrieveDynamicFlowData(accessToken, graphQlApiUrl,counter = 1, n
       });
       rowInsert(flowData);
 
-      nextToken = result.data?.listPhoneNumbers.nextToken;
+      nextToken = result.data?.listPhoneNumbers?.nextToken;
+      result.errors.forEach(err => {
+        logger.error("Error in retrieveDynamicFlowData", err?.message, false);
+      });
+      if(result?.errors?.length > 0) {
+        break;
+      }
     }
   } catch (error) {
-    logger.error("Error in retrieveFlowData", { error }, false);
+    logger.error("Error in retrieveDynamicFlowData", { error }, false);
   }
-  return counter;
+  return {
+    counter,
+    errors,
+    flowData
+  };
+
 }
 function updateDynamicFlowInput(item){
   const input = {

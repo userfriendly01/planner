@@ -28,6 +28,7 @@ import {
  * @param {Number} counter - counter for the row ID
  * @param {String} nextToken - the page token to grab the next batch/page of records
  * @param {any} rowInsert - the insert function used in this function that will insert the completed row into the component
+ * @returns {boolean} success (false if there were errors)
  */
 export const retrieveFlowData = async (
   accessToken: string,
@@ -35,9 +36,11 @@ export const retrieveFlowData = async (
   counter = 1,
   nextToken = "",
   rowInsert: (result?: CctSharedCallFlowDb[]) => FlowMasterData | Promise<void>
-): Promise<void> => {
-  const firstLoad = v1RetrieveFlowData(accessToken, graphQlApiUrl, counter, nextToken, rowInsert) as any;
-  await v2RetrieveFlowData(accessToken, graphQlApiUrl, firstLoad.counter, null, rowInsert, firstLoad.flowData);
+): Promise<boolean> => {
+  const firstLoad = await v1RetrieveFlowData(accessToken, graphQlApiUrl, counter, nextToken, rowInsert) as any;
+  const secondLoad = await v2RetrieveFlowData(accessToken, graphQlApiUrl, firstLoad.counter, null, rowInsert, firstLoad.flowData) as any;
+
+  return !secondLoad.errors;
 };
 
 export type BatchResponse = {

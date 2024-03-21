@@ -92,7 +92,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         msg: "Data loading in progress. Please wait for the complete set of data to be loaded.",
         duration: 15000
       }));
-      await retrieveFlowData(
+      const success = await retrieveFlowData(
         accessToken,
         graphQLEndpoint,
         1,
@@ -102,8 +102,8 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
         open: true,
-        severityType: "success",
-        msg: "Successfully loaded the flow data!!"
+        severityType: success ? "success" : "error",
+        msg: success ? "Successfully loaded the flow data.": "Errors loading data.  Please check the console logs."
       }));
     };
     getTableData();
@@ -261,7 +261,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
         open: true,
-        msg: "Error in retrieving Flow record. Please check the API Key",
+        msg: "Error in retrieving Flow records. Please check the console log",
         severityType: "error"
       }));
     }
