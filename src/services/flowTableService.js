@@ -144,6 +144,7 @@ export async function queryLSCDynamicFlowData(accessToken, graphQlApiUrl) {
       })
     });
     result = await response.json();
+    logGraphQLErrors(response, "queryLSCDynamicFlowData");
   } catch (error) {
     logger.error("Error in queryLSCDynamicFlowData", { error }, false);
   }
@@ -166,12 +167,8 @@ async function retrieveFlowData(accessToken, graphQlApiUrl, counter = 1, nextTok
     while (nextToken || counter === 1) {
       const result = await queryFlowData(accessToken, nextToken, graphQlApiUrl);
 
-      if(result?.errors?.length > 0) {
-        errors = true;
-        result.errors.forEach(err => {
-          logger.error("Error in retrieveFlowData", err?.message, false);
-        });
-      }
+      //retain if errors was true when it was passed in
+      errors = errors | logGraphQLErrors(result, "retrieveFlowData");
 
       const listItems = result.data?.listCctSharedCallFlowDbs?.items || [];
 
@@ -397,6 +394,8 @@ async function updateFlowDB(item, accessToken, graphQlApiUrl) {
     });
 
     response = await fetchResponse.json();
+    logGraphQLErrors(response, "updateFlowDB");
+
   } catch (error) {
     logger.error("Error in updateFlowDB", { error }, false);
   }
@@ -471,7 +470,7 @@ async function addFlowRule(item, accessToken, graphQlApiUrl, curTime = new Date(
       })
     });
     response = await fetchResponse.json();
-    logger.log("Add Flow Rule Response:", response);
+    logGraphQLErrors(response, "addFlowRule");
   } catch (error) {
     logger.error("Error in Adding Flow Rule", { error }, false);
   }
@@ -545,7 +544,7 @@ async function deleteFlowRule(item, accessToken, graphQlApiUrl) {
       })
     });
     response = await fetchResponse.json();
-    logger.log("Delete Flow Rule Response:", response);
+    logGraphQLErrors(response, "deleteFlowRule");
   } catch (error) {
     logger.error("Error in Deleting Flow Rule", { error }, false);
   }
@@ -609,7 +608,7 @@ async function flowBatchDelete(items, accessToken, graphQlApiUrl){
       body
     });
     response = await fetchResponse.json();
-    logger.log("Batch Delete Flow Rule Response:", response);
+    logGraphQLErrors(response, "flowBatchDelete");
   } catch (error) {
     logger.error("Error in Flow Batch Delete", { error }, false);
   }
@@ -646,6 +645,7 @@ const batchFlowUpdate = async(items, accessToken, graphQlApiUrl) =>{
   }
   flowUpdateArray.map(async flowUpdate =>{
     const flowUpdateBatchRunResponse = await updateFlowBatchRun(flowUpdate, accessToken, graphQlApiUrl);
+
     if(!flowUpdateBatchRunResponse?.errors){
       response.success = response.success.concat(flowUpdate);
     }
@@ -755,7 +755,10 @@ const updateFlowBatchRun = async(items, accessToken, graphQlApiUrl) =>{
         }
       })
     });
-    return await fetchResponse.json();
+    const response = await fetchResponse.json();
+    logGraphQLErrors(response, "updateFlowBatchRun");
+
+    return response;
   } catch (error) {
     logger.error("Error in Update Batch Flow DB", { error });
     return { errors: [{ message: error }]};
@@ -938,6 +941,8 @@ const createDynamicFlowRunItem = async(items, accessToken, graphQlApiUrl) =>{
       })
     });
     response = await fetchResponse.json();
+    logGraphQLErrors(response.json(), "createDynamicFlowRunItem");
+
     logger.log("Create Batch Dynamic Flow DB Response:", response);
   } catch (error) {
     logger.error("Error in Create Batch Dynamic Flow DB", error);
@@ -1047,6 +1052,8 @@ const createFlowRunItem = async(items, accessToken, graphQlApiUrl) =>{
       })
     });
     response = await fetchResponse.json();
+    logGraphQLErrors(response, "createFlowRunItem");
+
     logger.log("Create Batch Flow DB Response:", response);
   } catch (error) {
     logger.error("Error in Create Batch Flow DB", error);
@@ -1116,6 +1123,8 @@ async function queryDynamicFlowData(accessToken, nextToken = null, graphQlApiUrl
       })
     });
     result = await response.json();
+    logGraphQLErrors(result, "queryDynamicFlowData");
+
   } catch (error) {
     logger.error("Error in query Dynamic Flow Data", { error }, false);
   }
@@ -1133,12 +1142,7 @@ async function retrieveDynamicFlowData(accessToken, graphQlApiUrl, counter = 1, 
     while (nextToken || counter === 1) {
       const result = await queryDynamicFlowData(accessToken, nextToken, graphQlApiUrl);
 
-      if(result?.errors?.length > 0) {
-        errors = true;
-        result.errors.forEach(err => {
-          logger.error("Error in retrieveDynamicFlowData", err?.message, false);
-        });
-      }
+      errors = errors | logGraphQLErrors(result, "retrieveDynamicFlowData");
 
       const listItems = result.data?.listPhoneNumbers?.items || [];
       listItems.forEach(item => {
@@ -1152,6 +1156,7 @@ async function retrieveDynamicFlowData(accessToken, graphQlApiUrl, counter = 1, 
       rowInsert(flowData);
 
       nextToken = result.data?.listPhoneNumbers?.nextToken;
+
     }
   } catch (error) {
     logger.error("Error in retrieveDynamicFlowData", { error }, false);
@@ -1268,6 +1273,8 @@ async function updateDynamicFlowDB(item, accessToken, graphQlApiUrl) {
     });
 
     response = await fetchResponse.json();
+    logGraphQLErrors(response, "updateDynamicFlowDB");
+
   } catch (error) {
     logger.error("Error in update Dynamic Flow DB", { error }, false);
   }
@@ -1348,6 +1355,8 @@ async function addDynamicFlowRule(item, accessToken, graphQlApiUrl, curTime = ne
       })
     });
     response = await fetchResponse.json();
+    logGraphQLErrors(response, "addDynamicFlowRule");
+
     logger.log("Add Dynamic Flow Rule Response:", response);
   } catch (error) {
     logger.error("Error in Adding Dynamic Flow Rule", { error }, false);
@@ -1364,7 +1373,8 @@ async function addDynamicFlowRule(item, accessToken, graphQlApiUrl, curTime = ne
 async function deleteDynamicFlowRule(item, accessToken, graphQlApiUrl) {
   let response;
   const input = {
-    pkey: item.pkey
+    phoneNumber: item.pkey,
+    callFlowName: item.callFlowName
   };
   try {
     const fetchResponse = await fetch(graphQlApiUrl, {
@@ -1388,7 +1398,7 @@ async function deleteDynamicFlowRule(item, accessToken, graphQlApiUrl) {
       })
     });
     response = await fetchResponse.json();
-    logger.log("Delete Dynamic Flow Rule Response:", response);
+    logGraphQLErrors(response, "deleteDynamicFlowRule");
   } catch (error) {
     logger.error("Error in Deleting Dynamic Flow Rule", { error }, false);
   }
@@ -1414,7 +1424,6 @@ async function batchDynamicDeleteItems(items,accessToken,graphQlApiUrl){
         response.success = successResponse.concat(flowRespKeys);
       }
       else{
-        console.error("error while deleting the dynamic records", resp.errors);
         response.failure = failureResponse.concat(flowRespKeys);
         response.flag = true;
       }
@@ -1450,7 +1459,8 @@ async function flowDynamicBatchDelete(items, accessToken, graphQlApiUrl){
       body
     });
     response = await fetchResponse.json();
-    logger.log("Batch Delete Dynamic Flow Rule Response:", response);
+    logGraphQLErrors(response, "flowDynamicBatchDelete");
+
   } catch (error) {
     logger.error("Error in Dynamic Flow Batch Delete", { error }, false);
   }
@@ -1484,17 +1494,17 @@ const batchDynamicFlowUpdate = async(items, accessToken, graphQlApiUrl) =>{
   while(items.length>0){
     dynamicFlowUpdateArray.push(items.splice(0,size));
   }
-  dynamicFlowUpdateArray.map(async flowUpdate =>{
+  await Promise.all(dynamicFlowUpdateArray.map(async flowUpdate =>{
     const flowUpdateBatchRunResponse = await updateDynamicFlowBatchRun(flowUpdate, accessToken, graphQlApiUrl);
     if(!flowUpdateBatchRunResponse?.errors){
-      response.success = response.success.concat(flowUpdate);
+      response.success.push(flowUpdate);
     }
     else{
-      response.failure = response.failure.concat(flowUpdate);
+      response.failure.push(flowUpdate);
       response.flag = true;
     }
 
-  });
+  }));
   logger.info("Update Batch Dynamic Flow DB Response:", { response });
   return response;
 };
@@ -1588,12 +1598,34 @@ const updateDynamicFlowBatchRun = async(items, accessToken, graphQlApiUrl) =>{
         }
       })
     });
-    return await fetchResponse.json();
+    const response = await fetchResponse.json();
+    logGraphQLErrors(response, "updateDynamicFlowBatchRun");
+
+    return response;
   } catch (error) {
     logger.error("Error in Update Batch Flow DB", { error });
     return { errors: [{ message: error }]};
   }
 };
+
+/**
+ * 
+ * @param {*} graphQLResult - the GraphQL response
+ * @param {*} locationOfCall - the function name, to log the location of the error
+ * @returns {boolean} true if there were errors
+ */
+const logGraphQLErrors = (graphQLResult, locationOfCall) => {
+  let errors = false;
+  if(graphQLResult?.errors?.length > 0) {
+    errors = true;
+    graphQLResult.errors.forEach(err => {
+      logger.error(`Error in ${locationOfCall}`, err?.message, false);
+    });
+  }
+  return errors;
+};
+
+
 export {
   addFlowRule,
   deleteFlowRule,
