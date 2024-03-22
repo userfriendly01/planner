@@ -38,7 +38,8 @@ const validFlowData = {
   whisper: "test whisper",
   tfnRoutingGroup: "Core",
   predictiveCaller: true,
-  nextActionId: "next123"
+  nextActionId: "next123",
+  nextActionType: "ANNOUNCEMENT"
 };
 
 const invalidFLowData = {
@@ -205,6 +206,10 @@ describe("FlowFieldsConfig", ()=>{
     it("nextActionId", ()=>{
       const updatedFlowData = flowFields[45].valueSetter(validFlowData, { nextActionId: "nextId123" });
       expect(updatedFlowData.nextActionId).toBe("nextId123");
+    });
+    it("nextActionType", ()=>{
+      const updatedFlowData = flowFields[46].valueSetter(validFlowData, { nextActionType: "MENU" });
+      expect(updatedFlowData.nextActionType).toBe("MENU");
     });
   });
   describe("valueGetter", ()=>{
@@ -404,6 +409,12 @@ describe("FlowFieldsConfig", ()=>{
       const validData = flowFields[34].valueGetter(validFlowData);
       const invalidData = flowFields[34].valueGetter({});
       expect(validData).toBe(validFlowData.nextActionId);
+      expect(invalidData).toBe("");
+    });
+    it("nextActionType", ()=>{
+      const validData = flowFields[35].valueGetter(validFlowData);
+      const invalidData = flowFields[35].valueGetter({});
+      expect(validData).toBe(validFlowData.nextActionType);
       expect(invalidData).toBe("");
     });
   });

@@ -74,6 +74,7 @@ export interface CctSharedCallFlowDb {
     lineOfBusiness?: string;
     marketingChannel?: string;
     nextActionId?: string;
+    nextActionType?: string;
     pkey?: string;
     predictiveCaller?: boolean;
     rangeIndicator?: string;

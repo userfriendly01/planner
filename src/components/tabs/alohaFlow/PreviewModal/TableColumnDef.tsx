@@ -381,6 +381,13 @@ export const TableGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left"
+  },
+  {
+    headerName: "Next Action Type",
+    field: "nextActionType",
+    sortable: true,
+    width: 110,
+    align: "left"
   }
 ];
 

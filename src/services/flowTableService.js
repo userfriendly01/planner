@@ -1282,38 +1282,38 @@ async function updateDynamicFlowDB(item, accessToken, graphQlApiUrl) {
 }
 function addDynamicFlowInput (item, dataRequestsPassed, currentTimePassed){
   const input = {
-    phone_number: item.phone_number?.value,
-    callFlowName: item.callFlowName?.value,
-    createTime: currentTimePassed,
-    updateTime: item.updateTime?.value,
-    nextActionType: item.nextActionType?.value,
-    nextActionId: item.nextActionId?.value,
-    callFlowTemplate: item.callFlowName?.value,
-    dialedDescription: item.dialedDescription.value,
-    phoneNumberType: item.phoneNumberType?.value,
-    tfnRoutingGroup: item.tfnRoutingGroup?.value,
     brand: item.brand.value,
-    dataRequests: dataRequestsPassed,
-    greetingMessages: item.greetingMessages?.value,
-    languageOffer: item.languageOffer?.value,
-    transferDestination: item.transferDestination?.value,
-    callerType: item.callerType?.value,
+    callFlowName: item.callFlowName?.value,
     callFlowRoute: item.callFlowRoute?.value,
-    callIntent: item.callIntent?.value,
+    callFlowTemplate: item.callFlowName?.value,
     callFlowType: item.callFlowType?.value,
-    channel: item.channel.value,
-    predictiveCaller: item.predictiveCaller?.value,
-    employeeId: item.employeeId?.value,
+    callIntent: item.callIntent?.value,
     callTypeDescription: item.callTypeDescription?.value,
+    callerType: item.callerType?.value,
+    channel: item.channel.value,
+    createTime: currentTimePassed,
+    dataRequests: dataRequestsPassed,
+    dialedDescription: item.dialedDescription.value,
+    employeeId: item.employeeId?.value,
+    greetingMessages: item.greetingMessages?.value,
     internetPlacement: item.internetPlacement?.value,
+    languageOffer: item.languageOffer?.value,
     lineOfBusiness: item.lineOfBusiness?.value,
     marketingChannel: item.marketingChannel?.value,
+    nextActionId: item.nextActionId?.value,
+    nextActionType: item.nextActionType?.value,
+    officeNumbers: item.officeNumbers?.value,
+    phoneNumber: item.pkey?.value,
+    phoneNumberType: item.phoneNumberType?.value,
+    predictiveCaller: item.predictiveCaller?.value,
     rangeIndicator: item.rangeIndicator?.value,
     requestID: item.requestID?.value,
+    tfnRoutingGroup: item.tfnRoutingGroup?.value,
     tollFreeNumber: item.tollFreeNumber?.value,
     transferCode: item.transferCode?.value,
-    whisper: item.whisper?.value,
-    officeNumbers: item.officeNumbers?.value
+    transferDestination: item.transferDestination?.value,
+    updateTime: currentTimePassed,
+    whisper: item.whisper?.value
   };
   if(item.employeeId?.value){
     input.employeeId = item.employeeId.value;
@@ -1340,8 +1340,8 @@ async function addDynamicFlowRule(item, accessToken, graphQlApiUrl, curTime = ne
       },
       body: JSON.stringify({
         query: `
-          mutation AddDynamicFlowRule ($input:CctSharedCallFlowDbInput! ){
-            createListPhoneNumbers(input:$input) {
+          mutation AddDynamicFlowRule ($input:PhoneNumberInput! ){
+            createPhoneNumber(input:$input) {
               items {
                   pkey
                   skey

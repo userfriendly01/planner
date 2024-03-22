@@ -81,7 +81,7 @@ export const EditFlow = ({
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
   const env: string = useAdminState().userContext.pingIdentity.environment;
   const enableFlow = useMemo<boolean>(() => readWriteAccess(matchedGroups,"aloha-flow",env), []);
-  const originalRow = JSON.parse(JSON.stringify(selectedRow));
+  const originalRow = selectedRow ? JSON.parse(JSON.stringify(selectedRow)) : undefined;
 
   useEffect(() => {
     setSelectedRowLocal(selectedRow);

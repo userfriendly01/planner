@@ -107,5 +107,9 @@ describe("<FlowGridColumnDef />", () => {
       const renderedCell = render(FlowGridColumnDef[35].renderCell({ row: { nextActionId: "id123" }}));
       expect(renderedCell.container).toBeInTheDocument();
     });
+    it("nextActionType", ()=>{
+      const renderedCell = render(FlowGridColumnDef[36].renderCell({ row: { nextActionType: "MENU" }}));
+      expect(renderedCell.container).toBeInTheDocument();
+    });
   });
 });

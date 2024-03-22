@@ -264,7 +264,8 @@ export const AddFlow = ({
             tfnRoutingGroup: stringValue(flowRule,"tfnRoutingGroup", ""),
             type: flowRule.type.value ?? "",
             predictiveCaller: flowRule.predictiveCaller.value ?? false,
-            nextActionId: flowRule.nextActionId.value ?? ""
+            nextActionId: flowRule.nextActionId.value ?? "",
+            nextActionType: flowRule.nextActionType.value ?? ""
           };
           openAddModal(false, true, newFlowRule);
           setAlertBar((alertBarProps: AlertBarProps) => ({

@@ -216,6 +216,9 @@ export const deleteFlowRule = (item: CctSharedCallFlowDb,
  * @returns 
  */
 export const shouldDeleteOriginal = (originalRow: CctSharedCallFlowDb, updatedRow: CctSharedCallFlowDb): boolean => {
+  if (!originalRow) {
+    return false;
+  }
   if (originalRow.nextActionId && !updatedRow.nextActionId) {
     return true;
   }

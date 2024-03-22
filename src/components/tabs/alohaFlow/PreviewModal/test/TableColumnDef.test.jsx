@@ -107,6 +107,10 @@ describe("<TableGridColumnDef />", () => {
       expect(TableGridColumnDef[35].valueGetter({ row: { nextActionId: "next333" }})).toBe("next333");
       expect(TableGridColumnDef[35].valueGetter({ row: {}})).toEqual("");
     });
+    it("nextActionType", () => {
+      expect(TableGridColumnDef[35].valueGetter({ row: { nextActionType: "MENU" }})).toBe("MENU");
+      expect(TableGridColumnDef[35].valueGetter({ row: {}})).toEqual("");
+    });
   });
   describe("renderCell", ()=>{
     beforeEach(()=>{
@@ -175,6 +179,10 @@ describe("<TableGridColumnDef />", () => {
     });
     it("nextActionId", ()=>{
       const renderedCell = render(TableGridColumnDef[35].renderCell({ row: { nextActionId: "Self Service" }}));
+      expect(renderedCell.container).toBeInTheDocument();
+    });
+    it("nextActionType", ()=>{
+      const renderedCell = render(TableGridColumnDef[36].renderCell({ row: { nextActionType: "Self Service" }}));
       expect(renderedCell.container).toBeInTheDocument();
     });
   });

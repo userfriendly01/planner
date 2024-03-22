@@ -81,17 +81,17 @@ export const DynamicFlowGridColumnDef: GridColDef[] = [
     align: "left"
   },
   {
-    headerName: "next action type",
-    field: "nextActionType",
-    sortable: true,
-    width: 150,
-    align: "left"
-  },
-  {
     headerName: "next action id",
     field: "nextActionId",
     sortable: true,
     width: 300,
+    align: "left"
+  },
+  {
+    headerName: "next action type",
+    field: "nextActionType",
+    sortable: true,
+    width: 150,
     align: "left"
   },
   {

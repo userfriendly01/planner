@@ -428,6 +428,18 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...newValue
     })
 
+  },
+  {
+    label: "Next Action Type",
+    key: "nextActionType",
+    control: "input",
+    required: false,
+    valueGetter: (params: CctSharedCallFlowDb) => `${params?.nextActionType || ""}`,
+    valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
+      ...currentValue,
+      ...newValue
+    })
+
   }
 ];
 
