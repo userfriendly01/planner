@@ -116,12 +116,12 @@ const commonProcessing = async (
  * @returns
  */
 export const batchDeleteItems = async (
-  items: Array<string>,
+  items: Array<CctSharedCallFlowDb>,
   accessToken: string,
   graphQlApiUrl: string
 ): Promise<BatchResponse> =>  {
 
-  const response = await v1BatchDeleteItems(items, accessToken, graphQlApiUrl) as BatchResponse;
+  const response = await v1BatchDeleteItems(items.map(x => x.pkey), accessToken, graphQlApiUrl) as BatchResponse;
   const response2 = await v2BatchDeleteItems(items, accessToken, graphQlApiUrl)as BatchResponse;
 
   response2.failure.forEach(x => response.failure.push(x));
@@ -207,4 +207,20 @@ export const deleteFlowRule = (item: CctSharedCallFlowDb,
 
   return v1DeleteFlowRule(item, accessToken, graphQlApiUrl);
 
+};
+
+/**
+ * 
+ * @param originalRow 
+ * @param updatedRow 
+ * @returns 
+ */
+export const shouldDeleteOriginal = (originalRow: CctSharedCallFlowDb, updatedRow: CctSharedCallFlowDb): boolean => {
+  if (originalRow.nextActionId && !updatedRow.nextActionId) {
+    return true;
+  }
+  if (!originalRow.nextActionId && updatedRow.nextActionId) {
+    return true;
+  }
+  return false;
 };

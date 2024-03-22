@@ -50,7 +50,7 @@ import {
   AlertBarProps, FormValidationRule
 } from "utils/interfaces";
 import {
-  deleteFlowRule, updateFlowDB
+  deleteFlowRule, shouldDeleteOriginal, updateFlowDB
 } from "../../Utils/FlowTableServiceUtil";
 import {
   AzureSPA, DuplicateCheck
@@ -81,6 +81,7 @@ export const EditFlow = ({
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
   const env: string = useAdminState().userContext.pingIdentity.environment;
   const enableFlow = useMemo<boolean>(() => readWriteAccess(matchedGroups,"aloha-flow",env), []);
+  const originalRow = JSON.parse(JSON.stringify(selectedRow));
 
   useEffect(() => {
     setSelectedRowLocal(selectedRow);
@@ -195,6 +196,8 @@ export const EditFlow = ({
           severityType: "error"
         }));
         return;
+      } else if(shouldDeleteOriginal(originalRow, selectedRowLocal)) {
+        deleteFlowRule(originalRow, accessToken, graphQLEndPoint);
       }
       setFlowRule({ ...initRule });
       openEditModal(false, isSubmitted, selectedRowLocal, `Phone Number ${selectedRow.pkey} has been successfully updated.`, false);

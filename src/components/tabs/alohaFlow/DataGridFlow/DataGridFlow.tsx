@@ -20,7 +20,8 @@ import React, {
   useEffect, useState
 } from "react";
 import {
-  retrieveFlowData, batchFlowUpdate, batchDeleteItems, batchFlowCreate
+  retrieveFlowData, batchFlowUpdate, batchDeleteItems, batchFlowCreate,
+  shouldDeleteOriginal
 } from "../Utils/FlowTableServiceUtil";
 import {
   CACHE_FILTER_FLOW,
@@ -47,6 +48,7 @@ import {
   getGridMasterData
 } from "./GridMaster";
 import { PreviewModal } from "../PreviewModal";
+import { filter } from "lodash";
 
 const DataGridFlow = (props: AzureSPA): JSX.Element => {
   const {
@@ -385,6 +387,18 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
   };
 
   const handleOnBulkUpdate = async(rows: Array<CctSharedCallFlowDb> ) =>{
+
+    /* Compare existing rows with changes, and build a list of ones to delete
+    for the ones that are switching between dynamic and legacy call flow tables*/
+    const outOfSyncRows: Array<CctSharedCallFlowDb> = [];
+    const changingRows: {[key: string]: CctSharedCallFlowDb} = {} as any;
+    rows.forEach(x => changingRows[x.pkey] = x);
+    dataFlow.filteredItems.forEach(x => {
+      if(changingRows[x.pkey] && shouldDeleteOriginal(changingRows[x.pkey], x)) {
+        outOfSyncRows.push(x);
+      }
+    });
+
     const {
       isDuplicate, message
     } = checkForDuplicateBulkPutItems(rows);
@@ -412,6 +426,8 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         msg: "Flow Rules have been successfully updated.",
         severityType: "success"
       }));
+
+      await batchDeleteItems(outOfSyncRows, accessToken, graphQLEndpoint);
     }
 
     const filteredItems = dataFlow.filteredItems.map(x=> {
@@ -443,8 +459,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
   };
 
   const handleOnBulkDelete = async(rows: Array<CctSharedCallFlowDb> ) =>{
-    const keysToDelete = rows.map(x => x.pkey);
-    const response = await batchDeleteItems(keysToDelete, accessToken, graphQLEndpoint);
+    const response = await batchDeleteItems(rows, accessToken, graphQLEndpoint);
     if(response?.flag) {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
