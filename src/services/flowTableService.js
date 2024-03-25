@@ -164,7 +164,9 @@ export async function queryLSCDynamicFlowData(accessToken, graphQlApiUrl) {
  */
 async function retrieveFlowData(accessToken, graphQlApiUrl, counter = 1, nextToken = null, rowInsert, flowData = [], errors = false) {
   try {
-    while (nextToken || counter === 1) {
+    let firstLoop = true;
+    while (nextToken || counter === 1 || firstLoop) {
+      firstLoop = false;
       const result = await queryFlowData(accessToken, nextToken, graphQlApiUrl);
 
       //retain if errors was true when it was passed in
@@ -1139,7 +1141,9 @@ async function queryDynamicFlowData(accessToken, nextToken = null, graphQlApiUrl
  */
 async function retrieveDynamicFlowData(accessToken, graphQlApiUrl, counter = 1, nextToken = null, rowInsert, flowData = [], errors = false) {
   try {
-    while (nextToken || counter === 1) {
+    let firstLoop = true;
+    while (nextToken || counter === 1 || firstLoop) {
+      firstLoop = false;
       const result = await queryDynamicFlowData(accessToken, nextToken, graphQlApiUrl);
 
       errors = errors | logGraphQLErrors(result, "retrieveDynamicFlowData");
