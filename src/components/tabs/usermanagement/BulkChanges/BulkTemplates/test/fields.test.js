@@ -506,7 +506,7 @@ describe("fields.js", () => {
         test("returns the profile id options", () => {
           const options = optionsFunction(initialTestState);
           expect(options).toEqual([
-            1, 2, 3, 396, 12
+            1, 2, 3, 12, 396
           ]);
         });
       });
@@ -809,10 +809,10 @@ describe("fields.js", () => {
         test("returns the profile id options", () => {
           const options = optionsFunction(initialTestState);
           expect(options).toEqual([
-            "lscOBDialer1 Available levels: 1,2,3",
             "aisgL1",
-            "bscCommisssions Available levels: 1,2,3,4,5,6,7",
             "bscCbsL2",
+            "bscCommisssions Available levels: 1,2,3,4,5,6,7",
+            "lscOBDialer1 Available levels: 1,2,3",
             "lscUSAA"
           ]);
         });
@@ -2005,8 +2005,8 @@ describe("fields.js", () => {
         test("returns the profile id options", () => {
           const options = optionsFunction(initialTestState);
           expect(options).toEqual([
-            "Hawaii 50 Group",
             "FNOL Group",
+            "Hawaii 50 Group",
             "No Teams Group"
           ]);
         });
@@ -2091,9 +2091,9 @@ describe("fields.js", () => {
         test("returns the profile id options", () => {
           const options = optionsFunction(initialTestState);
           expect(options).toEqual([
-            "Hawaii Team 50",
+            "FNOL Team",
             "Hawaii Specialty Team",
-            "FNOL Team"
+            "Hawaii Team 50"
           ]);
         });
       });
@@ -2165,9 +2165,9 @@ describe("fields.js", () => {
         test("returns the profile id options", () => {
           const options = optionsFunction(initialTestState);
           expect(options).toEqual([
-            "Hawaii Team 50",
+            "FNOL Team",
             "Hawaii Specialty Team",
-            "FNOL Team"
+            "Hawaii Team 50"
           ]);
         });
       });
@@ -2245,8 +2245,8 @@ describe("fields.js", () => {
         test("returns the profile id options", () => {
           const options = optionsFunction(initialTestState);
           expect(options).toEqual([
-            "Hawaii 50 Group",
             "FNOL Group",
+            "Hawaii 50 Group",
             "No Teams Group"
           ]);
         });
@@ -2366,18 +2366,18 @@ describe("fields.js", () => {
         test("returns the profile id options", () => {
           const options = optionsFunction();
           expect(options).toEqual([
-            "Supervisor-Sync Only",
             "Agent-Sync Only",
-            "No Screen",
-            "QM Supervisor",
-            "QM Agent",
-            "WFM_Agent_TT_Dashboards",
-            "WFM_Supervisor_TT_Dashboards",
-            "WFM_Supervisor_NT_Dashboards",
-            "WFM_Agent_NT_Dashboards",
-            "Recording Access",
             "EXL_Genpact",
-            "QM Agent_No Live Monitoring"
+            "No Screen",
+            "QM Agent",
+            "QM Agent_No Live Monitoring",
+            "QM Supervisor",
+            "Recording Access",
+            "Supervisor-Sync Only",
+            "WFM_Agent_NT_Dashboards",
+            "WFM_Agent_TT_Dashboards",
+            "WFM_Supervisor_NT_Dashboards",
+            "WFM_Supervisor_TT_Dashboards"
           ]);
         });
       });
@@ -2428,13 +2428,13 @@ describe("fields.js", () => {
         test("returns the profile id options", () => {
           const options = optionsFunction();
           expect(options).toEqual([
-            "America/New_York (EST/EDT)",
-            "America/Los_Angeles (PST/PDT)",
-            "America/Denver (MST/MDT)",
+            "America/Anchorage (AKST/AKDT)",
             "America/Chicago (CST/CDT)",
+            "America/Denver (MST/MDT)",
+            "America/Los_Angeles (PST/PDT)",
+            "America/New_York (EST/EDT)",
             "America/Phoenix (MST)",
             "Pacific/Honolulu (HST)",
-            "America/Anchorage (AKST/AKDT)"
           ]);
         });
       });
@@ -2536,8 +2536,8 @@ describe("fields.js", () => {
         test("returns the BU name options", () => {
           const options = optionsFunction(initialTestState);
           expect(options).toEqual([
-            "WFM Business Unit1",
-            "Other WFM Business Unit"
+            "Other WFM Business Unit",
+            "WFM Business Unit1"
           ]);
         });
       });
@@ -4205,9 +4205,9 @@ describe("fields.js", () => {
             expect(e).toEqual(JSON.stringify({
               rowNumber: 4,
               error: "No value given for WFM Optional Column optionalcol1 for row 4,"
-              + "No value given for WFM Optional Column optionalcol3 for row 4,"
-              + "fakecol is not valid for the selected business unit for row 4,"
-              + "Duplicate WFM Optional Column optionalcol1 for row 4"
+                + "No value given for WFM Optional Column optionalcol3 for row 4,"
+                + "fakecol is not valid for the selected business unit for row 4,"
+                + "Duplicate WFM Optional Column optionalcol1 for row 4"
             }));
           }
         });
@@ -4241,6 +4241,43 @@ describe("fields.js", () => {
         test("No Business unit id is passed into options function, returns unable to generate message", () => {
           const options = optionsFunction(initialTestState);
           expect(options).toEqual(["unable to generate options"]);
+        });
+      });
+    });
+    describe.only("CALABRIO_WFM_NOTES", () => {
+      describe("validateFunction", () => {
+        const notesValidation = FIELDS.CALABRIO_WFM_NOTES.validateFunction;
+        test("No availability provided, resolve with the empty but not required message", async () => {
+          const row = {
+            "Notes": "",
+            rowNumber: 2
+          };
+          const result = await notesValidation(row, initialTestState);
+          expect(result).toEqual("Notes is empty but not required. Skipping validation for row 2");
+        });
+        test("Error thrown for missing BU availibilities, reject", async () => {
+          const row = {
+            "Notes": undefined,
+            rowNumber: 2
+          };
+          try {
+            await notesValidation(row, initialTestState);
+          } catch (e) {
+            expect(JSON.parse(e).rowNumber).toBe(2);
+            expect(JSON.parse(e).error).toContain("Cannot read properties of undefined (reading 'trim')");
+          }
+        });
+        test("Notes are valid, resolve and add availability id to row", async () => {
+          const row = {
+            "Notes": "Yay Cats!",
+            rowNumber: 2
+          };
+          const result = await notesValidation(row, initialTestState);
+          expect(result).toEqual("Notes valid for row 2");
+          expect(row).toEqual({
+            ...row,
+            wfmNotes: "Yay Cats!"
+          });
         });
       });
     });
