@@ -35,8 +35,7 @@ const CustomFlowGridToolBar = ({
   openAddModal, openPreviewModal, openAdvanceSearchModal, exportDataFile, applyFilter, matchedGroups,isAdvanceSearchOpen
 }:CustomFlowGridToolBarProps) =>{
   const [flowFilter, setFlowFilter] = useState<FlowAdvanceFilter>();
-  const env: string = useAdminState().userContext.pingIdentity.environment;
-  const enableFlow = useMemo(() => readWriteAccess(matchedGroups,"aloha-flow",env), []);
+  const enableFlow = useMemo(() => readWriteAccess(matchedGroups,"aloha-flow"), []);
   useEffect(()=>{
     const localFilter = getAdvanceFilter(CACHE_FILTER_FLOW);
     setFlowFilter(localFilter);

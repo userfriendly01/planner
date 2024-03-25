@@ -162,7 +162,7 @@ describe("flowTableService",()=>{
           })
         })
       );
-      const listFlow = await queryFlowData("12345","TEST","http://localhost:8082");
+      const listFlow = await queryFlowData("12345","TEST");
       expect(listFlow.data.listCctSharedCallFlowDbs.items).toEqual(jsonFlowData);
     });
     test("retrieveFlowData creates the IDs and skips nulls",async()=>{
@@ -196,7 +196,7 @@ describe("flowTableService",()=>{
       jest.spyOn(JSON, "stringify").mockImplementation(()=>{
         throw new Error();
       });
-      const listFlow = await queryFlowData("12345","TEST","http://localhost:8082");
+      const listFlow = await queryFlowData("12345","TEST");
       expect(listFlow).toBeDefined;
     });
     test("CallFlow list not found",async()=>{
@@ -263,7 +263,7 @@ describe("flowTableService",()=>{
       const item = {
         pkey: 1
       };
-      const delFlow = await deleteFlowRule(item,"1233-3245","http://localhost:3000");
+      const delFlow = await deleteFlowRule(item,"1233-3245");
       expect(delFlow).toBeDefined;
     });
     test("Testing the Delete FlowRule error",async()=>{
@@ -272,7 +272,7 @@ describe("flowTableService",()=>{
       jest.spyOn(JSON, "stringify").mockImplementation(()=>{
         throw new Error();
       });
-      const delFlow = await deleteFlowRule(item,"1233-3245","http://localhost:3000");
+      const delFlow = await deleteFlowRule(item,"1233-3245");
       expect(delFlow).toBeDefined;
     });
   });
@@ -298,7 +298,7 @@ describe("flowTableService",()=>{
         pkey: 1,
         employeeId: "n123453"
       };
-      const updateFlow = await updateFlowDB(item,"1233-3245","http://localhost:3000");
+      const updateFlow = await updateFlowDB(item,"1233-3245");
       expect(updateFlow).toBeTruthy();
     });
     test("Testing the Update FlowRule error",async()=>{
@@ -308,7 +308,7 @@ describe("flowTableService",()=>{
       jest.spyOn(JSON, "stringify").mockImplementation(()=>{
         throw new Error();
       });
-      const updateFlow = await updateFlowDB(item,"1233-3245","http://localhost:3000");
+      const updateFlow = await updateFlowDB(item,"1233-3245");
       expect(updateFlow).toBeUndefined();
     });
   });
@@ -324,7 +324,7 @@ describe("flowTableService",()=>{
       jest.restoreAllMocks();
     });
     test("Success",async()=>{
-      const response = await flowBatchDelete(batchDeleteItemsList,"1233-3245","http://localhost:3000");
+      const response = await flowBatchDelete(batchDeleteItemsList,"1233-3245");
       expect(response).toBe(batchDeleteResponse);
       expect(window.fetch).toBeCalledWith("http://localhost:3000", {
         "body": "{\"query\":\"\\n        mutation DeleteManyFlow {\\n          batchDeleteCctSharedCallFlowDb(input: {\\n            pkey: [\\\"pkey1\\\",\\\"pkey1\\\",\\\"pkey3\\\"]\\n            }) {\\n            items {\\n              pkey\\n            }\\n          }\\n        }\\n    \",\"variables\":{}}",
@@ -336,8 +336,8 @@ describe("flowTableService",()=>{
       });
     });
     test("batch Delete",async()=>{
-      await flowBatchDelete(batchDeleteItemsList,"1233-3245","http://localhost:3000");
-      const response=batchDeleteItems(batchDeleteItemsList,"3245","http://localhost:3000");
+      await flowBatchDelete(batchDeleteItemsList,"1233-3245");
+      const response=batchDeleteItems(batchDeleteItemsList,"3245");
       act(()=>{
         expect(response).toBeTruthy();
       });
@@ -346,15 +346,15 @@ describe("flowTableService",()=>{
       jest.spyOn(JSON, "stringify").mockImplementation(()=>{
         throw new Error();
       });
-      const response = await flowBatchDelete(batchDeleteItemsList,"1233-3245","http://localhost:3000");
+      const response = await flowBatchDelete(batchDeleteItemsList,"1233-3245");
       expect(response).toEqual(undefined);
     });
     test("Batch Delete Error",async()=>{
       jest.spyOn(JSON, "stringify").mockImplementation(()=>{
         throw new Error();
       });
-      await flowBatchDelete(batchDeleteItemsList,"1233-3245","http://localhost:3000");
-      const response = await batchDeleteItems(batchDeleteItemsList,"3245","http://localhost:3000");
+      await flowBatchDelete(batchDeleteItemsList,"1233-3245");
+      const response = await batchDeleteItems(batchDeleteItemsList,"3245");
       expect(response).toBeTruthy();
     });
   });
@@ -383,7 +383,7 @@ describe("flowTableService",()=>{
         flag: false,
         success: []
       };
-      const response = await batchFlowUpdate([{ ...jsonFlowData }],"1233-3245","http://localhost:3000");
+      const response = await batchFlowUpdate([{ ...jsonFlowData }],"1233-3245");
       expect(response).toEqual(batchUpdateResponse);
       expect(window.fetch).toBeCalledWith("http://localhost:3000", {
         "body": "{\"query\":\"\\n        mutation batchUpdateCctSharedCallFlowDb($input: CctSharedCallFlowDbBatchUpdateInput!) {\\n          batchUpdateCctSharedCallFlowDb(input: $input) {\\n            items {\\n              accountManager\\n              affinityVDN\\n              agentId\\n              brand\\n              callDetails1\\n              callDetails2\\n              callFlowTemplate\\n              callTypeDescription\\n              channel\\n              content {\\n                callFlowRoute\\n                callIntent\\n                callerType\\n                dataRequests\\n                greetingMessages\\n                languageOffer\\n                transferNumber\\n              }\\n              createTime\\n              dialedDescription\\n              employeeId\\n              internetPlacement\\n              lineOfBusiness\\n              marketingChannel\\n              pkey\\n              predictiveCaller\\n              rangeIndicator\\n              requestID\\n              selfServiceIndicator\\n              tollFreeNumber\\n              tfnRoutingGroup\\n              transferCode\\n              type\\n              userDestination\\n              whisper\\n            }\\n          }\\n        }\\n      \",\"variables\":{\"input\":{\"batchFlowUpdateInput\":[{\"pkey\":{\"value\":\"12345\"},\"agentId\":{\"value\":\"123455\"},\"brand\":{\"value\":\"LM\"},\"callFlowTemplate\":{\"value\":\"temp\"},\"channel\":{\"value\":\"Test1 Channel\"},\"content\":{\"callIntent\":\"\",\"callFlowRoute\":\"\",\"callerType\":\"\",\"greetingMessages\":\"\",\"transferNumber\":\"\",\"languageOffer\":\"\"},\"createTime\":{\"value\":\"2022-24-08\"},\"updateTime\":\"2024-01-30T05:00:00.000Z\",\"dialedDescription\":{\"value\":\"test\"},\"accountManager\":\"\",\"affinityVDN\":\"\",\"callTypeDescription\":\"\",\"transferCode\":\"\",\"internetPlacement\":\"\",\"callDetails1\":\"\",\"callDetails2\":\"\",\"tollFreeNumber\":\"\",\"lineOfBusiness\":\"\",\"marketingChannel\":\"\",\"predictiveCaller\":false,\"selfServiceIndicator\":false,\"whisper\":\"\",\"requestID\":\"\",\"userDestination\":{\"value\":\"dest\"},\"rangeIndicator\":\"\",\"tfnRoutingGroup\":\"\",\"type\":\"\"}]}}}",
@@ -403,11 +403,11 @@ describe("flowTableService",()=>{
       jest.spyOn(JSON, "stringify").mockImplementation(()=>{
         throw new Error();
       });
-      const response = await batchFlowUpdate([{ ...jsonFlowData }],"1233-3245","http://localhost:3000");
+      const response = await batchFlowUpdate([{ ...jsonFlowData }],"1233-3245");
       expect(response).toEqual(batchUpdateResponse);
     });
     test("Call with an Empty List", async()=>{
-      const response = await batchFlowUpdate([],"1233-3245","http://localhost:3000");
+      const response = await batchFlowUpdate([],"1233-3245");
       const errorResponse = {
         errors: [
           "Please Select Something to Edit"
@@ -444,7 +444,7 @@ describe("flowTableService",()=>{
         success: [],
         alertMsg: ""
       };
-      const response = await batchFlowCreate([{ ...jsonFlowData }],"1233-3245","http://localhost:3000");
+      const response = await batchFlowCreate([{ ...jsonFlowData }],"1233-3245");
       expect(response).toEqual(batchCreateResponse);
       expect(window.fetch).toBeCalledWith("http://localhost:3000", {
         "body": "{\"query\":\"\\n        mutation batchCreateCctSharedCallFlowDb($input: CctSharedCallFlowDbBatchCreateInput!) {\\n          batchCreateCctSharedCallFlowDb(input: $input) {\\n            items {\\n              accountManager\\n              affinityVDN\\n              agentId\\n              brand\\n              callDetails1\\n              callDetails2\\n              callFlowTemplate\\n              callTypeDescription\\n              channel\\n              content {\\n                callFlowRoute\\n                callIntent\\n                callerType\\n                dataRequests\\n                greetingMessages\\n                languageOffer\\n                transferNumber\\n              }\\n              createTime\\n              dialedDescription\\n              employeeId\\n              internetPlacement\\n              lineOfBusiness\\n              marketingChannel\\n              pkey\\n              predictiveCaller\\n              rangeIndicator\\n              requestID\\n              selfServiceIndicator\\n              tollFreeNumber\\n              transferCode\\n              type\\n              userDestination\\n              whisper\\n            }\\n          }\\n        }\\n      \",\"variables\":{\"input\":{\"batchFlowCreateInput\":[{\"pkey\":{\"value\":\"12345\"},\"agentId\":{\"value\":\"123455\"},\"brand\":{\"value\":\"LM\"},\"callFlowTemplate\":{\"value\":\"temp\"},\"channel\":{\"value\":\"Test1 Channel\"},\"content\":{\"callIntent\":\"\",\"callFlowRoute\":\"\",\"callerType\":\"\",\"greetingMessages\":\"\",\"transferNumber\":\"\",\"languageOffer\":\"\"},\"createTime\":{\"value\":\"2022-24-08\"},\"dialedDescription\":{\"value\":\"test\"},\"accountManager\":\"\",\"affinityVDN\":\"\",\"callTypeDescription\":\"\",\"transferCode\":\"\",\"internetPlacement\":\"\",\"callDetails1\":\"\",\"callDetails2\":\"\",\"tollFreeNumber\":\"\",\"lineOfBusiness\":\"\",\"marketingChannel\":\"\",\"whisper\":\"\",\"requestID\":\"\",\"userDestination\":{\"value\":\"dest\"},\"rangeIndicator\":\"\",\"type\":\"\",\"predictiveCaller\":false,\"selfServiceIndicator\":false}]}}}",
@@ -456,7 +456,7 @@ describe("flowTableService",()=>{
       });
     });
     test("empty records insertion",async()=>{
-      const response = await batchFlowCreate([],"1233-3245","http://localhost:3000");
+      const response = await batchFlowCreate([],"1233-3245");
       expect(response.alertMsg).toEqual("Please Select Something to Add");
     });
   });

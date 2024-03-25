@@ -1,7 +1,7 @@
 import {
   ErrorDuplicateRecord,
   cleanErrorMessage,
-  downloadCSV, getGraphQLEndpoint,
+  downloadCSV,
   readWriteAccess
 } from "utils";
 import { useAdminState } from "context";
@@ -72,15 +72,6 @@ describe("configUtils.js", ()=>{
     const routingDataList = createSampleTestRoutingDataList(0);
     downloadCSV(routingPrefix, routingDataList);
     expect(link.download).toBeNull;
-  });
-  test("Simulate getGraphQLEndpoint", ()=>{
-    const env = useAdminState().userContext.pingIdentity.environment;
-    const endpoint = getGraphQLEndpoint();
-    const endPointURI = new Map();
-    endPointURI.set("development","https://tgufpgkyxvacrntvgb75iuo3pi.appsync-api.us-east-1.amazonaws.com/graphql");
-    endPointURI.set("test","https://bz5ilxf2ercznouchavqvh26nm.appsync-api.us-east-1.amazonaws.com/graphql");
-    endPointURI.set("production", "https://3k2iegyjmnfwxheh65ugy2vjt4.appsync-api.us-east-1.amazonaws.com/graphql");
-    expect(endpoint).toBe(endPointURI.get(env));
   });
   test("Simulate cleanErrorMessage", ()=>{
     const duplicateError = [{

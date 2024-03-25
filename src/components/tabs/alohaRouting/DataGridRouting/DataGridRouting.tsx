@@ -34,7 +34,6 @@ import {
   CACHE_FILTER_ROUTING,
   EXPORT_FILE_PREFIX,
   downloadCSV,
-  getGraphQLEndpoint,
   initializedAlertBar,
   routingFields,
   routingInitRule,
@@ -62,7 +61,6 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
     matchedGroups
   } = props;
 
-  const graphQlApiUrl: string = getGraphQLEndpoint();
   const [state, setState] = useState<RoutingStateVariables>(routingInitState);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     pageSize: sessionStorage.getItem(CACHED_CALL_ROUTING_PER_PAGE) ? +sessionStorage.getItem(CACHED_CALL_ROUTING_PER_PAGE) : 10,
@@ -78,7 +76,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
   useEffect(() => {
     const getTableData = async()=>{
       const routingData: CctSharedCallRoutingDb[] = [];
-      const firstChunkData:any = await queryRoutingData(accessToken, null, graphQlApiUrl);
+      const firstChunkData:any = await queryRoutingData(accessToken, null);
       const listItems = firstChunkData.data?.listCctSharedCallRoutingGlobalDbs?.items || [];
       listItems.map((item:CctSharedCallRoutingDb) => routingData.push({
         ...item,
@@ -92,7 +90,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
         msg: "Data loading in progress. Please wait for the complete set of data to be loaded.",
         duration: 15000
       }));
-      const result: CctSharedCallRoutingDb[] = await retrieveRoutingData(accessToken, graphQlApiUrl,firstChunkData);
+      const result: CctSharedCallRoutingDb[] = await retrieveRoutingData(accessToken,firstChunkData);
       loadDataTable(result);
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
@@ -356,7 +354,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
   };
 
   const handleOnBulkCreate = async(rows: Array<CctSharedCallRoutingDb> ) =>{
-    const response = await routingBatchCreate(rows, accessToken, graphQlApiUrl);
+    const response = await routingBatchCreate(rows, accessToken);
     if(response?.flag) {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
@@ -386,7 +384,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
   };
 
   const handleOnBulkUpdate = async(rows: Array<CctSharedCallRoutingDb> ) =>{
-    const response = await routingBatchUpdate(rows, accessToken, graphQlApiUrl);
+    const response = await routingBatchUpdate(rows, accessToken);
     if(response?.flag) {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
@@ -440,7 +438,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
       };
     }
     );
-    const response = await routingBatchDelete(keysToDelete, accessToken, graphQlApiUrl);
+    const response = await routingBatchDelete(keysToDelete, accessToken);
     if(response?.flag) {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
