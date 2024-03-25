@@ -93,7 +93,7 @@ export const useAccessToken = (): Auth => {
 
       try {
         // Try to silently get token
-        const { accessToken: newAccessToken } = await instance.acquireTokenPopup(request);
+        const { accessToken: newAccessToken } = await instance.acquireTokenSilent(request);
 
         setAccessToken(newAccessToken);
       } catch(err) {
