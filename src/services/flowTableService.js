@@ -1174,41 +1174,41 @@ async function retrieveDynamicFlowData(accessToken, graphQlApiUrl, counter = 1, 
 }
 function updateDynamicFlowInput(item){
   const input = {
-    phone_number: item.phone_number?.value,
-    callFlowName: item.callFlowName?.value,
-    createTime: item.createTime?.value,
-    updateTime: item.updateTime?.value,
-    nextActionType: item.nextActionType?.value,
-    nextActionId: item.nextActionId?.value,
-    callFlowTemplate: item.callFlowName?.value,
-    dialedDescription: item.dialedDescription.value,
-    phoneNumberType: item.phoneNumberType?.value,
-    tfnRoutingGroup: item.tfnRoutingGroup?.value,
-    brand: item.brand.value,
+    brand: item.brand,
+    callFlowName: item.callFlowName,
+    callFlowRoute: item.content?.callFlowRoute,
+    callFlowTemplate: item.callFlowName,
+    callFlowType: item.callFlowType,
+    callIntent: item.content?.callIntent,
+    callTypeDescription: item.callTypeDescription,
+    callerType: item.content?.callerType,
+    channel: item.channel,
+    createTime: item.createTime,
     dataRequests: item.content?.dataRequests,
-    greetingMessages: item.greetingMessages?.value,
-    languageOffer: item.languageOffer?.value,
-    transferDestination: item.transferDestination?.value,
-    callerType: item.callerType?.value,
-    callFlowRoute: item.callFlowRoute?.value,
-    callIntent: item.callIntent?.value,
-    callFlowType: item.callFlowType?.value,
-    channel: item.channel.value,
-    predictiveCaller: item.predictiveCaller?.value,
-    employeeId: item.employeeId?.value,
-    callTypeDescription: item.callTypeDescription?.value,
-    internetPlacement: item.internetPlacement?.value,
-    lineOfBusiness: item.lineOfBusiness?.value,
-    marketingChannel: item.marketingChannel?.value,
-    rangeIndicator: item.rangeIndicator?.value,
-    requestID: item.requestID?.value,
-    tollFreeNumber: item.tollFreeNumber?.value,
-    transferCode: item.transferCode?.value,
-    whisper: item.whisper?.value,
-    officeNumbers: item.officeNumbers?.value
+    dialedDescription: item.dialedDescription,
+    employeeId: item.employeeId,
+    greetingMessages: item.content?.greetingMessages,
+    internetPlacement: item.internetPlacement,
+    languageOffer: item.content?.languageOffer,
+    lineOfBusiness: item.lineOfBusiness,
+    marketingChannel: item.marketingChannel,
+    nextActionId: item.nextActionId,
+    nextActionType: item.nextActionType,
+    officeNumbers: item.content?.officeNumbers,
+    phoneNumber: item.pkey,
+    phoneNumberType: item.phoneNumberType,
+    predictiveCaller: item.predictiveCaller,
+    rangeIndicator: item.rangeIndicator,
+    requestID: item.requestID,
+    skey: item.callFlowName.concat(":", item.callFlowType),
+    tollFreeNumber: item.tollFreeNumber,
+    transferCode: item.transferCode,
+    transferDestination: item.content?.transferDestination,
+    updateTime: Math.floor(new Date().getTime()/1000),
+    whisper: item.whisper
   };
-  if(item.employeeId?.value){
-    input.employeeId = item.employeeId.value;
+  if(item.employeeId){
+    input.employeeId = item.employeeId;
   }
   return input;
 }
@@ -1231,42 +1231,9 @@ async function updateDynamicFlowDB(item, accessToken, graphQlApiUrl) {
       },
       body: JSON.stringify({
         query: `
-          mutation updateListPhoneNumberDb($input:CctSharedCallFlowDbInputMod!) {
-            updateListPhoneNumberDb(input:$input) {
-                items {
-                    phone_number
-                    callFlowName
-                    createTime
-                    updateTime
-                    nextActionType
-                    nextActionId
-                    callFlowTemplate
-                    dialedDescription
-                    phoneNumberType
-                    tfnRoutingGroup
-                    brand
-                    dataRequests
-                    greetingMessages
-                    languageOffer
-                    transferDestination
-                    callerType
-                    callFlowRoute
-                    callIntent
-                    callFlowType
-                    channel
-                    predictiveCaller
-                    employeeId
-                    callTypeDescription
-                    internetPlacement
-                    lineOfBusiness
-                    marketingChannel
-                    rangeIndicator
-                    requestID
-                    tollFreeNumber
-                    transferCode
-                    whisper
-                    officeNumbers
-              }
+          mutation updatePhoneNumber($input:PhoneNumberInput!) {
+            updatePhoneNumber(input:$input) {
+                    phoneNumber
             }
           }
       `,
@@ -1514,38 +1481,39 @@ const batchDynamicFlowUpdate = async(items, accessToken, graphQlApiUrl) =>{
 const updateDynamicFlowBatchRun = async(items, accessToken, graphQlApiUrl) =>{
   const input = items.map(item=>{
     return {
-      phone_number: item.phone_number?.value,
-      callFlowName: item.callFlowName?.value,
-      createTime: item.createTime?.value,
-      updateTime: item.updateTime?.value,
-      nextActionType: item.nextActionType?.value,
-      nextActionId: item.nextActionId?.value,
-      callFlowTemplate: item.callFlowName?.value,
-      dialedDescription: item.dialedDescription.value,
-      phoneNumberType: item.phoneNumberType?.value,
-      tfnRoutingGroup: item.tfnRoutingGroup?.value,
       brand: item.brand.value,
-      dataRequests: item.dataRequests?.value,
-      greetingMessages: item.greetingMessages?.value,
-      languageOffer: item.languageOffer?.value,
-      transferDestination: item.transferDestination?.value,
-      callerType: item.callerType?.value,
+      callFlowName: item.callFlowName?.value,
       callFlowRoute: item.callFlowRoute?.value,
-      callIntent: item.callIntent?.value,
+      callFlowTemplate: item.callFlowName?.value,
       callFlowType: item.callFlowType?.value,
-      channel: item.channel.value,
-      predictiveCaller: item.predictiveCaller?.value,
-      employeeId: item.employeeId?.value,
+      callIntent: item.callIntent?.value,
       callTypeDescription: item.callTypeDescription?.value,
+      callerType: item.callerType?.value,
+      channel: item.channel.value,
+      createTime: item.createTime?.value,
+      dataRequests: item.dataRequests?.value,
+      dialedDescription: item.dialedDescription.value,
+      employeeId: item.employeeId?.value,
+      greetingMessages: item.greetingMessages?.value,
       internetPlacement: item.internetPlacement?.value,
+      languageOffer: item.languageOffer?.value,
       lineOfBusiness: item.lineOfBusiness?.value,
       marketingChannel: item.marketingChannel?.value,
+      nextActionId: item.nextActionId?.value,
+      nextActionType: item.nextActionType?.value,
+      officeNumbers: item.officeNumbers?.value,
+      phoneNumber: item.phoneNumber?.value,
+      phoneNumberType: item.phoneNumberType?.value,
+      predictiveCaller: item.predictiveCaller?.value,
       rangeIndicator: item.rangeIndicator?.value,
       requestID: item.requestID?.value,
+      skey: item.callFlowName.value.concat(":", item.callFlowType.value),
+      tfnRoutingGroup: item.tfnRoutingGroup?.value,
       tollFreeNumber: item.tollFreeNumber?.value,
       transferCode: item.transferCode?.value,
-      whisper: item.whisper?.value,
-      officeNumbers: item.officeNumbers?.value
+      transferDestination: item.transferDestination?.value,
+      updateTime: Math.floor(new Date().getTime()/1000),
+      whisper: item.whisper?.value
     };
   });
   try {

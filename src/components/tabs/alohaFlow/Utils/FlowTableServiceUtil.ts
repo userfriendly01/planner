@@ -38,8 +38,8 @@ export const retrieveFlowData = async (
   nextToken = "",
   rowInsert: (result?: CctSharedCallFlowDb[]) => FlowMasterData | Promise<void>
 ): Promise<boolean> => {
-  const firstLoad = await v1RetrieveFlowData(accessToken, graphQlApiUrl, counter, nextToken, rowInsert) as any;
-  const secondLoad = await v2RetrieveFlowData(accessToken, graphQlApiUrl, firstLoad.counter, null, rowInsert, firstLoad.flowData) as any;
+  const firstLoad = await v2RetrieveFlowData(accessToken, graphQlApiUrl, counter, nextToken, rowInsert) as any;
+  const secondLoad = await v1RetrieveFlowData(accessToken, graphQlApiUrl, firstLoad.counter, null, rowInsert, firstLoad.flowData) as any;
 
   return !secondLoad.errors;
 };
