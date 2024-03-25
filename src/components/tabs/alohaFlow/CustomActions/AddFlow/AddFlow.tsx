@@ -45,6 +45,7 @@ import {
   getGraphQLEndpoint,
   initializedAlertBar,
   languageOffer,
+  nextActionType,
   tfnRoutingGroup,
   userDestination
 } from "utils";
@@ -99,6 +100,7 @@ export const AddFlow = ({
         callFlowRoute: masterDataObject?.callFlowRoute,
         callFlowType: callFlowType,
         callerType: masterDataObject?.callerType,
+        nextActionType: nextActionType,
         dataRequests: masterDataObject?.dataRequests,
         tfnRoutingGroup,
         type: flowType
@@ -231,41 +233,41 @@ export const AddFlow = ({
           const newFlowRule: CctSharedCallFlowDb = {
             pkey: flowRule.pkey.value,
             content: {
-              callIntent: stringValue(flowRule, "callIntent", ""),
               callFlowRoute: stringValue(flowRule,"callFlowRoute", ""),
+              callIntent: stringValue(flowRule, "callIntent", ""),
               callerType: stringValue(flowRule,"callerType", ""),
-              greetingMessages: stringValue(flowRule,"greetingMessages", ""),
-              transferDestination: stringValue(flowRule,"transferDestination", ""),
-              languageOffer: stringValue(flowRule,"languageOffer", ""),
               dataRequests: dataRequests,
-              officeNumbers: stringValue(flowRule,"officeNumbers", "")
+              greetingMessages: stringValue(flowRule,"greetingMessages", ""),
+              languageOffer: stringValue(flowRule,"languageOffer", ""),
+              officeNumbers: stringValue(flowRule,"officeNumbers", ""),
+              transferDestination: stringValue(flowRule,"transferDestination", "")
             },
-            createTime: curTime,
+            accountManager: stringValue(flowRule,"accountManager", ""),
+            affinityVDN: stringValue(flowRule,"affinityVDN", ""),
             brand: flowRule.brand.value,
+            callDetails1: stringValue(flowRule,"callDetails1", ""),
+            callDetails2: stringValue(flowRule,"callDetails2", ""),
             callFlowName: stringValue(flowRule,"callFlowName", ""),
             callFlowTemplate: stringValue(flowRule,"callFlowTemplate", ""),
             callFlowType: stringValue(flowRule,"callFlowType", ""),
+            callTypeDescription: stringValue(flowRule,"callTypeDescription", ""),
             channel: flowRule.channel.value,
+            createTime: curTime,
             dialedDescription: flowRule.dialedDescription.value,
             employeeId: stringValue(flowRule,"employeeId", ""),
-            accountManager: stringValue(flowRule,"accountManager", ""),
-            affinityVDN: stringValue(flowRule,"affinityVDN", ""),
-            callTypeDescription: stringValue(flowRule,"callTypeDescription", ""),
-            transferCode: stringValue(flowRule,"transferCode", ""),
             internetPlacement: stringValue(flowRule,"internetPlacement", ""),
-            callDetails1: stringValue(flowRule,"callDetails1", ""),
-            callDetails2: stringValue(flowRule,"callDetails2", ""),
             lineOfBusiness: stringValue(flowRule,"lineOfBusiness", ""),
             marketingChannel: stringValue(flowRule,"marketingChannel", ""),
-            whisper: stringValue(flowRule,"whisper", ""),
-            requestID: stringValue(flowRule,"requestID", ""),
-            userDestination: flowRule.userDestination.value ?? "",
-            rangeIndicator: stringValue(flowRule,"rangeIndicator", ""),
-            tfnRoutingGroup: stringValue(flowRule,"tfnRoutingGroup", ""),
-            type: flowRule.type.value ?? "",
-            predictiveCaller: flowRule.predictiveCaller.value ?? false,
             nextActionId: flowRule.nextActionId.value ?? "",
-            nextActionType: flowRule.nextActionType.value ?? ""
+            nextActionType: flowRule.nextActionType.value ?? "",
+            predictiveCaller: flowRule.predictiveCaller.value ?? false,
+            rangeIndicator: stringValue(flowRule,"rangeIndicator", ""),
+            requestID: stringValue(flowRule,"requestID", ""),
+            tfnRoutingGroup: stringValue(flowRule,"tfnRoutingGroup", ""),
+            transferCode: stringValue(flowRule,"transferCode", ""),
+            type: flowRule?.phoneNumberType?.value ?? "",
+            userDestination: flowRule.userDestination.value ?? "",
+            whisper: stringValue(flowRule,"whisper", "")
           };
           openAddModal(false, true, newFlowRule);
           setAlertBar((alertBarProps: AlertBarProps) => ({

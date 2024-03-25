@@ -76,6 +76,7 @@ export interface CctSharedCallFlowDb {
     nextActionId?: string;
     nextActionType?: string;
     pkey?: string;
+    phoneNumberType?: boolean;
     predictiveCaller?: boolean;
     rangeIndicator?: string;
     requestID?: string;
@@ -129,6 +130,7 @@ export interface FlowDropDownList {
     callFlowType: string[];
     callerType: string[];
     dataRequests: string[];
+    nextActionType: string[];
     tfnRoutingGroup : string[];
     type: string[];
 }

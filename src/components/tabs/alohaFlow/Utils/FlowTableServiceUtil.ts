@@ -18,6 +18,7 @@ import {
   CctSharedCallFlowDb,
   FlowMasterData
 } from "../AlohaFlow.Interfaces";
+import { FormValidationRule } from "utils/interfaces";
 
 /**
  * Retrieve all of the Call Flow records and use the rowInsert function to persist
@@ -160,13 +161,13 @@ export const batchFlowCreate = async (
  * @param {Array<String>} dataRequests list of data requests.
  * @returns
  */
-export const addFlowRule = (item: CctSharedCallFlowDb,
+export const addFlowRule = (item: FormValidationRule,
   accessToken: string,
   graphQlApiUrl: string,
   curTime = new Date().toISOString(),
   dataRequests: Array<string>=[]): Promise<any> => {
-  if(item.nextActionId) {
-    return v2AddFlowRule(item, accessToken, graphQlApiUrl, curTime, dataRequests);
+  if(item.nextActionId.value) {
+    return v2AddFlowRule(item, accessToken, graphQlApiUrl, Math.floor(new Date(curTime).getTime()/1000), dataRequests);
   }
 
   return v1AddFlowRule(item, accessToken, graphQlApiUrl, curTime, dataRequests);

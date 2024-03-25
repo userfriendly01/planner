@@ -41,6 +41,7 @@ import {
   getGraphQLEndpoint,
   initializedAlertBar,
   languageOffer,
+  nextActionType,
   readWriteAccess,
   tfnRoutingGroup,
   userDestination
@@ -104,6 +105,7 @@ export const EditFlow = ({
         callFlowType: callFlowType,
         callerType: masterData?.callerType,
         dataRequests: masterData?.dataRequests,
+        nextActionType: nextActionType,
         tfnRoutingGroup: tfnRoutingGroup,
         type: flowType
       })

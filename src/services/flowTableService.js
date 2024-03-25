@@ -854,10 +854,10 @@ const createDynamicFlowRunItem = async(items, accessToken, graphQlApiUrl) =>{
         actionId: item.actionId,
         actionType: item.actionType,
         callFlowName: item.callFlowName,
-        createTime: new Date().getTime(),
+        createTime: Math.floor(new Date().getTime()/1000),
         nextActionType: item.nextActionType,
         speech: item.speech,
-        updateTime: new Date().getTime()
+        updateTime: Math.floor(new Date().getTime()/1000)
       });
     }
 
@@ -869,7 +869,7 @@ const createDynamicFlowRunItem = async(items, accessToken, graphQlApiUrl) =>{
         actionId: item.actionId,
         actionType: item.actionType,
         callFlowName: item.callFlowName,
-        createTime: new Date().getTime(),
+        createTime: Math.floor(new Date().getTime()/1000),
         maxDigits: item.maxDigits,
         minDigits: item.minDigits,
         nextActionId: item.nextActionId,
@@ -882,7 +882,7 @@ const createDynamicFlowRunItem = async(items, accessToken, graphQlApiUrl) =>{
         },
         speech: item.speech,
         timeout: item.timeout,
-        updateTime: new Date().getTime()
+        updateTime: Math.floor(new Date().getTime()/1000)
       }
       );
     }
@@ -892,8 +892,8 @@ const createDynamicFlowRunItem = async(items, accessToken, graphQlApiUrl) =>{
         actionId: item.actionId,
         actionType: item.actionType,
         callFlowName: item.callFlowName,
-        createTime: new Date().getTime(),
-        updateTime: new Date().getTime(),
+        createTime: Math.floor(new Date().getTime()/1000),
+        updateTime: Math.floor(new Date().getTime()/1000),
         options:
           item.options.map(option => {
             return {
@@ -1304,10 +1304,11 @@ function addDynamicFlowInput (item, dataRequestsPassed, currentTimePassed){
     nextActionType: item.nextActionType?.value,
     officeNumbers: item.officeNumbers?.value,
     phoneNumber: item.pkey?.value,
-    phoneNumberType: item.phoneNumberType?.value,
+    phoneNumberType: item.type?.value,
     predictiveCaller: item.predictiveCaller?.value,
     rangeIndicator: item.rangeIndicator?.value,
     requestID: item.requestID?.value,
+    skey: item.callFlowName.value.concat(":", item.callFlowType.value),
     tfnRoutingGroup: item.tfnRoutingGroup?.value,
     tollFreeNumber: item.tollFreeNumber?.value,
     transferCode: item.transferCode?.value,
@@ -1325,10 +1326,10 @@ function addDynamicFlowInput (item, dataRequestsPassed, currentTimePassed){
  * @param {flowData} item Flow object that need to add
  * @param {String} accessToken token to use while calling graphql query
  * @param {String} graphQlApiUrl Endpoint URL
- * @param {String} curTime the current time, for the db record's create time
+ * @param {Number} curTime the current time, for the db record's create time
  * @returns
  */
-async function addDynamicFlowRule(item, accessToken, graphQlApiUrl, curTime = new Date().toISOString(), dataRequests=[]) {
+async function addDynamicFlowRule(item, accessToken, graphQlApiUrl, curTime = Math.floor(new Date().getTime()/1000), dataRequests=[]) {
   let response;
   const input = addDynamicFlowInput(item, dataRequests, curTime);
   try {
@@ -1342,10 +1343,8 @@ async function addDynamicFlowRule(item, accessToken, graphQlApiUrl, curTime = ne
         query: `
           mutation AddDynamicFlowRule ($input:PhoneNumberInput! ){
             createPhoneNumber(input:$input) {
-              items {
-                  pkey
-                  skey
-              }
+              phoneNumber
+              phoneNumberType
             }
           }
         `,

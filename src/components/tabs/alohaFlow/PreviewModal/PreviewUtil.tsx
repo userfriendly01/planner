@@ -12,6 +12,7 @@ import {
   callFlowType,
   flowType,
   languageOffer,
+  nextActionType,
   tfnRoutingGroup,
   userDestination
 } from "utils";
@@ -136,6 +137,7 @@ const fetchData = (): FlowDropDownList =>{
     callFlowType: callFlowType,
     callerType: masterDataObject?.callerType,
     dataRequests: masterDataObject?.dataRequests,
+    nextActionType: nextActionType,
     tfnRoutingGroup,
     type: flowType
   };
