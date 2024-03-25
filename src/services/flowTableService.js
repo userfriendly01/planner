@@ -1481,39 +1481,39 @@ const batchDynamicFlowUpdate = async(items, accessToken, graphQlApiUrl) =>{
 const updateDynamicFlowBatchRun = async(items, accessToken, graphQlApiUrl) =>{
   const input = items.map(item=>{
     return {
-      brand: item.brand.value,
-      callFlowName: item.callFlowName?.value,
-      callFlowRoute: item.callFlowRoute?.value,
-      callFlowTemplate: item.callFlowName?.value,
-      callFlowType: item.callFlowType?.value,
-      callIntent: item.callIntent?.value,
-      callTypeDescription: item.callTypeDescription?.value,
-      callerType: item.callerType?.value,
-      channel: item.channel.value,
-      createTime: item.createTime?.value,
-      dataRequests: item.dataRequests?.value,
-      dialedDescription: item.dialedDescription.value,
-      employeeId: item.employeeId?.value,
-      greetingMessages: item.greetingMessages?.value,
-      internetPlacement: item.internetPlacement?.value,
-      languageOffer: item.languageOffer?.value,
-      lineOfBusiness: item.lineOfBusiness?.value,
-      marketingChannel: item.marketingChannel?.value,
-      nextActionId: item.nextActionId?.value,
-      nextActionType: item.nextActionType?.value,
-      officeNumbers: item.officeNumbers?.value,
-      phoneNumber: item.phoneNumber?.value,
-      phoneNumberType: item.phoneNumberType?.value,
-      predictiveCaller: item.predictiveCaller?.value,
-      rangeIndicator: item.rangeIndicator?.value,
-      requestID: item.requestID?.value,
-      skey: item.callFlowName.value.concat(":", item.callFlowType.value),
-      tfnRoutingGroup: item.tfnRoutingGroup?.value,
-      tollFreeNumber: item.tollFreeNumber?.value,
-      transferCode: item.transferCode?.value,
-      transferDestination: item.transferDestination?.value,
+      brand: item.brand,
+      callFlowName: item.callFlowName,
+      callFlowRoute: item.content.callFlowRoute,
+      callFlowTemplate: item.callFlowName,
+      callFlowType: item.callFlowType,
+      callIntent: item.content.callIntent,
+      callTypeDescription: item.callTypeDescription,
+      callerType: item.content.callerType,
+      channel: item.channel,
+      createTime: item.createTime,
+      dataRequests: item.content.dataRequests,
+      dialedDescription: item.dialedDescription,
+      employeeId: item.employeeId,
+      greetingMessages: item.content.greetingMessages,
+      internetPlacement: item.internetPlacement,
+      languageOffer: item.content.languageOffer,
+      lineOfBusiness: item.lineOfBusiness,
+      marketingChannel: item.marketingChannel,
+      nextActionId: item.nextActionId,
+      nextActionType: item.nextActionType,
+      officeNumbers: item.content.officeNumbers,
+      phoneNumber: item.phoneNumber,
+      phoneNumberType: item.phoneNumberType,
+      predictiveCaller: item.predictiveCaller,
+      rangeIndicator: item.rangeIndicator,
+      requestID: item.requestID,
+      skey: item.callFlowName.concat(":", item.callFlowType),
+      tfnRoutingGroup: item.tfnRoutingGroup,
+      tollFreeNumber: item.tollFreeNumber,
+      transferCode: item.transferCode,
+      transferDestination: item.content.transferDestination,
       updateTime: Math.floor(new Date().getTime()/1000),
-      whisper: item.whisper?.value
+      whisper: item.whisper
     };
   });
   try {
@@ -1525,10 +1525,10 @@ const updateDynamicFlowBatchRun = async(items, accessToken, graphQlApiUrl) =>{
       },
       body: JSON.stringify({
         query: `
-        mutation batchUpdateDynamicFlowDb($input: CctSharedCallFlowDbBatchUpdateInput!) {
-          batchUpdateDynamicFlowDb(input: $input) {
+        mutation batchCreatePhoneNumber($input: PhoneNumberCreateBatchInput!) {
+          batchCreatePhoneNumber(input: $input) {
             items {
-              phone_number
+                phoneNumber
                 callFlowName
                 createTime
                 updateTime
@@ -1565,7 +1565,7 @@ const updateDynamicFlowBatchRun = async(items, accessToken, graphQlApiUrl) =>{
         }
       `,
         variables: {
-          input: { batchFlowUpdateInput: input }
+          input: { batchPhoneNumberInput: input }
         }
       })
     });
