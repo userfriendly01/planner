@@ -93,20 +93,12 @@ export const useAccessToken = (): Auth => {
 
       try {
         // Try to silently get token
-        const { accessToken: newAccessToken } = await instance.acquireTokenSilent(request);
+        const { accessToken: newAccessToken } = await instance.acquireTokenPopup(request);
 
         setAccessToken(newAccessToken);
-      } catch(_) {
-        try {
-          // Try to loudly get token
-          const { accessToken: newAccessToken } = await instance.acquireTokenPopup(request);
-
-          setAccessToken(newAccessToken);
-        } catch(err) {
-          // An authentication error has occurred
-          setError((err as Error).message);
-          setLoadingToken(false);
-        }
+      } catch(err) {
+        // An authentication error has occurred
+        setError((err as Error).message);
       }
 
       setLoadingToken(false);

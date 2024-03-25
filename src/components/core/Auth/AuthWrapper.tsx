@@ -14,7 +14,7 @@ interface Props {
 export const AuthWrapper = ({ children }: Props): ReactElement => {
   return (
     <MsalAuthenticationTemplate
-      interactionType={InteractionType.Redirect}
+      interactionType={InteractionType.Popup}
       authenticationRequest={{ scopes: [`${authConfig.auth.clientId}/.default`]}}
       errorComponent={(props: MsalAuthenticationResult) => <LoginError message={props.error.errorMessage} />}
       loadingComponent={LoginInProgress}
