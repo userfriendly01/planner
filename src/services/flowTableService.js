@@ -212,48 +212,6 @@ async function retrieveFlowData(accessToken, graphQlApiUrl, counter = 1, nextTok
 
 }
 
-function createFlowFromAction (item) {
-  return {
-    pkey: item.phoneNumber,
-    brand: item.brand,
-    callFlowName: item.callFlowName ?? "",
-    callFlowTemplate: item.callFlowTemplate ?? "",
-    callFlowType: item.callFlowType ?? "",
-    callTypeDescription: item.callTypeDescription ?? "",
-    channel: item.channel,
-    content: {
-      callFlowRoute: item.callFlowRoute,
-      callIntent: item.callIntent,
-      callerType: item.callerType,
-      dataRequests: item.dataRequests,
-      greetingMessages: item.greetingMessages,
-      languageOffer: item.languageOffer,
-      officeNumbers: item.officeNumbers,
-      transferDestination: item.transferDestination
-    },
-    createTime: item.createTime,
-    dialedDescription: item.dialedDescription,
-    ...item.employeeId && {
-      employeeId: item.employeeId
-    },
-    internetPlacement: item.internetPlacement ?? "",
-    lineOfBusiness: item.lineOfBusiness ?? "",
-    marketingChannel: item.marketingChannel ?? "",
-    nextActionId: item.nextActionId ?? "",
-    nextActionType: item.nextActionType ?? "",
-    predictiveCaller: item.predictiveCaller ?? false,
-    rangeIndicator: item.rangeIndicator ?? "",
-    requestID: item.requestID ?? "",
-    selfServiceIndicator: item.callFlowType ?? false,
-    tfnRoutingGroup: item.tfnRoutingGroup ?? "",
-    tollFreeNumber: item.tollFreeNumber ?? "",
-    transferCode: item.transferCode ?? "",
-    phoneNumberType: item.phoneNumberType ?? "",
-    userDestination: item.userDestination ?? "",
-    whisper: item.whisper ?? ""
-  };
-}
-
 function addFlowInput (item, dataRequestsPassed, currentTimePassed){
   const input = {
     pkey: item.pkey.value,
