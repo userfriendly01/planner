@@ -4246,7 +4246,7 @@ describe("fields.js", () => {
     });
     describe("CALABRIO_WFM_NOTES", () => {
       describe("validateFunction", () => {
-        const notesValidation = FIELDS.CALABRIO_WFM_NOTES.validateFunction;
+        const notesValidation = FIELDS.CALABRIO_WFM_NOTE.validateFunction;
         test("No availability provided, resolve with the empty but not required message", async () => {
           const row = {
             "Note": "",

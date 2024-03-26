@@ -1683,18 +1683,18 @@ export const FIELDS: Fields = {
       }
     }
   },
-  CALABRIO_WFM_NOTES: { // can be empty
+  CALABRIO_WFM_NOTE: { // can be empty
     field: "wfmNote",
     name: "Note",
     type: "string",
-    description: "string representing text that will be saved in the general notes field",
+    description: "Optional string representing text that will be saved in the general note field",
     example: "I'm a note!",
     options: null,
     validateFunction: (row: any, state: any): Promise<any> => {
       const rowNumber = row.rowNumber;
 
       try {
-        const fieldName = FIELDS.CALABRIO_WFM_NOTES.name;
+        const fieldName = FIELDS.CALABRIO_WFM_NOTE.name;
         const field = row[fieldName].trim();
 
         if (!field) {
