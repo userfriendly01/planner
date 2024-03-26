@@ -4244,20 +4244,20 @@ describe("fields.js", () => {
         });
       });
     });
-    describe.only("CALABRIO_WFM_NOTES", () => {
+    describe("CALABRIO_WFM_NOTES", () => {
       describe("validateFunction", () => {
         const notesValidation = FIELDS.CALABRIO_WFM_NOTES.validateFunction;
         test("No availability provided, resolve with the empty but not required message", async () => {
           const row = {
-            "Notes": "",
+            "Note": "",
             rowNumber: 2
           };
           const result = await notesValidation(row, initialTestState);
-          expect(result).toEqual("Notes is empty but not required. Skipping validation for row 2");
+          expect(result).toEqual("Note is empty but not required. Skipping validation for row 2");
         });
         test("Error thrown for missing BU availibilities, reject", async () => {
           const row = {
-            "Notes": undefined,
+            "Note": undefined,
             rowNumber: 2
           };
           try {
@@ -4269,14 +4269,14 @@ describe("fields.js", () => {
         });
         test("Notes are valid, resolve and add availability id to row", async () => {
           const row = {
-            "Notes": "Yay Cats!",
+            "Note": "Yay Cats!",
             rowNumber: 2
           };
           const result = await notesValidation(row, initialTestState);
-          expect(result).toEqual("Notes valid for row 2");
+          expect(result).toEqual("Note valid for row 2");
           expect(row).toEqual({
             ...row,
-            wfmNotes: "Yay Cats!"
+            wfmNote: "Yay Cats!"
           });
         });
       });

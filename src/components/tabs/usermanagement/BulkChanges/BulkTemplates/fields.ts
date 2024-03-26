@@ -1684,8 +1684,8 @@ export const FIELDS: Fields = {
     }
   },
   CALABRIO_WFM_NOTES: { // can be empty
-    field: "wfmNotes",
-    name: "Notes",
+    field: "wfmNote",
+    name: "Note",
     type: "string",
     description: "string representing text that will be saved in the general notes field",
     example: "I'm a note!",
@@ -1700,7 +1700,7 @@ export const FIELDS: Fields = {
         if (!field) {
           return Promise.resolve(`${fieldName} is empty but not required. Skipping validation for row ${rowNumber}`);
         } else {
-          row.wfmNotes = (field);
+          row.wfmNote = (field);
           return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
         }
       } catch (err) {

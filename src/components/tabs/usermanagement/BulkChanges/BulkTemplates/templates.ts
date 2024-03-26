@@ -192,7 +192,7 @@ const processWFMCreateUser = async (row: any, state: AppState) => {
     body.RotationId = row.wfmRotationId;
     body.RotationStartDate = row.wfmRotationStartDate;
     body.RotationStartWeek = row.wfmRotationStartWk;
-    body.Notes = row.wfmNotes;
+    body.Note = row.wfmNote;
 
     // completely optional
     body.OptionalColumns = row.wfmOptionalColumns;
