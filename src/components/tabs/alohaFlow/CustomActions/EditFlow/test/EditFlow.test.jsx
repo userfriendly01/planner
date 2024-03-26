@@ -5,11 +5,21 @@ import {
   fireEvent, render, initialTestState, waitFor, act, within, setupMockedComponents, adGroupPermissionMapping
 } from "testUtils";
 import {
-  deleteFlowRule, updateFlowDB
+  deleteFlowRule,
+  shouldDeleteOriginal,
+  updateFlowDB
 } from "../../../Utils/FlowTableServiceUtil";
 import { useAdminState } from "context";
 import { CustomToast } from "components";
 import { AddOrView } from "../../CustomActionsCommon/AddOrView";
+
+jest.mock("../../../Utils/FlowTableServiceUtil", () => {
+  return{
+    deleteFlowRule: jest.fn(),
+    shouldDeleteOriginal: jest.fn().mockReturnValue(false),
+    updateFlowDB: jest.fn()
+  };
+});
 jest.mock("components", () => {
   return{
     __esModule: true,
@@ -158,6 +168,7 @@ describe("<EditFlow />", () => {
       });
       waitFor(() => {
         expect(openEditModal).toBeCalledTimes(1);
+        expect(shouldDeleteOriginal).toHaveBeenCalled();
       });
     });
     test("Simulate the SaveRule Button with Failed API Response", () => {

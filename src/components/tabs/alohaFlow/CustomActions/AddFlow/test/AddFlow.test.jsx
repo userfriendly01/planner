@@ -57,6 +57,11 @@ const mockMasterData = {
   userDestination: ["Twilio", "Avaya"]
 };
 
+jest.mock("../../../Utils/FlowTableServiceUtil", () => ({
+  addFlowRule: jest.fn(),
+  retrieveFlowData: jest.fn()
+}));
+
 jest.mock("@mui/material", () => ({
   __esModule: true,
   Grid: jest.fn(),
