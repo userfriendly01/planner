@@ -10,7 +10,9 @@ import { logger } from "utils";
  * @returns list of data and nextToken if any
  */
 async function queryFlowData(accessToken, nextToken = null, graphQlApiUrl) {
-  let result = {};
+  let result = {
+    errors: []
+  };
   try {
     const response = await fetch(graphQlApiUrl, {
       method: "POST",
@@ -69,6 +71,7 @@ async function queryFlowData(accessToken, nextToken = null, graphQlApiUrl) {
     });
     result = await response.json();
   } catch (error) {
+    result.errors.push("Error in queryFlowData " + error.message);
     logger.error("Error in queryFlowData", { error }, false);
   }
   return result;
@@ -160,33 +163,45 @@ export async function queryLSCDynamicFlowData(accessToken, graphQlApiUrl) {
  * @param {String} nextToken - the page token to grab the next batch/page of records
  * @param {object} rowInsert - the insert function used in this function that will insert the completed row into the component
  * @param {object} flowData - the accumulated flow records in the table
+ * @param {object} queryFunction - the query function used in this function that will retrieve the records
  * @returns {object} the counter and the flowData
  */
-async function retrieveFlowData(accessToken, graphQlApiUrl, counter = 1, nextToken = null, rowInsert, flowData = [], errors = false) {
+async function retrieveFlowData(accessToken, graphQlApiUrl, counter = 1, nextToken = null, rowInsert, flowData = [], errors = false, queryFunction = queryFlowData) {
+  let result = {};
   try {
     let firstLoop = true;
     while (nextToken || counter === 1 || firstLoop) {
       firstLoop = false;
-      const result = await queryFlowData(accessToken, nextToken, graphQlApiUrl);
+      result = await queryFunction(accessToken, nextToken, graphQlApiUrl);
 
       //retain if errors was true when it was passed in
-      errors = errors | logGraphQLErrors(result, "retrieveFlowData");
+      errors = errors || logGraphQLErrors(result, "retrieveFlowData");
 
       const listItems = result.data?.listCctSharedCallFlowDbs?.items || [];
 
-      listItems.forEach(item => {
-        if(item) {
-          flowData.push({
-            ...item,
-            id: counter++
-          });
-        }
-      });
-      rowInsert(flowData);
+      if (listItems.length !== 0) {
 
+        listItems.forEach(item => {
+          if(item) {
+            flowData.push({
+              ...item,
+              id: counter++
+            });
+          }
+        });
+
+        rowInsert(flowData);
+      } else {
+        // If there was a handled error in queryFlowData, and there were 
+        // no results returned at all, then break out of the loop
+        if(counter === 1) {
+          break;
+        }
+      }
       nextToken = result.data?.listCctSharedCallFlowDbs?.nextToken;
     }
   } catch (error) {
+    errors = true;
     logger.error("Error in retrieveFlowData", { error }, false);
   }
   return {
@@ -1140,38 +1155,9 @@ async function queryDynamicFlowData(accessToken, nextToken = null, graphQlApiUrl
  * @returns {flowData} list of data contain all the result present in DB
  */
 async function retrieveDynamicFlowData(accessToken, graphQlApiUrl, counter = 1, nextToken = null, rowInsert, flowData = [], errors = false) {
-  try {
-    let firstLoop = true;
-    while (nextToken || counter === 1 || firstLoop) {
-      firstLoop = false;
-      const result = await queryDynamicFlowData(accessToken, nextToken, graphQlApiUrl);
-
-      errors = errors | logGraphQLErrors(result, "retrieveDynamicFlowData");
-
-      const listItems = result.data?.listPhoneNumbers?.items || [];
-      listItems.forEach(item => {
-        if(item) {
-          flowData.push({
-            ...createFlowFromAction(item),
-            id: counter++
-          });
-        }
-      });
-      rowInsert(flowData);
-
-      nextToken = result.data?.listPhoneNumbers?.nextToken;
-
-    }
-  } catch (error) {
-    logger.error("Error in retrieveDynamicFlowData", { error }, false);
-  }
-  return {
-    counter,
-    errors,
-    flowData
-  };
-
+  return retrieveFlowData(accessToken, graphQlApiUrl, counter, nextToken, rowInsert, flowData, errors, queryDynamicFlowData);
 }
+
 function updateDynamicFlowInput(item){
   const input = {
     brand: item.brand,
