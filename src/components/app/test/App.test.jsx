@@ -77,7 +77,6 @@ jest.mock("utils", () => ({
   getAuthenticationProfiles: jest.fn(),
   getPermissions: jest.fn(),
   getStartups: jest.fn(),
-  getAzureSPAClientId: jest.fn(),
   myAxios: jest.requireActual("utils").myAxios,
   wait: jest.requireActual("utils").wait,
   isErrorIn400s: jest.requireActual("utils").isErrorIn400s,

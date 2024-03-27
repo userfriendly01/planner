@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-
+import { env } from "globals";
 import {
   logger, removeAllWhiteSpace
 } from "utils";
@@ -8,13 +8,12 @@ import {
  * This is the function use to query the appsync API to get the data from DB
  * @param {String} accessToken token to use while calling graphql query
  * @param {String} nextToken Token for next set of data
- * @param {String} graphQlApiUrl GraphQL Endpoint for Query and Mutation
  * @returns list of data and nextToken if any
  */
-async function queryRoutingData(accessToken, nextToken = null, graphQlApiUrl) {
+async function queryRoutingData(accessToken, nextToken = null) {
   let result = {};
   try {
-    const response = await fetch(graphQlApiUrl, {
+    const response = await fetch(env.GRAPH_API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -73,10 +72,9 @@ async function queryRoutingData(accessToken, nextToken = null, graphQlApiUrl) {
  * This is the function to use to call queryRoutingData function multiple time
  * until nextToken become null
  * @param {String} accessToken token to use while calling graphql query
- * @param {*} graphQlApiUrl GraphQL Endpoint for Query and Mutation
  * @returns {routingData} list of data contain all the result present in DB
  */
-async function retrieveRoutingData(accessToken, graphQlApiUrl,firstChunkData) {
+async function retrieveRoutingData(accessToken,firstChunkData) {
   let routingData = [];
   let isFirstTime = true;
   let result = firstChunkData;
@@ -85,7 +83,7 @@ async function retrieveRoutingData(accessToken, graphQlApiUrl,firstChunkData) {
     while (isFirstTime || result.data?.listCctSharedCallRoutingGlobalDbs.nextToken) {
       if(!isFirstTime || Object.keys(firstChunkData).length === 0){
         result = await queryRoutingData(accessToken, result.data?.listCctSharedCallRoutingGlobalDbs
-          .nextToken, graphQlApiUrl);
+          .nextToken);
         listItems = result.data?.listCctSharedCallRoutingGlobalDbs?.items || [];
       }
       const tempRoutingData = listItems.map(elem => (
@@ -108,10 +106,9 @@ async function retrieveRoutingData(accessToken, graphQlApiUrl,firstChunkData) {
  * This is the Function to update the Routing Object ]to the DB
  * @param {routingData} item Routing object that need to update
  * @param {String} accessToken token to use while calling graphql query 
- * @param {String} graphQlApiUrl Endpoint URL 
  * @returns 
  */
-async function updateRoutingDB(item, accessToken, graphQlApiUrl) {
+async function updateRoutingDB(item, accessToken) {
   let response;
   const input = {
     pkey: item.pkey,
@@ -137,7 +134,7 @@ async function updateRoutingDB(item, accessToken, graphQlApiUrl) {
     tfnRoutingGroup: item?.tfnRoutingGroup || ""
   };
   try {
-    const fetchResponse = await fetch(graphQlApiUrl, {
+    const fetchResponse = await fetch(env.GRAPH_API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -195,10 +192,9 @@ async function updateRoutingDB(item, accessToken, graphQlApiUrl) {
  * This is the Function to add the Routing Object ]to the DB
  * @param {routingData} item Routing object that need to add
  * @param {String} accessToken token to use while calling graphql query 
- * @param {String} graphQlApiUrl Endpoint URL 
  * @returns 
  */
-async function addRoutingRule(item, accessToken, graphQlApiUrl) {
+async function addRoutingRule(item, accessToken) {
   let response;
   const input = {
     all: "ALL",
@@ -225,7 +221,7 @@ async function addRoutingRule(item, accessToken, graphQlApiUrl) {
     tfnRoutingGroup: item?.tfnRoutingGroup?.value || ""
   };
   try {
-    const fetchResponse = await fetch(graphQlApiUrl, {
+    const fetchResponse = await fetch(env.GRAPH_API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -283,13 +279,12 @@ async function addRoutingRule(item, accessToken, graphQlApiUrl) {
  * This is the Function to delete the Routing Object ]to the DB
  * @param {routingData} item Routing object that need to delete
  * @param {String} accessToken token to use while calling graphql query 
- * @param {String} graphQlApiUrl Endpoint URL 
  * @returns 
  */
-async function deleteRoutingRule(item, accessToken, graphQlApiUrl) {
+async function deleteRoutingRule(item, accessToken) {
   let response;
   try {
-    const fetchResponse = await fetch(graphQlApiUrl, {
+    const fetchResponse = await fetch(env.GRAPH_API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -344,7 +339,7 @@ async function deleteRoutingRule(item, accessToken, graphQlApiUrl) {
   return response;
 }
 
-async function routingBatchDelete(items, accessToken, graphQlApiUrl){
+async function routingBatchDelete(items, accessToken){
   var routingDeleteArray=[];
   const size=25;
   const response = {
@@ -365,7 +360,7 @@ async function routingBatchDelete(items, accessToken, graphQlApiUrl){
     );
     const routingRespId = routeValue.map(x=>({ "id": x.id }));
 
-    await batchDelete(keysToDelete,accessToken,graphQlApiUrl).then(resp=>{
+    await batchDelete(keysToDelete,accessToken).then(resp=>{
       if(!resp?.errors){
         response.success = response.success.concat(routingRespId);
       }
@@ -384,10 +379,9 @@ async function routingBatchDelete(items, accessToken, graphQlApiUrl){
  * This is the Function to delete the Routing Object ]to the DB
  * @param {routingData[]} item Routing object that need to delete
  * @param {String} accessToken token to use while calling graphql query 
- * @param {String} graphQlApiUrl Endpoint URL 
  * @returns 
  */
-async function batchDelete(items, accessToken, graphQlApiUrl) {
+async function batchDelete(items, accessToken) {
   let response;
 
   try {
@@ -408,7 +402,7 @@ async function batchDelete(items, accessToken, graphQlApiUrl) {
       }
     }).replace(/\\"pkey\\":/g, "pkey:").replace(/\\"skey\\":/g, "skey:");
 
-    const fetchResponse = await fetch(graphQlApiUrl, {
+    const fetchResponse = await fetch(env.GRAPH_API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -424,7 +418,7 @@ async function batchDelete(items, accessToken, graphQlApiUrl) {
   return response;
 }
 
-async function routingBatchUpdate(items, accessToken, graphQlApiUrl){
+async function routingBatchUpdate(items, accessToken){
   var routingDeleteArray=[];
   const size=25;
   const response = {
@@ -441,7 +435,7 @@ async function routingBatchUpdate(items, accessToken, graphQlApiUrl){
     routingDeleteArray.push(items.splice(0, size));
   }
   for(var i=0; i<routingDeleteArray.length; i++){
-    await batchRoutingUpdate(routingDeleteArray[i],accessToken,graphQlApiUrl).then(resp=>{
+    await batchRoutingUpdate(routingDeleteArray[i],accessToken).then(resp=>{
       if(!resp?.errors){
         response.success = response.success.concat(routingDeleteArray[i]);
       }
@@ -460,10 +454,9 @@ async function routingBatchUpdate(items, accessToken, graphQlApiUrl){
  * This is the Function to batch update the Routing Object to the DB
  * @param {routingData} items List of Routing object that need to update
  * @param {String} accessToken token to use while calling graphql query 
- * @param {String} graphQlApiUrl Endpoint URL 
  * @returns 
  */
-const batchRoutingUpdate = async(items, accessToken, graphQlApiUrl) =>{
+const batchRoutingUpdate = async(items, accessToken) =>{
   let response;
   const input = items.map(item=>{
     return {
@@ -492,7 +485,7 @@ const batchRoutingUpdate = async(items, accessToken, graphQlApiUrl) =>{
     };
   });
   try {
-    const fetchResponse = await fetch(graphQlApiUrl, {
+    const fetchResponse = await fetch(env.GRAPH_API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -550,7 +543,7 @@ const batchRoutingUpdate = async(items, accessToken, graphQlApiUrl) =>{
   return response;
 };
 
-async function routingBatchCreate(items, accessToken, graphQlApiUrl){
+async function routingBatchCreate(items, accessToken){
   var routingDeleteArray=[];
   const size=25;
   const response = {
@@ -567,7 +560,7 @@ async function routingBatchCreate(items, accessToken, graphQlApiUrl){
     routingDeleteArray.push(items.splice(0, size));
   }
   for(var i=0; i<routingDeleteArray.length; i++){
-    await batchRoutingCreate(routingDeleteArray[i],accessToken,graphQlApiUrl).then(resp=>{
+    await batchRoutingCreate(routingDeleteArray[i], accessToken).then(resp=>{
       if(!resp?.errors){
         response.success = response.success.concat(routingDeleteArray[i]);
       }
@@ -586,10 +579,9 @@ async function routingBatchCreate(items, accessToken, graphQlApiUrl){
  * This is the Function to batch Create the Routing Object to the DB
  * @param {routingData} items List of Routing object that need to update
  * @param {String} accessToken token to use while calling graphql query
- * @param {String} graphQlApiUrl Endpoint URL
  * @returns
  */
-const batchRoutingCreate = async(items, accessToken, graphQlApiUrl) =>{
+const batchRoutingCreate = async(items, accessToken) =>{
   let response;
   const input = items.map(item=>{
     return {
@@ -618,7 +610,7 @@ const batchRoutingCreate = async(items, accessToken, graphQlApiUrl) =>{
     };
   });
   try {
-    const fetchResponse = await fetch(graphQlApiUrl, {
+    const fetchResponse = await fetch(env.GRAPH_API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

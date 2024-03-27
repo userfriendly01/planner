@@ -250,7 +250,7 @@ export const apiPaths = {
   GET_CALABRIO_WFM: `${SERVICE_BASE_URI}/calabrio-api/wfm`,
   GET_CALABRIO_WFM_ORG: `${SERVICE_BASE_URI}/calabrio-api/wfm/org/people`,
   GET_CALABRIO_WFM_OPTIONS: `${SERVICE_BASE_URI}/calabrio-api/wfm/org/options`,
-  GET_CALABRIO_WFM_USER_BY_NNUMBER: (nNumber: string) => `${SERVICE_BASE_URI}/calabrio-api/wfm-people-by-nnumber/${nNumber}`,
+  GET_CALABRIO_WFM_USER_BY_NNUMBER: (nNumber: string): string => `${SERVICE_BASE_URI}/calabrio-api/wfm-people-by-nnumber/${nNumber}`,
   GET_CALABRIO_USERS: `${SERVICE_BASE_URI}/calabrio-get-agents`,
   GET_CALABRIO_ORG: `${SERVICE_BASE_URI}/calabrio-get-org`,
   GET_CALABRIO_ROLES: `${SERVICE_BASE_URI}/calabrio-get-roles`,
@@ -266,11 +266,11 @@ export const apiPaths = {
   GET_TASK_QUEUES: `${SERVICE_BASE_URI}/taskqueues`,
   GET_TIME_OF_DAYS: `${SERVICE_BASE_URI}/timeofday`,
   GET_WORKERS: `${SERVICE_BASE_URI}/workers`,
-  GET_RESET_PROFILE_DATADOG_LOGS: (nNumber: string) => `${SERVICE_BASE_URI}/datadogresetprofileslogs/${nNumber}`,
+  GET_RESET_PROFILE_DATADOG_LOGS: (nNumber: string): string => `${SERVICE_BASE_URI}/datadogresetprofileslogs/${nNumber}`,
   MANAGERS: `${CONTACT_MANAGER_BASE_URI}/managers`,
   OFFICES: `${CONTACT_MANAGER_BASE_URI}/offices`,
   PROFILES: `${CONTACT_MANAGER_BASE_URI}/profiles`,
-  RESET_PROFILES: (nNumber: string) => `${SERVICE_BASE_URI}/resetprofiles/${nNumber}`,
+  RESET_PROFILES: (nNumber: string): string => `${SERVICE_BASE_URI}/resetprofiles/${nNumber}`,
   RESET_WORKER_SKILLS: `${SERVICE_BASE_URI}/resetworkerskills`,
   SKILL_GROUPS: `${CONTACT_MANAGER_BASE_URI}/skillgroups`,
   TERMINATE_WORKER: `${SERVICE_BASE_URI}/terminateworker`,
@@ -279,4 +279,33 @@ export const apiPaths = {
   UPDATE_WORKER: (workerSid: string): string => `${SERVICE_BASE_URI}/updateworker/${workerSid}`,
   GET_AGGREGATE_QUEUES_TYPE: (aggregateQueueType: string): string => `${CONTACT_MANAGER_BASE_URI}/aggregatequeuestype/${aggregateQueueType}`,
   WFM_ACTIVATE_EXTERNAL_LOGON: `${SERVICE_BASE_URI}/wfmexternallogon`
+};
+
+// We're adding this to the window and can really be anywhere
+// We'll put it here for reference to the below on why it's neede
+declare global {
+  interface Window {
+    env: {
+      [key: string]: string
+    }
+  }
+}
+
+export const env = {
+  AZURE_CLIENT_ID: window.env.AZURE_CLIENT_ID,
+  AZURE_REDIRECT_URI: window.env.AZURE_REDIRECT_URI,
+  DATADOG_APPLICATION_ID: window.env.DATADOG_APPLICATION_ID,
+  DATADOG_CLIENT_TOKEN: window.env.DATADOG_CLIENT_TOKEN,
+  APP_ENV: window.env.APP_ENV,
+  TROUX_ID: window.env.TROUX_ID,
+  GRAPH_API_URL: window.env.GRAPH_API_URL
+};
+
+export const authConfig = {
+  auth: {
+    clientId: env.AZURE_CLIENT_ID,
+    authority: "https://login.microsoftonline.com/LibertyMutual.onmicrosoft.com",
+    redirectUri: env.AZURE_REDIRECT_URI,
+    navigateToLoginRequestUrl: true
+  }
 };

@@ -1,36 +1,10 @@
 import {
   CctSharedCallFlowDb, CctSharedCallRoutingDb, FlowContent
 } from "components";
-import { useAdminState } from "context";
 import { AlertBarProps } from "./interfaces";
 import {
-  BrandNameMap, GraphQLErrors
+  BrandNameMap, GraphQLErrors, env
 } from "globals";
-
-/**
- *  This function return graphQL endpoint based on running environment  
- * @returns string: GraphQL Endpoint
- */
-export const getGraphQLEndpoint = (): string => {
-  const env: string = useAdminState().userContext.pingIdentity.environment;
-  return {
-    "development": "https://tgufpgkyxvacrntvgb75iuo3pi.appsync-api.us-east-1.amazonaws.com/graphql",
-    "test": "https://bz5ilxf2ercznouchavqvh26nm.appsync-api.us-east-1.amazonaws.com/graphql",
-    "production": "https://3k2iegyjmnfwxheh65ugy2vjt4.appsync-api.us-east-1.amazonaws.com/graphql"
-  }[env];
-};
-
-/**
- *  This function return Azure SPA client ID on running environment  
- * @returns string: GraphQL client ID
- */
-export const getAzureSPAClientId = (env: string): string => {
-  return {
-    "development": "cc2d6284-c9c4-43fe-9164-4ee0cb8fac50",
-    "test": "0605f6ba-a953-4a8e-a663-12cc240e50ed",
-    "production": "5e927376-81c5-498e-bc92-372aded461de"
-  }[env];
-};
 
 export const initializedAlertBar: AlertBarProps = {
   open: false,
@@ -133,12 +107,12 @@ export const cleanErrorMessage = (graphQLErrors: GraphQLErrors[]): string => {
   return graphQLErrors[0].message;
 };
 
-export const readWriteAccess=(matchedGroups:any[], alohaTabType:string, env:string):boolean=>{
+export const readWriteAccess=(matchedGroups: any[], alohaTabType: string): boolean => {
   let flag = true;
-  matchedGroups?.forEach((item: any)=>{
+  matchedGroups?.forEach((item: any) => {
     if(item.startup.name === alohaTabType && item.permissionLevel === "write"){
       item.environments.forEach((envVar: string)=>{
-        if(envVar === env){
+        if(envVar === env.APP_ENV){
           flag = false;
         }
       });

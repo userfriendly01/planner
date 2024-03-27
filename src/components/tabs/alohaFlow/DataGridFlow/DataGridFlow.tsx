@@ -27,9 +27,8 @@ import {
   CALL_FLOW_PAGE_NO,
   CALL_FLOW_PER_PAGE, downloadCSV,
   EXPORT_FILE_PREFIX,
-  getAdvanceFilter, getGraphQLEndpoint,
-  initializedAlertBar,
-  logger
+  getAdvanceFilter,
+  initializedAlertBar
 } from "utils";
 import {
   AlertBarProps, FormValidationRule
@@ -54,8 +53,6 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     accessToken,
     matchedGroups
   } = props;
-
-  const graphQLEndpoint = getGraphQLEndpoint();
 
   const flowInitState: FlowStateVariables = {
     data: [],
@@ -86,7 +83,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
 
   useEffect(() => {
     const getTableData = async()=>{
-      const firstChunkData:any = await queryFlowData(accessToken, null, graphQLEndpoint);
+      const firstChunkData:any = await queryFlowData(accessToken, null);
       const listItems = firstChunkData?.data?.listCctSharedCallFlowDbs?.items || [];
       let counter =1;
       const flowData: CctSharedCallFlowDb[] = [];
@@ -109,7 +106,6 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       }));
       const result: CctSharedCallFlowDb[] = await retrieveFlowData(
         accessToken,
-        graphQLEndpoint,
         firstChunkData
       );
       await loadDataTable(result);
@@ -370,7 +366,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       }));
       return;
     }
-    const response = await batchFlowCreate(rows, accessToken, graphQLEndpoint);
+    const response = await batchFlowCreate(rows, accessToken);
     if(response?.flag) {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
@@ -411,7 +407,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       }));
       return;
     }
-    const response = await batchFlowUpdate(rows, accessToken, graphQLEndpoint);
+    const response = await batchFlowUpdate(rows, accessToken);
     if(response?.flag) {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
@@ -458,7 +454,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
 
   const handleOnBulkDelete = async(rows: Array<CctSharedCallFlowDb> ) =>{
     const keysToDelete = rows.map(x => x.pkey);
-    const response = await batchDeleteItems(keysToDelete, accessToken, graphQLEndpoint);
+    const response = await batchDeleteItems(keysToDelete, accessToken);
     if(response?.flag) {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,

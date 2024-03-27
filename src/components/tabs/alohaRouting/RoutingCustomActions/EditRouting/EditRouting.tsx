@@ -8,7 +8,7 @@ import React, {
   useState, useEffect, useMemo
 } from "react";
 import {
-  convertTime12to24,convertTime24to12, getGraphQLEndpoint, routingFields, routingInitRule, initializedAlertBar, routingDropDownList, dayOfWeek
+  convertTime12to24,convertTime24to12, routingFields, routingInitRule, initializedAlertBar, routingDropDownList, dayOfWeek
 } from "utils";
 import {
   CctSharedCallRoutingDb, RoutingDropDownList, AddPageFieldConfigProps
@@ -27,9 +27,9 @@ import {
 } from "services";
 import { AzureSPA } from "globals";
 import {
-  BrandName, readWriteAccess
+  BrandName,
+  readWriteAccess
 } from "utils/configUtils";
-import { useAdminState } from "context";
 import { FloatingHeader } from "@lmig/lmds-react-floating-header";
 interface EditRoutingComponentProps {
   accessToken: string;
@@ -42,14 +42,12 @@ interface EditRoutingComponentProps {
 export const EditRouting = ({
   accessToken, isOpen, matchedGroups, selectedRow, openEditModal
 }: EditRoutingComponentProps & AzureSPA): JSX.Element => {
-  const graphQLEndPoint: string = getGraphQLEndpoint();
   const [selectedRowLocal, setSelectedRowLocal] = useState({} as CctSharedCallRoutingDb);
   const [routingRule, setRoutingRule] = useState({ ...routingInitRule });
   const [dropDownValues, setDropDownValues] = useState(routingDropDownList);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
   const defaultValue: { [key: string]: any } = {};
-  const env: string = useAdminState().userContext.pingIdentity.environment;
-  const enableRouting = useMemo(() => readWriteAccess(matchedGroups,"aloha-route",env), []);
+  const enableRouting = useMemo(() => readWriteAccess(matchedGroups, "aloha-route"), []);
 
   useEffect(() => {
     setDropDownValues((dropDownOptions: RoutingDropDownList) => ({
@@ -110,7 +108,7 @@ export const EditRouting = ({
   };
 
   const handleOnDelete = async () => {
-    const response = await deleteRoutingRule(selectedRowLocal, accessToken, graphQLEndPoint);
+    const response = await deleteRoutingRule(selectedRowLocal, accessToken);
     if (response) {
       openEditModal(false, true, selectedRowLocal, `Routing Rule ID ${selectedRow.id} has been successfully deleted. `, true);
       return true;
@@ -167,7 +165,7 @@ export const EditRouting = ({
         startTime: convertTime24to12(selectedRowLocal.startTime),
         endTime: convertTime24to12(selectedRowLocal.endTime)
       };
-      const response = await updateRoutingDB(updatedRow, accessToken, graphQLEndPoint);
+      const response = await updateRoutingDB(updatedRow, accessToken);
       if (response && !response.errors) {
         openEditModal(false, true, updatedRow, `Routing Rule ID ${selectedRow.id} has been successfully updated. `, false);
         return true;
