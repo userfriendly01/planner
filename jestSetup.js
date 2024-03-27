@@ -101,7 +101,7 @@ jest.mock("services", () => ({
   insertDirectory: jest.fn(),
   queryFlowData: jest.fn(),
   queryRoutingData: jest.fn(),
-  queryLSCDynamicFlowData: jest.fn(),
+  queryDynamicFlowData: jest.fn(),
   retrieveFlowData: jest.fn(),
   retrieveRoutingData: jest.fn(),
   routingBatchCreate: jest.fn(),
