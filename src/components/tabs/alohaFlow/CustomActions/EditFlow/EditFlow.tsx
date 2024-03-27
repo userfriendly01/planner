@@ -188,23 +188,28 @@ export const EditFlow = ({
         return;
       }
       const response = await updateFlowDB(selectedRowLocal, accessToken, graphQLEndPoint);
-      let isSubmitted = true;
-      if (response?.errors) {
-        isSubmitted = false;
-        setAlertBar((alertBarProps: AlertBarProps) => ({
-          ...alertBarProps,
-          open: true,
-          msg: response.errors[0]?.message,
-          severityType: "error"
-        }));
+      if (isErrorDisplayed(response)) {
         return;
       } else if(shouldDeleteOriginal(originalRow, selectedRowLocal)) {
         deleteFlowRule(originalRow, accessToken, graphQLEndPoint);
       }
       setFlowRule({ ...initRule });
-      openEditModal(false, isSubmitted, selectedRowLocal, `Phone Number ${selectedRow.pkey} has been successfully updated.`, false);
+      openEditModal(false, true, selectedRowLocal, `Phone Number ${selectedRow.pkey} has been successfully updated.`, false);
     }
   };
+
+  const isErrorDisplayed = (response: any) => {
+    if (response?.errors) {
+      setAlertBar((alertBarProps: AlertBarProps) => ({
+        ...alertBarProps,
+        open: true,
+        msg: response.errors[0]?.message,
+        severityType: "error"
+      }));
+      return true;
+    }
+    return false;
+  }
 
   const handleClone = () =>{
     openEditModal(false,false,selectedRowLocal,"",false,true);
@@ -212,6 +217,9 @@ export const EditFlow = ({
 
   const handleOnDelete = async () => {
     const response = await deleteFlowRule(selectedRowLocal, accessToken, graphQLEndPoint);
+    if (isErrorDisplayed(response)) {
+      return;
+    }
     if (response) {
       openEditModal(false, true, selectedRowLocal, `Phone Number ${selectedRow.pkey} has been successfully deleted.`, true);
     }
