@@ -9,7 +9,6 @@ import {
   FloatingHeader
 } from "@lmig/lmds-react-floating-header";
 import {
-  Box,
   Button,
   Grid
 } from "@mui/material";
@@ -34,7 +33,6 @@ import {
 import {
   flowDropDownList,
   FLOW_MASTER_DATA,
-  getGraphQLEndpoint,
   initializedAlertBar,
   languageOffer,
   userDestination,
@@ -54,7 +52,6 @@ import {
 import {
   AzureSPA, DuplicateCheck
 } from "globals";
-import { useAdminState } from "context";
 
 interface EditFlowComponentProps {
     isOpen: boolean;
@@ -67,7 +64,6 @@ export const EditFlow = ({
   accessToken, matchedGroups, isOpen, selectedRow, openEditModal, duplicateCheck
 }: EditFlowComponentProps & AzureSPA): JSX.Element => {
 
-  const graphQLEndPoint: string = getGraphQLEndpoint();
 
   const [selectedRowLocal, setSelectedRowLocal] = useState({} as CctSharedCallFlowDb);
   const [displayRecords, setDisplayRecords] = useState({
@@ -78,8 +74,7 @@ export const EditFlow = ({
   const [flowRule, setFlowRule] = useState({ ...initRule });
   const [dropDownValues, setDropDownValues] = useState(flowDropDownList);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
-  const env: string = useAdminState().userContext.pingIdentity.environment;
-  const enableFlow = useMemo<boolean>(() => readWriteAccess(matchedGroups,"aloha-flow",env), []);
+  const enableFlow = useMemo<boolean>(() => readWriteAccess(matchedGroups,"aloha-flow"), []);
 
   useEffect(() => {
     setSelectedRowLocal(selectedRow);
@@ -181,7 +176,7 @@ export const EditFlow = ({
         }));
         return;
       }
-      const response = await updateFlowDB(selectedRowLocal, accessToken, graphQLEndPoint);
+      const response = await updateFlowDB(selectedRowLocal, accessToken);
       let isSubmitted = true;
       if (response?.errors) {
         isSubmitted = false;
@@ -203,7 +198,7 @@ export const EditFlow = ({
   };
 
   const handleOnDelete = async () => {
-    const response = await deleteFlowRule(selectedRowLocal, accessToken, graphQLEndPoint);
+    const response = await deleteFlowRule(selectedRowLocal, accessToken);
     if (response) {
       openEditModal(false, true, selectedRowLocal, `Phone Number ${selectedRow.pkey} has been successfully deleted.`, true);
     }

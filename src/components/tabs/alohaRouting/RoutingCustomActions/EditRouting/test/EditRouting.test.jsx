@@ -4,18 +4,18 @@ import {
   ROUTING_CACHE_MASTER_DATA
 } from "utils";
 import {
-  fireEvent, render, initialTestState, act, setupMockedComponents, adGroupPermissionMapping
+  fireEvent, render, act, setupMockedComponents, adGroupPermissionMapping
 } from "testUtils";
 import {
   updateRoutingDB, deleteRoutingRule
 } from "services";
-import { useAdminState } from "context";
 import {
   Grid, Button
 } from "@mui/material";
 import {
   CustomToast, ComponentControl
 } from "components";
+import { env } from "globals";
 
 const validRoutingData = {
   id: 1,
@@ -46,17 +46,6 @@ const validStartTime =  {
   endTime: "12:00:00 PM"
 };
 
-const initDataProd={
-  userContext: {
-    pingIdentity: {
-      sub: "n0263786",
-      groups: [],
-      aud: "ciciccttritondev1",
-      environment: "production"
-    }
-  }
-};
-
 const openEditModal = jest.fn();
 
 jest.mock("@mui/material", () => ({
@@ -77,10 +66,6 @@ jest.mock("components", () => {
   };
 });
 
-jest.mock("context", () => ({
-  useAdminState: jest.fn()
-}));
-
 const mockMasterData = {
   brand: ["Test Brand"],
   channel: ["Test1 Channel", "Test2 Channel"]
@@ -96,7 +81,6 @@ const renderEditRouting = (isOpen, data) => {
 describe("<EditRouting />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    useAdminState.mockReturnValue(initialTestState);
     Object.defineProperty(window, "matchMedia", {
       writable: true,
       value: jest.fn().mockImplementation(query => ({
@@ -130,9 +114,10 @@ describe("<EditRouting />", () => {
     localStorage.removeItem(ROUTING_CACHE_MASTER_DATA);
   });
 
-  describe("Basic Simualte the Component", () => {
+  describe("Basic Simulate the Component", () => {
     test("Simulate the component with prod as environment", () => {
-      useAdminState.mockReturnValue(initDataProd);
+      env.APP_ENV = "production";
+
       renderEditRouting(true, validRoutingData);
       const saveButtonClick = Button.mock.calls[0][0].onClick;
       const saveButton = Button.mock.calls[0][0];
@@ -142,6 +127,8 @@ describe("<EditRouting />", () => {
       expect(saveButton.disabled).toBe(false);
     });
     test("Simulate the component with prod as environment with read only access", () => {
+      env.APP_ENV = "production";
+
       renderEditRouting(true, validRoutingData);
       const saveButtonClick = Button.mock.calls[0][0].onClick;
       const saveButton = Button.mock.calls[0][0];

@@ -1,33 +1,37 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/no-unknown-property */
+import { useAccessToken } from "authentication";
 import AlohaRoutingContainer from "../AlohaRoutingContainer";
 import { DataGridRouting } from "../DataGridRouting";
-import { authWrapper } from "../../../core/AzureAuth";
 import React from "react";
 import {
-  initialTestState,
   render,
   setupMockedComponents
 } from "testUtils";
+import {
+  LoginError, LoginInProgress
+} from "components";
 
 jest.mock("../DataGridRouting",()=>({
   __esModule: true,
   DataGridRouting: jest.fn()
 }));
-jest.mock("../../../core/AzureAuth",()=>({
-  __esModule: true,
-  authWrapper: jest.fn().mockReturnValue({
-    __esModule: true,
-    render: jest.fn()
-  })
+
+jest.mock("authentication", () => ({
+  useAccessToken: jest.fn()
+}));
+
+jest.mock("components", () => ({
+  LoginInProgress: jest.fn(),
+  LoginError: jest.fn()
 }));
 
 describe("<AlohaRoutingContainer />", ()=>{
   beforeEach(()=>{
     setupMockedComponents({
       DataGridRouting,
-      authWrapper
-    }),
+      LoginError,
+      LoginInProgress
+    });
+
     Object.defineProperty(window, "matchMedia", {
       writable: true,
       value: jest.fn().mockImplementation(query => ({
@@ -42,8 +46,34 @@ describe("<AlohaRoutingContainer />", ()=>{
       }))
     });
   });
-  test("Simple Render", async () =>{
-    // render(<AlohaRoutingContainer accessToken="999" matchedGroups="8,7,6" />, initialTestState);
+
+  test("Simple Render", () =>{
+    useAccessToken.mockReturnValue({
+      isLoading: false
+    });
+
+    render(<AlohaRoutingContainer />);
+    expect(DataGridRouting.mock.calls.length).toBe(1);
+  });
+
+  test("Returns Loading Component", () =>{
+    useAccessToken.mockReturnValue({
+      isLoading: true
+    });
+
+    render(<AlohaRoutingContainer />);
     expect(DataGridRouting.mock.calls.length).toBe(0);
+    expect(LoginInProgress.mock.calls.length).toBe(1);
+  });
+
+  test("Returns error Component", () => {
+    useAccessToken.mockReturnValue({
+      isLoading: false,
+      error: "An error"
+    });
+
+    render(<AlohaRoutingContainer />);
+    expect(DataGridRouting.mock.calls.length).toBe(0);
+    expect(LoginError.mock.calls.length).toBe(1);
   });
 });
