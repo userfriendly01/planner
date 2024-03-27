@@ -1,6 +1,7 @@
 import { act } from "@testing-library/react";
 import  {
-  retrieveFlowData,addFlowRule, deleteFlowRule, updateFlowDB, flowBatchDelete, queryFlowData, batchDeleteItems, batchFlowUpdate, batchFlowCreate, batchDynamicFlowCreate
+  retrieveFlowData, addFlowRule, deleteFlowRule, updateFlowDB, flowBatchDelete, queryFlowData, batchDeleteItems, batchFlowUpdate, batchFlowCreate,
+  retrieveDynamicFlowData, addDynamicFlowRule, deleteDynamicFlowRule, updateDyanmicFlowDB, queryDynamicFlowData, batchDeleteDynamicItems, batchDynamicFlowUpdate, flowDynamicBatchDelete, batchDynamicFlowCreate
 }  from "../flowTableService";
 
 const jsonFlowData = {
@@ -460,8 +461,405 @@ describe("flowTableService",()=>{
       expect(response.alertMsg).toEqual("Please Select Something to Add");
     });
   });
+});
+
+// Dynamic Flow Testing
+describe("dynamicFlowTableService",()=> {
+  describe("AddDynamicFlow", ()=>{
+    beforeEach(()=>{
+      window.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve({
+            data: { items: []},
+            error: []
+          })
+        })
+      );
+    });
+    afterEach(()=>{
+      jest.restoreAllMocks();
+    });
+    test("Simulate Add Dynamic Flow Rule", async()=>{
+      const validAddDynamicFlowData = {
+        pkey: { value: "12345" },
+        agentId: { value: "123455" },
+        brand: { value: "LM" },
+        callFlowTemplate: { value: "temp" },
+        channel: { value: "Test1 Channel" },
+        createTime: { value: "2022-24-08" },
+        dialedDescription: { value: "test" },
+        employeeId: { value: "n1234567" },
+        userDestination: { value: "dest" },
+        callerType: { value: "test" },
+        callFlowRoute: { value: "test" },
+        dataRequests: { value: "test1,test2" },
+        greetingMessages: { value: "Hello Test Message" },
+        languageOffer: { value: "English" },
+        transferNumber: { value: "123456789" }
+      };
+      const addDynamicFlow = await addDynamicFlowRule(validAddDynamicFlowData,"TEST","TEST");
+      expect(addDynamicFlow.error).toStrictEqual([]);
+    });
+    test("Simulate AddDynamicFlow with limited data", async()=>{
+      const invalidAddDynamicFlowData = {
+        pkey: { value: "12345" },
+        brand: { value: "LM" },
+        channel: { value: "Test1 Channel" },
+        createTime: { value: "2022-24-08" },
+        dialedDescription: { value: "test" },
+        dataRequests: { value: undefined }
+      };
+      const addDynamicFlow = await addDynamicFlowRule(invalidAddDynamicFlowData,"TEST","TEST");
+      expect(addDynamicFlow.error).toStrictEqual([]);
+    });
+    test("Simulate AddDynamicFlow with an error", async()=>{
+      const invalidAddDynamicFlowData = {
+        pkey: { value: "12345" },
+        brand: { value: "LM" },
+        channel: { value: "Test1 Channel" },
+        createTime: { value: "2022-24-08" },
+        dialedDescription: { value: "test" },
+        dataRequests: { value: undefined }
+      };
+      jest.spyOn(JSON, "stringify").mockImplementation(()=>{
+        throw new Error();
+      });
+      const addDynamicFlow = await addDynamicFlowRule(invalidAddDynamicFlowData,"TEST","TEST");
+      expect(addDynamicFlow).toBeUndefined;
+    });
+  });
+
+  describe("CallDynamicFlow List",()=>{
+    const jsonDynamicFlowData = [
+      {
+        id: 1,
+        pkey: "12345",
+        agentId: "123455",
+        brand: "LM",
+        callFlowTemplate: "temp",
+        channel: "Test1 Channel",
+        createTime: "2022-24-08",
+        updateTime: "2024-01-30T05:00:00.000Z",
+        dialedDescription: "test",
+        employeeId: "n1234567",
+        userDestination: "dest"
+      }
+      ,{
+        id: 2,
+        pkey: "23456",
+        agentId: "123455",
+        brand: "LM",
+        callFlowTemplate: "temp",
+        channel: "Test1 Channel",
+        createTime: "2022-24-08",
+        updateTime: "2024-01-30T05:00:00.000Z",
+        dialedDescription: "test",
+        employeeId: "n1234567",
+        userDestination: "dest"
+      }
+    ];
+
+    beforeEach(()=>{
+      jest.restoreAllMocks();
+    });
+    afterEach(()=>{
+      jest.resetAllMocks();
+    });
+    test("CallDynamicFlow list finds 1",async()=>{
+      window.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve({
+            data: {
+              listPhoneNumbers: {
+                items: jsonDynamicFlowData,
+                nextToken: undefined
+              }
+            }
+          })
+        })
+      );
+      const listFlow = await retrieveDynamicFlowData("12345","",{});
+      expect(listFlow).toEqual(jsonDynamicFlowData);
+    });
+    test("CallDynamicFlow list finds 2",async()=>{
+      window.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve({
+            data: {
+              listPhoneNumbers: {
+                items: jsonDynamicFlowData,
+                nextToken: undefined
+              }
+            }
+          })
+        })
+      );
+      const listFlow = await queryDynamicFlowData("12345","TEST","http://localhost:8082");
+      expect(listFlow.data.listPhoneNumbers.items).toEqual(jsonDynamicFlowData);
+    });
+    test("retrieveDynamicFlowData creates the IDs and skips nulls",async()=>{
+      const dynamicItems = JSON.parse(JSON.stringify(jsonDynamicFlowData));
+      dynamicItems[0].id = undefined;
+      dynamicItems[1].id = undefined;
+      dynamicItems[2] = null;
+      window.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve({
+            data: {
+              listPhoneNumbers: {
+                items: dynamicItems,
+                nextToken: undefined
+              }
+            }
+          })
+        })
+      );
+      const listDynamicFlow = await retrieveDynamicFlowData("12345","",{});
+      expect(listDynamicFlow).toEqual(jsonDynamicFlowData);
+    });
+    test("CallDynamicFlow list finds error",async()=>{
+      window.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve({
+            data: []
+          })
+        })
+      );
+      jest.spyOn(JSON, "stringify").mockImplementation(()=>{
+        throw new Error();
+      });
+      const listDynamicFlow = await queryDynamicFlowData("12345","TEST","http://localhost:8082");
+      expect(listDynamicFlow).toBeDefined;
+    });
+    test("CallDynamicFlow list not found",async()=>{
+      window.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve({
+            data: {
+              listPhoneNumbers: {
+                items: [],
+                nextToken: undefined
+              }
+            }
+          })
+        })
+      );
+      const listDynamicFlow = await retrieveDynamicFlowData("1234-5678","TEST", jsonDynamicFlowData);
+      expect(listDynamicFlow).toEqual([]);
+    });
+    test("pass null in dyanmic list",async()=>{
+      window.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve({
+            data: []
+          })
+        })
+      );
+      const listDynamicFlow = await retrieveDynamicFlowData("1234-5678","TEST", jsonDynamicFlowData);
+      expect(listDynamicFlow).toEqual([]);
+    });
+    test("Error scenario ",async()=>{
+      window.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve({
+            data: []
+          })
+        })
+      );
+      jest.spyOn(JSON, "stringify").mockImplementation(()=>{
+        throw new Error();
+      });
+      const listDynamicFlow = await retrieveDynamicFlowData("1234-5678","TEST", jsonDynamicFlowData);
+      expect(listDynamicFlow).toEqual([]);
+
+    });
+  });
+
+  describe("Delete Dynamic Flow", ()=>{
+    beforeEach(()=>{
+      window.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve({
+            data: {
+              listPhoneNumbers: {
+                items: jsonFlowData
+              }
+            }
+          })
+        })
+      );
+    });
+    afterEach(()=>{
+      jest.restoreAllMocks();
+    });
+    test("Testing the Delete Dynamic Flow",async()=>{
+      const item = {
+        pkey: 1
+      };
+      const delDynamicFlow = await deleteDynamicFlowRule(item,"1233-3245","http://localhost:3000");
+      expect(delDynamicFlow).toBeDefined;
+    });
+    test("Testing the Delete DynamicFlowRule error",async()=>{
+      const item = {
+      };
+      jest.spyOn(JSON, "stringify").mockImplementation(()=>{
+        throw new Error();
+      });
+      const delDynamicFlow = await deleteDynamicFlowRule(item,"1233-3245","http://localhost:3000");
+      expect(delDynamicFlow).toBeDefined;
+    });
+  });
+
+  describe("Update Dynamic Flow", ()=>{
+    beforeEach(()=>{
+      window.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve({
+            data: {
+              listPhoneNumbers: {
+                items: jsonFlowData
+              }
+            }
+          })
+        })
+      );
+    });
+    afterEach(()=>{
+      jest.restoreAllMocks();
+    });
+    test("Testing the Update Dynamic Flow",async()=>{
+      const item = {
+        pkey: 1,
+        employeeId: "n123453"
+      };
+      const updateDynamicFlow = await updateDyanmicFlowDB(item,"1233-3245","http://localhost:3000");
+      expect(updateDynamicFlow).toBeTruthy();
+    });
+    test("Testing the Update DynamicFlowRule error",async()=>{
+      const dynamicItem = {
+        pkey: 1
+      };
+      jest.spyOn(JSON, "stringify").mockImplementation(()=>{
+        throw new Error();
+      });
+      const updateDynamicFlow = await updateDyanmicFlowDB(dynamicItem,"1233-3245","http://localhost:3000");
+      expect(updateDynamicFlow).toBeUndefined();
+    });
+  });
+
+  describe("Batch Delete Dyanmic Flow", ()=>{
+    beforeEach(()=>{
+      window.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve(batchDeleteResponse)
+        })
+      );
+    });
+    afterEach(()=>{
+      jest.restoreAllMocks();
+    });
+    test("Success",async()=>{
+      const batchDeleteDyamicItemsList = ["pkey1","pkey1","pkey3"];
+      const response = await flowDynamicBatchDelete(batchDeleteDyamicItemsList,"1233-3245","http://localhost:3000");
+      expect(response).toBe(batchDeleteResponse);
+      expect(window.fetch).toBeCalledWith("http://localhost:3000", {
+        "body": "{\"query\":\"\\n        mutation deletePhoneNumber(phoneNumber: String!, skey: String!) {\\n            deletePhoneNumber(phoneNumber: String!, skey: String!){\\n              pkey\\n              skey\\n            }\\n          }\\n    \",\"variables\":{}}",
+        "headers": {
+          "Authorization": "1233-3245",
+          "Content-Type": "application/json"
+        },
+        "method": "POST"
+      });
+    });
+    test("batch Dynamic Delete",async()=>{
+      const batchDeleteDyamicItemsList = ["pkey1","pkey1","pkey3"];
+      await flowDynamicBatchDelete(batchDeleteDyamicItemsList,"1233-3245","http://localhost:3000");
+      const response=batchDeleteDynamicItems(batchDeleteDyamicItemsList,"3245","http://localhost:3000");
+      act(()=>{
+        expect(response).toBeTruthy();
+      });
+    });
+    test("Dynamic Error",async()=>{
+      const batchDeleteDyamicItemsList = ["pkey1","pkey1","pkey3"];
+      jest.spyOn(JSON, "stringify").mockImplementation(()=>{
+        throw new Error();
+      });
+      const response = await flowDynamicBatchDelete(batchDeleteDyamicItemsList,"1233-3245","http://localhost:3000");
+      expect(response).toEqual(undefined);
+    });
+    test("Batch Delete Dynamic Error",async()=>{
+      const batchDeleteDyamicItemsList = ["pkey1","pkey1","pkey3"];
+      jest.spyOn(JSON, "stringify").mockImplementation(()=>{
+        throw new Error();
+      });
+      await flowDynamicBatchDelete(batchDeleteItemsList,"1233-3245","http://localhost:3000");
+      const response = await batchDeleteDynamicItems(batchDeleteDyamicItemsList,"3245","http://localhost:3000");
+      expect(response).toBeTruthy();
+    });
+  });
+
+  describe("Batch Update Dynamic Flow", ()=>{
+    const batchUpdateResponse = {
+      failure: [],
+      flag: false,
+      success: []
+    };
+    beforeEach(()=>{
+      window.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve(batchUpdateResponse)
+        })
+      );
+    });
+    afterEach(()=>{
+      jest.restoreAllMocks();
+      jest.useRealTimers();
+    });
+    test("Success",async()=>{
+      const batchUpdateResponse = {
+        failure: [],
+        flag: false,
+        success: []
+      };
+      const response = await batchDynamicFlowUpdate([{ ...jsonFlowData }],"1233-3245","http://localhost:3000");
+      expect(response).toEqual(batchUpdateResponse);
+      expect(window.fetch).toBeCalledWith("http://localhost:3000", {
+        "body": "{\"query\":\"\\n        mutation batchUpdatePhoneNumber(input: PhoneNumberCreateBatchInput!) {\\n          batchUpdatePhoneNumber(input: PhoneNumberCreateBatchInput!) {\\n            items {\\n                phone_number\\n                      createTime\\n                      updateTime\\n                      nextActionType\\n                      nextActionId\\n                      dialedDescription\\n                      phoneNumberType\\n                      tfnRoutingGroup\\n                      brand\\n                      transferDestination\\n                      channel\\n                      predictiveCaller\\n                      employeeId\\n                      callTypeDescription\\n                      internetPlacement\\n                      lineOfBusiness\\n                      marketingChannel\\n                      rangeIndicator\\n                      requestID\\n                      tollFreeNumber\\n                      transferCode\\n                      whisper\\n                    content{\\n                      callFlowName\\n                      callFlowTemplate\\n                      callFlowType\\n                      callIntent\\n                      callFlowRoute\\n                      callerType\\n                      greetingMessages\\n                      languageOffer\\n                      dataRequests\\n                      officeNumbers\\n            }\\n          }\\n        }\\n      \",\"variables\":{\"input\":{\"batchFlowUpdateInput\":[{\"phone_number\":\"\",\"createTime\":\"2022-24-08\",\"updateTime\":\"2024-01-30T05:00:00.000Z\",\"nextActionType\":\"\",\"nextActionId\":\"\",\"dialedDescription\":{\"value\":\"test\"},\"phoneNumberType\":\"\",\"tfnRoutingGroup\":\"\",\"brand\":{\"value\":\"LM\"},\"transferDestination\":\"\",\"channel\":{\"value\":\"Test1 Channel\"},\"predictiveCaller\":\"\",\"employeeId\":\"n1234567\",\"callTypeDescription\":\"\",\"internetPlacement\":\"\",\"lineOfBusiness\":\"\",\"marketingChannel\":\"\",\"rangeIndicator\":\"\",\"requestID\":\"\",\"tollFreeNumber\":\"\",\"transferCode\":\"\",\"whisper\":\"\",\"content\":{\"callFlowName\":\"\",\"callFlowTemplate\":\"\",\"callFlowType\":\"\",\"callIntent\":\"\",\"callFlowRoute\":\"test\",\"callerType\":\"test\",\"greetingMessages\":\"Hello Test Message\",\"languageOffer\":\"English\",\"dataRequests\":\"\",\"officeNumbers\":\"\"}}]}}}",
+        "headers": {
+          "Authorization": "1233-3245",
+          "Content-Type": "application/json"
+        },
+        "method": "POST"
+      });
+    });
+    test("Dynamic Error",async()=>{
+      const batchUpdateResponse = {
+        failure: [{ ...jsonFlowData }],
+        flag: true,
+        success: []
+      };
+      jest.spyOn(JSON, "stringify").mockImplementation(()=>{
+        throw new Error();
+      });
+      const response = await batchDynamicFlowUpdate([{ ...jsonFlowData }],"1233-3245","http://localhost:3000");
+      expect(response).toEqual(batchUpdateResponse);
+    });
+    test("Call with an Empty List", async()=>{
+      const response = await batchDynamicFlowUpdate([],"1233-3245","http://localhost:3000");
+      const errorResponse = {
+        errors: [
+          "Please Select Something to Edit"
+        ],
+        flag: true,
+        success: [],
+        failure: []
+      };
+      expect(response).toEqual(errorResponse);
+    });
+  });
+
   describe("Batch Create Dynamic Flow", ()=>{
-    const batchDynamicCreateResponse = {
+    const batchCreateResponse = {
       failure: [],
       flag: false,
       success: [],
@@ -469,23 +867,74 @@ describe("flowTableService",()=>{
     };
     beforeEach(()=>{
       window.fetch = jest.fn(() =>
-          Promise.resolve({
-            json: () => Promise.resolve(batchDynamicCreateResponse)
-          })
+        Promise.resolve({
+          json: () => Promise.resolve(batchCreateResponse)
+        })
       );
     });
     afterEach(()=>{
       jest.restoreAllMocks();
     });
     test("Success",async()=>{
-      const batchDynamicCreateResponse = {
-        failure: [],
-        flag: false,
-        success: [],
-        alertMsg: ""
+      const batchCreateResponse = {
+        "alertMsg": "",
+        "failure": [],
+        "flag": false,
+        "success": [
+          {
+            "agentId": {
+              "value": "123455"
+            },
+            "brand": {
+              "value": "LM"
+            },
+            "callFlowRoute": {
+              "value": "test"
+            },
+            "callFlowTemplate": {
+              "value": "temp"
+            },
+            "callerType": {
+              "value": "test"
+            },
+            "channel": {
+              "value": "Test1 Channel"
+            },
+            "createTime": {
+              "value": "2022-24-08"
+            },
+            "dataRequests": {
+              "value": "test1,test2"
+            },
+            "dialedDescription": {
+              "value": "test"
+            },
+            "employeeId": {
+              "value": "n1234567"
+            },
+            "greetingMessages": {
+              "value": "Hello Test Message"
+            },
+            "languageOffer": {
+              "value": "English"
+            },
+            "pkey": {
+              "value": "12345"
+            },
+            "transferNumber": {
+              "value": "123456789"
+            },
+            "updateTime": {
+              "value": "2024-01-30T05:00:00.000Z"
+            },
+            "userDestination": {
+              "value": "dest"
+            }
+          }
+        ]
       };
       const response = await batchDynamicFlowCreate([{ ...jsonFlowData }],"1233-3245","http://localhost:3000");
-      expect(response.success.length).toBe(1);
+      expect(response).toEqual(batchCreateResponse);
       expect(window.fetch).toBeCalledWith("http://localhost:3000", {
         "body": "{\"query\":\"\\n        mutation createCallFlowConfig($input: CallFlowConfigInput! ) {\\n          createCallFlowConfig(input: $input) {\\n              callFlowName\\n            }\\n          }\\n      \",\"variables\":{\"input\":{\"announcements\":[],\"menus\":[],\"menuOptions\":[]}}}",
         "headers": {

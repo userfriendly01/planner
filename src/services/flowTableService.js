@@ -998,6 +998,556 @@ const createFlowRunItem = async(items, accessToken, graphQlApiUrl) =>{
   return response;
 };
 
+/**
+ * This is the function use to query the appsync API to get the data from DB
+ * @param {String} accessToken OAuth tokent to use while calling graphql query
+ * @param {String} nextToken Token for next set of data
+ * @param {String} graphQlApiUrl Endpoint URL
+ * @returns list of data and nextToken if any
+ */
+async function queryDynamicFlowData(accessToken, nextToken = null, graphQlApiUrl) {
+  let result = {};
+  try {
+    const response = await fetch(graphQlApiUrl, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        query: `
+            query listPhoneNumbers {
+              listPhoneNumbers(limit: 10000, nextToken: ${nextToken ? JSON.stringify(nextToken) : nextToken}) {
+                nextToken
+                items {
+                      phone_number
+                      createTime
+                      updateTime
+                      nextActionType
+                      nextActionId
+                      dialedDescription
+                      phoneNumberType
+                      tfnRoutingGroup
+                      brand
+                      transferDestination
+                      channel
+                      predictiveCaller
+                      employeeId
+                      callTypeDescription
+                      internetPlacement
+                      lineOfBusiness
+                      marketingChannel
+                      rangeIndicator
+                      requestID
+                      tollFreeNumber
+                      transferCode
+                      whisper
+                    content{
+                      callFlowName
+                      callFlowTemplate
+                      callFlowType
+                      callIntent
+                      callFlowRoute
+                      callerType
+                      greetingMessages
+                      languageOffer
+                      dataRequests
+                      officeNumbers
+                    }
+                }
+              }
+            }
+        `,
+        variables: {}
+      })
+    });
+    result = await response.json();
+  } catch (error) {
+    logger.error("Error in query Dynamic Flow Data", { error }, false);
+  }
+  return result;
+}
+
+/**
+ * This is the function to use to call queryFlowData function multiple time
+ * until nextToken become null
+ * @param {String} accessToken OAuth Access Token
+ * @param {String} graphQlApiUrl Endpoint URL
+ * @returns {flowData} list of data contain all the result present in DB
+ */
+async function retrieveDynamicFlowData(accessToken, graphQlApiUrl,firstChunkData) {
+  const dynamicFlowData = [];
+  let isFirstTime = true;
+  let result = firstChunkData;
+  let counter = firstChunkData?.data?.listPhoneNumbers?.items?.length+1 || 1;
+  let listItems = firstChunkData?.data?.listPhoneNumbers?.items || [];
+  try {
+    while (isFirstTime || result.data?.listPhoneNumbers.nextToken) {
+      if(!isFirstTime || Object.keys(firstChunkData).length === 0){
+        result = await queryDynamicFlowData(accessToken, result.data?.listPhoneNumbers.nextToken, graphQlApiUrl);
+        listItems = result.data?.listPhoneNumbers?.items || [];
+      }
+      listItems.forEach(item => {
+        if(item) {
+          dynamicFlowData.push({
+            ...item,
+            id: counter++
+          });
+        }
+      });
+      isFirstTime = false;
+    }
+  } catch (error) {
+    logger.error("Error in retrieve Dynamic Flow Data", { error }, false);
+  }
+  return dynamicFlowData;
+}
+
+
+function updateDynamicFlowInput(item){
+  const input = {
+    phone_number: item.phone_number?.value || "",
+    createTime: item.createTime?.value || "",
+    updateTime: item.updateTime?.value || "",
+    nextActionType: item.nextActionType?.value || "",
+    nextActionId: item.nextActionId?.value || "",
+    dialedDescription: item.dialedDescription || "",
+    phoneNumberType: item.phoneNumberType?.value || "",
+    tfnRoutingGroup: item.tfnRoutingGroup?.value || "",
+    brand: item.brand || "",
+    transferDestination: item.transferDestination?.value || "",
+    channel: item.channel || "",
+    predictiveCaller: item.predictiveCaller?.value || "",
+    employeeId: item.employeeId?.value || "",
+    callTypeDescription: item.callTypeDescription?.value || "",
+    internetPlacement: item.internetPlacement?.value || "",
+    lineOfBusiness: item.lineOfBusiness?.value || "",
+    marketingChannel: item.marketingChannel?.value || "",
+    rangeIndicator: item.rangeIndicator?.value || "",
+    requestID: item.requestID?.value || "",
+    tollFreeNumber: item.tollFreeNumber?.value || "",
+    transferCode: item.transferCode?.value || "",
+    whisper: item.whisper?.value || "",
+    content: {
+      callFlowName: item.callFlowName?.value || "",
+      callFlowTemplate: item.callFlowName?.value || "",
+      callFlowType: item.callFlowType?.value || "",
+      callIntent: item.callIntent?.value || "",
+      callFlowRoute: item.callFlowRoute?.value || "",
+      callerType: item.callerType?.value || "",
+      greetingMessages: item.greetingMessages?.value || "",
+      languageOffer: item.languageOffer?.value || "",
+      dataRequests: item.content?.dataRequests || "",
+      officeNumbers: item.officeNumbers?.value || ""
+    }
+  };
+  if(item.employeeId?.value){
+    input.employeeId = item.employeeId.value;
+  }
+  return input;
+}
+
+
+/**
+ * This is the Function to update the Flow Object ]to the DB
+ * @param {flowData} item Flow object that need to update
+ * @param {String} accessToken token to use while calling graphql query
+ * @param {String} graphQlApiUrl Endpoint URL
+ * @returns
+ */
+async function updateDyanmicFlowDB(item, accessToken, graphQlApiUrl) {
+  let response;
+  const input = updateDynamicFlowInput(item);
+  try {
+    const fetchResponse = await fetch(graphQlApiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: accessToken
+      },
+      body: JSON.stringify({
+        query: `
+          mutation updatePhoneNumber(input: PhoneNumberInput!) {
+            updatePhoneNumber(input:$input) {
+                items {
+                    phone_number
+                      createTime
+                      updateTime
+                      nextActionType
+                      nextActionId
+                      dialedDescription
+                      phoneNumberType
+                      tfnRoutingGroup
+                      brand
+                      transferDestination
+                      channel
+                      predictiveCaller
+                      employeeId
+                      callTypeDescription
+                      internetPlacement
+                      lineOfBusiness
+                      marketingChannel
+                      rangeIndicator
+                      requestID
+                      tollFreeNumber
+                      transferCode
+                      whisper
+                    content{
+                      callFlowName
+                      callFlowTemplate
+                      callFlowType
+                      callIntent
+                      callFlowRoute
+                      callerType
+                      greetingMessages
+                      languageOffer
+                      dataRequests
+                      officeNumbers
+              }
+            }
+          }
+      `,
+        variables: {
+          input
+        }
+      })
+    });
+
+    response = await fetchResponse.json();
+  } catch (error) {
+    logger.error("Error in update Dynamic Flow DB", { error }, false);
+  }
+  return response;
+}
+
+function addDynamicFlowInput (item, dataRequestsPassed, currentTimePassed){
+  const input = {
+    phone_number: item.phone_number?.value || "",
+    createTime: currentTimePassed || "",
+    updateTime: item.updateTime?.value || "",
+    nextActionType: item.nextActionType?.value || "",
+    nextActionId: item.nextActionId?.value || "",
+    dialedDescription: item.dialedDescription || "",
+    phoneNumberType: item.phoneNumberType?.value || "",
+    tfnRoutingGroup: item.tfnRoutingGroup?.value || "",
+    brand: item.brand || "",
+    transferDestination: item.transferDestination?.value || "",
+    channel: item.channel || "",
+    predictiveCaller: item.predictiveCaller?.value || "",
+    employeeId: item.employeeId?.value || "",
+    callTypeDescription: item.callTypeDescription?.value || "",
+    internetPlacement: item.internetPlacement?.value || "",
+    lineOfBusiness: item.lineOfBusiness?.value || "",
+    marketingChannel: item.marketingChannel?.value || "",
+    rangeIndicator: item.rangeIndicator?.value || "",
+    requestID: item.requestID?.value || "",
+    tollFreeNumber: item.tollFreeNumber?.value || "",
+    transferCode: item.transferCode?.value || "",
+    whisper: item.whisper?.value || "",
+    content: {
+      callFlowName: item.callFlowName?.value || "",
+      callFlowTemplate: item.callFlowName?.value || "",
+      callFlowType: item.callFlowType?.value || "",
+      callIntent: item.callIntent?.value || "",
+      callFlowRoute: item.callFlowRoute?.value || "",
+      callerType: item.callerType?.value || "",
+      greetingMessages: item.greetingMessages?.value || "",
+      languageOffer: item.languageOffer?.value || "",
+      dataRequests: dataRequestsPassed || "",
+      officeNumbers: item.officeNumbers?.value || ""
+    }
+  };
+  if(item.employeeId?.value){
+    input.employeeId = item.employeeId.value;
+  }
+  return input;
+}
+
+/**
+ * This is the Function to add the Flow Object to the DB
+ * @param {{createTime: {value: string}, dialedDescription: {value: string}, dataRequests: {value: undefined}, channel: {value: string}, pkey: {value: string}, brand: {value: string}}} item Flow object that need to add
+ * @param {String} accessToken token to use while calling graphql query
+ * @param {String} graphQlApiUrl Endpoint URL
+ * @param {String} curTime the current time, for the db record's create time
+ * @returns
+ */
+async function addDynamicFlowRule(item, accessToken, graphQlApiUrl, curTime = new Date().toISOString(), dataRequests=[]) {
+  let response;
+  const input = addDynamicFlowInput(item, dataRequests, curTime);
+  try {
+    const fetchResponse = await fetch(graphQlApiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: accessToken
+      },
+      body: JSON.stringify({
+        query: `
+          mutation createPhoneNumber (input: PhoneNumberInput!){
+            createPhoneNumber(input:$input) {
+              items {
+                  pkey
+                  skey
+              }
+            }
+          }
+        `,
+        variables: {
+          input
+        }
+      })
+    });
+    response = await fetchResponse.json();
+    logger.log("Add Dynamic Flow Rule Response:", response);
+  } catch (error) {
+    logger.error("Error in Adding Dynamic Flow Rule", { error }, false);
+  }
+  return response;
+}
+
+/**
+ * This is the Function to delete the Flow Object from the DB
+ * @param {flowData} item Flow object that need to delete
+ * @param {String} accessToken token to use while calling graphql query
+ * @param {String} graphQlApiUrl Endpoint URL
+ * @returns
+ */
+async function deleteDynamicFlowRule(item, accessToken, graphQlApiUrl) {
+  let response;
+  const input = {
+    pkey: item.pkey
+  };
+  try {
+    const fetchResponse = await fetch(graphQlApiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: accessToken
+      },
+      body: JSON.stringify({
+        query: `
+          mutation deletePhoneNumber(phoneNumber: String!, skey: String!) {
+            deletePhoneNumber(phoneNumber: String!, skey: String!){
+              pkey
+              skey
+            }
+          }
+      `,
+        variables: {
+          input
+        }
+      })
+    });
+    response = await fetchResponse.json();
+    logger.log("Delete Dynamic Flow Rule Response:", response);
+  } catch (error) {
+    logger.error("Error in Deleting Dynamic Flow Rule", { error }, false);
+  }
+  return response;
+}
+async function batchDeleteDynamicItems(items,accessToken,graphQlApiUrl){
+  var flowDeleteArray=[];
+  const size=24;
+  const response = {
+    "success": [],
+    "flag": false,
+    "failure": []
+  };
+  while (items.length > 0){
+    flowDeleteArray.push(items.splice(0, size));
+  }
+  for(const flowValue of flowDeleteArray){
+    const successResponse=response.success;
+    const failureResponse= response.failure;
+    const flowRespKeys = flowValue.map(x=>({ "pkey": x }));
+    await flowDynamicBatchDelete(flowValue,accessToken,graphQlApiUrl).then(resp=>{
+      if(!resp?.errors){
+        response.success = successResponse.concat(flowRespKeys);
+      }
+      else{
+        console.error("error while deleting the dynamic records", resp.errors);
+        response.failure = failureResponse.concat(flowRespKeys);
+        response.flag = true;
+      }
+    });
+  }
+  return response;
+}
+async function flowDynamicBatchDelete(items, accessToken, graphQlApiUrl){
+  let response;
+  try{
+    const body = JSON.stringify({
+      query: `
+        mutation deletePhoneNumber(phoneNumber: String!, skey: String!) {
+            deletePhoneNumber(phoneNumber: String!, skey: String!){
+              pkey
+              skey
+            }
+          }
+    `,
+      variables: {
+      }
+    }).replace(/\\"pkey\\":/g, "pkey:");
+
+    const fetchResponse = await fetch(graphQlApiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: accessToken
+      },
+      body
+    });
+    response = await fetchResponse.json();
+    logger.log("Batch Delete Dynamic Flow Rule Response:", response);
+  } catch (error) {
+    logger.error("Error in Dynamic Flow Batch Delete", { error }, false);
+  }
+  return response;
+}
+
+/**
+ * This is the Function to batch update the Flow Object to the DB
+ * @param {[{languageOffer: {value: string}, agentId: {value: string}, userDestination: {value: string}, dataRequests: {value: string}, channel: {value: string}, callFlowTemplate: {value: string}, updateTime: {value: string}, employeeId: {value: string}, greetingMessages: {value: string}, createTime: {value: string}, dialedDescription: {value: string}, callerType: {value: string}, pkey: {value: string}, brand: {value: string}, transferNumber: {value: string}, callFlowRoute: {value: string}}]} items List of Flow object that need to update
+ * @param {String} accessToken token to use while calling graphql query
+ * @param {String} graphQlApiUrl Endpoint URL
+ * @returns
+ */
+const batchDynamicFlowUpdate = async(items, accessToken, graphQlApiUrl) =>{
+  if(items.length === 0){
+    return {
+      flag: true,
+      success: [],
+      failure: [],
+      errors: [
+        "Please Select Something to Edit"
+      ]
+    };
+  }
+  const dynamicFlowUpdateArray=[];
+  const size = 25;
+  const response = {
+    success: [],
+    flag: false,
+    failure: []
+  };
+  while(items.length>0){
+    dynamicFlowUpdateArray.push(items.splice(0,size));
+  }
+  dynamicFlowUpdateArray.map(async flowUpdate =>{
+    const flowUpdateBatchRunResponse = await updateDynamicFlowBatchRun(flowUpdate, accessToken, graphQlApiUrl);
+    if(!flowUpdateBatchRunResponse?.errors){
+      response.success = response.success.concat(flowUpdate);
+    }
+    else{
+      response.failure = response.failure.concat(flowUpdate);
+      response.flag = true;
+    }
+
+  });
+  logger.info("Update Batch Dynamic Flow DB Response:", { response });
+  return response;
+};
+
+const updateDynamicFlowBatchRun = async(items, accessToken, graphQlApiUrl) =>{
+  const input = items.map(item=>{
+    return {
+      phone_number: item.phone_number?.value || "",
+      createTime: item.createTime?.value || "",
+      updateTime: item.updateTime?.value || "",
+      nextActionType: item.nextActionType?.value || "",
+      nextActionId: item.nextActionId?.value || "",
+      dialedDescription: item.dialedDescription || "",
+      phoneNumberType: item.phoneNumberType?.value || "",
+      tfnRoutingGroup: item.tfnRoutingGroup?.value || "",
+      brand: item.brand || "",
+      transferDestination: item.transferDestination?.value || "",
+      channel: item.channel || "",
+      predictiveCaller: item.predictiveCaller?.value || "",
+      employeeId: item.employeeId?.value || "",
+      callTypeDescription: item.callTypeDescription?.value || "",
+      internetPlacement: item.internetPlacement?.value || "",
+      lineOfBusiness: item.lineOfBusiness?.value || "",
+      marketingChannel: item.marketingChannel?.value || "",
+      rangeIndicator: item.rangeIndicator?.value || "",
+      requestID: item.requestID?.value || "",
+      tollFreeNumber: item.tollFreeNumber?.value || "",
+      transferCode: item.transferCode?.value || "",
+      whisper: item.whisper?.value || "",
+      content: {
+        callFlowName: item.callFlowName?.value || "",
+        callFlowTemplate: item.callFlowName?.value || "",
+        callFlowType: item.callFlowType?.value || "",
+        callIntent: item.callIntent?.value || "",
+        callFlowRoute: item.callFlowRoute?.value || "",
+        callerType: item.callerType?.value || "",
+        greetingMessages: item.greetingMessages?.value || "",
+        languageOffer: item.languageOffer?.value || "",
+        dataRequests: item.content?.dataRequests || "",
+        officeNumbers: item.officeNumbers?.value || ""
+      }
+    };
+  });
+  try {
+    const fetchResponse = await fetch(graphQlApiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: accessToken
+      },
+      body: JSON.stringify({
+        query: `
+        mutation batchUpdatePhoneNumber(input: PhoneNumberCreateBatchInput!) {
+          batchUpdatePhoneNumber(input: PhoneNumberCreateBatchInput!) {
+            items {
+                phone_number
+                      createTime
+                      updateTime
+                      nextActionType
+                      nextActionId
+                      dialedDescription
+                      phoneNumberType
+                      tfnRoutingGroup
+                      brand
+                      transferDestination
+                      channel
+                      predictiveCaller
+                      employeeId
+                      callTypeDescription
+                      internetPlacement
+                      lineOfBusiness
+                      marketingChannel
+                      rangeIndicator
+                      requestID
+                      tollFreeNumber
+                      transferCode
+                      whisper
+                    content{
+                      callFlowName
+                      callFlowTemplate
+                      callFlowType
+                      callIntent
+                      callFlowRoute
+                      callerType
+                      greetingMessages
+                      languageOffer
+                      dataRequests
+                      officeNumbers
+            }
+          }
+        }
+      `,
+        variables: {
+          input: { batchFlowUpdateInput: input }
+        }
+      })
+    });
+    return await fetchResponse.json();
+  } catch (error) {
+    logger.error("Error in Update Batch Flow DB", { error });
+    return { errors: [{ message: error }]};
+  }
+};
+
 export {
   addFlowRule,
   deleteFlowRule,
@@ -1008,5 +1558,13 @@ export {
   batchFlowUpdate,
   batchDeleteItems,
   batchFlowCreate,
+  addDynamicFlowRule,
+  deleteDynamicFlowRule,
+  retrieveDynamicFlowData,
+  queryDynamicFlowData,
+  updateDyanmicFlowDB,
+  flowDynamicBatchDelete,
+  batchDeleteDynamicItems,
+  batchDynamicFlowUpdate,
   batchDynamicFlowCreate
 };
