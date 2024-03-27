@@ -143,7 +143,6 @@ describe("flowTableService",()=>{
           })
         })
       );
-      const listFlow = await retrieveFlowData("12345","", 1, "", insertRows, []);
       expect(insertRows).toHaveBeenCalledTimes(1);
       expect(insertRows).toHaveBeenCalledWith(jsonFlowData);
     });
@@ -484,12 +483,6 @@ describe("flowTableService",()=>{
       jest.restoreAllMocks();
     });
     test("Success",async()=>{
-      const batchDynamicCreateResponse = {
-        failure: [],
-        flag: false,
-        success: [],
-        alertMsg: ""
-      };
       const response = await batchDynamicFlowCreate([{ ...jsonFlowData }],"1233-3245","http://localhost:3000");
       expect(response.success.length).toBe(1);
       expect(window.fetch).toBeCalledWith("http://localhost:3000", {
