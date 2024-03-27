@@ -1170,39 +1170,8 @@ async function updateDyanmicFlowDB(item, accessToken, graphQlApiUrl) {
           mutation updatePhoneNumber(input: PhoneNumberInput!) {
             updatePhoneNumber(input:$input) {
                 items {
-                    phone_number
-                      createTime
-                      updateTime
-                      nextActionType
-                      nextActionId
-                      dialedDescription
-                      phoneNumberType
-                      tfnRoutingGroup
-                      brand
-                      transferDestination
-                      channel
-                      predictiveCaller
-                      employeeId
-                      callTypeDescription
-                      internetPlacement
-                      lineOfBusiness
-                      marketingChannel
-                      rangeIndicator
-                      requestID
-                      tollFreeNumber
-                      transferCode
-                      whisper
-                    content{
-                      callFlowName
-                      callFlowTemplate
-                      callFlowType
-                      callIntent
-                      callFlowRoute
-                      callerType
-                      greetingMessages
-                      languageOffer
-                      dataRequests
-                      officeNumbers
+                  pkey
+                  phoneNumber
               }
             }
           }
@@ -1287,7 +1256,7 @@ async function addDynamicFlowRule(item, accessToken, graphQlApiUrl, curTime = ne
             createPhoneNumber(input:$input) {
               items {
                   pkey
-                  skey
+                  phoneNumber
               }
             }
           }
@@ -1500,38 +1469,38 @@ const updateDynamicFlowBatchRun = async(items, accessToken, graphQlApiUrl) =>{
           batchUpdatePhoneNumber(input: PhoneNumberCreateBatchInput!) {
             items {
                 phone_number
-                      createTime
-                      updateTime
-                      nextActionType
-                      nextActionId
-                      dialedDescription
-                      phoneNumberType
-                      tfnRoutingGroup
-                      brand
-                      transferDestination
-                      channel
-                      predictiveCaller
-                      employeeId
-                      callTypeDescription
-                      internetPlacement
-                      lineOfBusiness
-                      marketingChannel
-                      rangeIndicator
-                      requestID
-                      tollFreeNumber
-                      transferCode
-                      whisper
-                    content{
-                      callFlowName
-                      callFlowTemplate
-                      callFlowType
-                      callIntent
-                      callFlowRoute
-                      callerType
-                      greetingMessages
-                      languageOffer
-                      dataRequests
-                      officeNumbers
+                createTime
+                updateTime
+                nextActionType
+                nextActionId
+                dialedDescription
+                phoneNumberType
+                tfnRoutingGroup
+                brand
+                transferDestination
+                channel
+                predictiveCaller
+                employeeId
+                callTypeDescription
+                internetPlacement
+                lineOfBusiness
+                marketingChannel
+                rangeIndicator
+                requestID
+                tollFreeNumber
+                transferCode
+                whisper
+              content{
+                callFlowName
+                callFlowTemplate
+                callFlowType
+                callIntent
+                callFlowRoute
+                callerType
+                greetingMessages
+                languageOffer
+                dataRequests
+                officeNumbers
             }
           }
         }
