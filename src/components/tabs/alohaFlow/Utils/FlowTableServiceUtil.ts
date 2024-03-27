@@ -127,8 +127,7 @@ export const batchDeleteItems = async (
 
   response2.failure.forEach(x => response.failure.push(x));
   response2.success.forEach(x => response.success.push(x));
-  response.failure = response.failure ?? response2.failure;
-  response.alertMsg  = response.alertMsg ?? response2.alertMsg;
+  response.alertMsg = response.alertMsg ?? response2.alertMsg;
 
   return response;
 
@@ -153,8 +152,8 @@ export const batchFlowCreate = async (
 };
 
 /**
- * This is the Function to add the Flow Object ]to the DB
- * @param {CctSharedCallFlowDb} item Flow object that need to add
+ * This is the Function to add the Flow object to the DB
+ * @param {CctSharedCallFlowDb} item Flow object
  * @param {String} accessToken token to use while calling graphql query
  * @param {String} graphQlApiUrl Endpoint URL
  * @param {String} curTime the current time, for the db record's create time
@@ -166,7 +165,7 @@ export const addFlowRule = (item: FormValidationRule,
   graphQlApiUrl: string,
   curTime = new Date().toISOString(),
   dataRequests: Array<string>=[]): Promise<any> => {
-  if(item.nextActionId.value) {
+  if(item.nextActionId?.value) {
     return v2AddFlowRule(item, accessToken, graphQlApiUrl, Math.floor(new Date(curTime).getTime()/1000), dataRequests);
   }
 
@@ -175,8 +174,8 @@ export const addFlowRule = (item: FormValidationRule,
 };
 
 /**
- * This is the Function to update the Flow Object ]to the DB
- * @param {CctSharedCallFlowDb} item Flow object that need to add
+ * This is the Function to update the Flow object in the DB
+ * @param {CctSharedCallFlowDb} item Flow object
  * @param {String} accessToken token to use while calling graphql query
  * @param {String} graphQlApiUrl Endpoint URL
  * @returns
@@ -193,8 +192,8 @@ export const updateFlowDB = (item: CctSharedCallFlowDb,
 };
 
 /**
- * This is the Function to delete the Flow Object ]to the DB
- * @param {CctSharedCallFlowDb} item Flow object that need to add
+ * This is the Function to delete the Flow object from the DB
+ * @param {CctSharedCallFlowDb} item Flow object
  * @param {String} accessToken token to use while calling graphql query
  * @param {String} graphQlApiUrl Endpoint URL
  * @returns
