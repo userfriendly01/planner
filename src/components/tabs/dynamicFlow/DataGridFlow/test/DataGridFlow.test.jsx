@@ -16,8 +16,10 @@ import DataGridFlow from "../DataGridFlow";
 import { PreviewModal } from "../../PreviewModal";
 import React from "react";
 import { useAdminState } from "context";
-import {createFlowDataList} from "../../../dynamicFlow/PreviewModal/test/PreviewUtil.test";
-import {batchDynamicFlowCreate, queryLSCDynamicFlowData} from "services";
+import { createFlowDataList } from "../../../dynamicFlow/PreviewModal/test/PreviewUtil.test";
+import {
+  batchDynamicFlowCreate, queryDynamicFlowData
+} from "services";
 
 jest.mock("@mui/x-data-grid",()=>({
   __esModule: true,
@@ -30,7 +32,7 @@ jest.mock("@mui/x-data-grid",()=>({
         failure: [],
         success: [],
         flag: false,
-        alert:""
+        alert: ""
       })
     }
   })
@@ -60,7 +62,7 @@ describe("<DataGridFlow />", () => {
   const matchMedia = window.matchMedia;
   beforeEach(()=>{
     jest.clearAllMocks();
-    queryLSCDynamicFlowData.mockReset();
+    queryDynamicFlowData.mockReset();
     batchDynamicFlowCreate.mockReset();
     useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
@@ -103,7 +105,7 @@ describe("<DataGridFlow />", () => {
     });
     it.skip("Preview Modal onCreate Success", ()=>{
       const validFlowDataList = createFlowDataList(15);
-      queryLSCDynamicFlowData.mockResolvedValue(validFlowDataList);
+      queryDynamicFlowData.mockResolvedValue(validFlowDataList);
       batchDynamicFlowCreate.mockResolvedValue({
         flag: false,
         success: validFlowDataList,

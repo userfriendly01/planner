@@ -79,7 +79,7 @@ async function queryFlowData(accessToken, nextToken = null, graphQlApiUrl) {
  * @param {String} graphQlApiUrl Endpoint URL
  * @returns list of data and nextToken if any
  */
-export async function queryLSCDynamicFlowData(accessToken, graphQlApiUrl) {
+export async function queryDynamicFlowData(accessToken, graphQlApiUrl) {
   let result = {};
   try {
     const response = await fetch(graphQlApiUrl, {
@@ -90,7 +90,7 @@ export async function queryLSCDynamicFlowData(accessToken, graphQlApiUrl) {
       },
       body: JSON.stringify({
         query: `query MyQuery {
-  getCallFlowConfig(callFlowName: "LSC") {
+  getCallFlowConfig() {
     items {
       ... on Menu {
         allowBargeIn
