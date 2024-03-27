@@ -143,6 +143,7 @@ describe("flowTableService",()=>{
           })
         })
       );
+      await retrieveFlowData("12345","",1,"", insertRows);
       expect(insertRows).toHaveBeenCalledTimes(1);
       expect(insertRows).toHaveBeenCalledWith(jsonFlowData);
     });
