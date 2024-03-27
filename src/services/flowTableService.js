@@ -90,7 +90,7 @@ export async function queryDynamicFlowData(accessToken, graphQlApiUrl) {
       },
       body: JSON.stringify({
         query: `query MyQuery {
-  getCallFlowConfig() {
+  getCallFlowConfig {
     items {
       ... on Menu {
         allowBargeIn
