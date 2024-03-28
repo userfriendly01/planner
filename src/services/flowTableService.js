@@ -147,7 +147,6 @@ export async function queryLSCDynamicFlowData(accessToken, graphQlApiUrl) {
       })
     });
     result = await response.json();
-    logGraphQLErrors(response, "queryLSCDynamicFlowData");
   } catch (error) {
     logger.error("Error in queryLSCDynamicFlowData", { error }, false);
   }
@@ -175,7 +174,7 @@ async function retrieveFlowData(accessToken, graphQlApiUrl, counter = 1, nextTok
       result = await queryFunction(accessToken, nextToken, graphQlApiUrl);
 
       //retain if errors was true when it was passed in
-      errors = errors || logGraphQLErrors(result, "retrieveFlowData");
+      errors = errors || result.errors;
 
       const listItems = result.data?.listCctSharedCallFlowDbs?.items || [];
 
@@ -369,7 +368,6 @@ async function updateFlowDB(item, accessToken, graphQlApiUrl) {
     });
 
     response = await fetchResponse.json();
-    logGraphQLErrors(response, "updateFlowDB");
 
   } catch (error) {
     logger.error("Error in updateFlowDB", { error }, false);
@@ -445,7 +443,6 @@ async function addFlowRule(item, accessToken, graphQlApiUrl, curTime = new Date(
       })
     });
     response = await fetchResponse.json();
-    logGraphQLErrors(response, "addFlowRule");
   } catch (error) {
     logger.error("Error in Adding Flow Rule", { error }, false);
   }
@@ -519,7 +516,6 @@ async function deleteFlowRule(item, accessToken, graphQlApiUrl) {
       })
     });
     response = await fetchResponse.json();
-    logGraphQLErrors(response, "deleteFlowRule");
   } catch (error) {
     logger.error("Error in Deleting Flow Rule", { error }, false);
   }
@@ -584,7 +580,6 @@ async function flowBatchDelete(items, accessToken, graphQlApiUrl){
       body
     });
     response = await fetchResponse.json();
-    logGraphQLErrors(response, "flowBatchDelete");
   } catch (error) {
     logger.error("Error in Flow Batch Delete", { error }, false);
   }
@@ -725,7 +720,6 @@ const updateFlowBatchRun = async(items, accessToken, graphQlApiUrl) =>{
       })
     });
     const response = await fetchResponse.json();
-    logGraphQLErrors(response, "updateFlowBatchRun");
 
     return response;
   } catch (error) {
@@ -814,7 +808,7 @@ const buildResponse = allResults => {
 
   if(response.errors.length !== 0) {
     response.flag = true;
-    response.alertMsg = "Error Occurred while creating dynamic flowRecords";
+    response.alertMsg = "Errors occurred processing flow records";
   }
 
   return response;
@@ -928,7 +922,6 @@ const createDynamicFlowRunItem = async(items, accessToken, graphQlApiUrl) =>{
       })
     });
     response = await fetchResponse.json();
-    logGraphQLErrors(response.json(), "createDynamicFlowRunItem");
 
     logger.log("Create Batch Dynamic Flow DB Response:", response);
   } catch (error) {
@@ -1039,7 +1032,6 @@ const createFlowRunItem = async(items, accessToken, graphQlApiUrl) =>{
       })
     });
     response = await fetchResponse.json();
-    logGraphQLErrors(response, "createFlowRunItem");
 
     logger.log("Create Batch Flow DB Response:", response);
   } catch (error) {
@@ -1110,7 +1102,6 @@ async function queryDynamicFlowData(accessToken, nextToken = null, graphQlApiUrl
       })
     });
     result = await response.json();
-    logGraphQLErrors(result, "queryDynamicFlowData");
 
   } catch (error) {
     logger.error("Error in query Dynamic Flow Data", { error }, false);
@@ -1199,13 +1190,15 @@ async function updateDynamicFlowDB(item, accessToken, graphQlApiUrl) {
     });
 
     response = await fetchResponse.json();
-    logGraphQLErrors(response, "updateDynamicFlowDB");
+    logger.log("Update Dynamic Flow Rule Response:", response);
 
   } catch (error) {
     logger.error("Error in update Dynamic Flow DB", { error }, false);
   }
   return response;
 }
+
+//TODO why is employeeId in input, then checked again?  Should we remove it from initial def?
 function addDynamicFlowInput (item, dataRequestsPassed, currentTimePassed){
   const input = {
     brand: item.brand.value,
@@ -1279,7 +1272,6 @@ async function addDynamicFlowRule(item, accessToken, graphQlApiUrl, curTime = Ma
       })
     });
     response = await fetchResponse.json();
-    logGraphQLErrors(response, "addDynamicFlowRule");
 
     logger.log("Add Dynamic Flow Rule Response:", response);
   } catch (error) {
@@ -1309,8 +1301,8 @@ async function deleteDynamicFlowRule(item, accessToken, graphQlApiUrl) {
       },
       body: JSON.stringify({
         query: `
-          mutation deleteDynamicFlowDb($input:CctSharedCallFlowDbDelInput!) {
-            deleteDynamicFlowDb(input:$input){
+          mutation deletePhoneNumber($input:PhoneNumberDeleteInput!) {
+            deletePhoneNumber(input:$input){
               pkey
               skey
             }
@@ -1322,7 +1314,7 @@ async function deleteDynamicFlowRule(item, accessToken, graphQlApiUrl) {
       })
     });
     response = await fetchResponse.json();
-    logGraphQLErrors(response, "deleteDynamicFlowRule");
+    logger.log("Delete Dynamic Flow Rule Response:", response);
   } catch (error) {
     logger.error("Error in Deleting Dynamic Flow Rule", { error }, false);
   }
@@ -1331,48 +1323,45 @@ async function deleteDynamicFlowRule(item, accessToken, graphQlApiUrl) {
 async function batchDynamicDeleteItems(items,accessToken,graphQlApiUrl){
   var flowDeleteArray=[];
   const size=24;
-  const response = {
-    "success": [],
-    "flag": false,
-    "failure": []
-  };
 
   const itemsCopy = [...items];
   while (itemsCopy.length > 0){
     flowDeleteArray.push(itemsCopy.splice(0, size));
   }
-  for(const flowValue of flowDeleteArray){
-    const flowRespKeys = flowValue.map(x=>({ "pkey": x }));
-    const resp = await flowDynamicBatchDelete(flowRespKeys,accessToken,graphQlApiUrl);
 
-    resp?.errors?.forEach( y => response?.errors?.push(y));
-    resp?.success?.forEach( y => response?.success?.push(y));
-    resp?.failure?.forEach(y => response?.failure?.push(y));
+  const allResults = await Promise.all(
+    flowDeleteArray.map(
+      async flowValue => await flowDynamicBatchDelete(flowValue,accessToken,graphQlApiUrl)
+    )
+  );
+  const response = buildResponse(allResults);
 
-    if(resp?.errors){
-      console.error("%c %s %o", "color:yellow; background-color:black;", "Error while deleting the records", resp.errors);
-      response.flag = true;
-    }
-
-  }
+  logger.info("Delete Batch Flow DB Response:", { response });
   return response;
 }
 async function flowDynamicBatchDelete(items, accessToken, graphQlApiUrl){
+  const input = items.map(item=>{
+    return {
+      callFlowName: item.callFlowName,
+      phoneNumber: item.phoneNumber
+    };
+  });
+
   let response;
-  try{
+  try{ //TODO fix input parameter
     const body = JSON.stringify({
       query: `
-        mutation DeleteManyFlow {
-          batchDeleteDynamicFlowDb(input: {
-            pkey: ${JSON.stringify(items)}
-            }) {
-            items {
-              pkey
-            }
+      mutation batchDeletePhoneNumber(input: PhoneNumberDeleteBatchInput!) {
+        batchDeletePhoneNumber(input: $input) {
+          items {
+              phoneNumber
+              callFlowName
           }
         }
+      }
     `,
       variables: {
+        input: { batchDeletePhoneNumberInput: input }
       }
     }).replace(/\\"pkey\\":/g, "pkey:");
 
@@ -1385,7 +1374,7 @@ async function flowDynamicBatchDelete(items, accessToken, graphQlApiUrl){
       body
     });
     response = await fetchResponse.json();
-    logGraphQLErrors(response, "flowDynamicBatchDelete");
+    logger.log("Batch Delete Dynamic Flow Rule Response:", response);
 
   } catch (error) {
     logger.error("Error in Dynamic Flow Batch Delete", { error }, false);
@@ -1519,33 +1508,13 @@ const updateDynamicFlowBatchRun = async(items, accessToken, graphQlApiUrl) =>{
         }
       })
     });
-    const response = await fetchResponse.json();
-    logGraphQLErrors(response, "updateDynamicFlowBatchRun");
 
-    return response;
+    return await fetchResponse.json();
   } catch (error) {
     logger.error("Error in Update Batch Flow DB", { error });
     return { errors: [{ message: error }]};
   }
 };
-
-/**
- * 
- * @param {*} graphQLResult - the GraphQL response
- * @param {*} locationOfCall - the function name, to log the location of the error
- * @returns {boolean} true if there were errors
- */
-const logGraphQLErrors = (graphQLResult, locationOfCall) => {
-  let errors = false;
-  if(graphQLResult?.errors?.length > 0) {
-    errors = true;
-    graphQLResult.errors.forEach(err => {
-      logger.error(`Error in ${locationOfCall}`, err?.message, false);
-    });
-  }
-  return errors;
-};
-
 
 export {
   addFlowRule,
