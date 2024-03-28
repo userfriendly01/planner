@@ -53,6 +53,8 @@ const batchDeleteResponse = {
     }
   }
 };
+const curTime = "1971-05-25T04:00:00.000Z";
+const curTimeUnixEpoch = 43992000;
 
 describe("flowTableService",()=>{
   describe("AddFlow", ()=>{
@@ -837,6 +839,10 @@ describe("dynamicFlowTableService",()=> {
       flag: false,
       success: []
     };
+    beforeAll(() => {
+      jest.useFakeTimers("modern");
+      jest.setSystemTime(new Date(curTime));
+    });
     beforeEach(()=>{
       window.fetch = jest.fn(() =>
         Promise.resolve({
@@ -850,14 +856,16 @@ describe("dynamicFlowTableService",()=> {
     });
     test("Success",async()=>{
       const batchUpdateResponse = {
+        alertMsg: "",
+        errors: [],
         failure: [],
         flag: false,
-        success: []
+        success: [jsonFlowData]
       };
       const response = await batchDynamicFlowUpdate([{ ...jsonFlowData }],"1233-3245","http://localhost:3000");
       expect(response).toEqual(batchUpdateResponse);
       expect(window.fetch).toBeCalledWith("http://localhost:3000", {
-        "body": "{\"query\":\"\\n        mutation batchUpdatePhoneNumber(input: PhoneNumberCreateBatchInput!) {\\n          batchUpdatePhoneNumber(input: PhoneNumberCreateBatchInput!) {\\n            items {\\n                phone_number\\n                createTime\\n                updateTime\\n                nextActionType\\n                nextActionId\\n                dialedDescription\\n                phoneNumberType\\n                tfnRoutingGroup\\n                brand\\n                transferDestination\\n                channel\\n                predictiveCaller\\n                employeeId\\n                callTypeDescription\\n                internetPlacement\\n                lineOfBusiness\\n                marketingChannel\\n                rangeIndicator\\n                requestID\\n                tollFreeNumber\\n                transferCode\\n                whisper\\n              content{\\n                callFlowName\\n                callFlowTemplate\\n                callFlowType\\n                callIntent\\n                callFlowRoute\\n                callerType\\n                greetingMessages\\n                languageOffer\\n                dataRequests\\n                officeNumbers\\n            }\\n          }\\n        }\\n      \",\"variables\":{\"input\":{\"batchFlowUpdateInput\":[{\"phone_number\":\"\",\"createTime\":\"2022-24-08\",\"updateTime\":\"2024-01-30T05:00:00.000Z\",\"nextActionType\":\"\",\"nextActionId\":\"\",\"dialedDescription\":{\"value\":\"test\"},\"phoneNumberType\":\"\",\"tfnRoutingGroup\":\"\",\"brand\":{\"value\":\"LM\"},\"transferDestination\":\"\",\"channel\":{\"value\":\"Test1 Channel\"},\"predictiveCaller\":\"\",\"employeeId\":\"n1234567\",\"callTypeDescription\":\"\",\"internetPlacement\":\"\",\"lineOfBusiness\":\"\",\"marketingChannel\":\"\",\"rangeIndicator\":\"\",\"requestID\":\"\",\"tollFreeNumber\":\"\",\"transferCode\":\"\",\"whisper\":\"\",\"content\":{\"callFlowName\":\"\",\"callFlowTemplate\":\"\",\"callFlowType\":\"\",\"callIntent\":\"\",\"callFlowRoute\":\"test\",\"callerType\":\"test\",\"greetingMessages\":\"Hello Test Message\",\"languageOffer\":\"English\",\"dataRequests\":\"\",\"officeNumbers\":\"\"}}]}}}",
+        "body": "{\"query\":\"\\n        mutation batchCreatePhoneNumber($input: PhoneNumberCreateBatchInput!) {\\n          batchCreatePhoneNumber(input: $input) {\\n            items {\\n                phoneNumber\\n                callFlowName\\n                createTime\\n                updateTime\\n                nextActionType\\n                nextActionId\\n                callFlowTemplate\\n                dialedDescription\\n                phoneNumberType\\n                tfnRoutingGroup\\n                brand\\n                dataRequests\\n                greetingMessages\\n                languageOffer\\n                transferDestination\\n                callerType\\n                callFlowRoute\\n                callIntent\\n                callFlowType\\n                channel\\n                predictiveCaller\\n                employeeId\\n                callTypeDescription\\n                internetPlacement\\n                lineOfBusiness\\n                marketingChannel\\n                rangeIndicator\\n                requestID\\n                tollFreeNumber\\n                transferCode\\n                whisper\\n                officeNumbers\\n            }\\n          }\\n        }\\n      \",\"variables\":{\"input\":{\"batchPhoneNumberInput\":[{\"brand\":{\"value\":\"LM\"},\"channel\":{\"value\":\"Test1 Channel\"},\"createTime\":{\"value\":\"2022-24-08\"},\"dialedDescription\":{\"value\":\"test\"},\"employeeId\":{\"value\":\"n1234567\"},\"updateTime\":" + curTimeUnixEpoch + "}]}}}",
         "headers": {
           "Authorization": "1233-3245",
           "Content-Type": "application/json"
@@ -867,12 +875,16 @@ describe("dynamicFlowTableService",()=> {
     });
     test("Dynamic Error",async()=>{
       const batchUpdateResponse = {
-        failure: [{ ...jsonFlowData }],
+        alertMsg: "Errors occurred processing flow records",
+        errors: [{
+          message: Error("oops")
+        }],
+        failure: [jsonDynamicFlowData],
         flag: true,
         success: []
       };
       jest.spyOn(JSON, "stringify").mockImplementation(()=>{
-        throw new Error();
+        throw new Error("oops");
       });
       const response = await batchDynamicFlowUpdate([{ ...jsonDynamicFlowData }],"1233-3245","http://localhost:3000");
       expect(response).toEqual(batchUpdateResponse);
