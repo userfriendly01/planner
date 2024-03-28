@@ -529,27 +529,28 @@ async function batchDeleteItems(items,accessToken,graphQlApiUrl){
   var flowDeleteArray=[];
   const size=24;
   const response = {
+    "errors": [],
     "success": [],
     "flag": false,
     "failure": []
   };
-  while (items.length > 0){
-    flowDeleteArray.push(items.splice(0, size));
+
+  const itemsCopy = [...items];
+  while (itemsCopy.length > 0){
+    flowDeleteArray.push(itemsCopy.splice(0, size));
   }
   for(const flowValue of flowDeleteArray){
-    const successResponse=response.success;
-    const failureResponse= response.failure;
     const flowRespKeys = flowValue.map(x=>({ "pkey": x }));
-    await flowBatchDelete(flowValue,accessToken,graphQlApiUrl).then(resp=>{
-      if(!resp?.errors){
-        response.success = successResponse.concat(flowRespKeys);
-      }
-      else{
-        console.error("error while deleting the records", resp.errors);
-        response.failure = failureResponse.concat(flowRespKeys);
-        response.flag = true;
-      }
-    });
+    const resp = await flowBatchDelete(flowRespKeys,accessToken,graphQlApiUrl);
+
+    resp?.errors?.forEach( y => response?.errors?.push(y));
+    resp?.success?.forEach( y => response?.success?.push(y));
+    resp?.failure?.forEach(y => response?.failure?.push(y));
+
+    if(resp?.errors){
+      console.error("%c %s %o", "color:yellow; background-color:black;", "Error while deleting the records", resp.errors);
+      response.flag = true;
+    }
   }
   return response;
 }
@@ -610,26 +611,19 @@ const batchFlowUpdate = async(items, accessToken, graphQlApiUrl) =>{
   }
   const flowUpdateArray=[];
   const size = 25;
-  const response = {
-    success: [],
-    flag: false,
-    failure: []
-  };
-  while(items.length>0){
-    flowUpdateArray.push(items.splice(0,size));
+
+  const itemsCopy = [...items];
+  while(itemsCopy.length>0){
+    flowUpdateArray.push(itemsCopy.splice(0,size));
   }
-  flowUpdateArray.map(async flowUpdate =>{
-    const flowUpdateBatchRunResponse = await updateFlowBatchRun(flowUpdate, accessToken, graphQlApiUrl);
+  const allResults = await Promise.all(
+    flowUpdateArray.map(
+      async flowUpdate => await updateFlowBatchRun(flowUpdate, accessToken, graphQlApiUrl)
+    )
+  );
 
-    if(!flowUpdateBatchRunResponse?.errors){
-      response.success = response.success.concat(flowUpdate);
-    }
-    else{
-      response.failure = response.failure.concat(flowUpdate);
-      response.flag = true;
-    }
+  const response = buildResponse(allResults);
 
-  });
   logger.info("Update Batch Flow DB Response:", { response });
   return response;
 };
@@ -743,31 +737,22 @@ const updateFlowBatchRun = async(items, accessToken, graphQlApiUrl) =>{
 const batchFlowCreate = async(items, accessToken, graphQlApiUrl) =>{
   const flowCreateArray=[];
   const size = 25;
-  const response = {
-    success: [],
-    flag: false,
-    failure: [],
-    alertMsg: ""
-  };
+
   if(items.length === 0){
     response.flag=true,
     response.alertMsg = "Please Select Something to Add";
   }
-  while(items.length>0){
-    flowCreateArray.push(items.splice(0,size));
+  const itemsCopy = [...items];
+  while(itemsCopy.length>0){
+    flowCreateArray.push(itemsCopy.splice(0,size));
   }
-  flowCreateArray.map(async flowCreate =>{
-    const flowUpdateBatchRunResponse = await createFlowRunItem(flowCreate, accessToken, graphQlApiUrl);
-    if(!flowUpdateBatchRunResponse?.errors){
-      response.success = response.success.concat(flowCreate);
-    }
-    else{
-      response.failure = response.failure.concat(flowCreate);
-      response.flag = true;
-      response.alertMsg = "Error Occurred while creating Records";
-    }
+  const allResults = await Promise.all(
+    flowCreateArray.map(
+      async flowCreate => await createFlowRunItem(flowCreate, accessToken, graphQlApiUrl)
+    )
+  );
+  const response = buildResponse(allResults);
 
-  });
   logger.info("Create Batch Flow DB Response:", { response });
   return response;
 };
@@ -775,37 +760,55 @@ const batchFlowCreate = async(items, accessToken, graphQlApiUrl) =>{
 const batchDynamicFlowCreate = async(items, accessToken, graphQlApiUrl) =>{
   const dynamicFlowCreateArray=[];
   const size = 25;
-  const response = {
-    success: [],
-    flag: false,
-    failure: [],
-    alertMsg: ""
-  };
+
   if(items.length === 0){
     response.flag=true,
     response.alertMsg = "Please Select Something to Add";
   }
-  while(items.length>0){
-    dynamicFlowCreateArray.push(items.splice(0,size));
+
+  const itemsCopy = [...items];
+  while(itemsCopy.length>0){
+    dynamicFlowCreateArray.push(itemsCopy.splice(0,size));
   }
-  const allResults = await Promise.all(dynamicFlowCreateArray.map(async dynamicFlowCreate =>{
-    const dynamicFlowUpdateBatchRunResponse = await createDynamicFlowRunItem(dynamicFlowCreate, accessToken, graphQlApiUrl);
-    if(!dynamicFlowUpdateBatchRunResponse?.errors){
-      response.success = response.success.concat(dynamicFlowCreate);
-    }
-    else{
-      response.failure = response.failure.concat(dynamicFlowCreate);
-      response.flag = true;
-      response.alertMsg = "Error Occurred while creating dynamic flowRecords";
-    }
-    return dynamicFlowUpdateBatchRunResponse;
-  }));
+
+  const allResults = await Promise.all(
+    dynamicFlowCreateArray.map(
+      async dynamicFlowCreate => await createDynamicFlowRunItem(dynamicFlowCreate, accessToken, graphQlApiUrl)
+    )
+  );
+
+  const response = buildResponse(allResults);
+
+  logger.info("Create Dynamic Batch Flow DB Response:", { response });
+
+  return response;
+};
+
+/**
+ * Consolidate all of the command responses in a batch into 1 response object
+ * @param {any} allResults - a set results from all of the operations 
+ * @returns {any} a consolidated response object
+ */
+const buildResponse = allResults => {
+  const response = {
+    errors: [],
+    success: [],
+    flag: false,
+    failure: []
+  };
+
   allResults.forEach(x=>{
     x?.errors?.forEach( y => response?.errors?.push(y));
     x?.success?.forEach( y => response?.success?.push(y));
+    x?.failure?.forEach(y => response?.failure?.push(y));
   });
-  logger.info("Create Dynamic Batch Flow DB Response:", { response });
-  return response;
+
+  if(response.errors.length !== 0) {
+    response.flag = true;
+    response.alertMsg = "Error Occurred while creating dynamic flowRecords";
+
+    return response;
+  }
 };
 
 /**
@@ -1324,22 +1327,24 @@ async function batchDynamicDeleteItems(items,accessToken,graphQlApiUrl){
     "flag": false,
     "failure": []
   };
-  while (items.length > 0){
-    flowDeleteArray.push(items.splice(0, size));
+
+  const itemsCopy = [...items];
+  while (itemsCopy.length > 0){
+    flowDeleteArray.push(itemsCopy.splice(0, size));
   }
   for(const flowValue of flowDeleteArray){
-    const successResponse=response.success;
-    const failureResponse= response.failure;
     const flowRespKeys = flowValue.map(x=>({ "pkey": x }));
-    await flowDynamicBatchDelete(flowValue,accessToken,graphQlApiUrl).then(resp=>{
-      if(!resp?.errors){
-        response.success = successResponse.concat(flowRespKeys);
-      }
-      else{
-        response.failure = failureResponse.concat(flowRespKeys);
-        response.flag = true;
-      }
-    });
+    const resp = await flowDynamicBatchDelete(flowRespKeys,accessToken,graphQlApiUrl);
+
+    resp?.errors?.forEach( y => response?.errors?.push(y));
+    resp?.success?.forEach( y => response?.success?.push(y));
+    resp?.failure?.forEach(y => response?.failure?.push(y));
+
+    if(resp?.errors){
+      console.error("%c %s %o", "color:yellow; background-color:black;", "Error while deleting the records", resp.errors);
+      response.flag = true;
+    }
+
   }
   return response;
 }
@@ -1398,26 +1403,21 @@ const batchDynamicFlowUpdate = async(items, accessToken, graphQlApiUrl) =>{
   }
   const dynamicFlowUpdateArray=[];
   const size = 25;
-  const response = {
-    success: [],
-    flag: false,
-    failure: []
-  };
-  while(items.length>0){
-    dynamicFlowUpdateArray.push(items.splice(0,size));
-  }
-  await Promise.all(dynamicFlowUpdateArray.map(async flowUpdate =>{
-    const flowUpdateBatchRunResponse = await updateDynamicFlowBatchRun(flowUpdate, accessToken, graphQlApiUrl);
-    if(!flowUpdateBatchRunResponse?.errors){
-      response.success.push(flowUpdate);
-    }
-    else{
-      response.failure.push(flowUpdate);
-      response.flag = true;
-    }
 
-  }));
+  const itemsCopy = [...items];
+  while(itemsCopy.length>0){
+    dynamicFlowUpdateArray.push(itemsCopy.splice(0,size));
+  }
+  const allResults = await Promise.all(
+    dynamicFlowUpdateArray.map(
+      async flowUpdate =>await updateDynamicFlowBatchRun(flowUpdate, accessToken, graphQlApiUrl)
+    )
+  );
+
+  const response = buildResponse(allResults);
+
   logger.info("Update Batch Dynamic Flow DB Response:", { response });
+
   return response;
 };
 const updateDynamicFlowBatchRun = async(items, accessToken, graphQlApiUrl) =>{

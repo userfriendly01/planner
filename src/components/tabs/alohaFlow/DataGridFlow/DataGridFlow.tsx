@@ -366,14 +366,17 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         msg: response?.alertMsg || "Error while creating the records.",
         severityType: "error"
       }));
-    } else {
-      setAlertBar((alertBarProps: AlertBarProps) => ({
-        ...alertBarProps,
-        open: true,
-        msg: "Flow Rules have been successfully created.",
-        severityType: "success"
-      }));
+
+      return;
     }
+
+    setAlertBar((alertBarProps: AlertBarProps) => ({
+      ...alertBarProps,
+      open: true,
+      msg: "Flow Rules have been successfully created.",
+      severityType: "success"
+    }));
+
     setSelectedList([...response.failure]);
     const filteredItems = [...dataFlow.filteredItems, ...response.success];
     const filteredData = [...dataFlow.data, ...response.success];
@@ -381,7 +384,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       ...dataFlow,
       ...filteredItems && { filteredItems },
       data: filteredData,
-      isPreviewModalOpen: false
+      isPreviewModalOpen: response?.flag
     });
     apiRef.current.setRowSelectionModel([]);
   };
@@ -419,16 +422,19 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         msg: "Error while updating the records.",
         severityType: "error"
       }));
-    } else {
-      setAlertBar((alertBarProps: AlertBarProps) => ({
-        ...alertBarProps,
-        open: true,
-        msg: "Flow Rules have been successfully updated.",
-        severityType: "success"
-      }));
 
-      await batchDeleteItems(outOfSyncRows, accessToken, graphQLEndpoint);
+      return;
     }
+
+    setAlertBar((alertBarProps: AlertBarProps) => ({
+      ...alertBarProps,
+      open: true,
+      msg: "Flow Rules have been successfully updated.",
+      severityType: "success"
+    }));
+
+    await batchDeleteItems(outOfSyncRows, accessToken, graphQLEndpoint);
+
 
     const filteredItems = dataFlow.filteredItems.map(x=> {
       const fi = response.success.filter(r=> r.pkey === x.pkey);
@@ -467,14 +473,16 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         msg: "Error deleting records.",
         severityType: "error"
       }));
-    } else {
-      setAlertBar((alertBarProps: AlertBarProps) => ({
-        ...alertBarProps,
-        open: true,
-        msg: "Flow Rules have been successfully deleted.",
-        severityType: "success"
-      }));
+
+      return;
     }
+    setAlertBar((alertBarProps: AlertBarProps) => ({
+      ...alertBarProps,
+      open: true,
+      msg: "Flow Rules have been successfully deleted.",
+      severityType: "success"
+    }));
+
     const selectedRowsData = response?.failure?.map(x=>dataFlow.filteredItems.find((row: CctSharedCallFlowDb)=>row.pkey === x.pkey));
     setSelectedList(selectedRowsData);
     const deletedIds = response?.success?.map((x:any) => x.pkey);

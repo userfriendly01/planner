@@ -123,7 +123,7 @@ export const batchDeleteItems = async (
 ): Promise<BatchResponse> =>  {
 
   const response = await v1BatchDeleteItems(items.map(x => x.pkey), accessToken, graphQlApiUrl) as BatchResponse;
-  const response2 = await v2BatchDeleteItems(items, accessToken, graphQlApiUrl)as BatchResponse;
+  const response2 = await v2BatchDeleteItems(items.map(x => x.pkey), accessToken, graphQlApiUrl)as BatchResponse;
 
   response2.failure.forEach(x => response.failure.push(x));
   response2.success.forEach(x => response.success.push(x));
