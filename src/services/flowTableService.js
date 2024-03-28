@@ -820,11 +820,11 @@ const buildResponse = allResults => {
   };
 
   allResults.forEach(x=>{
-    x.result.errors?.forEach( y => response?.errors?.push(y));
-    if(x.result.errors && x.result.errors.length !== 0) {
+    x.result?.errors?.forEach( y => response?.errors?.push(y));
+    if(x.result?.errors && x.result.errors.length !== 0) {
       x.records.forEach(z => response.failure.push(z));
     } else {
-      x.records.forEach(z => response.success.push(z));
+      x.records?.forEach(z => response.success.push(z));
     }
   });
 

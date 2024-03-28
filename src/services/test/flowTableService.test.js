@@ -1,7 +1,23 @@
 import { act } from "@testing-library/react";
 import  {
-  retrieveFlowData, addFlowRule, deleteFlowRule, updateFlowDB, flowBatchDelete, queryFlowData, batchDeleteItems, batchFlowUpdate, batchFlowCreate,
-  retrieveDynamicFlowData, addDynamicFlowRule, deleteDynamicFlowRule, updateDyanmicFlowDB, queryDynamicFlowData, batchDeleteDynamicItems, batchDynamicFlowUpdate, flowDynamicBatchDelete, batchDynamicFlowCreate
+  addDynamicFlowRule,
+  addFlowRule,
+  batchDeleteItems,
+  batchDynamicDeleteItems,
+  batchDynamicFlowCreate,
+  batchDynamicFlowUpdate,
+  batchFlowCreate,
+  batchFlowUpdate,
+  deleteDynamicFlowRule,
+  deleteFlowRule,
+  flowBatchDelete,
+  flowDynamicBatchDelete,
+  queryDynamicFlowData,
+  queryFlowData,
+  retrieveDynamicFlowData,
+  retrieveFlowData,
+  updateDynamicFlowDB,
+  updateFlowDB
 }  from "../flowTableService";
 
 const jsonDynamicFlowData = {
@@ -767,7 +783,7 @@ describe("dynamicFlowTableService",()=> {
         pkey: 1,
         employeeId: "n123453"
       };
-      const updateDynamicFlow = await updateDyanmicFlowDB(item,"1233-3245","http://localhost:3000");
+      const updateDynamicFlow = await updateDynamicFlowDB(item,"1233-3245","http://localhost:3000");
       expect(updateDynamicFlow).toBeTruthy();
     });
     test("Testing the Update DynamicFlowRule error",async()=>{
@@ -777,7 +793,7 @@ describe("dynamicFlowTableService",()=> {
       jest.spyOn(JSON, "stringify").mockImplementation(()=>{
         throw new Error();
       });
-      const updateDynamicFlow = await updateDyanmicFlowDB(dynamicItem,"1233-3245","http://localhost:3000");
+      const updateDynamicFlow = await updateDynamicFlowDB(dynamicItem,"1233-3245","http://localhost:3000");
       expect(updateDynamicFlow).toBeUndefined();
     });
   });
@@ -798,7 +814,7 @@ describe("dynamicFlowTableService",()=> {
       const response = await flowDynamicBatchDelete(batchDeleteDyamicItemsList,"1233-3245","http://localhost:3000");
       expect(response).toBe(batchDeleteResponse);
       expect(window.fetch).toBeCalledWith("http://localhost:3000", {
-        "body": "{\"query\":\"\\n        mutation deletePhoneNumber(phoneNumber: String!, skey: String!) {\\n            deletePhoneNumber(phoneNumber: String!, skey: String!){\\n              pkey\\n              skey\\n            }\\n          }\\n    \",\"variables\":{}}",
+        "body": "{\"query\":\"\\n      mutation batchDeletePhoneNumber(input: PhoneNumberDeleteBatchInput!) {\\n        batchDeletePhoneNumber(input: $input) {\\n          items {\\n              phoneNumber\\n              callFlowName\\n          }\\n        }\\n      }\\n    \",\"variables\":{\"input\":{\"batchDeletePhoneNumberInput\":[{},{},{}]}}}",
         "headers": {
           "Authorization": "1233-3245",
           "Content-Type": "application/json"
@@ -809,7 +825,7 @@ describe("dynamicFlowTableService",()=> {
     test("batch Dynamic Delete",async()=>{
       const batchDeleteDyamicItemsList = ["pkey1","pkey1","pkey3"];
       await flowDynamicBatchDelete(batchDeleteDyamicItemsList,"1233-3245","http://localhost:3000");
-      const response=batchDeleteDynamicItems(batchDeleteDyamicItemsList,"3245","http://localhost:3000");
+      const response=batchDynamicDeleteItems(batchDeleteDyamicItemsList,"3245","http://localhost:3000");
       act(()=>{
         expect(response).toBeTruthy();
       });
@@ -828,7 +844,7 @@ describe("dynamicFlowTableService",()=> {
         throw new Error();
       });
       await flowDynamicBatchDelete(batchDeleteItemsList,"1233-3245","http://localhost:3000");
-      const response = await batchDeleteDynamicItems(batchDeleteDyamicItemsList,"3245","http://localhost:3000");
+      const response = await batchDynamicDeleteItems(batchDeleteDyamicItemsList,"3245","http://localhost:3000");
       expect(response).toBeTruthy();
     });
   });
