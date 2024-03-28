@@ -613,7 +613,12 @@ const batchFlowUpdate = async(items, accessToken, graphQlApiUrl) =>{
   }
   const allResults = await Promise.all(
     flowUpdateArray.map(
-      async flowUpdate => await updateFlowBatchRun(flowUpdate, accessToken, graphQlApiUrl)
+      async flowUpdate => {
+        return {
+          records: flowUpdate,
+          result: await updateFlowBatchRun(flowUpdate, accessToken, graphQlApiUrl)
+        };
+      }
     )
   );
 
@@ -747,7 +752,12 @@ const batchFlowCreate = async(items, accessToken, graphQlApiUrl) =>{
   }
   const allResults = await Promise.all(
     flowCreateArray.map(
-      async flowCreate => await createFlowRunItem(flowCreate, accessToken, graphQlApiUrl)
+      async flowCreate => {
+        return {
+          records: flowCreate,
+          result: await createFlowRunItem(flowCreate, accessToken, graphQlApiUrl)
+        };
+      }
     )
   );
   const response = buildResponse(allResults);
@@ -776,7 +786,12 @@ const batchDynamicFlowCreate = async(items, accessToken, graphQlApiUrl) =>{
 
   const allResults = await Promise.all(
     dynamicFlowCreateArray.map(
-      async dynamicFlowCreate => await createDynamicFlowRunItem(dynamicFlowCreate, accessToken, graphQlApiUrl)
+      async dynamicFlowCreate => {
+        return {
+          records: dynamicFlowCreate,
+          result: await createDynamicFlowRunItem(dynamicFlowCreate, accessToken, graphQlApiUrl)
+        };
+      }
     )
   );
 
@@ -794,19 +809,23 @@ const batchDynamicFlowCreate = async(items, accessToken, graphQlApiUrl) =>{
  */
 const buildResponse = allResults => {
   const response = {
+    alertMsg: "",
     errors: [],
-    success: [],
+    failure: [],
     flag: false,
-    failure: []
+    success: []
   };
 
   allResults.forEach(x=>{
-    x?.errors?.forEach( y => response?.errors?.push(y));
-    x?.success?.forEach( y => response?.success?.push(y));
-    x?.failure?.forEach(y => response?.failure?.push(y));
+    x.result.errors?.forEach( y => response?.errors?.push(y));
+    if(x.result.errors && x.result.errors.length !== 0) {
+      x.records.forEach(z => response.failure.push(z));
+    } else {
+      x.records.forEach(z => response.success.push(z));
+    }
   });
 
-  if(response.errors.length !== 0) {
+  if(response.failure.length !== 0) {
     response.flag = true;
     response.alertMsg = "Errors occurred processing flow records";
   }
@@ -1331,7 +1350,12 @@ async function batchDynamicDeleteItems(items,accessToken,graphQlApiUrl){
 
   const allResults = await Promise.all(
     flowDeleteArray.map(
-      async flowValue => await flowDynamicBatchDelete(flowValue,accessToken,graphQlApiUrl)
+      async flowValue => {
+        return {
+          records: flowValue,
+          result: await flowDynamicBatchDelete(flowValue, accessToken, graphQlApiUrl)
+        };
+      }
     )
   );
   const response = buildResponse(allResults);
@@ -1408,7 +1432,12 @@ const batchDynamicFlowUpdate = async(items, accessToken, graphQlApiUrl) =>{
   }
   const allResults = await Promise.all(
     dynamicFlowUpdateArray.map(
-      async flowUpdate =>await updateDynamicFlowBatchRun(flowUpdate, accessToken, graphQlApiUrl)
+      async flowUpdate => {
+        return {
+          records: flowUpdate,
+          result: await updateDynamicFlowBatchRun(flowUpdate, accessToken, graphQlApiUrl)
+        };
+      }
     )
   );
 

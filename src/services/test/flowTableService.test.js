@@ -4,6 +4,28 @@ import  {
   retrieveDynamicFlowData, addDynamicFlowRule, deleteDynamicFlowRule, updateDyanmicFlowDB, queryDynamicFlowData, batchDeleteDynamicItems, batchDynamicFlowUpdate, flowDynamicBatchDelete, batchDynamicFlowCreate
 }  from "../flowTableService";
 
+const jsonDynamicFlowData = {
+  brand: "LM",
+  callFlowTemplate: "temp",
+  channel: "Test1 Channel",
+  content: {
+    callFlowRoute: "test",
+    callIntent: "",
+    callerType: "test",
+    dataRequests: "test1,test2",
+    greetingMessages: "Hello Test Message",
+    languageOffer: "English",
+    officeNumbers: []
+  },
+  createTime: "2022-24-08",
+  dialedDescription: "test",
+  employeeId: "n1234567",
+  pkey: "12345",
+  transferNumber: "123456789",
+  updateTime: "2024-01-30T05:00:00.000Z",
+  userDestination: "dest"
+};
+
 const jsonFlowData = {
   pkey: { value: "12345" },
   brand: { value: "LM" },
@@ -21,7 +43,6 @@ const jsonFlowData = {
   languageOffer: { value: "English" },
   transferNumber: { value: "123456789" }
 };
-
 const batchDeleteItemsList = ["pkey1","pkey1","pkey3"];
 
 const batchDeleteResponse = {
@@ -851,7 +872,7 @@ describe("dynamicFlowTableService",()=> {
       jest.spyOn(JSON, "stringify").mockImplementation(()=>{
         throw new Error();
       });
-      const response = await batchDynamicFlowUpdate([{ ...jsonFlowData }],"1233-3245","http://localhost:3000");
+      const response = await batchDynamicFlowUpdate([{ ...jsonDynamicFlowData }],"1233-3245","http://localhost:3000");
       expect(response).toEqual(batchUpdateResponse);
     });
     test("Call with an Empty List", async()=>{
@@ -888,63 +909,13 @@ describe("dynamicFlowTableService",()=> {
     test("Success",async()=>{
       const batchCreateResponse = {
         "alertMsg": "",
+        "errors": [],
         "failure": [],
         "flag": false,
-        "success": [
-          {
-            "agentId": {
-              "value": "123455"
-            },
-            "brand": {
-              "value": "LM"
-            },
-            "callFlowRoute": {
-              "value": "test"
-            },
-            "callFlowTemplate": {
-              "value": "temp"
-            },
-            "callerType": {
-              "value": "test"
-            },
-            "channel": {
-              "value": "Test1 Channel"
-            },
-            "createTime": {
-              "value": "2022-24-08"
-            },
-            "dataRequests": {
-              "value": "test1,test2"
-            },
-            "dialedDescription": {
-              "value": "test"
-            },
-            "employeeId": {
-              "value": "n1234567"
-            },
-            "greetingMessages": {
-              "value": "Hello Test Message"
-            },
-            "languageOffer": {
-              "value": "English"
-            },
-            "pkey": {
-              "value": "12345"
-            },
-            "transferNumber": {
-              "value": "123456789"
-            },
-            "updateTime": {
-              "value": "2024-01-30T05:00:00.000Z"
-            },
-            "userDestination": {
-              "value": "dest"
-            }
-          }
-        ]
+        "success": [jsonDynamicFlowData]
       };
       //TODO shouldn't the graphql mutation by createPhoneNumber
-      const response = await batchDynamicFlowCreate([{ ...jsonFlowData }],"1233-3245","http://localhost:3000");
+      const response = await batchDynamicFlowCreate([{ ...jsonDynamicFlowData }],"1233-3245","http://localhost:3000");
       expect(response).toEqual(batchCreateResponse);
       expect(window.fetch).toBeCalledWith("http://localhost:3000", {
         "body": "{\"query\":\"\\n        mutation createCallFlowConfig($input: CallFlowConfigInput! ) {\\n          createCallFlowConfig(input: $input) {\\n              callFlowName\\n            }\\n          }\\n      \",\"variables\":{\"input\":{\"announcements\":[],\"menus\":[],\"menuOptions\":[]}}}",
