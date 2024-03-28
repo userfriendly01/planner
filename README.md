@@ -34,13 +34,33 @@ git clone https://github.com/lmigtech/cicct-softphone-admin-ui.git
 npm install
 ```
 
+### Creating the env.js file
+
+You'll want to copy the `example.env.js` file into the `dist` folder as `env.js`. This file contents
+should look something like this:
+
+`dist/env.js`:
+```js
+window.env = {
+  APP_ENV: "local",
+  DATADOG_APPLICATION_ID: "<${secret.datadog.applicationId} in cloudforge>",
+  DATADOG_CLIENT_TOKEN: "<${secret.datadog.clientToken} in cloudforge>",
+  AZURE_CLIENT_ID: "<${secret.cicct-softphone-admin-ui.id} in cloudforge>",
+  AZURE_REDIRECT_URI: "http://localhost:8082/triton-admin",
+  TROUX_ID: "<${forge.troux_application_uuid} in cloudforge>",
+  GRAPH_API_URL: "https://tgufpgkyxvacrntvgb75iuo3pi.appsync-api.us-east-1.amazonaws.com/graphql"
+};
+```
+
+Get the secret values from CloudForge and replace the <> items above. Now you're ready to continue on your journey :)
+
 ### Running the Admin UI Locally
 Running locally requires that you also have locally running instances of two other repositories:
 * [cicct-user-gateway](https://github.com/lmigtech/cicct-user-gateway)
 * [cicct-softphone-service](https://github.com/lmigtech/cicct-softphone-service)
 
 Download, build, and run these services as described in their respective readme files, before starting
-the Admin UI.
+the Admin UI. 
 
 #### Starting the Admin UI
 ```
@@ -63,7 +83,7 @@ to the [TIPS readme file](./documentation/TIPS.md)
 
 #### Authentication
 
-This app uses PING authentication in a deployed state when `NODE_ENV=production`.
+This app uses PING and Azure authentication in a deployed state when `NODE_ENV=production`.
 When running locally you should have `NODE_ENV=development` and the application will simply bypass 
 the authentication middleware in the `cicct-softphone-service` application.
 
