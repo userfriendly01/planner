@@ -41,7 +41,7 @@ export const retrieveFlowData = async (
   const firstLoad = await v2RetrieveFlowData(accessToken, graphQlApiUrl, counter, nextToken, rowInsert) as any;
   const secondLoad = await v1RetrieveFlowData(accessToken, graphQlApiUrl, firstLoad.counter, null, rowInsert, firstLoad.flowData) as any;
 
-  return !secondLoad.errors;
+  return !(firstLoad.errors || secondLoad.errors);
 };
 
 export type BatchResponse = {

@@ -165,16 +165,19 @@ export async function queryLSCDynamicFlowData(accessToken, graphQlApiUrl) {
  * @param {object} queryFunction - the query function used in this function that will retrieve the records
  * @returns {object} the counter and the flowData
  */
-async function retrieveFlowData(accessToken, graphQlApiUrl, counter = 1, nextToken = null, rowInsert, flowData = [], errors = false, queryFunction = queryFlowData) {
+async function retrieveFlowData(accessToken, graphQlApiUrl, counter = 1, nextToken = null, rowInsert, flowData = [], queryFunction = queryFlowData) {
   let result = {};
+  let errors = false;
+
   try {
     let firstLoop = true;
     while (nextToken || counter === 1 || firstLoop) {
       firstLoop = false;
       result = await queryFunction(accessToken, nextToken, graphQlApiUrl);
 
-      //retain if errors was true when it was passed in
-      errors = errors || result.errors;
+      if (result.errors && result.errors.length !==0) {
+        errors = true;
+      }
 
       const listItems = result.data?.listCctSharedCallFlowDbs?.items || [];
 
@@ -1134,8 +1137,8 @@ async function queryDynamicFlowData(accessToken, nextToken = null, graphQlApiUrl
  * @param {String} graphQlApiUrl Endpoint URL
  * @returns {flowData} list of data contain all the result present in DB
  */
-async function retrieveDynamicFlowData(accessToken, graphQlApiUrl, counter = 1, nextToken = null, rowInsert, flowData = [], errors = false) {
-  return retrieveFlowData(accessToken, graphQlApiUrl, counter, nextToken, rowInsert, flowData, errors, queryDynamicFlowData);
+async function retrieveDynamicFlowData(accessToken, graphQlApiUrl, counter = 1, nextToken = null, rowInsert, flowData = []) {
+  return retrieveFlowData(accessToken, graphQlApiUrl, counter, nextToken, rowInsert, flowData, queryDynamicFlowData);
 }
 
 function updateDynamicFlowInput(item){
