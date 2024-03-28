@@ -407,10 +407,11 @@ describe("flowTableService",()=>{
     });
     test("Success",async()=>{
       const batchUpdateResponse = {
+        alertMsg: "",
         errors: [],
         failure: [],
         flag: false,
-        success: []
+        success: [jsonFlowData]
       };
       const response = await batchFlowUpdate([{ ...jsonFlowData }],"1233-3245","http://localhost:3000");
       expect(response).toEqual(batchUpdateResponse);
@@ -471,10 +472,11 @@ describe("flowTableService",()=>{
     });
     test("Success",async()=>{
       const batchCreateResponse = {
+        alertMsg: "",
         errors: [],
         failure: [],
         flag: false,
-        success: []
+        success: [jsonFlowData]
       };
       const response = await batchFlowCreate([{ ...jsonFlowData }],"1233-3245","http://localhost:3000");
       expect(response).toEqual(batchCreateResponse);
