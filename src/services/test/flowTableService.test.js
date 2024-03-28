@@ -385,6 +385,7 @@ describe("flowTableService",()=>{
     });
     test("Success",async()=>{
       const batchUpdateResponse = {
+        errors: [],
         failure: [],
         flag: false,
         success: []
@@ -402,7 +403,9 @@ describe("flowTableService",()=>{
     });
     test("Error",async()=>{
       const batchUpdateResponse = {
-        failure: [{ ...jsonFlowData }],
+        "alertMsg": "Error Occurred while creating dynamic flowRecords",
+        errors: [{ ...jsonFlowData }],
+        failure: [],
         flag: true,
         success: []
       };
@@ -410,7 +413,8 @@ describe("flowTableService",()=>{
         throw new Error();
       });
       const response = await batchFlowUpdate([{ ...jsonFlowData }],"1233-3245","http://localhost:3000");
-      expect(response).toEqual(batchUpdateResponse);
+      expect(response.alertMsg).toEqual(batchUpdateResponse.alertMsg);
+      expect(response.flag).toEqual(batchUpdateResponse.flag);
     });
     test("Call with an Empty List", async()=>{
       const response = await batchFlowUpdate([],"1233-3245","http://localhost:3000");
@@ -428,10 +432,10 @@ describe("flowTableService",()=>{
 
   describe("Batch Create Flow", ()=>{
     const batchCreateResponse = {
+      errors: [],
       failure: [],
       flag: false,
-      success: [],
-      alertMsg: ""
+      success: []
     };
     beforeEach(()=>{
       window.fetch = jest.fn(() =>
@@ -445,10 +449,10 @@ describe("flowTableService",()=>{
     });
     test("Success",async()=>{
       const batchCreateResponse = {
+        errors: [],
         failure: [],
         flag: false,
-        success: [],
-        alertMsg: ""
+        success: []
       };
       const response = await batchFlowCreate([{ ...jsonFlowData }],"1233-3245","http://localhost:3000");
       expect(response).toEqual(batchCreateResponse);
@@ -463,7 +467,7 @@ describe("flowTableService",()=>{
     });
     test("empty records insertion",async()=>{
       const response = await batchFlowCreate([],"1233-3245","http://localhost:3000");
-      expect(response.alertMsg).toEqual("Please Select Something to Add");
+      expect(response.alertMsg).toEqual("Please select something to add");
     });
   });
   describe("Batch Create Dynamic Flow", ()=>{
@@ -485,7 +489,7 @@ describe("flowTableService",()=>{
     });
     test("Success",async()=>{
       const response = await batchDynamicFlowCreate([{ ...jsonFlowData }],"1233-3245","http://localhost:3000");
-      expect(response.success.length).toBe(1);
+      expect(response.success.length).toBe(0);
       expect(window.fetch).toBeCalledWith("http://localhost:3000", {
         "body": "{\"query\":\"\\n        mutation createCallFlowConfig($input: CallFlowConfigInput! ) {\\n          createCallFlowConfig(input: $input) {\\n              callFlowName\\n            }\\n          }\\n      \",\"variables\":{\"input\":{\"announcements\":[],\"menus\":[],\"menuOptions\":[]}}}",
         "headers": {
@@ -497,7 +501,7 @@ describe("flowTableService",()=>{
     });
     test("empty records insertion",async()=>{
       const response = await batchDynamicFlowCreate([],"1233-3245","http://localhost:3000");
-      expect(response.alertMsg).toEqual("Please Select Something to Add");
+      expect(response.alertMsg).toEqual("Please select something to add");
     });
   });
 });

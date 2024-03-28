@@ -560,7 +560,7 @@ async function routingBatchCreate(items, accessToken, graphQlApiUrl){
     alertMsg: ""
   };
   if(items.length === 0){
-    response.alertMsg="Please Select Something to Add";
+    response.alertMsg="Please select something to add";
     response.flag = true;
   }
   while (items.length > 0){

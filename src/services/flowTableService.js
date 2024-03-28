@@ -739,8 +739,13 @@ const batchFlowCreate = async(items, accessToken, graphQlApiUrl) =>{
   const size = 25;
 
   if(items.length === 0){
-    response.flag=true,
-    response.alertMsg = "Please Select Something to Add";
+    return {
+      alertMsg: "Please select something to add",
+      errors: [],
+      failure: [],
+      flag: true,
+      success: []
+    };
   }
   const itemsCopy = [...items];
   while(itemsCopy.length>0){
@@ -762,10 +767,14 @@ const batchDynamicFlowCreate = async(items, accessToken, graphQlApiUrl) =>{
   const size = 25;
 
   if(items.length === 0){
-    response.flag=true,
-    response.alertMsg = "Please Select Something to Add";
+    return {
+      alertMsg: "Please select something to add",
+      errors: [],
+      failure: [],
+      flag: true,
+      success: []
+    };
   }
-
   const itemsCopy = [...items];
   while(itemsCopy.length>0){
     dynamicFlowCreateArray.push(itemsCopy.splice(0,size));
@@ -806,9 +815,9 @@ const buildResponse = allResults => {
   if(response.errors.length !== 0) {
     response.flag = true;
     response.alertMsg = "Error Occurred while creating dynamic flowRecords";
-
-    return response;
   }
+
+  return response;
 };
 
 /**
