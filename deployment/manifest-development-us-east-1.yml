@@ -3,16 +3,19 @@ applications:
   routes:
     - route: cicct-softphone-admin-ui-development.us-east-1.np.paas.lmig.com
   buildpack: nodejs_current
-  command: node server.js
+  command: node createEnvFile.js && node server.js
   instances: 1
   memory: 2048M
   timeout: 600
   env:
     NODE_ENV: production
+    APP_ENV: development
     DATADOG_APPLICATION_ID: ${secret.datadog.applicationId}
     DATADOG_CLIENT_TOKEN: ${secret.datadog.clientToken}
+    AZURE_CLIENT_ID: ${secret.cicct-softphone-admin-ui.id}
     TROUX_ID: ${forge.troux_application_uuid}
-    APP_ENV: development
+    AZURE_REDIRECT_URI: https://triton-dev.lmig.com/triton-admin
+    GRAPH_API_URL: https://tgufpgkyxvacrntvgb75iuo3pi.appsync-api.us-east-1.amazonaws.com/graphql
   services:
     - everyday-curfew
   blue-green:

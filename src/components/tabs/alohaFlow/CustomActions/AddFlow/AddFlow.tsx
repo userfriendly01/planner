@@ -42,7 +42,6 @@ import {
   cleanErrorMessage,
   flowDropDownList,
   flowType,
-  getGraphQLEndpoint,
   initializedAlertBar,
   languageOffer,
   nextActionType,
@@ -58,6 +57,7 @@ import {
 } from "globals";
 import { AddOrView } from "../CustomActionsCommon/AddOrView";
 import { FloatingHeader } from "@lmig/lmds-react-floating-header";
+
 export interface AddFlowModalProps {
   isOpen: boolean;
   newId: number;
@@ -71,7 +71,6 @@ export const AddFlow = ({
   accessToken, isOpen = false, openAddModal, cloneType, flowRuleCloned, duplicateCheck
 }: AddFlowModalProps & AzureSPA):JSX.Element => {
 
-  const graphQlApiUrl: string = getGraphQLEndpoint();
   const [flowRule, setFlowRule] = useState({ ...initRule });
   const [dropDownValues, setDropDownValues] = useState(flowDropDownList);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
@@ -87,7 +86,7 @@ export const AddFlow = ({
       if (masterData !== undefined && masterData !== null) {
         masterDataObject = JSON.parse(masterData);
       } else {
-        await retrieveFlowData(accessToken, graphQlApiUrl,1, null, getGridMasterData);
+        await retrieveFlowData(accessToken,1, null, getGridMasterData);
         masterDataObject = getGridMasterData();
       }
       setDropDownValues((dropDownValuesProps: FlowDropDownList) => ({
@@ -228,7 +227,7 @@ export const AddFlow = ({
         }));
         return;
       }
-      addFlowRule(flowRule, accessToken, graphQlApiUrl, curTime, dataRequests).then(apiResponse => {
+      addFlowRule(flowRule, accessToken, curTime, dataRequests).then(apiResponse => {
         if (!apiResponse.errors) {
           const newFlowRule: CctSharedCallFlowDb = {
             pkey: flowRule.pkey.value,

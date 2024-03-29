@@ -22,10 +22,7 @@ import {
   NavTabs,
   NotificationModal
 } from "components";
-import {
-  useAdminState,
-  useAdminDispatch
-} from "context";
+import { useAdminDispatch } from "context";
 import {
   apiPaths,
   theme,
@@ -36,7 +33,6 @@ import React, {
   useEffect,
   useState
 } from "react";
-import { getAzureSPAClientId } from "utils";
 import {
   BrowserRouter, Routes, Route
 } from "react-router-dom";
@@ -64,10 +60,7 @@ const authenticateAndStartup = dispatch => new Promise((resolve, reject) => myAx
           authenticationProfiles
         }
       });
-      resolve({
-        ...authenticationProfiles,
-        azureClientId: getAzureSPAClientId(pingIdentity.environment)
-      });
+      resolve(authenticationProfiles);
     }).catch(error => {
       const msg = "An error occurred on startup";
       reject({
@@ -89,21 +82,17 @@ const authenticateAndStartup = dispatch => new Promise((resolve, reject) => myAx
 );
 
 const App = () => {
-
   const [loadResult, setLoadResult] = useState({
-    azureClientId: null,
     home: null,
     status: null
   });
   const [showModal, setShowModal] = useState(false);
-  const state = useAdminState();
   const dispatch = useAdminDispatch();
 
   useEffect(() => {
     authenticateAndStartup(dispatch)
       .then(authenticationProfiles => {
         setLoadResult({
-          azureClientId: authenticationProfiles.azureClientId,
           home: authenticationProfiles[0].home,
           status: success
         });
@@ -129,10 +118,9 @@ const App = () => {
             <Header />
             <NavTabs />
             <Routes>
-              <Route path="/triton-admin" element={<loadResult.home state={state} azureClientId={loadResult.azureClientId} />} />
-              {getRoutes(state, loadResult.azureClientId).map(r => {
-                const Component = r.element || r.render;
-                return <Route key={r.path} path={r.path} element={<Component />} />;
+              <Route path="/triton-admin" element={<loadResult.home />} />
+              {getRoutes().map(r => {
+                return <Route key={r.path} path={r.path} element={<r.Component />} />;
               })}
             </Routes>
             <Modal onClose={() => { return; }} open={showModal === true}>

@@ -1,20 +1,19 @@
 /* eslint-disable no-console */
-
+import { env } from "globals";
 import { logger } from "utils";
 
 /**
  * This is the function use to query the appsync API to get the data from DB
  * @param {String} accessToken OAuth tokent to use while calling graphql query
  * @param {String} nextToken Token for next set of data
- * @param {String} graphQlApiUrl Endpoint URL
  * @returns list of data and nextToken if any
  */
-async function queryFlowData(accessToken, nextToken = null, graphQlApiUrl) {
+async function queryFlowData(accessToken, nextToken = null) {
   let result = {
     errors: []
   };
   try {
-    const response = await fetch(graphQlApiUrl, {
+    const response = await fetch(env.GRAPH_API_URL, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -79,13 +78,12 @@ async function queryFlowData(accessToken, nextToken = null, graphQlApiUrl) {
 /**
  * This is the function use to query the appsync API to get the data from DB
  * @param {String} accessToken OAuth tokent to use while calling graphql query
- * @param {String} graphQlApiUrl Endpoint URL
  * @returns list of data and nextToken if any
  */
-export async function queryLSCDynamicFlowData(accessToken, graphQlApiUrl) {
+export async function queryLSCDynamicFlowData(accessToken) {
   let result = {};
   try {
-    const response = await fetch(graphQlApiUrl, {
+    const response = await fetch(env.GRAPH_API_URL, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -157,7 +155,6 @@ export async function queryLSCDynamicFlowData(accessToken, graphQlApiUrl) {
  * This is the function to use to call queryFlowData function multiple time
  * until nextToken become null
  * @param {String} accessToken OAuth Access Token
- * @param {String} graphQlApiUrl Endpoint URL
  * @param {Number} counter - counter for the row ID
  * @param {String} nextToken - the page token to grab the next batch/page of records
  * @param {object} rowInsert - the insert function used in this function that will insert the completed row into the component
@@ -165,7 +162,7 @@ export async function queryLSCDynamicFlowData(accessToken, graphQlApiUrl) {
  * @param {object} queryFunction - the query function used in this function that will retrieve the records
  * @returns {object} the counter and the flowData
  */
-async function retrieveFlowData(accessToken, graphQlApiUrl, counter = 1, nextToken = null, rowInsert, flowData = [], queryFunction = queryFlowData) {
+async function retrieveFlowData(accessToken, counter = 1, nextToken = null, rowInsert, flowData = [], queryFunction = queryFlowData) {
   let result = {};
   let errors = false;
   const resultSet = queryFunction == queryFlowData ? "listCctSharedCallFlowDbs" : "listPhoneNumbers";
@@ -174,7 +171,7 @@ async function retrieveFlowData(accessToken, graphQlApiUrl, counter = 1, nextTok
     let firstLoop = true;
     while (nextToken || counter === 1 || firstLoop) {
       firstLoop = false;
-      result = await queryFunction(accessToken, nextToken, graphQlApiUrl);
+      result = await queryFunction(accessToken, nextToken);
 
       if (result.errors && result.errors.length !==0) {
         errors = true;
@@ -313,14 +310,13 @@ function updateFlowInput(item){
  * This is the Function to update the Flow Object ]to the DB
  * @param {flowData} item Flow object that need to update
  * @param {String} accessToken token to use while calling graphql query
- * @param {String} graphQlApiUrl Endpoint URL
  * @returns
  */
-async function updateFlowDB(item, accessToken, graphQlApiUrl) {
+async function updateFlowDB(item, accessToken) {
   let response;
   const input = updateFlowInput(item);
   try {
-    const fetchResponse = await fetch(graphQlApiUrl, {
+    const fetchResponse = await fetch(env.GRAPH_API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -387,16 +383,15 @@ async function updateFlowDB(item, accessToken, graphQlApiUrl) {
  * This is the Function to add the Flow Object ]to the DB
  * @param {flowData} item Flow object that need to add
  * @param {String} accessToken token to use while calling graphql query
- * @param {String} graphQlApiUrl Endpoint URL
  * @param {String} curTime the current time, for the db record's create time
  * @param {Array} dataRequests list of data requests.
  * @returns
  */
-async function addFlowRule(item, accessToken, graphQlApiUrl, curTime = new Date().toISOString(), dataRequests=[]) {
+async function addFlowRule(item, accessToken, curTime = new Date().toISOString(), dataRequests=[]) {
   let response;
   const input = addFlowInput(item, dataRequests, curTime);
   try {
-    const fetchResponse = await fetch(graphQlApiUrl, {
+    const fetchResponse = await fetch(env.GRAPH_API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -461,16 +456,15 @@ async function addFlowRule(item, accessToken, graphQlApiUrl, curTime = new Date(
  * This is the Function to delete the Flow Object from the DB
  * @param {flowData} item Flow object that need to delete
  * @param {String} accessToken token to use while calling graphql query
- * @param {String} graphQlApiUrl Endpoint URL
  * @returns
  */
-async function deleteFlowRule(item, accessToken, graphQlApiUrl) {
+async function deleteFlowRule(item, accessToken) {
   let response;
   const input = {
     pkey: item.pkey
   };
   try {
-    const fetchResponse = await fetch(graphQlApiUrl, {
+    const fetchResponse = await fetch(env.GRAPH_API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -529,7 +523,7 @@ async function deleteFlowRule(item, accessToken, graphQlApiUrl) {
   }
   return response;
 }
-async function batchDeleteItems(items,accessToken,graphQlApiUrl){
+async function batchDeleteItems(items, accessToken){
   var flowDeleteArray=[];
   const size=24;
   const response = {
@@ -545,7 +539,7 @@ async function batchDeleteItems(items,accessToken,graphQlApiUrl){
   }
   for(const flowValue of flowDeleteArray){
     const flowRespKeys = flowValue.map(x=>({ "pkey": x }));
-    const resp = await flowBatchDelete(flowRespKeys,accessToken,graphQlApiUrl);
+    const resp = await flowBatchDelete(flowRespKeys,accessToken);
 
     resp?.errors?.forEach( y => response?.errors?.push(y));
     resp?.success?.forEach( y => response?.success?.push(y));
@@ -560,7 +554,7 @@ async function batchDeleteItems(items,accessToken,graphQlApiUrl){
 }
 
 
-async function flowBatchDelete(items, accessToken, graphQlApiUrl){
+async function flowBatchDelete(items, accessToken){
   let response;
   try{
     const body = JSON.stringify({
@@ -579,7 +573,7 @@ async function flowBatchDelete(items, accessToken, graphQlApiUrl){
       }
     }).replace(/\\"pkey\\":/g, "pkey:");
 
-    const fetchResponse = await fetch(graphQlApiUrl, {
+    const fetchResponse = await fetch(env.GRAPH_API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -598,10 +592,9 @@ async function flowBatchDelete(items, accessToken, graphQlApiUrl){
  * This is the Function to batch update the Flow Object to the DB
  * @param {flowData} items List of Flow object that need to update
  * @param {String} accessToken token to use while calling graphql query
- * @param {String} graphQlApiUrl Endpoint URL
  * @returns {Object} flag, success rows and failure rows
  */
-const batchFlowUpdate = async(items, accessToken, graphQlApiUrl) =>{
+const batchFlowUpdate = async(items, accessToken) =>{
   if(items.length === 0){
     return {
       flag: true,
@@ -624,7 +617,7 @@ const batchFlowUpdate = async(items, accessToken, graphQlApiUrl) =>{
       async flowUpdate => {
         return {
           records: flowUpdate,
-          result: await updateFlowBatchRun(flowUpdate, accessToken, graphQlApiUrl)
+          result: await updateFlowBatchRun(flowUpdate, accessToken)
         };
       }
     )
@@ -636,7 +629,7 @@ const batchFlowUpdate = async(items, accessToken, graphQlApiUrl) =>{
   return response;
 };
 
-const updateFlowBatchRun = async(items, accessToken, graphQlApiUrl) =>{
+const updateFlowBatchRun = async(items, accessToken) =>{
   const input = items.map(item=>{
     return {
       pkey: item.pkey,
@@ -677,7 +670,7 @@ const updateFlowBatchRun = async(items, accessToken, graphQlApiUrl) =>{
     };
   });
   try {
-    const fetchResponse = await fetch(graphQlApiUrl, {
+    const fetchResponse = await fetch(env.GRAPH_API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -741,7 +734,7 @@ const updateFlowBatchRun = async(items, accessToken, graphQlApiUrl) =>{
   }
 };
 
-const batchFlowCreate = async(items, accessToken, graphQlApiUrl) =>{
+const batchFlowCreate = async(items, accessToken) =>{
   const flowCreateArray=[];
   const size = 25;
 
@@ -763,7 +756,7 @@ const batchFlowCreate = async(items, accessToken, graphQlApiUrl) =>{
       async flowCreate => {
         return {
           records: flowCreate,
-          result: await createFlowRunItem(flowCreate, accessToken, graphQlApiUrl)
+          result: await createFlowRunItem(flowCreate, accessToken)
         };
       }
     )
@@ -774,7 +767,7 @@ const batchFlowCreate = async(items, accessToken, graphQlApiUrl) =>{
   return response;
 };
 
-const batchDynamicFlowCreate = async(items, accessToken, graphQlApiUrl) =>{
+const batchDynamicFlowCreate = async(items, accessToken) =>{
   const dynamicFlowCreateArray=[];
   const size = 25;
 
@@ -797,7 +790,7 @@ const batchDynamicFlowCreate = async(items, accessToken, graphQlApiUrl) =>{
       async dynamicFlowCreate => {
         return {
           records: dynamicFlowCreate,
-          result: await createDynamicFlowRunItem(dynamicFlowCreate, accessToken, graphQlApiUrl)
+          result: await createDynamicFlowRunItem(dynamicFlowCreate, accessToken)
         };
       }
     )
@@ -845,10 +838,9 @@ const buildResponse = allResults => {
  * This is the Function to batch create the Flow Object to the DB
  * @param {flowData} items List of Flow object that need to update
  * @param {String} accessToken token to use while calling graphql query
- * @param {String} graphQlApiUrl Endpoint URL
  * @returns
  */
-const createDynamicFlowRunItem = async(items, accessToken, graphQlApiUrl) =>{
+const createDynamicFlowRunItem = async(items, accessToken) =>{
   let response;
   const announcements = [];
   const menus = [];
@@ -924,7 +916,7 @@ const createDynamicFlowRunItem = async(items, accessToken, graphQlApiUrl) =>{
   });
 
   try {
-    const fetchResponse = await fetch(graphQlApiUrl, {
+    const fetchResponse = await fetch(env.GRAPH_API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -961,10 +953,9 @@ const createDynamicFlowRunItem = async(items, accessToken, graphQlApiUrl) =>{
  * This is the Function to batch create the Flow Object to the DB
  * @param {flowData} items List of Flow object that need to update
  * @param {String} accessToken token to use while calling graphql query
- * @param {String} graphQlApiUrl Endpoint URL
  * @returns
  */
-const createFlowRunItem = async(items, accessToken, graphQlApiUrl) =>{
+const createFlowRunItem = async(items, accessToken) =>{
   let response;
   const input = items.map(item=>{
     return {
@@ -1004,7 +995,7 @@ const createFlowRunItem = async(items, accessToken, graphQlApiUrl) =>{
     };
   });
   try {
-    const fetchResponse = await fetch(graphQlApiUrl, {
+    const fetchResponse = await fetch(env.GRAPH_API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -1070,14 +1061,13 @@ const createFlowRunItem = async(items, accessToken, graphQlApiUrl) =>{
  * This is the function use to query the appsync API to get the data from DB
  * @param {String} accessToken OAuth tokent to use while calling graphql query
  * @param {String} nextToken Token for next set of data
- * @param {String} graphQlApiUrl Endpoint URL
  * @returns list of data and nextToken if any
  */
-async function queryDynamicFlowData(accessToken, nextToken = null, graphQlApiUrl) {
+async function queryDynamicFlowData(accessToken, nextToken = null) {
   let result = nextToken ? undefined : {};
 
   try {
-    const response = await fetch(graphQlApiUrl, {
+    const response = await fetch(env.GRAPH_API_URL, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -1142,11 +1132,10 @@ async function queryDynamicFlowData(accessToken, nextToken = null, graphQlApiUrl
  * This is the function to use to call queryFlowData function multiple time
  * until nextToken become null
  * @param {String} accessToken OAuth Access Token
- * @param {String} graphQlApiUrl Endpoint URL
  * @returns {flowData} list of data contain all the result present in DB
  */
-async function retrieveDynamicFlowData(accessToken, graphQlApiUrl, counter = 1, nextToken = null, rowInsert, flowData = []) {
-  return retrieveFlowData(accessToken, graphQlApiUrl, counter, nextToken, rowInsert, flowData, queryDynamicFlowData);
+async function retrieveDynamicFlowData(accessToken, counter = 1, nextToken = null, rowInsert, flowData = []) {
+  return retrieveFlowData(accessToken, counter, nextToken, rowInsert, flowData, queryDynamicFlowData);
 }
 
 function updateDynamicFlowInput(item){
@@ -1192,14 +1181,13 @@ function updateDynamicFlowInput(item){
  * This is the Function to update the Flow Object ]to the DB
  * @param {flowData} item Flow object that need to update
  * @param {String} accessToken token to use while calling graphql query
- * @param {String} graphQlApiUrl Endpoint URL
  * @returns
  */
-async function updateDynamicFlowDB(item, accessToken, graphQlApiUrl) {
+async function updateDynamicFlowDB(item, accessToken) {
   let response;
   const input = updateDynamicFlowInput(item);
   try {
-    const fetchResponse = await fetch(graphQlApiUrl, {
+    const fetchResponse = await fetch(env.GRAPH_API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -1273,15 +1261,14 @@ function addDynamicFlowInput (item, dataRequestsPassed, currentTimePassed){
  * This is the Function to add the Flow Object to the DB
  * @param {flowData} item Flow object that need to add
  * @param {String} accessToken token to use while calling graphql query
- * @param {String} graphQlApiUrl Endpoint URL
  * @param {Number} curTime the current time, for the db record's create time
  * @returns
  */
-async function addDynamicFlowRule(item, accessToken, graphQlApiUrl, curTime = Math.floor(new Date().getTime()/1000), dataRequests=[]) {
+async function addDynamicFlowRule(item, accessToken, curTime = Math.floor(new Date().getTime()/1000), dataRequests=[]) {
   let response;
   const input = addDynamicFlowInput(item, dataRequests, curTime);
   try {
-    const fetchResponse = await fetch(graphQlApiUrl, {
+    const fetchResponse = await fetch(env.GRAPH_API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -1313,17 +1300,16 @@ async function addDynamicFlowRule(item, accessToken, graphQlApiUrl, curTime = Ma
  * This is the Function to delete the Flow Object from the DB
  * @param {flowData} item Flow object that need to delete
  * @param {String} accessToken token to use while calling graphql query
- * @param {String} graphQlApiUrl Endpoint URL
  * @returns
  */
-async function deleteDynamicFlowRule(item, accessToken, graphQlApiUrl) {
+async function deleteDynamicFlowRule(item, accessToken) {
   let response;
   const input = {
     phoneNumber: item.pkey,
     callFlowName: item.callFlowName
   };
   try {
-    const fetchResponse = await fetch(graphQlApiUrl, {
+    const fetchResponse = await fetch(env.GRAPH_API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -1350,7 +1336,7 @@ async function deleteDynamicFlowRule(item, accessToken, graphQlApiUrl) {
   }
   return response;
 }
-async function batchDynamicDeleteItems(items,accessToken,graphQlApiUrl){
+async function batchDynamicDeleteItems(items,accessToken){
   var flowDeleteArray=[];
   const size=24;
 
@@ -1364,7 +1350,7 @@ async function batchDynamicDeleteItems(items,accessToken,graphQlApiUrl){
       async flowValue => {
         return {
           records: flowValue,
-          result: await flowDynamicBatchDelete(flowValue, accessToken, graphQlApiUrl)
+          result: await flowDynamicBatchDelete(flowValue, accessToken)
         };
       }
     )
@@ -1374,7 +1360,7 @@ async function batchDynamicDeleteItems(items,accessToken,graphQlApiUrl){
   logger.info("Delete Batch Flow DB Response:", { response });
   return response;
 }
-async function flowDynamicBatchDelete(items, accessToken, graphQlApiUrl){
+async function flowDynamicBatchDelete(items, accessToken){
   const input = items.map(item=>{
     return {
       callFlowName: item.callFlowName,
@@ -1400,7 +1386,7 @@ async function flowDynamicBatchDelete(items, accessToken, graphQlApiUrl){
       }
     }).replace(/\\"pkey\\":/g, "pkey:");
 
-    const fetchResponse = await fetch(graphQlApiUrl, {
+    const fetchResponse = await fetch(env.GRAPH_API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -1420,10 +1406,9 @@ async function flowDynamicBatchDelete(items, accessToken, graphQlApiUrl){
  * This is the Function to batch update the Flow Object to the DB
  * @param {flowData} items List of Flow object that need to update
  * @param {String} accessToken token to use while calling graphql query
- * @param {String} graphQlApiUrl Endpoint URL
  * @returns
  */
-const batchDynamicFlowUpdate = async(items, accessToken, graphQlApiUrl) =>{
+const batchDynamicFlowUpdate = async(items, accessToken) =>{
   if(items.length === 0){
     return {
       flag: true,
@@ -1446,7 +1431,7 @@ const batchDynamicFlowUpdate = async(items, accessToken, graphQlApiUrl) =>{
       async flowUpdate => {
         return {
           records: flowUpdate,
-          result: await updateDynamicFlowBatchRun(flowUpdate, accessToken, graphQlApiUrl)
+          result: await updateDynamicFlowBatchRun(flowUpdate, accessToken)
         };
       }
     )
@@ -1458,7 +1443,7 @@ const batchDynamicFlowUpdate = async(items, accessToken, graphQlApiUrl) =>{
 
   return response;
 };
-const updateDynamicFlowBatchRun = async(items, accessToken, graphQlApiUrl) =>{
+const updateDynamicFlowBatchRun = async(items, accessToken) =>{
   const input = items.map(item=>{
     return {
       brand: item.brand,
@@ -1496,7 +1481,7 @@ const updateDynamicFlowBatchRun = async(items, accessToken, graphQlApiUrl) =>{
     };
   });
   try {
-    const fetchResponse = await fetch(graphQlApiUrl, {
+    const fetchResponse = await fetch(env.GRAPH_API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

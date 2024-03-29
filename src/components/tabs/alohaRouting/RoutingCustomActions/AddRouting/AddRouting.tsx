@@ -7,7 +7,7 @@ import {
   Modal, ModalHeader
 } from "@lmig/lmds-react-modal";
 import {
-  routingDropDownList, routingInitRule, routingFields, initializedAlertBar, getGraphQLEndpoint, convertTime24to12, cleanErrorMessage, removeAllWhiteSpace, BrandName
+  routingDropDownList, routingInitRule, routingFields, initializedAlertBar, convertTime24to12, cleanErrorMessage, BrandName
 } from "utils";
 import { getGridMasterData } from "../../DataGridRouting/GridMaster";
 import {
@@ -42,15 +42,13 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
   const [dropDownValues, setDropDownValues] = useState(routingDropDownList);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
 
-  const graphQlApiUrl: string = getGraphQLEndpoint();
-
   const masterDataValues = async (): Promise<RoutingDropDownList> => {
     let masterData: RoutingMasterData;
     const cachedMasterData: string | undefined = localStorage.getItem("ROUTING_MASTER_DATA");
     if (cachedMasterData !== undefined && cachedMasterData !== null) {
       masterData = JSON.parse(cachedMasterData);
     } else {
-      const result: CctSharedCallRoutingDb[] = await retrieveRoutingData(accessToken, graphQlApiUrl,{});
+      const result: CctSharedCallRoutingDb[] = await retrieveRoutingData(accessToken, {});
       masterData = getGridMasterData(result);
     }
     routingDropDownList.brand = masterData.brand;
@@ -114,7 +112,7 @@ export const AddRouting = (props: AddRoutingModalProps & AzureSPA): JSX.Element 
     if (isValidForm) {
       routingRule["startTime"].value = convertTime24to12(routingRule["startTime"].value);
       routingRule["endTime"].value = convertTime24to12(routingRule["endTime"].value);
-      addRoutingRule(routingRule, accessToken, graphQlApiUrl).then(apiResponse => {
+      addRoutingRule(routingRule, accessToken).then(apiResponse => {
         if (!apiResponse.errors) {
           const newRoutingRule: CctSharedCallRoutingDb = {
             id: Number(routingRule.id.value),

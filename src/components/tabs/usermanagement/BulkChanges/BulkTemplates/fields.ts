@@ -181,7 +181,7 @@ export const FIELDS: Fields = {
     type: "number",
     description: "Profile Id",
     example: 3,
-    options: (state: any) => state.profileContext.profiles.map((p: any) => p.profile_id),
+    options: (state: any) => state.profileContext.profiles.map((p: any) => p.profile_id).sort((a: number, b: number) => a - b),
     validateFunction: (row: any, state: any): Promise<any> => {
       const rowNumber = row.rowNumber;
       const fieldName = "Profile Id";
@@ -238,7 +238,7 @@ export const FIELDS: Fields = {
     type: "string",
     description: "N Number of the Manager",
     example: "n0088625",
-    options: (state: any) => state.managerContext.managers.map((m: any) => m.manager_n_number),
+    options: (state: any) => state.managerContext.managers.map((m: any) => m.manager_n_number).sort(),
     validateFunction: (row: any, state: any): Promise<any> => {
       const rowNumber = row.rowNumber;
       const fieldName = "Manager N Number";
@@ -266,13 +266,13 @@ export const FIELDS: Fields = {
     type: "string",
     description: "Comma delimited list of skill/level pairings. Skills can be on their own or have a ':level' to represent the level. If left blank, no skills will be added to the user",
     example: "bscCommissions:3, blSalesL1:2, aisl1",
-    options: (state: any) => state.skillContext.skills.map((s: any) => s.levels?.length > 0 ? `${s.name} Available levels: ${s.levels?.toString()}` : s.name),
+    options: (state: any) => state.skillContext.skills.map((s: any) => s.levels?.length > 0 ? `${s.name} Available levels: ${s.levels?.toString()}` : s.name).sort(),
     validateFunction: (row: any, state: any): Promise<any> => {
       const rowNumber = row.rowNumber;
       /*
         skills object: {
          levels: {asig: 2},
-         skills: [466, aisg]   
+         skills: [466, aisg]
         }
       */
       const fieldName = "Default Skills";
@@ -601,7 +601,7 @@ export const FIELDS: Fields = {
           p.routing_teams.forEach((t: any) => optionsArray.push(`Profile ${profileId}: ${t.routing_team_nme}`));
         }
       });
-      return optionsArray;
+      return optionsArray.sort();
     },
     validateFunction: (row: any, state: any): Promise<any> => {
       const rowNumber = row.rowNumber;
@@ -664,7 +664,7 @@ export const FIELDS: Fields = {
     type: "string",
     description: "Comma delimited list of groups or teams to represent a supervisor or evaluators scope. (Must already exist in Calabrio)",
     example: "Default Group",
-    options: (state: any) => state.calabrioContext.groups.map((g: any) => g.name),
+    options: (state: any) => state.calabrioContext.groups.map((g: any) => g.name).sort(),
     validateFunction: (row: any, state: any): Promise<any> => {
       const rowNumber = row.rowNumber;
       const fieldName = "Calabrio Scope";
@@ -707,7 +707,7 @@ export const FIELDS: Fields = {
     type: "string",
     description: "Team",
     example: "Default Team",
-    options: (state: any) => state.calabrioContext.teams.map((t: any) => t.name),
+    options: (state: any) => state.calabrioContext.teams.map((t: any) => t.name).sort(),
     validateFunction: (row: any, state: any): Promise<any> => {
       const rowNumber = row.rowNumber;
       const fieldName = "Calabrio Team";
@@ -745,7 +745,7 @@ export const FIELDS: Fields = {
     type: "string",
     description: "Team (Must already be created in Calabrio)",
     example: "Default Team",
-    options: (state: any) => state.calabrioContext.teams.map((t: any) => t.name),
+    options: (state: any) => state.calabrioContext.teams.map((t: any) => t.name).sort(),
     validateFunction: (row: any, state: any): Promise<any> => {
       const rowNumber = row.rowNumber;
       const fieldName = "Calabrio Team";
@@ -769,7 +769,7 @@ export const FIELDS: Fields = {
     type: "string",
     description: "Group (Must already be created in Calabrio)",
     example: "GRS Claims Services",
-    options: (state: any) => state.calabrioContext.groups.map((g: any) => g.name),
+    options: (state: any) => state.calabrioContext.groups.map((g: any) => g.name).sort(),
     validateFunction: (row: any, state: any): Promise<any> => {
       const rowNumber = row.rowNumber;
       const fieldName = "Calabrio Team";
@@ -802,7 +802,7 @@ export const FIELDS: Fields = {
     type: "string",
     description: "Comma delimited list of approved roles that already exist in Calabrio",
     example: "QM Agent",
-    options: () => calabrioAllowedRoles,
+    options: () => calabrioAllowedRoles.sort(),
     validateFunction: (row: any, state: any): Promise<any> => {
       const rowNumber = row.rowNumber;
       const fieldName = "Calabrio Role";
@@ -837,7 +837,7 @@ export const FIELDS: Fields = {
     type: "string",
     description: "Time Zone of the Calabrio User",
     example: "America/New_York (EST/EDT)",
-    options: () => calabrioTimeZones.map((t: any) => t.label),
+    options: () => calabrioTimeZones.map((t: any) => t.label).sort(),
     validateFunction: (row: any, state: any): Promise<any> => {
       const rowNumber = row.rowNumber;
       const fieldName = "Time Zone";
@@ -885,7 +885,7 @@ export const FIELDS: Fields = {
     type: "string",
     description: "Business Unit of the Calabrio WFM person. Required",
     example: "GRM Safeco",
-    options: (state: any) => state.calabrioContext.wfmOptions.map((bu: any) => bu.Name),
+    options: (state: any) => state.calabrioContext.wfmOptions.map((bu: any) => bu.Name).sort(),
     validateFunction: (row: any, state: any): Promise<any> => {
       const rowNumber = row.rowNumber;
       const fieldName = FIELDS.CALABRIO_WFM_BUSINESS_UNIT.name;
@@ -914,7 +914,7 @@ export const FIELDS: Fields = {
     options: (state: any, businessUnitId: string) => {
       const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
       if (businessUnit) {
-        return businessUnit.Roles.map((r: any) => r.Name);
+        return businessUnit.Roles.map((r: any) => r.Name).sort();
       }
       return ["unable to generate options"];
     },
@@ -984,7 +984,7 @@ export const FIELDS: Fields = {
     options: (state: any, businessUnitId: string) => {
       const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
       if (businessUnit) {
-        return businessUnit.Workflow_Control_Sets.map((wfc: any) => wfc.Name);
+        return businessUnit.Workflow_Control_Sets.map((wfc: any) => wfc.Name).sort();
       }
       return ["unable to generate options"];
     },
@@ -1024,7 +1024,7 @@ export const FIELDS: Fields = {
     options: (state: any, businessUnitId: string) => {
       const businessUnit = state.calabrioContext.wfmOrg.find((bu: any) => bu.Id === businessUnitId);
       if (businessUnit) {
-        return businessUnit.Teams.map((t: any) => t.Name);
+        return businessUnit.Teams.map((t: any) => t.Name).sort();
       }
       return ["unable to generate options"];
     },
@@ -1068,7 +1068,7 @@ export const FIELDS: Fields = {
     options: (state: any, businessUnitId: string) => {
       const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
       if (businessUnit) {
-        return businessUnit.Contracts.map((c: any) => c.Name);
+        return businessUnit.Contracts.map((c: any) => c.Name).sort();
       }
       return ["unable to generate options"];
     },
@@ -1112,7 +1112,7 @@ export const FIELDS: Fields = {
     options: (state: any, businessUnitId: string) => {
       const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
       if (businessUnit) {
-        return businessUnit.Contract_Schedules.map((c: any) => c.Name);
+        return businessUnit.Contract_Schedules.map((c: any) => c.Name).sort();
       }
       return ["unable to generate options"];
     },
@@ -1156,7 +1156,7 @@ export const FIELDS: Fields = {
     options: (state: any, businessUnitId: string) => {
       const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
       if (businessUnit) {
-        return businessUnit.Part_Time_Percentages.map((ptp: any) => ptp.Name);
+        return businessUnit.Part_Time_Percentages.map((ptp: any) => ptp.Name).sort();
       }
       return ["unable to generate options"];
     },
@@ -1200,7 +1200,7 @@ export const FIELDS: Fields = {
     options: (state: any, businessUnitId: string) => {
       const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
       if (businessUnit) {
-        return businessUnit.Shift_Bags.map((sb: any) => sb.Name);
+        return businessUnit.Shift_Bags.map((sb: any) => sb.Name).sort();
       }
       return ["unable to generate options"];
     },
@@ -1212,7 +1212,7 @@ export const FIELDS: Fields = {
         return Promise.resolve(`${fieldName} is empty but not required. Skipping validation for row ${rowNumber}`);
 
       } else {
-        // If this field is provided, but no other scheduling fields are, throw an error saying 
+        // If this field is provided, but no other scheduling fields are, throw an error saying
         // shiftbag can only be provided if the other schedule fields are given
         if (
           !cleanupField(row[FIELDS.CALABRIO_WFM_PERSON_START_DATE.name], "string") &&
@@ -1254,7 +1254,7 @@ export const FIELDS: Fields = {
     options: (state: any, businessUnitId: string) => {
       const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
       if (businessUnit) {
-        return businessUnit.Budget_Groups.map((ptp: any) => ptp.Name);
+        return businessUnit.Budget_Groups.map((ptp: any) => ptp.Name).sort();
       }
       return ["unable to generate options"];
     },
@@ -1265,7 +1265,7 @@ export const FIELDS: Fields = {
       if (!field) {
         return Promise.resolve(`${fieldName} is empty but not required. Skipping validation for row ${rowNumber}`);
       } else {
-        // If this field is provided, but no other scheduling fields are, throw an error saying 
+        // If this field is provided, but no other scheduling fields are, throw an error saying
         // budgetGroup can only be provided if the other schedule fields are given
         if (
           !cleanupField(row[FIELDS.CALABRIO_WFM_PERSON_START_DATE.name], "string") &&
@@ -1382,7 +1382,7 @@ export const FIELDS: Fields = {
           return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
         }
       } else {
-        // this would mean we have this skills start date field, but no skills field.  
+        // this would mean we have this skills start date field, but no skills field.
         return rejectPromise(`${fieldName} was provided but WFM Skills is empty.`, rowNumber);
       }
     }
@@ -1396,7 +1396,7 @@ export const FIELDS: Fields = {
     options: (state: any, businessUnitId: string) => {
       const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
       if (businessUnit) {
-        return businessUnit.Skills.map((s: any) => s.Name);
+        return businessUnit.Skills.map((s: any) => s.Name).sort();
       }
       return ["unable to generate options"];
     },
@@ -1462,7 +1462,7 @@ export const FIELDS: Fields = {
           return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
         }
       } else {
-        // this would mean we have this rotation start date field, but no rotation field.  
+        // this would mean we have this rotation start date field, but no rotation field.
         return rejectPromise(`${fieldName} was provided but WFM Rotation is empty.`, rowNumber);
       }
     }
@@ -1476,7 +1476,7 @@ export const FIELDS: Fields = {
     options: (state: any, businessUnitId: string) => {
       const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
       if (businessUnit) {
-        return businessUnit.Rotations.map((r: any) => r.Name);
+        return businessUnit.Rotations.map((r: any) => r.Name).sort();
       }
       return ["unable to generate options"];
     },
@@ -1534,7 +1534,7 @@ export const FIELDS: Fields = {
           return rejectPromise(`${fieldName} is invalid for row ${rowNumber}`, rowNumber);
         }
       } else {
-        // this would mean we have this Rotation start week field, but no rotation field.  
+        // this would mean we have this Rotation start week field, but no rotation field.
         return rejectPromise(`${fieldName} was provided but WFM Rotation is empty.`, rowNumber);
       }
     }
@@ -1568,7 +1568,7 @@ export const FIELDS: Fields = {
           return rejectPromise(`Error encountered validating ${fieldName} for row ${rowNumber}: ${err.message}`, rowNumber);
         }
       } else {
-        // this would mean we have this availability start date field, but no availability field.  
+        // this would mean we have this availability start date field, but no availability field.
         return rejectPromise(`${fieldName} was provided but WFM Availability is empty.`, rowNumber);
       }
     }
@@ -1582,7 +1582,7 @@ export const FIELDS: Fields = {
     options: (state: any, businessUnitId: string) => {
       const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
       if (businessUnit) {
-        return businessUnit.Availabilities.map((a: any) => a.Name);
+        return businessUnit.Availabilities.map((a: any) => a.Name).sort();
       }
       return ["unable to generate options"];
     },
@@ -1617,19 +1617,21 @@ export const FIELDS: Fields = {
     field: "wfmOptionalCols",
     name: "WFM Optional Columns",
     type: "string",
-    description: "Comma deliminated list of optional columns. Optional",
-    example: "SAF Agent Status, SAF Agent Location State",
+    description: "Comma delimited list of optional columns. Column names and values are colon delimited. Optional",
+    example: "SAF Agent Status:Ready, SAF Agent Location State:NH",
     options: (state: any, businessUnitId: string) => {
       const businessUnit = state.calabrioContext.wfmOptions.find((bu: any) => bu.Id === businessUnitId);
       if (businessUnit) {
-        return businessUnit.Optional_Columns.map((oc: any) => oc.Name);
+        return businessUnit.Optional_Columns.map((oc: any) => oc.Name).sort();
       }
       return ["unable to generate options"];
     },
     validateFunction: (row: any, state: any): Promise<any> => {
       const rowNumber = row.rowNumber;
       const fieldName = FIELDS.CALABRIO_WFM_OPTIONAL_COLUMNS.name;
-      const field = cleanupField(row[fieldName], "string");
+      const field = (row[fieldName]) ? row[fieldName].trim() : "";
+      const uniqueColumnNames: Set<string> = new Set<string>();
+      const optionalColumnErrors: string[] = [];
       row.wfmOptionalColumns = [];
 
       if (!field) {
@@ -1643,24 +1645,66 @@ export const FIELDS: Fields = {
           }
           const fieldArray = field.split(",");
           fieldArray.forEach((oc: any) => {
-            const cleanOptionalColumn = cleanupField(oc, "string");
+            const columnKeyValuePair = oc.split(":");
+            const cleanOptionalColumnName = cleanupField(columnKeyValuePair[0], "string");
+            const trimmedOptionalColumnValue = (columnKeyValuePair[1]) ? columnKeyValuePair[1].trim() : "";
 
-            const optionalColumnObj = businessUnitObj.Optional_Columns.find((r: any) => cleanupField(r.Name, "string") === cleanOptionalColumn);
+            const optionalColumnObj = businessUnitObj.Optional_Columns.find((r: any) => cleanupField(r.Name, "string") === cleanOptionalColumnName);
             if (!optionalColumnObj) {
-              throw new Error(`${cleanOptionalColumn} is not a valid WFM Optional Column for row ${rowNumber}`);
+              optionalColumnErrors.push(`${cleanOptionalColumnName} is not valid for the selected business unit for row ${rowNumber}`);
             } else {
+              // check for duplicate column names
+              if (uniqueColumnNames.has(cleanOptionalColumnName)) {
+                optionalColumnErrors.push(`Duplicate WFM Optional Column ${cleanOptionalColumnName} for row ${rowNumber}`);
+              } else {
+                uniqueColumnNames.add(cleanOptionalColumnName);
+              }
+
               // reformat - Teleopti api wants Id and Value
-              const optionalColumn = {
-                Id: optionalColumnObj.Id,
-                Value: optionalColumnObj.Name
-              };
-              row.wfmOptionalColumns.push(optionalColumn);
+              if (trimmedOptionalColumnValue) {
+                const optionalColumn = {
+                  Id: optionalColumnObj.Id,
+                  Value: trimmedOptionalColumnValue
+                };
+                row.wfmOptionalColumns.push(optionalColumn);
+              } else {
+                optionalColumnErrors.push(`No value given for WFM Optional Column ${cleanOptionalColumnName} for row ${rowNumber}`);
+              }
             }
           });
+
+          if (optionalColumnErrors.length > 0) {
+            throw new Error(optionalColumnErrors.toString());
+          }
           return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
         } catch (err) {
           return rejectPromise(err.message, rowNumber);
         }
+      }
+    }
+  },
+  CALABRIO_WFM_NOTE: { // can be empty
+    field: "wfmNote",
+    name: "Note",
+    type: "string",
+    description: "Optional string representing text that will be saved in the general note field",
+    example: "I'm a note!",
+    options: null,
+    validateFunction: (row: any, state: any): Promise<any> => {
+      const rowNumber = row.rowNumber;
+
+      try {
+        const fieldName = FIELDS.CALABRIO_WFM_NOTE.name;
+        const field = row[fieldName].trim();
+
+        if (!field) {
+          return Promise.resolve(`${fieldName} is empty but not required. Skipping validation for row ${rowNumber}`);
+        } else {
+          row.wfmNote = (field);
+          return Promise.resolve(`${fieldName} valid for row ${rowNumber}`);
+        }
+      } catch (err) {
+        return rejectPromise(err.message, rowNumber);
       }
     }
   }

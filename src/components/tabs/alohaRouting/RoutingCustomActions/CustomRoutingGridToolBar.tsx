@@ -37,7 +37,7 @@ export const CustomRoutingGridToolBar = ({
 
   const [routingFilter, setRoutingFilter] = useState<RoutingFilter>();
   const env: string = useAdminState().userContext.pingIdentity.environment;
-  const enableRouting = useMemo(() => readWriteAccess(matchedGroups,"aloha-route",env), []);
+  const enableRouting = useMemo(() => readWriteAccess(matchedGroups, "aloha-route"), []);
 
   useEffect(()=>{
     const localFilter = getAdvanceFilter(CACHE_FILTER_ROUTING);

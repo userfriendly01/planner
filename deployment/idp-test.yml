@@ -12,3 +12,25 @@ idp:
             reply_urls:
               - https://triton-test.lmig.com/triton-admin/*
         rotate_secret_enabled: true
+        user_roles:
+          - name: Agent
+            groups:
+              - gci-cct-triton-test-agent
+          - name: Supervisor
+            groups:
+              - gci-cct-triton-test-supv
+          - name: Admin
+            groups:
+              - gci-cct-triton-test-tritonadmin
+          - name: FlowRead
+            groups:
+              - gpi-cct-config-flow-read
+          - name: FlowReadWrite
+            groups:
+              - gpi-cct-config-flow-readwrite-np
+          - name: RouteRead
+            groups:
+              - gpi-cct-config-route-read
+          - name: RouteReadWrite
+            groups:
+              - gpi-cct-config-route-readwrite-np

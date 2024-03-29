@@ -28,7 +28,7 @@ import {
   CALL_FLOW_PAGE_NO,
   CALL_FLOW_PER_PAGE, downloadCSV,
   EXPORT_FILE_PREFIX,
-  getAdvanceFilter, getGraphQLEndpoint,
+  getAdvanceFilter,
   initializedAlertBar
 } from "utils";
 import {
@@ -55,8 +55,6 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     accessToken,
     matchedGroups
   } = props;
-
-  const graphQLEndpoint = getGraphQLEndpoint();
 
   const flowInitState: FlowStateVariables = {
     data: [],
@@ -96,7 +94,6 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       }));
       const success = await retrieveFlowData(
         accessToken,
-        graphQLEndpoint,
         1,
         null,
         loadDataTable
@@ -358,7 +355,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       }));
       return;
     }
-    const response = await batchFlowCreate(rows, accessToken, graphQLEndpoint);
+    const response = await batchFlowCreate(rows, accessToken);
     if(response?.flag) {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
@@ -414,7 +411,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       }));
       return;
     }
-    const response = await batchFlowUpdate(rows, accessToken, graphQLEndpoint);
+    const response = await batchFlowUpdate(rows, accessToken);
     if(response?.flag) {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
@@ -465,7 +462,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
   };
 
   const handleOnBulkDelete = async(rows: Array<CctSharedCallFlowDb> ) =>{
-    const response = await batchDeleteItems(rows, accessToken, graphQLEndpoint);
+    const response = await batchDeleteItems(rows, accessToken);
     if(response?.flag) {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,

@@ -192,6 +192,7 @@ const processWFMCreateUser = async (row: any, state: AppState) => {
     body.RotationId = row.wfmRotationId;
     body.RotationStartDate = row.wfmRotationStartDate;
     body.RotationStartWeek = row.wfmRotationStartWk;
+    body.Note = row.wfmNote;
 
     // completely optional
     body.OptionalColumns = row.wfmOptionalColumns;
@@ -734,7 +735,8 @@ export const getCreateTemplates = (state: AppState): Templates => {
         FIELDS.CALABRIO_WFM_ROTATION_START_WEEK,
         FIELDS.CALABRIO_WFM_AVAILABILITY_START_DATE,
         FIELDS.CALABRIO_WFM_AVAILABILITY,
-        FIELDS.CALABRIO_WFM_OPTIONAL_COLUMNS
+        FIELDS.CALABRIO_WFM_OPTIONAL_COLUMNS,
+        FIELDS.CALABRIO_WFM_NOTE
       ]
     },
     CREATE_MANAGER: {

@@ -13,3 +13,25 @@ idp:
               - http://localhost:8082/triton-admin/*
               - https://triton-dev.lmig.com/triton-admin/*
         rotate_secret_enabled: true
+        user_roles:
+          - name: Agent
+            groups:
+              - gci-cct-triton-dev-agent
+          - name: Supervisor
+            groups:
+              - gci-cct-triton-dev-supv
+          - name: Admin
+            groups:
+              - gci-cct-triton-dev-tritonadmin
+          - name: FlowRead
+            groups:
+              - gpi-cct-config-flow-read
+          - name: FlowReadWrite
+            groups:
+              - gpi-cct-config-flow-readwrite-np
+          - name: RouteRead
+            groups:
+              - gpi-cct-config-route-read
+          - name: RouteReadWrite
+            groups:
+              - gpi-cct-config-route-readwrite-np
