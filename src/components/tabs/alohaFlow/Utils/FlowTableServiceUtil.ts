@@ -25,7 +25,6 @@ import { FormValidationRule } from "utils/interfaces";
  * the complete recordset - for example, into a DataGrid.  
  * until nextToken become null
  * @param {String} accessToken OAuth Access Token
- * @param {String} graphQlApiUrl Endpoint URL
  * @param {Number} counter - counter for the row ID
  * @param {String} nextToken - the page token to grab the next batch/page of records
  * @param {any} rowInsert - the insert function used in this function that will insert the completed row into the component
@@ -33,13 +32,12 @@ import { FormValidationRule } from "utils/interfaces";
  */
 export const retrieveFlowData = async (
   accessToken: string,
-  graphQlApiUrl: string,
   counter = 1,
   nextToken = "",
   rowInsert: (result?: CctSharedCallFlowDb[]) => FlowMasterData | Promise<void>
 ): Promise<boolean> => {
-  const firstLoad = await v2RetrieveFlowData(accessToken, graphQlApiUrl, counter, nextToken, rowInsert) as any;
-  const secondLoad = await v1RetrieveFlowData(accessToken, graphQlApiUrl, firstLoad.counter, null, rowInsert, firstLoad.flowData) as any;
+  const firstLoad = await v2RetrieveFlowData(accessToken, counter, nextToken, rowInsert) as any;
+  const secondLoad = await v1RetrieveFlowData(accessToken, firstLoad.counter, null, rowInsert, firstLoad.flowData) as any;
 
   return !(firstLoad.errors || secondLoad.errors);
 };
@@ -55,16 +53,14 @@ export type BatchResponse = {
  * This is the Function to batch update the Flow Object to the DB
  * @param {flowData} items List of Flow object that need to update
  * @param {String} accessToken token to use while calling graphql query
- * @param {String} graphQlApiUrl Endpoint URL
  * @returns
  */
 export const batchFlowUpdate = async (
   items: Array<CctSharedCallFlowDb>,
-  accessToken: string,
-  graphQlApiUrl: string
+  accessToken: string
 ): Promise<BatchResponse> =>  {
 
-  return await commonProcessing(items, accessToken, graphQlApiUrl, v1BatchFlowUpdate, v2BatchFlowUpdate);
+  return await commonProcessing(items, accessToken, v1BatchFlowUpdate, v2BatchFlowUpdate);
 };
 
 /**
@@ -74,7 +70,6 @@ export const batchFlowUpdate = async (
  * it merges the results into 1 BatchResponse object.
  * @param {flowData} items List of Flow objects that need to update, or list of pkeys to delete
  * @param {String} accessToken token to use while calling graphql query
- * @param {String} graphQlApiUrl Endpoint URL
  * @param {Function} batchFunction1 - legacy batchFlowCreate or batchFlowUpdate
  * @param {Function} batchFunction2 - dynamic batchFlowCreate or batchFlowUpdate
  * @returns
@@ -82,7 +77,6 @@ export const batchFlowUpdate = async (
 const commonProcessing = async (
   items: Array<CctSharedCallFlowDb>,
   accessToken: string,
-  graphQlApiUrl: string,
   batchFunction1: any,
   batchFunction2: any
 ): Promise<BatchResponse> => {
@@ -97,10 +91,10 @@ const commonProcessing = async (
     }
   });
 
-  const response = await batchFunction1(items1, accessToken, graphQlApiUrl) as BatchResponse;
+  const response = await batchFunction1(items1, accessToken) as BatchResponse;
 
   if(items2.length) {
-    const response2 = await batchFunction2(items2, accessToken, graphQlApiUrl)as BatchResponse;
+    const response2 = await batchFunction2(items2, accessToken)as BatchResponse;
 
     response2.failure.forEach(x => response.failure.push(x));
     response2.success.forEach(x => response.success.push(x));
@@ -113,17 +107,15 @@ const commonProcessing = async (
  * This is the Function to batch delete the Flow Objects
  * @param {Array<String>} items List of Flow object that need to update
  * @param {String} accessToken token to use while calling graphql query
- * @param {String} graphQlApiUrl Endpoint URL
  * @returns
  */
 export const batchDeleteItems = async (
   items: Array<CctSharedCallFlowDb>,
-  accessToken: string,
-  graphQlApiUrl: string
+  accessToken: string
 ): Promise<BatchResponse> =>  {
 
-  const response = await v1BatchDeleteItems(items.map(x => x.pkey), accessToken, graphQlApiUrl) as BatchResponse;
-  const response2 = await v2BatchDeleteItems(items.map(x => x.pkey), accessToken, graphQlApiUrl)as BatchResponse;
+  const response = await v1BatchDeleteItems(items.map(x => x.pkey), accessToken) as BatchResponse;
+  const response2 = await v2BatchDeleteItems(items.map(x => x.pkey), accessToken)as BatchResponse;
 
   response2.failure.forEach(x => response.failure.push(x));
   response2.success.forEach(x => response.success.push(x));
@@ -138,16 +130,14 @@ export const batchDeleteItems = async (
  * This is the Function to batch delete the Flow Objects
  * @param {flowData} items List of Flow object that need to update
  * @param {String} accessToken token to use while calling graphql query
- * @param {String} graphQlApiUrl Endpoint URL
  * @returns
  */
 export const batchFlowCreate = async (
   items: Array<CctSharedCallFlowDb>,
-  accessToken: string,
-  graphQlApiUrl: string
+  accessToken: string
 ): Promise<BatchResponse> =>  {
 
-  return await commonProcessing(items, accessToken, graphQlApiUrl, v1BatchFlowCreate, v2BatchFlowCreate);
+  return await commonProcessing(items, accessToken, v1BatchFlowCreate, v2BatchFlowCreate);
 
 };
 
@@ -155,21 +145,19 @@ export const batchFlowCreate = async (
  * This is the Function to add the Flow object to the DB
  * @param {CctSharedCallFlowDb} item Flow object
  * @param {String} accessToken token to use while calling graphql query
- * @param {String} graphQlApiUrl Endpoint URL
  * @param {String} curTime the current time, for the db record's create time
  * @param {Array<String>} dataRequests list of data requests.
  * @returns
  */
 export const addFlowRule = (item: FormValidationRule,
   accessToken: string,
-  graphQlApiUrl: string,
   curTime = new Date().toISOString(),
   dataRequests: Array<string>=[]): Promise<any> => {
   if(item.nextActionId?.value) {
-    return v2AddFlowRule(item, accessToken, graphQlApiUrl, Math.floor(new Date(curTime).getTime()/1000), dataRequests);
+    return v2AddFlowRule(item, accessToken, Math.floor(new Date(curTime).getTime()/1000), dataRequests);
   }
 
-  return v1AddFlowRule(item, accessToken, graphQlApiUrl, curTime, dataRequests);
+  return v1AddFlowRule(item, accessToken, curTime, dataRequests);
 
 };
 
@@ -177,17 +165,15 @@ export const addFlowRule = (item: FormValidationRule,
  * This is the Function to update the Flow object in the DB
  * @param {CctSharedCallFlowDb} item Flow object
  * @param {String} accessToken token to use while calling graphql query
- * @param {String} graphQlApiUrl Endpoint URL
  * @returns
  */
 export const updateFlowDB = (item: CctSharedCallFlowDb,
-  accessToken: string,
-  graphQlApiUrl: string): Promise<any> => {
+  accessToken: string): Promise<any> => {
   if(item.nextActionId) {
-    return v2UpdateFlowDB(item, accessToken, graphQlApiUrl);
+    return v2UpdateFlowDB(item, accessToken);
   }
 
-  return v1UpdateFlowDB(item, accessToken, graphQlApiUrl);
+  return v1UpdateFlowDB(item, accessToken);
 
 };
 
@@ -195,17 +181,15 @@ export const updateFlowDB = (item: CctSharedCallFlowDb,
  * This is the Function to delete the Flow object from the DB
  * @param {CctSharedCallFlowDb} item Flow object
  * @param {String} accessToken token to use while calling graphql query
- * @param {String} graphQlApiUrl Endpoint URL
  * @returns
  */
 export const deleteFlowRule = (item: CctSharedCallFlowDb,
-  accessToken: string,
-  graphQlApiUrl: string): Promise<any> => {
+  accessToken: string): Promise<any> => {
   if(item.nextActionId) {
-    return v2DeleteFlowRule(item, accessToken, graphQlApiUrl);
+    return v2DeleteFlowRule(item, accessToken);
   }
 
-  return v1DeleteFlowRule(item, accessToken, graphQlApiUrl);
+  return v1DeleteFlowRule(item, accessToken);
 
 };
 

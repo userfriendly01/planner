@@ -48,7 +48,6 @@ import {
   getGridMasterData
 } from "./GridMaster";
 import { PreviewModal } from "../PreviewModal";
-import { filter } from "lodash";
 
 const DataGridFlow = (props: AzureSPA): JSX.Element => {
   const {
@@ -430,7 +429,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       severityType: "success"
     }));
 
-    await batchDeleteItems(outOfSyncRows, accessToken, graphQLEndpoint);
+    await batchDeleteItems(outOfSyncRows, accessToken);
 
 
     const filteredItems = dataFlow.filteredItems.map(x=> {
@@ -512,7 +511,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     });
 
     return {
-      isDuplicate: duplicateRecord.length>0? true: false,
+      isDuplicate: (duplicateRecord.length>0),
       message: `Duplicate Employee Ids ${[...new Set(duplicateEmployeeId)].join("\n")} found for the record of ${[...new Set(pkeys)].join("\n")}`
     };
   };

@@ -11,7 +11,7 @@ import {
 } from "../DynamicFlow.Interfaces";
 import { AlertBarProps } from "utils/interfaces";
 import {
-  getGraphQLEndpoint, initializedAlertBar
+  initializedAlertBar
 } from "utils";
 import { PreviewModal } from "../PreviewModal/PreviewModal";
 import {
@@ -43,8 +43,6 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
   const [dataFlow, setDataFlow] = useState(flowInitState);
   const [selectedList, setSelectedList] = useState<Array<ActionPreview>>([]);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
-  // Get GraphQL Endpoint to call
-  const graphQLEndpoint = getGraphQLEndpoint();
   const openPreviewModal = (flag: boolean, action: PreviewModalAction) =>{
     setDataFlow((dataFlowProps: DynamicStateVariables) => ({
       ...dataFlowProps,
@@ -62,7 +60,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     const getTableData = async()=>{
 
       // GraphQL Query
-      const firstChunkData:any = await queryLSCDynamicFlowData(accessToken,  graphQLEndpoint);
+      const firstChunkData:any = await queryLSCDynamicFlowData(accessToken);
 
       // Build an array from objects return from dynamo.
       const listItems = firstChunkData?.data?.getCallFlowConfig?.items || [];
@@ -146,7 +144,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
   };
 
   const handleOnBulkCreate = async(rows: Array<DynamicAction> ) =>{
-    const response = await batchDynamicFlowCreate(rows, accessToken, graphQLEndpoint);
+    const response = await batchDynamicFlowCreate(rows, accessToken);
     if(response?.flag) {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
