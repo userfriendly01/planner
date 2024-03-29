@@ -50,7 +50,9 @@ import {
   AlertBarProps, FormValidationRule
 } from "utils/interfaces";
 import {
-  deleteFlowRule, shouldDeleteOriginal, updateFlowDB
+  deleteFlowRule,
+  shouldDeleteOriginal,
+  updateFlowDB
 } from "../../Utils/FlowTableServiceUtil";
 import {
   AzureSPA, DuplicateCheck
@@ -186,9 +188,12 @@ export const EditFlow = ({
       const response = await updateFlowDB(selectedRowLocal, accessToken);
       if (isErrorDisplayed(response)) {
         return;
-      } else if(shouldDeleteOriginal(originalRow, selectedRowLocal)) {
+      }
+
+      if(shouldDeleteOriginal(originalRow, selectedRowLocal)) {
         deleteFlowRule(originalRow, accessToken);
       }
+
       setFlowRule({ ...initRule });
       openEditModal(false, true, selectedRowLocal, `Phone Number ${selectedRow.pkey} has been successfully updated.`, false);
     }

@@ -1180,6 +1180,7 @@ async function retrieveDynamicFlowData(accessToken, counter = 1, nextToken = nul
 }
 
 function updateDynamicFlowInput(item){
+  const updateTime = Math.floor(new Date().getTime()/1000);
   const input = {
     brand: item.brand,
     callFlowName: item.callFlowName,
@@ -1190,7 +1191,7 @@ function updateDynamicFlowInput(item){
     callTypeDescription: item.callTypeDescription,
     callerType: item.content?.callerType,
     channel: item.channel,
-    createTime: item.createTime,
+    createTime: item.createTime ?? updateTime,
     dataRequests: item.content?.dataRequests,
     dialedDescription: item.dialedDescription,
     employeeId: item.employeeId,
@@ -1203,14 +1204,15 @@ function updateDynamicFlowInput(item){
     nextActionType: item.nextActionType,
     officeNumbers: item.content?.officeNumbers,
     phoneNumber: item.pkey,
-    phoneNumberType: item.phoneNumberType,
+    phoneNumberType: item.type,
     predictiveCaller: item.predictiveCaller,
     rangeIndicator: item.rangeIndicator,
     requestID: item.requestID,
+    tfnRoutingGroup: item.tfnRoutingGroup,
     tollFreeNumber: item.tollFreeNumber,
     transferCode: item.transferCode,
     transferDestination: item.content?.transferDestination,
-    updateTime: Math.floor(new Date().getTime()/1000),
+    updateTime,
     whisper: item.whisper
   };
   if(item.employeeId){
