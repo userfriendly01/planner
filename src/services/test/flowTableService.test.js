@@ -225,7 +225,6 @@ describe("flowTableService",()=>{
       expect(insertRows).toHaveBeenCalledWith(jsonFlowData);
     });
     test("CallFlow list finds error",async()=>{
-      const insertRows = jest.fn();
       window.fetch = jest.fn(() =>
         Promise.resolve({
           json: () => Promise.resolve({

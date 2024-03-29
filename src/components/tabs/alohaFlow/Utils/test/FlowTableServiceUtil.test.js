@@ -27,7 +27,6 @@ import {
 } from "../FlowTableServiceUtil";
 
 const token = "accessToken";
-const url = "http://some.appsync.endpoint/v1";
 const curTime = "1971-05-25T04:00:00.000Z";
 const curTimeUnixEpoch = 43992000;
 
@@ -52,14 +51,14 @@ describe("FlowTableServiceUtil", () => {
     });
     it("should call both retrieve functions", async () => {
       const rowInsert = jest.fn();
-      const response = await retrieveFlowData(token, url, undefined, null, rowInsert);
+      const response = await retrieveFlowData(token, undefined, null, rowInsert);
       expect(v1RetrieveFlowData).toHaveBeenCalled();
       expect(v2RetrieveFlowData).toHaveBeenCalled();
       expect(response).toBe(false);
     });
     it("should call both with undefined token", async () => {
       const rowInsert = jest.fn();
-      const response = await retrieveFlowData(token, url, undefined, undefined, rowInsert);
+      const response = await retrieveFlowData(token, undefined, undefined, rowInsert);
       expect(v1RetrieveFlowData).toHaveBeenCalled();
       expect(v2RetrieveFlowData).toHaveBeenCalled();
       expect(response).toBe(false);
@@ -84,7 +83,7 @@ describe("FlowTableServiceUtil", () => {
         id: 2,
         nextActionId: "1"
       }];
-      const response = await batchFlowUpdate(items, token, url);
+      const response = await batchFlowUpdate(items, token);
       expect(v1BatchFlowUpdate).toHaveBeenCalled();
       expect(v2BatchFlowUpdate).toHaveBeenCalled();
       expect(response).toStrictEqual({
@@ -98,7 +97,7 @@ describe("FlowTableServiceUtil", () => {
       },{
         id: 2
       }];
-      const response = await batchFlowUpdate(items, token, url);
+      const response = await batchFlowUpdate(items, token);
       expect(v1BatchFlowUpdate).toHaveBeenCalled();
       expect(v2BatchFlowUpdate).not.toHaveBeenCalled();
       expect(response).toStrictEqual({
@@ -124,7 +123,7 @@ describe("FlowTableServiceUtil", () => {
       const items = [ {
         id: 1
       }];
-      await batchDeleteItems(items, token, url);
+      await batchDeleteItems(items, token);
       expect(v1BatchDeleteItems).toHaveBeenCalled();
       expect(v2BatchDeleteItems).toHaveBeenCalled();
     });
@@ -152,7 +151,7 @@ describe("FlowTableServiceUtil", () => {
         id: 2,
         nextActionId: "1"
       }];
-      await batchFlowCreate(items, token, url);
+      await batchFlowCreate(items, token);
       expect(v1BatchFlowCreate).toHaveBeenCalled();
       expect(v2BatchFlowCreate).toHaveBeenCalled();
     });
@@ -162,7 +161,7 @@ describe("FlowTableServiceUtil", () => {
       },{
         id: 2
       }];
-      await batchFlowCreate(items, token, url);
+      await batchFlowCreate(items, token);
       expect(v1BatchFlowCreate).toHaveBeenCalled();
       expect(v2BatchFlowCreate).not.toHaveBeenCalled();
     });
@@ -191,7 +190,7 @@ describe("FlowTableServiceUtil", () => {
         }
       };
       const dataRequests = ["Classify"];
-      await addFlowRule(item, token, url, curTime, dataRequests);
+      await addFlowRule(item, token, curTime, dataRequests);
       expect(v1AddFlowRule).not.toHaveBeenCalled();
       expect(v2AddFlowRule).toHaveBeenCalled();
     });
@@ -200,7 +199,7 @@ describe("FlowTableServiceUtil", () => {
         id: 1
       };
       const dataRequests = ["Classify"];
-      await addFlowRule(item, token, url, curTime, dataRequests);
+      await addFlowRule(item, token, curTime, dataRequests);
       expect(v1AddFlowRule).toHaveBeenCalled();
       expect(v2AddFlowRule).not.toHaveBeenCalled();
     });
@@ -212,8 +211,8 @@ describe("FlowTableServiceUtil", () => {
             value: "LSCMainMenu"
           }
         };
-        await addFlowRule(item, token, url);
-        expect(v2AddFlowRule).toHaveBeenCalledWith(item, token, url, curTimeUnixEpoch, []);
+        await addFlowRule(item, token);
+        expect(v2AddFlowRule).toHaveBeenCalledWith(item, token, curTimeUnixEpoch, []);
       });
 
     });
@@ -227,7 +226,7 @@ describe("FlowTableServiceUtil", () => {
         id: 1,
         nextActionId: "LSCMainMenu"
       };
-      await updateFlowDB(item, token, url);
+      await updateFlowDB(item, token);
       expect(v1UpdateFlowDB).not.toHaveBeenCalled();
       expect(v2UpdateFlowDB).toHaveBeenCalled();
     });
@@ -235,7 +234,7 @@ describe("FlowTableServiceUtil", () => {
       const item = {
         id: 1
       };
-      await updateFlowDB(item, token, url);
+      await updateFlowDB(item, token);
       expect(v1UpdateFlowDB).toHaveBeenCalled();
       expect(v2UpdateFlowDB).not.toHaveBeenCalled();
     });
@@ -249,7 +248,7 @@ describe("FlowTableServiceUtil", () => {
         id: 1,
         nextActionId: "LSCMainMenu"
       };
-      await deleteFlowRule(item, token, url);
+      await deleteFlowRule(item, token);
       expect(v1DeleteFlowRule).not.toHaveBeenCalled();
       expect(v2DeleteFlowRule).toHaveBeenCalled();
     });
@@ -257,7 +256,7 @@ describe("FlowTableServiceUtil", () => {
       const item = {
         id: 1
       };
-      await deleteFlowRule(item, token, url);
+      await deleteFlowRule(item, token);
       expect(v1DeleteFlowRule).toHaveBeenCalled();
       expect(v2DeleteFlowRule).not.toHaveBeenCalled();
     });

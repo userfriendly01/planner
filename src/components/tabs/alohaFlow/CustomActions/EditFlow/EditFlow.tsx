@@ -205,7 +205,7 @@ export const EditFlow = ({
       return true;
     }
     return false;
-  }
+  };
 
   const handleClone = () =>{
     openEditModal(false,false,selectedRowLocal,"",false,true);
