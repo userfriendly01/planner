@@ -25,13 +25,18 @@ import {
 import {
   FlexColumn,
   Manager,
-  ModalOverlayStatuses
+  ModalOverlayStatuses,
+  Worker
 } from "globals";
-import React, { useState } from "react";
+import React, {
+  useState, useEffect
+} from "react";
 import {
   addManager,
   editManager,
-  FetchUserResponse
+  FetchUserResponse,
+  fetchUser,
+  updateUser
 } from "services";
 import {
   logger,
@@ -77,6 +82,36 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
   const [ selectedCalabrioTeams, setSelectedCalabrioTeams ] = useState<number[]>(selectedManager ? selectedManager.calabrio_team_ids :[]);
   const [isTeamModalOpen, setIsTeamModalOpen] = useState<boolean>(false);
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
+  const [hasNameDiscrepancy, setHasNameDiscrepancy] = useState<boolean>(false);
+
+  console.log("KALEIGH: Fetched user: ", fetchedUser);
+
+  useEffect(() => {
+    if (selectedManager) {
+      checkForNameChange();
+    }
+  }, []);
+
+  const checkForNameChange = () => {
+    fetchUser(selectedManager.manager_n_number)
+      .then(newlyFetchedManager => {
+        if (selectedManager.manager_first_name !== newlyFetchedManager.firstName || selectedManager.manager_last_name !== newlyFetchedManager.lastName) {
+          setHasNameDiscrepancy(true);
+          setManager({
+            manager_n_number: selectedManager.manager_n_number.toLowerCase(),
+            manager_first_name: newlyFetchedManager.firstName,
+            manager_last_name: newlyFetchedManager.lastName
+          });
+        }
+      })
+      .catch(error => {
+        // logger.error("Failed to fetch user from employee lookup service", {
+        //   error,
+        //   nNumber
+        // });
+      });
+  };
+
 
   const getCalabrioOption = (teamId: number): any => {
     const team = calabrioTeams.find(team => team.groupId === teamId);
@@ -162,51 +197,117 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
       });
   };
 
-  const editManagerClicked = (): Promise<any> => {
+  const editManagerClicked = async (): Promise<any> => {
     setSaveStatus(ModalOverlayStatuses.SAVING);
     const profileId = profile ? profile.profile_id : null;
     const teams = JSON.stringify(selectedCalabrioTeams);
 
-    return editManager(manager.manager_id, {
+    console.log("fake call to edit manager. here's the body", {
+      manager_first_nme: manager.manager_first_name,
+      manager_last_nme: manager.manager_last_name,
       profile_id: profileId,
       calabrio_team_ids: teams
-    })
-      .then(res => {
-        const updatedArray = state.managerContext.managers.map(m => {
-          if(m.manager_id === manager.manager_id){
-            return {
-              ...manager,
-              profile_id: profileId,
-              calabrio_team_ids: selectedCalabrioTeams
-            };
-          } else {
-            return m;
-          }
-        });
-        dispatch(({
-          type: "editManager",
-          payload: updatedArray
+    });
+
+    try {
+      let res;  // Todo: put this back
+      // note: ctm fields end in _nme
+      // worker attributes fields end in _name, and they are in the manager state as _name
+      // const res = await editManager(manager.manager_id, {
+      //   manager_first_nme: manager.manager_first_name,
+      //   manager_last_nme: manager.manager_last_name,
+      //   profile_id: profileId,
+      //   calabrio_team_ids: teams
+      // });
+      const successes: Worker[] = [];
+      const failures: Worker[] = [];
+      if (hasNameDiscrepancy) {
+        // todo:  What do we do if this fails? Maybe export errors?
+        const affectedWorkers: Worker[] = state.workerContext.workers.filter(worker => worker.attributes.manager_n_number === selectedManager.manager_n_number);
+        console.log("AFFECTED WORKERS", affectedWorkers);
+        const results = await Promise.allSettled(affectedWorkers.map(worker => {
+          const body = {
+            attributes: {
+              ...worker.attributes,
+              manager_first_name: manager.manager_first_name,
+              manager_last_name: manager.manager_last_name,
+              manager: `${manager.manager_first_name} ${manager.manager_last_name}`
+            }
+          };
+          return updateUser(worker.sid, body);
         }));
+        // TODO: CHECK RESULTS, sort into successes and failures. Possible option to export?
+        results.forEach((r, index) => {
+          if (r.status === "fulfilled") {
+            successes.push(affectedWorkers[index]);
+          } else {
+            failures.push(affectedWorkers[index]);
+          }
+          // update the workerstate of the successful ones
+          //TODO: MAKE SURE THIS WORKS...
+          const updatedWorkers = state.workerContext.workers.map(w => {
+            const workerToUpdate = successes.find(s => s.sid === w.sid);
+            if (workerToUpdate) {
+              return {
+                ...w,
+                attributes: {
+                  ...w.attributes,
+                  manager_first_name: manager.manager_first_name,
+                  manager_last_name: manager.manager_last_name,
+                  manager: `${manager.manager_first_name} ${manager.manager_last_name}`
+                }
+              };
+            } else {
+              return w;
+            }
+          });
+          dispatch({
+            type: "loadWorkers",
+            payload: updatedWorkers
+          });
+        });
+      }
+      const updatedArray = state.managerContext.managers.map(m => {
+        if(m.manager_id === manager.manager_id){
+          return {
+            ...manager,
+            profile_id: profileId,
+            calabrio_team_ids: selectedCalabrioTeams
+          };
+        } else {
+          return m;
+        }
+      });
+      console.log("updated array", updatedArray.find(m => m.manager_last_name === "Spurio"));
+      dispatch(({
+        type: "editManager",
+        payload: updatedArray
+      }));
+      // TODO: check the failures and display different message without closing
+      if (failures.length > 0) {
+        setSaveStatus(ModalOverlayStatuses.PARTIAL_FAIL);
+        setErrorMessage("Manager was successfully updated, but Errors occurred while updateing their minions' attributes with the new name");
+      } else {
         setSaveStatus(ModalOverlayStatuses.SUCCESS);
         setTimeout(handleClose, 2000);
+      }
 
-        logger.info("Successfully updated manager", {
-          nNumber,
-          managerNNumber: manager.manager_n_number,
-          res
-        });
-      })
-      .catch(error => {
-        setSaveStatus(ModalOverlayStatuses.FAIL);
-        setTimeout(() => setSaveStatus(null), 2000);
-        setErrorMessage("Failed to update Manager");
-
-        logger.error("Failed to update manager", {
-          error,
-          nNumber,
-          managerNNumber: manager.manager_n_number
-        });
+      logger.info("Successfully updated manager", {
+        nNumber,
+        managerNNumber: manager.manager_n_number,
+        res
       });
+    } catch (error) {
+      setSaveStatus(ModalOverlayStatuses.FAIL);
+      setTimeout(() => setSaveStatus(null), 2000);
+      setErrorMessage("Failed to update Manager");
+
+      logger.error("Failed to update manager", {
+        error,
+        nNumber,
+        managerNNumber: manager.manager_n_number
+      });
+    }
   };
 
   let overlayMessage = "Saving";
@@ -230,15 +331,17 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
           </IconButton>
         </CloseButtonContainer>
         {selectedManager
-          ? <Header>Edit {manager.manager_first_name} {manager.manager_last_name}</Header>
+          ? <Header>Edit {selectedManager.manager_first_name} {selectedManager.manager_last_name}</Header>
           : <Header>Add a Manager</Header>
         }
         <FlexColumn>
+          {hasNameDiscrepancy&& (<Wrapper>We have detected that this manager&apos;s name has changed.  Saving will update.</Wrapper>)}
           <NNumberInput
             disabled={saveStatus || selectedManager ? true : false}
             fetchedUser={fetchedUser}
             label="N Number"
             onComplete={(fetchedUser, newNNumber) => {
+              console.log("kALEIGH ON COMPLETE");
               setManagerNNumber(newNNumber);
               setManager({
                 manager_n_number: newNNumber.toLowerCase(),
@@ -253,6 +356,7 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
             }}
             onUpdate={newNNumber => {
               setManagerNNumber(newNNumber);
+              console.log("kALEIGH ON COMPLETE");
             }}
             value={managerNNumber}
           />
