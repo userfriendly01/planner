@@ -1,16 +1,30 @@
 import React from "react";
-import { authWrapper } from "../../core/AzureAuth";
-import { AzureSPA } from "globals";
 import DataGridFlow from "./DataGridFlow/DataGridFlow";
-const DynamicFlowContainer = (props:AzureSPA) => {
+import { useAccessToken } from "authentication";
+import {
+  LoginInProgress,
+  LoginError
+} from "components";
+
+const DynamicFlowContainer = () => {
   const {
     accessToken,
-    matchedGroups
-  } = props;
+    matchedGroups,
+    isLoading,
+    error
+  } = useAccessToken();
+
+  if (isLoading) {
+    return <LoginInProgress />;
+  }
+
+  if (error) {
+    return <LoginError message={error} />;
+  }
 
   return (
     <DataGridFlow accessToken={accessToken} matchedGroups={matchedGroups} />
   );
 };
 
-export default authWrapper(DynamicFlowContainer);
+export default DynamicFlowContainer;
