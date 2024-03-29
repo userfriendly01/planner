@@ -13,8 +13,6 @@ import {
 import {
   PlaylistAdd
 } from "@mui/icons-material";
-import { useAdminState } from "context";
-
 
 interface CustomFlowGridToolBarProps {
   matchedGroups?: any[];
@@ -26,8 +24,7 @@ const CustomFlowGridToolBar = ({
   matchedGroups,
   openPreviewModal
 }:CustomFlowGridToolBarProps) =>{
-  const env: string = useAdminState().userContext.pingIdentity.environment;
-  const enableFlow = useMemo(() => readWriteAccess(matchedGroups,"aloha-flow",env), []);
+  const enableFlow = useMemo(() => readWriteAccess(matchedGroups,"aloha-flow"), []);
 
   const handleChange=(event:any):void=> {
     const { value } = event.target;

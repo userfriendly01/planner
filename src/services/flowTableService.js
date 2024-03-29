@@ -165,7 +165,7 @@ export async function queryLSCDynamicFlowData(accessToken) {
 async function retrieveFlowData(accessToken, counter = 1, nextToken = null, rowInsert, flowData = [], queryFunction = queryFlowData) {
   let result = {};
   let errors = false;
-  const resultSet = queryFunction == queryFlowData ? "listCctSharedCallFlowDbs" : "listPhoneNumbers";
+  const resultSet = queryFunction === queryFlowData ? "listCctSharedCallFlowDbs" : "listPhoneNumbers";
 
   try {
     let firstLoop = true;
@@ -186,21 +186,20 @@ async function retrieveFlowData(accessToken, counter = 1, nextToken = null, rowI
       if (listItems.length !== 0) {
 
         listItems.forEach(item => {
+          const itemCopy = queryFunction === queryFlowData ? item : createFlowFromAction(item);
           if(item) {
             flowData.push({
-              ...item,
+              ...itemCopy,
               id: counter++
             });
           }
         });
 
         rowInsert(flowData);
-      } else {
+      } else if (counter === 1){
         // If there was a handled error in queryFlowData, and there were 
         // no results returned at all, then break out of the loop
-        if(counter === 1) {
-          break;
-        }
+        break;
       }
       nextToken = result.data?.listCctSharedCallFlowDbs?.nextToken;
     }
@@ -214,6 +213,48 @@ async function retrieveFlowData(accessToken, counter = 1, nextToken = null, rowI
     flowData
   };
 
+}
+
+function createFlowFromAction (item) {
+  return {
+    pkey: item.phoneNumber,
+    brand: item.brand,
+    callFlowName: item.callFlowName ?? "",
+    callFlowTemplate: item.callFlowTemplate ?? "",
+    callFlowType: item.callFlowType ?? "",
+    callTypeDescription: item.callTypeDescription ?? "",
+    channel: item.channel,
+    content: {
+      callFlowRoute: item.callFlowRoute,
+      callIntent: item.callIntent,
+      callerType: item.callerType,
+      dataRequests: item.dataRequests,
+      greetingMessages: item.greetingMessages,
+      languageOffer: item.languageOffer,
+      officeNumbers: item.officeNumbers,
+      transferDestination: item.transferDestination
+    },
+    createTime: item.createTime,
+    dialedDescription: item.dialedDescription,
+    ...item.employeeId && {
+      employeeId: item.employeeId
+    },
+    internetPlacement: item.internetPlacement ?? "",
+    lineOfBusiness: item.lineOfBusiness ?? "",
+    marketingChannel: item.marketingChannel ?? "",
+    nextActionId: item.nextActionId ?? "",
+    nextActionType: item.nextActionType ?? "",
+    predictiveCaller: item.predictiveCaller ?? false,
+    rangeIndicator: item.rangeIndicator ?? "",
+    requestID: item.requestID ?? "",
+    selfServiceIndicator: item.callFlowType ?? false,
+    tfnRoutingGroup: item.tfnRoutingGroup ?? "",
+    tollFreeNumber: item.tollFreeNumber ?? "",
+    transferCode: item.transferCode ?? "",
+    phoneNumberType: item.phoneNumberType ?? "",
+    userDestination: item.userDestination ?? "",
+    whisper: item.whisper ?? ""
+  };
 }
 
 function addFlowInput (item, dataRequestsPassed, currentTimePassed){
@@ -1124,7 +1165,7 @@ async function queryDynamicFlowData(accessToken, nextToken = null) {
     logger.error("Error in query Dynamic Flow Data", { error }, false);
     return {
       errors: [error.message]
-    }
+    };
   }
   return result;
 }
