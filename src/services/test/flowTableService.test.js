@@ -629,8 +629,12 @@ describe("dynamicFlowTableService",()=> {
           })
         })
       );
-      const listFlow = await retrieveDynamicFlowData("12345","",{});
-      expect(listFlow).toEqual(jsonDynamicFlowData);
+      const listFlow = await retrieveDynamicFlowData("12345","",1, undefined, jest.fn(), []);
+      expect(listFlow).toEqual({
+        counter: 3,
+        errors: false,
+        flowData: jsonDynamicFlowData
+      });
     });
     test("CallDynamicFlow list finds 2",async()=>{
       window.fetch = jest.fn(() =>
@@ -665,8 +669,12 @@ describe("dynamicFlowTableService",()=> {
           })
         })
       );
-      const listDynamicFlow = await retrieveDynamicFlowData("12345","",{});
-      expect(listDynamicFlow).toEqual(jsonDynamicFlowData);
+      const listDynamicFlow = await retrieveDynamicFlowData("12345","",1, null, jest.fn(), []);
+      expect(listDynamicFlow).toEqual({
+        counter: 3,
+        errors: false,
+        flowData: jsonDynamicFlowData
+      });
     });
     test("CallDynamicFlow list finds error",async()=>{
       window.fetch = jest.fn(() =>
@@ -695,8 +703,12 @@ describe("dynamicFlowTableService",()=> {
           })
         })
       );
-      const listDynamicFlow = await retrieveDynamicFlowData("1234-5678","TEST", jsonDynamicFlowData);
-      expect(listDynamicFlow).toEqual([]);
+      const listDynamicFlow = await retrieveDynamicFlowData("1234-5678","TEST", 1, undefined, jest.fn(), jsonDynamicFlowData);
+      expect(listDynamicFlow).toEqual({
+        counter: 1,
+        errors: false,
+        flowData: jsonDynamicFlowData
+      });
     });
     test("pass null in dyanmic list",async()=>{
       window.fetch = jest.fn(() =>
@@ -706,8 +718,12 @@ describe("dynamicFlowTableService",()=> {
           })
         })
       );
-      const listDynamicFlow = await retrieveDynamicFlowData("1234-5678","TEST", jsonDynamicFlowData);
-      expect(listDynamicFlow).toEqual([]);
+      const listDynamicFlow = await retrieveDynamicFlowData("1234-5678","TEST",  1, undefined, jest.fn(), jsonDynamicFlowData);
+      expect(listDynamicFlow).toEqual({
+        counter: 1,
+        errors: false,
+        flowData: jsonDynamicFlowData
+      });
     });
     test("Error scenario ",async()=>{
       window.fetch = jest.fn(() =>
@@ -720,8 +736,13 @@ describe("dynamicFlowTableService",()=> {
       jest.spyOn(JSON, "stringify").mockImplementation(()=>{
         throw new Error();
       });
-      const listDynamicFlow = await retrieveDynamicFlowData("1234-5678","TEST", jsonDynamicFlowData);
-      expect(listDynamicFlow).toEqual([]);
+      const counter = 1;
+      const listDynamicFlow = await retrieveDynamicFlowData("1234-5678","TEST", counter, undefined, jest.fn(), jsonDynamicFlowData);
+      expect(listDynamicFlow).toEqual({
+        counter,
+        errors: true,
+        flowData: jsonDynamicFlowData
+      });
 
     });
   });

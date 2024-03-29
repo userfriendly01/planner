@@ -168,6 +168,7 @@ export async function queryLSCDynamicFlowData(accessToken, graphQlApiUrl) {
 async function retrieveFlowData(accessToken, graphQlApiUrl, counter = 1, nextToken = null, rowInsert, flowData = [], queryFunction = queryFlowData) {
   let result = {};
   let errors = false;
+  const resultSet = queryFunction == queryFlowData ? "listCctSharedCallFlowDbs" : "listPhoneNumbers";
 
   try {
     let firstLoop = true;
@@ -179,7 +180,11 @@ async function retrieveFlowData(accessToken, graphQlApiUrl, counter = 1, nextTok
         errors = true;
       }
 
-      const listItems = result.data?.listCctSharedCallFlowDbs?.items || [];
+      let listItems = [];
+
+      if (result.data) {
+        listItems = result.data[resultSet]?.items || [];
+      }
 
       if (listItems.length !== 0) {
 
@@ -1127,6 +1132,9 @@ async function queryDynamicFlowData(accessToken, nextToken = null, graphQlApiUrl
 
   } catch (error) {
     logger.error("Error in query Dynamic Flow Data", { error }, false);
+    return {
+      errors: [error.message]
+    }
   }
   return result;
 }
