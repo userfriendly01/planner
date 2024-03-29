@@ -183,7 +183,7 @@ describe("flowTableService",()=>{
           })
         })
       );
-      await retrieveFlowData("12345","",1,"", insertRows);
+      await retrieveFlowData("12345", 1, "", insertRows);
       expect(insertRows).toHaveBeenCalledTimes(1);
       expect(insertRows).toHaveBeenCalledWith(jsonFlowData);
     });
@@ -200,7 +200,7 @@ describe("flowTableService",()=>{
           })
         })
       );
-      const listFlow = await queryFlowData("12345","TEST");
+      const listFlow = await queryFlowData("12345", "TEST");
       expect(listFlow.data.listCctSharedCallFlowDbs.items).toEqual(jsonFlowData);
     });
     test("retrieveFlowData creates the IDs and skips nulls",async()=>{
@@ -221,7 +221,7 @@ describe("flowTableService",()=>{
           })
         })
       );
-      await retrieveFlowData("12345","", 1, "", insertRows, []);
+      await retrieveFlowData("12345", 1, "", insertRows, []);
       expect(insertRows).toHaveBeenCalledWith(jsonFlowData);
     });
     test("CallFlow list finds error",async()=>{
@@ -236,7 +236,7 @@ describe("flowTableService",()=>{
       jest.spyOn(JSON, "stringify").mockImplementation(()=>{
         throw new Error();
       });
-      const listFlow = await queryFlowData("12345","TEST", 1, "", insertRows, "http://localhost:8082");
+      const listFlow = await queryFlowData("12345", "TEST");
       expect(listFlow).toBeDefined;
     });
     test("CallFlow list not found",async()=>{
@@ -253,7 +253,7 @@ describe("flowTableService",()=>{
           })
         })
       );
-      const listFlow = await retrieveFlowData("1234-5678","TEST", 1, "", insertRows, jsonFlowData);
+      const listFlow = await retrieveFlowData("1234-5678", 1, "", insertRows, jsonFlowData);
       expect(insertRows).not.toHaveBeenCalled();
       expect(listFlow.errors).toBe(false);
     });
@@ -266,7 +266,7 @@ describe("flowTableService",()=>{
           })
         })
       );
-      const listFlow = await retrieveFlowData("1234-5678","TEST", 1, "", insertRows, jsonFlowData);
+      const listFlow = await retrieveFlowData("1234-5678", 1, "", insertRows, jsonFlowData);
       expect(insertRows).not.toHaveBeenCalled();
       expect(listFlow.errors).toBe(false);
     });
@@ -282,7 +282,7 @@ describe("flowTableService",()=>{
       jest.spyOn(JSON, "stringify").mockImplementation(()=>{
         throw new Error();
       });
-      const listFlow = await retrieveFlowData("1234-5678","TEST", 1, "", insertRows, jsonFlowData);
+      const listFlow = await retrieveFlowData("1234-5678", 1, "", insertRows, jsonFlowData);
       expect(insertRows).not.toHaveBeenCalled();
       expect(listFlow.errors).toBe(true);
 
@@ -629,7 +629,7 @@ describe("dynamicFlowTableService",()=> {
           })
         })
       );
-      const listFlow = await retrieveDynamicFlowData("12345","",1, undefined, jest.fn(), []);
+      const listFlow = await retrieveDynamicFlowData("12345",1, undefined, jest.fn(), []);
       expect(listFlow).toEqual({
         counter: 3,
         errors: false,
@@ -649,7 +649,7 @@ describe("dynamicFlowTableService",()=> {
           })
         })
       );
-      const listFlow = await queryDynamicFlowData("12345","TEST","http://localhost:8082");
+      const listFlow = await queryDynamicFlowData("12345", "TEST");
       expect(listFlow.data.listPhoneNumbers.items).toEqual(jsonDynamicFlowData);
     });
     test("retrieveDynamicFlowData creates the IDs and skips nulls",async()=>{
@@ -669,7 +669,7 @@ describe("dynamicFlowTableService",()=> {
           })
         })
       );
-      const listDynamicFlow = await retrieveDynamicFlowData("12345","",1, null, jest.fn(), []);
+      const listDynamicFlow = await retrieveDynamicFlowData("12345",1, null, jest.fn(), []);
       expect(listDynamicFlow).toEqual({
         counter: 3,
         errors: false,
@@ -687,7 +687,7 @@ describe("dynamicFlowTableService",()=> {
       jest.spyOn(JSON, "stringify").mockImplementation(()=>{
         throw new Error();
       });
-      const listDynamicFlow = await queryDynamicFlowData("12345","TEST","http://localhost:8082");
+      const listDynamicFlow = await queryDynamicFlowData("12345", "TEST");
       expect(listDynamicFlow).toBeDefined;
     });
     test("CallDynamicFlow list not found",async()=>{
@@ -703,7 +703,7 @@ describe("dynamicFlowTableService",()=> {
           })
         })
       );
-      const listDynamicFlow = await retrieveDynamicFlowData("1234-5678","TEST", 1, undefined, jest.fn(), jsonDynamicFlowData);
+      const listDynamicFlow = await retrieveDynamicFlowData("1234-5678", 1, undefined, jest.fn(), jsonDynamicFlowData);
       expect(listDynamicFlow).toEqual({
         counter: 1,
         errors: false,
@@ -718,7 +718,7 @@ describe("dynamicFlowTableService",()=> {
           })
         })
       );
-      const listDynamicFlow = await retrieveDynamicFlowData("1234-5678","TEST",  1, undefined, jest.fn(), jsonDynamicFlowData);
+      const listDynamicFlow = await retrieveDynamicFlowData("1234-5678", 1, undefined, jest.fn(), jsonDynamicFlowData);
       expect(listDynamicFlow).toEqual({
         counter: 1,
         errors: false,
@@ -737,7 +737,7 @@ describe("dynamicFlowTableService",()=> {
         throw new Error();
       });
       const counter = 1;
-      const listDynamicFlow = await retrieveDynamicFlowData("1234-5678","TEST", counter, undefined, jest.fn(), jsonDynamicFlowData);
+      const listDynamicFlow = await retrieveDynamicFlowData("1234-5678", counter, undefined, jest.fn(), jsonDynamicFlowData);
       expect(listDynamicFlow).toEqual({
         counter,
         errors: true,
