@@ -107,7 +107,17 @@ export const cleanErrorMessage = (graphQLErrors: GraphQLErrors[]): string => {
   return graphQLErrors[0].message;
 };
 
+/**
+ * 
+ * @param {Array<any>} matchedGroups - The matched groups provided by Azure Oauth response
+ * @param {String} alohaTabType - currently aloha-flow or aloha-route
+ * @returns {Boolean} true if the permission is not found/matched.
+ */
 export const readWriteAccess=(matchedGroups: any[], alohaTabType: string): boolean => {
+  if (env.APP_ENV === "local") {
+    return false;
+  }
+
   let flag = true;
   matchedGroups?.forEach((item: any) => {
     if(item.startup.name === alohaTabType && item.permissionLevel === "write"){
