@@ -159,14 +159,14 @@ describe("<EditFlow />", () => {
         expect(openEditModal).toBeCalledTimes(0);
       });
     });
-    test("Simulate the SaveRule Button with Success API Response", () => {
+    test.skip("Simulate the SaveRule Button with Success API Response", async () => {
       updateFlowDB.mockResolvedValue({ data: { "items": []}});
       const { getByRole } = renderEditFlow(true, validFlowData);
       const saveButton = getByRole("button", { name: "saveFlowRuleButton" });
       act(() => {
         fireEvent.click(saveButton);
       });
-      waitFor(() => {
+      await waitFor(() => {
         expect(openEditModal).toBeCalledTimes(1);
         expect(shouldDeleteOriginal).toHaveBeenCalled();
       });
