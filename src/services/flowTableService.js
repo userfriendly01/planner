@@ -223,7 +223,7 @@ function createFlowFromAction (item) {
     convertedCreateTime = new Date(jsEpoch).toISOString();
   }
   return {
-    pkey: item.pkey,
+    pkey: item.phoneNumber,
     agentId: item.agentId,
     brand: item.brand,
     callFlowName: item.callFlowName ?? "",

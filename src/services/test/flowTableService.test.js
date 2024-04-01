@@ -583,7 +583,7 @@ describe("dynamicFlowTableService",()=> {
     const jsonDynamicFlowData = [
       {
         id: 1,
-        pkey: "12345",
+        phoneNumber: "12345",
         agentId: "123455",
         brand: "LM",
         callFlowTemplate: "temp",
@@ -596,7 +596,7 @@ describe("dynamicFlowTableService",()=> {
       }
       ,{
         id: 2,
-        pkey: "23456",
+        phoneNumber: "23456",
         agentId: "123455",
         brand: "LM",
         callFlowTemplate: "temp",
