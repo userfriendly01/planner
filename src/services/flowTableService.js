@@ -186,8 +186,8 @@ async function retrieveFlowData(accessToken, counter = 1, nextToken = null, rowI
       if (listItems.length !== 0) {
 
         listItems.forEach(item => {
-          const itemCopy = queryFunction === queryFlowData ? item : createFlowFromAction(item);
           if(item) {
+            const itemCopy = queryFunction === queryFlowData ? item : createFlowFromAction(item);
             flowData.push({
               ...itemCopy,
               id: counter++
@@ -216,8 +216,15 @@ async function retrieveFlowData(accessToken, counter = 1, nextToken = null, rowI
 }
 
 function createFlowFromAction (item) {
+  let convertedCreateTime = "";
+  if(item.createTime && typeof item.createTime === "number") {
+    const jsEpoch = item.createTime < 9999999999 ? item.createTime * 1000 : item.createTime;
+
+    convertedCreateTime = new Date(jsEpoch).toISOString();
+  }
   return {
-    pkey: item.phoneNumber,
+    pkey: item.pkey,
+    agentId: item.agentId,
     brand: item.brand,
     callFlowName: item.callFlowName ?? "",
     callFlowTemplate: item.callFlowTemplate ?? "",
@@ -225,16 +232,16 @@ function createFlowFromAction (item) {
     callTypeDescription: item.callTypeDescription ?? "",
     channel: item.channel,
     content: {
-      callFlowRoute: item.callFlowRoute,
-      callIntent: item.callIntent,
-      callerType: item.callerType,
-      dataRequests: item.dataRequests,
-      greetingMessages: item.greetingMessages,
-      languageOffer: item.languageOffer,
-      officeNumbers: item.officeNumbers,
-      transferDestination: item.transferDestination
+      callFlowRoute: item.callFlowRoute ?? "",
+      callIntent: item.callIntent ?? "",
+      callerType: item.callerType ?? "",
+      dataRequests: item.dataRequests ?? "",
+      greetingMessages: item.greetingMessages ?? "",
+      languageOffer: item.languageOffer ?? "",
+      officeNumbers: item.officeNumbers ?? "",
+      transferDestination: item.transferDestination ?? ""
     },
-    createTime: item.createTime,
+    createTime: convertedCreateTime,
     dialedDescription: item.dialedDescription,
     ...item.employeeId && {
       employeeId: item.employeeId
@@ -244,6 +251,7 @@ function createFlowFromAction (item) {
     marketingChannel: item.marketingChannel ?? "",
     nextActionId: item.nextActionId ?? "",
     nextActionType: item.nextActionType ?? "",
+    phoneNumberType: item.phoneNumberType ?? "",
     predictiveCaller: item.predictiveCaller ?? false,
     rangeIndicator: item.rangeIndicator ?? "",
     requestID: item.requestID ?? "",
@@ -251,7 +259,6 @@ function createFlowFromAction (item) {
     tfnRoutingGroup: item.tfnRoutingGroup ?? "",
     tollFreeNumber: item.tollFreeNumber ?? "",
     transferCode: item.transferCode ?? "",
-    phoneNumberType: item.phoneNumberType ?? "",
     userDestination: item.userDestination ?? "",
     whisper: item.whisper ?? ""
   };

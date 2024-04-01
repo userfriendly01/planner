@@ -588,8 +588,8 @@ describe("dynamicFlowTableService",()=> {
         brand: "LM",
         callFlowTemplate: "temp",
         channel: "Test1 Channel",
-        createTime: "2022-24-08",
-        updateTime: "2024-01-30T05:00:00.000Z",
+        createTime: 1688443200,
+        updateTime: 1688443201,
         dialedDescription: "test",
         employeeId: "n1234567",
         userDestination: "dest"
@@ -601,13 +601,90 @@ describe("dynamicFlowTableService",()=> {
         brand: "LM",
         callFlowTemplate: "temp",
         channel: "Test1 Channel",
-        createTime: "2022-24-08",
-        updateTime: "2024-01-30T05:00:00.000Z",
+        createTime: 1688443200,
+        updateTime: 1688443201,
         dialedDescription: "test",
         employeeId: "n1234567",
         userDestination: "dest"
       }
     ];
+    const jsonDynamicToCallFlowData = [{
+      "agentId": "123455",
+      "brand": "LM",
+      "callFlowName": "",
+      "callFlowTemplate": "temp",
+      "callFlowType": "",
+      "callTypeDescription": "",
+      "channel": "Test1 Channel",
+      "content": {
+        "callFlowRoute": "",
+        "callIntent": "",
+        "callerType": "",
+        "dataRequests": "",
+        "greetingMessages": "",
+        "languageOffer": "",
+        "officeNumbers": "",
+        "transferDestination": ""
+      },
+      "createTime": "2023-07-04T04:00:00.000Z",
+      "dialedDescription": "test",
+      "employeeId": "n1234567",
+      "id": 1,
+      "pkey": "12345",
+      "internetPlacement": "",
+      "lineOfBusiness": "",
+      "marketingChannel": "",
+      "nextActionId": "",
+      "nextActionType": "",
+      "phoneNumberType": "",
+      "predictiveCaller": false,
+      "rangeIndicator": "",
+      "requestID": "",
+      "selfServiceIndicator": false,
+      "tfnRoutingGroup": "",
+      "tollFreeNumber": "",
+      "transferCode": "",
+      "userDestination": "dest",
+      "whisper": ""
+    },{
+      "agentId": "123455",
+      "brand": "LM",
+      "callFlowName": "",
+      "callFlowTemplate": "temp",
+      "callFlowType": "",
+      "callTypeDescription": "",
+      "channel": "Test1 Channel",
+      "content": {
+        "callFlowRoute": "",
+        "callIntent": "",
+        "callerType": "",
+        "dataRequests": "",
+        "greetingMessages": "",
+        "languageOffer": "",
+        "officeNumbers": "",
+        "transferDestination": ""
+      },
+      "createTime": "2023-07-04T04:00:00.000Z",
+      "dialedDescription": "test",
+      "employeeId": "n1234567",
+      "id": 2,
+      "pkey": "23456",
+      "internetPlacement": "",
+      "lineOfBusiness": "",
+      "marketingChannel": "",
+      "nextActionId": "",
+      "nextActionType": "",
+      "phoneNumberType": "",
+      "predictiveCaller": false,
+      "rangeIndicator": "",
+      "requestID": "",
+      "selfServiceIndicator": false,
+      "tfnRoutingGroup": "",
+      "tollFreeNumber": "",
+      "transferCode": "",
+      "userDestination": "dest",
+      "whisper": ""
+    }];
 
     beforeEach(()=>{
       jest.restoreAllMocks();
@@ -628,11 +705,11 @@ describe("dynamicFlowTableService",()=> {
           })
         })
       );
-      const listFlow = await retrieveDynamicFlowData("12345",1, undefined, jest.fn(), []);
+      const listFlow = await retrieveDynamicFlowData("12345", 1, undefined, jest.fn(), []);
       expect(listFlow).toEqual({
         counter: 3,
         errors: false,
-        flowData: jsonDynamicFlowData
+        flowData: jsonDynamicToCallFlowData
       });
     });
     test("CallDynamicFlow list finds 2",async()=>{
@@ -672,7 +749,7 @@ describe("dynamicFlowTableService",()=> {
       expect(listDynamicFlow).toEqual({
         counter: 3,
         errors: false,
-        flowData: jsonDynamicFlowData
+        flowData: jsonDynamicToCallFlowData
       });
     });
     test("CallDynamicFlow list finds error",async()=>{
@@ -964,8 +1041,8 @@ describe("dynamicFlowTableService",()=> {
         "flag": false,
         "success": [jsonDynamicFlowData]
       };
-      //TODO shouldn't the graphql mutation by createPhoneNumber
       const response = await batchDynamicFlowCreate([{ ...jsonDynamicFlowData }],"1233-3245","http://localhost:3000");
+
       expect(response).toEqual(batchCreateResponse);
       expect(window.fetch).toBeCalledWith("http://localhost:3000", {
         "body": "{\"query\":\"\\n        mutation createCallFlowConfig($input: CallFlowConfigInput! ) {\\n          createCallFlowConfig(input: $input) {\\n              callFlowName\\n            }\\n          }\\n      \",\"variables\":{\"input\":{\"announcements\":[],\"menus\":[],\"menuOptions\":[]}}}",
