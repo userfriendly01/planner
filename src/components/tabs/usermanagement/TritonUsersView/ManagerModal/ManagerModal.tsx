@@ -90,8 +90,6 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
   const [hasNameDiscrepancy, setHasNameDiscrepancy] = useState<boolean>(false);
 
-  console.log("KALEIGH: Fetched user: ", fetchedUser);
-
   useEffect(() => {
     if (selectedManager) {
       checkForNameChange();
@@ -101,7 +99,6 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
   const checkForNameChange = () => {
     fetchUser(selectedManager.manager_n_number)
       .then(newlyFetchedManager => {
-        console.warn("newly fetched manager", newlyFetchedManager);
         if (selectedManager.manager_first_name !== newlyFetchedManager.firstName || selectedManager.manager_last_name !== newlyFetchedManager.lastName) {
           setHasNameDiscrepancy(true);
           setManager({
@@ -110,7 +107,6 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
             manager_first_name: newlyFetchedManager.firstName,
             manager_last_name: newlyFetchedManager.lastName
           });
-          console.warn("after setManager", newlyFetchedManager, manager, profile, selectedCalabrioTeams);
         }
       })
       .catch(error => {
@@ -248,13 +244,6 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
     const profileId = profile ? profile.profile_id : null;
     const teams = JSON.stringify(selectedCalabrioTeams);
 
-    console.log("fake call to edit manager. here's the body", {
-      manager_first_nme: manager.manager_first_name,
-      manager_last_nme: manager.manager_last_name,
-      profile_id: profileId,
-      calabrio_team_ids: teams
-    });
-
     try {
       const res = await editManager(selectedManager.manager_id, {
         manager_first_nme: manager.manager_first_name,
@@ -266,7 +255,6 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
       const failures: Worker[] = [];
       if (hasNameDiscrepancy) {
         const affectedWorkers: Worker[] = state.workerContext.workers.filter(worker => worker.attributes.manager_n_number === selectedManager.manager_n_number);
-        console.log("AFFECTED WORKERS", affectedWorkers);
         const results = await Promise.allSettled(affectedWorkers.map(worker => {
           const body = {
             attributes: {
@@ -276,7 +264,8 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
               manager: `${manager.manager_first_name} ${manager.manager_last_name}`
             }
           };
-          return updateUser(worker.sid, body);
+          return Promise.reject("no");
+          // return updateUser(worker.sid, body);
         }));
 
         results.forEach((r, index) => {
@@ -321,14 +310,13 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
           return m;
         }
       });
-      console.warn("updated array", updatedArray);
+
       dispatch(({
         type: "editManager",
         payload: updatedArray
       }));
 
       if (failures.length > 0) {
-        console.warn("These ones failed", failures);
         setSaveStatus(ModalOverlayStatuses.PARTIAL_FAIL);
         const failUl = (<>
           <h4>
@@ -338,7 +326,7 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
           </h4>
           <StyledExportButton data-testid="export-button" onClick={() => handleExport(failures)} styles={{ width: "200px" }}><ExcelExport ref={_export} />Export Errors</StyledExportButton>
         </>);
-        console.warn("LOOK HERE", failUl);
+
         setErrorMessage(failUl);
         logger.warn("Some failures updating manager name in worker attributes while updating manager name", {
           nNumber,
@@ -401,7 +389,6 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
             fetchedUser={fetchedUser}
             label="N Number"
             onComplete={(fetchedUser, newNNumber) => {
-              console.log("kALEIGH ON COMPLETE");
               setManagerNNumber(newNNumber);
               setManager({
                 manager_n_number: newNNumber.toLowerCase(),
