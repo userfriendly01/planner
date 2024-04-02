@@ -116,6 +116,7 @@ jest.mock("services", () => ({
   queryFlowData: jest.fn(),
   queryRoutingData: jest.fn(),
   queryDynamicFlowData: jest.fn(),
+  queryDynamicPhoneData: jest.fn(),
   retrieveFlowData: jest.fn(),
   retrieveDynamicFlowData: jest.fn(),
   retrieveRoutingData: jest.fn(),

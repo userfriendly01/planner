@@ -172,8 +172,8 @@ export const TableGridColumnDef: GridColDef[] = [
     align: "left"
   },
   {
-    headerName: "Type",
-    field: "type",
+    headerName: "Phone Number Type",
+    field: "phoneNumberType",
     sortable: true,
     width: 80,
     align: "left"

@@ -12,7 +12,7 @@ import  {
   deleteFlowRule,
   flowBatchDelete,
   flowDynamicBatchDelete,
-  queryDynamicFlowData,
+  queryDynamicPhoneData,
   queryFlowData,
   retrieveDynamicFlowData,
   retrieveFlowData,
@@ -725,7 +725,7 @@ describe("dynamicFlowTableService",()=> {
           })
         })
       );
-      const listFlow = await queryDynamicFlowData("12345", "TEST");
+      const listFlow = await queryDynamicPhoneData("12345", "TEST");
       expect(listFlow.data.listPhoneNumbers.items).toEqual(jsonDynamicFlowData);
     });
     test("retrieveDynamicFlowData creates the IDs and skips nulls",async()=>{
@@ -763,7 +763,7 @@ describe("dynamicFlowTableService",()=> {
       jest.spyOn(JSON, "stringify").mockImplementation(()=>{
         throw new Error();
       });
-      const listDynamicFlow = await queryDynamicFlowData("12345", "TEST");
+      const listDynamicFlow = await queryDynamicPhoneData("12345", "TEST");
       expect(listDynamicFlow).toBeDefined;
     });
     test("CallDynamicFlow list not found",async()=>{

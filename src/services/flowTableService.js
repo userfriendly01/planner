@@ -80,7 +80,7 @@ async function queryFlowData(accessToken, nextToken = null) {
  * @param {String} accessToken OAuth tokent to use while calling graphql query
  * @returns list of data and nextToken if any
  */
-export async function queryDynamicFlowData(accessToken) {
+async function queryDynamicFlowData(accessToken) {
   let result = {};
   try {
     const response = await fetch(env.GRAPH_API_URL, {
@@ -297,7 +297,7 @@ function addFlowInput (item, dataRequestsPassed, currentTimePassed){
     requestID: item.requestID?.value || "",
     userDestination: item.userDestination?.value||"",
     rangeIndicator: item.rangeIndicator?.value || "",
-    type: item.type?.value || "",
+    type: item.phoneNumberType?.value || "",
     tfnRoutingGroup: item.tfnRoutingGroup?.value || "",
     predictiveCaller: item.predictiveCaller?.value || false,
     selfServiceIndicator: item.selfServiceIndicator?.value || false
@@ -342,7 +342,7 @@ function updateFlowInput(item){
     requestID: item.requestID || "",
     userDestination: item.userDestination || "",
     rangeIndicator: item.rangeIndicator || "",
-    type: item.type || "",
+    type: item.phoneNumberType || "",
     tfnRoutingGroup: item.tfnRoutingGroup || "",
     predictiveCaller: item.predictiveCaller || false,
     selfServiceIndicator: item.selfServiceIndicator || false
@@ -714,7 +714,7 @@ const updateFlowBatchRun = async(items, accessToken) =>{
       userDestination: item.userDestination || "",
       rangeIndicator: item.rangeIndicator || "",
       tfnRoutingGroup: item.tfnRoutingGroup || "",
-      type: item.type || ""
+      type: item.phoneNumberType || ""
     };
   });
   try {
@@ -1037,7 +1037,7 @@ const createFlowRunItem = async(items, accessToken) =>{
       requestID: item.requestID || "",
       userDestination: item.userDestination || "",
       rangeIndicator: item.rangeIndicator || "",
-      type: item.type || "",
+      type: item.phoneNumberType || "",
       predictiveCaller: item.predictiveCaller || false,
       selfServiceIndicator: item.selfServiceIndicator || false
     };
@@ -1109,7 +1109,7 @@ const createFlowRunItem = async(items, accessToken) =>{
  * @param {String} nextToken Token for next set of data
  * @returns list of data and nextToken if any
  */
-async function queryDynamicFlowData(accessToken, nextToken = null) {
+async function queryDynamicPhoneData(accessToken, nextToken = null) {
   let result = nextToken ? undefined : {};
 
   try {
@@ -1181,7 +1181,7 @@ async function queryDynamicFlowData(accessToken, nextToken = null) {
  * @returns {flowData} list of data contain all the result present in DB
  */
 async function retrieveDynamicFlowData(accessToken, counter = 1, nextToken = null, rowInsert, flowData = []) {
-  return retrieveFlowData(accessToken, counter, nextToken, rowInsert, flowData, queryDynamicFlowData);
+  return retrieveFlowData(accessToken, counter, nextToken, rowInsert, flowData, queryDynamicPhoneData);
 }
 
 function updateDynamicFlowInput(item){
@@ -1209,7 +1209,7 @@ function updateDynamicFlowInput(item){
     nextActionType: item.nextActionType,
     officeNumbers: item.content?.officeNumbers,
     phoneNumber: item.pkey,
-    phoneNumberType: item.type,
+    phoneNumberType: item.phoneNumberType,
     predictiveCaller: item.predictiveCaller,
     rangeIndicator: item.rangeIndicator,
     requestID: item.requestID,
@@ -1289,7 +1289,7 @@ function addDynamicFlowInput (item, dataRequestsPassed, currentTimePassed){
     nextActionType: item.nextActionType?.value,
     officeNumbers: item.officeNumbers?.value,
     phoneNumber: item.pkey?.value,
-    phoneNumberType: item.type?.value,
+    phoneNumberType: item.phoneNumberType?.value,
     predictiveCaller: item.predictiveCaller?.value,
     rangeIndicator: item.rangeIndicator?.value,
     requestID: item.requestID?.value,
@@ -1516,7 +1516,7 @@ const updateDynamicFlowBatchRun = async(items, accessToken) =>{
       nextActionType: item.nextActionType,
       officeNumbers: item.content?.officeNumbers,
       phoneNumber: item.pkey,
-      phoneNumberType: item.type,
+      phoneNumberType: item.phoneNumberType,
       predictiveCaller: item.predictiveCaller,
       rangeIndicator: item.rangeIndicator,
       requestID: item.requestID,
@@ -1590,22 +1590,23 @@ const updateDynamicFlowBatchRun = async(items, accessToken) =>{
 };
 
 export {
-  addFlowRule,
-  deleteFlowRule,
-  retrieveFlowData,
-  updateFlowDB,
-  queryFlowData,
-  flowBatchDelete,
-  batchFlowUpdate,
-  batchDeleteItems,
-  batchFlowCreate,
   addDynamicFlowRule,
-  deleteDynamicFlowRule,
-  retrieveDynamicFlowData,
-  updateDynamicFlowDB,
-  queryDynamicFlowData,
-  flowDynamicBatchDelete,
-  batchDynamicFlowUpdate,
+  addFlowRule,
+  batchDeleteItems,
   batchDynamicDeleteItems,
-  batchDynamicFlowCreate
+  batchDynamicFlowCreate,
+  batchDynamicFlowUpdate,
+  batchFlowCreate,
+  batchFlowUpdate,
+  deleteDynamicFlowRule,
+  deleteFlowRule,
+  flowBatchDelete,
+  flowDynamicBatchDelete,
+  queryDynamicFlowData,
+  queryDynamicPhoneData,
+  queryFlowData,
+  retrieveDynamicFlowData,
+  retrieveFlowData,
+  updateDynamicFlowDB,
+  updateFlowDB
 };

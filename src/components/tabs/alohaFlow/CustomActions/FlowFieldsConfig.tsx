@@ -108,7 +108,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
   },
   {
     label: "Phone Number Type",
-    key: "type",
+    key: "phoneNumberType",
     control: "autoComplete",
     required: false,
     valueGetter: (params: CctSharedCallFlowDb) => `${params?.type || ""}`,
