@@ -332,7 +332,7 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
       payload: {
         formMode: form.formMode,
         worker: tritonWorker,
-        managers: state.managerContext.managers
+        managers: managers
       }
     });
   }
