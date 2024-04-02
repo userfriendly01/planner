@@ -16,7 +16,7 @@ import {
 import { PreviewModal } from "../PreviewModal/PreviewModal";
 import {
   batchDynamicFlowCreate,
-  queryLSCDynamicFlowData
+  queryDynamicFlowData
 } from "services";
 import { getDynamicGridMasterData } from "./DynamicGridMaster";
 import {
@@ -60,7 +60,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     const getTableData = async()=>{
 
       // GraphQL Query
-      const firstChunkData:any = await queryLSCDynamicFlowData(accessToken);
+      const firstChunkData:any = await queryDynamicFlowData(accessToken);
 
       // Build an array from objects return from dynamo.
       const listItems = firstChunkData?.data?.getCallFlowConfig?.items || [];

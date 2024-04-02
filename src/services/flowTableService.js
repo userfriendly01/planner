@@ -80,7 +80,7 @@ async function queryFlowData(accessToken, nextToken = null) {
  * @param {String} accessToken OAuth tokent to use while calling graphql query
  * @returns list of data and nextToken if any
  */
-export async function queryLSCDynamicFlowData(accessToken) {
+export async function queryDynamicFlowData(accessToken) {
   let result = {};
   try {
     const response = await fetch(env.GRAPH_API_URL, {
@@ -91,7 +91,7 @@ export async function queryLSCDynamicFlowData(accessToken) {
       },
       body: JSON.stringify({
         query: `query MyQuery {
-  getCallFlowConfig(callFlowName: "LSC") {
+  getCallFlowConfig {
     items {
       ... on Menu {
         allowBargeIn
