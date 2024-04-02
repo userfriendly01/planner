@@ -799,6 +799,7 @@ const batchFlowCreate = async(items, accessToken) =>{
   while(itemsCopy.length>0){
     flowCreateArray.push(itemsCopy.splice(0,size));
   }
+
   const allResults = await Promise.all(
     flowCreateArray.map(
       async flowCreate => {
@@ -990,7 +991,6 @@ const createDynamicFlowRunItem = async(items, accessToken) =>{
     });
     response = await fetchResponse.json();
 
-    logger.log("Create Batch Dynamic Flow DB Response:", response);
   } catch (error) {
     logger.error("Error in Create Batch Dynamic Flow DB", error);
   }
@@ -1098,8 +1098,6 @@ const createFlowRunItem = async(items, accessToken) =>{
       })
     });
     response = await fetchResponse.json();
-
-    logger.log("Create Batch Flow DB Response:", response);
   } catch (error) {
     logger.error("Error in Create Batch Flow DB", error);
   }
@@ -1517,7 +1515,7 @@ const updateDynamicFlowBatchRun = async(items, accessToken) =>{
       nextActionId: item.nextActionId,
       nextActionType: item.nextActionType,
       officeNumbers: item.content?.officeNumbers,
-      phoneNumber: item.phoneNumber,
+      phoneNumber: item.pkey,
       phoneNumberType: item.type,
       predictiveCaller: item.predictiveCaller,
       rangeIndicator: item.rangeIndicator,

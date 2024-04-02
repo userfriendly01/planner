@@ -6,7 +6,6 @@ import {
   retrieveDynamicFlowData as v2RetrieveFlowData,
   batchDynamicFlowUpdate as v2BatchFlowUpdate,
   batchDynamicDeleteItems as v2BatchDeleteItems,
-  batchDynamicFlowCreate as v2BatchFlowCreate,
   addFlowRule as v1AddFlowRule,
   addDynamicFlowRule as v2AddFlowRule,
   deleteFlowRule as v1DeleteFlowRule,
@@ -43,6 +42,7 @@ export const retrieveFlowData = async (
 };
 
 export type BatchResponse = {
+    errors: Array<any>,
     failure: Array<any>,
     flag: boolean,
     success: Array<any>,
@@ -92,13 +92,23 @@ const commonProcessing = async (
   });
 
   const response = await batchFunction1(items1, accessToken) as BatchResponse;
+  if(items1.length === 0) {
+    response.flag = false;
+    response.alertMsg = "";
+  }
 
   if(items2.length) {
     const response2 = await batchFunction2(items2, accessToken)as BatchResponse;
 
-    response2.failure.forEach(x => response.failure.push(x));
-    response2.success.forEach(x => response.success.push(x));
+    response2.errors?.forEach(x => response.errors.push(x));
+    response2.failure?.forEach(x => response.failure.push(x));
+    response2.success?.forEach(x => response.success.push(x));
   }
+  if(response.errors?.length) {
+    response.flag = true;
+    response.alertMsg = "Errors occurred: " + response.errors.map(x=> x.message).join(" / ");
+  }
+
 
   return response;
 };
@@ -137,7 +147,7 @@ export const batchFlowCreate = async (
   accessToken: string
 ): Promise<BatchResponse> =>  {
 
-  return await commonProcessing(items, accessToken, v1BatchFlowCreate, v2BatchFlowCreate);
+  return await commonProcessing(items, accessToken, v1BatchFlowCreate, v2BatchFlowUpdate);
 
 };
 

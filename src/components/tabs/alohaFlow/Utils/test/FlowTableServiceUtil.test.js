@@ -3,7 +3,6 @@ import {
   addFlowRule as v1AddFlowRule,
   batchDeleteItems as v1BatchDeleteItems,
   batchDynamicDeleteItems as v2BatchDeleteItems,
-  batchDynamicFlowCreate as v2BatchFlowCreate,
   batchDynamicFlowUpdate as v2BatchFlowUpdate,
   batchFlowCreate as v1BatchFlowCreate,
   batchFlowUpdate as v1BatchFlowUpdate,
@@ -137,7 +136,7 @@ describe("FlowTableServiceUtil", () => {
         flag: false,
         success: ["a"]
       });
-      v2BatchFlowCreate.mockResolvedValue({
+      v2BatchFlowUpdate.mockResolvedValue({
         alertMsg: "",
         failure: ["d"],
         flag: false,
@@ -153,7 +152,7 @@ describe("FlowTableServiceUtil", () => {
       }];
       await batchFlowCreate(items, token);
       expect(v1BatchFlowCreate).toHaveBeenCalled();
-      expect(v2BatchFlowCreate).toHaveBeenCalled();
+      expect(v2BatchFlowUpdate).toHaveBeenCalled();
     });
     it("should call just one function", async () => {
       const items = [ {
@@ -163,7 +162,7 @@ describe("FlowTableServiceUtil", () => {
       }];
       await batchFlowCreate(items, token);
       expect(v1BatchFlowCreate).toHaveBeenCalled();
-      expect(v2BatchFlowCreate).not.toHaveBeenCalled();
+      expect(v2BatchFlowUpdate).not.toHaveBeenCalled();
     });
   });
   describe("addFlowRule", () => {
