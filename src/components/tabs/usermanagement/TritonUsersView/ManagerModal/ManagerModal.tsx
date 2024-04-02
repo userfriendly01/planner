@@ -264,8 +264,7 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
               manager: `${manager.manager_first_name} ${manager.manager_last_name}`
             }
           };
-          return Promise.reject("no");
-          // return updateUser(worker.sid, body);
+          return updateUser(worker.sid, body);
         }));
 
         results.forEach((r, index) => {
