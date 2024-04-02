@@ -99,7 +99,6 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
   }, []);
 
   const checkForNameChange = () => {
-    // TODO: set loading?
     fetchUser(selectedManager.manager_n_number)
       .then(newlyFetchedManager => {
         console.warn("newly fetched manager", newlyFetchedManager);
@@ -287,28 +286,29 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
             failures.push(affectedWorkers[index]);
           }
         });
-        // update the workerstate of the successful ones
-        //TODO: MAKE SURE THIS WORKS...
-        const updatedWorkers = state.workerContext.workers.map(w => {
-          const workerToUpdate = successes.find(s => s.sid === w.sid);
-          if (workerToUpdate) {
-            return {
-              ...w,
-              attributes: {
-                ...w.attributes,
-                manager_first_name: manager.manager_first_name,
-                manager_last_name: manager.manager_last_name,
-                manager: `${manager.manager_first_name} ${manager.manager_last_name}`
-              }
-            };
-          } else {
-            return w;
-          }
-        });
-        dispatch({
-          type: "loadWorkers",
-          payload: updatedWorkers
-        });
+        if (successes.length) {
+          // update the workerstate of the successful ones
+          const updatedWorkers = state.workerContext.workers.map(w => {
+            const workerToUpdate = successes.find(s => s.sid === w.sid);
+            if (workerToUpdate) {
+              return {
+                ...w,
+                attributes: {
+                  ...w.attributes,
+                  manager_first_name: manager.manager_first_name,
+                  manager_last_name: manager.manager_last_name,
+                  manager: `${manager.manager_first_name} ${manager.manager_last_name}`
+                }
+              };
+            } else {
+              return w;
+            }
+          });
+          dispatch({
+            type: "loadWorkers",
+            payload: updatedWorkers
+          });
+        }
       }
       const updatedArray = state.managerContext.managers.map(m => {
         if(m.manager_id === manager.manager_id){
@@ -328,7 +328,7 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
       }));
 
       if (failures.length > 0) {
-        console.log("These ones failed", failures);
+        console.warn("These ones failed", failures);
         setSaveStatus(ModalOverlayStatuses.PARTIAL_FAIL);
         const failUl = (<>
           <h4>
@@ -336,8 +336,9 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
             <br/>
             Export the errors
           </h4>
-          <StyledExportButton onClick={() => handleExport(failures)} styles={{ width: "200px" }}><ExcelExport ref={_export} />Export Errors</StyledExportButton>
+          <StyledExportButton data-testid="export-button" onClick={() => handleExport(failures)} styles={{ width: "200px" }}><ExcelExport ref={_export} />Export Errors</StyledExportButton>
         </>);
+        console.warn("LOOK HERE", failUl);
         setErrorMessage(failUl);
         logger.warn("Some failures updating manager name in worker attributes while updating manager name", {
           nNumber,

@@ -8,6 +8,7 @@ import {
   StyledButton,
   CalabrioTeamModal
 } from "components";
+import { StyledExportButton } from "components/tabs/callflowmanagement/SkillManagement/Skills.Styles";
 import {
   useAdminState,
   useAdminDispatch
@@ -32,6 +33,16 @@ import {
 } from "testUtils";
 
 jest.useFakeTimers();
+const useRefSpy = jest.spyOn(React, "useRef");
+const mockSave = jest.fn();
+
+jest.mock("components/tabs/callflowmanagement/SkillManagement/Skills.Styles", () => ({
+  StyledExportButton: jest.fn()
+}));
+
+// jest.mock("@progress/kendo-react-excel-export", () => ({
+//   ExcelExport: jest.fn()
+// }));
 
 jest.mock("@mui/icons-material", () => ({
   __esModule: true,
@@ -91,7 +102,8 @@ jest.mock("components", () => ({
   StyledButton: jest.fn(),
   CalabrioTeamModal: jest.fn(),
   ComponentControl: jest.fn(),
-  ModalFetchingRing: jest.fn()
+  ModalFetchingRing: jest.fn(),
+  StyledExportButton: jest.fn()
 }));
 
 describe("<ManagerModal />", () => {
@@ -107,7 +119,8 @@ describe("<ManagerModal />", () => {
       ModalOverlay,
       StyledButton,
       CalabrioTeamModal,
-      Modal
+      Modal,
+      StyledExportButton
     });
     useAdminDispatch.mockReturnValue(mockSetForm);
     PaperContainer.mockClear();
@@ -150,7 +163,8 @@ describe("<ManagerModal />", () => {
               emp_last_name: "Scott",
               manager_n_number: "n0263786",
               manager_first_name: "Faith",
-              manager_last_name: "Cuneo"
+              manager_last_name: "Cuneo",
+              n_number: "n0000000"
             },
             sid: "sid123"
           },
@@ -160,7 +174,8 @@ describe("<ManagerModal />", () => {
               emp_last_name: "Spurio",
               manager_n_number: "n0263786",
               manager_first_name: "Faith",
-              manager_last_name: "Cuneo"
+              manager_last_name: "Cuneo",
+              n_number: "n1541381"
             },
             sid: "sid456"
           }
@@ -400,6 +415,7 @@ describe("<ManagerModal />", () => {
   describe("Update Manager", () => {
     const renderComponent = manager => render(<ManagerModal handleClose={mockHandleClose} selectedManager={manager} />);
     beforeEach(() => {
+      useRefSpy.mockReturnValue({ current: { save: mockSave }});
 
     });
     describe("Initial State", () => {
@@ -445,6 +461,19 @@ describe("<ManagerModal />", () => {
         profile_id: null,
         calabrio_team_ids: [215, 225]
       };
+      describe("fetchUser with manager n number fails", () => {
+        test("Should show name discrepancy if there is one", async () => {
+          fetchUser.mockRejectedValueOnce("boo");
+          const rendered = renderComponent(selectedManager);
+          expect(rendered.container).toHaveTextContent("Edit Faith Cuneo");
+          expect(fetchUser).toHaveBeenCalledWith("n0263786");
+          expect(StyledButton.mock.calls[0][0].children).toBe("Save");
+          expect(StyledButton.mock.calls[0][0].disabled).toBe(true);
+          await waitFor(() => {
+            expect(rendered.container).not.toHaveTextContent("A name change was detected for this manager.");
+          });
+        });
+      });
       describe("Manager name change detected", () => {
         test("Save button should be enabled", async () => {
           const selectedManagerWithProfile = {
@@ -526,7 +555,8 @@ describe("<ManagerModal />", () => {
                         manager_n_number: "n0263786",
                         manager_first_name: "Faith updated Name",
                         manager_last_name: "Cuneo",
-                        manager: "Faith updated Name Cuneo"
+                        manager: "Faith updated Name Cuneo",
+                        n_number: "n0000000"
                       },
                       sid: "sid123"
                     },
@@ -537,21 +567,159 @@ describe("<ManagerModal />", () => {
                         manager_n_number: "n0263786",
                         manager_first_name: "Faith updated Name",
                         manager_last_name: "Cuneo",
-                        manager: "Faith updated Name Cuneo"
+                        manager: "Faith updated Name Cuneo",
+                        n_number: "n1541381"
                       },
                       sid: "sid456"
                     }
                   ]
                 });
+                expect(ModalOverlay.mock.calls[1][0]).toStrictEqual({
+                  message: "Manager saved successfully",
+                  status: "success",
+                  handleClose: mockHandleClose
+                });
               });
             });
           });
-          // TODO: FINISH TESTS
           describe("edit Manager with name change is successfull but updates to their workers' attributes fails", () => {
-            test("It should display a partial fail with export button, updates the manager context", async () => {});
+            const exportRows = [
+              {
+                emp_first_name: "Michael",
+                emp_last_name: "Scott",
+                n_number: "n0000000",
+                message: "Failed to update manager name in agent's worker attributes"
+              },
+              {
+                emp_first_name: "Kaleigh",
+                emp_last_name: "Spurio",
+                n_number: "n1541381",
+                message: "Failed to update manager name in agent's worker attributes"
+              }
+            ];
+            const exportColumns = [
+              {
+                field: "n_number",
+                title: "N-Number",
+                width: "50px"
+              },
+              {
+                field: "emp_first_name",
+                title: "First Name",
+                width: "200px"
+              },
+              {
+                field: "emp_last_name",
+                title: "Last Name",
+                width: "200px"
+              },
+              {
+                field: "message",
+                title: "Failure message",
+                width: "400px"
+              }
+            ];
+            test("It should display a partial fail with export button, updates the manager context", async () => {
+              fetchUser.mockResolvedValue({
+                firstName: "Faith updated Name",
+                lastName: "Cuneo"
+              });
+              editManager.mockResolvedValue("yay");
+              updateUser.mockRejectedValue("boo");
+
+              renderComponent(selectedManagerWithProfile);
+              expect(fetchUser).toHaveBeenCalledWith("n0263786");
+              expect(StyledButton.mock.calls[0][0].children).toBe("Save");
+              expect(StyledButton.mock.calls[0][0].disabled).toBe(false);
+              await waitFor(() => {
+                expect(StyledButton.mock.calls.length).toBe(3);
+              });
+              expect(StyledButton.mock.calls[2][0].disabled).toBe(false);
+              act(() => {
+                StyledButton.mock.calls[2][0].onClick();
+              });
+              await waitFor(() => {
+                expect(editManager).toHaveBeenCalledTimes(1);
+                expect(editManager).toHaveBeenCalledWith(10, {
+                  manager_first_nme: "Faith updated Name",
+                  manager_last_nme: "Cuneo",
+                  calabrio_team_ids: "[215,225]",
+                  profile_id: 4
+                });
+              });
+              await waitFor(() => {
+                expect(updateUser).toHaveBeenCalledTimes(2);
+                expect(mockSetForm).toHaveBeenCalledTimes(1);
+                expect(mockSetForm).toHaveBeenCalledWith({
+                  type: "editManager",
+                  payload: [
+                    {
+                      calabrio_team_ids: [215, 225],
+                      manager_id: 10,
+                      manager_first_name: "Faith updated Name",
+                      manager_last_name: "Cuneo",
+                      manager_n_number: "n0263786",
+                      profile_id: 4
+                    },
+                    {
+                      manager_id: 3,
+                      manager_n_number: "n0262226"
+                    }
+                  ]
+                });
+                expect(ModalOverlay.mock.calls[2][0].status).toEqual("partial fail");
+                expect(ModalOverlay.mock.calls[2][0].handleClose).toEqual(mockHandleClose);
+
+                render(ModalOverlay.mock.calls[2][0].message.props.children);
+                expect(StyledExportButton).toHaveBeenCalled();
+              });
+              const clickExport = StyledExportButton.mock.calls[0][0].onClick;
+              act(() => {
+                clickExport();
+              });
+              await  waitFor(() => {
+                expect(mockSave).toHaveBeenCalledTimes(1);
+                expect(mockSave).toHaveBeenCalledWith(exportRows, exportColumns);
+              });
+            });
           });
           describe("edit Manager with name change completely fails", () => {
-            test("It does not call to update any workers' attributes with new manager name, displays failure overlay, does not update manager or worker context", async () => {});
+            test("It does not call to update any workers' attributes with new manager name, displays failure overlay, does not update manager or worker context", async () => {
+              fetchUser.mockResolvedValue({
+                firstName: "Faith updated Name",
+                lastName: "Cuneo"
+              });
+              editManager.mockRejectedValueOnce("boo");
+              renderComponent(selectedManagerWithProfile);
+              expect(fetchUser).toHaveBeenCalledWith("n0263786");
+              expect(StyledButton.mock.calls[0][0].children).toBe("Save");
+              expect(StyledButton.mock.calls[0][0].disabled).toBe(false);
+              await waitFor(() => {
+                expect(StyledButton.mock.calls.length).toBe(3);
+              });
+              expect(StyledButton.mock.calls[2][0].disabled).toBe(false);
+              act(() => {
+                StyledButton.mock.calls[2][0].onClick();
+              });
+              await waitFor(() => {
+                expect(editManager).toHaveBeenCalledTimes(1);
+                expect(editManager).toHaveBeenCalledWith(10, {
+                  manager_first_nme: "Faith updated Name",
+                  manager_last_nme: "Cuneo",
+                  calabrio_team_ids: "[215,225]",
+                  profile_id: 4
+                });
+              });
+              await waitFor(() => {
+                expect(updateUser).toHaveBeenCalledTimes(0);
+                expect(mockSetForm).toHaveBeenCalledTimes(0);
+                expect(ModalOverlay.mock.calls[2][0]).toStrictEqual({
+                  message: "Failed to update Manager",
+                  status: "fail",
+                  handleClose: mockHandleClose
+                });
+              });
+            });
           });
         });
       });
@@ -570,6 +738,10 @@ describe("<ManagerModal />", () => {
         describe("editManager service call is successful", () => {
           beforeEach(() => {
             editManager.mockResolvedValue({ yay: "woo!" });
+            fetchUser.mockResolvedValue({
+              firstName: "Faith",
+              lastName: "Cuneo"
+            });
           });
           test("Should dispatch editManager and update Modal", async () => {
             renderComponent(selectedManager);
