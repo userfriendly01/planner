@@ -22,7 +22,9 @@ import {
   findMatchingWorker,
   identifyUserProfiles
 } from "../userManagementUtils";
-import { fetchUser, getWfmUserByNNumber } from "services";
+import {
+  fetchUser, getWfmUserByNNumber
+} from "services";
 import {
   initialTestState,
   initialFormState,
@@ -713,7 +715,7 @@ describe("identifyFormErrors", () => {
       FirstDayOfWeek: 0,
       EmploymentNumber: "n0263786"
     }
-  }
+  };
   test("errors are concatenated into one array", () => {
     const result = identifyFormErrors(form);
     expect(result).toStrictEqual(["QM Team", "QM Roles", "BusinessUnitId"]);
@@ -769,7 +771,7 @@ describe("isTritonUserValid", () => {
               valid: true
             }
           }
-        }
+        };
         expect(isTritonUserValid(form, mockWorkers[0], false)).toBe(true);
       });
     });
@@ -958,7 +960,7 @@ describe("isQMUserValid", () => {
         userFound: false,
         team: "Ill be ignored"
       }
-    }
+    };
     const result = isQMUserValid(form);
     expect(result).toStrictEqual(["QM Team", "QM Roles"]);
   });
@@ -969,7 +971,7 @@ describe("isQMUserValid", () => {
         team: "Team Buffy",
         roles: []
       }
-    }
+    };
     const result = isQMUserValid(form);
     expect(result).toStrictEqual(["QM Roles"]);
   });
@@ -980,7 +982,7 @@ describe("isQMUserValid", () => {
         team: null,
         roles: [{ name: "Role1" }]
       }
-    }
+    };
     const result = isQMUserValid(form);
     expect(result).toStrictEqual(["QM Team"]);
   });
@@ -991,7 +993,7 @@ describe("isQMUserValid", () => {
         team: "",
         roles: [{ name: "Role1" }]
       }
-    }
+    };
     const result = isQMUserValid(form);
     expect(result).toStrictEqual(["QM Team"]);
   });
@@ -1002,7 +1004,7 @@ describe("isQMUserValid", () => {
         team: "Valid Team",
         roles: [{ name: "Role1" }]
       }
-    }
+    };
     const result = isQMUserValid(form);
     expect(result).toStrictEqual([]);
   });
@@ -1018,7 +1020,7 @@ describe("isWfmUserValid", () => {
     DisplayName: "Faith Cuneo",
     BusinessUnitId: "BU123239",
     FirstDayOfWeek: 2
-  }
+  };
   describe("calabrio_wfm.userFound === false", () => {
     test("required fields are returned", () => {
       const form = {
@@ -1026,7 +1028,7 @@ describe("isWfmUserValid", () => {
           ...validWfmUser,
           userFound: false
         }
-      }
+      };
       const result = isWfmUserValid(form);
       expect(result).toStrictEqual([]);
     });
@@ -1038,7 +1040,7 @@ describe("isWfmUserValid", () => {
           ...validWfmUser,
           BusinessUnitId: null
         }
-      }
+      };
       const result = isWfmUserValid(form);
       expect(result).toStrictEqual(["BusinessUnitId"]);
     });
@@ -1048,7 +1050,7 @@ describe("isWfmUserValid", () => {
           ...validWfmUser,
           BusinessUnitId: ""
         }
-      }
+      };
       const result = isWfmUserValid(form);
       expect(result).toStrictEqual(["BusinessUnitId"]);
     });
@@ -1058,7 +1060,7 @@ describe("isWfmUserValid", () => {
           ...validWfmUser,
           BusinessUnitId: []
         }
-      }
+      };
       const result = isWfmUserValid(form);
       expect(result).toStrictEqual(["BusinessUnitId"]);
     });
@@ -1068,7 +1070,7 @@ describe("isWfmUserValid", () => {
           ...validWfmUser,
           BusinessUnitId: false
         }
-      }
+      };
       const result = isWfmUserValid(form);
       expect(result).toStrictEqual([]);
     });
@@ -1081,7 +1083,7 @@ describe("isWfmUserValid", () => {
           PersonSkills: [],
           SkillsStartDate: null
         }
-      }
+      };
       const result = isWfmUserValid(form);
       expect(result).toStrictEqual([]);
     });
@@ -1092,7 +1094,7 @@ describe("isWfmUserValid", () => {
           PersonSkills: ["Skill1"],
           SkillsStartDate: "05/02/1991"
         }
-      }
+      };
       const result = isWfmUserValid(form);
       expect(result).toStrictEqual([]);
     });
@@ -1103,7 +1105,7 @@ describe("isWfmUserValid", () => {
           AvailabilityId: "AV928371",
           AvailabilityStartDate: false
         }
-      }
+      };
       const result = isWfmUserValid(form);
       expect(result).toStrictEqual([]);
     });
@@ -1114,7 +1116,7 @@ describe("isWfmUserValid", () => {
           PersonSkills: ["Skill1"],
           SkillsStartDate: ""
         }
-      }
+      };
       const result = isWfmUserValid(form);
       expect(result).toStrictEqual(["SkillsStartDate"]);
     });
@@ -1125,7 +1127,7 @@ describe("isWfmUserValid", () => {
           PersonSkills: ["Skill1"],
           SkillsStartDate: null
         }
-      }
+      };
       const result = isWfmUserValid(form);
       expect(result).toStrictEqual(["SkillsStartDate"]);
     });
@@ -1136,7 +1138,7 @@ describe("isWfmUserValid", () => {
           PersonSkills: [],
           SkillsStartDate: "05/02/1991"
         }
-      }
+      };
       const result = isWfmUserValid(form);
       expect(result).toStrictEqual(["PersonSkills"]);
     });
@@ -1155,7 +1157,7 @@ describe("isWfmUserValid", () => {
             }
           ]
         }
-      }
+      };
       const result = isWfmUserValid(form);
       expect(result).toStrictEqual([]);
     });
@@ -1172,7 +1174,7 @@ describe("isWfmUserValid", () => {
             }
           ]
         }
-      }
+      };
       const result = isWfmUserValid(form);
       expect(result).toStrictEqual(["Optional Columns"]);
     });
@@ -1289,7 +1291,7 @@ describe("identifyUserProfiles", () => {
         ...initialFormState.triton,
         userFound: false
       }
-    }
+    };
     test("should call fetchUser and set the nNumber object", async () => {
       await identifyUserProfiles(form, mockSetForm, initialTestState);
       expect(fetchUser).toHaveBeenCalledTimes(1);
@@ -1430,7 +1432,7 @@ describe("identifyUserProfiles", () => {
           EmploymentNumber: "n1111111",
           Email: "Person@libertymutual.com",
           TeamId: "111"
-        }
+        };
         getWfmUserByNNumber.mockResolvedValue({
           data: {
             Result: [wfmUser]
@@ -1652,7 +1654,7 @@ describe("identifyUserProfiles", () => {
           nNumberfetchedUser: {
             email: "faith.cuneo@libertymutual.com"
           }
-        })
+        });
         const formState = {
           ...validFormState,
           nNumber: {
@@ -2038,4 +2040,72 @@ describe("identifyUserProfiles", () => {
       });
     });
   });
+  describe("Manager name change logic", () => {
+    describe("Triton user found but manager name has changed", () => {
+      test("should set discrepancies with manager name message", async () => {
+        const formState = {
+          ...validFormState,
+          triton: {
+            ...validFormState.triton,
+            userFound: true,
+            attributes: {
+              ...validFormState.triton.attributes,
+              manager_first_name: "Name Change",
+              manager_last_name: "McGee",
+              manager_n_number: "n1234567"
+            }
+          }
+        };
+
+        await identifyUserProfiles(formState, mockSetForm, initialTestState);
+        expect(mockSetForm).toHaveBeenCalledWith({
+          type: "SET_DISCREPANCIES",
+          payload: {
+            type: "General",
+            message: "Manager name on this worker is Name Change McGee, but our records indicate that their name has changed to John Wick"
+          }
+        });
+      });
+    });
+    describe("No triton user found", () => {
+      test("should not call to set the manager name discrepancy", async () => {
+        const formState = {
+          ...validFormState,
+          triton: {
+            ...validFormState.triton,
+            userFound: false
+          }
+        };
+
+        await identifyUserProfiles(formState, mockSetForm, initialTestState);
+        expect(mockSetForm).not.toHaveBeenCalledWith({
+          type: "SET_DISCREPANCIES",
+          payload: expect.anything()
+        });
+      });
+    });
+    describe("triton user found but manager name has not changed", () => {
+      test("should not call to set the manager name discrepancy", async () => {
+        const formState = {
+          ...validFormState,
+          triton: {
+            ...validFormState.triton,
+            userFound: true,
+            attributes: {
+              manager_first_name: "John",
+              manager_last_name: "Wick",
+              manager_n_number: "n1234567"
+            }
+          }
+        };
+
+        await identifyUserProfiles(formState, mockSetForm, initialTestState);
+        expect(mockSetForm).not.toHaveBeenCalledWith({
+          type: "SET_DISCREPANCIES",
+          payload: expect.anything()
+        });
+      });
+    });
+  });
+
 });
