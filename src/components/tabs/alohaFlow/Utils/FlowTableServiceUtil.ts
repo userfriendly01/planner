@@ -147,7 +147,8 @@ export const batchDeleteItems = async (
    * function will call batchDeleteItems, while toggling the nextActionId value so 
    * it will delete the rows.
    * @param {Array<CctSharedCallFlowDb>} rows - the rows just updated or created 
-   * @returns 
+   * @param {String} accessToken - token to use while calling graphql query
+   * @returns Promise<BatchResponse>
    */
 export const deleteOppositeRows = (
   rows: Array<CctSharedCallFlowDb>,

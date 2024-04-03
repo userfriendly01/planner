@@ -288,6 +288,6 @@ describe("FlowTableServiceUtil", () => {
 
       expect(v1BatchDeleteItems).toHaveBeenCalled();
       expect(v2BatchDeleteItems).toHaveBeenCalled();
-    })
+    });
   });
 });
