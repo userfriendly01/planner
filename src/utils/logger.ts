@@ -2,7 +2,7 @@ import { datadogRum } from "@datadog/browser-rum";
 import {
   datadogLogs, StatusType
 } from "@datadog/browser-logs";
-import { getEnvVariables } from "./getEnvVariables";
+import { env } from "globals";
 
 const DATADOG_SITE = "datadoghq.com";
 const DATADOG_USE_SECURE_SESSION_COOKIE = true;
@@ -14,27 +14,19 @@ const SERVICE_NAME = "cicct-softphone-admin-ui";
 
 // Helper Function to start up RUM for automatic event collection
 export const initDataDogRum = (): void => {
-  getEnvVariables()
-    .then(env => {
-      const TROUX_ID = env.get("TROUX_ID");
-      const DATADOG_APPLICATION_ID = env.get("DATADOG_APPLICATION_ID");
-      const DATADOG_CLIENT_TOKEN = env.get("DATADOG_CLIENT_TOKEN");
-      const APP_ENV = env.get("APP_ENV");
-
-      datadogRum.setGlobalContextProperty("troux_uuid", TROUX_ID);
-      datadogRum.init({
-        applicationId: DATADOG_APPLICATION_ID,
-        clientToken: DATADOG_CLIENT_TOKEN,
-        site: DATADOG_SITE,
-        service: SERVICE_NAME,
-        env: APP_ENV,
-        useSecureSessionCookie: DATADOG_USE_SECURE_SESSION_COOKIE,
-        sessionSampleRate: DATADOG_SAMPLE_RATE,
-        silentMultipleInit: DATADOG_SILENT_MULTIPLE_INIT,
-        sessionReplaySampleRate: DATADOG_REPLAY_SAMPLE_RATE,
-        defaultPrivacyLevel: "mask"
-      });
-    });
+  datadogRum.setGlobalContextProperty("troux_uuid", env.TROUX_ID);
+  datadogRum.init({
+    applicationId: env.DATADOG_APPLICATION_ID,
+    clientToken: env.DATADOG_CLIENT_TOKEN,
+    site: DATADOG_SITE,
+    service: SERVICE_NAME,
+    env: env.APP_ENV,
+    useSecureSessionCookie: DATADOG_USE_SECURE_SESSION_COOKIE,
+    sessionSampleRate: DATADOG_SAMPLE_RATE,
+    silentMultipleInit: DATADOG_SILENT_MULTIPLE_INIT,
+    sessionReplaySampleRate: DATADOG_REPLAY_SAMPLE_RATE,
+    defaultPrivacyLevel: "mask"
+  });
 };
 
 export class Logger {
@@ -45,37 +37,31 @@ export class Logger {
   }
 
   private init() {
-    getEnvVariables()
-      .then(env => {
-        const DATADOG_CLIENT_TOKEN = env.get("DATADOG_CLIENT_TOKEN");
-        const APP_ENV = env.get("APP_ENV");
+    this.defaultContext = {
+      component: SERVICE_NAME,
+      tags: {
+        lm_org: "cct",
+        deployment_guid: process.env.DEPLOYMENT_GUID,
+        cct_squad: "tpod",
+        cct_domain: "shared"
+      }
+    };
 
-        this.defaultContext = {
-          component: SERVICE_NAME,
-          tags: {
-            lm_org: "cct",
-            deployment_guid: process.env.DEPLOYMENT_GUID,
-            cct_squad: "tpod",
-            cct_domain: "shared"
-          }
-        };
+    datadogLogs.init({
+      clientToken: env.DATADOG_CLIENT_TOKEN,
+      site: DATADOG_SITE,
+      env: env.APP_ENV,
+      service: SERVICE_NAME,
+      forwardErrorsToLogs: true,
+      sampleRate: DATADOG_SAMPLE_RATE,
+      useSecureSessionCookie: DATADOG_USE_SECURE_SESSION_COOKIE,
+      silentMultipleInit: DATADOG_SILENT_MULTIPLE_INIT
+    });
 
-        datadogLogs.init({
-          clientToken: DATADOG_CLIENT_TOKEN,
-          site: DATADOG_SITE,
-          env: APP_ENV,
-          service: SERVICE_NAME,
-          forwardErrorsToLogs: true,
-          sampleRate: DATADOG_SAMPLE_RATE,
-          useSecureSessionCookie: DATADOG_USE_SECURE_SESSION_COOKIE,
-          silentMultipleInit: DATADOG_SILENT_MULTIPLE_INIT
-        });
-
-        datadogLogs.setLoggerGlobalContext({
-          ...this.defaultContext,
-          component: "global"
-        });
-      });
+    datadogLogs.setLoggerGlobalContext({
+      ...this.defaultContext,
+      component: "global"
+    });
   }
 
 

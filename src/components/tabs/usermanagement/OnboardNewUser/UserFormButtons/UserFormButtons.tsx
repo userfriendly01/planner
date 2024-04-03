@@ -362,13 +362,11 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     attributes.emp_first_name = nNumberFetchedUser?.firstName;
     attributes.emp_last_name = nNumberFetchedUser?.lastName;
     attributes.full_name = `${nNumberFetchedUser?.firstName} ${nNumberFetchedUser?.lastName}`;
+    attributes.manager_first_name = form.triton.manager.value.manager_first_name;
+    attributes.manager_last_name = form.triton.manager.value.manager_last_name;
+    attributes.manager_n_number = form.triton.manager.value.manager_n_number;
+    attributes.manager = form.triton.manager.value.manager_first_name + " " + form.triton.manager.value.manager_last_name;
 
-    if (form.triton.manager.updated) {
-      attributes.manager_first_name = form.triton.manager.value.manager_first_name;
-      attributes.manager_last_name = form.triton.manager.value.manager_last_name;
-      attributes.manager_n_number = form.triton.manager.value.manager_n_number;
-      attributes.manager = form.triton.manager.value.manager_first_name + " " + form.triton.manager.value.manager_last_name;
-    }
     if (form.triton.profileId.updated) {
       attributes.profile_id = form.triton.profileId.value;
       operatingUnitSid = profiles.find(profile => profile.profile_id === form.triton.profileId.value).operating_unit_sid;

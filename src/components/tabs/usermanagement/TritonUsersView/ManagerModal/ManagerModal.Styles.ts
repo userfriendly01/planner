@@ -20,6 +20,12 @@ export const Header = styled.h1`
   align-self: center;
 `;
 
+export const Header4 = styled.h4`
+  align-self: center;
+  margin: 5px;
+  color: red;
+`;
+
 export const CloseButtonContainer = styled.div`
   display: flex;
   justify-content: flex-end

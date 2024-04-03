@@ -1,6 +1,20 @@
 require("@testing-library/jest-dom/extend-expect");
 require("jest-styled-components");
 
+window.env = {
+  AZURE_CLIENT_ID: "AZURE_CLIENT_ID",
+  AZURE_REDIRECT_URI: "AZURE_REDIRECT_URI",
+  DATADOG_APPLICATION_ID: "DATADOG_APPLICATION_ID",
+  DATADOG_CLIENT_TOKEN: "DATADOG_CLIENT_TOKEN",
+  GRAPH_API_URL: "http://localhost:3000",
+  APP_ENV: "APP_ENV",
+  TROUX_ID: "TROUX_ID"
+};
+
+jest.mock("@azure/msal-react", () => ({
+  useMsal: jest.fn()
+}));
+
 beforeAll(() => {
   console.log = jest.fn();
   console.info = jest.fn();
@@ -35,10 +49,6 @@ jest.mock("utils/logger", () => ({
     warn: jest.fn(),
     error: jest.fn()
   }
-}));
-
-jest.mock("utils/getEnvVariables", () => ({
-  getEnvVariables: () => new Promise(resolve => resolve(new Map()))
 }));
 
 /* Services are mocked at a global level.

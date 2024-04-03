@@ -33,13 +33,13 @@ const mockSave = jest.fn();
 const createTemplates = getCreateTemplates(initialTestState);
 const expectedRows = [
   {
-    defaultSkills: "lscOBDialer1 Available levels: 1,2,3",
+    defaultSkills: "aisgL1",
     managerNNumber: "n1234567",
     profileId: 1
     // routing_team: "Profile 2: licencedCSC",
   },
   {
-    defaultSkills: "aisgL1",
+    defaultSkills: "bscCbsL2",
     managerNNumber: "n7454853",
     profileId: 2
   },
@@ -48,12 +48,12 @@ const expectedRows = [
     profileId: 3
   },
   {
-    defaultSkills: "bscCbsL2",
-    profileId: 396
+    defaultSkills: "lscOBDialer1 Available levels: 1,2,3",
+    profileId: 12
   },
   {
     defaultSkills: "lscUSAA",
-    profileId: 12
+    profileId: 396
   }
 ];
 const expectedColumns = [
@@ -63,8 +63,8 @@ const expectedColumns = [
       1,
       2,
       3,
-      396,
-      12
+      12,
+      396
     ],
     textAlign: "center",
     title: "Profile Id",
@@ -85,10 +85,10 @@ const expectedColumns = [
   {
     field: "defaultSkills",
     options: [
-      "lscOBDialer1 Available levels: 1,2,3",
       "aisgL1",
-      "bscCommisssions Available levels: 1,2,3,4,5,6,7",
       "bscCbsL2",
+      "bscCommisssions Available levels: 1,2,3,4,5,6,7",
+      "lscOBDialer1 Available levels: 1,2,3",
       "lscUSAA"
     ],
     textAlign: "center",
@@ -109,9 +109,9 @@ const expectedColumns = [
 ];
 const expectedWFMRows = [
   {
-    wfmBusinessUnit: "WFM Business Unit1",
+    wfmBusinessUnit: "Other WFM Business Unit",
     wfmRole: "Role1",
-    timeZone: "America/New_York (EST/EDT)",
+    timeZone: "America/Anchorage (AKST/AKDT)",
     wfmFirstDayOfWeek: 0,
     wfmWorkflowControlSet: "WFCSet1",
     wfmTeam: "Team1",
@@ -127,8 +127,8 @@ const expectedWFMRows = [
   },
   {
     wfmRole: "Role2",
-    timeZone: "America/Los_Angeles (PST/PDT)",
-    wfmBusinessUnit: "Other WFM Business Unit",
+    timeZone: "America/Chicago (CST/CDT)",
+    wfmBusinessUnit: "WFM Business Unit1",
     wfmFirstDayOfWeek: 1,
     wfmTeam: "Team2",
     wfmSkills: "Skill2",
@@ -137,22 +137,23 @@ const expectedWFMRows = [
   {
     timeZone: "America/Denver (MST/MDT)",
     wfmFirstDayOfWeek: 2,
+    wfmOptionalCols: "OptionalCol3",
     wfmTeam: "Team3 No ID"
   },
   {
-    timeZone: "America/Chicago (CST/CDT)",
+    timeZone: "America/Los_Angeles (PST/PDT)",
     wfmFirstDayOfWeek: 3
   },
   {
-    timeZone: "America/Phoenix (MST)",
+    timeZone: "America/New_York (EST/EDT)",
     wfmFirstDayOfWeek: 4
   },
   {
-    timeZone: "Pacific/Honolulu (HST)",
+    timeZone: "America/Phoenix (MST)",
     wfmFirstDayOfWeek: 5
   },
   {
-    timeZone: "America/Anchorage (AKST/AKDT)",
+    timeZone: "Pacific/Honolulu (HST)",
     wfmFirstDayOfWeek: 6
   }
 ];
@@ -161,7 +162,7 @@ const expectedWFMCols = [
     field: "wfmBusinessUnit",
     title: "WFM Business Unit",
     width: undefined,
-    options: [ "WFM Business Unit1", "Other WFM Business Unit" ],
+    options: ["Other WFM Business Unit", "WFM Business Unit1"],
     wrap: true,
     textAlign: "center"
   },
@@ -169,7 +170,7 @@ const expectedWFMCols = [
     field: "wfmRole",
     title: "WFM Role",
     width: undefined,
-    options: [ "Role1", "Role2" ],
+    options: ["Role1", "Role2"],
     wrap: true,
     textAlign: "center"
   },
@@ -178,13 +179,14 @@ const expectedWFMCols = [
     title: "Time Zone",
     width: undefined,
     options: [
-      "America/New_York (EST/EDT)",
-      "America/Los_Angeles (PST/PDT)",
-      "America/Denver (MST/MDT)",
+      "America/Anchorage (AKST/AKDT)",
       "America/Chicago (CST/CDT)",
+      "America/Denver (MST/MDT)",
+      "America/Los_Angeles (PST/PDT)",
+      "America/New_York (EST/EDT)",
       "America/Phoenix (MST)",
       "Pacific/Honolulu (HST)",
-      "America/Anchorage (AKST/AKDT)"
+
     ],
     wrap: true,
     textAlign: "center"
@@ -201,7 +203,7 @@ const expectedWFMCols = [
     field: "wfmWorkflowControlSet",
     title: "Workflow Control Set",
     width: undefined,
-    options: [ "WFCSet1" ],
+    options: ["WFCSet1"],
     wrap: true,
     textAlign: "center"
   },
@@ -209,7 +211,7 @@ const expectedWFMCols = [
     field: "wfmTeam",
     title: "WFM Team",
     width: undefined,
-    options: [ "Team1", "Team2", "Team3 No ID" ],
+    options: ["Team1", "Team2", "Team3 No ID"],
     wrap: true,
     textAlign: "center"
   },
@@ -217,7 +219,7 @@ const expectedWFMCols = [
     field: "wfmContract",
     title: "WFM Contract",
     width: undefined,
-    options: [ "Contract1" ],
+    options: ["Contract1"],
     wrap: true,
     textAlign: "center"
   },
@@ -225,7 +227,7 @@ const expectedWFMCols = [
     field: "wfmContractSchedule",
     title: "WFM Contract Schedule",
     width: undefined,
-    options: [ "ContractSchedule1" ],
+    options: ["ContractSchedule1"],
     wrap: true,
     textAlign: "center"
   },
@@ -233,7 +235,7 @@ const expectedWFMCols = [
     field: "wfmPartTimePercentage",
     title: "WFM Part Time Percentage",
     width: undefined,
-    options: [ "ParttimePercent1" ],
+    options: ["ParttimePercent1"],
     wrap: true,
     textAlign: "center"
   },
@@ -241,7 +243,7 @@ const expectedWFMCols = [
     field: "wfmShiftBag",
     title: "WFM Shift Bag",
     width: undefined,
-    options: [ "ShiftBag1" ],
+    options: ["ShiftBag1"],
     wrap: true,
     textAlign: "center"
   },
@@ -249,7 +251,7 @@ const expectedWFMCols = [
     field: "wfmBudgetGroup",
     title: "WFM Budget Group",
     width: undefined,
-    options: [ "BudgetGroup1" ],
+    options: ["BudgetGroup1"],
     wrap: true,
     textAlign: "center"
   },
@@ -257,7 +259,7 @@ const expectedWFMCols = [
     field: "wfmSkills",
     title: "WFM Skills",
     width: undefined,
-    options: [ "Skill1", "Skill2" ],
+    options: ["Skill1", "Skill2"],
     wrap: true,
     textAlign: "center"
   },
@@ -265,7 +267,7 @@ const expectedWFMCols = [
     field: "wfmRotation",
     title: "WFM Rotation",
     width: undefined,
-    options: [ "Rotation1" ],
+    options: ["Rotation1"],
     wrap: true,
     textAlign: "center"
   },
@@ -273,7 +275,7 @@ const expectedWFMCols = [
     field: "wfmAvailability",
     title: "WFM Availability",
     width: undefined,
-    options: [ "Availability1" ],
+    options: ["Availability1"],
     wrap: true,
     textAlign: "center"
   },
@@ -281,7 +283,7 @@ const expectedWFMCols = [
     field: "wfmOptionalCols",
     title: "WFM Optional Columns",
     width: undefined,
-    options: [ "OptionalCol1", "OptionalCol2" ],
+    options: ["OptionalCol1", "OptionalCol2", "OptionalCol3"],
     wrap: true,
     textAlign: "center"
   }
@@ -292,7 +294,7 @@ describe("ExportOptionsButton", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.resetAllMocks();
-    useRefSpy.mockReturnValue({ current: { save: mockSave }});
+    useRefSpy.mockReturnValue({ current: { save: mockSave } });
     setupMockedComponents({
       Button,
       Modal,
@@ -301,14 +303,14 @@ describe("ExportOptionsButton", () => {
   });
   describe("initial render", () => {
     test("component renders as expected", () => {
-      render(<ExportOptionsButton template={createTemplates.CREATE_TRITON_USER.fields} state={initialTestState} businessUnitId={"123-321"}/>);
+      render(<ExportOptionsButton template={createTemplates.CREATE_TRITON_USER.fields} state={initialTestState} businessUnitId={"123-321"} />);
       render(Button.mock.calls[0][0].children[0]);
       expect(Button.mock.calls.length).toBe(1);
       expect(ExcelExport.mock.calls.length).toBe(2);
     });
     describe("teamplate === CREATE_CALABRIO_WFM_PERSON", () => {
       test("should render BU specific options", () => {
-        render(<ExportOptionsButton template={createTemplates.CREATE_CALABRIO_WFM_PERSON.fields} state={initialTestState} businessUnitId={"123-321"}/>);
+        render(<ExportOptionsButton template={createTemplates.CREATE_CALABRIO_WFM_PERSON.fields} state={initialTestState} businessUnitId={"123-321"} />);
         render(Button.mock.calls[0][0].children[0]);
         const onClick = Button.mock.calls[0][0].onClick;
         act(() => onClick());
@@ -318,7 +320,7 @@ describe("ExportOptionsButton", () => {
     });
     describe("onClick", () => {
       test("handleExport is called", () => {
-        render(<ExportOptionsButton template={createTemplates.CREATE_TRITON_USER.fields} state={initialTestState} businessUnitId={"123-321"}/>);
+        render(<ExportOptionsButton template={createTemplates.CREATE_TRITON_USER.fields} state={initialTestState} businessUnitId={"123-321"} />);
         render(Button.mock.calls[0][0].children[0]);
         const onClick = Button.mock.calls[0][0].onClick;
         act(() => onClick());
@@ -337,7 +339,7 @@ describe("ExportOptionsButton", () => {
               field: "empty options",
               options: () => []
             }
-          ]} state={initialTestState}/>);
+          ]} state={initialTestState} />);
           render(Button.mock.calls[0][0].children);
           const onClick = Button.mock.calls[0][0].onClick;
           act(() => onClick());
