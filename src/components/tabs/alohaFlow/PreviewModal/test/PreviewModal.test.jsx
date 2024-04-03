@@ -61,7 +61,7 @@ const flowDropDownData = {
   callFlowRoute: ["CFR1","CFR2","CFR3"],
   callerType: ["CT1","CT2","CT3"],
   dataRequests: ["DR1","DR2","DR3"],
-  type: ["DID", "DRC", "CRC"]
+  phoneNumberType: ["DID", "DRC", "CRC"]
 };
 
 localStorage.setItem(FLOW_MASTER_DATA, JSON.stringify(flowDropDownData));

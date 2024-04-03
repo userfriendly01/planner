@@ -115,7 +115,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
           rangeIndicator: "",
           requestID: "",
           transferCode: "",
-          type: "",
+          phoneNumberType: "",
           userDestination: "",
           whisper: ""
         }

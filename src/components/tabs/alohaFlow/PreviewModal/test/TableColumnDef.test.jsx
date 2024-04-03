@@ -42,7 +42,7 @@ const validFlowData = {
   requestID: "test requestID",
   rangeIndicator: "test rangeIndicator",
   transferCode: "test transferCode",
-  type: "DID",
+  phoneNumberType: "DID",
   whisper: "test whisper",
   tfnRoutingGroup: "Core"
 };

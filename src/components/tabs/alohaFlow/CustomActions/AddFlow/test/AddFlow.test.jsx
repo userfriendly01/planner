@@ -17,6 +17,7 @@ import {
 import { AddOrView } from "../../CustomActionsCommon/AddOrView";
 import { flowFields } from "../../FlowFieldsConfig";
 import { FloatingHeader } from "@lmig/lmds-react-floating-header";
+import { PhoneNumberType } from "google-libphonenumber";
 
 const validFlowData = {
   id: 1,
@@ -230,7 +231,7 @@ describe("<AddFlow />", () => {
       const {
         getByRole
       } = renderAddFlow(true);
-      flowFields[8].valueSetter(validFlowData, { type: "DID1" });
+      flowFields[8].valueSetter(validFlowData, { phoneNumberType: "DID1" });
       const ComponentControlMock = ComponentControl.mock;
       const dialedPhoneNumberAttr = ComponentControl.mock.calls[0][0].onChange;
       const descriptionAttr = ComponentControl.mock.calls[1][0].onChange;
@@ -346,7 +347,7 @@ describe("<AddFlow />", () => {
     });
     test("Simulate the duplicate check", ()=>{
       const { getByRole } = renderAddFlowDuplicateCreate();
-      flowFields[8].valueSetter(validFlowData, { type: "DID1" });
+      flowFields[8].valueSetter(validFlowData, { phoneNumberType: "DID1" });
       const dialedPhoneNumberAttr = ComponentControl.mock.calls[0][0].onChange;
       const descriptionAttr = ComponentControl.mock.calls[1][0].onChange;
       const channelAttr = ComponentControl.mock.calls[3][0].onChange;

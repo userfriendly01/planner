@@ -37,7 +37,7 @@ const validFlowData = {
   requestID: "test requestID",
   tfnRoutingGroup: "Core",
   transferCode: "test transferCode",
-  type: "DID",
+  phoneNumberType: "DID",
   userDestination: "test userDestination",
   whisper: "test whisper"
 };
@@ -51,10 +51,10 @@ const invalidFLowData = {
 const drcFlowData = {
   brand: { value: "Liberty Mutual" },
   channel: { value: "Sales" },
-  type: { value: "DRC" }
+  phoneNumberType: { value: "DRC" }
 };
 const DIDFlowData = {
-  type: { value: "DID" }
+  phoneNumberType: { value: "DID" }
 };
 
 describe("FlowFieldsConfig", ()=>{
@@ -98,7 +98,7 @@ describe("FlowFieldsConfig", ()=>{
       expect(updatedFlowDataWithInvalidData.content.callerType).toBe("99999999");
     });
     it("phoneNumberType", ()=>{
-      const updatedFlowData = flowFields[8].valueSetter(validFlowData, { type: "99999999" });
+      const updatedFlowData = flowFields[8].valueSetter(validFlowData, { phoneNumberType: "99999999" });
       expect(updatedFlowData.type).toBe("99999999");
     });
     it("transferDestination", ()=>{

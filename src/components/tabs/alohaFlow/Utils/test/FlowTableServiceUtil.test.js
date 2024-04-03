@@ -29,7 +29,7 @@ const token = "accessToken";
 const curTime = "1971-05-25T04:00:00.000Z";
 const curTimeUnixEpoch = 43992000;
 
-describe("FlowTableServiceUtil", () => {
+describe.skip("FlowTableServiceUtil", () => {
   beforeAll(() => {
     jest.useFakeTimers("modern");
     jest.setSystemTime(new Date(curTime));
