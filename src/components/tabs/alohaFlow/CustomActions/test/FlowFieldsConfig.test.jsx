@@ -99,7 +99,7 @@ describe("FlowFieldsConfig", ()=>{
     });
     it("phoneNumberType", ()=>{
       const updatedFlowData = flowFields[8].valueSetter(validFlowData, { phoneNumberType: "99999999" });
-      expect(updatedFlowData.type).toBe("99999999");
+      expect(updatedFlowData.phoneNumberType).toBe("99999999");
     });
     it("transferDestination", ()=>{
       const updatedFlowData = flowFields[9].valueSetter(validFlowData, { transferDestination: "99999999" });
