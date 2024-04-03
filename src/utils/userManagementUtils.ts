@@ -248,6 +248,7 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
   };
   const tritonWorkers = state.workerContext.workers;
   const calabrioQmUsers = state.calabrioContext.users;
+  const managers = state.managerContext.managers;
   let tritonWorker: Worker = null;
   let calabrioQmUser = null;
   let calabrioWfmUser = null;
@@ -264,6 +265,8 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
     const email = form.nNumber.nNumberFetchedUser?.email || form.triton.attributes?.email;
     calabrioWfmUser = await findExistingWFMUser(nNumber);
     calabrioQmUser = findMatchingWorker(acdId, nNumber, email, calabrioQmUsers);
+
+
   } else if (primarySystem === "calabrio_qm") {
     //This condition wont be in play until the calabrio qm table is in place
     //When this condition is fulfilled we can peel some of the code out of the CallRecordingForm
@@ -310,6 +313,18 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
     }
   }
 
+  // Checking to make sure their manager's name matches the name in the worker attributes (should be rare)
+  const manager: any = managers.find(m => m.manager_n_number === form.triton?.attributes?.manager_n_number);
+  if (form.triton.userFound && manager && (form.triton.attributes.manager_first_name !== manager.manager_first_name || form.triton.attributes.manager_last_name !== manager.manager_last_name)) {
+    setForm({
+      type: "SET_DISCREPANCIES",
+      payload: {
+        type: discrepancyType.GENERAL,
+        message: `Manager name on this worker is ${form.triton.attributes.manager_first_name} ${form.triton.attributes.manager_last_name}, but our records indicate that their name has changed to ${manager.manager_first_name} ${manager.manager_last_name}`
+      }
+    });
+  }
+
   //Update state for Triton Worker if applicable
   if (!form.triton.userFound && tritonWorker) {
     setForm({
@@ -317,7 +332,7 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
       payload: {
         formMode: form.formMode,
         worker: tritonWorker,
-        managers: state.managerContext.managers
+        managers: managers
       }
     });
   }
