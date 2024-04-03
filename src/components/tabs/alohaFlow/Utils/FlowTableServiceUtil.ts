@@ -125,11 +125,17 @@ export const batchDeleteItems = async (
 ): Promise<BatchResponse> =>  {
 
   const response = await v1BatchDeleteItems(items.filter(x=>!x.nextActionId).map(x => x.pkey), accessToken) as BatchResponse;
-  const response2 = await v2BatchDeleteItems(items.filter(x=>x.nextActionId).map(x => x.pkey), accessToken) as BatchResponse;
+  const callFlowItems = items.filter(x=>x.nextActionId);
 
-  response2.failure.forEach(x => response.failure.push(x));
-  response2.success.forEach(x => response.success.push(x));
-  response.alertMsg = response.alertMsg ?? response2.alertMsg;
+  if(callFlowItems.length !== 0) {
+    const response2 = await v2BatchDeleteItems(callFlowItems.map(x => x.pkey), accessToken) as BatchResponse;
+
+    if(response2) {
+      response2.failure.forEach(x => response.failure.push(x));
+      response2.success.forEach(x => response.success.push(x));
+      response.alertMsg = response.alertMsg ?? response2.alertMsg;
+    }
+  }
 
   return response;
 
@@ -147,14 +153,15 @@ export const deleteOppositeRows = (
   rows: Array<CctSharedCallFlowDb>,
   accessToken: string
 ): Promise<BatchResponse> => {
-  const oppositeRows = rows.map(x => {
+  const oppositeRows: Array<CctSharedCallFlowDb> = rows.map(x => {
     return {
       ...x,
       nextActionId: x.nextActionId? "": "simulatedNextActionId"
-    };
+    } as CctSharedCallFlowDb;
   });
 
-  return batchDeleteItems(oppositeRows, accessToken);
+  const response =  batchDeleteItems(oppositeRows, accessToken);
+  return response;
 };
 
 /**

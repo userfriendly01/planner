@@ -29,7 +29,7 @@ const token = "accessToken";
 const curTime = "1971-05-25T04:00:00.000Z";
 const curTimeUnixEpoch = 43992000;
 
-describe.skip("FlowTableServiceUtil", () => {
+describe("FlowTableServiceUtil", () => {
   beforeAll(() => {
     jest.useFakeTimers("modern");
     jest.setSystemTime(new Date(curTime));
@@ -132,13 +132,13 @@ describe.skip("FlowTableServiceUtil", () => {
         success: ["c"]
       });
     });
-    it("should always call both delete functions", async () => {
+    it("should not call both delete functions", async () => {
       const items = [ {
         id: 1
       }];
       await batchDeleteItems(items, token);
       expect(v1BatchDeleteItems).toHaveBeenCalled();
-      expect(v2BatchDeleteItems).toHaveBeenCalled();
+      expect(v2BatchDeleteItems).not.toHaveBeenCalled();
     });
   });
   describe("batchFlowCreate", () => {
@@ -274,18 +274,20 @@ describe.skip("FlowTableServiceUtil", () => {
       expect(v2DeleteFlowRule).not.toHaveBeenCalled();
     });
   });
-  describe.skip("deleteOppositeRows", async () => {
-    const dynamicRecord = {
-      id: "1",
-      nextActionId: "123"
-    };
-    const nonDynamicRecord = {
-      id: "2"
-    };
+  describe.skip("deleteOppositeRows", () => {
+    it("will delete from both sources", async () => {
+      const dynamicRecord = {
+        id: "1",
+        nextActionId: "123"
+      };
+      const nonDynamicRecord = {
+        id: "2"
+      };
 
-    await deleteOppositeRows([dynamicRecord, nonDynamicRecord], token);
+      await deleteOppositeRows([dynamicRecord, nonDynamicRecord], token);
 
-    expect(v1BatchDeleteItems).toHaveBeenCalled();
-    expect(v2BatchDeleteItems).toHaveBeenCalled();
+      expect(v1BatchDeleteItems).toHaveBeenCalled();
+      expect(v2BatchDeleteItems).toHaveBeenCalled();
+    })
   });
 });
