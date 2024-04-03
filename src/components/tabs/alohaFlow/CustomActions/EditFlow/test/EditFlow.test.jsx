@@ -6,7 +6,7 @@ import {
 } from "testUtils";
 import {
   deleteFlowRule,
-  shouldDeleteOriginal,
+  deleteOppositeRows,
   updateFlowDB
 } from "../../../Utils/FlowTableServiceUtil";
 import { useAdminState } from "context";
@@ -16,7 +16,7 @@ import { AddOrView } from "../../CustomActionsCommon/AddOrView";
 jest.mock("../../../Utils/FlowTableServiceUtil", () => {
   return{
     deleteFlowRule: jest.fn(),
-    shouldDeleteOriginal: jest.fn().mockReturnValue(false),
+    deleteOppositeRows: jest.fn().mockReturnValue(false),
     updateFlowDB: jest.fn()
   };
 });
@@ -168,7 +168,7 @@ describe("<EditFlow />", () => {
       });
       await waitFor(() => {
         expect(openEditModal).toBeCalledTimes(1);
-        expect(shouldDeleteOriginal).toHaveBeenCalled();
+        expect(deleteOppositeRows).toHaveBeenCalled();
       });
     });
     test("Simulate the SaveRule Button with Failed API Response", () => {

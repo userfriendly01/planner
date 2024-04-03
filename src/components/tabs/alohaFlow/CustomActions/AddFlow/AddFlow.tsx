@@ -102,7 +102,7 @@ export const AddFlow = ({
         nextActionType: nextActionType,
         dataRequests: masterDataObject?.dataRequests,
         tfnRoutingGroup,
-        type: flowType
+        phoneNumberType: flowType
       }));
     }
     fetchData();
@@ -264,7 +264,7 @@ export const AddFlow = ({
             requestID: stringValue(flowRule,"requestID", ""),
             tfnRoutingGroup: stringValue(flowRule,"tfnRoutingGroup", ""),
             transferCode: stringValue(flowRule,"transferCode", ""),
-            type: flowRule?.phoneNumberType?.value ?? "",
+            phoneNumberType: flowRule?.phoneNumberType?.value ?? "",
             userDestination: flowRule.userDestination.value ?? "",
             whisper: stringValue(flowRule,"whisper", "")
           };

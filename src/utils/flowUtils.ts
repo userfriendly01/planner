@@ -12,7 +12,7 @@ export const flowDropDownList: FlowDropDownList = {
   "dataRequests": [],
   "nextActionType": [],
   "tfnRoutingGroup": [],
-  "type": []
+  "phoneNumberType": []
 
 };
 export const CACHE_FILTER_FLOW = "SEARCH_FILTER_FLOW";

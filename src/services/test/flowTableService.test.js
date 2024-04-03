@@ -911,7 +911,7 @@ describe("dynamicFlowTableService",()=> {
       const response = await flowDynamicBatchDelete(batchDeleteDyamicItemsList,"1233-3245","http://localhost:3000");
       expect(response).toBe(batchDeleteResponse);
       expect(window.fetch).toBeCalledWith("http://localhost:3000", {
-        "body": "{\"query\":\"\\n      mutation batchDeletePhoneNumber(input: PhoneNumberDeleteBatchInput!) {\\n        batchDeletePhoneNumber(input: $input) {\\n          items {\\n              phoneNumber\\n              callFlowName\\n          }\\n        }\\n      }\\n    \",\"variables\":{\"input\":{\"batchDeletePhoneNumberInput\":[{},{},{}]}}}",
+        "body": "{\"query\":\"\\n      mutation batchDeletePhoneNumber($input: PhoneNumberDeleteBatchInput!) {\\n        batchDeletePhoneNumber(input: $input) {\\n          items {\\n              phoneNumber\\n              callFlowName\\n          }\\n        }\\n      }\\n    \",\"variables\":{\"input\":{\"batchDeletePhoneNumberInput\":[{},{},{}]}}}",
         "headers": {
           "Authorization": "1233-3245",
           "Content-Type": "application/json"

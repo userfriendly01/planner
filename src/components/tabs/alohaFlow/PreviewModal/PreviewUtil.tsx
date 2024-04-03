@@ -139,7 +139,7 @@ const fetchData = (): FlowDropDownList =>{
     dataRequests: masterDataObject?.dataRequests,
     nextActionType: nextActionType,
     tfnRoutingGroup,
-    type: flowType
+    phoneNumberType: flowType
   };
   return dropDownValue;
 };

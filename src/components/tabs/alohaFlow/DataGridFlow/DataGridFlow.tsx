@@ -20,8 +20,11 @@ import React, {
   useEffect, useState
 } from "react";
 import {
-  retrieveFlowData, batchFlowUpdate, batchDeleteItems, batchFlowCreate,
-  shouldDeleteOriginal
+  batchDeleteItems,
+  batchFlowCreate,
+  batchFlowUpdate,
+  deleteOppositeRows,
+  retrieveFlowData
 } from "../Utils/FlowTableServiceUtil";
 import {
   CACHE_FILTER_FLOW,
@@ -354,6 +357,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       }));
       return;
     }
+
     const response = await batchFlowCreate(rows, accessToken);
     if(response?.flag) {
       setAlertBar((alertBarProps: AlertBarProps) => ({
@@ -365,6 +369,8 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
 
       return;
     }
+
+    await deleteOppositeRows(rows, accessToken);
 
     setAlertBar((alertBarProps: AlertBarProps) => ({
       ...alertBarProps,
@@ -386,17 +392,6 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
   };
 
   const handleOnBulkUpdate = async(rows: Array<CctSharedCallFlowDb> ) =>{
-
-    /* Compare existing rows with changes, and build a list of ones to delete
-    for the ones that are switching between dynamic and legacy call flow tables*/
-    const outOfSyncRows: Array<CctSharedCallFlowDb> = [];
-    const changingRows: {[key: string]: CctSharedCallFlowDb} = {} as any;
-    rows.forEach(x => changingRows[x.pkey] = x);
-    dataFlow.filteredItems.forEach(x => {
-      if(changingRows[x.pkey] && shouldDeleteOriginal(changingRows[x.pkey], x)) {
-        outOfSyncRows.push(x);
-      }
-    });
 
     const {
       isDuplicate, message
@@ -429,8 +424,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       severityType: "success"
     }));
 
-    await batchDeleteItems(outOfSyncRows, accessToken);
-
+    await deleteOppositeRows(rows, accessToken);
 
     const filteredItems = dataFlow.filteredItems.map(x=> {
       const fi = response.success.filter(r=> r.pkey === x.pkey);
@@ -472,6 +466,9 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
 
       return;
     }
+
+    await deleteOppositeRows(rows, accessToken);
+
     setAlertBar((alertBarProps: AlertBarProps) => ({
       ...alertBarProps,
       open: true,

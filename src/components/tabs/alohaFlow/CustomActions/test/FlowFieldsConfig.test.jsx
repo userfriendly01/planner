@@ -97,7 +97,7 @@ describe("FlowFieldsConfig", ()=>{
       expect(updatedFlowData.content.callerType).toBe("99999999");
       expect(updatedFlowDataWithInvalidData.content.callerType).toBe("99999999");
     });
-    it("type", ()=>{
+    it("phoneNumberType", ()=>{
       const updatedFlowData = flowFields[8].valueSetter(validFlowData, { type: "99999999" });
       expect(updatedFlowData.type).toBe("99999999");
     });
@@ -261,7 +261,7 @@ describe("FlowFieldsConfig", ()=>{
       expect(validData).toBe("test callerType");
       expect(invalidData).toBe("");
     });
-    it("type", ()=>{
+    it("phoneNumberType", ()=>{
       const validData = flowFields[8].valueGetter(validFlowData);
       const invalidData = flowFields[8].valueGetter({});
       expect(validData).toBe("DID");

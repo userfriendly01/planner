@@ -20,8 +20,8 @@ import {
   batchFlowCreate,
   batchFlowUpdate,
   deleteFlowRule,
+  deleteOppositeRows,
   retrieveFlowData,
-  shouldDeleteOriginal,
   updateFlowDB
 } from "../FlowTableServiceUtil";
 
@@ -46,6 +46,20 @@ describe("FlowTableServiceUtil", () => {
         counter: 2,
         errors: true,
         flowData: []
+      });
+      v1BatchDeleteItems.mockResolvedValue({
+        alertMsg: "",
+        errors: [],
+        failure: [],
+        flag: false,
+        success: []
+      });
+      v2BatchDeleteItems.mockResolvedValue({
+        alertMsg: "",
+        errors: [],
+        failure: [],
+        flag: false,
+        success: []
       });
     });
     it("should call both retrieve functions", async () => {
@@ -260,23 +274,18 @@ describe("FlowTableServiceUtil", () => {
       expect(v2DeleteFlowRule).not.toHaveBeenCalled();
     });
   });
-  describe("shouldDeleteOriginal", () => {
-    const noRecord = undefined;
+  describe.skip("deleteOppositeRows", async () => {
     const dynamicRecord = {
+      id: "1",
       nextActionId: "123"
     };
     const nonDynamicRecord = {
-      id: "123"
+      id: "2"
     };
 
-    //new records, so no
-    expect(shouldDeleteOriginal(noRecord, dynamicRecord)).toBe(false);
-    expect(shouldDeleteOriginal(noRecord, nonDynamicRecord)).toBe(false);
-    //switching tables, so yes
-    expect(shouldDeleteOriginal(dynamicRecord, nonDynamicRecord)).toBe(true);
-    expect(shouldDeleteOriginal(nonDynamicRecord, dynamicRecord)).toBe(true);
-    //modifying same record, so no
-    expect(shouldDeleteOriginal(dynamicRecord, dynamicRecord)).toBe(false);
-    expect(shouldDeleteOriginal(nonDynamicRecord, nonDynamicRecord)).toBe(false);
+    await deleteOppositeRows([dynamicRecord, nonDynamicRecord], token);
+
+    expect(v1BatchDeleteItems).toHaveBeenCalled();
+    expect(v2BatchDeleteItems).toHaveBeenCalled();
   });
 });

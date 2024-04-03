@@ -114,7 +114,7 @@ const commonProcessing = async (
 };
 
 /**
- * This is the Function to batch delete the Flow Objects
+ * This is the Function to batch delete the Flow Objects.
  * @param {Array<String>} items List of Flow object that need to update
  * @param {String} accessToken token to use while calling graphql query
  * @returns
@@ -124,8 +124,8 @@ export const batchDeleteItems = async (
   accessToken: string
 ): Promise<BatchResponse> =>  {
 
-  const response = await v1BatchDeleteItems(items.map(x => x.pkey), accessToken) as BatchResponse;
-  const response2 = await v2BatchDeleteItems(items.map(x => x.pkey), accessToken)as BatchResponse;
+  const response = await v1BatchDeleteItems(items.filter(x=>!x.nextActionId).map(x => x.pkey), accessToken) as BatchResponse;
+  const response2 = await v2BatchDeleteItems(items.filter(x=>x.nextActionId).map(x => x.pkey), accessToken) as BatchResponse;
 
   response2.failure.forEach(x => response.failure.push(x));
   response2.success.forEach(x => response.success.push(x));
@@ -135,6 +135,27 @@ export const batchDeleteItems = async (
 
 };
 
+/**
+   * Since the UI grid loads Call Flow records from 2 tables, we should 
+   * remove duplicates from the opposite table, since they shouldn't exist.  This 
+   * function will call batchDeleteItems, while toggling the nextActionId value so 
+   * it will delete the rows.
+   * @param {Array<CctSharedCallFlowDb>} rows - the rows just updated or created 
+   * @returns 
+   */
+export const deleteOppositeRows = (
+  rows: Array<CctSharedCallFlowDb>,
+  accessToken: string
+): Promise<BatchResponse> => {
+  const oppositeRows = rows.map(x => {
+    return {
+      ...x,
+      nextActionId: x.nextActionId? "": "simulatedNextActionId"
+    };
+  });
+
+  return batchDeleteItems(oppositeRows, accessToken);
+};
 
 /**
  * This is the Function to batch delete the Flow Objects
@@ -201,23 +222,4 @@ export const deleteFlowRule = (item: CctSharedCallFlowDb,
 
   return v1DeleteFlowRule(item, accessToken);
 
-};
-
-/**
- * 
- * @param originalRow 
- * @param updatedRow 
- * @returns 
- */
-export const shouldDeleteOriginal = (originalRow: CctSharedCallFlowDb, updatedRow: CctSharedCallFlowDb): boolean => {
-  if (!originalRow) {
-    return false;
-  }
-  if (originalRow.nextActionId && !updatedRow.nextActionId) {
-    return true;
-  }
-  if (!originalRow.nextActionId && updatedRow.nextActionId) {
-    return true;
-  }
-  return false;
 };

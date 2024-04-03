@@ -76,13 +76,12 @@ export interface CctSharedCallFlowDb {
     nextActionId?: string;
     nextActionType?: string;
     pkey?: string;
-    phoneNumberType?: boolean;
     predictiveCaller?: boolean;
     rangeIndicator?: string;
     requestID?: string;
     tfnRoutingGroup?:string;
     transferCode?: string;
-    type?: string;
+    phoneNumberType?: string;
     userDestination?: string;
     whisper?: string;
 }
@@ -115,7 +114,7 @@ export interface FlowKeys {
     tfnRoutingGroup?: string;
     transferCode?: string;
     transferDestination?: string;
-    type?: string;
+    phoneNumberType?: string;
     userDestination?: string;
     whisper?: string;
 }
@@ -132,7 +131,7 @@ export interface FlowDropDownList {
     dataRequests: string[];
     nextActionType: string[];
     tfnRoutingGroup : string[];
-    type: string[];
+    phoneNumberType: string[];
 }
 
 export interface AddFlowFieldsConfigProps {

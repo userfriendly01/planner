@@ -51,7 +51,7 @@ import {
 } from "utils/interfaces";
 import {
   deleteFlowRule,
-  shouldDeleteOriginal,
+  deleteOppositeRows,
   updateFlowDB
 } from "../../Utils/FlowTableServiceUtil";
 import {
@@ -105,7 +105,7 @@ export const EditFlow = ({
         dataRequests: masterData?.dataRequests,
         nextActionType: nextActionType,
         tfnRoutingGroup: tfnRoutingGroup,
-        type: flowType
+        phoneNumberType: flowType
       })
     );
     if(isOpen){
@@ -190,9 +190,7 @@ export const EditFlow = ({
         return;
       }
 
-      if(shouldDeleteOriginal(originalRow, selectedRowLocal)) {
-        deleteFlowRule(originalRow, accessToken);
-      }
+      deleteOppositeRows([originalRow], accessToken);
 
       setFlowRule({ ...initRule });
       openEditModal(false, true, selectedRowLocal, `Phone Number ${selectedRow.pkey} has been successfully updated.`, false);

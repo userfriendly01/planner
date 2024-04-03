@@ -111,7 +111,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     key: "phoneNumberType",
     control: "autoComplete",
     required: false,
-    valueGetter: (params: CctSharedCallFlowDb) => `${params?.type || ""}`,
+    valueGetter: (params: CctSharedCallFlowDb) => `${params?.phoneNumberType || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
       ...newValue
@@ -181,7 +181,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...newValue
     }),
     dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
-      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["type"]?.value === "DRC";
+      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["phoneNumberType"]?.value === "DRC";
     }
   },
   {
@@ -194,7 +194,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...newValue
     }),
     dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
-      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["type"]?.value === "DRC";
+      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["phoneNumberType"]?.value === "DRC";
     }
   },
   {
@@ -217,7 +217,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...newValue
     }),
     dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
-      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["type"]?.value === "DRC";
+      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["phoneNumberType"]?.value === "DRC";
     }
   },
   {
@@ -230,7 +230,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...newValue
     }),
     dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
-      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["type"]?.value === "DRC";
+      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["phoneNumberType"]?.value === "DRC";
     }
   },
   {
@@ -243,7 +243,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...newValue
     }),
     dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
-      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["type"]?.value === "DRC";
+      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["phoneNumberType"]?.value === "DRC";
     }
   },
   {
@@ -256,7 +256,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...newValue
     }),
     dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
-      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["type"]?.value === "DRC";
+      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["phoneNumberType"]?.value === "DRC";
     }
   },
   {
@@ -269,7 +269,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...newValue
     }),
     dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
-      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["type"]?.value === "DRC";
+      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["phoneNumberType"]?.value === "DRC";
     }
   },
   {
@@ -282,7 +282,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...newValue
     }),
     dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
-      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["type"]?.value === "DRC";
+      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["phoneNumberType"]?.value === "DRC";
     }
   },
   {
@@ -295,7 +295,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...newValue
     }),
     dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
-      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["type"]?.value === "DRC";
+      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["phoneNumberType"]?.value === "DRC";
     }
   },
   {
@@ -308,7 +308,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...newValue
     }),
     dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
-      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["type"]?.value === "DRC";
+      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["phoneNumberType"]?.value === "DRC";
     }
   },
   {
@@ -322,7 +322,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...newValue
     }),
     dynamicFieldConditionCheck: (params?: FormValidationRule): boolean=>{
-      return params["type"]?.value === "DID";
+      return params["phoneNumberType"]?.value === "DID";
     }
   },
   {
@@ -336,7 +336,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...newValue
     }),
     dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
-      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["type"]?.value === "DRC";
+      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["phoneNumberType"]?.value === "DRC";
     }
   },
   {
@@ -389,7 +389,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...newValue
     }),
     dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
-      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["type"]?.value === "DRC";
+      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["phoneNumberType"]?.value === "DRC";
     }
   },
   {
