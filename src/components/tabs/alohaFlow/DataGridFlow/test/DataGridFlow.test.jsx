@@ -36,6 +36,7 @@ jest.mock("../../Utils/FlowTableServiceUtil", () => ({
   batchDeleteItems: jest.fn(),
   batchFlowCreate: jest.fn(),
   batchFlowUpdate: jest.fn(),
+  deleteOppositeRows: jest.fn(),
   flowBatchDelete: jest.fn(),
   queryFlowData: jest.fn(),
   retrieveFlowData: jest.fn()

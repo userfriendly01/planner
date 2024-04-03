@@ -274,7 +274,7 @@ describe("FlowTableServiceUtil", () => {
       expect(v2DeleteFlowRule).not.toHaveBeenCalled();
     });
   });
-  describe.skip("deleteOppositeRows", () => {
+  describe("deleteOppositeRows", () => {
     it("will delete from both sources", async () => {
       const dynamicRecord = {
         id: "1",
