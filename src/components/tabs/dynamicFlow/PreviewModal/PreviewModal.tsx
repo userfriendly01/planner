@@ -1,3 +1,6 @@
+import React, {
+  useMemo, useState, useEffect
+} from "react";
 import {
   CsvReader, StyledButton
 } from "components";
@@ -11,12 +14,10 @@ import {
 import {
   Modal,ModalHeader, ModalBody, ModalFooter
 } from "@lmig/lmds-react-modal";
-import React, {
-  useMemo, useState, useEffect
-} from "react";
 import "./PreviewModal.css";
 import { Box } from "@mui/material";
 import  TableGridColumnDef  from "./TableColumnDef";
+import { logger } from "utils";
 import { reconstructTableColumnDef } from "./PreviewUtil";
 
 interface PreviewModalProps {
@@ -35,7 +36,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
 
   const apiRef =  useGridApiRef();
   const [flowRows, setFlowRows] = useState<ActionPreview[]>([]);
-  const [ uploadedForm, setUploadedForm ] = React.useState([]);
+  const [ uploadedForm, setUploadedForm ] = React.useState<any>([]);
   const tableGridColumnDef: Array<GridColDef> = useMemo<Array<GridColDef>>(()=>{
     return reconstructTableColumnDef([...TableGridColumnDef], apiRef);
   },[action]);
@@ -56,7 +57,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   const getUpdatedFlowDb = () =>{
     const newRows: Array<ActionPreview>=[...flowRows].map((row: ActionPreview)=>{
       const updatedFlow: ActionPreview = {
-        id:0,
+        id: 0,
         errors: "",
         actionId: "",
         actionType: "ANNOUNCEMENT",
@@ -84,9 +85,14 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
     return newRows;
   };
 
-  const handleOnCreate = () =>{
+  const handleOnCreate = async () =>{
     const newRows:Array<ActionPreview> = getUpdatedFlowDb();
-    onCreate(newRows);
+
+    try {
+      await onCreate(newRows);
+    } catch(error) {
+      logger.error("Flow: Preview Modal onDelete call failed", { error }, false);
+    }
   };
 
   const createNewRecord = () =>{
