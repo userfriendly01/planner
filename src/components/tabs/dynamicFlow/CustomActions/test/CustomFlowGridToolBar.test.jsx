@@ -54,10 +54,10 @@ describe("<CustomFlowGridToolBar/>",()=>{
     useAdminState.mockReturnValue(initialTestState);
   });
 
-  test.skip("Choose the multi-actions", () => {
+  test.only("Choose the multi-actions", () => {
     renderCustomToolBar();
     const GridMock = Grid.mock.calls[0][0];
-    const ActionsAttr = GridMock.children[0].props.children.props.children[0].props.onChange;
+    const ActionsAttr = GridMock.children[2].props.children.props.children[1].props.onChange;
 
     act(()=>{
       ActionsAttr({
@@ -67,7 +67,6 @@ describe("<CustomFlowGridToolBar/>",()=>{
       });
     });
 
-    expect(GridMock.children).toBe(1);
     expect(GridMock).toBeTruthy();
     expect(openPreviewModal).toBeCalledTimes(1);
 

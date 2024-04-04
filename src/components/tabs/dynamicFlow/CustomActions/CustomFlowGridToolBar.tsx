@@ -39,6 +39,10 @@ const CustomFlowGridToolBar = ({
 
   return (
     <Grid container>
+      <Grid item key="flow-search-box" xs={9}>
+      </Grid>
+      <Grid item key = "Export FlowUI" xs={1} >
+      </Grid>
       <Grid item key="flow-action-box" xs={2}>
         <FormControl sx={{
           marginTop: "16px",
