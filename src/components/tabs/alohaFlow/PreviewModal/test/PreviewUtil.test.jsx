@@ -8,23 +8,23 @@ export const createFlowDataItem = num => {
   return {
     id: num,
     pkey: `+18005551212x${num}`,
-    agentId: `agent${num}`,
     brand: `brand${num}`,
+    callFlowName: "LSC",
     callFlowTemplate: `cft${num}`,
+    callFlowType: "Self Service",
     channel: `channel${num}`,
     content: {
       callerType: "Customer",
       callFlowRoute: `route A${num}`,
       dataRequests: ["Classify"],
       greetingMessages: "Hello and welcome!",
-      transferNumber: `+12223334444x${num}`
+      transferDestination: `+12223334444x${num}`
     },
     createTime: "2020-01-01T15:14:13.${num}Z",
     dialedDescription: `Test case ${num}`,
     employeeId: `n${num}`,
     userDestination: "Avaya",
-    predictiveCaller: true,
-    selfServiceIndicator: true
+    predictiveCaller: true
   };
 };
 
@@ -44,7 +44,7 @@ export const flowDropDownData = {
   callFlowRoute: ["CFR1","CFR2","CFR3"],
   callerType: ["CT1","CT2","CT3"],
   dataRequests: ["DR1","DR2","DR3"],
-  type: ["DID", "DRC", "CRC"],
+  phoneNumberType: ["DID", "DRC", "CRC"],
   tfnRoutingGroup: ["Group1","Group2","Group3"]
 };
 

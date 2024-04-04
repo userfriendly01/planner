@@ -71,7 +71,7 @@ export const getRoutes = () => [
   },
   {
     path: "/triton-admin/dyn-flow",
-    render: (props: any) => <DynamicFlowContainer {...props} state={state} azureClientId={azureClientId} />
+    Component: DynamicFlowContainer
   },
   {
     path: "/triton-admin/aloha-routing",

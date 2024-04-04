@@ -102,16 +102,16 @@ export const TableGridColumnDef: GridColDef[] = [
   },
   {
     headerName: "Transfer Destination",
-    field: "transferNumber",
+    field: "transferDestination",
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params => `${params.row.content?.transferNumber || ""}`,
+    valueGetter: params => `${params.row.content?.transferDestination || ""}`,
     valueSetter: params => ({
       ...params.row,
       content: {
         ...params.row.content || {},
-        transferNumber: params.value
+        transferDestination: params.value
       }
     })
   },
@@ -151,13 +151,6 @@ export const TableGridColumnDef: GridColDef[] = [
     )
   },
   {
-    headerName: "Agent Id",
-    field: "agentId",
-    sortable: true,
-    width: 110,
-    align: "left"
-  },
-  {
     headerName: "Employee ID",
     field: "employeeId",
     sortable: true,
@@ -179,8 +172,8 @@ export const TableGridColumnDef: GridColDef[] = [
     align: "left"
   },
   {
-    headerName: "Type",
-    field: "type",
+    headerName: "Phone Number Type",
+    field: "phoneNumberType",
     sortable: true,
     width: 80,
     align: "left"
@@ -295,13 +288,6 @@ export const TableGridColumnDef: GridColDef[] = [
     align: "left"
   },
   {
-    headerName: "Toll Free Number",
-    field: "tollFreeNumber",
-    sortable: true,
-    width: 110,
-    align: "left"
-  },
-  {
     headerName: "Call Intent",
     field: "callIntent",
     sortable: true,
@@ -366,14 +352,42 @@ export const TableGridColumnDef: GridColDef[] = [
       <Switch checked={params.row?.predictiveCaller || false} defaultChecked={false} color="warning" disabled size="medium" />)
   },
   {
-    headerName: "Self Service",
-    field: "selfServiceIndicator",
+    headerName: "Call Flow Name",
+    field: "callFlowName",
     sortable: true,
     width: 110,
-    align: "center",
-    valueGetter: params => params.row?.selfServiceIndicator || false,
-    renderCell: (params: any) =>(
-      <Switch checked={params.row?.selfServiceIndicator || false} defaultChecked={false} color="warning" disabled size="medium" />)
+    align: "left",
+    renderCell: (params: any) => (
+      <Tooltip title={params.row.callFlowName} >
+        <div className="table-cell-trucate">{params.row.callFlowName}</div>
+      </Tooltip>
+    )
+  },
+  {
+    headerName: "Call Flow Type",
+    field: "callFlowType",
+    sortable: true,
+    width: 110,
+    align: "left",
+    renderCell: (params: any) => (
+      <Tooltip title={params.row.callFlowType} >
+        <div className="table-cell-trucate">{params.row.callFlowType}</div>
+      </Tooltip>
+    )
+  },
+  {
+    headerName: "Next Action ID",
+    field: "nextActionId",
+    sortable: true,
+    width: 110,
+    align: "left"
+  },
+  {
+    headerName: "Next Action Type",
+    field: "nextActionType",
+    sortable: true,
+    width: 110,
+    align: "left"
   }
 ];
 

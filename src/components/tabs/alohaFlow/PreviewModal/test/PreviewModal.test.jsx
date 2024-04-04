@@ -33,7 +33,6 @@ const createFlowDataList = numberOfData =>{
     const flowData = {
       id: num,
       pkey: `+18005551212x${num}`,
-      agentId: `agent${num}`,
       brand: `brand${num}`,
       callFlowTemplate: `cft${num}`,
       channel: `channel${num}`,
@@ -42,7 +41,7 @@ const createFlowDataList = numberOfData =>{
         callFlowRoute: `route A${num}`,
         dataRequests: ["Classify"],
         greetingMessages: "Hello and welcome!",
-        transferNumber: `+12223334444x${num}`
+        transferDestination: `+12223334444x${num}`
       },
       createTime: "2020-01-01T15:14:13.${num}Z",
       dialedDescription: `Test case ${num}`,
@@ -62,7 +61,7 @@ const flowDropDownData = {
   callFlowRoute: ["CFR1","CFR2","CFR3"],
   callerType: ["CT1","CT2","CT3"],
   dataRequests: ["DR1","DR2","DR3"],
-  type: ["DID", "DRC", "CRC"]
+  phoneNumberType: ["DID", "DRC", "CRC"]
 };
 
 localStorage.setItem(FLOW_MASTER_DATA, JSON.stringify(flowDropDownData));

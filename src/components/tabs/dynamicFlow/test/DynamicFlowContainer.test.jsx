@@ -1,56 +1,61 @@
 import React from "react";
-import {
-  render,
-  initialTestState
-} from "testUtils";
-import { useAdminState } from "context";
+import { render } from "testUtils";
 import { DynamicFlowContainer } from "../index";
-import { LoginInProgress } from "../../../core/AzureAuth/LoginInProgress";
+import {
+  LoginInProgress,
+  LoginError
+} from "components";
+import { useAccessToken } from "authentication";
+import DataGridFlow from "../DataGridFlow/DataGridFlow";
 
-jest.mock("../../../core/AzureAuth/LoginInProgress", () => ({
+jest.mock("components", () => ({
   __esModule: true,
-  LoginInProgress: jest.fn()
+  LoginInProgress: jest.fn(),
+  LoginError: jest.fn()
 }));
 
-jest.mock("msal", () => ({
-  __esModule: true,
-  UserAgentApplication: jest.fn().mockImplementation(() => {
-    return {
-      acquireTokenPopup: jest.fn().mockResolvedValue({
-        accessToken: "mockt-test-token-1234"
-      }),
-      handleRedirectCallback: jest.fn(),
-      isCallback: jest.fn().mockReturnValue(false),
-      getAccount: jest.fn().mockReturnValue(true),
-      loginRedirect: jest.fn()
-    };
-  })
-}));
+jest.mock("../DataGridFlow/DataGridFlow", () => {
+  const originalModule = jest.requireActual("../DataGridFlow/DataGridFlow");
 
-const xhrMockClass = () => ({
-  open: jest.fn(),
-  send: jest.fn(),
-  setRequestHeader: jest.fn()
+  return {
+    __esModule: true,
+    ...originalModule,
+    default: jest.fn()
+  };
 });
-
-window.XMLHttpRequest = jest.fn().mockImplementation(xhrMockClass);
-
-jest.mock("context", () => ({
-  useAdminState: jest.fn()
-}));
-
-const renderComponent = () => render(
-  <DynamicFlowContainer />,
-  initialTestState
-);
 
 describe("<DynamicFlowContainer />", () => {
   beforeEach(()=>{
     jest.clearAllMocks();
-    useAdminState.mockReturnValue(initialTestState);
   });
-  it("renders", () => {
-    renderComponent();
+
+  test("Simple Render", () =>{
+    useAccessToken.mockReturnValue({
+      isLoading: false
+    });
+
+    render(<DynamicFlowContainer />);
+    expect(DataGridFlow.mock.calls.length).toBe(1);
+  });
+
+  test("Returns Loading Component", () =>{
+    useAccessToken.mockReturnValue({
+      isLoading: true
+    });
+
+    render(<DynamicFlowContainer />);
+    expect(DataGridFlow.mock.calls.length).toBe(0);
     expect(LoginInProgress.mock.calls.length).toBe(1);
+  });
+
+  test("Returns error Component", () => {
+    useAccessToken.mockReturnValue({
+      isLoading: false,
+      error: "An error"
+    });
+
+    render(<DynamicFlowContainer />);
+    expect(DataGridFlow.mock.calls.length).toBe(0);
+    expect(LoginError.mock.calls.length).toBe(1);
   });
 });

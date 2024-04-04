@@ -89,7 +89,7 @@ describe("<DynamicGridColumnDef />", () => {
       });
     });
     it("nextActionType", () => {
-      expect(DynamicGridColumnDef[10]).toEqual( {
+      expect(DynamicGridColumnDef[11]).toEqual( {
         headerName: "next action type",
         field: "nextActionType",
         sortable: true,
@@ -98,7 +98,7 @@ describe("<DynamicGridColumnDef />", () => {
       });
     });
     it("nextActionId", () => {
-      expect(DynamicGridColumnDef[11]).toEqual(  {
+      expect(DynamicGridColumnDef[10]).toEqual(  {
         headerName: "next action id",
         field: "nextActionId",
         sortable: true,
@@ -119,7 +119,7 @@ describe("<DynamicGridColumnDef />", () => {
       expect(renderedCell.findByDisplayValue("options")).toBeTruthy();
     });
     it("repeat", () => {
-      const renderedCell = render(DynamicGridColumnDef[12].renderCell({
+      const renderedCell = render(DynamicGridColumnDef[13].renderCell({
         row: {
           headerName: "repeat",
           field: "repeat",

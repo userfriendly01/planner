@@ -31,24 +31,29 @@ import {
   CustomToast
 } from "components";
 import {
-  flowDropDownList,
+  BrandName,
   FLOW_MASTER_DATA,
+  callFlowName,
+  callFlowType,
+  checkGreetingMessageRegExp,
+  flowDropDownList,
+  flowType,
   initializedAlertBar,
   languageOffer,
-  userDestination,
-  flowType,
-  checkGreetingMessageRegExp,
+  nextActionType,
   readWriteAccess,
   tfnRoutingGroup,
-  BrandName
+  userDestination
 } from "utils";
 import ComponentControl from "components/core/SharedComponents/ComponentControl";
 import {
   AlertBarProps, FormValidationRule
 } from "utils/interfaces";
 import {
-  deleteFlowRule, updateFlowDB
-} from "services";
+  deleteFlowRule,
+  deleteOppositeRows,
+  updateFlowDB
+} from "../../Utils/FlowTableServiceUtil";
 import {
   AzureSPA, DuplicateCheck
 } from "globals";
@@ -75,6 +80,7 @@ export const EditFlow = ({
   const [dropDownValues, setDropDownValues] = useState(flowDropDownList);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
   const enableFlow = useMemo<boolean>(() => readWriteAccess(matchedGroups,"aloha-flow"), []);
+  const originalRow = selectedRow ? JSON.parse(JSON.stringify(selectedRow)) : undefined;
 
   useEffect(() => {
     setSelectedRowLocal(selectedRow);
@@ -92,11 +98,14 @@ export const EditFlow = ({
         channel: masterData?.channel,
         languageOffer: languageOffer,
         userDestination: userDestination,
+        callFlowName: callFlowName,
         callFlowRoute: masterData?.callFlowRoute,
+        callFlowType: callFlowType,
         callerType: masterData?.callerType,
         dataRequests: masterData?.dataRequests,
+        nextActionType: nextActionType,
         tfnRoutingGroup: tfnRoutingGroup,
-        type: flowType
+        phoneNumberType: flowType
       })
     );
     if(isOpen){
@@ -177,20 +186,28 @@ export const EditFlow = ({
         return;
       }
       const response = await updateFlowDB(selectedRowLocal, accessToken);
-      let isSubmitted = true;
-      if (response?.errors) {
-        isSubmitted = false;
-        setAlertBar((alertBarProps: AlertBarProps) => ({
-          ...alertBarProps,
-          open: true,
-          msg: response.errors[0]?.message,
-          severityType: "error"
-        }));
+      if (isErrorDisplayed(response)) {
         return;
       }
+
+      deleteOppositeRows([originalRow], accessToken);
+
       setFlowRule({ ...initRule });
-      openEditModal(false, isSubmitted, selectedRowLocal, `Phone Number ${selectedRow.pkey} has been successfully updated.`, false);
+      openEditModal(false, true, selectedRowLocal, `Phone Number ${selectedRow.pkey} has been successfully updated.`, false);
     }
+  };
+
+  const isErrorDisplayed = (response: any) => {
+    if (response?.errors) {
+      setAlertBar((alertBarProps: AlertBarProps) => ({
+        ...alertBarProps,
+        open: true,
+        msg: response.errors[0]?.message,
+        severityType: "error"
+      }));
+      return true;
+    }
+    return false;
   };
 
   const handleClone = () =>{
@@ -199,6 +216,9 @@ export const EditFlow = ({
 
   const handleOnDelete = async () => {
     const response = await deleteFlowRule(selectedRowLocal, accessToken);
+    if (isErrorDisplayed(response)) {
+      return;
+    }
     if (response) {
       openEditModal(false, true, selectedRowLocal, `Phone Number ${selectedRow.pkey} has been successfully deleted.`, true);
     }
@@ -231,8 +251,8 @@ export const EditFlow = ({
   ) => {
     let value: string;
     let key : string;
-    if(valuePassed && typeof valuePassed === "string" && !displayRecords[key as keyof ViewOrAddProps]){
-      value = valuePassed;
+    if(((valuePassed && typeof valuePassed === "string") || valuePassed === null) && !displayRecords[keyPassed as keyof ViewOrAddProps]){
+      value = valuePassed ?? "";
       key = keyPassed;
     } else{
       value = event.target.value;

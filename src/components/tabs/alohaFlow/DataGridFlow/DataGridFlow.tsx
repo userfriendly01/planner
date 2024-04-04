@@ -20,8 +20,12 @@ import React, {
   useEffect, useState
 } from "react";
 import {
-  queryFlowData, retrieveFlowData, batchFlowUpdate, batchDeleteItems, batchFlowCreate
-} from "services";
+  batchDeleteItems,
+  batchFlowCreate,
+  batchFlowUpdate,
+  deleteOppositeRows,
+  retrieveFlowData
+} from "../Utils/FlowTableServiceUtil";
 import {
   CACHE_FILTER_FLOW,
   CALL_FLOW_PAGE_NO,
@@ -83,20 +87,6 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
 
   useEffect(() => {
     const getTableData = async()=>{
-      const firstChunkData:any = await queryFlowData(accessToken, null);
-      const listItems = firstChunkData?.data?.listCctSharedCallFlowDbs?.items || [];
-      let counter =1;
-      const flowData: CctSharedCallFlowDb[] = [];
-      listItems.forEach((item: CctSharedCallFlowDb) => {
-        if (item) {
-          flowData.push({
-            ...item,
-            id: counter++
-          });
-        }
-      });
-
-      await loadDataTable(flowData);
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
         open: true,
@@ -104,16 +94,17 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         msg: "Data loading in progress. Please wait for the complete set of data to be loaded.",
         duration: 15000
       }));
-      const result: CctSharedCallFlowDb[] = await retrieveFlowData(
+      const success = await retrieveFlowData(
         accessToken,
-        firstChunkData
+        1,
+        null,
+        loadDataTable
       );
-      await loadDataTable(result);
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
         open: true,
-        severityType: "success",
-        msg: "Successfully loaded the flow data!!"
+        severityType: success ? "success" : "error",
+        msg: success ? "Successfully loaded the flow data.": "Errors loading data.  Please check the console logs."
       }));
     };
     getTableData();
@@ -271,7 +262,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
         open: true,
-        msg: "Error in retrieving Flow record. Please check the API Key",
+        msg: "Error in retrieving Flow records. Please check the console log",
         severityType: "error"
       }));
     }
@@ -366,6 +357,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       }));
       return;
     }
+
     const response = await batchFlowCreate(rows, accessToken);
     if(response?.flag) {
       setAlertBar((alertBarProps: AlertBarProps) => ({
@@ -374,14 +366,19 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         msg: response?.alertMsg || "Error while creating the records.",
         severityType: "error"
       }));
-    } else {
-      setAlertBar((alertBarProps: AlertBarProps) => ({
-        ...alertBarProps,
-        open: true,
-        msg: "Flow Rules have been successfully created.",
-        severityType: "success"
-      }));
+
+      return;
     }
+
+    await deleteOppositeRows(rows, accessToken);
+
+    setAlertBar((alertBarProps: AlertBarProps) => ({
+      ...alertBarProps,
+      open: true,
+      msg: "Flow Rules have been successfully created.",
+      severityType: "success"
+    }));
+
     setSelectedList([...response.failure]);
     const filteredItems = [...dataFlow.filteredItems, ...response.success];
     const filteredData = [...dataFlow.data, ...response.success];
@@ -389,12 +386,13 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       ...dataFlow,
       ...filteredItems && { filteredItems },
       data: filteredData,
-      isPreviewModalOpen: false
+      isPreviewModalOpen: response?.flag
     });
     apiRef.current.setRowSelectionModel([]);
   };
 
   const handleOnBulkUpdate = async(rows: Array<CctSharedCallFlowDb> ) =>{
+
     const {
       isDuplicate, message
     } = checkForDuplicateBulkPutItems(rows);
@@ -415,14 +413,18 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         msg: "Error while updating the records.",
         severityType: "error"
       }));
-    } else {
-      setAlertBar((alertBarProps: AlertBarProps) => ({
-        ...alertBarProps,
-        open: true,
-        msg: "Flow Rules have been successfully updated.",
-        severityType: "success"
-      }));
+
+      return;
     }
+
+    setAlertBar((alertBarProps: AlertBarProps) => ({
+      ...alertBarProps,
+      open: true,
+      msg: "Flow Rules have been successfully updated.",
+      severityType: "success"
+    }));
+
+    await deleteOppositeRows(rows, accessToken);
 
     const filteredItems = dataFlow.filteredItems.map(x=> {
       const fi = response.success.filter(r=> r.pkey === x.pkey);
@@ -453,8 +455,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
   };
 
   const handleOnBulkDelete = async(rows: Array<CctSharedCallFlowDb> ) =>{
-    const keysToDelete = rows.map(x => x.pkey);
-    const response = await batchDeleteItems(keysToDelete, accessToken);
+    const response = await batchDeleteItems(rows, accessToken);
     if(response?.flag) {
       setAlertBar((alertBarProps: AlertBarProps) => ({
         ...alertBarProps,
@@ -462,14 +463,19 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         msg: "Error deleting records.",
         severityType: "error"
       }));
-    } else {
-      setAlertBar((alertBarProps: AlertBarProps) => ({
-        ...alertBarProps,
-        open: true,
-        msg: "Flow Rules have been successfully deleted.",
-        severityType: "success"
-      }));
+
+      return;
     }
+
+    await deleteOppositeRows(rows, accessToken);
+
+    setAlertBar((alertBarProps: AlertBarProps) => ({
+      ...alertBarProps,
+      open: true,
+      msg: "Flow Rules have been successfully deleted.",
+      severityType: "success"
+    }));
+
     const selectedRowsData = response?.failure?.map(x=>dataFlow.filteredItems.find((row: CctSharedCallFlowDb)=>row.pkey === x.pkey));
     setSelectedList(selectedRowsData);
     const deletedIds = response?.success?.map((x:any) => x.pkey);
@@ -502,7 +508,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     });
 
     return {
-      isDuplicate: duplicateRecord.length>0? true: false,
+      isDuplicate: (duplicateRecord.length>0),
       message: `Duplicate Employee Ids ${[...new Set(duplicateEmployeeId)].join("\n")} found for the record of ${[...new Set(pkeys)].join("\n")}`
     };
   };
