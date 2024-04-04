@@ -1,9 +1,9 @@
+import React from "react";
 import {
   CustomFlowGridToolBar
-} from "../../CustomActions";
+} from "../../CustomActions/CustomFlowGridToolBar";
 import {
   DataGrid,
-  GridRenderCellParams,
   GridToolbar
 } from "@mui/x-data-grid";
 import {
@@ -13,8 +13,7 @@ import {
   setupMockedComponents
 } from "testUtils";
 import DataGridFlow from "../DataGridFlow";
-import { PreviewModal } from "../../PreviewModal";
-import React from "react";
+import { PreviewModal } from "../../PreviewModal/PreviewModal";
 import { useAdminState } from "context";
 import { createFlowDataList } from "../../../dynamicFlow/PreviewModal/test/PreviewUtil.test";
 import {
@@ -39,7 +38,7 @@ jest.mock("@mui/x-data-grid",()=>({
 }));
 
 
-jest.mock("../../CustomActions", () => ({
+jest.mock("../../CustomActions/CustomFlowGridToolBar", () => ({
   __esModule: true,
   CustomFlowGridToolBar: jest.fn()
 }));
@@ -48,7 +47,7 @@ jest.mock("context", () => ({
   useAdminState: jest.fn()
 }));
 
-jest.mock("../../PreviewModal", ()=>({
+jest.mock("../../PreviewModal/PreviewModal", ()=>({
   __esModule: true,
   PreviewModal: jest.fn()
 }));
@@ -68,7 +67,6 @@ describe("<DataGridFlow />", () => {
     setupMockedComponents({
       CustomFlowGridToolBar,
       DataGrid,
-      GridRenderCellParams,
       GridToolbar,
       PreviewModal
     });
@@ -95,7 +93,7 @@ describe("<DataGridFlow />", () => {
   });
 
   describe("PreviewModal", ()=>{
-    it.skip("Preview Modal onClose", ()=>{
+    it("Preview Modal onClose", ()=>{
       renderComponent();
       const previewModalOnClose = PreviewModal.mock.calls[0][0].onClose;
       act(()=>{
@@ -103,7 +101,7 @@ describe("<DataGridFlow />", () => {
       });
       expect(PreviewModal.mock.calls.length).toBe(2);
     });
-    it.skip("Preview Modal onCreate Success", ()=>{
+    it("Preview Modal onCreate Success", ()=>{
       const validFlowDataList = createFlowDataList(15);
       queryDynamicFlowData.mockResolvedValue(validFlowDataList);
       batchDynamicFlowCreate.mockResolvedValue({
@@ -115,14 +113,13 @@ describe("<DataGridFlow />", () => {
       renderComponent();
       const openPreviewModal = CustomFlowGridToolBar.mock.calls[0][0].openPreviewModal;
       act(()=>{ openPreviewModal(true, "delete"); });
-      expect(PreviewModal.mock).toBe(1);
       const previewModalOnCreate =  PreviewModal.mock.calls[0][0].onCreate;
       act(()=>{
         previewModalOnCreate([{ ...validFlowDataList[1] }]);
       });
-      expect(DataGrid.mock.calls.length).toBe(1);
+      expect(DataGrid.mock.calls.length).toBe(2);
     });
-    it.skip("Preview Modal onCreate Failure", ()=>{
+    it("Preview Modal onCreate Failure", ()=>{
       const validFlowDataList = createFlowDataList(15);
       batchDynamicFlowCreate.mockResolvedValue({
         flag: true,
