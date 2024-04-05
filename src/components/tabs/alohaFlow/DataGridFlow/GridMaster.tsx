@@ -74,6 +74,7 @@ const getGridMasterData = (data:CctSharedCallFlowDb[] = []):FlowMasterData  => {
 };
 
 export {
+  clearGridMasterData,
   getGridMasterData,
-  clearGridMasterData
+  getValueFromKeyPath
 };
