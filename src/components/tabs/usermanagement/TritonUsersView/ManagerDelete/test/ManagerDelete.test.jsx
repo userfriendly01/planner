@@ -84,9 +84,7 @@ const defaultAdminState = {
     ]
   },
   userContext: {
-    pingIdentity: {
-      sub: "n0263786"
-    }
+    nNumber: "n1234567"
   },
   workerContext: {
     workers: [

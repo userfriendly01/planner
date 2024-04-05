@@ -11,7 +11,6 @@ import {
   isUnpopulatedField,
   getTargetProfile,
   getOverflowSkillFromProfile,
-  removeProfileZeroIfAdminNotInProfileZero,
   getOverflowSkills,
   workerHasOverFlowSkill,
   getNonOverflowSkills,
@@ -33,27 +32,6 @@ import {
 
 const mockSetForm = jest.fn();
 
-const adminStateIsAdmin = {
-  userContext: {
-    pingIdentity: {
-      groups: ["CN=gci-cicct-triton-prod-admin"]
-    }
-  }
-};
-const adminStateIsNotAdmin = {
-  userContext: {
-    pingIdentity: {
-      groups: ["CN=gci-cicct-triton-not-admin"]
-    }
-  }
-};
-const adminStateIsErroneous = {
-  frog: {
-    merp: {
-      bloop: ["ribbit"]
-    }
-  }
-};
 const managerList = [
   {
     manager_first_name: "John",
@@ -80,28 +58,6 @@ const profileList = [
   {
     profile_nme: "test3",
     profile_id: 3,
-    overflow_skill: "anotherOverflowSkill"
-  }
-];
-const profileListWithZero = [
-  {
-    profile_nme: "test1",
-    profile_id: 1,
-    overflow_skill: null
-  },
-  {
-    profile_nme: "test2",
-    profile_id: 2,
-    overflow_skill: "whateverOverflowSkill"
-  },
-  {
-    profile_nme: "test3",
-    profile_id: 3,
-    overflow_skill: "anotherOverflowSkill"
-  },
-  {
-    profile_nme: "test0",
-    profile_id: 0,
     overflow_skill: "anotherOverflowSkill"
   }
 ];
@@ -490,21 +446,6 @@ describe("getOverflowSkillFromProfile", () => {
   test("should return undefined if profile does not have overflow skill", () => {
     const result = getOverflowSkillFromProfile(profileList, profileList[0].profile_id);
     expect(result).toBe(undefined);
-  });
-});
-
-describe("removeProfileZeroIfAdminNotInProfileZero", () => {
-  test("user is a triton-admin, should return full profile list", () => {
-    const result = removeProfileZeroIfAdminNotInProfileZero(adminStateIsAdmin, profileListWithZero);
-    expect(result).toEqual(profileListWithZero);
-  });
-  test("user is not a triton-admin, should return full not profile list", () => {
-    const result = removeProfileZeroIfAdminNotInProfileZero(adminStateIsNotAdmin, profileListWithZero);
-    expect(result).toEqual(profileList);
-  });
-  test("user state is erroneous, should return full not profile list", () => {
-    const result = removeProfileZeroIfAdminNotInProfileZero(adminStateIsErroneous, profileListWithZero);
-    expect(result).toEqual(profileList);
   });
 });
 
@@ -2040,72 +1981,4 @@ describe("identifyUserProfiles", () => {
       });
     });
   });
-  describe("Manager name change logic", () => {
-    describe("Triton user found but manager name has changed", () => {
-      test("should set discrepancies with manager name message", async () => {
-        const formState = {
-          ...validFormState,
-          triton: {
-            ...validFormState.triton,
-            userFound: true,
-            attributes: {
-              ...validFormState.triton.attributes,
-              manager_first_name: "Name Change",
-              manager_last_name: "McGee",
-              manager_n_number: "n1234567"
-            }
-          }
-        };
-
-        await identifyUserProfiles(formState, mockSetForm, initialTestState);
-        expect(mockSetForm).toHaveBeenCalledWith({
-          type: "SET_DISCREPANCIES",
-          payload: {
-            type: "General",
-            message: "Manager name on this worker is Name Change McGee, but our records indicate that their name has changed to John Wick"
-          }
-        });
-      });
-    });
-    describe("No triton user found", () => {
-      test("should not call to set the manager name discrepancy", async () => {
-        const formState = {
-          ...validFormState,
-          triton: {
-            ...validFormState.triton,
-            userFound: false
-          }
-        };
-
-        await identifyUserProfiles(formState, mockSetForm, initialTestState);
-        expect(mockSetForm).not.toHaveBeenCalledWith({
-          type: "SET_DISCREPANCIES",
-          payload: expect.anything()
-        });
-      });
-    });
-    describe("triton user found but manager name has not changed", () => {
-      test("should not call to set the manager name discrepancy", async () => {
-        const formState = {
-          ...validFormState,
-          triton: {
-            ...validFormState.triton,
-            userFound: true,
-            attributes: {
-              manager_first_name: "John",
-              manager_last_name: "Wick",
-              manager_n_number: "n1234567"
-            }
-          }
-        };
-
-        await identifyUserProfiles(formState, mockSetForm, initialTestState);
-        expect(mockSetForm).not.toHaveBeenCalledWith({
-          type: "SET_DISCREPANCIES",
-          payload: expect.anything()
-        });
-      });
-    });
-  });
-
 });

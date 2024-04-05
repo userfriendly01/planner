@@ -31,7 +31,7 @@ const SaveButton = (props: SaveButtonProps) => {
 
   const state = useAdminState();
   const dispatch = useAdminDispatch();
-  const nNumber = state.userContext.pingIdentity.sub;
+  const { nNumber } = state.userContext;
   const isSingleSelection = tableState.selected.length === 1;
   const isMultiSelection = tableState.selected.length > 1;
 

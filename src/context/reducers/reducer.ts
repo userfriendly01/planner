@@ -25,8 +25,8 @@ export const initialState: AppState = {
     skillGroups: []
   },
   userContext: {
-    pingIdentity: null,
-    authenticationProfiles: []
+    permissions: [],
+    accessToken: ""
   },
   workerContext: {
     workers: []
@@ -229,7 +229,10 @@ export const reducer = (state: AppState, action: Action): AppState => {
     case "loadUserData":
       return {
         ...state,
-        userContext: action.payload
+        userContext: {
+          ...state.userContext,
+          ...action.payload
+        }
       };
     case "resettingSkills":
       return {

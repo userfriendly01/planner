@@ -17,7 +17,6 @@ import {
   AddOutlined,
   EditNoteOutlined
 } from "@mui/icons-material";
-import { useAdminState } from "context";
 
 
 interface CustomFlowGridToolBarProps {
@@ -35,7 +34,7 @@ const CustomFlowGridToolBar = ({
   openAddModal, openPreviewModal, openAdvanceSearchModal, exportDataFile, applyFilter, matchedGroups,isAdvanceSearchOpen
 }:CustomFlowGridToolBarProps) =>{
   const [flowFilter, setFlowFilter] = useState<FlowAdvanceFilter>();
-  const enableFlow = useMemo(() => readWriteAccess(matchedGroups,"aloha-flow"), []);
+  const enableFlow = useMemo(() => readWriteAccess(matchedGroups, "ReadWriteFlow"), []);
   useEffect(()=>{
     const localFilter = getAdvanceFilter(CACHE_FILTER_FLOW);
     setFlowFilter(localFilter);
@@ -133,7 +132,7 @@ const CustomFlowGridToolBar = ({
             }}
             label="Actions"
             value=""
-            disabled = {enableFlow}
+            disabled = {!enableFlow}
             onChange={handleChange}
             variant="filled"
             size="small"

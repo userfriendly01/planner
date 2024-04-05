@@ -13,6 +13,7 @@ import {
   userFormActions
 } from "context";
 import {
+  env,
   formModes,
   ModalOverlayStatuses,
   timeouts,
@@ -68,8 +69,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     roles,
     teams
   } = state.calabrioContext;
-  const environment = state.userContext.pingIdentity.environment;
-  const nNumber = state.userContext.pingIdentity?.sub;
+  const { nNumber } = state.userContext;
 
   const doCreateUser = async () => {
     updateLoading({
@@ -242,7 +242,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
           Skills: form.calabrio_wfm.PersonSkills?.map((s: any) => s.Id)
         };
 
-        if (environment === "production") {
+        if (env.APP_ENV === "production") {
           try {
             const res = await createCalabrioWFMPerson(wfmBody);
 
@@ -362,11 +362,13 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     attributes.emp_first_name = nNumberFetchedUser?.firstName;
     attributes.emp_last_name = nNumberFetchedUser?.lastName;
     attributes.full_name = `${nNumberFetchedUser?.firstName} ${nNumberFetchedUser?.lastName}`;
-    attributes.manager_first_name = form.triton.manager.value.manager_first_name;
-    attributes.manager_last_name = form.triton.manager.value.manager_last_name;
-    attributes.manager_n_number = form.triton.manager.value.manager_n_number;
-    attributes.manager = form.triton.manager.value.manager_first_name + " " + form.triton.manager.value.manager_last_name;
 
+    if (form.triton.manager.updated) {
+      attributes.manager_first_name = form.triton.manager.value.manager_first_name;
+      attributes.manager_last_name = form.triton.manager.value.manager_last_name;
+      attributes.manager_n_number = form.triton.manager.value.manager_n_number;
+      attributes.manager = form.triton.manager.value.manager_first_name + " " + form.triton.manager.value.manager_last_name;
+    }
     if (form.triton.profileId.updated) {
       attributes.profile_id = form.triton.profileId.value;
       operatingUnitSid = profiles.find(profile => profile.profile_id === form.triton.profileId.value).operating_unit_sid;
@@ -523,7 +525,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         Skills: form.calabrio_wfm.PersonSkills?.map((s: any) => s.Id)
       };
 
-      if (environment === "production") {
+      if (env.APP_ENV === "production") {
         try {
           const res = await createCalabrioWFMPerson(wfmBody);
 

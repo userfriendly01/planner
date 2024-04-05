@@ -40,7 +40,7 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
   }
 
   const state = useAdminState();
-  const nNumber = state.userContext.pingIdentity?.sub;
+  const { nNumber } = state.userContext;
   const dispatch = useAdminDispatch();
   const form = useFormState();
   const tritonWorker: any = state.workerContext.workers.find((w: any) => w.attributes.n_number === form.nNumber.value);
@@ -149,7 +149,7 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
               if (typeof r === "object") {
                 const body = JSON.parse(r.body) || "";
                 if (body)
-                  resultDivs.push(<div>{body.message}</div>);
+                { resultDivs.push(<div>{body.message}</div>); }
               } else {
                 resultDivs.push(<div>{r}</div>);
               }
@@ -214,7 +214,10 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
           {!forwardToError &&
             <>
               <Text>Confirm Delete to allow the system to identify the forward to option for this DID user.</Text>
-              <UserFormButton style={{ width: "400px", alignSelf: "center" }} onClick={() => setRequireForwardTo(!requireForwardTo)} >
+              <UserFormButton style={{
+                width: "400px",
+                alignSelf: "center"
+              }} onClick={() => setRequireForwardTo(!requireForwardTo)} >
                 Manually select forward to option
               </UserFormButton>
             </>

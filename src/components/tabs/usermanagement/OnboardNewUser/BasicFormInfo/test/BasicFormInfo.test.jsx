@@ -33,7 +33,6 @@ import {
 } from "testUtils";
 import {
   getOverflowSkillFromProfile,
-  removeProfileZeroIfAdminNotInProfileZero,
   isProfileIdValid,
   isManagerValid
 } from "utils";
@@ -81,7 +80,6 @@ jest.mock("utils", () => ({
   sortProfilesByName: jest.requireActual("utils").sortProfilesByName,
   sortManagersByName: jest.fn("utils").sortManagersByName,
   getOverflowSkillFromProfile: jest.fn(),
-  removeProfileZeroIfAdminNotInProfileZero: jest.fn(),
   calabrioTimeZones: jest.requireActual("utils").calabrioTimeZones,
   getValidSkillsObject: jest.fn(),
   formatE164PhoneNumber: jest.fn(),
@@ -277,7 +275,6 @@ describe("<BasicFormInfo />", () => {
   });
   describe("Team dropdown", () => {
     test("Should render the correct initial state", () => {
-      removeProfileZeroIfAdminNotInProfileZero.mockReturnValue(profileList);
       const rendered = renderComponent(false);
       expectMockedComponent(rendered, { Dropdown }, 2);
       const expectedTeamProps = {
@@ -303,7 +300,6 @@ describe("<BasicFormInfo />", () => {
           }
         }
       });
-      removeProfileZeroIfAdminNotInProfileZero.mockReturnValue(profileList);
       isProfileIdValid.mockReturnValue(false);
       renderComponent(false);
       expect(Dropdown.mock.calls[1][0].error).toBe(true);

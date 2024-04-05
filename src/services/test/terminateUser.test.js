@@ -9,7 +9,6 @@ describe("deleteUser", () => {
     jest.clearAllMocks();
     axiosMock.reset();
   });
-  //todo: fix params and mocks for new endpoint
   describe("service call to DELETE_WORKER succeeds", () => {
     beforeEach(() => {
       axiosMock.onPost("/service/terminateworker").reply(200, { wow: "Yay!" });

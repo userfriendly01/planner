@@ -16,6 +16,7 @@ applications:
     AZURE_REDIRECT_URI: https://triton-test.lmig.com/triton-admin
     TROUX_ID: ${forge.troux_application_uuid}
     GRAPH_API_URL: https://bz5ilxf2ercznouchavqvh26nm.appsync-api.us-east-1.amazonaws.com/graphql
+    SOFTPHONE_SERVICE_URL: https://cicct-softphone-service-test.us-east-1.np.paas.lmig.com
   services:
     - everyday-curfew
   blue-green:

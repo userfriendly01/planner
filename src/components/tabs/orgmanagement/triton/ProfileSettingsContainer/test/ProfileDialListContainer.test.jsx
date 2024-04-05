@@ -55,9 +55,7 @@ const initialTestState = {
     profiles: profileList
   },
   userContext: {
-    pingIdentity: {
-      sub: "n0138110"
-    }
+    nNumber: "n1234567"
   }
 };
 

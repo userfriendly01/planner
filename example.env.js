@@ -5,5 +5,6 @@ window.env = {
   AZURE_CLIENT_ID: "<${secret.cicct-softphone-admin-ui.id} in cloudforge>",
   AZURE_REDIRECT_URI: "http://localhost:8082/triton-admin",
   TROUX_ID: "<${forge.troux_application_uuid} in cloudforge>",
-  GRAPH_API_URL: "https://tgufpgkyxvacrntvgb75iuo3pi.appsync-api.us-east-1.amazonaws.com/graphql"
+  GRAPH_API_URL: "https://tgufpgkyxvacrntvgb75iuo3pi.appsync-api.us-east-1.amazonaws.com/graphql",
+  SOFTPHONE_SERVICE_URL: "https://cicct-softphone-service-development.us-east-1.np.paas.lmig.com"
 };

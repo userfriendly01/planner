@@ -1,5 +1,5 @@
 import { AccountBox } from "@mui/icons-material";
-import { useAdminState } from "context";
+import { useMsal } from "@azure/msal-react";
 import React from "react";
 import styled from "styled-components";
 
@@ -24,11 +24,8 @@ const StyledAccountBox = styled(AccountBox)`
 `;
 
 const UserCard = () => {
-  const {
-    userContext: {
-      pingIdentity: { displayName }
-    }
-  } = useAdminState();
+  const { instance } = useMsal();
+  const displayName = instance.getActiveAccount()?.name;
   return (
     <Card>{displayName}<StyledAccountBox /></Card>
   );

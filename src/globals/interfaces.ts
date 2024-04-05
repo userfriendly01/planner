@@ -1,5 +1,7 @@
 import { CalabrioGroup } from "../components/tabs/usermanagement/OnboardNewUser/CallRecording/CallRecording.Interfaces";
-import { AuthenticationProfile } from "authentication";
+import {
+  AuthenticationProfile, Permissions
+} from "authentication";
 
 export interface Action {
   type: string,
@@ -31,8 +33,11 @@ export interface AppState {
     skillGroups: SkillGroup[]
   },
   userContext: {
-    pingIdentity: PingIdentity,
-    authenticationProfiles: AuthenticationProfile[]
+    permissions: ADGroupPermission[]
+    accessToken: string
+    isAdmin?: boolean
+    profileId?: number
+    nNumber?: string
   },
   workerContext: {
     workers: Worker[]
@@ -55,23 +60,19 @@ export interface AppState {
   }
 }
 
-export interface PingIdentity {
-  firstName: string,
-  lastName: string,
-  sub: string,
-  mail: string,
-  groups: string[],
-  aud: string,
-  displayName: string,
-  access_token: string,
-  acr: string,
-  exp: number,
-  iat: number,
-  iss: string,
-  jti: string,
-  "pi.pa.attr_exp": number,
-  "pi.pa.rat": number,
-  environment: string
+export interface ADGroupRole {
+  name: string;
+  permissionLevel: Permissions;
+}
+
+export interface ADGroupPermission {
+    roles: ADGroupRole[];
+    startup: {
+      name: string;
+      function: (dispatch: any) => Promise<any>;
+    }
+    description: string;
+    authenticationProfile:  AuthenticationProfile
 }
 
 export interface FormModes {

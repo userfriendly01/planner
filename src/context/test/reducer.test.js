@@ -597,16 +597,19 @@ describe("reducer", () => {
   describe("loadUserData", () => {
     test("should initialize or reinitialize the user data", () => {
       const payload = {
-        name: "Test",
-        nNum: "n1234345",
-        groupsArr: ["developers"]
+        isAdmin: false,
+        profileId: 10,
+        nNumber: "n1234345"
       };
       const action = {
         type: "loadUserData",
         payload
       };
       const result = reducer(initialState, action);
-      expect(result.userContext).toEqual(payload);
+      expect(result.userContext).toEqual({
+        ...initialState.userContext,
+        ...payload
+      });
     });
   });
   describe("resettingSkills", () => {

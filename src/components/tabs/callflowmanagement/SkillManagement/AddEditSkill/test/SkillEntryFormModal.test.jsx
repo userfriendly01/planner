@@ -710,7 +710,7 @@ describe("<SkillEntryFormModal />", () => {
       const testStateWithUpperNNumberForUser = {
         ...initialTestState
       };
-      testStateWithUpperNNumberForUser.userContext.pingIdentity.sub = "N1111111";
+      testStateWithUpperNNumberForUser.userContext.nNumber = "n1234567";
       useAdminState.mockReturnValue(initialTestState);
       createSkill.mockResolvedValueOnce({
         status: 200

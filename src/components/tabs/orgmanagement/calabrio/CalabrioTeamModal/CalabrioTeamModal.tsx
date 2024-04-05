@@ -31,7 +31,7 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
   const state = useAdminState();
   const dispatch = useAdminDispatch();
 
-  const nNumber = state.userContext.pingIdentity?.sub;
+  const { nNumber } = state.userContext;
   const {
     groups,
     teams

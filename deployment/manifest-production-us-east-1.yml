@@ -16,5 +16,6 @@ applications:
     AZURE_REDIRECT_URI: https://triton.lmig.com/triton-admin
     TROUX_ID: ${forge.troux_application_uuid}
     GRAPH_API_URL: https://3k2iegyjmnfwxheh65ugy2vjt4.appsync-api.us-east-1.amazonaws.com/graphql
+    SOFTPHONE_SERVICE_URL: https://cicct-softphone-service.us-east-1.paas.lmig.com
   blue-green:
     health-check-endpoint: /health

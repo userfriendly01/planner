@@ -82,7 +82,7 @@ const DialListEntryForm = props => {
   } = props;
 
   const state = useAdminState();
-  const nNumber = state.userContext.pingIdentity?.sub;
+  const { nNumber } = state.userContext;
 
   const getInitialFormState = () => {
     const contact_nme = dialListTableState.dialListEntryFormInitialValues.contact_nme || "";

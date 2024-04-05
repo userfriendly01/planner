@@ -1,13 +1,15 @@
 import { getAccessGroup } from "../accessGroup";
 import MockAdapter from "axios-mock-adapter";
 import { myAxios } from "utils";
+import { env } from "globals";
 
 const axiosMock = new MockAdapter(myAxios);
-const getAccessGroupEndpoint = "/contact-manager/accessgroup";
+const getAccessGroupEndpoint = "http://localhost:8080/contact-manager/accessgroup";
 
 beforeEach(() => {
   jest.clearAllMocks();
   axiosMock.reset();
+  env.SOFTPHONE_SERVICE_URL = "http://localhost:8080";
 });
 
 

@@ -3,7 +3,8 @@ import {
 } from "components";
 import { AlertBarProps } from "./interfaces";
 import {
-  BrandNameMap, GraphQLErrors, env
+  ADGroupPermission,
+  BrandNameMap, GraphQLErrors
 } from "globals";
 
 export const initializedAlertBar: AlertBarProps = {
@@ -107,17 +108,19 @@ export const cleanErrorMessage = (graphQLErrors: GraphQLErrors[]): string => {
   return graphQLErrors[0].message;
 };
 
-export const readWriteAccess=(matchedGroups: any[], alohaTabType: string): boolean => {
-  let flag = true;
-  matchedGroups?.forEach((item: any) => {
-    if(item.startup.name === alohaTabType && item.permissionLevel === "write"){
-      item.environments.forEach((envVar: string)=>{
-        if(envVar === env.APP_ENV){
-          flag = false;
-        }
-      });
-    } });
-  return flag;
+export const readWriteAccess = (permissions: ADGroupPermission[], role: string): boolean => {
+  for (const permission of permissions) {
+    const hasRole = permission.roles.reduce(
+      (prev, { name }) => prev || name === role,
+      false
+    );
+
+    if (hasRole) {
+      return true;
+    }
+  }
+
+  return false;
 };
 
 export const BrandName:BrandNameMap={

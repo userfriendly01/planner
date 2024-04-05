@@ -1,7 +1,4 @@
-import {
-  CircularProgress,
-  Modal
-} from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import {
   AppWrapper,
   ErrorMessage,
@@ -13,21 +10,17 @@ import {
 } from "./App.Styles";
 import ScrollToTop from "./ScrollToTop";
 import {
-  getAuthenticationProfiles,
-  getPermissions,
-  getStartups
+  getFilteredPermissions,
+  getWorkerProfileId
 } from "authentication";
 import {
   Header,
-  NavTabs,
-  NotificationModal
+  NavTabs
 } from "components";
-import { useAdminDispatch } from "context";
 import {
-  apiPaths,
-  theme,
-  timeouts
-} from "globals";
+  useAdminDispatch, useAdminState
+} from "context";
+import { theme } from "globals";
 import { getRoutes } from "globals/routes";
 import React, {
   useEffect,
@@ -36,80 +29,132 @@ import React, {
 import {
   BrowserRouter, Routes, Route
 } from "react-router-dom";
+import { useMsal } from "@azure/msal-react";
 import {
-  isErrorIn400s,
-  logger,
-  myAxios,
-  wait
+  logger, wait
 } from "utils";
 
 const success = "success";
-
-const authenticateAndStartup = dispatch => new Promise((resolve, reject) => myAxios.get(apiPaths.AUTH)
-  .then(res => {
-    const pingIdentity = res.data;
-    const permissions = getPermissions(pingIdentity.groups);
-    const startupFiles = getStartups(permissions);
-    const startupPromises = startupFiles.map(startup => { return startup(dispatch); });
-    Promise.all(startupPromises).then(res => {
-      const authenticationProfiles = getAuthenticationProfiles(permissions, pingIdentity?.sub, res);
-      dispatch({
-        type: "loadUserData",
-        payload: {
-          pingIdentity,
-          authenticationProfiles
-        }
-      });
-      resolve(authenticationProfiles);
-    }).catch(error => {
-      const msg = "An error occurred on startup";
-      reject({
-        msg,
-        error
-      });
-    });
-  })
-  .catch(error => {
-    let msg = "An error occurred when trying to authenticate";
-    if (error.response && isErrorIn400s(error.response.status)) {
-      msg = "You are not authorized to view this page";
-    }
-    reject({
-      msg,
-      error
-    });
-  })
-);
+const loading = "loading";
 
 const App = () => {
+  const { instance } = useMsal();
+  const account = instance.getActiveAccount();
+
   const [loadResult, setLoadResult] = useState({
     home: null,
     status: null
   });
-  const [showModal, setShowModal] = useState(false);
   const dispatch = useAdminDispatch();
+  const state = useAdminState();
 
   useEffect(() => {
-    authenticateAndStartup(dispatch)
-      .then(authenticationProfiles => {
-        setLoadResult({
-          home: authenticationProfiles[0].home,
-          status: success
-        });
-      })
-      .catch(error => {
+    const startup = async () => {
+      const permissions = getFilteredPermissions(account);
+
+      if (!permissions.length) {
+        const error = "Missing required AD groups";
         logger.error("Failed to authenticate", { error });
         setLoadResult({
           status: error
         });
+      } else {
+        try {
+          dispatch(({
+            type: "loadUserData",
+            payload: {
+              permissions
+            }
+          }));
+
+          await Promise.all(
+            permissions.map(({ startup }) => startup.function(dispatch))
+          );
+
+          setLoadResult({
+            home: permissions[0].authenticationProfile.home,
+            status: success
+          });
+        } catch (error) {
+          logger.error("Failed to authenticate", { error });
+          setLoadResult({
+            status: error
+          });
+        }
+      }
+    };
+
+    // Helper to keep token refreshed
+    const tokenManager = async () => {
+      logger.log("*** MSAL: Getting new Token ***");
+
+      const {
+        accessToken,
+        expiresOn
+      } = await instance.acquireTokenSilent({
+        account,
+        scopes: ["User.Read"]
       });
-  }, []);
+
+      logger.log(`*** MSAL: Token acquired, will expire at ${expiresOn} ***`);
+
+      dispatch(({
+        type: "loadUserData",
+        payload: {
+          accessToken
+        }
+      }));
+
+      setInterval(() => {
+        logger.log(expiresOn.getTime() - new Date().getTime() - 1000);
+      }, 1000);
+
+      wait(() => () => {
+        logger.log("*** MSAL: Token is about to expire, getting new token ***");
+        tokenManager();
+      }, expiresOn.getTime() - new Date().getTime() - 1000);
+    };
+
+    if (account && !loadResult.status) {
+      logger.log("User Account", account);
+
+      setLoadResult({
+        status: loading
+      });
+      tokenManager();
+      startup();
+    }
+  }, [account, loadResult]);
 
   useEffect(() => {
-    wait(() => setShowModal(true), timeouts.AUTH);
-  }, []);
+    const {
+      workerContext: {
+        workers
+      },
+      userContext
+    } = state;
 
-  if (loadResult.status) {
+    const loadUserContext = () => {
+      const nNumber = account.idTokenClaims.employeeid;
+      const profileId = getWorkerProfileId(nNumber, workers);
+      const isAdmin = account.idTokenClaims.roles.includes("Admin");
+
+      dispatch(({
+        type: "loadUserData",
+        payload: {
+          profileId,
+          isAdmin,
+          nNumber
+        }
+      }));
+    };
+
+    if (workers.length && userContext.isAdmin === undefined) {
+      loadUserContext();
+    }
+  }, [state]);
+
+  if (loadResult.status && loadResult.status !== loading) {
     if (loadResult.status === success) {
       return (
         <BrowserRouter>
@@ -123,15 +168,6 @@ const App = () => {
                 return <Route key={r.path} path={r.path} element={<r.Component />} />;
               })}
             </Routes>
-            <Modal onClose={() => { return; }} open={showModal === true}>
-              <>
-                <NotificationModal
-                  buttonText={"Reload"}
-                  handleClick={() => window.location.reload()}
-                  text={"Your session has expired. Please reload the page."}
-                />
-              </>
-            </Modal>
           </AppWrapper>
         </BrowserRouter>
       );

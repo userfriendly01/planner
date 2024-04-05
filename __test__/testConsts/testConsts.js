@@ -638,19 +638,23 @@ export const initialTestState = {
     skillGroups: skillGroups
   },
   userContext: {
-    pingIdentity: {
-      sub: "n0263786",
-      groups: [],
-      aud: "ciciccttritondev1",
-      environment: "development"
-    },
-    authenticationProfiles: [
+    nNumber: "n1234567",
+    profileId: 10,
+    accessToken: "blaahahh",
+    isAdmin: false,
+    permissions: [
       {
-        name: "Triton",
-        permissionLevel: "read",
-        isAdmin: false,
-        profileId: 10,
-        tabs: []
+        roles: [
+          {
+            name: "Admin",
+            permissionLevel: "write"
+          }
+        ],
+        authenticationProfile: {
+          name: "Triton",
+          permissionLevel: "read",
+          tabs: []
+        }
       }
     ]
   },

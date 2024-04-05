@@ -33,7 +33,7 @@ import {
   isDidUser
 } from "../BulkTemplates";
 import {
-  AppState
+  AppState, env
 } from "globals";
 
 const rejectPromise = (error: string, rowNumber: number) => {
@@ -47,7 +47,7 @@ const processCreateTritonUser = async (row: any, state: AppState) => {
   logger.log("**** TRITON RECORD PROCESSING", row);
 
   const rowNumber = row.rowNumber;
-  const nNumber = state.userContext?.pingIdentity?.sub;
+  const { nNumber } = state.userContext;
 
   try {
     const didFieldName = "Did User";
@@ -102,7 +102,7 @@ const processCreateCalabrioUser = async (row: any, state: AppState) => {
   logger.log("****CALABRIO RECORD PROCESSING for", row);
 
   const rowNumber = row.rowNumber;
-  const nNumber = state.userContext?.pingIdentity?.sub;
+  const { nNumber } = state.userContext;
 
   try {
     await checkConflictingCalabrioUsers(row, rowNumber, state.calabrioContext.users);
@@ -150,7 +150,7 @@ const processWFMCreateUser = async (row: any, state: AppState) => {
   logger.info("****WFM RECORD PROCESSING for", row);
 
   const rowNumber = row.rowNumber;
-  const nNumber = state.userContext?.pingIdentity?.sub;
+  const { nNumber } = state.userContext;
 
   try {
     const hasPersonConflict = checkIfConflictingWFMPeople(row, state);
@@ -196,8 +196,7 @@ const processWFMCreateUser = async (row: any, state: AppState) => {
 
     // completely optional
     body.OptionalColumns = row.wfmOptionalColumns;
-    const environment = state.userContext.pingIdentity.environment;
-    if (environment === "production") {
+    if (env.APP_ENV === "production") {
       const result = await createCalabrioWFMPerson(body);
       row.Id = result?.data?.PersonId;
 
@@ -240,7 +239,7 @@ const processWFMCreateUser = async (row: any, state: AppState) => {
 const processCreateManager = async (row: any, state: AppState) => {
   logger.log("****MANAGER RECORD PROCESSING for", row);
   const rowNumber = row.rowNumber;
-  const nNumber = state.userContext?.pingIdentity?.sub;
+  const { nNumber } = state.userContext;
 
   try {
     const managerNNumberFieldName = "Manager N Number";
@@ -311,7 +310,7 @@ const processCreateManager = async (row: any, state: AppState) => {
 
 const processUpdateWorkerAttribute = async (row: any, template: Template, state: AppState) => {
   const rowNumber = row.rowNumber;
-  const nNumber = state.userContext?.pingIdentity?.sub;
+  const { nNumber } = state.userContext;
 
   try {
     const key = template.data.key;
@@ -386,7 +385,7 @@ const processUpdateWorkerAttribute = async (row: any, template: Template, state:
 
 const processUpdateManager = async (row: any, template: Template, state: AppState) => {
   const rowNumber = row.rowNumber;
-  const nNumber = state.userContext?.pingIdentity?.sub;
+  const { nNumber } = state.userContext;
 
   try {
     const userNNumber = row.attributes.n_number;
@@ -474,7 +473,7 @@ const processUpdateManager = async (row: any, template: Template, state: AppStat
 
 const processUpdateDefaultSkills = async (row: any, template: Template, state: AppState) => {
   const rowNumber = row.rowNumber;
-  const nNumber = state.userContext?.pingIdentity?.sub;
+  const { nNumber } = state.userContext;
 
   try {
     const workerSid = row.workerSid;
@@ -553,7 +552,7 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: A
 
 const processUpdateCallerStates = async (row: any, template: Template, state: AppState) => {
   const rowNumber = row.rowNumber;
-  const nNumber = state.userContext?.pingIdentity?.sub;
+  const { nNumber } = state.userContext;
   const workerSid = row.workerSid;
 
   try {
@@ -609,8 +608,8 @@ const processSyncHrAttributes = async (row: any, template: Template, state: AppS
   const nNumber = row["N Number"];
   try {
     let syncNeeded = false;
-    let originalAttributes = row.originalWorker.attributes || {}
-    let hrAttributes = row.attributes || {}
+    const originalAttributes = row.originalWorker.attributes || {};
+    const hrAttributes = row.attributes || {};
 
     const doesFieldMatch = (field: string) => {
       if (cleanupField(originalAttributes[field], "string") !== cleanupField(hrAttributes[field], "string")) {
@@ -632,7 +631,7 @@ const processSyncHrAttributes = async (row: any, template: Template, state: AppS
     doesFieldMatch("full_name");
 
     delete row.originalWorker;
-    let message = '';
+    let message = "";
     if (syncNeeded) {
       await updateUser(row.workerSid, { attributes: hrAttributes });
       message = `Successfully synced worker for row ${rowNumber}. ${row.workerSid} : ${nNumber}.`;

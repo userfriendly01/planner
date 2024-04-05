@@ -1,7 +1,7 @@
+import { AccountInfo } from "@azure/msal-browser";
 import {
   AuthenticationProfileOptions,
   descriptions,
-  Environments,
   Permissions,
   runTritonAdminStartup,
   runAlohaRoutingStartup,
@@ -12,16 +12,15 @@ import {
   AlohaRoutingContainer,
   TritonUsersViewWrapper
 } from "components";
+import { ADGroupPermission } from "globals";
 
 export const getAuthenticationProfileTemplates = (): AuthenticationProfileOptions => {
   const Tabs = getTabs();
   return {
     TRITON: {
       name: "Triton",
-      permissionLevel: Permissions.READ,
-      isAdmin: false,
-      profileId: null,
       home: TritonUsersViewWrapper,
+      permissionLevel: Permissions.READ,
       tabs: [
         Tabs.TRITON_USER_MANAGEMENT,
         Tabs.ORG_MANAGEMENT,
@@ -47,79 +46,67 @@ export const getAuthenticationProfileTemplates = (): AuthenticationProfileOption
   };
 };
 
-export const getAdGroupPermissionMapping = () => {
+export const getFilteredPermissions = (account: AccountInfo): ADGroupPermission[] => {
+  return getAdGroupPermissionMapping()
+    .map(permission => {
+      const filteredRoles = permission.roles.filter(({ name }) =>
+        account.idTokenClaims.roles.includes(name)
+      );
+
+      if (filteredRoles.length) {
+        return {
+          ...permission,
+          roles: filteredRoles
+        };
+      }
+
+      return null;
+    })
+    .filter(group => !!group);
+};
+
+export const getAdGroupPermissionMapping = (): ADGroupPermission[] => {
   const startupProfiles = getStartupProfiles();
   const authenticationProfileTemplates = getAuthenticationProfileTemplates();
 
   return [
     {
-      adGroup: "GCI-CCT-TRITON-DEV-TRITONADMIN",
-      environments: [Environments.DEV],
-      permissionLevel: Permissions.WRITE,
+      roles: [
+        {
+          name: "Admin",
+          permissionLevel: Permissions.WRITE
+        }
+      ],
       startup: startupProfiles.TRITON,
       description: descriptions.Triton,
       authenticationProfile: authenticationProfileTemplates.TRITON
     },
     {
-      adGroup: "GCI-CCT-TRITON-TEST-TRITONADMIN",
-      environments: [Environments.TEST],
-      permissionLevel: Permissions.WRITE,
-      startup: startupProfiles.TRITON,
-      description: descriptions.Triton,
-      authenticationProfile: authenticationProfileTemplates.TRITON
-    },
-    {
-      adGroup: "GCI-CCT-TRITON-PROD-TRITONADMIN",
-      environments: [Environments.PROD],
-      permissionLevel: Permissions.WRITE,
-      startup: startupProfiles.TRITON,
-      description: descriptions.Triton,
-      authenticationProfile: authenticationProfileTemplates.TRITON
-    },
-    {
-      adGroup: "GPI-CCT-CONFIG-FLOW-READ",
-      environments: [Environments.DEV, Environments.TEST, Environments.PROD],
-      permissionLevel: Permissions.READ,
+      roles: [
+        {
+          name: "FlowRead",
+          permissionLevel: Permissions.READ
+        },
+        {
+          name: "FlowReadWrite",
+          permissionLevel: Permissions.WRITE
+        }
+      ],
       startup: startupProfiles.ALOHA_FLOW,
       description: descriptions.Aloha_Flow,
       authenticationProfile: authenticationProfileTemplates.ALOHA_FLOW
     },
     {
-      adGroup: "GPI-CCT-CONFIG-FLOW-READWRITE-NP",
-      environments: [Environments.DEV, Environments.TEST],
-      permissionLevel: Permissions.WRITE,
-      startup: startupProfiles.ALOHA_FLOW,
-      description: descriptions.Aloha_Flow,
-      authenticationProfile: authenticationProfileTemplates.ALOHA_FLOW
-    },
-    {
-      adGroup: "GPI-CCT-CONFIG-FLOW-READWRITE-PROD",
-      environments: [Environments.PROD],
-      permissionLevel: Permissions.WRITE,
-      startup: startupProfiles.ALOHA_FLOW,
-      description: descriptions.Aloha_Flow,
-      authenticationProfile: authenticationProfileTemplates.ALOHA_FLOW
-    },
-    {
-      adGroup: "GPI-CCT-CONFIG-ROUTE-READ",
-      environments: [Environments.DEV, Environments.TEST, Environments.PROD],
-      permissionLevel: Permissions.READ,
-      startup: startupProfiles.ALOHA_ROUTE,
-      description: descriptions.Aloha_Routing,
-      authenticationProfile: authenticationProfileTemplates.ALOHA_ROUTE
-    },
-    {
-      adGroup: "GPI-CCT-CONFIG-ROUTE-READWRITE-NP",
-      environments: [Environments.DEV, Environments.TEST],
-      permissionLevel: Permissions.WRITE,
-      startup: startupProfiles.ALOHA_ROUTE,
-      description: descriptions.Aloha_Routing,
-      authenticationProfile: authenticationProfileTemplates.ALOHA_ROUTE
-    },
-    {
-      adGroup: "GPI-CCT-CONFIG-ROUTE-READWRITE-PROD",
-      environments: [Environments.PROD],
-      permissionLevel: Permissions.WRITE,
+      roles: [
+        {
+          name: "RouteRead",
+          permissionLevel: Permissions.READ
+        },
+        {
+          name: "RouteReadWrite",
+          permissionLevel: Permissions.WRITE
+        }
+      ],
       startup: startupProfiles.ALOHA_ROUTE,
       description: descriptions.Aloha_Routing,
       authenticationProfile: authenticationProfileTemplates.ALOHA_ROUTE

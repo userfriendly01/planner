@@ -5,11 +5,6 @@ import {
 } from "@mui/material";
 import MockAdapter from "axios-mock-adapter";
 import {
-  getAuthenticationProfiles,
-  getPermissions,
-  getStartups
-} from "authentication";
-import {
   Header,
   NavTabs,
   NotificationModal
@@ -25,12 +20,12 @@ import {
 import React from "react";
 import {
   act,
+  adGroupPermissionMapping,
   expectMockedComponent,
   expectOnlyPassedProps,
   mockRunTritonStartup,
   render,
   setupMockedComponents,
-  startups,
   waitFor
 } from "testUtils";
 import { myAxios } from "utils";
@@ -41,9 +36,10 @@ const authEndpoint = apiPaths.AUTH;
 const axiosMock = new MockAdapter(myAxios);
 
 const auth = {
-  whatever: "lol",
-  groups: "Adgroups",
-  sub: "n0263786"
+  nNumber: "n1234567",
+  profileId: 10,
+  isAdmin: false,
+  accessToken: "jasdkjfahk"
 };
 
 delete window.location;
@@ -54,12 +50,6 @@ document.getElementById = jest.fn();
 jest.mock("@mui/material", () => ({
   CircularProgress: jest.fn(),
   Modal: jest.fn()
-}));
-
-jest.mock("authentication", () => ({
-  getAuthenticationProfiles: jest.fn(),
-  getPermissions: jest.fn(),
-  getStartups: jest.fn()
 }));
 
 jest.mock("components", () => ({
@@ -74,9 +64,6 @@ jest.mock("context", () => ({
 }));
 
 jest.mock("utils", () => ({
-  getAuthenticationProfiles: jest.fn(),
-  getPermissions: jest.fn(),
-  getStartups: jest.fn(),
   myAxios: jest.requireActual("utils").myAxios,
   wait: jest.requireActual("utils").wait,
   isErrorIn400s: jest.requireActual("utils").isErrorIn400s,
@@ -85,7 +72,7 @@ jest.mock("utils", () => ({
 
 const mockAdminDispatch = jest.fn();
 const mockHome = jest.fn();
-const authenticationProfiles = [{ home: mockHome }];
+const permissions = [adGroupPermissionMapping[0]];
 
 describe("<App />", () => {
 
@@ -95,10 +82,7 @@ describe("<App />", () => {
     useAdminState.mockReturnValue({});
     useAdminDispatch.mockReturnValue(mockAdminDispatch);
     axiosMock.onGet(authEndpoint).reply(200, auth);
-    getPermissions.mockReturnValue("permissions");
     mockRunTritonStartup.mockResolvedValue("Things went well!");
-    getAuthenticationProfiles.mockReturnValue(authenticationProfiles);
-    getStartups.mockReturnValue([startups.TRITON.function]);
     setupMockedComponents({
       CircularProgress,
       Header,
@@ -131,20 +115,13 @@ describe("<App />", () => {
             });
             expectMockedComponent(rendered, { CircularProgress }, 0);
             expect(rendered.container).not.toHaveTextContent("Loading...");
-            expect(getPermissions).toHaveBeenCalledTimes(1);
-            expect(getPermissions).toHaveBeenCalledWith(auth.groups);
-            expect(getStartups).toHaveBeenCalledTimes(1);
-            expect(getStartups).toHaveBeenCalledWith("permissions");
             expect(mockRunTritonStartup).toHaveBeenCalledTimes(1);
             expect(mockRunTritonStartup).toHaveBeenCalledWith(mockAdminDispatch);
-            expect(getAuthenticationProfiles).toHaveBeenCalledTimes(1);
-            expect(getAuthenticationProfiles).toHaveBeenCalledWith("permissions", "n0263786", ["Things went well!"]);
             expect(mockAdminDispatch).toHaveBeenCalledTimes(1);
             expect(mockAdminDispatch).toHaveBeenCalledWith({
               type: "loadUserData",
               payload: {
-                pingIdentity: auth,
-                authenticationProfiles
+                permissions
               }
             });
           });

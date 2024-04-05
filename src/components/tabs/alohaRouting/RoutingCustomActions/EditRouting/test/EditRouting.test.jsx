@@ -15,7 +15,6 @@ import {
 import {
   CustomToast, ComponentControl
 } from "components";
-import { env } from "globals";
 
 const validRoutingData = {
   id: 1,
@@ -71,9 +70,9 @@ const mockMasterData = {
   channel: ["Test1 Channel", "Test2 Channel"]
 };
 
-const renderEditRouting = (isOpen, data) => {
+const renderEditRouting = (isOpen, data, permissions = adGroupPermissionMapping) => {
   return render(
-    <EditRouting openEditModal={openEditModal} selectedRow={data} isOpen={isOpen} matchedGroups={adGroupPermissionMapping} />
+    <EditRouting openEditModal={openEditModal} selectedRow={data} isOpen={isOpen} matchedGroups={permissions} />
   );
 };
 
@@ -116,9 +115,17 @@ describe("<EditRouting />", () => {
 
   describe("Basic Simulate the Component", () => {
     test("Simulate the component with prod as environment", () => {
-      env.APP_ENV = "production";
+      const permissions = [{
+        ...adGroupPermissionMapping[2],
+        roles: [
+          {
+            name: "RouteReadWrite",
+            permissionLevel: "write"
+          }
+        ]
+      }];
 
-      renderEditRouting(true, validRoutingData);
+      renderEditRouting(true, validRoutingData, permissions);
       const saveButtonClick = Button.mock.calls[0][0].onClick;
       const saveButton = Button.mock.calls[0][0];
       act(() => {
@@ -127,15 +134,23 @@ describe("<EditRouting />", () => {
       expect(saveButton.disabled).toBe(false);
     });
     test("Simulate the component with prod as environment with read only access", () => {
-      env.APP_ENV = "production";
+      const permissions = [{
+        ...adGroupPermissionMapping[2],
+        roles: [
+          {
+            name: "RouteRead",
+            permissionLevel: "read"
+          }
+        ]
+      }];
 
-      renderEditRouting(true, validRoutingData);
+      renderEditRouting(true, validRoutingData, permissions);
       const saveButtonClick = Button.mock.calls[0][0].onClick;
       const saveButton = Button.mock.calls[0][0];
       act(() => {
         saveButtonClick();
       });
-      expect(saveButton.disabled).toBe(false);
+      expect(saveButton.disabled).toBe(true);
     });
   });
   describe("Edit Routing Modal Block", () => {

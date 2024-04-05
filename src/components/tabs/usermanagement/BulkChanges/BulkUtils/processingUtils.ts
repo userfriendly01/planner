@@ -388,7 +388,7 @@ export const initiateCalls = async (
  * @param selectedTemplates selected templates to be processed
  */
 export const handleWfmExternalLogon = async (state: AppState, dispatch: any, successfulRows: any, selectedTemplates: any) => {
-  const nNumber = state.userContext.pingIdentity?.sub;
+  const { nNumber } = state.userContext;
 
   if(selectedTemplates.some((t: Template) => t.name === "CREATE_TRITON_USER")) {
     const wfmNNumbers: any[] = [];

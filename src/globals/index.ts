@@ -1,11 +1,33 @@
+import { Configuration } from "@azure/msal-browser";
 import { FormModes } from "globals";
 
 export * from "./interfaces";
 export * from "./theme";
 export * from "./styles";
 
-const CONTACT_MANAGER_BASE_URI = "/contact-manager";
-const SERVICE_BASE_URI = "/service";
+// We're adding this to the window and can really be anywhere
+// We'll put it here for reference to the below on why it's neede
+declare global {
+  interface Window {
+    env: {
+      [key: string]: string
+    }
+  }
+}
+
+export const env = {
+  AZURE_CLIENT_ID: window.env.AZURE_CLIENT_ID,
+  AZURE_REDIRECT_URI: window.env.AZURE_REDIRECT_URI,
+  DATADOG_APPLICATION_ID: window.env.DATADOG_APPLICATION_ID,
+  DATADOG_CLIENT_TOKEN: window.env.DATADOG_CLIENT_TOKEN,
+  APP_ENV: window.env.APP_ENV,
+  TROUX_ID: window.env.TROUX_ID,
+  GRAPH_API_URL: window.env.GRAPH_API_URL,
+  SOFTPHONE_SERVICE_URL: window.env.SOFTPHONE_SERVICE_URL
+};
+
+const CONTACT_MANAGER_BASE_URI = `${env.SOFTPHONE_SERVICE_URL}/contact-manager`;
+const SERVICE_BASE_URI = env.SOFTPHONE_SERVICE_URL;
 
 export const nNumMatcher = /[n,N]\d{7}/g;
 export const extensionMatcher = /^\d{4,5}$/;
@@ -279,26 +301,6 @@ export const apiPaths = {
   UPDATE_WORKER: (workerSid: string): string => `${SERVICE_BASE_URI}/updateworker/${workerSid}`,
   GET_AGGREGATE_QUEUES_TYPE: (aggregateQueueType: string): string => `${CONTACT_MANAGER_BASE_URI}/aggregatequeuestype/${aggregateQueueType}`,
   WFM_ACTIVATE_EXTERNAL_LOGON: `${SERVICE_BASE_URI}/wfmexternallogon`
-};
-
-// We're adding this to the window and can really be anywhere
-// We'll put it here for reference to the below on why it's neede
-declare global {
-  interface Window {
-    env: {
-      [key: string]: string
-    }
-  }
-}
-
-export const env = {
-  AZURE_CLIENT_ID: window.env.AZURE_CLIENT_ID,
-  AZURE_REDIRECT_URI: window.env.AZURE_REDIRECT_URI,
-  DATADOG_APPLICATION_ID: window.env.DATADOG_APPLICATION_ID,
-  DATADOG_CLIENT_TOKEN: window.env.DATADOG_CLIENT_TOKEN,
-  APP_ENV: window.env.APP_ENV,
-  TROUX_ID: window.env.TROUX_ID,
-  GRAPH_API_URL: window.env.GRAPH_API_URL
 };
 
 export const authConfig = {

@@ -14,7 +14,10 @@ import {
   useFormDispatch,
   userFormActions
 } from "context";
-import { formModes } from "globals";
+import {
+  formModes,
+  env
+} from "globals";
 import React from "react";
 import {
   addOffice,
@@ -175,10 +178,7 @@ describe("<UserFormButtons />", () => {
     useAdminDispatch.mockReturnValue(mockDispatch);
     useAdminState.mockReturnValue({
       userContext: {
-        pingIdentity: {
-          environment: "development",
-          sub: "n1234567"
-        }
+        nNumber: "n1234567"
       },
       calabrioContext: {
         users: [],
@@ -931,12 +931,8 @@ describe("<UserFormButtons />", () => {
         };
         describe("environment === production", () => {
           beforeEach(() => {
+            env.APP_ENV = "production";
             useAdminState.mockReturnValue({
-              userContext: {
-                pingIdentity: {
-                  environment: "production"
-                }
-              },
               calabrioContext: {
                 users: [],
                 wfmOrg: []
@@ -1535,10 +1531,6 @@ describe("<UserFormButtons />", () => {
                   department_id: fetchedUser.departmentNumber,
                   department_name: fetchedUser.departmentName,
                   location: fetchedUser.departmentName,
-                  manager_first_name: "John",
-                  manager_last_name: "Wick",
-                  manager: "John Wick",
-                  manager_n_number: "n1234567",
                   email: "test@abc.com",
                   email_address: "test@abc.com",
                   emp_first_name: "Frank",
@@ -2260,12 +2252,8 @@ describe("<UserFormButtons />", () => {
         });
         describe("environment === production", () => {
           beforeEach(() => {
+            env.APP_ENV = "production";
             useAdminState.mockReturnValue({
-              userContext: {
-                pingIdentity: {
-                  environment: "production"
-                }
-              },
               calabrioContext: {
                 users: [],
                 wfmOrg: []

@@ -1,17 +1,19 @@
 import React from "react";
 import NavTabs from "../NavTabs";
-import { StyledTab, DropdownContainer, StyledTabContainer } from "../NavTabs.Styles";
+import {
+  StyledTab
+} from "../NavTabs.Styles";
 import { useAdminState } from "context";
-import { Link, useNavigate } from "react-router-dom";
+import {
+  Link, useNavigate
+} from "react-router-dom";
 import {
   render,
   fireEvent,
-  expectOnlyPassedProps,
   setupMockedComponents,
   initialTestState,
   tabs,
-  act,
-  waitFor
+  act
 } from "testUtils";
 import {
   Button
@@ -48,20 +50,23 @@ const state = {
   ...initialTestState,
   userContext: {
     ...initialTestState.userContext,
-    authenticationProfiles: [
-      {
+    permissions: [{
+      authenticationProfile: {
         tabs: [
           tabs.TRITON_USER_MANAGEMENT,
           tabs.ORG_MANAGEMENT,
           tabs.TRITON_CALL_FLOW_MANAGEMENT
         ]
-      },
-      {
+      }
+    },
+    {
+      authenticationProfile: {
         tabs: [
           tabs.ALOHA_CALL_FLOW_MANAGEMENT
+
         ]
       }
-    ]
+    }]
   }
 };
 
@@ -114,7 +119,7 @@ describe("NavTabs", () => {
   });
   describe("tab is clicked", () => {
     test("navigates to route", () => {
-      const rendered = render(<NavTabs />);
+      render(<NavTabs />);
       expect(StyledTab.mock.calls.length).toBe(4);
       const onClick = StyledTab.mock.calls[0][0].onClick;
       act(() => onClick());
