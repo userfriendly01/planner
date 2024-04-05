@@ -63,17 +63,50 @@ describe("<FlowGridColumnDef />", () => {
       const renderedCell = render(FlowGridColumnDef[10].renderCell({ row: { greetingMessages: "Test Greeting" }}));
       expect(renderedCell.findByDisplayValue("Test Greeting")).toBeTruthy();
     });
+    it("accountManager", ()=>{
+      const renderedCell = render(FlowGridColumnDef[15].renderCell({ row: { accountManager: "Moe" }}));
+      expect(renderedCell.findByDisplayValue("Moe")).toBeTruthy();
+
+      const renderedCell2 = render(FlowGridColumnDef[15].renderCell({ row: { }}));
+      expect(renderedCell2.findByDisplayValue("")).toBeTruthy();
+    });
+    it("internetPlacement", ()=>{
+      const renderedCell = render(FlowGridColumnDef[18].renderCell({ row: { internetPlacement: "Yes" }}));
+      expect(renderedCell.findByDisplayValue("Yes")).toBeTruthy();
+
+      const renderedCell2 = render(FlowGridColumnDef[18].renderCell({ row: { }}));
+      expect(renderedCell2.findByDisplayValue("")).toBeTruthy();
+    });
+    it("callDetails1", ()=>{
+      const renderedCell = render(FlowGridColumnDef[19].renderCell({ row: { callDetails1: "Test Call Details1" }}));
+      expect(renderedCell.findByDisplayValue("Test Call Details1")).toBeTruthy();
+
+      const renderedCell2 = render(FlowGridColumnDef[19].renderCell({ row: { }}));
+      expect(renderedCell2.findByDisplayValue("")).toBeTruthy();
+    });
     it("callDetails2", ()=>{
       const renderedCell = render(FlowGridColumnDef[20].renderCell({ row: { callDetails2: "Test Call Details2" }}));
       expect(renderedCell.findByDisplayValue("Test Call Details1")).toBeTruthy();
+
+      const renderedCell2 = render(FlowGridColumnDef[20].renderCell({ row: { }}));
+      expect(renderedCell2.findByDisplayValue("")).toBeTruthy();
     });
     it("callTypeDescription", ()=>{
       const renderedCell = render(FlowGridColumnDef[21].renderCell({ row: { callTypeDescription: "Test Call Type Description" }}));
       expect(renderedCell.findByDisplayValue("Test Call Type Description")).toBeTruthy();
+
+      const renderedCell2 = render(FlowGridColumnDef[21].renderCell({ row: { }}));
+      expect(renderedCell2.findByDisplayValue("")).toBeTruthy();
     });
     it("officeNumbers", ()=>{
       const renderedCell = render(FlowGridColumnDef[28].renderCell({ row: { content: { officeNumbers: ["#9999"]}}}));
       expect(renderedCell.findByDisplayValue("#9999")).toBeTruthy();
+      expect(renderedCell.findByLabelText("...")).toBeTruthy();
+
+      render(FlowGridColumnDef[28].renderCell({ row: { content: { officeNumbers: []}}}));
+      render(FlowGridColumnDef[28].renderCell({ row: { }}));
+
+
     });
     it("tfnRoutingGroup", ()=>{
       const renderedCell = render(FlowGridColumnDef[29].renderCell({ row: { tfnRoutingGroup: "Core" }}));
@@ -82,6 +115,10 @@ describe("<FlowGridColumnDef />", () => {
     it("predictiveCaller", ()=>{
       const renderedCell = render(FlowGridColumnDef[30].renderCell({ row: { predictiveCaller: true }}));
       expect(renderedCell.container).toBeInTheDocument();
+
+      const renderedCell2 = render(FlowGridColumnDef[30].renderCell({ row: { }}));
+      expect(renderedCell2.container).toBeInTheDocument();
+
     });
     it("callFlowName", ()=>{
       const renderedCell = render(FlowGridColumnDef[31].renderCell({ row: { callFlowName: "LSC" }}));
