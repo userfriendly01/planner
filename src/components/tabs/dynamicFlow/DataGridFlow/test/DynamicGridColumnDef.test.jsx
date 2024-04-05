@@ -38,17 +38,63 @@ describe("<DynamicGridColumnDef />", () => {
       });
     });
 
-    it("speech", () => {
-      const renderedCell = render(DynamicGridColumnDef[5].renderCell({
-        row: {
-          headerName: "speech",
-          field: "speech",
-          sortable: true,
-          width: 300,
-          align: "left"
-        }
-      }));
-      expect(renderedCell.findByDisplayValue("speech")).toBeTruthy();
+    describe("createTime", () => {
+      describe("valueGetter", () => {
+        const getter = DynamicGridColumnDef[3].valueGetter;
+        const oldTime = "1971-05-25T04:00:00.000Z";
+        const oldTimeJsEpoch = 43992000000;
+
+        it("should set the date", () => {
+          expect(getter({
+            row: {
+              createTime: oldTimeJsEpoch
+            }
+          })).toEqual(oldTime);
+        });
+
+      });
+    });
+
+    describe("updateTime", () => {
+      describe("valueGetter", () => {
+        const getter = DynamicGridColumnDef[4].valueGetter;
+        const oldTime = "1971-05-25T04:00:00.001Z";
+        const oldTimeJsEpoch = 43992000001;
+
+        it("should set the date", () => {
+          expect(getter({
+            row: {
+              updateTime: oldTimeJsEpoch
+            }
+          })).toEqual(oldTime);
+        });
+
+      });
+    });
+
+    describe("speech", () => {
+      const speech = "Hello";
+      describe("render", () => {
+        describe("greeting", () => {
+          const renderedCell = render(DynamicGridColumnDef[5].renderCell({
+            row: {
+              speech
+            }
+          }));
+          it("should render the cell", () => {
+            expect(renderedCell.findByText(speech)).toBeTruthy();
+          });
+        });
+        describe("nothing", () => {
+          const renderedCell = render(DynamicGridColumnDef[5].renderCell({
+            row: {
+            }
+          }));
+          it("should render the cell", () => {
+            expect(renderedCell.findByText("")).toBeTruthy();
+          });
+        });
+      });
     });
 
     it("timeout", () => {
