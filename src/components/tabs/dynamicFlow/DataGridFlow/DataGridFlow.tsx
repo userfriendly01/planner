@@ -162,9 +162,9 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     }
     setSelectedList([...response.failure]);
     const SuccessObj: any = { };
-    response.success.forEach((x: any) => SuccessObj[x.actionId] = x);
-    const filteredItems = dataFlow.filteredItems.map( x=> SuccessObj[x.actionId] || x);
-    const filteredData = dataFlow.data.map(y => SuccessObj[y.actionId] || y);
+    response.success.forEach((x: any) =>SuccessObj[x?.actionId] = x);
+    const filteredItems = dataFlow.filteredItems.map( x=> SuccessObj[x?.actionId] || x);
+    const filteredData = dataFlow.data.map(y => SuccessObj[y?.actionId] || y);
     setDataFlow({
       ...dataFlow,
       ...filteredItems && { filteredItems },

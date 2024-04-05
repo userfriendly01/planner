@@ -103,7 +103,15 @@ describe("<DataGridFlow />", () => {
     });
     it("Preview Modal onCreate Success", ()=>{
       const validFlowDataList = createFlowDataList(15);
-      queryDynamicFlowData.mockResolvedValue(validFlowDataList);
+      //cover when null items are added to the list
+      validFlowDataList.push(null);
+      queryDynamicFlowData.mockResolvedValue({
+        data: {
+          getCallFlowConfig: {
+            items: validFlowDataList
+          }
+        }
+      });
       batchDynamicFlowCreate.mockResolvedValue({
         flag: false,
         success: validFlowDataList,
