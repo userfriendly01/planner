@@ -69,6 +69,9 @@ async function queryFlowData(accessToken, nextToken = null) {
       })
     });
     result = await response.json();
+    if (!result.errors) {
+      logger.error("Error in queryFlowData", result.errors , false);
+    }
   } catch (error) {
     result.errors.push("Error in queryFlowData " + error.message);
     logger.error("Error in queryFlowData", { error }, false);
@@ -145,8 +148,11 @@ async function queryDynamicFlowData(accessToken) {
       })
     });
     result = await response.json();
+    if (!result.errors) {
+      logger.error("Error in queryDynamicFlowData", result.errors , false);
+    }
   } catch (error) {
-    logger.error("Error in queryLSCDynamicFlowData", { error }, false);
+    logger.error("Error in queryDynamicFlowData", { error }, false);
   }
   return result;
 }
@@ -1241,6 +1247,9 @@ async function queryDynamicPhoneData(accessToken, nextToken = null) {
       })
     });
     result = await response.json();
+    if (!result.errors) {
+      logger.error("Error in query Dynamic Flow Data", result.errors , false);
+    }
 
   } catch (error) {
     logger.error("Error in query Dynamic Flow Data", { error }, false);
