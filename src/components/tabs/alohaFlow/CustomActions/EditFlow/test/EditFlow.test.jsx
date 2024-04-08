@@ -216,7 +216,7 @@ describe("<EditFlow />", () => {
       });
       expect(openEditModal).toBeCalledTimes(0);
     });
-    test.only("Simulate the clone Flow Rule", () => {
+    test("Simulate the clone Flow Rule", () => {
       const { getByRole } = renderEditFlow(true, validFlowData);
       const cloneButton = getByRole("button", { name: "cloneFlowRuleButton" });
       act(() => {
