@@ -1,5 +1,4 @@
 import SkillsHeader from "../SkillsHeader";
-import { getAuthenticationProfileTemplates } from "authentication";
 import { SearchBox } from "components";
 import React from "react";
 import {
@@ -10,7 +9,6 @@ import {
 import { useAdminState } from "context";
 import {
   act,
-  authenticationProfileTemplates,
   render,
   expectOnlyPassedProps,
   skillsList,
@@ -55,7 +53,6 @@ const renderComponent = () => {
 describe("<SkillsHeader />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    getAuthenticationProfileTemplates.mockReturnValue(authenticationProfileTemplates);
     useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
       SearchBox,
@@ -83,12 +80,7 @@ describe("<SkillsHeader />", () => {
           ...initialTestState,
           userContext: {
             ...initialTestState.userContext,
-            authenticationProfiles: [
-              {
-                ...initialTestState.userContext.authenticationProfiles[0],
-                isAdmin: true
-              }
-            ]
+            isAdmin: true
           }
         });
       });
@@ -160,12 +152,7 @@ describe("<SkillsHeader />", () => {
           ...initialTestState,
           userContext: {
             ...initialTestState.userContext,
-            authenticationProfiles: [
-              {
-                ...initialTestState.userContext.authenticationProfiles[0],
-                isAdmin: false
-              }
-            ]
+            isAdmin: false
           }
         });
       });

@@ -34,7 +34,7 @@ const CustomFlowGridToolBar = ({
   openAddModal, openPreviewModal, openAdvanceSearchModal, exportDataFile, applyFilter, matchedGroups,isAdvanceSearchOpen
 }:CustomFlowGridToolBarProps) =>{
   const [flowFilter, setFlowFilter] = useState<FlowAdvanceFilter>();
-  const enableFlow = useMemo(() => readWriteAccess(matchedGroups, "ReadWriteFlow"), []);
+  const enableFlow = useMemo(() => readWriteAccess(matchedGroups, "FlowReadWrite"), []);
   useEffect(()=>{
     const localFilter = getAdvanceFilter(CACHE_FILTER_FLOW);
     setFlowFilter(localFilter);

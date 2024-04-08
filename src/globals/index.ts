@@ -1,4 +1,3 @@
-import { Configuration } from "@azure/msal-browser";
 import { FormModes } from "globals";
 
 export * from "./interfaces";

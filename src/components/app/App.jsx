@@ -91,7 +91,7 @@ const App = () => {
       const {
         accessToken,
         expiresOn
-      } = await instance.acquireTokenSilent({
+      } = await instance.acquireTokenPopup({
         account,
         scopes: ["User.Read"]
       });
@@ -105,10 +105,6 @@ const App = () => {
         }
       }));
 
-      setInterval(() => {
-        logger.log(expiresOn.getTime() - new Date().getTime() - 1000);
-      }, 1000);
-
       wait(() => () => {
         logger.log("*** MSAL: Token is about to expire, getting new token ***");
         tokenManager();
@@ -116,7 +112,7 @@ const App = () => {
     };
 
     if (account && !loadResult.status) {
-      logger.log("User Account", account);
+      logger.log("*** MSAL: User Account ***", account);
 
       setLoadResult({
         status: loading

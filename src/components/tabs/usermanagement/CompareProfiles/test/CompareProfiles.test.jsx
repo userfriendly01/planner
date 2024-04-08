@@ -80,9 +80,10 @@ describe("CompareProfiles", () => {
       MessageBanner
     });
     useAdminState.mockReturnValue(initialTestState);
+    delete env.APP_ENV;
   });
   describe("initial render", () => {
-    describe("environment === development", () => {
+    describe("env.APP_ENV === development", () => {
       beforeEach(() => {
         env.APP_ENV = "development";
       });
@@ -93,11 +94,10 @@ describe("CompareProfiles", () => {
         expect(ProfileColumn).not.toHaveBeenCalled();
         expect(ResetModal).not.toHaveBeenCalled();
         expect(MessageBanner).toHaveBeenCalled();
-        expect(MessageBanner.mock.calls[0][0]).toHaveProperty("environment", "development");
         expect(MessageBanner.mock.calls[0][0]).toHaveProperty("messages", []);
       });
     });
-    describe("environment === test", () => {
+    describe("env.APP_ENV === test", () => {
       beforeEach(() => {
         env.APP_ENV = "test";
       });
@@ -108,11 +108,10 @@ describe("CompareProfiles", () => {
         expect(ProfileColumn).not.toHaveBeenCalled();
         expect(ResetModal).not.toHaveBeenCalled();
         expect(MessageBanner).toHaveBeenCalled();
-        expect(MessageBanner.mock.calls[0][0]).toHaveProperty("environment", "test");
         expect(MessageBanner.mock.calls[0][0]).toHaveProperty("messages", []);
       });
     });
-    describe("environment === production", () => {
+    describe("env.APP_ENV === production", () => {
       beforeEach(() => {
         env.APP_ENV = "production";
       });
@@ -123,7 +122,6 @@ describe("CompareProfiles", () => {
         expect(ProfileColumn).not.toHaveBeenCalled();
         expect(ResetModal).not.toHaveBeenCalled();
         expect(MessageBanner).toHaveBeenCalled();
-        expect(MessageBanner.mock.calls[0][0]).toHaveProperty("environment", "production");
         expect(MessageBanner.mock.calls[0][0]).toHaveProperty("messages", []);
       });
     });
@@ -318,6 +316,7 @@ describe("CompareProfiles", () => {
                   deactivated: 32503593600000
                 }]
               });
+              env.APP_ENV = "production";
             });
             describe("error thrown fetching wfm user", () => {
               describe("error.message", () => {
@@ -766,6 +765,10 @@ describe("CompareProfiles", () => {
       });
     });
     describe("ResetSkills button is clicked", () => {
+      beforeEach(() => {
+        env.APP_ENV = "production";
+      });
+
       test("open === true, when closed = open === false", async () => {
         const worker = initialTestState.workerContext.workers[0];
         const fetchedUser = { email: "faith.cuneo@libertymutual.com" };

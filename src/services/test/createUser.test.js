@@ -4,7 +4,7 @@ import { myAxios } from "utils";
 
 const axiosMock = new MockAdapter(myAxios);
 
-const createWorkerServiceEndpoint = "/service/createworker";
+const createWorkerServiceEndpoint = "http://localhost:8080/createworker";
 
 beforeEach(() => {
   jest.clearAllMocks();

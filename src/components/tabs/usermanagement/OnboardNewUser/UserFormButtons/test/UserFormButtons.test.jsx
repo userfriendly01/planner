@@ -197,6 +197,8 @@ describe("<UserFormButtons />", () => {
       MergeUsersModal,
       Modal
     });
+
+    delete env.APP_ENV;
   });
 
   const renderComponent = (forwardToToggle, customWorker) => {
@@ -933,6 +935,9 @@ describe("<UserFormButtons />", () => {
           beforeEach(() => {
             env.APP_ENV = "production";
             useAdminState.mockReturnValue({
+              userContext: {
+                nNumber: "n1234567"
+              },
               calabrioContext: {
                 users: [],
                 wfmOrg: []
@@ -2254,6 +2259,9 @@ describe("<UserFormButtons />", () => {
           beforeEach(() => {
             env.APP_ENV = "production";
             useAdminState.mockReturnValue({
+              userContext: {
+                nNumber: "n1234567"
+              },
               calabrioContext: {
                 users: [],
                 wfmOrg: []

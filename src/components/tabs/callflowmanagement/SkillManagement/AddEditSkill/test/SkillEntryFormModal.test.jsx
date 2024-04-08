@@ -733,7 +733,7 @@ describe("<SkillEntryFormModal />", () => {
         taskQueueSid: "tqasdf",
         vhCallTarget: null,
         vhThreshold: null,
-        updatedBy: "n1111111",
+        updatedBy: "n1234567",
         timeOfDayIds: [
           {
             dayId: 1,

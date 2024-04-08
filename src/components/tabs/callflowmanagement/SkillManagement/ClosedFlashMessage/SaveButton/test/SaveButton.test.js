@@ -44,7 +44,7 @@ const mockSetSaveResult = jest.fn();
 const mockSetTableState = jest.fn();
 const mockSetConfirmationModalOpts = jest.fn();
 const text = "I'm the new flash message.. save me!";
-const nNumber = "n0263786";
+const nNumber = "n1234567";
 const confirmationModalOpts = {
 
 };

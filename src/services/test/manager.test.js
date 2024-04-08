@@ -9,7 +9,7 @@ import { myAxios } from "utils";
 
 const axiosMock = new MockAdapter(myAxios);
 
-const managerEndpoint = "/contact-manager/managers";
+const managerEndpoint = "http://localhost:8080/contact-manager/managers";
 
 beforeEach(() => {
   jest.clearAllMocks();

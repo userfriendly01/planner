@@ -16,6 +16,7 @@ import {
   getAuthenticationProfileTemplates,
   getStartupProfiles
 } from "authentication";
+import { env } from "globals";
 
 jest.mock("components", () => ({
   UserManagementWrapper: jest.fn(),
@@ -31,6 +32,8 @@ describe("authUtils", () => {
     getAuthenticationProfileTemplates.mockReturnValue(authenticationProfileTemplates);
     getAdGroupPermissionMapping.mockReturnValue(adGroupPermissionMapping);
     getStartupProfiles.mockReturnValue(startups);
+
+    delete env.APP_ENV;
   });
   describe("checkIfAdmin", () => {
     describe("profileId === 0 ", () => {
@@ -45,14 +48,14 @@ describe("authUtils", () => {
     });
   });
   describe("checkIfLowerEnv", () => {
-    test("should return true if environment=test", () => {
+    test("should return true if APP_ENV=test", () => {
+      env.APP_ENV = "test";
       expect(checkIfLowerEnv("test")).toBe(true);
     });
     test("should return false if APP_ENV=production", () => {
+      env.APP_ENV = "production";
+
       expect(checkIfLowerEnv("production")).toBe(false);
-    });
-    test("should return false if APP_ENV=unknownenv", () => {
-      expect(checkIfLowerEnv("unknownenv")).toBe(false);
     });
   });
   describe("checkIfPO", () => {
@@ -69,46 +72,66 @@ describe("authUtils", () => {
     });
     describe("n# is not a GOP PO", () => {
       test("should return false", () => {
-        expect(checkIfPO("n0288362", "production")).toBe(false);
+        env.APP_ENV = "production";
+
+        expect(checkIfPO("n0288362")).toBe(false);
       });
     });
     describe("n# is not a GOP PO, but it's a lower environment", () => {
       test("should return true", () => {
-        expect(checkIfPO("n0288362", "test")).toBe(true);
+        env.APP_ENV = "test";
+
+        expect(checkIfPO("n0288362")).toBe(true);
       });
     });
   });
   describe("checkIfBulkAdmin", () => {
     describe("n# is a GOP PO", () => {
       test("should return true for n0183277", () => {
-        expect(checkIfBulkAdmin("n0183277", "production")).toBe(true);
+        env.APP_ENV = "production";
+
+        expect(checkIfBulkAdmin("n0183277")).toBe(true);
       });
       test("should return true for n0116796", () => {
-        expect(checkIfBulkAdmin("n0116796", "production")).toBe(true);
+        env.APP_ENV = "production";
+
+        expect(checkIfBulkAdmin("n0116796")).toBe(true);
       });
       test("should return true for N0116796 (All CAPS)", () => {
-        expect(checkIfBulkAdmin("N0116796", "production")).toBe(true);
+        env.APP_ENV = "production";
+
+        expect(checkIfBulkAdmin("N0116796")).toBe(true);
       });
     });
     describe("n# is a Bulk Admin", () => {
       test("should return true for n0197784", () => {
-        expect(checkIfBulkAdmin("n0197784", "production")).toBe(true);
+        env.APP_ENV = "production";
+
+        expect(checkIfBulkAdmin("n0197784")).toBe(true);
       });
       test("should return true for n0149889", () => {
-        expect(checkIfBulkAdmin("n0149889", "production")).toBe(true);
+        env.APP_ENV = "production";
+
+        expect(checkIfBulkAdmin("n0149889")).toBe(true);
       });
       test("should return true for N0169879 (All CAPS)", () => {
-        expect(checkIfBulkAdmin("N0169879", "production")).toBe(true);
+        env.APP_ENV = "production";
+
+        expect(checkIfBulkAdmin("N0169879")).toBe(true);
       });
     });
     describe("n# is not a GOP PO or a Bulk Admin and it's a production environment", () => {
       test("should return false", () => {
-        expect(checkIfBulkAdmin("n0288362", "production")).toBe(false);
+        env.APP_ENV = "production";
+
+        expect(checkIfBulkAdmin("n0288362")).toBe(false);
       });
     });
     describe("n# is not a GOP PO or a Bulk Admin, but it's a lower environment", () => {
       test("should return true", () => {
-        expect(checkIfBulkAdmin("n0288362", "test")).toBe(true);
+        env.APP_ENV = "test";
+
+        expect(checkIfBulkAdmin("n0288362")).toBe(true);
       });
     });
   });

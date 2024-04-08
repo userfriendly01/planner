@@ -5,7 +5,7 @@ import { updateUser } from "../updateUser";
 const axiosMock = new MockAdapter(myAxios);
 
 const workerSid = "WK12345";
-const updateWorkerServiceEndpoint = `/service/updateworker/${workerSid}`;
+const updateWorkerServiceEndpoint = `http://localhost:8080/updateworker/${workerSid}`;
 const attributes = "stuff";
 const workerResponse = {
   workerSid,

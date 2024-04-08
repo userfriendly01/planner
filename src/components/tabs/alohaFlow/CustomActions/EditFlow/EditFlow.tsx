@@ -74,7 +74,7 @@ export const EditFlow = ({
   const [flowRule, setFlowRule] = useState({ ...initRule });
   const [dropDownValues, setDropDownValues] = useState(flowDropDownList);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
-  const enableFlow = useMemo<boolean>(() => readWriteAccess(matchedGroups, "ReadWriteFlow"), []);
+  const enableFlow = useMemo<boolean>(() => readWriteAccess(matchedGroups, "FlowReadWrite"), []);
 
   useEffect(() => {
     setSelectedRowLocal(selectedRow);
