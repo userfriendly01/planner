@@ -40,7 +40,7 @@ export interface AppState {
     nNumber?: string
   },
   workerContext: {
-    workers: Worker[]
+    workers: UMUser[]
   },
   calabrioContext: {
     tenant: any,
@@ -262,54 +262,66 @@ export interface WfmUser {
   ParentTeam?: string //something we add to verify the team Id listed on the worker aligns to the team they were found in
 }
 
-export interface Worker {
-  attributes: {
-    contact_uri?: string,
-    default_skills?: WorkerAttributeSkills,
-    department_name?:string,
-    department_id?:string,
-    did?: string,
-    disabled_skills?: WorkerAttributeSkills,
-    email?: string,
-    email_address?: string,
-    emp_first_name?: string,
-    emp_last_name?: string,
-    extension?: string,
-    full_name?: string,
-    location?:string,
-    manager_first_name?: string,
-    manager_last_name?: string,
-    manager_n_number?: string,
-    manager?:string,
-    n_number?: string,
-    office_location_name?: string,
-    office_location_number?: string,
-    primary_dept_name?: string,
-    primary_dept_number?: string,
-    profile_id?: string | number,
-    roles?: string[],
-    routing?: WorkerAttributeSkills,
-    unique_id?: string,
-    callerStateAttr?: WorkerAttributeSkills
-  },
-  alternateDid?: string,
-  directDialNum?: string,
-  inactiveInd?: string,
-  inactiveForwardTo?: string,
-  inactiveForwardToType?: string,
-  sid: string,
-  skillsDifferent: boolean,
-  zeroOutEnabled?: boolean,
-  selfServiceInd?: boolean
+export interface DBList<TItem> {
+  items: TItem[];
+  nextToken: string;
 }
 
-export interface WorkerAttributeSkills {
+export interface UMUserTwilioAttributes {
+  contact_uri?: string,
+  default_skills?: UMTwilioAttributeSkills,
+  department_name?:string,
+  department_id?:string,
+  did?: string,
+  disabled_skills?: UMTwilioAttributeSkills,
+  email?: string,
+  email_address?: string,
+  emp_first_name?: string,
+  emp_last_name?: string,
+  extension?: string,
+  full_name?: string,
+  location?:string,
+  manager_first_name?: string,
+  manager_last_name?: string,
+  manager_n_number?: string,
+  manager?:string,
+  n_number?: string,
+  office_location_name?: string,
+  office_location_number?: string,
+  primary_dept_name?: string,
+  primary_dept_number?: string,
+  profile_id?: string | number,
+  roles?: string[],
+  routing?: UMTwilioAttributeSkills,
+  unique_id?: string,
+}
+
+export interface UMUser {
+  sid: string; // --> mapped from worker_sid
+  workerSid: string; // --> mapped from worker_sid
+  directDialNum?: string; // --> did
+  inactive_date?: string;
+  twilio_attributes: string; // Used for create and update
+  twilio_attributes_raw: string // Used to make attributes
+  inactiveForwardTo: string;
+  zeroOutEnabled: boolean;
+  selfServiceInd: boolean;
+  operatingUnitSid: string;
+  alternateDid?: string, // --> Removed
+
+  // Added by us
+  skillsDifferent: boolean;
+  attributes: UMUserTwilioAttributes;  // --> Parsed from `twilio_attributes_raw`
+}
+
+export interface UMTwilioAttributeSkills {
   levels: {
     [key: string]: number
   },
   skills: string[],
   team?:string,
   callerStates?: string[],
+  caller_states?: string[],
   sales_assoc_worker?: string[]
 }
 

@@ -10,31 +10,33 @@ interface Props {
   children: ReactElement
 }
 
+// To use this, the tokenManager (defined in App.jsx)
+// must get an accessToken. After this point, all 
+// calls will automatically include the access token in the header.
+// You can use hooks (preferred) or the apolloClient directly
+export let apolloClient: ApolloClient<any>;
+
 export const SharedGraphAPIProvider = ({ children }: Props): ReactElement => {
   const state = useAdminState();
 
   const httpLink = createHttpLink({
-    uri: `${env.GRAPH_API_URL}/graphql`
+    uri: env.GRAPH_API_URL // "https://3k2iegyjmnfwxheh65ugy2vjt4.appsync-api.us-east-1.amazonaws.com/graphql"
   });
 
-  const authLink = setContext(async (_, { headers }) => {
-    const { accessToken } =  state.userContext;
+  const authLink = setContext(async (_, { headers }) => ({
+    headers: {
+      ...headers,
+      Authorization: state.userContext.accessToken
+    }
+  }));
 
-    return {
-      headers: {
-        ...headers,
-        Authorization: accessToken ? `Bearer ${accessToken}` : ""
-      }
-    };
-  });
-
-  const client = new ApolloClient({
+  apolloClient = new ApolloClient({
     link: authLink.concat(httpLink),
     cache: new InMemoryCache()
   });
 
   return (
-    <ApolloProvider client={client}>
+    <ApolloProvider client={apolloClient}>
       {children}
     </ApolloProvider>
   );

@@ -23,7 +23,7 @@ export const initialFormState = {
     value: "n",
     blurred: false,
     updated: false,
-    nNumberFetchedUser: null,
+    nNumberFetchedUser: null
   },
   triton: {
     userFound: true,
@@ -34,7 +34,7 @@ export const initialFormState = {
       updated: false,
       valid: false
     },
-    routing:{
+    routing: {
       team: "",
       skills: [],
       levels: {},
@@ -170,8 +170,8 @@ export const validFormOptions = {
     masked: "(800)234-5678",
     tenDig: "8002345678"
   },
-  routing:{
-    team:"Sample1",
+  routing: {
+    team: "Sample1",
     callerStates: ["Test1", "Test2"],
     skills: [],
     levels: {}
@@ -228,7 +228,7 @@ export const validFormState = {
         "c"
       ]
     },
-    routing:{
+    routing: {
       team: "Sample1",
       callerStates: ["Test1", "Test2"],
       levels: {},
@@ -336,7 +336,7 @@ export const mockWorkers = [
         levels: {
           "466": 3
         },
-        team:"Sample1",
+        team: "Sample1",
         callerStates: ["Test1", "Test2"]
       },
       profile_id: 15
@@ -356,7 +356,6 @@ export const mockWorkers = [
   {
     // DID worker with overflow skill
     sid: "WK2",
-    activateEp: true,
     alternateDid: validFormOptions.alternateDid.e164,
     directDialNum: validFormOptions.directDialNum.e164,
     zeroOutEnabled: true,
@@ -379,15 +378,14 @@ export const mockWorkers = [
         levels: {
           "466": 3
         },
-        team:"Sample1",
+        team: "Sample1",
         callerStates: ["Test1", "Test2"]
-      },
+      }
     }
   },
   {
     // DID worker without overflow skill
     sid: "WK3",
-    activateEp: true,
     alternateDid: validFormOptions.alternateDid.e164,
     directDialNum: validFormOptions.directDialNum.e164,
     zeroOutEnabled: true,
@@ -404,7 +402,7 @@ export const mockWorkers = [
       profile_id: profileList[1].profile_id,
       routing: {
         skills: [
-         "466"
+          "466"
         ],
         levels: {
           "466": 3
@@ -416,7 +414,6 @@ export const mockWorkers = [
   },
   {
     sid: "WK4",
-    activateEp: true,
     alternateDid: validFormOptions.alternateDid.e164,
     directDialNum: validFormOptions.directDialNum.e164,
     zeroOutEnabled: true,

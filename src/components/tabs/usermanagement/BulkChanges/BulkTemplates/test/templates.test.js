@@ -45,7 +45,6 @@ describe("CREATE_TRITON_USER", () => {
         const results = await createTritonProcessFunction(row, initialTestState);
         expect(createUser).toHaveBeenCalledTimes(1);
         expect(createUser).toHaveBeenCalledWith({
-          activateEp: true,
           alternateDid: "+16038518200",
           attributes: {
             profile_id: 1,
@@ -74,7 +73,6 @@ describe("CREATE_TRITON_USER", () => {
         const results = await createTritonProcessFunction(row, initialTestState);
         expect(createUser).toHaveBeenCalledTimes(1);
         expect(createUser).toHaveBeenCalledWith({
-          activateEp: false,
           attributes: {
             profile_id: 1,
             n_number: "n0263445"
@@ -102,7 +100,6 @@ describe("CREATE_TRITON_USER", () => {
       } catch (err) {
         expect(createUser).toHaveBeenCalledTimes(1);
         expect(createUser).toHaveBeenCalledWith({
-          activateEp: false,
           attributes: {
             profile_id: 1,
             n_number: "n0263445"

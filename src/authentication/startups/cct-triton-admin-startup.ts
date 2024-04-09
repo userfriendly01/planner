@@ -1,5 +1,10 @@
 import { getStartupProfiles } from "authentication";
-import { apiPaths } from "globals";
+import {
+  DBList,
+  LIST_USERS,
+  UMUser,
+  apiPaths
+} from "globals";
 import {
   getManagers as getManagersServiceCall,
   getOffices as getOfficesServiceCall,
@@ -11,11 +16,12 @@ import {
 import {
   formatManagersResponse,
   formatOfficesResponse,
-  formatWorkerResponse,
   getCalabrioWfmOptions,
   logger,
+  mapWorkerFromDbWorker,
   myAxios
 } from "utils";
+import { apolloClient } from "components";
 
 const getManagers = async (dispatch: any) => {
   try {
@@ -136,24 +142,59 @@ export const getSkills = (dispatch: any) => new Promise((resolve, reject) => myA
   })
 );
 
-const getWorkers = async (dispatch: any) => {
-  try {
-    const response = await myAxios.get(apiPaths.GET_WORKERS);
-    // filter out workers with "inactiveInd": true or no attributes
-    const filteredWorkers = formatWorkerResponse(response.data).filter(worker => !worker.inactiveInd && worker.attributes);
-    dispatch(({
-      type: "loadWorkers",
-      payload: filteredWorkers
-    }));
-    return filteredWorkers;
-  } catch (error) {
-    logger.error("Failed to fetch workers from service", { error });
+const getUsers = async (dispatch: any) => {
+  let nextToken = "start";
 
-    throw ({
-      msg: "Failed to fetch workers from service",
-      error
-    });
-  }
+  const firstQuery = new Promise(resolve => {
+    const getAllUsers = async () => {
+      while (nextToken) {
+        const isFirstQuery = nextToken === "start";
+
+        const {
+          data, error
+        } = await apolloClient.query<{ users: DBList<UMUser> }>({
+          query: LIST_USERS,
+          variables: {
+            nextToken: isFirstQuery ? null : nextToken
+          }
+        });
+
+        if (error) {
+          logger.error("Failed to fetch workers from service", { error });
+
+          throw ({
+            msg: "Failed to fetch workers from service",
+            error
+          });
+        }
+
+        console.log(data.users.items.length);
+
+        const newUsers = [] as UMUser[];
+        data.users.items.forEach(user => {
+          if (!user.inactive_date && user.twilio_attributes_raw) {
+            newUsers.push(mapWorkerFromDbWorker(user));
+          }
+        });
+
+        dispatch(({
+          type: "addWorkers",
+          payload: newUsers
+        }));
+
+        if(isFirstQuery){
+          resolve(true);
+        }
+
+        ({ nextToken } = data.users);
+      }
+    };
+
+    getAllUsers();
+  });
+
+  await firstQuery;
+  console.log("First query done");
 };
 
 const getBusinessUnits = async (dispatch: any) => {
@@ -184,7 +225,7 @@ export const runTritonAdminStartup = (dispatch: any) => {
 
   return Promise.all([
     Promise.resolve(getStartupProfiles().TRITON.name),
-    getWorkers(dispatch),
+    getUsers(dispatch),
     getManagers(dispatch),
     getOffices(dispatch),
     getProfiles(dispatch),

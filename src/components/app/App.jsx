@@ -48,46 +48,11 @@ const App = () => {
   const dispatch = useAdminDispatch();
   const state = useAdminState();
 
-  useEffect(() => {
-    const startup = async () => {
-      const permissions = getFilteredPermissions(account);
+  // Helper to keep token refreshed
+  const tokenManager = async () => {
+    logger.log("*** MSAL: Getting new Token ***");
 
-      if (!permissions.length) {
-        const error = "Missing required AD groups";
-        logger.error("Failed to authenticate", { error });
-        setLoadResult({
-          status: error
-        });
-      } else {
-        try {
-          dispatch(({
-            type: "loadUserData",
-            payload: {
-              permissions
-            }
-          }));
-
-          await Promise.all(
-            permissions.map(({ startup }) => startup.function(dispatch))
-          );
-
-          setLoadResult({
-            home: permissions[0].authenticationProfile.home,
-            status: success
-          });
-        } catch (error) {
-          logger.error("Failed to authenticate", { error });
-          setLoadResult({
-            status: error
-          });
-        }
-      }
-    };
-
-    // Helper to keep token refreshed
-    const tokenManager = async () => {
-      logger.log("*** MSAL: Getting new Token ***");
-
+    try {
       const {
         accessToken,
         expiresOn
@@ -109,18 +74,63 @@ const App = () => {
         logger.log("*** MSAL: Token is about to expire, getting new token ***");
         tokenManager();
       }, expiresOn.getTime() - new Date().getTime() - 1000);
-    };
+    } catch (error) {
+      logger.error("TOKEN_GET_FAILED", { error });
+      setLoadResult({
+        status: error
+      });
+    }
+  };
 
-    if (account && !loadResult.status) {
-      logger.log("*** MSAL: User Account ***", account);
+  const startup = async () => {
+    const permissions = getFilteredPermissions(account);
 
+    if (!permissions.length) {
+      logger.error("MISSING_AD_GROUPS", { nNumber: account.idTokenClaims.employeeid });
+      setLoadResult({
+        status: "You are missing required AD Groups to be able to access this application"
+      });
+    } else {
+      try {
+        dispatch(({
+          type: "loadUserData",
+          payload: {
+            permissions
+          }
+        }));
+
+        await Promise.all(
+          permissions.map(({ startup }) => startup.function(dispatch))
+        );
+
+        setLoadResult({
+          home: permissions[0].authenticationProfile.home,
+          status: success
+        });
+      } catch (error) {
+        logger.error("DATA_GET_FAILED", { error });
+        setLoadResult({
+          status: error
+        });
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (state.userContext.accessToken && loadResult.status !== loading) {
       setLoadResult({
         status: loading
       });
-      tokenManager();
+
       startup();
     }
-  }, [account, loadResult]);
+
+  }, [state.userContext.accessToken]);
+
+  useEffect(() => {
+    tokenManager();
+  }, []);
+
 
   useEffect(() => {
     const {

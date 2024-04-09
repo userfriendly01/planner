@@ -1,5 +1,5 @@
 import { TableStateProps } from "globals";
-import { Worker } from "globals";
+import { UMUser } from "globals";
 
 export interface ManagementHeaderProps {
   tableState: TableStateProps,
@@ -8,5 +8,5 @@ export interface ManagementHeaderProps {
 
 export interface ExportTritonUserProps {
   label: string,
-  selected: Worker[]
+  selected: UMUser[]
 }

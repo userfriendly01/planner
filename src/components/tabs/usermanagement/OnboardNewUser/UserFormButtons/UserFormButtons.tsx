@@ -17,7 +17,8 @@ import {
   formModes,
   ModalOverlayStatuses,
   timeouts,
-  Worker
+  UMUser,
+  UMUserTwilioAttributes
 } from "globals";
 import React from "react";
 import {
@@ -33,7 +34,6 @@ import {
 import {
   addWorkerToOrg,
   checkConflictingUsers,
-  DbWorker,
   getNonOverflowSkills,
   getOverflowSkillFromProfile,
   identifyFormErrors,
@@ -46,6 +46,7 @@ import {
   workerHasOverFlowSkill
 } from "utils";
 import { Tooltip } from "@mui/material";
+import { ApolloError } from "@apollo/client";
 
 const UserFormButtons = (props: UserFormButtonsProps) => {
 
@@ -83,7 +84,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
     // see this wiki page for attributes that will be automatically updated through SSO
     // https://forge.lmig.com/wiki/display/CICCT/Twilio+Flex+SSO+Saml2+Integration
-    const attributes: Partial<Worker["attributes"]> = {
+    const attributes: Partial<UMUserTwilioAttributes> = {
       contact_uri: `client:${userNNumber}`,
       default_skills: {
         levels: form.triton.defaultSkills.levels,
@@ -143,7 +144,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     const createUserReqBody = form.triton.directDialNum.value ?
       {
         attributes,
-        activateEp: true,
         alternateDid: form.triton.alternateDid.e164,
         directDialNum: form.triton.directDialNum.e164,
         operatingUnitSid: operatingUnitSid,
@@ -151,8 +151,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         selfServiceInd: form.triton.selfServiceInd.value
       } : {
         attributes,
-        operatingUnitSid: operatingUnitSid,
-        activateEp: false
+        operatingUnitSid: operatingUnitSid
       };
 
     const errors = [];
@@ -329,17 +328,19 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         });
       }
     } catch (error) {
+      const apolloError = error as ApolloError;
+
       logger.error("Errors thrown creating a new user",
         {
           error,
-          data: error.response?.data,
+          data: apolloError.message,
           nNumber
         },
         false
       );
       updateLoading({
         ...loading,
-        overlayMessage: error.response.data.message || "Failed to add new user.",
+        overlayMessage: apolloError.message || "Failed to add new user.",
         saveStatus: ModalOverlayStatuses.FAIL,
         saveUser: true
       });
@@ -353,7 +354,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       saveStatus: ModalOverlayStatuses.SAVING,
       saveUser: true
     });
-    const attributes: Partial<Worker["attributes"]> = {};
+    const attributes: Partial<UMUserTwilioAttributes> = {};
     let operatingUnitSid: string;
     const nNumberFetchedUser = form.nNumber.nNumberFetchedUser;
 
@@ -422,7 +423,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       attributes.routing.levels = levels;
     }
 
-    const payload: Partial<DbWorker> = {
+    const payload: Partial<UMUser> = {
       attributes,
       zeroOutEnabled: form.triton.zeroOutEnabled.value,
       selfServiceInd: form.triton.selfServiceInd.value
@@ -436,7 +437,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     }
     if (form.triton.directDialNum.updated) {
       payload.directDialNum = form.triton.directDialNum.e164;
-      payload.activateEp = true;
     }
     if (form.triton.inactiveForwardTo.value !== null && form.triton.inactiveForwardTo.updated) {
       payload.inactiveForwardTo = form.triton.inactiveForwardTo.value;

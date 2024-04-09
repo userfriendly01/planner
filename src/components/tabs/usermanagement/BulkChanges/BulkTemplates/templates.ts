@@ -56,14 +56,12 @@ const processCreateTritonUser = async (row: any, state: AppState) => {
     const body: any = {};
     if (didUser) {
       body.attributes = row.attributes;
-      body.activateEp = true;
       body.alternateDid = row.directDialNum;
       body.directDialNum = row.directDialNum;
       body.zeroOutEnabled = row.zeroOutEnabled;
       body.selfServiceInd = row.selfServiceInd;
     } else {
       body.attributes = row.attributes;
-      body.activateEp = false;
     }
 
     const profile = getTargetProfile(state.profileContext.profiles, body.attributes.profile_id);

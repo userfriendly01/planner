@@ -1,5 +1,5 @@
 import {
-  Worker, env
+  UMUser, env
 } from "globals";
 
 const productOwners = [
@@ -44,9 +44,9 @@ export const checkIfPO = (nNumber: string): boolean => {
   return productOwners.includes(nNumber.toLowerCase());
 };
 
-export const getWorkerProfileId = (nNumber: string, workers: Worker[]): number => {
-  let loggedInWorker: Worker;
-  workers.forEach((worker: Worker) =>{
+export const getWorkerProfileId = (nNumber: string, workers: UMUser[]): number => {
+  let loggedInWorker: UMUser;
+  workers.forEach((worker: UMUser) =>{
     if(worker.attributes?.n_number?.toLowerCase() === nNumber.toLowerCase()){
       loggedInWorker = worker;
     }

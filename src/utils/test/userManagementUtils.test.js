@@ -130,7 +130,6 @@ const mockWorkers = [
   {
     // DID worker with overflow skill
     sid: "WK2",
-    activateEp: true,
     alternateDid: validFormOptions.alternateDid.e164,
     directDialNum: validFormOptions.directDialNum.e164,
     zeroOutEnabled: true,
@@ -159,7 +158,6 @@ const mockWorkers = [
   {
     // DID worker without overflow skill
     sid: "WK3",
-    activateEp: true,
     alternateDid: validFormOptions.alternateDid.e164,
     directDialNum: validFormOptions.directDialNum.e164,
     zeroOutEnabled: true,

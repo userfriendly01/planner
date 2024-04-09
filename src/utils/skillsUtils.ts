@@ -1,11 +1,12 @@
 import {
-  Worker,
-  WorkerAttributeSkills,
-  Skill
+  UMUser,
+  UMTwilioAttributeSkills,
+  Skill,
+  UMUserTwilioAttributes
 } from "globals";
 import _ from "lodash";
 
-export const areSkillsDifferent = (workerAttributes: Worker["attributes"]): boolean => {
+export const areSkillsDifferent = (workerAttributes: UMUserTwilioAttributes): boolean => {
   const currentSkills = getValidSkillsObject(workerAttributes.routing);
   const defaultSkills = getValidSkillsObject(workerAttributes.default_skills);
   if (defaultSkills.skills.length > 0) {
@@ -21,9 +22,9 @@ export interface RawTaskRotuterSkill {
   name: string
 }
 
-export const getValidSkillsObject = (skillsObject?: WorkerAttributeSkills): WorkerAttributeSkills => {
+export const getValidSkillsObject = (skillsObject?: UMTwilioAttributeSkills): UMTwilioAttributeSkills => {
   const spreadSkillObject = typeof skillsObject === "object" ? skillsObject : {};
-  const validObject: WorkerAttributeSkills = {
+  const validObject: UMTwilioAttributeSkills = {
     ...spreadSkillObject,
     skills: [],
     levels: {}

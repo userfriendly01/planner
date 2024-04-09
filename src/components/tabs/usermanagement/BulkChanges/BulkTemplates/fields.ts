@@ -423,7 +423,6 @@ export const FIELDS: Fields = {
             const directDialNum = getE164Number(field);
             row.attributes.did = directDialNum;
             row.directDialNum = directDialNum;
-            row.activateEp = true;
             row.alternateDid = directDialNum;
             return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
           } catch (err) {

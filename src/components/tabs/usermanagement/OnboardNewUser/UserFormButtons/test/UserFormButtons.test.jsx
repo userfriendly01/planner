@@ -361,7 +361,6 @@ describe("<UserFormButtons />", () => {
             });
             await waitFor(() => {
               expect(createUser).toHaveBeenCalledWith({
-                activateEp: false, // false for non-DID workers
                 attributes: createWorkerAttributesAfterFormValid,
                 operatingUnitSid: validOperatingUnitId
               });
@@ -434,7 +433,6 @@ describe("<UserFormButtons />", () => {
             });
             await waitFor(() => {
               expect(createUser).toHaveBeenCalledWith({
-                activateEp: true, // true for DID workers
                 attributes: createWorkerAttributesAfterFormValid,
                 alternateDid: validFormState.triton.alternateDid.e164,
                 directDialNum: validFormState.triton.directDialNum.e164,
@@ -504,7 +502,6 @@ describe("<UserFormButtons />", () => {
             });
             await waitFor(() => {
               expect(createUser).toHaveBeenCalledWith({
-                activateEp: true, // true for DID workers
                 attributes: {
                   ...createWorkerAttributesAfterFormValid,
                   routing: {
@@ -570,7 +567,6 @@ describe("<UserFormButtons />", () => {
               });
               await waitFor(() => {
                 expect(createUser).toHaveBeenCalledWith({
-                  activateEp: true, // true for DID workers
                   attributes: {
                     ...createWorkerAttributesAfterFormValid,
                     routing: {
@@ -651,7 +647,6 @@ describe("<UserFormButtons />", () => {
             });
             await waitFor(() => {
               expect(createUser).toHaveBeenCalledWith({
-                activateEp: false, // false for non-DID workers
                 attributes: createWorkerAttributesAfterFormValid,
                 operatingUnitSid: validOperatingUnitId
               });
@@ -716,7 +711,6 @@ describe("<UserFormButtons />", () => {
             });
             await waitFor(() => {
               expect(createUser).toHaveBeenCalledWith({
-                activateEp: false, // false for non-DID workers
                 attributes: createWorkerAttributesAfterFormValid,
                 operatingUnitSid: validOperatingUnitId
               });
@@ -751,7 +745,6 @@ describe("<UserFormButtons />", () => {
             });
             await waitFor(() => {
               expect(createUser).toHaveBeenCalledWith({
-                activateEp: false, // false for non-DID workers
                 attributes: createWorkerAttributesAfterFormValid,
                 operatingUnitSid: validOperatingUnitId
               });
@@ -1351,7 +1344,6 @@ describe("<UserFormButtons />", () => {
             });
             await waitFor(() => {
               expect(updateUser).toHaveBeenCalledWith(worker.sid, {
-                activateEp: true, // true for DID workers
                 attributes: updateWorkerAttributesAfterFormValid,
                 alternateDid: validFormState.triton.alternateDid.e164,
                 directDialNum: validFormState.triton.directDialNum.e164,
@@ -1399,7 +1391,6 @@ describe("<UserFormButtons />", () => {
               });
               await waitFor(() => {
                 expect(updateUser).toHaveBeenCalledWith(worker.sid, {
-                  activateEp: true, // true for DID workers
                   attributes: {
                     ...updateWorkerAttributesAfterFormValid,
                     routing: {
@@ -1627,7 +1618,6 @@ describe("<UserFormButtons />", () => {
             });
             await waitFor(() => {
               expect(updateUser).toHaveBeenCalledWith(worker.sid, {
-                activateEp: true, // true for DID workers
                 attributes: updateWorkerAttributesAfterFormValid,
                 alternateDid: validFormState.triton.alternateDid.e164,
                 directDialNum: validFormState.triton.directDialNum.e164,
@@ -1712,7 +1702,6 @@ describe("<UserFormButtons />", () => {
             });
             await waitFor(() => {
               expect(updateUser).toHaveBeenCalledWith(worker.sid, {
-                activateEp: true, // true for DID workers
                 attributes: updateWorkerAttributesAfterFormValid,
                 alternateDid: validFormState.triton.alternateDid.e164,
                 directDialNum: validFormState.triton.directDialNum.e164,

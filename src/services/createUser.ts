@@ -1,9 +1,24 @@
-import { apiPaths }from "globals";
+import { apolloClient } from "components";
 import {
-  DbWorker,
-  myAxios
-} from "utils";
+  CREATE_USER,
+  UMUser
+}from "globals";
+import { mapWorkerToDbWorker } from "utils";
 
-export const createUser = (worker: Partial<DbWorker>): Promise<DbWorker> =>
-  myAxios.post(apiPaths.CREATE_WORKER, worker)
-    .then(response => response.data);
+export const createUser = async (worker: Partial<UMUser>): Promise<UMUser> => {
+  const {
+    data, error
+  } = await apolloClient.query<{ user: UMUser }>({
+    query: CREATE_USER,
+    variables: {
+      jj: "te",
+      input: mapWorkerToDbWorker(worker)
+    }
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  return data.user;
+};

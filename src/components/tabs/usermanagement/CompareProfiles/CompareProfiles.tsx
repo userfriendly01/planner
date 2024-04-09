@@ -12,7 +12,7 @@ import { messageConsts } from "./messages";
 import ProfileColumn from "./ProfileColumn";
 import ResetModal from "./ResetModal";
 import {
-  WfmUser, Worker, env, nNumMatcher
+  WfmUser, UMUser, env, nNumMatcher
 } from "globals";
 import {
   CalabrioGroup, NNumberInput
@@ -125,7 +125,7 @@ const CompareProfiles = () => {
 
   const trimProfiles = (userProfiles: any[], system: string): TritonPerson[] | QmPerson[] | WfmPerson[] | any[] => {
     if (system === "triton") {
-      return userProfiles.map((p: Worker) => {
+      return userProfiles.map((p: UMUser) => {
         return {
           ["Worker Sid"]: p.sid,
           ["N Number"]: p.attributes?.n_number,
@@ -174,7 +174,7 @@ const CompareProfiles = () => {
     const workers = state.workerContext.workers;
 
     try {
-      const matchingTritonProfiles = workers.filter((w: Worker) => w?.attributes?.n_number?.toLowerCase() === nNumberDetails?.nNumber?.toLowerCase());
+      const matchingTritonProfiles = workers.filter((w: UMUser) => w?.attributes?.n_number?.toLowerCase() === nNumberDetails?.nNumber?.toLowerCase());
       if (matchingTritonProfiles.length > 1) {
         updateMessages("add", null, messageConsts.MULTIPLE_TRITON_PROFILES, "error");
       } else if (matchingTritonProfiles.length === 0) {

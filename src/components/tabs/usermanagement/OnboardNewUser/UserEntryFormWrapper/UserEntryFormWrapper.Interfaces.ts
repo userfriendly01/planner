@@ -5,9 +5,9 @@ import {
   Office,
   Skill,
   TritonProfile,
-  Worker,
+  UMUser,
   WfmUser,
-  WorkerAttributeSkills,
+  UMTwilioAttributeSkills,
   formModes
 } from "globals";
 import { FetchUserResponse } from "services";
@@ -39,8 +39,8 @@ export interface UserEntryFormProps {
 
 export interface BasicFormInfoProps {
   skills: Skill[],
-  worker: Worker | null,
-  workers: Worker[],
+  worker: UMUser | null,
+  workers: UMUser[],
   profiles: TritonProfile[],
   managers: Manager[]
   forwardToToggle: boolean,
@@ -54,7 +54,7 @@ export interface UserFormButtonsProps {
   offices: Map<string, Office>,
   profiles: TritonProfile[],
   updateLoading: (payload: any) => void,
-  worker: Worker | null,
+  worker: UMUser | null,
   setMissingFields: (missingFields: string[]) => void
 }
 
@@ -109,7 +109,7 @@ export interface UserFormState {
   calabrio_wfm: CALABRIO_WFM
 }
 
-interface FormDefaultSkills extends WorkerAttributeSkills {
+interface FormDefaultSkills extends UMTwilioAttributeSkills {
   updated: boolean
 }
 interface FormNNumber extends FieldState {

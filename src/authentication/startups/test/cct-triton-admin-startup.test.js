@@ -17,8 +17,7 @@ import {
   myAxios
 } from "utils";
 import {
-  getCalabrioWfmOptions,
-  getCalabrioWfmOrg
+  getCalabrioWfmOptions
 } from "../../../utils/calabrioUtils";
 import { startups } from "testUtils";
 
@@ -109,7 +108,7 @@ const dbWorkers = [
     attributes: {
       superrrr: "superrrr"
     },
-    inactiveInd: true
+    inactiveDate: "2023-01-01"
   }
 ];
 
@@ -182,9 +181,9 @@ describe("cct-triton-admin-startup", () => {
       axiosMock.onGet(workersEndpoint).reply(200, dbWorkers);
       getManagers.mockResolvedValue(dbManagers);
       getOffices.mockResolvedValue(dbOffices);
-      getCalabrioUsers.mockResolvedValue({ data: [] });
-      getCalabrioOrg.mockResolvedValue({ data: [] });
-      getCalabrioRoles.mockResolvedValue({ data: [] });
+      getCalabrioUsers.mockResolvedValue({ data: []});
+      getCalabrioOrg.mockResolvedValue({ data: []});
+      getCalabrioRoles.mockResolvedValue({ data: []});
       getCalabrioWfmOptions.mockResolvedValue(true);
       getWfmBusinessUnits.mockResolvedValue({
         data: {

@@ -922,7 +922,7 @@ describe("fields.js", () => {
             await exetensionValidateFunction({
               rowNumber: 6,
               "Extension": 1234
-            }, { workerContext: { workers: null } });
+            }, { workerContext: { workers: null }});
           } catch (e) {
             expect(e).toEqual(JSON.stringify({
               rowNumber: 6,
@@ -1101,7 +1101,6 @@ describe("fields.js", () => {
           expect(row).toEqual({
             ...row,
             directDialNum: "+16035556565",
-            activateEp: true,
             alternateDid: "+16035556565",
             attributes: {
               did: "+16035556565",
@@ -1120,7 +1119,6 @@ describe("fields.js", () => {
           expect(row).toEqual({
             ...row,
             directDialNum: "+16035556565",
-            activateEp: true,
             alternateDid: "+16035556565",
             attributes: {
               did: "+16035556565"
@@ -2434,7 +2432,7 @@ describe("fields.js", () => {
             "America/Los_Angeles (PST/PDT)",
             "America/New_York (EST/EDT)",
             "America/Phoenix (MST)",
-            "Pacific/Honolulu (HST)",
+            "Pacific/Honolulu (HST)"
           ]);
         });
       });
