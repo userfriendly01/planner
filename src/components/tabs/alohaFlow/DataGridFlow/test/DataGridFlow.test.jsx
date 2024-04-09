@@ -22,11 +22,25 @@ import { useAdminState } from "context";
 import { CustomToast } from "components";
 import DataGridFlow from "../DataGridFlow";
 import {
-  retrieveFlowData,queryFlowData, flowBatchDelete, batchFlowUpdate, batchDeleteItems,batchFlowCreate
-} from "services";
+  batchDeleteItems,
+  batchFlowCreate,
+  batchFlowUpdate,
+  flowBatchDelete,
+  queryFlowData,
+  retrieveFlowData
+} from "../../Utils/FlowTableServiceUtil";
 import { PreviewModal } from "../../PreviewModal";
 import { createFlowDataList } from "../../PreviewModal/test/PreviewUtil.test";
 
+jest.mock("../../Utils/FlowTableServiceUtil", () => ({
+  batchDeleteItems: jest.fn(),
+  batchFlowCreate: jest.fn(),
+  batchFlowUpdate: jest.fn(),
+  deleteOppositeRows: jest.fn(),
+  flowBatchDelete: jest.fn(),
+  queryFlowData: jest.fn(),
+  retrieveFlowData: jest.fn()
+}));
 jest.mock("@mui/x-data-grid",()=>({
   __esModule: true,
   DataGrid: jest.fn(),
@@ -90,10 +104,12 @@ describe("<DataGridFlow />", () => {
   const matchMedia = window.matchMedia;
   beforeEach(()=>{
     jest.clearAllMocks();
-    retrieveFlowData.mockReset();
-    queryFlowData.mockReset();
-    flowBatchDelete.mockReset();
     batchDeleteItems.mockReset();
+    batchFlowCreate.mockReset();
+    batchFlowUpdate.mockReset();
+    flowBatchDelete.mockReset();
+    queryFlowData.mockReset();
+    retrieveFlowData.mockReset();
     useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
       DataGrid,
@@ -149,8 +165,8 @@ describe("<DataGridFlow />", () => {
         page: 1,
         pageSize: 20
       }); });
-      expect(DataGrid.mock.calls[1][0].paginationModel.page).toBe(1);
-      expect(DataGrid.mock.calls[1][0].paginationModel.pageSize).toBe(20);
+      expect(DataGrid.mock.calls[DataGrid.mock.calls.length-1][0].paginationModel.page).toBe(1);
+      expect(DataGrid.mock.calls[DataGrid.mock.calls.length-1][0].paginationModel.pageSize).toBe(20);
     });
 
     test("Simulate Change Go to Next Page", async () => {
@@ -163,8 +179,8 @@ describe("<DataGridFlow />", () => {
         page: 2,
         pageSize: 10
       }); });
-      expect(DataGrid.mock.calls[1][0].paginationModel.page).toBe(2);
-      expect(DataGrid.mock.calls[1][0].paginationModel.pageSize).toBe(10);
+      expect(DataGrid.mock.calls[2][0].paginationModel.page).toBe(2);
+      expect(DataGrid.mock.calls[2][0].paginationModel.pageSize).toBe(10);
     });
 
     test("Simulate Change Go to previous Page", async () => {
@@ -172,21 +188,21 @@ describe("<DataGridFlow />", () => {
       queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
       retrieveFlowData.mockResolvedValue(validFlowDataList);
       renderComponent();
-      const onPageChange = DataGrid.mock.calls[0][0].onPaginationModelChange;
+      const onPageChange = DataGrid.mock.calls[1][0].onPaginationModelChange;
       act(()=>{
         onPageChange({
           page: 2,
           pageSize: 10
         });
       });
-      const onPageChangeSecond = DataGrid.mock.calls[1][0].onPaginationModelChange;
+      const onPageChangeSecond = DataGrid.mock.calls[2][0].onPaginationModelChange;
       act(()=>{
         onPageChangeSecond({
           page: 1,
           pageSize: 10
         });
       });
-      expect(DataGrid.mock.calls[2][0].paginationModel.page).toBe(1);
+      expect(DataGrid.mock.calls[3][0].paginationModel.page).toBe(1);
     });
   });
 
@@ -214,16 +230,14 @@ describe("<DataGridFlow />", () => {
       renderComponent();
       const openModal = AddFlow.mock.calls[0][0].openAddModal;
       act(()=>{ openModal(true); });
-      expect(AddFlow.mock.calls[1][0].isOpen).toBe(true);
+      expect(AddFlow.mock.calls[2][0].isOpen).toBe(true);
     });
     test("Simulate the AddFlow openModal isOpen false, true", ()=>{
-      const validFlowDataList = createFlowDataList(15);
-      queryFlowData.mockResolvedValue(flowFormatList(validFlowDataList));
-      retrieveFlowData.mockResolvedValue(validFlowDataList);
+      retrieveFlowData.mockResolvedValue(false);
       renderComponent();
-      const openModal = AddFlow.mock.calls[0][0].openAddModal;
+      const openModal = AddFlow.mock.calls[1][0].openAddModal;
       act(()=>{ openModal(false, true); });
-      expect(CustomToast.mock.calls[1][0].open).toBe(false);
+      expect(CustomToast.mock.calls[2][0].open).toBe(true);
     });
     test("Simulate the AddFlow duplicate Check", ()=>{
       const validFlowDataList = createFlowDataList(15);
@@ -304,7 +318,6 @@ describe("<DataGridFlow />", () => {
       const flowData = {
         id: 1,
         pkey: "+18005551212",
-        agentId: "agent",
         brand: "brand",
         callFlowTemplate: "cft",
         channel: "channel"
@@ -324,7 +337,7 @@ describe("<DataGridFlow />", () => {
       renderComponent();
       const exportDataFile = CustomFlowGridToolBar.mock.calls[0][0].exportDataFile;
       act(()=>{ exportDataFile(); });
-      expect(CustomFlowGridToolBar.mock.calls.length).toBe(1);
+      expect(CustomFlowGridToolBar.mock.calls.length).toBe(2);
     });
     test("Simulate the CustomFlowGridToolBar Preview Modal Open", ()=>{
       const validFlowDataList = createFlowDataList(15);
@@ -365,10 +378,10 @@ describe("<DataGridFlow />", () => {
       renderComponent();
       const openModal = AdvanceSearchModal.mock.calls[0][0].openModal;
       act(()=>{ openModal(true, { channel: "channel1" }); });
-      expect(AdvanceSearchModal.mock.calls[1][0].isOpen).toBe(true);
+      expect(AdvanceSearchModal.mock.calls[2][0].isOpen).toBe(true);
       const handleClose = AdvanceSearchModal.mock.calls[1][0].onClose;
       act(()=>{ handleClose(true); });
-      expect(AdvanceSearchModal.mock.calls[2][0].isOpen).toBe(false);
+      expect(AdvanceSearchModal.mock.calls[3][0].isOpen).toBe(false);
     });
     test("Simulate openAdvanceSearchModal applyFilter props", ()=>{
       const validFlowDataList = createFlowDataList(15);
@@ -509,7 +522,7 @@ describe("<DataGridFlow />", () => {
       act(()=>{
         previewModalOnClose();
       });
-      expect(PreviewModal.mock.calls.length).toBe(2);
+      expect(PreviewModal.mock.calls.length).toBe(3);
     });
     it("Preview Modal onUpdate success", ()=>{
       const validFlowDataList = createFlowDataList(15);
@@ -521,7 +534,7 @@ describe("<DataGridFlow />", () => {
       act(()=>{
         previewModalOnUpdate([{ ...validFlowDataList[1] }]);
       });
-      expect(DataGrid.mock.calls.length).toBe(1);
+      expect(DataGrid.mock.calls.length).toBe(2);
     });
     it("Preview Modal onUpdate error", ()=>{
       const validFlowDataList = createFlowDataList(15);
@@ -531,7 +544,7 @@ describe("<DataGridFlow />", () => {
       renderComponent();
       const previewModalOnUpdate = PreviewModal.mock.calls[0][0].onUpdate;
       expect(previewModalOnUpdate).toBeTruthy();
-      expect(DataGrid.mock.calls.length).toBe(1);
+      expect(DataGrid.mock.calls.length).toBe(2);
     });
     it("Preview Modal onCreate Success", ()=>{
       const validFlowDataList = createFlowDataList(15);
@@ -547,7 +560,7 @@ describe("<DataGridFlow />", () => {
       act(()=>{
         previewModalOnCreate([{ ...validFlowDataList[1] }]);
       });
-      expect(DataGrid.mock.calls.length).toBe(1);
+      expect(DataGrid.mock.calls.length).toBe(2);
     });
     it("Preview Modal onCreate Failure", ()=>{
       const validFlowDataList = createFlowDataList(15);
@@ -563,7 +576,7 @@ describe("<DataGridFlow />", () => {
       act(()=>{
         previewModalOnCreate([{ ...validFlowDataList[1] }]);
       });
-      expect(DataGrid.mock.calls.length).toBe(1);
+      expect(DataGrid.mock.calls.length).toBe(2);
     });
     it("Preview Modal onDelete", ()=>{
       const validFlowDataList = createFlowDataList(15);
@@ -580,7 +593,7 @@ describe("<DataGridFlow />", () => {
       act(()=>{
         previewModalOnDelete(selectedRow);
       });
-      expect(DataGrid.mock.calls.length).toBe(1);
+      expect(DataGrid.mock.calls.length).toBe(2);
     });
     it("Preview Modal onDelete", ()=>{
       const validFlowDataList = createFlowDataList(15);
@@ -609,7 +622,7 @@ describe("<DataGridFlow />", () => {
       act(()=>{
         onRowSelectionModelChange(selectedRows);
       });
-      expect(DataGrid.mock.calls.length).toBe(2);
+      expect(DataGrid.mock.calls.length).toBe(3);
     });
     it("getRowId", ()=>{
       const validFlowDataList = createFlowDataList(15);

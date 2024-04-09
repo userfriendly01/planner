@@ -15,7 +15,6 @@ jest.mock("@mui/material",()=>({
 const validFlowData = {
   id: 1,
   pkey: "12345",
-  agentId: "123455",
   brand: "LM",
   callFlowTemplate: "test callFlowTemplate",
   channel: "Test1 Channel",
@@ -30,7 +29,7 @@ const validFlowData = {
     dataRequests: ["test1", "test2"],
     greetingMessages: "Hello Test Message",
     languageOffer: "English",
-    transferNumber: "123456789"
+    transferDestination: "123456789"
   },
   accountManager: "test accountManager",
   affinityVDN: "test affinityVDN",
@@ -42,17 +41,16 @@ const validFlowData = {
   marketingChannel: "test marketingChannel",
   requestID: "test requestID",
   rangeIndicator: "test rangeIndicator",
-  tollFreeNumber: "test tollFreeNumber",
   transferCode: "test transferCode",
-  type: "DID",
+  phoneNumberType: "DID",
   whisper: "test whisper",
   tfnRoutingGroup: "Core"
 };
 
 describe("<TableGridColumnDef />", () => {
 
-  it("has 34 columns", () => {
-    expect(TableGridColumnDef.length).toBe(34);
+  it("has 35 columns", () => {
+    expect(TableGridColumnDef.length).toBe(35);
   });
 
   describe("valueGetter", ()=>{
@@ -71,8 +69,8 @@ describe("<TableGridColumnDef />", () => {
       expect(TableGridColumnDef[7].valueGetter({ row: {}})).toBe("");
     });
 
-    it("transferNumber", () => {
-      expect(TableGridColumnDef[8].valueGetter({ row: { content: { transferNumber: "123" }}})).toBe("123");
+    it("transferDestination", () => {
+      expect(TableGridColumnDef[8].valueGetter({ row: { content: { transferDestination: "123" }}})).toBe("123");
       expect(TableGridColumnDef[8].valueGetter({ row: {}})).toBe("");
     });
 
@@ -86,21 +84,14 @@ describe("<TableGridColumnDef />", () => {
       expect(TableGridColumnDef[10].valueGetter({ row: {}})).toBe("");
     });
     it("callIntent", () => {
-      expect(TableGridColumnDef[29].valueGetter({ row: { content: { callIntent: "TEST_CALL_INTENT" }}})).toBe("TEST_CALL_INTENT");
-      expect(TableGridColumnDef[29].valueGetter({ row: {}})).toBe("");
+      expect(TableGridColumnDef[27].valueGetter({ row: { content: { callIntent: "TEST_CALL_INTENT" }}})).toBe("TEST_CALL_INTENT");
+      expect(TableGridColumnDef[27].valueGetter({ row: {}})).toBe("");
     });
     it("officeNumbers", () => {
-      expect(TableGridColumnDef[30].valueGetter({ row: { content: { officeNumbers: ["#9999"]}}})).toEqual(["#9999"]);
-      expect(TableGridColumnDef[30].valueGetter({ row: {}})).toEqual([]);
+      expect(TableGridColumnDef[28].valueGetter({ row: { content: { officeNumbers: ["#9999"]}}})).toEqual(["#9999"]);
+      expect(TableGridColumnDef[28].valueGetter({ row: {}})).toEqual([]);
     });
-    it("predictiveCaller", () => {
-      expect(TableGridColumnDef[32].valueGetter({ row: { predictiveCaller: true }})).toBe(true);
-      expect(TableGridColumnDef[32].valueGetter({ row: {}})).toEqual(false);
-    });
-    it("selfServiceIndicator", () => {
-      expect(TableGridColumnDef[33].valueGetter({ row: { selfServiceIndicator: true }})).toBe(true);
-      expect(TableGridColumnDef[33].valueGetter({ row: {}})).toEqual(false);
-    });
+
   });
   describe("renderCell", ()=>{
     beforeEach(()=>{
@@ -128,39 +119,43 @@ describe("<TableGridColumnDef />", () => {
       expect(renderedCell.findByDisplayValue("Test Greeting")).toBeTruthy();
     });
     it("accountManager", ()=>{
-      const renderedCell = render(TableGridColumnDef[16].renderCell({ row: { accountManager: "Test Account Manager" }}));
+      const renderedCell = render(TableGridColumnDef[15].renderCell({ row: { accountManager: "Test Account Manager" }}));
       expect(renderedCell.findByDisplayValue("Test Account Manager")).toBeTruthy();
     });
     it("internetPlacement", ()=>{
-      const renderedCell = render(TableGridColumnDef[19].renderCell({ row: { internetPlacement: "Test Internet Placement" }}));
+      const renderedCell = render(TableGridColumnDef[18].renderCell({ row: { internetPlacement: "Test Internet Placement" }}));
       expect(renderedCell.findByDisplayValue("Test Internet Placement")).toBeTruthy();
     });
     it("callDetails1", ()=>{
-      const renderedCell = render(TableGridColumnDef[20].renderCell({ row: { callDetails1: "Test Call Details1" }}));
+      const renderedCell = render(TableGridColumnDef[19].renderCell({ row: { callDetails1: "Test Call Details1" }}));
       expect(renderedCell.findByDisplayValue("Test Call Details1")).toBeTruthy();
     });
     it("callDetails2", ()=>{
-      const renderedCell = render(TableGridColumnDef[21].renderCell({ row: { callDetails2: "Test Call Details2" }}));
+      const renderedCell = render(TableGridColumnDef[20].renderCell({ row: { callDetails2: "Test Call Details2" }}));
       expect(renderedCell.findByDisplayValue("Test Call Details2")).toBeTruthy();
     });
     it("callTypeDescription", ()=>{
-      const renderedCell = render(TableGridColumnDef[22].renderCell({ row: { callTypeDescription: "Test Call Type Description" }}));
+      const renderedCell = render(TableGridColumnDef[21].renderCell({ row: { callTypeDescription: "Test Call Type Description" }}));
       expect(renderedCell.findByDisplayValue("Test Call Type Description")).toBeTruthy();
     });
     it("officeNumbers", ()=>{
-      const renderedCell = render(TableGridColumnDef[30].renderCell({ row: { content: { officeNumbers: ["#9999"]}}}));
+      const renderedCell = render(TableGridColumnDef[28].renderCell({ row: { content: { officeNumbers: ["#9999"]}}}));
       expect(renderedCell.findByDisplayValue("#9999")).toBeTruthy();
     });
     it("tfnRoutingGroup", ()=>{
-      const renderedCell = render(TableGridColumnDef[31].renderCell({ row: { tfnRoutingGroup: "Core" }}));
+      const renderedCell = render(TableGridColumnDef[29].renderCell({ row: { tfnRoutingGroup: "Core" }}));
       expect(renderedCell.findByDisplayValue("Core")).toBeTruthy();
     });
     it("predictiveCaller", ()=>{
-      const renderedCell = render(TableGridColumnDef[32].renderCell({ row: { predictiveCaller: true }}));
+      const renderedCell = render(TableGridColumnDef[30].renderCell({ row: { predictiveCaller: true }}));
       expect(renderedCell.container).toBeInTheDocument();
     });
-    it("selfServiceIndicator", ()=>{
-      const renderedCell = render(TableGridColumnDef[33].renderCell({ row: { selfServiceIndicator: true }}));
+    it("callFlowName", ()=>{
+      const renderedCell = render(TableGridColumnDef[31].renderCell({ row: { callFlowName: "LSC" }}));
+      expect(renderedCell.container).toBeInTheDocument();
+    });
+    it("callFlowType", ()=>{
+      const renderedCell = render(TableGridColumnDef[32].renderCell({ row: { callFlowType: "Self Service" }}));
       expect(renderedCell.container).toBeInTheDocument();
     });
   });
@@ -186,12 +181,12 @@ describe("<TableGridColumnDef />", () => {
       }).content.callerType).toBe("TEST_CT");
       expect(TableGridColumnDef[7].valueSetter({ row: {}}).content.callerType).toBe(undefined);
     });
-    it("transferNumber", ()=>{
+    it("transferDestination", ()=>{
       expect(TableGridColumnDef[8].valueSetter({
         row: { ...validFlowData },
         value: "TEST_TN"
-      }).content.transferNumber).toBe("TEST_TN");
-      expect(TableGridColumnDef[8].valueSetter({ row: {}}).content.transferNumber).toBe(undefined);
+      }).content.transferDestination).toBe("TEST_TN");
+      expect(TableGridColumnDef[8].valueSetter({ row: {}}).content.transferDestination).toBe(undefined);
     });
     it("callFlowRoute", ()=>{
       expect(TableGridColumnDef[9].valueSetter({
@@ -208,18 +203,18 @@ describe("<TableGridColumnDef />", () => {
       expect(TableGridColumnDef[10].valueSetter({ row: {}}).content.greetingMessages).toBe(undefined);
     });
     it("callIntent", ()=>{
-      expect(TableGridColumnDef[29].valueSetter({
+      expect(TableGridColumnDef[27].valueSetter({
         row: { ...validFlowData },
         value: "TEST_CI"
       }).content.callIntent).toBe("TEST_CI");
-      expect(TableGridColumnDef[29].valueSetter({ row: {}}).content.callIntent).toBe(undefined);
+      expect(TableGridColumnDef[27].valueSetter({ row: {}}).content.callIntent).toBe(undefined);
     });
     it("officeNumbers", ()=>{
-      expect(TableGridColumnDef[30].valueSetter({
+      expect(TableGridColumnDef[28].valueSetter({
         row: { ...validFlowData },
         value: ["9999"]
       }).content.officeNumbers).toEqual(["9999"]);
-      expect(TableGridColumnDef[30].valueSetter({ row: {}}).content.officeNumbers).toEqual([]);
+      expect(TableGridColumnDef[28].valueSetter({ row: {}}).content.officeNumbers).toEqual([]);
     });
   });
 

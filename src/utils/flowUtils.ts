@@ -5,11 +5,14 @@ export const flowDropDownList: FlowDropDownList = {
   "languageOffer": [],
   "channel": [],
   "userDestination": [],
+  "callFlowName": [],
   "callFlowRoute": [],
+  "callFlowType": [],
   "callerType": [],
   "dataRequests": [],
+  "nextActionType": [],
   "tfnRoutingGroup": [],
-  "type": []
+  "phoneNumberType": []
 
 };
 export const CACHE_FILTER_FLOW = "SEARCH_FILTER_FLOW";
@@ -19,6 +22,9 @@ export const FLOW_MASTER_DATA = "FLOW_MASTER_DATA";
 export const languageOffer = ["English", "Spanish"];
 export const userDestination = ["Avaya", "Twilio"];
 export const flowType = ["DID", "DRC", "LSC", "TFN"];
+export const callFlowName = ["LSC", "AISG Main"];
+export const callFlowType = ["DTMF", "Self Service"];
+export const nextActionType = ["ANNOUNCEMENT", "MENU", "MENUOPTIONS"];
 export const tfnRoutingGroup = ["Premier Partners", "TruStage", "TruStageNavy", "USAA", "High Touch Products", "Online Inbound", "Core",
   "LSCAgentSales", "LSCBookTransfer", "LSCDirectSales", "LSCHomeInsDotCom", "LSCPriorityAgent", "LSCPriorityCampaigns", "LSCUSAA"];
 export const LAST_FLOW_MASTER_DATA_CACHED_DATE="LAST_FLOW_MASTER_DATA_CACHED_DATE";

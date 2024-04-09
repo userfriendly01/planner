@@ -6,7 +6,7 @@ import {
 } from "testUtils";
 import {
   addFlowRule, retrieveFlowData
-} from "services";
+} from "../../../Utils/FlowTableServiceUtil";
 import { useAdminState } from "context";
 import {
   Grid, Button
@@ -17,11 +17,11 @@ import {
 import { AddOrView } from "../../CustomActionsCommon/AddOrView";
 import { flowFields } from "../../FlowFieldsConfig";
 import { FloatingHeader } from "@lmig/lmds-react-floating-header";
+import { PhoneNumberType } from "google-libphonenumber";
 
 const validFlowData = {
   id: 1,
   pkey: "12345",
-  agentId: "123455",
   brand: "LM",
   callFlowTemplate: "temp",
   channel: "Test1 Channel",
@@ -35,7 +35,7 @@ const validFlowData = {
     dataRequests: ["test1", "test2"],
     greetingMessages: "Hello Test Message",
     languageOffer: "English",
-    transferNumber: "123456789"
+    transferDestination: "123456789"
   },
   accountManager: "test",
   affinityVDN: "test",
@@ -57,6 +57,11 @@ const mockMasterData = {
   channel: ["Test1 Channel", "Test2 Channel"],
   userDestination: ["Twilio", "Avaya"]
 };
+
+jest.mock("../../../Utils/FlowTableServiceUtil", () => ({
+  addFlowRule: jest.fn(),
+  retrieveFlowData: jest.fn()
+}));
 
 jest.mock("@mui/material", () => ({
   __esModule: true,
@@ -226,7 +231,7 @@ describe("<AddFlow />", () => {
       const {
         getByRole
       } = renderAddFlow(true);
-      flowFields[8].valueSetter(validFlowData, { type: "DID1" });
+      flowFields[8].valueSetter(validFlowData, { phoneNumberType: "DID1" });
       const ComponentControlMock = ComponentControl.mock;
       const dialedPhoneNumberAttr = ComponentControl.mock.calls[0][0].onChange;
       const descriptionAttr = ComponentControl.mock.calls[1][0].onChange;
@@ -235,7 +240,7 @@ describe("<AddFlow />", () => {
       const callerTypeAttr = ComponentControl.mock.calls[7][0].onChange;
       const callFlowRouteAttr = ComponentControl.mock.calls[10][0].onChange;
       const callFlowTypeAttr = ComponentControl.mock.calls[2][0].onChange;
-      const transferNumberAttr = ComponentControl.mock.calls[9][0].onChange;
+      const transferDestinationAttr = ComponentControl.mock.calls[9][0].onChange;
       const languageOfferAttr = ComponentControl.mock.calls[5][0].onChange;
       const greetingMessagesAttr = ComponentControl.mock.calls[11][0].onChange;
       const dataRequestsAtr = ComponentControl.mock.calls[6][0].onChange;
@@ -282,9 +287,9 @@ describe("<AddFlow />", () => {
           value: /test/i
         }
       };
-      const eventTransferNumber= {
+      const eventTransferDestination= {
         target: {
-          name: "transferNumber",
+          name: "transferDestination",
           value: "4625917"
         }
       };
@@ -322,7 +327,7 @@ describe("<AddFlow />", () => {
         callFlowTypeAttr(eventCallFlowType);
         languageOfferAttr(eventLanguageOffer);
         greetingMessagesAttr(eventGreetingMessages);
-        transferNumberAttr(eventTransferNumber);
+        transferDestinationAttr(eventTransferDestination);
         dataRequestsAtr(eventDataRequests);
         tfnRoutingGroupAtr(eventTfnRoutingGroup);
       });
@@ -342,7 +347,7 @@ describe("<AddFlow />", () => {
     });
     test("Simulate the duplicate check", ()=>{
       const { getByRole } = renderAddFlowDuplicateCreate();
-      flowFields[8].valueSetter(validFlowData, { type: "DID1" });
+      flowFields[8].valueSetter(validFlowData, { phoneNumberType: "DID1" });
       const dialedPhoneNumberAttr = ComponentControl.mock.calls[0][0].onChange;
       const descriptionAttr = ComponentControl.mock.calls[1][0].onChange;
       const channelAttr = ComponentControl.mock.calls[3][0].onChange;
@@ -350,7 +355,7 @@ describe("<AddFlow />", () => {
       const callerTypeAttr = ComponentControl.mock.calls[7][0].onChange;
       const callFlowRouteAttr = ComponentControl.mock.calls[10][0].onChange;
       const callFlowTypeAttr = ComponentControl.mock.calls[2][0].onChange;
-      const transferNumberAttr = ComponentControl.mock.calls[9][0].onChange;
+      const transferDestinationAttr = ComponentControl.mock.calls[9][0].onChange;
       const languageOfferAttr = ComponentControl.mock.calls[5][0].onChange;
       const greetingMessagesAttr = ComponentControl.mock.calls[11][0].onChange;
       const dataRequestsAtr = ComponentControl.mock.calls[6][0].onChange;
@@ -397,9 +402,9 @@ describe("<AddFlow />", () => {
           value: /test/i
         }
       };
-      const eventTransferNumber= {
+      const eventTransferDestination= {
         target: {
-          name: "transferNumber",
+          name: "transferDestination",
           value: "4625917"
         }
       };
@@ -437,7 +442,7 @@ describe("<AddFlow />", () => {
         callFlowTypeAttr(eventCallFlowType);
         languageOfferAttr(eventLanguageOffer);
         greetingMessagesAttr(eventGreetingMessages);
-        transferNumberAttr(eventTransferNumber);
+        transferDestinationAttr(eventTransferDestination);
         dataRequestsAtr(eventDataRequests);
         tfnRoutingGroupAtr(eventTfnRoutingGroup);
       });

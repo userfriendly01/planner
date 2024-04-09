@@ -5,6 +5,7 @@ import {
   Box, Chip, Switch
 } from "@mui/material";
 import { ModalOnHover } from "components";
+
 export const FlowGridColumnDef: GridColDef[] = [
   {
     headerName: "Dialed",
@@ -82,11 +83,11 @@ export const FlowGridColumnDef: GridColDef[] = [
   },
   {
     headerName: "Transfer Destination",
-    field: "transferNumber",
+    field: "transferDestination",
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params => `${params.row.content?.transferNumber || ""}`
+    valueGetter: params => `${params.row.content?.transferDestination || ""}`
   },
   {
     headerName: "Route",
@@ -109,13 +110,7 @@ export const FlowGridColumnDef: GridColDef[] = [
       </Tooltip>
     )
   },
-  {
-    headerName: "Agent Id",
-    field: "agentId",
-    sortable: true,
-    width: 110,
-    align: "left"
-  },
+
   {
     headerName: "Employee ID",
     field: "employeeId",
@@ -138,8 +133,8 @@ export const FlowGridColumnDef: GridColDef[] = [
     align: "left"
   },
   {
-    headerName: "Type",
-    field: "type",
+    headerName: "Phone Number Type",
+    field: "phoneNumberType",
     sortable: true,
     width: 80,
     align: "left"
@@ -254,13 +249,6 @@ export const FlowGridColumnDef: GridColDef[] = [
     align: "left"
   },
   {
-    headerName: "Toll Free Number",
-    field: "tollFreeNumber",
-    sortable: true,
-    width: 110,
-    align: "left"
-  },
-  {
     headerName: "Call Intent",
     field: "callIntent",
     sortable: true,
@@ -324,16 +312,40 @@ export const FlowGridColumnDef: GridColDef[] = [
     )
   },
   {
-    headerName: "Self Service Indicator",
-    field: "selfServiceIndicator",
-    sortable: false,
+    headerName: "Call Flow Name",
+    field: "callFlowName",
+    sortable: true,
     width: 110,
-    align: "center",
-    renderCell: (params: any) =>(
-      <Box>
-        <Switch checked={params.row?.selfServiceIndicator || false} defaultChecked={false} color="warning" disabled size="medium" />
-      </Box>
+    align: "left",
+    renderCell: (params: any) => (
+      <Tooltip title={params.row.callFlowName} >
+        <div className="table-cell-trucate">{params.row.callFlowName}</div>
+      </Tooltip>
     )
+  },
+  {
+    headerName: "Call Flow Type",
+    field: "callFlowType",
+    sortable: true,
+    width: 110,
+    align: "left",
+    renderCell: (params: any) => (
+      <Tooltip title={params.row.callFlowType} >
+        <div className="table-cell-trucate">{params.row.callFlowType}</div>
+      </Tooltip>
+    )
+  },{
+    headerName: "Next Action ID",
+    field: "nextActionId",
+    sortable: true,
+    width: 110,
+    align: "left"
+  },{
+    headerName: "Next Action Type",
+    field: "nextActionType",
+    sortable: true,
+    width: 110,
+    align: "left"
   }
 ];
 
