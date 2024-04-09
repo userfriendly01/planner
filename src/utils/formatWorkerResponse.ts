@@ -36,7 +36,7 @@ export const mapWorkerFromDbWorker = (dbWorker: DbWorker): Worker => {
   }
   //sometimes Twilio flops and cant populate full name - this will be more reliable
   if(dbWorker.attributes?.emp_first_name && dbWorker.attributes?.emp_last_name){
-    worker.attributes.full_name = `${dbWorker.attributes?.emp_first_name} ${dbWorker.attributes?.emp_last_name}`
+    worker.attributes.full_name = `${dbWorker.attributes?.emp_first_name} ${dbWorker.attributes?.emp_last_name}`;
   }
   return worker;
 };

@@ -147,7 +147,7 @@ export interface TritonProfile {
   row_crtn_dtm: string,
   row_updt_dtm: string,
   overflow_skill: string,
-  activities: Array<object>,
+  activities: Array<Record<string, unknown>>,
   callTags: string,
   operating_unit_nme: string,
   operating_unit_sid: string
@@ -162,7 +162,7 @@ export interface ProfilePayload {
   pmt_prcsg_i: boolean,
   otbnd_recorded_i: boolean,
   acw_option_i: boolean,
-  callTags: Array<object>,
+  callTags: Array<Record<string, unknown>>,
   manual_recorded_i: boolean,
   acw_data_entry_i: boolean,
   manual_record_inbound_i: boolean,
@@ -174,7 +174,7 @@ export interface ProfilePayload {
   click_to_dial_i: boolean,
   eft_authorization_i: boolean,
   claim_number_edit_i: boolean,
-  transferQueues: Array<object>,
+  transferQueues: Array<Record<string, unknown>>,
   aggregateQueues: Array<number>
 }
 

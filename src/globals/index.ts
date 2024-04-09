@@ -3,6 +3,7 @@ import { FormModes } from "globals";
 export * from "./interfaces";
 export * from "./theme";
 export * from "./styles";
+export * from "./graphql";
 
 // We're adding this to the window and can really be anywhere
 // We'll put it here for reference to the below on why it's neede

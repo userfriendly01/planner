@@ -1,4 +1,6 @@
-import { App } from "components";
+import {
+  App, SharedGraphAPIProvider
+} from "components";
 import {
   StateProvider,
   FormStateProvider
@@ -16,7 +18,6 @@ import {
 } from "@azure/msal-browser";
 import { MsalProvider } from "@azure/msal-react";
 import { initDataDogRum } from "utils/logger";
-import { AuthWrapper } from "components";
 
 // Initialize RUM before startup
 initDataDogRum();
@@ -47,9 +48,9 @@ root.render(
     <StateProvider>
       <FormStateProvider>
         <ThemeProvider theme={theme}>
-          <AuthWrapper>
+          <SharedGraphAPIProvider>
             <App />
-          </AuthWrapper>
+          </SharedGraphAPIProvider>
         </ThemeProvider>
       </FormStateProvider>
     </StateProvider>
