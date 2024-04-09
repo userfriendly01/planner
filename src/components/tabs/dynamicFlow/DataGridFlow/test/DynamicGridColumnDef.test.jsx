@@ -42,12 +42,12 @@ describe("<DynamicGridColumnDef />", () => {
       describe("valueGetter", () => {
         const getter = DynamicGridColumnDef[3].valueGetter;
         const oldTime = "1971-05-25T04:00:00.000Z";
-        const oldTimeJsEpoch = 43992000000;
+        const oldTimeUnixEpoch = 43992000;
 
         it("should set the date", () => {
           expect(getter({
             row: {
-              createTime: oldTimeJsEpoch
+              createTime: oldTimeUnixEpoch
             }
           })).toEqual(oldTime);
         });
@@ -58,13 +58,13 @@ describe("<DynamicGridColumnDef />", () => {
     describe("updateTime", () => {
       describe("valueGetter", () => {
         const getter = DynamicGridColumnDef[4].valueGetter;
-        const oldTime = "1971-05-25T04:00:00.001Z";
-        const oldTimeJsEpoch = 43992000001;
+        const oldTime = "1971-05-25T04:00:01.000Z";
+        const oldTimeUnixEpoch = 43992001;
 
         it("should set the date", () => {
           expect(getter({
             row: {
-              updateTime: oldTimeJsEpoch
+              updateTime: oldTimeUnixEpoch
             }
           })).toEqual(oldTime);
         });

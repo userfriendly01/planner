@@ -30,7 +30,7 @@ export const DynamicFlowGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 220,
     align: "left",
-    valueGetter: params => `${new Date(params?.row?.createTime).toISOString() || ""}`
+    valueGetter: params => `${new Date(params?.row?.createTime * 1000).toISOString() || ""}`
   },
   {
     headerName: "update time",
@@ -38,7 +38,7 @@ export const DynamicFlowGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 220,
     align: "left",
-    valueGetter: params => `${new Date(params?.row?.updateTime).toISOString() || ""}`
+    valueGetter: params => `${new Date(params?.row?.updateTime * 1000).toISOString() || ""}`
   },
   {
     headerName: "speech",
