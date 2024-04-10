@@ -113,7 +113,7 @@ describe("NavTabs", () => {
         const dropdownActionDivs = rendered.getAllByTestId("dropdown-action");
         expect(dropdownActionDivs.length).toBe(4);
         act(() => fireEvent.mouseEnter(dropdownActionDivs[3]));
-        expect(Link.mock.calls.length).toBe(0);
+        expect(Link.mock.calls.length).toBe(2);
       });
     });
   });

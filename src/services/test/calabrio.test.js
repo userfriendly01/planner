@@ -257,11 +257,15 @@ describe("getWfmTeam", () => {
     beforeEach(() => axiosMock.onGet(apiPaths.GET_CALABRIO_WFM).replyOnce(200, data));
     test("should resolve with any successful response", done => {
       const BusinessUnitId = "123-321";
-      const TeamId = "987-456"
+      const TeamId = "987-456";
       getWfmTeam(BusinessUnitId, TeamId)
         .then(resolvedValue => {
           expect(axiosMock.history.get.length).toEqual(1);
-          expect(axiosMock.history.get[0].params).toStrictEqual({ api: "Team", BusinessUnitId, TeamId });
+          expect(axiosMock.history.get[0].params).toStrictEqual({
+            api: "Team",
+            BusinessUnitId,
+            TeamId
+          });
           expect(resolvedValue.data).toEqual(data);
           done();
         });
@@ -272,7 +276,7 @@ describe("getWfmTeam", () => {
     beforeEach(() => axiosMock.onGet(apiPaths.GET_CALABRIO_WFM).replyOnce(500, badResponse));
     test("should reject with error", done => {
       const BusinessUnitId = "123-321";
-      const TeamId = "987-456"
+      const TeamId = "987-456";
       getWfmTeam(BusinessUnitId, TeamId).catch(rejectedVal => {
         expect(axiosMock.history.get.length).toEqual(1);
         expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));

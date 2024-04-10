@@ -107,11 +107,11 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     gridSize: 10
   },
   {
-    label: "Type",
-    key: "type",
+    label: "Phone Number Type",
+    key: "phoneNumberType",
     control: "autoComplete",
     required: false,
-    valueGetter: (params: CctSharedCallFlowDb) => `${params?.type || ""}`,
+    valueGetter: (params: CctSharedCallFlowDb) => `${params?.phoneNumberType || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
       ...newValue
@@ -119,10 +119,10 @@ const flowFields: AddFlowFieldsConfigProps[] = [
   },
   {
     label: "Transfer Destination",
-    key: "transferNumber",
+    key: "transferDestination",
     control: "input",
     required: true,
-    valueGetter: (params: CctSharedCallFlowDb) => `${params?.content?.transferNumber || ""}`,
+    valueGetter: (params: CctSharedCallFlowDb) => `${params?.content?.transferDestination || ""}`,
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
       content: {
@@ -162,16 +162,6 @@ const flowFields: AddFlowFieldsConfigProps[] = [
     })
   },
   {
-    label: "Agent ID",
-    key: "agentId",
-    control: "input",
-    valueGetter: (params: CctSharedCallFlowDb) => `${params?.agentId || ""}`,
-    valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
-      ...currentValue,
-      ...newValue
-    })
-  },
-  {
     label: "Employee ID",
     key: "employeeId",
     control: "input",
@@ -191,7 +181,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...newValue
     }),
     dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
-      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["type"]?.value === "DRC";
+      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["phoneNumberType"]?.value === "DRC";
     }
   },
   {
@@ -204,7 +194,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...newValue
     }),
     dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
-      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["type"]?.value === "DRC";
+      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["phoneNumberType"]?.value === "DRC";
     }
   },
   {
@@ -227,7 +217,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...newValue
     }),
     dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
-      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["type"]?.value === "DRC";
+      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["phoneNumberType"]?.value === "DRC";
     }
   },
   {
@@ -240,7 +230,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...newValue
     }),
     dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
-      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["type"]?.value === "DRC";
+      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["phoneNumberType"]?.value === "DRC";
     }
   },
   {
@@ -253,7 +243,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...newValue
     }),
     dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
-      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["type"]?.value === "DRC";
+      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["phoneNumberType"]?.value === "DRC";
     }
   },
   {
@@ -266,7 +256,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...newValue
     }),
     dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
-      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["type"]?.value === "DRC";
+      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["phoneNumberType"]?.value === "DRC";
     }
   },
   {
@@ -279,7 +269,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...newValue
     }),
     dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
-      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["type"]?.value === "DRC";
+      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["phoneNumberType"]?.value === "DRC";
     }
   },
   {
@@ -292,18 +282,8 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...newValue
     }),
     dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
-      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["type"]?.value === "DRC";
+      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["phoneNumberType"]?.value === "DRC";
     }
-  },
-  {
-    label: "Toll Free Number",
-    key: "tollFreeNumber",
-    control: "input",
-    valueGetter: (params: CctSharedCallFlowDb) => `${params?.tollFreeNumber || ""}`,
-    valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
-      ...currentValue,
-      ...newValue
-    })
   },
   {
     label: "Whisper",
@@ -315,7 +295,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...newValue
     }),
     dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
-      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["type"]?.value === "DRC";
+      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["phoneNumberType"]?.value === "DRC";
     }
   },
   {
@@ -328,7 +308,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...newValue
     }),
     dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
-      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["type"]?.value === "DRC";
+      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["phoneNumberType"]?.value === "DRC";
     }
   },
   {
@@ -342,7 +322,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...newValue
     }),
     dynamicFieldConditionCheck: (params?: FormValidationRule): boolean=>{
-      return params["type"]?.value === "DID";
+      return params["phoneNumberType"]?.value === "DID";
     }
   },
   {
@@ -356,7 +336,7 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...newValue
     }),
     dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
-      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["type"]?.value === "DRC";
+      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["phoneNumberType"]?.value === "DRC";
     }
   },
   {
@@ -409,19 +389,57 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...newValue
     }),
     dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
-      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["type"]?.value === "DRC";
+      return params["brand"]?.value === "Liberty Mutual" && params["channel"]?.value === "Sales" && params["phoneNumberType"]?.value === "DRC";
     }
   },
   {
-    label: "Self Service Indicator",
-    key: "selfServiceIndicator",
-    control: "switch",
+    label: "Call Flow Type",
+    key: "callFlowType",
+    control: "autoComplete",
     required: false,
-    valueGetter: (params: CctSharedCallFlowDb) => params?.selfServiceIndicator || false,
+    valueGetter: (params: CctSharedCallFlowDb): string => params?.callFlowType ?? "",
     valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
       ...currentValue,
       ...newValue
     })
+  },
+  {
+    label: "Call Flow Name",
+    key: "callFlowName",
+    control: "autoComplete",
+    required: false,
+    dynamicFieldConditionCheck: (params: FormValidationRule): boolean=>{
+      return params["callFlowType"]?.value === "DTMF";
+    },
+    valueGetter: (params: CctSharedCallFlowDb) => `${params?.callFlowName || ""}`,
+    valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
+      ...currentValue,
+      ...newValue
+    })
+  },
+  {
+    label: "Next Action ID",
+    key: "nextActionId",
+    control: "input",
+    required: false,
+    valueGetter: (params: CctSharedCallFlowDb) => `${params?.nextActionId || ""}`,
+    valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
+      ...currentValue,
+      ...newValue
+    })
+
+  },
+  {
+    label: "Next Action Type",
+    key: "nextActionType",
+    control: "autoComplete",
+    required: false,
+    valueGetter: (params: CctSharedCallFlowDb) => `${params?.nextActionType || ""}`,
+    valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
+      ...currentValue,
+      ...newValue
+    })
+
   }
 ];
 

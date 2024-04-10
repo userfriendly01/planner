@@ -5,11 +5,20 @@ import {
   fireEvent, render, initialTestState, waitFor, act, within, setupMockedComponents, adGroupPermissionMapping
 } from "testUtils";
 import {
-  deleteFlowRule, updateFlowDB
-} from "services";
+  deleteFlowRule,
+  updateFlowDB
+} from "../../../Utils/FlowTableServiceUtil";
 import { useAdminState } from "context";
 import { CustomToast } from "components";
 import { AddOrView } from "../../CustomActionsCommon/AddOrView";
+
+jest.mock("../../../Utils/FlowTableServiceUtil", () => {
+  return{
+    deleteFlowRule: jest.fn(),
+    deleteOppositeRows: jest.fn().mockReturnValue(false),
+    updateFlowDB: jest.fn()
+  };
+});
 jest.mock("components", () => {
   return{
     __esModule: true,
@@ -32,7 +41,6 @@ jest.mock("context", () => ({
 const validFlowData = {
   id: 1,
   pkey: "12345",
-  agentId: "123455",
   brand: "LM",
   callFlowTemplate: "temp",
   channel: "Test1 Channel",
@@ -46,7 +54,7 @@ const validFlowData = {
     dataRequests: ["test1", "test2"],
     greetingMessages: "Hello Test Message",
     languageOffer: "English",
-    transferNumber: "123456789"
+    transferDestination: "123456789"
   },
   accountManager: "test",
   affinityVDN: "test",
@@ -64,7 +72,6 @@ const validFlowData = {
 const invalidFlowData={
   id: 1,
   pkey: "12345",
-  agentId: "123455",
   callFlowTemplate: "temp",
   createTime: "2022-24-08",
   dialedDescription: "test",
@@ -183,32 +190,31 @@ describe("<EditFlow />", () => {
     });
 
     test("Simulate the Close Button", () => {
+      updateFlowDB.mockResolvedValue({ data: { "items": []}});
       const { getByRole } = renderEditFlow(true, validFlowData);
       const cancelButton = getByRole("button", { name: "cancelEditFlowButton" });
       fireEvent.click(cancelButton);
       expect(openEditModal).toBeCalledTimes(1);
     });
-    test("Simulate the Delete Button  with Successful API Response", () => {
+    test("Simulate the Delete Button with Successful API Response", async () => {
       deleteFlowRule.mockResolvedValue({ data: { "items": []}});
       const { getByRole } = renderEditFlow(true, validFlowData);
       const deleteButton = getByRole("button", { name: "deleteFlowRuleButton" });
       act(() => {
         fireEvent.click(deleteButton);
       });
-      waitFor(() => {
+      await waitFor(() => {
         expect(openEditModal).toBeCalledTimes(0);
       });
     });
-    test("Simulate the Delete Button  with null Response", () => {
+    test("Simulate the Delete Button with null Response", () => {
       deleteFlowRule.mockResolvedValue(null);
       const { getByRole } = renderEditFlow(true, validFlowData);
       const deleteButton = getByRole("button", { name: "deleteFlowRuleButton" });
       act(() => {
         fireEvent.click(deleteButton);
       });
-      waitFor(() => {
-        expect(openEditModal).toBeCalledTimes(0);
-      });
+      expect(openEditModal).toBeCalledTimes(0);
     });
     test("Simulate the clone Flow Rule", () => {
       const { getByRole } = renderEditFlow(true, validFlowData);

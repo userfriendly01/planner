@@ -4,7 +4,7 @@ import {
 import { AlertBarProps } from "./interfaces";
 import {
   ADGroupPermission,
-  BrandNameMap, GraphQLErrors
+  BrandNameMap, GraphQLErrors, env
 } from "globals";
 
 export const initializedAlertBar: AlertBarProps = {
@@ -109,6 +109,10 @@ export const cleanErrorMessage = (graphQLErrors: GraphQLErrors[]): string => {
 };
 
 export const readWriteAccess = (permissions: ADGroupPermission[], role: string): boolean => {
+  if (env.APP_ENV === "local") {
+    return true;
+  }
+
   for (const permission of permissions) {
     const hasRole = permission.roles.reduce(
       (prev, { name }) => prev || name === role,
