@@ -20,6 +20,7 @@ import {
   getCalabrioWfmOptions
 } from "../../../utils/calabrioUtils";
 import { startups } from "testUtils";
+import { apolloClient } from "components";
 
 jest.mock("../../../utils/calabrioUtils", () => ({
   __esModule: true,
@@ -83,32 +84,32 @@ const dbManagers = [
 
 const dbWorkers = [
   {
-    workerSid: "WK1",
-    attributes: {
+    sid: "WK1",
+    twilio_attributes_raw: JSON.stringify({
       wow: "wow"
-    }
+    })
   },
   {
-    workerSid: "WK2",
-    attributes: {
+    sid: "WK2",
+    twilio_attributes_raw: JSON.stringify({
       neat: "neat"
-    }
+    })
   },
   {
-    workerSid: "WK3",
-    attributes: {
+    sid: "WK3",
+    twilio_attributes_raw: JSON.stringify({
       stellar: "stellar"
-    }
+    })
   },
   {
-    workerSid: "WK4"
+    sid: "WK4"
   },
   {
-    workerSid: "WK5",
-    attributes: {
+    sid: "WK5",
+    twilio_attributes_raw: JSON.stringify({
       superrrr: "superrrr"
-    },
-    inactiveDate: "2023-01-01"
+    }),
+    inactive_date: "2023-01-01"
   }
 ];
 
@@ -157,6 +158,12 @@ jest.mock("context", () => ({
   useAdminDispatch: jest.fn()
 }));
 
+jest.mock("components", () => ({
+  apolloClient: {
+    query: jest.fn()
+  }
+}));
+
 const mockAdminDispatch = jest.fn();
 const statusCode = 500;
 const error = {
@@ -178,7 +185,7 @@ describe("cct-triton-admin-startup", () => {
     beforeEach(() => {
       axiosMock.onGet(profilesEndpoint).reply(200, profiles);
       axiosMock.onGet(skillsEndpoint).reply(200, skills);
-      axiosMock.onGet(workersEndpoint).reply(200, dbWorkers);
+      apolloClient.query.mockResolvedValue({ data: { users: { items: dbWorkers }}});
       getManagers.mockResolvedValue(dbManagers);
       getOffices.mockResolvedValue(dbOffices);
       getCalabrioUsers.mockResolvedValue({ data: []});
@@ -243,7 +250,7 @@ describe("cct-triton-admin-startup", () => {
               payload: skills.consolidatedSkills
             });
             expect(mockAdminDispatch).toHaveBeenCalledWith({
-              type: "loadWorkers",
+              type: "addWorkers",
               payload: filteredWorkers
             });
             expect(mockAdminDispatch).toHaveBeenCalledWith({

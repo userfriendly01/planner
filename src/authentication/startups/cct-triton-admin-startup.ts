@@ -168,8 +168,6 @@ const getUsers = async (dispatch: any) => {
           });
         }
 
-        console.log(data.users.items.length);
-
         const newUsers = [] as UMUser[];
         data.users.items.forEach(user => {
           if (!user.inactive_date && user.twilio_attributes_raw) {
@@ -183,7 +181,7 @@ const getUsers = async (dispatch: any) => {
         }));
 
         if(isFirstQuery){
-          resolve(true);
+          resolve(newUsers);
         }
 
         ({ nextToken } = data.users);
@@ -193,8 +191,7 @@ const getUsers = async (dispatch: any) => {
     getAllUsers();
   });
 
-  await firstQuery;
-  console.log("First query done");
+  return firstQuery;
 };
 
 const getBusinessUnits = async (dispatch: any) => {
