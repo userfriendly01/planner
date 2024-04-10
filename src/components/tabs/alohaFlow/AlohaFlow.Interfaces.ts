@@ -10,19 +10,21 @@ export interface FlowContent {
     dataRequests?: Array<string>;
     greetingMessages?: string;
     languageOffer?: string;
-    transferNumber?: string;
+    transferDestination?: string;
     officeNumbers?: Array<string>;
 }
 
 
 export interface FlowMasterData {
-    channel?: Array<string>;
     brand?: Array<string>;
-    callerType?: Array<string>;
-    callFlowTemplate?: Array<string>;
+    callFlowName?: Array<string>;
     callFlowRoute?: Array<string>;
-    pkey?: Array<string>;
+    callFlowTemplate?: Array<string>;
+    callFlowType?: Array<string>;
+    callerType?: Array<string>;
+    channel?: Array<string>;
     dataRequests?: Array<string>;
+    pkey?: Array<string>;
 }
 
 export interface FlowAdvanceFilter {
@@ -56,11 +58,12 @@ export interface CctSharedCallFlowDb {
     id?: number;
     accountManager?: string;
     affinityVDN?: string;
-    agentId?: string;
     brand?: string;
     callDetails1?: string;
     callDetails2?: string;
+    callFlowName?: string;
     callFlowTemplate?: string;
+    callFlowType?: string;
     callTypeDescription?: string;
     channel?: string;
     content?: FlowContent;
@@ -70,22 +73,21 @@ export interface CctSharedCallFlowDb {
     internetPlacement?: string;
     lineOfBusiness?: string;
     marketingChannel?: string;
+    nextActionId?: string;
+    nextActionType?: string;
     pkey?: string;
     predictiveCaller?: boolean;
     rangeIndicator?: string;
     requestID?: string;
-    selfServiceIndicator?: boolean;
     tfnRoutingGroup?:string;
-    tollFreeNumber?: string;
     transferCode?: string;
-    type?: string;
+    phoneNumberType?: string;
     userDestination?: string;
     whisper?: string;
 }
 export interface FlowKeys {
     accountManager?: string;
     affinityVDN?: string;
-    agentId?: string;
     brand?: string;
     callDetails1?: string;
     callDetails2?: string;
@@ -109,12 +111,10 @@ export interface FlowKeys {
     predictiveCaller?: boolean;
     rangeIndicator?: string;
     requestID?: string;
-    selfServiceIndicator?: boolean;
     tfnRoutingGroup?: string;
-    tollFreeNumber?: string;
     transferCode?: string;
-    transferNumber?: string;
-    type?: string;
+    transferDestination?: string;
+    phoneNumberType?: string;
     userDestination?: string;
     whisper?: string;
 }
@@ -124,11 +124,14 @@ export interface FlowDropDownList {
     channel: string[];
     languageOffer: string[];
     userDestination: string[];
+    callFlowName: string[];
     callFlowRoute:string[];
+    callFlowType: string[];
     callerType: string[];
     dataRequests: string[];
+    nextActionType: string[];
     tfnRoutingGroup : string[];
-    type: string[];
+    phoneNumberType: string[];
 }
 
 export interface AddFlowFieldsConfigProps {

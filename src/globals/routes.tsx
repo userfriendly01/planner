@@ -5,6 +5,7 @@ import {
   CallFlowManagementSkills,
   CallFlowManagementTfn,
   CompareProfiles,
+  DynamicFlowContainer,
   ProfileDirectoryContainer,
   ProfileDialListContainer,
   ProfileSettingsContainer,
@@ -67,6 +68,10 @@ export const getRoutes = () => [
   {
     path: "/triton-admin/aloha-flow",
     Component: AlohaFlowContainer
+  },
+  {
+    path: "/triton-admin/dyn-flow",
+    Component: DynamicFlowContainer
   },
   {
     path: "/triton-admin/aloha-routing",

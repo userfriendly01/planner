@@ -1,11 +1,41 @@
 import {
   clearGridMasterData,
-  getGridMasterData
+  getGridMasterData,
+  getValueFromKeyPath
 } from "../GridMaster";
 
 let masterData;
 
 describe("<GridMaster />", () => {
+  describe("getValueFromKeyPath", () => {
+    describe("null element", () => {
+      it("should return null", () => {
+        expect(getValueFromKeyPath(null, "hi")).toEqual(null);
+      });
+    });
+    describe("masterDataItemsFromContent includes the key", () => {
+      const content = {
+        callerType: "customer",
+        languageOffer: "Spanish"
+      };
+      it("should return masterDataItemsFromContent callerType customer", () => {
+        expect(getValueFromKeyPath({
+          content
+        }, "callerType")).toEqual(content.callerType);
+      });
+      it("should return masterDataItemsFromContent undefined from invalid content", () => {
+        const invalidContent = {
+          key: "value"
+        };
+        expect(getValueFromKeyPath(invalidContent, "callerType")).toEqual(undefined);
+      });
+      it("should return languageOffer customer", () => {
+        expect(getValueFromKeyPath({
+          ...content
+        }, "languageOffer")).toEqual(content.languageOffer);
+      });
+    });
+  });
   it("stores brand and returns it", () => {
     masterData = getGridMasterData([{ brand: "safeco" }]);
     expect(masterData).toEqual({

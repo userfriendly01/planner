@@ -213,7 +213,16 @@ describe("authenticationProfiles", () => {
           value: "aloha-callflow-management",
           label: "Call Flow DB Management",
           route: "/triton-admin/aloha-flow",
-          dropdown: null
+          dropdown: [
+            {
+              route: "/triton-admin/aloha-flow",
+              label: "Call Flow"
+            },
+            {
+              route: "/triton-admin/dyn-flow",
+              label: "Dynamic Call Flow"
+            }
+          ]
         },
         ALOHA_ROUTING_RULES: {
           value: "aloha-routing-rules",

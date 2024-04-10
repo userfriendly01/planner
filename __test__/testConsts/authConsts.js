@@ -1,11 +1,13 @@
 export const mockRunTritonStartup = jest.fn();
 export const mockRunAlohaRoutingStartup = jest.fn();
 export const mockRunAlohaFlowStartup = jest.fn();
+export const mockRunDynFlowStartup = jest.fn();
 
 export const descriptions = {
   Triton: "Test Triton Description",
   Aloha_Routing: "Test Aloha Routing Description",
-  Aloha_Flow: "Test Aloha Flow Description"
+  Aloha_Flow: "Test Aloha Flow Description",
+  Dyn_Flow: "Dynamic Flow Description"
 };
 
 export const tabs = {
@@ -72,7 +74,16 @@ export const tabs = {
   ALOHA_CALL_FLOW_MANAGEMENT: {
     value: "aloha-callflow-management",
     label: "Aloha Flow Management",
-    dropdown: null
+    dropdown: [
+      {
+        route: "/triton-admin/aloha-flow",
+        label: "Call Flow"
+      },
+      {
+        route: "/triton-admin/dyn-flow",
+        label: "Dynamic Call Flow"
+      }
+    ]
   },
   ALOHA_ROUTING_RULES: {
     value: "aloha-routing-rules",
@@ -92,6 +103,10 @@ export const startups = {
   },
   ALOHA_FLOW: {
     name: "aloha-flow",
+    function: mockRunAlohaFlowStartup
+  },
+  DYNAMIC_FLOW: {
+    name: "dyn-flow",
     function: mockRunAlohaFlowStartup
   }
 };
@@ -149,6 +164,21 @@ export const adGroupPermissionMapping = [
     ],
     startup: startups.ALOHA_FLOW,
     description: descriptions.Aloha_Flow,
+    authenticationProfile: authenticationProfileTemplates.ALOHA_FLOW
+  },
+  {
+    roles: [
+      {
+        name: "FlowRead",
+        permissionLevel: "read"
+      },
+      {
+        name: "FlowReadWrite",
+        permissionLevel: "write"
+      }
+    ],
+    startup: startups.DYNAMIC_FLOW,
+    description: descriptions.Dyn_Flow,
     authenticationProfile: authenticationProfileTemplates.ALOHA_FLOW
   },
   {

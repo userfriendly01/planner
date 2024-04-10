@@ -27,23 +27,26 @@ import {
 import {
   addFlowRule,
   retrieveFlowData
-} from "services";
+} from "../../Utils/FlowTableServiceUtil";
 import {
   ModalBodyStyled,
   ModalFooterStyled,
   HeadingStyled
 } from "../../AlohaFlow.Styles";
 import {
+  BrandName,
+  FLOW_MASTER_DATA,
+  callFlowName,
+  callFlowType,
+  checkGreetingMessageRegExp,
   cleanErrorMessage,
   flowDropDownList,
-  FLOW_MASTER_DATA,
+  flowType,
   initializedAlertBar,
   languageOffer,
+  nextActionType,
   tfnRoutingGroup,
-  userDestination,
-  flowType,
-  checkGreetingMessageRegExp,
-  BrandName
+  userDestination
 } from "utils";
 import { getGridMasterData } from "../../DataGridFlow/GridMaster";
 import {
@@ -65,7 +68,7 @@ export interface AddFlowModalProps {
 }
 
 export const AddFlow = ({
-  accessToken, matchedGroups, isOpen = false, newId, openAddModal, cloneType, flowRuleCloned, duplicateCheck
+  accessToken, isOpen = false, openAddModal, cloneType, flowRuleCloned, duplicateCheck
 }: AddFlowModalProps & AzureSPA):JSX.Element => {
 
   const [flowRule, setFlowRule] = useState({ ...initRule });
@@ -83,8 +86,8 @@ export const AddFlow = ({
       if (masterData !== undefined && masterData !== null) {
         masterDataObject = JSON.parse(masterData);
       } else {
-        const result: CctSharedCallFlowDb[] = await retrieveFlowData(accessToken, {});
-        masterDataObject = getGridMasterData(result);
+        await retrieveFlowData(accessToken,1, null, getGridMasterData);
+        masterDataObject = getGridMasterData();
       }
       setDropDownValues((dropDownValuesProps: FlowDropDownList) => ({
         ...dropDownValuesProps,
@@ -92,11 +95,14 @@ export const AddFlow = ({
         channel: masterDataObject.channel,
         languageOffer,
         userDestination,
+        callFlowName: callFlowName,
         callFlowRoute: masterDataObject?.callFlowRoute,
+        callFlowType: callFlowType,
         callerType: masterDataObject?.callerType,
+        nextActionType: nextActionType,
         dataRequests: masterDataObject?.dataRequests,
         tfnRoutingGroup,
-        type: flowType
+        phoneNumberType: flowType
       }));
     }
     fetchData();
@@ -226,40 +232,41 @@ export const AddFlow = ({
           const newFlowRule: CctSharedCallFlowDb = {
             pkey: flowRule.pkey.value,
             content: {
-              callIntent: stringValue(flowRule, "callIntent", ""),
               callFlowRoute: stringValue(flowRule,"callFlowRoute", ""),
+              callIntent: stringValue(flowRule, "callIntent", ""),
               callerType: stringValue(flowRule,"callerType", ""),
-              greetingMessages: stringValue(flowRule,"greetingMessages", ""),
-              transferNumber: stringValue(flowRule,"transferNumber", ""),
-              languageOffer: stringValue(flowRule,"languageOffer", ""),
               dataRequests: dataRequests,
-              officeNumbers: stringValue(flowRule,"officeNumbers", "")
+              greetingMessages: stringValue(flowRule,"greetingMessages", ""),
+              languageOffer: stringValue(flowRule,"languageOffer", ""),
+              officeNumbers: stringValue(flowRule,"officeNumbers", ""),
+              transferDestination: stringValue(flowRule,"transferDestination", "")
             },
-            createTime: curTime,
-            agentId: stringValue(flowRule,"agentId", ""),
-            brand: flowRule.brand.value,
-            callFlowTemplate: stringValue(flowRule,"callFlowTemplate", ""),
-            channel: flowRule.channel.value,
-            dialedDescription: flowRule.dialedDescription.value,
-            employeeId: stringValue(flowRule,"employeeId", ""),
             accountManager: stringValue(flowRule,"accountManager", ""),
             affinityVDN: stringValue(flowRule,"affinityVDN", ""),
-            callTypeDescription: stringValue(flowRule,"callTypeDescription", ""),
-            transferCode: stringValue(flowRule,"transferCode", ""),
-            internetPlacement: stringValue(flowRule,"internetPlacement", ""),
+            brand: flowRule.brand.value,
             callDetails1: stringValue(flowRule,"callDetails1", ""),
             callDetails2: stringValue(flowRule,"callDetails2", ""),
+            callFlowName: stringValue(flowRule,"callFlowName", ""),
+            callFlowTemplate: stringValue(flowRule,"callFlowTemplate", ""),
+            callFlowType: stringValue(flowRule,"callFlowType", ""),
+            callTypeDescription: stringValue(flowRule,"callTypeDescription", ""),
+            channel: flowRule.channel.value,
+            createTime: curTime,
+            dialedDescription: flowRule.dialedDescription.value,
+            employeeId: stringValue(flowRule,"employeeId", ""),
+            internetPlacement: stringValue(flowRule,"internetPlacement", ""),
             lineOfBusiness: stringValue(flowRule,"lineOfBusiness", ""),
             marketingChannel: stringValue(flowRule,"marketingChannel", ""),
-            tollFreeNumber: stringValue(flowRule,"tollFreeNumber", ""),
-            whisper: stringValue(flowRule,"whisper", ""),
-            requestID: stringValue(flowRule,"requestID", ""),
-            userDestination: flowRule.userDestination.value || "",
+            nextActionId: flowRule.nextActionId.value ?? "",
+            nextActionType: flowRule.nextActionType.value ?? "",
+            predictiveCaller: flowRule.predictiveCaller.value ?? false,
             rangeIndicator: stringValue(flowRule,"rangeIndicator", ""),
+            requestID: stringValue(flowRule,"requestID", ""),
             tfnRoutingGroup: stringValue(flowRule,"tfnRoutingGroup", ""),
-            type: flowRule.type.value || "",
-            predictiveCaller: flowRule.predictiveCaller.value || false,
-            selfServiceIndicator: flowRule.selfServiceIndicator.value || false
+            transferCode: stringValue(flowRule,"transferCode", ""),
+            phoneNumberType: flowRule?.phoneNumberType?.value ?? "",
+            userDestination: flowRule.userDestination.value ?? "",
+            whisper: stringValue(flowRule,"whisper", "")
           };
           openAddModal(false, true, newFlowRule);
           setAlertBar((alertBarProps: AlertBarProps) => ({

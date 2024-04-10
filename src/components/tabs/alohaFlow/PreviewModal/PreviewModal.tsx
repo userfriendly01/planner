@@ -93,14 +93,13 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
             callFlowRoute: "",
             callerType: "",
             greetingMessages: "",
-            transferNumber: "",
+            transferDestination: "",
             languageOffer: "",
             dataRequests: [],
             officeNumbers: []
           },
           accountManager: "",
           affinityVDN: "",
-          agentId: "",
           brand: "",
           callDetails1: "",
           callDetails2: "",
@@ -115,9 +114,8 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
           marketingChannel: "",
           rangeIndicator: "",
           requestID: "",
-          tollFreeNumber: "",
           transferCode: "",
-          type: "",
+          phoneNumberType: "",
           userDestination: "",
           whisper: ""
         }
