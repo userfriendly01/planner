@@ -53,10 +53,12 @@ const App = () => {
       const permissions = getFilteredPermissions(account);
 
       if (!permissions.length) {
-        const error = "Missing required AD groups";
-        logger.error("Failed to authenticate", { error });
+        logger.error("MISSING_AD_GROUPS", { nNumber: account.idTokenClaims.employeeid });
         setLoadResult({
-          status: error
+          status: {
+            errorMessage: "You are missing required AD Groups to be able to access this application",
+            errorStatus: "UNAUTHORIZED"
+          }
         });
       } else {
         try {
@@ -76,51 +78,66 @@ const App = () => {
             status: success
           });
         } catch (error) {
-          logger.error("Failed to authenticate", { error });
+          logger.error("DATA_GET_FAILED", { error });
           setLoadResult({
-            status: error
+            status: {
+              errorMessage: error.response.msg,
+              errorPayload: JSON.stringify(error.response.data),
+              errorStatus: error.response.status
+            }
           });
         }
       }
     };
 
+
+    if (state.userContext.accessToken && loadResult.status !== loading) {
+      setLoadResult({
+        status: loading
+      });
+
+      startup();
+    }
+
+  }, [state.userContext.accessToken]);
+
+  useEffect(() => {
     // Helper to keep token refreshed
     const tokenManager = async () => {
       logger.log("*** MSAL: Getting new Token ***");
 
-      const {
-        accessToken,
-        expiresOn
-      } = await instance.acquireTokenPopup({
-        account,
-        scopes: ["User.Read"]
-      });
+      try {
+        const {
+          accessToken,
+          expiresOn
+        } = await instance.acquireTokenPopup({
+          account,
+          scopes: ["User.Read"]
+        });
 
-      logger.log(`*** MSAL: Token acquired, will expire at ${expiresOn} ***`);
+        logger.log(`*** MSAL: Token acquired, will expire at ${expiresOn} ***`);
 
-      dispatch(({
-        type: "loadUserData",
-        payload: {
-          accessToken
-        }
-      }));
+        dispatch(({
+          type: "loadUserData",
+          payload: {
+            accessToken
+          }
+        }));
 
-      wait(() => () => {
-        logger.log("*** MSAL: Token is about to expire, getting new token ***");
-        tokenManager();
-      }, expiresOn.getTime() - new Date().getTime() - 1000);
+        wait(() => () => {
+          logger.log("*** MSAL: Token is about to expire, getting new token ***");
+          tokenManager();
+        }, expiresOn.getTime() - new Date().getTime());
+      } catch (error) {
+        logger.error("TOKEN_GET_FAILED", { error });
+        setLoadResult({
+          status: error
+        });
+      }
     };
 
-    if (account && !loadResult.status) {
-      logger.log("*** MSAL: User Account ***", account);
-
-      setLoadResult({
-        status: loading
-      });
-      tokenManager();
-      startup();
-    }
-  }, [account, loadResult]);
+    tokenManager();
+  }, []);
 
   useEffect(() => {
     const {
@@ -171,9 +188,13 @@ const App = () => {
       return (
         <Overlay data-testid="error-overlay">
           <ErrorWrapper>
-            <ErrorStatus>{loadResult.status.error.response.status}</ErrorStatus>
-            <ErrorMessage>{loadResult.status.msg}</ErrorMessage>
-            <ErrorPayload>{JSON.stringify(loadResult.status.error.response.data)}</ErrorPayload>
+            <ErrorStatus>{loadResult.status.errorStatus}</ErrorStatus>
+            <ErrorMessage>{loadResult.status.errorMessage}</ErrorMessage>
+            {loadResult.status.errorPayload && (
+              <ErrorPayload>
+                {loadResult.status.errorPayload}
+              </ErrorPayload>
+            )}
           </ErrorWrapper>
         </Overlay>
       );
