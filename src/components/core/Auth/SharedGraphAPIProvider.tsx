@@ -20,7 +20,7 @@ export const SharedGraphAPIProvider = ({ children }: Props): ReactElement => {
   const state = useAdminState();
 
   const httpLink = createHttpLink({
-    uri: env.GRAPH_API_URL // "https://3k2iegyjmnfwxheh65ugy2vjt4.appsync-api.us-east-1.amazonaws.com/graphql"
+    uri: env.GRAPH_API_URL
   });
 
   const authLink = setContext(async (_, { headers }) => ({

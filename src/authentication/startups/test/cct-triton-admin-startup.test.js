@@ -109,7 +109,7 @@ const dbWorkers = [
     twilio_attributes_raw: JSON.stringify({
       superrrr: "superrrr"
     }),
-    inactive_date: "2023-01-01"
+    inactiveDate: "2023-01-01"
   }
 ];
 

@@ -48,75 +48,42 @@ const App = () => {
   const dispatch = useAdminDispatch();
   const state = useAdminState();
 
-  // Helper to keep token refreshed
-  const tokenManager = async () => {
-    logger.log("*** MSAL: Getting new Token ***");
-
-    try {
-      const {
-        accessToken,
-        expiresOn
-      } = await instance.acquireTokenPopup({
-        account,
-        scopes: ["User.Read"]
-      });
-
-      logger.log(`*** MSAL: Token acquired, will expire at ${expiresOn} ***`);
-
-      dispatch(({
-        type: "loadUserData",
-        payload: {
-          accessToken
-        }
-      }));
-
-      wait(() => () => {
-        logger.log("*** MSAL: Token is about to expire, getting new token ***");
-        tokenManager();
-      }, expiresOn.getTime() - new Date().getTime() - 1000);
-    } catch (error) {
-      logger.error("TOKEN_GET_FAILED", { error });
-      setLoadResult({
-        status: error
-      });
-    }
-  };
-
-  const startup = async () => {
-    const permissions = getFilteredPermissions(account);
-
-    if (!permissions.length) {
-      logger.error("MISSING_AD_GROUPS", { nNumber: account.idTokenClaims.employeeid });
-      setLoadResult({
-        status: "You are missing required AD Groups to be able to access this application"
-      });
-    } else {
-      try {
-        dispatch(({
-          type: "loadUserData",
-          payload: {
-            permissions
-          }
-        }));
-
-        await Promise.all(
-          permissions.map(({ startup }) => startup.function(dispatch))
-        );
-
-        setLoadResult({
-          home: permissions[0].authenticationProfile.home,
-          status: success
-        });
-      } catch (error) {
-        logger.error("DATA_GET_FAILED", { error });
-        setLoadResult({
-          status: error
-        });
-      }
-    }
-  };
-
   useEffect(() => {
+    const startup = async () => {
+      const permissions = getFilteredPermissions(account);
+
+      if (!permissions.length) {
+        logger.error("MISSING_AD_GROUPS", { nNumber: account.idTokenClaims.employeeid });
+        setLoadResult({
+          status: "You are missing required AD Groups to be able to access this application"
+        });
+      } else {
+        try {
+          dispatch(({
+            type: "loadUserData",
+            payload: {
+              permissions
+            }
+          }));
+
+          await Promise.all(
+            permissions.map(({ startup }) => startup.function(dispatch))
+          );
+
+          setLoadResult({
+            home: permissions[0].authenticationProfile.home,
+            status: success
+          });
+        } catch (error) {
+          logger.error("DATA_GET_FAILED", { error });
+          setLoadResult({
+            status: error
+          });
+        }
+      }
+    };
+
+
     if (state.userContext.accessToken && loadResult.status !== loading) {
       setLoadResult({
         status: loading
@@ -128,9 +95,42 @@ const App = () => {
   }, [state.userContext.accessToken]);
 
   useEffect(() => {
+    // Helper to keep token refreshed
+    const tokenManager = async () => {
+      logger.log("*** MSAL: Getting new Token ***");
+
+      try {
+        const {
+          accessToken,
+          expiresOn
+        } = await instance.acquireTokenPopup({
+          account,
+          scopes: ["User.Read"]
+        });
+
+        logger.log(`*** MSAL: Token acquired, will expire at ${expiresOn} ***`);
+
+        dispatch(({
+          type: "loadUserData",
+          payload: {
+            accessToken
+          }
+        }));
+
+        wait(() => () => {
+          logger.log("*** MSAL: Token is about to expire, getting new token ***");
+          tokenManager();
+        }, expiresOn.getTime() - new Date().getTime());
+      } catch (error) {
+        logger.error("TOKEN_GET_FAILED", { error });
+        setLoadResult({
+          status: error
+        });
+      }
+    };
+
     tokenManager();
   }, []);
-
 
   useEffect(() => {
     const {

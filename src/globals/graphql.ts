@@ -7,7 +7,7 @@ const userAttributes = `
   zeroOutEnabled: zero_out_enabled
   selfServiceInd: self_service_ind
   operatingUnitSid: operating_unit_sid
-  inactive_date: inactiveDate
+  inactiveDate: inactive_date
   inactiveForwardTo: inactive_forward_to
 `;
 

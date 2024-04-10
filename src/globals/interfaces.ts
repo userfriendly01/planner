@@ -294,13 +294,14 @@ export interface UMUserTwilioAttributes {
   roles?: string[],
   routing?: UMTwilioAttributeSkills,
   unique_id?: string,
+  agent_id?: string,
 }
 
 export interface UMUser {
   sid: string; // --> mapped from worker_sid
   workerSid: string; // --> mapped from worker_sid
   directDialNum?: string; // --> did
-  inactive_date?: string;
+  inactiveDate?: string; // --> inactive_date
   twilio_attributes: string; // Used for create and update
   twilio_attributes_raw: string // Used to make attributes
   inactiveForwardTo: string;

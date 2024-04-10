@@ -3,22 +3,23 @@ import {
   CREATE_USER,
   UMUser
 }from "globals";
-import { mapWorkerToDbWorker } from "utils";
+import {
+  mapWorkerFromDbWorker, mapWorkerToDbWorker
+} from "utils";
 
 export const createUser = async (worker: Partial<UMUser>): Promise<UMUser> => {
   const {
-    data, error
-  } = await apolloClient.query<{ user: UMUser }>({
-    query: CREATE_USER,
+    errors, data
+  }  = await apolloClient.mutate<{ user: UMUser }>({
+    mutation: CREATE_USER,
     variables: {
-      jj: "te",
       input: mapWorkerToDbWorker(worker)
     }
   });
 
-  if (error) {
-    throw error;
+  if (errors?.length) {
+    throw errors;
   }
 
-  return data.user;
+  return mapWorkerFromDbWorker(data.user);
 };

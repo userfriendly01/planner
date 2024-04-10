@@ -27,7 +27,7 @@ import * as XLSX from "xlsx";
 export const updateTritonUserState = async (state: AppState, dispatch: any): Promise<void> => {
   try {
     const response = await myAxios.get(apiPaths.GET_WORKERS);
-    const filteredWorkers = formatWorkerResponse(response.data).filter(worker => !worker.inactive_date && worker.attributes);
+    const filteredWorkers = formatWorkerResponse(response.data).filter(worker => !worker.inactiveDate && worker.attributes);
     dispatch(({
       type: "loadWorkers",
       payload: filteredWorkers

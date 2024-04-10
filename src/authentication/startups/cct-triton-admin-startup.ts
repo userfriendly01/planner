@@ -170,7 +170,7 @@ const getUsers = async (dispatch: any) => {
 
         const newUsers = [] as UMUser[];
         data.users.items.forEach(user => {
-          if (!user.inactive_date && user.twilio_attributes_raw) {
+          if (!user.inactiveDate && user.twilio_attributes_raw) {
             newUsers.push(mapWorkerFromDbWorker(user));
           }
         });

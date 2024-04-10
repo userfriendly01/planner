@@ -105,6 +105,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       manager_n_number: form.triton.manager.value.manager_n_number,
       manager: `${form.triton.manager.value.manager_first_name} ${form.triton.manager.value.manager_last_name}`,
       n_number: userNNumber,
+      agent_id: userNNumber,
       office_location_name: form.nNumber.nNumberFetchedUser.officeName,
       office_location_number: form.nNumber.nNumberFetchedUser.officeNumber,
       primary_dept_name: form.nNumber.nNumberFetchedUser.departmentName,
@@ -190,17 +191,17 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       }
       dispatch({
         type: "addWorkers",
-        payload: [mapWorkerFromDbWorker(dbWorker)]
+        payload: [dbWorker]
       });
 
       try {
-        calabrioAttributes.acdId = dbWorker.workerSid;
+        calabrioAttributes.acdId = dbWorker.sid;
         await checkConflictingUsers(calabrioAttributes, users, roles, teams);
         await createCalabrioUser(calabrioAttributes);
 
         logger.info("Successfully created Calabrio User", {
           nNumber,
-          workerSid: dbWorker.workerSid
+          workerSid: dbWorker.sid
         });
 
         try {

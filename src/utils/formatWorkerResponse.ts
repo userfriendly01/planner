@@ -11,6 +11,8 @@ export const formatWorkerResponse = (response: UMUser[]): UMUser[] => {
 };
 
 export const mapWorkerToDbWorker = (worker: Partial<UMUser>): Partial<UMUser> => {
+  console.log("THIS IS THE WORKER: ", worker);
+
   return {
     twilio_attributes: JSON.stringify({
       ...worker.attributes,
@@ -34,10 +36,10 @@ export const mapWorkerToDbWorker = (worker: Partial<UMUser>): Partial<UMUser> =>
     ...worker.operatingUnitSid && {
       operating_unit_sid: worker.operatingUnitSid
     },
-    ...worker.zeroOutEnabled !== undefined && {
-      zero_out_enabled: worker.directDialNum
+    ...(worker.zeroOutEnabled !== undefined && worker.zeroOutEnabled !== null) && {
+      zero_out_enabled: worker.zeroOutEnabled
     },
-    ...worker.selfServiceInd && {
+    ...(worker.selfServiceInd !== undefined && worker.selfServiceInd !== null)  !== undefined && {
       self_service_ind: worker.selfServiceInd
     },
     ...worker.alternateDid && {
@@ -47,10 +49,12 @@ export const mapWorkerToDbWorker = (worker: Partial<UMUser>): Partial<UMUser> =>
 };
 
 export const mapWorkerFromDbWorker = (dbWorker: UMUser): UMUser => {
+  const parsedAttributes = dbWorker.twilio_attributes_raw ? JSON.parse(dbWorker.twilio_attributes_raw) : null;
+
   const worker = {
     ...dbWorker,
-    attributes: JSON.parse(dbWorker.twilio_attributes_raw),
-    skillsDifferent: dbWorker.attributes ? areSkillsDifferent(dbWorker.attributes) : false
+    attributes: parsedAttributes,
+    skillsDifferent: parsedAttributes ? areSkillsDifferent(parsedAttributes) : false
   };
 
   delete worker.twilio_attributes_raw;
@@ -59,8 +63,8 @@ export const mapWorkerFromDbWorker = (dbWorker: UMUser): UMUser => {
     worker.attributes.manager_n_number = worker.attributes.manager_n_number.toLowerCase();
   }
   //sometimes Twilio flops and cant populate full name - this will be more reliable
-  if(dbWorker.attributes?.emp_first_name && dbWorker.attributes?.emp_last_name){
-    worker.attributes.full_name = `${dbWorker.attributes?.emp_first_name} ${dbWorker.attributes?.emp_last_name}`;
+  if(worker.attributes?.emp_first_name && worker.attributes?.emp_last_name){
+    worker.attributes.full_name = `${worker.attributes?.emp_first_name} ${worker.attributes?.emp_last_name}`;
   }
   return worker;
 };
