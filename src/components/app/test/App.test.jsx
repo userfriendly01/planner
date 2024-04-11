@@ -61,6 +61,8 @@ const mockAdminDispatch = jest.fn();
 const permissions = [adGroupPermissionMapping[0]];
 
 describe("<App />", () => {
+  let acquireTokenPopupFunc;
+
   beforeEach(() => {
     jest.resetAllMocks();
     document.getElementById.mockReturnValue({ scrollTo: jest.fn() });
@@ -86,13 +88,20 @@ describe("<App />", () => {
     getFilteredPermissions.mockReturnValue(permissions);
     getWorkerProfileId.mockReturnValue(0);
 
+    acquireTokenPopupFunc = jest.fn().mockReturnValue({
+      accessToken: "Access Token",
+      expiresOn: new Date()
+    });
+
     useMsal.mockReturnValue({
       instance: {
-        getActiveAccount: jest.fn(),
-        acquireTokenPopup: jest.fn().mockReturnValue({
-          accessToken: "Access Token",
-          expiresOn: null
-        })
+        getActiveAccount: jest.fn().mockReturnValue({
+          idTokenClaims: {
+            roles: ["Admin"],
+            employeeid: "n1234567"
+          }
+        }),
+        acquireTokenPopup: acquireTokenPopupFunc
       }
     });
   });
@@ -103,10 +112,35 @@ describe("<App />", () => {
       expect(rendered.container).toHaveTextContent("Loading...");
       expectMockedComponent(rendered, { CircularProgress });
     });
+
+    test("should call to acquireTokenPopup and get a token", async () => {
+      render(<App />);
+
+      await waitFor(() => {
+        expect(acquireTokenPopupFunc).toHaveBeenCalled();
+
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadUserData",
+          payload: {
+            accessToken: "Access Token"
+          }
+        });
+      });
+    });
   });
 
   describe("authentication is successful and we have an account object", () => {
     beforeEach(() => {
+      useAdminState.mockReturnValue({
+        userContext: {
+          permissions: [],
+          accessToken: "Access Token"
+        },
+        workerContext: {
+          workers: []
+        }
+      });
+
       useMsal.mockReturnValue({
         instance: {
           getActiveAccount: jest.fn().mockReturnValue({
@@ -176,11 +210,114 @@ describe("<App />", () => {
     });
   });
 
-  // Error test for when no permissions
+  describe("application is set into error state", () => {
+    test("User has no permissions", async () => {
+      useAdminState.mockReturnValue({
+        userContext: {
+          accessToken: "Access Token"
+        },
+        workerContext: {
+          workers: []
+        }
+      });
 
-  // Error test for when fails to run a startup
+      getFilteredPermissions.mockReturnValue([]);
+      const rendered = render(<App />);
+      await waitFor(() => rendered.getByTestId("error-overlay"));
 
-  // Error for acquireTokenSilent (needs functionality too)
+      expect(rendered.container).toHaveTextContent("You are missing required AD Groups to be able to access this application");
+      expect(rendered.container).toHaveTextContent("UNAUTHORIZED");
+    });
 
+    test("Startup fails to run", async () => {
+      useAdminState.mockReturnValue({
+        userContext: {
+          accessToken: "Access Token"
+        },
+        workerContext: {
+          workers: []
+        }
+      });
+
+      getFilteredPermissions.mockReturnValue([{
+        startup: {
+          function: mockRunTritonStartup
+        }
+      }]);
+      mockRunTritonStartup.mockRejectedValue({
+        response: {
+          msg: "Something went wrong",
+          data: { woah: "an error" },
+          status: 401
+        }
+      });
+
+      const rendered = render(<App />);
+      await waitFor(() => rendered.getByTestId("error-overlay"));
+
+      expect(rendered.container).toHaveTextContent("Something went wrong");
+      expect(rendered.container).toHaveTextContent(401);
+    });
+
+    test("acquireTokenPopup throws an error", async () => {
+      acquireTokenPopupFunc.mockRejectedValue({
+        errorMessage: "Popup went wrong",
+        errorStatus: 401
+      });
+
+      const rendered = render(<App />);
+      await waitFor(() => rendered.getByTestId("error-overlay"));
+
+      expect(rendered.container).toHaveTextContent("Popup went wrong");
+      expect(rendered.container).toHaveTextContent(401);
+    });
+  });
+
+  xdescribe("tokenManager refresh", () => {
+    beforeEach(() => {
+      jest.useFakeTimers("modern");
+      jest.setSystemTime(new Date("2024-01-01"));
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    test("tokenManager should re-call acquireTokenPopup when token expires", async () => {
+      acquireTokenPopupFunc = jest.fn().mockReturnValue({
+        accessToken: "Access Token",
+        expiresOn: new Date("2024-01-01")
+      });
+
+      useMsal.mockReturnValue({
+        instance: {
+          getActiveAccount: jest.fn().mockReturnValue({
+            idTokenClaims: {
+              roles: ["Admin"],
+              employeeid: "n1234567"
+            }
+          }),
+          acquireTokenPopup: acquireTokenPopupFunc
+        }
+      });
+
+      render(<App />);
+
+      await waitFor(() => {
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadUserData",
+          payload: {
+            accessToken: "Access Token"
+          }
+        });
+      });
+
+      // jest.advanceTimersByTime(5000);
+
+      await waitFor(() => {
+        expect(acquireTokenPopupFunc).toHaveBeenCalledTimes(2);
+      });
+    });
+  });
   // Tests for token manager
 });

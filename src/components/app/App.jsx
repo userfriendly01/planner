@@ -55,7 +55,10 @@ const App = () => {
       if (!permissions.length) {
         logger.error("MISSING_AD_GROUPS", { nNumber: account.idTokenClaims.employeeid });
         setLoadResult({
-          status: "You are missing required AD Groups to be able to access this application"
+          status: {
+            errorMessage: "You are missing required AD Groups to be able to access this application",
+            errorStatus: "UNAUTHORIZED"
+          }
         });
       } else {
         try {
@@ -77,7 +80,11 @@ const App = () => {
         } catch (error) {
           logger.error("DATA_GET_FAILED", { error });
           setLoadResult({
-            status: error
+            status: {
+              errorMessage: error.response.msg,
+              errorPayload: JSON.stringify(error.response.data),
+              errorStatus: error.response.status
+            }
           });
         }
       }
@@ -181,9 +188,13 @@ const App = () => {
       return (
         <Overlay data-testid="error-overlay">
           <ErrorWrapper>
-            <ErrorStatus>{loadResult.status.error.response.status}</ErrorStatus>
-            <ErrorMessage>{loadResult.status.msg}</ErrorMessage>
-            <ErrorPayload>{JSON.stringify(loadResult.status.error.response.data)}</ErrorPayload>
+            <ErrorStatus>{loadResult.status.errorStatus}</ErrorStatus>
+            <ErrorMessage>{loadResult.status.errorMessage}</ErrorMessage>
+            {loadResult.status.errorPayload && (
+              <ErrorPayload>
+                {loadResult.status.errorPayload}
+              </ErrorPayload>
+            )}
           </ErrorWrapper>
         </Overlay>
       );
