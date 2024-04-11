@@ -123,19 +123,11 @@ const App = () => {
             accessToken
           }
         }));
-
-        console.warn("**** just before wait", "expires: ", expiresOn.getTime());
-        setTimeout(() => {
-          console.warn("**** inside wait");
+        wait(() => {
           logger.log("*** MSAL: Token is about to expire, getting new token ***");
-          return tokenManager();
-        }, 5000); //expiresOn.getTime() - new Date().getTime()
+          tokenManager();
+        }, expiresOn.getTime() - Date.now());
 
-        // wait(() => {
-        //   console.warn("**** inside wait");
-        //   logger.log("*** MSAL: Token is about to expire, getting new token ***");
-        //   tokenManager();
-        // }, expiresOn.getTime() - new Date().getTime());
       } catch (error) {
         logger.error("TOKEN_GET_FAILED", { error });
         setLoadResult({
