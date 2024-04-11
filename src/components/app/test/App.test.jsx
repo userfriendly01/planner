@@ -25,6 +25,9 @@ import {
 import {
   getFilteredPermissions, getWorkerProfileId
 } from "authentication";
+import {
+  wait
+} from "utils";
 
 
 delete window.location;
@@ -50,9 +53,17 @@ jest.mock("context", () => ({
 
 jest.mock("@azure/msal-react");
 
+jest.useFakeTimers("modern");
+// jest.setSystemTime(new Date(1704067200000).getTime(123));
+Date.now = jest.fn();
+// .mockImplementation(() => ({
+//   getTime: jest.fn().mockReturnValue(123)
+// }));
+
+
 jest.mock("utils", () => ({
   myAxios: jest.requireActual("utils").myAxios,
-  wait: jest.requireActual("utils").wait,
+  wait: jest.fn(), //jest.requireActual("utils").wait,
   isErrorIn400s: jest.requireActual("utils").isErrorIn400s,
   logger: jest.requireActual("utils").logger
 }));
@@ -273,10 +284,19 @@ describe("<App />", () => {
     });
   });
 
-  xdescribe("tokenManager refresh", () => {
+  describe("tokenManager refresh", () => {
+    acquireTokenPopupFunc = jest.fn();
     beforeEach(() => {
-      jest.useFakeTimers("modern");
-      jest.setSystemTime(new Date("2024-01-01"));
+      Date.now.mockReturnValueOnce({
+        getTime: jest.fn().mockReturnValue(1704067100000)
+      });
+      Date.now.mockReturnValue({
+        getTime: jest.fn().mockReturnValue(1704067200000)
+      });
+      acquireTokenPopupFunc.mockReturnValue({
+        accessToken: "Access Token",
+        expiresOn: new Date("2024-01-01")
+      });
     });
 
     afterEach(() => {
@@ -284,10 +304,6 @@ describe("<App />", () => {
     });
 
     test("tokenManager should re-call acquireTokenPopup when token expires", async () => {
-      acquireTokenPopupFunc = jest.fn().mockReturnValue({
-        accessToken: "Access Token",
-        expiresOn: new Date("2024-01-01")
-      });
 
       useMsal.mockReturnValue({
         instance: {
@@ -303,6 +319,8 @@ describe("<App />", () => {
 
       render(<App />);
 
+      // expect(wait.mock.calls).toBe("butts"); //.toHaveBeenCalled();
+
       await waitFor(() => {
         expect(mockAdminDispatch).toHaveBeenCalledWith({
           type: "loadUserData",
@@ -312,7 +330,8 @@ describe("<App />", () => {
         });
       });
 
-      // jest.advanceTimersByTime(5000);
+      jest.advanceTimersByTime(5000);
+      // jest.runAllTimers();
 
       await waitFor(() => {
         expect(acquireTokenPopupFunc).toHaveBeenCalledTimes(2);
