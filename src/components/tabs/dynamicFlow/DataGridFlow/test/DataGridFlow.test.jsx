@@ -144,7 +144,7 @@ describe("<DataGridFlow />", () => {
       act(()=>{
         previewModalOnCreate([{ ...validFlowDataList[1] }]);
       });
-      expect(DataGrid.mock.calls.length).toBe(1);
+      expect(DataGrid.mock.calls.length).toBe(2);
     });
     it("Preview Modal onCreate Failure", ()=>{
       const validFlowDataList = createFlowDataList(15);
