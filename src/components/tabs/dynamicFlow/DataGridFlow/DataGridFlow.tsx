@@ -36,7 +36,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
 
   const flowInitState: DynamicStateVariables = {
     data: [],
-    filteredItems: [] ,
+    filteredItems: [] as Array<DynamicAction>,
     fetching: false,
     selectedRow: undefined,
     isPreviewModalOpen: false,
@@ -132,7 +132,19 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
   };
 
   const exportDataFile = () =>{
-    downloadCSV(EXPORT_FILE_PREFIX.FLOW, dataFlow.filteredItems);
+    downloadCSV(EXPORT_FILE_PREFIX.DYNAMIC_FLOW, dataFlow.filteredItems.map(action =>  {
+      return {
+        actionId: action.actionId,
+        actionType: action.actionType,
+        callFlowName: action.callFlowName,
+        nextActionId: action.nextActionId,
+        nextActionType: action.nextActionType,
+        speech: action.speech,
+        createTime: action.createTime,
+        updateTime: action.updateTime
+      };
+    }
+    ));
   };
 
   const handleClose = (flag: boolean) => {

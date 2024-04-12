@@ -5,6 +5,7 @@ import { AlertBarProps } from "./interfaces";
 import {
   BrandNameMap, GraphQLErrors, env
 } from "globals";
+import { DynamicAction } from "components/tabs/dynamicFlow/DynamicFlow.Interfaces";
 
 export const initializedAlertBar: AlertBarProps = {
   open: false,
@@ -14,11 +15,11 @@ export const initializedAlertBar: AlertBarProps = {
 };
 
 export const EXPORT_FILE_PREFIX: {
-  DYN: string;
+  DYNAMIC_FLOW: string;
   FLOW: string;
   ROUTING: string;
 } ={
-  DYN: "dynamic-flow",
+  DYNAMIC_FLOW: "dynamic-flow",
   FLOW: "call-flow",
   ROUTING: "routing-rules"
 };
@@ -86,7 +87,7 @@ const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb |CctSharedCa
   return result;
 };
 
-export const  downloadCSV = (prefix: string, array:Array<CctSharedCallFlowDb |CctSharedCallRoutingDb>): JSX.Element => {
+export const  downloadCSV = (prefix: string, array:Array<CctSharedCallFlowDb |CctSharedCallRoutingDb | DynamicAction>): JSX.Element => {
   const link: HTMLAnchorElement = document.createElement("a");
   let csv: string = convertArrayOfObjectsToCSV(array, prefix);
   if (csv === null || csv===undefined) { return; }

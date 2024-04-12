@@ -16,7 +16,7 @@ export interface Action {
 
 export interface DynamicStateVariables {
     data?: Array<Action>;
-    filteredItems?: Array<Action>;
+    filteredItems?: Array<DynamicAction>;
     fetching?: boolean;
     selectedRow?: Action;
     isPreviewModalOpen?: boolean;
