@@ -11,6 +11,8 @@ import {
 } from "../DynamicFlow.Interfaces";
 import { AlertBarProps } from "utils/interfaces";
 import {
+  downloadCSV,
+  EXPORT_FILE_PREFIX,
   initializedAlertBar
 } from "utils";
 import { PreviewModal } from "../PreviewModal/PreviewModal";
@@ -129,6 +131,10 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     }
   };
 
+  const exportDataFile = () =>{
+    downloadCSV(EXPORT_FILE_PREFIX.FLOW, dataFlow.filteredItems);
+  };
+
   const handleClose = (flag: boolean) => {
     setAlertBar((alertBarProps: AlertBarProps) => ({
       ...alertBarProps,
@@ -179,6 +185,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       <div className="data-grid-wrapper">
         <div className="data-grid-wrapper">
           <CustomFlowGridToolBar
+            exportDataFile={exportDataFile}
             matchedGroups={matchedGroups}
             openPreviewModal={openPreviewModal}
           />

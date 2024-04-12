@@ -14,11 +14,13 @@ export const initializedAlertBar: AlertBarProps = {
 };
 
 export const EXPORT_FILE_PREFIX: {
-  ROUTING: string;
+  DYN: string;
   FLOW: string;
+  ROUTING: string;
 } ={
-  ROUTING: "routing-rules",
-  FLOW: "call-flow"
+  DYN: "dynamic-flow",
+  FLOW: "call-flow",
+  ROUTING: "routing-rules"
 };
 
 const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb |CctSharedCallRoutingDb>, prefix: string): string => {
