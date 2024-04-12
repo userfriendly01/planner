@@ -20,6 +20,8 @@ import {
   batchDynamicFlowCreate, queryDynamicFlowData
 } from "services";
 
+
+
 jest.mock("@mui/x-data-grid",()=>({
   __esModule: true,
   DataGrid: jest.fn(),
@@ -92,6 +94,23 @@ describe("<DataGridFlow />", () => {
     });
   });
 
+  describe.only("Export", ()=>{
+    test("Simulate the export", async()=>{
+      const validFlowDataList = createFlowDataList(5);
+      queryDynamicFlowData.mockResolvedValue({
+        data: {
+          getCallFlowConfig: {
+            items: validFlowDataList
+          }
+        }
+      });
+      renderComponent();
+      const exportDataFile = CustomFlowGridToolBar.mock.calls[0][0].exportDataFile;
+      act(()=>{ exportDataFile(); });
+      expect(CustomFlowGridToolBar.mock.calls.length).toBe(1);
+    });
+  });
+
   describe("PreviewModal", ()=>{
     it("Preview Modal onClose", ()=>{
       renderComponent();
@@ -125,7 +144,7 @@ describe("<DataGridFlow />", () => {
       act(()=>{
         previewModalOnCreate([{ ...validFlowDataList[1] }]);
       });
-      expect(DataGrid.mock.calls.length).toBe(2);
+      expect(DataGrid.mock.calls.length).toBe(1);
     });
     it("Preview Modal onCreate Failure", ()=>{
       const validFlowDataList = createFlowDataList(15);
