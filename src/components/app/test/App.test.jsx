@@ -141,6 +141,9 @@ describe("<App />", () => {
         }
       });
 
+      Date.now = jest.fn();
+      Date.now.mockReturnValue(1704067200000);
+
       useMsal.mockReturnValue({
         instance: {
           getActiveAccount: jest.fn().mockReturnValue({
@@ -151,7 +154,7 @@ describe("<App />", () => {
           }),
           acquireTokenPopup: jest.fn().mockReturnValue({
             accessToken: "Access Token",
-            expiresOn: new Date()
+            expiresOn: new Date(1704067201000)
           })
         }
       });
@@ -273,7 +276,7 @@ describe("<App />", () => {
     });
   });
 
-  describe.only("tokenManager refresh", () => {
+  describe("tokenManager refresh", () => {
     acquireTokenPopupFunc = jest.fn();
     beforeEach(() => {
       Date.now = jest.fn();
@@ -315,5 +318,4 @@ describe("<App />", () => {
       }, 1200); // if this test ever causes spontaneous failures, up this timeout
     });
   });
-  // Tests for token manager
 });
