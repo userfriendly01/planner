@@ -137,9 +137,15 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         actionId: action.actionId,
         actionType: action.actionType,
         callFlowName: action.callFlowName,
+        speech: action.speech,
+        options: action.options,
+        repeat: action.repeat,
+        timeout: action.timeout,
+        finishOnKey: action.finishOnKey,
+        minDigits: action.minDigits,
+        maxDigits: action.maxDigits,
         nextActionId: action.nextActionId,
         nextActionType: action.nextActionType,
-        speech: action.speech,
         createTime: action.createTime,
         updateTime: action.updateTime
       };
