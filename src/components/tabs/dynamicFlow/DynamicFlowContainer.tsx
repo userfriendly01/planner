@@ -6,7 +6,7 @@ import {
   LoginError
 } from "components";
 
-const DynamicFlowContainer = () => {
+const DynamicFlowContainer = (): JSX.Element => {
   const {
     accessToken,
     matchedGroups,

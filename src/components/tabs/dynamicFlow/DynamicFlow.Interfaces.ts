@@ -1,9 +1,6 @@
 import { Control } from "globals";
 import { FormValidationRule } from "utils/interfaces";
 import { MultiFieldContainerFormProps } from "components/core/SharedComponents/MultiFieldContainer";
-import {
-  CctSharedCallFlowDb, FlowAdvanceFilter, FlowMasterData
-} from "components";
 
 export type PreviewModalAction = "add";
 
@@ -19,7 +16,7 @@ export interface Action {
 
 export interface DynamicStateVariables {
     data?: Array<Action>;
-    filteredItems?: Array<Action>;
+    filteredItems?: Array<DynamicAction>;
     fetching?: boolean;
     selectedRow?: Action;
     isPreviewModalOpen?: boolean;

@@ -5,6 +5,7 @@ import { AlertBarProps } from "./interfaces";
 import {
   BrandNameMap, GraphQLErrors, env
 } from "globals";
+import { DynamicAction } from "components/tabs/dynamicFlow/DynamicFlow.Interfaces";
 
 export const initializedAlertBar: AlertBarProps = {
   open: false,
@@ -14,11 +15,13 @@ export const initializedAlertBar: AlertBarProps = {
 };
 
 export const EXPORT_FILE_PREFIX: {
-  ROUTING: string;
+  DYNAMIC_FLOW: string;
   FLOW: string;
+  ROUTING: string;
 } ={
-  ROUTING: "routing-rules",
-  FLOW: "call-flow"
+  DYNAMIC_FLOW: "dynamic-flow",
+  FLOW: "call-flow",
+  ROUTING: "routing-rules"
 };
 
 const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb |CctSharedCallRoutingDb>, prefix: string): string => {
@@ -31,7 +34,7 @@ const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb |CctSharedCa
   let keys: string[] = Object.keys(array[0]);
   const contentStore : string[] =[];
   let contentKeys: string[] = [];
-  const jsonFormatKeys: string[] = ["occupancyCheck", "routingSteps"];
+  const jsonFormatKeys: string[] = ["occupancyCheck", "routingSteps", "options", "repeat"];
   const nullValueCheck = ["null", null, undefined];
   let flag = false;
   for( let i=0; i<keys.length; i++){
@@ -84,7 +87,7 @@ const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb |CctSharedCa
   return result;
 };
 
-export const  downloadCSV = (prefix: string, array:Array<CctSharedCallFlowDb |CctSharedCallRoutingDb>): JSX.Element => {
+export const  downloadCSV = (prefix: string, array:Array<CctSharedCallFlowDb |CctSharedCallRoutingDb | DynamicAction>): JSX.Element => {
   const link: HTMLAnchorElement = document.createElement("a");
   let csv: string = convertArrayOfObjectsToCSV(array, prefix);
   if (csv === null || csv===undefined) { return; }
