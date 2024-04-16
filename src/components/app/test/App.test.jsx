@@ -141,6 +141,9 @@ describe("<App />", () => {
         }
       });
 
+      Date.now = jest.fn();
+      Date.now.mockReturnValue(1704067200000);
+
       useMsal.mockReturnValue({
         instance: {
           getActiveAccount: jest.fn().mockReturnValue({
@@ -151,7 +154,7 @@ describe("<App />", () => {
           }),
           acquireTokenPopup: jest.fn().mockReturnValue({
             accessToken: "Access Token",
-            expiresOn: new Date()
+            expiresOn: new Date(1704067201000)
           })
         }
       });
@@ -273,21 +276,18 @@ describe("<App />", () => {
     });
   });
 
-  xdescribe("tokenManager refresh", () => {
+  describe("tokenManager refresh", () => {
+    acquireTokenPopupFunc = jest.fn();
     beforeEach(() => {
-      jest.useFakeTimers("modern");
-      jest.setSystemTime(new Date("2024-01-01"));
-    });
-
-    afterEach(() => {
-      jest.useRealTimers();
+      Date.now = jest.fn();
+      Date.now.mockReturnValue(1704067200000);
+      acquireTokenPopupFunc.mockReturnValue({
+        accessToken: "Access Token",
+        expiresOn: new Date(1704067201000)
+      });
     });
 
     test("tokenManager should re-call acquireTokenPopup when token expires", async () => {
-      acquireTokenPopupFunc = jest.fn().mockReturnValue({
-        accessToken: "Access Token",
-        expiresOn: new Date("2024-01-01")
-      });
 
       useMsal.mockReturnValue({
         instance: {
@@ -303,6 +303,7 @@ describe("<App />", () => {
 
       render(<App />);
 
+
       await waitFor(() => {
         expect(mockAdminDispatch).toHaveBeenCalledWith({
           type: "loadUserData",
@@ -312,12 +313,9 @@ describe("<App />", () => {
         });
       });
 
-      // jest.advanceTimersByTime(5000);
-
       await waitFor(() => {
         expect(acquireTokenPopupFunc).toHaveBeenCalledTimes(2);
-      });
+      }, 1200); // if this test ever causes spontaneous failures, up this timeout
     });
   });
-  // Tests for token manager
 });

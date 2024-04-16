@@ -23,6 +23,12 @@ jest.mock("context", () => ({
   useAdminState: jest.fn()
 }));
 
+jest.mock("utils", () => ({
+  readWriteAccess: jest.fn(),
+  CACHE_FILTER_FLOW: jest.requireActual("utils").CACHE_FILTER_FLOW,
+  getAdvanceFilter: jest.requireActual("utils").getAdvanceFilter
+}));
+
 const openAddModal=jest.fn();
 const openPreviewModal=jest.fn();
 const openAdvanceSearchModal = jest.fn();

@@ -122,7 +122,6 @@ const App = () => {
             accessToken
           }
         }));
-
         wait(() => {
           logger.log("*** MSAL: Token is about to expire, getting new token ***");
           tokenManager();
