@@ -33,6 +33,9 @@ export const mapWorkerToDbWorker = (worker: Partial<UMUser>): Partial<UMUser> =>
     },
     ...worker.alternateDid && {
       alternateDid: worker.alternateDid
+    },
+    ...worker.inactiveForwardTo && {
+      inactive_forward_to: worker.inactiveForwardTo
     }
   };
 };
