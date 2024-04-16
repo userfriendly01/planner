@@ -41,7 +41,8 @@ export interface AppState {
     nNumber?: string
   },
   workerContext: {
-    workers: UMUser[]
+    workers: UMUser[],
+    isLoading: boolean;
   },
   calabrioContext: {
     tenant: any,

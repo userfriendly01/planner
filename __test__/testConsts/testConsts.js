@@ -742,7 +742,8 @@ export const initialTestState = {
         },
         sid: "WK1234"
       }
-    ]
+    ],
+    isLoading: false
   },
   calabrioContext,
   resettingSkills: false,

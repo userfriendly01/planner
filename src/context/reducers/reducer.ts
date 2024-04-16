@@ -29,7 +29,8 @@ export const initialState: AppState = {
     accessToken: ""
   },
   workerContext: {
-    workers: []
+    workers: [],
+    isLoading: true
   },
   calabrioContext: {
     tenant: {},
@@ -87,7 +88,16 @@ export const reducer = (state: AppState, action: Action): AppState => {
       return {
         ...state,
         workerContext: {
+          ...state.workerContext,
           workers: action.payload
+        }
+      };
+    case "setLoadingWorkers":
+      return {
+        ...state,
+        workerContext: {
+          ...state.workerContext,
+          isLoading: action.payload
         }
       };
     case "loadWfmOrg": {

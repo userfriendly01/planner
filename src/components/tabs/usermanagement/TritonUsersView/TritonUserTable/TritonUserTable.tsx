@@ -9,7 +9,9 @@ import {
   TableDataFlex,
   TableText
 } from "./TableUserTable.Styles";
-import { Switch } from "@mui/material";
+import {
+  Switch
+} from "@mui/material";
 import {
   Delete,
   Edit,
@@ -26,7 +28,7 @@ import {
   ModalOverlayStatuses
 } from "globals";
 import React from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import { formatWorkerAttributeSkillsToHTML } from "utils";
 import { TritonUserTableProps } from "./TritonUserTable.Interfaces";
 
@@ -40,9 +42,11 @@ const TritonUserTable = (props: TritonUserTableProps) => {
   const setForm = useFormDispatch();
   const navigate = useNavigate();
 
+  const { isLoading } = state.workerContext;
+
   return (
     <TableContainer>
-      { state.resettingSkills ? <ModalOverlay message="Resetting Worker Skills" status={ModalOverlayStatuses.SAVING} /> : null }
+      {isLoading || state.resettingSkills ? <ModalOverlay message={isLoading ? "Loading Users" : "Resetting Worker Skills"} status={ModalOverlayStatuses.SAVING} /> : null }
       <CustomTable>
         <thead>
           <tr>
@@ -76,7 +80,7 @@ const TritonUserTable = (props: TritonUserTableProps) => {
                   selected: [
                     ...tableState.selected.filter((w: any) => w.sid !== worker.sid)
                   ]
-                })
+                });
               } else {
                 setTableState({
                   ...tableState,
@@ -87,7 +91,7 @@ const TritonUserTable = (props: TritonUserTableProps) => {
                       sid: worker.sid
                     }
                   ]
-                })
+                });
               }
             };
             const editButtonOnClick = (event: any) => {
@@ -100,7 +104,7 @@ const TritonUserTable = (props: TritonUserTableProps) => {
                   managers: state.managerContext.managers
                 }
               });
-              navigate(`/triton-admin/user`)
+              navigate("/triton-admin/user");
             };
             const deleteButtonOnClick = (event: any) => {
               event.stopPropagation();
@@ -111,7 +115,7 @@ const TritonUserTable = (props: TritonUserTableProps) => {
                   managers: state.managerContext.managers
                 }
               });
-              navigate(`/triton-admin/user`)
+              navigate("/triton-admin/user");
             };
             const profile: any = state.profileContext.profiles.find((p: any) => p.profile_id === worker.attributes.profile_id) || {};
             return (

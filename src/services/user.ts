@@ -23,8 +23,12 @@ import {
  * @returns - The first query's promise
  */
 export const getAllUsers = async (dispatch: (action: Action) => void): Promise<UMUser[]> => {
-  let nextToken = "start";
+  dispatch(({
+    type: "setLoadingWorkers",
+    payload: true
+  }));
 
+  let nextToken = "start";
   const firstQuery = new Promise((resolve: (users: UMUser[]) => void) => {
     const getAllUsers = async () => {
       while (nextToken) {
@@ -52,7 +56,10 @@ export const getAllUsers = async (dispatch: (action: Action) => void): Promise<U
         ({ nextToken } = response);
       }
 
-      // TODO: Add loading dispatch that says when the worker load is done
+      dispatch(({
+        type: "setLoadingWorkers",
+        payload: false
+      }));
     };
 
     getAllUsers();
@@ -111,7 +118,7 @@ export const listUsers = async (nextToken?: string): Promise<DBList<UMUser>> => 
 
   return {
     items: newUsers,
-    nextToken
+    nextToken: data.users.nextToken
   };
 };
 

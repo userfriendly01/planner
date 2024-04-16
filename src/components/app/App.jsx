@@ -158,13 +158,15 @@ const App = () => {
   useEffect(() => {
     const {
       workerContext: {
-        workers
+        workers,
+        isLoading
       },
       userContext
     } = state;
 
     const loadUserContext = () => {
       const nNumber = account.idTokenClaims.employeeid;
+      // TODO: Once we can query by nnumber, don't get profile from all workers, just query graph
       const profileId = getWorkerProfileId(nNumber, workers);
       const isAdmin = account.idTokenClaims.roles.includes("Admin");
 
@@ -178,10 +180,10 @@ const App = () => {
       }));
     };
 
-    if (workers.length && userContext.isAdmin === undefined) {
+    if (workers.length && !isLoading && userContext.isAdmin === undefined) {
       loadUserContext();
     }
-  }, [state]);
+  }, [state.workerContext, state.userContext]);
 
   if (loadResult.status && loadResult.status !== loading) {
     if (loadResult.status === success) {
