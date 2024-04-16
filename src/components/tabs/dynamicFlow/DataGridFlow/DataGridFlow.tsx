@@ -11,6 +11,8 @@ import {
 } from "../DynamicFlow.Interfaces";
 import { AlertBarProps } from "utils/interfaces";
 import {
+  downloadCSV,
+  EXPORT_FILE_PREFIX,
   initializedAlertBar
 } from "utils";
 import { PreviewModal } from "../PreviewModal/PreviewModal";
@@ -34,7 +36,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
 
   const flowInitState: DynamicStateVariables = {
     data: [],
-    filteredItems: [] ,
+    filteredItems: [] as Array<DynamicAction>,
     fetching: false,
     selectedRow: undefined,
     isPreviewModalOpen: false,
@@ -129,6 +131,28 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     }
   };
 
+  const exportDataFile = () =>{
+    downloadCSV(EXPORT_FILE_PREFIX.DYNAMIC_FLOW, dataFlow.filteredItems.map(action =>  {
+      return {
+        actionId: action.actionId,
+        actionType: action.actionType,
+        callFlowName: action.callFlowName,
+        speech: action.speech,
+        options: action.options,
+        repeat: action.repeat,
+        timeout: action.timeout,
+        finishOnKey: action.finishOnKey,
+        minDigits: action.minDigits,
+        maxDigits: action.maxDigits,
+        nextActionId: action.nextActionId,
+        nextActionType: action.nextActionType,
+        createTime: action.createTime,
+        updateTime: action.updateTime
+      };
+    }
+    ));
+  };
+
   const handleClose = (flag: boolean) => {
     setAlertBar((alertBarProps: AlertBarProps) => ({
       ...alertBarProps,
@@ -179,6 +203,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       <div className="data-grid-wrapper">
         <div className="data-grid-wrapper">
           <CustomFlowGridToolBar
+            exportDataFile={exportDataFile}
             matchedGroups={matchedGroups}
             openPreviewModal={openPreviewModal}
           />
