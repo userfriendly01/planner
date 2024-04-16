@@ -265,12 +265,13 @@ describe("<App />", () => {
     test("acquireTokenPopup throws an error", async () => {
       acquireTokenPopupFunc.mockRejectedValue({
         errorMessage: "Popup went wrong",
-        errorStatus: 401
+        errorCode: 401
       });
 
       const rendered = render(<App />);
       await waitFor(() => rendered.getByTestId("error-overlay"));
 
+      expect(rendered.container).toHaveTextContent("Failed to get a token from Azure, try refreshing the page");
       expect(rendered.container).toHaveTextContent("Popup went wrong");
       expect(rendered.container).toHaveTextContent(401);
     });

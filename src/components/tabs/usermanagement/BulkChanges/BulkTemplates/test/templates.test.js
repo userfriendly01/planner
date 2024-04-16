@@ -26,7 +26,7 @@ describe("CREATE_TRITON_USER", () => {
   });
   const createTritonProcessFunction = createTemplates.CREATE_TRITON_USER.processFunction;
   describe("createUser is successful", () => {
-    beforeEach(() => createUser.mockResolvedValue({ workerSid: "WK123456" }));
+    beforeEach(() => createUser.mockResolvedValue({ sid: "WK123456" }));
     describe("user is DID user", () => {
       const row = {
         rowNumber: 2,

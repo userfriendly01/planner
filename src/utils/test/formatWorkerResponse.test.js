@@ -1,121 +1,98 @@
 import {
-  formatWorkerResponse,
-  mapWorkerFromDbWorker
+  mapWorkerFromDbWorker,
+  mapWorkerToDbWorker
 } from "utils";
 
-describe("formatWorkerResponse", () => {
+const sid = "WK123123123";
 
-  const unformattedResponse = [
-    {
+describe("mapWorkerFromDbWorker", () => {
+  let attributes, dbWorker;
+
+  beforeEach(() => {
+    attributes = {
+      attr1: "whatever",
+      attr2: { hi: "I'm an object" }
+    };
+    dbWorker = {
+      twilio_attributes_raw: JSON.stringify(attributes),
+      sid
+    };
+  });
+
+  test("should return TwilioWorker object with attributes, sid & skillsDifferent", () => {
+    expect(mapWorkerFromDbWorker(dbWorker)).toEqual({
+      attributes,
+      sid,
+      skillsDifferent: false
+    });
+  });
+
+  test("should return TwilioWorker object with null attributes, sid & skillsDifferent", () => {
+    delete dbWorker.twilio_attributes_raw;
+
+    expect(mapWorkerFromDbWorker(dbWorker)).toEqual({
+      attributes: null,
+      sid,
+      skillsDifferent: false
+    });
+  });
+
+  test("should lowercase manager_n_number and set full_name if it exists", () => {
+    attributes.manager_n_number = "N1234567";
+    attributes.emp_first_name = "Bob";
+    attributes.emp_last_name = "Smith";
+    attributes.full_name = "Blah blah blah";
+    dbWorker.twilio_attributes_raw = JSON.stringify(attributes);
+
+    expect(mapWorkerFromDbWorker(dbWorker)).toEqual({
       attributes: {
-        email_address: "Noone@libertymutual.com",
-        full_name: "HMM",
-        emp_first_name: "Faith",
-        emp_last_name: "Cuneo",
-        manager_last_name: "Doe",
-        manager_n_number: "n1111111",
-        n_number: "n1111111",
-        primary_dept_name: "CI TECH APP SERVICES",
-        profile_id: 1,
-        roles: ["supervisor", "agent"],
-        skills: ["466"],
-        unique_id: "n0123456"
+        full_name: "Bob Smith",
+        emp_first_name: "Bob",
+        emp_last_name: "Smith",
+        manager_n_number: "n1234567",
+        attr1: "whatever",
+        attr2: { hi: "I'm an object" }
       },
-      workerSid: "WK8b0da13d2eca675babceedb76d7a15eb"
-    }
-  ];
-
-  const unformattedResponseNoAttr = [
-    {
-      workerSid: "WK8b0da13d2eca675babceedb76d7a15eb"
-    }
-  ];
-
-  test("if input is null, return empty object", () => {
-    expect(formatWorkerResponse(null)).toEqual([]);
-  });
-
-  test("if input is empty, return empty object", () => {
-    expect(formatWorkerResponse([])).toEqual([]);
-  });
-
-  test("should respond skillsDifferent false", () => {
-    const formattedWorker = [
-      {
-        attributes: {
-          email_address: "Noone@libertymutual.com",
-          full_name: "Faith Cuneo",
-          emp_first_name: "Faith",
-          emp_last_name: "Cuneo",
-          manager_last_name: "Doe",
-          manager_n_number: "n1111111",
-          n_number: "n1111111",
-          primary_dept_name: "CI TECH APP SERVICES",
-          profile_id: 1,
-          roles: ["supervisor", "agent"],
-          skills: ["466"],
-          unique_id: "n0123456"
-        },
-        sid: "WK8b0da13d2eca675babceedb76d7a15eb",
-        skillsDifferent: false
-      }
-    ];
-    expect(formatWorkerResponse(unformattedResponse)).toEqual(formattedWorker);
-  });
-
-  test("should respond skillsDifferent false when no attributes exist", () => {
-    const formattedWorker = [
-      {
-        sid: "WK8b0da13d2eca675babceedb76d7a15eb",
-        skillsDifferent: false
-      }
-    ];
-    expect(formatWorkerResponse(unformattedResponseNoAttr)).toEqual(formattedWorker);
-  });
-
-  test("should lowercase manager_n_number", () => {
-    const unformattedResponseCapNNumber = [
-      {
-        attributes: {
-          manager_n_number: "N1111111",
-          emp_first_name: "Faith",
-          emp_last_name: "Cuneo"
-        },
-        workerSid: "WK8b0da13d2eca675babceedb76d7a15eb"
-      }
-    ];
-    const formattedWorker = [
-      {
-        attributes: {
-          manager_n_number: "n1111111",
-          emp_first_name: "Faith",
-          emp_last_name: "Cuneo",
-          full_name: "Faith Cuneo"
-        },
-        sid: "WK8b0da13d2eca675babceedb76d7a15eb",
-        skillsDifferent: false
-      }
-    ];
-    expect(formatWorkerResponse(unformattedResponseCapNNumber)).toEqual(formattedWorker);
+      sid,
+      skillsDifferent: false
+    });
   });
 });
 
-const workerSid = "WK123123123";
+describe("mapWorkerToDbWorker", () => {
+  test("should map things to the new expression", () => {
+    const user = {
+      attributes: {
+        routing: {
+          callerStates: ["CA", "AK", "WA"]
+        },
+        did: "+1123456789",
+        profile_id: 0
+      },
+      directDialNum: "+1123456789",
+      operatingUnitSid: "OU1234",
+      zeroOutEnabled: false,
+      selfServiceInd: false,
+      alternateDid: "+1123456789"
+    };
 
-describe("mapWorkerFromDbWorker", () => {
-  const attributes = {
-    attr1: "whatever",
-    attr2: { hi: "I'm an object" }
-  };
-  const dbWorker = {
-    attributes,
-    workerSid
-  };
-  test("should return TwilioWorker object with attributes, sid & skillsDifferent; NOT workerSid", () => {
-    expect(mapWorkerFromDbWorker(dbWorker)).toEqual({
-      attributes,
-      sid: workerSid,
-      skillsDifferent: false
+
+    expect(mapWorkerToDbWorker(user)).toEqual({
+      twilio_attributes: JSON.stringify({
+        routing: {
+          callerStates: ["CA", "AK", "WA"],
+          caller_states: ["CA", "AK", "WA"]
+        },
+        did: "+1123456789",
+        profile_id: 0,
+        caller_id: "+1123456789",
+        agent_attribute_1: 0
+      }),
+      did: "+1123456789",
+      operating_unit_sid: "OU1234",
+      zero_out_enabled: false,
+      self_service_ind: false,
+      alternateDid: "+1123456789"
     });
   });
 });

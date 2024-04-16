@@ -6,7 +6,9 @@ import {
 import {
   useAdminState,
   useFormState,
-  useAdminDispatch
+  useAdminDispatch,
+  useFormDispatch,
+  userFormActions
 } from "context";
 import React from "react";
 import { terminateUser } from "services";
@@ -26,7 +28,9 @@ jest.mock("components", () => ({
 jest.mock("context", () => ({
   useAdminState: jest.fn(),
   useFormState: jest.fn(),
-  useAdminDispatch: jest.fn()
+  useAdminDispatch: jest.fn(),
+  useFormDispatch: jest.fn(),
+  userFormActions: jest.requireActual("context").userFormActions
 }));
 
 jest.mock("services", () => ({
@@ -34,6 +38,7 @@ jest.mock("services", () => ({
 }));
 
 const mockDispatch = jest.fn();
+const mockFormDispatch = jest.fn();
 const mockHandleClose = jest.fn();
 const mockUpdateLoading = jest.fn();
 const mockWorker = initialTestState.workerContext.workers[6];
@@ -65,9 +70,12 @@ describe("DeleteTritonUser", () => {
     jest.resetAllMocks();
     useAdminDispatch.mockReturnValue(mockDispatch);
     useAdminState.mockReturnValue(initialTestState);
+    useFormDispatch.mockReturnValue(mockFormDispatch);
     useFormState.mockReturnValue({
       ...initialFormState,
       triton: {
+        ...initialTestState.workerContext.workers[6],
+        inactiveForwardTo: "",
         userFound: true,
         didUser: false
       },
@@ -83,6 +91,7 @@ describe("DeleteTritonUser", () => {
         useFormState.mockReturnValue({
           ...initialFormState,
           triton: {
+            ...initialTestState.workerContext.workers[0],
             userFound: true,
             didUser: true
           },
@@ -106,11 +115,14 @@ describe("DeleteTritonUser", () => {
           expect(ForwardToEntryForm).toHaveBeenCalledTimes(1);
           const updateForwardTo = ForwardToEntryForm.mock.calls[0][0].updateForwardTo;
           act(() => updateForwardTo("callmebeepme"));
+          expect(mockFormDispatch).toHaveBeenCalledWith({
+            type: userFormActions.UPDATE_INACTIVE_FORWARD_TO,
+            payload: "callmebeepme"
+          });
           expect(StyledButton).toHaveBeenCalledTimes(9);
           const confirmDelete = StyledButton.mock.calls[8][0].onClick;
           act(() => confirmDelete());
           expect(terminateUser).toHaveBeenCalledTimes(1);
-          expect(terminateUser.mock.calls[0][0].inactiveForwardTo).toBe("callmebeepme");
         });
         test("inactiveForwardTo is cleared when delete is submitted", () => {
           renderComponent();
@@ -120,16 +132,19 @@ describe("DeleteTritonUser", () => {
           const updateForwardTo = ForwardToEntryForm.mock.calls[0][0].updateForwardTo;
           act(() => updateForwardTo(""));
           expect(StyledButton).toHaveBeenCalledTimes(6);
+          expect(mockFormDispatch).toHaveBeenCalledWith({
+            type: userFormActions.UPDATE_INACTIVE_FORWARD_TO,
+            payload: ""
+          });
           const confirmDelete = StyledButton.mock.calls[5][0].onClick;
           act(() => confirmDelete());
           expect(terminateUser).toHaveBeenCalledTimes(1);
-          expect(terminateUser.mock.calls[0][0].inactiveForwardTo).toBe("");
         });
       });
     });
     describe("worker is not DID", () => {
       test("component renders without ForwardToEntryForm", () => {
-        const rendered = renderComponent();
+        renderComponent();
         expect(ForwardToEntryForm).toHaveBeenCalledTimes(0);
         expect(StyledButton).toHaveBeenCalledTimes(2);
         expect(StyledButton.mock.calls[1][0].disabled).toBe(false);
@@ -348,6 +363,8 @@ describe("DeleteTritonUser", () => {
             useFormState.mockReturnValue({
               ...initialFormState,
               triton: {
+                ...initialTestState.workerContext.workers[6],
+                inactiveForwardTo: "",
                 userFound: true,
                 didUser: true
               },
@@ -361,7 +378,10 @@ describe("DeleteTritonUser", () => {
                   error: {
                     results: [
                       {
-                        body: JSON.stringify({ message: "Worker API Succeeded", forwardToFailure: true }),
+                        body: JSON.stringify({
+                          message: "Worker API Succeeded",
+                          forwardToFailure: true
+                        }),
                         statusCode: 500
                       }
                     ]

@@ -104,6 +104,7 @@ jest.mock("services", () => ({
   getCalabrioUsers: jest.fn(),
   getOffices: jest.fn(),
   getManagers: jest.fn(),
+  getAllUsers: jest.fn(),
   getTaskQueues: jest.fn(),
   getTfn: jest.fn(),
   getTimeOfDays: jest.fn(),

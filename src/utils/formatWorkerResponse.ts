@@ -1,18 +1,7 @@
 import { UMUser } from "globals";
 import { areSkillsDifferent } from "utils";
 
-export const formatWorkerResponse = (response: UMUser[]): UMUser[] => {
-  if (response) {
-    const formattedWorkers = response.map(mapWorkerFromDbWorker);
-    return formattedWorkers;
-  } else {
-    return [];
-  }
-};
-
 export const mapWorkerToDbWorker = (worker: Partial<UMUser>): Partial<UMUser> => {
-  console.log("THIS IS THE WORKER: ", worker);
-
   return {
     twilio_attributes: JSON.stringify({
       ...worker.attributes,
@@ -46,6 +35,23 @@ export const mapWorkerToDbWorker = (worker: Partial<UMUser>): Partial<UMUser> =>
       alternateDid: worker.alternateDid
     }
   };
+};
+
+export const mapWorkerFromTwilio = (dbWorker: UMUser): UMUser => {
+  const worker = {
+    ...dbWorker,
+    sid: dbWorker.workerSid,
+    skillsDifferent: dbWorker.attributes ? areSkillsDifferent(dbWorker.attributes) : false
+  };
+  delete worker.workerSid;
+  if (worker.attributes?.manager_n_number) {
+    worker.attributes.manager_n_number = worker.attributes.manager_n_number.toLowerCase();
+  }
+  //sometimes Twilio flops and cant populate full name - this will be more reliable
+  if(dbWorker.attributes?.emp_first_name && dbWorker.attributes?.emp_last_name){
+    worker.attributes.full_name = `${dbWorker.attributes?.emp_first_name} ${dbWorker.attributes?.emp_last_name}`;
+  }
+  return worker;
 };
 
 export const mapWorkerFromDbWorker = (dbWorker: UMUser): UMUser => {

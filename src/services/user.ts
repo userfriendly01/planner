@@ -52,7 +52,7 @@ export const getAllUsers = async (dispatch: (action: Action) => void): Promise<U
         ({ nextToken } = response);
       }
 
-      // TODO: Add loading element that says when the worker load is done
+      // TODO: Add loading dispatch that says when the worker load is done
     };
 
     getAllUsers();

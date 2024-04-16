@@ -9,7 +9,8 @@ import {
   getCalabrioOrg,
   getCalabrioRoles,
   getManagers,
-  getOffices
+  getOffices,
+  getAllUsers
 } from "services";
 import {
   formatManagersResponse,
@@ -179,6 +180,10 @@ describe("cct-triton-admin-startup", () => {
     axiosMock.reset();
     getStartupProfiles.mockReturnValueOnce(startups);
     useAdminDispatch.mockReturnValue(mockAdminDispatch);
+    getAllUsers.mockImplementation(dispatch => dispatch({
+      type: "addWorkers",
+      payload: filteredWorkers
+    }));
   });
 
   describe("runTritonAdminStartup", () => {
@@ -205,11 +210,6 @@ describe("cct-triton-admin-startup", () => {
         const result = await runTritonAdminStartup(mockAdminDispatch);
         const firstResponse = result[0];
         expect(firstResponse).toStrictEqual(startups.TRITON.name);
-      });
-      test("**MUST RETURN WORKER RESPONSE SECOND**", async () => {
-        const result = await runTritonAdminStartup(mockAdminDispatch);
-        const secondResponse = result[1];
-        expect(secondResponse).toStrictEqual(filteredWorkers);
       });
       describe("auth token is good (page loaded less than one hour ago)", () => {
         test(
@@ -284,13 +284,13 @@ describe("cct-triton-admin-startup", () => {
       describe(workersEndpoint, () => {
         describe("workers service call returned an error", () => {
           beforeEach(() => {
-            axiosMock.onGet(workersEndpoint).reply(statusCode, { boo: "wahhh" });
+            getAllUsers.mockRejectedValue({ message: "Failed to fetch workers from service" });
           });
           test("should return 'An error occurred while logging in.'", async () => {
             try {
               await runTritonAdminStartup(mockAdminDispatch);
             } catch (err) {
-              expect(err.msg).toBe("Failed to fetch workers from service");
+              expect(err.message).toBe("Failed to fetch workers from service");
             }
           });
         });
@@ -381,7 +381,7 @@ describe("cct-triton-admin-startup", () => {
               payload: skills.consolidatedSkills
             });
             expect(mockAdminDispatch).toHaveBeenCalledWith({
-              type: "loadWorkers",
+              type: "addWorkers",
               payload: filteredWorkers
             });
             expect(mockAdminDispatch).toHaveBeenCalledWith({
@@ -433,7 +433,7 @@ describe("cct-triton-admin-startup", () => {
               payload: skills.consolidatedSkills
             });
             expect(mockAdminDispatch).toHaveBeenCalledWith({
-              type: "loadWorkers",
+              type: "addWorkers",
               payload: filteredWorkers
             });
             expect(mockAdminDispatch).toHaveBeenCalledWith({
@@ -485,7 +485,7 @@ describe("cct-triton-admin-startup", () => {
               payload: skills.consolidatedSkills
             });
             expect(mockAdminDispatch).toHaveBeenCalledWith({
-              type: "loadWorkers",
+              type: "addWorkers",
               payload: filteredWorkers
             });
             expect(mockAdminDispatch).toHaveBeenCalledWith({

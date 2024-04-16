@@ -1,5 +1,4 @@
 import {
-  UMUser,
   UMTwilioAttributeSkills,
   Skill,
   UMUserTwilioAttributes
