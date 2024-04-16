@@ -86,13 +86,6 @@ export const initialUserFormState: UserFormState = {
   },
   triton: {
     userFound: false,
-    alternateDid: {
-      value: "",
-      blurred: false,
-      e164: undefined,
-      updated: false,
-      valid: false
-    },
     attributes: [],
     defaultSkills: {
       updated: false,
@@ -321,13 +314,6 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
         triton: {
           ...state.triton,
           didUser: !state.triton.didUser,
-          alternateDid: {
-            value: "",
-            blurred: false,
-            e164: undefined,
-            updated: false,
-            valid: false
-          },
           directDialNum: {
             value: "",
             blurred: false,
@@ -631,11 +617,6 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
           profileId: {
             ...state.triton.profileId,
             value: worker.attributes.profile_id
-          },
-          alternateDid: {
-            ...state.triton.alternateDid,
-            value: worker.alternateDid ? formatE164PhoneNumber(worker.alternateDid) : "",
-            valid: worker.alternateDid ? true : false
           },
           directDialNum: {
             ...state.triton.directDialNum,
@@ -953,11 +934,6 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
           profileId: {
             ...state.triton.profileId,
             value: worker.attributes.profile_id
-          },
-          alternateDid: {
-            ...state.triton.alternateDid,
-            value: worker.alternateDid ? formatE164PhoneNumber(worker.alternateDid) : "",
-            valid: worker.alternateDid ? true : false
           },
           directDialNum: {
             ...state.triton.directDialNum,

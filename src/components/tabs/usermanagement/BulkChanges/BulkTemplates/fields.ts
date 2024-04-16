@@ -423,7 +423,6 @@ export const FIELDS: Fields = {
             const directDialNum = getE164Number(field);
             row.attributes.did = directDialNum;
             row.directDialNum = directDialNum;
-            row.alternateDid = directDialNum;
             return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
           } catch (err) {
             return rejectPromise(`${fieldName} is not in the correct format for row ${rowNumber}`, rowNumber);

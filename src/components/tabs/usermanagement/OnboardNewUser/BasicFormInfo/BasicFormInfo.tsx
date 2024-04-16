@@ -190,7 +190,6 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
                 setForm({
                   type: userFormActions.UPDATE_PHONE_NUMBER,
                   payload: {
-                    field: "alternateDid",
                     maskedValue,
                     isValid,
                     e164Number

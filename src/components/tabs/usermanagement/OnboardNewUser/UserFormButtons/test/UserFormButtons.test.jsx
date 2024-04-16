@@ -424,7 +424,6 @@ describe("<UserFormButtons />", () => {
             await waitFor(() => {
               expect(createUser).toHaveBeenCalledWith({
                 attributes: createWorkerAttributesAfterFormValid,
-                alternateDid: validFormState.triton.alternateDid.e164,
                 directDialNum: validFormState.triton.directDialNum.e164,
                 zeroOutEnabled: validFormState.triton.zeroOutEnabled.value,
                 selfServiceInd: validFormState.triton.selfServiceInd.value,
@@ -501,7 +500,6 @@ describe("<UserFormButtons />", () => {
                     ]
                   }
                 },
-                alternateDid: validFormState.triton.alternateDid.e164,
                 directDialNum: validFormState.triton.directDialNum.e164,
                 zeroOutEnabled: true,
                 selfServiceInd: true,
@@ -566,7 +564,6 @@ describe("<UserFormButtons />", () => {
                       ]
                     }
                   },
-                  alternateDid: validFormState.triton.alternateDid.e164,
                   directDialNum: validFormState.triton.directDialNum.e164,
                   zeroOutEnabled: true,
                   selfServiceInd: true,
@@ -1241,7 +1238,6 @@ describe("<UserFormButtons />", () => {
             });
             await waitFor(() => {
               expect(updateUser).toHaveBeenCalledWith(worker.sid, {
-                alternateDid: updateFormState.triton.alternateDid.e164,
                 attributes: updateWorkerAttributesAfterFormValid,
                 operatingUnitSid: validOperatingUnitId,
                 zeroOutEnabled: true,
@@ -1332,7 +1328,6 @@ describe("<UserFormButtons />", () => {
             await waitFor(() => {
               expect(updateUser).toHaveBeenCalledWith(worker.sid, {
                 attributes: updateWorkerAttributesAfterFormValid,
-                alternateDid: validFormState.triton.alternateDid.e164,
                 directDialNum: validFormState.triton.directDialNum.e164,
                 zeroOutEnabled: validFormState.triton.zeroOutEnabled.value,
                 selfServiceInd: validFormState.triton.selfServiceInd.value,
@@ -1393,7 +1388,6 @@ describe("<UserFormButtons />", () => {
                     emp_last_name: "Rizzo",
                     full_name: "Frank Rizzo"
                   },
-                  alternateDid: validFormState.triton.alternateDid.e164,
                   directDialNum: validFormState.triton.directDialNum.e164,
                   zeroOutEnabled: validFormState.triton.zeroOutEnabled.value,
                   selfServiceInd: validFormState.triton.selfServiceInd.value,
@@ -1446,10 +1440,6 @@ describe("<UserFormButtons />", () => {
               },
               extension: {
                 ...updateFormState.triton.extension,
-                updated: false
-              },
-              alternateDid: {
-                ...updateFormState.triton.alternateDid,
                 updated: false
               },
               directDialNum: {
@@ -1612,7 +1602,6 @@ describe("<UserFormButtons />", () => {
             await waitFor(() => {
               expect(updateUser).toHaveBeenCalledWith(worker.sid, {
                 attributes: updateWorkerAttributesAfterFormValid,
-                alternateDid: validFormState.triton.alternateDid.e164,
                 directDialNum: validFormState.triton.directDialNum.e164,
                 zeroOutEnabled: validFormState.triton.zeroOutEnabled.value,
                 selfServiceInd: validFormState.triton.selfServiceInd.value,
@@ -1700,7 +1689,6 @@ describe("<UserFormButtons />", () => {
             await waitFor(() => {
               expect(updateUser).toHaveBeenCalledWith(worker.sid, {
                 attributes: updateWorkerAttributesAfterFormValid,
-                alternateDid: validFormState.triton.alternateDid.e164,
                 directDialNum: validFormState.triton.directDialNum.e164,
                 zeroOutEnabled: validFormState.triton.zeroOutEnabled.value,
                 selfServiceInd: validFormState.triton.selfServiceInd.value,
@@ -1811,7 +1799,6 @@ describe("<UserFormButtons />", () => {
           });
           await waitFor(() => {
             expect(updateUser).toHaveBeenCalledWith(worker.sid, {
-              alternateDid: updateFormState.triton.alternateDid.e164,
               attributes: {
                 ...updateWorkerAttributesAfterFormValid,
                 routing: {
@@ -1850,7 +1837,6 @@ describe("<UserFormButtons />", () => {
           });
           await waitFor(() => {
             expect(updateUser).toHaveBeenCalledWith(worker.sid, {
-              alternateDid: updateFormState.triton.alternateDid.e164,
               attributes: {
                 ...updateWorkerAttributesAfterFormValid,
                 routing: {
@@ -1875,11 +1861,6 @@ describe("<UserFormButtons />", () => {
             ...updateFormState.triton,
             directDialNum: {
               ...updateFormState.triton.directDialNum,
-              value: "",
-              updated: false
-            },
-            alternateDid: {
-              ...updateFormState.triton.alternateDid,
               value: "",
               updated: false
             },

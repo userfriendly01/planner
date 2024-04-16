@@ -36,7 +36,7 @@ export const isExtensionValid = (form: UserFormState): boolean => form.triton.ex
 
 export const isFormUpdated = (form: UserFormState): boolean => form.triton.defaultSkills.updated || form.triton.manager.updated ||
   form.triton.profileId.updated || form.triton.outgoing.updated ||
-  form.triton.alternateDid.updated || form.triton.directDialNum.updated ||
+  form.triton.directDialNum.updated ||
   form.nNumber.updated || form.triton.extension.updated ||
   form.triton.inactiveForwardTo.updated || form.triton.zeroOutEnabled.updated || form.calabrio_qm.updated || form.triton.selfServiceInd.updated || form.triton.routing.updated;
 
@@ -60,7 +60,7 @@ export const isTritonUserValid = (form: UserFormState, worker: UMUser, forwardTo
       && isManagerValid(form)
       && form.triton.outgoing.valid
       && isExtensionValid(form)
-      && (form.triton.didUser === true ? form.triton.directDialNum.valid && form.triton.alternateDid.valid : true)
+      && (form.triton.didUser === true ? form.triton.directDialNum.valid : true)
       && isInactiveForwardToValid(form, forwardToToggle)
       && isDidDifferentValid(form, worker, forwardToToggle);
   }

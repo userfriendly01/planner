@@ -310,7 +310,6 @@ export interface UMUser {
   zeroOutEnabled: boolean;
   selfServiceInd: boolean;
   operatingUnitSid: string;
-  alternateDid?: string, // --> Removed
 
   // Added by us
   skillsDifferent: boolean;

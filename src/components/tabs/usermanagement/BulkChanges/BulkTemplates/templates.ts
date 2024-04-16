@@ -56,7 +56,6 @@ const processCreateTritonUser = async (row: any, state: AppState) => {
     const body: any = {};
     if (didUser) {
       body.attributes = row.attributes;
-      body.alternateDid = row.directDialNum;
       body.directDialNum = row.directDialNum;
       body.zeroOutEnabled = row.zeroOutEnabled;
       body.selfServiceInd = row.selfServiceInd;

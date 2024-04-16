@@ -73,8 +73,7 @@ describe("mapWorkerToDbWorker", () => {
       operatingUnitSid: "OU1234",
       zeroOutEnabled: false,
       selfServiceInd: false,
-      inactiveForwardTo: "+1123456789",
-      alternateDid: "+1123456789"
+      inactiveForwardTo: "+1123456789"
     };
 
 
@@ -93,8 +92,7 @@ describe("mapWorkerToDbWorker", () => {
       operating_unit_sid: "OU1234",
       zero_out_enabled: false,
       self_service_ind: false,
-      inactive_forward_to: "+1123456789",
-      alternateDid: "+1123456789"
+      inactive_forward_to: "+1123456789"
     });
   });
 });

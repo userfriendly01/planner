@@ -75,7 +75,6 @@ export interface UserFormState {
   triton: {
     [key: string]: any,
     userFound: boolean,
-    alternateDid: FieldState,
     attributes: any,
     defaultSkills: FormDefaultSkills,
     didUser: boolean,

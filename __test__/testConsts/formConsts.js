@@ -27,13 +27,6 @@ export const initialFormState = {
   },
   triton: {
     userFound: true,
-    alternateDid: {
-      value: "",
-      blurred: false,
-      e164: undefined,
-      updated: false,
-      valid: false
-    },
     routing: {
       team: "",
       skills: [],
@@ -151,11 +144,6 @@ export const initialFormState = {
 };
 
 export const validFormOptions = {
-  alternateDid: {
-    e164: "+18001234567",
-    masked: "(800)123-4567",
-    tenDig: "8001234567"
-  },
   defaultSkills: {
     levels: {
       "a": 1,
@@ -263,13 +251,6 @@ export const validFormState = {
       blurred: false,
       updated: true
     },
-    alternateDid: {
-      value: "6032453160",
-      blurred: false,
-      e164: "+16032453160",
-      updated: true,
-      valid: true
-    },
     directDialNum: {
       value: "6032453160",
       blurred: false,
@@ -356,7 +337,6 @@ export const mockWorkers = [
   {
     // DID worker with overflow skill
     sid: "WK2",
-    alternateDid: validFormOptions.alternateDid.e164,
     directDialNum: validFormOptions.directDialNum.e164,
     zeroOutEnabled: true,
     selfServiceInd: true,
@@ -386,7 +366,6 @@ export const mockWorkers = [
   {
     // DID worker without overflow skill
     sid: "WK3",
-    alternateDid: validFormOptions.alternateDid.e164,
     directDialNum: validFormOptions.directDialNum.e164,
     zeroOutEnabled: true,
     selfServiceInd: true,
@@ -414,7 +393,6 @@ export const mockWorkers = [
   },
   {
     sid: "WK4",
-    alternateDid: validFormOptions.alternateDid.e164,
     directDialNum: validFormOptions.directDialNum.e164,
     zeroOutEnabled: true,
     selfServiceInd: true,

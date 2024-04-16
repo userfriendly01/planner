@@ -145,7 +145,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     const createUserReqBody = form.triton.directDialNum.value ?
       {
         attributes,
-        alternateDid: form.triton.alternateDid.e164,
         directDialNum: form.triton.directDialNum.e164,
         operatingUnitSid: operatingUnitSid,
         zeroOutEnabled: form.triton.zeroOutEnabled.value,
@@ -440,9 +439,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
     if (operatingUnitSid) {
       payload.operatingUnitSid = operatingUnitSid;
-    }
-    if (form.triton.alternateDid.updated) {
-      payload.alternateDid = form.triton.alternateDid.e164;
     }
     if (form.triton.directDialNum.updated) {
       payload.directDialNum = form.triton.directDialNum.e164;

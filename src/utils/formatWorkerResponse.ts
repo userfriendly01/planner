@@ -31,9 +31,6 @@ export const mapWorkerToDbWorker = (worker: Partial<UMUser>): Partial<UMUser> =>
     ...(worker.selfServiceInd !== undefined && worker.selfServiceInd !== null)  !== undefined && {
       self_service_ind: worker.selfServiceInd
     },
-    ...worker.alternateDid && {
-      alternateDid: worker.alternateDid
-    },
     ...worker.inactiveForwardTo && {
       inactive_forward_to: worker.inactiveForwardTo
     }

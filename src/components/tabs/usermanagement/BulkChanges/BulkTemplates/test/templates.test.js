@@ -45,7 +45,6 @@ describe("CREATE_TRITON_USER", () => {
         const results = await createTritonProcessFunction(row, initialTestState);
         expect(createUser).toHaveBeenCalledTimes(1);
         expect(createUser).toHaveBeenCalledWith({
-          alternateDid: "+16038518200",
           attributes: {
             profile_id: 1,
             did: "+16038518200",

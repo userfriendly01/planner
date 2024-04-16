@@ -1037,7 +1037,7 @@ describe("userFormReducer", () => {
           userFound: true,
           sid: "WK2",
           attributes: worker.attributes,
-          routing:worker.attributes.routing,
+          routing: worker.attributes.routing,
           defaultSkills: {
             updated: false,
             ...getValidSkillsObject(worker.attributes.default_skills)
@@ -1063,11 +1063,6 @@ describe("userFormReducer", () => {
           profileId: {
             ...initialUserFormState.triton.profileId,
             value: worker.attributes.profile_id
-          },
-          alternateDid: {
-            ...initialUserFormState.triton.alternateDid,
-            value: formatE164PhoneNumber(worker.alternateDid),
-            valid: true
           },
           directDialNum: {
             ...initialUserFormState.triton.directDialNum,
@@ -1139,11 +1134,6 @@ describe("userFormReducer", () => {
             ...initialUserFormState.triton.profileId,
             value: worker.attributes.profile_id
           },
-          alternateDid: {
-            ...initialUserFormState.triton.alternateDid,
-            value: formatE164PhoneNumber(worker.alternateDid),
-            valid: true
-          },
           directDialNum: {
             ...initialUserFormState.triton.directDialNum,
             value: formatE164PhoneNumber(worker.directDialNum),
@@ -1163,12 +1153,11 @@ describe("userFormReducer", () => {
       expect(result).toStrictEqual(expectedFormState);
     });
     test("should reset form to update state - attributes missing", () => {
-      const worker = {...mockWorkers[2]};
+      const worker = { ...mockWorkers[2] };
       delete worker.attributes.n_number;
       delete worker.attributes.extension;
       delete worker.attributes.did;
       delete worker.directDialNum;
-      delete worker.alternateDid;
       delete worker.zeroOutEnabled;
       delete worker.selfServiceInd;
 
@@ -1218,11 +1207,6 @@ describe("userFormReducer", () => {
           profileId: {
             ...initialUserFormState.triton.profileId,
             value: worker.attributes.profile_id
-          },
-          alternateDid: {
-            ...initialUserFormState.triton.alternateDid,
-            value: "",
-            valid: false
           },
           directDialNum: {
             ...initialUserFormState.triton.directDialNum,
@@ -1445,7 +1429,7 @@ describe("userFormReducer", () => {
   describe("UPDATE_ROUTINGTEAM", () => {
     test("should update routing team", () => {
       const payload = {
-        routingTeamName:"Sample1"
+        routingTeamName: "Sample1"
       };
       const action = {
         type: userFormActions.ADD_ROUTING_TEAM,
@@ -1454,22 +1438,22 @@ describe("userFormReducer", () => {
       const result = userFormReducer(initialUserFormState, action);
       const expectedFormState = {
         ...initialUserFormState,
-        triton:{
+        triton: {
           ...initialUserFormState.triton,
-          routing:{
+          routing: {
             ...initialUserFormState.triton.routing,
-            team:"Sample1",
+            team: "Sample1",
             updated: true
           }
         }
-        }
+      };
       expect(result).toStrictEqual(expectedFormState);
     });
   });
   describe("UPDATE_CALLERSTATE", () => {
     test("should update caller State", () => {
       const payload = {
-        callerStateRouting:["Test1", "Test2"]
+        callerStateRouting: ["Test1", "Test2"]
       };
       const action = {
         type: userFormActions.SET_CALLER_STATES,
@@ -1478,15 +1462,15 @@ describe("userFormReducer", () => {
       const result = userFormReducer(initialUserFormState, action);
       const expectedFormState = {
         ...initialUserFormState,
-        triton:{
+        triton: {
           ...initialUserFormState.triton,
           routing: {
             ...initialUserFormState.triton.routing,
-            callerStates:payload.callerStateRouting,
+            callerStates: payload.callerStateRouting,
             updated: true
           }
         }
-        }
+      };
       expect(result).toStrictEqual(expectedFormState);
     });
   });
@@ -1494,7 +1478,7 @@ describe("userFormReducer", () => {
   describe("UPDATE_SALES_ASSOC_WORKER", () => {
     test("should update sales Assoc worker", () => {
       const payload = {
-        salesAssociateWorkerRouting:["Test1", "Test2"]
+        salesAssociateWorkerRouting: ["Test1", "Test2"]
       };
       const action = {
         type: userFormActions.SET_SALES_ASSOCIATE_WORKER,
@@ -1503,7 +1487,7 @@ describe("userFormReducer", () => {
       const result = userFormReducer(initialUserFormState, action);
       const expectedFormState = {
         ...initialUserFormState,
-        triton:{
+        triton: {
           ...initialUserFormState.triton,
           routing: {
             ...initialUserFormState.triton.routing,
@@ -1511,7 +1495,7 @@ describe("userFormReducer", () => {
             updated: true
           }
         }
-        }
+      };
       expect(result).toStrictEqual(expectedFormState);
     });
   });
@@ -1619,7 +1603,7 @@ describe("userFormReducer", () => {
         type: userFormActions.SET_UPDATE_QM_FORM_STATE,
         payload: {
           user: calabrioUser,
-          formMode: formModes.UPDATE,
+          formMode: formModes.UPDATE
         }
       };
       const result = userFormReducer(initialUserFormState, action);

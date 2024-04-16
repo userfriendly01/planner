@@ -66,11 +66,6 @@ const validFormOptions = {
     team: 214,
     roles: ["imarole"]
   },
-  alternateDid: {
-    e164: "+18001234567",
-    masked: "(800)123-4567",
-    tenDig: "8001234567"
-  },
   defaultSkills: {
     levels: {
       "a": 1,
@@ -130,7 +125,6 @@ const mockWorkers = [
   {
     // DID worker with overflow skill
     sid: "WK2",
-    alternateDid: validFormOptions.alternateDid.e164,
     directDialNum: validFormOptions.directDialNum.e164,
     zeroOutEnabled: true,
     selfServiceInd: true,
@@ -158,7 +152,6 @@ const mockWorkers = [
   {
     // DID worker without overflow skill
     sid: "WK3",
-    alternateDid: validFormOptions.alternateDid.e164,
     directDialNum: validFormOptions.directDialNum.e164,
     zeroOutEnabled: true,
     selfServiceInd: true,
@@ -549,19 +542,6 @@ describe("isFormUpdated", () => {
     const result = isFormUpdated(updatedForm);
     expect(result).toBe(true);
   });
-  test("form.alternateDid.updated was updated", () => {
-    const updatedForm = {
-      ...initialFormState,
-      triton: {
-        ...initialFormState.triton,
-        alternateDid: {
-          updated: true
-        }
-      }
-    };
-    const result = isFormUpdated(updatedForm);
-    expect(result).toBe(true);
-  });
   test("form.directDialNum.updated was updated", () => {
     const updatedForm = {
       ...initialFormState,
@@ -694,7 +674,7 @@ describe("isTritonUserValid", () => {
         expect(isTritonUserValid(validFormState, mockWorkers[0], false)).toBe(true);
       });
     });
-    describe("form.didUser === true && form.triton.directDialNum.valid && form.triton.alternateDid.valid", () => {
+    describe("form.didUser === true && form.triton.directDialNum.valid", () => {
       test("isTritonUserValid should return true", () => {
         const form = {
           ...validFormState,
@@ -703,10 +683,6 @@ describe("isTritonUserValid", () => {
             didUser: true,
             directDialNum: {
               ...validFormState.triton.directDialNum,
-              valid: true
-            },
-            alternateDid: {
-              ...validFormState.triton.alternateDid,
               valid: true
             }
           }
@@ -831,22 +807,6 @@ describe("isTritonUserValid", () => {
               didUser: true,
               directDialNum: {
                 ...validFormState.directDialNum,
-                valid: false
-              }
-            }
-          };
-          expect(isTritonUserValid(form, mockWorkers[2], false)).toBe(false);
-        });
-      });
-      describe("Alternate DID is not valid", () => {
-        test("isTritonUserValid should return false", () => {
-          const form = {
-            ...validFormState,
-            triton: {
-              ...initialFormState.triton,
-              didUser: true,
-              alternateDid: {
-                ...validFormState.alternateDid,
                 valid: false
               }
             }

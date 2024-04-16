@@ -1101,7 +1101,6 @@ describe("fields.js", () => {
           expect(row).toEqual({
             ...row,
             directDialNum: "+16035556565",
-            alternateDid: "+16035556565",
             attributes: {
               did: "+16035556565",
               ...existingAttributes
@@ -1119,7 +1118,6 @@ describe("fields.js", () => {
           expect(row).toEqual({
             ...row,
             directDialNum: "+16035556565",
-            alternateDid: "+16035556565",
             attributes: {
               did: "+16035556565"
             }

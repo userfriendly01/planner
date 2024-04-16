@@ -750,7 +750,7 @@ describe("<BasicFormInfo />", () => {
         });
 
         describe("updateValue", () => {
-          test("should set directDialNum number, alternate DID, and outgoing to correct value when outgoing is unset", () => {
+          test("should set directDialNum number, and outgoing to correct value when outgoing is unset", () => {
             renderComponent();
             act(() => {
               const updateValue = PhoneNumberInput.mock.calls[0][0].updateValue;
@@ -770,7 +770,6 @@ describe("<BasicFormInfo />", () => {
             expect(mockSetForm.mock.calls[1][0]).toEqual({
               type: userFormActions.UPDATE_PHONE_NUMBER,
               payload: {
-                field: "alternateDid",
                 maskedValue: "(603) 851-8200",
                 isValid: true,
                 e164Number: "+16038518200"
@@ -823,7 +822,6 @@ describe("<BasicFormInfo />", () => {
             expect(mockSetForm.mock.calls[1][0]).toEqual({
               type: userFormActions.UPDATE_PHONE_NUMBER,
               payload: {
-                field: "alternateDid",
                 maskedValue: "(603) 851-8200",
                 isValid: true,
                 e164Number: "+16038518200"
@@ -851,7 +849,6 @@ describe("<BasicFormInfo />", () => {
             expect(mockSetForm.mock.calls[1][0]).toEqual({
               type: userFormActions.UPDATE_PHONE_NUMBER,
               payload: {
-                field: "alternateDid",
                 maskedValue: "(603) 851-82",
                 isValid: false,
                 e164Number: "+160385182"
@@ -951,7 +948,6 @@ describe("<BasicFormInfo />", () => {
             expect(mockSetForm.mock.calls[1][0]).toEqual({
               type: userFormActions.UPDATE_PHONE_NUMBER,
               payload: {
-                field: "alternateDid",
                 maskedValue: "(603) 851-8200",
                 isValid: true,
                 e164Number: "+16038518200"
