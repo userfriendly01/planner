@@ -84,6 +84,8 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
   };
 
   const addSkillClicked = () => {
+    console.log(newSkill);
+
     const {
       levelSelected,
       skill,
@@ -96,7 +98,7 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
         // don't add a duplicate skill
         if (!updatedDefaultSkills.skills.find(s => s === skill.name)) {
           updatedDefaultSkills.skills.push(skill.name);
-          if (skill.levels.length > 0) {
+          if (skill.levels?.length) {
             updatedDefaultSkills.levels[skill.name] = skill.levels[0];
           }
         }

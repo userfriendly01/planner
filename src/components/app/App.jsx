@@ -57,7 +57,7 @@ const App = () => {
         setLoadResult({
           status: {
             errorMessage: "You are missing required AD Groups to be able to access this application",
-            errorStatus: "UNAUTHORIZED"
+            errorCode: "UNAUTHORIZED"
           }
         });
       } else {
@@ -81,17 +81,16 @@ const App = () => {
           logger.error("DATA_GET_FAILED", { error });
           setLoadResult({
             status: {
-              errorMessage: error.response.msg,
-              errorPayload: JSON.stringify(error.response.data),
-              errorStatus: error.response.status
+              errorMessage: error.response?.msg,
+              errorPayload: JSON.stringify(error.response?.data),
+              errorCode: error?.response.status
             }
           });
         }
       }
     };
 
-
-    if (state.userContext.accessToken && loadResult.status !== loading) {
+    if (state.userContext.accessToken && loadResult.status !== loading && loadResult.status !== success) {
       setLoadResult({
         status: loading
       });
@@ -124,19 +123,37 @@ const App = () => {
           }
         }));
 
-        wait(() => () => {
+        wait(() => {
           logger.log("*** MSAL: Token is about to expire, getting new token ***");
           tokenManager();
-        }, expiresOn.getTime() - new Date().getTime());
+        }, expiresOn.getTime() - Date.now());
       } catch (error) {
         logger.error("TOKEN_GET_FAILED", { error });
         setLoadResult({
-          status: error
+          status: {
+            errorMessage: "Failed to get a token from Azure, try refreshing the page",
+            errorCode: error.errorCode,
+            errorPayload: error.errorMessage
+          }
         });
       }
     };
 
-    tokenManager();
+    // If we are in a popup we don't want to re-call Azure
+    // This can occur if we have left our window unoccupied for
+    // too long and the `wait` function above has fired off.
+    const isPopup = window.opener && window.opener !== window;
+
+    if(!isPopup) {
+      tokenManager();
+    } else {
+      setLoadResult({
+        status: {
+          errorMessage: "Close this popup and refresh Triton Admin",
+          errorCode: "POP_UP_INCEPTION"
+        }
+      });
+    }
   }, []);
 
   useEffect(() => {
@@ -188,7 +205,7 @@ const App = () => {
       return (
         <Overlay data-testid="error-overlay">
           <ErrorWrapper>
-            <ErrorStatus>{loadResult.status.errorStatus}</ErrorStatus>
+            <ErrorStatus>{loadResult.status.errorCode}</ErrorStatus>
             <ErrorMessage>{loadResult.status.errorMessage}</ErrorMessage>
             {loadResult.status.errorPayload && (
               <ErrorPayload>

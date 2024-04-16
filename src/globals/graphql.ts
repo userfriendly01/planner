@@ -11,6 +11,16 @@ const userAttributes = `
   inactiveForwardTo: inactive_forward_to
 `;
 
+export const GET_USER = gql`
+  query getUMUser($identifier: String!) {
+    user: getUMUser(identifier: $identifier) {
+      sid: worker_sid
+      twilio_attributes {
+        profile_id
+      }
+    }
+  }
+`;
 
 export const LIST_USERS = gql`
   query listUMUsers($nextToken: String) {

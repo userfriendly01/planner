@@ -18,6 +18,7 @@ export interface Discrepancy {
   message: string,
   type: string
 }
+
 export interface AppState {
   managerContext: {
     managers: Manager[]
@@ -273,6 +274,7 @@ export interface UMUserTwilioAttributes {
   department_name?:string,
   department_id?:string,
   did?: string,
+  caller_id?: string,
   disabled_skills?: UMTwilioAttributeSkills,
   email?: string,
   email_address?: string,

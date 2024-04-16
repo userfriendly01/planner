@@ -51,7 +51,6 @@ import {
   isDidDifferentValid,
   isFormUpdated,
   isTritonUserValid,
-  mapWorkerFromDbWorker,
   workerHasOverFlowSkill
 } from "utils";
 
@@ -84,7 +83,6 @@ jest.mock("utils", () => ({
   isFormUpdated: jest.fn(),
   isDidDifferentValid: jest.fn(),
   getOverflowSkillFromProfile: jest.fn(),
-  mapWorkerFromDbWorker: jest.fn(),
   wait: jest.requireActual("utils").wait,
   workerHasOverFlowSkill: jest.fn(),
   getNonOverflowSkills: jest.fn(),
@@ -104,8 +102,7 @@ export const worker = {
         team: "Sample1",
         skills: ["466"],
         levels: { "466": 3 },
-        callerStates: ["Test1", "Test2"],
-        updated: true
+        callerStates: ["Test1", "Test2"]
       }
     }
   },
@@ -117,6 +114,7 @@ const workerAttributesAfterFormValid = {
   contact_uri: `client:${validFormOptions.nNumber.toLowerCase()}`,
   default_skills: validFormOptions.defaultSkills,
   did: validFormOptions.didE164,
+  caller_id: validFormOptions.didE164,
   department_id: fetchedUser.departmentNumber,
   department_name: fetchedUser.departmentName,
   email: fetchedUser.email,
@@ -131,6 +129,7 @@ const workerAttributesAfterFormValid = {
   manager_n_number: validFormOptions.manager.manager_n_number,
   manager: `${validFormOptions.manager.manager_first_name} ${validFormOptions.manager.manager_last_name}`,
   n_number: validFormOptions.nNumber.toLowerCase(),
+  agent_id: validFormOptions.nNumber.toLowerCase(),
   office_location_name: fetchedUser.officeName,
   office_location_number: fetchedUser.officeNumber,
   primary_dept_name: fetchedUser.departmentName,
@@ -143,20 +142,12 @@ const workerAttributesAfterFormValid = {
   }
 };
 
-const rawDbWorker = {
+const newWorker = {
   attributes: {
     ...workerAttributesAfterFormValid,
     office_location_number: "newOffice"
   },
-  workerSid: "WK1234"
-};
-
-const formattedWorker = {
-  attributes: {
-    ...workerAttributesAfterFormValid,
-    office_location_number: "newOffice"
-  },
-  sid: rawDbWorker.workerSid,
+  sid: "WK1234",
   skillsDifferent: true
 };
 
@@ -185,7 +176,6 @@ describe("<UserFormButtons />", () => {
         wfmOrg: []
       }
     });
-    mapWorkerFromDbWorker.mockReturnValue(formattedWorker);
     checkConflictingUsers.mockResolvedValue({ yay: "woot!" });
     createCalabrioUser.mockResolvedValue({ yay: "woot!" });
     getCalabrioUsers.mockResolvedValue({ data: "yay!" });
@@ -282,7 +272,7 @@ describe("<UserFormButtons />", () => {
       beforeEach(() => {
         isDidDifferentValid.mockReturnValue(true);
         isTritonUserValid.mockReturnValue(true);
-        createUser.mockResolvedValue(rawDbWorker);
+        createUser.mockResolvedValue(newWorker);
         addOffice.mockResolvedValue("yay!");
         useFormState.mockReturnValue(validFormState);
         checkConflictingUsers.mockResolvedValue("Yay!");
@@ -373,7 +363,7 @@ describe("<UserFormButtons />", () => {
               expect(mockDispatch).toHaveBeenCalledTimes(3);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "addWorkers",
-                payload: [formattedWorker]
+                payload: [newWorker]
               });
               expect(mockDispatch.mock.calls[1][0]).toEqual({
                 type: "addOffice",
@@ -407,9 +397,9 @@ describe("<UserFormButtons />", () => {
         describe("Worker is a DID user", () => {
           const createWorkerAttributesAfterFormValid = workerAttributesAfterFormValid;
           const existingOfficeDbWorker = {
-            ...rawDbWorker,
+            ...newWorker,
             attributes: {
-              ...rawDbWorker.attributes,
+              ...newWorker.attributes,
               office_location_number: "ABC123"
             }
           };
@@ -452,7 +442,7 @@ describe("<UserFormButtons />", () => {
               expect(mockDispatch).toHaveBeenCalledTimes(2);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "addWorkers",
-                payload: [formattedWorker]
+                payload: [existingOfficeDbWorker]
               });
               expect(mockDispatch.mock.calls[1][0]).toEqual({
                 type: "loadCalabrioUsers",
@@ -523,7 +513,7 @@ describe("<UserFormButtons />", () => {
               expect(mockDispatch).toHaveBeenCalledTimes(3);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "addWorkers",
-                payload: [formattedWorker]
+                payload: [newWorker]
               });
               expect(mockDispatch.mock.calls[1][0]).toEqual({
                 type: "addOffice",
@@ -588,7 +578,7 @@ describe("<UserFormButtons />", () => {
                 expect(mockDispatch).toHaveBeenCalledTimes(3);
                 expect(mockDispatch.mock.calls[0][0]).toEqual({
                   type: "addWorkers",
-                  payload: [formattedWorker]
+                  payload: [newWorker]
                 });
                 expect(mockDispatch.mock.calls[1][0]).toEqual({
                   type: "addOffice",
@@ -656,7 +646,7 @@ describe("<UserFormButtons />", () => {
               expect(mockDispatch).toHaveBeenCalledTimes(2);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "addWorkers",
-                payload: [formattedWorker]
+                payload: [newWorker]
               });
               expect(mockDispatch.mock.calls[1][0]).toEqual({
                 type: "loadCalabrioUsers",
@@ -694,12 +684,7 @@ describe("<UserFormButtons />", () => {
           beforeEach(() => {
             useFormState.mockReturnValue(nonDidValidFormState);
             createUser.mockRejectedValue({
-              message: "bummer",
-              response: {
-                data: {
-                  message: "Failed to add worker"
-                }
-              }
+              message: "bummer"
             });
           });
           test("should not add user and should update loading with failed specific error message", async () => {
@@ -724,7 +709,7 @@ describe("<UserFormButtons />", () => {
                 saveUser: true
               });
               expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
-                overlayMessage: "Failed to add worker",
+                overlayMessage: "bummer",
                 saveStatus: "fail",
                 saveUser: true
               });
@@ -732,10 +717,7 @@ describe("<UserFormButtons />", () => {
           });
           test("should not add user and should update loading with failed generic error message", async () => {
             createUser.mockRejectedValue({
-              message: "bummer",
-              response: {
-                data: {}
-              }
+              message: null
             });
             renderComponent(true);
             render(Tooltip.mock.calls[0][0].children);
@@ -952,7 +934,7 @@ describe("<UserFormButtons />", () => {
                 expect(mockDispatch).toHaveBeenCalledTimes(4);
                 expect(mockDispatch.mock.calls[0][0]).toEqual({
                   type: "addWorkers",
-                  payload: [formattedWorker]
+                  payload: [newWorker]
                 });
                 expect(mockDispatch.mock.calls[1][0]).toEqual({
                   type: "addOffice",
@@ -1009,7 +991,7 @@ describe("<UserFormButtons />", () => {
                 expect(mockDispatch).toHaveBeenCalledTimes(3);
                 expect(mockDispatch.mock.calls[0][0]).toEqual({
                   type: "addWorkers",
-                  payload: [formattedWorker]
+                  payload: [newWorker]
                 });
                 expect(mockDispatch.mock.calls[1][0]).toEqual({
                   type: "addOffice",
@@ -1072,7 +1054,7 @@ describe("<UserFormButtons />", () => {
                 expect(mockDispatch).toHaveBeenCalledTimes(4);
                 expect(mockDispatch.mock.calls[0][0]).toEqual({
                   type: "addWorkers",
-                  payload: [formattedWorker]
+                  payload: [newWorker]
                 });
                 expect(mockDispatch.mock.calls[1][0]).toEqual({
                   type: "addOffice",
@@ -1123,7 +1105,7 @@ describe("<UserFormButtons />", () => {
               expect(mockDispatch).toHaveBeenCalledTimes(3);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "addWorkers",
-                payload: [formattedWorker]
+                payload: [newWorker]
               });
               expect(mockDispatch.mock.calls[1][0]).toEqual({
                 type: "addOffice",
@@ -1207,7 +1189,7 @@ describe("<UserFormButtons />", () => {
             }
           };
           beforeEach(() => {
-            updateUser.mockResolvedValue(rawDbWorker);
+            updateUser.mockResolvedValue(newWorker);
             useFormState.mockReturnValue(nonDidValidFormState);
             updateCalabrioUser.mockResolvedValue({ data: ["agent1", "agent2"]});
           });
@@ -1228,6 +1210,7 @@ describe("<UserFormButtons />", () => {
             const updateWorkerAttributesAfterFormValid = {
               default_skills: validFormOptions.defaultSkills,
               did: validFormOptions.didE164,
+              caller_id: validFormOptions.didE164,
               email: "test@abc.com",
               email_address: "test@abc.com",
               emp_first_name: "Frank",
@@ -1246,8 +1229,8 @@ describe("<UserFormButtons />", () => {
                 skills: ["nonSkillL1","466"],
                 levels: { "466": 3 },
                 team: "Sample1",
-                callerStates: ["Test1", "Test2"],
-                updated: true
+                caller_states: ["Test1", "Test2"],
+                callerStates: ["Test1", "Test2"]
               }
             };
             renderComponent(true, updateWorker);
@@ -1270,7 +1253,7 @@ describe("<UserFormButtons />", () => {
               expect(mockDispatch).toHaveBeenCalledTimes(2);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "updateWorker",
-                payload: formattedWorker
+                payload: newWorker
               });
               expect(mockDispatch.mock.calls[1][0]).toEqual({
                 type: "loadCalabrioUsers",
@@ -1305,6 +1288,7 @@ describe("<UserFormButtons />", () => {
             emp_last_name: "Rizzo",
             full_name: "Frank Rizzo",
             did: validFormOptions.didE164,
+            caller_id: validFormOptions.didE164,
             department_id: validFormOptions.nNumberFetchedUser.departmentNumber,
             department_name: validFormOptions.nNumberFetchedUser.departmentName,
             extension: validFormOptions.extension,
@@ -1315,7 +1299,10 @@ describe("<UserFormButtons />", () => {
             manager: `${validFormOptions.manager.manager_first_name} ${validFormOptions.manager.manager_last_name}`,
             profile_id: validFormOptions.profileId,
             routing: {
-              ...validFormState.triton.routing,
+              team: validFormState.triton.routing.team,
+              caller_states: validFormState.triton.routing.callerStates,
+              callerStates: validFormState.triton.routing.callerStates,
+              levels: validFormState.triton.routing.levels,
               skills: ["nonSkillL1"]
             }
           };
@@ -1331,7 +1318,7 @@ describe("<UserFormButtons />", () => {
             }
           };
           beforeEach(() => {
-            updateUser.mockResolvedValue(rawDbWorker);
+            updateUser.mockResolvedValue(newWorker);
             workerHasOverFlowSkill.mockReturnValue(true);
             useFormState.mockReturnValue(updateFormState);
           });
@@ -1354,7 +1341,7 @@ describe("<UserFormButtons />", () => {
               expect(mockDispatch).toHaveBeenCalledTimes(2);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "updateWorker",
-                payload: formattedWorker
+                payload: newWorker
               });
               expect(mockDispatch.mock.calls[1][0]).toEqual({
                 type: "loadCalabrioUsers",
@@ -1397,8 +1384,8 @@ describe("<UserFormButtons />", () => {
                       team: updateWorkerAttributesAfterFormValid.routing.team,
                       skills: [],
                       levels: updateWorkerAttributesAfterFormValid.routing.levels,
-                      callerStates: updateWorkerAttributesAfterFormValid.routing.callerStates,
-                      updated: true
+                      caller_states: updateWorkerAttributesAfterFormValid.routing.callerStates,
+                      callerStates: updateWorkerAttributesAfterFormValid.routing.callerStates
                     },
                     email: "test@abc.com",
                     email_address: "test@abc.com",
@@ -1415,7 +1402,7 @@ describe("<UserFormButtons />", () => {
                 expect(mockDispatch).toHaveBeenCalledTimes(2);
                 expect(mockDispatch.mock.calls[0][0]).toEqual({
                   type: "updateWorker",
-                  payload: formattedWorker
+                  payload: newWorker
                 });
                 expect(mockDispatch.mock.calls[1][0]).toEqual({
                   type: "loadCalabrioUsers",
@@ -1494,7 +1481,7 @@ describe("<UserFormButtons />", () => {
             }
           };
           beforeEach(() => {
-            updateUser.mockResolvedValue(rawDbWorker);
+            updateUser.mockResolvedValue(newWorker);
             workerHasOverFlowSkill.mockReturnValue(true);
             useFormState.mockReturnValue(unchangedForm);
           });
@@ -1510,6 +1497,7 @@ describe("<UserFormButtons />", () => {
                   skills: ["466"],
                   levels: { "466": 3 },
                   team: "Sample1",
+                  caller_states: ["Test1", "Test2"],
                   callerStates: ["Test1", "Test2"]
                 }
               }
@@ -1539,7 +1527,7 @@ describe("<UserFormButtons />", () => {
               expect(mockDispatch).toHaveBeenCalledTimes(2);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "updateWorker",
-                payload: formattedWorker
+                payload: newWorker
               });
               expect(mockDispatch.mock.calls[1][0]).toEqual({
                 type: "loadCalabrioUsers",
@@ -1572,6 +1560,7 @@ describe("<UserFormButtons />", () => {
             emp_last_name: undefined,
             full_name: undefined + " " + undefined,
             did: validFormOptions.didE164,
+            caller_id: validFormOptions.didE164,
             extension: validFormOptions.extension,
             manager_first_name: validFormOptions.manager.manager_first_name,
             manager_last_name: validFormOptions.manager.manager_last_name,
@@ -1579,7 +1568,10 @@ describe("<UserFormButtons />", () => {
             manager: `${validFormOptions.manager.manager_first_name} ${validFormOptions.manager.manager_last_name}`,
             profile_id: validFormOptions.profileId,
             routing: {
-              ...validFormState.triton.routing,
+              team: validFormState.triton.routing.team,
+              caller_states: validFormState.triton.routing.callerStates,
+              callerStates: validFormState.triton.routing.callerStates,
+              levels: validFormState.triton.routing.levels,
               skills: ["nonSkillL1"]
             }
           };
@@ -1593,13 +1585,14 @@ describe("<UserFormButtons />", () => {
                   skills: ["466"],
                   levels: { "466": 3 },
                   team: "Sample1",
+                  caller_states: ["Test1", "Test2"],
                   callerStates: ["Test1", "Test2"]
                 }
               }
             }
           };
           beforeEach(() => {
-            updateUser.mockResolvedValue(rawDbWorker);
+            updateUser.mockResolvedValue(newWorker);
             workerHasOverFlowSkill.mockReturnValue(true);
             useFormState.mockReturnValue({
               ...updateFormState,
@@ -1628,7 +1621,7 @@ describe("<UserFormButtons />", () => {
               expect(mockDispatch).toHaveBeenCalledTimes(2);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "updateWorker",
-                payload: formattedWorker
+                payload: newWorker
               });
               expect(mockDispatch.mock.calls[1][0]).toEqual({
                 type: "loadCalabrioUsers",
@@ -1661,6 +1654,7 @@ describe("<UserFormButtons />", () => {
             emp_last_name: "Rizzo",
             full_name: "Frank Rizzo",
             did: validFormOptions.didE164,
+            caller_id: validFormOptions.didE164,
             extension: validFormOptions.extension,
             manager_first_name: validFormOptions.manager.manager_first_name,
             manager_last_name: validFormOptions.manager.manager_last_name,
@@ -1668,7 +1662,10 @@ describe("<UserFormButtons />", () => {
             manager: `${validFormOptions.manager.manager_first_name} ${validFormOptions.manager.manager_last_name}`,
             profile_id: validFormOptions.profileId,
             routing: {
-              ...validFormState.triton.routing,
+              team: validFormState.triton.routing.team,
+              levels: validFormState.triton.routing.levels,
+              caller_states: validFormState.triton.routing.callerStates,
+              callerStates: validFormState.triton.routing.callerStates,
               skills: ["nonSkillL1"]
             }
           };
@@ -1679,7 +1676,7 @@ describe("<UserFormButtons />", () => {
             }
           };
           beforeEach(() => {
-            updateUser.mockResolvedValue(rawDbWorker);
+            updateUser.mockResolvedValue(newWorker);
             workerHasOverFlowSkill.mockReturnValue(true);
             useFormState.mockReturnValue({
               ...updateFormState,
@@ -1712,7 +1709,7 @@ describe("<UserFormButtons />", () => {
               expect(mockDispatch).toHaveBeenCalledTimes(2);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "updateWorker",
-                payload: formattedWorker
+                payload: newWorker
               });
               expect(mockDispatch.mock.calls[1][0]).toEqual({
                 type: "loadCalabrioUsers",
@@ -1753,6 +1750,7 @@ describe("<UserFormButtons />", () => {
         const updateWorkerAttributesAfterFormValid = {
           default_skills: validFormOptions.defaultSkills,
           did: validFormOptions.didE164,
+          caller_id: validFormOptions.didE164,
           email: "test@abc.com",
           email_address: "test@abc.com",
           emp_first_name: "Frank",
@@ -1767,13 +1765,6 @@ describe("<UserFormButtons />", () => {
           manager_n_number: validFormOptions.manager.manager_n_number,
           manager: `${validFormOptions.manager.manager_first_name} ${validFormOptions.manager.manager_last_name}`,
           profile_id: validFormOptions.profileId
-        };
-        const rawDbWorker = {
-          attributes: {
-            ...updateWorkerAttributesAfterFormValid,
-            office_location_number: "newOffice"
-          },
-          workerSid: "WK1234"
         };
         const nonDidValidFormState = {
           ...updateFormState,
@@ -1806,7 +1797,7 @@ describe("<UserFormButtons />", () => {
           }
         };
         beforeEach(() => {
-          updateUser.mockResolvedValue(rawDbWorker);
+          updateUser.mockResolvedValue(newWorker);
           workerHasOverFlowSkill.mockReturnValue(true);
           updateCalabrioUser.mockResolvedValue({ data: ["agent1", "agent2"]});
         });
@@ -1827,8 +1818,8 @@ describe("<UserFormButtons />", () => {
                   skills: ["nonSkillL1","466"],
                   levels: {},
                   team: "",
-                  callerStates: [],
-                  updated: "true"
+                  caller_states: [],
+                  callerStates: []
                 }
               },
               operatingUnitSid: validOperatingUnitId,
@@ -1866,8 +1857,8 @@ describe("<UserFormButtons />", () => {
                   skills: ["nonSkillL1"],
                   levels: {},
                   team: "",
-                  callerStates: [],
-                  updated: "true"
+                  caller_states: [],
+                  callerStates: []
                 }
               },
               operatingUnitSid: validOperatingUnitId,
@@ -1909,6 +1900,7 @@ describe("<UserFormButtons />", () => {
           department_id: validFormOptions.nNumberFetchedUser.departmentNumber,
           department_name: validFormOptions.nNumberFetchedUser.departmentName,
           did: validFormOptions.didE164,
+          caller_id: validFormOptions.didE164,
           email: "test@abc.com",
           email_address: "test@abc.com",
           emp_first_name: "Frank",
@@ -1933,11 +1925,7 @@ describe("<UserFormButtons />", () => {
           workerHasOverFlowSkill.mockReturnValue(false);
           useFormState.mockReturnValue(nonDidValidFormState);
           updateUser.mockRejectedValue({
-            response: {
-              data: {
-                message: "booo"
-              }
-            }
+            message: "booo"
           });
         });
         test("should still update calabrio user and should update loading with custom error message", async () => {
@@ -1952,7 +1940,16 @@ describe("<UserFormButtons />", () => {
               zeroOutEnabled: false,
               selfServiceInd: false,
               inactiveForwardTo: validFormOptions.inactiveForwardTo,
-              attributes: updateWorkerAttributesAfterFormValid,
+              attributes: {
+                ...updateWorkerAttributesAfterFormValid,
+                routing: {
+                  skills: [],
+                  levels: {},
+                  team: "Sample1",
+                  caller_states: validFormOptions.routing.callerStates,
+                  callerStates: validFormOptions.routing.callerStates
+                }
+              },
               operatingUnitSid: validOperatingUnitId
             });
             expect(mockSetForm).toHaveBeenCalledTimes(0);
@@ -1996,7 +1993,16 @@ describe("<UserFormButtons />", () => {
               zeroOutEnabled: false,
               selfServiceInd: false,
               inactiveForwardTo: validFormOptions.inactiveForwardTo,
-              attributes: updateWorkerAttributesAfterFormValid,
+              attributes: {
+                ...updateWorkerAttributesAfterFormValid,
+                routing: {
+                  skills: [],
+                  levels: {},
+                  team: "Sample1",
+                  caller_states: validFormOptions.routing.callerStates,
+                  callerStates: validFormOptions.routing.callerStates
+                }
+              },
               operatingUnitSid: validOperatingUnitId
             });
             expect(mockSetForm).toHaveBeenCalledTimes(0);
@@ -2175,7 +2181,7 @@ describe("<UserFormButtons />", () => {
         };
         beforeEach(() => {
           useFormState.mockReturnValue(form);
-          updateUser.mockResolvedValue("yay!");
+          updateUser.mockResolvedValue(newWorker);
         });
         test("setForm should not be called", async () => {
           renderComponent(true);
@@ -2272,7 +2278,7 @@ describe("<UserFormButtons />", () => {
                 expect(mockDispatch).toHaveBeenCalledTimes(2);
                 expect(mockDispatch.mock.calls[0][0]).toEqual({
                   type: "updateWorker",
-                  payload: formattedWorker
+                  payload: newWorker
                 });
 
                 expect(mockDispatch.mock.calls[1][0]).toEqual({
@@ -2320,7 +2326,7 @@ describe("<UserFormButtons />", () => {
                   expect(mockDispatch).toHaveBeenCalledTimes(1);
                   expect(mockDispatch.mock.calls[0][0]).toEqual({
                     type: "updateWorker",
-                    payload: formattedWorker
+                    payload: newWorker
                   });
                   jest.runAllTimers();
                   expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
@@ -2359,7 +2365,7 @@ describe("<UserFormButtons />", () => {
                   expect(mockDispatch).toHaveBeenCalledTimes(2);
                   expect(mockDispatch.mock.calls[0][0]).toEqual({
                     type: "updateWorker",
-                    payload: formattedWorker
+                    payload: newWorker
                   });
                   expect(mockDispatch.mock.calls[1][0]).toEqual({
                     type: "updateWfmOrg",
@@ -2400,7 +2406,7 @@ describe("<UserFormButtons />", () => {
               expect(mockDispatch).toHaveBeenCalledTimes(1);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "updateWorker",
-                payload: formattedWorker
+                payload: newWorker
               });
               jest.runAllTimers();
               expect(mockUpdateLoading).toHaveBeenCalledTimes(2);

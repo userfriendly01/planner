@@ -41,7 +41,6 @@ import {
   isFormUpdated,
   isTritonUserValid,
   logger,
-  mapWorkerFromDbWorker,
   wait,
   workerHasOverFlowSkill
 } from "utils";
@@ -93,6 +92,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       department_id: form.nNumber.nNumberFetchedUser.departmentNumber,// need this value otherwise the department_name will not appear in flex insights,
       department_name: form.nNumber.nNumberFetchedUser.departmentName,
       did: form.triton.outgoing.e164,
+      caller_id: form.triton.outgoing.e164,
       email: form.nNumber.nNumberFetchedUser.email,
       email_address: form.nNumber.nNumberFetchedUser.email,
       emp_first_name: form.nNumber.nNumberFetchedUser.firstName,
@@ -158,17 +158,17 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     const errors = [];
 
     try {
-      const dbWorker = await createUser(createUserReqBody);
+      const newWorker = await createUser(createUserReqBody);
 
       logger.info("Successfully created user", {
         nNumber,
         userNNumber
       });
 
-      if (!offices.get(dbWorker.attributes.office_location_number)) {
+      if (!offices.get(newWorker.attributes.office_location_number)) {
         const newOffice = {
-          office_nme: dbWorker.attributes.office_location_name,
-          office_num: dbWorker.attributes.office_location_number
+          office_nme: newWorker.attributes.office_location_name,
+          office_num: newWorker.attributes.office_location_number
         };
         addOffice(newOffice)
           .then(() => {
@@ -191,17 +191,17 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       }
       dispatch({
         type: "addWorkers",
-        payload: [dbWorker]
+        payload: [newWorker]
       });
 
       try {
-        calabrioAttributes.acdId = dbWorker.sid;
+        calabrioAttributes.acdId = newWorker.sid;
         await checkConflictingUsers(calabrioAttributes, users, roles, teams);
         await createCalabrioUser(calabrioAttributes);
 
         logger.info("Successfully created Calabrio User", {
           nNumber,
-          workerSid: dbWorker.sid
+          workerSid: newWorker.sid
         });
 
         try {
@@ -319,6 +319,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
             ...loading,
             saveUser: false
           });
+          handleClose();
         }, timeouts.MODAL_OVERLAY);
       } else {
         updateLoading({
@@ -377,6 +378,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     }
     if (form.triton.outgoing.updated) {
       attributes.did = form.triton.outgoing.e164;
+      attributes.caller_id = form.triton.outgoing.e164;
     }
     if (form.triton.extension.updated) {
       attributes.extension = form.triton.extension.value;
@@ -388,7 +390,13 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       };
     }
     if (form.triton.routing.updated) {
-      attributes.routing = form.triton.routing;
+      attributes.routing = {
+        team: form.triton.routing.team,
+        caller_states: form.triton.routing.callerStates,
+        callerStates: form.triton.routing.callerStates,
+        skills: form.triton.routing.skills,
+        levels: form.triton.routing.levels
+      };
     }
     if (nNumberFetchedUser) {
       nNumberFetchedUser.departmentNumber ? attributes.department_id = nNumberFetchedUser.departmentNumber : null;
@@ -445,7 +453,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
     const errors = [];
     try {
-      const dbWorker = await updateUser(worker.sid, payload);
+      const updatedWorker = await updateUser(worker.sid, payload);
 
       logger.info("Successfully Updated Triton user", {
         nNumber,
@@ -454,16 +462,18 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
       dispatch(({
         type: "updateWorker",
-        payload: mapWorkerFromDbWorker(dbWorker)
+        payload: updatedWorker
       }));
-    } catch (error) {
+    } catch (err) {
+      const error = err as ApolloError;
+
       logger.error("Failed to update Triton Worker", {
         error,
         nNumber,
         userNNumber: form.nNumber.value
       });
 
-      errors.push(`Failed to update Triton Worker. ${error.message || error.response?.data.message}`);
+      errors.push(`Failed to update Triton Worker. ${error.message}`);
     }
 
     if (form.calabrio_qm.updated) {

@@ -68,7 +68,7 @@ const processCreateTritonUser = async (row: any, state: AppState) => {
     body.operatingUnitSid = profile?.operating_unit_sid;
 
     const res = await createUser(body);
-    const workerSid = res.workerSid;
+    const workerSid = res.sid;
 
     logger.log("TRITON RESPONSE FROM CREATE USER", res);
 
