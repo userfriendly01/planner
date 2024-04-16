@@ -3,22 +3,24 @@ import { areSkillsDifferent } from "utils";
 
 export const mapWorkerToDbWorker = (worker: Partial<UMUser>): Partial<UMUser> => {
   return {
-    twilio_attributes: JSON.stringify({
-      ...worker.attributes,
-      ...(worker.attributes.routing && {
-        routing: {
-          ...worker.attributes.routing,
-          caller_states: worker.attributes.routing.callerStates
-        }
-      }),
-      ...(worker.attributes.did && {
-        caller_id: worker.attributes.did
-      }),
-      ...(worker.attributes.profile_id !== null &&
-        worker.attributes.profile_id !== undefined && {
-        agent_attribute_1: worker.attributes.profile_id
+    ...worker.attributes && {
+      twilio_attributes: JSON.stringify({
+        ...worker.attributes,
+        ...(worker.attributes.routing && {
+          routing: {
+            ...worker.attributes.routing,
+            caller_states: worker.attributes.routing.callerStates
+          }
+        }),
+        ...(worker.attributes.did && {
+          caller_id: worker.attributes.did
+        }),
+        ...(worker.attributes.profile_id !== null &&
+          worker.attributes.profile_id !== undefined && {
+          agent_attribute_1: worker.attributes.profile_id
+        })
       })
-    }),
+    },
     ...worker.directDialNum && {
       did: worker.directDialNum
     },
