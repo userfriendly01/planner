@@ -75,7 +75,9 @@ describe("DeleteTritonUser", () => {
       ...initialFormState,
       triton: {
         ...initialTestState.workerContext.workers[6],
-        inactiveForwardTo: "",
+        inactiveForwardTo: {
+          value: ""
+        },
         userFound: true,
         didUser: false
       },
@@ -93,7 +95,10 @@ describe("DeleteTritonUser", () => {
           triton: {
             ...initialTestState.workerContext.workers[0],
             userFound: true,
-            didUser: true
+            didUser: true,
+            inactiveForwardTo: {
+              value: ""
+            }
           },
           nNumber: {
             value: mockWorker.attributes.n_number
@@ -364,7 +369,9 @@ describe("DeleteTritonUser", () => {
               ...initialFormState,
               triton: {
                 ...initialTestState.workerContext.workers[6],
-                inactiveForwardTo: "",
+                inactiveForwardTo: {
+                  value: ""
+                },
                 userFound: true,
                 didUser: true
               },
