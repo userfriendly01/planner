@@ -104,7 +104,7 @@ const App = () => {
   }, [state.userContext.accessToken, loadResult.status]);
 
   useEffect(() => {
-    // Helper to keep token refreshed
+    // Helper to get token
     const tokenManager = async () => {
       logger.log("*** MSAL: Getting new Token ***");
 
@@ -126,8 +126,6 @@ const App = () => {
           }
         }));
         wait(() => {
-          logger.log("*** MSAL: Token is about to expire, getting new token ***");
-          tokenManager();
           setShowModal(true);
         }, expiresOn.getTime() - Date.now());
       } catch (error) {
@@ -142,21 +140,7 @@ const App = () => {
       }
     };
 
-    // If we are in a popup we don't want to re-call Azure
-    // This can occur if we have left our window unoccupied for
-    // too long and the `wait` function above has fired off.
-    const isPopup = window.opener && window.opener !== window;
-
-    if(!isPopup) {
-      tokenManager();
-    } else {
-      setLoadResult({
-        status: {
-          errorMessage: "Close this popup and refresh Triton Admin",
-          errorCode: "POP_UP_INCEPTION"
-        }
-      });
-    }
+    tokenManager();
   }, []);
 
   useEffect(() => {
@@ -207,12 +191,7 @@ const App = () => {
               <>
                 <NotificationModal
                   buttonText={"Reload"}
-                  handleClick={() => {
-                    setLoadResult({
-                      home: null,
-                      status: null
-                    });
-                  }}
+                  handleClick={() => window.location.reload()}
                   text={"Your session has expired. Please reload the page."}
                 />
               </>

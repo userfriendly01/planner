@@ -32,6 +32,7 @@ import {
 delete window.location;
 window.location = { reload: jest.fn() };
 document.getElementById = jest.fn();
+jest.useFakeTimers();
 
 jest.mock("@mui/material", () => ({
   CircularProgress: jest.fn(),
@@ -324,9 +325,7 @@ describe("<App />", () => {
 
       await waitFor(() => rendered.getByTestId("app-wrapper"));
 
-      await waitFor(() => {
-        expect(acquireTokenPopupFunc).toHaveBeenCalledTimes(2);
-      }, 1200); // if this test ever causes spontaneous failures, up this timeout
+      jest.advanceTimersByTime(5000);
 
       const modalChildren = Modal.mock.calls[0][0].children;
       const modalChildrenRendered = render(<div>{modalChildren}</div>);
@@ -341,56 +340,7 @@ describe("<App />", () => {
       // testing handleClick for code coverage
       const handleClick = NotificationModal.mock.calls[0][0].handleClick;
       act(() => handleClick());
-
-      await waitFor(() => {
-        expect(mockAdminDispatch).toHaveBeenCalledWith({
-          type: "loadUserData",
-          payload: {
-            accessToken: "Access Token"
-          }
-        });
-      });
-    });
-  });
-
-  describe("tokenManager refresh", () => {
-    acquireTokenPopupFunc = jest.fn();
-    beforeEach(() => {
-      Date.now = jest.fn();
-      Date.now.mockReturnValue(1704067200000);
-      acquireTokenPopupFunc.mockReturnValue({
-        accessToken: "Access Token",
-        expiresOn: new Date(1704067201000)
-      });
-    });
-
-    test("tokenManager should re-call acquireTokenPopup when token expires and display modal", async () => {
-      useMsal.mockReturnValue({
-        instance: {
-          getActiveAccount: jest.fn().mockReturnValue({
-            idTokenClaims: {
-              roles: ["Admin"],
-              employeeid: "n1234567"
-            }
-          }),
-          acquireTokenPopup: acquireTokenPopupFunc
-        }
-      });
-
-      render(<App />);
-
-      await waitFor(() => {
-        expect(mockAdminDispatch).toHaveBeenCalledWith({
-          type: "loadUserData",
-          payload: {
-            accessToken: "Access Token"
-          }
-        });
-      });
-
-      await waitFor(() => {
-        expect(acquireTokenPopupFunc).toHaveBeenCalledTimes(2);
-      }, 1200); // if this test ever causes spontaneous failures, up this timeout
+      expect(window.location.reload).toHaveBeenCalledTimes(1);
     });
   });
 });

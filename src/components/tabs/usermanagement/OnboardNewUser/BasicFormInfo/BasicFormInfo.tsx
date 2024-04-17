@@ -187,15 +187,6 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
                   }
                 });
 
-                setForm({
-                  type: userFormActions.UPDATE_PHONE_NUMBER,
-                  payload: {
-                    maskedValue,
-                    isValid,
-                    e164Number
-                  }
-                });
-
                 if(isValid && (!form.triton.outgoing.value || autoUpdateOutgoing)) {
                   setAutoUpdateOutgoing(true);
                   setForm({

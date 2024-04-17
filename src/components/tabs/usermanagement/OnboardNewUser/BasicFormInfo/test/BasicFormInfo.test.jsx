@@ -756,7 +756,7 @@ describe("<BasicFormInfo />", () => {
               const updateValue = PhoneNumberInput.mock.calls[0][0].updateValue;
               updateValue("(603) 851-8200", null, true, "+16038518200");
             });
-            expect(mockSetForm).toBeCalledTimes(3);
+            expect(mockSetForm).toBeCalledTimes(2);
             expect(mockSetForm.mock.calls[0][0]).toEqual({
               type: userFormActions.UPDATE_PHONE_NUMBER,
               payload: {
@@ -768,14 +768,6 @@ describe("<BasicFormInfo />", () => {
               }
             });
             expect(mockSetForm.mock.calls[1][0]).toEqual({
-              type: userFormActions.UPDATE_PHONE_NUMBER,
-              payload: {
-                maskedValue: "(603) 851-8200",
-                isValid: true,
-                e164Number: "+16038518200"
-              }
-            });
-            expect(mockSetForm.mock.calls[2][0]).toEqual({
               type: userFormActions.UPDATE_PHONE_NUMBER,
               payload: {
                 field: "outgoing",
@@ -808,7 +800,7 @@ describe("<BasicFormInfo />", () => {
               const updateValue = PhoneNumberInput.mock.calls[0][0].updateValue;
               updateValue("(603) 851-8200", null, true, "+16038518200");
             });
-            expect(mockSetForm).toBeCalledTimes(2);
+            expect(mockSetForm).toBeCalledTimes(1);
             expect(mockSetForm.mock.calls[0][0]).toEqual({
               type: userFormActions.UPDATE_PHONE_NUMBER,
               payload: {
@@ -819,14 +811,6 @@ describe("<BasicFormInfo />", () => {
                 initialValue: "+18002345678"
               }
             });
-            expect(mockSetForm.mock.calls[1][0]).toEqual({
-              type: userFormActions.UPDATE_PHONE_NUMBER,
-              payload: {
-                maskedValue: "(603) 851-8200",
-                isValid: true,
-                e164Number: "+16038518200"
-              }
-            });
           });
 
           test("should not set outgoing number if input is invalid", () => {
@@ -835,7 +819,7 @@ describe("<BasicFormInfo />", () => {
               const updateValue = PhoneNumberInput.mock.calls[0][0].updateValue;
               updateValue("(603) 851-82", null, false, "+160385182");
             });
-            expect(mockSetForm).toBeCalledTimes(2);
+            expect(mockSetForm).toBeCalledTimes(1);
             expect(mockSetForm.mock.calls[0][0]).toEqual({
               type: userFormActions.UPDATE_PHONE_NUMBER,
               payload: {
@@ -844,14 +828,6 @@ describe("<BasicFormInfo />", () => {
                 isValid: false,
                 e164Number: "+160385182",
                 initialValue: "+18002345678"
-              }
-            });
-            expect(mockSetForm.mock.calls[1][0]).toEqual({
-              type: userFormActions.UPDATE_PHONE_NUMBER,
-              payload: {
-                maskedValue: "(603) 851-82",
-                isValid: false,
-                e164Number: "+160385182"
               }
             });
           });
@@ -934,7 +910,7 @@ describe("<BasicFormInfo />", () => {
               updateValue("(603) 851-8200", null, true, "+16038518200");
             });
 
-            expect(mockSetForm).toBeCalledTimes(3);
+            expect(mockSetForm).toBeCalledTimes(2);
             expect(mockSetForm.mock.calls[0][0]).toEqual({
               type: userFormActions.UPDATE_PHONE_NUMBER,
               payload: {
@@ -946,14 +922,6 @@ describe("<BasicFormInfo />", () => {
               }
             });
             expect(mockSetForm.mock.calls[1][0]).toEqual({
-              type: userFormActions.UPDATE_PHONE_NUMBER,
-              payload: {
-                maskedValue: "(603) 851-8200",
-                isValid: true,
-                e164Number: "+16038518200"
-              }
-            });
-            expect(mockSetForm.mock.calls[2][0]).toEqual({
               type: userFormActions.UPDATE_PHONE_NUMBER,
               payload: {
                 field: "outgoing",
