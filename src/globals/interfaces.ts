@@ -325,7 +325,7 @@ export interface UMTwilioAttributeSkills {
   team?:string,
   callerStates?: string[],
   caller_states?: string[],
-  sales_assoc_worker?: string[]
+  sales_assoc_workers?: string[]
 }
 
 

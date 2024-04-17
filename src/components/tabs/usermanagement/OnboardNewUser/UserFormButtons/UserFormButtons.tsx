@@ -393,6 +393,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         team: form.triton.routing.team,
         caller_states: form.triton.routing.callerStates,
         callerStates: form.triton.routing.callerStates,
+        sales_assoc_workers: form.triton.routing.sales_assoc_workers,
         skills: form.triton.routing.skills,
         levels: form.triton.routing.levels
       };
