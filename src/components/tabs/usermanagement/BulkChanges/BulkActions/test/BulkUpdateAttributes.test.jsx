@@ -68,7 +68,7 @@ describe("<BulkUpdateAttributes />", () => {
           availableAttributes.ZERO_OUT_ENABLED,
           availableAttributes.SELF_SERVICE_INDICATOR,
           availableAttributes.PROFILE,
-          availableAttributes.DID,
+          availableAttributes.CALLER_ID,
           availableAttributes.ROUTING_TEAM,
           availableAttributes.ROUTING_SALES_ASSOC_WORKERS
         ]);
@@ -445,15 +445,15 @@ describe("<BulkUpdateAttributes />", () => {
           });
         });
       });
-      describe("Attribute Dropdown is updated to availableAttributes.DID", () => {
+      describe("Attribute Dropdown is updated to availableAttributes.CALLER_ID", () => {
         test("PhoneNumberInput is rendered", () => {
           renderComponent([]);
           expect(Dropdown.mock.calls.length).toBe(2);
           expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
           const onAttributeChange = Dropdown.mock.calls[0][0].updateValue;
-          act(() => onAttributeChange(null, availableAttributes.DID));
+          act(() => onAttributeChange(null, availableAttributes.CALLER_ID));
           expect(Dropdown.mock.calls.length).toBe(3);
-          expect(Dropdown.mock.calls[2][0].value).toBe(availableAttributes.DID);
+          expect(Dropdown.mock.calls[2][0].value).toBe(availableAttributes.CALLER_ID);
           expect(PhoneNumberInput.mock.calls.length).toBe(1);
           expect(PhoneNumberInput.mock.calls[0][0].number).toBe("");
         });
@@ -464,7 +464,7 @@ describe("<BulkUpdateAttributes />", () => {
               expect(Dropdown.mock.calls.length).toBe(2);
               expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
               const onAttributeChange = Dropdown.mock.calls[0][0].updateValue;
-              act(() => onAttributeChange(null, availableAttributes.DID));
+              act(() => onAttributeChange(null, availableAttributes.CALLER_ID));
               const onValueChange = PhoneNumberInput.mock.calls[0][0].updateValue;
               act(() => onValueChange(null, "60385182"));
               expect(mockReplaceTemplates).toHaveBeenCalledTimes(0);
@@ -480,7 +480,7 @@ describe("<BulkUpdateAttributes />", () => {
               expect(Dropdown.mock.calls.length).toBe(2);
               expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
               const onAttributeChange = Dropdown.mock.calls[0][0].updateValue;
-              act(() => onAttributeChange(null, availableAttributes.DID));
+              act(() => onAttributeChange(null, availableAttributes.CALLER_ID));
               const onValueChange = PhoneNumberInput.mock.calls[0][0].updateValue;
               act(() => onValueChange(null, "60385182"));
               expect(mockReplaceTemplates).toHaveBeenCalledTimes(0);
@@ -497,14 +497,14 @@ describe("<BulkUpdateAttributes />", () => {
               expect(Dropdown.mock.calls.length).toBe(2);
               expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
               const onAttributeChange = Dropdown.mock.calls[0][0].updateValue;
-              act(() => onAttributeChange(null, availableAttributes.DID));
+              act(() => onAttributeChange(null, availableAttributes.CALLER_ID));
               const onValueChange = PhoneNumberInput.mock.calls[0][0].updateValue;
               act(() => onValueChange(null, "6038518200"));
               expect(mockReplaceTemplates).toHaveBeenCalledTimes(1);
               expect(mockReplaceTemplates).toHaveBeenCalledWith({
                 ...updateTemplates.UPDATE_WORKER_ATTRIBUTE,
                 data: {
-                  key: "did",
+                  key: "caller_id",
                   value: "+16038518200",
                   location: "attributes"
                 }
@@ -520,13 +520,13 @@ describe("<BulkUpdateAttributes />", () => {
               expect(Dropdown.mock.calls.length).toBe(2);
               expect(Dropdown.mock.calls[0][0].value).toBe(availableAttributes.SELF_SERVICE_INDICATOR);
               const onAttributeChange = Dropdown.mock.calls[0][0].updateValue;
-              act(() => onAttributeChange(null, availableAttributes.DID));
+              act(() => onAttributeChange(null, availableAttributes.CALLER_ID));
               const onValueChange = PhoneNumberInput.mock.calls[0][0].updateValue;
               act(() => onValueChange(null, "6038518200"));
               expect(mockReplaceTemplates).toHaveBeenCalledTimes(0);
               expect(mockUpdateTemplates).toHaveBeenCalledTimes(1);
               expect(mockUpdateTemplates).toHaveBeenCalledWith(selectedTemplate, {
-                key: "did",
+                key: "caller_id",
                 value: "+16038518200",
                 location: "attributes"
               });

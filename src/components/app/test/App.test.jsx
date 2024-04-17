@@ -15,8 +15,10 @@ import {
 } from "context";
 import React from "react";
 import {
+  act,
   adGroupPermissionMapping,
   expectMockedComponent,
+  expectOnlyPassedProps,
   mockRunTritonStartup,
   render,
   setupMockedComponents,
@@ -30,7 +32,6 @@ import {
 delete window.location;
 window.location = { reload: jest.fn() };
 document.getElementById = jest.fn();
-
 
 jest.mock("@mui/material", () => ({
   CircularProgress: jest.fn(),
@@ -51,9 +52,7 @@ jest.mock("context", () => ({
 jest.mock("@azure/msal-react");
 
 jest.mock("utils", () => ({
-  myAxios: jest.requireActual("utils").myAxios,
   wait: jest.requireActual("utils").wait,
-  isErrorIn400s: jest.requireActual("utils").isErrorIn400s,
   logger: jest.requireActual("utils").logger
 }));
 
@@ -277,6 +276,83 @@ describe("<App />", () => {
     });
   });
 
+  describe("token refresh modal", () => {
+    acquireTokenPopupFunc = jest.fn();
+
+    beforeEach(() => {
+      useAdminState.mockReturnValue({
+        userContext: {
+          permissions: [],
+          accessToken: "Access Token"
+        },
+        workerContext: {
+          workers: []
+        }
+      });
+
+      Date.now = jest.fn();
+      Date.now.mockReturnValue(1704067200000);
+      acquireTokenPopupFunc.mockReturnValue({
+        accessToken: "Access Token",
+        expiresOn: new Date(1704067201000)
+      });
+    });
+
+    test("should show modal when token expires", async () => {
+      useMsal.mockReturnValue({
+        instance: {
+          getActiveAccount: jest.fn().mockReturnValue({
+            idTokenClaims: {
+              roles: ["Admin"],
+              employeeid: "n1234567"
+            }
+          }),
+          acquireTokenPopup: acquireTokenPopupFunc
+        }
+      });
+
+      const rendered = render(<App />);
+
+      await waitFor(() => {
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadUserData",
+          payload: {
+            accessToken: "Access Token"
+          }
+        });
+      });
+
+      await waitFor(() => rendered.getByTestId("app-wrapper"));
+
+      await waitFor(() => {
+        expect(acquireTokenPopupFunc).toHaveBeenCalledTimes(2);
+      }, 1200); // if this test ever causes spontaneous failures, up this timeout
+
+      const modalChildren = Modal.mock.calls[0][0].children;
+      const modalChildrenRendered = render(<div>{modalChildren}</div>);
+      expectOnlyPassedProps(Modal, {
+        open: true
+      });
+      expectMockedComponent(modalChildrenRendered, { NotificationModal });
+      expectOnlyPassedProps(NotificationModal, {
+        buttonText: "Reload",
+        text: "Your session has expired. Please reload the page."
+      });
+      // testing handleClick for code coverage
+      const handleClick = NotificationModal.mock.calls[0][0].handleClick;
+      act(() => handleClick());
+
+      await waitFor(() => {
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadUserData",
+          payload: {
+            accessToken: "Access Token"
+          }
+        });
+      });
+    });
+  });
+
   describe("tokenManager refresh", () => {
     acquireTokenPopupFunc = jest.fn();
     beforeEach(() => {
@@ -288,8 +364,7 @@ describe("<App />", () => {
       });
     });
 
-    test("tokenManager should re-call acquireTokenPopup when token expires", async () => {
-
+    test("tokenManager should re-call acquireTokenPopup when token expires and display modal", async () => {
       useMsal.mockReturnValue({
         instance: {
           getActiveAccount: jest.fn().mockReturnValue({
@@ -303,7 +378,6 @@ describe("<App />", () => {
       });
 
       render(<App />);
-
 
       await waitFor(() => {
         expect(mockAdminDispatch).toHaveBeenCalledWith({

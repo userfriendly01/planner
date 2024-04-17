@@ -1,4 +1,6 @@
-import { CircularProgress } from "@mui/material";
+import {
+  CircularProgress, Modal
+} from "@mui/material";
 import {
   AppWrapper,
   ErrorMessage,
@@ -15,7 +17,8 @@ import {
 } from "authentication";
 import {
   Header,
-  NavTabs
+  NavTabs,
+  NotificationModal
 } from "components";
 import {
   useAdminDispatch, useAdminState
@@ -41,6 +44,7 @@ const App = () => {
   const { instance } = useMsal();
   const account = instance.getActiveAccount();
 
+  const [showModal, setShowModal] = useState(false);
   const [loadResult, setLoadResult] = useState({
     home: null,
     status: null
@@ -90,15 +94,14 @@ const App = () => {
       }
     };
 
-    if (state.userContext.accessToken && loadResult.status !== loading && loadResult.status !== success) {
+    if (state.userContext.accessToken && loadResult.status === null) {
       setLoadResult({
         status: loading
       });
 
       startup();
     }
-
-  }, [state.userContext.accessToken]);
+  }, [state.userContext.accessToken, loadResult.status]);
 
   useEffect(() => {
     // Helper to keep token refreshed
@@ -125,6 +128,7 @@ const App = () => {
         wait(() => {
           logger.log("*** MSAL: Token is about to expire, getting new token ***");
           tokenManager();
+          setShowModal(true);
         }, expiresOn.getTime() - Date.now());
       } catch (error) {
         logger.error("TOKEN_GET_FAILED", { error });
@@ -170,14 +174,14 @@ const App = () => {
       const profileId = getWorkerProfileId(nNumber, workers);
       const isAdmin = account.idTokenClaims.roles.includes("Admin");
 
-      dispatch(({
+      dispatch({
         type: "loadUserData",
         payload: {
           profileId,
           isAdmin,
           nNumber
         }
-      }));
+      });
     };
 
     if (workers.length && !isLoading && userContext.isAdmin === undefined) {
@@ -199,6 +203,20 @@ const App = () => {
                 return <Route key={r.path} path={r.path} element={<r.Component />} />;
               })}
             </Routes>
+            <Modal onClose={() => { return; }} open={showModal === true}>
+              <>
+                <NotificationModal
+                  buttonText={"Reload"}
+                  handleClick={() => {
+                    setLoadResult({
+                      home: null,
+                      status: null
+                    });
+                  }}
+                  text={"Your session has expired. Please reload the page."}
+                />
+              </>
+            </Modal>
           </AppWrapper>
         </BrowserRouter>
       );
