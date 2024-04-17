@@ -1,5 +1,4 @@
 import {
-  CalabrioQmUser,
   Manager,
   ModalOverlayStatuses,
   Office,
@@ -7,8 +6,7 @@ import {
   TritonProfile,
   UMUser,
   WfmUser,
-  UMTwilioAttributeSkills,
-  formModes
+  UMTwilioAttributeSkills
 } from "globals";
 import { FetchUserResponse } from "services";
 import { ExtensionStatusProps } from "../Extension/ExtensionInput/ExtensionInput.Interfaces";

@@ -92,7 +92,7 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
       lastName: form.triton.attributes?.emp_last_name,
       systems: [],
       terminationDate: termDate,
-      inactiveForwardTo: isWorkerDid ? form.triton.inactiveForwardTo : ""
+      inactiveForwardTo: isWorkerDid ? form.triton.inactiveForwardTo.value : ""
     };
     if (profilesToDelete.triton) {
       body.systems.push("TRITON");

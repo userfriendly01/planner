@@ -40,15 +40,14 @@ const NavTabs = () => {
   logger.log("STATE", state);
 
   React.useEffect(() => {
-    const allowedTabs = [] as any[];
-    const tabsOpen = {} as any;
+    const allowedTabs: any[] = [];
+    const tabsOpen: any = {};
     permissions.forEach(({ authenticationProfile }) => {
       authenticationProfile.tabs.forEach(tab => {
         allowedTabs.push(tab);
         tabsOpen[tab.value] = false;
       });
     });
-
     setTabs(allowedTabs);
     setDropdownOpen(tabsOpen);
   }, []);
@@ -56,7 +55,7 @@ const NavTabs = () => {
   return (
     <Content>
       <StyledTabContainer>
-        {tabs.map((t: any) => (
+        { tabs.map((t: any) => (
           <div
             data-testid="dropdown-action"
             onMouseEnter={() => handleDropdownOpen(t.value)}

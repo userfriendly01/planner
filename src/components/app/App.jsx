@@ -44,11 +44,11 @@ const App = () => {
   const { instance } = useMsal();
   const account = instance.getActiveAccount();
 
-  const [showModal, setShowModal] = useState(false);
   const [loadResult, setLoadResult] = useState({
     home: null,
     status: null
   });
+  const [showModal, setShowModal] = useState(false);
   const dispatch = useAdminDispatch();
   const state = useAdminState();
 

@@ -84,8 +84,6 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
   };
 
   const addSkillClicked = () => {
-    console.log(newSkill);
-
     const {
       levelSelected,
       skill,
