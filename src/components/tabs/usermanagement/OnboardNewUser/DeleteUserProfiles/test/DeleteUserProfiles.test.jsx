@@ -310,7 +310,11 @@ describe("DeleteTritonUser", () => {
                   saveStatus: "partial fail",
                   saveUser: true
                 });
-                expect(mockDispatch).toHaveBeenCalledTimes(0);
+                expect(mockDispatch).toHaveBeenCalledTimes(1);
+                expect(mockDispatch).toHaveBeenCalledWith({
+                  type: "deleteWorker",
+                  payload: "WK1234"
+                });
               });
             });
           });

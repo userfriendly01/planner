@@ -165,6 +165,11 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
           });
 
           if (results[0]?.statusCode === 200) {
+            dispatch({
+              type: "deleteWorker",
+              payload: form.triton.sid
+            });
+
             updateLoading({
               ...loading,
               overlayMessage: resultMessage,
