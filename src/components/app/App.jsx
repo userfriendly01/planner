@@ -125,6 +125,10 @@ const App = () => {
             accessToken
           }
         }));
+
+        // TODO: Once we have subscriptions set up
+        // we'll want to constantly refresh the token several times
+        // then prompt the user to refresh or come up with a better way of re
         wait(() => {
           setShowModal(true);
         }, expiresOn.getTime() - Date.now());
