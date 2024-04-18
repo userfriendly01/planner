@@ -227,7 +227,7 @@ async function retrieveFlowData(accessToken, counter = 1, nextToken = null, rowI
  * @returns 
  */
 function createFlowFromLegacyPhone (item) {
-  let convertedCreateTime = "";
+  let convertedCreateTime = item.createTime;
   if(item.createTime && typeof item.createTime === "number") {
     const jsEpoch = item.createTime < 9999999999 ? item.createTime * 1000 : item.createTime;
 
@@ -235,8 +235,12 @@ function createFlowFromLegacyPhone (item) {
   }
   return {
     pkey: item.pkey,
+    accountManager: item.accountManager,
+    affinityVDN: item.affinityVDN,
     agentId: item.agentId,
     brand: item.brand,
+    callDetails1: item.callDetails1,
+    callDetails2: item.callDetails2,
     callFlowName: item.callFlowName ?? "",
     callFlowTemplate: item.callFlowTemplate ?? "",
     callFlowType: item.callFlowType ?? "",
@@ -289,8 +293,12 @@ function createFlowFromAction (item) {
   }
   return {
     pkey: item.phoneNumber,
+    accountManager: item.accountManager,
+    affinityVDN: item.affinityVDN,
     agentId: item.agentId,
     brand: item.brand,
+    callDetails1: item.callDetails1,
+    callDetails2: item.callDetails2,
     callFlowName: item.callFlowName ?? "",
     callFlowTemplate: item.callFlowTemplate ?? "",
     callFlowType: item.callFlowType ?? "",
