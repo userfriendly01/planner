@@ -29,27 +29,31 @@ export const getAllUsers = async (dispatch: (action: Action) => void): Promise<U
   }));
 
   let nextToken = "start";
-  const firstQuery = new Promise((resolve: (users: UMUser[]) => void) => {
+  const firstQuery = new Promise((resolve: (users: UMUser[]) => void, reject) => {
     const getAllUsers = async () => {
       while (nextToken) {
         const isFirstQuery = nextToken === "start";
-        const response = await listUsers(isFirstQuery ? undefined : nextToken);
+        try {
+          const response = await listUsers(isFirstQuery ? undefined : nextToken);
 
-        if (isFirstQuery) {
-          dispatch(({
-            type: "loadWorkers",
-            payload: response.items
-          }));
+          if (isFirstQuery) {
+            dispatch(({
+              type: "loadWorkers",
+              payload: response.items
+            }));
 
-          resolve(response.items);
-        } else {
-          dispatch(({
-            type: "addWorkers",
-            payload: response.items
-          }));
+            resolve(response.items);
+          } else {
+            dispatch(({
+              type: "addWorkers",
+              payload: response.items
+            }));
+          }
+
+          ({ nextToken } = response);
+        } catch(error) {
+          reject(error);
         }
-
-        ({ nextToken } = response);
       }
 
       dispatch(({

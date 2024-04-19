@@ -85,9 +85,9 @@ const App = () => {
           logger.error("DATA_GET_FAILED", { error });
           setLoadResult({
             status: {
-              errorMessage: error.response?.msg,
-              errorPayload: JSON.stringify(error.response?.data),
-              errorCode: error?.response.status
+              errorMessage: error.response?.msg || error.msg,
+              errorPayload: JSON.stringify(error.response?.data || error.error),
+              errorCode: error.response?.status || 500
             }
           });
         }
