@@ -49,10 +49,6 @@ export const getAllUsers = async (dispatch: (action: Action) => void): Promise<U
           }));
         }
 
-        if(isFirstQuery){
-          resolve(response.items);
-        }
-
         ({ nextToken } = response);
       }
 
@@ -66,28 +62,6 @@ export const getAllUsers = async (dispatch: (action: Action) => void): Promise<U
   });
 
   return firstQuery;
-};
-
-export const getUser = async (identifier: string): Promise<UMUser> => {
-  const {
-    error, data
-  }  = await apolloClient.query<{ user: UMUser }>({
-    query: GET_USER,
-    variables: {
-      identifier
-    }
-  });
-
-  if (error) {
-    logger.error("Failed to fetch user from service", { error });
-
-    throw ({
-      msg: "Failed to fetch user from service",
-      error
-    });
-  }
-
-  return data.user;
 };
 
 export const listUsers = async (nextToken?: string): Promise<DBList<UMUser>> => {
@@ -120,6 +94,23 @@ export const listUsers = async (nextToken?: string): Promise<DBList<UMUser>> => 
     items: newUsers,
     nextToken: data.users.nextToken
   };
+};
+
+export const getUser = async (identifier: string): Promise<UMUser> => {
+  const {
+    errors, data
+  }  = await apolloClient.query<{ user: UMUser }>({
+    query: GET_USER,
+    variables: {
+      identifier
+    }
+  });
+
+  if (errors?.length) {
+    throw errors;
+  }
+
+  return data.user;
 };
 
 export const updateUser = async (identifier: string, user: Partial<UMUser>): Promise<UMUser> => {
