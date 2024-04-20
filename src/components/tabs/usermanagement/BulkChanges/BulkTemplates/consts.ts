@@ -28,7 +28,7 @@ export const availableAttributes: any = {
     value: "caller_id",
     type: "phone number",
     validator: (value: any) => isNumberValid(value.toString(), false),
-    location: "attributes"// add tooltip that this is alone will not update someone's direct dial number, bulk update direct didal is not supported, this field also represents outgoing number for non DID users
+    location: "attributes"
   },
   ROUTING_TEAM: {
     label: "team",
