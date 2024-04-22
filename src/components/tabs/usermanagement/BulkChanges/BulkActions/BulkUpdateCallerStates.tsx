@@ -50,14 +50,14 @@ const BulkUpdateCallerStates = (props: BulkCallerStatesProps): any => {
         replaceTemplate({
           ...template,
           data: {
-            key: "callerStates",
+            key: "caller_states",
             value: updatedCallerStates,
             option: callerStatesOption
           }
         });
       } else {
         updateTemplate(templateFound, {
-          key: "callerStates",
+          key: "caller_states",
           value: updatedCallerStates,
           option: callerStatesOption
         });

@@ -1,4 +1,6 @@
-import { act, render, setupMockedComponents, initialFormState, validFormOptions, validFormState, fetchedUser } from "testUtils";
+import {
+  act, render, setupMockedComponents, initialFormState, validFormOptions, validFormState, fetchedUser
+} from "testUtils";
 import {
   Accordion
 } from "@mui/material";
@@ -8,7 +10,7 @@ import {
   useFormDispatch,
   useFormState
 } from "context";
-import {updateUser} from "services"
+import { updateUser } from "services";
 jest.mock("@mui/material", () => {
   return{
     __esModule: true,
@@ -34,7 +36,7 @@ jest.mock("context", () => ({
 const workerAttributesAfterFormValid = {
   contact_uri: `client:${validFormOptions.nNumber.toLowerCase()}`,
   default_skills: validFormOptions.defaultSkills,
-  did: validFormOptions.didE164,
+  caller_id: validFormOptions.caller_idE164,
   department_id: fetchedUser.departmentNumber,
   department_name: fetchedUser.departmentName,
   email: fetchedUser.email,
@@ -55,10 +57,10 @@ const workerAttributesAfterFormValid = {
   primary_dept_number: fetchedUser.departmentNumber,
   profile_id: validFormOptions.profileId,
   unique_id: validFormOptions.nNumber.toLowerCase(),
-  routing:{
+  routing: {
     ...validFormOptions.routing,
     updated: true
-  },
+  }
 };
 
 const rawDbWorker = {
@@ -85,23 +87,23 @@ describe("<RoutingAttributes />", ()=>{
     setupMockedComponents({
       Accordion
     });
-   
+
     test("Simulate Routing Team Component", ()=>{
       const eventOnChange={
         target: {
           name: "routing Team",
           value: "sample1"
         }
-      }
+      };
       const valueChanged ={
         label: "sample1",
         value: "sample1"
-      }
+      };
       renderComponent();
       const routingTeamChange = Accordion.mock.calls[0][0].children[1].props.children.props.updateValue;
       act(()=>{
         routingTeamChange(eventOnChange,valueChanged);
-      })
+      });
       expect(routingTeamChange).toBeTruthy();
     });
     test("Simulate Routing Team Component with team value as null",()=>{
@@ -110,50 +112,50 @@ describe("<RoutingAttributes />", ()=>{
           name: "routing Team",
           value: "sample1"
         }
-      }
+      };
       const validFormStateEdit={
         ...validFormState,
-        triton:{
+        triton: {
           ...validFormState.triton,
           zeroOutEnabled: {
             value: true,
             updated: true
           },
-          routing:{
-            team:"",
-            levels:{},
-            skills:[],
-            updated:true,
-            callerStates:[]
+          routing: {
+            team: "",
+            levels: {},
+            skills: [],
+            updated: true,
+            caller_states: []
           }
         }
-      }
+      };
       const routingResult = {
-        team:"",
+        team: "",
         skills: [],
         levels: {},
         updated: true,
-        callerStates:[]
-      }
+        caller_states: []
+      };
       updateUser.mockResolvedValue(rawDbWorker);
       useFormState.mockReturnValue(validFormStateEdit);
       renderComponent();
       const routingTeamChange = Accordion.mock.calls[0][0].children[1].props.children.props.updateValue;
       act(()=>{
         routingTeamChange(eventOnChange,null);
-      })
+      });
       const routingStateResult = useFormState.mock.results[0].value.triton.routing;
-      expect(routingStateResult).toEqual(routingResult);  
+      expect(routingStateResult).toEqual(routingResult);
     });
     test("Auto close the Accordian", ()=>{
       renderComponent();
       const accordianChange = Accordion.mock.calls[0][0].onChange;
       act(()=>{
         accordianChange();
-      })
+      });
       expect(accordianChange).toBeTruthy();
     });
-  })
+  });
   describe("CallerStates",()=>{
     beforeEach(()=>{
       jest.clearAllMocks();
@@ -166,48 +168,48 @@ describe("<RoutingAttributes />", ()=>{
           name: "routing Team",
           value: "sample1"
         }
-      }
+      };
       const validFormStateEdit={
         ...validFormState,
-        triton:{
+        triton: {
           ...validFormState.triton,
           zeroOutEnabled: {
             value: true,
             updated: true
           },
-          routing:{
-            team:"",
-            levels:{},
-            skills:[],
-            updated:true,
-            callerStates:["Test1","Test2"]
+          routing: {
+            team: "",
+            levels: {},
+            skills: [],
+            updated: true,
+            caller_states: ["Test1","Test2"]
           }
         }
-      }
+      };
       const routingResult = {
-        team:"",
+        team: "",
         skills: [],
         levels: {},
         updated: true,
-        callerStates:["Test1","Test2"]
-      }
+        caller_states: ["Test1","Test2"]
+      };
       const valueChanged ={
-        value:[
+        value: [
           {
             label: "sample1",
             value: ["test2"]
           }
         ]
-      }
+      };
       updateUser.mockResolvedValue(rawDbWorker);
       useFormState.mockReturnValue(validFormStateEdit);
       renderComponent();
       const callerStateTeamChange = Accordion.mock.calls[0][0].children[2].props.children.props.updateValue;
       act(()=>{
         callerStateTeamChange(eventOnChange,valueChanged);
-      })
+      });
       const callerStateResult = useFormState.mock.results[0].value.triton.routing;
-      expect(callerStateResult).toEqual(routingResult);  
+      expect(callerStateResult).toEqual(routingResult);
     });
     test("Simulate Caller State Component", ()=>{
       const eventOnChange={
@@ -215,20 +217,20 @@ describe("<RoutingAttributes />", ()=>{
           name: "callerState",
           value: "callerState"
         }
-      }
+      };
       const valueChanged ={
-        value:[
+        value: [
           {
             label: "sample1",
             value: ["test2"]
           }
         ]
-      }
+      };
       renderComponent();
       const callerStateChange = Accordion.mock.calls[0][0].children[2].props.children.props.updateValue;
       act(()=>{
         callerStateChange(eventOnChange,valueChanged);
-      })
+      });
       expect(callerStateChange).toBeTruthy();
     });
     test("Simulate Caller State Component", ()=>{
@@ -237,13 +239,13 @@ describe("<RoutingAttributes />", ()=>{
           name: "callerState",
           value: "callerState"
         }
-      }
+      };
       renderComponent();
       const callerStateChange = Accordion.mock.calls[0][0].children[2].props.children.props.updateValue;
       act(()=>{
         callerStateChange(eventOnChange,null);
-      })
+      });
       expect(callerStateChange).toBeTruthy();
     });
-  })
+  });
 });

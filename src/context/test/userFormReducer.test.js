@@ -571,7 +571,7 @@ describe("userFormReducer", () => {
           updated: true,
           valid: true
         },
-        directDialNum: {
+        did: {
           value: "a thousand",
           blurred: true,
           e164: "shoelaces",
@@ -626,7 +626,7 @@ describe("userFormReducer", () => {
             updated: true,
             valid: true
           },
-          directDialNum: {
+          did: {
             value: "a thousand",
             blurred: true,
             e164: "shoelaces",
@@ -1057,16 +1057,16 @@ describe("userFormReducer", () => {
           },
           outgoing: {
             ...initialUserFormState.triton.outgoing,
-            value: formatE164PhoneNumber(worker.attributes.did),
+            value: formatE164PhoneNumber(worker.attributes.caller_id),
             valid: true
           },
           profileId: {
             ...initialUserFormState.triton.profileId,
             value: worker.attributes.profile_id
           },
-          directDialNum: {
-            ...initialUserFormState.triton.directDialNum,
-            value: formatE164PhoneNumber(worker.directDialNum),
+          did: {
+            ...initialUserFormState.triton.did,
+            value: formatE164PhoneNumber(worker.did),
             valid: true
           },
           didUser: true,
@@ -1127,16 +1127,16 @@ describe("userFormReducer", () => {
           },
           outgoing: {
             ...initialUserFormState.triton.outgoing,
-            value: formatE164PhoneNumber(worker.attributes.did),
+            value: formatE164PhoneNumber(worker.attributes.caller_id),
             valid: true
           },
           profileId: {
             ...initialUserFormState.triton.profileId,
             value: worker.attributes.profile_id
           },
-          directDialNum: {
-            ...initialUserFormState.triton.directDialNum,
-            value: formatE164PhoneNumber(worker.directDialNum),
+          did: {
+            ...initialUserFormState.triton.did,
+            value: formatE164PhoneNumber(worker.did),
             valid: true
           },
           didUser: true,
@@ -1156,8 +1156,8 @@ describe("userFormReducer", () => {
       const worker = { ...mockWorkers[2] };
       delete worker.attributes.n_number;
       delete worker.attributes.extension;
-      delete worker.attributes.did;
-      delete worker.directDialNum;
+      delete worker.attributes.caller_id;
+      delete worker.did;
       delete worker.zeroOutEnabled;
       delete worker.selfServiceInd;
 
@@ -1208,8 +1208,8 @@ describe("userFormReducer", () => {
             ...initialUserFormState.triton.profileId,
             value: worker.attributes.profile_id
           },
-          directDialNum: {
-            ...initialUserFormState.triton.directDialNum,
+          did: {
+            ...initialUserFormState.triton.did,
             value: "",
             valid: false
           },
@@ -1466,7 +1466,7 @@ describe("userFormReducer", () => {
           ...initialUserFormState.triton,
           routing: {
             ...initialUserFormState.triton.routing,
-            callerStates: payload.callerStateRouting,
+            caller_states: payload.callerStateRouting,
             updated: true
           }
         }

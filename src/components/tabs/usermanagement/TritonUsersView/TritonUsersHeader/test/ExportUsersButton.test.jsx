@@ -33,13 +33,13 @@ const fullWorker = {
   ...initialTestState.workerContext.workers[1],
   attributes: {
     ...initialTestState.workerContext.workers[1].attributes,
-    did: "6038518200",
+    caller_id: "6038518200",
     roles: ["agent"],
     routing: {
       team: "Kitties",
       skills: ["psul1", "466"],
       levels: { "466": 1 },
-      callerStates: ["boo"],
+      caller_states: ["boo"],
       sales_assoc_workers: ["hi", "there"]
     },
     default_skills: {
@@ -94,7 +94,7 @@ describe("ExportUsersButton", () => {
         "emp_last_name": "Sake",
         "extension": "2345",
         "full_name": "Gloria Sake",
-        "did": "6038518200",
+        "caller_id": "6038518200",
         "outbound_number": "6038518200",
         "manager_n_number": "n0263786",
         "n_number": "n0000000",
@@ -112,7 +112,7 @@ describe("ExportUsersButton", () => {
           team: "Kitties",
           skills: ["psul1", "466"],
           levels: { "466": 1 },
-          callerStates: ["boo"],
+          caller_states: ["boo"],
           sales_assoc_workers: ["hi", "there"]
         }
       }], exportColumns);
@@ -123,7 +123,7 @@ describe("ExportUsersButton", () => {
           <ExportUsersButton
             selected={[{
               ...fullWorker,
-              directDialNum: "603242345"
+              did: "603242345"
             }]}
             label="Export"
           />
@@ -144,8 +144,8 @@ describe("ExportUsersButton", () => {
         "outbound_number": "6038518200",
         "profile_id": "12",
         "sales_assoc_workers": "hi, there",
-        "did": "6038518200",
-        "directDialNum": "603242345",
+        "caller_id": "6038518200",
+        "did": "603242345",
         "sid": "WK1234",
         "current_skills": "psul1,466 - 1",
         "default_skills": "dsul1,4d66 - 1",
@@ -157,7 +157,7 @@ describe("ExportUsersButton", () => {
           team: "Kitties",
           skills: ["psul1", "466"],
           levels: { "466": 1 },
-          callerStates: ["boo"],
+          caller_states: ["boo"],
           sales_assoc_workers: ["hi", "there"]
         }
       }], exportColumns);

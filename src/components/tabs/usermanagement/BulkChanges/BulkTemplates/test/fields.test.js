@@ -168,7 +168,7 @@ describe("fields.js", () => {
         });
         test("attributes is already on successful row, returns successful response, resolves with field is valid message", async () => {
           const existingAttributes = {
-            did: "16038518200"
+            caller_id: "16038518200"
           };
           fetchUser.mockResolvedValue({
             departmentNumber: "123"
@@ -395,7 +395,7 @@ describe("fields.js", () => {
         });
         test("attributes is already on successful row, returns successful response, resolves with field is valid message", async () => {
           const existingAttributes = {
-            did: "16038518200"
+            caller_id: "16038518200"
           };
           fetchUser.mockResolvedValue({
             departmentNumber: "123"
@@ -483,7 +483,7 @@ describe("fields.js", () => {
         });
         test("attributes is already on successful row, returns successful response, resolves with field is valid message", async () => {
           const existingAttributes = {
-            did: "16038518200"
+            caller_id: "16038518200"
           };
           const row = {
             rowNumber: 3,
@@ -649,7 +649,7 @@ describe("fields.js", () => {
         });
         test("attributes is already on successful row, returns successful response, resolves with field is valid message", async () => {
           const existingAttributes = {
-            did: "16038518200"
+            caller_id: "16038518200"
           };
           const row = {
             rowNumber: 3,
@@ -765,7 +765,7 @@ describe("fields.js", () => {
         });
         test("attributes is already on successful row, returns successful response, resolves with field is valid message", async () => {
           const existingAttributes = {
-            did: "16038518200"
+            caller_id: "16038518200"
           };
           const row = {
             rowNumber: 3,
@@ -862,7 +862,7 @@ describe("fields.js", () => {
         test("attributes is already on successful row, returns successful response, resolves with field is valid message", async () => {
           generateExtension.mockResolvedValueOnce("123");
           const existingAttributes = {
-            did: "16038518200"
+            caller_id: "16038518200"
           };
           const row = {
             rowNumber: 6,
@@ -1100,9 +1100,9 @@ describe("fields.js", () => {
           expect(result).toEqual("Direct Dial Number 6035556565 set for row 6");
           expect(row).toEqual({
             ...row,
-            directDialNum: "+16035556565",
+            did: "+16035556565",
             attributes: {
-              did: "+16035556565",
+              caller_id: "+16035556565",
               ...existingAttributes
             }
           });
@@ -1117,9 +1117,9 @@ describe("fields.js", () => {
           expect(results).toEqual("Direct Dial Number 6035556565 set for row 4");
           expect(row).toEqual({
             ...row,
-            directDialNum: "+16035556565",
+            did: "+16035556565",
             attributes: {
-              did: "+16035556565"
+              caller_id: "+16035556565"
             }
           });
         });
@@ -1642,7 +1642,7 @@ describe("fields.js", () => {
           expect(row).toEqual({
             ...row,
             attributes: {
-              did: "+16035554545"
+              caller_id: "+16035554545"
             }
           });
         });
@@ -1661,7 +1661,7 @@ describe("fields.js", () => {
           expect(row).toEqual({
             ...row,
             attributes: {
-              did: "+16035554545",
+              caller_id: "+16035554545",
               ...existingAttributes
             }
           });
@@ -1769,7 +1769,7 @@ describe("fields.js", () => {
         });
         describe("attributes is already on successful row", () => {
           const existingAttributes = {
-            did: "16038518200"
+            caller_id: "16038518200"
           };
           const row = {
             rowNumber: 1,

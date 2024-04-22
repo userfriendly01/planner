@@ -34,10 +34,10 @@ describe("CREATE_TRITON_USER", () => {
         attributes: {
           profile_id: 1,
           n_number: "n0263445",
-          did: "+16038518200"
+          caller_id: "+16038518200"
         },
         operatingUnitSid: "operatingUnitSid1",
-        directDialNum: "+16038518200",
+        did: "+16038518200",
         zeroOutEnabled: true,
         selfServiceInd: true
       };
@@ -47,11 +47,11 @@ describe("CREATE_TRITON_USER", () => {
         expect(createUser).toHaveBeenCalledWith({
           attributes: {
             profile_id: 1,
-            did: "+16038518200",
+            caller_id: "+16038518200",
             n_number: "n0263445"
           },
           operatingUnitSid: "operatingUnitSid1",
-          directDialNum: "+16038518200",
+          did: "+16038518200",
           zeroOutEnabled: true,
           selfServiceInd: true
         });
@@ -1184,7 +1184,7 @@ describe("UPDATE_CALLER_STATES", () => {
         workerSid: "WK1234",
         attributes: {
           routing: {
-            callerStates: [CallerStateAttrDropDownOptions[0].value]
+            caller_states: [CallerStateAttrDropDownOptions[0].value]
           }
         }
       };
@@ -1194,7 +1194,7 @@ describe("UPDATE_CALLER_STATES", () => {
         expect(updateUser).toHaveBeenCalledWith("WK1234", {
           attributes: {
             routing: {
-              callerStates: [
+              caller_states: [
                 CallerStateAttrDropDownOptions[0].value,
                 CallerStateAttrDropDownOptions[1].value,
                 CallerStateAttrDropDownOptions[2].value
@@ -1225,7 +1225,7 @@ describe("UPDATE_CALLER_STATES", () => {
         workerSid: "WK1234",
         attributes: {
           routing: {
-            callerStates: ["AK"]
+            caller_states: ["AK"]
           }
         }
       };
@@ -1235,7 +1235,7 @@ describe("UPDATE_CALLER_STATES", () => {
         expect(updateUser).toHaveBeenCalledWith("WK1234", {
           attributes: {
             routing: {
-              callerStates: [
+              caller_states: [
                 CallerStateAttrDropDownOptions[15].value,
                 CallerStateAttrDropDownOptions[16].value,
                 CallerStateAttrDropDownOptions[17].value
@@ -1265,7 +1265,7 @@ describe("UPDATE_CALLER_STATES", () => {
         workerSid: "WK1234",
         attributes: {
           routing: {
-            callerStates: [
+            caller_states: [
               CallerStateAttrDropDownOptions[15].value,
               CallerStateAttrDropDownOptions[16].value,
               CallerStateAttrDropDownOptions[17].value
@@ -1279,7 +1279,7 @@ describe("UPDATE_CALLER_STATES", () => {
         expect(updateUser).toHaveBeenCalledWith("WK1234", {
           attributes: {
             routing: {
-              callerStates: [
+              caller_states: [
                 CallerStateAttrDropDownOptions[16].value
               ]
             }
@@ -1310,7 +1310,7 @@ describe("UPDATE_CALLER_STATES", () => {
         workerSid: "WK1234",
         attributes: {
           routing: {
-            callerStates: [CallerStateAttrDropDownOptions[0].value]
+            caller_states: [CallerStateAttrDropDownOptions[0].value]
           }
         }
       };
@@ -1323,7 +1323,7 @@ describe("UPDATE_CALLER_STATES", () => {
           expect(updateUser).toHaveBeenCalledWith("WK1234", {
             attributes: {
               routing: {
-                callerStates: [
+                caller_states: [
                   CallerStateAttrDropDownOptions[0].value,
                   CallerStateAttrDropDownOptions[1].value,
                   CallerStateAttrDropDownOptions[2].value

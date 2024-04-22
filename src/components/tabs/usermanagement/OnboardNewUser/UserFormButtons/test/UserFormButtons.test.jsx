@@ -102,7 +102,7 @@ export const worker = {
         team: "Sample1",
         skills: ["466"],
         levels: { "466": 3 },
-        callerStates: ["Test1", "Test2"]
+        caller_states: ["Test1", "Test2"]
       }
     }
   },
@@ -113,8 +113,7 @@ export const worker = {
 const workerAttributesAfterFormValid = {
   contact_uri: `client:${validFormOptions.nNumber.toLowerCase()}`,
   default_skills: validFormOptions.defaultSkills,
-  did: validFormOptions.didE164,
-  caller_id: validFormOptions.didE164,
+  caller_id: validFormOptions.caller_idE164,
   department_id: fetchedUser.departmentNumber,
   department_name: fetchedUser.departmentName,
   email: fetchedUser.email,
@@ -333,8 +332,8 @@ describe("<UserFormButtons />", () => {
             ...validFormState,
             triton: {
               ...validFormState.triton,
-              directDialNum: {
-                ...validFormState.triton.directDialNum,
+              did: {
+                ...validFormState.triton.did,
                 value: ""
               }
             }
@@ -424,7 +423,7 @@ describe("<UserFormButtons />", () => {
             await waitFor(() => {
               expect(createUser).toHaveBeenCalledWith({
                 attributes: createWorkerAttributesAfterFormValid,
-                directDialNum: validFormState.triton.directDialNum.e164,
+                did: validFormState.triton.did.e164,
                 zeroOutEnabled: validFormState.triton.zeroOutEnabled.value,
                 selfServiceInd: validFormState.triton.selfServiceInd.value,
                 operatingUnitSid: validOperatingUnitId
@@ -465,7 +464,7 @@ describe("<UserFormButtons />", () => {
             });
           });
         });
-        describe("Worker profile has overflowSkill, zeroOutEnabled, selfServiceInd and directDialNum", () => {
+        describe("Worker profile has overflowSkill, zeroOutEnabled, selfServiceInd and did", () => {
           const createWorkerAttributesAfterFormValid = workerAttributesAfterFormValid;
           const form = {
             ...validFormState,
@@ -500,7 +499,7 @@ describe("<UserFormButtons />", () => {
                     ]
                   }
                 },
-                directDialNum: validFormState.triton.directDialNum.e164,
+                did: validFormState.triton.did.e164,
                 zeroOutEnabled: true,
                 selfServiceInd: true,
                 operatingUnitSid: validOperatingUnitId
@@ -564,7 +563,7 @@ describe("<UserFormButtons />", () => {
                       ]
                     }
                   },
-                  directDialNum: validFormState.triton.directDialNum.e164,
+                  did: validFormState.triton.did.e164,
                   zeroOutEnabled: true,
                   selfServiceInd: true,
                   operatingUnitSid: validOperatingUnitId
@@ -615,8 +614,8 @@ describe("<UserFormButtons />", () => {
             ...validFormState,
             triton: {
               ...validFormState.triton,
-              directDialNum: {
-                ...validFormState.directDialNum,
+              did: {
+                ...validFormState.did,
                 value: ""
               }
             }
@@ -672,8 +671,8 @@ describe("<UserFormButtons />", () => {
             ...validFormState,
             triton: {
               ...validFormState.triton,
-              directDialNum: {
-                ...validFormState.triton.directDialNum,
+              did: {
+                ...validFormState.triton.did,
                 value: ""
               }
             }
@@ -750,8 +749,8 @@ describe("<UserFormButtons />", () => {
           ...validFormState,
           triton: {
             ...validFormState.triton,
-            directDialNum: {
-              ...validFormState.triton.directDialNum,
+            did: {
+              ...validFormState.triton.did,
               value: ""
             }
           }
@@ -789,8 +788,8 @@ describe("<UserFormButtons />", () => {
           ...validFormState,
           triton: {
             ...validFormState.triton,
-            directDialNum: {
-              ...validFormState.triton.directDialNum,
+            did: {
+              ...validFormState.triton.did,
               value: ""
             }
           }
@@ -829,8 +828,8 @@ describe("<UserFormButtons />", () => {
           ...validFormState,
           triton: {
             ...validFormState.triton,
-            directDialNum: {
-              ...validFormState.triton.directDialNum,
+            did: {
+              ...validFormState.triton.did,
               value: ""
             }
           }
@@ -1172,8 +1171,8 @@ describe("<UserFormButtons />", () => {
             },
             triton: {
               ...updateFormState.triton,
-              directDialNum: {
-                ...updateFormState.triton.directDialNum,
+              did: {
+                ...updateFormState.triton.did,
                 value: "",
                 updated: false
               },
@@ -1199,15 +1198,14 @@ describe("<UserFormButtons />", () => {
                   skills: [],
                   levels: { "466": 3 },
                   team: "Sample1",
-                  callerStates: ["Test1", "Test2"],
+                  caller_states: ["Test1", "Test2"],
                   updated: "true"
                 }
               }
             };
             const updateWorkerAttributesAfterFormValid = {
               default_skills: validFormOptions.defaultSkills,
-              did: validFormOptions.didE164,
-              caller_id: validFormOptions.didE164,
+              caller_id: validFormOptions.caller_idE164,
               email: "test@abc.com",
               email_address: "test@abc.com",
               emp_first_name: "Frank",
@@ -1226,8 +1224,7 @@ describe("<UserFormButtons />", () => {
                 skills: ["nonSkillL1","466"],
                 levels: { "466": 3 },
                 team: "Sample1",
-                caller_states: ["Test1", "Test2"],
-                callerStates: ["Test1", "Test2"]
+                caller_states: ["Test1", "Test2"]
               }
             };
             renderComponent(true, updateWorker);
@@ -1283,8 +1280,7 @@ describe("<UserFormButtons />", () => {
             emp_first_name: "Frank",
             emp_last_name: "Rizzo",
             full_name: "Frank Rizzo",
-            did: validFormOptions.didE164,
-            caller_id: validFormOptions.didE164,
+            caller_id: validFormOptions.caller_idE164,
             department_id: validFormOptions.nNumberFetchedUser.departmentNumber,
             department_name: validFormOptions.nNumberFetchedUser.departmentName,
             extension: validFormOptions.extension,
@@ -1296,8 +1292,7 @@ describe("<UserFormButtons />", () => {
             profile_id: validFormOptions.profileId,
             routing: {
               team: validFormState.triton.routing.team,
-              caller_states: validFormState.triton.routing.callerStates,
-              callerStates: validFormState.triton.routing.callerStates,
+              caller_states: validFormState.triton.routing.caller_states,
               levels: validFormState.triton.routing.levels,
               skills: ["nonSkillL1"]
             }
@@ -1328,7 +1323,7 @@ describe("<UserFormButtons />", () => {
             await waitFor(() => {
               expect(updateUser).toHaveBeenCalledWith(worker.sid, {
                 attributes: updateWorkerAttributesAfterFormValid,
-                directDialNum: validFormState.triton.directDialNum.e164,
+                did: validFormState.triton.did.e164,
                 zeroOutEnabled: validFormState.triton.zeroOutEnabled.value,
                 selfServiceInd: validFormState.triton.selfServiceInd.value,
                 operatingUnitSid: validOperatingUnitId
@@ -1379,8 +1374,7 @@ describe("<UserFormButtons />", () => {
                       team: updateWorkerAttributesAfterFormValid.routing.team,
                       skills: [],
                       levels: updateWorkerAttributesAfterFormValid.routing.levels,
-                      caller_states: updateWorkerAttributesAfterFormValid.routing.callerStates,
-                      callerStates: updateWorkerAttributesAfterFormValid.routing.callerStates
+                      caller_states: updateWorkerAttributesAfterFormValid.routing.caller_states
                     },
                     email: "test@abc.com",
                     email_address: "test@abc.com",
@@ -1388,7 +1382,7 @@ describe("<UserFormButtons />", () => {
                     emp_last_name: "Rizzo",
                     full_name: "Frank Rizzo"
                   },
-                  directDialNum: validFormState.triton.directDialNum.e164,
+                  did: validFormState.triton.did.e164,
                   zeroOutEnabled: validFormState.triton.zeroOutEnabled.value,
                   selfServiceInd: validFormState.triton.selfServiceInd.value,
                   operatingUnitSid: validOperatingUnitId
@@ -1442,8 +1436,8 @@ describe("<UserFormButtons />", () => {
                 ...updateFormState.triton.extension,
                 updated: false
               },
-              directDialNum: {
-                ...updateFormState.triton.directDialNum,
+              did: {
+                ...updateFormState.triton.did,
                 updated: false
               },
               inactiveForwardTo: {
@@ -1487,8 +1481,7 @@ describe("<UserFormButtons />", () => {
                   skills: ["466"],
                   levels: { "466": 3 },
                   team: "Sample1",
-                  caller_states: ["Test1", "Test2"],
-                  callerStates: ["Test1", "Test2"]
+                  caller_states: ["Test1", "Test2"]
                 }
               }
               }
@@ -1553,8 +1546,7 @@ describe("<UserFormButtons />", () => {
             emp_first_name: undefined,
             emp_last_name: undefined,
             full_name: undefined + " " + undefined,
-            did: validFormOptions.didE164,
-            caller_id: validFormOptions.didE164,
+            caller_id: validFormOptions.caller_idE164,
             extension: validFormOptions.extension,
             manager_first_name: validFormOptions.manager.manager_first_name,
             manager_last_name: validFormOptions.manager.manager_last_name,
@@ -1563,8 +1555,7 @@ describe("<UserFormButtons />", () => {
             profile_id: validFormOptions.profileId,
             routing: {
               team: validFormState.triton.routing.team,
-              caller_states: validFormState.triton.routing.callerStates,
-              callerStates: validFormState.triton.routing.callerStates,
+              caller_states: validFormState.triton.routing.caller_states,
               levels: validFormState.triton.routing.levels,
               skills: ["nonSkillL1"]
             }
@@ -1579,8 +1570,7 @@ describe("<UserFormButtons />", () => {
                   skills: ["466"],
                   levels: { "466": 3 },
                   team: "Sample1",
-                  caller_states: ["Test1", "Test2"],
-                  callerStates: ["Test1", "Test2"]
+                  caller_states: ["Test1", "Test2"]
                 }
               }
             }
@@ -1606,7 +1596,7 @@ describe("<UserFormButtons />", () => {
             await waitFor(() => {
               expect(updateUser).toHaveBeenCalledWith(worker.sid, {
                 attributes: updateWorkerAttributesAfterFormValid,
-                directDialNum: validFormState.triton.directDialNum.e164,
+                did: validFormState.triton.did.e164,
                 zeroOutEnabled: validFormState.triton.zeroOutEnabled.value,
                 selfServiceInd: validFormState.triton.selfServiceInd.value,
                 operatingUnitSid: validOperatingUnitId
@@ -1646,8 +1636,7 @@ describe("<UserFormButtons />", () => {
             emp_first_name: "Frank",
             emp_last_name: "Rizzo",
             full_name: "Frank Rizzo",
-            did: validFormOptions.didE164,
-            caller_id: validFormOptions.didE164,
+            caller_id: validFormOptions.caller_idE164,
             extension: validFormOptions.extension,
             manager_first_name: validFormOptions.manager.manager_first_name,
             manager_last_name: validFormOptions.manager.manager_last_name,
@@ -1657,8 +1646,7 @@ describe("<UserFormButtons />", () => {
             routing: {
               team: validFormState.triton.routing.team,
               levels: validFormState.triton.routing.levels,
-              caller_states: validFormState.triton.routing.callerStates,
-              callerStates: validFormState.triton.routing.callerStates,
+              caller_states: validFormState.triton.routing.caller_states,
               skills: ["nonSkillL1"]
             }
           };
@@ -1693,7 +1681,7 @@ describe("<UserFormButtons />", () => {
             await waitFor(() => {
               expect(updateUser).toHaveBeenCalledWith(worker.sid, {
                 attributes: updateWorkerAttributesAfterFormValid,
-                directDialNum: validFormState.triton.directDialNum.e164,
+                did: validFormState.triton.did.e164,
                 zeroOutEnabled: validFormState.triton.zeroOutEnabled.value,
                 selfServiceInd: validFormState.triton.selfServiceInd.value,
                 operatingUnitSid: validOperatingUnitId
@@ -1741,8 +1729,7 @@ describe("<UserFormButtons />", () => {
         };
         const updateWorkerAttributesAfterFormValid = {
           default_skills: validFormOptions.defaultSkills,
-          did: validFormOptions.didE164,
-          caller_id: validFormOptions.didE164,
+          caller_id: validFormOptions.caller_idE164,
           email: "test@abc.com",
           email_address: "test@abc.com",
           emp_first_name: "Frank",
@@ -1771,11 +1758,11 @@ describe("<UserFormButtons />", () => {
               skills: [],
               levels: {},
               team: "",
-              callerStates: [],
+              caller_states: [],
               updated: "true"
             },
-            directDialNum: {
-              ...updateFormState.triton.directDialNum,
+            did: {
+              ...updateFormState.triton.did,
               value: "",
               updated: false
             },
@@ -1809,8 +1796,7 @@ describe("<UserFormButtons />", () => {
                   skills: ["nonSkillL1","466"],
                   levels: {},
                   team: "",
-                  caller_states: [],
-                  callerStates: []
+                  caller_states: []
                 }
               },
               operatingUnitSid: validOperatingUnitId,
@@ -1847,8 +1833,7 @@ describe("<UserFormButtons />", () => {
                   skills: ["nonSkillL1"],
                   levels: {},
                   team: "",
-                  caller_states: [],
-                  callerStates: []
+                  caller_states: []
                 }
               },
               operatingUnitSid: validOperatingUnitId,
@@ -1863,8 +1848,8 @@ describe("<UserFormButtons />", () => {
           ...updateFormState,
           triton: {
             ...updateFormState.triton,
-            directDialNum: {
-              ...updateFormState.triton.directDialNum,
+            did: {
+              ...updateFormState.triton.did,
               value: "",
               updated: false
             },
@@ -1884,8 +1869,7 @@ describe("<UserFormButtons />", () => {
           default_skills: validFormOptions.defaultSkills,
           department_id: validFormOptions.nNumberFetchedUser.departmentNumber,
           department_name: validFormOptions.nNumberFetchedUser.departmentName,
-          did: validFormOptions.didE164,
-          caller_id: validFormOptions.didE164,
+          caller_id: validFormOptions.caller_idE164,
           email: "test@abc.com",
           email_address: "test@abc.com",
           emp_first_name: "Frank",
@@ -1903,7 +1887,7 @@ describe("<UserFormButtons />", () => {
             levels: {},
             team: "Sample1",
             updated: true,
-            callerStates: validFormOptions.routing.callerStates
+            caller_states: validFormOptions.routing.caller_states
           }
         };
         beforeEach(() => {
@@ -1931,8 +1915,7 @@ describe("<UserFormButtons />", () => {
                   skills: [],
                   levels: {},
                   team: "Sample1",
-                  caller_states: validFormOptions.routing.callerStates,
-                  callerStates: validFormOptions.routing.callerStates
+                  caller_states: validFormOptions.routing.caller_states
                 }
               },
               operatingUnitSid: validOperatingUnitId
@@ -1984,8 +1967,7 @@ describe("<UserFormButtons />", () => {
                   skills: [],
                   levels: {},
                   team: "Sample1",
-                  caller_states: validFormOptions.routing.callerStates,
-                  callerStates: validFormOptions.routing.callerStates
+                  caller_states: validFormOptions.routing.caller_states
                 }
               },
               operatingUnitSid: validOperatingUnitId
@@ -2416,8 +2398,8 @@ describe("<UserFormButtons />", () => {
       ...validFormState,
       triton: {
         ...validFormState.triton,
-        directDialNum: {
-          ...validFormState.triton.directDialNum,
+        did: {
+          ...validFormState.triton.did,
           value: ""
         }
       }

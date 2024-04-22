@@ -230,7 +230,7 @@ export const exportColumns = [
     width: "100px"
   },
   {
-    field: "directDialNum",
+    field: "did",
     title: "Direct Dial Number",
     width: "100px"
   },

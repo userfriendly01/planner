@@ -91,7 +91,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       },
       department_id: form.nNumber.nNumberFetchedUser.departmentNumber,// need this value otherwise the department_name will not appear in flex insights,
       department_name: form.nNumber.nNumberFetchedUser.departmentName,
-      did: form.triton.outgoing.e164,
       caller_id: form.triton.outgoing.e164,
       email: form.nNumber.nNumberFetchedUser.email,
       email_address: form.nNumber.nNumberFetchedUser.email,
@@ -136,16 +135,16 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
     const overflowSkill = getOverflowSkillFromProfile(profiles, form.triton.profileId.value);
 
-    if (overflowSkill !== undefined && form.triton.zeroOutEnabled.value && form.triton.directDialNum.value) {
+    if (overflowSkill !== undefined && form.triton.zeroOutEnabled.value && form.triton.did.value) {
       attributes.routing.skills = [overflowSkill];
     }
 
     const operatingUnitSid = profiles.find(profile => profile.profile_id === form.triton.profileId.value).operating_unit_sid;
 
-    const createUserReqBody = form.triton.directDialNum.value ?
+    const createUserReqBody = form.triton.did.value ?
       {
         attributes,
-        directDialNum: form.triton.directDialNum.e164,
+        did: form.triton.did.e164,
         operatingUnitSid: operatingUnitSid,
         zeroOutEnabled: form.triton.zeroOutEnabled.value,
         selfServiceInd: form.triton.selfServiceInd.value
@@ -373,7 +372,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       operatingUnitSid = profiles.find(profile => profile.profile_id === form.triton.profileId.value).operating_unit_sid;
     }
     if (form.triton.outgoing.updated) {
-      attributes.did = form.triton.outgoing.e164;
       attributes.caller_id = form.triton.outgoing.e164;
     }
     if (form.triton.extension.updated) {
@@ -388,8 +386,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     if (form.triton.routing.updated) {
       attributes.routing = {
         team: form.triton.routing.team,
-        caller_states: form.triton.routing.callerStates,
-        callerStates: form.triton.routing.callerStates,
+        caller_states: form.triton.routing.caller_states,
         sales_assoc_workers: form.triton.routing.sales_assoc_workers,
         skills: form.triton.routing.skills,
         levels: form.triton.routing.levels
@@ -438,8 +435,8 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     if (operatingUnitSid) {
       payload.operatingUnitSid = operatingUnitSid;
     }
-    if (form.triton.directDialNum.updated) {
-      payload.directDialNum = form.triton.directDialNum.e164;
+    if (form.triton.did.updated) {
+      payload.did = form.triton.did.e164;
     }
     if (form.triton.inactiveForwardTo.value !== null && form.triton.inactiveForwardTo.updated) {
       payload.inactiveForwardTo = form.triton.inactiveForwardTo.value;

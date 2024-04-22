@@ -19,6 +19,14 @@ describe("mapWorkerFromDbWorker", () => {
     };
   });
 
+  test("should return TwilioWorker object with mapped caller id, sid & routing", () => {
+    expect(mapWorkerFromDbWorker(dbWorker)).toEqual({
+      attributes,
+      sid,
+      skillsDifferent: false
+    });
+  });
+
   test("should return TwilioWorker object with attributes, sid & skillsDifferent", () => {
     expect(mapWorkerFromDbWorker(dbWorker)).toEqual({
       attributes,
@@ -27,11 +35,11 @@ describe("mapWorkerFromDbWorker", () => {
     });
   });
 
-  test("should return TwilioWorker object with null attributes, sid & skillsDifferent", () => {
+  test("should return TwilioWorker object with {} attributes, sid & skillsDifferent", () => {
     delete dbWorker.twilio_attributes_raw;
 
     expect(mapWorkerFromDbWorker(dbWorker)).toEqual({
-      attributes: null,
+      attributes: {},
       sid,
       skillsDifferent: false
     });
@@ -64,12 +72,12 @@ describe("mapWorkerToDbWorker", () => {
     const user = {
       attributes: {
         routing: {
-          callerStates: ["CA", "AK", "WA"]
+          caller_states: ["CA", "AK", "WA"]
         },
-        did: "+1123456789",
+        caller_id: "+1123456789",
         profile_id: 0
       },
-      directDialNum: "+1123456789",
+      did: "+1123456789",
       operatingUnitSid: "OU1234",
       zeroOutEnabled: false,
       selfServiceInd: false,
@@ -80,15 +88,13 @@ describe("mapWorkerToDbWorker", () => {
     expect(mapWorkerToDbWorker(user)).toEqual({
       twilio_attributes: JSON.stringify({
         routing: {
-          callerStates: ["CA", "AK", "WA"],
           caller_states: ["CA", "AK", "WA"]
         },
-        did: "+1123456789",
-        profile_id: 0,
         caller_id: "+1123456789",
+        profile_id: 0,
         agent_attribute_1: 0
       }),
-      did: "+1123456789",
+      caller_id: "+1123456789",
       operating_unit_sid: "OU1234",
       zero_out_enabled: false,
       self_service_ind: false,

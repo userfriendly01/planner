@@ -420,9 +420,9 @@ export const FIELDS: Fields = {
         const didUser = isDidUser(didField, rowNumber);
         if (didUser && field) {
           try {
-            const directDialNum = getE164Number(field);
-            row.attributes.did = directDialNum;
-            row.directDialNum = directDialNum;
+            const did = getE164Number(field);
+            row.attributes.caller_id = did;
+            row.did = did;
             return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
           } catch (err) {
             return rejectPromise(`${fieldName} is not in the correct format for row ${rowNumber}`, rowNumber);
@@ -527,7 +527,7 @@ export const FIELDS: Fields = {
         } else {
           try {
             const outgoing = getE164Number(field);
-            row.attributes.did = outgoing;
+            row.attributes.caller_id = outgoing;
             return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
           } catch (err) {
             return rejectPromise(`${fieldName} is not in the correct format for row ${rowNumber}`, rowNumber);

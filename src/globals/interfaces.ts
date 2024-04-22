@@ -274,7 +274,6 @@ export interface UMUserTwilioAttributes {
   default_skills?: UMTwilioAttributeSkills,
   department_name?:string,
   department_id?:string,
-  did?: string,
   caller_id?: string,
   disabled_skills?: UMTwilioAttributeSkills,
   email?: string,
@@ -303,14 +302,14 @@ export interface UMUserTwilioAttributes {
 export interface UMUser {
   sid: string; // --> mapped from worker_sid
   workerSid: string; // --> mapped from worker_sid
-  directDialNum?: string; // --> did
   inactiveDate?: string; // --> inactive_date
   twilio_attributes: string; // Used for create and update
   twilio_attributes_raw: string // Used to make attributes
-  inactiveForwardTo: string;
-  zeroOutEnabled: boolean;
-  selfServiceInd: boolean;
-  operatingUnitSid: string;
+  inactiveForwardTo: string; // mapped from --> inactive_forward_to
+  zeroOutEnabled: boolean; // mapped from --> zero_out_enabled
+  selfServiceInd: boolean; // mapped from --> self_service_ind
+  operatingUnitSid: string; // mapped from --> operating_unit_sid
+  did?: string;
 
   // Added by us
   skillsDifferent: boolean;
@@ -323,7 +322,6 @@ export interface UMTwilioAttributeSkills {
   },
   skills: string[],
   team?:string,
-  callerStates?: string[],
   caller_states?: string[],
   sales_assoc_workers?: string[]
 }

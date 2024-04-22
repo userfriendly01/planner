@@ -22,11 +22,11 @@ import { CalabrioUser } from "components";
 
 export const isUnpopulatedField = (f: any) => (!f && f !== false && f !== 0) || f?.length === 0 || (typeof f === "object" && JSON.stringify(f) === JSON.stringify({}));
 
-// For a DID user, the outgoing number is tied to the directDialNum, if you change one you must change both in order for the form to be valid
+// For a DID user, the outgoing number is tied to the did, if you change one you must change both in order for the form to be valid
 export const isDidDifferentValid = (form: UserFormState, worker: UMUser, forwardToToggle: boolean): boolean => {
   if (forwardToToggle === true) {
-    return removeNonNumericCharacters(form.triton.outgoing.value) !== formatE164PhoneNumber(worker?.attributes?.did)
-      && removeNonNumericCharacters(form.triton.directDialNum.value) !== formatE164PhoneNumber(worker?.directDialNum);
+    return removeNonNumericCharacters(form.triton.outgoing.value) !== formatE164PhoneNumber(worker?.attributes?.caller_id)
+      && removeNonNumericCharacters(form.triton.did.value) !== formatE164PhoneNumber(worker?.did);
   } else {
     return true;
   }
@@ -36,7 +36,7 @@ export const isExtensionValid = (form: UserFormState): boolean => form.triton.ex
 
 export const isFormUpdated = (form: UserFormState): boolean => form.triton.defaultSkills.updated || form.triton.manager.updated ||
   form.triton.profileId.updated || form.triton.outgoing.updated ||
-  form.triton.directDialNum.updated ||
+  form.triton.did.updated ||
   form.nNumber.updated || form.triton.extension.updated ||
   form.triton.inactiveForwardTo.updated || form.triton.zeroOutEnabled.updated || form.calabrio_qm.updated || form.triton.selfServiceInd.updated || form.triton.routing.updated;
 
@@ -60,7 +60,7 @@ export const isTritonUserValid = (form: UserFormState, worker: UMUser, forwardTo
       && isManagerValid(form)
       && form.triton.outgoing.valid
       && isExtensionValid(form)
-      && (form.triton.didUser === true ? form.triton.directDialNum.valid : true)
+      && (form.triton.didUser === true ? form.triton.did.valid : true)
       && isInactiveForwardToValid(form, forwardToToggle)
       && isDidDifferentValid(form, worker, forwardToToggle);
   }

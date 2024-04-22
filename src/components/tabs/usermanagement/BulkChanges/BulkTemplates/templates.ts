@@ -56,7 +56,7 @@ const processCreateTritonUser = async (row: any, state: AppState) => {
     const body: any = {};
     if (didUser) {
       body.attributes = row.attributes;
-      body.directDialNum = row.directDialNum;
+      body.did = row.did;
       body.zeroOutEnabled = row.zeroOutEnabled;
       body.selfServiceInd = row.selfServiceInd;
     } else {
@@ -557,7 +557,7 @@ const processUpdateCallerStates = async (row: any, template: Template, state: Ap
     const selectedCallerStates: [] = template.data.value;
     const option = template.data.option;
 
-    const currentCallerStates = row.attributes.routing?.callerStates || [];
+    const currentCallerStates = row.attributes.routing?.caller_states || [];
     let combinedCallerStates;
 
     if (option.value === "ADD") {
@@ -575,7 +575,7 @@ const processUpdateCallerStates = async (row: any, template: Template, state: Ap
       attributes: {
         routing: {
           ...existingRouting,
-          callerStates: finalCallerStates.sort() // It's only polite to keep them in order
+          caller_states: finalCallerStates.sort() // It's only polite to keep them in order
         }
       }
     };

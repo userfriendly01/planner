@@ -76,7 +76,7 @@ export interface UserFormState {
     attributes: any,
     defaultSkills: FormDefaultSkills,
     didUser: boolean,
-    directDialNum: FieldState,
+    did: FieldState,
     extension: FormExtension
     inactiveForwardTo: FieldState,
     manager: FieldState,

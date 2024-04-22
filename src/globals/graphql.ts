@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 const userAttributes = `
-  directDialNum: did
+  did
   sid: worker_sid
   twilio_attributes_raw
   zeroOutEnabled: zero_out_enabled

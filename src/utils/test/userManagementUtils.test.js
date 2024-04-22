@@ -73,9 +73,9 @@ const validFormOptions = {
     },
     skills: ["a", "b", "c"]
   },
-  did: "6034567890",
-  didE164: "+16034567890",
-  directDialNum: {
+  caller_id: "6034567890",
+  caller_idE164: "+16034567890",
+  did: {
     e164: "+18002345678",
     masked: "(800)234-5678",
     tenDig: "8002345678"
@@ -125,12 +125,12 @@ const mockWorkers = [
   {
     // DID worker with overflow skill
     sid: "WK2",
-    directDialNum: validFormOptions.directDialNum.e164,
+    did: validFormOptions.did.e164,
     zeroOutEnabled: true,
     selfServiceInd: true,
     attributes: {
       default_skills: validFormOptions.defaultSkills,
-      did: validFormOptions.didE164,
+      caller_id: validFormOptions.caller_idE164,
       extension: validFormOptions.extension,
       full_name: "Test 3",
       manager_first_name: validFormOptions.manager.manager_first_name,
@@ -152,12 +152,12 @@ const mockWorkers = [
   {
     // DID worker without overflow skill
     sid: "WK3",
-    directDialNum: validFormOptions.directDialNum.e164,
+    did: validFormOptions.did.e164,
     zeroOutEnabled: true,
     selfServiceInd: true,
     attributes: {
       default_skills: validFormOptions.defaultSkills,
-      did: validFormOptions.didE164,
+      caller_id: validFormOptions.caller_idE164,
       extension: validFormOptions.extension,
       full_name: "Test 4",
       manager_first_name: validFormOptions.manager.manager_first_name,
@@ -373,7 +373,7 @@ describe("isDidDifferentValid", () => {
           outgoing: {
             value: "+16038518200"
           },
-          directDialNum: {
+          did: {
             value: "+16032453160"
           }
         }
@@ -385,10 +385,10 @@ describe("isDidDifferentValid", () => {
       const form = {
         triton: {
           outgoing: {
-            value: validFormOptions.didE164
+            value: validFormOptions.caller_idE164
           },
-          directDialNum: {
-            value: validFormOptions.directDialNum.e164
+          did: {
+            value: validFormOptions.did.e164
           }
         }
       };
@@ -401,8 +401,8 @@ describe("isDidDifferentValid", () => {
           outgoing: {
             value: "+16038518200"
           },
-          directDialNum: {
-            value: validFormOptions.directDialNum.tenDig
+          did: {
+            value: validFormOptions.did.tenDig
           }
         }
       };
@@ -542,12 +542,12 @@ describe("isFormUpdated", () => {
     const result = isFormUpdated(updatedForm);
     expect(result).toBe(true);
   });
-  test("form.directDialNum.updated was updated", () => {
+  test("form.did.updated was updated", () => {
     const updatedForm = {
       ...initialFormState,
       triton: {
         ...initialFormState.triton,
-        directDialNum: {
+        did: {
           updated: true
         }
       }
@@ -674,15 +674,15 @@ describe("isTritonUserValid", () => {
         expect(isTritonUserValid(validFormState, mockWorkers[0], false)).toBe(true);
       });
     });
-    describe("form.didUser === true && form.triton.directDialNum.valid", () => {
+    describe("form.didUser === true && form.triton.did.valid", () => {
       test("isTritonUserValid should return true", () => {
         const form = {
           ...validFormState,
           triton: {
             ...validFormState.triton,
             didUser: true,
-            directDialNum: {
-              ...validFormState.triton.directDialNum,
+            did: {
+              ...validFormState.triton.did,
               valid: true
             }
           }
@@ -805,8 +805,8 @@ describe("isTritonUserValid", () => {
             triton: {
               ...initialFormState.triton,
               didUser: true,
-              directDialNum: {
-                ...validFormState.directDialNum,
+              did: {
+                ...validFormState.did,
                 valid: false
               }
             }
@@ -821,10 +821,10 @@ describe("isTritonUserValid", () => {
               ...validFormState,
               triton: {
                 ...initialFormState.triton,
-                directDialNum: {
-                  ...validFormState.directDialNum,
+                did: {
+                  ...validFormState.did,
                   updated: false,
-                  value: validFormOptions.directDialNum
+                  value: validFormOptions.did
                 }
               }
             };
@@ -840,7 +840,7 @@ describe("isTritonUserValid", () => {
                 outbound: {
                   ...validFormState.outbound,
                   updated: false,
-                  value: validFormOptions.didE164
+                  value: validFormOptions.caller_idE164
                 }
               }
             };
