@@ -236,8 +236,4 @@ describe("user", () => {
 
     });
   });
-
-  describe("createUser", () => {
-
-  });
 });
