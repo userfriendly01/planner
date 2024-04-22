@@ -19,14 +19,6 @@ describe("mapWorkerFromDbWorker", () => {
     };
   });
 
-  test("should return TwilioWorker object with mapped caller id, sid & routing", () => {
-    expect(mapWorkerFromDbWorker(dbWorker)).toEqual({
-      attributes,
-      sid,
-      skillsDifferent: false
-    });
-  });
-
   test("should return TwilioWorker object with attributes, sid & skillsDifferent", () => {
     expect(mapWorkerFromDbWorker(dbWorker)).toEqual({
       attributes,
@@ -39,7 +31,7 @@ describe("mapWorkerFromDbWorker", () => {
     delete dbWorker.twilio_attributes_raw;
 
     expect(mapWorkerFromDbWorker(dbWorker)).toEqual({
-      attributes: {},
+      attributes: null,
       sid,
       skillsDifferent: false
     });
@@ -94,7 +86,7 @@ describe("mapWorkerToDbWorker", () => {
         profile_id: 0,
         agent_attribute_1: 0
       }),
-      caller_id: "+1123456789",
+      did: "+1123456789",
       operating_unit_sid: "OU1234",
       zero_out_enabled: false,
       self_service_ind: false,
