@@ -300,6 +300,7 @@ export interface UMUserTwilioAttributes {
 }
 
 export interface UMUser {
+  pk: string;
   sid: string; // --> mapped from worker_sid
   workerSid: string; // --> mapped from worker_sid
   inactiveDate?: string; // --> inactive_date

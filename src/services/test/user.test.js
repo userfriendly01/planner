@@ -33,32 +33,36 @@ jest.mock("utils", () => ({
 
 const workers = [
   {
+    pk: "NNum#n1234566",
     inactiveDate: "2024-01-01",
     sid: "WK0000",
-    twilio_attributes_raw: "{}"
+    twilio_attributes_raw: "{ \"emp_first_nme\": \"River\"}"
   },
   {
+    pk: "NNum#n1234565",
     sid: "WK1111",
-    twilio_attributes_raw: "{}"
+    twilio_attributes_raw: "{ \"emp_first_nme\": \"River\"}"
   },
   {
+    pk: "NNum#n1234564",
     sid: "WK2222",
-    twilio_attributes_raw: "{}"
+    twilio_attributes_raw: null
   },
   {
-    sid: "WK3333"
+    pk: "NNum#n1234563",
+    sid: "WK3333",
+    twilio_attributes_raw: "{ \"emp_first_nme\": \"River\"}"
+  },
+  {
+    pk: "NNum#n1234562#Console",
+    sid: "WK4444",
+    twilio_attributes_raw: "{ \"emp_first_nme\": \"River\"}"
   }
 ];
 
 const filteredWorkers =  [
-  {
-    sid: "WK1111",
-    twilio_attributes_raw: "{}"
-  },
-  {
-    sid: "WK2222",
-    twilio_attributes_raw: "{}"
-  }
+  workers[1],
+  workers[3]
 ];
 
 describe("user", () => {
@@ -115,14 +119,14 @@ describe("user", () => {
         .mockReturnValueOnce({
           data: {
             users: {
-              items: [workers[2], workers[3]]
+              items: [workers[2], workers[3], workers[4]]
             }
           }
         });
 
       const result = await getAllUsers(dispatchMock);
       const firstResult = [workers[1]];
-      const secondResult = [workers[2]];
+      const secondResult = [workers[3]];
 
       expect(result).toEqual(firstResult);
 
@@ -162,7 +166,7 @@ describe("user", () => {
       const result = await listUsers();
 
       expect(result).toEqual({
-        items: [workers[1], workers[2]],
+        items: filteredWorkers,
         nextToken: undefined
       });
     });

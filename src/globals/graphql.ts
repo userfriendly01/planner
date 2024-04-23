@@ -1,6 +1,7 @@
 import { gql } from "@apollo/client";
 
 const userAttributes = `
+  pk
   did
   sid: worker_sid
   twilio_attributes_raw
@@ -14,6 +15,7 @@ const userAttributes = `
 export const GET_USER = gql`
   query getUMUser($identifier: String!) {
     user: getUMUser(identifier: $identifier) {
+      pk
       sid: worker_sid
       twilio_attributes {
         profile_id
