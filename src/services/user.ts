@@ -91,15 +91,22 @@ export const listUsers = async (nextToken?: string): Promise<DBList<UMUser>> => 
   data.users.items.forEach(user => {
     // Main accounts look like pk = `NNum#n1234567` if there's more
     // subIdentifier will be populated
-    const [,, subIdentifier] = user.pk.split("#");
+    const [,, subIdentifier, ...rest] = user.pk.split("#");
+    const isConsole = subIdentifier === "Console" && !rest.length;
 
     if (
-      !subIdentifier
+      (!subIdentifier || isConsole)
       && !user.inactiveDate
+      && !user.ttl
       && user.twilio_attributes_raw
       && user.twilio_attributes_raw !== "{}"
     ) {
-      newUsers.push(mapWorkerFromDbWorker(user));
+      newUsers.push(
+        mapWorkerFromDbWorker({
+          ...user,
+          isConsole
+        })
+      );
     }
   });
 

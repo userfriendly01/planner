@@ -121,7 +121,11 @@ const TritonUserTable = (props: TritonUserTableProps) => {
             return (
               <CustomTableRow key={worker.sid} onClick={handleWorkerOnClick} selected={isSelected} data-testid="table-row">
                 <CustomTableData><TableText>{worker.attributes.emp_first_name} {worker.attributes.emp_last_name}</TableText></CustomTableData>
-                <CustomTableData><TableText>{worker.attributes.n_number}</TableText></CustomTableData>
+                <CustomTableData>
+                  <TableText>
+                    {`${worker.attributes.n_number}${worker.isConsole ? " [C]" : ""}`}
+                  </TableText>
+                </CustomTableData>
                 <CustomTableData><TableText>{worker.attributes.extension}</TableText></CustomTableData>
                 <CustomTableData><TableText>{profile.profile_nme} - {profile.profile_id}</TableText></CustomTableData>
                 <CustomTableData><TableText>{profile.operating_unit_nme}</TableText></CustomTableData>

@@ -36,33 +36,39 @@ const workers = [
     pk: "NNum#n1234566",
     inactiveDate: "2024-01-01",
     sid: "WK0000",
-    twilio_attributes_raw: "{ \"emp_first_nme\": \"River\"}"
+    twilio_attributes_raw: "{ \"emp_first_nme\": \"River\"}",
+    isConsole: false
   },
   {
     pk: "NNum#n1234565",
     sid: "WK1111",
-    twilio_attributes_raw: "{ \"emp_first_nme\": \"River\"}"
+    twilio_attributes_raw: "{ \"emp_first_nme\": \"River\"}",
+    isConsole: false
   },
   {
     pk: "NNum#n1234564",
     sid: "WK2222",
-    twilio_attributes_raw: null
+    twilio_attributes_raw: null,
+    isConsole: false
   },
   {
     pk: "NNum#n1234563",
     sid: "WK3333",
-    twilio_attributes_raw: "{ \"emp_first_nme\": \"River\"}"
+    twilio_attributes_raw: "{ \"emp_first_nme\": \"River\"}",
+    isConsole: false
   },
   {
     pk: "NNum#n1234562#Console",
     sid: "WK4444",
-    twilio_attributes_raw: "{ \"emp_first_nme\": \"River\"}"
+    twilio_attributes_raw: "{ \"emp_first_nme\": \"River\"}",
+    isConsole: true
   }
 ];
 
 const filteredWorkers =  [
   workers[1],
-  workers[3]
+  workers[3],
+  workers[4]
 ];
 
 describe("user", () => {
@@ -126,7 +132,7 @@ describe("user", () => {
 
       const result = await getAllUsers(dispatchMock);
       const firstResult = [workers[1]];
-      const secondResult = [workers[3]];
+      const secondResult = [workers[3], workers[4]];
 
       expect(result).toEqual(firstResult);
 
