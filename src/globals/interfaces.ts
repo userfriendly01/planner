@@ -302,21 +302,20 @@ export interface UMUserTwilioAttributes {
 export interface UMUser {
   pk: string;
   ttl: number;
-  sid: string; // --> mapped from worker_sid
-  workerSid: string; // --> mapped from worker_sid
-  inactiveDate?: string; // --> inactive_date
-  twilio_attributes: string; // Used for create and update
-  twilio_attributes_raw: string // Used to make attributes
-  inactiveForwardTo: string; // mapped from --> inactive_forward_to
-  zeroOutEnabled: boolean; // mapped from --> zero_out_enabled
-  selfServiceInd: boolean; // mapped from --> self_service_ind
-  operatingUnitSid: string; // mapped from --> operating_unit_sid
+  sid: string;                // mapped from --> worker_sid
+  workerSid: string;          // mapped from --> worker_sid
+  inactiveDate?: string;      // mapped from --> inactive_date
+  inactiveForwardTo: string;  // mapped from --> inactive_forward_to
+  zeroOutEnabled: boolean;    // mapped from --> zero_out_enabled
+  selfServiceInd: boolean;    // mapped from --> self_service_ind
+  operatingUnitSid: string;   // mapped from --> operating_unit_sid
   did?: string;
+  twilio_attributes: string;  // Used for create and update
 
   // Added by us
   skillsDifferent: boolean;
-  attributes: UMUserTwilioAttributes;  // --> Parsed from `twilio_attributes_raw`
-  isConsole: boolean;
+  attributes: UMUserTwilioAttributes;  // mapped from --> twilio_attributes
+  isConsole: boolean;                 // Will be true if pk contains Console
 }
 
 export interface UMTwilioAttributeSkills {

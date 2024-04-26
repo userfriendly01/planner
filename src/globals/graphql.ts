@@ -5,7 +5,46 @@ const userAttributes = `
   ttl
   did
   sid: worker_sid
-  twilio_attributes_raw
+  attributes: twilio_attributes {
+    unique_id
+    agent_id
+    contact_uri
+    n_number
+    full_name
+    emp_first_name
+    emp_last_name
+    profile_id
+    office_location_name
+    office_location_number
+    manager
+    manager_first_name
+    manager_last_name
+    manager_n_number
+    email
+    email_address
+    caller_id
+    extension
+    department_id
+    department_name
+    primary_dept_name
+    primary_dept_number
+    routing {
+      skills
+      levels
+      team
+      caller_states
+      sales_assoc_workers
+    }
+    default_skills {
+      skills
+      levels
+    }
+    disabled_skills {
+      skills
+      levels
+    }
+    agent_attribute_1
+  }
   zeroOutEnabled: zero_out_enabled
   selfServiceInd: self_service_ind
   operatingUnitSid: operating_unit_sid

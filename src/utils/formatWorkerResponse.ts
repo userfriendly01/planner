@@ -1,4 +1,6 @@
-import { UMUser } from "globals";
+import {
+  UMUser, UMUserTwilioAttributes
+} from "globals";
 import { areSkillsDifferent } from "utils";
 
 export const mapWorkerToDbWorker = (worker: Partial<UMUser>): Partial<UMUser> => {
@@ -48,15 +50,40 @@ export const mapWorkerFromTwilio = (dbWorker: UMUser): UMUser => {
 };
 
 export const mapWorkerFromDbWorker = (dbWorker: UMUser): UMUser => {
-  const parsedAttributes = dbWorker.twilio_attributes_raw ? JSON.parse(dbWorker.twilio_attributes_raw) : null;
+  if (!dbWorker.attributes) {
+    return {
+      ...dbWorker,
+      skillsDifferent: false
+    };
+  }
+
+  const parsedAttributes = {
+    ...dbWorker.attributes,
+    ...dbWorker.attributes.routing && {
+      routing: {
+        ...dbWorker.attributes.routing,
+        levels: JSON.parse(dbWorker.attributes.routing.levels as unknown as string)
+      }
+    },
+    ...dbWorker.attributes.default_skills && {
+      default_skills: {
+        ...dbWorker.attributes.default_skills,
+        levels: JSON.parse(dbWorker.attributes.default_skills.levels as unknown as string)
+      }
+    },
+    ...dbWorker.attributes.disabled_skills && {
+      disabled_skills: {
+        ...dbWorker.attributes.disabled_skills,
+        levels: JSON.parse(dbWorker.attributes.disabled_skills.levels as unknown as string)
+      }
+    }
+  } as UMUserTwilioAttributes;
 
   const worker = {
     ...dbWorker,
     attributes: parsedAttributes,
     skillsDifferent: parsedAttributes ? areSkillsDifferent(parsedAttributes) : false
   };
-
-  delete worker.twilio_attributes_raw;
 
   if (worker.attributes?.manager_n_number) {
     worker.attributes.manager_n_number = worker.attributes.manager_n_number.toLowerCase();

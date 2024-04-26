@@ -10,11 +10,11 @@ describe("mapWorkerFromDbWorker", () => {
 
   beforeEach(() => {
     attributes = {
-      attr1: "whatever",
-      attr2: { hi: "I'm an object" }
+      n_number: "n1234567",
+      contact_uri: "client:n1234567"
     };
     dbWorker = {
-      twilio_attributes_raw: JSON.stringify(attributes),
+      attributes,
       sid
     };
   });
@@ -28,30 +28,57 @@ describe("mapWorkerFromDbWorker", () => {
   });
 
   test("should return TwilioWorker object with {} attributes, sid & skillsDifferent", () => {
-    delete dbWorker.twilio_attributes_raw;
+    delete dbWorker.attributes;
 
     expect(mapWorkerFromDbWorker(dbWorker)).toEqual({
-      attributes: null,
+      attributes: undefined,
       sid,
       skillsDifferent: false
     });
   });
 
   test("should lowercase manager_n_number and set full_name if it exists", () => {
-    attributes.manager_n_number = "N1234567";
-    attributes.emp_first_name = "Bob";
-    attributes.emp_last_name = "Smith";
-    attributes.full_name = "Blah blah blah";
-    dbWorker.twilio_attributes_raw = JSON.stringify(attributes);
+    dbWorker.attributes.manager_n_number = "N1234567";
+    dbWorker.attributes.emp_first_name = "Bob";
+    dbWorker.attributes.emp_last_name = "Smith";
+    dbWorker.attributes.full_name = "Blah blah blah";
 
     expect(mapWorkerFromDbWorker(dbWorker)).toEqual({
       attributes: {
+        ...attributes,
         full_name: "Bob Smith",
         emp_first_name: "Bob",
         emp_last_name: "Smith",
-        manager_n_number: "n1234567",
-        attr1: "whatever",
-        attr2: { hi: "I'm an object" }
+        manager_n_number: "n1234567"
+      },
+      sid,
+      skillsDifferent: false
+    });
+  });
+
+  test("should parse levels when they exist on the user", () => {
+    dbWorker.attributes.routing = {
+      levels: "{}"
+    };
+    dbWorker.attributes.default_skills = {
+      levels: "{}"
+    };
+    dbWorker.attributes.disabled_skills = {
+      levels: "{}"
+    };
+
+    expect(mapWorkerFromDbWorker(dbWorker)).toEqual({
+      attributes: {
+        ...attributes,
+        routing: {
+          levels: {}
+        },
+        default_skills: {
+          levels: {}
+        },
+        disabled_skills: {
+          levels: {}
+        }
       },
       sid,
       skillsDifferent: false

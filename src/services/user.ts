@@ -29,31 +29,27 @@ export const getAllUsers = async (dispatch: (action: Action) => void): Promise<U
   }));
 
   let nextToken = "start";
-  const firstQuery = new Promise((resolve: (users: UMUser[]) => void, reject) => {
+  const firstQuery = new Promise((resolve: (users: UMUser[]) => void) => {
     const getAllUsers = async () => {
       while (nextToken) {
         const isFirstQuery = nextToken === "start";
-        try {
-          const response = await listUsers(isFirstQuery ? undefined : nextToken);
+        const response = await listUsers(isFirstQuery ? undefined : nextToken);
 
-          if (isFirstQuery) {
-            dispatch(({
-              type: "loadWorkers",
-              payload: response.items
-            }));
+        if (isFirstQuery) {
+          dispatch(({
+            type: "loadWorkers",
+            payload: response.items
+          }));
 
-            resolve(response.items);
-          } else {
-            dispatch(({
-              type: "addWorkers",
-              payload: response.items
-            }));
-          }
-
-          ({ nextToken } = response);
-        } catch(error) {
-          reject(error);
+          resolve(response.items);
+        } else {
+          dispatch(({
+            type: "addWorkers",
+            payload: response.items
+          }));
         }
+
+        ({ nextToken } = response);
       }
 
       dispatch(({
@@ -89,22 +85,11 @@ export const listUsers = async (nextToken?: string): Promise<DBList<UMUser>> => 
 
   const newUsers = [] as UMUser[];
   data.users.items.forEach(user => {
-    // Main accounts look like pk = `NNum#n1234567` if there's more
-    // subIdentifier will be populated
-    const [,, subIdentifier, ...rest] = user.pk.split("#");
-    const isConsole = subIdentifier === "Console" && !rest.length;
-
-    if (
-      (!subIdentifier || isConsole)
-      && !user.inactiveDate
-      && !user.ttl
-      && user.twilio_attributes_raw
-      && user.twilio_attributes_raw !== "{}"
-    ) {
+    if (!user.inactiveDate && !user.ttl && user.attributes) {
       newUsers.push(
         mapWorkerFromDbWorker({
           ...user,
-          isConsole
+          isConsole: user.pk.includes("Console")
         })
       );
     }
