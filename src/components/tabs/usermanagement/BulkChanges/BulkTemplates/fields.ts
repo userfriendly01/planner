@@ -421,7 +421,6 @@ export const FIELDS: Fields = {
         if (didUser && field) {
           try {
             const did = getE164Number(field);
-            row.attributes.caller_id = did;
             row.did = did;
             return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
           } catch (err) {

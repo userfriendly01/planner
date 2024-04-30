@@ -1100,11 +1100,7 @@ describe("fields.js", () => {
           expect(result).toEqual("Direct Dial Number 6035556565 set for row 6");
           expect(row).toEqual({
             ...row,
-            did: "+16035556565",
-            attributes: {
-              caller_id: "+16035556565",
-              ...existingAttributes
-            }
+            did: "+16035556565"
           });
         });
         test("didField field is Y, direct dial number in correct format, resolves with message", async () => {
@@ -1117,10 +1113,7 @@ describe("fields.js", () => {
           expect(results).toEqual("Direct Dial Number 6035556565 set for row 4");
           expect(row).toEqual({
             ...row,
-            did: "+16035556565",
-            attributes: {
-              caller_id: "+16035556565"
-            }
+            did: "+16035556565"
           });
         });
       });
