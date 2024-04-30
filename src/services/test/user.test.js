@@ -157,6 +157,21 @@ describe("user", () => {
         payload: false
       });
     });
+
+    test("should reject if an error occurs in the listUsers", async () => {
+      const error = new Error("An Error");
+
+      apolloClient.query.mockRejectedValue(error);
+
+      try {
+        await getAllUsers(jest.fn());
+      } catch(err) {
+        expect(logger.error).toHaveBeenCalledWith("Failed to fetch workers from service", { error });
+        expect(err).toEqual({
+          msg: "Failed to fetch workers from service"
+        });
+      }
+    });
   });
 
   describe("listUsers", () => {
@@ -180,21 +195,16 @@ describe("user", () => {
     test("should throw an error when there's an error", async () => {
       const error = new Error("An Error");
 
-      apolloClient.query.mockReturnValue({
-        error
-      });
+      apolloClient.query.mockRejectedValue(error);
 
       try {
         await listUsers();
       } catch(err) {
         expect(logger.error).toHaveBeenCalledWith("Failed to fetch workers from service", { error });
         expect(err).toEqual({
-          msg: "Failed to fetch workers from service",
-          error
+          msg: "Failed to fetch workers from service"
         });
       }
-
-
     });
   });
 

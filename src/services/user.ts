@@ -29,27 +29,31 @@ export const getAllUsers = async (dispatch: (action: Action) => void): Promise<U
   }));
 
   let nextToken = "start";
-  const firstQuery = new Promise((resolve: (users: UMUser[]) => void) => {
-    const getAllUsers = async () => {
+  const firstQuery = new Promise((resolve: (users: UMUser[]) => void, reject) => {
+    const getUsers = async () => {
       while (nextToken) {
-        const isFirstQuery = nextToken === "start";
-        const response = await listUsers(isFirstQuery ? undefined : nextToken);
+        try {
+          const isFirstQuery = nextToken === "start";
+          const response = await listUsers(isFirstQuery ? undefined : nextToken);
 
-        if (isFirstQuery) {
-          dispatch(({
-            type: "loadWorkers",
-            payload: response.items
-          }));
+          if (isFirstQuery) {
+            dispatch(({
+              type: "loadWorkers",
+              payload: response.items
+            }));
 
-          resolve(response.items);
-        } else {
-          dispatch(({
-            type: "addWorkers",
-            payload: response.items
-          }));
+            resolve(response.items);
+          } else {
+            dispatch(({
+              type: "addWorkers",
+              payload: response.items
+            }));
+          }
+
+          ({ nextToken } = response);
+        } catch(error) {
+          return reject(error);
         }
-
-        ({ nextToken } = response);
       }
 
       dispatch(({
@@ -58,47 +62,47 @@ export const getAllUsers = async (dispatch: (action: Action) => void): Promise<U
       }));
     };
 
-    getAllUsers();
+    getUsers();
   });
 
   return firstQuery;
 };
 
 export const listUsers = async (nextToken?: string): Promise<DBList<UMUser>> => {
-  const {
-    error, data
-  }  = await apolloClient.query<{ users: DBList<UMUser> }>({
-    query: LIST_USERS,
-    variables: {
-      nextToken
-    }
-  });
+  try {
+    const { data }  = await apolloClient.query<{ users: DBList<UMUser | null> }>({
+      query: LIST_USERS,
+      variables: {
+        nextToken
+      }
+    });
 
-  if (error) {
+    const newUsers = [] as UMUser[];
+    data.users.items.forEach(user => {
+      if (!user?.inactiveDate && !user?.ttl && user?.attributes) {
+        newUsers.push(
+          mapWorkerFromDbWorker({
+            ...user,
+            isConsole: user.pk.includes("Console")
+          })
+        );
+      }
+    });
+
+    return {
+      items: newUsers,
+      nextToken: data.users.nextToken
+    };
+  } catch(error) {
     logger.error("Failed to fetch workers from service", { error });
 
     throw ({
-      msg: "Failed to fetch workers from service",
-      error
+      msg: "Failed to fetch workers from service"
     });
   }
 
-  const newUsers = [] as UMUser[];
-  data.users.items.forEach(user => {
-    if (!user.inactiveDate && !user.ttl && user.attributes) {
-      newUsers.push(
-        mapWorkerFromDbWorker({
-          ...user,
-          isConsole: user.pk.includes("Console")
-        })
-      );
-    }
-  });
 
-  return {
-    items: newUsers,
-    nextToken: data.users.nextToken
-  };
+
 };
 
 export const getUser = async (identifier: string): Promise<UMUser> => {
