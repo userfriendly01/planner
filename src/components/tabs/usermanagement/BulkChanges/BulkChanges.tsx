@@ -69,7 +69,7 @@ const BulkChanges = () => {
 
   const { isLoading } = state.workerContext;
 
-  if (isLoading) {
+  if (isLoading && !showProcessingModal) {
     return (
       <BulkChangesWrapper>
         <LoadingMessage>Loading Users, operations will be available once it completes</LoadingMessage>
