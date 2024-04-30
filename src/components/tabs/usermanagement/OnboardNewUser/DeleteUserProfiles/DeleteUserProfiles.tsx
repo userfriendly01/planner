@@ -237,18 +237,11 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
                     type: userFormActions.UPDATE_INACTIVE_FORWARD_TO,
                     payload: inactiveForwardTo
                   });
-
-                  if (inactiveForwardTo) {
-                    setRequireForwardTo(false);
-                  } else {
-                    setRequireForwardTo(true);
-                  }
                 }
               }
             />
           }
         </>
-
         : null
       }
       <ButtonWrapper>
@@ -256,7 +249,7 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
           Close
         </UserFormButton>
         <UserFormButton
-          disabled={requireForwardTo}
+          disabled={requireForwardTo && !form.triton.inactiveForwardTo.value}
           onClick={handleDeleteUser}
         >
           Confirm Delete

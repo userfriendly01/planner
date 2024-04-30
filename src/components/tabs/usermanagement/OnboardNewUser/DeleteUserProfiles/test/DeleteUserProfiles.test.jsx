@@ -124,8 +124,23 @@ describe("DeleteTritonUser", () => {
             type: userFormActions.UPDATE_INACTIVE_FORWARD_TO,
             payload: "callmebeepme"
           });
-          expect(StyledButton).toHaveBeenCalledTimes(9);
-          const confirmDelete = StyledButton.mock.calls[8][0].onClick;
+          useFormState.mockReturnValue({
+            ...initialFormState,
+            triton: {
+              ...initialTestState.workerContext.workers[0],
+              userFound: true,
+              didUser: true,
+              inactiveForwardTo: {
+                value: "callmebeepme"
+              }
+            },
+            nNumber: {
+              value: mockWorker.attributes.n_number
+            }
+          });
+
+          expect(StyledButton).toHaveBeenCalledTimes(6);
+          const confirmDelete = StyledButton.mock.calls[5][0].onClick;
           act(() => confirmDelete());
           expect(terminateUser).toHaveBeenCalledTimes(1);
         });
