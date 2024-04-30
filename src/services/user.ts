@@ -83,7 +83,7 @@ export const listUsers = async (nextToken?: string): Promise<DBList<UMUser>> => 
         newUsers.push(
           mapWorkerFromDbWorker({
             ...user,
-            isConsole: user.pk.includes("Console")
+            isConsole: false // user.pk.includes("Console")
           })
         );
       }

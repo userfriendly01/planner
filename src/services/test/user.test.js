@@ -33,35 +33,35 @@ jest.mock("utils", () => ({
 
 const workers = [
   {
-    pk: "NNum#n1234566",
+    // pk: "NNum#n1234566",
     inactiveDate: "2024-01-01",
     sid: "WK0000",
     attributes: { emp_first_nme: "River" },
     isConsole: false
   },
   {
-    pk: "NNum#n1234565",
+    // pk: "NNum#n1234565",
     sid: "WK1111",
     attributes: { emp_first_nme: "River" },
     isConsole: false
   },
   {
-    pk: "NNum#n1234564",
+    // pk: "NNum#n1234564",
     sid: "WK2222",
     twilio_attributes_raw: null,
     isConsole: false
   },
   {
-    pk: "NNum#n1234563",
+    // pk: "NNum#n1234563",
     sid: "WK3333",
     attributes: { emp_first_nme: "River" },
     isConsole: false
   },
   {
-    pk: "NNum#n1234562#Console",
+    // pk: "NNum#n1234562#Console",
     sid: "WK4444",
     attributes: { emp_first_nme: "River" },
-    isConsole: true
+    isConsole: false
   }
 ];
 
