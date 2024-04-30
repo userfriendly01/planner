@@ -1564,10 +1564,9 @@ describe("fields.js", () => {
     describe("OUTGOING_NUMBER", () => {
       describe("validateFunction", () => {
         const outgoingNumberValidateFunction = FIELDS.OUTGOING_NUMBER.validateFunction;
-        test("Invalid value provided for Did User field, rejects with message", async () => {
+        test("Invalid value provided for User field, rejects with message", async () => {
           const row = {
             rowNumber: 9,
-            "Did User": "booya",
             "Outgoing Number": "1231231234"
           };
           try {
@@ -1575,7 +1574,7 @@ describe("fields.js", () => {
           } catch (e) {
             expect(e).toEqual(JSON.stringify({
               rowNumber: 9,
-              error: "Did User needs to be 'Y' or 'N' for row 9"
+              error: "Outgoing Number is not in the correct format for row 9"
             }));
             expect(row).toEqual({
               ...row,
@@ -1583,51 +1582,28 @@ describe("fields.js", () => {
             });
           }
         });
-        test("DidUser is true, Outgoing number is provided, reject with message", async () => {
-          try {
-            await outgoingNumberValidateFunction({
-              rowNumber: 9,
-              "Did User": "Y",
-              "Outgoing Number": "1231231234"
-            }, initialTestState);
-          } catch (e) {
-            expect(e).toEqual(JSON.stringify({
-              rowNumber: 9,
-              error: "Did User field is 'Y', Outgoing Number is not applicable for row 9"
-            }));
-          }
-        });
-        test("DidUser is true, Outgoing number is not provided, resolve with message", async () => {
+        test("Outgoing number is not provided, reject with message", async () => {
           const row = {
             rowNumber: 9,
-            "Did User": "Y",
             "Outgoing Number": ""
           };
-          const result = await outgoingNumberValidateFunction(row, initialTestState);
-          expect(result).toEqual("Outgoing Number skipped for DID user for row 9");
-          expect(row).toEqual({
-            ...row,
-            attributes: {}
-          });
-        });
-        test("Did User is false, no Outgoing number provided, rejects with message", async () => {
+
           try {
-            await outgoingNumberValidateFunction({
-              rowNumber: 9,
-              "Did User": "N",
-              "Outgoing Number": ""
-            }, initialTestState);
+            await outgoingNumberValidateFunction(row, initialTestState);
           } catch (e) {
             expect(e).toEqual(JSON.stringify({
               rowNumber: 9,
-              error: "Outgoing Number is required when DID user is 'N' for row 9"
+              error: "Outgoing Number is missing and is required for row 9"
             }));
+            expect(row).toEqual({
+              ...row,
+              attributes: {}
+            });
           }
         });
         test("DidUser is false, and Outgoing number is provided, getE164Number is successful, resolves with message", async () => {
           const row = {
             rowNumber: 9,
-            "Did User": "N",
             "Outgoing Number": "6035554545"
           };
           const result = await outgoingNumberValidateFunction(row, initialTestState);
@@ -1645,7 +1621,6 @@ describe("fields.js", () => {
           };
           const row = {
             rowNumber: 6,
-            "Did User": "N",
             "Outgoing Number": "6035554545",
             attributes: existingAttributes
           };
