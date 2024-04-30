@@ -6,8 +6,8 @@ import MockAdapter from "axios-mock-adapter";
 import { myAxios } from "utils";
 
 const axiosMock = new MockAdapter(myAxios);
-const getCallTagOptionsEndpoint = "/contact-manager/workertaskinfooptions";
-const getCallTagEndpoint = "/contact-manager/workertaskinfo";
+const getCallTagOptionsEndpoint = "http://localhost:8080/contact-manager/workertaskinfooptions";
+const getCallTagEndpoint = "http://localhost:8080/contact-manager/workertaskinfo";
 
 beforeEach(() => {
   jest.clearAllMocks();

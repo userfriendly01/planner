@@ -238,12 +238,12 @@ describe("skillsUtils", () => {
           expect(getValidSkillsObject({
             random: "not cool",
             team: "wahhh",
-            callerStates: ["boo"]
+            caller_states: ["boo"]
           })).toEqual({
             ...defaultObject,
             random: "not cool",
             team: "wahhh",
-            callerStates: ["boo"]
+            caller_states: ["boo"]
           });
         });
       });

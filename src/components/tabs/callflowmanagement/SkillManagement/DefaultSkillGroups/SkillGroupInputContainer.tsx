@@ -47,7 +47,7 @@ const SkillGroupInputContainer = (props: any) => {
   const dispatch = useAdminDispatch();
   const skillGroups = state.skillContext.skillGroups.slice();
   const skills = state.skillContext.skills.slice();
-  const nNumber = state.userContext.pingIdentity?.sub;
+  const { nNumber } = state.userContext;
 
   const getSkillGroupOptions = () => {
     return skillGroups.map((skg: any) => {

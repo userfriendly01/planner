@@ -2,28 +2,44 @@ import {
   Modal, ModalHeader
 } from "@lmig/lmds-react-modal";
 import {
-  RoutingHeadingStyled, RoutingModalBodyStyled, RoutingModalFooterStyled
+  RoutingHeadingStyled,
+  RoutingModalBodyStyled,
+  RoutingModalFooterStyled
 } from "../../AlohaRouting.Styles";
 import React, {
-  useState, useEffect, useMemo
+  useState,
+  useEffect,
+  useMemo
 } from "react";
 import {
-  convertTime12to24,convertTime24to12, routingFields, routingInitRule, initializedAlertBar, routingDropDownList, dayOfWeek
+  convertTime12to24,
+  convertTime24to12,
+  routingFields,
+  routingInitRule,
+  initializedAlertBar,
+  routingDropDownList,
+  dayOfWeek
 } from "utils";
 import {
-  CctSharedCallRoutingDb, RoutingDropDownList, AddPageFieldConfigProps
+  CctSharedCallRoutingDb,
+  RoutingDropDownList,
+  AddPageFieldConfigProps
 } from "../../AlohaRouting.Interfaces";
 import {
-  CustomToast, ComponentControl
+  CustomToast,
+  ComponentControl
 } from "components";
 import {
-  Button, Grid
+  Button,
+  Grid
 } from "@mui/material";
 import {
-  AlertBarProps, FormValidationRule
+  AlertBarProps,
+  FormValidationRule
 } from "utils/interfaces";
 import {
-  deleteRoutingRule, updateRoutingDB
+  deleteRoutingRule,
+  updateRoutingDB
 } from "services";
 import { AzureSPA } from "globals";
 import {
@@ -38,7 +54,6 @@ interface EditRoutingComponentProps {
   openEditModal: (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallRoutingDb, message?: string, deleteRow?: boolean,isCloneRule?: boolean) => void;
 }
 
-
 export const EditRouting = ({
   accessToken, isOpen, matchedGroups, selectedRow, openEditModal
 }: EditRoutingComponentProps & AzureSPA): JSX.Element => {
@@ -47,7 +62,7 @@ export const EditRouting = ({
   const [dropDownValues, setDropDownValues] = useState(routingDropDownList);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
   const defaultValue: { [key: string]: any } = {};
-  const enableRouting = useMemo(() => readWriteAccess(matchedGroups, "aloha-route"), []);
+  const enableRouting = useMemo(() => readWriteAccess(matchedGroups, "RouteReadWrite"), []);
 
   useEffect(() => {
     setDropDownValues((dropDownOptions: RoutingDropDownList) => ({
@@ -282,7 +297,7 @@ export const EditRouting = ({
             value="Save"
             color="primary"
             sx={{ marginRight: 2 }}
-            disabled={enableRouting}
+            disabled={!enableRouting}
             onClick={() => handleOnSave()}
           >
                         Save Rule
@@ -291,7 +306,7 @@ export const EditRouting = ({
             variant="contained"
             value="Clone"
             color="primary"
-            disabled={enableRouting}
+            disabled={!enableRouting}
             sx={{ marginRight: 2 }}
             onClick={() => handleClone()}
           >
@@ -301,7 +316,7 @@ export const EditRouting = ({
             variant="contained"
             color="error"
             value="Delete"
-            disabled={enableRouting}
+            disabled={!enableRouting}
             sx={{ marginRight: 2 }}
             onClick={() => handleOnDelete()}
           >

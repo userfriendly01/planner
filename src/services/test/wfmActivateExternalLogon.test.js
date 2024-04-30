@@ -4,7 +4,7 @@ import { myAxios } from "utils";
 
 const axiosMock = new MockAdapter(myAxios);
 
-const externalLogonServiceEndpoint = "/service/wfmexternallogon";
+const externalLogonServiceEndpoint = "http://localhost:8080/wfmexternallogon";
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -21,7 +21,7 @@ describe("Call to activate external logon succeeds", () => {
     failedActivations: {}
   };
   beforeEach(() => axiosMock.onPost(externalLogonServiceEndpoint).replyOnce(200, goodResponse));
-  
+
   test("should resolve with successful activation", done => {
     wfmActivateExternalLogon(payload).then(resolvedValue => {
       expect(resolvedValue.data).toEqual({

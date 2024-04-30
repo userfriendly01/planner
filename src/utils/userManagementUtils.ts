@@ -4,7 +4,7 @@ import {
   formModes,
   nNumMatcher,
   TritonProfile,
-  Worker
+  UMUser
 } from "globals";
 import {
   UserFormState
@@ -22,11 +22,11 @@ import { CalabrioUser } from "components";
 
 export const isUnpopulatedField = (f: any) => (!f && f !== false && f !== 0) || f?.length === 0 || (typeof f === "object" && JSON.stringify(f) === JSON.stringify({}));
 
-// For a DID user, the outgoing number is tied to the directDialNum, if you change one you must change both in order for the form to be valid
-export const isDidDifferentValid = (form: UserFormState, worker: Worker, forwardToToggle: boolean): boolean => {
+// For a DID user, the outgoing number is tied to the did, if you change one you must change both in order for the form to be valid
+export const isDidDifferentValid = (form: UserFormState, worker: UMUser, forwardToToggle: boolean): boolean => {
   if (forwardToToggle === true) {
-    return removeNonNumericCharacters(form.triton.outgoing.value) !== formatE164PhoneNumber(worker?.attributes?.did)
-      && removeNonNumericCharacters(form.triton.directDialNum.value) !== formatE164PhoneNumber(worker?.directDialNum);
+    return removeNonNumericCharacters(form.triton.outgoing.value) !== formatE164PhoneNumber(worker?.attributes?.caller_id)
+      && removeNonNumericCharacters(form.triton.did.value) !== formatE164PhoneNumber(worker?.did);
   } else {
     return true;
   }
@@ -36,7 +36,7 @@ export const isExtensionValid = (form: UserFormState): boolean => form.triton.ex
 
 export const isFormUpdated = (form: UserFormState): boolean => form.triton.defaultSkills.updated || form.triton.manager.updated ||
   form.triton.profileId.updated || form.triton.outgoing.updated ||
-  form.triton.alternateDid.updated || form.triton.directDialNum.updated ||
+  form.triton.did.updated ||
   form.nNumber.updated || form.triton.extension.updated ||
   form.triton.inactiveForwardTo.updated || form.triton.zeroOutEnabled.updated || form.calabrio_qm.updated || form.triton.selfServiceInd.updated || form.triton.routing.updated;
 
@@ -51,7 +51,7 @@ export const identifyFormErrors = (form: UserFormState) => {
   return erroredFields;
 };
 
-export const isTritonUserValid = (form: UserFormState, worker: Worker, forwardToToggle: boolean) => {
+export const isTritonUserValid = (form: UserFormState, worker: UMUser, forwardToToggle: boolean) => {
   if (!form.triton.userFound) {
     return false;
   } else {
@@ -60,7 +60,7 @@ export const isTritonUserValid = (form: UserFormState, worker: Worker, forwardTo
       && isManagerValid(form)
       && form.triton.outgoing.valid
       && isExtensionValid(form)
-      && (form.triton.didUser === true ? form.triton.directDialNum.valid && form.triton.alternateDid.valid : true)
+      && (form.triton.didUser === true ? form.triton.did.valid : true)
       && isInactiveForwardToValid(form, forwardToToggle)
       && isDidDifferentValid(form, worker, forwardToToggle);
   }
@@ -139,7 +139,7 @@ export const isProfileIdValid = (form: UserFormState): boolean => form.triton.pr
 
 export const isInactiveForwardToValid = (form: UserFormState, forwardToToggle: boolean): boolean => forwardToToggle === true ? form.triton.inactiveForwardTo.value !== null : true;
 
-export const getNonOverflowSkills = (worker: Worker, profiles: TritonProfile[]): string[] => worker?.attributes.routing?.skills.filter((skill: string) => !getOverflowSkills(profiles).includes(skill));
+export const getNonOverflowSkills = (worker: UMUser, profiles: TritonProfile[]): string[] => worker?.attributes.routing?.skills.filter((skill: string) => !getOverflowSkills(profiles).includes(skill));
 
 export const getOverflowSkills = (profiles: TritonProfile[]): string[] => {
   const skills: string[] = [];
@@ -156,28 +156,11 @@ export const getOverflowSkillFromProfile = (profiles: TritonProfile[], profileVa
   }
 };
 
-export const removeProfileZeroIfAdminNotInProfileZero = (adminState: AppState, profiles: TritonProfile[]) => {
-  const adGroups: string[] = adminState && adminState.userContext && adminState.userContext.pingIdentity ? adminState.userContext.pingIdentity.groups : [];
-
-  let adminGroup = false;
-  adGroups.forEach(group => {
-    if (group.includes("gci-cicct-triton-prod-admin") || group.includes("gci-cicct-triton-test-admin") || group.includes("gci-cicct-triton-dev-admin")) {
-      adminGroup = true;
-    }
-  });
-
-  if (!adminGroup) {
-    const filteredProfiles = profiles.filter(e => e.profile_id !== 0);
-    return filteredProfiles;
-  }
-  return profiles;
-};
-
 export const getTargetProfile = (profiles: TritonProfile[], newProfileValue: string): TritonProfile => profiles.find((profile: TritonProfile) => profile.profile_id.toString() === newProfileValue.toString());
 
 export const getZeroOutEnabledFromProfile = (profiles: TritonProfile[], newProfileValue: string): boolean => getTargetProfile(profiles, newProfileValue).overflow_skill !== null;
 
-export const workerHasOverFlowSkill = (worker: Worker, profiles: TritonProfile[]): boolean => worker?.attributes.routing?.skills.some(skill => getOverflowSkills(profiles).includes(skill));
+export const workerHasOverFlowSkill = (worker: UMUser, profiles: TritonProfile[]): boolean => worker?.attributes.routing?.skills.some(skill => getOverflowSkills(profiles).includes(skill));
 
 export const fetchUser = async (nNumber: string, setForm: any, errorMessage: string, errorType: string) => {
   try {
@@ -209,7 +192,7 @@ export const fetchUser = async (nNumber: string, setForm: any, errorMessage: str
 
 export const findMatchingWorker = (sid: string, nNumber: string, email: string, workers: any[]) => {
   //Dynamic to look through triton workers, calabrio qm users and calabrio wfm users
-  let matchingWorker: Worker = null;
+  let matchingWorker: UMUser = null;
   workers.forEach((w: any) => {
     const workerSid = w.sid?.toLowerCase() || w.acdId?.toLowerCase();
     const workerNNumber = w.attributes?.n_number?.toLowerCase() || w.EmploymentNumber?.toLowerCase();
@@ -238,7 +221,7 @@ export const findExistingWFMUser = async (nNumber: string): Promise<CalabrioUser
   } catch (err) {
     return null;
   }
-}
+};
 
 export const identifyUserProfiles = async (form: UserFormState, setForm: any, state: AppState) => {
   const primarySystem = form.triton.userFound && "triton" || form.calabrio_qm.userFound && "calabrio_qm" || form.calabrio_wfm.userFound && "calabrio_wfm";
@@ -249,7 +232,7 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
   const tritonWorkers = state.workerContext.workers;
   const calabrioQmUsers = state.calabrioContext.users;
   const managers = state.managerContext.managers;
-  let tritonWorker: Worker = null;
+  let tritonWorker: UMUser = null;
   let calabrioQmUser = null;
   let calabrioWfmUser = null;
 
@@ -265,8 +248,6 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
     const email = form.nNumber.nNumberFetchedUser?.email || form.triton.attributes?.email;
     calabrioWfmUser = await findExistingWFMUser(nNumber);
     calabrioQmUser = findMatchingWorker(acdId, nNumber, email, calabrioQmUsers);
-
-
   } else if (primarySystem === "calabrio_qm") {
     //This condition wont be in play until the calabrio qm table is in place
     //When this condition is fulfilled we can peel some of the code out of the CallRecordingForm

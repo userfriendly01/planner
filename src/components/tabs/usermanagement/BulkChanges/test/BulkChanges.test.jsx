@@ -24,7 +24,9 @@ import {
   waitFor
 } from "testUtils";
 import * as XLSX from "xlsx";
-import { Modal } from "@mui/material";
+import {
+  CircularProgress, Modal
+} from "@mui/material";
 import { useAdminState } from "context";
 
 jest.mock("../BulkActions", () => ({
@@ -53,7 +55,8 @@ jest.mock("context", () => ({
 
 jest.mock("@mui/material", () => ({
   Modal: jest.fn(),
-  Paper: jest.fn()
+  Paper: jest.fn(),
+  CircularProgress: jest.fn()
 }));
 
 jest.mock("xlsx", () => ({
@@ -94,6 +97,7 @@ describe("<BulkChanges />", () => {
       ExportTemplateButton,
       ExportOptionsButton,
       Modal,
+      CircularProgress,
       ProcessingModal,
       StyledButton
     });
@@ -114,6 +118,17 @@ describe("<BulkChanges />", () => {
       expect(ProcessingModal.mock.calls.length).toBe(0);
       expect(BulkCreateForm.mock.calls.length).toBe(2);
     });
+  });
+  test("Workers are loading", () => {
+    useAdminState.mockReturnValue({
+      ...initialTestState,
+      workerContext: {
+        isLoading: true
+      }
+    });
+
+    const rendered = render(<BulkChanges />);
+    expect(rendered.container).toHaveTextContent("Loading Users, operations will be available once it completes");
   });
   describe("View is views.BULK_CREATE_USERS ", () => {
     describe("selected templates do not include CREATE_CALABRIO_WFM_PERSON", () => {

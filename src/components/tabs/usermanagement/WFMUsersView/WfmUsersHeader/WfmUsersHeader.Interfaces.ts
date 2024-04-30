@@ -1,5 +1,5 @@
 import { TableStateProps } from "globals";
-import { Worker } from "globals";
+import { UMUser } from "globals";
 
 export interface WfmUsersHeaderProps {
   tableState: TableStateProps
@@ -9,5 +9,5 @@ export interface WfmUsersHeaderProps {
 
 export interface ExportWfmUserProps {
   label: string,
-  selected: Worker[]
+  selected: UMUser[]
 }

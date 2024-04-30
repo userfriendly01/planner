@@ -9,7 +9,8 @@ import {
   getCalabrioOrg,
   getCalabrioRoles,
   getManagers,
-  getOffices
+  getOffices,
+  getAllUsers
 } from "services";
 import {
   formatManagersResponse,
@@ -17,10 +18,10 @@ import {
   myAxios
 } from "utils";
 import {
-  getCalabrioWfmOptions,
-  getCalabrioWfmOrg
+  getCalabrioWfmOptions
 } from "../../../utils/calabrioUtils";
 import { startups } from "testUtils";
+import { apolloClient } from "components";
 
 jest.mock("../../../utils/calabrioUtils", () => ({
   __esModule: true,
@@ -84,32 +85,32 @@ const dbManagers = [
 
 const dbWorkers = [
   {
-    workerSid: "WK1",
-    attributes: {
+    sid: "WK1",
+    twilio_attributes_raw: JSON.stringify({
       wow: "wow"
-    }
+    })
   },
   {
-    workerSid: "WK2",
-    attributes: {
+    sid: "WK2",
+    twilio_attributes_raw: JSON.stringify({
       neat: "neat"
-    }
+    })
   },
   {
-    workerSid: "WK3",
-    attributes: {
+    sid: "WK3",
+    twilio_attributes_raw: JSON.stringify({
       stellar: "stellar"
-    }
+    })
   },
   {
-    workerSid: "WK4"
+    sid: "WK4"
   },
   {
-    workerSid: "WK5",
-    attributes: {
+    sid: "WK5",
+    twilio_attributes_raw: JSON.stringify({
       superrrr: "superrrr"
-    },
-    inactiveInd: true
+    }),
+    inactiveDate: "2023-01-01"
   }
 ];
 
@@ -158,6 +159,12 @@ jest.mock("context", () => ({
   useAdminDispatch: jest.fn()
 }));
 
+jest.mock("components", () => ({
+  apolloClient: {
+    query: jest.fn()
+  }
+}));
+
 const mockAdminDispatch = jest.fn();
 const statusCode = 500;
 const error = {
@@ -173,18 +180,22 @@ describe("cct-triton-admin-startup", () => {
     axiosMock.reset();
     getStartupProfiles.mockReturnValueOnce(startups);
     useAdminDispatch.mockReturnValue(mockAdminDispatch);
+    getAllUsers.mockImplementation(dispatch => dispatch({
+      type: "addWorkers",
+      payload: filteredWorkers
+    }));
   });
 
   describe("runTritonAdminStartup", () => {
     beforeEach(() => {
       axiosMock.onGet(profilesEndpoint).reply(200, profiles);
       axiosMock.onGet(skillsEndpoint).reply(200, skills);
-      axiosMock.onGet(workersEndpoint).reply(200, dbWorkers);
+      apolloClient.query.mockResolvedValue({ data: { users: { items: dbWorkers }}});
       getManagers.mockResolvedValue(dbManagers);
       getOffices.mockResolvedValue(dbOffices);
-      getCalabrioUsers.mockResolvedValue({ data: [] });
-      getCalabrioOrg.mockResolvedValue({ data: [] });
-      getCalabrioRoles.mockResolvedValue({ data: [] });
+      getCalabrioUsers.mockResolvedValue({ data: []});
+      getCalabrioOrg.mockResolvedValue({ data: []});
+      getCalabrioRoles.mockResolvedValue({ data: []});
       getCalabrioWfmOptions.mockResolvedValue(true);
       getWfmBusinessUnits.mockResolvedValue({
         data: {
@@ -199,11 +210,6 @@ describe("cct-triton-admin-startup", () => {
         const result = await runTritonAdminStartup(mockAdminDispatch);
         const firstResponse = result[0];
         expect(firstResponse).toStrictEqual(startups.TRITON.name);
-      });
-      test("**MUST RETURN WORKER RESPONSE SECOND**", async () => {
-        const result = await runTritonAdminStartup(mockAdminDispatch);
-        const secondResponse = result[1];
-        expect(secondResponse).toStrictEqual(filteredWorkers);
       });
       describe("auth token is good (page loaded less than one hour ago)", () => {
         test(
@@ -244,7 +250,7 @@ describe("cct-triton-admin-startup", () => {
               payload: skills.consolidatedSkills
             });
             expect(mockAdminDispatch).toHaveBeenCalledWith({
-              type: "loadWorkers",
+              type: "addWorkers",
               payload: filteredWorkers
             });
             expect(mockAdminDispatch).toHaveBeenCalledWith({
@@ -278,13 +284,13 @@ describe("cct-triton-admin-startup", () => {
       describe(workersEndpoint, () => {
         describe("workers service call returned an error", () => {
           beforeEach(() => {
-            axiosMock.onGet(workersEndpoint).reply(statusCode, { boo: "wahhh" });
+            getAllUsers.mockRejectedValue({ message: "Failed to fetch workers from service" });
           });
           test("should return 'An error occurred while logging in.'", async () => {
             try {
               await runTritonAdminStartup(mockAdminDispatch);
             } catch (err) {
-              expect(err.msg).toBe("Failed to fetch workers from service");
+              expect(err.message).toBe("Failed to fetch workers from service");
             }
           });
         });
@@ -375,7 +381,7 @@ describe("cct-triton-admin-startup", () => {
               payload: skills.consolidatedSkills
             });
             expect(mockAdminDispatch).toHaveBeenCalledWith({
-              type: "loadWorkers",
+              type: "addWorkers",
               payload: filteredWorkers
             });
             expect(mockAdminDispatch).toHaveBeenCalledWith({
@@ -427,7 +433,7 @@ describe("cct-triton-admin-startup", () => {
               payload: skills.consolidatedSkills
             });
             expect(mockAdminDispatch).toHaveBeenCalledWith({
-              type: "loadWorkers",
+              type: "addWorkers",
               payload: filteredWorkers
             });
             expect(mockAdminDispatch).toHaveBeenCalledWith({
@@ -479,7 +485,7 @@ describe("cct-triton-admin-startup", () => {
               payload: skills.consolidatedSkills
             });
             expect(mockAdminDispatch).toHaveBeenCalledWith({
-              type: "loadWorkers",
+              type: "addWorkers",
               payload: filteredWorkers
             });
             expect(mockAdminDispatch).toHaveBeenCalledWith({

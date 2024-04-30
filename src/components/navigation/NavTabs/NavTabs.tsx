@@ -12,8 +12,9 @@ import { logger } from "utils";
 
 const NavTabs = () => {
   const state = useAdminState();
+  const { permissions } = state.userContext;
+
   const navigate = useNavigate();
-  const authenticationProfiles = state.userContext.authenticationProfiles;
 
   const [ tabs, setTabs ] = React.useState([]);
   const [ dropdownOpen, setDropdownOpen ] = React.useState<any>({});
@@ -41,11 +42,10 @@ const NavTabs = () => {
   React.useEffect(() => {
     const allowedTabs: any[] = [];
     const tabsOpen: any = {};
-    authenticationProfiles.forEach(p => {
-      p.tabs.forEach((t: any) => {
-        const value = t.value;
-        allowedTabs.push(t);
-        tabsOpen[value] = false;
+    permissions.forEach(({ authenticationProfile }) => {
+      authenticationProfile.tabs.forEach(tab => {
+        allowedTabs.push(tab);
+        tabsOpen[tab.value] = false;
       });
     });
     setTabs(allowedTabs);

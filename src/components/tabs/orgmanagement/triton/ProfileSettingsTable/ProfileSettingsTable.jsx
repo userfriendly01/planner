@@ -36,7 +36,6 @@ import {
 
 const ProfileSettingsTable = props => {
   const {
-    environment,
     profileList,
     setProfileModalState,
     loggedInUser
@@ -160,7 +159,7 @@ const ProfileSettingsTable = props => {
                       <TableText style={{ "text-wrap": "nowrap" }}>{profile.fwd_to_num ? formatTenDigitNumber(profile.fwd_to_num) : ""}</TableText>
                     </CustomTableData>
                     {
-                      checkIfPO(loggedInUser, environment) ?
+                      checkIfPO(loggedInUser) ?
                         <CustomTableData>
                           <IconWrapper onClick={editButtonOnClick(profile)} data-testid="edit-button">
                             <Edit fontSize={"inherit"}/>

@@ -3,9 +3,31 @@ import { FormModes } from "globals";
 export * from "./interfaces";
 export * from "./theme";
 export * from "./styles";
+export * from "./graphql";
 
-const CONTACT_MANAGER_BASE_URI = "/contact-manager";
-const SERVICE_BASE_URI = "/service";
+// We're adding this to the window and can really be anywhere
+// We'll put it here for reference to the below on why it's neede
+declare global {
+  interface Window {
+    env: {
+      [key: string]: string
+    }
+  }
+}
+
+export const env = {
+  AZURE_CLIENT_ID: window.env.AZURE_CLIENT_ID,
+  AZURE_REDIRECT_URI: window.env.AZURE_REDIRECT_URI,
+  DATADOG_APPLICATION_ID: window.env.DATADOG_APPLICATION_ID,
+  DATADOG_CLIENT_TOKEN: window.env.DATADOG_CLIENT_TOKEN,
+  APP_ENV: window.env.APP_ENV,
+  TROUX_ID: window.env.TROUX_ID,
+  GRAPH_API_URL: window.env.GRAPH_API_URL,
+  SOFTPHONE_SERVICE_URL: window.env.SOFTPHONE_SERVICE_URL
+};
+
+const CONTACT_MANAGER_BASE_URI = `${env.SOFTPHONE_SERVICE_URL}/contact-manager`;
+const SERVICE_BASE_URI = env.SOFTPHONE_SERVICE_URL;
 
 export const nNumMatcher = /[n,N]\d{7}/g;
 export const extensionMatcher = /^\d{4,5}$/;
@@ -18,7 +40,6 @@ export const formModes: FormModes = {
 };
 
 export const timeouts = {
-  AUTH: 3600 * 1000,
   MODAL_OVERLAY: 2000,
   MODAL_OVERLAY_ATTENTION: 5000
 };
@@ -209,7 +230,7 @@ export const exportColumns = [
     width: "100px"
   },
   {
-    field: "directDialNum",
+    field: "did",
     title: "Direct Dial Number",
     width: "100px"
   },
@@ -231,14 +252,12 @@ export const exportColumns = [
 ];
 
 export const apiPaths = {
-  AUTH: `${SERVICE_BASE_URI}/admin-login`,
   CHECK_EXTENSION: `${SERVICE_BASE_URI}/checkextension`,
   CREATE_CALABRIO_TEAM: `${SERVICE_BASE_URI}/calabrio-add-team`,
   CREATE_CALABRIO_USER: `${SERVICE_BASE_URI}/calabrio-add-user`,
   CREATE_CALABRIO_WFM_PERSON: `${SERVICE_BASE_URI}/calabrio-api/wfm/person`,
   CLOSED_MESSAGE: `${SERVICE_BASE_URI}/closedmessage`,
   CREATE_SKILL: `${SERVICE_BASE_URI}/createskill`,
-  CREATE_WORKER: `${SERVICE_BASE_URI}/createworker`,
   // DELETE_WORKER: (workerSid: string): string => `${SERVICE_BASE_URI}/deleteworker/${workerSid}`,
   DIAL_LIST: `${CONTACT_MANAGER_BASE_URI}/diallist`,
   DIAL_LIST_ENTRY: (dialListId: number): string => `${CONTACT_MANAGER_BASE_URI}/diallist/${dialListId}`,
@@ -265,7 +284,6 @@ export const apiPaths = {
   GET_OU: `${SERVICE_BASE_URI}/operatingunit`,
   GET_TASK_QUEUES: `${SERVICE_BASE_URI}/taskqueues`,
   GET_TIME_OF_DAYS: `${SERVICE_BASE_URI}/timeofday`,
-  GET_WORKERS: `${SERVICE_BASE_URI}/workers`,
   GET_RESET_PROFILE_DATADOG_LOGS: (nNumber: string): string => `${SERVICE_BASE_URI}/datadogresetprofileslogs/${nNumber}`,
   MANAGERS: `${CONTACT_MANAGER_BASE_URI}/managers`,
   OFFICES: `${CONTACT_MANAGER_BASE_URI}/offices`,
@@ -276,29 +294,8 @@ export const apiPaths = {
   TERMINATE_WORKER: `${SERVICE_BASE_URI}/terminateworker`,
   TFN_DATA: `${SERVICE_BASE_URI}/tfn`,
   UPDATE_CALABRIO_USER: (personId: number): any => `${SERVICE_BASE_URI}/calabrio-update-user/${personId}`,
-  UPDATE_WORKER: (workerSid: string): string => `${SERVICE_BASE_URI}/updateworker/${workerSid}`,
   GET_AGGREGATE_QUEUES_TYPE: (aggregateQueueType: string): string => `${CONTACT_MANAGER_BASE_URI}/aggregatequeuestype/${aggregateQueueType}`,
   WFM_ACTIVATE_EXTERNAL_LOGON: `${SERVICE_BASE_URI}/wfmexternallogon`
-};
-
-// We're adding this to the window and can really be anywhere
-// We'll put it here for reference to the below on why it's neede
-declare global {
-  interface Window {
-    env: {
-      [key: string]: string
-    }
-  }
-}
-
-export const env = {
-  AZURE_CLIENT_ID: window.env.AZURE_CLIENT_ID,
-  AZURE_REDIRECT_URI: window.env.AZURE_REDIRECT_URI,
-  DATADOG_APPLICATION_ID: window.env.DATADOG_APPLICATION_ID,
-  DATADOG_CLIENT_TOKEN: window.env.DATADOG_CLIENT_TOKEN,
-  APP_ENV: window.env.APP_ENV,
-  TROUX_ID: window.env.TROUX_ID,
-  GRAPH_API_URL: window.env.GRAPH_API_URL
 };
 
 export const authConfig = {

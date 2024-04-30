@@ -31,6 +31,9 @@ import { Dropdown } from "components";
 import { useAdminState } from "context";
 import React from "react";
 import { Modal } from "@mui/material";
+import { CircularProgress } from "@mui/material";
+import { LoadingMessage } from "components/app/App.Styles";
+import { theme } from "globals";
 
 const BulkChanges = () => {
 
@@ -63,6 +66,17 @@ const BulkChanges = () => {
     const isOrgLoaded = state.calabrioContext.wfmOrg.length > 0;
     return areOptionsLoaded && isOrgLoaded;
   };
+
+  const { isLoading } = state.workerContext;
+
+  if (isLoading && !showProcessingModal) {
+    return (
+      <BulkChangesWrapper>
+        <LoadingMessage>Loading Users, operations will be available once it completes</LoadingMessage>
+        <CircularProgress size={theme.circularProgressSize} />
+      </BulkChangesWrapper>
+    );
+  }
 
   return (
     <>

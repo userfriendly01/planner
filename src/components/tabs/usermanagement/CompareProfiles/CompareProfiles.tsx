@@ -1,4 +1,6 @@
-import { TritonPerson, QmPerson, WfmPerson } from "./CompareProfiles.Interfaces";
+import {
+  TritonPerson, QmPerson, WfmPerson
+} from "./CompareProfiles.Interfaces";
 import {
   CompareProfilesWrapper,
   ProfileColumnsWrapper,
@@ -9,11 +11,17 @@ import MessageBanner from "./MessageBanner";
 import { messageConsts } from "./messages";
 import ProfileColumn from "./ProfileColumn";
 import ResetModal from "./ResetModal";
-import { WfmUser, Worker, nNumMatcher } from "globals";
-import { CalabrioGroup, NNumberInput } from "components";
+import {
+  WfmUser, UMUser, env, nNumMatcher
+} from "globals";
+import {
+  CalabrioGroup, NNumberInput
+} from "components";
 import { useAdminState } from "context";
 import React from "react";
-import { getWfmUserByNNumber, getQmUserProfiles, getWfmTeam } from "services";
+import {
+  getWfmUserByNNumber, getQmUserProfiles, getWfmTeam
+} from "services";
 import util from "util";
 import {
   logger,
@@ -29,9 +37,8 @@ const CompareProfiles = () => {
   const calabrioTeams = state.calabrioContext.teams;
 
   //Environment Control
-  const environment = state.userContext.pingIdentity.environment;
-  const isProduction = environment === "production";
-  const isDevelopment = environment === "development";
+  const isProduction = env.APP_ENV === "production";
+  const isDevelopment = env.APP_ENV === "development";
 
   //Form Control
   const [showModal, setShowModal] = React.useState(false);
@@ -48,7 +55,12 @@ const CompareProfiles = () => {
     nNumber: null
   });
 
-  logger.info("Reset User Details", { nNumberDetails, tritonProfiles, calabrioQMProfiles, calabrioWFMProfiles });
+  logger.info("Reset User Details", {
+    nNumberDetails,
+    tritonProfiles,
+    calabrioQMProfiles,
+    calabrioWFMProfiles
+  });
 
   React.useEffect(() => {
     if (nNumberDetails.fetchedUser) {
@@ -79,7 +91,7 @@ const CompareProfiles = () => {
           message,
           level
         }
-      ]
+      ];
     } else {
       newArray = messages.filter(m => m.id !== id);
     }
@@ -93,7 +105,7 @@ const CompareProfiles = () => {
       if (teamInState) {
         return teamInState.Name;
       } else if (p.BusinessUnitId && p.TeamId) {
-        const res = await getWfmTeam(p.BusinessUnitId, p.TeamId)
+        const res = await getWfmTeam(p.BusinessUnitId, p.TeamId);
         if (res.data.Result.length > 0) {
           return res.data.Result[0].Name;
         } else {
@@ -103,14 +115,17 @@ const CompareProfiles = () => {
         throw Error("Business Unit or Team Id were invalid to fetch Team");
       }
     } catch (error) {
-      logger.error(messageConsts.ERROR, { error, message: `Failed to fetch WFM Team for BU ${p.BusinessUnitId}: Team ${p.TeamId}` }, false);
-      return p.TeamId || ""
+      logger.error(messageConsts.ERROR, {
+        error,
+        message: `Failed to fetch WFM Team for BU ${p.BusinessUnitId}: Team ${p.TeamId}`
+      }, false);
+      return p.TeamId || "";
     }
   };
 
   const trimProfiles = (userProfiles: any[], system: string): TritonPerson[] | QmPerson[] | WfmPerson[] | any[] => {
     if (system === "triton") {
-      return userProfiles.map((p: Worker) => {
+      return userProfiles.map((p: UMUser) => {
         return {
           ["Worker Sid"]: p.sid,
           ["N Number"]: p.attributes?.n_number,
@@ -123,7 +138,7 @@ const CompareProfiles = () => {
           ["Manager First Name"]: p.attributes?.manager_first_name || "",
           ["Manager Last Name"]: p.attributes?.manager_last_name || "",
           ["Active"]: true
-        }
+        };
       });
     } else if (system === "qm") {
       return userProfiles.map((p: any) => {
@@ -136,7 +151,7 @@ const CompareProfiles = () => {
           ["Team"]: calabrioTeams.find((c: CalabrioGroup) => c.groupId === p.groupId)?.name || "Not Found",
           ["User Id"]: p.id,
           ["Active"]: p.deactivated === 32503593600000
-        }
+        };
       });
     } else {
       return userProfiles.map((p: any) => {
@@ -150,7 +165,7 @@ const CompareProfiles = () => {
           ["Team Id"]: p.TeamName || "",
           ["Person Id"]: p.Id || "",
           ["Active"]: true
-        }
+        };
       });
     }
   };
@@ -159,7 +174,7 @@ const CompareProfiles = () => {
     const workers = state.workerContext.workers;
 
     try {
-      const matchingTritonProfiles = workers.filter((w: Worker) => w?.attributes?.n_number?.toLowerCase() === nNumberDetails?.nNumber?.toLowerCase());
+      const matchingTritonProfiles = workers.filter((w: UMUser) => w?.attributes?.n_number?.toLowerCase() === nNumberDetails?.nNumber?.toLowerCase());
       if (matchingTritonProfiles.length > 1) {
         updateMessages("add", null, messageConsts.MULTIPLE_TRITON_PROFILES, "error");
       } else if (matchingTritonProfiles.length === 0) {
@@ -170,7 +185,7 @@ const CompareProfiles = () => {
 
         setTritonProfiles(matchingTritonProfiles);
 
-        const wfmUserPromise = isProduction ? getWfmUserByNNumber(nNumberDetails.nNumber) : Promise.resolve({ data: [] });
+        const wfmUserPromise = isProduction ? getWfmUserByNNumber(nNumberDetails.nNumber) : Promise.resolve({ data: []});
         const calabrioProfilesPromise = getQmUserProfiles(workerSid, nNumberDetails.nNumber, email);
 
         const [wfmResponse, calabrioProfilesResponse]: [any, any] = await Promise.all([wfmUserPromise, calabrioProfilesPromise]);
@@ -179,7 +194,7 @@ const CompareProfiles = () => {
         if (wfmProfiles.length === 1) {
           const team = await fetchTeam(wfmProfiles[0]);
           wfmProfiles[0].TeamName = team;
-          setCalabrioWFMProfiles(wfmProfiles)
+          setCalabrioWFMProfiles(wfmProfiles);
         } else if (wfmProfiles.length > 1) {
           const personIds = wfmProfiles.map((p: WfmUser) => p.Id);
           updateMessages("add", null, `${messageConsts.WFM_MULTIPLE_PROFILES} Person Ids: ${JSON.stringify(personIds)}`, "error");
@@ -205,7 +220,11 @@ const CompareProfiles = () => {
       }
     } catch (error) {
       const errorString = error.message || error.response?.message || util.format(error);
-      logger.error(messageConsts.ERROR, { error, message: errorString, nNumber: nNumberDetails.nNumber });
+      logger.error(messageConsts.ERROR, {
+        error,
+        message: errorString,
+        nNumber: nNumberDetails.nNumber
+      });
       updateMessages("add", null, `${messageConsts.ERROR}: ${errorString}`, "error");
     }
   };
@@ -213,7 +232,6 @@ const CompareProfiles = () => {
   return (
     <CompareProfilesWrapper>
       <MessageBanner
-        environment={environment}
         messages={messages}
         updateMessages={updateMessages}
       />
@@ -236,7 +254,7 @@ const CompareProfiles = () => {
               setNNumberDetails({
                 nNumber,
                 fetchedUser: null
-              })
+              });
             }}
             value={nNumberDetails.nNumber || ""}
           />

@@ -168,7 +168,7 @@ describe("fields.js", () => {
         });
         test("attributes is already on successful row, returns successful response, resolves with field is valid message", async () => {
           const existingAttributes = {
-            did: "16038518200"
+            caller_id: "16038518200"
           };
           fetchUser.mockResolvedValue({
             departmentNumber: "123"
@@ -395,7 +395,7 @@ describe("fields.js", () => {
         });
         test("attributes is already on successful row, returns successful response, resolves with field is valid message", async () => {
           const existingAttributes = {
-            did: "16038518200"
+            caller_id: "16038518200"
           };
           fetchUser.mockResolvedValue({
             departmentNumber: "123"
@@ -483,7 +483,7 @@ describe("fields.js", () => {
         });
         test("attributes is already on successful row, returns successful response, resolves with field is valid message", async () => {
           const existingAttributes = {
-            did: "16038518200"
+            caller_id: "16038518200"
           };
           const row = {
             rowNumber: 3,
@@ -649,7 +649,7 @@ describe("fields.js", () => {
         });
         test("attributes is already on successful row, returns successful response, resolves with field is valid message", async () => {
           const existingAttributes = {
-            did: "16038518200"
+            caller_id: "16038518200"
           };
           const row = {
             rowNumber: 3,
@@ -765,7 +765,7 @@ describe("fields.js", () => {
         });
         test("attributes is already on successful row, returns successful response, resolves with field is valid message", async () => {
           const existingAttributes = {
-            did: "16038518200"
+            caller_id: "16038518200"
           };
           const row = {
             rowNumber: 3,
@@ -862,7 +862,7 @@ describe("fields.js", () => {
         test("attributes is already on successful row, returns successful response, resolves with field is valid message", async () => {
           generateExtension.mockResolvedValueOnce("123");
           const existingAttributes = {
-            did: "16038518200"
+            caller_id: "16038518200"
           };
           const row = {
             rowNumber: 6,
@@ -922,7 +922,7 @@ describe("fields.js", () => {
             await exetensionValidateFunction({
               rowNumber: 6,
               "Extension": 1234
-            }, { workerContext: { workers: null } });
+            }, { workerContext: { workers: null }});
           } catch (e) {
             expect(e).toEqual(JSON.stringify({
               rowNumber: 6,
@@ -1100,13 +1100,7 @@ describe("fields.js", () => {
           expect(result).toEqual("Direct Dial Number 6035556565 set for row 6");
           expect(row).toEqual({
             ...row,
-            directDialNum: "+16035556565",
-            activateEp: true,
-            alternateDid: "+16035556565",
-            attributes: {
-              did: "+16035556565",
-              ...existingAttributes
-            }
+            did: "+16035556565"
           });
         });
         test("didField field is Y, direct dial number in correct format, resolves with message", async () => {
@@ -1119,12 +1113,7 @@ describe("fields.js", () => {
           expect(results).toEqual("Direct Dial Number 6035556565 set for row 4");
           expect(row).toEqual({
             ...row,
-            directDialNum: "+16035556565",
-            activateEp: true,
-            alternateDid: "+16035556565",
-            attributes: {
-              did: "+16035556565"
-            }
+            did: "+16035556565"
           });
         });
       });
@@ -1575,10 +1564,9 @@ describe("fields.js", () => {
     describe("OUTGOING_NUMBER", () => {
       describe("validateFunction", () => {
         const outgoingNumberValidateFunction = FIELDS.OUTGOING_NUMBER.validateFunction;
-        test("Invalid value provided for Did User field, rejects with message", async () => {
+        test("Invalid value provided for User field, rejects with message", async () => {
           const row = {
             rowNumber: 9,
-            "Did User": "booya",
             "Outgoing Number": "1231231234"
           };
           try {
@@ -1586,7 +1574,7 @@ describe("fields.js", () => {
           } catch (e) {
             expect(e).toEqual(JSON.stringify({
               rowNumber: 9,
-              error: "Did User needs to be 'Y' or 'N' for row 9"
+              error: "Outgoing Number is not in the correct format for row 9"
             }));
             expect(row).toEqual({
               ...row,
@@ -1594,51 +1582,28 @@ describe("fields.js", () => {
             });
           }
         });
-        test("DidUser is true, Outgoing number is provided, reject with message", async () => {
-          try {
-            await outgoingNumberValidateFunction({
-              rowNumber: 9,
-              "Did User": "Y",
-              "Outgoing Number": "1231231234"
-            }, initialTestState);
-          } catch (e) {
-            expect(e).toEqual(JSON.stringify({
-              rowNumber: 9,
-              error: "Did User field is 'Y', Outgoing Number is not applicable for row 9"
-            }));
-          }
-        });
-        test("DidUser is true, Outgoing number is not provided, resolve with message", async () => {
+        test("Outgoing number is not provided, reject with message", async () => {
           const row = {
             rowNumber: 9,
-            "Did User": "Y",
             "Outgoing Number": ""
           };
-          const result = await outgoingNumberValidateFunction(row, initialTestState);
-          expect(result).toEqual("Outgoing Number skipped for DID user for row 9");
-          expect(row).toEqual({
-            ...row,
-            attributes: {}
-          });
-        });
-        test("Did User is false, no Outgoing number provided, rejects with message", async () => {
+
           try {
-            await outgoingNumberValidateFunction({
-              rowNumber: 9,
-              "Did User": "N",
-              "Outgoing Number": ""
-            }, initialTestState);
+            await outgoingNumberValidateFunction(row, initialTestState);
           } catch (e) {
             expect(e).toEqual(JSON.stringify({
               rowNumber: 9,
-              error: "Outgoing Number is required when DID user is 'N' for row 9"
+              error: "Outgoing Number is missing and is required for row 9"
             }));
+            expect(row).toEqual({
+              ...row,
+              attributes: {}
+            });
           }
         });
         test("DidUser is false, and Outgoing number is provided, getE164Number is successful, resolves with message", async () => {
           const row = {
             rowNumber: 9,
-            "Did User": "N",
             "Outgoing Number": "6035554545"
           };
           const result = await outgoingNumberValidateFunction(row, initialTestState);
@@ -1646,7 +1611,7 @@ describe("fields.js", () => {
           expect(row).toEqual({
             ...row,
             attributes: {
-              did: "+16035554545"
+              caller_id: "+16035554545"
             }
           });
         });
@@ -1656,7 +1621,6 @@ describe("fields.js", () => {
           };
           const row = {
             rowNumber: 6,
-            "Did User": "N",
             "Outgoing Number": "6035554545",
             attributes: existingAttributes
           };
@@ -1665,7 +1629,7 @@ describe("fields.js", () => {
           expect(row).toEqual({
             ...row,
             attributes: {
-              did: "+16035554545",
+              caller_id: "+16035554545",
               ...existingAttributes
             }
           });
@@ -1773,7 +1737,7 @@ describe("fields.js", () => {
         });
         describe("attributes is already on successful row", () => {
           const existingAttributes = {
-            did: "16038518200"
+            caller_id: "16038518200"
           };
           const row = {
             rowNumber: 1,
@@ -2434,7 +2398,7 @@ describe("fields.js", () => {
             "America/Los_Angeles (PST/PDT)",
             "America/New_York (EST/EDT)",
             "America/Phoenix (MST)",
-            "Pacific/Honolulu (HST)",
+            "Pacific/Honolulu (HST)"
           ]);
         });
       });

@@ -14,15 +14,19 @@ import {
 } from "services";
 import { initialTestState } from "testUtils";
 import { CallerStateAttrDropDownOptions } from "../../../OnboardNewUser/RoutingAttributes/RoutingAttributesDropDown";
+import { env } from "globals";
 
 const createTemplates = getCreateTemplates(initialTestState);
 const updateTemplates = getUpdateTemplates(initialTestState);
 
 describe("CREATE_TRITON_USER", () => {
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => {
+    jest.clearAllMocks();
+    delete env.APP_ENV;
+  });
   const createTritonProcessFunction = createTemplates.CREATE_TRITON_USER.processFunction;
   describe("createUser is successful", () => {
-    beforeEach(() => createUser.mockResolvedValue({ workerSid: "WK123456" }));
+    beforeEach(() => createUser.mockResolvedValue({ sid: "WK123456" }));
     describe("user is DID user", () => {
       const row = {
         rowNumber: 2,
@@ -30,10 +34,10 @@ describe("CREATE_TRITON_USER", () => {
         attributes: {
           profile_id: 1,
           n_number: "n0263445",
-          did: "+16038518200"
+          caller_id: "+16038518200"
         },
         operatingUnitSid: "operatingUnitSid1",
-        directDialNum: "+16038518200",
+        did: "+16038518200",
         zeroOutEnabled: true,
         selfServiceInd: true
       };
@@ -41,15 +45,13 @@ describe("CREATE_TRITON_USER", () => {
         const results = await createTritonProcessFunction(row, initialTestState);
         expect(createUser).toHaveBeenCalledTimes(1);
         expect(createUser).toHaveBeenCalledWith({
-          activateEp: true,
-          alternateDid: "+16038518200",
           attributes: {
             profile_id: 1,
-            did: "+16038518200",
+            caller_id: "+16038518200",
             n_number: "n0263445"
           },
           operatingUnitSid: "operatingUnitSid1",
-          directDialNum: "+16038518200",
+          did: "+16038518200",
           zeroOutEnabled: true,
           selfServiceInd: true
         });
@@ -70,7 +72,6 @@ describe("CREATE_TRITON_USER", () => {
         const results = await createTritonProcessFunction(row, initialTestState);
         expect(createUser).toHaveBeenCalledTimes(1);
         expect(createUser).toHaveBeenCalledWith({
-          activateEp: false,
           attributes: {
             profile_id: 1,
             n_number: "n0263445"
@@ -98,7 +99,6 @@ describe("CREATE_TRITON_USER", () => {
       } catch (err) {
         expect(createUser).toHaveBeenCalledTimes(1);
         expect(createUser).toHaveBeenCalledWith({
-          activateEp: false,
           attributes: {
             profile_id: 1,
             n_number: "n0263445"
@@ -309,15 +309,11 @@ describe("CREATE_CALABRIO_WFM_PERSON", () => {
   describe("createCalabrioWFMPerson succeeds", () => {
     beforeEach(() => createCalabrioWFMPerson.mockResolvedValue("yay"));
     test("should resolve", async () => {
+      env.APP_ENV = "production";
       row.attributes.email = "e.mail@lm.com";
       row.attributes.n_number = "n0263445";
       const createTemplates = getCreateTemplates({
-        ...initialTestState,
-        userContext: {
-          pingIdentity: {
-            environment: "production"
-          }
-        }
+        ...initialTestState
       });
 
       const result = await createTemplates.CREATE_CALABRIO_WFM_PERSON.processFunction(row);
@@ -355,7 +351,7 @@ describe("CREATE_CALABRIO_WFM_PERSON", () => {
   });
 
   describe("User gateway timeout occurs while waiting for a response from adding a person in createCalabrioWFMPerson", () => {
-    beforeEach(() => createCalabrioWFMPerson.mockRejectedValue({ response: { data: { exception: "com.netflix.zuul.exception.ZuulException" } } }));
+    beforeEach(() => createCalabrioWFMPerson.mockRejectedValue({ response: { data: { exception: "com.netflix.zuul.exception.ZuulException" }}}));
     test("should reject with err message that timeout occured and user should verify creation in wfm", async () => {
       try {
         await createWFMProcessFunction(row, initialTestState);
@@ -1188,7 +1184,7 @@ describe("UPDATE_CALLER_STATES", () => {
         workerSid: "WK1234",
         attributes: {
           routing: {
-            callerStates: [CallerStateAttrDropDownOptions[0].value]
+            caller_states: [CallerStateAttrDropDownOptions[0].value]
           }
         }
       };
@@ -1198,7 +1194,7 @@ describe("UPDATE_CALLER_STATES", () => {
         expect(updateUser).toHaveBeenCalledWith("WK1234", {
           attributes: {
             routing: {
-              callerStates: [
+              caller_states: [
                 CallerStateAttrDropDownOptions[0].value,
                 CallerStateAttrDropDownOptions[1].value,
                 CallerStateAttrDropDownOptions[2].value
@@ -1229,7 +1225,7 @@ describe("UPDATE_CALLER_STATES", () => {
         workerSid: "WK1234",
         attributes: {
           routing: {
-            callerStates: ["AK"]
+            caller_states: ["AK"]
           }
         }
       };
@@ -1239,7 +1235,7 @@ describe("UPDATE_CALLER_STATES", () => {
         expect(updateUser).toHaveBeenCalledWith("WK1234", {
           attributes: {
             routing: {
-              callerStates: [
+              caller_states: [
                 CallerStateAttrDropDownOptions[15].value,
                 CallerStateAttrDropDownOptions[16].value,
                 CallerStateAttrDropDownOptions[17].value
@@ -1269,7 +1265,7 @@ describe("UPDATE_CALLER_STATES", () => {
         workerSid: "WK1234",
         attributes: {
           routing: {
-            callerStates: [
+            caller_states: [
               CallerStateAttrDropDownOptions[15].value,
               CallerStateAttrDropDownOptions[16].value,
               CallerStateAttrDropDownOptions[17].value
@@ -1283,7 +1279,7 @@ describe("UPDATE_CALLER_STATES", () => {
         expect(updateUser).toHaveBeenCalledWith("WK1234", {
           attributes: {
             routing: {
-              callerStates: [
+              caller_states: [
                 CallerStateAttrDropDownOptions[16].value
               ]
             }
@@ -1314,7 +1310,7 @@ describe("UPDATE_CALLER_STATES", () => {
         workerSid: "WK1234",
         attributes: {
           routing: {
-            callerStates: [CallerStateAttrDropDownOptions[0].value]
+            caller_states: [CallerStateAttrDropDownOptions[0].value]
           }
         }
       };
@@ -1327,7 +1323,7 @@ describe("UPDATE_CALLER_STATES", () => {
           expect(updateUser).toHaveBeenCalledWith("WK1234", {
             attributes: {
               routing: {
-                callerStates: [
+                caller_states: [
                   CallerStateAttrDropDownOptions[0].value,
                   CallerStateAttrDropDownOptions[1].value,
                   CallerStateAttrDropDownOptions[2].value
@@ -1353,7 +1349,7 @@ describe("SYNC_HR_ATTRIBUTES", () => {
       workerSid: "WK1234",
       "N Number": "n0263786",
       attributes: {
-        primary_dept_number: "CRC",
+        primary_dept_number: "CRC"
       },
       originalWorker: {
         attributes: {
@@ -1390,7 +1386,7 @@ describe("SYNC_HR_ATTRIBUTES", () => {
           attributes: {
             primary_dept_number: "CRC",
             n_number: "n0263786"
-          },
+          }
         });
         expect(result).toBe("Successfully synced worker for row 4. WK1234 : undefined.");
       });

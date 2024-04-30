@@ -6,7 +6,6 @@ import {
 } from "../authenticationProfiles";
 import {
   descriptions,
-  Environments,
   Permissions,
   runTritonAdminStartup,
   runAlohaRoutingStartup,
@@ -42,8 +41,6 @@ describe("authenticationProfiles", () => {
         TRITON: {
           name: "Triton",
           permissionLevel: Permissions.READ,
-          isAdmin: false,
-          profileId: null,
           home: TritonUsersViewWrapper,
           tabs: [
             Tabs.TRITON_USER_MANAGEMENT,
@@ -77,73 +74,42 @@ describe("authenticationProfiles", () => {
       const result = getAdGroupPermissionMapping();
       expect(result).toStrictEqual([
         {
-          adGroup: "GCI-CCT-TRITON-DEV-TRITONADMIN",
-          environments: [Environments.DEV],
-          permissionLevel: Permissions.WRITE,
+          roles: [
+            {
+              name: "Admin",
+              permissionLevel: Permissions.WRITE
+            }
+          ],
           startup: startupProfiles.TRITON,
           description: descriptions.Triton,
           authenticationProfile: authenticationProfileTemplates.TRITON
         },
         {
-          adGroup: "GCI-CCT-TRITON-TEST-TRITONADMIN",
-          environments: [Environments.TEST],
-          permissionLevel: Permissions.WRITE,
-          startup: startupProfiles.TRITON,
-          description: descriptions.Triton,
-          authenticationProfile: authenticationProfileTemplates.TRITON
-        },
-        {
-          adGroup: "GCI-CCT-TRITON-PROD-TRITONADMIN",
-          environments: [Environments.PROD],
-          permissionLevel: Permissions.WRITE,
-          startup: startupProfiles.TRITON,
-          description: descriptions.Triton,
-          authenticationProfile: authenticationProfileTemplates.TRITON
-        },
-        {
-          adGroup: "GPI-CCT-CONFIG-FLOW-READ",
-          environments: [Environments.DEV, Environments.TEST, Environments.PROD],
-          permissionLevel: Permissions.READ,
+          roles: [
+            {
+              name: "FlowRead",
+              permissionLevel: Permissions.READ
+            },
+            {
+              name: "FlowReadWrite",
+              permissionLevel: Permissions.WRITE
+            }
+          ],
           startup: startupProfiles.ALOHA_FLOW,
           description: descriptions.Aloha_Flow,
           authenticationProfile: authenticationProfileTemplates.ALOHA_FLOW
         },
         {
-          adGroup: "GPI-CCT-CONFIG-FLOW-READWRITE-NP",
-          environments: [Environments.DEV, Environments.TEST],
-          permissionLevel: Permissions.WRITE,
-          startup: startupProfiles.ALOHA_FLOW,
-          description: descriptions.Aloha_Flow,
-          authenticationProfile: authenticationProfileTemplates.ALOHA_FLOW
-        },
-        {
-          adGroup: "GPI-CCT-CONFIG-FLOW-READWRITE-PROD",
-          environments: [Environments.PROD],
-          permissionLevel: Permissions.WRITE,
-          startup: startupProfiles.ALOHA_FLOW,
-          description: descriptions.Aloha_Flow,
-          authenticationProfile: authenticationProfileTemplates.ALOHA_FLOW
-        },
-        {
-          adGroup: "GPI-CCT-CONFIG-ROUTE-READ",
-          environments: [Environments.DEV, Environments.TEST, Environments.PROD],
-          permissionLevel: Permissions.READ,
-          startup: startupProfiles.ALOHA_ROUTE,
-          description: descriptions.Aloha_Routing,
-          authenticationProfile: authenticationProfileTemplates.ALOHA_ROUTE
-        },
-        {
-          adGroup: "GPI-CCT-CONFIG-ROUTE-READWRITE-NP",
-          environments: [Environments.DEV, Environments.TEST],
-          permissionLevel: Permissions.WRITE,
-          startup: startupProfiles.ALOHA_ROUTE,
-          description: descriptions.Aloha_Routing,
-          authenticationProfile: authenticationProfileTemplates.ALOHA_ROUTE
-        },
-        {
-          adGroup: "GPI-CCT-CONFIG-ROUTE-READWRITE-PROD",
-          environments: [Environments.PROD],
-          permissionLevel: Permissions.WRITE,
+          roles: [
+            {
+              name: "RouteRead",
+              permissionLevel: Permissions.READ
+            },
+            {
+              name: "RouteReadWrite",
+              permissionLevel: Permissions.WRITE
+            }
+          ],
           startup: startupProfiles.ALOHA_ROUTE,
           description: descriptions.Aloha_Routing,
           authenticationProfile: authenticationProfileTemplates.ALOHA_ROUTE

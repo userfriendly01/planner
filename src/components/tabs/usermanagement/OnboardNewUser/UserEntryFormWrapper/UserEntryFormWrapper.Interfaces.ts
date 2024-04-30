@@ -1,14 +1,12 @@
 import {
-  CalabrioQmUser,
   Manager,
   ModalOverlayStatuses,
   Office,
   Skill,
   TritonProfile,
-  Worker,
+  UMUser,
   WfmUser,
-  WorkerAttributeSkills,
-  formModes
+  UMTwilioAttributeSkills
 } from "globals";
 import { FetchUserResponse } from "services";
 import { ExtensionStatusProps } from "../Extension/ExtensionInput/ExtensionInput.Interfaces";
@@ -39,8 +37,8 @@ export interface UserEntryFormProps {
 
 export interface BasicFormInfoProps {
   skills: Skill[],
-  worker: Worker | null,
-  workers: Worker[],
+  worker: UMUser | null,
+  workers: UMUser[],
   profiles: TritonProfile[],
   managers: Manager[]
   forwardToToggle: boolean,
@@ -54,7 +52,7 @@ export interface UserFormButtonsProps {
   offices: Map<string, Office>,
   profiles: TritonProfile[],
   updateLoading: (payload: any) => void,
-  worker: Worker | null,
+  worker: UMUser | null,
   setMissingFields: (missingFields: string[]) => void
 }
 
@@ -75,11 +73,10 @@ export interface UserFormState {
   triton: {
     [key: string]: any,
     userFound: boolean,
-    alternateDid: FieldState,
     attributes: any,
     defaultSkills: FormDefaultSkills,
     didUser: boolean,
-    directDialNum: FieldState,
+    did: FieldState,
     extension: FormExtension
     inactiveForwardTo: FieldState,
     manager: FieldState,
@@ -109,7 +106,7 @@ export interface UserFormState {
   calabrio_wfm: CALABRIO_WFM
 }
 
-interface FormDefaultSkills extends WorkerAttributeSkills {
+interface FormDefaultSkills extends UMTwilioAttributeSkills {
   updated: boolean
 }
 interface FormNNumber extends FieldState {

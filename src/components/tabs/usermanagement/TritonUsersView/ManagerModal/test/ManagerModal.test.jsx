@@ -151,9 +151,8 @@ describe("<ManagerModal />", () => {
         ]
       },
       userContext: {
-        pingIdentity: {
-          sub: "n0138110"
-        }
+        nNumber: "n0138110"
+
       },
       workerContext: {
         workers: [
@@ -340,9 +339,7 @@ describe("<ManagerModal />", () => {
             }]
           },
           userContext: {
-            pingIdentity: {
-              sub: "n0138110"
-            }
+            nNumber: "n0138110"
           }
         });
       });

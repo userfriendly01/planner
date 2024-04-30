@@ -19,7 +19,7 @@ import {
   setupMockedComponents
 } from "testUtils";
 import {
-  mapWorkerFromDbWorker,
+  mapWorkerFromTwilio,
   myAxios
 } from "utils";
 
@@ -115,11 +115,11 @@ describe("ResetSkillsButton", () => {
           });
           expect(setMockForm).toHaveBeenCalledWith({
             type: "updateWorker",
-            payload: mapWorkerFromDbWorker(convertedWorkers[0])
+            payload: mapWorkerFromTwilio(convertedWorkers[0])
           });
           expect(setMockForm).toHaveBeenCalledWith({
             type: "updateWorker",
-            payload: mapWorkerFromDbWorker(convertedWorkers[1])
+            payload: mapWorkerFromTwilio(convertedWorkers[1])
           });
           expect(setMockForm).toHaveBeenCalledWith({
             type: "resettingSkills",
@@ -162,7 +162,7 @@ describe("ResetSkillsButton", () => {
           });
           expect(setMockForm).toHaveBeenCalledWith({
             type: "updateWorker",
-            payload: mapWorkerFromDbWorker(convertedWorkers[0])
+            payload: mapWorkerFromTwilio(convertedWorkers[0])
           });
           expect(setMockForm).toHaveBeenCalledWith({
             type: "resettingSkills",

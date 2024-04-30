@@ -36,7 +36,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
   } = props;
 
   const state = useAdminState();
-  const nNumber = state.userContext.pingIdentity?.sub;
+  const { nNumber } = state.userContext;
   const form = profileEntryFormState();
   const setForm = profileEntryFormDispatch();
 

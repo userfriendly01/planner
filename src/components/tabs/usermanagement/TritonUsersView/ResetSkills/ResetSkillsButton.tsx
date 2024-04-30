@@ -11,7 +11,7 @@ import { apiPaths } from "globals";
 import React, { useState } from "react";
 import {
   logger,
-  mapWorkerFromDbWorker,
+  mapWorkerFromTwilio,
   myAxios
 } from "utils";
 import { Modal } from "@mui/material";
@@ -29,7 +29,7 @@ const ResetSkillsButton = (props: any) => {
   } = props;
 
   const state = useAdminState();
-  const nNumber = state.userContext.pingIdentity?.sub;
+  const { nNumber } = state.userContext;
 
   const dispatch = useAdminDispatch();
   const [ resultsModalOpts, setResultsModalOpts ] = useState(defaultResetInformation);
@@ -49,7 +49,7 @@ const ResetSkillsButton = (props: any) => {
           if (result.updated){
             result.worker.workerSid = result.workerSid;
             result.worker.attributes = JSON.parse(result.worker.attributes);
-            const updatedWorker = mapWorkerFromDbWorker(result.worker);
+            const updatedWorker = mapWorkerFromTwilio(result.worker);
             dispatch({
               type: "updateWorker",
               payload: updatedWorker

@@ -5,7 +5,6 @@ import {
 } from "components";
 import { SkillsHeaderProps } from "../Skills.Interfaces";
 import { StyledHeader } from "../Skills.Styles";
-import { getAuthenticationProfileTemplates } from "authentication";
 import { SearchBox } from "components";
 import { useAdminState } from "context";
 import {
@@ -24,8 +23,7 @@ const SkillsHeader = (props: SkillsHeaderProps) => {
   } = props;
 
   const state = useAdminState();
-  const tritonProfile = state.userContext.authenticationProfiles.find((p: any) => p.name === getAuthenticationProfileTemplates().TRITON.name);
-  const isAdmin = tritonProfile.isAdmin;
+  const { isAdmin } = state.userContext;
 
   const getProfileOptions = () => {
     return state.profileContext.profiles.map((p: TritonProfile) => {

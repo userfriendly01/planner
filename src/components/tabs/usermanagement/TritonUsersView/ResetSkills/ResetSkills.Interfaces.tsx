@@ -1,4 +1,4 @@
-import { Worker } from "globals";
+import { UMUser } from "globals";
 
 export interface DefaultResetInformation {
   open: boolean,
@@ -10,6 +10,6 @@ export interface DefaultResetInformation {
 export interface ResultsModalProps {
   error: string,
   handleClose: () => void,
-  successfulWorkers: Worker[],
+  successfulWorkers: UMUser[],
   unsuccessfulWorkers: any[]
 }

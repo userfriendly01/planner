@@ -31,7 +31,7 @@ const successfulRows = [
     extension: "Enter a number for the users extension or type Y for a randomly generated extension. Enter N for no extension",
     managerNNumber: "N Number of the Manager",
     nNumber: "Agents N Number",
-    outgoingNumber: "If the user is not a DID user this is their Outgoing number",
+    outgoingNumber: "Agent's Outgoing Number",
     profileId: "Profile Id",
     // routing_team: "List of Teams that can be used in dynamic routing",
     zeroOutEnabled: "Y/N Indicator to represent if the zero out skill aligned to the profile ID should be added to the users current skills. Only required when DID User is true",
@@ -131,7 +131,7 @@ const expectedColumns = [
     title: "WFM Activate External Logon",
     width: undefined,
     wrap: true
-  },
+  }
   // {
   //   field: "routing_team",
   //   textAlign: "center",

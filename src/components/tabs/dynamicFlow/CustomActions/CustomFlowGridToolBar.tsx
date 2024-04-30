@@ -29,7 +29,7 @@ const CustomFlowGridToolBar = ({
   matchedGroups,
   openPreviewModal
 }:CustomFlowGridToolBarProps) =>{
-  const enableFlow = useMemo(() => readWriteAccess(matchedGroups,"aloha-flow"), []);
+  const enableFlow = useMemo(() => readWriteAccess(matchedGroups, "FlowReadWrite"), []);
 
   const handleChange=(event:any):void=> {
     const { value } = event.target;
@@ -82,7 +82,7 @@ const CustomFlowGridToolBar = ({
             }}
             label="Actions"
             value=""
-            disabled = {enableFlow}
+            disabled = {!enableFlow}
             onChange={handleChange}
             variant="filled"
             size="small"

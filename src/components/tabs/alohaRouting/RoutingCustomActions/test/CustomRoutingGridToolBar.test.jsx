@@ -38,24 +38,14 @@ const mockedRoutingFilter = {
 
 const initData={
   userContext: {
-    pingIdentity: {
-      sub: "n0263786",
-      groups: [],
-      aud: "ciciccttritondev1",
-      environment: "development"
-    }
+    nNumber: "n1234567",
+    profileId: 10,
+    isAdmin: false,
+    accessToken: "adsjfhakdf",
+    permissions: [adGroupPermissionMapping[0]]
   }
 };
-const initDataProd={
-  userContext: {
-    pingIdentity: {
-      sub: "n0263786",
-      groups: [],
-      aud: "ciciccttritondev1",
-      environment: "production"
-    }
-  }
-};
+
 const renderCustomToolBar = () =>{
   const rendered =render(
     <CustomRoutingGridToolBar
@@ -99,7 +89,7 @@ describe("<CustomRoutingGridToolBar />", ()=>{
     expect(exportDataFile).toBeCalledTimes(1);
   });
   test("Simulate Custom Routing Toolbar with production as Env",()=>{
-    useAdminState.mockReturnValue(initDataProd);
+    useAdminState.mockReturnValue(initData);
     renderCustomToolBar();
     const GridMock = Grid.mock.calls[0][0];
     const ExportFlowUI = GridMock.children[1].props.children[0].props.children.props.onClick;

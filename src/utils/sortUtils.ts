@@ -2,7 +2,7 @@ import {
   Manager,
   TritonProfile,
   WfmUser,
-  Worker
+  UMUser
 } from "globals";
 
 const sortLast = "zzzzzzzzzzz";
@@ -55,7 +55,7 @@ export const sortQueueByName = (a: any, b: any) => {
   return sortStrings(aName, bName);
 };
 
-export const sortWorkersByFullName = (a: Worker, b: Worker) => {
+export const sortWorkersByFullName = (a: UMUser, b: UMUser) => {
   const [aName, bName] = [a.attributes.full_name || sortLast, b.attributes.full_name || sortLast];
   return sortStrings(aName, bName);
 };

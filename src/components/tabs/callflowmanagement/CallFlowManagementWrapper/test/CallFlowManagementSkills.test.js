@@ -60,13 +60,8 @@ describe("CallFlowManagementSkills", () => {
       ...initialTestState,
       userContext: {
         ...initialTestState.userContext,
-        authenticationProfiles: [
-          {
-            ...initialTestState.userContext.authenticationProfiles[0],
-            isAdmin: true,
-            profileId: 0
-          }
-        ]
+        isAdmin: true,
+        profileId: 0
       }
     });
     setupMockedComponents({
@@ -100,8 +95,8 @@ describe("CallFlowManagementSkills", () => {
         const setTableState = ActionContainer.mock.calls[0][0].setTableState;
         act(() => setTableState({
           ...initialTableState,
-          profiles: [{ profile_id: 32}]
-        }))
+          profiles: [{ profile_id: 32 }]
+        }));
         expect(ActionContainer.mock.calls[3][0].tableState.filteredList).toStrictEqual([initialTestState.skillContext.skills[0]]);
       });
     });
@@ -112,7 +107,7 @@ describe("CallFlowManagementSkills", () => {
         act(() => setTableState({
           ...initialTableState,
           closedFilter: true
-        }))
+        }));
         expect(ActionContainer.mock.calls[3][0].tableState.filteredList).toStrictEqual([
           initialTestState.skillContext.skills[1],
           initialTestState.skillContext.skills[2]
@@ -126,7 +121,7 @@ describe("CallFlowManagementSkills", () => {
         act(() => setTableState({
           ...initialTableState,
           flashFilter: true
-        }))
+        }));
         expect(ActionContainer.mock.calls[3][0].tableState.filteredList).toStrictEqual([
           initialTestState.skillContext.skills[2]
         ]);

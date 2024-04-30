@@ -86,13 +86,6 @@ export const initialUserFormState: UserFormState = {
   },
   triton: {
     userFound: false,
-    alternateDid: {
-      value: "",
-      blurred: false,
-      e164: undefined,
-      updated: false,
-      valid: false
-    },
     attributes: [],
     defaultSkills: {
       updated: false,
@@ -101,14 +94,14 @@ export const initialUserFormState: UserFormState = {
     },
     routing: {
       team: "",
-      callerStates: [],
+      caller_states: [],
       sales_assoc_workers: [],
       skills: [],
       level: {},
       updated: false
     },
     didUser: false,
-    directDialNum: {
+    did: {
       value: "",
       blurred: false,
       e164: undefined,
@@ -321,14 +314,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
         triton: {
           ...state.triton,
           didUser: !state.triton.didUser,
-          alternateDid: {
-            value: "",
-            blurred: false,
-            e164: undefined,
-            updated: false,
-            valid: false
-          },
-          directDialNum: {
+          did: {
             value: "",
             blurred: false,
             e164: undefined,
@@ -442,7 +428,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
           ...state.triton,
           routing: {
             ...state.triton.routing,
-            callerStates: callerStateRoutingAttr,
+            caller_states: callerStateRoutingAttr,
             updated: true
           }
         }
@@ -607,7 +593,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
           routing: {
             ...getValidSkillsObject(worker.attributes.routing)
           },
-          didUser: worker.directDialNum ? true : false,
+          didUser: worker.did ? true : false,
           extension: {
             ...state.triton.extension,
             value: worker.attributes.extension || "",
@@ -625,22 +611,17 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
           },
           outgoing: {
             ...state.triton.outgoing,
-            value: worker.attributes.did ? formatE164PhoneNumber(worker.attributes.did) : "",
-            valid: worker.attributes.did ? true : false
+            value: worker.attributes.caller_id ? formatE164PhoneNumber(worker.attributes.caller_id) : "",
+            valid: worker.attributes.caller_id ? true : false
           },
           profileId: {
             ...state.triton.profileId,
             value: worker.attributes.profile_id
           },
-          alternateDid: {
-            ...state.triton.alternateDid,
-            value: worker.alternateDid ? formatE164PhoneNumber(worker.alternateDid) : "",
-            valid: worker.alternateDid ? true : false
-          },
-          directDialNum: {
-            ...state.triton.directDialNum,
-            value: worker.directDialNum ? formatE164PhoneNumber(worker.directDialNum) : "",
-            valid: worker.directDialNum ? true : false
+          did: {
+            ...state.triton.did,
+            value: worker.did ? formatE164PhoneNumber(worker.did) : "",
+            valid: worker.did ? true : false
           },
           zeroOutEnabled: {
             ...state.triton.zeroOutEnabled,
@@ -947,24 +928,19 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
           },
           outgoing: {
             ...state.triton.outgoing,
-            value: worker.attributes.did ? formatE164PhoneNumber(worker.attributes.did) : "",
-            valid: worker.attributes.did ? true : false
+            value: worker.attributes.caller_id ? formatE164PhoneNumber(worker.attributes.caller_id) : "",
+            valid: worker.attributes.caller_id ? true : false
           },
           profileId: {
             ...state.triton.profileId,
             value: worker.attributes.profile_id
           },
-          alternateDid: {
-            ...state.triton.alternateDid,
-            value: worker.alternateDid ? formatE164PhoneNumber(worker.alternateDid) : "",
-            valid: worker.alternateDid ? true : false
+          did: {
+            ...state.triton.did,
+            value: worker.did ? formatE164PhoneNumber(worker.did) : "",
+            valid: worker.did ? true : false
           },
-          directDialNum: {
-            ...state.triton.directDialNum,
-            value: worker.directDialNum ? formatE164PhoneNumber(worker.directDialNum) : "",
-            valid: worker.directDialNum ? true : false
-          },
-          didUser: worker.directDialNum ? true : false,
+          didUser: worker.did ? true : false,
           zeroOutEnabled: {
             ...state.triton.zeroOutEnabled,
             value: worker.zeroOutEnabled || false

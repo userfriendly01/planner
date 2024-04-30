@@ -3,19 +3,15 @@ import { DataGridRouting } from "./DataGridRouting";
 import {
   LAST_ROUTING_MASTER_DATA_CACHED_DATE, ROUTING_CACHE_MASTER_DATA
 } from "utils";
-import { useAccessToken } from "authentication";
-import {
-  LoginInProgress,
-  LoginError
-} from "components";
+import { useAdminState } from "context";
 
 const AlohaRoutingContainer = () => {
   const {
-    accessToken,
-    matchedGroups,
-    isLoading,
-    error
-  } = useAccessToken();
+    userContext: {
+      permissions,
+      accessToken
+    }
+  } = useAdminState();
 
   useEffect(() => {
     const updateCacheData = () =>{
@@ -37,16 +33,8 @@ const AlohaRoutingContainer = () => {
     updateCacheData();
   },[]);
 
-  if (isLoading) {
-    return <LoginInProgress />;
-  }
-
-  if (error) {
-    return <LoginError message={error}/>;
-  }
-
   return (
-    <DataGridRouting accessToken={accessToken} matchedGroups={matchedGroups} />
+    <DataGridRouting accessToken={accessToken} matchedGroups={permissions} />
   );
 };
 

@@ -27,7 +27,7 @@ import {
   FlexColumn,
   Manager,
   ModalOverlayStatuses,
-  Worker
+  UMUser
 } from "globals";
 import React, {
   useState, useEffect
@@ -51,7 +51,6 @@ import { CloseRounded } from "@mui/icons-material";
 import { StyledExportButton } from "components/tabs/callflowmanagement/SkillManagement/Skills.Styles";
 import { ExcelExport } from "@progress/kendo-react-excel-export";
 
-
 const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any => {
   const {
     handleClose,
@@ -61,7 +60,7 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
   const _export = React.useRef(null);
 
   const state = useAdminState();
-  const nNumber = state.userContext.pingIdentity?.sub;
+  const { nNumber } = state.userContext;
   const profiles = state.profileContext.profiles;
   const calabrioTeams = state.calabrioContext.teams;
   const options: DropdownOption[] = [
@@ -140,7 +139,7 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
     setIsTeamModalOpen(false);
   };
 
-  const handleExport = (selected: Worker[]) => {
+  const handleExport = (selected: UMUser[]) => {
     const columns = [
       {
         field: "n_number",
@@ -251,10 +250,10 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
         profile_id: profileId,
         calabrio_team_ids: teams
       });
-      const successes: Worker[] = [];
-      const failures: Worker[] = [];
+      const successes: UMUser[] = [];
+      const failures: UMUser[] = [];
       if (hasNameDiscrepancy) {
-        const affectedWorkers: Worker[] = state.workerContext.workers.filter(worker => worker.attributes.manager_n_number === selectedManager.manager_n_number);
+        const affectedWorkers: UMUser[] = state.workerContext.workers.filter(worker => worker.attributes.manager_n_number === selectedManager.manager_n_number);
         const results = await Promise.allSettled(affectedWorkers.map(worker => {
           const body = {
             attributes: {

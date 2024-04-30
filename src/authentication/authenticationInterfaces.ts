@@ -20,8 +20,6 @@ export interface AuthenticationProfile {
   permissionLevel: string,
   home: any,
   tabs: any[],
-  isAdmin?: boolean,
-  profileId?: number | string | null
 }
 
 export interface AuthenticationProfileOptions {

@@ -21,7 +21,6 @@ import {
   TritonProfile
 } from "globals";
 import React from "react";
-import { getAuthenticationProfileTemplates } from "authentication";
 import {
   filterSkillsByName, logger
 } from "utils";
@@ -54,9 +53,12 @@ const CallFlowManagementSkills = () => {
   };
 
   const state = useAdminState();
-  const tritonProfile = state.userContext.authenticationProfiles.find((p: any) => p.name === getAuthenticationProfileTemplates().TRITON.name);
-  const isAdmin = tritonProfile.isAdmin;
-  const userProfileId = tritonProfile.profileId;
+
+  const {
+    isAdmin,
+    profileId: userProfileId
+  } = state.userContext;
+
   const [ tableState, setTableState ] = React.useState(defaultTableState);
   const [ confirmationModalOpts, setConfirmationModalOpts ] = React.useState(defaultConfirmationModalOpts);
   const [ saveResult, setSaveResult ] = React.useState(defaultSaveResult);

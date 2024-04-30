@@ -19,7 +19,7 @@ const RoutingAttributes = (): JSX.Element => {
   const setForm = useFormDispatch();
   const form = useFormState();
   const accordianExpansion= ()=>{
-    if(form.triton.routing.team || form.triton.routing?.callerStates?.length>0 || form.triton.routing?.sales_assoc_workers?.length>0){
+    if(form.triton.routing.team || form.triton.routing?.caller_states?.length>0 || form.triton.routing?.sales_assoc_workers?.length>0){
       return true;
     }
     return false;
@@ -27,8 +27,8 @@ const RoutingAttributes = (): JSX.Element => {
   const [expanded, setExpanded] = useState(accordianExpansion);
   const getlabelValuePair=(key:string)=>{
     let RoutingAttrList:string[] = [];
-    if(key === "callerStates"){
-      RoutingAttrList = form.triton.routing?.callerStates || [];
+    if(key === "caller_states"){
+      RoutingAttrList = form.triton.routing?.caller_states || [];
     }
     return RoutingAttrList.map((routingAttr:string) => {
       return {
@@ -47,7 +47,7 @@ const RoutingAttributes = (): JSX.Element => {
           }
         });
         break;
-      case "callerStates": {
+      case "caller_states": {
         const callerStatesArray:string[] =[];
         for(let i=0; i<value?.length; i++){
           callerStatesArray.push(value[i].value);
@@ -96,9 +96,9 @@ const RoutingAttributes = (): JSX.Element => {
       <AccordionDetails>
         <Dropdown
           label="Caller State"
-          value={getlabelValuePair("callerStates")}
+          value={getlabelValuePair("caller_states")}
           options={CallerStateAttrDropDownOptions}
-          updateValue={(event: any, value: any) => handleChange(event, value, "callerStates")}
+          updateValue={(event: any, value: any) => handleChange(event, value, "caller_states")}
           styles={{
             width: "calc(95%)",
             margin: "0 0 0 0"

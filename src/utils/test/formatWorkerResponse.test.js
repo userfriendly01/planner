@@ -1,121 +1,123 @@
 import {
-  formatWorkerResponse,
-  mapWorkerFromDbWorker
+  mapWorkerFromDbWorker,
+  mapWorkerToDbWorker
 } from "utils";
 
-describe("formatWorkerResponse", () => {
+const sid = "WK123123123";
 
-  const unformattedResponse = [
-    {
+describe("mapWorkerFromDbWorker", () => {
+  let attributes, dbWorker;
+
+  beforeEach(() => {
+    attributes = {
+      n_number: "n1234567",
+      contact_uri: "client:n1234567"
+    };
+    dbWorker = {
+      attributes,
+      sid
+    };
+  });
+
+  test("should return TwilioWorker object with attributes, sid & skillsDifferent", () => {
+    expect(mapWorkerFromDbWorker(dbWorker)).toEqual({
+      attributes,
+      sid,
+      skillsDifferent: false
+    });
+  });
+
+  test("should return TwilioWorker object with {} attributes, sid & skillsDifferent", () => {
+    delete dbWorker.attributes;
+
+    expect(mapWorkerFromDbWorker(dbWorker)).toEqual({
+      attributes: undefined,
+      sid,
+      skillsDifferent: false
+    });
+  });
+
+  test("should lowercase manager_n_number and set full_name if it exists", () => {
+    dbWorker.attributes.manager_n_number = "N1234567";
+    dbWorker.attributes.emp_first_name = "Bob";
+    dbWorker.attributes.emp_last_name = "Smith";
+    dbWorker.attributes.full_name = "Blah blah blah";
+
+    expect(mapWorkerFromDbWorker(dbWorker)).toEqual({
       attributes: {
-        email_address: "Noone@libertymutual.com",
-        full_name: "HMM",
-        emp_first_name: "Faith",
-        emp_last_name: "Cuneo",
-        manager_last_name: "Doe",
-        manager_n_number: "n1111111",
-        n_number: "n1111111",
-        primary_dept_name: "CI TECH APP SERVICES",
-        profile_id: 1,
-        roles: ["supervisor", "agent"],
-        skills: ["466"],
-        unique_id: "n0123456"
+        ...attributes,
+        full_name: "Bob Smith",
+        emp_first_name: "Bob",
+        emp_last_name: "Smith",
+        manager_n_number: "n1234567"
       },
-      workerSid: "WK8b0da13d2eca675babceedb76d7a15eb"
-    }
-  ];
-
-  const unformattedResponseNoAttr = [
-    {
-      workerSid: "WK8b0da13d2eca675babceedb76d7a15eb"
-    }
-  ];
-
-  test("if input is null, return empty object", () => {
-    expect(formatWorkerResponse(null)).toEqual([]);
+      sid,
+      skillsDifferent: false
+    });
   });
 
-  test("if input is empty, return empty object", () => {
-    expect(formatWorkerResponse([])).toEqual([]);
-  });
+  test("should parse levels when they exist on the user", () => {
+    dbWorker.attributes.routing = {
+      levels: "{}"
+    };
+    dbWorker.attributes.default_skills = {
+      levels: "{}"
+    };
+    dbWorker.attributes.disabled_skills = {
+      levels: "{}"
+    };
 
-  test("should respond skillsDifferent false", () => {
-    const formattedWorker = [
-      {
-        attributes: {
-          email_address: "Noone@libertymutual.com",
-          full_name: "Faith Cuneo",
-          emp_first_name: "Faith",
-          emp_last_name: "Cuneo",
-          manager_last_name: "Doe",
-          manager_n_number: "n1111111",
-          n_number: "n1111111",
-          primary_dept_name: "CI TECH APP SERVICES",
-          profile_id: 1,
-          roles: ["supervisor", "agent"],
-          skills: ["466"],
-          unique_id: "n0123456"
+    expect(mapWorkerFromDbWorker(dbWorker)).toEqual({
+      attributes: {
+        ...attributes,
+        routing: {
+          levels: {}
         },
-        sid: "WK8b0da13d2eca675babceedb76d7a15eb",
-        skillsDifferent: false
-      }
-    ];
-    expect(formatWorkerResponse(unformattedResponse)).toEqual(formattedWorker);
-  });
-
-  test("should respond skillsDifferent false when no attributes exist", () => {
-    const formattedWorker = [
-      {
-        sid: "WK8b0da13d2eca675babceedb76d7a15eb",
-        skillsDifferent: false
-      }
-    ];
-    expect(formatWorkerResponse(unformattedResponseNoAttr)).toEqual(formattedWorker);
-  });
-
-  test("should lowercase manager_n_number", () => {
-    const unformattedResponseCapNNumber = [
-      {
-        attributes: {
-          manager_n_number: "N1111111",
-          emp_first_name: "Faith",
-          emp_last_name: "Cuneo"
+        default_skills: {
+          levels: {}
         },
-        workerSid: "WK8b0da13d2eca675babceedb76d7a15eb"
-      }
-    ];
-    const formattedWorker = [
-      {
-        attributes: {
-          manager_n_number: "n1111111",
-          emp_first_name: "Faith",
-          emp_last_name: "Cuneo",
-          full_name: "Faith Cuneo"
-        },
-        sid: "WK8b0da13d2eca675babceedb76d7a15eb",
-        skillsDifferent: false
-      }
-    ];
-    expect(formatWorkerResponse(unformattedResponseCapNNumber)).toEqual(formattedWorker);
+        disabled_skills: {
+          levels: {}
+        }
+      },
+      sid,
+      skillsDifferent: false
+    });
   });
 });
 
-const workerSid = "WK123123123";
+describe("mapWorkerToDbWorker", () => {
+  test("should map things to the new expression", () => {
+    const user = {
+      attributes: {
+        routing: {
+          caller_states: ["CA", "AK", "WA"]
+        },
+        caller_id: "+1123456789",
+        profile_id: 0
+      },
+      did: "+1123456789",
+      operatingUnitSid: "OU1234",
+      zeroOutEnabled: false,
+      selfServiceInd: false,
+      inactiveForwardTo: "+1123456789"
+    };
 
-describe("mapWorkerFromDbWorker", () => {
-  const attributes = {
-    attr1: "whatever",
-    attr2: { hi: "I'm an object" }
-  };
-  const dbWorker = {
-    attributes,
-    workerSid
-  };
-  test("should return TwilioWorker object with attributes, sid & skillsDifferent; NOT workerSid", () => {
-    expect(mapWorkerFromDbWorker(dbWorker)).toEqual({
-      attributes,
-      sid: workerSid,
-      skillsDifferent: false
+
+    expect(mapWorkerToDbWorker(user)).toEqual({
+      twilio_attributes: JSON.stringify({
+        routing: {
+          caller_states: ["CA", "AK", "WA"]
+        },
+        caller_id: "+1123456789",
+        profile_id: 0,
+        agent_attribute_1: 0
+      }),
+      did: "+1123456789",
+      operating_unit_sid: "OU1234",
+      zero_out_enabled: false,
+      self_service_ind: false,
+      inactive_forward_to: "+1123456789"
     });
   });
 });

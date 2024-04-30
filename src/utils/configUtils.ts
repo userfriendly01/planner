@@ -3,6 +3,7 @@ import {
 } from "components";
 import { AlertBarProps } from "./interfaces";
 import {
+  ADGroupPermission,
   BrandNameMap, GraphQLErrors, env
 } from "globals";
 import { DynamicAction } from "components/tabs/dynamicFlow/DynamicFlow.Interfaces";
@@ -110,27 +111,23 @@ export const cleanErrorMessage = (graphQLErrors: GraphQLErrors[]): string => {
   return graphQLErrors[0].message;
 };
 
-/**
- * 
- * @param {Array<any>} matchedGroups - The matched groups provided by Azure Oauth response
- * @param {String} alohaTabType - currently aloha-flow or aloha-route
- * @returns {Boolean} true if the permission is not found/matched.
- */
-export const readWriteAccess=(matchedGroups: any[], alohaTabType: string): boolean => {
+export const readWriteAccess = (permissions: ADGroupPermission[], role: string): boolean => {
   if (env.APP_ENV === "local") {
-    return false;
+    return true;
   }
 
-  let flag = true;
-  matchedGroups?.forEach((item: any) => {
-    if(item.startup.name === alohaTabType && item.permissionLevel === "write"){
-      item.environments.forEach((envVar: string)=>{
-        if(envVar === env.APP_ENV){
-          flag = false;
-        }
-      });
-    } });
-  return flag;
+  for (const permission of permissions) {
+    const hasRole = permission.roles.reduce(
+      (prev, { name }) => prev || name === role,
+      false
+    );
+
+    if (hasRole) {
+      return true;
+    }
+  }
+
+  return false;
 };
 
 export const BrandName:BrandNameMap={

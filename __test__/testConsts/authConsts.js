@@ -141,81 +141,57 @@ export const authenticationProfileTemplates = {
 
 export const adGroupPermissionMapping = [
   {
-    adGroup: "GCI-CCT-TRITON-DEV-TRITONADMIN",
-    environments: ["development"],
-    permissionLevel: "write",
+    roles: [
+      {
+        name: "Admin",
+        permissionLevel: "write"
+      }
+    ],
     startup: startups.TRITON,
     description: descriptions.Triton,
     authenticationProfile: authenticationProfileTemplates.TRITON
   },
   {
-    adGroup: "GCI-CCT-TRITON-TEST-TRITONADMIN",
-    environments: ["test"],
-    permissionLevel: "write",
-    startup: startups.TRITON,
-    description: descriptions.Triton,
-    authenticationProfile: authenticationProfileTemplates.TRITON
-  },
-  {
-    adGroup: "GCI-CCT-TRITON-PROD-TRITONADMIN",
-    environments: ["production"],
-    permissionLevel: "write",
-    startup: startups.TRITON,
-    description: descriptions.Triton,
-    authenticationProfile: authenticationProfileTemplates.TRITON
-  },
-  {
-    adGroup: "GPI-CCT-CONFIG-FLOW-READ",
-    environments: ["development", "test", "production"],
-    permissionLevel: "read",
+    roles: [
+      {
+        name: "FlowRead",
+        permissionLevel: "read"
+      },
+      {
+        name: "FlowReadWrite",
+        permissionLevel: "write"
+      }
+    ],
     startup: startups.ALOHA_FLOW,
     description: descriptions.Aloha_Flow,
     authenticationProfile: authenticationProfileTemplates.ALOHA_FLOW
   },
   {
-    adGroup: "GPI-CCT-CONFIG-FLOW-READWRITE-NP",
-    environments: ["development", "test"],
-    permissionLevel: "write",
-    startup: startups.ALOHA_FLOW,
-    description: descriptions.Aloha_Flow,
-    authenticationProfile: authenticationProfileTemplates.ALOHA_FLOW
-  },
-  {
-    adGroup: "GPI-CCT-CONFIG-FLOW-READWRITE-NP",
-    environments: ["development", "test"],
-    permissionLevel: "write",
+    roles: [
+      {
+        name: "FlowRead",
+        permissionLevel: "read"
+      },
+      {
+        name: "FlowReadWrite",
+        permissionLevel: "write"
+      }
+    ],
     startup: startups.DYNAMIC_FLOW,
     description: descriptions.Dyn_Flow,
     authenticationProfile: authenticationProfileTemplates.ALOHA_FLOW
   },
   {
-    adGroup: "GPI-CCT-CONFIG-FLOW-READWRITE-PROD",
-    environments: ["production"],
-    permissionLevel: "write",
-    startup: startups.ALOHA_FLOW,
-    description: descriptions.Aloha_Flow,
-    authenticationProfile: authenticationProfileTemplates.ALOHA_FLOW
-  },
-  {
-    adGroup: "GPI-CCT-CONFIG-ROUTE-READ",
-    environments: ["development", "test", "production"],
-    permissionLevel: "read",
-    startup: startups.ALOHA_ROUTE,
-    description: descriptions.Aloha_Routing,
-    authenticationProfile: authenticationProfileTemplates.ALOHA_ROUTE
-  },
-  {
-    adGroup: "GPI-CCT-CONFIG-ROUTE-READWRITE-NP",
-    environments: ["development", "test"],
-    permissionLevel: "write",
-    startup: startups.ALOHA_ROUTE,
-    description: descriptions.Aloha_Routing,
-    authenticationProfile: authenticationProfileTemplates.ALOHA_ROUTE
-  },
-  {
-    adGroup: "GPI-CCT-CONFIG-ROUTE-READWRITE-PROD",
-    environments: ["production"],
-    permissionLevel: "write",
+    roles: [
+      {
+        name: "RouteRead",
+        permissionLevel: "read"
+      },
+      {
+        name: "RouteReadWrite",
+        permissionLevel: "write"
+      }
+    ],
     startup: startups.ALOHA_ROUTE,
     description: descriptions.Aloha_Routing,
     authenticationProfile: authenticationProfileTemplates.ALOHA_ROUTE

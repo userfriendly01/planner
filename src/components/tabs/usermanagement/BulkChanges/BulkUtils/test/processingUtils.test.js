@@ -1,6 +1,7 @@
 import { useAdminState } from "context";
 import * as utils from "../processingUtils";
 import {
+  getAllUsers,
   getCalabrioUsers,
   getManagers,
   wfmActivateExternalLogon
@@ -12,20 +13,13 @@ import {
 } from "testUtils";
 import {
   formatManagersResponse,
-  formatWorkerResponse,
-  myAxios,
   getCalabrioWfmOrg,
   logger
 } from "utils";
 import * as XLSX from "xlsx";
 
-
 jest.mock("utils",() => ({
   formatManagersResponse: jest.fn(),
-  formatWorkerResponse: jest.fn(),
-  myAxios: {
-    get: jest.fn()
-  },
   getCalabrioWfmOrg: jest.fn(),
   logger: jest.requireActual("utils").logger
 }));
@@ -81,28 +75,18 @@ describe("updateTritonUserState", () => {
     jest.resetAllMocks();
   });
   describe("get workers succeeds", () => {
-    const response = {
-      data: [{
-        attributes: {
-          yas: "girl"
-        }
-      }]
-    };
-    test("dispatch is called, promise resolves", async () => {
-      myAxios.get.mockResolvedValue(response);
-      formatWorkerResponse.mockReturnValue(response.data);
+    test("getAllUsers is called, promise resolves", async () => {
+
       await utils.updateTritonUserState(null, mockDispatch);
-      expect(myAxios.get).toHaveBeenCalledTimes(1);
-      expect(mockDispatch).toHaveBeenCalledTimes(1);
-      expect(mockDispatch).toHaveBeenCalledWith({
-        type: "loadWorkers",
-        payload: response.data
-      });
+
+      expect(getAllUsers).toHaveBeenCalledWith(mockDispatch);
+      expect(getAllUsers).toHaveBeenCalledTimes(1);
     });
   });
   describe("get workers fails", () => {
-    myAxios.get.mockRejectedValue("Aww");
     test("dispatch is not called, promise resolves", async () => {
+      getAllUsers.mockRejectedValue("Waaaaaaaaaaa");
+
       await utils.updateTritonUserState(null, mockDispatch);
       expect(logger.error).toHaveBeenCalledTimes(1);
       expect(logger.error.mock.calls[0][0]).toContain("Failed to update triton user state after bulk upload");

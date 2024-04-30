@@ -14,6 +14,4 @@ export * from "./PaperContainer/PaperContainer";
 export { default as ModalFetchingRing } from "./ModalFetchingRing/ModalFetchingRing";
 export { default as ModalHelperText } from "./ModalHelperText/ModalHelperText";
 export * from "./CSVReader/CsvReader";
-export * from "./Auth/LoginError";
-export * from "./Auth/LoginInProgress";
-export * from "./Auth/AuthWrapper";
+export * from "./Auth/SharedGraphAPIProvider";

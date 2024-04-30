@@ -60,7 +60,7 @@ describe("configUtils.js", ()=>{
   });
 
   test("Simulate read-write of routing data",()=>{
-    const flag = readWriteAccess(adGroupPermissionMapping,"aloha-route");
+    const flag = readWriteAccess(adGroupPermissionMapping, "RouteReadWrite");
     expect(flag).toBe(true);
   });
 

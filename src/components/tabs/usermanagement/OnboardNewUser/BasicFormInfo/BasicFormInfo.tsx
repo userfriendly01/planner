@@ -47,7 +47,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
   const form = useFormState();
   const setForm = useFormDispatch();
 
-  const [autoUpdateOutgoing, setAutoUpdateOutgoing] = useState(form.triton.outgoing.value === form.triton.directDialNum.value || !form.triton.outgoing.value);
+  const [autoUpdateOutgoing, setAutoUpdateOutgoing] = useState(form.triton.outgoing.value === form.triton.did.value || !form.triton.outgoing.value);
 
   const formatDropdownOption = (value: any, label: string, option: any) => {
     if(typeof option === "object"){
@@ -171,29 +171,19 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
               disabled={form.formMode === formModes.DELETE}
               allowSevenDigitVdn={false}
               id="direct-dial-number"
-              number={form.triton.directDialNum.value}
+              number={form.triton.did.value}
               label="Direct Dial Number *"
-              showError={form.triton.directDialNum.blurred}
-              onBlur={() => handleOnBlur("directDialNum", "triton")}
+              showError={form.triton.did.blurred}
+              onBlur={() => handleOnBlur("did", "triton")}
               updateValue={(maskedValue, _unmaskedValue, isValid, e164Number) => {
                 setForm({
                   type: userFormActions.UPDATE_PHONE_NUMBER,
                   payload: {
-                    field: "directDialNum",
+                    field: "did",
                     maskedValue,
                     isValid,
                     e164Number,
-                    initialValue: worker?.directDialNum || null
-                  }
-                });
-
-                setForm({
-                  type: userFormActions.UPDATE_PHONE_NUMBER,
-                  payload: {
-                    field: "alternateDid",
-                    maskedValue,
-                    isValid,
-                    e164Number
+                    initialValue: worker?.did || null
                   }
                 });
 
@@ -206,7 +196,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
                       maskedValue,
                       isValid,
                       e164Number,
-                      initialValue: worker?.attributes?.did || null
+                      initialValue: worker?.attributes?.caller_id || null
                     }
                   });
                 }
@@ -215,8 +205,8 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
           )}
           {form.triton.didUser
             && form.formMode === formModes.UPDATE
-            && form.triton.directDialNum.updated
-            && form.triton.directDialNum.e164 !== worker?.directDialNum
+            && form.triton.did.updated
+            && form.triton.did.e164 !== worker?.did
             && (
               <ForwardToEntryForm
                 label={"Please choose a forward to option for the existing direct dial number"}
@@ -245,7 +235,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
                   maskedValue,
                   isValid,
                   e164Number,
-                  initialValue: worker?.attributes?.did || null
+                  initialValue: worker?.attributes?.caller_id || null
                 }
               });
 
@@ -259,14 +249,14 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
         </FormControlsPane>
         <Tooltip
           title={
-            form.formMode === formModes.UPDATE && worker?.directDialNum ?
+            form.formMode === formModes.UPDATE && worker?.did ?
               "Twilio DID can not be removed" : ""
           }
           placement={"bottom-start"}
         >
           <ToggleContainer>
             <Switch
-              disabled={form.formMode === formModes.UPDATE && worker?.directDialNum ? true : false || form.formMode === formModes.DELETE}
+              disabled={form.formMode === formModes.UPDATE && worker?.did ? true : false || form.formMode === formModes.DELETE}
               checked={form.triton.didUser}
               onChange={() => {
                 setForm({ type: userFormActions.INITIATE_DID_FIELDS });

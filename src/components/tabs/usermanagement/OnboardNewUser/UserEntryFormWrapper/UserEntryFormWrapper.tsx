@@ -31,7 +31,7 @@ import {
   logger
 } from "utils";
 import {
-  Worker,
+  UMUser,
   formModes,
   discrepancyType,
   ModalOverlayStatuses
@@ -63,7 +63,7 @@ const UserEntryForm = () => {
 
   React.useEffect(() => {
     if (form.formMode === formModes.INSERT) {
-      const workerFound = workers.find((w: Worker) => w.attributes?.n_number?.toLowerCase() === form.nNumber.value?.toLowerCase());
+      const workerFound = workers.find((w: UMUser) => w.attributes?.n_number?.toLowerCase() === form.nNumber.value?.toLowerCase());
       const duplicateTritonMessage = "This user already seems to have a Triton Record. Please cancel out of this form and edit their worker instead.";
       if (workerFound) {
         setForm({

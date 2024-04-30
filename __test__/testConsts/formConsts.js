@@ -23,28 +23,21 @@ export const initialFormState = {
     value: "n",
     blurred: false,
     updated: false,
-    nNumberFetchedUser: null,
+    nNumberFetchedUser: null
   },
   triton: {
     userFound: true,
-    alternateDid: {
-      value: "",
-      blurred: false,
-      e164: undefined,
-      updated: false,
-      valid: false
-    },
-    routing:{
+    routing: {
       team: "",
       skills: [],
       levels: {},
-      callerStates: [],
+      caller_states: [],
       sales_assoc_workers: []
     },
     defaultSkills: {},
     defaultSkillsUpdated: false,
     didUser: false,
-    directDialNum: {
+    did: {
       value: "",
       blurred: false,
       e164: undefined,
@@ -151,11 +144,6 @@ export const initialFormState = {
 };
 
 export const validFormOptions = {
-  alternateDid: {
-    e164: "+18001234567",
-    masked: "(800)123-4567",
-    tenDig: "8001234567"
-  },
   defaultSkills: {
     levels: {
       "a": 1,
@@ -163,16 +151,16 @@ export const validFormOptions = {
     },
     skills: ["a", "b", "c"]
   },
-  did: "6034567890",
-  didE164: "+16034567890",
-  directDialNum: {
+  caller_id: "6034567890",
+  caller_idE164: "+16034567890",
+  did: {
     e164: "+18002345678",
     masked: "(800)234-5678",
     tenDig: "8002345678"
   },
-  routing:{
-    team:"Sample1",
-    callerStates: ["Test1", "Test2"],
+  routing: {
+    team: "Sample1",
+    caller_states: ["Test1", "Test2"],
     skills: [],
     levels: {}
   },
@@ -228,9 +216,9 @@ export const validFormState = {
         "c"
       ]
     },
-    routing:{
+    routing: {
       team: "Sample1",
-      callerStates: ["Test1", "Test2"],
+      caller_states: ["Test1", "Test2"],
       levels: {},
       skills: [],
       updated: true
@@ -254,7 +242,7 @@ export const validFormState = {
     outgoing: {
       value: "6038518200",
       blurred: false,
-      e164: validFormOptions.didE164,
+      e164: validFormOptions.caller_idE164,
       updated: true,
       valid: true
     },
@@ -263,14 +251,7 @@ export const validFormState = {
       blurred: false,
       updated: true
     },
-    alternateDid: {
-      value: "6032453160",
-      blurred: false,
-      e164: "+16032453160",
-      updated: true,
-      valid: true
-    },
-    directDialNum: {
+    did: {
       value: "6032453160",
       blurred: false,
       e164: "+16032453160",
@@ -336,8 +317,8 @@ export const mockWorkers = [
         levels: {
           "466": 3
         },
-        team:"Sample1",
-        callerStates: ["Test1", "Test2"]
+        team: "Sample1",
+        caller_states: ["Test1", "Test2"]
       },
       profile_id: 15
     },
@@ -356,15 +337,13 @@ export const mockWorkers = [
   {
     // DID worker with overflow skill
     sid: "WK2",
-    activateEp: true,
-    alternateDid: validFormOptions.alternateDid.e164,
-    directDialNum: validFormOptions.directDialNum.e164,
+    did: validFormOptions.did.e164,
     zeroOutEnabled: true,
     selfServiceInd: true,
     attributes: {
       default_skills: validFormOptions.defaultSkills,
       n_number: "n",
-      did: validFormOptions.didE164,
+      caller_id: validFormOptions.caller_idE164,
       extension: validFormOptions.extension,
       full_name: "Test 3",
       manager_first_name: validFormOptions.manager.manager_first_name,
@@ -379,51 +358,20 @@ export const mockWorkers = [
         levels: {
           "466": 3
         },
-        team:"Sample1",
-        callerStates: ["Test1", "Test2"]
-      },
+        team: "Sample1",
+        caller_states: ["Test1", "Test2"]
+      }
     }
   },
   {
     // DID worker without overflow skill
     sid: "WK3",
-    activateEp: true,
-    alternateDid: validFormOptions.alternateDid.e164,
-    directDialNum: validFormOptions.directDialNum.e164,
+    did: validFormOptions.did.e164,
     zeroOutEnabled: true,
     selfServiceInd: true,
     attributes: {
       default_skills: validFormOptions.defaultSkills,
-      did: validFormOptions.didE164,
-      extension: validFormOptions.extension,
-      full_name: "Test 4",
-      manager_first_name: validFormOptions.manager.manager_first_name,
-      manager_last_name: validFormOptions.manager.manager_last_name,
-      manager_n_number: validFormOptions.manager.manager_n_number,
-      office_location_name: "Pluto",
-      profile_id: profileList[1].profile_id,
-      routing: {
-        skills: [
-         "466"
-        ],
-        levels: {
-          "466": 3
-        },
-        team: "Sample1",
-        callerStates: ["Test1", "Test2"]
-      }
-    }
-  },
-  {
-    sid: "WK4",
-    activateEp: true,
-    alternateDid: validFormOptions.alternateDid.e164,
-    directDialNum: validFormOptions.directDialNum.e164,
-    zeroOutEnabled: true,
-    selfServiceInd: true,
-    attributes: {
-      default_skills: validFormOptions.defaultSkills,
-      did: validFormOptions.didE164,
+      caller_id: validFormOptions.caller_idE164,
       extension: validFormOptions.extension,
       full_name: "Test 4",
       manager_first_name: validFormOptions.manager.manager_first_name,
@@ -439,7 +387,34 @@ export const mockWorkers = [
           "466": 3
         },
         team: "Sample1",
-        callerStates: ["Test1", "Test2"]
+        caller_states: ["Test1", "Test2"]
+      }
+    }
+  },
+  {
+    sid: "WK4",
+    did: validFormOptions.did.e164,
+    zeroOutEnabled: true,
+    selfServiceInd: true,
+    attributes: {
+      default_skills: validFormOptions.defaultSkills,
+      caller_id: validFormOptions.caller_idE164,
+      extension: validFormOptions.extension,
+      full_name: "Test 4",
+      manager_first_name: validFormOptions.manager.manager_first_name,
+      manager_last_name: validFormOptions.manager.manager_last_name,
+      manager_n_number: validFormOptions.manager.manager_n_number,
+      office_location_name: "Pluto",
+      profile_id: profileList[1].profile_id,
+      routing: {
+        skills: [
+          "466"
+        ],
+        levels: {
+          "466": 3
+        },
+        team: "Sample1",
+        caller_states: ["Test1", "Test2"]
       }
     }
   }

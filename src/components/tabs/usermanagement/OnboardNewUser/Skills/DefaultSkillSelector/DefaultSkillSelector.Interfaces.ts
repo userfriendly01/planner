@@ -1,8 +1,8 @@
-import { WorkerAttributeSkills } from "globals";
+import { UMTwilioAttributeSkills } from "globals";
 
 export interface DefaultSkillSelectorProps {
-  defaultSkills: WorkerAttributeSkills,
-  setDefaultSkills: (defaultSkills: WorkerAttributeSkills) => void;
+  defaultSkills: UMTwilioAttributeSkills,
+  setDefaultSkills: (defaultSkills: UMTwilioAttributeSkills) => void;
 }
 export interface NewTwilioWorkerSkill {
   levels: number[],

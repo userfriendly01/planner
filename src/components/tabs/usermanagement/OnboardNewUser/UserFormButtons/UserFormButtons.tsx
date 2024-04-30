@@ -13,10 +13,12 @@ import {
   userFormActions
 } from "context";
 import {
+  env,
   formModes,
   ModalOverlayStatuses,
   timeouts,
-  Worker
+  UMUser,
+  UMUserTwilioAttributes
 } from "globals";
 import React from "react";
 import {
@@ -32,7 +34,6 @@ import {
 import {
   addWorkerToOrg,
   checkConflictingUsers,
-  DbWorker,
   getNonOverflowSkills,
   getOverflowSkillFromProfile,
   identifyFormErrors,
@@ -40,11 +41,11 @@ import {
   isFormUpdated,
   isTritonUserValid,
   logger,
-  mapWorkerFromDbWorker,
   wait,
   workerHasOverFlowSkill
 } from "utils";
 import { Tooltip } from "@mui/material";
+import { ApolloError } from "@apollo/client";
 
 const UserFormButtons = (props: UserFormButtonsProps) => {
 
@@ -68,8 +69,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     roles,
     teams
   } = state.calabrioContext;
-  const environment = state.userContext.pingIdentity.environment;
-  const nNumber = state.userContext.pingIdentity?.sub;
+  const { nNumber } = state.userContext;
 
   const doCreateUser = async () => {
     updateLoading({
@@ -83,7 +83,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
     // see this wiki page for attributes that will be automatically updated through SSO
     // https://forge.lmig.com/wiki/display/CICCT/Twilio+Flex+SSO+Saml2+Integration
-    const attributes: Partial<Worker["attributes"]> = {
+    const attributes: Partial<UMUserTwilioAttributes> = {
       contact_uri: `client:${userNNumber}`,
       default_skills: {
         levels: form.triton.defaultSkills.levels,
@@ -91,7 +91,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       },
       department_id: form.nNumber.nNumberFetchedUser.departmentNumber,// need this value otherwise the department_name will not appear in flex insights,
       department_name: form.nNumber.nNumberFetchedUser.departmentName,
-      did: form.triton.outgoing.e164,
+      caller_id: form.triton.outgoing.e164,
       email: form.nNumber.nNumberFetchedUser.email,
       email_address: form.nNumber.nNumberFetchedUser.email,
       emp_first_name: form.nNumber.nNumberFetchedUser.firstName,
@@ -104,6 +104,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       manager_n_number: form.triton.manager.value.manager_n_number,
       manager: `${form.triton.manager.value.manager_first_name} ${form.triton.manager.value.manager_last_name}`,
       n_number: userNNumber,
+      agent_id: userNNumber,
       office_location_name: form.nNumber.nNumberFetchedUser.officeName,
       office_location_number: form.nNumber.nNumberFetchedUser.officeNumber,
       primary_dept_name: form.nNumber.nNumberFetchedUser.departmentName,
@@ -134,41 +135,38 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
     const overflowSkill = getOverflowSkillFromProfile(profiles, form.triton.profileId.value);
 
-    if (overflowSkill !== undefined && form.triton.zeroOutEnabled.value && form.triton.directDialNum.value) {
+    if (overflowSkill !== undefined && form.triton.zeroOutEnabled.value && form.triton.did.value) {
       attributes.routing.skills = [overflowSkill];
     }
 
     const operatingUnitSid = profiles.find(profile => profile.profile_id === form.triton.profileId.value).operating_unit_sid;
 
-    const createUserReqBody = form.triton.directDialNum.value ?
+    const createUserReqBody = form.triton.did.value ?
       {
         attributes,
-        activateEp: true,
-        alternateDid: form.triton.alternateDid.e164,
-        directDialNum: form.triton.directDialNum.e164,
+        did: form.triton.did.e164,
         operatingUnitSid: operatingUnitSid,
         zeroOutEnabled: form.triton.zeroOutEnabled.value,
         selfServiceInd: form.triton.selfServiceInd.value
       } : {
         attributes,
-        operatingUnitSid: operatingUnitSid,
-        activateEp: false
+        operatingUnitSid: operatingUnitSid
       };
 
     const errors = [];
 
     try {
-      const dbWorker = await createUser(createUserReqBody);
+      const newWorker = await createUser(createUserReqBody);
 
       logger.info("Successfully created user", {
         nNumber,
         userNNumber
       });
 
-      if (!offices.get(dbWorker.attributes.office_location_number)) {
+      if (!offices.get(newWorker.attributes.office_location_number)) {
         const newOffice = {
-          office_nme: dbWorker.attributes.office_location_name,
-          office_num: dbWorker.attributes.office_location_number
+          office_nme: newWorker.attributes.office_location_name,
+          office_num: newWorker.attributes.office_location_number
         };
         addOffice(newOffice)
           .then(() => {
@@ -191,17 +189,17 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       }
       dispatch({
         type: "addWorkers",
-        payload: [mapWorkerFromDbWorker(dbWorker)]
+        payload: [newWorker]
       });
 
       try {
-        calabrioAttributes.acdId = dbWorker.workerSid;
+        calabrioAttributes.acdId = newWorker.sid;
         await checkConflictingUsers(calabrioAttributes, users, roles, teams);
         await createCalabrioUser(calabrioAttributes);
 
         logger.info("Successfully created Calabrio User", {
           nNumber,
-          workerSid: dbWorker.workerSid
+          workerSid: newWorker.sid
         });
 
         try {
@@ -242,7 +240,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
           Skills: form.calabrio_wfm.PersonSkills?.map((s: any) => s.Id)
         };
 
-        if (environment === "production") {
+        if (env.APP_ENV === "production") {
           try {
             const res = await createCalabrioWFMPerson(wfmBody);
 
@@ -329,17 +327,19 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         });
       }
     } catch (error) {
+      const apolloError = error as ApolloError;
+
       logger.error("Errors thrown creating a new user",
         {
           error,
-          data: error.response?.data,
+          data: apolloError.message,
           nNumber
         },
         false
       );
       updateLoading({
         ...loading,
-        overlayMessage: error.response.data.message || "Failed to add new user.",
+        overlayMessage: apolloError.message || "Failed to add new user.",
         saveStatus: ModalOverlayStatuses.FAIL,
         saveUser: true
       });
@@ -353,7 +353,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       saveStatus: ModalOverlayStatuses.SAVING,
       saveUser: true
     });
-    const attributes: Partial<Worker["attributes"]> = {};
+    const attributes: Partial<UMUserTwilioAttributes> = {};
     let operatingUnitSid: string;
     const nNumberFetchedUser = form.nNumber.nNumberFetchedUser;
 
@@ -372,7 +372,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       operatingUnitSid = profiles.find(profile => profile.profile_id === form.triton.profileId.value).operating_unit_sid;
     }
     if (form.triton.outgoing.updated) {
-      attributes.did = form.triton.outgoing.e164;
+      attributes.caller_id = form.triton.outgoing.e164;
     }
     if (form.triton.extension.updated) {
       attributes.extension = form.triton.extension.value;
@@ -384,7 +384,13 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       };
     }
     if (form.triton.routing.updated) {
-      attributes.routing = form.triton.routing;
+      attributes.routing = {
+        team: form.triton.routing.team,
+        caller_states: form.triton.routing.caller_states,
+        sales_assoc_workers: form.triton.routing.sales_assoc_workers,
+        skills: form.triton.routing.skills,
+        levels: form.triton.routing.levels
+      };
     }
     if (nNumberFetchedUser) {
       nNumberFetchedUser.departmentNumber ? attributes.department_id = nNumberFetchedUser.departmentNumber : null;
@@ -420,7 +426,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       attributes.routing.levels = levels;
     }
 
-    const payload: Partial<DbWorker> = {
+    const payload: Partial<UMUser> = {
       attributes,
       zeroOutEnabled: form.triton.zeroOutEnabled.value,
       selfServiceInd: form.triton.selfServiceInd.value
@@ -429,12 +435,8 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     if (operatingUnitSid) {
       payload.operatingUnitSid = operatingUnitSid;
     }
-    if (form.triton.alternateDid.updated) {
-      payload.alternateDid = form.triton.alternateDid.e164;
-    }
-    if (form.triton.directDialNum.updated) {
-      payload.directDialNum = form.triton.directDialNum.e164;
-      payload.activateEp = true;
+    if (form.triton.did.updated) {
+      payload.did = form.triton.did.e164;
     }
     if (form.triton.inactiveForwardTo.value !== null && form.triton.inactiveForwardTo.updated) {
       payload.inactiveForwardTo = form.triton.inactiveForwardTo.value;
@@ -442,7 +444,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
     const errors = [];
     try {
-      const dbWorker = await updateUser(worker.sid, payload);
+      const updatedWorker = await updateUser(worker.sid, payload);
 
       logger.info("Successfully Updated Triton user", {
         nNumber,
@@ -451,16 +453,18 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
       dispatch(({
         type: "updateWorker",
-        payload: mapWorkerFromDbWorker(dbWorker)
+        payload: updatedWorker
       }));
-    } catch (error) {
+    } catch (err) {
+      const error = err as ApolloError;
+
       logger.error("Failed to update Triton Worker", {
         error,
         nNumber,
         userNNumber: form.nNumber.value
       });
 
-      errors.push(`Failed to update Triton Worker. ${error.message || error.response?.data.message}`);
+      errors.push(`Failed to update Triton Worker. ${error.message}`);
     }
 
     if (form.calabrio_qm.updated) {
@@ -523,7 +527,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         Skills: form.calabrio_wfm.PersonSkills?.map((s: any) => s.Id)
       };
 
-      if (environment === "production") {
+      if (env.APP_ENV === "production") {
         try {
           const res = await createCalabrioWFMPerson(wfmBody);
 

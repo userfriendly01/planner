@@ -6,19 +6,15 @@ import {
   FLOW_MASTER_DATA,
   LAST_FLOW_MASTER_DATA_CACHED_DATE
 } from "utils";
-import { useAccessToken } from "authentication";
-import {
-  LoginInProgress,
-  LoginError
-} from "components";
+import { useAdminState } from "context";
 
 const AlohaFlowContainer = () => {
   const {
-    accessToken,
-    matchedGroups,
-    isLoading,
-    error
-  } = useAccessToken();
+    userContext: {
+      permissions,
+      accessToken
+    }
+  } = useAdminState();
 
   useEffect(() => {
     const updateCacheData = () => {
@@ -40,16 +36,8 @@ const AlohaFlowContainer = () => {
     updateCacheData();
   },[]);
 
-  if (isLoading) {
-    return <LoginInProgress />;
-  }
-
-  if (error) {
-    return <LoginError message={error} />;
-  }
-
   return (
-    <DataGridFlow accessToken={accessToken} matchedGroups={matchedGroups} />
+    <DataGridFlow accessToken={accessToken} matchedGroups={permissions} />
   );
 };
 

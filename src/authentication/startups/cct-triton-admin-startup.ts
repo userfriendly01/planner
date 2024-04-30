@@ -1,6 +1,10 @@
 import { getStartupProfiles } from "authentication";
-import { apiPaths } from "globals";
 import {
+  Action,
+  apiPaths
+} from "globals";
+import {
+  getAllUsers,
   getManagers as getManagersServiceCall,
   getOffices as getOfficesServiceCall,
   getWfmBusinessUnits,
@@ -11,13 +15,12 @@ import {
 import {
   formatManagersResponse,
   formatOfficesResponse,
-  formatWorkerResponse,
   getCalabrioWfmOptions,
   logger,
   myAxios
 } from "utils";
 
-const getManagers = async (dispatch: any) => {
+const getManagers = async (dispatch: (action: Action) => void) => {
   try {
     const managers = await getManagersServiceCall();
     dispatch({
@@ -34,7 +37,7 @@ const getManagers = async (dispatch: any) => {
   }
 };
 
-const getOffices = async (dispatch: any) => {
+const getOffices = async (dispatch: (action: Action) => void) => {
   try {
     const offices = await getOfficesServiceCall();
     dispatch({
@@ -51,7 +54,7 @@ const getOffices = async (dispatch: any) => {
   }
 };
 
-const getCalabrioUsers = async (dispatch: any) => {
+const getCalabrioUsers = async (dispatch: (action: Action) => void) => {
   try {
     const users: any = await getCalabrioUsersServiceCall();
     logger.log("Calabrio Users", users);
@@ -66,7 +69,7 @@ const getCalabrioUsers = async (dispatch: any) => {
   }
 };
 
-const getCalabrioOrg = async (dispatch: any) => {
+const getCalabrioOrg = async (dispatch: (action: Action) => void) => {
   try {
     const org: any = await getCalabrioOrgServiceCall();
     logger.log("Calabrio Org", org);
@@ -81,7 +84,7 @@ const getCalabrioOrg = async (dispatch: any) => {
   }
 };
 
-const getCalabrioRoles = async (dispatch: any) => {
+const getCalabrioRoles = async (dispatch: (action: Action) => void) => {
   try {
     const roles: any = await getCalabrioRolesServiceCall();
     logger.log("Calabrio Roles", roles);
@@ -96,67 +99,49 @@ const getCalabrioRoles = async (dispatch: any) => {
   }
 };
 
-const getProfiles = (dispatch: any) => new Promise((resolve, reject) => myAxios.get(apiPaths.PROFILES)
-  .then(res => {
-    dispatch({
-      type: "loadProfiles",
-      payload: res.data
-    });
-    resolve(true);
-  })
-  .catch(error => {
-    logger.error("Failed to fetch profiles from service", { error });
+const getProfiles = (dispatch: (action: Action) => void) =>
+  new Promise((resolve, reject) => myAxios.get(apiPaths.PROFILES)
+    .then(res => {
+      dispatch({
+        type: "loadProfiles",
+        payload: res.data
+      });
+      resolve(true);
+    })
+    .catch(error => {
+      logger.error("Failed to fetch profiles from service", { error });
 
-    reject({
-      msg: "Failed to fetch profiles from service",
-      error
-    });
-  })
-);
+      reject({
+        msg: "Failed to fetch profiles from service",
+        error
+      });
+    })
+  );
 
-export const getSkills = (dispatch: any) => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_SKILLS)
-  .then(res => {
-    dispatch({
-      type: "loadSkills",
-      payload: res.data.consolidatedSkills
-    });
-    dispatch({
-      type: "loadSkillGroups",
-      payload: res.data.consolidatedSkills
-    });
-    resolve(true);
-  })
-  .catch(error => {
-    logger.error("Failed to fetch skills from service", { error });
+export const getSkills = (dispatch: (action: Action) => void): Promise<boolean> =>
+  new Promise((resolve, reject) => myAxios.get(apiPaths.GET_SKILLS)
+    .then(res => {
+      dispatch({
+        type: "loadSkills",
+        payload: res.data.consolidatedSkills
+      });
+      dispatch({
+        type: "loadSkillGroups",
+        payload: res.data.consolidatedSkills
+      });
+      resolve(true);
+    })
+    .catch(error => {
+      logger.error("Failed to fetch skills from service", { error });
 
-    reject({
-      msg: "Failed to fetch skills from service",
-      error
-    });
-  })
-);
+      reject({
+        msg: "Failed to fetch skills from service",
+        error
+      });
+    })
+  );
 
-const getWorkers = async (dispatch: any) => {
-  try {
-    const response = await myAxios.get(apiPaths.GET_WORKERS);
-    // filter out workers with "inactiveInd": true or no attributes
-    const filteredWorkers = formatWorkerResponse(response.data).filter(worker => !worker.inactiveInd && worker.attributes);
-    dispatch(({
-      type: "loadWorkers",
-      payload: filteredWorkers
-    }));
-    return filteredWorkers;
-  } catch (error) {
-    logger.error("Failed to fetch workers from service", { error });
-
-    throw ({
-      msg: "Failed to fetch workers from service",
-      error
-    });
-  }
-};
-
-const getBusinessUnits = async (dispatch: any) => {
+const getBusinessUnits = async (dispatch: (action: Action) => void) => {
   try {
     const response: any = await getWfmBusinessUnits();
     dispatch({
@@ -178,13 +163,13 @@ const getBusinessUnits = async (dispatch: any) => {
   }
 };
 
-export const runTritonAdminStartup = (dispatch: any) => {
+export const runTritonAdminStartup = (dispatch:  (action: Action) => void): Promise<any[]> => {
   /* Please add new service calls to the end of this Promise.all,
   the existing order is important */
 
   return Promise.all([
     Promise.resolve(getStartupProfiles().TRITON.name),
-    getWorkers(dispatch),
+    getAllUsers(dispatch),
     getManagers(dispatch),
     getOffices(dispatch),
     getProfiles(dispatch),

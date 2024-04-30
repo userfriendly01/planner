@@ -18,7 +18,6 @@ import {
   AddOutlined,
   EditNoteOutlined
 } from "@mui/icons-material";
-import { useAdminState } from "context";
 
 interface CustomRoutingGridToolBarProps {
   openAddModal: (flag: boolean) => void;
@@ -36,7 +35,7 @@ export const CustomRoutingGridToolBar = ({
 }: CustomRoutingGridToolBarProps):JSX.Element => {
 
   const [routingFilter, setRoutingFilter] = useState<RoutingFilter>();
-  const enableRouting = useMemo(() => readWriteAccess(matchedGroups, "aloha-route"), []);
+  const enableRouting = useMemo(() => readWriteAccess(matchedGroups, "RouteReadWrite"), []);
 
   useEffect(()=>{
     const localFilter = getAdvanceFilter(CACHE_FILTER_ROUTING);
@@ -139,7 +138,7 @@ export const CustomRoutingGridToolBar = ({
             onChange={handleChange}
             variant="filled"
             size="small"
-            disabled={enableRouting}
+            disabled={!enableRouting}
           >
             <MenuItem key="addRouting" value="addRouting">
               <AddOutlined /> &nbsp;&nbsp;Add Routing

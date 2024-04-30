@@ -1,9 +1,9 @@
 import {
-  apiPaths,
   AppState,
   WfmBusinessUnit
 } from "globals";
 import {
+  getAllUsers,
   getCalabrioUsers,
   getManagers,
   wfmActivateExternalLogon
@@ -13,9 +13,7 @@ import {
   Template
 } from "../BulkChanges.Interfaces";
 import {
-  formatWorkerResponse,
   formatManagersResponse,
-  myAxios,
   getCalabrioWfmOrg,
   logger
 } from "utils";
@@ -24,14 +22,10 @@ import * as XLSX from "xlsx";
 /**
  * Refreshes the triton user state after a bulk update on users
  */
-export const updateTritonUserState = async (state: AppState, dispatch: any): Promise<void> => {
+export const updateTritonUserState = async (_state: AppState, dispatch: () => void): Promise<void> => {
   try {
-    const response = await myAxios.get(apiPaths.GET_WORKERS);
-    const filteredWorkers = formatWorkerResponse(response.data).filter(worker => !worker.inactiveInd && worker.attributes);
-    dispatch(({
-      type: "loadWorkers",
-      payload: filteredWorkers
-    }));
+    // Await the first call
+    await getAllUsers(dispatch);
   } catch (error) {
     logger.error("Failed to update triton user state after bulk upload", { error }, false);
   }
@@ -41,7 +35,7 @@ export const updateTritonUserState = async (state: AppState, dispatch: any): Pro
 /**
  * Refreshes the calabrio user state after a bulk update on users
  */
-export const updateCalabrioUserState = async (state: AppState, dispatch: any): Promise<void> => {
+export const updateCalabrioUserState = async (_state: AppState, dispatch: any): Promise<void> => {
   try {
     const users: any = await getCalabrioUsers();
     dispatch({
@@ -388,7 +382,7 @@ export const initiateCalls = async (
  * @param selectedTemplates selected templates to be processed
  */
 export const handleWfmExternalLogon = async (state: AppState, dispatch: any, successfulRows: any, selectedTemplates: any) => {
-  const nNumber = state.userContext.pingIdentity?.sub;
+  const { nNumber } = state.userContext;
 
   if(selectedTemplates.some((t: Template) => t.name === "CREATE_TRITON_USER")) {
     const wfmNNumbers: any[] = [];

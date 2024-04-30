@@ -8,7 +8,8 @@ window.env = {
   DATADOG_CLIENT_TOKEN: "DATADOG_CLIENT_TOKEN",
   GRAPH_API_URL: "http://localhost:3000",
   APP_ENV: "APP_ENV",
-  TROUX_ID: "TROUX_ID"
+  TROUX_ID: "TROUX_ID",
+  SOFTPHONE_SERVICE_URL: "http://localhost:8080"
 };
 
 jest.mock("@azure/msal-react", () => ({
@@ -103,6 +104,7 @@ jest.mock("services", () => ({
   getCalabrioUsers: jest.fn(),
   getOffices: jest.fn(),
   getManagers: jest.fn(),
+  getAllUsers: jest.fn(),
   getTaskQueues: jest.fn(),
   getTfn: jest.fn(),
   getTimeOfDays: jest.fn(),

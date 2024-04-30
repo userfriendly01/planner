@@ -8,7 +8,7 @@ import {
   TritonUserTable
 } from "components";
 import { useAdminState } from "context";
-import { Worker } from "globals";
+import { UMUser } from "globals";
 import React from "react";
 import {
   filterWorkerSearch,
@@ -46,12 +46,12 @@ const TritonUserManagementWrapper: any = () => {
 
     //filter by manager
     if(managerFilter && managerFilter !== "show-all"){
-      filteredList = filteredList.filter((worker: Worker) => worker.attributes.manager_n_number === managerFilter);
+      filteredList = filteredList.filter((worker: UMUser) => worker.attributes.manager_n_number === managerFilter);
     }
 
     //filter by profile
     if(profileFilterArray.length > 0){
-      filteredList = filteredList.filter((worker: Worker) => {
+      filteredList = filteredList.filter((worker: UMUser) => {
         const workerProfileId = typeof worker.attributes.profile_id === "number" ? worker.attributes.profile_id.toString() : worker.attributes.profile_id;
         const profileFound = profileFilterArray.some((p:any) => p.value === workerProfileId);
         return profileFound;
@@ -60,7 +60,7 @@ const TritonUserManagementWrapper: any = () => {
 
     //filter by Ou
     if(ouFilterArray.length > 0){
-      filteredList = filteredList.filter((worker: Worker) => {
+      filteredList = filteredList.filter((worker: UMUser) => {
         const profile = state.profileContext.profiles.find(p => p.profile_id === worker.attributes.profile_id);
         const ouSid = profile ? profile.operating_unit_sid : "";
         const ouFound = ouFilterArray.some((o:any) => o.value === ouSid);

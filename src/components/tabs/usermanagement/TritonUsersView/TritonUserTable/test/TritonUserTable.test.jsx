@@ -14,7 +14,9 @@ import {
   render,
   setupMockedComponents
 } from "testUtils";
-import { formModes, theme } from "globals";
+import {
+  formModes, theme
+} from "globals";
 import { useNavigate } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import { formatWorkerAttributeSkillsToHTML } from "utils";
@@ -111,7 +113,7 @@ describe("<TritonUserTable />", () => {
         expect(rendered.container).toHaveTextContent(w.attributes.emp_last_name);
         expect(rendered.container).toHaveTextContent(w.attributes.n_number);
         expect(rendered.container).toHaveTextContent(w.attributes.extension);
-        const profile = initialTestState.profileContext.profiles.find(p => p.profile_id === w.attributes.profile_id)
+        const profile = initialTestState.profileContext.profiles.find(p => p.profile_id === w.attributes.profile_id);
         if(profile){
           expect(rendered.container).toHaveTextContent(`${profile.profile_nme} - ${profile.profile_id}`);
           expect(rendered.container).toHaveTextContent(profile.operating_unit_nme);
@@ -155,6 +157,27 @@ describe("<TritonUserTable />", () => {
         });
       });
     });
+
+    describe("isLoading (workers) === true", () => {
+      beforeEach(() => {
+        useAdminState.mockReturnValue({
+          ...initialTestState,
+          workerContext: {
+            ...initialTestState.workerContext,
+            isLoading: true,
+            selectedWorkers: []
+          }
+        });
+      });
+      test("ModalOverlay is rendered", () => {
+        renderComponent();
+        expect(ModalOverlay.mock.calls.length).toBe(1);
+        expect(ModalOverlay.mock.calls[0][0]).toStrictEqual({
+          message: "Loading Users",
+          status: "saving"
+        });
+      });
+    });
   });
   describe("Reset Skills Toggle is clicked", () => {
     test("setTableState is updated ", () => {
@@ -191,7 +214,7 @@ describe("<TritonUserTable />", () => {
           name: initialTestState.workerContext.workers[1].attributes.full_name,
           sid: initialTestState.workerContext.workers[1].sid
         }]
-      }
+      };
       const rendered = render(
         <ThemeProvider theme={theme}>
           <TritonUserTable tableState={selectedTableState} setTableState={mockSetTableState} />

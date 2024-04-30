@@ -710,7 +710,7 @@ describe("<SkillEntryFormModal />", () => {
       const testStateWithUpperNNumberForUser = {
         ...initialTestState
       };
-      testStateWithUpperNNumberForUser.userContext.pingIdentity.sub = "N1111111";
+      testStateWithUpperNNumberForUser.userContext.nNumber = "n1234567";
       useAdminState.mockReturnValue(initialTestState);
       createSkill.mockResolvedValueOnce({
         status: 200
@@ -733,7 +733,7 @@ describe("<SkillEntryFormModal />", () => {
         taskQueueSid: "tqasdf",
         vhCallTarget: null,
         vhThreshold: null,
-        updatedBy: "n1111111",
+        updatedBy: "n1234567",
         timeOfDayIds: [
           {
             dayId: 1,
