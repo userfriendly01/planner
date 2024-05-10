@@ -159,6 +159,14 @@ export const RoutingTeamAttrDropDownOptions: DropdownOption[] = [
   {
     label: "AssetService",
     value: "AssetService"
+  },
+  {
+    label: "UnlicensedEserviceRightTrack",
+    value: "UnlicensedEserviceRightTrack"
+  },
+  {
+    label: "UnlicPartTTEC",
+    value: "UnlicPartTTEC"
   }
 ];
 
