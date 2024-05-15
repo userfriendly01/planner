@@ -47,7 +47,7 @@ const jsonFlowData = {
   brand: { value: "LM" },
   callFlowTemplate: { value: "temp" },
   channel: { value: "Test1 Channel" },
-  createTime: { value: "2022-24-08T05:00:00.000Z" },
+  createTime: { value: "2022-24-08" },
   updateTime: { value: "2024-01-30T05:00:00.000Z" },
   dialedDescription: { value: "test" },
   employeeId: { value: "n1234567" },
@@ -59,6 +59,25 @@ const jsonFlowData = {
   languageOffer: { value: "English" },
   transferNumber: { value: "123456789" }
 };
+
+const updatejsonFlowData = {
+  pkey: { value: "12345" },
+  brand: { value: "LM" },
+  callFlowTemplate: { value: "temp" },
+  channel: { value: "Test1 Channel" },
+  createTime: { value: "2024-01-30T05:00:00.000Z" },
+  updateTime: { value: "2024-01-30T05:00:00.000Z" },
+  dialedDescription: { value: "test" },
+  employeeId: { value: "n1234567" },
+  userDestination: { value: "dest" },
+  callerType: { value: "test" },
+  callFlowRoute: { value: "test" },
+  dataRequests: { value: "test1,test2" },
+  greetingMessages: { value: "Hello Test Message" },
+  languageOffer: { value: "English" },
+  transferNumber: { value: "123456789" }
+};
+
 const batchDeleteItemsList = ["pkey1","pkey1","pkey3"];
 
 const batchDeleteResponse = {
@@ -972,9 +991,9 @@ describe("dynamicFlowTableService",()=> {
         errors: [],
         failure: [],
         flag: false,
-        success: [jsonFlowData]
+        success: [updatejsonFlowData]
       };
-      const response = await batchDynamicFlowUpdate([{ ...jsonFlowData }],"1233-3245","http://localhost:3000");
+      const response = await batchDynamicFlowUpdate([{ ...updatejsonFlowData }],"1233-3245","http://localhost:3000");
       expect(response).toEqual(batchUpdateResponse);
       expect(window.fetch).toBeCalledWith("http://localhost:3000", {
         "body": "{\"query\":\"\\n        mutation batchCreatePhoneNumber($input: PhoneNumberCreateBatchInput!) {\\n          batchCreatePhoneNumber(input: $input) {\\n            items {\\n                phoneNumber\\n                callFlowName\\n                createTime\\n                updateTime\\n                nextActionType\\n                nextActionId\\n                callFlowTemplate\\n                dialedDescription\\n                phoneNumberType\\n                tfnRoutingGroup\\n                brand\\n                dataRequests\\n                greetingMessages\\n                languageOffer\\n                transferDestination\\n                callerType\\n                callFlowRoute\\n                callIntent\\n                callFlowType\\n                channel\\n                predictiveCaller\\n                employeeId\\n                callTypeDescription\\n                internetPlacement\\n                lineOfBusiness\\n                marketingChannel\\n                rangeIndicator\\n                requestID\\n                tollFreeNumber\\n                transferCode\\n                whisper\\n                officeNumbers\\n            }\\n          }\\n        }\\n      \",\"variables\":{\"input\":{\"batchPhoneNumberInput\":[{\"brand\":{\"value\":\"LM\"},\"channel\":{\"value\":\"Test1 Channel\"},\"createTime\":" + curTimeUnixEpoch + ",\"dialedDescription\":{\"value\":\"test\"},\"employeeId\":{\"value\":\"n1234567\"},\"phoneNumber\":{\"value\":\"12345\"},\"updateTime\":" + curTimeUnixEpoch + "}]}}}",
