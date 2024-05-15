@@ -227,12 +227,9 @@ async function retrieveFlowData(accessToken, counter = 1, nextToken = null, rowI
  * @returns
  */
 function createFlowFromLegacyPhone (item) {
-  let convertedCreateTime = item.createTime;
-  if(item.createTime && typeof item.createTime === "number") {
-    const jsEpoch = item.createTime < 9999999999 ? item.createTime * 1000 : item.createTime;
 
-    convertedCreateTime = new Date(jsEpoch).toISOString();
-  }
+  const convertedCreateTime = dateConversion().toISOString();
+
   return {
     pkey: item.pkey,
     accountManager: item.accountManager,
@@ -285,12 +282,8 @@ function createFlowFromLegacyPhone (item) {
  * @returns
  */
 function createFlowFromAction (item) {
-  let convertedCreateTime = "";
-  if(item.createTime && typeof item.createTime === "number") {
-    const jsEpoch = item.createTime < 9999999999 ? item.createTime * 1000 : item.createTime;
+  const convertedCreateTime = dateConversion(item.createTime).toISOString();
 
-    convertedCreateTime = new Date(jsEpoch).toISOString();
-  }
   return {
     pkey: item.phoneNumber,
     accountManager: item.accountManager,
@@ -335,6 +328,14 @@ function createFlowFromAction (item) {
     userDestination: item.userDestination ?? "",
     whisper: item.whisper ?? ""
   };
+}
+
+function dateConversion(createTime) {
+  let jsEpoch = createTime;
+  if (createTime && typeof createTime === "number") {
+    jsEpoch = createTime < 9999999999 ? createTime * 1000 : createTime;
+  }
+  return new Date(jsEpoch);
 }
 
 /**
@@ -1294,7 +1295,7 @@ function updateDynamicFlowInput(item){
     callTypeDescription: item.callTypeDescription,
     callerType: item.content?.callerType,
     channel: item.channel,
-    createTime: item.createTime ? Math.floor(new Date(item.createTime).getTime()/1000) : updateTime,
+    createTime: Math.floor(dateConversion(item.createTime).getTime()/1000),
     dataRequests: item.content?.dataRequests,
     dialedDescription: item.dialedDescription,
     employeeId: item.employeeId,
@@ -1603,7 +1604,7 @@ const updateDynamicFlowBatchRun = async(items, accessToken) =>{
       callTypeDescription: item.callTypeDescription,
       callerType: item.content?.callerType,
       channel: item.channel,
-      createTime: Math.floor(new Date(item.createTime).getTime()/1000),
+      createTime: Math.floor(dateConversion(item.createTime).getTime()/1000),
       dataRequests: item.content?.dataRequests,
       dialedDescription: item.dialedDescription,
       employeeId: item.employeeId,
