@@ -204,7 +204,7 @@ async function retrieveFlowData(accessToken, counter = 1, nextToken = null, rowI
 
         rowInsert(flowData);
       } else if (counter === 1){
-        // If there was a handled error in queryFlowData, and there were 
+        // If there was a handled error in queryFlowData, and there were
         // no results returned at all, then break out of the loop
         break;
       }
@@ -223,8 +223,8 @@ async function retrieveFlowData(accessToken, counter = 1, nextToken = null, rowI
 
 /**
  * Convert DB Legacy Call Flow record to UI Call Flow Record
- * @param {any} item 
- * @returns 
+ * @param {any} item
+ * @returns
  */
 function createFlowFromLegacyPhone (item) {
   let convertedCreateTime = item.createTime;
@@ -281,8 +281,8 @@ function createFlowFromLegacyPhone (item) {
 
 /**
  * Convert DB Dynamic Call Flow record to UI Call Flow Record
- * @param {any} item 
- * @returns 
+ * @param {any} item
+ * @returns
  */
 function createFlowFromAction (item) {
   let convertedCreateTime = "";
@@ -339,10 +339,10 @@ function createFlowFromAction (item) {
 
 /**
  * Convert UI ADD Call Flow record to DB Call Flow Record
- * @param {*} item 
- * @param {*} dataRequestsPassed 
- * @param {*} currentTimePassed 
- * @returns 
+ * @param {*} item
+ * @param {*} dataRequestsPassed
+ * @param {*} currentTimePassed
+ * @returns
  */
 function addFlowInput (item, dataRequestsPassed, currentTimePassed){
   const input = {
@@ -390,8 +390,8 @@ function addFlowInput (item, dataRequestsPassed, currentTimePassed){
 
 /**
  * Convert UI UPDATE Call Flow record to DB Call Flow Record
- * @param {*} item 
- * @returns 
+ * @param {*} item
+ * @returns
  */
 function updateFlowInput(item){
   const input = {
@@ -763,9 +763,9 @@ const batchFlowUpdate = async(items, accessToken) =>{
 
 /**
  * Convert UI UPDATE Call Flow record to DB Call Flow Record
- * @param {*} items 
- * @param {*} accessToken 
- * @returns 
+ * @param {*} items
+ * @param {*} accessToken
+ * @returns
  */
 const updateFlowBatchRun = async(items, accessToken) =>{
   const input = items.map(item=>{
@@ -944,7 +944,7 @@ const batchDynamicFlowCreate = async(items, accessToken) =>{
 
 /**
  * Consolidate all of the command responses in a batch into 1 response object
- * @param {any} allResults - a set results from all of the operations 
+ * @param {any} allResults - a set results from all of the operations
  * @returns {any} a consolidated response object
  */
 const buildResponse = allResults => {
@@ -1279,8 +1279,8 @@ async function retrieveDynamicFlowData(accessToken, counter = 1, nextToken = nul
 
 /**
  * Transform the UI Call Flow record to a Dynamic Call Flow DB record
- * @param {*} item 
- * @returns 
+ * @param {*} item
+ * @returns
  */
 function updateDynamicFlowInput(item){
   const updateTime = Math.floor(new Date().getTime()/1000);
@@ -1364,10 +1364,10 @@ async function updateDynamicFlowDB(item, accessToken) {
 
 /**
  * Convert a Call Flow table record to a Dynamic Call Flow DB record.
- * @param {*} item 
- * @param {*} dataRequestsPassed 
- * @param {*} currentTimePassed 
- * @returns 
+ * @param {*} item
+ * @param {*} dataRequestsPassed
+ * @param {*} currentTimePassed
+ * @returns
  */
 function addDynamicFlowInput (item, dataRequestsPassed, currentTimePassed){
   const input = {
@@ -1603,7 +1603,7 @@ const updateDynamicFlowBatchRun = async(items, accessToken) =>{
       callTypeDescription: item.callTypeDescription,
       callerType: item.content?.callerType,
       channel: item.channel,
-      createTime: item.createTime,
+      createTime: Math.floor(new Date(item.createTime).getTime()/1000),
       dataRequests: item.content?.dataRequests,
       dialedDescription: item.dialedDescription,
       employeeId: item.employeeId,
