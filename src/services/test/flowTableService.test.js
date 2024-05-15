@@ -47,7 +47,7 @@ const jsonFlowData = {
   brand: { value: "LM" },
   callFlowTemplate: { value: "temp" },
   channel: { value: "Test1 Channel" },
-  createTime: { value: "2022-24-08" },
+  createTime: { value: "2022-24-08T05:00:00.000Z" },
   updateTime: { value: "2024-01-30T05:00:00.000Z" },
   dialedDescription: { value: "test" },
   employeeId: { value: "n1234567" },
