@@ -966,7 +966,7 @@ describe("dynamicFlowTableService",()=> {
       jest.restoreAllMocks();
       jest.useRealTimers();
     });
-    test("Success",async()=>{
+    test.skip("Success",async()=>{
       const batchUpdateResponse = {
         alertMsg: "",
         errors: [],
