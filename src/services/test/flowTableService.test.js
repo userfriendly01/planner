@@ -33,7 +33,7 @@ const jsonDynamicFlowData = {
     languageOffer: "English",
     officeNumbers: []
   },
-  createTime: "2022-24-08",
+  createTime: "2022-01-08",
   dialedDescription: "test",
   employeeId: "n1234567",
   pkey: "12345",
@@ -47,7 +47,7 @@ const jsonFlowData = {
   brand: { value: "LM" },
   callFlowTemplate: { value: "temp" },
   channel: { value: "Test1 Channel" },
-  createTime: { value: "2022-24-08" },
+  createTime: { value: "2022-01-08" },
   updateTime: { value: "2024-01-30T05:00:00.000Z" },
   dialedDescription: { value: "test" },
   employeeId: { value: "n1234567" },
@@ -93,7 +93,7 @@ describe("flowTableService",()=>{
         brand: { value: "LM" },
         callFlowTemplate: { value: "temp" },
         channel: { value: "Test1 Channel" },
-        createTime: { value: "2022-24-08" },
+        createTime: { value: "2022-01-08" },
         dialedDescription: { value: "test" },
         employeeId: { value: "n1234567" },
         userDestination: { value: "dest" },
@@ -112,7 +112,7 @@ describe("flowTableService",()=>{
         pkey: { value: "12345" },
         brand: { value: "LM" },
         channel: { value: "Test1 Channel" },
-        createTime: { value: "2022-24-08" },
+        createTime: { value: "2022-01-08" },
         dialedDescription: { value: "test" },
         dataRequests: { value: undefined }
       };
@@ -124,7 +124,7 @@ describe("flowTableService",()=>{
         pkey: { value: "12345" },
         brand: { value: "LM" },
         channel: { value: "Test1 Channel" },
-        createTime: { value: "2022-24-08" },
+        createTime: { value: "2022-01-08" },
         dialedDescription: { value: "test" },
         dataRequests: { value: undefined }
       };
@@ -143,7 +143,7 @@ describe("flowTableService",()=>{
         brand: "LM",
         callFlowTemplate: "temp",
         channel: "Test1 Channel",
-        createTime: "2022-24-08",
+        createTime: "2022-01-08",
         updateTime: "2024-01-30T05:00:00.000Z",
         dialedDescription: "test",
         employeeId: "n1234567",
@@ -155,7 +155,7 @@ describe("flowTableService",()=>{
         brand: "LM",
         callFlowTemplate: "temp",
         channel: "Test1 Channel",
-        createTime: "2022-24-08",
+        createTime: "2022-01-08",
         updateTime: "2024-01-30T05:00:00.000Z",
         dialedDescription: "test",
         employeeId: "n1234567",
@@ -432,7 +432,7 @@ describe("flowTableService",()=>{
       const response = await batchFlowUpdate([{ ...jsonFlowData }],"1233-3245");
       expect(response).toEqual(batchUpdateResponse);
       expect(window.fetch).toBeCalledWith("http://localhost:3000", {
-        "body": "{\"query\":\"\\n        mutation batchUpdateCctSharedCallFlowDb($input: CctSharedCallFlowDbBatchUpdateInput!) {\\n          batchUpdateCctSharedCallFlowDb(input: $input) {\\n            items {\\n              accountManager\\n              affinityVDN\\n              agentId\\n              brand\\n              callDetails1\\n              callDetails2\\n              callFlowTemplate\\n              callTypeDescription\\n              channel\\n              content {\\n                callFlowRoute\\n                callIntent\\n                callerType\\n                dataRequests\\n                greetingMessages\\n                languageOffer\\n                transferNumber\\n              }\\n              createTime\\n              dialedDescription\\n              employeeId\\n              internetPlacement\\n              lineOfBusiness\\n              marketingChannel\\n              pkey\\n              predictiveCaller\\n              rangeIndicator\\n              requestID\\n              selfServiceIndicator\\n              tollFreeNumber\\n              tfnRoutingGroup\\n              transferCode\\n              type\\n              userDestination\\n              whisper\\n            }\\n          }\\n        }\\n      \",\"variables\":{\"input\":{\"batchFlowUpdateInput\":[{\"pkey\":{\"value\":\"12345\"},\"agentId\":\"\",\"brand\":{\"value\":\"LM\"},\"callFlowTemplate\":{\"value\":\"temp\"},\"channel\":{\"value\":\"Test1 Channel\"},\"content\":{\"callIntent\":\"\",\"callFlowRoute\":\"\",\"callerType\":\"\",\"greetingMessages\":\"\",\"transferNumber\":\"\",\"languageOffer\":\"\"},\"createTime\":{\"value\":\"2022-24-08\"},\"updateTime\":\"2024-01-30T05:00:00.000Z\",\"dialedDescription\":{\"value\":\"test\"},\"accountManager\":\"\",\"affinityVDN\":\"\",\"callTypeDescription\":\"\",\"transferCode\":\"\",\"internetPlacement\":\"\",\"callDetails1\":\"\",\"callDetails2\":\"\",\"tollFreeNumber\":\"\",\"lineOfBusiness\":\"\",\"marketingChannel\":\"\",\"predictiveCaller\":false,\"selfServiceIndicator\":false,\"whisper\":\"\",\"requestID\":\"\",\"userDestination\":{\"value\":\"dest\"},\"rangeIndicator\":\"\",\"tfnRoutingGroup\":\"\",\"type\":\"\"}]}}}",
+        "body": "{\"query\":\"\\n        mutation batchUpdateCctSharedCallFlowDb($input: CctSharedCallFlowDbBatchUpdateInput!) {\\n          batchUpdateCctSharedCallFlowDb(input: $input) {\\n            items {\\n              accountManager\\n              affinityVDN\\n              agentId\\n              brand\\n              callDetails1\\n              callDetails2\\n              callFlowTemplate\\n              callTypeDescription\\n              channel\\n              content {\\n                callFlowRoute\\n                callIntent\\n                callerType\\n                dataRequests\\n                greetingMessages\\n                languageOffer\\n                transferNumber\\n              }\\n              createTime\\n              dialedDescription\\n              employeeId\\n              internetPlacement\\n              lineOfBusiness\\n              marketingChannel\\n              pkey\\n              predictiveCaller\\n              rangeIndicator\\n              requestID\\n              selfServiceIndicator\\n              tollFreeNumber\\n              tfnRoutingGroup\\n              transferCode\\n              type\\n              userDestination\\n              whisper\\n            }\\n          }\\n        }\\n      \",\"variables\":{\"input\":{\"batchFlowUpdateInput\":[{\"pkey\":{\"value\":\"12345\"},\"agentId\":\"\",\"brand\":{\"value\":\"LM\"},\"callFlowTemplate\":{\"value\":\"temp\"},\"channel\":{\"value\":\"Test1 Channel\"},\"content\":{\"callIntent\":\"\",\"callFlowRoute\":\"\",\"callerType\":\"\",\"greetingMessages\":\"\",\"transferNumber\":\"\",\"languageOffer\":\"\"},\"createTime\":{\"value\":\"2022-01-08\"},\"updateTime\":\"2024-01-30T05:00:00.000Z\",\"dialedDescription\":{\"value\":\"test\"},\"accountManager\":\"\",\"affinityVDN\":\"\",\"callTypeDescription\":\"\",\"transferCode\":\"\",\"internetPlacement\":\"\",\"callDetails1\":\"\",\"callDetails2\":\"\",\"tollFreeNumber\":\"\",\"lineOfBusiness\":\"\",\"marketingChannel\":\"\",\"predictiveCaller\":false,\"selfServiceIndicator\":false,\"whisper\":\"\",\"requestID\":\"\",\"userDestination\":{\"value\":\"dest\"},\"rangeIndicator\":\"\",\"tfnRoutingGroup\":\"\",\"type\":\"\"}]}}}",
         "headers": {
           "Authorization": "1233-3245",
           "Content-Type": "application/json"
@@ -497,7 +497,7 @@ describe("flowTableService",()=>{
       const response = await batchFlowCreate([{ ...jsonFlowData }],"1233-3245");
       expect(response).toEqual(batchCreateResponse);
       expect(window.fetch).toBeCalledWith("http://localhost:3000", {
-        "body": "{\"query\":\"\\n        mutation batchCreateCctSharedCallFlowDb($input: CctSharedCallFlowDbBatchCreateInput!) {\\n          batchCreateCctSharedCallFlowDb(input: $input) {\\n            items {\\n              accountManager\\n              affinityVDN\\n              agentId\\n              brand\\n              callDetails1\\n              callDetails2\\n              callFlowTemplate\\n              callTypeDescription\\n              channel\\n              content {\\n                callFlowRoute\\n                callIntent\\n                callerType\\n                dataRequests\\n                greetingMessages\\n                languageOffer\\n                transferNumber\\n              }\\n              createTime\\n              dialedDescription\\n              employeeId\\n              internetPlacement\\n              lineOfBusiness\\n              marketingChannel\\n              pkey\\n              predictiveCaller\\n              rangeIndicator\\n              requestID\\n              selfServiceIndicator\\n              tollFreeNumber\\n              transferCode\\n              type\\n              userDestination\\n              whisper\\n            }\\n          }\\n        }\\n      \",\"variables\":{\"input\":{\"batchFlowCreateInput\":[{\"pkey\":{\"value\":\"12345\"},\"agentId\":\"\",\"brand\":{\"value\":\"LM\"},\"callFlowTemplate\":{\"value\":\"temp\"},\"channel\":{\"value\":\"Test1 Channel\"},\"content\":{\"callIntent\":\"\",\"callFlowRoute\":\"\",\"callerType\":\"\",\"greetingMessages\":\"\",\"transferNumber\":\"\",\"languageOffer\":\"\"},\"createTime\":{\"value\":\"2022-24-08\"},\"dialedDescription\":{\"value\":\"test\"},\"accountManager\":\"\",\"affinityVDN\":\"\",\"callTypeDescription\":\"\",\"transferCode\":\"\",\"internetPlacement\":\"\",\"callDetails1\":\"\",\"callDetails2\":\"\",\"tollFreeNumber\":\"\",\"lineOfBusiness\":\"\",\"marketingChannel\":\"\",\"whisper\":\"\",\"requestID\":\"\",\"userDestination\":{\"value\":\"dest\"},\"rangeIndicator\":\"\",\"type\":\"\",\"predictiveCaller\":false,\"selfServiceIndicator\":false}]}}}",
+        "body": "{\"query\":\"\\n        mutation batchCreateCctSharedCallFlowDb($input: CctSharedCallFlowDbBatchCreateInput!) {\\n          batchCreateCctSharedCallFlowDb(input: $input) {\\n            items {\\n              accountManager\\n              affinityVDN\\n              agentId\\n              brand\\n              callDetails1\\n              callDetails2\\n              callFlowTemplate\\n              callTypeDescription\\n              channel\\n              content {\\n                callFlowRoute\\n                callIntent\\n                callerType\\n                dataRequests\\n                greetingMessages\\n                languageOffer\\n                transferNumber\\n              }\\n              createTime\\n              dialedDescription\\n              employeeId\\n              internetPlacement\\n              lineOfBusiness\\n              marketingChannel\\n              pkey\\n              predictiveCaller\\n              rangeIndicator\\n              requestID\\n              selfServiceIndicator\\n              tollFreeNumber\\n              transferCode\\n              type\\n              userDestination\\n              whisper\\n            }\\n          }\\n        }\\n      \",\"variables\":{\"input\":{\"batchFlowCreateInput\":[{\"pkey\":{\"value\":\"12345\"},\"agentId\":\"\",\"brand\":{\"value\":\"LM\"},\"callFlowTemplate\":{\"value\":\"temp\"},\"channel\":{\"value\":\"Test1 Channel\"},\"content\":{\"callIntent\":\"\",\"callFlowRoute\":\"\",\"callerType\":\"\",\"greetingMessages\":\"\",\"transferNumber\":\"\",\"languageOffer\":\"\"},\"createTime\":{\"value\":\"2022-01-08\"},\"dialedDescription\":{\"value\":\"test\"},\"accountManager\":\"\",\"affinityVDN\":\"\",\"callTypeDescription\":\"\",\"transferCode\":\"\",\"internetPlacement\":\"\",\"callDetails1\":\"\",\"callDetails2\":\"\",\"tollFreeNumber\":\"\",\"lineOfBusiness\":\"\",\"marketingChannel\":\"\",\"whisper\":\"\",\"requestID\":\"\",\"userDestination\":{\"value\":\"dest\"},\"rangeIndicator\":\"\",\"type\":\"\",\"predictiveCaller\":false,\"selfServiceIndicator\":false}]}}}",
         "headers": {
           "Authorization": "1233-3245",
           "Content-Type": "application/json"
@@ -535,7 +535,7 @@ describe("dynamicFlowTableService",()=> {
         brand: { value: "LM" },
         callFlowTemplate: { value: "temp" },
         channel: { value: "Test1 Channel" },
-        createTime: { value: "2022-24-08" },
+        createTime: { value: "2022-01-08" },
         dialedDescription: { value: "test" },
         employeeId: { value: "n1234567" },
         userDestination: { value: "dest" },
@@ -554,7 +554,7 @@ describe("dynamicFlowTableService",()=> {
         pkey: { value: "12345" },
         brand: { value: "LM" },
         channel: { value: "Test1 Channel" },
-        createTime: { value: "2022-24-08" },
+        createTime: { value: "2022-01-08" },
         dialedDescription: { value: "test" },
         dataRequests: { value: undefined }
       };
@@ -566,7 +566,7 @@ describe("dynamicFlowTableService",()=> {
         pkey: { value: "12345" },
         brand: { value: "LM" },
         channel: { value: "Test1 Channel" },
-        createTime: { value: "2022-24-08" },
+        createTime: { value: "2022-01-08" },
         dialedDescription: { value: "test" },
         dataRequests: { value: undefined }
       };
