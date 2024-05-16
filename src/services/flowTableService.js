@@ -228,7 +228,7 @@ async function retrieveFlowData(accessToken, counter = 1, nextToken = null, rowI
  */
 function createFlowFromLegacyPhone (item) {
 
-  const convertedCreateTime = dateConversion().toISOString();
+  const convertedCreateTime = dateConversion(item.createTime).toISOString();
 
   return {
     pkey: item.pkey,
