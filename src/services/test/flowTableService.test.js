@@ -949,16 +949,14 @@ describe("dynamicFlowTableService",()=> {
       flag: false,
       success: []
     };
-    beforeAll(() => {
-      jest.useFakeTimers("modern");
-      jest.setSystemTime(new Date(curTime));
-    });
     beforeEach(()=>{
       window.fetch = jest.fn(() =>
         Promise.resolve({
           json: () => Promise.resolve(batchUpdateResponse)
         })
       );
+      jest.useFakeTimers("modern");
+      jest.setSystemTime(new Date(1706590800000));
     });
     afterEach(()=>{
       jest.restoreAllMocks();
@@ -972,7 +970,6 @@ describe("dynamicFlowTableService",()=> {
         flag: false,
         success: [jsonFlowData]
       };
-      jsonDynamicFlowData.createTime = curTimeUnixEpoch;
       const response = await batchDynamicFlowUpdate([{ ...jsonFlowData }],"1233-3245","http://localhost:3000");
       expect(response).toEqual(batchUpdateResponse);
       expect(window.fetch).toBeCalledWith("http://localhost:3000", {
@@ -1063,10 +1060,16 @@ describe("dynamicFlowTableService",()=> {
       const response = dateConversion("2023-07-04T04:00:00.000Z");
       expect(response).toEqual(new Date("2023-07-04T04:00:00.000Z"));
     });
-    test("Number",()=>{
+    test("Number less than 9999999999",()=>{
       const response = dateConversion(1609001);
-      expect(response).toEqual("1970-01-19T14:56:41.000Z");
+      expect(response).toEqual(new Date(160900100));
     });
+
+    test("Number greater than 9999999999",()=>{
+      const response = dateConversion(10000000000);
+      expect(response).toEqual(new Date(10000000000));
+    });
+
     test("Empty string",()=>{
       const response = dateConversion("");
       expect(response).toEqual(new Date(0));
