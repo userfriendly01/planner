@@ -330,6 +330,11 @@ function createFlowFromAction (item) {
   };
 }
 
+/**
+ * Convert string/ number to date
+ * @param {any} createTime
+ * @returns Date
+ */
 function dateConversion(createTime) {
   let returnDate = new Date(0);
   try {
@@ -1710,6 +1715,7 @@ export {
   batchDynamicFlowUpdate,
   batchFlowCreate,
   batchFlowUpdate,
+  dateConversion,
   deleteDynamicFlowRule,
   deleteFlowRule,
   flowBatchDelete,

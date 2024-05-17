@@ -1,5 +1,5 @@
 import { act } from "@testing-library/react";
-import  {
+import {
   addDynamicFlowRule,
   addFlowRule,
   batchDeleteItems,
@@ -7,7 +7,7 @@ import  {
   batchDynamicFlowCreate,
   batchDynamicFlowUpdate,
   batchFlowCreate,
-  batchFlowUpdate,
+  batchFlowUpdate, dateConversion,
   deleteDynamicFlowRule,
   deleteFlowRule,
   flowBatchDelete,
@@ -18,7 +18,7 @@ import  {
   retrieveFlowData,
   updateDynamicFlowDB,
   updateFlowDB
-}  from "../flowTableService";
+} from "../flowTableService";
 
 const jsonDynamicFlowData = {
   brand: "LM",
@@ -964,7 +964,7 @@ describe("dynamicFlowTableService",()=> {
       jest.restoreAllMocks();
       jest.useRealTimers();
     });
-    test.skip("Success",async()=>{
+    test("Success",async()=>{
       const batchUpdateResponse = {
         alertMsg: "",
         errors: [],
@@ -1051,6 +1051,28 @@ describe("dynamicFlowTableService",()=> {
     test("empty records insertion",async()=>{
       const response = await batchDynamicFlowCreate([],"1233-3245","http://localhost:3000");
       expect(response.alertMsg).toEqual("");
+    });
+  });
+
+  describe("DateConversion", ()=>{
+    afterEach(()=>{
+      jest.restoreAllMocks();
+    });
+    test("String",async()=>{
+      const response = dateConversion("2023-07-04T04:00:00.000Z");
+      expect(response).toEqual(new Date("2023-07-04T04:00:00.000Z"));
+    });
+    test("Number",async()=>{
+      const response = dateConversion(1609001);
+      expect(response).toEqual(new Date(1609001));
+    });
+    test("Empty string",async()=>{
+      const response = dateConversion("");
+      expect(response).toEqual(new Date(0));
+    });
+    test("Invalid date",async()=>{
+      const response = dateConversion("Invalid Date");
+      expect(response).toEqual(new Date(0));
     });
   });
 });
