@@ -458,10 +458,8 @@ describe("flowTableService",()=>{
     test("Call with an Empty List", async()=>{
       const response = await batchFlowUpdate([],"1233-3245");
       const errorResponse = {
-        errors: [
-          "Please Select Something to Edit"
-        ],
-        flag: true,
+        errors: [],
+        flag: false,
         success: [],
         failure: []
       };
@@ -507,7 +505,7 @@ describe("flowTableService",()=>{
     });
     test("empty records insertion",async()=>{
       const response = await batchFlowCreate([],"1233-3245","http://localhost:3000");
-      expect(response.alertMsg).toEqual("Please select something to add");
+      expect(response.alertMsg).toEqual("");
     });
   });
 });
@@ -1004,10 +1002,8 @@ describe("dynamicFlowTableService",()=> {
     test("Call with an Empty List", async()=>{
       const response = await batchDynamicFlowUpdate([],"1233-3245","http://localhost:3000");
       const errorResponse = {
-        errors: [
-          "Please Select Something to Edit"
-        ],
-        flag: true,
+        errors: [],
+        flag: false,
         success: [],
         failure: []
       };
@@ -1054,7 +1050,7 @@ describe("dynamicFlowTableService",()=> {
     });
     test("empty records insertion",async()=>{
       const response = await batchDynamicFlowCreate([],"1233-3245","http://localhost:3000");
-      expect(response.alertMsg).toEqual("Please select something to add");
+      expect(response.alertMsg).toEqual("");
     });
   });
 });

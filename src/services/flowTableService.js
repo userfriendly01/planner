@@ -331,11 +331,26 @@ function createFlowFromAction (item) {
 }
 
 function dateConversion(createTime) {
-  let jsEpoch = createTime ?? "0";
-  if (createTime && typeof createTime === "number") {
-    jsEpoch = createTime < 9999999999 ? createTime * 1000 : createTime;
+  let returnDate = new Date(0);
+  try {
+
+    if (typeof createTime === "string" && createTime.length===0) {
+      return returnDate;
+    }
+
+    let jsEpoch = createTime;
+    if (createTime && typeof createTime === "number") {
+      jsEpoch = createTime < 9999999999 ? createTime * 1000 : createTime;
+    }
+    returnDate = new Date(jsEpoch);
+  } catch(err) {
+    console.warn("Error in dateConversion", err, createTime);
+    return returnDate;
   }
-  return new Date(jsEpoch);
+  if (returnDate === "Invalid Date") {
+    return new Date(0);
+  }
+  return returnDate;
 }
 
 /**
@@ -730,12 +745,10 @@ async function flowBatchDelete(items, accessToken){
 const batchFlowUpdate = async(items, accessToken) =>{
   if(items.length === 0){
     return {
-      flag: true,
+      flag: false,
       success: [],
       failure: [],
-      errors: [
-        "Please Select Something to Edit"
-      ]
+      errors: []
     };
   }
   const flowUpdateArray=[];
@@ -879,10 +892,10 @@ const batchFlowCreate = async(items, accessToken) =>{
 
   if(items.length === 0){
     return {
-      alertMsg: "Please select something to add",
+      alertMsg: "",
       errors: [],
       failure: [],
-      flag: true,
+      flag: false,
       success: []
     };
   }
@@ -913,10 +926,10 @@ const batchDynamicFlowCreate = async(items, accessToken) =>{
 
   if(items.length === 0){
     return {
-      alertMsg: "Please select something to add",
+      alertMsg: "",
       errors: [],
       failure: [],
-      flag: true,
+      flag: false,
       success: []
     };
   }
@@ -1560,12 +1573,10 @@ async function flowDynamicBatchDelete(items, accessToken){
 const batchDynamicFlowUpdate = async(items, accessToken) =>{
   if(items.length === 0){
     return {
-      flag: true,
+      flag: false,
       success: [],
       failure: [],
-      errors: [
-        "Please Select Something to Edit"
-      ]
+      errors: []
     };
   }
   const dynamicFlowUpdateArray=[];
