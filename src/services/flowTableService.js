@@ -331,7 +331,7 @@ function createFlowFromAction (item) {
 }
 
 function dateConversion(createTime) {
-  let jsEpoch = createTime;
+  let jsEpoch = createTime ?? "0";
   if (createTime && typeof createTime === "number") {
     jsEpoch = createTime < 9999999999 ? createTime * 1000 : createTime;
   }
