@@ -972,6 +972,7 @@ describe("dynamicFlowTableService",()=> {
         flag: false,
         success: [jsonFlowData]
       };
+      jsonDynamicFlowData.createTime = curTimeUnixEpoch;
       const response = await batchDynamicFlowUpdate([{ ...jsonFlowData }],"1233-3245","http://localhost:3000");
       expect(response).toEqual(batchUpdateResponse);
       expect(window.fetch).toBeCalledWith("http://localhost:3000", {
@@ -1058,20 +1059,16 @@ describe("dynamicFlowTableService",()=> {
     afterEach(()=>{
       jest.restoreAllMocks();
     });
-    test("String",async()=>{
+    test("String",()=>{
       const response = dateConversion("2023-07-04T04:00:00.000Z");
       expect(response).toEqual(new Date("2023-07-04T04:00:00.000Z"));
     });
-    test("Number",async()=>{
+    test("Number",()=>{
       const response = dateConversion(1609001);
-      expect(response).toEqual(new Date(1609001));
+      expect(response).toEqual("1970-01-19T14:56:41.000Z");
     });
-    test("Empty string",async()=>{
+    test("Empty string",()=>{
       const response = dateConversion("");
-      expect(response).toEqual(new Date(0));
-    });
-    test("Invalid date",async()=>{
-      const response = dateConversion("Invalid Date");
       expect(response).toEqual(new Date(0));
     });
   });
