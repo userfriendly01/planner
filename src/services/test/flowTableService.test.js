@@ -956,7 +956,7 @@ describe("dynamicFlowTableService",()=> {
         })
       );
       jest.useFakeTimers("modern");
-      jest.setSystemTime(new Date(1706590800000));
+      jest.setSystemTime(new Date(curTime));
     });
     afterEach(()=>{
       jest.restoreAllMocks();
@@ -973,7 +973,7 @@ describe("dynamicFlowTableService",()=> {
       const response = await batchDynamicFlowUpdate([{ ...jsonFlowData }],"1233-3245","http://localhost:3000");
       expect(response).toEqual(batchUpdateResponse);
       expect(window.fetch).toBeCalledWith("http://localhost:3000", {
-        "body": "{\"query\":\"\\n        mutation batchCreatePhoneNumber($input: PhoneNumberCreateBatchInput!) {\\n          batchCreatePhoneNumber(input: $input) {\\n            items {\\n                phoneNumber\\n                callFlowName\\n                createTime\\n                updateTime\\n                nextActionType\\n                nextActionId\\n                callFlowTemplate\\n                dialedDescription\\n                phoneNumberType\\n                tfnRoutingGroup\\n                brand\\n                dataRequests\\n                greetingMessages\\n                languageOffer\\n                transferDestination\\n                callerType\\n                callFlowRoute\\n                callIntent\\n                callFlowType\\n                channel\\n                predictiveCaller\\n                employeeId\\n                callTypeDescription\\n                internetPlacement\\n                lineOfBusiness\\n                marketingChannel\\n                rangeIndicator\\n                requestID\\n                tollFreeNumber\\n                transferCode\\n                whisper\\n                officeNumbers\\n            }\\n          }\\n        }\\n      \",\"variables\":{\"input\":{\"batchPhoneNumberInput\":[{\"brand\":{\"value\":\"LM\"},\"channel\":{\"value\":\"Test1 Channel\"},\"createTime\":{\"value\":"+ curTimeUnixEpoch +"},\"dialedDescription\":{\"value\":\"test\"},\"employeeId\":{\"value\":\"n1234567\"},\"phoneNumber\":{\"value\":\"12345\"},\"updateTime\":" + curTimeUnixEpoch + "}]}}}",
+        "body": "{\"query\":\"\\n        mutation batchCreatePhoneNumber($input: PhoneNumberCreateBatchInput!) {\\n          batchCreatePhoneNumber(input: $input) {\\n            items {\\n                phoneNumber\\n                callFlowName\\n                createTime\\n                updateTime\\n                nextActionType\\n                nextActionId\\n                callFlowTemplate\\n                dialedDescription\\n                phoneNumberType\\n                tfnRoutingGroup\\n                brand\\n                dataRequests\\n                greetingMessages\\n                languageOffer\\n                transferDestination\\n                callerType\\n                callFlowRoute\\n                callIntent\\n                callFlowType\\n                channel\\n                predictiveCaller\\n                employeeId\\n                callTypeDescription\\n                internetPlacement\\n                lineOfBusiness\\n                marketingChannel\\n                rangeIndicator\\n                requestID\\n                tollFreeNumber\\n                transferCode\\n                whisper\\n                officeNumbers\\n            }\\n          }\\n        }\\n      \",\"variables\":{\"input\":{\"batchPhoneNumberInput\":[{\"brand\":{\"value\":\"LM\"},\"channel\":{\"value\":\"Test1 Channel\"},\"createTime\":{\"value\":\"2022-01-08\"},\"dialedDescription\":{\"value\":\"test\"},\"employeeId\":{\"value\":\"n1234567\"},\"phoneNumber\":{\"value\":\"12345\"},\"updateTime\":" + curTimeUnixEpoch + "}]}}}",
         "headers": {
           "Authorization": "1233-3245",
           "Content-Type": "application/json"
@@ -1062,7 +1062,7 @@ describe("dynamicFlowTableService",()=> {
     });
     test("Number less than 9999999999",()=>{
       const response = dateConversion(1609001);
-      expect(response).toEqual(new Date(160900100));
+      expect(response).toEqual(new Date(1609001000));
     });
 
     test("Number greater than 9999999999",()=>{
