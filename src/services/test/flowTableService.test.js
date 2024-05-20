@@ -962,7 +962,7 @@ describe("dynamicFlowTableService",()=> {
       jest.restoreAllMocks();
       jest.useRealTimers();
     });
-    test.skip("Success",async()=>{
+    test("Success",async()=>{
       const batchUpdateResponse = {
         alertMsg: "",
         errors: [],
@@ -1077,6 +1077,11 @@ describe("dynamicFlowTableService",()=> {
 
     test("Empty string",()=>{
       const response = dateConversion("");
+      expect(response).toEqual(new Date(0));
+    });
+
+    test("Invalid Date",()=>{
+      const response = dateConversion("Invalid Date");
       expect(response).toEqual(new Date(0));
     });
   });
