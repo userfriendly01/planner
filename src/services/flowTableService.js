@@ -352,7 +352,7 @@ function dateConversion(createTime) {
     console.warn("Error in dateConversion", err, createTime);
     return returnDate;
   }
-  if (returnDate === "Invalid Date") {
+  if (returnDate.toString() === "Invalid Date") {
     return new Date(0);
   }
   return returnDate;
