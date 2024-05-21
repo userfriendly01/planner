@@ -428,8 +428,8 @@ async function routingBatchUpdate(items, accessToken){
     alertMsg: ""
   };
   if(items.length === 0){
-    response.alertMsg = "Please Select Something to Edit";
-    response.flag=true;
+    response.alertMsg = "";
+    response.flag=false;
   }
   while (items.length > 0){
     routingDeleteArray.push(items.splice(0, size));
@@ -553,8 +553,8 @@ async function routingBatchCreate(items, accessToken){
     alertMsg: ""
   };
   if(items.length === 0){
-    response.alertMsg="Please select something to add";
-    response.flag = true;
+    response.alertMsg="";
+    response.flag = false;
   }
   while (items.length > 0){
     routingDeleteArray.push(items.splice(0, size));
