@@ -1,0 +1,156 @@
+import { FormValidationRule } from "../../../../utils/interfaces";
+import { AddPhoneNumberFieldsConfigProps } from "../CallFlowPhoneNumber.Interfaces";
+import {
+  BrandEnum,
+  PhoneNumberRecordType, CallFlowTypeEnum, ChannelEnum, PhoneNumberTypeEnum
+} from "../GraphQL/DynamicPhoneNumber.Interfaces";
+import {
+  CctSharedCallFlowDb, FlowContent, LegacyPhoneNumberTypeEnum
+} from "../GraphQL/LegacyPhoneNumber.Interfaces";
+import {
+  CombinedPhoneNumberRecordFields,
+  CommonPhoneNumberRecordField,
+  UniqueDynamicPhoneNumberRecordField,
+  UniqueLegacyPhoneNumberRecordField
+} from "./DynamicPhoneNumberFields";
+import {
+  PhoneNumberRecordUtil
+} from "../GraphQL/Util/PhoneNumberRecordUtil";
+import { Control } from "../../../../globals";
+import {
+  ControlEnum,
+  DynamicFieldConditionCheckType, FieldType, FieldTypeEnum, ValueGetterFunctionType, ValueSetterFunctionType
+} from "./Field.Interfaces";
+
+const fieldValueGetter: ValueGetterFunctionType = (phoneNumberRecord: PhoneNumberRecordType, key: string): string => {
+  if (PhoneNumberRecordUtil.isLegacyContentFieldKey(phoneNumberRecord, key)) {
+    const cctSharedCallFlowDb = phoneNumberRecord as CctSharedCallFlowDb;
+    return `${cctSharedCallFlowDb?.content[key as keyof FlowContent] || ""}`;
+  } else {
+    return `${phoneNumberRecord?.[key as keyof typeof phoneNumberRecord] || ""}`;
+  }
+};
+
+const fieldValueSetter: ValueSetterFunctionType = (phoneNumberRecord: PhoneNumberRecordType, newPropertyValue: any): PhoneNumberRecordType => {
+  if (newPropertyValue instanceof Object) {
+    Object.keys(newPropertyValue).forEach((key: string) => {
+      if (key in CombinedPhoneNumberRecordFields) {
+        if (PhoneNumberRecordUtil.isLegacyContentFieldKey(phoneNumberRecord, key)) {
+          return {
+            ...phoneNumberRecord,
+            content: {
+              ...phoneNumberRecord["content" as keyof typeof phoneNumberRecord] as FlowContent || {},
+              ...newPropertyValue
+            }
+          };
+        } else {
+          return {
+            ...phoneNumberRecord,
+            ...newPropertyValue
+          };
+        }
+      }
+    });
+  }
+
+  //TODO: log that value was not found in list of fields
+  return phoneNumberRecord;
+};
+
+const drcDynamicFieldConditionCheck: DynamicFieldConditionCheckType = (formValidationRule: FormValidationRule): boolean => {
+  return formValidationRule[CommonPhoneNumberRecordField.BRAND]?.value === BrandEnum.LIBERTY_MUTUAL
+    && formValidationRule[CommonPhoneNumberRecordField.CHANNEL]?.value === ChannelEnum.SALES
+    && formValidationRule[UniqueLegacyPhoneNumberRecordField.TYPE]?.value === LegacyPhoneNumberTypeEnum.DRC;
+};
+
+const didDynamicFieldConditionCheck: DynamicFieldConditionCheckType = (formValidationRule?: FormValidationRule): boolean => {
+  return formValidationRule[UniqueLegacyPhoneNumberRecordField.TYPE]?.value === PhoneNumberTypeEnum.DID;
+};
+
+const dtmfDynamicFieldConditionCheck: DynamicFieldConditionCheckType = (formValidationRule: FormValidationRule): boolean => {
+  return formValidationRule[UniqueDynamicPhoneNumberRecordField.CALL_FLOW_TYPE]?.value === CallFlowTypeEnum.DTMF ||
+    formValidationRule[UniqueLegacyPhoneNumberRecordField.SELF_SERVICE_INDICATOR]?.value === true;
+};
+
+/**
+ *
+ * @param {string} label
+ * @param {string} key
+ * @param {Control} control
+ * @param {boolean} required
+ * @param {boolean} disableEdit
+ * @param {DynamicFieldConditionCheckType} dynamicFieldConditionCheck
+ * @param {FieldType} fieldType
+ * @param {number} gridSize
+ *
+ * @return {AddPhoneNumberFieldsConfigProps}
+ */
+function createAddPhoneNumberFieldsConfig(label: string, key: string, control: Control, required: boolean, disableEdit: boolean, dynamicFieldConditionCheck?: DynamicFieldConditionCheckType | undefined, fieldType?: FieldType, gridSize?: number): AddPhoneNumberFieldsConfigProps {
+  return {
+    label,
+    key,
+    control,
+    required,
+    disableEdit,
+    valueGetter: fieldValueGetter,
+    valueSetter: fieldValueSetter,
+    dynamicFieldConditionCheck,
+    fieldType,
+    gridSize
+  } as AddPhoneNumberFieldsConfigProps;
+}
+
+const phoneNumberFields: AddPhoneNumberFieldsConfigProps[] = [
+  createAddPhoneNumberFieldsConfig("Dialed Phone Number", UniqueLegacyPhoneNumberRecordField.PKEY, ControlEnum.Input, true, true),
+  createAddPhoneNumberFieldsConfig("Dynamic Dialed Phone Number", UniqueDynamicPhoneNumberRecordField.PHONE_NUMBER, ControlEnum.Input, true, true),
+  createAddPhoneNumberFieldsConfig("Description", CommonPhoneNumberRecordField.DIALED_DESCRIPTION, ControlEnum.Input, true, false),
+  createAddPhoneNumberFieldsConfig("Call Flow Template", CommonPhoneNumberRecordField.CALL_FLOW_TEMPLATE, ControlEnum.Input, true, false),
+  createAddPhoneNumberFieldsConfig("Channel", CommonPhoneNumberRecordField.CHANNEL, ControlEnum.Select, true, false),
+  createAddPhoneNumberFieldsConfig("Brand", CommonPhoneNumberRecordField.BRAND, ControlEnum.Select, true, false),
+  createAddPhoneNumberFieldsConfig("Language Offer", CommonPhoneNumberRecordField.LANGUAGE_OFFER, ControlEnum.Select, true, false),
+  createAddPhoneNumberFieldsConfig("Data Requests", CommonPhoneNumberRecordField.DATA_REQUESTS, ControlEnum.AutoComplete, true, false, undefined, FieldTypeEnum.VIEW_AND_ADD, 10),
+  createAddPhoneNumberFieldsConfig("Caller Type", CommonPhoneNumberRecordField.CALLER_TYPE, ControlEnum.AutoComplete, true, false, undefined, FieldTypeEnum.VIEW_AND_ADD, 10),
+  createAddPhoneNumberFieldsConfig("Phone Number Type", UniqueLegacyPhoneNumberRecordField.TYPE, ControlEnum.AutoComplete, false, false),
+  createAddPhoneNumberFieldsConfig("Dynamic Phone Number Type", UniqueDynamicPhoneNumberRecordField.PHONE_NUMBER_TYPE, ControlEnum.AutoComplete, false, false),
+  createAddPhoneNumberFieldsConfig("Transfer Number", UniqueLegacyPhoneNumberRecordField.TRANSFER_NUMBER, ControlEnum.Input, true, false),
+  createAddPhoneNumberFieldsConfig("Dynamic Transfer Destination", UniqueDynamicPhoneNumberRecordField.TRANSFER_DESTINATION, ControlEnum.Input, true, false),
+  createAddPhoneNumberFieldsConfig("Call Flow Route", CommonPhoneNumberRecordField.CALL_FLOW_ROUTE, ControlEnum.AutoComplete, true, false, undefined, FieldTypeEnum.VIEW_AND_ADD, 10),
+  createAddPhoneNumberFieldsConfig("Greeting", CommonPhoneNumberRecordField.GREETING_MESSAGES, ControlEnum.Input, true, false),
+  createAddPhoneNumberFieldsConfig("Employee ID", CommonPhoneNumberRecordField.EMPLOYEE_ID, ControlEnum.Input, false, false),
+  createAddPhoneNumberFieldsConfig("Account Manager", UniqueLegacyPhoneNumberRecordField.ACCOUNT_MANAGER, ControlEnum.Input, false, false),
+  createAddPhoneNumberFieldsConfig("Affinity VDN", UniqueLegacyPhoneNumberRecordField.AFFINITY_VDN, ControlEnum.Input, false, false),
+  createAddPhoneNumberFieldsConfig("Call Type Description", CommonPhoneNumberRecordField.CALL_TYPE_DESCRIPTION, ControlEnum.Input, false, false),
+  createAddPhoneNumberFieldsConfig("Transfer Code", CommonPhoneNumberRecordField.TRANSFER_CODE, ControlEnum.Input, false, false),
+  createAddPhoneNumberFieldsConfig("Internet Placement", CommonPhoneNumberRecordField.INTERNET_PLACEMENT, ControlEnum.Input, false, false),
+  createAddPhoneNumberFieldsConfig("Call Details 1", UniqueLegacyPhoneNumberRecordField.CALL_DETAILS_1, ControlEnum.Input, false, false, drcDynamicFieldConditionCheck),
+  createAddPhoneNumberFieldsConfig("Call Details 2", UniqueLegacyPhoneNumberRecordField.CALL_DETAILS_2, ControlEnum.Input, false, false, drcDynamicFieldConditionCheck),
+  createAddPhoneNumberFieldsConfig("Line Of Business", CommonPhoneNumberRecordField.LINE_OF_BUSINESS, ControlEnum.Input, false, false, drcDynamicFieldConditionCheck),
+  createAddPhoneNumberFieldsConfig("Marketing Channel", CommonPhoneNumberRecordField.MARKETING_CHANNEL, ControlEnum.Input, false, false, drcDynamicFieldConditionCheck),
+  createAddPhoneNumberFieldsConfig("Whisper", CommonPhoneNumberRecordField.WHISPER, ControlEnum.Input, false, false, drcDynamicFieldConditionCheck),
+  createAddPhoneNumberFieldsConfig("Request ID", CommonPhoneNumberRecordField.REQUEST_ID, ControlEnum.Input, false, false, drcDynamicFieldConditionCheck),
+  createAddPhoneNumberFieldsConfig("User Destination", UniqueLegacyPhoneNumberRecordField.USER_DESTINATION, ControlEnum.Select, false, false, didDynamicFieldConditionCheck),
+  createAddPhoneNumberFieldsConfig("Range Indicator", CommonPhoneNumberRecordField.RANGE_INDICATOR, ControlEnum.Input, false, false, drcDynamicFieldConditionCheck),
+  createAddPhoneNumberFieldsConfig("Call Intent", CommonPhoneNumberRecordField.CALL_INTENT, ControlEnum.Input, false, false),
+  createAddPhoneNumberFieldsConfig("Office Numbers", CommonPhoneNumberRecordField.OFFICE_NUMBERS, ControlEnum.MultiTextField, false, false),
+  createAddPhoneNumberFieldsConfig("TFN Routing Group", CommonPhoneNumberRecordField.TFN_ROUTING_GROUP, ControlEnum.Select, false, false),
+  createAddPhoneNumberFieldsConfig("Predictive Caller", CommonPhoneNumberRecordField.PREDICTIVE_CALLER, ControlEnum.Switch, false, false, drcDynamicFieldConditionCheck),
+  createAddPhoneNumberFieldsConfig("Call Flow Type", UniqueDynamicPhoneNumberRecordField.CALL_FLOW_TYPE, ControlEnum.AutoComplete, false, false),
+  createAddPhoneNumberFieldsConfig("Self Service Indicator", UniqueLegacyPhoneNumberRecordField.SELF_SERVICE_INDICATOR, ControlEnum.AutoComplete, false, false),
+  createAddPhoneNumberFieldsConfig("Call Flow Template", CommonPhoneNumberRecordField.CALL_FLOW_TEMPLATE, ControlEnum.AutoComplete, false, false, dtmfDynamicFieldConditionCheck),
+  createAddPhoneNumberFieldsConfig("Next Action ID", UniqueDynamicPhoneNumberRecordField.NEXT_ACTION_ID, ControlEnum.Input, false, false),
+  createAddPhoneNumberFieldsConfig("Next Action Type", UniqueDynamicPhoneNumberRecordField.NEXT_ACTION_TYPE, ControlEnum.AutoComplete, false, false)
+];
+
+const initRule: FormValidationRule = phoneNumberFields.reduce((a: FormValidationRule, v: AddPhoneNumberFieldsConfigProps) => ({
+  ...a,
+  [v.key]: {
+    error: false,
+    value: "",
+    required: v.required || false
+  }
+}), {});
+
+export {
+  phoneNumberFields,
+  initRule
+};

@@ -85,6 +85,20 @@ export const tabs = {
       }
     ]
   },
+  DYNAMIC_CALL_FLOW_MANAGEMENT: {
+    value: "dynamic-call-flow-management",
+    label: "Dynamic Call Flow",
+    dropdown: [
+      {
+        route: "/triton-admin/dynamic-call-flow-phone-number",
+        label: "Dynamic Call Flow Phone Number"
+      },
+      {
+        route: "/triton-admin/dynamic-call-flow-action",
+        label: "Dynamic Call Flow Action"
+      }
+    ]
+  },
   ALOHA_ROUTING_RULES: {
     value: "aloha-routing-rules",
     label: "Routing Rules",
@@ -135,6 +149,13 @@ export const authenticationProfileTemplates = {
     permissionLevel: "read",
     tabs: [
       tabs.ALOHA_CALL_FLOW_MANAGEMENT
+    ]
+  },
+  DYNAMIC_CALL_FLOW: {
+    name: "Dynamic Call Flow",
+    permissionLevel: "read",
+    tabs: [
+      tabs.DYNAMIC_CALL_FLOW_MANAGEMENT
     ]
   }
 };

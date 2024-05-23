@@ -4,3 +4,4 @@ export * from "./orgmanagement";
 export * from "./alohaFlow";
 export * from "./alohaRouting";
 export * from "./dynamicFlow";
+export * from "./dynamicCallFlowPhoneNumber";

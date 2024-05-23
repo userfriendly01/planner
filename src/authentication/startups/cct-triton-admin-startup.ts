@@ -26,11 +26,11 @@ const getManagers = async (dispatch: any) => {
     });
   } catch (error) {
     logger.error("Failed to fetch managers from service", { error });
-
-    throw ({
-      msg: "Failed to fetch managers from service",
-      error
-    });
+    //TODO: Uncomment below
+    // throw ({
+    //   msg: "Failed to fetch managers from service",
+    //   error
+    // });
   }
 };
 
@@ -44,10 +44,10 @@ const getOffices = async (dispatch: any) => {
   } catch (error) {
     logger.error("Failed to fetch offices from service", { error });
 
-    throw ({
-      msg: "Failed to fetch offices from service",
-      error
-    });
+    // throw ({
+    //   msg: "Failed to fetch offices from service",
+    //   error
+    // });
   }
 };
 
@@ -149,10 +149,10 @@ const getWorkers = async (dispatch: any) => {
   } catch (error) {
     logger.error("Failed to fetch workers from service", { error });
 
-    throw ({
-      msg: "Failed to fetch workers from service",
-      error
-    });
+    // throw ({
+    //   msg: "Failed to fetch workers from service",
+    //   error
+    // });
   }
 };
 
@@ -171,10 +171,10 @@ const getBusinessUnits = async (dispatch: any) => {
   } catch (error) {
     logger.error("Failed to fetch Calabrio Business Units", { error });
 
-    throw ({
-      msg: "Failed to fetch Calabrio Business Units",
-      error
-    });
+    // throw ({
+    //   msg: "Failed to fetch Calabrio Business Units",
+    //   error
+    // });
   }
 };
 
@@ -184,15 +184,15 @@ export const runTritonAdminStartup = (dispatch: any) => {
 
   return Promise.all([
     Promise.resolve(getStartupProfiles().TRITON.name),
-    getWorkers(dispatch),
-    getManagers(dispatch),
-    getOffices(dispatch),
-    getProfiles(dispatch),
-    getSkills(dispatch),
+    // getWorkers(dispatch),
+    // getManagers(dispatch),
+    // getOffices(dispatch),
+    // getProfiles(dispatch),
+    // getSkills(dispatch),
     getCalabrioUsers(dispatch),
     getCalabrioOrg(dispatch),
     getCalabrioRoles(dispatch),
-    getBusinessUnits(dispatch),
-    getCalabrioWfmOptions(dispatch)
+    // getBusinessUnits(dispatch),
+    // getCalabrioWfmOptions(dispatch)
   ]);
 };

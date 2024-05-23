@@ -50,7 +50,7 @@ export const checkIfPO = (nNumber: string, environment: string): boolean => {
 
 export const getWorkerProfileId = (nNumber: string, workers: Worker[]): number => {
   let loggedInWorker: Worker;
-  workers.forEach((worker: Worker) =>{
+  workers?.forEach((worker: Worker) =>{
     if(worker.attributes?.n_number?.toLowerCase() === nNumber.toLowerCase()){
       loggedInWorker = worker;
     }

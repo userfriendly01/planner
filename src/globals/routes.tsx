@@ -13,8 +13,10 @@ import {
   UserEntryForm,
   WfmUsersViewWrapper,
   CalabrioOrgWrapper,
-  CalabrioRolesWrapper
+  CalabrioRolesWrapper,
+  DynamicCallFlowPhoneNumberContainer
 } from "components";
+import DynamicCallFlowActionContainer from "../components/tabs/dynamicCallFlowAction/DynamicCallFlowActionContainer";
 
 export const getRoutes = () => [
   {
@@ -72,6 +74,14 @@ export const getRoutes = () => [
   {
     path: "/triton-admin/dyn-flow",
     Component: DynamicFlowContainer
+  },
+  {
+    path: "/triton-admin/dynamic-call-flow-phone-number",
+    Component: DynamicCallFlowPhoneNumberContainer
+  },
+  {
+    path: "/triton-admin/dynamic-call-flow-action",
+    Component: DynamicCallFlowActionContainer
   },
   {
     path: "/triton-admin/aloha-routing",

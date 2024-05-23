@@ -32,6 +32,7 @@
     "@types/lodash": "^4.14.191",
     "@types/react-text-mask": "^5.4.11",
     "@types/styled-components": "^5.1.4",
+    "@types/uuid": "^9.0.8",
     "@typescript-eslint/eslint-plugin": "^4.17.0",
     "@typescript-eslint/parser": "^4.17.0",
     "axios": "^0.21.2",
@@ -95,6 +96,7 @@
     "ts-loader": "^9.5.0",
     "url-loader": "^4.1.1",
     "util": "^0.12.5",
+    "uuid": "9.0.1",
     "xlsx": "^0.18.5"
   },
   "engines": {

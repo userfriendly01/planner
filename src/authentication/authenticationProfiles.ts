@@ -5,13 +5,16 @@ import {
   Permissions,
   runTritonAdminStartup,
   runAlohaRoutingStartup,
-  runAlohaFlowStartup
+  runAlohaFlowStartup,
+  runDynamicCallFlowStartup
 } from "authentication";
 import {
   AlohaFlowContainer,
   AlohaRoutingContainer,
   TritonUsersViewWrapper
 } from "components";
+import DynamicCallFlowPhoneNumberContainer
+  from "../components/tabs/dynamicCallFlowPhoneNumber/DynamicCallFlowPhoneNumberContainer";
 
 export const getAuthenticationProfileTemplates = (): AuthenticationProfileOptions => {
   const Tabs = getTabs();
@@ -42,6 +45,14 @@ export const getAuthenticationProfileTemplates = (): AuthenticationProfileOption
       permissionLevel: Permissions.READ,
       tabs: [
         Tabs.ALOHA_CALL_FLOW_MANAGEMENT
+      ]
+    },
+    DYNAMIC_CALL_FLOW: {
+      name: "Dynamic Call Flow",
+      home: DynamicCallFlowPhoneNumberContainer,
+      permissionLevel: Permissions.READ,
+      tabs: [
+        Tabs.DYNAMIC_CALL_FLOW_MANAGEMENT
       ]
     }
   };
@@ -93,6 +104,14 @@ export const getAdGroupPermissionMapping = () => {
       authenticationProfile: authenticationProfileTemplates.ALOHA_FLOW
     },
     {
+      adGroup: "GPI-CCT-CONFIG-FLOW-READWRITE-NP",
+      environments: [Environments.DEV, Environments.TEST],
+      permissionLevel: Permissions.WRITE,
+      startup: startupProfiles.DYNAMIC_CALL_FLOW,
+      description: descriptions.Dynami_Call_Flow,
+      authenticationProfile: authenticationProfileTemplates.DYNAMIC_CALL_FLOW
+    },
+    {
       adGroup: "GPI-CCT-CONFIG-FLOW-READWRITE-PROD",
       environments: [Environments.PROD],
       permissionLevel: Permissions.WRITE,
@@ -140,6 +159,10 @@ export const getStartupProfiles = () => {
     ALOHA_FLOW: {
       name: "aloha-flow",
       function: runAlohaFlowStartup
+    },
+    DYNAMIC_CALL_FLOW: {
+      name: "dynamic-call-flow",
+      function: runDynamicCallFlowStartup
     }
   };
 };
@@ -227,6 +250,21 @@ export const getTabs = (): any => {
         {
           route: "/triton-admin/dyn-flow",
           label: "Dynamic Call Flow"
+        }
+      ]
+    },
+    DYNAMIC_CALL_FLOW_MANAGEMENT: {
+      value: "dynamic-call-flow-management",
+      label: "Dynamic Call Flow",
+      route: "/triton-admin/dynamic-call-flow",
+      dropdown: [
+        {
+          route: "/triton-admin/dynamic-call-flow-phone-number",
+          label: "Dynamic Call Flow Phone Number"
+        },
+        {
+          route: "/triton-admin/dynamic-call-flow-action",
+          label: "Dynamic Call Flow Action"
         }
       ]
     },
