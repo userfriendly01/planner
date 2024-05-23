@@ -103,8 +103,8 @@ class DynamicCallFlowActionXlsxReader extends AbstractXlsxReader<ActionRecordTyp
       actionId: xlsxJSONRow[XLSX_ACTION_ID] as string,
       actionType: xlsxJSONRow[XLSX_ACTION_TYPE] as ActionType,
       callFlowName: xlsxJSONRow[XLSX_CALL_FLOW_NAME] as string,
-      createTime: xlsxJSONRow[XLSX_CREATE_TIME] as string,
-      updateTime: xlsxJSONRow[XLSX_UPDATE_TIME] as string
+      createTime: xlsxJSONRow[XLSX_CREATE_TIME] as number,
+      updateTime: xlsxJSONRow[XLSX_UPDATE_TIME] as number
     } as Action;
   }
 

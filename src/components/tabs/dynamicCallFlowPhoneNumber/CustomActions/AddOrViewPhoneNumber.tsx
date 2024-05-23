@@ -9,15 +9,15 @@ import React, { useState } from "react";
 
 export interface AddOrViewProps{
   navigateViewOrAdd:(display:boolean,keys:string)=>void
-  keys?:string
+  key?:string
 }
 export const AddOrViewPhoneNumber = ({
-  navigateViewOrAdd, keys
+  navigateViewOrAdd, key
 }:AddOrViewProps):JSX.Element => {
   const [navButton, setNavButton] = useState(false);
   function navigateButton(display:boolean){
     setNavButton(display);
-    navigateViewOrAdd(display,keys);
+    navigateViewOrAdd(display,key);
   }
   return (
     <div>

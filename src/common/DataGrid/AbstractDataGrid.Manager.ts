@@ -25,7 +25,7 @@ export abstract class AbstractDataGridManager<T> {
     return this.alertBarState;
   }
 
-  protected abstract retrieveData(accessToken: string): Promise<T[]>;
+  protected abstract retrieveData(accessToken: string): Promise<Array<T>>;
 
   protected abstract getPropertyValue(record: T, key: string): string | Array<string> | number | boolean | undefined;
 

@@ -985,7 +985,7 @@ const createDynamicFlowRunItem = async(items, accessToken) =>{
   const menus = [];
   const menuOptions = [];
   let callFlowName = "";
-  items.map(item=>{
+  items.forEach(item=>{
     if(item.actionType === "ANNOUNCEMENT")
     {
       announcements.push({

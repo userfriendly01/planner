@@ -11,8 +11,9 @@ import {
   DATA_REQUESTS
 } from "../Field/DynamicPhoneNumberFields";
 import { PKEY } from "../Field/LegacyPhoneNumberFields";
-import { Filter } from "../../../../common/DataGrid/DataGridState.Interfaces";
-import { PreviewModalAction } from "components";
+import {
+  Filter, PreviewModalActionType
+} from "../../../../common/DataGrid/DataGridState.Interfaces";
 
 export class PhoneNumberDataGridManager extends AbstractDataGridManager<PhoneNumberRecordType>{
 
@@ -66,10 +67,10 @@ export class PhoneNumberDataGridManager extends AbstractDataGridManager<PhoneNum
     this.dataGrid.setIsFilterModalOpen(openFilterModal);
   }
 
-  openPreviewModal(openPreviewModal: boolean, action: PreviewModalAction): void {
+  openPreviewModal(openPreviewModal: boolean, previewModalAction: PreviewModalActionType): void {
     this.dataGrid.state = {
       isPreviewModalOpen: openPreviewModal,
-      previewModalAction: action
+      previewModalAction: previewModalAction
     };
   }
 

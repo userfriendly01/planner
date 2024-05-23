@@ -4,35 +4,24 @@ import React, {
 import { AzureSPA } from "globals";
 import { ActionDataGridToolBar } from "../CustomActions/ActionDataGridToolBar";
 import {
-  DynamicAction, DynamicFlowStateVariables,
-  ActionPreview,
-  DynamicStateVariables,
-  PreviewModalAction
-} from "../../dynamicFlow/DynamicFlow.Interfaces";
-import { AlertBarProps } from "utils/interfaces";
-import {
   downloadCSV,
-  EXPORT_FILE_PREFIX,
-  initializedAlertBar
+  EXPORT_FILE_PREFIX
 } from "utils";
 import { PreviewModal } from "../PreviewModal/PreviewModal";
 import {
-  batchDynamicFlowCreate,
-  queryDynamicFlowData
-} from "services";
-import { getDynamicGridMasterData } from "./ActionDataGridMaster";
-import {
   DataGrid, useGridApiRef
 } from "@mui/x-data-grid";
-import ActionDataGridColumnDef from "./ActionDataGridColumnDef";
 import { CustomToast } from "components";
+import ActionDataGridColumnDef from "./ActionDataGridColumnDef";
+import { DataGridState } from "../../../../common/DataGrid/DataGridState.Manager";
+import { AlertBarState } from "../../../../common/StateManager/AlertBarState.Manager";
 import {
-  ActionFormFieldConfigs
-} from "../Field/ActionFieldsConfig";
-import {
-  FormField, FormFieldConfig,
-  FormFields
-} from "../../../../common/FormField/FormField.Interfaces";
+  ActionRecord,
+  ActionRecordType
+} from "../GraphQL/DynamicCallFlowActionGraphQL.Interfaces";
+import { ActionDataGridManager } from "./ActionDataGrid.Manager";
+import { PreviewModalActionType } from "../../../../common/DataGrid/DataGridState.Interfaces";
+import { batchCreateDynamicActionRecords } from "../GraphQL/BatchCreateDynamicActionQuery";
 
 const ActionDataGrid = (props: AzureSPA): JSX.Element => {
   const {
@@ -40,167 +29,82 @@ const ActionDataGrid = (props: AzureSPA): JSX.Element => {
     matchedGroups
   } = props;
 
-  const flowInitState: DynamicStateVariables = {
-    data: [],
-    filteredItems: [] as Array<DynamicAction>,
-    fetching: false,
-    selectedRow: undefined,
-    isPreviewModalOpen: false,
-    saveSuccess: 0
-  };
-  const [dataFlow, setDataFlow] = useState(flowInitState);
-  const [selectedList, setSelectedList] = useState<Array<ActionPreview>>([]);
-  const [alertBar, setAlertBar] = useState(initializedAlertBar);
-  const openPreviewModal = (flag: boolean, action: PreviewModalAction) =>{
-    setDataFlow((dataFlowProps: DynamicStateVariables) => ({
-      ...dataFlowProps,
-      isPreviewModalOpen: flag,
-      previewModalAction: action
-    }));
+  const dataGridState: DataGridState<ActionRecord> = new DataGridState<ActionRecord>();
+  const alertBarState: AlertBarState = new AlertBarState();
+  const actionDataGridManager: ActionDataGridManager = new ActionDataGridManager(dataGridState, alertBarState);
+  const [selectedList, setSelectedList] = useState<Array<ActionRecord>>([]);
+
+  useEffect(() => {
+    //TODO:  Rename this function, it's not returning any values, it's loading the table
+    const loadDataGrid = async()=> {
+      // alertBarState.info("Data loading in progress. Please wait for the complete set of data to be loaded.");
+      console.log("Loading call flow data.");
+      try {
+        // console.log("Loading call flow data.");
+        // const phoneNumberRecords: Array<PhoneNumberRecordType> = await listPhoneNumberRecords(accessToken);
+        await actionDataGridManager.loadDataGrid(accessToken);
+      } catch (error: unknown) {
+        // TODO: Log error
+        alertBarState.error("Errors loading data.  Please check the console logs.");
+      }
+      console.log("done call flow data load.");
+
+    };
+
+    loadDataGrid();
+    // setDataGrid((dg: DataGridStateProps<PhoneNumberRecordType>) => ({
+    //   ...dg,
+    //   ...dataGrid
+    // }));
+  }, []);
+
+  const openPreviewModal = (openPreviewModal: boolean, previewModelAction: PreviewModalActionType) => {
+    actionDataGridManager.dataGrid.setIsPreviewModalOpen(openPreviewModal)
+      .setPreviewModalAction(previewModelAction);
   };
 
   const apiRef = useGridApiRef();
-  /**
-   * Below function Query new Dynamo db (V1) table
-   * and prepare array to display in the data grid
-   */
-  useEffect(() => {
-    const getTableData = async()=>{
-
-      // GraphQL Query
-      const firstChunkData:any = await queryDynamicFlowData(accessToken);
-
-      // Build an array from objects return from dynamo.
-      const listItems = firstChunkData?.data?.getCallFlowConfig?.items || [];
-      let counter =1;
-      const dynamicFlowData: DynamicAction[] = [];
-      listItems.forEach((item: DynamicAction) => {
-        if (item) {
-          dynamicFlowData.push({
-            ...item,
-            id: counter++
-          });
-        }
-      });
-
-      await loadDataTable(dynamicFlowData);
-
-      setAlertBar((alertBarProps: AlertBarProps) => ({
-        ...alertBarProps,
-        open: true,
-        severityType: "info",
-        msg: "Data loading in progress. Please wait for the complete set of data to be loaded.",
-        duration: 15000
-      }));
-
-      setAlertBar((alertBarProps: AlertBarProps) => ({
-        ...alertBarProps,
-        open: true,
-        severityType: "success",
-        msg: "Successfully loaded the dynamic flow data!!"
-      }));
-    };
-    getTableData();
-  }, []);
-
-  const loadDataTable = async (result?: DynamicAction[]) => {
-    if (result?.length > 0) {
-      result = result.sort((a: DynamicAction, b: DynamicAction) => (a.id - b.id));
-      result = result.map((item: DynamicAction, index: number) => ({
-        ...item,
-        id: index + 1
-      }));
-      const minId: number = result[0].id;
-      const maxId: number = result[result.length - 1].id;
-      const masterData = getDynamicGridMasterData(result);
-
-      // Set Data Flow
-      setDataFlow((dynamicDataFlowProps: DynamicFlowStateVariables) => ({
-        ...dynamicDataFlowProps,
-        data: result,
-        filteredItems: result,
-        fetching: false,
-        idStart: minId,
-        idEnd: maxId,
-        maxId,
-        minId,
-        masterData
-      }));
-
-    } else {
-      setAlertBar((alertBarProps: AlertBarProps) => ({
-        ...alertBarProps,
-        open: true,
-        msg: "Error in retrieving Flow record. Please check the API Key",
-        severityType: "error"
-      }));
-    }
-  };
 
   const exportDataFile = () =>{
-    downloadCSV(EXPORT_FILE_PREFIX.DYNAMIC_FLOW, dataFlow.filteredItems.map(action =>  {
-      return {
-        actionId: action.actionId,
-        actionType: action.actionType,
-        callFlowName: action.callFlowName,
-        speech: action.speech,
-        options: action.options,
-        repeat: action.repeat,
-        timeout: action.timeout,
-        finishOnKey: action.finishOnKey,
-        minDigits: action.minDigits,
-        maxDigits: action.maxDigits,
-        nextActionId: action.nextActionId,
-        nextActionType: action.nextActionType,
-        createTime: action.createTime,
-        updateTime: action.updateTime
-      };
-    }
-    ));
+    // downloadCSV(EXPORT_FILE_PREFIX.DYNAMIC_FLOW, actionDataGridManager.dataGrid.filteredData.map((action: ActionRecord) =>  {
+    //   return {
+    //     actionId: action.actionId,
+    //     actionType: action.actionType,
+    //     callFlowName: action.callFlowName,
+    //     speech: action.speech,
+    //     options: action.options,
+    //     repeat: action.repeat,
+    //     timeout: action.timeout,
+    //     finishOnKey: action.finishOnKey,
+    //     minDigits: action.minDigits,
+    //     maxDigits: action.maxDigits,
+    //     nextActionId: action.nextActionId,
+    //     nextActionType: action.nextActionType,
+    //     createTime: action.createTime,
+    //     updateTime: action.updateTime
+    //   };
+    // }
+    // ));
   };
 
   const handleClose = (flag: boolean) => {
-    setAlertBar((alertBarProps: AlertBarProps) => ({
-      ...alertBarProps,
-      open: flag
-    }));
+    alertBarState.open = flag;
   };
 
-  const handlePreviewModalOnClose = () =>{
-    setDataFlow((dataFlowProps: DynamicStateVariables) => ({
-      ...dataFlowProps,
-      isPreviewModalOpen: false
-    }));
+  const handlePreviewModalOnClose = () => {
+    actionDataGridManager.dataGrid.setIsPreviewModalOpen(false);
   };
 
-  const handleOnBulkCreate = async(rows: Array<DynamicAction> ) =>{
-    const response = await batchDynamicFlowCreate(rows, accessToken);
-    if(response?.flag) {
-      setAlertBar((alertBarProps: AlertBarProps) => ({
-        ...alertBarProps,
-        open: true,
-        msg: response?.alertMsg || "Error while creating the records.",
-        severityType: "error"
-      }));
+  const handleOnBulkCreate = async(actionRecords: Array<ActionRecordType> ) =>{
+    const graphQLResponse = await batchCreateDynamicActionRecords(accessToken, actionRecords);
+
+    if (graphQLResponse?.errors.length > 0) {
+      alertBarState.graphQLError(graphQLResponse.errors);
     } else {
-      setAlertBar((alertBarProps: AlertBarProps) => ({
-        ...alertBarProps,
-        open: true,
-        msg: "Dynamic Flow Rules have been successfully created.",
-        severityType: "success"
-      }));
+      alertBarState.success("Call Flow Actions have been successfully loaded.");
     }
-    setSelectedList([...response.failure]);
-    const SuccessObj: any = { };
-    response.success.forEach((x: any) =>SuccessObj[x?.actionId] = x);
-    const filteredItems = dataFlow.filteredItems.map( x=> SuccessObj[x?.actionId] || x);
-    const filteredData = dataFlow.data.map(y => SuccessObj[y?.actionId] || y);
-    setDataFlow({
-      ...dataFlow,
-      ...filteredItems && { filteredItems },
-      data: filteredData,
-      isPreviewModalOpen: false
-    });
+
+    actionDataGridManager.dataGrid.setIsPreviewModalOpen(false);
     apiRef.current.setRowSelectionModel([]);
   };
 
@@ -215,13 +119,13 @@ const ActionDataGrid = (props: AzureSPA): JSX.Element => {
           />
           <DataGrid
             apiRef={apiRef}
-            rows={dataFlow.filteredItems}
+            rows={actionDataGridManager.dataGrid.filteredData}
             columns={ActionDataGridColumnDef}
-            loading={dataFlow.fetching}
+            loading={actionDataGridManager.dataGrid.fetching}
             checkboxSelection
             disableRowSelectionOnClick
             autoHeight
-            getRowId={(row: DynamicAction)=>row.actionId}
+            getRowId={(actionRecord: ActionRecordType) => actionRecord.actionId}
             sx={{
               "& .MuiDataGrid-columnHeaderTitle": {
                 fontWeight: 600
@@ -232,16 +136,16 @@ const ActionDataGrid = (props: AzureSPA): JSX.Element => {
         </div>
       </div>
       <CustomToast
-        open={alertBar.open}
+        open={alertBarState.open}
         onClose={handleClose}
-        msg={alertBar.msg}
-        severityType={alertBar.severityType}
-        duration={alertBar.duration}
+        msg={alertBarState.msg}
+        severityType={alertBarState.severityType}
+        duration={alertBarState.duration}
       />
       <PreviewModal
-        action={dataFlow.previewModalAction}
-        isOpen={dataFlow.isPreviewModalOpen}
-        loading={dataFlow.fetching}
+        action={actionDataGridManager.dataGrid.previewModalAction}
+        isOpen={actionDataGridManager.dataGrid.isPreviewModalOpen}
+        loading={actionDataGridManager.dataGrid.fetching}
         onClose={handlePreviewModalOnClose}
         onCreate={handleOnBulkCreate}
         rows={selectedList}

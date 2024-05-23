@@ -1,7 +1,6 @@
 import {
   ControlEnum,
   DynamicFieldConditionCheckType,
-  FieldType,
   FormFieldConfig,
   FormFieldConfigs
 } from "../../../../common/FormField/FormField.Interfaces";
@@ -10,7 +9,7 @@ import { Control } from "../../../../globals";
 export const ActionFormFieldConfigs: FormFieldConfigs = {};
 export const RequiredActionFormFields: Array<string> = [];
 
-function createActionFormFieldConfig(key: string, label: string, control: Control, required: boolean, disableEdit: boolean, dynamicFieldConditionCheck?: DynamicFieldConditionCheckType, fieldType?: FieldType, gridSize?: number): void {
+function createActionFormFieldConfig(key: string, label: string, control: Control, required: boolean, disableEdit: boolean, dynamicFieldConditionCheck?: DynamicFieldConditionCheckType, isUserAbleToSwitchToInputControl?: boolean, gridSize?: number): void {
   if (required) {
     RequiredActionFormFields.push(key);
   }
@@ -19,10 +18,10 @@ function createActionFormFieldConfig(key: string, label: string, control: Contro
     key,
     label,
     control,
+    isUserAbleToSwitchToInputControl: isUserAbleToSwitchToInputControl || false,
     required,
     disableEdit,
     dynamicFieldConditionCheck,
-    fieldType,
     gridSize
   } as FormFieldConfig;
 }

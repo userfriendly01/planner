@@ -65,7 +65,7 @@ class ListActionRecordsQuery extends AbstractListQuery {
 
 const listActionRecordsQuery = new ListActionRecordsQuery();
 
-export async function listActionRecords(accessToken: string, nextToken: string = null): Promise<[string, Array<ActionRecordType>]> {
+export async function listActionRecords(accessToken: string, nextToken: string = null): Promise<Array<ActionRecordType>> {
   const listGraphQLData = await listActionRecordsQuery.getList<ActionRecordType>(accessToken, 10000, nextToken);
-  return [listGraphQLData.nextToken, listGraphQLData.items];
+  return listGraphQLData.items;
 }

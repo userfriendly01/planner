@@ -110,8 +110,8 @@ export class DataGridState<RecordType> extends AbstractReactState<DataGridStateP
     return this.state.isEditModalOpen;
   }
 
-  setIsPreviewModalOpen(isPreviewModalOpen: boolean): DataGridState<RecordType> {
-    return this.setProperty("isPreviewModalOpen", isPreviewModalOpen);
+  setIsPreviewModalOpen(openPrivewModal: boolean): DataGridState<RecordType> {
+    return this.setProperty("isPreviewModalOpen", openPrivewModal);
   }
 
   get isPreviewModalOpen(): boolean {

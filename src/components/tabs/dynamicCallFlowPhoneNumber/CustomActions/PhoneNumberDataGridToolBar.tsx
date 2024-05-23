@@ -6,9 +6,6 @@ import React, {
 } from "react";
 import { readWriteAccess } from "utils";
 import {
-  DynamicCallFlowPhoneNumberAdvanceFilter, PreviewModalAction
-} from "../DynamicCallFlowPhoneNumber.Interfaces";
-import {
   PlaylistAdd,
   SaveAlt,
   DeleteSweepOutlined,
@@ -26,7 +23,7 @@ interface CustomFlowGridToolBarProps {
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const CustomPhoneNumberGridToolBar = ({
+const PhoneNumberDataGridToolBar = ({
   phoneNumberDataGridManager, exportDataFile, matchedGroups
 }: CustomFlowGridToolBarProps) => {
 
@@ -76,7 +73,7 @@ const CustomPhoneNumberGridToolBar = ({
                 key={key}
                 color="primary"
                 tabIndex={index}
-                label={`${key.toLowerCase()} : ${phoneNumberDataGridManager.dataGrid.filter[key as keyof DynamicCallFlowPhoneNumberAdvanceFilter]}`}
+                label={`${key.toLowerCase()} : ${phoneNumberDataGridManager.dataGrid.filter[key as keyof Filter]}`}
                 onDelete={(event: any)=>{ handleOnDelete(key); }}
                 sx={{ margin: 1 }}
               />
@@ -134,7 +131,10 @@ const CustomPhoneNumberGridToolBar = ({
             displayEmpty
           >
             <MenuItem key="addFlow" value="addFlow">
-              <AddOutlined />&nbsp;&nbsp; Add Flow
+              <AddOutlined />&nbsp;&nbsp; Add Legacy Call Flow
+            </MenuItem>
+            <MenuItem key="addFlow" value="addFlow">
+              <AddOutlined />&nbsp;&nbsp; Add Dynamic Call Flow
             </MenuItem>
             <MenuItem key="bulkDeleteFlow" value="bulkDeleteFlow">
               <DeleteSweepOutlined />&nbsp;&nbsp; Multi Delete Flow
@@ -153,5 +153,5 @@ const CustomPhoneNumberGridToolBar = ({
 };
 
 export {
-  CustomPhoneNumberGridToolBar
+  PhoneNumberDataGridToolBar
 };

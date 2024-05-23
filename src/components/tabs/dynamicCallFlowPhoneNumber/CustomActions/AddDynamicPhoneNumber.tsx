@@ -58,8 +58,14 @@ export interface AddPhoneNumberModalProps {
   clonedFormFields?: FormFields;
 }
 
+const initialControlToggleFormFieldsState = {
+  callerType: false,
+  dataRequests: false,
+  callFlowRoute: false
+};
+
 //TODO: JSX is deprecated, need to research what to do.  import {JSX} from 'react'
-export const AddPhoneNumber = ({
+export const AddDynamicPhoneNumber = ({
   phoneNumberDataGridManager, accessToken, cloneType, clonedFormFields
 }: AddPhoneNumberModalProps & AzureSPA):JSX.Element => {
 
@@ -67,7 +73,7 @@ export const AddPhoneNumber = ({
   const [dropDownValues, setDropDownValues] = useState<DynamicCallFlowPhoneNumberDropDownList>(flowDropDownList);
   const formFields = new FormFieldsState(PhoneNumberFormFieldConfigs);
   const alertBarState: AlertBarState = new AlertBarState();
-  const formFieldViewListIconVisibility = new FormFieldViewListIconVisibilityState();
+  const formFieldViewListIconVisibility = new FormFieldViewListIconVisibilityState(initialControlToggleFormFieldsState);
 
   useEffect(() => {
     async function fetchData(): Promise<void> {
@@ -108,7 +114,7 @@ export const AddPhoneNumber = ({
     //   ...rule
     // }));
 
-    if (cloneType) {
+    if(cloneType) {
       formFields.state = clonedFormFields;
     }
   },[phoneNumberDataGridManager.openAddModal]);
@@ -178,8 +184,8 @@ export const AddPhoneNumber = ({
     phoneNumberDataGridManager.openAddModal(false);
   }
 
-  function setFormFieldViewListIconVisibility(key: string, visibile: boolean) {
-    formFieldViewListIconVisibility.setProperty(key, visibile);
+  function setFormFieldViewListIconVisibility(key: string, visible: boolean) {
+    formFieldViewListIconVisibility.setProperty(key, visible);
   }
 
   const handleOnAddCallFlowRecord = async (): Promise<void> => {

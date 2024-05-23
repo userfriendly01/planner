@@ -40,10 +40,7 @@ import { PhoneNumberRecordUtil } from "../GraphQL/Util/PhoneNumberRecordUtil";
 import { deleteOppositeRows } from "../Utils/FlowTableServiceUtil";
 import {
   PhoneNumberFormFieldConfigs
-} from "../Field/PhoneNumberFieldsConfig";
-import {
-  PreviewModalAction
-} from "../DynamicCallFlowPhoneNumber.Interfaces";
+} from "../Field/LegacyPhoneNumberFieldsConfig";
 import { BatchPhoneNumberRecord } from "../GraphQL/Util/BatchPhoneNumberRecord.Util";
 import { PreviewModal } from "../PreviewModal";
 import PhoneNumberColumnDef from "./GridColumnDef";
@@ -51,12 +48,14 @@ import {
   FormField, FormFieldConfig,
   FormFields
 } from "../../../../common/FormField/FormField.Interfaces";
-import { CustomPhoneNumberGridToolBar } from "../CustomActions/CustomPhoneNumberGridToolBar";
+import { PhoneNumberDataGridToolBar } from "../CustomActions/PhoneNumberDataGridToolBar";
 import { AddPhoneNumber } from "../CustomActions/AddPhoneNumber";
 import { EditPhoneNumber } from "../CustomActions/EditPhoneNumber";
 import { PhoneNumberFilterModal } from "../CustomActions/PhoneNumberFilterModal";
 import { FormFieldsState } from "../../../../common/FormField/FormFieldsState.Manager";
-import { Filter } from "../../../../common/DataGrid/DataGridState.Interfaces";
+import {
+  Filter, PreviewModalActionType
+} from "../../../../common/DataGrid/DataGridState.Interfaces";
 
 const PhoneNumberDataGrid = (azureSPA: AzureSPA): JSX.Element => {
   const {
@@ -88,6 +87,7 @@ const PhoneNumberDataGrid = (azureSPA: AzureSPA): JSX.Element => {
         await phoneNumberDataGridManager.loadDataGrid(accessToken);
       } catch (error: unknown) {
         // TODO: Log error
+        console.log(`Error loading call flow data: ${(error as Error)?.message}`);
         alertBarState.error("Errors loading data.  Please check the console logs.");
       }
       console.log("done call flow data load.");
@@ -169,12 +169,12 @@ const PhoneNumberDataGrid = (azureSPA: AzureSPA): JSX.Element => {
     setCloneType(!openEditModal);
     clonedFormFieldsState.state = clonedFormFields;
     dataGridState.setIsEditModalOpen(openEditModal)
-      .setIsAddModalOpen(openEditModal);
+      .setIsAddModalOpen(!openEditModal);
   };
 
-  const openPreviewModal = (flag: boolean, action: PreviewModalAction) => {
-    dataGridState.setIsPreviewModalOpen(flag)
-      .setPreviewModalAction(action);
+  const openPreviewModal = (openPreviewModal: boolean, previewModalAction: PreviewModalActionType) => {
+    dataGridState.setIsPreviewModalOpen(openPreviewModal)
+      .setPreviewModalAction(previewModalAction);
   };
 
   const openEditModal = (openEditModal: boolean, isSubmitted?: boolean, row?: PhoneNumberRecordType, message?: string, deleteRow?: boolean, isClonedFlowRule?: boolean) => {
@@ -185,14 +185,14 @@ const PhoneNumberDataGrid = (azureSPA: AzureSPA): JSX.Element => {
     }
 
     dataGridState.state =
-      {
+      { // When edit modal is open for a phone record and the delete button is clicked, this method is called and the row is removed from the grid
         ...(!openEditModal && isSubmitted && deleteRow) && {
-          data: dataGridState.state.data.filter(x=> x.id !== row.id),
-          filteredItems: dataGridState.state.data.filter(x=> x.id !== row.id)
-        },
+          data: dataGridState.state.data.filter(phoneNumberRecord=> phoneNumberRecord.id !== row.id),
+          filteredItems: dataGridState.state.data.filter(phoneNumberRecord=> phoneNumberRecord.id !== row.id)
+        }, // When edit modal is open and a row is edited and the user clicks save, this method is called and the record in the edit modal replaces the record in the grid
         ...(!openEditModal && isSubmitted && !deleteRow && row) && {
-          data: dataGridState.state.data.map(x=> x.id === row.id ? row : x),
-          filteredItems: dataGridState.state.data.map(x=> x.id === row.id ? row : x)
+          data: dataGridState.state.data.map(phoneNumberRecord=> phoneNumberRecord.id === row.id ? row : phoneNumberRecord),
+          filteredItems: dataGridState.state.data.map(phoneNumberRecord=> phoneNumberRecord.id === row.id ? row : phoneNumberRecord)
         },
         isEditModalOpen: openEditModal,
         selectedRow: row
@@ -329,14 +329,14 @@ const PhoneNumberDataGrid = (azureSPA: AzureSPA): JSX.Element => {
     <div className="data-grid-wrapper">
       <div className="data-grid-wrapper">
         <div className="data-grid-wrapper">
-          <CustomPhoneNumberGridToolBar
+          <PhoneNumberDataGridToolBar
             phoneNumberDataGridManager={phoneNumberDataGridManager}
             exportDataFile={exportDataFile}
             matchedGroups={matchedGroups}
           />
           <DataGrid
             apiRef={apiRef}
-            rows={dataGridState.state.filteredData}
+            rows={dataGridState.state.filteredData || []}
             columns={PhoneNumberColumnDef}
             paginationModel={paginationModel}
             onPaginationModelChange={handlePaginationModelChange}
@@ -370,7 +370,6 @@ const PhoneNumberDataGrid = (azureSPA: AzureSPA): JSX.Element => {
         phoneNumberDataGridManager={phoneNumberDataGridManager}
         accessToken={accessToken}
         matchedGroups={matchedGroups}
-        selectedRow={dataGridState.state.selectedRow}
         openEditModal={openEditModal}
         dataGridStateCallFlowRecords={dataGridState.data}
       />

@@ -8,18 +8,16 @@ import { FloatingHeader } from "@lmig/lmds-react-floating-header";
 import {
   Button, Grid
 } from "@mui/material";
-import { AddOrViewPhoneNumber } from "./AddOrViewPhoneNumber";
 import {
   HeadingStyled, ModalBodyStyled, ModalFooterStyled
 } from "../DynamicCallFlowPhoneNumber.Styles";
 import {
   DynamicCallFlowPhoneNumberDropDownList,
-  DynamicCallFlowPhoneNumberMasterData,
-  ViewOrAddBooleanProps
+  DynamicCallFlowPhoneNumberMasterData
 } from "../DynamicCallFlowPhoneNumber.Interfaces";
 import {
   PhoneNumberFormFieldConfigs
-} from "../Field/PhoneNumberFieldsConfig";
+} from "../Field/LegacyPhoneNumberFieldsConfig";
 import { CustomToast } from "components";
 import {
   BrandName, callFlowName, callFlowType, checkGreetingMessageRegExp,
@@ -33,7 +31,7 @@ import { PhoneNumberRecordType } from "../GraphQL/DynamicPhoneNumber.Interfaces"
 import { SingleRecordResults } from "../../../../common/GraphQL/AbstractSingleRecordQuery";
 import { PhoneNumberRecordUtil } from "../GraphQL/Util/PhoneNumberRecordUtil";
 import { hasDuplicateCallFlowRecord } from "../DataGrid/Util/MatchCallFlowRecords.Util";
-import { DisplayState } from "../StateManager/DisplayState.Manager";
+import { FormFieldViewListIconVisibilityState } from "./FormFieldViewListIconVisibility.Manager";
 import { SingleCallFlowRecord } from "../GraphQL/Util/SinglePhoneNumberRecord.Util";
 import { GREETING_MESSAGES } from "../Field/DynamicPhoneNumberFields";
 import { ObjectState } from "../../../../common/StateManager/ObjectState.Manager";
@@ -43,36 +41,39 @@ import {
 } from "../../../../common/FormField/FormField.Interfaces";
 import { FormFieldsState } from "../../../../common/FormField/FormFieldsState.Manager";
 import { PhoneNumberDataGridManager } from "../DataGrid/PhoneNumberDataGrid.Manager";
+import { deleteOppositeRows } from "../../alohaFlow/Utils/FlowTableServiceUtil";
+import {
+  FormFieldViewListIconVisibility,
+  ToggleAddOrViewListIcon
+} from "./ToggleAddOrViewListIcon";
 
 interface EditFlowComponentProps {
   phoneNumberDataGridManager: PhoneNumberDataGridManager,
-  selectedRow: PhoneNumberRecordType;
   openEditModal: (flag: boolean, isSubmitted?: boolean, phoneNumberRecord?: PhoneNumberRecordType, message?: string, deleteRow?: boolean, isClonedFlowRule?: boolean) => void;
   dataGridStateCallFlowRecords?: Array<PhoneNumberRecordType>;
 }
 
+const initialControlToggleFormFieldsState = {
+  callerType: false,
+  dataRequests: false,
+  callFlowRoute: false
+};
+
 //TODO: JSX is deprecated, need to research other option
 export const EditPhoneNumber = ({
-  phoneNumberDataGridManager, accessToken, matchedGroups, selectedRow, openEditModal, dataGridStateCallFlowRecords
+  phoneNumberDataGridManager, accessToken, matchedGroups, openEditModal, dataGridStateCallFlowRecords
 }: EditFlowComponentProps & AzureSPA): JSX.Element => {
 
-  // const selectedRowLocal = new DataGridState<PhoneNumberRecordType>();
-  const displayState = new DisplayState();
-  const formFieldsState = new FormFieldsState(PhoneNumberFormFieldConfigs);
-  const selectedRowState = new ObjectState<PhoneNumberRecordType>();
+  const formFieldViewListIconVisibility = new FormFieldViewListIconVisibilityState(initialControlToggleFormFieldsState);
+  const formFields = new FormFieldsState(PhoneNumberFormFieldConfigs);
+  const selectedRowLocal = new ObjectState<PhoneNumberRecordType>();
 
-  const [selectedRowLocal, setSelectedRowLocal] = useState<PhoneNumberRecordType>({} as PhoneNumberRecordType);
   const [dropDownValues, setDropDownValues] = useState(flowDropDownList);
   const enableFlow = useMemo<boolean>(() => readWriteAccess(matchedGroups,"dynamic-call-flow"), []);
-  // const isValidGreetingMessages = selectedRow ? JSON.parse(JSON.stringify(selectedRow)) : undefined;
+  const originalRow = phoneNumberDataGridManager.dataGrid.state.selectedRow ? JSON.parse(JSON.stringify(phoneNumberDataGridManager.dataGrid.state.selectedRow)) : undefined;
 
   useEffect(() => {
-    selectedRowState.state = selectedRow;
-    displayState.state = {
-      callerType: false,
-      dataRequests: false,
-      callFlowRoute: false
-    };
+    selectedRowLocal.state = phoneNumberDataGridManager.dataGrid.state.selectedRow;
 
     const masterDataStorage: string = localStorage.getItem(FLOW_MASTER_DATA);
     const masterData: DynamicCallFlowPhoneNumberMasterData = JSON.parse(masterDataStorage);
@@ -95,16 +96,16 @@ export const EditPhoneNumber = ({
     );
 
     if (phoneNumberDataGridManager.dataGrid.isEditModalOpen) {
-      formFieldsState.reset();
+      formFields.reset();
     }
 
-  }, [selectedRow]);
+  }, [phoneNumberDataGridManager.dataGrid.state.selectedRow]);
 
   const isInvalidField =(key: string, value: string): boolean =>{
     if(key === GREETING_MESSAGES){
       return checkGreetingMessageRegExp(value);
     }
-    return formFieldsState.state[key].required && [undefined, "", null, "null"].includes(value);
+    return formFields.state[key].required && [undefined, "", null, "null"].includes(value);
   };
 
   // const isInvalid = (formValidation: FormValidationProps): boolean => {
@@ -114,13 +115,13 @@ export const EditPhoneNumber = ({
   const validateFlow = async (): Promise<boolean> => {
     let isValidForm = true;
 
-    Object.keys(formFieldsState.state).forEach(key => {
-      const fieldValue = PhoneNumberRecordUtil.getPropertyValue(selectedRowLocal, key) as string;
-      const conditionMet = PhoneNumberFormFieldConfigs[key]?.dynamicFieldConditionCheck ? PhoneNumberFormFieldConfigs[key]?.dynamicFieldConditionCheck(formFieldsState.state): true;
+    Object.keys(formFields.state).forEach(key => {
+      const fieldValue = PhoneNumberRecordUtil.getPropertyValue(selectedRowLocal.state, key) as string;
+      const conditionMet = PhoneNumberFormFieldConfigs[key]?.dynamicFieldConditionCheck ? PhoneNumberFormFieldConfigs[key]?.dynamicFieldConditionCheck(formFields.state): true;
 
       //TODO: What to do if condition is not met? Shouldn't that be invalid?
       if (isInvalidField(key, fieldValue) && conditionMet) {
-        formFieldsState.setProperty("error", true);
+        formFields.setProperty("error", true);
         isValidForm = false;
       }
     });
@@ -130,8 +131,8 @@ export const EditPhoneNumber = ({
 
   const findFieldValue = (key: string): {value: string, conditionMet: boolean} => {
     return {
-      value: PhoneNumberRecordUtil.getPropertyValue(selectedRowLocal, key) as string,
-      conditionMet: PhoneNumberFormFieldConfigs[key]?.dynamicFieldConditionCheck ? PhoneNumberFormFieldConfigs[key]?.dynamicFieldConditionCheck(formFieldsState.state): true
+      value: PhoneNumberRecordUtil.getPropertyValue(selectedRowLocal.state, key) as string,
+      conditionMet: PhoneNumberFormFieldConfigs[key]?.dynamicFieldConditionCheck ? PhoneNumberFormFieldConfigs[key]?.dynamicFieldConditionCheck(formFields.state): true
     };
   };
 
@@ -140,20 +141,20 @@ export const EditPhoneNumber = ({
       return;
     }
 
-    if (hasDuplicateCallFlowRecord(dataGridStateCallFlowRecords, selectedRowLocal, phoneNumberDataGridManager.alertBar)) {
+    if (hasDuplicateCallFlowRecord(dataGridStateCallFlowRecords, selectedRowLocal.state, phoneNumberDataGridManager.alertBar)) {
       return;
     }
 
-    const updateResults = await SingleCallFlowRecord.update(accessToken, selectedRowLocal);
+    const updateResults = await SingleCallFlowRecord.update(accessToken, selectedRowLocal.state);
 
     if (isErrorDisplayed(updateResults)) {
       return;
     }
 
-    //TODO: Research this further.
-    // deleteOppositeRows([originalRow], accessToken);
-    formFieldsState.reset();
-    openEditModal(false, true, selectedRowLocal, `Phone Number ${PhoneNumberRecordUtil.getPhoneNumber(selectedRow)} has been successfully updated.`, false);
+    // TODO: Research this further.
+    deleteOppositeRows([originalRow], accessToken);
+    formFields.reset();
+    openEditModal(false, true, selectedRowLocal.state, `Phone Number ${PhoneNumberRecordUtil.getPhoneNumber(phoneNumberDataGridManager.dataGrid.state.selectedRow)} has been successfully updated.`, false);
   };
 
   const isErrorDisplayed = (singleRecordResults: SingleRecordResults<PhoneNumberRecordType>) => {
@@ -167,27 +168,27 @@ export const EditPhoneNumber = ({
   };
 
   const handleClone = () =>{
-    openEditModal(false,false,selectedRowLocal,"",false,true);
+    openEditModal(false,false,selectedRowLocal.state,"",false,true);
   };
 
   const handleOnDelete = async () => {
-    const singleRecordResults = await SingleCallFlowRecord.deleteCallFlowRecord(accessToken, selectedRowLocal);
+    const singleRecordResults = await SingleCallFlowRecord.deleteCallFlowRecord(accessToken, selectedRowLocal.state);
     if (isErrorDisplayed(singleRecordResults)) {
       return;
     }
     if (singleRecordResults) {
-      openEditModal(false, true, selectedRowLocal, `Phone Number ${PhoneNumberRecordUtil.getPhoneNumber(selectedRow)} has been successfully deleted.`, true);
+      openEditModal(false, true, selectedRowLocal.state, `Phone Number ${PhoneNumberRecordUtil.getPhoneNumber(phoneNumberDataGridManager.dataGrid.state.selectedRow)} has been successfully deleted.`, true);
     }
 
-    formFieldsState.reset();
+    formFields.reset();
   };
 
-  function navigateButtons(display:boolean,key:string) {
-    displayState.setProperty(key, display);
+  function setFormFieldViewListIconVisibility(key: string, visible: boolean) {
+    formFieldViewListIconVisibility.setProperty(key, visible);
   }
 
   const handleCancel = () => {
-    formFieldsState.reset();
+    formFields.reset();
     openEditModal(false);
   };
 
@@ -203,7 +204,7 @@ export const EditPhoneNumber = ({
     let value: string;
     let key : string;
 
-    if(((valuePassed && typeof valuePassed === "string") || valuePassed === null) && !displayState.state[keyPassed as keyof ViewOrAddBooleanProps]){
+    if(((valuePassed && typeof valuePassed === "string") || valuePassed === null) && !formFieldViewListIconVisibility.state[keyPassed]){
       value = valuePassed ?? "";
       key = keyPassed;
     } else{
@@ -211,11 +212,11 @@ export const EditPhoneNumber = ({
       key = event.target.name;
     }
 
-    selectedRowState.state = PhoneNumberRecordUtil.setPropertyValue(selectedRowState.state, key, value);
+    selectedRowLocal.state = PhoneNumberRecordUtil.setPropertyValue(selectedRowLocal.state, key, value);
 
-    formFieldsState.state = {
+    formFields.state = {
       [key]: {
-        ...formFieldsState.state[key as keyof FormFields],
+        ...formFields.state[key as keyof FormFields],
         value: value,
         error: isInvalidField(key, value)
       }
@@ -236,13 +237,13 @@ export const EditPhoneNumber = ({
       >
         <ModalHeader>
           {
-            ["Liberty Mutual", "Safeco"].includes(selectedRowLocal?.brand)?
-              (<FloatingHeader brand={BrandName[selectedRowLocal?.brand]} overlayIsOpen>
-                <HeadingStyled type="h4-light">{`Update Flow Rule ${selectedRow && PhoneNumberRecordUtil.getPhoneNumber(selectedRow)}`}
+            ["Liberty Mutual", "Safeco"].includes(selectedRowLocal.state?.brand)?
+              (<FloatingHeader brand={BrandName[selectedRowLocal.state?.brand]} overlayIsOpen>
+                <HeadingStyled type="h4-light">{`Update Flow Rule ${phoneNumberDataGridManager.dataGrid.selectedRow && PhoneNumberRecordUtil.getPhoneNumber(phoneNumberDataGridManager.dataGrid.selectedRow)}`}
                 </HeadingStyled>
               </FloatingHeader>):
               (
-                <HeadingStyled type="h4-light">{`Update Flow Rule ${selectedRow && PhoneNumberRecordUtil.getPhoneNumber(selectedRow)}`}
+                <HeadingStyled type="h4-light">{`Update Flow Rule ${phoneNumberDataGridManager.dataGrid.selectedRow && PhoneNumberRecordUtil.getPhoneNumber(phoneNumberDataGridManager.dataGrid.selectedRow)}`}
                 </HeadingStyled>
               )
           }
@@ -252,10 +253,10 @@ export const EditPhoneNumber = ({
             {
               Array.from<string>(Object.keys(PhoneNumberFormFieldConfigs)).map((key: string) => {
                 const {
-                  label, control, required = false, disableEdit, dynamicFieldConditionCheck, fieldType, gridSize = 12
+                  label, control, required = false, disableEdit, dynamicFieldConditionCheck, isUserAbleToSwitchToInputControl, gridSize = 12
                 }: FormFieldConfig = PhoneNumberFormFieldConfigs[key];
 
-                if (dynamicFieldConditionCheck && !dynamicFieldConditionCheck(formFieldsState.state)) {
+                if (dynamicFieldConditionCheck && !dynamicFieldConditionCheck(formFields.state)) {
                   return;
                 }
 
@@ -263,20 +264,20 @@ export const EditPhoneNumber = ({
                   <Grid container key = {key} item xs = {4}>
                     <Grid key = {key} item xs = {gridSize}>
                       <ComponentControl
-                        control={fieldType && displayState.state[key as keyof ViewOrAddBooleanProps] ? ControlEnum.Input : control}
+                        control={isUserAbleToSwitchToInputControl && formFieldViewListIconVisibility.state[key] ? ControlEnum.Input : control}
                         name={key}
                         label={label}
                         type="text"
-                        value={PhoneNumberRecordUtil.getPropertyValue(selectedRowLocal, key)}
-                        error={formFieldsState.state[key as keyof FormFields].error}
+                        value={PhoneNumberRecordUtil.getPropertyValue(selectedRowLocal.state, key)}
+                        error={formFields.state[key as keyof FormFields].error}
                         dropDownOptions={dropDownValues[key as keyof DynamicCallFlowPhoneNumberDropDownList] || []}
                         onChange={(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, value?:string) => handleInputChange(event,value,key)}
                         required={required}
                         disabled={disableEdit}
                       />
                     </Grid>
-                    {(fieldType === "viewAndAdd")?(<Grid item xs={1}>
-                      <AddOrViewPhoneNumber navigateViewOrAdd = {navigateButtons} keys = {key}></AddOrViewPhoneNumber>
+                    {(isUserAbleToSwitchToInputControl)?(<Grid item xs={1}>
+                      <ToggleAddOrViewListIcon key = {key} setFormFieldViewListIconVisibility = {setFormFieldViewListIconVisibility} ></ToggleAddOrViewListIcon>
                     </Grid>):(<div></div>)}
                   </Grid>
                 );

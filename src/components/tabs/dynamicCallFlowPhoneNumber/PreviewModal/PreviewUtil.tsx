@@ -5,7 +5,6 @@ import {
 import {
   DynamicCallFlowPhoneNumberDropDownList,
   DynamicCallFlowPhoneNumberMasterData,
-  PreviewModalAction
 } from "../DynamicCallFlowPhoneNumber.Interfaces";
 import {
   FLOW_MASTER_DATA,
@@ -18,12 +17,13 @@ import {
   userDestination
 } from "utils";
 
-import { RequiredPhoneNumberFormFields } from "../Field/PhoneNumberFieldsConfig";
+import { RequiredPhoneNumberFormFields } from "../Field/LegacyPhoneNumberFieldsConfig";
 import { ComponentControl } from "components";
 import { GridApiCommunity } from "@mui/x-data-grid/internals";
+import { PreviewModalActionType } from "../../../../common/DataGrid/DataGridState.Interfaces";
 
 
-const reconstructTableColumnDef = (action: PreviewModalAction, columnDef: Array<GridColDef>,apiRef: React.MutableRefObject<GridApiCommunity>): Array<GridColDef> =>{
+const reconstructTableColumnDef = (action: PreviewModalActionType, columnDef: Array<GridColDef>,apiRef: React.MutableRefObject<GridApiCommunity>): Array<GridColDef> =>{
   if(action==="edit" || action === "add")
   {
     return manageEditColumnDef(columnDef,apiRef);

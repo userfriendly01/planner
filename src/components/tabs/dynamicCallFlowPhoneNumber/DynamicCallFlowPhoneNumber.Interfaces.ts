@@ -1,5 +1,3 @@
-export type PreviewModalAction = "add" | "edit" | "delete"
-
 export interface DynamicCallFlowPhoneNumberMasterData {
     brand?: Array<string>;
     callFlowName?: Array<string>;
@@ -10,16 +8,6 @@ export interface DynamicCallFlowPhoneNumberMasterData {
     channel?: Array<string>;
     dataRequests?: Array<string>;
     pkey?: Array<string>;
-}
-
-export interface DynamicCallFlowPhoneNumberAdvanceFilter {
-    channel?: string;
-    brand?: string;
-    callerType?: string;
-    callFlowTemplate?: string;
-    callFlowRoute?: string;
-    pkey?: string;
-    phoneNumber?: string;
 }
 
 export interface DynamicCallFlowPhoneNumberDropDownList {
@@ -35,11 +23,4 @@ export interface DynamicCallFlowPhoneNumberDropDownList {
     nextActionType: string[];
     tfnRoutingGroup : string[];
     phoneNumberType: string[];
-}
-
-
-export interface ViewOrAddBooleanProps {
-    callerType:boolean;
-    dataRequests:boolean;
-    callFlowRoute:boolean;
 }

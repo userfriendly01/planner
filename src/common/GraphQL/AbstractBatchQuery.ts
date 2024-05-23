@@ -55,7 +55,7 @@ export abstract class AbstractBatchQuery extends AbstractGraphQLQuery {
       callFlowRecordBatches.map(
         async recordBatch => {
           const variables: BatchVariables<RecordType> = {
-            //Put an empty object here as a placeholder, then set the records to be updated with via dynamic property access.  Batch input structure example: { input: { batchCreatePhoneNumber: Array<PhoneNumber> } }
+            //Put an empty object here as a placeholder, then set the records to be updated via dynamic property access.  Batch input structure example: { input: { batchCreatePhoneNumber: Array<PhoneNumber> } }
             input: {} as BatchInput<RecordType>
           };
 

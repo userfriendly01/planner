@@ -16,17 +16,18 @@ import  TableGridColumnDef  from "./TableColumnDef";
 import { logger } from "utils";
 import { reconstructTableColumnDef } from "./PreviewUtil";
 import {
-  ActionRecordType,
+  ActionRecordType, ActionTypeEnum,
   MenuOption
 } from "../GraphQL/DynamicCallFlowActionGraphQL.Interfaces";
 import { ObjectArrayState } from "../../../../common/StateManager/ObjectArrayState.Manager";
+import { PreviewModalActionType } from "../../../../common/DataGrid/DataGridState.Interfaces";
 
 interface PreviewModalProps {
     isOpen: boolean;
     rows: Array<ActionRecordType>;
-    action: "add";
+    action: PreviewModalActionType;
     onClose: () => void;
-    onCreate?: (rows: Array<ActionRecordType>) => void;
+    onCreate?: (actionRecords: Array<ActionRecordType>) => void;
     loading?: boolean;
 }
 
@@ -57,15 +58,15 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
     }
   }, [uploadedForm]);
 
-  const getUpdatedActionRows = () =>{
-    const newRows: Array<ActionRecordType> = [...actionRows.state].map((row: ActionRecordType)=>{
+  const getUpdatedActionRows = () => {
+    const newRows: Array<ActionRecordType> = [...actionRows.state].map((row: ActionRecordType) => {
       const updatedAction: ActionRecordType = {
         id: 0,
         actionId: "",
-        actionType: "ANNOUNCEMENT",
+        actionType: undefined,
         callFlowName: "",
-        createTime: "",
-        updateTime: "",
+        createTime: 0,
+        updateTime: 0,
         speech: "",
         allowBargeIn: true,
         finishOnKey: "",
@@ -73,9 +74,9 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
         maxDigits: 0,
         timeout: 0,
         repeat: {
-          nextActionType: "ANNOUNCEMENT"
+          nextActionType: undefined
         },
-        nextActionType: "ANNOUNCEMENT",
+        nextActionType: undefined,
         nextActionId: "",
         options: [] as unknown as MenuOption[]
       };
@@ -103,10 +104,10 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
         {
           id: 0,
           actionId: "",
-          actionType: "ANNOUNCEMENT",
+          actionType: undefined,
           callFlowName: "",
-          createTime: "",
-          updateTime: "",
+          createTime: undefined,
+          updateTime: undefined,
           speech: "",
           allowBargeIn: true,
           finishOnKey: "",
@@ -114,11 +115,11 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
           maxDigits: 0,
           timeout: 0,
           repeat: {
-            nextActionType: "ANNOUNCEMENT"
+            nextActionType: ActionTypeEnum.ANNOUNCEMENT
           },
-          nextActionType: "ANNOUNCEMENT",
+          nextActionType: ActionTypeEnum.ANNOUNCEMENT,
           nextActionId: "",
-          options: [] as unknown as MenuOption[]
+          options: []
         }
       ];
   };

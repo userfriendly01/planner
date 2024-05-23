@@ -4,6 +4,8 @@ import {
   AlertBarProps, AlertSeverityType,
   AlertSeverityTypeEnum
 } from "./AlertBarState.Interfaces";
+import {GraphQLErrors} from "../../globals";
+import {GraphQLError} from "../GraphQL/GraphQL.Interfaces";
 
 export const initialAlertBar: AlertBarProps = {
   open: false,
@@ -27,6 +29,16 @@ export class AlertBarState extends AbstractReactState<AlertBarProps> {
 
   error(message: string, open = true, duration = 15000): void {
     this.setAlertBarState(message, AlertSeverityTypeEnum.Error, open, duration);
+  }
+
+  graphQLError(errors: Array<GraphQLError>): void {
+    let message = "Error: ";
+
+    errors.forEach((error: GraphQLError) => {
+      message = message.concat("\n\t", error.message);
+    });
+
+    this.setAlertBarState(message, AlertSeverityTypeEnum.Error, true);
   }
 
   warning(message: string, open = true, duration = 15000): void {
@@ -61,7 +73,7 @@ export class AlertBarState extends AbstractReactState<AlertBarProps> {
     return this.state.duration;
   }
 
-  private setAlertBarState(message: string, severityType: AlertSeverityType, open: boolean, duration: number): void {
+  private setAlertBarState(message: string, severityType: AlertSeverityType, open: boolean, duration = 15000): void {
     this.setStateAction(stateAction => ({
       ...stateAction,
       msg: message,
