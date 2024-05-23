@@ -1,5 +1,5 @@
 import {
-  AbstractXlsxReader, XlsxJSONRow, XlsxReaderResults
+  AbstractXlsxReader, XlsxJSONRow
 } from "../../../../common/XlsxReader/AbstractXlsxReader";
 import {
   BrandType,

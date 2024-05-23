@@ -1,5 +1,5 @@
 import React, {
-  useMemo, useState, useEffect
+  useMemo, useEffect
 } from "react";
 import {
   CsvReader, StyledButton

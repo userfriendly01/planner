@@ -2,7 +2,7 @@ import { DIALED_PHONENUMBER } from "../XlsxReader/XlsxHeaders";
 import {
   RECORD_DATA_TYPE_NAME, RECORD_DATA_TYPE_NAME_ENUM
 } from "../../../../common/XlsxReader/AbstractXlsxReader";
-import {CALLER_CONTEXT_ATTRIBUTES} from "../../dynamicCallFlowAction/Field/ActionFields";
+import { CALLER_CONTEXT_ATTRIBUTES } from "../../dynamicCallFlowAction/Field/ActionFields";
 
 export const BRAND = "brand";
 export const CALL_FLOW_TEMPLATE = "callFlowTemplate";

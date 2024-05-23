@@ -6,13 +6,8 @@ import {
   DATA_REQUESTS,
   GREETING_MESSAGES,
   LANGUAGE_OFFER,
-  OFFICE_NUMBERS,
-  PREDICTIVE_CALLER
+  OFFICE_NUMBERS
 } from "./DynamicPhoneNumberFields";
-import { DIALED_PHONENUMBER } from "../XlsxReader/XlsxHeaders";
-import {
-  RECORD_DATA_TYPE_NAME, RECORD_DATA_TYPE_NAME_ENUM
-} from "../../../../common/XlsxReader/AbstractXlsxReader";
 
 export const ACCOUNT_MANAGER = "accountManager";
 export const AFFINITY_VDN = "affinityVDN";

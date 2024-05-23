@@ -1,7 +1,3 @@
-import {
-  RECORD_DATA_TYPE_NAME, RECORD_DATA_TYPE_NAME_ENUM
-} from "../../../../common/XlsxReader/AbstractXlsxReader";
-
 // Action Fields
 export const ACTION_ID = "actionId";
 export const ACTION_TYPE = "actionType";

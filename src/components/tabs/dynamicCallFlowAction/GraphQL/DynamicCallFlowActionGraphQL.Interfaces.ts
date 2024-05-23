@@ -1,4 +1,4 @@
-import {GraphQLRecord} from "../../../../common/GraphQL/GraphQL.Interfaces";
+import { GraphQLRecord } from "../../../../common/GraphQL/GraphQL.Interfaces";
 
 export type ActionType = "ANNOUNCEMENT" | "MENU" | "MENUOPTIONS" | "TRANSFER" | "HANGUP";
 export enum ActionTypeEnum {

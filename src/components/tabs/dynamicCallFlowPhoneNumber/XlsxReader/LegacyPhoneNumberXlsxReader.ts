@@ -1,5 +1,5 @@
 import {
-  AbstractXlsxReader, XlsxJSONRow, XlsxReaderResults
+  AbstractXlsxReader, XlsxJSONRow
 } from "../../../../common/XlsxReader/AbstractXlsxReader";
 import { CctSharedCallFlowDb } from "../GraphQL/LegacyPhoneNumber.Interfaces";
 import {
@@ -15,7 +15,7 @@ import {
   USER_DESTINATION
 } from "../Field/LegacyPhoneNumberFields";
 import {
-  BrandType, CallerType, ChannelType, LanguageOfferType, PhoneNumber
+  BrandType, CallerType, ChannelType, LanguageOfferType
 } from "../GraphQL/DynamicPhoneNumber.Interfaces";
 import {
   BRAND,

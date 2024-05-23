@@ -1,5 +1,5 @@
 import {
- AbstractSingleRecordQuery, SingleRecordResults
+  AbstractSingleRecordQuery, SingleRecordResults
 } from "./AbstractSingleRecordQuery";
 
 export interface AddVariables<RecordType> {
@@ -7,7 +7,6 @@ export interface AddVariables<RecordType> {
 }
 
 export abstract class AbstractAddQuery extends AbstractSingleRecordQuery {
-
   async add<RecordType>(accessToken: string, input: RecordType): Promise<SingleRecordResults<RecordType>> {
     const addVariables = {
       input
