@@ -1540,16 +1540,16 @@ async function flowDynamicBatchDelete(items, accessToken){
   try{
     const body = JSON.stringify({
       query: `
-      mutation batchDeletePhoneNumber($input: PhoneNumberDeleteBatchInput!) {
-        batchDeletePhoneNumber(input: $input) {
+      mutation batchDeletePhoneNumber($input: CallFlowDeleteInput!) {
+        batchDeleteInput(input: $input) {
           items {
-              phoneNumber
+              id
           }
         }
       }
     `,
       variables: {
-        input: { batchDeletePhoneNumberInput: input }
+        input: { batchDeleteInput: input }
       }
     }).replace(/\\"pkey\\":/g, "pkey:");
 
