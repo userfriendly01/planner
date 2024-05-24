@@ -1,5 +1,5 @@
 import {
-  Manager,
+  UMManager,
   TritonProfile,
   WfmUser,
   UMUser
@@ -17,7 +17,7 @@ export const sortDirectoryListEntriesByName = (a: any, b: any) => {
   return sortStrings(aName, bName);
 };
 
-export const sortManagersByName = (a: Manager, b: Manager) => {
+export const sortManagersByName = (a: UMManager, b: UMManager) => {
   const [aName, bName] = [a.manager_first_name + " " + a.manager_last_name, b.manager_first_name + " " + b.manager_last_name];
   return sortStrings(aName, bName);
 };

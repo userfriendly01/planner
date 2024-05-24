@@ -42,12 +42,12 @@ const ManagerDropdown = () => {
   };
 
   const handleEditManager = async (option: DropdownOption) => {
-    setSelectedManager(managers.find(manager => manager.manager_n_number === option.value));
+    setSelectedManager(managers.find(manager => manager.manager_n_num === option.value));
     setIsManagerModalOpen(true);
   };
 
   const handleOpenDeleteManager = async (option: DropdownOption) => {
-    setSelectedManager(managers.find(manager => manager.manager_n_number === option.value));
+    setSelectedManager(managers.find(manager => manager.manager_n_num === option.value));
     setIsManagerDeleteOpen(true);
   };
 
@@ -71,8 +71,8 @@ const ManagerDropdown = () => {
       value: "divider"
     },
     ...sortedManagers.map(manager => ({
-      label: `${manager.manager_first_name} ${manager.manager_last_name} | ${manager.manager_n_number}`,
-      value: manager.manager_n_number
+      label: `${manager.manager_first_name} ${manager.manager_last_name} | ${manager.manager_n_num}`,
+      value: manager.manager_n_num
     }))
   ];
 

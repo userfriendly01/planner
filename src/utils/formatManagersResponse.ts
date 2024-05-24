@@ -1,8 +1,7 @@
-import { Manager } from "globals";
-import { DbManagerResponse } from "services";
+import { UMManager } from "globals";
 import { logger } from "./logger";
 
-const parseCalabrioTeams = (manager: DbManagerResponse): any => {
+const parseCalabrioTeams = (manager: any): any => {
   try {
     return manager.calabrio_team_ids ? JSON.parse(manager.calabrio_team_ids): [];
   } catch(err) {
@@ -11,9 +10,9 @@ const parseCalabrioTeams = (manager: DbManagerResponse): any => {
   }
 };
 
-export const formatManagersResponse = (response: DbManagerResponse[]): Manager[] => {
+export const formatManagersResponse = (response: any[]): Partial<UMManager>[] => {
   if (response) {
-    return response.map<Manager>(manager => {
+    return response.map<Partial<UMManager>>(manager => {
       return {
         manager_first_name: manager.manager_first_nme,
         manager_last_name: manager.manager_last_nme,

@@ -9,6 +9,7 @@ import {
   UPDATE_USER
 }from "globals";
 import {
+  getPaginatedResults,
   logger,
   mapWorkerFromDbWorker,
   mapWorkerToDbWorker
@@ -22,63 +23,16 @@ import {
  * @param dispatch - AppState Dispatch function
  * @returns - The first query's promise
  */
-export const getAllUsers = async (dispatch: (action: Action) => void): Promise<UMUser[]> => {
+
+export const listUMUsers = async (dispatch: (action: Action) => void): Promise<DBList<UMUser>> => {
   dispatch(({
     type: "setLoadingWorkers",
     payload: true
   }));
 
-  let nextToken = "start";
-  const firstQuery = new Promise((resolve: (users: UMUser[]) => void, reject) => {
-    const getUsers = async () => {
-      while (nextToken) {
-        try {
-          const isFirstQuery = nextToken === "start";
-          const response = await listUsers(isFirstQuery ? undefined : nextToken);
-
-          if (isFirstQuery) {
-            dispatch(({
-              type: "loadWorkers",
-              payload: response.items
-            }));
-
-            resolve(response.items);
-          } else {
-            dispatch(({
-              type: "addWorkers",
-              payload: response.items
-            }));
-          }
-
-          ({ nextToken } = response);
-        } catch(error) {
-          return reject(error);
-        }
-      }
-
-      dispatch(({
-        type: "setLoadingWorkers",
-        payload: false
-      }));
-    };
-
-    getUsers();
-  });
-
-  return firstQuery;
-};
-
-export const listUsers = async (nextToken?: string): Promise<DBList<UMUser>> => {
-  try {
-    const { data }  = await apolloClient.query<{ users: DBList<UMUser | null> }>({
-      query: LIST_USERS,
-      variables: {
-        nextToken
-      }
-    });
-
+  const formatUsers = (users: UMUser[]) => {
     const newUsers = [] as UMUser[];
-    data.users.items.forEach(user => {
+    users.forEach(user => {
       if (!user?.inactiveDate && !user?.ttl && user?.attributes) {
         newUsers.push(
           mapWorkerFromDbWorker({
@@ -88,21 +42,25 @@ export const listUsers = async (nextToken?: string): Promise<DBList<UMUser>> => 
         );
       }
     });
+    return newUsers;
+  };
 
-    return {
-      items: newUsers,
-      nextToken: data.users.nextToken
-    };
+  try {
+    await getPaginatedResults("UMUser", dispatch, formatUsers);
+
+    dispatch(({
+      type: "setLoadingWorkers",
+      payload: false
+    }));
+
+    return;
   } catch(error) {
-    logger.error("Failed to fetch workers from service", { error });
+    logger.error("Failed to fetch users from graph", { error });
 
     throw ({
-      msg: "Failed to fetch workers from service"
+      msg: "Failed to fetch users from graph"
     });
   }
-
-
-
 };
 
 export const getUser = async (identifier: string): Promise<UMUser> => {

@@ -295,7 +295,7 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
   }
 
   // Checking to make sure their manager's name matches the name in the worker attributes (should be rare)
-  const manager: any = managers.find(m => m.manager_n_number === form.triton?.attributes?.manager_n_number);
+  const manager: any = managers.find(m => m.manager_n_num === form.triton?.attributes?.manager_n_number);
   if (form.triton.userFound && manager && (form.triton.attributes.manager_first_name !== manager.manager_first_name || form.triton.attributes.manager_last_name !== manager.manager_last_name)) {
     setForm({
       type: "SET_DISCREPANCIES",

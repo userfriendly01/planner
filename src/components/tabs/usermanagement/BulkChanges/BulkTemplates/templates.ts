@@ -400,7 +400,7 @@ const processUpdateManager = async (row: any, template: Template, state: AppStat
       tritonBody.attributes = {
         manager_first_name: managerObject.manager_first_name,
         manager_last_name: managerObject.manager_last_name,
-        manager_n_number: managerObject.manager_n_number,
+        manager_n_number: managerObject.manager_n_num,
         manager: `${managerObject.manager_first_name} ${managerObject.manager_last_name}`
       };
     }

@@ -163,9 +163,9 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         userNNumber
       });
 
-      if (!offices.get(newWorker.attributes.office_location_number)) {
+      if (!offices.some(o => newWorker.attributes.office_location_number === o.office_num)) {
         const newOffice = {
-          office_nme: newWorker.attributes.office_location_name,
+          office_name: newWorker.attributes.office_location_name,
           office_num: newWorker.attributes.office_location_number
         };
         addOffice(newOffice)

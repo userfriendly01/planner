@@ -25,7 +25,7 @@ const ManagementHeader = (props: ManagementHeaderProps) => {
   const dispatch = useAdminDispatch();
 
   const getManagerName = (nNumber: string) => {
-    const manager = state.managerContext.managers.find(manager => manager.manager_n_number === nNumber);
+    const manager = state.managerContext.managers.find(manager => manager.manager_n_num === nNumber);
     return `${manager.manager_first_name} ${manager.manager_last_name}`;
   };
 

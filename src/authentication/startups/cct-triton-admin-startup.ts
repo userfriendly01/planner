@@ -4,55 +4,19 @@ import {
   apiPaths
 } from "globals";
 import {
-  getAllUsers,
-  getManagers as getManagersServiceCall,
-  getOffices as getOfficesServiceCall,
+  listUMUsers,
+  listUMOffices,
+  listUMManagers,
   getWfmBusinessUnits,
   getCalabrioUsers as getCalabrioUsersServiceCall,
   getCalabrioRoles as getCalabrioRolesServiceCall,
   getCalabrioOrg as getCalabrioOrgServiceCall
 } from "services";
 import {
-  formatManagersResponse,
-  formatOfficesResponse,
   getCalabrioWfmOptions,
   logger,
   myAxios
 } from "utils";
-
-const getManagers = async (dispatch: (action: Action) => void) => {
-  try {
-    const managers = await getManagersServiceCall();
-    dispatch({
-      type: "loadManagers",
-      payload: formatManagersResponse(managers)
-    });
-  } catch (error) {
-    logger.error("Failed to fetch managers from service", { error });
-
-    throw ({
-      msg: "Failed to fetch managers from service",
-      error
-    });
-  }
-};
-
-const getOffices = async (dispatch: (action: Action) => void) => {
-  try {
-    const offices = await getOfficesServiceCall();
-    dispatch({
-      type: "loadOffices",
-      payload: formatOfficesResponse(offices)
-    });
-  } catch (error) {
-    logger.error("Failed to fetch offices from service", { error });
-
-    throw ({
-      msg: "Failed to fetch offices from service",
-      error
-    });
-  }
-};
 
 const getCalabrioUsers = async (dispatch: (action: Action) => void) => {
   try {
@@ -169,9 +133,9 @@ export const runTritonAdminStartup = (dispatch:  (action: Action) => void): Prom
 
   return Promise.all([
     Promise.resolve(getStartupProfiles().TRITON.name),
-    getAllUsers(dispatch),
-    getManagers(dispatch),
-    getOffices(dispatch),
+    // listUMUsers(dispatch),
+    // listUMManagers(dispatch),
+    // listUMOffices(dispatch),
     getProfiles(dispatch),
     getSkills(dispatch),
     getCalabrioUsers(dispatch),
