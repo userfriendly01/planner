@@ -1532,7 +1532,7 @@ async function batchDynamicDeleteItems(items,accessToken){
 async function flowDynamicBatchDelete(items, accessToken){
   const input = items.map(item=>{
     return {
-      phoneNumber: item
+      id: item
     };
   });
 
