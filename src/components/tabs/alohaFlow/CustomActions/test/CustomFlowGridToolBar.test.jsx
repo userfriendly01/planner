@@ -6,7 +6,12 @@ import {
 import {
   Chip, FormControl, InputLabel, MenuItem, Select, Grid, TextField
 } from "@mui/material";
-import { CACHE_FILTER_FLOW } from "utils";
+import { getAdvanceFilter } from "utils";
+import {
+  CACHE_FILTER_FLOW,
+  getAdvanceFilter as getAdvanceFilterCopy
+} from "../../../../../utils/flowUtils";
+
 jest.mock("@mui/material", () => ({
   __esModule: true,
   Grid: jest.fn(),
@@ -15,7 +20,8 @@ jest.mock("@mui/material", () => ({
   FormControl: jest.fn(),
   InputLabel: jest.fn(),
   Select: jest.fn(),
-  MenuItem: jest.fn()
+  MenuItem: jest.fn(),
+  Button: jest.fn()
 }));
 import { useAdminState } from "context";
 
@@ -25,8 +31,8 @@ jest.mock("context", () => ({
 
 jest.mock("utils", () => ({
   readWriteAccess: jest.fn(),
-  CACHE_FILTER_FLOW: jest.requireActual("utils").CACHE_FILTER_FLOW,
-  getAdvanceFilter: jest.requireActual("utils").getAdvanceFilter
+  CACHE_FILTER_FLOW: "SEARCH_FILTER_FLOW",
+  getAdvanceFilter: jest.fn()
 }));
 
 const openAddModal=jest.fn();
@@ -68,6 +74,7 @@ describe("<CustomFlowGridToolBar/>",()=>{
     });
     useAdminState.mockReturnValue(initialTestState);
     localStorage.setItem(CACHE_FILTER_FLOW, JSON.stringify(mockedFlowFilter));
+    getAdvanceFilter.mockImplementation(getAdvanceFilterCopy);
   });
   afterEach(() => {
     localStorage.removeItem(CACHE_FILTER_FLOW);
