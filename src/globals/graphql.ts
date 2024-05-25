@@ -190,8 +190,8 @@ export const CREATE_MANAGER = gql`
 
 
 export const UPDATE_MANAGER = gql`
-  mutation updateUMManager($input: UMManagerUpdateInput!) {
-    user: updateUMManager(input: $input) {
+  mutation updateUMManager($n_number: String!, $input: UMManagerUpdateInput!) {
+    user: updateUMManager(n_number: $n_number, input: $input) {
       pk
       sk
       item_type

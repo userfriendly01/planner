@@ -1,12 +1,15 @@
 import { apolloClient } from "components";
 import {
   Action,
+  CREATE_MANAGER,
   CREATE_USER,
   DBList,
+  DELETE_MANAGER,
   GET_USER,
   LIST_MANAGERS,
   LIST_USERS,
   UMManager,
+  UPDATE_MANAGER,
   UPDATE_USER
 }from "globals";
 import {
@@ -38,13 +41,53 @@ export const listUMManagers = async (dispatch: (action: Action) => void): Promis
 };
 
 export const addManager = async (manager: Partial<UMManager>) => {
-  console.log("dummy");
+  const {
+    errors, data
+  }  = await apolloClient.mutate<{ manager: UMManager }>({
+    mutation: CREATE_MANAGER,
+    variables: {
+      input: manager
+    }
+  });
+
+  if (errors?.length) {
+    throw errors;
+  }
+
+  return data;
 };
 
-export const editManager = async (nNumber: string, manager: Partial<UMManager>) => {
-  console.log("dummy");
+export const editManager = async (n_number: string, manager: Partial<UMManager>) => {
+  const {
+    errors
+  }  = await apolloClient.mutate<{ manager: UMManager }>({
+    mutation: UPDATE_MANAGER,
+    variables: {
+      n_number,
+      input: manager
+    }
+  });
+
+  if (errors?.length) {
+    throw errors;
+  }
+
+  return;
 };
 
-export const deleteManager = async (nNumber: string) => {
-  console.log("dummy");
+export const deleteManager = async (n_number: string) => {
+  const {
+    errors
+  }  = await apolloClient.mutate<{ manager: UMManager }>({
+    mutation: DELETE_MANAGER,
+    variables: {
+      input: n_number
+    }
+  });
+
+  if (errors?.length) {
+    throw errors;
+  }
+
+  return;
 };

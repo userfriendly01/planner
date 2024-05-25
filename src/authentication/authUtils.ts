@@ -1,6 +1,4 @@
-import {
-  UMUser, env, UMUserTwilioAttributes
-} from "globals";
+import { env } from "globals";
 import { listUMUserRecords } from "services";
 
 const productOwners = [
@@ -47,6 +45,6 @@ export const checkIfPO = (nNumber: string): boolean => {
 
 export const getWorkerProfileId = async (nNumber: string): Promise<number> => {
   const loggedInWorker: any = await listUMUserRecords(nNumber);
-  const profileId = loggedInWorker.twilio_attributes.profile_id;
+  const profileId = loggedInWorker.twilio_attributes?.profile_id;
   return profileId;
 };

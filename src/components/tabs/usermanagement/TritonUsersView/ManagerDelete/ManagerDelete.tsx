@@ -53,7 +53,7 @@ const ManagerDelete = (props: ManagerDeleteProps): any => {
   const deleteManagerClicked = (): Promise<any> => {
     setSaveStatus(ModalOverlayStatuses.SAVING);
 
-    return deleteManager(selectedManager.manager_id)
+    return deleteManager(selectedManager.manager_n_num)
       .then((res: any) => {
         // Remove the deleted manager from our local state
         const updatedArray = state.managerContext.managers.filter(
@@ -75,7 +75,7 @@ const ManagerDelete = (props: ManagerDeleteProps): any => {
         logger.info("Successfully deleted manager", {
           res,
           nNumber,
-          managerNNumber: selectedManager.manager_n_number
+          managerNNumber: selectedManager.manager_n_num
         });
       })
       .catch((error: any) => {
@@ -86,7 +86,7 @@ const ManagerDelete = (props: ManagerDeleteProps): any => {
         logger.error("Failed to delete Manager", {
           error,
           nNumber,
-          managerNNumber: selectedManager.manager_n_number
+          managerNNumber: selectedManager.manager_n_num
         });
       });
   };

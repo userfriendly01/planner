@@ -532,7 +532,7 @@ describe("fields.js", () => {
           try {
             await managerValidateFunction({
               rowNumber: 9,
-              "Manager N Number": initialTestState.managerContext.managers[0].manager_n_number
+              "Manager N Number": initialTestState.managerContext.managers[0].manager_n_num
             }, initialTestState);
           } catch (e) {
             expect(e).toEqual(JSON.stringify({

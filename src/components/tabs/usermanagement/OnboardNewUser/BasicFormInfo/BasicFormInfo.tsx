@@ -39,9 +39,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
   const {
     worker,
     profiles,
-    managers,
-    forwardToToggle,
-    setForwardToToggle
+    managers
   } = props;
 
   const form = useFormState();

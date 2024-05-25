@@ -1,19 +1,31 @@
 import {
-  UMOffice, apiPaths
-}from "globals";
-import {
-  myAxios, getPaginatedResults, logger
+  getPaginatedResults, logger
 } from "utils";
 import {
   Action,
-  DBList
+  CREATE_OFFICE,
+  DBList,
+  UMOffice
 }from "globals";
+import { apolloClient } from "components";
 
-export const addOffice = (office: Partial<UMOffice>): Promise<any> =>
-  myAxios.post(apiPaths.OFFICES, office).then(response => response.data);
 
-// export const listOffices = (): Promise<DbOffice[]> =>
-//   myAxios.get(apiPaths.OFFICES).then(response => response.data);
+export const addOffice = async (office: Partial<UMOffice>): Promise<UMOffice> => {
+  const {
+    errors, data
+  }  = await apolloClient.mutate<{ office: UMOffice }>({
+    mutation: CREATE_OFFICE,
+    variables: {
+      input: office
+    }
+  });
+
+  if (errors?.length) {
+    throw errors;
+  }
+
+  return data.office;
+};
 
 export const listUMOffices = async (dispatch: (action: Action) => void): Promise<DBList<UMOffice>> => {
   try {

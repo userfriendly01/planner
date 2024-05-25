@@ -33,7 +33,7 @@ import {
   isDidUser
 } from "../BulkTemplates";
 import {
-  AppState, env
+  AppState, UMManager, env
 } from "globals";
 
 const rejectPromise = (error: string, rowNumber: number) => {
@@ -276,11 +276,11 @@ const processCreateManager = async (row: any, state: AppState) => {
     // add manager
     const body: any = {};
 
-    body.manager_first_nme = row.attributes.manager_first_name;
-    body.manager_last_nme = row.attributes.manager_last_name;
+    body.manager_first_name = row.attributes.manager_first_name;
+    body.manager_last_name = row.attributes.manager_last_name;
     body.manager_n_num = managerNNumberField;
     body.profile_id = row.attributes.profile_id;
-    body.calabrio_team_ids = JSON.stringify([row.groupId]);
+    body.calabrio_team_ids = [row.groupId];
 
     await addManager(body);
 
@@ -393,7 +393,7 @@ const processUpdateManager = async (row: any, template: Template, state: AppStat
     let calabrioBody: any = {};
     let calabrioFunction: any = () => Promise.resolve("Bypassing Calabrio Team Change, not selected");
 
-    const managerObject = state.managerContext.managers.find((m: any) => m.manager_n_number && cleanupField(m.manager_n_number, "string") === managerNNumber);
+    const managerObject = state.managerContext.managers.find((m: UMManager) => m.manager_n_num && cleanupField(m.manager_n_num, "string") === managerNNumber);
     if (!managerObject) {
       return rejectPromise(`${managerNNumber} is not a valid manager nNumber for row ${rowNumber}`, rowNumber);
     } else {

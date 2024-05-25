@@ -21,7 +21,7 @@ describe("reducer", () => {
       const payload = {
         manager_first_name: "joe",
         manager_last_name: "smith",
-        manager_n_number: "n1234657"
+        manager_n_num: "n1234657"
       };
       const action = {
         type: "addManager",

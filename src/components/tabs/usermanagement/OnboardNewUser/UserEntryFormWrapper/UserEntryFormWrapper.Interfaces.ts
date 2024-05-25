@@ -41,8 +41,6 @@ export interface BasicFormInfoProps {
   workers: UMUser[],
   profiles: TritonProfile[],
   managers: UMManager[]
-  forwardToToggle: boolean,
-  setForwardToToggle: (value: boolean) => void,
 }
 
 export interface UserFormButtonsProps {

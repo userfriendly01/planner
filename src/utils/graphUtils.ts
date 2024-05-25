@@ -1,25 +1,17 @@
 import { apolloClient } from "components";
 import {
   Action,
-  CREATE_USER,
   DBList,
-  GET_USER,
   LIST_MANAGERS,
   LIST_OFFICES,
   LIST_USERS,
   UMOffice,
   UMManager,
   UMUser,
-  UPDATE_USER,
   GraphData
 }from "globals";
 import {
-  listUMManagers, listUMOffices, listUMUsers
-} from "services";
-import {
-  logger,
-  mapWorkerFromDbWorker,
-  mapWorkerToDbWorker
+  logger
 } from "utils";
 
 type PaginationType = UMOffice | UMManager | UMUser;

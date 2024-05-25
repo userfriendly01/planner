@@ -5,8 +5,8 @@ import {
   checkIfPO,
   getWorkerProfileId
 } from "../authUtils";
+import { listUMUserRecords } from "services";
 import {
-  initialTestState,
   startups,
   adGroupPermissionMapping,
   authenticationProfileTemplates
@@ -137,23 +137,30 @@ describe("authUtils", () => {
   });
   describe("getWorkerProfileId", () => {
     describe("profile Id is number", () => {
-      test("should return worker profile Id", () => {
-        const nNumber = "N0263786";
-        const profileId = getWorkerProfileId(nNumber, initialTestState.workerContext.workers);
-        expect(profileId).toBe(12);
+      beforeEach(() => {
+        listUMUserRecords.mockResolvedValue({
+          twilio_attributes: {
+            profile_id: 2
+          }
+        });
       });
-    });
-    describe("profile Id is string", () => {
-      test("should return worker profile Id", () => {
-        const nNumber = "n0000000";
-        const profileId = getWorkerProfileId(nNumber, initialTestState.workerContext.workers);
-        expect(profileId).toBe(12);
+      test("should return worker profile Id", async () => {
+        const nNumber = "N0263786";
+        const profileId = await getWorkerProfileId(nNumber);
+        expect(profileId).toBe(2);
       });
     });
     describe("profile Id is null", () => {
-      test("should return worker profile Id", () => {
+      beforeEach(() => {
+        listUMUserRecords.mockResolvedValue({
+          twilio_attributes: {
+            profile_id: null
+          }
+        });
+      });
+      test("should return worker profile Id", async () => {
         const nNumber = "n1111111";
-        const profileId = getWorkerProfileId(nNumber, initialTestState.workerContext.workers);
+        const profileId = await getWorkerProfileId(nNumber);
         expect(profileId).toBe(null);
       });
     });

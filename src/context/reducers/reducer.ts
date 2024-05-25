@@ -64,8 +64,6 @@ export const reducer = (state: AppState, action: Action): AppState => {
       console.log("loadPaginatedResults", action.payload);
       const type: string = action.payload.type;
       const pageResults: any[] = action.payload.results;
-      console.log("starting offices", state.officeContext.offices);
-      console.log("starting managers", state.managerContext.managers);
 
       return {
         ...state,
@@ -176,22 +174,6 @@ export const reducer = (state: AppState, action: Action): AppState => {
           workers: state.workerContext.workers.filter(worker => worker.sid !== action.payload)
         }
       };
-    // case "loadManagers":
-    //   return {
-    //     ...state,
-    //     managerContext: {
-    //       ...state.managerContext,
-    //       managers: action.payload
-    //     }
-    //   };
-    // case "loadOffices":
-    //   return {
-    //     ...state,
-    //     officeContext: {
-    //       ...state.officeContext,
-    //       offices: new Map(action.payload)
-    //     }
-    //   };
     case "loadCalabrioOrg":
       return {
         ...state,

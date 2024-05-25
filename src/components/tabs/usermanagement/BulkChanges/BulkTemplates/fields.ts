@@ -22,6 +22,7 @@ import {
 import {
   Fields
 } from "../BulkChanges.Interfaces";
+import { UMManager } from "globals";
 
 const rejectPromise = (error: string, rowNumber: number | string) => {
   return Promise.reject(JSON.stringify({
@@ -213,7 +214,7 @@ export const FIELDS: Fields = {
       if (!row.attributes) {
         row.attributes = {};
       }
-      const managerObject = state.managerContext.managers.some((m: any) => m.manager_n_number && cleanupField(m.manager_n_number, "string") === field);
+      const managerObject = state.managerContext.managers.some((m: UMManager) => m.manager_n_num && cleanupField(m.manager_n_num, "string") === field);
       if (!field) {
         return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
       } else if (managerObject) {
@@ -238,7 +239,7 @@ export const FIELDS: Fields = {
     type: "string",
     description: "N Number of the Manager",
     example: "n0088625",
-    options: (state: any) => state.managerContext.managers.map((m: any) => m.manager_n_number).sort(),
+    options: (state: any) => state.managerContext.managers.map((m: UMManager) => m.manager_n_num).sort(),
     validateFunction: (row: any, state: any): Promise<any> => {
       const rowNumber = row.rowNumber;
       const fieldName = "Manager N Number";
@@ -246,7 +247,7 @@ export const FIELDS: Fields = {
       if (!row.attributes) {
         row.attributes = {};
       }
-      const managerObject = state.managerContext.managers.find((m: any) => m.manager_n_number && cleanupField(m.manager_n_number, "string") === field);
+      const managerObject = state.managerContext.managers.find((m: UMManager) => m.manager_n_num && cleanupField(m.manager_n_num, "string") === field);
       if (!field) {
         return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
       } else if (!managerObject) {
@@ -254,7 +255,7 @@ export const FIELDS: Fields = {
       } else {
         row.attributes.manager_first_name = managerObject.manager_first_name;
         row.attributes.manager_last_name = managerObject.manager_last_name;
-        row.attributes.manager_n_number = managerObject.manager_n_number;
+        row.attributes.manager_n_number = managerObject.manager_n_num;
         row.attributes.manager = `${managerObject.manager_first_name} ${managerObject.manager_last_name}`;
         return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
       }

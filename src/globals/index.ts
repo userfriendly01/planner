@@ -285,8 +285,6 @@ export const apiPaths = {
   GET_TASK_QUEUES: `${SERVICE_BASE_URI}/taskqueues`,
   GET_TIME_OF_DAYS: `${SERVICE_BASE_URI}/timeofday`,
   GET_RESET_PROFILE_DATADOG_LOGS: (nNumber: string): string => `${SERVICE_BASE_URI}/datadogresetprofileslogs/${nNumber}`,
-  MANAGERS: `${CONTACT_MANAGER_BASE_URI}/managers`,
-  OFFICES: `${CONTACT_MANAGER_BASE_URI}/offices`,
   PROFILES: `${CONTACT_MANAGER_BASE_URI}/profiles`,
   RESET_PROFILES: (nNumber: string): string => `${SERVICE_BASE_URI}/resetprofiles/${nNumber}`,
   RESET_WORKER_SKILLS: `${SERVICE_BASE_URI}/resetworkerskills`,
