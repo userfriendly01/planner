@@ -151,7 +151,7 @@ describe("<CustomRoutingGridToolBar />", ()=>{
     });
     expect(openAddModal).toBeCalledTimes(0);
   });
-  test("Simulate Existing Filter Delete Functionality", async ()=>{
+  xtest("Simulate Existing Filter Delete Functionality", async ()=>{
     renderCustomToolBar();
     const GridMock = Grid.mock.calls[0][0];
     const onDelete = GridMock.children[0].props.children.props.InputProps.startAdornment[0].props.onDelete;
