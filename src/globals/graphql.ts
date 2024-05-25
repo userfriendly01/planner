@@ -64,6 +64,26 @@ export const GET_USER = gql`
   }
 `;
 
+export const LIST_USER_RECORDS: GraphData = {
+  query: gql`
+    query listUMUserRecords($n_number: String) {
+      listUMUserRecords: listUMUserRecords(n_number: $n_number) {
+        items {
+          pk
+          sk
+          item_type
+          worker_sid
+          inactive_date
+          twilio_attributes {
+              profile_id
+          }
+        }
+      }
+    }
+  `,
+  responsePath: "listUMUserRecords"
+};
+
 export const LIST_USERS: GraphData = {
   query: gql`
     query listUMUsers($nextToken: String) {
@@ -105,7 +125,7 @@ export const DELETE_USER = gql`
 export const LIST_OFFICES: GraphData = {
   query: gql`
     query listUMOffices($nextToken: String) {
-      users: listUMOffices(nextToken: $nextToken) {
+      offices: listUMOffices(nextToken: $nextToken) {
         items {
           pk
           sk
@@ -135,7 +155,7 @@ export const CREATE_OFFICE = gql`
 export const LIST_MANAGERS: GraphData = {
   query: gql`
     query listUMManagers($nextToken: String) {
-      users: listUMManagers(nextToken: $nextToken) {
+      managers: listUMManagers(nextToken: $nextToken) {
         items {
           pk
           sk

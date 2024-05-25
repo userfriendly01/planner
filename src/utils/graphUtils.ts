@@ -42,8 +42,6 @@ export const getPaginatedResults = async (type: string, dispatch: (action: Actio
   const getPageResults = async (nextToken?: string): Promise<VoidFunction> => {
     try {
       const graph: GraphData = getGraphData(type);
-      // const response: DBList<PaginationType> = await listQuery(nextToken);
-
       const { data }: any  = await apolloClient.query<{ results: DBList<PaginationType | null> }>({
         query: graph.query,
         variables: {
@@ -53,11 +51,18 @@ export const getPaginatedResults = async (type: string, dispatch: (action: Actio
 
       console.log("Faith! what does the paginated response look like", data);
       const items = data[graph.responsePath].items;
+      console.log("Faith! items", items);
+
       const formattedData = formatResults ? formatResults(items) : items;
+      console.log("Faith! formattedData", formattedData);
+      console.log("Dispatch", `load${type}s`);
 
       dispatch(({
-        type: `load${type}s`,
-        payload: formattedData
+        type: "loadPaginatedResults",
+        payload: {
+          type,
+          results: formattedData
+        }
       }));
 
       if(data[graph.responsePath].nextToken){

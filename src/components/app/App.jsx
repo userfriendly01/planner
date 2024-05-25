@@ -66,10 +66,16 @@ const App = () => {
         });
       } else {
         try {
+          const nNumber = account.idTokenClaims.employeeid;
+          const profileId = await getWorkerProfileId(nNumber);
+          const isAdmin = account.idTokenClaims.roles.includes("Admin");
           dispatch(({
             type: "loadUserData",
             payload: {
-              permissions
+              permissions,
+              profileId,
+              isAdmin,
+              nNumber
             }
           }));
 
@@ -101,7 +107,7 @@ const App = () => {
 
       startup();
     }
-  }, [state.userContext.accessToken, loadResult.status]);
+  }, [state.userContext.accessToken]);
 
   useEffect(() => {
     // Helper to get token
@@ -119,12 +125,12 @@ const App = () => {
 
         logger.log(`*** MSAL: Token acquired, will expire at ${expiresOn} ***`);
 
-        dispatch(({
+        dispatch({
           type: "loadUserData",
           payload: {
             accessToken
           }
-        }));
+        });
 
         // TODO: Once we have subscriptions set up
         // we'll want to constantly refresh the token several times
@@ -147,36 +153,6 @@ const App = () => {
 
     tokenManager();
   }, []);
-
-  useEffect(() => {
-    const {
-      workerContext: {
-        workers,
-        isLoading
-      },
-      userContext
-    } = state;
-
-    const loadUserContext = () => {
-      const nNumber = account.idTokenClaims.employeeid;
-      // TODO: Once we can query by nnumber, don't get profile from all workers, just query graph
-      const profileId = getWorkerProfileId(nNumber, workers);
-      const isAdmin = account.idTokenClaims.roles.includes("Admin");
-
-      dispatch({
-        type: "loadUserData",
-        payload: {
-          profileId,
-          isAdmin,
-          nNumber
-        }
-      });
-    };
-
-    if (workers.length && !isLoading && userContext.isAdmin === undefined) {
-      loadUserContext();
-    }
-  }, [state.workerContext, state.userContext]);
 
   if (loadResult.status && loadResult.status !== loading) {
     if (loadResult.status === success) {

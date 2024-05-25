@@ -304,7 +304,7 @@ export interface UMUserTwilioAttributes {
   office_location_number?: string,
   primary_dept_name?: string,
   primary_dept_number?: string,
-  profile_id?: string | number,
+  profile_id?: number,
   roles?: string[],
   routing?: UMTwilioAttributeSkills,
   unique_id?: string,

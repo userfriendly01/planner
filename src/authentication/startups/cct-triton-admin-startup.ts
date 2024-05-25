@@ -133,9 +133,9 @@ export const runTritonAdminStartup = (dispatch:  (action: Action) => void): Prom
 
   return Promise.all([
     Promise.resolve(getStartupProfiles().TRITON.name),
-    // listUMUsers(dispatch),
-    // listUMManagers(dispatch),
-    // listUMOffices(dispatch),
+    listUMUsers(dispatch),
+    listUMManagers(dispatch),
+    listUMOffices(dispatch),
     getProfiles(dispatch),
     getSkills(dispatch),
     getCalabrioUsers(dispatch),

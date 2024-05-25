@@ -61,22 +61,25 @@ export const reducer = (state: AppState, action: Action): AppState => {
         }
       };
     case "loadPaginatedResults": {
+      console.log("loadPaginatedResults", action.payload);
       const type: string = action.payload.type;
       const pageResults: any[] = action.payload.results;
+      console.log("starting offices", state.officeContext.offices);
+      console.log("starting managers", state.managerContext.managers);
 
       return {
         ...state,
         managerContext: {
           ...state.managerContext,
-          managers: type === "UMManager" && state.managerContext.managers.concat(pageResults)
+          managers: type === "UMManager" ? state.managerContext.managers.concat(pageResults) : state.managerContext.managers
         },
         officeContext: {
           ...state.officeContext,
-          offices: type === "UMOffice" && state.officeContext.offices.concat(pageResults)
+          offices: type === "UMOffice" ? state.officeContext.offices.concat(pageResults) : state.officeContext.offices
         },
         workerContext: {
           ...state.workerContext,
-          workers: type === "UMUser" && state.workerContext.workers.concat(pageResults)
+          workers: type === "UMUser" ? state.workerContext.workers.concat(pageResults) : state.workerContext.workers
         }
       };
     }
@@ -248,14 +251,14 @@ export const reducer = (state: AppState, action: Action): AppState => {
           skillGroups: formatSkillGroups(action.payload)
         }
       };
-    // case "loadUserData":
-    //   return {
-    //     ...state,
-    //     userContext: {
-    //       ...state.userContext,
-    //       ...action.payload
-    //     }
-    //   };
+    case "loadUserData":
+      return {
+        ...state,
+        userContext: {
+          ...state.userContext,
+          ...action.payload
+        }
+      };
     case "resettingSkills":
       return {
         ...state,

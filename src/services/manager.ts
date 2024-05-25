@@ -30,9 +30,9 @@ export const listUMManagers = async (dispatch: (action: Action) => void): Promis
     await getPaginatedResults("UMManager", dispatch);
     return;
   } catch(error) {
-    logger.error("Failed to fetch offices from graph", { error });
+    logger.error("Failed to fetch managers from graph", { error });
     throw ({
-      msg: "Failed to fetch offices from graph"
+      msg: "Failed to fetch managers from graph"
     });
   }
 };

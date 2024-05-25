@@ -4,7 +4,7 @@ import {
   CREATE_USER,
   DBList,
   GET_USER,
-  LIST_USERS,
+  LIST_USER_RECORDS,
   UMUser,
   UPDATE_USER
 }from "globals";
@@ -78,6 +78,31 @@ export const getUser = async (identifier: string): Promise<UMUser> => {
   }
 
   return data.user;
+};
+
+export const listUMUserRecords = async (n_number: string): Promise<UMUser> => {
+
+  const {
+    errors, data
+  }: any = await apolloClient.query<{ results: DBList<UMUser | null> }>({
+    query: LIST_USER_RECORDS.query,
+    variables: {
+      n_number
+    }
+  });
+
+  if (errors?.length) {
+    throw errors;
+  }
+
+  /*
+  Sorting the users will allow for the primary user to be the SSO user but if they only have
+  a console worker, they will work just fine
+  */
+  let items = data[LIST_USER_RECORDS.responsePath].items;
+  items = items.sort((a: any, b: any) => a.pk - b.pk);
+  items = items.filter((i: UMUser) => !i.inactiveDate);
+  return items[0];
 };
 
 export const updateUser = async (identifier: string, user: Partial<UMUser>): Promise<UMUser> => {
