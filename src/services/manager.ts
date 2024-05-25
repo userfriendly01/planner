@@ -2,22 +2,14 @@ import { apolloClient } from "components";
 import {
   Action,
   CREATE_MANAGER,
-  CREATE_USER,
   DBList,
   DELETE_MANAGER,
-  GET_USER,
-  LIST_MANAGERS,
-  LIST_USERS,
   UMManager,
-  UPDATE_MANAGER,
-  UPDATE_USER
+  UPDATE_MANAGER
 }from "globals";
 import {
   getPaginatedResults,
-  logger,
-  mapWorkerFromDbWorker,
-  mapWorkerToDbWorker,
-  formatManagersResponse
+  logger
 } from "utils";
 
 /**
