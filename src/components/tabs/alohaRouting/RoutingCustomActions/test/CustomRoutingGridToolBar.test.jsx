@@ -6,7 +6,15 @@ import {
 import {
   render, setupMockedComponents, act, adGroupPermissionMapping
 } from "testUtils";
-import { CACHE_FILTER_ROUTING } from "utils";
+import {
+  CACHE_FILTER_ROUTING,
+  getAdvanceFilter,
+  readWriteAccess
+} from "utils";
+import {
+  getAdvanceFilter as getAdvanceFilterCopy,
+  readWriteAccess as readWriteAccessCopy
+} from "../../../../../utils/routingUtils";
 import { useAdminState } from "context";
 
 jest.mock("@mui/material", () => ({
@@ -20,6 +28,11 @@ jest.mock("@mui/material", () => ({
   MenuItem: jest.fn()
 }));
 
+jest.mock("utils", () => ({
+  CACHE_FILTER_ROUTING: "SEARCH_FILTER_ROUTING",
+  getAdvanceFilter: jest.fn(),
+  readWriteAccess: jest.fn()
+}));
 
 jest.mock("context", () => ({
   useAdminState: jest.fn()
@@ -73,6 +86,8 @@ describe("<CustomRoutingGridToolBar />", ()=>{
       MenuItem
     });
     localStorage.setItem(CACHE_FILTER_ROUTING, JSON.stringify(mockedRoutingFilter));
+    getAdvanceFilter.mockImplementation(getAdvanceFilterCopy);
+    readWriteAccess.mockImplementation(readWriteAccessCopy);
   });
   afterEach(() => {
     localStorage.removeItem(CACHE_FILTER_ROUTING);
@@ -136,9 +151,9 @@ describe("<CustomRoutingGridToolBar />", ()=>{
     });
     expect(openAddModal).toBeCalledTimes(0);
   });
-  test("Simulate Existing Filter Delete Functionality", ()=>{
+  test("Simulate Existing Filter Delete Functionality", async ()=>{
     renderCustomToolBar();
-    const GridMock = Grid.mock.calls[1][0];
+    const GridMock = Grid.mock.calls[0][0];
     const onDelete = GridMock.children[0].props.children.props.InputProps.startAdornment[0].props.onDelete;
     act(()=>{
       onDelete("brand");
