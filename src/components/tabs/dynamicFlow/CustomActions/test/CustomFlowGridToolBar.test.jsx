@@ -22,14 +22,20 @@ jest.mock("@mui/material", () => ({
   Grid: jest.fn(),
   InputLabel: jest.fn(),
   MenuItem: jest.fn(),
-  Select: jest.fn()
+  Select: jest.fn(),
+  IconButton: jest.fn(),
+  Tooltip: jest.fn()
 }));
+
 jest.mock("context", () => ({
   useAdminState: jest.fn()
 }));
 
-const openPreviewModal=jest.fn();
+jest.mock("utils", () => ({
+  readWriteAccess: jest.fn()
+}));
 
+const openPreviewModal=jest.fn();
 
 const renderCustomToolBar = () =>{
   const rendered =render(
