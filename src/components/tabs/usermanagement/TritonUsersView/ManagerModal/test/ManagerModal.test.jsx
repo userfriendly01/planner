@@ -141,12 +141,10 @@ describe("<ManagerModal />", () => {
       managerContext: {
         managers: [
           {
-            manager_id: 10,
-            manager_n_number: "n0263786"
+            manager_n_num: "n0263786"
           },
           {
-            manager_id: 3,
-            manager_n_number: "n0262226"
+            manager_n_num: "n0262226"
           }
         ]
       },
@@ -271,10 +269,9 @@ describe("<ManagerModal />", () => {
                   type: "addManager",
                   payload: {
                     calabrio_team_ids: [215],
-                    manager_id: undefined,
                     manager_first_name: "B'ob",
                     manager_last_name: "Bob'son",
-                    manager_n_number: "n0000000",
+                    manager_n_num: "n0000000",
                     profile_id: 4
                   }
                 });
@@ -335,7 +332,7 @@ describe("<ManagerModal />", () => {
             managers: [{
               manager_first_name: "Ialready",
               manager_last_name: "Exist",
-              manager_n_number: managerNNumber
+              manager_n_num: managerNNumber
             }]
           },
           userContext: {
@@ -419,7 +416,7 @@ describe("<ManagerModal />", () => {
       const selectedManager = {
         manager_first_name: "Faith",
         manager_last_name: "Cuneo",
-        manager_n_number: "n0263786",
+        manager_n_num: "n0263786",
         profile_id: null,
         calabrio_team_ids: [215, 225]
       };
@@ -451,10 +448,9 @@ describe("<ManagerModal />", () => {
     });
     describe("Update Manager Button", () => {
       const selectedManager = {
-        manager_id: 10,
         manager_first_name: "Faith",
         manager_last_name: "Cuneo",
-        manager_n_number: "n0263786",
+        manager_n_num: "n0263786",
         profile_id: null,
         calabrio_team_ids: [215, 225]
       };
@@ -515,10 +511,10 @@ describe("<ManagerModal />", () => {
               });
               await waitFor(() => {
                 expect(editManager).toHaveBeenCalledTimes(1);
-                expect(editManager).toHaveBeenCalledWith(10, {
-                  manager_first_nme: "Faith updated Name",
-                  manager_last_nme: "Cuneo",
-                  calabrio_team_ids: "[215,225]",
+                expect(editManager).toHaveBeenCalledWith("n0263786", {
+                  manager_first_name: "Faith updated Name",
+                  manager_last_name: "Cuneo",
+                  calabrio_team_ids: [215,225],
                   profile_id: 4
                 });
               });
@@ -530,15 +526,13 @@ describe("<ManagerModal />", () => {
                   payload: [
                     {
                       calabrio_team_ids: [215, 225],
-                      manager_id: 10,
                       manager_first_name: "Faith updated Name",
                       manager_last_name: "Cuneo",
-                      manager_n_number: "n0263786",
+                      manager_n_num: "n0263786",
                       profile_id: 4
                     },
                     {
-                      manager_id: 3,
-                      manager_n_number: "n0262226"
+                      manager_n_num: "n0262226"
                     }
                   ]
                 });
@@ -637,10 +631,10 @@ describe("<ManagerModal />", () => {
               });
               await waitFor(() => {
                 expect(editManager).toHaveBeenCalledTimes(1);
-                expect(editManager).toHaveBeenCalledWith(10, {
-                  manager_first_nme: "Faith updated Name",
-                  manager_last_nme: "Cuneo",
-                  calabrio_team_ids: "[215,225]",
+                expect(editManager).toHaveBeenCalledWith("n0263786", {
+                  manager_first_name: "Faith updated Name",
+                  manager_last_name: "Cuneo",
+                  calabrio_team_ids: [215,225],
                   profile_id: 4
                 });
               });
@@ -652,15 +646,13 @@ describe("<ManagerModal />", () => {
                   payload: [
                     {
                       calabrio_team_ids: [215, 225],
-                      manager_id: 10,
                       manager_first_name: "Faith updated Name",
                       manager_last_name: "Cuneo",
-                      manager_n_number: "n0263786",
+                      manager_n_num: "n0263786",
                       profile_id: 4
                     },
                     {
-                      manager_id: 3,
-                      manager_n_number: "n0262226"
+                      manager_n_num: "n0262226"
                     }
                   ]
                 });
@@ -700,10 +692,10 @@ describe("<ManagerModal />", () => {
               });
               await waitFor(() => {
                 expect(editManager).toHaveBeenCalledTimes(1);
-                expect(editManager).toHaveBeenCalledWith(10, {
-                  manager_first_nme: "Faith updated Name",
-                  manager_last_nme: "Cuneo",
-                  calabrio_team_ids: "[215,225]",
+                expect(editManager).toHaveBeenCalledWith("n0263786", {
+                  manager_first_name: "Faith updated Name",
+                  manager_last_name: "Cuneo",
+                  calabrio_team_ids: [215,225],
                   profile_id: 4
                 });
               });
@@ -750,10 +742,10 @@ describe("<ManagerModal />", () => {
             });
             await waitFor(() => {
               expect(editManager).toHaveBeenCalledTimes(1);
-              expect(editManager).toHaveBeenCalledWith(10, {
-                manager_first_nme: "Faith",
-                manager_last_nme: "Cuneo",
-                calabrio_team_ids: "[215,225]",
+              expect(editManager).toHaveBeenCalledWith("n0263786", {
+                manager_first_name: "Faith",
+                manager_last_name: "Cuneo",
+                calabrio_team_ids: [215,225],
                 profile_id: 4
               });
               expect(mockHandleClose).toHaveBeenCalledTimes(1);
@@ -763,15 +755,13 @@ describe("<ManagerModal />", () => {
                 payload: [
                   {
                     calabrio_team_ids: [215, 225],
-                    manager_id: 10,
                     manager_first_name: "Faith",
                     manager_last_name: "Cuneo",
-                    manager_n_number: "n0263786",
+                    manager_n_num: "n0263786",
                     profile_id: 4
                   },
                   {
-                    manager_id: 3,
-                    manager_n_number: "n0262226"
+                    manager_n_num: "n0262226"
                   }
                 ]
               });
@@ -797,10 +787,10 @@ describe("<ManagerModal />", () => {
             });
             await waitFor(() => {
               expect(editManager).toHaveBeenCalledTimes(1);
-              expect(editManager).toHaveBeenCalledWith(10, {
-                manager_first_nme: "Faith",
-                manager_last_nme: "Cuneo",
-                calabrio_team_ids: "[215,225]",
+              expect(editManager).toHaveBeenCalledWith("n0263786", {
+                manager_first_name: "Faith",
+                manager_last_name: "Cuneo",
+                calabrio_team_ids: [215,225],
                 profile_id: 4
               });
               expect(mockHandleClose).toHaveBeenCalledTimes(0);
