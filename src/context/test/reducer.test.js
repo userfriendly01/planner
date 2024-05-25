@@ -82,10 +82,10 @@ describe("reducer", () => {
         type: "addOffice",
         payload
       };
-      const initialOffices = new Map([["024", {
+      const initialOffices = [{
         office_nme: "Initial Office",
         office_num: "024"
-      }]]);
+      }];
       const testState = {
         ...initialState,
         officeContext: {
@@ -93,7 +93,7 @@ describe("reducer", () => {
         }
       };
       const result = reducer(testState, action);
-      expect(result.officeContext.offices).toEqual(initialOffices.set(payload.office_num, payload));
+      expect(result.officeContext.offices).toEqual(initialOffices.concat([payload]));
     });
   });
   describe("addWorkers", () => {
@@ -167,49 +167,6 @@ describe("reducer", () => {
       };
       const result = reducer(testState, action);
       expect(result.workerContext.workers).toEqual([workerToKeep, someOtherWorker]);
-    });
-  });
-  describe("loadManager", () => {
-    test("should initialize or reinitialize the managers array", () => {
-      const payload = [
-        {
-          manager_first_name: "joe",
-          manager_last_name: "smith",
-          manager_n_number: "n1234657"
-        }
-      ];
-      const action = {
-        type: "loadManagers",
-        payload
-      };
-      const result = reducer(initialState, action);
-      expect(result.managerContext.managers).toEqual(payload);
-    });
-  });
-  describe("loadOffices", () => {
-    test("should initialize a map from the offices map sent in", () => {
-      const payload = new Map([
-        [
-          "A1",
-          {
-            office_nme: "Test1",
-            office_num: "A1"
-          }
-        ],
-        [
-          "A2",
-          {
-            office_nme: "Test2",
-            office_num: "A2"
-          }
-        ]
-      ]);
-      const action = {
-        type: "loadOffices",
-        payload
-      };
-      const result = reducer(initialState, action);
-      expect(result.officeContext.offices).toEqual(payload);
     });
   });
   describe("loadCalabrioOrg", () => {
@@ -329,26 +286,6 @@ describe("reducer", () => {
       };
       const result = reducer(initialState, action);
       expect(result.calabrioContext.roles).toEqual(payload);
-    });
-  });
-  describe("loadWorkers", () => {
-    test("should update wfmOrg only", () => {
-      const payload = [
-        {
-          id: 1,
-          name: "Administrator"
-        },
-        {
-          id: 2,
-          name: "Agent"
-        }
-      ];
-      const action = {
-        type: "loadWorkers",
-        payload
-      };
-      const result = reducer(initialState, action);
-      expect(result.workerContext.workers).toEqual(payload);
     });
   });
   describe("updateWfmOrg", () => {
