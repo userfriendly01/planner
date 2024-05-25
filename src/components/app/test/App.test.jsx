@@ -143,7 +143,7 @@ describe("<App />", () => {
 
       Date.now = jest.fn();
       Date.now.mockReturnValue(1704067200000);
-
+      getWorkerProfileId.mockResolvedValue(0);
       useMsal.mockReturnValue({
         instance: {
           getActiveAccount: jest.fn().mockReturnValue({
@@ -173,41 +173,16 @@ describe("<App />", () => {
       expect(mockAdminDispatch).toHaveBeenCalledWith({
         type: "loadUserData",
         payload: {
-          permissions
+          permissions,
+          isAdmin: true,
+          nNumber: "n1234567",
+          profileId: 0
         }
       });
       expect(mockAdminDispatch).toHaveBeenCalledWith({
         type: "loadUserData",
         payload: {
           accessToken: "Access Token"
-        }
-      });
-    });
-
-    test("should set isAdmin, nNumber, and profileId once workers has loaded", async () => {
-      useAdminState.mockReturnValue({
-        userContext: {
-          permissions: [],
-          accessToken: "Access"
-        },
-        workerContext: {
-          workers: [{
-            attributes: {
-              n_number: "n1234567"
-            }
-          }]
-        }
-      });
-
-      const rendered = render(<App />);
-      await waitFor(() => rendered.getByTestId("app-wrapper"));
-
-      expect(mockAdminDispatch).toHaveBeenCalledWith({
-        type: "loadUserData",
-        payload: {
-          profileId: 0,
-          isAdmin: true,
-          nNumber: "n1234567"
         }
       });
     });
