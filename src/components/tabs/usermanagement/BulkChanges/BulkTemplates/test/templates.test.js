@@ -483,11 +483,11 @@ describe("CREATE_MANAGER", () => {
         });
         expect(addManager).toHaveBeenCalledTimes(1);
         expect(addManager).toHaveBeenCalledWith({
-          manager_first_nme: "Michael",
-          manager_last_nme: "Scott",
+          manager_first_name: "Michael",
+          manager_last_name: "Scott",
           manager_n_num: "n0003232",
           profile_id: 1,
-          calabrio_team_ids: JSON.stringify([300])
+          calabrio_team_ids: [300]
         });
       });
     });
@@ -505,11 +505,11 @@ describe("CREATE_MANAGER", () => {
         } catch (e) {
           expect(addManager).toHaveBeenCalledTimes(1);
           expect(addManager).toHaveBeenCalledWith({
-            manager_first_nme: "Michael",
-            manager_last_nme: "Scott",
+            manager_first_name: "Michael",
+            manager_last_name: "Scott",
             manager_n_num: "n0003232",
             profile_id: 1,
-            calabrio_team_ids: JSON.stringify([101])
+            calabrio_team_ids: [101]
           });
           expect(e).toBe(JSON.stringify({
             rowNumber: 2,
@@ -528,11 +528,11 @@ describe("CREATE_MANAGER", () => {
         });
         expect(addManager).toHaveBeenCalledTimes(1);
         expect(addManager).toHaveBeenCalledWith({
-          manager_first_nme: "Michael",
-          manager_last_nme: "Scott",
+          manager_first_name: "Michael",
+          manager_last_name: "Scott",
           manager_n_num: "n0003232",
           profile_id: 1,
-          calabrio_team_ids: JSON.stringify([101])
+          calabrio_team_ids: [101]
         });
       });
     });

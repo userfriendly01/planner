@@ -13,7 +13,6 @@ import {
   Template
 } from "../BulkChanges.Interfaces";
 import {
-  formatManagersResponse,
   getCalabrioWfmOrg,
   logger
 } from "utils";
@@ -66,7 +65,11 @@ export const updateWFMPersonState = async (state: any, dispatch: any, rows: any[
  * Refreshes the manager user state after a bulk update on users
  */
 export const updateManagerUserState = async (dispatch: any): Promise<void> => {
-  await listUMManagers(dispatch);
+  try {
+    await listUMManagers(dispatch);
+  } catch(err){
+    logger.error("Failed to update manager state after bulk upload", err);
+  }
   return Promise.resolve();
 };
 
