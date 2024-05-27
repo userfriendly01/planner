@@ -7,18 +7,17 @@ import {
 import {
   getPaginatedResults
 } from "utils";
-import { apolloClient } from "components";
+import { apolloClient } from "../../components/core/Auth/SharedGraphAPIProvider";
 
-beforeEach(() => {
-  jest.clearAllMocks();
-});
-
-jest.mock("components", () => ({
+jest.mock("../../components/core/Auth/SharedGraphAPIProvider", () => ({
   apolloClient: {
     mutate: jest.fn(),
     query: jest.fn()
   }
 }));
+beforeEach(() => {
+  jest.clearAllMocks();
+});
 
 jest.mock("utils", () => ({
   getPaginatedResults: jest.fn(),
