@@ -1,4 +1,4 @@
-import { apolloClient } from "components";
+import { apolloClient } from "../components/core/Auth/SharedGraphAPIProvider";
 import {
   Action,
   CREATE_MANAGER,

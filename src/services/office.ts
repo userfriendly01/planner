@@ -7,8 +7,7 @@ import {
   DBList,
   UMOffice
 }from "globals";
-import { apolloClient } from "components";
-
+import { apolloClient } from "../components/core/Auth/SharedGraphAPIProvider";
 
 export const addOffice = async (office: Partial<UMOffice>): Promise<UMOffice> => {
   const {
