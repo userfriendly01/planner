@@ -24,7 +24,7 @@ export const addOffice = async (office: Partial<UMOffice>): Promise<UMOffice> =>
     throw errors;
   }
 
-  return data.office;
+  return data?.office;
 };
 
 export const listUMOffices = async (dispatch: (action: Action) => void): Promise<DBList<UMOffice>> => {

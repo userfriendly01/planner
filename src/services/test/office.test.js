@@ -1,23 +1,34 @@
 import {
   addOffice,
-  getOffices
+  listUMOffices
 } from "../office";
-import MockAdapter from "axios-mock-adapter";
-import { myAxios } from "utils";
+import {
+  getPaginatedResults
+} from "utils";
+import { apolloClient } from "components";
 
-const axiosMock = new MockAdapter(myAxios);
+jest.mock("components", () => ({
+  apolloClient: {
+    mutate: jest.fn(),
+    query: jest.fn()
+  }
+}));
 
-const officeEndpoint = "http://localhost:8080/contact-manager/offices";
+jest.mock("utils", () => ({
+  getPaginatedResults: jest.fn(),
+  logger: {
+    error: jest.fn()
+  }
+}));
 
 beforeEach(() => {
   jest.clearAllMocks();
-  axiosMock.reset();
 });
 
 describe("addOffice", () => {
   describe("call succeeds", () => {
-    const data = { huzzah: "you are winner" };
-    beforeEach(() => axiosMock.onPost(officeEndpoint).replyOnce(200, data));
+    const data = { office: "0022" };
+    beforeEach(() => apolloClient.mutate.mockReturnValue({ data }));
     test("should resolve with any successful response", done => {
       const newOffice = {
         office_nme: "noob",
@@ -25,47 +36,43 @@ describe("addOffice", () => {
       };
       addOffice(newOffice)
         .then(resolvedValue => {
-          expect(JSON.parse(axiosMock.history.post[0].data)).toEqual(newOffice);
-          expect(resolvedValue).toEqual(data);
+          expect(resolvedValue).toEqual(data.office);
           done();
         });
     });
   });
   describe("call fails", () => {
-    const badResponse = { wahh: "boo" };
-    beforeEach(() => axiosMock.onPost(officeEndpoint).replyOnce(500, badResponse));
+    beforeEach(() => apolloClient.mutate.mockReturnValue({ errors: [{ message: "boo" }]}));
     test("should reject with error", done => {
       const newOffice = {
         office_nme: "noob",
         office_num: "0xb"
       };
       addOffice(newOffice).catch(rejectedVal => {
-        expect(JSON.parse(axiosMock.history.post[0].data)).toEqual(newOffice);
-        expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
+        expect(rejectedVal).toEqual([{ "message": "boo" }]);
         done();
       });
     });
   });
 });
 
-describe("getOffices", () => {
+describe("listUMOffices", () => {
   describe("call succeeds", () => {
-    const data = { huzzah: "you are winner" };
-    beforeEach(() => axiosMock.onGet(officeEndpoint).replyOnce(200, data));
+    beforeEach(() => getPaginatedResults.mockResolvedValue("Yay"));
     test("should resolve with any successful response", done => {
-      getOffices()
+      listUMOffices()
         .then(resolvedValue => {
-          expect(resolvedValue).toEqual(data);
+          expect(resolvedValue).toEqual(undefined);
           done();
         });
     });
   });
   describe("call fails", () => {
     const badResponse = { wahh: "boo" };
-    beforeEach(() => axiosMock.onGet(officeEndpoint).replyOnce(500, badResponse));
+    beforeEach(() => getPaginatedResults.mockRejectedValue(badResponse));
     test("should reject with error", done => {
-      getOffices().catch(rejectedVal => {
-        expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
+      listUMOffices().catch(rejectedVal => {
+        expect(rejectedVal).toEqual({ msg: "Failed to fetch offices from graph" });
         done();
       });
     });

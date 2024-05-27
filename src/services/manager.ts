@@ -27,6 +27,7 @@ export const listUMManagers = async (dispatch: (action: Action) => void): Promis
   } catch(error) {
     logger.error("Failed to fetch managers from graph", { error });
     throw ({
+      error,
       msg: "Failed to fetch managers from graph"
     });
   }
@@ -46,7 +47,7 @@ export const addManager = async (manager: Partial<UMManager>) => {
     throw errors;
   }
 
-  return data;
+  return data.manager;
 };
 
 export const editManager = async (n_number: string, manager: Partial<UMManager>) => {
