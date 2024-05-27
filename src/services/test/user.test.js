@@ -1,7 +1,7 @@
 import {
   createUser, listUMUsers, getUser, updateUser
 } from "services/user";
-import { apolloClient } from "components";
+import { apolloClient } from "../../components/core/Auth/SharedGraphAPIProvider";
 import {
   logger,
   mapWorkerFromDbWorker,
@@ -9,7 +9,7 @@ import {
   getPaginatedResults
 } from "utils";
 
-jest.mock("components", () => ({
+jest.mock("../../components/core/Auth/SharedGraphAPIProvider", () => ({
   apolloClient: {
     mutate: jest.fn(),
     query: jest.fn()
@@ -41,7 +41,7 @@ describe("user", () => {
 
       await listUMUsers(dispatchMock);
 
-      expect(dispatchMock).toHaveBeenCalledTimes(3);
+      expect(dispatchMock).toHaveBeenCalledTimes(2);
       expect(dispatchMock).toHaveBeenCalledWith({
         type: "setLoadingWorkers",
         payload: true
