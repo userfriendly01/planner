@@ -38,7 +38,7 @@ export const listUMUsers = async (dispatch: (action: Action) => void): Promise<D
         newUsers.push(
           mapWorkerFromDbWorker({
             ...user,
-            isConsole: false // user.pk.includes("Console")
+            isConsole: user.pk.includes("Console")
           })
         );
       }
