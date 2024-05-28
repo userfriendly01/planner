@@ -142,7 +142,7 @@ export const LIST_OFFICES: GraphData = {
 
 export const CREATE_OFFICE = gql`
   mutation createUMOffice($input: UMOfficeCreateInput!) {
-    user: createUMOffice(input: $input) {
+    office: createUMOffice(input: $input) {
       pk
       sk
       item_type
@@ -175,7 +175,7 @@ export const LIST_MANAGERS: GraphData = {
 
 export const CREATE_MANAGER = gql`
   mutation createUMManager($input: UMManagerCreateInput!) {
-    user: createUMManager(input: $input) {
+    manager: createUMManager(input: $input) {
       pk
       sk
       item_type
@@ -191,7 +191,7 @@ export const CREATE_MANAGER = gql`
 
 export const UPDATE_MANAGER = gql`
   mutation updateUMManager($n_number: String!, $input: UMManagerUpdateInput!) {
-    user: updateUMManager(n_number: $n_number, input: $input) {
+    manager: updateUMManager(n_number: $n_number, input: $input) {
       pk
       sk
       item_type
@@ -206,7 +206,7 @@ export const UPDATE_MANAGER = gql`
 
 export const DELETE_MANAGER = gql`
   mutation deleteUMManager($n_number: String!) {
-    user: deleteUMManager(n_number: $n_number) {
+    manager: deleteUMManager(n_number: $n_number) {
       pk
       sk
       item_type
