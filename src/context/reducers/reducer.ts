@@ -61,7 +61,6 @@ export const reducer = (state: AppState, action: Action): AppState => {
         }
       };
     case "loadPaginatedResults": {
-      console.log("loadPaginatedResults", action.payload);
       const type: string = action.payload.type;
       const pageResults: any[] = action.payload.results;
 

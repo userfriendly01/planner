@@ -44,7 +44,7 @@ describe("addManager", () => {
     });
   });
   describe("call fails", () => {
-    beforeEach(() => apolloClient.mutate.mockRejectedValue({ errors: [{ message: "boo" }]}));
+    beforeEach(() => apolloClient.mutate.mockResolvedValue({ errors: [{ message: "boo" }]}));
     test("should reject with error", done => {
       const newManager = {
         manager_first_name: "Noob",
@@ -52,7 +52,7 @@ describe("addManager", () => {
         manager_n_num: "fatality"
       };
       addManager(newManager).catch(rejectedVal => {
-        expect(rejectedVal).toEqual({ "errors": [{ "message": "boo" }]});
+        expect(rejectedVal).toEqual([{ "message": "boo" }]);
         done();
       });
     });
@@ -79,10 +79,10 @@ describe("editManager", () => {
     });
   });
   describe("call fails", () => {
-    beforeEach(() => apolloClient.mutate.mockRejectedValue({ errors: [{ message: "boo" }]}));
+    beforeEach(() => apolloClient.mutate.mockResolvedValue({ errors: [{ message: "boo" }]}));
     test("should reject with error", done => {
       editManager(updatedManager.manager_id, updatedManager).catch(rejectedVal => {
-        expect(rejectedVal).toEqual({ "errors": [{ "message": "boo" }]});
+        expect(rejectedVal).toEqual([{ "message": "boo" }]);
         done();
       });
     });
@@ -102,10 +102,10 @@ describe("deleteManager", () => {
     });
   });
   describe("call fails", () => {
-    beforeEach(() => apolloClient.mutate.mockRejectedValue({ errors: [{ message: "boo" }]}));
+    beforeEach(() => apolloClient.mutate.mockResolvedValue({ errors: [{ message: "boo" }]}));
     test("should reject with error", done => {
       deleteManager(managerId).catch(rejectedVal => {
-        expect(rejectedVal).toEqual({ errors: [{ message: "boo" }]});
+        expect(rejectedVal).toEqual([{ message: "boo" }]);
         done();
       });
     });
@@ -124,12 +124,11 @@ describe("listUMManagers", () => {
     });
   });
   describe("call fails", () => {
-    const badResponse = { wahh: "boo" };
-    beforeEach(() => getPaginatedResults.mockRejectedValue(badResponse));
+    beforeEach(() => getPaginatedResults.mockRejectedValue({ errors: [{ message: "boo" }]}));
     test("should reject with error", done => {
       listUMManagers().catch(rejectedVal => {
         expect(rejectedVal).toEqual({
-          error: badResponse,
+          "error": { "errors": [{ "message": "boo" }]},
           msg: "Failed to fetch managers from graph"
         });
         done();

@@ -12,7 +12,8 @@ import {
   getPaginatedResults,
   logger,
   mapWorkerFromDbWorker,
-  mapWorkerToDbWorker
+  mapWorkerToDbWorker,
+  sortGraphObjectsByPk
 } from "utils";
 
 /**
@@ -25,7 +26,6 @@ import {
  */
 
 export const listUMUsers = async (dispatch: (action: Action) => void): Promise<DBList<UMUser>> => {
-  //oh hi
   dispatch(({
     type: "setLoadingWorkers",
     payload: true
@@ -75,6 +75,7 @@ export const getUser = async (identifier: string): Promise<UMUser> => {
   });
 
   if (errors?.length) {
+    logger.error("Failed to fetch user from graph", { errors });
     throw errors;
   }
 
@@ -93,6 +94,7 @@ export const listUMUserRecords = async (n_number: string): Promise<UMUser> => {
   });
 
   if (errors?.length) {
+    logger.error("Failed to fetch user records from graph", { errors });
     throw errors;
   }
 
@@ -100,9 +102,10 @@ export const listUMUserRecords = async (n_number: string): Promise<UMUser> => {
   Sorting the users will allow for the primary user to be the SSO user but if they only have
   a console worker, they will work just fine
   */
-  let items = data[LIST_USER_RECORDS.responsePath].items;
-  items = items.sort((a: any, b: any) => a.pk - b.pk);
+
+  let items = data[LIST_USER_RECORDS.responsePath]?.items;
   items = items.filter((i: UMUser) => !i.inactiveDate);
+  items = items.sort(sortGraphObjectsByPk);
   return items[0];
 };
 
@@ -118,6 +121,7 @@ export const updateUser = async (identifier: string, user: Partial<UMUser>): Pro
   });
 
   if (errors?.length) {
+    logger.error("Failed to update user from graph", { errors });
     throw errors;
   }
 
@@ -135,6 +139,7 @@ export const createUser = async (user: Partial<UMUser>): Promise<UMUser> => {
   });
 
   if (errors?.length) {
+    logger.error("Failed to create user from graph", { errors });
     throw errors;
   }
 

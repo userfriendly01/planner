@@ -1,13 +1,15 @@
 import {
-  createUser, listUMUsers, getUser, updateUser
+  createUser, listUMUsers, getUser, updateUser, listUMUserRecords
 } from "services/user";
 import { apolloClient } from "../../components/core/Auth/SharedGraphAPIProvider";
 import {
   logger,
   mapWorkerFromDbWorker,
   mapWorkerToDbWorker,
-  getPaginatedResults
+  getPaginatedResults,
+  sortGraphObjectsByPk
 } from "utils";
+import { sortGraphObjectsByPk as sortGraphObjectsByPkCopy } from "../../utils/sortUtils";
 
 jest.mock("../../components/core/Auth/SharedGraphAPIProvider", () => ({
   apolloClient: {
@@ -22,15 +24,16 @@ jest.mock("utils", () => ({
   },
   mapWorkerFromDbWorker: jest.fn(),
   mapWorkerToDbWorker: jest.fn(),
-  getPaginatedResults: jest.fn()
+  getPaginatedResults: jest.fn(),
+  sortGraphObjectsByPk: jest.fn()
 }));
 
 describe("user", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-
     mapWorkerFromDbWorker.mockImplementation(data => data);
     mapWorkerToDbWorker.mockImplementation(data => data);
+    sortGraphObjectsByPk.mockImplementation(sortGraphObjectsByPkCopy);
   });
 
   describe("listUMUsers", () => {
@@ -67,7 +70,52 @@ describe("user", () => {
       }
     });
   });
+  describe("listUMUserRecords", () => {
+    test("should resolve with the first paint of data", async () => {
+      apolloClient.query.mockResolvedValue({
+        data: {
+          listUMUserRecords: {
+            items: [
+              {
+                pk: "n0263786#Console"
+              },
+              {
+                pk: "n0263786"
+              }
+            ]
+          }
+        }
+      });
 
+      const res = await listUMUserRecords("n0263786");
+      expect(res).toStrictEqual({
+        pk: "n0263786"
+      });
+
+    });
+
+    test("should reject if an error occurs in the listUMUsers", async () => {
+      apolloClient.query.mockResolvedValue({
+        errors: [
+          {
+            message: "Oh Nooo"
+          }
+        ]
+      });
+      try {
+        await listUMUserRecords("n0263786");
+      } catch(err) {
+        expect(logger.error).toHaveBeenCalledWith("Failed to fetch user records from graph", {
+          errors: [
+            {
+              message: "Oh Nooo"
+            }
+          ]
+        });
+        expect(err).toEqual([{ "message": "Oh Nooo" }]);
+      }
+    });
+  });
   describe.each([
     {
       func: updateUser,

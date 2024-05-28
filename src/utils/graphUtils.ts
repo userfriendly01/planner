@@ -16,7 +16,7 @@ import {
 
 type PaginationType = UMOffice | UMManager | UMUser;
 
-const getGraphData = (type: string) => {
+export const getGraphData = (type: string) => {
   switch (type) {
     case "UMUser":
       return LIST_USERS;
@@ -30,10 +30,10 @@ const getGraphData = (type: string) => {
 };
 
 export const getPaginatedResults = async (type: string, dispatch: (action: Action) => void, formatResults?: (items: PaginationType[]) => PaginationType[]): Promise<void> => {
+  const graph: GraphData = getGraphData(type);
 
   const getPageResults = async (nextToken?: string): Promise<VoidFunction> => {
     try {
-      const graph: GraphData = getGraphData(type);
       const { data }: any  = await apolloClient.query<{ results: DBList<PaginationType | null> }>({
         query: graph.query,
         variables: {
@@ -41,13 +41,8 @@ export const getPaginatedResults = async (type: string, dispatch: (action: Actio
         }
       });
 
-      console.log("Faith! what does the paginated response look like", data);
-      const items = data[graph.responsePath].items;
-      console.log("Faith! items", items);
-
+      const items = data[graph.responsePath]?.items;
       const formattedData = formatResults ? formatResults(items) : items;
-      console.log("Faith! formattedData", formattedData);
-      console.log("Dispatch", `load${type}s`);
 
       dispatch(({
         type: "loadPaginatedResults",
@@ -57,8 +52,8 @@ export const getPaginatedResults = async (type: string, dispatch: (action: Actio
         }
       }));
 
-      if(data[graph.responsePath].nextToken){
-        return getPageResults(data[graph.responsePath].nextToken);
+      if(data[graph.responsePath]?.nextToken){
+        return getPageResults(data[graph.responsePath]?.nextToken);
       } else {
         return;
       }
@@ -68,7 +63,7 @@ export const getPaginatedResults = async (type: string, dispatch: (action: Actio
     }
   };
 
-  getPageResults();
+  await getPageResults();
 
   return;
 };

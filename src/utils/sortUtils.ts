@@ -7,6 +7,11 @@ import {
 
 const sortLast = "zzzzzzzzzzz";
 
+export const sortGraphObjectsByPk = (a: any, b: any) => {
+  console.warn("DoubleCheck", a, b);
+  return sortStrings(a.pk, b.pk);
+};
+
 export const sortDialListEntriesByName = (a: any, b: any) => {
   const [aName, bName] = [a.contact_nme, b.contact_nme];
   return sortStrings(aName, bName);

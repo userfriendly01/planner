@@ -44,6 +44,7 @@ export const addManager = async (manager: Partial<UMManager>) => {
   });
 
   if (errors?.length) {
+    logger.error("Failed to add manager from graph", { errors } );
     throw errors;
   }
 
@@ -62,6 +63,7 @@ export const editManager = async (n_number: string, manager: Partial<UMManager>)
   });
 
   if (errors?.length) {
+    logger.error("Failed to edit manager from graph", { errors } );
     throw errors;
   }
 
@@ -79,6 +81,7 @@ export const deleteManager = async (n_number: string) => {
   });
 
   if (errors?.length) {
+    logger.error("Failed to delete manager from graph", { errors } );
     throw errors;
   }
 

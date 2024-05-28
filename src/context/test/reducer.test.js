@@ -16,6 +16,78 @@ describe("reducer", () => {
       expect(result).toBe(initialState);
     });
   });
+  describe("setLoadingWorkers", () => {
+    test("should set workers loading boolean", () => {
+      const payload = true;
+      const action = {
+        type: "setLoadingWorkers",
+        payload
+      };
+      const result = reducer(initialState, action);
+      expect(result.workerContext.isLoading).toEqual(true);
+    });
+  });
+  describe("loadPaginatedResults", () => {
+    describe("type === UMManager", () => {
+      test("should set managers to page results", () => {
+        const payload = {
+          type: "UMManager",
+          results: [
+            { name: "I'm a manager" }
+          ]
+        };
+        const action = {
+          type: "loadPaginatedResults",
+          payload
+        };
+        const testState = {
+          ...initialState,
+          managerContext: {
+            managers: [
+              { name: "I'm a control freak" }
+            ]
+          }
+        };
+        const result = reducer(testState, action);
+        expect(result.managerContext.managers).toEqual([
+          { name: "I'm a control freak" },
+          { name: "I'm a manager" }
+        ]);
+      });
+    });
+    describe("type === UMOffice", () => {
+      test("should set offices to page results", () => {
+        const payload = {
+          type: "UMOffice",
+          results: [
+            { name: "I'm an office" }
+          ]
+        };
+        const action = {
+          type: "loadPaginatedResults",
+          payload
+        };
+        const result = reducer(initialState, action);
+        expect(result.officeContext.offices).toEqual(payload.results);
+      });
+    });
+    describe("type === UMUser", () => {
+      test("should set workers to page results", () => {
+        const payload = {
+          type: "UMUser",
+          results: [
+            { name: "I'm a worker!" }
+          ]
+        };
+        const action = {
+          type: "loadPaginatedResults",
+          payload
+        };
+        const result = reducer(initialState, action);
+        expect(result.workerContext.workers).toEqual(payload.results);
+      });
+    });
+  });
   describe("addManager", () => {
     test("should add to the managers array", () => {
       const payload = {

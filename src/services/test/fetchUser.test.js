@@ -41,7 +41,7 @@ describe("fetchUser", () => {
     beforeEach(() => {
       axiosMock.onGet("/service/employeelookup/n01234567").reply(200, fetchUserRes);
     });
-    xtest("should resolve with formatted data", done => {
+    test("should resolve with formatted data", done => {
       const nNum = "n01234567";
       fetchUser(nNum).then(resolvedVal => {
         expect(axiosMock.history.get[0].url).toBe("/service/employeelookup/n01234567");
