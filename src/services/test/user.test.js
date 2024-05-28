@@ -88,9 +88,7 @@ describe("user", () => {
       });
 
       const res = await listUMUserRecords("n0263786");
-      expect(res).toStrictEqual({
-        pk: "n0263786"
-      });
+      expect(res).toStrictEqual([{ "pk": "n0263786" }, { "pk": "n0263786#Console" }]);
 
     });
 

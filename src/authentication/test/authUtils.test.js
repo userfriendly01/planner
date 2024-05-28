@@ -138,11 +138,11 @@ describe("authUtils", () => {
   describe("getWorkerProfileId", () => {
     describe("profile Id is number", () => {
       beforeEach(() => {
-        listUMUserRecords.mockResolvedValue({
+        listUMUserRecords.mockResolvedValue([{
           twilio_attributes: {
             profile_id: 2
           }
-        });
+        }]);
       });
       test("should return worker profile Id", async () => {
         const nNumber = "N0263786";
@@ -152,11 +152,11 @@ describe("authUtils", () => {
     });
     describe("profile Id is null", () => {
       beforeEach(() => {
-        listUMUserRecords.mockResolvedValue({
+        listUMUserRecords.mockResolvedValue([{
           twilio_attributes: {
             profile_id: null
           }
-        });
+        }]);
       });
       test("should return worker profile Id", async () => {
         const nNumber = "n1111111";

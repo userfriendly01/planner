@@ -9,6 +9,18 @@ import {
 }from "globals";
 import { apolloClient } from "../components/core/Auth/SharedGraphAPIProvider";
 
+export const listUMOffices = async (dispatch: (action: Action) => void): Promise<DBList<UMOffice>> => {
+  try {
+    await getPaginatedResults("UMOffice", dispatch);
+    return;
+  } catch(error) {
+    logger.error("Failed to fetch offices from graph", { error });
+    throw ({
+      msg: "Failed to fetch offices from graph"
+    });
+  }
+};
+
 export const addOffice = async (office: Partial<UMOffice>): Promise<UMOffice> => {
   const {
     errors, data
@@ -26,14 +38,4 @@ export const addOffice = async (office: Partial<UMOffice>): Promise<UMOffice> =>
   return data?.office;
 };
 
-export const listUMOffices = async (dispatch: (action: Action) => void): Promise<DBList<UMOffice>> => {
-  try {
-    await getPaginatedResults("UMOffice", dispatch);
-    return;
-  } catch(error) {
-    logger.error("Failed to fetch offices from graph", { error });
-    throw ({
-      msg: "Failed to fetch offices from graph"
-    });
-  }
-};
+

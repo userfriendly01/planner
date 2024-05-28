@@ -64,25 +64,7 @@ export const listUMUsers = async (dispatch: (action: Action) => void): Promise<D
   }
 };
 
-export const getUser = async (identifier: string): Promise<UMUser> => {
-  const {
-    errors, data
-  }  = await apolloClient.query<{ user: UMUser }>({
-    query: GET_USER,
-    variables: {
-      identifier
-    }
-  });
-
-  if (errors?.length) {
-    logger.error("Failed to fetch user from graph", { errors });
-    throw errors;
-  }
-
-  return data.user;
-};
-
-export const listUMUserRecords = async (n_number: string): Promise<UMUser> => {
+export const listUMUserRecords = async (n_number: string): Promise<UMUser[]> => {
 
   const {
     errors, data
@@ -106,7 +88,43 @@ export const listUMUserRecords = async (n_number: string): Promise<UMUser> => {
   let items = data[LIST_USER_RECORDS.responsePath]?.items;
   items = items.filter((i: UMUser) => !i.inactiveDate);
   items = items.sort(sortGraphObjectsByPk);
-  return items[0];
+  return items;
+};
+
+export const getUser = async (identifier: string): Promise<UMUser> => {
+  const {
+    errors, data
+  }  = await apolloClient.query<{ user: UMUser }>({
+    query: GET_USER,
+    variables: {
+      identifier
+    }
+  });
+
+  if (errors?.length) {
+    logger.error("Failed to fetch user from graph", { errors });
+    throw errors;
+  }
+
+  return data.user;
+};
+
+export const createUser = async (user: Partial<UMUser>): Promise<UMUser> => {
+  const {
+    errors, data
+  }  = await apolloClient.mutate<{ user: UMUser }>({
+    mutation: CREATE_USER,
+    variables: {
+      input: mapWorkerToDbWorker(user)
+    }
+  });
+
+  if (errors?.length) {
+    logger.error("Failed to create user from graph", { errors });
+    throw errors;
+  }
+
+  return mapWorkerFromDbWorker(data.user);
 };
 
 export const updateUser = async (identifier: string, user: Partial<UMUser>): Promise<UMUser> => {
@@ -122,24 +140,6 @@ export const updateUser = async (identifier: string, user: Partial<UMUser>): Pro
 
   if (errors?.length) {
     logger.error("Failed to update user from graph", { errors });
-    throw errors;
-  }
-
-  return mapWorkerFromDbWorker(data.user);
-};
-
-export const createUser = async (user: Partial<UMUser>): Promise<UMUser> => {
-  const {
-    errors, data
-  }  = await apolloClient.mutate<{ user: UMUser }>({
-    mutation: CREATE_USER,
-    variables: {
-      input: mapWorkerToDbWorker(user)
-    }
-  });
-
-  if (errors?.length) {
-    logger.error("Failed to create user from graph", { errors });
     throw errors;
   }
 

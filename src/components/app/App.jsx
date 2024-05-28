@@ -69,7 +69,7 @@ const App = () => {
           const nNumber = account.idTokenClaims.employeeid;
           const profileId = await getWorkerProfileId(nNumber);
           const isAdmin = account.idTokenClaims.roles.includes("Admin");
-          dispatch(({
+          dispatch({
             type: "loadUserData",
             payload: {
               permissions,
@@ -77,7 +77,7 @@ const App = () => {
               isAdmin,
               nNumber
             }
-          }));
+          });
 
           await Promise.all(
             permissions.map(({ startup }) => startup.function(dispatch))

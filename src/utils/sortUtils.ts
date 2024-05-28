@@ -8,7 +8,6 @@ import {
 const sortLast = "zzzzzzzzzzz";
 
 export const sortGraphObjectsByPk = (a: any, b: any) => {
-  console.warn("DoubleCheck", a, b);
   return sortStrings(a.pk, b.pk);
 };
 
