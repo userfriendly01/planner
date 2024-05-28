@@ -2,6 +2,7 @@ import { gql } from "@apollo/client";
 import { GraphData } from "globals";
 
 const userAttributes = `
+  pk
   ttl
   did
   sid: worker_sid
