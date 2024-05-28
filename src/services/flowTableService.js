@@ -1476,7 +1476,7 @@ async function addDynamicFlowRule(item, accessToken, curTime = Math.floor(new Da
 async function deleteDynamicFlowRule(item, accessToken) {
   let response;
   const input = {
-    phoneNumber: item.pkey
+    id: item.pkey
   };
   try {
     const fetchResponse = await fetch(env.GRAPH_API_URL, {
@@ -1487,9 +1487,9 @@ async function deleteDynamicFlowRule(item, accessToken) {
       },
       body: JSON.stringify({
         query: `
-          mutation deletePhoneNumber($input:PhoneNumberDeleteInput!) {
-            deletePhoneNumber(input:$input){
-              phoneNumber
+          mutation deletePhoneNumber($input:CallFlowDeleteInput!) {
+            batchDeleteInput(input:$input){
+              id
             }
           }
       `,
@@ -1532,7 +1532,7 @@ async function batchDynamicDeleteItems(items,accessToken){
 async function flowDynamicBatchDelete(items, accessToken){
   const input = items.map(item=>{
     return {
-      phoneNumber: item
+      id: item
     };
   });
 
@@ -1540,16 +1540,16 @@ async function flowDynamicBatchDelete(items, accessToken){
   try{
     const body = JSON.stringify({
       query: `
-      mutation batchDeletePhoneNumber($input: PhoneNumberDeleteBatchInput!) {
-        batchDeletePhoneNumber(input: $input) {
+      mutation batchDeletePhoneNumber($input: CallFlowDeleteInput!) {
+        batchDeleteInput(input: $input) {
           items {
-              phoneNumber
+              id
           }
         }
       }
     `,
       variables: {
-        input: { batchDeletePhoneNumberInput: input }
+        input: { batchDeleteInput: input }
       }
     }).replace(/\\"pkey\\":/g, "pkey:");
 
