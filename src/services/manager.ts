@@ -74,7 +74,7 @@ export const deleteManager = async (n_number: string) => {
   }  = await apolloClient.mutate<{ manager: UMManager }>({
     mutation: DELETE_MANAGER,
     variables: {
-      input: n_number
+      n_number
     }
   });
 

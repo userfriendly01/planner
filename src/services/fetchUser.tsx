@@ -29,8 +29,8 @@ export const fetchUser = (nNumber: string): Promise<FetchUserResponse> => myAxio
         email,
         firstName: (preferredName || firstName)?.trim(),
         lastName: lastName?.trim(),
-        officeName,
-        officeNumber,
+        officeName: "New Office Name - Faith",
+        officeNumber: "xxx001",
         departmentName,
         departmentNumber
       };
