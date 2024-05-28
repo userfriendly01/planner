@@ -193,6 +193,23 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       });
 
       try {
+        await wfmActivateExternalLogon({ workerNNumbers: [userNNumber]});
+
+        logger.info("Successfully activated WFM external login", {
+          nNumber,
+          userNNumber: userNNumber
+        });
+      } catch (error) {
+        logger.error("Failed to activate WFM external login", {
+          error,
+          nNumber,
+          userNNumber: userNNumber
+        });
+
+        errors.push(`Failed to activate WFM External Logon. ${error.message}`);
+      }
+
+      try {
         calabrioAttributes.acdId = newWorker.sid;
         await checkConflictingUsers(calabrioAttributes, users, roles, teams);
         await createCalabrioUser(calabrioAttributes);
@@ -219,6 +236,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
 
           errors.push("Failed to refresh Calabrio state, please refresh Triton Admin");
         }
+
       } catch (error) {
         logger.error("Failed to create Calabrio QM User.", {
           error,
@@ -260,22 +278,6 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
                 errors: []
               }
             });
-            try {
-              await wfmActivateExternalLogon({ workerNNumbers: [form.calabrio_wfm.EmploymentNumber]});
-
-              logger.info("Successfully activated WFM external login", {
-                nNumber,
-                userNNumber: form.calabrio_wfm.EmploymentNumber
-              });
-            } catch (error) {
-              logger.error("Failed to activate WFM external login", {
-                error,
-                nNumber,
-                userNNumber: form.calabrio_wfm.EmploymentNumber
-              });
-
-              errors.push(`Failed to activate WFM External Logon. ${error.message}`);
-            }
           } catch (error) {
             logger.error("Failed to create WFM User", {
               error,

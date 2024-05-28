@@ -78,6 +78,7 @@ export const FIELDS: Fields = {
           row.attributes.full_name = `${fetchedUser.firstName} ${fetchedUser.lastName}`;
           row.attributes.location = fetchedUser.officeName;
           row.attributes.n_number = field.toLowerCase();
+          row.attributes.agent_id = field.toLowerCase();
           row.attributes.office_location_name = fetchedUser.officeName;
           row.attributes.office_location_number = fetchedUser.officeNumber;
           row.attributes.primary_dept_name = fetchedUser.departmentName;

@@ -157,6 +157,7 @@ describe("fields.js", () => {
               lastName: "Smith",
               location: "hi",
               n_number: "n1234567",
+              agent_id: "n1234567",
               office_location_name: "hi",
               office_location_number: 12,
               primary_dept_name: "grm",
