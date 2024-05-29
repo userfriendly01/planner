@@ -1488,7 +1488,7 @@ async function deleteDynamicFlowRule(item, accessToken) {
       body: JSON.stringify({
         query: `
           mutation deletePhoneNumber($input:CallFlowDeleteInput!) {
-            batchDeleteInput(input:$input){
+            deletePhoneNumber(input:$input){
               id
             }
           }
@@ -1540,8 +1540,8 @@ async function flowDynamicBatchDelete(items, accessToken){
   try{
     const body = JSON.stringify({
       query: `
-      mutation batchDeletePhoneNumber($input: CallFlowDeleteInput!) {
-        batchDeleteInput(input: $input) {
+      mutation batchDeletePhoneNumber($input: CallFlowDeleteBatchInput!) {
+        batchDeletePhoneNumber(input: $input) {
           items {
               id
           }
