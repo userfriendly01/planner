@@ -1,0 +1,90 @@
+import { PhoneNumberRecordType } from "./DynamicPhoneNumber.Interfaces";
+import { legacyPhoneNumberBatchCreateRecords } from "./Query/LegacyPhoneNumberBatchCreateRecords.Query";
+import {
+  BatchRecordQuery, BatchResults
+} from "../../common/GraphQL/AbstractBatchRecords.Query";
+import { legacyPhoneNumberBatchUpdateRecords } from "./Query/LegacyPhoneNumberBatchUpdateRecords.Query";
+import {
+  dynamicPhoneNumberBatchCreateRecords,
+  dynamicPhoneNumberBatchUpdateRecords
+} from "./Query/DynamicPhoneNumberBatchCreateRecords.Query";
+import { PhoneNumberRecordUtil } from "./PhoneNumberRecord.Util";
+import { legacyPhoneNumberBatchDeleteRecords } from "./Query/LegacyPhoneNumberBatchDeleteRecords.Query";
+
+/**
+ * This function separates the phone number record list into legacy and dynamic lists and executes the corresponding
+ * batch function.  This will run batch create, update, and delete functions
+ *
+ * @param {string} accessToken token to use while calling graphql query
+ * @param {Array<PhoneNumberRecordType>} phoneNumberRecords List of phone number records to be run in a batch query
+ * @param {BatchRecordQuery<PhoneNumberRecordType>} batchLegacyPhoneNumberRecordQuery function to run legacy batch query
+ * @param {BatchRecordQuery<PhoneNumberRecordType>} batchDynamicPhoneNumberRecordQuery function to run dynamic batch query
+ *
+ * @returns Promise<BatchResults<PhoneNumberRecordType>>
+ */
+async function batchPhoneNumberRecords(
+  accessToken: string,
+  phoneNumberRecords: Array<PhoneNumberRecordType>,
+  batchLegacyPhoneNumberRecordQuery: BatchRecordQuery<PhoneNumberRecordType>,
+  batchDynamicPhoneNumberRecordQuery: BatchRecordQuery<PhoneNumberRecordType>
+): Promise<BatchResults<PhoneNumberRecordType>> {
+  // Process batch jobs concurrently
+  const [legacyBatchResults, dynamicBatchResults] =
+    await Promise.all([
+      filterAndRunBatch(accessToken, phoneNumberRecords, batchLegacyPhoneNumberRecordQuery, true),
+      filterAndRunBatch(accessToken, phoneNumberRecords, batchDynamicPhoneNumberRecordQuery)
+    ]);
+
+  return combineLegacyAndDynamicBatchResults(legacyBatchResults, dynamicBatchResults);
+}
+
+async function filterAndRunBatch(accessToken: string, phoneNumberRecords: Array<PhoneNumberRecordType>, batchPhoneNumberRecordQuery: BatchRecordQuery<PhoneNumberRecordType>, filterForLegacy = false): Promise<BatchResults<PhoneNumberRecordType>> {
+  const filteredPhoneNumberRecords = filterPhoneNumberRecords(phoneNumberRecords, filterForLegacy);
+  return await batchPhoneNumberRecordQuery(accessToken, filteredPhoneNumberRecords);
+}
+
+/**
+ * This method takes an array of all phone number records (legacy and dynamic) and returns an array of either legacy phone number records
+ * or dynamic phone number records.
+ *
+ * @param {Array<PhoneNumberRecordType>} phoneNumberRecords array of both legacy and dynamic phone number records.
+ * @param {boolean} filterForLegacy if true, only legacy phone number records are returned, if false, only dynamic phone number records are returned
+ *
+ * @return {Array<PhoneNumberRecordType>} Filtered array of phone number records, returns either only legacy or only dynamic phone number records
+ */
+function filterPhoneNumberRecords(phoneNumberRecords: Array<PhoneNumberRecordType>, filterForLegacy: boolean): Array<PhoneNumberRecordType> {
+  return phoneNumberRecords
+    .filter( phoneNumberRecord => PhoneNumberRecordUtil.isLegacyPhoneNumberRecord(phoneNumberRecord) === filterForLegacy);
+}
+
+/**
+ * Takes results from a legacy batch query and results from a dynamic batch query and combines them into one result
+ * to be used to display to the user.
+ *
+ * @param {BatchResults<PhoneNumberRecordType>} legacyBatchResults results of legacy batch query
+ * @param {BatchResults<PhoneNumberRecordType>} dynamicBatchResults results of dynamic batch query
+ *
+ * @return {BatchResults<PhoneNumberRecordType>} Returns combined batch results
+ */
+function combineLegacyAndDynamicBatchResults(legacyBatchResults: BatchResults<PhoneNumberRecordType>, dynamicBatchResults: BatchResults<PhoneNumberRecordType>): BatchResults<PhoneNumberRecordType> {
+  // Throwing all results into legacyBatchResults rather than creating a new object to copy all results into.  Some
+  legacyBatchResults.errors = legacyBatchResults.errors.concat(dynamicBatchResults.errors);
+  legacyBatchResults.failure = legacyBatchResults.failure.concat(dynamicBatchResults.failure);
+  legacyBatchResults.success = legacyBatchResults.success.concat(dynamicBatchResults.success);
+
+  return legacyBatchResults;
+}
+
+export class BatchPhoneNumberRecord {
+  static async create(accessToken: string, phoneNumberRecords: Array<PhoneNumberRecordType>): Promise<BatchResults<PhoneNumberRecordType>> {
+    return await batchPhoneNumberRecords(accessToken, phoneNumberRecords, legacyPhoneNumberBatchCreateRecords, dynamicPhoneNumberBatchCreateRecords);
+  }
+
+  static async update(accessToken: string, phoneNumberRecords: Array<PhoneNumberRecordType>): Promise<BatchResults<PhoneNumberRecordType>> {
+    return await batchPhoneNumberRecords(accessToken, phoneNumberRecords, legacyPhoneNumberBatchUpdateRecords, dynamicPhoneNumberBatchUpdateRecords);
+  }
+
+  static async delete(accessToken: string, phoneNumberRecords: Array<PhoneNumberRecordType>): Promise<BatchResults<PhoneNumberRecordType>> {
+    return await batchPhoneNumberRecords(accessToken, phoneNumberRecords, legacyPhoneNumberBatchDeleteRecords, legacyPhoneNumberBatchDeleteRecords);
+  }
+}

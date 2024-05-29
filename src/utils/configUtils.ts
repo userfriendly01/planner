@@ -133,7 +133,7 @@ export const readWriteAccess=(matchedGroups: any[], alohaTabType: string): boole
   return flag;
 };
 
-export const BrandName:BrandNameMap={
+export const BrandName:BrandNameMap = {
   "Liberty Mutual": "liberty",
   "Safeco": "safeco"
 };
