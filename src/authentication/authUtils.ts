@@ -48,7 +48,7 @@ export const getWorkerProfileId = async (nNumber: string): Promise<number> => {
   try {
     const workerRecords: any = await listUMUserRecords(nNumber);
     const primaryWorker: any = workerRecords[0];
-    profileId = primaryWorker.twilio_attributes?.profile_id;
+    profileId = primaryWorker?.twilio_attributes?.profile_id || -1;
   } catch(err){
     profileId = -1;
   }
