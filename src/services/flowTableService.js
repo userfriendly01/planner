@@ -1530,16 +1530,33 @@ async function batchDynamicDeleteItems(items,accessToken){
   return response;
 }
 async function flowDynamicBatchDelete(items, accessToken){
+  let request;
   const input = items.map(item=>{
-    return {
-      id: item
-    };
+    if(!item.actionType){
+      request = {
+        id: item
+      }; }
+    else {
+      request = {
+        actionType: item.actionType,
+        id: item.id
+      };
+    }
+    return request;
   });
 
   let response;
   try{
-    const body = JSON.stringify({
-      query: `
+    const graphQlQuery = input.actionType ? `
+      mutation batchDeletePhoneNumber($input: CallFlowDeleteInput!) {
+        batchDeleteInput(input: $input) {
+          items {
+              id
+              actionType
+          }
+        }
+      }
+    ` : `
       mutation batchDeletePhoneNumber($input: CallFlowDeleteInput!) {
         batchDeleteInput(input: $input) {
           items {
@@ -1547,7 +1564,9 @@ async function flowDynamicBatchDelete(items, accessToken){
           }
         }
       }
-    `,
+    `;
+    const body = JSON.stringify({
+      query: graphQlQuery,
       variables: {
         input: { batchDeleteInput: input }
       }
