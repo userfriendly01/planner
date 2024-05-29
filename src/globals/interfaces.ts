@@ -21,10 +21,10 @@ export interface Discrepancy {
 
 export interface AppState {
   managerContext: {
-    managers: Manager[]
+    managers: UMManager[]
   },
   officeContext: {
-    offices: Map<string, Office>
+    offices: UMOffice[]
   },
   profileContext: {
     profiles: TritonProfile[]
@@ -83,11 +83,15 @@ export interface FormModes {
   DELETE: string
 }
 
-export interface Manager {
+export interface UMManager {
+  pk: string,
+  sk: string,
+  item_type: string,
   manager_first_name: string,
   manager_last_name: string,
-  manager_n_number: string,
-  manager_id?: number | string
+  profile_id: number,
+  manager_n_num: string,
+  calabrio_team_ids: number[],
 }
 
 export enum ModalOverlayStatuses {
@@ -101,9 +105,12 @@ export interface MySqlBoolean {
   type: "Buffer"
 }
 
-export interface Office {
-  office_nme: string,
-  office_num: string
+export interface UMOffice {
+  pk: string,
+  sk: string,
+  item_type: string,
+  office_num: string,
+  office_name: string
 }
 
 export interface Skill {
@@ -269,6 +276,11 @@ export interface DBList<TItem> {
   nextToken: string;
 }
 
+export interface GraphData {
+  query: any,
+  responsePath: string
+}
+
 export interface UMUserTwilioAttributes {
   contact_uri?: string,
   default_skills?: UMTwilioAttributeSkills,
@@ -292,7 +304,7 @@ export interface UMUserTwilioAttributes {
   office_location_number?: string,
   primary_dept_name?: string,
   primary_dept_number?: string,
-  profile_id?: string | number,
+  profile_id?: number,
   roles?: string[],
   routing?: UMTwilioAttributeSkills,
   unique_id?: string,

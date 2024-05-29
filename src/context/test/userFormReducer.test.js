@@ -1053,7 +1053,7 @@ describe("userFormReducer", () => {
           },
           manager: {
             ...initialUserFormState.triton.manager,
-            value: managerList.find(m => m.manager_n_number === worker.attributes.manager_n_number)
+            value: managerList.find(m => m.manager_n_num === worker.attributes.manager_n_number)
           },
           outgoing: {
             ...initialUserFormState.triton.outgoing,
@@ -1123,7 +1123,7 @@ describe("userFormReducer", () => {
           },
           manager: {
             ...initialUserFormState.triton.manager,
-            value: managerList.find(m => m.manager_n_number === worker.attributes.manager_n_number)
+            value: managerList.find(m => m.manager_n_num === worker.attributes.manager_n_number)
           },
           outgoing: {
             ...initialUserFormState.triton.outgoing,
@@ -1197,7 +1197,7 @@ describe("userFormReducer", () => {
           },
           manager: {
             ...initialUserFormState.triton.manager,
-            value: managerList.find(m => m.manager_n_number === worker.attributes.manager_n_number)
+            value: managerList.find(m => m.manager_n_num === worker.attributes.manager_n_number)
           },
           outgoing: {
             ...initialUserFormState.triton.outgoing,
@@ -1261,7 +1261,7 @@ describe("userFormReducer", () => {
           },
           manager: {
             ...initialUserFormState.triton.manager,
-            value: JSON.stringify(managerList.find(m => m.manager_n_number === worker.attributes.manager_n_number))
+            value: JSON.stringify(managerList.find(m => m.manager_n_num === worker.attributes.manager_n_number))
           },
           profileId: {
             ...initialUserFormState.triton.profileId,
@@ -1404,7 +1404,7 @@ describe("userFormReducer", () => {
       const payload = {
         manager_first_name: "Rebecca",
         manager_last_name: "Miller",
-        manager_n_number: "n0001234"
+        manager_n_num: "n0001234"
       };
       const action = {
         type: userFormActions.UPDATE_MANAGER,

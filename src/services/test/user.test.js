@@ -1,22 +1,17 @@
 import {
-  createUser, getAllUsers, getUser, listUsers, updateUser
+  createUser, listUMUsers, getUser, updateUser, listUMUserRecords
 } from "services/user";
-import { apolloClient } from "components";
+import { apolloClient } from "../../components/core/Auth/SharedGraphAPIProvider";
 import {
   logger,
-  mapWorkerFromDbWorker, mapWorkerToDbWorker
+  mapWorkerFromDbWorker,
+  mapWorkerToDbWorker,
+  getPaginatedResults,
+  sortGraphObjectsByPk
 } from "utils";
-import { waitFor } from "@testing-library/react";
+import { sortGraphObjectsByPk as sortGraphObjectsByPkCopy } from "../../utils/sortUtils";
 
-jest.mock("services/user", () => ({
-  getAllUsers: jest.requireActual("services/user").getAllUsers,
-  getUser: jest.requireActual("services/user").getUser,
-  listUsers: jest.requireActual("services/user").listUsers,
-  updateUser: jest.requireActual("services/user").updateUser,
-  createUser: jest.requireActual("services/user").createUser
-}));
-
-jest.mock("components", () => ({
+jest.mock("../../components/core/Auth/SharedGraphAPIProvider", () => ({
   apolloClient: {
     mutate: jest.fn(),
     query: jest.fn()
@@ -28,81 +23,31 @@ jest.mock("utils", () => ({
     error: jest.fn()
   },
   mapWorkerFromDbWorker: jest.fn(),
-  mapWorkerToDbWorker: jest.fn()
+  mapWorkerToDbWorker: jest.fn(),
+  getPaginatedResults: jest.fn(),
+  sortGraphObjectsByPk: jest.fn()
 }));
-
-const workers = [
-  {
-    // pk: "NNum#n1234566",
-    inactiveDate: "2024-01-01",
-    sid: "WK0000",
-    attributes: { emp_first_nme: "River" },
-    isConsole: false
-  },
-  {
-    // pk: "NNum#n1234565",
-    sid: "WK1111",
-    attributes: { emp_first_nme: "River" },
-    isConsole: false
-  },
-  {
-    // pk: "NNum#n1234564",
-    sid: "WK2222",
-    twilio_attributes_raw: null,
-    isConsole: false
-  },
-  {
-    // pk: "NNum#n1234563",
-    sid: "WK3333",
-    attributes: { emp_first_nme: "River" },
-    isConsole: false
-  },
-  {
-    // pk: "NNum#n1234562#Console",
-    sid: "WK4444",
-    attributes: { emp_first_nme: "River" },
-    isConsole: false
-  }
-];
-
-const filteredWorkers =  [
-  workers[1],
-  workers[3],
-  workers[4]
-];
 
 describe("user", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-
     mapWorkerFromDbWorker.mockImplementation(data => data);
     mapWorkerToDbWorker.mockImplementation(data => data);
+    sortGraphObjectsByPk.mockImplementation(sortGraphObjectsByPkCopy);
   });
 
-  describe("getAllUsers", () => {
+  describe("listUMUsers", () => {
     test("should resolve with the first paint of data", async () => {
       const dispatchMock = jest.fn();
 
-      apolloClient.query.mockReturnValue({
-        data: {
-          users: {
-            items: workers
-          }
-        }
-      });
+      getPaginatedResults.mockResolvedValue("yay!");
 
-      const result = await getAllUsers(dispatchMock);
+      await listUMUsers(dispatchMock);
 
-      expect(result).toEqual(filteredWorkers);
-
-      expect(dispatchMock).toHaveBeenCalledTimes(3);
+      expect(dispatchMock).toHaveBeenCalledTimes(2);
       expect(dispatchMock).toHaveBeenCalledWith({
         type: "setLoadingWorkers",
         payload: true
-      });
-      expect(dispatchMock).toHaveBeenCalledWith({
-        type: "loadWorkers",
-        payload: filteredWorkers
       });
       expect(dispatchMock).toHaveBeenCalledWith({
         type: "setLoadingWorkers",
@@ -110,104 +55,65 @@ describe("user", () => {
       });
     });
 
-    test("should dispatch a second time with addWorkers when there's a next token", async () => {
-      const dispatchMock = jest.fn();
-
-      apolloClient.query
-        .mockReturnValueOnce({
-          data: {
-            users: {
-              items: [workers[0], workers[1]],
-              nextToken: "nextToken"
-            }
-          }
-        })
-        .mockReturnValueOnce({
-          data: {
-            users: {
-              items: [workers[2], workers[3], workers[4]]
-            }
-          }
-        });
-
-      const result = await getAllUsers(dispatchMock);
-      const firstResult = [workers[1]];
-      const secondResult = [workers[3], workers[4]];
-
-      expect(result).toEqual(firstResult);
-
-      await waitFor(() => {
-        expect(dispatchMock).toHaveBeenCalledTimes(4);
-      });
-
-      expect(dispatchMock).toHaveBeenCalledWith({
-        type: "setLoadingWorkers",
-        payload: true
-      });
-      expect(dispatchMock).toHaveBeenCalledWith({
-        type: "loadWorkers",
-        payload: firstResult
-      });
-      expect(dispatchMock).toHaveBeenCalledWith({
-        type: "addWorkers",
-        payload: secondResult
-      });
-      expect(dispatchMock).toHaveBeenCalledWith({
-        type: "setLoadingWorkers",
-        payload: false
-      });
-    });
-
-    test("should reject if an error occurs in the listUsers", async () => {
+    test("should reject if an error occurs in the listUMUsers", async () => {
       const error = new Error("An Error");
 
-      apolloClient.query.mockRejectedValue(error);
+      getPaginatedResults.mockRejectedValue(error);
 
       try {
-        await getAllUsers(jest.fn());
+        await listUMUsers(jest.fn());
       } catch(err) {
-        expect(logger.error).toHaveBeenCalledWith("Failed to fetch workers from service", { error });
+        expect(logger.error).toHaveBeenCalledWith("Failed to fetch users from graph", { error });
         expect(err).toEqual({
-          msg: "Failed to fetch workers from service"
+          msg: "Failed to fetch users from graph"
         });
       }
     });
   });
-
-  describe("listUsers", () => {
-    test("should return only active workers", async () => {
-      apolloClient.query.mockReturnValue({
+  describe("listUMUserRecords", () => {
+    test("should resolve with the first paint of data", async () => {
+      apolloClient.query.mockResolvedValue({
         data: {
-          users: {
-            items: workers
+          listUMUserRecords: {
+            items: [
+              {
+                pk: "n0263786#Console"
+              },
+              {
+                pk: "n0263786"
+              }
+            ]
           }
         }
       });
 
-      const result = await listUsers();
+      const res = await listUMUserRecords("n0263786");
+      expect(res).toStrictEqual([{ "pk": "n0263786" }, { "pk": "n0263786#Console" }]);
 
-      expect(result).toEqual({
-        items: filteredWorkers,
-        nextToken: undefined
-      });
     });
 
-    test("should throw an error when there's an error", async () => {
-      const error = new Error("An Error");
-
-      apolloClient.query.mockRejectedValue(error);
-
+    test("should reject if an error occurs in the listUMUsers", async () => {
+      apolloClient.query.mockResolvedValue({
+        errors: [
+          {
+            message: "Oh Nooo"
+          }
+        ]
+      });
       try {
-        await listUsers();
+        await listUMUserRecords("n0263786");
       } catch(err) {
-        expect(logger.error).toHaveBeenCalledWith("Failed to fetch workers from service", { error });
-        expect(err).toEqual({
-          msg: "Failed to fetch workers from service"
+        expect(logger.error).toHaveBeenCalledWith("Failed to fetch user records from graph", {
+          errors: [
+            {
+              message: "Oh Nooo"
+            }
+          ]
         });
+        expect(err).toEqual([{ "message": "Oh Nooo" }]);
       }
     });
   });
-
   describe.each([
     {
       func: updateUser,

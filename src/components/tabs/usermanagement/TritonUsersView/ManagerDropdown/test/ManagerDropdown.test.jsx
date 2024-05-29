@@ -44,27 +44,27 @@ jest.mock("@mui/material", () => ({
 
 const mockManagerData = [
   {
-    manager_n_number: "n0444444",
+    manager_n_num: "n0444444",
     manager_first_name: "Faith",
     manager_last_name: "Cuneo"
   },
   {
-    manager_n_number: "n0333333",
+    manager_n_num: "n0333333",
     manager_first_name: "Christine",
     manager_last_name: "Haley"
   },
   {
-    manager_n_number: "n0555555",
+    manager_n_num: "n0555555",
     manager_first_name: "Michael",
     manager_last_name: "Nieman"
   },
   {
-    manager_n_number: "n0555555",
+    manager_n_num: "n0555555",
     manager_first_name: "Michael",
     manager_last_name: "Nieman"
   },
   {
-    manager_n_number: "n0222222",
+    manager_n_num: "n0222222",
     manager_first_name: "Ben",
     manager_last_name: "Redman"
   }
@@ -116,8 +116,8 @@ describe("<ManagerDropdown />", () => {
         value: "divider"
       },
       ...sortedManagers.map(manager => ({
-        label: `${manager.manager_first_name} ${manager.manager_last_name} | ${manager.manager_n_number}`,
-        value: manager.manager_n_number
+        label: `${manager.manager_first_name} ${manager.manager_last_name} | ${manager.manager_n_num}`,
+        value: manager.manager_n_num
       }))
     ]);
   });

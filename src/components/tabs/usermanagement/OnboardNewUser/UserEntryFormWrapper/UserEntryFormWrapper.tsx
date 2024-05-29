@@ -193,8 +193,6 @@ const UserEntryForm = () => {
           workers={workers}
           profiles={profiles}
           managers={managers}
-          forwardToToggle={forwardToToggle}
-          setForwardToToggle={setForwardToToggle}
         />
       }
       <StyledDivider />

@@ -1,11 +1,15 @@
 import {
-  Manager,
+  UMManager,
   TritonProfile,
   WfmUser,
   UMUser
 } from "globals";
 
 const sortLast = "zzzzzzzzzzz";
+
+export const sortGraphObjectsByPk = (a: any, b: any) => {
+  return sortStrings(a.pk, b.pk);
+};
 
 export const sortDialListEntriesByName = (a: any, b: any) => {
   const [aName, bName] = [a.contact_nme, b.contact_nme];
@@ -17,7 +21,7 @@ export const sortDirectoryListEntriesByName = (a: any, b: any) => {
   return sortStrings(aName, bName);
 };
 
-export const sortManagersByName = (a: Manager, b: Manager) => {
+export const sortManagersByName = (a: UMManager, b: UMManager) => {
   const [aName, bName] = [a.manager_first_name + " " + a.manager_last_name, b.manager_first_name + " " + b.manager_last_name];
   return sortStrings(aName, bName);
 };
