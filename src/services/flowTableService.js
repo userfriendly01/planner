@@ -1489,7 +1489,7 @@ async function deleteDynamicFlowRule(item, accessToken) {
         query: `
           mutation deletePhoneNumber($input:CallFlowDeleteInput!) {
             deletePhoneNumber(input:$input){
-              id
+              phoneNumber
             }
           }
       `,
