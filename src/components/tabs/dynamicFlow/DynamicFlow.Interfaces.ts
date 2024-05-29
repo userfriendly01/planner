@@ -2,7 +2,7 @@ import { Control } from "globals";
 import { FormValidationRule } from "utils/interfaces";
 import { MultiFieldContainerFormProps } from "components/core/SharedComponents/MultiFieldContainer";
 
-export type PreviewModalAction = "add";
+export type PreviewModalAction = "add" | "delete";
 
 export type ActionType = "MENU"|"MENUOPTIONS"|"ANNOUNCEMENT"|"TRANSFER"|"HANGUP";
 export interface Action {
