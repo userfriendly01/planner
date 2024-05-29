@@ -164,5 +164,15 @@ describe("authUtils", () => {
         expect(profileId).toBe(null);
       });
     });
+    describe("error is thrown fetching UMUserRecords", () => {
+      beforeEach(() => {
+        listUMUserRecords.mockRejectedValue("Aww");
+      });
+      test("should return worker profile Id", async () => {
+        const nNumber = "n1111111";
+        const profileId = await getWorkerProfileId(nNumber);
+        expect(profileId).toBe(-1);
+      });
+    });
   });
 });

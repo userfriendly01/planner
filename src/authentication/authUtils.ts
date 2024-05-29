@@ -44,8 +44,14 @@ export const checkIfPO = (nNumber: string): boolean => {
 };
 
 export const getWorkerProfileId = async (nNumber: string): Promise<number> => {
-  const workerRecords: any = await listUMUserRecords(nNumber);
-  const primaryWorker: any = workerRecords[0];
-  const profileId = primaryWorker.twilio_attributes?.profile_id;
+  let profileId;
+  try {
+    const workerRecords: any = await listUMUserRecords(nNumber);
+    const primaryWorker: any = workerRecords[0];
+    profileId = primaryWorker.twilio_attributes?.profile_id;
+  } catch(err){
+    profileId = -1;
+  }
+
   return profileId;
 };
