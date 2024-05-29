@@ -1,7 +1,6 @@
 export * from "./filterTable";
 export * from "./calabrioUtils";
 export * from "./configUtils";
-export * from "./formatManagersResponse";
 export * from "./profileUtils";
 export * from "./flowUtils";
 export * from "./formatNumberUtils";

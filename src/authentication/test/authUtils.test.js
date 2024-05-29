@@ -154,14 +154,14 @@ describe("authUtils", () => {
       beforeEach(() => {
         listUMUserRecords.mockResolvedValue([{
           twilio_attributes: {
-            profile_id: null
+            profile_id: -1
           }
         }]);
       });
       test("should return worker profile Id", async () => {
         const nNumber = "n1111111";
         const profileId = await getWorkerProfileId(nNumber);
-        expect(profileId).toBe(null);
+        expect(profileId).toBe(-1);
       });
     });
     describe("error is thrown fetching UMUserRecords", () => {
