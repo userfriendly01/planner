@@ -16,6 +16,10 @@ import { createFlowDataItem } from "./PreviewUtil.test";
 
 const onCloseMock = jest.fn();
 const onCreateMock = jest.fn();
+const onDeleteMock = jest.fn().mockResolvedValue(undefined);
+const onDeleteMockBad = jest.fn().mockImplementation(() => {
+  throw new Error("failed");
+});
 const onCreateMockBad = jest.fn().mockImplementation(() => {
   throw new Error("failed");
 });
@@ -34,12 +38,13 @@ const createFlowDataList = numberOfData =>{
   return dataList;
 };
 
-const renderComponent = (action, createMock) => {
+const renderComponent = (action, createMock, deleteMock) => {
   return render (<PreviewModal
     action={action}
     isOpen={true}
     onClose={onCloseMock}
     onCreate={createMock}
+    onDelete={deleteMock}
     rows={createFlowDataList(12)}
   />, initialTestState);
 };
@@ -93,6 +98,28 @@ describe("<PreviewModal />", () => {
     act(() => calls[4][0].onClick());
     const calls2 = StyledButton.mock.calls;
     expect(calls2.length).toBe(12);
+  });
+  test("render Delete preview - cancel", () => {
+    renderComponent("delete", onDeleteMock);
+    const calls = StyledButton.mock.calls;
+    expect(calls[0][0].children).toBe("Delete");
+    expect(calls[1][0].children).toBe("Cancel");
+    act(() => calls[1][0].onClick());
+    expect(onDeleteMock).toBeCalledTimes(0);
+    expect(onCloseMock).toBeCalledTimes(1);
+  });
+  test("render Delete preview - delete success", () => {
+    renderComponent("delete", onDeleteMock);
+    const calls = StyledButton.mock.calls;
+    act(async () => calls[0][0].onClick());
+    expect(onDeleteMock).toBeCalledTimes(1);
+  });
+  test("render Delete preview - delete failure", () => {
+    renderComponent("delete", onDeleteMockBad);
+    const calls = StyledButton.mock.calls;
+    act(async () => calls[0][0].onClick());
+    expect(onDeleteMockBad).toBeCalledTimes(1);
+    expect(onCloseMock).toBeCalledTimes(0);
   });
 
 });
