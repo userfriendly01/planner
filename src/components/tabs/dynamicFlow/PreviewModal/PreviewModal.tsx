@@ -36,7 +36,8 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   } = props;
 
   const apiRef =  useGridApiRef();
-  const [flowRows, setFlowRows] = useState<ActionPreview[]>([]);
+  // TODO Check on Type with ERIC
+  const [flowRows, setFlowRows] = useState<any[]>([]);
   const [ uploadedForm, setUploadedForm ] = React.useState<any>([]);
   const tableGridColumnDef: Array<GridColDef> = useMemo<Array<GridColDef>>(()=>{
     return reconstructTableColumnDef([...TableGridColumnDef], apiRef);
@@ -149,10 +150,13 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
     >
       <ModalHeader>{action?.toUpperCase()} Flow - {flowRows.length} rows selected</ModalHeader>
       <ModalBody className="preview-grid-modal">
+        {action==="delete" &&
         <StyledButton sx={{
           marginRight: "10px",
           marginBottom: "10px"
         }} onClick={()=>{ createNewRecord(); }}>Add New +</StyledButton>
+        }
+        {action==="delete" &&
         <StyledButton sx={{
           marginRight: "10px",
           marginBottom: "10px"
@@ -162,6 +166,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
             accept=".csv"
             onChange={handleOnChange}
           /> </StyledButton>
+        }
         <DataGrid
           apiRef={apiRef}
           rows={flowRows}

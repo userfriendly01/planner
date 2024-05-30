@@ -22,7 +22,7 @@ import {
 } from "services";
 import { getDynamicGridMasterData } from "./DynamicGridMaster";
 import {
-  DataGrid, useGridApiRef
+  DataGrid, GridRowId, GridRowSelectionModel, useGridApiRef
 } from "@mui/x-data-grid";
 import DynamicFlowGridColumnDef from "./DynamicGridColumnDef";
 import {
@@ -172,7 +172,10 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       isPreviewModalOpen: false
     }));
   };
-
+  const handleSelectionChanges = (gridSelectionModel: GridRowSelectionModel) =>{
+    const selectedRowsData:ActionPreview[] = gridSelectionModel.map((id: GridRowId)=>dataFlow.filteredItems.find((row: ActionPreview)=>row.actionId === id));
+    setSelectedList(selectedRowsData);
+  };
   const handleOnBulkCreate = async(rows: Array<DynamicAction> ) =>{
     const response = await batchDynamicFlowCreate(rows, accessToken);
     if(response?.flag) {
@@ -254,6 +257,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
             loading={dataFlow.fetching}
             checkboxSelection
             disableRowSelectionOnClick
+            onRowSelectionModelChange={handleSelectionChanges}
             autoHeight
             getRowId={(row: DynamicAction)=>row.actionId}
             sx={{

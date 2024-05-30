@@ -104,5 +104,5 @@ export interface DynamicFlowStateVariables {
 
 export type DynamicAction = Menu & MenuOptions & Announcement;
 export interface ActionPreview extends DynamicAction {
-    errors: string;
+    errors?: string;
 }
