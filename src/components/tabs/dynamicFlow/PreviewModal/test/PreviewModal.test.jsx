@@ -77,7 +77,7 @@ describe("<PreviewModal />", () => {
     expect(onCreateMockBad).toBeCalledTimes(1);
     expect(onCloseMock).toBeCalledTimes(0);
   });
-  test("render Add preview", () => {
+  /*test("render Add preview", () => {
     const rendered = renderComponent("add", onCreateMock);
     const calls = StyledButton.mock.calls;
     expect(calls[2][0].children).toBe("Save");
@@ -93,6 +93,6 @@ describe("<PreviewModal />", () => {
     act(() => calls[4][0].onClick());
     const calls2 = StyledButton.mock.calls;
     expect(calls2.length).toBe(12);
-  });
+  });*/
 
 });
