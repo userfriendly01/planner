@@ -1539,7 +1539,7 @@ async function flowDynamicBatchDelete(items, accessToken){
     else {
       request = {
         actionType: item.actionType,
-        id: item.id
+        id: item.actionId
       };
     }
     return request;
