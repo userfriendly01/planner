@@ -149,13 +149,13 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
     >
       <ModalHeader>{action?.toUpperCase()} Flow - {flowRows.length} rows selected</ModalHeader>
       <ModalBody className="preview-grid-modal">
-        {action==="delete" &&
+        {action==="add" &&
         <StyledButton sx={{
           marginRight: "10px",
           marginBottom: "10px"
         }} onClick={()=>{ createNewRecord(); }}>Add New +</StyledButton>
         }
-        {action==="delete" &&
+        {action==="add" &&
         <StyledButton sx={{
           marginRight: "10px",
           marginBottom: "10px"
