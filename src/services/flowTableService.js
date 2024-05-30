@@ -1488,8 +1488,8 @@ async function deleteDynamicFlowRule(item, accessToken) {
       body: JSON.stringify({
         query: `
           mutation deletePhoneNumber($input:CallFlowDeleteInput!) {
-            batchDeleteInput(input:$input){
-              id
+            deletePhoneNumber(input:$input){
+              phoneNumber
             }
           }
       `,
@@ -1548,8 +1548,8 @@ async function flowDynamicBatchDelete(items, accessToken){
   let response;
   try{
     const graphQlQuery = input.actionType ? `
-      mutation batchDeletePhoneNumber($input: CallFlowDeleteInput!) {
-        batchDeleteInput(input: $input) {
+      mutation batchDeletePhoneNumber($input: CallFlowDeleteBatchInput!) {
+        batchDeletePhoneNumber(input: $input) {
           items {
               id
               actionType
@@ -1557,7 +1557,7 @@ async function flowDynamicBatchDelete(items, accessToken){
         }
       }
     ` : `
-      mutation batchDeletePhoneNumber($input: CallFlowDeleteInput!) {
+      mutation batchDeletePhoneNumber($input: CallFlowDeleteBatchInput!) {
         batchDeleteInput(input: $input) {
           items {
               id

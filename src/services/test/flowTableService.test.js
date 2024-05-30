@@ -892,7 +892,7 @@ describe("dynamicFlowTableService",()=> {
     });
   });
 
-  describe("Batch Delete Dyanmic Flow", ()=>{
+  describe("Batch Delete Dynamic Flow", ()=>{
     beforeEach(()=>{
       window.fetch = jest.fn(() =>
         Promise.resolve({
@@ -908,7 +908,7 @@ describe("dynamicFlowTableService",()=> {
       const response = await flowDynamicBatchDelete(batchDeleteDyamicItemsList,"1233-3245","http://localhost:3000");
       expect(response).toBe(batchDeleteResponse);
       expect(window.fetch).toBeCalledWith("http://localhost:3000", {
-        "body": "{\"query\":\"\\n      mutation batchDeletePhoneNumber($input: CallFlowDeleteInput!) {\\n        batchDeleteInput(input: $input) {\\n          items {\\n              id\\n          }\\n        }\\n      }\\n    \",\"variables\":{\"input\":{\"batchDeleteInput\":[{\"id\":\"pkey1\"},{\"id\":\"pkey1\"},{\"id\":\"pkey3\"}]}}}",
+        "body": "{\"query\":\"\\n      mutation batchDeletePhoneNumber($input: CallFlowDeleteBatchInput!) {\\n        batchDeletePhoneNumber(input: $input) {\\n          items {\\n              id\\n          }\\n        }\\n      }\\n    \",\"variables\":{\"input\":{\"batchDeleteInput\":[{\"id\":\"pkey1\"},{\"id\":\"pkey1\"},{\"id\":\"pkey3\"}]}}}",
         "headers": {
           "Authorization": "1233-3245",
           "Content-Type": "application/json"
