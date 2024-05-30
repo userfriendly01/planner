@@ -47,14 +47,10 @@ export const listUMUsers = async (dispatch: (action: Action) => void): Promise<D
   };
 
   try {
-    await getPaginatedResults("UMUser", dispatch, formatUsers);
-
-    dispatch(({
+    getPaginatedResults("UMUser", dispatch, formatUsers, () => dispatch(({
       type: "setLoadingWorkers",
       payload: false
-    }));
-
-    return;
+    })));
   } catch(error) {
     logger.error("Failed to fetch users from graph", { error });
 
@@ -62,6 +58,7 @@ export const listUMUsers = async (dispatch: (action: Action) => void): Promise<D
       msg: "Failed to fetch users from graph"
     });
   }
+  return;
 };
 
 export const listUMUserRecords = async (n_number: string): Promise<UMUser[]> => {
