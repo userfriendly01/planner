@@ -1558,7 +1558,7 @@ async function flowDynamicBatchDelete(items, accessToken){
       }
     ` : `
       mutation batchDeletePhoneNumber($input: CallFlowDeleteBatchInput!) {
-        batchDeleteInput(input: $input) {
+        batchDeletePhoneNumber(input: $input) {
           items {
               id
           }
