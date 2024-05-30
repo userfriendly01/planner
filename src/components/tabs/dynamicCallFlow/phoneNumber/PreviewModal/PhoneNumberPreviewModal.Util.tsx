@@ -17,10 +17,11 @@ import {
   userDestination
 } from "utils";
 
-import { RequiredPhoneNumberFormFields } from "../Form/LegacyPhoneNumberFormField.Configs";
+import { RequiredPhoneNumberFormFields } from "../Form/Legacy.PhoneNumber.Form.FieldConfigs";
 import { ComponentControl } from "components";
 import { GridApiCommunity } from "@mui/x-data-grid/internals";
-import { PreviewModalActionType } from "../../common/DataGrid/DataGridState.Interfaces";
+
+import {PreviewModalActionType} from "../../common/Preview/Preview.Interface";
 
 
 const reconstructTableColumnDef = (action: PreviewModalActionType, columnDef: Array<GridColDef>,apiRef: React.MutableRefObject<GridApiCommunity>): Array<GridColDef> =>{

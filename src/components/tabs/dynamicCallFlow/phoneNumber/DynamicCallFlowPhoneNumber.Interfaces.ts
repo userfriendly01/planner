@@ -1,4 +1,4 @@
-import { FieldOptions } from "../common/Form/AbstractForm.FieldOptions";
+import { FieldOptions } from "../common/Form/AbstractFormFieldOptionsManager";
 
 export interface DynamicCallFlowPhoneNumberMasterData extends FieldOptions {
     brand?: Array<string>;

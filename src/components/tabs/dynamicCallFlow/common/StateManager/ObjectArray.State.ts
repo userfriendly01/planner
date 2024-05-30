@@ -1,6 +1,6 @@
-import { AbstractReactState } from "./AbstractReact.State";
+import { AbstractReactStateDeprecated } from "./AbstractReactStateDeprecated";
 
-export class ObjectArrayState<T> extends AbstractReactState<Array<T>> {
+export class ObjectArrayState<T> extends AbstractReactStateDeprecated<Array<T>> {
   constructor() {
     super([]);
   }

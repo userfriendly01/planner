@@ -1,8 +1,8 @@
-import { AbstractDataGridManager } from "../../common/DataGrid/AbstractDataGrid.Manager";
+import { AbstractDataGridComponentManager } from "../../common/DataGrid/Abstract.DataGrid.Component.Manager";
 import { ActionRecordType } from "../GraphQL/DynamicCallFlowActionGraphQL.Interfaces";
 import { actionListRecords } from "../GraphQL/ListActionRecordsQuery";
 
-export class ActionDataGridManager extends AbstractDataGridManager<ActionRecordType> {
+export class ActionDataGridManager extends AbstractDataGridComponentManager<ActionRecordType> {
   protected async retrieveData(accessToken: string): Promise<Array<ActionRecordType>> {
     return await actionListRecords(accessToken);
   }

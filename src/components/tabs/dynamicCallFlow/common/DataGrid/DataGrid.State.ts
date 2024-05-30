@@ -1,14 +1,11 @@
-import { PreviewModalActionType } from "./DataGridState.Interfaces";
-import { AbstractReactState } from "../StateManager/AbstractReact.State";
-
-export interface Filter {
-  [key: string]: string | number | boolean | Array<string | number | boolean> | undefined | null | Record<string, any> | Record<string, any>[];
-}
+import { PreviewModalActionType } from "../Preview/Preview.Interface";
+import { AbstractReactState } from "../StateManager/Abstract.ReactState";
+import { Filter } from "./Abstract.DataGrid.Filter.Modal.Manager";
 
 export interface DataGridStateProps<RecordType> {
   data?: Array<RecordType>;
   filteredData?: Array<RecordType>;
-  filter?: Filter;
+  selectedList?: Array<RecordType>;
   fetching?: boolean;
   selectedRow?: RecordType;
   previewModalAction?: PreviewModalActionType;
@@ -22,12 +19,13 @@ export interface DataGridStateProps<RecordType> {
   idEnd?: number;
   maxId?: number;
   minId?: number;
-  saveSuccess?: number;
+  saveSuccess?: boolean;
 }
 
 export function initializeDataGrid<RecordType>(): DataGridStateProps<RecordType> {
   return {
     data: [],
+    selectedList: {} as Array<RecordType>,
     filteredData: [],
     filter: {} as Filter,
     fetching: true,
@@ -42,36 +40,27 @@ export function initializeDataGrid<RecordType>(): DataGridStateProps<RecordType>
     idEnd: 0,
     maxId: 0,
     minId: 0,
-    saveSuccess: 0
-  };
+    saveSuccess: false
+  } as DataGridStateProps<RecordType>;
 }
 
 export class DataGridState<RecordType> extends AbstractReactState<DataGridStateProps<RecordType>> {
+  addRecordToData(record: RecordType): DataGridState<RecordType> {
+    this.state.data.push(record);
 
-  constructor() {
-    super(initializeDataGrid());
+    return this as DataGridState<RecordType>;
   }
 
-  addRecordToData(record: RecordType): void {
-    this._setState((prevState: DataGridStateProps<RecordType>) => {
-      return {
-        ...prevState,
-        data: [...prevState.data, record]
-      };
-    });
+  addRecordToFilteredData(record: RecordType): DataGridState<RecordType>  {
+    this.state.data.push(record);
+
+    return this as DataGridState<RecordType>;
   }
 
-  addRecordToFilteredData(record: RecordType): void {
-    this._setState((prevState: DataGridStateProps<RecordType>) => {
-      return {
-        ...prevState,
-        filteredData: [...prevState.filteredData, record]
-      };
-    });
-  }
+  setData(newData: Array<RecordType>): DataGridState<RecordType> {
+    this.state.data = newData;
 
-  set data(data: Array<RecordType>) {
-    this.setProperty("data", data);
+    return this as DataGridState<RecordType>;
   }
 
   get data(): Array<RecordType> {
@@ -79,30 +68,29 @@ export class DataGridState<RecordType> extends AbstractReactState<DataGridStateP
   }
 
   setFilteredData(filteredData: Array<RecordType>): DataGridState<RecordType> {
-    return this.setProperty("filteredData", filteredData);
+    this.state.filteredData = filteredData;
+
+    return this as DataGridState<RecordType>;
+  }
+
+  get selectedList(): Array<RecordType> {
+    return this.state.selectedList;
+  }
+
+  setSelectedList(selectedList: Array<RecordType>): DataGridState<RecordType> {
+    this.state.selectedList = selectedList;
+
+    return this;
   }
 
   get filteredData(): Array<RecordType> {
     return this.state.filteredData;
   }
 
-  setFilter(recordFilter: Filter): DataGridState<RecordType> {
-    this.state = {
-      filter: {
-        ...this.state.filter,
-        ...recordFilter
-      }
-    };
-
-    return this;
-  }
-
-  get filter(): Filter {
-    return this.state.filter;
-  }
-
   setFetching(fetching: boolean): DataGridState<RecordType> {
-    return this.setProperty("fetching", fetching);
+    this.state.fetching = fetching;
+
+    return this as DataGridState<RecordType>;
   }
 
   get fetching(): boolean {
@@ -110,7 +98,9 @@ export class DataGridState<RecordType> extends AbstractReactState<DataGridStateP
   }
 
   setSelectedRow(selectedRow: RecordType): DataGridState<RecordType> {
-    return this.setProperty("selectedRow", selectedRow);
+    this.state.selectedRow = selectedRow;
+
+    return this as DataGridState<RecordType>;
   }
 
   get selectedRow(): RecordType {
@@ -118,15 +108,19 @@ export class DataGridState<RecordType> extends AbstractReactState<DataGridStateP
   }
 
   setIsEditModalOpen(isEditModalOpen: boolean): DataGridState<RecordType> {
-    return this.setProperty("isEditModalOpen", isEditModalOpen);
+    this.state.isEditModalOpen = isEditModalOpen;
+
+    return this as DataGridState<RecordType>;
   }
 
   get isEditModalOpen(): boolean {
     return this.state.isEditModalOpen;
   }
 
-  setIsPreviewModalOpen(openPrivewModal: boolean): DataGridState<RecordType> {
-    return this.setProperty("isPreviewModalOpen", openPrivewModal);
+  setIsPreviewModalOpen(openPreviewModal: boolean): DataGridState<RecordType> {
+    this.state.isPreviewModalOpen = openPreviewModal;
+
+    return this as DataGridState<RecordType>;
   }
 
   get isPreviewModalOpen(): boolean {
@@ -134,7 +128,9 @@ export class DataGridState<RecordType> extends AbstractReactState<DataGridStateP
   }
 
   setPreviewModalAction(previewModalAction: PreviewModalActionType): DataGridState<RecordType> {
-    return this.setProperty("previewModalAction", previewModalAction);
+    this.state.previewModalAction = previewModalAction;
+
+    return this as DataGridState<RecordType>;
   }
 
   get previewModalAction(): PreviewModalActionType {
@@ -142,7 +138,9 @@ export class DataGridState<RecordType> extends AbstractReactState<DataGridStateP
   }
 
   setIsAddDynamicPhoneNumberModalOpen(isAddDynamicPhoneNumberModalOpen: boolean): DataGridState<RecordType> {
-    return this.setProperty("isAddDynamicPhoneNumberModalOpen", isAddDynamicPhoneNumberModalOpen);
+    this.state.isAddModalOpen = isAddDynamicPhoneNumberModalOpen;
+
+    return this as DataGridState<RecordType>;
   }
 
   get isAddDynamicPhoneNumberModalOpen(): boolean {
@@ -150,7 +148,9 @@ export class DataGridState<RecordType> extends AbstractReactState<DataGridStateP
   }
 
   setIsFormEditModalOpen(isFormEditModalOpen: boolean): DataGridState<RecordType> {
-    return this.setProperty("isFormEditModalOpen", isFormEditModalOpen);
+    this.state.isFormEditModalOpen = isFormEditModalOpen;
+
+    return this as DataGridState<RecordType>;
   }
 
   get isFormEditModalOpen(): boolean {
@@ -158,7 +158,9 @@ export class DataGridState<RecordType> extends AbstractReactState<DataGridStateP
   }
 
   setIsAddModalOpen(isAddModalOpen: boolean): DataGridState<RecordType> {
-    return this.setProperty("isAddModalOpen", isAddModalOpen);
+    this.state.isAddModalOpen = isAddModalOpen;
+
+    return this as DataGridState<RecordType>;
   }
 
   get isAddModalOpen(): boolean {
@@ -166,7 +168,9 @@ export class DataGridState<RecordType> extends AbstractReactState<DataGridStateP
   }
 
   setIsFilterModalOpen(isFilterModalOpen: boolean): DataGridState<RecordType> {
-    return this.setProperty("isFilterModalOpen", isFilterModalOpen);
+    this.state.isFilterModalOpen = isFilterModalOpen;
+
+    return this as DataGridState<RecordType>;
   }
 
   get isFilterModalOpen(): boolean {
@@ -174,7 +178,9 @@ export class DataGridState<RecordType> extends AbstractReactState<DataGridStateP
   }
 
   setIdStart(idStart: number): DataGridState<RecordType> {
-    return this.setProperty("idStart", idStart);
+    this.state.idStart = idStart;
+
+    return this as DataGridState<RecordType>;
   }
 
   get idStart(): number {
@@ -182,7 +188,9 @@ export class DataGridState<RecordType> extends AbstractReactState<DataGridStateP
   }
 
   setIdEnd(idEnd: number): DataGridState<RecordType> {
-    return this.setProperty("idEnd", idEnd);
+    this.state.idEnd = idEnd;
+
+    return this as DataGridState<RecordType>;
   }
 
   get idEnd(): number {
@@ -190,7 +198,9 @@ export class DataGridState<RecordType> extends AbstractReactState<DataGridStateP
   }
 
   setMinId(minId: number): DataGridState<RecordType> {
-    return this.setProperty("minId", minId);
+    this.state.minId = minId;
+
+    return this as DataGridState<RecordType>;
   }
 
   get minId(): number {
@@ -198,19 +208,22 @@ export class DataGridState<RecordType> extends AbstractReactState<DataGridStateP
   }
 
   setMaxId(maxId: number): DataGridState<RecordType> {
-    return this.setProperty("maxId", maxId);
+    this.state.maxId;
+
+    return this as DataGridState<RecordType>;
   }
 
   get maxId(): number {
     return this.state.maxId;
   }
 
-  //TODO: Should this be boolean?
-  setSaveSuccess(saveSuccess: number): DataGridState<RecordType> {
-    return this.setProperty("saveSuccess", saveSuccess);
+  setSaveSuccess(saveSuccess: boolean): DataGridState<RecordType> {
+    this.state.saveSuccess = saveSuccess;
+
+    return this as DataGridState<RecordType>;
   }
 
-  get saveSuccess(): number {
+  get saveSuccess(): boolean {
     return this.state.saveSuccess;
   }
 }

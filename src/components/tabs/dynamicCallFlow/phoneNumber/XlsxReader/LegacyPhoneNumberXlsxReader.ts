@@ -1,7 +1,7 @@
 import {
   AbstractXlsxReader, XlsxJSONRow
 } from "../../common/XlsxReader/AbstractXlsxReader";
-import { CctSharedCallFlowDb } from "../GraphQL/LegacyPhoneNumber.Interfaces";
+import { CctSharedCallFlowDb } from "../GraphQL/Legacy.PhoneNumber.Interfaces";
 import {
   ACCOUNT_MANAGER,
   AFFINITY_VDN,
@@ -13,10 +13,10 @@ import {
   TRANSFER_NUMBER,
   TYPE,
   USER_DESTINATION
-} from "../Form/LegacyPhoneNumberForm.Fields";
+} from "../Form/Legacy.PhoneNumber.Form.Fields";
 import {
   BrandType, CallerType, ChannelType, LanguageOfferType
-} from "../GraphQL/DynamicPhoneNumber.Interfaces";
+} from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
 import {
   BRAND,
   CALL_FLOW_ROUTE,
@@ -41,7 +41,7 @@ import {
   TOLL_FREE_NUMBER,
   TRANSFER_CODE,
   WHISPER
-} from "../Form/DynamicPhoneNumberForm.Fields";
+} from "../Form/Dynamic.PhoneNumber.Form.Fields";
 
 class LegacyPhoneNumberXlsxReader extends AbstractXlsxReader<CctSharedCallFlowDb> {
   protected mapXlsxJSONRowToRecord(xlsxJSONRow: XlsxJSONRow): CctSharedCallFlowDb {

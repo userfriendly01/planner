@@ -14,9 +14,9 @@ import "./PhoneNumberPreviewModal.css";
 import { Box } from "@mui/material";
 import { reconstructTableColumnDef } from "./PhoneNumberPreviewModal.Util";
 import { logger } from "utils";
-import { PhoneNumberRecordType } from "../GraphQL/DynamicPhoneNumber.Interfaces";
+import { PhoneNumberRecordType } from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
 import { ObjectArrayState } from "../../common/StateManager/ObjectArray.State";
-import { PhoneNumberRecordUtil } from "../GraphQL/PhoneNumberRecord.Util";
+import { PhoneNumberRecordUtil } from "../GraphQL/PhoneNumber.Record.Util";
 
 interface PreviewModalProps {
     isOpen: boolean;

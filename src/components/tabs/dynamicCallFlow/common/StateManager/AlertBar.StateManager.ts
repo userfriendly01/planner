@@ -1,6 +1,9 @@
 import { AbstractReactStateDeprecated } from "./AbstractReactStateDeprecated";
 
 import { GraphQLError } from "../GraphQL/AbstractGraphQL.Query";
+import {AbstractReactState} from "./Abstract.ReactState";
+import React from "react";
+import {AlertBarState} from "./AlertBar.State";
 
 export type AlertSeverityType = "success" | "info" | "warning" | "error";
 
@@ -25,26 +28,14 @@ export const initialAlertBarProps: AlertBarProps = {
   duration: 6000
 };
 
-export interface AlertBarState {
-  error(message: string, open?: boolean, duration?: number): void;
-  graphQLError(errors: Array<GraphQLError>): void;
-  warning(message: string, open?: boolean, duration?: number): void;
-  info(message: string, open?: boolean, duration?: number): void;
-  success(message: string, open?: boolean, duration?: number): void;
-  set open(open: boolean);
-  get open(): boolean;
-  set msg(msg: string);
-  get msg(): string;
-  set severityType(severityType: AlertSeverityType);
-  get severityType(): AlertSeverityType;
-  set duration(duration: number);
-  get duration(): number;
-}
-
-export class AlertBarStateOld extends AbstractReactStateDeprecated<AlertBarProps> implements AlertBarState {
-  constructor() {
-    super(initialAlertBarProps);
+export class AlertBarStateManager extends AbstractReactState<AlertBarProps> implements AlertBarState {
+  constructor(state: AlertBarProps, setState: React.Dispatch<React.SetStateAction<AlertBarProps>>) {
+    super(state, setState);
   }
+
+  handleClose(isAlertOpen: boolean): void {
+    this.open = isAlertOpen;
+  };
 
   error(message: string, open = true, duration = 15000): void {
     this.setAlertBarState(message, AlertSeverityTypeEnum.Error, open, duration);

@@ -13,15 +13,15 @@ import {
 } from "@mui/x-data-grid";
 import { CustomToast } from "components";
 import ActionDataGridColumnDef from "./ActionDataGridColumnDef";
-import { DataGridState } from "../../common/DataGrid/DataGrid.State";
-import { AlertBarState } from "../../common/StateManager/AlertBar.State";
+import {DataGridStateDeprecated, DataGridStateOld} from "../../common/DataGrid/DataGrid.State.Deprecated";
+import {AlertBarState, AlertBarStateOld} from "../../common/StateManager/AlertBar.State";
 import {
   ActionRecord,
   ActionRecordType
 } from "../GraphQL/DynamicCallFlowActionGraphQL.Interfaces";
 import { ActionDataGridManager } from "./ActionDataGrid.Manager";
-import { PreviewModalActionType } from "../../common/DataGrid/DataGridState.Interfaces";
 import { batchCreateDynamicActionRecords } from "../GraphQL/BatchCreateDynamicActionQuery";
+import { PreviewModalActionType } from "../../common/Preview/Preview.Interface";
 
 const ActionDataGrid = (props: AzureSPA): JSX.Element => {
   const {
@@ -29,8 +29,8 @@ const ActionDataGrid = (props: AzureSPA): JSX.Element => {
     matchedGroups
   } = props;
 
-  const dataGridState: DataGridState<ActionRecord> = new DataGridState<ActionRecord>();
-  const alertBarState: AlertBarState = new AlertBarState();
+  const dataGridState: DataGridStateDeprecated<ActionRecord> = new DataGridStateOld<ActionRecord>();
+  const alertBarState: AlertBarState = new AlertBarStateOld();
   const actionDataGridManager: ActionDataGridManager = new ActionDataGridManager(dataGridState, alertBarState);
   const [selectedList, setSelectedList] = useState<Array<ActionRecord>>([]);
 
@@ -59,8 +59,8 @@ const ActionDataGrid = (props: AzureSPA): JSX.Element => {
   }, []);
 
   const openPreviewModal = (openPreviewModal: boolean, previewModelAction: PreviewModalActionType) => {
-    actionDataGridManager.dataGrid.setIsPreviewModalOpen(openPreviewModal)
-      .setPreviewModalAction(previewModelAction);
+    actionDataGridManager.dataGrid.state.isPreviewModalOpen = openPreviewModal;
+    actionDataGridManager.dataGrid.state.previewModalAction = previewModelAction;
   };
 
   const apiRef = useGridApiRef();
@@ -92,7 +92,7 @@ const ActionDataGrid = (props: AzureSPA): JSX.Element => {
   };
 
   const handlePreviewModalOnClose = () => {
-    actionDataGridManager.dataGrid.setIsPreviewModalOpen(false);
+    actionDataGridManager.dataGrid.state.isPreviewModalOpen = false;
   };
 
   const handleOnBulkCreate = async(actionRecords: Array<ActionRecordType> ) =>{
@@ -104,7 +104,7 @@ const ActionDataGrid = (props: AzureSPA): JSX.Element => {
       alertBarState.success("Call Flow Actions have been successfully loaded.");
     }
 
-    actionDataGridManager.dataGrid.setIsPreviewModalOpen(false);
+    actionDataGridManager.dataGrid.state.isPreviewModalOpen = false;
     apiRef.current.setRowSelectionModel([]);
   };
 
@@ -119,9 +119,9 @@ const ActionDataGrid = (props: AzureSPA): JSX.Element => {
           />
           <DataGrid
             apiRef={apiRef}
-            rows={actionDataGridManager.dataGrid.filteredData}
+            rows={actionDataGridManager.dataGrid.state.filteredData}
             columns={ActionDataGridColumnDef}
-            loading={actionDataGridManager.dataGrid.fetching}
+            loading={actionDataGridManager.dataGrid.state.fetching}
             checkboxSelection
             disableRowSelectionOnClick
             autoHeight

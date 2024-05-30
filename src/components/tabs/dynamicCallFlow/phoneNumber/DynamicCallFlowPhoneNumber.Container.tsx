@@ -1,9 +1,10 @@
-import PhoneNumberDataGrid from "./DataGrid/PhoneNumberDataGrid";
+import PhoneNumberDataGridComponent from "./DataGrid/PhoneNumber.DataGrid.Component";
 import { useAccessToken } from "authentication";
 import {
   LoginInProgress,
   LoginError
 } from "components";
+import React from "react";
 
 const DynamicCallFlowPhoneNumberContainer = () => {
   const {
@@ -43,7 +44,7 @@ const DynamicCallFlowPhoneNumberContainer = () => {
   }
 
   return (
-    <PhoneNumberDataGrid accessToken={accessToken} matchedGroups={matchedGroups} />
+    <PhoneNumberDataGridComponent accessToken={accessToken} matchedGroups={matchedGroups} />
   );
 };
 

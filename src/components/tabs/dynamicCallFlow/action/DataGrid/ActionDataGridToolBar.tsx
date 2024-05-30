@@ -13,7 +13,8 @@ import {
   PlaylistAdd,
   SaveAlt
 } from "@mui/icons-material";
-import { PreviewModalActionType } from "../../common/DataGrid/DataGridState.Interfaces";
+
+import {PreviewModalActionType} from "../../common/Preview/Preview.Interface";
 
 interface CustomFlowGridToolBarProps {
   exportDataFile: ()=> void;

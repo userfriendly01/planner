@@ -1,10 +1,10 @@
 import { Control } from "../../../../../globals";
 import {
-  FieldConditionCheckType, FormFieldConfig, FormFieldConfigs
-} from "../../common/Form/FormFieldConfig.State";
-import { ControlEnum } from "../../common/Form/FormField.Control";
+  FieldConditionCheckType, FieldConfig, FieldConfigs
+} from "../../common/Form/Form.FieldConfig.State";
+import { ControlEnum } from "../../common/Form/Change.Form.FieldControl";
 
-export const ActionFormFieldConfigs: FormFieldConfigs = {};
+export const ActionFormFieldConfigs: FieldConfigs = {};
 export const RequiredActionFormFields: Array<string> = [];
 
 function createActionFormFieldConfig(key: string, label: string, control: Control, required: boolean, disableEdit: boolean, dynamicFieldConditionCheck?: FieldConditionCheckType, isUserAbleToSwitchToInputControl?: boolean, gridSize?: number): void {
@@ -21,7 +21,7 @@ function createActionFormFieldConfig(key: string, label: string, control: Contro
     disableEdit,
     fieldConditionCheck: dynamicFieldConditionCheck,
     gridSize
-  } as FormFieldConfig;
+  } as FieldConfig;
 }
 
 createActionFormFieldConfig("actionId", "Action ID", ControlEnum.Input, true, false);

@@ -1,0 +1,29 @@
+import { PhoneNumber } from "../Dynamic.PhoneNumber.Interfaces";
+import { SingleRecordResults } from "../../../common/GraphQL/AbstractSingleRecord.Query";
+import { AbstractCreateRecordQuery } from "../../../common/GraphQL/Abstract.CreateRecord.Query";
+
+class CreateDynamicPhoneNumberRecordQuery extends AbstractCreateRecordQuery {
+  protected queryName(): string {
+    return "createPhoneNumber";
+  }
+
+  //TODO: Need to add more attributes on the create
+  protected queryDefinition(): string {
+    return `
+      mutation ${this.queryName()} ($input: PhoneNumberInput! ){
+        ${this.queryName()}(input: $input) {
+          phoneNumber
+          phoneNumberType
+        }
+      }`;
+  }
+}
+
+const createDynamicPhoneNumberRecordQuery = new CreateDynamicPhoneNumberRecordQuery();
+
+export async function createDynamicPhoneNumberRecord(accessToken: string, phoneNumberRecord: PhoneNumber, dataRequests: Array<string>=[]): Promise<SingleRecordResults<PhoneNumber>> {
+  phoneNumberRecord.dataRequests = dataRequests;
+  phoneNumberRecord.createTime = Date.now();
+  phoneNumberRecord.updateTime = Date.now();
+  return await createDynamicPhoneNumberRecordQuery.create<PhoneNumber>(accessToken, phoneNumberRecord);
+}

@@ -10,7 +10,7 @@ import {
   NextActionType,
   PhoneNumber,
   PhoneNumberType
-} from "../GraphQL/DynamicPhoneNumber.Interfaces";
+} from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
 import {
   BRAND,
   CALL_FLOW_NAME,
@@ -44,7 +44,7 @@ import {
   TRANSFER_DESTINATION,
   UPDATE_TIME,
   WHISPER
-} from "../Form/DynamicPhoneNumberForm.Fields";
+} from "../Form/Dynamic.PhoneNumber.Form.Fields";
 
 class DynamicPhoneNumberXlsxReader extends AbstractXlsxReader<PhoneNumber> {
   protected mapXlsxJSONRowToRecord(xlsxJSONRow: XlsxJSONRow): PhoneNumber {

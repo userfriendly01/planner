@@ -20,7 +20,8 @@ import {
   MenuOption
 } from "../GraphQL/DynamicCallFlowActionGraphQL.Interfaces";
 import { ObjectArrayState } from "../../common/StateManager/ObjectArray.State";
-import { PreviewModalActionType } from "../../common/DataGrid/DataGridState.Interfaces";
+
+import {PreviewModalActionType} from "../../common/Preview/Preview.Interface";
 
 interface PreviewModalProps {
     isOpen: boolean;
