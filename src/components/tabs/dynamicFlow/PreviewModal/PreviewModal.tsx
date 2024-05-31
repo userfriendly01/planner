@@ -36,7 +36,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   } = props;
 
   const apiRef =  useGridApiRef();
-  const [flowRows, setFlowRows] = useState<any[]>([]);
+  const [flowRows, setFlowRows] = useState<ActionPreview[]>([]);
   const [ uploadedForm, setUploadedForm ] = React.useState<any>([]);
   const tableGridColumnDef: Array<GridColDef> = useMemo<Array<GridColDef>>(()=>{
     return reconstructTableColumnDef([...TableGridColumnDef], apiRef);

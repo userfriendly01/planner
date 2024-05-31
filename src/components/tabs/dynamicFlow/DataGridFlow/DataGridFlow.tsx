@@ -26,11 +26,10 @@ import {
 } from "@mui/x-data-grid";
 import DynamicFlowGridColumnDef from "./DynamicGridColumnDef";
 import {
-  CctSharedCallFlowDb, CustomToast, FlowStateVariables
+  CustomToast
 } from "components";
 import {
-  batchDeleteActionItems,
-  batchDeleteItems, deleteOppositeRows
+  batchDeleteActionItems
 } from "../../alohaFlow/Utils/FlowTableServiceUtil";
 
 
