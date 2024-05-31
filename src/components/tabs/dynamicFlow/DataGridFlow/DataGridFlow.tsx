@@ -221,7 +221,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     setAlertBar((alertBarProps: AlertBarProps) => ({
       ...alertBarProps,
       open: true,
-      msg: "Flow Rules have been successfully deleted.",
+      msg: "Actions deleted successfully",
       severityType: "success"
     }));
 

@@ -19,6 +19,7 @@ import { Box } from "@mui/material";
 import  TableGridColumnDef  from "./TableColumnDef";
 import { logger } from "utils";
 import { reconstructTableColumnDef } from "./PreviewUtil";
+import { Text } from "../../usermanagement/OnboardNewUser/CallRecording/CallRecording.Styles";
 
 interface PreviewModalProps {
     isOpen: boolean;
@@ -198,6 +199,9 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
             <StyledButton sx={{ marginRight: "15px" }} onClick={()=>handleOnCreate()}>Save</StyledButton>
           }
           <StyledButton onClick={()=>{ handleOnClose(); }}>Cancel</StyledButton>
+          {action==="delete" &&
+                  <Text color={"RED"}>Are you sure? You will spend the next few days reverting your junk</Text>
+          }
         </Box>
       </ModalFooter>
     </Modal>
