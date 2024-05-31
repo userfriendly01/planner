@@ -37,17 +37,17 @@ const createFlowDataList = numberOfData =>{
   }
   return dataList;
 };
-
-const renderComponent = (action, createMock, deleteMock) => {
+const renderComponent = (action, deleteMock) => {
   return render (<PreviewModal
     action={action}
     isOpen={true}
     onClose={onCloseMock}
-    onCreate={createMock}
+    onCreate={onCreateMock}
     onDelete={deleteMock}
     rows={createFlowDataList(12)}
   />, initialTestState);
 };
+
 
 describe("<PreviewModal />", () => {
   const matchMedia = window.matchMedia;
@@ -108,7 +108,7 @@ describe("<PreviewModal />", () => {
     expect(onDeleteMock).toBeCalledTimes(0);
     expect(onCloseMock).toBeCalledTimes(1);
   });
-  /*test("render Delete preview - delete success", () => {
+  test("render Delete preview - delete success", () => {
     renderComponent("delete", onDeleteMock);
     const calls = StyledButton.mock.calls;
     act(async () => calls[0][0].onClick());
@@ -120,6 +120,6 @@ describe("<PreviewModal />", () => {
     act(async () => calls[0][0].onClick());
     expect(onDeleteMockBad).toBeCalledTimes(1);
     expect(onCloseMock).toBeCalledTimes(0);
-  });*/
+  });
 
 });
