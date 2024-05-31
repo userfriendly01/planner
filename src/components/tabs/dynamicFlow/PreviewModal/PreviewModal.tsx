@@ -2,7 +2,7 @@ import React, {
   useMemo, useState, useEffect
 } from "react";
 import {
-  CsvReader, FlowAdvanceFilter, StyledButton
+  CsvReader, StyledButton
 } from "components";
 import {
   DataGrid, GridColDef, useGridApiRef
@@ -15,17 +15,10 @@ import {
   Modal,ModalHeader, ModalBody, ModalFooter
 } from "@lmig/lmds-react-modal";
 import "./PreviewModal.css";
-import {
-  Alert,
-  Box, Chip, TextField
-} from "@mui/material";
+import { Box } from "@mui/material";
 import  TableGridColumnDef  from "./TableColumnDef";
-import {
-  initializedAlertBar, logger
-} from "utils";
+import { logger } from "utils";
 import { reconstructTableColumnDef } from "./PreviewUtil";
-import { AlertBarProps } from "../../../../utils/interfaces";
-import { Text } from "../../usermanagement/OnboardNewUser/CallRecording/CallRecording.Styles";
 
 interface PreviewModalProps {
     isOpen: boolean;
@@ -43,7 +36,6 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   } = props;
 
   const apiRef =  useGridApiRef();
-  const [alertBar, setAlertBar] = useState(initializedAlertBar);
   const [flowRows, setFlowRows] = useState<any[]>([]);
   const [ uploadedForm, setUploadedForm ] = React.useState<any>([]);
   const tableGridColumnDef: Array<GridColDef> = useMemo<Array<GridColDef>>(()=>{
@@ -199,14 +191,8 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
           display: "flex",
           justifyContent: "center"
         }}>
-
-
           {action==="delete" &&
                   <StyledButton sx={{ marginRight: "15px" }} onClick={() =>{ handleOnDelete(); }}>Delete</StyledButton>
-
-          }
-          {action==="delete" &&
-            <Text>Are you sure? You will spend the next few days reverting your junk</Text>
           }
           {action === "add" &&
             <StyledButton sx={{ marginRight: "15px" }} onClick={()=>handleOnCreate()}>Save</StyledButton>
