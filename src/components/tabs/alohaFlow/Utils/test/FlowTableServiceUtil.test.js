@@ -15,7 +15,7 @@ import {
 } from "services";
 
 import {
-  addFlowRule,
+  addFlowRule, batchDeleteActionItems,
   batchDeleteItems,
   batchFlowCreate,
   batchFlowUpdate,
@@ -287,6 +287,23 @@ describe("FlowTableServiceUtil", () => {
       await deleteOppositeRows([dynamicRecord, nonDynamicRecord], token);
 
       expect(v1BatchDeleteItems).toHaveBeenCalled();
+      expect(v2BatchDeleteItems).toHaveBeenCalled();
+    });
+  });
+  describe("batchDeleteActionItems", () => {
+    beforeEach(() => {
+      jest.resetAllMocks();
+      v2BatchDeleteItems.mockResolvedValue({
+        failure: ["b"],
+        success: ["a"]
+      });
+    });
+    it("should call batchDeleteActionItems function", async () => {
+      const items = [ {
+        id: 1,
+        actionType: "MENU"
+      }];
+      await batchDeleteActionItems(items, token);
       expect(v2BatchDeleteItems).toHaveBeenCalled();
     });
   });
