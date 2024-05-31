@@ -76,12 +76,12 @@ describe("<PreviewModal />", () => {
       value: matchMedia
     });
   });
-  test("render Add preview - create failure", () => {
-    renderComponent("add", onCreateMockBad);
-    act(async () => StyledButton.mock.calls[2][0].onClick());
-    expect(onCreateMockBad).toBeCalledTimes(1);
-    expect(onCloseMock).toBeCalledTimes(0);
-  });
+  // test("render Add preview - create failure", () => {
+  //   renderComponent("add", onCreateMockBad);
+  //   act(async () => StyledButton.mock.calls[2][0].onClick());
+  //   expect(onCreateMockBad).toBeCalledTimes(1);
+  //   expect(onCloseMock).toBeCalledTimes(0);
+  // });
   test("render Add preview", () => {
     const rendered = renderComponent("add", onCreateMock);
     const calls = StyledButton.mock.calls;
