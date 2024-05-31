@@ -72,9 +72,16 @@ describe("<CustomFlowGridToolBar/>",()=>{
         }
       });
     });
+    act(()=>{
+      ActionsAttr({
+        target: {
+          value: "bulkDeleteFlow"
+        }
+      });
+    });
 
     expect(GridMock).toBeTruthy();
-    expect(openPreviewModal).toBeCalledTimes(1);
+    expect(openPreviewModal).toBeCalledTimes(2);
 
   });
 });

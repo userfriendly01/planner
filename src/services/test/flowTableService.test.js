@@ -924,6 +924,14 @@ describe("dynamicFlowTableService",()=> {
         expect(response).toBeTruthy();
       });
     });
+    test("batch Dynamic Delete with actionType",async()=>{
+      const batchDeleteDyamicItemsList = ["actionType1","actionId1"];
+      await flowDynamicBatchDelete(batchDeleteDyamicItemsList,"1233-3245","http://localhost:3000");
+      const response=batchDynamicDeleteItems(batchDeleteDyamicItemsList,"3245","http://localhost:3000");
+      act(()=>{
+        expect(response).toBeTruthy();
+      });
+    });
     test("Dynamic Error",async()=>{
       const batchDeleteDyamicItemsList = ["pkey1","pkey1","pkey3"];
       jest.spyOn(JSON, "stringify").mockImplementation(()=>{

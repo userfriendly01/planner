@@ -7,7 +7,7 @@ import {
   DynamicAction, DynamicFlowStateVariables,
   ActionPreview,
   DynamicStateVariables,
-  PreviewModalAction
+  PreviewModalAction, Action
 } from "../DynamicFlow.Interfaces";
 import { AlertBarProps } from "utils/interfaces";
 import {
@@ -22,10 +22,15 @@ import {
 } from "services";
 import { getDynamicGridMasterData } from "./DynamicGridMaster";
 import {
-  DataGrid, useGridApiRef
+  DataGrid, GridRowId, GridRowSelectionModel, useGridApiRef
 } from "@mui/x-data-grid";
 import DynamicFlowGridColumnDef from "./DynamicGridColumnDef";
-import { CustomToast } from "components";
+import {
+  CustomToast
+} from "components";
+import {
+  batchDeleteActionItems
+} from "../../alohaFlow/Utils/FlowTableServiceUtil";
 
 
 const DataGridFlow = (props: AzureSPA): JSX.Element => {
@@ -166,7 +171,10 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
       isPreviewModalOpen: false
     }));
   };
-
+  const handleSelectionChanges = (gridSelectionModel: GridRowSelectionModel) =>{
+    const selectedRowsData:ActionPreview[] = gridSelectionModel.map((id: GridRowId)=>dataFlow.filteredItems.find((row: ActionPreview)=>row.actionId === id));
+    setSelectedList(selectedRowsData);
+  };
   const handleOnBulkCreate = async(rows: Array<DynamicAction> ) =>{
     const response = await batchDynamicFlowCreate(rows, accessToken);
     if(response?.flag) {
@@ -197,7 +205,41 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     });
     apiRef.current.setRowSelectionModel([]);
   };
+  const handleOnBulkDelete = async(rows: Array<Action> ) =>{
+    const response = await batchDeleteActionItems(rows, accessToken);
+    if(response?.flag) {
+      setAlertBar((alertBarProps: AlertBarProps) => ({
+        ...alertBarProps,
+        open: true,
+        msg: "Error deleting records.",
+        severityType: "error"
+      }));
 
+      return;
+    }
+
+    setAlertBar((alertBarProps: AlertBarProps) => ({
+      ...alertBarProps,
+      open: true,
+      msg: "Flow Rules have been successfully deleted.",
+      severityType: "success"
+    }));
+
+    const selectedRowsData:any = response?.failure?.map(x=>dataFlow.filteredItems.find((row: Action)=>row.id === x.id));
+    setSelectedList(selectedRowsData);
+    const deletedIds = response?.success?.map((x:any) => x.id);
+    const filteredItems = dataFlow.filteredItems.filter(x=> deletedIds.indexOf(x.id) === -1);
+    const filteredData = dataFlow.data.filter(x=> deletedIds.indexOf(x.id) === -1);
+
+    setDataFlow((dataFlowProps: any) => ({
+      ...dataFlowProps,
+      filteredItems,
+      data: filteredData,
+      isPreviewModalOpen: response?.flag || false,
+      fetching: false
+    }));
+    apiRef.current.setRowSelectionModel(response.failure);
+  };
   return (
     <div className="data-grid-wrapper">
       <div className="data-grid-wrapper">
@@ -214,6 +256,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
             loading={dataFlow.fetching}
             checkboxSelection
             disableRowSelectionOnClick
+            onRowSelectionModelChange={handleSelectionChanges}
             autoHeight
             getRowId={(row: DynamicAction)=>row.actionId}
             sx={{
@@ -238,6 +281,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
         loading={dataFlow.fetching}
         onClose={handlePreviewModalOnClose}
         onCreate={handleOnBulkCreate}
+        onDelete= {handleOnBulkDelete}
         rows={selectedList}
       />
     </div>
