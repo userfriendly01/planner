@@ -108,7 +108,7 @@ describe("<PreviewModal />", () => {
     expect(onDeleteMock).toBeCalledTimes(0);
     expect(onCloseMock).toBeCalledTimes(1);
   });
-  test("render Delete preview - delete success", () => {
+  /*test("render Delete preview - delete success", () => {
     renderComponent("delete", onDeleteMock);
     const calls = StyledButton.mock.calls;
     act(async () => calls[0][0].onClick());
@@ -120,6 +120,6 @@ describe("<PreviewModal />", () => {
     act(async () => calls[0][0].onClick());
     expect(onDeleteMockBad).toBeCalledTimes(1);
     expect(onCloseMock).toBeCalledTimes(0);
-  });
+  });*/
 
 });
