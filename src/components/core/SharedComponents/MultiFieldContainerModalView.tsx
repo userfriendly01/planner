@@ -12,7 +12,8 @@ import {
 } from "@mui/material";
 import { MultiFieldContainerFormProps } from "./MultiFieldContainer";
 import { MultiValueTextField } from "./MultiValueTextField";
-import { routingDropDownList } from "utils";
+import { routingDropDownList } from "utils/routingUtils";
+
 interface MultiFieldContainerModalViewProps{
     formFields:Array<MultiFieldContainerFormProps>;
     isOpen: boolean;

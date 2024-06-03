@@ -3,8 +3,8 @@ import {
   ApolloClient, ApolloProvider, InMemoryCache, createHttpLink
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
-import { env } from "globals";
-import { useAdminState } from "context";
+import { env } from "globals/index";
+import { useAdminState } from "context/appContext";
 
 interface Props {
   children: ReactElement

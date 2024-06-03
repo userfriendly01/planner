@@ -21,7 +21,7 @@ import {
 import {
   useAdminDispatch, useAdminState
 } from "context";
-import { theme } from "globals";
+import { theme } from "globals/theme";
 import { getRoutes } from "globals/routes";
 import React, {
   useEffect,

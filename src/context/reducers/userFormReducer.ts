@@ -2,7 +2,7 @@ import {
   Action,
   UMManager,
   formModes
-} from "../../globals/shared";
+} from "../../globals/index";
 import { UserFormState } from "components/tabs/usermanagement/OnboardNewUser/UserEntryFormWrapper/UserEntryFormWrapper.Interfaces";
 import { ExtensionSearchStatuses } from "components/tabs/usermanagement/OnboardNewUser/Extension/ExtensionInput/ExtensionInput.Interfaces";
 import { SearchParams } from "components/tabs/usermanagement/OnboardNewUser/Extension/ExtensionSearchParams";

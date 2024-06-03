@@ -1,9 +1,11 @@
-import ModalOverlay from "../ModalOverlay";
-import { ModalOverlayStatuses } from "globals";
+import { ModalOverlay } from "../ModalOverlay";
+import { ModalOverlayStatuses } from "globals/interfaces";
 import React from "react";
 import {
   fireEvent, render
 } from "testUtils";
+
+jest.mock("components/ModalFetchingRing");
 
 const mockHandleClose = jest.fn();
 

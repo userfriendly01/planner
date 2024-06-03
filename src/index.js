@@ -4,10 +4,8 @@ import {
   StateProvider,
   FormStateProvider
 } from "context";
-import {
-  authConfig,
-  theme
-} from "globals";
+import { authConfig } from "globals";
+import { theme } from "globals/theme";
 import React from "react";
 import { ThemeProvider } from "styled-components";
 import { createRoot } from "react-dom/client";

@@ -18,10 +18,17 @@
       "components*":[
          "./components*",
          "./components/core*",
-         "./components/core/ModalFetchingRing*"
+         "./components/core/ModalHelperText*",
+         "./components/core/ModalFetchingRing*",
+         "./components/core/CustomDropdown*",
+         "./components/core/CustomInput*",
+         "./components/core/PaperContainer*",
+         "./components/core/StyledButton*"
       ],
       "context*":[
-         "./context*"
+         "./context*",
+         "./context/appContext*",
+         "./context/reducers*",
       ],
       "dynamicFlow*":[
          "./components/tabs/dynamicFlow*"

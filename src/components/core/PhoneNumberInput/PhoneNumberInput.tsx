@@ -2,7 +2,7 @@ import {
   getE164Number,
   isNumberValid,
   unMaskPhoneNumber
-} from "utils";
+} from "utils/formatNumberUtils";
 import {
   Switch,
   TextField

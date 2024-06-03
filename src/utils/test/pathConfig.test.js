@@ -13,6 +13,6 @@ const resolvePathInSrc = resourceInSrc => {
 
 describe("", () => {
   test("", () => {
-    expect(getConfigPaths()).toBe("butts");
+    expect(getJestConfigPaths()).toBe("butts");
   });
 });

@@ -1,7 +1,7 @@
 import Pagination from "../Pagination";
 import { NavArrow } from "../Pagination.Styles";
 import { Tooltip } from "@mui/material";
-import { theme } from "globals";
+import { theme } from "globals/theme";
 import React from "react";
 import { ThemeProvider } from "styled-components";
 import {

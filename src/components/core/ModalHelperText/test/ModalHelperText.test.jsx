@@ -1,4 +1,4 @@
-import ModalHelperText from "../ModalHelperText";
+import { ModalHelperText } from "../ModalHelperText";
 import React from "react";
 import {
   fireEvent,
@@ -16,7 +16,7 @@ describe("<ModalHelperText />", () => {
     const rendered = render(<ModalHelperText clearFunction={mockFunction} message={message} error={null}
     />);
     expect(rendered.container).toHaveTextContent(message);
-    expect(rendered.getByTestId("helper-text-section")).toHaveStyleRule("color", "green");
+    expect(rendered.getByTestId("helper-text-section")).toHaveStyle({ color: "green" });
   });
   test("when the clear button is clicked, should fire whatever function was sent in.", () => {
     const rendered = render(<ModalHelperText clearFunction={mockFunction} message={"whatever"} error={null} />);
@@ -25,6 +25,6 @@ describe("<ModalHelperText />", () => {
   });
   test("if there is an error, should display message in red", () => {
     const rendered = render(<ModalHelperText clearFunction={mockFunction} message={"user not found or whatever"} error={"Bad News Bears"} />);
-    expect(rendered.getByTestId("helper-text-section")).toHaveStyleRule("color", "red");
+    expect(rendered.getByTestId("helper-text-section")).toHaveStyle({ color: "red" });
   });
 });

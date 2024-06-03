@@ -1,10 +1,8 @@
 import ModalNNumber from "../NNumberInput";
-import {
-  CustomInput,
-  ModalHelperText
-} from "components";
+import { CustomInput } from "components/CustomInput";
+import { ModalHelperText } from "components/ModalHelperText";
 import React from "react";
-import { fetchUser } from "services";
+import { fetchUser } from "services/fetchUser";
 import {
   act,
   expectMockedComponent,
@@ -15,10 +13,16 @@ import {
   waitFor
 } from "testUtils";
 
-jest.mock("components", () => ({
-  __esModule: true,
-  CustomInput: jest.fn(),
+jest.mock("components/CustomInput", () => ({
+  CustomInput: jest.fn()
+}));
+
+jest.mock("components/ModalHelperText", () => ({
   ModalHelperText: jest.fn()
+}));
+
+jest.mock("services/fetchUser", () => ({
+  fetchUser: jest.fn()
 }));
 
 const mockOnClear = jest.fn();

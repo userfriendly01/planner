@@ -4,12 +4,13 @@ import {
 } from "@mui/material";
 import SelectContainer from "./SelectContainer";
 import TimePickerComponent from "./TimepickerComponent";
-import { Control } from "globals";
-import { Dropdown } from "../index";
+import { Control } from "globals/interfaces";
+import { Dropdown } from "components/Dropdown";
 import {
-  MultiFieldContainer,MultiFieldContainerFormProps
+  MultiFieldContainer, MultiFieldContainerFormProps
 } from "./MultiFieldContainer";
 import { MultiValueTextField } from "./MultiValueTextField";
+
 export interface ComponentControlProps {
   control: Control;
   dropDownOptions?: string[];

@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const ESLintPlugin = require("eslint-webpack-plugin");
 const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 const webpack = require("webpack");
@@ -69,6 +70,7 @@ const config = {
       icons: resolvePathInSrc("assets/icons"),
       services: resolvePathInSrc("services"),
       utils: resolvePathInSrc("utils"),
+      // "styled-components": path.resolve(__dirname, "node_modules", "styled-components"),
       process: "process/browser.js"
     },
     fallback: {

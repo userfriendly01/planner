@@ -10,7 +10,12 @@ const paths = [
     paths: [
       "components",
       "components/core",
-      "components/core/ModalFetchingRing"
+      "components/core/CustomDropdown",
+      "components/core/CustomInput",
+      "components/core/ModalFetchingRing",
+      "components/core/ModalHelperText",
+      "components/core/PaperContainer",
+      "components/core/StyledButton"
     ]
   },
   {
@@ -53,19 +58,14 @@ const paths = [
   {
     alias: "context",
     paths: [
-      "context"
+      "context",
+      "context/reducers"
     ]
   },
   {
     alias: "globals",
     paths: [
-      "globals",
-      "globals/interfaces",
-      "globals/graphql",
-      "globals/index",
-      "globals/routes",
-      "globals/styles",
-      "globals/theme"
+      "globals"
     ]
   },
   {
