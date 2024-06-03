@@ -15,8 +15,14 @@ import {
   getAdGroupPermissionMapping,
   getAuthenticationProfileTemplates,
   getStartupProfiles
-} from "authentication";
+} from "authentication/authenticationProfiles";
 import { env } from "globals";
+
+jest.mock("authentication/authenticationProfiles", () => ({
+  getStartupProfiles: jest.fn(),
+  getAdGroupPermissionMapping: jest.fn(),
+  getAuthenticationProfileTemplates: jest.fn()
+}));
 
 jest.mock("components", () => ({
   UserManagementWrapper: jest.fn(),

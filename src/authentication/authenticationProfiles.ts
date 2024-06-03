@@ -2,11 +2,11 @@ import { AccountInfo } from "@azure/msal-browser";
 import {
   AuthenticationProfileOptions,
   descriptions,
-  Permissions,
-  runTritonAdminStartup,
-  runAlohaRoutingStartup,
-  runAlohaFlowStartup
-} from "authentication";
+  Permissions
+} from "authentication/authenticationInterfaces";
+import { runTritonAdminStartup } from "authentication/startups/cct-triton-admin-startup";
+import { runAlohaRoutingStartup } from "authentication/startups/cct-aloha-routing-startup";
+import { runAlohaFlowStartup } from "authentication/startups/cct-aloha-flow-startup";
 import {
   AlohaFlowContainer,
   AlohaRoutingContainer,

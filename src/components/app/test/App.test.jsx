@@ -24,9 +24,8 @@ import {
   setupMockedComponents,
   waitFor
 } from "testUtils";
-import {
-  getFilteredPermissions, getWorkerProfileId
-} from "authentication";
+import { getWorkerProfileId } from "authentication/authUtils";
+import { getFilteredPermissions } from "authentication/authenticationProfiles";
 
 
 delete window.location;
@@ -37,6 +36,14 @@ jest.useFakeTimers();
 jest.mock("@mui/material", () => ({
   CircularProgress: jest.fn(),
   Modal: jest.fn()
+}));
+
+jest.mock("authentication/authUtils", () => ({
+  getWorkerProfileId: jest.fn()
+}));
+
+jest.mock("authentication/authenticationProfiles", () => ({
+  getFilteredPermissions: jest.fn()
 }));
 
 jest.mock("components", () => ({

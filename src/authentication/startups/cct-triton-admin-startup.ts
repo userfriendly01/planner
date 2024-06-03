@@ -1,4 +1,4 @@
-import { getStartupProfiles } from "authentication";
+import { getStartupProfiles } from "authentication/authenticationProfiles";
 import {
   Action,
   apiPaths

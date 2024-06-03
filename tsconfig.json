@@ -8,7 +8,7 @@
     "noImplicitAny": true,
     "outDir": "./dist/",
     "paths": {
-      "authentication": ["./authentication/index.js"],
+      "authentication*": ["./authentication*"],
       "components": ["./components/index.js"],
       "context": ["./context/index.js"],
       "globals": ["./globals/index.js"],

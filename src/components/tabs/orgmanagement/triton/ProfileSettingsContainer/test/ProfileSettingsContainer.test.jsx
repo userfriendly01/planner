@@ -1,5 +1,5 @@
 import ProfileSettingsContainer from "../ProfileSettingsContainer";
-import { checkIfPO } from "authentication";
+import { checkIfPO } from "authentication/authUtils";
 import MockAdapter from "axios-mock-adapter";
 import {
   ProfileSettingsTable,
@@ -12,12 +12,8 @@ import React from "react";
 import { act } from "react-dom/test-utils";
 import {
   expectMockedComponent,
-  expectOnlyPassedProps,
-  getLastInstanceCalled,
-  getMockedComponentProps,
   render,
   setupMockedComponents,
-  waitFor,
   initialTestState as initialState
 } from "testUtils";
 import { myAxios } from "utils";
@@ -40,7 +36,7 @@ jest.mock("@mui/material", () => ({
   Modal: jest.fn()
 }));
 
-jest.mock("authentication", () => ({
+jest.mock("authentication/authUtils", () => ({
   checkIfPO: jest.fn()
 }));
 
@@ -68,8 +64,6 @@ const initialTestState = {
     nNumber: "n1234567"
   }
 };
-
-const errorMessage = "Failed to fetch data for selected profile";
 
 describe("<ProfileSettingsContainer />", () => {
 

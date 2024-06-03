@@ -24,7 +24,7 @@ import {
 } from "./SkillGroup.Styles";
 import { Dropdown } from "components";
 import _ from "lodash";
-import { getSkills } from "authentication";
+import { getSkills } from "authentication/startups/cct-triton-admin-startup";
 import { logger } from "utils";
 
 

@@ -28,10 +28,6 @@ jest.mock("../NavTabs.Styles", () => ({
   StyledTabContainer: jest.requireActual("../NavTabs.Styles").StyledTabContainer
 }));
 
-jest.mock("authentication", () => ({
-  getTabs: jest.requireActual("authentication").getTabs
-}));
-
 jest.mock("react-router-dom", () => ({
   Link: jest.fn(),
   useNavigate: jest.fn()

@@ -1,6 +1,6 @@
 import React from "react";
 import CallFlowManagementSkills from "../CallFlowManagementSkills";
-import { getAuthenticationProfileTemplates } from "authentication";
+import { getAuthenticationProfileTemplates } from "authentication/authenticationProfiles";
 import {
   CallFlowConfirmationModal,
   ActionContainer,
@@ -18,6 +18,10 @@ import {
   authenticationProfileTemplates
 } from "testUtils";
 import { Modal } from "@mui/material";
+
+jest.mock("authentication/authenticationProfiles", () => ({
+  getAuthenticationProfileTemplates: jest.fn()
+}));
 
 jest.mock("components", () => ({
   CallFlowConfirmationModal: jest.fn(),

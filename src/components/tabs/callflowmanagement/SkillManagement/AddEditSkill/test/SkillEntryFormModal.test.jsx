@@ -29,14 +29,14 @@ import {
 import {
   createSkill
 } from "services";
-import { getSkills } from "authentication";
+import { getSkills } from "authentication/startups/cct-triton-admin-startup";
 
 
 jest.mock("services", () => ({
   createSkill: jest.fn()
 }));
 
-jest.mock("authentication", () => ({
+jest.mock("authentication/startups/cct-triton-admin-startup", () => ({
   getSkills: jest.fn()
 }));
 

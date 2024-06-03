@@ -35,7 +35,7 @@ import {
 import {
   createSkill
 } from "services";
-import { getSkills } from "authentication";
+import { getSkills } from "authentication/startups/cct-triton-admin-startup";
 import { logger } from "utils";
 
 const ModalContainer = styled.div`

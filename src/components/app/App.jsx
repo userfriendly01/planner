@@ -11,10 +11,8 @@ import {
   LoadingMessage
 } from "./App.Styles";
 import ScrollToTop from "./ScrollToTop";
-import {
-  getFilteredPermissions,
-  getWorkerProfileId
-} from "authentication";
+import { getWorkerProfileId } from "authentication/authUtils";
+import { getFilteredPermissions } from "authentication/authenticationProfiles";
 import {
   Header,
   NavTabs,

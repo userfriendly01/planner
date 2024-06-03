@@ -2,7 +2,7 @@ import { runTritonAdminStartup } from "../cct-triton-admin-startup";
 import MockAdapter from "axios-mock-adapter";
 import { useAdminDispatch } from "context";
 import { apiPaths } from "globals";
-import { getStartupProfiles } from "authentication";
+import { getStartupProfiles } from "authentication/authenticationProfiles";
 import {
   getWfmBusinessUnits,
   getCalabrioUsers,
@@ -24,6 +24,10 @@ jest.mock("../../../utils/calabrioUtils", () => ({
   __esModule: true,
   getCalabrioWfmOptions: jest.fn(),
   getCalabrioWfmOrg: jest.fn()
+}));
+
+jest.mock("authentication/authenticationProfiles", () => ({
+  getStartupProfiles: jest.fn()
 }));
 
 jest.mock("context", () => ({

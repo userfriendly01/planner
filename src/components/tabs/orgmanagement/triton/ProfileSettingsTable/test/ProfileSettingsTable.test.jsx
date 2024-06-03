@@ -1,5 +1,5 @@
 import ProfileSettingsTable from "../ProfileSettingsTable";
-import { checkIfPO } from "authentication";
+import { checkIfPO } from "authentication/authUtils";
 import React from "react";
 import {
   act,
@@ -11,7 +11,7 @@ import {
 import { profileEntryFormDispatch } from "context";
 import { ProfileEntryForm } from "components";
 
-jest.mock("authentication", () => ({
+jest.mock("authentication/authUtils", () => ({
   checkIfPO: jest.fn()
 }));
 

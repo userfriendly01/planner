@@ -43,7 +43,7 @@ const NavTabs = () => {
     const allowedTabs: any[] = [];
     const tabsOpen: any = {};
     permissions.forEach(({ authenticationProfile }) => {
-      authenticationProfile.tabs.forEach(tab => {
+      authenticationProfile.tabs.forEach((tab:any) => {
         allowedTabs.push(tab);
         tabsOpen[tab.value] = false;
       });

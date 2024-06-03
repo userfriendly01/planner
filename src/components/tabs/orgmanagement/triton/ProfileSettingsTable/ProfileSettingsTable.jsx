@@ -1,4 +1,4 @@
-import { checkIfPO } from "authentication";
+import { checkIfPO } from "authentication/authUtils";
 import React from "react";
 import {
   BubbleDiv,

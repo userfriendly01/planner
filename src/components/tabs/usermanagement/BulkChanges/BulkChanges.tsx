@@ -26,7 +26,7 @@ import {
   ExportOptionsButton
 } from "./ExportButtons";
 import { ProcessingModal } from "./Processing";
-import { checkIfBulkAdmin } from "authentication";
+import { checkIfBulkAdmin } from "authentication/authUtils";
 import { Dropdown } from "components";
 import { useAdminState } from "context";
 import React from "react";

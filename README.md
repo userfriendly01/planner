@@ -83,7 +83,7 @@ to the [TIPS readme file](./documentation/TIPS.md)
 
 #### Authentication
 
-This app uses PING and Azure authentication in a deployed state when `NODE_ENV=production`.
+This app uses Azure authentication in a deployed state when `NODE_ENV=production`.
 When running locally you should have `NODE_ENV=development` and the application will simply bypass 
 the authentication middleware in the `cicct-softphone-service` application.
 

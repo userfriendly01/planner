@@ -41,8 +41,6 @@ jest.mock("@datadog/browser-logs", () => ({
   }
 }));
 
-jest.mock("authentication");
-
 jest.mock("utils/logger", () => ({
   logger: {
     log: jest.fn(),

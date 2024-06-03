@@ -25,7 +25,7 @@ import {
 } from "testUtils";
 import { ActionTypes } from "../../Skills.Interfaces";
 import { Dropdown } from "components";
-import { getSkills } from "authentication";
+import { getSkills } from "authentication/startups/cct-triton-admin-startup";
 
 jest.mock("context", () => ({
   useAdminDispatch: jest.fn(),
@@ -36,7 +36,7 @@ jest.mock("components", () => ({
   Dropdown: jest.fn()
 }));
 
-jest.mock("authentication", () => ({
+jest.mock("authentication/startups/cct-triton-admin-startup", () => ({
   getSkills: jest.fn()
 }));
 

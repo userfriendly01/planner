@@ -1,4 +1,4 @@
-import { getStartupProfiles } from "authentication";
+import { getStartupProfiles } from "authentication/authenticationProfiles";
 
 export const runAlohaFlowStartup = (dispatch: any) => {
   /* Please add new service calls to the end of this Promise.all,

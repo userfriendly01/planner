@@ -1,7 +1,7 @@
 import { CalabrioGroup } from "../components/tabs/usermanagement/OnboardNewUser/CallRecording/CallRecording.Interfaces";
 import {
   AuthenticationProfile, Permissions
-} from "authentication";
+} from "authentication/authenticationInterfaces";
 
 export interface Action {
   type: string,
