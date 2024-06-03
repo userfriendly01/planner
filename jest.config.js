@@ -1,6 +1,8 @@
 // For a detailed explanation regarding each configuration property, visit:
 // https://jestjs.io/docs/en/configuration.html
 
+const { getJestConfigPaths } = require("./pathConfig");
+
 const jestConfig = {
   coveragePathIgnorePatterns: [
     "<rootDir>/__test__",
@@ -27,21 +29,9 @@ const jestConfig = {
   moduleNameMapper: {
     // to understand our module paths (ex: files in /src reference other files simply by using 'src/components')
     "^src/(.*)": "<rootDir>/src/$1",
-    "^authentication/(.*)": "<rootDir>/src/authentication/$1",
-    "^authentication$": "<rootDir>/src/authentication",
-    "^components/(.*)": "<rootDir>/src/components/$1",
-    "^components$": "<rootDir>/src/components",
-    "^context/(.*)": "<rootDir>/src/context/$1",
-    "^context$": "<rootDir>/src/context",
-    "^globals$": "<rootDir>/src/globals",
-    "^globals/(.*)": "<rootDir>/src/globals/$1",
-    "^icons/(.*)": "<rootDir>/src/assets/icons/$1",
-    "^services$": "<rootDir>/src/services",
-    "^services/(.*)": "<rootDir>/src/services/$1",
     "^testUtils$": "<rootDir>/__test__/index",
-    "^utils$": "<rootDir>/src/utils",
-    "^utils/(.*)": "<rootDir>/src/utils/$1",
-    "\\.(css|less|scss)$": "<rootDir>/__test__/styleMock.js"
+    "\\.(css|less|scss)$": "<rootDir>/__test__/styleMock.js",
+    ...getJestConfigPaths()
   },
   setupFilesAfterEnv: ["<rootDir>/jestSetup.js"],
   testMatch: [

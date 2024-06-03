@@ -2,8 +2,8 @@ import * as XLSX from "xlsx";
 import { flowFields } from "../../tabs/alohaFlow/CustomActions/FlowFieldsConfig";
 import { flowFields as dynamicFlowFields } from "../../tabs/dynamicFlow/CustomActions/FlowFieldsConfig";
 import { routingFields } from "utils";
-import { AddPageFieldConfigProps as AddRoutingFieldConfigProps } from "components";
-import { AddFlowFieldsConfigProps } from "components";
+import { AddPageFieldConfigProps as AddRoutingFieldConfigProps } from "alohaRouting/AlohaRouting.Interfaces";
+import { AddFlowFieldsConfigProps } from "alohaFlow/AlohaFlow.Interfaces";
 import {
   ActionPreview,
   AddDynamicFlowFieldsConfigProps,

@@ -105,7 +105,7 @@ const StyledCloseRounded = styled(CloseRounded)`
   }
 `;
 
-const ModalOverlay = props => {
+export const ModalOverlay = props => {
   const {
     message,
     handleClose,
@@ -190,5 +190,3 @@ ModalOverlay.propTypes = {
   handleClose: PropTypes.func,
   status: PropTypes.oneOf(Object.values(ModalOverlayStatuses)).isRequired
 };
-
-export default ModalOverlay;

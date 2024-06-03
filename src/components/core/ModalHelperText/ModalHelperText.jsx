@@ -34,7 +34,7 @@ const Text = styled.div`
   margin: 20px;
 `;
 
-const ModalHelperText = props => {
+export const ModalHelperText = props => {
   const {
     clearFunction,
     message,
@@ -54,5 +54,3 @@ ModalHelperText.propTypes = {
   error: PropTypes.bool,
   message: PropTypes.string
 };
-
-export default ModalHelperText;

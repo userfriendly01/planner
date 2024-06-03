@@ -1,3 +1,4 @@
+
 {
   "compilerOptions": {
     "allowJs": true,
@@ -8,15 +9,58 @@
     "noImplicitAny": true,
     "outDir": "./dist/",
     "paths": {
-      "authentication*": ["./authentication*"],
-      "components": ["./components/index.js"],
-      "context": ["./context/index.js"],
-      "globals": ["./globals/index.js"],
-      "services": ["./services/index.js"],
-      "icons/*": ["./assets/icons/*"],
-      "testUtils": ["../__test__/index.js"],
-      "utils": ["./utils/index.js"]
-    },
+      "alohaFlow*":[
+         "./components/tabs/alohaFlow*"
+      ],
+      "alohaRouting*":[
+         "./components/tabs/alohaRouting*"
+      ],
+      "authentication*":[
+         "./authentication*"
+      ],
+      "callflowmanagement*":[
+         "./components/tabs/callflowmanagement*"
+      ],
+      "components*":[
+         "./components*",
+         "./components/core*",
+         "./components/core/ModalFetchingRing*"
+      ],
+      "context*":[
+         "./context*"
+      ],
+      "dynamicFlow*":[
+         "./components/tabs/dynamicFlow*"
+      ],
+      "globals*":[
+         "./globals*",
+         "./globals/interfaces*",
+         "./globals/graphql*",
+         "./globals/index*",
+         "./globals/routes*",
+         "./globals/styles*",
+         "./globals/theme*"
+      ],
+      "icons*":[
+         "./assets/icons*"
+      ],
+      "orgmanagement*":[
+         "./components/tabs/orgmanagement*"
+      ],
+      "services*":[
+         "./services*"
+      ],
+      "testUtils":[
+         "../__test__/index.js"
+      ],
+      "usermanagement*":[
+         "./components/tabs/usermanagement*",
+         "./components/tabs/usermanagement/TritonUsersView/TritonUsersViewWrapper*"
+      ],
+      "utils*":[
+         "./utils*"
+      ]
+   },
     "sourceMap": true,
     "target": "ES2017",
     "module": "es2022",

@@ -7,12 +7,10 @@ import {
 import { runTritonAdminStartup } from "authentication/startups/cct-triton-admin-startup";
 import { runAlohaRoutingStartup } from "authentication/startups/cct-aloha-routing-startup";
 import { runAlohaFlowStartup } from "authentication/startups/cct-aloha-flow-startup";
-import {
-  AlohaFlowContainer,
-  AlohaRoutingContainer,
-  TritonUsersViewWrapper
-} from "components";
-import { ADGroupPermission } from "globals";
+import AlohaFlowContainer from "alohaFlow/AlohaFlowContainer";
+import AlohaRoutingContainer from "alohaRouting/AlohaRoutingContainer";
+import TritonUsersViewWrapper from "usermanagement/TritonUsersViewWrapper";
+import { ADGroupPermission } from "globals/interfaces";
 
 export const getAuthenticationProfileTemplates = (): AuthenticationProfileOptions => {
   const Tabs = getTabs();

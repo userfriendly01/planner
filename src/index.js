@@ -1,5 +1,5 @@
 import { App } from "components";
-import { SharedGraphAPIProvider } from "./components/core/Auth/SharedGraphAPIProvider";
+import { SharedGraphAPIProvider } from "components/core/Auth/SharedGraphAPIProvider";
 import {
   StateProvider,
   FormStateProvider

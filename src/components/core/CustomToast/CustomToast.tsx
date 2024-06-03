@@ -26,7 +26,7 @@ export interface CustomToastProps {
   duration?: number
 }
 
-export default ({
+export const CustomToast = ({
   open,
   onClose,
   msg,
