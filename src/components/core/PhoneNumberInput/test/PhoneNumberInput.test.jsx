@@ -1,4 +1,4 @@
-import PhoneNumberInput from "../PhoneNumberInput";
+import { PhoneNumberInput } from "../PhoneNumberInput";
 import MaskedInput from "react-text-mask";
 import React from "react";
 import {
@@ -25,14 +25,8 @@ jest.mock("react-text-mask", () => ({
 }));
 
 jest.mock("@mui/material", () => ({
-  Divider: jest.fn(),
   Switch: jest.fn(),
-  TextField: jest.fn(),
-  Button: jest.fn(),
-  Tabs: jest.fn(),
-  Tab: jest.fn(),
-  Paper: jest.fn(),
-  Checkbox: jest.fn()
+  TextField: jest.fn()
 }));
 
 jest.mock("utils/formatNumberUtils", () => ({

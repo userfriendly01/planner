@@ -4,20 +4,16 @@ import {
   SkillsTableWrapper,
   SkillsWrapper
 } from "../Skills.Styles";
-import {
-  SkillsHeader,
-  SkillsTable
-} from "components";
+import { SkillsTable } from "callflowmanagement/SkillsTable";
+import { SkillsHeader } from "callflowmanagement/SkillsHeader";
 import {
   SkillFormStateProvider
-} from "context";
-import {
-  getTaskQueues,
-  getApplications,
-  getTimeOfDays
-} from "services";
+} from "context/appContext";
+import { getTimeOfDays } from "services/timeOfDays";
+import { getTaskQueues } from "services/taskQueues";
+import { getApplications } from "services/applications";
 
-const SkillsContainer = (props: SkillsContainerProps) => {
+export const SkillsContainer = (props: SkillsContainerProps) => {
 
   const {
     tableState,
@@ -70,6 +66,3 @@ const SkillsContainer = (props: SkillsContainerProps) => {
     </SkillFormStateProvider>
   );
 };
-
-export default SkillsContainer;
-

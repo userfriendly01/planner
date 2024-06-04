@@ -1,5 +1,5 @@
 import { ClearRounded } from "@mui/icons-material";
-import SearchBox from "../SearchBox";
+import { SearchBox } from "../SearchBox";
 import React from "react";
 import { act } from "react-dom/test-utils";
 import {

@@ -4,7 +4,7 @@ import {
   render,
   act
 } from "testUtils";
-import ComponentControl from "../ComponentControl";
+import { ComponentControl } from "../ComponentControl";
 
 jest.mock("globals/interfaces", () => ({
   Control: jest.fn()

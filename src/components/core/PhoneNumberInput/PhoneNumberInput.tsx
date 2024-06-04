@@ -78,7 +78,7 @@ export interface PhoneNumberInputProps {
   icon?: JSX.Element
 }
 
-const PhoneNumberInput = (props: PhoneNumberInputProps) => {
+export const PhoneNumberInput = (props: PhoneNumberInputProps) => {
   const {
     allowSevenDigitVdn,
     disabled = false,
@@ -158,5 +158,3 @@ const PhoneNumberInput = (props: PhoneNumberInputProps) => {
     return textField;
   }
 };
-
-export default PhoneNumberInput;

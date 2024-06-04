@@ -1,5 +1,5 @@
 import * as React from "react";
-import { SaveButton } from "components";
+import { SaveButton } from "callflowmanagement/SaveButton";
 import { MessageContainerProps } from "../ClosedFlashMessage.Interfaces";
 import {
   MessageContainerWrapper,
@@ -8,7 +8,7 @@ import {
 } from "../ClosedFlashMessage.Styles";
 import { ActionTypes } from "../../Skills.Interfaces";
 
-const MessageContainer = (props: MessageContainerProps) => {
+export const MessageContainer = (props: MessageContainerProps) => {
   const {
     action,
     confirmationModalOpts,
@@ -60,5 +60,3 @@ const MessageContainer = (props: MessageContainerProps) => {
     </MessageContainerWrapper>
   );
 };
-
-export default MessageContainer;

@@ -10,13 +10,14 @@ import {
 } from "../Skills.Styles";
 import { SkillsTableProps } from "../Skills.Interfaces";
 import { messageTypes } from "../ClosedFlashMessage/ClosedFlashMessage.Interfaces";
-import { Checkbox } from "@mui/material";
 import { Circle } from "@mui/icons-material";
-import { Tooltip } from "@mui/material";
-import { Skill } from "globals";
+import {
+  Checkbox, Tooltip
+} from "@mui/material";
+import { Skill } from "globals/interfaces";
 import React, { ReactElement } from "react";
 
-const SkillsTable = (props: SkillsTableProps) => {
+export const SkillsTable = (props: SkillsTableProps) => {
   const {
     tableState,
     setTableState
@@ -140,5 +141,3 @@ const SkillsTable = (props: SkillsTableProps) => {
     </TableContainer>
   );
 };
-
-export default SkillsTable;

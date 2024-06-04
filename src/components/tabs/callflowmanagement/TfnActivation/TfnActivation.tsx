@@ -8,23 +8,17 @@ import {
 } from "./TfnActivation.Styles";
 import { TfnActivationProps } from "./TfnActivation.Interfaces";
 import React from "react";
-import {
-  Dropdown,
-  PhoneNumberInput
-} from "components";
-import { useAdminState } from "context";
+import { Dropdown } from "components/Dropdown";
+import { PhoneNumberInput } from "components/PhoneNumberInput";
+import { useAdminState } from "context/appContext";
 import {
   getTfn,
   updateTfn
-} from "services";
-import {
-  ModalOverlayStatuses,
-  timeouts
-} from "globals";
+} from "services/tfnActivation";
+import { ModalOverlayStatuses } from "globals/interfaces";
+import { timeouts } from "globals/index";
 import { InputAdornment } from "@mui/material";
-import { logger } from "utils";
-
-
+import { logger } from "utils/logger";
 
 export const TfnActivation = (props: TfnActivationProps) => {
   const {

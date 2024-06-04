@@ -1,15 +1,13 @@
-import TfnActivation from "../TfnActivation";
-import {
-  Dropdown,
-  PhoneNumberInput,
-  StyledButton
-} from "components";
-import { useAdminState } from "context";
+import { TfnActivation } from "../TfnActivation";
+import { StyledButton } from "components/StyledButton";
+import { Dropdown } from "components/Dropdown";
+import { PhoneNumberInput } from "components/PhoneNumberInput";
+import { useAdminState } from "context/appContext";
 import React from "react";
 import {
   getTfn,
   updateTfn
-} from "services";
+} from "services/tfnActivation";
 import {
   act,
   expectOnlyPassedProps,
@@ -21,7 +19,7 @@ import {
 } from "testUtils";
 import { Close } from "@mui/icons-material";
 import { TextField } from "@mui/material";
-import { logger } from "utils";
+import { logger } from "utils/logger";
 
 jest.mock("@mui/material", () => ({
   TextField: jest.fn(),
@@ -32,14 +30,25 @@ jest.mock("@mui/icons-material", () => ({
   Close: jest.fn()
 }));
 
-jest.mock("components", () => ({
-  Dropdown: jest.fn(),
-  PhoneNumberInput: jest.fn(),
+jest.mock("components/Dropdown", () => ({
+  Dropdown: jest.fn()
+}));
+
+jest.mock("components/PhoneNumberInput", () => ({
+  PhoneNumberInput: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
+}));
+
+jest.mock("services/tfnActivation", () => ({
+  getTfn: jest.fn(),
+  updateTfn: jest.fn()
 }));
 
 jest.useFakeTimers();

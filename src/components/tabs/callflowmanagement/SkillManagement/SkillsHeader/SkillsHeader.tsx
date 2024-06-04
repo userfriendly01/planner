@@ -1,18 +1,15 @@
-import {
-  Dropdown,
-  ExportButton,
-  SkillEntryButton
-} from "components";
+import { Dropdown } from "components/Dropdown";
+import { ExportButton } from "callflowmanagement/ExportButton";
+import { SkillEntryButton } from "callflowmanagement/SkillEntryButton";
 import { SkillsHeaderProps } from "../Skills.Interfaces";
 import { StyledHeader } from "../Skills.Styles";
-import { SearchBox } from "components";
-import { useAdminState } from "context";
-import {
-  formModes, TritonProfile
-} from "globals";
+import { SearchBox } from "components/SearchBox";
+import { useAdminState } from "context/appContext";
+import { formModes } from "globals/index";
+import { TritonProfile } from "globals/interfaces";
 import React from "react";
 
-const SkillsHeader = (props: SkillsHeaderProps) => {
+export const SkillsHeader = (props: SkillsHeaderProps) => {
 
   const {
     tableState,
@@ -72,6 +69,3 @@ const SkillsHeader = (props: SkillsHeaderProps) => {
     </StyledHeader>
   );
 };
-
-export default SkillsHeader;
-

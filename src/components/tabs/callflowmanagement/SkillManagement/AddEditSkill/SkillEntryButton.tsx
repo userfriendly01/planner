@@ -3,14 +3,14 @@ import { StyledExportButton } from "../Skills.Styles";
 import { Modal } from "@mui/material";
 import React from "react";
 import SkillEntryFormModal from "./SkillEntryFormModal";
-import { formModes } from "globals";
+import { formModes } from "globals/index";
 
 const defaultSaveResult: any = {
   status: null,
   message: null
 };
 
-const SkillEntryButton = (props: any) => {
+export const SkillEntryButton = (props: any) => {
 
   const {
     formMode, taskQueues, applications, timeOfDays, isAdmin
@@ -58,5 +58,3 @@ const SkillEntryButton = (props: any) => {
     </>
   );
 };
-
-export default SkillEntryButton;

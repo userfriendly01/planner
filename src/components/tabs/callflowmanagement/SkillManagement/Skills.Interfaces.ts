@@ -1,6 +1,6 @@
 import {
   Skill
-} from "globals";
+} from "globals/interfaces";
 import { TableState } from "../CallFlowManagementWrapper/CallFlowManagement.Interfaces";
 import { messageTypes } from "../SkillManagement/ClosedFlashMessage/ClosedFlashMessage.Interfaces";
 import {

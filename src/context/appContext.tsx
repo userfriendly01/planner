@@ -1,18 +1,24 @@
 // Our Boy Kent C https://kentcdodds.com/blog/how-to-use-react-context-effectively
 import {
-  initialState,
-  reducer,
-  initialUserFormState,
-  userFormReducer,
   initialProfileEntryFormState,
-  profileEntryFormReducer,
+  profileEntryFormReducer
+} from "context/profileEntryFormReducer";
+import {
+  initialState,
+  reducer
+} from "context/reducer";
+import {
+  initialUserFormState,
+  userFormReducer
+} from "context/userFormReducer";
+import {
   initialSkillFormState,
   skillFormReducer
-} from "context";
+} from "context/skillFormReducer";
 import {
   Action,
   AppState
-} from "globals";
+} from "globals/interfaces";
 import { UserFormState } from "components/tabs/usermanagement/OnboardNewUser/UserEntryFormWrapper/UserEntryFormWrapper.Interfaces";
 import React, { ReactElement } from "react";
 import { ProfileEntryFormState } from "components/tabs/orgmanagement/triton/ProfileEntryForm/ProfileEntryForm.Interfaces";

@@ -1,6 +1,6 @@
 import { Checkbox } from "@mui/material";
 import styled from "styled-components";
-import { StyledButton } from "components";
+import { StyledButton } from "components/StyledButton";
 
 const headerIconWidth = "10px";
 

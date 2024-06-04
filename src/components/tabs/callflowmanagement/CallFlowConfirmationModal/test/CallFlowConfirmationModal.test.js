@@ -1,24 +1,31 @@
 import React from "react";
-import CallFlowConfirmationModal from "../CallFlowConfirmationModal";
-import {
-  ModalOverlay,
-  ExportButton,
-  PaperContainer,
-  StyledButton
-} from "components";
-import { ModalOverlayStatuses } from "globals";
+import { CallFlowConfirmationModal } from "../CallFlowConfirmationModal";
+import { ModalOverlay } from "components/ModalOverlay";
+import { PaperContainer } from "components/PaperContainer";
+import { StyledButton } from "components/StyledButton";
+import ExportButton from "callflowmanagement/ExportButton";
+import { ModalOverlayStatuses } from "globals/interfaces";
 import {
   act,
   render,
   setupMockedComponents
 } from "testUtils";
 
-jest.mock("components", () => ({
-  Divider: jest.fn(),
-  ExportButton: jest.fn(),
-  ModalOverlay: jest.fn(),
-  PaperContainer: jest.fn(),
+jest.mock("components/ModalOverlay", () => ({
+  ModalOverlay: jest.fn()
+}));
+
+jest.mock("components/PaperContainer", () => ({
+  PaperContainer: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
+}));
+
+jest.mock("callflowmanagement/ExportButton", () => ({
+  __esModule: true,
+  default: jest.fn()
 }));
 
 const mockOnConfirm = jest.fn();

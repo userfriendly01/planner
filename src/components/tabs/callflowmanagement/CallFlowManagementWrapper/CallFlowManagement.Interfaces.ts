@@ -1,7 +1,7 @@
 import {
   Skill,
   TritonProfile
-} from "globals";
+} from "globals/interfaces";
 
 export interface SkillProfile {
   profileId: number,

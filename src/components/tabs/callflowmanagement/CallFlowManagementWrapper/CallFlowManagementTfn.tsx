@@ -3,10 +3,8 @@ import {
   ConfirmationModalOptsProps,
   SaveResultProps
 } from "../CallFlowConfirmationModal/CallFlowConfirmationModal.Interfaces";
-import {
-  CallFlowConfirmationModal,
-  TfnActivation
-} from "components";
+import { CallFlowConfirmationModal } from "callflowmanagement/CallFlowConfirmationModal";
+import { TfnActivation } from "callflowmanagement/TfnActivation";
 import React from "react";
 import { Modal } from "@mui/material";
 

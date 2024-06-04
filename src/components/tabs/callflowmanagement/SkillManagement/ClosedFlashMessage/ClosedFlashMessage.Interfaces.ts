@@ -4,11 +4,11 @@ import {
 } from "../../CallFlowConfirmationModal/CallFlowConfirmationModal.Interfaces";
 import { TableState } from "../../CallFlowManagementWrapper/CallFlowManagement.Interfaces";
 import { ActionType } from "../Skills.Interfaces";
-import { Skill } from "globals";
+import { Skill } from "globals/interfaces";
 import {
   updateClosedMessage,
   updateFlashMessage
-} from "services";
+} from "services/message";
 import { AxiosResponse } from "axios";
 export interface MessageContainerProps {
   action: ActionType,

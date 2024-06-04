@@ -1,5 +1,5 @@
-import MessageContainer from "../MessageContainer";
-import { SaveButton } from "components";
+import { MessageContainer } from "../MessageContainer";
+import { SaveButton } from "callflowmanagement/SaveButton";
 import React from "react";
 import {
   act,
@@ -12,12 +12,12 @@ import { TextField } from "../../ClosedFlashMessage.Styles";
 import { messageTypes } from "../../ClosedFlashMessage.Interfaces";
 import { ActionTypes } from "../../../Skills.Interfaces";
 
-jest.mock("components", () => ({
-  MessageBox: jest.fn(),
-  SaveButton: jest.fn(),
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
 }));
-
+jest.mock("callflowmanagement/SaveButton", () => ({
+  SaveButton: jest.fn()
+}));
 
 jest.mock("../../ClosedFlashMessage.Styles", () => ({
   MessageContainerWrapper: jest.requireActual("../../ClosedFlashMessage.Styles").MessageContainerWrapper,

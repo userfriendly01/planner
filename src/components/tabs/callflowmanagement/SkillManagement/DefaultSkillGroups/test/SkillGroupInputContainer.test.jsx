@@ -1,18 +1,18 @@
 import React from "react";
-import SkillGroupInputContainer from "../SkillGroupInputContainer";
+import { SkillGroupInputContainer } from "../SkillGroupInputContainer";
 import {
   UserFormButton
 } from "../../ClosedFlashMessage/ClosedFlashMessage.Styles";
 import {
   useAdminState,
   useAdminDispatch
-} from "context";
+} from "context/appContext";
 import { TextField } from "@mui/material";
 import {
   addSkillGroup,
   deleteSkillGroup,
   updateSkillGroup
-} from "services";
+} from "services/skillgroup";
 import {
   initialTestState,
   render,
@@ -24,15 +24,15 @@ import {
   getMockedComponentProps
 } from "testUtils";
 import { ActionTypes } from "../../Skills.Interfaces";
-import { Dropdown } from "components";
+import { Dropdown } from "components/Dropdown";
 import { getSkills } from "authentication/startups/cct-triton-admin-startup";
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminDispatch: jest.fn(),
   useAdminState: jest.fn()
 }));
 
-jest.mock("components", () => ({
+jest.mock("components/Dropdown", () => ({
   Dropdown: jest.fn()
 }));
 
@@ -45,12 +45,7 @@ jest.mock("../../ClosedFlashMessage/ClosedFlashMessage.Styles", () => ({
 }));
 
 jest.mock("@mui/material", () => ({
-  TextField: jest.fn(),
-  Button: jest.fn(),
-  Paper: jest.fn(),
-  Divider: jest.fn(),
-  Tabs: jest.fn(),
-  Checkbox: jest.fn()
+  TextField: jest.fn()
 }));
 
 jest.mock("@mui/x-date-pickers/TimePicker", () => ({
@@ -63,7 +58,7 @@ jest.mock("@mui/x-data-grid", () => ({
   GridToolbar: jest.fn()
 }));
 
-jest.mock("services", () => ({
+jest.mock("services/skillgroup", () => ({
   addSkillGroup: jest.fn(),
   deleteSkillGroup: jest.fn(),
   updateSkillGroup: jest.fn()

@@ -1,6 +1,6 @@
-import ExportButton from "../ExportButton";
+import { ExportButton } from "../ExportButton";
 import React from "react";
-import { StyledButton } from "components";
+import { StyledButton } from "components/StyledButton";
 import {
   act,
   render,
@@ -9,7 +9,7 @@ import {
 } from "testUtils";
 import { ExcelExport } from "@progress/kendo-react-excel-export";
 
-jest.mock("components", () => ({
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
 }));
 
