@@ -15,10 +15,13 @@ import {
   Modal,ModalHeader, ModalBody, ModalFooter
 } from "@lmig/lmds-react-modal";
 import "./PreviewModal.css";
-import { Box } from "@mui/material";
+import {
+  Box, Typography
+} from "@mui/material";
 import  TableGridColumnDef  from "./TableColumnDef";
 import { logger } from "utils";
 import { reconstructTableColumnDef } from "./PreviewUtil";
+import { Text } from "../../usermanagement/OnboardNewUser/CallRecording/CallRecording.Styles";
 
 interface PreviewModalProps {
     isOpen: boolean;
@@ -188,9 +191,20 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
       </ModalBody>
       <ModalFooter>
         <Box sx={{
+          color: "red",
+          display: "flex",
+          justifyContent: "center",
+          marginBottom: "15px"
+        }}>
+          {action==="delete" &&
+                  <Text>Are you sure you want to permanently remove these items?</Text>
+          }
+        </Box>
+        <Box sx={{
           display: "flex",
           justifyContent: "center"
         }}>
+
           {action==="delete" &&
                   <StyledButton sx={{ marginRight: "15px" }} onClick={() =>{ handleOnDelete(); }}>Delete</StyledButton>
           }
@@ -198,7 +212,9 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
             <StyledButton sx={{ marginRight: "15px" }} onClick={()=>handleOnCreate()}>Save</StyledButton>
           }
           <StyledButton onClick={()=>{ handleOnClose(); }}>Cancel</StyledButton>
+
         </Box>
+
       </ModalFooter>
     </Modal>
   );
