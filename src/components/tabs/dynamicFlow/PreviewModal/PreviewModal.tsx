@@ -200,7 +200,6 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
                   <Text>Are you sure you want to permanently remove these items?</Text>
           }
         </Box>
-        <div></div>
         <Box sx={{
           display: "flex",
           justifyContent: "center"
