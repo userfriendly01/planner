@@ -15,7 +15,9 @@ import {
   Modal,ModalHeader, ModalBody, ModalFooter
 } from "@lmig/lmds-react-modal";
 import "./PreviewModal.css";
-import { Box } from "@mui/material";
+import {
+  Box, Typography
+} from "@mui/material";
 import  TableGridColumnDef  from "./TableColumnDef";
 import { logger } from "utils";
 import { reconstructTableColumnDef } from "./PreviewUtil";
@@ -190,6 +192,15 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
       <ModalFooter>
         <Box sx={{
           display: "flex",
+          justifyContent: "left"
+        }}>
+          {action==="delete" &&
+                  <Typography color="red.hot">Are you sure? You will spend the next few days reverting your junk</Typography>
+          }
+
+        </Box>
+        <Box sx={{
+          display: "flex",
           justifyContent: "center"
         }}>
 
@@ -202,14 +213,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
           <StyledButton onClick={()=>{ handleOnClose(); }}>Cancel</StyledButton>
 
         </Box>
-        <Box sx={{
-          display: "flex",
-          justifyContent: "left"
-        }}>
-          {action==="delete" &&
-                  <Text color={"RED"}>Are you sure? You will spend the next few days reverting your junk</Text>
-          }
-        </Box>
+
       </ModalFooter>
     </Modal>
   );
