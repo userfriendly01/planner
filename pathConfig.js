@@ -15,6 +15,7 @@ const paths = [
       "components/core/CustomToast",
       "components/core/CustomDropdown",
       "components/core/CustomInput",
+      "components/core/CSVReader",
       "components/core/ExportButton",
       "components/core/ModalFetchingRing",
       "components/core/ModalHelperText",

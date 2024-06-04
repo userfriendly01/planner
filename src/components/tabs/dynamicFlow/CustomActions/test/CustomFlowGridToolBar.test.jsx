@@ -14,10 +14,9 @@ import {
 } from "testUtils";
 import { CustomFlowGridToolBar } from "../CustomFlowGridToolBar";
 import React from "react";
-import { useAdminState } from "context";
+import { useAdminState } from "context/appContext";
 
 jest.mock("@mui/material", () => ({
-  __esModule: true,
   FormControl: jest.fn(),
   Grid: jest.fn(),
   InputLabel: jest.fn(),
@@ -27,11 +26,11 @@ jest.mock("@mui/material", () => ({
   Tooltip: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
 }));
 
-jest.mock("utils", () => ({
+jest.mock("utils/configUtils", () => ({
   readWriteAccess: jest.fn()
 }));
 

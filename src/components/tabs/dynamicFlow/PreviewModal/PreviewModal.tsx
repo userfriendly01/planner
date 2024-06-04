@@ -1,9 +1,8 @@
 import React, {
   useMemo, useState, useEffect
 } from "react";
-import {
-  CsvReader, StyledButton
-} from "components";
+import { CsvReader } from "components/CsvReader";
+import { StyledButton } from "components/StyledButton";
 import {
   DataGrid, GridColDef, useGridApiRef
 } from "@mui/x-data-grid";
@@ -17,7 +16,7 @@ import {
 import "./PreviewModal.css";
 import { Box } from "@mui/material";
 import  TableGridColumnDef  from "./TableColumnDef";
-import { logger } from "utils";
+import { logger } from "utils/logger";
 import { reconstructTableColumnDef } from "./PreviewUtil";
 
 interface PreviewModalProps {

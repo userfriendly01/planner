@@ -1,7 +1,7 @@
 import React, {
   useEffect, useState
 } from "react";
-import { AzureSPA } from "globals";
+import { AzureSPA } from "globals/interfaces";
 import { CustomFlowGridToolBar } from "../CustomActions/CustomFlowGridToolBar";
 import {
   DynamicAction, DynamicFlowStateVariables,
@@ -14,18 +14,18 @@ import {
   downloadCSV,
   EXPORT_FILE_PREFIX,
   initializedAlertBar
-} from "utils";
+} from "utils/configUtils";
 import { PreviewModal } from "../PreviewModal/PreviewModal";
 import {
   batchDynamicFlowCreate,
   queryDynamicFlowData
-} from "services";
+} from "services/flowTableService";
 import { getDynamicGridMasterData } from "./DynamicGridMaster";
 import {
   DataGrid, useGridApiRef
 } from "@mui/x-data-grid";
 import DynamicFlowGridColumnDef from "./DynamicGridColumnDef";
-import { CustomToast } from "components";
+import { CustomToast } from "components/CustomToast";
 
 
 const DataGridFlow = (props: AzureSPA): JSX.Element => {

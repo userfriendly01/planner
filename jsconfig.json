@@ -33,6 +33,7 @@
          "./components/core/ModalHelperText*",
          "./components/core/ModalFetchingRing*",
          "./components/core/CustomDropdown*",
+         "./components/core/CSVReader*",
          "./components/core/SearchBox*",
          "./components/core/SharedComponents*",
          "./components/core/CustomToast*",

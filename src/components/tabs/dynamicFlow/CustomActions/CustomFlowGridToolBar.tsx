@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import {
   readWriteAccess
-} from "utils";
+} from "utils/configUtils";
 import {
   PreviewModalAction
 } from "../DynamicFlow.Interfaces";
