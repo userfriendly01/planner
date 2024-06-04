@@ -3,16 +3,15 @@ import {
   Role,
   Permission
 } from "../CalabrioRolesWrapper.Styles";
-import { useAdminState } from "context";
+import { useAdminState } from "context/appContext";
 import React from "react";
-import { sortCalabrioObject } from "utils";
+import { sortCalabrioObject } from "utils/sortUtils";
 import {
   act,
   initialTestState,
   expectOnlyPassedProps,
   render,
-  setupMockedComponents,
-  waitFor
+  setupMockedComponents
 } from "testUtils";
 import { Divider } from "@mui/material";
 
@@ -22,11 +21,11 @@ jest.mock("../CalabrioRolesWrapper.Styles", () => ({
   Permission: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
 }));
 
-jest.mock("utils", () => ({
+jest.mock("utils/sortUtils", () => ({
   sortCalabrioObject: jest.fn()
 }));
 
@@ -83,7 +82,7 @@ describe("CalabrioOrgWrapper", () => {
       expect(Role.mock.calls.length).toBe(5);
       expect(Permission.mock.calls.length).toBe(1);
       const onClick = Role.mock.calls[1][0].onClick;
-      act(() => onClick())
+      act(() => onClick());
       expect(Role.mock.calls[6][0].selected).toBe(true);
       expect(Permission.mock.calls.length).toBe(3);
       expect(Permission.mock.calls[1][0].children).toBe("permission 2");

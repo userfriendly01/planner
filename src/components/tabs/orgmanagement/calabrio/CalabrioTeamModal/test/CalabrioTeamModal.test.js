@@ -1,18 +1,16 @@
 import CalabrioTeamModal from "../CalabrioTeamModal";
 import { CloseButton } from "../CalabrioTeamModal.Styles";
 import { TextField } from "@mui/material";
-import {
-  Dropdown,
-  ModalOverlay,
-  PaperContainer,
-  StyledButton
-} from "components";
+import { Dropdown } from "components/Dropdown";
+import { PaperContainer } from "components/PaperContainer";
+import { StyledButton } from "components/StyledButton";
+import { ModalOverlay } from "components/ModalOverlay";
 import {
   useAdminState,
   useAdminDispatch
-} from "context";
+} from "context/appContext";
 import React from "react";
-import { createCalabrioTeam } from "services";
+import { createCalabrioTeam } from "services/calabrio";
 import {
   act,
   initialTestState,
@@ -22,17 +20,29 @@ import {
   waitFor
 } from "testUtils";
 
-jest.mock("components", () => ({
-  __esModule: true,
-  Dropdown: jest.fn(),
-  PaperContainer: jest.fn(),
-  StyledButton: jest.fn(),
+jest.mock("components/Dropdown", () => ({
+  Dropdown: jest.fn()
+}));
+
+jest.mock("components/PaperContainer", () => ({
+  PaperContainer: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
+  StyledButton: jest.fn()
+}));
+
+jest.mock("components/ModalOverlay", () => ({
   ModalOverlay: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn(),
   useAdminDispatch: jest.fn()
+}));
+
+jest.mock("services/calabrio", () => ({
+  createCalabrioTeam: jest.fn()
 }));
 
 jest.mock("@mui/material", () => ({

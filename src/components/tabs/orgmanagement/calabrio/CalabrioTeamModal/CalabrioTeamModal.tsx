@@ -5,24 +5,21 @@ import {
   ModalContainer
 } from "./CalabrioTeamModal.Styles";
 import { TextField } from "@mui/material";
-import {
-  Dropdown,
-  PaperContainer,
-  StyledButton,
-  ModalOverlay
-} from "components";
+import { Dropdown } from "components/Dropdown";
+import { PaperContainer } from "components/PaperContainer";
+import { StyledButton } from "components/StyledButton";
+import { ModalOverlay } from "components/ModalOverlay";
 import {
   useAdminDispatch,
   useAdminState
-} from "context";
-import {
-  FlexColumn,
-  ModalOverlayStatuses,
-  timeouts
-} from "globals";
+} from "context/appContext";
+import { FlexColumn } from "globals/styles";
+import { ModalOverlayStatuses } from "globals/interfaces";
+import { timeouts } from "globals/index";
 import React, { useState } from "react";
-import { createCalabrioTeam } from "services";
-import { logger } from "utils";
+import { createCalabrioTeam } from "services/calabrio";
+import { logger } from "utils/logger";
+
 export interface TeamModalProps {
   handleClose: (res: any) => void
 }

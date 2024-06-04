@@ -65,14 +65,27 @@ const paths = [
   {
     alias: "orgmanagement",
     paths: [
-      "components/tabs/orgmanagement"
+      "components/tabs/orgmanagement",
+      "components/tabs/orgmanagement/calabrio/CalabrioOrgWrapper",
+      "components/tabs/orgmanagement/calabrio/CalabrioRolesWrapper",
+      "components/tabs/orgmanagement/calabrio/CalabrioTeamModal",
+      "components/tabs/orgmanagement/triton/DialListEntryForm",
+      "components/tabs/orgmanagement/triton/DialListTable",
+      "components/tabs/orgmanagement/triton/Directory",
+      "components/tabs/orgmanagement/triton/DirectoryEntryForm",
+      "components/tabs/orgmanagement/triton/PhoneNumberTable",
+      "components/tabs/orgmanagement/triton/ProfileDropDown",
+      "components/tabs/orgmanagement/triton/ProfileEntryForm",
+      "components/tabs/orgmanagement/triton/ProfileSettingsContainer",
+      "components/tabs/orgmanagement/triton/ProfileSettingsTable"
     ]
   },
   {
     alias: "usermanagement",
     paths: [
       "components/tabs/usermanagement",
-      "components/tabs/usermanagement/TritonUsersView/TritonUsersViewWrapper"
+      "components/tabs/usermanagement/TritonUsersView/TritonUsersViewWrapper",
+      "components/tabs/usermanagement/OnboardNewUser/CallRecording"
     ]
   },
   {

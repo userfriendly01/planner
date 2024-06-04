@@ -1,7 +1,7 @@
 import {
   FlexColumn,
   FlexRow
-} from "globals";
+} from "globals/styles";
 import styled from "styled-components";
 import { CloseRounded } from "@mui/icons-material";
 

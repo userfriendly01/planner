@@ -3,9 +3,9 @@ import {
   Group,
   Team
 } from "../CalabrioOrgWrapper.Styles";
-import { useAdminState } from "context";
+import { useAdminState } from "context/appContext";
 import React from "react";
-import { sortCalabrioObject } from "utils";
+import { sortCalabrioObject } from "utils/sortUtils";
 import {
   act,
   initialTestState,
@@ -21,11 +21,11 @@ jest.mock("../CalabrioOrgWrapper.Styles", () => ({
   Team: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
 }));
 
-jest.mock("utils", () => ({
+jest.mock("utils/sortUtils", () => ({
   sortCalabrioObject: jest.fn()
 }));
 
@@ -74,7 +74,7 @@ describe("CalabrioOrgWrapper", () => {
       expect(Group.mock.calls.length).toBe(3);
       expect(Team.mock.calls.length).toBe(2);
       const onClick = Group.mock.calls[1][0].onClick;
-      act(() => onClick())
+      act(() => onClick());
       expect(Group.mock.calls[4][0].selected).toBe(true);
       expect(Team.mock.calls.length).toBe(3);
       expect(Team.mock.calls[2][0].children).toBe("FNOL Team");
