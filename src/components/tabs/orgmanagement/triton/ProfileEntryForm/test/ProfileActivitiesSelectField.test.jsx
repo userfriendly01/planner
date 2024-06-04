@@ -1,12 +1,12 @@
-import ProfileActivitiesSelectField from "../ProfileActivitiesSelectField";
+import { ProfileActivitiesSelectField } from "../ProfileActivitiesSelectField";
 import {
   Add,
   Delete
 } from "@mui/icons-material";
 import MockAdapter from "axios-mock-adapter";
-import { Dropdown } from "components";
+import { Dropdown } from "components/Dropdown";
 import React from "react";
-import { myAxios } from "utils";
+import { myAxios } from "utils/myAxios";
 import {
   expectMockedComponent,
   render,
@@ -17,27 +17,25 @@ import {
   mockActivities
 } from "testUtils";
 import { ThemeProvider } from "styled-components";
-import {
-  apiPaths,
-  theme
-} from "globals";
+import { apiPaths } from "globals/index";
+import { theme } from "globals/theme";
 import { Tooltip } from "@mui/material";
 import { act } from "react-dom/test-utils";
 
 jest.mock("@mui/icons-material", () => ({
-  __esModule: true,
   Add: jest.fn(),
   Delete: jest.fn()
 }));
 
 jest.mock("@mui/material", () => ({
-  __esModule: true,
   Tooltip: jest.fn()
 }));
 
-jest.mock("components", () => ({
-  __esModule: true,
-  Dropdown: jest.fn(),
+jest.mock("components/Dropdown", () => ({
+  Dropdown: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
 }));
 

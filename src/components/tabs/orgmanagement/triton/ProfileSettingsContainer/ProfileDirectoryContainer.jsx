@@ -1,15 +1,11 @@
-import {
-  Directory,
-  ProfileDropDown
-} from "components";
-import { useAdminState } from "context";
-import { apiPaths } from "globals";
+import { Directory } from "orgmanagement/Directory";
+import { ProfileDropDown } from "orgmanagement/ProfileDropDown";
+import { useAdminState } from "context/appContext";
+import { apiPaths } from "globals/index";
 import React, { useState } from "react";
-import {
-  logger,
-  myAxios,
-  sortDirectoryListEntriesByName
-} from "utils";
+import { logger } from "utils/logger";
+import { myAxios } from "utils/myAxios";
+import { sortDirectoryListEntriesByName } from "utils/sortUtils";
 import {
   ProfileSettingsContainerDiv,
   ProfileSettingsMessage

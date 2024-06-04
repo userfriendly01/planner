@@ -1,13 +1,11 @@
-import ProfileSettingsContainer from "../ProfileSettingsContainer";
+import { ProfileSettingsContainer } from "../ProfileSettingsContainer";
 import { checkIfPO } from "authentication/authUtils";
 import MockAdapter from "axios-mock-adapter";
-import {
-  ProfileSettingsTable,
-  StyledButton,
-  ProfileEntryForm
-} from "components";
+import { StyledButton } from "components/StyledButton";
+import { ProfileSettingsTable } from "orgmanagement/ProfileSettingsTable";
+import { ProfileEntryForm } from "orgmanagement/ProfileEntryForm";
 import { Modal } from "@mui/material";
-import { useAdminState } from "context";
+import { useAdminState } from "context/appContext";
 import React from "react";
 import { act } from "react-dom/test-utils";
 import {
@@ -16,20 +14,32 @@ import {
   setupMockedComponents,
   initialTestState as initialState
 } from "testUtils";
-import { myAxios } from "utils";
+import { myAxios } from "utils/myAxios";
 
 const axiosMock = new MockAdapter(myAxios);
 
-jest.mock("components", () => ({
-  __esModule: true,
-  ProfileSettingsTable: jest.fn(),
-  StyledButton: jest.fn(),
+jest.mock("components/StyledButton", () => ({
+  StyledButton: jest.fn()
+}));
+
+jest.mock("orgmanagement/ProfileSettingsTable", () => ({
+  ProfileSettingsTable: jest.fn()
+}));
+jest.mock("orgmanagement/ProfileEntryForm", () => ({
   ProfileEntryForm: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn(),
-  ProfileEntryFormStateProvider: jest.requireActual("context").ProfileEntryFormStateProvider
+  ProfileEntryFormStateProvider: jest.requireActual("context/appContext").ProfileEntryFormStateProvider
+}));
+
+jest.mock("context/reducer", () => ({
+  default: jest.fn()
+}));
+
+jest.mock("context/userFormReducer", () => ({
+  default: jest.fn()
 }));
 
 jest.mock("@mui/material", () => ({

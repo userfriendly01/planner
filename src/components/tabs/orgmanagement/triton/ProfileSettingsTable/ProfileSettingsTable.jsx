@@ -13,28 +13,28 @@ import {
   TableDataFlex,
   IconWrapper
 } from "./ProfileSettingsTable.Styles";
+import { sortProfilesById } from "utils/sortUtils";
+import { formatTenDigitNumber } from "utils/formatNumberUtils";
 import {
   formatAggregateQueues,
   formatProfileBooleanData,
   formatProfileACWDataEntry,
   formatSimpleText,
   formatActivityData,
-  sortProfilesById,
-  formatSelfServiceIndicatorData,
-  formatTenDigitNumber
-} from "utils";
+  formatSelfServiceIndicatorData
+} from "utils/profileUtils";
 import { Tooltip } from "@mui/material";
 import { Edit } from "@mui/icons-material";
 import {
   profileTableColumnHeader,
   formModes
-} from "globals";
+} from "globals/index";
 import {
   profileEntryFormDispatch,
   profileEntryFormActions
-} from "context";
+} from "context/appContext";
 
-const ProfileSettingsTable = props => {
+export const ProfileSettingsTable = props => {
   const {
     profileList,
     setProfileModalState,

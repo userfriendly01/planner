@@ -1,12 +1,10 @@
 import ProfileDirectoryContainer from "../ProfileDirectoryContainer";
 import MockAdapter from "axios-mock-adapter";
-import {
-  Directory,
-  ProfileDropDown,
-  StyledButton
-} from "components";
-import { useAdminState } from "context";
-import { apiPaths } from "globals";
+import { StyledButton } from "components/StyledButton";
+import { Directory } from "orgmanagement/Directory";
+import { ProfileDropDown } from "orgmanagement/ProfileDropDown";
+import { useAdminState } from "context/appContext";
+import { apiPaths } from "globals/index";
 import React from "react";
 import { act } from "react-dom/test-utils";
 import {
@@ -19,19 +17,24 @@ import {
   waitFor,
   initialTestState as initialState
 } from "testUtils";
-import { myAxios } from "utils";
+import { myAxios } from "utils/myAxios";
 
 const axiosMock = new MockAdapter(myAxios);
 
-jest.mock("components", () => ({
-  __esModule: true,
-  Directory: jest.fn(),
-  ProfileDropDown: jest.fn(),
+jest.mock("orgmanagement/Directory", () => ({
+  Directory: jest.fn()
+}));
+
+jest.mock("orgmanagement/ProfileDropDown", () => ({
+  ProfileDropDown: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
 }));
 
-jest.mock("context", () => ({
-  useAdminState: jest.fn(),
+jest.mock("context/appContext", () => ({
+  useAdminState: jest.fn()
 }));
 
 const profileList = [

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { StyledButton } from "components";
+import { StyledButton } from "components/StyledButton";
 
 export const ModalContainer = styled.div<{theme: any}>`
   background-color: ${props => props.theme.backgroundColor};

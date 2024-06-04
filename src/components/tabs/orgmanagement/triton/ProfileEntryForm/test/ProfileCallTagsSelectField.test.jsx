@@ -1,4 +1,4 @@
-import ProfileCallTagsSelectField from "../ProfileCallTagsSelectField";
+import { ProfileCallTagsSelectField } from "../ProfileCallTagsSelectField";
 import {
   Add,
   Delete
@@ -6,11 +6,11 @@ import {
 import {
   getCallTags,
   getCallTagOptions
-} from "services";
+} from "services/callTags";
 import MockAdapter from "axios-mock-adapter";
-import { Dropdown } from "components";
+import { Dropdown } from "components/Dropdown";
 import React from "react";
-import { myAxios } from "utils";
+import { myAxios } from "utils/myAxios";
 import {
   expectMockedComponent,
   render,
@@ -22,28 +22,31 @@ import {
   mockCallTagOptions
 } from "testUtils";
 import { ThemeProvider } from "styled-components";
-import {
-  apiPaths,
-  theme
-} from "globals";
+import { apiPaths } from "globals/index";
+import { theme } from "globals/theme";
 import { Tooltip } from "@mui/material";
 import { act } from "react-dom/test-utils";
 
 jest.mock("@mui/icons-material", () => ({
-  __esModule: true,
   Add: jest.fn(),
   Delete: jest.fn()
 }));
 
 jest.mock("@mui/material", () => ({
-  __esModule: true,
   Tooltip: jest.fn()
 }));
 
-jest.mock("components", () => ({
-  __esModule: true,
-  Dropdown: jest.fn(),
+jest.mock("components/Dropdown", () => ({
+  Dropdown: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
+}));
+
+jest.mock("services/callTags", () => ({
+  getCallTags: jest.fn(),
+  getCallTagOptions: jest.fn()
 }));
 
 getCallTags.mockImplementation(() => { return Promise.resolve(200, { response: "success" } ); });

@@ -1,30 +1,29 @@
 import {
-  isNumberValid,
-  logger,
-  unMaskPhoneNumber
-} from "utils";
+  isNumberValid, unMaskPhoneNumber
+} from "utils/formatNumberUtils";
+import { logger } from "utils/logger";
 import {
   TextField,
   Tooltip
 } from "@mui/material";
 import { InfoOutlined } from "@mui/icons-material";
-import {
-  PaperContainer,
-  PhoneNumberInput,
-  ModalOverlay,
-  StyledButton
-} from "components";
+import { PaperContainer } from "components/PaperContainer";
+import { PhoneNumberInput } from "components/PhoneNumberInput";
+import { ModalOverlay } from "components/ModalOverlay";
+import { StyledButton } from "components/StyledButton";
 import {
   apiPaths,
   formModes,
-  ModalOverlayStatuses,
   timeouts
-} from "globals";
+} from "globals/index";
+import {
+  ModalOverlayStatuses
+} from "globals/interfaces";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import styled from "styled-components";
-import { myAxios } from "utils";
-import { useAdminState } from "context";
+import { myAxios } from "utils/myAxios";
+import { useAdminState } from "context/appContext";
 
 const FlexRow = styled.div`
   display: flex;
@@ -73,7 +72,7 @@ const TextFieldContainer = styled.div`
 
 const validateContactNme = value => value.length > 0;
 
-const DialListEntryForm = props => {
+export const DialListEntryForm = props => {
   const {
     dialListTableState,
     profileId,
@@ -307,5 +306,3 @@ DialListEntryForm.propTypes = {
   refreshProfileData: PropTypes.func.isRequired,
   setDialListTableState: PropTypes.func.isRequired
 };
-
-export default DialListEntryForm;

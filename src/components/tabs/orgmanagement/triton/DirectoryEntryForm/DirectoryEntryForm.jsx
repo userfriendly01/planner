@@ -1,28 +1,24 @@
 import {
-  isNumberValid,
-  logger,
-  unMaskPhoneNumber
-} from "utils";
+  isNumberValid, unMaskPhoneNumber
+} from "utils/formatNumberUtils";
+import { logger } from "utils/logger";
 import { TextField } from "@mui/material";
+import { ModalOverlay } from "components/ModalOverlay";
+import { PhoneNumberInput } from "components/PhoneNumberInput";
+import { PaperContainer } from "components/PaperContainer";
+import { StyledButton } from "components/StyledButton";
 import {
-  ModalOverlay,
-  PhoneNumberInput,
-  PaperContainer,
-  StyledButton
-} from "components";
-import {
-  formModes,
-  ModalOverlayStatuses,
-  timeouts
-} from "globals";
+  formModes, timeouts
+} from "globals/index";
+import { ModalOverlayStatuses } from "globals/interfaces";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import {
   insertDirectory,
   updateDirectory
-} from "services";
+} from "services/directory";
 import styled from "styled-components";
-import { useAdminState } from "context";
+import { useAdminState } from "context/appContext";
 
 const FlexRow = styled.div`
   display: flex;
@@ -51,7 +47,7 @@ const ModalContainer = styled.div`
 
 const validateStringNotEmpty = value => value.length > 0;
 
-const DirectoryEntryForm = props => {
+export const DirectoryEntryForm = props => {
   const {
     closeModal,
     directoryState,
@@ -266,5 +262,3 @@ DirectoryEntryForm.propTypes = {
   profileId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   refreshProfileData: PropTypes.func.isRequired
 };
-
-export default DirectoryEntryForm;

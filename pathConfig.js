@@ -131,7 +131,7 @@ const getConfigPaths = () => {
     "testUtils": ["../__test__/index.js"]
   };
   paths.forEach(entry => {
-    pathConfig[`${entry.alias}*`] = entry.paths.map(p => `./${p}*`);
+    pathConfig[`${entry.alias}/*`] = entry.paths.map(p => `./${p}/*`);
   });
   return pathConfig;
 };

@@ -3,9 +3,9 @@ import {
 } from "components/tabs/orgmanagement/triton/ProfileEntryForm/ProfileEntryForm.Interfaces";
 import {
   Action,
-  formModes,
   OperatingUnit
-} from "globals";
+} from "globals/interfaces";
+import { formModes } from "globals/index";
 import {
   formatProfileBooleanDataTrueFalse,
   formatSimpleText

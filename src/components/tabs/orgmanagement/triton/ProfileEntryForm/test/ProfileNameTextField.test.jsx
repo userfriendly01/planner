@@ -1,5 +1,5 @@
-import { CustomInput } from "components";
-import ProfileNameTextField from "../ProfileNameTextField";
+import { CustomInput } from "components/CustomInput";
+import { ProfileNameTextField } from "../ProfileNameTextField";
 import React from "react";
 import {
   setupMockedComponents,
@@ -12,7 +12,7 @@ import {
 import {
   profileEntryFormState,
   profileEntryFormDispatch
-} from "context";
+} from "context/appContext";
 
 const label = "Profile Name";
 
@@ -20,13 +20,11 @@ const renderComponent = () =>{
   return render(<ProfileNameTextField label={label} />);
 };
 
-jest.mock("components", () => ({
-  __esModule: true,
+jest.mock("components/CustomInput", () => ({
   CustomInput: jest.fn()
 }));
 
-jest.mock("context", () => ({
-  __esModule: true,
+jest.mock("context/appContext", () => ({
   profileEntryFormState: jest.fn(),
   profileEntryFormDispatch: jest.fn()
 }));

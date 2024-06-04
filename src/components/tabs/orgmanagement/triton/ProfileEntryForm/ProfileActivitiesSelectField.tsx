@@ -9,21 +9,17 @@ import {
   Label,
   ProfileDropdownWrapper
 } from "./ProfileEntryForm.Styles";
-import { Dropdown } from "components";
+import { Dropdown } from "components/Dropdown";
 import {
   Add,
   Delete
 } from "@mui/icons-material";
-import {
-  Activity,
-  apiPaths
-} from "globals";
+import { apiPaths } from "globals/index";
+import { Activity } from "globals/interfaces";
 import { Tooltip } from "@mui/material";
-import {
-  logger,
-  myAxios,
-  sortActivityByName
-} from "utils";
+import { logger } from "utils/logger";
+import { myAxios } from "utils/myAxios";
+import { sortActivityByName } from "utils/sortUtils";
 
 const getActivities = () => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_ACTIVITIES)
   .then(res => {
@@ -37,7 +33,7 @@ const getActivities = () => new Promise((resolve, reject) => myAxios.get(apiPath
   })
 );
 
-const ProfileActivitiesSelectField = (props: ProfileActivitiesSelectFieldProps) => {
+export const ProfileActivitiesSelectField = (props: ProfileActivitiesSelectFieldProps) => {
   const {
     activitiesList,
     setActivitiesList
@@ -131,5 +127,3 @@ const ProfileActivitiesSelectField = (props: ProfileActivitiesSelectFieldProps) 
     </ProfileDropdownControlWrapper>
   );
 };
-
-export default ProfileActivitiesSelectField;

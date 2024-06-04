@@ -1,22 +1,22 @@
-import DialListEntryForm from "../DialListEntryForm";
+import { DialListEntryForm } from "../DialListEntryForm";
 import {
   TextField,
   Tooltip
 } from "@mui/material";
 import { InfoOutlined } from "@mui/icons-material";
 import MockAdapter from "axios-mock-adapter";
-import {
-  PaperContainer,
-  PhoneNumberInput,
-  ModalOverlay,
-  StyledButton
-} from "components";
+import { PaperContainer } from "components/PaperContainer";
+import { PhoneNumberInput } from "components/PhoneNumberInput";
+import { ModalOverlay } from "components/ModalOverlay";
+import { StyledButton } from "components/StyledButton";
 import {
   apiPaths,
   formModes,
-  ModalOverlayStatuses,
   timeouts
-} from "globals";
+} from "globals/index";
+import {
+  ModalOverlayStatuses
+} from "globals/interfaces";
 import React from "react";
 import {
   act,
@@ -29,31 +29,37 @@ import {
   setupMockedComponents,
   waitFor
 } from "testUtils";
-import { myAxios } from "utils";
-import { useAdminState } from "context";
+import { myAxios } from "utils/myAxios";
+import { useAdminState } from "context/appContext";
 
 jest.useFakeTimers();
 
 jest.mock("@mui/material", () => ({
-  __esModule: true,
   TextField: jest.fn(),
   Tooltip: jest.fn()
 }));
 
 jest.mock("@mui/icons-material", () => ({
-  __esModule: true,
   InfoOutlined: jest.fn()
 }));
 
-jest.mock("components", () => ({
-  __esModule: true,
-  PaperContainer: jest.fn(),
-  PhoneNumberInput: jest.fn(),
-  ModalOverlay: jest.fn(),
+jest.mock("components/PaperContainer", () => ({
+  PaperContainer: jest.fn()
+}));
+
+jest.mock("components/PhoneNumberInput", () => ({
+  PhoneNumberInput: jest.fn()
+}));
+
+jest.mock("components/ModalOverlay", () => ({
+  ModalOverlay: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
 }));
 

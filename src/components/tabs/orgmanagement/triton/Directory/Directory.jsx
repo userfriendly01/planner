@@ -1,20 +1,17 @@
 import { Modal } from "@mui/material";
+import { DirectoryEntryForm } from "orgmanagement/DirectoryEntryForm";
+import { PhoneNumberTable } from "orgmanagement/PhoneNumberTable";
+import { StyledButton } from "components/StyledButton";
+import { useAdminState } from "context/appContext";
 import {
-  DirectoryEntryForm,
-  PhoneNumberTable,
-  StyledButton
-} from "components";
-import { useAdminState } from "context";
-import {
-  formModes,
-  ModalOverlayStatuses,
-  timeouts
-} from "globals";
+  formModes, timeouts
+} from "globals/index";
+import { ModalOverlayStatuses } from "globals/interfaces";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
-import { deleteDirectory } from "services";
+import { deleteDirectory } from "services/directory";
 import styled from "styled-components";
-import { logger } from "utils";
+import { logger } from "utils/logger";
 
 const AddContactButtonContainer = styled.div`
   display: flex;
@@ -31,7 +28,7 @@ const TableContainer = styled.div`
   position: relative;
 `;
 
-const Directory = props => {
+export const Directory = props => {
   const {
     directory,
     profileId,
@@ -177,5 +174,3 @@ Directory.propTypes = {
   profileId: PropTypes.number.isRequired,
   refreshProfileData: PropTypes.func.isRequired
 };
-
-export default Directory;

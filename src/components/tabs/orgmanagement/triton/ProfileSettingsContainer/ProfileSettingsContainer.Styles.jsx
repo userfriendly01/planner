@@ -1,4 +1,4 @@
-import { StyledButton } from "components";
+import { StyledButton } from "components/StyledButton";
 import styled from "styled-components";
 
 export const ProfileSettingsDropdownWrapper = styled.div`
