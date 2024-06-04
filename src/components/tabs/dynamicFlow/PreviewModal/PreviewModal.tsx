@@ -195,10 +195,10 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
           justifyContent: "left"
         }}>
           {action==="delete" &&
-                  <Typography color="red.hot">Are you sure? You will spend the next few days reverting your junk</Typography>
+                  <Text>Are you sure? You will spend the next few days reverting your junk</Text>
           }
-
         </Box>
+        <div></div>
         <Box sx={{
           display: "flex",
           justifyContent: "center"
