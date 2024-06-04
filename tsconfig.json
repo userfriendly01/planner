@@ -27,6 +27,8 @@
          "./components/core/ModalHelperText*",
          "./components/core/ModalFetchingRing*",
          "./components/core/CustomDropdown*",
+         "./components/core/SharedComponents*",
+         "./components/core/CustomToast*",
          "./components/core/CustomInput*",
          "./components/core/PaperContainer*",
          "./components/core/StyledButton*"

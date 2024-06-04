@@ -15,10 +15,9 @@ import {
   nextActionType,
   tfnRoutingGroup,
   userDestination
-} from "utils";
-
+} from "utils/flowUtils";
 import { flowFields } from "../CustomActions/FlowFieldsConfig";
-import { ComponentControl } from "components";
+import ComponentControl from "components/ComponentControl";
 import { GridApiCommunity } from "@mui/x-data-grid/internals";
 
 

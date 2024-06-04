@@ -10,7 +10,7 @@ import SelectContainer from "../../../../core/SharedComponents/SelectContainer";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
-import { CACHE_FILTER_FLOW } from "utils";
+import { CACHE_FILTER_FLOW } from "utils/flowUtils";
 import {
   FlowAdvanceFilter, FlowMasterData
 } from "../../AlohaFlow.Interfaces";

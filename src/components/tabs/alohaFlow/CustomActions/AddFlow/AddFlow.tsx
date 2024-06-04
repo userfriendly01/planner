@@ -1,5 +1,3 @@
-/* eslint-disable react/prop-types */
-
 import React, {
   useState,
   useEffect
@@ -7,15 +5,15 @@ import React, {
 import {
   Modal, ModalHeader
 } from "@lmig/lmds-react-modal";
-import Grid from "@mui/material/Grid";
-import Button from "@mui/material/Button";
+import {
+  Grid, Button
+} from "@mui/material";
 import {
   initRule,
   flowFields
 } from "../FlowFieldsConfig";
-import {
-  ComponentControl, CustomToast
-} from "components";
+import { ComponentControl } from "components/ComponentControl";
+import { CustomToast } from "components/CustomToast";
 import {
   AddFlowFieldsConfigProps,
   CctSharedCallFlowDb,
@@ -34,27 +32,29 @@ import {
   HeadingStyled
 } from "../../AlohaFlow.Styles";
 import {
-  BrandName,
   FLOW_MASTER_DATA,
   callFlowName,
   callFlowType,
   checkGreetingMessageRegExp,
-  cleanErrorMessage,
   flowDropDownList,
   flowType,
-  initializedAlertBar,
   languageOffer,
   nextActionType,
   tfnRoutingGroup,
   userDestination
-} from "utils";
+} from "utils/flowUtils";
+import {
+  BrandName,
+  cleanErrorMessage,
+  initializedAlertBar
+} from "utils/configUtils";
 import { getGridMasterData } from "../../DataGridFlow/GridMaster";
 import {
   AlertBarProps, FormValidationRule
 } from "utils/interfaces";
 import {
   AzureSPA, DuplicateCheck
-} from "globals";
+} from "globals/interfaces";
 import { AddOrView } from "../CustomActionsCommon/AddOrView";
 import { FloatingHeader } from "@lmig/lmds-react-floating-header";
 

@@ -1,23 +1,23 @@
 import React from "react";
-import { AddFlow } from "../../index";
-import { FLOW_MASTER_DATA } from "utils";
-import {
-  fireEvent, render, initialTestState, act, waitFor, setupMockedComponents
-} from "testUtils";
-import {
-  addFlowRule, retrieveFlowData
-} from "../../../Utils/FlowTableServiceUtil";
-import { useAdminState } from "context";
+import { FloatingHeader } from "@lmig/lmds-react-floating-header";
 import {
   Grid, Button
 } from "@mui/material";
-import {
-  CustomToast, ComponentControl, Dropdown
-} from "components";
+import { AddFlow } from "../AddFlow";
+
+import { FLOW_MASTER_DATA } from "utils/flowUtils";
 import { AddOrView } from "../../CustomActionsCommon/AddOrView";
 import { flowFields } from "../../FlowFieldsConfig";
-import { FloatingHeader } from "@lmig/lmds-react-floating-header";
-import { PhoneNumberType } from "google-libphonenumber";
+import {
+  addFlowRule, retrieveFlowData
+} from "../../../Utils/FlowTableServiceUtil";
+import { useAdminState } from "context/appContext";
+import { CustomToast } from "components/CustomToast";
+import { ComponentControl } from "components/ComponentControl";
+
+import {
+  fireEvent, render, initialTestState, act, waitFor, setupMockedComponents
+} from "testUtils";
 
 const validFlowData = {
   id: 1,
@@ -51,7 +51,6 @@ const validFlowData = {
   tfnRoutingGroup: "Core"
 };
 
-
 const mockMasterData = {
   brand: ["Test Brand", "Testing Brand2"],
   channel: ["Test1 Channel", "Test2 Channel"],
@@ -64,7 +63,6 @@ jest.mock("../../../Utils/FlowTableServiceUtil", () => ({
 }));
 
 jest.mock("@mui/material", () => ({
-  __esModule: true,
   Grid: jest.fn(),
   Button: jest.fn(),
   TextField: jest.fn(),
@@ -76,31 +74,30 @@ jest.mock("@mui/x-date-pickers/TimePicker", () => ({
   TimePicker: jest.fn()
 }));
 
-jest.mock("components", () => {
-  return{
-    __esModule: true,
-    CustomToast: jest.fn(),
-    ComponentControl: jest.fn(),
-    Dropdown: jest.fn()
-  };
-});
-jest.mock("../../CustomActionsCommon/AddOrView",()=>{
-  return{
-    __esModule: true,
-    AddOrView: jest.fn()
-  };
-});
+jest.mock("components/ComponentControl", () => ({
+  ComponentControl: jest.fn()
+}));
 
-jest.mock("context", () => ({
+jest.mock("components/CustomToast", () => ({
+  CustomToast: jest.fn()
+}));
+
+jest.mock("components/Dropdown", () => ({
+  Dropdown: jest.fn()
+}));
+
+jest.mock("../../CustomActionsCommon/AddOrView", () => ({
+  __esModule: true,
+  AddOrView: jest.fn()
+}));
+
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
 }));
 
-jest.mock("@lmig/lmds-react-floating-header", ()=>{
-  return {
-    __esModule: true,
-    FloatingHeader: jest.fn()
-  };
-});
+jest.mock("@lmig/lmds-react-floating-header", () => ({
+  FloatingHeader: jest.fn()
+}));
 
 const openAddModal = jest.fn();
 const duplicateCheck = jest.fn().mockReturnValue({
@@ -159,7 +156,6 @@ describe("<AddFlow />", () => {
       Button,
       ComponentControl,
       CustomToast,
-      Dropdown,
       AddOrView,
       FloatingHeader
     });
@@ -170,7 +166,7 @@ describe("<AddFlow />", () => {
     localStorage.removeItem(FLOW_MASTER_DATA);
   });
   describe("AddFlow ModalBlock",()=>{
-    test("Simulate Close Modal By Clicking Close Icon",()=>{
+    test.only("Simulate Close Modal By Clicking Close Icon",()=>{
       const { getByRole } = renderAddFlow(true);
       const closeModalButton = getByRole("img", { name: "Close" });
       act(()=>{

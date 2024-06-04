@@ -12,7 +12,7 @@ import {
   deleteDynamicFlowRule as v2DeleteFlowRule,
   updateFlowDB as v1UpdateFlowDB,
   updateDynamicFlowDB as v2UpdateFlowDB
-} from "services";
+} from "services/flowTableService";
 import {
   CctSharedCallFlowDb,
   FlowMasterData

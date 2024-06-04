@@ -10,6 +10,8 @@ const paths = [
     paths: [
       "components",
       "components/core",
+      "components/core/SharedComponents",
+      "components/core/CustomToast",
       "components/core/CustomDropdown",
       "components/core/CustomInput",
       "components/core/ModalFetchingRing",

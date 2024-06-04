@@ -7,14 +7,14 @@ import {
 import {
   DataGrid, GridColDef, useGridApiRef
 } from "@mui/x-data-grid";
-import { StyledButton } from "components";
+import { StyledButton } from "components/StyledButton";
 import { CctSharedCallFlowDb } from "../AlohaFlow.Interfaces";
 import { TableGridColumnDef } from "./TableColumnDef";
 import "./PreviewModal.css";
 import { Box } from "@mui/material";
 import { reconstructTableColumnDef } from "./PreviewUtil";
-import { logger } from "utils";
-import { CsvReader } from "components";
+import { logger } from "utils/logger";
+import { CsvReader } from "components/CSVReader/CsvReader";
 
 interface PreviewModalProps {
     isOpen: boolean;

@@ -29,23 +29,25 @@ import {
 } from "../FlowFieldsConfig";
 import {
   CustomToast
-} from "components";
+} from "components/CustomToast";
 import {
-  BrandName,
   FLOW_MASTER_DATA,
   callFlowName,
   callFlowType,
   checkGreetingMessageRegExp,
   flowDropDownList,
   flowType,
-  initializedAlertBar,
   languageOffer,
   nextActionType,
-  readWriteAccess,
   tfnRoutingGroup,
   userDestination
-} from "utils";
-import ComponentControl from "components/core/SharedComponents/ComponentControl";
+} from "utils/flowUtils";
+import {
+  BrandName,
+  initializedAlertBar,
+  readWriteAccess
+} from "utils/configUtils";
+import { ComponentControl } from "components/ComponentControl";
 import {
   AlertBarProps, FormValidationRule
 } from "utils/interfaces";
@@ -56,7 +58,7 @@ import {
 } from "../../Utils/FlowTableServiceUtil";
 import {
   AzureSPA, DuplicateCheck
-} from "globals";
+} from "globals/interfaces";
 
 interface EditFlowComponentProps {
     isOpen: boolean;

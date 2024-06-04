@@ -7,12 +7,12 @@ import {
 } from "testUtils";
 import {
   PreviewModal
-} from "..";
+} from "../PreviewModal";
 import React from "react";
-import { FLOW_MASTER_DATA } from "utils";
+import { FLOW_MASTER_DATA } from "utils/flowUtils";
 import {
   StyledButton
-} from "components";
+} from "components/StyledButton";
 
 const onCloseMock = jest.fn();
 const onCreateMock = jest.fn();
@@ -22,7 +22,7 @@ const onDeleteMockBad = jest.fn().mockImplementation(() => {
   throw new Error("failed");
 });
 
-jest.mock("components", ()=>({
+jest.mock("components/StyledButton", ()=>({
   __esModule: true,
   StyledButton: jest.fn()
 }));

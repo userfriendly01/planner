@@ -1,15 +1,16 @@
 import React from "react";
 import { render as quickRender } from "@testing-library/react";
-import {
-  AddFlow, AdvanceSearchModal, CustomFlowGridToolBar, EditFlow
-} from "../../CustomActions";
+import { AddFlow } from "../../CustomActions/AddFlow/AddFlow";
+import { AdvanceSearchModal } from "../../CustomActions/AdvanceSearch/AdvanceSearch";
+import { CustomFlowGridToolBar } from "../../CustomActions/CustomFlowGridToolBar";
+import { EditFlow } from "../../CustomActions/EditFlow/EditFlow";
 import {
   CACHE_FILTER_FLOW,
   CALL_FLOW_PAGE_NO,
   CALL_FLOW_PER_PAGE
-} from "utils";
+} from "utils/flowUtils";
 import {
-  DataGrid, GridRenderCellParams, GridToolbar
+  DataGrid, GridToolbar
 } from "@mui/x-data-grid";
 import {
   act,
@@ -18,8 +19,8 @@ import {
   render,
   setupMockedComponents
 } from "testUtils";
-import { useAdminState } from "context";
-import { CustomToast } from "components";
+import { useAdminState } from "context/appContext";
+import { CustomToast } from "components/CustomToast";
 import DataGridFlow from "../DataGridFlow";
 import {
   batchDeleteItems,
@@ -29,7 +30,7 @@ import {
   queryFlowData,
   retrieveFlowData
 } from "../../Utils/FlowTableServiceUtil";
-import { PreviewModal } from "../../PreviewModal";
+import { PreviewModal } from "../../PreviewModal/PreviewModal";
 import { createFlowDataList } from "../../PreviewModal/test/PreviewUtil.test";
 
 jest.mock("../../Utils/FlowTableServiceUtil", () => ({
@@ -57,24 +58,30 @@ jest.mock("@mui/x-data-grid",()=>({
   })
 }));
 
-jest.mock("components", ()=>({
-  __esModule: true,
+jest.mock("components/CustomToast", () => ({
   CustomToast: jest.fn()
 }));
 
-jest.mock("../../CustomActions", () => ({
-  __esModule: true,
-  AddFlow: jest.fn(),
-  AdvanceSearchModal: jest.fn(),
-  CustomFlowGridToolBar: jest.fn(),
-  EditFlow: jest.fn()
+jest.mock("../../CustomActions/AddFlow/AddFlow", () => ({
+  AddFlow: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("../../CustomActions/AdvanceSearch/AdvanceSearch", () => ({
+  AdvanceSearchModal: jest.fn()
+}));
+
+jest.mock("../../CustomActions/CustomFlowGridToolBar", () => ({
+  CustomFlowGridToolBar: jest.fn()
+}));
+
+jest.mock("../../CustomActions/EditFlow/EditFlow", () => ({
+  EditFlow: jest.fn()
+}));
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
 }));
 
-jest.mock("../../PreviewModal", ()=>({
+jest.mock("../../PreviewModal/PreviewModal", ()=>({
   __esModule: true,
   PreviewModal: jest.fn()
 }));
@@ -114,7 +121,6 @@ describe("<DataGridFlow />", () => {
     setupMockedComponents({
       DataGrid,
       GridToolbar,
-      GridRenderCellParams,
       AdvanceSearchModal,
       EditFlow,
       AddFlow,
