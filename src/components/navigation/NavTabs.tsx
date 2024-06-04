@@ -6,9 +6,9 @@ import {
   StyledTabContainer
 } from "./NavTabs.Styles";
 import React from "react";
-import { useAdminState } from "context";
+import { useAdminState } from "context/appContext";
 import { useNavigate } from "react-router-dom";
-import { logger } from "utils";
+import { logger } from "utils/logger";
 
 const NavTabs = () => {
   const state = useAdminState();
@@ -42,7 +42,7 @@ const NavTabs = () => {
   React.useEffect(() => {
     const allowedTabs: any[] = [];
     const tabsOpen: any = {};
-    permissions.forEach(({ authenticationProfile }) => {
+    permissions.forEach(({ authenticationProfile }: any) => {
       authenticationProfile.tabs.forEach((tab:any) => {
         allowedTabs.push(tab);
         tabsOpen[tab.value] = false;

@@ -3,7 +3,7 @@ import NavTabs from "../NavTabs";
 import {
   StyledTab
 } from "../NavTabs.Styles";
-import { useAdminState } from "context";
+import { useAdminState } from "context/appContext";
 import {
   Link, useNavigate
 } from "react-router-dom";
@@ -16,7 +16,7 @@ import {
   act
 } from "testUtils";
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
 }));
 
