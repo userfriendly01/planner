@@ -192,9 +192,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
           display: "flex",
           justifyContent: "center"
         }}>
-          {action==="delete" &&
-                  <Text color={"RED"}>Are you sure? You will spend the next few days reverting your junk</Text>
-          }
+
           {action==="delete" &&
                   <StyledButton sx={{ marginRight: "15px" }} onClick={() =>{ handleOnDelete(); }}>Delete</StyledButton>
           }
@@ -202,7 +200,14 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
             <StyledButton sx={{ marginRight: "15px" }} onClick={()=>handleOnCreate()}>Save</StyledButton>
           }
           <StyledButton onClick={()=>{ handleOnClose(); }}>Cancel</StyledButton>
-
+          <Box sx={{
+            display: "flex",
+            justifyContent: "left"
+          }}>
+            {action==="delete" &&
+                    <Text color={"RED"}>Are you sure? You will spend the next few days reverting your junk</Text>
+            }
+          </Box>
         </Box>
       </ModalFooter>
     </Modal>
