@@ -195,7 +195,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
           justifyContent: "left"
         }}>
           {action==="delete" &&
-                  <Text>Are you sure? You will spend the next few days reverting your junk</Text>
+                  <Text color="red">Are you sure? You will spend the next few days reverting your junk</Text>
           }
         </Box>
         <div></div>
