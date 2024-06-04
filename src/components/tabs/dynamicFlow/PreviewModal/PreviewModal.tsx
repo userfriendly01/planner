@@ -191,11 +191,13 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
       </ModalBody>
       <ModalFooter>
         <Box sx={{
+          color: "red",
           display: "flex",
-          justifyContent: "left"
+          justifyContent: "center",
+          marginBottom: "15px"
         }}>
           {action==="delete" &&
-                  <Text color="red">Are you sure? You will spend the next few days reverting your junk</Text>
+                  <Text>Are you sure you want to permanently remove these items?</Text>
           }
         </Box>
         <div></div>
