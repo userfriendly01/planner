@@ -1,6 +1,8 @@
 import { gql } from "@apollo/client";
+import { GraphData } from "globals";
 
 const userAttributes = `
+  pk
   ttl
   did
   sid: worker_sid
@@ -63,16 +65,39 @@ export const GET_USER = gql`
   }
 `;
 
-export const LIST_USERS = gql`
-  query listUMUsers($nextToken: String) {
-    users: listUMUsers(nextToken: $nextToken) {
-      items {
-        ${userAttributes}
+export const LIST_USER_RECORDS: GraphData = {
+  query: gql`
+    query listUMUserRecords($n_number: String) {
+      listUMUserRecords: listUMUserRecords(n_number: $n_number) {
+        items {
+          pk
+          sk
+          item_type
+          sid: worker_sid
+          inactiveDate: inactive_date
+          twilio_attributes {
+              profile_id
+          }
+        }
       }
-      nextToken
     }
-  }
-`;
+  `,
+  responsePath: "listUMUserRecords"
+};
+
+export const LIST_USERS: GraphData = {
+  query: gql`
+    query listUMUsers($nextToken: String) {
+      users: listUMUsers(nextToken: $nextToken) {
+        items {
+          ${userAttributes}
+        }
+        nextToken
+      }
+    }
+  `,
+  responsePath: "users"
+};
 
 export const CREATE_USER = gql`
   mutation createUMUser($input: UMUserCreateInput!) {
@@ -94,6 +119,103 @@ export const DELETE_USER = gql`
   mutation deleteUMUser($identifier: String!, $options: UMUserDeleteOptionsInput) {
     user: deleteUMUser(identifier: $identifier, options: $options) {
       ${userAttributes}
+    }
+  }
+`;
+
+export const LIST_OFFICES: GraphData = {
+  query: gql`
+    query listUMOffices($nextToken: String) {
+      offices: listUMOffices(nextToken: $nextToken) {
+        items {
+          pk
+          sk
+          item_type
+          office_num
+          office_name
+        }
+        nextToken
+      }
+    }
+`,
+  responsePath: "offices"
+};
+
+export const CREATE_OFFICE = gql`
+  mutation createUMOffice($input: UMOfficeCreateInput!) {
+    office: createUMOffice(input: $input) {
+      pk
+      sk
+      item_type
+      office_num
+      office_name
+    }
+  }
+`;
+
+export const LIST_MANAGERS: GraphData = {
+  query: gql`
+    query listUMManagers($nextToken: String) {
+      managers: listUMManagers(nextToken: $nextToken) {
+        items {
+          pk
+          sk
+          item_type
+          manager_first_name
+          manager_last_name
+          profile_id
+          manager_n_num
+          calabrio_team_ids
+        }
+        nextToken
+      }
+    }
+`,
+  responsePath: "managers"
+};
+
+export const CREATE_MANAGER = gql`
+  mutation createUMManager($input: UMManagerCreateInput!) {
+    manager: createUMManager(input: $input) {
+      pk
+      sk
+      item_type
+      manager_first_name
+      manager_last_name
+      profile_id
+      manager_n_num
+      calabrio_team_ids
+    }
+  }
+`;
+
+
+export const UPDATE_MANAGER = gql`
+  mutation updateUMManager($n_number: String!, $input: UMManagerUpdateInput!) {
+    manager: updateUMManager(n_number: $n_number, input: $input) {
+      pk
+      sk
+      item_type
+      manager_first_name
+      manager_last_name
+      profile_id
+      manager_n_num
+      calabrio_team_ids
+    }
+  }
+`;
+
+export const DELETE_MANAGER = gql`
+  mutation deleteUMManager($n_number: String!) {
+    manager: deleteUMManager(n_number: $n_number) {
+      pk
+      sk
+      item_type
+      manager_first_name
+      manager_last_name
+      profile_id
+      manager_n_num
+      calabrio_team_ids
     }
   }
 `;

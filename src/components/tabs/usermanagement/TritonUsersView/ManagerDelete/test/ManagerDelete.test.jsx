@@ -74,12 +74,10 @@ const defaultAdminState = {
   managerContext: {
     managers: [
       {
-        manager_id: 3,
-        manager_n_number: "n0262226"
+        manager_n_num: "n0262226"
       },
       {
-        manager_id: 10,
-        manager_n_number: "n0263786"
+        manager_n_num: "n0263786"
       }
     ]
   },
@@ -129,7 +127,7 @@ describe("<ManagerDelete />", () => {
   });
 
   const managerObject = manager => {
-    return { manager_n_number: manager };
+    return { manager_n_num: manager };
   };
 
   describe("initial state of ManagerDelete", () => {
@@ -160,7 +158,7 @@ describe("<ManagerDelete />", () => {
         });
         expectOnlyPassedProps(ConfirmationForm, {
           SelectedManager: {
-            manager_n_number: "n0263786"
+            manager_n_num: "n0263786"
           }
         });
       });
@@ -178,7 +176,7 @@ describe("<ManagerDelete />", () => {
         });
         expectOnlyPassedProps(ConfirmationForm, {
           SelectedManager: {
-            manager_n_number: "n0263786"
+            manager_n_num: "n0263786"
           }
         });
       });

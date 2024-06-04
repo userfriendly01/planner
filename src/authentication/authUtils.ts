@@ -1,6 +1,5 @@
-import {
-  UMUser, env
-} from "globals";
+import { env } from "globals";
+import { listUMUserRecords } from "services";
 
 const productOwners = [
   "n0138110", // Keith Teeter
@@ -44,20 +43,15 @@ export const checkIfPO = (nNumber: string): boolean => {
   return productOwners.includes(nNumber.toLowerCase());
 };
 
-export const getWorkerProfileId = (nNumber: string, workers: UMUser[]): number => {
-  let loggedInWorker: UMUser;
-  workers.forEach((worker: UMUser) =>{
-    if(worker.attributes?.n_number?.toLowerCase() === nNumber.toLowerCase()){
-      loggedInWorker = worker;
-    }
-  });
-
-  const profileId = loggedInWorker?.attributes?.profile_id;
-  if(typeof profileId === "string"){
-    return parseInt(profileId);
-  } else if(typeof profileId === "number"){
-    return profileId;
-  } else {
-    return null;
+export const getWorkerProfileId = async (nNumber: string): Promise<number> => {
+  let profileId;
+  try {
+    const workerRecords: any = await listUMUserRecords(nNumber);
+    const primaryWorker: any = workerRecords[0];
+    profileId = primaryWorker?.twilio_attributes?.profile_id || -1;
+  } catch(err){
+    profileId = -1;
   }
+
+  return profileId;
 };

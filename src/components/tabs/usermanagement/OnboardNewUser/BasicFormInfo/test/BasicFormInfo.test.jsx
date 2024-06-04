@@ -154,8 +154,8 @@ describe("<BasicFormInfo />", () => {
       const expectedManagerProps = {
         label: "Manager *",
         options: managerList.map(manager => ({
-          label: `${manager.manager_first_name} ${manager.manager_last_name} - ${manager.manager_n_number}`,
-          value: manager.manager_n_number,
+          label: `${manager.manager_first_name} ${manager.manager_last_name} - ${manager.manager_n_num}`,
+          value: manager.manager_n_num,
           ...manager
         })),
         value: "",

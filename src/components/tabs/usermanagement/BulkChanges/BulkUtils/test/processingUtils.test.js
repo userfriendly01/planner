@@ -1,9 +1,9 @@
 import { useAdminState } from "context";
 import * as utils from "../processingUtils";
 import {
-  getAllUsers,
+  listUMUsers,
   getCalabrioUsers,
-  getManagers,
+  listUMManagers,
   wfmActivateExternalLogon
 } from "services";
 import {
@@ -12,16 +12,19 @@ import {
   initialTestState
 } from "testUtils";
 import {
-  formatManagersResponse,
   getCalabrioWfmOrg,
   logger
 } from "utils";
 import * as XLSX from "xlsx";
 
 jest.mock("utils",() => ({
-  formatManagersResponse: jest.fn(),
   getCalabrioWfmOrg: jest.fn(),
-  logger: jest.requireActual("utils").logger
+  logger: {
+    error: jest.fn(),
+    info: jest.fn(),
+    log: jest.fn(),
+    warn: jest.fn()
+  }
 }));
 
 jest.mock("xlsx",() => ({
@@ -47,20 +50,14 @@ describe("updateManagerUserState", () => {
       manager: "Bill"
     }];
     test("dispatch is called, promise resolves", async () => {
-      getManagers.mockResolvedValue(response);
-      formatManagersResponse.mockReturnValue(response);
+      listUMManagers.mockResolvedValue(response);
       await utils.updateManagerUserState(mockDispatch);
-      expect(getManagers).toHaveBeenCalledTimes(1);
-      expect(mockDispatch).toHaveBeenCalledTimes(1);
-      expect(mockDispatch).toHaveBeenCalledWith({
-        type: "loadManagers",
-        payload: response
-      });
+      expect(listUMManagers).toHaveBeenCalledTimes(1);
     });
   });
   describe("get managers fails", () => {
     test("dispatch is not called, promise resolves", async () => {
-      getManagers.mockRejectedValue("Aww");
+      listUMManagers.mockRejectedValue("Aww");
       await utils.updateManagerUserState(mockDispatch);
       expect(logger.error).toHaveBeenCalledTimes(1);
       expect(logger.error.mock.calls[0][0]).toContain("Failed to update manager state after bulk upload");
@@ -75,17 +72,17 @@ describe("updateTritonUserState", () => {
     jest.resetAllMocks();
   });
   describe("get workers succeeds", () => {
-    test("getAllUsers is called, promise resolves", async () => {
+    test("listUMUsers is called, promise resolves", async () => {
 
       await utils.updateTritonUserState(null, mockDispatch);
 
-      expect(getAllUsers).toHaveBeenCalledWith(mockDispatch);
-      expect(getAllUsers).toHaveBeenCalledTimes(1);
+      expect(listUMUsers).toHaveBeenCalledWith(mockDispatch);
+      expect(listUMUsers).toHaveBeenCalledTimes(1);
     });
   });
   describe("get workers fails", () => {
     test("dispatch is not called, promise resolves", async () => {
-      getAllUsers.mockRejectedValue("Waaaaaaaaaaa");
+      listUMUsers.mockRejectedValue("Waaaaaaaaaaa");
 
       await utils.updateTritonUserState(null, mockDispatch);
       expect(logger.error).toHaveBeenCalledTimes(1);

@@ -3,9 +3,9 @@ import {
   WfmBusinessUnit
 } from "globals";
 import {
-  getAllUsers,
+  listUMUsers,
   getCalabrioUsers,
-  getManagers,
+  listUMManagers,
   wfmActivateExternalLogon
 } from "services";
 import {
@@ -13,7 +13,6 @@ import {
   Template
 } from "../BulkChanges.Interfaces";
 import {
-  formatManagersResponse,
   getCalabrioWfmOrg,
   logger
 } from "utils";
@@ -24,8 +23,7 @@ import * as XLSX from "xlsx";
  */
 export const updateTritonUserState = async (_state: AppState, dispatch: () => void): Promise<void> => {
   try {
-    // Await the first call
-    await getAllUsers(dispatch);
+    await listUMUsers(dispatch);
   } catch (error) {
     logger.error("Failed to update triton user state after bulk upload", { error }, false);
   }
@@ -68,13 +66,9 @@ export const updateWFMPersonState = async (state: any, dispatch: any, rows: any[
  */
 export const updateManagerUserState = async (dispatch: any): Promise<void> => {
   try {
-    const managers: any = await getManagers();
-    dispatch({
-      type: "loadManagers",
-      payload: formatManagersResponse(managers)
-    });
-  } catch (error) {
-    logger.error("Failed to update manager state after bulk upload", { error }, false);
+    await listUMManagers(dispatch);
+  } catch(err){
+    logger.error("Failed to update manager state after bulk upload", err);
   }
   return Promise.resolve();
 };

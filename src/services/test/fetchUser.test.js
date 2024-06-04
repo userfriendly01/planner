@@ -1,17 +1,20 @@
 import { fetchUser } from "../fetchUser";
 import MockAdapter from "axios-mock-adapter";
-import { apiPaths } from "globals";
 import { myAxios } from "utils";
 
-jest.mock("globals", () => ({
-  __esModule: true,
-  apiPaths: {
-    EMPLOYEE_LOOKUP: jest.fn()
-  },
-  formModes: jest.requireActual("globals").formModes
-}));
-
 const axiosMock = new MockAdapter(myAxios);
+
+jest.mock("components");
+jest.mock("globals", () => ({
+  apiPaths: {
+    EMPLOYEE_LOOKUP: jest.fn().mockReturnValue("/service/employeelookup/n01234567")
+  },
+  formModes: {
+    INSERT: "insert",
+    UPDATE: "update",
+    DELETE: "delete"
+  }
+}));
 
 describe("fetchUser", () => {
 
@@ -37,7 +40,6 @@ describe("fetchUser", () => {
     };
     beforeEach(() => {
       axiosMock.onGet("/service/employeelookup/n01234567").reply(200, fetchUserRes);
-      apiPaths.EMPLOYEE_LOOKUP.mockReturnValue("/service/employeelookup/n01234567");
     });
     test("should resolve with formatted data", done => {
       const nNum = "n01234567";
@@ -61,7 +63,6 @@ describe("fetchUser", () => {
     const fetchUserRes = [];
     beforeEach(() => {
       axiosMock.onGet("/service/employeelookup/n01234567").reply(200, fetchUserRes);
-      apiPaths.EMPLOYEE_LOOKUP.mockReturnValue("/service/employeelookup/n01234567");
     });
     test("should reject", done => {
       const nNum = "n01234567";

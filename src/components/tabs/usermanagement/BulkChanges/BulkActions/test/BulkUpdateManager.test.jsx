@@ -56,7 +56,7 @@ describe("<BulkUpdateManager />", () => {
         expect(Dropdown.mock.calls[2][0].options).toStrictEqual(initialTestState.managerContext.managers.map(m => {
           return {
             label: `${m.manager_first_name} ${m.manager_last_name}`,
-            value: m.manager_n_number,
+            value: m.manager_n_num,
             ...m
           };
         }));

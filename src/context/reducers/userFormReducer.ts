@@ -1,6 +1,6 @@
 import {
   Action,
-  Manager,
+  UMManager,
   formModes
 } from "../../globals";
 import { UserFormState } from "components/tabs/usermanagement/OnboardNewUser/UserEntryFormWrapper/UserEntryFormWrapper.Interfaces";
@@ -607,7 +607,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
           },
           manager: {
             ...state.triton.manager,
-            value: managers.find((m: Manager) => m.manager_n_number === worker.attributes.manager_n_number)
+            value: managers.find((m: UMManager) => m.manager_n_num === worker.attributes.manager_n_number)
           },
           outgoing: {
             ...state.triton.outgoing,
@@ -924,7 +924,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
           },
           manager: {
             ...state.triton.manager,
-            value: managers.find((m: Manager) => m.manager_n_number === worker.attributes.manager_n_number)
+            value: managers.find((m: UMManager) => m.manager_n_num === worker.attributes.manager_n_number)
           },
           outgoing: {
             ...state.triton.outgoing,

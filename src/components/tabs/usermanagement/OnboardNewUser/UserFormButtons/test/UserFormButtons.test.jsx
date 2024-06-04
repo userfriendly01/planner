@@ -125,7 +125,7 @@ const workerAttributesAfterFormValid = {
   location: fetchedUser.officeName,
   manager_first_name: validFormOptions.manager.manager_first_name,
   manager_last_name: validFormOptions.manager.manager_last_name,
-  manager_n_number: validFormOptions.manager.manager_n_number,
+  manager_n_number: validFormOptions.manager.manager_n_num,
   manager: `${validFormOptions.manager.manager_first_name} ${validFormOptions.manager.manager_last_name}`,
   n_number: validFormOptions.nNumber.toLowerCase(),
   agent_id: validFormOptions.nNumber.toLowerCase(),
@@ -367,7 +367,7 @@ describe("<UserFormButtons />", () => {
               expect(mockDispatch.mock.calls[1][0]).toEqual({
                 type: "addOffice",
                 payload: {
-                  office_nme: "Springfield 012B",
+                  office_name: "Springfield 012B",
                   office_num: "newOffice"
                 }
               });
@@ -516,7 +516,7 @@ describe("<UserFormButtons />", () => {
               expect(mockDispatch.mock.calls[1][0]).toEqual({
                 type: "addOffice",
                 payload: {
-                  office_nme: "Springfield 012B",
+                  office_name: "Springfield 012B",
                   office_num: "newOffice"
                 }
               });
@@ -580,7 +580,7 @@ describe("<UserFormButtons />", () => {
                 expect(mockDispatch.mock.calls[1][0]).toEqual({
                   type: "addOffice",
                   payload: {
-                    office_nme: "Springfield 012B",
+                    office_name: "Springfield 012B",
                     office_num: "newOffice"
                   }
                 });
@@ -706,7 +706,7 @@ describe("<UserFormButtons />", () => {
               expect(mockDispatch.mock.calls[1][0]).toEqual({
                 type: "addOffice",
                 payload: {
-                  office_nme: "Springfield 012B",
+                  office_name: "Springfield 012B",
                   office_num: "newOffice"
                 }
               });
@@ -999,7 +999,7 @@ describe("<UserFormButtons />", () => {
                 expect(mockDispatch.mock.calls[1][0]).toEqual({
                   type: "addOffice",
                   payload: {
-                    office_nme: "Springfield 012B",
+                    office_name: "Springfield 012B",
                     office_num: "newOffice"
                   }
                 });
@@ -1055,7 +1055,7 @@ describe("<UserFormButtons />", () => {
                 expect(mockDispatch.mock.calls[1][0]).toEqual({
                   type: "addOffice",
                   payload: {
-                    office_nme: "Springfield 012B",
+                    office_name: "Springfield 012B",
                     office_num: "newOffice"
                   }
                 });
@@ -1098,7 +1098,7 @@ describe("<UserFormButtons />", () => {
               expect(mockDispatch.mock.calls[1][0]).toEqual({
                 type: "addOffice",
                 payload: {
-                  office_nme: "Springfield 012B",
+                  office_name: "Springfield 012B",
                   office_num: "newOffice"
                 }
               });
@@ -1209,7 +1209,7 @@ describe("<UserFormButtons />", () => {
               location: validFormState.nNumber.nNumberFetchedUser.departmentName,
               manager_first_name: validFormOptions.manager.manager_first_name,
               manager_last_name: validFormOptions.manager.manager_last_name,
-              manager_n_number: validFormOptions.manager.manager_n_number,
+              manager_n_number: validFormOptions.manager.manager_n_num,
               manager: `${validFormOptions.manager.manager_first_name} ${validFormOptions.manager.manager_last_name}`,
               profile_id: validFormOptions.profileId,
               routing: {
@@ -1279,7 +1279,7 @@ describe("<UserFormButtons />", () => {
             location: validFormOptions.nNumberFetchedUser.departmentName,
             manager_first_name: validFormOptions.manager.manager_first_name,
             manager_last_name: validFormOptions.manager.manager_last_name,
-            manager_n_number: validFormOptions.manager.manager_n_number,
+            manager_n_number: validFormOptions.manager.manager_n_num,
             manager: `${validFormOptions.manager.manager_first_name} ${validFormOptions.manager.manager_last_name}`,
             profile_id: validFormOptions.profileId,
             routing: {
@@ -1542,7 +1542,7 @@ describe("<UserFormButtons />", () => {
             extension: validFormOptions.extension,
             manager_first_name: validFormOptions.manager.manager_first_name,
             manager_last_name: validFormOptions.manager.manager_last_name,
-            manager_n_number: validFormOptions.manager.manager_n_number,
+            manager_n_number: validFormOptions.manager.manager_n_num,
             manager: `${validFormOptions.manager.manager_first_name} ${validFormOptions.manager.manager_last_name}`,
             profile_id: validFormOptions.profileId,
             routing: {
@@ -1632,7 +1632,7 @@ describe("<UserFormButtons />", () => {
             extension: validFormOptions.extension,
             manager_first_name: validFormOptions.manager.manager_first_name,
             manager_last_name: validFormOptions.manager.manager_last_name,
-            manager_n_number: validFormOptions.manager.manager_n_number,
+            manager_n_number: validFormOptions.manager.manager_n_num,
             manager: `${validFormOptions.manager.manager_first_name} ${validFormOptions.manager.manager_last_name}`,
             profile_id: validFormOptions.profileId,
             routing: {
@@ -1733,7 +1733,7 @@ describe("<UserFormButtons />", () => {
           location: validFormState.nNumber.nNumberFetchedUser.departmentName,
           manager_first_name: validFormOptions.manager.manager_first_name,
           manager_last_name: validFormOptions.manager.manager_last_name,
-          manager_n_number: validFormOptions.manager.manager_n_number,
+          manager_n_number: validFormOptions.manager.manager_n_num,
           manager: `${validFormOptions.manager.manager_first_name} ${validFormOptions.manager.manager_last_name}`,
           profile_id: validFormOptions.profileId
         };
@@ -1871,7 +1871,7 @@ describe("<UserFormButtons />", () => {
           location: validFormOptions.nNumberFetchedUser.departmentName,
           manager_first_name: validFormOptions.manager.manager_first_name,
           manager_last_name: validFormOptions.manager.manager_last_name,
-          manager_n_number: validFormOptions.manager.manager_n_number,
+          manager_n_number: validFormOptions.manager.manager_n_num,
           manager: `${validFormOptions.manager.manager_first_name} ${validFormOptions.manager.manager_last_name}`,
           profile_id: validFormOptions.profileId,
           routing: {

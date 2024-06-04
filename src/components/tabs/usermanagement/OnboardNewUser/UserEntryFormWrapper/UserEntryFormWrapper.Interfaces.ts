@@ -1,7 +1,7 @@
 import {
-  Manager,
+  UMManager,
   ModalOverlayStatuses,
-  Office,
+  UMOffice,
   Skill,
   TritonProfile,
   UMUser,
@@ -40,16 +40,14 @@ export interface BasicFormInfoProps {
   worker: UMUser | null,
   workers: UMUser[],
   profiles: TritonProfile[],
-  managers: Manager[]
-  forwardToToggle: boolean,
-  setForwardToToggle: (value: boolean) => void,
+  managers: UMManager[]
 }
 
 export interface UserFormButtonsProps {
   forwardToToggle: boolean,
   handleClose: () => void,
   loading: LoadingState,
-  offices: Map<string, Office>,
+  offices: UMOffice[],
   profiles: TritonProfile[],
   updateLoading: (payload: any) => void,
   worker: UMUser | null,

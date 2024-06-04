@@ -41,7 +41,7 @@ const ManagerDelete = (props: ManagerDeleteProps): any => {
 
     const members = workers.filter(worker => {
       if (worker.attributes.manager_n_number && selectedManager) {
-        if (worker.attributes.manager_n_number.toLowerCase() === selectedManager.manager_n_number.toLowerCase()) {
+        if (worker.attributes.manager_n_number.toLowerCase() === selectedManager.manager_n_num.toLowerCase()) {
           return true;
         }
       }
@@ -53,11 +53,11 @@ const ManagerDelete = (props: ManagerDeleteProps): any => {
   const deleteManagerClicked = (): Promise<any> => {
     setSaveStatus(ModalOverlayStatuses.SAVING);
 
-    return deleteManager(selectedManager.manager_id)
-      .then(res => {
+    return deleteManager(selectedManager.manager_n_num)
+      .then((res: any) => {
         // Remove the deleted manager from our local state
         const updatedArray = state.managerContext.managers.filter(
-          mgr => mgr.manager_n_number !== selectedManager.manager_n_number
+          mgr => mgr.manager_n_num !== selectedManager.manager_n_num
         );
 
         dispatch(({
@@ -75,10 +75,10 @@ const ManagerDelete = (props: ManagerDeleteProps): any => {
         logger.info("Successfully deleted manager", {
           res,
           nNumber,
-          managerNNumber: selectedManager.manager_n_number
+          managerNNumber: selectedManager.manager_n_num
         });
       })
-      .catch(error => {
+      .catch((error: any) => {
         setErrorMessage("Failed to delete Manager");
         setSaveStatus(ModalOverlayStatuses.FAIL);
         setTimeout(() => setSaveStatus(null), 2000);
@@ -86,7 +86,7 @@ const ManagerDelete = (props: ManagerDeleteProps): any => {
         logger.error("Failed to delete Manager", {
           error,
           nNumber,
-          managerNNumber: selectedManager.manager_n_number
+          managerNNumber: selectedManager.manager_n_num
         });
       });
   };

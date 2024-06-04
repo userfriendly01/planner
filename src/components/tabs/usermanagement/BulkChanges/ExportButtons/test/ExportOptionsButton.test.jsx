@@ -9,8 +9,6 @@ import {
   render,
   setupMockedComponents
 } from "testUtils";
-import BusinessUnitModal from "../../BusinessUnitModal";
-import { Modal } from "@mui/material";
 
 jest.mock("../../BulkChanges.Styles", () => ({
   Button: jest.fn()
@@ -18,12 +16,6 @@ jest.mock("../../BulkChanges.Styles", () => ({
 
 jest.mock("@progress/kendo-react-excel-export", () => ({
   ExcelExport: jest.fn()
-}));
-
-jest.mock("../../BusinessUnitModal", () => jest.fn());
-
-jest.mock("@mui/material", () => ({
-  Modal: jest.fn()
 }));
 
 jest.useFakeTimers();
@@ -36,7 +28,6 @@ const expectedRows = [
     defaultSkills: "aisgL1",
     managerNNumber: "n1234567",
     profileId: 1
-    // routing_team: "Profile 2: licencedCSC",
   },
   {
     defaultSkills: "bscCbsL2",
@@ -96,16 +87,6 @@ const expectedColumns = [
     width: undefined,
     wrap: true
   }
-  // {
-  //   field: "routing_team",
-  //   options: [
-  //     "Profile 2: licencedCSC"
-  //   ],
-  //   textAlign: "center",
-  //   title: "Routing Team",
-  //   width: undefined,
-  //   wrap: true
-  // } //Not ready to go yet
 ];
 const expectedWFMRows = [
   {
@@ -185,8 +166,7 @@ const expectedWFMCols = [
       "America/Los_Angeles (PST/PDT)",
       "America/New_York (EST/EDT)",
       "America/Phoenix (MST)",
-      "Pacific/Honolulu (HST)",
-
+      "Pacific/Honolulu (HST)"
     ],
     wrap: true,
     textAlign: "center"
@@ -294,11 +274,9 @@ describe("ExportOptionsButton", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.resetAllMocks();
-    useRefSpy.mockReturnValue({ current: { save: mockSave } });
+    useRefSpy.mockReturnValue({ current: { save: mockSave }});
     setupMockedComponents({
-      Button,
-      Modal,
-      BusinessUnitModal
+      Button
     });
   });
   describe("initial render", () => {
@@ -326,7 +304,6 @@ describe("ExportOptionsButton", () => {
         act(() => onClick());
         expect(mockSave).toHaveBeenCalledTimes(1);
         expect(mockSave).toHaveBeenCalledWith(expectedRows, expectedColumns);
-        expect(BusinessUnitModal.mock.calls.length).toBe(0);
       });
       describe("_export is null", () => {
         beforeEach(() => {

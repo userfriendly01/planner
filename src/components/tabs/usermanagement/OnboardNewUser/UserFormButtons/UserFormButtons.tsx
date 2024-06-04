@@ -101,7 +101,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
       location: form.nNumber.nNumberFetchedUser.officeName,
       manager_first_name: form.triton.manager.value.manager_first_name,
       manager_last_name: form.triton.manager.value.manager_last_name,
-      manager_n_number: form.triton.manager.value.manager_n_number,
+      manager_n_number: form.triton.manager.value.manager_n_num,
       manager: `${form.triton.manager.value.manager_first_name} ${form.triton.manager.value.manager_last_name}`,
       n_number: userNNumber,
       agent_id: userNNumber,
@@ -163,9 +163,9 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
         userNNumber
       });
 
-      if (!offices.get(newWorker.attributes.office_location_number)) {
+      if (!offices.some(o => newWorker.attributes.office_location_number === o.office_num)) {
         const newOffice = {
-          office_nme: newWorker.attributes.office_location_name,
+          office_name: newWorker.attributes.office_location_name,
           office_num: newWorker.attributes.office_location_number
         };
         addOffice(newOffice)
@@ -366,7 +366,7 @@ const UserFormButtons = (props: UserFormButtonsProps) => {
     attributes.full_name = `${nNumberFetchedUser?.firstName} ${nNumberFetchedUser?.lastName}`;
     attributes.manager_first_name = form.triton.manager.value.manager_first_name;
     attributes.manager_last_name = form.triton.manager.value.manager_last_name;
-    attributes.manager_n_number = form.triton.manager.value.manager_n_number;
+    attributes.manager_n_number = form.triton.manager.value.manager_n_num;
     attributes.manager = form.triton.manager.value.manager_first_name + " " + form.triton.manager.value.manager_last_name;
 
     if (form.triton.profileId.updated) {

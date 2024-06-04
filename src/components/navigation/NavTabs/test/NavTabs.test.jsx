@@ -15,16 +15,9 @@ import {
   tabs,
   act
 } from "testUtils";
-import {
-  Button
-} from "@mui/material";
 
 jest.mock("context", () => ({
   useAdminState: jest.fn()
-}));
-
-jest.mock("@mui/material", () => ({
-  Button: jest.fn()
 }));
 
 jest.mock("../NavTabs.Styles", () => ({
@@ -77,8 +70,7 @@ describe("NavTabs", () => {
     useAdminState.mockReturnValue(state);
     setupMockedComponents({
       Link,
-      StyledTab,
-      Button
+      StyledTab
     });
   });
   describe("initial render", () => {
