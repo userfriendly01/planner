@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
-import { DataGridRouting } from "./DataGridRouting";
+import { DataGridRouting } from "./DataGridRouting/DataGridRouting";
 import {
   LAST_ROUTING_MASTER_DATA_CACHED_DATE, ROUTING_CACHE_MASTER_DATA
-} from "utils";
-import { useAdminState } from "context";
+} from "utils/routingUtils";
+import { useAdminState } from "context/appContext";
 
 const AlohaRoutingContainer = () => {
   const {

@@ -1,20 +1,19 @@
 import React from "react";
-import { EditRouting } from "../index";
+import { EditRouting } from "../EditRouting";
 import {
   ROUTING_CACHE_MASTER_DATA
-} from "utils";
+} from "utils/routingUtils";
 import {
   fireEvent, render, act, setupMockedComponents, adGroupPermissionMapping
 } from "testUtils";
 import {
   updateRoutingDB, deleteRoutingRule
-} from "services";
+} from "services/routingTableService";
 import {
   Grid, Button
 } from "@mui/material";
-import {
-  CustomToast, ComponentControl
-} from "components";
+import { CustomToast } from "components/CustomToast";
+import { ComponentControl } from "components/ComponentControl";
 
 const validRoutingData = {
   id: 1,
@@ -57,14 +56,18 @@ jest.mock("@mui/x-date-pickers/TimePicker", () => ({
   TimePicker: jest.fn()
 }));
 
-jest.mock("components", () => {
-  return{
-    __esModule: true,
-    CustomToast: jest.fn(),
-    ComponentControl: jest.fn()
-  };
-});
+jest.mock("components/CustomToast", () => ({
+  CustomToast: jest.fn()
+}));
 
+jest.mock("components/ComponentControl", () => ({
+  ComponentControl: jest.fn()
+}));
+
+jest.mock("services/routingTableService", () => ({
+  deleteRoutingRule: jest.fn(),
+  updateRoutingDB: jest.fn()
+}));
 const mockMasterData = {
   brand: ["Test Brand"],
   channel: ["Test1 Channel", "Test2 Channel"]

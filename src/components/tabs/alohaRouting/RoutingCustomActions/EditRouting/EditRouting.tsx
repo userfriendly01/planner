@@ -16,19 +16,17 @@ import {
   convertTime24to12,
   routingFields,
   routingInitRule,
-  initializedAlertBar,
   routingDropDownList,
   dayOfWeek
-} from "utils";
+} from "utils/routingUtils";
+import { initializedAlertBar } from "utils/configUtils";
 import {
   CctSharedCallRoutingDb,
   RoutingDropDownList,
   AddPageFieldConfigProps
 } from "../../AlohaRouting.Interfaces";
-import {
-  CustomToast,
-  ComponentControl
-} from "components";
+import { CustomToast } from "components/CustomToast";
+import { ComponentControl } from "components/ComponentControl";
 import {
   Button,
   Grid
@@ -40,8 +38,8 @@ import {
 import {
   deleteRoutingRule,
   updateRoutingDB
-} from "services";
-import { AzureSPA } from "globals";
+} from "services/routingTableService";
+import { AzureSPA } from "globals/interfaces";
 import {
   BrandName,
   readWriteAccess

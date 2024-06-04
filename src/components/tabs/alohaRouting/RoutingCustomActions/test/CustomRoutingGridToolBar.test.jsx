@@ -6,16 +6,8 @@ import {
 import {
   render, setupMockedComponents, act, adGroupPermissionMapping
 } from "testUtils";
-import {
-  CACHE_FILTER_ROUTING,
-  getAdvanceFilter,
-  readWriteAccess
-} from "utils";
-import {
-  getAdvanceFilter as getAdvanceFilterCopy,
-  readWriteAccess as readWriteAccessCopy
-} from "../../../../../utils/routingUtils";
-import { useAdminState } from "context";
+import { CACHE_FILTER_ROUTING } from "utils/routingUtils";
+import { useAdminState } from "context/appContext";
 
 jest.mock("@mui/material", () => ({
   __esModule: true,
@@ -28,13 +20,11 @@ jest.mock("@mui/material", () => ({
   MenuItem: jest.fn()
 }));
 
-jest.mock("utils", () => ({
-  CACHE_FILTER_ROUTING: "SEARCH_FILTER_ROUTING",
-  getAdvanceFilter: jest.fn(),
+jest.mock("utils/configUtils", () => ({
   readWriteAccess: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
 }));
 
@@ -86,8 +76,6 @@ describe("<CustomRoutingGridToolBar />", ()=>{
       MenuItem
     });
     localStorage.setItem(CACHE_FILTER_ROUTING, JSON.stringify(mockedRoutingFilter));
-    getAdvanceFilter.mockImplementation(getAdvanceFilterCopy);
-    readWriteAccess.mockImplementation(readWriteAccessCopy);
   });
   afterEach(() => {
     localStorage.removeItem(CACHE_FILTER_ROUTING);

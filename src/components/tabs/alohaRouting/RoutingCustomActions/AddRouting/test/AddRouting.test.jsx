@@ -1,20 +1,19 @@
 import React from "react";
-import { AddRouting } from "../../index";
+import { AddRouting } from "../AddRouting";
 import {
   fireEvent, render, initialTestState, act, setupMockedComponents, waitFor
 } from "testUtils";
-import {
-  CustomToast, ComponentControl
-} from "components";
+import { CustomToast } from "components/CustomToast";
+import { ComponentControl } from "components/ComponentControl";
 import {
   ROUTING_CACHE_MASTER_DATA, dayOfWeek
-} from "utils";
+} from "utils/routingUtils";
 import {
   retrieveRoutingData, addRoutingRule
-} from "services";
+} from "services/routingTableService";
 import {
   useAdminState
-} from "context";
+} from "context/appContext";
 const validRoutingData = {
   id: 1,
   all: "test",
@@ -42,16 +41,21 @@ jest.mock("@mui/x-date-pickers/TimePicker", () => ({
   TimePicker: jest.fn()
 }));
 
-jest.mock("components", () => {
-  return{
-    __esModule: true,
-    CustomToast: jest.fn(),
-    ComponentControl: jest.fn()
-  };
-});
-
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
+}));
+
+jest.mock("components/CustomToast", () => ({
+  CustomToast: jest.fn()
+}));
+
+jest.mock("components/ComponentControl", () => ({
+  ComponentControl: jest.fn()
+}));
+
+jest.mock("services/routingTableService", () => ({
+  retrieveRoutingData: jest.fn(),
+  addRoutingRule: jest.fn()
 }));
 
 const mockMasterData = {

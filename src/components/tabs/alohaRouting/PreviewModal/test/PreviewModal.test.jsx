@@ -7,12 +7,12 @@ import {
 } from "testUtils";
 import {
   PreviewModal
-} from "..";
+} from "../PreviewModal";
 import React from "react";
-import { ROUTING_CACHE_MASTER_DATA } from "utils";
+import { ROUTING_CACHE_MASTER_DATA } from "utils/routingUtils";
 import {
   StyledButton
-} from "components";
+} from "components/StyledButton";
 
 const onCloseMock = jest.fn();
 const onCreateMock = jest.fn();
@@ -22,8 +22,7 @@ const onDeleteMockBad = jest.fn().mockImplementation(() => {
   throw new Error("failed");
 });
 
-jest.mock("components", ()=>({
-  __esModule: true,
+jest.mock("components/StyledButton", ()=>({
   StyledButton: jest.fn()
 }));
 

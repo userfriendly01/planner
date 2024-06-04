@@ -1,6 +1,6 @@
-import { useAdminState } from "context";
+import { useAdminState } from "context/appContext";
 import AlohaRoutingContainer from "../AlohaRoutingContainer";
-import { DataGridRouting } from "../DataGridRouting";
+import { DataGridRouting } from "../DataGridRouting/DataGridRouting";
 import React from "react";
 import {
   initialTestState,
@@ -8,11 +8,11 @@ import {
   setupMockedComponents
 } from "testUtils";
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
 }));
 
-jest.mock("../DataGridRouting",()=>({
+jest.mock("../DataGridRouting/DataGridRouting",()=>({
   __esModule: true,
   DataGridRouting: jest.fn()
 }));

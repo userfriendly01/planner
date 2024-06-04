@@ -4,11 +4,11 @@ import {
   render,
   initialTestState
 } from "testUtils";
-import { RoutingAdvanceSearch } from "../../index";
+import RoutingAdvanceSearch from "../RoutingAdvanceSearch";
 import React from "react";
-import SelectContainer from "../../../../../core/SharedComponents/SelectContainer";
+import SelectContainer from "components/SelectContainer";
 import Autocomplete from "@mui/material/Autocomplete";
-import { useAdminState } from "context";
+import { useAdminState } from "context/appContext";
 
 const mockChange = jest.fn();
 const mockApplyFilter = jest.fn();
@@ -33,7 +33,7 @@ const mockSelectionAll = {
   twilioSkill: "twilioSkill1"
 };
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
 }));
 
@@ -54,8 +54,8 @@ const renderComponent = (isOpen, callIntent = "callIntent1") => render(
 Storage.prototype.setItem = jest.fn();
 Storage.prototype.removeItem = jest.fn();
 
-jest.mock("../../../../../core/SharedComponents/SelectContainer", () => {
-  const originalModule = jest.requireActual("../../../../../core/SharedComponents/SelectContainer");
+jest.mock("components/SelectContainer", () => {
+  const originalModule = jest.requireActual("components/SelectContainer");
 
   return {
     __esModule: true,
