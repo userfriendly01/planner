@@ -9,7 +9,7 @@
     "start": "webpack-dev-server --progress --color --config webpack.local.config.js",
     "test": "jest --config=jest.config.js --coverage --detectOpenHandles",
     "test-bamboo": "jest --config=jest.bamboo.config.js --coverage",
-    "generate-config": "node pathConfig.js",
+    "generate-config": "node -e 'require(\"./pathConfig\").init()'",
     "postinstall": "npm run-script generate-config"
   },
   "repository": {

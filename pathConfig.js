@@ -3,7 +3,7 @@
   If you are creating folder structures, add them to the paths array below and this file will appropriately
   update the jsconfig, tsconfig, webpack aliases & the jestConfig
 
-  For these changes to take effect, you can run a fresh build or manually run the command: 
+  For these changes to take effect, you can run a fresh install or manually run the command: 
                             npm run-script "generate-config"
 */
 
@@ -247,11 +247,14 @@ var fs = require("fs");
 jsConfigTemplate.compilerOptions.paths = getConfigPaths();
 tsConfigTemplate.compilerOptions.paths = getConfigPaths();
 
-fs.writeFile("jsconfig.json", JSON.stringify(jsConfigTemplate, null, 4), () => console.log("jsconfig successfully generated from pathConfig!"));
-fs.writeFile("tsconfig.json", JSON.stringify(tsConfigTemplate, null, 4), () => console.log("tsconfig successfully generated from pathConfig!"));
+const init = () => {
+  fs.writeFile("jsconfig.json", JSON.stringify(jsConfigTemplate, null, 4), () => console.log("jsconfig successfully generated from pathConfig!"));
+  fs.writeFile("tsconfig.json", JSON.stringify(tsConfigTemplate, null, 4), () => console.log("tsconfig successfully generated from pathConfig!"));
+};
 
 // eslint-disable-next-line no-undef
 module.exports = {
+  init,
   getWebpackPaths,
   getJestConfigPaths
 };
