@@ -2,7 +2,7 @@ import {
   initialUserFormState,
   userFormActions,
   userFormReducer
-} from "context";
+} from "../reducers/userFormReducer";
 import { formModes } from "globals";
 import {
   managerList,
@@ -11,12 +11,10 @@ import {
   validFormOptions,
   initialTestState
 } from "testUtils";
-import {
-  formatE164PhoneNumber,
-  getValidSkillsObject
-} from "utils";
-import { ExtensionSearchStatuses } from "components/tabs/usermanagement/OnboardNewUser/Extension/ExtensionInput/ExtensionInput.Interfaces";
-import { SearchParams } from "components/tabs/usermanagement/OnboardNewUser/Extension/ExtensionSearchParams";
+import { getValidSkillsObject } from "utils/skillsUtils";
+import { formatE164PhoneNumber } from "utils/formatNumberUtils";
+import { ExtensionSearchStatuses } from "usermanagement/ExtensionInput.Interfaces";
+import { SearchParams } from "usermanagement/ExtensionSearchParams";
 const searchParams = SearchParams.getValues();
 
 describe("userFormReducer", () => {

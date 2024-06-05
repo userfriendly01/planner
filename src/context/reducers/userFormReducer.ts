@@ -1,11 +1,10 @@
 import {
-  Action,
-  UMManager,
-  formModes
-} from "../../globals/index";
-import { UserFormState } from "components/tabs/usermanagement/OnboardNewUser/UserEntryFormWrapper/UserEntryFormWrapper.Interfaces";
-import { ExtensionSearchStatuses } from "components/tabs/usermanagement/OnboardNewUser/Extension/ExtensionInput/ExtensionInput.Interfaces";
-import { SearchParams } from "components/tabs/usermanagement/OnboardNewUser/Extension/ExtensionSearchParams";
+  Action, UMManager
+} from "globals/interfaces";
+import { formModes } from "globals";
+import { UserFormState } from "usermanagement/UserEntryFormWrapper.Interfaces";
+import { ExtensionSearchStatuses } from "usermanagement/ExtensionInput.Interfaces";
+import { SearchParams } from "usermanagement/ExtensionSearchParams";
 import { formatE164PhoneNumber } from "utils/formatNumberUtils";
 import { calabrioTimeZones } from "utils/calabrioUtils";
 import { getValidSkillsObject } from "utils/skillsUtils";

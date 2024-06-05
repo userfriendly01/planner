@@ -1,9 +1,13 @@
 import {
   initialState,
   reducer
-} from "context";
+} from "../reducers/reducer";
 import { skillsList } from "testUtils";
-import { formatSkillGroups } from "utils";
+import { formatSkillGroups } from "utils/skillsUtils";
+
+jest.mock("utils/skillsUtils", () => ({
+  formatSkillGroups: jest.fn()
+}));
 
 describe("reducer", () => {
   describe("invalid action", () => {
