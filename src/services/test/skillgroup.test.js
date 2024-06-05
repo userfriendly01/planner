@@ -1,5 +1,5 @@
 import MockAdapter from "axios-mock-adapter";
-import { myAxios } from "utils";
+import { myAxios } from "utils/myAxios";
 import {
   addSkillGroup, updateSkillGroup, deleteSkillGroup
 } from "../skillgroup";

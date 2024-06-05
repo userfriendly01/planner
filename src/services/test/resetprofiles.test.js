@@ -4,7 +4,7 @@ import {
 } from "../resetprofiles";
 import MockAdapter from "axios-mock-adapter";
 import { apiPaths } from "globals";
-import { myAxios } from "utils";
+import { myAxios } from "utils/myAxios";
 
 const axiosMock = new MockAdapter(myAxios);
 const nNumber = "n0263786";
@@ -45,7 +45,7 @@ describe("resetProfiles", () => {
   const body = {
     workerSid: "WK2342",
     email: "faith.cuneo@libertymutual.com"
-  }
+  };
 
   describe("call succeeds", () => {
     const data = { huzzah: "you are winner" };

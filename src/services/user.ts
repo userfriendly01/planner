@@ -1,20 +1,24 @@
 import { apolloClient } from "../components/core/Auth/SharedGraphAPIProvider";
 import {
   Action,
-  CREATE_USER,
   DBList,
+  UMUser
+}from "globals/interfaces";
+import {
+  CREATE_USER,
   GET_USER,
   LIST_USER_RECORDS,
-  UMUser,
   UPDATE_USER
-}from "globals";
+}from "globals/graphql";
 import {
-  getPaginatedResults,
-  logger,
   mapWorkerFromDbWorker,
-  mapWorkerToDbWorker,
+  mapWorkerToDbWorker
+} from "utils/formatWorkerResponse";
+import { getPaginatedResults } from "utils/graphUtils";
+import {
   sortGraphObjectsByPk
-} from "utils";
+} from "utils/sortUtils";
+import { logger } from "utils/logger";
 
 /**
  * This helper function gets all the workers, which now that they are paginated, takes a little bit

@@ -3,13 +3,11 @@ import {
 } from "services/user";
 import { apolloClient } from "../../components/core/Auth/SharedGraphAPIProvider";
 import {
-  logger,
   mapWorkerFromDbWorker,
-  mapWorkerToDbWorker,
-  getPaginatedResults,
-  sortGraphObjectsByPk
-} from "utils";
-import { sortGraphObjectsByPk as sortGraphObjectsByPkCopy } from "../../utils/sortUtils";
+  mapWorkerToDbWorker
+} from "utils/formatWorkerResponse";
+import { getPaginatedResults } from "utils/graphUtils";
+import { logger } from "utils/logger";
 
 jest.mock("../../components/core/Auth/SharedGraphAPIProvider", () => ({
   apolloClient: {
@@ -18,14 +16,13 @@ jest.mock("../../components/core/Auth/SharedGraphAPIProvider", () => ({
   }
 }));
 
-jest.mock("utils", () => ({
-  logger: {
-    error: jest.fn()
-  },
+jest.mock("utils/formatWorkerResponse", () => ({
   mapWorkerFromDbWorker: jest.fn(),
-  mapWorkerToDbWorker: jest.fn(),
-  getPaginatedResults: jest.fn(),
-  sortGraphObjectsByPk: jest.fn()
+  mapWorkerToDbWorker: jest.fn()
+}));
+
+jest.mock("utils/graphUtils", () => ({
+  getPaginatedResults: jest.fn()
 }));
 
 describe("user", () => {
@@ -33,7 +30,6 @@ describe("user", () => {
     jest.clearAllMocks();
     mapWorkerFromDbWorker.mockImplementation(data => data);
     mapWorkerToDbWorker.mockImplementation(data => data);
-    sortGraphObjectsByPk.mockImplementation(sortGraphObjectsByPkCopy);
   });
 
   describe("listUMUsers", () => {

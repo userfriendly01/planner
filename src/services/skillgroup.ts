@@ -1,8 +1,8 @@
 import {
   AddEditSkillGroupBody
-} from "components/tabs/callflowmanagement/SkillManagement/Skills.Interfaces";
+} from "callflowmanagement/SkillManagement/Skills.Interfaces";
 import { apiPaths } from "globals";
-import { myAxios } from "utils";
+import { myAxios } from "utils/myAxios";
 
 // requestBody should contain skill_group_nme and array of skillIds
 export const addSkillGroup = (requestBody: AddEditSkillGroupBody): Promise<any> =>

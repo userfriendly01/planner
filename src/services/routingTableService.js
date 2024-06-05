@@ -1,8 +1,7 @@
 /* eslint-disable no-console */
 import { env } from "globals";
-import {
-  logger, removeAllWhiteSpace
-} from "utils";
+import { logger } from "utils/logger";
+import { removeAllWhiteSpace } from "utils/routingUtils";
 
 /**
  * This is the function use to query the appsync API to get the data from DB

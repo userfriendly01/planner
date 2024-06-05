@@ -1,12 +1,11 @@
-import {
-  getPaginatedResults, logger
-} from "utils";
+import { getPaginatedResults } from "utils/graphUtils";
+import { CREATE_OFFICE } from "globals/graphql";
 import {
   Action,
-  CREATE_OFFICE,
   DBList,
   UMOffice
-}from "globals";
+}from "globals/interfaces";
+import { logger } from "utils/logger";
 import { apolloClient } from "../components/core/Auth/SharedGraphAPIProvider";
 
 export const listUMOffices = async (dispatch: (action: Action) => void): Promise<DBList<UMOffice>> => {

@@ -4,7 +4,7 @@ import {
 } from "../office";
 import {
   getPaginatedResults
-} from "utils";
+} from "utils/graphUtils";
 import { apolloClient } from "../../components/core/Auth/SharedGraphAPIProvider";
 
 jest.mock("../../components/core/Auth/SharedGraphAPIProvider", () => ({
@@ -14,11 +14,8 @@ jest.mock("../../components/core/Auth/SharedGraphAPIProvider", () => ({
   }
 }));
 
-jest.mock("utils", () => ({
-  getPaginatedResults: jest.fn(),
-  logger: {
-    error: jest.fn()
-  }
+jest.mock("utils/graphUtils", () => ({
+  getPaginatedResults: jest.fn()
 }));
 
 beforeEach(() => {

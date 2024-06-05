@@ -1,5 +1,5 @@
 import { apiPaths } from "globals";
-import { myAxios } from "utils";
+import { myAxios } from "utils/myAxios";
 
 export interface FetchUserResponse {
   email: string,

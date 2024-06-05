@@ -1,16 +1,16 @@
 import { apolloClient } from "../components/core/Auth/SharedGraphAPIProvider";
 import {
   Action,
-  CREATE_MANAGER,
   DBList,
-  DELETE_MANAGER,
-  UMManager,
-  UPDATE_MANAGER
-}from "globals";
+  UMManager
+}from "globals/interfaces";
 import {
-  getPaginatedResults,
-  logger
-} from "utils";
+  CREATE_MANAGER,
+  DELETE_MANAGER,
+  UPDATE_MANAGER
+}from "globals/graphql";
+import { getPaginatedResults } from "utils/graphUtils";
+import { logger } from "utils/logger";
 
 /**
  * This helper function gets all the managers using pagination. If there's a next token, it will

@@ -1,9 +1,7 @@
 import { apiPaths } from "globals";
 import { AxiosResponse } from "axios";
-import {
-  escapeQuotes,
-  myAxios
-} from "utils";
+import { escapeQuotes } from "utils";
+import { myAxios } from "utils/myAxios";
 
 export const getTfn = (e164Tfn: number): Promise<AxiosResponse<any>> => {
   return myAxios.get(`${apiPaths.TFN_DATA}/${e164Tfn}`);
