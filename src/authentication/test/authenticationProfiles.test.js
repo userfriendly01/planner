@@ -55,7 +55,6 @@ describe("authenticationProfiles", () => {
     test("should return authenticationProfileTemplaces", () => {
       const Tabs = getTabs();
       const result = getAuthenticationProfileTemplates();
-      // expect(AlohaRoutingContainer).toBe("butts");
       expect(result).toStrictEqual({
         TRITON: {
           name: "Triton",

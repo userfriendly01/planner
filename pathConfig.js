@@ -1,6 +1,6 @@
 /****** For importing files into this codebase, alias's are used for most of our folder paths. ********
   
-  If you are creating folder structures, add them to the paths array below and this file will appropriately
+  If you are creating new folders, add them to the paths array below and this file will appropriately
   update the jsconfig, tsconfig, webpack aliases & the jestConfig
 
   For these changes to take effect, you can run a fresh install or manually run the command: 
