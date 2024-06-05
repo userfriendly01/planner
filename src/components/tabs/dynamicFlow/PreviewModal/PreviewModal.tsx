@@ -14,23 +14,27 @@ import {
   Modal,ModalHeader, ModalBody, ModalFooter
 } from "@lmig/lmds-react-modal";
 import "./PreviewModal.css";
-import { Box } from "@mui/material";
+import {
+  Box, Typography
+} from "@mui/material";
 import  TableGridColumnDef  from "./TableColumnDef";
 import { logger } from "utils/logger";
 import { reconstructTableColumnDef } from "./PreviewUtil";
+import { Text } from "../../usermanagement/OnboardNewUser/CallRecording/CallRecording.Styles";
 
 interface PreviewModalProps {
     isOpen: boolean;
     rows: Array<ActionPreview>;
-    action: "add";
+    action: "delete" | "add";
     onClose: () => void;
     onCreate?: (rows: Array<ActionPreview>) => void;
+    onDelete?: (rows: Array<ActionPreview>) => void;
     loading?: boolean;
 }
 
 const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   const {
-    isOpen, rows, onClose, action , onCreate, loading
+    isOpen, rows, onClose, action , onDelete,onCreate, loading
   } = props;
 
   const apiRef =  useGridApiRef();
@@ -93,7 +97,13 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
       logger.error("Flow: Preview Modal onDelete call failed", { error }, false);
     }
   };
-
+  const handleOnDelete = async () => {
+    try {
+      await onDelete(flowRows);
+    } catch(error) {
+      logger.error("Flow: Preview Modal onDelete call failed", { error }, false);
+    }
+  };
   const createNewRecord = () =>{
     setFlowRows((previousRows: ActionPreview[])=>(
       [
@@ -141,10 +151,13 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
     >
       <ModalHeader>{action?.toUpperCase()} Flow - {flowRows.length} rows selected</ModalHeader>
       <ModalBody className="preview-grid-modal">
+        {action==="add" &&
         <StyledButton sx={{
           marginRight: "10px",
           marginBottom: "10px"
         }} onClick={()=>{ createNewRecord(); }}>Add New +</StyledButton>
+        }
+        {action==="add" &&
         <StyledButton sx={{
           marginRight: "10px",
           marginBottom: "10px"
@@ -154,6 +167,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
             accept=".csv"
             onChange={handleOnChange}
           /> </StyledButton>
+        }
         <DataGrid
           apiRef={apiRef}
           rows={flowRows}
@@ -176,14 +190,30 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
       </ModalBody>
       <ModalFooter>
         <Box sx={{
+          color: "red",
+          display: "flex",
+          justifyContent: "center",
+          marginBottom: "15px"
+        }}>
+          {action==="delete" &&
+                  <Text>Are you sure you want to permanently remove these items?</Text>
+          }
+        </Box>
+        <Box sx={{
           display: "flex",
           justifyContent: "center"
         }}>
+
+          {action==="delete" &&
+                  <StyledButton sx={{ marginRight: "15px" }} onClick={() =>{ handleOnDelete(); }}>Delete</StyledButton>
+          }
           {action === "add" &&
             <StyledButton sx={{ marginRight: "15px" }} onClick={()=>handleOnCreate()}>Save</StyledButton>
           }
           <StyledButton onClick={()=>{ handleOnClose(); }}>Cancel</StyledButton>
+
         </Box>
+
       </ModalFooter>
     </Modal>
   );

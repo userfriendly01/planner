@@ -13,6 +13,7 @@ import {
   PreviewModalAction
 } from "../DynamicFlow.Interfaces";
 import {
+  DeleteSweepOutlined,
   PlaylistAdd,
   SaveAlt
 } from "@mui/icons-material";
@@ -37,11 +38,13 @@ const CustomFlowGridToolBar = ({
       case "bulkAddFlow":
         openPreviewModal(true, "add");
         break;
+      case "bulkDeleteFlow":
+        openPreviewModal(true, "delete");
+        break;
       default:
         break;
     }
   };
-
   return (
     <Grid container>
       <Grid item key="flow-search-box" xs={9}>
@@ -88,6 +91,9 @@ const CustomFlowGridToolBar = ({
             size="small"
             displayEmpty
           >
+            <MenuItem key="bulkDeleteFlow" value="bulkDeleteFlow">
+              <DeleteSweepOutlined />&nbsp;&nbsp; Multi Delete Flow
+            </MenuItem>
             <MenuItem key="bulkAddFlow" value="bulkAddFlow">
               <PlaylistAdd />&nbsp;&nbsp; Multi Add Flow
             </MenuItem>

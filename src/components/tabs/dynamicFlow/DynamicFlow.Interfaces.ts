@@ -2,7 +2,7 @@ import { Control } from "globals/interfaces";
 import { FormValidationRule } from "utils/interfaces";
 import { MultiFieldContainerFormProps } from "components/core/SharedComponents/MultiFieldContainer";
 
-export type PreviewModalAction = "add";
+export type PreviewModalAction = "add" | "delete";
 
 export type ActionType = "MENU"|"MENUOPTIONS"|"ANNOUNCEMENT"|"TRANSFER"|"HANGUP";
 export interface Action {
@@ -104,5 +104,5 @@ export interface DynamicFlowStateVariables {
 
 export type DynamicAction = Menu & MenuOptions & Announcement;
 export interface ActionPreview extends DynamicAction {
-    errors: string;
+    errors?: string;
 }

@@ -16,6 +16,10 @@ import { createFlowDataItem } from "./PreviewUtil.test";
 
 const onCloseMock = jest.fn();
 const onCreateMock = jest.fn();
+const onDeleteMock = jest.fn().mockResolvedValue(undefined);
+const onDeleteMockBad = jest.fn().mockImplementation(() => {
+  throw new Error("failed");
+});
 const onCreateMockBad = jest.fn().mockImplementation(() => {
   throw new Error("failed");
 });
@@ -33,12 +37,13 @@ const createFlowDataList = numberOfData =>{
   return dataList;
 };
 
-const renderComponent = (action, createMock) => {
+const renderComponent = (action, createMock, deleteMock) => {
   return render (<PreviewModal
     action={action}
     isOpen={true}
     onClose={onCloseMock}
     onCreate={createMock}
+    onDelete={deleteMock}
     rows={createFlowDataList(12)}
   />, initialTestState);
 };
@@ -71,13 +76,13 @@ describe("<PreviewModal />", () => {
     });
   });
   test("render Add preview - create failure", () => {
-    renderComponent("add", onCreateMockBad);
+    renderComponent("add", onCreateMockBad, onDeleteMock);
     act(async () => StyledButton.mock.calls[2][0].onClick());
     expect(onCreateMockBad).toBeCalledTimes(1);
     expect(onCloseMock).toBeCalledTimes(0);
   });
   test("render Add preview", () => {
-    const rendered = renderComponent("add", onCreateMock);
+    const rendered = renderComponent("add", onCreateMock, onDeleteMock);
     const calls = StyledButton.mock.calls;
     expect(calls[2][0].children).toBe("Save");
     expect(calls[3][0].children).toBe("Cancel");
@@ -87,11 +92,33 @@ describe("<PreviewModal />", () => {
     expect(onCloseMock).toBeCalledTimes(1);
   });
   test("Add new +", () => {
-    renderComponent("add", onCreateMock);
+    renderComponent("add", onCreateMock, onDeleteMock);
     const calls = StyledButton.mock.calls;
     act(() => calls[4][0].onClick());
     const calls2 = StyledButton.mock.calls;
     expect(calls2.length).toBe(12);
+  });
+  test("render Delete preview - cancel", () => {
+    renderComponent("delete", onCreateMock, onDeleteMock);
+    const calls = StyledButton.mock.calls;
+    expect(calls[0][0].children).toBe("Delete");
+    expect(calls[1][0].children).toBe("Cancel");
+    act(() => calls[1][0].onClick());
+    expect(onDeleteMock).toBeCalledTimes(0);
+    expect(onCloseMock).toBeCalledTimes(1);
+  });
+  test("render Delete preview - delete success", () => {
+    renderComponent("delete", onCreateMock, onDeleteMock);
+    const calls = StyledButton.mock.calls;
+    act(async () => calls[0][0].onClick());
+    expect(onDeleteMock).toBeCalledTimes(1);
+  });
+  test("render Delete preview - delete failure", () => {
+    renderComponent("delete", onCreateMock, onDeleteMockBad);
+    const calls = StyledButton.mock.calls;
+    act(async () => calls[0][0].onClick());
+    expect(onDeleteMockBad).toBeCalledTimes(1);
+    expect(onCloseMock).toBeCalledTimes(0);
   });
 
 });
