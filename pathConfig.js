@@ -250,8 +250,8 @@ tsConfigTemplate.compilerOptions.paths = getConfigPaths();
 fs.writeFile("jsconfig.json", JSON.stringify(jsConfigTemplate, null, 4), () => console.log("jsconfig successfully generated from pathConfig!"));
 fs.writeFile("tsconfig.json", JSON.stringify(tsConfigTemplate, null, 4), () => console.log("tsconfig successfully generated from pathConfig!"));
 
+// eslint-disable-next-line no-undef
 module.exports = {
-  getConfigPaths,
   getWebpackPaths,
   getJestConfigPaths
 };
