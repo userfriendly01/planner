@@ -97,6 +97,15 @@ npm run test
 
 ## Development Notes
 
+### ES Lint & TS Lint configurations
+
+For importing files into this codebase, alias's are used for most of our folder paths.
+  
+If you are creating folder structures, add them to the 'paths' array in pathConfig and they will appropriately
+update the jsconfig, tsconfig, webpack aliases & the jestConfig
+
+For these changes to take effect, you can run a fresh build or manually run the command: npm run-script "generate-config"
+
 ### Bamboo Environment Variables
 Environment Variables can be extracted from deployment/manifest-*.yml using the following legacy Bamboo deployment task command.
 

@@ -8,7 +8,9 @@
     "eslint": "eslint ./src",
     "start": "webpack-dev-server --progress --color --config webpack.local.config.js",
     "test": "jest --config=jest.config.js --coverage --detectOpenHandles",
-    "test-bamboo": "jest --config=jest.bamboo.config.js --coverage"
+    "test-bamboo": "jest --config=jest.bamboo.config.js --coverage",
+    "generate-config": "node pathConfig.js",
+    "postinstall": "npm run-script generate-config"
   },
   "repository": {
     "type": "git",

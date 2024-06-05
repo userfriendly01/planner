@@ -1,7 +1,10 @@
-/*
-if you get browser errors - comment out the paths until you find the culprit
-Paths should only be defined if there is a folder within it
-if the folder & file are the same name, you'll need to specify it a little deeper - ie "callflowmanagement/TfnActivation/TfnActivation"
+/****** For importing files into this codebase, alias's are used for most of our folder paths. ********
+  
+  If you are creating folder structures, add them to the paths array below and this file will appropriately
+  update the jsconfig, tsconfig, webpack aliases & the jestConfig
+
+  For these changes to take effect, you can run a fresh build or manually run the command: 
+                            npm run-script "generate-config"
 */
 
 const paths = [
@@ -162,6 +165,36 @@ const paths = [
   }
 ];
 
+const jsConfigTemplate = {
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "jsx": "react",
+    "paths": {}
+  },
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+};
+
+const tsConfigTemplate =
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "baseUrl": "./src",
+    "esModuleInterop": true,
+    "jsx": "react",
+    "lib": ["ESNext", "DOM"],
+    "noImplicitAny": true,
+    "outDir": "./dist/",
+    "paths": {},
+    "sourceMap": true,
+    "target": "ES2017",
+    "module": "es2022",
+    "moduleResolution": "node"
+  }
+};
+
 const getConfigPaths = () => {
   /*
   "./components/*",
@@ -208,6 +241,14 @@ const getJestConfigPaths = () => {
 
   return pathConfig;
 };
+
+var fs = require("fs");
+
+jsConfigTemplate.compilerOptions.paths = getConfigPaths();
+tsConfigTemplate.compilerOptions.paths = getConfigPaths();
+
+fs.writeFile("jsconfig.json", JSON.stringify(jsConfigTemplate, null, 4), () => console.log("jsconfig successfully generated from pathConfig!"));
+fs.writeFile("tsconfig.json", JSON.stringify(tsConfigTemplate, null, 4), () => console.log("tsconfig successfully generated from pathConfig!"));
 
 module.exports = {
   getConfigPaths,
