@@ -1,5 +1,5 @@
 import { MultiFieldContainerFormProps } from "components/core/SharedComponents/MultiFieldContainer";
-import { Control } from "globals";
+import { Control } from "globals/interfaces";
 import { FormValidationRule } from "utils/interfaces";
 
 export type PreviewModalAction = "add" | "edit" | "delete"

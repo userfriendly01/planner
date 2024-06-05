@@ -13,7 +13,7 @@ import { runAlohaRoutingStartup } from "authentication/startups/cct-aloha-routin
 import { runAlohaFlowStartup } from "authentication/startups/cct-aloha-flow-startup";
 import AlohaFlowContainer from "alohaFlow/AlohaFlowContainer";
 import AlohaRoutingContainer from "alohaRouting/AlohaRoutingContainer";
-import TritonUsersViewWrapper from "usermanagement/TritonUsersViewWrapper";
+import { TritonUsersViewWrapper } from "usermanagement/TritonUsersViewWrapper";
 import { setupMockedComponents } from "testUtils";
 
 jest.mock("authentication/startups/cct-triton-admin-startup", () => ({
@@ -29,8 +29,7 @@ jest.mock("authentication/startups/cct-aloha-flow-startup", () => ({
 }));
 
 jest.mock("usermanagement/TritonUsersViewWrapper", () => ({
-  __esModule: true,
-  default: jest.fn()
+  TritonUsersViewWrapper: jest.fn()
 }));
 
 jest.mock("alohaRouting/AlohaRoutingContainer", () => ({

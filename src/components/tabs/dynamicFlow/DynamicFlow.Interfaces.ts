@@ -1,4 +1,4 @@
-import { Control } from "globals";
+import { Control } from "globals/interfaces";
 import { FormValidationRule } from "utils/interfaces";
 import { MultiFieldContainerFormProps } from "components/core/SharedComponents/MultiFieldContainer";
 

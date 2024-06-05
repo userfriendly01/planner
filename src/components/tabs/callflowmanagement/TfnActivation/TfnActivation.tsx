@@ -16,7 +16,7 @@ import {
   updateTfn
 } from "services/tfnActivation";
 import { ModalOverlayStatuses } from "globals/interfaces";
-import { timeouts } from "globals/index";
+import { timeouts } from "globals";
 import { InputAdornment } from "@mui/material";
 import { logger } from "utils/logger";
 

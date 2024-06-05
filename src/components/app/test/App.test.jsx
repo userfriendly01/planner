@@ -6,7 +6,7 @@ import {
 } from "@mui/material";
 import Header from "../../header/Header/Header";
 import NavTabs from "../../navigation/NavTabs";
-import { NotificationModal } from "components/NotificationModal";
+import NotificationModal from "components/NotificationModal";
 import {
   useAdminDispatch, useAdminState
 } from "context/appContext";
@@ -119,7 +119,8 @@ jest.mock("../../navigation/NavTabs", () => ({
 }));
 
 jest.mock("components/NotificationModal", () => ({
-  NotificationModal: jest.fn()
+  __esModule: true,
+  default: jest.fn()
 }));
 
 jest.mock("context/appContext", () => ({

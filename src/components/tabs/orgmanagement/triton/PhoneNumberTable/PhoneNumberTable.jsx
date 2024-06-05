@@ -91,7 +91,7 @@ const TableText = styled.div`
   margin: 2px;
 `;
 
-const PhoneNumberTable = props => {
+export const PhoneNumberTable = props => {
   const {
     deleteFunction,
     editFunction,
@@ -165,5 +165,3 @@ PhoneNumberTable.propTypes = {
     overlayMessage: PropTypes.string
   }).isRequired
 };
-
-export default PhoneNumberTable;

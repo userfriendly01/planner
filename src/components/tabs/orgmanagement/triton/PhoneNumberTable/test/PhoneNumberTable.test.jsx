@@ -1,4 +1,4 @@
-import PhoneNumberTable from "../PhoneNumberTable";
+import { PhoneNumberTable } from "../PhoneNumberTable";
 import { ModalOverlay } from "components/ModalOverlay";
 import React from "react";
 import {

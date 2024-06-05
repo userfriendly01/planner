@@ -5,7 +5,7 @@ import {
   CallTag,
   CallTagOptions,
   OperatingUnit
-} from "globals";
+} from "globals/interfaces";
 
 export interface ProfileEntryFormProps {
   handleClose: () => void

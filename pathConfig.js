@@ -1,3 +1,9 @@
+/*
+if you get browser errors - comment out the paths until you find the culprit
+Paths should only be defined if there is a folder within it
+if the folder & file are the same name, you'll need to specify it a little deeper - ie "callflowmanagement/TfnActivation/TfnActivation"
+*/
+
 const paths = [
   {
     alias: "authentication",
@@ -53,9 +59,7 @@ const paths = [
       "components/tabs/callflowmanagement/SkillManagement/SkillsContainer",
       "components/tabs/callflowmanagement/SkillManagement/AddEditSkill",
       "components/tabs/callflowmanagement/SkillManagement/ActionContainer",
-      "components/tabs/callflowmanagement/SkillManagement/DefaultSkillGroups",
-      "components/tabs/callflowmanagement/TfnActivation",
-      "components/tabs/callflowmanagement/CallFlowConfirmationModal"
+      "components/tabs/callflowmanagement/SkillManagement/DefaultSkillGroups"
     ]
   },
   {

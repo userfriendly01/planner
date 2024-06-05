@@ -3,7 +3,7 @@ import { CallFlowConfirmationModal } from "../CallFlowConfirmationModal";
 import { ModalOverlay } from "components/ModalOverlay";
 import { PaperContainer } from "components/PaperContainer";
 import { StyledButton } from "components/StyledButton";
-import ExportButton from "callflowmanagement/ExportButton";
+import { ExportButton } from "callflowmanagement/ExportButton";
 import { ModalOverlayStatuses } from "globals/interfaces";
 import {
   act,
@@ -24,8 +24,7 @@ jest.mock("components/StyledButton", () => ({
 }));
 
 jest.mock("callflowmanagement/ExportButton", () => ({
-  __esModule: true,
-  default: jest.fn()
+  ExportButton: jest.fn()
 }));
 
 const mockOnConfirm = jest.fn();

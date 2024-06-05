@@ -17,7 +17,7 @@ import {
   userDestination
 } from "utils/flowUtils";
 import { flowFields } from "../CustomActions/FlowFieldsConfig";
-import ComponentControl from "components/ComponentControl";
+import { ComponentControl } from "components/ComponentControl";
 import { GridApiCommunity } from "@mui/x-data-grid/internals";
 
 

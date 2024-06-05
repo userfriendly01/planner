@@ -1,4 +1,4 @@
-import { FetchUserResponse } from "services";
+import { FetchUserResponse } from "services/fetchUser";
 
 export interface ModalNNumberProps {
   disabled: boolean,

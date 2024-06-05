@@ -1,7 +1,7 @@
 import React from "react";
 import { CallFlowManagementSkills } from "../CallFlowManagementSkills";
 import { getAuthenticationProfileTemplates } from "authentication/authenticationProfiles";
-import { CallFlowConfirmationModal } from "callflowmanagement/CallFlowConfirmationModal";
+import { CallFlowConfirmationModal } from "callflowmanagement/CallFlowConfirmationModal/CallFlowConfirmationModal";
 import { ActionContainer } from "callflowmanagement/ActionContainer";
 import { SkillsContainer } from "callflowmanagement/SkillsContainer";
 import { useAdminState } from "context/appContext";
@@ -21,7 +21,7 @@ jest.mock("authentication/authenticationProfiles", () => ({
   getAuthenticationProfileTemplates: jest.fn()
 }));
 
-jest.mock("callflowmanagement/CallFlowConfirmationModal", () => ({
+jest.mock("callflowmanagement/CallFlowConfirmationModal/CallFlowConfirmationModal", () => ({
   CallFlowConfirmationModal: jest.fn()
 }));
 

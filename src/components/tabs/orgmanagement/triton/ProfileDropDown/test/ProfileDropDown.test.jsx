@@ -1,4 +1,4 @@
-import ProfileDropDown from "../ProfileDropDown";
+import { ProfileDropDown } from "../ProfileDropDown";
 import { Dropdown } from "components/Dropdown";
 import React from "react";
 import {

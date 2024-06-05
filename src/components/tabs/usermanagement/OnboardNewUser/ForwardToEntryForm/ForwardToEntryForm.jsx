@@ -2,8 +2,8 @@ import {
   FormControlLabel,
   Radio
 } from "@mui/material";
-import { Dropdown } from "components";
-import { PhoneNumberInput } from "components";
+import { Dropdown } from "components/Dropdown";
+import { PhoneNumberInput } from "components/PhoneNumberInput";
 import { useAdminState } from "context/appContext";
 import PropTypes from "prop-types";
 import React from "react";

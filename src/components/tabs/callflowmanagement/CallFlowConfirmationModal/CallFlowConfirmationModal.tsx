@@ -7,7 +7,7 @@ import {
 import { CallFlowConfirmationModalProps } from "./CallFlowConfirmationModal.Interfaces";
 import { ModalOverlay } from "components/ModalOverlay";
 import { PaperContainer } from "components/PaperContainer";
-import ExportButton from "callflowmanagement/ExportButton";
+import { ExportButton } from "callflowmanagement/ExportButton";
 import React from "react";
 
 export const CallFlowConfirmationModal = (props: CallFlowConfirmationModalProps) => {

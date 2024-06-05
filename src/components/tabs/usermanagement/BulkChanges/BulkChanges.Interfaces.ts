@@ -1,4 +1,4 @@
-import { AppState } from "globals";
+import { AppState } from "globals/interfaces";
 
 export interface Field {
   field: string,

@@ -1,9 +1,9 @@
-import { App } from "components";
+import App from "components/app/App";
 import { SharedGraphAPIProvider } from "components/core/Auth/SharedGraphAPIProvider";
 import {
   StateProvider,
   FormStateProvider
-} from "context";
+} from "context/appContext";
 import { authConfig } from "globals";
 import { theme } from "globals/theme";
 import React from "react";

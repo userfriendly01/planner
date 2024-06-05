@@ -3,12 +3,12 @@ import {
   ConfirmationModalOptsProps,
   SaveResultProps
 } from "../CallFlowConfirmationModal/CallFlowConfirmationModal.Interfaces";
-import { CallFlowConfirmationModal } from "callflowmanagement/CallFlowConfirmationModal";
-import { TfnActivation } from "callflowmanagement/TfnActivation";
+import { CallFlowConfirmationModal } from "callflowmanagement/CallFlowConfirmationModal/CallFlowConfirmationModal";
+import { TfnActivation } from "callflowmanagement/TfnActivation/TfnActivation";
 import React from "react";
 import { Modal } from "@mui/material";
 
-const CallFlowManagementTfn = () => {
+export const CallFlowManagementTfn = () => {
 
   const defaultConfirmationModalOpts: ConfirmationModalOptsProps = {
     open: false,
@@ -46,5 +46,3 @@ const CallFlowManagementTfn = () => {
     </CallflowWrapper>
   );
 };
-
-export default CallFlowManagementTfn;

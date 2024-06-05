@@ -15,7 +15,7 @@ import { getWorkerProfileId } from "authentication/authUtils";
 import { getFilteredPermissions } from "authentication/authenticationProfiles";
 import Header from "../header/Header/Header";
 import NavTabs from "../navigation/NavTabs";
-import { NotificationModal } from "components/NotificationModal";
+import NotificationModal from "components/NotificationModal";
 import {
   useAdminDispatch, useAdminState
 } from "context/appContext";

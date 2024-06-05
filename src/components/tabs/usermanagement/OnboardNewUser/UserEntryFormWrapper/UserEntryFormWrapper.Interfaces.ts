@@ -7,10 +7,10 @@ import {
   UMUser,
   WfmUser,
   UMTwilioAttributeSkills
-} from "globals";
-import { FetchUserResponse } from "services";
+} from "globals/interfaces";
+import { FetchUserResponse } from "services/fetchUser";
 import { ExtensionStatusProps } from "../Extension/ExtensionInput/ExtensionInput.Interfaces";
-import { CalabrioGroup } from "..";
+import { CalabrioGroup } from "usermanagement/CallRecording.Interfaces";
 
 export interface LoadingState {
   lookupUser: boolean;

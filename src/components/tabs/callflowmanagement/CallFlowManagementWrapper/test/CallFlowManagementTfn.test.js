@@ -1,7 +1,7 @@
 import React from "react";
-import CallFlowManagementTfn from "../CallFlowManagementTfn";
-import { CallFlowConfirmationModal } from "callflowmanagement/CallFlowConfirmationModal";
-import { TfnActivation } from "callflowmanagement/TfnActivation";
+import { CallFlowManagementTfn } from "../CallFlowManagementTfn";
+import { CallFlowConfirmationModal } from "callflowmanagement/CallFlowConfirmationModal/CallFlowConfirmationModal";
+import { TfnActivation } from "callflowmanagement/TfnActivation/TfnActivation";
 import {
   render,
   getLastInstanceCalled,
@@ -11,12 +11,12 @@ import {
 } from "testUtils";
 import { Modal } from "@mui/material";
 
-jest.mock("callflowmanagement/CallFlowConfirmationModal", () => ({
+jest.mock("callflowmanagement/CallFlowConfirmationModal/CallFlowConfirmationModal", () => ({
   CallFlowConfirmationModal: jest.fn()
 }));
 
 
-jest.mock("callflowmanagement/TfnActivation", () => ({
+jest.mock("callflowmanagement/TfnActivation/TfnActivation", () => ({
   TfnActivation: jest.fn()
 }));
 

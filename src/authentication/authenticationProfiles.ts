@@ -9,7 +9,7 @@ import { runAlohaRoutingStartup } from "authentication/startups/cct-aloha-routin
 import { runAlohaFlowStartup } from "authentication/startups/cct-aloha-flow-startup";
 import AlohaFlowContainer from "alohaFlow/AlohaFlowContainer";
 import AlohaRoutingContainer from "alohaRouting/AlohaRoutingContainer";
-import TritonUsersViewWrapper from "usermanagement/TritonUsersViewWrapper";
+import { TritonUsersViewWrapper } from "usermanagement/TritonUsersViewWrapper";
 import { ADGroupPermission } from "globals/interfaces";
 
 export const getAuthenticationProfileTemplates = (): AuthenticationProfileOptions => {

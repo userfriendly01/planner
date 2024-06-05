@@ -10,7 +10,7 @@ import {
   ConfirmationModalOptsProps,
   SaveResultProps
 } from "../CallFlowConfirmationModal/CallFlowConfirmationModal.Interfaces";
-import { CallFlowConfirmationModal } from "callflowmanagement/CallFlowConfirmationModal";
+import { CallFlowConfirmationModal } from "callflowmanagement/CallFlowConfirmationModal/CallFlowConfirmationModal";
 import { ActionContainer } from "callflowmanagement/ActionContainer";
 import { SkillsContainer } from "callflowmanagement/SkillsContainer";
 import { useAdminState } from "context/appContext";

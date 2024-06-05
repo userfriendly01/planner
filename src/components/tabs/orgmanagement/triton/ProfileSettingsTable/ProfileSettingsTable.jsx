@@ -29,10 +29,8 @@ import {
   profileTableColumnHeader,
   formModes
 } from "globals/index";
-import {
-  profileEntryFormDispatch,
-  profileEntryFormActions
-} from "context/appContext";
+import { profileEntryFormDispatch } from "context/appContext";
+import { profileEntryFormActions } from "context/profileEntryFormReducer";
 
 export const ProfileSettingsTable = props => {
   const {

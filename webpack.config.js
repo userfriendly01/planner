@@ -3,6 +3,7 @@ const ESLintPlugin = require("eslint-webpack-plugin");
 const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 const webpack = require("webpack");
 const path = require("path");
+const { getWebpackPaths } = require("./pathConfig");
 
 const resolvePathInSrc = resourceInSrc => {
   return resourceInSrc
@@ -55,21 +56,9 @@ const config = {
   },
   resolve: {
     alias: {
-      // You will need to define similar aliases in jest.config.js
+      /* */
       src: resolvePathInSrc(),
-      authentication: resolvePathInSrc("authentication"),
-      components: [resolvePathInSrc("components")],
-      alohaFlow: resolvePathInSrc("components/tabs/alohaFlow"),
-      alohaRouting: resolvePathInSrc("components/tabs/alohaRouting"),
-      callflowmanagement: resolvePathInSrc("components/tabs/callflowmanagement"),
-      dynamicFlow: resolvePathInSrc("components/tabs/dynamicFlow"),
-      orgmanagement: resolvePathInSrc("components/tabs/orgmanagement"),
-      usermanagement: resolvePathInSrc("components/tabs/usermanagement"),
-      context: resolvePathInSrc("context"),
-      globals: resolvePathInSrc("globals"),
-      icons: resolvePathInSrc("assets/icons"),
-      services: resolvePathInSrc("services"),
-      utils: resolvePathInSrc("utils"),
+      ...getWebpackPaths(resolvePathInSrc),
       // "styled-components": path.resolve(__dirname, "node_modules", "styled-components"),
       process: "process/browser.js"
     },
