@@ -1,4 +1,4 @@
-import Pagination from "../Pagination";
+import { Pagination } from "../Pagination";
 import { NavArrow } from "../Pagination.Styles";
 import { Tooltip } from "@mui/material";
 import { theme } from "globals/theme";

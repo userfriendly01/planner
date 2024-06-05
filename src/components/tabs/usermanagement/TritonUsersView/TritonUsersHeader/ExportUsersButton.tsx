@@ -1,13 +1,13 @@
 
-import { StyledExportButton } from "./TritonUsersHeader.Styles";
-import { ExportTritonUserProps } from "./TritonUsersHeader.Interfaces";
+import { StyledExportButton } from "usermanagement/TritonUsersHeader.Styles";
+import { ExportTritonUserProps } from "usermanagement/TritonUsersHeader.Interfaces";
 import React from "react";
 import { ExcelExport } from "@progress/kendo-react-excel-export";
-import { formatWorkerAttributeSkillsToString } from "utils";
-import { useAdminState } from "context";
+import { formatWorkerAttributeSkillsToString } from "utils/formatWorkerAttributeSkills";
+import { useAdminState } from "context/appContext";
 import { exportColumns } from "globals";
 
-const ExportButton = (props: ExportTritonUserProps) => {
+export const ExportUsersButton = (props: ExportTritonUserProps) => {
   const {
     selected,
     label
@@ -57,5 +57,3 @@ const ExportButton = (props: ExportTritonUserProps) => {
     </div>
   );
 };
-
-export default ExportButton;

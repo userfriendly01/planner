@@ -1,24 +1,24 @@
 import {
   Label,
   Wrapper
-} from "./OuFilterDropdown.Styles";
+} from "usermanagement/OuFilterDropdown.Styles";
 import {
   Dropdown
-} from "components";
+} from "components/Dropdown";
 import {
   useAdminState, useAdminDispatch
-} from "context";
+} from "context/appContext";
 import React from "react";
-import { getOperatingUnits } from "services";
-import { OperatingUnit } from "globals";
-import { logger } from "utils";
+import { getOperatingUnits } from "services/operatingUnits";
+import { OperatingUnit } from "globals/interfaces";
+import { logger } from "utils/logger";
 
 export interface DropdownOption {
   label: string,
   value: any
 }
 
-const OuFilterDropdown = () => {
+export const OuFilterDropdown = () => {
 
   const [operatingUnitList, setOperatingUnitList] = React.useState([]);
 
@@ -94,5 +94,3 @@ const OuFilterDropdown = () => {
     </Wrapper>
   );
 };
-
-export default OuFilterDropdown;

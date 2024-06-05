@@ -1,29 +1,30 @@
-import ProfileFilterDropdown from "../ProfileFilterDropdown";
-import { Dropdown } from "components";
-import { useAdminState, useAdminDispatch } from "context";
+import { ProfileFilterDropdown } from "../ProfileFilterDropdown";
+import { Dropdown } from "components/Dropdown";
+import {
+  useAdminState, useAdminDispatch
+} from "context/appContext";
 import React from "react";
-import { sortProfilesById } from "utils";
+import { sortProfilesById } from "utils/skillsUtils";
 import {
   act,
   render,
   setupMockedComponents,
   initialTestState as initialState
 } from "testUtils";
-import { theme } from "globals";
+import { theme } from "globals/theme";
 import { ThemeProvider } from "styled-components";
 
-jest.mock("components", () => ({
+jest.mock("components/Dropdown", () => ({
   Dropdown: jest.fn()
 }));
 
-jest.mock("context", () => ({
-  useAdminState: jest.fn(),
-  useAdminDispatch: jest.fn()
+jest.mock("utils/sortUtils", () => ({
+  sortProfilesById: jest.fn()
 }));
 
-jest.mock("../ProfileFilterDropdown.Styles", () => ({
-  Label: jest.requireActual("../ProfileFilterDropdown.Styles").Label,
-  Wrapper: jest.requireActual("../ProfileFilterDropdown.Styles").Wrapper
+jest.mock("context/appContext", () => ({
+  useAdminState: jest.fn(),
+  useAdminDispatch: jest.fn()
 }));
 
 const mockAdminDispatch = jest.fn();

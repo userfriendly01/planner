@@ -1,21 +1,23 @@
-import ProfileColumn from "../ProfileColumn";
+import { ProfileColumn } from "../ProfileColumn";
 import React from "react";
-import { Person, PersonOutline } from "@mui/icons-material";
-import { theme } from "globals";
+import {
+  Person, PersonOutline
+} from "@mui/icons-material";
+import { theme } from "globals/theme";
 import { ThemeProvider } from "styled-components";
-import { act, fireEvent, render, setupMockedComponents } from "testUtils";
+import {
+  act, fireEvent, render, setupMockedComponents
+} from "testUtils";
 
-jest.mock("components", () => ({
-  ModalFetchingRing: jest.fn(),
-  StyledButton: jest.fn(),
+jest.mock("components/ModalFetchingRing", () => ({
+  ModalFetchingRing: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
+  StyledButton: jest.fn()
 }));
 
 jest.mock("@mui/icons-material", () => ({
-  Close: jest.fn(),
-  CloseRounded: jest.fn(),
-  AccountBox: jest.fn(),
-  Edit: jest.fn(),
-  InfoOutlined: jest.fn(),
   Person: jest.fn(),
   PersonOutline: jest.fn()
 }));
@@ -37,7 +39,7 @@ const people = [
     ["Last Name"]: "Cuneo",
     ["Team"]: "Default Team",
     ["User Id"]: 302,
-    ["Active"]: true,
+    ["Active"]: true
   },
   {
     ["Acd Id"]: "WK129988",
@@ -47,7 +49,7 @@ const people = [
     ["Last Name"]: "west",
     ["Team"]: "Default Team",
     ["User Id"]: 49,
-    ["Active"]: false,
+    ["Active"]: false
   },
   {
     ["Acd Id"]: "WK124423",
@@ -57,9 +59,9 @@ const people = [
     ["Last Name"]: "marathon",
     ["Team"]: "Family Guy",
     ["User Id"]: 422,
-    ["Active"]: false,
+    ["Active"]: false
   }
-]
+];
 describe("ProfileColumn", () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -74,7 +76,7 @@ describe("ProfileColumn", () => {
         <ThemeProvider theme={theme}>
           <ProfileColumn people={people} title={title} />
         </ThemeProvider>
-      )
+      );
       expect(container).toHaveTextContent(people[0]["Acd Id"]);
       expect(container).toHaveTextContent("Active");
       expect(container).not.toHaveTextContent(people[1]["Acd Id"]);
@@ -89,7 +91,7 @@ describe("ProfileColumn", () => {
         <ThemeProvider theme={theme}>
           <ProfileColumn people={people} title={title} />
         </ThemeProvider>
-      )
+      );
       expect(rendered.container).toHaveTextContent(people[0]["Acd Id"]);
       expect(rendered.container).not.toHaveTextContent(people[1]["Acd Id"]);
       const selectUser = rendered.getByTestId("user-1");

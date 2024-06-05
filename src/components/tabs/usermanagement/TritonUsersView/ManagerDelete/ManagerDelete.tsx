@@ -2,26 +2,24 @@ import {
   Header,
   CloseButtonContainer,
   ModalContainer
-} from "./ManagerDelete.Styles";
+} from "usermanagement/ManagerDelete.Styles";
 import { ManagerDeleteProps } from "./ManagerDelete.Interfaces";
-import {
-  ConfirmationForm,
-  ErrorForm,
-  ModalOverlay,
-  PaperContainer
-} from "components";
+import { ConfirmationForm } from "usermanagement/ConfirmationForm";
+import { ErrorForm } from "usermanagement/ErrorForm";
+import { ModalOverlay } from "components/ModalOverlay";
+import { PaperContainer } from "components/PaperContainer";
 import {
   useAdminDispatch,
   useAdminState
-} from "context";
-import { ModalOverlayStatuses } from "globals";
+} from "context/appContext";
+import { ModalOverlayStatuses } from "globals/interfaces";
 import React from "react";
-import { deleteManager } from "services";
+import { deleteManager } from "services/manager";
 import { CloseRounded } from "@mui/icons-material";
-import { logger } from "utils";
+import { logger } from "utils/logger";
 import { IconButton } from "@mui/material";
 
-const ManagerDelete = (props: ManagerDeleteProps): any => {
+export const ManagerDelete = (props: ManagerDeleteProps): any => {
   const {
     handleClose,
     selectedManager
@@ -125,5 +123,3 @@ const ManagerDelete = (props: ManagerDeleteProps): any => {
       : <div></div>
   );
 };
-
-export default ManagerDelete;

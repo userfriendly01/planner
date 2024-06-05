@@ -1,11 +1,11 @@
 
-import { Button } from "../BulkChanges.Styles";
+import { Button } from "usermanagement/BulkChanges.Styles";
 import React from "react";
 import {
   ExcelExport
 } from "@progress/kendo-react-excel-export";
 
-const ExportSuccessButton = (props: any) => {
+export const ExportSuccessButton = (props: any) => {
   const { successfulRows } = props;
 
   const _export = React.useRef(null);
@@ -43,5 +43,3 @@ const ExportSuccessButton = (props: any) => {
     <Button onClick={handleExport}><ExcelExport ref={_export}/>Export Successful Rows</Button>
   );
 };
-
-export default ExportSuccessButton;

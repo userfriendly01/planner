@@ -4,14 +4,12 @@ import {
   ModalContainer,
   DropdownWrapper,
   CloseButtonContainer
-} from "./Filter.Styles";
-import {
-  PaperContainer,
-  StyledButton,
-  ProfileFilterDropdown,
-  OuFilterDropdown,
-  ManagerDropdown
-} from "components";
+} from "usermanagement/Filter.Styles";
+import { PaperContainer } from "components/PaperContainer";
+import { StyledButton } from "components/StyledButton";
+import { ProfileFilterDropdown } from "usermanagement/ProfileFilterDropdown";
+import { OuFilterDropdown } from "usermanagement/OuFilterDropdown";
+import { ManagerDropdown } from "usermanagement/ManagerDropdown";
 import React from "react";
 import { CloseRounded } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
@@ -21,7 +19,7 @@ export interface FilterModalProps {
   handleClose: () => void
 }
 
-const FilterModal = (props: FilterModalProps) => {
+export const FilterModal = (props: FilterModalProps) => {
   const {
     handleClose,
     handleClear
@@ -49,5 +47,3 @@ const FilterModal = (props: FilterModalProps) => {
     </ModalContainer>
   );
 };
-
-export default FilterModal;

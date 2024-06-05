@@ -1,17 +1,13 @@
-import {
-  BulkCreateForm,
-  BulkUpdateForm
-} from "./BulkActions";
-import {
-  readUploadFile,
-  consolidateTemplates
-} from "./BulkUtils";
+import { BulkCreateForm } from "usermanagement/BulkCreateForm";
+import { BulkUpdateForm } from "usermanagement/BulkUpdateForm";
+import { readUploadFile } from "usermanagement/processingUtils";
+import { consolidateTemplates } from "usermanagement/validationUtils";
 import {
   Template,
   View,
   views
-} from "./BulkChanges.Interfaces";
-import { getCreateTemplates } from "./BulkTemplates";
+} from "usermanagement/BulkChanges.Interfaces";
+import { getCreateTemplates } from "usermanagement/templates";
 import {
   BulkChangesWrapper,
   ButtonWrapper,
@@ -20,22 +16,20 @@ import {
   Row,
   StepWrapper,
   Wrapper
-} from "./BulkChanges.Styles";
-import {
-  ExportTemplateButton,
-  ExportOptionsButton
-} from "./ExportButtons";
-import { ProcessingModal } from "./Processing";
+} from "usermanagement/BulkChanges.Styles";
+import { ExportTemplateButton } from "usermanagement/ExportTemplateButton";
+import { ExportOptionsButton } from "usermanagement/ExportOptionsButton";
+import { ProcessingModal } from "usermanagement/ProcessingModal";
 import { checkIfBulkAdmin } from "authentication/authUtils";
-import { Dropdown } from "components";
-import { useAdminState } from "context";
+import { Dropdown } from "components/Dropdown";
+import { useAdminState } from "context/appContext";
 import React from "react";
 import { Modal } from "@mui/material";
 import { CircularProgress } from "@mui/material";
 import { LoadingMessage } from "components/app/App.Styles";
-import { theme } from "globals";
+import { theme } from "globals/theme";
 
-const BulkChanges = () => {
+export const BulkChanges = () => {
 
   const state = useAdminState();
   const uploadButtonRef = React.useRef<HTMLInputElement>();
@@ -204,5 +198,3 @@ const BulkChanges = () => {
     </>
   );
 };
-
-export default BulkChanges;

@@ -24,7 +24,7 @@ export interface TeamModalProps {
   handleClose: (res: any) => void
 }
 
-const CalabrioTeamModal = (props: TeamModalProps) => {
+export const CalabrioTeamModal = (props: TeamModalProps) => {
   const state = useAdminState();
   const dispatch = useAdminDispatch();
 
@@ -141,5 +141,3 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
     </ModalContainer>
   );
 };
-
-export default CalabrioTeamModal;

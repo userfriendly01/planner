@@ -1,9 +1,7 @@
-import WfmUsersHeader from "../WfmUsersHeader";
-import ExportButton from "../ExportUsersButton";
-import {
-  Dropdown,
-  SearchBox
-} from "components";
+import { WfmUsersHeader } from "../WfmUsersHeader";
+import { ExportWfmUsersButton } from "usermanagement/ExportWfmUsersButton";
+import { Dropdown } from "components/Dropdown";
+import { SearchBox } from "components/SearchBox";
 import React from "react";
 import {
   act,
@@ -12,34 +10,37 @@ import {
   initialTestState,
   waitFor
 } from "testUtils";
-import { useAdminState } from "context";
+import { useAdminState } from "context/appContext";
 import {
   getCalabrioWfmOrg
-} from "utils";
-import { ModalOverlayStatuses } from "globals";
+} from "utils/calabrioUtils";
+import { ModalOverlayStatuses } from "globals/interfaces";
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn(),
   useAdminDispatch: jest.fn()
 }));
 
-jest.mock("utils", () => ({
+jest.mock("utils/calabrioUtils", () => ({
   getCalabrioWfmOrg: jest.fn(),
-  getWfmTeams: jest.requireActual("utils").getWfmTeams,
-  sortWFMByName: jest.requireActual("utils").sortWFMByName,
-  getWfmBusinessUnits: jest.requireActual("utils").getWfmBusinessUnits,
-  logger: jest.requireActual("utils").logger
+  getWfmTeams: jest.requireActual("utils/calabrioUtils").getWfmTeams,
+  getWfmBusinessUnits: jest.requireActual("utils/calabrioUtils").getWfmBusinessUnits
 }));
 
-jest.mock("components", () => ({
-  Dropdown: jest.fn(),
-  SearchBox: jest.fn(),
+jest.mock("components/Dropdown", () => ({
+  Dropdown: jest.fn()
+}));
+
+jest.mock("components/SearchBox", () => ({
+  SearchBox: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
 }));
 
-jest.mock("../ExportUsersButton", () => ({
-  __esModule: true,
-  default: jest.fn()
+jest.mock("usermanagement/ExportWfmUsersButton", () => ({
+  ExportWfmUsersButton: jest.fn()
 }));
 
 const tableState = {
@@ -66,19 +67,19 @@ describe("WfmUsersHeader", () => {
     setupMockedComponents({
       Dropdown,
       SearchBox,
-      ExportButton
+      ExportWfmUsersButton
     });
   });
   describe("initial render", () => {
     test("component renders as expected", () => {
       renderComponent();
-      expect(ExportButton.mock.calls.length).toBe(1);
-      expect(ExportButton.mock.calls[0][0].selected).toBe(tableState.searchResults);
-      expect(ExportButton.mock.calls[0][0].label).toBe("Export");
+      expect(ExportWfmUsersButton.mock.calls.length).toBe(1);
+      expect(ExportWfmUsersButton.mock.calls[0][0].selected).toBe(tableState.searchResults);
+      expect(ExportWfmUsersButton.mock.calls[0][0].label).toBe("Export");
       expect(SearchBox.mock.calls.length).toBe(1);
       expect(SearchBox.mock.calls[0][0].searchBy).toBe(tableState.searchBy);
       expect(Dropdown.mock.calls.length).toBe(2);
-      expect(ExportButton.mock.calls.length).toBe(1);
+      expect(ExportWfmUsersButton.mock.calls.length).toBe(1);
     });
   });
   describe("updateValue is called on Business Unit Dropdown", () => {

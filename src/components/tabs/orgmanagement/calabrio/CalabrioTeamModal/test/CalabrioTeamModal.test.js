@@ -1,4 +1,4 @@
-import CalabrioTeamModal from "../CalabrioTeamModal";
+import { CalabrioTeamModal } from "../CalabrioTeamModal";
 import { CloseButton } from "../CalabrioTeamModal.Styles";
 import { TextField } from "@mui/material";
 import { Dropdown } from "components/Dropdown";

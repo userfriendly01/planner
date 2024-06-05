@@ -2,18 +2,16 @@ import {
   Label,
   IconWrapper,
   Wrapper
-} from "./ManagerDropdown.Styles";
-import {
-  ManagerModal,
-  ManagerDelete,
-  Dropdown
-} from "components";
+} from "usermanagement/ManagerDropdown.Styles";
+import { ManagerModal } from "usermanagement/ManagerModal";
+import { ManagerDelete } from "usermanagement/ManagerDelete";
+import { Dropdown } from "components/Dropdown";
 import {
   useAdminState,
   useAdminDispatch
-} from "context";
+} from "context/appContext";
 import React, { useState } from "react";
-import { sortManagersByName } from "utils";
+import { sortManagersByName } from "utils/sortUtils";
 import {
   Edit,
   Delete
@@ -25,9 +23,7 @@ export interface DropdownOption {
   value: any
 }
 
-const ManagerDropdown = () => {
-
-
+export const ManagerDropdown = () => {
   const state = useAdminState();
   const filterBy = state.userManagementTableFilters.managerFilter;
   const dispatch = useAdminDispatch();
@@ -141,5 +137,3 @@ const ManagerDropdown = () => {
     </Wrapper>
   );
 };
-
-export default ManagerDropdown;

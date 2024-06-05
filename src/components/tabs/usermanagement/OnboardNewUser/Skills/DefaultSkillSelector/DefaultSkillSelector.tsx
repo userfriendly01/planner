@@ -6,24 +6,22 @@ import {
   SkillRowItem,
   SkillRowSeperator,
   SkillsWrapper
-} from "./DefaultSkillSelector.Styles";
+} from "usermanagement/DefaultSkillSelector.Styles";
 import {
   DefaultSkillSelectorProps,
   NewTwilioWorkerSkill
-} from "./DefaultSkillSelector.Interfaces";
-import {
-  SkillsList,
-  SkillLevels
-} from "components";
-import { useAdminState } from "context";
-import { Skill } from "globals";
+} from "usermanagement/DefaultSkillSelector.Interfaces";
+import { SkillsList } from "usermanagement/SkillsList";
+import { SkillLevels } from "usermanagement/SkillLevels";
+import { useAdminState } from "context/appContext";
+import { Skill } from "globals/interfaces";
 import React from "react";
 import {
   Add,
   Delete
 } from "@mui/icons-material";
 
-const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
+export const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
   const {
     defaultSkills,
     setDefaultSkills
@@ -175,5 +173,3 @@ const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
     </DefaultSkillsWrapper>
   );
 };
-
-export default DefaultSkillSelector;

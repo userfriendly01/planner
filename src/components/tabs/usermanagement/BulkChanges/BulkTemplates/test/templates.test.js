@@ -1,23 +1,42 @@
 import {
   getUpdateTemplates,
   getCreateTemplates
-} from "../../BulkTemplates";
+} from "../templates";
 import {
-  addManager,
-  createUser,
+  createCalabrioTeam,
   createCalabrioUser,
   createCalabrioWFMPerson,
-  createCalabrioTeam,
   getCalabrioUser,
-  updateCalabrioUser,
+  updateCalabrioUser
+} from "services/calabrio";
+import {
+  createUser,
   updateUser
-} from "services";
+} from "services/user";
+import { addManager } from "services/manager";
 import { initialTestState } from "testUtils";
-import { CallerStateAttrDropDownOptions } from "../../../OnboardNewUser/RoutingAttributes/RoutingAttributesDropDown";
+import { CallerStateAttrDropDownOptions } from "usermanagement/RoutingAttributesDropDown";
 import { env } from "globals";
 
 const createTemplates = getCreateTemplates(initialTestState);
 const updateTemplates = getUpdateTemplates(initialTestState);
+
+jest.mock("services/calabrio", () => ({
+  createCalabrioTeam: jest.fn(),
+  createCalabrioUser: jest.fn(),
+  createCalabrioWFMPerson: jest.fn(),
+  getCalabrioUser: jest.fn(),
+  updateCalabrioUser: jest.fn()
+}));
+
+jest.mock("services/user", () => ({
+  updateUser: jest.fn(),
+  createUser: jest.fn()
+}));
+
+jest.mock("services/manager", () => ({
+  addManager: jest.fn()
+}));
 
 describe("CREATE_TRITON_USER", () => {
   beforeEach(() => {

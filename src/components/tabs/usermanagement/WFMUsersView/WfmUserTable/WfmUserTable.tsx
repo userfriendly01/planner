@@ -1,4 +1,4 @@
-import { WfmUserTableProps } from "./WfmUserTable.Interfaces";
+import { WfmUserTableProps } from "usermanagement/WfmUserTable.Interfaces";
 import {
   CustomTable,
   CustomTableData,
@@ -7,27 +7,23 @@ import {
   IconWrapper,
   TableContainer,
   TableText
-} from "./WfmUserTable.Styles";
+} from "usermanagement/WfmUserTable.Styles";
 import { Edit } from "@mui/icons-material";
+import { userFormActions } from "context/userFormReducer";
 import {
-  useAdminState,
-  useFormDispatch,
-  userFormActions
-} from "context";
+  useAdminState, useFormDispatch
+} from "context/appContext";
+import { formModes } from "globals";
 import {
-  formModes,
-  WfmBusinessUnit,
-  WfmTeam,
-  WfmUser
-} from "globals";
+  WfmBusinessUnit, WfmTeam, WfmUser
+} from "globals/interfaces";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  getWfmBusinessUnits,
-  getWfmTeams
-} from "utils";
+  getWfmBusinessUnits, getWfmTeams
+} from "utils/calabrioUtils";
 
-const WfmUserTable = (props: WfmUserTableProps) => {
+export const WfmUserTable = (props: WfmUserTableProps) => {
   const {
     tableState
   } = props;
@@ -114,5 +110,3 @@ const WfmUserTable = (props: WfmUserTableProps) => {
     </TableContainer>
   );
 };
-
-export default WfmUserTable;

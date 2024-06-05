@@ -1,20 +1,18 @@
-import {
-  AlohaFlowContainer,
-  AlohaRoutingContainer,
-  BulkChanges,
-  CallFlowManagementSkills,
-  CallFlowManagementTfn,
-  CompareProfiles,
-  DynamicFlowContainer,
-  ProfileDirectoryContainer,
-  ProfileDialListContainer,
-  ProfileSettingsContainer,
-  TritonUsersViewWrapper,
-  UserEntryForm,
-  WfmUsersViewWrapper,
-  CalabrioOrgWrapper,
-  CalabrioRolesWrapper
-} from "components";
+import AlohaFlowContainer from "alohaFlow/AlohaFlowContainer";
+import AlohaRoutingContainer from "alohaRouting/AlohaRoutingContainer";
+import { BulkChanges } from "usermanagement/BulkChanges";
+import { CallFlowManagementSkills } from "callflowmanagement/CallFlowManagementWrapper/CallFlowManagementSkills";
+import CallFlowManagementTfn from "callflowmanagement/CallFlowManagementWrapper/CallFlowManagementTfn";
+import { CompareProfiles } from "usermanagement/CompareProfiles";
+import DynamicFlowContainer from "dynamicFlow/DynamicFlowContainer";
+import ProfileDirectoryContainer from "orgmanagement/ProfileDirectoryContainer";
+import { ProfileDialListContainer } from "orgmanagement/ProfileDialListContainer";
+import { ProfileSettingsContainer } from "orgmanagement/ProfileSettingsContainer";
+import { TritonUsersViewWrapper } from "usermanagement/TritonUsersViewWrapper";
+import { UserEntryForm } from "usermanagement/UserEntryFormWrapper";
+import { WfmUsersViewWrapper } from "usermanagement/WfmUsersViewWrapper";
+import CalabrioOrgWrapper from "orgmanagement/CalabrioOrgWrapper";
+import CalabrioRolesWrapper from "orgmanagement/CalabrioRolesWrapper";
 
 export const getRoutes = () => [
   {

@@ -1,28 +1,26 @@
-import { Wrapper } from "./WfmUsersHeader.Styles";
-import { WfmUsersHeaderProps } from "./WfmUsersHeader.Interfaces";
-import ExportButton from "./ExportUsersButton";
-import {
-  Dropdown,
-  SearchBox
-} from "components";
+import { Wrapper } from "usermanagement/WfmUsersHeader.Styles";
+import { WfmUsersHeaderProps } from "usermanagement/WfmUsersHeader.Interfaces";
+import { ExportWfmUsersButton } from "usermanagement/ExportWfmUsersButton";
+import { Dropdown } from "components/Dropdown";
+import { SearchBox } from "components/SearchBox";
 import {
   useAdminDispatch, useAdminState
-} from "context";
+} from "context/appContext";
 import {
   ModalOverlayStatuses,
   WfmBusinessUnit,
   WfmTeam
-} from "globals";
+} from "globals/interfaces";
 import React from "react";
 import {
   getWfmBusinessUnits,
   getWfmTeams,
-  sortWFMByName,
-  getCalabrioWfmOrg,
-  logger
-} from "utils";
+  getCalabrioWfmOrg
+} from "utils/calabrioUtils";
+import { sortWFMByName } from "utils/sortUtils";
+import { logger } from "utils/logger";
 
-const ManagementHeader = (props: WfmUsersHeaderProps) => {
+export const WfmUsersHeader = (props: WfmUsersHeaderProps) => {
   const {
     setStatus,
     tableState,
@@ -147,9 +145,7 @@ const ManagementHeader = (props: WfmUsersHeaderProps) => {
         }
       })}
       />
-      <ExportButton selected={tableState.searchResults} label="Export"/>
+      <ExportWfmUsersButton selected={tableState.searchResults} label="Export"/>
     </Wrapper>
   );
 };
-
-export default ManagementHeader;

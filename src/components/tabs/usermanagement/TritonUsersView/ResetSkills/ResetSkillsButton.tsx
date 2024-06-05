@@ -1,19 +1,15 @@
-import { DefaultResetInformation } from "./ResetSkills.Interfaces";
-import {
-  ResetSkillsResultsModal,
-  StyledButton
-} from "components";
+import { DefaultResetInformation } from "usermanagement/ResetSkills.Interfaces";
+import { ResetSkillsResultsModal } from "usermanagement/ResetSkillsResultsModal";
+import { StyledButton } from "components/StyledButton";
 import {
   useAdminDispatch,
   useAdminState
-} from "context";
+} from "context/appContext";
 import { apiPaths } from "globals";
 import React, { useState } from "react";
-import {
-  logger,
-  mapWorkerFromTwilio,
-  myAxios
-} from "utils";
+import { logger } from "utils/logger";
+import { mapWorkerFromTwilio } from "utils/formatWorkerResponse";
+import { myAxios } from "utils/myAxios";
 import { Modal } from "@mui/material";
 
 const defaultResetInformation: DefaultResetInformation = {
@@ -23,7 +19,7 @@ const defaultResetInformation: DefaultResetInformation = {
   unsuccessfulResets: []
 };
 
-const ResetSkillsButton = (props: any) => {
+export const ResetSkillsButton = (props: any) => {
   const {
     selected
   } = props;
@@ -115,5 +111,3 @@ const ResetSkillsButton = (props: any) => {
     </div>
   );
 };
-
-export default ResetSkillsButton;

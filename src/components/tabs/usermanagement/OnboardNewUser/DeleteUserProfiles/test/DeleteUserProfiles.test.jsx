@@ -1,17 +1,15 @@
-import DeleteTritonUser from "../DeleteUserProfiles";
-import {
-  ForwardToEntryForm,
-  StyledButton
-} from "components";
+import { DeleteTritonUser } from "../DeleteUserProfiles";
+import { ForwardToEntryForm } from "usermanagement/ForwardToEntryForm";
+import { StyledButton } from "components/StyledButton";
 import {
   useAdminState,
   useFormState,
   useAdminDispatch,
-  useFormDispatch,
-  userFormActions
-} from "context";
+  useFormDispatch
+} from "context/appContext";
+import { userFormActions } from "context/userFormReducer";
 import React from "react";
-import { terminateUser } from "services";
+import { terminateUser } from "services/terminateUser";
 import {
   act,
   initialFormState,
@@ -20,20 +18,22 @@ import {
   waitFor
 } from "testUtils";
 
-jest.mock("components", () => ({
-  ForwardToEntryForm: jest.fn(),
+jest.mock("usermanagement/ForwardToEntryForm", () => ({
+  ForwardToEntryForm: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn(),
   useFormState: jest.fn(),
   useAdminDispatch: jest.fn(),
-  useFormDispatch: jest.fn(),
-  userFormActions: jest.requireActual("context").userFormActions
+  useFormDispatch: jest.fn()
 }));
 
-jest.mock("services", () => ({
+jest.mock("services/terminateUser", () => ({
   terminateUser: jest.fn()
 }));
 

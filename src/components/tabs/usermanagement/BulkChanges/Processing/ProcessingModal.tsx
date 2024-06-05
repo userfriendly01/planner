@@ -4,29 +4,26 @@ import {
   ModalWrapper,
   TextWrapper,
   ProcessingResultsWrapper
-} from "../BulkChanges.Styles";
+} from "usermanagement/BulkChanges.Styles";
 import {
   ProcessingModalProps,
   PROCESSING_STATES
-} from "../BulkChanges.Interfaces";
+} from "usermanagement/BulkChanges.Interfaces";
+import { ExportErrorsButton } from "usermanagement/ExportErrorsButton";
+import { ExportSuccessButton } from "usermanagement/ExportSuccessButton";
 import {
-  ExportErrorsButton,
-  ExportSuccessButton
-} from "../ExportButtons";
-import {
-  performValidations,
-  initiateCalls,
-  identifySuccessfulRecords
-} from "../BulkUtils";
-import ProgressBar from "./ProgressBar";
+  initiateCalls, identifySuccessfulRecords
+} from "usermanagement/processingUtils";
+import { performValidations } from "usermanagement/validationUtils";
+import { ProgressBar } from "./ProgressBar";
 import {
   useAdminState,
   useAdminDispatch
-} from "context";
+} from "context/appContext";
 import React from "react";
-import { logger } from "utils";
+import { logger } from "utils/logger";
 
-const ProcessingModal = (props: ProcessingModalProps) => {
+export const ProcessingModal = (props: ProcessingModalProps) => {
   const {
     selectedTemplates,
     handleClose,
@@ -156,5 +153,3 @@ const ProcessingModal = (props: ProcessingModalProps) => {
     </ModalWrapper>
   );
 };
-
-export default ProcessingModal;

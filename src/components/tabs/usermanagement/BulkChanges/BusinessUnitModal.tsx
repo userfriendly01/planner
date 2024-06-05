@@ -3,18 +3,19 @@ import {
   Button,
   ModalWrapper,
   CenteredDiv
-} from "./BulkChanges.Styles";
+} from "usermanagement/BulkChanges.Styles";
 import {
   useAdminDispatch,
   useAdminState
-} from "context";
-import { Dropdown, ModalFetchingRing } from "components";
+} from "context/appContext";
+import { Dropdown } from "components/Dropdown";
+import { ModalFetchingRing } from "components/ModalFetchingRing";
 import React from "react";
-import { getCalabrioWfmOrg } from "utils";
-import { ModalOverlayStatuses } from "globals";
+import { getCalabrioWfmOrg } from "utils/calabrioUtils";
+import { ModalOverlayStatuses } from "globals/interfaces";
 import { BusinessUnitModalProps } from "./BulkChanges.Interfaces";
 
-const BusinessUnitModal = (props: BusinessUnitModalProps) => {
+export const BusinessUnitModal = (props: BusinessUnitModalProps) => {
   const {
     handleClose,
     handleConfirm
@@ -46,28 +47,28 @@ const BusinessUnitModal = (props: BusinessUnitModalProps) => {
   return (
     <ModalWrapper>
       { state.calabrioContext.wfmOptions.length > 0 ?
-      <>
-        <Dropdown
-          label="Select a WFM Business Unit"
-          value={wfmBusinessUnit}
-          options={generateWFMBusinessUnitOptions()}
-          updateValue={async (event: any, businessUnit: any) => {
-            try {
-              setStatus(ModalOverlayStatuses.SAVING)
-              setWfmBusinessUnit(businessUnit);
-              await getCalabrioWfmOrg(businessUnit.value, state, dispatch);
-              setStatus(ModalOverlayStatuses.SUCCESS)
-            } catch(err) {
-              setStatus(ModalOverlayStatuses.FAIL)
-            }
-          }}
-          styles={{
-            margin: "0 0 30 0",
-            width: "500px"
-          }}
-        />
-        { status === ModalOverlayStatuses.SAVING && <ModalFetchingRing/>}
-        { status === ModalOverlayStatuses.SUCCESS && 
+        <>
+          <Dropdown
+            label="Select a WFM Business Unit"
+            value={wfmBusinessUnit}
+            options={generateWFMBusinessUnitOptions()}
+            updateValue={async (event: any, businessUnit: any) => {
+              try {
+                setStatus(ModalOverlayStatuses.SAVING);
+                setWfmBusinessUnit(businessUnit);
+                await getCalabrioWfmOrg(businessUnit.value, state, dispatch);
+                setStatus(ModalOverlayStatuses.SUCCESS);
+              } catch(err) {
+                setStatus(ModalOverlayStatuses.FAIL);
+              }
+            }}
+            styles={{
+              margin: "0 0 30 0",
+              width: "500px"
+            }}
+          />
+          { status === ModalOverlayStatuses.SAVING && <ModalFetchingRing/>}
+          { status === ModalOverlayStatuses.SUCCESS &&
           <ButtonWrapper>
             <Button onClick={() => handleClose()}>
               Cancel
@@ -76,13 +77,11 @@ const BusinessUnitModal = (props: BusinessUnitModalProps) => {
               Confirm
             </Button>
           </ButtonWrapper>
-        }
-        { status === ModalOverlayStatuses.FAIL && <CenteredDiv>Business Unit Failed to Load, please try again.</CenteredDiv>}
-      </>
-      : <CenteredDiv>WFM Options failed to load, please refresh Triton Admin and try again</CenteredDiv>
+          }
+          { status === ModalOverlayStatuses.FAIL && <CenteredDiv>Business Unit Failed to Load, please try again.</CenteredDiv>}
+        </>
+        : <CenteredDiv>WFM Options failed to load, please refresh Triton Admin and try again</CenteredDiv>
       }
     </ModalWrapper>
   );
 };
-
-export default BusinessUnitModal;

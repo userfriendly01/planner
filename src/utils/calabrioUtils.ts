@@ -7,7 +7,7 @@ import {
   updateCalabrioUser,
   getWfmOptions as getWfmOptionsServiceCall,
   getWfmOrg as getWfmOrgServiceCall
-} from "services";
+} from "services/calabrio";
 import util from "util";
 import zlib from "zlib";
 import {
@@ -17,7 +17,7 @@ import {
   WfmTeam,
   WfmUser,
   discrepancyType
-} from "globals";
+} from "globals/interfaces";
 import { logger } from "./logger";
 
 const inflate = util.promisify(zlib.inflate);

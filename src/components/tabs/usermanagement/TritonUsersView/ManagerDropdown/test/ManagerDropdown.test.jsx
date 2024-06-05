@@ -1,16 +1,14 @@
-import ManagerDropdown from "../ManagerDropdown";
-import {
-  Dropdown,
-  ManagerDelete,
-  ManagerModal
-} from "components";
-import { IconWrapper } from "../ManagerDropdown.Styles";
+import { ManagerDropdown } from "../ManagerDropdown";
+import { ManagerModal } from "usermanagement/ManagerModal";
+import { ManagerDelete } from "usermanagement/ManagerDelete";
+import { Dropdown } from "components/Dropdown";
+import { IconWrapper } from "usermanagement/ManagerDropdown.Styles";
 import {
   useAdminState, useAdminDispatch
-} from "context";
+} from "context/appContext";
 import { Modal } from "@mui/material";
 import React from "react";
-import { sortManagersByName } from "utils";
+import { sortManagersByName } from "utils/sortUtils";
 import {
   act,
   render,
@@ -18,21 +16,27 @@ import {
   initialTestState as initialState,
   waitFor
 } from "testUtils";
-import { theme } from "globals";
+import { theme } from "globals/theme";
 import { ThemeProvider } from "styled-components";
 
-jest.mock("components", () => ({
-  Dropdown: jest.fn(),
-  ManagerModal: jest.fn(),
+jest.mock("components/Dropdown", () => ({
+  Dropdown: jest.fn()
+}));
+
+jest.mock("usermanagement/ManagerModal", () => ({
+  ManagerModal: jest.fn()
+}));
+
+jest.mock("usermanagement/ManagerDelete", () => ({
   ManagerDelete: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn(),
   useAdminDispatch: jest.fn()
 }));
 
-jest.mock("../ManagerDropdown.Styles", () => ({
+jest.mock("usermanagement/ManagerDropdown.Styles", () => ({
   Label: jest.requireActual("../ManagerDropdown.Styles").Label,
   IconWrapper: jest.fn(),
   Wrapper: jest.requireActual("../ManagerDropdown.Styles").Wrapper

@@ -1,10 +1,10 @@
 
-import { StyledExportButton } from "./WfmUsersHeader.Styles";
-import { ExportWfmUserProps } from "./WfmUsersHeader.Interfaces";
+import { StyledExportButton } from "usermanagement/WfmUsersHeader.Styles";
+import { ExportWfmUserProps } from "usermanagement/WfmUsersHeader.Interfaces";
 import React from "react";
 import { ExcelExport } from "@progress/kendo-react-excel-export";
 
-const ExportButton = (props: ExportWfmUserProps) => {
+export const ExportWfmUsersButton = (props: ExportWfmUserProps) => {
   const {
     selected,
     label
@@ -69,5 +69,3 @@ const ExportButton = (props: ExportWfmUserProps) => {
     <StyledExportButton onClick={handleExport}><ExcelExport ref={_export}/>{label ? label : "Export"}</StyledExportButton>
   );
 };
-
-export default ExportButton;

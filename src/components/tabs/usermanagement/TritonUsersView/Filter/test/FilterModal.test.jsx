@@ -1,4 +1,4 @@
-import FilterModal from "../FilterModal";
+import { FilterModal } from "../FilterModal";
 import React from "react";
 import {
   expectMockedComponent,
@@ -7,29 +7,36 @@ import {
   setupMockedComponents,
   act
 } from "testUtils";
-import {
-  StyledButton,
-  ManagerDropdown,
-  ProfileFilterDropdown,
-  OuFilterDropdown,
-  PaperContainer
-} from "components";
+import { PaperContainer } from "components/PaperContainer";
+import { StyledButton } from "components/StyledButton";
+import { ProfileFilterDropdown } from "usermanagement/ProfileFilterDropdown";
+import { OuFilterDropdown } from "usermanagement/OuFilterDropdown";
+import { ManagerDropdown } from "usermanagement/ManagerDropdown";
 import { CloseRounded } from "@mui/icons-material";
 
 jest.mock("@mui/icons-material", () => ({
-  __esModule: true,
   CloseRounded: jest.fn()
 }));
 
-jest.mock("components", () => ({
-  __esModule: true,
-  Dropdown: jest.fn(),
-  PaperContainer: jest.fn(),
-  StyledButton: jest.fn(),
-  ManagerDropdown: jest.fn(),
-  ProfileFilterDropdown: jest.fn(),
-  OuFilterDropdown: jest.fn(),
-  ComponentControl: jest.fn()
+
+jest.mock("components/PaperContainer", () => ({
+  PaperContainer: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
+  StyledButton: jest.fn()
+}));
+
+jest.mock("usermanagement/ManagerDropdown", () => ({
+  ManagerDropdown: jest.fn()
+}));
+
+jest.mock("usermanagement/ProfileFilterDropdown", () => ({
+  ProfileFilterDropdown: jest.fn()
+}));
+
+jest.mock("usermanagement/OuFilterDropdown", () => ({
+  OuFilterDropdown: jest.fn()
 }));
 
 const mockHandleClose = jest.fn();

@@ -1,40 +1,39 @@
-import { BasicFormInfoProps } from "../UserEntryFormWrapper/UserEntryFormWrapper.Interfaces";
+import { BasicFormInfoProps } from "usermanagement/UserEntryFormWrapper.Interfaces";
 import {
   FormControlsContainer,
   FormControlsPane,
   RightColumn,
   ToggleContainer,
   ToggleLabel
-} from "../UserEntryFormWrapper/UserEntryFormWrapper.Styles";
+} from "usermanagement/UserEntryFormWrapper.Styles";
 import {
   Switch,
   Tooltip
 } from "@mui/material";
+import { Dropdown } from "components/Dropdown";
+import { ExtensionInput } from "usermanagement/ExtensionInput";
+import { ForwardToEntryForm } from "usermanagement/ForwardToEntryForm";
+import { NNumberInput } from "components/NNumberInput";
+import { PhoneNumberInput } from "components/PhoneNumberInput";
+import { SkillsFormInfo } from "usermanagement/SkillsFormInfo";
 import {
-  Dropdown,
-  ExtensionInput,
-  ForwardToEntryForm,
-  NNumberInput,
-  PhoneNumberInput,
-  SkillsFormInfo
-} from "components";
-import {
-  useFormDispatch,
-  useFormState,
-  userFormActions
-} from "context";
+  useFormDispatch, useFormState
+} from "context/appContext";
+import { userFormActions } from "context/userFormReducer";
 import { formModes } from "globals";
 import React, { useState } from "react";
 import {
   getOverflowSkillFromProfile,
   isProfileIdValid,
-  isManagerValid,
+  isManagerValid
+} from "utils/userManagementUtils";
+import {
   sortManagersByName,
   sortProfilesByName
-} from "utils";
-import { RoutingAttributes } from "../RoutingAttributes";
+} from "utils/sortUtils";
+import { RoutingAttributes } from "usermanagement/RoutingAttributes";
 
-const BasicFormInfo = (props: BasicFormInfoProps) => {
+export const BasicFormInfo = (props: BasicFormInfoProps) => {
 
   const {
     worker,
@@ -317,5 +316,3 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
     </FormControlsContainer>
   );
 };
-
-export default BasicFormInfo;

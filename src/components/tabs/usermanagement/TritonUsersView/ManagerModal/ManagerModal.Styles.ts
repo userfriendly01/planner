@@ -1,7 +1,7 @@
 import {
   FlexColumn,
   FlexRow
-} from "globals";
+} from "globals/styles";
 import { Paper } from "@mui/material";
 import styled from "styled-components";
 

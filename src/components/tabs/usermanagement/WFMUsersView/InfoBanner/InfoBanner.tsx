@@ -1,6 +1,6 @@
 import React from "react";
-import { ModalOverlayStatuses } from "globals";
-import { ModalFetchingRing } from "components";
+import { ModalOverlayStatuses } from "globals/interfaces";
+import { ModalFetchingRing } from "components/ModalFetchingRing";
 import styled from "styled-components";
 
 const InfoWrapper = styled.div`
@@ -11,7 +11,7 @@ const InfoWrapper = styled.div`
   font-size: 25px;
 `;
 
-const InfoBanner = (props: any) => {
+export const InfoBanner = (props: any) => {
   const {
     status,
     options
@@ -21,15 +21,13 @@ const InfoBanner = (props: any) => {
     <InfoWrapper>
       { options.length > 0 ?
         <>
-        { !status && <>Please select a business unit </> }
-        { status === ModalOverlayStatuses.SAVING && <ModalFetchingRing/> }
-        { status === ModalOverlayStatuses.FAIL && <>Users failed to load, please try again</>}
+          { !status && <>Please select a business unit </> }
+          { status === ModalOverlayStatuses.SAVING && <ModalFetchingRing/> }
+          { status === ModalOverlayStatuses.FAIL && <>Users failed to load, please try again</>}
         </>
         : <> WFM Options did not load, please refresh triton and try again </>
       }
-      
-    </InfoWrapper>
-  )
-};
 
-export default InfoBanner;
+    </InfoWrapper>
+  );
+};

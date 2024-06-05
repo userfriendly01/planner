@@ -9,18 +9,16 @@ import {
   ErrorWrapper,
   Overlay,
   LoadingMessage
-} from "./App.Styles";
+} from "components/app/App.Styles";
 import ScrollToTop from "./ScrollToTop";
 import { getWorkerProfileId } from "authentication/authUtils";
 import { getFilteredPermissions } from "authentication/authenticationProfiles";
-import {
-  Header,
-  NavTabs,
-  NotificationModal
-} from "components";
+import Header from "../header/Header/Header";
+import NavTabs from "../navigation/NavTabs";
+import { NotificationModal } from "components/NotificationModal";
 import {
   useAdminDispatch, useAdminState
-} from "context";
+} from "context/appContext";
 import { theme } from "globals/theme";
 import { getRoutes } from "globals/routes";
 import React, {
@@ -31,9 +29,8 @@ import {
   BrowserRouter, Routes, Route
 } from "react-router-dom";
 import { useMsal } from "@azure/msal-react";
-import {
-  logger, wait
-} from "utils";
+import { logger } from "utils/logger";
+import { wait } from "utils/timeUtils";
 
 const success = "success";
 const loading = "loading";

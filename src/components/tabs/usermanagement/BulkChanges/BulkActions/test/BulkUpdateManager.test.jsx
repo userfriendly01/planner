@@ -1,7 +1,7 @@
-import BulkUpdateManager from "../BulkUpdateManager";
-import { getUpdateTemplates } from "../../BulkTemplates";
-import { Dropdown } from "components";
-import { useAdminState } from "context";
+import { BulkUpdateManager } from "../BulkUpdateManager";
+import { getUpdateTemplates } from "usermanagement/templates";
+import { Dropdown } from "components/Dropdown";
+import { useAdminState } from "context/appContext";
 import React from "react";
 import {
   act,
@@ -10,12 +10,15 @@ import {
   setupMockedComponents
 } from "testUtils";
 
-jest.mock("components", () => ({
-  Dropdown: jest.fn(),
+jest.mock("components/Dropdown", () => ({
+  Dropdown: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
 }));
 

@@ -6,7 +6,7 @@ import React, { useState } from "react";
 import { fetchUser } from "services/fetchUser";
 import { logger } from "utils/logger";
 
-const NNumberEntryField = (props: ModalNNumberProps) => {
+export const NNumberInput = (props: ModalNNumberProps) => {
   const {
     disabled,
     fetchedUser,
@@ -65,5 +65,3 @@ const NNumberEntryField = (props: ModalNNumberProps) => {
     </>
   );
 };
-
-export default NNumberEntryField;

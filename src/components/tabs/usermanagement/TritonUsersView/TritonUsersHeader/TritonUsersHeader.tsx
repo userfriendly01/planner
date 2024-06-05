@@ -3,19 +3,17 @@ import {
   ControlsWrapper
 } from "./TritonUsersHeader.Styles";
 import { ManagementHeaderProps } from "./TritonUsersHeader.Interfaces";
-import ExportButton from "./ExportUsersButton";
-import {
-  ResetSkillsButton,
-  FilterButton,
-  SearchBox
-} from "components";
+import { ExportUsersButton }  from "usermanagement/ExportUsersButton";
+import { ResetSkillsButton } from "usermanagement/ResetSkillsButton";
+import { FilterButton } from "usermanagement/FilterButton";
+import { SearchBox } from "components/SearchBox";
 import {
   useAdminState, useAdminDispatch
-} from "context";
+} from "context/appContext";
 import React from "react";
 import { Chip } from "@mui/material";
 
-const ManagementHeader = (props: ManagementHeaderProps) => {
+export const TritonUsersHeader = (props: ManagementHeaderProps) => {
   const {
     tableState,
     setTableState
@@ -99,11 +97,9 @@ const ManagementHeader = (props: ManagementHeaderProps) => {
         </ul>
       </ControlItem>
       <ControlItem>
-        <ExportButton selected={tableState.searchResults} label="Export"/>
+        <ExportUsersButton selected={tableState.searchResults} label="Export"/>
         <ResetSkillsButton selected={tableState.selected}/>
       </ControlItem>
     </ControlsWrapper>
   );
 };
-
-export default ManagementHeader;

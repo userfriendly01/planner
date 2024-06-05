@@ -1,9 +1,8 @@
-import WfmUserTable from "../WfmUserTable";
+import { WfmUserTable } from "../WfmUserTable";
+import { userFormActions } from "context/userFormReducer";
 import {
-  useAdminState,
-  useFormDispatch,
-  userFormActions
-} from "context";
+  useAdminState, useFormDispatch
+} from "context/appContext";
 import React from "react";
 import {
   act,
@@ -12,7 +11,8 @@ import {
   render,
   setupMockedComponents
 } from "testUtils";
-import { formModes, theme } from "globals";
+import { formModes } from "globals";
+import { theme } from "globals/theme";
 import { useNavigate } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import {
@@ -20,7 +20,7 @@ import {
   Edit
 } from "@mui/icons-material";
 
-jest.mock("components", () => ({
+jest.mock("components/ModalOverlay", () => ({
   ModalOverlay: jest.fn()
 }));
 
@@ -28,10 +28,9 @@ jest.mock("react-router-dom", () => ({
   useNavigate: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn(),
-  useFormDispatch: jest.fn(),
-  userFormActions: jest.requireActual("context").userFormActions
+  useFormDispatch: jest.fn()
 }));
 
 jest.mock("@mui/icons-material", () => ({

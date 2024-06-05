@@ -1,5 +1,5 @@
 import { env } from "globals";
-import { listUMUserRecords } from "services";
+import { listUMUserRecords } from "services/user";
 
 const productOwners = [
   "n0138110", // Keith Teeter

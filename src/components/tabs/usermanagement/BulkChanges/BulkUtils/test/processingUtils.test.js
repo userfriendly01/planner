@@ -1,30 +1,36 @@
-import { useAdminState } from "context";
+import { useAdminState } from "context/appContext";
 import * as utils from "../processingUtils";
-import {
-  listUMUsers,
-  getCalabrioUsers,
-  listUMManagers,
-  wfmActivateExternalLogon
-} from "services";
+import { listUMUsers } from "services/user";
+import { getCalabrioUsers } from "services/calabrio";
+import { listUMManagers } from "services/manager";
+import { wfmActivateExternalLogon } from "services/wfmActivateExternalLogon";
 import {
   act,
   waitFor,
   initialTestState
 } from "testUtils";
-import {
-  getCalabrioWfmOrg,
-  logger
-} from "utils";
+import { logger } from "utils/logger";
+import { getCalabrioWfmOrg } from "utils/calabrioUtils";
 import * as XLSX from "xlsx";
 
-jest.mock("utils",() => ({
-  getCalabrioWfmOrg: jest.fn(),
-  logger: {
-    error: jest.fn(),
-    info: jest.fn(),
-    log: jest.fn(),
-    warn: jest.fn()
-  }
+jest.mock("utils/calabrioUtils",() => ({
+  getCalabrioWfmOrg: jest.fn()
+}));
+
+jest.mock("services/user",() => ({
+  listUMUsers: jest.fn()
+}));
+
+jest.mock("services/calabrio",() => ({
+  getCalabrioUsers: jest.fn()
+}));
+
+jest.mock("services/manager",() => ({
+  listUMManagers: jest.fn()
+}));
+
+jest.mock("services/wfmActivateExternalLogon",() => ({
+  wfmActivateExternalLogon: jest.fn()
 }));
 
 jest.mock("xlsx",() => ({
@@ -34,7 +40,7 @@ jest.mock("xlsx",() => ({
   }
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
 }));
 

@@ -1,14 +1,9 @@
-import BusinessUnitModal from "../BusinessUnitModal";
+import { BusinessUnitModal } from "../BusinessUnitModal";
 import React from "react";
-import {
-  Dropdown,
-  ModalFetchingRing,
-  StyledButton
-} from "components";
-import {
-  useAdminDispatch,
-  useAdminState
-} from "context";
+import { Dropdown } from "components/Dropdown";
+import { ModalFetchingRing } from "components/ModalFetchingRing";
+import { StyledButton } from "components/StyledButton";
+import { useAdminState } from "context/appContext";
 import {
   act,
   render,
@@ -16,21 +11,26 @@ import {
   initialTestState,
   waitFor
 } from "testUtils";
-import { getCalabrioWfmOrg } from "utils";
-import { ModalOverlayStatuses } from "globals";
+import { getCalabrioWfmOrg } from "utils/calabrioUtils";
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminDispatch: jest.fn(),
   useAdminState: jest.fn()
 }));
 
-jest.mock("utils", () => ({
+jest.mock("utils/calabrioUtils", () => ({
   getCalabrioWfmOrg: jest.fn()
 }));
 
-jest.mock("components", () => ({
-  Dropdown: jest.fn(),
-  ModalFetchingRing: jest.fn(),
+jest.mock("components/Dropdown", () => ({
+  Dropdown: jest.fn()
+}));
+
+jest.mock("components/ModalFetchingRing", () => ({
+  ModalFetchingRing: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
 }));
 
@@ -87,12 +87,12 @@ describe("<BusinessUnitModal />", () => {
         const rendered = renderComponent();
         expect(Dropdown.mock.calls.length).toBe(1);
         const updateValue = Dropdown.mock.calls[0][0].updateValue;
-        act(() => updateValue(null, { value: businessUnit }))
+        act(() => updateValue(null, { value: businessUnit }));
         await waitFor(() => {
           expect(ModalFetchingRing).toHaveBeenCalled();
           expect(getCalabrioWfmOrg).toHaveBeenCalledTimes(1);
-          expect(rendered.container).toHaveTextContent("Business Unit Failed to Load, please try again.")
-        })
+          expect(rendered.container).toHaveTextContent("Business Unit Failed to Load, please try again.");
+        });
       });
     });
     describe("getCalabrioWfmOrg succeeds", () => {
@@ -100,14 +100,14 @@ describe("<BusinessUnitModal />", () => {
         renderComponent();
         expect(Dropdown.mock.calls.length).toBe(1);
         const updateValue = Dropdown.mock.calls[0][0].updateValue;
-        act(() => updateValue(null, { value: businessUnit }))
+        act(() => updateValue(null, { value: businessUnit }));
         await waitFor(() => {
           expect(ModalFetchingRing).toHaveBeenCalled();
           expect(getCalabrioWfmOrg).toHaveBeenCalledTimes(1);
           expect(StyledButton).toHaveBeenCalledTimes(2);
           expect(StyledButton.mock.calls[0][0].children).toBe("Cancel");
           expect(StyledButton.mock.calls[1][0].children).toBe("Confirm");
-        })
+        });
       });
     });
   });
@@ -116,7 +116,7 @@ describe("<BusinessUnitModal />", () => {
       renderComponent();
       expect(Dropdown.mock.calls.length).toBe(1);
       const updateValue = Dropdown.mock.calls[0][0].updateValue;
-      act(() => updateValue(null, { value: businessUnit }))
+      act(() => updateValue(null, { value: businessUnit }));
       await waitFor(() => {
         expect(StyledButton).toHaveBeenCalledTimes(2);
         expect(StyledButton.mock.calls[0][0].children).toBe("Cancel");
@@ -132,7 +132,7 @@ describe("<BusinessUnitModal />", () => {
       renderComponent();
       expect(Dropdown.mock.calls.length).toBe(1);
       const updateValue = Dropdown.mock.calls[0][0].updateValue;
-      act(() => updateValue(null, { value: businessUnit }))
+      act(() => updateValue(null, { value: businessUnit }));
       await waitFor(() => {
         expect(StyledButton).toHaveBeenCalledTimes(2);
         expect(StyledButton.mock.calls[0][0].children).toBe("Cancel");

@@ -1,21 +1,17 @@
 import {
   AppState,
   WfmBusinessUnit
-} from "globals";
-import {
-  listUMUsers,
-  getCalabrioUsers,
-  listUMManagers,
-  wfmActivateExternalLogon
-} from "services";
+} from "globals/interfaces";
+import { listUMUsers } from "services/user";
+import { getCalabrioUsers } from "services/calabrio";
+import { listUMManagers } from "services/manager";
+import { wfmActivateExternalLogon } from "services/wfmActivateExternalLogon";
 import {
   UploadedRow,
   Template
 } from "../BulkChanges.Interfaces";
-import {
-  getCalabrioWfmOrg,
-  logger
-} from "utils";
+import { getCalabrioWfmOrg } from "utils/calabrioUtils";
+import { logger } from "utils/logger";
 import * as XLSX from "xlsx";
 
 /**

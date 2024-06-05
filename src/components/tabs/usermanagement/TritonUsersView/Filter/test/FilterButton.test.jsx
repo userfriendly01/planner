@@ -1,8 +1,6 @@
-import FilterButton from "../FilterButton";
-import {
-  FilterModal,
-  StyledButton
-} from "components";
+import { FilterButton } from "../FilterButton";
+import { FilterModal } from "usermanagement/FilterModal";
+import { StyledButton } from "components/StyledButton";
 import React from "react";
 import {
   act,
@@ -12,11 +10,13 @@ import {
   setupMockedComponents
 } from "testUtils";
 import { Modal } from "@mui/material";
-import { useAdminDispatch } from "context";
+import { useAdminDispatch } from "context/appContext";
 
+jest.mock("usermanagement/FilterModal", () => ({
+  FilterModal: jest.fn()
+}));
 
-jest.mock("components", () => ({
-  FilterModal: jest.fn(),
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
 }));
 
@@ -24,7 +24,7 @@ jest.mock("@mui/material", () => ({
   Modal: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminDispatch: jest.fn()
 }));
 

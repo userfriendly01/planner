@@ -1,8 +1,8 @@
-import { PriorityDropdownProps } from "./SkillLevels.Interfaces";
-import { Dropdown } from "components";
+import { PriorityDropdownProps } from "usermanagement/SkillLevels.Interfaces";
+import { Dropdown } from "components/Dropdown";
 import React from "react";
 
-const SkillLevels = (props: PriorityDropdownProps) => {
+export const SkillLevels = (props: PriorityDropdownProps) => {
   const {
     availablePriorities,
     priorityValue,
@@ -28,5 +28,3 @@ const SkillLevels = (props: PriorityDropdownProps) => {
     />
   );
 };
-
-export default SkillLevels;

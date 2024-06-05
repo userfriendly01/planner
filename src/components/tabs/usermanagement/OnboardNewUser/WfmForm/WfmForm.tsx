@@ -4,19 +4,17 @@ import {
   Row,
   StatusWrapper,
   Wrapper
-} from "./WfmForm.Styles";
+} from "usermanagement/WfmForm.Styles";
+import { CalabrioUser } from "usermanagement/CallRecording.Interfaces";
+import { Dropdown } from "components/Dropdown";
+import { ModalFetchingRing } from "components/ModalFetchingRing";
 import {
-  CalabrioUser,
-  Dropdown,
-  ModalFetchingRing
-} from "components";
-import {
-  userFormActions,
   useFormState,
   useFormDispatch,
   useAdminState,
   useAdminDispatch
-} from "context";
+} from "context/appContext";
+import { userFormActions } from "context/userFormReducer";
 import {
   InputAdornment,
   TextField,
@@ -29,28 +27,28 @@ import {
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import {
-  formModes,
-  ModalOverlayStatuses
-} from "globals";
-import { getWfmUserByNNumber } from "services";
+import { ModalOverlayStatuses } from "globals/interfaces";
+import { formModes } from "globals";
+import { getWfmUserByNNumber } from "services/calabrio";
 import {
   daysOfTheWeekOptions,
   getWfmBusinessUnits,
   getWfmTeams,
   getWfmOptions,
+  getCalabrioWfmOrg
+} from "utils/calabrioUtils";
+import {
   isUnpopulatedField,
-  getCalabrioWfmOrg,
   identifyUserProfiles,
   isWfmUserValid
-} from "utils";
+} from "utils/userManagementUtils";
 
 interface WfmFormProps {
   missingFields: string[]
   setMissingFields: (missingFields: string[]) => void
 }
 
-const WfmForm = (props: WfmFormProps) => {
+export const WfmForm = (props: WfmFormProps) => {
   const state = useAdminState();
   const dispatch = useAdminDispatch();
   const form = useFormState();
@@ -605,5 +603,3 @@ const WfmForm = (props: WfmFormProps) => {
     </Wrapper>
   );
 };
-
-export default WfmForm;

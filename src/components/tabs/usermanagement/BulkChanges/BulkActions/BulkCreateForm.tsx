@@ -7,17 +7,17 @@ import {
   Template,
   BulkActionFormProps
 } from "../BulkChanges.Interfaces";
-import BusinessUnitModal from "../BusinessUnitModal";
-import { updateSelectedTemplates } from "../BulkUtils";
-import { getCreateTemplates } from "../BulkTemplates";
-import { useAdminState } from "context";
+import { BusinessUnitModal } from "usermanagement/BusinessUnitModal";
+import { updateSelectedTemplates } from "usermanagement/validationUtils";
+import { getCreateTemplates } from "usermanagement/templates";
+import { useAdminState } from "context/appContext";
 import React from "react";
 import {
   Checkbox,
   Modal
 } from "@mui/material";
 
-const BulkCreateForm = (props: BulkActionFormProps) => {
+export const BulkCreateForm = (props: BulkActionFormProps) => {
   const {
     setBusinessUnitId,
     selectedTemplates,
@@ -82,5 +82,3 @@ const BulkCreateForm = (props: BulkActionFormProps) => {
     </>
   );
 };
-
-export default BulkCreateForm;

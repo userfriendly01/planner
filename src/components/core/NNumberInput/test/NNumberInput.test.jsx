@@ -1,4 +1,4 @@
-import ModalNNumber from "../NNumberInput";
+import { NNumberInput } from "../NNumberInput";
 import { CustomInput } from "components/CustomInput";
 import { ModalHelperText } from "components/ModalHelperText";
 import React from "react";
@@ -33,7 +33,7 @@ const mockOnUpdate = jest.fn();
 const label = "N Number Thing";
 
 const renderComponent = (value, disabled, fetchedUser) => {
-  return render(<ModalNNumber
+  return render(<NNumberInput
     disabled={disabled}
     fetchedUser={fetchedUser}
     label={label}

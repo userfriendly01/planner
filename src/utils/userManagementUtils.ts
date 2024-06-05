@@ -1,10 +1,12 @@
 import {
   AppState,
   discrepancyType,
-  formModes,
-  nNumMatcher,
   TritonProfile,
   UMUser
+} from "globals/interfaces";
+import {
+  formModes,
+  nNumMatcher
 } from "globals";
 import {
   UserFormState
@@ -13,12 +15,10 @@ import {
   formatE164PhoneNumber,
   removeNonNumericCharacters
 } from "./formatNumberUtils";
-import {
-  fetchUser as fetchUserServiceCall,
-  getWfmUserByNNumber
-} from "services";
+import { fetchUser as fetchUserServiceCall } from "services/fetchUser";
+import { getWfmUserByNNumber } from "services/calabrio";
 import { logger } from "./logger";
-import { CalabrioUser } from "components";
+import { CalabrioUser } from "usermanagement/CallRecording.Interfaces";
 
 export const isUnpopulatedField = (f: any) => (!f && f !== false && f !== 0) || f?.length === 0 || (typeof f === "object" && JSON.stringify(f) === JSON.stringify({}));
 

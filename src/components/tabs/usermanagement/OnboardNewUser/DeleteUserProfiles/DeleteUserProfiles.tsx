@@ -1,35 +1,31 @@
-import { DeleteTritonUserProps } from "./DeleteUserProfiles.Interfaces";
+import { DeleteTritonUserProps } from "usermanagement/DeleteUserProfiles.Interfaces";
 import {
   ButtonWrapper,
   UserFormButton,
   StyledDivider
-} from "../UserEntryFormWrapper/UserEntryFormWrapper.Styles";
+} from "usermanagement/UserEntryFormWrapper.Styles";
 import {
   DeleteTritonUserWrapper,
   Text,
   CheckboxWrapper
-} from "./DeleteUserProfiles.Styles";
-import { ForwardToEntryForm } from "components";
+} from "usermanagement/DeleteUserProfiles.Styles";
+import { ForwardToEntryForm } from "usermanagement/ForwardToEntryForm";
 import {
   useAdminState,
   useFormState,
   useAdminDispatch,
-  useFormDispatch,
-  userFormActions
-} from "context";
-import {
-  ModalOverlayStatuses,
-  timeouts
-} from "globals";
+  useFormDispatch
+} from "context/appContext";
+import { userFormActions } from "context/userFormReducer";
+import { timeouts } from "globals";
+import { ModalOverlayStatuses } from "globals/interfaces";
 import React from "react";
-import { terminateUser } from "services";
-import {
-  logger,
-  wait
-} from "utils";
+import { terminateUser } from "services/terminateUser";
+import { wait } from "utils/timeUtils";
+import { logger } from "utils/logger";
 import { Checkbox } from "@mui/material";
 
-const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
+export const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
   const {
     handleClose,
     loading,
@@ -258,5 +254,3 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
     </DeleteTritonUserWrapper>
   );
 };
-
-export default DeleteTritonUser;

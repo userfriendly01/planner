@@ -1,13 +1,11 @@
-import ExtensionInput from "../ExtensionInput";
-import {
-  CustomInput,
-  ModalHelperText,
-  UserFormButton
-} from "components";
+import { ExtensionInput } from "../ExtensionInput";
+import { CustomInput } from "components/CustomInput";
+import { ModalHelperText } from "components/ModalHelperText";
+import { UserFormButton } from "usermanagement/ExtensionInput.Styles";
 import {
   useFormState,
   useFormDispatch
-} from "context";
+} from "context/appContext";
 import React from "react";
 import {
   getMockedComponentProps,
@@ -16,18 +14,25 @@ import {
   setupMockedComponents
 } from "testUtils";
 
-jest.mock("components", () => ({
-  __esModule: true,
-  CustomInput: jest.fn(),
-  ModalHelperText: jest.fn(),
-  StyledButton: jest.fn(),
-  UserFormButton: jest.fn()
+jest.mock("components/CustomInput", () => ({
+  CustomInput: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("components/ModalHelperText", () => ({
+  ModalHelperText: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
+  StyledButton: jest.fn()
+}));
+
+jest.mock("context/appContext", () => ({
   useFormDispatch: jest.fn(),
-  useFormState: jest.fn(),
-  userFormActions: jest.requireActual("context").userFormActions
+  useFormState: jest.fn()
+}));
+
+jest.mock("services/checkExtension", () => ({
+  checkExtension: jest.fn()
 }));
 
 const mockOnBlur = jest.fn();

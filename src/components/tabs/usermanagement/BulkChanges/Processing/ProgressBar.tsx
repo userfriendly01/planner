@@ -1,14 +1,14 @@
-import { logger } from "utils";
+import { logger } from "utils/logger";
 import {
   ProgressBarContainer,
   ProgressBarWrapper,
   ProgressBarFiller,
   TextWrapper
-} from "../BulkChanges.Styles";
-import { jokes } from "../BulkTemplates";
+} from "usermanagement/BulkChanges.Styles";
+import { jokes } from "usermanagement/consts";
 import React from "react";
 
-const ProgressBar = (props: any) => {
+export const ProgressBar = (props: any) => {
   const {
     totalRowCount,
     completedRows
@@ -43,5 +43,3 @@ const ProgressBar = (props: any) => {
     </ProgressBarContainer>
   );
 };
-
-export default ProgressBar;

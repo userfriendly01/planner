@@ -1,29 +1,26 @@
 import {
   ExtensionSearchStatuses,
   ModalExtensionProps
-} from "./ExtensionInput.Interfaces";
+} from "usermanagement/ExtensionInput.Interfaces";
 import {
   ExtensionButtonWrapper,
   ExtensionWrapper,
   FlexColumn,
   UserFormButton
-} from "./ExtensionInput.Styles";
+} from "usermanagement/ExtensionInput.Styles";
+import { CustomInput } from "components/CustomInput";
+import { ModalHelperText } from "components/ModalHelperText";
 import {
-  CustomInput,
-  ModalHelperText
-} from "components";
-import {
-  useFormDispatch,
-  useFormState,
-  userFormActions
-} from "context";
+  useFormDispatch, useFormState
+} from "context/appContext";
+import { userFormActions } from "context/userFormReducer";
 import { extensionMatcher } from "globals";
 import React from "react";
-import { checkExtension } from "services";
+import { checkExtension } from "services/checkExtension";
 import { SearchParams } from "../ExtensionSearchParams";
-import { logger } from "utils";
+import { logger } from "utils/logger";
 
-const ModalExtension = (props: ModalExtensionProps) => {
+export const ExtensionInput = (props: ModalExtensionProps) => {
   const {
     disabled,
     extension,
@@ -182,5 +179,3 @@ const ModalExtension = (props: ModalExtensionProps) => {
     </ExtensionWrapper>
   );
 };
-
-export default ModalExtension;

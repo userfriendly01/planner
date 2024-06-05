@@ -1,8 +1,8 @@
 import React from "react";
-import WfmErrorBanner from "../WfmErrorBanner";
+import { WfmErrorBanner } from "../WfmErrorBanner";
 import {
   useAdminState
-} from "context";
+} from "context/appContext";
 import {
   AccordionSummary,
   AccordionDetails
@@ -12,7 +12,7 @@ import {
   setupMockedComponents
 } from "testUtils";
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
 }));
 

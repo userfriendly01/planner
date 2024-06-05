@@ -1,10 +1,8 @@
-import TritonUsersHeader from "../TritonUsersHeader";
-import ExportButton from "../ExportUsersButton";
-import {
-  FilterButton,
-  ResetSkillsButton,
-  SearchBox
-} from "components";
+import { TritonUsersHeader } from "../TritonUsersHeader";
+import { ExportUsersButton }  from "usermanagement/ExportUsersButton";
+import { ResetSkillsButton } from "usermanagement/ResetSkillsButton";
+import { FilterButton } from "usermanagement/FilterButton";
+import { SearchBox } from "components/SearchBox";
 import React from "react";
 import {
   act,
@@ -14,26 +12,34 @@ import {
 } from "testUtils";
 import {
   useAdminState, useAdminDispatch
-} from "context";
+} from "context/appContext";
 import { Chip } from "@mui/material";
 
-jest.mock("components", () => ({
-  FilterButton: jest.fn(),
-  ResetSkillsButton: jest.fn(),
-  SearchBox: jest.fn(),
+jest.mock("usermanagement/FilterButton", () => ({
+  FilterButton: jest.fn()
+}));
+
+jest.mock("usermanagement/ResetSkillsButton", () => ({
+  ResetSkillsButton: jest.fn()
+}));
+
+jest.mock("components/SearchBox", () => ({
+  SearchBox: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
+}));
+
+jest.mock("usermanagement/ExportUsersButton", () => ({
+  ExportUsersButton: jest.fn()
 }));
 
 jest.mock("@mui/material", () => ({
   Chip: jest.fn()
 }));
 
-jest.mock("../ExportUsersButton", () => ({
-  __esModule: true,
-  default: jest.fn()
-}));
-
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminDispatch: jest.fn(),
   useAdminState: jest.fn()
 }));
@@ -60,16 +66,16 @@ describe("TritonUsersHeader", () => {
       FilterButton,
       ResetSkillsButton,
       SearchBox,
-      ExportButton,
+      ExportUsersButton,
       Chip
     });
   });
   describe("initial render", () => {
     test("component renders as expected", () => {
       renderComponent();
-      expect(ExportButton.mock.calls.length).toBe(1);
-      expect(ExportButton.mock.calls[0][0].selected).toBe(tableState.searchResults);
-      expect(ExportButton.mock.calls[0][0].label).toBe("Export");
+      expect(ExportUsersButton.mock.calls.length).toBe(1);
+      expect(ExportUsersButton.mock.calls[0][0].selected).toBe(tableState.searchResults);
+      expect(ExportUsersButton.mock.calls[0][0].label).toBe("Export");
       expect(SearchBox.mock.calls.length).toBe(1);
       expect(SearchBox.mock.calls[0][0].searchBy).toBe(tableState.searchBy);
       expect(ResetSkillsButton.mock.calls.length).toBe(1);

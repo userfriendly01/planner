@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { StyledButton } from "components";
+import { StyledButton } from "components/StyledButton";
 import { TextField } from "@mui/material";
 
 export const Button = styled(StyledButton)`

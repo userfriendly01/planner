@@ -1,8 +1,8 @@
-import ExportUsersButton from "../ExportUsersButton";
-import { StyledExportButton } from "../WfmUsersHeader.Styles";
+import { ExportWfmUsersButton } from "../ExportWfmUsersButton";
+import { StyledExportButton } from "usermanagement/WfmUsersHeader.Styles";
 import React from "react";
 import { ExcelExport } from "@progress/kendo-react-excel-export";
-import { theme } from "globals";
+import { theme } from "globals/theme";
 import {
   act,
   render,
@@ -11,10 +11,10 @@ import {
 import { ThemeProvider } from "styled-components";
 
 jest.mock("@progress/kendo-react-excel-export", () => ({
-  ExcelExport: jest.fn(),
+  ExcelExport: jest.fn()
 }));
 
-jest.mock("../WfmUsersHeader.Styles", () => ({
+jest.mock("usermanagement/WfmUsersHeader.Styles", () => ({
   StyledExportButton: jest.fn()
 }));
 
@@ -32,12 +32,12 @@ const selected = [
     TeamId: "Team Jim",
     FirstDayOfWeek: 3
   }
-]
+];
 
 const renderComponent = () => {
   const rendered = render(
     <ThemeProvider theme={theme}>
-      <ExportUsersButton
+      <ExportWfmUsersButton
         selected={selected}
         label="Export"
       />
@@ -45,7 +45,7 @@ const renderComponent = () => {
   );
   render(StyledExportButton.mock.calls[0][0].children);
   return rendered;
-}
+};
 
 describe("ExportUsersButton", () => {
   beforeEach(() => {
@@ -54,7 +54,7 @@ describe("ExportUsersButton", () => {
     setupMockedComponents({
       StyledExportButton,
       ExcelExport
-    })
+    });
   });
   describe("initial render", () => {
     test("renders with ExcelExport", () => {
@@ -65,12 +65,12 @@ describe("ExportUsersButton", () => {
   });
   describe("_export.current === null", () => {
     beforeEach(() => {
-      useRefSpy.mockReturnValue({ current: null});
+      useRefSpy.mockReturnValue({ current: null });
     });
     test("should not call _export.current.save", () => {
       render(
         <ThemeProvider theme={theme}>
-          <ExportUsersButton
+          <ExportWfmUsersButton
             selected={selected}
             label="New Label"
           />
@@ -99,8 +99,7 @@ describe("ExportUsersButton", () => {
         BusinessUnitId: "123-321",
         TeamId: "Team Jim",
         FirstDayOfWeek: 3
-      }
-      ], 
+      }],
       [
         {
           field: "Id",
@@ -149,6 +148,6 @@ describe("ExportUsersButton", () => {
         }
       ]);
     });
-    
+
   });
 });

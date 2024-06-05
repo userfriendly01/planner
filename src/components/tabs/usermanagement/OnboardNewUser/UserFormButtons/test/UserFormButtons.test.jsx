@@ -1,34 +1,32 @@
-import UserFormButtons from "../UserFormButtons";
+import { UserFormButtons } from "../UserFormButtons";
 import {
   Modal,
   Tooltip
 } from "@mui/material";
-import {
-  MergeUsersModal,
-  StyledButton
-} from "components";
+import { StyledButton } from "components/StyledButton";
 import {
   useAdminState,
   useAdminDispatch,
   useFormState,
-  useFormDispatch,
-  userFormActions
-} from "context";
+  useFormDispatch
+} from "context/appContext";
+import { userFormActions } from "context/userFormReducer";
 import {
   formModes,
   env
 } from "globals";
 import React from "react";
 import {
-  addOffice,
   createCalabrioUser,
-  createUser,
   getCalabrioUsers,
   updateCalabrioUser,
-  updateUser,
-  createCalabrioWFMPerson,
-  wfmActivateExternalLogon
-} from "services";
+  createCalabrioWFMPerson
+} from "services/calabrio";
+import { wfmActivateExternalLogon } from "services/wfmActivateExternalLogon";
+import {
+  createUser, updateUser
+} from "services/user";
+import { addOffice } from "services/office";
 import {
   act,
   fetchedUser,
@@ -44,19 +42,20 @@ import {
 } from "testUtils";
 import {
   addWorkerToOrg,
-  checkConflictingUsers,
-  getOverflowSkillFromProfile,
+  checkConflictingUsers
+} from "utils/calabrioUtils";
+import {
   getNonOverflowSkills,
+  getOverflowSkillFromProfile,
   identifyFormErrors,
   isDidDifferentValid,
   isFormUpdated,
   isTritonUserValid,
   workerHasOverFlowSkill
-} from "utils";
+} from "utils/userManagementUtils";
 
-jest.mock("components", () => ({
-  StyledButton: jest.fn(),
-  MergeUsersModal: jest.fn()
+jest.mock("components/StyledButton", () => ({
+  StyledButton: jest.fn()
 }));
 
 jest.mock("@mui/material", () => ({
@@ -66,30 +65,47 @@ jest.mock("@mui/material", () => ({
   Divider: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn(),
   useAdminDispatch: jest.fn(),
   useFormState: jest.fn(),
-  useFormDispatch: jest.fn(),
-  userFormActions: jest.requireActual("context").userFormActions
+  useFormDispatch: jest.fn()
 }));
 
-jest.mock("utils", () => ({
+jest.mock("utils/calabrioUtils", () => ({
   addWorkerToOrg: jest.fn(),
-  calabrioTimeZones: jest.requireActual("utils").calabrioTimeZones,
   checkConflictingUsers: jest.fn(),
+  calabrioTimeZones: jest.requireActual("utils/calabrioUtils").calabrioTimeZones
+}));
+
+jest.mock("utils/userManagementUtils", () => ({
   identifyFormErrors: jest.fn(),
-  isTritonUserValid: jest.fn(),
-  isFormUpdated: jest.fn(),
   isDidDifferentValid: jest.fn(),
-  getOverflowSkillFromProfile: jest.fn(),
-  wait: jest.requireActual("utils").wait,
+  isFormUpdated: jest.fn(),
+  isTritonUserValid: jest.fn(),
   workerHasOverFlowSkill: jest.fn(),
-  getNonOverflowSkills: jest.fn(),
-  getValidSkillsObject: jest.fn(),
-  formatE164PhoneNumber: jest.fn(),
-  getZeroOutEnabledFromProfile: jest.fn(),
-  logger: jest.requireActual("utils").logger
+  getOverflowSkillFromProfile: jest.fn(),
+  getNonOverflowSkills: jest.fn()
+}));
+
+jest.mock("services/calabrio", () => ({
+  createCalabrioUser: jest.fn(),
+  getCalabrioUsers: jest.fn(),
+  updateCalabrioUser: jest.fn(),
+  createCalabrioWFMPerson: jest.fn()
+}));
+
+jest.mock("services/wfmActivateExternalLogon", () => ({
+  wfmActivateExternalLogon: jest.fn()
+}));
+
+jest.mock("services/user", () => ({
+  createUser: jest.fn(),
+  updateUser: jest.fn()
+}));
+
+jest.mock("services/office", () => ({
+  addOffice: jest.fn()
 }));
 
 export const worker = {
@@ -183,7 +199,6 @@ describe("<UserFormButtons />", () => {
     setupMockedComponents({
       StyledButton,
       Tooltip,
-      MergeUsersModal,
       Modal
     });
 

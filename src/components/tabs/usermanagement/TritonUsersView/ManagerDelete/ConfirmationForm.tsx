@@ -2,12 +2,8 @@ import {
   ManagerDeleteButtonWrapper,
   TextBox
 } from "./ManagerDelete.Styles";
-import {
-  StyledButton
-} from "components";
-import {
-  FlexColumn
-} from "globals";
+import { StyledButton } from "components/StyledButton";
+import { FlexColumn } from "globals/styles";
 import React from "react";
 
 export interface ConfirmationFormProps {
@@ -15,7 +11,7 @@ export interface ConfirmationFormProps {
   DeleteManagerClicked: () => void
 }
 
-const ConfirmationForm = (props:ConfirmationFormProps) : any => {
+export const ConfirmationForm = (props:ConfirmationFormProps) : any => {
   const {
     SelectedManager,
     DeleteManagerClicked
@@ -40,5 +36,3 @@ const ConfirmationForm = (props:ConfirmationFormProps) : any => {
     </div>
   );
 };
-
-export default ConfirmationForm;

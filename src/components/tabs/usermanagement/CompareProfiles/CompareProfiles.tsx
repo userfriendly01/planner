@@ -1,36 +1,37 @@
 import {
   TritonPerson, QmPerson, WfmPerson
-} from "./CompareProfiles.Interfaces";
+} from "usermanagement/CompareProfiles.Interfaces";
 import {
   CompareProfilesWrapper,
   ProfileColumnsWrapper,
   ResetButton,
   StyledLoadSpinner
-} from "./CompareProfiles.Styles";
-import MessageBanner from "./MessageBanner";
-import { messageConsts } from "./messages";
-import ProfileColumn from "./ProfileColumn";
-import ResetModal from "./ResetModal";
+} from "usermanagement/CompareProfiles.Styles";
+import { MessageBanner } from "usermanagement/MessageBanner";
+import { messageConsts } from "usermanagement/messages";
+import { ProfileColumn } from "usermanagement/ProfileColumn";
+import { ResetModal } from "usermanagement/ResetModal";
 import {
-  WfmUser, UMUser, env, nNumMatcher
+  WfmUser, UMUser
+} from "globals/interfaces";
+import {
+  env, nNumMatcher
 } from "globals";
-import {
-  CalabrioGroup, NNumberInput
-} from "components";
-import { useAdminState } from "context";
+import { CalabrioGroup } from "usermanagement/CallRecording.Interfaces";
+import { NNumberInput } from "components/NNumberInput";
+import { useAdminState } from "context/appContext";
 import React from "react";
 import {
   getWfmUserByNNumber, getQmUserProfiles, getWfmTeam
-} from "services";
+} from "services/calabrio";
 import util from "util";
 import {
-  logger,
-  getWfmBusinessUnits,
-  getWfmTeams
-} from "utils";
+  getWfmBusinessUnits, getWfmTeams
+} from "utils/calabrioUtils";
+import { logger } from "utils/logger";
 import { Modal } from "@mui/material";
 
-const CompareProfiles = () => {
+export const CompareProfiles = () => {
   //State
   const state = useAdminState();
   const profiles = state.profileContext.profiles;
@@ -291,5 +292,3 @@ const CompareProfiles = () => {
     </CompareProfilesWrapper>
   );
 };
-
-export default CompareProfiles;

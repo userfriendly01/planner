@@ -1,8 +1,11 @@
-import ResetModal from "../ResetModal";
+import { ResetModal } from "../ResetModal";
 import React from "react";
-import { fetchResetProfileDatadogLogs, resetProfiles } from "services";
+import {
+  fetchResetProfileDatadogLogs, resetProfiles
+} from "services/resetprofiles";
 import { Divider } from "@mui/material";
-import { StyledButton, ModalFetchingRing } from "components";
+import { ModalFetchingRing } from "components/ModalFetchingRing";
+import { StyledButton } from "components/StyledButton";
 import { ReportGmailerrorred } from "@mui/icons-material";
 import {
   act,
@@ -10,14 +13,17 @@ import {
   setupMockedComponents,
   waitFor
 } from "testUtils";
-import { ProgressBar } from "../../BulkChanges/Processing";
+import { ProgressBar } from "usermanagement/ProgressBar";
 
-jest.mock("../../BulkChanges/Processing", () => ({
+jest.mock("usermanagement/ProgressBar", () => ({
   ProgressBar: jest.fn()
 }));
 
-jest.mock("components", () => ({
-  ModalFetchingRing: jest.fn(),
+jest.mock("components/ModalFetchingRing", () => ({
+  ModalFetchingRing: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
 }));
 
@@ -30,7 +36,7 @@ jest.mock("@mui/icons-material", () => ({
   ReportGmailerrorred: jest.fn()
 }));
 
-jest.mock("services", () => ({
+jest.mock("services/resetprofiles", () => ({
   fetchResetProfileDatadogLogs: jest.fn(),
   resetProfiles: jest.fn()
 }));
@@ -43,8 +49,8 @@ const workerSid = "WK939u3";
 const mockOnClose = jest.fn();
 
 const renderComponent = () => {
-  return render(<ResetModal nNumber={nNumber} email={email} workerSid={workerSid} onClose={mockOnClose} />)
-}
+  return render(<ResetModal nNumber={nNumber} email={email} workerSid={workerSid} onClose={mockOnClose} />);
+};
 
 const datadogResults = {
   attributes: {
@@ -63,7 +69,7 @@ const datadogResults = {
       }
     }
   }
-}
+};
 describe("ResetModal", () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -154,7 +160,7 @@ describe("ResetModal", () => {
             expect(rendered.container).toHaveTextContent("Whoop Whoop");
             expect(rendered.container).toHaveTextContent("We did it!");
             expect(rendered.container).toHaveTextContent("We did it again!");
-          })
+          });
         });
       });
       describe("status === Fail", () => {
@@ -253,7 +259,7 @@ describe("ResetModal", () => {
               expect(fetchResetProfileDatadogLogs).toHaveBeenCalledTimes(1);
               expect(rendered.container).toHaveTextContent("Calabrio... is the worst we're sorry");
               expect(rendered.container).toHaveTextContent("Aww");
-            })
+            });
           });
         });
       });

@@ -1,22 +1,22 @@
 import {
   Label,
   Wrapper
-} from "./ProfileFilterDropdown.Styles";
+} from "usermanagement/ProfileFilterDropdown.Styles";
 import {
   Dropdown
-} from "components";
+} from "components/Dropdown";
 import {
   useAdminState, useAdminDispatch
-} from "context";
+} from "context/appContext";
 import React from "react";
-import { sortProfilesById } from "utils";
+import { sortProfilesById } from "utils/sortUtils";
 
 export interface DropdownOption {
   label: string,
   value: any
 }
 
-const ProfileFilterDropdown = () => {
+export const ProfileFilterDropdown = () => {
   const state = useAdminState();
   const filterBy = state.userManagementTableFilters.profileFilterArray;
   const dispatch = useAdminDispatch();
@@ -86,5 +86,3 @@ const ProfileFilterDropdown = () => {
     </Wrapper>
   );
 };
-
-export default ProfileFilterDropdown;

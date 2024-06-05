@@ -1,7 +1,7 @@
-import OuFilterDropdown from "../OuFilterDropdown";
-import { Dropdown } from "components";
+import { OuFilterDropdown } from "../OuFilterDropdown";
+import { Dropdown } from "components/Dropdown";
 import React from "react";
-import { getOperatingUnits } from "services";
+import { getOperatingUnits } from "services/operatingUnits";
 import {
   act,
   render,
@@ -12,28 +12,27 @@ import {
 } from "testUtils";
 import {
   theme
-} from "globals";
+} from "globals/theme";
 import {
   useAdminState, useAdminDispatch
-} from "context";
+} from "context/appContext";
 import { ThemeProvider } from "styled-components";
-import { logger } from "utils";
+import { logger } from "utils/logger";
 
-jest.mock("components", () => ({
+jest.mock("components/Dropdown", () => ({
   Dropdown: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn(),
   useAdminDispatch: jest.fn()
 }));
 
-const statusCode = 500;
-
-jest.mock("../OuFilterDropdown.Styles", () => ({
-  Label: jest.requireActual("../OuFilterDropdown.Styles").Label,
-  Wrapper: jest.requireActual("../OuFilterDropdown.Styles").Wrapper
+jest.mock("services/operatingUnits", () => ({
+  getOperatingUnits: jest.fn()
 }));
+
+const statusCode = 500;
 
 const mockAdminDispatch = jest.fn();
 

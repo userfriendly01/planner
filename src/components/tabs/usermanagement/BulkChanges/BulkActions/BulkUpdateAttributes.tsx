@@ -4,17 +4,15 @@ import {
   BulkUpdateProps,
   WorkerAttribute
 } from "../BulkChanges.Interfaces";
-import { availableAttributes } from "../BulkTemplates";
-import {
-  CustomInput,
-  Dropdown,
-  PhoneNumberInput
-} from "components";
+import { availableAttributes } from "usermanagement/consts";
+import { CustomInput } from "components/CustomInput";
+import { Dropdown } from "components/Dropdown";
+import { PhoneNumberInput } from "components/PhoneNumberInput";
 import React from "react";
-import { getE164Number } from "utils";
+import { getE164Number } from "utils/formatNumberUtils";
 import { Tooltip } from "@mui/material";
 
-const BulkUpdateAttributes = (props: BulkUpdateProps) => {
+export const BulkUpdateAttributes = (props: BulkUpdateProps) => {
   const {
     template,
     selectedTemplates,
@@ -160,5 +158,3 @@ const BulkUpdateAttributes = (props: BulkUpdateProps) => {
     </UpdateWrapper>
   );
 };
-
-export default BulkUpdateAttributes;

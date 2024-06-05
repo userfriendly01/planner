@@ -1,18 +1,16 @@
-import { CallerStateAttrDropDownOptions } from "../../OnboardNewUser/RoutingAttributes/RoutingAttributesDropDown";
+import { CallerStateAttrDropDownOptions } from "usermanagement/RoutingAttributesDropDown";
 import {
   UpdateWrapper,
   CallerStatesSelectorContainer
-} from "../BulkChanges.Styles";
+} from "usermanagement/BulkChanges.Styles";
 import {
   Template,
   BulkCallerStatesProps
-} from "../BulkChanges.Interfaces";
-import {
-  Dropdown
-} from "components";
+} from "usermanagement/BulkChanges.Interfaces";
+import { Dropdown } from "components/Dropdown";
 import React from "react";
 
-const BulkUpdateCallerStates = (props: BulkCallerStatesProps): any => {
+export const BulkUpdateCallerStates = (props: BulkCallerStatesProps): any => {
   const {
     template,
     selectedTemplates,
