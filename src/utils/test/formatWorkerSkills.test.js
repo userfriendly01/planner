@@ -1,7 +1,7 @@
 import {
   formatWorkerAttributeSkillsToHTML,
   formatWorkerAttributeSkillsToString
-} from "utils";
+} from "../formatWorkerAttributeSkills";
 import { render } from "testUtils";
 
 describe("formatWorkerAttributeSkillsToHTML()", () => {
@@ -37,13 +37,13 @@ describe("formatWorkerAttributeSkillsToHTML()", () => {
     };
     const rendered = render(formatWorkerAttributeSkillsToHTML(testData));
     expect(rendered.getByText("466", { exact: false })).toBeInTheDocument();
-    expect(rendered.getByText("466", { exact: false })).toHaveStyleRule("border-color", "#C0BFC0");
-    expect(rendered.getByText("466", { exact: false })).toHaveStyleRule("border-style", "solid");
-    expect(rendered.getByText("466", { exact: false })).toHaveStyleRule("border-radius", "5px");
-    expect(rendered.getByText("466", { exact: false })).toHaveStyleRule("border-width", "2px");
+    expect(rendered.getByText("466", { exact: false })).toHaveStyle({ "border-color": "#C0BFC0" });
+    expect(rendered.getByText("466", { exact: false })).toHaveStyle({ "border-style": "solid" });
+    expect(rendered.getByText("466", { exact: false })).toHaveStyle({ "border-radius": "5px" });
+    expect(rendered.getByText("466", { exact: false })).toHaveStyle({ "border-width": "2px" });
     expect(rendered.getByText("psuUm")).toBeInTheDocument();
     expect(rendered.getByText("3", { selector: "span" })).toBeInTheDocument();
-    expect(rendered.getByText("3", { selector: "span" })).toHaveStyleRule("color", "#28A3AF");
+    expect(rendered.getByText("3", { selector: "span" })).toHaveStyle({ "color": "#28A3AF" });
   });
 });
 
@@ -51,13 +51,13 @@ describe("formatWorkerAttributeSkillsToString", () => {
   test("skills/level object formats correctly", () => {
     const testData = {
       "skills": [
-          "ccSharedAGLFNOL38",
-          "psu-l1"
+        "ccSharedAGLFNOL38",
+        "psu-l1"
       ],
       "levels": {
-          "ccSharedAGLFNOL38": 1
+        "ccSharedAGLFNOL38": 1
       }
-    }
+    };
     expect(formatWorkerAttributeSkillsToString(testData)).toEqual(["ccSharedAGLFNOL38 - 1", "psu-l1"]);
   });
 

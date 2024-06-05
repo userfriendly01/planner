@@ -1,6 +1,6 @@
 import {
   checkGreetingMessageRegExp , getAdvanceFilter
-} from "utils";
+} from "../flowUtils";
 
 describe("flowUtils.ts", ()=>{
   describe("checkGreetingMessageRegExp",()=>{

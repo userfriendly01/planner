@@ -1,11 +1,11 @@
-import {
-  CctSharedCallFlowDb, CctSharedCallRoutingDb, FlowContent
-} from "components";
+import { CctSharedCallFlowDb } from "alohaFlow/AlohaFlow.Interfaces";
+import { CctSharedCallRoutingDb } from "alohaRouting/AlohaRouting.Interfaces";
+import { FlowContent } from "alohaFlow/AlohaFlow.Interfaces";
 import { AlertBarProps } from "./interfaces";
 import {
-  ADGroupPermission,
-  BrandNameMap, GraphQLErrors, env
-} from "globals";
+  ADGroupPermission, BrandNameMap, GraphQLErrors
+} from "globals/interfaces";
+import { env } from "globals";
 import { DynamicAction } from "components/tabs/dynamicFlow/DynamicFlow.Interfaces";
 
 export const initializedAlertBar: AlertBarProps = {

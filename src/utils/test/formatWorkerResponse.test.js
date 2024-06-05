@@ -1,7 +1,7 @@
 import {
   mapWorkerFromDbWorker,
   mapWorkerToDbWorker
-} from "utils";
+} from "../formatWorkerResponse";
 
 const sid = "WK123123123";
 

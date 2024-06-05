@@ -11,15 +11,15 @@ import {
   getWfmBusinessUnits,
   getWfmTeams,
   getWfmPeople,
-  getWfmOptions as getWfmOptionsUtil,
-  logger
-} from "utils";
+  getWfmOptions as getWfmOptionsUtil
+} from "../calabrioUtils";
+import { logger } from "utils/logger";
 import {
   getCalabrioUser,
   updateCalabrioUser,
   getWfmOptions,
   getWfmOrg
-} from "services";
+} from "services/calabrio";
 import {
   calabrioContext, initialTestState
 } from "testUtils";
@@ -29,6 +29,13 @@ Date.now = jest.fn();
 
 jest.mock("zlib", () => ({
   inflate: jest.fn()
+}));
+
+jest.mock("services/calabrio", () => ({
+  getCalabrioUser: jest.fn(),
+  updateCalabrioUser: jest.fn(),
+  getWfmOptions: jest.fn(),
+  getWfmOrg: jest.fn()
 }));
 
 const orgPayload = [
@@ -157,8 +164,8 @@ let userResponse;
 describe("calabrioUtils", () => {
   beforeEach(() => {
     jest.resetAllMocks(),
-      jest.clearAllMocks(),
-      Date.now.mockReturnValue("Right Now");
+    jest.clearAllMocks(),
+    Date.now.mockReturnValue("Right Now");
   });
 
   describe("addWorkerToOrg", () => {
@@ -1191,8 +1198,13 @@ describe("calabrioUtils", () => {
   });
   describe("getCalabrioWfmOptions", () => {
     test("getWFMOptions succeeds, decompress succeeds, dispatches and returns true", async () => {
-      const data = Buffer.from(JSON.stringify({ organization: { businessUnits: [{ Id: "123" }, { Id: "456" }] } }));
-      getWfmOptions.mockResolvedValueOnce({ data: { compressed: true, data: "eJyrVkoqLc7MSy0uDs3LLClWsoquVvJMUbJSMjQyVqrVgXJMTM2UamNrAVp8Dd0=" } });
+      const data = Buffer.from(JSON.stringify({ organization: { businessUnits: [{ Id: "123" }, { Id: "456" }]}}));
+      getWfmOptions.mockResolvedValueOnce({
+        data: {
+          compressed: true,
+          data: "eJyrVkoqLc7MSy0uDs3LLClWsoquVvJMUbJSMjQyVqrVgXJMTM2UamNrAVp8Dd0="
+        }
+      });
 
       zlib.inflate.mockImplementationOnce((buffer, callback) => {
         callback(null, data);
@@ -1207,7 +1219,12 @@ describe("calabrioUtils", () => {
       expect(result).toBe(true);
     });
     test("getWFMOptions succeeds, decompress has an error, does not dispatch, returns false", async () => {
-      getWfmOptions.mockResolvedValueOnce({ data: { compressed: true, data: "eJyrVkoqLc7MSy0uDs3LLClWsoquVvJMUbJSMjQyVqrVgXJMTM2UamNrAVp8Dd0=" } });
+      getWfmOptions.mockResolvedValueOnce({
+        data: {
+          compressed: true,
+          data: "eJyrVkoqLc7MSy0uDs3LLClWsoquVvJMUbJSMjQyVqrVgXJMTM2UamNrAVp8Dd0="
+        }
+      });
       zlib.inflate.mockImplementationOnce(() => {
         throw new Error("boo");
       });

@@ -1,7 +1,7 @@
 import {
   calabrioGroupLevels,
   CalabrioGroup
-} from "../components/tabs/usermanagement/OnboardNewUser/CallRecording/CallRecording.Interfaces";
+} from "usermanagement/CallRecording.Interfaces";
 import {
   getCalabrioUser,
   updateCalabrioUser,
@@ -18,7 +18,7 @@ import {
   WfmUser,
   discrepancyType
 } from "globals/interfaces";
-import { logger } from "./logger";
+import { logger } from "utils/logger";
 
 const inflate = util.promisify(zlib.inflate);
 

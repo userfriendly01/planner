@@ -1,7 +1,7 @@
 import {
   UMUser, UMUserTwilioAttributes
-} from "globals";
-import { areSkillsDifferent } from "utils";
+} from "globals/interfaces";
+import { areSkillsDifferent } from "utils/skillsUtils";
 
 export const mapWorkerToDbWorker = (worker: Partial<UMUser>): Partial<UMUser> => {
   return {

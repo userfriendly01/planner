@@ -5,7 +5,7 @@ import {
   AutoAwesomeMotion
 } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
-import { logger } from "./logger";
+import { logger } from "utils/logger";
 
 export const formatProfileBooleanData = value => {
   if (value === 1) {

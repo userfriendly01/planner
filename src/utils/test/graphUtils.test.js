@@ -7,10 +7,10 @@ import {
   LIST_MANAGERS,
   LIST_OFFICES,
   LIST_USERS
-}from "globals";
+}from "globals/graphql";
 import {
   logger
-} from "utils";
+} from "utils/logger";
 
 jest.mock("../../components/core/Auth/SharedGraphAPIProvider", () => ({
   apolloClient: {

@@ -2,7 +2,7 @@ import {
   UMTwilioAttributeSkills,
   Skill,
   UMUserTwilioAttributes
-} from "globals";
+} from "globals/interfaces";
 import _ from "lodash";
 
 export const areSkillsDifferent = (workerAttributes: UMUserTwilioAttributes): boolean => {

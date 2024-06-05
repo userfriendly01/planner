@@ -3,13 +3,13 @@ import {
   cleanErrorMessage,
   downloadCSV,
   readWriteAccess
-} from "utils";
-import { useAdminState } from "context";
+} from "../configUtils";
+import { useAdminState } from "context/appContext";
 import {
   initialTestState, adGroupPermissionMapping
 } from "testUtils";
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
 }));
 

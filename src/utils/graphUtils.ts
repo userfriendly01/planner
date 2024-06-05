@@ -2,17 +2,19 @@ import { apolloClient } from "../components/core/Auth/SharedGraphAPIProvider";
 import {
   Action,
   DBList,
-  LIST_MANAGERS,
-  LIST_OFFICES,
-  LIST_USERS,
   UMOffice,
   UMManager,
   UMUser,
   GraphData
-}from "globals";
+}from "globals/interfaces";
+import {
+  LIST_MANAGERS,
+  LIST_OFFICES,
+  LIST_USERS
+}from "globals/graphql";
 import {
   logger
-} from "utils";
+} from "utils/logger";
 
 type PaginationType = UMOffice | UMManager | UMUser;
 

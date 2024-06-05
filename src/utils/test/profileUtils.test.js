@@ -19,7 +19,7 @@ import {
 import {
   BubbleDiv,
   HighlightRed
-} from "../../components/tabs/orgmanagement/triton/ProfileSettingsTable/ProfileSettingsTable.Styles";
+} from "orgmanagement/ProfileSettingsTable.Styles";
 
 describe("profileUtils", () => {
   describe("formatProfileBooleanData", () => {

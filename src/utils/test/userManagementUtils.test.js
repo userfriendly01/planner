@@ -21,14 +21,21 @@ import {
   findMatchingWorker,
   identifyUserProfiles
 } from "../userManagementUtils";
-import {
-  fetchUser, getWfmUserByNNumber
-} from "services";
+import { fetchUser } from "services/fetchUser";
+import { getWfmUserByNNumber } from "services/calabrio";
 import {
   initialTestState,
   initialFormState,
   validFormState
 } from "testUtils";
+
+jest.mock("services/fetchUser", () => ({
+  fetchUser: jest.fn()
+}));
+
+jest.mock("services/calabrio", () => ({
+  getWfmUserByNNumber: jest.fn()
+}));
 
 const mockSetForm = jest.fn();
 

@@ -3,7 +3,7 @@ import {
   TritonProfile,
   WfmUser,
   UMUser
-} from "globals";
+} from "globals/interfaces";
 
 const sortLast = "zzzzzzzzzzz";
 
