@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { GraphData } from "globals";
+import { GraphData } from "globals/interfaces";
 
 const userAttributes = `
   pk

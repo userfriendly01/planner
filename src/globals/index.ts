@@ -1,4 +1,4 @@
-import { FormModes } from "globals";
+import { FormModes } from "globals/interfaces";
 
 // We're adding this to the window and can really be anywhere
 // We'll put it here for reference to the below on why it's neede
