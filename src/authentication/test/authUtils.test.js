@@ -5,8 +5,12 @@ import {
   checkIfPO,
   getWorkerProfileId
 } from "../authUtils";
-import { listUMUserRecords } from "services";
+import { listUMUserRecords } from "services/user";
 import { env } from "globals";
+
+jest.mock("services/user", () => ({
+  listUMUserRecords: jest.fn()
+}));
 
 describe("authUtils", () => {
   beforeEach(() => {

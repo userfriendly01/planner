@@ -1,27 +1,26 @@
 import { runTritonAdminStartup } from "../cct-triton-admin-startup";
 import MockAdapter from "axios-mock-adapter";
-import { useAdminDispatch } from "context";
+import { useAdminDispatch } from "context/appContext";
 import { apiPaths } from "globals";
 import { getStartupProfiles } from "authentication/authenticationProfiles";
 import {
   getWfmBusinessUnits,
   getCalabrioUsers,
-  getCalabrioOrg,
   getCalabrioRoles,
-  listUMUsers,
-  listUMOffices,
-  listUMManagers
-} from "services";
+  getCalabrioOrg
+} from "services/calabrio";
+import { listUMManagers } from "services/manager";
+import { listUMOffices } from "services/office";
+import { listUMUsers } from "services/user";
 import {
   myAxios
-} from "utils";
+} from "utils/myAxios";
 import {
   getCalabrioWfmOptions
-} from "../../../utils/calabrioUtils";
+} from "utils/calabrioUtils";
 import { startups } from "testUtils";
 
-jest.mock("../../../utils/calabrioUtils", () => ({
-  __esModule: true,
+jest.mock("utils/calabrioUtils", () => ({
   getCalabrioWfmOptions: jest.fn(),
   getCalabrioWfmOrg: jest.fn()
 }));
@@ -30,8 +29,27 @@ jest.mock("authentication/authenticationProfiles", () => ({
   getStartupProfiles: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminDispatch: jest.fn()
+}));
+
+jest.mock("services/calabrio", () => ({
+  getWfmBusinessUnits: jest.fn(),
+  getCalabrioUsers: jest.fn(),
+  getCalabrioRoles: jest.fn(),
+  getCalabrioOrg: jest.fn()
+}));
+
+jest.mock("services/manager", () => ({
+  listUMManagers: jest.fn()
+}));
+
+jest.mock("services/office", () => ({
+  listUMOffices: jest.fn()
+}));
+
+jest.mock("services/user", () => ({
+  listUMUsers: jest.fn()
 }));
 
 const axiosMock = new MockAdapter(myAxios);

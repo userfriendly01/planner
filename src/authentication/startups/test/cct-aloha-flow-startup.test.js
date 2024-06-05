@@ -1,8 +1,8 @@
 import { runAlohaFlowStartup } from "../cct-aloha-flow-startup";
 import MockAdapter from "axios-mock-adapter";
-import { useAdminDispatch } from "context";
+import { useAdminDispatch } from "context/appContext";
 import { getStartupProfiles } from "authentication/authenticationProfiles";
-import { myAxios } from "utils";
+import { myAxios } from "utils/myAxios";
 import { startups } from "testUtils";
 
 const axiosMock = new MockAdapter(myAxios);
@@ -11,7 +11,7 @@ jest.mock("authentication/authenticationProfiles", () => ({
   getStartupProfiles: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminDispatch: jest.fn()
 }));
 

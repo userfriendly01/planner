@@ -1,22 +1,18 @@
 import { getStartupProfiles } from "authentication/authenticationProfiles";
+import { apiPaths } from "globals";
+import { Action } from "globals/interfaces";
 import {
-  Action,
-  apiPaths
-} from "globals";
-import {
-  listUMUsers,
-  listUMOffices,
-  listUMManagers,
   getWfmBusinessUnits,
   getCalabrioUsers as getCalabrioUsersServiceCall,
   getCalabrioRoles as getCalabrioRolesServiceCall,
   getCalabrioOrg as getCalabrioOrgServiceCall
-} from "services";
-import {
-  getCalabrioWfmOptions,
-  logger,
-  myAxios
-} from "utils";
+} from "services/calabrio";
+import { listUMManagers } from "services/manager";
+import { listUMOffices } from "services/office";
+import { listUMUsers } from "services/user";
+import { getCalabrioWfmOptions } from "utils/calabrioUtils";
+import { logger } from "utils/logger";
+import { myAxios } from "utils/myAxios";
 
 const getCalabrioUsers = async (dispatch: (action: Action) => void) => {
   try {
