@@ -26,7 +26,7 @@ import {
   ModalOverlayStatuses,
   UMUser
 } from "globals/interfaces";
-import { FlexColumn } from "globals/styles";
+import { FlexColumn } from "globals/interfaces";
 import React, {
   useState, useEffect
 } from "react";

@@ -1,7 +1,7 @@
 import {
   FlexColumn,
   FlexRow
-} from "globals/styles";
+} from "globals/interfaces";
 import styled from "styled-components";
 
 export const TextBox = styled.div`

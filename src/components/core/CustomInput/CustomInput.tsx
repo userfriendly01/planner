@@ -12,7 +12,7 @@ const StyledTextField = styled(TextField)<{styles?: any}>`
   }
 `;
 
-export interface CustomInputProps {
+interface CustomInputProps {
   disabled?: boolean,
   error?: boolean,
   label: string,

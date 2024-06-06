@@ -2,7 +2,7 @@ import { GridColDef } from "@mui/x-data-grid";
 import Tooltip from "@mui/material/Tooltip";
 import React from "react";
 
-export const DynamicFlowGridColumnDef: GridColDef[] = [
+const DynamicFlowGridColumnDef: GridColDef[] = [
   {
     headerName: "actionId",
     field: "actionId",

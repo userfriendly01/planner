@@ -5,7 +5,7 @@ import {
 import { fetchUser } from "services/fetchUser";
 import { generateExtension } from "services/checkExtension";
 import { getE164Number } from "utils/numberUtils";
-import { getOverflowSkillFromProfile } from "utils/userManagementUtils";
+import { getOverflowSkillFromProfile } from "utils/usermanagementUtils";
 import {
   calabrioAllowedRoles, calabrioTimeZones
 } from "utils/calabrioUtils";

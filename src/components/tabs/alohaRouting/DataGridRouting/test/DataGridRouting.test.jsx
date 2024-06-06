@@ -87,7 +87,7 @@ jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
 }));
 
-export const createRoutingRule = num => {
+const createRoutingRule = num => {
   return {
     id: num,
     all: "ALL",
@@ -111,7 +111,7 @@ export const createRoutingRule = num => {
   };
 };
 
-export const createSampleTestRoutingDataList = numberOfData =>{
+const createSampleTestRoutingDataList = numberOfData =>{
   const dataList = [];
   for (let num=1; num<=numberOfData; num++) {
     dataList.push(createRoutingRule(num));

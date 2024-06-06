@@ -115,14 +115,6 @@ export const UPDATE_USER = gql`
   }
 `;
 
-export const DELETE_USER = gql`
-  mutation deleteUMUser($identifier: String!, $options: UMUserDeleteOptionsInput) {
-    user: deleteUMUser(identifier: $identifier, options: $options) {
-      ${userAttributes}
-    }
-  }
-`;
-
 export const LIST_OFFICES: GraphData = {
   query: gql`
     query listUMOffices($nextToken: String) {

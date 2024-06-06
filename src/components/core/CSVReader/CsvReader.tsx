@@ -10,7 +10,7 @@ import {
   DynamicAction
 } from "../../tabs/dynamicFlow/DynamicFlow.Interfaces";
 
-export type CSVFileType = "FLOW" | "ROUTING" | "DYNFLOW";
+type CSVFileType = "FLOW" | "ROUTING" | "DYNFLOW";
 
 const mapValuesToObj=(jsonValues:any, type?:CSVFileType):any=>{
   if(type ==="FLOW"){

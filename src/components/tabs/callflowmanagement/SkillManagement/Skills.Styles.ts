@@ -1,12 +1,7 @@
-import { Checkbox } from "@mui/material";
 import styled from "styled-components";
 import { StyledButton } from "components/StyledButton";
 
 const headerIconWidth = "10px";
-
-export const StyledCheckBox = styled(Checkbox)`
-  padding: 0px;
-`;
 
 export const StyledHeader = styled.div`
   display: flex;

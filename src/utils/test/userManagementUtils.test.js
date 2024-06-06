@@ -20,7 +20,7 @@ import {
   fetchUser as fetchUserUtil,
   findMatchingWorker,
   identifyUserProfiles
-} from "../userManagementUtils";
+} from "../usermanagementUtils";
 import { fetchUser } from "services/fetchUser";
 import { getWfmUserByNNumber } from "services/calabrio";
 import {

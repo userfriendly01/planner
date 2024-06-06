@@ -3,10 +3,10 @@ import {
   TextBox
 } from "./ManagerDelete.Styles";
 import { StyledButton } from "components/StyledButton";
-import { FlexColumn } from "globals/styles";
+import { FlexColumn } from "globals/interfaces";
 import React from "react";
 
-export interface ConfirmationFormProps {
+interface ConfirmationFormProps {
   SelectedManager: any,
   DeleteManagerClicked: () => void
 }

@@ -22,10 +22,6 @@ export const ControlsWrapper = styled.div`
   padding: 1%;
 `;
 
-export const AddUserButton = styled(StyledButton)`
-  width: 35%;
-`;
-
 export const StyledExportButton = styled(StyledButton)`
   height: 50px;
   width: 100%;

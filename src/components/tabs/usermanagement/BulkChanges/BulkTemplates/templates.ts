@@ -30,7 +30,7 @@ import {
   checkConflictingCalabrioUsers,
   checkIfConflictingWFMPeople
 } from "usermanagement/validationUtils";
-import { getTargetProfile } from "utils/userManagementUtils";
+import { getTargetProfile } from "utils/usermanagementUtils";
 import { logger } from "utils/logger";
 import {
   FIELDS,

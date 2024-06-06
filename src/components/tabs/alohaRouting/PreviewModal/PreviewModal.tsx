@@ -32,7 +32,7 @@ interface PreviewModalProps {
   loading?: boolean;
 }
 
-const PreviewModal = (props: PreviewModalProps): JSX.Element => {
+export const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   const {
     action,
     isOpen,
@@ -208,9 +208,4 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
       </Modal>
     </div>
   );
-};
-
-export {
-  PreviewModal,
-  PreviewModalProps
 };

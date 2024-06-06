@@ -32,7 +32,7 @@ import {
   getOverflowSkillFromProfile,
   isProfileIdValid,
   isManagerValid
-} from "utils/userManagementUtils";
+} from "utils/usermanagementUtils";
 import { StyledButton } from "components/StyledButton";
 
 jest.useFakeTimers();
@@ -82,7 +82,7 @@ jest.mock("context/appContext", () => ({
   useFormDispatch: jest.fn()
 }));
 
-jest.mock("utils/userManagementUtils", () => ({
+jest.mock("utils/usermanagementUtils", () => ({
   isManagerValid: jest.fn(),
   isProfileIdValid: jest.fn(),
   getOverflowSkillFromProfile: jest.fn()

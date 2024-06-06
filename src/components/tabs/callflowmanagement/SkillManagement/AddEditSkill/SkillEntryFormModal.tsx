@@ -27,7 +27,7 @@ import {
 import {
   FlexRow,
   FlexColumn
-} from "globals/styles";
+} from "globals/interfaces";
 import { ModalOverlayStatuses } from "globals/interfaces";
 import {
   FormControlLabel,

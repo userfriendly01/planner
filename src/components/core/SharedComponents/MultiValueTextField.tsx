@@ -7,7 +7,7 @@ import {
   TextField
 } from "@mui/material";
 
-export interface MultiValueTextFieldProps{
+interface MultiValueTextFieldProps{
   name: string;
   label: string;
   value: Array<string>;

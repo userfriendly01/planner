@@ -10,7 +10,7 @@ jest.mock("@mui/material",()=>({
   Tooltip: jest.fn()
 }));
 
-export const validFlowData = {
+const validFlowData = {
   actionId: "LSC1GREETING",
   actionType: "ANNOUNCEMENT",
   allowBargeIn: false,

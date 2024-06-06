@@ -3,6 +3,27 @@ import {
   AuthenticationProfile, Permissions
 } from "authentication/authenticationInterfaces";
 import { AlertColor } from "@mui/material";
+import styled from "styled-components";
+
+export const FlexColumn = styled.div`
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+`;
+
+export const FlexRow = styled.div`
+  display: flex;
+  flex: 1 1 auto;
+`;
+
+export interface GenericObject {
+  [key: string]: any
+}
+
+export interface DropdownOption {
+  label: string,
+  value: any
+}
 
 export interface AlertBarProps {
     open: boolean;

@@ -19,7 +19,7 @@ import { getCalabrioUser } from "services/calabrio";
 import {
   calabrioTimeZones, calabrioAllowedRoles, findMatchingQmProfiles
 } from "utils/calabrioUtils";
-import { isUnpopulatedField } from "utils/userManagementUtils";
+import { isUnpopulatedField } from "utils/usermanagementUtils";
 import {
   logger
 } from "utils/logger";

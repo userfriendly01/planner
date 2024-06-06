@@ -246,5 +246,3 @@ export const TfnActivation = (props: TfnActivationProps) => {
     </TfnWrapper>
   );
 };
-
-export default TfnActivation;

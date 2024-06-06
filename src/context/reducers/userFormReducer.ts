@@ -8,7 +8,7 @@ import { SearchParams } from "usermanagement/ExtensionSearchParams";
 import { formatE164PhoneNumber } from "utils/numberUtils";
 import { calabrioTimeZones } from "utils/calabrioUtils";
 import { getValidSkillsObject } from "utils/skillsUtils";
-import { getZeroOutEnabledFromProfile } from "utils/userManagementUtils";
+import { getZeroOutEnabledFromProfile } from "utils/usermanagementUtils";
 import { getWfmOptions } from "utils/calabrioUtils";
 
 const searchParams = SearchParams.getValues();

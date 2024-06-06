@@ -175,5 +175,3 @@ export const ProfileSettingsTable = props => {
     </TableContainer>
   );
 };
-
-export default ProfileSettingsTable;

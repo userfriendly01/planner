@@ -63,7 +63,7 @@ const TenDigitInputMask = React.forwardRef((inputProps: any, ref: React.Forwarde
   );
 });
 
-export interface PhoneNumberInputProps {
+interface PhoneNumberInputProps {
   allowSevenDigitVdn?: boolean,
   disabled?: boolean,
   error?: boolean,

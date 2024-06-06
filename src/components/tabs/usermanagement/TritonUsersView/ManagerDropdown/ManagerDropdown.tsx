@@ -17,11 +17,7 @@ import {
   Delete
 } from "@mui/icons-material";
 import { Modal } from "@mui/material";
-
-export interface DropdownOption {
-  label: string,
-  value: any
-}
+import { DropdownOption } from "globals/interfaces";
 
 export const ManagerDropdown = () => {
   const state = useAdminState();

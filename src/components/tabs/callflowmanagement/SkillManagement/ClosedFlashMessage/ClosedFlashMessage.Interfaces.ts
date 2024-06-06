@@ -10,6 +10,7 @@ import {
   updateFlashMessage
 } from "services/message";
 import { AxiosResponse } from "axios";
+
 export interface MessageContainerProps {
   action: ActionType,
   confirmationModalOpts: ConfirmationModalOptsProps,
@@ -19,13 +20,6 @@ export interface MessageContainerProps {
   setTableState: (state: TableState) => void,
   setConfirmationModalOpts: (props: ConfirmationModalOptsProps) => void,
   setSaveResult: (props: SaveResultProps) => void,
-}
-export interface MessageBoxProps {
-  action: ActionType,
-  tableState: TableState,
-  text: string,
-  setText: (text: string) => void,
-  messageType: MessageType
 }
 
 export interface SaveButtonProps {
@@ -40,14 +34,14 @@ export interface SaveButtonProps {
   text: string
 }
 
-export interface MessageType {
+interface MessageType {
   name: string,
   filter: string,
   variable: string,
   updateFunction: (skill: Skill, message: string, nNumber: string) => Promise<AxiosResponse<any>>
 }
 
-export const messageTypes = {
+export const messageTypes:{ [key: string]: MessageType} = {
   CLOSED: {
     name: "Closed Message",
     filter: "closedFilter",

@@ -42,7 +42,7 @@ import {
   isFormUpdated,
   isTritonUserValid,
   workerHasOverFlowSkill
-} from "utils/userManagementUtils";
+} from "utils/usermanagementUtils";
 import { logger } from "utils/logger";
 import { wait } from "utils";
 import {

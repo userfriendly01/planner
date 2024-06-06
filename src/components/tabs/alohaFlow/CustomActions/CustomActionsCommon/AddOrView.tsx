@@ -7,7 +7,7 @@ import {
 } from "@mui/icons-material";
 import React, { useState } from "react";
 
-export interface AddOrViewProps{
+interface AddOrViewProps{
   navigateViewOrAdd:(display:boolean,keys:string)=>void
   keys?:string
 }

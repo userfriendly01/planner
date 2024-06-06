@@ -13,14 +13,14 @@ import {
   useAdminDispatch,
   useAdminState
 } from "context/appContext";
-import { FlexColumn } from "globals/styles";
+import { FlexColumn } from "globals/interfaces";
 import { ModalOverlayStatuses } from "globals/interfaces";
 import { timeouts } from "globals/index";
 import React, { useState } from "react";
 import { createCalabrioTeam } from "services/calabrio";
 import { logger } from "utils/logger";
 
-export interface TeamModalProps {
+interface TeamModalProps {
   handleClose: (res: any) => void
 }
 

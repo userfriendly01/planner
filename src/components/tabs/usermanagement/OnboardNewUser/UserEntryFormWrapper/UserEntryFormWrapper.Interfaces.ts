@@ -19,12 +19,6 @@ export interface LoadingState {
   saveUser: boolean;
 }
 
-export enum UserAction {
-  ADD = "add",
-  EDIT = "edit",
-  DELETE = "delete"
-}
-
 export interface UserSystem {
   triton: boolean,
   calabrio_qm: boolean,
@@ -55,7 +49,7 @@ export interface UserFormButtonsProps {
 }
 
 
-export interface FieldState {
+interface FieldState {
   value: any,
   blurred?: boolean,
   e164?: string,

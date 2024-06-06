@@ -144,5 +144,3 @@ export const BulkUpdateCallerStates = (props: BulkCallerStatesProps): any => {
     </UpdateWrapper>
   );
 };
-
-export default BulkUpdateCallerStates;

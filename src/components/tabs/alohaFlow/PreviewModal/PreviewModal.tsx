@@ -28,7 +28,7 @@ interface PreviewModalProps {
     loading?: boolean;
 }
 
-const PreviewModal = (props: PreviewModalProps): JSX.Element => {
+export const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   const {
     isOpen, rows, onClose, action , maxId , onDelete, onCreate, onUpdate, loading
   } = props;
@@ -197,9 +197,4 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
       </ModalFooter>
     </Modal>
   );
-};
-
-export {
-  PreviewModal,
-  PreviewModalProps
 };

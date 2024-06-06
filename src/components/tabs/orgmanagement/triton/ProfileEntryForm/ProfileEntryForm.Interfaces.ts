@@ -24,7 +24,7 @@ export interface ProfileFormButtonsProps {
   updateLoading: (payload: any) => void
 }
 
-export interface FieldState {
+interface FieldState {
   value: any,
   updated?: boolean,
   valid?: boolean,

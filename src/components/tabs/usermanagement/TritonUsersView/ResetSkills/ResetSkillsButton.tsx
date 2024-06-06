@@ -8,7 +8,7 @@ import {
 import { apiPaths } from "globals";
 import React, { useState } from "react";
 import { logger } from "utils/logger";
-import { mapWorkerFromTwilio } from "utils/formatWorkerResponse";
+import { mapWorkerFromTwilio } from "utils";
 import { myAxios } from "utils/myAxios";
 import { Modal } from "@mui/material";
 

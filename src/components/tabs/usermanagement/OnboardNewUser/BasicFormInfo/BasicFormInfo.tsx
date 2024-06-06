@@ -26,7 +26,7 @@ import {
   getOverflowSkillFromProfile,
   isProfileIdValid,
   isManagerValid
-} from "utils/userManagementUtils";
+} from "utils/usermanagementUtils";
 import {
   sortManagersByName,
   sortProfilesByName

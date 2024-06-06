@@ -55,7 +55,7 @@ import {
 import { AddOrView } from "../CustomActionsCommon/AddOrView";
 import { FloatingHeader } from "@lmig/lmds-react-floating-header";
 
-export interface AddFlowModalProps {
+interface AddFlowModalProps {
   isOpen: boolean;
   newId: number;
   openAddModal: (flag: boolean, isSubmitted?: boolean, row?:CctSharedCallFlowDb) => void;

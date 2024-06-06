@@ -4,11 +4,11 @@ export const descriptions = {
   Aloha_Flow: ""
 };
 
-export enum Environments {
-  DEV = "development",
-  TEST = "test",
-  PROD = "production"
-}
+// export enum Environments {
+//   DEV = "development",
+//   TEST = "test",
+//   PROD = "production"
+// }
 
 export const enum Permissions {
   READ = "read",

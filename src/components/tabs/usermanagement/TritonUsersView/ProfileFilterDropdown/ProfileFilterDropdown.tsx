@@ -10,11 +10,7 @@ import {
 } from "context/appContext";
 import React from "react";
 import { sortProfilesById } from "utils/_sortUtils";
-
-export interface DropdownOption {
-  label: string,
-  value: any
-}
+import { DropdownOption } from "globals/interfaces";
 
 export const ProfileFilterDropdown = () => {
   const state = useAdminState();
