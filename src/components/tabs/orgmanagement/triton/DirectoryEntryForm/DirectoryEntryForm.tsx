@@ -11,7 +11,6 @@ import {
   formModes, timeouts
 } from "globals/index";
 import { ModalOverlayStatuses } from "globals/interfaces";
-import PropTypes from "prop-types";
 import React, { useState } from "react";
 import {
   insertDirectory,
@@ -45,9 +44,33 @@ const ModalContainer = styled.div`
   transform: translate(-50%, -50%);
 `;
 
-const validateStringNotEmpty = value => value.length > 0;
+export interface DirectoryEntryFormInitialValuesProps {
+  directory_id?: number,
+  first_nme?: string,
+  last_nme?: string,
+  phone_num?: string
+}
 
-export const DirectoryEntryForm = props => {
+export interface DirectoryStateProps {
+  directoryId?: number,
+  directoryEntryFormInitialValues?: DirectoryEntryFormInitialValuesProps,
+  directoryEntryFormMode?: string,
+  takenPhoneNums?: any[],
+  isDirectoryEntryFormOpen?: boolean,
+  overlayMessage?: string,
+  saveState?: { status: ModalOverlayStatuses, overlayMessage?: string }
+}
+
+interface DirectoryEntryFormProps {
+    directoryState: DirectoryStateProps,
+    closeModal: VoidFunction,
+    profileId: string | number,
+    refreshProfileData: VoidFunction,
+}
+
+const validateStringNotEmpty = (value: string) => value.length > 0;
+
+export const DirectoryEntryForm = (props: DirectoryEntryFormProps) => {
   const {
     closeModal,
     directoryState,
@@ -87,7 +110,7 @@ export const DirectoryEntryForm = props => {
   const formValid = form.first_nme_valid && form.last_nme_valid && form.phone_num_valid && !form.phone_num_is_duplicate;
   const lastNameValid = form.last_nme_updated && !form.last_nme_valid;
 
-  const updateStateFromService = (success, added) => {
+  const updateStateFromService = (success: boolean, added: boolean) => {
     if (success) {
       refreshProfileData();
       setLoading({
@@ -104,7 +127,7 @@ export const DirectoryEntryForm = props => {
     }
   };
 
-  const waitAndHideOverlay = closeDialListEntryForm => setTimeout(() => {
+  const waitAndHideOverlay = (closeDialListEntryForm?: boolean) => setTimeout(() => {
     if (closeDialListEntryForm) {
       closeModal();
     } else {
@@ -245,20 +268,4 @@ export const DirectoryEntryForm = props => {
       </PaperContainer>
     </ModalContainer>
   );
-};
-
-DirectoryEntryForm.propTypes = {
-  closeModal: PropTypes.func.isRequired,
-  directoryState: PropTypes.shape({
-    directoryId: PropTypes.number,
-    directoryEntryFormInitialValues: PropTypes.shape({
-      first_nme: PropTypes.string,
-      last_nme: PropTypes.string,
-      phone_num: PropTypes.string
-    }).isRequired,
-    directoryEntryFormMode: PropTypes.string.isRequired,
-    takenPhoneNums: PropTypes.array.isRequired
-  }).isRequired,
-  profileId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  refreshProfileData: PropTypes.func.isRequired
 };

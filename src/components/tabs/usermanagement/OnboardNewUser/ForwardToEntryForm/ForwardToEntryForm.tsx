@@ -5,7 +5,6 @@ import {
 import { Dropdown } from "components/Dropdown";
 import { PhoneNumberInput } from "components/PhoneNumberInput";
 import { useAdminState } from "context/appContext";
-import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
 
@@ -27,7 +26,12 @@ const LabelContainer = styled.div`
   text-align: center;
 `;
 
-export const ForwardToEntryForm = props => {
+interface ForwardToEntryFormProps {
+  label: string,
+  updateForwardTo: (value: string) => void
+}
+
+export const ForwardToEntryForm = (props: ForwardToEntryFormProps) => {
   const {
     label,
     updateForwardTo
@@ -61,7 +65,7 @@ export const ForwardToEntryForm = props => {
     showError: false
   });
 
-  const handleUpdatePhoneNumber = (maskedValue, unmaskedValue, isValid) => {
+  const handleUpdatePhoneNumber = (maskedValue: string, unmaskedValue: string, isValid: boolean) => {
     setPhoneNumber({
       ...phoneNumber,
       isValid,
@@ -76,7 +80,7 @@ export const ForwardToEntryForm = props => {
 
   const [ forwardToType, updateForwardToType ] = React.useState("worker");
 
-  const handleRadioChange = selection => {
+  const handleRadioChange = (selection: string) => {
     updateForwardTo(null);
     switch(selection) {
       case "skill":
@@ -132,7 +136,7 @@ export const ForwardToEntryForm = props => {
             margin: "16px 0px 8px 0px"
           }}
           options={getWorkerOptions()}
-          updateValue={(event, worker) => updateForwardTo(worker ? worker.value : "")}
+          updateValue={(event: any, worker: any) => updateForwardTo(worker ? worker.value : "")}
         />
       }
       {forwardToType === "skill" &&
@@ -142,7 +146,7 @@ export const ForwardToEntryForm = props => {
             margin: "16px 0px 8px 0px"
           }}
           options={getSkillOptions()}
-          updateValue={(event, skill) => updateForwardTo(skill ? skill.value : "")}
+          updateValue={(event: any, skill: any) => updateForwardTo(skill ? skill.value : "")}
         />
       }
       {forwardToType === "phoneNum" &&
@@ -163,9 +167,4 @@ export const ForwardToEntryForm = props => {
       }
     </EntryFormContainer>
   );
-};
-
-ForwardToEntryForm.propTypes = {
-  label: PropTypes.string.isRequired,
-  updateForwardTo: PropTypes.func.isRequired
 };

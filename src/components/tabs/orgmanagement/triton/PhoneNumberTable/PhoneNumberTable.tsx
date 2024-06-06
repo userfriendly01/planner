@@ -5,7 +5,6 @@ import {
 } from "@mui/icons-material";
 import { ModalOverlay } from "components/ModalOverlay";
 import { ModalOverlayStatuses } from "globals/interfaces";
-import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
 import { formatTenDigitNumber } from "utils/numberUtils";
@@ -91,7 +90,25 @@ const TableText = styled.div`
   margin: 2px;
 `;
 
-export const PhoneNumberTable = props => {
+interface PhoneNumberEntry {
+  directory_id: number,
+  phone_num: string,
+  first_nme: string,
+  last_nme: string
+}
+
+interface PhoneNumberTableProps {
+  deleteFunction: (id: number) => void,
+  editFunction: (id: PhoneNumberEntry) => void,
+  emptyListMsg: string,
+  phoneNumberList: any[],
+  saveState: {
+    status?: ModalOverlayStatuses,
+    overlayMessage?: string
+  }
+}
+
+export const PhoneNumberTable = (props: PhoneNumberTableProps) => {
   const {
     deleteFunction,
     editFunction,
@@ -133,12 +150,12 @@ export const PhoneNumberTable = props => {
                           <TableText>{formatTenDigitNumber(entry.phone_num)}</TableText>
                         </CustomTableData>
                         <CustomTableData>
-                          <IconWrapper onClick={editFunction(entry)} data-testid="edit-button">
+                          <IconWrapper onClick={() => editFunction(entry)} data-testid="edit-button">
                             <Edit fontSize={"inherit"} />
                           </IconWrapper>
                         </CustomTableData>
                         <CustomTableData>
-                          <IconWrapper onClick={deleteFunction(entry.directory_id)} data-testid="delete-button">
+                          <IconWrapper onClick={() => deleteFunction(entry.directory_id)} data-testid="delete-button">
                             <Delete fontSize={"inherit"} />
                           </IconWrapper>
                         </CustomTableData>
@@ -153,15 +170,4 @@ export const PhoneNumberTable = props => {
       }
     </div>
   );
-};
-
-PhoneNumberTable.propTypes = {
-  deleteFunction: PropTypes.func.isRequired,
-  editFunction: PropTypes.func.isRequired,
-  emptyListMsg: PropTypes.string.isRequired,
-  phoneNumberList: PropTypes.array.isRequired,
-  saveState: PropTypes.shape({
-    status: PropTypes.oneOf(Object.values(ModalOverlayStatuses)),
-    overlayMessage: PropTypes.string
-  }).isRequired
 };

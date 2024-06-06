@@ -6,11 +6,11 @@ import {
 import {
   ClearRounded
 } from "@mui/icons-material";
-import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
+import { GenericObject } from "globals/interfaces";
 
-const TextInput = styled(TextField)`
+const TextInput = styled(TextField)<{ styles: GenericObject }>`
   && {
     margin: 0 8px;
     width: 100%;
@@ -18,7 +18,13 @@ const TextInput = styled(TextField)`
   }
 `;
 
-export const SearchBox = props => {
+interface SearchBoxProps {
+  searchBy: string,
+  setSearch: (search: string) => void,
+  styles?: GenericObject
+}
+
+export const SearchBox = (props: SearchBoxProps) => {
   const {
     searchBy,
     setSearch,
@@ -54,10 +60,4 @@ export const SearchBox = props => {
       value={searchBy}
     />
   );
-};
-
-SearchBox.propTypes = {
-  searchBy: PropTypes.string.isRequired,
-  setSearch: PropTypes.func.isRequired,
-  styles: PropTypes.any
 };
