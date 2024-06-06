@@ -122,36 +122,6 @@ export const views: any = {
   }
 };
 
-// export const updateActions: any = {
-//   WORKER_ATTRIBUTES: {
-//     value: "WORKER_ATTRIBUTES",
-//     label: "Twilio Worker Attributes"
-//   }
-// };
-
-// export const valueTypes: any = {
-//   STRING: {
-//     value: "string",
-//     label: "String"
-//   },
-//   NUMBER: {
-//     value: "number",
-//     label: "Number"
-//   },
-//   BOOLEAN: {
-//     value: "boolean",
-//     label: "Boolean"
-//   },
-//   OBJECT: {
-//     value: "object",
-//     label: "Object"
-//   },
-//   ARRAY: {
-//     value: "array",
-//     label: "Array"
-//   }
-// };
-
 export enum ErrorTypes {
   NO_ERRORS = "No Errors",
   VALIDATION = "Validation",
