@@ -7,7 +7,7 @@ import { CustomToast } from "components/CustomToast";
 import { ComponentControl } from "components/ComponentControl";
 import {
   ROUTING_CACHE_MASTER_DATA, dayOfWeek
-} from "utils/routingUtils";
+} from "utils/alohaRoutingUtils";
 import {
   retrieveRoutingData, addRoutingRule
 } from "services/routingTableService";

@@ -5,7 +5,7 @@ import { formModes } from "globals";
 import { UserFormState } from "usermanagement/UserEntryFormWrapper.Interfaces";
 import { ExtensionSearchStatuses } from "usermanagement/ExtensionInput.Interfaces";
 import { SearchParams } from "usermanagement/ExtensionSearchParams";
-import { formatE164PhoneNumber } from "utils/formatNumberUtils";
+import { formatE164PhoneNumber } from "utils/numberUtils";
 import { calabrioTimeZones } from "utils/calabrioUtils";
 import { getValidSkillsObject } from "utils/skillsUtils";
 import { getZeroOutEnabledFromProfile } from "utils/userManagementUtils";

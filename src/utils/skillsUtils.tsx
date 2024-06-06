@@ -5,6 +5,51 @@ import {
 } from "globals/interfaces";
 import _ from "lodash";
 
+import React from "react";
+import styled from "styled-components";
+
+const Priority = styled.span`
+  color: #28A3AF;
+`;
+
+const SkillsDiv = styled.div`
+  border-color: #C0BFC0;
+  border-style: solid;
+  border-radius: 5px;
+  border-width: 2px;
+  font-size: .85em;
+  font-weight: 800;
+  margin: 2;
+  padding: 1 3;
+`;
+
+export const formatWorkerAttributeSkillsToHTML = (routingObj: any) => {
+  if (routingObj && Array.isArray(routingObj.skills) && routingObj.skills.length > 0) {
+    return routingObj.skills.map((skill: string, index: number) => {
+      if (routingObj.levels && routingObj.levels[skill]) {
+        return <SkillsDiv key={index}>{`${skill} - `}<Priority>{`${routingObj.levels[skill]}`}</Priority></SkillsDiv>;
+      }
+      return <SkillsDiv key={index}>{skill}</SkillsDiv>;
+    });
+  } else {
+    return null;
+  }
+};
+
+export const formatWorkerAttributeSkillsToString = (routingObj: any) => {
+  if (routingObj && Array.isArray(routingObj.skills) && routingObj.skills.length > 0) {
+    return routingObj.skills.map((skill: string) => {
+      if (routingObj.levels && routingObj.levels[skill]) {
+        return `${skill} - ${routingObj.levels[skill]}`;
+      } else {
+        return `${skill}`;
+      }
+    });
+  } else {
+    return "";
+  }
+};
+
 export const areSkillsDifferent = (workerAttributes: UMUserTwilioAttributes): boolean => {
   const currentSkills = getValidSkillsObject(workerAttributes.routing);
   const defaultSkills = getValidSkillsObject(workerAttributes.default_skills);
@@ -14,12 +59,6 @@ export const areSkillsDifferent = (workerAttributes: UMUserTwilioAttributes): bo
     return false;
   }
 };
-export interface RawTaskRotuterSkill {
-  multivalue: boolean,
-  minimum: number,
-  maximum: number,
-  name: string
-}
 
 export const getValidSkillsObject = (skillsObject?: UMTwilioAttributeSkills): UMTwilioAttributeSkills => {
   const spreadSkillObject = typeof skillsObject === "object" ? skillsObject : {};

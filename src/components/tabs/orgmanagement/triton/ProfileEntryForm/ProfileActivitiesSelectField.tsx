@@ -19,7 +19,7 @@ import { Activity } from "globals/interfaces";
 import { Tooltip } from "@mui/material";
 import { logger } from "utils/logger";
 import { myAxios } from "utils/myAxios";
-import { sortActivityByName } from "utils/sortUtils";
+import { sortActivityByName } from "utils/_sortUtils";
 
 const getActivities = () => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_ACTIVITIES)
   .then(res => {

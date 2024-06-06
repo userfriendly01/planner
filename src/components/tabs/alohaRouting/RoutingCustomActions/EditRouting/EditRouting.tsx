@@ -18,8 +18,8 @@ import {
   routingInitRule,
   routingDropDownList,
   dayOfWeek
-} from "utils/routingUtils";
-import { initializedAlertBar } from "utils/configUtils";
+} from "utils/alohaRoutingUtils";
+import { initializedAlertBar } from "utils/alohaConfigUtils";
 import {
   CctSharedCallRoutingDb,
   RoutingDropDownList,
@@ -32,18 +32,16 @@ import {
   Grid
 } from "@mui/material";
 import {
-  AlertBarProps,
-  FormValidationRule
-} from "utils/interfaces";
+  AzureSPA, AlertBarProps, FormValidationRule
+} from "globals/interfaces";
 import {
   deleteRoutingRule,
   updateRoutingDB
 } from "services/routingTableService";
-import { AzureSPA } from "globals/interfaces";
 import {
   BrandName,
   readWriteAccess
-} from "utils/configUtils";
+} from "utils/alohaConfigUtils";
 import { FloatingHeader } from "@lmig/lmds-react-floating-header";
 interface EditRoutingComponentProps {
   accessToken: string;

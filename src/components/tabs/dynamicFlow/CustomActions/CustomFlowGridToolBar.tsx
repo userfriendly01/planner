@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import {
   readWriteAccess
-} from "utils/configUtils";
+} from "utils/alohaConfigUtils";
 import {
   PreviewModalAction
 } from "../DynamicFlow.Interfaces";

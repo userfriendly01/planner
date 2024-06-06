@@ -1,5 +1,5 @@
 /* eslint-disable no-console, max-len,  no-return-assign */
-import { LAST_FLOW_MASTER_DATA_CACHED_DATE } from "utils/flowUtils";
+import { LAST_FLOW_MASTER_DATA_CACHED_DATE } from "utils/alohaFlowUtils";
 import { logger } from "utils/logger";
 import {
   CctSharedCallFlowDb, FlowContent, FlowMasterData, FlowListMasterData

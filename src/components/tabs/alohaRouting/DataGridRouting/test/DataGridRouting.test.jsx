@@ -32,7 +32,7 @@ import {
 } from "services/routingTableService";
 import {
   CACHED_CALL_ROUTING_PER_PAGE, CACHED_CALL_ROUTING_PAGE_NO, CACHE_FILTER_ROUTING
-} from "utils/routingUtils";
+} from "utils/alohaRoutingUtils";
 
 
 jest.mock("@mui/x-data-grid",()=>({

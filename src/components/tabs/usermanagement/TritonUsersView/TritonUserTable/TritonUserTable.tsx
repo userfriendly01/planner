@@ -27,7 +27,7 @@ import { formModes } from "globals";
 import { ModalOverlayStatuses } from "globals/interfaces";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { formatWorkerAttributeSkillsToHTML } from "utils/formatWorkerAttributeSkills";
+import { formatWorkerAttributeSkillsToHTML } from "utils/skillsUtils";
 import { TritonUserTableProps } from "./TritonUserTable.Interfaces";
 
 export const TritonUserTable = (props: TritonUserTableProps) => {

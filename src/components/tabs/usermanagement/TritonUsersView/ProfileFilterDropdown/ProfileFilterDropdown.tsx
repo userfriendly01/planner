@@ -9,7 +9,7 @@ import {
   useAdminState, useAdminDispatch
 } from "context/appContext";
 import React from "react";
-import { sortProfilesById } from "utils/sortUtils";
+import { sortProfilesById } from "utils/_sortUtils";
 
 export interface DropdownOption {
   label: string,

@@ -13,8 +13,8 @@ import {
   TableDataFlex,
   IconWrapper
 } from "./ProfileSettingsTable.Styles";
-import { sortProfilesById } from "utils/sortUtils";
-import { formatTenDigitNumber } from "utils/formatNumberUtils";
+import { sortProfilesById } from "utils/_sortUtils";
+import { formatTenDigitNumber } from "utils/numberUtils";
 import {
   formatAggregateQueues,
   formatProfileBooleanData,

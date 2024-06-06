@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { MultiFieldContainerFormProps } from "./MultiFieldContainer";
 import { MultiValueTextField } from "./MultiValueTextField";
-import { routingDropDownList } from "utils/routingUtils";
+import { routingDropDownList } from "utils/alohaRoutingUtils";
 
 interface MultiFieldContainerModalViewProps{
     formFields:Array<MultiFieldContainerFormProps>;

@@ -15,7 +15,7 @@ import {
   nextActionType,
   tfnRoutingGroup,
   userDestination
-} from "utils/flowUtils";
+} from "utils/alohaFlowUtils";
 import { flowFields } from "../CustomActions/FlowFieldsConfig";
 import { ComponentControl } from "components/ComponentControl";
 import { GridApiCommunity } from "@mui/x-data-grid/internals";

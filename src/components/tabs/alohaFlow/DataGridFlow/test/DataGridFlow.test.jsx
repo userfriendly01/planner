@@ -8,7 +8,7 @@ import {
   CACHE_FILTER_FLOW,
   CALL_FLOW_PAGE_NO,
   CALL_FLOW_PER_PAGE
-} from "utils/flowUtils";
+} from "utils/alohaFlowUtils";
 import {
   DataGrid, GridToolbar
 } from "@mui/x-data-grid";

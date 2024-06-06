@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import {
   CACHE_FILTER_FLOW
-} from "utils/flowUtils";
+} from "utils/alohaFlowUtils";
 import { useAdminState } from "context/appContext";
 
 jest.mock("@mui/material", () => ({
@@ -27,12 +27,12 @@ jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
 }));
 
-jest.mock("utils/flowUtils", () => ({
+jest.mock("utils/alohaFlowUtils", () => ({
   CACHE_FILTER_FLOW: "SEARCH_FILTER_FLOW",
   getAdvanceFilter: jest.fn()
 }));
 
-jest.mock("utils/configUtils", () => ({
+jest.mock("utils/alohaConfigUtils", () => ({
   readWriteAccess: jest.fn()
 }));
 

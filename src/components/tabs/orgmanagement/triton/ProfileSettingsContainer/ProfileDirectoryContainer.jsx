@@ -5,7 +5,7 @@ import { apiPaths } from "globals/index";
 import React, { useState } from "react";
 import { logger } from "utils/logger";
 import { myAxios } from "utils/myAxios";
-import { sortDirectoryListEntriesByName } from "utils/sortUtils";
+import { sortDirectoryListEntriesByName } from "utils/_sortUtils";
 import {
   ProfileSettingsContainerDiv,
   ProfileSettingsMessage

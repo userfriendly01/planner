@@ -30,7 +30,7 @@ import {
 import {
   sortManagersByName,
   sortProfilesByName
-} from "utils/sortUtils";
+} from "utils/_sortUtils";
 import { RoutingAttributes } from "usermanagement/RoutingAttributes";
 
 export const BasicFormInfo = (props: BasicFormInfoProps) => {

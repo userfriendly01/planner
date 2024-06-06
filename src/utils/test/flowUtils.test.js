@@ -1,8 +1,8 @@
 import {
   checkGreetingMessageRegExp , getAdvanceFilter
-} from "../flowUtils";
+} from "../alohaFlowUtils";
 
-describe("flowUtils.ts", ()=>{
+describe("alohaFlowUtils.ts", ()=>{
   describe("checkGreetingMessageRegExp",()=>{
     describe("English",()=>{
       it("Valid", ()=>{

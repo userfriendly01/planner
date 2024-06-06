@@ -14,7 +14,7 @@ import {
 } from "testUtils";
 import {
   sortWorkersByFullName
-} from "utils/sortUtils";
+} from "utils/_sortUtils";
 
 jest.mock("components/Pagination", () => ({
   Pagination: jest.fn()

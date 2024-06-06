@@ -44,7 +44,7 @@ import {
   workerHasOverFlowSkill
 } from "utils/userManagementUtils";
 import { logger } from "utils/logger";
-import { wait } from "utils/timeUtils";
+import { wait } from "utils";
 import {
   addWorkerToOrg,
   checkConflictingUsers

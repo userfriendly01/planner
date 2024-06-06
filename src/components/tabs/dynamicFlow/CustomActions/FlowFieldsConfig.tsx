@@ -1,4 +1,4 @@
-import { FormValidationRule } from "utils/interfaces";
+import { FormValidationRule } from "globals/interfaces";
 import {
   AddFlowFieldsConfigProps,
   DynamicAction

@@ -21,7 +21,7 @@ import {
   CallTagOptions
 } from "globals/interfaces";
 import { logger } from "utils/logger";
-import { sortCallTagByName } from "utils/sortUtils";
+import { sortCallTagByName } from "utils/_sortUtils";
 import { formatCallTagsName } from "utils/profileUtils";
 import {
   getCallTags,

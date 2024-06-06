@@ -10,7 +10,7 @@ import { Modal } from "@mui/material";
 import { StyledButton } from "components/StyledButton";
 import { formModes } from "globals/index";
 import { ModalOverlayStatuses } from "globals/interfaces";
-import { isProfileFormValid } from "utils/profileFormUtils";
+import { isProfileFormValid } from "utils/profileUtils";
 import {
   act,
   render,
@@ -40,11 +40,8 @@ jest.mock("@mui/material", () => ({
   Modal: jest.fn()
 }));
 
-jest.mock("utils/profileFormUtils", () => ({
-  isProfileFormValid: jest.fn()
-}));
-
 jest.mock("utils/profileUtils", () => ({
+  isProfileFormValid: jest.fn(),
   createProfilePayload: jest.fn(),
   updateProfilePayload: jest.fn()
 }));

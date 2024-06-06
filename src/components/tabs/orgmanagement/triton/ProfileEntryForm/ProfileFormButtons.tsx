@@ -12,16 +12,16 @@ import {
 } from "./ProfileEntryForm.Styles";
 import {
   formModes,timeouts
-} from "globals/index";
+} from "globals";
 import {
   ModalOverlayStatuses, ProfilePayload
 } from "globals/interfaces";
-import { isProfileFormValid } from "utils/profileFormUtils";
+import { isProfileFormValid } from "utils/profileUtils";
 import { logger } from "utils/logger";
 import {
   createProfilePayload, updateProfilePayload
 } from "utils/profileUtils";
-import { wait } from "utils/timeUtils";
+import { wait } from "utils";
 import {
   createProfile,
   editProfile

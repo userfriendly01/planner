@@ -23,36 +23,10 @@ export const getE164Number = (number: string) => {
 };
 
 /**
- * Converts a string representing a phone number 11 digits (E164 stripped of the +
- * at the beginning like: 16038887777).Throws error if unable convert number to E164 format.
- * @param number Number to convert
- */
-export const getElevenDigitNumber = (number: string) => getE164Number(number).replace(/^\+/, ""); // remove '+' from start of string
-
-/**
  * Returns `true` or `false` whether the number is ten digits
  * @param number Number to check
  */
 export const isNumberTenDigits = (number: string) => /^\d{10}$/.test(number);
-
-/**
- * Returns `true` or `false` whether the number is Toll Free Number.
- * If number is not a valid phone number, error is caught and returns `false`.
- * @param number Number to check
- */
-export const isNumberTfn = (number: string) => {
-  try {
-    const phoneNumber = getPhoneNumber(number);
-    if (phoneNumberUtil.isValidNumber(phoneNumber)) {
-      const numberType = phoneNumberUtil.getNumberType(phoneNumber);
-      return numberType === PhoneNumberType.TOLL_FREE;
-    } else {
-      return false;
-    }
-  } catch (error) {
-    return false;
-  }
-};
 
 /**
  * Checks if a number is a seven digit VDN

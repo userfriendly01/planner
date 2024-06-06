@@ -9,7 +9,7 @@ import { CustomInput } from "components/CustomInput";
 import { Dropdown } from "components/Dropdown";
 import { PhoneNumberInput } from "components/PhoneNumberInput";
 import React from "react";
-import { getE164Number } from "utils/formatNumberUtils";
+import { getE164Number } from "utils/numberUtils";
 import { Tooltip } from "@mui/material";
 
 export const BulkUpdateAttributes = (props: BulkUpdateProps) => {

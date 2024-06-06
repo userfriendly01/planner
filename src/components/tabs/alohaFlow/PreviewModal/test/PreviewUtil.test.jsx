@@ -2,7 +2,7 @@ import { TableGridColumnDef } from "../TableColumnDef";
 import {
   reconstructTableColumnDef
 } from "../PreviewUtil";
-import { FLOW_MASTER_DATA } from "utils/flowUtils";
+import { FLOW_MASTER_DATA } from "utils/alohaFlowUtils";
 
 export const createFlowDataItem = num => {
   return {

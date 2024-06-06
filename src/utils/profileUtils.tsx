@@ -6,24 +6,45 @@ import {
 } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { logger } from "utils/logger";
+import { ProfileEntryFormState } from "components/tabs/orgmanagement/triton/ProfileEntryForm/ProfileEntryForm.Interfaces";
 
-export const formatProfileBooleanData = value => {
+export const isProfileFormValid = (form: ProfileEntryFormState): boolean => {
+  if (form.operatingUnit.ou_name && form.activitiesList.length
+    && form.profileName.valid && form.overflowSkill.valid
+    && (form.forwardToNum.valid || !form.forwardToNum.unmaskedValue) // allow null
+    && ((form.acwDataEntry.value === true && form.callTagsList.length) || (form.acwDataEntry.value === false && !form.callTagsList.length))
+    && ((form.accessGroup.value === true && form.accessGroupId) || form.accessGroup.value === false)) {
+    return true;
+  }
+  return false;
+};
+
+export const isProfileNameValid = (profileName: string): boolean => {
+  return profileName.length && profileName.length <= 80 ? true : false;
+};
+
+export const isOverflowSkillValid = (overflowSkill: string): boolean => {
+  const overflowSkillRegEx = /^[0-9a-zA-Z]+$/;
+  return !overflowSkill || (overflowSkill.length <= 80 && overflowSkill.match(overflowSkillRegEx)) ? true : false;
+};
+
+export const formatProfileBooleanData = (value: number) => {
   if (value === 1) {
     return <Check />;
   }
   return "";
 };
 
-export const formatProfileBooleanDataTrueFalse = value => {
+export const formatProfileBooleanDataTrueFalse = (value: number) => {
   if (value === 1) {
     return { value: true };
   }
   return { value: false };
 };
 
-export const formatProfileACWDataEntry = (value, options, BubbleDiv, HighlightRed) => {
+export const formatProfileACWDataEntry = (value: number, options: any, BubbleDiv: any, HighlightRed: any) => {
   if (value === 1 && options.length) {
-    return options.map(option => {
+    return options.map((option: any) => {
       return <Tooltip key={option.wrkr_tsk_info_id} placement="top" title={option.options ? option.options.toString().replace(/,/g,", ") : ""}>
         <BubbleDiv key={option.wrkr_tsk_info_id}>{option.display_nme}</BubbleDiv>
       </Tooltip>;
@@ -38,63 +59,51 @@ export const formatProfileACWDataEntry = (value, options, BubbleDiv, HighlightRe
   return "";
 };
 
-export const formatSimpleText = text => {
+export const formatSimpleText = (text?: string) => {
   if (text === null) {
     return  "";
   }
   return text;
 };
 
-export const formatActivityData = (activity, BubbleDiv) => {
+export const formatActivityData = (activity?: string, BubbleDiv?: any) => {
   if (activity === null) {
     return "";
   }
   return <BubbleDiv>{activity}</BubbleDiv>;
 };
 
-export const formatCallTagsName = name => {
+export const formatCallTagsName = (name: string) => {
   return _.startCase(name);
 };
 
-export const formatSelfServiceIndicatorData = profileId => {
-  const formattedProfileId = typeof profileId === "string" ? parseInt(profileId) : profileId; // do we need this extra step? 
-  if(formattedProfileId >= 39){
+export const formatSelfServiceIndicatorData = (profileId: number) => {
+  if(profileId >= 39){
     return  <Check />;
   }
   return "";
 };
 
-export const profileSettingsViews = [
-  {
-    value: "PROFILE_DIRECTORY",
-    label: "Profile Directory"
-  },
-  {
-    value: "PROFILE_SETTINGS",
-    label: "Profile Settings"
-  }
-];
-
-export const formatAggregateQueues = (aggregateQueues, BubbleDiv) => {
+export const formatAggregateQueues = (aggregateQueues: any[], BubbleDiv: any) => {
   return aggregateQueues.map(queue => {
     if (queue.aggregate_queues_type === "aggregate") {
-      return <BubbleDiv key={queue.aggregate_queues_nme}>{queue.aggregate_queues_nme} <AutoAwesomeMotion fontSize="1 rem"/></BubbleDiv>;
+      return <BubbleDiv key={queue.aggregate_queues_nme}>{queue.aggregate_queues_nme} <AutoAwesomeMotion fontSize="small"/></BubbleDiv>;
     } else {
       return <BubbleDiv key={`${queue.aggregate_queues_nme}`}>{queue.aggregate_queues_nme}</BubbleDiv>;
     }
   });
 };
 
-export const createProfilePayload = form => {
+export const createProfilePayload = (form: any) => {
   return {
     profile_id: form.profileId,
     profile_nme: form.profileName.value,
-    activities: form.activitiesList.map(activity => activity.activity_id),
+    activities: form.activitiesList.map((activity: any) => activity.activity_id),
     recorded_i: form.inboundRecorded.value,
     auto_answd_i: form.autoAnswered.value,
     pmt_prcsg_i: form.paymentProcessing.value,
     otbnd_recorded_i: form.outboundRecorded.value,
-    callTags: form.callTagsList.map(callTag => {
+    callTags: form.callTagsList.map((callTag: any) => {
       return {
         wrkr_tsk_info_id: callTag.wrkr_tsk_info_id,
         display_nme: formatCallTagsName(callTag.wrkr_tsk_info_nme),
@@ -113,7 +122,7 @@ export const createProfilePayload = form => {
     call_reason_i: form.callReason.value,
     eft_authorization_i: form.eftAuthorization.value,
     claim_number_edit_i: form.claimNumberEdit.value,
-    transferQueues: form.transferQueues.filter(queue => queue.ctmSkillId > 0).map(queue => {
+    transferQueues: form.transferQueues.filter((queue: any) => queue.ctmSkillId > 0).map((queue: any) => {
       return {
         skill_id: queue.ctmSkillId,
         skill_nme: queue.ctmSkillDisplayName
@@ -121,7 +130,7 @@ export const createProfilePayload = form => {
     }),
     access_group: form.accessGroup.value || null,
     // Aggregate queues need to be set to a negative ID in order to not clash with single transfer queues / skills. In the payload we need to change that back to a positive integer
-    aggregateQueues: form.transferQueues.filter(queue => queue.ctmSkillId < 0).map(queue => Math.abs(queue.ctmSkillId)),
+    aggregateQueues: form.transferQueues.filter((queue: any) => queue.ctmSkillId < 0).map((queue: any) => Math.abs(queue.ctmSkillId)),
     operating_unit_sid: form.operatingUnit.ou_sid,
     operating_unit_nme: form.operatingUnit.ou_name,
     access_group_id: form.accessGroup.value ? form.accessGroupId : null,
@@ -129,22 +138,22 @@ export const createProfilePayload = form => {
   };
 };
 
-export const updateProfilePayload = form => {
-  const payload = {
+export const updateProfilePayload = (form: any) => {
+  const payload: any = {
     profile_id: form.profileId
   };
 
   form.profileName.updated ? payload.profile_nme = form.profileName.value : null;
   form.overflowSkill.updated ? payload.overflow_skill = form.overflowSkill.value || null : null;
-  form.activitiesUpdated ? payload.activities = form.activitiesList.map(activity => activity.activity_id) : null;
-  form.queuesUpdated ? payload.transferQueues = form.transferQueues.filter(queue => queue.ctmSkillId > 0).map(queue => {
+  form.activitiesUpdated ? payload.activities = form.activitiesList.map((activity: any) => activity.activity_id) : null;
+  form.queuesUpdated ? payload.transferQueues = form.transferQueues.filter((queue: any) => queue.ctmSkillId > 0).map((queue: any) => {
     return {
       skill_id: queue.ctmSkillId,
       skill_nme: queue.ctmSkillDisplayName
     };
   }) : null;
   // Aggregate queues need to be set to a negative ID in order to not clash with single transfer queues / skills. In the payload we need to change that back to a positive integer
-  form.queuesUpdated ? payload.aggregateQueues = form.transferQueues.filter(queue => queue.ctmSkillId < 0).map(queue => Math.abs(queue.ctmSkillId)) : null;
+  form.queuesUpdated ? payload.aggregateQueues = form.transferQueues.filter((queue: any) => queue.ctmSkillId < 0).map((queue: any) => Math.abs(queue.ctmSkillId)) : null;
   form.inboundRecorded.updated ? payload.recorded_i = form.inboundRecorded.value : null;
   form.autoAnswered.updated ? payload.auto_answd_i = form.autoAnswered.value : null;
   form.paymentProcessing.updated ? payload.pmt_prcsg_i = form.paymentProcessing.value : null;
@@ -160,7 +169,7 @@ export const updateProfilePayload = form => {
   form.clickToDial.updated ? payload.click_to_dial_i = form.clickToDial.value : null;
   form.eftAuthorization.updated ? payload.eft_authorization_i = form.eftAuthorization.value : null;
   form.claimNumberEdit.updated ? payload.claim_number_edit_i = form.claimNumberEdit.value : null;
-  form.callTagsUpdated ? payload.callTags = form.callTagsList.map(callTag => {
+  form.callTagsUpdated ? payload.callTags = form.callTagsList.map((callTag: any) => {
     return {
       wrkr_tsk_info_id: callTag.wrkr_tsk_info_id,
       display_nme: formatCallTagsName(callTag.wrkr_tsk_info_nme),

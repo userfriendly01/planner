@@ -26,7 +26,6 @@ const SERVICE_BASE_URI = env.SOFTPHONE_SERVICE_URL;
 
 export const nNumMatcher = /[n,N]\d{7}/g;
 export const extensionMatcher = /^\d{4,5}$/;
-export const workersPerPage = 15;
 
 export const formModes: FormModes = {
   INSERT: "insert",

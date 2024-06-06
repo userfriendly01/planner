@@ -8,7 +8,7 @@ import { ModalOverlayStatuses } from "globals/interfaces";
 import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
-import { formatTenDigitNumber } from "utils/formatNumberUtils";
+import { formatTenDigitNumber } from "utils/numberUtils";
 
 const CustomTable = styled.table`
   border-spacing: 0;

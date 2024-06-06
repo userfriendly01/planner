@@ -41,23 +41,20 @@ import {
   nextActionType,
   tfnRoutingGroup,
   userDestination
-} from "utils/flowUtils";
+} from "utils/alohaFlowUtils";
 import {
   BrandName,
   initializedAlertBar,
   readWriteAccess
-} from "utils/configUtils";
+} from "utils/alohaConfigUtils";
 import { ComponentControl } from "components/ComponentControl";
-import {
-  AlertBarProps, FormValidationRule
-} from "utils/interfaces";
 import {
   deleteFlowRule,
   deleteOppositeRows,
   updateFlowDB
 } from "../../Utils/FlowTableServiceUtil";
 import {
-  AzureSPA, DuplicateCheck
+  AzureSPA, AlertBarProps, FormValidationRule, DuplicateCheck
 } from "globals/interfaces";
 
 interface EditFlowComponentProps {
@@ -147,7 +144,7 @@ export const EditFlow = ({
           }
         };
         isValidForm = false;
-        setFlowRule(flowRule => ({
+        setFlowRule((flowRule: any) => ({
           ...flowRule,
           ...newFlowRule
         }));

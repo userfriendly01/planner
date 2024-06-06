@@ -16,8 +16,8 @@ import {
   getWfmTeams,
   getWfmPeople
 } from "utils/calabrioUtils";
-import { filterWfmUserTable } from "utils/filterTable";
-import { sortWfmWorkersByFullName } from "utils/sortUtils";
+import { filterWfmUserTable } from "utils/_filterUtils";
+import { sortWfmWorkersByFullName } from "utils/_sortUtils";
 import { logger } from "utils/logger";
 
 export const WfmUsersViewWrapper: any = () => {

@@ -19,7 +19,7 @@ import {
   TritonProfile
 } from "globals/interfaces";
 import React from "react";
-import { filterSkillsByName } from "utils/filterTable";
+import { filterSkillsByName } from "utils/_filterUtils";
 import { logger } from "utils/logger";
 import { Modal } from "@mui/material";
 

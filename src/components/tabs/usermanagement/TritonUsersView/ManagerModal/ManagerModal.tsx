@@ -37,7 +37,7 @@ import {
 import {
   FetchUserResponse, fetchUser
 } from "services/fetchUser";
-import { sortProfilesByName } from "utils/sortUtils";
+import { sortProfilesByName } from "utils/_sortUtils";
 import { logger } from "utils/logger";
 import {
   IconButton,

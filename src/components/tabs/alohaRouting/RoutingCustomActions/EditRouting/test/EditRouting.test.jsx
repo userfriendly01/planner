@@ -2,7 +2,7 @@ import React from "react";
 import { EditRouting } from "../EditRouting";
 import {
   ROUTING_CACHE_MASTER_DATA
-} from "utils/routingUtils";
+} from "utils/alohaRoutingUtils";
 import {
   fireEvent, render, act, setupMockedComponents, adGroupPermissionMapping
 } from "testUtils";

@@ -3,7 +3,7 @@ import { StyledExportButton } from "usermanagement/TritonUsersHeader.Styles";
 import { ExportTritonUserProps } from "usermanagement/TritonUsersHeader.Interfaces";
 import React from "react";
 import { ExcelExport } from "@progress/kendo-react-excel-export";
-import { formatWorkerAttributeSkillsToString } from "utils/formatWorkerAttributeSkills";
+import { formatWorkerAttributeSkillsToString } from "utils/skillsUtils";
 import { useAdminState } from "context/appContext";
 import { exportColumns } from "globals";
 

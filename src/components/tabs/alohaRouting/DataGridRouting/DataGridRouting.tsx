@@ -18,7 +18,7 @@ import { EditRouting } from "../RoutingCustomActions/EditRouting/EditRouting";
 import {
   AlertBarProps,
   FormValidationRule
-} from "utils/interfaces";
+} from "globals/interfaces";
 import {
   routingBatchDelete,
   queryRoutingData,
@@ -33,12 +33,12 @@ import {
   routingFields,
   routingInitRule,
   routingInitState
-} from "utils/routingUtils";
+} from "utils/alohaRoutingUtils";
 import {
   EXPORT_FILE_PREFIX,
   downloadCSV,
   initializedAlertBar
-} from "utils/configUtils";
+} from "utils/alohaConfigUtils";
 import {
   DataGrid,
   GridCallbackDetails,

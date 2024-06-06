@@ -1,6 +1,6 @@
 import React from "react";
 import { EditFlow } from "../EditFlow";
-import { FLOW_MASTER_DATA } from "utils/flowUtils";
+import { FLOW_MASTER_DATA } from "utils/alohaFlowUtils";
 import {
   fireEvent, render, initialTestState, waitFor, act, within, setupMockedComponents, adGroupPermissionMapping
 } from "testUtils";

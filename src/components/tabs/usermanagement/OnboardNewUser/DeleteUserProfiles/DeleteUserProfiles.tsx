@@ -21,7 +21,7 @@ import { timeouts } from "globals";
 import { ModalOverlayStatuses } from "globals/interfaces";
 import React from "react";
 import { terminateUser } from "services/terminateUser";
-import { wait } from "utils/timeUtils";
+import { wait } from "utils";
 import { logger } from "utils/logger";
 import { Checkbox } from "@mui/material";
 

@@ -6,7 +6,7 @@ import {
 import { Dropdown } from "components/Dropdown";
 import { useAdminState } from "context/appContext";
 import React from "react";
-import { sortProfilesByName } from "utils/sortUtils";
+import { sortProfilesByName } from "utils/_sortUtils";
 
 export const BulkUpdateHrSync = (props: BulkUpdateProps) => {
   const {

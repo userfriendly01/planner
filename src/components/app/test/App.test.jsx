@@ -131,8 +131,7 @@ jest.mock("context/appContext", () => ({
 jest.mock("@azure/msal-react");
 
 jest.mock("utils", () => ({
-  wait: jest.requireActual("utils").wait,
-  logger: jest.requireActual("utils").logger
+  wait: jest.requireActual("utils").wait
 }));
 
 const mockAdminDispatch = jest.fn();

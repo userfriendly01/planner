@@ -17,7 +17,7 @@ import {
   CctSharedCallFlowDb,
   FlowMasterData
 } from "../AlohaFlow.Interfaces";
-import { FormValidationRule } from "utils/interfaces";
+import { FormValidationRule } from "globals/interfaces";
 import { Action } from "../../dynamicFlow/DynamicFlow.Interfaces";
 
 /**

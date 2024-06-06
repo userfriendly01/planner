@@ -17,7 +17,7 @@ import {
 import { ModalOverlayStatuses } from "globals/interfaces";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
-import { formatTenDigitNumber } from "utils/formatNumberUtils";
+import { formatTenDigitNumber } from "utils/numberUtils";
 import { logger } from "utils/logger";
 import { myAxios } from "utils/myAxios";
 import styled from "styled-components";

@@ -11,7 +11,7 @@ import {
   useAdminDispatch
 } from "context/appContext";
 import React, { useState } from "react";
-import { sortManagersByName } from "utils/sortUtils";
+import { sortManagersByName } from "utils/_sortUtils";
 import {
   Edit,
   Delete

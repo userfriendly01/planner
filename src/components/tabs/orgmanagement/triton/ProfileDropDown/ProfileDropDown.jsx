@@ -1,7 +1,7 @@
 import { Dropdown } from "components/Dropdown";
 import PropTypes from "prop-types";
 import React from "react";
-import { sortProfilesById } from "utils/sortUtils";
+import { sortProfilesById } from "utils/_sortUtils";
 
 export const ProfileDropDown = props => {
   const {

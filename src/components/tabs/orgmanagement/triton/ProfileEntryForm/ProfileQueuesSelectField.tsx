@@ -3,7 +3,7 @@ import { ProfileQueuesSelectFieldProps } from "./ProfileEntryForm.Interfaces";
 import { Dropdown } from "components/Dropdown";
 import { useAdminState } from "context/appContext";
 import { logger } from "utils/logger";
-import { sortQueueByName } from "utils/sortUtils";
+import { sortQueueByName } from "utils/_sortUtils";
 import {
   AggregateQueue, Skill
 } from "globals/interfaces";

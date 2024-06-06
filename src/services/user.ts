@@ -13,11 +13,11 @@ import {
 import {
   mapWorkerFromDbWorker,
   mapWorkerToDbWorker
-} from "utils/formatWorkerResponse";
+} from "utils/graphUtils";
 import { getPaginatedResults } from "utils/graphUtils";
 import {
   sortGraphObjectsByPk
-} from "utils/sortUtils";
+} from "utils/_sortUtils";
 import { logger } from "utils/logger";
 
 /**

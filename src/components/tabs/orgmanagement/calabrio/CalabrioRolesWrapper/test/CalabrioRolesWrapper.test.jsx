@@ -5,7 +5,7 @@ import {
 } from "../CalabrioRolesWrapper.Styles";
 import { useAdminState } from "context/appContext";
 import React from "react";
-import { sortCalabrioObject } from "utils/sortUtils";
+import { sortCalabrioObject } from "utils/_sortUtils";
 import {
   act,
   initialTestState,
@@ -25,7 +25,7 @@ jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
 }));
 
-jest.mock("utils/sortUtils", () => ({
+jest.mock("utils/_sortUtils", () => ({
   sortCalabrioObject: jest.fn()
 }));
 

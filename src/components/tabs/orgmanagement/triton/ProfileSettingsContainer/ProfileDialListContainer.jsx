@@ -3,7 +3,7 @@ import { ProfileDropDown } from "orgmanagement/ProfileDropDown";
 import { useAdminState } from "context/appContext";
 import { apiPaths } from "globals/index";
 import React, { useState } from "react";
-import { sortDialListEntriesByName } from "utils/sortUtils";
+import { sortDialListEntriesByName } from "utils/_sortUtils";
 import { myAxios } from "utils/myAxios";
 import { logger } from "utils/logger";
 import {
