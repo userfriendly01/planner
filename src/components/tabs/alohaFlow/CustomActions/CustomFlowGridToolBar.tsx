@@ -6,8 +6,8 @@ import React, {
 } from "react";
 import {
   CACHE_FILTER_FLOW, getAdvanceFilter
-} from "utils/flowUtils";
-import { readWriteAccess } from "utils/configUtils";
+} from "utils/alohaFlowUtils";
+import { readWriteAccess } from "utils/alohaConfigUtils";
 import {
   FlowAdvanceFilter, PreviewModalAction
 } from "../AlohaFlow.Interfaces";

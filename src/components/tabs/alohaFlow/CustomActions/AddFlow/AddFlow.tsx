@@ -42,23 +42,20 @@ import {
   nextActionType,
   tfnRoutingGroup,
   userDestination
-} from "utils/flowUtils";
+} from "utils/alohaFlowUtils";
 import {
   BrandName,
   cleanErrorMessage,
   initializedAlertBar
-} from "utils/configUtils";
+} from "utils/alohaConfigUtils";
 import { getGridMasterData } from "../../DataGridFlow/GridMaster";
 import {
-  AlertBarProps, FormValidationRule
-} from "utils/interfaces";
-import {
-  AzureSPA, DuplicateCheck
+  AzureSPA, AlertBarProps, FormValidationRule, DuplicateCheck
 } from "globals/interfaces";
 import { AddOrView } from "../CustomActionsCommon/AddOrView";
 import { FloatingHeader } from "@lmig/lmds-react-floating-header";
 
-export interface AddFlowModalProps {
+interface AddFlowModalProps {
   isOpen: boolean;
   newId: number;
   openAddModal: (flag: boolean, isSubmitted?: boolean, row?:CctSharedCallFlowDb) => void;

@@ -5,7 +5,7 @@ import {
 } from "@mui/material";
 import { AddFlow } from "../AddFlow";
 
-import { FLOW_MASTER_DATA } from "utils/flowUtils";
+import { FLOW_MASTER_DATA } from "utils/alohaFlowUtils";
 import { AddOrView } from "../../CustomActionsCommon/AddOrView";
 import { flowFields } from "../../FlowFieldsConfig";
 import {

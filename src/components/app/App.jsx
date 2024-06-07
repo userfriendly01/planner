@@ -30,7 +30,7 @@ import {
 } from "react-router-dom";
 import { useMsal } from "@azure/msal-react";
 import { logger } from "utils/logger";
-import { wait } from "utils/timeUtils";
+import { wait } from "utils";
 
 const success = "success";
 const loading = "loading";

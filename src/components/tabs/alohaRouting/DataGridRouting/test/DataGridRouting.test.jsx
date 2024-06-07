@@ -32,7 +32,7 @@ import {
 } from "services/routingTableService";
 import {
   CACHED_CALL_ROUTING_PER_PAGE, CACHED_CALL_ROUTING_PAGE_NO, CACHE_FILTER_ROUTING
-} from "utils/routingUtils";
+} from "utils/alohaRoutingUtils";
 
 
 jest.mock("@mui/x-data-grid",()=>({
@@ -87,7 +87,7 @@ jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
 }));
 
-export const createRoutingRule = num => {
+const createRoutingRule = num => {
   return {
     id: num,
     all: "ALL",
@@ -111,7 +111,7 @@ export const createRoutingRule = num => {
   };
 };
 
-export const createSampleTestRoutingDataList = numberOfData =>{
+const createSampleTestRoutingDataList = numberOfData =>{
   const dataList = [];
   for (let num=1; num<=numberOfData; num++) {
     dataList.push(createRoutingRule(num));

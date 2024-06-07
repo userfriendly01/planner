@@ -20,7 +20,7 @@ import { initDataDogRum } from "utils/logger";
 initDataDogRum();
 
 // ********* SPA Configuration for Azure *********
-export const msalInstance = new PublicClientApplication(authConfig);
+const msalInstance = new PublicClientApplication(authConfig);
 
 if (!msalInstance.getActiveAccount() && msalInstance.getAllAccounts().length > 0) {
   msalInstance.setActiveAccount(msalInstance.getAllAccounts()[0]);

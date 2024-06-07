@@ -18,7 +18,7 @@ jest.mock("components/Dropdown", () => ({
   Dropdown: jest.fn()
 }));
 
-jest.mock("utils/sortUtils", () => ({
+jest.mock("utils/_sortUtils", () => ({
   sortProfilesById: jest.fn()
 }));
 

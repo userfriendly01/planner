@@ -19,10 +19,6 @@ export const StatusWrapper = styled.div<{align?: string}>`
   margin-top: 30px;
 `;
 
-export const Button = styled.button`
-  margin: 0px 5px;
-`;
-
 export const OptionalColumnRow = styled.div`
   display: flex;
   flex-wrap: wrap;

@@ -30,7 +30,7 @@ jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
 }));
 
-jest.mock("utils/configUtils", () => ({
+jest.mock("utils/alohaConfigUtils", () => ({
   readWriteAccess: jest.fn()
 }));
 

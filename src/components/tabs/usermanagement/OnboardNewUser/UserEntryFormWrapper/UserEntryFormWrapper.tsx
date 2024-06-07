@@ -23,8 +23,8 @@ import {
 import { userFormActions } from "context/userFormReducer";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { sortWorkersByFullName } from "utils/sortUtils";
-import { identifyUserProfiles } from "utils/userManagementUtils";
+import { sortWorkersByFullName } from "utils/_sortUtils";
+import { identifyUserProfiles } from "utils/usermanagementUtils";
 import { logger } from "utils/logger";
 import { formModes } from "globals";
 import {

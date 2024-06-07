@@ -9,7 +9,7 @@ import {
   PreviewModal
 } from "../PreviewModal";
 import React from "react";
-import { FLOW_MASTER_DATA } from "utils/flowUtils";
+import { FLOW_MASTER_DATA } from "utils/alohaFlowUtils";
 import {
   StyledButton
 } from "components/StyledButton";

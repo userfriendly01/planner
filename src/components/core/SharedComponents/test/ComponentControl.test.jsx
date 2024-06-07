@@ -14,7 +14,7 @@ jest.mock("components/Dropdown", () => ({
   Dropdown: jest.fn()
 }));
 
-jest.mock("utils/routingUtils", () => ({
+jest.mock("utils/alohaRoutingUtils", () => ({
   routingDropDownList: jest.fn()
 }));
 

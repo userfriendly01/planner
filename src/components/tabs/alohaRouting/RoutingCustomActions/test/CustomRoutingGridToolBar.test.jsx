@@ -6,7 +6,7 @@ import {
 import {
   render, setupMockedComponents, act, adGroupPermissionMapping
 } from "testUtils";
-import { CACHE_FILTER_ROUTING } from "utils/routingUtils";
+import { CACHE_FILTER_ROUTING } from "utils/alohaRoutingUtils";
 import { useAdminState } from "context/appContext";
 
 jest.mock("@mui/material", () => ({
@@ -20,7 +20,7 @@ jest.mock("@mui/material", () => ({
   MenuItem: jest.fn()
 }));
 
-jest.mock("utils/configUtils", () => ({
+jest.mock("utils/alohaConfigUtils", () => ({
   readWriteAccess: jest.fn()
 }));
 

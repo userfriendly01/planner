@@ -26,7 +26,7 @@ import {
   ModalOverlayStatuses,
   UMUser
 } from "globals/interfaces";
-import { FlexColumn } from "globals/styles";
+import { FlexColumn } from "globals/interfaces";
 import React, {
   useState, useEffect
 } from "react";
@@ -37,7 +37,7 @@ import {
 import {
   FetchUserResponse, fetchUser
 } from "services/fetchUser";
-import { sortProfilesByName } from "utils/sortUtils";
+import { sortProfilesByName } from "utils/_sortUtils";
 import { logger } from "utils/logger";
 import {
   IconButton,

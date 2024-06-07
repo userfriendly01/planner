@@ -11,17 +11,13 @@ import {
   useAdminDispatch
 } from "context/appContext";
 import React, { useState } from "react";
-import { sortManagersByName } from "utils/sortUtils";
+import { sortManagersByName } from "utils/_sortUtils";
 import {
   Edit,
   Delete
 } from "@mui/icons-material";
 import { Modal } from "@mui/material";
-
-export interface DropdownOption {
-  label: string,
-  value: any
-}
+import { DropdownOption } from "globals/interfaces";
 
 export const ManagerDropdown = () => {
   const state = useAdminState();

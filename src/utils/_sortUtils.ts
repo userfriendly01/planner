@@ -7,6 +7,18 @@ import {
 
 const sortLast = "zzzzzzzzzzz";
 
+export const sortNumbers = (a: number, b: number) => {
+  return a - b;
+};
+
+export const sortStrings = (a: string, b: string) => {
+  const _a = a.toLowerCase();
+  const _b = b.toLowerCase();
+  if (_a < _b) { return -1; }
+  if (_a > _b) { return 1; }
+  return 0;
+};
+
 export const sortGraphObjectsByPk = (a: any, b: any) => {
   return sortStrings(a.pk, b.pk);
 };
@@ -31,18 +43,6 @@ export const sortProfilesById = (a: TritonProfile, b: TritonProfile) => sortNumb
 export const sortProfilesByName = (a: TritonProfile, b: TritonProfile) => sortStrings(a.profile_nme, b.profile_nme);
 
 export const sortCalabrioObject = (a: any, b: any) => sortStrings(a.name, b.name);
-
-export const sortStrings = (a: string, b: string) => {
-  const _a = a.toLowerCase();
-  const _b = b.toLowerCase();
-  if (_a < _b) { return -1; }
-  if (_a > _b) { return 1; }
-  return 0;
-};
-
-export const sortNumbers = (a: number, b: number) => {
-  return a - b;
-};
 
 export const sortActivityByName = (a: any, b: any) => {
   const [aName, bName] = [a.activity_nme, b.activity_nme];

@@ -14,7 +14,7 @@ import React from "react";
 import { CloseRounded } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 
-export interface FilterModalProps {
+interface FilterModalProps {
   handleClear: ()=> void
   handleClose: () => void
 }

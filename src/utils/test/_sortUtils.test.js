@@ -7,7 +7,7 @@ import {
   sortQueueByName,
   sortProfilesById,
   sortProfilesByName
-} from "../sortUtils";
+} from "../_sortUtils";
 
 describe("sortDialListEntriesByName", () => {
   const arr = [

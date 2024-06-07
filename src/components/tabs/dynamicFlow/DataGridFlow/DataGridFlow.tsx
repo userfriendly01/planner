@@ -1,7 +1,6 @@
 import React, {
   useEffect, useState
 } from "react";
-import { AzureSPA } from "globals/interfaces";
 import { CustomFlowGridToolBar } from "../CustomActions/CustomFlowGridToolBar";
 import {
   DynamicAction, DynamicFlowStateVariables,
@@ -9,12 +8,14 @@ import {
   DynamicStateVariables,
   PreviewModalAction, Action
 } from "../DynamicFlow.Interfaces";
-import { AlertBarProps } from "utils/interfaces";
+import {
+  AzureSPA, AlertBarProps
+} from "globals/interfaces";
 import {
   downloadCSV,
   EXPORT_FILE_PREFIX,
   initializedAlertBar
-} from "utils/configUtils";
+} from "utils/alohaConfigUtils";
 import { PreviewModal } from "../PreviewModal/PreviewModal";
 import {
   batchDynamicFlowCreate,

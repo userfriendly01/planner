@@ -98,7 +98,6 @@ const paths = [
       "components/tabs/usermanagement/WFMUsersView/WfmUsersHeader",
       "components/tabs/usermanagement/WFMUsersView/InfoBanner",
       "components/tabs/usermanagement/WFMUsersView/WfmErrorBanner",
-      "components/tabs/usermanagement/UserManagementWrapper",
       "components/tabs/usermanagement/TritonUsersView/TritonUsersViewWrapper",
       "components/tabs/usermanagement/TritonUsersView/TritonUserTable",
       "components/tabs/usermanagement/TritonUsersView/TritonUsersHeader",

@@ -3,7 +3,7 @@ import {
   cleanErrorMessage,
   downloadCSV,
   readWriteAccess
-} from "../configUtils";
+} from "../alohaConfigUtils";
 import { useAdminState } from "context/appContext";
 import {
   initialTestState, adGroupPermissionMapping
@@ -41,7 +41,7 @@ const createSampleTestRoutingDataList = numberOfData =>{
   return dataList;
 };
 
-describe("configUtils.js", ()=>{
+describe("alohaConfigUtils.js", ()=>{
   const routingPrefix = "TEST_ROUTING";
   beforeEach(()=>{
     jest.clearAllMocks();

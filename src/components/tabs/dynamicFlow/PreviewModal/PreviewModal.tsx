@@ -14,25 +14,23 @@ import {
   Modal,ModalHeader, ModalBody, ModalFooter
 } from "@lmig/lmds-react-modal";
 import "./PreviewModal.css";
-import {
-  Box, Typography
-} from "@mui/material";
+import { Box } from "@mui/material";
 import  TableGridColumnDef  from "./TableColumnDef";
 import { logger } from "utils/logger";
 import { reconstructTableColumnDef } from "./PreviewUtil";
 import { Text } from "../../usermanagement/OnboardNewUser/CallRecording/CallRecording.Styles";
 
 interface PreviewModalProps {
-    isOpen: boolean;
-    rows: Array<ActionPreview>;
-    action: "delete" | "add";
-    onClose: () => void;
-    onCreate?: (rows: Array<ActionPreview>) => void;
-    onDelete?: (rows: Array<ActionPreview>) => void;
-    loading?: boolean;
+  isOpen: boolean;
+  rows: Array<ActionPreview>;
+  action: "delete" | "add";
+  onClose: () => void;
+  onCreate?: (rows: Array<ActionPreview>) => void;
+  onDelete?: (rows: Array<ActionPreview>) => void;
+  loading?: boolean;
 }
 
-const PreviewModal = (props: PreviewModalProps): JSX.Element => {
+export const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   const {
     isOpen, rows, onClose, action , onDelete,onCreate, loading
   } = props;
@@ -217,9 +215,4 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
       </ModalFooter>
     </Modal>
   );
-};
-
-export {
-  PreviewModal,
-  PreviewModalProps
 };

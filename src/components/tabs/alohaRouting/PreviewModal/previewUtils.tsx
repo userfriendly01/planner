@@ -5,8 +5,8 @@ import {
   routingFields,
   priority,
   tfnRoutingGroupAttr
-} from "utils/routingUtils";
-import { languageOffer } from "utils/flowUtils";
+} from "utils/alohaRoutingUtils";
+import { languageOffer } from "utils/alohaFlowUtils";
 import {
   PreviewModalAction,
   RoutingDropDownList,

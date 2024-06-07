@@ -12,7 +12,7 @@ import {
   initialTestState
 } from "testUtils";
 import { getValidSkillsObject } from "utils/skillsUtils";
-import { formatE164PhoneNumber } from "utils/formatNumberUtils";
+import { formatE164PhoneNumber } from "utils/numberUtils";
 import { ExtensionSearchStatuses } from "usermanagement/ExtensionInput.Interfaces";
 import { SearchParams } from "usermanagement/ExtensionSearchParams";
 const searchParams = SearchParams.getValues();

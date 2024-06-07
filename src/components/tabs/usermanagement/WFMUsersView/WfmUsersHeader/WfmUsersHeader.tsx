@@ -17,7 +17,7 @@ import {
   getWfmTeams,
   getCalabrioWfmOrg
 } from "utils/calabrioUtils";
-import { sortWFMByName } from "utils/sortUtils";
+import { sortWFMByName } from "utils/_sortUtils";
 import { logger } from "utils/logger";
 
 export const WfmUsersHeader = (props: WfmUsersHeaderProps) => {

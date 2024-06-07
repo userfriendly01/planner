@@ -1,6 +1,7 @@
-import { Control } from "globals/interfaces";
+import {
+  Control, FormValidationRule
+} from "globals/interfaces";
 import { MultiFieldContainerFormProps } from "components/core/SharedComponents/MultiFieldContainer";
-import { FormValidationRule } from "utils/interfaces";
 
 export type PreviewModalAction = "add" | "edit" | "delete"
 export interface RoutingOccupancyCheck {

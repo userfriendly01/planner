@@ -8,12 +8,12 @@ import {
 } from "@lmig/lmds-react-modal";
 import {
   routingDropDownList, routingInitRule, routingFields, convertTime24to12
-} from "utils/routingUtils";
+} from "utils/alohaRoutingUtils";
 import {
   initializedAlertBar,
   cleanErrorMessage,
   BrandName
-} from "utils/configUtils";
+} from "utils/alohaConfigUtils";
 import { getGridMasterData } from "../../DataGridRouting/GridMaster";
 import {
   retrieveRoutingData, addRoutingRule
@@ -26,8 +26,9 @@ import {
 } from "../../AlohaRouting.Styles";
 import { CustomToast } from "components/CustomToast";
 import { ComponentControl } from "components/ComponentControl";
-import { FormValidationRule } from "utils/interfaces";
-import { AzureSPA } from "globals/interfaces";
+import {
+  AzureSPA,  FormValidationRule
+} from "globals/interfaces";
 import { FloatingHeader } from "@lmig/lmds-react-floating-header";
 
 

@@ -3,7 +3,7 @@
 import {
   LAST_ROUTING_MASTER_DATA_CACHED_DATE,
   ROUTING_CACHE_MASTER_DATA
-} from "utils/routingUtils";
+} from "utils/alohaRoutingUtils";
 import { logger } from "utils/logger";
 import {
   CctSharedCallRoutingDb, RoutingMasterData

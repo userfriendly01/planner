@@ -41,7 +41,7 @@ import {
   isUnpopulatedField,
   identifyUserProfiles,
   isWfmUserValid
-} from "utils/userManagementUtils";
+} from "utils/usermanagementUtils";
 
 interface WfmFormProps {
   missingFields: string[]

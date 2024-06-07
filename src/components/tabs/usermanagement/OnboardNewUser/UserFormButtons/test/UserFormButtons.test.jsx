@@ -52,7 +52,7 @@ import {
   isFormUpdated,
   isTritonUserValid,
   workerHasOverFlowSkill
-} from "utils/userManagementUtils";
+} from "utils/usermanagementUtils";
 
 jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
@@ -78,7 +78,7 @@ jest.mock("utils/calabrioUtils", () => ({
   calabrioTimeZones: jest.requireActual("utils/calabrioUtils").calabrioTimeZones
 }));
 
-jest.mock("utils/userManagementUtils", () => ({
+jest.mock("utils/usermanagementUtils", () => ({
   identifyFormErrors: jest.fn(),
   isDidDifferentValid: jest.fn(),
   isFormUpdated: jest.fn(),
@@ -108,7 +108,7 @@ jest.mock("services/office", () => ({
   addOffice: jest.fn()
 }));
 
-export const worker = {
+const worker = {
   attributes: {
     full_name: "Faith Cuneo",
     office_location_name: "Uranus",
@@ -166,7 +166,7 @@ const newWorker = {
   skillsDifferent: true
 };
 
-export const validOperatingUnitId = "operatingUnitSid1";
+const validOperatingUnitId = "operatingUnitSid1";
 
 const mockHandleClose = jest.fn();
 const mockSetForm = jest.fn();

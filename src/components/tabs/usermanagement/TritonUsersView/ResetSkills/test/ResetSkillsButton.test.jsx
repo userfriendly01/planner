@@ -16,7 +16,7 @@ import {
   render,
   setupMockedComponents
 } from "testUtils";
-import { mapWorkerFromTwilio } from "utils/formatWorkerResponse";
+import { mapWorkerFromTwilio } from "utils";
 import { myAxios } from "utils/myAxios";
 
 jest.mock("usermanagement/ResetSkillsResultsModal", () => ({
@@ -32,7 +32,7 @@ jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
 }));
 
-jest.mock("utils/formatWorkerResponse", () => ({
+jest.mock("utils", () => ({
   mapWorkerFromTwilio: jest.fn()
 }));
 

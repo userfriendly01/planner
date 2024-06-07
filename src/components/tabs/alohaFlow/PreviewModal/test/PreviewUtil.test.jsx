@@ -2,9 +2,9 @@ import { TableGridColumnDef } from "../TableColumnDef";
 import {
   reconstructTableColumnDef
 } from "../PreviewUtil";
-import { FLOW_MASTER_DATA } from "utils/flowUtils";
+import { FLOW_MASTER_DATA } from "utils/alohaFlowUtils";
 
-export const createFlowDataItem = num => {
+const createFlowDataItem = num => {
   return {
     id: num,
     pkey: `+18005551212x${num}`,
@@ -36,7 +36,7 @@ export const createFlowDataList = numberOfData =>{
   return dataList;
 };
 
-export const flowDropDownData = {
+const flowDropDownData = {
   brand: ["Liberty Mutual", "Safeco"],
   channel: ["Sales", "Service"],
   languageOffer: ["ENGLISH", "SPANISH"],

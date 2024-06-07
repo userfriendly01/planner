@@ -1,6 +1,8 @@
-import { AppState } from "globals/interfaces";
+import {
+  AppState, GenericObject
+} from "globals/interfaces";
 
-export interface Field {
+interface Field {
   field: string,
   name: string,
   type: string,
@@ -14,16 +16,12 @@ export interface Fields {
   [key: string]: Field
 }
 
-export interface Row {
-  [key: string]: any
-}
-
 export interface UploadedRow {
   "__rowNum__": string,
   [key: string]: any
 }
 
-export interface MultiRunDependency {
+interface MultiRunDependency {
   name: string,
   variable: any
 }
@@ -31,7 +29,7 @@ export interface MultiRunDependency {
 export interface Template {
   name: string,
   data?: { [key: string]: any }
-  processFunction: (row: Row, template?: Template) => Promise<string>,
+  processFunction: (row: GenericObject, template?: Template) => Promise<string>,
   stateUpdateFunctions: ((state: AppState, dispatch: any, successfulRows?: any, selectedTemplates?: any) => Promise<any>)[],
   multiRunDependencies: MultiRunDependency[] | null,
   validationConcurrencyLimit: number,
@@ -59,15 +57,6 @@ export interface BulkUpdateProps {
   selectedTemplates: Template[],
   setUploadedForm?: (show: any[]) => void;
   setShowTemplates?: (show: boolean) => void;
-  replaceTemplate: (template: Template) => void;
-  updateTemplate: (template: Template, data: any) => void;
-  removeTemplate: (template: Template) => void;
-}
-
-
-export interface BulkUpdateHrProps {
-  template: Template,
-  selectedTemplates: Template[],
   replaceTemplate: (template: Template) => void;
   updateTemplate: (template: Template, data: any) => void;
   removeTemplate: (template: Template) => void;
@@ -130,36 +119,6 @@ export const views: any = {
   BULK_ADD_MANAGER: {
     value: "BULK_ADD_MANAGER",
     label: "Create Managers"
-  }
-};
-
-export const updateActions: any = {
-  WORKER_ATTRIBUTES: {
-    value: "WORKER_ATTRIBUTES",
-    label: "Twilio Worker Attributes"
-  }
-};
-
-export const valueTypes: any = {
-  STRING: {
-    value: "string",
-    label: "String"
-  },
-  NUMBER: {
-    value: "number",
-    label: "Number"
-  },
-  BOOLEAN: {
-    value: "boolean",
-    label: "Boolean"
-  },
-  OBJECT: {
-    value: "object",
-    label: "Object"
-  },
-  ARRAY: {
-    value: "array",
-    label: "Array"
   }
 };
 

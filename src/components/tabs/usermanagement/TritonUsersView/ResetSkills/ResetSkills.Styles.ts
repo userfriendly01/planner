@@ -1,17 +1,7 @@
 import styled from "styled-components";
-
-export const FlexColumn = styled.div`
-  display: flex;
-  flex: 1 1 auto;
-  flex-direction: column;
-  margin: 5px;
-`;
-
-export const FlexRow = styled.div`
-  display: flex;
-  padding: 5px;
-  flex: 1 1 auto;
-`;
+import {
+  FlexColumn, FlexRow
+} from "globals/interfaces";
 
 export const ResetSkillsButtonWrapper = styled(FlexRow)`
   justify-content: space-around;
@@ -20,6 +10,7 @@ export const ResetSkillsButtonWrapper = styled(FlexRow)`
 
 export const FlexRowMax = styled(FlexRow)`
   width: max-content;
+  padding: 5px;
 `;
 
 export const Header = styled.h1`
@@ -33,6 +24,7 @@ export const ModalContainer = styled(FlexColumn)`
   position: absolute;
   top: 50%;
   transform: translate(-50%, -50%);
+  margin: 5px;
 `;
 
 export const ResultsContainer = styled(FlexColumn)<{
@@ -46,4 +38,5 @@ export const ResultsContainer = styled(FlexColumn)<{
   border-radius: 10px;
   padding: 5px;
   width: auto;
+  margin: 5px;
 `;

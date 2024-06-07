@@ -2,7 +2,7 @@ import {
   filterSkillsByName,
   filterWorkerSearch,
   filterWfmUserTable
-} from "../filterTable";
+} from "../_filterUtils";
 import { initialTestState } from "testUtils";
 
 describe("filterWorkerSearch", () => {

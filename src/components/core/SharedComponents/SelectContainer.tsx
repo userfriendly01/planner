@@ -4,7 +4,7 @@ import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 
-export interface SelectContainerProps{
+interface SelectContainerProps{
   dropDownOptions: string[],
   name: string,
   label: string,

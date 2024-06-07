@@ -1,7 +1,7 @@
 import {
   RoutingStateVariables, RoutingDropDownList, AddPageFieldConfigProps as AddRoutingFieldConfigProps, CctSharedCallRoutingDb
 } from "../components/tabs/alohaRouting/AlohaRouting.Interfaces";
-import { FormValidationRule } from "./interfaces";
+import { FormValidationRule } from "globals/interfaces";
 
 export const ROUTING_CACHE_MASTER_DATA = "ROUTING_MASTER_DATA";
 

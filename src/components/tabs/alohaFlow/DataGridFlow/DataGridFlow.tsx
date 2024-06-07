@@ -31,15 +31,15 @@ import {
   CALL_FLOW_PAGE_NO,
   CALL_FLOW_PER_PAGE,
   getAdvanceFilter
-} from "utils/flowUtils";
+} from "utils/alohaFlowUtils";
 import {
   downloadCSV,
   EXPORT_FILE_PREFIX,
   initializedAlertBar
-} from "utils/configUtils";
+} from "utils/alohaConfigUtils";
 import {
   AlertBarProps, FormValidationRule
-} from "utils/interfaces";
+} from "globals/interfaces";
 import {
   AddFlowFieldsConfigProps,
   CctSharedCallFlowDb, FlowAdvanceFilter, FlowStateVariables, PreviewModalAction

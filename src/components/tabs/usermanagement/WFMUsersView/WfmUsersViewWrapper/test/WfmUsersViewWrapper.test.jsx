@@ -15,7 +15,7 @@ import {
   setupMockedComponents
 } from "testUtils";
 import { getWfmPeople } from "utils/calabrioUtils";
-import { sortWfmWorkersByFullName } from "utils/sortUtils";
+import { sortWfmWorkersByFullName } from "utils/_sortUtils";
 import { ModalOverlayStatuses } from "globals/interfaces";
 
 jest.mock("components/Pagination", () => ({

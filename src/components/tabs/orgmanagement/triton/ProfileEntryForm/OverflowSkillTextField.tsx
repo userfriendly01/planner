@@ -5,7 +5,7 @@ import {
 } from "context/appContext";
 import { profileEntryFormActions } from "context/reducers/profileEntryFormReducer";
 import React from "react";
-import { isOverflowSkillValid } from "utils/profileFormUtils";
+import { isOverflowSkillValid } from "utils/profileUtils";
 import { TextFieldProps } from "./ProfileEntryForm.Interfaces";
 
 export const OverflowSkillTextField = (props: TextFieldProps) => {

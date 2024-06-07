@@ -9,7 +9,7 @@ import {
   PreviewModal
 } from "../PreviewModal";
 import React from "react";
-import { ROUTING_CACHE_MASTER_DATA } from "utils/routingUtils";
+import { ROUTING_CACHE_MASTER_DATA } from "utils/alohaRoutingUtils";
 import {
   StyledButton
 } from "components/StyledButton";

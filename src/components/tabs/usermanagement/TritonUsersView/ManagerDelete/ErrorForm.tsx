@@ -4,15 +4,15 @@ import {
   PenaltyBox
 } from "usermanagement/ManagerDelete.Styles";
 import { StyledButton } from "components/StyledButton";
-import { FlexColumn } from "globals/styles";
+import { FlexColumn } from "globals/interfaces";
 import React from "react";
 
-export interface ErrorFormProps {
+interface ErrorFormProps {
   TeamMembers: string,
   HandleClose: () => void
 }
 
-export const ErrorForm = (props:ErrorFormProps) : any => {
+export const ErrorForm = (props: ErrorFormProps) : any => {
   const {
     TeamMembers,
     HandleClose

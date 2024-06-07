@@ -18,7 +18,7 @@ import { formModes } from "globals";
 import { theme } from "globals/theme";
 import { useNavigate } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
-import { formatWorkerAttributeSkillsToHTML } from "utils/formatWorkerAttributeSkills";
+import { formatWorkerAttributeSkillsToHTML } from "utils/skillsUtils";
 import {
   Delete,
   Edit,
@@ -40,7 +40,7 @@ jest.mock("context/appContext", () => ({
   useFormDispatch: jest.fn()
 }));
 
-jest.mock("utils/formatWorkerAttributeSkills", () => ({
+jest.mock("utils/skillsUtils", () => ({
   formatWorkerAttributeSkillsToHTML: jest.fn()
 }));
 

@@ -6,7 +6,7 @@ import {
 } from "@mui/material";
 import ModalOnHover from "components/ModalOnHover";
 
-export const FlowGridColumnDef: GridColDef[] = [
+const FlowGridColumnDef: GridColDef[] = [
   {
     headerName: "Dialed",
     field: "pkey",

@@ -1,6 +1,6 @@
 import {
   isNumberValid, unMaskPhoneNumber
-} from "utils/formatNumberUtils";
+} from "utils/numberUtils";
 import { logger } from "utils/logger";
 import { TextField } from "@mui/material";
 import { ModalOverlay } from "components/ModalOverlay";

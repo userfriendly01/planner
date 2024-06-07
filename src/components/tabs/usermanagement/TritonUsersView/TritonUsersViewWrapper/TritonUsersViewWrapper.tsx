@@ -7,8 +7,8 @@ import { TritonUserTable } from "usermanagement/TritonUserTable";
 import { useAdminState } from "context/appContext";
 import { UMUser } from "globals/interfaces";
 import React from "react";
-import { sortWorkersByFullName } from "utils/sortUtils";
-import { filterWorkerSearch } from "utils/filterTable";
+import { sortWorkersByFullName } from "utils/_sortUtils";
+import { filterWorkerSearch } from "utils/_filterUtils";
 
 export const TritonUsersViewWrapper: any = () => {
 

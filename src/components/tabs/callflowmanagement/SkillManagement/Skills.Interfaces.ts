@@ -32,12 +32,6 @@ export const ActionTypes = {
   }
 };
 
-export interface PropertyOption {
-  value: any,
-  label: string,
-  actions: ActionType[]
-}
-
 export const propertyOptions = {
   CLOSED_MESSAGE: {
     label: "Closed Message",

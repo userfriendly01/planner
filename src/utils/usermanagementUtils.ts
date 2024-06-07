@@ -14,7 +14,7 @@ import {
 import {
   formatE164PhoneNumber,
   removeNonNumericCharacters
-} from "./formatNumberUtils";
+} from "./numberUtils";
 import { fetchUser as fetchUserServiceCall } from "services/fetchUser";
 import { getWfmUserByNNumber } from "services/calabrio";
 import { logger } from "./logger";
@@ -209,7 +209,7 @@ export const findMatchingWorker = (sid: string, nNumber: string, email: string, 
   return matchingWorker;
 };
 
-export const findExistingWFMUser = async (nNumber: string): Promise<CalabrioUser> => {
+const findExistingWFMUser = async (nNumber: string): Promise<CalabrioUser> => {
   try {
     const wfmUserRes = await getWfmUserByNNumber(nNumber);
     if (wfmUserRes?.data?.Result.length > 0) {

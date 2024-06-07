@@ -3,10 +3,10 @@ import {
 } from "services/user";
 import { apolloClient } from "../../components/core/Auth/SharedGraphAPIProvider";
 import {
+  getPaginatedResults,
   mapWorkerFromDbWorker,
   mapWorkerToDbWorker
-} from "utils/formatWorkerResponse";
-import { getPaginatedResults } from "utils/graphUtils";
+} from "utils/graphUtils";
 import { logger } from "utils/logger";
 
 jest.mock("../../components/core/Auth/SharedGraphAPIProvider", () => ({
@@ -16,13 +16,10 @@ jest.mock("../../components/core/Auth/SharedGraphAPIProvider", () => ({
   }
 }));
 
-jest.mock("utils/formatWorkerResponse", () => ({
+jest.mock("utils/graphUtils", () => ({
+  getPaginatedResults: jest.fn(),
   mapWorkerFromDbWorker: jest.fn(),
   mapWorkerToDbWorker: jest.fn()
-}));
-
-jest.mock("utils/graphUtils", () => ({
-  getPaginatedResults: jest.fn()
 }));
 
 describe("user", () => {

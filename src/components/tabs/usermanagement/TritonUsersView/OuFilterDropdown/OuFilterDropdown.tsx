@@ -10,13 +10,10 @@ import {
 } from "context/appContext";
 import React from "react";
 import { getOperatingUnits } from "services/operatingUnits";
-import { OperatingUnit } from "globals/interfaces";
+import {
+  DropdownOption, OperatingUnit
+} from "globals/interfaces";
 import { logger } from "utils/logger";
-
-export interface DropdownOption {
-  label: string,
-  value: any
-}
 
 export const OuFilterDropdown = () => {
 

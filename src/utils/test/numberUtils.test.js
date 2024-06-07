@@ -2,7 +2,7 @@ import {
   formatE164PhoneNumber,
   formatTenDigitNumber,
   removeNonNumericCharacters
-} from "../formatNumberUtils";
+} from "../numberUtils";
 
 describe("formatTenDigitNumber", () => {
   const testUnchanged = num => {

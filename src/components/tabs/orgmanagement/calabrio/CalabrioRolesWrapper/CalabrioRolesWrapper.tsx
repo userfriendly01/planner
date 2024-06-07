@@ -7,7 +7,7 @@ import {
   Permission
 } from "./CalabrioRolesWrapper.Styles";
 import { useAdminState } from "context/appContext";
-import { sortCalabrioObject } from "utils/sortUtils";
+import { sortCalabrioObject } from "utils/_sortUtils";
 import { Divider } from "@mui/material";
 
 const CalabrioRolesWrapper = () => {

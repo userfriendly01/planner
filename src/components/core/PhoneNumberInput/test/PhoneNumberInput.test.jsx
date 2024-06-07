@@ -5,7 +5,7 @@ import {
   getE164Number,
   isNumberValid,
   unMaskPhoneNumber
-} from "utils/formatNumberUtils";
+} from "utils/numberUtils";
 import {
   Switch,
   TextField
@@ -29,7 +29,7 @@ jest.mock("@mui/material", () => ({
   TextField: jest.fn()
 }));
 
-jest.mock("utils/formatNumberUtils", () => ({
+jest.mock("utils/numberUtils", () => ({
   getE164Number: jest.fn(),
   isNumberValid: jest.fn(),
   unMaskPhoneNumber: jest.fn()

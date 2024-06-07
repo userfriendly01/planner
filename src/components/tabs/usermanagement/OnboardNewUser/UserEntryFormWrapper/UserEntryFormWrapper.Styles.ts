@@ -1,15 +1,7 @@
 import styled from "styled-components";
-import {
-  Divider,
-  Tabs
-} from "@mui/material";
-import { Edit } from "@mui/icons-material";
+import { Divider } from "@mui/material";
 import { StyledButton } from "components/StyledButton";
-
-export const FlexRow = styled.div`
-  display: flex;
-  flex: 1 1 auto;
-`;
+import { FlexRow } from "globals/interfaces";
 
 export const UserFormButton = styled(StyledButton)`
   height: 40px;
@@ -60,10 +52,6 @@ export const Header2 = styled.h2`
   align-self: center;
 `;
 
-export const Header3 = styled.h3`
-  margin: 20px 0px;
-`;
-
 export const Header4 = styled.h4`
   align-self: center;
   margin: 5px;
@@ -97,14 +85,6 @@ export const ModalContainer = styled.div<{theme: any}>`
   position: relative;
 `;
 
-export const TabContainer = styled.div`
-  display: flex;
-`;
-
-export const UserFormTabs = styled(Tabs)`
-  min-width: 160px;
-`;
-
 export const ToggleContainer = styled.div`
   display: flex;
   margin-left: 4px;
@@ -114,14 +94,4 @@ export const ToggleLabel = styled.div`
   align-self: center;
   font-weight: 400;
   font-size: 1rem;
-`;
-
-export const StyledIcon = styled(Edit)<{theme: any}>`
-  && {
-    color: ${props => props.theme.button.blue.backgroundColor};
-    &:hover {
-      color: ${props => props.theme.button.blue.hoverColor};
-      cursor: pointer;
-    }
-  }
 `;

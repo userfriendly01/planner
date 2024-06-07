@@ -8,7 +8,7 @@ import {
 } from "context/appContext";
 import { Modal } from "@mui/material";
 import React from "react";
-import { sortManagersByName } from "utils/sortUtils";
+import { sortManagersByName } from "utils/_sortUtils";
 import {
   act,
   render,
