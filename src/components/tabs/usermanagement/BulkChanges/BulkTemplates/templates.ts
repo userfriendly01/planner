@@ -39,7 +39,7 @@ import {
 import {
   AppState, UMManager
 } from "globals/interfaces";
-import { env } from "globals/index";
+import { env } from "globals";
 
 const rejectPromise = (error: string, rowNumber: number) => {
   return Promise.reject(JSON.stringify({

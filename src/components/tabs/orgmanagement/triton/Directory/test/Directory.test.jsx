@@ -5,7 +5,7 @@ import { PhoneNumberTable } from "orgmanagement/PhoneNumberTable";
 import { StyledButton } from "components/StyledButton";
 import {
   formModes, timeouts
-} from "globals/index";
+} from "globals";
 import { ModalOverlayStatuses } from "globals/interfaces";
 import React from "react";
 import { deleteDirectory } from "services/directory";

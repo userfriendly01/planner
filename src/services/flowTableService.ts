@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { env } from "globals/index";
+import { env } from "globals";
 import { logger } from "utils/logger";
 
 /**

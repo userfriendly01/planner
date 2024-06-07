@@ -9,7 +9,7 @@ import { PaperContainer } from "components/PaperContainer";
 import { StyledButton } from "components/StyledButton";
 import {
   formModes, timeouts
-} from "globals/index";
+} from "globals";
 import { ModalOverlayStatuses } from "globals/interfaces";
 import React, { useState } from "react";
 import {

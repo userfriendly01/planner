@@ -14,7 +14,7 @@ import {
   apiPaths,
   formModes,
   timeouts
-} from "globals/index";
+} from "globals";
 import { ModalOverlayStatuses } from "globals/interfaces";
 import React, { useState } from "react";
 import { formatTenDigitNumber } from "utils/numberUtils";

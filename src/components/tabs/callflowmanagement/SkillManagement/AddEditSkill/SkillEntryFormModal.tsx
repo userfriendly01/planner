@@ -23,7 +23,7 @@ import {
 import {
   formModes,
   timeouts
-} from "globals/index";
+} from "globals";
 import {
   FlexRow,
   FlexColumn

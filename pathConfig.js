@@ -18,6 +18,11 @@ const paths = [
     alias: "components",
     paths: [
       "components",
+      "components/app",
+      "components/header/Header",
+      "components/header/Logo",
+      "components/header/UserCard",
+      "components/navigation",
       "components/core",
       "components/core/SearchBox",
       "components/core/SharedComponents",

@@ -10,11 +10,11 @@ import {
   Overlay,
   LoadingMessage
 } from "components/app/App.Styles";
-import ScrollToTop from "./ScrollToTop";
+import ScrollToTop from "components/ScrollToTop";
 import { getWorkerProfileId } from "authentication/authUtils";
 import { getFilteredPermissions } from "authentication/authenticationProfiles";
-import Header from "../header/Header/Header";
-import NavTabs from "../navigation/NavTabs";
+import Header from "components/Header";
+import NavTabs from "components/NavTabs";
 import NotificationModal from "components/NotificationModal";
 import {
   useAdminDispatch, useAdminState

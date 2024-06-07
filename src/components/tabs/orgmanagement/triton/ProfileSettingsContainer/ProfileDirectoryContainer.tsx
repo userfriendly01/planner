@@ -1,7 +1,7 @@
 import { Directory } from "orgmanagement/Directory";
 import { ProfileDropDown } from "orgmanagement/ProfileDropDown";
 import { useAdminState } from "context/appContext";
-import { apiPaths } from "globals/index";
+import { apiPaths } from "globals";
 import React, { useState } from "react";
 import { logger } from "utils/logger";
 import { myAxios } from "utils/myAxios";

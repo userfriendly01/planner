@@ -28,7 +28,7 @@ import { Edit } from "@mui/icons-material";
 import {
   profileTableColumnHeader,
   formModes
-} from "globals/index";
+} from "globals";
 import { profileEntryFormDispatch } from "context/appContext";
 import { profileEntryFormActions } from "context/profileEntryFormReducer";
 

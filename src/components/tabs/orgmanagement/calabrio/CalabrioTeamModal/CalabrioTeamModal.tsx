@@ -15,7 +15,7 @@ import {
 } from "context/appContext";
 import { FlexColumn } from "globals/interfaces";
 import { ModalOverlayStatuses } from "globals/interfaces";
-import { timeouts } from "globals/index";
+import { timeouts } from "globals";
 import React, { useState } from "react";
 import { createCalabrioTeam } from "services/calabrio";
 import { logger } from "utils/logger";

@@ -17,7 +17,7 @@ import {
   mockActivities
 } from "testUtils";
 import { ThemeProvider } from "styled-components";
-import { apiPaths } from "globals/index";
+import { apiPaths } from "globals";
 import { theme } from "globals/theme";
 import { Tooltip } from "@mui/material";
 import { act } from "react-dom/test-utils";

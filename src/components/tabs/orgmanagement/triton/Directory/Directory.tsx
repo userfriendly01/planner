@@ -8,7 +8,7 @@ import { StyledButton } from "components/StyledButton";
 import { useAdminState } from "context/appContext";
 import {
   formModes, timeouts
-} from "globals/index";
+} from "globals";
 import { ModalOverlayStatuses } from "globals/interfaces";
 import React, { useState } from "react";
 import { deleteDirectory } from "services/directory";

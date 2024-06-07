@@ -8,7 +8,7 @@ import {
 } from "context/appContext";
 import { StyledButton } from "components/StyledButton";
 import { ModalOverlayStatuses } from "globals/interfaces";
-import { timeouts } from "globals/index";
+import { timeouts } from "globals";
 import React from "react";
 import {
   updateFlashMessage,

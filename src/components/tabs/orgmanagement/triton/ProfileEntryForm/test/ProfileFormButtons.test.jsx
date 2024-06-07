@@ -8,7 +8,7 @@ import {
 import { profileEntryFormActions } from "context/profileEntryFormReducer";
 import { Modal } from "@mui/material";
 import { StyledButton } from "components/StyledButton";
-import { formModes } from "globals/index";
+import { formModes } from "globals";
 import { ModalOverlayStatuses } from "globals/interfaces";
 import { isProfileFormValid } from "utils/profileUtils";
 import {

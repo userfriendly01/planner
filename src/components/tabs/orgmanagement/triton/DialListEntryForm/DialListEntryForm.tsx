@@ -15,10 +15,8 @@ import {
   apiPaths,
   formModes,
   timeouts
-} from "globals/index";
-import {
-  GenericObject, ModalOverlayStatuses
-} from "globals/interfaces";
+} from "globals";
+import { ModalOverlayStatuses } from "globals/interfaces";
 import React, { useState } from "react";
 import styled from "styled-components";
 import { myAxios } from "utils/myAxios";

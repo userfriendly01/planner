@@ -1,7 +1,7 @@
 import { DialListTable } from "orgmanagement/DialListTable";
 import { ProfileDropDown } from "orgmanagement/ProfileDropDown";
 import { useAdminState } from "context/appContext";
-import { apiPaths } from "globals/index";
+import { apiPaths } from "globals";
 import React, { useState } from "react";
 import { sortDialListEntriesByName } from "utils/_sortUtils";
 import { myAxios } from "utils/myAxios";
