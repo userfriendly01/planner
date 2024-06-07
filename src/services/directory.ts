@@ -2,7 +2,7 @@ import { apiPaths } from "globals";
 import { logger } from "utils/logger";
 import { myAxios } from "utils/myAxios";
 
-export const deleteDirectory = directoryId => {
+export const deleteDirectory = (directoryId: number) => {
   return myAxios.delete(apiPaths.DIRECTORY_ENTRY(directoryId)).then(res => {
     logger.log(
       `Successfully deleted directory entry with directoryId ${directoryId}`,
@@ -14,7 +14,7 @@ export const deleteDirectory = directoryId => {
   });
 };
 
-export const insertDirectory = (firstName, lastName, phoneNumber, profileId) => {
+export const insertDirectory = (firstName: string, lastName: string, phoneNumber: string, profileId: string | number) => {
   const requestBody = {
     first_nme: firstName,
     last_nme: lastName,
@@ -31,7 +31,7 @@ export const insertDirectory = (firstName, lastName, phoneNumber, profileId) => 
     });
 };
 
-export const updateDirectory = (directoryId, firstName, lastName, phoneNumber) => {
+export const updateDirectory = (directoryId: number, firstName: string, lastName: string, phoneNumber: string) => {
   const requestBody = {
     first_nme: firstName,
     last_nme: lastName,

@@ -11,8 +11,14 @@ import {
   ProfileSettingsMessage
 } from "./ProfileSettingsContainer.Styles";
 
+export interface InitialProfileStateProps {
+  directoryList: any[],
+  message: string,
+  profileId?: number | string
+}
+
 const ProfileDirectoryContainer = () => {
-  const initialProfileState = {
+  const initialProfileState: InitialProfileStateProps = {
     directoryList: [],
     message: "Please select a profile",
     profileId: null
@@ -23,7 +29,7 @@ const ProfileDirectoryContainer = () => {
   const state = useAdminState();
   const profilesFromContext = state.profileContext.profiles;
 
-  const fetchProfileInformation = profileId => {
+  const fetchProfileInformation = (profileId: string | number) => {
     myAxios.get(apiPaths.GET_PROFILE_DATA(profileId))
       .then(res => {
         const directoryList = res.data.directories.sort(sortDirectoryListEntriesByName);

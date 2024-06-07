@@ -53,6 +53,7 @@ const paths = [
     alias: "callflowmanagement",
     paths: [
       "components/tabs/callflowmanagement",
+      "components/tabs/callflowmanagement/SkillManagement",
       "components/tabs/callflowmanagement/SkillManagement/ClosedFlashMessage",
       "components/tabs/callflowmanagement/SkillManagement/ClosedFlashMessage/SaveButton",
       "components/tabs/callflowmanagement/SkillManagement/ClosedFlashMessage/MessageContainer",
@@ -62,7 +63,10 @@ const paths = [
       "components/tabs/callflowmanagement/SkillManagement/SkillsContainer",
       "components/tabs/callflowmanagement/SkillManagement/AddEditSkill",
       "components/tabs/callflowmanagement/SkillManagement/ActionContainer",
-      "components/tabs/callflowmanagement/SkillManagement/DefaultSkillGroups"
+      "components/tabs/callflowmanagement/SkillManagement/DefaultSkillGroups",
+      "components/tabs/callflowmanagement/CallFlowConfirmationModal",
+      "components/tabs/callflowmanagement/CallFlowManagementWrapper",
+      "components/tabs/callflowmanagement/TfnActivation"
     ]
   },
   {

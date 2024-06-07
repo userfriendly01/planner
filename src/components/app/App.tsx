@@ -39,7 +39,7 @@ const App = () => {
   const { instance } = useMsal();
   const account = instance.getActiveAccount();
 
-  const [loadResult, setLoadResult] = useState({
+  const [loadResult, setLoadResult] = useState<any>({
     home: null,
     status: null
   });
@@ -61,7 +61,7 @@ const App = () => {
         });
       } else {
         try {
-          const nNumber = account.idTokenClaims.employeeid;
+          const nNumber = account.idTokenClaims.employeeid as string;
           const profileId = await getWorkerProfileId(nNumber);
           const isAdmin = account.idTokenClaims.roles.includes("Admin");
           dispatch({

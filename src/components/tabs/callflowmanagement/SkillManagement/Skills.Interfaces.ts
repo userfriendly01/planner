@@ -1,12 +1,12 @@
 import {
   Skill
 } from "globals/interfaces";
-import { TableState } from "../CallFlowManagementWrapper/CallFlowManagement.Interfaces";
-import { messageTypes } from "../SkillManagement/ClosedFlashMessage/ClosedFlashMessage.Interfaces";
+import { TableState } from "callflowmanagement/CallFlowManagement.Interfaces";
+import { messageTypes } from "callflowmanagement/ClosedFlashMessage.Interfaces";
 import {
   ConfirmationModalOptsProps,
   SaveResultProps
-} from "../CallFlowConfirmationModal/CallFlowConfirmationModal.Interfaces";
+} from "callflowmanagement/CallFlowConfirmationModal.Interfaces";
 
 export interface ActionType {
   value: string,

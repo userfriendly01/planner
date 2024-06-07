@@ -11,8 +11,14 @@ import {
   ProfileSettingsMessage
 } from "./ProfileSettingsContainer.Styles";
 
+interface InitialProfileStateProps {
+  dialList: any[],
+  message: string,
+  profileId?: number | string
+}
+
 export const ProfileDialListContainer = () => {
-  const initialProfileState = {
+  const initialProfileState: InitialProfileStateProps = {
     dialList: [],
     message: "Please select a profile",
     profileId: null
@@ -23,7 +29,7 @@ export const ProfileDialListContainer = () => {
   const state = useAdminState();
   const profilesFromContext = state.profileContext.profiles;
 
-  const fetchProfileInformation = profileId => {
+  const fetchProfileInformation = (profileId: number | string) => {
     myAxios.get(apiPaths.GET_PROFILE_DATA(profileId))
       .then(res => {
         const dialList = res.data.diallist.sort(sortDialListEntriesByName);

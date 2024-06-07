@@ -121,7 +121,7 @@ const TableText = styled.div`
 
 interface DialListTableProps {
     dialList: any[],
-    profileId: number,
+    profileId: number | string,
     refreshProfileData: VoidFunction
 }
 

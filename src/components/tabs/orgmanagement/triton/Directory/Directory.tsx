@@ -32,7 +32,7 @@ const TableContainer = styled.div`
 
 interface DirectoryProps {
     directory: any[],
-    profileId: number,
+    profileId: number | string,
     refreshProfileData: () => void
 }
 

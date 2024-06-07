@@ -49,12 +49,12 @@ jest.mock("usermanagement/BulkChanges", () => ({
   BulkChanges: jest.fn()
 }));
 
-jest.mock("callflowmanagement/CallFlowManagementWrapper/CallFlowManagementSkills", () => ({
+jest.mock("callflowmanagement/CallFlowManagementSkills", () => ({
   __esModule: true,
   default: jest.fn()
 }));
 
-jest.mock("callflowmanagement/CallFlowManagementWrapper/CallFlowManagementTfn", () => ({
+jest.mock("callflowmanagement/CallFlowManagementTfn", () => ({
   CallFlowManagementTfn: jest.fn()
 }));
 

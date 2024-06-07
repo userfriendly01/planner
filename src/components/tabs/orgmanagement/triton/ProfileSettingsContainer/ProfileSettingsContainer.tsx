@@ -1,5 +1,5 @@
 import { checkIfPO } from "authentication/authUtils";
-import { ProfileSettingsTable } from "orgmanagement/ProfileSettingsTable";
+import { ProfileSettingsTable } from "components/tabs/orgmanagement/triton/ProfileSettingsTable/ProfileSettingsTable";
 import { ProfileEntryForm } from "orgmanagement/ProfileEntryForm";
 import {
   useAdminState,

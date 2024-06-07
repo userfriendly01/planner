@@ -32,15 +32,21 @@ import {
 import { profileEntryFormDispatch } from "context/appContext";
 import { profileEntryFormActions } from "context/profileEntryFormReducer";
 
-export const ProfileSettingsTable = props => {
+interface ProfileSettingsTableProps {
+  profileList: any[],
+  setProfileModalState: (payload: any) => void,
+  loggedInUser: any
+}
+export const ProfileSettingsTable = (props: ProfileSettingsTableProps) => {
   const {
     profileList,
     setProfileModalState,
     loggedInUser
   } = props;
+
   const setForm = profileEntryFormDispatch();
 
-  const editButtonOnClick = profile => event => {
+  const editButtonOnClick = (profile: any) => (event: any) => {
     event.stopPropagation();
     setForm({
       type: profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE,
@@ -101,7 +107,7 @@ export const ProfileSettingsTable = props => {
                       <TableText>{formatProfileBooleanData(profile.manual_recorded_i.data[0])}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatProfileACWDataEntry(profile.acw_data_entry_i.data[0], profile.callTags.filter(data => data.profile_id === profile.profile_id), BubbleDiv, HighlightRed)}</TableText>
+                      <TableText>{formatProfileACWDataEntry(profile.acw_data_entry_i.data[0], profile.callTags.filter((data: any) => data.profile_id === profile.profile_id), BubbleDiv, HighlightRed)}</TableText>
                     </CustomTableData>
                     <CustomTableData>
                       <TableText>{formatProfileBooleanData(profile.manual_record_inbound_i.data[0])}</TableText>
@@ -136,7 +142,7 @@ export const ProfileSettingsTable = props => {
                     <CustomTableData>
                       <TableDataFlex>
                         {
-                          profile.activities.map(activity => {
+                          profile.activities.map((activity: any) => {
                             return <div key={`${activity.activity_nme}`}>{formatActivityData(activity.activity_nme, BubbleDiv)}</div>;
                           })
                         }
@@ -154,7 +160,7 @@ export const ProfileSettingsTable = props => {
                       <TableText>{formatSimpleText(profile?.operating_unit_nme)}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText style={{ "text-wrap": "nowrap" }}>{profile.fwd_to_num ? formatTenDigitNumber(profile.fwd_to_num) : ""}</TableText>
+                      <TableText style={{ "textWrap": "nowrap" }}>{profile.fwd_to_num ? formatTenDigitNumber(profile.fwd_to_num) : ""}</TableText>
                     </CustomTableData>
                     {
                       checkIfPO(loggedInUser) ?
