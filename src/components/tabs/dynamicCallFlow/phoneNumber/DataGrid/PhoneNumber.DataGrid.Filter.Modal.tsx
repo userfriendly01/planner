@@ -1,11 +1,13 @@
 /* eslint-disable react/prop-types */
-import React from "react";
+import React, {
+  useEffect, useState, useContext
+} from "react";
 import {
   ModalBody, ModalFooter, ModalHeader
 } from "@lmig/lmds-react-modal";
 import {
   HeadingStyled, ModalSearchStyled
-} from "../DynamicCallFlowPhoneNumber.Styles";
+} from "../../common/DynamicCallFlow.Styles";
 import SelectContainer from "../../../../core/SharedComponents/SelectContainer";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
@@ -13,48 +15,41 @@ import Button from "@mui/material/Button";
 import {
   BRAND, CALL_FLOW_ROUTE, CALL_FLOW_TEMPLATE, CHANNEL
 } from "../Form/Dynamic.PhoneNumber.Form.Fields";
-import { Filter } from "../../common/DataGrid/Abstract.DataGrid.Filter.Modal.Manager";
-import { PhoneNumberDataGridFilterModalManager } from "./PhoneNumber.DataGrid.Filter.Modal.Manager";
-import { FieldOptions } from "../../common/Form/AbstractFormFieldOptionsManager";
-
-interface PhoneNumberDataGridFilterModalProps {
-  dataGridDataFilterModalManager: PhoneNumberDataGridFilterModalManager;
-  fieldOptions: FieldOptions;
-}
-
-export const FILTER_CACHE_KEY = "DYNAMIC_CALL_FLOW_PHONE_NUMBER_FILTER";
+import {
+  DataGridFilterModalProps, Filter
+} from "../../common/DataGrid/Abstract.DataGrid.Filter";
+import { PKEY } from "../Form/Legacy.PhoneNumber.Form.Fields";
+import { DynamicCallFlowPhoneNumberContext } from "../DynamicCallFlow.PhoneNumber.Container";
+import { PhoneNumberRecordType } from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
 
 export const PhoneNumberDataGridFilterModal = ({
-  dataGridDataFilterModalManager, fieldOptions
-}: PhoneNumberDataGridFilterModalProps):JSX.Element => {
+  isOpen, dataGridFilter
+}: DataGridFilterModalProps<PhoneNumberRecordType>):JSX.Element => {
+  const { modalController } = useContext(DynamicCallFlowPhoneNumberContext);
 
-  const saveFilter = (filter: Filter) => {
-    localStorage.setItem(FILTER_CACHE_KEY, JSON.stringify(filter));
-    dataGridDataFilterModalManager.filterRecords();
-    dataGridDataFilterModalManager.closeModal();
+  const [filter, setFilter] = useState<Filter>({} as Filter);
+
+  useEffect(() => {
+    setFilter(dataGridFilter.current.getFilter());
+  }, [isOpen]);
+
+  const applyFilter = () => {
+    dataGridFilter.current.applyFilter();
+    modalController.current.closeModal();
   };
 
   const handleChange = (event: any) => {
-    dataGridDataFilterModalManager.state.filter = {
-      filter: {
-        ...dataGridDataFilterModalManager.state.filter,
-        [event.target.name as keyof Filter]: event.target.value
-      }
-    } as Filter;
+    setFilter(dataGridFilter.current.addFilterElement(event.target.name, event.target.value));
   };
 
-  const resetSavedFilter = () => {
-    localStorage.removeItem(FILTER_CACHE_KEY);
-    dataGridDataFilterModalManager.saveFilter({});
-    dataGridDataFilterModalManager.closeModal();
+  const resetFilterAndClose = () => {
+    setFilter(dataGridFilter.current.resetFilter());
+    modalController.current.closeModal();
   };
 
   return (
     <div>
-      <ModalSearchStyled isOpen={dataGridDataFilterModalManager.isModalOpen} onClose={() => {
-        dataGridDataFilterModalManager.closeModal();
-        return true;
-      }}>
+      <ModalSearchStyled isOpen={isOpen} onClose={() => modalController.current.closeModal()}>
         <ModalHeader id="my-search-header">
           <HeadingStyled type="h4-light"> Advance Flow Search Selection </HeadingStyled>
         </ModalHeader>
@@ -62,10 +57,10 @@ export const PhoneNumberDataGridFilterModal = ({
           <Grid container rowSpacing={3}>
             <Grid item xs={10}>
               <SelectContainer
-                dropDownOptions={fieldOptions[BRAND]}
+                dropDownOptions={dataGridFilter?.current.fieldOptions[BRAND] || []}
                 name="brand"
                 label="Choose Brand"
-                value={dataGridDataFilterModalManager.state.filter?.brand}
+                value={filter[BRAND] || ""}
                 onChange={handleChange}
                 disabled={false}
                 error={false}
@@ -74,10 +69,10 @@ export const PhoneNumberDataGridFilterModal = ({
             </Grid>
             <Grid item xs={10}>
               <SelectContainer
-                dropDownOptions={fieldOptions[CHANNEL]}
+                dropDownOptions={dataGridFilter?.current.fieldOptions[CHANNEL]}
                 name="channel"
                 label="Choose Channel"
-                value={dataGridDataFilterModalManager.state.filter?.channel}
+                value={filter[CHANNEL] || ""}
                 onChange={handleChange}
                 disabled={false}
                 error={false}
@@ -90,17 +85,17 @@ export const PhoneNumberDataGridFilterModal = ({
                 label="#Dialed"
                 name="pkey"
                 type="text"
-                value={dataGridDataFilterModalManager.state.filter?.pkey}
+                value={filter[PKEY] || ""}
                 onChange={handleChange}
                 sx={{ width: "Calc(96%)" }}
               />
             </Grid>
             <Grid item xs={10}>
               <SelectContainer
-                dropDownOptions={fieldOptions[CALL_FLOW_TEMPLATE]}
+                dropDownOptions={dataGridFilter?.current.fieldOptions[CALL_FLOW_TEMPLATE]}
                 name="callFlowTemplate"
                 label="Choose Call Flow Template"
-                value={dataGridDataFilterModalManager.state.filter.callFlowTemplate}
+                value={filter[CALL_FLOW_TEMPLATE]}
                 onChange={handleChange}
                 disabled={false}
                 error={false}
@@ -109,10 +104,10 @@ export const PhoneNumberDataGridFilterModal = ({
             </Grid>
             <Grid item xs={10}>
               <SelectContainer
-                dropDownOptions={fieldOptions[CALL_FLOW_ROUTE]}
+                dropDownOptions={dataGridFilter?.current.fieldOptions[CALL_FLOW_ROUTE]}
                 name="callFlowRoute"
                 label="Choose Call Flow Route"
-                value={dataGridDataFilterModalManager.state.filter?.callFlowRoute}
+                value={filter[CALL_FLOW_ROUTE] || ""}
                 onChange={handleChange}
                 disabled={false}
                 error={false}
@@ -128,7 +123,7 @@ export const PhoneNumberDataGridFilterModal = ({
             variant="contained"
             color="primary"
             sx={{ marginRight: 1 }}
-            onClick={() => saveFilter(dataGridDataFilterModalManager.state.filter)}
+            onClick={applyFilter}
           >
             Save Filter
           </Button>
@@ -136,7 +131,7 @@ export const PhoneNumberDataGridFilterModal = ({
             value="Cancel"
             variant="outlined"
             color="primary"
-            onClick={() => resetSavedFilter()}
+            onClick={resetFilterAndClose}
           >
             Reset Filter
           </Button>

@@ -9,52 +9,17 @@ class UpdateLegacyPhoneNumberRecordQuery extends AbstractUpdateRecordQuery {
 
   protected queryDefinition(): string {
     return `
-      mutation updateCctSharedCallFlowDb($input:CctSharedCallFlowDbInputMod!) {
+      mutation ${this.queryName()}($input: CctSharedCallFlowDbInputMod!) {
         updateCctSharedCallFlowDb(input:$input) {
           pkey
-          agentId
-          brand
-          callFlowTemplate
-          channel
-          content {
-            callIntent
-            callerType
-            callFlowRoute
-            dataRequests
-            greetingMessages
-            languageOffer
-            transferNumber
-            officeNumbers
-          }
-          createTime
-          dialedDescription
-          employeeId
-          accountManager
-          affinityVDN
-          callTypeDescription
-          transferCode
-          internetPlacement
-          callDetails1
-          callDetails2
-          tollFreeNumber
-          lineOfBusiness
-          marketingChannel
-          predictiveCaller
-          whisper
-          requestID
-          selfServiceIndicator
-          userDestination
-          rangeIndicator
-          tfnRoutingGroup
-          type
         }
       }`;
   }
 }
 
-const legacyPhoneNumberUpdateRecordQuery = new UpdateLegacyPhoneNumberRecordQuery();
+const updateLegacyPhoneNumberRecordQuery = new UpdateLegacyPhoneNumberRecordQuery();
 
-export async function legacyPhoneNumberUpdateRecord(accessToken: string, callFlowRecord: CctSharedCallFlowDb): Promise<SingleRecordResults<CctSharedCallFlowDb>> {
+export async function updateLegacyPhoneNumberRecord(accessToken: string, callFlowRecord: CctSharedCallFlowDb): Promise<SingleRecordResults<CctSharedCallFlowDb>> {
   callFlowRecord.updateTime = new Date().toISOString();
-  return await legacyPhoneNumberUpdateRecordQuery.update<CctSharedCallFlowDb>(accessToken, callFlowRecord);
+  return await updateLegacyPhoneNumberRecordQuery.update<CctSharedCallFlowDb>(accessToken, callFlowRecord);
 }

@@ -1,28 +1,38 @@
 import { Control } from "../../../../../globals";
-import { FieldConfigsManager } from "./Form.FieldConfig.StateManager";
-import { ControlEnum } from "./Change.Form.FieldControl";
+import { FieldConfigs } from "./Form.Field.Config";
 
+export enum ControlEnum {
+  AutoComplete = "autoComplete",
+  Input = "input",
+  Select = "select",
+  Switch = "switch",
+  MultiField = "multiField",
+  MultiTextField = "multiTextField",
+  TimePicker = "timePicker"
+}
+
+//TODO: Remove this class and possibly move the above enum
 export class FormFieldControlManager {
-  private _fieldConfigsManager: FieldConfigsManager;
+  private _fieldConfigs: FieldConfigs;
 
-  constructor(formFieldConfigs: FieldConfigsManager) {
-    this._fieldConfigsManager = formFieldConfigs;
+  constructor(fieldConfigs: FieldConfigs) {
+    this._fieldConfigs = fieldConfigs;
   }
 
   current(field: string): Control {
-    return this._fieldConfigsManager.get(field)?.currentControl;
+    return this._fieldConfigs[field].currentControl;
   }
 
   original(field: string): Control {
-    return this._fieldConfigsManager.get(field)?.originalControl;
+    return this._fieldConfigs[field].originalControl;
   }
 
   private to(field: string, control: Control) {
-    this._fieldConfigsManager.get(field).currentControl =  control;
+    this._fieldConfigs[field].currentControl = control;
   }
 
   toOriginal(field: string): void {
-    this.to(field, this._fieldConfigsManager.get(field)?.originalControl);
+    this.to(field, this._fieldConfigs[field].originalControl);
   }
 
   toInput(field: string): void {
@@ -33,7 +43,7 @@ export class FormFieldControlManager {
     this.to(field, ControlEnum.Select);
   }
 
-  toAutoComplete(field: string) {
+  toAutoComplete(field: string): void {
     this.to(field, ControlEnum.AutoComplete);
   }
 

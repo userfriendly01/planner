@@ -5,3 +5,4 @@ export enum PreviewModalActionTypeEnum {
   EDIT = "edit",
   DELETE = "delete"
 }
+

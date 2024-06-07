@@ -1,8 +1,8 @@
-import { FieldConfigs } from "./Form.FieldConfig.State";
+import { FieldConfigs } from "./Form.Field.Config";
 
 export interface FormFieldOptions<RecordType> {
-  generate(records: Array<RecordType>): void;
-  register(key: string, fieldConfigs: FieldConfigs): void;
+  generateOptions(records: Array<RecordType>): void;
+  updateFieldOptionsOnFieldConfigs(fieldConfigs: FieldConfigs): FieldConfigs;
 }
 
 export interface FieldOptions {
@@ -10,11 +10,19 @@ export interface FieldOptions {
 }
 
 export abstract class AbstractFormFieldOptionsManager<RecordType> implements FormFieldOptions<RecordType> {
-  private _fieldOptions: FieldOptions = {};
-  private _registeredFieldConfigs: Map<string, FieldConfigs> = new Map<string, FieldConfigs>();
+  private readonly _fieldOptions: FieldOptions = {};
 
-  constructor(fieldOptions: FieldOptions) {
-    this._fieldOptions = fieldOptions;
+  constructor() {
+    const fieldOptionsCache = localStorage.getItem(this.getFieldOptionsCacheKey());
+    const lastCachedDate = localStorage.getItem(this.getFieldOptionsCacheKeyLastCachedDate());
+
+    this._fieldOptions = this.getStaticFieldOptions();
+    if (fieldOptionsCache && lastCachedDate) {
+      this._fieldOptions = {
+        ...this._fieldOptions,
+        ...JSON.parse(fieldOptionsCache)
+      };
+    }
   }
 
   protected abstract getRecordKeyValue(record: RecordType, key: string): string | Array<string> | undefined;
@@ -31,11 +39,11 @@ export abstract class AbstractFormFieldOptionsManager<RecordType> implements For
 
   protected abstract getStaticFieldOptions(): FieldOptions;
 
-  register(key: string, fieldConfigs: FieldConfigs): void {
-    this._registeredFieldConfigs.set(key, fieldConfigs);
+  private isValidOption(key: string, option: string): boolean {
+    return typeof option === "string" && option.trim().length > 0 && option.toLowerCase() !== "null" && !this._fieldOptions[key].includes(option);
   }
 
-  generate(records: Array<RecordType>): void {
+  generateOptions(records: Array<RecordType>): FieldOptions {
     records.forEach((record: RecordType) => this.getDataDrivenOptionsFieldNames().forEach((key: string) => {
       const recordPropertyValue = this.getRecordKeyValue(record, key);
 
@@ -47,34 +55,41 @@ export abstract class AbstractFormFieldOptionsManager<RecordType> implements For
         if (this.getDataDrivenOptionsFieldNamesWithList().includes(key)) {
           if (Array.isArray(recordPropertyValue)) {
             (recordPropertyValue as Array<string>).forEach(option => {
-              if (typeof option === "string" && option.trim().length > 0 && option.toLowerCase() !== "null") {
+              if (this.isValidOption(key, option)) {
                 this._fieldOptions[key].push(option);
               }
             });
           } else {
             console.log("Invalid data type for field: ", key, " in record: ", record, "expected type to be Array<string> but got: ", typeof (recordPropertyValue));
           }
-        } else if (typeof recordPropertyValue === "string" && recordPropertyValue.trim().length > 0 && recordPropertyValue.toLowerCase() !== "null") {
+        } else if (this.isValidOption(key, recordPropertyValue as string)) {
           this._fieldOptions[key].push(recordPropertyValue as string);
-        } else {
-          console.log("Invalid data type for field: ", key, " in record: ", record, "expected type to be string but got: ", typeof (recordPropertyValue));
         }
       }
     }));
 
-    Object.keys(this._fieldOptions).forEach(key => this._fieldOptions[key] = [...new Set(this._fieldOptions[key])].sort());
+    Object.keys(this._fieldOptions).forEach(key => {
+      if (this._fieldOptions[key].length === 0) {
+        console.warn("No options found for field: ", key);
+      }
+      this._fieldOptions[key] = [...new Set(this._fieldOptions[key])].sort();
+    });
 
     localStorage.setItem(this.getFieldOptionsCacheKey(), JSON.stringify(this._fieldOptions));
     localStorage.setItem(this.getFieldOptionsCacheKeyLastCachedDate(), new Date().toString());
 
-    this.updateFieldOptionsOnRegisteredFieldConfigs(this._fieldOptions);
+    return this._fieldOptions;
   }
 
-  private updateFieldOptionsOnRegisteredFieldConfigs(_fieldOptions: FieldOptions) {
-    Object.values(this._registeredFieldConfigs).forEach((fieldConfigs: FieldConfigs) => {
-      Object.keys(_fieldOptions).forEach(fieldOptionKey => {
+  updateFieldOptionsOnFieldConfigs(fieldConfigs: FieldConfigs): FieldConfigs {
+    Object.keys(this._fieldOptions).forEach(fieldOptionKey => {
+      if (fieldConfigs[fieldOptionKey]) {
         fieldConfigs[fieldOptionKey].options = this._fieldOptions[fieldOptionKey];
-      });
+      } else {
+        console.warn("Field option key not found in field configs: ", fieldOptionKey);
+      }
     });
+
+    return fieldConfigs;
   }
 }

@@ -6,11 +6,13 @@ import {
   ViewList
 } from "@mui/icons-material";
 import React, { useState } from "react";
-import {FormFieldControlManager} from "./Form.Field.Control.Manager";
+import { FieldConfigs } from "./Form.Field.Config";
+import { ControlEnum } from "./Form.Field.Control.Manager";
+import { ReactStateAction } from "../Container.Interfaces";
 
-export interface ViewListIconToggleComponentProps {
+export interface ViewListIconToggleFormProps {
   field: string;
-  formFieldControl: FormFieldControlManager;
+  fieldConfigsReactStateAction: ReactStateAction<FieldConfigs>;
 }
 
 const SHOW_VIEW_LIST_ICON = true;
@@ -19,26 +21,40 @@ const HIDE_VIEW_LIST_ICON = false;
 export const ViewListIconToggleForm = (
   {
     field,
-    formFieldControl
-  }: ViewListIconToggleComponentProps):JSX.Element => {
-
+    fieldConfigsReactStateAction
+  }: ViewListIconToggleFormProps):JSX.Element => {
+  const {
+    state: fieldConfigs,
+    setState: setFieldConfigs
+  } = fieldConfigsReactStateAction;
   const [displayViewListIcon, setDisplayViewListIcon] = useState(false);
 
   function showViewListIcon() {
     setDisplayViewListIcon(SHOW_VIEW_LIST_ICON);
-    formFieldControl.toInput(field);
+    setFieldConfigs(prevState => ({
+      ...prevState,
+      [field]: {
+        ...prevState[field],
+        currentControl: ControlEnum.Input
+      }
+    }));
   }
 
   function showAddIcon() {
     setDisplayViewListIcon(HIDE_VIEW_LIST_ICON);
-    formFieldControl.toOriginal(field);
-  }
+    setFieldConfigs(prevState => ({
+      ...prevState,
+      [field]: {
+        ...prevState[field],
+        currentControl: fieldConfigs[field].originalControl
+      }
+    }));  }
 
   return (
     <div>
       <IconButton onClick={() => {
         displayViewListIcon ? showAddIcon() : showViewListIcon();
-      }} aria-label={`display-${field}-${formFieldControl.original(field)}`} edge="start">
+      }} aria-label={`display-${field}`} edge="start">
         {displayViewListIcon ?<ViewList/>:<Add/>}
       </IconButton>
     </div>);

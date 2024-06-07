@@ -8,18 +8,18 @@ import { BatchResults } from "../../common/GraphQL/Abstract.BatchRecords.Query";
    * remove duplicates from the opposite table, since they shouldn't exist.  This 
    * function will call batchDeleteItems, while toggling the nextActionId value so 
    * it will delete the rows.
-   * @param {Array<PhoneNumberRecordType>} phoneNumberRecords - the rows just updated or created
    * @param {string} accessToken - token to use while calling graphql query
+   * @param {Array<PhoneNumberRecordType>} phoneNumberRecords - the rows just updated or created
    * @returns Promise<BatchResponse<PhoneNumberRecordType>>
    */
 export const deleteOppositeRows = (
-  phoneNumberRecords: Array<PhoneNumberRecordType>,
-  accessToken: string
+  accessToken: string,
+  phoneNumberRecords: Array<PhoneNumberRecordType>
 ): Promise<BatchResults<PhoneNumberRecordType>> => {
   const oppositeRows: Array<PhoneNumberRecordType> = phoneNumberRecords.map(phoneNumberRecord => {
     return {
       ...phoneNumberRecord,
-      nextActionId: phoneNumberRecord[NEXT_ACTION_ID as keyof typeof phoneNumberRecord] ? "" : "simulatedNextActionId"
+      nextActionId: phoneNumberRecord[NEXT_ACTION_ID as keyof typeof phoneNumberRecord] || ""
     } as PhoneNumberRecordType;
   });
 

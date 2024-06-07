@@ -1,66 +1,64 @@
 import React, {
-  useMemo, useEffect
+  useEffect, useMemo
 } from "react";
-import {
-  CsvReader, StyledButton
-} from "components";
+import { StyledButton } from "components";
 import {
   DataGrid, GridColDef, useGridApiRef
 } from "@mui/x-data-grid";
 import {
-  Modal,ModalHeader, ModalBody, ModalFooter
+  Modal, ModalBody, ModalFooter, ModalHeader
 } from "@lmig/lmds-react-modal";
 import "./PreviewModal.css";
 import { Box } from "@mui/material";
-import  TableGridColumnDef  from "./TableColumnDef";
+import TableGridColumnDef from "./TableColumnDef";
 import { logger } from "utils";
 import { reconstructTableColumnDef } from "./PreviewUtil";
 import {
-  ActionRecordType, ActionTypeEnum,
-  MenuOption
+  ActionRecordType, MenuOption
 } from "../GraphQL/DynamicCallFlowActionGraphQL.Interfaces";
-import { ObjectArrayState } from "../../common/StateManager/ObjectArray.State";
+import {
+  ActionModalType, ActionModalTypeEnum
+} from "../DataGrid/Action.DataGrid.Component";
 
-import {PreviewModalActionType} from "../../common/Preview/Preview.Interface";
-
-interface PreviewModalProps {
-    isOpen: boolean;
-    rows: Array<ActionRecordType>;
-    action: PreviewModalActionType;
-    onClose: () => void;
-    onCreate?: (actionRecords: Array<ActionRecordType>) => void;
-    loading?: boolean;
+interface PreviewModalProps<RecordType> {
+  isOpen: boolean;
+  records: Array<RecordType>;
+  modalType: ActionModalType;
+  maxId?: number;
+  onClose: () => void;
+  onDelete?: (record: Array<RecordType>) => void;
+  onCreate?: (record: Array<RecordType>) => void;
+  onUpdate?: (record: Array<RecordType>) => void;
+  loading?: boolean;
 }
 
-const PreviewModal = (props: PreviewModalProps): JSX.Element => {
+const ActionPreviewModal = (props: PreviewModalProps<ActionRecordType>): JSX.Element => {
   const {
-    isOpen, rows, onClose, action , onCreate, loading
+    isOpen, records, onClose, modalType , maxId , onDelete, onCreate, onUpdate, loading
   } = props;
 
   const apiRef =  useGridApiRef();
-  const actionRows = new ObjectArrayState<ActionRecordType>();
-  const [ uploadedForm, setUploadedForm ] = React.useState<any>([]);
+  const [modalRecords, setModalRecords] = React.useState<ActionRecordType[]>([]);
+  const [htmlInputElements, setHtmlInputElements] = React.useState<Array<HTMLInputElement>>([]);
   const tableGridColumnDef: Array<GridColDef> = useMemo<Array<GridColDef>>(()=>{
     return reconstructTableColumnDef([...TableGridColumnDef], apiRef);
-  },[action]);
-
-  useEffect(()=>{
-    actionRows.state = rows;
-  }, [rows]);
+  },[modalType]);
 
   useEffect(()=> {
-    //TODO: Update with XlsxReader upload
-    if (uploadedForm.length>0) {
-      // const modifiedRow = htmlInputElements.state.map((row:ActionRecordType, index: number) => ({
-      //   ...row
-      // }));
-      // actionRows.state = htmlInputElements.state;
-      // setFlowRows(modifiedRow);
+    setModalRecords(records);
+  }, [records]);
+
+  useEffect(()=>{
+    if (htmlInputElements.length > 0) {
+      setHtmlInputElements(htmlInputElements.map((row: any, index:  number) => ({
+        ...row,
+        id: maxId+ index+ 1
+      })));
     }
-  }, [uploadedForm]);
+  }, [htmlInputElements]);
 
   const getUpdatedActionRows = () => {
-    const newRows: Array<ActionRecordType> = [...actionRows.state].map((row: ActionRecordType) => {
+    const newRows: Array<ActionRecordType> = [...modalRecords].map((row: ActionRecordType) => {
       const updatedAction: ActionRecordType = {
         id: 0,
         actionId: "",
@@ -100,37 +98,36 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   };
 
   const createNewRecord = () => {
-    actionRows.state =
-      [
-        {
-          id: 0,
-          actionId: "",
-          actionType: undefined,
-          callFlowName: "",
-          createTime: undefined,
-          updateTime: undefined,
-          speech: "",
-          allowBargeIn: true,
-          finishOnKey: "",
-          minDigits: 0,
-          maxDigits: 0,
-          timeout: 0,
-          repeat: {
-            nextActionType: ActionTypeEnum.ANNOUNCEMENT
-          },
-          nextActionType: ActionTypeEnum.ANNOUNCEMENT,
-          nextActionId: "",
-          options: []
-        }
-      ];
+    // setModalRecords([...modalRecords,
+    //   {
+    //     id: 0,
+    //     actionId: "",
+    //     actionType: undefined,
+    //     callFlowName: "",
+    //     createTime: undefined,
+    //     updateTime: undefined,
+    //     speech: "",
+    //     allowBargeIn: true,
+    //     finishOnKey: "",
+    //     minDigits: 0,
+    //     maxDigits: 0,
+    //     timeout: 0,
+    //     repeat: {
+    //       nextActionType: ActionTypeEnum.ANNOUNCEMENT
+    //     },
+    //     nextActionType: ActionTypeEnum.ANNOUNCEMENT,
+    //     nextActionId: "",
+    //     options: []
+    //   }
+    // ]);
   };
 
   const handleOnChange=(event:any)=>{
-    CsvReader(event, setUploadedForm, "DYNFLOW");
+    // CsvReader(event, setUploadedForm, "DYNFLOW");
   };
 
-  const handleOnClose =()=>{
-    actionRows.reset();
+  const handleOnClose =()=> {
+    setModalRecords([]);
     onClose();
   };
 
@@ -141,7 +138,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
       onClose={()=>{ onClose(); }}
       size="large"
     >
-      <ModalHeader>{action?.toUpperCase()} Flow - {actionRows.state.length} rows selected</ModalHeader>
+      <ModalHeader>{modalType?.toUpperCase()} Flow - {modalRecords?.length} rows selected</ModalHeader>
       <ModalBody className="preview-grid-modal">
         <StyledButton sx={{
           marginRight: "10px",
@@ -158,7 +155,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
           /> </StyledButton>
         <DataGrid
           apiRef={apiRef}
-          rows={actionRows.state}
+          rows={modalRecords}
           columns={tableGridColumnDef}
           editMode="row"
           getRowId={(row: ActionRecordType)=>row.actionId}
@@ -181,7 +178,7 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
           display: "flex",
           justifyContent: "center"
         }}>
-          {action === "add" &&
+          {modalType === ActionModalTypeEnum.BulkAdd &&
             <StyledButton sx={{ marginRight: "15px" }} onClick={()=>handleOnCreate()}>Save</StyledButton>
           }
           <StyledButton onClick={()=>{ handleOnClose(); }}>Cancel</StyledButton>
@@ -192,6 +189,6 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
 };
 
 export {
-  PreviewModal,
+  ActionPreviewModal,
   PreviewModalProps
 };

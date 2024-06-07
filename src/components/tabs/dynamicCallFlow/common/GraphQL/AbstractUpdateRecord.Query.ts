@@ -8,9 +8,9 @@ export interface UpdateVariables<RecordType> {
 
 export abstract class AbstractUpdateRecordQuery extends AbstractSingleRecordQuery {
 
-  async update<RecordType>(accessToken: string, callFlowRecord: RecordType): Promise<SingleRecordResults<RecordType>> {
+  async update<RecordType>(accessToken: string, record: RecordType): Promise<SingleRecordResults<RecordType>> {
     const updateVariables = {
-      input: callFlowRecord
+      input: record
     } as UpdateVariables<RecordType>;
 
     return this.singleRecordQuery<RecordType, UpdateVariables<RecordType>>(accessToken, updateVariables);

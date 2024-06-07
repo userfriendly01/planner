@@ -6,10 +6,10 @@ import { PhoneNumberRecordUtil } from "./PhoneNumber.Record.Util";
 import { createLegacyPhoneNumberRecord } from "./Query/Create.Legacy.PhoneNumber.Record.Query";
 import { CctSharedCallFlowDb } from "./Legacy.PhoneNumber.Interfaces";
 import { createDynamicPhoneNumberRecord } from "./Query/Create.Dynamic.PhoneNumber.Record.Query";
-import { legacyPhoneNumberDeleteRecord } from "./Query/Delete.Legacy.PhoneNumber.Record.Query";
+import { deleteLegacyPhoneNumberRecord } from "./Query/Delete.Legacy.PhoneNumber.Record.Query";
 import { deleteDynamicPhoneNumberRecord } from "./Query/Delete.Dynamic.PhoneNumber.Record.Query";
-import { legacyPhoneNumberUpdateRecord } from "./Query/Update.Legacy.PhoneNumber.Record.Query";
-import { dynamicPhoneNumberUpdateRecord } from "./Query/Update.Dynamic.PhoneNumber.Record.Query";
+import { updateLegacyPhoneNumberRecord } from "./Query/Update.Legacy.PhoneNumber.Record.Query";
+import { updateDynamicPhoneNumberRecord } from "./Query/Update.Dynamic.PhoneNumber.Record.Query";
 
 export class SingleCallFlowRecord {
 
@@ -23,15 +23,15 @@ export class SingleCallFlowRecord {
 
   static async update(accessToken: string, phoneNumberRecord: PhoneNumberRecordType): Promise<SingleRecordResults<PhoneNumberRecordType>> {
     if (PhoneNumberRecordUtil.isLegacyPhoneNumberRecord(phoneNumberRecord)) {
-      return legacyPhoneNumberUpdateRecord(accessToken, phoneNumberRecord as CctSharedCallFlowDb);
+      return updateLegacyPhoneNumberRecord(accessToken, phoneNumberRecord as CctSharedCallFlowDb);
     } else {
-      return dynamicPhoneNumberUpdateRecord(accessToken, phoneNumberRecord as PhoneNumber);
+      return updateDynamicPhoneNumberRecord(accessToken, phoneNumberRecord as PhoneNumber);
     }
   }
 
-  static async deleteCallFlowRecord(accessToken: string, phoneNumberRecord: PhoneNumberRecordType): Promise<SingleRecordResults<PhoneNumberRecordType>> {
+  static async delete(accessToken: string, phoneNumberRecord: PhoneNumberRecordType): Promise<SingleRecordResults<PhoneNumberRecordType>> {
     if (PhoneNumberRecordUtil.isLegacyPhoneNumberRecord(phoneNumberRecord)) {
-      return legacyPhoneNumberDeleteRecord(accessToken, phoneNumberRecord as CctSharedCallFlowDb);
+      return deleteLegacyPhoneNumberRecord(accessToken, phoneNumberRecord as CctSharedCallFlowDb);
     } else {
       return deleteDynamicPhoneNumberRecord(accessToken, phoneNumberRecord as PhoneNumber);
     }

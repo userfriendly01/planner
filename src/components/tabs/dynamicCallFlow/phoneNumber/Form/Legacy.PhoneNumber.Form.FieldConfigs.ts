@@ -52,8 +52,9 @@ import {
   FieldConfigs,
   FieldDataTypeEnum,
   USER_IS_ABLE_TO_CHANGE_CONTROL
-} from "../../common/Form/Form.FieldConfig.State";
-import { ControlEnum } from "../../common/Form/Change.Form.FieldControl";
+} from "../../common/Form/Form.Field.Config";
+
+import { ControlEnum } from "../../common/Form/Form.Field.Control.Manager";
 
 
 const drcFieldConditionCheck: FieldConditionCheckType = (record: PhoneNumberRecordType): boolean => {
@@ -71,6 +72,10 @@ const dtmfFieldConditionCheck: FieldConditionCheckType = (record: PhoneNumberRec
     record[SELF_SERVICE_INDICATOR as keyof PhoneNumberRecordType] === true;
 };
 
+const defaultFieldConditionCheck: FieldConditionCheckType = (record: PhoneNumberRecordType): boolean => {
+  return true;
+};
+
 
 export const LegacyPhoneNumberFormFieldConfigs: FieldConfigs = {};
 export const RequiredPhoneNumberFormFields: Array<string> = [];
@@ -83,12 +88,12 @@ export const RequiredPhoneNumberFormFields: Array<string> = [];
  * @param {boolean} required
  * @param {boolean} disableEdit
  * @param {FieldDataTypeEnum} dataType
- * @param {FieldConditionCheckType} dynamicFieldConditionCheck
+ * @param {FieldConditionCheckType} fieldConditionCheck
  * @param {boolean} isUserAbleToChangeControl
  * @param {number} gridSize
  *
  */
-function createFieldConfig(label: string, fieldKey: string, control: Control, required = false, disableEdit = false, dataType = FieldDataTypeEnum.STRING, dynamicFieldConditionCheck?: FieldConditionCheckType, isUserAbleToChangeControl = false, gridSize?: number): void {
+function createFieldConfig(label: string, fieldKey: string, control: Control, required = false, disableEdit = false, dataType = FieldDataTypeEnum.STRING, fieldConditionCheck?: FieldConditionCheckType, isUserAbleToChangeControl = false, gridSize?: number): void {
   if (required) {
     RequiredPhoneNumberFormFields.push(fieldKey);
   }
@@ -96,14 +101,13 @@ function createFieldConfig(label: string, fieldKey: string, control: Control, re
   LegacyPhoneNumberFormFieldConfigs[fieldKey] = {
     label,
     fieldKey,
-    control,
     originalControl: control,
     currentControl: control,
     isUserAbleToChangeControl: isUserAbleToChangeControl,
     required,
     disableEdit,
     dataType,
-    fieldConditionCheck: dynamicFieldConditionCheck,
+    fieldConditionCheck: fieldConditionCheck || defaultFieldConditionCheck,
     gridSize
   } as FieldConfig;
 }

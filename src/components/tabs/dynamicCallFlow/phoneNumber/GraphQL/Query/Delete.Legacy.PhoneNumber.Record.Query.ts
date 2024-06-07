@@ -2,8 +2,10 @@ import { AbstractDeleteRecordQuery } from "../../../common/GraphQL/AbstractDelet
 import { SingleRecordResults } from "../../../common/GraphQL/AbstractSingleRecord.Query";
 import { CctSharedCallFlowDb } from "../Legacy.PhoneNumber.Interfaces";
 
-interface LegacyPhoneNumberDeleteRecordVariables {
-  pkey: string;
+interface DeleteLegacyPhoneNumberRecordVariables {
+  input: {
+    pkey: string;
+  }
 }
 
 class DeleteLegacyPhoneNumberRecordQuery extends AbstractDeleteRecordQuery {
@@ -17,51 +19,19 @@ class DeleteLegacyPhoneNumberRecordQuery extends AbstractDeleteRecordQuery {
       mutation ${this.queryName()}($input:CctSharedCallFlowDbDelInput!) {
         ${this.queryName()}(input:$input ){
           pkey
-          agentId
-          brand
-          callFlowTemplate
-          channel
-          content {
-            callIntent
-            callerType
-            callFlowRoute
-            dataRequests
-            greetingMessages
-            languageOffer
-            transferNumber
-            officeNumbers
-          }
-          createTime
-          dialedDescription
-          employeeId
-          accountManager
-          affinityVDN
-          callTypeDescription
-          transferCode
-          internetPlacement
-          callDetails1
-          callDetails2
-          tollFreeNumber
-          lineOfBusiness
-          marketingChannel
-          predictiveCaller
-          whisper
-          requestID
-          selfServiceIndicator
-          rangeIndicator
-          tfnRoutingGroup
-          type
         }
       }`;
   }
 }
 
-const legacyPhoneNumberDeleteRecordQuery = new DeleteLegacyPhoneNumberRecordQuery();
+const deleteLegacyPhoneNumberRecordQuery = new DeleteLegacyPhoneNumberRecordQuery();
 
-export async function legacyPhoneNumberDeleteRecord(accessToken: string, legacyPhoneNumberRecord: CctSharedCallFlowDb): Promise<SingleRecordResults<CctSharedCallFlowDb>> {
+export async function deleteLegacyPhoneNumberRecord(accessToken: string, legacyPhoneNumberRecord: CctSharedCallFlowDb): Promise<SingleRecordResults<CctSharedCallFlowDb>> {
   const variables = {
-    pkey: legacyPhoneNumberRecord.pkey
-  } as LegacyPhoneNumberDeleteRecordVariables;
+    input: {
+      pkey: legacyPhoneNumberRecord.pkey
+    }
+  } as DeleteLegacyPhoneNumberRecordVariables;
 
-  return await legacyPhoneNumberDeleteRecordQuery.delete<CctSharedCallFlowDb, LegacyPhoneNumberDeleteRecordVariables>(accessToken, variables);
+  return await deleteLegacyPhoneNumberRecordQuery.delete<CctSharedCallFlowDb, DeleteLegacyPhoneNumberRecordVariables>(accessToken, variables);
 }

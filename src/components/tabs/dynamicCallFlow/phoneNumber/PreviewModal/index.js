@@ -1,1 +1,1 @@
-export * from "./PhoneNumberPreviewModal";
+export * from "./PhoneNumber.Preview.Modal.Component";

@@ -5,7 +5,9 @@ import {
 import { SingleRecordResults } from "../../../common/GraphQL/AbstractSingleRecord.Query";
 
 interface DeleteDynamicPhoneNumberRecordVariables {
-  phoneNumber: string;
+  input: {
+    phoneNumber: string;
+  }
 }
 
 class DeleteDynamicPhoneNumberRecordQuery extends AbstractDeleteRecordQuery {
@@ -16,8 +18,8 @@ class DeleteDynamicPhoneNumberRecordQuery extends AbstractDeleteRecordQuery {
   //TODO: Need to add more attributes on the delete
   protected queryDefinition(): string {
     return `
-      mutation ${this.queryName}($input:PhoneNumberDeleteInput!) {
-            ${this.queryName}(input:$input) {
+      mutation ${this.queryName()}($input:PhoneNumberDeleteInput!) {
+            ${this.queryName()}(input:$input) {
                     phoneNumber
             }
           }`;
@@ -28,7 +30,9 @@ const deleteDynamicPhoneNumberRecordQuery = new DeleteDynamicPhoneNumberRecordQu
 
 export async function deleteDynamicPhoneNumberRecord(accessToken: string, dynamicPhoneNumber: PhoneNumber): Promise<SingleRecordResults<PhoneNumber>> {
   const variables = {
-    phoneNumber: dynamicPhoneNumber.phoneNumber
+    input: {
+      phoneNumber: dynamicPhoneNumber.phoneNumber
+    }
   } as DeleteDynamicPhoneNumberRecordVariables;
   return await deleteDynamicPhoneNumberRecordQuery.delete<PhoneNumber, DeleteDynamicPhoneNumberRecordVariables>(accessToken, variables);
 }

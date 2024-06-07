@@ -1,7 +1,7 @@
 import {
   BrandEnum,
   CallFlowTypeEnum,
-  ChannelEnum,
+  ChannelEnum, PhoneNumber,
   PhoneNumberRecordType,
   PhoneNumberTypeEnum
 } from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
@@ -42,22 +42,26 @@ import {
   FieldConfigs,
   FieldDataTypeEnum,
   USER_IS_ABLE_TO_CHANGE_CONTROL
-} from "../../common/Form/Form.FieldConfig.State";
-import { ControlEnum } from "../../common/Form/Change.Form.FieldControl";
+} from "../../common/Form/Form.Field.Config";
 
-const drcFieldConditionCheck: FieldConditionCheckType = (phoneNumberRecord: PhoneNumberRecordType): boolean => {
-  return phoneNumberRecord[BRAND as keyof PhoneNumberRecordType] === BrandEnum.LIBERTY_MUTUAL
-    && phoneNumberRecord[CHANNEL as keyof PhoneNumberRecordType] === ChannelEnum.SALES;
+import { ControlEnum } from "../../common/Form/Form.Field.Control.Manager";
+
+const drcFieldConditionCheck: FieldConditionCheckType = (phoneNumberRecord: PhoneNumber): boolean => {
+  return phoneNumberRecord?.brand === BrandEnum.LIBERTY_MUTUAL
+    && phoneNumberRecord?.channel === ChannelEnum.SALES;
 };
 
-const didFieldConditionCheck: FieldConditionCheckType = (phoneNumberRecord: PhoneNumberRecordType): boolean => {
-  return phoneNumberRecord[PHONE_NUMBER_TYPE as keyof PhoneNumberRecordType] === PhoneNumberTypeEnum.DID;
+const didFieldConditionCheck: FieldConditionCheckType = (phoneNumberRecord: PhoneNumber): boolean => {
+  return phoneNumberRecord?.phoneNumberType === PhoneNumberTypeEnum.DID;
 };
 
-const dtmfFieldConditionCheck: FieldConditionCheckType = (phoneNumberRecord: PhoneNumberRecordType): boolean => {
-  return phoneNumberRecord[CALL_FLOW_TYPE as keyof PhoneNumberRecordType] === CallFlowTypeEnum.DTMF;
+const dtmfFieldConditionCheck: FieldConditionCheckType = (phoneNumberRecord: PhoneNumber): boolean => {
+  return phoneNumberRecord?.callFlowType === CallFlowTypeEnum.DTMF;
 };
 
+const defaultFieldConditionCheck: FieldConditionCheckType = (record: PhoneNumberRecordType): boolean => {
+  return true;
+};
 
 export const DynamicPhoneNumberFormFieldConfigs: FieldConfigs = {};
 export const RequiredFieldsPhoneNumberForm: Array<string> = [];
@@ -83,14 +87,13 @@ function createFieldConfig(label: string, fieldKey: string, control: Control, re
   DynamicPhoneNumberFormFieldConfigs[fieldKey] = {
     label,
     fieldKey,
-    control,
     originalControl: control,
     currentControl: control,
     isUserAbleToChangeControl: isUserAbleToChangeControl,
     required,
     disableEdit,
     dataType,
-    fieldConditionCheck: fieldConditionCheck,
+    fieldConditionCheck: fieldConditionCheck || defaultFieldConditionCheck,
     gridSize
   } as FieldConfig;
 }

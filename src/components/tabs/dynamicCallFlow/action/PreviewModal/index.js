@@ -1,1 +1,1 @@
-export * from "./PreviewModal";
+export * from "./ActionPreviewModal";

@@ -5,7 +5,7 @@ import {
 import {
   DynamicCallFlowPhoneNumberDropDownList,
   DynamicCallFlowPhoneNumberMasterData
-} from "../DynamicCallFlowPhoneNumber.Interfaces";
+} from "../DynamicCallFlow.PhoneNumber.Interfaces";
 import {
   FLOW_MASTER_DATA,
   callFlowName,
@@ -21,11 +21,15 @@ import { RequiredPhoneNumberFormFields } from "../Form/Legacy.PhoneNumber.Form.F
 import { ComponentControl } from "components";
 import { GridApiCommunity } from "@mui/x-data-grid/internals";
 
-import {PreviewModalActionType} from "../../common/Preview/Preview.Interface";
+
+import {
+  PhoneNumberModalType,
+  PhoneNumberModalTypeEnum
+} from "../DynamicCallFlow.PhoneNumber.Container.Modal.Controller";
 
 
-const reconstructTableColumnDef = (action: PreviewModalActionType, columnDef: Array<GridColDef>,apiRef: React.MutableRefObject<GridApiCommunity>): Array<GridColDef> =>{
-  if(action==="edit" || action === "add")
+const reconstructTableColumnDef = (modalType: PhoneNumberModalType, columnDef: Array<GridColDef>,apiRef: React.MutableRefObject<GridApiCommunity>): Array<GridColDef> =>{
+  if (modalType === PhoneNumberModalTypeEnum.BulkAdd || modalType === PhoneNumberModalTypeEnum.BulkEdit)
   {
     return manageEditColumnDef(columnDef,apiRef);
   }
@@ -121,11 +125,12 @@ const manageEditColumnDef = (columnDef: Array<GridColDef>, apiRef: React.Mutable
 
 const fetchData = (): DynamicCallFlowPhoneNumberDropDownList =>{
   const masterData: string = localStorage.getItem(FLOW_MASTER_DATA);
+  // TODO: an just "if (masterdata) {" be used here?
   if (masterData === undefined && masterData === null) {
     return;
   }
   const masterDataObject: DynamicCallFlowPhoneNumberMasterData = JSON.parse(masterData);
-  const dropDownValue: DynamicCallFlowPhoneNumberDropDownList = {
+  return DynamicCallFlowPhoneNumberDropDownList = {
     brand: masterDataObject.brand,
     channel: masterDataObject.channel,
     languageOffer,
@@ -139,7 +144,6 @@ const fetchData = (): DynamicCallFlowPhoneNumberDropDownList =>{
     tfnRoutingGroup,
     phoneNumberType: flowType
   };
-  return dropDownValue;
 };
 
 export {

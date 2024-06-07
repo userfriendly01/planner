@@ -1,62 +1,69 @@
-import { NOT_VALID } from "../../common/Form/Abstract.Form.Handler";
-// import { hasDuplicatePhoneNumberRecord } from "../GraphQL/PhoneNumberRecordMatch.Util";
-import { SingleCallFlowRecord } from "../GraphQL/Single.PhoneNumber.Record.Util";
-import { checkForDuplicateErrorMessage } from "../../common/GraphQL/GraphQL.Util";
-import { PhoneNumberFormManager } from "./PhoneNumber.Form.Manager";
-import { PhoneNumberDataGridComponentManager } from "../DataGrid/PhoneNumber.DataGrid.Component.Manager";
 import { AbstractPhoneNumberFormHandler } from "./Abstract.PhoneNumber.Form.Handler";
-// import {hasDuplicatePhoneNumberRecord} from "../GraphQL/Match.PhoneNumber.Records.Util";
+import { PhoneNumberRecordType } from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { SingleCallFlowRecord } from "../GraphQL/Single.PhoneNumber.Record.Util";
+import { FormOnHandleResponse } from "../../common/Form/Abstract.Form.Handler";
+import { FieldConfigs } from "../../common/Form/Form.Field.Config";
+import { PhoneNumberRecordUtil } from "../GraphQL/PhoneNumber.Record.Util";
 
 const MODAL_NAME = "DynamicPhoneNumberFormAddHandler";
-const MODAL_LABEL = "Add Dynamic Phone Number";
+const MODAL_LABEL = "Add";
 
 export class AddPhoneNumberFormHandler extends AbstractPhoneNumberFormHandler {
-
-  constructor(accessToken: string, formManager: PhoneNumberFormManager, dataGridManager: PhoneNumberDataGridComponentManager) {
-    super(MODAL_NAME, MODAL_LABEL, accessToken, formManager, dataGridManager);
+  get modalName(): string {
+    return MODAL_NAME;
   }
 
-  handleOnOpen() {
-    this.openModal();
+  get modalLabel(): string {
+    return MODAL_LABEL;
   }
 
-  handleOnClone() {
-    // handle on clone
+  get displayCloneButton(): boolean {
+    return false;
   }
 
-  async handleOnSave(): Promise<void> {
-    if (this.phoneNumberValidation() === NOT_VALID) {
-      return;
+  get displayDeleteButton(): boolean {
+    return false;
+  }
+
+  async handleOnSave(accessToken: string, recordToCreate: PhoneNumberRecordType, fieldConfigs: FieldConfigs): Promise<FormOnHandleResponse<PhoneNumberRecordType>> {
+    // Make a copy of the recordToCreate as the transient keys on the record need to be deleted in order to persist to db and the transient keys are needed in the UI
+    const recordToReturn = { ...recordToCreate };
+
+    try {
+      this.deleteTransientKeys(recordToCreate);
+
+      this.validatePhoneNumberRecord(recordToCreate, fieldConfigs);
+
+      const createRecordResults = await SingleCallFlowRecord.create(accessToken, recordToCreate);
+
+      if (createRecordResults.errors?.length > 0) {
+        const message = createRecordResults.errors.map<string>(error => (error.message)).join("; ");
+        console.error(message);
+
+        return {
+          errorMessage: message
+        };
+      }
+    } catch (error) {
+      console.error(error?.message, error);
+
+      return {
+        errorMessage: error?.message || JSON.stringify(error)
+      };
     }
 
-    // if (hasDuplicatePhoneNumberRecord(this.dataGridManager.dataGrid.data, this.record, this.dataGridManager.alertBar)) {
-    //   return;
-    // }
+    // TODO: add delete duplicate records.
+    // deleteOppositeRows([originalRow], accessToken);
 
-    const singleCallFlowResults = await SingleCallFlowRecord.create(this.accessToken, this.record);
-
-    if (!singleCallFlowResults.errors) {
-      this.dataGridManager.dataGrid.state.data.push(singleCallFlowResults.record);
-      this.dataGridManager.dataGrid.state.filteredData.push(singleCallFlowResults.record);
-      this.dataGridManager.alertBar.success("New call flow has been successfully added.");
-
-      this.formManager.formFieldConfig.reset();
-    } else {
-      checkForDuplicateErrorMessage(singleCallFlowResults.errors);
-      this.dataGridManager.alertBar.error(singleCallFlowResults.errors.join("\n"));
-      return;
-    }
+    return {
+      record: recordToReturn,
+      successMessage: `Phone Number ${PhoneNumberRecordUtil.getPhoneNumber(recordToReturn)} has been successfully updated.`
+    };
   }
 
-  handleOnCancel(): void {
-    // handle cancel
+  handleOnDelete(accessToken: string, recordToDelete: PhoneNumberRecordType): Promise<FormOnHandleResponse<PhoneNumberRecordType>> {
+    // Add handler does not have delete functionality, but interface requires it.  Just a nuane of having a delete button on the edit form but not shown on the add form.
+    return undefined;
   }
 
-  handleOnClose(): void {
-    this.closeModal();
-  }
-
-  handleOnDelete(): void {
-    // handle on delete
-  }
 }

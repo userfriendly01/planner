@@ -1,41 +1,48 @@
 import { Control } from "../../../../../globals";
 import {
-  FieldConditionCheckType, FieldConfig, FieldConfigs
-} from "../../common/Form/Form.FieldConfig.State";
-import { ControlEnum } from "../../common/Form/Change.Form.FieldControl";
+  FieldConditionCheckType, FieldConfig, FieldConfigs, FieldDataTypeEnum
+} from "../../common/Form/Form.Field.Config";
+import { PhoneNumberRecordType } from "../../phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { ControlEnum } from "../../common/Form/Form.Field.Control.Manager";
 
 export const ActionFormFieldConfigs: FieldConfigs = {};
 export const RequiredActionFormFields: Array<string> = [];
 
-function createActionFormFieldConfig(key: string, label: string, control: Control, required: boolean, disableEdit: boolean, dynamicFieldConditionCheck?: FieldConditionCheckType, isUserAbleToSwitchToInputControl?: boolean, gridSize?: number): void {
+const defaultFieldConditionCheck: FieldConditionCheckType = (record: PhoneNumberRecordType): boolean => {
+  return true;
+};
+
+function createFieldConfig(fieldKey: string, label: string, control: Control, required: boolean, disableEdit: boolean, dataType = FieldDataTypeEnum.STRING, fieldConditionCheck?: FieldConditionCheckType, isUserAbleToChangeControl = false, gridSize?: number): void {
   if (required) {
-    RequiredActionFormFields.push(key);
+    RequiredActionFormFields.push(fieldKey);
   }
 
-  ActionFormFieldConfigs[key] = {
-    fieldKey: key,
+  ActionFormFieldConfigs[fieldKey] = {
+    fieldKey: fieldKey,
     label,
-    control,
-    isUserAbleToChangeControl: isUserAbleToSwitchToInputControl || false,
+    originalControl: control,
+    currentControl: control,
+    isUserAbleToChangeControl: isUserAbleToChangeControl || false,
     required,
     disableEdit,
-    fieldConditionCheck: dynamicFieldConditionCheck,
+    dataType,
+    fieldConditionCheck: fieldConditionCheck || defaultFieldConditionCheck,
     gridSize
   } as FieldConfig;
 }
 
-createActionFormFieldConfig("actionId", "Action ID", ControlEnum.Input, true, false);
-createActionFormFieldConfig("actionType", "Action Type", ControlEnum.Input, true, false);
-createActionFormFieldConfig("allowBargeIn", "Allow Barge-in", ControlEnum.Input, false, false);
-createActionFormFieldConfig("callFlowName", "Callflow Name", ControlEnum.Input, true, false);
-createActionFormFieldConfig("finishOnKey", "Finish on Key", ControlEnum.Input, false, false);
-createActionFormFieldConfig("maxDigits", "Max Digits", ControlEnum.Input, false, false);
-createActionFormFieldConfig("minDigits", "Min Digits", ControlEnum.Input, false, false);
-createActionFormFieldConfig("nextActionId", "Next Action ID", ControlEnum.Input, true, false);
-createActionFormFieldConfig("nextActionType", "Next Action Type", ControlEnum.Input, true, false);
-createActionFormFieldConfig("options", "Options", ControlEnum.Input, false, false);
-createActionFormFieldConfig("repeat", "Repeat", ControlEnum.Input, false, false);
-createActionFormFieldConfig("speech", "Speech", ControlEnum.Input, false, false);
-createActionFormFieldConfig("timeout", "Timeout", ControlEnum.Input, false, false);
+createFieldConfig("actionId", "Action ID", ControlEnum.Input, true, false);
+createFieldConfig("actionType", "Action Type", ControlEnum.AutoComplete, true, false);
+createFieldConfig("allowBargeIn", "Allow Barge-in", ControlEnum.Input, false, false);
+createFieldConfig("callFlowName", "Callflow Name", ControlEnum.Input, true, false);
+createFieldConfig("finishOnKey", "Finish on Key", ControlEnum.Input, false, false);
+createFieldConfig("maxDigits", "Max Digits", ControlEnum.Input, false, false);
+createFieldConfig("minDigits", "Min Digits", ControlEnum.Input, false, false);
+createFieldConfig("nextActionId", "Next Action ID", ControlEnum.Input, true, false);
+createFieldConfig("nextActionType", "Next Action Type", ControlEnum.AutoComplete, true, false);
+createFieldConfig("options", "Options", ControlEnum.Input, false, false);
+createFieldConfig("repeat", "Repeat", ControlEnum.Input, false, false);
+createFieldConfig("speech", "Speech", ControlEnum.Input, false, false);
+createFieldConfig("timeout", "Timeout", ControlEnum.Input, false, false);
 
 Object.freeze(ActionFormFieldConfigs);

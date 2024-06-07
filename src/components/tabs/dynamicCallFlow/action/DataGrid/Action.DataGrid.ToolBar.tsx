@@ -1,44 +1,38 @@
 import {
-  FormControl, InputLabel, MenuItem, Select, Grid,
-  IconButton,
-  Tooltip
+  FormControl, Grid, IconButton, InputLabel, MenuItem, Select, Tooltip
 } from "@mui/material";
 import React, {
-  useMemo
+  useContext, useMemo, useState
 } from "react";
+import { readWriteAccess } from "utils";
 import {
-  readWriteAccess
-} from "utils";
-import {
-  PlaylistAdd,
-  SaveAlt
+  PlaylistAdd, SaveAlt
 } from "@mui/icons-material";
+import { DynamicCallFlowActionContext } from "../DynamicCallFlow.Action.Container";
+import { Filter } from "../../common/DataGrid/Abstract.DataGrid.Filter";
 
-import {PreviewModalActionType} from "../../common/Preview/Preview.Interface";
-
-interface CustomFlowGridToolBarProps {
+interface ActionDataGridToolBarProps {
+  isFilterModalOpen: boolean;
   exportDataFile: ()=> void;
-  matchedGroups?: any[];
-  openPreviewModal: (flag: boolean, action: PreviewModalActionType) =>void;
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const ActionDataGridToolBar = ({
-  exportDataFile,
-  matchedGroups,
-  openPreviewModal
-}:CustomFlowGridToolBarProps) =>{
+  isFilterModalOpen, exportDataFile
+}: ActionDataGridToolBarProps) => {
+  const {
+    matchedGroups,
+    modalController
+  } = useContext(DynamicCallFlowActionContext);
   const enableFlow = useMemo(() => readWriteAccess(matchedGroups,"aloha-flow"), []);
+  const [localFilter, setLocalFilter] = useState<Filter>({} as Filter);
+
+  // useEffect(()=> {
+  //   setLocalFilter(dataGridFilter.getFilter());
+  // },[isFilterModalOpen]);
 
   const handleChange=(event:any):void=> {
-    const { value } = event.target;
-    switch (value) {
-      case "bulkAddFlow":
-        openPreviewModal(true, "add");
-        break;
-      default:
-        break;
-    }
+    modalController.current.openModal(event.target.value);
   };
 
   return (

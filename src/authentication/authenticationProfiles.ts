@@ -14,7 +14,7 @@ import {
   TritonUsersViewWrapper
 } from "components";
 import DynamicCallFlowPhoneNumberContainer
-  from "../components/tabs/dynamicCallFlow/phoneNumber/DynamicCallFlowPhoneNumber.Container";
+  from "../components/tabs/dynamicCallFlow/phoneNumber/DynamicCallFlow.PhoneNumber.Container";
 
 export const getAuthenticationProfileTemplates = (): AuthenticationProfileOptions => {
   const Tabs = getTabs();

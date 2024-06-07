@@ -18,7 +18,7 @@ import {
 } from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
 import { LegacyPhoneNumberTypeEnum } from "../GraphQL/Legacy.PhoneNumber.Interfaces";
 import { PhoneNumberRecordUtil } from "../GraphQL/PhoneNumber.Record.Util";
-import { FieldDataType } from "../../common/Form/Form.FieldConfig.State";
+import { FieldDataType } from "../../common/Form/Form.Field.Config";
 
 export class PhoneNumberFormFieldOptionsManager extends AbstractFormFieldOptionsManager<PhoneNumberRecordType> {
   protected getRecordKeyValue(phoneNumberRecord: PhoneNumberRecordType, key: string): string | Array<string> | undefined {

@@ -1,4 +1,3 @@
-import { AlertBarState } from "../../common/StateManager/AlertBar.State";
 import { PhoneNumberRecordType } from "./Dynamic.PhoneNumber.Interfaces";
 import { PhoneNumberRecordUtil } from "./PhoneNumber.Record.Util";
 
@@ -26,45 +25,43 @@ export const pkeyAndEmployeeIdFilter: MatchFilter = (phoneNumberRecord1: PhoneNu
 };
 
 /**
- * Check if duplicate phone number record exist.  If they do, set the alert bar with the duplicate record.
+ * Check if duplicate phone number record exist.
  * @param {Array<PhoneNumberRecordType>} searchList - List of phoneNumberRecords to search through to see if any records match the matchCandidate
  * @param {PhoneNumberRecordType} matchCandidate - phone number record candidate to match against
- * @param {AlertBarState} alertBarState - Function to set the alert bar if matching record found
  * @param {MatchFilter} matchFilter - Filter to use to match records
  * @return {boolean} - True if duplicate record found, false otherwise
  */
-export function hasDuplicatePhoneNumberRecord(searchList: Array<PhoneNumberRecordType>, matchCandidate: PhoneNumberRecordType, alertBarState: AlertBarState, matchFilter: MatchFilter = pkeyFilter): boolean {
-  return hasDuplicatePhoneNumberRecords(searchList, [matchCandidate], alertBarState, matchFilter);
+export function hasDuplicatePhoneNumberRecord(searchList: Array<PhoneNumberRecordType>, matchCandidate: PhoneNumberRecordType, matchFilter: MatchFilter = pkeyFilter): boolean {
+  return hasDuplicatePhoneNumberRecords(searchList, [matchCandidate], matchFilter);
+}
+
+export function checkForDuplicatePhoneNumberRecord(searchList: Array<PhoneNumberRecordType>, matchCandidate: PhoneNumberRecordType, matchFilter: MatchFilter = pkeyFilter): void {
+  if (hasDuplicatePhoneNumberRecord(searchList, matchCandidate, matchFilter)) {
+    throw new Error(`Duplicate phone number record found: ${generateMatchingRecordMessages(searchList, [matchCandidate], matchFilter).join("; ")}`);
+  }
 }
 
 /**
- * Check if duplicate phone number records exist.  If they do, set the alert bar with the duplicate record(s).
+ * Check if duplicate phone number records exist.
  * @param {Array<PhoneNumberRecordType>} searchList - List of phoneNumberRecords to search through to see if any records match the matchCandidate
  * @param {Array<PhoneNumberRecordType>} matchCandidateList - phone number record candidates to match against
- * @param {AlertBarState} alertBarState - Function to set the alert bar if matching record found
  * @param {MatchFilter} matchFilter - Filter to use to match records
  * @return {boolean} - True if duplicate record(s) found, false otherwise
  */
-export function hasDuplicatePhoneNumberRecords(searchList: Array<PhoneNumberRecordType>, matchCandidateList: Array<PhoneNumberRecordType>, alertBarState: AlertBarState, matchFilter: MatchFilter = pkeyFilter): boolean {
+export function hasDuplicatePhoneNumberRecords(searchList: Array<PhoneNumberRecordType>, matchCandidateList: Array<PhoneNumberRecordType>, matchFilter: MatchFilter = pkeyFilter): boolean {
   const matchingRecordMessages = generateMatchingRecordMessages(searchList, matchCandidateList, matchFilter);
 
-  if (matchingRecordMessages.length > 0) {
-    alertBarState.error(`Duplicate record(s) found: ${matchingRecordMessages.join("\n\t")}`);
-
-    return true;
-  }
-
-  return false;
+  return matchingRecordMessages.length > 0;
 }
 
 /**
- * Generate message for duplicate records that will be displayed in the alert bar
+ * Generate message for duplicate records
  * @param {Array<PhoneNumberRecordType>} searchList - List of phoneNumberRecords to search through to see if any records match the matchCandidate
  * @param {Array<PhoneNumberRecordType>} matchCandidateList - phone number record candidates to match against
  * @param {MatchFilter} matchFilter - Filter to use to match records
  * @return {Array<string>>} - Alert message for duplicate record(s), if no duplicates found will return an empty array
  */
-function generateMatchingRecordMessages(searchList: Array<PhoneNumberRecordType>, matchCandidateList: Array<PhoneNumberRecordType>, matchFilter: MatchFilter): Array<string> {
+export function generateMatchingRecordMessages(searchList: Array<PhoneNumberRecordType>, matchCandidateList: Array<PhoneNumberRecordType>, matchFilter: MatchFilter = pkeyFilter): Array<string> {
   return findMatchingPhoneNumberRecords(searchList, matchCandidateList, matchFilter).map((matchCandidateRecord: PhoneNumberRecordType) =>
     `pkey: ${PhoneNumberRecordUtil.getPkey(matchCandidateRecord)}, employeeId: ${matchCandidateRecord.employeeId}`);
 }

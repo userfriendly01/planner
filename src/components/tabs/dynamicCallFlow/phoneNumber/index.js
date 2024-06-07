@@ -1,2 +1,2 @@
-export { default as DynamicCallFlowPhoneNumberContainer } from "./DynamicCallFlowPhoneNumber.Container";
-export * from "./DynamicCallFlowPhoneNumber.Interfaces";
+export { default as DynamicCallFlowPhoneNumberContainer } from "./DynamicCallFlow.PhoneNumber.Container";
+export * from "./DynamicCallFlow.PhoneNumber.Interfaces";

@@ -43,15 +43,15 @@ export abstract class AbstractBatchRecordsQuery extends AbstractGraphQLQuery {
     }
 
     const recordsCopy = [...records];
-    const callFlowRecordBatches: Array<Array<RecordType>> = [];
+    const recordBatches: Array<Array<RecordType>> = [];
 
     while (recordsCopy.length > 0) {
       // Splice the records into batches of 25
-      callFlowRecordBatches.push(recordsCopy.splice(0, 25));
+      recordBatches.push(recordsCopy.splice(0, 25));
     }
 
     const batchGraphQLResponses = await Promise.all(
-      callFlowRecordBatches.map(
+      recordBatches.map(
         async recordBatch => {
           const variables: BatchVariables<RecordType> = {
             //Put an empty object here as a placeholder, then set the records to be updated via dynamic property access.  Batch input structure example: { input: { batchCreatePhoneNumber: Array<PhoneNumber> } }

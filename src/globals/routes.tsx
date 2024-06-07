@@ -16,7 +16,7 @@ import {
   CalabrioRolesWrapper,
   DynamicCallFlowPhoneNumberContainer
 } from "components";
-import DynamicCallFlowActionContainer from "../components/tabs/dynamicCallFlow/action/DynamicCallFlowActionContainer";
+import DynamicCallFlowActionContainer from "../components/tabs/dynamicCallFlow/action/DynamicCallFlow.Action.Container";
 
 export const getRoutes = () => [
   {

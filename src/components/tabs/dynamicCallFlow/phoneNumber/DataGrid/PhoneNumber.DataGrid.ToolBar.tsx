@@ -2,10 +2,11 @@ import {
   Chip, FormControl, InputLabel, MenuItem, Select, Grid, TextField, IconButton, Tooltip
 } from "@mui/material";
 import React, {
+  useContext,
   useEffect, useMemo, useState
 } from "react";
 import {
-  getAdvanceFilter, readWriteAccess
+  readWriteAccess
 } from "utils";
 import {
   PlaylistAdd,
@@ -14,57 +15,43 @@ import {
   AddOutlined,
   EditNoteOutlined
 } from "@mui/icons-material";
-import { PhoneNumberDataGridComponentManager } from "./PhoneNumber.DataGrid.Component.Manager";
-import {FlowAdvanceFilter} from "components";
-import {FILTER_CACHE_KEY} from "../Filter/PhoneNumber.DataGrid.Filter.Modal";
-import {Filter} from "../../common/DataGrid/Abstract.DataGrid.Filter.Modal.Manager";
+import {
+  Filter
+} from "../../common/DataGrid/Abstract.DataGrid.Filter";
+import { DynamicCallFlowPhoneNumberContext } from "../DynamicCallFlow.PhoneNumber.Container";
+import { PhoneNumberModalTypeEnum } from "../DynamicCallFlow.PhoneNumber.Container.Modal.Controller";
+import { DataGridFilterRef } from "../../common/Container.Interfaces";
+import { PhoneNumberRecordType } from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
 
-
-interface CustomFlowGridToolBarProps {
-  dataGridManager: PhoneNumberDataGridComponentManager,
+interface PhoneNumberDataGridToolBarProps {
+  isFilterModalOpen: boolean;
+  dataGridFilter: DataGridFilterRef<PhoneNumberRecordType>;
   exportDataFile: ()=> void;
-  matchedGroups?: any[];
-  isFilterModalOpen?: boolean;
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const PhoneNumberDataGridToolBar = ({
-  dataGridManager, exportDataFile, matchedGroups, isFilterModalOpen
-}: CustomFlowGridToolBarProps) => {
-  const [localFilter, setLocalFilter] = useState<Filter>();
+  isFilterModalOpen, dataGridFilter, exportDataFile
+}: PhoneNumberDataGridToolBarProps) => {
+  const {
+    matchedGroups,
+    modalController
+  } = useContext(DynamicCallFlowPhoneNumberContext);
 
   const enableFlow = useMemo(() => readWriteAccess(matchedGroups,"aloha-flow"), []);
+  const [localFilter, setLocalFilter] = useState<Filter>({} as Filter);
 
   useEffect(()=> {
-    setLocalFilter(getAdvanceFilter(FILTER_CACHE_KEY));
+    setLocalFilter(dataGridFilter.current.getFilter());
   },[isFilterModalOpen]);
 
   const handleChange=(event:any):void=> {
-    const { value } = event.target;
-    switch (value) {
-      case "addFlow":
-        dataGridManager.openAddModal(true);
-        break;
-      case "bulkDeleteFlow":
-        dataGridManager.openPreviewModal(true, "delete");
-        break;
-      case "bulkAddFlow":
-        dataGridManager.openPreviewModal(true, "add");
-        break;
-      case "bulkEditFlow":
-        dataGridManager.openPreviewModal(true, "edit");
-        break;
-      default:
-        break;
-    }
+    modalController.current.openModal(event.target.value);
   };
 
-  const handleOnDelete = (key: string) =>{
-    const updatedFilter: Filter = { ...localFilter };
-    delete updatedFilter[key as keyof Filter];
-    localStorage.setItem(FILTER_CACHE_KEY, JSON.stringify(updatedFilter));
-    dataGridManager.filterRecords();
-    setLocalFilter(updatedFilter);
+  const removeFilterElement = (key: string) => {
+    setLocalFilter(dataGridFilter.current.removeFilterElement(key));
+    dataGridFilter.current.applyFilter();
   };
 
   return (
@@ -80,11 +67,11 @@ const PhoneNumberDataGridToolBar = ({
                   key={key}
                   color="primary"
                   tabIndex={index}
-                  label={`${key.toLowerCase()} : ${localFilter}`}
-                  onDelete={(event: any)=>{ handleOnDelete(key); }}
+                  label={`${key.toLowerCase()} : ${localFilter[key]}`}
+                  onDelete={(event: any)=> { removeFilterElement(key); }}
                   sx={{ margin: 1 }}
                 />
-            ))
+              ))
           }}
           fullWidth
           id="flow-SearchBox-input"
@@ -92,7 +79,7 @@ const PhoneNumberDataGridToolBar = ({
           margin="normal"
           name="flow-SearchBox-input"
           variant="standard"
-          onClick={()=>dataGridManager.openFilterModal(true)}
+          onClick={() => modalController.current.openModal(PhoneNumberModalTypeEnum.Filter)}
         />
       </Grid>
       <Grid item key = "Export FlowUI" xs={1} >
@@ -137,19 +124,19 @@ const PhoneNumberDataGridToolBar = ({
             size="small"
             displayEmpty
           >
-            <MenuItem key="addFlow" value="addFlow">
+            <MenuItem key={PhoneNumberModalTypeEnum.AddLegacyPhoneNumber} value={PhoneNumberModalTypeEnum.AddLegacyPhoneNumber}>
               <AddOutlined />&nbsp;&nbsp; Add Legacy Call Flow
             </MenuItem>
-            <MenuItem key="addFlow" value="addFlow">
+            <MenuItem key={PhoneNumberModalTypeEnum.AddDynamicPhoneNumber} value={PhoneNumberModalTypeEnum.AddDynamicPhoneNumber}>
               <AddOutlined />&nbsp;&nbsp; Add Dynamic Call Flow
             </MenuItem>
-            <MenuItem key="bulkDeleteFlow" value="bulkDeleteFlow">
+            <MenuItem key={PhoneNumberModalTypeEnum.BulkDelete} value={PhoneNumberModalTypeEnum.BulkDelete}>
               <DeleteSweepOutlined />&nbsp;&nbsp; Multi Delete Flow
             </MenuItem>
-            <MenuItem key="bulkAddFlow" value="bulkAddFlow">
+            <MenuItem key={PhoneNumberModalTypeEnum.BulkAdd} value={PhoneNumberModalTypeEnum.BulkAdd}>
               <PlaylistAdd />&nbsp;&nbsp; Multi Add Flow
             </MenuItem>
-            <MenuItem key="bulkEditFlow" value="bulkEditFlow">
+            <MenuItem key={PhoneNumberModalTypeEnum.BulkEdit} value={PhoneNumberModalTypeEnum.BulkEdit}>
               <EditNoteOutlined />&nbsp;&nbsp; Multi Edit Flow
             </MenuItem>
           </Select>

@@ -2,15 +2,15 @@ import {
   PhoneNumberRecordType, PhoneNumber
 } from "./Dynamic.PhoneNumber.Interfaces";
 import {
-  CREATE_TIME,
-  PHONE_NUMBER, UPDATE_TIME
-
+  CREATE_TIME, PHONE_NUMBER, UPDATE_TIME
 } from "../Form/Dynamic.PhoneNumber.Form.Fields";
 import {
   CctSharedCallFlowDb, FlowContent
 } from "./Legacy.PhoneNumber.Interfaces";
-import { isLegacyContentField } from "../Form/Legacy.PhoneNumber.Form.Fields";
-import { FieldDataType } from "../../common/Form/Form.FieldConfig.State";
+import {
+  isLegacyContentField, PKEY
+} from "../Form/Legacy.PhoneNumber.Form.Fields";
+import { FieldDataType } from "../../common/Form/Form.Field.Config";
 
 export class PhoneNumberRecordUtil {
   public static getPkey(phoneNumberRecord: PhoneNumberRecordType): string {
@@ -30,7 +30,7 @@ export class PhoneNumberRecordUtil {
   }
 
   public static isDynamicPhoneNumberRecord(phoneNumberRecord: PhoneNumberRecordType): boolean {
-    return PHONE_NUMBER in phoneNumberRecord;
+    return phoneNumberRecord && PHONE_NUMBER in phoneNumberRecord;
   }
 
   public static isLegacyPhoneNumberRecord(phoneNumberRecord: PhoneNumberRecordType): boolean {
@@ -42,19 +42,21 @@ export class PhoneNumberRecordUtil {
   }
 
   public static getPropertyValue(phoneNumberRecord: PhoneNumberRecordType, key: string): FieldDataType {
-    if (!phoneNumberRecord || !key) {
-      return undefined;
+    let propertyValue: FieldDataType = undefined;
+
+    if (phoneNumberRecord && key) {
+      if (this.isLegacyContentFieldKey(phoneNumberRecord, key)) {
+        propertyValue = (phoneNumberRecord as CctSharedCallFlowDb).content ? (phoneNumberRecord as CctSharedCallFlowDb).content[key as keyof FlowContent] : undefined;
+      } else {
+        propertyValue = phoneNumberRecord[key as keyof typeof phoneNumberRecord];
+      }
     }
 
-    if (this.isLegacyContentFieldKey(phoneNumberRecord, key)) {
-      return (phoneNumberRecord as CctSharedCallFlowDb).content ? (phoneNumberRecord as CctSharedCallFlowDb).content[key as keyof FlowContent] : undefined;
-    }
-
-    return phoneNumberRecord[key as keyof typeof phoneNumberRecord];
+    return propertyValue;
   }
 
   public static isValidGreetingMessage(value: string): boolean {
-    const reg = new RegExp("^[a-zA-Z0-9,@:=<>./\\-\\'\" ñáéíóú]+$");
+    const reg = new RegExp("^[a-zA-Z0-9,@:=<>./\\-'\" ñáéíóú]+$");
     return value && !reg.test(value);
   }
 
@@ -67,7 +69,13 @@ export class PhoneNumberRecordUtil {
       // TODO: How to make ts happy trying to dynamically set a property
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      return (phoneNumberRecord as CctSharedCallFlowDb).content[key as keyof FlowContent] = value;
+      (phoneNumberRecord as CctSharedCallFlowDb).content[key] = value;
+
+      return;
+    }
+
+    if (key === PKEY && this.isDynamicPhoneNumberRecord(phoneNumberRecord)) {
+      (phoneNumberRecord as PhoneNumber)[PHONE_NUMBER] = value as string;
     }
 
     // const updatedPhoneNumberRecord = {
@@ -76,7 +84,9 @@ export class PhoneNumberRecordUtil {
     // };
     //
     // return updatedPhoneNumberRecord;
-    // return phoneNumberRecord[key as keyof typeof phoneNumberRecord] = value;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    phoneNumberRecord[key] = value;
   }
 
   private static setTimeProperty(phoneNumberRecord: PhoneNumberRecordType, key: string): void {

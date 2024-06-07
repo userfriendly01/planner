@@ -1,1 +1,1 @@
-export { default as DynamicCallFlowActionContainer } from "./DynamicCallFlowActionContainer";
+export { default as DynamicCallFlowActionContainer } from "./DynamicCallFlow.Action.Container";

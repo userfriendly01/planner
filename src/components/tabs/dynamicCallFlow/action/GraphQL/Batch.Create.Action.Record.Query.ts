@@ -19,7 +19,7 @@ interface BatchCreateDynamicActionVariables {
   }
 }
 
-class BatchCreateDynamicActionQuery extends AbstractGraphQLQuery {
+class BatchCreateActionRecordQuery extends AbstractGraphQLQuery {
   protected batchInputName(): string {
     return "batchPhoneNumberInput";
   }
@@ -81,7 +81,7 @@ class BatchCreateDynamicActionQuery extends AbstractGraphQLQuery {
   }
 }
 
-const batchCreateDynamicActionQuery = new BatchCreateDynamicActionQuery();
+const batchCreateDynamicActionQuery = new BatchCreateActionRecordQuery();
 
 /**
  * This method simply calls the BatchCreateDynamicActionQuery.runBatch.  It is here in case any common manipulation of the action
