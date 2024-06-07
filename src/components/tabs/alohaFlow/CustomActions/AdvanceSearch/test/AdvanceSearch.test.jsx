@@ -4,7 +4,7 @@ import {
   render,
   initialTestState
 } from "testUtils";
-import { AdvanceSearchModal } from "../../index";
+import { AdvanceSearchModal } from "../AdvanceSearch";
 import React from "react";
 import SelectContainer from "../../../../../core/SharedComponents/SelectContainer";
 import TextField from "@mui/material/TextField";

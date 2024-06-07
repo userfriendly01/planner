@@ -1,18 +1,17 @@
-import CompareProfiles from "../CompareProfiles";
-import MessageBanner from "../MessageBanner";
-import ProfileColumn from "../ProfileColumn";
-import ResetModal from "../ResetModal";
-import {
-  NNumberInput,
-  StyledButton
-} from "components";
-import { useAdminState } from "context";
+import { CompareProfiles } from "../CompareProfiles";
+import { MessageBanner } from "usermanagement/MessageBanner";
+import { messageConsts } from "usermanagement/messages";
+import { ProfileColumn } from "usermanagement/ProfileColumn";
+import { ResetModal } from "usermanagement/ResetModal";
+import { NNumberInput } from "components/NNumberInput";
+import { StyledButton } from "components/StyledButton";
+import { useAdminState } from "context/appContext";
 import React from "react";
 import {
   getWfmTeam,
   getWfmUserByNNumber,
   getQmUserProfiles
-} from "services";
+} from "services/calabrio";
 import {
   act,
   render,
@@ -21,17 +20,25 @@ import {
   waitFor
 } from "testUtils";
 import { Modal } from "@mui/material";
-import { messageConsts } from "../messages";
 import { env } from "globals";
 
-jest.mock("components", () => ({
-  ModalFetchingRing: jest.fn(),
-  NNumberInput: jest.fn(),
-  CalabrioGroup: jest.fn(),
+jest.mock("components/ModalFetchingRing", () => ({
+  ModalFetchingRing: jest.fn()
+}));
+
+jest.mock("components/NNumberInput", () => ({
+  NNumberInput: jest.fn()
+}));
+
+jest.mock("usermanagement/CallRecording.Interfaces", () => ({
+  CalabrioGroup: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
 }));
 
@@ -40,19 +47,22 @@ jest.mock("@mui/material", () => ({
   Paper: jest.fn()
 }));
 
-jest.mock("../MessageBanner", () => ({
-  __esModule: true,
-  default: jest.fn()
+jest.mock("usermanagement/MessageBanner", () => ({
+  MessageBanner: jest.fn()
 }));
 
-jest.mock("../ProfileColumn", () => ({
-  __esModule: true,
-  default: jest.fn()
+jest.mock("usermanagement/ProfileColumn", () => ({
+  ProfileColumn: jest.fn()
 }));
 
-jest.mock("../ResetModal", () => ({
-  __esModule: true,
-  default: jest.fn()
+jest.mock("usermanagement/ResetModal", () => ({
+  ResetModal: jest.fn()
+}));
+
+jest.mock("services/calabrio", () => ({
+  getWfmUserByNNumber: jest.fn(),
+  getQmUserProfiles: jest.fn(),
+  getWfmTeam: jest.fn()
 }));
 
 const initiateResetProcess = (nNumber, fetchedUser) => {

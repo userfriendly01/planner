@@ -1,36 +1,31 @@
 import {
   act, render, setupMockedComponents, initialFormState, validFormOptions, validFormState, fetchedUser
 } from "testUtils";
-import {
-  Accordion
-} from "@mui/material";
+import { Accordion } from "@mui/material";
 import React from "react";
-import { default as RoutingAttributes } from "../RoutingAttributes";
+import { RoutingAttributes } from "usermanagement/RoutingAttributes";
 import {
   useFormDispatch,
   useFormState
-} from "context";
-import { updateUser } from "services";
-jest.mock("@mui/material", () => {
-  return{
-    __esModule: true,
-    Accordion: jest.fn()
-  };
-});
+} from "context/appContext";
+import { updateUser } from "services/user";
 
-jest.mock("components", () => {
-  return{
-    __esModule: true,
-    SelectContainer: jest.fn()
-  };
-});
+jest.mock("@mui/material", () => ({
+  Accordion: jest.fn()
+}));
 
-jest.mock("context", () => ({
-  __esModule: true,
+jest.mock("components/SelectContainer", () => ({
+  SelectContainer: jest.fn()
+}));
+
+jest.mock("context/appContext", () => ({
   useFormState: jest.fn(),
   useAdminState: jest.fn(),
-  useFormDispatch: jest.fn(),
-  userFormActions: jest.requireActual("context").userFormActions
+  useFormDispatch: jest.fn()
+}));
+
+jest.mock("services/user", () => ({
+  updateUser: jest.fn()
 }));
 
 const workerAttributesAfterFormValid = {

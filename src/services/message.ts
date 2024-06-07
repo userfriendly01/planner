@@ -1,12 +1,8 @@
-import {
-  apiPaths,
-  Skill
-} from "globals";
+import { apiPaths } from "globals/index";
+import { Skill } from "globals/interfaces";
 import { AxiosResponse } from "axios";
-import {
-  escapeQuotes,
-  myAxios
-} from "utils";
+import { escapeQuotes } from "utils";
+import { myAxios } from "utils/myAxios";
 
 export const updateFlashMessage = (skill: Skill, message: string, nNumber: string): Promise<AxiosResponse<any>> => {
   const req = {

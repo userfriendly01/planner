@@ -1,4 +1,4 @@
-import { UMTwilioAttributeSkills } from "globals";
+import { UMTwilioAttributeSkills } from "globals/interfaces";
 
 export interface DefaultSkillSelectorProps {
   defaultSkills: UMTwilioAttributeSkills,

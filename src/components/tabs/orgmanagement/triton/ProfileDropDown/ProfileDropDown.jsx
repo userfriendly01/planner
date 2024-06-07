@@ -1,9 +1,9 @@
-import { Dropdown } from "components";
+import { Dropdown } from "components/Dropdown";
 import PropTypes from "prop-types";
 import React from "react";
-import { sortProfilesById } from "utils";
+import { sortProfilesById } from "utils/_sortUtils";
 
-const ProfileDropDown = props => {
+export const ProfileDropDown = props => {
   const {
     availableProfiles,
     profileId,
@@ -39,5 +39,3 @@ ProfileDropDown.propTypes = {
   profileId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   updateProfile: PropTypes.func.isRequired
 };
-
-export default ProfileDropDown;

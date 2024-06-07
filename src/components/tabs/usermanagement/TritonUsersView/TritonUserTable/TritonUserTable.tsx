@@ -8,7 +8,7 @@ import {
   TableContainer,
   TableDataFlex,
   TableText
-} from "./TableUserTable.Styles";
+} from "usermanagement/TableUserTable.Styles";
 import {
   Switch
 } from "@mui/material";
@@ -17,22 +17,20 @@ import {
   Edit,
   ChangeHistoryRounded
 } from "@mui/icons-material";
-import { ModalOverlay } from "components";
+import { ModalOverlay } from "components/ModalOverlay";
 import {
   useAdminState,
-  useFormDispatch,
-  userFormActions
-} from "context";
-import {
-  formModes,
-  ModalOverlayStatuses
-} from "globals";
+  useFormDispatch
+} from "context/appContext";
+import { userFormActions } from "context/userFormReducer";
+import { formModes } from "globals";
+import { ModalOverlayStatuses } from "globals/interfaces";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { formatWorkerAttributeSkillsToHTML } from "utils";
+import { formatWorkerAttributeSkillsToHTML } from "utils/skillsUtils";
 import { TritonUserTableProps } from "./TritonUserTable.Interfaces";
 
-const TritonUserTable = (props: TritonUserTableProps) => {
+export const TritonUserTable = (props: TritonUserTableProps) => {
   const {
     tableState,
     setTableState
@@ -156,5 +154,3 @@ const TritonUserTable = (props: TritonUserTableProps) => {
     </TableContainer>
   );
 };
-
-export default TritonUserTable;

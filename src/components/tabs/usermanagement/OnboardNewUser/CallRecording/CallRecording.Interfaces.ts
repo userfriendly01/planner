@@ -4,19 +4,6 @@ export const calabrioGroupLevels: any = {
   TEAM: "TEAM"
 };
 
-
-export const searchByOptions = {
-  NAME: "name",
-  N_NUMBER: "nNumber",
-  ACD_ID: "ACD ID"
-};
-
-export interface ConflictingUserResult {
-  conflictFound: boolean,
-  duplicateUser?: CalabrioUser,
-  scenario?: number,
-  searchBy?: string,
-}
 export interface CalabrioFetchedUser {
   [key: string]: any,
   acdId: string,

@@ -1,4 +1,4 @@
-import ProfileFormFields from "../ProfileFormFields";
+import { ProfileFormFields } from "../ProfileFormFields";
 import {
   FormControlLabel,
   Switch,
@@ -7,18 +7,16 @@ import {
 import {
   profileEntryFormDispatch,
   profileEntryFormState
-} from "context";
-import {
-  ProfileAccessGroupField,
-  OverflowSkillTextField,
-  ProfileActivitiesSelectField,
-  ProfileCallTagsSelectField,
-  ProfileNameTextField,
-  ProfileOperatingUnitField,
-  ProfileQueuesSelectField,
-  StyledButton,
-  PhoneNumberInput
-} from "components";
+} from "context/appContext";
+import { PhoneNumberInput } from "components/PhoneNumberInput";
+import { StyledButton } from "components/StyledButton";
+import { ProfileCallTagsSelectField } from "orgmanagement/ProfileCallTagsSelectField";
+import { ProfileAccessGroupField } from "orgmanagement/ProfileAccessGroupField";
+import { ProfileNameTextField } from "orgmanagement/ProfileNameTextField";
+import { ProfileActivitiesSelectField } from "orgmanagement/ProfileActivitiesSelectField";
+import { ProfileQueuesSelectField } from "orgmanagement/ProfileQueuesSelectField";
+import { ProfileOperatingUnitField } from "orgmanagement/ProfileOperatingUnitField";
+import { OverflowSkillTextField } from "orgmanagement/OverflowSkillTextField";
 import {
   act,
   expectMockedComponent,
@@ -29,21 +27,43 @@ import {
 } from "testUtils";
 import React from "react";
 
-jest.mock("components", () => ({
-  __esModule: true,
-  ProfileAccessGroupField: jest.fn(),
-  ProfileNameTextField: jest.fn(),
-  ProfileActivitiesSelectField: jest.fn(),
-  ProfileOperatingUnitField: jest.fn(),
-  ProfileQueuesSelectField: jest.fn(),
-  ProfileCallTagsSelectField: jest.fn(),
-  OverflowSkillTextField: jest.fn(),
-  StyledButton: jest.fn(),
+jest.mock("orgmanagement/ProfileAccessGroupField", () => ({
+  ProfileAccessGroupField: jest.fn()
+}));
+
+jest.mock("orgmanagement/ProfileNameTextField", () => ({
+  ProfileNameTextField: jest.fn()
+}));
+
+jest.mock("orgmanagement/ProfileActivitiesSelectField", () => ({
+  ProfileActivitiesSelectField: jest.fn()
+}));
+
+jest.mock("orgmanagement/ProfileOperatingUnitField", () => ({
+  ProfileOperatingUnitField: jest.fn()
+}));
+
+jest.mock("orgmanagement/ProfileQueuesSelectField", () => ({
+  ProfileQueuesSelectField: jest.fn()
+}));
+
+jest.mock("orgmanagement/ProfileCallTagsSelectField", () => ({
+  ProfileCallTagsSelectField: jest.fn()
+}));
+
+jest.mock("orgmanagement/OverflowSkillTextField", () => ({
+  OverflowSkillTextField: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
+  StyledButton: jest.fn()
+}));
+
+jest.mock("components/PhoneNumberInput", () => ({
   PhoneNumberInput: jest.fn()
 }));
 
-jest.mock("context", () => ({
-  __esModule: true,
+jest.mock("context/appContext", () => ({
   profileEntryFormState: jest.fn(),
   profileEntryFormDispatch: jest.fn()
 }));
@@ -176,13 +196,14 @@ describe("<ProfileFormFields />", () => {
         const updateForwardToNum = PhoneNumberInput.mock.calls[0][0].updateValue;
         updateForwardToNum("(123) 123-1234", "1231231234", true, "+11231231234");
         expect(mockSetForm).toHaveBeenCalledTimes(1);
-        expect(mockSetForm).toHaveBeenCalledWith({"payload": {
-          maskedValue: "(123) 123-1234",
-          unmaskedValue: "1231231234",
-          isValid: true,
-          e164Number: "+11231231234"
-        },
-        "type": "UPDATE_FORWARD_TO_NUM"
+        expect(mockSetForm).toHaveBeenCalledWith({
+          "payload": {
+            maskedValue: "(123) 123-1234",
+            unmaskedValue: "1231231234",
+            isValid: true,
+            e164Number: "+11231231234"
+          },
+          "type": "UPDATE_FORWARD_TO_NUM"
         });
       });
     });

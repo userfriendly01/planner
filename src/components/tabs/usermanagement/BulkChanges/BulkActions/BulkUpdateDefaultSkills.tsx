@@ -1,21 +1,17 @@
 import {
   UpdateWrapper,
   SkillSelectorContainer
-} from "../BulkChanges.Styles";
+} from "usermanagement/BulkChanges.Styles";
 import {
   Template,
   BulkUpdateProps
-} from "../BulkChanges.Interfaces";
-import {
-  Dropdown,
-  DefaultSkillSelector
-} from "components";
-import {
-  useAdminState
-} from "context";
+} from "usermanagement/BulkChanges.Interfaces";
+import { DefaultSkillSelector } from "usermanagement/DefaultSkillSelector";
+import { Dropdown } from "components/Dropdown";
+import { useAdminState } from "context/appContext";
 import React from "react";
 
-const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
+export const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
   const {
     template,
     selectedTemplates,
@@ -151,5 +147,3 @@ const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
     </UpdateWrapper>
   );
 };
-
-export default BulkUpdateDefaultSkills;

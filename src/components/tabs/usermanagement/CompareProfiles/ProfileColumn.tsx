@@ -4,7 +4,7 @@ import {
   TritonPerson,
   QmPerson,
   WfmPerson
-} from "./CompareProfiles.Interfaces";
+} from "usermanagement/CompareProfiles.Interfaces";
 import {
   ProfileColumnContainer,
   ProfileColumnsHeader,
@@ -16,11 +16,13 @@ import {
   Attribute,
   Key,
   ProfileValue
-} from "./CompareProfiles.Styles";
-import { Person, PersonOutline } from "@mui/icons-material";
+} from "usermanagement/CompareProfiles.Styles";
+import {
+  Person, PersonOutline
+} from "@mui/icons-material";
 import { Divider } from "@mui/material";
 
-const ProfileColumn = (props: ProfileColumnProps) => {
+export const ProfileColumn = (props: ProfileColumnProps) => {
   const {
     people,
     title
@@ -49,7 +51,7 @@ const ProfileColumn = (props: ProfileColumnProps) => {
                 selected={selectedProfile?.index === index}
                 onClick={() => setSelectedProfile({
                   index,
-                  ...p,
+                  ...p
                 })}>
                 {p.Active ? <Person style={{ font: "20px" }} /> : <PersonOutline />}
               </ProfileColumnNavOption>
@@ -62,27 +64,39 @@ const ProfileColumn = (props: ProfileColumnProps) => {
                 if (key === "Active") {
                   if (selectedProfile[key]) {
                     return (
-                      <Attribute>
+                      <Attribute key={key}>
                         <Key>Active</Key>
-                        <Divider flexItem style={{ width: "80%", margin: "5px 0px", alignSelf: "center" }} />
+                        <Divider flexItem style={{
+                          width: "80%",
+                          margin: "5px 0px",
+                          alignSelf: "center"
+                        }} />
                       </Attribute>
-                    )
+                    );
                   } else {
                     return (
-                      <Attribute>
+                      <Attribute key={key}>
                         <Key>Inactive</Key>
-                        <Divider flexItem style={{ width: "80%", margin: "5px 0px", alignSelf: "center" }} />
+                        <Divider flexItem style={{
+                          width: "80%",
+                          margin: "5px 0px",
+                          alignSelf: "center"
+                        }} />
                       </Attribute>
-                    )
+                    );
                   }
                 } else if (key !== "index") {
                   return (
-                    <Attribute>
+                    <Attribute key={key}>
                       <Key>{key}</Key>
                       <ProfileValue>{selectedProfile[key]}</ProfileValue>
-                      <Divider flexItem style={{ width: "80%", margin: "5px 0px", alignSelf: "center" }} />
+                      <Divider flexItem style={{
+                        width: "80%",
+                        margin: "5px 0px",
+                        alignSelf: "center"
+                      }} />
                     </Attribute>
-                  )
+                  );
                 }
               })
             }
@@ -90,7 +104,5 @@ const ProfileColumn = (props: ProfileColumnProps) => {
         </ProfileColumnWrapper>
       </ProfileColumnsHeaderWrapper>
     </ProfileColumnContainer>
-  )
+  );
 };
-
-export default ProfileColumn;

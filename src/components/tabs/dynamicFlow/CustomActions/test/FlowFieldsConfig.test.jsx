@@ -1,6 +1,5 @@
 import { flowFields } from "../FlowFieldsConfig";
 
-
 const validFlowData = {
   actionId: "LSC1GREETING",
   actionType: "ANNOUNCEMENT",

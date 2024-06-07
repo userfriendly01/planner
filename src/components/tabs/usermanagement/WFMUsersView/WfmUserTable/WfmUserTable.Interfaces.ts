@@ -1,4 +1,4 @@
-import { TableStateProps } from "globals";
+import { TableStateProps } from "globals/interfaces";
 
 export interface WfmUserTableProps {
   tableState: TableStateProps,

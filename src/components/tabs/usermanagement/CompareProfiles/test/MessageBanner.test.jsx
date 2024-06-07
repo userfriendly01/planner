@@ -1,18 +1,14 @@
 import React from "react";
-import MessageBanner from "../MessageBanner";
+import { MessageBanner } from "../MessageBanner";
 import { Close } from "@mui/icons-material";
-import { messageConsts } from "../messages";
+import { messageConsts } from "usermanagement/messages";
 import {
   act, render, setupMockedComponents
 } from "testUtils";
 import { env } from "globals";
 
 jest.mock("@mui/icons-material", () => ({
-  Close: jest.fn(),
-  CloseRounded: jest.fn(),
-  AccountBox: jest.fn(),
-  Edit: jest.fn(),
-  InfoOutlined: jest.fn()
+  Close: jest.fn()
 }));
 
 const mockUpdateMessages = jest.fn();

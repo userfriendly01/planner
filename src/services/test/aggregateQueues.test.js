@@ -1,6 +1,6 @@
 import { getAggregateQueuesType } from "../aggregateQueues";
 import MockAdapter from "axios-mock-adapter";
-import { myAxios } from "utils";
+import { myAxios } from "utils/myAxios";
 
 const axiosMock = new MockAdapter(myAxios);
 const getAggregateQueuesTypeEndpoint = "http://localhost:8080/contact-manager/aggregatequeuestype/aggregate";

@@ -1,18 +1,12 @@
-import BulkChanges from "../BulkChanges";
-import {
-  BulkCreateForm,
-  BulkUpdateForm
-} from "../BulkActions";
-import { views } from "../BulkChanges.Interfaces";
-import {
-  ExportTemplateButton,
-  ExportOptionsButton
-} from "../ExportButtons";
-import { ProcessingModal } from "../Processing";
-import {
-  Dropdown,
-  StyledButton
-} from "components";
+import { BulkChanges } from "../BulkChanges";
+import { BulkCreateForm } from "usermanagement/BulkCreateForm";
+import { BulkUpdateForm } from "usermanagement/BulkUpdateForm";
+import { views } from "usermanagement/BulkChanges.Interfaces";
+import { ExportTemplateButton } from "usermanagement/ExportTemplateButton";
+import { ExportOptionsButton } from "usermanagement/ExportOptionsButton";
+import { ProcessingModal } from "usermanagement/ProcessingModal";
+import { Dropdown } from "components/Dropdown";
+import { StyledButton } from "components/StyledButton";
 import React from "react";
 import {
   act,
@@ -27,28 +21,37 @@ import * as XLSX from "xlsx";
 import {
   CircularProgress, Modal
 } from "@mui/material";
-import { useAdminState } from "context";
+import { useAdminState } from "context/appContext";
 
-jest.mock("../BulkActions", () => ({
-  BulkCreateForm: jest.fn(),
+jest.mock("usermanagement/BulkCreateForm", () => ({
+  BulkCreateForm: jest.fn()
+}));
+
+jest.mock("usermanagement/BulkUpdateForm", () => ({
   BulkUpdateForm: jest.fn()
 }));
 
-jest.mock("../ExportButtons", () => ({
-  ExportTemplateButton: jest.fn(),
+jest.mock("usermanagement/ExportTemplateButton", () => ({
+  ExportTemplateButton: jest.fn()
+}));
+
+jest.mock("usermanagement/ExportOptionsButton", () => ({
   ExportOptionsButton: jest.fn()
 }));
 
-jest.mock("../Processing", () => ({
+jest.mock("usermanagement/ProcessingModal", () => ({
   ProcessingModal: jest.fn()
 }));
 
-jest.mock("components", () => ({
-  Dropdown: jest.fn(),
+jest.mock("components/Dropdown", () => ({
+  Dropdown: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn(),
   useAdminDispatch: jest.fn()
 }));

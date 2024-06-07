@@ -29,34 +29,33 @@ import {
 } from "../FlowFieldsConfig";
 import {
   CustomToast
-} from "components";
+} from "components/CustomToast";
 import {
-  BrandName,
   FLOW_MASTER_DATA,
   callFlowName,
   callFlowType,
   checkGreetingMessageRegExp,
   flowDropDownList,
   flowType,
-  initializedAlertBar,
   languageOffer,
   nextActionType,
-  readWriteAccess,
   tfnRoutingGroup,
   userDestination
-} from "utils";
-import ComponentControl from "components/core/SharedComponents/ComponentControl";
+} from "utils/alohaFlowUtils";
 import {
-  AlertBarProps, FormValidationRule
-} from "utils/interfaces";
+  BrandName,
+  initializedAlertBar,
+  readWriteAccess
+} from "utils/alohaConfigUtils";
+import { ComponentControl } from "components/ComponentControl";
 import {
   deleteFlowRule,
   deleteOppositeRows,
   updateFlowDB
 } from "../../Utils/FlowTableServiceUtil";
 import {
-  AzureSPA, DuplicateCheck
-} from "globals";
+  AzureSPA, AlertBarProps, FormValidationRule, DuplicateCheck
+} from "globals/interfaces";
 
 interface EditFlowComponentProps {
     isOpen: boolean;
@@ -145,7 +144,7 @@ export const EditFlow = ({
           }
         };
         isValidForm = false;
-        setFlowRule(flowRule => ({
+        setFlowRule((flowRule: any) => ({
           ...flowRule,
           ...newFlowRule
         }));

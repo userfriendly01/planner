@@ -1,7 +1,7 @@
 import {
   FlexColumn,
   FlexRow
-} from "globals";
+} from "globals/interfaces";
 import { Paper } from "@mui/material";
 import styled from "styled-components";
 
@@ -37,13 +37,4 @@ export const ModalContainer = styled(FlexColumn)`
   position: absolute;
   top: 50%;
   transform: translate(-50%, -50%);
-`;
-
-export const PaperContainer = styled(Paper)`
-  display: flex;
-  flex: 1 1 auto;
-  flex-direction: column;
-  min-width: 400px;
-  padding: 2%;
-  position: relative;
 `;

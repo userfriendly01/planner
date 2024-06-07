@@ -1,7 +1,7 @@
 import {
   ConfirmationModalOptsProps,
   SaveResultProps
-} from "../CallFlowConfirmationModal/CallFlowConfirmationModal.Interfaces";
+} from "callflowmanagement/CallFlowConfirmationModal/CallFlowConfirmationModal.Interfaces";
 
 export interface TfnActivationProps {
   confirmationModalOpts: ConfirmationModalOptsProps,

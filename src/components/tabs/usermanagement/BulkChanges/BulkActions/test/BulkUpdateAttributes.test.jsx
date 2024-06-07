@@ -1,13 +1,9 @@
-import BulkUpdateAttributes from "../BulkUpdateAttributes";
-import {
-  getUpdateTemplates,
-  availableAttributes
-} from "../../BulkTemplates";
-import {
-  CustomInput,
-  Dropdown,
-  PhoneNumberInput
-} from "components";
+import { BulkUpdateAttributes } from "../BulkUpdateAttributes";
+import { getUpdateTemplates } from "usermanagement/templates";
+import { availableAttributes } from "usermanagement/consts";
+import { CustomInput } from "components/CustomInput";
+import { Dropdown } from "components/Dropdown";
+import { PhoneNumberInput } from "components/PhoneNumberInput";
 import React from "react";
 import {
   act,
@@ -15,14 +11,23 @@ import {
   setupMockedComponents
 } from "testUtils";
 
-jest.mock("components", () => ({
-  CustomInput: jest.fn(),
-  Dropdown: jest.fn(),
-  PhoneNumberInput: jest.fn(),
+jest.mock("components/CustomInput", () => ({
+  CustomInput: jest.fn()
+}));
+
+jest.mock("components/Dropdown", () => ({
+  Dropdown: jest.fn()
+}));
+
+jest.mock("components/PhoneNumberInput", () => ({
+  PhoneNumberInput: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
 }));
 

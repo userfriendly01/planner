@@ -1,25 +1,22 @@
-import DirectoryEntryForm from "../DirectoryEntryForm";
+import { DirectoryEntryForm } from "../DirectoryEntryForm";
 import {
   TextField,
   Tooltip
 } from "@mui/material";
+import { ModalOverlay } from "components/ModalOverlay";
+import { PhoneNumberInput } from "components/PhoneNumberInput";
+import { PaperContainer } from "components/PaperContainer";
+import { StyledButton } from "components/StyledButton";
+import { useAdminState } from "context/appContext";
 import {
-  ModalOverlay,
-  PhoneNumberInput,
-  PaperContainer,
-  StyledButton
-} from "components";
-import { useAdminState } from "context";
-import {
-  formModes,
-  ModalOverlayStatuses,
-  timeouts
-} from "globals";
+  formModes, timeouts
+} from "globals/index";
+import { ModalOverlayStatuses } from "globals/interfaces";
 import React from "react";
 import {
   insertDirectory,
   updateDirectory
-} from "services";
+} from "services/directory";
 import {
   act,
   initialTestState,
@@ -35,21 +32,33 @@ import {
 jest.useFakeTimers();
 
 jest.mock("@mui/material", () => ({
-  __esModule: true,
   TextField: jest.fn(),
   Tooltip: jest.fn()
 }));
 
-jest.mock("components", () => ({
-  __esModule: true,
-  PaperContainer: jest.fn(),
-  PhoneNumberInput: jest.fn(),
-  ModalOverlay: jest.fn(),
+jest.mock("components/PaperContainer", () => ({
+  PaperContainer: jest.fn()
+}));
+
+jest.mock("components/PhoneNumberInput", () => ({
+  PhoneNumberInput: jest.fn()
+}));
+
+jest.mock("components/ModalOverlay", () => ({
+  ModalOverlay: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
+}));
+
+jest.mock("services/directory", () => ({
+  insertDirectory: jest.fn(),
+  updateDirectory: jest.fn()
 }));
 
 const first_nme = "Some";

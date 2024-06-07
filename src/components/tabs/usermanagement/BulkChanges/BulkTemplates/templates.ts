@@ -1,40 +1,45 @@
 import {
-  createUser,
   createCalabrioTeam,
   createCalabrioUser,
   createCalabrioWFMPerson,
   getCalabrioUser,
-  updateCalabrioUser,
-  updateUser,
-  addManager
-} from "services";
+  updateCalabrioUser
+} from "services/calabrio";
+import {
+  createUser,
+  updateUser
+} from "services/user";
+import { addManager } from "services/manager";
 import {
   Template,
   Templates
-} from "../BulkChanges.Interfaces";
+} from "usermanagement/BulkChanges.Interfaces";
 import {
   cleanupField,
-  checkConflictingCalabrioUsers,
-  checkIfConflictingWFMPeople,
   formatErrorMessage,
+  toProperCase
+} from "usermanagement/formatUtils";
+import {
   handleWfmExternalLogon,
-  toProperCase,
   updateCalabrioUserState,
   updateTritonUserState,
   updateWFMPersonState,
   updateManagerUserState
-} from "../BulkUtils";
+} from "usermanagement/processingUtils";
 import {
-  getTargetProfile,
-  logger
-} from "utils";
+  checkConflictingCalabrioUsers,
+  checkIfConflictingWFMPeople
+} from "usermanagement/validationUtils";
+import { getTargetProfile } from "utils/usermanagementUtils";
+import { logger } from "utils/logger";
 import {
   FIELDS,
   isDidUser
-} from "../BulkTemplates";
+} from "usermanagement/fields";
 import {
-  AppState, UMManager, env
-} from "globals";
+  AppState, UMManager
+} from "globals/interfaces";
+import { env } from "globals/index";
 
 const rejectPromise = (error: string, rowNumber: number) => {
   return Promise.reject(JSON.stringify({

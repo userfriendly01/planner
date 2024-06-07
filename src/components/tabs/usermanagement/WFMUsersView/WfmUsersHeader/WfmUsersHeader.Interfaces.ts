@@ -1,5 +1,6 @@
-import { TableStateProps } from "globals";
-import { UMUser } from "globals";
+import {
+  TableStateProps, UMUser
+} from "globals/interfaces";
 
 export interface WfmUsersHeaderProps {
   tableState: TableStateProps

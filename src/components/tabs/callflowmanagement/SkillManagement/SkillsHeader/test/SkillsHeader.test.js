@@ -1,12 +1,10 @@
-import SkillsHeader from "../SkillsHeader";
-import { SearchBox } from "components";
+import { SkillsHeader } from "../SkillsHeader";
+import { SearchBox } from "components/SearchBox";
 import React from "react";
-import {
-  Dropdown,
-  ExportButton,
-  SkillEntryButton
-} from "components";
-import { useAdminState } from "context";
+import { Dropdown } from "components/Dropdown";
+import { ExportButton } from "callflowmanagement/ExportButton";
+import { SkillEntryButton } from "callflowmanagement/SkillEntryButton";
+import { useAdminState } from "context/appContext";
 import {
   act,
   render,
@@ -17,15 +15,27 @@ import {
   profileList
 } from "testUtils";
 
-jest.mock("components", () => ({
-  SearchBox: jest.fn(),
-  Dropdown: jest.fn(),
-  ExportButton: jest.fn(),
-  StyledButton: jest.fn(),
+jest.mock("components/Dropdown", () => ({
+  Dropdown: jest.fn()
+}));
+
+jest.mock("components/SearchBox", () => ({
+  SearchBox: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
+  StyledButton: jest.fn()
+}));
+
+jest.mock("callflowmanagement/ExportButton", () => ({
+  ExportButton: jest.fn()
+}));
+
+jest.mock("callflowmanagement/SkillEntryButton", () => ({
   SkillEntryButton: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
 }));
 

@@ -12,7 +12,7 @@ import {
   retrieveFlowData as v1RetrieveFlowData,
   updateDynamicFlowDB as v2UpdateFlowDB,
   updateFlowDB as v1UpdateFlowDB
-} from "services";
+} from "services/flowTableService";
 
 import {
   addFlowRule, batchDeleteActionItems,
@@ -28,6 +28,22 @@ import {
 const token = "accessToken";
 const curTime = "1971-05-25T04:00:00.000Z";
 const curTimeUnixEpoch = 43992000;
+
+jest.mock("services/flowTableService", ()=>({
+  addDynamicFlowRule: jest.fn(),
+  addFlowRule: jest.fn(),
+  batchDeleteItems: jest.fn(),
+  batchDynamicDeleteItems: jest.fn(),
+  batchDynamicFlowUpdate: jest.fn(),
+  batchFlowCreate: jest.fn(),
+  batchFlowUpdate: jest.fn(),
+  deleteDynamicFlowRule: jest.fn(),
+  deleteFlowRule: jest.fn(),
+  retrieveDynamicFlowData: jest.fn(),
+  retrieveFlowData: jest.fn(),
+  updateDynamicFlowDB: jest.fn(),
+  updateFlowDB: jest.fn()
+}));
 
 describe("FlowTableServiceUtil", () => {
   beforeAll(() => {

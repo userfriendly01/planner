@@ -4,6 +4,7 @@ import React from "react";
 import {
   Chip, Switch
 } from "@mui/material";
+
 export const TableGridColumnDef: GridColDef[] = [
   {
     headerName: "Dialed",
@@ -390,5 +391,3 @@ export const TableGridColumnDef: GridColDef[] = [
     align: "left"
   }
 ];
-
-export default TableGridColumnDef;

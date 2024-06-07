@@ -1,6 +1,6 @@
 import { CustomInput } from "../CustomInput";
 import { TextField } from "@mui/material";
-import { ModalFetchingRing } from "components";
+import { ModalFetchingRing } from "components/ModalFetchingRing";
 import React from "react";
 import {
   getMockedComponentProps,
@@ -9,12 +9,10 @@ import {
 } from "testUtils";
 
 jest.mock("@mui/material", () => ({
-  __esModule: true,
   TextField: jest.fn()
 }));
 
-jest.mock("components", () => ({
-  __esModule: true,
+jest.mock("components/ModalFetchingRing", () => ({
   ModalFetchingRing: jest.fn()
 }));
 
@@ -23,7 +21,6 @@ const mockValidator = jest.fn();
 const updateValueFunc = jest.fn();
 
 describe("CustomInput", () => {
-
   beforeEach(() => {
     setupMockedComponents({
       TextField,

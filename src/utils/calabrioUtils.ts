@@ -1,13 +1,13 @@
 import {
   calabrioGroupLevels,
   CalabrioGroup
-} from "../components/tabs/usermanagement/OnboardNewUser/CallRecording/CallRecording.Interfaces";
+} from "usermanagement/CallRecording.Interfaces";
 import {
   getCalabrioUser,
   updateCalabrioUser,
   getWfmOptions as getWfmOptionsServiceCall,
   getWfmOrg as getWfmOrgServiceCall
-} from "services";
+} from "services/calabrio";
 import util from "util";
 import zlib from "zlib";
 import {
@@ -17,15 +17,41 @@ import {
   WfmTeam,
   WfmUser,
   discrepancyType
-} from "globals";
-import { logger } from "./logger";
+} from "globals/interfaces";
+import { logger } from "utils/logger";
 
 const inflate = util.promisify(zlib.inflate);
 
-export const calabrioTenants = {
-  PROD: "tenant0215",
-  NP: "LibertyMutual"
-};
+export const calabrioTimeZones = [
+  {
+    label: "America/New_York (EST/EDT)",
+    value: "America/New_York"
+  },
+  {
+    label: "America/Los_Angeles (PST/PDT)",
+    value: "America/Los_Angeles"
+  },
+  {
+    label: "America/Denver (MST/MDT)",
+    value: "America/Denver"
+  },
+  {
+    label: "America/Chicago (CST/CDT)",
+    value: "America/Chicago"
+  },
+  {
+    label: "America/Phoenix (MST)",
+    value: "America/Phoenix"
+  },
+  {
+    label: "Pacific/Honolulu (HST)",
+    value: "Pacific/Honolulu"
+  },
+  {
+    label: "America/Anchorage (AKST/AKDT)",
+    value: "America/Anchorage"
+  }
+];
 
 export const calabrioAllowedRoles = [
   "Supervisor-Sync Only",
@@ -72,6 +98,16 @@ export const daysOfTheWeekOptions = [
     label: "Saturday"
   }
 ];
+
+const toLowerCaseString = (variable: any) => {
+  return typeof variable === "string" ? variable.toLowerCase() : variable;
+};
+
+const decompressResponse = async (body: any) => {
+  const buff = Buffer.from(body, "base64");
+  const data = await inflate(buff);
+  return JSON.parse(data.toString("utf-8"));
+};
 
 export const addWorkerToOrg = (user: WfmUser, state: AppState) => {
   const wfmOrg = state.calabrioContext.wfmOrg;
@@ -120,6 +156,7 @@ export const addWorkerToOrg = (user: WfmUser, state: AppState) => {
     });
   }
 };
+
 export const getWfmBusinessUnits = (state: AppState, includeLostSouls?: boolean) => {
   const wfmOrg = state.calabrioContext.wfmOrg;
   if (includeLostSouls) {
@@ -213,40 +250,6 @@ export const getWfmOptions = (state: AppState, businessUnitId?: string) => {
   }
 };
 
-//Calabrio doesnt offer an API for this, only PST, MNT, CST, and EST were requested so we hardcoded them here as they are unlikely to change
-//They are also the same through environments
-//Update April 2023 : added in the MST, HST and  AKST/AKDT timeszones
-export const calabrioTimeZones = [
-  {
-    label: "America/New_York (EST/EDT)",
-    value: "America/New_York"
-  },
-  {
-    label: "America/Los_Angeles (PST/PDT)",
-    value: "America/Los_Angeles"
-  },
-  {
-    label: "America/Denver (MST/MDT)",
-    value: "America/Denver"
-  },
-  {
-    label: "America/Chicago (CST/CDT)",
-    value: "America/Chicago"
-  },
-  {
-    label: "America/Phoenix (MST)",
-    value: "America/Phoenix"
-  },
-  {
-    label: "Pacific/Honolulu (HST)",
-    value: "Pacific/Honolulu"
-  },
-  {
-    label: "America/Anchorage (AKST/AKDT)",
-    value: "America/Anchorage"
-  }
-];
-
 export const formatCalabrioTeams = (groupsArray: CalabrioGroup[]): CalabrioGroup[] => {
   const teams = groupsArray.filter((group: CalabrioGroup) => group.groupLevel === calabrioGroupLevels.TEAM);
   return teams.map(team => {
@@ -272,10 +275,6 @@ export const formatCalabrioRoles = (rolesArray: any[]): any[] => {
   return rolesArray.map((role: any) => {
     return role;
   });
-};
-
-const toLowerCaseString = (variable: any) => {
-  return typeof variable === "string" ? variable.toLowerCase() : variable;
 };
 
 /*
@@ -398,12 +397,6 @@ export const findMatchingQmProfiles = (user: any, users: CalabrioQmUser[], setFo
     logger.error("Error thrown trying to find QM profiles", { error });
     return [];
   }
-};
-
-export const decompressResponse = async (body: any) => {
-  const buff = Buffer.from(body, "base64");
-  const data = await inflate(buff);
-  return JSON.parse(data.toString("utf-8"));
 };
 
 export const getCalabrioWfmOptions = async (dispatch: any) => {

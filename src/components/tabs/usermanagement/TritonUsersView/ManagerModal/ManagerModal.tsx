@@ -5,53 +5,49 @@ import {
   ModalContainer,
   Wrapper,
   Header4
-} from "./ManagerModal.Styles";
+} from "usermanagement/ManagerModal.Styles";
 import {
   defaultNNumber,
   DropdownOption,
   ManagerModalProps
-} from "./ManagerModal.Interfaces";
-import {
-  Dropdown,
-  NNumberInput,
-  ModalOverlay,
-  StyledButton,
-  CalabrioTeamModal,
-  PaperContainer
-} from "components";
+} from "usermanagement/ManagerModal.Interfaces";
+import { Dropdown } from "components/Dropdown";
+import { NNumberInput } from "components/NNumberInput";
+import { ModalOverlay } from "components/ModalOverlay";
+import { StyledButton } from "components/StyledButton";
+import { CalabrioTeamModal } from "orgmanagement/CalabrioTeamModal";
+import { PaperContainer } from "components/PaperContainer";
 import {
   useAdminDispatch,
   useAdminState
-} from "context";
+} from "context/appContext";
 import {
-  FlexColumn,
   UMManager,
   ModalOverlayStatuses,
   UMUser
-} from "globals";
+} from "globals/interfaces";
+import { FlexColumn } from "globals/interfaces";
 import React, {
   useState, useEffect
 } from "react";
+import { updateUser } from "services/user";
 import {
-  addManager,
-  editManager,
-  FetchUserResponse,
-  fetchUser,
-  updateUser
-} from "services";
+  addManager, editManager
+} from "services/manager";
 import {
-  logger,
-  sortProfilesByName
-} from "utils";
+  FetchUserResponse, fetchUser
+} from "services/fetchUser";
+import { sortProfilesByName } from "utils/_sortUtils";
+import { logger } from "utils/logger";
 import {
   IconButton,
   Modal
 } from "@mui/material";
 import { CloseRounded } from "@mui/icons-material";
-import { StyledExportButton } from "components/tabs/callflowmanagement/SkillManagement/Skills.Styles";
+import { StyledExportButton } from "callflowmanagement/SkillManagement/Skills.Styles";
 import { ExcelExport } from "@progress/kendo-react-excel-export";
 
-const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any => {
+export const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any => {
   const {
     handleClose,
     selectedManager
@@ -455,5 +451,3 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
     </ModalContainer>
   );
 });
-
-export default ManagerModal;

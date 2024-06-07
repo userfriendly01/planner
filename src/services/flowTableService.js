@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
-import { env } from "globals";
-import { logger } from "utils";
+import { env } from "globals/index";
+import { logger } from "utils/logger";
 
 /**
  * This is the function use to query the appsync API to get the data from DB

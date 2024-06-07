@@ -4,19 +4,15 @@ import {
   Header,
   ModalContainer,
   ResultsContainer
-} from "./ResetSkills.Styles";
+} from "usermanagement/ResetSkills.Styles";
 import { ResultsModalProps } from "./ResetSkills.Interfaces";
-import {
-  PaperContainer,
-  StyledButton
-} from "components";
-import {
-  resetResponses,
-  theme
-} from "globals";
+import { PaperContainer } from "components/PaperContainer";
+import { StyledButton } from "components/StyledButton";
+import { resetResponses } from "globals";
+import { theme } from "globals/theme";
 import React from "react";
 
-const ResetSkillsResultsModal = (props: ResultsModalProps) => {
+export const ResetSkillsResultsModal = (props: ResultsModalProps) => {
   const {
     error,
     handleClose,
@@ -83,5 +79,3 @@ const ResetSkillsResultsModal = (props: ResultsModalProps) => {
     </ModalContainer>
   );
 };
-
-export default ResetSkillsResultsModal;

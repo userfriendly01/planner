@@ -6,22 +6,40 @@ import {
 } from "../authenticationProfiles";
 import {
   descriptions,
-  Permissions,
-  runTritonAdminStartup,
-  runAlohaRoutingStartup,
-  runAlohaFlowStartup
-} from "authentication";
-import {
-  TritonUsersViewWrapper,
-  AlohaRoutingContainer,
-  AlohaFlowContainer
-} from "components";
+  Permissions
+} from "authentication/authenticationInterfaces";
+import { runTritonAdminStartup } from "authentication/startups/cct-triton-admin-startup";
+import { runAlohaRoutingStartup } from "authentication/startups/cct-aloha-routing-startup";
+import { runAlohaFlowStartup } from "authentication/startups/cct-aloha-flow-startup";
+import AlohaFlowContainer from "alohaFlow/AlohaFlowContainer";
+import AlohaRoutingContainer from "alohaRouting/AlohaRoutingContainer";
+import { TritonUsersViewWrapper } from "usermanagement/TritonUsersViewWrapper";
 import { setupMockedComponents } from "testUtils";
 
-jest.mock("components", () => ({
-  TritonUsersViewWrapper: jest.fn(),
-  AlohaRoutingContainer: jest.fn(),
-  AlohaFlowContainer: jest.fn()
+jest.mock("authentication/startups/cct-triton-admin-startup", () => ({
+  runTritonAdminStartup: jest.fn()
+}));
+
+jest.mock("authentication/startups/cct-aloha-routing-startup", () => ({
+  runAlohaRoutingStartup: jest.fn()
+}));
+
+jest.mock("authentication/startups/cct-aloha-flow-startup", () => ({
+  runAlohaFlowStartup: jest.fn()
+}));
+
+jest.mock("usermanagement/TritonUsersViewWrapper", () => ({
+  TritonUsersViewWrapper: jest.fn()
+}));
+
+jest.mock("alohaRouting/AlohaRoutingContainer", () => ({
+  __esModule: true,
+  default: jest.fn()
+}));
+
+jest.mock("alohaFlow/AlohaFlowContainer", () => ({
+  __esModule: true,
+  default: jest.fn()
 }));
 
 describe("authenticationProfiles", () => {

@@ -1,9 +1,6 @@
-import {
-  apiPaths,
-  OperatingUnit
-} from "globals";
-import { myAxios } from "utils";
-
+import { apiPaths } from "globals";
+import { OperatingUnit } from "globals/interfaces";
+import { myAxios } from "utils/myAxios";
 
 export const getOperatingUnits = (): Promise<OperatingUnit[]> =>
   myAxios.get(apiPaths.GET_OU).then(response => {

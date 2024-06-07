@@ -1,5 +1,5 @@
 import { TextField } from "@mui/material";
-import { ModalFetchingRing } from "components";
+import { ModalFetchingRing } from "components/ModalFetchingRing";
 import React, {
   useState
 } from "react";
@@ -12,7 +12,7 @@ const StyledTextField = styled(TextField)<{styles?: any}>`
   }
 `;
 
-export interface CustomInputProps {
+interface CustomInputProps {
   disabled?: boolean,
   error?: boolean,
   label: string,

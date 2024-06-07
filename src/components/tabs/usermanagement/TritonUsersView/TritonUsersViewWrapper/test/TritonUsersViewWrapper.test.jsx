@@ -1,10 +1,8 @@
-import TritonUserManagementWrapper from "../TritonUsersViewWrapper";
-import {
-  TritonUsersHeader,
-  Pagination,
-  TritonUserTable
-} from "components";
-import { useAdminState } from "context";
+import { TritonUsersViewWrapper } from "../TritonUsersViewWrapper";
+import { Pagination } from "components/Pagination";
+import { TritonUsersHeader } from "usermanagement/TritonUsersHeader";
+import { TritonUserTable } from "usermanagement/TritonUserTable";
+import { useAdminState } from "context/appContext";
 import React from "react";
 import {
   act,
@@ -16,15 +14,21 @@ import {
 } from "testUtils";
 import {
   sortWorkersByFullName
-} from "utils";
+} from "utils/_sortUtils";
 
-jest.mock("components", () => ({
-  TritonUsersHeader: jest.fn(),
-  Pagination: jest.fn(),
+jest.mock("components/Pagination", () => ({
+  Pagination: jest.fn()
+}));
+
+jest.mock("usermanagement/TritonUsersHeader", () => ({
+  TritonUsersHeader: jest.fn()
+}));
+
+jest.mock("usermanagement/TritonUserTable", () => ({
   TritonUserTable: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
 }));
 
@@ -47,7 +51,7 @@ const workersCopy = initialTestState.workerContext.workers.slice();
 
 describe("TritonUsersViewWrapper", () => {
   const doRender = () => {
-    return render(<TritonUserManagementWrapper/>);
+    return render(<TritonUsersViewWrapper/>);
   };
 
   beforeEach(() => {

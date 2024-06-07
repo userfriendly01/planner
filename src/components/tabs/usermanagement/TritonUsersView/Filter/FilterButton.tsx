@@ -1,12 +1,10 @@
-import {
-  FilterModal,
-  StyledButton
-} from "components";
+import { FilterModal } from "usermanagement/FilterModal";
+import { StyledButton } from "components/StyledButton";
 import React, { useState } from "react";
-import { useAdminDispatch } from "context";
+import { useAdminDispatch } from "context/appContext";
 import { Modal } from "@mui/material";
 
-const FilterButton = () => {
+export const FilterButton = () => {
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const dispatch = useAdminDispatch();
 
@@ -36,5 +34,3 @@ const FilterButton = () => {
     </div>
   );
 };
-
-export default FilterButton;

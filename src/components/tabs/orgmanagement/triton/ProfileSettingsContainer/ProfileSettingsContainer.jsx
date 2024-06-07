@@ -1,12 +1,10 @@
-import { checkIfPO } from "authentication";
-import {
-  ProfileSettingsTable,
-  ProfileEntryForm
-} from "components";
+import { checkIfPO } from "authentication/authUtils";
+import { ProfileSettingsTable } from "orgmanagement/ProfileSettingsTable";
+import { ProfileEntryForm } from "orgmanagement/ProfileEntryForm";
 import {
   useAdminState,
   ProfileEntryFormStateProvider
-} from "context";
+} from "context/appContext";
 import { Modal } from "@mui/material";
 import React, { useState } from "react";
 import {
@@ -17,7 +15,7 @@ import {
   CreateProfileButton
 } from "./ProfileSettingsContainer.Styles";
 
-const ProfileSettingsContainer = () => {
+export const ProfileSettingsContainer = () => {
   const initialProfileModalState = {
     open: false
   };
@@ -64,5 +62,3 @@ const ProfileSettingsContainer = () => {
     </ProfileEntryFormStateProvider>
   );
 };
-
-export default ProfileSettingsContainer;

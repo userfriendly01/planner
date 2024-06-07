@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { GraphData } from "globals";
+import { GraphData } from "globals/interfaces";
 
 const userAttributes = `
   pk
@@ -110,14 +110,6 @@ export const CREATE_USER = gql`
 export const UPDATE_USER = gql`
   mutation updateUMUser($identifier: String!, $input: UMUserUpdateInput!, $options: UMUserUpdateOptionsInput) {
     user: updateUMUser(identifier: $identifier, input: $input, options: $options) {
-      ${userAttributes}
-    }
-  }
-`;
-
-export const DELETE_USER = gql`
-  mutation deleteUMUser($identifier: String!, $options: UMUserDeleteOptionsInput) {
-    user: deleteUMUser(identifier: $identifier, options: $options) {
       ${userAttributes}
     }
   }

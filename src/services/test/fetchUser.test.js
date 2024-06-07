@@ -1,10 +1,9 @@
 import { fetchUser } from "../fetchUser";
 import MockAdapter from "axios-mock-adapter";
-import { myAxios } from "utils";
+import { myAxios } from "utils/myAxios";
 
 const axiosMock = new MockAdapter(myAxios);
 
-jest.mock("components");
 jest.mock("globals", () => ({
   apiPaths: {
     EMPLOYEE_LOOKUP: jest.fn().mockReturnValue("/service/employeelookup/n01234567")

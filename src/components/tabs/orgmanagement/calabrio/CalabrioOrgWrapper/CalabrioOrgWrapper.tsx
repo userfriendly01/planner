@@ -5,11 +5,11 @@ import {
   TeamColumn,
   Group,
   Team
-} from "./CalabrioOrgWrapper.Styles"
-import { useAdminState } from "context";
-import { sortCalabrioObject } from "utils";
+} from "./CalabrioOrgWrapper.Styles";
+import { useAdminState } from "context/appContext";
+import { sortCalabrioObject } from "utils/_sortUtils";
 import { Divider } from "@mui/material";
-import { CalabrioGroup } from "components";
+import { CalabrioGroup } from "usermanagement/CallRecording.Interfaces";
 
 const CalabrioOrgWrapper = () => {
   const state = useAdminState();
@@ -22,7 +22,7 @@ const CalabrioOrgWrapper = () => {
     <OrgWrapper>
       <GroupColumn>
         {groups.sort(sortCalabrioObject).map((g: any) => ((
-          <div>
+          <div key={g.groupId}>
             <Group
               selected={g.groupId === selectedGroup.groupId}
               onClick={() => setSelectedGroup(g)}>
@@ -36,14 +36,14 @@ const CalabrioOrgWrapper = () => {
       </GroupColumn>
       <TeamColumn>
         {teams.filter((t: CalabrioGroup) => t.parentGroupId === selectedGroup.groupId).sort(sortCalabrioObject).map((t: any) => ((
-          <Team>
+          <Team key={t.groupId}>
             {t.name}
           </Team>
         )))
         }
       </TeamColumn>
     </OrgWrapper>
-  )
+  );
 };
 
 export default CalabrioOrgWrapper;

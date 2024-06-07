@@ -1,9 +1,7 @@
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
-import {
-  Logo,
-  UserCard
-} from "components";
+import UserCard from "../UserCard/UserCard";
+import Logo from "../Logo/Logo";
 import React from "react";
 import styled from "styled-components";
 

@@ -2,7 +2,7 @@ import React from "react";
 import {
   useAdminState,
   useAdminDispatch
-} from "context";
+} from "context/appContext";
 import { TextField } from "@mui/material";
 import {
   UserFormButton
@@ -14,21 +14,22 @@ import {
   addSkillGroup,
   deleteSkillGroup,
   updateSkillGroup
-} from "services";
+} from "services/skillgroup";
+import { timeouts } from "globals/index";
 import {
-  Skill, timeouts, ModalOverlayStatuses
-} from "globals";
+  Skill, ModalOverlayStatuses
+} from "globals/interfaces";
 import {
   ConfirmationSkillGroupsDiv,
   ConfirmationSkillList
 } from "./SkillGroup.Styles";
-import { Dropdown } from "components";
+import { Dropdown } from "components/Dropdown";
 import _ from "lodash";
-import { getSkills } from "authentication";
-import { logger } from "utils";
+import { getSkills } from "authentication/startups/cct-triton-admin-startup";
+import { logger } from "utils/logger";
 
 
-const SkillGroupInputContainer = (props: any) => {
+export const SkillGroupInputContainer = (props: any) => {
   const [ skillGroupName, setSkillGroupName ] = React.useState("");
   const [ errorText, setErrorText ] = React.useState("");
   const [ skillGroupToEditDelete, setSkillGroupToEditDelete ] = React.useState(null);
@@ -101,8 +102,8 @@ const SkillGroupInputContainer = (props: any) => {
       skillGroupNameExists = skillGroups.find((sg: any) => sg.skillGroupNme.toLowerCase() === skillGroupName.trim().toLowerCase()) ? true : false;
     } else if (action === ActionTypes.EDIT) {
       // it can have the same name as itself, but no other skillgroups
-      const allOtherSkillgroups = skillGroups.filter(sg => sg.skillGroupId !== skillGroupToEditDelete.value);
-      skillGroupNameExists = allOtherSkillgroups.find(sg => sg.skillGroupNme.toLowerCase() === skillGroupName.trim().toLowerCase()) ? true : false;
+      const allOtherSkillgroups = skillGroups.filter((sg: any) => sg.skillGroupId !== skillGroupToEditDelete.value);
+      skillGroupNameExists = allOtherSkillgroups.find((sg: any) => sg.skillGroupNme.toLowerCase() === skillGroupName.trim().toLowerCase()) ? true : false;
     }
     return skillGroupNameExists;
   };
@@ -337,7 +338,7 @@ const SkillGroupInputContainer = (props: any) => {
             setSkillGroupName(val.label);
             setTableState({
               ...tableState,
-              selected: skills.filter(sk => sk.ctmSkillGroups.find(skg => skg.skillGroupId === val.value))
+              selected: skills.filter((sk: any) => sk.ctmSkillGroups.find((skg: any) => skg.skillGroupId === val.value))
             });
           }}
           styles={{
@@ -374,7 +375,3 @@ const SkillGroupInputContainer = (props: any) => {
     </>
   );
 };
-
-
-
-export default SkillGroupInputContainer;

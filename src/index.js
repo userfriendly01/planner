@@ -1,13 +1,11 @@
-import { App } from "components";
-import { SharedGraphAPIProvider } from "./components/core/Auth/SharedGraphAPIProvider";
+import App from "components/app/App";
+import { SharedGraphAPIProvider } from "components/core/Auth/SharedGraphAPIProvider";
 import {
   StateProvider,
   FormStateProvider
-} from "context";
-import {
-  authConfig,
-  theme
-} from "globals";
+} from "context/appContext";
+import { authConfig } from "globals";
+import { theme } from "globals/theme";
 import React from "react";
 import { ThemeProvider } from "styled-components";
 import { createRoot } from "react-dom/client";
@@ -22,7 +20,7 @@ import { initDataDogRum } from "utils/logger";
 initDataDogRum();
 
 // ********* SPA Configuration for Azure *********
-export const msalInstance = new PublicClientApplication(authConfig);
+const msalInstance = new PublicClientApplication(authConfig);
 
 if (!msalInstance.getActiveAccount() && msalInstance.getAllAccounts().length > 0) {
   msalInstance.setActiveAccount(msalInstance.getAllAccounts()[0]);

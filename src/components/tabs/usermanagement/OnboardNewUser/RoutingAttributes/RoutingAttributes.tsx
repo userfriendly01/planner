@@ -1,21 +1,20 @@
 import React, { useState } from "react";
 import {
-  Accordion, AccordionSummary, AccordionDetails, Autocomplete, Chip, TextField
+  Accordion, AccordionSummary, AccordionDetails
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
 import {
-  useFormDispatch,
-  userFormActions,
-  useFormState
-} from "context";
-import { Dropdown } from "components";
+  useFormDispatch, useFormState
+} from "context/appContext";
+import { userFormActions } from "context/userFormReducer";
+import { Dropdown } from "components/Dropdown";
 import {
   RoutingTeamAttrDropDownOptions,
   CallerStateAttrDropDownOptions
-} from "./RoutingAttributesDropDown";
-import AutoCompleteContainer from "../../../../core/SharedComponents/AutoCompleteContainer";
+} from "usermanagement/RoutingAttributesDropDown";
+import AutoCompleteContainer from "components/AutoCompleteContainer";
 
-const RoutingAttributes = (): JSX.Element => {
+export const RoutingAttributes = (): JSX.Element => {
   const setForm = useFormDispatch();
   const form = useFormState();
   const accordianExpansion= ()=>{
@@ -114,5 +113,3 @@ const RoutingAttributes = (): JSX.Element => {
     </Accordion>
   );
 };
-
-export default RoutingAttributes;

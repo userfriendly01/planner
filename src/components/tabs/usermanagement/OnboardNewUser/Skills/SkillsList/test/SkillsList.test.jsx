@@ -1,6 +1,6 @@
-import SkillsList from "../SkillsList";
-import { Dropdown } from "components";
-import { useFormState } from "context";
+import { SkillsList } from "../SkillsList";
+import { Dropdown } from "components/Dropdown";
+import { useFormState } from "context/appContext";
 import React from "react";
 import { act } from "react-dom/test-utils";
 import {
@@ -10,12 +10,11 @@ import {
   setupMockedComponents
 } from "testUtils";
 
-jest.mock("components", () => ({
-  __esModule: true,
+jest.mock("components/Dropdown", () => ({
   Dropdown: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useFormState: jest.fn()
 }));
 

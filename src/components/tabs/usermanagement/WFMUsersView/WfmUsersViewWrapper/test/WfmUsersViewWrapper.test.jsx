@@ -1,12 +1,10 @@
-import WfmUsersViewWrapper from "../WfmUsersViewWrapper";
-import InfoBanner from "../../InfoBanner/InfoBanner";
-import {
-  WfmErrorBanner,
-  WfmUsersHeader,
-  Pagination,
-  WfmUserTable
-} from "components";
-import { useAdminState } from "context";
+import { WfmUsersViewWrapper } from "../WfmUsersViewWrapper";
+import { Pagination } from "components/Pagination";
+import { WfmUsersHeader } from "usermanagement/WfmUsersHeader";
+import { WfmUserTable } from "usermanagement/WfmUserTable";
+import { InfoBanner } from "usermanagement/InfoBanner";
+import { WfmErrorBanner } from "usermanagement/WfmErrorBanner";
+import { useAdminState } from "context/appContext";
 import React from "react";
 import {
   act,
@@ -14,29 +12,34 @@ import {
   getLastInstanceCalled,
   initialTestState,
   render,
-  setupMockedComponents,
-  waitFor
+  setupMockedComponents
 } from "testUtils";
-import {
-  getWfmPeople,
-  sortWfmWorkersByFullName
-} from "utils";
-import { ModalOverlayStatuses } from "globals";
+import { getWfmPeople } from "utils/calabrioUtils";
+import { sortWfmWorkersByFullName } from "utils/_sortUtils";
+import { ModalOverlayStatuses } from "globals/interfaces";
 
-jest.mock("components", () => ({
-  WfmErrorBanner: jest.fn(),
-  WfmUsersHeader: jest.fn(),
-  Pagination: jest.fn(),
+jest.mock("components/Pagination", () => ({
+  Pagination: jest.fn()
+}));
+
+jest.mock("usermanagement/InfoBanner", () => ({
+  InfoBanner: jest.fn()
+}));
+
+jest.mock("usermanagement/WfmUsersHeader", () => ({
+  WfmUsersHeader: jest.fn()
+}));
+
+jest.mock("usermanagement/WfmUserTable", () => ({
   WfmUserTable: jest.fn()
 }));
 
-jest.mock("context", () => ({
-  useAdminState: jest.fn()
+jest.mock("usermanagement/WfmErrorBanner", () => ({
+  WfmErrorBanner: jest.fn()
 }));
 
-jest.mock("../../InfoBanner/InfoBanner", () => ({
-  __esModule: true,
-  default : jest.fn()
+jest.mock("context/appContext", () => ({
+  useAdminState: jest.fn()
 }));
 
 const defaultTableState = {
@@ -98,7 +101,7 @@ describe("WfmUsersViewWrapper", () => {
           },
           filteredList: getWfmPeople(initialTestState).filter(p => p.BusinessUnitId === businessUnitId).sort(sortWfmWorkersByFullName)
         }
-      }
+      };
       doRender();
       expectOnlyPassedProps(WfmUsersHeader, expectedDefaultTableState, getLastInstanceCalled(WfmUsersHeader));
       expect(WfmUserTable).toHaveBeenCalledTimes(1);
@@ -114,7 +117,7 @@ describe("WfmUsersViewWrapper", () => {
       const setWfmTable = WfmUserTable.mock.calls[0][0].setTableState;
       act(() => setWfmTable({
         ...defaultTableState,
-        businessUnitFilter: "999-999", 
+        businessUnitFilter: "999-999",
         searchBy: "FaiTh"
       }));
       expect(WfmUserTable.mock.calls.length).toBe(3);
@@ -126,7 +129,7 @@ describe("WfmUsersViewWrapper", () => {
         const setWfmTable = WfmUserTable.mock.calls[0][0].setTableState;
         act(() => setWfmTable({
           ...defaultTableState,
-          businessUnitFilter: businessUnitId, 
+          businessUnitFilter: businessUnitId,
           teamFilter: "111"
         }));
         expect(WfmUserTable.mock.calls.length).toBe(3);
@@ -139,7 +142,7 @@ describe("WfmUsersViewWrapper", () => {
         const setWfmTable = WfmUserTable.mock.calls[0][0].setTableState;
         act(() => setWfmTable({
           ...defaultTableState,
-          businessUnitFilter: businessUnitId, 
+          businessUnitFilter: businessUnitId,
           teamFilter: "0099"
         }));
         expect(WfmUserTable.mock.calls.length).toBe(3);
@@ -152,7 +155,7 @@ describe("WfmUsersViewWrapper", () => {
         const setWfmTable = WfmUserTable.mock.calls[0][0].setTableState;
         act(() => setWfmTable({
           ...defaultTableState,
-          businessUnitFilter: businessUnitId, 
+          businessUnitFilter: businessUnitId,
           teamFilter: "no-team"
         }));
         expect(WfmUserTable.mock.calls.length).toBe(3);

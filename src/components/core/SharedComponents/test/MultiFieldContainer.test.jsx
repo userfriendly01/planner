@@ -1,9 +1,9 @@
 import React from "react";
 import {
-  act,render,setupMockedComponents
+  act, render, setupMockedComponents
 } from "testUtils";
 import {
-  Chip,FormControl,TextField
+  Chip, FormControl, TextField
 } from "@mui/material";
 import {
   MultiFieldContainer
@@ -13,14 +13,12 @@ import { MultiFieldContainerModalView } from "../MultiFieldContainerModalView";
 const mockUpdateValue = jest.fn();
 
 jest.mock("@mui/material",()=>({
-  __esModule: true,
   Chip: jest.fn(),
   TextField: jest.fn(),
   FormControl: jest.fn()
 }));
 
 jest.mock("../MultiFieldContainerModalView", ()=>({
-  __esModule: true,
   MultiFieldContainerModalView: jest.fn()
 }));
 

@@ -1,8 +1,6 @@
 import NotificationModal from "../NotificationModal";
-import {
-  PaperContainer,
-  StyledButton
-} from "components";
+import { PaperContainer } from "components/PaperContainer";
+import { StyledButton } from "components/StyledButton";
 import React from "react";
 import {
   expectMockedComponent,
@@ -15,10 +13,12 @@ const mockHandleClick = jest.fn();
 const buttonText = "Button";
 const text = "I will display in the modal but not in the button";
 
-jest.mock("components", () => ({
-  __esModule: true,
-  PaperContainer: jest.fn(),
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
+}));
+
+jest.mock("components/PaperContainer", () => ({
+  PaperContainer: jest.fn()
 }));
 
 describe("<NotificationModal />", () => {

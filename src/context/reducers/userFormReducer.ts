@@ -1,15 +1,14 @@
 import {
-  Action,
-  UMManager,
-  formModes
-} from "../../globals";
-import { UserFormState } from "components/tabs/usermanagement/OnboardNewUser/UserEntryFormWrapper/UserEntryFormWrapper.Interfaces";
-import { ExtensionSearchStatuses } from "components/tabs/usermanagement/OnboardNewUser/Extension/ExtensionInput/ExtensionInput.Interfaces";
-import { SearchParams } from "components/tabs/usermanagement/OnboardNewUser/Extension/ExtensionSearchParams";
-import { formatE164PhoneNumber } from "utils/formatNumberUtils";
+  Action, UMManager
+} from "globals/interfaces";
+import { formModes } from "globals";
+import { UserFormState } from "usermanagement/UserEntryFormWrapper.Interfaces";
+import { ExtensionSearchStatuses } from "usermanagement/ExtensionInput.Interfaces";
+import { SearchParams } from "usermanagement/ExtensionSearchParams";
+import { formatE164PhoneNumber } from "utils/numberUtils";
 import { calabrioTimeZones } from "utils/calabrioUtils";
 import { getValidSkillsObject } from "utils/skillsUtils";
-import { getZeroOutEnabledFromProfile } from "utils/userManagementUtils";
+import { getZeroOutEnabledFromProfile } from "utils/usermanagementUtils";
 import { getWfmOptions } from "utils/calabrioUtils";
 
 const searchParams = SearchParams.getValues();

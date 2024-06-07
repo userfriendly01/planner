@@ -1,8 +1,5 @@
-import PhoneNumberTable from "../PhoneNumberTable";
-import {
-  DirectoryEntryForm,
-  ModalOverlay
-} from "components";
+import { PhoneNumberTable } from "../PhoneNumberTable";
+import { ModalOverlay } from "components/ModalOverlay";
 import React from "react";
 import {
   expectMockedComponent,
@@ -11,11 +8,10 @@ import {
   setupMockedComponents,
   within
 } from "testUtils";
-import { theme } from "globals";
+import { theme } from "globals/theme";
 import { ThemeProvider } from "styled-components";
 
-jest.mock("components", () => ({
-  DirectoryEntryForm: jest.fn(),
+jest.mock("components/ModalOverlay", () => ({
   ModalOverlay: jest.fn()
 }));
 
@@ -40,7 +36,6 @@ describe("<PhoneNumberTable />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     setupMockedComponents({
-      DirectoryEntryForm,
       ModalOverlay
     });
   });

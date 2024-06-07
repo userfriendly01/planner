@@ -16,7 +16,7 @@ import {
 import React from "react";
 
 
-const Pagination = (props: PaginationProps) => {
+export const Pagination = (props: PaginationProps) => {
   const {
     tableState,
     setTableState
@@ -92,4 +92,3 @@ const Pagination = (props: PaginationProps) => {
   );
 };
 
-export default Pagination;

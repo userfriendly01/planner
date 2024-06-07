@@ -1,5 +1,5 @@
-import ProfileSettingsTable from "../ProfileSettingsTable";
-import { checkIfPO } from "authentication";
+import { ProfileSettingsTable } from "../ProfileSettingsTable";
+import { checkIfPO } from "authentication/authUtils";
 import React from "react";
 import {
   act,
@@ -8,22 +8,20 @@ import {
   render,
   setupMockedComponents
 } from "testUtils";
-import { profileEntryFormDispatch } from "context";
-import { ProfileEntryForm } from "components";
+import { profileEntryFormDispatch } from "context/appContext";
+import { ProfileEntryForm } from "orgmanagement/ProfileEntryForm";
 
-jest.mock("authentication", () => ({
+jest.mock("authentication/authUtils", () => ({
   checkIfPO: jest.fn()
 }));
 
-jest.mock("context", () => ({
-  __esModule: true,
-  profileEntryFormDispatch: jest.fn(),
-  profileEntryFormActions: { SET_UPDATE_PROFILE_FORM_STATE: "SET_UPDATE_PROFILE_FORM_STATE" }
+jest.mock("orgmanagement/ProfileEntryForm", () => ({
+  ProfileEntryForm: jest.fn()
 }));
 
-jest.mock("components", () => ({
-  __esModule: true,
-  ProfileEntryForm: jest.fn()
+jest.mock("context/appContext", () => ({
+  profileEntryFormDispatch: jest.fn(),
+  profileEntryFormActions: { SET_UPDATE_PROFILE_FORM_STATE: "SET_UPDATE_PROFILE_FORM_STATE" }
 }));
 
 const mockSetForm = jest.fn();

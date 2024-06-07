@@ -1,6 +1,6 @@
 import {
   Skill, SkillGroup
-} from "globals";
+} from "globals/interfaces";
 
 export interface SkillDropdownProps {
   skill: {

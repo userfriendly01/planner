@@ -1,4 +1,4 @@
-import { StyledButton } from "components";
+import { StyledButton } from "components/StyledButton";
 import styled from "styled-components";
 
 export const ConfirmationDiv = styled.div`
@@ -42,21 +42,4 @@ export const UserFormButton: any = styled(StyledButton)`
   height: 40px;
   width: 450px;
   margin-bottom: 15px; 
-`;
-
-
-export const IconWrapper = styled.div<{ active: boolean }>`
-  align-items: center;
-  justify-content: center;
-  border-radius: 20px;
-  color: ${props => props.theme.libertyDarkGray};
-  cursor: pointer;
-  display: flex;
-  height: 35px;
-  width: 35px;
-  background-color: ${props => props.active ? "rgb(170, 237, 237)" : "none"};
-  &:hover {
-    background-color: ${props => props.theme.tableRow.selectedColor};
-    cursor: pointer;
-  }
 `;

@@ -4,15 +4,12 @@ import {
   CircularProgress,
   Modal
 } from "@mui/material";
+import Header from "../../header/Header/Header";
+import NavTabs from "../../navigation/NavTabs";
+import NotificationModal from "components/NotificationModal";
 import {
-  Header,
-  NavTabs,
-  NotificationModal
-} from "components";
-import {
-  useAdminDispatch,
-  useAdminState
-} from "context";
+  useAdminDispatch, useAdminState
+} from "context/appContext";
 import React from "react";
 import {
   act,
@@ -24,9 +21,8 @@ import {
   setupMockedComponents,
   waitFor
 } from "testUtils";
-import {
-  getFilteredPermissions, getWorkerProfileId
-} from "authentication";
+import { getWorkerProfileId } from "authentication/authUtils";
+import { getFilteredPermissions } from "authentication/authenticationProfiles";
 
 
 delete window.location;
@@ -39,13 +35,95 @@ jest.mock("@mui/material", () => ({
   Modal: jest.fn()
 }));
 
-jest.mock("components", () => ({
-  Header: jest.fn(),
-  NavTabs: jest.fn(),
-  NotificationModal: jest.fn()
+jest.mock("alohaFlow/AlohaFlowContainer", () => ({
+  __esModule: true,
+  default: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("alohaRouting/AlohaRoutingContainer", () => ({
+  __esModule: true,
+  default: jest.fn()
+}));
+
+jest.mock("usermanagement/BulkChanges", () => ({
+  BulkChanges: jest.fn()
+}));
+
+jest.mock("callflowmanagement/CallFlowManagementWrapper/CallFlowManagementSkills", () => ({
+  __esModule: true,
+  default: jest.fn()
+}));
+
+jest.mock("callflowmanagement/CallFlowManagementWrapper/CallFlowManagementTfn", () => ({
+  CallFlowManagementTfn: jest.fn()
+}));
+
+jest.mock("usermanagement/CompareProfiles", () => ({
+  CompareProfiles: jest.fn()
+}));
+
+jest.mock("dynamicFlow/DynamicFlowContainer", () => ({
+  __esModule: true,
+  default: jest.fn()
+}));
+
+jest.mock("orgmanagement/ProfileDirectoryContainer", () => ({
+  __esModule: true,
+  default: jest.fn()
+}));
+
+jest.mock("orgmanagement/ProfileDialListContainer", () => ({
+  ProfileDialListContainer: jest.fn()
+}));
+
+jest.mock("orgmanagement/ProfileSettingsContainer", () => ({
+  ProfileSettingsContainer: jest.fn()
+}));
+
+jest.mock("usermanagement/TritonUsersViewWrapper", () => ({
+  TritonUsersViewWrapper: jest.fn()
+}));
+
+jest.mock("usermanagement/UserEntryFormWrapper", () => ({
+  UserEntryForm: jest.fn()
+}));
+
+jest.mock("usermanagement/WfmUsersViewWrapper", () => ({
+  WfmUsersViewWrapper: jest.fn()
+}));
+
+jest.mock("orgmanagement/CalabrioOrgWrapper", () => ({
+  CalabrioOrgWrapper: jest.fn()
+}));
+
+jest.mock("orgmanagement/CalabrioRolesWrapper", () => ({
+  CalabrioRolesWrapper: jest.fn()
+}));
+
+jest.mock("authentication/authUtils", () => ({
+  getWorkerProfileId: jest.fn()
+}));
+
+jest.mock("authentication/authenticationProfiles", () => ({
+  getFilteredPermissions: jest.fn()
+}));
+
+jest.mock("../../header/Header/Header", () => ({
+  __esModule: true,
+  default: jest.fn()
+}));
+
+jest.mock("../../navigation/NavTabs", () => ({
+  __esModule: true,
+  default: jest.fn()
+}));
+
+jest.mock("components/NotificationModal", () => ({
+  __esModule: true,
+  default: jest.fn()
+}));
+
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn(),
   useAdminDispatch: jest.fn()
 }));
@@ -53,8 +131,7 @@ jest.mock("context", () => ({
 jest.mock("@azure/msal-react");
 
 jest.mock("utils", () => ({
-  wait: jest.requireActual("utils").wait,
-  logger: jest.requireActual("utils").logger
+  wait: jest.requireActual("utils").wait
 }));
 
 const mockAdminDispatch = jest.fn();

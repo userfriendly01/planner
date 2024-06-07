@@ -2,8 +2,8 @@ import { apiPaths } from "globals";
 import {
   CalabrioGroup,
   CalabrioUser
-} from "../components/tabs/usermanagement/OnboardNewUser/CallRecording/CallRecording.Interfaces";
-import { myAxios } from "utils";
+} from "usermanagement/CallRecording.Interfaces";
+import { myAxios } from "utils/myAxios";
 
 export const createCalabrioTeam = async (payload: any): Promise<CalabrioGroup[]> => {
   return await myAxios.post(apiPaths.CREATE_CALABRIO_TEAM, payload);
@@ -77,7 +77,7 @@ export const getQmUserProfiles = async (workerSid: string, nNumber: string, emai
   let url = `${apiPaths.GET_CALABRIO_USER_PROFILES}/${workerSid}/${nNumber}/${email}`;
 
   if (firstName && lastName) {
-    url = url + `/${firstName}/${lastName}`
+    url = url + `/${firstName}/${lastName}`;
   }
 
   return await myAxios.get(url);

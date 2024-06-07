@@ -1,21 +1,18 @@
-import BasicFormInfo from "../BasicFormInfo";
+import { BasicFormInfo } from "../BasicFormInfo";
 import {
   Switch,
   Tooltip
 } from "@mui/material";
 import { Edit } from "@mui/icons-material";
+import { Dropdown } from "components/Dropdown";
+import { ExtensionInput } from "usermanagement/ExtensionInput";
+import { ForwardToEntryForm } from "usermanagement/ForwardToEntryForm";
+import { NNumberInput } from "components/NNumberInput";
+import { PhoneNumberInput } from "components/PhoneNumberInput";
 import {
-  ForwardToEntryForm,
-  ExtensionInput,
-  NNumberInput,
-  PhoneNumberInput,
-  Dropdown
-} from "components";
-import {
-  useFormDispatch,
-  useFormState,
-  userFormActions
-} from "context";
+  useFormDispatch, useFormState
+} from "context/appContext";
+import { userFormActions } from "context/userFormReducer";
 import { formModes } from "globals";
 import React from "react";
 import {
@@ -35,24 +32,40 @@ import {
   getOverflowSkillFromProfile,
   isProfileIdValid,
   isManagerValid
-} from "utils";
-import { StyledButton } from "components";
+} from "utils/usermanagementUtils";
+import { StyledButton } from "components/StyledButton";
 
 jest.useFakeTimers();
 
-jest.mock("components", () => ({
-  __esModule: true,
-  Dropdown: jest.fn(),
-  ExtensionInput: jest.fn(),
-  NNumberInput: jest.fn(),
-  PhoneNumberInput: jest.fn(),
-  SkillsFormInfo: jest.fn(),
-  StyledButton: jest.fn(),
+jest.mock("components/Dropdown", () => ({
+  Dropdown: jest.fn()
+}));
+
+jest.mock("usermanagement/ExtensionInput", () => ({
+  ExtensionInput: jest.fn()
+}));
+
+jest.mock("components/NNumberInput", () => ({
+  NNumberInput: jest.fn()
+}));
+
+jest.mock("components/PhoneNumberInput", () => ({
+  PhoneNumberInput: jest.fn()
+}));
+
+jest.mock("usermanagement/SkillsFormInfo", () => ({
+  SkillsFormInfo: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
+  StyledButton: jest.fn()
+}));
+
+jest.mock("usermanagement/ForwardToEntryForm", () => ({
   ForwardToEntryForm: jest.fn()
 }));
 
 jest.mock("@mui/material", () => ({
-  __esModule: true,
   Divider: jest.fn(),
   Tabs: jest.fn(),
   Switch: jest.fn(),
@@ -60,42 +73,29 @@ jest.mock("@mui/material", () => ({
 }));
 
 jest.mock("@mui/icons-material", () => ({
-  __esModule: true,
   Edit: jest.fn()
 }));
 
-jest.mock("context", () => ({
-  __esModule: true,
+jest.mock("context/appContext", () => ({
   useFormState: jest.fn(),
   useAdminState: jest.fn(),
-  useFormDispatch: jest.fn(),
-  userFormActions: jest.requireActual("context").userFormActions
+  useFormDispatch: jest.fn()
 }));
 
-jest.mock("utils", () => ({
-  __esModule: true,
-  isExtensionValid: jest.fn(),
+jest.mock("utils/usermanagementUtils", () => ({
   isManagerValid: jest.fn(),
   isProfileIdValid: jest.fn(),
-  sortProfilesByName: jest.requireActual("utils").sortProfilesByName,
-  sortManagersByName: jest.fn("utils").sortManagersByName,
-  getOverflowSkillFromProfile: jest.fn(),
-  calabrioTimeZones: jest.requireActual("utils").calabrioTimeZones,
-  getValidSkillsObject: jest.fn(),
-  formatE164PhoneNumber: jest.fn(),
-  getZeroOutEnabledFromProfile: jest.fn()
+  getOverflowSkillFromProfile: jest.fn()
 }));
 
 jest.mock("globals", () => ({
-  __esModule: true,
   extensionMatcher: {
     test: jest.fn()
   },
   formModes: jest.requireActual("globals").formModes
 }));
 
-jest.mock("../../RoutingAttributes", ()=>({
-  __esModule: true,
+jest.mock("usermanagement/RoutingAttributes", ()=>({
   RoutingAttributes: jest.fn()
 }));
 

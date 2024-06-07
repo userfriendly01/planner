@@ -1,17 +1,14 @@
-import { useAdminState } from "context";
-import Directory from "../Directory";
+import { useAdminState } from "context/appContext";
+import { Directory } from "../Directory";
+import { DirectoryEntryForm } from "orgmanagement/DirectoryEntryForm";
+import { PhoneNumberTable } from "orgmanagement/PhoneNumberTable";
+import { StyledButton } from "components/StyledButton";
 import {
-  DirectoryEntryForm,
-  PhoneNumberTable,
-  StyledButton
-} from "components";
-import {
-  formModes,
-  ModalOverlayStatuses,
-  timeouts
-} from "globals";
+  formModes, timeouts
+} from "globals/index";
+import { ModalOverlayStatuses } from "globals/interfaces";
 import React from "react";
-import { deleteDirectory } from "services";
+import { deleteDirectory } from "services/directory";
 import {
   act,
   expectMockedComponent,
@@ -25,14 +22,24 @@ import {
 
 jest.useFakeTimers();
 
-jest.mock("components", () => ({
-  DirectoryEntryForm: jest.fn(),
-  PhoneNumberTable: jest.fn(),
+jest.mock("orgmanagement/DirectoryEntryForm", () => ({
+  DirectoryEntryForm: jest.fn()
+}));
+
+jest.mock("orgmanagement/PhoneNumberTable", () => ({
+  PhoneNumberTable: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
+}));
+
+jest.mock("services/directory", () => ({
+  deleteDirectory: jest.fn()
 }));
 
 const profileId = "89";

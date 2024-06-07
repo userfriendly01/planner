@@ -1,16 +1,16 @@
 import {
   cleanupField,
+  formatErrorMessage
+} from "usermanagement/formatUtils";
+import {
   getLowestConcurrencyLimit,
   handleConcurrentCalls,
-  identifyProcessingDependencies,
-  formatErrorMessage
-} from "../BulkUtils";
-import { FIELDS } from "../BulkTemplates/fields";
-import {
-  getWfmPeople,
-  logger
-} from "utils";
-import { AppState } from "globals";
+  identifyProcessingDependencies
+} from "usermanagement/processingUtils";
+import { FIELDS } from "usermanagement/fields";
+import { logger } from "utils/logger";
+import { getWfmPeople } from "utils/calabrioUtils";
+import { AppState } from "globals/interfaces";
 
 /**
  * Selected Templates is an array of templates to be processed on a bulk upload.

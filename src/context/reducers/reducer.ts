@@ -1,7 +1,7 @@
 import {
   Action,
   AppState
-} from "globals";
+} from "globals/interfaces";
 import {
   formatCalabrioTeams,
   formatCalabrioTenant,

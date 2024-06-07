@@ -1,9 +1,9 @@
-import { StyledButton } from "components";
+import { StyledButton } from "components/StyledButton";
 import styled from "styled-components";
 import {
   FlexColumn,
   FlexRow
-} from "globals";
+} from "globals/interfaces";
 
 export const Button = styled(StyledButton)`
   height: 40;

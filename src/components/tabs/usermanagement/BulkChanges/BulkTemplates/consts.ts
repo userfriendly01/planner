@@ -1,4 +1,4 @@
-import { isNumberValid } from "utils";
+import { isNumberValid } from "utils/numberUtils";
 import { RoutingTeamAttrDropDownOptions } from "../../OnboardNewUser/RoutingAttributes/RoutingAttributesDropDown";
 
 //Not all worker attribute fields would logically be bulk updated. 

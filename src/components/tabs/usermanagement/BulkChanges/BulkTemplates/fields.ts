@@ -1,28 +1,19 @@
 import {
   cleanupField,
   toProperCase
-} from "../BulkUtils";
+} from "usermanagement/formatUtils";
+import { fetchUser } from "services/fetchUser";
+import { generateExtension } from "services/checkExtension";
+import { getE164Number } from "utils/numberUtils";
+import { getOverflowSkillFromProfile } from "utils/usermanagementUtils";
 import {
-  fetchUser,
-  generateExtension
-} from "services";
-import {
-  getE164Number,
-  calabrioAllowedRoles,
-  calabrioTimeZones,
-  getOverflowSkillFromProfile,
-  logger
-} from "utils";
-import {
-  formatDateFromExcelDate
-} from "../BulkUtils/formatUtils";
-import {
-  allowedEmptyScheduleField
-} from "../BulkUtils/validationUtils";
-import {
-  Fields
-} from "../BulkChanges.Interfaces";
-import { UMManager } from "globals";
+  calabrioAllowedRoles, calabrioTimeZones
+} from "utils/calabrioUtils";
+import { logger } from "utils/logger";
+import { formatDateFromExcelDate } from "usermanagement/formatUtils";
+import { allowedEmptyScheduleField } from "usermanagement/validationUtils";
+import { Fields } from "usermanagement/BulkChanges.Interfaces";
+import { UMManager } from "globals/interfaces";
 
 const rejectPromise = (error: string, rowNumber: number | string) => {
   return Promise.reject(JSON.stringify({

@@ -9,10 +9,10 @@ import {
 import {
   getLowestConcurrencyLimit,
   handleConcurrentCalls
-} from "../processingUtils";
+} from "usermanagement/processingUtils";
 import { initialTestState } from "testUtils";
 
-jest.mock("../processingUtils",() => ({
+jest.mock("usermanagement/processingUtils",() => ({
   handleConcurrentCalls: jest.fn(),
   getLowestConcurrencyLimit: jest.fn(),
   identifyProcessingDependencies: jest.requireActual("../processingUtils").identifyProcessingDependencies

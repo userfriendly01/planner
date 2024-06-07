@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { Paper } from "@mui/material";
-import { ModalFetchingRing, StyledButton } from "components";
+import { ModalFetchingRing } from "components/ModalFetchingRing";
+import { StyledButton } from "components/StyledButton";
 
 export const CompareProfilesWrapper = styled.div`
   display: flex;

@@ -3,12 +3,12 @@ import {
   Delete,
   Edit
 } from "@mui/icons-material";
-import { ModalOverlay } from "components";
-import { ModalOverlayStatuses } from "globals";
+import { ModalOverlay } from "components/ModalOverlay";
+import { ModalOverlayStatuses } from "globals/interfaces";
 import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
-import { formatTenDigitNumber } from "utils";
+import { formatTenDigitNumber } from "utils/numberUtils";
 
 const CustomTable = styled.table`
   border-spacing: 0;
@@ -91,7 +91,7 @@ const TableText = styled.div`
   margin: 2px;
 `;
 
-const PhoneNumberTable = props => {
+export const PhoneNumberTable = props => {
   const {
     deleteFunction,
     editFunction,
@@ -165,5 +165,3 @@ PhoneNumberTable.propTypes = {
     overlayMessage: PropTypes.string
   }).isRequired
 };
-
-export default PhoneNumberTable;

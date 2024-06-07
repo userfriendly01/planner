@@ -1,12 +1,10 @@
 import React from "react";
-import CallFlowManagementSkills from "../CallFlowManagementSkills";
-import { getAuthenticationProfileTemplates } from "authentication";
-import {
-  CallFlowConfirmationModal,
-  ActionContainer,
-  SkillsContainer
-} from "components";
-import { useAdminState } from "context";
+import { CallFlowManagementSkills } from "../CallFlowManagementSkills";
+import { getAuthenticationProfileTemplates } from "authentication/authenticationProfiles";
+import { CallFlowConfirmationModal } from "callflowmanagement/CallFlowConfirmationModal/CallFlowConfirmationModal";
+import { ActionContainer } from "callflowmanagement/ActionContainer";
+import { SkillsContainer } from "callflowmanagement/SkillsContainer";
+import { useAdminState } from "context/appContext";
 import {
   skillsList,
   render,
@@ -19,9 +17,19 @@ import {
 } from "testUtils";
 import { Modal } from "@mui/material";
 
-jest.mock("components", () => ({
-  CallFlowConfirmationModal: jest.fn(),
-  ActionContainer: jest.fn(),
+jest.mock("authentication/authenticationProfiles", () => ({
+  getAuthenticationProfileTemplates: jest.fn()
+}));
+
+jest.mock("callflowmanagement/CallFlowConfirmationModal/CallFlowConfirmationModal", () => ({
+  CallFlowConfirmationModal: jest.fn()
+}));
+
+jest.mock("callflowmanagement/ActionContainer", () => ({
+  ActionContainer: jest.fn()
+}));
+
+jest.mock("callflowmanagement/SkillsContainer", () => ({
   SkillsContainer: jest.fn()
 }));
 
@@ -29,7 +37,7 @@ jest.mock("@mui/material", () => ({
   Modal: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
 }));
 

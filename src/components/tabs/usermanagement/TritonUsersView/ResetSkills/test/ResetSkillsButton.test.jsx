@@ -1,14 +1,12 @@
-import ResetSkillsButton from "../ResetSkillsButton";
+import { ResetSkillsButton } from "../ResetSkillsButton";
 import MockAdapter from "axios-mock-adapter";
+import { ResetSkillsResultsModal } from "usermanagement/ResetSkillsResultsModal";
+import { StyledButton } from "components/StyledButton";
 import {
-  ResetSkillsResultsModal,
-  StyledButton
-} from "components";
-import {
-  initialState,
   useAdminState,
   useAdminDispatch
-} from "context";
+} from "context/appContext";
+import { initialState } from "context/reducer";
 import { apiPaths } from "globals";
 import React from "react";
 import {
@@ -18,20 +16,24 @@ import {
   render,
   setupMockedComponents
 } from "testUtils";
-import {
-  mapWorkerFromTwilio,
-  myAxios
-} from "utils";
+import { mapWorkerFromTwilio } from "utils";
+import { myAxios } from "utils/myAxios";
 
-jest.mock("components", () => ({
-  ResetSkillsResultsModal: jest.fn(),
+jest.mock("usermanagement/ResetSkillsResultsModal", () => ({
+  ResetSkillsResultsModal: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
 }));
 
-jest.mock("context", () => ({
-  initialState: jest.requireActual("context").initialState,
+jest.mock("context/appContext", () => ({
   useAdminDispatch: jest.fn(),
   useAdminState: jest.fn()
+}));
+
+jest.mock("utils", () => ({
+  mapWorkerFromTwilio: jest.fn()
 }));
 
 const setMockForm = jest.fn();

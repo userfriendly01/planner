@@ -7,14 +7,14 @@ import {
 import {
   DataGrid, GridColDef, useGridApiRef
 } from "@mui/x-data-grid";
-import { StyledButton } from "components";
+import { StyledButton } from "components/StyledButton";
 import { CctSharedCallFlowDb } from "../AlohaFlow.Interfaces";
 import { TableGridColumnDef } from "./TableColumnDef";
 import "./PreviewModal.css";
 import { Box } from "@mui/material";
 import { reconstructTableColumnDef } from "./PreviewUtil";
-import { logger } from "utils";
-import { CsvReader } from "components";
+import { logger } from "utils/logger";
+import { CsvReader } from "components/CSVReader/CsvReader";
 
 interface PreviewModalProps {
     isOpen: boolean;
@@ -28,7 +28,7 @@ interface PreviewModalProps {
     loading?: boolean;
 }
 
-const PreviewModal = (props: PreviewModalProps): JSX.Element => {
+export const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   const {
     isOpen, rows, onClose, action , maxId , onDelete, onCreate, onUpdate, loading
   } = props;
@@ -197,9 +197,4 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
       </ModalFooter>
     </Modal>
   );
-};
-
-export {
-  PreviewModal,
-  PreviewModalProps
 };

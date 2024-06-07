@@ -1,9 +1,7 @@
-import SkillsContainer from "../SkillsContainer";
+import { SkillsContainer } from "../SkillsContainer";
 import React from "react";
-import {
-  SkillsHeader,
-  SkillsTable
-} from "components";
+import { SkillsHeader } from "callflowmanagement/SkillsHeader";
+import { SkillsTable } from "callflowmanagement/SkillsTable";
 import {
   render,
   expectOnlyPassedProps,
@@ -11,21 +9,39 @@ import {
   setupMockedComponents,
   waitFor
 } from "testUtils";
-import {
-  getTaskQueues,
-  getApplications,
-  getTimeOfDays
-} from "services";
+import { getTimeOfDays } from "services/timeOfDays";
+import { getTaskQueues } from "services/taskQueues";
+import { getApplications } from "services/applications";
 
-jest.mock("components", () => ({
-  SkillsHeader: jest.fn(),
-  SkillsTable: jest.fn(),
+jest.mock("context/reducer", () => ({
+  reducer: jest.fn()
+}));
+
+jest.mock("context/userFormReducer", () => ({
+  userFormReducer: jest.fn()
+}));
+
+jest.mock("callflowmanagement/SkillsHeader", () => ({
+  SkillsHeader: jest.fn()
+}));
+
+jest.mock("callflowmanagement/SkillsTable", () => ({
+  SkillsTable: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
 }));
 
-jest.mock("services", () => ({
-  getTaskQueues: jest.fn(),
-  getApplications: jest.fn(),
+jest.mock("services/taskQueues", () => ({
+  getTaskQueues: jest.fn()
+}));
+
+jest.mock("services/applications", () => ({
+  getApplications: jest.fn()
+}));
+
+jest.mock("services/timeOfDays", () => ({
   getTimeOfDays: jest.fn()
 }));
 

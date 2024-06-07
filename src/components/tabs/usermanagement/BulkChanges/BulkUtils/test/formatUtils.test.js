@@ -3,7 +3,7 @@ import {
   formatErrorMessage,
   toProperCase,
   formatDateFromExcelDate
-} from "../../BulkUtils";
+} from "../formatUtils";
 
 describe("formatErrorMessage", () => {
   test("err?.response?.data", () => {

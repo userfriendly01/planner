@@ -3,7 +3,7 @@ import {
   ResetModalProps,
   Result,
   StatusOptions
-} from "./CompareProfiles.Interfaces";
+} from "usermanagement/CompareProfiles.Interfaces";
 import {
   ButtonWrapper,
   InformationText,
@@ -12,16 +12,18 @@ import {
   ModalContainer,
   ResultWrapper,
   ResultsWrapper
-} from "./CompareProfiles.Styles";
-import { StyledButton } from "components";
-import { ProgressBar } from "../BulkChanges/Processing";
+} from "usermanagement/CompareProfiles.Styles";
+import { StyledButton } from "components/StyledButton";
+import { ProgressBar } from "usermanagement/ProgressBar";
 import { ReportGmailerrorred } from "@mui/icons-material";
 import { Divider } from "@mui/material";
-import { fetchResetProfileDatadogLogs, resetProfiles } from "services";
-import { logger } from "utils";
+import {
+  fetchResetProfileDatadogLogs, resetProfiles
+} from "services/resetprofiles";
+import { logger } from "utils/logger";
 import util from "util";
 
-const ResetModal = (props: ResetModalProps) => {
+export const ResetModal = (props: ResetModalProps) => {
   const {
     nNumber,
     email,
@@ -51,11 +53,11 @@ const ResetModal = (props: ResetModalProps) => {
     const timeout = 3000;
     if (status === StatusOptions.STARTED || status === StatusOptions.TIME_OUT) {
       progressIntervalId.current = setInterval(() => {
-        setProgress(progress => progress + 15)
+        setProgress(progress => progress + 15);
       }, timeout);
       if (status === StatusOptions.TIME_OUT) {
         datadogIntervalId.current = setInterval(() => {
-          fetchDatadogLog()
+          fetchDatadogLog();
         }, timeout);
       }
     } else {
@@ -78,7 +80,7 @@ const ResetModal = (props: ResetModalProps) => {
       wfmPersonId,
       email,
       workerSid
-    }
+    };
     try {
       const res = await resetProfiles(nNumber, body);
       setResults(res.data);
@@ -91,12 +93,16 @@ const ResetModal = (props: ResetModalProps) => {
       } else {
         const errorString = error.message || error.response?.message || util.format(error);
         const errorMessage = "Reset Profiles failed calling the Calabrio service";
-        logger.error(errorMessage, { error, message: errorString, nNumber });
+        logger.error(errorMessage, {
+          error,
+          message: errorString,
+          nNumber
+        });
         setResults(`${errorMessage} - ${errorString}`);
         setStatus(StatusOptions.FAIL);
       }
     }
-  }
+  };
 
   const fetchDatadogLog = async () => {
     try {
@@ -108,11 +114,14 @@ const ResetModal = (props: ResetModalProps) => {
     } catch (error) {
       const errorString = error.message || error.response?.message || util.format(error);
       const errorMessage = "Reset Profiles failed calling Datadog";
-      logger.error(errorMessage, { error, message: errorString });
+      logger.error(errorMessage, {
+        error,
+        message: errorString
+      });
       setResults(`${errorMessage} - ${errorString}`);
       setStatus(StatusOptions.FAIL);
     }
-  }
+  };
 
   return (
     <ModalContainer>
@@ -125,7 +134,7 @@ const ResetModal = (props: ResetModalProps) => {
           <InformationText>They even need the same casing.</InformationText>
           <InformationText>(AD, LDAP(i), LDAP(e), HR)</InformationText>
           <InformationText>
-            <a href="https://security-identity-portal.lmig.com/dashboard" target="_blank">Security Identity Portal</a>
+            <a href="https://security-identity-portal.lmig.com/dashboard" target="_blank" rel="noreferrer">Security Identity Portal</a>
           </InformationText>
           <ButtonWrapper>
             <StyledButton onClick={initiateReset}>The Emails all Match!</StyledButton>
@@ -146,7 +155,11 @@ const ResetModal = (props: ResetModalProps) => {
       }
       {(status === StatusOptions.STARTED || status === StatusOptions.TIME_OUT) && <ProgressBar completedRows={progress} totalRowCount={totalWaitSeconds} />}
       {status === StatusOptions.FAIL &&
-        <InformationWapper style={{ marginTop: "10", minHeight: "200px", height: "auto" }}>
+        <InformationWapper style={{
+          marginTop: "10",
+          minHeight: "200px",
+          height: "auto"
+        }}>
           <InformationText>
             Calabrio... is the worst we're sorry
           </InformationText>
@@ -162,23 +175,37 @@ const ResetModal = (props: ResetModalProps) => {
         <ResultsWrapper>
           <h1 style={{ alignSelf: "center" }}>Reset Results</h1>
           {results.map((r: Result) => ((
-            <ResultWrapper>
+            <ResultWrapper key={r.stepNumber}>
               <InformationText style={{ justifyContent: "flex-start" }}>
-                <Key style={{ width: "85px" }}>Step {r.stepNumber}:</Key> <div style={{ textAlign: "left", marginLeft: "5px" }}>{r.description}</div>
+                <Key style={{ width: "85px" }}>Step {r.stepNumber}:</Key> <div style={{
+                  textAlign: "left",
+                  marginLeft: "5px"
+                }}>{r.description}</div>
               </InformationText>
               <InformationText style={{ justifyContent: "flex-start" }}>
                 <Key>Result:</Key>
                 {typeof r.result === "string" ?
-                  <div style={{ textAlign: "left", maxWidth: "90%", marginLeft: "13px" }}>{r.result}</div>
+                  <div style={{
+                    textAlign: "left",
+                    maxWidth: "90%",
+                    marginLeft: "13px"
+                  }}>{r.result}</div>
                   :
                   <ResultWrapper>
                     {r.result.map((result: string) => ((
-                      <div style={{ textAlign: "left", maxWidth: "90%", marginLeft: "5px" }}>{result}</div>
+                      <div key={result} style={{
+                        textAlign: "left",
+                        maxWidth: "90%",
+                        marginLeft: "5px"
+                      }}>{result}</div>
                     )))}
                   </ResultWrapper>
                 }
               </InformationText>
-              <Divider flexItem style={{ width: "100vw", margin: "10px 0px" }} />
+              <Divider flexItem style={{
+                width: "100vw",
+                margin: "10px 0px"
+              }} />
             </ResultWrapper>
           )))}
           <ButtonWrapper>
@@ -189,5 +216,3 @@ const ResetModal = (props: ResetModalProps) => {
     </ModalContainer>
   );
 };
-
-export default ResetModal;

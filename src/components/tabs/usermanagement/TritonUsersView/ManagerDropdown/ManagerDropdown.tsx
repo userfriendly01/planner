@@ -2,32 +2,24 @@ import {
   Label,
   IconWrapper,
   Wrapper
-} from "./ManagerDropdown.Styles";
-import {
-  ManagerModal,
-  ManagerDelete,
-  Dropdown
-} from "components";
+} from "usermanagement/ManagerDropdown.Styles";
+import { ManagerModal } from "usermanagement/ManagerModal";
+import { ManagerDelete } from "usermanagement/ManagerDelete";
+import { Dropdown } from "components/Dropdown";
 import {
   useAdminState,
   useAdminDispatch
-} from "context";
+} from "context/appContext";
 import React, { useState } from "react";
-import { sortManagersByName } from "utils";
+import { sortManagersByName } from "utils/_sortUtils";
 import {
   Edit,
   Delete
 } from "@mui/icons-material";
 import { Modal } from "@mui/material";
+import { DropdownOption } from "globals/interfaces";
 
-export interface DropdownOption {
-  label: string,
-  value: any
-}
-
-const ManagerDropdown = () => {
-
-
+export const ManagerDropdown = () => {
   const state = useAdminState();
   const filterBy = state.userManagementTableFilters.managerFilter;
   const dispatch = useAdminDispatch();
@@ -141,5 +133,3 @@ const ManagerDropdown = () => {
     </Wrapper>
   );
 };
-
-export default ManagerDropdown;

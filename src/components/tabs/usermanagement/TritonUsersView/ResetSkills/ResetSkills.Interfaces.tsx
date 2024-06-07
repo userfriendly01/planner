@@ -1,4 +1,4 @@
-import { UMUser } from "globals";
+import { UMUser } from "globals/interfaces";
 
 export interface DefaultResetInformation {
   open: boolean,

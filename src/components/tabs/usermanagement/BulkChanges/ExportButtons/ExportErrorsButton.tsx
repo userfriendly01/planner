@@ -1,9 +1,9 @@
 
-import { Button } from "../BulkChanges.Styles";
+import { Button } from "usermanagement/BulkChanges.Styles";
 import React from "react";
 import { ExcelExport } from "@progress/kendo-react-excel-export";
 
-const ExportErrorsButton = (props: any) => {
+export const ExportErrorsButton = (props: any) => {
   const { errors } = props;
 
   const _export = React.useRef(null);
@@ -45,5 +45,3 @@ const ExportErrorsButton = (props: any) => {
     <Button onClick={handleExport}><ExcelExport ref={_export}/>Export Errors</Button>
   );
 };
-
-export default ExportErrorsButton;

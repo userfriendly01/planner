@@ -1,6 +1,6 @@
 import { TableGridColumnDef } from "../TableGridColumnDef";
 import { reconstructTableColumnDef } from "../previewUtils";
-import { ROUTING_CACHE_MASTER_DATA } from "../../../../../utils";
+import { ROUTING_CACHE_MASTER_DATA } from "utils/alohaRoutingUtils";
 
 const routingDropDownData = {
   brand: ["Liberty Mutual", "Safeco"],

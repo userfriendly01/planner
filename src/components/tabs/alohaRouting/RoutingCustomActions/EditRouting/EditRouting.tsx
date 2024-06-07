@@ -16,36 +16,32 @@ import {
   convertTime24to12,
   routingFields,
   routingInitRule,
-  initializedAlertBar,
   routingDropDownList,
   dayOfWeek
-} from "utils";
+} from "utils/alohaRoutingUtils";
+import { initializedAlertBar } from "utils/alohaConfigUtils";
 import {
   CctSharedCallRoutingDb,
   RoutingDropDownList,
   AddPageFieldConfigProps
 } from "../../AlohaRouting.Interfaces";
-import {
-  CustomToast,
-  ComponentControl
-} from "components";
+import { CustomToast } from "components/CustomToast";
+import { ComponentControl } from "components/ComponentControl";
 import {
   Button,
   Grid
 } from "@mui/material";
 import {
-  AlertBarProps,
-  FormValidationRule
-} from "utils/interfaces";
+  AzureSPA, AlertBarProps, FormValidationRule
+} from "globals/interfaces";
 import {
   deleteRoutingRule,
   updateRoutingDB
-} from "services";
-import { AzureSPA } from "globals";
+} from "services/routingTableService";
 import {
   BrandName,
   readWriteAccess
-} from "utils/configUtils";
+} from "utils/alohaConfigUtils";
 import { FloatingHeader } from "@lmig/lmds-react-floating-header";
 interface EditRoutingComponentProps {
   accessToken: string;

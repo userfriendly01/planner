@@ -6,7 +6,7 @@ import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import FormControl from "@mui/material/FormControl";
 
 
-export interface TimePickerComponentProps {
+interface TimePickerComponentProps {
   label: string;
   value?: string;
   onChange: any;

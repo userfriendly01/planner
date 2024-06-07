@@ -2,10 +2,8 @@ import React from "react";
 import {
   ToggleFormField
 } from "./ProfileEntryForm.Interfaces";
-import {
-  formModes,
-  OperatingUnit
-} from "globals";
+import { formModes } from "globals/index";
+import { OperatingUnit } from "globals/interfaces";
 import {
   FormControlsContainer,
   FormControlsPane,
@@ -21,20 +19,18 @@ import {
 import {
   profileEntryFormDispatch,
   profileEntryFormState
-} from "context";
-import { profileEntryFormActions } from "context/reducers/profileEntryFormReducer";
-import {
-  ProfileAccessGroupField,
-  ProfileNameTextField,
-  ProfileActivitiesSelectField,
-  ProfileCallTagsSelectField,
-  ProfileQueuesSelectField,
-  ProfileOperatingUnitField,
-  OverflowSkillTextField,
-  PhoneNumberInput
-} from "components";
+} from "context/appContext";
+import { profileEntryFormActions } from "context/profileEntryFormReducer";
+import { ProfileCallTagsSelectField } from "orgmanagement/ProfileCallTagsSelectField";
+import { ProfileAccessGroupField } from "orgmanagement/ProfileAccessGroupField";
+import { ProfileNameTextField } from "orgmanagement/ProfileNameTextField";
+import { ProfileActivitiesSelectField } from "orgmanagement/ProfileActivitiesSelectField";
+import { ProfileQueuesSelectField } from "orgmanagement/ProfileQueuesSelectField";
+import { ProfileOperatingUnitField } from "orgmanagement/ProfileOperatingUnitField";
+import { OverflowSkillTextField } from "orgmanagement/OverflowSkillTextField";
+import { PhoneNumberInput } from "components/PhoneNumberInput";
 
-const ProfileFormFields = () => {
+export const ProfileFormFields = () => {
 
   const form = profileEntryFormState();
   const setForm = profileEntryFormDispatch();
@@ -245,5 +241,3 @@ const ProfileFormFields = () => {
     </FormControlsContainer>
   );
 };
-
-export default ProfileFormFields;

@@ -1,7 +1,6 @@
 import { apiPaths } from "globals";
-import {
-  logger, myAxios
-} from "utils";
+import { logger } from "utils/logger";
+import { myAxios } from "utils/myAxios";
 
 export const deleteDirectory = directoryId => {
   return myAxios.delete(apiPaths.DIRECTORY_ENTRY(directoryId)).then(res => {

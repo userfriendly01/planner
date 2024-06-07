@@ -1,8 +1,6 @@
 import Header from "../Header";
-import {
-  Logo,
-  UserCard
-} from "components";
+import UserCard from "../../UserCard/UserCard";
+import Logo from "../../Logo/Logo";
 import React from "react";
 import {
   expectMockedComponent,
@@ -10,10 +8,14 @@ import {
   setupMockedComponents
 } from "testUtils";
 
-jest.mock("components", () => ({
+jest.mock("../../Logo/Logo", () => ({
   __esModule: true,
-  Logo: jest.fn(),
-  UserCard: jest.fn()
+  default: jest.fn()
+}));
+
+jest.mock("../../UserCard/UserCard", () => ({
+  __esModule: true,
+  default: jest.fn()
 }));
 
 describe("<Header />", () => {

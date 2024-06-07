@@ -1,21 +1,16 @@
 import {
-  ManagementContainer,
-  StyledPaper
-} from "./TritonUsersViewWrapper.Styles";
-import {
-  TritonUsersHeader,
-  Pagination,
-  TritonUserTable
-} from "components";
-import { useAdminState } from "context";
-import { UMUser } from "globals";
+  ManagementContainer, StyledPaper
+} from "usermanagement/TritonUsersViewWrapper.Styles";
+import { Pagination } from "components/Pagination";
+import { TritonUsersHeader } from "usermanagement/TritonUsersHeader";
+import { TritonUserTable } from "usermanagement/TritonUserTable";
+import { useAdminState } from "context/appContext";
+import { UMUser } from "globals/interfaces";
 import React from "react";
-import {
-  filterWorkerSearch,
-  sortWorkersByFullName
-} from "utils";
+import { sortWorkersByFullName } from "utils/_sortUtils";
+import { filterWorkerSearch } from "utils/_filterUtils";
 
-const TritonUserManagementWrapper: any = () => {
+export const TritonUsersViewWrapper: any = () => {
 
   // Note: The table filters are kept in context so they can be retained across pages
   const defaultTableState: any = {
@@ -119,5 +114,3 @@ const TritonUserManagementWrapper: any = () => {
     </ManagementContainer>
   );
 };
-
-export default TritonUserManagementWrapper;

@@ -18,7 +18,7 @@ const TextInput = styled(TextField)`
   }
 `;
 
-const SearchBox = props => {
+export const SearchBox = props => {
   const {
     searchBy,
     setSearch,
@@ -61,5 +61,3 @@ SearchBox.propTypes = {
   setSearch: PropTypes.func.isRequired,
   styles: PropTypes.any
 };
-
-export default SearchBox;

@@ -1,7 +1,7 @@
-import StyledButton from "../StyledButton";
+import { StyledButton } from "../StyledButton";
 import { Button } from "@mui/material";
 import React from "react";
-import { theme } from "globals";
+import { theme } from "globals/theme";
 import { ThemeProvider } from "styled-components";
 import {
   act,
@@ -10,7 +10,6 @@ import {
 } from "testUtils";
 
 jest.mock("@mui/material", () => ({
-  __esModule: true,
   Button: jest.fn()
 }));
 

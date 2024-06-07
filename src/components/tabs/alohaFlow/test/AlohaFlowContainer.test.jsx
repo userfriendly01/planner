@@ -2,11 +2,11 @@ import React from "react";
 import {
   initialTestState, render
 } from "testUtils";
-import { AlohaFlowContainer } from "../index";
+import AlohaFlowContainer from "../AlohaFlowContainer";
 import DataGridFlow from "../DataGridFlow/DataGridFlow";
-import { useAdminState } from "context";
+import { useAdminState } from "context/appContext";
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
 }));
 

@@ -12,12 +12,12 @@ import {
   deleteDynamicFlowRule as v2DeleteFlowRule,
   updateFlowDB as v1UpdateFlowDB,
   updateDynamicFlowDB as v2UpdateFlowDB
-} from "services";
+} from "services/flowTableService";
 import {
   CctSharedCallFlowDb,
   FlowMasterData
 } from "../AlohaFlow.Interfaces";
-import { FormValidationRule } from "utils/interfaces";
+import { FormValidationRule } from "globals/interfaces";
 import { Action } from "../../dynamicFlow/DynamicFlow.Interfaces";
 
 /**

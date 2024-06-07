@@ -6,7 +6,7 @@ import {
 } from "../manager";
 import {
   getPaginatedResults
-} from "utils";
+} from "utils/graphUtils";
 import { apolloClient } from "../../components/core/Auth/SharedGraphAPIProvider";
 
 jest.mock("../../components/core/Auth/SharedGraphAPIProvider", () => ({
@@ -19,11 +19,8 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 
-jest.mock("utils", () => ({
-  getPaginatedResults: jest.fn(),
-  logger: {
-    error: jest.fn()
-  }
+jest.mock("utils/graphUtils", () => ({
+  getPaginatedResults: jest.fn()
 }));
 
 describe("addManager", () => {

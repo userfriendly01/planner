@@ -1,7 +1,6 @@
 import React, {
   useEffect, useState
 } from "react";
-import { AzureSPA } from "globals";
 import { CustomFlowGridToolBar } from "../CustomActions/CustomFlowGridToolBar";
 import {
   DynamicAction, DynamicFlowStateVariables,
@@ -9,25 +8,25 @@ import {
   DynamicStateVariables,
   PreviewModalAction, Action
 } from "../DynamicFlow.Interfaces";
-import { AlertBarProps } from "utils/interfaces";
+import {
+  AzureSPA, AlertBarProps
+} from "globals/interfaces";
 import {
   downloadCSV,
   EXPORT_FILE_PREFIX,
   initializedAlertBar
-} from "utils";
+} from "utils/alohaConfigUtils";
 import { PreviewModal } from "../PreviewModal/PreviewModal";
 import {
   batchDynamicFlowCreate,
   queryDynamicFlowData
-} from "services";
+} from "services/flowTableService";
 import { getDynamicGridMasterData } from "./DynamicGridMaster";
 import {
   DataGrid, GridRowId, GridRowSelectionModel, useGridApiRef
 } from "@mui/x-data-grid";
 import DynamicFlowGridColumnDef from "./DynamicGridColumnDef";
-import {
-  CustomToast
-} from "components";
+import { CustomToast } from "components/CustomToast";
 import {
   batchDeleteActionItems
 } from "../../alohaFlow/Utils/FlowTableServiceUtil";

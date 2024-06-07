@@ -5,14 +5,12 @@ import {
   ModalContainer
 } from "./CallFlowConfirmationModal.Styles";
 import { CallFlowConfirmationModalProps } from "./CallFlowConfirmationModal.Interfaces";
-import {
-  ModalOverlay,
-  PaperContainer,
-  ExportButton
-} from "components";
+import { ModalOverlay } from "components/ModalOverlay";
+import { PaperContainer } from "components/PaperContainer";
+import { ExportButton } from "callflowmanagement/ExportButton";
 import React from "react";
 
-const CallFlowConfirmationModal = (props: CallFlowConfirmationModalProps) => {
+export const CallFlowConfirmationModal = (props: CallFlowConfirmationModalProps) => {
   const {
     tableState,
     confirmationModalOpts,
@@ -46,5 +44,3 @@ const CallFlowConfirmationModal = (props: CallFlowConfirmationModalProps) => {
     </ModalContainer>
   );
 };
-
-export default CallFlowConfirmationModal;

@@ -10,10 +10,10 @@ import {
 import {
   RoutingHeadingStyled, RoutingModalSearchStyled
 } from "../../AlohaRouting.Styles";
-import SelectContainer from "../../../../core/SharedComponents/SelectContainer";
+import SelectContainer from "components/SelectContainer";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
-import { CACHE_FILTER_ROUTING } from "utils";
+import { CACHE_FILTER_ROUTING } from "utils/alohaRoutingUtils";
 import TextField from "@mui/material/TextField";
 
 interface AdvanceSearchModalProps{

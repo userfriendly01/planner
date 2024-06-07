@@ -5,34 +5,16 @@ import {
   checkIfPO,
   getWorkerProfileId
 } from "../authUtils";
-import { listUMUserRecords } from "services";
-import {
-  startups,
-  adGroupPermissionMapping,
-  authenticationProfileTemplates
-} from "testUtils";
-import {
-  getAdGroupPermissionMapping,
-  getAuthenticationProfileTemplates,
-  getStartupProfiles
-} from "authentication";
+import { listUMUserRecords } from "services/user";
 import { env } from "globals";
 
-jest.mock("components", () => ({
-  UserManagementWrapper: jest.fn(),
-  ProfileSettingsContainer: jest.fn(),
-  CallFlowManagementWrapper: jest.fn(),
-  AlohaRoutingContainer: jest.fn(),
-  AlohaFlowContainer: jest.fn()
+jest.mock("services/user", () => ({
+  listUMUserRecords: jest.fn()
 }));
 
 describe("authUtils", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    getAuthenticationProfileTemplates.mockReturnValue(authenticationProfileTemplates);
-    getAdGroupPermissionMapping.mockReturnValue(adGroupPermissionMapping);
-    getStartupProfiles.mockReturnValue(startups);
-
     delete env.APP_ENV;
   });
   describe("checkIfAdmin", () => {

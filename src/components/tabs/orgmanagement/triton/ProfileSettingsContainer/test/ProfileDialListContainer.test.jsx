@@ -1,12 +1,10 @@
-import ProfileDialListContainer from "../ProfileDialListContainer";
+import { ProfileDialListContainer } from "../ProfileDialListContainer";
 import MockAdapter from "axios-mock-adapter";
-import {
-  DialListTable,
-  ProfileDropDown,
-  StyledButton,
-} from "components";
-import { apiPaths } from "globals";
-import { useAdminState } from "context";
+import { StyledButton } from "components/StyledButton";
+import { DialListTable } from "orgmanagement/DialListTable";
+import { ProfileDropDown } from "orgmanagement/ProfileDropDown";
+import { apiPaths } from "globals/index";
+import { useAdminState } from "context/appContext";
 import React from "react";
 import { act } from "react-dom/test-utils";
 import {
@@ -19,19 +17,24 @@ import {
   waitFor,
   initialTestState as initialState
 } from "testUtils";
-import { myAxios } from "utils";
+import { myAxios } from "utils/myAxios";
 
 const axiosMock = new MockAdapter(myAxios);
 
-jest.mock("components", () => ({
-  __esModule: true,
-  DialListTable: jest.fn(),
-  ProfileDropDown: jest.fn(),
-  StyledButton: jest.fn(),
+jest.mock("orgmanagement/DialListTable", () => ({
+  DialListTable: jest.fn()
 }));
 
-jest.mock("context", () => ({
-  useAdminState: jest.fn(),
+jest.mock("orgmanagement/ProfileDropDown", () => ({
+  ProfileDropDown: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
+  StyledButton: jest.fn()
+}));
+
+jest.mock("context/appContext", () => ({
+  useAdminState: jest.fn()
 }));
 
 const profileList = [

@@ -1,5 +1,5 @@
-import ProfileDropDown from "../ProfileDropDown";
-import { Dropdown } from "components";
+import { ProfileDropDown } from "../ProfileDropDown";
+import { Dropdown } from "components/Dropdown";
 import React from "react";
 import {
   expectMockedComponent,
@@ -9,8 +9,7 @@ import {
   setupMockedComponents
 } from "testUtils";
 
-jest.mock("components", () => ({
-  __esModule: true,
+jest.mock("components/Dropdown", () => ({
   Dropdown: jest.fn()
 }));
 

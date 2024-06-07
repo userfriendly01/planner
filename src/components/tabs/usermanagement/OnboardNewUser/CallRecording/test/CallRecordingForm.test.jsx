@@ -1,13 +1,13 @@
 import React from "react";
-import CallRecordingForm from "../CallRecordingForm";
-import CallRecordingScope from "../CallRecordingScope";
-import { Dropdown } from "components";
+import { CallRecordingForm } from "../CallRecordingForm";
+import { CallRecordingScope } from "usermanagement/CallRecordingScope";
+import { Dropdown } from "components/Dropdown";
 import {
   useAdminState,
   useFormDispatch,
   useFormState
-} from "context";
-import { getCalabrioUser } from "services";
+} from "context/appContext";
+import { getCalabrioUser } from "services/calabrio";
 import {
   act,
   calabrioContext,
@@ -18,26 +18,29 @@ import {
   setupMockedComponents,
   waitFor
 } from "testUtils";
-import {
-  calabrioTimeZones, logger
-} from "utils";
+import { calabrioTimeZones } from "utils/calabrioUtils";
+import { logger } from "utils/logger";
 
-
-jest.mock("../CallRecordingScope", () => ({
-  __esModule: true,
-  default: jest.fn()
+jest.mock("usermanagement/CallRecordingScope", () => ({
+  CallRecordingScope: jest.fn()
 }));
 
-jest.mock("components", () => ({
-  Dropdown: jest.fn(),
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("components/Dropdown", () => ({
+  Dropdown: jest.fn()
+}));
+
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn(),
   useFormState: jest.fn(),
-  useFormDispatch: jest.fn(),
-  userFormActions: jest.requireActual("context").userFormActions
+  useFormDispatch: jest.fn()
+}));
+
+jest.mock("services/calabrio", () => ({
+  getCalabrioUser: jest.fn()
 }));
 
 const mockSetForm = jest.fn();

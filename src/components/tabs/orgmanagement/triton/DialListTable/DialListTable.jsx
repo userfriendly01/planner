@@ -6,26 +6,22 @@ import {
   Delete,
   Edit
 } from "@mui/icons-material";
-import {
-  DialListEntryForm,
-  ModalOverlay,
-  StyledButton
-} from "components";
+import { DialListEntryForm } from "orgmanagement/DialListEntryForm";
+import { ModalOverlay } from "components/ModalOverlay";
+import { StyledButton } from "components/StyledButton";
 import {
   apiPaths,
   formModes,
-  ModalOverlayStatuses,
   timeouts
-} from "globals";
+} from "globals/index";
+import { ModalOverlayStatuses } from "globals/interfaces";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
-import {
-  formatTenDigitNumber,
-  logger,
-  myAxios
-} from "utils";
+import { formatTenDigitNumber } from "utils/numberUtils";
+import { logger } from "utils/logger";
+import { myAxios } from "utils/myAxios";
 import styled from "styled-components";
-import { useAdminState } from "context";
+import { useAdminState } from "context/appContext";
 
 const AddContactButtonContainer = styled.div`
   display: flex;
@@ -123,7 +119,7 @@ const TableText = styled.div`
   margin: 2px;
 `;
 
-const DialListTable = props => {
+export const DialListTable = props => {
   const {
     dialList,
     profileId,
@@ -287,5 +283,3 @@ DialListTable.propTypes = {
   profileId: PropTypes.number.isRequired,
   refreshProfileData: PropTypes.func.isRequired
 };
-
-export default DialListTable;

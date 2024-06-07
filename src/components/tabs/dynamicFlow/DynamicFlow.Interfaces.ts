@@ -1,5 +1,6 @@
-import { Control } from "globals";
-import { FormValidationRule } from "utils/interfaces";
+import {
+  Control, FormValidationRule
+} from "globals/interfaces";
 import { MultiFieldContainerFormProps } from "components/core/SharedComponents/MultiFieldContainer";
 
 export type PreviewModalAction = "add" | "delete";

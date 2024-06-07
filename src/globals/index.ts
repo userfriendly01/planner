@@ -1,9 +1,4 @@
-import { FormModes } from "globals";
-
-export * from "./interfaces";
-export * from "./theme";
-export * from "./styles";
-export * from "./graphql";
+import { FormModes } from "globals/interfaces";
 
 // We're adding this to the window and can really be anywhere
 // We'll put it here for reference to the below on why it's neede
@@ -31,7 +26,6 @@ const SERVICE_BASE_URI = env.SOFTPHONE_SERVICE_URL;
 
 export const nNumMatcher = /[n,N]\d{7}/g;
 export const extensionMatcher = /^\d{4,5}$/;
-export const workersPerPage = 15;
 
 export const formModes: FormModes = {
   INSERT: "insert",

@@ -1,8 +1,6 @@
-import {
-  Dropdown,
-  MessageContainer,
-  SkillGroupInputContainer
-} from "components";
+import { Dropdown } from "components/Dropdown";
+import { MessageContainer } from "callflowmanagement/MessageContainer";
+import { SkillGroupInputContainer } from "callflowmanagement/SkillGroupInputContainer";
 import React from "react";
 import {
   propertyOptions,
@@ -10,7 +8,7 @@ import {
 } from "../Skills.Interfaces";
 import { FormControlsContainer } from "../Skills.Styles";
 
-const ActionContainer = (props: ActionContainerProps) => {
+export const ActionContainer = (props: ActionContainerProps) => {
   const {
     confirmationModalOpts,
     tableState,
@@ -93,5 +91,3 @@ const ActionContainer = (props: ActionContainerProps) => {
     </FormControlsContainer>
   );
 };
-
-export default ActionContainer;

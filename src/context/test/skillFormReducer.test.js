@@ -2,8 +2,7 @@ import {
   skillFormActions,
   skillFormReducer,
   initialSkillFormState
-} from "context";
-import { formModes } from "globals";
+} from "../reducers/skillFormReducer";
 
 describe("skillFormReducer", () => {
   describe("default case", () => {

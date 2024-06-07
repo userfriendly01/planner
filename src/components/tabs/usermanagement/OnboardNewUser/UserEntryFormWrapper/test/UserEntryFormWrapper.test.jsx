@@ -1,18 +1,16 @@
-import UserEntryForm from "../UserEntryFormWrapper";
-import {
-  CallRecordingForm,
-  DeleteTritonUser,
-  ModalOverlay,
-  StyledButton,
-  UserFormButtons,
-  WfmForm
-} from "components";
+import { UserEntryForm } from "../UserEntryFormWrapper";
+import { DeleteTritonUser } from "usermanagement/DeleteUserProfiles";
+import { ModalOverlay } from "components/ModalOverlay";
+import { StyledButton } from "components/StyledButton";
+import { CallRecordingForm } from "usermanagement/CallRecordingForm";
+import { UserFormButtons } from "usermanagement/UserFormButtons";
+import { WfmForm } from "usermanagement/WfmForm";
 import {
   useAdminState,
   useFormState,
-  useFormDispatch,
-  userFormActions
-} from "context";
+  useFormDispatch
+} from "context/appContext";
+import { userFormActions } from "context/userFormReducer";
 import { formModes } from "globals";
 import { Checkbox } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -23,10 +21,8 @@ import {
   expectOnlyPassedProps,
   render,
   setupMockedComponents,
-  mockWorkers,
   initialFormState,
-  initialTestState,
-  waitFor
+  initialTestState
 } from "testUtils";
 
 jest.mock("react-router-dom", () => ({
@@ -36,29 +32,41 @@ jest.mock("react-router-dom", () => ({
 jest.mock("@mui/material", () => ({
   Checkbox: jest.fn(),
   Divider: jest.fn(),
-  Tabs: jest.fn(),
-  Tab: jest.fn()
+  Tabs: jest.fn()
 }));
 
-jest.mock("components", () => ({
-  __esModule: true,
-  DeleteTritonUser: jest.fn(),
-  CallRecordingForm: jest.fn(),
-  ModalOverlay: jest.fn(),
-  BasicFormInfo: jest.fn(),
-  StyledButton: jest.fn(),
-  UserFormButtons: jest.fn(),
+jest.mock("usermanagement/DeleteUserProfiles", () => ({
+  DeleteTritonUser: jest.fn()
+}));
+
+jest.mock("usermanagement/CallRecordingForm", () => ({
+  CallRecordingForm: jest.fn()
+}));
+
+jest.mock("components/ModalOverlay", () => ({
+  ModalOverlay: jest.fn()
+}));
+
+jest.mock("usermanagement/BasicFormInfo", () => ({
+  BasicFormInfo: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
+  StyledButton: jest.fn()
+}));
+
+jest.mock("usermanagement/UserFormButtons", () => ({
+  UserFormButtons: jest.fn()
+}));
+
+jest.mock("usermanagement/WfmForm", () => ({
   WfmForm: jest.fn()
 }));
 
-jest.mock("context", () => ({
-  __esModule: true,
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn(),
   useFormState: jest.fn(),
-  useFormDispatch: jest.fn(),
-  userFormActions: jest.requireActual("context").userFormActions,
-  initialState: jest.requireActual("context").initialState,
-  profileEntryFormActions: jest.requireActual("context").profileEntryFormActions
+  useFormDispatch: jest.fn()
 }));
 
 jest.useFakeTimers();
@@ -72,7 +80,7 @@ describe("<UserEntryForm />", () => {
     jest.clearAllMocks();
     jest.resetAllMocks();
     useFormDispatch.mockReturnValue(mockSetForm);
-    useFormState.mockReturnValue({...initialFormState });
+    useFormState.mockReturnValue({ ...initialFormState });
     useAdminState.mockReturnValue(initialTestState);
     useNavigate.mockReturnValue(mockNavigate);
     setupMockedComponents({
@@ -141,7 +149,9 @@ describe("<UserEntryForm />", () => {
     });
     describe("Header", () => {
       test(`Header should read 'Add a User' when form.formMode === ${formModes.INSERT}`, () => {
-        const { container, unmount } = renderComponent();
+        const {
+          container, unmount
+        } = renderComponent();
         expect(container).toHaveTextContent("Onboard New User");
         act(() => unmount());
       });
@@ -153,7 +163,9 @@ describe("<UserEntryForm />", () => {
             value: "n222354"
           }
         });
-        const { container, unmount } = render(
+        const {
+          container, unmount
+        } = render(
           <UserEntryForm
             handleClose={mockHandleClose}
           />
@@ -176,7 +188,9 @@ describe("<UserEntryForm />", () => {
         });
       });
       test("Should render discrepancy messages", () => {
-        const { container, unmount } = renderComponent();
+        const {
+          container, unmount
+        } = renderComponent();
         expect(ModalOverlay.mock.calls.length).toBe(0);
         expect(container).toHaveTextContent("Discrepencies have been found for this worker. They will be corrected when you hit 'Save User' unless otherwise specified ");
         expect(container).toHaveTextContent("Missing Profile");
@@ -392,7 +406,9 @@ describe("<UserEntryForm />", () => {
         });
       });
       test("Should render the correct initial state", () => {
-        const { unmount, container } = renderComponent();
+        const {
+          unmount, container
+        } = renderComponent();
         expect(container).toHaveTextContent("Deactivate User");
         expect(DeleteTritonUser.mock.calls.length).toBe(1);
         act(() => unmount());

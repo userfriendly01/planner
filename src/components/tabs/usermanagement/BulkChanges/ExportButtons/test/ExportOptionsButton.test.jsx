@@ -1,6 +1,6 @@
-import ExportOptionsButton from "../ExportOptionsButton";
-import { Button } from "../../BulkChanges.Styles";
-import { getCreateTemplates } from "../../BulkTemplates";
+import { ExportOptionsButton } from "../ExportOptionsButton";
+import { Button } from "usermanagement/BulkChanges.Styles";
+import { getCreateTemplates } from "usermanagement/templates";
 import React from "react";
 import { ExcelExport } from "@progress/kendo-react-excel-export";
 import {

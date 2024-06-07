@@ -1,11 +1,11 @@
 
-import { Button } from "../BulkChanges.Styles";
+import { Button } from "usermanagement/BulkChanges.Styles";
 import React from "react";
 import {
   ExcelExport
 } from "@progress/kendo-react-excel-export";
 
-const ExportOptionsButton = (props: any) => {
+export const ExportOptionsButton = (props: any) => {
   const {
     template,
     state,
@@ -68,5 +68,3 @@ const ExportOptionsButton = (props: any) => {
     </Button>
   );
 };
-
-export default ExportOptionsButton;

@@ -5,8 +5,8 @@ import DataGridFlow from "./DataGridFlow/DataGridFlow";
 import {
   FLOW_MASTER_DATA,
   LAST_FLOW_MASTER_DATA_CACHED_DATE
-} from "utils";
-import { useAdminState } from "context";
+} from "utils/alohaFlowUtils";
+import { useAdminState } from "context/appContext";
 
 const AlohaFlowContainer = () => {
   const {
