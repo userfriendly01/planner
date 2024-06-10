@@ -27,7 +27,7 @@ import {
   AlertBarController,
   AlertBarProps,
   initialAlertBarProps
-} from "../../common/AlertBar";
+} from "../../common/AlertBar.Controller";
 import { DynamicCallFlowActionContext } from "../DynamicCallFlow.Action.Container";
 import { NotInUseModalType } from "../../common/Modal.Controller";
 

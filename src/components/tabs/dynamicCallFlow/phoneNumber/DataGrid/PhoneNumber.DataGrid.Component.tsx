@@ -41,7 +41,7 @@ import {
 import { AddPhoneNumberFormHandler } from "../Form/Add.PhoneNumber.Form.Handler";
 import {
   AlertBarController, AlertBarProps, initialAlertBarProps
-} from "../../common/AlertBar";
+} from "../../common/AlertBar.Controller";
 import { DynamicCallFlowPhoneNumberContext } from "../DynamicCallFlow.PhoneNumber.Container";
 import { PhoneNumberModalTypeEnum } from "../DynamicCallFlow.PhoneNumber.Container.Modal.Controller";
 import { PhoneNumberDataGridFilter } from "./PhoneNumber.DataGrid.Filter";

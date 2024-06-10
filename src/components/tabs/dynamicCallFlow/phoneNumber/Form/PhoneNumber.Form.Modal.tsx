@@ -28,7 +28,7 @@ import { PhoneNumberRecordUtil } from "../GraphQL/PhoneNumber.Record.Util";
 
 import {
   AlertBarProps, initialAlertBarProps
-} from "../../common/AlertBar";
+} from "../../common/AlertBar.Controller";
 import {
   AlertBarControllerRef, ReactStateAction
 } from "../../common/Container.Interfaces";

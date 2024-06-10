@@ -3,7 +3,7 @@ import {
   AlertBarControllerRef, DataGridFilterRef,
   ReactGridApi, ReactSetState
 } from "../Container.Interfaces";
-import { AlertBarController } from "../AlertBar";
+import { AlertBarController } from "../AlertBar.Controller";
 import { GridApiCommunity } from "@mui/x-data-grid/internals";
 import { DataGridFilter } from "./Abstract.DataGrid.Filter";
 

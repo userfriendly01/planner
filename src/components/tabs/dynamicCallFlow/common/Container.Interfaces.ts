@@ -1,6 +1,6 @@
 import React from "react";
 import { GridApiCommunity } from "@mui/x-data-grid/internals";
-import { AlertBarController } from "./AlertBar";
+import { AlertBarController } from "./AlertBar.Controller";
 import { DataGridFilter } from "./DataGrid/Abstract.DataGrid.Filter";
 import { DataGridController } from "./DataGrid/Abstract.DataGrid.Controller";
 
