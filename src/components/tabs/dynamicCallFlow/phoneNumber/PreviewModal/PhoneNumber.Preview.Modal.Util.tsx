@@ -130,7 +130,7 @@ const fetchData = (): DynamicCallFlowPhoneNumberDropDownList =>{
     return;
   }
   const masterDataObject: DynamicCallFlowPhoneNumberMasterData = JSON.parse(masterData);
-  return DynamicCallFlowPhoneNumberDropDownList = {
+  return {
     brand: masterDataObject.brand,
     channel: masterDataObject.channel,
     languageOffer,
