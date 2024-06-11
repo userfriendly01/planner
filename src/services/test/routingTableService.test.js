@@ -327,7 +327,7 @@ describe("routingTableService",()=>{
       expect(window.fetch).toBeCalledWith("http://localhost:3000", {
         "body": "{\"query\":\"\\n        mutation DeleteMany {\\n          batchDeleteCctSharedCallRoutingGlobalDb(input: {\\n              routingKey: [{pkey:\\\"pkey1\\\",skey:\\\"skey1\\\",\\\"id\\\":1},{pkey:\\\"pkey2\\\",skey:\\\"skey2\\\",\\\"id\\\":2}]\\n            }) {\\n            items {\\n              pkey\\n              skey\\n            }\\n          }\\n        }\\n    \",\"variables\":{}}",
         "headers": {
-          "Authorization": "1233-3245",
+          "Authorization": "Bearer 1233-3245",
           "Content-Type": "application/json"
         },
         "method": "POST"
@@ -363,7 +363,7 @@ describe("routingTableService",()=>{
       expect(window.fetch).toBeCalledWith("http://localhost:3000", {
         "body": "{\"query\":\"\\n        mutation batchUpdateCctSharedCallRoutingDb($input: CctSharedCallRoutingDbBatchUpdateInput!) {\\n          batchUpdateCctSharedCallRoutingDb(input: $input) {\\n            items {\\n              all\\n              brand\\n              callIntent\\n              callerState\\n              callerType\\n              channel\\n              crcSkill\\n              dayOfWeek\\n              endTime\\n              occupancyCheck {\\n                percentage\\n                team\\n              }\\n              percentOfCallers\\n              pkey\\n              policyType\\n              priority\\n              routingSteps {\\n                callerState\\n                teams\\n                time\\n              }\\n              skey\\n              startTime\\n              transferDestination\\n              transferMessage\\n              twilioSkill\\n              tfnRoutingGroup\\n              alternateTransferDestination\\n            }\\n            nextToken\\n          }\\n        }\\n      \",\"variables\":{\"input\":{\"batchRoutingUpdateInput\":[{\"all\":\"ALL\",\"pkey\":\"pkey1\",\"skey\":\"skey1\",\"brand\":\"Liberty\",\"channel\":\"safeco\",\"callIntent\":\"call\",\"dayOfWeek\":\"Monday\",\"callerState\":\"callerstate\",\"callerType\":\"CT\",\"twilioSkill\":\"\",\"transferDestination\":\"\",\"percentOfCallers\":\"10\",\"transferMessage\":\"message\",\"policyType\":\"polcy\",\"startTime\":\"2022-02-20\",\"endTime\":\"2022-02-20\",\"crcSkill\":\"\",\"priority\":\"\",\"occupancyCheck\":[],\"routingSteps\":[],\"tfnRoutingGroup\":\"\",\"alternateTransferDestination\":\"\"},{\"all\":\"ALL\",\"pkey\":\"pkey2\",\"skey\":\"skey2\",\"brand\":\"Liberty\",\"channel\":\"safeco\",\"callIntent\":\"call\",\"dayOfWeek\":\"Monday\",\"callerState\":\"callerstate\",\"callerType\":\"CT\",\"twilioSkill\":\"\",\"transferDestination\":\"\",\"percentOfCallers\":\"10\",\"transferMessage\":\"message\",\"policyType\":\"policy\",\"startTime\":\"2022-02-20\",\"endTime\":\"2022-02-20\",\"crcSkill\":\"\",\"priority\":\"\",\"occupancyCheck\":[],\"routingSteps\":[],\"tfnRoutingGroup\":\"\",\"alternateTransferDestination\":\"\"}]}}}",
         "headers": {
-          "Authorization": "1233-3245",
+          "Authorization": "Bearer 1233-3245",
           "Content-Type": "application/json"
         },
         "method": "POST"

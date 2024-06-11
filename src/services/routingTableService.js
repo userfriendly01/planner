@@ -16,7 +16,7 @@ async function queryRoutingData(accessToken, nextToken = null) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body: JSON.stringify({
         query: `
@@ -137,7 +137,7 @@ async function updateRoutingDB(item, accessToken) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body: JSON.stringify({
         query: `
@@ -224,7 +224,7 @@ async function addRoutingRule(item, accessToken) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body: JSON.stringify({
         query: `
@@ -287,7 +287,7 @@ async function deleteRoutingRule(item, accessToken) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body: JSON.stringify({
         query: `
@@ -405,7 +405,7 @@ async function batchDelete(items, accessToken) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body
     });
@@ -488,7 +488,7 @@ const batchRoutingUpdate = async(items, accessToken) =>{
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body: JSON.stringify({
         query: `
@@ -613,7 +613,7 @@ const batchRoutingCreate = async(items, accessToken) =>{
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body: JSON.stringify({
         query: `
