@@ -7,7 +7,6 @@ import {
   render, setupMockedComponents, act, adGroupPermissionMapping
 } from "testUtils";
 import { CACHE_FILTER_ROUTING } from "utils/alohaRoutingUtils";
-import { useAdminState } from "context/appContext";
 
 jest.mock("@mui/material", () => ({
   __esModule: true,
@@ -37,16 +36,6 @@ const isAdvanceSearchModalOpen = true;
 
 const mockedRoutingFilter = {
   brand: "Liberty Mutual"
-};
-
-const initData={
-  userContext: {
-    nNumber: "n1234567",
-    profileId: 10,
-    isAdmin: false,
-    accessToken: "adsjfhakdf",
-    permissions: [adGroupPermissionMapping[0]]
-  }
 };
 
 const renderCustomToolBar = () =>{
@@ -81,7 +70,6 @@ describe("<CustomRoutingGridToolBar />", ()=>{
     localStorage.removeItem(CACHE_FILTER_ROUTING);
   });
   test("Simulate Custom Routing Toolbar For Routing Export",()=>{
-    useAdminState.mockReturnValue(initData);
     renderCustomToolBar();
     const GridMock = Grid.mock.calls[0][0];
     const ExportFlowUI = GridMock.children[1].props.children[0].props.children.props.onClick;
@@ -92,7 +80,6 @@ describe("<CustomRoutingGridToolBar />", ()=>{
     expect(exportDataFile).toBeCalledTimes(1);
   });
   test("Simulate Custom Routing Toolbar with production as Env",()=>{
-    useAdminState.mockReturnValue(initData);
     renderCustomToolBar();
     const GridMock = Grid.mock.calls[0][0];
     const ExportFlowUI = GridMock.children[1].props.children[0].props.children.props.onClick;
