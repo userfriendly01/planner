@@ -20,6 +20,7 @@ import {
   useAdminDispatch, useAdminState
 } from "context/appContext";
 import { theme } from "globals/theme";
+import { env } from "globals/index";
 import { getRoutes } from "globals/routes";
 import React, {
   useEffect,
@@ -118,12 +119,22 @@ const App = () => {
           scopes: ["User.Read"]
         });
 
+        const {
+          accessToken: accessTokenGraph,
+          expiresOn: expiresOnGraph
+        } = await instance.acquireTokenSilent({
+          account,
+          scopes: [`${env.GRAPH_CLIENT_ID}/.default`]
+        });
+
         logger.log(`*** MSAL: Token acquired, will expire at ${expiresOn} ***`);
+        logger.log(`*** MSAL: Graph Token acquired, will expire at ${expiresOnGraph} ***`);
 
         dispatch({
           type: "loadUserData",
           payload: {
-            accessToken
+            accessToken,
+            accessTokenGraph
           }
         });
 

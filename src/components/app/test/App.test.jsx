@@ -139,6 +139,7 @@ const permissions = [adGroupPermissionMapping[0]];
 
 describe("<App />", () => {
   let acquireTokenPopupFunc;
+  let acquireTokenSilentFunc;
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -170,6 +171,11 @@ describe("<App />", () => {
       expiresOn: new Date()
     });
 
+    acquireTokenSilentFunc = jest.fn().mockReturnValue({
+      accessToken: "Access Token",
+      expiresOn: new Date()
+    });
+
     useMsal.mockReturnValue({
       instance: {
         getActiveAccount: jest.fn().mockReturnValue({
@@ -178,7 +184,8 @@ describe("<App />", () => {
             employeeid: "n1234567"
           }
         }),
-        acquireTokenPopup: acquireTokenPopupFunc
+        acquireTokenPopup: acquireTokenPopupFunc,
+        acquireTokenSilent: acquireTokenSilentFunc
       }
     });
   });
@@ -195,11 +202,13 @@ describe("<App />", () => {
 
       await waitFor(() => {
         expect(acquireTokenPopupFunc).toHaveBeenCalled();
+        expect(acquireTokenSilentFunc).toHaveBeenCalled();
 
         expect(mockAdminDispatch).toHaveBeenCalledWith({
           type: "loadUserData",
           payload: {
-            accessToken: "Access Token"
+            accessToken: "Access Token",
+            accessTokenGraph: "Access Token"
           }
         });
       });
@@ -211,7 +220,8 @@ describe("<App />", () => {
       useAdminState.mockReturnValue({
         userContext: {
           permissions: [],
-          accessToken: "Access Token"
+          accessToken: "Access Token",
+          accessTokenGraph: "Access Token"
         },
         workerContext: {
           workers: []
@@ -230,6 +240,10 @@ describe("<App />", () => {
             }
           }),
           acquireTokenPopup: jest.fn().mockReturnValue({
+            accessToken: "Access Token",
+            expiresOn: new Date(1704067201000)
+          }),
+          acquireTokenSilent: jest.fn().mockReturnValue({
             accessToken: "Access Token",
             expiresOn: new Date(1704067201000)
           })
@@ -259,7 +273,8 @@ describe("<App />", () => {
       expect(mockAdminDispatch).toHaveBeenCalledWith({
         type: "loadUserData",
         payload: {
-          accessToken: "Access Token"
+          accessToken: "Access Token",
+          accessTokenGraph: "Access Token"
         }
       });
     });
@@ -269,7 +284,8 @@ describe("<App />", () => {
     test("User has no permissions", async () => {
       useAdminState.mockReturnValue({
         userContext: {
-          accessToken: "Access Token"
+          accessToken: "Access Token",
+          accessTokenGraph: "Access Token"
         },
         workerContext: {
           workers: []
@@ -287,7 +303,8 @@ describe("<App />", () => {
     test("Startup fails to run", async () => {
       useAdminState.mockReturnValue({
         userContext: {
-          accessToken: "Access Token"
+          accessToken: "Access Token",
+          accessTokenGraph: "Access Token"
         },
         workerContext: {
           workers: []
@@ -331,12 +348,14 @@ describe("<App />", () => {
 
   describe("token refresh modal", () => {
     acquireTokenPopupFunc = jest.fn();
+    acquireTokenSilentFunc = jest.fn();
 
     beforeEach(() => {
       useAdminState.mockReturnValue({
         userContext: {
           permissions: [],
-          accessToken: "Access Token"
+          accessToken: "Access Token",
+          accessTokenGraph: "Access Token"
         },
         workerContext: {
           workers: []
@@ -360,7 +379,8 @@ describe("<App />", () => {
               employeeid: "n1234567"
             }
           }),
-          acquireTokenPopup: acquireTokenPopupFunc
+          acquireTokenPopup: acquireTokenPopupFunc,
+          acquireTokenSilent: acquireTokenSilentFunc
         }
       });
 
@@ -370,7 +390,8 @@ describe("<App />", () => {
         expect(mockAdminDispatch).toHaveBeenCalledWith({
           type: "loadUserData",
           payload: {
-            accessToken: "Access Token"
+            accessToken: "Access Token",
+            accessTokenGraph: "Access Token"
           }
         });
       });
