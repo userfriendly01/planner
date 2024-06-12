@@ -16,7 +16,7 @@ export abstract class AbstractPhoneNumberFormHandler extends AbstractFormHandler
 
     // Dynamic Phone Number uses phoneNumber as the pkey and does not have a pkey field
     if (PhoneNumberRecordUtil.isDynamicPhoneNumberRecord(record)) {
-      (record as PhoneNumber).phoneNumber = record.pkey as string;
+      (record as PhoneNumber).phoneNumber = record.pkey as string || (record as PhoneNumber).phoneNumber;
       delete record[PKEY];
     }
   }
