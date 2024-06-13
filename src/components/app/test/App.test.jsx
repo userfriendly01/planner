@@ -138,7 +138,8 @@ const mockAdminDispatch = jest.fn();
 const permissions = [adGroupPermissionMapping[0]];
 
 describe("<App />", () => {
-  let acquireTokenPopupFunc;
+  let loginPopupFunc;
+  let acquireTokenSilentFunc;
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -165,7 +166,12 @@ describe("<App />", () => {
     getFilteredPermissions.mockReturnValue(permissions);
     getWorkerProfileId.mockReturnValue(0);
 
-    acquireTokenPopupFunc = jest.fn().mockReturnValue({
+    loginPopupFunc = jest.fn().mockReturnValue({
+      accessToken: "Access Token",
+      expiresOn: new Date()
+    });
+
+    acquireTokenSilentFunc = jest.fn().mockReturnValue({
       accessToken: "Access Token",
       expiresOn: new Date()
     });
@@ -178,7 +184,8 @@ describe("<App />", () => {
             employeeid: "n1234567"
           }
         }),
-        acquireTokenPopup: acquireTokenPopupFunc
+        loginPopup: loginPopupFunc,
+        acquireTokenSilent: acquireTokenSilentFunc
       }
     });
   });
@@ -190,16 +197,18 @@ describe("<App />", () => {
       expectMockedComponent(rendered, { CircularProgress });
     });
 
-    test("should call to acquireTokenPopup and get a token", async () => {
+    test("should call to loginPopup and get a token", async () => {
       render(<App />);
 
       await waitFor(() => {
-        expect(acquireTokenPopupFunc).toHaveBeenCalled();
+        expect(loginPopupFunc).toHaveBeenCalled();
+        expect(acquireTokenSilentFunc).toHaveBeenCalled();
 
         expect(mockAdminDispatch).toHaveBeenCalledWith({
           type: "loadUserData",
           payload: {
-            accessToken: "Access Token"
+            accessToken: "Access Token",
+            accessTokenGraph: "Access Token"
           }
         });
       });
@@ -211,7 +220,8 @@ describe("<App />", () => {
       useAdminState.mockReturnValue({
         userContext: {
           permissions: [],
-          accessToken: "Access Token"
+          accessToken: "Access Token",
+          accessTokenGraph: "Access Token"
         },
         workerContext: {
           workers: []
@@ -229,7 +239,11 @@ describe("<App />", () => {
               employeeid: "n1234567"
             }
           }),
-          acquireTokenPopup: jest.fn().mockReturnValue({
+          loginPopup: jest.fn().mockReturnValue({
+            accessToken: "Access Token",
+            expiresOn: new Date(1704067201000)
+          }),
+          acquireTokenSilent: jest.fn().mockReturnValue({
             accessToken: "Access Token",
             expiresOn: new Date(1704067201000)
           })
@@ -259,7 +273,8 @@ describe("<App />", () => {
       expect(mockAdminDispatch).toHaveBeenCalledWith({
         type: "loadUserData",
         payload: {
-          accessToken: "Access Token"
+          accessToken: "Access Token",
+          accessTokenGraph: "Access Token"
         }
       });
     });
@@ -269,7 +284,8 @@ describe("<App />", () => {
     test("User has no permissions", async () => {
       useAdminState.mockReturnValue({
         userContext: {
-          accessToken: "Access Token"
+          accessToken: "Access Token",
+          accessTokenGraph: "Access Token"
         },
         workerContext: {
           workers: []
@@ -287,7 +303,8 @@ describe("<App />", () => {
     test("Startup fails to run", async () => {
       useAdminState.mockReturnValue({
         userContext: {
-          accessToken: "Access Token"
+          accessToken: "Access Token",
+          accessTokenGraph: "Access Token"
         },
         workerContext: {
           workers: []
@@ -314,8 +331,8 @@ describe("<App />", () => {
       expect(rendered.container).toHaveTextContent(401);
     });
 
-    test("acquireTokenPopup throws an error", async () => {
-      acquireTokenPopupFunc.mockRejectedValue({
+    test("loginPopup throws an error", async () => {
+      loginPopupFunc.mockRejectedValue({
         errorMessage: "Popup went wrong",
         errorCode: 401
       });
@@ -330,13 +347,15 @@ describe("<App />", () => {
   });
 
   describe("token refresh modal", () => {
-    acquireTokenPopupFunc = jest.fn();
+    loginPopupFunc = jest.fn();
+    acquireTokenSilentFunc = jest.fn();
 
     beforeEach(() => {
       useAdminState.mockReturnValue({
         userContext: {
           permissions: [],
-          accessToken: "Access Token"
+          accessToken: "Access Token",
+          accessTokenGraph: "Access Token"
         },
         workerContext: {
           workers: []
@@ -345,7 +364,7 @@ describe("<App />", () => {
 
       Date.now = jest.fn();
       Date.now.mockReturnValue(1704067200000);
-      acquireTokenPopupFunc.mockReturnValue({
+      loginPopupFunc.mockReturnValue({
         accessToken: "Access Token",
         expiresOn: new Date(1704067201000)
       });
@@ -360,7 +379,8 @@ describe("<App />", () => {
               employeeid: "n1234567"
             }
           }),
-          acquireTokenPopup: acquireTokenPopupFunc
+          loginPopup: loginPopupFunc,
+          acquireTokenSilent: acquireTokenSilentFunc
         }
       });
 
@@ -370,7 +390,8 @@ describe("<App />", () => {
         expect(mockAdminDispatch).toHaveBeenCalledWith({
           type: "loadUserData",
           payload: {
-            accessToken: "Access Token"
+            accessToken: "Access Token",
+            accessTokenGraph: "Access Token"
           }
         });
       });

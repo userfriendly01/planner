@@ -474,7 +474,7 @@ async function updateFlowDB(item, accessToken) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body: JSON.stringify({
         query: `
@@ -549,7 +549,7 @@ async function addFlowRule(item, accessToken, curTime = new Date().toISOString()
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body: JSON.stringify({
         query: `
@@ -622,7 +622,7 @@ async function deleteFlowRule(item, accessToken) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body: JSON.stringify({
         query: `
@@ -730,7 +730,7 @@ async function flowBatchDelete(items, accessToken){
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body
     });
@@ -831,7 +831,7 @@ const updateFlowBatchRun = async(items, accessToken) =>{
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body: JSON.stringify({
         query: `
@@ -1078,7 +1078,7 @@ const createDynamicFlowRunItem = async(items, accessToken) =>{
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body: JSON.stringify({
         query: `
@@ -1156,7 +1156,7 @@ const createFlowRunItem = async(items, accessToken) =>{
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body: JSON.stringify({
         query: `
@@ -1356,7 +1356,7 @@ async function updateDynamicFlowDB(item, accessToken) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body: JSON.stringify({
         query: `
@@ -1443,7 +1443,7 @@ async function addDynamicFlowRule(item, accessToken, curTime = Math.floor(new Da
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body: JSON.stringify({
         query: `
@@ -1483,7 +1483,7 @@ async function deleteDynamicFlowRule(item, accessToken) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body: JSON.stringify({
         query: `
@@ -1576,7 +1576,7 @@ async function flowDynamicBatchDelete(items, accessToken){
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body
     });
@@ -1669,7 +1669,7 @@ const updateDynamicFlowBatchRun = async(items, accessToken) =>{
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body: JSON.stringify({
         query: `

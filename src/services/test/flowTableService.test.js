@@ -373,7 +373,7 @@ describe("flowTableService",()=>{
       expect(window.fetch).toBeCalledWith("http://localhost:3000", {
         "body": "{\"query\":\"\\n        mutation DeleteManyFlow {\\n          batchDeleteCctSharedCallFlowDb(input: {\\n            pkey: [\\\"pkey1\\\",\\\"pkey1\\\",\\\"pkey3\\\"]\\n            }) {\\n            items {\\n              pkey\\n            }\\n          }\\n        }\\n    \",\"variables\":{}}",
         "headers": {
-          "Authorization": "1233-3245",
+          "Authorization": "Bearer 1233-3245",
           "Content-Type": "application/json"
         },
         "method": "POST"
@@ -434,7 +434,7 @@ describe("flowTableService",()=>{
       expect(window.fetch).toBeCalledWith("http://localhost:3000", {
         "body": "{\"query\":\"\\n        mutation batchUpdateCctSharedCallFlowDb($input: CctSharedCallFlowDbBatchUpdateInput!) {\\n          batchUpdateCctSharedCallFlowDb(input: $input) {\\n            items {\\n              accountManager\\n              affinityVDN\\n              agentId\\n              brand\\n              callDetails1\\n              callDetails2\\n              callFlowTemplate\\n              callTypeDescription\\n              channel\\n              content {\\n                callFlowRoute\\n                callIntent\\n                callerType\\n                dataRequests\\n                greetingMessages\\n                languageOffer\\n                transferNumber\\n              }\\n              createTime\\n              dialedDescription\\n              employeeId\\n              internetPlacement\\n              lineOfBusiness\\n              marketingChannel\\n              pkey\\n              predictiveCaller\\n              rangeIndicator\\n              requestID\\n              selfServiceIndicator\\n              tollFreeNumber\\n              tfnRoutingGroup\\n              transferCode\\n              type\\n              userDestination\\n              whisper\\n            }\\n          }\\n        }\\n      \",\"variables\":{\"input\":{\"batchFlowUpdateInput\":[{\"pkey\":{\"value\":\"12345\"},\"agentId\":\"\",\"brand\":{\"value\":\"LM\"},\"callFlowTemplate\":{\"value\":\"temp\"},\"channel\":{\"value\":\"Test1 Channel\"},\"content\":{\"callIntent\":\"\",\"callFlowRoute\":\"\",\"callerType\":\"\",\"greetingMessages\":\"\",\"transferNumber\":\"\",\"languageOffer\":\"\"},\"createTime\":{\"value\":\"2022-01-08\"},\"updateTime\":\"2024-01-30T05:00:00.000Z\",\"dialedDescription\":{\"value\":\"test\"},\"accountManager\":\"\",\"affinityVDN\":\"\",\"callTypeDescription\":\"\",\"transferCode\":\"\",\"internetPlacement\":\"\",\"callDetails1\":\"\",\"callDetails2\":\"\",\"tollFreeNumber\":\"\",\"lineOfBusiness\":\"\",\"marketingChannel\":\"\",\"predictiveCaller\":false,\"selfServiceIndicator\":false,\"whisper\":\"\",\"requestID\":\"\",\"userDestination\":{\"value\":\"dest\"},\"rangeIndicator\":\"\",\"tfnRoutingGroup\":\"\",\"type\":\"\"}]}}}",
         "headers": {
-          "Authorization": "1233-3245",
+          "Authorization": "Bearer 1233-3245",
           "Content-Type": "application/json"
         },
         "method": "POST"
@@ -497,7 +497,7 @@ describe("flowTableService",()=>{
       expect(window.fetch).toBeCalledWith("http://localhost:3000", {
         "body": "{\"query\":\"\\n        mutation batchCreateCctSharedCallFlowDb($input: CctSharedCallFlowDbBatchCreateInput!) {\\n          batchCreateCctSharedCallFlowDb(input: $input) {\\n            items {\\n              accountManager\\n              affinityVDN\\n              agentId\\n              brand\\n              callDetails1\\n              callDetails2\\n              callFlowTemplate\\n              callTypeDescription\\n              channel\\n              content {\\n                callFlowRoute\\n                callIntent\\n                callerType\\n                dataRequests\\n                greetingMessages\\n                languageOffer\\n                transferNumber\\n              }\\n              createTime\\n              dialedDescription\\n              employeeId\\n              internetPlacement\\n              lineOfBusiness\\n              marketingChannel\\n              pkey\\n              predictiveCaller\\n              rangeIndicator\\n              requestID\\n              selfServiceIndicator\\n              tollFreeNumber\\n              transferCode\\n              type\\n              userDestination\\n              whisper\\n            }\\n          }\\n        }\\n      \",\"variables\":{\"input\":{\"batchFlowCreateInput\":[{\"pkey\":{\"value\":\"12345\"},\"agentId\":\"\",\"brand\":{\"value\":\"LM\"},\"callFlowTemplate\":{\"value\":\"temp\"},\"channel\":{\"value\":\"Test1 Channel\"},\"content\":{\"callIntent\":\"\",\"callFlowRoute\":\"\",\"callerType\":\"\",\"greetingMessages\":\"\",\"transferNumber\":\"\",\"languageOffer\":\"\"},\"createTime\":{\"value\":\"2022-01-08\"},\"dialedDescription\":{\"value\":\"test\"},\"accountManager\":\"\",\"affinityVDN\":\"\",\"callTypeDescription\":\"\",\"transferCode\":\"\",\"internetPlacement\":\"\",\"callDetails1\":\"\",\"callDetails2\":\"\",\"tollFreeNumber\":\"\",\"lineOfBusiness\":\"\",\"marketingChannel\":\"\",\"whisper\":\"\",\"requestID\":\"\",\"userDestination\":{\"value\":\"dest\"},\"rangeIndicator\":\"\",\"type\":\"\",\"predictiveCaller\":false,\"selfServiceIndicator\":false}]}}}",
         "headers": {
-          "Authorization": "1233-3245",
+          "Authorization": "Bearer 1233-3245",
           "Content-Type": "application/json"
         },
         "method": "POST"
@@ -910,7 +910,7 @@ describe("dynamicFlowTableService",()=> {
       expect(window.fetch).toBeCalledWith("http://localhost:3000", {
         "body": "{\"query\":\"\\n      mutation batchDeletePhoneNumber($input: CallFlowDeleteBatchInput!) {\\n        batchDeletePhoneNumber(input: $input) {\\n          items {\\n              id\\n          }\\n        }\\n      }\\n    \",\"variables\":{\"input\":{\"batchDeleteInput\":[{\"id\":\"pkey1\"},{\"id\":\"pkey1\"},{\"id\":\"pkey3\"}]}}}",
         "headers": {
-          "Authorization": "1233-3245",
+          "Authorization": "Bearer 1233-3245",
           "Content-Type": "application/json"
         },
         "method": "POST"
@@ -984,7 +984,7 @@ describe("dynamicFlowTableService",()=> {
       expect(window.fetch).toBeCalledWith("http://localhost:3000", {
         "body": "{\"query\":\"\\n        mutation batchCreatePhoneNumber($input: PhoneNumberCreateBatchInput!) {\\n          batchCreatePhoneNumber(input: $input) {\\n            items {\\n                phoneNumber\\n                callFlowName\\n                createTime\\n                updateTime\\n                nextActionType\\n                nextActionId\\n                callFlowTemplate\\n                dialedDescription\\n                phoneNumberType\\n                tfnRoutingGroup\\n                brand\\n                dataRequests\\n                greetingMessages\\n                languageOffer\\n                transferDestination\\n                callerType\\n                callFlowRoute\\n                callIntent\\n                callFlowType\\n                channel\\n                predictiveCaller\\n                employeeId\\n                callTypeDescription\\n                internetPlacement\\n                lineOfBusiness\\n                marketingChannel\\n                rangeIndicator\\n                requestID\\n                tollFreeNumber\\n                transferCode\\n                whisper\\n                officeNumbers\\n            }\\n          }\\n        }\\n      \",\"variables\":{\"input\":{\"batchPhoneNumberInput\":[{\"brand\":\"LM\",\"callFlowRoute\":\"test\",\"callIntent\":\"\",\"callerType\":\"test\",\"channel\":\"Test1 Channel\",\"createTime\":" + dateConversion + ",\"dataRequests\":\"test1,test2\",\"dialedDescription\":\"test\",\"employeeId\":\"n1234567\",\"greetingMessages\":\"Hello Test Message\",\"languageOffer\":\"English\",\"officeNumbers\":[],\"phoneNumber\":\"12345\",\"updateTime\":" + curTimeUnixEpoch + "}]}}}",
         "headers": {
-          "Authorization": "1233-3245",
+          "Authorization": "Bearer 1233-3245",
           "Content-Type": "application/json"
         },
         "method": "POST"
@@ -1049,7 +1049,7 @@ describe("dynamicFlowTableService",()=> {
       expect(window.fetch).toBeCalledWith("http://localhost:3000", {
         "body": "{\"query\":\"\\n        mutation createCallFlowConfig($input: CallFlowConfigInput! ) {\\n          createCallFlowConfig(input: $input) {\\n              callFlowName\\n            }\\n          }\\n      \",\"variables\":{\"input\":{\"announcements\":[],\"menus\":[],\"menuOptions\":[]}}}",
         "headers": {
-          "Authorization": "1233-3245",
+          "Authorization": "Bearer 1233-3245",
           "Content-Type": "application/json"
         },
         "method": "POST"

@@ -9,7 +9,7 @@ const AlohaRoutingContainer = () => {
   const {
     userContext: {
       permissions,
-      accessToken
+      accessTokenGraph
     }
   } = useAdminState();
 
@@ -34,7 +34,7 @@ const AlohaRoutingContainer = () => {
   },[]);
 
   return (
-    <DataGridRouting accessToken={accessToken} matchedGroups={permissions} />
+    <DataGridRouting accessToken={accessTokenGraph} matchedGroups={permissions} />
   );
 };
 

@@ -26,7 +26,7 @@ export const SharedGraphAPIProvider = ({ children }: Props): ReactElement => {
   const authLink = setContext(async (_, { headers }) => ({
     headers: {
       ...headers,
-      Authorization: state.userContext.accessToken
+      Authorization: `Bearer ${state.userContext.accessTokenGraph}`
     }
   }));
 
