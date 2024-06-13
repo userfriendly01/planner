@@ -4,7 +4,7 @@ import {
   FieldConfigs,
   FieldDataType, FieldDataTypeEnum
 } from "./Form.Field.Config";
-import { ReactStateAction } from "../Container.Interfaces";
+import { ReactStateAction } from "../DynamicCallFlow.Interfaces";
 
 export const VALID = true;
 export const NOT_VALID = false;

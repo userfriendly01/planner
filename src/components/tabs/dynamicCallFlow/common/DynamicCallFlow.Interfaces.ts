@@ -3,6 +3,7 @@ import { GridApiCommunity } from "@mui/x-data-grid/internals";
 import { AlertBarController } from "./AlertBar.Controller";
 import { DataGridFilter } from "./DataGrid/Abstract.DataGrid.Filter";
 import { DataGridController } from "./DataGrid/Abstract.DataGrid.Controller";
+import { ModalController } from "./Modal.Controller";
 
 export type MutableRefObject<T> = React.MutableRefObject<T>;
 export type ReactGridApi = React.MutableRefObject<GridApiCommunity>;
@@ -15,3 +16,9 @@ export interface ReactStateAction<StateActionType> {
   setState: ReactSetState<StateActionType>;
 }
 
+export interface DynamicCallFlowContextStore<ModalType> {
+  accessToken: string;
+  matchedGroups: string[];
+  currentOpenModal: ModalType;
+  modalController: React.MutableRefObject<ModalController<ModalType>>;
+}

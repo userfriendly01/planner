@@ -8,19 +8,11 @@ import {
   LoginError
 } from "components";
 import {
-  DynamicCallFlowContextStore
-} from "../common/DynamicCallFlowContextStore";
-import {
   MODAL_NOT_IN_USE, ModalController
 } from "../common/Modal.Controller";
+import { DynamicCallFlowContextStore } from "../common/DynamicCallFlow.Interfaces";
 
 export const DynamicCallFlowActionContext = createContext<DynamicCallFlowContextStore<ActionModalType> | undefined>(undefined);
-
-export interface ActionTokenInfo {
-  accessToken: string;
-  matchedGroups: string[];
-}
-
 
 const DynamicCallFlowActionContainer = (): JSX.Element => {
   const {

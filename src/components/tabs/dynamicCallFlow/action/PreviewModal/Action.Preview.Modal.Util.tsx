@@ -4,7 +4,7 @@ import {
 } from "@mui/x-data-grid";
 
 import { GridApiCommunity } from "@mui/x-data-grid/internals";
-import { RequiredActionFormFields } from "../Field/ActionFieldsConfig";
+import { RequiredActionFormFields } from "../Form/ActionFieldsConfig";
 
 
 const reconstructTableColumnDef = (columnDef: Array<GridColDef>,apiRef: React.MutableRefObject<GridApiCommunity>): Array<GridColDef> =>{

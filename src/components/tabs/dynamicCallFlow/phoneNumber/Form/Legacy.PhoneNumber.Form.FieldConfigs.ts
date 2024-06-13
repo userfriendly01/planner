@@ -1,5 +1,5 @@
 import {
-  BrandEnum,
+  BrandTypeEnum,
   CallFlowTypeEnum,
   ChannelEnum,
   PhoneNumberRecordType,
@@ -58,7 +58,7 @@ import { ControlEnum } from "../../common/Form/Form.Field.Control.Manager";
 
 
 const drcFieldConditionCheck: FieldConditionCheckType = (record: PhoneNumberRecordType): boolean => {
-  return record[BRAND as keyof PhoneNumberRecordType] === BrandEnum.LIBERTY_MUTUAL
+  return record[BRAND as keyof PhoneNumberRecordType] === BrandTypeEnum.LIBERTY_MUTUAL
     && record[CHANNEL as keyof PhoneNumberRecordType] === ChannelEnum.SALES
     && record[TYPE as keyof PhoneNumberRecordType] === LegacyPhoneNumberTypeEnum.DRC;
 };

@@ -1,5 +1,6 @@
 import React, {
-  useEffect, useMemo
+  useContext,
+  useEffect, useMemo, useRef
 } from "react";
 import { StyledButton } from "components";
 import {
@@ -8,45 +9,58 @@ import {
 import {
   Modal, ModalBody, ModalFooter, ModalHeader
 } from "@lmig/lmds-react-modal";
-import "./PreviewModal.css";
+import "./Action.Preview.Modal.css";
 import { Box } from "@mui/material";
-import TableGridColumnDef from "./TableColumnDef";
+import TableGridColumnDef from "./Action.Preview.Modal.ColumnDef";
 import { logger } from "utils";
-import { reconstructTableColumnDef } from "./PreviewUtil";
+import { reconstructTableColumnDef } from "./Action.Preview.Modal.Util";
 import {
   ActionRecordType, MenuOption
-} from "../GraphQL/DynamicCallFlowActionGraphQL.Interfaces";
+} from "../GraphQL/Action.Interfaces";
 import {
   ActionModalType, ActionModalTypeEnum
 } from "../DataGrid/Action.DataGrid.Component";
+import { PhoneNumberXlsxReader } from "../../phoneNumber/Xlsx/PhoneNumber.Xlsx.Reader";
+import { ActionXlsxReader } from "../Xlsx/Action.Xlsx.Reader";
+import { DataGridControllerRef } from "../../common/DynamicCallFlow.Interfaces";
+import {
+  PhoneNumberModalType,
+  PhoneNumberModalTypeEnum
+} from "../../phoneNumber/DynamicCallFlow.PhoneNumber.Container.Modal.Controller";
+import { DynamicCallFlowPhoneNumberContext } from "../../phoneNumber/DynamicCallFlow.PhoneNumber.Container";
+import { DynamicCallFlowActionContext } from "../DynamicCallFlow.Action.Container";
+import { PhoneNumberPreviewModalHandler } from "../../phoneNumber/PreviewModal/PhoneNumber.Preview.Modal.Handler";
+import { PhoneNumberRecordType } from "../../phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { ActionPreviewModalHandler } from "./Action.Preview.Modal.Handler";
 
-interface PreviewModalProps<RecordType> {
+interface PreviewModalParameters<RecordType> {
   isOpen: boolean;
-  records: Array<RecordType>;
+  selectedRecords: Array<RecordType>;
+  dataGridController: DataGridControllerRef<RecordType>;
   modalType: ActionModalType;
   maxId?: number;
   onClose: () => void;
-  onDelete?: (record: Array<RecordType>) => void;
-  onCreate?: (record: Array<RecordType>) => void;
-  onUpdate?: (record: Array<RecordType>) => void;
   loading?: boolean;
 }
 
-const ActionPreviewModal = (props: PreviewModalProps<ActionRecordType>): JSX.Element => {
+export const ActionPreviewModal = ({
+  isOpen, selectedRecords, onClose, dataGridController, modalType, maxId, loading
+}: PreviewModalParameters<ActionRecordType>): JSX.Element => {
   const {
-    isOpen, records, onClose, modalType , maxId , onDelete, onCreate, onUpdate, loading
-  } = props;
+    accessToken
+  } = useContext(DynamicCallFlowActionContext);
 
-  const apiRef =  useGridApiRef();
+  const previewModalHandler = useRef(new ActionPreviewModalHandler(dataGridController));
+  const previewModalGridApiRef =  useGridApiRef();
   const [modalRecords, setModalRecords] = React.useState<ActionRecordType[]>([]);
   const [htmlInputElements, setHtmlInputElements] = React.useState<Array<HTMLInputElement>>([]);
   const tableGridColumnDef: Array<GridColDef> = useMemo<Array<GridColDef>>(()=>{
-    return reconstructTableColumnDef([...TableGridColumnDef], apiRef);
+    return reconstructTableColumnDef([...TableGridColumnDef], previewModalGridApiRef);
   },[modalType]);
 
   useEffect(()=> {
-    setModalRecords(records);
-  }, [records]);
+    setModalRecords([...selectedRecords]);
+  }, [selectedRecords]);
 
   useEffect(()=>{
     if (htmlInputElements.length > 0) {
@@ -79,8 +93,8 @@ const ActionPreviewModal = (props: PreviewModalProps<ActionRecordType>): JSX.Ele
         nextActionId: "",
         options: [] as unknown as MenuOption[]
       };
-      Object.keys(row).forEach((key: string)=>{
-        updatedAction[key as keyof ActionRecordType] = apiRef.current.getCellValue(row.actionId, key);
+      Object.keys(row).forEach((key: string)=> {
+        updatedAction[key as keyof ActionRecordType] = previewModalGridApiRef.current.getCellValue(row.actionId, key);
       });
       return updatedAction;
     });
@@ -88,13 +102,18 @@ const ActionPreviewModal = (props: PreviewModalProps<ActionRecordType>): JSX.Ele
   };
 
   const handleOnCreate = async () =>{
-    const newRows:Array<ActionRecordType> = getUpdatedActionRows();
+    const recordsToCreate: Array<ActionRecordType> = getUpdatedActionRows();
+    await previewModalHandler.current.handleOnCreate(accessToken, recordsToCreate);
+  };
 
-    try {
-      await onCreate(newRows);
-    } catch(error) {
-      logger.error("Flow: Preview Modal onDelete call failed", { error }, false);
-    }
+  const handleOnUpdate = async () =>{
+    const recordsToUpdate: Array<ActionRecordType> = getUpdatedActionRows();
+    await previewModalHandler.current.handleOnUpdate(accessToken, recordsToUpdate);
+  };
+
+  const handleOnDelete = async () => {
+    const recordsToDelete: Array<ActionRecordType> = getUpdatedActionRows();
+    await previewModalHandler.current.handleOnDelete(accessToken, recordsToDelete);
   };
 
   const createNewRecord = () => {
@@ -122,8 +141,14 @@ const ActionPreviewModal = (props: PreviewModalProps<ActionRecordType>): JSX.Ele
     // ]);
   };
 
-  const handleOnChange=(event:any)=>{
-    // CsvReader(event, setUploadedForm, "DYNFLOW");
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>)=> {
+    const xlsxReaderResults = await ActionXlsxReader.getInstance().processXlsxFile(event);
+
+    if (xlsxReaderResults.errors.length > 0) {
+      dataGridController.current.alertBarController.error(xlsxReaderResults.errors.join("\n"));
+    } else {
+      setModalRecords(xlsxReaderResults.records);
+    }
   };
 
   const handleOnClose =()=> {
@@ -151,10 +176,10 @@ const ActionPreviewModal = (props: PreviewModalProps<ActionRecordType>): JSX.Ele
           <input
             type="file"
             accept=".csv"
-            onChange={handleOnChange}
+            onChange={handleFileUpload}
           /> </StyledButton>
         <DataGrid
-          apiRef={apiRef}
+          apiRef={previewModalGridApiRef}
           rows={modalRecords}
           columns={tableGridColumnDef}
           editMode="row"
@@ -178,17 +203,18 @@ const ActionPreviewModal = (props: PreviewModalProps<ActionRecordType>): JSX.Ele
           display: "flex",
           justifyContent: "center"
         }}>
+          {modalType === PhoneNumberModalTypeEnum.BulkDelete &&
+              <StyledButton sx={{ marginRight: "15px" }} onClick={()=>{ handleOnDelete(); }}>Delete</StyledButton>
+          }
           {modalType === ActionModalTypeEnum.BulkAdd &&
             <StyledButton sx={{ marginRight: "15px" }} onClick={()=>handleOnCreate()}>Save</StyledButton>
+          }
+          {modalType === PhoneNumberModalTypeEnum.BulkEdit &&
+              <StyledButton sx={{ marginRight: "15px" }} onClick={()=>{ handleOnUpdate(); }}>Update</StyledButton>
           }
           <StyledButton onClick={()=>{ handleOnClose(); }}>Cancel</StyledButton>
         </Box>
       </ModalFooter>
     </Modal>
   );
-};
-
-export {
-  ActionPreviewModal,
-  PreviewModalProps
 };

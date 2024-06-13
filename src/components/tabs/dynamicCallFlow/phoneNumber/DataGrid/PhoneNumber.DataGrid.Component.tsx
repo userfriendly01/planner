@@ -33,7 +33,6 @@ import { PhoneNumberFormFieldOptionsManager } from "../Form/PhoneNumberFormField
 import { FieldOptions } from "../../common/Form/AbstractFormFieldOptionsManager";
 import { listPhoneNumberRecords } from "../GraphQL/List.PhoneNumber.Records.Util";
 import {
-  DataGridContextStore,
   DataGridStateProps,
   initializeDataGrid,
   sortDataGrid
@@ -45,7 +44,7 @@ import {
 import { DynamicCallFlowPhoneNumberContext } from "../DynamicCallFlow.PhoneNumber.Container";
 import { PhoneNumberModalTypeEnum } from "../DynamicCallFlow.PhoneNumber.Container.Modal.Controller";
 import { PhoneNumberDataGridFilter } from "./PhoneNumber.DataGrid.Filter";
-import { PhoneNumberDataGridController } from "./PhoneNumberDataGridController";
+import { PhoneNumberDataGridController } from "./PhoneNumber.DataGrid.Controller";
 
 const DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_PAGE_NUMBER = "dynamicCallFlowPhoneNumberDataGridPageNumber";
 const DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_RECORDS_PER_PAGE = "dynamicCallFlowPhoneNumberDataGridRecordsPerPage";
@@ -100,9 +99,8 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
 
       try {
         const records = await listPhoneNumberRecords(accessToken);
-        [sortedRecords, updatedDataGridProps] = sortDataGrid(records);
+        [sortedRecords, updatedDataGridProps] = sortDataGrid<PhoneNumberRecordType>(records);
       } catch (error: unknown) {
-        // TODO: Log error
         console.log(`Error loading call flow data: ${(error as Error)?.message}`);
         alertBarController.current.error("Errors loading data.  Please check the console logs.");
       }
@@ -145,6 +143,7 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
   useEffect(() => {
     dataGridController.current.dataGridProps = dataGridProps;
   }, [dataGridProps]);
+
   const handlePaginationModelChange = (model: GridPaginationModel, gridCallbackDetails: GridCallbackDetails) =>{
     sessionStorage.setItem(DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_PAGE_NUMBER, model.page.toString());
     sessionStorage.setItem(DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_RECORDS_PER_PAGE, model.pageSize.toString());

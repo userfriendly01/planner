@@ -1,98 +1,62 @@
-// export interface DataGridController<RecordType> {
-//   set
-// }
 import { PhoneNumberRecordType } from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
 import {
   generateMatchingRecordMessages,
-  pkeyAndEmployeeIdFilter,
-  pkeyFilter
+  pkeyAndEmployeeIdFilter
 } from "../GraphQL/Match.PhoneNumber.Records.Util";
 import { BatchPhoneNumberRecord } from "../GraphQL/Batch.PhoneNumber.Records.Util";
 import { deleteOppositeRows } from "../DataGrid/PhoneNumber.DataGrid.Util";
-import { DataGridControllerRef } from "../../common/Container.Interfaces";
-import { DataGridController } from "../../common/DataGrid/Abstract.DataGrid.Controller";
+import {
+  AbstractPreviewModalHandler, DataGridAction
+} from "../../common/Preview/Abstract.Preview.Modal.Handler";
+import {
+  BatchRecordQuery, BatchResults
+} from "../../common/GraphQL/Abstract.BatchRecords.Query";
 
-export interface HandlerResponse {
-  errorMessage?: string;
-  successMessage?: string;
-}
+export class PhoneNumberPreviewModalHandler extends AbstractPreviewModalHandler<PhoneNumberRecordType> {
+  private hasMatchingRecords(recordsToMatchOn: Array<PhoneNumberRecordType>): boolean {
+    const matchingRecordMessages = generateMatchingRecordMessages(this.dataGridController.sourceRecords, recordsToMatchOn, pkeyAndEmployeeIdFilter);
 
-export class PhoneNumberPreviewModalHandler {
-  private readonly _dataGridController: DataGridControllerRef<PhoneNumberRecordType>;
+    if (matchingRecordMessages && matchingRecordMessages.length > 0) {
+      this.dataGridController.alertBarController.error(matchingRecordMessages.join("\n"));
+      return true;
+    }
 
-  constructor(dataGridController: DataGridControllerRef<PhoneNumberRecordType>) {
-    this._dataGridController = dataGridController;
-  }
-
-  private get dataGridController(): DataGridController<PhoneNumberRecordType> {
-    return this._dataGridController.current;
+    return false;
   }
 
   async handleOnCreate(accessToken: string, recordsToCreate: Array<PhoneNumberRecordType>): Promise<void> {
-    const matchingRecordMessages = generateMatchingRecordMessages(this.dataGridController.sourceRecords, recordsToCreate, pkeyAndEmployeeIdFilter);
-
-    if (matchingRecordMessages && matchingRecordMessages.length > 0) {
-      this.dataGridController.alertBarController.error(matchingRecordMessages.join("\n"));
+    if (this.hasMatchingRecords(recordsToCreate)) {
       return;
     }
 
-    const batchResults = await BatchPhoneNumberRecord.create(accessToken, recordsToCreate);
-
-    if (batchResults?.hasError) {
-      this.dataGridController.alertBarController.error(batchResults.alertMsg);
-    }
-
-    await deleteOppositeRows(accessToken, batchResults.success);
-
-    this.dataGridController.addRecordsToSourceRecords(batchResults.success);
-    this.dataGridController.setSelectedRecordsState(batchResults.failure);
-    this.dataGridController.dataGridApi.setRowSelectionModel([]);
-    this.dataGridController.alertBarController.success("Phone Numbers have been successfully created.");
+    await this.runPhoneNumberBatch(accessToken, recordsToCreate, BatchPhoneNumberRecord.create,
+      this.dataGridController.addRecordsToSourceRecords);
   }
 
   async handleOnUpdate(accessToken: string, recordsToUpdate: Array<PhoneNumberRecordType>): Promise<void> {
-    const matchingRecordMessages = generateMatchingRecordMessages(this.dataGridController.sourceRecords, recordsToUpdate, pkeyFilter);
-
-    if (matchingRecordMessages && matchingRecordMessages.length > 0) {
-      this.dataGridController.alertBarController.error(matchingRecordMessages.join("\n"));
+    if (this.hasMatchingRecords(recordsToUpdate)) {
       return;
     }
 
-    const batchResults = await BatchPhoneNumberRecord.update(accessToken, recordsToUpdate);
-
-    if (batchResults?.hasError) {
-      this.dataGridController.alertBarController.error("Error while updating the records. ".concat(batchResults.alertMsg));
-      return;
-    }
-
-    this.dataGridController.alertBarController.success("Call Flow Rules have been successfully updated.");
-
-    await deleteOppositeRows(accessToken, batchResults.success);
-
-    this.dataGridController.setSelectedRecordsState(batchResults.failure);
-
-    this.dataGridController.updateRecordsInSourceRecords(batchResults.success);
-    this.dataGridController.dataGridApi.setRowSelectionModel(batchResults.failure.map<number>(phoneNumberRecord => phoneNumberRecord.id));
-    this.dataGridController.dataGridFilter.applyFilter();
+    await this.runPhoneNumberBatch(accessToken, recordsToUpdate, BatchPhoneNumberRecord.update,
+      this.dataGridController.updateRecordsInSourceRecords);
   }
 
   async handleOnDelete(accessToken: string, recordsToDelete: Array<PhoneNumberRecordType>): Promise<void> {
-    const batchResults = await BatchPhoneNumberRecord.delete(accessToken, recordsToDelete);
+    await this.runPhoneNumberBatch(accessToken, recordsToDelete, BatchPhoneNumberRecord.delete,
+      this.dataGridController.removeRecordsFromSourceRecords);
+  }
 
-    if(batchResults?.hasError) {
-      this.dataGridController.alertBarController.error(batchResults.alertMsg);
+  async runPhoneNumberBatch(accessToken: string, records: Array<PhoneNumberRecordType>,
+    batchRecordQuery: BatchRecordQuery<PhoneNumberRecordType>,
+    dataGridAction: DataGridAction<PhoneNumberRecordType>): Promise<BatchResults<PhoneNumberRecordType>> {
+
+    const batchResults = await this.runBatch(accessToken, records, batchRecordQuery, dataGridAction);
+
+    if (batchResults?.hasError) {
       return;
-    } else {
-      this.dataGridController.alertBarController.success("Call Flow Rules have been successfully deleted.");
     }
 
     await deleteOppositeRows(accessToken, batchResults.success);
-
-    this.dataGridController.setSelectedRecordsState(batchResults.failure);
-    this.dataGridController.removeRecordsFromSourceRecords(batchResults.success);
-    this.dataGridController.dataGridFilter.applyFilter();
-    this.dataGridController.setDataGridPropsState({ fetching: false });
-    this.dataGridController.dataGridApi.setRowSelectionModel(batchResults.failure.map<number>(phoneNumberRecord => phoneNumberRecord.id));
   }
 }
-

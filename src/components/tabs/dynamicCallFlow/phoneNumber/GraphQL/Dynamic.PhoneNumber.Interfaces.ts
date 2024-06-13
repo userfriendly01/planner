@@ -5,7 +5,7 @@ export type PhoneNumberRecordType = CctSharedCallFlowDb | PhoneNumber;
 export type PhoneNumberRecordFields = CctSharedCallFlowDb & PhoneNumber;
 
 export type BrandType = "Safeco" | "Liberty Mutual" | "Comparion";
-export enum BrandEnum {
+export enum BrandTypeEnum {
     SAFECO = "Safeco",
     LIBERTY_MUTUAL = "Liberty Mutual",
     COMPARION = "Comparion"

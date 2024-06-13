@@ -18,8 +18,8 @@ import {
 } from "../../common/DataGrid/Abstract.DataGrid.Filter";
 import {
   ACTION_ID, ACTION_TYPE
-} from "../Field/ActionFields";
-import { ActionRecordType } from "../GraphQL/DynamicCallFlowActionGraphQL.Interfaces";
+} from "../Form/ActionFields";
+import { ActionRecordType } from "../GraphQL/Action.Interfaces";
 import { DynamicCallFlowActionContext } from "../DynamicCallFlow.Action.Container";
 
 //TODO:  This can be moved to a common location as most is the same as PhoneNumberDataGridFilterModal.  Just need to make the SelectContainers dynamic

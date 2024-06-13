@@ -20,7 +20,7 @@ import {
 } from "../../common/DataGrid/Abstract.DataGrid.Filter";
 import { DynamicCallFlowPhoneNumberContext } from "../DynamicCallFlow.PhoneNumber.Container";
 import { PhoneNumberModalTypeEnum } from "../DynamicCallFlow.PhoneNumber.Container.Modal.Controller";
-import { DataGridFilterRef } from "../../common/Container.Interfaces";
+import { DataGridFilterRef } from "../../common/DynamicCallFlow.Interfaces";
 import { PhoneNumberRecordType } from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
 
 interface PhoneNumberDataGridToolBarProps {

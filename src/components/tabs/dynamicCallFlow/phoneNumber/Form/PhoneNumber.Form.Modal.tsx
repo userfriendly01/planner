@@ -31,7 +31,7 @@ import {
 } from "../../common/AlertBar.Controller";
 import {
   AlertBarControllerRef, ReactStateAction
-} from "../../common/Container.Interfaces";
+} from "../../common/DynamicCallFlow.Interfaces";
 import { DynamicCallFlowPhoneNumberContext } from "../DynamicCallFlow.PhoneNumber.Container";
 import { PhoneNumberModalTypeEnum } from "../DynamicCallFlow.PhoneNumber.Container.Modal.Controller";
 

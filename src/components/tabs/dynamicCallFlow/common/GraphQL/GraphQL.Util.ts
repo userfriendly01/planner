@@ -13,6 +13,10 @@ export const checkForDuplicateErrorMessage = (graphQLError: Array<GraphQLError>)
   });
 };
 
-export function validateAndGeneratePkeyIfNeeded(pkey: string): string {
-  return uuidValidate(pkey) ? pkey : uuidv4();
+export function isValidUUID(uuid: string): boolean {
+  return uuidValidate(uuid);
+}
+
+export function generateUuid(): string {
+  return uuidv4();
 }

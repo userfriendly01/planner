@@ -4,12 +4,12 @@ import {
 
 export type BatchRecordQuery<RecordType> = (accessToken: string, records: Array<RecordType>) => Promise<BatchResults<RecordType>>;
 
-export interface BatchVariables<RecordType> {
-  input?: BatchInput<RecordType>;
+export interface BatchVariables<VariableType> {
+  input?: BatchInput<VariableType>;
 }
 
-export interface BatchInput<RecordType> {
-  [key: string]: Array<RecordType>;
+export interface BatchInput<VariableType> {
+  [key: string]: Array<VariableType>;
 }
 
 export interface BatchGraphQLResponse<RecordType> extends GraphQLResponse<BatchGraphQLData<RecordType>> {
@@ -28,11 +28,11 @@ export interface BatchResults<RecordType> {
   success: Array<RecordType>
 }
 
-export abstract class AbstractBatchRecordsQuery extends AbstractGraphQLQuery {
+export abstract class AbstractBatchRecordsQuery<VariableType, RecordType> extends AbstractGraphQLQuery {
   protected abstract batchInputName(): string;
 
-  async runBatch<RecordType>(accessToken: string, records: Array<RecordType>): Promise<BatchResults<RecordType>> {
-    if (records.length === 0) {
+  async runBatch(accessToken: string, variables: Array<VariableType>): Promise<BatchResults<RecordType>> {
+    if (variables?.length === 0) {
       return {
         alertMsg: "Please select something to add",
         errors: [],
@@ -42,26 +42,26 @@ export abstract class AbstractBatchRecordsQuery extends AbstractGraphQLQuery {
       } as BatchResults<RecordType>;
     }
 
-    const recordsCopy = [...records];
-    const recordBatches: Array<Array<RecordType>> = [];
+    const variablesCopy = [...variables];
+    const variableBatches: Array<Array<VariableType>> = [];
 
-    while (recordsCopy.length > 0) {
+    while (variablesCopy.length > 0) {
       // Splice the records into batches of 25
-      recordBatches.push(recordsCopy.splice(0, 25));
+      variableBatches.push(variablesCopy.splice(0, 25));
     }
 
     const batchGraphQLResponses = await Promise.all(
-      recordBatches.map(
-        async recordBatch => {
-          const variables: BatchVariables<RecordType> = {
+      variableBatches.map(
+        async variablesBatch => {
+          const variables: BatchVariables<VariableType> = {
             //Put an empty object here as a placeholder, then set the records to be updated via dynamic property access.  Batch input structure example: { input: { batchCreatePhoneNumber: Array<PhoneNumber> } }
-            input: {} as BatchInput<RecordType>
+            input: {} as BatchInput<VariableType>
           };
 
-          variables.input[this.batchInputName() as keyof typeof variables] = recordBatch;
+          variables.input[this.batchInputName()] = variablesBatch;
 
-          const batchGraphQLResponse = await this.query<BatchVariables<RecordType>, RecordType>(accessToken, this.queryDefinition(), variables) as BatchGraphQLResponse<RecordType>;
-          batchGraphQLResponse.originalItems = records;
+          const batchGraphQLResponse = await this.query<BatchVariables<VariableType>, RecordType>(accessToken, variables) as BatchGraphQLResponse<RecordType>;
+          batchGraphQLResponse.originalItems = [];
 
           return batchGraphQLResponse;
         }
@@ -74,10 +74,10 @@ export abstract class AbstractBatchRecordsQuery extends AbstractGraphQLQuery {
 
   /**
    * Consolidate all of the command responses in a batch into 1 response object
-   * @param {Array<BatchGraphQLResponse>} batchGraphQLResponse - a set results from all of the operations
+   * @param {Array<BatchGraphQLResponse>} batchGraphQLResponses - a set results from all of the operations
    * @returns {Promise<BatchResults>} a consolidated response object
    */
-  private buildResponse<RecordType>(batchGraphQLResponse: Array<BatchGraphQLResponse<RecordType>>): BatchResults<RecordType> {
+  protected buildResponse<RecordType>(batchGraphQLResponses: Array<BatchGraphQLResponse<RecordType>>): BatchResults<RecordType> {
     const batchResults = {
       alertMsg: "",
       errors: [],
@@ -86,7 +86,7 @@ export abstract class AbstractBatchRecordsQuery extends AbstractGraphQLQuery {
       success: []
     } as BatchResults<RecordType>;
 
-    batchGraphQLResponse.forEach( batchGraphQLResponse=>{
+    batchGraphQLResponses.forEach( batchGraphQLResponse=>{
       if (batchGraphQLResponse.errors?.length > 0) {
         batchResults.errors = batchResults.errors.concat(batchGraphQLResponse.errors);
         batchResults.failure = batchResults.failure.concat(batchGraphQLResponse.originalItems);

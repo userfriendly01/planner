@@ -30,7 +30,7 @@ export abstract class AbstractListRecordsQuery extends AbstractGraphQLQuery {
         console.debug(`Retrieved ${listResults.items.length} of ${entireList.length} records`);
       } while (nextToken);
     } catch (error) {
-      console.error(`Error in retrieveFlowData: ${error?.message}`, { error });
+      console.error(`Error in getEntireList: ${error?.message}`, { error });
     }
 
     return entireList;
@@ -42,7 +42,7 @@ export abstract class AbstractListRecordsQuery extends AbstractGraphQLQuery {
       nextToken
     } as ListVariables;
 
-    const graphQLResponse = await this.query<ListVariables, ListGraphQLData<RecordType>>(accessToken, this.queryDefinition(), listVariables);
+    const graphQLResponse = await this.query<ListVariables, ListGraphQLData<RecordType>>(accessToken, listVariables);
 
     if (graphQLResponse.errors?.length > 0) {
       throw new Error(`${graphQLResponse.errors.map(graphQLError => graphQLError.message)}`);

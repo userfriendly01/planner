@@ -6,6 +6,7 @@ export enum ActionTypeEnum {
   ANNOUNCEMENT = "ANNOUNCEMENT",
   MENU = "MENU",
   MENU_OPTIONS = "MENUOPTIONS",
+  MENUOPTIONS = "MENUOPTIONS",
   REDIRECT = "REDIRECT",
   TRANSFER = "TRANSFER",
   HANGUP = "HANGUP"
@@ -37,14 +38,14 @@ export interface Announcement extends Action {
 }
 
 export interface MenuOptions extends Action {
-  options?: MenuOption[]
+  options?: MenuOption[];
 }
 
 export interface Repeat {
-  callerContextAttributes?: any
-  loop?: number
-  nextActionType?: ActionType
-  nextActionId?: string
+  callerContextAttributes?: string;
+  loop?: number;
+  nextActionType?: ActionType;
+  nextActionId?: string;
 }
 
 export interface Menu extends Action {

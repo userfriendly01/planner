@@ -1,5 +1,5 @@
 import { GraphQLError } from "./GraphQL/AbstractGraphQL.Query";
-import { ReactSetState } from "./Container.Interfaces";
+import { ReactSetState } from "./DynamicCallFlow.Interfaces";
 
 export type AlertSeverityType = "success" | "info" | "warning" | "error";
 export enum AlertSeverityTypeEnum {

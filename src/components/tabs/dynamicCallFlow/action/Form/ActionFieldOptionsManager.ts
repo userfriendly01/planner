@@ -4,7 +4,7 @@ import {
 import { FieldDataType } from "../../common/Form/Form.Field.Config";
 import {
   ActionRecordType, ActionTypeEnum
-} from "../GraphQL/DynamicCallFlowActionGraphQL.Interfaces";
+} from "../GraphQL/Action.Interfaces";
 import { ActionRecordUtil } from "../GraphQL/Action.Record.Util";
 import { CALL_FLOW_NAME } from "./ActionFields";
 

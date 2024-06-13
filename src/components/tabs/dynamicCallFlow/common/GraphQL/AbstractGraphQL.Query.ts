@@ -35,7 +35,7 @@ export abstract class AbstractGraphQLQuery {
   protected abstract queryName(): string;
   protected abstract queryDefinition(): string;
 
-  async query<Variables, GraphQLDataType>(accessToken: string, query: string, variables: Variables): Promise<GraphQLResponse<GraphQLDataType>> {
+  async query<Variables, GraphQLDataType>(accessToken: string, variables: Variables): Promise<GraphQLResponse<GraphQLDataType>> {
     const response: Response = await fetch(env.GRAPH_API_URL, {
       method: "POST",
       headers: {

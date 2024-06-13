@@ -2,7 +2,7 @@ import { DataGridStateProps } from "./DynamicCallFlow.Common.DataGrid";
 import {
   AlertBarControllerRef, DataGridFilterRef,
   ReactGridApi, ReactSetState
-} from "../Container.Interfaces";
+} from "../DynamicCallFlow.Interfaces";
 import { AlertBarController } from "../AlertBar.Controller";
 import { GridApiCommunity } from "@mui/x-data-grid/internals";
 import { DataGridFilter } from "./Abstract.DataGrid.Filter";

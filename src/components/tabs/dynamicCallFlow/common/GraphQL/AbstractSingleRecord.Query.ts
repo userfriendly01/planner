@@ -16,7 +16,7 @@ export interface SingleRecordResults<RecordType> {
 export abstract class AbstractSingleRecordQuery extends AbstractGraphQLQuery {
   protected async singleRecordQuery<RecordType, Variables>(accessToken: string, variables: Variables): Promise<SingleRecordResults<RecordType>> {
     const graphQLResponse =
-      await this.query<Variables, SingleRecordGraphQLData<RecordType>>(accessToken, this.queryDefinition(), variables);
+      await this.query<Variables, SingleRecordGraphQLData<RecordType>>(accessToken, variables);
 
     let record: RecordType;
 

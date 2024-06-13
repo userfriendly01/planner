@@ -23,12 +23,13 @@ import {
 } from "../DynamicCallFlow.PhoneNumber.Container.Modal.Controller";
 import { DynamicCallFlowPhoneNumberContext } from "../DynamicCallFlow.PhoneNumber.Container";
 import { PhoneNumberPreviewModalHandler } from "./PhoneNumber.Preview.Modal.Handler";
-import { DataGridControllerRef } from "../../common/Container.Interfaces";
+import { DataGridControllerRef } from "../../common/DynamicCallFlow.Interfaces";
+import { PhoneNumberXlsxReader } from "../Xlsx/PhoneNumber.Xlsx.Reader";
 
-interface PreviewModalProps<RecordType> {
+interface PreviewModalParameters<RecordType> {
     isOpen: boolean;
     selectedRecords: Array<RecordType>;
-    dataGridController: DataGridControllerRef<PhoneNumberRecordType>;
+    dataGridController: DataGridControllerRef<RecordType>;
     modalType: PhoneNumberModalType;
     maxId?: number;
     onClose: () => void;
@@ -36,9 +37,9 @@ interface PreviewModalProps<RecordType> {
 }
 // create handler to process batch jobs concurrently
 
-const PhoneNumberPreviewModal = ({
+export const PhoneNumberPreviewModal = ({
   isOpen, selectedRecords, onClose, dataGridController, modalType, maxId, loading
-}: PreviewModalProps<PhoneNumberRecordType>): JSX.Element => {
+}: PreviewModalParameters<PhoneNumberRecordType>): JSX.Element => {
   const {
     accessToken
   } = useContext(DynamicCallFlowPhoneNumberContext);
@@ -47,13 +48,12 @@ const PhoneNumberPreviewModal = ({
   const previewModalGridApiRef = useGridApiRef();
   const [modalRecords, setModalRecords] = React.useState<PhoneNumberRecordType[]>([]);
   const [htmlInputElements, setHtmlInputElements] = React.useState<Array<HTMLInputElement>>([]);
-  // const htmlInputElements = new ObjectArrayState<HTMLInputElement>();
   const tableGridColumnDef: Array<GridColDef> = useMemo<Array<GridColDef>>(() => {
     return reconstructTableColumnDef(modalType, [...PhoneNumberPreviewModalColumnDef], previewModalGridApiRef);
   },[modalType]);
 
   useEffect(()=> {
-    setModalRecords({ ...selectedRecords });
+    setModalRecords([ ...selectedRecords ]);
   }, [selectedRecords]);
 
   useEffect(()=>{
@@ -78,7 +78,7 @@ const PhoneNumberPreviewModal = ({
   };
 
   const handleOnCreate = async () =>{
-    const recordsToCreate:Array<PhoneNumberRecordType> = getUpdatedPhoneNumberRows();
+    const recordsToCreate: Array<PhoneNumberRecordType> = getUpdatedPhoneNumberRows();
     await previewModalHandler.current.handleOnCreate(accessToken, recordsToCreate);
   };
 
@@ -133,8 +133,14 @@ const PhoneNumberPreviewModal = ({
     // ));
   };
 
-  const handleOnChange=(event:any)=>{
-    // CsvReader(event, setUploadedForm, "FLOW");
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>)=> {
+    const xlsxReaderResults = await PhoneNumberXlsxReader.getInstance().processXlsxFile(event);
+
+    if (xlsxReaderResults.errors.length > 0) {
+      dataGridController.current.alertBarController.error(xlsxReaderResults.errors.join("\n"));
+    } else {
+      setModalRecords(xlsxReaderResults.records);
+    }
   };
 
   const handleOnClose =()=>{
@@ -165,8 +171,8 @@ const PhoneNumberPreviewModal = ({
                 }}>
                   <input
                     type="file"
-                    accept=".csv"
-                    onChange={handleOnChange}
+                    accept=".xlsx"
+                    onChange={handleFileUpload}
                   /> </StyledButton>
           }
           <DataGrid
@@ -209,9 +215,4 @@ const PhoneNumberPreviewModal = ({
       </Modal>
     </div>
   );
-};
-
-export {
-  PhoneNumberPreviewModal,
-  PreviewModalProps
 };

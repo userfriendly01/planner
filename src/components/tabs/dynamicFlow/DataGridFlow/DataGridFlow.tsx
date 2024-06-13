@@ -167,7 +167,7 @@ const DataGridFlow = (props: AzureSPA): JSX.Element => {
     }));
   };
 
-  const handleOnBulkCreate = async(rows: Array<DynamicAction> ) =>{
+  const handleOnBulkCreate = async(rows: Array<DynamicAction> ) => {
     const response = await batchDynamicFlowCreate(rows, accessToken);
     if(response?.flag) {
       setAlertBar((alertBarProps: AlertBarProps) => ({

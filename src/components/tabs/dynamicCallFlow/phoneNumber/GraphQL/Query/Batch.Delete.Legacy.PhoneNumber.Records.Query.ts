@@ -3,7 +3,7 @@ import {
 } from "../../../common/GraphQL/Abstract.BatchRecords.Query";
 import { CctSharedCallFlowDb } from "../Legacy.PhoneNumber.Interfaces";
 
-class BatchDeleteLegacyPhoneNumberRecordsQuery extends AbstractBatchRecordsQuery {
+class BatchDeleteLegacyPhoneNumberRecordsQuery extends AbstractBatchRecordsQuery<string, CctSharedCallFlowDb> {
   protected batchInputName(): string {
     return "pkey";
   }
@@ -27,5 +27,5 @@ class BatchDeleteLegacyPhoneNumberRecordsQuery extends AbstractBatchRecordsQuery
 const batchDeleteLegacyPhoneNumberRecordsQuery = new BatchDeleteLegacyPhoneNumberRecordsQuery();
 
 export const batchDeleteLegacyPhoneNumberRecords: BatchRecordQuery<CctSharedCallFlowDb> = async (accessToken: string, legacyPhoneNumberRecords: Array<CctSharedCallFlowDb>): Promise<BatchResults<CctSharedCallFlowDb>> => {
-  return await batchDeleteLegacyPhoneNumberRecordsQuery.runBatch<CctSharedCallFlowDb>(accessToken, legacyPhoneNumberRecords);
+  return await batchDeleteLegacyPhoneNumberRecordsQuery.runBatch(accessToken, legacyPhoneNumberRecords.map((legacyPhoneNumberRecord: CctSharedCallFlowDb) => legacyPhoneNumberRecord.pkey));
 };

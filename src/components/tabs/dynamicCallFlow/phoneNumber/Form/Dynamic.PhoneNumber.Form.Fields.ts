@@ -1,8 +1,7 @@
-import { DIALED_PHONENUMBER } from "../XlsxReader/XlsxHeaders";
 import {
   RECORD_DATA_TYPE_NAME, RECORD_DATA_TYPE_NAME_ENUM
-} from "../../common/XlsxReader/AbstractXlsxReader";
-import { CALLER_CONTEXT_ATTRIBUTES } from "../../action/Field/ActionFields";
+} from "../../common/Xlsx/Abstract.Xlsx.Reader";
+import { CALLER_CONTEXT_ATTRIBUTES } from "../../action/Form/ActionFields";
 
 export const BRAND = "brand";
 export const CALL_FLOW_TEMPLATE = "callFlowTemplate";
@@ -89,7 +88,3 @@ export const DynamicPhoneNumberFieldToDataTypeMap: Map<string, RECORD_DATA_TYPE_
   [ CALLER_CONTEXT_ATTRIBUTES, RECORD_DATA_TYPE_NAME_ENUM.JSON_STRINGIFY]
 ]);
 Object.freeze(DynamicPhoneNumberFieldToDataTypeMap);
-
-export const DynamicPhoneNumberXlsxFieldToHeaderMap: Map<string, string> = new Map([
-  [ PHONE_NUMBER, DIALED_PHONENUMBER ]
-]);

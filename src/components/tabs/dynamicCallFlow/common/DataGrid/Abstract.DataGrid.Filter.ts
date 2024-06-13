@@ -1,7 +1,7 @@
 import { FieldOptions } from "../Form/AbstractFormFieldOptionsManager";
 import {
   DataGridFilterRef, ReactSetState
-} from "../Container.Interfaces";
+} from "../DynamicCallFlow.Interfaces";
 
 const ID = "id";
 

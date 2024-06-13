@@ -1,5 +1,5 @@
 import {
-  BrandEnum,
+  BrandTypeEnum,
   CallFlowTypeEnum,
   ChannelEnum, PhoneNumber,
   PhoneNumberRecordType,
@@ -47,7 +47,7 @@ import {
 import { ControlEnum } from "../../common/Form/Form.Field.Control.Manager";
 
 const drcFieldConditionCheck: FieldConditionCheckType = (phoneNumberRecord: PhoneNumber): boolean => {
-  return phoneNumberRecord?.brand === BrandEnum.LIBERTY_MUTUAL
+  return phoneNumberRecord?.brand === BrandTypeEnum.LIBERTY_MUTUAL
     && phoneNumberRecord?.channel === ChannelEnum.SALES;
 };
 

@@ -6,7 +6,7 @@ import {
 } from "../Dynamic.PhoneNumber.Interfaces";
 
 
-export class BatchDeleteDynamicPhoneNumberRecordsQuery extends AbstractBatchRecordsQuery {
+export class BatchDeleteDynamicPhoneNumberRecordsQuery extends AbstractBatchRecordsQuery<string, PhoneNumber> {
   protected batchInputName(): string {
     return "batchDeletePhoneNumberInput";
   }
@@ -38,5 +38,5 @@ const batchDeleteDynamicPhoneNumberRecordsQuery = new BatchDeleteDynamicPhoneNum
  * @return {Promise<BatchResults<PhoneNumber>>}
  */
 export const batchDeleteDynamicPhoneNumberRecords: BatchRecordQuery<PhoneNumber> = async (accessToken: string, phoneNumberRecords: Array<PhoneNumber>): Promise<BatchResults<PhoneNumber>> => {
-  return await batchDeleteDynamicPhoneNumberRecordsQuery.runBatch<PhoneNumber>(accessToken, phoneNumberRecords as Array<PhoneNumber>);
+  return await batchDeleteDynamicPhoneNumberRecordsQuery.runBatch(accessToken, (phoneNumberRecords as Array<PhoneNumber>).map((phoneNumber: PhoneNumber) => phoneNumber.phoneNumber));
 };
