@@ -1,17 +1,15 @@
-import DialListTable from "../DialListTable";
+import { DialListTable } from "../DialListTable";
 import MockAdapter from "axios-mock-adapter";
-import {
-  DialListEntryForm,
-  ModalOverlay,
-  StyledButton
-} from "components";
+import { DialListEntryForm } from "orgmanagement/DialListEntryForm";
+import { ModalOverlay } from "components/ModalOverlay";
+import { StyledButton } from "components/StyledButton";
 import {
   apiPaths,
   formModes,
-  ModalOverlayStatuses,
-  theme,
   timeouts
-} from "globals";
+} from "globals/index";
+import { ModalOverlayStatuses } from "globals/interfaces";
+import { theme } from "globals/theme";
 import React from "react";
 import {
   act,
@@ -27,26 +25,30 @@ import {
   within
 } from "testUtils";
 import { ThemeProvider } from "styled-components";
-import { myAxios } from "utils";
+import { myAxios } from "utils/myAxios";
 import { Modal } from "@mui/material";
-import { useAdminState } from "context";
+import { useAdminState } from "context/appContext";
 
 jest.useFakeTimers();
 
-jest.mock("components", () => ({
-  __esModule: true,
-  DialListEntryForm: jest.fn(),
-  ModalOverlay: jest.fn(),
+jest.mock("orgmanagement/DialListEntryForm", () => ({
+  DialListEntryForm: jest.fn()
+}));
+
+jest.mock("components/ModalOverlay", () => ({
+  ModalOverlay: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
 }));
 
 jest.mock("@mui/material", () => ({
-  __esModule: true,
   Modal: jest.fn(),
   Paper: jest.requireActual("@mui/material").Paper
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
 }));
 

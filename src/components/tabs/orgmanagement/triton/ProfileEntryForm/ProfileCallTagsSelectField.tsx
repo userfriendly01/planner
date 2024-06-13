@@ -9,7 +9,7 @@ import {
   Label,
   ProfileDropdownWrapper
 } from "./ProfileEntryForm.Styles";
-import { Dropdown } from "components";
+import { Dropdown } from "components/Dropdown";
 import {
   Add,
   Delete,
@@ -19,18 +19,16 @@ import { Tooltip } from "@mui/material";
 import {
   CallTag,
   CallTagOptions
-} from "globals";
-import {
-  formatCallTagsName,
-  logger,
-  sortCallTagByName
-} from "utils";
+} from "globals/interfaces";
+import { logger } from "utils/logger";
+import { sortCallTagByName } from "utils/_sortUtils";
+import { formatCallTagsName } from "utils/profileUtils";
 import {
   getCallTags,
   getCallTagOptions
-} from "services";
+} from "services/callTags";
 
-const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
+export const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   const {
     callTagsList,
     callTagOptionsList,
@@ -166,5 +164,3 @@ const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
     </ProfileDropdownControlWrapper>
   );
 };
-
-export default ProfileCallTagsSelectField;

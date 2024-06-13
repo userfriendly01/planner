@@ -1,104 +1,160 @@
+import { useMsal } from "@azure/msal-react";
 import App from "../App";
 import {
   CircularProgress,
   Modal
 } from "@mui/material";
-import MockAdapter from "axios-mock-adapter";
+import Header from "../../header/Header/Header";
+import NavTabs from "../../navigation/NavTabs";
+import NotificationModal from "components/NotificationModal";
 import {
-  getAuthenticationProfiles,
-  getPermissions,
-  getStartups
-} from "authentication";
-import {
-  Header,
-  NavTabs,
-  NotificationModal
-} from "components";
-import {
-  useAdminDispatch,
-  useAdminState
-} from "context";
-import {
-  apiPaths,
-  timeouts
-} from "globals";
+  useAdminDispatch, useAdminState
+} from "context/appContext";
 import React from "react";
 import {
   act,
+  adGroupPermissionMapping,
   expectMockedComponent,
   expectOnlyPassedProps,
   mockRunTritonStartup,
   render,
   setupMockedComponents,
-  startups,
   waitFor
 } from "testUtils";
-import { myAxios } from "utils";
+import { getWorkerProfileId } from "authentication/authUtils";
+import { getFilteredPermissions } from "authentication/authenticationProfiles";
 
-jest.useFakeTimers();
-
-const authEndpoint = apiPaths.AUTH;
-const axiosMock = new MockAdapter(myAxios);
-
-const auth = {
-  whatever: "lol",
-  groups: "Adgroups",
-  sub: "n0263786"
-};
 
 delete window.location;
 window.location = { reload: jest.fn() };
 document.getElementById = jest.fn();
-
+jest.useFakeTimers();
 
 jest.mock("@mui/material", () => ({
   CircularProgress: jest.fn(),
   Modal: jest.fn()
 }));
 
-jest.mock("authentication", () => ({
-  getAuthenticationProfiles: jest.fn(),
-  getPermissions: jest.fn(),
-  getStartups: jest.fn()
+jest.mock("alohaFlow/AlohaFlowContainer", () => ({
+  __esModule: true,
+  default: jest.fn()
 }));
 
-jest.mock("components", () => ({
-  Header: jest.fn(),
-  NavTabs: jest.fn(),
-  NotificationModal: jest.fn()
+jest.mock("alohaRouting/AlohaRoutingContainer", () => ({
+  __esModule: true,
+  default: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("usermanagement/BulkChanges", () => ({
+  BulkChanges: jest.fn()
+}));
+
+jest.mock("callflowmanagement/CallFlowManagementWrapper/CallFlowManagementSkills", () => ({
+  __esModule: true,
+  default: jest.fn()
+}));
+
+jest.mock("callflowmanagement/CallFlowManagementWrapper/CallFlowManagementTfn", () => ({
+  CallFlowManagementTfn: jest.fn()
+}));
+
+jest.mock("usermanagement/CompareProfiles", () => ({
+  CompareProfiles: jest.fn()
+}));
+
+jest.mock("dynamicFlow/DynamicFlowContainer", () => ({
+  __esModule: true,
+  default: jest.fn()
+}));
+
+jest.mock("orgmanagement/ProfileDirectoryContainer", () => ({
+  __esModule: true,
+  default: jest.fn()
+}));
+
+jest.mock("orgmanagement/ProfileDialListContainer", () => ({
+  ProfileDialListContainer: jest.fn()
+}));
+
+jest.mock("orgmanagement/ProfileSettingsContainer", () => ({
+  ProfileSettingsContainer: jest.fn()
+}));
+
+jest.mock("usermanagement/TritonUsersViewWrapper", () => ({
+  TritonUsersViewWrapper: jest.fn()
+}));
+
+jest.mock("usermanagement/UserEntryFormWrapper", () => ({
+  UserEntryForm: jest.fn()
+}));
+
+jest.mock("usermanagement/WfmUsersViewWrapper", () => ({
+  WfmUsersViewWrapper: jest.fn()
+}));
+
+jest.mock("orgmanagement/CalabrioOrgWrapper", () => ({
+  CalabrioOrgWrapper: jest.fn()
+}));
+
+jest.mock("orgmanagement/CalabrioRolesWrapper", () => ({
+  CalabrioRolesWrapper: jest.fn()
+}));
+
+jest.mock("authentication/authUtils", () => ({
+  getWorkerProfileId: jest.fn()
+}));
+
+jest.mock("authentication/authenticationProfiles", () => ({
+  getFilteredPermissions: jest.fn()
+}));
+
+jest.mock("../../header/Header/Header", () => ({
+  __esModule: true,
+  default: jest.fn()
+}));
+
+jest.mock("../../navigation/NavTabs", () => ({
+  __esModule: true,
+  default: jest.fn()
+}));
+
+jest.mock("components/NotificationModal", () => ({
+  __esModule: true,
+  default: jest.fn()
+}));
+
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn(),
   useAdminDispatch: jest.fn()
 }));
 
+jest.mock("@azure/msal-react");
+
 jest.mock("utils", () => ({
-  getAuthenticationProfiles: jest.fn(),
-  getPermissions: jest.fn(),
-  getStartups: jest.fn(),
-  myAxios: jest.requireActual("utils").myAxios,
-  wait: jest.requireActual("utils").wait,
-  isErrorIn400s: jest.requireActual("utils").isErrorIn400s,
-  logger: jest.requireActual("utils").logger
+  wait: jest.requireActual("utils").wait
 }));
 
 const mockAdminDispatch = jest.fn();
-const mockHome = jest.fn();
-const authenticationProfiles = [{ home: mockHome }];
+const permissions = [adGroupPermissionMapping[0]];
 
 describe("<App />", () => {
+  let loginPopupFunc;
+  let acquireTokenSilentFunc;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    jest.resetAllMocks();
     document.getElementById.mockReturnValue({ scrollTo: jest.fn() });
-    useAdminState.mockReturnValue({});
+    useAdminState.mockReturnValue({
+      userContext: {
+        permissions: [],
+        accessToken: ""
+      },
+      workerContext: {
+        workers: []
+      }
+    });
     useAdminDispatch.mockReturnValue(mockAdminDispatch);
-    axiosMock.onGet(authEndpoint).reply(200, auth);
-    getPermissions.mockReturnValue("permissions");
     mockRunTritonStartup.mockResolvedValue("Things went well!");
-    getAuthenticationProfiles.mockReturnValue(authenticationProfiles);
-    getStartups.mockReturnValue([startups.TRITON.function]);
     setupMockedComponents({
       CircularProgress,
       Header,
@@ -106,139 +162,258 @@ describe("<App />", () => {
       NavTabs,
       NotificationModal
     });
-  });
 
-  describe("authenticationAndStartup is successful", () => {
-    describe("initial state, page is loading", () => {
-      test("should render LoadingMessage", () => {
-        const rendered = render(<App />);
-        expect(rendered.container).toHaveTextContent("Loading...");
-        expectMockedComponent(rendered, { CircularProgress });
-      });
+    getFilteredPermissions.mockReturnValue(permissions);
+    getWorkerProfileId.mockReturnValue(0);
+
+    loginPopupFunc = jest.fn().mockReturnValue({
+      accessToken: "Access Token",
+      expiresOn: new Date()
     });
-    describe("service calls are complete", () => {
-      describe("auth token is good (page loaded less than one hour ago)", () => {
-        test(
-          "should render Header & NavTabs, should dispatch appropriate actions, Modal should not be open",
-          async () => {
-            const rendered = render(<App />);
-            await waitFor(() => rendered.getByTestId("app-wrapper"));
-            expectMockedComponent(rendered, { Header });
-            expectMockedComponent(rendered, { NavTabs });
-            expectMockedComponent(rendered, { Modal });
-            expectOnlyPassedProps(Modal, {
-              open: false
-            });
-            expectMockedComponent(rendered, { CircularProgress }, 0);
-            expect(rendered.container).not.toHaveTextContent("Loading...");
-            expect(getPermissions).toHaveBeenCalledTimes(1);
-            expect(getPermissions).toHaveBeenCalledWith(auth.groups);
-            expect(getStartups).toHaveBeenCalledTimes(1);
-            expect(getStartups).toHaveBeenCalledWith("permissions");
-            expect(mockRunTritonStartup).toHaveBeenCalledTimes(1);
-            expect(mockRunTritonStartup).toHaveBeenCalledWith(mockAdminDispatch);
-            expect(getAuthenticationProfiles).toHaveBeenCalledTimes(1);
-            expect(getAuthenticationProfiles).toHaveBeenCalledWith("permissions", "n0263786", ["Things went well!"]);
-            expect(mockAdminDispatch).toHaveBeenCalledTimes(1);
-            expect(mockAdminDispatch).toHaveBeenCalledWith({
-              type: "loadUserData",
-              payload: {
-                pingIdentity: auth,
-                authenticationProfiles
-              }
-            });
-          });
-      });
-      describe("auth token has expired (page loaded more than one hour ago", () => {
-        test("should render NotificationModal", async () => {
-          const rendered = render(<App />);
-          await waitFor(() => rendered.getByTestId("app-wrapper"));
-          const modalChildren = Modal.mock.calls[0][0].children;
-          const modalChildrenRendered = render(<div>{modalChildren}</div>);
-          await act(() => jest.advanceTimersByTime(timeouts.AUTH));
-          expectOnlyPassedProps(Modal, {
-            open: true
-          });
-          expectMockedComponent(modalChildrenRendered, { NotificationModal });
-          expectOnlyPassedProps(NotificationModal, {
-            buttonText: "Reload",
-            text: "Your session has expired. Please reload the page."
-          });
-          // testing handleClick for code coverage
-          const handleClick = NotificationModal.mock.calls[0][0].handleClick;
-          act(() => handleClick());
-          expect(window.location.reload).toHaveBeenCalledTimes(1);
-        });
-        describe("onClose is called for modal", () => {
-          test("modal does not close", async () => {
-            const rendered = render(<App />);
-            await waitFor(() => rendered.getByTestId("app-wrapper"));
-            expect(Modal.mock.calls.length).toBe(1);
-            await act(() => jest.advanceTimersByTime(timeouts.AUTH));
-            expect(Modal.mock.calls.length).toBe(2);
-            expectOnlyPassedProps(Modal, {
-              open: true
-            });
-            // testing handleClose for code coverage
-            const handleClose = Modal.mock.calls[0][0].onClose;
-            act(() => handleClose());
-            expect(Modal.mock.calls.length).toBe(2);
-            expect(Modal.mock.calls[1][0].open).toBe(true);
-          });
-        });
-      });
+
+    acquireTokenSilentFunc = jest.fn().mockReturnValue({
+      accessToken: "Access Token",
+      expiresOn: new Date()
+    });
+
+    useMsal.mockReturnValue({
+      instance: {
+        getActiveAccount: jest.fn().mockReturnValue({
+          idTokenClaims: {
+            roles: ["Admin"],
+            employeeid: "n1234567"
+          }
+        }),
+        loginPopup: loginPopupFunc,
+        acquireTokenSilent: acquireTokenSilentFunc
+      }
     });
   });
 
-  describe("authenticationAndStartup fails", () => {
-    describe("startup file fails", () => {
-      const statusCode = 500;
-      beforeEach(() => {
-        mockRunTritonStartup.mockRejectedValue({
-          response: {
-            status: statusCode
+  describe("initial state, page is loading", () => {
+    test("should render LoadingMessage", () => {
+      const rendered = render(<App />);
+      expect(rendered.container).toHaveTextContent("Loading...");
+      expectMockedComponent(rendered, { CircularProgress });
+    });
+
+    test("should call to loginPopup and get a token", async () => {
+      render(<App />);
+
+      await waitFor(() => {
+        expect(loginPopupFunc).toHaveBeenCalled();
+        expect(acquireTokenSilentFunc).toHaveBeenCalled();
+
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadUserData",
+          payload: {
+            accessToken: "Access Token",
+            accessTokenGraph: "Access Token"
           }
         });
       });
-      test("should throw error up the stack", done => {
-        const rendered = render(<App />);
-        waitFor(() => rendered.getByTestId("error-overlay"))
-          .then(() => {
-            expect(rendered.container).toHaveTextContent(statusCode);
-            expect(rendered.container).toHaveTextContent("An error occurred on startup");
-            done();
-          });
+    });
+  });
+
+  describe("authentication is successful and we have an account object", () => {
+    beforeEach(() => {
+      useAdminState.mockReturnValue({
+        userContext: {
+          permissions: [],
+          accessToken: "Access Token",
+          accessTokenGraph: "Access Token"
+        },
+        workerContext: {
+          workers: []
+        }
+      });
+
+      Date.now = jest.fn();
+      Date.now.mockReturnValue(1704067200000);
+      getWorkerProfileId.mockResolvedValue(0);
+      useMsal.mockReturnValue({
+        instance: {
+          getActiveAccount: jest.fn().mockReturnValue({
+            idTokenClaims: {
+              roles: ["Admin"],
+              employeeid: "n1234567"
+            }
+          }),
+          loginPopup: jest.fn().mockReturnValue({
+            accessToken: "Access Token",
+            expiresOn: new Date(1704067201000)
+          }),
+          acquireTokenSilent: jest.fn().mockReturnValue({
+            accessToken: "Access Token",
+            expiresOn: new Date(1704067201000)
+          })
+        }
       });
     });
-    describe("authentication service call returned an error in the 400's", () => {
-      const statusCode = 403;
-      beforeEach(() => {
-        axiosMock.onGet(authEndpoint).reply(statusCode, { ohno: "booo" });
+
+    test("should render Header & NavTabs, should dispatch appropriate actions, Modal should not be open", async () => {
+      const rendered = render(<App />);
+      await waitFor(() => rendered.getByTestId("app-wrapper"));
+      expectMockedComponent(rendered, { Header });
+      expectMockedComponent(rendered, { NavTabs });
+      expectMockedComponent(rendered, { CircularProgress }, 0);
+      expect(rendered.container).not.toHaveTextContent("Loading...");
+      expect(mockRunTritonStartup).toHaveBeenCalledTimes(1);
+      expect(mockRunTritonStartup).toHaveBeenCalledWith(mockAdminDispatch);
+      expect(mockAdminDispatch).toHaveBeenCalledTimes(2);
+      expect(mockAdminDispatch).toHaveBeenCalledWith({
+        type: "loadUserData",
+        payload: {
+          permissions,
+          isAdmin: true,
+          nNumber: "n1234567",
+          profileId: 0
+        }
       });
-      test("should return 'You are not authorized to view this page'", done => {
-        const rendered = render(<App />);
-        waitFor(() => rendered.getByTestId("error-overlay"))
-          .then(() => {
-            expect(rendered.container).toHaveTextContent(statusCode);
-            expect(rendered.container).toHaveTextContent("You are not authorized to view this page");
-            done();
-          });
+      expect(mockAdminDispatch).toHaveBeenCalledWith({
+        type: "loadUserData",
+        payload: {
+          accessToken: "Access Token",
+          accessTokenGraph: "Access Token"
+        }
       });
     });
-    describe("authentication service call returned an error not in the 400's", () => {
-      const statusCode = 500;
-      beforeEach(() => {
-        axiosMock.onGet(authEndpoint).reply(statusCode, { wahhh: "nooo" });
+  });
+
+  describe("application is set into error state", () => {
+    test("User has no permissions", async () => {
+      useAdminState.mockReturnValue({
+        userContext: {
+          accessToken: "Access Token",
+          accessTokenGraph: "Access Token"
+        },
+        workerContext: {
+          workers: []
+        }
       });
-      test("should return 'An error occurred while logging in.'", done => {
-        const rendered = render(<App />);
-        waitFor(() => rendered.getByTestId("error-overlay"))
-          .then(() => {
-            expect(rendered.container).toHaveTextContent(statusCode);
-            expect(rendered.container).toHaveTextContent("An error occurred when trying to authenticate");
-            done();
-          });
+
+      getFilteredPermissions.mockReturnValue([]);
+      const rendered = render(<App />);
+      await waitFor(() => rendered.getByTestId("error-overlay"));
+
+      expect(rendered.container).toHaveTextContent("You are missing required AD Groups to be able to access this application");
+      expect(rendered.container).toHaveTextContent("UNAUTHORIZED");
+    });
+
+    test("Startup fails to run", async () => {
+      useAdminState.mockReturnValue({
+        userContext: {
+          accessToken: "Access Token",
+          accessTokenGraph: "Access Token"
+        },
+        workerContext: {
+          workers: []
+        }
       });
+
+      getFilteredPermissions.mockReturnValue([{
+        startup: {
+          function: mockRunTritonStartup
+        }
+      }]);
+      mockRunTritonStartup.mockRejectedValue({
+        response: {
+          msg: "Something went wrong",
+          data: { woah: "an error" },
+          status: 401
+        }
+      });
+
+      const rendered = render(<App />);
+      await waitFor(() => rendered.getByTestId("error-overlay"));
+
+      expect(rendered.container).toHaveTextContent("Something went wrong");
+      expect(rendered.container).toHaveTextContent(401);
+    });
+
+    test("loginPopup throws an error", async () => {
+      loginPopupFunc.mockRejectedValue({
+        errorMessage: "Popup went wrong",
+        errorCode: 401
+      });
+
+      const rendered = render(<App />);
+      await waitFor(() => rendered.getByTestId("error-overlay"));
+
+      expect(rendered.container).toHaveTextContent("Failed to get a token from Azure, try refreshing the page");
+      expect(rendered.container).toHaveTextContent("Popup went wrong");
+      expect(rendered.container).toHaveTextContent(401);
+    });
+  });
+
+  describe("token refresh modal", () => {
+    loginPopupFunc = jest.fn();
+    acquireTokenSilentFunc = jest.fn();
+
+    beforeEach(() => {
+      useAdminState.mockReturnValue({
+        userContext: {
+          permissions: [],
+          accessToken: "Access Token",
+          accessTokenGraph: "Access Token"
+        },
+        workerContext: {
+          workers: []
+        }
+      });
+
+      Date.now = jest.fn();
+      Date.now.mockReturnValue(1704067200000);
+      loginPopupFunc.mockReturnValue({
+        accessToken: "Access Token",
+        expiresOn: new Date(1704067201000)
+      });
+    });
+
+    test("should show modal when token expires", async () => {
+      useMsal.mockReturnValue({
+        instance: {
+          getActiveAccount: jest.fn().mockReturnValue({
+            idTokenClaims: {
+              roles: ["Admin"],
+              employeeid: "n1234567"
+            }
+          }),
+          loginPopup: loginPopupFunc,
+          acquireTokenSilent: acquireTokenSilentFunc
+        }
+      });
+
+      const rendered = render(<App />);
+
+      await waitFor(() => {
+        expect(mockAdminDispatch).toHaveBeenCalledWith({
+          type: "loadUserData",
+          payload: {
+            accessToken: "Access Token",
+            accessTokenGraph: "Access Token"
+          }
+        });
+      });
+
+      await waitFor(() => rendered.getByTestId("app-wrapper"));
+
+      jest.advanceTimersByTime(5000);
+
+      const modalChildren = Modal.mock.calls[0][0].children;
+      const modalChildrenRendered = render(<div>{modalChildren}</div>);
+      expectOnlyPassedProps(Modal, {
+        open: true
+      });
+      expectMockedComponent(modalChildrenRendered, { NotificationModal });
+      expectOnlyPassedProps(NotificationModal, {
+        buttonText: "Reload",
+        text: "Your session has expired. Please reload the page."
+      });
+      // testing handleClick for code coverage
+      const handleClick = NotificationModal.mock.calls[0][0].handleClick;
+      act(() => handleClick());
+      expect(window.location.reload).toHaveBeenCalledTimes(1);
     });
   });
 });

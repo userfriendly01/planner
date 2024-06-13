@@ -5,9 +5,9 @@ import {
   PermissionsColumn,
   Role,
   Permission
-} from "./CalabrioRolesWrapper.Styles"
-import { useAdminState } from "context";
-import { sortCalabrioObject } from "utils";
+} from "./CalabrioRolesWrapper.Styles";
+import { useAdminState } from "context/appContext";
+import { sortCalabrioObject } from "utils/_sortUtils";
 import { Divider } from "@mui/material";
 
 const CalabrioRolesWrapper = () => {
@@ -20,7 +20,7 @@ const CalabrioRolesWrapper = () => {
     <RolesWrapper>
       <RolesColumn>
         {roles.sort(sortCalabrioObject).map((r: any) => ((
-          <div>
+          <div key={r.id}>
             <Role
               selected={r.id === selectedRole.id}
               onClick={() => setSelectedRole(r)}>{r.name}
@@ -32,14 +32,14 @@ const CalabrioRolesWrapper = () => {
       </RolesColumn>
       <PermissionsColumn>
         {selectedRole.permissions?.sort(sortCalabrioObject).map((p: any) => ((
-          <Permission>
+          <Permission key={p.name}>
             {p.name}
           </Permission>
         )))
         }
       </PermissionsColumn>
     </RolesWrapper>
-  )
+  );
 };
 
 export default CalabrioRolesWrapper;

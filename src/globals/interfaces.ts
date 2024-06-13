@@ -1,5 +1,46 @@
-import { CalabrioGroup } from "../components/tabs/usermanagement/OnboardNewUser/CallRecording/CallRecording.Interfaces";
-import { AuthenticationProfile } from "authentication";
+import { CalabrioGroup } from "usermanagement/CallRecording.Interfaces";
+import {
+  AuthenticationProfile, Permissions
+} from "authentication/authenticationInterfaces";
+import { AlertColor } from "@mui/material";
+import styled from "styled-components";
+
+export const FlexColumn = styled.div`
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+`;
+
+export const FlexRow = styled.div`
+  display: flex;
+  flex: 1 1 auto;
+`;
+
+export interface GenericObject {
+  [key: string]: any
+}
+
+export interface DropdownOption {
+  label: string,
+  value: any
+}
+
+export interface AlertBarProps {
+    open: boolean;
+    msg: string;
+    severityType: AlertColor;
+    duration?: number
+}
+
+export interface FormValidationProps {
+    error?: boolean;
+    value?: any;
+    required?: boolean;
+}
+
+export interface FormValidationRule {
+    [key: string]: FormValidationProps;
+}
 
 export interface Action {
   type: string,
@@ -16,12 +57,13 @@ export interface Discrepancy {
   message: string,
   type: string
 }
+
 export interface AppState {
   managerContext: {
-    managers: Manager[]
+    managers: UMManager[]
   },
   officeContext: {
-    offices: Map<string, Office>
+    offices: UMOffice[]
   },
   profileContext: {
     profiles: TritonProfile[]
@@ -31,11 +73,16 @@ export interface AppState {
     skillGroups: SkillGroup[]
   },
   userContext: {
-    pingIdentity: PingIdentity,
-    authenticationProfiles: AuthenticationProfile[]
+    permissions: ADGroupPermission[]
+    accessToken: string
+    accessTokenGraph: string
+    isAdmin?: boolean
+    profileId?: number
+    nNumber?: string
   },
   workerContext: {
-    workers: Worker[]
+    workers: UMUser[],
+    isLoading: boolean;
   },
   calabrioContext: {
     tenant: any,
@@ -55,23 +102,19 @@ export interface AppState {
   }
 }
 
-export interface PingIdentity {
-  firstName: string,
-  lastName: string,
-  sub: string,
-  mail: string,
-  groups: string[],
-  aud: string,
-  displayName: string,
-  access_token: string,
-  acr: string,
-  exp: number,
-  iat: number,
-  iss: string,
-  jti: string,
-  "pi.pa.attr_exp": number,
-  "pi.pa.rat": number,
-  environment: string
+export interface ADGroupRole {
+  name: string;
+  permissionLevel: Permissions;
+}
+
+export interface ADGroupPermission {
+    roles: ADGroupRole[];
+    startup: {
+      name: string;
+      function: (dispatch: any) => Promise<any>;
+    }
+    description: string;
+    authenticationProfile:  AuthenticationProfile
 }
 
 export interface FormModes {
@@ -80,11 +123,15 @@ export interface FormModes {
   DELETE: string
 }
 
-export interface Manager {
+export interface UMManager {
+  pk: string,
+  sk: string,
+  item_type: string,
   manager_first_name: string,
   manager_last_name: string,
-  manager_n_number: string,
-  manager_id?: number | string
+  profile_id: number,
+  manager_n_num: string,
+  calabrio_team_ids: number[],
 }
 
 export enum ModalOverlayStatuses {
@@ -98,9 +145,12 @@ export interface MySqlBoolean {
   type: "Buffer"
 }
 
-export interface Office {
-  office_nme: string,
-  office_num: string
+export interface UMOffice {
+  pk: string,
+  sk: string,
+  item_type: string,
+  office_num: string,
+  office_name: string
 }
 
 export interface Skill {
@@ -146,7 +196,7 @@ export interface TritonProfile {
   row_crtn_dtm: string,
   row_updt_dtm: string,
   overflow_skill: string,
-  activities: Array<object>,
+  activities: Array<Record<string, unknown>>,
   callTags: string,
   operating_unit_nme: string,
   operating_unit_sid: string
@@ -161,7 +211,7 @@ export interface ProfilePayload {
   pmt_prcsg_i: boolean,
   otbnd_recorded_i: boolean,
   acw_option_i: boolean,
-  callTags: Array<object>,
+  callTags: Array<Record<string, unknown>>,
   manual_recorded_i: boolean,
   acw_data_entry_i: boolean,
   manual_record_inbound_i: boolean,
@@ -173,7 +223,7 @@ export interface ProfilePayload {
   click_to_dial_i: boolean,
   eft_authorization_i: boolean,
   claim_number_edit_i: boolean,
-  transferQueues: Array<object>,
+  transferQueues: Array<Record<string, unknown>>,
   aggregateQueues: Array<number>
 }
 
@@ -261,55 +311,73 @@ export interface WfmUser {
   ParentTeam?: string //something we add to verify the team Id listed on the worker aligns to the team they were found in
 }
 
-export interface Worker {
-  attributes: {
-    contact_uri?: string,
-    default_skills?: WorkerAttributeSkills,
-    department_name?:string,
-    department_id?:string,
-    did?: string,
-    disabled_skills?: WorkerAttributeSkills,
-    email?: string,
-    email_address?: string,
-    emp_first_name?: string,
-    emp_last_name?: string,
-    extension?: string,
-    full_name?: string,
-    location?:string,
-    manager_first_name?: string,
-    manager_last_name?: string,
-    manager_n_number?: string,
-    manager?:string,
-    n_number?: string,
-    office_location_name?: string,
-    office_location_number?: string,
-    primary_dept_name?: string,
-    primary_dept_number?: string,
-    profile_id?: string | number,
-    roles?: string[],
-    routing?: WorkerAttributeSkills,
-    unique_id?: string,
-    callerStateAttr?: WorkerAttributeSkills
-  },
-  alternateDid?: string,
-  directDialNum?: string,
-  inactiveInd?: string,
-  inactiveForwardTo?: string,
-  inactiveForwardToType?: string,
-  sid: string,
-  skillsDifferent: boolean,
-  zeroOutEnabled?: boolean,
-  selfServiceInd?: boolean
+export interface DBList<TItem> {
+  items: TItem[];
+  nextToken: string;
 }
 
-export interface WorkerAttributeSkills {
+export interface GraphData {
+  query: any,
+  responsePath: string
+}
+
+export interface UMUserTwilioAttributes {
+  contact_uri?: string,
+  default_skills?: UMTwilioAttributeSkills,
+  department_name?:string,
+  department_id?:string,
+  caller_id?: string,
+  disabled_skills?: UMTwilioAttributeSkills,
+  email?: string,
+  email_address?: string,
+  emp_first_name?: string,
+  emp_last_name?: string,
+  extension?: string,
+  full_name?: string,
+  location?:string,
+  manager_first_name?: string,
+  manager_last_name?: string,
+  manager_n_number?: string,
+  manager?:string,
+  n_number?: string,
+  office_location_name?: string,
+  office_location_number?: string,
+  primary_dept_name?: string,
+  primary_dept_number?: string,
+  profile_id?: number,
+  roles?: string[],
+  routing?: UMTwilioAttributeSkills,
+  unique_id?: string,
+  agent_id?: string,
+}
+
+export interface UMUser {
+  pk: string;
+  ttl: number;
+  sid: string;                // mapped from --> worker_sid
+  workerSid: string;          // mapped from --> worker_sid
+  inactiveDate?: string;      // mapped from --> inactive_date
+  inactiveForwardTo: string;  // mapped from --> inactive_forward_to
+  zeroOutEnabled: boolean;    // mapped from --> zero_out_enabled
+  selfServiceInd: boolean;    // mapped from --> self_service_ind
+  operatingUnitSid: string;   // mapped from --> operating_unit_sid
+  did?: string;
+  twilio_attributes: string;  // Used for create and update
+
+  // Added by us
+  skillsDifferent: boolean;
+  attributes: UMUserTwilioAttributes;  // mapped from --> twilio_attributes
+  isConsole: boolean;                 // Will be true if pk contains Console
+}
+
+export interface UMTwilioAttributeSkills {
   levels: {
     [key: string]: number
   },
   skills: string[],
   team?:string,
-  callerStates?: string[],
-  sales_assoc_worker?: string[]
+  caller_states?: string[],
+  sales_assoc_workers?: string[]
 }
 
 

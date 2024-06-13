@@ -1,4 +1,4 @@
-import { LoadingState } from "./UserEntryFormWrapper.Interfaces";
+import { LoadingState } from "usermanagement/UserEntryFormWrapper.Interfaces";
 import {
   DiscrepancyContainer,
   Header1,
@@ -8,37 +8,33 @@ import {
   ModalContainer,
   StyledDivider,
   Text
-} from "./UserEntryFormWrapper.Styles";
-import {
-  DeleteTritonUser,
-  ModalOverlay,
-  BasicFormInfo,
-  CallRecordingForm,
-  UserFormButtons,
-  WfmForm
-} from "components";
+} from "usermanagement/UserEntryFormWrapper.Styles";
+import { DeleteTritonUser } from "usermanagement/DeleteUserProfiles";
+import { ModalOverlay } from "components/ModalOverlay";
+import { BasicFormInfo } from "usermanagement/BasicFormInfo";
+import { CallRecordingForm } from "usermanagement/CallRecordingForm";
+import { UserFormButtons } from "usermanagement/UserFormButtons";
+import { WfmForm } from "usermanagement/WfmForm";
 import {
   useFormState,
   useAdminState,
-  useFormDispatch,
-  userFormActions
-} from "context";
+  useFormDispatch
+} from "context/appContext";
+import { userFormActions } from "context/userFormReducer";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { sortWorkersByFullName } from "utils/_sortUtils";
+import { identifyUserProfiles } from "utils/usermanagementUtils";
+import { logger } from "utils/logger";
+import { formModes } from "globals";
 import {
-  sortWorkersByFullName,
-  identifyUserProfiles,
-  logger
-} from "utils";
-import {
-  Worker,
-  formModes,
+  UMUser,
   discrepancyType,
   ModalOverlayStatuses
-} from "globals";
+} from "globals/interfaces";
 import { Checkbox } from "@mui/material";
 
-const UserEntryForm = () => {
+export const UserEntryForm = () => {
 
   const state = useAdminState();
   const form = useFormState();
@@ -63,7 +59,7 @@ const UserEntryForm = () => {
 
   React.useEffect(() => {
     if (form.formMode === formModes.INSERT) {
-      const workerFound = workers.find((w: Worker) => w.attributes?.n_number?.toLowerCase() === form.nNumber.value?.toLowerCase());
+      const workerFound = workers.find((w: UMUser) => w.attributes?.n_number?.toLowerCase() === form.nNumber.value?.toLowerCase());
       const duplicateTritonMessage = "This user already seems to have a Triton Record. Please cancel out of this form and edit their worker instead.";
       if (workerFound) {
         setForm({
@@ -193,8 +189,6 @@ const UserEntryForm = () => {
           workers={workers}
           profiles={profiles}
           managers={managers}
-          forwardToToggle={forwardToToggle}
-          setForwardToToggle={setForwardToToggle}
         />
       }
       <StyledDivider />
@@ -249,5 +243,3 @@ const UserEntryForm = () => {
     </ModalContainer>
   );
 };
-
-export default UserEntryForm;

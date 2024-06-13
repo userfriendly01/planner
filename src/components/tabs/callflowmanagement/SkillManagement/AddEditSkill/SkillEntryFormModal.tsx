@@ -1,32 +1,34 @@
 import React from "react";
 import styled from "styled-components";
-import {
-  StyledButton,
-  Dropdown,
-  CustomInput,
-  ModalOverlay,
-  PhoneNumberInput
-} from "components";
+import { StyledButton } from "components/StyledButton";
+import { Dropdown } from "components/Dropdown";
+import { CustomInput } from "components/CustomInput";
+import { ModalOverlay } from "components/ModalOverlay";
+import { PhoneNumberInput } from "components/PhoneNumberInput";
 import {
   useAdminState,
   useAdminDispatch,
   skillFormState,
-  skillFormDispatch,
+  skillFormDispatch
+} from "context/appContext";
+import {
   skillFormActions,
   initialSkillFormState
-} from "context";
+} from "context/skillFormReducer";
 import {
   AddEditSkill,
   SkillFormState,
   SkillEntryFormModalProps
 } from "../Skills.Interfaces";
 import {
-  FlexRow,
-  FlexColumn,
   formModes,
-  ModalOverlayStatuses,
   timeouts
-} from "globals";
+} from "globals/index";
+import {
+  FlexRow,
+  FlexColumn
+} from "globals/interfaces";
+import { ModalOverlayStatuses } from "globals/interfaces";
 import {
   FormControlLabel,
   Switch,
@@ -34,9 +36,9 @@ import {
 } from "@mui/material";
 import {
   createSkill
-} from "services";
-import { getSkills } from "authentication";
-import { logger } from "utils";
+} from "services/skill";
+import { getSkills } from "authentication/startups/cct-triton-admin-startup";
+import { logger } from "utils/logger";
 
 const ModalContainer = styled.div`
   display: flex;
@@ -87,7 +89,7 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
   const adminDispatch = useAdminDispatch();
 
   const state = useAdminState();
-  const nNumber = state.userContext.pingIdentity?.sub;
+  const { nNumber } = state.userContext;
   const profiles = state.profileContext.profiles;
   const skills = state.skillContext.skills;
 
@@ -109,8 +111,8 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
   const timeOfDayOptions = getDropdownOptions(timeOfDays, "openTime", "timeOfDayId");
   const applicationOptions = getDropdownOptions(applications, "applicationName", "applicationId");
 
-  const invalidSkillFriendlyName = skills.find(skill => skill.ctmSkillDisplayName === skFormState.skillFriendlyName) ? true : false;
-  const invalidSkillNum = skills.find(skill => skill.name === skFormState.skillNum) ? true : false;
+  const invalidSkillFriendlyName = skills.find((skill: any) => skill.ctmSkillDisplayName === skFormState.skillFriendlyName) ? true : false;
+  const invalidSkillNum = skills.find((skill: any) => skill.name === skFormState.skillNum) ? true : false;
   const invalidVhCallTarget = skFormState.vhCallTarget.e164.trim() !== "" && !skFormState.vhCallTarget.valid;
   const invalidVhThreshold = skFormState.vhThreshold.trim() !== "" && isNaN(parseInt(skFormState.vhThreshold));
 

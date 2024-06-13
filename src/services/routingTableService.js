@@ -1,8 +1,7 @@
 /* eslint-disable no-console */
 import { env } from "globals";
-import {
-  logger, removeAllWhiteSpace
-} from "utils";
+import { logger } from "utils/logger";
+import { removeAllWhiteSpace } from "utils/alohaRoutingUtils";
 
 /**
  * This is the function use to query the appsync API to get the data from DB
@@ -17,7 +16,7 @@ async function queryRoutingData(accessToken, nextToken = null) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body: JSON.stringify({
         query: `
@@ -138,7 +137,7 @@ async function updateRoutingDB(item, accessToken) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body: JSON.stringify({
         query: `
@@ -225,7 +224,7 @@ async function addRoutingRule(item, accessToken) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body: JSON.stringify({
         query: `
@@ -288,7 +287,7 @@ async function deleteRoutingRule(item, accessToken) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body: JSON.stringify({
         query: `
@@ -406,7 +405,7 @@ async function batchDelete(items, accessToken) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body
     });
@@ -428,8 +427,8 @@ async function routingBatchUpdate(items, accessToken){
     alertMsg: ""
   };
   if(items.length === 0){
-    response.alertMsg = "Please Select Something to Edit";
-    response.flag=true;
+    response.alertMsg = "";
+    response.flag=false;
   }
   while (items.length > 0){
     routingDeleteArray.push(items.splice(0, size));
@@ -489,7 +488,7 @@ const batchRoutingUpdate = async(items, accessToken) =>{
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body: JSON.stringify({
         query: `
@@ -553,8 +552,8 @@ async function routingBatchCreate(items, accessToken){
     alertMsg: ""
   };
   if(items.length === 0){
-    response.alertMsg="Please select something to add";
-    response.flag = true;
+    response.alertMsg="";
+    response.flag = false;
   }
   while (items.length > 0){
     routingDeleteArray.push(items.splice(0, size));
@@ -614,7 +613,7 @@ const batchRoutingCreate = async(items, accessToken) =>{
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body: JSON.stringify({
         query: `

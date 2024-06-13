@@ -1,19 +1,15 @@
-import { DefaultResetInformation } from "./ResetSkills.Interfaces";
-import {
-  ResetSkillsResultsModal,
-  StyledButton
-} from "components";
+import { DefaultResetInformation } from "usermanagement/ResetSkills.Interfaces";
+import { ResetSkillsResultsModal } from "usermanagement/ResetSkillsResultsModal";
+import { StyledButton } from "components/StyledButton";
 import {
   useAdminDispatch,
   useAdminState
-} from "context";
+} from "context/appContext";
 import { apiPaths } from "globals";
 import React, { useState } from "react";
-import {
-  logger,
-  mapWorkerFromDbWorker,
-  myAxios
-} from "utils";
+import { logger } from "utils/logger";
+import { mapWorkerFromTwilio } from "utils";
+import { myAxios } from "utils/myAxios";
 import { Modal } from "@mui/material";
 
 const defaultResetInformation: DefaultResetInformation = {
@@ -23,13 +19,13 @@ const defaultResetInformation: DefaultResetInformation = {
   unsuccessfulResets: []
 };
 
-const ResetSkillsButton = (props: any) => {
+export const ResetSkillsButton = (props: any) => {
   const {
     selected
   } = props;
 
   const state = useAdminState();
-  const nNumber = state.userContext.pingIdentity?.sub;
+  const { nNumber } = state.userContext;
 
   const dispatch = useAdminDispatch();
   const [ resultsModalOpts, setResultsModalOpts ] = useState(defaultResetInformation);
@@ -49,7 +45,7 @@ const ResetSkillsButton = (props: any) => {
           if (result.updated){
             result.worker.workerSid = result.workerSid;
             result.worker.attributes = JSON.parse(result.worker.attributes);
-            const updatedWorker = mapWorkerFromDbWorker(result.worker);
+            const updatedWorker = mapWorkerFromTwilio(result.worker);
             dispatch({
               type: "updateWorker",
               payload: updatedWorker
@@ -115,5 +111,3 @@ const ResetSkillsButton = (props: any) => {
     </div>
   );
 };
-
-export default ResetSkillsButton;

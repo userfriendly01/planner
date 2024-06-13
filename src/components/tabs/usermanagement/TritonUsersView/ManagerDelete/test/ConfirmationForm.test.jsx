@@ -1,16 +1,13 @@
-import {
-  StyledButton
-} from "components";
+import { StyledButton } from "components/StyledButton";
 import React from "react";
 import {
   expectMockedComponent,
   render,
   setupMockedComponents
 } from "testUtils";
-import ConfirmationForm from "../ConfirmationForm";
+import { ConfirmationForm } from "../ConfirmationForm";
 
-jest.mock("components", () => ({
-  __esModule: true,
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
 }));
 

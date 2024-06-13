@@ -12,16 +12,17 @@ import {
   deleteDynamicFlowRule as v2DeleteFlowRule,
   updateFlowDB as v1UpdateFlowDB,
   updateDynamicFlowDB as v2UpdateFlowDB
-} from "services";
+} from "services/flowTableService";
 import {
   CctSharedCallFlowDb,
   FlowMasterData
 } from "../AlohaFlow.Interfaces";
-import { FormValidationRule } from "utils/interfaces";
+import { FormValidationRule } from "globals/interfaces";
+import { Action } from "../../dynamicFlow/DynamicFlow.Interfaces";
 
 /**
  * Retrieve all of the Call Flow records and use the rowInsert function to persist
- * the complete recordset - for example, into a DataGrid.  
+ * the complete recordset - for example, into a DataGrid.
  * until nextToken become null
  * @param {String} accessToken OAuth Access Token
  * @param {Number} counter - counter for the row ID
@@ -64,9 +65,9 @@ export const batchFlowUpdate = async (
 };
 
 /**
- * This process for insert and update is exactly the same, so we can code for it just 
- * once.  It splits the list of items into 2 - 1 for the legacy call flow table, and one 
- * for the dynamic call flow table.  After running the appropriate service function, 
+ * This process for insert and update is exactly the same, so we can code for it just
+ * once.  It splits the list of items into 2 - 1 for the legacy call flow table, and one
+ * for the dynamic call flow table.  After running the appropriate service function,
  * it merges the results into 1 BatchResponse object.
  * @param {flowData} items List of Flow objects that need to update, or list of pkeys to delete
  * @param {String} accessToken token to use while calling graphql query
@@ -142,11 +143,25 @@ export const batchDeleteItems = async (
 };
 
 /**
-   * Since the UI grid loads Call Flow records from 2 tables, we should 
-   * remove duplicates from the opposite table, since they shouldn't exist.  This 
-   * function will call batchDeleteItems, while toggling the nextActionId value so 
+ * This is the Function to batch delete the Flow Objects.
+ * @param {Array<String>} items List of Flow object that need to update
+ * @param {String} accessToken token to use while calling graphql query
+ * @returns
+ */
+export const batchDeleteActionItems = async (
+  items: Array<Action>,
+  accessToken: string
+): Promise<BatchResponse> =>  {
+  return await v2BatchDeleteItems(items, accessToken) as BatchResponse;
+
+};
+
+/**
+   * Since the UI grid loads Call Flow records from 2 tables, we should
+   * remove duplicates from the opposite table, since they shouldn't exist.  This
+   * function will call batchDeleteItems, while toggling the nextActionId value so
    * it will delete the rows.
-   * @param {Array<CctSharedCallFlowDb>} rows - the rows just updated or created 
+   * @param {Array<CctSharedCallFlowDb>} rows - the rows just updated or created
    * @param {String} accessToken - token to use while calling graphql query
    * @returns Promise<BatchResponse>
    */

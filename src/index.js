@@ -1,12 +1,11 @@
-import { App } from "components";
+import App from "components/app/App";
+import { SharedGraphAPIProvider } from "components/core/Auth/SharedGraphAPIProvider";
 import {
   StateProvider,
   FormStateProvider
-} from "context";
-import {
-  authConfig,
-  theme
-} from "globals";
+} from "context/appContext";
+import { authConfig } from "globals";
+import { theme } from "globals/theme";
 import React from "react";
 import { ThemeProvider } from "styled-components";
 import { createRoot } from "react-dom/client";
@@ -16,13 +15,12 @@ import {
 } from "@azure/msal-browser";
 import { MsalProvider } from "@azure/msal-react";
 import { initDataDogRum } from "utils/logger";
-import { AuthWrapper } from "components";
 
 // Initialize RUM before startup
 initDataDogRum();
 
 // ********* SPA Configuration for Azure *********
-export const msalInstance = new PublicClientApplication(authConfig);
+const msalInstance = new PublicClientApplication(authConfig);
 
 if (!msalInstance.getActiveAccount() && msalInstance.getAllAccounts().length > 0) {
   msalInstance.setActiveAccount(msalInstance.getAllAccounts()[0]);
@@ -47,9 +45,9 @@ root.render(
     <StateProvider>
       <FormStateProvider>
         <ThemeProvider theme={theme}>
-          <AuthWrapper>
+          <SharedGraphAPIProvider>
             <App />
-          </AuthWrapper>
+          </SharedGraphAPIProvider>
         </ThemeProvider>
       </FormStateProvider>
     </StateProvider>

@@ -1,4 +1,4 @@
-import ProfileAccessGroupField from "../ProfileAccessGroupField";
+import { ProfileAccessGroupField } from "../ProfileAccessGroupField";
 import {
   expectMockedComponent,
   render,
@@ -6,31 +6,35 @@ import {
   initialTestState,
   getMockedComponentProps
 } from "testUtils";
-import { Dropdown } from "components";
+import { Dropdown } from "components/Dropdown";
 import {
   theme
-} from "globals";
+} from "globals/theme";
 import { ThemeProvider } from "styled-components";
 import { Tooltip } from "@mui/material";
 import { Info } from "@mui/icons-material";
 import React from "react";
-import { getAccessGroup } from "services";
+import { getAccessGroup } from "services/accessGroup";
 import { act } from "react-dom/test-utils";
 
 jest.mock("@mui/icons-material", () => ({
-  __esModule: true,
   Info: jest.fn()
 }));
 
 jest.mock("@mui/material", () => ({
-  __esModule: true,
   Tooltip: jest.fn()
 }));
 
-jest.mock("components", () => ({
-  __esModule: true,
-  Dropdown: jest.fn(),
+jest.mock("components/Dropdown", () => ({
+  Dropdown: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
+}));
+
+jest.mock("services/accessGroup", () => ({
+  getAccessGroup: jest.fn()
 }));
 
 getAccessGroup.mockImplementation(() => { return Promise.resolve([{

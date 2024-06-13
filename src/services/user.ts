@@ -1,0 +1,148 @@
+import { apolloClient } from "../components/core/Auth/SharedGraphAPIProvider";
+import {
+  Action,
+  DBList,
+  UMUser
+}from "globals/interfaces";
+import {
+  CREATE_USER,
+  GET_USER,
+  LIST_USER_RECORDS,
+  UPDATE_USER
+}from "globals/graphql";
+import {
+  mapWorkerFromDbWorker,
+  mapWorkerToDbWorker
+} from "utils/graphUtils";
+import { getPaginatedResults } from "utils/graphUtils";
+import {
+  sortGraphObjectsByPk
+} from "utils/_sortUtils";
+import { logger } from "utils/logger";
+
+/**
+ * This helper function gets all the workers, which now that they are paginated, takes a little bit
+ * of time. This returns a promise for the first network call, allowing an array of roughly ~700 workers
+ * to be used in the application.
+ * 
+ * @param dispatch - AppState Dispatch function
+ * @returns - The first query's promise
+ */
+
+export const listUMUsers = async (dispatch: (action: Action) => void): Promise<DBList<UMUser>> => {
+  dispatch(({
+    type: "setLoadingWorkers",
+    payload: true
+  }));
+
+  const formatUsers = (users: UMUser[]) => {
+    const newUsers = [] as UMUser[];
+    users.forEach(user => {
+      if (!user?.inactiveDate && !user?.ttl && user?.attributes) {
+        newUsers.push(
+          mapWorkerFromDbWorker({
+            ...user,
+            isConsole: user.pk?.includes("Console")
+          })
+        );
+      }
+    });
+    return newUsers;
+  };
+
+  try {
+    getPaginatedResults("UMUser", dispatch, formatUsers, () => dispatch(({
+      type: "setLoadingWorkers",
+      payload: false
+    })));
+  } catch(error) {
+    logger.error("Failed to fetch users from graph", { error });
+
+    throw ({
+      msg: "Failed to fetch users from graph"
+    });
+  }
+  return;
+};
+
+export const listUMUserRecords = async (n_number: string): Promise<UMUser[]> => {
+
+  const {
+    errors, data
+  }: any = await apolloClient.query<{ results: DBList<UMUser | null> }>({
+    query: LIST_USER_RECORDS.query,
+    variables: {
+      n_number
+    }
+  });
+
+  if (errors?.length) {
+    logger.error("Failed to fetch user records from graph", { errors });
+    throw errors;
+  }
+
+  /*
+  Sorting the users will allow for the primary user to be the SSO user but if they only have
+  a console worker, they will work just fine
+  */
+
+  let items = data[LIST_USER_RECORDS.responsePath]?.items;
+  items = items.filter((i: UMUser) => !i.inactiveDate);
+  items = items.sort(sortGraphObjectsByPk);
+  return items;
+};
+
+export const getUser = async (identifier: string): Promise<UMUser> => {
+  const {
+    errors, data
+  }  = await apolloClient.query<{ user: UMUser }>({
+    query: GET_USER,
+    variables: {
+      identifier
+    }
+  });
+
+  if (errors?.length) {
+    logger.error("Failed to fetch user from graph", { errors });
+    throw errors;
+  }
+
+  return data.user;
+};
+
+export const createUser = async (user: Partial<UMUser>): Promise<UMUser> => {
+  const {
+    errors, data
+  }  = await apolloClient.mutate<{ user: UMUser }>({
+    mutation: CREATE_USER,
+    variables: {
+      input: mapWorkerToDbWorker(user)
+    }
+  });
+
+  if (errors?.length) {
+    logger.error("Failed to create user from graph", { errors });
+    throw errors;
+  }
+
+  return mapWorkerFromDbWorker(data.user);
+};
+
+export const updateUser = async (identifier: string, user: Partial<UMUser>): Promise<UMUser> => {
+  const {
+    errors, data
+  }  = await apolloClient.mutate<{ user: UMUser }>({
+    mutation: UPDATE_USER,
+    variables: {
+      identifier,
+      input: mapWorkerToDbWorker(user)
+    }
+  });
+
+  if (errors?.length) {
+    logger.error("Failed to update user from graph", { errors });
+    throw errors;
+  }
+
+  return mapWorkerFromDbWorker(data.user);
+};

@@ -2,7 +2,7 @@ import {
   initialUserFormState,
   userFormActions,
   userFormReducer
-} from "context";
+} from "../reducers/userFormReducer";
 import { formModes } from "globals";
 import {
   managerList,
@@ -11,12 +11,10 @@ import {
   validFormOptions,
   initialTestState
 } from "testUtils";
-import {
-  formatE164PhoneNumber,
-  getValidSkillsObject
-} from "utils";
-import { ExtensionSearchStatuses } from "components/tabs/usermanagement/OnboardNewUser/Extension/ExtensionInput/ExtensionInput.Interfaces";
-import { SearchParams } from "components/tabs/usermanagement/OnboardNewUser/Extension/ExtensionSearchParams";
+import { getValidSkillsObject } from "utils/skillsUtils";
+import { formatE164PhoneNumber } from "utils/numberUtils";
+import { ExtensionSearchStatuses } from "usermanagement/ExtensionInput.Interfaces";
+import { SearchParams } from "usermanagement/ExtensionSearchParams";
 const searchParams = SearchParams.getValues();
 
 describe("userFormReducer", () => {
@@ -571,7 +569,7 @@ describe("userFormReducer", () => {
           updated: true,
           valid: true
         },
-        directDialNum: {
+        did: {
           value: "a thousand",
           blurred: true,
           e164: "shoelaces",
@@ -626,7 +624,7 @@ describe("userFormReducer", () => {
             updated: true,
             valid: true
           },
-          directDialNum: {
+          did: {
             value: "a thousand",
             blurred: true,
             e164: "shoelaces",
@@ -1037,7 +1035,7 @@ describe("userFormReducer", () => {
           userFound: true,
           sid: "WK2",
           attributes: worker.attributes,
-          routing:worker.attributes.routing,
+          routing: worker.attributes.routing,
           defaultSkills: {
             updated: false,
             ...getValidSkillsObject(worker.attributes.default_skills)
@@ -1053,25 +1051,20 @@ describe("userFormReducer", () => {
           },
           manager: {
             ...initialUserFormState.triton.manager,
-            value: managerList.find(m => m.manager_n_number === worker.attributes.manager_n_number)
+            value: managerList.find(m => m.manager_n_num === worker.attributes.manager_n_number)
           },
           outgoing: {
             ...initialUserFormState.triton.outgoing,
-            value: formatE164PhoneNumber(worker.attributes.did),
+            value: formatE164PhoneNumber(worker.attributes.caller_id),
             valid: true
           },
           profileId: {
             ...initialUserFormState.triton.profileId,
             value: worker.attributes.profile_id
           },
-          alternateDid: {
-            ...initialUserFormState.triton.alternateDid,
-            value: formatE164PhoneNumber(worker.alternateDid),
-            valid: true
-          },
-          directDialNum: {
-            ...initialUserFormState.triton.directDialNum,
-            value: formatE164PhoneNumber(worker.directDialNum),
+          did: {
+            ...initialUserFormState.triton.did,
+            value: formatE164PhoneNumber(worker.did),
             valid: true
           },
           didUser: true,
@@ -1128,25 +1121,20 @@ describe("userFormReducer", () => {
           },
           manager: {
             ...initialUserFormState.triton.manager,
-            value: managerList.find(m => m.manager_n_number === worker.attributes.manager_n_number)
+            value: managerList.find(m => m.manager_n_num === worker.attributes.manager_n_number)
           },
           outgoing: {
             ...initialUserFormState.triton.outgoing,
-            value: formatE164PhoneNumber(worker.attributes.did),
+            value: formatE164PhoneNumber(worker.attributes.caller_id),
             valid: true
           },
           profileId: {
             ...initialUserFormState.triton.profileId,
             value: worker.attributes.profile_id
           },
-          alternateDid: {
-            ...initialUserFormState.triton.alternateDid,
-            value: formatE164PhoneNumber(worker.alternateDid),
-            valid: true
-          },
-          directDialNum: {
-            ...initialUserFormState.triton.directDialNum,
-            value: formatE164PhoneNumber(worker.directDialNum),
+          did: {
+            ...initialUserFormState.triton.did,
+            value: formatE164PhoneNumber(worker.did),
             valid: true
           },
           didUser: true,
@@ -1163,12 +1151,11 @@ describe("userFormReducer", () => {
       expect(result).toStrictEqual(expectedFormState);
     });
     test("should reset form to update state - attributes missing", () => {
-      const worker = {...mockWorkers[2]};
+      const worker = { ...mockWorkers[2] };
       delete worker.attributes.n_number;
       delete worker.attributes.extension;
-      delete worker.attributes.did;
-      delete worker.directDialNum;
-      delete worker.alternateDid;
+      delete worker.attributes.caller_id;
+      delete worker.did;
       delete worker.zeroOutEnabled;
       delete worker.selfServiceInd;
 
@@ -1208,7 +1195,7 @@ describe("userFormReducer", () => {
           },
           manager: {
             ...initialUserFormState.triton.manager,
-            value: managerList.find(m => m.manager_n_number === worker.attributes.manager_n_number)
+            value: managerList.find(m => m.manager_n_num === worker.attributes.manager_n_number)
           },
           outgoing: {
             ...initialUserFormState.triton.outgoing,
@@ -1219,13 +1206,8 @@ describe("userFormReducer", () => {
             ...initialUserFormState.triton.profileId,
             value: worker.attributes.profile_id
           },
-          alternateDid: {
-            ...initialUserFormState.triton.alternateDid,
-            value: "",
-            valid: false
-          },
-          directDialNum: {
-            ...initialUserFormState.triton.directDialNum,
+          did: {
+            ...initialUserFormState.triton.did,
             value: "",
             valid: false
           },
@@ -1277,7 +1259,7 @@ describe("userFormReducer", () => {
           },
           manager: {
             ...initialUserFormState.triton.manager,
-            value: JSON.stringify(managerList.find(m => m.manager_n_number === worker.attributes.manager_n_number))
+            value: JSON.stringify(managerList.find(m => m.manager_n_num === worker.attributes.manager_n_number))
           },
           profileId: {
             ...initialUserFormState.triton.profileId,
@@ -1420,7 +1402,7 @@ describe("userFormReducer", () => {
       const payload = {
         manager_first_name: "Rebecca",
         manager_last_name: "Miller",
-        manager_n_number: "n0001234"
+        manager_n_num: "n0001234"
       };
       const action = {
         type: userFormActions.UPDATE_MANAGER,
@@ -1445,7 +1427,7 @@ describe("userFormReducer", () => {
   describe("UPDATE_ROUTINGTEAM", () => {
     test("should update routing team", () => {
       const payload = {
-        routingTeamName:"Sample1"
+        routingTeamName: "Sample1"
       };
       const action = {
         type: userFormActions.ADD_ROUTING_TEAM,
@@ -1454,22 +1436,22 @@ describe("userFormReducer", () => {
       const result = userFormReducer(initialUserFormState, action);
       const expectedFormState = {
         ...initialUserFormState,
-        triton:{
+        triton: {
           ...initialUserFormState.triton,
-          routing:{
+          routing: {
             ...initialUserFormState.triton.routing,
-            team:"Sample1",
+            team: "Sample1",
             updated: true
           }
         }
-        }
+      };
       expect(result).toStrictEqual(expectedFormState);
     });
   });
   describe("UPDATE_CALLERSTATE", () => {
     test("should update caller State", () => {
       const payload = {
-        callerStateRouting:["Test1", "Test2"]
+        callerStateRouting: ["Test1", "Test2"]
       };
       const action = {
         type: userFormActions.SET_CALLER_STATES,
@@ -1478,15 +1460,15 @@ describe("userFormReducer", () => {
       const result = userFormReducer(initialUserFormState, action);
       const expectedFormState = {
         ...initialUserFormState,
-        triton:{
+        triton: {
           ...initialUserFormState.triton,
           routing: {
             ...initialUserFormState.triton.routing,
-            callerStates:payload.callerStateRouting,
+            caller_states: payload.callerStateRouting,
             updated: true
           }
         }
-        }
+      };
       expect(result).toStrictEqual(expectedFormState);
     });
   });
@@ -1494,7 +1476,7 @@ describe("userFormReducer", () => {
   describe("UPDATE_SALES_ASSOC_WORKER", () => {
     test("should update sales Assoc worker", () => {
       const payload = {
-        salesAssociateWorkerRouting:["Test1", "Test2"]
+        salesAssociateWorkerRouting: ["Test1", "Test2"]
       };
       const action = {
         type: userFormActions.SET_SALES_ASSOCIATE_WORKER,
@@ -1503,7 +1485,7 @@ describe("userFormReducer", () => {
       const result = userFormReducer(initialUserFormState, action);
       const expectedFormState = {
         ...initialUserFormState,
-        triton:{
+        triton: {
           ...initialUserFormState.triton,
           routing: {
             ...initialUserFormState.triton.routing,
@@ -1511,7 +1493,7 @@ describe("userFormReducer", () => {
             updated: true
           }
         }
-        }
+      };
       expect(result).toStrictEqual(expectedFormState);
     });
   });
@@ -1619,7 +1601,7 @@ describe("userFormReducer", () => {
         type: userFormActions.SET_UPDATE_QM_FORM_STATE,
         payload: {
           user: calabrioUser,
-          formMode: formModes.UPDATE,
+          formMode: formModes.UPDATE
         }
       };
       const result = userFormReducer(initialUserFormState, action);

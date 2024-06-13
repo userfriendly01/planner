@@ -7,16 +7,16 @@ import {
   ScopeRow,
   FormControlsPane,
   FullAccessWrapper
-} from "./CallRecording.Styles";
+} from "usermanagement/CallRecording.Styles";
 import {
   useFormState,
   useFormDispatch
-} from "context";
-import { userFormActions } from "context";
+} from "context/appContext";
+import { userFormActions } from "context/userFormReducer";
 import { formModes } from "globals";
 import { Checkbox } from "@mui/material";
 
-const CallRecordingScope = (props: any) => {
+export const CallRecordingScope = (props: any) => {
 
   const { calabrioUser } = props;
 
@@ -223,5 +223,3 @@ const CallRecordingScope = (props: any) => {
     </>
   );
 };
-
-export default CallRecordingScope;

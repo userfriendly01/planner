@@ -1,17 +1,13 @@
 import React from "react";
-import { render } from "testUtils";
-import { DynamicFlowContainer } from "../index";
 import {
-  LoginInProgress,
-  LoginError
-} from "components";
-import { useAccessToken } from "authentication";
+  initialTestState, render
+} from "testUtils";
+import DynamicFlowContainer from "../DynamicFlowContainer";
 import DataGridFlow from "../DataGridFlow/DataGridFlow";
+import { useAdminState } from "context/appContext";
 
-jest.mock("components", () => ({
-  __esModule: true,
-  LoginInProgress: jest.fn(),
-  LoginError: jest.fn()
+jest.mock("context/appContext", () => ({
+  useAdminState: jest.fn()
 }));
 
 jest.mock("../DataGridFlow/DataGridFlow", () => {
@@ -27,35 +23,11 @@ jest.mock("../DataGridFlow/DataGridFlow", () => {
 describe("<DynamicFlowContainer />", () => {
   beforeEach(()=>{
     jest.clearAllMocks();
+    useAdminState.mockReturnValue(initialTestState);
   });
 
   test("Simple Render", () =>{
-    useAccessToken.mockReturnValue({
-      isLoading: false
-    });
-
     render(<DynamicFlowContainer />);
     expect(DataGridFlow.mock.calls.length).toBe(1);
-  });
-
-  test("Returns Loading Component", () =>{
-    useAccessToken.mockReturnValue({
-      isLoading: true
-    });
-
-    render(<DynamicFlowContainer />);
-    expect(DataGridFlow.mock.calls.length).toBe(0);
-    expect(LoginInProgress.mock.calls.length).toBe(1);
-  });
-
-  test("Returns error Component", () => {
-    useAccessToken.mockReturnValue({
-      isLoading: false,
-      error: "An error"
-    });
-
-    render(<DynamicFlowContainer />);
-    expect(DataGridFlow.mock.calls.length).toBe(0);
-    expect(LoginError.mock.calls.length).toBe(1);
   });
 });

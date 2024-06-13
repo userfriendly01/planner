@@ -1,7 +1,7 @@
 import React from "react";
 import {
   useAdminState
-} from "context";
+} from "context/appContext";
 import {
   Accordion,
   AccordionSummary,
@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
 
-const WfmErrorBanner = () => {
+export const WfmErrorBanner = () => {
 
   const state = useAdminState();
 
@@ -18,7 +18,7 @@ const WfmErrorBanner = () => {
       { state.calabrioContext.wfmErrors.length > 0 ?
         <Accordion>
           <AccordionSummary
-          expandIcon={<ExpandMore />}
+            expandIcon={<ExpandMore />}
           >
             Some teams failed to load into the table. Expand to see details...
           </AccordionSummary>
@@ -35,7 +35,5 @@ const WfmErrorBanner = () => {
         : null
       }
     </>
-  )
-}
-
-export default WfmErrorBanner;
+  );
+};

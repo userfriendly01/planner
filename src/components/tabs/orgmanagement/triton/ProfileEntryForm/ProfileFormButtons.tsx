@@ -2,33 +2,32 @@ import React from "react";
 import {
   profileEntryFormDispatch,
   profileEntryFormState,
-  profileEntryFormActions,
   useAdminState
-} from "context";
+} from "context/appContext";
+import { profileEntryFormActions } from "context/profileEntryFormReducer";
 import { ProfileFormButtonsProps } from "./ProfileEntryForm.Interfaces";
 import {
   ButtonWrapper,
   FormButton
 } from "./ProfileEntryForm.Styles";
 import {
-  formModes,
-  ModalOverlayStatuses,
-  ProfilePayload,
-  timeouts
+  formModes,timeouts
 } from "globals";
 import {
-  isProfileFormValid,
-  createProfilePayload,
-  updateProfilePayload,
-  wait,
-  logger
-} from "utils";
+  ModalOverlayStatuses, ProfilePayload
+} from "globals/interfaces";
+import { isProfileFormValid } from "utils/profileUtils";
+import { logger } from "utils/logger";
+import {
+  createProfilePayload, updateProfilePayload
+} from "utils/profileUtils";
+import { wait } from "utils";
 import {
   createProfile,
   editProfile
-} from "services";
+} from "services/profile";
 
-const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
+export const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
   const {
     handleClose,
     loading,
@@ -36,7 +35,7 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
   } = props;
 
   const state = useAdminState();
-  const nNumber = state.userContext.pingIdentity?.sub;
+  const { nNumber } = state.userContext;
   const form = profileEntryFormState();
   const setForm = profileEntryFormDispatch();
 
@@ -167,5 +166,3 @@ const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
     </ButtonWrapper>
   );
 };
-
-export default ProfileFormButtons;

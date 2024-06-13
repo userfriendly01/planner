@@ -1,27 +1,23 @@
-import ManagerModal from "../ManagerModal";
+import { ManagerModal } from "../ManagerModal";
 import { CloseRounded } from "@mui/icons-material";
-import {
-  Dropdown,
-  NNumberInput,
-  ModalOverlay,
-  PaperContainer,
-  StyledButton,
-  CalabrioTeamModal
-} from "components";
+import { Dropdown } from "components/Dropdown";
+import { NNumberInput } from "components/NNumberInput";
+import { ModalOverlay } from "components/ModalOverlay";
+import { StyledButton } from "components/StyledButton";
+import { CalabrioTeamModal } from "orgmanagement/CalabrioTeamModal";
 import { StyledExportButton } from "components/tabs/callflowmanagement/SkillManagement/Skills.Styles";
 import {
   useAdminState,
   useAdminDispatch
-} from "context";
+} from "context/appContext";
 import React from "react";
 import { act } from "react-dom/test-utils";
 import { Modal } from "@mui/material";
+import { fetchUser } from "services/fetchUser";
+import { updateUser } from "services/user";
 import {
-  addManager,
-  editManager,
-  fetchUser,
-  updateUser
-} from "services";
+  addManager, editManager
+} from "services/manager";
 import {
   expectMockedComponent,
   expectOnlyPassedProps,
@@ -36,32 +32,17 @@ jest.useFakeTimers();
 const useRefSpy = jest.spyOn(React, "useRef");
 const mockSave = jest.fn();
 
-jest.mock("components/tabs/callflowmanagement/SkillManagement/Skills.Styles", () => ({
+jest.mock("callflowmanagement/SkillManagement/Skills.Styles", () => ({
   StyledExportButton: jest.fn()
 }));
 
-// jest.mock("@progress/kendo-react-excel-export", () => ({
-//   ExcelExport: jest.fn()
-// }));
-
 jest.mock("@mui/icons-material", () => ({
-  __esModule: true,
-  CloseRounded: jest.fn(),
-  AccountBox: jest.fn(),
-  Edit: jest.fn(),
-  Close: jest.fn(),
-  InfoOutlined: jest.fn()
+  CloseRounded: jest.fn()
 }));
 
 jest.mock("@mui/material", () => ({
   Modal: jest.fn(),
-  Paper: jest.fn(),
-  TextField: jest.fn(),
-  Button: jest.fn(),
-  Tab: jest.fn(),
-  Tabs: jest.fn(),
-  Divider: jest.fn(),
-  Checkbox: jest.fn(),
+  Paper: jest.requireActual("@mui/material").Paper,
   IconButton: jest.requireActual("@mui/material").IconButton
 }));
 
@@ -70,7 +51,6 @@ jest.mock("@mui/x-date-pickers/DatePicker", () => ({
 }));
 
 jest.mock("@mui/x-data-grid", () => ({
-  __esModule: true,
   DataGrid: jest.fn(),
   GridToolbar: jest.fn(),
   GridRenderCellParams: jest.fn()
@@ -80,29 +60,49 @@ jest.mock("@mui/x-date-pickers/TimePicker", () => ({
   TimePicker: jest.fn()
 }));
 
-jest.mock("services", () => ({
-  FetchUserResponse: jest.requireActual("services").FetchUserResponse,
-  addManager: jest.fn(),
-  editManager: jest.fn(),
-  fetchUser: jest.fn(),
+jest.mock("services/user", () => ({
   updateUser: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("services/manager", () => ({
+  addManager: jest.fn(),
+  editManager: jest.fn()
+}));
+
+jest.mock("services/fetchUser", () => ({
+  FetchUserResponse: jest.requireActual("services/fetchUser").FetchUserResponse,
+  fetchUser: jest.fn()
+}));
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn(),
   useAdminDispatch: jest.fn()
 }));
 
-jest.mock("components", () => ({
-  __esModule: true,
-  Dropdown: jest.fn(),
-  NNumberInput: jest.fn(),
-  ModalOverlay: jest.fn(),
-  PaperContainer: jest.requireActual("components").PaperContainer,
-  StyledButton: jest.fn(),
-  CalabrioTeamModal: jest.fn(),
-  ComponentControl: jest.fn(),
-  ModalFetchingRing: jest.fn(),
+jest.mock("components/Dropdown", () => ({
+  Dropdown: jest.fn()
+}));
+
+jest.mock("components/NNumberInput", () => ({
+  NNumberInput: jest.fn()
+}));
+
+jest.mock("components/ModalOverlay", () => ({
+  ModalOverlay: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
+  StyledButton: jest.fn()
+}));
+
+jest.mock("orgmanagement/CalabrioTeamModal", () => ({
+  CalabrioTeamModal: jest.fn()
+}));
+
+jest.mock("components/ModalFetchingRing", () => ({
+  ModalFetchingRing: jest.fn()
+}));
+
+jest.mock("callflowmanagement/SkillManagement/Skills.Styles", () => ({
   StyledExportButton: jest.fn()
 }));
 
@@ -123,8 +123,6 @@ describe("<ManagerModal />", () => {
       StyledExportButton
     });
     useAdminDispatch.mockReturnValue(mockSetForm);
-    PaperContainer.mockClear();
-    PaperContainer.mockImplementation(props => <div>{props.children}</div>);
     mockHandleClose.mockClear();
     useAdminState.mockReturnValue({
       profileContext: {
@@ -141,19 +139,16 @@ describe("<ManagerModal />", () => {
       managerContext: {
         managers: [
           {
-            manager_id: 10,
-            manager_n_number: "n0263786"
+            manager_n_num: "n0263786"
           },
           {
-            manager_id: 3,
-            manager_n_number: "n0262226"
+            manager_n_num: "n0262226"
           }
         ]
       },
       userContext: {
-        pingIdentity: {
-          sub: "n0138110"
-        }
+        nNumber: "n0138110"
+
       },
       workerContext: {
         workers: [
@@ -272,10 +267,9 @@ describe("<ManagerModal />", () => {
                   type: "addManager",
                   payload: {
                     calabrio_team_ids: [215],
-                    manager_id: undefined,
                     manager_first_name: "B'ob",
                     manager_last_name: "Bob'son",
-                    manager_n_number: "n0000000",
+                    manager_n_num: "n0000000",
                     profile_id: 4
                   }
                 });
@@ -336,13 +330,11 @@ describe("<ManagerModal />", () => {
             managers: [{
               manager_first_name: "Ialready",
               manager_last_name: "Exist",
-              manager_n_number: managerNNumber
+              manager_n_num: managerNNumber
             }]
           },
           userContext: {
-            pingIdentity: {
-              sub: "n0138110"
-            }
+            nNumber: "n0138110"
           }
         });
       });
@@ -422,7 +414,7 @@ describe("<ManagerModal />", () => {
       const selectedManager = {
         manager_first_name: "Faith",
         manager_last_name: "Cuneo",
-        manager_n_number: "n0263786",
+        manager_n_num: "n0263786",
         profile_id: null,
         calabrio_team_ids: [215, 225]
       };
@@ -454,10 +446,9 @@ describe("<ManagerModal />", () => {
     });
     describe("Update Manager Button", () => {
       const selectedManager = {
-        manager_id: 10,
         manager_first_name: "Faith",
         manager_last_name: "Cuneo",
-        manager_n_number: "n0263786",
+        manager_n_num: "n0263786",
         profile_id: null,
         calabrio_team_ids: [215, 225]
       };
@@ -518,10 +509,10 @@ describe("<ManagerModal />", () => {
               });
               await waitFor(() => {
                 expect(editManager).toHaveBeenCalledTimes(1);
-                expect(editManager).toHaveBeenCalledWith(10, {
-                  manager_first_nme: "Faith updated Name",
-                  manager_last_nme: "Cuneo",
-                  calabrio_team_ids: "[215,225]",
+                expect(editManager).toHaveBeenCalledWith("n0263786", {
+                  manager_first_name: "Faith updated Name",
+                  manager_last_name: "Cuneo",
+                  calabrio_team_ids: [215,225],
                   profile_id: 4
                 });
               });
@@ -533,15 +524,13 @@ describe("<ManagerModal />", () => {
                   payload: [
                     {
                       calabrio_team_ids: [215, 225],
-                      manager_id: 10,
                       manager_first_name: "Faith updated Name",
                       manager_last_name: "Cuneo",
-                      manager_n_number: "n0263786",
+                      manager_n_num: "n0263786",
                       profile_id: 4
                     },
                     {
-                      manager_id: 3,
-                      manager_n_number: "n0262226"
+                      manager_n_num: "n0262226"
                     }
                   ]
                 });
@@ -640,10 +629,10 @@ describe("<ManagerModal />", () => {
               });
               await waitFor(() => {
                 expect(editManager).toHaveBeenCalledTimes(1);
-                expect(editManager).toHaveBeenCalledWith(10, {
-                  manager_first_nme: "Faith updated Name",
-                  manager_last_nme: "Cuneo",
-                  calabrio_team_ids: "[215,225]",
+                expect(editManager).toHaveBeenCalledWith("n0263786", {
+                  manager_first_name: "Faith updated Name",
+                  manager_last_name: "Cuneo",
+                  calabrio_team_ids: [215,225],
                   profile_id: 4
                 });
               });
@@ -655,15 +644,13 @@ describe("<ManagerModal />", () => {
                   payload: [
                     {
                       calabrio_team_ids: [215, 225],
-                      manager_id: 10,
                       manager_first_name: "Faith updated Name",
                       manager_last_name: "Cuneo",
-                      manager_n_number: "n0263786",
+                      manager_n_num: "n0263786",
                       profile_id: 4
                     },
                     {
-                      manager_id: 3,
-                      manager_n_number: "n0262226"
+                      manager_n_num: "n0262226"
                     }
                   ]
                 });
@@ -703,10 +690,10 @@ describe("<ManagerModal />", () => {
               });
               await waitFor(() => {
                 expect(editManager).toHaveBeenCalledTimes(1);
-                expect(editManager).toHaveBeenCalledWith(10, {
-                  manager_first_nme: "Faith updated Name",
-                  manager_last_nme: "Cuneo",
-                  calabrio_team_ids: "[215,225]",
+                expect(editManager).toHaveBeenCalledWith("n0263786", {
+                  manager_first_name: "Faith updated Name",
+                  manager_last_name: "Cuneo",
+                  calabrio_team_ids: [215,225],
                   profile_id: 4
                 });
               });
@@ -753,10 +740,10 @@ describe("<ManagerModal />", () => {
             });
             await waitFor(() => {
               expect(editManager).toHaveBeenCalledTimes(1);
-              expect(editManager).toHaveBeenCalledWith(10, {
-                manager_first_nme: "Faith",
-                manager_last_nme: "Cuneo",
-                calabrio_team_ids: "[215,225]",
+              expect(editManager).toHaveBeenCalledWith("n0263786", {
+                manager_first_name: "Faith",
+                manager_last_name: "Cuneo",
+                calabrio_team_ids: [215,225],
                 profile_id: 4
               });
               expect(mockHandleClose).toHaveBeenCalledTimes(1);
@@ -766,15 +753,13 @@ describe("<ManagerModal />", () => {
                 payload: [
                   {
                     calabrio_team_ids: [215, 225],
-                    manager_id: 10,
                     manager_first_name: "Faith",
                     manager_last_name: "Cuneo",
-                    manager_n_number: "n0263786",
+                    manager_n_num: "n0263786",
                     profile_id: 4
                   },
                   {
-                    manager_id: 3,
-                    manager_n_number: "n0262226"
+                    manager_n_num: "n0262226"
                   }
                 ]
               });
@@ -800,10 +785,10 @@ describe("<ManagerModal />", () => {
             });
             await waitFor(() => {
               expect(editManager).toHaveBeenCalledTimes(1);
-              expect(editManager).toHaveBeenCalledWith(10, {
-                manager_first_nme: "Faith",
-                manager_last_nme: "Cuneo",
-                calabrio_team_ids: "[215,225]",
+              expect(editManager).toHaveBeenCalledWith("n0263786", {
+                manager_first_name: "Faith",
+                manager_last_name: "Cuneo",
+                calabrio_team_ids: [215,225],
                 profile_id: 4
               });
               expect(mockHandleClose).toHaveBeenCalledTimes(0);

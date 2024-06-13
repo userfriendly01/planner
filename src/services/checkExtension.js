@@ -1,9 +1,7 @@
 import { apiPaths } from "globals";
-import { SearchParams } from "../components/tabs/usermanagement/OnboardNewUser/Extension/ExtensionSearchParams";
-import {
-  logger,
-  myAxios
-} from "utils";
+import { SearchParams } from "usermanagement/ExtensionSearchParams";
+import { logger } from "utils/logger";
+import { myAxios } from "utils/myAxios";
 
 export const checkExtension = extension => myAxios.post(apiPaths.CHECK_EXTENSION, { extension })
   .then(res => {

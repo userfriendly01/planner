@@ -1,4 +1,4 @@
-import ProfileEntryForm from "../ProfileEntryForm";
+import { ProfileEntryForm } from "../ProfileEntryForm";
 import React from "react";
 import {
   render,
@@ -9,25 +9,32 @@ import {
   initialTestState,
   act
 } from "testUtils";
-import {
-  ModalOverlay,
-  ProfileFormButtons,
-  ProfileFormFields
-} from "components";
-import { profileEntryFormState } from "context";
+import { ModalOverlay } from "components/ModalOverlay";
+import { ProfileFormButtons } from "orgmanagement/ProfileFormButtons";
+import { ProfileFormFields } from "orgmanagement/ProfileFormFields";
+import { profileEntryFormState } from "context/appContext";
 
-jest.mock("components", () => ({
-  __esModule: true,
-  ModalOverlay: jest.fn(),
-  StyledButton: jest.fn(),
-  FormButton: jest.fn(),
-  ProfileFormButtons: jest.fn(),
-  ProfileFormFields: jest.fn(),
+jest.mock("components/ModalOverlay", () => ({
+  ModalOverlay: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
+  StyledButton: jest.fn()
+}));
+
+jest.mock("orgmanagement/ProfileFormButtons", () => ({
+  ProfileFormButtons: jest.fn()
+}));
+
+jest.mock("orgmanagement/ProfileFormFields", () => ({
+  ProfileFormFields: jest.fn()
+}));
+
+jest.mock("orgmanagement/ProfileNameTextField", () => ({
   ProfileNameTextField: jest.fn()
 }));
 
-jest.mock("context", () => ({
-  __esModule: true,
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn(),
   profileEntryFormState: jest.fn(),
   profileEntryFormDispatch: jest.fn()

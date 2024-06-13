@@ -1,14 +1,12 @@
-import BulkUpdateForm from "../BulkUpdateForm";
-import { updateSelectedTemplates } from "../../BulkUtils";
-import {
-  BulkUpdateAttributes,
-  BulkUpdateDefaultSkills,
-  BulkUpdateManager,
-  BulkUpdateCallerStates,
-  BulkUpdateHrSync
-} from "../";
-import { getUpdateTemplates } from "../../BulkTemplates";
-import { Dropdown } from "components";
+import { BulkUpdateForm } from "../BulkUpdateForm";
+import { updateSelectedTemplates } from "usermanagement/validationUtils";
+import { BulkUpdateAttributes } from "usermanagement/BulkActions/BulkUpdateAttributes";
+import { BulkUpdateManager } from "usermanagement/BulkActions/BulkUpdateManager";
+import { BulkUpdateDefaultSkills } from "usermanagement/BulkActions/BulkUpdateDefaultSkills";
+import { BulkUpdateCallerStates } from "usermanagement/BulkActions/BulkUpdateCallerStates";
+import { BulkUpdateHrSync } from "usermanagement/BulkActions/BulkUpdateHrSync";
+import { getUpdateTemplates } from "usermanagement/templates";
+import { Dropdown } from "components/Dropdown";
 import React from "react";
 import {
   act,
@@ -16,24 +14,39 @@ import {
   setupMockedComponents
 } from "testUtils";
 
-jest.mock("../../BulkUtils", () => ({
+jest.mock("usermanagement/validationUtils", () => ({
   updateSelectedTemplates: jest.fn()
 }));
 
-jest.mock("../", () => ({
-  BulkUpdateAttributes: jest.fn(),
-  BulkUpdateManager: jest.fn(),
-  BulkUpdateDefaultSkills: jest.fn(),
-  BulkUpdateCallerStates: jest.fn(),
-  BulkUpdateHrSync: jest.fn(),
+jest.mock("usermanagement/BulkUpdateAttributes", () => ({
+  BulkUpdateAttributes: jest.fn()
 }));
 
-jest.mock("components", () => ({
-  Dropdown: jest.fn(),
+jest.mock("usermanagement/BulkUpdateManager", () => ({
+  BulkUpdateManager: jest.fn()
+}));
+
+jest.mock("usermanagement/BulkUpdateDefaultSkills", () => ({
+  BulkUpdateDefaultSkills: jest.fn()
+}));
+
+jest.mock("usermanagement/BulkUpdateCallerStates", () => ({
+  BulkUpdateCallerStates: jest.fn()
+}));
+
+jest.mock("usermanagement/BulkUpdateHrSync", () => ({
+  BulkUpdateHrSync: jest.fn()
+}));
+
+jest.mock("components/Dropdown", () => ({
+  Dropdown: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
 }));
 

@@ -5,33 +5,30 @@ import {
   ModalContainer
 } from "./CalabrioTeamModal.Styles";
 import { TextField } from "@mui/material";
-import {
-  Dropdown,
-  PaperContainer,
-  StyledButton,
-  ModalOverlay
-} from "components";
+import { Dropdown } from "components/Dropdown";
+import { PaperContainer } from "components/PaperContainer";
+import { StyledButton } from "components/StyledButton";
+import { ModalOverlay } from "components/ModalOverlay";
 import {
   useAdminDispatch,
   useAdminState
-} from "context";
-import {
-  FlexColumn,
-  ModalOverlayStatuses,
-  timeouts
-} from "globals";
+} from "context/appContext";
+import { FlexColumn } from "globals/interfaces";
+import { ModalOverlayStatuses } from "globals/interfaces";
+import { timeouts } from "globals/index";
 import React, { useState } from "react";
-import { createCalabrioTeam } from "services";
-import { logger } from "utils";
-export interface TeamModalProps {
+import { createCalabrioTeam } from "services/calabrio";
+import { logger } from "utils/logger";
+
+interface TeamModalProps {
   handleClose: (res: any) => void
 }
 
-const CalabrioTeamModal = (props: TeamModalProps) => {
+export const CalabrioTeamModal = (props: TeamModalProps) => {
   const state = useAdminState();
   const dispatch = useAdminDispatch();
 
-  const nNumber = state.userContext.pingIdentity?.sub;
+  const { nNumber } = state.userContext;
   const {
     groups,
     teams
@@ -144,5 +141,3 @@ const CalabrioTeamModal = (props: TeamModalProps) => {
     </ModalContainer>
   );
 };
-
-export default CalabrioTeamModal;

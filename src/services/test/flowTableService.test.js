@@ -1,5 +1,5 @@
 import { act } from "@testing-library/react";
-import  {
+import {
   addDynamicFlowRule,
   addFlowRule,
   batchDeleteItems,
@@ -7,7 +7,7 @@ import  {
   batchDynamicFlowCreate,
   batchDynamicFlowUpdate,
   batchFlowCreate,
-  batchFlowUpdate,
+  batchFlowUpdate, dateConversion,
   deleteDynamicFlowRule,
   deleteFlowRule,
   flowBatchDelete,
@@ -18,7 +18,7 @@ import  {
   retrieveFlowData,
   updateDynamicFlowDB,
   updateFlowDB
-}  from "../flowTableService";
+} from "../flowTableService";
 
 const jsonDynamicFlowData = {
   brand: "LM",
@@ -33,7 +33,7 @@ const jsonDynamicFlowData = {
     languageOffer: "English",
     officeNumbers: []
   },
-  createTime: "2022-24-08",
+  createTime: "2022-01-08",
   dialedDescription: "test",
   employeeId: "n1234567",
   pkey: "12345",
@@ -47,7 +47,7 @@ const jsonFlowData = {
   brand: { value: "LM" },
   callFlowTemplate: { value: "temp" },
   channel: { value: "Test1 Channel" },
-  createTime: { value: "2022-24-08" },
+  createTime: { value: "2022-01-08" },
   updateTime: { value: "2024-01-30T05:00:00.000Z" },
   dialedDescription: { value: "test" },
   employeeId: { value: "n1234567" },
@@ -93,7 +93,7 @@ describe("flowTableService",()=>{
         brand: { value: "LM" },
         callFlowTemplate: { value: "temp" },
         channel: { value: "Test1 Channel" },
-        createTime: { value: "2022-24-08" },
+        createTime: { value: "2022-01-08" },
         dialedDescription: { value: "test" },
         employeeId: { value: "n1234567" },
         userDestination: { value: "dest" },
@@ -112,7 +112,7 @@ describe("flowTableService",()=>{
         pkey: { value: "12345" },
         brand: { value: "LM" },
         channel: { value: "Test1 Channel" },
-        createTime: { value: "2022-24-08" },
+        createTime: { value: "2022-01-08" },
         dialedDescription: { value: "test" },
         dataRequests: { value: undefined }
       };
@@ -124,7 +124,7 @@ describe("flowTableService",()=>{
         pkey: { value: "12345" },
         brand: { value: "LM" },
         channel: { value: "Test1 Channel" },
-        createTime: { value: "2022-24-08" },
+        createTime: { value: "2022-01-08" },
         dialedDescription: { value: "test" },
         dataRequests: { value: undefined }
       };
@@ -143,7 +143,7 @@ describe("flowTableService",()=>{
         brand: "LM",
         callFlowTemplate: "temp",
         channel: "Test1 Channel",
-        createTime: "2022-24-08",
+        createTime: "2022-01-08",
         updateTime: "2024-01-30T05:00:00.000Z",
         dialedDescription: "test",
         employeeId: "n1234567",
@@ -155,7 +155,7 @@ describe("flowTableService",()=>{
         brand: "LM",
         callFlowTemplate: "temp",
         channel: "Test1 Channel",
-        createTime: "2022-24-08",
+        createTime: "2022-01-08",
         updateTime: "2024-01-30T05:00:00.000Z",
         dialedDescription: "test",
         employeeId: "n1234567",
@@ -373,7 +373,7 @@ describe("flowTableService",()=>{
       expect(window.fetch).toBeCalledWith("http://localhost:3000", {
         "body": "{\"query\":\"\\n        mutation DeleteManyFlow {\\n          batchDeleteCctSharedCallFlowDb(input: {\\n            pkey: [\\\"pkey1\\\",\\\"pkey1\\\",\\\"pkey3\\\"]\\n            }) {\\n            items {\\n              pkey\\n            }\\n          }\\n        }\\n    \",\"variables\":{}}",
         "headers": {
-          "Authorization": "1233-3245",
+          "Authorization": "Bearer 1233-3245",
           "Content-Type": "application/json"
         },
         "method": "POST"
@@ -432,9 +432,9 @@ describe("flowTableService",()=>{
       const response = await batchFlowUpdate([{ ...jsonFlowData }],"1233-3245");
       expect(response).toEqual(batchUpdateResponse);
       expect(window.fetch).toBeCalledWith("http://localhost:3000", {
-        "body": "{\"query\":\"\\n        mutation batchUpdateCctSharedCallFlowDb($input: CctSharedCallFlowDbBatchUpdateInput!) {\\n          batchUpdateCctSharedCallFlowDb(input: $input) {\\n            items {\\n              accountManager\\n              affinityVDN\\n              agentId\\n              brand\\n              callDetails1\\n              callDetails2\\n              callFlowTemplate\\n              callTypeDescription\\n              channel\\n              content {\\n                callFlowRoute\\n                callIntent\\n                callerType\\n                dataRequests\\n                greetingMessages\\n                languageOffer\\n                transferNumber\\n              }\\n              createTime\\n              dialedDescription\\n              employeeId\\n              internetPlacement\\n              lineOfBusiness\\n              marketingChannel\\n              pkey\\n              predictiveCaller\\n              rangeIndicator\\n              requestID\\n              selfServiceIndicator\\n              tollFreeNumber\\n              tfnRoutingGroup\\n              transferCode\\n              type\\n              userDestination\\n              whisper\\n            }\\n          }\\n        }\\n      \",\"variables\":{\"input\":{\"batchFlowUpdateInput\":[{\"pkey\":{\"value\":\"12345\"},\"agentId\":\"\",\"brand\":{\"value\":\"LM\"},\"callFlowTemplate\":{\"value\":\"temp\"},\"channel\":{\"value\":\"Test1 Channel\"},\"content\":{\"callIntent\":\"\",\"callFlowRoute\":\"\",\"callerType\":\"\",\"greetingMessages\":\"\",\"transferNumber\":\"\",\"languageOffer\":\"\"},\"createTime\":{\"value\":\"2022-24-08\"},\"updateTime\":\"2024-01-30T05:00:00.000Z\",\"dialedDescription\":{\"value\":\"test\"},\"accountManager\":\"\",\"affinityVDN\":\"\",\"callTypeDescription\":\"\",\"transferCode\":\"\",\"internetPlacement\":\"\",\"callDetails1\":\"\",\"callDetails2\":\"\",\"tollFreeNumber\":\"\",\"lineOfBusiness\":\"\",\"marketingChannel\":\"\",\"predictiveCaller\":false,\"selfServiceIndicator\":false,\"whisper\":\"\",\"requestID\":\"\",\"userDestination\":{\"value\":\"dest\"},\"rangeIndicator\":\"\",\"tfnRoutingGroup\":\"\",\"type\":\"\"}]}}}",
+        "body": "{\"query\":\"\\n        mutation batchUpdateCctSharedCallFlowDb($input: CctSharedCallFlowDbBatchUpdateInput!) {\\n          batchUpdateCctSharedCallFlowDb(input: $input) {\\n            items {\\n              accountManager\\n              affinityVDN\\n              agentId\\n              brand\\n              callDetails1\\n              callDetails2\\n              callFlowTemplate\\n              callTypeDescription\\n              channel\\n              content {\\n                callFlowRoute\\n                callIntent\\n                callerType\\n                dataRequests\\n                greetingMessages\\n                languageOffer\\n                transferNumber\\n              }\\n              createTime\\n              dialedDescription\\n              employeeId\\n              internetPlacement\\n              lineOfBusiness\\n              marketingChannel\\n              pkey\\n              predictiveCaller\\n              rangeIndicator\\n              requestID\\n              selfServiceIndicator\\n              tollFreeNumber\\n              tfnRoutingGroup\\n              transferCode\\n              type\\n              userDestination\\n              whisper\\n            }\\n          }\\n        }\\n      \",\"variables\":{\"input\":{\"batchFlowUpdateInput\":[{\"pkey\":{\"value\":\"12345\"},\"agentId\":\"\",\"brand\":{\"value\":\"LM\"},\"callFlowTemplate\":{\"value\":\"temp\"},\"channel\":{\"value\":\"Test1 Channel\"},\"content\":{\"callIntent\":\"\",\"callFlowRoute\":\"\",\"callerType\":\"\",\"greetingMessages\":\"\",\"transferNumber\":\"\",\"languageOffer\":\"\"},\"createTime\":{\"value\":\"2022-01-08\"},\"updateTime\":\"2024-01-30T05:00:00.000Z\",\"dialedDescription\":{\"value\":\"test\"},\"accountManager\":\"\",\"affinityVDN\":\"\",\"callTypeDescription\":\"\",\"transferCode\":\"\",\"internetPlacement\":\"\",\"callDetails1\":\"\",\"callDetails2\":\"\",\"tollFreeNumber\":\"\",\"lineOfBusiness\":\"\",\"marketingChannel\":\"\",\"predictiveCaller\":false,\"selfServiceIndicator\":false,\"whisper\":\"\",\"requestID\":\"\",\"userDestination\":{\"value\":\"dest\"},\"rangeIndicator\":\"\",\"tfnRoutingGroup\":\"\",\"type\":\"\"}]}}}",
         "headers": {
-          "Authorization": "1233-3245",
+          "Authorization": "Bearer 1233-3245",
           "Content-Type": "application/json"
         },
         "method": "POST"
@@ -458,10 +458,8 @@ describe("flowTableService",()=>{
     test("Call with an Empty List", async()=>{
       const response = await batchFlowUpdate([],"1233-3245");
       const errorResponse = {
-        errors: [
-          "Please Select Something to Edit"
-        ],
-        flag: true,
+        errors: [],
+        flag: false,
         success: [],
         failure: []
       };
@@ -497,9 +495,9 @@ describe("flowTableService",()=>{
       const response = await batchFlowCreate([{ ...jsonFlowData }],"1233-3245");
       expect(response).toEqual(batchCreateResponse);
       expect(window.fetch).toBeCalledWith("http://localhost:3000", {
-        "body": "{\"query\":\"\\n        mutation batchCreateCctSharedCallFlowDb($input: CctSharedCallFlowDbBatchCreateInput!) {\\n          batchCreateCctSharedCallFlowDb(input: $input) {\\n            items {\\n              accountManager\\n              affinityVDN\\n              agentId\\n              brand\\n              callDetails1\\n              callDetails2\\n              callFlowTemplate\\n              callTypeDescription\\n              channel\\n              content {\\n                callFlowRoute\\n                callIntent\\n                callerType\\n                dataRequests\\n                greetingMessages\\n                languageOffer\\n                transferNumber\\n              }\\n              createTime\\n              dialedDescription\\n              employeeId\\n              internetPlacement\\n              lineOfBusiness\\n              marketingChannel\\n              pkey\\n              predictiveCaller\\n              rangeIndicator\\n              requestID\\n              selfServiceIndicator\\n              tollFreeNumber\\n              transferCode\\n              type\\n              userDestination\\n              whisper\\n            }\\n          }\\n        }\\n      \",\"variables\":{\"input\":{\"batchFlowCreateInput\":[{\"pkey\":{\"value\":\"12345\"},\"agentId\":\"\",\"brand\":{\"value\":\"LM\"},\"callFlowTemplate\":{\"value\":\"temp\"},\"channel\":{\"value\":\"Test1 Channel\"},\"content\":{\"callIntent\":\"\",\"callFlowRoute\":\"\",\"callerType\":\"\",\"greetingMessages\":\"\",\"transferNumber\":\"\",\"languageOffer\":\"\"},\"createTime\":{\"value\":\"2022-24-08\"},\"dialedDescription\":{\"value\":\"test\"},\"accountManager\":\"\",\"affinityVDN\":\"\",\"callTypeDescription\":\"\",\"transferCode\":\"\",\"internetPlacement\":\"\",\"callDetails1\":\"\",\"callDetails2\":\"\",\"tollFreeNumber\":\"\",\"lineOfBusiness\":\"\",\"marketingChannel\":\"\",\"whisper\":\"\",\"requestID\":\"\",\"userDestination\":{\"value\":\"dest\"},\"rangeIndicator\":\"\",\"type\":\"\",\"predictiveCaller\":false,\"selfServiceIndicator\":false}]}}}",
+        "body": "{\"query\":\"\\n        mutation batchCreateCctSharedCallFlowDb($input: CctSharedCallFlowDbBatchCreateInput!) {\\n          batchCreateCctSharedCallFlowDb(input: $input) {\\n            items {\\n              accountManager\\n              affinityVDN\\n              agentId\\n              brand\\n              callDetails1\\n              callDetails2\\n              callFlowTemplate\\n              callTypeDescription\\n              channel\\n              content {\\n                callFlowRoute\\n                callIntent\\n                callerType\\n                dataRequests\\n                greetingMessages\\n                languageOffer\\n                transferNumber\\n              }\\n              createTime\\n              dialedDescription\\n              employeeId\\n              internetPlacement\\n              lineOfBusiness\\n              marketingChannel\\n              pkey\\n              predictiveCaller\\n              rangeIndicator\\n              requestID\\n              selfServiceIndicator\\n              tollFreeNumber\\n              transferCode\\n              type\\n              userDestination\\n              whisper\\n            }\\n          }\\n        }\\n      \",\"variables\":{\"input\":{\"batchFlowCreateInput\":[{\"pkey\":{\"value\":\"12345\"},\"agentId\":\"\",\"brand\":{\"value\":\"LM\"},\"callFlowTemplate\":{\"value\":\"temp\"},\"channel\":{\"value\":\"Test1 Channel\"},\"content\":{\"callIntent\":\"\",\"callFlowRoute\":\"\",\"callerType\":\"\",\"greetingMessages\":\"\",\"transferNumber\":\"\",\"languageOffer\":\"\"},\"createTime\":{\"value\":\"2022-01-08\"},\"dialedDescription\":{\"value\":\"test\"},\"accountManager\":\"\",\"affinityVDN\":\"\",\"callTypeDescription\":\"\",\"transferCode\":\"\",\"internetPlacement\":\"\",\"callDetails1\":\"\",\"callDetails2\":\"\",\"tollFreeNumber\":\"\",\"lineOfBusiness\":\"\",\"marketingChannel\":\"\",\"whisper\":\"\",\"requestID\":\"\",\"userDestination\":{\"value\":\"dest\"},\"rangeIndicator\":\"\",\"type\":\"\",\"predictiveCaller\":false,\"selfServiceIndicator\":false}]}}}",
         "headers": {
-          "Authorization": "1233-3245",
+          "Authorization": "Bearer 1233-3245",
           "Content-Type": "application/json"
         },
         "method": "POST"
@@ -507,7 +505,7 @@ describe("flowTableService",()=>{
     });
     test("empty records insertion",async()=>{
       const response = await batchFlowCreate([],"1233-3245","http://localhost:3000");
-      expect(response.alertMsg).toEqual("Please select something to add");
+      expect(response.alertMsg).toEqual("");
     });
   });
 });
@@ -535,7 +533,7 @@ describe("dynamicFlowTableService",()=> {
         brand: { value: "LM" },
         callFlowTemplate: { value: "temp" },
         channel: { value: "Test1 Channel" },
-        createTime: { value: "2022-24-08" },
+        createTime: { value: "2022-01-08" },
         dialedDescription: { value: "test" },
         employeeId: { value: "n1234567" },
         userDestination: { value: "dest" },
@@ -554,7 +552,7 @@ describe("dynamicFlowTableService",()=> {
         pkey: { value: "12345" },
         brand: { value: "LM" },
         channel: { value: "Test1 Channel" },
-        createTime: { value: "2022-24-08" },
+        createTime: { value: "2022-01-08" },
         dialedDescription: { value: "test" },
         dataRequests: { value: undefined }
       };
@@ -566,7 +564,7 @@ describe("dynamicFlowTableService",()=> {
         pkey: { value: "12345" },
         brand: { value: "LM" },
         channel: { value: "Test1 Channel" },
-        createTime: { value: "2022-24-08" },
+        createTime: { value: "2022-01-08" },
         dialedDescription: { value: "test" },
         dataRequests: { value: undefined }
       };
@@ -894,7 +892,7 @@ describe("dynamicFlowTableService",()=> {
     });
   });
 
-  describe("Batch Delete Dyanmic Flow", ()=>{
+  describe("Batch Delete Dynamic Flow", ()=>{
     beforeEach(()=>{
       window.fetch = jest.fn(() =>
         Promise.resolve({
@@ -910,9 +908,9 @@ describe("dynamicFlowTableService",()=> {
       const response = await flowDynamicBatchDelete(batchDeleteDyamicItemsList,"1233-3245","http://localhost:3000");
       expect(response).toBe(batchDeleteResponse);
       expect(window.fetch).toBeCalledWith("http://localhost:3000", {
-        "body": "{\"query\":\"\\n      mutation batchDeletePhoneNumber($input: PhoneNumberDeleteBatchInput!) {\\n        batchDeletePhoneNumber(input: $input) {\\n          items {\\n              phoneNumber\\n          }\\n        }\\n      }\\n    \",\"variables\":{\"input\":{\"batchDeletePhoneNumberInput\":[{\"phoneNumber\":\"pkey1\"},{\"phoneNumber\":\"pkey1\"},{\"phoneNumber\":\"pkey3\"}]}}}",
+        "body": "{\"query\":\"\\n      mutation batchDeletePhoneNumber($input: CallFlowDeleteBatchInput!) {\\n        batchDeletePhoneNumber(input: $input) {\\n          items {\\n              id\\n          }\\n        }\\n      }\\n    \",\"variables\":{\"input\":{\"batchDeleteInput\":[{\"id\":\"pkey1\"},{\"id\":\"pkey1\"},{\"id\":\"pkey3\"}]}}}",
         "headers": {
-          "Authorization": "1233-3245",
+          "Authorization": "Bearer 1233-3245",
           "Content-Type": "application/json"
         },
         "method": "POST"
@@ -920,6 +918,14 @@ describe("dynamicFlowTableService",()=> {
     });
     test("batch Dynamic Delete",async()=>{
       const batchDeleteDyamicItemsList = ["pkey1","pkey1","pkey3"];
+      await flowDynamicBatchDelete(batchDeleteDyamicItemsList,"1233-3245","http://localhost:3000");
+      const response=batchDynamicDeleteItems(batchDeleteDyamicItemsList,"3245","http://localhost:3000");
+      act(()=>{
+        expect(response).toBeTruthy();
+      });
+    });
+    test("batch Dynamic Delete with actionType",async()=>{
+      const batchDeleteDyamicItemsList = ["actionType1","actionId1"];
       await flowDynamicBatchDelete(batchDeleteDyamicItemsList,"1233-3245","http://localhost:3000");
       const response=batchDynamicDeleteItems(batchDeleteDyamicItemsList,"3245","http://localhost:3000");
       act(()=>{
@@ -951,16 +957,14 @@ describe("dynamicFlowTableService",()=> {
       flag: false,
       success: []
     };
-    beforeAll(() => {
-      jest.useFakeTimers("modern");
-      jest.setSystemTime(new Date(curTime));
-    });
     beforeEach(()=>{
       window.fetch = jest.fn(() =>
         Promise.resolve({
           json: () => Promise.resolve(batchUpdateResponse)
         })
       );
+      jest.useFakeTimers("modern");
+      jest.setSystemTime(new Date(curTime));
     });
     afterEach(()=>{
       jest.restoreAllMocks();
@@ -972,14 +976,15 @@ describe("dynamicFlowTableService",()=> {
         errors: [],
         failure: [],
         flag: false,
-        success: [jsonFlowData]
+        success: [jsonDynamicFlowData]
       };
-      const response = await batchDynamicFlowUpdate([{ ...jsonFlowData }],"1233-3245","http://localhost:3000");
+      const response = await batchDynamicFlowUpdate([{ ...jsonDynamicFlowData }],"1233-3245","http://localhost:3000");
       expect(response).toEqual(batchUpdateResponse);
+      const dateConversion = 1641600000;
       expect(window.fetch).toBeCalledWith("http://localhost:3000", {
-        "body": "{\"query\":\"\\n        mutation batchCreatePhoneNumber($input: PhoneNumberCreateBatchInput!) {\\n          batchCreatePhoneNumber(input: $input) {\\n            items {\\n                phoneNumber\\n                callFlowName\\n                createTime\\n                updateTime\\n                nextActionType\\n                nextActionId\\n                callFlowTemplate\\n                dialedDescription\\n                phoneNumberType\\n                tfnRoutingGroup\\n                brand\\n                dataRequests\\n                greetingMessages\\n                languageOffer\\n                transferDestination\\n                callerType\\n                callFlowRoute\\n                callIntent\\n                callFlowType\\n                channel\\n                predictiveCaller\\n                employeeId\\n                callTypeDescription\\n                internetPlacement\\n                lineOfBusiness\\n                marketingChannel\\n                rangeIndicator\\n                requestID\\n                tollFreeNumber\\n                transferCode\\n                whisper\\n                officeNumbers\\n            }\\n          }\\n        }\\n      \",\"variables\":{\"input\":{\"batchPhoneNumberInput\":[{\"brand\":{\"value\":\"LM\"},\"channel\":{\"value\":\"Test1 Channel\"},\"createTime\":{\"value\":\"2022-24-08\"},\"dialedDescription\":{\"value\":\"test\"},\"employeeId\":{\"value\":\"n1234567\"},\"phoneNumber\":{\"value\":\"12345\"},\"updateTime\":" + curTimeUnixEpoch + "}]}}}",
+        "body": "{\"query\":\"\\n        mutation batchCreatePhoneNumber($input: PhoneNumberCreateBatchInput!) {\\n          batchCreatePhoneNumber(input: $input) {\\n            items {\\n                phoneNumber\\n                callFlowName\\n                createTime\\n                updateTime\\n                nextActionType\\n                nextActionId\\n                callFlowTemplate\\n                dialedDescription\\n                phoneNumberType\\n                tfnRoutingGroup\\n                brand\\n                dataRequests\\n                greetingMessages\\n                languageOffer\\n                transferDestination\\n                callerType\\n                callFlowRoute\\n                callIntent\\n                callFlowType\\n                channel\\n                predictiveCaller\\n                employeeId\\n                callTypeDescription\\n                internetPlacement\\n                lineOfBusiness\\n                marketingChannel\\n                rangeIndicator\\n                requestID\\n                tollFreeNumber\\n                transferCode\\n                whisper\\n                officeNumbers\\n            }\\n          }\\n        }\\n      \",\"variables\":{\"input\":{\"batchPhoneNumberInput\":[{\"brand\":\"LM\",\"callFlowRoute\":\"test\",\"callIntent\":\"\",\"callerType\":\"test\",\"channel\":\"Test1 Channel\",\"createTime\":" + dateConversion + ",\"dataRequests\":\"test1,test2\",\"dialedDescription\":\"test\",\"employeeId\":\"n1234567\",\"greetingMessages\":\"Hello Test Message\",\"languageOffer\":\"English\",\"officeNumbers\":[],\"phoneNumber\":\"12345\",\"updateTime\":" + curTimeUnixEpoch + "}]}}}",
         "headers": {
-          "Authorization": "1233-3245",
+          "Authorization": "Bearer 1233-3245",
           "Content-Type": "application/json"
         },
         "method": "POST"
@@ -1004,10 +1009,8 @@ describe("dynamicFlowTableService",()=> {
     test("Call with an Empty List", async()=>{
       const response = await batchDynamicFlowUpdate([],"1233-3245","http://localhost:3000");
       const errorResponse = {
-        errors: [
-          "Please Select Something to Edit"
-        ],
-        flag: true,
+        errors: [],
+        flag: false,
         success: [],
         failure: []
       };
@@ -1046,7 +1049,7 @@ describe("dynamicFlowTableService",()=> {
       expect(window.fetch).toBeCalledWith("http://localhost:3000", {
         "body": "{\"query\":\"\\n        mutation createCallFlowConfig($input: CallFlowConfigInput! ) {\\n          createCallFlowConfig(input: $input) {\\n              callFlowName\\n            }\\n          }\\n      \",\"variables\":{\"input\":{\"announcements\":[],\"menus\":[],\"menuOptions\":[]}}}",
         "headers": {
-          "Authorization": "1233-3245",
+          "Authorization": "Bearer 1233-3245",
           "Content-Type": "application/json"
         },
         "method": "POST"
@@ -1054,7 +1057,41 @@ describe("dynamicFlowTableService",()=> {
     });
     test("empty records insertion",async()=>{
       const response = await batchDynamicFlowCreate([],"1233-3245","http://localhost:3000");
-      expect(response.alertMsg).toEqual("Please select something to add");
+      expect(response.alertMsg).toEqual("");
+    });
+  });
+
+  describe("DateConversion", ()=>{
+    afterEach(()=>{
+      jest.restoreAllMocks();
+    });
+    test("String",()=>{
+      const response = dateConversion("2023-07-04T04:00:00.000Z");
+      expect(response).toEqual(new Date("2023-07-04T04:00:00.000Z"));
+    });
+    test("String",()=>{
+      const response = dateConversion("2022-01-08");
+      expect(response).toEqual(new Date("2022-01-08"));
+    });
+
+    test("Number less than 9999999999",()=>{
+      const response = dateConversion(1609001);
+      expect(response).toEqual(new Date(1609001000));
+    });
+
+    test("Number greater than 9999999999",()=>{
+      const response = dateConversion(10000000000);
+      expect(response).toEqual(new Date(10000000000));
+    });
+
+    test("Empty string",()=>{
+      const response = dateConversion("");
+      expect(response).toEqual(new Date(0));
+    });
+
+    test("Invalid Date",()=>{
+      const response = dateConversion("Invalid Date");
+      expect(response).toEqual(new Date(0));
     });
   });
 });

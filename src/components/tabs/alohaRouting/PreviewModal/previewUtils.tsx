@@ -2,11 +2,11 @@ import React from "react";
 import {
   ROUTING_CACHE_MASTER_DATA,
   dayOfWeek,
-  languageOffer,
   routingFields,
   priority,
   tfnRoutingGroupAttr
-} from "utils";
+} from "utils/alohaRoutingUtils";
+import { languageOffer } from "utils/alohaFlowUtils";
 import {
   PreviewModalAction,
   RoutingDropDownList,
@@ -17,7 +17,7 @@ import {
   GridColDef
 } from "@mui/x-data-grid";
 
-import { ComponentControl } from "components";
+import { ComponentControl } from "components/ComponentControl";
 import { MultiFieldContainerFormProps } from "components/core/SharedComponents/MultiFieldContainer";
 import { GridApiCommunity } from "@mui/x-data-grid/internals";
 

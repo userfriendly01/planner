@@ -1,13 +1,14 @@
-import { UpdateWrapper } from "../BulkChanges.Styles";
+import { UpdateWrapper } from "usermanagement/BulkChanges.Styles";
 import {
   Template,
   BulkUpdateProps
-} from "../BulkChanges.Interfaces";
-import { Dropdown } from "components";
-import { useAdminState } from "context";
+} from "usermanagement/BulkChanges.Interfaces";
+import { Dropdown } from "components/Dropdown";
+import { useAdminState } from "context/appContext";
 import React from "react";
+import { UMManager } from "globals/interfaces";
 
-const BulkUpdateManager = (props: BulkUpdateProps) => {
+export const BulkUpdateManager = (props: BulkUpdateProps) => {
   const {
     template,
     selectedTemplates,
@@ -53,11 +54,11 @@ const BulkUpdateManager = (props: BulkUpdateProps) => {
   }, [selectedTemplates]);
 
 
-  const formatManagerDropdownEntry = (m: any) => {
+  const formatManagerDropdownEntry = (m: UMManager) => {
     if(m){
       return {
         label: `${m.manager_first_name} ${m.manager_last_name}`,
-        value: m.manager_n_number,
+        value: m.manager_n_num,
         ...m
       };
     } else {
@@ -81,13 +82,13 @@ const BulkUpdateManager = (props: BulkUpdateProps) => {
     <UpdateWrapper>
       <Dropdown
         label="Triton Team Manager"
-        value={formatManagerDropdownEntry(state.managerContext.managers.find((m: any) => m.manager_n_number === newManager.nNumber))}
+        value={formatManagerDropdownEntry(state.managerContext.managers.find((m: any) => m.manager_n_num === newManager.nNumber))}
         options={state.managerContext.managers.map((m: any) => {
           return formatManagerDropdownEntry(m);
         })}
         updateValue={(event: any, manager: any) => setNewManager({
           ...newManager,
-          nNumber: manager.manager_n_number
+          nNumber: manager.manager_n_num
         })}
         styles={{
           width: "230px",
@@ -112,5 +113,3 @@ const BulkUpdateManager = (props: BulkUpdateProps) => {
     </UpdateWrapper>
   );
 };
-
-export default BulkUpdateManager;

@@ -1,7 +1,7 @@
 import {
   Skill,
   TritonProfile
-} from "globals";
+} from "globals/interfaces";
 
 export interface SkillProfile {
   profileId: number,
@@ -16,19 +16,3 @@ export interface TableState {
   searchBy: string,
   selected: Skill[]
 }
-
-export interface View {
-  value: string,
-  label: string
-}
-
-export const views = {
-  SKILLS: {
-    value: "SKILLS_MANAGEMENT",
-    label: "Skills Management"
-  },
-  TFN: {
-    value: "TFN_ACTIVATION",
-    label: "TFN Activation"
-  }
-};

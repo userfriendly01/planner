@@ -1,27 +1,19 @@
 import {
   cleanupField,
   toProperCase
-} from "../BulkUtils";
+} from "usermanagement/formatUtils";
+import { fetchUser } from "services/fetchUser";
+import { generateExtension } from "services/checkExtension";
+import { getE164Number } from "utils/numberUtils";
+import { getOverflowSkillFromProfile } from "utils/usermanagementUtils";
 import {
-  fetchUser,
-  generateExtension
-} from "services";
-import {
-  getE164Number,
-  calabrioAllowedRoles,
-  calabrioTimeZones,
-  getOverflowSkillFromProfile,
-  logger
-} from "utils";
-import {
-  formatDateFromExcelDate
-} from "../BulkUtils/formatUtils";
-import {
-  allowedEmptyScheduleField
-} from "../BulkUtils/validationUtils";
-import {
-  Fields
-} from "../BulkChanges.Interfaces";
+  calabrioAllowedRoles, calabrioTimeZones
+} from "utils/calabrioUtils";
+import { logger } from "utils/logger";
+import { formatDateFromExcelDate } from "usermanagement/formatUtils";
+import { allowedEmptyScheduleField } from "usermanagement/validationUtils";
+import { Fields } from "usermanagement/BulkChanges.Interfaces";
+import { UMManager } from "globals/interfaces";
 
 const rejectPromise = (error: string, rowNumber: number | string) => {
   return Promise.reject(JSON.stringify({
@@ -78,6 +70,7 @@ export const FIELDS: Fields = {
           row.attributes.full_name = `${fetchedUser.firstName} ${fetchedUser.lastName}`;
           row.attributes.location = fetchedUser.officeName;
           row.attributes.n_number = field.toLowerCase();
+          row.attributes.agent_id = field.toLowerCase();
           row.attributes.office_location_name = fetchedUser.officeName;
           row.attributes.office_location_number = fetchedUser.officeNumber;
           row.attributes.primary_dept_name = fetchedUser.departmentName;
@@ -213,7 +206,7 @@ export const FIELDS: Fields = {
       if (!row.attributes) {
         row.attributes = {};
       }
-      const managerObject = state.managerContext.managers.some((m: any) => m.manager_n_number && cleanupField(m.manager_n_number, "string") === field);
+      const managerObject = state.managerContext.managers.some((m: UMManager) => m.manager_n_num && cleanupField(m.manager_n_num, "string") === field);
       if (!field) {
         return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
       } else if (managerObject) {
@@ -238,7 +231,7 @@ export const FIELDS: Fields = {
     type: "string",
     description: "N Number of the Manager",
     example: "n0088625",
-    options: (state: any) => state.managerContext.managers.map((m: any) => m.manager_n_number).sort(),
+    options: (state: any) => state.managerContext.managers.map((m: UMManager) => m.manager_n_num).sort(),
     validateFunction: (row: any, state: any): Promise<any> => {
       const rowNumber = row.rowNumber;
       const fieldName = "Manager N Number";
@@ -246,7 +239,7 @@ export const FIELDS: Fields = {
       if (!row.attributes) {
         row.attributes = {};
       }
-      const managerObject = state.managerContext.managers.find((m: any) => m.manager_n_number && cleanupField(m.manager_n_number, "string") === field);
+      const managerObject = state.managerContext.managers.find((m: UMManager) => m.manager_n_num && cleanupField(m.manager_n_num, "string") === field);
       if (!field) {
         return rejectPromise(`${fieldName} is missing from row ${rowNumber}`, rowNumber);
       } else if (!managerObject) {
@@ -254,7 +247,7 @@ export const FIELDS: Fields = {
       } else {
         row.attributes.manager_first_name = managerObject.manager_first_name;
         row.attributes.manager_last_name = managerObject.manager_last_name;
-        row.attributes.manager_n_number = managerObject.manager_n_number;
+        row.attributes.manager_n_number = managerObject.manager_n_num;
         row.attributes.manager = `${managerObject.manager_first_name} ${managerObject.manager_last_name}`;
         return Promise.resolve(`${fieldName} Valid for row ${rowNumber}`);
       }
@@ -420,11 +413,8 @@ export const FIELDS: Fields = {
         const didUser = isDidUser(didField, rowNumber);
         if (didUser && field) {
           try {
-            const directDialNum = getE164Number(field);
-            row.attributes.did = directDialNum;
-            row.directDialNum = directDialNum;
-            row.activateEp = true;
-            row.alternateDid = directDialNum;
+            const did = getE164Number(field);
+            row.did = did;
             return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
           } catch (err) {
             return rejectPromise(`${fieldName} is not in the correct format for row ${rowNumber}`, rowNumber);
@@ -505,38 +495,27 @@ export const FIELDS: Fields = {
     field: "outgoingNumber",
     name: "Outgoing Number",
     type: "string",
-    description: "If the user is not a DID user this is their Outgoing number",
+    description: "Agent's Outgoing Number",
     example: "6038518288",
     options: null,
     validateFunction: async (row: any, state: any): Promise<any> => {
       const rowNumber = row.rowNumber;
       const fieldName = "Outgoing Number";
       const field = cleanupField(row[fieldName], "string");
-      const didFieldName = "Did User";
-      const didField = cleanupField(row[didFieldName], "string");
       if (!row.attributes) {
         row.attributes = {};
       }
 
-      try {
-        const didUser = isDidUser(didField, rowNumber);
-        if (didUser && field) {
-          return rejectPromise(`Did User field is 'Y', ${fieldName} is not applicable for row ${rowNumber}`, rowNumber);
-        } else if (didUser && !field) {
-          return Promise.resolve(`${fieldName} skipped for DID user for row ${rowNumber}`);
-        } else if (!didUser && !field) {
-          return rejectPromise(`${fieldName} is required when DID user is 'N' for row ${rowNumber}`, rowNumber);
-        } else {
-          try {
-            const outgoing = getE164Number(field);
-            row.attributes.did = outgoing;
-            return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
-          } catch (err) {
-            return rejectPromise(`${fieldName} is not in the correct format for row ${rowNumber}`, rowNumber);
-          }
+      if (!field) {
+        return rejectPromise(`${fieldName} is missing and is required for row ${rowNumber}`, rowNumber);
+      } else {
+        try {
+          const outgoing = getE164Number(field);
+          row.attributes.caller_id = outgoing;
+          return Promise.resolve(`${fieldName} ${field} set for row ${rowNumber}`);
+        } catch (err) {
+          return rejectPromise(`${fieldName} is not in the correct format for row ${rowNumber}`, rowNumber);
         }
-      } catch (err) {
-        return rejectPromise(`${didFieldName} needs to be 'Y' or 'N' for row ${rowNumber}`, rowNumber);
       }
     }
   },

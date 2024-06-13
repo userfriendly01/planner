@@ -2,7 +2,7 @@ import {
   profileEntryFormReducer,
   initialProfileEntryFormState,
   profileEntryFormActions
-} from "context";
+} from "../reducers/profileEntryFormReducer";
 import { formModes } from "globals";
 
 describe("profileEntryFormReducer", () => {

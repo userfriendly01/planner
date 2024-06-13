@@ -2,12 +2,14 @@ import React from "react";
 import SkillEntryFormModal from "../SkillEntryFormModal";
 import {
   useAdminState,
+  useAdminDispatch,
   skillFormState,
-  skillFormDispatch,
-  initialSkillFormState,
+  skillFormDispatch
+} from "context/appContext";
+import {
   skillFormActions,
-  useAdminDispatch
-} from "context";
+  initialSkillFormState
+} from "context/skillFormReducer";
 import {
   act,
   render,
@@ -15,28 +17,26 @@ import {
   initialTestState,
   waitFor
 } from "testUtils";
-import {
-  StyledButton,
-  Dropdown,
-  CustomInput,
-  ModalOverlay,
-  PhoneNumberInput
-} from "components";
+import { StyledButton } from "components/StyledButton";
+import { Dropdown } from "components/Dropdown";
+import { CustomInput } from "components/CustomInput";
+import { ModalOverlay } from "components/ModalOverlay";
+import { PhoneNumberInput } from "components/PhoneNumberInput";
 import {
   FormControlLabel,
   Paper
 } from "@mui/material";
 import {
   createSkill
-} from "services";
-import { getSkills } from "authentication";
+} from "services/skill";
+import { getSkills } from "authentication/startups/cct-triton-admin-startup";
 
 
-jest.mock("services", () => ({
+jest.mock("services/skill", () => ({
   createSkill: jest.fn()
 }));
 
-jest.mock("authentication", () => ({
+jest.mock("authentication/startups/cct-triton-admin-startup", () => ({
   getSkills: jest.fn()
 }));
 
@@ -46,20 +46,30 @@ jest.mock("@mui/material", () => ({
   Paper: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn(),
   useAdminDispatch: jest.fn(),
   skillFormDispatch: jest.fn(),
-  skillFormState: jest.fn(),
-  initialSkillFormState: jest.requireActual("context").initialSkillFormState,
-  skillFormActions: jest.requireActual("context").skillFormActions
+  skillFormState: jest.fn()
 }));
 
-jest.mock("components", () => ({
-  StyledButton: jest.fn(),
-  Dropdown: jest.fn(),
-  CustomInput: jest.fn(),
-  ModalOverlay: jest.fn(),
+jest.mock("components/StyledButton", () => ({
+  StyledButton: jest.fn()
+}));
+
+jest.mock("components/Dropdown", () => ({
+  Dropdown: jest.fn()
+}));
+
+jest.mock("components/CustomInput", () => ({
+  CustomInput: jest.fn()
+}));
+
+jest.mock("components/ModalOverlay", () => ({
+  ModalOverlay: jest.fn()
+}));
+
+jest.mock("components/PhoneNumberInput", () => ({
   PhoneNumberInput: jest.fn()
 }));
 
@@ -710,7 +720,7 @@ describe("<SkillEntryFormModal />", () => {
       const testStateWithUpperNNumberForUser = {
         ...initialTestState
       };
-      testStateWithUpperNNumberForUser.userContext.pingIdentity.sub = "N1111111";
+      testStateWithUpperNNumberForUser.userContext.nNumber = "n1234567";
       useAdminState.mockReturnValue(initialTestState);
       createSkill.mockResolvedValueOnce({
         status: 200
@@ -733,7 +743,7 @@ describe("<SkillEntryFormModal />", () => {
         taskQueueSid: "tqasdf",
         vhCallTarget: null,
         vhThreshold: null,
-        updatedBy: "n1111111",
+        updatedBy: "n1234567",
         timeOfDayIds: [
           {
             dayId: 1,

@@ -1,7 +1,5 @@
-import {
-  PaperContainer,
-  StyledButton
-} from "components";
+import { PaperContainer } from "components/PaperContainer";
+import { StyledButton } from "components/StyledButton";
 import React from "react";
 import styled from "styled-components";
 

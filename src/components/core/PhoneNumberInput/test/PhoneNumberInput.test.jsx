@@ -1,11 +1,11 @@
-import PhoneNumberInput from "../PhoneNumberInput";
+import { PhoneNumberInput } from "../PhoneNumberInput";
 import MaskedInput from "react-text-mask";
 import React from "react";
 import {
   getE164Number,
   isNumberValid,
   unMaskPhoneNumber
-} from "utils";
+} from "utils/numberUtils";
 import {
   Switch,
   TextField
@@ -25,25 +25,17 @@ jest.mock("react-text-mask", () => ({
 }));
 
 jest.mock("@mui/material", () => ({
-  __esModule: true,
-  Divider: jest.fn(),
   Switch: jest.fn(),
-  TextField: jest.fn(),
-  Button: jest.fn(),
-  Tabs: jest.fn(),
-  Tab: jest.fn(),
-  Paper: jest.fn(),
-  Checkbox: jest.fn()
+  TextField: jest.fn()
 }));
 
-jest.mock("utils", () => ({
+jest.mock("utils/numberUtils", () => ({
   getE164Number: jest.fn(),
   isNumberValid: jest.fn(),
   unMaskPhoneNumber: jest.fn()
 }));
 
 jest.mock("@mui/x-data-grid", () => ({
-  __esModule: true,
   DataGrid: jest.fn(),
   GridToolbar: jest.fn()
 }));

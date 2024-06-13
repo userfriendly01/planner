@@ -14,22 +14,27 @@ import {
 } from "testUtils";
 import { CustomFlowGridToolBar } from "../CustomFlowGridToolBar";
 import React from "react";
-import { useAdminState } from "context";
+import { useAdminState } from "context/appContext";
 
 jest.mock("@mui/material", () => ({
-  __esModule: true,
   FormControl: jest.fn(),
   Grid: jest.fn(),
   InputLabel: jest.fn(),
   MenuItem: jest.fn(),
-  Select: jest.fn()
+  Select: jest.fn(),
+  IconButton: jest.fn(),
+  Tooltip: jest.fn()
 }));
-jest.mock("context", () => ({
+
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
 }));
 
-const openPreviewModal=jest.fn();
+jest.mock("utils/alohaConfigUtils", () => ({
+  readWriteAccess: jest.fn()
+}));
 
+const openPreviewModal=jest.fn();
 
 const renderCustomToolBar = () =>{
   const rendered =render(
@@ -54,7 +59,7 @@ describe("<CustomFlowGridToolBar/>",()=>{
     useAdminState.mockReturnValue(initialTestState);
   });
 
-  test.only("Choose the multi-actions", () => {
+  test("Choose the multi-actions", () => {
     renderCustomToolBar();
     const GridMock = Grid.mock.calls[0][0];
     const ActionsAttr = GridMock.children[2].props.children.props.children[1].props.onChange;
@@ -66,9 +71,16 @@ describe("<CustomFlowGridToolBar/>",()=>{
         }
       });
     });
+    act(()=>{
+      ActionsAttr({
+        target: {
+          value: "bulkDeleteFlow"
+        }
+      });
+    });
 
     expect(GridMock).toBeTruthy();
-    expect(openPreviewModal).toBeCalledTimes(1);
+    expect(openPreviewModal).toBeCalledTimes(2);
 
   });
 });

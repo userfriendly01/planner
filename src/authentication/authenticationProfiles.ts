@@ -1,18 +1,16 @@
+import { AccountInfo } from "@azure/msal-browser";
 import {
   AuthenticationProfileOptions,
   descriptions,
-  Environments,
-  Permissions,
-  runTritonAdminStartup,
-  runAlohaRoutingStartup,
-  runAlohaFlowStartup,
-  runDynamicCallFlowStartup
-} from "authentication";
-import {
-  AlohaFlowContainer,
-  AlohaRoutingContainer,
-  TritonUsersViewWrapper
-} from "components";
+  Permissions
+} from "authentication/authenticationInterfaces";
+import { runTritonAdminStartup } from "authentication/startups/cct-triton-admin-startup";
+import { runAlohaRoutingStartup } from "authentication/startups/cct-aloha-routing-startup";
+import { runAlohaFlowStartup } from "authentication/startups/cct-aloha-flow-startup";
+import AlohaFlowContainer from "alohaFlow/AlohaFlowContainer";
+import AlohaRoutingContainer from "alohaRouting/AlohaRoutingContainer";
+import { TritonUsersViewWrapper } from "usermanagement/TritonUsersViewWrapper";
+import { ADGroupPermission } from "globals/interfaces";
 import DynamicCallFlowPhoneNumberContainer
   from "../components/tabs/dynamicCallFlow/phoneNumber/DynamicCallFlow.PhoneNumber.Container";
 
@@ -21,10 +19,8 @@ export const getAuthenticationProfileTemplates = (): AuthenticationProfileOption
   return {
     TRITON: {
       name: "Triton",
-      permissionLevel: Permissions.READ,
-      isAdmin: false,
-      profileId: null,
       home: TritonUsersViewWrapper,
+      permissionLevel: Permissions.READ,
       tabs: [
         Tabs.TRITON_USER_MANAGEMENT,
         Tabs.ORG_MANAGEMENT,
@@ -58,87 +54,67 @@ export const getAuthenticationProfileTemplates = (): AuthenticationProfileOption
   };
 };
 
-export const getAdGroupPermissionMapping = () => {
+export const getFilteredPermissions = (account: AccountInfo): ADGroupPermission[] => {
+  return getAdGroupPermissionMapping()
+    .map(permission => {
+      const filteredRoles = permission.roles.filter(({ name }) =>
+        account.idTokenClaims.roles.includes(name)
+      );
+
+      if (filteredRoles.length) {
+        return {
+          ...permission,
+          roles: filteredRoles
+        };
+      }
+
+      return null;
+    })
+    .filter(group => !!group);
+};
+
+export const getAdGroupPermissionMapping = (): ADGroupPermission[] => {
   const startupProfiles = getStartupProfiles();
   const authenticationProfileTemplates = getAuthenticationProfileTemplates();
 
   return [
     {
-      adGroup: "GCI-CCT-TRITON-DEV-TRITONADMIN",
-      environments: [Environments.DEV],
-      permissionLevel: Permissions.WRITE,
+      roles: [
+        {
+          name: "Admin",
+          permissionLevel: Permissions.WRITE
+        }
+      ],
       startup: startupProfiles.TRITON,
       description: descriptions.Triton,
       authenticationProfile: authenticationProfileTemplates.TRITON
     },
     {
-      adGroup: "GCI-CCT-TRITON-TEST-TRITONADMIN",
-      environments: [Environments.TEST],
-      permissionLevel: Permissions.WRITE,
-      startup: startupProfiles.TRITON,
-      description: descriptions.Triton,
-      authenticationProfile: authenticationProfileTemplates.TRITON
-    },
-    {
-      adGroup: "GCI-CCT-TRITON-PROD-TRITONADMIN",
-      environments: [Environments.PROD],
-      permissionLevel: Permissions.WRITE,
-      startup: startupProfiles.TRITON,
-      description: descriptions.Triton,
-      authenticationProfile: authenticationProfileTemplates.TRITON
-    },
-    {
-      adGroup: "GPI-CCT-CONFIG-FLOW-READ",
-      environments: [Environments.DEV, Environments.TEST, Environments.PROD],
-      permissionLevel: Permissions.READ,
+      roles: [
+        {
+          name: "FlowRead",
+          permissionLevel: Permissions.READ
+        },
+        {
+          name: "FlowReadWrite",
+          permissionLevel: Permissions.WRITE
+        }
+      ],
       startup: startupProfiles.ALOHA_FLOW,
       description: descriptions.Aloha_Flow,
       authenticationProfile: authenticationProfileTemplates.ALOHA_FLOW
     },
     {
-      adGroup: "GPI-CCT-CONFIG-FLOW-READWRITE-NP",
-      environments: [Environments.DEV, Environments.TEST],
-      permissionLevel: Permissions.WRITE,
-      startup: startupProfiles.ALOHA_FLOW,
-      description: descriptions.Aloha_Flow,
-      authenticationProfile: authenticationProfileTemplates.ALOHA_FLOW
-    },
-    {
-      adGroup: "GPI-CCT-CONFIG-FLOW-READWRITE-NP",
-      environments: [Environments.DEV, Environments.TEST],
-      permissionLevel: Permissions.WRITE,
-      startup: startupProfiles.DYNAMIC_CALL_FLOW,
-      description: descriptions.Dynami_Call_Flow,
-      authenticationProfile: authenticationProfileTemplates.DYNAMIC_CALL_FLOW
-    },
-    {
-      adGroup: "GPI-CCT-CONFIG-FLOW-READWRITE-PROD",
-      environments: [Environments.PROD],
-      permissionLevel: Permissions.WRITE,
-      startup: startupProfiles.ALOHA_FLOW,
-      description: descriptions.Aloha_Flow,
-      authenticationProfile: authenticationProfileTemplates.ALOHA_FLOW
-    },
-    {
-      adGroup: "GPI-CCT-CONFIG-ROUTE-READ",
-      environments: [Environments.DEV, Environments.TEST, Environments.PROD],
-      permissionLevel: Permissions.READ,
-      startup: startupProfiles.ALOHA_ROUTE,
-      description: descriptions.Aloha_Routing,
-      authenticationProfile: authenticationProfileTemplates.ALOHA_ROUTE
-    },
-    {
-      adGroup: "GPI-CCT-CONFIG-ROUTE-READWRITE-NP",
-      environments: [Environments.DEV, Environments.TEST],
-      permissionLevel: Permissions.WRITE,
-      startup: startupProfiles.ALOHA_ROUTE,
-      description: descriptions.Aloha_Routing,
-      authenticationProfile: authenticationProfileTemplates.ALOHA_ROUTE
-    },
-    {
-      adGroup: "GPI-CCT-CONFIG-ROUTE-READWRITE-PROD",
-      environments: [Environments.PROD],
-      permissionLevel: Permissions.WRITE,
+      roles: [
+        {
+          name: "RouteRead",
+          permissionLevel: Permissions.READ
+        },
+        {
+          name: "RouteReadWrite",
+          permissionLevel: Permissions.WRITE
+        }
+      ],
       startup: startupProfiles.ALOHA_ROUTE,
       description: descriptions.Aloha_Routing,
       authenticationProfile: authenticationProfileTemplates.ALOHA_ROUTE
@@ -260,11 +236,11 @@ export const getTabs = (): any => {
       dropdown: [
         {
           route: "/triton-admin/dynamic-call-flow-phone-number",
-          label: "Dynamic Call Flow Phone Number"
+          label: "Phone Number"
         },
         {
           route: "/triton-admin/dynamic-call-flow-action",
-          label: "Dynamic Call Flow Action"
+          label: "Action"
         }
       ]
     },

@@ -1,6 +1,6 @@
 import {
   Skill
-} from "globals";
+} from "globals/interfaces";
 import { TableState } from "../CallFlowManagementWrapper/CallFlowManagement.Interfaces";
 import { messageTypes } from "../SkillManagement/ClosedFlashMessage/ClosedFlashMessage.Interfaces";
 import {
@@ -31,12 +31,6 @@ export const ActionTypes = {
     value: "delete"
   }
 };
-
-export interface PropertyOption {
-  value: any,
-  label: string,
-  actions: ActionType[]
-}
 
 export const propertyOptions = {
   CLOSED_MESSAGE: {

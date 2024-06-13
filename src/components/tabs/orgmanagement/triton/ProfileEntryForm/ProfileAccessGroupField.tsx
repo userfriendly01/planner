@@ -1,7 +1,7 @@
 import React from "react";
-import { Dropdown } from "components";
-import { getAccessGroup } from "services";
-import { AccessGroup } from "globals";
+import { Dropdown } from "components/Dropdown";
+import { getAccessGroup } from "services/accessGroup";
+import { AccessGroup } from "globals/interfaces";
 import {
   AccessGroupDropdownRowItem,
   IconButtonWrapper,
@@ -11,7 +11,7 @@ import { Tooltip } from "@mui/material";
 import { Info } from "@mui/icons-material";
 import { ProfileAccessGroupFieldProps } from "./ProfileEntryForm.Interfaces";
 
-const ProfileAccessGroupField = (props: ProfileAccessGroupFieldProps) => {
+export const ProfileAccessGroupField = (props: ProfileAccessGroupFieldProps) => {
 
   const {
     enableDropDown,
@@ -87,5 +87,3 @@ const ProfileAccessGroupField = (props: ProfileAccessGroupFieldProps) => {
     </ProfileDropdownRow>
   );
 };
-
-export default ProfileAccessGroupField;

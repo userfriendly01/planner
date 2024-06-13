@@ -1,4 +1,4 @@
-import { ModalOverlayStatuses } from "globals";
+import { ModalOverlayStatuses } from "globals/interfaces";
 import { TableState } from "../CallFlowManagementWrapper/CallFlowManagement.Interfaces";
 
 export interface ConfirmationModalOptsProps {

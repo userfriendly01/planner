@@ -12,10 +12,10 @@ import {
   retrieveFlowData as v1RetrieveFlowData,
   updateDynamicFlowDB as v2UpdateFlowDB,
   updateFlowDB as v1UpdateFlowDB
-} from "services";
+} from "services/flowTableService";
 
 import {
-  addFlowRule,
+  addFlowRule, batchDeleteActionItems,
   batchDeleteItems,
   batchFlowCreate,
   batchFlowUpdate,
@@ -28,6 +28,22 @@ import {
 const token = "accessToken";
 const curTime = "1971-05-25T04:00:00.000Z";
 const curTimeUnixEpoch = 43992000;
+
+jest.mock("services/flowTableService", ()=>({
+  addDynamicFlowRule: jest.fn(),
+  addFlowRule: jest.fn(),
+  batchDeleteItems: jest.fn(),
+  batchDynamicDeleteItems: jest.fn(),
+  batchDynamicFlowUpdate: jest.fn(),
+  batchFlowCreate: jest.fn(),
+  batchFlowUpdate: jest.fn(),
+  deleteDynamicFlowRule: jest.fn(),
+  deleteFlowRule: jest.fn(),
+  retrieveDynamicFlowData: jest.fn(),
+  retrieveFlowData: jest.fn(),
+  updateDynamicFlowDB: jest.fn(),
+  updateFlowDB: jest.fn()
+}));
 
 describe("FlowTableServiceUtil", () => {
   beforeAll(() => {
@@ -287,6 +303,23 @@ describe("FlowTableServiceUtil", () => {
       await deleteOppositeRows([dynamicRecord, nonDynamicRecord], token);
 
       expect(v1BatchDeleteItems).toHaveBeenCalled();
+      expect(v2BatchDeleteItems).toHaveBeenCalled();
+    });
+  });
+  describe("batchDeleteActionItems", () => {
+    beforeEach(() => {
+      jest.resetAllMocks();
+      v2BatchDeleteItems.mockResolvedValue({
+        failure: ["b"],
+        success: ["a"]
+      });
+    });
+    it("should call batchDeleteActionItems function", async () => {
+      const items = [ {
+        id: 1,
+        actionType: "MENU"
+      }];
+      await batchDeleteActionItems(items, token);
       expect(v2BatchDeleteItems).toHaveBeenCalled();
     });
   });

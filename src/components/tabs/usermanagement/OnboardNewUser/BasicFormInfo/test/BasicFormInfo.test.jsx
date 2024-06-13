@@ -1,21 +1,18 @@
-import BasicFormInfo from "../BasicFormInfo";
+import { BasicFormInfo } from "../BasicFormInfo";
 import {
   Switch,
   Tooltip
 } from "@mui/material";
 import { Edit } from "@mui/icons-material";
+import { Dropdown } from "components/Dropdown";
+import { ExtensionInput } from "usermanagement/ExtensionInput";
+import { ForwardToEntryForm } from "usermanagement/ForwardToEntryForm";
+import { NNumberInput } from "components/NNumberInput";
+import { PhoneNumberInput } from "components/PhoneNumberInput";
 import {
-  ForwardToEntryForm,
-  ExtensionInput,
-  NNumberInput,
-  PhoneNumberInput,
-  Dropdown
-} from "components";
-import {
-  useFormDispatch,
-  useFormState,
-  userFormActions
-} from "context";
+  useFormDispatch, useFormState
+} from "context/appContext";
+import { userFormActions } from "context/userFormReducer";
 import { formModes } from "globals";
 import React from "react";
 import {
@@ -33,27 +30,42 @@ import {
 } from "testUtils";
 import {
   getOverflowSkillFromProfile,
-  removeProfileZeroIfAdminNotInProfileZero,
   isProfileIdValid,
   isManagerValid
-} from "utils";
-import { StyledButton } from "components";
+} from "utils/usermanagementUtils";
+import { StyledButton } from "components/StyledButton";
 
 jest.useFakeTimers();
 
-jest.mock("components", () => ({
-  __esModule: true,
-  Dropdown: jest.fn(),
-  ExtensionInput: jest.fn(),
-  NNumberInput: jest.fn(),
-  PhoneNumberInput: jest.fn(),
-  SkillsFormInfo: jest.fn(),
-  StyledButton: jest.fn(),
+jest.mock("components/Dropdown", () => ({
+  Dropdown: jest.fn()
+}));
+
+jest.mock("usermanagement/ExtensionInput", () => ({
+  ExtensionInput: jest.fn()
+}));
+
+jest.mock("components/NNumberInput", () => ({
+  NNumberInput: jest.fn()
+}));
+
+jest.mock("components/PhoneNumberInput", () => ({
+  PhoneNumberInput: jest.fn()
+}));
+
+jest.mock("usermanagement/SkillsFormInfo", () => ({
+  SkillsFormInfo: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
+  StyledButton: jest.fn()
+}));
+
+jest.mock("usermanagement/ForwardToEntryForm", () => ({
   ForwardToEntryForm: jest.fn()
 }));
 
 jest.mock("@mui/material", () => ({
-  __esModule: true,
   Divider: jest.fn(),
   Tabs: jest.fn(),
   Switch: jest.fn(),
@@ -61,43 +73,29 @@ jest.mock("@mui/material", () => ({
 }));
 
 jest.mock("@mui/icons-material", () => ({
-  __esModule: true,
   Edit: jest.fn()
 }));
 
-jest.mock("context", () => ({
-  __esModule: true,
+jest.mock("context/appContext", () => ({
   useFormState: jest.fn(),
   useAdminState: jest.fn(),
-  useFormDispatch: jest.fn(),
-  userFormActions: jest.requireActual("context").userFormActions
+  useFormDispatch: jest.fn()
 }));
 
-jest.mock("utils", () => ({
-  __esModule: true,
-  isExtensionValid: jest.fn(),
+jest.mock("utils/usermanagementUtils", () => ({
   isManagerValid: jest.fn(),
   isProfileIdValid: jest.fn(),
-  sortProfilesByName: jest.requireActual("utils").sortProfilesByName,
-  sortManagersByName: jest.fn("utils").sortManagersByName,
-  getOverflowSkillFromProfile: jest.fn(),
-  removeProfileZeroIfAdminNotInProfileZero: jest.fn(),
-  calabrioTimeZones: jest.requireActual("utils").calabrioTimeZones,
-  getValidSkillsObject: jest.fn(),
-  formatE164PhoneNumber: jest.fn(),
-  getZeroOutEnabledFromProfile: jest.fn()
+  getOverflowSkillFromProfile: jest.fn()
 }));
 
 jest.mock("globals", () => ({
-  __esModule: true,
   extensionMatcher: {
     test: jest.fn()
   },
   formModes: jest.requireActual("globals").formModes
 }));
 
-jest.mock("../../RoutingAttributes", ()=>({
-  __esModule: true,
+jest.mock("usermanagement/RoutingAttributes", ()=>({
   RoutingAttributes: jest.fn()
 }));
 
@@ -156,8 +154,8 @@ describe("<BasicFormInfo />", () => {
       const expectedManagerProps = {
         label: "Manager *",
         options: managerList.map(manager => ({
-          label: `${manager.manager_first_name} ${manager.manager_last_name} - ${manager.manager_n_number}`,
-          value: manager.manager_n_number,
+          label: `${manager.manager_first_name} ${manager.manager_last_name} - ${manager.manager_n_num}`,
+          value: manager.manager_n_num,
           ...manager
         })),
         value: "",
@@ -277,7 +275,6 @@ describe("<BasicFormInfo />", () => {
   });
   describe("Team dropdown", () => {
     test("Should render the correct initial state", () => {
-      removeProfileZeroIfAdminNotInProfileZero.mockReturnValue(profileList);
       const rendered = renderComponent(false);
       expectMockedComponent(rendered, { Dropdown }, 2);
       const expectedTeamProps = {
@@ -303,7 +300,6 @@ describe("<BasicFormInfo />", () => {
           }
         }
       });
-      removeProfileZeroIfAdminNotInProfileZero.mockReturnValue(profileList);
       isProfileIdValid.mockReturnValue(false);
       renderComponent(false);
       expect(Dropdown.mock.calls[1][0].error).toBe(true);
@@ -729,7 +725,7 @@ describe("<BasicFormInfo />", () => {
           expect(mockSetForm).toBeCalledWith({
             type: userFormActions.SET_BLUR_ON_FIELD,
             payload: {
-              field: "directDialNum",
+              field: "did",
               system: "triton"
             }
           });
@@ -740,7 +736,7 @@ describe("<BasicFormInfo />", () => {
             triton: {
               ...initialFormState.triton,
               didUser: true,
-              directDialNum: {
+              did: {
                 valid: true
               }
             }
@@ -754,17 +750,17 @@ describe("<BasicFormInfo />", () => {
         });
 
         describe("updateValue", () => {
-          test("should set directDialNum number, alternate DID, and outgoing to correct value when outgoing is unset", () => {
+          test("should set did number, and outgoing to correct value when outgoing is unset", () => {
             renderComponent();
             act(() => {
               const updateValue = PhoneNumberInput.mock.calls[0][0].updateValue;
               updateValue("(603) 851-8200", null, true, "+16038518200");
             });
-            expect(mockSetForm).toBeCalledTimes(3);
+            expect(mockSetForm).toBeCalledTimes(2);
             expect(mockSetForm.mock.calls[0][0]).toEqual({
               type: userFormActions.UPDATE_PHONE_NUMBER,
               payload: {
-                field: "directDialNum",
+                field: "did",
                 maskedValue: "(603) 851-8200",
                 isValid: true,
                 e164Number: "+16038518200",
@@ -772,15 +768,6 @@ describe("<BasicFormInfo />", () => {
               }
             });
             expect(mockSetForm.mock.calls[1][0]).toEqual({
-              type: userFormActions.UPDATE_PHONE_NUMBER,
-              payload: {
-                field: "alternateDid",
-                maskedValue: "(603) 851-8200",
-                isValid: true,
-                e164Number: "+16038518200"
-              }
-            });
-            expect(mockSetForm.mock.calls[2][0]).toEqual({
               type: userFormActions.UPDATE_PHONE_NUMBER,
               payload: {
                 field: "outgoing",
@@ -792,7 +779,7 @@ describe("<BasicFormInfo />", () => {
             });
           });
 
-          test("should set directDialNum number and not outgoing to correct value when outgoing is set", () => {
+          test("should set did number and not outgoing to correct value when outgoing is set", () => {
             useFormState.mockReturnValue({
               ...initialFormState,
               triton: {
@@ -813,24 +800,15 @@ describe("<BasicFormInfo />", () => {
               const updateValue = PhoneNumberInput.mock.calls[0][0].updateValue;
               updateValue("(603) 851-8200", null, true, "+16038518200");
             });
-            expect(mockSetForm).toBeCalledTimes(2);
+            expect(mockSetForm).toBeCalledTimes(1);
             expect(mockSetForm.mock.calls[0][0]).toEqual({
               type: userFormActions.UPDATE_PHONE_NUMBER,
               payload: {
-                field: "directDialNum",
+                field: "did",
                 maskedValue: "(603) 851-8200",
                 isValid: true,
                 e164Number: "+16038518200",
                 initialValue: "+18002345678"
-              }
-            });
-            expect(mockSetForm.mock.calls[1][0]).toEqual({
-              type: userFormActions.UPDATE_PHONE_NUMBER,
-              payload: {
-                field: "alternateDid",
-                maskedValue: "(603) 851-8200",
-                isValid: true,
-                e164Number: "+16038518200"
               }
             });
           });
@@ -841,24 +819,15 @@ describe("<BasicFormInfo />", () => {
               const updateValue = PhoneNumberInput.mock.calls[0][0].updateValue;
               updateValue("(603) 851-82", null, false, "+160385182");
             });
-            expect(mockSetForm).toBeCalledTimes(2);
+            expect(mockSetForm).toBeCalledTimes(1);
             expect(mockSetForm.mock.calls[0][0]).toEqual({
               type: userFormActions.UPDATE_PHONE_NUMBER,
               payload: {
-                field: "directDialNum",
+                field: "did",
                 maskedValue: "(603) 851-82",
                 isValid: false,
                 e164Number: "+160385182",
                 initialValue: "+18002345678"
-              }
-            });
-            expect(mockSetForm.mock.calls[1][0]).toEqual({
-              type: userFormActions.UPDATE_PHONE_NUMBER,
-              payload: {
-                field: "alternateDid",
-                maskedValue: "(603) 851-82",
-                isValid: false,
-                e164Number: "+160385182"
               }
             });
           });
@@ -870,9 +839,9 @@ describe("<BasicFormInfo />", () => {
               triton: {
                 ...initialFormState.triton,
                 didUser: true,
-                directDialNum: {
-                  ...initialFormState.triton.directDialNum,
-                  e164: mockWorkers[2].directDialNum,
+                did: {
+                  ...initialFormState.triton.did,
+                  e164: mockWorkers[2].did,
                   updated: true
                 }
               }
@@ -884,7 +853,7 @@ describe("<BasicFormInfo />", () => {
           });
         });
 
-        describe(`directDialNum updated && form.formMode === ${formModes.UPDATE}`, () => {
+        describe(`did updated && form.formMode === ${formModes.UPDATE}`, () => {
           describe("ForwardToEntryForm", () => {
             beforeEach(() => {
               useFormState.mockReturnValue({
@@ -893,8 +862,8 @@ describe("<BasicFormInfo />", () => {
                 triton: {
                   ...initialFormState.triton,
                   didUser: true,
-                  directDialNum: {
-                    ...initialFormState.triton.directDialNum,
+                  did: {
+                    ...initialFormState.triton.did,
                     updated: true
                   }
                 }
@@ -923,14 +892,14 @@ describe("<BasicFormInfo />", () => {
           });
 
 
-          test("should update outgoing when directDialNum matches outgoing number", () => {
+          test("should update outgoing when did matches outgoing number", () => {
             useFormState.mockReturnValue({
               ...initialFormState,
               formMode: formModes.UPDATE,
               triton: {
                 ...initialFormState.triton,
                 didUser: true,
-                outgoing: initialFormState.triton.directDialNum
+                outgoing: initialFormState.triton.did
               }
             });
 
@@ -941,11 +910,11 @@ describe("<BasicFormInfo />", () => {
               updateValue("(603) 851-8200", null, true, "+16038518200");
             });
 
-            expect(mockSetForm).toBeCalledTimes(3);
+            expect(mockSetForm).toBeCalledTimes(2);
             expect(mockSetForm.mock.calls[0][0]).toEqual({
               type: userFormActions.UPDATE_PHONE_NUMBER,
               payload: {
-                field: "directDialNum",
+                field: "did",
                 maskedValue: "(603) 851-8200",
                 isValid: true,
                 e164Number: "+16038518200",
@@ -953,15 +922,6 @@ describe("<BasicFormInfo />", () => {
               }
             });
             expect(mockSetForm.mock.calls[1][0]).toEqual({
-              type: userFormActions.UPDATE_PHONE_NUMBER,
-              payload: {
-                field: "alternateDid",
-                maskedValue: "(603) 851-8200",
-                isValid: true,
-                e164Number: "+16038518200"
-              }
-            });
-            expect(mockSetForm.mock.calls[2][0]).toEqual({
               type: userFormActions.UPDATE_PHONE_NUMBER,
               payload: {
                 field: "outgoing",

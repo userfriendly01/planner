@@ -1,14 +1,14 @@
-import { UpdateWrapper } from "../BulkChanges.Styles";
+import { UpdateWrapper } from "usermanagement/BulkChanges.Styles";
 import {
   Template,
   BulkUpdateProps
-} from "../BulkChanges.Interfaces";
-import { Dropdown } from "components";
-import { useAdminState } from "context";
+} from "usermanagement/BulkChanges.Interfaces";
+import { Dropdown } from "components/Dropdown";
+import { useAdminState } from "context/appContext";
 import React from "react";
-import { sortProfilesByName } from "utils";
+import { sortProfilesByName } from "utils/_sortUtils";
 
-const BulkUpdateHrSync = (props: BulkUpdateProps) => {
+export const BulkUpdateHrSync = (props: BulkUpdateProps) => {
   const {
     template,
     selectedTemplates,
@@ -86,5 +86,3 @@ const BulkUpdateHrSync = (props: BulkUpdateProps) => {
     </UpdateWrapper>
   );
 };
-
-export default BulkUpdateHrSync;

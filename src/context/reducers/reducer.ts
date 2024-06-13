@@ -1,7 +1,7 @@
 import {
   Action,
   AppState
-} from "globals";
+} from "globals/interfaces";
 import {
   formatCalabrioTeams,
   formatCalabrioTenant,
@@ -15,7 +15,7 @@ export const initialState: AppState = {
     managers: []
   },
   officeContext: {
-    offices: new Map()
+    offices: []
   },
   profileContext: {
     profiles: []
@@ -25,11 +25,13 @@ export const initialState: AppState = {
     skillGroups: []
   },
   userContext: {
-    pingIdentity: null,
-    authenticationProfiles: []
+    permissions: [],
+    accessToken: "",
+    accessTokenGraph: ""
   },
   workerContext: {
-    workers: []
+    workers: [],
+    isLoading: true
   },
   calabrioContext: {
     tenant: {},
@@ -51,6 +53,34 @@ export const initialState: AppState = {
 
 export const reducer = (state: AppState, action: Action): AppState => {
   switch (action.type) {
+    case "setLoadingWorkers":
+      return {
+        ...state,
+        workerContext: {
+          ...state.workerContext,
+          isLoading: action.payload
+        }
+      };
+    case "loadPaginatedResults": {
+      const type: string = action.payload.type;
+      const pageResults: any[] = action.payload.results;
+
+      return {
+        ...state,
+        managerContext: {
+          ...state.managerContext,
+          managers: type === "UMManager" ? state.managerContext.managers.concat(pageResults) : state.managerContext.managers
+        },
+        officeContext: {
+          ...state.officeContext,
+          offices: type === "UMOffice" ? state.officeContext.offices.concat(pageResults) : state.officeContext.offices
+        },
+        workerContext: {
+          ...state.workerContext,
+          workers: type === "UMUser" ? state.workerContext.workers.concat(pageResults) : state.workerContext.workers
+        }
+      };
+    }
     case "addManager":
       return {
         ...state,
@@ -72,7 +102,7 @@ export const reducer = (state: AppState, action: Action): AppState => {
         ...state,
         officeContext: {
           ...state.officeContext,
-          offices: new Map(state.officeContext.offices).set(action.payload.office_num, action.payload)
+          offices: [...state.officeContext.offices.slice(), action.payload]
         }
       };
     case "addWorkers":
@@ -81,13 +111,6 @@ export const reducer = (state: AppState, action: Action): AppState => {
         workerContext: {
           ...state.workerContext,
           workers: state.workerContext.workers.concat(action.payload)
-        }
-      };
-    case "loadWorkers":
-      return {
-        ...state,
-        workerContext: {
-          workers: action.payload
         }
       };
     case "loadWfmOrg": {
@@ -149,22 +172,6 @@ export const reducer = (state: AppState, action: Action): AppState => {
         workerContext: {
           ...state.workerContext,
           workers: state.workerContext.workers.filter(worker => worker.sid !== action.payload)
-        }
-      };
-    case "loadManagers":
-      return {
-        ...state,
-        managerContext: {
-          ...state.managerContext,
-          managers: action.payload
-        }
-      };
-    case "loadOffices":
-      return {
-        ...state,
-        officeContext: {
-          ...state.officeContext,
-          offices: new Map(action.payload)
         }
       };
     case "loadCalabrioOrg":
@@ -229,7 +236,10 @@ export const reducer = (state: AppState, action: Action): AppState => {
     case "loadUserData":
       return {
         ...state,
-        userContext: action.payload
+        userContext: {
+          ...state.userContext,
+          ...action.payload
+        }
       };
     case "resettingSkills":
       return {

@@ -1,17 +1,19 @@
 import { fetchUser } from "../fetchUser";
 import MockAdapter from "axios-mock-adapter";
-import { apiPaths } from "globals";
-import { myAxios } from "utils";
-
-jest.mock("globals", () => ({
-  __esModule: true,
-  apiPaths: {
-    EMPLOYEE_LOOKUP: jest.fn()
-  },
-  formModes: jest.requireActual("globals").formModes
-}));
+import { myAxios } from "utils/myAxios";
 
 const axiosMock = new MockAdapter(myAxios);
+
+jest.mock("globals", () => ({
+  apiPaths: {
+    EMPLOYEE_LOOKUP: jest.fn().mockReturnValue("/service/employeelookup/n01234567")
+  },
+  formModes: {
+    INSERT: "insert",
+    UPDATE: "update",
+    DELETE: "delete"
+  }
+}));
 
 describe("fetchUser", () => {
 
@@ -21,74 +23,53 @@ describe("fetchUser", () => {
   });
 
   describe("service call to EMPLOYEE_LOOKUP succeeds", () => {
-    const fetchUserRes = [
-      {
-        person: {
-          data: {
-            Email: "email",
-            FirstName: "FirstName  ",
-            LastName: "LastName  ",
-            OfficeName: "OfficeName",
-            OfficeNumber: "OfficeNumber",
-            DepartmentName: "DepartmentName",
-            DepartmentNumber: "DepartmentNumber"
-          }
+    const fetchUserRes = {
+      results: [
+        {
+          employee_email_address: "email",
+          first_name: "FirstName  ",
+          last_name: "LastName  ",
+          preferred_name: null,
+          office_name: "OfficeName",
+          office_code: "OfficeNumber",
+          dept_name: "DepartmentName",
+          dept_code: "DepartmentNumber"
         }
-      }
-    ];
+      ]
+    };
     beforeEach(() => {
-      axiosMock.onGet("/service/employeelookup/01234567").reply(200, fetchUserRes);
-      apiPaths.EMPLOYEE_LOOKUP.mockReturnValue("/service/employeelookup/01234567");
+      axiosMock.onGet("/service/employeelookup/n01234567").reply(200, fetchUserRes);
     });
     test("should resolve with formatted data", done => {
       const nNum = "n01234567";
       fetchUser(nNum).then(resolvedVal => {
-        expect(axiosMock.history.get[0].url).toBe("/service/employeelookup/01234567");
+        expect(axiosMock.history.get[0].url).toBe("/service/employeelookup/n01234567");
         expect(resolvedVal).toEqual({
-          email: fetchUserRes[0].person.data.Email,
-          firstName: fetchUserRes[0].person.data.FirstName.trim(),
-          lastName: fetchUserRes[0].person.data.LastName.trim(),
-          officeName: fetchUserRes[0].person.data.OfficeName,
-          officeNumber: fetchUserRes[0].person.data.OfficeNumber,
-          departmentName: fetchUserRes[0].person.data.DepartmentName,
-          departmentNumber: fetchUserRes[0].person.data.DepartmentNumber
+          email: fetchUserRes.results[0].employee_email_address,
+          firstName: fetchUserRes.results[0].first_name.trim(),
+          lastName: fetchUserRes.results[0].last_name.trim(),
+          officeName: fetchUserRes.results[0].office_name,
+          officeNumber: fetchUserRes.results[0].office_code,
+          departmentName: fetchUserRes.results[0].dept_name,
+          departmentNumber: fetchUserRes.results[0].dept_code
         });
         done();
       });
     });
   });
 
-  describe("service call to EMPLOYEE_LOOKUP returns noting", () => {
+  describe("service call to EMPLOYEE_LOOKUP returns nothing", () => {
     const fetchUserRes = [];
     beforeEach(() => {
-      axiosMock.onGet("/service/employeelookup/01234567").reply(200, fetchUserRes);
-      apiPaths.EMPLOYEE_LOOKUP.mockReturnValue("/service/employeelookup/01234567");
+      axiosMock.onGet("/service/employeelookup/n01234567").reply(200, fetchUserRes);
     });
     test("should reject", done => {
       const nNum = "n01234567";
       fetchUser(nNum).catch(rejectedVal => {
-        expect(axiosMock.history.get[0].url).toBe("/service/employeelookup/01234567");
+        expect(axiosMock.history.get[0].url).toBe("/service/employeelookup/n01234567");
         expect(rejectedVal).toEqual("fetchUser employee lookup did not return any data");
         done();
       });
     });
   });
-
-  // describe("postToTransferApi fails", () => {
-  //   const badResponse = { wahh: "Failed transfer to VDN" };
-  //   const status = 500;
-  //   beforeEach(() => ( axiosMock.onPost(postToTransferApiUrl).reply(status, badResponse)));
-  //   test("should reject with error", done => {
-  //     postToTransferApi(vdn, fromNumber).catch(rejectedVal => {
-  //       expect(axiosMock.history.post[0].url).toBe(postToTransferApiUrl);
-  //       expect(JSON.parse(axiosMock.history.post[0].data)).toEqual(postToTransferApiRequest);
-  //       expect(rejectedVal).toEqual({
-  //         data: badResponse,
-  //         status
-  //       });
-  //       expect(getElevenDigitNumber).toHaveBeenCalledWith(fromNumber);
-  //       done();
-  //     });
-  //   });
-  // });
 });

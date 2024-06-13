@@ -5,8 +5,9 @@ import React, {
   useState, useEffect, useMemo
 } from "react";
 import {
-  CACHE_FILTER_FLOW, getAdvanceFilter, readWriteAccess
-} from "utils";
+  CACHE_FILTER_FLOW, getAdvanceFilter
+} from "utils/alohaFlowUtils";
+import { readWriteAccess } from "utils/alohaConfigUtils";
 import {
   FlowAdvanceFilter, PreviewModalAction
 } from "../AlohaFlow.Interfaces";
@@ -17,7 +18,6 @@ import {
   AddOutlined,
   EditNoteOutlined
 } from "@mui/icons-material";
-import { useAdminState } from "context";
 
 
 interface CustomFlowGridToolBarProps {
@@ -35,7 +35,7 @@ const CustomFlowGridToolBar = ({
   openAddModal, openPreviewModal, openAdvanceSearchModal, exportDataFile, applyFilter, matchedGroups,isAdvanceSearchOpen
 }:CustomFlowGridToolBarProps) =>{
   const [flowFilter, setFlowFilter] = useState<FlowAdvanceFilter>();
-  const enableFlow = useMemo(() => readWriteAccess(matchedGroups,"aloha-flow"), []);
+  const enableFlow = useMemo(() => readWriteAccess(matchedGroups, "FlowReadWrite"), []);
   useEffect(()=>{
     const localFilter = getAdvanceFilter(CACHE_FILTER_FLOW);
     setFlowFilter(localFilter);
@@ -133,7 +133,7 @@ const CustomFlowGridToolBar = ({
             }}
             label="Actions"
             value=""
-            disabled = {enableFlow}
+            disabled = {!enableFlow}
             onChange={handleChange}
             variant="filled"
             size="small"

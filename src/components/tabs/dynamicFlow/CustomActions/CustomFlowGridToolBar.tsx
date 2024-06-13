@@ -8,11 +8,12 @@ import React, {
 } from "react";
 import {
   readWriteAccess
-} from "utils";
+} from "utils/alohaConfigUtils";
 import {
   PreviewModalAction
 } from "../DynamicFlow.Interfaces";
 import {
+  DeleteSweepOutlined,
   PlaylistAdd,
   SaveAlt
 } from "@mui/icons-material";
@@ -29,7 +30,7 @@ const CustomFlowGridToolBar = ({
   matchedGroups,
   openPreviewModal
 }:CustomFlowGridToolBarProps) =>{
-  const enableFlow = useMemo(() => readWriteAccess(matchedGroups,"aloha-flow"), []);
+  const enableFlow = useMemo(() => readWriteAccess(matchedGroups, "FlowReadWrite"), []);
 
   const handleChange=(event:any):void=> {
     const { value } = event.target;
@@ -37,11 +38,13 @@ const CustomFlowGridToolBar = ({
       case "bulkAddFlow":
         openPreviewModal(true, "add");
         break;
+      case "bulkDeleteFlow":
+        openPreviewModal(true, "delete");
+        break;
       default:
         break;
     }
   };
-
   return (
     <Grid container>
       <Grid item key="flow-search-box" xs={9}>
@@ -82,12 +85,15 @@ const CustomFlowGridToolBar = ({
             }}
             label="Actions"
             value=""
-            disabled = {enableFlow}
+            disabled = {!enableFlow}
             onChange={handleChange}
             variant="filled"
             size="small"
             displayEmpty
           >
+            <MenuItem key="bulkDeleteFlow" value="bulkDeleteFlow">
+              <DeleteSweepOutlined />&nbsp;&nbsp; Multi Delete Flow
+            </MenuItem>
             <MenuItem key="bulkAddFlow" value="bulkAddFlow">
               <PlaylistAdd />&nbsp;&nbsp; Multi Add Flow
             </MenuItem>

@@ -1,24 +1,22 @@
-import BulkCreateForm from "../BulkCreateForm";
-import { updateSelectedTemplates } from "../../BulkUtils";
-import { getCreateTemplates } from "../../BulkTemplates";
-import BusinessUnitModal from "../../BusinessUnitModal";
+import { BulkCreateForm } from "../BulkCreateForm";
+import { updateSelectedTemplates } from "usermanagement/validationUtils";
+import { getCreateTemplates } from "usermanagement/templates";
 import React from "react";
 import {
   act,
   render
 } from "testUtils";
-import { Checkbox, Modal } from "@mui/material";
+import { Checkbox } from "@mui/material";
 
-jest.mock("../../BulkUtils", () => ({
+jest.mock("usermanagement/BusinessUnitModal", () => ({
+  BusinessUnitModal: jest.fn()
+}));
+
+jest.mock("usermanagement/validationUtils", () => ({
   updateSelectedTemplates: jest.fn()
 }));
 
-jest.mock("../../BusinessUnitModal", () => ({
-  __esModule: true,
-  default: jest.fn()
-}));
-
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
 }));
 
@@ -29,7 +27,6 @@ jest.mock("@mui/material", () => ({
 }));
 
 jest.mock("@mui/x-data-grid", () => ({
-  __esModule: true,
   DataGrid: jest.fn(),
   GridToolbar: jest.fn()
 }));
@@ -38,7 +35,7 @@ jest.mock("@mui/x-date-pickers/TimePicker", () => ({
   TimePicker: jest.fn()
 }));
 
-jest.mock("components", () => ({
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
 }));
 

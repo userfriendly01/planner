@@ -1,7 +1,5 @@
-import {
-  Action,
-  formModes
-} from "globals";
+import { formModes } from "globals";
+import { Action } from "globals/interfaces";
 import { SkillFormState } from "../../components/tabs/callflowmanagement/SkillManagement/Skills.Interfaces";
 
 export const skillFormActions = {

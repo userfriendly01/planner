@@ -2,7 +2,7 @@ import {
   getE164Number,
   isNumberValid,
   unMaskPhoneNumber
-} from "utils";
+} from "utils/numberUtils";
 import {
   Switch,
   TextField
@@ -63,7 +63,7 @@ const TenDigitInputMask = React.forwardRef((inputProps: any, ref: React.Forwarde
   );
 });
 
-export interface PhoneNumberInputProps {
+interface PhoneNumberInputProps {
   allowSevenDigitVdn?: boolean,
   disabled?: boolean,
   error?: boolean,
@@ -78,7 +78,7 @@ export interface PhoneNumberInputProps {
   icon?: JSX.Element
 }
 
-const PhoneNumberInput = (props: PhoneNumberInputProps) => {
+export const PhoneNumberInput = (props: PhoneNumberInputProps) => {
   const {
     allowSevenDigitVdn,
     disabled = false,
@@ -158,5 +158,3 @@ const PhoneNumberInput = (props: PhoneNumberInputProps) => {
     return textField;
   }
 };
-
-export default PhoneNumberInput;

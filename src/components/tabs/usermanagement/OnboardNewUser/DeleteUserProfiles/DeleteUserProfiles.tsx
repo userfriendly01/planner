@@ -1,33 +1,31 @@
-import { DeleteTritonUserProps } from "./DeleteUserProfiles.Interfaces";
+import { DeleteTritonUserProps } from "usermanagement/DeleteUserProfiles.Interfaces";
 import {
   ButtonWrapper,
   UserFormButton,
   StyledDivider
-} from "../UserEntryFormWrapper/UserEntryFormWrapper.Styles";
+} from "usermanagement/UserEntryFormWrapper.Styles";
 import {
   DeleteTritonUserWrapper,
   Text,
   CheckboxWrapper
-} from "./DeleteUserProfiles.Styles";
-import { ForwardToEntryForm } from "components";
+} from "usermanagement/DeleteUserProfiles.Styles";
+import { ForwardToEntryForm } from "usermanagement/ForwardToEntryForm";
 import {
   useAdminState,
   useFormState,
-  useAdminDispatch
-} from "context";
-import {
-  ModalOverlayStatuses,
-  timeouts
-} from "globals";
+  useAdminDispatch,
+  useFormDispatch
+} from "context/appContext";
+import { userFormActions } from "context/userFormReducer";
+import { timeouts } from "globals";
+import { ModalOverlayStatuses } from "globals/interfaces";
 import React from "react";
-import { terminateUser } from "services";
-import {
-  logger,
-  wait
-} from "utils";
+import { terminateUser } from "services/terminateUser";
+import { wait } from "utils";
+import { logger } from "utils/logger";
 import { Checkbox } from "@mui/material";
 
-const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
+export const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
   const {
     handleClose,
     loading,
@@ -40,12 +38,11 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
   }
 
   const state = useAdminState();
-  const nNumber = state.userContext.pingIdentity?.sub;
+  const { nNumber } = state.userContext;
   const dispatch = useAdminDispatch();
   const form = useFormState();
-  const tritonWorker: any = state.workerContext.workers.find((w: any) => w.attributes.n_number === form.nNumber.value);
+  const setForm = useFormDispatch();
 
-  logger.log("TRITON WORKER", tritonWorker);
   const isWorkerDid = form.triton.didUser;
   const [requireForwardTo, setRequireForwardTo] = React.useState(false);
   const [forwardToError, setForwardToError] = React.useState(false);
@@ -71,8 +68,8 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
   };
 
   const handleDeleteUser = () => {
-    const tritonWorkerName = tritonWorker.attributes ? `${tritonWorker.attributes?.emp_first_name} ${tritonWorker.attributes?.emp_last_name}` : null;
-    const workerName = tritonWorkerName || tritonWorker.displayId || tritonWorker.DisplayName;
+    const tritonWorkerName = form.triton.attributes ? `${form.triton.attributes?.emp_first_name} ${form.triton.attributes?.emp_last_name}` : null;
+    const workerName = tritonWorkerName || form.triton.displayId || form.triton.DisplayName;
     const termDate = new Date().toISOString().split("T")[0];
 
     updateLoading({
@@ -84,14 +81,14 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
     let resultMessage;
 
     const body: any = {
-      nNumber: tritonWorker.attributes?.n_number,
-      workerSid: tritonWorker.sid,
-      email: tritonWorker.attributes?.email_address || tritonWorker.attributes?.email,
-      firstName: tritonWorker.attributes?.emp_first_name,
-      lastName: tritonWorker.attributes?.emp_last_name,
+      nNumber: form.triton.attributes?.n_number,
+      workerSid: form.triton.sid,
+      email: form.triton.attributes?.email_address || form.triton.attributes?.email,
+      firstName: form.triton.attributes?.emp_first_name,
+      lastName: form.triton.attributes?.emp_last_name,
       systems: [],
       terminationDate: termDate,
-      inactiveForwardTo: isWorkerDid ? tritonWorker.inactiveForwardTo : ""
+      inactiveForwardTo: isWorkerDid ? form.triton.inactiveForwardTo.value : ""
     };
     if (profilesToDelete.triton) {
       body.systems.push("TRITON");
@@ -101,19 +98,19 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
     }
 
     terminateUser(body)
-      .then(response => {
+      .then(() => {
         resultMessage = `Successfully marked Triton worker for delete in ${body.systems}`;
         const overlayMessage = "Successfully Deleted User";
 
         logger.info(resultMessage, {
           nNumber,
-          workerSid: tritonWorker.sid,
-          userNNumber: tritonWorker.attributes?.n_number
+          workerSid: form.triton.sid,
+          userNNumber: form.triton.attributes?.n_number
         });
 
         dispatch({
           type: "deleteWorker",
-          payload: tritonWorker.sid
+          payload: form.triton.sid
         });
         updateLoading({
           ...loading,
@@ -149,7 +146,7 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
               if (typeof r === "object") {
                 const body = JSON.parse(r.body) || "";
                 if (body)
-                  resultDivs.push(<div>{body.message}</div>);
+                { resultDivs.push(<div>{body.message}</div>); }
               } else {
                 resultDivs.push(<div>{r}</div>);
               }
@@ -160,10 +157,15 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
           logger.error(results, {
             error,
             nNumber,
-            tritonWorker
+            tritonWorker: form.triton
           });
 
           if (results[0]?.statusCode === 200) {
+            dispatch({
+              type: "deleteWorker",
+              payload: form.triton.sid
+            });
+
             updateLoading({
               ...loading,
               overlayMessage: resultMessage,
@@ -214,7 +216,10 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
           {!forwardToError &&
             <>
               <Text>Confirm Delete to allow the system to identify the forward to option for this DID user.</Text>
-              <UserFormButton style={{ width: "400px", alignSelf: "center" }} onClick={() => setRequireForwardTo(!requireForwardTo)} >
+              <UserFormButton style={{
+                width: "400px",
+                alignSelf: "center"
+              }} onClick={() => setRequireForwardTo(!requireForwardTo)} >
                 Manually select forward to option
               </UserFormButton>
             </>
@@ -224,18 +229,15 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
               label={forwardToError ? "The system failed to identify the DID's forward to option, please manually select it and try again." : "This user has a direct dial number. Please choose a forward to option before confirming."}
               updateForwardTo={
                 (inactiveForwardTo: string) => {
-                  tritonWorker.inactiveForwardTo = inactiveForwardTo;
-                  if (inactiveForwardTo) {
-                    setRequireForwardTo(false);
-                  } else {
-                    setRequireForwardTo(true);
-                  }
+                  setForm({
+                    type: userFormActions.UPDATE_INACTIVE_FORWARD_TO,
+                    payload: inactiveForwardTo
+                  });
                 }
               }
             />
           }
         </>
-
         : null
       }
       <ButtonWrapper>
@@ -243,7 +245,7 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
           Close
         </UserFormButton>
         <UserFormButton
-          disabled={requireForwardTo}
+          disabled={requireForwardTo && !form.triton.inactiveForwardTo.value}
           onClick={handleDeleteUser}
         >
           Confirm Delete
@@ -252,5 +254,3 @@ const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
     </DeleteTritonUserWrapper>
   );
 };
-
-export default DeleteTritonUser;

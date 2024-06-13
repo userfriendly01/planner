@@ -1,9 +1,13 @@
 import {
   initialState,
   reducer
-} from "context";
+} from "../reducers/reducer";
 import { skillsList } from "testUtils";
-import { formatSkillGroups } from "utils";
+import { formatSkillGroups } from "utils/skillsUtils";
+
+jest.mock("utils/skillsUtils", () => ({
+  formatSkillGroups: jest.fn()
+}));
 
 describe("reducer", () => {
   describe("invalid action", () => {
@@ -16,12 +20,84 @@ describe("reducer", () => {
       expect(result).toBe(initialState);
     });
   });
+  describe("setLoadingWorkers", () => {
+    test("should set workers loading boolean", () => {
+      const payload = true;
+      const action = {
+        type: "setLoadingWorkers",
+        payload
+      };
+      const result = reducer(initialState, action);
+      expect(result.workerContext.isLoading).toEqual(true);
+    });
+  });
+  describe("loadPaginatedResults", () => {
+    describe("type === UMManager", () => {
+      test("should set managers to page results", () => {
+        const payload = {
+          type: "UMManager",
+          results: [
+            { name: "I'm a manager" }
+          ]
+        };
+        const action = {
+          type: "loadPaginatedResults",
+          payload
+        };
+        const testState = {
+          ...initialState,
+          managerContext: {
+            managers: [
+              { name: "I'm a control freak" }
+            ]
+          }
+        };
+        const result = reducer(testState, action);
+        expect(result.managerContext.managers).toEqual([
+          { name: "I'm a control freak" },
+          { name: "I'm a manager" }
+        ]);
+      });
+    });
+    describe("type === UMOffice", () => {
+      test("should set offices to page results", () => {
+        const payload = {
+          type: "UMOffice",
+          results: [
+            { name: "I'm an office" }
+          ]
+        };
+        const action = {
+          type: "loadPaginatedResults",
+          payload
+        };
+        const result = reducer(initialState, action);
+        expect(result.officeContext.offices).toEqual(payload.results);
+      });
+    });
+    describe("type === UMUser", () => {
+      test("should set workers to page results", () => {
+        const payload = {
+          type: "UMUser",
+          results: [
+            { name: "I'm a worker!" }
+          ]
+        };
+        const action = {
+          type: "loadPaginatedResults",
+          payload
+        };
+        const result = reducer(initialState, action);
+        expect(result.workerContext.workers).toEqual(payload.results);
+      });
+    });
+  });
   describe("addManager", () => {
     test("should add to the managers array", () => {
       const payload = {
         manager_first_name: "joe",
         manager_last_name: "smith",
-        manager_n_number: "n1234657"
+        manager_n_num: "n1234657"
       };
       const action = {
         type: "addManager",
@@ -82,10 +158,10 @@ describe("reducer", () => {
         type: "addOffice",
         payload
       };
-      const initialOffices = new Map([["024", {
+      const initialOffices = [{
         office_nme: "Initial Office",
         office_num: "024"
-      }]]);
+      }];
       const testState = {
         ...initialState,
         officeContext: {
@@ -93,7 +169,7 @@ describe("reducer", () => {
         }
       };
       const result = reducer(testState, action);
-      expect(result.officeContext.offices).toEqual(initialOffices.set(payload.office_num, payload));
+      expect(result.officeContext.offices).toEqual(initialOffices.concat([payload]));
     });
   });
   describe("addWorkers", () => {
@@ -167,49 +243,6 @@ describe("reducer", () => {
       };
       const result = reducer(testState, action);
       expect(result.workerContext.workers).toEqual([workerToKeep, someOtherWorker]);
-    });
-  });
-  describe("loadManager", () => {
-    test("should initialize or reinitialize the managers array", () => {
-      const payload = [
-        {
-          manager_first_name: "joe",
-          manager_last_name: "smith",
-          manager_n_number: "n1234657"
-        }
-      ];
-      const action = {
-        type: "loadManagers",
-        payload
-      };
-      const result = reducer(initialState, action);
-      expect(result.managerContext.managers).toEqual(payload);
-    });
-  });
-  describe("loadOffices", () => {
-    test("should initialize a map from the offices map sent in", () => {
-      const payload = new Map([
-        [
-          "A1",
-          {
-            office_nme: "Test1",
-            office_num: "A1"
-          }
-        ],
-        [
-          "A2",
-          {
-            office_nme: "Test2",
-            office_num: "A2"
-          }
-        ]
-      ]);
-      const action = {
-        type: "loadOffices",
-        payload
-      };
-      const result = reducer(initialState, action);
-      expect(result.officeContext.offices).toEqual(payload);
     });
   });
   describe("loadCalabrioOrg", () => {
@@ -329,26 +362,6 @@ describe("reducer", () => {
       };
       const result = reducer(initialState, action);
       expect(result.calabrioContext.roles).toEqual(payload);
-    });
-  });
-  describe("loadWorkers", () => {
-    test("should update wfmOrg only", () => {
-      const payload = [
-        {
-          id: 1,
-          name: "Administrator"
-        },
-        {
-          id: 2,
-          name: "Agent"
-        }
-      ];
-      const action = {
-        type: "loadWorkers",
-        payload
-      };
-      const result = reducer(initialState, action);
-      expect(result.workerContext.workers).toEqual(payload);
     });
   });
   describe("updateWfmOrg", () => {
@@ -597,16 +610,19 @@ describe("reducer", () => {
   describe("loadUserData", () => {
     test("should initialize or reinitialize the user data", () => {
       const payload = {
-        name: "Test",
-        nNum: "n1234345",
-        groupsArr: ["developers"]
+        isAdmin: false,
+        profileId: 10,
+        nNumber: "n1234345"
       };
       const action = {
         type: "loadUserData",
         payload
       };
       const result = reducer(initialState, action);
-      expect(result.userContext).toEqual(payload);
+      expect(result.userContext).toEqual({
+        ...initialState.userContext,
+        ...payload
+      });
     });
   });
   describe("resettingSkills", () => {

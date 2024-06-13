@@ -1,10 +1,8 @@
 import UserCard from "../UserCard";
 import { AccountBox } from "@mui/icons-material";
-import { useAdminState } from "context";
 import React from "react";
 import {
   expectMockedComponent,
-  initialTestState,
   render,
   setupMockedComponents
 } from "testUtils";
@@ -18,17 +16,19 @@ jest.mock("@mui/icons-material", () => ({
   Close: jest.fn()
 }));
 
-jest.mock("context", () => ({
-  useAdminState: jest.fn()
+jest.mock("@azure/msal-react", () => ({
+  useMsal: jest.fn().mockReturnValue({
+    instance: {
+      getActiveAccount: jest.fn().mockReturnValue({
+        name: "John Doe"
+      })
+    }
+  })
 }));
-
-const state = initialTestState;
-state.userContext.pingIdentity.displayName = "John Doe";
 
 describe("<UserCard />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    useAdminState.mockReturnValue(state);
     setupMockedComponents({
       AccountBox
     });

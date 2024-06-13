@@ -1,21 +1,19 @@
-import SaveButton from "../SaveButton";
+import { SaveButton } from "../SaveButton";
 import { messageTypes } from "../../ClosedFlashMessage.Interfaces";
 import { UserFormButton } from "../../ClosedFlashMessage.Styles";
 import { ActionTypes } from "../../../Skills.Interfaces";
 import {
   useAdminState,
   useAdminDispatch
-} from "context";
-import { StyledButton } from "components";
-import {
-  ModalOverlayStatuses,
-  timeouts
-} from "globals";
+} from "context/appContext";
+import { StyledButton } from "components/StyledButton";
+import { ModalOverlayStatuses } from "globals/interfaces";
+import { timeouts } from "globals/index";
 import React from "react";
 import {
   updateFlashMessage,
   updateClosedMessage
-} from "services";
+} from "services/message";
 import {
   act,
   initialTestState,
@@ -24,16 +22,21 @@ import {
   skillsList,
   waitFor
 } from "testUtils";
-import { theme } from "globals";
+import { theme } from "globals/theme";
 import { ThemeProvider } from "styled-components";
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn(),
   useAdminDispatch: jest.fn()
 }));
 
-jest.mock("components", () => ({
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
+}));
+
+jest.mock("services/message", () => ({
+  updateFlashMessage: jest.fn(),
+  updateClosedMessage: jest.fn()
 }));
 
 jest.useFakeTimers();
@@ -44,7 +47,7 @@ const mockSetSaveResult = jest.fn();
 const mockSetTableState = jest.fn();
 const mockSetConfirmationModalOpts = jest.fn();
 const text = "I'm the new flash message.. save me!";
-const nNumber = "n0263786";
+const nNumber = "n1234567";
 const confirmationModalOpts = {
 
 };

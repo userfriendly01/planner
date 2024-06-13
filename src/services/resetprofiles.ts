@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import { apiPaths } from "globals";
-import { myAxios } from "utils";
+import { myAxios } from "utils/myAxios";
 
 export const fetchResetProfileDatadogLogs = async (nNumber: string): Promise<AxiosResponse> => {
   return await myAxios.get(apiPaths.GET_RESET_PROFILE_DATADOG_LOGS(nNumber));

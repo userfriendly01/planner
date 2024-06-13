@@ -1,10 +1,10 @@
 import React from "react";
-import CallRecordingScope from "../CallRecordingScope";
-import { StyledButton } from "components";
+import { CallRecordingScope } from "usermanagement/CallRecordingScope";
+import { StyledButton } from "components/StyledButton";
 import {
   useFormState,
   useFormDispatch
-} from "context";
+} from "context/appContext";
 import {
   Checkbox,
   TextField
@@ -16,7 +16,7 @@ import {
   render,
   setupMockedComponents
 } from "testUtils";
-import { theme } from "globals";
+import { theme } from "globals/theme";
 import { ThemeProvider } from "styled-components";
 
 jest.mock("@mui/material", () => ({
@@ -24,15 +24,14 @@ jest.mock("@mui/material", () => ({
   TextField: jest.fn()
 }));
 
-jest.mock("components", () => ({
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn(),
   useFormState: jest.fn(),
-  useFormDispatch: jest.fn(),
-  userFormActions: jest.requireActual("context").userFormActions
+  useFormDispatch: jest.fn()
 }));
 
 const mockSetForm = jest.fn();

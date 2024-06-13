@@ -1,33 +1,36 @@
-import { useAdminState } from "context";
+import { useAdminState } from "context/appContext";
 import * as utils from "../processingUtils";
-import {
-  getCalabrioUsers,
-  getManagers,
-  wfmActivateExternalLogon
-} from "services";
+import { listUMUsers } from "services/user";
+import { getCalabrioUsers } from "services/calabrio";
+import { listUMManagers } from "services/manager";
+import { wfmActivateExternalLogon } from "services/wfmActivateExternalLogon";
 import {
   act,
   waitFor,
   initialTestState
 } from "testUtils";
-import {
-  formatManagersResponse,
-  formatWorkerResponse,
-  myAxios,
-  getCalabrioWfmOrg,
-  logger
-} from "utils";
+import { logger } from "utils/logger";
+import { getCalabrioWfmOrg } from "utils/calabrioUtils";
 import * as XLSX from "xlsx";
 
+jest.mock("utils/calabrioUtils",() => ({
+  getCalabrioWfmOrg: jest.fn()
+}));
 
-jest.mock("utils",() => ({
-  formatManagersResponse: jest.fn(),
-  formatWorkerResponse: jest.fn(),
-  myAxios: {
-    get: jest.fn()
-  },
-  getCalabrioWfmOrg: jest.fn(),
-  logger: jest.requireActual("utils").logger
+jest.mock("services/user",() => ({
+  listUMUsers: jest.fn()
+}));
+
+jest.mock("services/calabrio",() => ({
+  getCalabrioUsers: jest.fn()
+}));
+
+jest.mock("services/manager",() => ({
+  listUMManagers: jest.fn()
+}));
+
+jest.mock("services/wfmActivateExternalLogon",() => ({
+  wfmActivateExternalLogon: jest.fn()
 }));
 
 jest.mock("xlsx",() => ({
@@ -37,7 +40,7 @@ jest.mock("xlsx",() => ({
   }
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
 }));
 
@@ -53,20 +56,14 @@ describe("updateManagerUserState", () => {
       manager: "Bill"
     }];
     test("dispatch is called, promise resolves", async () => {
-      getManagers.mockResolvedValue(response);
-      formatManagersResponse.mockReturnValue(response);
+      listUMManagers.mockResolvedValue(response);
       await utils.updateManagerUserState(mockDispatch);
-      expect(getManagers).toHaveBeenCalledTimes(1);
-      expect(mockDispatch).toHaveBeenCalledTimes(1);
-      expect(mockDispatch).toHaveBeenCalledWith({
-        type: "loadManagers",
-        payload: response
-      });
+      expect(listUMManagers).toHaveBeenCalledTimes(1);
     });
   });
   describe("get managers fails", () => {
     test("dispatch is not called, promise resolves", async () => {
-      getManagers.mockRejectedValue("Aww");
+      listUMManagers.mockRejectedValue("Aww");
       await utils.updateManagerUserState(mockDispatch);
       expect(logger.error).toHaveBeenCalledTimes(1);
       expect(logger.error.mock.calls[0][0]).toContain("Failed to update manager state after bulk upload");
@@ -81,28 +78,18 @@ describe("updateTritonUserState", () => {
     jest.resetAllMocks();
   });
   describe("get workers succeeds", () => {
-    const response = {
-      data: [{
-        attributes: {
-          yas: "girl"
-        }
-      }]
-    };
-    test("dispatch is called, promise resolves", async () => {
-      myAxios.get.mockResolvedValue(response);
-      formatWorkerResponse.mockReturnValue(response.data);
+    test("listUMUsers is called, promise resolves", async () => {
+
       await utils.updateTritonUserState(null, mockDispatch);
-      expect(myAxios.get).toHaveBeenCalledTimes(1);
-      expect(mockDispatch).toHaveBeenCalledTimes(1);
-      expect(mockDispatch).toHaveBeenCalledWith({
-        type: "loadWorkers",
-        payload: response.data
-      });
+
+      expect(listUMUsers).toHaveBeenCalledWith(mockDispatch);
+      expect(listUMUsers).toHaveBeenCalledTimes(1);
     });
   });
   describe("get workers fails", () => {
-    myAxios.get.mockRejectedValue("Aww");
     test("dispatch is not called, promise resolves", async () => {
+      listUMUsers.mockRejectedValue("Waaaaaaaaaaa");
+
       await utils.updateTritonUserState(null, mockDispatch);
       expect(logger.error).toHaveBeenCalledTimes(1);
       expect(logger.error.mock.calls[0][0]).toContain("Failed to update triton user state after bulk upload");

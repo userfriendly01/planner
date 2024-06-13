@@ -29,34 +29,33 @@ import {
 } from "../FlowFieldsConfig";
 import {
   CustomToast
-} from "components";
+} from "components/CustomToast";
 import {
-  BrandName,
   FLOW_MASTER_DATA,
   callFlowName,
   callFlowType,
   checkGreetingMessageRegExp,
   flowDropDownList,
   flowType,
-  initializedAlertBar,
   languageOffer,
   nextActionType,
-  readWriteAccess,
   tfnRoutingGroup,
   userDestination
-} from "utils";
-import ComponentControl from "components/core/SharedComponents/ComponentControl";
+} from "utils/alohaFlowUtils";
 import {
-  AlertBarProps, FormValidationRule
-} from "utils/interfaces";
+  BrandName,
+  initializedAlertBar,
+  readWriteAccess
+} from "utils/alohaConfigUtils";
+import { ComponentControl } from "components/ComponentControl";
 import {
   deleteFlowRule,
   deleteOppositeRows,
   updateFlowDB
 } from "../../Utils/FlowTableServiceUtil";
 import {
-  AzureSPA, DuplicateCheck
-} from "globals";
+  AzureSPA, AlertBarProps, FormValidationRule, DuplicateCheck
+} from "globals/interfaces";
 
 interface EditFlowComponentProps {
     isOpen: boolean;
@@ -79,7 +78,7 @@ export const EditFlow = ({
   const [flowRule, setFlowRule] = useState({ ...initRule });
   const [dropDownValues, setDropDownValues] = useState(flowDropDownList);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
-  const enableFlow = useMemo<boolean>(() => readWriteAccess(matchedGroups,"aloha-flow"), []);
+  const enableFlow = useMemo<boolean>(() => readWriteAccess(matchedGroups, "FlowReadWrite"), []);
   const originalRow = selectedRow ? JSON.parse(JSON.stringify(selectedRow)) : undefined;
 
   useEffect(() => {
@@ -145,7 +144,7 @@ export const EditFlow = ({
           }
         };
         isValidForm = false;
-        setFlowRule(flowRule => ({
+        setFlowRule((flowRule: any) => ({
           ...flowRule,
           ...newFlowRule
         }));
@@ -341,7 +340,7 @@ export const EditFlow = ({
             variant="contained"
             value="Save"
             color="primary"
-            disabled = {enableFlow}
+            disabled = {!enableFlow}
             sx={{ marginRight: 2 }}
             aria-label="saveFlowRuleButton"
             onClick={() => handleOnSave()}
@@ -352,7 +351,7 @@ export const EditFlow = ({
             variant="contained"
             value="Clone"
             color="primary"
-            disabled = {enableFlow}
+            disabled = {!enableFlow}
             sx={{ marginRight: 2 }}
             aria-label="cloneFlowRuleButton"
             onClick={() => handleClone()}
@@ -363,7 +362,7 @@ export const EditFlow = ({
             variant="contained"
             color="error"
             value="Delete"
-            disabled = {enableFlow }
+            disabled = {!enableFlow }
             sx={{ marginRight: 2 }}
             aria-label="deleteFlowRuleButton"
             onClick={() => handleOnDelete()}

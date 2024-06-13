@@ -1,40 +1,45 @@
 import {
-  createUser,
   createCalabrioTeam,
   createCalabrioUser,
   createCalabrioWFMPerson,
   getCalabrioUser,
-  updateCalabrioUser,
-  updateUser,
-  addManager
-} from "services";
+  updateCalabrioUser
+} from "services/calabrio";
+import {
+  createUser,
+  updateUser
+} from "services/user";
+import { addManager } from "services/manager";
 import {
   Template,
   Templates
-} from "../BulkChanges.Interfaces";
+} from "usermanagement/BulkChanges.Interfaces";
 import {
   cleanupField,
-  checkConflictingCalabrioUsers,
-  checkIfConflictingWFMPeople,
   formatErrorMessage,
+  toProperCase
+} from "usermanagement/formatUtils";
+import {
   handleWfmExternalLogon,
-  toProperCase,
   updateCalabrioUserState,
   updateTritonUserState,
   updateWFMPersonState,
   updateManagerUserState
-} from "../BulkUtils";
+} from "usermanagement/processingUtils";
 import {
-  getTargetProfile,
-  logger
-} from "utils";
+  checkConflictingCalabrioUsers,
+  checkIfConflictingWFMPeople
+} from "usermanagement/validationUtils";
+import { getTargetProfile } from "utils/usermanagementUtils";
+import { logger } from "utils/logger";
 import {
   FIELDS,
   isDidUser
-} from "../BulkTemplates";
+} from "usermanagement/fields";
 import {
-  AppState
-} from "globals";
+  AppState, UMManager
+} from "globals/interfaces";
+import { env } from "globals/index";
 
 const rejectPromise = (error: string, rowNumber: number) => {
   return Promise.reject(JSON.stringify({
@@ -47,7 +52,7 @@ const processCreateTritonUser = async (row: any, state: AppState) => {
   logger.log("**** TRITON RECORD PROCESSING", row);
 
   const rowNumber = row.rowNumber;
-  const nNumber = state.userContext?.pingIdentity?.sub;
+  const { nNumber } = state.userContext;
 
   try {
     const didFieldName = "Did User";
@@ -56,21 +61,18 @@ const processCreateTritonUser = async (row: any, state: AppState) => {
     const body: any = {};
     if (didUser) {
       body.attributes = row.attributes;
-      body.activateEp = true;
-      body.alternateDid = row.directDialNum;
-      body.directDialNum = row.directDialNum;
+      body.did = row.did;
       body.zeroOutEnabled = row.zeroOutEnabled;
       body.selfServiceInd = row.selfServiceInd;
     } else {
       body.attributes = row.attributes;
-      body.activateEp = false;
     }
 
     const profile = getTargetProfile(state.profileContext.profiles, body.attributes.profile_id);
     body.operatingUnitSid = profile?.operating_unit_sid;
 
     const res = await createUser(body);
-    const workerSid = res.workerSid;
+    const workerSid = res.sid;
 
     logger.log("TRITON RESPONSE FROM CREATE USER", res);
 
@@ -102,7 +104,7 @@ const processCreateCalabrioUser = async (row: any, state: AppState) => {
   logger.log("****CALABRIO RECORD PROCESSING for", row);
 
   const rowNumber = row.rowNumber;
-  const nNumber = state.userContext?.pingIdentity?.sub;
+  const { nNumber } = state.userContext;
 
   try {
     await checkConflictingCalabrioUsers(row, rowNumber, state.calabrioContext.users);
@@ -150,7 +152,7 @@ const processWFMCreateUser = async (row: any, state: AppState) => {
   logger.info("****WFM RECORD PROCESSING for", row);
 
   const rowNumber = row.rowNumber;
-  const nNumber = state.userContext?.pingIdentity?.sub;
+  const { nNumber } = state.userContext;
 
   try {
     const hasPersonConflict = checkIfConflictingWFMPeople(row, state);
@@ -196,8 +198,7 @@ const processWFMCreateUser = async (row: any, state: AppState) => {
 
     // completely optional
     body.OptionalColumns = row.wfmOptionalColumns;
-    const environment = state.userContext.pingIdentity.environment;
-    if (environment === "production") {
+    if (env.APP_ENV === "production") {
       const result = await createCalabrioWFMPerson(body);
       row.Id = result?.data?.PersonId;
 
@@ -240,7 +241,7 @@ const processWFMCreateUser = async (row: any, state: AppState) => {
 const processCreateManager = async (row: any, state: AppState) => {
   logger.log("****MANAGER RECORD PROCESSING for", row);
   const rowNumber = row.rowNumber;
-  const nNumber = state.userContext?.pingIdentity?.sub;
+  const { nNumber } = state.userContext;
 
   try {
     const managerNNumberFieldName = "Manager N Number";
@@ -280,11 +281,11 @@ const processCreateManager = async (row: any, state: AppState) => {
     // add manager
     const body: any = {};
 
-    body.manager_first_nme = row.attributes.manager_first_name;
-    body.manager_last_nme = row.attributes.manager_last_name;
+    body.manager_first_name = row.attributes.manager_first_name;
+    body.manager_last_name = row.attributes.manager_last_name;
     body.manager_n_num = managerNNumberField;
     body.profile_id = row.attributes.profile_id;
-    body.calabrio_team_ids = JSON.stringify([row.groupId]);
+    body.calabrio_team_ids = [row.groupId];
 
     await addManager(body);
 
@@ -311,7 +312,7 @@ const processCreateManager = async (row: any, state: AppState) => {
 
 const processUpdateWorkerAttribute = async (row: any, template: Template, state: AppState) => {
   const rowNumber = row.rowNumber;
-  const nNumber = state.userContext?.pingIdentity?.sub;
+  const { nNumber } = state.userContext;
 
   try {
     const key = template.data.key;
@@ -386,7 +387,7 @@ const processUpdateWorkerAttribute = async (row: any, template: Template, state:
 
 const processUpdateManager = async (row: any, template: Template, state: AppState) => {
   const rowNumber = row.rowNumber;
-  const nNumber = state.userContext?.pingIdentity?.sub;
+  const { nNumber } = state.userContext;
 
   try {
     const userNNumber = row.attributes.n_number;
@@ -397,14 +398,14 @@ const processUpdateManager = async (row: any, template: Template, state: AppStat
     let calabrioBody: any = {};
     let calabrioFunction: any = () => Promise.resolve("Bypassing Calabrio Team Change, not selected");
 
-    const managerObject = state.managerContext.managers.find((m: any) => m.manager_n_number && cleanupField(m.manager_n_number, "string") === managerNNumber);
+    const managerObject = state.managerContext.managers.find((m: UMManager) => m.manager_n_num && cleanupField(m.manager_n_num, "string") === managerNNumber);
     if (!managerObject) {
       return rejectPromise(`${managerNNumber} is not a valid manager nNumber for row ${rowNumber}`, rowNumber);
     } else {
       tritonBody.attributes = {
         manager_first_name: managerObject.manager_first_name,
         manager_last_name: managerObject.manager_last_name,
-        manager_n_number: managerObject.manager_n_number,
+        manager_n_number: managerObject.manager_n_num,
         manager: `${managerObject.manager_first_name} ${managerObject.manager_last_name}`
       };
     }
@@ -474,7 +475,7 @@ const processUpdateManager = async (row: any, template: Template, state: AppStat
 
 const processUpdateDefaultSkills = async (row: any, template: Template, state: AppState) => {
   const rowNumber = row.rowNumber;
-  const nNumber = state.userContext?.pingIdentity?.sub;
+  const { nNumber } = state.userContext;
 
   try {
     const workerSid = row.workerSid;
@@ -553,7 +554,7 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: A
 
 const processUpdateCallerStates = async (row: any, template: Template, state: AppState) => {
   const rowNumber = row.rowNumber;
-  const nNumber = state.userContext?.pingIdentity?.sub;
+  const { nNumber } = state.userContext;
   const workerSid = row.workerSid;
 
   try {
@@ -561,7 +562,7 @@ const processUpdateCallerStates = async (row: any, template: Template, state: Ap
     const selectedCallerStates: [] = template.data.value;
     const option = template.data.option;
 
-    const currentCallerStates = row.attributes.routing?.callerStates || [];
+    const currentCallerStates = row.attributes.routing?.caller_states || [];
     let combinedCallerStates;
 
     if (option.value === "ADD") {
@@ -579,7 +580,7 @@ const processUpdateCallerStates = async (row: any, template: Template, state: Ap
       attributes: {
         routing: {
           ...existingRouting,
-          callerStates: finalCallerStates.sort() // It's only polite to keep them in order
+          caller_states: finalCallerStates.sort() // It's only polite to keep them in order
         }
       }
     };
@@ -609,8 +610,8 @@ const processSyncHrAttributes = async (row: any, template: Template, state: AppS
   const nNumber = row["N Number"];
   try {
     let syncNeeded = false;
-    let originalAttributes = row.originalWorker.attributes || {}
-    let hrAttributes = row.attributes || {}
+    const originalAttributes = row.originalWorker.attributes || {};
+    const hrAttributes = row.attributes || {};
 
     const doesFieldMatch = (field: string) => {
       if (cleanupField(originalAttributes[field], "string") !== cleanupField(hrAttributes[field], "string")) {
@@ -632,7 +633,7 @@ const processSyncHrAttributes = async (row: any, template: Template, state: AppS
     doesFieldMatch("full_name");
 
     delete row.originalWorker;
-    let message = '';
+    let message = "";
     if (syncNeeded) {
       await updateUser(row.workerSid, { attributes: hrAttributes });
       message = `Successfully synced worker for row ${rowNumber}. ${row.workerSid} : ${nNumber}.`;

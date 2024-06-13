@@ -1,11 +1,11 @@
 import React from "react";
-import { Dropdown } from "components";
-import { getOperatingUnits } from "services";
-import { OperatingUnit } from "globals";
+import { Dropdown } from "components/Dropdown";
+import { getOperatingUnits } from "services/operatingUnits";
+import { OperatingUnit } from "globals/interfaces";
 import { ProfileOperatingUnitFieldProps } from "./ProfileEntryForm.Interfaces";
-import { logger } from "utils";
+import { logger } from "utils/logger";
 
-const ProfileOperatingUnitField = (props: ProfileOperatingUnitFieldProps) => {
+export const ProfileOperatingUnitField = (props: ProfileOperatingUnitFieldProps) => {
 
   const { setOperatingUnit } = props;
 
@@ -51,5 +51,3 @@ const ProfileOperatingUnitField = (props: ProfileOperatingUnitFieldProps) => {
     </div>
   );
 };
-
-export default ProfileOperatingUnitField;

@@ -1,6 +1,5 @@
 import React from "react";
-import SkillsTable from "../SkillsTable";
-
+import { SkillsTable } from "../SkillsTable";
 import {
   CustomTableHeader,
   CustomTableRow,
@@ -19,24 +18,13 @@ import {
 } from "testUtils";
 
 jest.mock("@mui/icons-material", () => ({
-  Circle: jest.fn(),
-  Close: jest.fn(),
-  CloseRounded: jest.fn(),
-  AccountBox: jest.fn(),
-  Edit: jest.fn(),
-  Delete: jest.fn(),
-  InfoOutlined: jest.fn()
+  Circle: jest.fn()
 }));
 
 jest.mock("@mui/material", () => ({
   Checkbox: jest.fn(),
-  TextField: jest.fn(),
   Button: jest.fn(),
-  Paper: jest.fn(),
-  Tabs: jest.fn(),
-  Tab: jest.fn(),
-  Tooltip: jest.fn(),
-  Divider: jest.fn()
+  Tooltip: jest.fn()
 }));
 
 jest.mock("@mui/x-data-grid", () => ({

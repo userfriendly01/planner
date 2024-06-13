@@ -2,32 +2,24 @@ import {
   Label,
   IconWrapper,
   Wrapper
-} from "./ManagerDropdown.Styles";
-import {
-  ManagerModal,
-  ManagerDelete,
-  Dropdown
-} from "components";
+} from "usermanagement/ManagerDropdown.Styles";
+import { ManagerModal } from "usermanagement/ManagerModal";
+import { ManagerDelete } from "usermanagement/ManagerDelete";
+import { Dropdown } from "components/Dropdown";
 import {
   useAdminState,
   useAdminDispatch
-} from "context";
+} from "context/appContext";
 import React, { useState } from "react";
-import { sortManagersByName } from "utils";
+import { sortManagersByName } from "utils/_sortUtils";
 import {
   Edit,
   Delete
 } from "@mui/icons-material";
 import { Modal } from "@mui/material";
+import { DropdownOption } from "globals/interfaces";
 
-export interface DropdownOption {
-  label: string,
-  value: any
-}
-
-const ManagerDropdown = () => {
-
-
+export const ManagerDropdown = () => {
   const state = useAdminState();
   const filterBy = state.userManagementTableFilters.managerFilter;
   const dispatch = useAdminDispatch();
@@ -42,12 +34,12 @@ const ManagerDropdown = () => {
   };
 
   const handleEditManager = async (option: DropdownOption) => {
-    setSelectedManager(managers.find(manager => manager.manager_n_number === option.value));
+    setSelectedManager(managers.find(manager => manager.manager_n_num === option.value));
     setIsManagerModalOpen(true);
   };
 
   const handleOpenDeleteManager = async (option: DropdownOption) => {
-    setSelectedManager(managers.find(manager => manager.manager_n_number === option.value));
+    setSelectedManager(managers.find(manager => manager.manager_n_num === option.value));
     setIsManagerDeleteOpen(true);
   };
 
@@ -71,8 +63,8 @@ const ManagerDropdown = () => {
       value: "divider"
     },
     ...sortedManagers.map(manager => ({
-      label: `${manager.manager_first_name} ${manager.manager_last_name} | ${manager.manager_n_number}`,
-      value: manager.manager_n_number
+      label: `${manager.manager_first_name} ${manager.manager_last_name} | ${manager.manager_n_num}`,
+      value: manager.manager_n_num
     }))
   ];
 
@@ -141,5 +133,3 @@ const ManagerDropdown = () => {
     </Wrapper>
   );
 };
-
-export default ManagerDropdown;

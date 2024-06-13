@@ -1,15 +1,12 @@
 import React from "react";
 import { ProfileQueuesSelectFieldProps } from "./ProfileEntryForm.Interfaces";
-import { Dropdown } from "components";
-import { useAdminState } from "context";
+import { Dropdown } from "components/Dropdown";
+import { useAdminState } from "context/appContext";
+import { logger } from "utils/logger";
+import { sortQueueByName } from "utils/_sortUtils";
 import {
-  logger,
-  sortQueueByName
-} from "utils";
-import {
-  AggregateQueue,
-  Skill
-} from "globals";
+  AggregateQueue, Skill
+} from "globals/interfaces";
 import { Tooltip } from "@mui/material";
 import {
   IconButtonWrapper,
@@ -24,9 +21,9 @@ import {
   Add,
   Delete
 } from "@mui/icons-material";
-import { getAggregateQueuesType } from "services";
+import { getAggregateQueuesType } from "services/aggregateQueues";
 
-const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
+export const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
   const {
     transferQueues,
     setQueueList
@@ -135,5 +132,3 @@ const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
     </ProfileDropdownControlWrapper>
   );
 };
-
-export default ProfileQueuesSelectField;

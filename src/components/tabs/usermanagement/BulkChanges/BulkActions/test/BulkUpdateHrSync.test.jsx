@@ -1,13 +1,8 @@
-import BulkUpdateHrSync from "../BulkUpdateHrSync";
-import {
-  getUpdateTemplates,
-  availableAttributes
-} from "../../BulkTemplates";
-import {
-  CustomInput,
-  Dropdown,
-  PhoneNumberInput
-} from "components";
+import { BulkUpdateHrSync } from "../BulkUpdateHrSync";
+import { getUpdateTemplates } from "usermanagement/templates";
+import { CustomInput } from "components/CustomInput";
+import { Dropdown } from "components/Dropdown";
+import { PhoneNumberInput } from "components/PhoneNumberInput";
 import React from "react";
 import {
   act,
@@ -15,16 +10,25 @@ import {
   render,
   setupMockedComponents
 } from "testUtils";
-import { useAdminState } from "context";
+import { useAdminState } from "context/appContext";
 
-jest.mock("components", () => ({
-  CustomInput: jest.fn(),
-  Dropdown: jest.fn(),
-  PhoneNumberInput: jest.fn(),
+jest.mock("components/CustomInput", () => ({
+  CustomInput: jest.fn()
+}));
+
+jest.mock("components/Dropdown", () => ({
+  Dropdown: jest.fn()
+}));
+
+jest.mock("components/PhoneNumberInput", () => ({
+  PhoneNumberInput: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
 }));
 
@@ -75,7 +79,7 @@ describe("<BulkUpdateAttributes />", () => {
             ...p,
             value: p.profile_id,
             label: `${p.profile_nme} - ${p.profile_id}`
-          }
+          };
         }));
       });
     });
@@ -118,7 +122,7 @@ describe("<BulkUpdateAttributes />", () => {
             }
           },
           "rowNumber": 1,
-          "workerSid": undefined,
+          "workerSid": undefined
         }]);
       });
     });
@@ -162,7 +166,7 @@ describe("<BulkUpdateAttributes />", () => {
             }
           },
           "rowNumber": 1,
-          "workerSid": undefined,
+          "workerSid": undefined
         }]);
       });
     });

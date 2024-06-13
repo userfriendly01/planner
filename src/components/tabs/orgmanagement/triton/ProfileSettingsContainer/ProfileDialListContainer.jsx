@@ -1,21 +1,17 @@
-import {
-  DialListTable,
-  ProfileDropDown
-} from "components";
-import { useAdminState } from "context";
-import { apiPaths } from "globals";
+import { DialListTable } from "orgmanagement/DialListTable";
+import { ProfileDropDown } from "orgmanagement/ProfileDropDown";
+import { useAdminState } from "context/appContext";
+import { apiPaths } from "globals/index";
 import React, { useState } from "react";
-import {
-  logger,
-  myAxios,
-  sortDialListEntriesByName
-} from "utils";
+import { sortDialListEntriesByName } from "utils/_sortUtils";
+import { myAxios } from "utils/myAxios";
+import { logger } from "utils/logger";
 import {
   ProfileSettingsContainerDiv,
   ProfileSettingsMessage
 } from "./ProfileSettingsContainer.Styles";
 
-const ProfileDialListContainer = () => {
+export const ProfileDialListContainer = () => {
   const initialProfileState = {
     dialList: [],
     message: "Please select a profile",
@@ -90,5 +86,3 @@ const ProfileDialListContainer = () => {
     </ProfileSettingsContainerDiv>
   );
 };
-
-export default ProfileDialListContainer;

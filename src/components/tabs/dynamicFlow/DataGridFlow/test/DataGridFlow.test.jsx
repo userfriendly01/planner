@@ -14,13 +14,11 @@ import {
 } from "testUtils";
 import DataGridFlow from "../DataGridFlow";
 import { PreviewModal } from "../../PreviewModal/PreviewModal";
-import { useAdminState } from "context";
+import { useAdminState } from "context/appContext";
 import { createFlowDataList } from "../../../dynamicFlow/PreviewModal/test/PreviewUtil.test";
 import {
   batchDynamicFlowCreate, queryDynamicFlowData
-} from "services";
-
-
+} from "services/flowTableService";
 
 jest.mock("@mui/x-data-grid",()=>({
   __esModule: true,
@@ -45,8 +43,13 @@ jest.mock("../../CustomActions/CustomFlowGridToolBar", () => ({
   CustomFlowGridToolBar: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
+}));
+
+jest.mock("services/flowTableService", () => ({
+  batchDynamicFlowCreate: jest.fn(),
+  queryDynamicFlowData: jest.fn()
 }));
 
 jest.mock("../../PreviewModal/PreviewModal", ()=>({

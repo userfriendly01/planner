@@ -1,6 +1,6 @@
-import ProfileOperatingUnitField from "../ProfileOperatingUnitField";
+import { ProfileOperatingUnitField } from "../ProfileOperatingUnitField";
 import React from "react";
-import { Dropdown } from "components";
+import { Dropdown } from "components/Dropdown";
 import {
   expectMockedComponent,
   render,
@@ -10,13 +10,16 @@ import {
   mockOperatingUnits,
   waitFor
 } from "testUtils";
-import { getOperatingUnits } from "services";
+import { getOperatingUnits } from "services/operatingUnits";
 import { act } from "react-dom/test-utils";
-import { logger } from "utils";
+import { logger } from "utils/logger";
 
-jest.mock("components", () => ({
-  __esModule: true,
+jest.mock("components/Dropdown", () => ({
   Dropdown: jest.fn()
+}));
+
+jest.mock("services/operatingUnits", () => ({
+  getOperatingUnits: jest.fn()
 }));
 
 getOperatingUnits.mockImplementation(() => { return Promise.resolve(mockOperatingUnits); });

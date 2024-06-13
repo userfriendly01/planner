@@ -12,10 +12,10 @@ import {
   GridCallbackDetails,
   useGridApiRef
 } from "@mui/x-data-grid";
-import { CustomToast } from "components";
+import { CustomToast } from "components/CustomToast";
 import {
   AzureSPA, DuplicateCheck
-} from "globals";
+} from "globals/interfaces";
 import React, {
   useEffect, useState
 } from "react";
@@ -29,28 +29,32 @@ import {
 import {
   CACHE_FILTER_FLOW,
   CALL_FLOW_PAGE_NO,
-  CALL_FLOW_PER_PAGE, downloadCSV,
+  CALL_FLOW_PER_PAGE,
+  getAdvanceFilter
+} from "utils/alohaFlowUtils";
+import {
+  downloadCSV,
   EXPORT_FILE_PREFIX,
-  getAdvanceFilter,
   initializedAlertBar
-} from "utils";
+} from "utils/alohaConfigUtils";
 import {
   AlertBarProps, FormValidationRule
-} from "utils/interfaces";
+} from "globals/interfaces";
 import {
   AddFlowFieldsConfigProps,
   CctSharedCallFlowDb, FlowAdvanceFilter, FlowStateVariables, PreviewModalAction
 } from "../AlohaFlow.Interfaces";
-import {
-  AddFlow, AdvanceSearchModal, CustomFlowGridToolBar, EditFlow
-} from "../CustomActions";
 import { flowFields } from "../CustomActions/FlowFieldsConfig";
+import { AddFlow } from "../CustomActions/AddFlow/AddFlow";
+import { AdvanceSearchModal } from "../CustomActions/AdvanceSearch/AdvanceSearch";
+import { CustomFlowGridToolBar } from "../CustomActions/CustomFlowGridToolBar";
+import { EditFlow } from "../CustomActions/EditFlow/EditFlow";
 import "./Grid.scss";
 import FlowGridColumnDef from "./GridColumnDef";
 import {
   getGridMasterData
 } from "./GridMaster";
-import { PreviewModal } from "../PreviewModal";
+import { PreviewModal } from "../PreviewModal/PreviewModal";
 
 const DataGridFlow = (props: AzureSPA): JSX.Element => {
   const {

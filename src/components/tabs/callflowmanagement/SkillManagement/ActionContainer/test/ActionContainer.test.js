@@ -1,9 +1,7 @@
-import ActionContainer from "../ActionContainer";
-import {
-  Dropdown,
-  MessageContainer,
-  SkillGroupInputContainer
-} from "components";
+import { ActionContainer } from "../ActionContainer";
+import { Dropdown } from "components/Dropdown";
+import { MessageContainer } from "callflowmanagement/MessageContainer";
+import { SkillGroupInputContainer } from "callflowmanagement/SkillGroupInputContainer";
 import React from "react";
 import {
   act,
@@ -17,10 +15,19 @@ import {
 } from "../../Skills.Interfaces";
 import { messageTypes } from "../../ClosedFlashMessage/ClosedFlashMessage.Interfaces";
 
-jest.mock("components", () => ({
-  Dropdown: jest.fn(),
-  MessageContainer: jest.fn(),
-  StyledButton: jest.fn(),
+jest.mock("components/Dropdown", () => ({
+  Dropdown: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
+  StyledButton: jest.fn()
+}));
+
+jest.mock("callflowmanagement/MessageContainer", () => ({
+  MessageContainer: jest.fn()
+}));
+
+jest.mock("callflowmanagement/SkillGroupInputContainer", () => ({
   SkillGroupInputContainer: jest.fn()
 }));
 

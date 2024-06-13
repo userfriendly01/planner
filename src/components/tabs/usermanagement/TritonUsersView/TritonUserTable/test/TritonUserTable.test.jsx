@@ -1,11 +1,11 @@
-import TritonUserTable from "../TritonUserTable";
-import { ModalOverlay } from "components";
+import { TritonUserTable } from "../TritonUserTable";
+import { ModalOverlay } from "components/ModalOverlay";
 import {
   useAdminDispatch,
   useAdminState,
-  useFormDispatch,
-  userFormActions
-} from "context";
+  useFormDispatch
+} from "context/appContext";
+import { userFormActions } from "context/userFormReducer";
 import React from "react";
 import {
   act,
@@ -14,10 +14,11 @@ import {
   render,
   setupMockedComponents
 } from "testUtils";
-import { formModes, theme } from "globals";
+import { formModes } from "globals";
+import { theme } from "globals/theme";
 import { useNavigate } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
-import { formatWorkerAttributeSkillsToHTML } from "utils";
+import { formatWorkerAttributeSkillsToHTML } from "utils/skillsUtils";
 import {
   Delete,
   Edit,
@@ -25,7 +26,7 @@ import {
 } from "@mui/icons-material";
 import { Switch } from "@mui/material";
 
-jest.mock("components", () => ({
+jest.mock("components/ModalOverlay", () => ({
   ModalOverlay: jest.fn()
 }));
 
@@ -33,14 +34,13 @@ jest.mock("react-router-dom", () => ({
   useNavigate: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminDispatch: jest.fn(),
   useAdminState: jest.fn(),
-  useFormDispatch: jest.fn(),
-  userFormActions: jest.requireActual("context").userFormActions
+  useFormDispatch: jest.fn()
 }));
 
-jest.mock("utils", () => ({
+jest.mock("utils/skillsUtils", () => ({
   formatWorkerAttributeSkillsToHTML: jest.fn()
 }));
 
@@ -111,7 +111,7 @@ describe("<TritonUserTable />", () => {
         expect(rendered.container).toHaveTextContent(w.attributes.emp_last_name);
         expect(rendered.container).toHaveTextContent(w.attributes.n_number);
         expect(rendered.container).toHaveTextContent(w.attributes.extension);
-        const profile = initialTestState.profileContext.profiles.find(p => p.profile_id === w.attributes.profile_id)
+        const profile = initialTestState.profileContext.profiles.find(p => p.profile_id === w.attributes.profile_id);
         if(profile){
           expect(rendered.container).toHaveTextContent(`${profile.profile_nme} - ${profile.profile_id}`);
           expect(rendered.container).toHaveTextContent(profile.operating_unit_nme);
@@ -155,6 +155,27 @@ describe("<TritonUserTable />", () => {
         });
       });
     });
+
+    describe("isLoading (workers) === true", () => {
+      beforeEach(() => {
+        useAdminState.mockReturnValue({
+          ...initialTestState,
+          workerContext: {
+            ...initialTestState.workerContext,
+            isLoading: true,
+            selectedWorkers: []
+          }
+        });
+      });
+      test("ModalOverlay is rendered", () => {
+        renderComponent();
+        expect(ModalOverlay.mock.calls.length).toBe(1);
+        expect(ModalOverlay.mock.calls[0][0]).toStrictEqual({
+          message: "Loading Users",
+          status: "saving"
+        });
+      });
+    });
   });
   describe("Reset Skills Toggle is clicked", () => {
     test("setTableState is updated ", () => {
@@ -191,7 +212,7 @@ describe("<TritonUserTable />", () => {
           name: initialTestState.workerContext.workers[1].attributes.full_name,
           sid: initialTestState.workerContext.workers[1].sid
         }]
-      }
+      };
       const rendered = render(
         <ThemeProvider theme={theme}>
           <TritonUserTable tableState={selectedTableState} setTableState={mockSetTableState} />

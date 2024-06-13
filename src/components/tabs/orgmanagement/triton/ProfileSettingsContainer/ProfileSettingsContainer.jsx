@@ -1,12 +1,10 @@
-import { checkIfPO } from "authentication";
-import {
-  ProfileSettingsTable,
-  ProfileEntryForm
-} from "components";
+import { checkIfPO } from "authentication/authUtils";
+import { ProfileSettingsTable } from "orgmanagement/ProfileSettingsTable";
+import { ProfileEntryForm } from "orgmanagement/ProfileEntryForm";
 import {
   useAdminState,
   ProfileEntryFormStateProvider
-} from "context";
+} from "context/appContext";
 import { Modal } from "@mui/material";
 import React, { useState } from "react";
 import {
@@ -17,7 +15,7 @@ import {
   CreateProfileButton
 } from "./ProfileSettingsContainer.Styles";
 
-const ProfileSettingsContainer = () => {
+export const ProfileSettingsContainer = () => {
   const initialProfileModalState = {
     open: false
   };
@@ -25,8 +23,7 @@ const ProfileSettingsContainer = () => {
   const [profileModalState, setProfileModalState] = useState(initialProfileModalState);
 
   const state = useAdminState();
-  const environment = state.userContext.pingIdentity.environment;
-  const loggedInUser = state.userContext.pingIdentity.sub.toLowerCase();
+  const { nNumber: loggedInUser } = state.userContext;
   const profilesFromContext = state.profileContext.profiles;
 
   const createProfileOnClick = () => setProfileModalState({
@@ -45,7 +42,7 @@ const ProfileSettingsContainer = () => {
         </Modal>
         <SettingsContainer>
           {
-            checkIfPO(loggedInUser, environment) ?
+            checkIfPO(loggedInUser) ?
               <ControlsWrapper>
                 <ControlItem>
                   <CreateProfileButton onClick={createProfileOnClick} data-testid={"create-profile-button"}>
@@ -56,7 +53,6 @@ const ProfileSettingsContainer = () => {
               : null
           }
           <ProfileSettingsTable
-            environment={environment}
             profileList={profilesFromContext}
             setProfileModalState={setProfileModalState}
             loggedInUser={loggedInUser}
@@ -66,5 +62,3 @@ const ProfileSettingsContainer = () => {
     </ProfileEntryFormStateProvider>
   );
 };
-
-export default ProfileSettingsContainer;

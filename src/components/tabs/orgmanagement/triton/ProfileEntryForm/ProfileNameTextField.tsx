@@ -1,14 +1,14 @@
-import { CustomInput } from "components";
+import { CustomInput } from "components/CustomInput";
 import {
   profileEntryFormState,
   profileEntryFormDispatch
-} from "context";
+} from "context/appContext";
 import { profileEntryFormActions } from "context/reducers/profileEntryFormReducer";
 import React from "react";
-import { isProfileNameValid } from "utils";
+import { isProfileNameValid } from "utils/profileUtils";
 import { TextFieldProps } from "./ProfileEntryForm.Interfaces";
 
-const ProfileNameTextField = (props: TextFieldProps) => {
+export const ProfileNameTextField = (props: TextFieldProps) => {
   const {
     label
   } = props;
@@ -36,5 +36,3 @@ const ProfileNameTextField = (props: TextFieldProps) => {
     />
   );
 };
-
-export default ProfileNameTextField;

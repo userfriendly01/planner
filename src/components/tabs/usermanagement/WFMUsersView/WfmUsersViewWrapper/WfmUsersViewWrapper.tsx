@@ -1,29 +1,26 @@
 import {
-  WfmUsersContainer,
-  StyledPaper
-} from "./WfmUsersViewWrapper.Styles";
-import {
-  WfmUsersHeader,
-  Pagination,
-  WfmUserTable,
-  WfmErrorBanner
-} from "components";
-import { useAdminState } from "context";
+  WfmUsersContainer, StyledPaper
+} from "usermanagement/WfmUsersViewWrapper.Styles";
+import { Pagination } from "components/Pagination";
+import { WfmUsersHeader } from "usermanagement/WfmUsersHeader";
+import { WfmUserTable } from "usermanagement/WfmUserTable";
+import { InfoBanner } from "usermanagement/InfoBanner";
+import { WfmErrorBanner } from "usermanagement/WfmErrorBanner";
+import { useAdminState } from "context/appContext";
 import {
   ModalOverlayStatuses, WfmBusinessUnit, WfmTeam, WfmUser
-} from "globals";
+} from "globals/interfaces";
 import React from "react";
 import {
   getWfmBusinessUnits,
   getWfmTeams,
-  getWfmPeople,
-  filterWfmUserTable,
-  sortWfmWorkersByFullName,
-  logger
-} from "utils";
-import InfoBanner from "../InfoBanner/InfoBanner";
+  getWfmPeople
+} from "utils/calabrioUtils";
+import { filterWfmUserTable } from "utils/_filterUtils";
+import { sortWfmWorkersByFullName } from "utils/_sortUtils";
+import { logger } from "utils/logger";
 
-const TritonUserManagementWrapper: any = () => {
+export const WfmUsersViewWrapper: any = () => {
 
   const defaultTableState: any = {
     searchBy: "",
@@ -127,5 +124,3 @@ const TritonUserManagementWrapper: any = () => {
     </WfmUsersContainer>
   );
 };
-
-export default TritonUserManagementWrapper;

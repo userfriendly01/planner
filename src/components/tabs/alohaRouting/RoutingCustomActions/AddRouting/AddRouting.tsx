@@ -7,23 +7,28 @@ import {
   Modal, ModalHeader
 } from "@lmig/lmds-react-modal";
 import {
-  routingDropDownList, routingInitRule, routingFields, initializedAlertBar, convertTime24to12, cleanErrorMessage, BrandName
-} from "utils";
+  routingDropDownList, routingInitRule, routingFields, convertTime24to12
+} from "utils/alohaRoutingUtils";
+import {
+  initializedAlertBar,
+  cleanErrorMessage,
+  BrandName
+} from "utils/alohaConfigUtils";
 import { getGridMasterData } from "../../DataGridRouting/GridMaster";
 import {
   retrieveRoutingData, addRoutingRule
-} from "services";
+} from "services/routingTableService";
 import {
   CctSharedCallRoutingDb, RoutingMasterData, RoutingDropDownList, AddRoutingModalProps
 } from "../../AlohaRouting.Interfaces";
 import {
   RoutingModalBodyStyled, RoutingModalFooterStyled, RoutingHeadingStyled
 } from "../../AlohaRouting.Styles";
+import { CustomToast } from "components/CustomToast";
+import { ComponentControl } from "components/ComponentControl";
 import {
-  CustomToast, ComponentControl
-} from "components";
-import { FormValidationRule } from "utils/interfaces";
-import { AzureSPA } from "globals";
+  AzureSPA,  FormValidationRule
+} from "globals/interfaces";
 import { FloatingHeader } from "@lmig/lmds-react-floating-header";
 
 

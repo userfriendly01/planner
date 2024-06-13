@@ -1,5 +1,5 @@
-import ExportSuccessButton from "../ExportSuccessButton";
-import { Button } from "../../BulkChanges.Styles";
+import { ExportSuccessButton } from "../ExportSuccessButton";
+import { Button } from "usermanagement/BulkChanges.Styles";
 import React from "react";
 import { ExcelExport } from "@progress/kendo-react-excel-export";
 import {

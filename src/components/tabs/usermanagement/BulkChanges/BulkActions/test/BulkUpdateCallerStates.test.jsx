@@ -1,11 +1,7 @@
-import BulkUpdateCallerStates from "../BulkUpdateCallerStates";
-import { CallerStateAttrDropDownOptions } from "../../../OnboardNewUser/RoutingAttributes/RoutingAttributesDropDown";
-import {
-  getUpdateTemplates
-} from "../../BulkTemplates";
-import {
-  Dropdown
-} from "components";
+import { BulkUpdateCallerStates } from "../BulkUpdateCallerStates";
+import { CallerStateAttrDropDownOptions } from "usermanagement/RoutingAttributesDropDown";
+import { getUpdateTemplates } from "usermanagement/templates";
+import { Dropdown } from "components/Dropdown";
 import React from "react";
 import {
   act,
@@ -13,12 +9,15 @@ import {
   setupMockedComponents
 } from "testUtils";
 
-jest.mock("components", () => ({
-  Dropdown: jest.fn(),
+jest.mock("components/Dropdown", () => ({
+  Dropdown: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn(),
   useAdminDispatch: jest.fn()
 }));

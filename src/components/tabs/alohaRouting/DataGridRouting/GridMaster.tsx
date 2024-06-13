@@ -2,9 +2,9 @@
 
 import {
   LAST_ROUTING_MASTER_DATA_CACHED_DATE,
-  ROUTING_CACHE_MASTER_DATA,
-  logger
-} from "utils";
+  ROUTING_CACHE_MASTER_DATA
+} from "utils/alohaRoutingUtils";
+import { logger } from "utils/logger";
 import {
   CctSharedCallRoutingDb, RoutingMasterData
 } from "../AlohaRouting.Interfaces";

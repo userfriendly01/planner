@@ -1,16 +1,15 @@
-import { DefaultSkillSelector } from "components";
+import { DefaultSkillSelector } from "usermanagement/DefaultSkillSelector";
 import {
-  useFormState,
-  useFormDispatch,
-  userFormActions
-} from "context";
+  useFormState, useFormDispatch
+} from "context/appContext";
+import { userFormActions } from "context/userFormReducer";
 import React, { useState } from "react";
 import {
   Accordion, AccordionSummary, AccordionDetails
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
 
-const SkillsFormInfo = () => {
+export const SkillsFormInfo = () => {
 
   const form = useFormState();
   const setForm = useFormDispatch();
@@ -42,5 +41,3 @@ const SkillsFormInfo = () => {
     </Accordion>
   );
 };
-
-export default SkillsFormInfo;

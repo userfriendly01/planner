@@ -10,16 +10,15 @@ import {
   ModalBody,
   ModalFooter
 } from "@lmig/lmds-react-modal";
-import {
-  StyledButton, CsvReader
-} from "components";
+import { StyledButton } from "components/StyledButton";
+import { CsvReader } from "components/CSVReader/CsvReader";
 import { Box } from "@mui/material";
 import { CctSharedCallRoutingDb } from "../AlohaRouting.Interfaces";
 import { TableGridColumnDef } from "./TableGridColumnDef";
 
 import { reconstructTableColumnDef } from "./previewUtils";
 import "./PreviewModal.css";
-import { logger } from "utils";
+import { logger } from "utils/logger";
 
 interface PreviewModalProps {
   action: "delete" | "add" | "edit"
@@ -33,7 +32,7 @@ interface PreviewModalProps {
   loading?: boolean;
 }
 
-const PreviewModal = (props: PreviewModalProps): JSX.Element => {
+export const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   const {
     action,
     isOpen,
@@ -209,9 +208,4 @@ const PreviewModal = (props: PreviewModalProps): JSX.Element => {
       </Modal>
     </div>
   );
-};
-
-export {
-  PreviewModal,
-  PreviewModalProps
 };

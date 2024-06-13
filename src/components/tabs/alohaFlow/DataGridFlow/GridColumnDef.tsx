@@ -4,9 +4,9 @@ import React from "react";
 import {
   Box, Chip, Switch
 } from "@mui/material";
-import { ModalOnHover } from "components";
+import ModalOnHover from "components/ModalOnHover";
 
-export const FlowGridColumnDef: GridColDef[] = [
+const FlowGridColumnDef: GridColDef[] = [
   {
     headerName: "Dialed",
     field: "pkey",

@@ -1,13 +1,13 @@
-import ProfileQueuesSelectField from "../ProfileQueuesSelectField";
+import { ProfileQueuesSelectField } from "../ProfileQueuesSelectField";
 import {
   Add,
   Delete
 } from "@mui/icons-material";
-import { Dropdown } from "components";
-import { useAdminState } from "context";
+import { Dropdown } from "components/Dropdown";
+import { useAdminState } from "context/appContext";
 import React from "react";
 import MockAdapter from "axios-mock-adapter";
-import { myAxios } from "utils";
+import { myAxios } from "utils/myAxios";
 import {
   expectMockedComponent,
   render,
@@ -18,33 +18,36 @@ import {
   initialTestState,
   skillsList
 } from "testUtils";
-import {
-  theme,
-  apiPaths
-} from "globals";
+import { theme } from "globals/theme";
+import { apiPaths } from "globals/index";
 import { ThemeProvider } from "styled-components";
 import { act } from "react-dom/test-utils";
-import { getAggregateQueuesType } from "services";
+import { getAggregateQueuesType } from "services/aggregateQueues";
 import { Tooltip } from "@mui/material";
 
 jest.mock("@mui/icons-material", () => ({
-  __esModule: true,
   Add: jest.fn(),
   Delete: jest.fn()
 }));
 
-jest.mock("components", () => ({
-  __esModule: true,
-  Dropdown: jest.fn(),
+jest.mock("components/Dropdown", () => ({
+  Dropdown: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
 }));
 
 jest.mock("@mui/material", () => ({
   Tooltip: jest.fn()
+}));
+
+jest.mock("services/aggregateQueues", () => ({
+  getAggregateQueuesType: jest.fn()
 }));
 
 const mockSetQueueList = jest.fn();

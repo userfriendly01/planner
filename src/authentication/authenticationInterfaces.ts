@@ -5,12 +5,6 @@ export const descriptions = {
   Dynami_Call_Flow: ""
 };
 
-export enum Environments {
-  DEV = "development",
-  TEST = "test",
-  PROD = "production"
-}
-
 export const enum Permissions {
   READ = "read",
   WRITE = "write"
@@ -21,8 +15,6 @@ export interface AuthenticationProfile {
   permissionLevel: string,
   home: any,
   tabs: any[],
-  isAdmin?: boolean,
-  profileId?: number | string | null
 }
 
 export interface AuthenticationProfileOptions {

@@ -2,21 +2,21 @@ import React from "react";
 import {
   BannerWrapper,
   BannerMessage
-} from "./CompareProfiles.Styles";
+} from "usermanagement/CompareProfiles.Styles";
 import { Close } from "@mui/icons-material";
-import { messageConsts } from "./messages";
+import { messageConsts } from "usermanagement/messages";
+import { env } from "globals";
 
-const MessageBanner = (props: any) => {
+export const MessageBanner = (props: any) => {
   const {
-    environment,
     messages,
-    updateMessages,
+    updateMessages
   } = props;
 
   React.useEffect(() => {
-    if (environment === "development") {
+    if (env.APP_ENV === "development") {
       updateMessages("add", null, messageConsts.DEV_MESSAGE, "error");
-    } else if (environment === "test") {
+    } else if (env.APP_ENV  === "test") {
       updateMessages("add", null, messageConsts.TEST_MESSAGE, "error");
     }
   }, []);
@@ -24,7 +24,7 @@ const MessageBanner = (props: any) => {
   return (
     <BannerWrapper >
       {messages.map((m: any) => ((
-        <BannerMessage level={m.level}>
+        <BannerMessage key={m.id} level={m.level}>
           {m.message}
           <Close onClick={() => updateMessages("delete", m.id)} />
         </BannerMessage>))
@@ -32,5 +32,3 @@ const MessageBanner = (props: any) => {
     </BannerWrapper>
   );
 };
-
-export default MessageBanner;

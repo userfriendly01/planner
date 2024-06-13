@@ -5,7 +5,7 @@ import {
   CallTag,
   CallTagOptions,
   OperatingUnit
-} from "globals";
+} from "globals/interfaces";
 
 export interface ProfileEntryFormProps {
   handleClose: () => void
@@ -24,7 +24,7 @@ export interface ProfileFormButtonsProps {
   updateLoading: (payload: any) => void
 }
 
-export interface FieldState {
+interface FieldState {
   value: any,
   updated?: boolean,
   valid?: boolean,

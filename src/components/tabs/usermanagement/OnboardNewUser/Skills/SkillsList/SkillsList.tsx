@@ -1,6 +1,6 @@
-import { SkillDropdownProps } from "./SkillsList.Interfaces";
-import { Dropdown } from "components";
-import { useFormState } from "context";
+import { SkillDropdownProps } from "usermanagement/SkillsList.Interfaces";
+import { Dropdown } from "components/Dropdown";
+import { useFormState } from "context/appContext";
 import { formModes } from "globals";
 import React from "react";
 import styled from "styled-components";
@@ -10,7 +10,7 @@ const SubText = styled.div`
   font-weight: bold
 `;
 
-const SkillsList = (props: SkillDropdownProps) => {
+export const SkillsList = (props: SkillDropdownProps) => {
   const {
     skills,
     updateSkill,
@@ -96,5 +96,3 @@ const SkillsList = (props: SkillDropdownProps) => {
     />
   );
 };
-
-export default SkillsList;

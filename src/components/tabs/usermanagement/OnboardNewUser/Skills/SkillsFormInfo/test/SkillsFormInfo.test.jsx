@@ -1,10 +1,9 @@
-import SkillsFormInfo from "../SkillsFormInfo";
-import { DefaultSkillSelector } from "components";
+import { SkillsFormInfo } from "../SkillsFormInfo";
+import { DefaultSkillSelector } from "usermanagement/DefaultSkillSelector";
 import {
-  useFormState,
-  useFormDispatch,
-  userFormActions
-} from "context";
+  useFormState, useFormDispatch
+} from "context/appContext";
+import { userFormActions } from "context/userFormReducer";
 import React from "react";
 import {
   act,
@@ -15,17 +14,17 @@ import {
 
 jest.useFakeTimers();
 
-jest.mock("components", () => ({
-  __esModule: true,
-  DefaultSkillSelector: jest.fn(),
+jest.mock("usermanagement/DefaultSkillSelector", () => ({
+  DefaultSkillSelector: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
 }));
 
-jest.mock("context", () => ({
-  __esModule: true,
+jest.mock("context/appContext", () => ({
   useFormState: jest.fn(),
-  useFormDispatch: jest.fn(),
-  userFormActions: jest.requireActual("context").userFormActions
+  useFormDispatch: jest.fn()
 }));
 
 const mockSetForm = jest.fn();

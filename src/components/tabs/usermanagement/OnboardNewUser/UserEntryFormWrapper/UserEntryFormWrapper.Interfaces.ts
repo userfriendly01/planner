@@ -1,30 +1,22 @@
 import {
-  CalabrioQmUser,
-  Manager,
+  UMManager,
   ModalOverlayStatuses,
-  Office,
+  UMOffice,
   Skill,
   TritonProfile,
-  Worker,
+  UMUser,
   WfmUser,
-  WorkerAttributeSkills,
-  formModes
-} from "globals";
-import { FetchUserResponse } from "services";
+  UMTwilioAttributeSkills
+} from "globals/interfaces";
+import { FetchUserResponse } from "services/fetchUser";
 import { ExtensionStatusProps } from "../Extension/ExtensionInput/ExtensionInput.Interfaces";
-import { CalabrioGroup } from "..";
+import { CalabrioGroup } from "usermanagement/CallRecording.Interfaces";
 
 export interface LoadingState {
   lookupUser: boolean;
   overlayMessage: string;
   saveStatus: ModalOverlayStatuses;
   saveUser: boolean;
-}
-
-export enum UserAction {
-  ADD = "add",
-  EDIT = "edit",
-  DELETE = "delete"
 }
 
 export interface UserSystem {
@@ -39,27 +31,25 @@ export interface UserEntryFormProps {
 
 export interface BasicFormInfoProps {
   skills: Skill[],
-  worker: Worker | null,
-  workers: Worker[],
+  worker: UMUser | null,
+  workers: UMUser[],
   profiles: TritonProfile[],
-  managers: Manager[]
-  forwardToToggle: boolean,
-  setForwardToToggle: (value: boolean) => void,
+  managers: UMManager[]
 }
 
 export interface UserFormButtonsProps {
   forwardToToggle: boolean,
   handleClose: () => void,
   loading: LoadingState,
-  offices: Map<string, Office>,
+  offices: UMOffice[],
   profiles: TritonProfile[],
   updateLoading: (payload: any) => void,
-  worker: Worker | null,
+  worker: UMUser | null,
   setMissingFields: (missingFields: string[]) => void
 }
 
 
-export interface FieldState {
+interface FieldState {
   value: any,
   blurred?: boolean,
   e164?: string,
@@ -75,11 +65,10 @@ export interface UserFormState {
   triton: {
     [key: string]: any,
     userFound: boolean,
-    alternateDid: FieldState,
     attributes: any,
     defaultSkills: FormDefaultSkills,
     didUser: boolean,
-    directDialNum: FieldState,
+    did: FieldState,
     extension: FormExtension
     inactiveForwardTo: FieldState,
     manager: FieldState,
@@ -109,7 +98,7 @@ export interface UserFormState {
   calabrio_wfm: CALABRIO_WFM
 }
 
-interface FormDefaultSkills extends WorkerAttributeSkills {
+interface FormDefaultSkills extends UMTwilioAttributeSkills {
   updated: boolean
 }
 interface FormNNumber extends FieldState {

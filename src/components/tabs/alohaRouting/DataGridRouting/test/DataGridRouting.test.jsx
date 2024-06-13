@@ -1,17 +1,18 @@
 import React from "react";
 import { render as quickRender } from "@testing-library/react";
 import { DataGridRouting } from "../DataGridRouting";
-import { PreviewModal } from "../../PreviewModal";
+import { PreviewModal } from "../../PreviewModal/PreviewModal";
 import {
   DataGrid, GridRenderCellParams, GridToolbar
 } from "@mui/x-data-grid";
-import {
-  RoutingAdvanceSearch, EditRouting, AddRouting, CustomRoutingGridToolBar
-} from "../../RoutingCustomActions";
+import { CustomRoutingGridToolBar } from "../../RoutingCustomActions/CustomRoutingGridToolBar";
+import RoutingAdvanceSearch from "../../RoutingCustomActions/RoutingAdvanceSearch/RoutingAdvanceSearch";
+import { AddRouting } from "../../RoutingCustomActions/AddRouting/AddRouting";
+import { EditRouting } from "../../RoutingCustomActions/EditRouting/EditRouting";
 import {
   CustomToast
-} from "components";
-import { useAdminState } from "context";
+} from "components/CustomToast";
+import { useAdminState } from "context/appContext";
 import {
   act,
   initialTestState,
@@ -28,10 +29,10 @@ import {
   routingBatchCreate,
   batchRoutingCreate,
   routingBatchUpdate
-} from "services";
+} from "services/routingTableService";
 import {
   CACHED_CALL_ROUTING_PER_PAGE, CACHED_CALL_ROUTING_PAGE_NO, CACHE_FILTER_ROUTING
-} from "utils";
+} from "utils/alohaRoutingUtils";
 
 
 jest.mock("@mui/x-data-grid",()=>({
@@ -46,29 +47,47 @@ jest.mock("@mui/x-data-grid",()=>({
   })
 }));
 
-jest.mock("components", ()=>({
-  __esModule: true,
+jest.mock("components/CustomToast", ()=>({
   CustomToast: jest.fn()
 }));
 
-jest.mock("../../PreviewModal", ()=>({
-  __esModule: true,
+jest.mock("services/routingTableService", ()=>({
+  batchDelete: jest.fn(),
+  batchRoutingUpdate: jest.fn(),
+  queryRoutingData: jest.fn(),
+  retrieveRoutingData: jest.fn(),
+  routingBatchDelete: jest.fn(),
+  routingBatchCreate: jest.fn(),
+  batchRoutingCreate: jest.fn(),
+  routingBatchUpdate: jest.fn()
+}));
+
+jest.mock("../../PreviewModal/PreviewModal", ()=>({
   PreviewModal: jest.fn()
 }));
 
-jest.mock("../../RoutingCustomActions", ()=>({
-  __esModule: true,
-  RoutingAdvanceSearch: jest.fn(),
-  AddRouting: jest.fn(),
-  EditRouting: jest.fn(),
+jest.mock("../../RoutingCustomActions/CustomRoutingGridToolBar", ()=>({
   CustomRoutingGridToolBar: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("../../RoutingCustomActions/RoutingAdvanceSearch/RoutingAdvanceSearch", ()=>({
+  __esModule: true,
+  default: jest.fn()
+}));
+
+jest.mock("../../RoutingCustomActions/AddRouting/AddRouting", ()=>({
+  AddRouting: jest.fn()
+}));
+
+jest.mock("../../RoutingCustomActions/EditRouting/EditRouting", ()=>({
+  EditRouting: jest.fn()
+}));
+
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
 }));
 
-export const createRoutingRule = num => {
+const createRoutingRule = num => {
   return {
     id: num,
     all: "ALL",
@@ -92,7 +111,7 @@ export const createRoutingRule = num => {
   };
 };
 
-export const createSampleTestRoutingDataList = numberOfData =>{
+const createSampleTestRoutingDataList = numberOfData =>{
   const dataList = [];
   for (let num=1; num<=numberOfData; num++) {
     dataList.push(createRoutingRule(num));

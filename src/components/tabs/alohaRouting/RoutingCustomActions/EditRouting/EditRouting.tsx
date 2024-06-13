@@ -2,34 +2,46 @@ import {
   Modal, ModalHeader
 } from "@lmig/lmds-react-modal";
 import {
-  RoutingHeadingStyled, RoutingModalBodyStyled, RoutingModalFooterStyled
+  RoutingHeadingStyled,
+  RoutingModalBodyStyled,
+  RoutingModalFooterStyled
 } from "../../AlohaRouting.Styles";
 import React, {
-  useState, useEffect, useMemo
+  useState,
+  useEffect,
+  useMemo
 } from "react";
 import {
-  convertTime12to24,convertTime24to12, routingFields, routingInitRule, initializedAlertBar, routingDropDownList, dayOfWeek
-} from "utils";
+  convertTime12to24,
+  convertTime24to12,
+  routingFields,
+  routingInitRule,
+  routingDropDownList,
+  dayOfWeek
+} from "utils/alohaRoutingUtils";
+import { initializedAlertBar } from "utils/alohaConfigUtils";
 import {
-  CctSharedCallRoutingDb, RoutingDropDownList, AddPageFieldConfigProps
+  CctSharedCallRoutingDb,
+  RoutingDropDownList,
+  AddPageFieldConfigProps
 } from "../../AlohaRouting.Interfaces";
+import { CustomToast } from "components/CustomToast";
+import { ComponentControl } from "components/ComponentControl";
 import {
-  CustomToast, ComponentControl
-} from "components";
-import {
-  Button, Grid
+  Button,
+  Grid
 } from "@mui/material";
 import {
-  AlertBarProps, FormValidationRule
-} from "utils/interfaces";
+  AzureSPA, AlertBarProps, FormValidationRule
+} from "globals/interfaces";
 import {
-  deleteRoutingRule, updateRoutingDB
-} from "services";
-import { AzureSPA } from "globals";
+  deleteRoutingRule,
+  updateRoutingDB
+} from "services/routingTableService";
 import {
   BrandName,
   readWriteAccess
-} from "utils/configUtils";
+} from "utils/alohaConfigUtils";
 import { FloatingHeader } from "@lmig/lmds-react-floating-header";
 interface EditRoutingComponentProps {
   accessToken: string;
@@ -37,7 +49,6 @@ interface EditRoutingComponentProps {
   selectedRow: CctSharedCallRoutingDb;
   openEditModal: (flag: boolean, isSubmitted?: boolean, row?: CctSharedCallRoutingDb, message?: string, deleteRow?: boolean,isCloneRule?: boolean) => void;
 }
-
 
 export const EditRouting = ({
   accessToken, isOpen, matchedGroups, selectedRow, openEditModal
@@ -47,7 +58,7 @@ export const EditRouting = ({
   const [dropDownValues, setDropDownValues] = useState(routingDropDownList);
   const [alertBar, setAlertBar] = useState(initializedAlertBar);
   const defaultValue: { [key: string]: any } = {};
-  const enableRouting = useMemo(() => readWriteAccess(matchedGroups, "aloha-route"), []);
+  const enableRouting = useMemo(() => readWriteAccess(matchedGroups, "RouteReadWrite"), []);
 
   useEffect(() => {
     setDropDownValues((dropDownOptions: RoutingDropDownList) => ({
@@ -282,7 +293,7 @@ export const EditRouting = ({
             value="Save"
             color="primary"
             sx={{ marginRight: 2 }}
-            disabled={enableRouting}
+            disabled={!enableRouting}
             onClick={() => handleOnSave()}
           >
                         Save Rule
@@ -291,7 +302,7 @@ export const EditRouting = ({
             variant="contained"
             value="Clone"
             color="primary"
-            disabled={enableRouting}
+            disabled={!enableRouting}
             sx={{ marginRight: 2 }}
             onClick={() => handleClone()}
           >
@@ -301,7 +312,7 @@ export const EditRouting = ({
             variant="contained"
             color="error"
             value="Delete"
-            disabled={enableRouting}
+            disabled={!enableRouting}
             sx={{ marginRight: 2 }}
             onClick={() => handleOnDelete()}
           >

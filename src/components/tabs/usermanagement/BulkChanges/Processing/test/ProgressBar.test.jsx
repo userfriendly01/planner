@@ -1,16 +1,16 @@
-import ProgressBar from "../ProgressBar";
+import { ProgressBar } from "../ProgressBar";
 import React from "react";
 import {
   ProgressBarFiller,
   TextWrapper
-} from "../../BulkChanges.Styles";
-import { jokes } from "../../BulkTemplates";
+} from "usermanagement/BulkChanges.Styles";
+import { jokes } from "usermanagement/consts";
 import {
   render,
   setupMockedComponents
 } from "testUtils";
 
-jest.mock("../../BulkChanges.Styles", () => ({
+jest.mock("usermanagement/BulkChanges.Styles", () => ({
   TextWrapper: jest.fn(),
   ProgressBarFiller: jest.fn(),
   ProgressBarWrapper: jest.requireActual("../../BulkChanges.Styles").ProgressBarFiller,

@@ -1,6 +1,6 @@
 import React from "react";
-import { EditFlow } from "../index";
-import { FLOW_MASTER_DATA } from "utils";
+import { EditFlow } from "../EditFlow";
+import { FLOW_MASTER_DATA } from "utils/alohaFlowUtils";
 import {
   fireEvent, render, initialTestState, waitFor, act, within, setupMockedComponents, adGroupPermissionMapping
 } from "testUtils";
@@ -8,8 +8,8 @@ import {
   deleteFlowRule,
   updateFlowDB
 } from "../../../Utils/FlowTableServiceUtil";
-import { useAdminState } from "context";
-import { CustomToast } from "components";
+import { useAdminState } from "context/appContext";
+import { CustomToast } from "components/CustomToast";
 import { AddOrView } from "../../CustomActionsCommon/AddOrView";
 
 jest.mock("../../../Utils/FlowTableServiceUtil", () => {
@@ -19,12 +19,9 @@ jest.mock("../../../Utils/FlowTableServiceUtil", () => {
     updateFlowDB: jest.fn()
   };
 });
-jest.mock("components", () => {
-  return{
-    __esModule: true,
-    CustomToast: jest.fn()
-  };
-});
+jest.mock("components/CustomToast", () => ({
+  CustomToast: jest.fn()
+}));
 
 jest.mock("../../CustomActionsCommon/AddOrView", () => {
   return{
@@ -33,8 +30,7 @@ jest.mock("../../CustomActionsCommon/AddOrView", () => {
   };
 });
 
-
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
 }));
 

@@ -9,7 +9,7 @@ const Spin = keyframes`
   }
 `;
 
-const ModalFetchingRing = styled.div`
+export const ModalFetchingRing = styled.div`
   display: inline-block;
   width: 64px;
   height: 64px;
@@ -25,5 +25,3 @@ const ModalFetchingRing = styled.div`
     animation: ${Spin} 1.2s linear infinite;
   }
 `;
-
-export default ModalFetchingRing;

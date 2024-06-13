@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
-import { env } from "globals";
-import { logger } from "utils";
+import { env } from "globals/index";
+import { logger } from "utils/logger";
 
 /**
  * This is the function use to query the appsync API to get the data from DB
@@ -204,7 +204,7 @@ async function retrieveFlowData(accessToken, counter = 1, nextToken = null, rowI
 
         rowInsert(flowData);
       } else if (counter === 1){
-        // If there was a handled error in queryFlowData, and there were 
+        // If there was a handled error in queryFlowData, and there were
         // no results returned at all, then break out of the loop
         break;
       }
@@ -223,16 +223,13 @@ async function retrieveFlowData(accessToken, counter = 1, nextToken = null, rowI
 
 /**
  * Convert DB Legacy Call Flow record to UI Call Flow Record
- * @param {any} item 
- * @returns 
+ * @param {any} item
+ * @returns
  */
 function createFlowFromLegacyPhone (item) {
-  let convertedCreateTime = item.createTime;
-  if(item.createTime && typeof item.createTime === "number") {
-    const jsEpoch = item.createTime < 9999999999 ? item.createTime * 1000 : item.createTime;
 
-    convertedCreateTime = new Date(jsEpoch).toISOString();
-  }
+  const convertedCreateTime = dateConversion(item.createTime).toISOString();
+
   return {
     pkey: item.pkey,
     accountManager: item.accountManager,
@@ -281,16 +278,12 @@ function createFlowFromLegacyPhone (item) {
 
 /**
  * Convert DB Dynamic Call Flow record to UI Call Flow Record
- * @param {any} item 
- * @returns 
+ * @param {any} item
+ * @returns
  */
 function createFlowFromAction (item) {
-  let convertedCreateTime = "";
-  if(item.createTime && typeof item.createTime === "number") {
-    const jsEpoch = item.createTime < 9999999999 ? item.createTime * 1000 : item.createTime;
+  const convertedCreateTime = dateConversion(item.createTime).toISOString();
 
-    convertedCreateTime = new Date(jsEpoch).toISOString();
-  }
   return {
     pkey: item.phoneNumber,
     accountManager: item.accountManager,
@@ -338,11 +331,39 @@ function createFlowFromAction (item) {
 }
 
 /**
+ * Convert string/ number to date
+ * @param {any} createTime
+ * @returns Date
+ */
+function dateConversion(createTime) {
+  let returnDate = new Date(0);
+  try {
+
+    if (typeof createTime === "string" && createTime.length===0) {
+      return returnDate;
+    }
+
+    let jsEpoch = createTime;
+    if (createTime && typeof createTime === "number") {
+      jsEpoch = createTime < 9999999999 ? createTime * 1000 : createTime;
+    }
+    returnDate = new Date(jsEpoch);
+  } catch(err) {
+    console.warn("Error in dateConversion", err, createTime);
+    return returnDate;
+  }
+  if (returnDate.toString() === "Invalid Date") {
+    return new Date(0);
+  }
+  return returnDate;
+}
+
+/**
  * Convert UI ADD Call Flow record to DB Call Flow Record
- * @param {*} item 
- * @param {*} dataRequestsPassed 
- * @param {*} currentTimePassed 
- * @returns 
+ * @param {*} item
+ * @param {*} dataRequestsPassed
+ * @param {*} currentTimePassed
+ * @returns
  */
 function addFlowInput (item, dataRequestsPassed, currentTimePassed){
   const input = {
@@ -390,8 +411,8 @@ function addFlowInput (item, dataRequestsPassed, currentTimePassed){
 
 /**
  * Convert UI UPDATE Call Flow record to DB Call Flow Record
- * @param {*} item 
- * @returns 
+ * @param {*} item
+ * @returns
  */
 function updateFlowInput(item){
   const input = {
@@ -453,7 +474,7 @@ async function updateFlowDB(item, accessToken) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body: JSON.stringify({
         query: `
@@ -528,7 +549,7 @@ async function addFlowRule(item, accessToken, curTime = new Date().toISOString()
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body: JSON.stringify({
         query: `
@@ -601,7 +622,7 @@ async function deleteFlowRule(item, accessToken) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body: JSON.stringify({
         query: `
@@ -709,7 +730,7 @@ async function flowBatchDelete(items, accessToken){
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body
     });
@@ -729,12 +750,10 @@ async function flowBatchDelete(items, accessToken){
 const batchFlowUpdate = async(items, accessToken) =>{
   if(items.length === 0){
     return {
-      flag: true,
+      flag: false,
       success: [],
       failure: [],
-      errors: [
-        "Please Select Something to Edit"
-      ]
+      errors: []
     };
   }
   const flowUpdateArray=[];
@@ -763,9 +782,9 @@ const batchFlowUpdate = async(items, accessToken) =>{
 
 /**
  * Convert UI UPDATE Call Flow record to DB Call Flow Record
- * @param {*} items 
- * @param {*} accessToken 
- * @returns 
+ * @param {*} items
+ * @param {*} accessToken
+ * @returns
  */
 const updateFlowBatchRun = async(items, accessToken) =>{
   const input = items.map(item=>{
@@ -812,7 +831,7 @@ const updateFlowBatchRun = async(items, accessToken) =>{
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body: JSON.stringify({
         query: `
@@ -878,10 +897,10 @@ const batchFlowCreate = async(items, accessToken) =>{
 
   if(items.length === 0){
     return {
-      alertMsg: "Please select something to add",
+      alertMsg: "",
       errors: [],
       failure: [],
-      flag: true,
+      flag: false,
       success: []
     };
   }
@@ -912,10 +931,10 @@ const batchDynamicFlowCreate = async(items, accessToken) =>{
 
   if(items.length === 0){
     return {
-      alertMsg: "Please select something to add",
+      alertMsg: "",
       errors: [],
       failure: [],
-      flag: true,
+      flag: false,
       success: []
     };
   }
@@ -944,7 +963,7 @@ const batchDynamicFlowCreate = async(items, accessToken) =>{
 
 /**
  * Consolidate all of the command responses in a batch into 1 response object
- * @param {any} allResults - a set results from all of the operations 
+ * @param {any} allResults - a set results from all of the operations
  * @returns {any} a consolidated response object
  */
 const buildResponse = allResults => {
@@ -1059,7 +1078,7 @@ const createDynamicFlowRunItem = async(items, accessToken) =>{
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body: JSON.stringify({
         query: `
@@ -1137,7 +1156,7 @@ const createFlowRunItem = async(items, accessToken) =>{
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body: JSON.stringify({
         query: `
@@ -1279,8 +1298,8 @@ async function retrieveDynamicFlowData(accessToken, counter = 1, nextToken = nul
 
 /**
  * Transform the UI Call Flow record to a Dynamic Call Flow DB record
- * @param {*} item 
- * @returns 
+ * @param {*} item
+ * @returns
  */
 function updateDynamicFlowInput(item){
   const updateTime = Math.floor(new Date().getTime()/1000);
@@ -1294,7 +1313,7 @@ function updateDynamicFlowInput(item){
     callTypeDescription: item.callTypeDescription,
     callerType: item.content?.callerType,
     channel: item.channel,
-    createTime: item.createTime ? Math.floor(new Date(item.createTime).getTime()/1000) : updateTime,
+    createTime: Math.floor(dateConversion(item.createTime).getTime()/1000),
     dataRequests: item.content?.dataRequests,
     dialedDescription: item.dialedDescription,
     employeeId: item.employeeId,
@@ -1337,7 +1356,7 @@ async function updateDynamicFlowDB(item, accessToken) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body: JSON.stringify({
         query: `
@@ -1364,10 +1383,10 @@ async function updateDynamicFlowDB(item, accessToken) {
 
 /**
  * Convert a Call Flow table record to a Dynamic Call Flow DB record.
- * @param {*} item 
- * @param {*} dataRequestsPassed 
- * @param {*} currentTimePassed 
- * @returns 
+ * @param {*} item
+ * @param {*} dataRequestsPassed
+ * @param {*} currentTimePassed
+ * @returns
  */
 function addDynamicFlowInput (item, dataRequestsPassed, currentTimePassed){
   const input = {
@@ -1424,7 +1443,7 @@ async function addDynamicFlowRule(item, accessToken, curTime = Math.floor(new Da
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body: JSON.stringify({
         query: `
@@ -1457,18 +1476,18 @@ async function addDynamicFlowRule(item, accessToken, curTime = Math.floor(new Da
 async function deleteDynamicFlowRule(item, accessToken) {
   let response;
   const input = {
-    phoneNumber: item.pkey
+    id: item.pkey
   };
   try {
     const fetchResponse = await fetch(env.GRAPH_API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body: JSON.stringify({
         query: `
-          mutation deletePhoneNumber($input:PhoneNumberDeleteInput!) {
+          mutation deletePhoneNumber($input:CallFlowDeleteInput!) {
             deletePhoneNumber(input:$input){
               phoneNumber
             }
@@ -1511,26 +1530,45 @@ async function batchDynamicDeleteItems(items,accessToken){
   return response;
 }
 async function flowDynamicBatchDelete(items, accessToken){
+  let request;
   const input = items.map(item=>{
-    return {
-      phoneNumber: item
-    };
+    if(!item.actionType){
+      request = {
+        id: item
+      }; }
+    else {
+      request = {
+        actionType: item.actionType,
+        id: item.actionId
+      };
+    }
+    return request;
   });
 
   let response;
   try{
-    const body = JSON.stringify({
-      query: `
-      mutation batchDeletePhoneNumber($input: PhoneNumberDeleteBatchInput!) {
+    const graphQlQuery = input.actionType ? `
+      mutation batchDeletePhoneNumber($input: CallFlowDeleteBatchInput!) {
         batchDeletePhoneNumber(input: $input) {
           items {
-              phoneNumber
+              id
+              actionType
           }
         }
       }
-    `,
+    ` : `
+      mutation batchDeletePhoneNumber($input: CallFlowDeleteBatchInput!) {
+        batchDeletePhoneNumber(input: $input) {
+          items {
+              id
+          }
+        }
+      }
+    `;
+    const body = JSON.stringify({
+      query: graphQlQuery,
       variables: {
-        input: { batchDeletePhoneNumberInput: input }
+        input: { batchDeleteInput: input }
       }
     }).replace(/\\"pkey\\":/g, "pkey:");
 
@@ -1538,7 +1576,7 @@ async function flowDynamicBatchDelete(items, accessToken){
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body
     });
@@ -1559,12 +1597,10 @@ async function flowDynamicBatchDelete(items, accessToken){
 const batchDynamicFlowUpdate = async(items, accessToken) =>{
   if(items.length === 0){
     return {
-      flag: true,
+      flag: false,
       success: [],
       failure: [],
-      errors: [
-        "Please Select Something to Edit"
-      ]
+      errors: []
     };
   }
   const dynamicFlowUpdateArray=[];
@@ -1603,7 +1639,7 @@ const updateDynamicFlowBatchRun = async(items, accessToken) =>{
       callTypeDescription: item.callTypeDescription,
       callerType: item.content?.callerType,
       channel: item.channel,
-      createTime: item.createTime,
+      createTime: Math.floor(dateConversion(item.createTime).getTime()/1000),
       dataRequests: item.content?.dataRequests,
       dialedDescription: item.dialedDescription,
       employeeId: item.employeeId,
@@ -1633,7 +1669,7 @@ const updateDynamicFlowBatchRun = async(items, accessToken) =>{
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken
+        Authorization: `Bearer ${accessToken}`
       },
       body: JSON.stringify({
         query: `
@@ -1698,6 +1734,7 @@ export {
   batchDynamicFlowUpdate,
   batchFlowCreate,
   batchFlowUpdate,
+  dateConversion,
   deleteDynamicFlowRule,
   deleteFlowRule,
   flowBatchDelete,

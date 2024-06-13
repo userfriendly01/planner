@@ -2,14 +2,14 @@ export const managerList = [
   {
     manager_first_name: "John",
     manager_last_name: "Wick",
-    manager_n_number: "n1234567",
+    manager_n_num: "n1234567",
     manager_id: "01",
     profile_id: 11
   },
   {
     manager_first_name: "Test",
     manager_last_name: "Manager",
-    manager_n_number: "n7454853",
+    manager_n_num: "n7454853",
     manager_id: "02"
   }
 ];
@@ -20,24 +20,19 @@ export const mockSkills = [
   }
 ];
 
-export const officeMap = new Map([
-  [
-    "ABC123",
-    {
+export const officeMap = [
+  {
 
-      office_nme: "Office 1",
-      office_num: "ABC123"
-    }
-  ],
-  [
-    "0002",
-    {
+    office_name: "Office 1",
+    office_num: "ABC123"
+  }
+  ,
+  {
 
-      office_nme: "Office 2",
-      office_num: "0002"
-    }
-  ]
-]);
+    office_name: "Office 2",
+    office_num: "0002"
+  }
+];
 
 export const profileList = [
   {
@@ -638,19 +633,23 @@ export const initialTestState = {
     skillGroups: skillGroups
   },
   userContext: {
-    pingIdentity: {
-      sub: "n0263786",
-      groups: [],
-      aud: "ciciccttritondev1",
-      environment: "development"
-    },
-    authenticationProfiles: [
+    nNumber: "n1234567",
+    profileId: 10,
+    accessToken: "blaahahh",
+    isAdmin: false,
+    permissions: [
       {
-        name: "Triton",
-        permissionLevel: "read",
-        isAdmin: false,
-        profileId: 10,
-        tabs: []
+        roles: [
+          {
+            name: "Admin",
+            permissionLevel: "write"
+          }
+        ],
+        authenticationProfile: {
+          name: "Triton",
+          permissionLevel: "read",
+          tabs: []
+        }
       }
     ]
   },
@@ -738,7 +737,8 @@ export const initialTestState = {
         },
         sid: "WK1234"
       }
-    ]
+    ],
+    isLoading: false
   },
   calabrioContext,
   resettingSkills: false,

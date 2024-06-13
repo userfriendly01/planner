@@ -10,24 +10,20 @@ import {
   ConfirmationModalOptsProps,
   SaveResultProps
 } from "../CallFlowConfirmationModal/CallFlowConfirmationModal.Interfaces";
-import {
-  CallFlowConfirmationModal,
-  ActionContainer,
-  SkillsContainer
-} from "components";
-import { useAdminState } from "context";
+import { CallFlowConfirmationModal } from "callflowmanagement/CallFlowConfirmationModal/CallFlowConfirmationModal";
+import { ActionContainer } from "callflowmanagement/ActionContainer";
+import { SkillsContainer } from "callflowmanagement/SkillsContainer";
+import { useAdminState } from "context/appContext";
 import {
   Skill,
   TritonProfile
-} from "globals";
+} from "globals/interfaces";
 import React from "react";
-import { getAuthenticationProfileTemplates } from "authentication";
-import {
-  filterSkillsByName, logger
-} from "utils";
+import { filterSkillsByName } from "utils/_filterUtils";
+import { logger } from "utils/logger";
 import { Modal } from "@mui/material";
 
-const CallFlowManagementSkills = () => {
+export const CallFlowManagementSkills = () => {
 
   const defaultTableState: TableState = {
     searchBy: "",
@@ -54,9 +50,12 @@ const CallFlowManagementSkills = () => {
   };
 
   const state = useAdminState();
-  const tritonProfile = state.userContext.authenticationProfiles.find((p: any) => p.name === getAuthenticationProfileTemplates().TRITON.name);
-  const isAdmin = tritonProfile.isAdmin;
-  const userProfileId = tritonProfile.profileId;
+
+  const {
+    isAdmin,
+    profileId: userProfileId
+  } = state.userContext;
+
   const [ tableState, setTableState ] = React.useState(defaultTableState);
   const [ confirmationModalOpts, setConfirmationModalOpts ] = React.useState(defaultConfirmationModalOpts);
   const [ saveResult, setSaveResult ] = React.useState(defaultSaveResult);
@@ -134,5 +133,3 @@ const CallFlowManagementSkills = () => {
     </CallflowWrapper>
   );
 };
-
-export default CallFlowManagementSkills;

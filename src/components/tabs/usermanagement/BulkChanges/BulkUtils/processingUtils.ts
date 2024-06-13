@@ -1,37 +1,25 @@
 import {
-  apiPaths,
   AppState,
   WfmBusinessUnit
-} from "globals";
-import {
-  getCalabrioUsers,
-  getManagers,
-  wfmActivateExternalLogon
-} from "services";
+} from "globals/interfaces";
+import { listUMUsers } from "services/user";
+import { getCalabrioUsers } from "services/calabrio";
+import { listUMManagers } from "services/manager";
+import { wfmActivateExternalLogon } from "services/wfmActivateExternalLogon";
 import {
   UploadedRow,
   Template
 } from "../BulkChanges.Interfaces";
-import {
-  formatWorkerResponse,
-  formatManagersResponse,
-  myAxios,
-  getCalabrioWfmOrg,
-  logger
-} from "utils";
+import { getCalabrioWfmOrg } from "utils/calabrioUtils";
+import { logger } from "utils/logger";
 import * as XLSX from "xlsx";
 
 /**
  * Refreshes the triton user state after a bulk update on users
  */
-export const updateTritonUserState = async (state: AppState, dispatch: any): Promise<void> => {
+export const updateTritonUserState = async (_state: AppState, dispatch: () => void): Promise<void> => {
   try {
-    const response = await myAxios.get(apiPaths.GET_WORKERS);
-    const filteredWorkers = formatWorkerResponse(response.data).filter(worker => !worker.inactiveInd && worker.attributes);
-    dispatch(({
-      type: "loadWorkers",
-      payload: filteredWorkers
-    }));
+    await listUMUsers(dispatch);
   } catch (error) {
     logger.error("Failed to update triton user state after bulk upload", { error }, false);
   }
@@ -41,7 +29,7 @@ export const updateTritonUserState = async (state: AppState, dispatch: any): Pro
 /**
  * Refreshes the calabrio user state after a bulk update on users
  */
-export const updateCalabrioUserState = async (state: AppState, dispatch: any): Promise<void> => {
+export const updateCalabrioUserState = async (_state: AppState, dispatch: any): Promise<void> => {
   try {
     const users: any = await getCalabrioUsers();
     dispatch({
@@ -74,13 +62,9 @@ export const updateWFMPersonState = async (state: any, dispatch: any, rows: any[
  */
 export const updateManagerUserState = async (dispatch: any): Promise<void> => {
   try {
-    const managers: any = await getManagers();
-    dispatch({
-      type: "loadManagers",
-      payload: formatManagersResponse(managers)
-    });
-  } catch (error) {
-    logger.error("Failed to update manager state after bulk upload", { error }, false);
+    await listUMManagers(dispatch);
+  } catch(err){
+    logger.error("Failed to update manager state after bulk upload", err);
   }
   return Promise.resolve();
 };
@@ -388,7 +372,7 @@ export const initiateCalls = async (
  * @param selectedTemplates selected templates to be processed
  */
 export const handleWfmExternalLogon = async (state: AppState, dispatch: any, successfulRows: any, selectedTemplates: any) => {
-  const nNumber = state.userContext.pingIdentity?.sub;
+  const { nNumber } = state.userContext;
 
   if(selectedTemplates.some((t: Template) => t.name === "CREATE_TRITON_USER")) {
     const wfmNNumbers: any[] = [];

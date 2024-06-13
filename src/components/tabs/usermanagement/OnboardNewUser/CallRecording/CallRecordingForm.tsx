@@ -1,36 +1,34 @@
 import React from "react";
-import { CallRecordingScope } from "./";
+import { CallRecordingScope } from "usermanagement/CallRecordingScope";
 import {
   FormControlsContainer,
   FormControlsPane
-} from "./CallRecording.Styles";
-import { Dropdown } from "components";
+} from "usermanagement/CallRecording.Styles";
+import { Dropdown } from "components/Dropdown";
 import {
   useAdminState,
-  userFormActions,
   useFormState,
   useFormDispatch
-} from "context";
+} from "context/appContext";
+import { userFormActions } from "context/userFormReducer";
 import {
-  Discrepancy,
-  discrepancyType,
-  formModes
-} from "globals";
-import { getCalabrioUser } from "services";
+  Discrepancy, discrepancyType
+} from "globals/interfaces";
+import { formModes } from "globals";
+import { getCalabrioUser } from "services/calabrio";
 import {
-  calabrioTimeZones,
-  calabrioAllowedRoles,
-  findMatchingQmProfiles,
-  isUnpopulatedField,
+  calabrioTimeZones, calabrioAllowedRoles, findMatchingQmProfiles
+} from "utils/calabrioUtils";
+import { isUnpopulatedField } from "utils/usermanagementUtils";
+import {
   logger
-} from "utils";
-
+} from "utils/logger";
 interface CallRecordingFormInterface {
   twilioWorker: any,
   missingFields: string[]
 }
 
-const CallRecordingForm = (props: CallRecordingFormInterface) => {
+export const CallRecordingForm = (props: CallRecordingFormInterface) => {
   const state = useAdminState();
   const {
     twilioWorker, missingFields
@@ -315,5 +313,3 @@ const CallRecordingForm = (props: CallRecordingFormInterface) => {
     </FormControlsContainer>
   );
 };
-
-export default CallRecordingForm;

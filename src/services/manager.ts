@@ -1,36 +1,89 @@
-import { apiPaths }from "globals";
-import { myAxios } from "utils";
-export interface DbAddManagerRequest {
-  manager_first_nme: string;
-  manager_last_nme: string;
-  manager_n_num: string;
-  profile_id: number;
-  calabrio_team_ids: string
-}
-export interface DbUpdateManagerRequest {
-  manager_first_nme?: string;
-  manager_last_nme?: string;
-  manager_n_num?: string;
-  profile_id: number;
-  calabrio_team_ids: string
-}
-export interface DbManagerResponse {
-  manager_first_nme: string;
-  manager_last_nme: string;
-  manager_n_num: string;
-  manager_id: number;
-  profile_id: number;
-  calabrio_team_ids: string
-}
+import { apolloClient } from "../components/core/Auth/SharedGraphAPIProvider";
+import {
+  Action,
+  DBList,
+  UMManager
+}from "globals/interfaces";
+import {
+  CREATE_MANAGER,
+  DELETE_MANAGER,
+  UPDATE_MANAGER
+}from "globals/graphql";
+import { getPaginatedResults } from "utils/graphUtils";
+import { logger } from "utils/logger";
 
-export const addManager = (manager: DbAddManagerRequest): Promise<any> =>
-  myAxios.post(apiPaths.MANAGERS, manager).then(response => response.data);
+/**
+ * This helper function gets all the managers using pagination. If there's a next token, it will
+ * concatenate all the managers
+ * 
+ * @param dispatch - AppState Dispatch function
+ * @returns - The first query's promise
+ */
 
-export const editManager = (managerId: string | number, manager: DbUpdateManagerRequest): Promise<any> =>
-  myAxios.put(`${apiPaths.MANAGERS}/${managerId}`, manager).then(response => response.data);
+export const listUMManagers = async (dispatch: (action: Action) => void): Promise<DBList<UMManager>> => {
+  try {
+    await getPaginatedResults("UMManager", dispatch);
+    return;
+  } catch(error) {
+    logger.error("Failed to fetch managers from graph", { error });
+    throw ({
+      error,
+      msg: "Failed to fetch managers from graph"
+    });
+  }
+};
 
-export const deleteManager = (managerId: string | number): Promise<any> =>
-  myAxios.delete(`${apiPaths.MANAGERS}/${managerId}`).then(response => response.data);
+export const addManager = async (manager: Partial<UMManager>) => {
+  const {
+    errors, data
+  }  = await apolloClient.mutate<{ manager: UMManager }>({
+    mutation: CREATE_MANAGER,
+    variables: {
+      input: manager
+    }
+  });
 
-export const getManagers = (): Promise<DbManagerResponse[]> =>
-  myAxios.get(apiPaths.MANAGERS).then(response => response.data);
+  if (errors?.length) {
+    logger.error("Failed to add manager from graph", { errors } );
+    throw errors;
+  }
+
+  return data.manager;
+};
+
+export const editManager = async (n_number: string, manager: Partial<UMManager>) => {
+  const {
+    errors
+  }  = await apolloClient.mutate<{ manager: UMManager }>({
+    mutation: UPDATE_MANAGER,
+    variables: {
+      n_number,
+      input: manager
+    }
+  });
+
+  if (errors?.length) {
+    logger.error("Failed to edit manager from graph", { errors } );
+    throw errors;
+  }
+
+  return;
+};
+
+export const deleteManager = async (n_number: string) => {
+  const {
+    errors
+  }  = await apolloClient.mutate<{ manager: UMManager }>({
+    mutation: DELETE_MANAGER,
+    variables: {
+      n_number
+    }
+  });
+
+  if (errors?.length) {
+    logger.error("Failed to delete manager from graph", { errors } );
+    throw errors;
+  }
+
+  return;
+};

@@ -1,4 +1,4 @@
-import { checkIfPO } from "authentication";
+import { checkIfPO } from "authentication/authUtils";
 import React from "react";
 import {
   BubbleDiv,
@@ -13,30 +13,27 @@ import {
   TableDataFlex,
   IconWrapper
 } from "./ProfileSettingsTable.Styles";
+import { sortProfilesById } from "utils/_sortUtils";
+import { formatTenDigitNumber } from "utils/numberUtils";
 import {
   formatAggregateQueues,
   formatProfileBooleanData,
   formatProfileACWDataEntry,
   formatSimpleText,
   formatActivityData,
-  sortProfilesById,
-  formatSelfServiceIndicatorData,
-  formatTenDigitNumber
-} from "utils";
+  formatSelfServiceIndicatorData
+} from "utils/profileUtils";
 import { Tooltip } from "@mui/material";
 import { Edit } from "@mui/icons-material";
 import {
   profileTableColumnHeader,
   formModes
-} from "globals";
-import {
-  profileEntryFormDispatch,
-  profileEntryFormActions
-} from "context";
+} from "globals/index";
+import { profileEntryFormDispatch } from "context/appContext";
+import { profileEntryFormActions } from "context/profileEntryFormReducer";
 
-const ProfileSettingsTable = props => {
+export const ProfileSettingsTable = props => {
   const {
-    environment,
     profileList,
     setProfileModalState,
     loggedInUser
@@ -160,7 +157,7 @@ const ProfileSettingsTable = props => {
                       <TableText style={{ "text-wrap": "nowrap" }}>{profile.fwd_to_num ? formatTenDigitNumber(profile.fwd_to_num) : ""}</TableText>
                     </CustomTableData>
                     {
-                      checkIfPO(loggedInUser, environment) ?
+                      checkIfPO(loggedInUser) ?
                         <CustomTableData>
                           <IconWrapper onClick={editButtonOnClick(profile)} data-testid="edit-button">
                             <Edit fontSize={"inherit"}/>
@@ -178,5 +175,3 @@ const ProfileSettingsTable = props => {
     </TableContainer>
   );
 };
-
-export default ProfileSettingsTable;

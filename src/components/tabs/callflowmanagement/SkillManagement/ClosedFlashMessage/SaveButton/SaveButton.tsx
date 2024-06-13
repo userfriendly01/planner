@@ -2,12 +2,11 @@ import React from "react";
 import {
   useAdminState,
   useAdminDispatch
-} from "context";
+} from "context/appContext";
 import {
-  ModalOverlayStatuses,
-  Skill,
-  timeouts
-} from "globals";
+  ModalOverlayStatuses, Skill
+} from "globals/interfaces";
+import { timeouts } from "globals/index";
 import { SaveButtonProps } from "../ClosedFlashMessage.Interfaces";
 import {
   ConfirmationDiv,
@@ -16,7 +15,7 @@ import {
 } from "../ClosedFlashMessage.Styles";
 import { ActionTypes } from "../../Skills.Interfaces";
 
-const SaveButton = (props: SaveButtonProps) => {
+export const SaveButton = (props: SaveButtonProps) => {
   const {
     action,
     confirmationModalOpts,
@@ -31,7 +30,7 @@ const SaveButton = (props: SaveButtonProps) => {
 
   const state = useAdminState();
   const dispatch = useAdminDispatch();
-  const nNumber = state.userContext.pingIdentity.sub;
+  const { nNumber } = state.userContext;
   const isSingleSelection = tableState.selected.length === 1;
   const isMultiSelection = tableState.selected.length > 1;
 
@@ -174,7 +173,7 @@ const SaveButton = (props: SaveButtonProps) => {
   const updateStateOnResolvedPromises = (fulfilledSkills: Skill[])=> {
     const skills = state.skillContext.skills.slice();
     const updatedText = action === ActionTypes.DELETE ? "" : text;
-    const updatedSkills = skills.map(s => {
+    const updatedSkills = skills.map((s: any) => {
       let updatedSkill = s;
       fulfilledSkills.forEach(skill => {
         if(s.name === skill.name) {
@@ -206,5 +205,3 @@ const SaveButton = (props: SaveButtonProps) => {
     </div>
   );
 };
-
-export default SaveButton;

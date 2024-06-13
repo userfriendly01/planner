@@ -5,54 +5,49 @@ import {
   ModalContainer,
   Wrapper,
   Header4
-} from "./ManagerModal.Styles";
+} from "usermanagement/ManagerModal.Styles";
 import {
   defaultNNumber,
   DropdownOption,
   ManagerModalProps
-} from "./ManagerModal.Interfaces";
-import {
-  Dropdown,
-  NNumberInput,
-  ModalOverlay,
-  StyledButton,
-  CalabrioTeamModal,
-  PaperContainer
-} from "components";
+} from "usermanagement/ManagerModal.Interfaces";
+import { Dropdown } from "components/Dropdown";
+import { NNumberInput } from "components/NNumberInput";
+import { ModalOverlay } from "components/ModalOverlay";
+import { StyledButton } from "components/StyledButton";
+import { CalabrioTeamModal } from "orgmanagement/CalabrioTeamModal";
+import { PaperContainer } from "components/PaperContainer";
 import {
   useAdminDispatch,
   useAdminState
-} from "context";
+} from "context/appContext";
 import {
-  FlexColumn,
-  Manager,
+  UMManager,
   ModalOverlayStatuses,
-  Worker
-} from "globals";
+  UMUser
+} from "globals/interfaces";
+import { FlexColumn } from "globals/interfaces";
 import React, {
   useState, useEffect
 } from "react";
+import { updateUser } from "services/user";
 import {
-  addManager,
-  editManager,
-  FetchUserResponse,
-  fetchUser,
-  updateUser
-} from "services";
+  addManager, editManager
+} from "services/manager";
 import {
-  logger,
-  sortProfilesByName
-} from "utils";
+  FetchUserResponse, fetchUser
+} from "services/fetchUser";
+import { sortProfilesByName } from "utils/_sortUtils";
+import { logger } from "utils/logger";
 import {
   IconButton,
   Modal
 } from "@mui/material";
 import { CloseRounded } from "@mui/icons-material";
-import { StyledExportButton } from "components/tabs/callflowmanagement/SkillManagement/Skills.Styles";
+import { StyledExportButton } from "callflowmanagement/SkillManagement/Skills.Styles";
 import { ExcelExport } from "@progress/kendo-react-excel-export";
 
-
-const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any => {
+export const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any => {
   const {
     handleClose,
     selectedManager
@@ -61,7 +56,7 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
   const _export = React.useRef(null);
 
   const state = useAdminState();
-  const nNumber = state.userContext.pingIdentity?.sub;
+  const { nNumber } = state.userContext;
   const profiles = state.profileContext.profiles;
   const calabrioTeams = state.calabrioContext.teams;
   const options: DropdownOption[] = [
@@ -79,10 +74,10 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
       ...team
     }))
   ];
-  const [manager, setManager] = useState<Manager>(selectedManager ? selectedManager : null);
+  const [manager, setManager] = useState<Partial<UMManager>>(selectedManager ? selectedManager : null);
   const [errorMessage, setErrorMessage] = useState<any>(null);
   const [saveStatus, setSaveStatus] = useState<ModalOverlayStatuses>(null);
-  const [managerNNumber, setManagerNNumber] = useState<string>(selectedManager ? selectedManager.manager_n_number : defaultNNumber);
+  const [managerNNumber, setManagerNNumber] = useState<string>(selectedManager ? selectedManager.manager_n_num : defaultNNumber);
   const [fetchedUser, setFetchedUser] = useState<FetchUserResponse>(null);
   const [ profile, setProfile ] = useState<any>(selectedManager ? profiles.find(p => p.profile_id === selectedManager.profile_id) : null);
   const [ selectedCalabrioTeams, setSelectedCalabrioTeams ] = useState<number[]>(selectedManager ? selectedManager.calabrio_team_ids :[]);
@@ -97,13 +92,12 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
   }, []);
 
   const checkForNameChange = () => {
-    fetchUser(selectedManager.manager_n_number)
+    fetchUser(selectedManager.manager_n_num)
       .then(newlyFetchedManager => {
         if (selectedManager.manager_first_name !== newlyFetchedManager.firstName || selectedManager.manager_last_name !== newlyFetchedManager.lastName) {
           setHasNameDiscrepancy(true);
           setManager({
-            manager_id: selectedManager.manager_id,
-            manager_n_number: selectedManager.manager_n_number.toLowerCase(),
+            manager_n_num: selectedManager.manager_n_num.toLowerCase(),
             manager_first_name: newlyFetchedManager.firstName,
             manager_last_name: newlyFetchedManager.lastName
           });
@@ -140,7 +134,7 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
     setIsTeamModalOpen(false);
   };
 
-  const handleExport = (selected: Worker[]) => {
+  const handleExport = (selected: UMUser[]) => {
     const columns = [
       {
         field: "n_number",
@@ -180,13 +174,13 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
   const addManagerClicked = (): Promise<any> => {
     setIsDisabled(true);
     setSaveStatus(ModalOverlayStatuses.SAVING);
-    if (state.managerContext.managers.some((savedManager: Manager) => savedManager.manager_n_number.toLowerCase() === manager.manager_n_number)) {
+    if (state.managerContext.managers.some((savedManager: UMManager) => savedManager.manager_n_num.toLowerCase() === manager.manager_n_num)) {
       setSaveStatus(ModalOverlayStatuses.FAIL);
       setTimeout(() => setSaveStatus(null), 2000);
       setErrorMessage("Manager already exists");
 
       logger.warn("addManager - Failure - Manager Already exists", {
-        managerNNumber: manager.manager_n_number
+        managerNNumber: manager.manager_n_num
       }, false);
 
       setIsDisabled(false);
@@ -195,13 +189,13 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
     const profileId = profile ? profile.profile_id : null;
 
     return addManager({
-      manager_first_nme: manager.manager_first_name.replace("'", "\\'"),
-      manager_last_nme: manager.manager_last_name.replace("'", "\\'"),
-      manager_n_num: manager.manager_n_number,
+      manager_first_name: manager.manager_first_name.replace("'", "\\'"),
+      manager_last_name: manager.manager_last_name.replace("'", "\\'"),
+      manager_n_num: manager.manager_n_num,
       profile_id: profileId,
-      calabrio_team_ids: JSON.stringify(selectedCalabrioTeams)
+      calabrio_team_ids: selectedCalabrioTeams
     })
-      .then(res => {
+      .then((res: any) => {
         dispatch(({
           type: "addManager",
           payload: {
@@ -213,7 +207,7 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
         }));
         dispatch({
           type: "updateManagerFilter",
-          payload: manager.manager_n_number
+          payload: manager.manager_n_num
         });
         setSaveStatus(ModalOverlayStatuses.SUCCESS);
         setTimeout(handleClose, 2000);
@@ -222,10 +216,10 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
         logger.info("Successfully created manager", {
           res,
           nNumber,
-          managerNNumber: manager.manager_n_number
+          managerNNumber: manager.manager_n_num
         });
       })
-      .catch(error => {
+      .catch((error: any) => {
         setSaveStatus(ModalOverlayStatuses.FAIL);
         setTimeout(() => setSaveStatus(null), 2000);
         setErrorMessage("Failed to Create Manager");
@@ -234,7 +228,7 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
         logger.error("Failed to create manager", {
           error,
           nNumber,
-          managerNNumber: manager.manager_n_number
+          managerNNumber: manager.manager_n_num
         });
       });
   };
@@ -242,19 +236,18 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
   const editManagerClicked = async (): Promise<any> => {
     setSaveStatus(ModalOverlayStatuses.SAVING);
     const profileId = profile ? profile.profile_id : null;
-    const teams = JSON.stringify(selectedCalabrioTeams);
 
     try {
-      const res = await editManager(selectedManager.manager_id, {
-        manager_first_nme: manager.manager_first_name,
-        manager_last_nme: manager.manager_last_name,
+      const res = await editManager(selectedManager.manager_n_num, {
+        manager_first_name: manager.manager_first_name,
+        manager_last_name: manager.manager_last_name,
         profile_id: profileId,
-        calabrio_team_ids: teams
+        calabrio_team_ids: selectedCalabrioTeams
       });
-      const successes: Worker[] = [];
-      const failures: Worker[] = [];
+      const successes: UMUser[] = [];
+      const failures: UMUser[] = [];
       if (hasNameDiscrepancy) {
-        const affectedWorkers: Worker[] = state.workerContext.workers.filter(worker => worker.attributes.manager_n_number === selectedManager.manager_n_number);
+        const affectedWorkers: UMUser[] = state.workerContext.workers.filter(worker => worker.attributes.manager_n_number === selectedManager.manager_n_num);
         const results = await Promise.allSettled(affectedWorkers.map(worker => {
           const body = {
             attributes: {
@@ -299,7 +292,7 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
         }
       }
       const updatedArray = state.managerContext.managers.map(m => {
-        if(m.manager_id === manager.manager_id){
+        if(m.manager_n_num === manager.manager_n_num){
           return {
             ...manager,
             profile_id: profileId,
@@ -329,7 +322,7 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
         setErrorMessage(failUl);
         logger.warn("Some failures updating manager name in worker attributes while updating manager name", {
           nNumber,
-          managerNNumber: manager.manager_n_number,
+          managerNNumber: manager.manager_n_num,
           failures,
           res
         });
@@ -338,7 +331,7 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
         setTimeout(handleClose, 2000);
         logger.info("Successfully updated manager", {
           nNumber,
-          managerNNumber: manager.manager_n_number,
+          managerNNumber: manager.manager_n_num,
           res
         });
       }
@@ -351,7 +344,7 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
       logger.error("Failed to update manager", {
         error,
         nNumber,
-        managerNNumber: manager.manager_n_number
+        managerNNumber: manager.manager_n_num
       });
     }
   };
@@ -390,7 +383,7 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
             onComplete={(fetchedUser, newNNumber) => {
               setManagerNNumber(newNNumber);
               setManager({
-                manager_n_number: newNNumber.toLowerCase(),
+                manager_n_num: newNNumber.toLowerCase(),
                 manager_first_name: fetchedUser.firstName,
                 manager_last_name: fetchedUser.lastName
               });
@@ -458,5 +451,3 @@ const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any 
     </ModalContainer>
   );
 });
-
-export default ManagerModal;

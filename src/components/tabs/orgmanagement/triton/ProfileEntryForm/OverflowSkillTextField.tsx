@@ -1,14 +1,14 @@
-import { CustomInput } from "components";
+import { CustomInput } from "components/CustomInput";
 import {
   profileEntryFormState,
   profileEntryFormDispatch
-} from "context";
+} from "context/appContext";
 import { profileEntryFormActions } from "context/reducers/profileEntryFormReducer";
 import React from "react";
-import { isOverflowSkillValid } from "utils";
+import { isOverflowSkillValid } from "utils/profileUtils";
 import { TextFieldProps } from "./ProfileEntryForm.Interfaces";
 
-const OverflowSkillTextField = (props: TextFieldProps) => {
+export const OverflowSkillTextField = (props: TextFieldProps) => {
   const {
     label
   } = props;
@@ -36,5 +36,3 @@ const OverflowSkillTextField = (props: TextFieldProps) => {
     />
   );
 };
-
-export default OverflowSkillTextField;

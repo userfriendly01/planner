@@ -1,7 +1,7 @@
 /* eslint-disable no-console, max-len,  no-return-assign */
 import {
   logger
-} from "utils";
+} from "utils/logger";
 
 import {
   DynamicAction

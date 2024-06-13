@@ -1,16 +1,13 @@
-import ProgressBar from "../ProgressBar";
-import ProcessingModal from "../ProcessingModal";
+import { ProgressBar } from "usermanagement/ProgressBar";
+import { ProcessingModal } from "../ProcessingModal";
+import { ExportErrorsButton } from "usermanagement/ExportErrorsButton";
+import { ExportSuccessButton } from "usermanagement/ExportSuccessButton";
 import {
-  ExportErrorsButton,
-  ExportSuccessButton
-} from "../../ExportButtons";
-import {
-  performValidations,
-  initiateCalls,
-  identifySuccessfulRecords
-} from "../../BulkUtils";
-import { getUpdateTemplates } from "../../BulkTemplates";
-import { StyledButton } from "components";
+  initiateCalls, identifySuccessfulRecords
+} from "usermanagement/processingUtils";
+import { performValidations } from "usermanagement/validationUtils";
+import { getUpdateTemplates } from "usermanagement/templates";
+import { StyledButton } from "components/StyledButton";
 import React from "react";
 import {
   act,
@@ -18,25 +15,30 @@ import {
   setupMockedComponents,
   waitFor
 } from "testUtils";
-import { useAdminDispatch } from "context";
+import { useAdminDispatch } from "context/appContext";
 
 jest.mock("../ProgressBar", () => ({
-  __esModule: true,
-  default: jest.fn()
+  ProgressBar: jest.fn()
 }));
 
-jest.mock("../../BulkUtils", () => ({
-  performValidations: jest.fn(),
+jest.mock("usermanagement/validationUtils", () => ({
+  performValidations: jest.fn()
+}));
+
+jest.mock("usermanagement/processingUtils", () => ({
   initiateCalls: jest.fn(),
   identifySuccessfulRecords: jest.fn()
 }));
 
-jest.mock("../../ExportButtons", () => ({
-  ExportErrorsButton: jest.fn(),
+jest.mock("usermanagement/ExportErrorsButton", () => ({
+  ExportErrorsButton: jest.fn()
+}));
+
+jest.mock("usermanagement/ExportSuccessButton", () => ({
   ExportSuccessButton: jest.fn()
 }));
 
-jest.mock("components", () => ({
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
 }));
 
@@ -44,7 +46,7 @@ jest.mock("@mui/material", () => ({
   Paper: jest.requireActual("@mui/material").Paper
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn(),
   useAdminDispatch: jest.fn()
 }));

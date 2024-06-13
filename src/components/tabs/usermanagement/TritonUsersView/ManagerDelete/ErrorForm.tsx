@@ -2,17 +2,17 @@ import {
   ManagerDeleteButtonWrapper,
   TextBox,
   PenaltyBox
-} from "./ManagerDelete.Styles";
-import { StyledButton } from "components";
-import { FlexColumn } from "globals";
+} from "usermanagement/ManagerDelete.Styles";
+import { StyledButton } from "components/StyledButton";
+import { FlexColumn } from "globals/interfaces";
 import React from "react";
 
-export interface ErrorFormProps {
+interface ErrorFormProps {
   TeamMembers: string,
   HandleClose: () => void
 }
 
-const ErrorForm = (props:ErrorFormProps) : any => {
+export const ErrorForm = (props: ErrorFormProps) : any => {
   const {
     TeamMembers,
     HandleClose
@@ -36,5 +36,3 @@ const ErrorForm = (props:ErrorFormProps) : any => {
     </div>
   );
 };
-
-export default ErrorForm;

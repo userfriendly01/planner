@@ -1,19 +1,17 @@
-import ManagerDelete from "../ManagerDelete";
+import { ManagerDelete } from "../ManagerDelete";
 import { CloseRounded } from "@mui/icons-material";
-import {
-  ModalOverlay,
-  PaperContainer,
-  StyledButton,
-  ConfirmationForm,
-  ErrorForm
-} from "components";
+import { StyledButton } from "components/StyledButton";
+import { ConfirmationForm } from "usermanagement/ConfirmationForm";
+import { ErrorForm } from "usermanagement/ErrorForm";
+import { ModalOverlay } from "components/ModalOverlay";
+import { PaperContainer } from "components/PaperContainer";
 import {
   useAdminDispatch,
   useAdminState
-} from "context";
+} from "context/appContext";
 import React from "react";
 import { act } from "react-dom/test-utils";
-import { deleteManager } from "services";
+import { deleteManager } from "services/manager";
 import {
   expectOnlyPassedProps,
   render,
@@ -24,29 +22,37 @@ import {
 jest.useFakeTimers();
 
 jest.mock("@mui/icons-material", () => ({
-  __esModule: true,
   CloseRounded: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn(),
   useAdminDispatch: jest.fn()
 }));
 
-jest.mock("services", () => ({
-  __esModule: true,
+jest.mock("services/manager", () => ({
   addManager: jest.fn(),
   editManager: jest.fn(),
-  deleteManager: jest.fn(),
-  FetchUserResponse: jest.requireActual("services").FetchUserResponse
+  deleteManager: jest.fn()
 }));
 
-jest.mock("components", () => ({
-  __esModule: true,
-  ConfirmationForm: jest.fn(),
-  ErrorForm: jest.fn(),
-  ModalOverlay: jest.fn(),
-  PaperContainer: jest.fn(),
+jest.mock("usermanagement/ConfirmationForm", () => ({
+  ConfirmationForm: jest.fn()
+}));
+
+jest.mock("usermanagement/ErrorForm", () => ({
+  ErrorForm: jest.fn()
+}));
+
+jest.mock("components/ModalOverlay", () => ({
+  ModalOverlay: jest.fn()
+}));
+
+jest.mock("components/PaperContainer", () => ({
+  PaperContainer: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
 }));
 
@@ -74,19 +80,15 @@ const defaultAdminState = {
   managerContext: {
     managers: [
       {
-        manager_id: 3,
-        manager_n_number: "n0262226"
+        manager_n_num: "n0262226"
       },
       {
-        manager_id: 10,
-        manager_n_number: "n0263786"
+        manager_n_num: "n0263786"
       }
     ]
   },
   userContext: {
-    pingIdentity: {
-      sub: "n0263786"
-    }
+    nNumber: "n1234567"
   },
   workerContext: {
     workers: [
@@ -131,7 +133,7 @@ describe("<ManagerDelete />", () => {
   });
 
   const managerObject = manager => {
-    return { manager_n_number: manager };
+    return { manager_n_num: manager };
   };
 
   describe("initial state of ManagerDelete", () => {
@@ -162,7 +164,7 @@ describe("<ManagerDelete />", () => {
         });
         expectOnlyPassedProps(ConfirmationForm, {
           SelectedManager: {
-            manager_n_number: "n0263786"
+            manager_n_num: "n0263786"
           }
         });
       });
@@ -180,7 +182,7 @@ describe("<ManagerDelete />", () => {
         });
         expectOnlyPassedProps(ConfirmationForm, {
           SelectedManager: {
-            manager_n_number: "n0263786"
+            manager_n_num: "n0263786"
           }
         });
       });

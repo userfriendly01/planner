@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { StyledButton } from "components";
+import { StyledButton } from "components/StyledButton";
+import { FlexRow } from "globals/interfaces";
 
 export const ModalContainer = styled.div<{theme: any}>`
   background-color: ${props => props.theme.backgroundColor};
@@ -20,11 +21,6 @@ export const ModalContainer = styled.div<{theme: any}>`
 
 export const Header1 = styled.h1`
   align-self: center;
-`;
-
-export const FlexRow = styled.div`
-  display: flex;
-  flex: 1 1 auto;
 `;
 
 export const ButtonWrapper = styled(FlexRow)`

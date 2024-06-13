@@ -1,25 +1,23 @@
 import {
   Row,
   StepWrapper
-} from "../BulkChanges.Styles";
+} from "usermanagement/BulkChanges.Styles";
 import {
   Template,
   BulkActionFormProps
-} from "../BulkChanges.Interfaces";
-import { updateSelectedTemplates } from "../BulkUtils";
-import {
-  BulkUpdateAttributes,
-  BulkUpdateManager,
-  BulkUpdateDefaultSkills,
-  BulkUpdateCallerStates,
-  BulkUpdateHrSync
-} from "./";
-import { getUpdateTemplates } from "../BulkTemplates";
-import { Dropdown } from "components";
-import { useAdminState } from "context";
+} from "usermanagement/BulkChanges.Interfaces";
+import { updateSelectedTemplates } from "usermanagement/validationUtils";
+import { BulkUpdateAttributes } from "usermanagement/BulkActions/BulkUpdateAttributes";
+import { BulkUpdateManager } from "usermanagement/BulkActions/BulkUpdateManager";
+import { BulkUpdateDefaultSkills } from "usermanagement/BulkActions/BulkUpdateDefaultSkills";
+import { BulkUpdateCallerStates } from "usermanagement/BulkActions/BulkUpdateCallerStates";
+import { BulkUpdateHrSync } from "usermanagement/BulkActions/BulkUpdateHrSync";
+import { getUpdateTemplates } from "usermanagement/templates";
+import { Dropdown } from "components/Dropdown";
+import { useAdminState } from "context/appContext";
 import React from "react";
 
-const BulkUpdateForm = (props: BulkActionFormProps) => {
+export const BulkUpdateForm = (props: BulkActionFormProps) => {
   const {
     setUploadedForm,
     setShowTemplates,
@@ -120,5 +118,3 @@ const BulkUpdateForm = (props: BulkActionFormProps) => {
     </Row>
   );
 };
-
-export default BulkUpdateForm;

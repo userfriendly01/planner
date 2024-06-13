@@ -1,4 +1,4 @@
-import SkillEntryButton from "../SkillEntryButton";
+import { SkillEntryButton } from "../SkillEntryButton";
 import React from "react";
 import {
   act,
@@ -13,7 +13,7 @@ jest.mock("../../Skills.Styles", () => ({
   StyledExportButton: jest.fn()
 }));
 
-jest.mock("components", () => ({
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
 }));
 

@@ -1,21 +1,19 @@
 import React from "react";
-import { EditRouting } from "../index";
+import { EditRouting } from "../EditRouting";
 import {
   ROUTING_CACHE_MASTER_DATA
-} from "utils";
+} from "utils/alohaRoutingUtils";
 import {
   fireEvent, render, act, setupMockedComponents, adGroupPermissionMapping
 } from "testUtils";
 import {
   updateRoutingDB, deleteRoutingRule
-} from "services";
+} from "services/routingTableService";
 import {
   Grid, Button
 } from "@mui/material";
-import {
-  CustomToast, ComponentControl
-} from "components";
-import { env } from "globals";
+import { CustomToast } from "components/CustomToast";
+import { ComponentControl } from "components/ComponentControl";
 
 const validRoutingData = {
   id: 1,
@@ -58,22 +56,26 @@ jest.mock("@mui/x-date-pickers/TimePicker", () => ({
   TimePicker: jest.fn()
 }));
 
-jest.mock("components", () => {
-  return{
-    __esModule: true,
-    CustomToast: jest.fn(),
-    ComponentControl: jest.fn()
-  };
-});
+jest.mock("components/CustomToast", () => ({
+  CustomToast: jest.fn()
+}));
 
+jest.mock("components/ComponentControl", () => ({
+  ComponentControl: jest.fn()
+}));
+
+jest.mock("services/routingTableService", () => ({
+  deleteRoutingRule: jest.fn(),
+  updateRoutingDB: jest.fn()
+}));
 const mockMasterData = {
   brand: ["Test Brand"],
   channel: ["Test1 Channel", "Test2 Channel"]
 };
 
-const renderEditRouting = (isOpen, data) => {
+const renderEditRouting = (isOpen, data, permissions = adGroupPermissionMapping) => {
   return render(
-    <EditRouting openEditModal={openEditModal} selectedRow={data} isOpen={isOpen} matchedGroups={adGroupPermissionMapping} />
+    <EditRouting openEditModal={openEditModal} selectedRow={data} isOpen={isOpen} matchedGroups={permissions} />
   );
 };
 
@@ -116,9 +118,17 @@ describe("<EditRouting />", () => {
 
   describe("Basic Simulate the Component", () => {
     test("Simulate the component with prod as environment", () => {
-      env.APP_ENV = "production";
+      const permissions = [{
+        ...adGroupPermissionMapping[2],
+        roles: [
+          {
+            name: "RouteReadWrite",
+            permissionLevel: "write"
+          }
+        ]
+      }];
 
-      renderEditRouting(true, validRoutingData);
+      renderEditRouting(true, validRoutingData, permissions);
       const saveButtonClick = Button.mock.calls[0][0].onClick;
       const saveButton = Button.mock.calls[0][0];
       act(() => {
@@ -127,15 +137,23 @@ describe("<EditRouting />", () => {
       expect(saveButton.disabled).toBe(false);
     });
     test("Simulate the component with prod as environment with read only access", () => {
-      env.APP_ENV = "production";
+      const permissions = [{
+        ...adGroupPermissionMapping[2],
+        roles: [
+          {
+            name: "RouteRead",
+            permissionLevel: "read"
+          }
+        ]
+      }];
 
-      renderEditRouting(true, validRoutingData);
+      renderEditRouting(true, validRoutingData, permissions);
       const saveButtonClick = Button.mock.calls[0][0].onClick;
       const saveButton = Button.mock.calls[0][0];
       act(() => {
         saveButtonClick();
       });
-      expect(saveButton.disabled).toBe(false);
+      expect(saveButton.disabled).toBe(true);
     });
   });
   describe("Edit Routing Modal Block", () => {

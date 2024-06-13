@@ -8,7 +8,9 @@ const env = `window.env = {
   AZURE_CLIENT_ID: "${process.env.AZURE_CLIENT_ID}",
   AZURE_REDIRECT_URI: "${process.env.AZURE_REDIRECT_URI}",
   TROUX_ID: "${process.env.TROUX_ID}",
-  GRAPH_API_URL: "${process.env.GRAPH_API_URL}"
+  GRAPH_API_URL: "${process.env.GRAPH_API_URL}",
+  GRAPH_CLIENT_ID: "${process.env.GRAPH_CLIENT_ID}",
+  SOFTPHONE_SERVICE_URL: "${process.env.SOFTPHONE_SERVICE_URL}",
 };
 `;
 

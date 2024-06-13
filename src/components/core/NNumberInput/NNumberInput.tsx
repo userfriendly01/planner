@@ -1,14 +1,12 @@
 import { ModalNNumberProps } from "./NNumberInput.Interfaces";
-import {
-  CustomInput,
-  ModalHelperText
-} from "components";
-import { nNumMatcher } from "globals";
+import { CustomInput } from "components/CustomInput";
+import { ModalHelperText } from "components/ModalHelperText";
+import { nNumMatcher } from "globals/index";
 import React, { useState } from "react";
-import { fetchUser } from "services";
-import { logger } from "utils";
+import { fetchUser } from "services/fetchUser";
+import { logger } from "utils/logger";
 
-const NNumberEntryField = (props: ModalNNumberProps) => {
+export const NNumberInput = (props: ModalNNumberProps) => {
   const {
     disabled,
     fetchedUser,
@@ -67,5 +65,3 @@ const NNumberEntryField = (props: ModalNNumberProps) => {
     </>
   );
 };
-
-export default NNumberEntryField;

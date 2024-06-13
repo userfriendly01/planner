@@ -1,18 +1,16 @@
-import ProfileFormButtons from "../ProfileFormButtons";
+import { ProfileFormButtons } from "../ProfileFormButtons";
 import React from "react";
 import {
   profileEntryFormDispatch,
   profileEntryFormState,
-  profileEntryFormActions,
   useAdminState
-} from "context";
+} from "context/appContext";
+import { profileEntryFormActions } from "context/profileEntryFormReducer";
 import { Modal } from "@mui/material";
-import { StyledButton } from "components";
-import {
-  formModes,
-  ModalOverlayStatuses
-} from "globals";
-import { isProfileFormValid } from "utils";
+import { StyledButton } from "components/StyledButton";
+import { formModes } from "globals/index";
+import { ModalOverlayStatuses } from "globals/interfaces";
+import { isProfileFormValid } from "utils/profileUtils";
 import {
   act,
   render,
@@ -23,19 +21,17 @@ import {
   validProfileEntryFormState,
   initialTestState
 } from "testUtils";
-import { createProfile } from "services";
+import { createProfile } from "services/profile";
 
 jest.useFakeTimers();
 
-jest.mock("components", () => ({
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
 }));
 
-jest.mock("context", () => ({
-  __esModule: true,
+jest.mock("context/appContext", () => ({
   profileEntryFormState: jest.fn(),
   profileEntryFormDispatch: jest.fn(),
-  profileEntryFormActions: { RESET_FORM: "RESET_FORM" },
   useAdminState: jest.fn()
 }));
 
@@ -44,12 +40,15 @@ jest.mock("@mui/material", () => ({
   Modal: jest.fn()
 }));
 
-jest.mock("utils", () => ({
+jest.mock("utils/profileUtils", () => ({
   isProfileFormValid: jest.fn(),
   createProfilePayload: jest.fn(),
-  updateProfilePayload: jest.fn(),
-  wait: jest.requireActual("utils").wait,
-  logger: jest.requireActual("utils").logger
+  updateProfilePayload: jest.fn()
+}));
+
+jest.mock("services/profile", () => ({
+  createProfile: jest.fn(),
+  editProfile: jest.fn()
 }));
 
 const mockSetForm = jest.fn();

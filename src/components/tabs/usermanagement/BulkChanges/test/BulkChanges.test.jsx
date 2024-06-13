@@ -1,18 +1,12 @@
-import BulkChanges from "../BulkChanges";
-import {
-  BulkCreateForm,
-  BulkUpdateForm
-} from "../BulkActions";
-import { views } from "../BulkChanges.Interfaces";
-import {
-  ExportTemplateButton,
-  ExportOptionsButton
-} from "../ExportButtons";
-import { ProcessingModal } from "../Processing";
-import {
-  Dropdown,
-  StyledButton
-} from "components";
+import { BulkChanges } from "../BulkChanges";
+import { BulkCreateForm } from "usermanagement/BulkCreateForm";
+import { BulkUpdateForm } from "usermanagement/BulkUpdateForm";
+import { views } from "usermanagement/BulkChanges.Interfaces";
+import { ExportTemplateButton } from "usermanagement/ExportTemplateButton";
+import { ExportOptionsButton } from "usermanagement/ExportOptionsButton";
+import { ProcessingModal } from "usermanagement/ProcessingModal";
+import { Dropdown } from "components/Dropdown";
+import { StyledButton } from "components/StyledButton";
 import React from "react";
 import {
   act,
@@ -24,36 +18,48 @@ import {
   waitFor
 } from "testUtils";
 import * as XLSX from "xlsx";
-import { Modal } from "@mui/material";
-import { useAdminState } from "context";
+import {
+  CircularProgress, Modal
+} from "@mui/material";
+import { useAdminState } from "context/appContext";
 
-jest.mock("../BulkActions", () => ({
-  BulkCreateForm: jest.fn(),
+jest.mock("usermanagement/BulkCreateForm", () => ({
+  BulkCreateForm: jest.fn()
+}));
+
+jest.mock("usermanagement/BulkUpdateForm", () => ({
   BulkUpdateForm: jest.fn()
 }));
 
-jest.mock("../ExportButtons", () => ({
-  ExportTemplateButton: jest.fn(),
+jest.mock("usermanagement/ExportTemplateButton", () => ({
+  ExportTemplateButton: jest.fn()
+}));
+
+jest.mock("usermanagement/ExportOptionsButton", () => ({
   ExportOptionsButton: jest.fn()
 }));
 
-jest.mock("../Processing", () => ({
+jest.mock("usermanagement/ProcessingModal", () => ({
   ProcessingModal: jest.fn()
 }));
 
-jest.mock("components", () => ({
-  Dropdown: jest.fn(),
+jest.mock("components/Dropdown", () => ({
+  Dropdown: jest.fn()
+}));
+
+jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn(),
   useAdminDispatch: jest.fn()
 }));
 
 jest.mock("@mui/material", () => ({
   Modal: jest.fn(),
-  Paper: jest.fn()
+  Paper: jest.fn(),
+  CircularProgress: jest.fn()
 }));
 
 jest.mock("xlsx", () => ({
@@ -94,6 +100,7 @@ describe("<BulkChanges />", () => {
       ExportTemplateButton,
       ExportOptionsButton,
       Modal,
+      CircularProgress,
       ProcessingModal,
       StyledButton
     });
@@ -114,6 +121,17 @@ describe("<BulkChanges />", () => {
       expect(ProcessingModal.mock.calls.length).toBe(0);
       expect(BulkCreateForm.mock.calls.length).toBe(2);
     });
+  });
+  test("Workers are loading", () => {
+    useAdminState.mockReturnValue({
+      ...initialTestState,
+      workerContext: {
+        isLoading: true
+      }
+    });
+
+    const rendered = render(<BulkChanges />);
+    expect(rendered.container).toHaveTextContent("Loading Users, operations will be available once it completes");
   });
   describe("View is views.BULK_CREATE_USERS ", () => {
     describe("selected templates do not include CREATE_CALABRIO_WFM_PERSON", () => {

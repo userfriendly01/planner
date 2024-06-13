@@ -1,29 +1,17 @@
 import React from "react";
 import DataGridFlow from "./DataGridFlow/DataGridFlow";
-import { useAccessToken } from "authentication";
-import {
-  LoginInProgress,
-  LoginError
-} from "components";
+import { useAdminState } from "context/appContext";
 
 const DynamicFlowContainer = (): JSX.Element => {
   const {
-    accessToken,
-    matchedGroups,
-    isLoading,
-    error
-  } = useAccessToken();
-
-  if (isLoading) {
-    return <LoginInProgress />;
-  }
-
-  if (error) {
-    return <LoginError message={error} />;
-  }
+    userContext: {
+      permissions,
+      accessTokenGraph
+    }
+  } = useAdminState();
 
   return (
-    <DataGridFlow accessToken={accessToken} matchedGroups={matchedGroups} />
+    <DataGridFlow accessToken={accessTokenGraph} matchedGroups={permissions} />
   );
 };
 

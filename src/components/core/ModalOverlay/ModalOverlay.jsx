@@ -2,8 +2,8 @@ import {
   CloseRounded,
   Warning
 } from "@mui/icons-material";
-import { ModalFetchingRing } from "components";
-import { ModalOverlayStatuses } from "globals";
+import { ModalFetchingRing } from "components/ModalFetchingRing";
+import { ModalOverlayStatuses } from "globals/interfaces";
 import PropTypes from "prop-types";
 import React from "react";
 import styled, { keyframes } from "styled-components";
@@ -105,20 +105,20 @@ const StyledCloseRounded = styled(CloseRounded)`
   }
 `;
 
-const ModalOverlay = props => {
-  const {
-    message,
-    handleClose,
-    status
-  } = props;
-
-  const TextWrapper = styled.div`
+const TextWrapper = styled.div`
   font-size: 18px;
   margin-top: 5%;
   text-align: center;
   word-spacing: 2px;
   color: white;
 `;
+
+export const ModalOverlay = props => {
+  const {
+    message,
+    handleClose,
+    status
+  } = props;
 
   const getIconAndBackground = status => {
     if (status === ModalOverlayStatuses.SUCCESS) {
@@ -190,5 +190,3 @@ ModalOverlay.propTypes = {
   handleClose: PropTypes.func,
   status: PropTypes.oneOf(Object.values(ModalOverlayStatuses)).isRequired
 };
-
-export default ModalOverlay;

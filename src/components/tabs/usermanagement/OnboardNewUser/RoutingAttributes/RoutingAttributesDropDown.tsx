@@ -1,7 +1,4 @@
-export interface DropdownOption {
-  label: string,
-  value: any
-}
+import { DropdownOption } from "globals/interfaces";
 
 export const RoutingTeamAttrDropDownOptions: DropdownOption[] = [
   {
@@ -159,6 +156,14 @@ export const RoutingTeamAttrDropDownOptions: DropdownOption[] = [
   {
     label: "AssetService",
     value: "AssetService"
+  },
+  {
+    label: "FoundeverUnlicensedEserviceRightTrack",
+    value: "FoundeverUnlicensedEserviceRightTrack"
+  },
+  {
+    label: "UnlicPartTTEC",
+    value: "UnlicPartTTEC"
   }
 ];
 

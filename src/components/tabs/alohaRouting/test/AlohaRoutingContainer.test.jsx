@@ -1,36 +1,29 @@
-import { useAccessToken } from "authentication";
+import { useAdminState } from "context/appContext";
 import AlohaRoutingContainer from "../AlohaRoutingContainer";
-import { DataGridRouting } from "../DataGridRouting";
+import { DataGridRouting } from "../DataGridRouting/DataGridRouting";
 import React from "react";
 import {
+  initialTestState,
   render,
   setupMockedComponents
 } from "testUtils";
-import {
-  LoginError, LoginInProgress
-} from "components";
 
-jest.mock("../DataGridRouting",()=>({
+jest.mock("context/appContext", () => ({
+  useAdminState: jest.fn()
+}));
+
+jest.mock("../DataGridRouting/DataGridRouting",()=>({
   __esModule: true,
   DataGridRouting: jest.fn()
-}));
-
-jest.mock("authentication", () => ({
-  useAccessToken: jest.fn()
-}));
-
-jest.mock("components", () => ({
-  LoginInProgress: jest.fn(),
-  LoginError: jest.fn()
 }));
 
 describe("<AlohaRoutingContainer />", ()=>{
   beforeEach(()=>{
     setupMockedComponents({
-      DataGridRouting,
-      LoginError,
-      LoginInProgress
+      DataGridRouting
     });
+
+    useAdminState.mockReturnValue(initialTestState);
 
     Object.defineProperty(window, "matchMedia", {
       writable: true,
@@ -48,32 +41,7 @@ describe("<AlohaRoutingContainer />", ()=>{
   });
 
   test("Simple Render", () =>{
-    useAccessToken.mockReturnValue({
-      isLoading: false
-    });
-
     render(<AlohaRoutingContainer />);
     expect(DataGridRouting.mock.calls.length).toBe(1);
-  });
-
-  test("Returns Loading Component", () =>{
-    useAccessToken.mockReturnValue({
-      isLoading: true
-    });
-
-    render(<AlohaRoutingContainer />);
-    expect(DataGridRouting.mock.calls.length).toBe(0);
-    expect(LoginInProgress.mock.calls.length).toBe(1);
-  });
-
-  test("Returns error Component", () => {
-    useAccessToken.mockReturnValue({
-      isLoading: false,
-      error: "An error"
-    });
-
-    render(<AlohaRoutingContainer />);
-    expect(DataGridRouting.mock.calls.length).toBe(0);
-    expect(LoginError.mock.calls.length).toBe(1);
   });
 });

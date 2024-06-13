@@ -18,7 +18,7 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-export interface CustomToastProps {
+interface CustomToastProps {
   open: boolean,
   onClose: any,
   msg: string,
@@ -26,7 +26,7 @@ export interface CustomToastProps {
   duration?: number
 }
 
-export default ({
+export const CustomToast = ({
   open,
   onClose,
   msg,

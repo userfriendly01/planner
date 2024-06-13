@@ -1,15 +1,13 @@
-import DefaultSkillSelector from "../DefaultSkillSelector";
+import { DefaultSkillSelector } from "../DefaultSkillSelector";
 import {
   Add,
   Delete
 } from "@mui/icons-material";
-import {
-  SkillsList,
-  SkillLevels
-} from "components";
+import { SkillsList } from "usermanagement/SkillsList";
+import { SkillLevels } from "usermanagement/SkillLevels";
 import {
   useAdminState
-} from "context";
+} from "context/appContext";
 import React from "react";
 
 import {
@@ -22,22 +20,23 @@ import {
   initialTestState as initialState,
   setupMockedComponents
 } from "testUtils";
-import { theme } from "globals";
+import { theme } from "globals/theme";
 import { ThemeProvider } from "styled-components";
 
 jest.mock("@mui/icons-material", () => ({
-  __esModule: true,
   Add: jest.fn(),
   Delete: jest.fn()
 }));
 
-jest.mock("components", () => ({
-  __esModule: true,
-  SkillLevels: jest.fn(),
+jest.mock("usermanagement/SkillLevels", () => ({
+  SkillLevels: jest.fn()
+}));
+
+jest.mock("usermanagement/SkillsList", () => ({
   SkillsList: jest.fn()
 }));
 
-jest.mock("context", () => ({
+jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
 }));
 

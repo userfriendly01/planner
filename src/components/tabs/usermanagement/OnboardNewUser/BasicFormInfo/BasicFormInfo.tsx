@@ -1,53 +1,50 @@
-import { BasicFormInfoProps } from "../UserEntryFormWrapper/UserEntryFormWrapper.Interfaces";
+import { BasicFormInfoProps } from "usermanagement/UserEntryFormWrapper.Interfaces";
 import {
   FormControlsContainer,
   FormControlsPane,
   RightColumn,
   ToggleContainer,
   ToggleLabel
-} from "../UserEntryFormWrapper/UserEntryFormWrapper.Styles";
+} from "usermanagement/UserEntryFormWrapper.Styles";
 import {
   Switch,
   Tooltip
 } from "@mui/material";
+import { Dropdown } from "components/Dropdown";
+import { ExtensionInput } from "usermanagement/ExtensionInput";
+import { ForwardToEntryForm } from "usermanagement/ForwardToEntryForm";
+import { NNumberInput } from "components/NNumberInput";
+import { PhoneNumberInput } from "components/PhoneNumberInput";
+import { SkillsFormInfo } from "usermanagement/SkillsFormInfo";
 import {
-  Dropdown,
-  ExtensionInput,
-  ForwardToEntryForm,
-  NNumberInput,
-  PhoneNumberInput,
-  SkillsFormInfo
-} from "components";
-import {
-  useFormDispatch,
-  useFormState,
-  userFormActions
-} from "context";
+  useFormDispatch, useFormState
+} from "context/appContext";
+import { userFormActions } from "context/userFormReducer";
 import { formModes } from "globals";
 import React, { useState } from "react";
 import {
   getOverflowSkillFromProfile,
   isProfileIdValid,
-  isManagerValid,
+  isManagerValid
+} from "utils/usermanagementUtils";
+import {
   sortManagersByName,
   sortProfilesByName
-} from "utils";
-import { RoutingAttributes } from "../RoutingAttributes";
+} from "utils/_sortUtils";
+import { RoutingAttributes } from "usermanagement/RoutingAttributes";
 
-const BasicFormInfo = (props: BasicFormInfoProps) => {
+export const BasicFormInfo = (props: BasicFormInfoProps) => {
 
   const {
     worker,
     profiles,
-    managers,
-    forwardToToggle,
-    setForwardToToggle
+    managers
   } = props;
 
   const form = useFormState();
   const setForm = useFormDispatch();
 
-  const [autoUpdateOutgoing, setAutoUpdateOutgoing] = useState(form.triton.outgoing.value === form.triton.directDialNum.value || !form.triton.outgoing.value);
+  const [autoUpdateOutgoing, setAutoUpdateOutgoing] = useState(form.triton.outgoing.value === form.triton.did.value || !form.triton.outgoing.value);
 
   const formatDropdownOption = (value: any, label: string, option: any) => {
     if(typeof option === "object"){
@@ -86,7 +83,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
             margin: "8px 0px 5px 0px"
           }}
           onBlur={() => handleOnBlur("manager", "triton")}
-          options={managers.sort(sortManagersByName).map(manager => formatDropdownOption(manager.manager_n_number, `${manager.manager_first_name} ${manager.manager_last_name} - ${manager.manager_n_number}`, manager))}
+          options={managers.sort(sortManagersByName).map(manager => formatDropdownOption(manager.manager_n_num, `${manager.manager_first_name} ${manager.manager_last_name} - ${manager.manager_n_num}`, manager))}
           updateValue={(event: any, newValue: any) => {
             setForm({
               type: userFormActions.UPDATE_MANAGER,
@@ -110,7 +107,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
               });
             }
           }}
-          value={form.triton.manager.value ? `${form.triton.manager.value.manager_first_name} ${form.triton.manager.value.manager_last_name} - ${form.triton.manager.value.manager_n_number}`: ""}
+          value={form.triton.manager.value ? `${form.triton.manager.value.manager_first_name} ${form.triton.manager.value.manager_last_name} - ${form.triton.manager.value.manager_n_num}`: ""}
         />
         <Dropdown
           disabled={form.formMode === formModes.DELETE}
@@ -171,29 +168,19 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
               disabled={form.formMode === formModes.DELETE}
               allowSevenDigitVdn={false}
               id="direct-dial-number"
-              number={form.triton.directDialNum.value}
+              number={form.triton.did.value}
               label="Direct Dial Number *"
-              showError={form.triton.directDialNum.blurred}
-              onBlur={() => handleOnBlur("directDialNum", "triton")}
+              showError={form.triton.did.blurred}
+              onBlur={() => handleOnBlur("did", "triton")}
               updateValue={(maskedValue, _unmaskedValue, isValid, e164Number) => {
                 setForm({
                   type: userFormActions.UPDATE_PHONE_NUMBER,
                   payload: {
-                    field: "directDialNum",
+                    field: "did",
                     maskedValue,
                     isValid,
                     e164Number,
-                    initialValue: worker?.directDialNum || null
-                  }
-                });
-
-                setForm({
-                  type: userFormActions.UPDATE_PHONE_NUMBER,
-                  payload: {
-                    field: "alternateDid",
-                    maskedValue,
-                    isValid,
-                    e164Number
+                    initialValue: worker?.did || null
                   }
                 });
 
@@ -206,7 +193,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
                       maskedValue,
                       isValid,
                       e164Number,
-                      initialValue: worker?.attributes?.did || null
+                      initialValue: worker?.attributes?.caller_id || null
                     }
                   });
                 }
@@ -215,8 +202,8 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
           )}
           {form.triton.didUser
             && form.formMode === formModes.UPDATE
-            && form.triton.directDialNum.updated
-            && form.triton.directDialNum.e164 !== worker?.directDialNum
+            && form.triton.did.updated
+            && form.triton.did.e164 !== worker?.did
             && (
               <ForwardToEntryForm
                 label={"Please choose a forward to option for the existing direct dial number"}
@@ -245,7 +232,7 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
                   maskedValue,
                   isValid,
                   e164Number,
-                  initialValue: worker?.attributes?.did || null
+                  initialValue: worker?.attributes?.caller_id || null
                 }
               });
 
@@ -259,14 +246,14 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
         </FormControlsPane>
         <Tooltip
           title={
-            form.formMode === formModes.UPDATE && worker?.directDialNum ?
+            form.formMode === formModes.UPDATE && worker?.did ?
               "Twilio DID can not be removed" : ""
           }
           placement={"bottom-start"}
         >
           <ToggleContainer>
             <Switch
-              disabled={form.formMode === formModes.UPDATE && worker?.directDialNum ? true : false || form.formMode === formModes.DELETE}
+              disabled={form.formMode === formModes.UPDATE && worker?.did ? true : false || form.formMode === formModes.DELETE}
               checked={form.triton.didUser}
               onChange={() => {
                 setForm({ type: userFormActions.INITIATE_DID_FIELDS });
@@ -329,5 +316,3 @@ const BasicFormInfo = (props: BasicFormInfoProps) => {
     </FormControlsContainer>
   );
 };
-
-export default BasicFormInfo;

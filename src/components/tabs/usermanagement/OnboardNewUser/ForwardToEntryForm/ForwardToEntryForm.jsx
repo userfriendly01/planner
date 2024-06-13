@@ -2,13 +2,9 @@ import {
   FormControlLabel,
   Radio
 } from "@mui/material";
-import {
-  Dropdown,
-  PhoneNumberInput
-} from "components";
-import {
-  useAdminState
-} from "context";
+import { Dropdown } from "components/Dropdown";
+import { PhoneNumberInput } from "components/PhoneNumberInput";
+import { useAdminState } from "context/appContext";
 import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
@@ -31,7 +27,7 @@ const LabelContainer = styled.div`
   text-align: center;
 `;
 
-const ForwardToEntryForm = props => {
+export const ForwardToEntryForm = props => {
   const {
     label,
     updateForwardTo
@@ -147,7 +143,7 @@ const ForwardToEntryForm = props => {
           }}
           options={getSkillOptions()}
           updateValue={(event, skill) => updateForwardTo(skill ? skill.value : "")}
-      />
+        />
       }
       {forwardToType === "phoneNum" &&
         <PhoneNumberInput
@@ -173,5 +169,3 @@ ForwardToEntryForm.propTypes = {
   label: PropTypes.string.isRequired,
   updateForwardTo: PropTypes.func.isRequired
 };
-
-export default ForwardToEntryForm;

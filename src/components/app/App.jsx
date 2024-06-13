@@ -1,6 +1,5 @@
 import {
-  CircularProgress,
-  Modal
+  CircularProgress, Modal
 } from "@mui/material";
 import {
   AppWrapper,
@@ -10,24 +9,18 @@ import {
   ErrorWrapper,
   Overlay,
   LoadingMessage
-} from "./App.Styles";
+} from "components/app/App.Styles";
 import ScrollToTop from "./ScrollToTop";
+import { getWorkerProfileId } from "authentication/authUtils";
+import { getFilteredPermissions } from "authentication/authenticationProfiles";
+import Header from "../header/Header/Header";
+import NavTabs from "../navigation/NavTabs";
+import NotificationModal from "components/NotificationModal";
 import {
-  getAuthenticationProfiles,
-  getPermissions,
-  getStartups
-} from "authentication";
-import {
-  Header,
-  NavTabs,
-  NotificationModal
-} from "components";
-import { useAdminDispatch } from "context";
-import {
-  apiPaths,
-  theme,
-  timeouts
-} from "globals";
+  useAdminDispatch, useAdminState
+} from "context/appContext";
+import { theme } from "globals/theme";
+import { env } from "globals/index";
 import { getRoutes } from "globals/routes";
 import React, {
   useEffect,
@@ -36,80 +29,139 @@ import React, {
 import {
   BrowserRouter, Routes, Route
 } from "react-router-dom";
-import {
-  isErrorIn400s,
-  logger,
-  myAxios,
-  wait
-} from "utils";
+import { useMsal } from "@azure/msal-react";
+import { logger } from "utils/logger";
+import { wait } from "utils";
 
 const success = "success";
-
-const authenticateAndStartup = dispatch => new Promise((resolve, reject) => myAxios.get(apiPaths.AUTH)
-  .then(res => {
-    const pingIdentity = res.data;
-    const permissions = getPermissions(pingIdentity.groups);
-    const startupFiles = getStartups(permissions);
-    const startupPromises = startupFiles.map(startup => { return startup(dispatch); });
-    Promise.all(startupPromises).then(res => {
-      const authenticationProfiles = getAuthenticationProfiles(permissions, pingIdentity?.sub, res);
-      dispatch({
-        type: "loadUserData",
-        payload: {
-          pingIdentity,
-          authenticationProfiles
-        }
-      });
-      resolve(authenticationProfiles);
-    }).catch(error => {
-      const msg = "An error occurred on startup";
-      reject({
-        msg,
-        error
-      });
-    });
-  })
-  .catch(error => {
-    let msg = "An error occurred when trying to authenticate";
-    if (error.response && isErrorIn400s(error.response.status)) {
-      msg = "You are not authorized to view this page";
-    }
-    reject({
-      msg,
-      error
-    });
-  })
-);
+const loading = "loading";
 
 const App = () => {
+  const { instance } = useMsal();
+  const account = instance.getActiveAccount();
+
   const [loadResult, setLoadResult] = useState({
     home: null,
     status: null
   });
   const [showModal, setShowModal] = useState(false);
   const dispatch = useAdminDispatch();
+  const state = useAdminState();
 
   useEffect(() => {
-    authenticateAndStartup(dispatch)
-      .then(authenticationProfiles => {
+    const startup = async () => {
+      const permissions = getFilteredPermissions(account);
+
+      if (!permissions.length) {
+        logger.error("MISSING_AD_GROUPS", { nNumber: account.idTokenClaims.employeeid });
         setLoadResult({
-          home: authenticationProfiles[0].home,
-          status: success
+          status: {
+            errorMessage: "You are missing required AD Groups to be able to access this application",
+            errorCode: "UNAUTHORIZED"
+          }
         });
-      })
-      .catch(error => {
-        logger.error("Failed to authenticate", { error });
-        setLoadResult({
-          status: error
-        });
+      } else {
+        try {
+          const nNumber = account.idTokenClaims.employeeid;
+          const profileId = await getWorkerProfileId(nNumber);
+          const isAdmin = account.idTokenClaims.roles.includes("Admin");
+          dispatch({
+            type: "loadUserData",
+            payload: {
+              permissions,
+              profileId,
+              isAdmin,
+              nNumber
+            }
+          });
+
+          await Promise.all(
+            permissions.map(({ startup }) => startup.function(dispatch))
+          );
+
+          setLoadResult({
+            home: permissions[0].authenticationProfile.home,
+            status: success
+          });
+        } catch (error) {
+          logger.error("DATA_GET_FAILED", { error });
+          setLoadResult({
+            status: {
+              errorMessage: error.response?.msg || error.msg,
+              errorPayload: JSON.stringify(error.response?.data || error.error),
+              errorCode: error.response?.status || 500
+            }
+          });
+        }
+      }
+    };
+
+    if (state.userContext.accessToken && loadResult.status === null) {
+      setLoadResult({
+        status: loading
       });
-  }, []);
+
+      startup();
+    }
+  }, [state.userContext.accessToken]);
 
   useEffect(() => {
-    wait(() => setShowModal(true), timeouts.AUTH);
+    // Helper to get token
+    const tokenManager = async () => {
+      logger.log("*** MSAL: Getting new Token ***");
+
+      try {
+        const {
+          accessToken,
+          expiresOn
+        } = await instance.loginPopup({
+          account,
+          extraScopesToConsent: [
+            // Add additional scopes that are needed here
+            `${env.GRAPH_CLIENT_ID}/.default`
+          ]
+        });
+
+        logger.log(`*** MSAL: Token acquired, will expire at ${expiresOn} ***`);
+
+        // Place any additional token requests here:
+        const { accessToken: accessTokenGraph } = await instance.acquireTokenSilent({
+          account,
+          scopes: [`${env.GRAPH_CLIENT_ID}/.default`]
+        });
+
+
+        dispatch({
+          type: "loadUserData",
+          payload: {
+            accessToken,
+            accessTokenGraph
+          }
+        });
+
+        // TODO: Once we have subscriptions set up
+        // we'll want to constantly refresh the token several times
+        // then prompt the user to refresh or come up with a better way of refreshing
+        // the data
+        wait(() => {
+          setShowModal(true);
+        }, expiresOn.getTime() - Date.now());
+      } catch (error) {
+        logger.error("TOKEN_GET_FAILED", { error });
+        setLoadResult({
+          status: {
+            errorMessage: "Failed to get a token from Azure, try refreshing the page",
+            errorCode: error.errorCode,
+            errorPayload: error.errorMessage
+          }
+        });
+      }
+    };
+
+    tokenManager();
   }, []);
 
-  if (loadResult.status) {
+  if (loadResult.status && loadResult.status !== loading) {
     if (loadResult.status === success) {
       return (
         <BrowserRouter>
@@ -139,9 +191,13 @@ const App = () => {
       return (
         <Overlay data-testid="error-overlay">
           <ErrorWrapper>
-            <ErrorStatus>{loadResult.status.error.response.status}</ErrorStatus>
-            <ErrorMessage>{loadResult.status.msg}</ErrorMessage>
-            <ErrorPayload>{JSON.stringify(loadResult.status.error.response.data)}</ErrorPayload>
+            <ErrorStatus>{loadResult.status.errorCode}</ErrorStatus>
+            <ErrorMessage>{loadResult.status.errorMessage}</ErrorMessage>
+            {loadResult.status.errorPayload && (
+              <ErrorPayload>
+                {loadResult.status.errorPayload}
+              </ErrorPayload>
+            )}
           </ErrorWrapper>
         </Overlay>
       );

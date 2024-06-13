@@ -1,4 +1,4 @@
-import { StyledButton } from "components";
+import { StyledButton } from "components/StyledButton";
 import styled from "styled-components";
 
 export const ControlItem = styled.div`
@@ -20,10 +20,6 @@ export const ControlsWrapper = styled.div`
   align-items: center;
   display: flex;
   padding: 1%;
-`;
-
-export const AddUserButton = styled(StyledButton)`
-  width: 35%;
 `;
 
 export const StyledExportButton = styled(StyledButton)`
