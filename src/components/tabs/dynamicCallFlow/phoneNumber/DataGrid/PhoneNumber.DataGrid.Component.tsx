@@ -12,9 +12,8 @@ import {
   GridRowSelectionModel,
   useGridApiRef
 } from "@mui/x-data-grid";
-import { CustomToast } from "components";
 import React, {
-  createContext, useContext, useEffect, useRef, useState
+  useContext, useEffect, useRef, useState
 } from "react";
 import "./PhoneNumber.DataGrid.scss";
 import { GridApiCommunity } from "@mui/x-data-grid/internals";
@@ -45,6 +44,7 @@ import { DynamicCallFlowPhoneNumberContext } from "../DynamicCallFlow.PhoneNumbe
 import { PhoneNumberModalTypeEnum } from "../DynamicCallFlow.PhoneNumber.Container.Modal.Controller";
 import { PhoneNumberDataGridFilter } from "./PhoneNumber.DataGrid.Filter";
 import { PhoneNumberDataGridController } from "./PhoneNumber.DataGrid.Controller";
+import { CustomToast } from "components/CustomToast";
 
 const DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_PAGE_NUMBER = "dynamicCallFlowPhoneNumberDataGridPageNumber";
 const DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_RECORDS_PER_PAGE = "dynamicCallFlowPhoneNumberDataGridRecordsPerPage";
@@ -53,7 +53,7 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
   const {
     currentOpenModal,
     modalController,
-    accessToken
+    accessTokenGraph
   } = useContext(DynamicCallFlowPhoneNumberContext);
 
   // sourceRecords is the master list of all records.  It is used to update the data grid records and to update the field options.
@@ -98,7 +98,7 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
       let updatedDataGridProps: DataGridStateProps;
 
       try {
-        const records = await listPhoneNumberRecords(accessToken);
+        const records = await listPhoneNumberRecords(accessTokenGraph);
         [sortedRecords, updatedDataGridProps] = sortDataGrid<PhoneNumberRecordType>(records);
       } catch (error: unknown) {
         console.log(`Error loading call flow data: ${(error as Error)?.message}`);
@@ -313,6 +313,7 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
         isOpen={currentOpenModal === PhoneNumberModalTypeEnum.BulkAdd || currentOpenModal === PhoneNumberModalTypeEnum.BulkEdit || currentOpenModal === PhoneNumberModalTypeEnum.BulkDelete}
         selectedRecords={selectedRecords}
         dataGridController={dataGridController}
+        fieldOptions={fieldOptions}
         onClose={handlePreviewModalOnClose}
         modalType={currentOpenModal}
         maxId={dataGridProps.maxId}

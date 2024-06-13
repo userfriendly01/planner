@@ -4,6 +4,8 @@ import { AlertBarController } from "./AlertBar.Controller";
 import { DataGridFilter } from "./DataGrid/Abstract.DataGrid.Filter";
 import { DataGridController } from "./DataGrid/Abstract.DataGrid.Controller";
 import { ModalController } from "./Modal.Controller";
+import { ADGroupPermission } from "globals/interfaces";
+import { useAdminState } from "context/appContext";
 
 export type MutableRefObject<T> = React.MutableRefObject<T>;
 export type ReactGridApi = React.MutableRefObject<GridApiCommunity>;
@@ -17,8 +19,8 @@ export interface ReactStateAction<StateActionType> {
 }
 
 export interface DynamicCallFlowContextStore<ModalType> {
-  accessToken: string;
-  matchedGroups: string[];
+  accessTokenGraph: string;
+  permissions: ADGroupPermission[];
   currentOpenModal: ModalType;
   modalController: React.MutableRefObject<ModalController<ModalType>>;
 }

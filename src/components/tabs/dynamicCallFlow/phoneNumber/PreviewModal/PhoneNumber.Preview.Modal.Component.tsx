@@ -7,9 +7,6 @@ import {
 import {
   DataGrid, GridColDef, useGridApiRef
 } from "@mui/x-data-grid";
-import {
-  StyledButton
-} from "components";
 import { PhoneNumberPreviewModalColumnDef } from "./PhoneNumber.Preview.Modal.ColumnDef";
 import "./PhoneNumber.Preview.Modal.css";
 import { Box } from "@mui/material";
@@ -25,11 +22,14 @@ import { DynamicCallFlowPhoneNumberContext } from "../DynamicCallFlow.PhoneNumbe
 import { PhoneNumberPreviewModalHandler } from "./PhoneNumber.Preview.Modal.Handler";
 import { DataGridControllerRef } from "../../common/DynamicCallFlow.Interfaces";
 import { PhoneNumberXlsxReader } from "../Xlsx/PhoneNumber.Xlsx.Reader";
+import { FieldOptions } from "components/tabs/dynamicCallFlow/common/Form/AbstractFormFieldOptionsManager";
+import { StyledButton } from "components/StyledButton";
 
 interface PreviewModalParameters<RecordType> {
     isOpen: boolean;
     selectedRecords: Array<RecordType>;
     dataGridController: DataGridControllerRef<RecordType>;
+    fieldOptions: FieldOptions;
     modalType: PhoneNumberModalType;
     maxId?: number;
     onClose: () => void;
@@ -38,10 +38,10 @@ interface PreviewModalParameters<RecordType> {
 // create handler to process batch jobs concurrently
 
 export const PhoneNumberPreviewModal = ({
-  isOpen, selectedRecords, onClose, dataGridController, modalType, maxId, loading
+  isOpen, selectedRecords, onClose, dataGridController, fieldOptions, modalType, maxId, loading
 }: PreviewModalParameters<PhoneNumberRecordType>): JSX.Element => {
   const {
-    accessToken
+    accessTokenGraph
   } = useContext(DynamicCallFlowPhoneNumberContext);
 
   const previewModalHandler = useRef(new PhoneNumberPreviewModalHandler(dataGridController));
@@ -49,7 +49,7 @@ export const PhoneNumberPreviewModal = ({
   const [modalRecords, setModalRecords] = React.useState<PhoneNumberRecordType[]>([]);
   const [htmlInputElements, setHtmlInputElements] = React.useState<Array<HTMLInputElement>>([]);
   const tableGridColumnDef: Array<GridColDef> = useMemo<Array<GridColDef>>(() => {
-    return reconstructTableColumnDef(modalType, [...PhoneNumberPreviewModalColumnDef], previewModalGridApiRef);
+    return reconstructTableColumnDef(modalType, [...PhoneNumberPreviewModalColumnDef], previewModalGridApiRef, fieldOptions);
   },[modalType]);
 
   useEffect(()=> {
@@ -79,17 +79,17 @@ export const PhoneNumberPreviewModal = ({
 
   const handleOnCreate = async () =>{
     const recordsToCreate: Array<PhoneNumberRecordType> = getUpdatedPhoneNumberRows();
-    await previewModalHandler.current.handleOnCreate(accessToken, recordsToCreate);
+    await previewModalHandler.current.handleOnCreate(accessTokenGraph, recordsToCreate);
   };
 
   const handleOnUpdate = async () =>{
     const recordsToUpdate: Array<PhoneNumberRecordType> = getUpdatedPhoneNumberRows();
-    await previewModalHandler.current.handleOnUpdate(accessToken, recordsToUpdate);
+    await previewModalHandler.current.handleOnUpdate(accessTokenGraph, recordsToUpdate);
   };
 
   const handleOnDelete = async () => {
     const recordsToDelete: Array<PhoneNumberRecordType> = getUpdatedPhoneNumberRows();
-    await previewModalHandler.current.handleOnDelete(accessToken, recordsToDelete);
+    await previewModalHandler.current.handleOnDelete(accessTokenGraph, recordsToDelete);
   };
 
   const createNewRecord = () => {

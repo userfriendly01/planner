@@ -1,7 +1,6 @@
 import {
   Button, Grid
 } from "@mui/material";
-import ComponentControl from "../../../../core/SharedComponents/ComponentControl";
 import React, {
   ChangeEvent, useContext, useEffect, useMemo, useState
 } from "react";
@@ -9,10 +8,6 @@ import { ViewListIconToggleForm } from "../../common/Form/ViewList.IconToggle.Fo
 import {
   HeadingStyled, ModalBodyStyled, ModalFooterStyled
 } from "../../common/DynamicCallFlow.Styles";
-import { CustomToast } from "components";
-import {
-  BrandName, readWriteAccess
-} from "utils";
 import {
   FormHandler, NOT_VALID
 } from "../../common/Form/Abstract.Form.Handler";
@@ -20,7 +15,9 @@ import { FloatingHeader } from "@lmig/lmds-react-floating-header";
 import {
   Modal, ModalHeader
 } from "@lmig/lmds-react-modal";
-import { PhoneNumberRecordType } from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
+import {
+  BrandName, PhoneNumberRecordType
+} from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
 import {
   FieldConfig, FieldConfigs
 } from "../../common/Form/Form.Field.Config";
@@ -34,6 +31,9 @@ import {
 } from "../../common/DynamicCallFlow.Interfaces";
 import { DynamicCallFlowPhoneNumberContext } from "../DynamicCallFlow.PhoneNumber.Container";
 import { PhoneNumberModalTypeEnum } from "../DynamicCallFlow.PhoneNumber.Container.Modal.Controller";
+import { ComponentControl } from "components/ComponentControl";
+import { readWriteAccess } from "utils/alohaConfigUtils";
+import { CustomToast } from "components/CustomToast";
 
 export interface FormModalProps {
   isOpen: boolean;
@@ -53,13 +53,13 @@ export const PhoneNumberFormModal = ({
     state: fieldConfigs
   } = fieldConfigsReactStateAction;
   const {
-    accessToken,
-    matchedGroups,
+    accessTokenGraph,
+    permissions,
     currentOpenModal,
     modalController
   } = useContext(DynamicCallFlowPhoneNumberContext);
 
-  const enableFlow = useMemo<boolean>(() => readWriteAccess(matchedGroups,"dynamic-call-flow"), []);
+  const enableFlow = useMemo<boolean>(() => readWriteAccess(permissions,"dynamic-call-flow"), []);
   const [formRecord, setFormRecord] = React.useState<PhoneNumberRecordType>({} as PhoneNumberRecordType);
   const [alertBarProps, setAlertBarProps] = useState<AlertBarProps>(initialAlertBarProps);
 
@@ -82,7 +82,7 @@ export const PhoneNumberFormModal = ({
   };
 
   const handleOnSave = async (): Promise<void> => {
-    const formOnHandleResponse = await formHandler.handleOnSave(accessToken, formRecord, fieldConfigs);
+    const formOnHandleResponse = await formHandler.handleOnSave(accessTokenGraph, formRecord, fieldConfigs);
 
     if (formOnHandleResponse.errorMessage) {
       alertBarController.current.error(formOnHandleResponse.errorMessage);
@@ -94,7 +94,7 @@ export const PhoneNumberFormModal = ({
   };
 
   const handleOnDelete = async (): Promise<void> => {
-    const formOnHandleResponse = await formHandler.handleOnDelete(accessToken, formRecord);
+    const formOnHandleResponse = await formHandler.handleOnDelete(accessTokenGraph, formRecord);
 
     if (formOnHandleResponse.errorMessage) {
       alertBarController.current.error(formOnHandleResponse.errorMessage);

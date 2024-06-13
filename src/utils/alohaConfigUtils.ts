@@ -111,6 +111,7 @@ export const cleanErrorMessage = (graphQLErrors: GraphQLErrors[]): string => {
   return graphQLErrors[0].message;
 };
 
+//TODO: Move to a more appropriate location
 export const readWriteAccess = (permissions: ADGroupPermission[], role: string): boolean => {
   if (env.APP_ENV === "local") {
     return true;

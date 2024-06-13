@@ -1,9 +1,9 @@
-import { Control } from "../../../../../globals";
 import {
   FieldConditionCheckType, FieldConfig, FieldConfigs, FieldDataTypeEnum
 } from "../../common/Form/Form.Field.Config";
 import { PhoneNumberRecordType } from "../../phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 import { ControlEnum } from "../../common/Form/Form.Field.Control.Manager";
+import { Control } from "globals/interfaces";
 
 export const ActionFormFieldConfigs: FieldConfigs = {};
 export const RequiredActionFormFields: Array<string> = [];

@@ -35,7 +35,6 @@ import {
   TRANSFER_DESTINATION,
   WHISPER
 } from "./Dynamic.PhoneNumber.Form.Fields";
-import { Control } from "../../../../../globals";
 import {
   ACCOUNT_MANAGER,
   AFFINITY_VDN,
@@ -55,6 +54,7 @@ import {
 } from "../../common/Form/Form.Field.Config";
 
 import { ControlEnum } from "../../common/Form/Form.Field.Control.Manager";
+import { Control } from "globals/interfaces";
 
 
 const drcFieldConditionCheck: FieldConditionCheckType = (record: PhoneNumberRecordType): boolean => {

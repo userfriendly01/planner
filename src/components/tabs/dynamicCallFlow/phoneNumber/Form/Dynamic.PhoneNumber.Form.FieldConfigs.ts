@@ -35,7 +35,6 @@ import {
   TRANSFER_DESTINATION,
   WHISPER
 } from "./Dynamic.PhoneNumber.Form.Fields";
-import { Control } from "../../../../../globals";
 import {
   FieldConditionCheckType,
   FieldConfig,
@@ -45,6 +44,7 @@ import {
 } from "../../common/Form/Form.Field.Config";
 
 import { ControlEnum } from "../../common/Form/Form.Field.Control.Manager";
+import { Control } from "globals/interfaces";
 
 const drcFieldConditionCheck: FieldConditionCheckType = (phoneNumberRecord: PhoneNumber): boolean => {
   return phoneNumberRecord?.brand === BrandTypeEnum.LIBERTY_MUTUAL

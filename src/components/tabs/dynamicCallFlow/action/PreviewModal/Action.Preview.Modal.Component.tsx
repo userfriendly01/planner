@@ -2,7 +2,6 @@ import React, {
   useContext,
   useEffect, useMemo, useRef
 } from "react";
-import { StyledButton } from "components";
 import {
   DataGrid, GridColDef, useGridApiRef
 } from "@mui/x-data-grid";
@@ -12,7 +11,6 @@ import {
 import "./Action.Preview.Modal.css";
 import { Box } from "@mui/material";
 import TableGridColumnDef from "./Action.Preview.Modal.ColumnDef";
-import { logger } from "utils";
 import { reconstructTableColumnDef } from "./Action.Preview.Modal.Util";
 import {
   ActionRecordType, MenuOption
@@ -20,18 +18,11 @@ import {
 import {
   ActionModalType, ActionModalTypeEnum
 } from "../DataGrid/Action.DataGrid.Component";
-import { PhoneNumberXlsxReader } from "../../phoneNumber/Xlsx/PhoneNumber.Xlsx.Reader";
 import { ActionXlsxReader } from "../Xlsx/Action.Xlsx.Reader";
 import { DataGridControllerRef } from "../../common/DynamicCallFlow.Interfaces";
-import {
-  PhoneNumberModalType,
-  PhoneNumberModalTypeEnum
-} from "../../phoneNumber/DynamicCallFlow.PhoneNumber.Container.Modal.Controller";
-import { DynamicCallFlowPhoneNumberContext } from "../../phoneNumber/DynamicCallFlow.PhoneNumber.Container";
 import { DynamicCallFlowActionContext } from "../DynamicCallFlow.Action.Container";
-import { PhoneNumberPreviewModalHandler } from "../../phoneNumber/PreviewModal/PhoneNumber.Preview.Modal.Handler";
-import { PhoneNumberRecordType } from "../../phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 import { ActionPreviewModalHandler } from "./Action.Preview.Modal.Handler";
+import { StyledButton } from "components/StyledButton";
 
 interface PreviewModalParameters<RecordType> {
   isOpen: boolean;
@@ -47,7 +38,7 @@ export const ActionPreviewModal = ({
   isOpen, selectedRecords, onClose, dataGridController, modalType, maxId, loading
 }: PreviewModalParameters<ActionRecordType>): JSX.Element => {
   const {
-    accessToken
+    accessTokenGraph
   } = useContext(DynamicCallFlowActionContext);
 
   const previewModalHandler = useRef(new ActionPreviewModalHandler(dataGridController));
@@ -103,17 +94,17 @@ export const ActionPreviewModal = ({
 
   const handleOnCreate = async () =>{
     const recordsToCreate: Array<ActionRecordType> = getUpdatedActionRows();
-    await previewModalHandler.current.handleOnCreate(accessToken, recordsToCreate);
+    await previewModalHandler.current.handleOnCreate(accessTokenGraph, recordsToCreate);
   };
 
   const handleOnUpdate = async () =>{
     const recordsToUpdate: Array<ActionRecordType> = getUpdatedActionRows();
-    await previewModalHandler.current.handleOnUpdate(accessToken, recordsToUpdate);
+    await previewModalHandler.current.handleOnUpdate(accessTokenGraph, recordsToUpdate);
   };
 
   const handleOnDelete = async () => {
     const recordsToDelete: Array<ActionRecordType> = getUpdatedActionRows();
-    await previewModalHandler.current.handleOnDelete(accessToken, recordsToDelete);
+    await previewModalHandler.current.handleOnDelete(accessTokenGraph, recordsToDelete);
   };
 
   const createNewRecord = () => {
@@ -203,13 +194,13 @@ export const ActionPreviewModal = ({
           display: "flex",
           justifyContent: "center"
         }}>
-          {modalType === PhoneNumberModalTypeEnum.BulkDelete &&
+          {modalType === ActionModalTypeEnum.BulkDelete &&
               <StyledButton sx={{ marginRight: "15px" }} onClick={()=>{ handleOnDelete(); }}>Delete</StyledButton>
           }
           {modalType === ActionModalTypeEnum.BulkAdd &&
             <StyledButton sx={{ marginRight: "15px" }} onClick={()=>handleOnCreate()}>Save</StyledButton>
           }
-          {modalType === PhoneNumberModalTypeEnum.BulkEdit &&
+          {modalType === ActionModalTypeEnum.BulkEdit &&
               <StyledButton sx={{ marginRight: "15px" }} onClick={()=>{ handleOnUpdate(); }}>Update</StyledButton>
           }
           <StyledButton onClick={()=>{ handleOnClose(); }}>Cancel</StyledButton>

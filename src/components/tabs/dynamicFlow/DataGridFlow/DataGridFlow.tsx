@@ -26,10 +26,10 @@ import {
   DataGrid, GridRowId, GridRowSelectionModel, useGridApiRef
 } from "@mui/x-data-grid";
 import DynamicFlowGridColumnDef from "./DynamicGridColumnDef";
-import { CustomToast } from "components/CustomToast";
 import {
   batchDeleteActionItems
 } from "../../alohaFlow/Utils/FlowTableServiceUtil";
+import { CustomToast } from "../../../core/CustomToast/CustomToast";
 
 
 const DataGridFlow = (props: AzureSPA): JSX.Element => {

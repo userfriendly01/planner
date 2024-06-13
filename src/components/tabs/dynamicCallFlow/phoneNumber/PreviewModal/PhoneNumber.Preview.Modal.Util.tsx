@@ -2,53 +2,38 @@ import React from "react";
 import {
   GridCellParams, GridColDef
 } from "@mui/x-data-grid";
-import {
-  DynamicCallFlowPhoneNumberDropDownList,
-  DynamicCallFlowPhoneNumberMasterData
-} from "../DynamicCallFlow.PhoneNumber.Interfaces";
-import {
-  FLOW_MASTER_DATA,
-  callFlowName,
-  callFlowType,
-  flowType,
-  languageOffer,
-  nextActionType,
-  tfnRoutingGroup,
-  userDestination
-} from "utils";
 
 import { RequiredPhoneNumberFormFields } from "../Form/Legacy.PhoneNumber.Form.FieldConfigs";
-import { ComponentControl } from "components";
-import { GridApiCommunity } from "@mui/x-data-grid/internals";
-
 
 import {
   PhoneNumberModalType,
   PhoneNumberModalTypeEnum
 } from "../DynamicCallFlow.PhoneNumber.Container.Modal.Controller";
+import { ComponentControl } from "components/ComponentControl";
+import { ReactGridApi } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
+import { FieldOptions } from "components/tabs/dynamicCallFlow/common/Form/AbstractFormFieldOptionsManager";
 
 
-const reconstructTableColumnDef = (modalType: PhoneNumberModalType, columnDef: Array<GridColDef>,apiRef: React.MutableRefObject<GridApiCommunity>): Array<GridColDef> =>{
+const reconstructTableColumnDef = (modalType: PhoneNumberModalType, columnDef: Array<GridColDef>, previewModalGridApiRef: ReactGridApi, fieldOptions: FieldOptions): Array<GridColDef> =>{
   if (modalType === PhoneNumberModalTypeEnum.BulkAdd || modalType === PhoneNumberModalTypeEnum.BulkEdit)
   {
-    return manageEditColumnDef(columnDef,apiRef);
+    return manageEditColumnDef(columnDef, previewModalGridApiRef, fieldOptions);
   }
   else{
     return columnDef;
   }
 };
 
-const manageEditColumnDef = (columnDef: Array<GridColDef>, apiRef: React.MutableRefObject<GridApiCommunity>): Array<GridColDef> =>{
-  const flowDropDownList:DynamicCallFlowPhoneNumberDropDownList = fetchData(); // update how dropdown list is set
+const manageEditColumnDef = (columnDef: Array<GridColDef>, previewModalGridApiRef: ReactGridApi, fieldOptions: FieldOptions): Array<GridColDef> =>{
   const updatedColDef: Array<GridColDef> = columnDef.map((item:GridColDef)=> {
-    if(Object.keys(flowDropDownList).includes(item.field)){
+    if (Object.keys(fieldOptions).includes(item.field)) {
       return {
         ...item,
         editable: true,
         type: "singleSelect",
-        valueOptions: flowDropDownList[item.field as keyof DynamicCallFlowPhoneNumberDropDownList],
+        valueOptions: fieldOptions[item.field as keyof FieldOptions],
         cellClassName: (params: GridCellParams<any, string>)=> {
-          if(!flowDropDownList[item.field as keyof DynamicCallFlowPhoneNumberDropDownList].includes(params.value) &&
+          if(!fieldOptions[item.field as keyof FieldOptions].includes(params.value) &&
             RequiredPhoneNumberFormFields.includes(item.field)){
             return "MuiDataGrid-Custom-Cell-Format";
           }
@@ -56,7 +41,7 @@ const manageEditColumnDef = (columnDef: Array<GridColDef>, apiRef: React.Mutable
         }
       };
     }
-    if(item.field === "officeNumbers"){
+    if (item.field === "officeNumbers") {
       return {
         ...item,
         editable: true,
@@ -70,7 +55,7 @@ const manageEditColumnDef = (columnDef: Array<GridColDef>, apiRef: React.Mutable
             type="text"
             value={params.value}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              apiRef.current.setEditCellValue({
+              previewModalGridApiRef.current.setEditCellValue({
                 id: params.row.id,
                 field: item.field,
                 value: event.target.value
@@ -93,7 +78,7 @@ const manageEditColumnDef = (columnDef: Array<GridColDef>, apiRef: React.Mutable
             type="boolean"
             value={params.value}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              apiRef.current.setEditCellValue({
+              previewModalGridApiRef.current.setEditCellValue({
                 id: params.row.id,
                 field: item.field,
                 value: event.target.value
@@ -121,29 +106,6 @@ const manageEditColumnDef = (columnDef: Array<GridColDef>, apiRef: React.Mutable
     };
   });
   return updatedColDef;
-};
-
-const fetchData = (): DynamicCallFlowPhoneNumberDropDownList =>{
-  const masterData: string = localStorage.getItem(FLOW_MASTER_DATA);
-  // TODO: an just "if (masterdata) {" be used here?
-  if (masterData === undefined && masterData === null) {
-    return;
-  }
-  const masterDataObject: DynamicCallFlowPhoneNumberMasterData = JSON.parse(masterData);
-  return {
-    brand: masterDataObject.brand,
-    channel: masterDataObject.channel,
-    languageOffer,
-    userDestination,
-    callFlowName: callFlowName,
-    callFlowRoute: masterDataObject?.callFlowRoute,
-    callFlowType: callFlowType,
-    callerType: masterDataObject?.callerType,
-    dataRequests: masterDataObject?.dataRequests,
-    nextActionType: nextActionType,
-    tfnRoutingGroup,
-    phoneNumberType: flowType
-  };
 };
 
 export {

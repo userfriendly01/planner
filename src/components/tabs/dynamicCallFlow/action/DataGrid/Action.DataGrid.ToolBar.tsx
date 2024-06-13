@@ -4,12 +4,12 @@ import {
 import React, {
   useContext, useMemo, useState
 } from "react";
-import { readWriteAccess } from "utils";
 import {
   PlaylistAdd, SaveAlt
 } from "@mui/icons-material";
 import { DynamicCallFlowActionContext } from "../DynamicCallFlow.Action.Container";
 import { Filter } from "../../common/DataGrid/Abstract.DataGrid.Filter";
+import { readWriteAccess } from "utils/alohaConfigUtils";
 
 interface ActionDataGridToolBarProps {
   isFilterModalOpen: boolean;
@@ -21,10 +21,10 @@ export const ActionDataGridToolBar = ({
   isFilterModalOpen, exportDataFile
 }: ActionDataGridToolBarProps) => {
   const {
-    matchedGroups,
+    permissions,
     modalController
   } = useContext(DynamicCallFlowActionContext);
-  const enableFlow = useMemo(() => readWriteAccess(matchedGroups,"aloha-flow"), []);
+  const enableFlow = useMemo(() => readWriteAccess(permissions,"aloha-flow"), []);
   const [localFilter, setLocalFilter] = useState<Filter>({} as Filter);
 
   // useEffect(()=> {

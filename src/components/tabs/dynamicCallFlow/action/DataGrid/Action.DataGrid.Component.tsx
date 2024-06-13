@@ -5,7 +5,6 @@ import { ActionDataGridToolBar } from "./Action.DataGrid.ToolBar";
 import {
   DataGrid, GridCallbackDetails, GridPaginationModel, useGridApiRef
 } from "@mui/x-data-grid";
-import { CustomToast } from "components";
 import ActionDataGridColumnDef from "./Action.DataGrid.ColumnDef";
 import {
   ActionRecord, ActionRecordType
@@ -32,6 +31,7 @@ import { DynamicCallFlowActionContext } from "../DynamicCallFlow.Action.Containe
 import { NotInUseModalType } from "../../common/Modal.Controller";
 import { ActionDataGridController } from "./Action.DataGrid.Controller";
 import { ActionDataGridFilter } from "./Action.DataGrid.Filter";
+import { CustomToast } from "components/CustomToast";
 
 const DYNAMIC_CALL_FLOW_ACTION_DATA_GRID_PAGE_NUMBER = "dynamicCallFlowActionDataGridPageNumber";
 const DYNAMIC_CALL_FLOW_ACTION_DATA_GRID_RECORDS_PER_PAGE = "dynamicCallFlowActionDataGridRecordsPerPage";
@@ -51,7 +51,7 @@ const ActionDataGridComponent = (): JSX.Element => {
   const {
     currentOpenModal,
     modalController,
-    accessToken
+    accessTokenGraph
   } = useContext(DynamicCallFlowActionContext);
 
   // sourceRecords is the master list of all records.  It is used to update the data grid records and to update the field options.
@@ -89,9 +89,9 @@ const ActionDataGridComponent = (): JSX.Element => {
       let updatedDataGridProps: DataGridStateProps;
 
       try {
-        const records = await actionListRecords(accessToken);
+        const records = await actionListRecords(accessTokenGraph);
         [sortedRecords, updatedDataGridProps] = sortDataGrid<ActionRecordType>(records);
-        setSourceRecords(await actionListRecords(accessToken));
+        setSourceRecords(await actionListRecords(accessTokenGraph));
       } catch (error: unknown) {
         console.log(`Error loading dynamic call flow action data: ${(error as Error)?.message}`);
         alertBarController.current.error("Errors loading data.  Please check the console logs.");
@@ -158,7 +158,7 @@ const ActionDataGridComponent = (): JSX.Element => {
   };
 
   const handleOnBacthCreate = async(actionRecords: Array<ActionRecordType> ) =>{
-    const graphQLResponse = await batchCreateDynamicActionRecords(accessToken, actionRecords);
+    const graphQLResponse = await batchCreateDynamicActionRecords(accessTokenGraph, actionRecords);
 
     if (graphQLResponse?.errors.length > 0) {
       alertBarController.current.graphQLError(graphQLResponse.errors);

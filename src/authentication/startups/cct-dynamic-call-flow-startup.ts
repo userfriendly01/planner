@@ -1,4 +1,4 @@
-import { getStartupProfiles } from "authentication";
+import { getStartupProfiles } from "../authenticationProfiles";
 
 export const runDynamicCallFlowStartup = (dispatch: any) => {
   /* Please add new service calls to the end of this Promise.all,

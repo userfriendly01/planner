@@ -72,6 +72,13 @@ const paths = [
     ]
   },
   {
+    alias: "dynamicCallFlow",
+    paths: [
+      "components/tabs/dynamicCallFlow/action",
+      "components/tabs/dynamicCallFlow/phoneNumber"
+    ]
+  },
+  {
     alias: "orgmanagement",
     paths: [
       "components/tabs/orgmanagement",

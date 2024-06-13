@@ -1,5 +1,5 @@
-import { Control } from "../../../../../globals";
 import { MultiFieldContainerFormProps } from "../../../../core/SharedComponents/MultiFieldContainer";
+import { Control } from "globals/interfaces";
 
 export type FieldDataType = string | Array<string> | boolean | number | undefined;
 

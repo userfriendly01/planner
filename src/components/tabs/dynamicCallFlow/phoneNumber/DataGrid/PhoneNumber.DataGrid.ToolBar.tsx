@@ -6,9 +6,6 @@ import React, {
   useEffect, useMemo, useState
 } from "react";
 import {
-  readWriteAccess
-} from "utils";
-import {
   PlaylistAdd,
   SaveAlt,
   DeleteSweepOutlined,
@@ -22,6 +19,7 @@ import { DynamicCallFlowPhoneNumberContext } from "../DynamicCallFlow.PhoneNumbe
 import { PhoneNumberModalTypeEnum } from "../DynamicCallFlow.PhoneNumber.Container.Modal.Controller";
 import { DataGridFilterRef } from "../../common/DynamicCallFlow.Interfaces";
 import { PhoneNumberRecordType } from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { readWriteAccess } from "utils/alohaConfigUtils";
 
 interface PhoneNumberDataGridToolBarProps {
   isFilterModalOpen: boolean;
@@ -34,11 +32,11 @@ const PhoneNumberDataGridToolBar = ({
   isFilterModalOpen, dataGridFilter, exportDataFile
 }: PhoneNumberDataGridToolBarProps) => {
   const {
-    matchedGroups,
+    permissions,
     modalController
   } = useContext(DynamicCallFlowPhoneNumberContext);
 
-  const enableFlow = useMemo(() => readWriteAccess(matchedGroups,"aloha-flow"), []);
+  const enableFlow = useMemo(() => readWriteAccess(permissions,"aloha-flow"), []);
   const [localFilter, setLocalFilter] = useState<Filter>({} as Filter);
 
   useEffect(()=> {

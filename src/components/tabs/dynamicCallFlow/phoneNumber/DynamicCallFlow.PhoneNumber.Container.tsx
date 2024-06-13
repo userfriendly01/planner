@@ -1,9 +1,4 @@
 import PhoneNumberDataGridComponent from "./DataGrid/PhoneNumber.DataGrid.Component";
-import { useAccessToken } from "authentication";
-import {
-  LoginInProgress,
-  LoginError
-} from "components";
 import React, {
   createContext, useState, useRef, useEffect
 } from "react";
@@ -12,16 +7,17 @@ import {
 } from "../common/Modal.Controller";
 import { PhoneNumberModalType } from "./DynamicCallFlow.PhoneNumber.Container.Modal.Controller";
 import { DynamicCallFlowContextStore } from "../common/DynamicCallFlow.Interfaces";
+import { useAdminState } from "context/appContext";
 
 export const DynamicCallFlowPhoneNumberContext = createContext<DynamicCallFlowContextStore<PhoneNumberModalType>>(undefined);
 
 const DynamicCallFlowPhoneNumberContainer = () => {
   const {
-    accessToken,
-    matchedGroups,
-    isLoading,
-    error
-  } = useAccessToken();
+    userContext: {
+      permissions,
+      accessTokenGraph
+    }
+  } = useAdminState();
 
   const modalController = useRef<ModalController<PhoneNumberModalType>>(new ModalController<PhoneNumberModalType>());
   const [currentOpenModal, setCurrentOpenModal] = useState<PhoneNumberModalType>(MODAL_NOT_IN_USE);
@@ -39,19 +35,10 @@ const DynamicCallFlowPhoneNumberContainer = () => {
     modalController.current.setCloseModalRef(closeModal);
   }, [currentOpenModal]);
 
-
-  if (isLoading) {
-    return <LoginInProgress />;
-  }
-
-  if (error) {
-    return <LoginError message={error} />;
-  }
-
   return (
     <DynamicCallFlowPhoneNumberContext.Provider value={ {
-      accessToken,
-      matchedGroups,
+      accessTokenGraph,
+      permissions,
       currentOpenModal,
       modalController
     } }>

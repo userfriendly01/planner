@@ -7,12 +7,15 @@ import {
 import { runTritonAdminStartup } from "authentication/startups/cct-triton-admin-startup";
 import { runAlohaRoutingStartup } from "authentication/startups/cct-aloha-routing-startup";
 import { runAlohaFlowStartup } from "authentication/startups/cct-aloha-flow-startup";
-import AlohaFlowContainer from "alohaFlow/AlohaFlowContainer";
-import AlohaRoutingContainer from "alohaRouting/AlohaRoutingContainer";
-import { TritonUsersViewWrapper } from "usermanagement/TritonUsersViewWrapper";
 import { ADGroupPermission } from "globals/interfaces";
 import DynamicCallFlowPhoneNumberContainer
   from "../components/tabs/dynamicCallFlow/phoneNumber/DynamicCallFlow.PhoneNumber.Container";
+import AlohaFlowContainer from "../components/tabs/alohaFlow/AlohaFlowContainer";
+import {
+  TritonUsersViewWrapper
+} from "../components/tabs/usermanagement/TritonUsersView/TritonUsersViewWrapper/TritonUsersViewWrapper";
+import AlohaRoutingContainer from "../components/tabs/alohaRouting/AlohaRoutingContainer";
+import { runDynamicCallFlowStartup } from "./startups/cct-dynamic-call-flow-startup";
 
 export const getAuthenticationProfileTemplates = (): AuthenticationProfileOptions => {
   const Tabs = getTabs();

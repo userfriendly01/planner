@@ -15,7 +15,7 @@ import { batchDeleteLegacyPhoneNumberRecords } from "./Query/Batch.Delete.Legacy
  * This function separates the phone number record list into legacy and dynamic lists and executes the corresponding
  * batch function.  This will run batch create, update, and delete functions
  *
- * @param {string} accessToken token to use while calling graphql query
+ * @param {string} accessTokenGraph token to use while calling graphql query
  * @param {Array<PhoneNumberRecordType>} phoneNumberRecords List of phone number records to be run in a batch query
  * @param {BatchRecordQuery<PhoneNumberRecordType>} batchLegacyPhoneNumberRecordQuery function to run legacy batch query
  * @param {BatchRecordQuery<PhoneNumberRecordType>} batchDynamicPhoneNumberRecordQuery function to run dynamic batch query
@@ -23,7 +23,7 @@ import { batchDeleteLegacyPhoneNumberRecords } from "./Query/Batch.Delete.Legacy
  * @returns Promise<BatchResults<PhoneNumberRecordType>>
  */
 async function batchPhoneNumberRecords(
-  accessToken: string,
+  accessTokenGraph: string,
   phoneNumberRecords: Array<PhoneNumberRecordType>,
   batchLegacyPhoneNumberRecordQuery: BatchRecordQuery<PhoneNumberRecordType>,
   batchDynamicPhoneNumberRecordQuery: BatchRecordQuery<PhoneNumberRecordType>
@@ -31,16 +31,16 @@ async function batchPhoneNumberRecords(
   // Process batch jobs concurrently
   const [legacyBatchResults, dynamicBatchResults] =
     await Promise.all([
-      filterAndRunBatch(accessToken, phoneNumberRecords, batchLegacyPhoneNumberRecordQuery, true),
-      filterAndRunBatch(accessToken, phoneNumberRecords, batchDynamicPhoneNumberRecordQuery)
+      filterAndRunBatch(accessTokenGraph, phoneNumberRecords, batchLegacyPhoneNumberRecordQuery, true),
+      filterAndRunBatch(accessTokenGraph, phoneNumberRecords, batchDynamicPhoneNumberRecordQuery)
     ]);
 
   return combineLegacyAndDynamicBatchResults(legacyBatchResults, dynamicBatchResults);
 }
 
-async function filterAndRunBatch(accessToken: string, phoneNumberRecords: Array<PhoneNumberRecordType>, batchPhoneNumberRecordQuery: BatchRecordQuery<PhoneNumberRecordType>, filterForLegacy = false): Promise<BatchResults<PhoneNumberRecordType>> {
+async function filterAndRunBatch(accessTokenGraph: string, phoneNumberRecords: Array<PhoneNumberRecordType>, batchPhoneNumberRecordQuery: BatchRecordQuery<PhoneNumberRecordType>, filterForLegacy = false): Promise<BatchResults<PhoneNumberRecordType>> {
   const filteredPhoneNumberRecords = filterPhoneNumberRecords(phoneNumberRecords, filterForLegacy);
-  return await batchPhoneNumberRecordQuery(accessToken, filteredPhoneNumberRecords);
+  return await batchPhoneNumberRecordQuery(accessTokenGraph, filteredPhoneNumberRecords);
 }
 
 /**

@@ -1,5 +1,5 @@
-import { Control } from "../../../../../globals";
 import { FieldConfigs } from "./Form.Field.Config";
+import { Control } from "globals/interfaces";
 
 export enum ControlEnum {
   AutoComplete = "autoComplete",

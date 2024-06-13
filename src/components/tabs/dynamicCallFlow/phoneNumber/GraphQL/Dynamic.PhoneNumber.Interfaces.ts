@@ -11,6 +11,15 @@ export enum BrandTypeEnum {
     COMPARION = "Comparion"
 }
 
+export interface BrandNameMap{
+    [key:string]: "liberty" | "safeco"
+}
+
+export const BrandName: BrandNameMap = {
+  "Liberty Mutual": "liberty",
+  "Safeco": "safeco"
+};
+
 export type CallFlowNameType = "LSC" | "AISG Main";
 export enum CallFlowNameEnum {
     LSC = "LSC",

@@ -1,20 +1,26 @@
-import AlohaFlowContainer from "alohaFlow/AlohaFlowContainer";
-import AlohaRoutingContainer from "alohaRouting/AlohaRoutingContainer";
-import { BulkChanges } from "usermanagement/BulkChanges";
-import { CallFlowManagementSkills } from "callflowmanagement/CallFlowManagementWrapper/CallFlowManagementSkills";
-import { CallFlowManagementTfn } from "callflowmanagement/CallFlowManagementWrapper/CallFlowManagementTfn";
-import { CompareProfiles } from "usermanagement/CompareProfiles";
-import DynamicFlowContainer from "dynamicFlow/DynamicFlowContainer";
-import ProfileDirectoryContainer from "orgmanagement/ProfileDirectoryContainer";
-import { ProfileDialListContainer } from "orgmanagement/ProfileDialListContainer";
-import { ProfileSettingsContainer } from "orgmanagement/ProfileSettingsContainer";
-import { TritonUsersViewWrapper } from "usermanagement/TritonUsersViewWrapper";
-import { UserEntryForm } from "usermanagement/UserEntryFormWrapper";
-import { WfmUsersViewWrapper } from "usermanagement/WfmUsersViewWrapper";
-import CalabrioOrgWrapper from "orgmanagement/CalabrioOrgWrapper";
-import CalabrioRolesWrapper from "orgmanagement/CalabrioRolesWrapper";
+import AlohaFlowContainer from "../components/tabs/alohaFlow/AlohaFlowContainer";
+import AlohaRoutingContainer from "../components/tabs/alohaRouting/AlohaRoutingContainer";
+import { CallFlowManagementSkills } from "../components/tabs/callflowmanagement/CallFlowManagementWrapper/CallFlowManagementSkills";
+import { CallFlowManagementTfn } from "../components/tabs/callflowmanagement/CallFlowManagementWrapper/CallFlowManagementTfn";
+import DynamicFlowContainer from "../components/tabs/dynamicFlow/DynamicFlowContainer";
 import DynamicCallFlowActionContainer from "../components/tabs/dynamicCallFlow/action/DynamicCallFlow.Action.Container";
 import DynamicCallFlowPhoneNumberContainer from "../components/tabs/dynamicCallFlow/phoneNumber/DynamicCallFlow.PhoneNumber.Container";
+import { BulkChanges } from "../components/tabs/usermanagement/BulkChanges/BulkChanges";
+import {
+  TritonUsersViewWrapper
+} from "../components/tabs/usermanagement/TritonUsersView/TritonUsersViewWrapper/TritonUsersViewWrapper";
+import {
+  WfmUsersViewWrapper
+} from "../components/tabs/usermanagement/WFMUsersView/WfmUsersViewWrapper/WfmUsersViewWrapper";
+import {
+  UserEntryForm
+} from "../components/tabs/usermanagement/OnboardNewUser/UserEntryFormWrapper/UserEntryFormWrapper";
+import { CompareProfiles } from "../components/tabs/usermanagement/CompareProfiles/CompareProfiles";
+import CalabrioOrgWrapper from "../components/tabs/orgmanagement/calabrio/CalabrioOrgWrapper/CalabrioOrgWrapper";
+import CalabrioRolesWrapper from "../components/tabs/orgmanagement/calabrio/CalabrioRolesWrapper/CalabrioRolesWrapper";
+import { ProfileSettingsContainer } from "../components/tabs/orgmanagement/triton/ProfileSettingsContainer/ProfileSettingsContainer";
+import { ProfileDialListContainer } from "../components/tabs/orgmanagement/triton/ProfileSettingsContainer/ProfileDialListContainer";
+import ProfileDirectoryContainer from "../components/tabs/orgmanagement/triton/ProfileSettingsContainer/ProfileDirectoryContainer";
 
 export const getRoutes = () => [
   {

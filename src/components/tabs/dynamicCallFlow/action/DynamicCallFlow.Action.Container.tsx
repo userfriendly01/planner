@@ -2,11 +2,7 @@ import React, {
   createContext, useEffect, useRef, useState
 } from "react";
 import ActionDataGridComponent, { ActionModalType } from "./DataGrid/Action.DataGrid.Component";
-import { useAccessToken } from "authentication";
-import {
-  LoginInProgress,
-  LoginError
-} from "components";
+import { useAdminState } from "context/appContext";
 import {
   MODAL_NOT_IN_USE, ModalController
 } from "../common/Modal.Controller";
@@ -16,11 +12,11 @@ export const DynamicCallFlowActionContext = createContext<DynamicCallFlowContext
 
 const DynamicCallFlowActionContainer = (): JSX.Element => {
   const {
-    accessToken,
-    matchedGroups,
-    isLoading,
-    error
-  } = useAccessToken();
+    userContext: {
+      permissions,
+      accessTokenGraph
+    }
+  } = useAdminState();
 
   const modalController = useRef<ModalController<ActionModalType>>(new ModalController<ActionModalType>());
   const [currentOpenModal, setCurrentOpenModal] = useState<ActionModalType>(MODAL_NOT_IN_USE);
@@ -38,18 +34,10 @@ const DynamicCallFlowActionContainer = (): JSX.Element => {
     modalController.current.setCloseModalRef(closeModal);
   }, [currentOpenModal]);
 
-  if (isLoading) {
-    return <LoginInProgress />;
-  }
-
-  if (error) {
-    return <LoginError message={error} />;
-  }
-
   return (
     <DynamicCallFlowActionContext.Provider value={ {
-      accessToken,
-      matchedGroups,
+      accessTokenGraph,
+      permissions,
       currentOpenModal,
       modalController
     } }>
