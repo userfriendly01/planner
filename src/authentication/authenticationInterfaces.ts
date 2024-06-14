@@ -2,7 +2,7 @@ export const descriptions = {
   Triton: "The Triton developers & admins use these tabs for Triton user management, Organization Management, and managing closed and flash messages for IVRs leading to Twilio and Triton.",
   Aloha_Routing: "",
   Aloha_Flow: "",
-  Dynami_Call_Flow: ""
+  Dynamic_Call_Flow: ""
 };
 
 export const enum Permissions {

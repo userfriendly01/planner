@@ -110,6 +110,21 @@ export const getAdGroupPermissionMapping = (): ADGroupPermission[] => {
     {
       roles: [
         {
+          name: "FlowRead",
+          permissionLevel: Permissions.READ
+        },
+        {
+          name: "FlowReadWrite",
+          permissionLevel: Permissions.WRITE
+        }
+      ],
+      startup: startupProfiles.DYNAMIC_CALL_FLOW,
+      description: descriptions.Dynamic_Call_Flow,
+      authenticationProfile: authenticationProfileTemplates.DYNAMIC_CALL_FLOW
+    },
+    {
+      roles: [
+        {
           name: "RouteRead",
           permissionLevel: Permissions.READ
         },
@@ -235,7 +250,7 @@ export const getTabs = (): any => {
     DYNAMIC_CALL_FLOW_MANAGEMENT: {
       value: "dynamic-call-flow-management",
       label: "Dynamic Call Flow",
-      route: "/triton-admin/dynamic-call-flow",
+      route: "/triton-admin/dynamic-call-flow-phone-number",
       dropdown: [
         {
           route: "/triton-admin/dynamic-call-flow-phone-number",
