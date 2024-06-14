@@ -1,4 +1,4 @@
-import { ActionRecordType, ActionType } from "../GraphQL/Action.Interfaces";
+import { ActionType } from "../GraphQL/Action.Interfaces";
 import { XlsxJSONRow } from "../../common/Xlsx/Xlsx.Interfaces";
 
 export interface CallerContextAttributes {
@@ -15,9 +15,9 @@ export interface ActionXlsxRow extends XlsxJSONRow {
 }
 
 export interface AnnouncementXlsxRow extends ActionXlsxRow {
-  speech: string;
   nextActionId: string;
   nextActionType: ActionType;
+  speech: string;
 }
 
 export interface MenuXlsxRow extends ActionXlsxRow {

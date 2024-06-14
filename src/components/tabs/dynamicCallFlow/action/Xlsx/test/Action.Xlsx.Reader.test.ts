@@ -1,6 +1,5 @@
 import * as xlsx from "xlsx";
 import { ActionXlsxReader } from "../Action.Xlsx.Reader";
-import { BrandTypeEnum } from "../../../phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 
 describe("Action XLSX Reader", () => {
   test("happy path", () => {
