@@ -12,13 +12,12 @@ export type DataGridAction<RecordType> = (records: Array<RecordType>) => void;
 export const HANDLED_SUCCESSFULLY = true;
 export const HANDLED_UNSUCCESSFULLY = false;
 
-export interface PreviewModalHandler<RecordType, ResponseType> {
+export interface PreviewModalHandler<RecordType> {
   handleOnCreate(accessToken: string, recordsToCreate: Array<RecordType>): Promise<boolean>;
-  handleOnUpdate(accessToken: string, recordsToUpdate: Array<RecordType>): Promise<boolean>;
   handleOnDelete(accessToken: string, recordsToDelete: Array<RecordType>): Promise<boolean>;
 }
 
-export abstract class AbstractPreviewModalHandler<RecordType, ResponseType> implements PreviewModalHandler<RecordType, ResponseType> {
+export abstract class AbstractPreviewModalHandler<RecordType> implements PreviewModalHandler<RecordType> {
   protected readonly _dataGridController: DataGridControllerRef<RecordType>;
 
   constructor(dataGridController: DataGridControllerRef<RecordType>) {
@@ -30,7 +29,6 @@ export abstract class AbstractPreviewModalHandler<RecordType, ResponseType> impl
   }
 
   abstract handleOnCreate(accessToken: string, recordsToCreate: Array<RecordType>): Promise<boolean>;
-  abstract handleOnUpdate(accessToken: string, recordsToUpdate: Array<RecordType>): Promise<boolean>;
   abstract handleOnDelete(accessToken: string, recordsToDelete: Array<RecordType>): Promise<boolean>;
 
   protected async runBatch(accessToken: string, records: Array<RecordType>, batchRecordQuery: BatchRecordQuery<RecordType>,  dataGridAction: DataGridAction<RecordType>): Promise<BatchResults<RecordType>> {

@@ -40,7 +40,7 @@ export abstract class AbstractXlsxReader<XlsxRowType, RecordType> implements Xls
   async processXlsxUpload(changeEvent: React.ChangeEvent<HTMLInputElement>): Promise<XlsxReaderResults<XlsxRowType, RecordType>> {
     changeEvent.preventDefault();
 
-    if (changeEvent.target.files) {
+    if (changeEvent.target.files && changeEvent.target.files.length > 0) {
       const workSheet = await this.getWorkSheet(changeEvent.target.files[0]);
       return this.processWorkSheet(workSheet);
     } else {

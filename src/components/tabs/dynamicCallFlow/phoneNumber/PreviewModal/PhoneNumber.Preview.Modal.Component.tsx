@@ -66,37 +66,16 @@ export const PhoneNumberPreviewModal = ({
     }
   }, [htmlInputElements]);
 
-  const getUpdatedPhoneNumberRows = () => {
-    return modalRecords.map((row: PhoneNumberRecordType) => {
-      const updatedPhoneNumberRecord: PhoneNumberRecordType = {};
-
-      Object.keys(row).forEach((key: string)=> {
-        PhoneNumberRecordUtil.setPropertyValue(updatedPhoneNumberRecord, key, previewModalGridApiRef.current.getCellValue(row.id, key));
-      });
-
-      return updatedPhoneNumberRecord;
-    });
-  };
-
   const handleOnCreate = async () =>{
-    const recordsToCreate: Array<PhoneNumberRecordType> = getUpdatedPhoneNumberRows();
-    if (await previewModalHandler.current.handleOnCreate(accessTokenGraph, recordsToCreate) === HANDLED_SUCCESSFULLY) {
-      setModalRecords([]);
-      onClose();
-    }
-  };
-
-  const handleOnUpdate = async () =>{
-    const recordsToUpdate: Array<PhoneNumberRecordType> = getUpdatedPhoneNumberRows();
-    if (await previewModalHandler.current.handleOnUpdate(accessTokenGraph, recordsToUpdate) === HANDLED_SUCCESSFULLY) {
+    if (await previewModalHandler.current.handleOnCreate(accessTokenGraph, modalRecords) === HANDLED_SUCCESSFULLY) {
       setModalRecords([]);
       onClose();
     }
   };
 
   const handleOnDelete = async () => {
-    const recordsToDelete: Array<PhoneNumberRecordType> = getUpdatedPhoneNumberRows();
-    if (await previewModalHandler.current.handleOnDelete(accessTokenGraph, recordsToDelete) === HANDLED_SUCCESSFULLY) {
+    if (await previewModalHandler.current.handleOnDelete(accessTokenGraph, modalRecords) === HANDLED_SUCCESSFULLY) {
+      // reset this modal dataGrid and close the modal
       setModalRecords([]);
       onClose();
     }
@@ -212,9 +191,6 @@ export const PhoneNumberPreviewModal = ({
             }
             {modalType === PhoneNumberModalTypeEnum.BulkAdd &&
             <StyledButton sx={{ marginRight: "15px" }} onClick={() => handleOnCreate() }>Save</StyledButton>
-            }
-            {modalType === PhoneNumberModalTypeEnum.BulkEdit &&
-            <StyledButton sx={{ marginRight: "15px" }} onClick={()=>{ handleOnUpdate(); }}>Update</StyledButton>
             }
             <StyledButton onClick={()=>{ handleOnClose(); }}>Cancel</StyledButton>
           </Box>

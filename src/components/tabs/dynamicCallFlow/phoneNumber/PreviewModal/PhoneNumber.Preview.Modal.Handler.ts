@@ -10,11 +10,8 @@ import { deleteOppositeRows } from "../DataGrid/PhoneNumber.DataGrid.Util";
 import {
   AbstractPreviewModalHandler, DataGridAction, HANDLED_SUCCESSFULLY, HANDLED_UNSUCCESSFULLY
 } from "../../common/Preview/Abstract.Preview.Modal.Handler";
-import {
-  BatchRecordQuery, BatchResults
-} from "../../common/GraphQL/Abstract.BatchRecords.Query";
 
-export class PhoneNumberPreviewModalHandler extends AbstractPreviewModalHandler<PhoneNumberRecordType, CallFlowDeleteResponse> {
+export class PhoneNumberPreviewModalHandler extends AbstractPreviewModalHandler<PhoneNumberRecordType> {
   private hasMatchingRecords(recordsToMatchOn: Array<PhoneNumberRecordType>): boolean {
     const matchingRecordMessages = generateMatchingRecordMessages(this.dataGridController.sourceRecords, recordsToMatchOn, pkeyAndEmployeeIdFilter);
 
@@ -31,40 +28,41 @@ export class PhoneNumberPreviewModalHandler extends AbstractPreviewModalHandler<
       return HANDLED_UNSUCCESSFULLY;
     }
 
-    const batchResults = await this.runPhoneNumberBatch(accessToken, recordsToCreate, BatchPhoneNumberRecord.create,
-      this.dataGridController.addRecordsToSourceRecords);
+    const batchResults = await BatchPhoneNumberRecord.create(accessToken, recordsToCreate);
 
-    return batchResults?.hasError ? HANDLED_UNSUCCESSFULLY : HANDLED_SUCCESSFULLY;
-  }
-
-  async handleOnUpdate(accessToken: string, recordsToUpdate: Array<PhoneNumberRecordType>): Promise<boolean> {
-    if (this.hasMatchingRecords(recordsToUpdate)) {
+    if (batchResults?.hasError) {
+      this.dataGridController.alertBarController.graphQLError(batchResults.errors);
       return HANDLED_UNSUCCESSFULLY;
     }
 
-    const batchResults = await this.runPhoneNumberBatch(accessToken, recordsToUpdate, BatchPhoneNumberRecord.update,
-      this.dataGridController.updateRecordsInSourceRecords);
+    const deleteOppositeRowsBatchResult = await deleteOppositeRows(accessToken, batchResults.success);
 
-    return batchResults?.hasError ? HANDLED_UNSUCCESSFULLY : HANDLED_SUCCESSFULLY;
+    if (deleteOppositeRowsBatchResult?.hasError) {
+      this.dataGridController.alertBarController.graphQLError(deleteOppositeRowsBatchResult.errors);
+      return HANDLED_UNSUCCESSFULLY;
+    }
+
+    this.dataGridController.addRecordsToSourceRecords(batchResults.success);
+    this.dataGridController.dataGridFilter.applyFilter();
+
+    this.dataGridController.setDataGridPropsState({ fetching: false });
+    this.dataGridController.alertBarController.success("Phone Number Records successfully created.");
+
+    return HANDLED_SUCCESSFULLY;
   }
 
   async handleOnDelete(accessToken: string, recordsToDelete: Array<PhoneNumberRecordType>): Promise<boolean> {
-    const batchResults = await this.runPhoneNumberBatch(accessToken, recordsToDelete, BatchPhoneNumberRecord.delete,
-      this.dataGridController.removeRecordsFromSourceRecords);
+    const batchResults = await BatchPhoneNumberRecord.delete(accessToken, recordsToDelete);
 
-    return batchResults?.hasError ? HANDLED_UNSUCCESSFULLY : HANDLED_SUCCESSFULLY;
-  }
-
-  async runPhoneNumberBatch(accessToken: string, records: Array<PhoneNumberRecordType>,
-    batchRecordQuery: BatchRecordQuery<PhoneNumberRecordType>,
-    dataGridAction: DataGridAction<PhoneNumberRecordType>): Promise<BatchResults<PhoneNumberRecordType>> {
-
-    const batchResults = await this.runBatch(accessToken, records, batchRecordQuery, dataGridAction);
-
-    if (!batchResults?.hasError) {
-      await deleteOppositeRows(accessToken, batchResults.success);
+    if (batchResults?.hasError) {
+      this.dataGridController.alertBarController.error(batchResults.alertMsg);
+      return HANDLED_UNSUCCESSFULLY;
     }
 
-    return batchResults;
+    this.dataGridController.removeRecordsFromSourceRecords(recordsToDelete);
+    this.dataGridController.setDataGridPropsState({ fetching: false });
+    this.dataGridController.alertBarController.success("Phone Numbers successfully deleted.");
+
+    return HANDLED_SUCCESSFULLY;
   }
 }
