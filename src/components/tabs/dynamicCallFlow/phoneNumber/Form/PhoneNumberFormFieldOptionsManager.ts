@@ -12,13 +12,15 @@ import {
 import { PKEY } from "./Legacy.PhoneNumber.Form.Fields";
 import {
   CallFlowNameEnum, CallFlowTypeEnum,
-  LanguageOfferEnum, NextActionTypeEnum,
+  LanguageOfferEnum,
   PhoneNumberRecordType, TfnRoutingGroupEnum,
   UserDestinationEnum
 } from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
 import { LegacyPhoneNumberTypeEnum } from "../GraphQL/Legacy.PhoneNumber.Interfaces";
 import { PhoneNumberRecordUtil } from "../GraphQL/PhoneNumber.Record.Util";
 import { FieldDataType } from "../../common/Form/Form.Field.Config";
+
+import { ActionTypeEnum } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
 
 export class PhoneNumberFormFieldOptionsManager extends AbstractFormFieldOptionsManager<PhoneNumberRecordType> {
   protected getRecordKeyValue(phoneNumberRecord: PhoneNumberRecordType, key: string): string | Array<string> | undefined {
@@ -53,7 +55,7 @@ export class PhoneNumberFormFieldOptionsManager extends AbstractFormFieldOptions
       userDestination: Object.values<string>(UserDestinationEnum),
       callFlowName: Object.values<string>(CallFlowNameEnum),
       callFlowType: Object.values<string>(CallFlowTypeEnum),
-      nextActionType: Object.values<string>(NextActionTypeEnum),
+      nextActionType: Object.values<string>(ActionTypeEnum),
       tfnRoutingGroup: Object.values<string>(TfnRoutingGroupEnum),
       phoneNumberType: Object.values<string>(LegacyPhoneNumberTypeEnum)
     } as FieldOptions;

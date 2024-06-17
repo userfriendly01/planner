@@ -1,8 +1,7 @@
-import {
-  AbstractGraphQLQuery, GraphQLVariables
-} from "./AbstractGraphQL.Query";
+import { AbstractGraphQLQuery } from "./AbstractGraphQL.Query";
 
-export interface ListVariables extends GraphQLVariables {
+export interface ListVariables {
+  id?: number;
   limit?: number;
   nextToken?: string;
 }

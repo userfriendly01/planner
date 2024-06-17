@@ -126,11 +126,11 @@ export abstract class AbstractDataGridController<RecordType> implements DataGrid
   }
 
   addRecordToSourceRecords(recordToAdd: RecordType): void {
-    this._setSourceRecords( previousRecordsState => this._addRecordToPreviousStateRecordArray(recordToAdd, previousRecordsState));
+    this._setSourceRecords( previousRecordsState => this._addRecordToPreviousRecordState(recordToAdd, previousRecordsState));
   }
 
   addRecordsToSourceRecords(recordsToAdd: Array<RecordType>): void {
-    this._setSourceRecords( previousRecordsState => [ ...previousRecordsState, ...recordsToAdd ]);
+    this._setSourceRecords( previousRecordsState => this._addRecordsToPreviousRecordsState(previousRecordsState, recordsToAdd));
   }
 
   updateRecordInSourceRecords(updatedRecord: RecordType): void {
@@ -169,11 +169,11 @@ export abstract class AbstractDataGridController<RecordType> implements DataGrid
   }
 
   addRecordToDataGrid(recordToAdd: RecordType): void {
-    this._setDataGridRecords( previousRecordsState => this._addRecordToPreviousStateRecordArray(recordToAdd, previousRecordsState));
+    this._setDataGridRecords( previousRecordsState => this._addRecordToPreviousRecordState(recordToAdd, previousRecordsState));
   }
 
   addRecordsToDataGrid(recordsToAdd: Array<RecordType>): void {
-    this._setDataGridRecords( previousRecordsState => [ ...previousRecordsState, ...recordsToAdd ]);
+    this._setDataGridRecords( previousRecordsState => this._addRecordsToPreviousRecordsState(previousRecordsState, recordsToAdd));
   }
 
   updateRecordInDataGrid(updatedRecord: RecordType): void {
@@ -225,20 +225,28 @@ export abstract class AbstractDataGridController<RecordType> implements DataGrid
   }
 
   // **************** Private Common Utility Functions **************** //
-  private _addRecordToPreviousStateRecordArray(recordToAdd: RecordType, previousRecordsState: Array<RecordType>): Array<RecordType> {
+  private _addRecordToPreviousRecordState(recordToAdd: RecordType, previousRecordsState: Array<RecordType>): Array<RecordType> {
     return [ ...previousRecordsState, recordToAdd ];
+  }
+
+  private _addRecordsToPreviousRecordsState(recordsToAdd: Array<RecordType>, previousRecordsState: Array<RecordType>): Array<RecordType> {
+    return [ ...previousRecordsState, ...recordsToAdd ];
   }
 
   private _updateRecordInPreviousRecordsState(newRecord: RecordType, previousRecordsState: Array<RecordType>): Array<RecordType> {
     return previousRecordsState.map( existingRecord => existingRecord[this.recordKey() as keyof RecordType] === newRecord[this.recordKey() as keyof RecordType] ? newRecord : existingRecord);
   }
 
-  private _updateRecordsInPreviousRecordsState(updatedRecords: Array<RecordType>, previousRecordsState: Array<RecordType>): Array<RecordType> {
+  private _updateRecordsInPreviousRecordsState(updatedRecordsReadOnly: Array<RecordType>, previousRecordsState: Array<RecordType>): Array<RecordType> {
+    //Freeze the updatedRecordsReadOnly array to prevent accidental modification.  Since this parameter is passed by reference, and this method splices the array down to 0,
+    // the caller would be left with an empty array if they tried to use the updatedRecordsReadOnly array after this method call.
+    Object.freeze(updatedRecordsReadOnly);
+    const updatedRecordsCopy = [ ...updatedRecordsReadOnly ];
     return previousRecordsState.map(existingRecord => {
-      const updatedRecordIndex = updatedRecords.findIndex(updatedRecord => updatedRecord[this.recordKey() as keyof RecordType] === existingRecord[this.recordKey() as keyof RecordType]);
+      const updatedRecordIndex = updatedRecordsCopy.findIndex(updatedRecord => updatedRecord[this.recordKey() as keyof RecordType] === existingRecord[this.recordKey() as keyof RecordType]);
 
-      //remove updatedRecord from updatedRecords array to speed up the find for future iterations by reducing recordsToRemove array size
-      return updatedRecordIndex === RECORD_NOT_FOUND ? existingRecord : updatedRecords.splice(updatedRecordIndex, 1)[0];
+      //remove updatedRecord from updatedRecordsCopy array to speed up the find for future iterations by reducing updatedRecordsCopy array size
+      return updatedRecordIndex === RECORD_NOT_FOUND ? existingRecord : updatedRecordsCopy.splice(updatedRecordIndex, 1)[0];
     });
   }
 
@@ -246,15 +254,19 @@ export abstract class AbstractDataGridController<RecordType> implements DataGrid
     return previousRecordsState.filter( existingRecord => existingRecord[this.recordKey() as keyof RecordType] !== recordToRemove[this.recordKey() as keyof RecordType]);
   }
 
-  private _removeRecordsFromPreviousRecordsState(recordsToRemove: Array<RecordType>, previousRecordsState: Array<RecordType>): Array<RecordType> {
+  private _removeRecordsFromPreviousRecordsState(recordsToRemoveReadOnly: Array<RecordType>, previousRecordsState: Array<RecordType>): Array<RecordType> {
+    //Freeze the recordsToRemoveReadOnly array to prevent accidental modification.  Since this parameter is passed by reference, and this method splices the array down to 0,
+    // the caller would be left with an empty array if they tried to use the recordsToRemoveReadOnly array after this method call.
+    Object.freeze(recordsToRemoveReadOnly);
+    const recordsToRemoveCopy = [ ...recordsToRemoveReadOnly ];
     return previousRecordsState.filter( existingRecord => {
-      const recordToRemoveIndex = recordsToRemove.findIndex( recordToRemove => recordToRemove[this.recordKey() as keyof RecordType] === existingRecord[this.recordKey() as keyof RecordType]);
+      const recordToRemoveIndex = recordsToRemoveCopy.findIndex( recordToRemove => recordToRemove[this.recordKey() as keyof RecordType] === existingRecord[this.recordKey() as keyof RecordType]);
 
       if (recordToRemoveIndex === RECORD_NOT_FOUND) {
         return KEEP_EXISTING_RECORD;
       } else {
-        //remove recordToRemove from recordsToRemove array to speed up the find for future iterations by reducing recordsToRemove array size
-        recordsToRemove.splice(recordToRemoveIndex, 1);
+        //remove recordToRemove from recordsToRemoveCopy array to speed up the find for future iterations by reducing recordsToRemoveCopy array size
+        recordsToRemoveCopy.splice(recordToRemoveIndex, 1);
         return REMOVE_EXISTING_RECORD;
       }
     });

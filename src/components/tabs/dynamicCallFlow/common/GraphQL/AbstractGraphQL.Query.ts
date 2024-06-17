@@ -1,41 +1,11 @@
 import { env } from "../../../../../globals";
-
-export interface GraphQLVariables {
-  id?: number;
-}
-
-export interface GraphQLRecord {
-  id?: number;
-}
-
-export interface GraphQLLocation {
-  line: number;
-  column: number;
-}
-
-export interface GraphQLError {
-  message: string;
-  locations?: GraphQLLocation[];
-  path?: string[];
-  data?: any;
-  errorType?: string;
-  errorInfo?: string;
-  extensions?: {
-    classification?: string;
-  };
-}
-
-export interface GraphQLResponse<GraphQLDataType> {
-  hasResults: boolean;
-  data: GraphQLDataType | null;
-  errors: GraphQLError[];
-}
+import { GraphQLResponse } from "./DynamicCallFlow.Interfaces";
 
 export abstract class AbstractGraphQLQuery {
   protected abstract queryName(): string;
   protected abstract queryDefinition(): string;
 
-  async query<Variables, GraphQLDataType>(accessToken: string, variables: Variables): Promise<GraphQLResponse<GraphQLDataType>> {
+  async query<VariableType, GraphQLDataType>(accessToken: string, variables: VariableType): Promise<GraphQLResponse<GraphQLDataType>> {
     const response: Response = await fetch(env.GRAPH_API_URL, {
       method: "POST",
       headers: {

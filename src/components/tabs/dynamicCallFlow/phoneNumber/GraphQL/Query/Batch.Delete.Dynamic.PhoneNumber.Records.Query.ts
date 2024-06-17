@@ -1,29 +1,22 @@
 import {
-  AbstractBatchRecordsQuery, BatchResults, BatchRecordQuery
+  BatchResults, BatchRecordQuery
 } from "../../../common/GraphQL/Abstract.BatchRecords.Query";
 import {
-  PhoneNumber
+  CallFlowDeleteInput,
+  PhoneNumber, PhoneNumberRecordType
 } from "../Dynamic.PhoneNumber.Interfaces";
+import {
+  AbstractBatchDeleteDynamicCallFlowQuery
+} from "components/tabs/dynamicCallFlow/common/GraphQL/Batch.Delete.DynamicCallFlow.Query";
+import { PhoneNumberRecordUtil } from "dynamicCallFlow/GraphQL/PhoneNumber.Record.Util";
 
 
-export class BatchDeleteDynamicPhoneNumberRecordsQuery extends AbstractBatchRecordsQuery<string, PhoneNumber> {
-  protected batchInputName(): string {
-    return "batchDeletePhoneNumberInput";
-  }
-
-  protected queryName(): string {
-    return "batchDeletePhoneNumber";
-  }
-
-  protected queryDefinition(): string {
-    return `
-      mutation ${this.queryName()}($input: PhoneNumberDeleteBatchInput!) {
-        ${this.queryName()}(input: $input) {
-          items {
-              phoneNumber
-          }
-        }
-      }`;
+export class BatchDeleteDynamicPhoneNumberRecordsQuery extends AbstractBatchDeleteDynamicCallFlowQuery<PhoneNumber> {
+  protected generateCallFlowDeleteInputs(phoneNumberRecords: Array<PhoneNumberRecordType>): Array<CallFlowDeleteInput> {
+    return phoneNumberRecords.map( phoneNumberRecord =>
+      ({
+        id: PhoneNumberRecordUtil.getPkey(phoneNumberRecord),
+      } as CallFlowDeleteInput));
   }
 }
 
@@ -38,5 +31,5 @@ const batchDeleteDynamicPhoneNumberRecordsQuery = new BatchDeleteDynamicPhoneNum
  * @return {Promise<BatchResults<PhoneNumber>>}
  */
 export const batchDeleteDynamicPhoneNumberRecords: BatchRecordQuery<PhoneNumber> = async (accessToken: string, phoneNumberRecords: Array<PhoneNumber>): Promise<BatchResults<PhoneNumber>> => {
-  return await batchDeleteDynamicPhoneNumberRecordsQuery.runBatch(accessToken, (phoneNumberRecords as Array<PhoneNumber>).map((phoneNumber: PhoneNumber) => phoneNumber.phoneNumber));
+  return await batchDeleteDynamicPhoneNumberRecordsQuery.batchQuery(accessToken, phoneNumberRecords);
 };

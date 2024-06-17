@@ -9,14 +9,17 @@ import {
 
 export type DataGridAction<RecordType> = (records: Array<RecordType>) => void;
 
-export interface PreviewModalHandler<RecordType> {
-  handleOnCreate(accessToken: string, recordsToCreate: Array<RecordType>): Promise<void>;
-  handleOnUpdate(accessToken: string, recordsToUpdate: Array<RecordType>): Promise<void>;
-  handleOnDelete(accessToken: string, recordsToDelete: Array<RecordType>): Promise<void>;
+export const HANDLED_SUCCESSFULLY = true;
+export const HANDLED_UNSUCCESSFULLY = false;
+
+export interface PreviewModalHandler<RecordType, ResponseType> {
+  handleOnCreate(accessToken: string, recordsToCreate: Array<RecordType>): Promise<boolean>;
+  handleOnUpdate(accessToken: string, recordsToUpdate: Array<RecordType>): Promise<boolean>;
+  handleOnDelete(accessToken: string, recordsToDelete: Array<RecordType>): Promise<boolean>;
 }
 
-export abstract class AbstractPreviewModalHandler<RecordType> implements PreviewModalHandler<RecordType> {
-  private readonly _dataGridController: DataGridControllerRef<RecordType>;
+export abstract class AbstractPreviewModalHandler<RecordType, ResponseType> implements PreviewModalHandler<RecordType, ResponseType> {
+  protected readonly _dataGridController: DataGridControllerRef<RecordType>;
 
   constructor(dataGridController: DataGridControllerRef<RecordType>) {
     this._dataGridController = dataGridController;
@@ -26,24 +29,20 @@ export abstract class AbstractPreviewModalHandler<RecordType> implements Preview
     return this._dataGridController.current;
   }
 
-  abstract handleOnCreate(accessToken: string, recordsToCreate: Array<RecordType>): Promise<void>;
-  abstract handleOnUpdate(accessToken: string, recordsToUpdate: Array<RecordType>): Promise<void>;
-  abstract handleOnDelete(accessToken: string, recordsToDelete: Array<RecordType>): Promise<void>;
+  abstract handleOnCreate(accessToken: string, recordsToCreate: Array<RecordType>): Promise<boolean>;
+  abstract handleOnUpdate(accessToken: string, recordsToUpdate: Array<RecordType>): Promise<boolean>;
+  abstract handleOnDelete(accessToken: string, recordsToDelete: Array<RecordType>): Promise<boolean>;
 
   protected async runBatch(accessToken: string, records: Array<RecordType>, batchRecordQuery: BatchRecordQuery<RecordType>,  dataGridAction: DataGridAction<RecordType>): Promise<BatchResults<RecordType>> {
     const batchResults = await batchRecordQuery(accessToken, records);
 
     if (batchResults?.hasError) {
       this.dataGridController.alertBarController.error(batchResults.alertMsg);
-      return;
+    } else {
+      dataGridAction(records);
+      this.dataGridController.setDataGridPropsState({ fetching: false });
+      this.dataGridController.alertBarController.success("Action successfully completed.");
     }
-
-    dataGridAction(batchResults.success);
-    this.dataGridController.setSelectedRecordsState(batchResults.failure);
-    this.dataGridController.dataGridApi.setRowSelectionModel(batchResults.failure.map<number>(record => record["id" as keyof RecordType] as number));
-    this.dataGridController.dataGridFilter.applyFilter();
-    this.dataGridController.setDataGridPropsState({ fetching: false });
-    this.dataGridController.alertBarController.success("Action successfully completed.");
 
     return batchResults;
   }

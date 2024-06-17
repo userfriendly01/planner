@@ -5,9 +5,8 @@ import {
   MenuXlsxRow,
   RedirectXlsxRow
 } from "./Action.Xlsx.Interfaces";
-import {
-  ActionTypeEnum
-} from "../GraphQL/Action.Interfaces";
+
+import { ActionTypeEnum } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
 
 export class ActionXlsxValueInspector {
   private readonly actionValueInspectionErrors: Array<string> = [];

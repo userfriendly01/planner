@@ -1,34 +1,31 @@
 import {
   ActionRecordType,
-  ActionTypeEnum,
   Announcement,
   Menu,
   MenuOptions, Redirect
 } from "./Action.Interfaces";
 import {
-  AbstractGraphQLQuery, GraphQLResponse
-} from "../../common/GraphQL/AbstractGraphQL.Query";
-import {
-  AbstractBatchRecordsQuery,
-  BatchGraphQLResponse,
+  AbstractBatchRecordsQuery, BatchGraphQLResponse,
   BatchResults
 } from "../../common/GraphQL/Abstract.BatchRecords.Query";
+import { AbstractSingleRecordQuery } from "components/tabs/dynamicCallFlow/common/GraphQL/AbstractSingleRecord.Query";
+import {
+  AbstractGraphQLQuery
+} from "components/tabs/dynamicCallFlow/common/GraphQL/AbstractGraphQL.Query";
+import {
+  ActionTypeEnum, GraphQLInputVariables,
+  GraphQLResponse
+} from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
 
-interface BatchCreateDynamicActionVariables {
-  input: {
-    callFlowName: string;
-    announcements: Array<Announcement>;
-    menus: Array<Menu>;
-    menuOptions: Array<MenuOptions>;
-    redirects: Array<Redirect>;
-  }
+interface CallFlowConfig {
+  callFlowName: string;
+  announcements: Array<Announcement>;
+  menus: Array<Menu>;
+  menuOptions: Array<MenuOptions>;
+  redirects: Array<Redirect>;
 }
 
-class BatchCreateActionRecordsQuery extends AbstractBatchRecordsQuery<ActionRecordType, ActionRecordType>{
-  protected batchInputName(): string {
-    return "batchPhoneNumberInput";
-  }
-
+class BatchCreateActionRecordsQuery extends AbstractGraphQLQuery {
   protected queryName(): string {
     return "createCallFlowConfig";
   }
@@ -42,26 +39,65 @@ class BatchCreateActionRecordsQuery extends AbstractBatchRecordsQuery<ActionReco
         }`;
   }
 
-  generateQueryVariables(actionRecords: Array<ActionRecordType>): BatchCreateDynamicActionVariables {
+  generateQueryVariables(actionRecords: Array<ActionRecordType>): CallFlowConfig {
     const announcements: Array<Announcement> = [];
     const menus: Array<Menu> = [];
     const menuOptions: Array<MenuOptions> = [];
     const redirects: Array<Redirect> = [];
     let callFlowName = "";
 
+    // Have to create new objects or else javascript will include all the properties of all action types combined for each record, which cause an error in GraphQL
     actionRecords.forEach(actionRecord => {
       switch (actionRecord.actionType) {
         case ActionTypeEnum.ANNOUNCEMENT:
-          announcements.push(actionRecord as Announcement);
+          announcements.push({
+            actionId: actionRecord.actionId,
+            actionType: actionRecord.actionType,
+            callFlowName: actionRecord.callFlowName,
+            createTime: actionRecord.createTime,
+            updateTime: actionRecord.updateTime,
+            speech: (actionRecord as Announcement).speech,
+            nextActionType: (actionRecord as Announcement).nextActionType,
+            nextActionId: (actionRecord as Announcement).nextActionId
+          } as Announcement);
           break;
         case ActionTypeEnum.MENU:
-          announcements.push(actionRecord as Menu);
+          menus.push({
+            actionId: actionRecord.actionId,
+            actionType: actionRecord.actionType,
+            callFlowName: actionRecord.callFlowName,
+            createTime: actionRecord.createTime,
+            updateTime: actionRecord.updateTime,
+            speech: (actionRecord as Menu).speech,
+            allowBargeIn: (actionRecord as Menu).allowBargeIn,
+            finishOnKey: (actionRecord as Menu).finishOnKey,
+            minDigits: (actionRecord as Menu).minDigits,
+            maxDigits: (actionRecord as Menu).maxDigits,
+            timeout: (actionRecord as Menu).timeout,
+            repeat: (actionRecord as Menu).repeat,
+            nextActionType: (actionRecord as Menu).nextActionType,
+            nextActionId: (actionRecord as Menu).nextActionId
+          } as Menu);
           break;
         case ActionTypeEnum.MENU_OPTIONS:
-          announcements.push(actionRecord as MenuOptions);
+          menuOptions.push({
+            actionId: actionRecord.actionId,
+            actionType: actionRecord.actionType,
+            callFlowName: actionRecord.callFlowName,
+            createTime: actionRecord.createTime,
+            updateTime: actionRecord.updateTime,
+            options: (actionRecord as MenuOptions).options
+          } as MenuOptions);
           break;
         case ActionTypeEnum.REDIRECT:
-          announcements.push(actionRecord as Redirect);
+          redirects.push({
+            actionId: actionRecord.actionId,
+            actionType: actionRecord.actionType,
+            callFlowName: actionRecord.callFlowName,
+            createTime: actionRecord.createTime,
+            updateTime: actionRecord.updateTime,
+            url: (actionRecord as Redirect).url
+          } as Redirect);
           break;
         default:
         //TODO: log action not found
@@ -71,33 +107,45 @@ class BatchCreateActionRecordsQuery extends AbstractBatchRecordsQuery<ActionReco
     });
 
     return {
-      input: {
-        callFlowName,
-        announcements,
-        menus,
-        menuOptions,
-        redirects
-      }
-    } as BatchCreateDynamicActionVariables;
+      callFlowName,
+      announcements,
+      menus,
+      menuOptions,
+      redirects
+    } as CallFlowConfig;
   }
 
-  async runCreateBatch(accessToken: string, actionRecords: Array<ActionRecordType>): Promise<BatchResults<ActionRecordType>> {
-    const batchGraphQLResponse = await this.query<BatchCreateDynamicActionVariables, ActionRecordType>(accessToken, this.generateQueryVariables(actionRecords)) as BatchGraphQLResponse<ActionRecordType>;
-    return this.buildResponse([batchGraphQLResponse]);
+  /**
+   * This method mimics the AbstractBatchRecordsQuery.buildResponse as this particular batch job cannot extend that abstract class
+   * since it bundles the ActionRecords into the subtypes of Announcement, Menu, MenuOptions, and Redirect.  We should look in to
+   * NOT bundling the records up in that manner and send all records to GraphQL and let GraphQL separate them by ActionType.  That
+   * would enable this batch job to extend the AbstractBatchRecordsQuery class and follow the pattern of the other batch jobs.
+   * @param {string} accessToken
+   * @param {Array<ActionRecordType>} actionRecords
+   * @return {Promise<BatchResults<ActionRecordType>>}
+   */
+  async batchQuery(accessToken: string, actionRecords: Array<ActionRecordType>): Promise<BatchResults<ActionRecordType>> {
+    const variables = {
+      input: this.generateQueryVariables(actionRecords)
+    } as GraphQLInputVariables<CallFlowConfig>;
+
+    const graphQlResponse: GraphQLResponse<CallFlowConfig> = await this.query<GraphQLInputVariables<CallFlowConfig>, CallFlowConfig>(accessToken, variables);
+
+    return {
+      alertMsg: graphQlResponse.errors && graphQlResponse.errors.length === 0 ? "" : `Errors occurred processing ${this.queryName()} records`,
+      errors: graphQlResponse.errors || [],
+      failure: graphQlResponse.errors?.length > 0 ? actionRecords : [],
+      hasError: graphQlResponse.errors?.length > 0,
+      success: graphQlResponse.errors?.length === 0 ? actionRecords : []
+    } as BatchResults<ActionRecordType>;
   }
 }
 
 const batchCreateDynamicActionQuery = new BatchCreateActionRecordsQuery();
 
-/**
- * This method simply calls the BatchCreateDynamicActionQuery.runBatch.  It is here in case any common manipulation of the action
- * records occur, they can be done here rather than all over the application.  As of now, it appears it isn't necessary.
- * @param {string} accessToken
- * @param {Array<ActionRecordType>} actionRecords
- * @return {Promise<BatchResults<ActionRecordType>>}
- */
+
 export async function batchCreateDynamicActionRecords(accessToken: string, actionRecords: Array<ActionRecordType>): Promise<BatchResults<ActionRecordType>> {
-  return await batchCreateDynamicActionQuery.runCreateBatch(accessToken, actionRecords);
+  return await batchCreateDynamicActionQuery.batchQuery(accessToken, actionRecords);
 }
 
 /**
@@ -109,5 +157,6 @@ export async function batchCreateDynamicActionRecords(accessToken: string, actio
  * @return {Promise<BatchResults<ActionRecordType>>}
  */
 export async function batchUpdateDynamicActionRecords(accessToken: string, actionRecords: Array<ActionRecordType>): Promise<BatchResults<ActionRecordType>> {
+  //Need to call the delete method first to remove the existing records and then add them again.
   return await batchCreateDynamicActionRecords(accessToken, actionRecords);
 }

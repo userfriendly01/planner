@@ -51,9 +51,9 @@ const DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_RECORDS_PER_PAGE = "dynamicCallFl
 
 const PhoneNumberDataGridComponent = (): JSX.Element => {
   const {
+    accessTokenGraph,
     currentOpenModal,
-    modalController,
-    accessTokenGraph
+    modalController
   } = useContext(DynamicCallFlowPhoneNumberContext);
 
   // sourceRecords is the master list of all records.  It is used to update the data grid records and to update the field options.
@@ -124,10 +124,6 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
   }, []);
 
   useEffect(() => {
-    // legacyPhoneNumberFormAddHandler.sourceRecords = sourceRecords;
-    // legacyPhoneNumberFormEditHandler.sourceRecords = sourceRecords;
-    // dynamicPhoneNumberFormAddHandler.sourceRecords = sourceRecords;
-    // dynamicPhoneNumberFormEditHandler.sourceRecords = sourceRecords;
     dataGridFilter.current.sourceRecords = sourceRecords;
     dataGridController.current.sourceRecords = sourceRecords;
   }, [sourceRecords]);

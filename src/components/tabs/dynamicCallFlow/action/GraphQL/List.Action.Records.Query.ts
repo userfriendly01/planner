@@ -57,6 +57,14 @@ class ActionListRecordsQuery extends AbstractListRecordsQuery {
               speech
               updateTime
             }
+            ... on Redirect {
+              actionId
+              actionType
+              callFlowName
+              createTime
+              url
+              updateTime
+            }
           }
         }
       }`.replace(/[\n\r]/g, "");

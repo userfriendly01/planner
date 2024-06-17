@@ -1,37 +1,33 @@
 import {
   ActionRecordType,
-  ActionTypeEnum,
   Announcement,
   Menu,
   MenuOptions, Redirect
 } from "./Action.Interfaces";
 import {
-  AbstractGraphQLQuery, GraphQLResponse
+  AbstractGraphQLQuery
 } from "../../common/GraphQL/AbstractGraphQL.Query";
 import {
   AbstractBatchRecordsQuery,
-  BatchGraphQLResponse,
   BatchResults
 } from "../../common/GraphQL/Abstract.BatchRecords.Query";
+import {
+  BatchCallFlowDeleteInput, BatchCallFlowDeleteResponse, CallFlowDeleteInput,
+  GraphQLInputVariables,
+  GraphQLResponse
+} from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
+import {
+  AbstractBatchDeleteDynamicCallFlowQuery
+} from "components/tabs/dynamicCallFlow/common/GraphQL/Batch.Delete.DynamicCallFlow.Query";
 
-class BatchDeleteActionRecordsQuery extends AbstractBatchRecordsQuery<string, ActionRecordType>{
-  protected batchInputName(): string {
-    return "batchActionInput";
+class BatchDeleteActionRecordsQuery extends AbstractBatchDeleteDynamicCallFlowQuery<ActionRecordType> {
+  protected generateCallFlowDeleteInputs(actionRecords: Array<ActionRecordType>): Array<CallFlowDeleteInput> {
+    return actionRecords.map( actionRecord =>
+      ({
+        id: actionRecord.actionId,
+        actionType: actionRecord.actionType
+      } as CallFlowDeleteInput));
   }
-
-  protected queryName(): string {
-    return "deleteCallFlowConfig";
-  }
-
-  protected queryDefinition(): string {
-    return `
-      mutation deleteCallFlowConfig($input: CallFlowConfigInput! ) {
-        createCallFlowConfig(input: $input) {
-            callFlowName
-          }
-        }`;
-  }
-
 }
 
 const batchCreateDynamicActionQuery = new BatchDeleteActionRecordsQuery();
@@ -44,5 +40,5 @@ const batchCreateDynamicActionQuery = new BatchDeleteActionRecordsQuery();
  * @return {Promise<BatchResults<ActionRecordType>>}
  */
 export async function batchDeleteDynamicActionRecords(accessToken: string, actionRecords: Array<ActionRecordType>): Promise<BatchResults<ActionRecordType>> {
-  return await batchCreateDynamicActionQuery.runBatch(accessToken, actionRecords.map(actionRecord => actionRecord.actionId));
+  return await batchCreateDynamicActionQuery.batchQuery(accessToken, actionRecords);
 }

@@ -2,18 +2,15 @@ import {
   AbstractSingleRecordQuery, SingleRecordResults
 } from "./AbstractSingleRecord.Query";
 
-export interface UpdateVariables<RecordType> {
-  input: RecordType;
-}
+import { GraphQLInputVariables } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
 
 export abstract class AbstractUpdateRecordQuery extends AbstractSingleRecordQuery {
-
   async update<RecordType>(accessToken: string, record: RecordType): Promise<SingleRecordResults<RecordType>> {
     const updateVariables = {
       input: record
-    } as UpdateVariables<RecordType>;
+    } as GraphQLInputVariables<RecordType>;
 
-    return this.singleRecordQuery<RecordType, UpdateVariables<RecordType>>(accessToken, updateVariables);
+    return this.singleRecordQuery<GraphQLInputVariables<RecordType>, RecordType>(accessToken, updateVariables);
   }
 }
 

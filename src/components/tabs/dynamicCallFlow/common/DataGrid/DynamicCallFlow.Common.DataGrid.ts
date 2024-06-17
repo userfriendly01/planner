@@ -43,7 +43,7 @@ export function sortDataGrid<RecordType>(records: Array<RecordType>): [Array<Rec
     }));
 
     const minId: number = sortedRecords[0][ID as keyof RecordType] as number;
-    const maxId: number = sortedRecords[sortedRecords.length - 1][ID as keyof RecordType] as number;
+    const maxId: number = sortedRecords && sortedRecords.length > 0 ? sortedRecords[sortedRecords.length - 1][ID as keyof RecordType] as number : minId;
 
     return [ sortedRecords, {
       fetching: false,
@@ -59,7 +59,11 @@ export function sortDataGrid<RecordType>(records: Array<RecordType>): [Array<Rec
     // }
   } else {
     return [records, {
-      fetching: false
+      fetching: false,
+      idStart: 0,
+      idEnd: 0,
+      minId: 0,
+      maxId: 0
     }];
   }
 }

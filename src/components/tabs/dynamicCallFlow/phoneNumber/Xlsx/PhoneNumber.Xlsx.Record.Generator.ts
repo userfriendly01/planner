@@ -2,11 +2,13 @@ import { PhoneNumberXlsxRow } from "./PhoneNumber.Xlsx.Interfaces";
 import {
   BrandType,
   CallerType,
-  ChannelType, LanguageOfferType, NextActionType,
+  ChannelType, LanguageOfferType,
   PhoneNumber,
   PhoneNumberRecordType, UserDestinationType
 } from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
 import { CctSharedCallFlowDb } from "../GraphQL/Legacy.PhoneNumber.Interfaces";
+
+import { ActionType } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
 
 export class PhoneNumberXlsxRecordGenerator {
   public generatePhoneNumberRecords(phoneNumberXlsxRows: Array<PhoneNumberXlsxRow>): Array<PhoneNumberRecordType> {
@@ -51,7 +53,7 @@ export class PhoneNumberXlsxRecordGenerator {
     dynamicPhoneNumber.greetingMessages = phoneNumberXlsxRow.greetingMessages;
     dynamicPhoneNumber.languageOffer = phoneNumberXlsxRow.languageOffer as LanguageOfferType;
     dynamicPhoneNumber.nextActionId = phoneNumberXlsxRow.nextActionId;
-    dynamicPhoneNumber.nextActionType = phoneNumberXlsxRow.nextActionType as NextActionType;
+    dynamicPhoneNumber.nextActionType = phoneNumberXlsxRow.nextActionType as ActionType;
     dynamicPhoneNumber.officeNumbers = phoneNumberXlsxRow.officeNumbers?.split(",") || [];
     dynamicPhoneNumber.transferDestination = phoneNumberXlsxRow.transferDestination;
 

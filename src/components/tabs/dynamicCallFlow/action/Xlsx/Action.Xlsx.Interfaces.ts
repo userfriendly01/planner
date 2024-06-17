@@ -1,5 +1,5 @@
-import { ActionType } from "../GraphQL/Action.Interfaces";
 import { XlsxJSONRow } from "../../common/Xlsx/Xlsx.Interfaces";
+import { ActionType } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
 
 export interface CallerContextAttributes {
   reasonForReturning?: string;

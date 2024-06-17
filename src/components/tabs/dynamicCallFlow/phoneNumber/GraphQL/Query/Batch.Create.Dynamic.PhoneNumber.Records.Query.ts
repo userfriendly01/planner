@@ -5,7 +5,7 @@ import {
   PhoneNumber
 } from "../Dynamic.PhoneNumber.Interfaces";
 
-export class BatchCreateDynamicPhoneNumberRecordsQuery extends AbstractBatchRecordsQuery<PhoneNumber, PhoneNumber> {
+export class BatchCreateDynamicPhoneNumberRecordsQuery extends AbstractBatchRecordsQuery {
   protected batchInputName(): string {
     return "batchPhoneNumberInput";
   }
@@ -67,7 +67,7 @@ const batchCreateDynamicPhoneNumberRecordsQuery = new BatchCreateDynamicPhoneNum
  * @return {Promise<BatchResults<PhoneNumber>>}
  */
 export const batchCreateDynamicPhoneNumberRecords: BatchRecordQuery<PhoneNumber> = async (accessToken: string, phoneNumberRecords: Array<PhoneNumber>): Promise<BatchResults<PhoneNumber>> => {
-  return await batchCreateDynamicPhoneNumberRecordsQuery.runBatch(accessToken, phoneNumberRecords);
+  return await batchCreateDynamicPhoneNumberRecordsQuery.runBatch<PhoneNumber, PhoneNumber>(accessToken, phoneNumberRecords);
 };
 
 /**
@@ -79,5 +79,5 @@ export const batchCreateDynamicPhoneNumberRecords: BatchRecordQuery<PhoneNumber>
  * @return {Promise<BatchResults<PhoneNumber>>}
  */
 export const batchUpdateDynamicPhoneNumberRecordsQuery: BatchRecordQuery<PhoneNumber> = async (accessToken: string, phoneNumberRecords: Array<PhoneNumber>): Promise<BatchResults<PhoneNumber>> => {
-  return await batchCreateDynamicPhoneNumberRecordsQuery.runBatch(accessToken, phoneNumberRecords);
+  return await batchCreateDynamicPhoneNumberRecords(accessToken, phoneNumberRecords);
 };

@@ -24,14 +24,16 @@ import { ActionFormFieldConfigs } from "../Form/ActionFieldsConfig";
 import { ActionPreviewModal } from "../PreviewModal/Action.Preview.Modal.Component";
 import {
   AlertBarController,
-  AlertBarProps,
-  initialAlertBarProps
+  AlertBarProps, CLOSE_ALERT_BAR,
+  initialAlertBarProps, OPEN_ALERT_BAR
 } from "../../common/AlertBar.Controller";
 import { DynamicCallFlowActionContext } from "../DynamicCallFlow.Action.Container";
 import { NotInUseModalType } from "../../common/Modal.Controller";
 import { ActionDataGridController } from "./Action.DataGrid.Controller";
 import { ActionDataGridFilter } from "./Action.DataGrid.Filter";
 import { CustomToast } from "components/CustomToast";
+import { ReactSetState } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
+import { ActionPreviewModalHandler } from "dynamicCallFlow/PreviewModal/Action.Preview.Modal.Handler";
 
 const DYNAMIC_CALL_FLOW_ACTION_DATA_GRID_PAGE_NUMBER = "dynamicCallFlowActionDataGridPageNumber";
 const DYNAMIC_CALL_FLOW_ACTION_DATA_GRID_RECORDS_PER_PAGE = "dynamicCallFlowActionDataGridRecordsPerPage";
@@ -49,16 +51,23 @@ export enum ActionModalTypeEnum {
 
 const ActionDataGridComponent = (): JSX.Element => {
   const {
+    accessTokenGraph,
     currentOpenModal,
-    modalController,
-    accessTokenGraph
+    modalController
   } = useContext(DynamicCallFlowActionContext);
 
   // sourceRecords is the master list of all records.  It is used to update the data grid records and to update the field options.
   const [sourceRecords, setSourceRecords ] = useState<Array<ActionRecordType>>([]);
+  const linkToSetSourceRecords = (): ReactSetState<Array<ActionRecordType>> => {
+    return setSourceRecords;
+  };
 
   // dataGridRecords is the list of records that are displayed in the data grid.  It contains the results of when a filter is applied to sourceRecords.
   const [dataGridRecords, setDataGridRecords] = useState<Array<ActionRecordType>>([]);
+  // const linkToSetDataGridRecord = (updatedDataGridRecords: Array<ActionRecordType>): ReactSetState<Array<ActionRecordType>> => {
+  //   return setSourceRecords;
+  // };
+
   // dataGridProps stores the state of fetching data, the min and max id, and the max id.
   const [dataGridProps, setDataGridProps] = useState<DataGridStateProps>(initializeDataGrid());
   const dataGridFilter = useRef<ActionDataGridFilter>(new ActionDataGridFilter(setDataGridRecords));
@@ -82,6 +91,8 @@ const ActionDataGridComponent = (): JSX.Element => {
   const dataGridController = useRef(new ActionDataGridController(dataGridApi, dataGridFilter,
     setDataGridProps, alertBarController, setSourceRecords, setDataGridRecords, setSelectedRecord, setSelectedRecords));
 
+  const previewModalHandler = useRef(new ActionPreviewModalHandler(dataGridController));
+
   useEffect(() => {
     const loadDataGrid = async()=> {
       alertBarController.current.info("Data loading in progress. Please wait for the complete set of data to be loaded.");
@@ -91,7 +102,6 @@ const ActionDataGridComponent = (): JSX.Element => {
       try {
         const records = await actionListRecords(accessTokenGraph);
         [sortedRecords, updatedDataGridProps] = sortDataGrid<ActionRecordType>(records);
-        setSourceRecords(await actionListRecords(accessTokenGraph));
       } catch (error: unknown) {
         console.log(`Error loading dynamic call flow action data: ${(error as Error)?.message}`);
         alertBarController.current.error("Errors loading data.  Please check the console logs.");
@@ -107,6 +117,8 @@ const ActionDataGridComponent = (): JSX.Element => {
       const actionFieldOptionsManager = new ActionFieldOptionsManager();
       setFieldOptions(actionFieldOptionsManager.generateOptions(sortedRecords));
       setActionFieldConfigs(actionFieldOptionsManager.updateFieldOptionsOnFieldConfigs(actionFieldConfigs));
+
+      alertBarController.current.success("Data has been successfully loaded.", OPEN_ALERT_BAR, 5000);
     };
 
     loadDataGrid();
@@ -160,7 +172,7 @@ const ActionDataGridComponent = (): JSX.Element => {
   const handleOnBacthCreate = async(actionRecords: Array<ActionRecordType> ) =>{
     const graphQLResponse = await batchCreateDynamicActionRecords(accessTokenGraph, actionRecords);
 
-    if (graphQLResponse?.errors.length > 0) {
+    if (graphQLResponse?.errors?.length > 0) {
       alertBarController.current.graphQLError(graphQLResponse.errors);
     } else {
       alertBarController.current.success("Call Flow Actions have been successfully loaded.");
@@ -169,14 +181,6 @@ const ActionDataGridComponent = (): JSX.Element => {
     // closeModal();
 
     dataGridApi.current.setRowSelectionModel([]);
-  };
-
-  const handleOnBatchUpdate = async(actionRecords: Array<ActionRecordType>) => {
-    //
-  };
-
-  const handleOnBatchDelete = async(actionRecords: Array<ActionRecordType>) => {
-    //
   };
 
   const updateDataGridRecords = (updatedDataGridRecord: Array<ActionRecordType>): void => {
@@ -189,6 +193,7 @@ const ActionDataGridComponent = (): JSX.Element => {
 
   const handlePreviewModalOnClose = () =>{
     dataGridApi.current.setRowSelectionModel([]);
+    modalController.current.closeModal();
   };
 
   return (
@@ -224,8 +229,8 @@ const ActionDataGridComponent = (): JSX.Element => {
       </div>
       <ActionPreviewModal
         isOpen={currentOpenModal === ActionModalTypeEnum.BulkAdd || currentOpenModal === ActionModalTypeEnum.BulkEdit || currentOpenModal === ActionModalTypeEnum.BulkDelete}
-        selectedRecords={selectedRecords}
         dataGridController={dataGridController}
+        previewModalHandler={previewModalHandler}
         onClose={handlePreviewModalOnClose}
         modalType={currentOpenModal}
         maxId={dataGridProps.maxId}

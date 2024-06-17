@@ -19,15 +19,16 @@ import {
   ActionModalType, ActionModalTypeEnum
 } from "../DataGrid/Action.DataGrid.Component";
 import { ActionXlsxReader } from "../Xlsx/Action.Xlsx.Reader";
-import { DataGridControllerRef } from "../../common/DynamicCallFlow.Interfaces";
+import { DataGridControllerRef, MutableRefObject } from "../../common/DynamicCallFlow.Interfaces";
 import { DynamicCallFlowActionContext } from "../DynamicCallFlow.Action.Container";
 import { ActionPreviewModalHandler } from "./Action.Preview.Modal.Handler";
 import { StyledButton } from "components/StyledButton";
+import { HANDLED_SUCCESSFULLY } from "components/tabs/dynamicCallFlow/common/Preview/Abstract.Preview.Modal.Handler";
 
 interface PreviewModalParameters<RecordType> {
   isOpen: boolean;
-  selectedRecords: Array<RecordType>;
   dataGridController: DataGridControllerRef<RecordType>;
+  previewModalHandler: MutableRefObject<ActionPreviewModalHandler>;
   modalType: ActionModalType;
   maxId?: number;
   onClose: () => void;
@@ -35,23 +36,18 @@ interface PreviewModalParameters<RecordType> {
 }
 
 export const ActionPreviewModal = ({
-  isOpen, selectedRecords, onClose, dataGridController, modalType, maxId, loading
+  isOpen, onClose, dataGridController, previewModalHandler, modalType, maxId, loading
 }: PreviewModalParameters<ActionRecordType>): JSX.Element => {
   const {
     accessTokenGraph
   } = useContext(DynamicCallFlowActionContext);
 
-  const previewModalHandler = useRef(new ActionPreviewModalHandler(dataGridController));
   const previewModalGridApiRef =  useGridApiRef();
   const [modalRecords, setModalRecords] = React.useState<ActionRecordType[]>([]);
   const [htmlInputElements, setHtmlInputElements] = React.useState<Array<HTMLInputElement>>([]);
   const tableGridColumnDef: Array<GridColDef> = useMemo<Array<GridColDef>>(()=>{
     return reconstructTableColumnDef([...TableGridColumnDef], previewModalGridApiRef);
   },[modalType]);
-
-  useEffect(()=> {
-    setModalRecords([...selectedRecords]);
-  }, [selectedRecords]);
 
   useEffect(()=>{
     if (htmlInputElements.length > 0) {
@@ -62,78 +58,44 @@ export const ActionPreviewModal = ({
     }
   }, [htmlInputElements]);
 
-  const getUpdatedActionRows = () => {
-    const newRows: Array<ActionRecordType> = [...modalRecords].map((row: ActionRecordType) => {
-      const updatedAction: ActionRecordType = {
-        id: 0,
-        actionId: "",
-        actionType: undefined,
-        callFlowName: "",
-        createTime: 0,
-        updateTime: 0,
-        speech: "",
-        allowBargeIn: true,
-        finishOnKey: "",
-        minDigits: 0,
-        maxDigits: 0,
-        timeout: 0,
-        repeat: {
-          nextActionType: undefined
-        },
-        nextActionType: undefined,
-        nextActionId: "",
-        options: [] as unknown as MenuOption[]
-      };
-      Object.keys(row).forEach((key: string)=> {
-        updatedAction[key as keyof ActionRecordType] = previewModalGridApiRef.current.getCellValue(row.actionId, key);
-      });
-      return updatedAction;
-    });
-    return newRows;
-  };
+  // const getUpdatedActionRows = () => {
+  //   const newRows: Array<ActionRecordType> = [...modalRecords].map((row: ActionRecordType) => {
+  //     const updatedAction: ActionRecordType = {
+  //       id: 0,
+  //       actionId: "",
+  //       actionType: undefined,
+  //       callFlowName: "",
+  //       createTime: 0,
+  //       updateTime: 0,
+  //       speech: "",
+  //       allowBargeIn: true,
+  //       finishOnKey: "",
+  //       minDigits: 0,
+  //       maxDigits: 0,
+  //       timeout: 0,
+  //       repeat: {
+  //         nextActionType: undefined
+  //       },
+  //       nextActionType: undefined,
+  //       nextActionId: "",
+  //       options: [] as unknown as MenuOption[]
+  //     };
+  //     Object.keys(row).forEach((key: string)=> {
+  //       updatedAction[key as keyof ActionRecordType] = previewModalGridApiRef.current.getCellValue(row.actionId, key);
+  //     });
+  //     return updatedAction;
+  //   });
+  //   return newRows;
+  // };
 
   const handleOnCreate = async () =>{
-    const recordsToCreate: Array<ActionRecordType> = getUpdatedActionRows();
-    await previewModalHandler.current.handleOnCreate(accessTokenGraph, recordsToCreate);
-  };
-
-  const handleOnUpdate = async () =>{
-    const recordsToUpdate: Array<ActionRecordType> = getUpdatedActionRows();
-    await previewModalHandler.current.handleOnUpdate(accessTokenGraph, recordsToUpdate);
-  };
-
-  const handleOnDelete = async () => {
-    const recordsToDelete: Array<ActionRecordType> = getUpdatedActionRows();
-    await previewModalHandler.current.handleOnDelete(accessTokenGraph, recordsToDelete);
-  };
-
-  const createNewRecord = () => {
-    // setModalRecords([...modalRecords,
-    //   {
-    //     id: 0,
-    //     actionId: "",
-    //     actionType: undefined,
-    //     callFlowName: "",
-    //     createTime: undefined,
-    //     updateTime: undefined,
-    //     speech: "",
-    //     allowBargeIn: true,
-    //     finishOnKey: "",
-    //     minDigits: 0,
-    //     maxDigits: 0,
-    //     timeout: 0,
-    //     repeat: {
-    //       nextActionType: ActionTypeEnum.ANNOUNCEMENT
-    //     },
-    //     nextActionType: ActionTypeEnum.ANNOUNCEMENT,
-    //     nextActionId: "",
-    //     options: []
-    //   }
-    // ]);
+    if (await previewModalHandler.current.handleOnCreate(accessTokenGraph, modalRecords) === HANDLED_SUCCESSFULLY) {
+      handleOnClose();
+    }
   };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>)=> {
-    const xlsxReaderResults = await ActionXlsxReader.getInstance().processXlsxFile(event);
+    const xlsxReaderResults = await ActionXlsxReader.getInstance().processXlsxUpload(event);
 
     if (xlsxReaderResults.errors.length > 0) {
       dataGridController.current.alertBarController.error(xlsxReaderResults.errors.join("\n"));
@@ -159,14 +121,10 @@ export const ActionPreviewModal = ({
         <StyledButton sx={{
           marginRight: "10px",
           marginBottom: "10px"
-        }} onClick={()=>{ createNewRecord(); }}>Add New +</StyledButton>
-        <StyledButton sx={{
-          marginRight: "10px",
-          marginBottom: "10px"
         }}>
           <input
             type="file"
-            accept=".csv"
+            accept=".xlsx"
             onChange={handleFileUpload}
           /> </StyledButton>
         <DataGrid
@@ -194,16 +152,10 @@ export const ActionPreviewModal = ({
           display: "flex",
           justifyContent: "center"
         }}>
-          {modalType === ActionModalTypeEnum.BulkDelete &&
-              <StyledButton sx={{ marginRight: "15px" }} onClick={()=>{ handleOnDelete(); }}>Delete</StyledButton>
-          }
           {modalType === ActionModalTypeEnum.BulkAdd &&
-            <StyledButton sx={{ marginRight: "15px" }} onClick={()=>handleOnCreate()}>Save</StyledButton>
+            <StyledButton sx={{ marginRight: "15px" }} onClick={()=>handleOnCreate()}>Load Call Flow Config Actions</StyledButton>
           }
-          {modalType === ActionModalTypeEnum.BulkEdit &&
-              <StyledButton sx={{ marginRight: "15px" }} onClick={()=>{ handleOnUpdate(); }}>Update</StyledButton>
-          }
-          <StyledButton onClick={()=>{ handleOnClose(); }}>Cancel</StyledButton>
+          <StyledButton onClick={handleOnClose}>Cancel</StyledButton>
         </Box>
       </ModalFooter>
     </Modal>

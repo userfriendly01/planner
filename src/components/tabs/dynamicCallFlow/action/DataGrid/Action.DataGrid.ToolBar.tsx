@@ -10,6 +10,7 @@ import {
 import { DynamicCallFlowActionContext } from "../DynamicCallFlow.Action.Container";
 import { Filter } from "../../common/DataGrid/Abstract.DataGrid.Filter";
 import { readWriteAccess } from "utils/alohaConfigUtils";
+import { ActionModalTypeEnum } from "dynamicCallFlow/DataGrid/Action.DataGrid.Component";
 
 interface ActionDataGridToolBarProps {
   isFilterModalOpen: boolean;
@@ -75,14 +76,14 @@ export const ActionDataGridToolBar = ({
             }}
             label="Actions"
             value=""
-            disabled = {enableFlow}
+            disabled = {false}
             onChange={handleChange}
             variant="filled"
             size="small"
             displayEmpty
           >
-            <MenuItem key="bulkAddFlow" value="bulkAddFlow">
-              <PlaylistAdd />&nbsp;&nbsp; Multi Add Flow
+            <MenuItem key={ActionModalTypeEnum.BulkAdd} value={ActionModalTypeEnum.BulkAdd}>
+              <PlaylistAdd />&nbsp;&nbsp; Multi Add
             </MenuItem>
           </Select>
         </FormControl>

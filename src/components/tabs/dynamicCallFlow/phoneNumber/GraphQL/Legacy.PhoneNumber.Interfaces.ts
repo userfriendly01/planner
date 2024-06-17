@@ -2,6 +2,14 @@ import {
   BasePhoneNumber, CallerType, LanguageOfferType
 } from "./Dynamic.PhoneNumber.Interfaces";
 
+export interface CctSharedCallFlowDbDelInput {
+    pkey: string;
+}
+
+export interface CctSharedCallFlowDbBatchDelInput {
+    pkey: Array<string>;
+}
+
 export type LegacyPhoneNumberType = "" | "DID" | "DRC" | "LSC" | "TFN";
 
 export enum LegacyPhoneNumberTypeEnum {

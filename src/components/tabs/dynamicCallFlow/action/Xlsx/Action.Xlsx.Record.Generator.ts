@@ -7,76 +7,82 @@ import {
 } from "./Action.Xlsx.Interfaces";
 import {
   ActionRecordType,
-  ActionTypeEnum,
   Announcement,
   Menu, MenuOptions, Redirect
 } from "../GraphQL/Action.Interfaces";
+import { ActionTypeEnum } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
 
 export class ActionXlsxRecordGenerator {
   public generateActionRecords(actionXlsxRows: Array<ActionXlsRowType>): Array<ActionRecordType> {
     const actionRecords: Array<ActionRecordType> = [];
 
     actionXlsxRows.forEach((actionXlsxRow: ActionXlsRowType) => {
-      const actionRecord: ActionRecordType = {} as ActionRecordType;
+      let actionRecord: ActionRecordType;
 
-      actionRecord.actionId = actionXlsxRow.actionId;
-      actionRecord.actionType = actionXlsxRow.actionType;
-      actionRecord.callFlowName = actionXlsxRow.callFlowName;
-
-      switch (actionRecord.actionType) {
+      switch (actionXlsxRow.actionType) {
         case ActionTypeEnum.ANNOUNCEMENT:
-          this.mapToAnnouncement(actionRecord as Announcement, actionXlsxRow as AnnouncementXlsxRow);
+          actionRecord = this.mapToAnnouncement(actionXlsxRow as AnnouncementXlsxRow);
           break;
         case ActionTypeEnum.MENU:
-          this.mapToMenu(actionRecord as Menu, actionXlsxRow as MenuXlsxRow);
+          actionRecord = this.mapToMenu(actionXlsxRow as MenuXlsxRow);
           break;
         case ActionTypeEnum.MENU_OPTIONS:
-          this.mapToMenuOptions(actionRecord as MenuOptions, actionXlsxRow as MenuOptionXlsxRow);
+          actionRecord = this.mapToMenuOptions(actionXlsxRow as MenuOptionXlsxRow);
           break;
         case ActionTypeEnum.REDIRECT:
-          this.mapToRedirect(actionRecord as Redirect, actionXlsxRow as RedirectXlsxRow);
+          actionRecord = this.mapToRedirect(actionXlsxRow as RedirectXlsxRow);
           break;
         default:
-          console.error(`Unknown action type: ${actionRecord.actionType}`);
+          console.error(`Unknown action type: ${actionXlsxRow.actionType}`);
           return undefined;
       }
 
-      actionRecords.push(actionRecord);
+      if (actionRecord) {
+        delete actionRecord.id;
+        actionRecord.actionId = actionXlsxRow.actionId;
+        actionRecord.actionType = actionXlsxRow.actionType;
+        actionRecord.callFlowName = actionXlsxRow.callFlowName;
+        actionRecords.push(actionRecord);
+      }
     });
 
     return this.consolidateMenuOptions(actionRecords);
   }
 
-  private mapToAnnouncement(announcement: Announcement, announcementXlsxRow: AnnouncementXlsxRow): void {
-    announcement.speech = announcementXlsxRow.speech;
-    announcement.nextActionId = announcementXlsxRow.nextActionId;
-    announcement.nextActionType = announcementXlsxRow.nextActionType;
+  private mapToAnnouncement(announcementXlsxRow: AnnouncementXlsxRow): Announcement {
+    return {
+      speech: announcementXlsxRow.speech,
+      nextActionId: announcementXlsxRow.nextActionId,
+      nextActionType: announcementXlsxRow.nextActionType
+    } as Announcement;
   }
 
-  private mapToMenu(menu: Menu, menuXlsxRow: MenuXlsxRow): void {
+  private mapToMenu(menuXlsxRow: MenuXlsxRow): Menu {
     const callerContextAttributes: CallerContextAttributes = {};
 
     if (menuXlsxRow.menuRepeatReasonForReturning) {
       callerContextAttributes.reasonForReturning = menuXlsxRow.menuRepeatReasonForReturning;
     }
 
-    menu.nextActionId = menuXlsxRow.nextActionId;
-    menu.nextActionType = menuXlsxRow.nextActionType;
-    menu.speech = menuXlsxRow.speech;
-    menu.allowBargeIn = menuXlsxRow.menuAllowBargeIn;
-    menu.finishOnKey = menuXlsxRow.menuFinishOnKey;
-    menu.minDigits = menuXlsxRow.menuMinDigits;
-    menu.maxDigits = menuXlsxRow.menuMaxDigits;
-    menu.timeout = menuXlsxRow.menuTimeout;
-    menu.repeat = {
-      loop: menuXlsxRow.menuRepeatLoop,
-      nextActionType: menuXlsxRow.menuRepeatNextActionType,
-      nextActionId: menuXlsxRow.menuRepeatNextActionId,
-      callerContextAttributes: JSON.stringify(callerContextAttributes)
-    };
+    return {
+      nextActionId: menuXlsxRow.nextActionId,
+      nextActionType: menuXlsxRow.nextActionType,
+      speech: menuXlsxRow.speech,
+      allowBargeIn: menuXlsxRow.menuAllowBargeIn,
+      finishOnKey: menuXlsxRow.menuFinishOnKey,
+      minDigits: menuXlsxRow.menuMinDigits,
+      maxDigits: menuXlsxRow.menuMaxDigits,
+      timeout: menuXlsxRow.menuTimeout,
+      repeat: {
+        loop: menuXlsxRow.menuRepeatLoop,
+        nextActionType: menuXlsxRow.menuRepeatNextActionType,
+        nextActionId: menuXlsxRow.menuRepeatNextActionId,
+        callerContextAttributes: JSON.stringify(callerContextAttributes)
+      }
+    } as Menu;
   }
 
-  private mapToMenuOptions(menuOptions: MenuOptions, menuOptionsXlsxRow: MenuOptionXlsxRow): void {
+  private mapToMenuOptions(menuOptionsXlsxRow: MenuOptionXlsxRow): MenuOptions {
     const callerContextAttributes: CallerContextAttributes = {};
 
     if (menuOptionsXlsxRow.menuOptionReasonForReturning) {
@@ -87,18 +93,22 @@ export class ActionXlsxRecordGenerator {
       callerContextAttributes.callIntent = menuOptionsXlsxRow.menuOptionCallIntent;
     }
 
-    menuOptions.options = [
-      {
-        digit: menuOptionsXlsxRow.menuOptionDigit,
-        callerContextAttributes: JSON.stringify(callerContextAttributes),
-        nextActionType: menuOptionsXlsxRow.menuOptionNextActionType,
-        nextActionId: menuOptionsXlsxRow.menuOptionNextActionId
-      }
-    ];
+    return {
+      options: [
+        {
+          digit: menuOptionsXlsxRow.menuOptionDigit,
+          callerContextAttributes: JSON.stringify(callerContextAttributes),
+          nextActionType: menuOptionsXlsxRow.menuOptionNextActionType,
+          nextActionId: menuOptionsXlsxRow.menuOptionNextActionId
+        }
+      ]
+    };
   }
 
-  private mapToRedirect(redirect: Redirect, redirectXlsxRow: RedirectXlsxRow): void {
-    redirect.url = redirectXlsxRow.redirectUrl;
+  private mapToRedirect(redirectXlsxRow: RedirectXlsxRow): Redirect {
+    return {
+      url: redirectXlsxRow.redirectUrl
+    };
   }
 
   private consolidateMenuOptions(actionRecords: Array<ActionRecordType>): Array<ActionRecordType> {

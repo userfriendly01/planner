@@ -3,10 +3,11 @@ import {
 } from "../../common/Form/AbstractFormFieldOptionsManager";
 import { FieldDataType } from "../../common/Form/Form.Field.Config";
 import {
-  ActionRecordType, ActionTypeEnum
+  ActionRecordType
 } from "../GraphQL/Action.Interfaces";
 import { ActionRecordUtil } from "../GraphQL/Action.Record.Util";
 import { CALL_FLOW_NAME } from "./ActionFields";
+import { ActionTypeEnum } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
 
 export class ActionFieldOptionsManager extends AbstractFormFieldOptionsManager<ActionRecordType> {
   protected getRecordKeyValue(actionRecord: ActionRecordType, key: string): string | Array<string> | undefined {

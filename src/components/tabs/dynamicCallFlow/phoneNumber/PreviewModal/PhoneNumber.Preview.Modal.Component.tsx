@@ -24,6 +24,7 @@ import { DataGridControllerRef } from "../../common/DynamicCallFlow.Interfaces";
 import { PhoneNumberXlsxReader } from "../Xlsx/PhoneNumber.Xlsx.Reader";
 import { FieldOptions } from "components/tabs/dynamicCallFlow/common/Form/AbstractFormFieldOptionsManager";
 import { StyledButton } from "components/StyledButton";
+import { HANDLED_SUCCESSFULLY } from "components/tabs/dynamicCallFlow/common/Preview/Abstract.Preview.Modal.Handler";
 
 interface PreviewModalParameters<RecordType> {
     isOpen: boolean;
@@ -79,17 +80,26 @@ export const PhoneNumberPreviewModal = ({
 
   const handleOnCreate = async () =>{
     const recordsToCreate: Array<PhoneNumberRecordType> = getUpdatedPhoneNumberRows();
-    await previewModalHandler.current.handleOnCreate(accessTokenGraph, recordsToCreate);
+    if (await previewModalHandler.current.handleOnCreate(accessTokenGraph, recordsToCreate) === HANDLED_SUCCESSFULLY) {
+      setModalRecords([]);
+      onClose();
+    }
   };
 
   const handleOnUpdate = async () =>{
     const recordsToUpdate: Array<PhoneNumberRecordType> = getUpdatedPhoneNumberRows();
-    await previewModalHandler.current.handleOnUpdate(accessTokenGraph, recordsToUpdate);
+    if (await previewModalHandler.current.handleOnUpdate(accessTokenGraph, recordsToUpdate) === HANDLED_SUCCESSFULLY) {
+      setModalRecords([]);
+      onClose();
+    }
   };
 
   const handleOnDelete = async () => {
     const recordsToDelete: Array<PhoneNumberRecordType> = getUpdatedPhoneNumberRows();
-    await previewModalHandler.current.handleOnDelete(accessTokenGraph, recordsToDelete);
+    if (await previewModalHandler.current.handleOnDelete(accessTokenGraph, recordsToDelete) === HANDLED_SUCCESSFULLY) {
+      setModalRecords([]);
+      onClose();
+    }
   };
 
   const createNewRecord = () => {
@@ -134,7 +144,7 @@ export const PhoneNumberPreviewModal = ({
   };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>)=> {
-    const xlsxReaderResults = await PhoneNumberXlsxReader.getInstance().processXlsxFile(event);
+    const xlsxReaderResults = await PhoneNumberXlsxReader.getInstance().processXlsxUpload(event);
 
     if (xlsxReaderResults.errors.length > 0) {
       dataGridController.current.alertBarController.error(xlsxReaderResults.errors.join("\n"));
@@ -158,23 +168,20 @@ export const PhoneNumberPreviewModal = ({
       >
         <ModalHeader>{modalType?.toUpperCase()} Flow - {modalRecords?.length} rows selected</ModalHeader>
         <ModalBody className="preview-grid-modal">
-          {modalType === PhoneNumberModalTypeEnum.BulkAdd &&
-                <StyledButton sx={{
-                  marginRight: "10px",
-                  marginBottom: "10px"
-                }} onClick={()=>{ createNewRecord(); }}>Add New +</StyledButton>
-          }
-          {(PhoneNumberModalTypeEnum.BulkAdd === modalType || PhoneNumberModalTypeEnum.BulkEdit === modalType) &&
-                <StyledButton sx={{
-                  marginRight: "10px",
-                  marginBottom: "10px"
-                }}>
-                  <input
-                    type="file"
-                    accept=".xlsx"
-                    onChange={handleFileUpload}
-                  /> </StyledButton>
-          }
+          <Box sx={{
+            marginRight: "10px",
+            marginBottom: "10px"
+          }}>
+            {modalType === PhoneNumberModalTypeEnum.BulkAdd &&
+                <StyledButton onClick={()=>{ createNewRecord(); }}>Add New +</StyledButton>
+            }
+            <StyledButton sx={{
+              marginRight: "10px",
+              marginBottom: "10px"
+            }}>
+              <input type="file" accept=".xlsx" onChange={(event:React.ChangeEvent<HTMLInputElement>) => handleFileUpload(event)} />
+            </StyledButton>
+          </Box>
           <DataGrid
             apiRef={previewModalGridApiRef}
             rows={modalRecords}

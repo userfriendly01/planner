@@ -1,6 +1,10 @@
 import * as XLSX from "xlsx";
-import { ParsingOptions, Sheet2JSONOpts, WorkBook, WorkSheet } from "xlsx";
-import { XlsxJSONRow, XlsxReaderResults } from "./Xlsx.Interfaces";
+import {
+  ParsingOptions, Sheet2JSONOpts, WorkSheet
+} from "xlsx";
+import {
+  XlsxJSONRow, XlsxReaderResults
+} from "./Xlsx.Interfaces";
 
 export type RECORD_DATA_TYPE_NAME = "string" | "number" | "boolean" | "stringArray" | "jsonStringify";
 export enum RECORD_DATA_TYPE_NAME_ENUM {
@@ -12,8 +16,7 @@ export enum RECORD_DATA_TYPE_NAME_ENUM {
 }
 
 const XLSX_PARSING_OPTIONS: ParsingOptions = {
-  type: "array", // possible types 'base64' | 'binary' | 'buffer' | 'file' | 'array' | 'string'
-  FS: "," // field separator
+  type: "array" // possible types 'base64' | 'binary' | 'buffer' | 'file' | 'array' | 'string'
 };
 
 const SHEET_TO_JSON_OPTIONS: Sheet2JSONOpts = {
@@ -22,19 +25,24 @@ const SHEET_TO_JSON_OPTIONS: Sheet2JSONOpts = {
 
 const ROW_NUM = "__rowNum__";
 
-export abstract class AbstractXlsxReader<XlsxRowType, RecordType> {
+export interface XlsxReader<XlsxRowType, RecordType> {
+  processXlsxUpload(changeEvent: React.ChangeEvent<HTMLInputElement>): Promise<XlsxReaderResults<XlsxRowType, RecordType>>;
+  processWorkSheet(workSheet: WorkSheet): XlsxReaderResults<XlsxRowType, RecordType>;
+}
+
+export abstract class AbstractXlsxReader<XlsxRowType, RecordType> implements XlsxReader<XlsxRowType, RecordType> {
   protected _xlsxReaderResults: XlsxReaderResults<XlsxRowType, RecordType> = {
     xlsxRows: [],
     records: [],
     errors: []
   };
 
-  async processXlsxFile(changeEvent: React.ChangeEvent<HTMLInputElement>): Promise<XlsxReaderResults<XlsxRowType, RecordType>> {
+  async processXlsxUpload(changeEvent: React.ChangeEvent<HTMLInputElement>): Promise<XlsxReaderResults<XlsxRowType, RecordType>> {
     changeEvent.preventDefault();
 
     if (changeEvent.target.files) {
-      const workBook = this.getWorkBook((await (changeEvent.target.files.item(0))) as Blob);
-      return this.processWorkBook(workBook);
+      const workSheet = await this.getWorkSheet(changeEvent.target.files[0]);
+      return this.processWorkSheet(workSheet);
     } else {
       return {
         errors: ["No files selected"]
@@ -42,23 +50,14 @@ export abstract class AbstractXlsxReader<XlsxRowType, RecordType> {
     }
   }
 
-  private getWorkBook(rawData: Blob): WorkBook {
-    const fileReader = new FileReader();
-    let workbook: WorkBook;
-
-    fileReader.onload = (progressEvent: ProgressEvent<FileReader>) => {
-      workbook = XLSX.read(progressEvent.target?.result, XLSX_PARSING_OPTIONS);
-    };
-
-    fileReader.readAsArrayBuffer(rawData);
-
-    return workbook;
+  private async getWorkSheet(file: File): Promise<WorkSheet> {
+    const data = await file.arrayBuffer();
+    const workBook = XLSX.read(data, XLSX_PARSING_OPTIONS);
+    const sheetName = workBook.SheetNames[0];
+    return workBook.Sheets[sheetName];
   }
 
-  processWorkBook(workBook: WorkBook): XlsxReaderResults<XlsxRowType, RecordType> {
-    const sheetName = workBook.SheetNames[0];
-    const workSheet = workBook.Sheets[sheetName];
-
+  processWorkSheet(workSheet: WorkSheet): XlsxReaderResults<XlsxRowType, RecordType> {
     try {
       const xlsxRows: Array<XlsxRowType> = XLSX.utils.sheet_to_json<XlsxRowType>(workSheet, SHEET_TO_JSON_OPTIONS);
 

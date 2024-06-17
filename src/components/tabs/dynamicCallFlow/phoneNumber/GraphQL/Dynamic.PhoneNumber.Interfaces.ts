@@ -1,8 +1,18 @@
 import { CctSharedCallFlowDb } from "./Legacy.PhoneNumber.Interfaces";
-import { GraphQLRecord } from "../../common/GraphQL/AbstractGraphQL.Query";
+
+import { ActionType, GraphQLRecord } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
+
+//This is interface name matches what is defined in GraphQL schema
+export interface CallFlowDeleteInput {
+    id: string;
+    actionType?: ActionType
+}
+
+export interface CallFlowDeleteResponse {
+    id: string;
+}
 
 export type PhoneNumberRecordType = CctSharedCallFlowDb | PhoneNumber;
-export type PhoneNumberRecordFields = CctSharedCallFlowDb & PhoneNumber;
 
 export type BrandType = "Safeco" | "Liberty Mutual" | "Comparion";
 export enum BrandTypeEnum {
@@ -48,13 +58,6 @@ export type LanguageOfferType = "English" | "Spanish";
 export enum LanguageOfferEnum {
     ENGLISH = "English",
     SPANISH = "Spanish",
-}
-//TODO: Use this until dynamic actions tab is refactored
-export type NextActionType = "ANNOUNCEMENT" | "MENU" | "MENUOPTIONS";
-export enum NextActionTypeEnum {
-    MENU = "MENU",
-    MENU_OPTIONS = "MENUOPTIONS",
-    ANNOUNCEMENT = "ANNOUNCEMENT"
 }
 
 export type PhoneNumberType = "" | "DID" | "TFN";
@@ -123,7 +126,7 @@ export interface PhoneNumber extends BasePhoneNumber {
     greetingMessages?: string;
     languageOffer?: LanguageOfferType;
     nextActionId?: string;
-    nextActionType?: NextActionType;
+    nextActionType?: ActionType;
     officeNumbers?: Array<string>;
     phoneNumber?: string;
     phoneNumberType?: PhoneNumberType;

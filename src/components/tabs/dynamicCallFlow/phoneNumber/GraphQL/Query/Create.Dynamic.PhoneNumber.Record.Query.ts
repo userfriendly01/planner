@@ -21,9 +21,12 @@ class CreateDynamicPhoneNumberRecordQuery extends AbstractCreateRecordQuery {
 
 const createDynamicPhoneNumberRecordQuery = new CreateDynamicPhoneNumberRecordQuery();
 
+//TODO: Check on why dataRequests is a parameter
 export async function createDynamicPhoneNumberRecord(accessToken: string, phoneNumberRecord: PhoneNumber, dataRequests: Array<string>=[]): Promise<SingleRecordResults<PhoneNumber>> {
   phoneNumberRecord.dataRequests = dataRequests;
+  //TODO: Need to determine how to set the createTime and updateTime since we don't update, but create a new record each time
   phoneNumberRecord.createTime = Date.now();
   phoneNumberRecord.updateTime = Date.now();
+
   return await createDynamicPhoneNumberRecordQuery.create<PhoneNumber>(accessToken, phoneNumberRecord);
 }

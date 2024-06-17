@@ -116,7 +116,7 @@ const PhoneNumberDataGridToolBar = ({
             }}
             label="Actions"
             value=""
-            disabled = {enableFlow}
+            disabled = {false}
             onChange={handleChange}
             variant="filled"
             size="small"

@@ -4,9 +4,8 @@ import {
 import {
   generateUuid, isValidUUID
 } from "../../common/GraphQL/GraphQL.Util";
-import {
-  ActionTypeEnum
-} from "../GraphQL/Action.Interfaces";
+
+import { ActionTypeEnum } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
 
 
 export class ActionXlsxIdInspector {

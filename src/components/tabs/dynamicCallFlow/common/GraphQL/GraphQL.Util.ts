@@ -1,7 +1,8 @@
 import {
   v4 as uuidv4, validate as uuidValidate
 } from "uuid";
-import { GraphQLError } from "./AbstractGraphQL.Query";
+
+import { GraphQLError } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
 
 export const ErrorDuplicateRecord = "Record already exists.";
 

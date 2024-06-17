@@ -1,16 +1,6 @@
-import { GraphQLRecord } from "../../common/GraphQL/AbstractGraphQL.Query";
-
-export type ActionType = "ANNOUNCEMENT" | "MENU" | "MENUOPTIONS" | "REDIRECT" | "TRANSFER" | "HANGUP";
-
-export enum ActionTypeEnum {
-  ANNOUNCEMENT = "ANNOUNCEMENT",
-  MENU = "MENU",
-  MENU_OPTIONS = "MENUOPTIONS",
-  MENUOPTIONS = "MENUOPTIONS",
-  REDIRECT = "REDIRECT",
-  TRANSFER = "TRANSFER",
-  HANGUP = "HANGUP"
-}
+import {
+  ActionType, GraphQLRecord
+} from "../../common/GraphQL/DynamicCallFlow.Interfaces";
 
 export type ActionRecordType = Action | Announcement | Menu | MenuOptions | Redirect
 

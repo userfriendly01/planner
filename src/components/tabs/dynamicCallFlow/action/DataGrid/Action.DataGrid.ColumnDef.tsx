@@ -25,22 +25,6 @@ export const ActionDataGridColumnDef: GridColDef[] = [
     align: "left"
   },
   {
-    headerName: "createTime",
-    field: "createTime",
-    sortable: true,
-    width: 220,
-    align: "left",
-    valueGetter: params => `${new Date(params?.row?.createTime * 1000).toISOString() || ""}`
-  },
-  {
-    headerName: "update time",
-    field: "updateTime",
-    sortable: true,
-    width: 220,
-    align: "left",
-    valueGetter: params => `${new Date(params?.row?.updateTime * 1000).toISOString() || ""}`
-  },
-  {
     headerName: "speech",
     field: "speech",
     sortable: true,

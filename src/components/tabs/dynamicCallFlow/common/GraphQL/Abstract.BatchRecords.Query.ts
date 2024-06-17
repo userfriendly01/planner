@@ -1,6 +1,10 @@
 import {
-  AbstractGraphQLQuery, GraphQLError, GraphQLResponse
+  AbstractGraphQLQuery
 } from "./AbstractGraphQL.Query";
+import {
+  GraphQLError,
+  GraphQLResponse
+} from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
 
 export type BatchRecordQuery<RecordType> = (accessToken: string, records: Array<RecordType>) => Promise<BatchResults<RecordType>>;
 
@@ -12,26 +16,26 @@ export interface BatchInput<VariableType> {
   [key: string]: Array<VariableType>;
 }
 
-export interface BatchGraphQLResponse<RecordType> extends GraphQLResponse<BatchGraphQLData<RecordType>> {
-  originalItems?: Array<RecordType>;
+export interface BatchGraphQLResponse<ResponseDataType> extends GraphQLResponse<BatchGraphQLData<ResponseDataType>> {
+  originalItems?: Array<ResponseDataType>;
 }
 
-export interface BatchGraphQLData<RecordType> {
-  items: Array<RecordType>
+export interface BatchGraphQLData<ResponseDataType> {
+  items: Array<ResponseDataType>
 }
 
-export interface BatchResults<RecordType> {
+export interface BatchResults<ResponseDataType> {
   alertMsg: string;
   errors: GraphQLError[];
-  failure: Array<RecordType>;
+  failure: Array<ResponseDataType>;
   hasError: boolean;
-  success: Array<RecordType>
+  success: Array<ResponseDataType>
 }
 
-export abstract class AbstractBatchRecordsQuery<VariableType, RecordType> extends AbstractGraphQLQuery {
+export abstract class AbstractBatchRecordsQuery extends AbstractGraphQLQuery {
   protected abstract batchInputName(): string;
 
-  async runBatch(accessToken: string, variables: Array<VariableType>): Promise<BatchResults<RecordType>> {
+  async runBatch<VariableType, ResponseDataType>(accessToken: string, variables: Array<VariableType>): Promise<BatchResults<ResponseDataType>> {
     if (variables?.length === 0) {
       return {
         alertMsg: "Please select something to add",
@@ -39,7 +43,7 @@ export abstract class AbstractBatchRecordsQuery<VariableType, RecordType> extend
         failure: [],
         hasError: true,
         success: []
-      } as BatchResults<RecordType>;
+      } as BatchResults<ResponseDataType>;
     }
 
     const variablesCopy = [...variables];
@@ -60,7 +64,7 @@ export abstract class AbstractBatchRecordsQuery<VariableType, RecordType> extend
 
           variables.input[this.batchInputName()] = variablesBatch;
 
-          const batchGraphQLResponse = await this.query<BatchVariables<VariableType>, RecordType>(accessToken, variables) as BatchGraphQLResponse<RecordType>;
+          const batchGraphQLResponse = await this.query<BatchVariables<VariableType>, ResponseDataType>(accessToken, variables) as BatchGraphQLResponse<ResponseDataType>;
           batchGraphQLResponse.originalItems = [];
 
           return batchGraphQLResponse;
@@ -69,7 +73,7 @@ export abstract class AbstractBatchRecordsQuery<VariableType, RecordType> extend
     );
 
     // logger.info("Create Batch Flow DB Response:", null, false); // TODO: Fix logging to send batchResults
-    return this.buildResponse<RecordType>(batchGraphQLResponses);
+    return this.buildResponse<ResponseDataType>(batchGraphQLResponses);
   }
 
   /**
@@ -77,14 +81,14 @@ export abstract class AbstractBatchRecordsQuery<VariableType, RecordType> extend
    * @param {Array<BatchGraphQLResponse>} batchGraphQLResponses - a set results from all of the operations
    * @returns {Promise<BatchResults>} a consolidated response object
    */
-  protected buildResponse<RecordType>(batchGraphQLResponses: Array<BatchGraphQLResponse<RecordType>>): BatchResults<RecordType> {
+  buildResponse<ResponseDataType>(batchGraphQLResponses: Array<BatchGraphQLResponse<ResponseDataType>>): BatchResults<ResponseDataType> {
     const batchResults = {
       alertMsg: "",
       errors: [],
       failure: [],
       hasError: false,
       success: []
-    } as BatchResults<RecordType>;
+    } as BatchResults<ResponseDataType>;
 
     batchGraphQLResponses.forEach( batchGraphQLResponse=>{
       if (batchGraphQLResponse.errors?.length > 0) {

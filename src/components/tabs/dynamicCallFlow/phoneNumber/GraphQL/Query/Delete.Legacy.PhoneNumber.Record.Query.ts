@@ -1,12 +1,6 @@
 import { AbstractDeleteRecordQuery } from "../../../common/GraphQL/AbstractDeleteRecord.Query";
 import { SingleRecordResults } from "../../../common/GraphQL/AbstractSingleRecord.Query";
-import { CctSharedCallFlowDb } from "../Legacy.PhoneNumber.Interfaces";
-
-interface DeleteLegacyPhoneNumberRecordVariables {
-  input: {
-    pkey: string;
-  }
-}
+import { CctSharedCallFlowDb, CctSharedCallFlowDbDelInput } from "../Legacy.PhoneNumber.Interfaces";
 
 class DeleteLegacyPhoneNumberRecordQuery extends AbstractDeleteRecordQuery {
   protected queryName(): string {
@@ -27,11 +21,5 @@ class DeleteLegacyPhoneNumberRecordQuery extends AbstractDeleteRecordQuery {
 const deleteLegacyPhoneNumberRecordQuery = new DeleteLegacyPhoneNumberRecordQuery();
 
 export async function deleteLegacyPhoneNumberRecord(accessToken: string, legacyPhoneNumberRecord: CctSharedCallFlowDb): Promise<SingleRecordResults<CctSharedCallFlowDb>> {
-  const variables = {
-    input: {
-      pkey: legacyPhoneNumberRecord.pkey
-    }
-  } as DeleteLegacyPhoneNumberRecordVariables;
-
-  return await deleteLegacyPhoneNumberRecordQuery.delete<CctSharedCallFlowDb, DeleteLegacyPhoneNumberRecordVariables>(accessToken, variables);
+  return await deleteLegacyPhoneNumberRecordQuery.delete<CctSharedCallFlowDbDelInput, CctSharedCallFlowDb>(accessToken, { pkey: legacyPhoneNumberRecord.pkey });
 }
