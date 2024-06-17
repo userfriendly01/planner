@@ -12,7 +12,7 @@ beforeEach(() => {
 
 describe("getTaskQueues", () => {
   describe("call succeeds", () => {
-    beforeEach(() => axiosMock.onGet(apiPaths.GET_TASK_QUEUES).replyOnce(200, { cool: "beans" }));
+    beforeEach(() => axiosMock.onGet(apiPaths.TASK_QUEUES).replyOnce(200, { cool: "beans" }));
     test("should resolve with data", done => {
       getTaskQueues()
         .then(res => {
@@ -23,7 +23,7 @@ describe("getTaskQueues", () => {
     });
   });
   describe("call fails", () => {
-    beforeEach(() => axiosMock.onGet(apiPaths.GET_TASK_QUEUES).replyOnce(500, { boo: "nooo" }));
+    beforeEach(() => axiosMock.onGet(apiPaths.TASK_QUEUES).replyOnce(500, { boo: "nooo" }));
     test("should reject with error", done => {
       getTaskQueues()
         .catch(error => {

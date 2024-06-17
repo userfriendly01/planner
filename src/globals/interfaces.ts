@@ -58,6 +58,40 @@ export interface Discrepancy {
   type: string
 }
 
+export interface TwilioQueue {
+  account_sid?: string,
+  taskQueueSid?: string,
+  url?: string,
+  friendlyName: string,
+  maxReservedWorkers: number,
+  targetWorkers: string, //ie '(skills HAS "support") AND (languages HAS "english")'
+  operatingUnitSid: null //this is missing from the Twilio docs
+}
+
+export interface TwilioSkill {
+  name: string,
+  multivalue: boolean,
+  minimum: number,
+  maximum: number
+}
+
+
+export interface CallflowSkill {
+  skillId: string,
+  applicationId: number,
+  vhThreshold: string,
+  vhCallTarget: string,
+  timeOfDayIds: number[],
+  updatedBy: string
+}
+
+
+export interface CallFlowTimeOfDay {
+  timeOfDayId: number,
+  dayId: number,
+  vhTimeOfDayId?: number
+}
+
 export interface AppState {
   managerContext: {
     managers: UMManager[]
@@ -152,7 +186,7 @@ export interface UMOffice {
   office_name: string
 }
 
-export interface Skill {
+interface Skill {
   [key: string]: any
   ctmSkillId: number,
   ctmSkillDisplayName: string,

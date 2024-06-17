@@ -10,6 +10,7 @@ import {
 import { listUMManagers } from "services/manager";
 import { listUMOffices } from "services/office";
 import { listUMUsers } from "services/user";
+import { getConsolidatedSkills } from "services/skill";
 import { getCalabrioWfmOptions } from "utils/calabrioUtils";
 import { logger } from "utils/logger";
 import { myAxios } from "utils/myAxios";
@@ -78,28 +79,6 @@ const getProfiles = (dispatch: (action: Action) => void) =>
     })
   );
 
-export const getSkills = (dispatch: (action: Action) => void): Promise<boolean> =>
-  new Promise((resolve, reject) => myAxios.get(apiPaths.GET_SKILLS)
-    .then(res => {
-      dispatch({
-        type: "loadSkills",
-        payload: res.data.consolidatedSkills
-      });
-      dispatch({
-        type: "loadSkillGroups",
-        payload: res.data.consolidatedSkills
-      });
-      resolve(true);
-    })
-    .catch(error => {
-      logger.error("Failed to fetch skills from service", { error });
-
-      reject({
-        msg: "Failed to fetch skills from service",
-        error
-      });
-    })
-  );
 
 const getBusinessUnits = async (dispatch: (action: Action) => void) => {
   try {
@@ -133,7 +112,7 @@ export const runTritonAdminStartup = (dispatch:  (action: Action) => void): Prom
     listUMManagers(dispatch),
     listUMOffices(dispatch),
     getProfiles(dispatch),
-    getSkills(dispatch),
+    getConsolidatedSkills(dispatch),
     getCalabrioUsers(dispatch),
     getCalabrioOrg(dispatch),
     getCalabrioRoles(dispatch),
