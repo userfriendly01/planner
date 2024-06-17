@@ -18,6 +18,7 @@ export const env = {
   APP_ENV: window.env.APP_ENV,
   TROUX_ID: window.env.TROUX_ID,
   GRAPH_API_URL: window.env.GRAPH_API_URL,
+  GRAPH_CLIENT_ID: window.env.GRAPH_CLIENT_ID,
   SOFTPHONE_SERVICE_URL: window.env.SOFTPHONE_SERVICE_URL
 };
 

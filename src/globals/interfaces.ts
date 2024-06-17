@@ -109,6 +109,7 @@ export interface AppState {
   userContext: {
     permissions: ADGroupPermission[]
     accessToken: string
+    accessTokenGraph: string
     isAdmin?: boolean
     profileId?: number
     nNumber?: string
