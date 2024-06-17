@@ -1,5 +1,5 @@
 import { apiPaths } from "globals";
-import { TwilioQueue } from "globals/interfaces";
+import { TwilioQueue } from "callflowmanagement/Skills.Interfaces";
 import { myAxios } from "utils/myAxios";
 
 export const getTaskQueues = (): Promise<any> =>

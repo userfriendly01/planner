@@ -1,8 +1,8 @@
 import {
   UMTwilioAttributeSkills,
-  Skill,
   UMUserTwilioAttributes
 } from "globals/interfaces";
+import { Skill } from "callflowmanagement/Skills.Interfaces";
 import _ from "lodash";
 
 import React from "react";
@@ -23,6 +23,9 @@ const SkillsDiv = styled.div`
   padding: 1 3;
 `;
 
+export const isSkillFormValid = () => {
+  return false;
+};
 export const formatWorkerAttributeSkillsToHTML = (routingObj: any) => {
   if (routingObj && Array.isArray(routingObj.skills) && routingObj.skills.length > 0) {
     return routingObj.skills.map((skill: string, index: number) => {

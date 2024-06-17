@@ -13,8 +13,8 @@ import {
 } from "usermanagement/DefaultSkillSelector.Interfaces";
 import { SkillsList } from "usermanagement/SkillsList";
 import { SkillLevels } from "usermanagement/SkillLevels";
-import { useAdminState } from "context/appContext";
-import { Skill } from "globals/interfaces";
+import { useSkillState } from "context/appContext";
+import { Skill } from "callflowmanagement/Skills.Interfaces";
 import React from "react";
 import {
   Add,
@@ -27,8 +27,8 @@ export const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
     setDefaultSkills
   } = props;
 
-  const skills = useAdminState().skillContext.skills.slice().filter(s => s.levels);
-  const skillGroups = useAdminState().skillContext.skillGroups.slice();
+  const skills = useSkillState().skills.slice().filter(s => s.levels);
+  const skillGroups = useSkillState().skillGroups.slice();
 
   const skillsForDropDown = skills.filter((skillObj: Skill) => !defaultSkills.skills.includes(skillObj.name));
 

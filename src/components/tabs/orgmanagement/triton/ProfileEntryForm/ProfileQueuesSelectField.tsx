@@ -1,12 +1,11 @@
 import React from "react";
 import { ProfileQueuesSelectFieldProps } from "./ProfileEntryForm.Interfaces";
 import { Dropdown } from "components/Dropdown";
-import { useAdminState } from "context/appContext";
+import { useSkillState } from "context/appContext";
 import { logger } from "utils/logger";
 import { sortQueueByName } from "utils/_sortUtils";
-import {
-  AggregateQueue, Skill
-} from "globals/interfaces";
+import { AggregateQueue } from "globals/interfaces";
+import { Skill } from "callflowmanagement/Skills.Interfaces";
 import { Tooltip } from "@mui/material";
 import {
   IconButtonWrapper,
@@ -31,7 +30,7 @@ export const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) =
 
   const defaultNewQueue: Skill[] = [];
   const [newProfileQueue, setNewProfileQueue] = React.useState<Skill[]>(defaultNewQueue);
-  const queues = useAdminState().skillContext.skills;
+  const queues = useSkillState().skills;
   const [filteredQueues, setFilteredQueues] = React.useState<Skill[]>(defaultNewQueue);
   const [aggregateQueues, setAggregateQueues] = React.useState([]);
   const aggregateQueuesType = "aggregate";

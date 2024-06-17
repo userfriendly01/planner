@@ -1,8 +1,10 @@
 import { formModes } from "globals";
 import { Action } from "globals/interfaces";
-import { SkillFormState } from "../../components/tabs/callflowmanagement/SkillManagement/Skills.Interfaces";
+import {
+  Application, DayOfWeek, SkillState, Skill, SkillGroup, TimeOfDay, TwilioQueue, SkillFormState
+} from "callflowmanagement/Skills.Interfaces";
 
-export const skillFormActions = {
+export const skillActions = {
   RESET_FORM: "RESET_FORM",
   SET_SKILL_FRIENDLY_NAME: "SET_SKILL_FRIENDLY_NAME",
   SET_SKILL_NUM: "SET_SKILL_NUM",
@@ -17,6 +19,40 @@ export const skillFormActions = {
   SET_UPDATE_SKILL: "SET_UPDATE_SKILL"
 };
 
+export const initialSkillState: SkillState = {
+  discrepancies: [],
+  skills: [],
+  skillGroups: [],
+  applications: [],
+  daysOfWeek: {
+    sunday: 1,
+    monday: 2,
+    tuesday: 3,
+    wednesday: 4,
+    thursday: 5,
+    friday: 6,
+    saturday: 7
+  },
+  timeOfDays: [],
+  taskQueues: [],
+  skillForm: {
+    formMode: formModes.INSERT,
+    skillFriendlyName: "",
+    skillNum: "",
+    applicationId: null,
+    taskQueueSid: "",
+    profileIds: [],
+    enableVirtualHold: false,
+    vhCallTarget: {
+      value: "",
+      valid: false,
+      e164: "",
+      blurred: false
+    },
+    vhThreshold: "",
+    timeOfDays: []
+  }
+};
 export const initialSkillFormState: SkillFormState = {
   formMode: formModes.INSERT,
   skillFriendlyName: "",
@@ -32,102 +68,79 @@ export const initialSkillFormState: SkillFormState = {
     blurred: false
   },
   vhThreshold: "",
-  timeOfDay: {
-    skill: {
-      sunday: null,
-      monday: null,
-      tuesday: null,
-      wednesday: null,
-      thursday: null,
-      friday: null,
-      saturday: null
-    },
-    vh: {
-      sunday: null,
-      monday: null,
-      tuesday: null,
-      wednesday: null,
-      thursday: null,
-      friday: null,
-      saturday: null
+  timeOfDays: []
+};
+
+export const skillReducer = (state: SkillFormState, action: Action): any => {
+  switch (action.type) {
+    default: {
+      return state;
     }
   }
 };
 
 export const skillFormReducer = (state: SkillFormState, action: Action): SkillFormState => {
   switch (action.type) {
-    case skillFormActions.RESET_FORM: {
+    case skillActions.RESET_FORM: {
       return {
         ...initialSkillFormState
       };
     }
-    case skillFormActions.SET_SKILL_FRIENDLY_NAME: {
+    case skillActions.SET_SKILL_FRIENDLY_NAME: {
       return {
         ...state,
         skillFriendlyName: action.payload
       };
     }
-    case skillFormActions.SET_SKILL_NUM: {
+    case skillActions.SET_SKILL_NUM: {
       return {
         ...state,
         skillNum: action.payload
       };
     }
-    case skillFormActions.SET_TASK_QUEUE: {
+    case skillActions.SET_TASK_QUEUE: {
       return {
         ...state,
         taskQueueSid: action.payload
       };
     }
-    case skillFormActions.SET_PROFILE_IDS: {
+    case skillActions.SET_PROFILE_IDS: {
       return {
         ...state,
         profileIds: action.payload
       };
     }
-    case skillFormActions.SET_VH_CALL_TARGET: {
+    case skillActions.SET_VH_CALL_TARGET: {
       return {
         ...state,
         vhCallTarget: action.payload
       };
     }
-    case skillFormActions.SET_VH_THRESHOLD: {
+    case skillActions.SET_VH_THRESHOLD: {
       return {
         ...state,
         vhThreshold: action.payload
       };
     }
-    case skillFormActions.SET_TIME_OF_DAYS: {
+    case skillActions.SET_TIME_OF_DAYS: {
       return {
         ...state,
-        timeOfDay: {
-          ...state.timeOfDay,
-          skill: action.payload
-        }
+        timeOfDays: [...state.timeOfDays, action.payload]
       };
     }
-    case skillFormActions.SET_VH_TIME_OF_DAYS: {
-      return {
-        ...state,
-        timeOfDay: {
-          ...state.timeOfDay,
-          vh: action.payload
-        }
-      };
-    }
-    case skillFormActions.SET_APPLICATION_ID: {
+    case skillActions.SET_APPLICATION_ID: {
       return {
         ...state,
         applicationId: action.payload
       };
     }
-    case skillFormActions.SET_ENABLE_VIRTUAL_HOLD: {
+    case skillActions.SET_ENABLE_VIRTUAL_HOLD: {
       return {
         ...state,
         enableVirtualHold: action.payload
       };
     }
-    // case skillFormActions.SET_UPDATE_SKILL:{
+    // case skillActions.SET_UPDATE_SKILL:{
     //   return {
     //     ...action.payload
     //   };

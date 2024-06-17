@@ -58,40 +58,6 @@ export interface Discrepancy {
   type: string
 }
 
-export interface TwilioQueue {
-  account_sid?: string,
-  taskQueueSid?: string,
-  url?: string,
-  friendlyName: string,
-  maxReservedWorkers: number,
-  targetWorkers: string, //ie '(skills HAS "support") AND (languages HAS "english")'
-  operatingUnitSid: null //this is missing from the Twilio docs
-}
-
-export interface TwilioSkill {
-  name: string,
-  multivalue: boolean,
-  minimum: number,
-  maximum: number
-}
-
-
-export interface CallflowSkill {
-  skillId: string,
-  applicationId: number,
-  vhThreshold: string,
-  vhCallTarget: string,
-  timeOfDayIds: number[],
-  updatedBy: string
-}
-
-
-export interface CallFlowTimeOfDay {
-  timeOfDayId: number,
-  dayId: number,
-  vhTimeOfDayId?: number
-}
-
 export interface AppState {
   managerContext: {
     managers: UMManager[]
@@ -101,10 +67,6 @@ export interface AppState {
   },
   profileContext: {
     profiles: TritonProfile[]
-  },
-  skillContext: {
-    skills: Skill[],
-    skillGroups: SkillGroup[]
   },
   userContext: {
     permissions: ADGroupPermission[]
@@ -185,28 +147,6 @@ export interface UMOffice {
   item_type: string,
   office_num: string,
   office_name: string
-}
-
-interface Skill {
-  [key: string]: any
-  ctmSkillId: number,
-  ctmSkillDisplayName: string,
-  ctmSkillGroups: SkillGroup[],
-  name: string,
-  profiles: any[],
-  closedMessage: string,
-  flashMessage: string,
-  levels: any[],
-  timeOfDays: any[],
-  vhCallTarget: string,
-  vhCallerId: string,
-  vhThreshold: number
-}
-
-export interface SkillGroup {
-  skillGroupId: number,
-  skillGroupNme: string,
-  skills: Skill[],
 }
 
 export interface TritonProfile {

@@ -8,7 +8,8 @@ const productOwners = [
   "n0183277", // Jacob Radke
   "n0196231", // Michael Wilcox
   "n0197784", // Anthony Burke
-  "n0149889"  // David Kahrer
+  "n0149889", // David Kahrer
+  "n0263786"  // Faith Cuneo
 ];
 
 const bulkAdmins = [

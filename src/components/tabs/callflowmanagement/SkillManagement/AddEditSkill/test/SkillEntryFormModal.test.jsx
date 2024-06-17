@@ -3,13 +3,13 @@ import SkillEntryFormModal from "../SkillEntryFormModal";
 import {
   useAdminState,
   useAdminDispatch,
-  skillFormState,
-  skillFormDispatch
+  skillState,
+  skillDispatch
 } from "context/appContext";
 import {
-  skillFormActions,
+  skillActions,
   initialSkillFormState
-} from "context/skillFormReducer";
+} from "context/reducers/skillReducer";
 import {
   act,
   render,
@@ -49,8 +49,8 @@ jest.mock("@mui/material", () => ({
 jest.mock("context/appContext", () => ({
   useAdminState: jest.fn(),
   useAdminDispatch: jest.fn(),
-  skillFormDispatch: jest.fn(),
-  skillFormState: jest.fn()
+  skillDispatch: jest.fn(),
+  skillState: jest.fn()
 }));
 
 jest.mock("components/StyledButton", () => ({
@@ -190,9 +190,9 @@ describe("<SkillEntryFormModal />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     useAdminState.mockReturnValue(initialTestState);
-    skillFormState.mockReturnValue(initialSkillFormState);
+    skillState.mockReturnValue(initialSkillFormState);
     useAdminDispatch.mockReturnValue(mockAdminDispatch);
-    skillFormDispatch.mockReturnValue(mockSkillFormDispatch);
+    skillDispatch.mockReturnValue(mockSkillFormDispatch);
     setupMockedComponents({
       StyledButton,
       Dropdown,
@@ -289,7 +289,7 @@ describe("<SkillEntryFormModal />", () => {
         ...initialSkillFormState,
         enableVirtualHold: true
       };
-      skillFormState.mockReturnValueOnce(enabledVH);
+      skillState.mockReturnValueOnce(enabledVH);
       renderComponent();
       render(Paper.mock.calls[0][0].children);
       expect(CustomInput.mock.calls.length).toBe(3);
@@ -446,7 +446,7 @@ describe("<SkillEntryFormModal />", () => {
           ...initialSkillFormState,
           enableVirtualHold: true
         };
-        skillFormState.mockReturnValueOnce(enabledVH);
+        skillState.mockReturnValueOnce(enabledVH);
       });
       test("sunday vh time of day dropdown options updates applicationId in skillformstate", () => {
         renderComponent();
@@ -585,7 +585,7 @@ describe("<SkillEntryFormModal />", () => {
         ...initialSkillFormState,
         enableVirtualHold: true
       };
-      skillFormState.mockReturnValueOnce(enabledVH);
+      skillState.mockReturnValueOnce(enabledVH);
       renderComponent();
       render(Paper.mock.calls[0][0].children);
       const callTargetInput = PhoneNumberInput.mock.calls[0][0];
@@ -607,7 +607,7 @@ describe("<SkillEntryFormModal />", () => {
         ...initialSkillFormState,
         enableVirtualHold: true
       };
-      skillFormState.mockReturnValueOnce(enabledVH);
+      skillState.mockReturnValueOnce(enabledVH);
       renderComponent();
       render(Paper.mock.calls[0][0].children);
       const skillNumInput = CustomInput.mock.calls[2][0];
@@ -628,19 +628,19 @@ describe("<SkillEntryFormModal />", () => {
       expect(StyledButton.mock.calls[1][0].disabled).toBe(true);
       const clickCancel = StyledButton.mock.calls[0][0].onClick;
       expect(mockSkillFormDispatch).not.toHaveBeenCalledWith({
-        type: skillFormActions.RESET_FORM
+        type: skillActions.RESET_FORM
       });
       act(() => {
         clickCancel();
       });
       expect(mockSkillFormDispatch).toHaveBeenCalledWith({
-        type: skillFormActions.RESET_FORM
+        type: skillActions.RESET_FORM
       });
       expect(mockCloseModal).toHaveBeenCalledTimes(1);
     });
     test("add/update skill button is NOT disabled when required fields are valid/complete (no VH)", () => {
 
-      skillFormState.mockReturnValueOnce(completeFormNoVh);
+      skillState.mockReturnValueOnce(completeFormNoVh);
       renderComponent();
       render(Paper.mock.calls[0][0].children);
       expect(StyledButton.mock.calls.length).toBe(2);
@@ -648,7 +648,7 @@ describe("<SkillEntryFormModal />", () => {
       expect(addSkillButton.disabled).toBe(false);
     });
     test("add/update skill button is disabled when some required fields are empty", () => {
-      skillFormState.mockReturnValueOnce(completeFormWithVh);
+      skillState.mockReturnValueOnce(completeFormWithVh);
       renderComponent();
       render(Paper.mock.calls[0][0].children);
       expect(StyledButton.mock.calls.length).toBe(2);
@@ -671,7 +671,7 @@ describe("<SkillEntryFormModal />", () => {
           }
         }
       };
-      skillFormState.mockReturnValueOnce(incompleteForm);
+      skillState.mockReturnValueOnce(incompleteForm);
       renderComponent();
       render(Paper.mock.calls[0][0].children);
       expect(StyledButton.mock.calls.length).toBe(2);
@@ -681,7 +681,7 @@ describe("<SkillEntryFormModal />", () => {
   });
   describe("create skill is called", () => {
     test("user is not admin, does not call createSkill", () => {
-      skillFormState.mockReturnValueOnce(completeFormNoVh);
+      skillState.mockReturnValueOnce(completeFormNoVh);
       render(<SkillEntryFormModal
         closeModal={mockCloseModal}
         taskQueues={taskQueues}
@@ -706,7 +706,7 @@ describe("<SkillEntryFormModal />", () => {
         vhThreshold: "",
         taskQueueSid: ""
       };
-      skillFormState.mockReturnValueOnce(incompleteForm);
+      skillState.mockReturnValueOnce(incompleteForm);
       renderComponent();
       render(Paper.mock.calls[0][0].children);
       expect(StyledButton.mock.calls.length).toBe(2);
@@ -725,7 +725,7 @@ describe("<SkillEntryFormModal />", () => {
       createSkill.mockResolvedValueOnce({
         status: 200
       });
-      skillFormState.mockReturnValueOnce(completeFormNoVh);
+      skillState.mockReturnValueOnce(completeFormNoVh);
       renderComponent();
       render(Paper.mock.calls[0][0].children);
       expect(StyledButton.mock.calls.length).toBe(2);
@@ -804,7 +804,7 @@ describe("<SkillEntryFormModal />", () => {
           }
         }
       });
-      skillFormState.mockReturnValueOnce(completeFormNoVh);
+      skillState.mockReturnValueOnce(completeFormNoVh);
       renderComponent();
       render(Paper.mock.calls[0][0].children);
       expect(StyledButton.mock.calls.length).toBe(2);
@@ -828,7 +828,7 @@ describe("<SkillEntryFormModal />", () => {
     });
     test("call fails, shows error message", async () => {
       createSkill.mockRejectedValueOnce({ message: "boo" });
-      skillFormState.mockReturnValueOnce(completeFormNoVh);
+      skillState.mockReturnValueOnce(completeFormNoVh);
       renderComponent();
       render(Paper.mock.calls[0][0].children);
       expect(StyledButton.mock.calls.length).toBe(2);

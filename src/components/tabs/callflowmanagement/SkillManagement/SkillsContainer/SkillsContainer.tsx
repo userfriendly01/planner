@@ -6,9 +6,6 @@ import {
 } from "../Skills.Styles";
 import { SkillsTable } from "callflowmanagement/SkillsTable";
 import { SkillsHeader } from "callflowmanagement/SkillsHeader";
-import {
-  SkillFormStateProvider
-} from "context/appContext";
 import { getTimeOfDays } from "services/timeOfDays";
 import { getTaskQueues } from "services/taskQueues";
 import { getApplications } from "services/applications";
@@ -47,22 +44,20 @@ export const SkillsContainer = (props: SkillsContainerProps) => {
   };
 
   return (
-    <SkillFormStateProvider>
-      <SkillsWrapper>
-        <SkillsHeader
+    <SkillsWrapper>
+      <SkillsHeader
+        tableState={tableState}
+        setTableState={setTableState}
+        taskQueues={taskQueues}
+        applications={applications}
+        timeOfDays={timeOfDays}
+      />
+      <SkillsTableWrapper>
+        <SkillsTable
           tableState={tableState}
           setTableState={setTableState}
-          taskQueues={taskQueues}
-          applications={applications}
-          timeOfDays={timeOfDays}
         />
-        <SkillsTableWrapper>
-          <SkillsTable
-            tableState={tableState}
-            setTableState={setTableState}
-          />
-        </SkillsTableWrapper>
-      </SkillsWrapper>
-    </SkillFormStateProvider>
+      </SkillsTableWrapper>
+    </SkillsWrapper>
   );
 };

@@ -1,8 +1,8 @@
 import {
-  skillFormActions,
+  skillActions,
   skillFormReducer,
   initialSkillFormState
-} from "../reducers/skillFormReducer";
+} from "../reducers/skillReducer";
 
 describe("skillFormReducer", () => {
   describe("default case", () => {
@@ -19,7 +19,7 @@ describe("skillFormReducer", () => {
         taskQueueSid: "TQ123"
       };
       const result = skillFormReducer(NonInitialFormState, {
-        type: skillFormActions.RESET_FORM
+        type: skillActions.RESET_FORM
       });
       expect(result).toEqual(initialSkillFormState);
     });
@@ -27,7 +27,7 @@ describe("skillFormReducer", () => {
   describe("SET_SKILL_FRIENDLY_NAME", () => {
     test("should set skillFriendlyName", () => {
       const result = skillFormReducer(initialSkillFormState, {
-        type: skillFormActions.SET_SKILL_FRIENDLY_NAME,
+        type: skillActions.SET_SKILL_FRIENDLY_NAME,
         payload: "cool skill name"
       });
       expect(result).toEqual({
@@ -39,7 +39,7 @@ describe("skillFormReducer", () => {
   describe("SET_SKILL_NUM", () => {
     test("should set skillNum", () => {
       const result = skillFormReducer(initialSkillFormState, {
-        type: skillFormActions.SET_SKILL_NUM,
+        type: skillActions.SET_SKILL_NUM,
         payload: "YO I AM SKILLNUM"
       });
       expect(result).toEqual({
@@ -51,7 +51,7 @@ describe("skillFormReducer", () => {
   describe("SET_TASK_QUEUE", () => {
     test("should set taskQueueSid", () => {
       const result = skillFormReducer(initialSkillFormState, {
-        type: skillFormActions.SET_TASK_QUEUE,
+        type: skillActions.SET_TASK_QUEUE,
         payload: "TQ123456"
       });
       expect(result).toEqual({
@@ -63,7 +63,7 @@ describe("skillFormReducer", () => {
   describe("SET_PROFILE_IDS", () => {
     test("should set profileIds", () => {
       const result = skillFormReducer(initialSkillFormState, {
-        type: skillFormActions.SET_PROFILE_IDS,
+        type: skillActions.SET_PROFILE_IDS,
         payload: [1, 2, 3]
       });
       expect(result).toEqual({
@@ -75,7 +75,7 @@ describe("skillFormReducer", () => {
   describe("SET_VH_CALL_TARGET", () => {
     test("should set vhCallTarget", () => {
       const result = skillFormReducer(initialSkillFormState, {
-        type: skillFormActions.SET_VH_CALL_TARGET,
+        type: skillActions.SET_VH_CALL_TARGET,
         payload: {
           value: "1231231234",
           valid: true,
@@ -95,7 +95,7 @@ describe("skillFormReducer", () => {
   describe("SET_VH_THRESHOLD", () => {
     test("should set vhThreshold", () => {
       const result = skillFormReducer(initialSkillFormState, {
-        type: skillFormActions.SET_VH_THRESHOLD,
+        type: skillActions.SET_VH_THRESHOLD,
         payload: "120"
       });
       expect(result).toEqual({
@@ -107,7 +107,7 @@ describe("skillFormReducer", () => {
   describe("SET_VH_TIME_OF_DAYS", () => {
     test("should set time of day for vh", () => {
       const result = skillFormReducer(initialSkillFormState, {
-        type: skillFormActions.SET_VH_TIME_OF_DAYS,
+        type: skillActions.SET_VH_TIME_OF_DAYS,
         payload: {
           sunday: 1,
           monday: 3,
@@ -138,7 +138,7 @@ describe("skillFormReducer", () => {
   describe("SET_TIME_OF_DAYS", () => {
     test("should set time of day for skill", () => {
       const result = skillFormReducer(initialSkillFormState, {
-        type: skillFormActions.SET_TIME_OF_DAYS,
+        type: skillActions.SET_TIME_OF_DAYS,
         payload: {
           sunday: 11,
           monday: 13,
@@ -169,7 +169,7 @@ describe("skillFormReducer", () => {
   describe("SET_APPLICATION_ID", () => {
     test("should set applicationId", () => {
       const result = skillFormReducer(initialSkillFormState, {
-        type: skillFormActions.SET_APPLICATION_ID,
+        type: skillActions.SET_APPLICATION_ID,
         payload: 12
       });
       expect(result).toEqual({
@@ -181,7 +181,7 @@ describe("skillFormReducer", () => {
   describe("SET_ENABLE_VIRTUAL_HOLD", () => {
     test("should set profileIds", () => {
       const result = skillFormReducer(initialSkillFormState, {
-        type: skillFormActions.SET_ENABLE_VIRTUAL_HOLD,
+        type: skillActions.SET_ENABLE_VIRTUAL_HOLD,
         payload: true
       });
       expect(result).toEqual({

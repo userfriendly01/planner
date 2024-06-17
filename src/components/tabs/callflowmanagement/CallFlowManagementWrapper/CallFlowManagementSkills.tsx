@@ -13,11 +13,11 @@ import {
 import { CallFlowConfirmationModal } from "callflowmanagement/CallFlowConfirmationModal";
 import { ActionContainer } from "callflowmanagement/ActionContainer";
 import { SkillsContainer } from "callflowmanagement/SkillsContainer";
-import { useAdminState } from "context/appContext";
 import {
-  Skill,
-  TritonProfile
-} from "globals/interfaces";
+  useAdminState, useSkillState
+} from "context/appContext";
+import { Skill } from "callflowmanagement/Skills.Interfaces";
+import { TritonProfile } from "globals/interfaces";
 import React from "react";
 import { filterSkillsByName } from "utils/_filterUtils";
 import { logger } from "utils/logger";
@@ -50,6 +50,7 @@ export const CallFlowManagementSkills = () => {
   };
 
   const state = useAdminState();
+  const skillState = useSkillState();
 
   const {
     isAdmin,
@@ -63,7 +64,7 @@ export const CallFlowManagementSkills = () => {
   logger.log("CallFlowManagementSkills Filtered State: ", tableState);
 
   React.useEffect(() => {
-    let filteredList = state.skillContext.skills.slice();
+    let filteredList = skillState.skills.slice();
     //filter by profile
     if(isAdmin) {
       if(tableState.profiles.length > 0){
@@ -104,7 +105,7 @@ export const CallFlowManagementSkills = () => {
       ...tableState,
       filteredList
     });
-  }, [tableState.searchBy, tableState.profiles, tableState.closedFilter, tableState.flashFilter, state.skillContext.skills]);
+  }, [tableState.searchBy, tableState.profiles, tableState.closedFilter, tableState.flashFilter, skillState.skills]);
 
   return (
     <CallflowWrapper>

@@ -1,7 +1,5 @@
-import {
-  Skill,
-  TritonProfile
-} from "globals/interfaces";
+import { TritonProfile } from "globals/interfaces";
+import { Skill } from "callflowmanagement/Skills.Interfaces";
 
 export interface SkillProfile {
   profileId: number,

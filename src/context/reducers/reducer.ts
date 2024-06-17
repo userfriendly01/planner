@@ -20,10 +20,6 @@ export const initialState: AppState = {
   profileContext: {
     profiles: []
   },
-  skillContext: {
-    skills: [],
-    skillGroups: []
-  },
   userContext: {
     permissions: [],
     accessToken: "",
@@ -217,22 +213,6 @@ export const reducer = (state: AppState, action: Action): AppState => {
         }
       };
     }
-    case "loadSkills":
-      return {
-        ...state,
-        skillContext: {
-          ...state.skillContext,
-          skills: action.payload
-        }
-      };
-    case "loadSkillGroups":
-      return {
-        ...state,
-        skillContext: {
-          ...state.skillContext,
-          skillGroups: formatSkillGroups(action.payload)
-        }
-      };
     case "loadUserData":
       return {
         ...state,
@@ -252,14 +232,6 @@ export const reducer = (state: AppState, action: Action): AppState => {
         workerContext: {
           ...state.workerContext,
           workers: [...state.workerContext.workers.filter(w => w.sid !== action.payload.sid), action.payload]
-        }
-      };
-    case "updateSkills":
-      return {
-        ...state,
-        skillContext: {
-          ...state.skillContext,
-          skills: action.payload
         }
       };
     case "updateManagerFilter":

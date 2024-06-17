@@ -1,6 +1,3 @@
-import {
-  Skill
-} from "globals/interfaces";
 import { TableState } from "callflowmanagement/CallFlowManagement.Interfaces";
 import { messageTypes } from "callflowmanagement/ClosedFlashMessage.Interfaces";
 import {
@@ -91,9 +88,6 @@ export interface SkillsHeaderProps {
 
 export interface SkillEntryFormModalProps {
   closeModal: () => void,
-  taskQueues: any[],
-  applications: any[],
-  timeOfDays: any[],
   setSaveResult: (saveResult: SaveResultProps) => void,
   saveResult: SaveResultProps,
   isAdmin: boolean
@@ -108,48 +102,6 @@ export interface AddEditSkillGroupBody {
   skill_group_nme: string,
   skillIds?: number[]
 }
-export interface SkillFormState {
-  formMode: string,
-  skillFriendlyName: string,
-  skillNum: string,
-  applicationId: number | null,
-  taskQueueSid: string,
-  profileIds: any[],
-  enableVirtualHold: boolean,
-  vhCallTarget: {
-    value: string,
-    valid: boolean,
-    e164: string,
-    blurred: boolean
-  },
-  vhThreshold: string | null,
-  timeOfDay: {
-    skill: {
-      sunday: number | null,
-      monday: number | null,
-      tuesday: number | null,
-      wednesday: number | null,
-      thursday: number | null,
-      friday: number | null,
-      saturday: number | null
-    },
-    vh: {
-      sunday: number | null,
-      monday: number | null,
-      tuesday: number | null,
-      wednesday: number | null,
-      thursday: number | null,
-      friday: number | null,
-      saturday: number | null
-    }
-  }
-}
-
-interface TimeOfDay {
-  dayId: number,
-  timeOfDayId: number,
-  vhTimeOfDayId: number | null
-}
 
 export interface AddEditSkill {
   skillFriendlyName: string,
@@ -160,5 +112,120 @@ export interface AddEditSkill {
   vhCallTarget: string | null,
   vhThreshold: number | null,
   updatedBy: string,
-  timeOfDayIds: TimeOfDay[]
+  timeOfDayIds: TimeOfDayRequestObject[]
+}
+
+export interface Application {
+  applicationId: number,
+  applicationName: string
+}
+
+export enum DayOfWeek {
+  sunday = 1,
+  monday = 2,
+  tuesday = 3,
+  wednesday = 4,
+  thursday = 5,
+  friday = 6,
+  saturday = 7
+}
+export interface SkillState {
+  discrepancies: string[],
+  skills: Skill[],
+  skillGroups: SkillGroup[],
+  applications: Application[],
+  daysOfWeek: typeof DayOfWeek,
+  timeOfDays: TimeOfDay[],
+  taskQueues: TwilioQueue[],
+  skillForm: SkillFormState
+}
+
+export interface SkillFormState {
+  formMode: string,
+  skillFriendlyName: string,
+  skillNum: string,
+  applicationId: number | null, // FAITH does this need to be | null?
+  taskQueueSid: string,
+  profileIds: number[],
+  enableVirtualHold: boolean,
+  vhCallTarget: {
+    value: string,
+    valid: boolean,
+    e164: string,
+    blurred: boolean
+  },
+  vhThreshold?: string,
+  timeOfDays: TimeOfDayRequestObject[]
+}
+
+export interface TwilioQueue {
+  account_sid?: string,
+  taskQueueSid?: string,
+  url?: string,
+  friendlyName: string,
+  maxReservedWorkers: number,
+  targetWorkers: string, //ie '(skills HAS "support") AND (languages HAS "english")'
+  operatingUnitSid: null //this is missing from the Twilio docs
+}
+
+export interface TwilioSkill {
+  name: string,
+  multivalue: boolean,
+  minimum: number,
+  maximum: number
+}
+
+export interface TimeOfDay {
+  timeOfDayId: number,
+  openTime: string,
+  closeTime: string,
+}
+
+export interface TimeOfDayRequestObject {
+  dayOfWeekId: number,
+  timeOfDayId: number,
+  vhTimeOfDayId?: number
+}
+
+export interface CallflowSkill {
+  skillId: string,
+  applicationId: number,
+  vhThreshold: string,
+  vhCallTarget: string,
+  timeOfDayIds: number[],
+  updatedBy: string
+}
+
+export interface CallFlowTimeOfDay {
+  timeOfDayId: number,
+  dayId: number,
+  vhTimeOfDayId?: number
+}
+
+export interface UMSkill {
+  timeOfDayId: number,
+  dayId: number,
+  vhTimeOfDayId?: number
+}
+
+export interface Skill {
+  [key: string]: any
+  ctmSkillId: number,
+  ctmSkillDisplayName: string,
+  ctmSkillGroups: SkillGroup[],
+  name: string,
+  profiles: any[],
+  closedMessage: string,
+  flashMessage: string,
+  levels: any[],
+  timeOfDays: any[],
+  vhCallTarget: string,
+  vhCallerId: string,
+  vhThreshold: number
+}
+
+export interface SkillGroup {
+  skillGroupId: number,
+  skillGroupNme: string,
+  skills: Skill[],
 }

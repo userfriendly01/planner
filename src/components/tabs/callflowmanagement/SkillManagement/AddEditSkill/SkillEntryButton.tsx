@@ -22,8 +22,8 @@ export const SkillEntryButton = (props: any) => {
   const openModal = () => {
     if (formMode === "UPDATE") {
       // Placeholder to fill in form the existing data
-      // skillFormDispatch({
-      //   type: skillFormActions.SET_UPDATE_SKILL,
+      // skillDispatch({
+      //   type: skillActions.SET_UPDATE_SKILL,
       //   payload: {
       //     formMode: formMode,
       //     // and all the other stuff...
@@ -46,9 +46,6 @@ export const SkillEntryButton = (props: any) => {
                 status: null
               });
             }}
-            taskQueues={taskQueues}
-            applications={applications}
-            timeOfDays={timeOfDays}
             setSaveResult={setSaveResult}
             saveResult={saveResult}
             isAdmin={isAdmin}

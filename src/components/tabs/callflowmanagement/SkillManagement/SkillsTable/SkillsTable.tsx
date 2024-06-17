@@ -14,7 +14,7 @@ import { Circle } from "@mui/icons-material";
 import {
   Checkbox, Tooltip
 } from "@mui/material";
-import { Skill } from "globals/interfaces";
+import { Skill } from "callflowmanagement/Skills.Interfaces";
 import React, { ReactElement } from "react";
 
 export const SkillsTable = (props: SkillsTableProps) => {

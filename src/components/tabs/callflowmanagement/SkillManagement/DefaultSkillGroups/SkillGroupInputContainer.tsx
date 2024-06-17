@@ -1,7 +1,8 @@
 import React from "react";
 import {
   useAdminState,
-  useAdminDispatch
+  useAdminDispatch,
+  useSkillState
 } from "context/appContext";
 import { TextField } from "@mui/material";
 import {
@@ -16,16 +17,15 @@ import {
   updateSkillGroup
 } from "services/skillgroup";
 import { timeouts } from "globals";
-import {
-  Skill, ModalOverlayStatuses
-} from "globals/interfaces";
+import { ModalOverlayStatuses } from "globals/interfaces";
+import { Skill } from "callflowmanagement/Skills.Interfaces";
 import {
   ConfirmationSkillGroupsDiv,
   ConfirmationSkillList
 } from "./SkillGroup.Styles";
 import { Dropdown } from "components/Dropdown";
 import _ from "lodash";
-import { getSkills } from "authentication/startups/cct-triton-admin-startup";
+import { getConsolidatedSkills } from "services/skill";
 import { logger } from "utils/logger";
 
 
@@ -45,9 +45,10 @@ export const SkillGroupInputContainer = (props: any) => {
   } = props;
 
   const state = useAdminState();
+  const skillState = useSkillState();
   const dispatch = useAdminDispatch();
-  const skillGroups = state.skillContext.skillGroups.slice();
-  const skills = state.skillContext.skills.slice();
+  const skillGroups = skillState.skillGroups.slice();
+  const skills = skillState.skills.slice();
   const { nNumber } = state.userContext;
 
   const getSkillGroupOptions = () => {
@@ -136,7 +137,7 @@ export const SkillGroupInputContainer = (props: any) => {
         });
 
         // refresh skill state
-        await getSkills(dispatch);
+        await getConsolidatedSkills(dispatch);
 
         setTimeout(() => {
           handleCloseConfirmation();
@@ -225,7 +226,7 @@ export const SkillGroupInputContainer = (props: any) => {
           status: ModalOverlayStatuses.SUCCESS
         });
         // refresh skill state
-        await getSkills(dispatch);
+        await getConsolidatedSkills(dispatch);
         setTimeout(() => {
           handleCloseConfirmation();
           setAction(null);
@@ -276,7 +277,7 @@ export const SkillGroupInputContainer = (props: any) => {
         });
 
         // refresh skill state
-        await getSkills(dispatch);
+        await getConsolidatedSkills(dispatch);
 
         setTimeout(() => {
           handleCloseConfirmation();
