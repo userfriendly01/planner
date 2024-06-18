@@ -12,7 +12,9 @@ import {
   SkillGroup, SkillsTableProps
 } from "../Skills.Interfaces";
 import { messageTypes } from "../ClosedFlashMessage/ClosedFlashMessage.Interfaces";
-import { Circle } from "@mui/icons-material";
+import {
+  Circle, ReportProblemOutlined
+} from "@mui/icons-material";
 import {
   Checkbox, Tooltip
 } from "@mui/material";
@@ -122,6 +124,14 @@ export const SkillsTable = (props: SkillsTableProps) => {
               }
             ><FilterWrapper active={tableState[messageTypes.CLOSED.filter]}>CLOSED</FilterWrapper>
             </CustomTableHeader>
+            <CustomTableHeader
+              onClick={() => setTableState({
+                ...tableState,
+                discrepancyFilter: !tableState.discrepancyFilter
+              })
+              }
+            ><FilterWrapper active={tableState.discrepancyFilter}>PROBLEMS</FilterWrapper>
+            </CustomTableHeader>
           </tr>
         </thead>
         <tbody>
@@ -154,6 +164,15 @@ export const SkillsTable = (props: SkillsTableProps) => {
                       placement="right"
                       title={<h1 style={{ fontSize: "15px" }}>{skill.closedMessage}</h1>}>
                       <TableIcon><Circle fontSize="small"/></TableIcon>
+                    </Tooltip>
+                  }
+                </CustomTableData>
+                <CustomTableData>
+                  {skill.discrepancies.length > 0 &&
+                    <Tooltip
+                      placement="right"
+                      title={<h1 style={{ fontSize: "15px" }}>{skill.discrepancies.toString()}</h1>}>
+                      <TableIcon><ReportProblemOutlined fontSize="small"/></TableIcon>
                     </Tooltip>
                   }
                 </CustomTableData>

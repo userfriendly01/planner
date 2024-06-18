@@ -33,6 +33,7 @@ export const CallFlowManagementSkills = () => {
     profiles: [],
     closedFilter: false,
     flashFilter: false,
+    discrepancyFilter: false,
     filteredList: []
   };
 
@@ -110,11 +111,16 @@ export const CallFlowManagementSkills = () => {
       filteredList = filteredList.filter((skill: Skill) => skill.flashMessage);
     }
 
+    //filter by discrepancy
+    if(tableState.discrepancyFilter){
+      filteredList = filteredList.filter((skill: Skill) => skill.discrepancies.length > 0);
+    }
+
     setTableState({
       ...tableState,
       filteredList
     });
-  }, [tableState.searchBy, tableState.profiles, tableState.closedFilter, tableState.flashFilter, skillState.skills]);
+  }, [tableState.searchBy, tableState.profiles, tableState.closedFilter, tableState.flashFilter, tableState.discrepancyFilter,  skillState.skills]);
 
   return (
     <CallflowWrapper>

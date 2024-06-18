@@ -9,6 +9,7 @@ export interface TableState {
   [key: string]: any
   closedFilter: boolean,
   flashFilter: boolean,
+  discrepancyFilter: boolean,
   filteredList: Skill[],
   profiles: TritonProfile[],
   searchBy: string,

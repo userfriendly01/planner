@@ -54,13 +54,17 @@ export const CustomTableHeader = styled.th`
     width: 25%;
   }
   &:nth-child(4) {
-    width: 20%;
+    width: 15%;
   }
   &:nth-child(5) {
     width: ${headerIconWidth};
     text-align: -webkit-center;
   }
   &:nth-child(6) {
+    width: ${headerIconWidth};
+    text-align: -webkit-center;
+  }
+  &:nth-child(7) {
     width: ${headerIconWidth};
     text-align: -webkit-center;
   }

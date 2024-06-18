@@ -132,7 +132,6 @@ export const SaveButton = (props: SaveButtonProps) => {
 
     results.forEach((r, index) => {
       if(r.status === "fulfilled"){
-        console.log("FAITH - fulfilled", tableState.selected[index]);
         successfulPromiseSkills.push(tableState.selected[index]);
       }
       if(r.status === "rejected"){
@@ -177,7 +176,6 @@ export const SaveButton = (props: SaveButtonProps) => {
   };
 
   const updateStateOnResolvedPromises = (fulfilledSkills: Skill[])=> {
-    console.log("Faith?", fulfilledSkills);
     const skills = skillState.skills.slice();
     const updatedText = action === ActionTypes.DELETE ? "" : text;
     const updatedSkills = skills.map((s: any) => {
@@ -192,7 +190,7 @@ export const SaveButton = (props: SaveButtonProps) => {
       });
       return updatedSkill;
     });
-    console.log("faith, udpated skills?", updatedSkills);
+
     skillDispatch({
       type: "LOAD_SKILLS",
       payload: updatedSkills
