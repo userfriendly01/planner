@@ -24,8 +24,8 @@ import { ActionFormFieldConfigs } from "../Form/ActionFieldsConfig";
 import { ActionPreviewModal } from "../PreviewModal/Action.Preview.Modal.Component";
 import {
   AlertBarController,
-  AlertBarProps, CLOSE_ALERT_BAR,
-  initialAlertBarProps, OPEN_ALERT_BAR
+  AlertBarProps,
+  initialAlertBarProps
 } from "../../common/AlertBar.Controller";
 import { DynamicCallFlowActionContext } from "../DynamicCallFlow.Action.Container";
 import { NotInUseModalType } from "../../common/Modal.Controller";
@@ -58,8 +58,8 @@ const ActionDataGridComponent = (): JSX.Element => {
 
   // sourceRecords is the master list of all records.  It is used to update the data grid records and to update the field options.
   const [sourceRecords, setSourceRecords ] = useState<Array<ActionRecordType>>([]);
-  const linkToSetSourceRecords = (): ReactSetState<Array<ActionRecordType>> => {
-    return setSourceRecords;
+  const linkToSetSourceRecords = (sourceRecords: Array<ActionRecordType>): void => {
+    setSourceRecords(sourceRecords);
   };
 
   // dataGridRecords is the list of records that are displayed in the data grid.  It contains the results of when a filter is applied to sourceRecords.
@@ -89,7 +89,7 @@ const ActionDataGridComponent = (): JSX.Element => {
 
   const dataGridApi = useGridApiRef<GridApiCommunity>();
   const dataGridController = useRef(new ActionDataGridController(dataGridApi, dataGridFilter,
-    setDataGridProps, alertBarController, setSourceRecords, setDataGridRecords, setSelectedRecord, setSelectedRecords));
+    setDataGridProps, alertBarController, setSourceRecords, setDataGridRecords, setSelectedRecord, setSelectedRecords, linkToSetSourceRecords));
 
   const previewModalHandler = useRef(new ActionPreviewModalHandler(dataGridController));
 
@@ -118,7 +118,7 @@ const ActionDataGridComponent = (): JSX.Element => {
       setFieldOptions(actionFieldOptionsManager.generateOptions(sortedRecords));
       setActionFieldConfigs(actionFieldOptionsManager.updateFieldOptionsOnFieldConfigs(actionFieldConfigs));
 
-      alertBarController.current.success("Data has been successfully loaded.", OPEN_ALERT_BAR, 5000);
+      alertBarController.current.success("Data has been successfully loaded.");
     };
 
     loadDataGrid();

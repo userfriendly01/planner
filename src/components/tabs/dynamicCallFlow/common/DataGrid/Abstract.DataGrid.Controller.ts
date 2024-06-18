@@ -61,12 +61,13 @@ export abstract class AbstractDataGridController<RecordType> implements DataGrid
   private readonly _setSelectedRecord:  ReactSetState<RecordType>;
   private _selectedRecords: Array<RecordType>;
   private readonly _setSelectedRecords:  ReactSetState<Array<RecordType>>;
+  private readonly _linkToSetSourceRecords: (records: Array<RecordType>) => void;
 
   protected abstract recordKey(): string;
 
   constructor(dataGridApi: ReactGridApi, dataGridFilter: DataGridFilterRef<RecordType>, setDataGridProps: ReactSetState<DataGridStateProps>,
     alertBarController: AlertBarControllerRef, setSourceRecords: ReactSetState<Array<RecordType>>, setDataGridRecords: ReactSetState<Array<RecordType>>,
-    setSelectedRecord: ReactSetState<RecordType>, setSelectedRecords: ReactSetState<Array<RecordType>>) {
+    setSelectedRecord: ReactSetState<RecordType>, setSelectedRecords: ReactSetState<Array<RecordType>>, linkToSetSourceRecords: (records: Array<RecordType>) => void) {
 
     this._dataGridApi = dataGridApi;
     this._dataGridFilter = dataGridFilter;
@@ -76,6 +77,7 @@ export abstract class AbstractDataGridController<RecordType> implements DataGrid
     this._setDataGridRecords = setDataGridRecords;
     this._setSelectedRecord = setSelectedRecord;
     this._setSelectedRecords = setSelectedRecords;
+    this._linkToSetSourceRecords = linkToSetSourceRecords;
   }
 
   get dataGridApi(): GridApiCommunity {
@@ -122,31 +124,35 @@ export abstract class AbstractDataGridController<RecordType> implements DataGrid
   }
 
   setSourceRecordsState(sourceRecords: Array<RecordType>): void {
-    this._setSourceRecords(sourceRecords);
+    this._linkToSetSourceRecords([ ...sourceRecords ]);
   }
 
   addRecordToSourceRecords(recordToAdd: RecordType): void {
-    this._setSourceRecords( previousRecordsState => this._addRecordToPreviousRecordState(recordToAdd, previousRecordsState));
+    this._linkToSetSourceRecords(this._addRecordToPreviousRecordState(recordToAdd, this._sourceRecords));
   }
 
   addRecordsToSourceRecords(recordsToAdd: Array<RecordType>): void {
-    this._setSourceRecords( previousRecordsState => this._addRecordsToPreviousRecordsState(previousRecordsState, recordsToAdd));
+    this._linkToSetSourceRecords(this._addRecordsToPreviousRecordsState(recordsToAdd, this._sourceRecords));
   }
 
   updateRecordInSourceRecords(updatedRecord: RecordType): void {
-    this._setSourceRecords( previousRecordsState => this._updateRecordInPreviousRecordsState(updatedRecord, previousRecordsState));
+    this._linkToSetSourceRecords(this._updateRecordInPreviousRecordsState(updatedRecord, this._sourceRecords));
+    // this._setSourceRecords( previousRecordsState => this._updateRecordInPreviousRecordsState(updatedRecord, previousRecordsState));
   }
 
   updateRecordsInSourceRecords(updatedRecords: Array<RecordType>): void {
-    this._setSourceRecords( previousRecordsState => this._updateRecordsInPreviousRecordsState(updatedRecords, previousRecordsState));
+    this._linkToSetSourceRecords(this._updateRecordsInPreviousRecordsState(updatedRecords, this._sourceRecords));
+    // this._setSourceRecords( previousRecordsState => this._updateRecordsInPreviousRecordsState(updatedRecords, previousRecordsState));
   }
 
   removeRecordFromSourceRecords(recordToRemove: RecordType): void {
-    this._setSourceRecords( previousRecordsState => this._removeRecordFromPreviousRecordsState(recordToRemove, previousRecordsState));
+    this._linkToSetSourceRecords(this._removeRecordFromPreviousRecordsState(recordToRemove, this._sourceRecords));
+    // this._setSourceRecords( previousRecordsState => this._removeRecordFromPreviousRecordsState(recordToRemove, previousRecordsState));
   }
 
   removeRecordsFromSourceRecords(recordsToRemove: Array<RecordType>): void {
-    this._setSourceRecords( previousRecordsState => this._removeRecordsFromPreviousRecordsState(recordsToRemove, previousRecordsState));
+    this._linkToSetSourceRecords(this._removeRecordsFromPreviousRecordsState(recordsToRemove, this._sourceRecords));
+    // this._setSourceRecords( previousRecordsState => this._removeRecordsFromPreviousRecordsState(recordsToRemove, previousRecordsState));
   }
 
   // **************** dataGridRecords Functions **************** //

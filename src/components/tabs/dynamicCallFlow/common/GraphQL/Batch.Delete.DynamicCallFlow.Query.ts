@@ -1,5 +1,5 @@
 import {
-  BatchCallFlowDeleteInput,
+  CallFlowDeleteBatchInput,
   BatchCallFlowDeleteResponse,
   CallFlowDeleteInput
 } from "./DynamicCallFlow.Interfaces";
@@ -13,7 +13,7 @@ export abstract class AbstractBatchDeleteDynamicCallFlowQuery<RecordType> extend
 
   protected queryDefinition(): string {
     return `
-      mutation ${this.queryName()}($input: PhoneNumberDeleteBatchInput!) {
+      mutation ${this.queryName()}($input: CallFlowDeleteBatchInput!) {
         ${this.queryName()}(input: $input) {
           items {
               id
@@ -39,15 +39,15 @@ export abstract class AbstractBatchDeleteDynamicCallFlowQuery<RecordType> extend
       input: {
         batchDeleteInput: this.generateCallFlowDeleteInputs(records)
       }
-    } as BatchCallFlowDeleteInput;
+    } as CallFlowDeleteBatchInput;
     const graphQLResponse =
-      await this.query<BatchCallFlowDeleteInput, BatchCallFlowDeleteResponse>(accessToken, variables);
+      await this.query<CallFlowDeleteBatchInput, BatchCallFlowDeleteResponse>(accessToken, variables);
 
     return {
-      alertMsg: graphQLResponse.errors.length === 0 ? "" : `Errors occurred processing ${this.queryName()} records`,
+      alertMsg: graphQLResponse.errors?.length === 0 ? "" : `Errors occurred processing ${this.queryName()} records`,
       errors: graphQLResponse.errors || [],
       failure: [],
-      hasError: graphQLResponse.errors.length > 0,
+      hasError: graphQLResponse.errors?.length > 0,
       success: records
     } as BatchResults<RecordType>;
   }

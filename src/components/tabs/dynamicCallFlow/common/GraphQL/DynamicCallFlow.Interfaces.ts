@@ -15,7 +15,7 @@ export enum ActionTypeEnum {
 // This copies the naming from shared-graph-api.  Some places in shared-graph-api uses this name, other areas call it GraphQLDeleteRequest.
 // sometimes input has an extra level of nesting, like in BatchCallFlowDeleteInput, others do not.  Should refactor shared-graph-api to
 // be consistent.  Will allow more consolidation of code on the client side.
-export interface BatchCallFlowDeleteInput {
+export interface CallFlowDeleteBatchInput {
   input: {
     batchDeleteInput: CallFlowDeleteInput[]
   }

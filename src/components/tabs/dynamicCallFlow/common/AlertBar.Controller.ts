@@ -39,8 +39,8 @@ export class AlertBarController {
     this._setAlertBarProps = setAlertBarProps;
   }
 
-  error(message: string, open = true, duration = 15000): void {
-    return this.setAlertBarPropsState(message, AlertSeverityTypeEnum.Error, open, duration);
+  error(message: string, duration = ALERT_BAR_15_SECOND_DURATION): void {
+    return this.setAlertBarPropsState(message, AlertSeverityTypeEnum.Error, duration, OPEN_ALERT_BAR);
   }
 
   graphQLError(errors: Array<GraphQLError>): void {
@@ -50,22 +50,22 @@ export class AlertBarController {
       message = message.concat("\n\t", error.message);
     });
 
-    return this.setAlertBarPropsState(message, AlertSeverityTypeEnum.Error, true);
+    return this.setAlertBarPropsState(message, AlertSeverityTypeEnum.Error, ALERT_BAR_15_SECOND_DURATION, OPEN_ALERT_BAR);
   }
 
-  warning(message: string, open = true, duration = 15000): void {
-    return this.setAlertBarPropsState(message, AlertSeverityTypeEnum.Warning, open, duration);
+  warning(message: string, duration = ALERT_BAR_10_SECOND_DURATION): void {
+    return this.setAlertBarPropsState(message, AlertSeverityTypeEnum.Warning, duration, OPEN_ALERT_BAR);
   }
 
-  info(message: string, open = true, duration = 15000): void {
-    return this.setAlertBarPropsState(message, AlertSeverityTypeEnum.Info, open, duration);
+  info(message: string, duration = ALERT_BAR_10_SECOND_DURATION): void {
+    return this.setAlertBarPropsState(message, AlertSeverityTypeEnum.Info, duration, OPEN_ALERT_BAR);
   }
 
-  success(message: string, open = true, duration = 15000): void {
-    return this.setAlertBarPropsState(message, AlertSeverityTypeEnum.Success, open, duration);
+  success(message: string, duration = ALERT_BAR_10_SECOND_DURATION): void {
+    return this.setAlertBarPropsState(message, AlertSeverityTypeEnum.Success, duration, OPEN_ALERT_BAR);
   }
 
-  private setAlertBarPropsState(message: string, severityType: AlertSeverityType, open: boolean, duration = 15000): void {
+  private setAlertBarPropsState(message: string, severityType: AlertSeverityType,  duration = 15000, open: boolean): void {
     this._setAlertBarProps({
       msg: message,
       severityType,

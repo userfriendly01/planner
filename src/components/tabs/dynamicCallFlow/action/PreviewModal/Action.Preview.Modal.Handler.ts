@@ -26,12 +26,14 @@ export class ActionPreviewModalHandler extends AbstractPreviewModalHandler<Actio
 
         return HANDLED_UNSUCCESSFULLY;
       } else {
-        if (HANDLED_SUCCESSFULLY === await this.deleteUnusedCallFlowConfigRecords(accessToken, newCallFlowConfig, oldCallFlowConfig)) {
-          // Remove the old call flow config records from the source records
-          this.dataGridController.addRecordsToSourceRecords(newCallFlowConfig);
-        } else {
-          return;
-        }
+        this.dataGridController.addRecordsToSourceRecords(newCallFlowConfig);
+        this.dataGridController.dataGridFilter.applyFilter();
+        // if (HANDLED_SUCCESSFULLY === await this.deleteUnusedCallFlowConfigRecords(accessToken, newCallFlowConfig, oldCallFlowConfig)) {
+        //   // Remove the old call flow config records from the source records
+        //   this.dataGridController.addRecordsToSourceRecords(newCallFlowConfig);
+        // } else {
+        //   return;
+        // }
 
       }
     }

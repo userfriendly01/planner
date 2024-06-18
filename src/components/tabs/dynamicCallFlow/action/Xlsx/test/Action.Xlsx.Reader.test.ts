@@ -1,6 +1,7 @@
 import * as xlsx from "xlsx";
 import { ActionXlsxReader } from "../Action.Xlsx.Reader";
 import { getXlsReaderResults } from "../../../common/Xlsx/test/Xlsx.Testing.Util";
+import { removeElementsFromArray } from "components/tabs/dynamicCallFlow/common/Util/Array.Util";
 
 function getActionXlsxReaderResults(fileName: string): xlsx.WorkSheet {
   return getXlsReaderResults(new ActionXlsxReader(), fileName);
@@ -22,4 +23,20 @@ describe("Action XLSX Reader", () => {
     expect(xlsxReaderResults).toBeDefined();
     expect(xlsxReaderResults.errors.length).toBe(2);
   });
+
+  // test("temp", () => {
+  //   const oldArray = [ { id: 1, name: "one"}, {id: 2, name: "two"}, {id: 3, name: "three"} ];
+  //   const newArray = [ { id: 2, name: "two"} ];
+  //
+  //   const result = removeElementsFromArray("id", newArray, oldArray);
+  //   expect(result.length).toBe(2);
+  // });
 });
+
+function elementExistsInArray(element: any, array: any[]): boolean {
+  return array.some((arrayElement) => arrayElement.id === element.id);
+}
+
+function elementDoesNotExistInArray(element: any, array: any[]): boolean {
+  return !elementExistsInArray(element, array);
+}

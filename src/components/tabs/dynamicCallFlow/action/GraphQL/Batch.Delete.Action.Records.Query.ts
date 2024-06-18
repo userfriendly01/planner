@@ -1,21 +1,8 @@
 import {
-  ActionRecordType,
-  Announcement,
-  Menu,
-  MenuOptions, Redirect
+  ActionRecordType
 } from "./Action.Interfaces";
-import {
-  AbstractGraphQLQuery
-} from "../../common/GraphQL/AbstractGraphQL.Query";
-import {
-  AbstractBatchRecordsQuery,
-  BatchResults
-} from "../../common/GraphQL/Abstract.BatchRecords.Query";
-import {
-  BatchCallFlowDeleteInput, BatchCallFlowDeleteResponse, CallFlowDeleteInput,
-  GraphQLInputVariables,
-  GraphQLResponse
-} from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
+import { BatchResults } from "../../common/GraphQL/Abstract.BatchRecords.Query";
+import { CallFlowDeleteInput } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
 import {
   AbstractBatchDeleteDynamicCallFlowQuery
 } from "components/tabs/dynamicCallFlow/common/GraphQL/Batch.Delete.DynamicCallFlow.Query";

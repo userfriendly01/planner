@@ -24,13 +24,20 @@ export function updateElementsInArray<ElementType>(elementKey: string, updatedEl
   });
 }
 
-export function removeElementFromArray<ElementType>(elementKey: string, elementToRemove: ElementType, targetElements: Array<ElementType>): Array<ElementType> {
-  return targetElements.filter( targetElement => targetElement[elementKey as keyof ElementType] !== elementToRemove[elementKey as keyof ElementType]);
+export function removeElementFromArray<ElementType>(elementUniqueKey: string, elementToRemove: ElementType, targetArray: Array<ElementType>): Array<ElementType> {
+  return targetArray.filter( targetElement => targetElement[elementUniqueKey as keyof ElementType] !== elementToRemove[elementUniqueKey as keyof ElementType]);
 }
 
-export function removeElementsFromArray<ElementType>(elementKey: string, elementsToRemove: Array<ElementType>, targetElements: Array<ElementType>): Array<ElementType> {
-  return targetElements.filter( targetElement => {
-    return elementsToRemove.findIndex( elementToRemove =>
-      elementToRemove[elementKey as keyof ElementType] === targetElement[elementKey as keyof ElementType]) > 0;
-  });
+export function removeElementsFromArray<ElementType>(elementUniqueKey: string, elementsToRemoveFromTargetArray: Array<ElementType>, targetArray: Array<ElementType>): Array<ElementType> {
+  // Filter the targetArray to keep targetElements that do not exist in the elementsToRemoveFromTargetArray
+  return targetArray.filter( targetElement => elementDoesNotExistInArray(elementUniqueKey, targetElement, elementsToRemoveFromTargetArray));
+}
+
+export function elementExistsInArray<ElementType>(elementUniqueKey: string, elementToCheckIfItExistsInArray: ElementType, targetArrayToCheck: Array<ElementType>): boolean {
+  return targetArrayToCheck.some(targetArrayElement =>
+    targetArrayElement[elementUniqueKey as keyof typeof targetArrayElement] === elementToCheckIfItExistsInArray[elementUniqueKey as keyof typeof elementToCheckIfItExistsInArray]);
+}
+
+function elementDoesNotExistInArray<ElementType>(elementUniqueKey: string, elementToCheckIfItDoesNotExistInArray: ElementType, targetArrayToCheck: any[]): boolean {
+  return !elementExistsInArray(elementUniqueKey, elementToCheckIfItDoesNotExistInArray, targetArrayToCheck);
 }

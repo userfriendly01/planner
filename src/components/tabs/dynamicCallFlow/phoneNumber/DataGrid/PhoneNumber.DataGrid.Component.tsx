@@ -45,6 +45,7 @@ import { PhoneNumberModalTypeEnum } from "../DynamicCallFlow.PhoneNumber.Contain
 import { PhoneNumberDataGridFilter } from "./PhoneNumber.DataGrid.Filter";
 import { PhoneNumberDataGridController } from "./PhoneNumber.DataGrid.Controller";
 import { CustomToast } from "components/CustomToast";
+import { ActionRecordType } from "dynamicCallFlow/GraphQL/Action.Interfaces";
 
 const DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_PAGE_NUMBER = "dynamicCallFlowPhoneNumberDataGridPageNumber";
 const DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_RECORDS_PER_PAGE = "dynamicCallFlowPhoneNumberDataGridRecordsPerPage";
@@ -58,6 +59,9 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
 
   // sourceRecords is the master list of all records.  It is used to update the data grid records and to update the field options.
   const [sourceRecords, setSourceRecords] = useState<Array<PhoneNumberRecordType>>([]);
+  const linkToSetSourceRecords = (sourceRecords: Array<ActionRecordType>): void => {
+    setSourceRecords(sourceRecords);
+  };
 
   // dataGridRecords is the list of records that are displayed in the data grid.  It contains the results of when a filter is applied to sourceRecords.
   const [dataGridRecords, setDataGridRecords] = useState<Array<PhoneNumberRecordType>>([]);
@@ -89,7 +93,7 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
 
   const dataGridApi = useGridApiRef<GridApiCommunity>();
   const dataGridController = useRef(new PhoneNumberDataGridController(dataGridApi, dataGridFilter,
-    setDataGridProps, alertBarController, setSourceRecords, setDataGridRecords, setSelectedRecord, setSelectedRecords));
+    setDataGridProps, alertBarController, setSourceRecords, setDataGridRecords, setSelectedRecord, setSelectedRecords, linkToSetSourceRecords));
 
   useEffect(() => {
     const loadDataGrid = async()=> {

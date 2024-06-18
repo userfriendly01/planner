@@ -163,7 +163,7 @@ export abstract class AbstractDataGridFilter<RecordType> implements DataGridFilt
 
       this._setDataGridRecords(filteredRecords);
     } else {
-      this._setDataGridRecords(this._sourceRecords);
+      this._setDataGridRecords([ ...this._sourceRecords ]);
     }
   }
 }

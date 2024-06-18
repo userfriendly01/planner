@@ -4,11 +4,7 @@ import {
   Menu,
   MenuOptions, Redirect
 } from "./Action.Interfaces";
-import {
-  AbstractBatchRecordsQuery, BatchGraphQLResponse,
-  BatchResults
-} from "../../common/GraphQL/Abstract.BatchRecords.Query";
-import { AbstractSingleRecordQuery } from "components/tabs/dynamicCallFlow/common/GraphQL/AbstractSingleRecord.Query";
+import { BatchResults } from "../../common/GraphQL/Abstract.BatchRecords.Query";
 import {
   AbstractGraphQLQuery
 } from "components/tabs/dynamicCallFlow/common/GraphQL/AbstractGraphQL.Query";
@@ -132,7 +128,7 @@ class BatchCreateActionRecordsQuery extends AbstractGraphQLQuery {
     const graphQlResponse: GraphQLResponse<CallFlowConfig> = await this.query<GraphQLInputVariables<CallFlowConfig>, CallFlowConfig>(accessToken, variables);
 
     return {
-      alertMsg: graphQlResponse.errors && graphQlResponse.errors.length === 0 ? "" : `Errors occurred processing ${this.queryName()} records`,
+      alertMsg: graphQlResponse.errors?.length === 0 ? "" : `Errors occurred processing ${this.queryName()} records`,
       errors: graphQlResponse.errors || [],
       failure: graphQlResponse.errors?.length > 0 ? actionRecords : [],
       hasError: graphQlResponse.errors?.length > 0,
