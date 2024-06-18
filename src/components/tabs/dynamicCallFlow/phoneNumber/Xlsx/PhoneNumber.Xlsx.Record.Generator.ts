@@ -1,10 +1,11 @@
 import { PhoneNumberXlsxRow } from "./PhoneNumber.Xlsx.Interfaces";
 import {
   BrandType,
+  CallFlowType,
   CallerType,
   ChannelType, LanguageOfferType,
   PhoneNumber,
-  PhoneNumberRecordType, UserDestinationType
+  PhoneNumberRecordType, PhoneNumberType, UserDestinationType
 } from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
 import { CctSharedCallFlowDb } from "../GraphQL/Legacy.PhoneNumber.Interfaces";
 
@@ -29,15 +30,16 @@ export class PhoneNumberXlsxRecordGenerator {
     const dynamicPhoneNumber: PhoneNumber = {} as PhoneNumber;
 
     dynamicPhoneNumber.phoneNumber = phoneNumberXlsxRow.dialedPhoneNumber;
+    dynamicPhoneNumber.phoneNumberType = phoneNumberXlsxRow.phoneNumberType as PhoneNumberType;
     dynamicPhoneNumber.brand = phoneNumberXlsxRow.brand as BrandType;
     dynamicPhoneNumber.callFlowTemplate = phoneNumberXlsxRow.callFlowTemplate;
+    dynamicPhoneNumber.callFlowType = phoneNumberXlsxRow.callFlowType as CallFlowType;
     dynamicPhoneNumber.callTypeDescription = phoneNumberXlsxRow.callTypeDescription;
     dynamicPhoneNumber.channel = phoneNumberXlsxRow.channel as ChannelType;
     dynamicPhoneNumber.dialedDescription = phoneNumberXlsxRow.dialedDescription;
     dynamicPhoneNumber.internetPlacement = phoneNumberXlsxRow.internetPlacement;
     dynamicPhoneNumber.lineOfBusiness = phoneNumberXlsxRow.lineOfBusiness;
     dynamicPhoneNumber.marketingChannel = phoneNumberXlsxRow.marketingChannel;
-    dynamicPhoneNumber.pkey = phoneNumberXlsxRow.dialedPhoneNumber;
     dynamicPhoneNumber.predictiveCaller = phoneNumberXlsxRow.predictiveCaller === "TRUE";
     dynamicPhoneNumber.rangeIndicator = phoneNumberXlsxRow.rangeIndicator;
     dynamicPhoneNumber.requestID = phoneNumberXlsxRow.requestID;

@@ -11,8 +11,9 @@ import { PhoneNumberPreviewModalColumnDef } from "./PhoneNumber.Preview.Modal.Co
 import "./PhoneNumber.Preview.Modal.css";
 import { Box } from "@mui/material";
 import { reconstructTableColumnDef } from "./PhoneNumber.Preview.Modal.Util";
-import { PhoneNumberRecordType } from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
-import { PhoneNumberRecordUtil } from "../GraphQL/PhoneNumber.Record.Util";
+import {
+  PhoneNumber, PhoneNumberRecordType
+} from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
 
 import {
   PhoneNumberModalType,
@@ -166,7 +167,7 @@ export const PhoneNumberPreviewModal = ({
             rows={modalRecords}
             columns={tableGridColumnDef}
             editMode="row"
-            getRowId={(row: PhoneNumberRecordType) => row.id}
+            getRowId={(row: PhoneNumberRecordType) => (row as PhoneNumber).phoneNumber ? (row as PhoneNumber).phoneNumber : row.pkey}
             loading = {loading}
             sx={{
               "& .MuiDataGrid-columnHeaderTitle": {

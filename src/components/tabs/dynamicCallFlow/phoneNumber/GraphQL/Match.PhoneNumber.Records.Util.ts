@@ -74,8 +74,7 @@ export function generateMatchingRecordMessages(searchList: Array<PhoneNumberReco
  * @return {Array<PhoneNumberRecordType>} - List of matching phone number records
  */
 export function findMatchingPhoneNumberRecords(searchList: Array<PhoneNumberRecordType>, matchCandidateList: Array<PhoneNumberRecordType>, matchFilter: MatchFilter<PhoneNumberRecordType>): Array<PhoneNumberRecordType> {
-  return matchCandidateList.map((matchCandidateRecord: PhoneNumberRecordType) =>
-    matchFound(searchList, matchCandidateRecord, matchFilter) ? matchCandidateRecord : undefined);
+  return matchCandidateList.filter((matchCandidateRecord: PhoneNumberRecordType) => matchFound(searchList, matchCandidateRecord, matchFilter));
 }
 
 /**
