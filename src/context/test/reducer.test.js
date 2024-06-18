@@ -625,17 +625,6 @@ describe("reducer", () => {
       });
     });
   });
-  describe("resettingSkills", () => {
-    test("should set resettingSkills to payload", () => {
-      const payload = true;
-      const action = {
-        type: "resettingSkills",
-        payload
-      };
-      const result = reducer(initialState, action);
-      expect(result.resettingSkills).toEqual(payload);
-    });
-  });
   describe("updateWorker", () => {
     test("should update a single existing worker in the workers context", () => {
       const state = { ...initialState };

@@ -90,7 +90,6 @@ export interface AppState {
     wfmOptions: any[],
     wfmErrors: any[]
   },
-  resettingSkills: false,
   userManagementTableFilters: {
     managerFilter: string,
     profileFilterArray: any[],

@@ -25,9 +25,7 @@ import { Dropdown } from "components/Dropdown";
 import { useAdminState } from "context/appContext";
 import React from "react";
 import { Modal } from "@mui/material";
-import { CircularProgress } from "@mui/material";
-import { LoadingMessage } from "components/app/App.Styles";
-import { theme } from "globals/theme";
+import { PageLoadSpinner } from "components/PageLoadSpinner";
 
 export const BulkChanges = () => {
 
@@ -66,8 +64,7 @@ export const BulkChanges = () => {
   if (isLoading && !showProcessingModal) {
     return (
       <BulkChangesWrapper>
-        <LoadingMessage>Loading Users, operations will be available once it completes</LoadingMessage>
-        <CircularProgress size={theme.circularProgressSize} />
+        <PageLoadSpinner message="Loading Users, operations will be available once it completes"/>
       </BulkChangesWrapper>
     );
   }

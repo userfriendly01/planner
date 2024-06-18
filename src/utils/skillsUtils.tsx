@@ -26,6 +26,7 @@ const SkillsDiv = styled.div`
 export const isSkillFormValid = () => {
   return false;
 };
+
 export const formatWorkerAttributeSkillsToHTML = (routingObj: any) => {
   if (routingObj && Array.isArray(routingObj.skills) && routingObj.skills.length > 0) {
     return routingObj.skills.map((skill: string, index: number) => {
@@ -83,11 +84,11 @@ export const getValidSkillsObject = (skillsObject?: UMTwilioAttributeSkills): UM
 
 export const formatSkillGroups = (skillsArray: Skill[]): any[] => {
   // filter through the skills that have skillGroups and group them by skillGroup
-  const skillsWithGroups = skillsArray.filter(s => s.ctmSkillGroups.length > 0);
+  const skillsWithGroups = skillsArray.filter(s => s.skillGroups.length > 0);
 
   const groups: any[] = [];
   skillsWithGroups.forEach(sk => {
-    sk.ctmSkillGroups.forEach(group => {
+    sk.skillGroups.forEach(group => {
       const groupInGroupsArray = groups.find(g => g.skillGroupId === group.skillGroupId);
       const skillCopy = JSON.parse(JSON.stringify(sk));
       delete skillCopy.ctmSkillGroups; // take off the skillGroups from this layer or we'll have neverending data

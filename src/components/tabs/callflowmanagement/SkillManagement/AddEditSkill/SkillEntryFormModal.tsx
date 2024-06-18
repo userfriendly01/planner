@@ -37,7 +37,7 @@ import {
 import {
   createSkill
 } from "services/skill";
-import { getConsolidatedSkills } from "services/skill";
+import { loadConsolidatedSkills } from "services/skill";
 import { logger } from "utils/logger";
 
 const ModalContainer = styled.div`
@@ -163,7 +163,7 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
         skFormDispatch({
           type: skillActions.RESET_FORM
         });
-        await getConsolidatedSkills(adminDispatch);
+        await loadConsolidatedSkills(adminDispatch);
         setTimeout(() => {
           closeModal();
           setSaveResult({
@@ -188,7 +188,7 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
         skFormDispatch({
           type: skillActions.RESET_FORM
         });
-        await getConsolidatedSkills(adminDispatch);
+        await loadConsolidatedSkills(adminDispatch);
 
       }
     } catch (error) {

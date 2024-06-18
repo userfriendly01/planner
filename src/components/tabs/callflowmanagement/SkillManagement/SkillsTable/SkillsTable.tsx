@@ -25,7 +25,7 @@ export const SkillsTable = (props: SkillsTableProps) => {
 
   const allSkillsSelected = tableState.selected.length === tableState.filteredList.length && tableState.filteredList.length > 0;
 
-  // field is the key in the skills object to use  (ie, ctmSkillGroups, or profiles)
+  // field is the key in the skills object to use  (ie, skillGroups, or profiles)
   const getItemsDisplayForSkill = (skill: Skill, field: string, id: string, displayName: string, displayId: boolean) => {
     const itemDivs: ReactElement[] = [];
     skill[field]?.map((p: any, index: number) => {

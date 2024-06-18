@@ -36,6 +36,7 @@ const paths = [
       "components/core/ModalOverlay",
       "components/core/NNumberInput",
       "components/core/NotificationModal",
+      "components/core/PageLoadSpinner",
       "components/core/Pagination",
       "components/core/PaperContainer",
       "components/core/PhoneNumberInput",

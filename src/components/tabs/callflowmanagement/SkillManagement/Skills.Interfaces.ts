@@ -130,7 +130,6 @@ export enum DayOfWeek {
   saturday = 7
 }
 export interface SkillState {
-  discrepancies: string[],
   skills: Skill[],
   skillGroups: SkillGroup[],
   applications: Application[],
@@ -168,17 +167,13 @@ export interface TwilioQueue {
   operatingUnitSid: null //this is missing from the Twilio docs
 }
 
-export interface TwilioSkill {
-  name: string,
-  multivalue: boolean,
-  minimum: number,
-  maximum: number
-}
-
 export interface TimeOfDay {
   timeOfDayId: number,
   openTime: string,
   closeTime: string,
+  vhTimeOfDayId: number,
+  vhOpenTime: string,
+  vhCloseTime: string,
 }
 
 export interface TimeOfDayRequestObject {
@@ -187,13 +182,28 @@ export interface TimeOfDayRequestObject {
   vhTimeOfDayId?: number
 }
 
+export interface TwilioSkill {
+  name: string,
+  multivalue: boolean,
+  minimum: number,
+  maximum: number
+}
+
 export interface CallflowSkill {
-  skillId: string,
+  skillName: string,
+  closedMessage: string,
+  flashMessage: string,
   applicationId: number,
-  vhThreshold: string,
+  vhThreshold: number,
   vhCallTarget: string,
-  timeOfDayIds: number[],
-  updatedBy: string
+  vhCallerId: string,
+  timeOfDays: TimeOfDay[],
+  updatedBy?: string
+}
+
+export interface CtmSkill {
+  skill_num: string,
+  profile_id: number
 }
 
 export interface CallFlowTimeOfDay {
@@ -203,21 +213,24 @@ export interface CallFlowTimeOfDay {
 }
 
 export interface UMSkill {
-  timeOfDayId: number,
-  dayId: number,
-  vhTimeOfDayId?: number
+  skillId: number,
+  taskQueueSid: string,
+  taskQueueName: string,
+  levels: any[]
 }
 
 export interface Skill {
-  [key: string]: any
-  ctmSkillId: number,
-  ctmSkillDisplayName: string,
-  ctmSkillGroups: SkillGroup[],
+  [key: string]: any,
+  discrepancies: string[],
   name: string,
+  levels: any[],
   profiles: any[],
+  taskQueueSid: string,
+  taskQueueName: string,
+  skillGroups: SkillGroup[],
+  applicationId: number,
   closedMessage: string,
   flashMessage: string,
-  levels: any[],
   timeOfDays: any[],
   vhCallTarget: string,
   vhCallerId: string,

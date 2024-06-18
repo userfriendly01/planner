@@ -9,6 +9,7 @@ import { UMUser } from "globals/interfaces";
 import React from "react";
 import { sortWorkersByFullName } from "utils/_sortUtils";
 import { filterWorkerSearch } from "utils/_filterUtils";
+import { PageLoadSpinner } from "components/PageLoadSpinner";
 
 export const TritonUsersViewWrapper: any = () => {
 
@@ -34,7 +35,10 @@ export const TritonUsersViewWrapper: any = () => {
     profileFilterArray,
     ouFilterArray
   } = state.userManagementTableFilters;
+  const { isLoading } = state.workerContext;
+  // const isLoading = true;
   const [ tableState, setTableState ] = React.useState(defaultTableState);
+  const [ resettingSkills, setResettingSkills ] = React.useState(false);
 
   React.useEffect(() => {
     let filteredList = state.workerContext.workers.slice().sort(sortWorkersByFullName);
@@ -63,12 +67,10 @@ export const TritonUsersViewWrapper: any = () => {
       });
     }
 
-
     //filter by deltaFilter
     if(tableState.deltaFilter){
       filteredList = filteredList.filter(worker => worker.skillsDifferent);
     }
-
 
     //filter by searchBy
     const trimmedSearch = tableState.searchBy.trim();
@@ -80,7 +82,6 @@ export const TritonUsersViewWrapper: any = () => {
     const startingUserIndex = tableState.pagination.pageNumber !== 1 ? ((tableState.pagination.pageNumber - 1) * tableState.pagination.usersPerPage) : 0;
     const endingUserIndex = tableState.pagination.pageNumber * tableState.pagination.usersPerPage - 1;
     filteredList = filteredList.slice(startingUserIndex, endingUserIndex + 1);
-
 
     setTableState({
       ...tableState,
@@ -98,19 +99,26 @@ export const TritonUsersViewWrapper: any = () => {
   return (
     <ManagementContainer>
       <TritonUsersHeader
+        setResettingSkills={setResettingSkills}
         tableState={tableState}
         setTableState={setTableState}
       />
-      <StyledPaper elevation={3}>
-        <TritonUserTable
-          tableState={tableState}
-          setTableState={setTableState}
-        />
-      </StyledPaper>
-      <Pagination
-        tableState={tableState}
-        setTableState={setTableState}
-      />
+      {isLoading ? <PageLoadSpinner/> :
+        <>
+          <StyledPaper elevation={3}>
+            <TritonUserTable
+              resettingSkills={resettingSkills}
+              tableState={tableState}
+              setTableState={setTableState}
+            />
+
+          </StyledPaper>
+          <Pagination
+            tableState={tableState}
+            setTableState={setTableState}
+          />
+        </>
+      }
     </ManagementContainer>
   );
 };

@@ -25,7 +25,7 @@ import {
 } from "./SkillGroup.Styles";
 import { Dropdown } from "components/Dropdown";
 import _ from "lodash";
-import { getConsolidatedSkills } from "services/skill";
+import { loadConsolidatedSkills } from "services/skill";
 import { logger } from "utils/logger";
 
 
@@ -137,7 +137,7 @@ export const SkillGroupInputContainer = (props: any) => {
         });
 
         // refresh skill state
-        await getConsolidatedSkills(dispatch);
+        await loadConsolidatedSkills(dispatch);
 
         setTimeout(() => {
           handleCloseConfirmation();
@@ -226,7 +226,7 @@ export const SkillGroupInputContainer = (props: any) => {
           status: ModalOverlayStatuses.SUCCESS
         });
         // refresh skill state
-        await getConsolidatedSkills(dispatch);
+        await loadConsolidatedSkills(dispatch);
         setTimeout(() => {
           handleCloseConfirmation();
           setAction(null);
@@ -277,7 +277,7 @@ export const SkillGroupInputContainer = (props: any) => {
         });
 
         // refresh skill state
-        await getConsolidatedSkills(dispatch);
+        await loadConsolidatedSkills (dispatch);
 
         setTimeout(() => {
           handleCloseConfirmation();

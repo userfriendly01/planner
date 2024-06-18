@@ -10,7 +10,7 @@ import {
 import { listUMManagers } from "services/manager";
 import { listUMOffices } from "services/office";
 import { listUMUsers } from "services/user";
-import { getConsolidatedSkills } from "services/skill";
+import { loadConsolidatedSkills } from "services/skill";
 import { getCalabrioWfmOptions } from "utils/calabrioUtils";
 import { logger } from "utils/logger";
 import { myAxios } from "utils/myAxios";
@@ -112,7 +112,7 @@ export const runTritonAdminStartup = (dispatch:  (action: Action) => void): Prom
     listUMManagers(dispatch),
     listUMOffices(dispatch),
     getProfiles(dispatch),
-    getConsolidatedSkills(dispatch),
+    loadConsolidatedSkills(dispatch),
     getCalabrioUsers(dispatch),
     getCalabrioOrg(dispatch),
     getCalabrioRoles(dispatch),

@@ -8,7 +8,6 @@ import {
   formatCalabrioGroups,
   formatCalabrioRoles
 } from "utils/calabrioUtils";
-import { formatSkillGroups } from "utils/skillsUtils";
 
 export const initialState: AppState = {
   managerContext: {
@@ -39,7 +38,6 @@ export const initialState: AppState = {
     wfmOptions: [],
     wfmErrors: []
   },
-  resettingSkills: false,
   userManagementTableFilters: {
     managerFilter: null,
     profileFilterArray: [],
@@ -220,11 +218,6 @@ export const reducer = (state: AppState, action: Action): AppState => {
           ...state.userContext,
           ...action.payload
         }
-      };
-    case "resettingSkills":
-      return {
-        ...state,
-        resettingSkills: action.payload
       };
     case "updateWorker":
       return {

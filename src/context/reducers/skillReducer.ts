@@ -3,9 +3,13 @@ import { Action } from "globals/interfaces";
 import {
   Application, DayOfWeek, SkillState, Skill, SkillGroup, TimeOfDay, TwilioQueue, SkillFormState
 } from "callflowmanagement/Skills.Interfaces";
+import { formatSkillGroups } from "utils/skillsUtils";
 
 export const skillActions = {
   RESET_FORM: "RESET_FORM",
+  LOAD_SKILLS: "LOAD_SKILLS",
+  LOAD_SKILL_GROUPS: "LOAD_SKILL_GROUPS",
+  LOAD_SKILL_OPTIONS: "LOAD_SKILL_OPTIONS",
   SET_SKILL_FRIENDLY_NAME: "SET_SKILL_FRIENDLY_NAME",
   SET_SKILL_NUM: "SET_SKILL_NUM",
   SET_TASK_QUEUE: "SET_TASK_QUEUE",
@@ -20,7 +24,6 @@ export const skillActions = {
 };
 
 export const initialSkillState: SkillState = {
-  discrepancies: [],
   skills: [],
   skillGroups: [],
   applications: [],
@@ -79,47 +82,85 @@ export const skillReducer = (state: SkillFormState, action: Action): any => {
   }
 };
 
-export const skillFormReducer = (state: SkillFormState, action: Action): SkillFormState => {
+export const skillFormReducer = (state: SkillState, action: Action): SkillState => {
   switch (action.type) {
+    case skillActions.LOAD_SKILLS:
+      return {
+        ...state,
+        skills: action.payload
+      };
+    case skillActions.LOAD_SKILL_GROUPS:
+      return {
+        ...state,
+        skillGroups: formatSkillGroups(action.payload)
+      };
+    case skillActions.LOAD_SKILL_OPTIONS:
+      return {
+        ...state,
+        applications: action.payload.applications,
+        timeOfDays: action.payload.timeOfDays,
+        taskQueues: action.payload.taskQueues
+      };
     case skillActions.RESET_FORM: {
       return {
-        ...initialSkillFormState
+        ...state,
+        skillForm: {
+          ...initialSkillFormState
+        }
       };
     }
     case skillActions.SET_SKILL_FRIENDLY_NAME: {
       return {
         ...state,
-        skillFriendlyName: action.payload
+        skillForm: {
+          ...state.skillForm,
+          skillFriendlyName: action.payload
+        }
       };
     }
     case skillActions.SET_SKILL_NUM: {
       return {
         ...state,
-        skillNum: action.payload
+        skillForm: {
+          ...state.skillForm,
+          skillNum: action.payload
+        }
       };
     }
     case skillActions.SET_TASK_QUEUE: {
       return {
         ...state,
-        taskQueueSid: action.payload
+        skillForm: {
+          ...state.skillForm,
+          taskQueueSid: action.payload
+        }
       };
     }
     case skillActions.SET_PROFILE_IDS: {
       return {
         ...state,
-        profileIds: action.payload
+        skillForm: {
+          ...state.skillForm,
+          profileIds: action.payload
+        }
       };
     }
     case skillActions.SET_VH_CALL_TARGET: {
       return {
         ...state,
-        vhCallTarget: action.payload
+        skillForm: {
+          ...state.skillForm,
+          vhCallTarget: action.payload
+        }
       };
     }
     case skillActions.SET_VH_THRESHOLD: {
       return {
         ...state,
-        vhThreshold: action.payload
+        skillForm: {
+          ...state.skillForm,
+          vhThreshold: action.payload
+        }
       };
     }
     case skillActions.SET_TIME_OF_DAYS: {
@@ -131,13 +172,19 @@ export const skillFormReducer = (state: SkillFormState, action: Action): SkillFo
     case skillActions.SET_APPLICATION_ID: {
       return {
         ...state,
-        applicationId: action.payload
+        skillForm: {
+          ...state.skillForm,
+          applicationId: action.payload
+        }
       };
     }
     case skillActions.SET_ENABLE_VIRTUAL_HOLD: {
       return {
         ...state,
-        enableVirtualHold: action.payload
+        skillForm: {
+          ...state.skillForm,
+          enableVirtualHold: action.payload
+        }
       };
     }
     // case skillActions.SET_UPDATE_SKILL:{

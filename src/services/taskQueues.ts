@@ -3,13 +3,13 @@ import { TwilioQueue } from "callflowmanagement/Skills.Interfaces";
 import { myAxios } from "utils/myAxios";
 
 export const getTaskQueues = (): Promise<any> =>
-  myAxios.get(apiPaths.TASK_QUEUES).then(response => response.data);
+  myAxios.get(apiPaths.TASK_QUEUES);
 
 export const createTaskQueue = (taskQueue: TwilioQueue): Promise<any> =>
-  myAxios.post(apiPaths.TASK_QUEUES, taskQueue).then(response => response.data);
+  myAxios.post(apiPaths.TASK_QUEUES, taskQueue);
 
 export const updateTaskQueue = (taskQueueSid: string, updatedTaskQueue: Partial<TwilioQueue>): Promise<any> =>
-  myAxios.put(`${apiPaths.TASK_QUEUES}/${taskQueueSid}`, updatedTaskQueue).then(response => response.data);
+  myAxios.put(`${apiPaths.TASK_QUEUES}/${taskQueueSid}`, updatedTaskQueue);
 
 export const deleteTaskQueue = (taskQueueSid: string): Promise<any> =>
-  myAxios.delete(`${apiPaths.TASK_QUEUES}/${taskQueueSid}`).then(response => response.data);
+  myAxios.delete(`${apiPaths.TASK_QUEUES}/${taskQueueSid}`);

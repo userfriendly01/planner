@@ -12,8 +12,8 @@ import {
   userFormReducer
 } from "context/userFormReducer";
 import {
-  initialSkillFormState,
-  skillFormReducer
+  initialSkillState,
+  skillReducer
 } from "context/reducers/skillReducer";
 import {
   Action,
@@ -95,7 +95,7 @@ interface SkillStateProviderProps {
   children: ReactElement
 }
 const SkillStateProvider = (props: SkillStateProviderProps) => {
-  const [state, dispatch] = React.useReducer(skillFormReducer, initialSkillFormState);
+  const [state, dispatch] = React.useReducer(skillReducer, initialSkillState);
   return (
     <SkillStateContext.Provider value={state}>
       <SkillDispatchContext.Provider value={dispatch}>
