@@ -15,8 +15,10 @@ import { ActionTypeEnum } from "components/tabs/dynamicCallFlow/common/GraphQL/D
 export class ActionXlsxRecordGenerator {
   public generateActionRecords(actionXlsxRows: Array<ActionXlsRowType>): Array<ActionRecordType> {
     const actionRecords: Array<ActionRecordType> = [];
+    let dataGridId = 0;
 
     actionXlsxRows.forEach((actionXlsxRow: ActionXlsRowType) => {
+      dataGridId++;
       let actionRecord: ActionRecordType;
 
       switch (actionXlsxRow.actionType) {
@@ -38,7 +40,7 @@ export class ActionXlsxRecordGenerator {
       }
 
       if (actionRecord) {
-        delete actionRecord.id;
+        actionRecord.id = dataGridId;
         actionRecord.actionId = actionXlsxRow.actionId;
         actionRecord.actionType = actionXlsxRow.actionType;
         actionRecord.callFlowName = actionXlsxRow.callFlowName;

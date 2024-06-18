@@ -22,14 +22,4 @@ describe("Action XLSX Reader", () => {
     expect(xlsxReaderResults).toBeDefined();
     expect(xlsxReaderResults.errors.length).toBe(2);
   });
-  test("temp", () => {
-    const newCallFlowConfigRecords = [ { id: 1 } ];
-    const oldCallFlowConfigRecords = [ { id: 1 }, { id: 2 }, { id: 3 } ];
-    // const oldCallFlowConfigRecordsToDelete =
-    //   oldCallFlowConfigRecords.filter(oldCallFlowConfigRecord =>
-    //     !newCallFlowConfigRecords.find(newCallFlowConfigRecord => oldCallFlowConfigRecord.id === newCallFlowConfigRecord.id));
-    const oldCallFlowConfigRecordsToDelete =
-      oldCallFlowConfigRecords.filter(oldCallFlowConfigRecord => !newCallFlowConfigRecords.find(newCallFlowConfigRecord => oldCallFlowConfigRecord.id === newCallFlowConfigRecord.id));
-    expect(oldCallFlowConfigRecordsToDelete.length).toBe(2);
-  });
 });

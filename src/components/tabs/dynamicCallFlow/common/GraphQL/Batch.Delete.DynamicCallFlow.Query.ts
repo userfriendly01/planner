@@ -16,7 +16,7 @@ export abstract class AbstractBatchDeleteDynamicCallFlowQuery<RecordType> extend
       mutation ${this.queryName()}($input: PhoneNumberDeleteBatchInput!) {
         ${this.queryName()}(input: $input) {
           items {
-              phoneNumber
+              id
           }
         }
       }`;

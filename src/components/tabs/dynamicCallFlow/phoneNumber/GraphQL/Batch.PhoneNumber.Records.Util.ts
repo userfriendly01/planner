@@ -3,11 +3,7 @@ import { batchCreateLegacyPhoneNumberRecords } from "./Query/Batch.Create.Legacy
 import {
   BatchRecordQuery, BatchResults
 } from "../../common/GraphQL/Abstract.BatchRecords.Query";
-import { batchUpdateLegacyPhoneNumberRecords } from "./Query/Batch.Update.LegacyPhoneNumber.Records.Query";
-import {
-  batchCreateDynamicPhoneNumberRecords,
-  batchUpdateDynamicPhoneNumberRecordsQuery
-} from "./Query/Batch.Create.Dynamic.PhoneNumber.Records.Query";
+import { batchCreateDynamicPhoneNumberRecords } from "./Query/Batch.Create.Dynamic.PhoneNumber.Records.Query";
 import { PhoneNumberRecordUtil } from "./PhoneNumber.Record.Util";
 import { batchDeleteLegacyPhoneNumberRecords } from "./Query/Batch.Delete.Legacy.PhoneNumber.Records.Query";
 
@@ -75,13 +71,18 @@ function combineLegacyAndDynamicBatchResults(legacyBatchResults: BatchResults<Ph
   return legacyBatchResults;
 }
 
+/**
+ * BatchPhoneNumberRecord class is used to create and delete phone number records in a batch query.  None of the functions above are exported.
+ */
 export class BatchPhoneNumberRecord {
+  /**
+   * There is no update as you cannot batch update records in DynamoDB on AWS.  Create will create or if the record already exists it will be replaced.
+   *
+   * @param {string} accessToken
+   * @param {Array<PhoneNumberRecordType>} phoneNumberRecords
+   */
   static async create(accessToken: string, phoneNumberRecords: Array<PhoneNumberRecordType>): Promise<BatchResults<PhoneNumberRecordType>> {
     return await batchPhoneNumberRecords(accessToken, phoneNumberRecords, batchCreateLegacyPhoneNumberRecords, batchCreateDynamicPhoneNumberRecords);
-  }
-
-  static async update(accessToken: string, phoneNumberRecords: Array<PhoneNumberRecordType>): Promise<BatchResults<PhoneNumberRecordType>> {
-    return await batchPhoneNumberRecords(accessToken, phoneNumberRecords, batchUpdateLegacyPhoneNumberRecords, batchUpdateDynamicPhoneNumberRecordsQuery);
   }
 
   static async delete(accessToken: string, phoneNumberRecords: Array<PhoneNumberRecordType>): Promise<BatchResults<PhoneNumberRecordType>> {

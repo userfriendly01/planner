@@ -1,15 +1,13 @@
 import { CctSharedCallFlowDb } from "./Legacy.PhoneNumber.Interfaces";
 
-import { ActionType, GraphQLRecord } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
+import {
+  ActionType, GraphQLRecord
+} from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
 
 //This is interface name matches what is defined in GraphQL schema
 export interface CallFlowDeleteInput {
     id: string;
     actionType?: ActionType
-}
-
-export interface CallFlowDeleteResponse {
-    id: string;
 }
 
 export type PhoneNumberRecordType = CctSharedCallFlowDb | PhoneNumber;

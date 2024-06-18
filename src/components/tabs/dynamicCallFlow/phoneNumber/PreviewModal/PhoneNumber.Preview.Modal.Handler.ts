@@ -1,6 +1,4 @@
-import {
-  CallFlowDeleteResponse, PhoneNumberRecordType
-} from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { PhoneNumberRecordType } from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
 import {
   generateMatchingRecordMessages,
   pkeyAndEmployeeIdFilter
@@ -8,10 +6,12 @@ import {
 import { BatchPhoneNumberRecord } from "../GraphQL/Batch.PhoneNumber.Records.Util";
 import { deleteOppositeRows } from "../DataGrid/PhoneNumber.DataGrid.Util";
 import {
-  AbstractPreviewModalHandler, DataGridAction, HANDLED_SUCCESSFULLY, HANDLED_UNSUCCESSFULLY
+  AbstractPreviewModalHandler, HANDLED_SUCCESSFULLY, HANDLED_UNSUCCESSFULLY
 } from "../../common/Preview/Abstract.Preview.Modal.Handler";
 
 export class PhoneNumberPreviewModalHandler extends AbstractPreviewModalHandler<PhoneNumberRecordType> {
+  //TODO: May need to check for matching records of the same record type since moving a phone number from legacy to dynamic is ok,
+  // but creating a dynamic phone number record when a dynamic record already exists for that phone number is not ok.
   private hasMatchingRecords(recordsToMatchOn: Array<PhoneNumberRecordType>): boolean {
     const matchingRecordMessages = generateMatchingRecordMessages(this.dataGridController.sourceRecords, recordsToMatchOn, pkeyAndEmployeeIdFilter);
 
@@ -62,6 +62,7 @@ export class PhoneNumberPreviewModalHandler extends AbstractPreviewModalHandler<
     this.dataGridController.removeRecordsFromSourceRecords(recordsToDelete);
     this.dataGridController.setDataGridPropsState({ fetching: false });
     this.dataGridController.alertBarController.success("Phone Numbers successfully deleted.");
+    this.dataGridController.dataGridFilter.applyFilter();
 
     return HANDLED_SUCCESSFULLY;
   }
