@@ -80,7 +80,7 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
   } = props;
 
   const skillState = useSkillState();
-  const skFormDispatch = useSkillDispatch();
+  const skillDispatch = useSkillDispatch();
   const adminDispatch = useAdminDispatch();
 
   const state = useAdminState();
@@ -160,10 +160,10 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
           message: "Request Successfully Processed",
           status: ModalOverlayStatuses.SUCCESS
         });
-        skFormDispatch({
+        skillDispatch({
           type: skillActions.RESET_FORM
         });
-        await loadConsolidatedSkills(adminDispatch);
+        await loadConsolidatedSkills(skillDispatch);
         setTimeout(() => {
           closeModal();
           setSaveResult({
@@ -185,10 +185,10 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
           message: response.data.result.message,
           status: ModalOverlayStatuses.PARTIAL_FAIL
         });
-        skFormDispatch({
+        skillDispatch({
           type: skillActions.RESET_FORM
         });
-        await loadConsolidatedSkills(adminDispatch);
+        await loadConsolidatedSkills(skillDispatch);
 
       }
     } catch (error) {
@@ -233,7 +233,7 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
             style={{ width: "200px" }}
             onClick={() => {
               closeModal();
-              skFormDispatch({
+              skillDispatch({
                 type: skillActions.RESET_FORM
               });
             }} >Cancel</StyledButton>

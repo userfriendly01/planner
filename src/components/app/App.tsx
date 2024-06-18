@@ -16,7 +16,8 @@ import NotificationModal from "components/NotificationModal";
 import { PageLoadSpinner } from "components/PageLoadSpinner";
 import { Overlay } from "components/PageLoadSpinner.Styles";
 import {
-  useAdminDispatch, useAdminState
+  useAdminDispatch, useAdminState,
+  useSkillDispatch
 } from "context/appContext";
 import { env } from "globals/index";
 import { getRoutes } from "globals/routes";
@@ -44,6 +45,7 @@ const App = () => {
   });
   const [showModal, setShowModal] = useState(false);
   const dispatch = useAdminDispatch();
+  const skillDispatch = useSkillDispatch();
   const state = useAdminState();
 
   useEffect(() => {
@@ -74,7 +76,7 @@ const App = () => {
           });
 
           await Promise.all(
-            permissions.map(({ startup }) => startup.function(dispatch))
+            permissions.map(({ startup }) => startup.function(dispatch, skillDispatch))
           );
 
           setLoadResult({

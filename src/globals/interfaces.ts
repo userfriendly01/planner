@@ -106,7 +106,7 @@ export interface ADGroupPermission {
     roles: ADGroupRole[];
     startup: {
       name: string;
-      function: (dispatch: any) => Promise<any>;
+      function: (dispatch: any, skillDispatch?: any) => Promise<any>;
     }
     description: string;
     authenticationProfile:  AuthenticationProfile

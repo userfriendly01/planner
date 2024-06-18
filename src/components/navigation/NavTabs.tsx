@@ -6,13 +6,18 @@ import {
   StyledTabContainer
 } from "./NavTabs.Styles";
 import React from "react";
-import { useAdminState } from "context/appContext";
+import {
+  useAdminState, useSkillState
+} from "context/appContext";
 import { useNavigate } from "react-router-dom";
 import { logger } from "utils/logger";
 
 const NavTabs = () => {
   const state = useAdminState();
   const { permissions } = state.userContext;
+
+  logger.log("STATE", state);
+  logger.log("SKILL STATE", useSkillState());
 
   const navigate = useNavigate();
 
@@ -36,8 +41,6 @@ const NavTabs = () => {
       };
     });
   };
-
-  logger.log("STATE", state);
 
   React.useEffect(() => {
     const allowedTabs: any[] = [];

@@ -12,7 +12,7 @@ import {
 } from "context/appContext";
 import {
   skillActions,
-  initialSkillFormState
+  initialSkillState
 } from "context/reducers/skillReducer";
 import {
   FlexRow, FlexColumn
@@ -242,11 +242,11 @@ export const CallflowSkillForm = () => {
               });
               skFormDispatch({
                 type: skillActions.SET_VH_CALL_TARGET,
-                payload: initialSkillFormState.vhCallTarget
+                payload: initialSkillState.skillForm.vhCallTarget
               });
               skFormDispatch({
                 type: skillActions.SET_VH_THRESHOLD,
-                payload: initialSkillFormState.vhThreshold
+                payload: initialSkillState.skillForm.vhThreshold
               });
               // skFormDispatch({
               //   type: skillActions.SET_VH_TIME_OF_DAYS,

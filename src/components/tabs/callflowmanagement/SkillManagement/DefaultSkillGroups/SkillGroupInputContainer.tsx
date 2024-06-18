@@ -1,8 +1,8 @@
 import React from "react";
 import {
   useAdminState,
-  useAdminDispatch,
-  useSkillState
+  useSkillState,
+  useSkillDispatch
 } from "context/appContext";
 import { TextField } from "@mui/material";
 import {
@@ -27,6 +27,8 @@ import { Dropdown } from "components/Dropdown";
 import _ from "lodash";
 import { loadConsolidatedSkills } from "services/skill";
 import { logger } from "utils/logger";
+import { escapeQuotes } from "utils";
+
 
 
 export const SkillGroupInputContainer = (props: any) => {
@@ -46,13 +48,14 @@ export const SkillGroupInputContainer = (props: any) => {
 
   const state = useAdminState();
   const skillState = useSkillState();
-  const dispatch = useAdminDispatch();
+  const skillDispatch = useSkillDispatch();
   const skillGroups = skillState.skillGroups.slice();
   const skills = skillState.skills.slice();
   const { nNumber } = state.userContext;
 
   const getSkillGroupOptions = () => {
     return skillGroups.map((skg: any) => {
+      console.log("WTF", skillGroups);
       return {
         label: skg.skillGroupNme,
         value: skg.skillGroupId,
@@ -120,7 +123,7 @@ export const SkillGroupInputContainer = (props: any) => {
         const skillIds = tableState.selected.map((skill: Skill) => skill.ctmSkillId);
 
         const requestBody: AddEditSkillGroupBody = {
-          skill_group_nme: skillGroupName.trim(),
+          skill_group_nme: escapeQuotes(skillGroupName.trim()),
           skillIds
         };
         await addSkillGroup(requestBody);
@@ -137,7 +140,7 @@ export const SkillGroupInputContainer = (props: any) => {
         });
 
         // refresh skill state
-        await loadConsolidatedSkills(dispatch);
+        await loadConsolidatedSkills(skillDispatch);
 
         setTimeout(() => {
           handleCloseConfirmation();
@@ -179,7 +182,7 @@ export const SkillGroupInputContainer = (props: any) => {
   const handleEditSkillGroup = () => {
 
     const requestBody: AddEditSkillGroupBody = {
-      skill_group_nme: skillGroupName.trim()
+      skill_group_nme: escapeQuotes(skillGroupName.trim())
     };
     let editConfirmationText;
 
@@ -226,7 +229,7 @@ export const SkillGroupInputContainer = (props: any) => {
           status: ModalOverlayStatuses.SUCCESS
         });
         // refresh skill state
-        await loadConsolidatedSkills(dispatch);
+        await loadConsolidatedSkills(skillDispatch);
         setTimeout(() => {
           handleCloseConfirmation();
           setAction(null);
@@ -277,7 +280,7 @@ export const SkillGroupInputContainer = (props: any) => {
         });
 
         // refresh skill state
-        await loadConsolidatedSkills (dispatch);
+        await loadConsolidatedSkills (skillDispatch);
 
         setTimeout(() => {
           handleCloseConfirmation();
@@ -339,7 +342,7 @@ export const SkillGroupInputContainer = (props: any) => {
             setSkillGroupName(val.label);
             setTableState({
               ...tableState,
-              selected: skills.filter((sk: any) => sk.ctmSkillGroups.find((skg: any) => skg.skillGroupId === val.value))
+              selected: skills.filter((sk: any) => sk.skillGroups?.find((skg: any) => skg.skillGroupId === val.value))
             });
           }}
           styles={{
@@ -369,7 +372,9 @@ export const SkillGroupInputContainer = (props: any) => {
           (action === ActionTypes.DELETE && !skillGroupToEditDelete) ||
           (action === ActionTypes.EDIT && !skillGroupToEditDelete)
         }
-      >{action.label} Skill Group</UserFormButton>
+      >
+        {action.label} Skill Group
+      </UserFormButton>
       <div style={{ marginTop: "5px" }}>
         {generateBottomMsg()}
       </div>

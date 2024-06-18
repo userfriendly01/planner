@@ -55,7 +55,7 @@ export const loadSkillOptions = async (dispatch: (action: Action) => void, callb
   ] = await Promise.all([ timeOfDaysPromise, applicationsPromise, taskQueuesPromise]);
 
   dispatch({
-    type: "loadSkillGroups",
+    type: "LOAD_SKILL_OPTIONS",
     payload: {
       applications: applicationsResponse.data,
       timeOfDays: timeOfDaysResponse.data,
@@ -85,38 +85,58 @@ export const loadConsolidatedSkills = async (dispatch: (action: Action) => void)
     let callflowSkills = callflowSkillsResponse.data.slice();
 
     contactManagerSkills.map((ctmSkill: CtmSkill) => {
-      let skill: Partial<Skill> = {
-        discrepancies: [],
-        name: ctmSkill.skill_num,
-        profiles: [ctmSkill.profile_id]
-      //Current CTM get doesnt send the Task Queue Sid - going to plug this in when we migrate to graph
-      };
+      const dupSkill = consolidatedSkills.find(sk => sk.name === ctmSkill.skill_num);
+      if(dupSkill){
+        const needsProfile = !dupSkill.profiles.includes(ctmSkill.profile_id);
+        const needsSkillGroup = ctmSkill.skill_group_id && !dupSkill.skillGroups.some(sg => sg.skillGroupId === ctmSkill.skill_group_id);
 
-      const matchingCallFlowSkill = callflowSkills.find((cfSkill: CallflowSkill) => cfSkill.skillName === ctmSkill.skill_num);
-      const matchingTrSkill = taskRouterSkills.find((trSkill: TwilioSkill) => trSkill.name === ctmSkill.skill_num);
+        needsProfile && dupSkill.profiles.push(ctmSkill.profile_id);
+        needsSkillGroup && dupSkill.skillGroups.push({
+          skillGroupId: ctmSkill.skill_group_id,
+          skillGroupNme: ctmSkill.skill_group_nme,
+          skills: []
+        });
 
-      if(matchingCallFlowSkill){
-        skill = {
-          ...skill,
-          ...matchingCallFlowSkill
+      } else {
+        let skill: Partial<Skill> = {
+          discrepancies: [],
+          name: ctmSkill.skill_num,
+          ctmSkillId: ctmSkill.skill_id,
+          profiles: [ctmSkill.profile_id],
+          skillGroups: ctmSkill.skill_group_id ? [{
+            skillGroupId: ctmSkill.skill_group_id,
+            skillGroupNme: ctmSkill.skill_group_nme,
+            skills: []
+          }] : []
+          //Current CTM get doesnt send the Task Queue Sid - going to plug this in when we migrate to graph
         };
-        callflowSkills = callflowSkills.filter(cfSkill => cfSkill.skillName !== skill.name);
-      } else {
-        skill.discrepancies.push(`${skill.name} is not in the Legacy Callflow Database`);
-      }
 
-      if(matchingTrSkill){
-        const levels = [];
-        for (let i = matchingTrSkill.minimum; i <= matchingTrSkill.maximum; i++) {
-          levels.push(i);
+        const matchingCallFlowSkill = callflowSkills.find((cfSkill: CallflowSkill) => cfSkill.skillName === ctmSkill.skill_num);
+        const matchingTrSkill = taskRouterSkills.find((trSkill: TwilioSkill) => trSkill.name === ctmSkill.skill_num);
+
+        if(matchingCallFlowSkill){
+          skill = {
+            ...skill,
+            ...matchingCallFlowSkill
+          };
+          callflowSkills = callflowSkills.filter(cfSkill => cfSkill.skillName !== skill.name);
+        } else {
+          skill.discrepancies.push(`${skill.name} is not in the Legacy Callflow Database`);
         }
-        skill.levels = levels;
-        taskRouterSkills = taskRouterSkills.filter(trSkill => trSkill.name !== skill.name);
-      } else {
-        skill.discrepancies.push(`${skill.name} is not in the Flex Console`);
-      }
 
-      consolidatedSkills.push(skill);
+        if(matchingTrSkill){
+          const levels = [];
+          for (let i = matchingTrSkill.minimum; i <= matchingTrSkill.maximum; i++) {
+            levels.push(i);
+          }
+          skill.levels = levels;
+          taskRouterSkills = taskRouterSkills.filter(trSkill => trSkill.name !== skill.name);
+        } else {
+          skill.discrepancies.push(`${skill.name} is not in the Flex Console`);
+        }
+
+        consolidatedSkills.push(skill);
+      }
     });
 
     taskRouterSkills.map((trSkill: TwilioSkill) => {
@@ -151,24 +171,26 @@ export const loadConsolidatedSkills = async (dispatch: (action: Action) => void)
           `${cfSkill.skillName} is not in the Contact Manager Database`,
           `${cfSkill.skillName} is not in the Flex Console`
         ],
+        name: cfSkill.skillName,
         ...cfSkill
       };
+      delete skill.skillName;
       consolidatedSkills.push(skill);
     });
 
 
-
+    console.log("Faith - contactManagerSkills", contactManagerSkills);
     console.log("Faith - callflowSkills after", callflowSkills);
     console.log("Faith - taskRouterSkills after", taskRouterSkills);
     console.log("Faith - consolidatedSkills", consolidatedSkills);
 
 
     dispatch({
-      type: "loadSkills",
+      type: "LOAD_SKILLS",
       payload: consolidatedSkills
     });
     dispatch({
-      type: "loadSkillGroups",
+      type: "LOAD_SKILL_GROUPS",
       payload: consolidatedSkills
     });
 

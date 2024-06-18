@@ -84,14 +84,14 @@ export const getValidSkillsObject = (skillsObject?: UMTwilioAttributeSkills): UM
 
 export const formatSkillGroups = (skillsArray: Skill[]): any[] => {
   // filter through the skills that have skillGroups and group them by skillGroup
-  const skillsWithGroups = skillsArray.filter(s => s.skillGroups.length > 0);
+  const skillsWithGroups = skillsArray.filter(s => s.skillGroups?.length > 0);
 
   const groups: any[] = [];
   skillsWithGroups.forEach(sk => {
     sk.skillGroups.forEach(group => {
       const groupInGroupsArray = groups.find(g => g.skillGroupId === group.skillGroupId);
       const skillCopy = JSON.parse(JSON.stringify(sk));
-      delete skillCopy.ctmSkillGroups; // take off the skillGroups from this layer or we'll have neverending data
+      delete skillCopy.skillGroups; // take off the skillGroups from this layer or we'll have neverending data
       if (groupInGroupsArray) {
         groupInGroupsArray.skills.push(skillCopy);
       } else {

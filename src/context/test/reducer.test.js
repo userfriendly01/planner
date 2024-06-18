@@ -548,7 +548,7 @@ describe("reducer", () => {
           name: "lscOBDialer1",
           ctmSkillId: 1,
           ctmSkillDisplayName: "lsc OB Dialer 1",
-          ctmSkillGroups: [{
+          skillGroups: [{
             skillGroupId: 1,
             skillGroupNme: "skillgroup1",
             skills: [{
@@ -575,7 +575,7 @@ describe("reducer", () => {
           name: "aisgL1",
           ctmSkillId: 2,
           ctmSkillDisplayName: "aisg L1",
-          ctmSkillGroups: [{
+          skillGroups: [{
             skillGroupId: 1,
             skillGroupNme: "skillgroup1",
             skills: [{

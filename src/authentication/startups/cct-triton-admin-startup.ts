@@ -102,7 +102,7 @@ const getBusinessUnits = async (dispatch: (action: Action) => void) => {
   }
 };
 
-export const runTritonAdminStartup = (dispatch:  (action: Action) => void): Promise<any[]> => {
+export const runTritonAdminStartup = (dispatch:  (action: Action) => void, skillDispatch:  (action: Action) => void): Promise<any[]> => {
   /* Please add new service calls to the end of this Promise.all,
   the existing order is important */
 
@@ -112,7 +112,7 @@ export const runTritonAdminStartup = (dispatch:  (action: Action) => void): Prom
     listUMManagers(dispatch),
     listUMOffices(dispatch),
     getProfiles(dispatch),
-    loadConsolidatedSkills(dispatch),
+    loadConsolidatedSkills(skillDispatch),
     getCalabrioUsers(dispatch),
     getCalabrioOrg(dispatch),
     getCalabrioRoles(dispatch),

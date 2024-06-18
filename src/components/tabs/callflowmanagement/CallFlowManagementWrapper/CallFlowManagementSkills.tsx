@@ -79,8 +79,8 @@ export const CallFlowManagementSkills = () => {
       if(tableState.profiles.length > 0){
         filteredList = filteredList.filter((skill: Skill) => {
           let shouldReturn = false;
-          skill.profiles.forEach((p: SkillProfile) => {
-            if(tableState.profiles.some((sp: TritonProfile) => sp.profile_id === p.profileId)){
+          skill.profiles.forEach((p: number) => {
+            if(tableState.profiles.some((sp: TritonProfile) => sp.profile_id === p)){
               shouldReturn = true;
             }
           });
@@ -90,7 +90,7 @@ export const CallFlowManagementSkills = () => {
     } else {
       filteredList = filteredList.filter((skill: Skill) => {
         let shouldReturn = false;
-        if(skill.profiles.some((sp: SkillProfile) => sp.profileId === userProfileId)){
+        if(skill.profiles.some((s: number) => s === userProfileId)){
           shouldReturn = true;
         }
         return shouldReturn;

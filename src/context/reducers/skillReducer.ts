@@ -56,33 +56,8 @@ export const initialSkillState: SkillState = {
     timeOfDays: []
   }
 };
-export const initialSkillFormState: SkillFormState = {
-  formMode: formModes.INSERT,
-  skillFriendlyName: "",
-  skillNum: "",
-  applicationId: null,
-  taskQueueSid: "",
-  profileIds: [],
-  enableVirtualHold: false,
-  vhCallTarget: {
-    value: "",
-    valid: false,
-    e164: "",
-    blurred: false
-  },
-  vhThreshold: "",
-  timeOfDays: []
-};
 
-export const skillReducer = (state: SkillFormState, action: Action): any => {
-  switch (action.type) {
-    default: {
-      return state;
-    }
-  }
-};
-
-export const skillFormReducer = (state: SkillState, action: Action): SkillState => {
+export const skillReducer = (state: SkillState, action: Action): SkillState => {
   switch (action.type) {
     case skillActions.LOAD_SKILLS:
       return {
@@ -105,7 +80,7 @@ export const skillFormReducer = (state: SkillState, action: Action): SkillState 
       return {
         ...state,
         skillForm: {
-          ...initialSkillFormState
+          ...initialSkillState.skillForm
         }
       };
     }

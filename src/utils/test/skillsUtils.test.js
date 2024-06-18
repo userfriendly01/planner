@@ -469,11 +469,11 @@ describe("skillsUtils", () => {
       test("If no skills contain skill groups, return empty array", () => {
         const skillsArray = [{
           name: "skill1",
-          ctmSkillGroups: []
+          skillGroups: []
         },
         {
           name: "skill2",
-          ctmSkillGroups: []
+          skillGroups: []
         }];
         expect(formatSkillGroups(skillsArray)).toEqual([]);
       });
@@ -482,7 +482,7 @@ describe("skillsUtils", () => {
           name: "skill1",
           levels: [1, 2, 3],
           ctmSkillId: 3,
-          ctmSkillGroups: [
+          skillGroups: [
             {
               skillGroupId: 1,
               skillGroupNme: "I am a default skill group"
@@ -519,7 +519,7 @@ describe("skillsUtils", () => {
           name: "skill1",
           levels: [1, 2, 3],
           ctmSkillId: 3,
-          ctmSkillGroups: [
+          skillGroups: [
             {
               skillGroupId: 1,
               skillGroupNme: "I am a default skill group"
@@ -529,7 +529,7 @@ describe("skillsUtils", () => {
           name: "skill2",
           levels: [1, 2, 3, 4, 5],
           ctmSkillId: 4,
-          ctmSkillGroups: [
+          skillGroups: [
             {
               skillGroupId: 1,
               skillGroupNme: "I am a default skill group"

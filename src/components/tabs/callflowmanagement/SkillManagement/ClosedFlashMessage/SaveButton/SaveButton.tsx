@@ -2,7 +2,8 @@ import React from "react";
 import {
   useAdminState,
   useAdminDispatch,
-  useSkillState
+  useSkillState,
+  useSkillDispatch
 } from "context/appContext";
 import {
   ModalOverlayStatuses
@@ -33,7 +34,7 @@ export const SaveButton = (props: SaveButtonProps) => {
 
   const state = useAdminState();
   const skillState = useSkillState();
-  const dispatch = useAdminDispatch();
+  const skillDispatch = useSkillDispatch();
   const { nNumber } = state.userContext;
   const isSingleSelection = tableState.selected.length === 1;
   const isMultiSelection = tableState.selected.length > 1;
@@ -131,6 +132,7 @@ export const SaveButton = (props: SaveButtonProps) => {
 
     results.forEach((r, index) => {
       if(r.status === "fulfilled"){
+        console.log("FAITH - fulfilled", tableState.selected[index]);
         successfulPromiseSkills.push(tableState.selected[index]);
       }
       if(r.status === "rejected"){
@@ -175,6 +177,7 @@ export const SaveButton = (props: SaveButtonProps) => {
   };
 
   const updateStateOnResolvedPromises = (fulfilledSkills: Skill[])=> {
+    console.log("Faith?", fulfilledSkills);
     const skills = skillState.skills.slice();
     const updatedText = action === ActionTypes.DELETE ? "" : text;
     const updatedSkills = skills.map((s: any) => {
@@ -189,8 +192,9 @@ export const SaveButton = (props: SaveButtonProps) => {
       });
       return updatedSkill;
     });
-    dispatch({
-      type: "updateSkills",
+    console.log("faith, udpated skills?", updatedSkills);
+    skillDispatch({
+      type: "LOAD_SKILLS",
       payload: updatedSkills
     });
   };

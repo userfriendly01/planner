@@ -203,7 +203,10 @@ export interface CallflowSkill {
 
 export interface CtmSkill {
   skill_num: string,
-  profile_id: number
+  skill_id: number,
+  profile_id: number,
+  skill_group_id: number,
+  skill_group_nme: string,
 }
 
 export interface CallFlowTimeOfDay {
@@ -224,10 +227,11 @@ export interface Skill {
   discrepancies: string[],
   name: string,
   levels: any[],
-  profiles: any[],
+  profiles: number[],
   taskQueueSid: string,
   taskQueueName: string,
   skillGroups: SkillGroup[],
+  ctmSkillId: number,
   applicationId: number,
   closedMessage: string,
   flashMessage: string,
