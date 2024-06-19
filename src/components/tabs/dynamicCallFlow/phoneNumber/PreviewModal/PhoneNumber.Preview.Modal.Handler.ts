@@ -42,10 +42,7 @@ export class PhoneNumberPreviewModalHandler extends AbstractPreviewModalHandler<
       return HANDLED_UNSUCCESSFULLY;
     }
 
-    this.dataGridController.addRecordsToSourceRecords(batchResults.success);
-    this.dataGridController.dataGridFilter.applyFilter();
-
-    this.dataGridController.setDataGridPropsState({ fetching: false });
+    this.dataGridController.addRecordsToSourceRecords(recordsToCreate);
     this.dataGridController.alertBarController.success("Phone Number Records successfully created.");
 
     return HANDLED_SUCCESSFULLY;
@@ -60,9 +57,7 @@ export class PhoneNumberPreviewModalHandler extends AbstractPreviewModalHandler<
     }
 
     this.dataGridController.removeRecordsFromSourceRecords(recordsToDelete);
-    this.dataGridController.setDataGridPropsState({ fetching: false });
     this.dataGridController.alertBarController.success("Phone Numbers successfully deleted.");
-    this.dataGridController.dataGridFilter.applyFilter();
 
     return HANDLED_SUCCESSFULLY;
   }

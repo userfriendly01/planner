@@ -1,11 +1,4 @@
-import * as xlsx from "xlsx";
-import { ActionXlsxReader } from "../Action.Xlsx.Reader";
-import { getXlsReaderResults } from "../../../common/Xlsx/test/Xlsx.Testing.Util";
-import { removeElementsFromArray } from "components/tabs/dynamicCallFlow/common/Util/Array.Util";
-
-function getActionXlsxReaderResults(fileName: string): xlsx.WorkSheet {
-  return getXlsReaderResults(new ActionXlsxReader(), fileName);
-}
+import { getActionXlsxReaderResults } from "../../../common/Xlsx/test/Xlsx.Testing.Util";
 
 describe("Action XLSX Reader", () => {
   test("happy path", () => {

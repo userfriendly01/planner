@@ -51,7 +51,7 @@ export const PhoneNumberDataGridFilterModal = ({
     <div>
       <ModalSearchStyled isOpen={isOpen} onClose={() => modalController.current.closeModal()}>
         <ModalHeader id="my-search-header">
-          <HeadingStyled type="h4-light"> Advance Flow Search Selection </HeadingStyled>
+          <HeadingStyled type="h4-light"> Phone Number Search Selection </HeadingStyled>
         </ModalHeader>
         <ModalBody>
           <Grid container rowSpacing={3}>

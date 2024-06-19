@@ -18,38 +18,12 @@ export interface DataGridFilter<RecordType> {
   set sourceRecords(records: Array<RecordType>);
   set fieldOptions(fieldOptions: FieldOptions);
   get fieldOptions(): FieldOptions;
-  set setDataGridRecords(setDataGridRecords: React.Dispatch<React.SetStateAction<RecordType[]>>);
   saveFilter(filter: Filter): void;
   addFilterElement(key: string, value: string): Filter;
   removeFilterElement(key: string): Filter;
   getFilter(): Filter;
   applyFilter(minId?: number, maxId?: number): void;
   resetFilter(): Filter;
-}
-
-//TODO: Remove this function
-export const getCachedFilter = (cacheKey: string): Filter => {
-  let filter: Filter;
-
-  try {
-    const cachedFilter = localStorage.getItem(cacheKey);
-    filter = JSON.parse(cachedFilter) || {};
-    Object.keys(filter).forEach(key => {
-      if (filter[key] === "" || filter[key] === null) {
-        delete filter[key];
-      }
-    });
-  } catch (e) {
-    console.warn("Error in getting filter model from local storage", e);
-    filter = {};
-  }
-
-  return filter;
-};
-
-//TODO: remove this function
-export function saveFilter(filter: Filter, filterCacheKey: string): void {
-  localStorage.setItem(this.getFilterCacheKey(), JSON.stringify(filter));
 }
 
 export abstract class AbstractDataGridFilter<RecordType> implements DataGridFilter<RecordType> {
@@ -71,10 +45,6 @@ export abstract class AbstractDataGridFilter<RecordType> implements DataGridFilt
 
   get fieldOptions(): FieldOptions {
     return this._fieldOptions;
-  }
-
-  set setDataGridRecords(setDataGridRecords: ReactSetState<RecordType[]>) {
-    this._setDataGridRecords = setDataGridRecords;
   }
 
   abstract getFilterCacheKey(): string;

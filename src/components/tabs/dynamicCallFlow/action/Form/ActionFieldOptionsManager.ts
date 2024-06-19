@@ -9,6 +9,8 @@ import { ActionRecordUtil } from "../GraphQL/Action.Record.Util";
 import { CALL_FLOW_NAME } from "./ActionFields";
 import { ActionTypeEnum } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
 
+const DYNAMIC_CALL_FLOW_CALL_FLOW_CONFIGURATION_FORM_FIELD_OPTIONS = "DYNAMIC_CALL_FLOW_CALL_FLOW_CONFIGURATION_FORM_FIELD_OPTIONS";
+
 export class ActionFieldOptionsManager extends AbstractFormFieldOptionsManager<ActionRecordType> {
   protected getRecordKeyValue(actionRecord: ActionRecordType, key: string): string | Array<string> | undefined {
     const keyValue: FieldDataType = ActionRecordUtil.getPropertyValue(actionRecord, key);
@@ -25,7 +27,7 @@ export class ActionFieldOptionsManager extends AbstractFormFieldOptionsManager<A
   }
 
   protected getFieldOptionsCacheKey(): string {
-    return "DYNAMIC_CALL_FLOW_PHONE_NUMBER_FORM_FIELD_OPTIONS";
+    return DYNAMIC_CALL_FLOW_CALL_FLOW_CONFIGURATION_FORM_FIELD_OPTIONS;
   }
 
   protected getDataDrivenOptionsFieldNames(): Array<string> {
@@ -37,9 +39,6 @@ export class ActionFieldOptionsManager extends AbstractFormFieldOptionsManager<A
   }
 
   protected getStaticFieldOptions(): FieldOptions {
-    return {
-      actionType: Object.values<string>(ActionTypeEnum),
-      nextActionType: Object.values<string>(ActionTypeEnum)
-    } as FieldOptions;
+    return {} as FieldOptions;
   }
 }

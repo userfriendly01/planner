@@ -8,18 +8,6 @@ export const TableGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 220,
     align: "left"
-  },{
-    headerName: "Errors",
-    field: "errors",
-    sortable: true,
-    width: 50,
-    align: "left",
-    valueGetter: params => `${params.row?.errors || ""}`,
-    renderCell: (params: any) =>  (
-      <Tooltip title={params.row.errors || ""} className="validation-error" >
-        <div>{params.row.errors?"...":""}</div>
-      </Tooltip>
-    )
   },
   {
     headerName: "Action Type",
@@ -27,43 +15,10 @@ export const TableGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 150,
     align: "left",
-    valueGetter: params => `${params.row?.actionType || ""}`,
-    valueSetter: params => ({
-      ...params.row,
-      actionType: params.value
-    })
   },
   {
-    headerName: "Allow Barge-in",
-    field: "allowBargeIn",
-    sortable: true,
-    width: 110,
-    align: "left"
-  },
-  {
-    headerName: "Callflow Name",
+    headerName: "Call Flow Name",
     field: "callFlowName",
-    sortable: true,
-    width: 110,
-    align: "left"
-  },
-  {
-    headerName: "Finish on Key",
-    field: "finishOnKey",
-    sortable: true,
-    width: 110,
-    align: "left"
-  },
-  {
-    headerName: "Max Digits",
-    field: "maxDigits",
-    sortable: true,
-    width: 110,
-    align: "left"
-  },
-  {
-    headerName: "Min Digits",
-    field: "minDigits",
     sortable: true,
     width: 110,
     align: "left"
@@ -83,7 +38,35 @@ export const TableGridColumnDef: GridColDef[] = [
     align: "left"
   },
   {
-    headerName: "Options",
+    headerName: "Menu Allow Barge-in",
+    field: "allowBargeIn",
+    sortable: true,
+    width: 110,
+    align: "left"
+  },
+  {
+    headerName: "Menu Finish on Key",
+    field: "finishOnKey",
+    sortable: true,
+    width: 110,
+    align: "left"
+  },
+  {
+    headerName: "Menu Max Digits",
+    field: "maxDigits",
+    sortable: true,
+    width: 110,
+    align: "left"
+  },
+  {
+    headerName: "Menu Min Digits",
+    field: "minDigits",
+    sortable: true,
+    width: 110,
+    align: "left"
+  },
+  {
+    headerName: "Menu Options",
     field: "options",
     sortable: true,
     width: 330,

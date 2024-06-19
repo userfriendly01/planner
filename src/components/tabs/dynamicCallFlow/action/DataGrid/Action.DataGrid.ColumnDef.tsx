@@ -4,6 +4,13 @@ import React from "react";
 
 export const ActionDataGridColumnDef: GridColDef[] = [
   {
+    headerName: "",
+    field: "",
+    sortable: true,
+    width: 50,
+    align: "left"
+  },
+  {
     headerName: "actionId",
     field: "actionId",
     sortable: true,
@@ -22,6 +29,20 @@ export const ActionDataGridColumnDef: GridColDef[] = [
     field: "callFlowName",
     sortable: true,
     width: 110,
+    align: "left"
+  },
+  {
+    headerName: "next action id",
+    field: "nextActionId",
+    sortable: true,
+    width: 300,
+    align: "left"
+  },
+  {
+    headerName: "next action type",
+    field: "nextActionType",
+    sortable: true,
+    width: 150,
     align: "left"
   },
   {
@@ -51,35 +72,21 @@ export const ActionDataGridColumnDef: GridColDef[] = [
     align: "left"
   },
   {
-    headerName: "minDigits",
+    headerName: "Menu Min Digits",
     field: "minDigits",
     sortable: true,
     width: 110,
     align: "left"
   },
   {
-    headerName: "maxDigits",
+    headerName: "Menu Max Digits",
     field: "maxDigits",
     sortable: true,
     width: 110,
     align: "left"
   },
   {
-    headerName: "next action id",
-    field: "nextActionId",
-    sortable: true,
-    width: 300,
-    align: "left"
-  },
-  {
-    headerName: "next action type",
-    field: "nextActionType",
-    sortable: true,
-    width: 150,
-    align: "left"
-  },
-  {
-    headerName: "options",
+    headerName: "Menu Options",
     field: "options",
     sortable: true,
     width: 300,
@@ -91,7 +98,7 @@ export const ActionDataGridColumnDef: GridColDef[] = [
     )
   },
   {
-    headerName: "repeat",
+    headerName: "Menu Repeat",
     field: "repeat",
     sortable: true,
     width: 300,

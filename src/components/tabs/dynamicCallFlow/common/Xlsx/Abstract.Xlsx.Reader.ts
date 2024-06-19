@@ -2,9 +2,7 @@ import * as XLSX from "xlsx";
 import {
   ParsingOptions, Sheet2JSONOpts, WorkSheet
 } from "xlsx";
-import {
-  XlsxJSONRow, XlsxReaderResults
-} from "./Xlsx.Interfaces";
+import { XlsxReaderResults } from "./Xlsx.Interfaces";
 
 export type RECORD_DATA_TYPE_NAME = "string" | "number" | "boolean" | "stringArray" | "jsonStringify";
 export enum RECORD_DATA_TYPE_NAME_ENUM {

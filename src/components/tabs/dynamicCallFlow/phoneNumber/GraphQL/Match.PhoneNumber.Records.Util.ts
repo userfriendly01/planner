@@ -1,6 +1,9 @@
 import { PhoneNumberRecordType } from "./Dynamic.PhoneNumber.Interfaces";
 import { PhoneNumberRecordUtil } from "./PhoneNumber.Record.Util";
-import { MatchFilter } from "../../action/GraphQL/Match.Records.Util";
+
+import {
+  findMatchingElements, MatchFilter
+} from "components/tabs/dynamicCallFlow/common/Util/Array.Util";
 
 
 /**
@@ -67,23 +70,13 @@ export function generateMatchingRecordMessages(searchList: Array<PhoneNumberReco
 
 /**
  * Find matching phone number records
- * @param {Array<PhoneNumberRecordType>} searchList - List of phoneNumberRecords to search through to see if any records in recordsToMatch
- * @param {Array<PhoneNumberRecordType>} matchCandidateList - If passing single phoneNumberRecord, pass it as single length array i.e. "[newPhoneNumberRecord]"
+ * @param {Array<PhoneNumberRecordType>} listToSearchIn - List of phoneNumberRecords to search through to see if any records in recordsToMatch
+ * @param {Array<PhoneNumberRecordType>} recordsToMatchOn - If passing single phoneNumberRecord, pass it as single length array i.e. "[newPhoneNumberRecord]"
  * @param {MatchFilter} matchFilter - Filter to use to match records
  *
  * @return {Array<PhoneNumberRecordType>} - List of matching phone number records
  */
-export function findMatchingPhoneNumberRecords(searchList: Array<PhoneNumberRecordType>, matchCandidateList: Array<PhoneNumberRecordType>, matchFilter: MatchFilter<PhoneNumberRecordType>): Array<PhoneNumberRecordType> {
-  return matchCandidateList.filter((matchCandidateRecord: PhoneNumberRecordType) => matchFound(searchList, matchCandidateRecord, matchFilter));
-}
-
-/**
- * Check if matching record found
- * @param {Array<PhoneNumberRecordType>} searchList - List of phoneNumberRecords to search through to see if any records match the matchCandidate
- * @param {PhoneNumberRecordType} matchCandidateRecord - phone number record candidate to match against
- * @param {MatchFilter} matchFilter - Filter to use to match records
- * @return {boolean} - True if matching record found, false otherwise
- */
-function matchFound(searchList: Array<PhoneNumberRecordType>, matchCandidateRecord: PhoneNumberRecordType, matchFilter: MatchFilter<PhoneNumberRecordType>): boolean {
-  return searchList.filter( searchListRecord =>  matchFilter(searchListRecord, matchCandidateRecord)? matchCandidateRecord : undefined).length > 0;
+export function findMatchingPhoneNumberRecords(listToSearchIn: Array<PhoneNumberRecordType>, recordsToMatchOn: Array<PhoneNumberRecordType>, matchFilter: MatchFilter<PhoneNumberRecordType>): Array<PhoneNumberRecordType> {
+  return findMatchingElements<PhoneNumberRecordType>(listToSearchIn, recordsToMatchOn, matchFilter);
+  // return matchCandidateList.filter((matchCandidateRecord: PhoneNumberRecordType) => matchFound(searchList, matchCandidateRecord, matchFilter));
 }

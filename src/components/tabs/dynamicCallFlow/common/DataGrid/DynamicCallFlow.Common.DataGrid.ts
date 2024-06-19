@@ -1,18 +1,4 @@
-import { DataGridFilter } from "./Abstract.DataGrid.Filter";
-import React from "react";
-
 const ID = "id";
-
-export interface DataGridContextStore<RecordType> {
-  allRecords: Array<RecordType>;
-  setAllRecords: React.Dispatch<React.SetStateAction<RecordType[]>>;
-  dataGridRecords: Array<RecordType>;
-  setDataGridRecords: React.Dispatch<React.SetStateAction<RecordType[]>>;
-  selectedRecords: Array<RecordType>;
-  setSelectedRecords: React.Dispatch<React.SetStateAction<RecordType[]>>;
-  setDataGridProps: React.Dispatch<React.SetStateAction<DataGridStateProps>>;
-  dataGridFilter: React.MutableRefObject<DataGridFilter<RecordType>>;
-}
 
 export interface DataGridStateProps {
   fetching?: boolean;

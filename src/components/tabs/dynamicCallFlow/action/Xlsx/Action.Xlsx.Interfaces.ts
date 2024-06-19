@@ -6,6 +6,7 @@ export interface CallerContextAttributes {
   callIntent?: string;
 }
 
+export type ActionXlsxCompleteRowType = ActionXlsxRow & AnnouncementXlsxRow & MenuXlsxRow & MenuOptionXlsxRow & RedirectXlsxRow;
 export type ActionXlsRowType = ActionXlsxRow | AnnouncementXlsxRow | MenuXlsxRow | MenuOptionXlsxRow | RedirectXlsxRow;
 
 export interface ActionXlsxRow extends XlsxJSONRow {

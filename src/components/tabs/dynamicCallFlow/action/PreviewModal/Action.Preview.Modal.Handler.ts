@@ -7,52 +7,47 @@ import { batchCreateDynamicActionRecords } from "../GraphQL/Batch.Create.Action.
 import { batchDeleteDynamicActionRecords } from "../GraphQL/Batch.Delete.Action.Records.Query";
 import { removeElementsFromArray } from "components/tabs/dynamicCallFlow/common/Util/Array.Util";
 import { ACTION_ID } from "dynamicCallFlow/Form/ActionFields";
+import { BatchResults } from "components/tabs/dynamicCallFlow/common/GraphQL/Abstract.BatchRecords.Query";
 
 export class ActionPreviewModalHandler extends AbstractPreviewModalHandler<ActionRecordType> {
 
   async handleOnCreate(accessToken: string, newCallFlowConfig: Array<ActionRecordType>): Promise<boolean> {
     if (newCallFlowConfig?.length > 0) {
       const callFlowName = newCallFlowConfig[0].callFlowName;
-      const oldCallFlowConfig = [ ...this.dataGridController.sourceRecords.filter(sourceRecord => sourceRecord.callFlowName === callFlowName) ];
+      const oldCallFlowConfig: Array<ActionRecordType> = this.dataGridController.sourceRecords.filter(sourceRecord => sourceRecord.callFlowName === callFlowName);
 
-      //Remove old call flow config records from the source records
-      this.dataGridController.removeRecordsFromSourceRecords(oldCallFlowConfig);
-
-      const batchResults = await batchCreateDynamicActionRecords(accessToken, newCallFlowConfig);
+      const batchResults: BatchResults<ActionRecordType> = await batchCreateDynamicActionRecords(accessToken, newCallFlowConfig);
 
       if (batchResults?.hasError) {
-        // if newCallFlowConfig failed to create, add the oldCallFlowConfig back to the ActionDataGridComponent sourceRecords
-        this.dataGridController.addRecordsToSourceRecords(oldCallFlowConfig);
-
         return HANDLED_UNSUCCESSFULLY;
       } else {
-        this.dataGridController.addRecordsToSourceRecords(newCallFlowConfig);
-        this.dataGridController.dataGridFilter.applyFilter();
-        // if (HANDLED_SUCCESSFULLY === await this.deleteUnusedCallFlowConfigRecords(accessToken, newCallFlowConfig, oldCallFlowConfig)) {
-        //   // Remove the old call flow config records from the source records
-        //   this.dataGridController.addRecordsToSourceRecords(newCallFlowConfig);
-        // } else {
-        //   return;
+        // if (HANDLED_UNSUCCESSFULLY === await this.deleteUnusedCallFlowConfigRecords(accessToken, newCallFlowConfig, oldCallFlowConfig)) {
+        //   return HANDLED_UNSUCCESSFULLY;
         // }
 
+        //Remove old call flow config records from the source records
+        this.dataGridController.removeRecordsFromSourceRecords(oldCallFlowConfig);
+        // Add the new call flow config records to the source records
+        this.dataGridController.addRecordsToSourceRecords(newCallFlowConfig);
+        // Set the data grid records to the source records (will need to change in future when filtering is added, once added dataGridFilter.applyFilter() will be called)
+        this.dataGridController.dataGridRecords = this.dataGridController.sourceRecords;
       }
     }
 
-    this.dataGridController.alertBarController.success("Call Flow Config successfully loaded.");
+    this.dataGridController.alertBarController.success("Call Flow Configuration successfully loaded.");
     return HANDLED_SUCCESSFULLY;
   }
 
   async deleteUnusedCallFlowConfigRecords(accessToken: string, newCallFlowConfig: Array<ActionRecordType>, oldCallFlowConfig: Array<ActionRecordType>): Promise<boolean> {
     // pass a copy of oldCallFlowConfig to removeElementsFromArray to keep that array intact in case we need to add the oldCallFlowConfig
     // back to the sourceRecords in case of batch delete failure.
-    const unusedCallFlowConfigRecords = removeElementsFromArray(ACTION_ID, newCallFlowConfig, [ ...oldCallFlowConfig ]);
+    const unusedCallFlowConfigRecords: Array<ActionRecordType> = removeElementsFromArray(ACTION_ID, newCallFlowConfig, [ ...oldCallFlowConfig ]);
 
     if (unusedCallFlowConfigRecords.length > 0) {
-      const batchResults = await batchDeleteDynamicActionRecords(accessToken, unusedCallFlowConfigRecords);
+      const batchResults: BatchResults<ActionRecordType> = await batchDeleteDynamicActionRecords(accessToken, unusedCallFlowConfigRecords);
 
       if (batchResults?.hasError) {
         this.dataGridController.alertBarController.graphQLError(batchResults.errors);
-        this.dataGridController.addRecordsToSourceRecords(oldCallFlowConfig);
 
         return HANDLED_UNSUCCESSFULLY;
       }

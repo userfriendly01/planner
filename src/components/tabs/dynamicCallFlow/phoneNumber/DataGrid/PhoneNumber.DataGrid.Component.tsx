@@ -45,7 +45,6 @@ import { PhoneNumberModalTypeEnum } from "../DynamicCallFlow.PhoneNumber.Contain
 import { PhoneNumberDataGridFilter } from "./PhoneNumber.DataGrid.Filter";
 import { PhoneNumberDataGridController } from "./PhoneNumber.DataGrid.Controller";
 import { CustomToast } from "components/CustomToast";
-import { ActionRecordType } from "dynamicCallFlow/GraphQL/Action.Interfaces";
 
 const DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_PAGE_NUMBER = "dynamicCallFlowPhoneNumberDataGridPageNumber";
 const DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_RECORDS_PER_PAGE = "dynamicCallFlowPhoneNumberDataGridRecordsPerPage";
@@ -59,12 +58,10 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
 
   // sourceRecords is the master list of all records.  It is used to update the data grid records and to update the field options.
   const [sourceRecords, setSourceRecords] = useState<Array<PhoneNumberRecordType>>([]);
-  const linkToSetSourceRecords = (sourceRecords: Array<ActionRecordType>): void => {
-    setSourceRecords(sourceRecords);
-  };
 
   // dataGridRecords is the list of records that are displayed in the data grid.  It contains the results of when a filter is applied to sourceRecords.
   const [dataGridRecords, setDataGridRecords] = useState<Array<PhoneNumberRecordType>>([]);
+
   // dataGridProps stores the state of fetching data, the min and max id, and the max id.
   const [dataGridProps, setDataGridProps] = useState<DataGridStateProps>(initializeDataGrid());
   const dataGridFilter = useRef<PhoneNumberDataGridFilter>(new PhoneNumberDataGridFilter(setDataGridRecords));
@@ -93,7 +90,7 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
 
   const dataGridApi = useGridApiRef<GridApiCommunity>();
   const dataGridController = useRef(new PhoneNumberDataGridController(dataGridApi, dataGridFilter,
-    setDataGridProps, alertBarController, setSourceRecords, setDataGridRecords, setSelectedRecord, setSelectedRecords, linkToSetSourceRecords));
+    alertBarController));
 
   useEffect(() => {
     const loadDataGrid = async()=> {
@@ -214,8 +211,22 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
     setAlertBarProps(initialAlertBarProps);
   };
 
+  const handlePreviewModalOpen = (event: any) => {
+    dataGridController.current.sourceRecords = sourceRecords;
+    dataGridController.current.dataGridRecords = dataGridRecords;
+    modalController.current.openModal(event.target.value);
+  };
+
   const handlePreviewModalOnClose = () =>{
     dataGridApi.current.setRowSelectionModel([]);
+    setSourceRecords([ ...dataGridController.current.sourceRecords ]);
+    setDataGridRecords([ ...dataGridController.current.dataGridRecords ]);
+    setDataGridProps( prevState => ({
+      ...prevState,
+      fetching: false
+    }));
+
+    modalController.current.closeModal();
   };
 
   PhoneNumberDataGridColumnDef[0].renderCell = (gridRenderCellParams: GridRenderCellParams<PhoneNumberRecordType>) =>
@@ -228,6 +239,7 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
           <PhoneNumberDataGridToolBar
             isFilterModalOpen={currentOpenModal === PhoneNumberModalTypeEnum.Filter}
             dataGridFilter={dataGridFilter}
+            handlePreviewModalOpen={handlePreviewModalOpen}
             exportDataFile={exportDataFile}
           />
           <DataGrid

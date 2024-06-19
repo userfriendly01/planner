@@ -17,7 +17,7 @@ import {
   DataGridFilterModalProps, Filter
 } from "../../common/DataGrid/Abstract.DataGrid.Filter";
 import {
-  ACTION_ID, ACTION_TYPE
+  ACTION_ID, ACTION_TYPE, CALL_FLOW_NAME
 } from "../Form/ActionFields";
 import { ActionRecordType } from "../GraphQL/Action.Interfaces";
 import { DynamicCallFlowActionContext } from "../DynamicCallFlow.Action.Container";
@@ -36,6 +36,7 @@ export const ActionDataGridFilterModal = ({
 
   const applyFilter = () => {
     dataGridFilter.current.applyFilter();
+    modalController.current.closeModal();
   };
 
   const handleChange = (event: any) => {
@@ -44,42 +45,28 @@ export const ActionDataGridFilterModal = ({
 
   const resetFilterAndClose = () => {
     setFilter(dataGridFilter.current.resetFilter());
-  };
-
-  const handleOnClose = () => {
     modalController.current.closeModal();
   };
 
   return (
     <div>
-      <ModalSearchStyled isOpen={isOpen} onClose={handleOnClose}>
+      <ModalSearchStyled isOpen={isOpen} onClose={() => modalController.current.closeModal()}>
         <ModalHeader id="my-search-header">
-          <HeadingStyled type="h4-light"> Advance Flow Search Selection </HeadingStyled>
+          <HeadingStyled type="h4-light"> Call Flow Configuration Search Selection </HeadingStyled>
         </ModalHeader>
         <ModalBody>
           <Grid container rowSpacing={3}>
             <Grid item xs={10}>
               <SelectContainer
-                dropDownOptions={dataGridFilter.current.fieldOptions[ACTION_TYPE] || []}
-                name="brand"
-                label="Choose Brand"
-                value={filter[ACTION_TYPE] || ""}
+                dropDownOptions={dataGridFilter.current.fieldOptions[CALL_FLOW_NAME] || []}
+                name="callFlowName"
+                label="Choose Call Flow Name"
+                value={filter[CALL_FLOW_NAME] || ""}
                 onChange={handleChange}
                 disabled={false}
                 error={false}
                 isBlankFirstValue={true}
                 required={false} />
-            </Grid>
-            <Grid item xs={10}>
-              <TextField
-                variant="outlined"
-                label="#Dialed"
-                name="actionId"
-                type="text"
-                value={filter[ACTION_ID] || ""}
-                onChange={handleChange}
-                sx={{ width: "Calc(96%)" }}
-              />
             </Grid>
           </Grid>
         </ModalBody>

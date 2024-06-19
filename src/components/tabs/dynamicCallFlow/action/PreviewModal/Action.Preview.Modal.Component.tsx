@@ -45,6 +45,7 @@ export const ActionPreviewModal = ({
   const previewModalGridApiRef =  useGridApiRef();
   const [modalRecords, setModalRecords] = React.useState<ActionRecordType[]>([]);
   const [htmlInputElements, setHtmlInputElements] = React.useState<Array<HTMLInputElement>>([]);
+
   const tableGridColumnDef: Array<GridColDef> = useMemo<Array<GridColDef>>(()=>{
     return reconstructTableColumnDef([...TableGridColumnDef], previewModalGridApiRef);
   },[modalType]);
@@ -58,36 +59,6 @@ export const ActionPreviewModal = ({
     }
   }, [htmlInputElements]);
 
-  // const getUpdatedActionRows = () => {
-  //   const newRows: Array<ActionRecordType> = [...modalRecords].map((row: ActionRecordType) => {
-  //     const updatedAction: ActionRecordType = {
-  //       id: 0,
-  //       actionId: "",
-  //       actionType: undefined,
-  //       callFlowName: "",
-  //       createTime: 0,
-  //       updateTime: 0,
-  //       speech: "",
-  //       allowBargeIn: true,
-  //       finishOnKey: "",
-  //       minDigits: 0,
-  //       maxDigits: 0,
-  //       timeout: 0,
-  //       repeat: {
-  //         nextActionType: undefined
-  //       },
-  //       nextActionType: undefined,
-  //       nextActionId: "",
-  //       options: [] as unknown as MenuOption[]
-  //     };
-  //     Object.keys(row).forEach((key: string)=> {
-  //       updatedAction[key as keyof ActionRecordType] = previewModalGridApiRef.current.getCellValue(row.actionId, key);
-  //     });
-  //     return updatedAction;
-  //   });
-  //   return newRows;
-  // };
-
   const handleOnCreate = async () =>{
     if (await previewModalHandler.current.handleOnCreate(accessTokenGraph, modalRecords) === HANDLED_SUCCESSFULLY) {
       handleOnClose();
@@ -98,7 +69,7 @@ export const ActionPreviewModal = ({
     const xlsxReaderResults = await ActionXlsxReader.getInstance().processXlsxUpload(event);
 
     if (xlsxReaderResults.errors.length > 0) {
-      dataGridController.current.alertBarController.error(xlsxReaderResults.errors.join("\n"));
+      dataGridController.current.alertBarController.error(xlsxReaderResults.errors.join("\n\r").concat("\n\rPlease check the Call Flow Configuration in the spreadsheet and try again."));
     } else {
       setModalRecords(xlsxReaderResults.records);
     }
@@ -131,8 +102,7 @@ export const ActionPreviewModal = ({
           apiRef={previewModalGridApiRef}
           rows={modalRecords}
           columns={tableGridColumnDef}
-          editMode="row"
-          getRowId={(row: ActionRecordType)=>row.actionId}
+          getRowId={(row: ActionRecordType) => row.actionId}
           loading = {loading}
           sx={{
             "& .MuiDataGrid-columnHeaderTitle": {
@@ -152,7 +122,7 @@ export const ActionPreviewModal = ({
           display: "flex",
           justifyContent: "center"
         }}>
-          {modalType === ActionModalTypeEnum.BulkAdd &&
+          {modalType === ActionModalTypeEnum.BatchCreate &&
             <StyledButton sx={{ marginRight: "15px" }} onClick={()=>handleOnCreate()}>Load Call Flow Config Actions</StyledButton>
           }
           <StyledButton onClick={handleOnClose}>Cancel</StyledButton>

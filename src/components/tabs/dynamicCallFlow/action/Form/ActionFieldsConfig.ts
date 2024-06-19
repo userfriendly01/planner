@@ -34,7 +34,7 @@ function createFieldConfig(fieldKey: string, label: string, control: Control, re
 createFieldConfig("actionId", "Action ID", ControlEnum.Input, true, false);
 createFieldConfig("actionType", "Action Type", ControlEnum.AutoComplete, true, false);
 createFieldConfig("allowBargeIn", "Allow Barge-in", ControlEnum.Input, false, false);
-createFieldConfig("callFlowName", "Callflow Name", ControlEnum.Input, true, false);
+createFieldConfig("callFlowName", "Call Flow Name", ControlEnum.Input, true, false);
 createFieldConfig("finishOnKey", "Finish on Key", ControlEnum.Input, false, false);
 createFieldConfig("maxDigits", "Max Digits", ControlEnum.Input, false, false);
 createFieldConfig("minDigits", "Min Digits", ControlEnum.Input, false, false);

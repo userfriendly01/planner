@@ -20,32 +20,33 @@ import { PhoneNumberModalTypeEnum } from "../DynamicCallFlow.PhoneNumber.Contain
 import { DataGridFilterRef } from "../../common/DynamicCallFlow.Interfaces";
 import { PhoneNumberRecordType } from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
 import { readWriteAccess } from "utils/alohaConfigUtils";
+import {
+  userDoesNotHaveReadWriteAccess,
+  userHasReadWriteAccess
+} from "components/tabs/dynamicCallFlow/common/authentication";
 
 interface PhoneNumberDataGridToolBarProps {
   isFilterModalOpen: boolean;
   dataGridFilter: DataGridFilterRef<PhoneNumberRecordType>;
+  handlePreviewModalOpen: (event: any) => void;
   exportDataFile: ()=> void;
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const PhoneNumberDataGridToolBar = ({
-  isFilterModalOpen, dataGridFilter, exportDataFile
+  isFilterModalOpen, dataGridFilter, handlePreviewModalOpen, exportDataFile
 }: PhoneNumberDataGridToolBarProps) => {
   const {
     permissions,
     modalController
   } = useContext(DynamicCallFlowPhoneNumberContext);
 
-  const enableFlow = useMemo(() => readWriteAccess(permissions,"aloha-flow"), []);
+  const userHasPermission = useMemo(() => userHasReadWriteAccess(permissions,"aloha-flow"), []);
   const [localFilter, setLocalFilter] = useState<Filter>({} as Filter);
 
   useEffect(()=> {
     setLocalFilter(dataGridFilter.current.getFilter());
   },[isFilterModalOpen]);
-
-  const handleChange=(event:any):void=> {
-    modalController.current.openModal(event.target.value);
-  };
 
   const removeFilterElement = (key: string) => {
     setLocalFilter(dataGridFilter.current.removeFilterElement(key));
@@ -54,7 +55,7 @@ const PhoneNumberDataGridToolBar = ({
 
   return (
     <Grid container>
-      <Grid item key="flow-search-box" xs={9}>
+      <Grid item key="phone-number-search-box" xs={9}>
         <TextField
           sx={{ marginLeft: 1 }}
           placeholder="Click here to apply filter"
@@ -116,8 +117,8 @@ const PhoneNumberDataGridToolBar = ({
             }}
             label="Actions"
             value=""
-            disabled = {false}
-            onChange={handleChange}
+            disabled = {false} // TODO: change this to us !userHasPermission
+            onChange={handlePreviewModalOpen}
             variant="filled"
             size="small"
             displayEmpty
