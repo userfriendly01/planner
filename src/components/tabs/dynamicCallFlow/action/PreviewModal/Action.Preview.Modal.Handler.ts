@@ -21,9 +21,9 @@ export class ActionPreviewModalHandler extends AbstractPreviewModalHandler<Actio
       if (batchResults?.hasError) {
         return HANDLED_UNSUCCESSFULLY;
       } else {
-        // if (HANDLED_UNSUCCESSFULLY === await this.deleteUnusedCallFlowConfigRecords(accessToken, newCallFlowConfig, oldCallFlowConfig)) {
-        //   return HANDLED_UNSUCCESSFULLY;
-        // }
+        if (HANDLED_UNSUCCESSFULLY === await this.deleteUnusedCallFlowConfigRecords(accessToken, newCallFlowConfig, oldCallFlowConfig)) {
+          return HANDLED_UNSUCCESSFULLY;
+        }
 
         //Remove old call flow config records from the source records
         this.dataGridController.removeRecordsFromSourceRecords(oldCallFlowConfig);

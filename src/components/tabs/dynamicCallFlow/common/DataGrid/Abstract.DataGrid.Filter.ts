@@ -97,7 +97,7 @@ export abstract class AbstractDataGridFilter<RecordType> implements DataGridFilt
 
   protected abstract getPropertyValue(record: RecordType, key: string): string | Array<string> | number | boolean | undefined;
 
-  applyFilter(idStart?: number, idEnd?: number): void {
+  applyFilter(idStart?: number, idEnd?: number): Array<RecordType> {
     if (!this._sourceRecords) {
       return;
     }
@@ -131,9 +131,11 @@ export abstract class AbstractDataGridFilter<RecordType> implements DataGridFilt
         }
       });
 
-      this._setDataGridRecords(filteredRecords);
+      this._setDataGridRecords( [ ...filteredRecords ]);
     } else {
       this._setDataGridRecords([ ...this._sourceRecords ]);
     }
+
+    return filteredRecords;
   }
 }

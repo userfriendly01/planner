@@ -86,7 +86,7 @@ export const ActionDataGridToolBar = ({
       </Grid>
       <Grid item key="Load Call Flow Configuration" xs={2}>
         <FormControl sx={{
-          marginTop: "16px",
+          marginTop: "5px",
           marginBottom: "8px",
           marginLeft: "35px"
         }}>
@@ -98,7 +98,7 @@ export const ActionDataGridToolBar = ({
             aria-label="loadCallFlowConfigurationButton"
             disabled={false} // TODO: change this to us !userHasPermission
             onClick={handlePreviewModalOpen}>
-            Load Call Flow Configuration
+            Import Call Flow Configuration
           </Button>
           {/*<InputLabel>Actions</InputLabel>*/}
           {/*<Select*/}

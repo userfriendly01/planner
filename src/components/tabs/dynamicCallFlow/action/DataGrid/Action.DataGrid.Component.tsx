@@ -135,28 +135,6 @@ const ActionDataGridComponent = (): JSX.Element => {
     setPaginationModel(model);
   };
 
-  const exportDataFile = () =>{
-    // downloadCSV(EXPORT_FILE_PREFIX.DYNAMIC_FLOW, actionDataGridManager.dataGrid.filteredData.map((action: ActionRecord) =>  {
-    //   return {
-    //     actionId: action.actionId,
-    //     actionType: action.actionType,
-    //     callFlowName: action.callFlowName,
-    //     speech: action.speech,
-    //     options: action.options,
-    //     repeat: action.repeat,
-    //     timeout: action.timeout,
-    //     finishOnKey: action.finishOnKey,
-    //     minDigits: action.minDigits,
-    //     maxDigits: action.maxDigits,
-    //     nextActionId: action.nextActionId,
-    //     nextActionType: action.nextActionType,
-    //     createTime: action.createTime,
-    //     updateTime: action.updateTime
-    //   };
-    // }
-    // ));
-  };
-
   const handleCloseAlertBar = () => {
     setAlertBarProps(initialAlertBarProps);
   };
@@ -174,6 +152,7 @@ const ActionDataGridComponent = (): JSX.Element => {
       fetching: false
     }));
 
+    dataGridFilter.current.sourceRecords = dataGridController.current.sourceRecords;
     dataGridFilter.current.applyFilter();
     modalController.current.closeModal();
   };
