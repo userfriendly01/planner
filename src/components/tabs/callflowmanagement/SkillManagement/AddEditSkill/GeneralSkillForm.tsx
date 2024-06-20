@@ -47,7 +47,7 @@ export const GeneralSkillForm = () => {
       ...queue
     };
   });
-  const workerExpressionDisplay = skillState.skillForm.taskQueue.isNew ? `routing.skills HAS "${tempField.name}"` : skillState.skillForm.taskQueue.target_workers;
+  const workerExpression = skillState.skillForm.taskQueue.isNew ? `routing.skills HAS "${tempField.name}"` : skillState.skillForm.taskQueue.target_workers;
   const nameDisplay = skillState.skillForm.taskQueue.isNew ? tempField.newTaskQueue : skillState.skillForm.taskQueue.friendly_name;
 
   const [ filteredQueues, setFilteredQueues ] = React.useState(taskQueueOptions);
@@ -96,6 +96,16 @@ export const GeneralSkillForm = () => {
               payload: {
                 key: "name",
                 value: tempField.name
+              }
+            });
+            skFormDispatch({
+              type: skillActions.SET_FORM_FIELD,
+              payload: {
+                key: "taskQueue",
+                value: {
+                  ...skillState.skillForm.taskQueue,
+                  target_workers: workerExpression
+                }
               }
             });
           }}
@@ -225,7 +235,7 @@ export const GeneralSkillForm = () => {
           <Label><h2>Task Queue Details</h2></Label>
           <Label>{skillState.skillForm.taskQueue.sid}</Label>
           <Label>{nameDisplay}</Label>
-          <Label>{workerExpressionDisplay}</Label>
+          <Label>{workerExpression}</Label>
         </TaskQueueDisplay>
       </FormRow>
       <FormRow>

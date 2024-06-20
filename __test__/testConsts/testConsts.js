@@ -380,7 +380,6 @@ export const skillsList = [
     taskQueueName: "",
     timeOfDays: [],
     vhCallTarget: null,
-    vhCallerId: null,
     vhThreshold: null
   },
   {
@@ -408,7 +407,6 @@ export const skillsList = [
     levels: [],
     timeOfDays: [],
     vhCallTarget: null,
-    vhCallerId: null,
     vhThreshold: null
   },
   {
@@ -425,7 +423,6 @@ export const skillsList = [
     levels: [1, 2, 3, 4, 5, 6, 7],
     timeOfDays: [],
     vhCallTarget: null,
-    vhCallerId: null,
     vhThreshold: null
   },
   {
@@ -442,7 +439,6 @@ export const skillsList = [
     levels: [],
     timeOfDays: [],
     vhCallTarget: null,
-    vhCallerId: null,
     vhThreshold: null
   },
   {
@@ -459,7 +455,6 @@ export const skillsList = [
     levels: [],
     timeOfDays: [],
     vhCallTarget: null,
-    vhCallerId: null,
     vhThreshold: null
   }
 ];
@@ -478,7 +473,6 @@ export const skillGroups = [
       levels: [1, 2, 3],
       timeOfDays: [],
       vhCallTarget: null,
-      vhCallerId: null,
       vhThreshold: null
     }]
   },
@@ -495,7 +489,6 @@ export const skillGroups = [
       levels: [],
       timeOfDays: [],
       vhCallTarget: null,
-      vhCallerId: null,
       vhThreshold: null
     },
     {
@@ -508,7 +501,6 @@ export const skillGroups = [
       levels: [1, 2, 3, 4, 5, 6, 7],
       timeOfDays: [],
       vhCallTarget: null,
-      vhCallerId: null,
       vhThreshold: null
     }]
   }

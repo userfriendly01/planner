@@ -1,6 +1,5 @@
 import { Dropdown } from "components/core/CustomDropdown/Dropdown";
 import { CustomInput } from "components/core/CustomInput/CustomInput";
-import { PhoneNumberInput } from "components/core/PhoneNumberInput/PhoneNumberInput";
 import { FormRow } from "callflowmanagement/Skills.Styles";
 import {
   useSkillState,
@@ -20,16 +19,7 @@ export const CallflowSkillForm = (props: { missingFields: string[]}) => {
 
   const skillState: SkillState = useSkillState();
   const skFormDispatch = useSkillDispatch();
-  const [ tempField, setTempField ] = React.useState<{
-    vhCallerId: any,
-    vhThreshold: string,
-    vhCallTarget: string
-  }>({
-    vhCallerId: {
-      valid: false,
-      blurred: false,
-      ...skillState.skillForm.vhCallerId
-    },
+  const [ tempField, setTempField ] = React.useState({
     vhThreshold: skillState.skillForm.vhThreshold,
     vhCallTarget: skillState.skillForm.vhCallTarget
   });
@@ -117,58 +107,6 @@ export const CallflowSkillForm = (props: { missingFields: string[]}) => {
               payload: {
                 key: "applicationId",
                 value: newValue?.value
-              }
-            });
-          }}
-        />
-        <PhoneNumberInput
-          key={"vhCallerId"}
-          id="VH Caller Id"
-          label="VH Caller Id (Optional)"
-          error={missingFields.some((f: string) => f === "vhCallerId") && !tempField.vhCallerId.value}
-          style={inputStyles}
-          number={tempField.vhCallerId.value}
-          showError={tempField.vhCallerId.blurred && !tempField.vhCallerId.valid}
-          onBlur={() => {
-            if(tempField.vhCallerId.valid){
-              skFormDispatch({
-                type: skillActions.SET_FORM_FIELD,
-                payload: {
-                  key: "vhCallerId",
-                  value: {
-                    value: tempField.vhCallerId.value,
-                    e164: tempField.vhCallerId.e164
-                  }
-                }
-              });
-            } else {
-              setTempField({
-                ...tempField,
-                vhCallerId: {
-                  ...tempField.vhCallerId,
-                  blurred: tempField.vhCallerId.value.trim() === "" ? false : true
-                }
-              });
-              skFormDispatch({
-                type: skillActions.SET_FORM_FIELD,
-                payload: {
-                  key: "vhCallerId",
-                  value: {
-                    value: "",
-                    e164: ""
-                  }
-                }
-              });
-            }
-          }}
-          updateValue={(maskedValue: string, unmaskedValue: string, isValid: boolean, e164Number: string) => {
-            setTempField({
-              ...tempField,
-              vhCallerId: {
-                ...tempField.vhCallerId,
-                value: unmaskedValue,
-                valid: isValid,
-                e164: e164Number
               }
             });
           }}

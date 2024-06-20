@@ -154,10 +154,6 @@ export interface SkillFormState {
   timeOfDays: TimeOfDayRequestObject[],
   vhThreshold?: string,
   vhCallTarget: string,
-  vhCallerId: {
-    value: string,
-    e164: string
-  }
 }
 
 export interface TwilioQueue {
@@ -210,7 +206,6 @@ export interface CallflowSkill {
   applicationId: number,
   vhThreshold: number,
   vhCallTarget: string,
-  vhCallerId: string,
   timeOfDays: TimeOfDay[],
   updatedBy?: string
 }
@@ -251,7 +246,6 @@ export interface Skill {
   flashMessage: string,
   timeOfDays: any[],
   vhCallTarget: string,
-  vhCallerId: string,
   vhThreshold: number
 }
 

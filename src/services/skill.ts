@@ -20,26 +20,86 @@ import { getOperatingUnits } from "./operatingUnits";
    https://libertymutual.atlassian.net/browse/CCTP-13060
 */
 
-export const createSkill = async (skillForm: SkillFormState): Promise<any> => {
-  let taskQueueSid;
+export const createSkill = async (skillForm: SkillFormState, updatedBy: string): Promise<any> => {
+  let taskQueueSid = skillForm.taskQueue.sid;
   if(skillForm.taskQueue.isNew){
-    //create task queue
+    const newTaskQueuebody = {
+      targetWorkers: skillForm.taskQueue.target_workers,
+      operatingUnitSid: skillForm.taskQueue.operating_unit_sid,
+      friendlyName: skillForm.taskQueue.friendly_name
+    };
 
-    //response = taskQueueSid
+    try {
+      const res = await myAxios.post(apiPaths.TASK_QUEUES, newTaskQueuebody);
+      taskQueueSid = res.data.sid;
+    } catch(error){
+      const message = "Task Queue failed to create, unable to proceed with skill creation";
+      console.error(message, error);
+      throw message;
+    }
   }
+  try {
+    const newFlexSkillBody: any = { name: skillForm.name };
+    if(skillForm.levels.min && skillForm.levels.max){
+      newFlexSkillBody.multivalue = true;
+      newFlexSkillBody.minimum = skillForm.levels.min;
+      newFlexSkillBody.maximum = skillForm.levels.max;
+    }
+    await myAxios.post(apiPaths.SKILLS_TASKROUTER, newFlexSkillBody);
+  } catch(error){
+    const message = "Task Queue created but Flex skill failed to create. Database updates not attempted";
+    console.error(message, error);
+    throw message;
+  }
+
+  try {
+    const newCallflowSkillBody: any = {
+      skillNum: skillForm.name,
+      applicationId: skillForm.applicationId,
+      vhThreshold: skillForm.vhThreshold || null,
+      vhCallTarget: skillForm.vhCallTarget || null,
+      updatedBy,
+      timeOfDayIds: Object.values(skillForm.timeOfDays)
+    };
+
+    await myAxios.post(apiPaths.SKILLS_CALLFLOW, newCallflowSkillBody);
+  } catch(error){
+    const message = "Task Queue & Flex Skill created but callflow database failed to update";
+    console.error(message, error);
+    throw message;
+  }
+
+  try {
+    const newCallflowSkillBody: any = {
+      skillNum: skillForm.name,
+      applicationId: skillForm.applicationId,
+      vhThreshold: skillForm.vhThreshold || null,
+      vhCallTarget: skillForm.vhCallTarget || null,
+      updatedBy,
+      timeOfDayIds: Object.values(skillForm.timeOfDays)
+    };
+
+    await myAxios.post(apiPaths.SKILLS_CALLFLOW, newCallflowSkillBody);
+  } catch(error){
+    const message = "Task Queue & Flex Skill & Callflow DB Record created but contact manager database failed to update";
+    console.error(message, error);
+    throw message;
+  }
+
+
 //create skill in flex config
 };
 
 const getTaskRouterSkills = (): Promise<{ data: TwilioSkill[] }> => {
-  return myAxios.get(apiPaths.GET_SKILLS_TASKROUTER);
+  return myAxios.get(apiPaths.SKILLS_TASKROUTER);
 };
 
 const getCallflowSkills = (): Promise<{ data: CallflowSkill[] }> => {
-  return myAxios.get(apiPaths.GET_SKILLS_CALLFLOW);
+  return myAxios.get(apiPaths.SKILLS_CALLFLOW);
 };
 
 const getContactManagerSkills= (): Promise<{ data: CtmSkill[] }> => {
-  return myAxios.get(apiPaths.GET_SKILLS_CONTACT_MANAGER);
+  return myAxios.get(apiPaths.SKILLS_CONTACT_MANAGER);
 };
 
 export const addTaskRouterSkills = () => {

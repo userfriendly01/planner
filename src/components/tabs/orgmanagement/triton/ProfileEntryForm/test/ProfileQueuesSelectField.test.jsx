@@ -120,7 +120,6 @@ describe("<ProfileQueuesSelectField />", () => {
         levels: [ 1, 2, 3],
         timeOfDays: [],
         vhCallTarget: null,
-        vhCallerId: null,
         vhThreshold: null
       }];
       React.useState = jest.fn()
@@ -143,7 +142,6 @@ describe("<ProfileQueuesSelectField />", () => {
         levels: [],
         timeOfDays: [],
         vhCallTarget: null,
-        vhCallerId: null,
         vhThreshold: null
       }]);
       expect(rendered.container).not.toHaveTextContent("lsc OB Dialer 1");
@@ -168,7 +166,6 @@ describe("<ProfileQueuesSelectField />", () => {
           levels: [],
           timeOfDays: [],
           vhCallTarget: null,
-          vhCallerId: null,
           vhThreshold: null
         },
         {
@@ -199,7 +196,6 @@ describe("<ProfileQueuesSelectField />", () => {
         levels: [ 1, 2, 3],
         timeOfDays: [],
         vhCallTarget: null,
-        vhCallerId: null,
         vhThreshold: null
       }];
       React.useState = jest.fn()
@@ -223,7 +219,6 @@ describe("<ProfileQueuesSelectField />", () => {
           levels: [],
           timeOfDays: [],
           vhCallTarget: null,
-          vhCallerId: null,
           vhThreshold: null
         },
         {
@@ -239,7 +234,6 @@ describe("<ProfileQueuesSelectField />", () => {
           levels: [ 1, 2, 3],
           timeOfDays: [],
           vhCallTarget: null,
-          vhCallerId: null,
           vhThreshold: null
         }
       ]);
@@ -261,7 +255,6 @@ describe("<ProfileQueuesSelectField />", () => {
           levels: [],
           timeOfDays: [],
           vhCallTarget: null,
-          vhCallerId: null,
           vhThreshold: null
         }
       ]);

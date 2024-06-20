@@ -96,20 +96,9 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
       return;
     }
 
-    // const body: AddEditSkill = {
-    //   name: skillState.skillForm.name,
-    //   profileIds: skillState.skillForm.profileIds,
-    //   applicationId: skillState.skillForm.applicationId,
-    //   taskQueueSid: skillState.skillForm.taskQueue.sid,
-    //   vhCallTarget: skillState.skillForm.vhCallerId ? skillState.skillForm.vhCallerId.e164 : null,
-    //   vhThreshold: skillState.skillForm.vhThreshold ? parseInt(skillState.skillForm.vhThreshold) : null,
-    //   updatedBy: nNumber.toLowerCase(),
-    //   timeOfDayIds: []//FAITH redo this
-    // };
-
     // try {
 
-    //   const response = await createSkill(body);
+    //   const response = await createSkill(skillState.skillForm, nNumber);
 
     //   if (response.status === 200) {
     //     logger.info(`Successfully created new skill ${skillState.skillForm.name}`, {
