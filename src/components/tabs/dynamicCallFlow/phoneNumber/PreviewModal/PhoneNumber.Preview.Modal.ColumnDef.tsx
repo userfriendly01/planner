@@ -4,13 +4,16 @@ import React from "react";
 import {
   Chip, Switch
 } from "@mui/material";
+import { PhoneNumberRecordUtil } from "dynamicCallFlow/GraphQL/PhoneNumber.Record.Util";
+import { PhoneNumberRecordType } from "dynamicCallFlow/GraphQL/Dynamic.PhoneNumber.Interfaces";
 export const PhoneNumberPreviewModalColumnDef: GridColDef[] = [
   {
     headerName: "Dialed",
     field: "pkey",
     sortable: true,
     width: 110,
-    align: "left"
+    align: "left",
+    valueGetter: params => `${PhoneNumberRecordUtil.getPkey(params.row as PhoneNumberRecordType) || ""}`
   },
   {
     headerName: "Description",
