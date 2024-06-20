@@ -26,7 +26,7 @@ if (!msalInstance.getActiveAccount() && msalInstance.getAllAccounts().length > 0
   msalInstance.setActiveAccount(msalInstance.getAllAccounts()[0]);
 }
 msalInstance.enableAccountStorageEvents();
-msalInstance.addEventCallback(event => {
+msalInstance.addEventCallback((event: any) => {
   if (
     (event.eventType === EventType.LOGIN_SUCCESS ||
       event.eventType === EventType.ACQUIRE_TOKEN_SUCCESS ||

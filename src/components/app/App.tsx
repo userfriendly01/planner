@@ -10,11 +10,11 @@ import {
   Overlay,
   LoadingMessage
 } from "components/app/App.Styles";
-import ScrollToTop from "./ScrollToTop";
+import ScrollToTop from "components/ScrollToTop";
 import { getWorkerProfileId } from "authentication/authUtils";
 import { getFilteredPermissions } from "authentication/authenticationProfiles";
-import Header from "../header/Header/Header";
-import NavTabs from "../navigation/NavTabs";
+import Header from "components/Header";
+import NavTabs from "components/NavTabs";
 import NotificationModal from "components/NotificationModal";
 import {
   useAdminDispatch, useAdminState
@@ -39,7 +39,7 @@ const App = () => {
   const { instance } = useMsal();
   const account = instance.getActiveAccount();
 
-  const [loadResult, setLoadResult] = useState({
+  const [loadResult, setLoadResult] = useState<any>({
     home: null,
     status: null
   });
@@ -61,7 +61,7 @@ const App = () => {
         });
       } else {
         try {
-          const nNumber = account.idTokenClaims.employeeid;
+          const nNumber = account.idTokenClaims.employeeid as string;
           const profileId = await getWorkerProfileId(nNumber);
           const isAdmin = account.idTokenClaims.roles.includes("Admin");
           dispatch({

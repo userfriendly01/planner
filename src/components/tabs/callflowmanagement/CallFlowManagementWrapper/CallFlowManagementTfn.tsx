@@ -2,9 +2,9 @@ import { CallflowWrapper } from "./CallFlowManagement.Styles";
 import {
   ConfirmationModalOptsProps,
   SaveResultProps
-} from "../CallFlowConfirmationModal/CallFlowConfirmationModal.Interfaces";
-import { CallFlowConfirmationModal } from "callflowmanagement/CallFlowConfirmationModal/CallFlowConfirmationModal";
-import { TfnActivation } from "callflowmanagement/TfnActivation/TfnActivation";
+} from "callflowmanagement/CallFlowConfirmationModal.Interfaces";
+import { CallFlowConfirmationModal } from "callflowmanagement/CallFlowConfirmationModal";
+import { TfnActivation } from "callflowmanagement/TfnActivation";
 import React from "react";
 import { Modal } from "@mui/material";
 

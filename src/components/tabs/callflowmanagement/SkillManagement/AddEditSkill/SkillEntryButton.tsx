@@ -3,7 +3,7 @@ import { StyledExportButton } from "../Skills.Styles";
 import { Modal } from "@mui/material";
 import React from "react";
 import SkillEntryFormModal from "./SkillEntryFormModal";
-import { formModes } from "globals/index";
+import { formModes } from "globals";
 
 const defaultSaveResult: any = {
   status: null,

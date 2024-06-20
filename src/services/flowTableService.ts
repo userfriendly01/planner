@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { env } from "globals/index";
+import { env } from "globals";
 import { logger } from "utils/logger";
 
 /**
@@ -8,8 +8,8 @@ import { logger } from "utils/logger";
  * @param {String} nextToken Token for next set of data
  * @returns list of data and nextToken if any
  */
-async function queryFlowData(accessToken, nextToken = null) {
-  let result = {
+async function queryFlowData(accessToken: string, nextToken: string = null) {
+  let result: any = {
     errors: []
   };
   try {
@@ -70,7 +70,7 @@ async function queryFlowData(accessToken, nextToken = null) {
     });
     result = await response.json();
     if (result.errors) {
-      logger.error("Error in queryFlowData", result.errors.map(x => x.message) , false);
+      logger.error("Error in queryFlowData", result.errors.map((x: any) => x.message) , false);
     }
   } catch (error) {
     result.errors.push("Error in queryFlowData " + error.message);
@@ -83,8 +83,8 @@ async function queryFlowData(accessToken, nextToken = null) {
  * @param {String} accessToken OAuth tokent to use while calling graphql query
  * @returns list of data and nextToken if any
  */
-async function queryDynamicFlowData(accessToken) {
-  let result = {};
+async function queryDynamicFlowData(accessToken: string) {
+  let result: any = {};
   try {
     const response = await fetch(env.GRAPH_API_URL, {
       method: "POST",
@@ -149,7 +149,7 @@ async function queryDynamicFlowData(accessToken) {
     });
     result = await response.json();
     if (result.errors) {
-      logger.error("Error in queryDynamicFlowData", result.errors.map(x => x.message) , false);
+      logger.error("Error in queryDynamicFlowData", result.errors.map((x: any) => x.message) , false);
     }
   } catch (error) {
     logger.error("Error in queryDynamicFlowData", { error }, false);
@@ -168,8 +168,8 @@ async function queryDynamicFlowData(accessToken) {
  * @param {object} queryFunction - the query function used in this function that will retrieve the records
  * @returns {object} the counter and the flowData
  */
-async function retrieveFlowData(accessToken, counter = 1, nextToken = null, rowInsert, flowData = [], queryFunction = queryFlowData) {
-  let result = {};
+async function retrieveFlowData(accessToken: string, counter = 1, nextToken: string = null, rowInsert: any, flowData: any[] = [], queryFunction = queryFlowData) {
+  let result: any = {};
   let errors = false;
   const isLegacyCallFlowTable = queryFunction === queryFlowData;
   const resultSet = isLegacyCallFlowTable ? "listCctSharedCallFlowDbs" : "listPhoneNumbers";
@@ -192,7 +192,7 @@ async function retrieveFlowData(accessToken, counter = 1, nextToken = null, rowI
 
       if (listItems.length !== 0) {
 
-        listItems.forEach(item => {
+        listItems.forEach((item: any) => {
           if(item) {
             const itemCopy = isLegacyCallFlowTable ? createFlowFromLegacyPhone(item) : createFlowFromAction(item);
             flowData.push({
@@ -226,7 +226,7 @@ async function retrieveFlowData(accessToken, counter = 1, nextToken = null, rowI
  * @param {any} item
  * @returns
  */
-function createFlowFromLegacyPhone (item) {
+function createFlowFromLegacyPhone (item: any) {
 
   const convertedCreateTime = dateConversion(item.createTime).toISOString();
 
@@ -281,7 +281,7 @@ function createFlowFromLegacyPhone (item) {
  * @param {any} item
  * @returns
  */
-function createFlowFromAction (item) {
+function createFlowFromAction (item: any) {
   const convertedCreateTime = dateConversion(item.createTime).toISOString();
 
   return {
@@ -335,7 +335,7 @@ function createFlowFromAction (item) {
  * @param {any} createTime
  * @returns Date
  */
-function dateConversion(createTime) {
+function dateConversion(createTime: any) {
   let returnDate = new Date(0);
   try {
 
@@ -365,8 +365,8 @@ function dateConversion(createTime) {
  * @param {*} currentTimePassed
  * @returns
  */
-function addFlowInput (item, dataRequestsPassed, currentTimePassed){
-  const input = {
+function addFlowInput (item: any, dataRequestsPassed: any, currentTimePassed: any){
+  const input: any = {
     pkey: item.pkey.value,
     content: {
       callIntent: item.callIntent?.value,
@@ -414,8 +414,8 @@ function addFlowInput (item, dataRequestsPassed, currentTimePassed){
  * @param {*} item
  * @returns
  */
-function updateFlowInput(item){
-  const input = {
+function updateFlowInput(item: any){
+  const input: any = {
     pkey: item.pkey,
     agentId: item.agentId || "",
     brand: item.brand,
@@ -466,7 +466,7 @@ function updateFlowInput(item){
  * @param {String} accessToken token to use while calling graphql query
  * @returns
  */
-async function updateFlowDB(item, accessToken) {
+async function updateFlowDB(item: any, accessToken: string) {
   let response;
   const input = updateFlowInput(item);
   try {
@@ -541,7 +541,7 @@ async function updateFlowDB(item, accessToken) {
  * @param {Array} dataRequests list of data requests.
  * @returns
  */
-async function addFlowRule(item, accessToken, curTime = new Date().toISOString(), dataRequests=[]) {
+async function addFlowRule(item: any, accessToken: string, curTime = new Date().toISOString(), dataRequests: any[] =[]) {
   let response;
   const input = addFlowInput(item, dataRequests, curTime);
   try {
@@ -612,7 +612,7 @@ async function addFlowRule(item, accessToken, curTime = new Date().toISOString()
  * @param {String} accessToken token to use while calling graphql query
  * @returns
  */
-async function deleteFlowRule(item, accessToken) {
+async function deleteFlowRule(item: any, accessToken: string) {
   let response;
   const input = {
     pkey: item.pkey
@@ -677,10 +677,10 @@ async function deleteFlowRule(item, accessToken) {
   }
   return response;
 }
-async function batchDeleteItems(items, accessToken){
-  var flowDeleteArray=[];
+async function batchDeleteItems(items: any[], accessToken: string){
+  const flowDeleteArray: any[] = [];
   const size=24;
-  const response = {
+  const response: any = {
     "errors": [],
     "success": [],
     "flag": false,
@@ -694,9 +694,9 @@ async function batchDeleteItems(items, accessToken){
   for(const flowValue of flowDeleteArray){
     const resp = await flowBatchDelete(flowValue,accessToken);
 
-    resp?.errors?.forEach( y => response?.errors?.push(y));
-    resp?.success?.forEach( y => response?.success?.push(y));
-    resp?.failure?.forEach(y => response?.failure?.push(y));
+    resp?.errors?.forEach((y: any) => response?.errors?.push(y));
+    resp?.success?.forEach((y: any) => response?.success?.push(y));
+    resp?.failure?.forEach((y: any) => response?.failure?.push(y));
 
     if(resp?.errors){
       logger.error("Error while deleting the records", resp.errors, false);
@@ -707,7 +707,7 @@ async function batchDeleteItems(items, accessToken){
 }
 
 
-async function flowBatchDelete(items, accessToken){
+async function flowBatchDelete(items: any, accessToken: string){
   let response;
   try{
     const body = JSON.stringify({
@@ -747,14 +747,14 @@ async function flowBatchDelete(items, accessToken){
  * @param {String} accessToken token to use while calling graphql query
  * @returns {Object} flag, success rows and failure rows
  */
-const batchFlowUpdate = async(items, accessToken) =>{
+const batchFlowUpdate = async(items: any, accessToken: string) =>{
   if(items.length === 0){
     return {
       flag: false,
       success: [],
       failure: [],
       errors: []
-    };
+    } as any;
   }
   const flowUpdateArray=[];
   const size = 25;
@@ -786,8 +786,8 @@ const batchFlowUpdate = async(items, accessToken) =>{
  * @param {*} accessToken
  * @returns
  */
-const updateFlowBatchRun = async(items, accessToken) =>{
-  const input = items.map(item=>{
+const updateFlowBatchRun = async(items: any, accessToken: string) =>{
+  const input = items.map((item: any)=>{
     return {
       pkey: item.pkey,
       agentId: item.agentId || "",
@@ -891,7 +891,7 @@ const updateFlowBatchRun = async(items, accessToken) =>{
   }
 };
 
-const batchFlowCreate = async(items, accessToken) =>{
+const batchFlowCreate = async(items: any, accessToken: string) =>{
   const flowCreateArray=[];
   const size = 25;
 
@@ -925,7 +925,7 @@ const batchFlowCreate = async(items, accessToken) =>{
   return response;
 };
 
-const batchDynamicFlowCreate = async(items, accessToken) =>{
+const batchDynamicFlowCreate = async(items: any, accessToken: string) =>{
   const dynamicFlowCreateArray=[];
   const size = 25;
 
@@ -966,8 +966,8 @@ const batchDynamicFlowCreate = async(items, accessToken) =>{
  * @param {any} allResults - a set results from all of the operations
  * @returns {any} a consolidated response object
  */
-const buildResponse = allResults => {
-  const response = {
+const buildResponse = (allResults: any) => {
+  const response: any = {
     alertMsg: "",
     errors: [],
     failure: [],
@@ -975,12 +975,12 @@ const buildResponse = allResults => {
     success: []
   };
 
-  allResults.forEach(x=>{
-    x.result?.errors?.forEach( y => response?.errors?.push(y));
+  allResults.forEach((x: any)=>{
+    x.result?.errors?.forEach((y: any) => response?.errors?.push(y));
     if(x.result?.errors && x.result.errors.length !== 0) {
-      x.records.forEach(z => response.failure.push(z));
+      x.records.forEach((z: any) => response.failure.push(z));
     } else {
-      x.records?.forEach(z => response.success.push(z));
+      x.records?.forEach((z: any) => response.success.push(z));
     }
   });
 
@@ -998,13 +998,13 @@ const buildResponse = allResults => {
  * @param {String} accessToken token to use while calling graphql query
  * @returns
  */
-const createDynamicFlowRunItem = async(items, accessToken) =>{
+const createDynamicFlowRunItem = async(items: any, accessToken: string) =>{
   let response;
-  const announcements = [];
-  const menus = [];
-  const menuOptions = [];
+  const announcements: any[] = [];
+  const menus: any[] = [];
+  const menuOptions: any[] = [];
   let callFlowName = "";
-  items.map(item=>{
+  items.map((item: any) => {
     if(item.actionType === "ANNOUNCEMENT")
     {
       announcements.push({
@@ -1053,7 +1053,7 @@ const createDynamicFlowRunItem = async(items, accessToken) =>{
         createTime: Math.floor(new Date().getTime()/1000),
         updateTime: Math.floor(new Date().getTime()/1000),
         options:
-          item.options.map(option => {
+          item.options.map((option: any) => {
             return {
               callerContextAttributes: JSON.stringify(option.callerContextAttributes),
               digit: option.digit,
@@ -1112,7 +1112,7 @@ const createDynamicFlowRunItem = async(items, accessToken) =>{
  * @param {String} accessToken token to use while calling graphql query
  * @returns
  */
-const createFlowRunItem = async(items, accessToken) =>{
+const createFlowRunItem = async (items: any[], accessToken: string) =>{
   let response;
   const input = items.map(item=>{
     return {
@@ -1218,8 +1218,8 @@ const createFlowRunItem = async(items, accessToken) =>{
  * @param {String} nextToken Token for next set of data
  * @returns list of data and nextToken if any
  */
-async function queryDynamicPhoneData(accessToken, nextToken = null) {
-  let result = nextToken ? undefined : {};
+async function queryDynamicPhoneData(accessToken: string, nextToken: string = null) {
+  let result: any = nextToken ? undefined : {};
 
   try {
     const response = await fetch(env.GRAPH_API_URL, {
@@ -1275,7 +1275,7 @@ async function queryDynamicPhoneData(accessToken, nextToken = null) {
     });
     result = await response.json();
     if (result.errors) {
-      logger.error("Error in queryDynamicPhoneData", result.errors.map(x => x.message) , false);
+      logger.error("Error in queryDynamicPhoneData", result.errors.map((x: any) => x.message) , false);
     }
 
   } catch (error) {
@@ -1292,7 +1292,7 @@ async function queryDynamicPhoneData(accessToken, nextToken = null) {
  * @param {String} accessToken OAuth Access Token
  * @returns {flowData} list of data contain all the result present in DB
  */
-async function retrieveDynamicFlowData(accessToken, counter = 1, nextToken = null, rowInsert, flowData = []) {
+async function retrieveDynamicFlowData(accessToken: string, counter = 1, nextToken: string = null, rowInsert: any, flowData: any[] = []) {
   return retrieveFlowData(accessToken, counter, nextToken, rowInsert, flowData, queryDynamicPhoneData);
 }
 
@@ -1301,7 +1301,7 @@ async function retrieveDynamicFlowData(accessToken, counter = 1, nextToken = nul
  * @param {*} item
  * @returns
  */
-function updateDynamicFlowInput(item){
+function updateDynamicFlowInput(item: any){
   const updateTime = Math.floor(new Date().getTime()/1000);
   const input = {
     brand: item.brand,
@@ -1348,7 +1348,7 @@ function updateDynamicFlowInput(item){
  * @param {String} accessToken token to use while calling graphql query
  * @returns
  */
-async function updateDynamicFlowDB(item, accessToken) {
+async function updateDynamicFlowDB(item: any, accessToken: string) {
   let response;
   const input = updateDynamicFlowInput(item);
   try {
@@ -1388,7 +1388,7 @@ async function updateDynamicFlowDB(item, accessToken) {
  * @param {*} currentTimePassed
  * @returns
  */
-function addDynamicFlowInput (item, dataRequestsPassed, currentTimePassed){
+function addDynamicFlowInput (item: any, dataRequestsPassed: any, currentTimePassed: any){
   const input = {
     brand: item.brand.value,
     callFlowName: item.callFlowName?.value,
@@ -1435,7 +1435,7 @@ function addDynamicFlowInput (item, dataRequestsPassed, currentTimePassed){
  * @param {Number} curTime the current time, for the db record's create time
  * @returns
  */
-async function addDynamicFlowRule(item, accessToken, curTime = Math.floor(new Date().getTime()/1000), dataRequests=[]) {
+async function addDynamicFlowRule(item: any, accessToken: string, curTime = Math.floor(new Date().getTime()/1000), dataRequests: any[] = []) {
   let response;
   const input = addDynamicFlowInput(item, dataRequests, curTime);
   try {
@@ -1473,7 +1473,7 @@ async function addDynamicFlowRule(item, accessToken, curTime = Math.floor(new Da
  * @param {String} accessToken token to use while calling graphql query
  * @returns
  */
-async function deleteDynamicFlowRule(item, accessToken) {
+async function deleteDynamicFlowRule(item: any, accessToken: string) {
   let response;
   const input = {
     id: item.pkey
@@ -1505,8 +1505,8 @@ async function deleteDynamicFlowRule(item, accessToken) {
   }
   return response;
 }
-async function batchDynamicDeleteItems(items,accessToken){
-  var flowDeleteArray=[];
+async function batchDynamicDeleteItems(items: any, accessToken: string){
+  const flowDeleteArray = [];
   const size=24;
 
   const itemsCopy = [...items];
@@ -1529,9 +1529,9 @@ async function batchDynamicDeleteItems(items,accessToken){
   logger.info("Delete Batch Flow DB Response:", response, false);
   return response;
 }
-async function flowDynamicBatchDelete(items, accessToken){
+async function flowDynamicBatchDelete(items: any, accessToken: string){
   let request;
-  const input = items.map(item=>{
+  const input = items.map((item: any) => {
     if(!item.actionType){
       request = {
         id: item
@@ -1594,7 +1594,7 @@ async function flowDynamicBatchDelete(items, accessToken){
  * @param {String} accessToken token to use while calling graphql query
  * @returns
  */
-const batchDynamicFlowUpdate = async(items, accessToken) =>{
+const batchDynamicFlowUpdate = async(items: any, accessToken: string) =>{
   if(items.length === 0){
     return {
       flag: false,
@@ -1627,8 +1627,8 @@ const batchDynamicFlowUpdate = async(items, accessToken) =>{
 
   return response;
 };
-const updateDynamicFlowBatchRun = async(items, accessToken) =>{
-  const input = items.map(item=>{
+const updateDynamicFlowBatchRun = async(items: any, accessToken: string) =>{
+  const input = items.map((item: any) => {
     return {
       brand: item.brand,
       callFlowName: item.callFlowName,

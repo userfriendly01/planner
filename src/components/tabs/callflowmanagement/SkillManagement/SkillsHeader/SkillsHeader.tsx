@@ -5,7 +5,7 @@ import { SkillsHeaderProps } from "../Skills.Interfaces";
 import { StyledHeader } from "../Skills.Styles";
 import { SearchBox } from "components/SearchBox";
 import { useAdminState } from "context/appContext";
-import { formModes } from "globals/index";
+import { formModes } from "globals";
 import { TritonProfile } from "globals/interfaces";
 import React from "react";
 

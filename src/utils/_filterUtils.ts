@@ -1,4 +1,4 @@
-export const filterWorkerSearch = (worker, searchValue) => {
+export const filterWorkerSearch = (worker: any, searchValue: string) => {
   if (!worker || !worker.attributes) {
     return false;
   }
@@ -29,7 +29,7 @@ export const filterWorkerSearch = (worker, searchValue) => {
   return false;
 };
 
-export const filterSkillsByName = (skill, searchValue) => {
+export const filterSkillsByName = (skill: any, searchValue: string) => {
   if (!skill) {
     return false;
   }
@@ -44,7 +44,7 @@ export const filterSkillsByName = (skill, searchValue) => {
   return false;
 };
 
-export const filterWfmUserTable = (wfmUser, searchValue) => {
+export const filterWfmUserTable = (wfmUser: any, searchValue: string) => {
   if (!wfmUser) { return false; }
 
   if (!searchValue) { return true; }

@@ -19,7 +19,7 @@ import {
   skillsList
 } from "testUtils";
 import { theme } from "globals/theme";
-import { apiPaths } from "globals/index";
+import { apiPaths } from "globals";
 import { ThemeProvider } from "styled-components";
 import { act } from "react-dom/test-utils";
 import { getAggregateQueuesType } from "services/aggregateQueues";

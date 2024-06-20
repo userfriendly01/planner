@@ -3,7 +3,7 @@ import MockAdapter from "axios-mock-adapter";
 import { StyledButton } from "components/StyledButton";
 import { DialListTable } from "orgmanagement/DialListTable";
 import { ProfileDropDown } from "orgmanagement/ProfileDropDown";
-import { apiPaths } from "globals/index";
+import { apiPaths } from "globals";
 import { useAdminState } from "context/appContext";
 import React from "react";
 import { act } from "react-dom/test-utils";

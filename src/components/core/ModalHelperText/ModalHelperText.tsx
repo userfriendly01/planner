@@ -1,6 +1,11 @@
-import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
+
+interface ModalHelperTextProps {
+  clearFunction: VoidFunction,
+  error: boolean,
+  message: string
+}
 
 const ClearButton = styled.button`
   display: flex;
@@ -16,7 +21,7 @@ const ClearButton = styled.button`
   justify-content: center;
 `;
 
-const HelperTextSection = styled.div`
+const HelperTextSection = styled.div<{error: boolean}>`
   display: flex;
   align-items: center;
   color: ${props => props.error ? "red" : "green"};
@@ -34,7 +39,7 @@ const Text = styled.div`
   margin: 20px;
 `;
 
-export const ModalHelperText = props => {
+export const ModalHelperText = (props: ModalHelperTextProps) => {
   const {
     clearFunction,
     message,
@@ -47,10 +52,4 @@ export const ModalHelperText = props => {
       <ClearButton onClick={clearFunction}>X</ClearButton>
     </HelperTextSection>
   );
-};
-
-ModalHelperText.propTypes = {
-  clearFunction: PropTypes.func,
-  error: PropTypes.bool,
-  message: PropTypes.string
 };

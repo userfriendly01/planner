@@ -1,8 +1,8 @@
 import AlohaFlowContainer from "alohaFlow/AlohaFlowContainer";
 import AlohaRoutingContainer from "alohaRouting/AlohaRoutingContainer";
 import { BulkChanges } from "usermanagement/BulkChanges";
-import { CallFlowManagementSkills } from "callflowmanagement/CallFlowManagementWrapper/CallFlowManagementSkills";
-import { CallFlowManagementTfn } from "callflowmanagement/CallFlowManagementWrapper/CallFlowManagementTfn";
+import { CallFlowManagementSkills } from "callflowmanagement/CallFlowManagementSkills";
+import { CallFlowManagementTfn } from "callflowmanagement/CallFlowManagementTfn";
 import { CompareProfiles } from "usermanagement/CompareProfiles";
 import DynamicFlowContainer from "dynamicFlow/DynamicFlowContainer";
 import ProfileDirectoryContainer from "orgmanagement/ProfileDirectoryContainer";

@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 /* class-methods-use-this,
    no-console,
    react/jsx-props-no-spreading

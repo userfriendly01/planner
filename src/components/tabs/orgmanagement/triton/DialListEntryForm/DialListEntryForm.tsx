@@ -15,11 +15,8 @@ import {
   apiPaths,
   formModes,
   timeouts
-} from "globals/index";
-import {
-  ModalOverlayStatuses
-} from "globals/interfaces";
-import PropTypes from "prop-types";
+} from "globals";
+import { ModalOverlayStatuses } from "globals/interfaces";
 import React, { useState } from "react";
 import styled from "styled-components";
 import { myAxios } from "utils/myAxios";
@@ -70,9 +67,32 @@ const TextFieldContainer = styled.div`
   width: 100%;
 `;
 
-const validateContactNme = value => value.length > 0;
+interface DialListEntryFormInitialValuesProps {
+  contact_nme?: string,
+  contact_num?: string,
+  external_num?: string
+}
 
-export const DialListEntryForm = props => {
+export interface DialListTableStateProps {
+  dialListId?: number,
+  dialListEntryFormInitialValues?: DialListEntryFormInitialValuesProps,
+  dialListEntryFormMode?: string,
+  isDialListEntryFormOpen?: boolean,
+  otherContactNums?: any[],
+  overlayMessage?: string,
+  saveStatus?: ModalOverlayStatuses
+}
+
+interface DialListEntryFormProps {
+    dialListTableState: DialListTableStateProps,
+    profileId: string | number,
+    refreshProfileData: VoidFunction,
+    setDialListTableState: (props: DialListTableStateProps) => void
+}
+
+const validateContactNme = (value: string) => value.length > 0;
+
+export const DialListEntryForm = (props: DialListEntryFormProps) => {
   const {
     dialListTableState,
     profileId,
@@ -114,7 +134,7 @@ export const DialListEntryForm = props => {
     isDialListEntryFormOpen: false
   });
 
-  const waitAndHideOverlay = closeDialListEntryForm => setTimeout(() => {
+  const waitAndHideOverlay = (closeDialListEntryForm?: boolean) => setTimeout(() => {
     if (closeDialListEntryForm) {
       onClose();
     } else {
@@ -289,20 +309,4 @@ export const DialListEntryForm = props => {
       </PaperContainer>
     </ModalContainer>
   );
-};
-
-DialListEntryForm.propTypes = {
-  dialListTableState: PropTypes.shape({
-    dialListId: PropTypes.number,
-    dialListEntryFormInitialValues: PropTypes.shape({
-      contact_nme: PropTypes.string,
-      contact_num: PropTypes.string,
-      external_num: PropTypes.string
-    }).isRequired,
-    dialListEntryFormMode: PropTypes.string.isRequired,
-    otherContactNums: PropTypes.array.isRequired
-  }).isRequired,
-  profileId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  refreshProfileData: PropTypes.func.isRequired,
-  setDialListTableState: PropTypes.func.isRequired
 };

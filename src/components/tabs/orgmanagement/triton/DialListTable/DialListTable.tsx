@@ -6,6 +6,7 @@ import {
   Delete,
   Edit
 } from "@mui/icons-material";
+import { DialListTableStateProps } from "../DialListEntryForm/DialListEntryForm";
 import { DialListEntryForm } from "orgmanagement/DialListEntryForm";
 import { ModalOverlay } from "components/ModalOverlay";
 import { StyledButton } from "components/StyledButton";
@@ -13,9 +14,8 @@ import {
   apiPaths,
   formModes,
   timeouts
-} from "globals/index";
+} from "globals";
 import { ModalOverlayStatuses } from "globals/interfaces";
-import PropTypes from "prop-types";
 import React, { useState } from "react";
 import { formatTenDigitNumber } from "utils/numberUtils";
 import { logger } from "utils/logger";
@@ -119,7 +119,13 @@ const TableText = styled.div`
   margin: 2px;
 `;
 
-export const DialListTable = props => {
+interface DialListTableProps {
+    dialList: any[],
+    profileId: number | string,
+    refreshProfileData: VoidFunction
+}
+
+export const DialListTable = (props: DialListTableProps) => {
   const {
     dialList,
     profileId,
@@ -129,7 +135,7 @@ export const DialListTable = props => {
   const state = useAdminState();
   const { nNumber } = state.userContext;
 
-  const [dialListTableState, setDialListTableState] = useState({
+  const [dialListTableState, setDialListTableState] = useState<DialListTableStateProps>({
     dialListId: null,
     dialListEntryFormInitialValues: {}, // populated with diallist entry data and passed to DialListEntryForm
     dialListEntryFormMode: "",
@@ -147,7 +153,7 @@ export const DialListTable = props => {
     });
   }, timeouts.MODAL_OVERLAY);
 
-  const deleteButtonOnClick = diallistId => () => {
+  const deleteButtonOnClick = (diallistId: number) => () => {
     const popUp = confirm("Are you sure you want to delete this dial list entry?");
     if (popUp === true) {
       setDialListTableState({
@@ -185,16 +191,18 @@ export const DialListTable = props => {
   };
 
   const addContactButtonClicked = () => {
-    setDialListTableState({
-      dialListEntryFormInitialValues: {
-        contact_nme: "",
-        contact_num: "",
-        external_num: ""
-      },
-      dialListEntryFormMode: formModes.INSERT,
-      isDialListEntryFormOpen: true,
-      otherContactNums: dialList.map(entry => entry.contact_num)
-    });
+    setDialListTableState(
+      {
+        dialListEntryFormInitialValues: {
+          contact_nme: "",
+          contact_num: "",
+          external_num: ""
+        },
+        dialListEntryFormMode: formModes.INSERT,
+        isDialListEntryFormOpen: true,
+        otherContactNums: dialList.map(entry => entry.contact_num)
+      }
+    );
   };
 
   return(
@@ -276,10 +284,4 @@ export const DialListTable = props => {
       }
     </TableContainer>
   );
-};
-
-DialListTable.propTypes = {
-  dialList: PropTypes.array.isRequired,
-  profileId: PropTypes.number.isRequired,
-  refreshProfileData: PropTypes.func.isRequired
 };
