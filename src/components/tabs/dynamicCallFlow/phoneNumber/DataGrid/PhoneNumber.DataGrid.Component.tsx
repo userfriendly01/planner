@@ -77,20 +77,21 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
   const [alertBarProps, setAlertBarProps] = useState<AlertBarProps>(initialAlertBarProps);
   const alertBarController = useRef<AlertBarController>(new AlertBarController(setAlertBarProps));
 
-  // fieldOptions is used to store the options for the fields in the form.  Some options are static, some are derived from the values in sourceRecords.
-  const [fieldOptions, setFieldOptions] = useState<FieldOptions>({} as FieldOptions);
-
-  const [legacyPhoneNumberFormEditHandler] = useState(new EditPhoneNumberFormHandler());
-  const [legacyPhoneNumberFormAddHandler] = useState(new AddPhoneNumberFormHandler());
-  const [legacyFieldConfigs, setLegacyFieldConfigs] = useState<FieldConfigs>(LegacyPhoneNumberFormFieldConfigs);
-
-  const [dynamicPhoneNumberFormEditHandler] = useState(new EditPhoneNumberFormHandler());
-  const [dynamicPhoneNumberFormAddHandler] = useState(new AddPhoneNumberFormHandler());
-  const [dynamicFieldConfigs, setDynamicFieldConfigs] = useState<FieldConfigs>(DynamicPhoneNumberFormFieldConfigs);
-
   const dataGridApi = useGridApiRef<GridApiCommunity>();
   const dataGridController = useRef(new PhoneNumberDataGridController(dataGridApi, dataGridFilter,
     alertBarController));
+
+  // fieldOptions is used to store the options for the fields in the form.  Some options are static, some are derived from the values in sourceRecords.
+  const [fieldOptions, setFieldOptions] = useState<FieldOptions>({} as FieldOptions);
+
+  const [legacyPhoneNumberFormEditHandler] = useState(new EditPhoneNumberFormHandler(dataGridController));
+  const [legacyPhoneNumberFormAddHandler] = useState(new AddPhoneNumberFormHandler(dataGridController));
+  const [legacyFieldConfigs, setLegacyFieldConfigs] = useState<FieldConfigs>(LegacyPhoneNumberFormFieldConfigs);
+
+  const [dynamicPhoneNumberFormEditHandler] = useState(new EditPhoneNumberFormHandler(dataGridController));
+  const [dynamicPhoneNumberFormAddHandler] = useState(new AddPhoneNumberFormHandler(dataGridController));
+  const [dynamicFieldConfigs, setDynamicFieldConfigs] = useState<FieldConfigs>(DynamicPhoneNumberFormFieldConfigs);
+
 
   useEffect(() => {
     const loadDataGrid = async()=> {
@@ -154,6 +155,8 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
 
   const openEditFormModal = (recordToEdit: PhoneNumberRecordType): void => {
     setSelectedRecord(recordToEdit);
+    dataGridController.current.sourceRecords = sourceRecords;
+    dataGridController.current.dataGridRecords = dataGridRecords;
 
     if (PhoneNumberRecordUtil.isLegacyPhoneNumberRecord(recordToEdit)) {
       modalController.current.openModal(PhoneNumberModalTypeEnum.EditLegacyPhoneNumber);
@@ -169,11 +172,20 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
       phoneNumber: ""
     });
 
+    dataGridController.current.sourceRecords = sourceRecords;
+    dataGridController.current.dataGridRecords = dataGridRecords;
+
     if (PhoneNumberRecordUtil.isLegacyPhoneNumberRecord(selectedRecord)) {
       modalController.current.openModal(PhoneNumberModalTypeEnum.AddLegacyPhoneNumber);
     } else {
       modalController.current.openModal(PhoneNumberModalTypeEnum.AddDynamicPhoneNumber);
     }
+  };
+
+  const postFormHandler = (): void => {
+    setSourceRecords([ ...dataGridController.current.sourceRecords ]);
+    dataGridFilter.current.applyFilter(dataGridController.current.sourceRecords);
+    modalController.current.closeModal();
   };
 
   /**
@@ -229,6 +241,10 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
     modalController.current.closeModal();
   };
 
+  function getRowId(row: PhoneNumberRecordType) {
+    return PhoneNumberRecordUtil.getPhoneNumber(row);
+  }
+
   PhoneNumberDataGridColumnDef[0].renderCell = (gridRenderCellParams: GridRenderCellParams<PhoneNumberRecordType>) =>
     (<a href="#" onClick={() => openEditFormModal(gridRenderCellParams.row)}>{`${gridRenderCellParams.value}`}</a>);
 
@@ -255,7 +271,7 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
             checkboxSelection
             disableRowSelectionOnClick
             autoHeight
-            getRowId={(phoneNumberRecord: PhoneNumberRecordType) => PhoneNumberRecordUtil.getPhoneNumber(phoneNumberRecord)}
+            getRowId={getRowId}
             onRowSelectionModelChange={handleSelectionChanges}
             sx={{
               "& .MuiDataGrid-columnHeaderTitle": {
@@ -277,6 +293,7 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
         handleOnClone={handleOnClone}
         postHandleOnSave={postHandleOnUpdate}
         postHandleOnDelete={postHandleOnDelete}
+        postFormHandler={postFormHandler}
       />
       <PhoneNumberFormModal
         isOpen={currentOpenModal === PhoneNumberModalTypeEnum.AddLegacyPhoneNumber}
@@ -290,6 +307,7 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
         handleOnClone={handleOnClone}
         postHandleOnSave={postHandleOnAdd}
         postHandleOnDelete={postHandleOnDelete}
+        postFormHandler={postFormHandler}
       />
       <PhoneNumberFormModal
         isOpen={currentOpenModal === PhoneNumberModalTypeEnum.EditDynamicPhoneNumber}
@@ -303,6 +321,7 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
         handleOnClone={handleOnClone}
         postHandleOnSave={postHandleOnUpdate}
         postHandleOnDelete={postHandleOnDelete}
+        postFormHandler={postFormHandler}
       />
       <PhoneNumberFormModal
         isOpen={currentOpenModal === PhoneNumberModalTypeEnum.AddDynamicPhoneNumber}
@@ -316,6 +335,7 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
         handleOnClone={handleOnClone}
         postHandleOnSave={postHandleOnUpdate}
         postHandleOnDelete={postHandleOnDelete}
+        postFormHandler={postFormHandler}
       />
       <PhoneNumberDataGridFilterModal
         isOpen={currentOpenModal === PhoneNumberModalTypeEnum.Filter}
