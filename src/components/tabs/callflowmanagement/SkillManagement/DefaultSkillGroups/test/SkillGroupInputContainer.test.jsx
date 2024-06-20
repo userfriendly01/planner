@@ -5,7 +5,9 @@ import {
 } from "../../ClosedFlashMessage/ClosedFlashMessage.Styles";
 import {
   useAdminState,
-  useAdminDispatch
+  useAdminDispatch,
+  useSkillState,
+  useSkillDispatch
 } from "context/appContext";
 import { TextField } from "@mui/material";
 import {
@@ -21,23 +23,22 @@ import {
   skillsList,
   waitFor,
   act,
-  getMockedComponentProps
+  getMockedComponentProps,
+  skillGroups
 } from "testUtils";
 import { ActionTypes } from "../../Skills.Interfaces";
 import { Dropdown } from "components/Dropdown";
-import { getSkills } from "authentication/startups/cct-triton-admin-startup";
+import { loadConsolidatedSkills } from "services/skill";
 
 jest.mock("context/appContext", () => ({
   useAdminDispatch: jest.fn(),
-  useAdminState: jest.fn()
+  useAdminState: jest.fn(),
+  useSkillState: jest.fn(),
+  useSkillDispatch: jest.fn()
 }));
 
 jest.mock("components/Dropdown", () => ({
   Dropdown: jest.fn()
-}));
-
-jest.mock("authentication/startups/cct-triton-admin-startup", () => ({
-  getSkills: jest.fn()
 }));
 
 jest.mock("../../ClosedFlashMessage/ClosedFlashMessage.Styles", () => ({
@@ -62,6 +63,10 @@ jest.mock("services/skillgroup", () => ({
   addSkillGroup: jest.fn(),
   deleteSkillGroup: jest.fn(),
   updateSkillGroup: jest.fn()
+}));
+
+jest.mock("services/skill", () => ({
+  loadConsolidatedSkills: jest.fn()
 }));
 
 jest.useFakeTimers();
@@ -90,6 +95,10 @@ describe("<SkillGroupInputContainer />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.resetAllMocks();
+    useSkillState.mockReturnValue({
+      skills: skillsList,
+      skillGroups: skillGroups
+    });
     useAdminDispatch.mockReturnValue(mockDispatch);
     useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
@@ -318,7 +327,7 @@ describe("<SkillGroupInputContainer />", () => {
             message: "",
             status: null
           });
-          expect(getSkills).toHaveBeenCalledTimes(1);
+          expect(loadConsolidatedSkills).toHaveBeenCalledTimes(1);
         });
       });
       test("SkillGroup failes to add successfully", async () => {
@@ -447,7 +456,7 @@ describe("<SkillGroupInputContainer />", () => {
         });
         await waitFor(() => {
           expect(deleteSkillGroup).toHaveBeenLastCalledWith(1);
-          expect(getSkills).toHaveBeenCalledTimes(1);
+          expect(loadConsolidatedSkills).toHaveBeenCalledTimes(1);
           jest.runAllTimers();
           expect(mockSetAction).toHaveBeenCalledTimes(1);
           expect(mockSetConfirmationModalOpts).toHaveBeenCalledWith({
@@ -481,7 +490,7 @@ describe("<SkillGroupInputContainer />", () => {
         });
         await waitFor(() => {
           expect(deleteSkillGroup).toHaveBeenLastCalledWith(1);
-          expect(getSkills).toHaveBeenCalledTimes(0);
+          expect(loadConsolidatedSkills).toHaveBeenCalledTimes(0);
           expect(mockSetAction).toHaveBeenCalledTimes(0);
           expect(mockSetSaveResult).toHaveBeenCalledWith({
             message: "Request Failed",
@@ -600,7 +609,7 @@ describe("<SkillGroupInputContainer />", () => {
               message: "Request Successfully Processed",
               status: "success"
             });
-            expect(getSkills).toHaveBeenCalledTimes(1);
+            expect(loadConsolidatedSkills).toHaveBeenCalledTimes(1);
             expect(mockSetConfirmationModalOpts).toHaveBeenLastCalledWith({
               ...confirmationModalOpts,
               open: false
@@ -643,7 +652,7 @@ describe("<SkillGroupInputContainer />", () => {
               message: "Request Failed",
               status: "fail"
             });
-            expect(getSkills).toHaveBeenCalledTimes(0);
+            expect(loadConsolidatedSkills).toHaveBeenCalledTimes(0);
           });
         });
       });

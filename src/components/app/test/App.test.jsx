@@ -8,7 +8,8 @@ import Header from "components/Header";
 import NavTabs from "components/NavTabs";
 import NotificationModal from "components/NotificationModal";
 import {
-  useAdminDispatch, useAdminState
+  useAdminDispatch, useAdminState,
+  useSkillDispatch
 } from "context/appContext";
 import React from "react";
 import {
@@ -125,7 +126,8 @@ jest.mock("components/NotificationModal", () => ({
 
 jest.mock("context/appContext", () => ({
   useAdminState: jest.fn(),
-  useAdminDispatch: jest.fn()
+  useAdminDispatch: jest.fn(),
+  useSkillDispatch: jest.fn()
 }));
 
 jest.mock("@azure/msal-react");
@@ -135,6 +137,7 @@ jest.mock("utils", () => ({
 }));
 
 const mockAdminDispatch = jest.fn();
+const mockSkillDispatch = jest.fn();
 const permissions = [adGroupPermissionMapping[0]];
 
 describe("<App />", () => {
@@ -154,6 +157,7 @@ describe("<App />", () => {
       }
     });
     useAdminDispatch.mockReturnValue(mockAdminDispatch);
+    useSkillDispatch.mockReturnValue(mockSkillDispatch);
     mockRunTritonStartup.mockResolvedValue("Things went well!");
     setupMockedComponents({
       CircularProgress,
@@ -259,7 +263,7 @@ describe("<App />", () => {
       expectMockedComponent(rendered, { CircularProgress }, 0);
       expect(rendered.container).not.toHaveTextContent("Loading...");
       expect(mockRunTritonStartup).toHaveBeenCalledTimes(1);
-      expect(mockRunTritonStartup).toHaveBeenCalledWith(mockAdminDispatch);
+      expect(mockRunTritonStartup).toHaveBeenCalledWith(mockAdminDispatch, mockSkillDispatch);
       expect(mockAdminDispatch).toHaveBeenCalledTimes(2);
       expect(mockAdminDispatch).toHaveBeenCalledWith({
         type: "loadUserData",

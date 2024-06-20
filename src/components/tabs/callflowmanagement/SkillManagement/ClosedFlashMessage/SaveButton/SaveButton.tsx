@@ -1,7 +1,6 @@
 import React from "react";
 import {
   useAdminState,
-  useAdminDispatch,
   useSkillState,
   useSkillDispatch
 } from "context/appContext";

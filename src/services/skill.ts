@@ -7,7 +7,10 @@ import {
   TimeOfDay,
   TwilioQueue
 } from "callflowmanagement/SkillManagement/Skills.Interfaces";
-import { Action } from "globals/interfaces";
+import {
+  Action, OperatingUnit
+} from "globals/interfaces";
+import { getOperatingUnits } from "./operatingUnits";
 
 /* FYI - In the interest of not having to bother to set up the softphone-service to interact with the graph,
    The consolidation logic for skills will be here.
@@ -43,23 +46,47 @@ export const editTaskRouterSkill = () => {
   console.log();
 };
 
-export const loadSkillOptions = async (dispatch: (action: Action) => void, callback: () => void): Promise<void>=> {
+export const loadSkillOptions = async (skills: Skill[], dispatch: (action: Action) => void, callback: () => void): Promise<void>=> {
   const timeOfDaysPromise: Promise<{data: TimeOfDay[]}> = myAxios.get(apiPaths.GET_TIME_OF_DAYS);
   const applicationsPromise: Promise<{data: Application[]}> = myAxios.get(apiPaths.GET_APPLICATIONS);
   const taskQueuesPromise: Promise<{data: TwilioQueue[]}> = getTaskQueues();
+  const operatingUnitPromise: Promise<OperatingUnit[]> = getOperatingUnits();
 
   const [
     timeOfDaysResponse,
     applicationsResponse,
-    taskQueuesResponse
-  ] = await Promise.all([ timeOfDaysPromise, applicationsPromise, taskQueuesPromise]);
+    taskQueuesResponse,
+    operatingUnitResponse
+  ] = await Promise.all([ timeOfDaysPromise, applicationsPromise, taskQueuesPromise, operatingUnitPromise]);
+
+  const taskQueues = taskQueuesResponse.data;
+  const timeOfDays = timeOfDaysResponse.data;
+  const applications = applicationsResponse.data;
+  const operatingUnits = operatingUnitResponse;
+
+
+  const verifiedSkills = skills.map(skill => {
+    const skillTargetExpression = `routing.skills HAS "${skill.name}"`;
+    const expressionFound = taskQueues.some(tq => tq.target_workers.includes(skillTargetExpression));
+    if(!expressionFound){
+      skill.discrepancies.push(`Task Queue was not found with the expression ${skillTargetExpression}. (Case Sensitive)`);
+    }
+    return skill;
+    //Enhance this after we swap to the graph to compare the task queue saved on the skill to the target expression
+  });
+
+  dispatch({
+    type: "LOAD_SKILLS",
+    payload: verifiedSkills
+  });
 
   dispatch({
     type: "LOAD_SKILL_OPTIONS",
     payload: {
-      applications: applicationsResponse.data,
-      timeOfDays: timeOfDaysResponse.data,
-      taskQueues: taskQueuesResponse.data
+      applications,
+      timeOfDays,
+      taskQueues,
+      operatingUnits
     }
   });
 
@@ -87,7 +114,7 @@ export const loadConsolidatedSkills = async (dispatch: (action: Action) => void)
     contactManagerSkills.map((ctmSkill: CtmSkill) => {
       const dupSkill = consolidatedSkills.find(sk => sk.name === ctmSkill.skill_num);
       if(dupSkill){
-        const needsProfile = !dupSkill.profiles.includes(ctmSkill.profile_id);
+        const needsProfile = ctmSkill.profile_id && !dupSkill.profiles.includes(ctmSkill.profile_id);
         const needsSkillGroup = ctmSkill.skill_group_id && !dupSkill.skillGroups.some(sg => sg.skillGroupId === ctmSkill.skill_group_id);
 
         needsProfile && dupSkill.profiles.push(ctmSkill.profile_id);
@@ -99,10 +126,10 @@ export const loadConsolidatedSkills = async (dispatch: (action: Action) => void)
 
       } else {
         let skill: Partial<Skill> = {
-          discrepancies: [],
+          discrepancies: !ctmSkill.profile_id ? ["Skill exists in Contact Manager Database but has no relationship to a profile"] : [],
           name: ctmSkill.skill_num,
           ctmSkillId: ctmSkill.skill_id,
-          profiles: [ctmSkill.profile_id],
+          profiles: ctmSkill.profile_id ? [ctmSkill.profile_id] : [],
           skillGroups: ctmSkill.skill_group_id ? [{
             skillGroupId: ctmSkill.skill_group_id,
             skillGroupNme: ctmSkill.skill_group_nme,

@@ -2,7 +2,7 @@ import { BulkUpdateDefaultSkills } from "../BulkUpdateDefaultSkills";
 import { getUpdateTemplates } from "usermanagement/templates";
 import { Dropdown } from "components/Dropdown";
 import { DefaultSkillSelector } from "usermanagement/DefaultSkillSelector";
-import { useAdminState } from "context/appContext";
+import { useSkillState } from "context/appContext";
 import React from "react";
 import {
   act,
@@ -23,8 +23,7 @@ jest.mock("components/StyledButton", () => ({
 }));
 
 jest.mock("context/appContext", () => ({
-  useAdminState: jest.fn(),
-  useAdminDispatch: jest.fn()
+  useSkillState: jest.fn()
 }));
 
 const skills = [
@@ -68,7 +67,9 @@ const updateTemplates = getUpdateTemplates();
 describe("<BulkUpdateDefaultSkills />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    useAdminState.mockReturnValue(adminState);
+    useSkillState.mockReturnValue({
+      skills: adminState.skillContext.skills
+    });
     setupMockedComponents({
       Dropdown,
       DefaultSkillSelector

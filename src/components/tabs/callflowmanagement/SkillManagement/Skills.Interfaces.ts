@@ -4,6 +4,7 @@ import {
   ConfirmationModalOptsProps,
   SaveResultProps
 } from "callflowmanagement/CallFlowConfirmationModal.Interfaces";
+import { OperatingUnit } from "globals/interfaces";
 
 export interface ActionType {
   value: string,
@@ -104,8 +105,7 @@ export interface AddEditSkillGroupBody {
 }
 
 export interface AddEditSkill {
-  skillFriendlyName: string,
-  skillNum: string,
+  name: string,
   applicationId: number,
   taskQueueSid: string,
   profileIds: number[],
@@ -120,60 +120,72 @@ export interface Application {
   applicationName: string
 }
 
-export enum DayOfWeek {
-  sunday = 1,
-  monday = 2,
-  tuesday = 3,
-  wednesday = 4,
-  thursday = 5,
-  friday = 6,
-  saturday = 7
+export interface Day {
+  id: number,
+  label: string
 }
+
+export interface DayOfWeek {
+  [day: string]: Day
+}
+
 export interface SkillState {
   skills: Skill[],
   skillGroups: SkillGroup[],
   applications: Application[],
-  daysOfWeek: typeof DayOfWeek,
+  daysOfWeek: DayOfWeek,
   timeOfDays: TimeOfDay[],
   taskQueues: TwilioQueue[],
+  operatingUnits: OperatingUnit[],
   skillForm: SkillFormState
 }
 
 export interface SkillFormState {
+  [key: string]: any,
   formMode: string,
-  skillFriendlyName: string,
-  skillNum: string,
-  applicationId: number | null, // FAITH does this need to be | null?
-  taskQueueSid: string,
+  name: string,
+  applicationId: number,
+  taskQueue: TwilioQueue,
   profileIds: number[],
-  enableVirtualHold: boolean,
-  vhCallTarget: {
+  timeOfDays: TimeOfDayRequestObject[],
+  vhThreshold?: string,
+  vhCallTarget: string,
+  vhCallerId: {
     value: string,
     valid: boolean,
     e164: string,
     blurred: boolean
-  },
-  vhThreshold?: string,
-  timeOfDays: TimeOfDayRequestObject[]
+  }
 }
 
 export interface TwilioQueue {
-  account_sid?: string,
+  sid: string,
+  url?: string,
+  isNew: boolean,
+  friendly_name: string,
+  target_workers: string, //ie '(skills HAS "support") AND (languages HAS "english")'
+  operating_unit_sid: null //this can only be accesses using axios, the twilioClient does not have access to OUs
+}
+
+export interface TwilioQueueRequest {
   taskQueueSid?: string,
   url?: string,
   friendlyName: string,
-  maxReservedWorkers: number,
   targetWorkers: string, //ie '(skills HAS "support") AND (languages HAS "english")'
-  operatingUnitSid: null //this is missing from the Twilio docs
+  operatingUnitSid: null //this can only be accesses using axios, the twilioClient does not have access to OUs
 }
+/*
+  These attributes are on the payload from the callflow api but after inspection of the DB, there are no "vh" versions of these fields.
+  the vhTimeOfDayId on the TimeOfDayRequestObject represents a general timeOfDayId 
+      * vhTimeOfDayId: number,
+      * vhOpenTime: string,
+      * vhCloseTime: string,
+*/
 
 export interface TimeOfDay {
   timeOfDayId: number,
   openTime: string,
-  closeTime: string,
-  vhTimeOfDayId: number,
-  vhOpenTime: string,
-  vhCloseTime: string,
+  closeTime: string
 }
 
 export interface TimeOfDayRequestObject {
@@ -226,7 +238,7 @@ export interface Skill {
   [key: string]: any,
   discrepancies: string[],
   name: string,
-  levels: any[],
+  levels: number[],
   profiles: number[],
   taskQueueSid: string,
   taskQueueName: string,

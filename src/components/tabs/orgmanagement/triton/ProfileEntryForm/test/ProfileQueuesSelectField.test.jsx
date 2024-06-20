@@ -4,7 +4,7 @@ import {
   Delete
 } from "@mui/icons-material";
 import { Dropdown } from "components/Dropdown";
-import { useAdminState } from "context/appContext";
+import { useSkillState } from "context/appContext";
 import React from "react";
 import MockAdapter from "axios-mock-adapter";
 import { myAxios } from "utils/myAxios";
@@ -23,7 +23,6 @@ import { apiPaths } from "globals";
 import { ThemeProvider } from "styled-components";
 import { act } from "react-dom/test-utils";
 import { getAggregateQueuesType } from "services/aggregateQueues";
-import { Tooltip } from "@mui/material";
 
 jest.mock("@mui/icons-material", () => ({
   Add: jest.fn(),
@@ -39,7 +38,7 @@ jest.mock("components/StyledButton", () => ({
 }));
 
 jest.mock("context/appContext", () => ({
-  useAdminState: jest.fn()
+  useSkillState: jest.fn()
 }));
 
 jest.mock("@mui/material", () => ({
@@ -72,12 +71,11 @@ const getDeleteTransferQueuesButton = (rendered, instance) => rendered.getAllByT
 describe("<ProfileQueuesSelectField />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    useAdminState.mockReturnValue(initialTestState);
+    useSkillState.mockReturnValue(initialTestState);
     setupMockedComponents({
       Add,
       Delete,
-      Dropdown,
-      Tooltip
+      Dropdown
     });
     axiosMock.onGet(aggregateQueueTypeEndpoint).reply(200, mockAggregateQueues);
     mockSetQueueList.mockClear();
@@ -89,7 +87,6 @@ describe("<ProfileQueuesSelectField />", () => {
       expectMockedComponent(rendered, { Dropdown });
       expectMockedComponent(rendered, { Add });
       expectMockedComponent(rendered, { Delete }, 0);
-      expectMockedComponent(rendered, { Tooltip }, 0);
     });
   });
 
@@ -246,7 +243,6 @@ describe("<ProfileQueuesSelectField />", () => {
           vhThreshold: null
         }
       ]);
-      expectMockedComponent(rendered, { Tooltip }, 1);
       expectMockedComponent(rendered, { Delete }, 2);
       act(() => {
         fireEvent.click(getDeleteTransferQueuesButton(rendered, 1));

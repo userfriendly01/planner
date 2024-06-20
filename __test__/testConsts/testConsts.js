@@ -358,8 +358,9 @@ export const calabrioContext = {
 export const skillsList = [
   {
     name: "lscOBDialer1",
+    discrepancies: [],
+    applicationId: 0,
     ctmSkillId: 1,
-    ctmSkillDisplayName: "lsc OB Dialer 1",
     skillGroups: [{
       skillGroupId: 1,
       skillGroupNme: "skillgroup1",
@@ -371,13 +372,12 @@ export const skillsList = [
         ctmSkillId: 2
       }]
     }],
-    profiles: [{
-      profileName: "Licensed Sales Center",
-      profileId: 32
-    }],
+    profiles: [32],
     flashMessage: "",
     closedMessage: "",
     levels: [1, 2, 3],
+    taskQueueSid: "",
+    taskQueueName: "",
     timeOfDays: [],
     vhCallTarget: null,
     vhCallerId: null,
@@ -385,6 +385,7 @@ export const skillsList = [
   },
   {
     name: "aisgL1",
+    discrepancies: [],
     ctmSkillId: 2,
     ctmSkillDisplayName: "aisg L1",
     skillGroups: [{
@@ -412,13 +413,13 @@ export const skillsList = [
   },
   {
     name: "bscCommisssions",
+    applicationId: 1,
+    discrepancies: [],
     ctmSkillId: 3,
-    ctmSkillDisplayName: "bsc Commisssions",
+    taskQueueSid: "",
+    taskQueueName: "bsc Commisssions",
     skillGroups: [],
-    profiles: [{
-      profileName: "BSC",
-      profileId: 10
-    }],
+    profiles: [10],
     flashMessage: "OH NO WE'RE EXPLODING!! ",
     closedMessage: "Sorry, we're closed.",
     levels: [1, 2, 3, 4, 5, 6, 7],
@@ -429,19 +430,13 @@ export const skillsList = [
   },
   {
     name: "bscCbsL2",
+    applicationId: 4,
+    discrepancies: [],
     ctmSkillId: 4,
-    ctmSkillDisplayName: "bsc Cbs L2",
+    taskQueueSid: "",
+    taskQueueName: "bsc Cbs L2",
     skillGroups: [],
-    profiles: [
-      {
-        profileName: "BSC",
-        profileId: 10
-      },
-      {
-        profileName: "BLST Billing",
-        profileId: 12
-      }
-    ],
+    profiles: [10,12],
     flashMessage: "",
     closedMessage: "",
     levels: [],
@@ -452,8 +447,11 @@ export const skillsList = [
   },
   {
     name: "lscUSAA",
+    discrepancies: [],
+    applicationId: 1,
     ctmSkillId: 5,
-    ctmSkillDisplayName: "lsc USAA",
+    taskQueueSid: 1,
+    taskQueueName: "lsc USAA",
     skillGroups: [],
     profiles: [],
     flashMessage: "",
@@ -474,10 +472,7 @@ export const skillGroups = [
       name: "lscOBDialer1",
       ctmSkillId: 1,
       ctmSkillDisplayName: "lsc OB Dialer 1",
-      profiles: [{
-        profileName: "Licensed Sales Center",
-        profileId: 32
-      }],
+      profiles: [32],
       flashMessage: "",
       closedMessage: "",
       levels: [1, 2, 3],
@@ -494,10 +489,7 @@ export const skillGroups = [
       name: "aisgL1",
       ctmSkillId: 2,
       ctmSkillDisplayName: "aisg L1",
-      profiles: [{
-        profileName: "AISG",
-        profileId: 4
-      }],
+      profiles: [4],
       flashMessage: "",
       closedMessage: "Sorry, we're closed.",
       levels: [],
@@ -510,10 +502,7 @@ export const skillGroups = [
       name: "bscCommisssions",
       ctmSkillId: 3,
       ctmSkillDisplayName: "bsc Commisssions",
-      profiles: [{
-        profileName: "BSC",
-        profileId: 10
-      }],
+      profiles: [10],
       flashMessage: "OH NO WE'RE EXPLODING!! ",
       closedMessage: "Sorry, we're closed.",
       levels: [1, 2, 3, 4, 5, 6, 7],

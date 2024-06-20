@@ -15,6 +15,10 @@ import styled from "styled-components";
     syles: You can pass through multiple styles to control width, height, if there is a border etc
 */
 
+const ListItem = styled.li<{ styles?: any }>`
+width: ${props => props.styles && props.styles.width ? props.styles.width : "250px"};
+font-size: ${props => props.styles && props.styles.fontSize ? props.styles.fontSize : "15px"};
+`;
 
 export const Dropdown = (props: any) => {
   const {
@@ -41,11 +45,6 @@ export const Dropdown = (props: any) => {
     }
   };
 
-  const ListItem = styled.li`
-    width: ${styles && styles.width ? styles.width : "250px"},
-    font-size: ${styles && styles.fontSize ? styles.fontSize : "15px"};
-  `;
-
   const handleCheckEqual = (option: any, value: any) => {
     if(typeof value === "object") {
       return option?.value === value?.value || value?.value === "";
@@ -57,6 +56,7 @@ export const Dropdown = (props: any) => {
   return (
     <Autocomplete
       multiple={multiple}
+      blurOnSelect={true}
       size={styles && styles.small ? "small" :"medium"}
       disableClearable={disableClear}
       disableCloseOnSelect={multiple}

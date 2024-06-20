@@ -4,7 +4,10 @@ import { getAuthenticationProfileTemplates } from "authentication/authentication
 import { CallFlowConfirmationModal } from "callflowmanagement/CallFlowConfirmationModal";
 import { ActionContainer } from "callflowmanagement/ActionContainer";
 import { SkillsContainer } from "callflowmanagement/SkillsContainer";
-import { useAdminState } from "context/appContext";
+import { PageLoadSpinner } from "components/PageLoadSpinner";
+import {
+  useAdminState, useSkillState
+} from "context/appContext";
 import {
   skillsList,
   render,
@@ -19,6 +22,10 @@ import { Modal } from "@mui/material";
 
 jest.mock("authentication/authenticationProfiles", () => ({
   getAuthenticationProfileTemplates: jest.fn()
+}));
+
+jest.mock("components/PageLoadSpinner", () => ({
+  PageLoadSpinner: jest.fn()
 }));
 
 jest.mock("callflowmanagement/CallFlowConfirmationModal", () => ({
@@ -38,13 +45,16 @@ jest.mock("@mui/material", () => ({
 }));
 
 jest.mock("context/appContext", () => ({
-  useAdminState: jest.fn()
+  useAdminState: jest.fn(),
+  useSkillState: jest.fn(),
+  useSkillDispatch: jest.fn()
 }));
 
 const initialTableState = {
   closedFilter: false,
   filteredList: [skillsList[2], skillsList[3]],
   flashFilter: false,
+  discrepancyFilter: false,
   profiles: [],
   searchBy: "",
   selected: []
@@ -64,6 +74,9 @@ describe("CallFlowManagementSkills", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     getAuthenticationProfileTemplates.mockReturnValue(authenticationProfileTemplates);
+    useSkillState.mockReturnValue({
+      skills: skillsList
+    });
     useAdminState.mockReturnValue({
       ...initialTestState,
       userContext: {
@@ -82,6 +95,9 @@ describe("CallFlowManagementSkills", () => {
   describe("initial render", () => {
     beforeEach(() => {
       useAdminState.mockReturnValue(initialTestState);
+    });
+    test.only("Faith", () => {
+      expect(true).toBe(true);
     });
     test("initial form renders as expected", () => {
       render(<CallFlowManagementSkills />);

@@ -1,5 +1,9 @@
 import styled from "styled-components";
 import { StyledButton } from "components/StyledButton";
+import {
+  Paper, Tabs
+} from "@mui/material";
+import { FlexRow } from "globals/interfaces";
 
 const headerIconWidth = "10px";
 
@@ -95,7 +99,7 @@ export const FormControlsContainer = styled.div`
   align-items: center;
   max-height: 650px;
   padding-top: 5px;
-  width: 40%;
+  width: 35%;
   overflow: hidden;
 `;
 
@@ -133,10 +137,44 @@ export const SkillsWrapper = styled.div`
   margin-top: 10px;
   align-items: center;
   flex-direction: column;
-  width: 60%;
+  width: 65%;
 `;
 
 export const StyledExportButton = styled(StyledButton)<{ styles: any }>`
   height: 40px;
   width: ${props => props.styles && props.styles.width ? props.styles.width : "100px"};
+`;
+
+export const SkillTabs = styled(Tabs)`
+  && .MuiTabs-flexContainer {
+    justify-content: space-evenly;
+  }
+`;
+
+export const FormRow = styled(FlexRow)`
+  align-items: center;
+  justify-content: space-evenly;
+  margin: 5px;
+`;
+
+export const Wrapper = styled.div`
+  display: flex;
+  min-width: 100%;
+  position: relative;
+`;
+
+export const Label = styled.div`
+  display: flex;
+  width: 90%;
+  justify-content: center;
+  margin: 10px;
+  text-align: center;
+`;
+
+export const TaskQueueDisplay = styled(Paper)<{error?: string}>`
+  width: 330px;
+  min-height: 150px;
+  border: ${props => props.error === "true" ? "groove 2px red": "none"};
+  text-align: -webkit-center;
+  margin-left: 44px;
 `;

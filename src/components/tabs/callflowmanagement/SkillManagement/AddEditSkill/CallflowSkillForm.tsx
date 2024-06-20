@@ -4,7 +4,7 @@ import {
 import { Dropdown } from "components/core/CustomDropdown/Dropdown";
 import { CustomInput } from "components/core/CustomInput/CustomInput";
 import { PhoneNumberInput } from "components/core/PhoneNumberInput/PhoneNumberInput";
-import { CenteredDiv } from "components/tabs/usermanagement/BulkChanges/BulkChanges.Styles";
+import { FormRow } from "callflowmanagement/Skills.Styles";
 import {
   useAdminState,
   useSkillState,
@@ -18,386 +18,171 @@ import {
   FlexRow, FlexColumn
 } from "globals/interfaces";
 import React from "react";
-import { SkillState } from "../Skills.Interfaces";
+import {
+  Application, Day, DayOfWeek, SkillState,
+  TimeOfDay,
+  TimeOfDayRequestObject
+} from "../Skills.Interfaces";
+import { dayOfWeek } from "utils/alohaRoutingUtils";
 
 export const CallflowSkillForm = () => {
 
   const skillState: SkillState = useSkillState();
   const skFormDispatch = useSkillDispatch();
 
-  const state = useAdminState();
-  const profiles = state.profileContext.profiles;
-  const skills = skillState.skills;
-
-  const getDropdownOptions = (list: any[], labelKey: string, valueKey: string) => {
-    if (labelKey === "openTime") {
-      return list.map(option => ({
-        value: option[valueKey],
-        label: `${option[labelKey]} - ${option.closeTime}`
-      }));
-    }
-    return list.map(option => ({
-      value: option[valueKey],
-      label: option[labelKey]
+  const getTimeOfDayOptions = (timeOfDays: TimeOfDay[]) => {
+    return timeOfDays.map(tod => ({
+      value: tod.timeOfDayId,
+      label: `${tod.openTime} - ${tod.closeTime}`
     }));
   };
 
-  const taskQueueOptions = getDropdownOptions(skillState.taskQueues, "friendlyName", "sid");
-  const profileOptions = getDropdownOptions(profiles, "profile_nme", "profile_id");
-  const timeOfDayOptions = getDropdownOptions(skillState.timeOfDays, "openTime", "timeOfDayId");
-  const applicationOptions = getDropdownOptions(skillState.applications, "applicationName", "applicationId");
+  const getApplicationOptions = (applications: Application[]) => {
+    return applications.map(a => ({
+      value: a.applicationId,
+      label: a.applicationName
+    }));
+  };
 
-  const invalidSkillFriendlyName = skills.find((skill: any) => skill.ctmSkillDisplayName === skillState.skillForm.skillFriendlyName) ? true : false;
-  const invalidSkillNum = skills.find((skill: any) => skill.name === skillState.skillForm.skillNum) ? true : false;
-  const invalidVhCallTarget = skillState.skillForm.vhCallTarget.e164.trim() !== "" && !skillState.skillForm.vhCallTarget.valid;
+  const timeOfDayOptions = getTimeOfDayOptions(skillState.timeOfDays);
+  const applicationOptions = getApplicationOptions(skillState.applications);
+
   const invalidVhThreshold = skillState.skillForm.vhThreshold.trim() !== "" && isNaN(parseInt(skillState.skillForm.vhThreshold));
 
   const inputStyles = {
-    width: "350px",
-    margin: "5px"
+    width: "230px",
+    margin: "5px",
+    flexGrow: "none"
   };
 
-  return (
-    <>
-      <FlexRow>
-        <CustomInput
-          value={skillState.skillForm.skillFriendlyName}
-          styles={inputStyles}
-          error={invalidSkillFriendlyName}
-          maxLength="80"
-          label="Skill Friendly Name"
-          name="Skill Friendly Name"
-          updateValue={value => {
-            skFormDispatch({
-              type: skillActions.SET_SKILL_FRIENDLY_NAME,
-              payload: value.trim()
-            });
-          }}
-        />
-        <CustomInput
-          value={skillState.skillForm.skillNum}
-          styles={inputStyles}
-          error={invalidSkillNum}
-          maxLength="80"
-          label="Skill"
-          name="Skill"
-          updateValue={value => {
-            skFormDispatch({
-              type: skillActions.SET_SKILL_NUM,
-              payload: value.trim()
-            });
-          }}
-        />
-      </FlexRow>
-      <FlexRow>
+  const TimeOfDayDropdowns = (props: { day: Day }) => {
+    const { day } = props;
+    const value: Partial<TimeOfDayRequestObject> = skillState.skillForm.timeOfDays.find(tod => tod.dayOfWeekId === day.id) || {};
+
+    return (
+      <FormRow>
+        <div style={{ width: "10%" }}>{day.label}</div>
         <Dropdown
-          options={profileOptions}
-          value={profileOptions.filter((p: any) => skillState.skillForm.profileIds.includes(p.value))}
-          multiple={true}
-          label="Profiles"
-          updateValue={(e:any, values: any) => {
-            skFormDispatch({
-              type: skillActions.SET_PROFILE_IDS,
-              payload: [...values.map((val: any) => val.value)]
-            });
-          }}
-        />
-        <Dropdown
-          options={taskQueueOptions}
-          value={taskQueueOptions.find((op:any) => op.value === skillState.skillForm.taskQueueSid) || null}
-          label="Task Queue"
+          options={timeOfDayOptions}
+          value={timeOfDayOptions.find(tod => tod.value === value.timeOfDayId)}
+          label={"Time Of Day"}
+          styles={{ width: "36%" }}
           updateValue={(e: any, newValue: any) => {
             skFormDispatch({
-              type: skillActions.SET_TASK_QUEUE,
-              payload: newValue.value
+              type: skillActions.SET_TIME_OF_DAYS,
+              payload: {
+                dayOfWeekId: day.id,
+                timeOfDayId: newValue.value
+              }
             });
           }}
         />
         <Dropdown
+          options={timeOfDayOptions}
+          value={timeOfDayOptions.find(tod => tod.value === value.vhTimeOfDayId)}
+          styles={{ width: "36%" }}
+          label={"Virtual Hold Time Of Day (Optional)"}
+          updateValue={(e: any, newValue: any) => {
+            skFormDispatch({
+              type: skillActions.SET_TIME_OF_DAYS,
+              payload: {
+                dayOfWeekId: day.id,
+                vhTimeOfDayId: newValue.value
+              }
+            });
+          }}
+        />
+      </FormRow>
+    ); };
+  return (
+    <>
+      <FormRow>
+        <Dropdown
           options={applicationOptions}
+          styles={inputStyles}
           value={applicationOptions.find((ap:any) => ap.value === skillState.skillForm.applicationId) || null}
           label="Application"
           updateValue={(e: any, newValue: any) => {
             skFormDispatch({
-              type: skillActions.SET_APPLICATION_ID,
-              payload: newValue.value
+              type: skillActions.SET_FORM_FIELD,
+              payload: {
+                key: "applicationId",
+                value: newValue.value
+              }
             });
           }}
         />
-      </FlexRow>
-      <hr />
-      <CenteredDiv>Skill Time of Day</CenteredDiv>
-      <FlexRow>
-        <FlexColumn>
-          <Dropdown //Faith fix how these populate
-            options={timeOfDayOptions}
-            value={null}
-            label="Sunday"
-            updateValue={(e: any, newValue: any) => {
-              skFormDispatch({
-                type: skillActions.SET_TIME_OF_DAYS,
-                payload: null
-              });
-            }}
-          />
-          <Dropdown
-            options={timeOfDayOptions}
-            value={null}
-            label="Saturday"
-            updateValue={(e: any, newValue: any) => {
-              skFormDispatch({
-                type: skillActions.SET_TIME_OF_DAYS,
-                payload: {
-                  saturday: newValue.value
-                }
-              });
-            }}
-          />
-        </FlexColumn>
-        <FlexColumn>
-          <Dropdown
-            options={timeOfDayOptions}
-            value={null}
-            label="Monday"
-            updateValue={(e: any, newValue: any) => {
-              skFormDispatch({
-                type: skillActions.SET_TIME_OF_DAYS,
-                payload: {
-                  monday: newValue.value
-                }
-              });
-            }}
-          />
-          <Dropdown
-            options={timeOfDayOptions}
-            value={null}
-            label="Tuesday"
-            updateValue={(e: any, newValue: any) => {
-              skFormDispatch({
-                type: skillActions.SET_TIME_OF_DAYS,
-                payload: {
-                  tuesday: newValue.value
-                }
-              });
-            }}
-          />
-          <Dropdown
-            options={timeOfDayOptions}
-            value={null}
-            label="Wednesday"
-            updateValue={(e: any, newValue: any) => {
-              skFormDispatch({
-                type: skillActions.SET_TIME_OF_DAYS,
-                payload: {
-                  wednesday: newValue.value
-                }
-              });
-            }}
-          />
-          <Dropdown
-            options={timeOfDayOptions}
-            value={null}
-            label="Thursday"
-            updateValue={(e: any, newValue: any) => {
-              skFormDispatch({
-                type: skillActions.SET_TIME_OF_DAYS,
-                payload: {
-                  thursday: newValue.value
-                }
-              });
-            }}
-          />
-          <Dropdown
-            options={timeOfDayOptions}
-            value={null}
-            label="Friday"
-            updateValue={(e: any, newValue: any) => {
-              skFormDispatch({
-                type: skillActions.SET_TIME_OF_DAYS,
-                payload: {
-                  friday: newValue.value
-                }
-              });
-            }}
-          />
-        </FlexColumn>
-      </FlexRow>
-      <hr />
-      <FormControlLabel
-        label={"Virtual Hold"}
-        labelPlacement="end"
-        control={<Switch
-          inputProps={{ "aria-label": "toggle-enable-virtual-hold" }}
-          checked={skillState.skillForm.enableVirtualHold}
-          onChange={(e: any, isChecked: any) => {
-            if (isChecked) {
-              skFormDispatch({
-                type: skillActions.SET_ENABLE_VIRTUAL_HOLD,
-                payload: true
-              });
-            } else {
-              skFormDispatch({
-                type: skillActions.SET_ENABLE_VIRTUAL_HOLD,
-                payload: false
-              });
-              skFormDispatch({
-                type: skillActions.SET_VH_CALL_TARGET,
-                payload: initialSkillState.skillForm.vhCallTarget
-              });
-              skFormDispatch({
-                type: skillActions.SET_VH_THRESHOLD,
-                payload: initialSkillState.skillForm.vhThreshold
-              });
-              // skFormDispatch({
-              //   type: skillActions.SET_VH_TIME_OF_DAYS,
-              //   payload: initialSkillFormState.timeOfDays.vh
-              // });
-            }
-          }}
-        />} />
-      {skillState.skillForm.enableVirtualHold && <>
-        <CenteredDiv>Note: Adding these fields will NOT enable virtual hold by themselves.  More needs to be done in addition to providing these values</CenteredDiv>
-        <FlexRow>
-          <PhoneNumberInput
-            id="Virtual Hold Call Target"
-            label="Virtual Hold Call Target"
-            style={inputStyles}
-            number={skillState.skillForm.vhCallTarget.value}
-            showError={skillState.skillForm.vhCallTarget.blurred && !skillState.skillForm.vhCallTarget.valid}
-            onBlur={() => skFormDispatch({
-              type: skillActions.SET_VH_CALL_TARGET,
-              payload: {
-                ...skillState.skillForm.vhCallTarget,
+        <PhoneNumberInput
+          id="VH Caller Id"
+          label="VH Caller Id (Optional)"
+          style={inputStyles}
+          number={skillState.skillForm.vhCallerId.value}
+          showError={skillState.skillForm.vhCallerId.blurred && !skillState.skillForm.vhCallerId.valid}
+          onBlur={() => skFormDispatch({
+            type: skillActions.SET_FORM_FIELD,
+            payload: {
+              key: "vhCallerId",
+              value: {
+                ...skillState.skillForm.vhCallerId,
                 blurred: true
               }
-            })}
-            updateValue={(maskedValue: string, unmaskedValue: string, isValid: boolean, e164Number: string) => {
-              skFormDispatch({
-                type: skillActions.SET_VH_CALL_TARGET,
-                payload: {
-                  ...skillState.skillForm.vhCallTarget,
+            }
+          })}
+          updateValue={(maskedValue: string, unmaskedValue: string, isValid: boolean, e164Number: string) => {
+            skFormDispatch({
+              type: skillActions.SET_FORM_FIELD,
+              payload: {
+                key: "vhCallerId",
+                value: {
+                  ...skillState.skillForm.vhCallerId,
                   value: unmaskedValue,
                   valid: isValid,
                   e164: e164Number
                 }
-              });
-            }}
-          />
-          <CustomInput
-            value={skillState.skillForm.vhThreshold}
-            error={invalidVhThreshold}
-            styles={inputStyles}
-            maxLength="11"
-            label="Virtual Hold Threshold"
-            name="vhThreshold"
-            updateValue={value => {
-              skFormDispatch({
-                type: skillActions.SET_VH_THRESHOLD,
-                payload: value.trim()
-              });
-            }}
-          />
-        </FlexRow>
-        <CenteredDiv>Virtual Hold Time of Day</CenteredDiv>
-        <FlexRow>
-          <FlexColumn>
-            <Dropdown
-              options={timeOfDayOptions}
-              value={null}
-              label="Virtual Hold Time: Sunday"
-              updateValue={(e: any, newValue: any) => {
-                skFormDispatch({
-                  type: skillActions.SET_VH_TIME_OF_DAYS,
-                  payload: {
-                    sunday: newValue.value
-                  }
-                });
-              }}
-            />
-            <Dropdown
-              options={timeOfDayOptions}
-              value={null}
-              label="Virtual Hold Time: Saturday"
-              updateValue={(e: any, newValue: any) => {
-                skFormDispatch({
-                  type: skillActions.SET_VH_TIME_OF_DAYS,
-                  payload: {
-                    saturday: newValue.value
-                  }
-                });
-              }}
-            />
-          </FlexColumn>
-          <FlexColumn>
-            <Dropdown
-              options={timeOfDayOptions}
-              value={null}
-              label="Virtual Hold Time: Monday"
-              updateValue={(e: any, newValue: any) => {
-                skFormDispatch({
-                  type: skillActions.SET_VH_TIME_OF_DAYS,
-                  payload: {
-                    monday: newValue.value
-                  }
-                });
-              }}
-            />
-            <Dropdown
-              options={timeOfDayOptions}
-              value={null}
-              label="Virtual Hold Time: Tuesday"
-              updateValue={(e: any, newValue: any) => {
-                skFormDispatch({
-                  type: skillActions.SET_VH_TIME_OF_DAYS,
-                  payload: {
-                    tuesday: newValue.value
-                  }
-                });
-              }}
-            />
-            <Dropdown
-              options={timeOfDayOptions}
-              value={null}
-              label="Virtual Hold Time: Wednesday"
-              updateValue={(e: any, newValue: any) => {
-                skFormDispatch({
-                  type: skillActions.SET_VH_TIME_OF_DAYS,
-                  payload: {
-                    wednesday: newValue.value
-                  }
-                });
-              }}
-            />
-            <Dropdown
-              options={timeOfDayOptions}
-              value={null}
-              label="Virtual Hold Time: Thursday"
-              updateValue={(e: any, newValue: any) => {
-                skFormDispatch({
-                  type: skillActions.SET_VH_TIME_OF_DAYS,
-                  payload: {
-                    thursday: newValue.value
-                  }
-                });
-              }}
-            />
-            <Dropdown
-              options={timeOfDayOptions}
-              value={null}
-              label="Virtual Hold Time: Friday"
-              updateValue={(e: any, newValue: any) => {
-                skFormDispatch({
-                  type: skillActions.SET_VH_TIME_OF_DAYS,
-                  payload: {
-                    friday: newValue.value
-                  }
-                });
-              }}
-            />
-          </FlexColumn>
-        </FlexRow>
-      </>
-      }
+              }
+            });
+          }}
+        />
+        <CustomInput
+          value={skillState.skillForm.vhThreshold}
+          error={invalidVhThreshold}
+          styles={inputStyles}
+          maxLength="3"
+          label="VH Threshold (Optional)"
+          name="vhThreshold"
+          updateValue={value => {
+            skFormDispatch({
+              type: skillActions.SET_FORM_FIELD,
+              payload: {
+                key: "vhThreshold",
+                value: value.trim()
+              }
+            });
+          }}
+        />
+        <CustomInput
+          value={skillState.skillForm.vhCallTarget}
+          styles={inputStyles}
+          maxLength="9"
+          label="VH Call Target (Optional)"
+          name="vhCallTarget"
+          updateValue={value => {
+            skFormDispatch({
+              type: skillActions.SET_FORM_FIELD,
+              payload: {
+                key: "vhCallTarget",
+                value: value.trim()
+              }
+            });
+          }}
+        />
+      </FormRow>
+      <FlexColumn style={{ overflow: "scroll" }}>
+        {Object.values(skillState.daysOfWeek).map(dow => ((
+          <TimeOfDayDropdowns key={dow.id} day={dow} />
+        )))
+        }
+      </FlexColumn>
     </>
   );
 };

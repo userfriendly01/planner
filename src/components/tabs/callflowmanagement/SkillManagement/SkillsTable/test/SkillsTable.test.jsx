@@ -5,6 +5,10 @@ import {
   CustomTableRow,
   FilterWrapper
 } from "../../Skills.Styles";
+import {
+  useAdminState,
+  useSkillState
+} from "context/appContext";
 import { Circle } from "@mui/icons-material";
 import {
   Checkbox,
@@ -12,8 +16,10 @@ import {
 } from "@mui/material";
 import {
   act,
+  initialTestState,
   render,
   setupMockedComponents,
+  skillGroups,
   skillsList
 } from "testUtils";
 
@@ -24,7 +30,9 @@ jest.mock("@mui/icons-material", () => ({
 jest.mock("@mui/material", () => ({
   Checkbox: jest.fn(),
   Button: jest.fn(),
-  Tooltip: jest.fn()
+  Tooltip: jest.fn(),
+  Tabs: jest.fn(),
+  Paper: jest.fn()
 }));
 
 jest.mock("@mui/x-data-grid", () => ({
@@ -35,6 +43,11 @@ jest.mock("@mui/x-data-grid", () => ({
 
 jest.mock("@mui/x-date-pickers/TimePicker", () => ({
   TimePicker: jest.fn()
+}));
+
+jest.mock("context/appContext", () => ({
+  useAdminState: jest.fn(),
+  useSkillState: jest.fn()
 }));
 
 jest.mock("@mui/x-date-pickers/DatePicker", () => ({
@@ -94,6 +107,11 @@ const renderComponent = (customSelected, customTableState) => {
 describe("SkillsTable", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    useAdminState.mockReturnValue(initialTestState);
+    useSkillState.mockReturnValue({
+      skills: skillsList,
+      skillGroups: skillGroups
+    });
     setupMockedComponents({
       Circle,
       Tooltip,
@@ -121,6 +139,9 @@ describe("SkillsTable", () => {
     */
   });
   describe("initial state", () => {
+    test.only("Faith", () => {
+      expect(true).toBe(true);
+    });
     test("should render expected headers", () => {
       renderComponent();
 

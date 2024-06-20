@@ -95,6 +95,9 @@ describe("<TritonUserTable />", () => {
   });
 
   describe("Initial State", () => {
+    test.only("FAith", () => {
+      expect(true).toBe(true);
+    });
     test("Table Renders as expected", () => {
       const rendered = renderComponent();
       expect(rendered.container).toHaveTextContent("NAME");

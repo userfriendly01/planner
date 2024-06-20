@@ -2,7 +2,9 @@ import {
   UMTwilioAttributeSkills,
   UMUserTwilioAttributes
 } from "globals/interfaces";
-import { Skill } from "callflowmanagement/Skills.Interfaces";
+import {
+  Skill, SkillFormState
+} from "callflowmanagement/Skills.Interfaces";
 import _ from "lodash";
 
 import React from "react";
@@ -22,6 +24,14 @@ const SkillsDiv = styled.div`
   margin: 2;
   padding: 1 3;
 `;
+
+export const isTaskQueueError = (skillForm: SkillFormState): boolean => {
+  const skillTargetExpression = `routing.skills HAS "${skillForm.name}"`;
+
+  return (skillForm.taskQueue.sid && skillForm.taskQueue.sid.length > 0) &&
+    (skillForm.name && skillForm.name.length > 0) &&
+    skillForm.taskQueue.target_workers !== skillTargetExpression ? true : false;
+};
 
 export const isSkillFormValid = () => {
   return false;

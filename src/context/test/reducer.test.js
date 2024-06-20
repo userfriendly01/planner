@@ -2,8 +2,6 @@ import {
   initialState,
   reducer
 } from "../reducers/reducer";
-import { skillsList } from "testUtils";
-import { formatSkillGroups } from "utils/skillsUtils";
 
 jest.mock("utils/skillsUtils", () => ({
   formatSkillGroups: jest.fn()
@@ -517,96 +515,6 @@ describe("reducer", () => {
       expect(result.profileContext.profiles).toEqual(payload);
     });
   });
-  describe("loadSkills", () => {
-    test("should update skilContext.skills to payload", () => {
-      const payload = [
-        {
-          skill: "psu-l1",
-          levels: []
-        },
-        {
-          skill: "psu-l2",
-          levels: [1,2,3]
-        },
-        {
-          skill: "psu-l3",
-          levels: [1,2,3,4,5,6]
-        }
-      ];
-      const action = {
-        type: "loadSkills",
-        payload
-      };
-      const result = reducer(initialState, action);
-      expect(result.skillContext.skills).toEqual(payload);
-    });
-  });
-  describe("loadSkillGroupss", () => {
-    test("should update skilContext.skillGroups to payload", () => {
-      const payload = [
-        {
-          name: "lscOBDialer1",
-          ctmSkillId: 1,
-          ctmSkillDisplayName: "lsc OB Dialer 1",
-          skillGroups: [{
-            skillGroupId: 1,
-            skillGroupNme: "skillgroup1",
-            skills: [{
-              name: "lscOBDialer1",
-              ctmSkillId: 1
-            }, {
-              name: "aisgL1",
-              ctmSkillId: 2
-            }]
-          }],
-          profiles: [{
-            profileName: "Licensed Sales Center",
-            profileId: 32
-          }],
-          flashMessage: "",
-          closedMessage: "",
-          levels: [ 1, 2, 3],
-          timeOfDays: [],
-          vhCallTarget: null,
-          vhCallerId: null,
-          vhThreshold: null
-        },
-        {
-          name: "aisgL1",
-          ctmSkillId: 2,
-          ctmSkillDisplayName: "aisg L1",
-          skillGroups: [{
-            skillGroupId: 1,
-            skillGroupNme: "skillgroup1",
-            skills: [{
-              name: "lscOBDialer1",
-              ctmSkillId: 1
-            }, {
-              name: "aisgL1",
-              ctmSkillId: 2
-            }]
-          }],
-          profiles: [{
-            profileName: "AISG",
-            profileId: 4
-          }],
-          flashMessage: "",
-          closedMessage: "Sorry, we're closed.",
-          levels: [],
-          timeOfDays: [],
-          vhCallTarget: null,
-          vhCallerId: null,
-          vhThreshold: null
-        }
-      ];
-      const action = {
-        type: "loadSkillGroups",
-        payload
-      };
-      const result = reducer(initialState, action);
-      expect(result.skillContext.skillGroups).toEqual(formatSkillGroups(payload));
-    });
-  });
   describe("loadUserData", () => {
     test("should initialize or reinitialize the user data", () => {
       const payload = {
@@ -661,22 +569,6 @@ describe("reducer", () => {
           attributes: "new"
         }
       ]);
-    });
-  });
-  describe("updateSkills", () => {
-    test("should set the skills array on skillContext", () => {
-      const action = {
-        type: "updateSkills",
-        payload: skillsList
-      };
-      const result = reducer(initialState, action);
-      expect(result).toEqual({
-        ...initialState,
-        skillContext: {
-          ...initialState.skillContext,
-          skills: skillsList
-        }
-      });
     });
   });
   describe("updateManageFilter", () => {

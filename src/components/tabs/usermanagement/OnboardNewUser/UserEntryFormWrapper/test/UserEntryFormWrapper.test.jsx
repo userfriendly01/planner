@@ -8,7 +8,8 @@ import { WfmForm } from "usermanagement/WfmForm";
 import {
   useAdminState,
   useFormState,
-  useFormDispatch
+  useFormDispatch,
+  useSkillState
 } from "context/appContext";
 import { userFormActions } from "context/userFormReducer";
 import { formModes } from "globals";
@@ -22,7 +23,8 @@ import {
   render,
   setupMockedComponents,
   initialFormState,
-  initialTestState
+  initialTestState,
+  skillsList
 } from "testUtils";
 
 jest.mock("react-router-dom", () => ({
@@ -66,7 +68,8 @@ jest.mock("usermanagement/WfmForm", () => ({
 jest.mock("context/appContext", () => ({
   useAdminState: jest.fn(),
   useFormState: jest.fn(),
-  useFormDispatch: jest.fn()
+  useFormDispatch: jest.fn(),
+  useSkillState: jest.fn()
 }));
 
 jest.useFakeTimers();
@@ -83,6 +86,9 @@ describe("<UserEntryForm />", () => {
     useFormState.mockReturnValue({ ...initialFormState });
     useAdminState.mockReturnValue(initialTestState);
     useNavigate.mockReturnValue(mockNavigate);
+    useSkillState.mockReturnValue({
+      skills: skillsList
+    });
     setupMockedComponents({
       CallRecordingForm,
       DeleteTritonUser,
@@ -102,6 +108,9 @@ describe("<UserEntryForm />", () => {
     );
   };
   describe("Initial State", () => {
+    test.only("Faith", () => {
+      expect("butts").toBe("butts");
+    });
     test("Should render the correct initial state", () => {
       const { unmount } = renderComponent();
       expect(ModalOverlay.mock.calls.length).toBe(0);

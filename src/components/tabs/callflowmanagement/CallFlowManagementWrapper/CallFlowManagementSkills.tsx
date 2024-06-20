@@ -2,10 +2,7 @@ import {
   CallflowWrapper,
   MessageWrapper
 } from "./CallFlowManagement.Styles";
-import {
-  SkillProfile,
-  TableState
-} from "./CallFlowManagement.Interfaces";
+import { TableState } from "./CallFlowManagement.Interfaces";
 import {
   ConfirmationModalOptsProps,
   SaveResultProps
@@ -70,7 +67,7 @@ export const CallFlowManagementSkills = () => {
   const [ isLoading, setIsLoading ] = React.useState(true);
 
   React.useEffect(() => {
-    loadSkillOptions(skillDispatch, () => setIsLoading(false));
+    loadSkillOptions(skillState.skills, skillDispatch, () => setIsLoading(false));
   }, []);
 
   React.useEffect(() => {
@@ -80,7 +77,7 @@ export const CallFlowManagementSkills = () => {
       if(tableState.profiles.length > 0){
         filteredList = filteredList.filter((skill: Skill) => {
           let shouldReturn = false;
-          skill.profiles.forEach((p: number) => {
+          skill.profiles?.forEach((p: number) => {
             if(tableState.profiles.some((sp: TritonProfile) => sp.profile_id === p)){
               shouldReturn = true;
             }
@@ -91,7 +88,7 @@ export const CallFlowManagementSkills = () => {
     } else {
       filteredList = filteredList.filter((skill: Skill) => {
         let shouldReturn = false;
-        if(skill.profiles.some((s: number) => s === userProfileId)){
+        if(skill.profiles?.some((s: number) => s === userProfileId)){
           shouldReturn = true;
         }
         return shouldReturn;

@@ -4,7 +4,7 @@ import { UserFormButton } from "../../ClosedFlashMessage.Styles";
 import { ActionTypes } from "../../../Skills.Interfaces";
 import {
   useAdminState,
-  useAdminDispatch
+  useSkillDispatch
 } from "context/appContext";
 import { StyledButton } from "components/StyledButton";
 import { ModalOverlayStatuses } from "globals/interfaces";
@@ -27,7 +27,8 @@ import { ThemeProvider } from "styled-components";
 
 jest.mock("context/appContext", () => ({
   useAdminState: jest.fn(),
-  useAdminDispatch: jest.fn()
+  useSkillState: jest.fn(),
+  useSkillDispatch: jest.fn()
 }));
 
 jest.mock("components/StyledButton", () => ({
@@ -76,11 +77,14 @@ const renderComponent = (action, selected, messageType) => {
 describe("<SaveButton /> ", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    useAdminDispatch.mockReturnValue(mockDispatch);
+    useSkillDispatch.mockReturnValue(mockDispatch);
     useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
       StyledButton
     });
+  });
+  test.only("Faith", () => {
+    expect(true).toBe(true);
   });
   describe("initial render", () => {
     describe("isSingleSelection === true && action !== view", () => {

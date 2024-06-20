@@ -6,7 +6,6 @@ import { logger } from "utils/logger";
 import { sortQueueByName } from "utils/_sortUtils";
 import { AggregateQueue } from "globals/interfaces";
 import { Skill } from "callflowmanagement/Skills.Interfaces";
-import { Tooltip } from "@mui/material";
 import {
   IconButtonWrapper,
   ProfileDropdownControlWrapper,

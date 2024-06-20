@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { CallflowSkillForm } from "callflowmanagement/CallflowSkillForm";
+import { GeneralSkillForm } from "callflowmanagement/GeneralSkillForm";
 import { Dropdown } from "components/Dropdown";
 import { CustomInput } from "components/CustomInput";
 import { ModalOverlay } from "components/ModalOverlay";
@@ -20,6 +21,10 @@ import {
   SkillFormState,
   SkillEntryFormModalProps
 } from "../Skills.Interfaces";
+import {
+  FormRow,
+  SkillTabs
+} from "../Skills.Styles";
 import {
   formModes,
   timeouts
@@ -49,7 +54,8 @@ const ModalContainer = styled.div`
   position: absolute;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 900px;
+  width: 80%;
+  height: 75%;
 `;
 
 const ScrollingPaper = styled(Paper)`
@@ -88,9 +94,9 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
   const skills = skillState.skills;
 
   const [ selectedTab, setSelectedTab ] = React.useState(0);
-  const invalidSkillFriendlyName = skills.find((skill: any) => skill.ctmSkillDisplayName === skillState.skillForm.skillFriendlyName) ? true : false;
-  const invalidSkillNum = skills.find((skill: any) => skill.name === skillState.skillForm.skillNum) ? true : false;
-  const invalidVhCallTarget = skillState.skillForm.vhCallTarget.e164.trim() !== "" && !skillState.skillForm.vhCallTarget.valid;
+  const invalidSkillFriendlyName = skills.find((skill: any) => skill.ctmSkillDisplayName === skillState.skillForm.name) ? true : false;
+  const invalidSkillNum = skills.find((skill: any) => skill.name === skillState.skillForm.name) ? true : false;
+  const invalidVhCallTarget = skillState.skillForm.vhCallerId.e164.trim() !== "" && !skillState.skillForm.vhCallerId.valid;
   const invalidVhThreshold = skillState.skillForm.vhThreshold.trim() !== "" && isNaN(parseInt(skillState.skillForm.vhThreshold));
 
   const areRequiredFieldsEmpty = () => {
@@ -98,26 +104,17 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
     const emptyTimeOfDay = true;
     let emptyVhTimeOfDay;
     const {
-      skillFriendlyName,
-      skillNum,
+      name,
       applicationId,
-      taskQueueSid,
+      taskQueue,
       profileIds,
-      enableVirtualHold,
-      vhCallTarget,
+      vhCallerId,
       vhThreshold,
       timeOfDays
     } = skillState.skillForm;
 
-    hasEmptyValues = skillFriendlyName === "" || skillNum === "" || applicationId === null ||
-      taskQueueSid === "" || !taskQueueSid || profileIds.length < 1;
-
-    // emptyTimeOfDay = Object.values(timeOfDay.skill).filter((value: any) => !value || (value && value.toString().trim() === "")).length > 0;
-
-    if (enableVirtualHold) {
-      hasEmptyValues = hasEmptyValues || vhThreshold === "" || vhCallTarget.e164 === "";
-      // emptyVhTimeOfDay = Object.values(timeOfDay.vh).filter((value: any) => !value || (value && value.toString().trim() === "")).length > 0;
-    }
+    hasEmptyValues = name === "" || applicationId === null ||
+      taskQueue.sid === "" || !taskQueue.sid || profileIds.length < 1;
 
     if (hasEmptyValues || emptyTimeOfDay || emptyVhTimeOfDay) {
       return true;
@@ -134,13 +131,12 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
     }
 
     const body: AddEditSkill = {
-      skillFriendlyName: skillState.skillForm.skillFriendlyName,
-      skillNum: skillState.skillForm.skillNum,
+      name: skillState.skillForm.name,
       profileIds: skillState.skillForm.profileIds,
       applicationId: skillState.skillForm.applicationId,
-      taskQueueSid: skillState.skillForm.taskQueueSid,
-      vhCallTarget: skillState.skillForm.enableVirtualHold ? skillState.skillForm.vhCallTarget.e164 : null,
-      vhThreshold: skillState.skillForm.enableVirtualHold ? parseInt(skillState.skillForm.vhThreshold) : null,
+      taskQueueSid: skillState.skillForm.taskQueue.sid,
+      vhCallTarget: skillState.skillForm.vhCallerId.valid ? skillState.skillForm.vhCallerId.e164 : null,
+      vhThreshold: skillState.skillForm.vhThreshold ? parseInt(skillState.skillForm.vhThreshold) : null,
       updatedBy: nNumber.toLowerCase(),
       timeOfDayIds: []//FAITH redo this
     };
@@ -150,10 +146,10 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
       const response = await createSkill(body);
 
       if (response.status === 200) {
-        logger.info(`Successfully created new skill ${skillState.skillForm.skillFriendlyName}`, {
+        logger.info(`Successfully created new skill ${skillState.skillForm.name}`, {
           nNumber,
-          skillFriendlyName: skillState.skillForm.skillFriendlyName,
-          skillNum: skillState.skillForm.skillNum
+          skillFriendlyName: skillState.skillForm.name,
+          name: skillState.skillForm.name
         });
 
         setSaveResult({
@@ -172,10 +168,10 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
           });
         }, timeouts.MODAL_OVERLAY);
       } else {
-        logger.warn(`Partially created new skill ${skillState.skillForm.skillFriendlyName}`, {
+        logger.warn(`Partially created new skill ${skillState.skillForm.name}`, {
           nNumber,
-          skillFriendlyName: skillState.skillForm.skillFriendlyName,
-          skillNum: skillState.skillForm.skillNum,
+          skillFriendlyName: skillState.skillForm.name,
+          name: skillState.skillForm.name,
           error: response.data.result.message
         });
 
@@ -219,15 +215,15 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
           borderBottom: 1,
           borderColor: "divider"
         }}>
-          <Tabs value={selectedTab}>
+          <SkillTabs value={selectedTab}>
             <Tab label="General Skill Settings" onClick={() => setSelectedTab(0)} />
-            <Tab label="Item Two" onClick={() => setSelectedTab(0)}/>
-            <Tab label="Item Three" onClick={() => setSelectedTab(0)} />
-          </Tabs>
+            <Tab label="Dynamic Routing" onClick={() => setSelectedTab(1)}/>
+            <Tab label="Legacy Callflow Database" onClick={() => setSelectedTab(2)} />
+          </SkillTabs>
         </Box>
-        { selectedTab === 0 && <div>Basic Info</div>}
-        { selectedTab === 0 && <div>Basic Info</div>}
-        { selectedTab === 0 && <CallflowSkillForm/>}
+        { selectedTab === 0 && <GeneralSkillForm/>}
+        { selectedTab === 1 && <FormRow>Dynamic Routing will be migrated over to use this skill in a future sprint</FormRow>}
+        { selectedTab === 2 && <CallflowSkillForm/>}
         <ButtonWrapper>
           <StyledButton
             style={{ width: "200px" }}
