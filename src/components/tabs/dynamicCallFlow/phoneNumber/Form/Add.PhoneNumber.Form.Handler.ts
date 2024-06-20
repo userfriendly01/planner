@@ -55,6 +55,8 @@ export class AddPhoneNumberFormHandler extends AbstractPhoneNumberFormHandler {
     // TODO: add delete duplicate records.
     // deleteOppositeRows([originalRow], accessToken);
 
+    this.dataGridController.addRecordToSourceRecords(recordToReturn);
+
     return {
       record: recordToReturn,
       successMessage: `Phone Number ${PhoneNumberRecordUtil.getPhoneNumber(recordToReturn)} has been successfully updated.`

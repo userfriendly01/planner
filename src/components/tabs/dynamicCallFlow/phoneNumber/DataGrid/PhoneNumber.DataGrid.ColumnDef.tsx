@@ -12,6 +12,7 @@ import {
   DATA_REQUESTS, GREETING_MESSAGES,
   LANGUAGE_OFFER
 } from "../Form/Dynamic.PhoneNumber.Form.Fields";
+import { PhoneNumberRecordType } from "dynamicCallFlow/GraphQL/Dynamic.PhoneNumber.Interfaces";
 
 export const PhoneNumberDataGridColumnDef: GridColDef[] = [
   {
@@ -19,7 +20,8 @@ export const PhoneNumberDataGridColumnDef: GridColDef[] = [
     field: "pkey",
     sortable: true,
     width: 110,
-    align: "left"
+    align: "left",
+    valueGetter: params => PhoneNumberRecordUtil.getPkey(params.row as PhoneNumberRecordType)
   },
   {
     headerName: "Description",
@@ -70,7 +72,7 @@ export const PhoneNumberDataGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params => `${PhoneNumberRecordUtil.getPropertyValue(params.row, LANGUAGE_OFFER) || ""}`
+    valueGetter: params => PhoneNumberRecordUtil.getPropertyValue(params.row, LANGUAGE_OFFER) || ""
   },
   {
     headerName: "Data Requests",

@@ -9,7 +9,7 @@ import {
   HeadingStyled, ModalBodyStyled, ModalFooterStyled
 } from "../../common/DynamicCallFlow.Styles";
 import {
-  FormHandler, NOT_VALID
+  FormHandler, FormOnHandleResponse, NOT_VALID
 } from "../../common/Form/Abstract.Form.Handler";
 import { FloatingHeader } from "@lmig/lmds-react-floating-header";
 import {
@@ -44,10 +44,11 @@ export interface FormModalProps {
   handleOnClone: () => void;
   postHandleOnSave: (record: PhoneNumberRecordType) => void;
   postHandleOnDelete: (record: PhoneNumberRecordType) => void;
+  postFormHandler: () => void;
 }
 
 export const PhoneNumberFormModal = ({
-  isOpen, formHandler, alertBarController, selectedRow, fieldConfigsReactStateAction, handleOnClone, postHandleOnSave, postHandleOnDelete
+  isOpen, formHandler, alertBarController, selectedRow, fieldConfigsReactStateAction, handleOnClone, postHandleOnSave, postHandleOnDelete, postFormHandler
 }: FormModalProps): JSX.Element => {
   const {
     state: fieldConfigs
@@ -84,24 +85,21 @@ export const PhoneNumberFormModal = ({
   const handleOnSave = async (): Promise<void> => {
     const formOnHandleResponse = await formHandler.handleOnSave(accessTokenGraph, formRecord, fieldConfigs);
 
-    if (formOnHandleResponse.errorMessage) {
-      alertBarController.current.error(formOnHandleResponse.errorMessage);
-    } else {
-      alertBarController.current.success(formOnHandleResponse.successMessage);
-      modalController.current.closeModal();
-      postHandleOnSave(formOnHandleResponse.record);
-    }
+    postHandleAction(formOnHandleResponse);
   };
 
   const handleOnDelete = async (): Promise<void> => {
     const formOnHandleResponse = await formHandler.handleOnDelete(accessTokenGraph, formRecord);
 
+    postHandleAction(formOnHandleResponse);
+  };
+
+  const postHandleAction = (formOnHandleResponse: FormOnHandleResponse<PhoneNumberRecordType>): void => {
     if (formOnHandleResponse.errorMessage) {
       alertBarController.current.error(formOnHandleResponse.errorMessage);
     } else {
       alertBarController.current.success(formOnHandleResponse.successMessage);
-      modalController.current.closeModal();
-      postHandleOnDelete(formOnHandleResponse.record);
+      postFormHandler();
     }
   };
 

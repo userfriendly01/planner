@@ -23,9 +23,9 @@ export async function listPhoneNumberRecords(accessToken: string): Promise<Array
   const phoneNumberRecords: Array<PhoneNumberRecordType> = await dynamicPhoneNumberListRecords(accessToken);
   // phoneNumberRecords = phoneNumberRecords.concat(legacyPhoneNumberRecords);
 
-  phoneNumberRecords.forEach((phoneNumberRecord, index) => {
-    phoneNumberRecord.id = index + 1;
-  });
+  // phoneNumberRecords.forEach((phoneNumberRecord, index) => {
+  //   phoneNumberRecord.id = index + 1;
+  // });
 
   // console.log(`dynamicPhoneNumberRecords: ${dynamicPhoneNumberRecords.length}, legacyPhoneNumberRecords: ${legacyPhoneNumberRecords.length}, phoneNumberRecords: ${phoneNumberRecords.length}`);
   return phoneNumberRecords;

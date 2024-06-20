@@ -55,6 +55,8 @@ export class EditPhoneNumberFormHandler extends AbstractPhoneNumberFormHandler {
     // TODO: add delete duplicate records in legacy call flow.
     // deleteOppositeRows([originalRow], accessToken);
 
+    this.dataGridController.updateRecordInSourceRecords(recordToReturn);
+
     return {
       record: recordToReturn,
       successMessage: `Phone Number ${PhoneNumberRecordUtil.getPhoneNumber(recordToReturn)} has been successfully updated.`
@@ -82,6 +84,8 @@ export class EditPhoneNumberFormHandler extends AbstractPhoneNumberFormHandler {
         errorMessage: error?.message || JSON.stringify(error)
       };
     }
+
+    this.dataGridController.removeRecordFromSourceRecords(recordToReturn);
 
     return {
       record: recordToReturn,
