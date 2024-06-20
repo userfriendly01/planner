@@ -2,6 +2,7 @@ import { FieldOptions } from "../Form/AbstractFormFieldOptionsManager";
 import {
   DataGridFilterRef, ReactSetState
 } from "../DynamicCallFlow.Interfaces";
+import { PhoneNumberRecordType } from "dynamicCallFlow/GraphQL/Dynamic.PhoneNumber.Interfaces";
 
 const ID = "id";
 
@@ -22,7 +23,7 @@ export interface DataGridFilter<RecordType> {
   addFilterElement(key: string, value: string): Filter;
   removeFilterElement(key: string): Filter;
   getFilter(): Filter;
-  applyFilter(minId?: number, maxId?: number): void;
+  applyFilter(sourceRecords?: Array<PhoneNumberRecordType>, minId?: number, maxId?: number): void;
   resetFilter(): Filter;
 }
 
@@ -97,9 +98,11 @@ export abstract class AbstractDataGridFilter<RecordType> implements DataGridFilt
 
   protected abstract getPropertyValue(record: RecordType, key: string): string | Array<string> | number | boolean | undefined;
 
-  applyFilter(idStart?: number, idEnd?: number): Array<RecordType> {
-    if (!this._sourceRecords) {
-      return;
+  applyFilter(sourceRecords?: Array<RecordType>,idStart?: number, idEnd?: number): Array<RecordType> {
+    if (sourceRecords) {
+      this._sourceRecords = sourceRecords;
+    } else if (!this._sourceRecords) {
+      throw Error("No source records to filter");
     }
 
     let recordsToFilter: Array<RecordType>;

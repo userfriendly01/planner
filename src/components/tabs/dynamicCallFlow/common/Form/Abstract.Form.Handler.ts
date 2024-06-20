@@ -4,7 +4,8 @@ import {
   FieldConfigs,
   FieldDataType, FieldDataTypeEnum
 } from "./Form.Field.Config";
-import { ReactStateAction } from "../DynamicCallFlow.Interfaces";
+import { DataGridControllerRef, ReactStateAction } from "../DynamicCallFlow.Interfaces";
+import { DataGridController } from "components/tabs/dynamicCallFlow/common/DataGrid/Abstract.DataGrid.Controller";
 
 export const VALID = true;
 export const NOT_VALID = false;
@@ -26,6 +27,16 @@ export interface FormOnHandleResponse<RecordType> {
 }
 
 export abstract class AbstractFormHandler<RecordType> implements FormHandler<RecordType> {
+  private readonly _dataGridController: DataGridControllerRef<RecordType>;
+
+  constructor(dataGridController: DataGridControllerRef<RecordType>) {
+    this._dataGridController = dataGridController;
+  }
+
+  get dataGridController(): DataGridController<RecordType> {
+    return this._dataGridController.current;
+  }
+
   abstract get modalName(): string;
   abstract get modalLabel(): string;
 
