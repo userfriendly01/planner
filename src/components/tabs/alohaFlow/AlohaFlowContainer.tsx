@@ -12,7 +12,7 @@ const AlohaFlowContainer = () => {
   const {
     userContext: {
       permissions,
-      accessToken
+      accessTokenGraph
     }
   } = useAdminState();
 
@@ -37,7 +37,7 @@ const AlohaFlowContainer = () => {
   },[]);
 
   return (
-    <DataGridFlow accessToken={accessToken} matchedGroups={permissions} />
+    <DataGridFlow accessToken={accessTokenGraph} matchedGroups={permissions} />
   );
 };
 

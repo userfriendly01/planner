@@ -6,12 +6,12 @@ const DynamicFlowContainer = (): JSX.Element => {
   const {
     userContext: {
       permissions,
-      accessToken
+      accessTokenGraph
     }
   } = useAdminState();
 
   return (
-    <DataGridFlow accessToken={accessToken} matchedGroups={permissions} />
+    <DataGridFlow accessToken={accessTokenGraph} matchedGroups={permissions} />
   );
 };
 
