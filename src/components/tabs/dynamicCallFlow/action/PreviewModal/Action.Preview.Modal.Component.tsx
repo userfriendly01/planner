@@ -1,6 +1,6 @@
 import React, {
   useContext,
-  useEffect, useMemo, useRef
+  useEffect, useMemo
 } from "react";
 import {
   DataGrid, GridColDef, useGridApiRef
@@ -13,13 +13,15 @@ import { Box } from "@mui/material";
 import TableGridColumnDef from "./Action.Preview.Modal.ColumnDef";
 import { reconstructTableColumnDef } from "./Action.Preview.Modal.Util";
 import {
-  ActionRecordType, MenuOption
+  ActionRecordType
 } from "../GraphQL/Action.Interfaces";
 import {
   ActionModalType, ActionModalTypeEnum
 } from "../DataGrid/Action.DataGrid.Component";
-import { ActionXlsxReader } from "../Xlsx/Action.Xlsx.Reader";
-import { DataGridControllerRef, MutableRefObject } from "../../common/DynamicCallFlow.Interfaces";
+import { ActionXlsxImporter } from "../Xlsx/Action.Xlsx.Importer";
+import {
+  DataGridControllerRef, MutableRefObject
+} from "../../common/DynamicCallFlow.Interfaces";
 import { DynamicCallFlowActionContext } from "../DynamicCallFlow.Action.Container";
 import { ActionPreviewModalHandler } from "./Action.Preview.Modal.Handler";
 import { StyledButton } from "components/StyledButton";
@@ -66,12 +68,12 @@ export const ActionPreviewModal = ({
   };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>)=> {
-    const xlsxReaderResults = await ActionXlsxReader.getInstance().processXlsxUpload(event);
+    const xlsxImporterResults = await ActionXlsxImporter.getInstance().processXlsxUpload(event);
 
-    if (xlsxReaderResults.errors.length > 0) {
-      dataGridController.current.alertBarController.error(xlsxReaderResults.errors.join("\n\r").concat("\n\rPlease check the Call Flow Configuration in the spreadsheet and try again."));
+    if (xlsxImporterResults.errors.length > 0) {
+      dataGridController.current.alertBarController.error(xlsxImporterResults.errors.join("\n\r").concat("\n\rPlease check the Call Flow Configuration in the spreadsheet and try again."));
     } else {
-      setModalRecords(xlsxReaderResults.records);
+      setModalRecords(xlsxImporterResults.records);
     }
   };
 

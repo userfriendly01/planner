@@ -18,7 +18,6 @@ import {
 } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
 import { ActionRecordType } from "dynamicCallFlow/GraphQL/Action.Interfaces";
 import { ActionXlsxExporter } from "dynamicCallFlow/Xlsx/Action.Xlsx.Exporter";
-import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
 
 interface ActionDataGridToolBarProps {
@@ -61,7 +60,7 @@ export const ActionDataGridToolBar = ({
       <Grid item key="phone-number-search-box" xs={9}>
         <TextField
           sx={{ marginLeft: 1 }}
-          placeholder="Click here to apply filter"
+          placeholder="Click here to open filter"
           InputProps={{
             startAdornment:
               localFilter && Object.keys(localFilter).map((key: string, index: number) => (
@@ -76,17 +75,17 @@ export const ActionDataGridToolBar = ({
               ))
           }}
           fullWidth
-          id="flow-SearchBox-input"
+          id="CallFlowConfiguration-SearchBox-input"
           label="Search"
           margin="normal"
-          name="flow-SearchBox-input"
+          name="CallFlowConfiguration-SearchBox-input"
           variant="standard"
           onClick={() => modalController.current.openModal(ActionModalTypeEnum.Filter)}
         />
       </Grid>
       <Grid item key="Load Call Flow Configuration" xs={2}>
         <FormControl sx={{
-          marginTop: "5px",
+          marginTop: "10px",
           marginBottom: "8px",
           marginLeft: "35px"
         }}>
@@ -94,7 +93,10 @@ export const ActionDataGridToolBar = ({
             variant="contained"
             value="Save"
             color="primary"
-            sx={{ marginLeft: 2 }}
+            sx={{
+              marginLeft: 2,
+              fontSize: "12px"
+            }}
             aria-label="loadCallFlowConfigurationButton"
             disabled={false} // TODO: change this to us !userHasPermission
             onClick={handlePreviewModalOpen}>
@@ -131,8 +133,8 @@ export const ActionDataGridToolBar = ({
             size = "large"
             sx ={{
               // position: "relative",
-              marginTop: "40px",
-              marginLeft: "5px",
+              marginTop: "30px",
+              marginLeft: "10px",
               ":hover": {
                 backgroundColor: "grey",
                 color: "white"

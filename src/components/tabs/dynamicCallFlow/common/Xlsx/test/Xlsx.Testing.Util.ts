@@ -1,17 +1,15 @@
 import * as xlsx from "xlsx";
-import { XlsxReader } from "../Abstract.Xlsx.Reader";
-import { XlsxReaderResults } from "../Xlsx.Interfaces";
-import { ActionXlsxRow } from "dynamicCallFlow/Xlsx/Action.Xlsx.Interfaces";
-import { ActionRecordType } from "dynamicCallFlow/GraphQL/Action.Interfaces";
-import { ActionXlsxReader } from "dynamicCallFlow/Xlsx/Action.Xlsx.Reader";
+import { XlsxImporter } from "../Abstract.Xlsx.Importer";
+import { XlsxImporterResults } from "../Xlsx.Interfaces";
 
-export function getActionXlsxReaderResults(fileName: string): XlsxReaderResults<ActionXlsxRow, ActionRecordType> {
-  return getXlsReaderResults(new ActionXlsxReader(), fileName);
-}
+export const DYNAMIC_CALL_FLOW_PATH = "src/components/tabs/dynamicCallFlow/";
+export const DYNAMIC_CALL_FLOW_COMMON_XLSX_TEST_PATH = DYNAMIC_CALL_FLOW_PATH.concat("common/Xlsx/test/");
 
-export function getXlsReaderResults<XlsxRowType, RecordType>(xlsxReader: XlsxReader<XlsxRowType, RecordType>, fileName: string): XlsxReaderResults<XlsxRowType, RecordType> {
+
+
+export function getXlsImporterResults<XlsxRowType, RecordType>(xlsxImporter: XlsxImporter<XlsxRowType, RecordType>, fileName: string): XlsxImporterResults<XlsxRowType, RecordType> {
   const workSheet = getWorkSheet(fileName);
-  return xlsxReader.processWorkSheet(workSheet);
+  return xlsxImporter.processWorkSheet(workSheet);
 }
 
 export function getWorkSheet(fileName: string): xlsx.WorkSheet {

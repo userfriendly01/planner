@@ -2,7 +2,7 @@ import * as XLSX from "xlsx";
 import {
   ParsingOptions, Sheet2JSONOpts, WorkSheet
 } from "xlsx";
-import { XlsxReaderResults } from "./Xlsx.Interfaces";
+import { XlsxImporterResults } from "./Xlsx.Interfaces";
 
 export type RECORD_DATA_TYPE_NAME = "string" | "number" | "boolean" | "stringArray" | "jsonStringify";
 export enum RECORD_DATA_TYPE_NAME_ENUM {
@@ -21,21 +21,19 @@ const SHEET_TO_JSON_OPTIONS: Sheet2JSONOpts = {
   raw: false
 };
 
-const ROW_NUM = "__rowNum__";
-
-export interface XlsxReader<XlsxRowType, RecordType> {
-  processXlsxUpload(changeEvent: React.ChangeEvent<HTMLInputElement>): Promise<XlsxReaderResults<XlsxRowType, RecordType>>;
-  processWorkSheet(workSheet: WorkSheet): XlsxReaderResults<XlsxRowType, RecordType>;
+export interface XlsxImporter<XlsxRowType, RecordType> {
+  processXlsxUpload(changeEvent: React.ChangeEvent<HTMLInputElement>): Promise<XlsxImporterResults<XlsxRowType, RecordType>>;
+  processWorkSheet(workSheet: WorkSheet): XlsxImporterResults<XlsxRowType, RecordType>;
 }
 
-export abstract class AbstractXlsxReader<XlsxRowType, RecordType> implements XlsxReader<XlsxRowType, RecordType> {
-  protected _xlsxReaderResults: XlsxReaderResults<XlsxRowType, RecordType> = {
+export abstract class AbstractXlsxImporter<XlsxRowType, RecordType> implements XlsxImporter<XlsxRowType, RecordType> {
+  protected _xlsxImporterResults: XlsxImporterResults<XlsxRowType, RecordType> = {
     xlsxRows: [],
     records: [],
     errors: []
   };
 
-  async processXlsxUpload(changeEvent: React.ChangeEvent<HTMLInputElement>): Promise<XlsxReaderResults<XlsxRowType, RecordType>> {
+  async processXlsxUpload(changeEvent: React.ChangeEvent<HTMLInputElement>): Promise<XlsxImporterResults<XlsxRowType, RecordType>> {
     changeEvent.preventDefault();
 
     if (changeEvent.target.files && changeEvent.target.files.length > 0) {
@@ -55,17 +53,17 @@ export abstract class AbstractXlsxReader<XlsxRowType, RecordType> implements Xls
     return workBook.Sheets[sheetName];
   }
 
-  processWorkSheet(workSheet: WorkSheet): XlsxReaderResults<XlsxRowType, RecordType> {
+  processWorkSheet(workSheet: WorkSheet): XlsxImporterResults<XlsxRowType, RecordType> {
     try {
       const xlsxRows: Array<XlsxRowType> = XLSX.utils.sheet_to_json<XlsxRowType>(workSheet, SHEET_TO_JSON_OPTIONS);
 
       this.inspectXlsxRows(xlsxRows);
-      this._xlsxReaderResults.records = this.generateRecords(xlsxRows);
+      this._xlsxImporterResults.records = this.generateRecords(xlsxRows);
     } catch (error) {
-      this._xlsxReaderResults.errors.push(error.message);
+      this._xlsxImporterResults.errors.push(error.message);
     }
 
-    return this._xlsxReaderResults;
+    return this._xlsxImporterResults;
   }
 
   protected abstract inspectXlsxRows(xlsxRows: Array<XlsxRowType>): void

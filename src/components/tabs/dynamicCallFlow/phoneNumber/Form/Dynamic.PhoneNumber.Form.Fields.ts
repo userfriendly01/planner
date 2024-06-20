@@ -1,6 +1,6 @@
 import {
   RECORD_DATA_TYPE_NAME, RECORD_DATA_TYPE_NAME_ENUM
-} from "../../common/Xlsx/Abstract.Xlsx.Reader";
+} from "../../common/Xlsx/Abstract.Xlsx.Importer";
 import { CALLER_CONTEXT_ATTRIBUTES } from "../../action/Form/ActionFields";
 
 export const BRAND = "brand";

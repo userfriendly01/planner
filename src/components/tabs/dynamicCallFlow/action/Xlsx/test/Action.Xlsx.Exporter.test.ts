@@ -1,11 +1,10 @@
-import { getActionXlsxReaderResults } from "components/tabs/dynamicCallFlow/common/Xlsx/test/Xlsx.Testing.Util";
+import { getActionXlsxImporterResults } from "dynamicCallFlow/Xlsx/test/Action.Xlsx.Test.Util";
 
 describe("Action XLSX Exporter", () => {
   test("happy path", () => {
-    const xlsxReaderResults = getActionXlsxReaderResults(
-      "./src/components/tabs/dynamicCallFlow/action/Xlsx/test/AISGMain.xlsx");
+    const xlsxImporterResults = getActionXlsxImporterResults("AISGMain.xlsx");
 
-    expect(xlsxReaderResults).toBeDefined();
-    expect(xlsxReaderResults.errors.length).toBe(0);
+    expect(xlsxImporterResults).toBeDefined();
+    expect(xlsxImporterResults.errors.length).toBe(0);
   });
 });

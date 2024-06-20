@@ -4,7 +4,7 @@ export interface XlsxJSONRow {
   xlsxId: string;
 }
 
-export interface XlsxReaderResults<XlsxRowType, RecordType> {
+export interface XlsxImporterResults<XlsxRowType, RecordType> {
   xlsxRows?: Array<XlsxRowType>;
   records?: Array<RecordType>;
   errors: Array<string>;

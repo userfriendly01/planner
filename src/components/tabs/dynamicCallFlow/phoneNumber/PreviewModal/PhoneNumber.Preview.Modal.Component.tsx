@@ -22,7 +22,7 @@ import {
 import { DynamicCallFlowPhoneNumberContext } from "../DynamicCallFlow.PhoneNumber.Container";
 import { PhoneNumberPreviewModalHandler } from "./PhoneNumber.Preview.Modal.Handler";
 import { DataGridControllerRef } from "../../common/DynamicCallFlow.Interfaces";
-import { PhoneNumberXlsxReader } from "../Xlsx/PhoneNumber.Xlsx.Reader";
+import { PhoneNumberXlsxImporter } from "../Xlsx/PhoneNumber.Xlsx.Importer";
 import { FieldOptions } from "components/tabs/dynamicCallFlow/common/Form/AbstractFormFieldOptionsManager";
 import { StyledButton } from "components/StyledButton";
 import { HANDLED_SUCCESSFULLY } from "components/tabs/dynamicCallFlow/common/Preview/Abstract.Preview.Modal.Handler";
@@ -125,12 +125,12 @@ export const PhoneNumberPreviewModal = ({
   };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>)=> {
-    const xlsxReaderResults = await PhoneNumberXlsxReader.getInstance().processXlsxUpload(event);
+    const xlsxImporterResults = await PhoneNumberXlsxImporter.getInstance().processXlsxUpload(event);
 
-    if (xlsxReaderResults.errors.length > 0) {
-      dataGridController.current.alertBarController.error(xlsxReaderResults.errors.join("\n"));
+    if (xlsxImporterResults.errors.length > 0) {
+      dataGridController.current.alertBarController.error(xlsxImporterResults.errors.join("\n"));
     } else {
-      setModalRecords(xlsxReaderResults.records);
+      setModalRecords(xlsxImporterResults.records);
     }
   };
 
