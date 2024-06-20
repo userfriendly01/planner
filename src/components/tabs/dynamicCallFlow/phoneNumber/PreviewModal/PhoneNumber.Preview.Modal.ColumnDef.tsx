@@ -13,7 +13,7 @@ export const PhoneNumberPreviewModalColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params => `${PhoneNumberRecordUtil.getPkey(params.row as PhoneNumberRecordType) || ""}`
+    valueGetter: params => PhoneNumberRecordUtil.getPkey(params.row as PhoneNumberRecordType)
   },
   {
     headerName: "Description",

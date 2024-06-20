@@ -12,7 +12,7 @@ import "./PhoneNumber.Preview.Modal.css";
 import { Box } from "@mui/material";
 import { reconstructTableColumnDef } from "./PhoneNumber.Preview.Modal.Util";
 import {
-  PhoneNumber, PhoneNumberRecordType
+  PhoneNumberRecordType
 } from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
 
 import {
@@ -26,6 +26,7 @@ import { PhoneNumberXlsxReader } from "../Xlsx/PhoneNumber.Xlsx.Reader";
 import { FieldOptions } from "components/tabs/dynamicCallFlow/common/Form/AbstractFormFieldOptionsManager";
 import { StyledButton } from "components/StyledButton";
 import { HANDLED_SUCCESSFULLY } from "components/tabs/dynamicCallFlow/common/Preview/Abstract.Preview.Modal.Handler";
+import { PhoneNumberRecordUtil } from "dynamicCallFlow/GraphQL/PhoneNumber.Record.Util";
 
 interface PreviewModalParameters<RecordType> {
     isOpen: boolean;
@@ -167,7 +168,7 @@ export const PhoneNumberPreviewModal = ({
             rows={modalRecords}
             columns={tableGridColumnDef}
             editMode="row"
-            getRowId={(row: PhoneNumberRecordType) => (row as PhoneNumber).phoneNumber ? (row as PhoneNumber).phoneNumber : row.pkey}
+            getRowId={(row: PhoneNumberRecordType) => PhoneNumberRecordUtil.getPhoneNumber(row)}
             loading = {loading}
             sx={{
               "& .MuiDataGrid-columnHeaderTitle": {
