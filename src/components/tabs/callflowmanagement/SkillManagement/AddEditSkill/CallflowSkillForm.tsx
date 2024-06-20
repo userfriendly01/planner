@@ -71,7 +71,7 @@ export const CallflowSkillForm = (props: { missingFields: string[]}) => {
           key={`timeOfDay.${day.id}`}
           options={timeOfDayOptions}
           value={timeOfDayOptions.find(tod => tod.value === value.timeOfDayId)}
-          label={"Time Of Day"}
+          label={"Time Of Day *"}
           styles={{ width: "36%" }}
           updateValue={(e: any, newValue: any) => {
             skFormDispatch({
@@ -110,13 +110,13 @@ export const CallflowSkillForm = (props: { missingFields: string[]}) => {
           options={applicationOptions}
           styles={inputStyles}
           value={applicationOptions.find((ap:any) => ap.value === skillState.skillForm.applicationId) || null}
-          label="Application"
+          label="Application *"
           updateValue={(e: any, newValue: any) => {
             skFormDispatch({
               type: skillActions.SET_FORM_FIELD,
               payload: {
                 key: "applicationId",
-                value: newValue.value
+                value: newValue?.value
               }
             });
           }}
@@ -191,7 +191,7 @@ export const CallflowSkillForm = (props: { missingFields: string[]}) => {
           updateValue={value => {
             setTempField({
               ...tempField,
-              vhThreshold: value.trim()
+              vhThreshold: value?.trim()
             });
           }}
         />
@@ -213,7 +213,7 @@ export const CallflowSkillForm = (props: { missingFields: string[]}) => {
           updateValue={value => {
             setTempField({
               ...tempField,
-              vhCallTarget: value.trim()
+              vhCallTarget: value?.trim()
             });
           }}
         />

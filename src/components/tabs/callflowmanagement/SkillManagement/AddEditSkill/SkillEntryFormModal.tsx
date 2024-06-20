@@ -92,82 +92,78 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
   const [ missingFields, setMissingFields ] = React.useState<string[]>([]);
 
   const addSkill = async () => {
-    if(!isAdmin || !areVhFieldsValid(skillState.skillForm, setMissingFields)) {
-      console.log("Fields arent valid... bish");
-      return;
-    } else {
-      console.log("were validated!... dingleberry");
+    if(!areVhFieldsValid(skillState.skillForm, setMissingFields)) {
       return;
     }
 
-    const body: AddEditSkill = {
-      name: skillState.skillForm.name,
-      profileIds: skillState.skillForm.profileIds,
-      applicationId: skillState.skillForm.applicationId,
-      taskQueueSid: skillState.skillForm.taskQueue.sid,
-      vhCallTarget: skillState.skillForm.vhCallerId ? skillState.skillForm.vhCallerId.e164 : null,
-      vhThreshold: skillState.skillForm.vhThreshold ? parseInt(skillState.skillForm.vhThreshold) : null,
-      updatedBy: nNumber.toLowerCase(),
-      timeOfDayIds: []//FAITH redo this
-    };
+    // const body: AddEditSkill = {
+    //   name: skillState.skillForm.name,
+    //   profileIds: skillState.skillForm.profileIds,
+    //   applicationId: skillState.skillForm.applicationId,
+    //   taskQueueSid: skillState.skillForm.taskQueue.sid,
+    //   vhCallTarget: skillState.skillForm.vhCallerId ? skillState.skillForm.vhCallerId.e164 : null,
+    //   vhThreshold: skillState.skillForm.vhThreshold ? parseInt(skillState.skillForm.vhThreshold) : null,
+    //   updatedBy: nNumber.toLowerCase(),
+    //   timeOfDayIds: []//FAITH redo this
+    // };
 
-    try {
+    // try {
 
-      const response = await createSkill(body);
+    //   const response = await createSkill(body);
 
-      if (response.status === 200) {
-        logger.info(`Successfully created new skill ${skillState.skillForm.name}`, {
-          nNumber,
-          skillFriendlyName: skillState.skillForm.name,
-          name: skillState.skillForm.name
-        });
+    //   if (response.status === 200) {
+    //     logger.info(`Successfully created new skill ${skillState.skillForm.name}`, {
+    //       nNumber,
+    //       skillFriendlyName: skillState.skillForm.name,
+    //       name: skillState.skillForm.name
+    //     });
 
-        setSaveResult({
-          message: "Request Successfully Processed",
-          status: ModalOverlayStatuses.SUCCESS
-        });
-        skillDispatch({
-          type: skillActions.RESET_FORM
-        });
-        await loadConsolidatedSkills(skillDispatch);
-        setTimeout(() => {
-          closeModal();
-          setSaveResult({
-            message: "",
-            status: null
-          });
-        }, timeouts.MODAL_OVERLAY);
-      } else {
-        logger.warn(`Partially created new skill ${skillState.skillForm.name}`, {
-          nNumber,
-          skillFriendlyName: skillState.skillForm.name,
-          name: skillState.skillForm.name,
-          error: response.data.result.message
-        });
+    //     setSaveResult({
+    //       message: "Request Successfully Processed",
+    //       status: ModalOverlayStatuses.SUCCESS
+    //     });
+    //     skillDispatch({
+    //       type: skillActions.RESET_FORM
+    //     });
+    //     await loadConsolidatedSkills(skillDispatch);
+    //     setTimeout(() => {
+    //       closeModal();
+    //       setSaveResult({
+    //         message: "",
+    //         status: null
+    //       });
+    //     }, timeouts.MODAL_OVERLAY);
+    //   } else {
+    //     logger.warn(`Partially created new skill ${skillState.skillForm.name}`, {
+    //       nNumber,
+    //       skillFriendlyName: skillState.skillForm.name,
+    //       name: skillState.skillForm.name,
+    //       error: response.data.result.message
+    //     });
 
-        // a partial success will return 206
-        // meaning either the creation in contactmanager OR the callflow db was sucessful
-        setSaveResult({
-          message: response.data.result.message,
-          status: ModalOverlayStatuses.PARTIAL_FAIL
-        });
-        skillDispatch({
-          type: skillActions.RESET_FORM
-        });
-        await loadConsolidatedSkills(skillDispatch);
+    //     // a partial success will return 206
+    //     // meaning either the creation in contactmanager OR the callflow db was sucessful
+    //     setSaveResult({
+    //       message: response.data.result.message,
+    //       status: ModalOverlayStatuses.PARTIAL_FAIL
+    //     });
+    //     skillDispatch({
+    //       type: skillActions.RESET_FORM
+    //     });
+    //     await loadConsolidatedSkills(skillDispatch);
 
-      }
-    } catch (error) {
-      logger.error("Error when adding Skill", {
-        error,
-        nNumber,
-        skill: body
-      });
-      setSaveResult({
-        message: `Request Failed: ${error.message}`,
-        status: ModalOverlayStatuses.FAIL
-      });
-    }
+    //   }
+    // } catch (error) {
+    //   logger.error("Error when adding Skill", {
+    //     error,
+    //     nNumber,
+    //     skill: body
+    //   });
+    //   setSaveResult({
+    //     message: `Request Failed: ${error.message}`,
+    //     status: ModalOverlayStatuses.FAIL
+    //   });
+    // }
   };
 
   return (

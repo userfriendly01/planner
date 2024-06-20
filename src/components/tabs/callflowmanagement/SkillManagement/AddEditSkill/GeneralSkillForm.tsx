@@ -1,3 +1,4 @@
+import { Switch } from "@mui/material";
 import { SkillState } from "../Skills.Interfaces";
 import {
   FormRow,
@@ -29,9 +30,15 @@ export const GeneralSkillForm = () => {
   const profiles = state.profileContext.profiles;
   const [ tempField, setTempField ] = React.useState({
     name: skillState.skillForm.name,
-    newTaskQueue: skillState.skillForm.taskQueue.isNew ? skillState.skillForm.taskQueue.friendly_name : ""
+    newTaskQueue: skillState.skillForm.taskQueue.isNew ? skillState.skillForm.taskQueue.friendly_name : "",
+    levelToggle: skillState.skillForm.levels.min || skillState.skillForm.levels.max ? true : false
   });
   const taskQueues = skillState.taskQueues;
+  const levels = [];
+
+  for(let i = 1; i < 100; i++ ){
+    levels.push(i);
+  }
   const taskQueueError: boolean = isTaskQueueError(skillState.skillForm, tempField.name);
   const taskQueueOptions = taskQueues.map(queue => {
     return {
@@ -220,6 +227,84 @@ export const GeneralSkillForm = () => {
           <Label>{nameDisplay}</Label>
           <Label>{workerExpressionDisplay}</Label>
         </TaskQueueDisplay>
+      </FormRow>
+      <FormRow>
+        <FormRow style={{ maxWidth: "125px" }}>
+          Levels
+          <Switch
+            checked={tempField.levelToggle}
+            onChange={() => {
+              setTempField({
+                ...tempField,
+                levelToggle: !tempField.levelToggle
+              });
+              skFormDispatch({
+                type: skillActions.SET_FORM_FIELD,
+                payload: {
+                  key: "levels",
+                  value: {
+                    min: null,
+                    max: null
+                  }
+                }
+              });
+            }
+            }
+            inputProps={{ "aria-label": "toggle skills modified" }}
+          />
+        </FormRow>
+        {tempField.levelToggle &&
+        <>
+          <Dropdown
+            options={levels.map(l => ({
+              value: l,
+              label: l.toString()
+            }))}
+            styles={{
+              width: "200px",
+              margin: "5px"
+            }}
+            value={skillState.skillForm.levels.min}
+            label="Min Level"
+            updateValue={(e: any, newValue: number) => {
+              skFormDispatch({
+                type: skillActions.SET_FORM_FIELD,
+                payload: {
+                  key: "levels",
+                  value: {
+                    ...skillState.skillForm.levels,
+                    min: newValue
+                  }
+                }
+              });
+            }}
+          />
+          <Dropdown
+            options={levels.map(l => ({
+              value: l,
+              label: l.toString()
+            }))}
+            styles={{
+              width: "200px",
+              margin: "5px"
+            }}
+            value={skillState.skillForm.levels.max}
+            label="Max Level"
+            updateValue={(e: any, newValue: number) => {
+              skFormDispatch({
+                type: skillActions.SET_FORM_FIELD,
+                payload: {
+                  key: "levels",
+                  value: {
+                    ...skillState.skillForm.levels,
+                    max: newValue
+                  }
+                }
+              });
+            }}
+          />
+        </>
+        }
       </FormRow>
     </>
   );

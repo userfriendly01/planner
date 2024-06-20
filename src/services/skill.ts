@@ -5,7 +5,8 @@ import { getTaskQueues } from "services/taskQueues";
 import {
   AddEditSkill, Application, Skill, TwilioSkill, CallflowSkill, CtmSkill,
   TimeOfDay,
-  TwilioQueue
+  TwilioQueue,
+  SkillFormState
 } from "callflowmanagement/SkillManagement/Skills.Interfaces";
 import {
   Action, OperatingUnit
@@ -19,8 +20,15 @@ import { getOperatingUnits } from "./operatingUnits";
    https://libertymutual.atlassian.net/browse/CCTP-13060
 */
 
-export const createSkill = (payload: AddEditSkill): Promise<any> =>
-  myAxios.post(apiPaths.CREATE_SKILL, payload).then(response => response);
+export const createSkill = async (skillForm: SkillFormState): Promise<any> => {
+  let taskQueueSid;
+  if(skillForm.taskQueue.isNew){
+    //create task queue
+
+    //response = taskQueueSid
+  }
+//create skill in flex config
+};
 
 const getTaskRouterSkills = (): Promise<{ data: TwilioSkill[] }> => {
   return myAxios.get(apiPaths.GET_SKILLS_TASKROUTER);

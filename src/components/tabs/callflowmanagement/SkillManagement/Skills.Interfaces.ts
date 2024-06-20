@@ -147,6 +147,10 @@ export interface SkillFormState {
   applicationId: number,
   taskQueue: TwilioQueue,
   profileIds: number[],
+  levels: {
+    min: number,
+    max: number
+  },
   timeOfDays: TimeOfDayRequestObject[],
   vhThreshold?: string,
   vhCallTarget: string,

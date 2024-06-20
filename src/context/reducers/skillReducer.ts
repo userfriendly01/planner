@@ -55,6 +55,10 @@ export const initialSkillState: SkillState = {
   skillForm: {
     formMode: formModes.INSERT,
     name: "",
+    levels: {
+      min: null,
+      max: null
+    },
     applicationId: null,
     taskQueue: {
       isNew: false,
