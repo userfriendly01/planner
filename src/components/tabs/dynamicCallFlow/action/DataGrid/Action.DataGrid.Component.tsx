@@ -157,6 +157,10 @@ const ActionDataGridComponent = (): JSX.Element => {
     modalController.current.closeModal();
   };
 
+  function getRowId(row: ActionRecordType) {
+    return row.actionId;
+  }
+
   return (
     <div className="data-grid-wrapper">
       <div className="data-grid-wrapper">
@@ -178,7 +182,7 @@ const ActionDataGridComponent = (): JSX.Element => {
             pagination
             loading={dataGridProps.fetching}
             autoHeight
-            getRowId={(actionRecord: ActionRecordType) => actionRecord.actionId}
+            getRowId={getRowId}
             sx={{
               "& .MuiDataGrid-columnHeaderTitle": {
                 fontWeight: 600
