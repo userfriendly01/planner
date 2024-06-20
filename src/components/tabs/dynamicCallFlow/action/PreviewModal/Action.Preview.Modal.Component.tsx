@@ -82,6 +82,10 @@ export const ActionPreviewModal = ({
     onClose();
   };
 
+  function getRowId(row: ActionRecordType) {
+    return row.actionId;
+  }
+
   return (
     <Modal
       isOpen={isOpen}
@@ -104,7 +108,7 @@ export const ActionPreviewModal = ({
           apiRef={previewModalGridApiRef}
           rows={modalRecords}
           columns={tableGridColumnDef}
-          getRowId={(row: ActionRecordType) => row.actionId}
+          getRowId={getRowId}
           loading = {loading}
           sx={{
             "& .MuiDataGrid-columnHeaderTitle": {
