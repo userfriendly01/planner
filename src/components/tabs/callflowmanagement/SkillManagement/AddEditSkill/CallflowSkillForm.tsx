@@ -15,7 +15,8 @@ import {
   TimeOfDayRequestObject
 } from "../Skills.Interfaces";
 
-export const CallflowSkillForm = () => {
+export const CallflowSkillForm = (props: { missingFields: string[]}) => {
+  const { missingFields } = props;
 
   const skillState: SkillState = useSkillState();
   const skFormDispatch = useSkillDispatch();
@@ -33,13 +34,14 @@ export const CallflowSkillForm = () => {
     vhCallTarget: skillState.skillForm.vhCallTarget
   });
 
-  console.warn("TEMP FIELDS", tempField);
-
   const getTimeOfDayOptions = (timeOfDays: TimeOfDay[]) => {
-    return timeOfDays.map(tod => ({
-      value: tod.timeOfDayId,
-      label: `${tod.openTime} - ${tod.closeTime}`
-    }));
+    return timeOfDays.map(tod => {
+      const label = tod.openTime === "00:00:00" && tod.closeTime === "00:00:00" ? "Closed" : `${tod.openTime} - ${tod.closeTime}`;
+      return {
+        value: tod.timeOfDayId,
+        label: label
+      };
+    });
   };
 
   const getApplicationOptions = (applications: Application[]) => {
@@ -51,8 +53,6 @@ export const CallflowSkillForm = () => {
 
   const timeOfDayOptions = getTimeOfDayOptions(skillState.timeOfDays);
   const applicationOptions = getApplicationOptions(skillState.applications);
-
-  const invalidVhThreshold = skillState.skillForm.vhThreshold.trim() !== "" && isNaN(parseInt(skillState.skillForm.vhThreshold));
 
   const inputStyles = {
     width: "230px",
@@ -68,6 +68,7 @@ export const CallflowSkillForm = () => {
       <FormRow>
         <div style={{ width: "10%" }}>{day.label}</div>
         <Dropdown
+          key={`timeOfDay.${day.id}`}
           options={timeOfDayOptions}
           value={timeOfDayOptions.find(tod => tod.value === value.timeOfDayId)}
           label={"Time Of Day"}
@@ -77,13 +78,15 @@ export const CallflowSkillForm = () => {
               type: skillActions.SET_TIME_OF_DAYS,
               payload: {
                 dayOfWeekId: day.id,
-                timeOfDayId: newValue.value
+                timeOfDayId: newValue?.value || null
               }
             });
           }}
         />
         <Dropdown
+          key={`vhTimeOfDay.${day.id}`}
           options={timeOfDayOptions}
+          error={missingFields.some((f: string) => f === `vhTimeOfDay.${day.id}`) && !skillState.skillForm.timeOfDays.find(tod => tod.dayOfWeekId === day.id)}
           value={timeOfDayOptions.find(tod => tod.value === value.vhTimeOfDayId)}
           styles={{ width: "36%" }}
           label={"Virtual Hold Time Of Day (Optional)"}
@@ -92,7 +95,7 @@ export const CallflowSkillForm = () => {
               type: skillActions.SET_TIME_OF_DAYS,
               payload: {
                 dayOfWeekId: day.id,
-                vhTimeOfDayId: newValue.value
+                vhTimeOfDayId: newValue?.value || null
               }
             });
           }}
@@ -103,6 +106,7 @@ export const CallflowSkillForm = () => {
     <>
       <FormRow>
         <Dropdown
+          key={"application"}
           options={applicationOptions}
           styles={inputStyles}
           value={applicationOptions.find((ap:any) => ap.value === skillState.skillForm.applicationId) || null}
@@ -118,8 +122,10 @@ export const CallflowSkillForm = () => {
           }}
         />
         <PhoneNumberInput
+          key={"vhCallerId"}
           id="VH Caller Id"
           label="VH Caller Id (Optional)"
+          error={missingFields.some((f: string) => f === "vhCallerId") && !tempField.vhCallerId.value}
           style={inputStyles}
           number={tempField.vhCallerId.value}
           showError={tempField.vhCallerId.blurred && !tempField.vhCallerId.valid}
@@ -169,7 +175,7 @@ export const CallflowSkillForm = () => {
         />
         <CustomInput
           value={tempField.vhThreshold}
-          error={invalidVhThreshold}
+          error={missingFields.some((f: string) => f === "vhThreshold") && !tempField.vhThreshold}
           styles={inputStyles}
           onBlur={() => skFormDispatch({
             type: skillActions.SET_FORM_FIELD,
@@ -190,7 +196,9 @@ export const CallflowSkillForm = () => {
           }}
         />
         <CustomInput
+          key={"vhCallTarget"}
           value={tempField.vhCallTarget}
+          error={missingFields.some((f: string) => f === "vhCallTarget") && !tempField.vhCallTarget}
           styles={inputStyles}
           maxLength="9"
           onBlur={() => skFormDispatch({

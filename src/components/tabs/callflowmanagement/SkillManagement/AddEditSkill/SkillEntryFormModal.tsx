@@ -2,14 +2,10 @@ import React from "react";
 import styled from "styled-components";
 import { CallflowSkillForm } from "callflowmanagement/CallflowSkillForm";
 import { GeneralSkillForm } from "callflowmanagement/GeneralSkillForm";
-import { Dropdown } from "components/Dropdown";
-import { CustomInput } from "components/CustomInput";
 import { ModalOverlay } from "components/ModalOverlay";
-import { PhoneNumberInput } from "components/PhoneNumberInput";
 import { StyledButton } from "components/StyledButton";
 import {
   useAdminState,
-  useAdminDispatch,
   useSkillState,
   useSkillDispatch
 } from "context/appContext";
@@ -18,7 +14,6 @@ import {
 } from "context/reducers/skillReducer";
 import {
   AddEditSkill,
-  SkillFormState,
   SkillEntryFormModalProps
 } from "../Skills.Interfaces";
 import {
@@ -35,15 +30,16 @@ import {
 import { ModalOverlayStatuses } from "globals/interfaces";
 import {
   Paper,
-  Box,
   Tab,
-  Tabs
+  Divider
 } from "@mui/material";
 import {
-  createSkill
+  createSkill, loadConsolidatedSkills
 } from "services/skill";
-import { loadConsolidatedSkills } from "services/skill";
 import { logger } from "utils/logger";
+import {
+  areVhFieldsValid, isSkillFormValid
+} from "utils/skillsUtils";
 
 const ModalContainer = styled.div`
   display: flex;
@@ -87,46 +83,20 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
 
   const skillState = useSkillState();
   const skillDispatch = useSkillDispatch();
-  const adminDispatch = useAdminDispatch();
 
   const state = useAdminState();
   const { nNumber } = state.userContext;
   const skills = skillState.skills;
 
   const [ selectedTab, setSelectedTab ] = React.useState(0);
-  const invalidSkillFriendlyName = skills.find((skill: any) => skill.ctmSkillDisplayName === skillState.skillForm.name) ? true : false;
-  const invalidSkillNum = skills.find((skill: any) => skill.name === skillState.skillForm.name) ? true : false;
-  // const invalidVhCallTarget = skillState.skillForm.vhCallerId.e164.trim() !== "" && !skillState.skillForm.vhCallerId.valid;
-  const invalidVhThreshold = skillState.skillForm.vhThreshold.trim() !== "" && isNaN(parseInt(skillState.skillForm.vhThreshold));
-
-  const areRequiredFieldsEmpty = () => {
-    let hasEmptyValues = true;
-    const emptyTimeOfDay = true;
-    let emptyVhTimeOfDay;
-    const {
-      name,
-      applicationId,
-      taskQueue,
-      profileIds,
-      vhCallerId,
-      vhThreshold,
-      timeOfDays
-    } = skillState.skillForm;
-
-    hasEmptyValues = name === "" || applicationId === null ||
-      taskQueue.sid === "" || !taskQueue.sid || profileIds.length < 1;
-
-    if (hasEmptyValues || emptyTimeOfDay || emptyVhTimeOfDay) {
-      return true;
-    } else {
-      return false;
-    }
-  };
+  const [ missingFields, setMissingFields ] = React.useState<string[]>([]);
 
   const addSkill = async () => {
-
-    //   validate the skill info - replace with util function
-    if (!isAdmin || areRequiredFieldsEmpty() || invalidSkillFriendlyName || invalidSkillNum || invalidVhThreshold) {
+    if(!isAdmin || !areVhFieldsValid(skillState.skillForm, setMissingFields)) {
+      console.log("Fields arent valid... bish");
+      return;
+    } else {
+      console.log("were validated!... dingleberry");
       return;
     }
 
@@ -211,19 +181,15 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
           />
         }
         <CenteredDiv style={{ fontSize: "25px" }}>Add Skill</CenteredDiv>
-        <Box sx={{
-          borderBottom: 1,
-          borderColor: "divider"
-        }}>
-          <SkillTabs value={selectedTab}>
-            <Tab label="General Skill Settings" onClick={() => setSelectedTab(0)} />
-            <Tab label="Dynamic Routing" onClick={() => setSelectedTab(1)}/>
-            <Tab label="Legacy Callflow Database" onClick={() => setSelectedTab(2)} />
-          </SkillTabs>
-        </Box>
+        <SkillTabs value={selectedTab}>
+          <Tab label="General Skill Settings" onClick={() => setSelectedTab(0)} />
+          <Tab label="Dynamic Routing" onClick={() => setSelectedTab(1)}/>
+          <Tab label="Legacy Callflow Database" onClick={() => setSelectedTab(2)} />
+        </SkillTabs>
+        <Divider/>
         { selectedTab === 0 && <GeneralSkillForm/>}
         { selectedTab === 1 && <FormRow>Dynamic Routing will be migrated over to use this skill in a future sprint</FormRow>}
-        { selectedTab === 2 && <CallflowSkillForm/>}
+        { selectedTab === 2 && <CallflowSkillForm missingFields={missingFields}/>}
         <ButtonWrapper>
           <StyledButton
             style={{ width: "200px" }}
@@ -236,12 +202,7 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
           <StyledButton
             onClick={addSkill}
             style={{ width: "200px" }}
-            disabled={
-              areRequiredFieldsEmpty() ||
-              invalidSkillFriendlyName ||
-              invalidSkillNum  ||
-              invalidVhThreshold
-            }
+            disabled={!isSkillFormValid(skills, skillState.skillForm)}
           >{skillState.skillForm.formMode === formModes.INSERT ? "Add " : "Update "}Skill</StyledButton>
         </ButtonWrapper>
       </ScrollingPaper>

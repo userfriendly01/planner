@@ -3,12 +3,14 @@ import {
   UMUserTwilioAttributes
 } from "globals/interfaces";
 import {
-  Skill, SkillFormState
+  Skill, SkillFormState,
+  TimeOfDayRequestObject
 } from "callflowmanagement/Skills.Interfaces";
 import _ from "lodash";
 
 import React from "react";
 import styled from "styled-components";
+import { isNotEmptyString } from "utils";
 
 const Priority = styled.span`
   color: #28A3AF;
@@ -32,8 +34,41 @@ export const isTaskQueueError = (skillForm: SkillFormState, name: string): boole
     (name && name.length > 0) && skillForm.taskQueue.target_workers !== skillTargetExpression ? true : false;
 };
 
-export const isSkillFormValid = () => {
-  return false;
+const areTimeOfDaysValid = (timeOfDays: TimeOfDayRequestObject[], virtualHold = false) => {
+  return timeOfDays.length === 7 && timeOfDays.every(tod => tod.dayOfWeekId && tod.timeOfDayId) && (virtualHold ? timeOfDays.every(tod => tod.vhTimeOfDayId) : true);
+};
+
+export const isSkillFormValid = (skills: Skill[], skillForm: SkillFormState): boolean => {
+  const isNameValid = isNotEmptyString(skillForm.name) && !skills.some(s => s.name === skillForm.name);
+  const areProfilesSelected = skillForm.profileIds.length;
+  const isTaskQueueValid = skillForm.taskQueue.isNew ? isNotEmptyString(skillForm.taskQueue.friendly_name) &&
+  skillForm.taskQueue.operating_unit_sid : skillForm.taskQueue.sid && !isTaskQueueError(skillForm, skillForm.name);
+
+  console.log(isNameValid, areProfilesSelected,isTaskQueueValid, areTimeOfDaysValid(skillForm.timeOfDays), typeof skillForm.applicationId === "number");
+  return isNameValid && areProfilesSelected && isTaskQueueValid && areTimeOfDaysValid(skillForm.timeOfDays) && typeof skillForm.applicationId === "number";
+};
+
+export const areVhFieldsValid = (skillForm: SkillFormState, setMissingFields: (fields: string[]) => void): boolean => {
+  const isVhFieldSelected = isNotEmptyString(skillForm.vhCallTarget) || isNotEmptyString(skillForm.vhThreshold) ||
+  skillForm.timeOfDays.some(tod => tod.vhTimeOfDayId) || isNotEmptyString(skillForm.vhCallerId.value);
+  console.log("isVhFieldSelected", isVhFieldSelected);
+  const missingFields: string[] = [];
+  if(isVhFieldSelected) {
+    !isNotEmptyString(skillForm.vhCallTarget) && missingFields.push("vhCallTarget");
+    !isNotEmptyString(skillForm.vhThreshold) && missingFields.push("vhThreshold");
+    !isNotEmptyString(skillForm.vhCallerId.value) && missingFields.push("vhCallerId");
+
+    const requiredDays = [1, 2, 3, 4, 5, 6, 7];
+
+    requiredDays.forEach((d: number) => {
+      skillForm.timeOfDays.some(tod => tod.dayOfWeekId !== d) && missingFields.push(`vhTimeOfDay.${d}`);
+    });
+  }
+
+  setMissingFields(missingFields);
+
+  console.log("MISSING FUCKING FIELDS", missingFields);
+  return missingFields.length > 0;
 };
 
 export const formatWorkerAttributeSkillsToHTML = (routingObj: any) => {

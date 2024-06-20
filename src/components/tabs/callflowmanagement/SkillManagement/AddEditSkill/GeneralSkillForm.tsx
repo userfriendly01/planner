@@ -100,6 +100,7 @@ export const GeneralSkillForm = () => {
               name: value
             });
           }}
+          helperText={skillState.skills.some(s => s.name === tempField.name) ? "This skill name already exists" : null}
         />
         <Dropdown
           options={profileOptions}
@@ -117,6 +118,7 @@ export const GeneralSkillForm = () => {
             });
           }}
         />
+
       </FormRow>
       <FormRow>
         <FlexColumn style={{ maxWidth: "300px" }}>
