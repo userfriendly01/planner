@@ -116,9 +116,10 @@ const App = () => {
           expiresOn
         } = await instance.loginPopup({
           account,
+          scopes: ["User.Read"],
           extraScopesToConsent: [
             // Add additional scopes that are needed here
-            `${env.GRAPH_CLIENT_ID}/.default`
+            `${env.GRAPH_CLIENT_ID}/uiaccess`
           ]
         });
 
