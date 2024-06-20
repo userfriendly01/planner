@@ -4,8 +4,8 @@ import {
   CircularProgress,
   Modal
 } from "@mui/material";
-import Header from "../../header/Header/Header";
-import NavTabs from "../../navigation/NavTabs";
+import Header from "components/Header";
+import NavTabs from "components/NavTabs";
 import NotificationModal from "components/NotificationModal";
 import {
   useAdminDispatch, useAdminState
@@ -49,12 +49,12 @@ jest.mock("usermanagement/BulkChanges", () => ({
   BulkChanges: jest.fn()
 }));
 
-jest.mock("callflowmanagement/CallFlowManagementWrapper/CallFlowManagementSkills", () => ({
+jest.mock("callflowmanagement/CallFlowManagementSkills", () => ({
   __esModule: true,
   default: jest.fn()
 }));
 
-jest.mock("callflowmanagement/CallFlowManagementWrapper/CallFlowManagementTfn", () => ({
+jest.mock("callflowmanagement/CallFlowManagementTfn", () => ({
   CallFlowManagementTfn: jest.fn()
 }));
 

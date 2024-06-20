@@ -1,4 +1,4 @@
-import { apiPaths } from "globals/index";
+import { apiPaths } from "globals";
 import { Skill } from "globals/interfaces";
 import { AxiosResponse } from "axios";
 import { escapeQuotes } from "utils";

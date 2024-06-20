@@ -1,5 +1,5 @@
 import { ExtensionSearchStatuses } from "usermanagement/OnboardNewUser/Extension/ExtensionInput/ExtensionInput.Interfaces";
-import { formModes } from "globals/index";
+import { formModes } from "globals";
 import {
   managerList,
   profileList

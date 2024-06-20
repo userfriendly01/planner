@@ -1,13 +1,15 @@
 import { Modal } from "@mui/material";
 import { DirectoryEntryForm } from "orgmanagement/DirectoryEntryForm";
+import {
+  DirectoryStateProps, DirectoryEntryFormInitialValuesProps
+} from "../DirectoryEntryForm/DirectoryEntryForm";
 import { PhoneNumberTable } from "orgmanagement/PhoneNumberTable";
 import { StyledButton } from "components/StyledButton";
 import { useAdminState } from "context/appContext";
 import {
   formModes, timeouts
-} from "globals/index";
+} from "globals";
 import { ModalOverlayStatuses } from "globals/interfaces";
-import PropTypes from "prop-types";
 import React, { useState } from "react";
 import { deleteDirectory } from "services/directory";
 import styled from "styled-components";
@@ -28,7 +30,13 @@ const TableContainer = styled.div`
   position: relative;
 `;
 
-export const Directory = props => {
+interface DirectoryProps {
+    directory: any[],
+    profileId: number | string,
+    refreshProfileData: () => void
+}
+
+export const Directory = (props: DirectoryProps) => {
   const {
     directory,
     profileId,
@@ -38,7 +46,7 @@ export const Directory = props => {
   const state = useAdminState();
   const { nNumber } = state.userContext;
 
-  const [directoryState, setDirectoryState] = useState({
+  const [directoryState, setDirectoryState] = useState<DirectoryStateProps>({
     directoryId: null,
     directoryEntryFormInitialValues: {},
     directoryEntryFormMode: "",
@@ -60,7 +68,7 @@ export const Directory = props => {
     });
   }, timeouts.MODAL_OVERLAY);
 
-  const deleteButtonOnClick = directoryId => () => {
+  const deleteButtonOnClick = (directoryId: number) => () => {
     const popUp = confirm("Are you sure you want to delete this directory entry?");
     if (popUp === true) {
       setDirectoryState({
@@ -106,7 +114,7 @@ export const Directory = props => {
     }
   };
 
-  const editButtonOnClick = entry => () => {
+  const editButtonOnClick = (entry: DirectoryEntryFormInitialValuesProps) => () => {
     setDirectoryState({
       ...directoryState,
       directoryId: entry.directory_id,
@@ -167,10 +175,4 @@ export const Directory = props => {
       />
     </TableContainer>
   );
-};
-
-Directory.propTypes = {
-  directory: PropTypes.array.isRequired,
-  profileId: PropTypes.number.isRequired,
-  refreshProfileData: PropTypes.func.isRequired
 };

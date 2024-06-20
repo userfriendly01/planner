@@ -4,7 +4,6 @@ import {
 } from "@mui/icons-material";
 import { ModalFetchingRing } from "components/ModalFetchingRing";
 import { ModalOverlayStatuses } from "globals/interfaces";
-import PropTypes from "prop-types";
 import React from "react";
 import styled, { keyframes } from "styled-components";
 
@@ -80,7 +79,7 @@ const Line = styled.line`
   animation: ${Dash} .9s .35s ease-in-out forwards;
 `;
 
-const Overlay = styled(FlexRow)`
+const Overlay = styled(FlexRow)<{ modalBackground: string, status: string }>`
   align-items: center;
   background-color: ${props => props.modalBackground};
   border-radius: 4px;
@@ -113,14 +112,20 @@ const TextWrapper = styled.div`
   color: white;
 `;
 
-export const ModalOverlay = props => {
+interface ModalOverlayProps {
+  message: string,
+  handleClose?: VoidFunction,
+  status: ModalOverlayStatuses
+}
+
+export const ModalOverlay = (props: ModalOverlayProps) => {
   const {
     message,
     handleClose,
     status
   } = props;
 
-  const getIconAndBackground = status => {
+  const getIconAndBackground = (status: ModalOverlayStatuses) => {
     if (status === ModalOverlayStatuses.SUCCESS) {
       return {
         background: "green",
@@ -183,10 +188,4 @@ export const ModalOverlay = props => {
       </InnerContainer>
     </Overlay>
   );
-};
-
-ModalOverlay.propTypes = {
-  message: PropTypes.string.isRequired,
-  handleClose: PropTypes.func,
-  status: PropTypes.oneOf(Object.values(ModalOverlayStatuses)).isRequired
 };

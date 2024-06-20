@@ -9,7 +9,7 @@ import { removeAllWhiteSpace } from "utils/alohaRoutingUtils";
  * @param {String} nextToken Token for next set of data
  * @returns list of data and nextToken if any
  */
-async function queryRoutingData(accessToken, nextToken = null) {
+async function queryRoutingData(accessToken: string, nextToken: string = null) {
   let result = {};
   try {
     const response = await fetch(env.GRAPH_API_URL, {
@@ -73,8 +73,8 @@ async function queryRoutingData(accessToken, nextToken = null) {
  * @param {String} accessToken token to use while calling graphql query
  * @returns {routingData} list of data contain all the result present in DB
  */
-async function retrieveRoutingData(accessToken,firstChunkData) {
-  let routingData = [];
+async function retrieveRoutingData(accessToken: string, firstChunkData: any) {
+  let routingData: any[] = [];
   let isFirstTime = true;
   let result = firstChunkData;
   let listItems = firstChunkData?.data?.listCctSharedCallRoutingGlobalDbs?.items || [];
@@ -85,7 +85,7 @@ async function retrieveRoutingData(accessToken,firstChunkData) {
           .nextToken);
         listItems = result.data?.listCctSharedCallRoutingGlobalDbs?.items || [];
       }
-      const tempRoutingData = listItems.map(elem => (
+      const tempRoutingData = listItems.map((elem: any) => (
         {
           ...elem,
           id: elem &&
@@ -107,7 +107,7 @@ async function retrieveRoutingData(accessToken,firstChunkData) {
  * @param {String} accessToken token to use while calling graphql query 
  * @returns 
  */
-async function updateRoutingDB(item, accessToken) {
+async function updateRoutingDB(item: any, accessToken: string) {
   let response;
   const input = {
     pkey: item.pkey,
@@ -193,7 +193,7 @@ async function updateRoutingDB(item, accessToken) {
  * @param {String} accessToken token to use while calling graphql query 
  * @returns 
  */
-async function addRoutingRule(item, accessToken) {
+async function addRoutingRule(item: any, accessToken: string) {
   let response;
   const input = {
     all: "ALL",
@@ -280,7 +280,7 @@ async function addRoutingRule(item, accessToken) {
  * @param {String} accessToken token to use while calling graphql query 
  * @returns 
  */
-async function deleteRoutingRule(item, accessToken) {
+async function deleteRoutingRule(item: any, accessToken: string) {
   let response;
   try {
     const fetchResponse = await fetch(env.GRAPH_API_URL, {
@@ -338,10 +338,10 @@ async function deleteRoutingRule(item, accessToken) {
   return response;
 }
 
-async function routingBatchDelete(items, accessToken){
-  var routingDeleteArray=[];
+async function routingBatchDelete(items: any, accessToken: string){
+  const routingDeleteArray = [];
   const size=25;
-  const response = {
+  const response: any = {
     "success": [],
     "flag": false,
     "failure": []
@@ -350,14 +350,14 @@ async function routingBatchDelete(items, accessToken){
     routingDeleteArray.push(items.splice(0, size));
   }
   for(const routeValue of routingDeleteArray){
-    const keysToDelete = routeValue.map(x => {
+    const keysToDelete = routeValue.map((x: any) => {
       return {
         pkey: x.pkey,
         skey: x.skey
       };
     }
     );
-    const routingRespId = routeValue.map(x=>({ "id": x.id }));
+    const routingRespId = routeValue.map((x: any) => ({ "id": x.id }));
 
     await batchDelete(keysToDelete,accessToken).then(resp=>{
       if(!resp?.errors){
@@ -380,7 +380,7 @@ async function routingBatchDelete(items, accessToken){
  * @param {String} accessToken token to use while calling graphql query 
  * @returns 
  */
-async function batchDelete(items, accessToken) {
+async function batchDelete(items: any, accessToken: string) {
   let response;
 
   try {
@@ -417,10 +417,10 @@ async function batchDelete(items, accessToken) {
   return response;
 }
 
-async function routingBatchUpdate(items, accessToken){
-  var routingDeleteArray=[];
+async function routingBatchUpdate(items: any, accessToken: string){
+  const routingDeleteArray: any[] = [];
   const size=25;
-  const response = {
+  const response: any = {
     success: [],
     flag: false,
     failure: [],
@@ -433,7 +433,7 @@ async function routingBatchUpdate(items, accessToken){
   while (items.length > 0){
     routingDeleteArray.push(items.splice(0, size));
   }
-  for(var i=0; i<routingDeleteArray.length; i++){
+  for(let i=0; i<routingDeleteArray.length; i++){
     await batchRoutingUpdate(routingDeleteArray[i],accessToken).then(resp=>{
       if(!resp?.errors){
         response.success = response.success.concat(routingDeleteArray[i]);
@@ -455,9 +455,9 @@ async function routingBatchUpdate(items, accessToken){
  * @param {String} accessToken token to use while calling graphql query 
  * @returns 
  */
-const batchRoutingUpdate = async(items, accessToken) =>{
+const batchRoutingUpdate = async(items: any, accessToken: string) =>{
   let response;
-  const input = items.map(item=>{
+  const input = items.map((item: any)=>{
     return {
       all: "ALL",
       pkey: item.pkey,
@@ -542,10 +542,10 @@ const batchRoutingUpdate = async(items, accessToken) =>{
   return response;
 };
 
-async function routingBatchCreate(items, accessToken){
-  var routingDeleteArray=[];
+async function routingBatchCreate(items: any, accessToken: string){
+  const routingDeleteArray: any[] = [];
   const size=25;
-  const response = {
+  const response: any = {
     success: [],
     flag: false,
     failure: [],
@@ -558,7 +558,7 @@ async function routingBatchCreate(items, accessToken){
   while (items.length > 0){
     routingDeleteArray.push(items.splice(0, size));
   }
-  for(var i=0; i<routingDeleteArray.length; i++){
+  for(let i=0; i<routingDeleteArray.length; i++){
     await batchRoutingCreate(routingDeleteArray[i], accessToken).then(resp=>{
       if(!resp?.errors){
         response.success = response.success.concat(routingDeleteArray[i]);
@@ -580,9 +580,9 @@ async function routingBatchCreate(items, accessToken){
  * @param {String} accessToken token to use while calling graphql query
  * @returns
  */
-const batchRoutingCreate = async(items, accessToken) =>{
+const batchRoutingCreate = async(items: any, accessToken: string) =>{
   let response;
-  const input = items.map(item=>{
+  const input = items.map((item: any)=>{
     return {
       all: "ALL",
       pkey: removeAllWhiteSpace(item.callIntent).toLocaleLowerCase(),

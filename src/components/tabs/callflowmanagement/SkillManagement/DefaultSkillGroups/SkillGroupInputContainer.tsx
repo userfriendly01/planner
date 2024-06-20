@@ -15,7 +15,7 @@ import {
   deleteSkillGroup,
   updateSkillGroup
 } from "services/skillgroup";
-import { timeouts } from "globals/index";
+import { timeouts } from "globals";
 import {
   Skill, ModalOverlayStatuses
 } from "globals/interfaces";

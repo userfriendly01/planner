@@ -4,7 +4,7 @@ import { StyledButton } from "components/StyledButton";
 import { Directory } from "orgmanagement/Directory";
 import { ProfileDropDown } from "orgmanagement/ProfileDropDown";
 import { useAdminState } from "context/appContext";
-import { apiPaths } from "globals/index";
+import { apiPaths } from "globals";
 import React from "react";
 import { act } from "react-dom/test-utils";
 import {

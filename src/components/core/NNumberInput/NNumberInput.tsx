@@ -1,7 +1,7 @@
 import { ModalNNumberProps } from "./NNumberInput.Interfaces";
 import { CustomInput } from "components/CustomInput";
 import { ModalHelperText } from "components/ModalHelperText";
-import { nNumMatcher } from "globals/index";
+import { nNumMatcher } from "globals";
 import React, { useState } from "react";
 import { fetchUser } from "services/fetchUser";
 import { logger } from "utils/logger";

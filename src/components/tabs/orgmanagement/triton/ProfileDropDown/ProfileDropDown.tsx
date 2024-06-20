@@ -1,9 +1,14 @@
 import { Dropdown } from "components/Dropdown";
-import PropTypes from "prop-types";
 import React from "react";
 import { sortProfilesById } from "utils/_sortUtils";
 
-export const ProfileDropDown = props => {
+interface ProfileDropDownProps {
+    availableProfiles: any[],
+    profileId: string | number,
+    updateProfile: (value: any) => void
+}
+
+export const ProfileDropDown = (props: ProfileDropDownProps) => {
   const {
     availableProfiles,
     profileId,
@@ -27,15 +32,9 @@ export const ProfileDropDown = props => {
           value: profile.profile_id,
           ...profile
         }))}
-        updateValue={(event, newInput) => updateProfile(newInput.value)}
+        updateValue={(event: any, newInput: any) => updateProfile(newInput.value)}
         value={getValue()}
       />
     </div>
   );
-};
-
-ProfileDropDown.propTypes = {
-  availableProfiles: PropTypes.arrayOf(PropTypes.object),
-  profileId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  updateProfile: PropTypes.func.isRequired
 };

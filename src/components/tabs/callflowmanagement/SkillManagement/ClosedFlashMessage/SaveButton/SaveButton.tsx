@@ -6,7 +6,7 @@ import {
 import {
   ModalOverlayStatuses, Skill
 } from "globals/interfaces";
-import { timeouts } from "globals/index";
+import { timeouts } from "globals";
 import { SaveButtonProps } from "../ClosedFlashMessage.Interfaces";
 import {
   ConfirmationDiv,

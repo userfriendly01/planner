@@ -3,7 +3,7 @@ import { SearchParams } from "usermanagement/ExtensionSearchParams";
 import { logger } from "utils/logger";
 import { myAxios } from "utils/myAxios";
 
-export const checkExtension = extension => myAxios.post(apiPaths.CHECK_EXTENSION, { extension })
+export const checkExtension = (extension: string) => myAxios.post(apiPaths.CHECK_EXTENSION, { extension })
   .then(res => {
     return res.data.isValid !== undefined ? res.data.isValid : false;
   });
@@ -20,10 +20,10 @@ const pickANumber = () => {
   return extNum;
 };
 
-export const generateExtension = workers => {
+export const generateExtension = (workers: any[]) => {
   const maxAttempts = 5;
 
-  const validateGeneratedNumber = async attemptNumber => {
+  const validateGeneratedNumber = async (attemptNumber: number): Promise<any> => {
     const extension = pickANumber();
     const validExtension = !workers.some(w => {
       w.attributes.extension === extension.toString();

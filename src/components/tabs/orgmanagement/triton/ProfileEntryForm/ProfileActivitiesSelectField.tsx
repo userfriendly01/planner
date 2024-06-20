@@ -14,7 +14,7 @@ import {
   Add,
   Delete
 } from "@mui/icons-material";
-import { apiPaths } from "globals/index";
+import { apiPaths } from "globals";
 import { Activity } from "globals/interfaces";
 import { Tooltip } from "@mui/material";
 import { logger } from "utils/logger";

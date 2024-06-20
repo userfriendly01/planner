@@ -1,19 +1,25 @@
-import { DialListTable } from "orgmanagement/DialListTable";
+import { Directory } from "orgmanagement/Directory";
 import { ProfileDropDown } from "orgmanagement/ProfileDropDown";
 import { useAdminState } from "context/appContext";
-import { apiPaths } from "globals/index";
+import { apiPaths } from "globals";
 import React, { useState } from "react";
-import { sortDialListEntriesByName } from "utils/_sortUtils";
-import { myAxios } from "utils/myAxios";
 import { logger } from "utils/logger";
+import { myAxios } from "utils/myAxios";
+import { sortDirectoryListEntriesByName } from "utils/_sortUtils";
 import {
   ProfileSettingsContainerDiv,
   ProfileSettingsMessage
 } from "./ProfileSettingsContainer.Styles";
 
-export const ProfileDialListContainer = () => {
-  const initialProfileState = {
-    dialList: [],
+export interface InitialProfileStateProps {
+  directoryList: any[],
+  message: string,
+  profileId?: number | string
+}
+
+const ProfileDirectoryContainer = () => {
+  const initialProfileState: InitialProfileStateProps = {
+    directoryList: [],
     message: "Please select a profile",
     profileId: null
   };
@@ -23,12 +29,12 @@ export const ProfileDialListContainer = () => {
   const state = useAdminState();
   const profilesFromContext = state.profileContext.profiles;
 
-  const fetchProfileInformation = profileId => {
+  const fetchProfileInformation = (profileId: string | number) => {
     myAxios.get(apiPaths.GET_PROFILE_DATA(profileId))
       .then(res => {
-        const dialList = res.data.diallist.sort(sortDialListEntriesByName);
+        const directoryList = res.data.directories.sort(sortDirectoryListEntriesByName);
         setProfileSettingsState({
-          dialList,
+          directoryList,
           message: null,
           profileId
         });
@@ -50,11 +56,10 @@ export const ProfileDialListContainer = () => {
   };
 
   const {
-    dialList,
+    directoryList,
     message,
     profileId
   } = profileSettingsState;
-
 
   return (
     <ProfileSettingsContainerDiv>
@@ -66,11 +71,13 @@ export const ProfileDialListContainer = () => {
       {
         profileId !== null && profileId !== ""
           ?
-          <DialListTable
-            dialList={dialList}
-            profileId={profileId}
-            refreshProfileData={() => fetchProfileInformation(profileId)}
-          />
+          <div>
+            <Directory
+              directory={directoryList}
+              profileId={profileId}
+              refreshProfileData={() => fetchProfileInformation(profileId)}
+            />
+          </div>
           :
           null
       }
@@ -86,3 +93,5 @@ export const ProfileDialListContainer = () => {
     </ProfileSettingsContainerDiv>
   );
 };
+
+export default ProfileDirectoryContainer;
