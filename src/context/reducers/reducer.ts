@@ -26,8 +26,7 @@ export const initialState: AppState = {
   },
   userContext: {
     permissions: [],
-    accessToken: "",
-    accessTokenGraph: ""
+    tokens: {}
   },
   workerContext: {
     workers: [],

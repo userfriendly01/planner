@@ -73,12 +73,13 @@ export interface AppState {
     skillGroups: SkillGroup[]
   },
   userContext: {
-    permissions: ADGroupPermission[]
-    accessToken: string
-    accessTokenGraph: string
-    isAdmin?: boolean
-    profileId?: number
-    nNumber?: string
+    permissions: ADGroupPermission[];
+    tokens: {
+      [key: string]: string;
+    };
+    isAdmin?: boolean;
+    profileId?: number;
+    nNumber?: string;
   },
   workerContext: {
     workers: UMUser[],

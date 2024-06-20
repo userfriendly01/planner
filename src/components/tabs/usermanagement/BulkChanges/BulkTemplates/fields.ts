@@ -13,7 +13,9 @@ import { logger } from "utils/logger";
 import { formatDateFromExcelDate } from "usermanagement/formatUtils";
 import { allowedEmptyScheduleField } from "usermanagement/validationUtils";
 import { Fields } from "usermanagement/BulkChanges.Interfaces";
-import { UMManager } from "globals/interfaces";
+import {
+  AppState, UMManager
+} from "globals/interfaces";
 
 const rejectPromise = (error: string, rowNumber: number | string) => {
   return Promise.reject(JSON.stringify({
@@ -42,7 +44,7 @@ export const FIELDS: Fields = {
     description: "Agents N Number",
     example: "n0263786",
     options: null,
-    validateFunction: async (row: any, state: any): Promise<any> => {
+    validateFunction: async (row: any, state: AppState): Promise<any> => {
       const rowNumber = row.rowNumber;
       const fieldName = "N Number";
       const field = cleanupField(row[fieldName], "string");
@@ -58,7 +60,7 @@ export const FIELDS: Fields = {
         return rejectPromise(`${field} already has a record in Twilio/Worker Database row ${rowNumber}`, rowNumber);
       } else {
         try {
-          const fetchedUser = await fetchUser(field);
+          const fetchedUser = await fetchUser(state.userContext.tokens.msGraph, field);
 
           row.attributes.contact_uri = `client:${field.toLowerCase()}`;
           row.attributes.department_id = fetchedUser.departmentNumber;
@@ -127,7 +129,7 @@ export const FIELDS: Fields = {
     description: "Agents N Number",
     example: "n0263786",
     options: null,
-    validateFunction: async (row: any, state: any): Promise<any> => {
+    validateFunction: async (row: any, state: AppState): Promise<any> => {
       const fieldName = "N Number";
       const field = cleanupField(row[fieldName], "string");
 
@@ -140,7 +142,7 @@ export const FIELDS: Fields = {
         return rejectPromise(`${fieldName} is not in the valid n number format on Triton worker ${row.workerSid}`, "NA");
       } else {
         try {
-          const fetchedUser = await fetchUser(field);
+          const fetchedUser = await fetchUser(state.userContext.tokens.msGraph, field);
 
           row.attributes.contact_uri = `client:${field.toLowerCase()}`;
           row.attributes.department_id = fetchedUser.departmentNumber;
@@ -199,7 +201,7 @@ export const FIELDS: Fields = {
     description: "N Number of the Manager",
     example: "n0088625",
     options: null,
-    validateFunction: async (row: any, state: any): Promise<any> => {
+    validateFunction: async (row: any, state: AppState): Promise<any> => {
       const rowNumber = row.rowNumber;
       const fieldName = "Manager N Number";
       const field = cleanupField(row[fieldName], "string");
@@ -213,7 +215,7 @@ export const FIELDS: Fields = {
         return rejectPromise(`${fieldName} is already present for row ${rowNumber}`, rowNumber);
       } else {
         try {
-          const fetchedUser = await fetchUser(field);
+          const fetchedUser = await fetchUser(state.userContext.tokens.msGraph, field);
 
           row.attributes.manager_first_name = fetchedUser.firstName;
           row.attributes.manager_last_name = fetchedUser.lastName;
@@ -495,7 +497,7 @@ export const FIELDS: Fields = {
     field: "outgoingNumber",
     name: "Outgoing Number",
     type: "string",
-    description: "Agent's Outgoing Number",
+    description: "Agent's Outgoing Number, this is required",
     example: "6038518288",
     options: null,
     validateFunction: async (row: any, state: any): Promise<any> => {

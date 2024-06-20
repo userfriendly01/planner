@@ -75,7 +75,7 @@ export const LIST_USER_RECORDS: GraphData = {
           item_type
           sid: worker_sid
           inactiveDate: inactive_date
-          twilio_attributes {
+          attributes: twilio_attributes {
               profile_id
           }
         }

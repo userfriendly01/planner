@@ -96,14 +96,14 @@ const App = () => {
       }
     };
 
-    if (state.userContext.accessToken && loadResult.status === null) {
+    if (Object.keys(state.userContext.tokens).length && loadResult.status === null) {
       setLoadResult({
         status: loading
       });
 
       startup();
     }
-  }, [state.userContext.accessToken]);
+  }, [state.userContext.tokens]);
 
   useEffect(() => {
     // Helper to get token
@@ -111,32 +111,30 @@ const App = () => {
       logger.log("*** MSAL: Getting new Token ***");
 
       try {
-        const {
-          accessToken,
-          expiresOn
-        } = await instance.loginPopup({
+        const msGraph = await instance.loginPopup({
           account,
-          scopes: ["User.Read"],
+          scopes: ["User.Read.All"],
           extraScopesToConsent: [
             // Add additional scopes that are needed here
             `${env.GRAPH_CLIENT_ID}/uiaccess`
           ]
         });
 
-        logger.log(`*** MSAL: Token acquired, will expire at ${expiresOn} ***`);
+        logger.log(`*** MSAL: Token acquired, will expire at ${msGraph.expiresOn} ***`);
 
         // Place any additional token requests here:
-        const { accessToken: accessTokenGraph } = await instance.acquireTokenSilent({
+        const sharedGraph = await instance.acquireTokenSilent({
           account,
-          scopes: [`${env.GRAPH_CLIENT_ID}/.default`]
+          scopes: [`${env.GRAPH_CLIENT_ID}/uiaccess`]
         });
-
 
         dispatch({
           type: "loadUserData",
           payload: {
-            accessToken,
-            accessTokenGraph
+            tokens: {
+              msGraph: msGraph.accessToken,
+              sharedGraph: sharedGraph.accessToken
+            }
           }
         });
 
@@ -146,7 +144,7 @@ const App = () => {
         // the data
         wait(() => {
           setShowModal(true);
-        }, expiresOn.getTime() - Date.now());
+        }, msGraph.expiresOn.getTime() - Date.now());
       } catch (error) {
         logger.error("TOKEN_GET_FAILED", { error });
         setLoadResult({

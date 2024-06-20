@@ -635,7 +635,10 @@ export const initialTestState = {
   userContext: {
     nNumber: "n1234567",
     profileId: 10,
-    accessToken: "blaahahh",
+    tokens: {
+      msGraph: "Access Token",
+      sharedGraph: "Access Token"
+    },
     isAdmin: false,
     permissions: [
       {

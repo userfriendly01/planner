@@ -147,7 +147,7 @@ describe("<App />", () => {
     useAdminState.mockReturnValue({
       userContext: {
         permissions: [],
-        accessToken: ""
+        tokens: {}
       },
       workerContext: {
         workers: []
@@ -207,8 +207,10 @@ describe("<App />", () => {
         expect(mockAdminDispatch).toHaveBeenCalledWith({
           type: "loadUserData",
           payload: {
-            accessToken: "Access Token",
-            accessTokenGraph: "Access Token"
+            tokens: {
+              msGraph: "Access Token",
+              sharedGraph: "Access Token"
+            }
           }
         });
       });
@@ -220,8 +222,10 @@ describe("<App />", () => {
       useAdminState.mockReturnValue({
         userContext: {
           permissions: [],
-          accessToken: "Access Token",
-          accessTokenGraph: "Access Token"
+          tokens: {
+            msGraph: "Access Token",
+            graph: "Access Token"
+          }
         },
         workerContext: {
           workers: []
@@ -273,8 +277,10 @@ describe("<App />", () => {
       expect(mockAdminDispatch).toHaveBeenCalledWith({
         type: "loadUserData",
         payload: {
-          accessToken: "Access Token",
-          accessTokenGraph: "Access Token"
+          tokens: {
+            msGraph: "Access Token",
+            sharedGraph: "Access Token"
+          }
         }
       });
     });
@@ -284,8 +290,10 @@ describe("<App />", () => {
     test("User has no permissions", async () => {
       useAdminState.mockReturnValue({
         userContext: {
-          accessToken: "Access Token",
-          accessTokenGraph: "Access Token"
+          tokens: {
+            msGraph: "Access Token",
+            graph: "Access Token"
+          }
         },
         workerContext: {
           workers: []
@@ -303,8 +311,10 @@ describe("<App />", () => {
     test("Startup fails to run", async () => {
       useAdminState.mockReturnValue({
         userContext: {
-          accessToken: "Access Token",
-          accessTokenGraph: "Access Token"
+          tokens: {
+            msGraph: "Access Token",
+            graph: "Access Token"
+          }
         },
         workerContext: {
           workers: []
@@ -354,8 +364,10 @@ describe("<App />", () => {
       useAdminState.mockReturnValue({
         userContext: {
           permissions: [],
-          accessToken: "Access Token",
-          accessTokenGraph: "Access Token"
+          tokens: {
+            msGraph: "Access Token",
+            sharedGraph: "Access Token"
+          }
         },
         workerContext: {
           workers: []
@@ -390,8 +402,10 @@ describe("<App />", () => {
         expect(mockAdminDispatch).toHaveBeenCalledWith({
           type: "loadUserData",
           payload: {
-            accessToken: "Access Token",
-            accessTokenGraph: "Access Token"
+            tokens: {
+              msGraph: "Access Token",
+              sharedGraph: "Access Token"
+            }
           }
         });
       });

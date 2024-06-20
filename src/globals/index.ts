@@ -24,6 +24,7 @@ export const env = {
 
 const CONTACT_MANAGER_BASE_URI = `${env.SOFTPHONE_SERVICE_URL}/contact-manager`;
 const SERVICE_BASE_URI = env.SOFTPHONE_SERVICE_URL;
+const MS_GRAPH_URL = "https://graph.microsoft.com/v1.0";
 
 export const nNumMatcher = /[n,N]\d{7}/g;
 export const extensionMatcher = /^\d{4,5}$/;
@@ -258,7 +259,7 @@ export const apiPaths = {
   DIAL_LIST_ENTRY: (dialListId: number): string => `${CONTACT_MANAGER_BASE_URI}/diallist/${dialListId}`,
   DIRECTORY: `${CONTACT_MANAGER_BASE_URI}/directory`,
   DIRECTORY_ENTRY: (directoryId: string | number): string => `${CONTACT_MANAGER_BASE_URI}/directory/${directoryId}`,
-  EMPLOYEE_LOOKUP: (nNumber: string): string => `${SERVICE_BASE_URI}/employeelookup/${nNumber}`,
+  EMPLOYEE_LOOKUP: (nNumber: string): string => `${MS_GRAPH_URL}/users?$filter=employeeId eq '${nNumber}'&$select=mail,givenName,surname,officeLocation,extension_128b6233d06d4df391d7de26c982b64e_extensionAttribute1,department,extension_128b6233d06d4df391d7de26c982b64e_extensionAttribute2,accountEnabled`,
   FLASH_MESSAGE: `${SERVICE_BASE_URI}/flashmessage`,
   GET_APPLICATIONS: `${SERVICE_BASE_URI}/applications`,
   GET_CALABRIO_WFM: `${SERVICE_BASE_URI}/calabrio-api/wfm`,
