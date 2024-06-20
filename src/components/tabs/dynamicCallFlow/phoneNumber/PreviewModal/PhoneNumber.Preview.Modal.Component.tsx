@@ -139,6 +139,10 @@ export const PhoneNumberPreviewModal = ({
     onClose();
   };
 
+  function getRowId(row: PhoneNumberRecordType) {
+    return PhoneNumberRecordUtil.getPhoneNumber(row);
+  }
+
   return (
     <div>
       <Modal
@@ -168,7 +172,7 @@ export const PhoneNumberPreviewModal = ({
             rows={modalRecords}
             columns={tableGridColumnDef}
             editMode="row"
-            getRowId={(row: PhoneNumberRecordType) => PhoneNumberRecordUtil.getPhoneNumber(row)}
+            getRowId={getRowId}
             loading = {loading}
             sx={{
               "& .MuiDataGrid-columnHeaderTitle": {
