@@ -27,8 +27,12 @@ export const GeneralSkillForm = () => {
 
   const state = useAdminState();
   const profiles = state.profileContext.profiles;
+  const [ tempField, setTempField ] = React.useState({
+    name: skillState.skillForm.name,
+    newTaskQueue: skillState.skillForm.taskQueue.isNew ? skillState.skillForm.taskQueue.friendly_name : ""
+  });
   const taskQueues = skillState.taskQueues;
-  const taskQueueError: boolean = isTaskQueueError(skillState.skillForm);
+  const taskQueueError: boolean = isTaskQueueError(skillState.skillForm, tempField.name);
   const taskQueueOptions = taskQueues.map(queue => {
     return {
       label: queue.friendly_name,
@@ -36,6 +40,9 @@ export const GeneralSkillForm = () => {
       ...queue
     };
   });
+  const workerExpressionDisplay = skillState.skillForm.taskQueue.isNew ? `routing.skills HAS "${tempField.name}"` : skillState.skillForm.taskQueue.target_workers;
+  const nameDisplay = skillState.skillForm.taskQueue.isNew ? tempField.newTaskQueue : skillState.skillForm.taskQueue.friendly_name;
+
   const [ filteredQueues, setFilteredQueues ] = React.useState(taskQueueOptions);
 
   const taskQueueDropdownOptions: DropdownOption[] = [
@@ -68,24 +75,29 @@ export const GeneralSkillForm = () => {
     width: "330px",
     margin: "5px"
   };
-
   return (
     <>
       <FormRow>
         <CustomInput
-          value={skillState.skillForm.name}
+          value={tempField.name}
           styles={inputStyles}
           maxLength="80"
-          label="Skill"
-          name="Skill"
-          updateValue={value => {
-            setFilteredQueues(taskQueueOptions.filter(tq => tq.target_workers.includes(value)));
+          onBlur={() => {
+            setFilteredQueues(taskQueueOptions.filter(tq => tq.target_workers.includes(tempField.name)));
             skFormDispatch({
               type: skillActions.SET_FORM_FIELD,
               payload: {
                 key: "name",
-                value: value.trim()
+                value: tempField.name
               }
+            });
+          }}
+          label="Skill"
+          name="Skill"
+          updateValue={value => {
+            setTempField({
+              ...tempField,
+              name: value
             });
           }}
         />
@@ -157,23 +169,28 @@ export const GeneralSkillForm = () => {
           { skillState.skillForm.taskQueue.isNew &&
           <div>
             <CustomInput
-              value={skillState.skillForm.taskQueue.friendly_name}
+              value={tempField.newTaskQueue}
               styles={inputStyles}
-              label="New Task Queue Friendly Name"
-              name="Skill"
-              updateValue={value => {
+              onBlur={() => {
                 skFormDispatch({
                   type: skillActions.SET_FORM_FIELD,
                   payload: {
                     key: "taskQueue",
                     value: {
                       ...skillState.skillForm.taskQueue,
-                      friendly_name: value
+                      friendly_name: tempField.newTaskQueue.trim()
                     }
                   }
                 });
               }}
-
+              label="New Task Queue Friendly Name"
+              name="Skill"
+              updateValue={value => {
+                setTempField({
+                  ...tempField,
+                  newTaskQueue: value
+                });
+              }}
             />
             <Dropdown
               options={ouOptions}
@@ -198,8 +215,8 @@ export const GeneralSkillForm = () => {
         <TaskQueueDisplay elevation={3} error={taskQueueError.toString()}>
           <Label><h2>Task Queue Details</h2></Label>
           <Label>{skillState.skillForm.taskQueue.sid}</Label>
-          <Label>{skillState.skillForm.taskQueue.friendly_name}</Label>
-          <Label>{skillState.skillForm.taskQueue.target_workers}</Label>
+          <Label>{nameDisplay}</Label>
+          <Label>{workerExpressionDisplay}</Label>
         </TaskQueueDisplay>
       </FormRow>
     </>

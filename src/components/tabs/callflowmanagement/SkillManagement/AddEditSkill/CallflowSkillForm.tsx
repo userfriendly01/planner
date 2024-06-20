@@ -1,34 +1,39 @@
-import {
-  FormControlLabel, Switch
-} from "@mui/material";
 import { Dropdown } from "components/core/CustomDropdown/Dropdown";
 import { CustomInput } from "components/core/CustomInput/CustomInput";
 import { PhoneNumberInput } from "components/core/PhoneNumberInput/PhoneNumberInput";
 import { FormRow } from "callflowmanagement/Skills.Styles";
 import {
-  useAdminState,
   useSkillState,
   useSkillDispatch
 } from "context/appContext";
-import {
-  skillActions,
-  initialSkillState
-} from "context/reducers/skillReducer";
-import {
-  FlexRow, FlexColumn
-} from "globals/interfaces";
+import { skillActions } from "context/reducers/skillReducer";
+import { FlexColumn } from "globals/interfaces";
 import React from "react";
 import {
-  Application, Day, DayOfWeek, SkillState,
+  Application, Day, SkillState,
   TimeOfDay,
   TimeOfDayRequestObject
 } from "../Skills.Interfaces";
-import { dayOfWeek } from "utils/alohaRoutingUtils";
 
 export const CallflowSkillForm = () => {
 
   const skillState: SkillState = useSkillState();
   const skFormDispatch = useSkillDispatch();
+  const [ tempField, setTempField ] = React.useState<{
+    vhCallerId: any,
+    vhThreshold: string,
+    vhCallTarget: string
+  }>({
+    vhCallerId: {
+      valid: false,
+      blurred: false,
+      ...skillState.skillForm.vhCallerId
+    },
+    vhThreshold: skillState.skillForm.vhThreshold,
+    vhCallTarget: skillState.skillForm.vhCallTarget
+  });
+
+  console.warn("TEMP FIELDS", tempField);
 
   const getTimeOfDayOptions = (timeOfDays: TimeOfDay[]) => {
     return timeOfDays.map(tod => ({
@@ -116,63 +121,91 @@ export const CallflowSkillForm = () => {
           id="VH Caller Id"
           label="VH Caller Id (Optional)"
           style={inputStyles}
-          number={skillState.skillForm.vhCallerId.value}
-          showError={skillState.skillForm.vhCallerId.blurred && !skillState.skillForm.vhCallerId.valid}
-          onBlur={() => skFormDispatch({
-            type: skillActions.SET_FORM_FIELD,
-            payload: {
-              key: "vhCallerId",
-              value: {
-                ...skillState.skillForm.vhCallerId,
-                blurred: true
-              }
-            }
-          })}
-          updateValue={(maskedValue: string, unmaskedValue: string, isValid: boolean, e164Number: string) => {
-            skFormDispatch({
-              type: skillActions.SET_FORM_FIELD,
-              payload: {
-                key: "vhCallerId",
-                value: {
-                  ...skillState.skillForm.vhCallerId,
-                  value: unmaskedValue,
-                  valid: isValid,
-                  e164: e164Number
+          number={tempField.vhCallerId.value}
+          showError={tempField.vhCallerId.blurred && !tempField.vhCallerId.valid}
+          onBlur={() => {
+            if(tempField.vhCallerId.valid){
+              skFormDispatch({
+                type: skillActions.SET_FORM_FIELD,
+                payload: {
+                  key: "vhCallerId",
+                  value: {
+                    value: tempField.vhCallerId.value,
+                    e164: tempField.vhCallerId.e164
+                  }
                 }
+              });
+            } else {
+              setTempField({
+                ...tempField,
+                vhCallerId: {
+                  ...tempField.vhCallerId,
+                  blurred: tempField.vhCallerId.value.trim() === "" ? false : true
+                }
+              });
+              skFormDispatch({
+                type: skillActions.SET_FORM_FIELD,
+                payload: {
+                  key: "vhCallerId",
+                  value: {
+                    value: "",
+                    e164: ""
+                  }
+                }
+              });
+            }
+          }}
+          updateValue={(maskedValue: string, unmaskedValue: string, isValid: boolean, e164Number: string) => {
+            setTempField({
+              ...tempField,
+              vhCallerId: {
+                ...tempField.vhCallerId,
+                value: unmaskedValue,
+                valid: isValid,
+                e164: e164Number
               }
             });
           }}
         />
         <CustomInput
-          value={skillState.skillForm.vhThreshold}
+          value={tempField.vhThreshold}
           error={invalidVhThreshold}
           styles={inputStyles}
+          onBlur={() => skFormDispatch({
+            type: skillActions.SET_FORM_FIELD,
+            payload: {
+              key: "vhThreshold",
+              value: tempField.vhThreshold
+            }
+          })
+          }
           maxLength="3"
           label="VH Threshold (Optional)"
           name="vhThreshold"
           updateValue={value => {
-            skFormDispatch({
-              type: skillActions.SET_FORM_FIELD,
-              payload: {
-                key: "vhThreshold",
-                value: value.trim()
-              }
+            setTempField({
+              ...tempField,
+              vhThreshold: value.trim()
             });
           }}
         />
         <CustomInput
-          value={skillState.skillForm.vhCallTarget}
+          value={tempField.vhCallTarget}
           styles={inputStyles}
           maxLength="9"
+          onBlur={() => skFormDispatch({
+            type: skillActions.SET_FORM_FIELD,
+            payload: {
+              key: "vhCallTarget",
+              value: tempField.vhCallTarget.trim()
+            }
+          })}
           label="VH Call Target (Optional)"
           name="vhCallTarget"
           updateValue={value => {
-            skFormDispatch({
-              type: skillActions.SET_FORM_FIELD,
-              payload: {
-                key: "vhCallTarget",
-                value: value.trim()
-              }
+            setTempField({
+              ...tempField,
+              vhCallTarget: value.trim()
             });
           }}
         />

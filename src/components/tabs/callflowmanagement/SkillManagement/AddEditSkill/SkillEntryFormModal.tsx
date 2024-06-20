@@ -96,7 +96,7 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
   const [ selectedTab, setSelectedTab ] = React.useState(0);
   const invalidSkillFriendlyName = skills.find((skill: any) => skill.ctmSkillDisplayName === skillState.skillForm.name) ? true : false;
   const invalidSkillNum = skills.find((skill: any) => skill.name === skillState.skillForm.name) ? true : false;
-  const invalidVhCallTarget = skillState.skillForm.vhCallerId.e164.trim() !== "" && !skillState.skillForm.vhCallerId.valid;
+  // const invalidVhCallTarget = skillState.skillForm.vhCallerId.e164.trim() !== "" && !skillState.skillForm.vhCallerId.valid;
   const invalidVhThreshold = skillState.skillForm.vhThreshold.trim() !== "" && isNaN(parseInt(skillState.skillForm.vhThreshold));
 
   const areRequiredFieldsEmpty = () => {
@@ -126,7 +126,7 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
   const addSkill = async () => {
 
     //   validate the skill info - replace with util function
-    if (!isAdmin || areRequiredFieldsEmpty() || invalidSkillFriendlyName || invalidSkillNum || invalidVhCallTarget || invalidVhThreshold) {
+    if (!isAdmin || areRequiredFieldsEmpty() || invalidSkillFriendlyName || invalidSkillNum || invalidVhThreshold) {
       return;
     }
 
@@ -135,7 +135,7 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
       profileIds: skillState.skillForm.profileIds,
       applicationId: skillState.skillForm.applicationId,
       taskQueueSid: skillState.skillForm.taskQueue.sid,
-      vhCallTarget: skillState.skillForm.vhCallerId.valid ? skillState.skillForm.vhCallerId.e164 : null,
+      vhCallTarget: skillState.skillForm.vhCallerId ? skillState.skillForm.vhCallerId.e164 : null,
       vhThreshold: skillState.skillForm.vhThreshold ? parseInt(skillState.skillForm.vhThreshold) : null,
       updatedBy: nNumber.toLowerCase(),
       timeOfDayIds: []//FAITH redo this
@@ -240,7 +240,6 @@ const SkillEntryFormModal = (props: SkillEntryFormModalProps) => {
               areRequiredFieldsEmpty() ||
               invalidSkillFriendlyName ||
               invalidSkillNum  ||
-              invalidVhCallTarget ||
               invalidVhThreshold
             }
           >{skillState.skillForm.formMode === formModes.INSERT ? "Add " : "Update "}Skill</StyledButton>

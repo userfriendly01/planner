@@ -25,12 +25,11 @@ const SkillsDiv = styled.div`
   padding: 1 3;
 `;
 
-export const isTaskQueueError = (skillForm: SkillFormState): boolean => {
-  const skillTargetExpression = `routing.skills HAS "${skillForm.name}"`;
+export const isTaskQueueError = (skillForm: SkillFormState, name: string): boolean => {
+  const skillTargetExpression = `routing.skills HAS "${name}"`;
 
   return (skillForm.taskQueue.sid && skillForm.taskQueue.sid.length > 0) &&
-    (skillForm.name && skillForm.name.length > 0) &&
-    skillForm.taskQueue.target_workers !== skillTargetExpression ? true : false;
+    (name && name.length > 0) && skillForm.taskQueue.target_workers !== skillTargetExpression ? true : false;
 };
 
 export const isSkillFormValid = () => {

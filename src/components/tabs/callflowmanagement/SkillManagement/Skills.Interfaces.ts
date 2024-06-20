@@ -152,9 +152,7 @@ export interface SkillFormState {
   vhCallTarget: string,
   vhCallerId: {
     value: string,
-    valid: boolean,
-    e164: string,
-    blurred: boolean
+    e164: string
   }
 }
 

@@ -67,9 +67,7 @@ export const initialSkillState: SkillState = {
     vhCallTarget: "",
     vhCallerId: {
       value: "",
-      valid: false,
-      e164: "",
-      blurred: false
+      e164: ""
     },
     vhThreshold: "",
     timeOfDays: []

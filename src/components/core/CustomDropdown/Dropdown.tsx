@@ -56,7 +56,7 @@ export const Dropdown = (props: any) => {
   return (
     <Autocomplete
       multiple={multiple}
-      blurOnSelect={true}
+      blurOnSelect={multiple ? false : true}
       size={styles && styles.small ? "small" :"medium"}
       disableClearable={disableClear}
       disableCloseOnSelect={multiple}

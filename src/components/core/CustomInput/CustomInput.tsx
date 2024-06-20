@@ -19,7 +19,7 @@ interface CustomInputProps {
   maxLength?: string,
   name: string,
   styles?: any,
-  onBlur?: () => void,
+  onBlur?: (event?: any) => void,
   updateValue: (value: string) => void,
   validator?: (value: string) => boolean,
   validatedServiceCall?: (value: string) => Promise<any>,
@@ -59,6 +59,9 @@ export const CustomInput = (props: CustomInputProps) => {
     <>
       <StyledTextField
         disabled={disabled || loading}
+        onKeyDown={(event: any) => {
+          event.stopPropagation();
+        }}
         error={error}
         id={name ? `outlined-${name}-input` : null}
         inputProps={maxLength ? { maxLength } : {}}
