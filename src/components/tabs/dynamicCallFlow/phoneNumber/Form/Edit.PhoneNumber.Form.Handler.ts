@@ -30,8 +30,6 @@ export class EditPhoneNumberFormHandler extends AbstractPhoneNumberFormHandler {
     const recordToReturn = { ...recordToUpdate };
 
     try {
-      this.deleteTransientKeys(recordToUpdate);
-
       this.validatePhoneNumberRecord(recordToUpdate, fieldConfigs);
 
       const updateRecordResults = await SingleCallFlowRecord.update(accessToken, recordToUpdate);

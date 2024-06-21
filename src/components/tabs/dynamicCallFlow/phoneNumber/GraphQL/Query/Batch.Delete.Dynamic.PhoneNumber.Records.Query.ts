@@ -1,10 +1,5 @@
-import {
-  BatchResults, BatchRecordQuery
-} from "../../../common/GraphQL/Abstract.BatchRecords.Query";
-import {
-  CallFlowDeleteInput,
-  PhoneNumber, PhoneNumberRecordType
-} from "../Dynamic.PhoneNumber.Interfaces";
+import { BatchRecordQuery, BatchResults } from "../../../common/GraphQL/Abstract.BatchRecords.Query";
+import { CallFlowDeleteInput, PhoneNumber, PhoneNumberRecordType } from "../Dynamic.PhoneNumber.Interfaces";
 import {
   AbstractBatchDeleteDynamicCallFlowQuery
 } from "components/tabs/dynamicCallFlow/common/GraphQL/Batch.Delete.DynamicCallFlow.Query";
@@ -15,7 +10,7 @@ export class BatchDeleteDynamicPhoneNumberRecordsQuery extends AbstractBatchDele
   protected generateCallFlowDeleteInputs(phoneNumberRecords: Array<PhoneNumberRecordType>): Array<CallFlowDeleteInput> {
     return phoneNumberRecords.map( phoneNumberRecord =>
       ({
-        id: PhoneNumberRecordUtil.getPkey(phoneNumberRecord),
+        id: PhoneNumberRecordUtil.getPkey(phoneNumberRecord)
       } as CallFlowDeleteInput));
   }
 }

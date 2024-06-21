@@ -1,12 +1,12 @@
 import {
-  ActionType, GraphQLRecord
+  ActionType
 } from "../../common/GraphQL/DynamicCallFlow.Interfaces";
 
 export type ActionRecordType = Action | Announcement | Menu | MenuOptions | Redirect
 
 export type ActionRecord = Action & Announcement & Menu & MenuOptions & Redirect
 
-export interface Action extends GraphQLRecord {
+export interface Action {
   actionId?: string;
   actionType?: ActionType;
   callFlowName?: string;

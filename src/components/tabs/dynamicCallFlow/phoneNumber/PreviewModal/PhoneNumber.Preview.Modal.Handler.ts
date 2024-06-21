@@ -36,7 +36,7 @@ export class PhoneNumberPreviewModalHandler extends AbstractPreviewModalHandler<
       return HANDLED_UNSUCCESSFULLY;
     }
 
-    const deleteOppositeRowsBatchResult = await deleteOppositeRows(accessToken, batchResults.success);
+    const deleteOppositeRowsBatchResult = await deleteOppositeRows(accessToken, recordsToCreate);
 
     if (deleteOppositeRowsBatchResult?.hasError) {
       this.dataGridController.alertBarController.graphQLError(deleteOppositeRowsBatchResult.errors);

@@ -4,7 +4,12 @@ import {
   Menu,
   MenuOptions, Redirect
 } from "./Action.Interfaces";
-import { BatchResults } from "../../common/GraphQL/Abstract.BatchRecords.Query";
+import {
+  BatchGraphQLResponse,
+  BatchInput,
+  BatchResults,
+  BatchVariables
+} from "../../common/GraphQL/Abstract.BatchRecords.Query";
 import {
   AbstractGraphQLQuery
 } from "components/tabs/dynamicCallFlow/common/GraphQL/AbstractGraphQL.Query";
@@ -121,19 +126,53 @@ class BatchCreateActionRecordsQuery extends AbstractGraphQLQuery {
    * @return {Promise<BatchResults<ActionRecordType>>}
    */
   async batchQuery(accessToken: string, actionRecords: Array<ActionRecordType>): Promise<BatchResults<ActionRecordType>> {
-    const variables = {
-      input: this.generateQueryVariables(actionRecords)
-    } as GraphQLInputVariables<CallFlowConfig>;
+    const batchOfGraphQLInputVariables: Array<GraphQLInputVariables<CallFlowConfig>> = this.generateBatchOfGraphQLInputVariables(actionRecords);
 
-    const graphQlResponse: GraphQLResponse<CallFlowConfig> = await this.query<GraphQLInputVariables<CallFlowConfig>, CallFlowConfig>(accessToken, variables);
+    const batchGraphQLResponses: Array<GraphQLResponse<CallFlowConfig>> = await Promise.all(
+      batchOfGraphQLInputVariables.map(
+        async graphQLInputVariables => {
+          return await this.query<GraphQLInputVariables<CallFlowConfig>, CallFlowConfig>(accessToken, graphQLInputVariables) as GraphQLResponse<CallFlowConfig>;;
+        }
+      )
+    );
 
-    return {
-      alertMsg: graphQlResponse.errors?.length === 0 ? "" : `Errors occurred processing ${this.queryName()} records`,
-      errors: graphQlResponse.errors || [],
-      failure: graphQlResponse.errors?.length > 0 ? actionRecords : [],
-      hasError: graphQlResponse.errors?.length > 0,
-      success: graphQlResponse.errors?.length === 0 ? actionRecords : []
-    } as BatchResults<ActionRecordType>;
+    return this.buildResponse(batchGraphQLResponses);
+  }
+
+  private generateBatchOfGraphQLInputVariables(actionRecords: Array<ActionRecordType>): Array<GraphQLInputVariables<CallFlowConfig>> {
+    const batchOfGraphQLInputVariables: Array<GraphQLInputVariables<CallFlowConfig>> = [];
+    const actionRecordsCopy = [...actionRecords];
+
+    while (actionRecordsCopy.length > 0) {
+      // Splice the records into batches of 25
+      const graphQLInputVariables = {
+        input: this.generateQueryVariables(actionRecordsCopy.splice(0, 25))
+      } as GraphQLInputVariables<CallFlowConfig>;
+
+      batchOfGraphQLInputVariables.push(graphQLInputVariables);
+    }
+
+    return batchOfGraphQLInputVariables;
+  }
+
+  private buildResponse(batchGraphQLResponses: Array<GraphQLResponse<CallFlowConfig>>): BatchResults<ActionRecordType> {
+    const batchResults = {
+      alertMsg: "",
+      errors: [],
+      failure: [],
+      hasError: false,
+      success: []
+    } as BatchResults<CallFlowConfig>;
+
+    batchGraphQLResponses.forEach(batchGraphQLResponse => {
+      if (batchGraphQLResponse.errors?.length > 0) {
+        batchResults.errors = batchResults.errors.concat(batchGraphQLResponse.errors);
+        batchResults.hasError = true;
+        batchResults.alertMsg = `Errors occurred processing ${this.queryName()} records`;
+      }
+    });
+
+    return batchResults;
   }
 }
 

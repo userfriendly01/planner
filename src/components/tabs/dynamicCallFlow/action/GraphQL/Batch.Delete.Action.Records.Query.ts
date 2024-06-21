@@ -1,6 +1,4 @@
-import {
-  ActionRecordType
-} from "./Action.Interfaces";
+import { ActionRecordType } from "./Action.Interfaces";
 import { BatchResults } from "../../common/GraphQL/Abstract.BatchRecords.Query";
 import { CallFlowDeleteInput } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
 import {

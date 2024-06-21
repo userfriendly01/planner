@@ -25,31 +25,31 @@ const reconstructTableColumnDef = (modalType: PhoneNumberModalType, columnDef: A
 };
 
 const manageEditColumnDef = (columnDef: Array<GridColDef>, previewModalGridApiRef: ReactGridApi, fieldOptions: FieldOptions): Array<GridColDef> =>{
-  const updatedColDef: Array<GridColDef> = columnDef.map((item:GridColDef)=> {
-    if (Object.keys(fieldOptions).includes(item.field)) {
+  const updatedColDef: Array<GridColDef> = columnDef.map((columnDef:GridColDef)=> {
+    if (Object.keys(fieldOptions).includes(columnDef.field)) {
       return {
-        ...item,
+        ...columnDef,
         editable: true,
         type: "singleSelect",
-        valueOptions: fieldOptions[item.field as keyof FieldOptions],
+        valueOptions: fieldOptions[columnDef.field as keyof FieldOptions],
         cellClassName: (params: GridCellParams<any, string>)=> {
-          if(!fieldOptions[item.field as keyof FieldOptions].includes(params.value) &&
-            RequiredPhoneNumberFormFields.includes(item.field)){
+          if (!fieldOptions[columnDef.field as keyof FieldOptions].includes(params.value) &&
+            RequiredPhoneNumberFormFields.includes(columnDef.field)) {
             return "MuiDataGrid-Custom-Cell-Format";
           }
           return "";
         }
       };
     }
-    if (item.field === "officeNumbers") {
+    if (columnDef.field === "officeNumbers") {
       return {
-        ...item,
+        ...columnDef,
         editable: true,
         renderEditCell: params =>
           <ComponentControl
             control="multiTextField"
             label=""
-            name={item.field}
+            name={columnDef.field}
             error={false}
             required={false}
             type="text"
@@ -57,22 +57,22 @@ const manageEditColumnDef = (columnDef: Array<GridColDef>, previewModalGridApiRe
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               previewModalGridApiRef.current.setEditCellValue({
                 id: params.row.id,
-                field: item.field,
+                field: columnDef.field,
                 value: event.target.value
               });
             }}
           />
       };
     }
-    if(["predictiveCaller"].includes(item.field)){
+    if(["predictiveCaller"].includes(columnDef.field)){
       return {
-        ...item,
+        ...columnDef,
         editable: true,
         renderEditCell: params =>
           <ComponentControl
             control="switch"
             label=""
-            name={item.field}
+            name={columnDef.field}
             error={false}
             required={false}
             type="boolean"
@@ -80,13 +80,13 @@ const manageEditColumnDef = (columnDef: Array<GridColDef>, previewModalGridApiRe
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               previewModalGridApiRef.current.setEditCellValue({
                 id: params.row.id,
-                field: item.field,
+                field: columnDef.field,
                 value: event.target.value
               });
             }}
           />,
         cellClassName: (params: GridCellParams<any, string>)=> {
-          if(!params.value && RequiredPhoneNumberFormFields.includes(item.field)){
+          if(!params.value && RequiredPhoneNumberFormFields.includes(columnDef.field)){
             return "MuiDataGrid-Custom-Cell-Format";
           }
           return "";
@@ -95,10 +95,10 @@ const manageEditColumnDef = (columnDef: Array<GridColDef>, previewModalGridApiRe
       };
     }
     return {
-      ...item,
+      ...columnDef,
       editable: true,
       cellClassName: (params: GridCellParams<any, string>)=> {
-        if(!params.value && RequiredPhoneNumberFormFields.includes(item.field)){
+        if(!params.value && RequiredPhoneNumberFormFields.includes(columnDef.field)){
           return "MuiDataGrid-Custom-Cell-Format";
         }
         return "";

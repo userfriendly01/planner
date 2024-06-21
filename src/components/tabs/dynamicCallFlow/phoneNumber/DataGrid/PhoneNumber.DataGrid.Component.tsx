@@ -17,7 +17,7 @@ import React, {
 } from "react";
 import "./PhoneNumber.DataGrid.scss";
 import { GridApiCommunity } from "@mui/x-data-grid/internals";
-import { PhoneNumberRecordType } from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { PhoneNumber, PhoneNumberRecordType } from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
 import { PhoneNumberRecordUtil } from "../GraphQL/PhoneNumber.Record.Util";
 import { LegacyPhoneNumberFormFieldConfigs } from "../Form/Legacy.PhoneNumber.Form.FieldConfigs";
 import { PhoneNumberPreviewModal } from "../PreviewModal";
@@ -45,6 +45,7 @@ import { PhoneNumberModalTypeEnum } from "../DynamicCallFlow.PhoneNumber.Contain
 import { PhoneNumberDataGridFilter } from "./PhoneNumber.DataGrid.Filter";
 import { PhoneNumberDataGridController } from "./PhoneNumber.DataGrid.Controller";
 import { CustomToast } from "components/CustomToast";
+import { CctSharedCallFlowDb } from "dynamicCallFlow/GraphQL/Legacy.PhoneNumber.Interfaces";
 
 const DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_PAGE_NUMBER = "dynamicCallFlowPhoneNumberDataGridPageNumber";
 const DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_RECORDS_PER_PAGE = "dynamicCallFlowPhoneNumberDataGridRecordsPerPage";
@@ -166,10 +167,14 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
   };
 
   const handleOnClone = (): void => {
+    if (PhoneNumberRecordUtil.isDynamicPhoneNumberRecord(selectedRecord)) {
+      (selectedRecord as PhoneNumber).phoneNumber = "";
+    } else {
+      (selectedRecord as CctSharedCallFlowDb).pkey = "";
+    }
+
     setSelectedRecord({
-      ...selectedRecord,
-      pkey: "",
-      phoneNumber: ""
+      ...selectedRecord
     });
 
     dataGridController.current.sourceRecords = sourceRecords;
@@ -193,8 +198,8 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
    * @param updatedPhoneNumberRecord
    */
   const postHandleOnUpdate = (updatedPhoneNumberRecord: PhoneNumberRecordType): void => {
-    setSourceRecords(sourceRecords.map(phoneNumberRecord => phoneNumberRecord.id === updatedPhoneNumberRecord.id ? updatedPhoneNumberRecord : phoneNumberRecord));
-    setDataGridRecords(dataGridRecords.map(phoneNumberRecord => phoneNumberRecord.id === updatedPhoneNumberRecord.id ? updatedPhoneNumberRecord : phoneNumberRecord));
+    setSourceRecords(sourceRecords.map(phoneNumberRecord => PhoneNumberRecordUtil.getPhoneNumber(phoneNumberRecord) !== PhoneNumberRecordUtil.getPhoneNumber(updatedPhoneNumberRecord) ? updatedPhoneNumberRecord : phoneNumberRecord));
+    setDataGridRecords(dataGridRecords.map(phoneNumberRecord => PhoneNumberRecordUtil.getPhoneNumber(phoneNumberRecord) !== PhoneNumberRecordUtil.getPhoneNumber(updatedPhoneNumberRecord) ? updatedPhoneNumberRecord : phoneNumberRecord));
   };
 
   const postHandleOnAdd = (newPhoneNumberRecord: PhoneNumberRecordType): void => {
@@ -207,14 +212,14 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
    * @param deletedPhoneNumberRecord
    */
   const postHandleOnDelete = (deletedPhoneNumberRecord: PhoneNumberRecordType): void => {
-    setSourceRecords(sourceRecords.filter(phoneNumberRecord => phoneNumberRecord.id !== deletedPhoneNumberRecord.id));
-    setDataGridRecords(dataGridRecords.filter(phoneNumberRecord => phoneNumberRecord.id !== deletedPhoneNumberRecord.id));
+    setSourceRecords(sourceRecords.filter(phoneNumberRecord => PhoneNumberRecordUtil.getPhoneNumber(phoneNumberRecord) !== PhoneNumberRecordUtil.getPhoneNumber(deletedPhoneNumberRecord)));
+    setDataGridRecords(dataGridRecords.filter(phoneNumberRecord => PhoneNumberRecordUtil.getPhoneNumber(phoneNumberRecord) !== PhoneNumberRecordUtil.getPhoneNumber(deletedPhoneNumberRecord)));
   };
 
   const handleSelectionChanges = (gridRowSelectionModel: GridRowSelectionModel) =>{
     const selectedRecords = gridRowSelectionModel.map<PhoneNumberRecordType>((id: GridRowId) =>
       dataGridRecords.find((phoneNumberRecord: PhoneNumberRecordType)=>
-        phoneNumberRecord.id === id));
+        PhoneNumberRecordUtil.getPhoneNumber(phoneNumberRecord) === id));
 
     setSelectedRecords(selectedRecords);
   };
