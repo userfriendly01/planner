@@ -21,14 +21,6 @@ export async function listPhoneNumberRecords(accessToken: string, loadDataGridMo
       listLegacyPhoneNumberRecords(accessToken, loadDataGridMonitor)
     ]);
 
-  // const phoneNumberRecords: Array<PhoneNumberRecordType> = await listDynamicPhoneNumberRecords(accessToken);
-  // const phoneNumberRecords: Array<PhoneNumberRecordType> = [ ...dynamicPhoneNumberRecords, ...legacyPhoneNumberRecords ];
-  // phoneNumberRecords = phoneNumberRecords.concat(legacyPhoneNumberRecords);
-
-  // phoneNumberRecords.forEach((phoneNumberRecord, index) => {
-  //   phoneNumberRecord.id = index + 1;
-  // });
-
-  // console.log(`dynamicPhoneNumberRecords: ${dynamicPhoneNumberRecords.length}, legacyPhoneNumberRecords: ${legacyPhoneNumberRecords.length}, phoneNumberRecords: ${phoneNumberRecords.length}`);
+  // return = await listDynamicPhoneNumberRecords(accessToken, loadDataGridMonitor);
   return [ ...dynamicPhoneNumberRecords, ...legacyPhoneNumberRecords ];
 }
