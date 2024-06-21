@@ -139,13 +139,18 @@ export const PhoneNumberPreviewModalColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params => `${params.row.content?.greetingMessages || ""}`,
+    // valueGetter: params => `${params.row.content?.greetingMessages || ""}`,
+    valueGetter: params => `${params.row.greetingMessages || ""}`,
+    // valueSetter: params => ({
+    //   ...params.row,
+    //   content: {
+    //     ...params.row.content || {},
+    //     greetingMessages: params.value
+    //   }
+    // }),
     valueSetter: params => ({
       ...params.row,
-      content: {
-        ...params.row.content || {},
-        greetingMessages: params.value
-      }
+      greetingMessages: params.value
     }),
     renderCell: (params: any) => (
       <Tooltip title={params.row.content?.greetingMessages || ""} >
