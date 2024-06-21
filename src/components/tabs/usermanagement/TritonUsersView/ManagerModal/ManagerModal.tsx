@@ -56,7 +56,10 @@ export const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any
   const _export = React.useRef(null);
 
   const state = useAdminState();
-  const { nNumber } = state.userContext;
+  const {
+    nNumber,
+    tokens
+  } = state.userContext;
   const profiles = state.profileContext.profiles;
   const calabrioTeams = state.calabrioContext.teams;
   const options: DropdownOption[] = [
@@ -92,7 +95,7 @@ export const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any
   }, []);
 
   const checkForNameChange = () => {
-    fetchUser(selectedManager.manager_n_num)
+    fetchUser(tokens.msGraph, selectedManager.manager_n_num)
       .then(newlyFetchedManager => {
         if (selectedManager.manager_first_name !== newlyFetchedManager.firstName || selectedManager.manager_last_name !== newlyFetchedManager.lastName) {
           setHasNameDiscrepancy(true);

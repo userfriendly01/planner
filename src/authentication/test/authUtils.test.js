@@ -121,7 +121,7 @@ describe("authUtils", () => {
     describe("profile Id is number", () => {
       beforeEach(() => {
         listUMUserRecords.mockResolvedValue([{
-          twilio_attributes: {
+          attributes: {
             profile_id: 2
           }
         }]);
@@ -135,7 +135,7 @@ describe("authUtils", () => {
     describe("profile Id is null", () => {
       beforeEach(() => {
         listUMUserRecords.mockResolvedValue([{
-          twilio_attributes: {
+          attributes: {
             profile_id: -1
           }
         }]);

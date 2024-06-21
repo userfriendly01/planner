@@ -1,7 +1,8 @@
 import { ModalNNumberProps } from "./NNumberInput.Interfaces";
 import { CustomInput } from "components/CustomInput";
 import { ModalHelperText } from "components/ModalHelperText";
-import { nNumMatcher } from "globals";
+import { useAdminState } from "context/appContext";
+import { nNumMatcher } from "globals/index";
 import React, { useState } from "react";
 import { fetchUser } from "services/fetchUser";
 import { logger } from "utils/logger";
@@ -18,12 +19,14 @@ export const NNumberInput = (props: ModalNNumberProps) => {
     value
   } = props;
 
+  const { userContext: { tokens }} = useAdminState();
+
   const [lookupError, setLookupError] = useState<string>("");
 
   const validator = (nNumber: string) => nNumber.match(nNumMatcher) !== null;
 
   const lookupNNumber = (nNumber: string) => {
-    return fetchUser(nNumber)
+    return fetchUser(tokens.msGraph, nNumber)
       .then(newlyFetchedUser => {
         onComplete(newlyFetchedUser, nNumber);
       })

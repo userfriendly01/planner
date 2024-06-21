@@ -86,10 +86,9 @@ export const listUMUserRecords = async (n_number: string): Promise<UMUser[]> => 
   a console worker, they will work just fine
   */
 
-  let items = data[LIST_USER_RECORDS.responsePath]?.items;
-  items = items.filter((i: UMUser) => !i.inactiveDate);
-  items = items.sort(sortGraphObjectsByPk);
-  return items;
+  return data[LIST_USER_RECORDS.responsePath]?.items
+    .filter((i: UMUser) => !i.inactiveDate)
+    .sort(sortGraphObjectsByPk);
 };
 
 export const getUser = async (identifier: string): Promise<UMUser> => {

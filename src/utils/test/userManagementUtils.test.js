@@ -1091,7 +1091,7 @@ describe("fetchUser", () => {
   describe("fetchUserServiceCall fails", () => {
     test("setForm is called with 'SET_DISCREPANCIES' and returns nNumber and null fetchedUser", async () => {
       fetchUser.mockRejectedValueOnce("boo");
-      const result = await fetchUserUtil("n1234567", mockSetForm, "error Message", "i am an errorType");
+      const result = await fetchUserUtil("Access Token", "n1234567", mockSetForm, "error Message", "i am an errorType");
       expect(result).toEqual({
         nNumber: "n1234567",
         fetchedUser: null
@@ -1111,7 +1111,7 @@ describe("fetchUser", () => {
         email: "email@lmig.com",
         other: "stuff"
       });
-      const result = await fetchUserUtil("n1234567", mockSetForm, "error Message", "i am an errorType");
+      const result = await fetchUserUtil("Access Token", "n1234567", mockSetForm, "error Message", "i am an errorType");
       expect(result).toEqual({
         nNumber: "n1234567",
         fetchedUser: {
@@ -1201,7 +1201,7 @@ describe("identifyUserProfiles", () => {
     test("should call fetchUser and set the nNumber object", async () => {
       await identifyUserProfiles(form, mockSetForm, initialTestState);
       expect(fetchUser).toHaveBeenCalledTimes(1);
-      expect(fetchUser).toHaveBeenCalledWith("n0263786");
+      expect(fetchUser).toHaveBeenCalledWith("Access Token", "n0263786");
     });
   });
   describe("system is triton", () => {
@@ -1588,7 +1588,7 @@ describe("identifyUserProfiles", () => {
         };
         await identifyUserProfiles(formState, mockSetForm, initialTestState);
         expect(fetchUser).toHaveBeenCalledTimes(1);
-        expect(fetchUser).toHaveBeenCalledWith("n2222222");
+        expect(fetchUser).toHaveBeenCalledWith("Access Token", "n2222222");
         expect(mockSetForm).toHaveBeenCalledTimes(2);
         expect(mockSetForm).toHaveBeenCalledWith({
           type: "SET_UPDATE_TRITON_FORM_STATE",

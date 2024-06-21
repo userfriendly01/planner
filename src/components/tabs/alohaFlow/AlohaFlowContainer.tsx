@@ -11,8 +11,10 @@ import { useAdminState } from "context/appContext";
 const AlohaFlowContainer = () => {
   const {
     userContext: {
-      permissions,
-      accessTokenGraph
+      tokens: {
+        sharedGraph
+      },
+      permissions
     }
   } = useAdminState();
 
@@ -37,7 +39,7 @@ const AlohaFlowContainer = () => {
   },[]);
 
   return (
-    <DataGridFlow accessToken={accessTokenGraph} matchedGroups={permissions} />
+    <DataGridFlow accessToken={sharedGraph} matchedGroups={permissions} />
   );
 };
 

@@ -8,8 +8,10 @@ import { useAdminState } from "context/appContext";
 const AlohaRoutingContainer = () => {
   const {
     userContext: {
-      permissions,
-      accessTokenGraph
+      tokens: {
+        sharedGraph
+      },
+      permissions
     }
   } = useAdminState();
 
@@ -34,7 +36,7 @@ const AlohaRoutingContainer = () => {
   },[]);
 
   return (
-    <DataGridRouting accessToken={accessTokenGraph} matchedGroups={permissions} />
+    <DataGridRouting accessToken={sharedGraph} matchedGroups={permissions} />
   );
 };
 
