@@ -32,15 +32,17 @@ import {
 import {
   createSkill, loadConsolidatedSkills
 } from "services/skill";
+import { getTaskQueues } from "services/taskQueues";
 import { logger } from "utils/logger";
 import {
   areVhFieldsValid, isSkillFormValid
 } from "utils/skillsUtils";
+import { TwilioQueue } from "../Skills.Interfaces";
 
 
 export const AddEditForm = (props: any) => {
   const {
-    closeModal, tableState, setAction, setTableState
+    closeModal, setAction
   } = props;
 
   const skillState = useSkillState();
@@ -59,6 +61,27 @@ export const AddEditForm = (props: any) => {
   });
 
   const addSkill = async () => {
+
+    const refreshState = async () => {
+      const reloadTaskQueues = skillState.skillForm.taskQueue.isNew;
+      const taskQueuesPromise: Promise<{data: TwilioQueue[]}> = reloadTaskQueues ? getTaskQueues() : Promise.resolve();
+      const consolidatedSkillsPromise = loadConsolidatedSkills(skillDispatch);
+
+      const [ taskQueueResults ] = await Promise.allSettled([taskQueuesPromise, consolidatedSkillsPromise]);
+
+      if(reloadTaskQueues && taskQueueResults.status === "fulfilled"){
+        skillDispatch({
+          type: "LOAD_SKILL_OPTIONS",
+          payload: {
+            applications: skillState.applications,
+            timeOfDays: skillState.timeOfDays,
+            taskQueues: taskQueueResults.value.data,
+            operatingUnits: skillState.operatingUnits
+          }
+        });
+      }
+    };
+
     if(!areVhFieldsValid(skillState.skillForm, setMissingFields)) {
       console.error("Early Return on Missing Fields");
       return;
@@ -88,7 +111,7 @@ export const AddEditForm = (props: any) => {
           type: skillActions.RESET_FORM
         });
 
-        await loadConsolidatedSkills(skillDispatch);
+        await refreshState();
 
         setTimeout(() => {
           closeModal();
@@ -113,7 +136,8 @@ export const AddEditForm = (props: any) => {
         skillDispatch({
           type: skillActions.RESET_FORM
         });
-        await loadConsolidatedSkills(skillDispatch);
+
+        refreshState();
       }
     } catch (error) {
       logger.error("Error when adding Skill", {

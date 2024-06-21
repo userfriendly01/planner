@@ -1,5 +1,6 @@
 import {
   UMTwilioAttributeSkills,
+  UMUser,
   UMUserTwilioAttributes
 } from "globals/interfaces";
 import {
@@ -71,6 +72,44 @@ export const areVhFieldsValid = (skillForm: SkillFormState, setMissingFields: (f
 
   console.log("MISSING FIELDS", missingFields);
   return !missingFields.length;
+};
+
+export const identifyImpactedWorkers = (users: UMUser[], skills: Skill[]): Partial<UMUser>[] => {
+  let impactedWorkers: UMUser[] = [];
+
+  const cleanupWorker = (user: UMUser): Partial<UMUser> => {
+    const skillNames = skills.map(s => s.name);
+    const formattedWorker: UMUser = JSON.parse(JSON.stringify(user));
+
+    if(formattedWorker.attributes.routing){
+      formattedWorker.attributes.routing.skills = formattedWorker.attributes.routing?.skills?.filter((s => !skillNames.includes(s)));
+    }
+    if(formattedWorker.attributes.default_skills){
+      formattedWorker.attributes.default_skills.skills = formattedWorker.attributes.default_skills?.skills?.filter((s => !skillNames.includes(s)));
+    }
+    if(formattedWorker.attributes.disabled_skills){
+      formattedWorker.attributes.disabled_skills.skills = formattedWorker.attributes.disabled_skills?.skills?.filter((s => !skillNames.includes(s)));
+    }
+
+    skillNames.forEach(n => {
+      if (formattedWorker.attributes.routing?.levels) { formattedWorker.attributes.routing.levels[n]= null; }
+      if (formattedWorker.attributes.default_skills?.levels) { formattedWorker.attributes.default_skills.levels[n] = null; }
+      if( formattedWorker.attributes.disabled_skills?.levels) { formattedWorker.attributes.disabled_skills.levels[n] = null; }
+    });
+
+    return {
+      sid: formattedWorker.sid,
+      attributes: {
+        routing: formattedWorker.attributes.routing,
+        default_skills: formattedWorker.attributes.default_skills,
+        disabled_skills: formattedWorker.attributes.disabled_skills
+      }
+    };
+  };
+
+  impactedWorkers = users.filter(w => skills.some(s => JSON.stringify(w).includes(s.name)));
+  console.log("BEFORE CLEANUP", impactedWorkers.slice());
+  return impactedWorkers.map(w => cleanupWorker(w));
 };
 
 export const formatWorkerAttributeSkillsToHTML = (routingObj: any) => {

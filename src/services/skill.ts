@@ -133,18 +133,6 @@ const getContactManagerSkills= (): Promise<{ data: CtmSkill[] }> => {
   return myAxios.get(apiPaths.SKILLS_CONTACT_MANAGER);
 };
 
-export const addTaskRouterSkills = () => {
-  console.log();
-};
-
-export const removeTaskRouterSkills = () => {
-  console.log();
-};
-
-export const editTaskRouterSkill = () => {
-  console.log();
-};
-
 export const loadSkillOptions = async (skills: Skill[], dispatch: (action: Action) => void, callback: () => void): Promise<void>=> {
   const timeOfDaysPromise: Promise<{data: TimeOfDay[]}> = myAxios.get(apiPaths.GET_TIME_OF_DAYS);
   const applicationsPromise: Promise<{data: Application[]}> = myAxios.get(apiPaths.GET_APPLICATIONS);

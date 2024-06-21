@@ -3,7 +3,8 @@ import { StyledButton } from "components/StyledButton";
 import {
   useAdminState,
   useSkillState,
-  useSkillDispatch
+  useSkillDispatch,
+  useAdminDispatch
 } from "context/appContext";
 import {
   skillActions
@@ -26,12 +27,19 @@ import {
 } from "services/skill";
 import { logger } from "utils/logger";
 import {
-  getTargetExpression
+  getTargetExpression,
+  identifyImpactedWorkers
 } from "utils/skillsUtils";
 import {
-  FlexColumn, ModalOverlayStatuses
+  FlexColumn, ModalOverlayStatuses,
+  UMUser
 } from "globals/interfaces";
 import { ModalOverlay } from "components/core/ModalOverlay/ModalOverlay";
+import { TwilioQueue } from "../Skills.Interfaces";
+import { getTaskQueues } from "services/taskQueues";
+import {
+  listUMUsers, updateUser
+} from "services/user";
 
 export const DeleteForm = (props: any) => {
   const {
@@ -42,6 +50,7 @@ export const DeleteForm = (props: any) => {
   const skillDispatch = useSkillDispatch();
 
   const state = useAdminState();
+  const adminDispatch = useAdminDispatch();
   const { nNumber } = state.userContext;
   const taskQueues = skillState.taskQueues;
   const formattedSkills = tableState.selected.map((sk: any) => ({
@@ -50,22 +59,52 @@ export const DeleteForm = (props: any) => {
     matchingQueue: taskQueues.find(tq => tq.target_workers === getTargetExpression(sk.name))|| {} //Filter?
   }));
   const [ shouldDeleteQueue, setShouldDeleteQueue ] = useState();
+  const [ impactedWorkers, setImpactedWorkers ] = useState(identifyImpactedWorkers(state.workerContext.workers, formattedSkills));
   const [ saveResult, setSaveResult ] = useState<any>({
     status: null,
     message: null
   });
 
+  React.useEffect(() => {
+    console.log("IMPACTED WORKERS - PRE", impactedWorkers.slice());
+    setImpactedWorkers(identifyImpactedWorkers(state.workerContext.workers, formattedSkills));
+    console.log("IMPACTED WORKERS - POST", impactedWorkers.slice());
+  },[state.workerContext.workers]);
 
   const deleteSkills = async () => {
+
+    const refreshState = async () => {
+      const taskQueuesPromise: Promise<{data: TwilioQueue[]}> = shouldDeleteQueue ? getTaskQueues() : Promise.resolve();
+      const usersPromise = impactedWorkers.length ? listUMUsers(adminDispatch) : Promise.resolve();
+
+      const consolidatedSkillsPromise = loadConsolidatedSkills(skillDispatch);
+
+      const [ taskQueueResults ] = await Promise.allSettled([taskQueuesPromise, consolidatedSkillsPromise, usersPromise]);
+
+      if(shouldDeleteQueue && taskQueueResults.status === "fulfilled"){
+        skillDispatch({
+          type: "LOAD_SKILL_OPTIONS",
+          payload: {
+            applications: skillState.applications,
+            timeOfDays: skillState.timeOfDays,
+            taskQueues: taskQueueResults.value.data,
+            operatingUnits: skillState.operatingUnits
+          }
+        });
+      }
+      return;
+    };
+
     setSaveResult({
       message: "Processing...",
       status: ModalOverlayStatuses.SAVING
     });
 
     try {
-      const results = await Promise.allSettled(formattedSkills.map((skill: any) => {
-        return deleteSkill(skill, shouldDeleteQueue);
-      }));
+      const results = await Promise.allSettled([
+        ...formattedSkills.map((skill: any) => deleteSkill(skill, shouldDeleteQueue)),
+        ...impactedWorkers.map((user: Partial<UMUser>) => updateUser(user.sid, { attributes: user.attributes }))
+      ]);
 
       console.log("Results", results);
 
@@ -76,12 +115,12 @@ export const DeleteForm = (props: any) => {
           nNumber
         });
 
+        await refreshState();
+
         setSaveResult({
           message: "Skills Successfully Deleted",
           status: ModalOverlayStatuses.SUCCESS
         });
-
-        await loadConsolidatedSkills(skillDispatch);
 
         setTimeout(() => {
           closeModal();
@@ -102,7 +141,7 @@ export const DeleteForm = (props: any) => {
           ...final,
           nNumber
         });
-        await loadConsolidatedSkills(skillDispatch);
+        await refreshState();
         setTableState({
           ...tableState,
           selected: []
@@ -182,6 +221,9 @@ export const DeleteForm = (props: any) => {
               <SkillsDetailWrapper>
                 <FormRow>
                   <h2>Please carefully review the below skills before confirming the deletion</h2>
+                </FormRow>
+                <FormRow>
+                  <h4>These skills will also be removed from {impactedWorkers.length} workers that have this skill in either their default skills, routing skills & disabled skills</h4>
                 </FormRow>
                 <FormRow>
                   <Checkbox

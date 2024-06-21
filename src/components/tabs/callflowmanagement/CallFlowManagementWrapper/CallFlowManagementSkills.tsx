@@ -67,7 +67,11 @@ export const CallFlowManagementSkills = () => {
   const [ isLoading, setIsLoading ] = React.useState(true);
 
   React.useEffect(() => {
-    loadSkillOptions(skillState.skills, skillDispatch, () => setIsLoading(false));
+    if(!skillState.timeOfDays.length || !skillState.applications.length || !skillState.taskQueues.length || !skillState.operatingUnits.length){
+      loadSkillOptions(skillState.skills, skillDispatch, () => setIsLoading(false));
+    } else {
+      setIsLoading(false);
+    }
   }, []);
 
   React.useEffect(() => {
