@@ -39,7 +39,8 @@ const fullWorker = {
       skills: ["psul1", "466"],
       levels: { "466": 1 },
       caller_states: ["boo"],
-      sales_assoc_workers: ["hi", "there"]
+      sales_assoc_workers: ["hi", "there"],
+      backup_workers: ["n2222222", "n1212121"]
     },
     default_skills: {
       skills: ["dsul1", "4d66"],
@@ -100,6 +101,7 @@ describe("ExportUsersButton", () => {
         "ou": "Claims",
         "profile_id": "12",
         "sales_assoc_workers": "hi, there",
+        "backup_workers": "n2222222, n1212121",
         "sid": "WK1234",
         "current_skills": "psul1,466 - 1",
         "default_skills": "dsul1,4d66 - 1",
@@ -112,7 +114,8 @@ describe("ExportUsersButton", () => {
           skills: ["psul1", "466"],
           levels: { "466": 1 },
           caller_states: ["boo"],
-          sales_assoc_workers: ["hi", "there"]
+          sales_assoc_workers: ["hi", "there"],
+          backup_workers: ["n2222222", "n1212121"]
         }
       }], exportColumns);
     });
@@ -143,6 +146,7 @@ describe("ExportUsersButton", () => {
         "outbound_number": "6038518200",
         "profile_id": "12",
         "sales_assoc_workers": "hi, there",
+        "backup_workers": "n2222222, n1212121",
         "caller_id": "6038518200",
         "did": "603242345",
         "sid": "WK1234",
@@ -157,7 +161,8 @@ describe("ExportUsersButton", () => {
           skills: ["psul1", "466"],
           levels: { "466": 1 },
           caller_states: ["boo"],
-          sales_assoc_workers: ["hi", "there"]
+          sales_assoc_workers: ["hi", "there"],
+          backup_workers: ["n2222222", "n1212121"]
         }
       }], exportColumns);
     });
