@@ -69,7 +69,8 @@ describe("<ActionContainer/>", () => {
           options: [
             propertyOptions.CLOSED_MESSAGE,
             propertyOptions.FLASH_MESSAGE,
-            propertyOptions.SKILL_GROUP
+            propertyOptions.SKILL_GROUP,
+            propertyOptions.SKILLS
           ]
         }, 0);
         expectOnlyPassedProps(MessageContainer, {

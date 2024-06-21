@@ -1,5 +1,5 @@
 import React from "react";
-import SkillEntryFormModal from "../SkillEntryFormModal";
+import SkillFormModal from "../AddEditForm";
 import {
   useAdminState,
   useAdminDispatch,
@@ -176,7 +176,7 @@ const mockAdminDispatch = jest.fn();
 const mockSetSaveResult = jest.fn();
 
 const renderComponent = () => {
-  return render(<SkillEntryFormModal
+  return render(<SkillFormModal
     closeModal={mockCloseModal}
     taskQueues={taskQueues}
     applications={applications}
@@ -187,7 +187,7 @@ const renderComponent = () => {
   />);
 };
 
-describe("<SkillEntryFormModal />", () => {
+describe("<SkillFormModal />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     useAdminState.mockReturnValue(initialTestState);
@@ -686,7 +686,7 @@ describe("<SkillEntryFormModal />", () => {
   describe("create skill is called", () => {
     test("user is not admin, does not call createSkill", () => {
       useSkillState.mockReturnValueOnce(completeFormNoVh);
-      render(<SkillEntryFormModal
+      render(<SkillFormModal
         closeModal={mockCloseModal}
         taskQueues={taskQueues}
         applications={applications}

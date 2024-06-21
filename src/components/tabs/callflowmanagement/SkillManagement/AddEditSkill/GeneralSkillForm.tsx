@@ -109,7 +109,7 @@ export const GeneralSkillForm = () => {
               }
             });
           }}
-          label="Skill"
+          label="Skill *"
           name="Skill"
           updateValue={value => {
             setTempField({
@@ -124,7 +124,7 @@ export const GeneralSkillForm = () => {
           styles={inputStyles}
           value={profileOptions.filter((p: any) => skillState.skillForm.profileIds.includes(p.value))}
           multiple={true}
-          label="Profiles"
+          label="Profiles *"
           updateValue={(e:any, values: any) => {
             skFormDispatch({
               type: skillActions.SET_FORM_FIELD,
@@ -143,7 +143,7 @@ export const GeneralSkillForm = () => {
             options={taskQueueDropdownOptions}
             styles={inputStyles}
             value={skillState.skillForm.taskQueue.isNew && "Add TaskQueue" || taskQueueOptions.find((op:any) => op.value === skillState.skillForm.taskQueue.sid) || null}
-            label="Task Queue"
+            label="Task Queue *"
             updateValue={(e: any, newValue: any) => {
               if (newValue === null || newValue.value === "show-all") {
                 setFilteredQueues(taskQueueOptions);
@@ -202,7 +202,7 @@ export const GeneralSkillForm = () => {
                   }
                 });
               }}
-              label="New Task Queue Friendly Name"
+              label="New Task Queue Friendly Name *"
               name="Skill"
               updateValue={value => {
                 setTempField({
@@ -215,7 +215,7 @@ export const GeneralSkillForm = () => {
               options={ouOptions}
               styles={inputStyles}
               value={ouOptions.find((op:any) => op.value === skillState.skillForm.taskQueue.operating_unit_sid) || null}
-              label="Operating Unit"
+              label="Operating Unit *"
               updateValue={(e: any, newValue: any) => {
                 skFormDispatch({
                   type: skillActions.SET_FORM_FIELD,
@@ -275,7 +275,7 @@ export const GeneralSkillForm = () => {
               margin: "5px"
             }}
             value={skillState.skillForm.levels.min}
-            label="Min Level"
+            label="Min Level *"
             updateValue={(e: any, newValue: number) => {
               skFormDispatch({
                 type: skillActions.SET_FORM_FIELD,
@@ -299,7 +299,7 @@ export const GeneralSkillForm = () => {
               margin: "5px"
             }}
             value={skillState.skillForm.levels.max}
-            label="Max Level"
+            label="Max Level *"
             updateValue={(e: any, newValue: number) => {
               skFormDispatch({
                 type: skillActions.SET_FORM_FIELD,

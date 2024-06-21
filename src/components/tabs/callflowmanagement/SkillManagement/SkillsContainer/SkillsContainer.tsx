@@ -28,9 +28,6 @@ export const SkillsContainer = (props: SkillsContainerProps) => {
       <SkillsHeader
         tableState={tableState}
         setTableState={setTableState}
-        taskQueues={taskQueues}
-        applications={applications}
-        timeOfDays={timeOfDays}
       />
       <SkillsTableWrapper>
         <SkillsTable

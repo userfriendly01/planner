@@ -76,7 +76,8 @@ export const CallflowSkillForm = (props: { missingFields: string[]}) => {
         <Dropdown
           key={`vhTimeOfDay.${day.id}`}
           options={timeOfDayOptions}
-          error={missingFields.some((f: string) => f === `vhTimeOfDay.${day.id}`) && !skillState.skillForm.timeOfDays.find(tod => tod.dayOfWeekId === day.id)}
+          error={missingFields.some((f: string) => f === `vhTimeOfDay.${day.id}`) &&
+          (!skillState.skillForm.timeOfDays.find(tod => tod.dayOfWeekId === day.id)?.vhTimeOfDayId)}
           value={timeOfDayOptions.find(tod => tod.value === value.vhTimeOfDayId)}
           styles={{ width: "36%" }}
           label={"Virtual Hold Time Of Day (Optional)"}

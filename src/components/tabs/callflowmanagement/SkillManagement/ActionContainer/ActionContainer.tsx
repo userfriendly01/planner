@@ -1,10 +1,12 @@
 import { Dropdown } from "components/Dropdown";
 import { MessageContainer } from "callflowmanagement/MessageContainer";
+import { SkillFormModal } from "callflowmanagement/SkillFormModal";
 import { SkillGroupInputContainer } from "callflowmanagement/SkillGroupInputContainer";
 import React from "react";
 import {
   propertyOptions,
-  ActionContainerProps
+  ActionContainerProps,
+  ActionTypes
 } from "../Skills.Interfaces";
 import { FormControlsContainer } from "../Skills.Styles";
 
@@ -57,6 +59,19 @@ export const ActionContainer = (props: ActionContainerProps) => {
           />;
         }
         return <div></div>;
+      case propertyOptions.SKILLS.label:
+        if (action && action.value) {
+          return <SkillFormModal
+            action={action}
+            setTableState={setTableState}
+            confirmationModalOpts={confirmationModalOpts}
+            setAction={setAction}
+            tableState={tableState}
+            setConfirmationModalOpts={setConfirmationModalOpts}
+            setSaveResult={setSaveResult}
+          />;
+        }
+        return null;
       default:
         return null;
     }

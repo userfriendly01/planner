@@ -3,15 +3,14 @@ import { myAxios } from "utils/myAxios";
 import { logger } from "utils/logger";
 import { getTaskQueues } from "services/taskQueues";
 import {
-  AddEditSkill, Application, Skill, TwilioSkill, CallflowSkill, CtmSkill,
-  TimeOfDay,
-  TwilioQueue,
-  SkillFormState
+  Application, Skill, TwilioSkill, CallflowSkill, CtmSkill,
+  TimeOfDay, TwilioQueue, SkillFormState
 } from "callflowmanagement/SkillManagement/Skills.Interfaces";
 import {
   Action, OperatingUnit
 } from "globals/interfaces";
 import { getOperatingUnits } from "./operatingUnits";
+import { getTargetExpression } from "utils/skillsUtils";
 
 /* FYI - In the interest of not having to bother to set up the softphone-service to interact with the graph,
    The consolidation logic for skills will be here.
@@ -20,11 +19,14 @@ import { getOperatingUnits } from "./operatingUnits";
    https://libertymutual.atlassian.net/browse/CCTP-13060
 */
 
+const formatError = (error: any) => typeof error === "object" ? JSON.stringify(error) : error?.string();
+
 export const createSkill = async (skillForm: SkillFormState, updatedBy: string): Promise<any> => {
+  const messages: string[] = [];
   let taskQueueSid = skillForm.taskQueue.sid;
   if(skillForm.taskQueue.isNew){
     const newTaskQueuebody = {
-      targetWorkers: skillForm.taskQueue.target_workers,
+      targetWorkers: getTargetExpression(skillForm.name),
       operatingUnitSid: skillForm.taskQueue.operating_unit_sid,
       friendlyName: skillForm.taskQueue.friendly_name
     };
@@ -33,61 +35,90 @@ export const createSkill = async (skillForm: SkillFormState, updatedBy: string):
       const res = await myAxios.post(apiPaths.TASK_QUEUES, newTaskQueuebody);
       taskQueueSid = res.data.sid;
     } catch(error){
-      const message = "Task Queue failed to create, unable to proceed with skill creation";
+      const message = `Task Queue failed to create. ${formatError(error?.response?.data || error?.message)}`;
       console.error(message, error);
-      throw message;
+      messages.push(message);
     }
   }
   try {
     const newFlexSkillBody: any = { name: skillForm.name };
     if(skillForm.levels.min && skillForm.levels.max){
       newFlexSkillBody.multivalue = true;
-      newFlexSkillBody.minimum = skillForm.levels.min;
-      newFlexSkillBody.maximum = skillForm.levels.max;
+      newFlexSkillBody.minimum = skillForm.levels.min.value;
+      newFlexSkillBody.maximum = skillForm.levels.max.value;
     }
     await myAxios.post(apiPaths.SKILLS_TASKROUTER, newFlexSkillBody);
   } catch(error){
-    const message = "Task Queue created but Flex skill failed to create. Database updates not attempted";
+    const message = `Flex skill failed to create: ${formatError(error?.response?.data || error?.message)}`;
     console.error(message, error);
-    throw message;
+    messages.push(message);
   }
 
   try {
     const newCallflowSkillBody: any = {
-      skillNum: skillForm.name,
+      skillNme: skillForm.name,
       applicationId: skillForm.applicationId,
       vhThreshold: skillForm.vhThreshold || null,
       vhCallTarget: skillForm.vhCallTarget || null,
       updatedBy,
-      timeOfDayIds: Object.values(skillForm.timeOfDays)
+      timeOfDays: Object.values(skillForm.timeOfDays)
     };
 
     await myAxios.post(apiPaths.SKILLS_CALLFLOW, newCallflowSkillBody);
   } catch(error){
-    const message = "Task Queue & Flex Skill created but callflow database failed to update";
+    const message = `Callflow database failed to update: ${formatError(error?.response?.data || error?.message)}`;
     console.error(message, error);
-    throw message;
+    messages.push(message);
   }
 
-  try {
-    const newCallflowSkillBody: any = {
-      skillNum: skillForm.name,
-      applicationId: skillForm.applicationId,
-      vhThreshold: skillForm.vhThreshold || null,
-      vhCallTarget: skillForm.vhCallTarget || null,
-      updatedBy,
-      timeOfDayIds: Object.values(skillForm.timeOfDays)
+  if(messages.length === 0){
+    return {
+      status: 200
     };
+  } else if(messages.length < 3){
+    return {
+      status: 206,
+      messages
+    };
+  } else {
+    return {
+      status: 500,
+      messages
+    };
+  }
+};
 
-    await myAxios.post(apiPaths.SKILLS_CALLFLOW, newCallflowSkillBody);
-  } catch(error){
-    const message = "Task Queue & Flex Skill & Callflow DB Record created but contact manager database failed to update";
-    console.error(message, error);
-    throw message;
+export const deleteSkill = async (skill: any, deleteQueues: boolean): Promise<any> => {
+  const skillName = skill.name;
+  let taskQueuePromise;
+
+  if(!deleteQueues){
+    taskQueuePromise = Promise.resolve("Task Queue Deletion Bypassed");
+  } else if(!skill.matchingQueue.sid){
+    taskQueuePromise = Promise.resolve("No Associated Task Queue");
+  } else {
+    taskQueuePromise = myAxios.delete(`${apiPaths.TASK_QUEUES}/${skill.matchingQueue.sid}`);
   }
 
+  const taskRouterSkillPromise = myAxios.delete(`${apiPaths.SKILLS_TASKROUTER}/${skillName}`);
+  const callflowSkillPromise = myAxios.delete(`${apiPaths.SKILLS_CALLFLOW}/${skillName}`);
 
-//create skill in flex config
+  const results = await Promise.allSettled([taskQueuePromise, taskRouterSkillPromise, callflowSkillPromise]);
+
+  console.log("Delete Results", results);
+
+  if(!results.every((r: any) => r.status === "fulfilled")){
+    const is404 = (reason: any) => reason?.response?.data?.error?.error === "Not Found" ||
+    reason?.response?.data?.error?.toString().includes("not found");
+    const messages = results.filter((r: any) => r.status === "rejected" && !is404(r.reason)).map((p: any) => {
+      const message = formatError(p.reason?.response?.data?.error) || formatError(p.reason?.response?.data) || formatError(p.reason);
+      return `${skillName} - ${message}`;
+    });
+    if(messages.length){
+      return Promise.reject(messages.toString());
+    }
+  }
+  return;
 };
 
 const getTaskRouterSkills = (): Promise<{ data: TwilioSkill[] }> => {

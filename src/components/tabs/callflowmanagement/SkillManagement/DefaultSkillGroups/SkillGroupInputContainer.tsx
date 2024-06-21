@@ -55,7 +55,6 @@ export const SkillGroupInputContainer = (props: any) => {
 
   const getSkillGroupOptions = () => {
     return skillGroups.map((skg: any) => {
-      console.log("WTF", skillGroups);
       return {
         label: skg.skillGroupNme,
         value: skg.skillGroupId,

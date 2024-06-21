@@ -30,7 +30,7 @@ export const ActionTypes = {
   }
 };
 
-export const propertyOptions = {
+export const propertyOptions: any = {
   CLOSED_MESSAGE: {
     label: "Closed Message",
     value: messageTypes.CLOSED,
@@ -59,6 +59,18 @@ export const propertyOptions = {
       ActionTypes.DELETE,
       ActionTypes.EDIT
     ]
+  },
+  SKILLS: {
+    label: "Skills",
+    value: {
+      name: "Skills",
+      filter: "skills",
+      variable: "skills"
+    },
+    actions: [
+      ActionTypes.ADD,
+      ActionTypes.DELETE
+    ]
   }
 };
 export interface ActionContainerProps {
@@ -81,17 +93,12 @@ export interface SkillsExportButtonProps {
 }
 export interface SkillsHeaderProps {
   tableState: TableState,
-  setTableState: (tableState: TableState) => void,
-  applications: any[],
-  taskQueues: any[],
-  timeOfDays: any[]
+  setTableState: (tableState: TableState) => void
 }
 
 export interface SkillEntryFormModalProps {
   closeModal: () => void,
-  setSaveResult: (saveResult: SaveResultProps) => void,
-  saveResult: SaveResultProps,
-  isAdmin: boolean
+  setSaveResult: (saveResult: SaveResultProps) => void
 }
 
 export interface SkillsTableProps {
@@ -148,8 +155,8 @@ export interface SkillFormState {
   taskQueue: TwilioQueue,
   profileIds: number[],
   levels: {
-    min: number,
-    max: number
+    min: any,
+    max: any
   },
   timeOfDays: TimeOfDayRequestObject[],
   vhThreshold?: string,

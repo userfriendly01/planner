@@ -60,10 +60,7 @@ describe("<SkillsContainer />", () => {
       await waitFor(() => {
         expectOnlyPassedProps(SkillsHeader, {
           tableState,
-          setTableState: mockSetTableState,
-          taskQueues: [{ taskque: "cool" }],
-          applications: [{ application: "yo" }],
-          timeOfDays: [{ time: "hey" }]
+          setTableState: mockSetTableState
         });
       });
     });

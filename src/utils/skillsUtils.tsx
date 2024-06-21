@@ -27,8 +27,10 @@ const SkillsDiv = styled.div`
   padding: 1 3;
 `;
 
+export const getTargetExpression = (name: string): string => `routing.skills HAS "${name}"`;
+
 export const isTaskQueueError = (skillForm: SkillFormState, name: string): boolean => {
-  const skillTargetExpression = `routing.skills HAS "${name}"`;
+  const skillTargetExpression = getTargetExpression(name);
 
   return (skillForm.taskQueue.sid && skillForm.taskQueue.sid.length > 0) &&
     (name && name.length > 0) && skillForm.taskQueue.target_workers !== skillTargetExpression ? true : false;
@@ -60,14 +62,15 @@ export const areVhFieldsValid = (skillForm: SkillFormState, setMissingFields: (f
     const requiredDays = [1, 2, 3, 4, 5, 6, 7];
 
     requiredDays.forEach((d: number) => {
-      skillForm.timeOfDays.some(tod => tod.dayOfWeekId !== d) && missingFields.push(`vhTimeOfDay.${d}`);
+      const timeOfDayRecord = skillForm.timeOfDays.find(tod => tod.dayOfWeekId !== d);
+      !timeOfDayRecord || !timeOfDayRecord.vhTimeOfDayId && missingFields.push(`vhTimeOfDay.${d}`);
     });
   }
 
   setMissingFields(missingFields);
 
-  console.log("MISSING FUCKING FIELDS", missingFields);
-  return missingFields.length > 0;
+  console.log("MISSING FIELDS", missingFields);
+  return !missingFields.length;
 };
 
 export const formatWorkerAttributeSkillsToHTML = (routingObj: any) => {

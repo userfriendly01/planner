@@ -3,7 +3,6 @@ import { SearchBox } from "components/SearchBox";
 import React from "react";
 import { Dropdown } from "components/Dropdown";
 import { ExportButton } from "callflowmanagement/ExportButton";
-import { SkillEntryButton } from "callflowmanagement/SkillEntryButton";
 import { useAdminState } from "context/appContext";
 import {
   act,
@@ -29,10 +28,6 @@ jest.mock("components/StyledButton", () => ({
 
 jest.mock("callflowmanagement/ExportButton", () => ({
   ExportButton: jest.fn()
-}));
-
-jest.mock("callflowmanagement/SkillEntryButton", () => ({
-  SkillEntryButton: jest.fn()
 }));
 
 jest.mock("context/appContext", () => ({
@@ -67,8 +62,7 @@ describe("<SkillsHeader />", () => {
     setupMockedComponents({
       SearchBox,
       Dropdown,
-      ExportButton,
-      SkillEntryButton
+      ExportButton
     });
   });
   describe("initial render", () => {
@@ -96,11 +90,6 @@ describe("<SkillsHeader />", () => {
       });
       test("should render Add Skill button", () => {
         renderComponent();
-        console.warn("look here", SkillEntryButton.mock);
-        expect(SkillEntryButton.mock.calls.length).toBe(1);
-        expectOnlyPassedProps(SkillEntryButton, {
-          formMode: "insert"
-        });
         expect(ExportButton.mock.calls.length).toBe(1);
         expectOnlyPassedProps(ExportButton, {
           selected: tableState.selected
