@@ -1,6 +1,7 @@
 import { PhoneNumberRecordType } from "./Dynamic.PhoneNumber.Interfaces";
-import { dynamicPhoneNumberListRecords } from "./Query/List.Dynamic.PhoneNumber.Records.Query";
-import { legacyPhoneNumberListRecords } from "./Query/List.Legacy.PhoneNumber.Records.Query";
+import { listDynamicPhoneNumberRecords } from "./Query/List.Dynamic.PhoneNumber.Records.Query";
+import { listLegacyPhoneNumberRecords } from "./Query/List.Legacy.PhoneNumber.Records.Query";
+import { LoadDataGridMonitorRef } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
 
 /**
  * This function is a single place to obtain both legacy and dynamic phone number records.  For the dynamic phone number, this simply
@@ -10,17 +11,18 @@ import { legacyPhoneNumberListRecords } from "./Query/List.Legacy.PhoneNumber.Re
  * and a refactor can be performed to change the ui to run solely to the specs of dynamic phone number and the functions
  * in this should no longer be needed.
  * @param {string} accessToken
- *
+ * @param {LoadDataGridMonitorRef} loadDataGridMonitor
  * @return Promise<Array<PhoneNumberRecordType>>
  */
-export async function listPhoneNumberRecords(accessToken: string): Promise<Array<PhoneNumberRecordType>> {
-  // const [dynamicPhoneNumberRecords, legacyPhoneNumberRecords] =
-  //   await Promise.all([
-  //     listDynamicPhoneNumberRecords(accessToken),
-  //     listLegacyPhoneNumberRecords(accessToken)
-  //   ]);
+export async function listPhoneNumberRecords(accessToken: string, loadDataGridMonitor?: LoadDataGridMonitorRef): Promise<Array<PhoneNumberRecordType>> {
+  const [dynamicPhoneNumberRecords, legacyPhoneNumberRecords] =
+    await Promise.all([
+      listDynamicPhoneNumberRecords(accessToken, loadDataGridMonitor),
+      listLegacyPhoneNumberRecords(accessToken, loadDataGridMonitor)
+    ]);
 
-  const phoneNumberRecords: Array<PhoneNumberRecordType> = await dynamicPhoneNumberListRecords(accessToken);
+  // const phoneNumberRecords: Array<PhoneNumberRecordType> = await listDynamicPhoneNumberRecords(accessToken);
+  // const phoneNumberRecords: Array<PhoneNumberRecordType> = [ ...dynamicPhoneNumberRecords, ...legacyPhoneNumberRecords ];
   // phoneNumberRecords = phoneNumberRecords.concat(legacyPhoneNumberRecords);
 
   // phoneNumberRecords.forEach((phoneNumberRecord, index) => {
@@ -28,5 +30,5 @@ export async function listPhoneNumberRecords(accessToken: string): Promise<Array
   // });
 
   // console.log(`dynamicPhoneNumberRecords: ${dynamicPhoneNumberRecords.length}, legacyPhoneNumberRecords: ${legacyPhoneNumberRecords.length}, phoneNumberRecords: ${phoneNumberRecords.length}`);
-  return phoneNumberRecords;
+  return [ ...dynamicPhoneNumberRecords, ...legacyPhoneNumberRecords ];
 }

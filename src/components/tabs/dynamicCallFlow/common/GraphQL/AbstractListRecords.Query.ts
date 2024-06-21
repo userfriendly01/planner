@@ -1,4 +1,5 @@
 import { AbstractGraphQLQuery } from "./AbstractGraphQL.Query";
+import { LoadDataGridMonitorRef } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
 
 export interface ListVariables {
   id?: number;
@@ -16,22 +17,23 @@ export interface ListResults<RecordType> {
 }
 
 export abstract class AbstractListRecordsQuery extends AbstractGraphQLQuery {
-  async getEntireList<RecordType>(accessToken: string): Promise<Array<RecordType>> {
+  async getEntireList<RecordType>(accessToken: string, loadDataGridMonitor?: LoadDataGridMonitorRef): Promise<Array<RecordType>> {
     let nextToken: string = null;
     let entireList: Array<RecordType> = [];
-
+    const startTime = Date.now();
     try {
       do {
         const listResults = await this.getList<RecordType>(accessToken, 10000, nextToken);
-
         nextToken = listResults.nextToken;
+        loadDataGridMonitor.current.addToRecordCount(listResults.items.length);
         entireList = entireList.concat(listResults.items);
-        console.debug(`Retrieved ${listResults.items.length} of ${entireList.length} records`);
       } while (nextToken);
     } catch (error) {
       console.error(`Error in getEntireList: ${error?.message}`, { error });
     }
 
+    const endTime = Date.now();
+    console.debug(`Time to retrieve ${entireList.length} records: ${endTime - startTime}ms`);
     return entireList;
   }
 

@@ -1,5 +1,6 @@
 import { AbstractListRecordsQuery } from "../../../common/GraphQL/AbstractListRecords.Query";
 import { CctSharedCallFlowDb } from "../Legacy.PhoneNumber.Interfaces";
+import { LoadDataGridMonitorRef } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
 
 class ListLegacyPhoneNumberRecordsQuery extends AbstractListRecordsQuery {
   protected queryName(): string {
@@ -55,8 +56,8 @@ class ListLegacyPhoneNumberRecordsQuery extends AbstractListRecordsQuery {
   }
 }
 
-const legacyPhoneNumberListRecordsQuery = new ListLegacyPhoneNumberRecordsQuery();
+const listLegacyPhoneNumberRecordsQuery = new ListLegacyPhoneNumberRecordsQuery();
 
-export async function legacyPhoneNumberListRecords(accessToken: string): Promise<Array<CctSharedCallFlowDb>> {
-  return await legacyPhoneNumberListRecordsQuery.getEntireList<CctSharedCallFlowDb>(accessToken);
+export async function listLegacyPhoneNumberRecords(accessToken: string, loadDataGridMonitor?: LoadDataGridMonitorRef): Promise<Array<CctSharedCallFlowDb>> {
+  return await listLegacyPhoneNumberRecordsQuery.getEntireList<CctSharedCallFlowDb>(accessToken, loadDataGridMonitor);
 }

@@ -17,7 +17,9 @@ import React, {
 } from "react";
 import "./PhoneNumber.DataGrid.scss";
 import { GridApiCommunity } from "@mui/x-data-grid/internals";
-import { PhoneNumber, PhoneNumberRecordType } from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
+import {
+  PhoneNumber, PhoneNumberRecordType
+} from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
 import { PhoneNumberRecordUtil } from "../GraphQL/PhoneNumber.Record.Util";
 import { LegacyPhoneNumberFormFieldConfigs } from "../Form/Legacy.PhoneNumber.Form.FieldConfigs";
 import { PhoneNumberPreviewModal } from "../PreviewModal";
@@ -46,6 +48,8 @@ import { PhoneNumberDataGridFilter } from "./PhoneNumber.DataGrid.Filter";
 import { PhoneNumberDataGridController } from "./PhoneNumber.DataGrid.Controller";
 import { CustomToast } from "components/CustomToast";
 import { CctSharedCallFlowDb } from "dynamicCallFlow/GraphQL/Legacy.PhoneNumber.Interfaces";
+import { PhoneNumberDataGridProgressBar } from "dynamicCallFlow/DataGrid/PhoneNumber.DataGrid.ProgressBar";
+import { LoadDataGridMonitor } from "components/tabs/dynamicCallFlow/common/DataGrid/Load.DataGrid.Monitor";
 
 const DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_PAGE_NUMBER = "dynamicCallFlowPhoneNumberDataGridPageNumber";
 const DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_RECORDS_PER_PAGE = "dynamicCallFlowPhoneNumberDataGridRecordsPerPage";
@@ -57,11 +61,19 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
     modalController
   } = useContext(DynamicCallFlowPhoneNumberContext);
 
+
+  // alertBarProps is used to display messages to the user.
+  const [alertBarProps, setAlertBarProps] = useState<AlertBarProps>(initialAlertBarProps);
+  const alertBarController = useRef<AlertBarController>(new AlertBarController(setAlertBarProps));
+
   // sourceRecords is the master list of all records.  It is used to update the data grid records and to update the field options.
   const [sourceRecords, setSourceRecords] = useState<Array<PhoneNumberRecordType>>([]);
 
   // dataGridRecords is the list of records that are displayed in the data grid.  It contains the results of when a filter is applied to sourceRecords.
   const [dataGridRecords, setDataGridRecords] = useState<Array<PhoneNumberRecordType>>([]);
+  const [recordCount, setRecordCount] = useState<number>(0);
+  const [dataGridLoaded, setDataGridLoaded] = useState<boolean>(false);
+  const loadDataGridMonitor = useRef(new LoadDataGridMonitor(setRecordCount, setDataGridLoaded, alertBarController));
 
   // dataGridProps stores the state of fetching data, the min and max id, and the max id.
   const [dataGridProps, setDataGridProps] = useState<DataGridStateProps>(initializeDataGrid());
@@ -74,9 +86,6 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
   const [selectedRecords, setSelectedRecords] = useState<Array<PhoneNumberRecordType>>([]);
   const [selectedRecord, setSelectedRecord] = useState<PhoneNumberRecordType>({} as PhoneNumberRecordType);
 
-  // alertBarProps is used to display messages to the user.
-  const [alertBarProps, setAlertBarProps] = useState<AlertBarProps>(initialAlertBarProps);
-  const alertBarController = useRef<AlertBarController>(new AlertBarController(setAlertBarProps));
 
   const dataGridApi = useGridApiRef<GridApiCommunity>();
   const dataGridController = useRef(new PhoneNumberDataGridController(dataGridApi, dataGridFilter,
@@ -101,12 +110,14 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
       let updatedDataGridProps: DataGridStateProps;
 
       try {
-        const records = await listPhoneNumberRecords(accessTokenGraph);
+        const records = await listPhoneNumberRecords(accessTokenGraph, loadDataGridMonitor);
         [sortedRecords, updatedDataGridProps] = sortDataGrid<PhoneNumberRecordType>(records);
       } catch (error: unknown) {
         console.log(`Error loading call flow data: ${(error as Error)?.message}`);
         alertBarController.current.error("Errors loading data.  Please check the console logs.");
       }
+
+      loadDataGridMonitor.current.dataGridLoaded = true;
 
       setSourceRecords(sortedRecords);
       setDataGridRecords(sortedRecords);
@@ -256,7 +267,11 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
   return (
     <div className="data-grid-wrapper">
       <div className="data-grid-wrapper">
-        <div className="data-grid-wrapper">
+        <div className="data-grid-wrapper" style={{ justifyContent: "center" }}>
+          <PhoneNumberDataGridProgressBar
+            recordCount={recordCount}
+            dataGridLoaded={dataGridLoaded}
+          />
           <PhoneNumberDataGridToolBar
             isFilterModalOpen={currentOpenModal === PhoneNumberModalTypeEnum.Filter}
             dataGridFilter={dataGridFilter}
