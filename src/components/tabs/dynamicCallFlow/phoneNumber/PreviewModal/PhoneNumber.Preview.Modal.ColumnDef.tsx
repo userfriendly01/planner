@@ -6,6 +6,15 @@ import {
 } from "@mui/material";
 import { PhoneNumberRecordUtil } from "dynamicCallFlow/GraphQL/PhoneNumber.Record.Util";
 import { PhoneNumberRecordType } from "dynamicCallFlow/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import {
+  CALL_FLOW_ROUTE,
+  CALLER_TYPE,
+  DATA_REQUESTS, GREETING_MESSAGES,
+  LANGUAGE_OFFER,
+  TRANSFER_DESTINATION
+} from "dynamicCallFlow/Form/Dynamic.PhoneNumber.Form.Fields";
+import { PhoneNumber } from "google-libphonenumber";
+import { ControlEnum } from "components/tabs/dynamicCallFlow/common/Form/Form.Field.Control.Manager";
 export const PhoneNumberPreviewModalColumnDef: GridColDef[] = [
   {
     headerName: "Dialed",
@@ -64,7 +73,7 @@ export const PhoneNumberPreviewModalColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params => `${params.row.content?.languageOffer || ""}`,
+    valueGetter: params => PhoneNumberRecordUtil.getPropertyValue(params.row, LANGUAGE_OFFER) || "",
     valueSetter: params => ({
       ...params.row,
       content: {
@@ -79,7 +88,7 @@ export const PhoneNumberPreviewModalColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params => `${params.row.content?.dataRequests || ""}`,
+    valueGetter: params => PhoneNumberRecordUtil.getPropertyStringArray(params.row, DATA_REQUESTS)?.join() || "",
     valueSetter: params => ({
       ...params.row,
       content: {
@@ -94,7 +103,7 @@ export const PhoneNumberPreviewModalColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params => `${params.row.content?.callerType || ""}`,
+    valueGetter: params => PhoneNumberRecordUtil.getPropertyValue(params.row, CALLER_TYPE) || "",
     valueSetter: params => ({
       ...params.row,
       content: {
@@ -109,7 +118,7 @@ export const PhoneNumberPreviewModalColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params => `${params.row.content?.transferDestination || ""}`,
+    valueGetter: params => PhoneNumberRecordUtil.getPropertyValue(params.row, TRANSFER_DESTINATION) || "",
     valueSetter: params => ({
       ...params.row,
       content: {
@@ -124,7 +133,7 @@ export const PhoneNumberPreviewModalColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params => `${params.row.content?.callFlowRoute || ""}`,
+    valueGetter: params => PhoneNumberRecordUtil.getPropertyValue(params.row, CALL_FLOW_ROUTE) || "",
     valueSetter: params => ({
       ...params.row,
       content: {
@@ -139,15 +148,7 @@ export const PhoneNumberPreviewModalColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left",
-    // valueGetter: params => `${params.row.content?.greetingMessages || ""}`,
-    valueGetter: params => `${params.row.greetingMessages || ""}`,
-    // valueSetter: params => ({
-    //   ...params.row,
-    //   content: {
-    //     ...params.row.content || {},
-    //     greetingMessages: params.value
-    //   }
-    // }),
+    valueGetter: params => PhoneNumberRecordUtil.getPropertyValue(params.row, GREETING_MESSAGES) || "",
     valueSetter: params => ({
       ...params.row,
       greetingMessages: params.value

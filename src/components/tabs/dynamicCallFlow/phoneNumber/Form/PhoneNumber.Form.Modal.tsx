@@ -60,6 +60,7 @@ export const PhoneNumberFormModal = ({
     modalController
   } = useContext(DynamicCallFlowPhoneNumberContext);
 
+  // TODO: The enableFlow doesn't appear to be working.  Form Save, Clone, & Delete buttons are always disabled when referencing enableFlow.
   const enableFlow = useMemo<boolean>(() => readWriteAccess(permissions,"dynamic-call-flow"), []);
   const [formRecord, setFormRecord] = React.useState<PhoneNumberRecordType>({} as PhoneNumberRecordType);
   const [alertBarProps, setAlertBarProps] = useState<AlertBarProps>(initialAlertBarProps);
@@ -167,7 +168,7 @@ export const PhoneNumberFormModal = ({
             variant="contained"
             value="Save"
             color="primary"
-            disabled={enableFlow || undefined}
+            disabled={false}
             sx={{ marginRight: 2 }}
             aria-label="saveFlowRuleButton"
             onClick={handleOnSave}
@@ -178,7 +179,7 @@ export const PhoneNumberFormModal = ({
             variant="contained"
             value="Clone"
             color="primary"
-            disabled={enableFlow || undefined}
+            disabled={false}
             sx={{ marginRight: 2 }}
             aria-label="cloneFlowRuleButton"
             onClick={handleOnClone}
@@ -189,7 +190,7 @@ export const PhoneNumberFormModal = ({
             variant="contained"
             color="error"
             value="Delete"
-            disabled={enableFlow || undefined}
+            disabled={false}
             sx={{ marginRight: 2 }}
             aria-label="deleteFlowRuleButton"
             onClick={handleOnDelete}

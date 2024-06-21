@@ -30,8 +30,6 @@ export class AddPhoneNumberFormHandler extends AbstractPhoneNumberFormHandler {
     const recordToReturn = { ...recordToCreate };
 
     try {
-      this.deleteTransientKeys(recordToCreate);
-
       this.validatePhoneNumberRecord(recordToCreate, fieldConfigs);
 
       const createRecordResults = await SingleCallFlowRecord.create(accessToken, recordToCreate);

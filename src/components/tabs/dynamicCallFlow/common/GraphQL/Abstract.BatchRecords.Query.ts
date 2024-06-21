@@ -54,7 +54,7 @@ export abstract class AbstractBatchRecordsQuery extends AbstractGraphQLQuery {
       variableBatches.push(variablesCopy.splice(0, 25));
     }
 
-    const batchGraphQLResponses = await Promise.all(
+    const batchGraphQLResponses: Array<BatchGraphQLResponse<ResponseDataType>> = await Promise.all(
       variableBatches.map(
         async variablesBatch => {
           const variables: BatchVariables<VariableType> = {

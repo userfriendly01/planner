@@ -1,7 +1,6 @@
 import { AbstractListRecordsQuery } from "../../../common/GraphQL/AbstractListRecords.Query";
-import {
-  PhoneNumber
-} from "../Dynamic.PhoneNumber.Interfaces";
+import { PhoneNumber } from "../Dynamic.PhoneNumber.Interfaces";
+import { LoadDataGridMonitorRef } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
 
 class ListDynamicPhoneNumberRecordsQuery extends AbstractListRecordsQuery {
   protected queryName(): string {
@@ -54,8 +53,8 @@ class ListDynamicPhoneNumberRecordsQuery extends AbstractListRecordsQuery {
   }
 }
 
-const dynamicPhoneNumberListRecordsQuery = new ListDynamicPhoneNumberRecordsQuery();
+const listDynamicPhoneNumberRecordsQuery = new ListDynamicPhoneNumberRecordsQuery();
 
-export async function dynamicPhoneNumberListRecords(accessToken: string): Promise<Array<PhoneNumber>> {
-  return await dynamicPhoneNumberListRecordsQuery.getEntireList<PhoneNumber>(accessToken);
+export async function listDynamicPhoneNumberRecords(accessToken: string, loadDataGridMonitor?: LoadDataGridMonitorRef): Promise<Array<PhoneNumber>> {
+  return await listDynamicPhoneNumberRecordsQuery.getEntireList<PhoneNumber>(accessToken, loadDataGridMonitor);
 }

@@ -1,7 +1,7 @@
 import {
   CallFlowDeleteBatchInput,
   BatchCallFlowDeleteResponse,
-  CallFlowDeleteInput
+  GraphQLResponse, CallFlowDeleteInput
 } from "./DynamicCallFlow.Interfaces";
 import { BatchResults } from "./Abstract.BatchRecords.Query";
 import { AbstractGraphQLQuery } from "./AbstractGraphQL.Query";
@@ -34,21 +34,54 @@ export abstract class AbstractBatchDeleteDynamicCallFlowQuery<RecordType> extend
    * @return {Promise<BatchResults<RecordType>>}
    */
   async batchQuery(accessToken: string, records: Array<RecordType>): Promise<BatchResults<RecordType>> {
+    const batchOfCallFlowDeleteBatchInput: Array<CallFlowDeleteBatchInput> = this.generateBatchOfGraphQLInputs(records);
 
-    const variables = {
-      input: {
-        batchDeleteInput: this.generateCallFlowDeleteInputs(records)
-      }
-    } as CallFlowDeleteBatchInput;
-    const graphQLResponse =
-      await this.query<CallFlowDeleteBatchInput, BatchCallFlowDeleteResponse>(accessToken, variables);
+    const batchGraphQLResponses: Array<GraphQLResponse<BatchCallFlowDeleteResponse>> = await Promise.all(
+      batchOfCallFlowDeleteBatchInput.map(
+        async graphQLInputVariables => {
+          return await this.query<CallFlowDeleteBatchInput, BatchCallFlowDeleteResponse>(accessToken, graphQLInputVariables) as GraphQLResponse<BatchCallFlowDeleteResponse>;
+        }
+      )
+    );
 
-    return {
-      alertMsg: graphQLResponse.errors?.length === 0 ? "" : `Errors occurred processing ${this.queryName()} records`,
-      errors: graphQLResponse.errors || [],
+    return this.buildResponse(batchGraphQLResponses);
+  }
+
+  protected generateBatchOfGraphQLInputs(records: Array<RecordType>): Array<CallFlowDeleteBatchInput> {
+    const batchOfCallFlowDeleteBatchInput: Array<CallFlowDeleteBatchInput> = [];
+    const recordsCopy = [...records];
+
+    while (recordsCopy.length > 0) {
+      // Splice the records into batches of 25
+      const callFlowDeleteBatchInput = {
+        input: {
+          batchDeleteInput: this.generateCallFlowDeleteInputs(recordsCopy.splice(0, 25))
+        }
+      } as CallFlowDeleteBatchInput;
+
+      batchOfCallFlowDeleteBatchInput.push(callFlowDeleteBatchInput);
+    }
+
+    return batchOfCallFlowDeleteBatchInput;
+  }
+
+  private buildResponse(batchGraphQLResponses: Array<GraphQLResponse<BatchCallFlowDeleteResponse>>): BatchResults<RecordType> {
+    const batchResults = {
+      alertMsg: "",
+      errors: [],
       failure: [],
-      hasError: graphQLResponse.errors?.length > 0,
-      success: records
+      hasError: false,
+      success: []
     } as BatchResults<RecordType>;
+
+    batchGraphQLResponses.forEach(batchGraphQLResponse => {
+      if (batchGraphQLResponse.errors?.length > 0) {
+        batchResults.errors = batchResults.errors.concat(batchGraphQLResponse.errors);
+        batchResults.hasError = true;
+        batchResults.alertMsg = `Errors occurred processing ${this.queryName()} records`;
+      }
+    });
+
+    return batchResults;
   }
 }

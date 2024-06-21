@@ -41,6 +41,10 @@ export class PhoneNumberRecordUtil {
     return this.isLegacyPhoneNumberRecord(phoneNumberRecord) && isLegacyContentField(key);
   }
 
+  public static getPropertyStringArray(phoneNumberRecord: PhoneNumberRecordType, key: string): Array<string> {
+    return this.getPropertyValue(phoneNumberRecord, key) as Array<string>;
+  }
+
   public static getPropertyValue(phoneNumberRecord: PhoneNumberRecordType, key: string): FieldDataType {
     let propertyValue: FieldDataType = undefined;
 

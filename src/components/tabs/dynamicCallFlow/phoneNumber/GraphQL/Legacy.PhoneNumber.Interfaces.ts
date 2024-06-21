@@ -32,6 +32,7 @@ export interface FlowContent {
 }
 
 export interface CctSharedCallFlowDb extends BasePhoneNumber {
+    pkey?: string;
     accountManager?: string;
     affinityVDN?: string;
     agentId?: string;

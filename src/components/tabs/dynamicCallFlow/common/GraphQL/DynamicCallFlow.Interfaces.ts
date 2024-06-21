@@ -38,10 +38,6 @@ export interface GraphQLInputVariables<InputVariables> {
   input: InputVariables;
 }
 
-export interface GraphQLRecord {
-  id?: number;
-}
-
 export interface GraphQLLocation {
   line: number;
   column: number;

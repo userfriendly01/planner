@@ -1,7 +1,7 @@
 import { CctSharedCallFlowDb } from "./Legacy.PhoneNumber.Interfaces";
 
 import {
-  ActionType, GraphQLRecord
+  ActionType
 } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
 
 //This is interface name matches what is defined in GraphQL schema
@@ -93,7 +93,7 @@ export enum UserDestinationEnum {
     TWILIO = "Twilio"
 }
 
-export interface BasePhoneNumber extends GraphQLRecord {
+export interface BasePhoneNumber {
     brand?: BrandType;
     callFlowTemplate?: string;
     callTypeDescription?: string;
@@ -103,7 +103,6 @@ export interface BasePhoneNumber extends GraphQLRecord {
     internetPlacement?: string;
     lineOfBusiness?: string;
     marketingChannel?: string;
-    pkey?: string;
     predictiveCaller?: boolean;
     rangeIndicator?: string;
     requestID?: string;

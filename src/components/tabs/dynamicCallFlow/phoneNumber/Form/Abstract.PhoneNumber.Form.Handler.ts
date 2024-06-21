@@ -10,17 +10,6 @@ import { PKEY } from "./Legacy.PhoneNumber.Form.Fields";
 import { FieldConfigs } from "../../common/Form/Form.Field.Config";
 
 export abstract class AbstractPhoneNumberFormHandler extends AbstractFormHandler<PhoneNumberRecordType> {
-  protected deleteTransientKeys(record: PhoneNumberRecordType): void {
-    // Delete keys from record that are transient and should not be saved
-    delete record["id"];
-
-    // Dynamic Phone Number uses phoneNumber as the pkey and does not have a pkey field
-    if (PhoneNumberRecordUtil.isDynamicPhoneNumberRecord(record)) {
-      (record as PhoneNumber).phoneNumber = record.pkey as string || (record as PhoneNumber).phoneNumber;
-      delete record[PKEY];
-    }
-  }
-
   /**
    *
    * @param greetingMessage
