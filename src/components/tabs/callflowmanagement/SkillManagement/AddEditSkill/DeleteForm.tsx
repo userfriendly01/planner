@@ -40,6 +40,7 @@ import { getTaskQueues } from "services/taskQueues";
 import {
   listUMUsers, updateUser
 } from "services/user";
+import { handleConcurrentCalls } from "usermanagement/processingUtils";
 
 export const DeleteForm = (props: any) => {
   const {
@@ -66,9 +67,7 @@ export const DeleteForm = (props: any) => {
   });
 
   React.useEffect(() => {
-    console.log("IMPACTED WORKERS - PRE", impactedWorkers.slice());
     setImpactedWorkers(identifyImpactedWorkers(state.workerContext.workers, formattedSkills));
-    console.log("IMPACTED WORKERS - POST", impactedWorkers.slice());
   },[state.workerContext.workers]);
 
   const deleteSkills = async () => {
@@ -101,14 +100,13 @@ export const DeleteForm = (props: any) => {
     });
 
     try {
-      const results = await Promise.allSettled([
-        ...formattedSkills.map((skill: any) => deleteSkill(skill, shouldDeleteQueue)),
-        ...impactedWorkers.map((user: Partial<UMUser>) => updateUser(user.sid, { attributes: user.attributes }))
-      ]);
+      const userResults = await Promise.allSettled(impactedWorkers.map((user: Partial<UMUser>) => updateUser(user.sid, { attributes: user.attributes })));
+      console.log("Worker Skill Delete Results", userResults);
 
+      const results = await handleConcurrentCalls(5, deleteSkill, formattedSkills, shouldDeleteQueue);
       console.log("Results", results);
 
-      if(results.every((r: any) => r.status === "fulfilled")){
+      if([...results, ...userResults].every((r: any) => r.status === "fulfilled")){
         logger.info("Successfully deleted all skills", {
           skills: formattedSkills.map((sk: any) => sk.name),
           taskQueuesDeleted: shouldDeleteQueue ? formattedSkills.map((sk: any) => sk.taskQueue?.friendly_name) : "TaskQueue deletion bypassed",
@@ -131,8 +129,8 @@ export const DeleteForm = (props: any) => {
           }));
         }, timeouts.MODAL_OVERLAY);
       } else {
-        const successfullyDeletedSkills = results.filter((r: any) => r.status === "fulfilled");
-        const failedSkills = results.filter((r: any) => r.status === "rejected");
+        const successfullyDeletedSkills = [...results, ...userResults].filter((r: any) => r.status === "fulfilled");
+        const failedSkills = [...results, ...userResults].filter((r: any) => r.status === "rejected");
         const final = {
           successfullyDeletedSkills,
           failedSkills

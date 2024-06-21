@@ -110,9 +110,20 @@ export const deleteSkill = async (skill: any, deleteQueues: boolean): Promise<an
   if(!results.every((r: any) => r.status === "fulfilled")){
     const is404 = (reason: any) => reason?.response?.data?.error?.error === "Not Found" ||
     reason?.response?.data?.error?.toString().includes("not found");
-    const messages = results.filter((r: any) => r.status === "rejected" && !is404(r.reason)).map((p: any) => {
-      const message = formatError(p.reason?.response?.data?.error) || formatError(p.reason?.response?.data) || formatError(p.reason);
-      return `${skillName} - ${message}`;
+
+    const messages: string[] = [];
+
+    results.forEach((r: any, index: number) => {
+      if(r.status === "rejected" && !is404(r.reason)){
+
+        const taskQueueError = r.reason.response.data?.details.toString().includes("400");
+        if(index === 0 && taskQueueError){
+          messages.push(`Twilio was unable to delete the task queue. Please try to delete ${skill.matchingQueue?.friendly_name} from the Twilio console manually`);
+        } else {
+          const message = formatError(r.reason?.response?.data?.error) || formatError(r.reason?.response?.data) || formatError(r.reason);
+          messages.push(`${skillName} - ${message}`);
+        }
+      }
     });
     if(messages.length){
       return Promise.reject(messages.toString());

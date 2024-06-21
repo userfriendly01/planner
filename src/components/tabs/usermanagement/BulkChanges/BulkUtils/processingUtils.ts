@@ -283,7 +283,7 @@ export const initiateCalls = async (
   };
 
   if(concurrencyLimit){
-    logger.warn("Concurrency Limit found", { concurrencyLimit: concurrencyLimit }, false);
+    logger.warn("Concurrency Limit found", { concurrencyLimit }, false);
     processingPromises = await handleConcurrentCalls(concurrencyLimit, processRow, rows, setProcessedRows);
   } else {
     logger.warn("No Concurrency Limit found", {}, false);
