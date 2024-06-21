@@ -41,7 +41,7 @@ export abstract class AbstractBatchRecordsQuery extends AbstractGraphQLQuery {
         alertMsg: "Please select something to add",
         errors: [],
         failure: [],
-        hasError: true,
+        hasError: false,
         success: []
       } as BatchResults<ResponseDataType>;
     }
