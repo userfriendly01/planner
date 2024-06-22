@@ -36,7 +36,7 @@ export const createSkill = async (skillForm: SkillFormState, updatedBy: string):
       taskQueueSid = res.data.sid;
     } catch(error){
       const message = `Task Queue failed to create. ${formatError(error?.response?.data || error?.message)}`;
-      console.error(message, error);
+      logger.error(message, error);
       messages.push(message);
     }
   }
@@ -50,7 +50,7 @@ export const createSkill = async (skillForm: SkillFormState, updatedBy: string):
     await myAxios.post(apiPaths.SKILLS_TASKROUTER, newFlexSkillBody);
   } catch(error){
     const message = `Flex skill failed to create: ${formatError(error?.response?.data || error?.message)}`;
-    console.error(message, error);
+    logger.error(message, error);
     messages.push(message);
   }
 
@@ -67,7 +67,7 @@ export const createSkill = async (skillForm: SkillFormState, updatedBy: string):
     await myAxios.post(apiPaths.SKILLS_CALLFLOW, newCallflowSkillBody);
   } catch(error){
     const message = `Callflow database failed to update: ${formatError(error?.response?.data || error?.message)}`;
-    console.error(message, error);
+    logger.error(message, error);
     messages.push(message);
   }
 
@@ -105,7 +105,7 @@ export const deleteSkill = async (skill: any, deleteQueues: boolean): Promise<an
 
   const results = await Promise.allSettled([taskQueuePromise, taskRouterSkillPromise, callflowSkillPromise]);
 
-  console.log("Delete Results", results);
+  logger.info("Delete Results", { results }, false);
 
   if(!results.every((r: any) => r.status === "fulfilled")){
     const is404 = (reason: any) => reason?.response?.data?.error?.error === "Not Found" ||
@@ -117,8 +117,6 @@ export const deleteSkill = async (skill: any, deleteQueues: boolean): Promise<an
       const errorSource: string = (index === 0 && "Task Queue Deletion Error") ||
                           (index === 1 && "Flex Console Skill Deletion Error") ||
                           (index === 2 && "Callflow Database Skill Deletion Error");
-
-      console.log("errorSource", errorSource);
 
       if(r.status === "rejected" && !is404(r.reason)){
         const taskQueueError = r.reason.response.data?.details?.toString().includes("400");
@@ -308,13 +306,6 @@ export const loadConsolidatedSkills = async (dispatch: (action: Action) => void)
       delete skill.skillName;
       consolidatedSkills.push(skill);
     });
-
-
-    console.log("Faith - contactManagerSkills", contactManagerSkills);
-    console.log("Faith - callflowSkills after", callflowSkills);
-    console.log("Faith - taskRouterSkills after", taskRouterSkills);
-    console.log("Faith - consolidatedSkills", consolidatedSkills);
-
 
     dispatch({
       type: "LOAD_SKILLS",

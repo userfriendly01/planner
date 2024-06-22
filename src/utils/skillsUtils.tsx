@@ -11,6 +11,7 @@ import _ from "lodash";
 
 import React from "react";
 import styled from "styled-components";
+import { logger } from "utils/logger";
 import { isNotEmptyString } from "utils";
 
 const Priority = styled.span`
@@ -70,7 +71,7 @@ export const areVhFieldsValid = (skillForm: SkillFormState, setMissingFields: (f
 
   setMissingFields(missingFields);
 
-  console.log("MISSING FIELDS", missingFields);
+  logger.error("Early Return on Missing Fields", { missingFields }, false);
   return !missingFields.length;
 };
 

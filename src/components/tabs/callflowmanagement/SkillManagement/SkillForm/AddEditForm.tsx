@@ -83,7 +83,6 @@ export const AddEditForm = (props: any) => {
     };
 
     if(!areVhFieldsValid(skillState.skillForm, setMissingFields)) {
-      console.error("Early Return on Missing Fields");
       return;
     }
 

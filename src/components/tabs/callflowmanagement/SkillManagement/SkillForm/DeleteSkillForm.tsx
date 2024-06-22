@@ -102,17 +102,15 @@ export const DeleteForm = (props: any) => {
 
     try {
       const userResults = await Promise.allSettled(impactedWorkers.map((user: Partial<UMUser>) => updateUser(user.sid, { attributes: user.attributes })));
-      console.log("Worker Deletion Results", userResults);
+      logger.info("Worker Deletion Results", { userResults });
 
       const results = await handleConcurrentCalls(3, deleteSkill, formattedSkills, shouldDeleteQueue);
-      console.log("Skill Deletion Results", results);
+      logger.info("Skill Deletion Results", { results });
 
       const totalResults = [...results, ...userResults.map((r: any, i: number) => ({
         ...r,
         reason: [<div key={`${i} - userError`}><h2 style={{ fontWeight: "bold" }}>Error Removing Skill from Twilio Worker</h2> - {formatError(r.reason)}</div>]
       }))];
-
-      console.log("Total Results", totalResults);
 
       if(totalResults.every((r: any) => r.status === "fulfilled")){
         logger.info("Successfully deleted all skills", {
