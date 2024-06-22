@@ -66,8 +66,8 @@ export const createSkill = async (skillForm: SkillFormState, updatedBy: string):
 
     await myAxios.post(apiPaths.SKILLS_CALLFLOW, newCallflowSkillBody);
   } catch(error){
-    const message = `Callflow database failed to update: ${formatError(error?.response?.data || error?.message)}`;
-    logger.error(message, error);
+    const message = `Callflow database failed to create skill: ${formatError(error?.response?.data || error?.message)}`;
+    console.error(message, error);
     messages.push(message);
   }
 
