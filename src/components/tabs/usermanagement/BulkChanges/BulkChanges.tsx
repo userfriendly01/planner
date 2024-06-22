@@ -26,7 +26,9 @@ import { useAdminState } from "context/appContext";
 import React from "react";
 import { Modal } from "@mui/material";
 import { PageLoadSpinner } from "components/PageLoadSpinner";
-import { LoadStatuses } from "globals/interfaces";
+import {
+  AppError, LoadStatuses
+} from "globals/interfaces";
 
 export const BulkChanges = () => {
 
@@ -72,9 +74,9 @@ export const BulkChanges = () => {
 
   if (loadStatus === LoadStatuses.FAIL && !showProcessingModal) {
     return (
-      <BulkChangesWrapper>
-        <PageLoadSpinner message="An Error was thrown loading users, please refresh Triton to try again"/>
-      </BulkChangesWrapper>
+      <AppError>
+        An error was thrown loading users, please refresh Triton to try again
+      </AppError>
     );
   }
 

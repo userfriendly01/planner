@@ -1,3 +1,4 @@
+import { LoadStatuses } from "globals/interfaces";
 import {
   initialState,
   reducer
@@ -20,13 +21,13 @@ describe("reducer", () => {
   });
   describe("setLoadingWorkers", () => {
     test("should set workers loading boolean", () => {
-      const payload = true;
+      const payload = LoadStatuses.SUCCESS;
       const action = {
         type: "setLoadingWorkers",
         payload
       };
       const result = reducer(initialState, action);
-      expect(result.workerContext.isLoading).toEqual(true);
+      expect(result.workerContext.loadStatus).toEqual(LoadStatuses.SUCCESS);
     });
   });
   describe("loadPaginatedResults", () => {

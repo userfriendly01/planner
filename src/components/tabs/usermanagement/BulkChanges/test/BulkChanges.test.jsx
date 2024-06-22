@@ -22,6 +22,7 @@ import {
   CircularProgress, Modal
 } from "@mui/material";
 import { useAdminState } from "context/appContext";
+import { LoadStatuses } from "globals/interfaces";
 
 jest.mock("usermanagement/BulkCreateForm", () => ({
   BulkCreateForm: jest.fn()
@@ -126,7 +127,7 @@ describe("<BulkChanges />", () => {
     useAdminState.mockReturnValue({
       ...initialTestState,
       workerContext: {
-        isLoading: true
+        loadStatus: LoadStatuses.LOADING
       }
     });
 

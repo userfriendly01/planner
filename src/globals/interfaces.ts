@@ -2,7 +2,9 @@ import { CalabrioGroup } from "usermanagement/CallRecording.Interfaces";
 import {
   AuthenticationProfile, Permissions
 } from "authentication/authenticationInterfaces";
-import { AlertColor } from "@mui/material";
+import {
+  AlertColor, Paper
+} from "@mui/material";
 import styled from "styled-components";
 
 export const FlexColumn = styled.div`
@@ -14,6 +16,14 @@ export const FlexColumn = styled.div`
 export const FlexRow = styled.div`
   display: flex;
   flex: 1 1 auto;
+`;
+
+export const AppError = styled(Paper)`
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  font-size: 30;
+  padding: 50;
 `;
 
 export const IconWrapper = styled.div`

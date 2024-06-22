@@ -5,7 +5,9 @@ import { Pagination } from "components/Pagination";
 import { TritonUsersHeader } from "usermanagement/TritonUsersHeader";
 import { TritonUserTable } from "usermanagement/TritonUserTable";
 import { useAdminState } from "context/appContext";
-import { UMUser } from "globals/interfaces";
+import {
+  LoadStatuses, UMUser, AppError
+} from "globals/interfaces";
 import React from "react";
 import { sortWorkersByFullName } from "utils/_sortUtils";
 import { filterWorkerSearch } from "utils/_filterUtils";
@@ -35,8 +37,7 @@ export const TritonUsersViewWrapper: any = () => {
     profileFilterArray,
     ouFilterArray
   } = state.userManagementTableFilters;
-  const { isLoading } = state.workerContext;
-  // const isLoading = true;
+  const { loadStatus } = state.workerContext;
   const [ tableState, setTableState ] = React.useState(defaultTableState);
   const [ resettingSkills, setResettingSkills ] = React.useState(false);
 
@@ -103,7 +104,13 @@ export const TritonUsersViewWrapper: any = () => {
         tableState={tableState}
         setTableState={setTableState}
       />
-      {isLoading ? <PageLoadSpinner/> :
+      {loadStatus === LoadStatuses.LOADING && <PageLoadSpinner/> }
+      {loadStatus === LoadStatuses.FAIL &&
+        <AppError elevation={3}>
+          An error was thrown loading users, please refresh Triton to try again
+        </AppError>
+      }
+      {loadStatus === LoadStatuses.SUCCESS &&
         <>
           <StyledPaper elevation={3}>
             <TritonUserTable

@@ -2,6 +2,7 @@ import { apolloClient } from "../components/core/Auth/SharedGraphAPIProvider";
 import {
   Action,
   DBList,
+  LoadStatuses,
   UMUser
 }from "globals/interfaces";
 import {
@@ -32,7 +33,7 @@ import { logger } from "utils/logger";
 export const listUMUsers = async (dispatch: (action: Action) => void): Promise<DBList<UMUser>> => {
   dispatch(({
     type: "setLoadingWorkers",
-    payload: true
+    payload: LoadStatuses.LOADING
   }));
 
   const formatUsers = (users: UMUser[]) => {
@@ -51,13 +52,17 @@ export const listUMUsers = async (dispatch: (action: Action) => void): Promise<D
   };
 
   try {
-    await getPaginatedResults("UMUser", dispatch, formatUsers, () => dispatch(({
+    await getPaginatedResults("UMUser", dispatch, formatUsers);
+    dispatch(({
       type: "setLoadingWorkers",
-      payload: false
-    })));
+      payload: LoadStatuses.SUCCESS
+    }));
   } catch(error) {
     logger.error("Failed to fetch users from graph", { error });
-    //TODO - Handle this in a way to show the user the table only failed to load
+    dispatch(({
+      type: "setLoadingWorkers",
+      payload: LoadStatuses.FAIL
+    }));
   }
   return;
 };
