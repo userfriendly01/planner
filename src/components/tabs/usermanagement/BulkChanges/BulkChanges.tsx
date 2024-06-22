@@ -26,6 +26,7 @@ import { useAdminState } from "context/appContext";
 import React from "react";
 import { Modal } from "@mui/material";
 import { PageLoadSpinner } from "components/PageLoadSpinner";
+import { LoadStatuses } from "globals/interfaces";
 
 export const BulkChanges = () => {
 
@@ -59,12 +60,20 @@ export const BulkChanges = () => {
     return areOptionsLoaded && isOrgLoaded;
   };
 
-  const { isLoading } = state.workerContext;
+  const { loadStatus } = state.workerContext;
 
-  if (isLoading && !showProcessingModal) {
+  if (loadStatus === LoadStatuses.LOADING && !showProcessingModal) {
     return (
       <BulkChangesWrapper>
         <PageLoadSpinner message="Loading Users, operations will be available once it completes"/>
+      </BulkChangesWrapper>
+    );
+  }
+
+  if (loadStatus === LoadStatuses.FAIL && !showProcessingModal) {
+    return (
+      <BulkChangesWrapper>
+        <PageLoadSpinner message="An Error was thrown loading users, please refresh Triton to try again"/>
       </BulkChangesWrapper>
     );
   }

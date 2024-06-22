@@ -642,6 +642,7 @@ export const initialTestState = {
       {
         skillsDifferent: true,
         sid: "wk049358",
+        isConsole: true,
         attributes: {
           full_name: "Faith Cuneo",
           emp_first_name: "Faith",
@@ -722,7 +723,7 @@ export const initialTestState = {
         sid: "WK1234"
       }
     ],
-    isLoading: false
+    loadStatus: null
   },
   calabrioContext,
   resettingSkills: false,

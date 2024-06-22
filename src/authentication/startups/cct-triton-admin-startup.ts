@@ -106,9 +106,10 @@ export const runTritonAdminStartup = (dispatch:  (action: Action) => void, skill
   /* Please add new service calls to the end of this Promise.all,
   the existing order is important */
 
+  listUMUsers(dispatch); // We want to kick this off but not wait for the results
+
   return Promise.all([
     Promise.resolve(getStartupProfiles().TRITON.name),
-    listUMUsers(dispatch),
     listUMManagers(dispatch),
     listUMOffices(dispatch),
     getProfiles(dispatch),

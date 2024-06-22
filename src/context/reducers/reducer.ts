@@ -25,7 +25,7 @@ export const initialState: AppState = {
   },
   workerContext: {
     workers: [],
-    isLoading: true
+    loadStatus: null
   },
   calabrioContext: {
     tenant: {},
@@ -51,7 +51,7 @@ export const reducer = (state: AppState, action: Action): AppState => {
         ...state,
         workerContext: {
           ...state.workerContext,
-          isLoading: action.payload
+          loadStatus: action.payload
         }
       };
     case "loadPaginatedResults": {

@@ -73,6 +73,12 @@ export interface Discrepancy {
   type: string
 }
 
+export enum LoadStatuses {
+  FAIL = "fail",
+  LOADING = "loading",
+  SUCCESS = "success"
+}
+
 export interface AppState {
   managerContext: {
     managers: UMManager[]
@@ -94,7 +100,7 @@ export interface AppState {
   },
   workerContext: {
     workers: UMUser[],
-    isLoading: boolean;
+    loadStatus: LoadStatuses;
   },
   calabrioContext: {
     tenant: any,

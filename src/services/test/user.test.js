@@ -29,7 +29,7 @@ describe("user", () => {
     mapWorkerToDbWorker.mockImplementation(data => data);
   });
 
-  describe("listUMUsers", () => {
+  describe.only("listUMUsers", () => {
     test("should resolve with the first paint of data", async () => {
       const dispatchMock = jest.fn();
 
@@ -44,13 +44,16 @@ describe("user", () => {
       });
     });
 
-    xtest("should reject if an error occurs in the listUMUsers", async () => {
+    test("should reject if an error occurs in the listUMUsers", async () => {
       const error = new Error("An Error");
 
       getPaginatedResults.mockRejectedValue(error);
 
       try {
         listUMUsers(jest.fn());
+        // await waitFor(() => {
+        //   expect(logger.error).toHaveBeenCalledWith("Failed to fetch users from graph", { error });
+        // });
       } catch(err) {
         expect(logger.error).toHaveBeenCalledWith("Failed to fetch users from graph", { error });
         expect(err).toEqual({

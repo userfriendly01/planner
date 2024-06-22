@@ -18,12 +18,8 @@ import * as XLSX from "xlsx";
  * Refreshes the triton user state after a bulk update on users
  */
 export const updateTritonUserState = async (_state: AppState, dispatch: () => void): Promise<void> => {
-  try {
-    await listUMUsers(dispatch);
-  } catch (error) {
-    logger.error("Failed to update triton user state after bulk upload", { error }, false);
-  }
-  return Promise.resolve();
+  listUMUsers(dispatch);
+  return;
 };
 
 /**

@@ -11,10 +11,10 @@ import {
   UPDATE_USER
 }from "globals/graphql";
 import {
+  getPaginatedResults,
   mapWorkerFromDbWorker,
   mapWorkerToDbWorker
 } from "utils/graphUtils";
-import { getPaginatedResults } from "utils/graphUtils";
 import {
   sortGraphObjectsByPk
 } from "utils/_sortUtils";
@@ -51,16 +51,13 @@ export const listUMUsers = async (dispatch: (action: Action) => void): Promise<D
   };
 
   try {
-    getPaginatedResults("UMUser", dispatch, formatUsers, () => dispatch(({
+    await getPaginatedResults("UMUser", dispatch, formatUsers, () => dispatch(({
       type: "setLoadingWorkers",
       payload: false
     })));
   } catch(error) {
     logger.error("Failed to fetch users from graph", { error });
-
-    throw ({
-      msg: "Failed to fetch users from graph"
-    });
+    //TODO - Handle this in a way to show the user the table only failed to load
   }
   return;
 };
