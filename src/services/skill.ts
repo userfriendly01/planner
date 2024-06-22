@@ -19,7 +19,7 @@ import { getTargetExpression } from "utils/skillsUtils";
    https://libertymutual.atlassian.net/browse/CCTP-13060
 */
 
-const formatError = (error: any) => typeof error === "object" ? JSON.stringify(error) : error?.string();
+const formatError = (error: any) => typeof error === "object" ? JSON.stringify(error) : error?.toString();
 
 export const createSkill = async (skillForm: SkillFormState, updatedBy: string): Promise<any> => {
   const messages: string[] = [];
