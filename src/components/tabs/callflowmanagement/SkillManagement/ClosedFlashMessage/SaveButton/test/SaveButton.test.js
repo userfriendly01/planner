@@ -4,7 +4,8 @@ import { UserFormButton } from "../../ClosedFlashMessage.Styles";
 import { ActionTypes } from "../../../Skills.Interfaces";
 import {
   useAdminState,
-  useSkillDispatch
+  useSkillDispatch,
+  useSkillState
 } from "context/appContext";
 import { StyledButton } from "components/StyledButton";
 import { ModalOverlayStatuses } from "globals/interfaces";
@@ -77,14 +78,14 @@ const renderComponent = (action, selected, messageType) => {
 describe("<SaveButton /> ", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    useSkillDispatch.mockReturnValue(mockDispatch);
     useAdminState.mockReturnValue(initialTestState);
+    useSkillDispatch.mockReturnValue(mockDispatch);
+    useSkillState.mockReturnValue({
+      skills: skillsList
+    });
     setupMockedComponents({
       StyledButton
     });
-  });
-  test.only("Faith", () => {
-    expect(true).toBe(true);
   });
   describe("initial render", () => {
     describe("isSingleSelection === true && action !== view", () => {
@@ -131,54 +132,52 @@ describe("<SaveButton /> ", () => {
           expect(mockSetConfirmationModalOpts.mock.calls[0][0].open).toBe(true);
         });
         describe("onConfirm is called", () => {
-          describe("handleResults", () => {
-            describe("all promises are resolved", () => {
-              beforeEach(() => {
-                updateFlashMessage.mockResolvedValue({
-                  config: {
-                    data: JSON.stringify({
-                      skill: "aisgL1",
-                      flashMessage: "I'm a new flash message!"
-                    })
-                  }
-                });
+          describe("all promises are resolved", () => {
+            beforeEach(() => {
+              updateFlashMessage.mockResolvedValue({
+                config: {
+                  data: JSON.stringify({
+                    skill: "aisgL1",
+                    flashMessage: "I'm a new flash message!"
+                  })
+                }
               });
-              test("dispatch should be called for all resolved promises", async () => {
-                renderComponent(ActionTypes.EDIT, [skillsList[0], skillsList[1]], messageTypes.FLASH);
-                const saveButton = UserFormButton.mock.calls[0][0].onClick;
-                act(() => {
-                  saveButton();
-                });
-                const onConfirm = mockSetConfirmationModalOpts.mock.calls[0][0].callbackMethods.onConfirm;
-                act(() => {
-                  onConfirm();
-                });
-                expect(updateFlashMessage).toHaveBeenCalledTimes(2);
-                expect(updateFlashMessage).toHaveBeenCalledWith(skillsList[0], text, nNumber);
-                expect(updateFlashMessage).toHaveBeenCalledWith(skillsList[1], text, nNumber);
+            });
+            test("dispatch should be called for all resolved promises", async () => {
+              renderComponent(ActionTypes.EDIT, [skillsList[0], skillsList[1]], messageTypes.FLASH);
+              const saveButton = UserFormButton.mock.calls[0][0].onClick;
+              act(() => {
+                saveButton();
+              });
+              const onConfirm = mockSetConfirmationModalOpts.mock.calls[0][0].callbackMethods.onConfirm;
+              act(() => {
+                onConfirm();
+              });
+              expect(updateFlashMessage).toHaveBeenCalledTimes(2);
+              expect(updateFlashMessage).toHaveBeenCalledWith(skillsList[0], text, nNumber);
+              expect(updateFlashMessage).toHaveBeenCalledWith(skillsList[1], text, nNumber);
 
-                jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
-                await waitFor(() => {
-                  expect(mockSetAction).toHaveBeenCalledTimes(1);
-                  expect(mockSetAction).toHaveBeenCalledWith(null);
-                  expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(2);
-                  expect(mockSetSaveResult).toHaveBeenCalledTimes(3);
-                  expect(mockSetSaveResult).toHaveBeenCalledTimes(3);
-                  expect(mockSetSaveResult).toHaveBeenCalledWith({
-                    message: "Processing...",
-                    status: ModalOverlayStatuses.SAVING
-                  });
-                  expect(mockSetSaveResult).toHaveBeenCalledWith({
-                    message: "Request Successfully Processed",
-                    status: ModalOverlayStatuses.SUCCESS
-                  });
-                  expect(mockSetSaveResult).toHaveBeenCalledWith({
-                    message: "",
-                    status: null
-                  });
-                  expect(mockDispatch).toHaveBeenCalledTimes(1);
-
+              jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
+              await waitFor(() => {
+                expect(mockSetAction).toHaveBeenCalledTimes(1);
+                expect(mockSetAction).toHaveBeenCalledWith(null);
+                expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(2);
+                expect(mockSetSaveResult).toHaveBeenCalledTimes(3);
+                expect(mockSetSaveResult).toHaveBeenCalledTimes(3);
+                expect(mockSetSaveResult).toHaveBeenCalledWith({
+                  message: "Processing...",
+                  status: ModalOverlayStatuses.SAVING
                 });
+                expect(mockSetSaveResult).toHaveBeenCalledWith({
+                  message: "Request Successfully Processed",
+                  status: ModalOverlayStatuses.SUCCESS
+                });
+                expect(mockSetSaveResult).toHaveBeenCalledWith({
+                  message: "",
+                  status: null
+                });
+                expect(mockDispatch).toHaveBeenCalledTimes(1);
+
               });
             });
           });
@@ -262,6 +261,7 @@ describe("<SaveButton /> ", () => {
               });
             });
           });
+
         });
       });
       describe("messageType is CLOSED", () => {
