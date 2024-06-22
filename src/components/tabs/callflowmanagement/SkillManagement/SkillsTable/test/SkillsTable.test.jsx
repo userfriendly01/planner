@@ -65,11 +65,36 @@ jest.mock("../../Skills.Styles", () => ({
   TableIcon: jest.requireActual("../../Skills.Styles").TableIcon
 }));
 
+const testState = {
+  ...initialTestState,
+  profileContext: {
+    profiles: [
+      {
+        profile_id: 32,
+        profile_nme: "Licensed Sales Center"
+      },
+      {
+        profile_id: 4,
+        profile_nme: "AISG"
+      },
+      {
+        profile_id: 10,
+        profile_nme: "BSC"
+      },
+      {
+        profile_id: 12,
+        profile_nme: "BLST Billing"
+      }
+    ]
+  }
+};
+
 const defaultTableState = {
   filteredList: skillsList,
   selected: [],
   closedFilter: false,
-  flashFilter: false
+  flashFilter: false,
+  discrepancyFilter: false
 };
 const mockSetTableState = jest.fn();
 
@@ -83,7 +108,7 @@ const renderComponent = (customSelected, customTableState) => {
     setTableState={mockSetTableState}
   />);
 
-  const headerCount = 5;
+  const headerCount = 6;
   for(let i = 0; i <= headerCount; i++){
     if(CustomTableHeader.mock.calls[i] && CustomTableHeader.mock.calls[i][0]){
       render(CustomTableHeader.mock.calls[i][0].children);
@@ -107,7 +132,7 @@ const renderComponent = (customSelected, customTableState) => {
 describe("SkillsTable", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    useAdminState.mockReturnValue(initialTestState);
+    useAdminState.mockReturnValue(testState);
     useSkillState.mockReturnValue({
       skills: skillsList,
       skillGroups: skillGroups
@@ -139,13 +164,10 @@ describe("SkillsTable", () => {
     */
   });
   describe("initial state", () => {
-    test.only("Faith", () => {
-      expect(true).toBe(true);
-    });
     test("should render expected headers", () => {
       renderComponent();
 
-      expect(CustomTableHeader.mock.calls.length).toBe(6);
+      expect(CustomTableHeader.mock.calls.length).toBe(7);
 
       const checkboxClick = Checkbox.mock.calls[4][0].onClick;
       act(() => {
@@ -159,7 +181,9 @@ describe("SkillsTable", () => {
       expect(FilterWrapper.mock.calls[0][0].children).toBe("FLASH");
       expect(FilterWrapper.mock.calls[0][0].active).toBe(false);
       expect(FilterWrapper.mock.calls[1][0].children).toBe("CLOSED");
-      expect(FilterWrapper.mock.calls[0][0].active).toBe(false);
+      expect(FilterWrapper.mock.calls[1][0].active).toBe(false);
+      expect(FilterWrapper.mock.calls[2][0].children).toBe("PROBLEMS");
+      expect(FilterWrapper.mock.calls[2][0].active).toBe(false);
     });
     test("should render expected rows", () => {
       renderComponent();
@@ -272,6 +296,20 @@ describe("SkillsTable", () => {
       expect(mockSetTableState).toHaveBeenCalledWith({
         ...defaultTableState,
         closedFilter: true
+      });
+    });
+  });
+  describe("discrepancy filter is clicked", () => {
+    test("setTableState is called with discrepancyFilter === true", () => {
+      renderComponent();
+      const setDiscrepancyFilter = CustomTableHeader.mock.calls[6][0].onClick;
+      act(() => {
+        setDiscrepancyFilter();
+      });
+      expect(mockSetTableState).toHaveBeenCalledTimes(1);
+      expect(mockSetTableState).toHaveBeenCalledWith({
+        ...defaultTableState,
+        discrepancyFilter: true
       });
     });
   });

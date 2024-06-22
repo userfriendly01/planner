@@ -371,6 +371,10 @@ export const skillsList = [
         name: "aisgL1",
         ctmSkillId: 2
       }]
+    },
+    {
+      skillGroupId: 2,
+      skillGroupNme: "skillgroup2"
     }],
     profiles: [32],
     flashMessage: "",
@@ -398,10 +402,7 @@ export const skillsList = [
         ctmSkillId: 2
       }]
     }],
-    profiles: [{
-      profileName: "AISG",
-      profileId: 4
-    }],
+    profiles: [4],
     flashMessage: "",
     closedMessage: "Sorry, we're closed.",
     levels: [],
