@@ -8,8 +8,7 @@ import { WfmForm } from "usermanagement/WfmForm";
 import {
   useAdminState,
   useFormState,
-  useFormDispatch,
-  useSkillState
+  useFormDispatch
 } from "context/appContext";
 import { userFormActions } from "context/userFormReducer";
 import { formModes } from "globals";
@@ -23,8 +22,7 @@ import {
   render,
   setupMockedComponents,
   initialFormState,
-  initialTestState,
-  skillsList
+  initialTestState
 } from "testUtils";
 
 jest.mock("react-router-dom", () => ({
@@ -68,8 +66,7 @@ jest.mock("usermanagement/WfmForm", () => ({
 jest.mock("context/appContext", () => ({
   useAdminState: jest.fn(),
   useFormState: jest.fn(),
-  useFormDispatch: jest.fn(),
-  useSkillState: jest.fn()
+  useFormDispatch: jest.fn()
 }));
 
 jest.useFakeTimers();
@@ -77,7 +74,7 @@ const mockNavigate = jest.fn();
 const mockSetForm = jest.fn();
 const mockHandleClose = jest.fn();
 
-describe("<UserEntryForm />", () => {
+describe("<UserEntryFormWrapper />", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -86,9 +83,6 @@ describe("<UserEntryForm />", () => {
     useFormState.mockReturnValue({ ...initialFormState });
     useAdminState.mockReturnValue(initialTestState);
     useNavigate.mockReturnValue(mockNavigate);
-    useSkillState.mockReturnValue({
-      skills: skillsList
-    });
     setupMockedComponents({
       CallRecordingForm,
       DeleteTritonUser,
@@ -198,7 +192,7 @@ describe("<UserEntryForm />", () => {
           container, unmount
         } = renderComponent();
         expect(ModalOverlay.mock.calls.length).toBe(0);
-        expect(container).toHaveTextContent("Discrepencies have been found for this worker. They will be corrected when you hit 'Save User' unless otherwise specified ");
+        expect(container).toHaveTextContent("Discrepencies have been found for this worker. They will be corrected when you hit `Save User` unless otherwise specified ");
         expect(container).toHaveTextContent("Missing Profile");
         act(() => unmount());
       });
@@ -277,7 +271,7 @@ describe("<UserEntryForm />", () => {
     });
     describe("check userFound boxes", () => {
       describe("triton checkbox", () => {
-        test("updates triton.userFound", async () => {
+        test("updates triton.userFound", () => {
           const { unmount } = renderComponent();
           const checkTritonBox = Checkbox.mock.calls[0][0].onChange;
           act(() => checkTritonBox({

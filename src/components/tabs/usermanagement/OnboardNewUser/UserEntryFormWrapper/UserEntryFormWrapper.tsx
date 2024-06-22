@@ -18,7 +18,6 @@ import { WfmForm } from "usermanagement/WfmForm";
 import {
   useFormState,
   useAdminState,
-  useSkillState,
   useFormDispatch
 } from "context/appContext";
 import { userFormActions } from "context/userFormReducer";
