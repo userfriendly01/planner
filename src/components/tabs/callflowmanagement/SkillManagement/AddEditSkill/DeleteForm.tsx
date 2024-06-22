@@ -103,7 +103,7 @@ export const DeleteForm = (props: any) => {
       const userResults = await Promise.allSettled(impactedWorkers.map((user: Partial<UMUser>) => updateUser(user.sid, { attributes: user.attributes })));
       console.log("Worker Skill Delete Results", userResults);
 
-      const results = await handleConcurrentCalls(5, deleteSkill, formattedSkills, shouldDeleteQueue);
+      const results = await handleConcurrentCalls(3, deleteSkill, formattedSkills, shouldDeleteQueue);
       console.log("Results", results);
 
       if([...results, ...userResults].every((r: any) => r.status === "fulfilled")){
@@ -223,7 +223,12 @@ export const DeleteForm = (props: any) => {
                 <FormRow>
                   <h4>These skills will also be removed from {impactedWorkers.length} workers that have this skill in either their default skills, routing skills & disabled skills</h4>
                 </FormRow>
-                <FormRow>
+                {/* <FormRow> 
+                
+                // Deleting Task Queues is more involved than it seemed. 
+                Will discuss next steps with Kim before peeling code out. 
+                Task Queues need to be taken out of a workflow
+
                   <Checkbox
                     onChange={(e: any) => setShouldDeleteQueue(e.target.checked)}
                     checked={shouldDeleteQueue}
@@ -232,7 +237,7 @@ export const DeleteForm = (props: any) => {
                     <h4 style={{ margin: 0 }}>By checking this box, all task queues with the matching targetWorkerExpression will be deleted along with the skill</h4>
                     <h4 style={{ margin: 0 }}>If you leave it unchecked, only the skill will be removed from Twilio & all applicable databases</h4>
                   </FlexColumn>
-                </FormRow>
+                </FormRow> */}
               </SkillsDetailWrapper>
             }
             <SkillsDetailWrapper>

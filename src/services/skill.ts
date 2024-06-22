@@ -116,7 +116,7 @@ export const deleteSkill = async (skill: any, deleteQueues: boolean): Promise<an
     results.forEach((r: any, index: number) => {
       if(r.status === "rejected" && !is404(r.reason)){
 
-        const taskQueueError = r.reason.response.data?.details.toString().includes("400");
+        const taskQueueError = r.reason.response.data?.details?.toString().includes("400");
         if(index === 0 && taskQueueError){
           messages.push(`Twilio was unable to delete the task queue. Please try to delete ${skill.matchingQueue?.friendly_name} from the Twilio console manually`);
         } else {
