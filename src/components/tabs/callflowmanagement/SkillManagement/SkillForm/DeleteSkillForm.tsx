@@ -25,6 +25,7 @@ import {
 import {
   deleteSkill, loadConsolidatedSkills
 } from "services/skill";
+import { formatError } from "utils";
 import { logger } from "utils/logger";
 import {
   getTargetExpression,
@@ -101,12 +102,19 @@ export const DeleteForm = (props: any) => {
 
     try {
       const userResults = await Promise.allSettled(impactedWorkers.map((user: Partial<UMUser>) => updateUser(user.sid, { attributes: user.attributes })));
-      console.log("Worker Skill Delete Results", userResults);
+      console.log("Worker Deletion Results", userResults);
 
       const results = await handleConcurrentCalls(3, deleteSkill, formattedSkills, shouldDeleteQueue);
-      console.log("Results", results);
+      console.log("Skill Deletion Results", results);
 
-      if([...results, ...userResults].every((r: any) => r.status === "fulfilled")){
+      const totalResults = [...results, ...userResults.map((r: any, i: number) => ({
+        ...r,
+        reason: [<div key={`${i} - userError`}><h2 style={{ fontWeight: "bold" }}>Error Removing Skill from Twilio Worker</h2> - {formatError(r.reason)}</div>]
+      }))];
+
+      console.log("Total Results", totalResults);
+
+      if(totalResults.every((r: any) => r.status === "fulfilled")){
         logger.info("Successfully deleted all skills", {
           skills: formattedSkills.map((sk: any) => sk.name),
           taskQueuesDeleted: shouldDeleteQueue ? formattedSkills.map((sk: any) => sk.taskQueue?.friendly_name) : "TaskQueue deletion bypassed",
@@ -129,8 +137,8 @@ export const DeleteForm = (props: any) => {
           }));
         }, timeouts.MODAL_OVERLAY);
       } else {
-        const successfullyDeletedSkills = [...results, ...userResults].filter((r: any) => r.status === "fulfilled");
-        const failedSkills = [...results, ...userResults].filter((r: any) => r.status === "rejected");
+        const successfullyDeletedSkills = totalResults.filter((r: any) => r.status === "fulfilled");
+        const failedSkills = totalResults.filter((r: any) => r.status === "rejected");
         const final = {
           successfullyDeletedSkills,
           failedSkills
@@ -167,7 +175,7 @@ export const DeleteForm = (props: any) => {
     <ModalContainer>
       { (saveResult.status !== null && saveResult.status !== ModalOverlayStatuses.PARTIAL_FAIL) &&
           <ModalOverlay
-            message={saveResult.message}
+            message={saveResult.message.toString()}
             status={saveResult.status}
             handleClose={closeModal}
           />
@@ -186,9 +194,20 @@ export const DeleteForm = (props: any) => {
               </thead>
               <tbody>
                 {saveResult.message.map((result: any, index: number) => ((
-                  <tr key={`${index}-row`}>
-                    <td><CenteredDiv>{result.reason.toString()}</CenteredDiv></td>
-                  </tr>
+                  <>
+                    {typeof result.reason === "object" ?
+                      <tr key={`${index}-row`}>
+                        {result.reason.map((reason: string) => ((
+                          <td key={`${index}-reason`}><CenteredDiv>{reason}</CenteredDiv></td>
+                        )))
+                        }
+                      </tr>
+                      :
+                      <tr key={`${index}-row`}>
+                        <td><CenteredDiv>{result.reason}</CenteredDiv></td>
+                      </tr>
+                    }
+                  </>
                 )))
                 }
               </tbody>

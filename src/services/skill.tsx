@@ -1,6 +1,8 @@
 import { apiPaths } from "globals";
+import React from "react";
 import { myAxios } from "utils/myAxios";
 import { logger } from "utils/logger";
+import { formatError } from "utils";
 import { getTaskQueues } from "services/taskQueues";
 import {
   Application, Skill, TwilioSkill, CallflowSkill, CtmSkill,
@@ -18,8 +20,6 @@ import { getTargetExpression } from "utils/skillsUtils";
    In a future story, we want to move this logic to the shared-admin-service
    https://libertymutual.atlassian.net/browse/CCTP-13060
 */
-
-const formatError = (error: any) => typeof error === "object" ? JSON.stringify(error) : error?.toString();
 
 export const createSkill = async (skillForm: SkillFormState, updatedBy: string): Promise<any> => {
   const messages: string[] = [];
@@ -111,22 +111,28 @@ export const deleteSkill = async (skill: any, deleteQueues: boolean): Promise<an
     const is404 = (reason: any) => reason?.response?.data?.error?.error === "Not Found" ||
     reason?.response?.data?.error?.toString().includes("not found");
 
-    const messages: string[] = [];
+    const messages: any[] = [];
 
     results.forEach((r: any, index: number) => {
-      if(r.status === "rejected" && !is404(r.reason)){
+      const errorSource: string = (index === 0 && "Task Queue Deletion Error") ||
+                          (index === 1 && "Flex Console Skill Deletion Error") ||
+                          (index === 2 && "Callflow Database Skill Deletion Error");
 
+      console.log("errorSource", errorSource);
+
+      if(r.status === "rejected" && !is404(r.reason)){
         const taskQueueError = r.reason.response.data?.details?.toString().includes("400");
         if(index === 0 && taskQueueError){
-          messages.push(`Twilio was unable to delete the task queue. Please try to delete ${skill.matchingQueue?.friendly_name} from the Twilio console manually`);
+          const message = `Twilio was unable to delete the task queue. Please try to delete ${skill.matchingQueue?.friendly_name} from the Twilio console manually`;
+          messages.push(<div><h2 style={{ fontWeight: "bold" }}>{errorSource}: {skillName}</h2> - {message}</div>);
         } else {
           const message = formatError(r.reason?.response?.data?.error) || formatError(r.reason?.response?.data) || formatError(r.reason);
-          messages.push(`${skillName} - ${message}`);
+          messages.push(<div><h2 style={{ fontWeight: "bold" }}>{errorSource}: {skillName}</h2> - {message}</div>);
         }
       }
     });
     if(messages.length){
-      return Promise.reject(messages.toString());
+      return Promise.reject(messages);
     }
   }
   return;

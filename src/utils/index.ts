@@ -9,6 +9,14 @@ export const isNotEmptyString = (value: string) => {
   return value && value.trim().length > 0;
 };
 
+export const formatError = (error: any): string => {
+  /* TODO - I want to clean up - look into Error formatting utils or make this more typed out for axios/apollo/twilio/legacy databases (SQL) errors
+   To get the best message display we have to get pretty specific into all the different types of errors*/
+
+  console.log("Error Before Formatting", error);
+  return (error.message?.toString() || error?.toString()) || (typeof error === "object" && JSON.stringify(error));
+};
+
 export const escapeQuotes = (payload: string): string => {
   const replaceAll = (string: string, search: string, replace: string) => {
     return string.split(search).join(replace);

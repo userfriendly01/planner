@@ -67,7 +67,7 @@ const paths = [
       "components/tabs/callflowmanagement/SkillManagement/SkillsHeader",
       "components/tabs/callflowmanagement/SkillManagement/SkillsTable",
       "components/tabs/callflowmanagement/SkillManagement/SkillsContainer",
-      "components/tabs/callflowmanagement/SkillManagement/AddEditSkill",
+      "components/tabs/callflowmanagement/SkillManagement/SkillForm",
       "components/tabs/callflowmanagement/SkillManagement/ActionContainer",
       "components/tabs/callflowmanagement/SkillManagement/DefaultSkillGroups",
       "components/tabs/callflowmanagement/CallFlowConfirmationModal",

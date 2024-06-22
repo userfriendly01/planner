@@ -2,7 +2,7 @@
 import { Modal } from "@mui/material";
 import React from "react";
 import { AddEditForm } from "./AddEditForm";
-import { DeleteForm } from "./DeleteForm";
+import { DeleteForm } from "./DeleteSkillForm";
 import { ActionTypes } from "../Skills.Interfaces";
 
 export const SkillFormModal = (props: any) => {
