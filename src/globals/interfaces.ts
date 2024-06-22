@@ -3,7 +3,7 @@ import {
   AuthenticationProfile, Permissions
 } from "authentication/authenticationInterfaces";
 import {
-  AlertColor, Paper
+  AlertColor
 } from "@mui/material";
 import styled from "styled-components";
 
@@ -18,7 +18,7 @@ export const FlexRow = styled.div`
   flex: 1 1 auto;
 `;
 
-export const AppError = styled(Paper)`
+export const AppError = styled.div`
   align-items: center;
   display: flex;
   justify-content: center;

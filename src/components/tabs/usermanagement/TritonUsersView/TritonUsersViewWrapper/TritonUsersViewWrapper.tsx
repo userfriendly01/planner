@@ -106,7 +106,7 @@ export const TritonUsersViewWrapper: any = () => {
       />
       {loadStatus === LoadStatuses.LOADING && <PageLoadSpinner/> }
       {loadStatus === LoadStatuses.FAIL &&
-        <AppError elevation={3}>
+        <AppError>
           An error was thrown loading users, please refresh Triton to try again
         </AppError>
       }

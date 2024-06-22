@@ -108,9 +108,6 @@ describe("<UserEntryForm />", () => {
     );
   };
   describe("Initial State", () => {
-    test.only("Faith", () => {
-      expect("butts").toBe("butts");
-    });
     test("Should render the correct initial state", () => {
       const { unmount } = renderComponent();
       expect(ModalOverlay.mock.calls.length).toBe(0);

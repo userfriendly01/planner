@@ -39,12 +39,9 @@ export const UserEntryForm = () => {
 
   const state = useAdminState();
   const form = useFormState();
-  const skillState = useSkillState();
-
   const setForm = useFormDispatch();
   const navigate = useNavigate();
 
-  const skills = skillState.skills;
   const workers = state.workerContext.workers.sort(sortWorkersByFullName);
   const tritonWorker = workers.find((w: any) => w?.attributes?.n_number === form.nNumber?.value);
   const managers = state.managerContext.managers;
@@ -187,11 +184,11 @@ export const UserEntryForm = () => {
       </HeaderRow>
       {form.triton.userFound &&
         <BasicFormInfo
-          skills={skills}
           worker={tritonWorker}
-          workers={workers}
           profiles={profiles}
           managers={managers}
+          forwardToToggle={forwardToToggle}
+          setForwardToToggle={setForwardToToggle}
         />
       }
       <StyledDivider />

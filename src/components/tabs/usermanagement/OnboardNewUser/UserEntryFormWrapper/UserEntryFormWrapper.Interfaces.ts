@@ -30,11 +30,11 @@ export interface UserEntryFormProps {
 }
 
 export interface BasicFormInfoProps {
-  skills: Skill[],
   worker: UMUser | null,
-  workers: UMUser[],
   profiles: TritonProfile[],
-  managers: UMManager[]
+  managers: UMManager[],
+  forwardToToggle: boolean,
+  setForwardToToggle: (toggle: boolean) => void
 }
 
 export interface UserFormButtonsProps {
