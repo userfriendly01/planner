@@ -1,9 +1,9 @@
 
 import { Modal } from "@mui/material";
 import React from "react";
-import { AddEditForm } from "./AddEditForm";
-import { DeleteForm } from "./DeleteSkillForm";
-import { ActionTypes } from "../Skills.Interfaces";
+import { AddEditForm } from "callflowmanagement/AddEditForm";
+import { DeleteForm } from "callflowmanagement/DeleteSkillForm";
+import { ActionTypes } from "callflowmanagement/Skills.Interfaces";
 
 export const SkillFormModal = (props: any) => {
   const [ showSkillModal, setShowSkillModal ] = React.useState(true);
