@@ -2,7 +2,7 @@ import { apiPaths } from "globals";
 import React from "react";
 import { myAxios } from "utils/myAxios";
 import { logger } from "utils/logger";
-import { formatError } from "utils";
+import { formatErrorMessage } from "utils/_formatUtils";
 import { getTaskQueues } from "services/taskQueues";
 import {
   Application, Skill, TwilioSkill, CallflowSkill, CtmSkill,
@@ -11,7 +11,7 @@ import {
 import {
   Action, OperatingUnit
 } from "globals/interfaces";
-import { getOperatingUnits } from "./operatingUnits";
+import { getOperatingUnits } from "services/operatingUnits";
 import { getTargetExpression } from "utils/skillsUtils";
 
 /* FYI - In the interest of not having to bother to set up the softphone-service to interact with the graph,
@@ -35,7 +35,7 @@ export const createSkill = async (skillForm: SkillFormState, updatedBy: string):
       const res = await myAxios.post(apiPaths.TASK_QUEUES, newTaskQueuebody);
       taskQueueSid = res.data.sid;
     } catch(error){
-      const message = `Task Queue failed to create. ${formatError(error?.response?.data || error?.message)}`;
+      const message = `Task Queue failed to create: ${formatErrorMessage(error?.response?.data || error?.message)}`;
       logger.error(message, error);
       messages.push(message);
     }
@@ -49,7 +49,7 @@ export const createSkill = async (skillForm: SkillFormState, updatedBy: string):
     }
     await myAxios.post(apiPaths.SKILLS_TASKROUTER, newFlexSkillBody);
   } catch(error){
-    const message = `Flex skill failed to create: ${formatError(error?.response?.data || error?.message)}`;
+    const message = `Flex skill failed to create: ${formatErrorMessage(error?.response?.data || error?.message)}`;
     logger.error(message, error);
     messages.push(message);
   }
@@ -66,7 +66,7 @@ export const createSkill = async (skillForm: SkillFormState, updatedBy: string):
 
     await myAxios.post(apiPaths.SKILLS_CALLFLOW, newCallflowSkillBody);
   } catch(error){
-    const message = `Callflow database failed to create skill: ${formatError(error?.response?.data || error?.message)}`;
+    const message = `Callflow database failed to create skill: ${formatErrorMessage(error?.response?.data || error?.message)}`;
     console.error(message, error);
     messages.push(message);
   }
@@ -124,7 +124,7 @@ export const deleteSkill = async (skill: any, deleteQueues: boolean): Promise<an
           const message = `Twilio was unable to delete the task queue. Please try to delete ${skill.matchingQueue?.friendly_name} from the Twilio console manually`;
           messages.push(<div><h2 style={{ fontWeight: "bold" }}>{errorSource}: {skillName}</h2> - {message}</div>);
         } else {
-          const message = formatError(r.reason?.response?.data?.error) || formatError(r.reason?.response?.data) || formatError(r.reason);
+          const message = formatErrorMessage(r.reason?.response?.data?.error) || formatErrorMessage(r.reason?.response?.data) || formatErrorMessage(r.reason);
           messages.push(<div><h2 style={{ fontWeight: "bold" }}>{errorSource}: {skillName}</h2> - {message}</div>);
         }
       }
@@ -134,6 +134,58 @@ export const deleteSkill = async (skill: any, deleteQueues: boolean): Promise<an
     }
   }
   return;
+};
+
+export const loadSkillOptions = async (skills: Skill[], dispatch: (action: Action) => void, callback: () => void): Promise<void>=> {
+  try {
+    const timeOfDaysPromise: Promise<{data: TimeOfDay[]}> = myAxios.get(apiPaths.GET_TIME_OF_DAYS);
+    const applicationsPromise: Promise<{data: Application[]}> = myAxios.get(apiPaths.GET_APPLICATIONS);
+    const taskQueuesPromise: Promise<{data: TwilioQueue[]}> = getTaskQueues();
+    const operatingUnitPromise: Promise<OperatingUnit[]> = getOperatingUnits();
+
+
+    const [
+      timeOfDaysResponse,
+      applicationsResponse,
+      taskQueuesResponse,
+      operatingUnitResponse
+    ] = await Promise.all([ timeOfDaysPromise, applicationsPromise, taskQueuesPromise, operatingUnitPromise]);
+
+    const taskQueues = taskQueuesResponse.data;
+    const timeOfDays = timeOfDaysResponse.data;
+    const applications = applicationsResponse.data;
+    const operatingUnits = operatingUnitResponse;
+
+    const verifiedSkills = skills.map(skill => {
+      const skillTargetExpression = `routing.skills HAS "${skill.name}"`;
+      const expressionFound = taskQueues.some(tq => tq.target_workers.includes(skillTargetExpression));
+      if(!expressionFound){
+        skill.discrepancies.push(`Task Queue was not found with the expression ${skillTargetExpression}. (Case Sensitive)`);
+      }
+      return skill;
+    //Enhance this after we swap to the graph to compare the task queue saved on the skill to the target expression
+    });
+
+    dispatch({
+      type: "LOAD_SKILLS",
+      payload: verifiedSkills
+    });
+
+    dispatch({
+      type: "LOAD_SKILL_OPTIONS",
+      payload: {
+        applications,
+        timeOfDays,
+        taskQueues,
+        operatingUnits
+      }
+    });
+
+    callback();
+  } catch(err){
+    logger.error("Skill Options Failed to Load", err);
+    throw("Skill Options Failed to Load - please refresh Triton and try again");
+  }
 };
 
 const getTaskRouterSkills = (): Promise<{ data: TwilioSkill[] }> => {
@@ -146,53 +198,6 @@ const getCallflowSkills = (): Promise<{ data: CallflowSkill[] }> => {
 
 const getContactManagerSkills= (): Promise<{ data: CtmSkill[] }> => {
   return myAxios.get(apiPaths.SKILLS_CONTACT_MANAGER);
-};
-
-export const loadSkillOptions = async (skills: Skill[], dispatch: (action: Action) => void, callback: () => void): Promise<void>=> {
-  const timeOfDaysPromise: Promise<{data: TimeOfDay[]}> = myAxios.get(apiPaths.GET_TIME_OF_DAYS);
-  const applicationsPromise: Promise<{data: Application[]}> = myAxios.get(apiPaths.GET_APPLICATIONS);
-  const taskQueuesPromise: Promise<{data: TwilioQueue[]}> = getTaskQueues();
-  const operatingUnitPromise: Promise<OperatingUnit[]> = getOperatingUnits();
-
-  const [
-    timeOfDaysResponse,
-    applicationsResponse,
-    taskQueuesResponse,
-    operatingUnitResponse
-  ] = await Promise.all([ timeOfDaysPromise, applicationsPromise, taskQueuesPromise, operatingUnitPromise]);
-
-  const taskQueues = taskQueuesResponse.data;
-  const timeOfDays = timeOfDaysResponse.data;
-  const applications = applicationsResponse.data;
-  const operatingUnits = operatingUnitResponse;
-
-
-  const verifiedSkills = skills.map(skill => {
-    const skillTargetExpression = `routing.skills HAS "${skill.name}"`;
-    const expressionFound = taskQueues.some(tq => tq.target_workers.includes(skillTargetExpression));
-    if(!expressionFound){
-      skill.discrepancies.push(`Task Queue was not found with the expression ${skillTargetExpression}. (Case Sensitive)`);
-    }
-    return skill;
-    //Enhance this after we swap to the graph to compare the task queue saved on the skill to the target expression
-  });
-
-  dispatch({
-    type: "LOAD_SKILLS",
-    payload: verifiedSkills
-  });
-
-  dispatch({
-    type: "LOAD_SKILL_OPTIONS",
-    payload: {
-      applications,
-      timeOfDays,
-      taskQueues,
-      operatingUnits
-    }
-  });
-
-  callback();
 };
 
 export const loadConsolidatedSkills = async (dispatch: (action: Action) => void): Promise<void> => {

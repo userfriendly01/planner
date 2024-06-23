@@ -18,7 +18,7 @@ import {
   cleanupField,
   formatErrorMessage,
   toProperCase
-} from "usermanagement/formatUtils";
+} from "utils/_formatUtils";
 import {
   handleWfmExternalLogon,
   updateCalabrioUserState,

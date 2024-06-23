@@ -3,15 +3,18 @@
  * @param field Field to format
  */
 export const formatErrorMessage = (err: any) => {
+/* TODO - I want to clean up - look into Error formatting utils or make this more typed out for axios/apollo/twilio/legacy databases (SQL) errors
+   To get the best message display we have to get pretty specific into all the different types of errors*/
+  const stringify = (e: any) => (typeof e === "object" && JSON.stringify(e)) || (typeof e !== "string" && e.toString()) || e;
   try {
-    if(err?.response?.data){
-      return JSON.stringify(err.response.data);
+    if(err?.message){
+      return stringify(err.message);
+    } else if(err?.response?.data){
+      return stringify(err.response.data);
     } else if(err?.response) {
-      return JSON.stringify(err.response);
-    } else if(err?.message){
-      return err.message.toString();
+      return stringify(err.response);
     } else {
-      return err.toString();
+      return stringify(err);
     }
   } catch(error){
     return err;

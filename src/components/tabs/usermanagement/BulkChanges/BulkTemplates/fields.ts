@@ -1,7 +1,8 @@
 import {
   cleanupField,
-  toProperCase
-} from "usermanagement/formatUtils";
+  toProperCase,
+  formatDateFromExcelDate
+} from "utils/_formatUtils";
 import { fetchUser } from "services/fetchUser";
 import { generateExtension } from "services/checkExtension";
 import { getE164Number } from "utils/numberUtils";
@@ -10,7 +11,6 @@ import {
   calabrioAllowedRoles, calabrioTimeZones
 } from "utils/calabrioUtils";
 import { logger } from "utils/logger";
-import { formatDateFromExcelDate } from "usermanagement/formatUtils";
 import { allowedEmptyScheduleField } from "usermanagement/validationUtils";
 import { Fields } from "usermanagement/BulkChanges.Interfaces";
 import {

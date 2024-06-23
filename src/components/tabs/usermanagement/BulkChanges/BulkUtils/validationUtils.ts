@@ -1,7 +1,7 @@
 import {
   cleanupField,
   formatErrorMessage
-} from "usermanagement/formatUtils";
+} from "utils/_formatUtils";
 import {
   getLowestConcurrencyLimit,
   handleConcurrentCalls,

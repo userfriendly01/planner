@@ -25,7 +25,7 @@ import {
 import {
   deleteSkill, loadConsolidatedSkills
 } from "services/skill";
-import { formatError } from "utils";
+import { formatErrorMessage } from "utils/_formatUtils";
 import { logger } from "utils/logger";
 import {
   getTargetExpression,
@@ -109,7 +109,7 @@ export const DeleteForm = (props: any) => {
 
       const totalResults = [...results, ...userResults.map((r: any, i: number) => ({
         ...r,
-        reason: [<div key={`${i} - userError`}><h2 style={{ fontWeight: "bold" }}>Error Removing Skill from Twilio Worker</h2> - {formatError(r.reason)}</div>]
+        reason: [<div key={`${i} - userError`}><h2 style={{ fontWeight: "bold" }}>Error Removing Skill from Twilio Worker</h2> - {formatErrorMessage(r.reason)}</div>]
       }))];
 
       if(totalResults.every((r: any) => r.status === "fulfilled")){
