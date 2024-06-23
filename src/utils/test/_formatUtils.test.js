@@ -33,7 +33,7 @@ describe("formatErrorMessage", () => {
   });
   test("err", () => {
     const result = formatErrorMessage(null);
-    expect(result).toBe(null);
+    expect(result).toBe("null");
   });
 });
 

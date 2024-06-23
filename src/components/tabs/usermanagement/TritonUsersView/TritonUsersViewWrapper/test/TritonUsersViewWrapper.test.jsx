@@ -15,6 +15,7 @@ import {
 import {
   sortWorkersByFullName
 } from "utils/_sortUtils";
+import { PageLoadSpinner } from "components/PageLoadSpinner";
 
 jest.mock("components/Pagination", () => ({
   Pagination: jest.fn()
@@ -30,6 +31,10 @@ jest.mock("usermanagement/TritonUserTable", () => ({
 
 jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
+}));
+
+jest.mock("components/PageLoadSpinner", () => ({
+  PageLoadSpinner: jest.fn()
 }));
 
 const defaultTableState = {
@@ -59,16 +64,18 @@ describe("TritonUsersViewWrapper", () => {
     setupMockedComponents({
       TritonUsersHeader,
       Pagination,
-      TritonUserTable
+      TritonUserTable,
+      PageLoadSpinner
     });
     useAdminState.mockReturnValue({
       ...initialTestState,
       workerContext: {
+        loadStatus: "success",
         workers: initialTestState.workerContext.workers.slice()
       }
     });
   });
-  describe("initial render", () => {
+  describe("initial render - loadStatus === success", () => {
     test("ManagementHeader, TritonUserTable, Pagination are rendered with expected props", () => {
       doRender();
       expect(TritonUsersHeader).toHaveBeenCalledTimes(2);
@@ -110,6 +117,32 @@ describe("TritonUsersViewWrapper", () => {
           filteredList: initialTestState.workerContext.workers.sort(sortWorkersByFullName)
         }
       }, getLastInstanceCalled(Pagination));
+    });
+  });
+  describe("initial render - loadStatus === loading", () => {
+    test("ManagementHeader, TritonUserTable, Pagination are rendered with expected props", () => {
+      useAdminState.mockReturnValue({
+        ...initialTestState,
+        workerContext: {
+          loadStatus: "loading",
+          workers: initialTestState.workerContext.workers.slice()
+        }
+      });
+      doRender();
+      expect(PageLoadSpinner).toHaveBeenCalled();
+    });
+  });
+  describe("initial render - loadStatus === loading", () => {
+    test("ManagementHeader, TritonUserTable, Pagination are rendered with expected props", () => {
+      useAdminState.mockReturnValue({
+        ...initialTestState,
+        workerContext: {
+          loadStatus: "fail",
+          workers: initialTestState.workerContext.workers.slice()
+        }
+      });
+      const rendered = doRender();
+      expect(rendered.container).toHaveTextContent("An error was thrown loading users, please refresh Triton to try again");
     });
   });
   describe("managerFilter === true", () => {
