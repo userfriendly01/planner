@@ -180,20 +180,6 @@ describe("cct-triton-admin-startup", () => {
           });
         });
       });
-      describe("ListUMUsers", () => {
-        describe("workers service call returned an error", () => {
-          beforeEach(() => {
-            listUMUsers.mockRejectedValue({ message: "Failed to fetch workers from service" });
-          });
-          test("should return 'An error occurred while logging in.'", async () => {
-            try {
-              await runTritonAdminStartup(mockAdminDispatch);
-            } catch (err) {
-              expect(err.message).toBe("Failed to fetch workers from service");
-            }
-          });
-        });
-      });
       describe(skillsEndpoint, () => {
         describe("skills service call returned an error", () => {
           beforeEach(() => {

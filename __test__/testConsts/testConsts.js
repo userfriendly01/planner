@@ -571,7 +571,6 @@ export const initialTestState = {
     loadStatus: null
   },
   calabrioContext,
-  resettingSkills: false,
   userManagementTableFilters: {
     managerFilter: null,
     profileFilterArray: [],

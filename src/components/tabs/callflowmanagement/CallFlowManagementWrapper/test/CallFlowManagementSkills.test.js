@@ -145,7 +145,7 @@ describe("CallFlowManagementSkills", () => {
           ...initialTableState,
           profiles: [{ profile_id: 32 }]
         }));
-        expect(ActionContainer.mock.calls[2][0].tableState.filteredList).toStrictEqual([initialTestState.skillContext.skills[0]]);
+        expect(ActionContainer.mock.calls[2][0].tableState.filteredList).toStrictEqual([skillsList.skills[0]]);
       });
     });
     describe("tablestate.closedFilter === true", () => {
@@ -157,8 +157,8 @@ describe("CallFlowManagementSkills", () => {
           closedFilter: true
         }));
         expect(ActionContainer.mock.calls[2][0].tableState.filteredList).toStrictEqual([
-          initialTestState.skillContext.skills[1],
-          initialTestState.skillContext.skills[2]
+          skillsList.skills[1],
+          skillsList.skills[2]
         ]);
       });
     });
@@ -171,7 +171,7 @@ describe("CallFlowManagementSkills", () => {
           flashFilter: true
         }));
         expect(ActionContainer.mock.calls[2][0].tableState.filteredList).toStrictEqual([
-          initialTestState.skillContext.skills[2]
+          skillsList.skills[2]
         ]);
       });
     });
@@ -184,7 +184,7 @@ describe("CallFlowManagementSkills", () => {
           discrepancyFilter: true
         }));
         expect(ActionContainer.mock.calls[2][0].tableState.filteredList).toStrictEqual([
-          initialTestState.skillContext.skills[1]
+          skillsList.skills[1]
         ]);
       });
     });

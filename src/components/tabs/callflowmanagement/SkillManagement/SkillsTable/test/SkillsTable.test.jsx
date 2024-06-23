@@ -24,7 +24,8 @@ import {
 } from "testUtils";
 
 jest.mock("@mui/icons-material", () => ({
-  Circle: jest.fn()
+  Circle: jest.fn(),
+  ReportProblemOutlined: jest.fn()
 }));
 
 jest.mock("@mui/material", () => ({
