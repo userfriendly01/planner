@@ -54,7 +54,8 @@ jest.mock("components/StyledButton", () => ({
 
 jest.mock("context/appContext", () => ({
   useAdminState: jest.fn(),
-  useAdminDispatch: jest.fn()
+  useAdminDispatch: jest.fn(),
+  useSkillState: jest.fn()
 }));
 
 jest.mock("@mui/material", () => ({

@@ -5,8 +5,7 @@ import { SkillGroupInputContainer } from "callflowmanagement/SkillGroupInputCont
 import React from "react";
 import {
   propertyOptions,
-  ActionContainerProps,
-  ActionTypes
+  ActionContainerProps
 } from "../Skills.Interfaces";
 import { FormControlsContainer } from "../Skills.Styles";
 import { useAdminState } from "context/appContext";

@@ -288,3 +288,13 @@ export const skillGroups = [
     }]
   }
 ];
+
+export const initialSkillState = {
+  skills: skillsList,
+  skillGroups: skillGroups,
+  taskQueue: mockTaskQueues,
+  timeOfDays: mockTimeOfDays,
+  applications: mockApplications,
+  operatingUnits: operatingUnits,
+  skillForm: mockSkillFormState
+};

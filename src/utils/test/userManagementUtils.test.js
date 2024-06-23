@@ -1143,11 +1143,11 @@ describe("findMatchingWorker", () => {
     expect(result).toEqual({
       skillsDifferent: true,
       sid: "wk049358",
+      isConsole: true,
       attributes: {
         full_name: "Faith Cuneo",
         emp_first_name: "Faith",
         emp_last_name: "Cuneo",
-        isConsole: true,
         n_number: "N0263786",
         extension: "1234",
         profile_id: 12,

@@ -16,6 +16,7 @@ import { Fields } from "usermanagement/BulkChanges.Interfaces";
 import {
   AppState, UMManager
 } from "globals/interfaces";
+import { SkillState } from "components/tabs/callflowmanagement/SkillManagement/Skills.Interfaces";
 
 const rejectPromise = (error: string, rowNumber: number | string) => {
   return Promise.reject(JSON.stringify({
@@ -261,7 +262,7 @@ export const FIELDS: Fields = {
     type: "string",
     description: "Comma delimited list of skill/level pairings. Skills can be on their own or have a ':level' to represent the level. If left blank, no skills will be added to the user",
     example: "bscCommissions:3, blSalesL1:2, aisl1",
-    options: (state: any) => state.skillContext.skills.map((s: any) => s.levels?.length > 0 ? `${s.name} Available levels: ${s.levels?.toString()}` : s.name).sort(),
+    options: (state: any, businessUnit: any, skillState: SkillState) => skillState.skills.map((s: any) => s.levels?.length > 0 ? `${s.name} Available levels: ${s.levels?.toString()}` : s.name).sort(),
     validateFunction: (row: any, state: any): Promise<any> => {
       const rowNumber = row.rowNumber;
       /*

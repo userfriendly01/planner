@@ -9,6 +9,7 @@ export const ExportOptionsButton = (props: any) => {
   const {
     template,
     state,
+    skillState,
     disabled,
     businessUnitId
   } = props;
@@ -27,7 +28,7 @@ export const ExportOptionsButton = (props: any) => {
         if (t.field.includes("wfm")) {
           options = t.options(state, businessUnitId);
         } else {
-          options = t.options(state);
+          options = t.options(state, null, skillState);
         }
         if(options.length > 0){
           columns.push({

@@ -22,7 +22,9 @@ import { ExportOptionsButton } from "usermanagement/ExportOptionsButton";
 import { ProcessingModal } from "usermanagement/ProcessingModal";
 import { checkIfBulkAdmin } from "authentication/authUtils";
 import { Dropdown } from "components/Dropdown";
-import { useAdminState } from "context/appContext";
+import {
+  useAdminState, useSkillState
+} from "context/appContext";
 import React from "react";
 import { Modal } from "@mui/material";
 import { PageLoadSpinner } from "components/PageLoadSpinner";
@@ -33,6 +35,7 @@ import {
 export const BulkChanges = () => {
 
   const state = useAdminState();
+  const skillState = useSkillState();
   const uploadButtonRef = React.useRef<HTMLInputElement>();
   const [view, setView] = React.useState(views.BULK_CREATE_USERS);
   const [showTemplates, setShowTemplates] = React.useState(true);
@@ -144,6 +147,7 @@ export const BulkChanges = () => {
                   <ExportOptionsButton
                     template={consolidatedTemplate}
                     state={state}
+                    skillState={skillState}
                     businessUnitId={businessUnitId}
                     disabled={
                       selectedTemplates.some((t: Template) => t.name === "CREATE_CALABRIO_WFM_PERSON") &&
