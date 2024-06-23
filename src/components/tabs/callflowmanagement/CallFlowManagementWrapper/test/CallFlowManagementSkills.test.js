@@ -5,6 +5,7 @@ import { CallFlowConfirmationModal } from "callflowmanagement/CallFlowConfirmati
 import { ActionContainer } from "callflowmanagement/ActionContainer";
 import { SkillsContainer } from "callflowmanagement/SkillsContainer";
 import { PageLoadSpinner } from "components/PageLoadSpinner";
+import { loadSkillOptions } from "services/skill";
 import {
   useAdminState, useSkillState
 } from "context/appContext";
@@ -16,7 +17,11 @@ import {
   setupMockedComponents,
   initialTestState,
   act,
-  authenticationProfileTemplates
+  authenticationProfileTemplates,
+  mockTimeOfDays,
+  mockApplications,
+  mockTaskQueues,
+  mockOperatingUnits
 } from "testUtils";
 import { Modal } from "@mui/material";
 
@@ -38,6 +43,10 @@ jest.mock("callflowmanagement/ActionContainer", () => ({
 
 jest.mock("callflowmanagement/SkillsContainer", () => ({
   SkillsContainer: jest.fn()
+}));
+
+jest.mock("services/skill", () => ({
+  loadSkillOptions: jest.fn()
 }));
 
 jest.mock("@mui/material", () => ({
@@ -75,7 +84,11 @@ describe("CallFlowManagementSkills", () => {
     jest.clearAllMocks();
     getAuthenticationProfileTemplates.mockReturnValue(authenticationProfileTemplates);
     useSkillState.mockReturnValue({
-      skills: skillsList
+      skills: skillsList,
+      timeOfDays: mockTimeOfDays,
+      applications: mockApplications,
+      taskQueues: mockTaskQueues,
+      operatingUnits: mockOperatingUnits
     });
     useAdminState.mockReturnValue({
       ...initialTestState,
@@ -89,18 +102,17 @@ describe("CallFlowManagementSkills", () => {
       CallFlowConfirmationModal,
       Modal,
       ActionContainer,
-      SkillsContainer
+      SkillsContainer,
+      PageLoadSpinner
     });
   });
   describe("initial render", () => {
     beforeEach(() => {
       useAdminState.mockReturnValue(initialTestState);
     });
-    test.only("Faith", () => {
-      expect(true).toBe(true);
-    });
-    test("initial form renders as expected", () => {
+    test("initial form renders as expected - state is already loaded", () => {
       render(<CallFlowManagementSkills />);
+      expect(PageLoadSpinner).toHaveBeenCalled();
       expectOnlyPassedProps(SkillsContainer, {
         tableState: initialTableState
       }, getLastInstanceCalled(SkillsContainer));
@@ -110,6 +122,18 @@ describe("CallFlowManagementSkills", () => {
       expectOnlyPassedProps(Modal, {
         open: false
       }, getLastInstanceCalled(Modal));
+      expect(loadSkillOptions).not.toHaveBeenCalled();
+    });
+    test("initial form renders as expected", () => {
+      useSkillState.mockReturnValue({
+        skills: [],
+        timeOfDays: [],
+        applications: [],
+        taskQueues: [],
+        operatingUnits: []
+      });
+      render(<CallFlowManagementSkills />);
+      expect(loadSkillOptions).toHaveBeenCalled();
     });
   });
   describe("setTableState is called", () => {
@@ -121,7 +145,7 @@ describe("CallFlowManagementSkills", () => {
           ...initialTableState,
           profiles: [{ profile_id: 32 }]
         }));
-        expect(ActionContainer.mock.calls[3][0].tableState.filteredList).toStrictEqual([initialTestState.skillContext.skills[0]]);
+        expect(ActionContainer.mock.calls[2][0].tableState.filteredList).toStrictEqual([initialTestState.skillContext.skills[0]]);
       });
     });
     describe("tablestate.closedFilter === true", () => {
@@ -132,7 +156,7 @@ describe("CallFlowManagementSkills", () => {
           ...initialTableState,
           closedFilter: true
         }));
-        expect(ActionContainer.mock.calls[3][0].tableState.filteredList).toStrictEqual([
+        expect(ActionContainer.mock.calls[2][0].tableState.filteredList).toStrictEqual([
           initialTestState.skillContext.skills[1],
           initialTestState.skillContext.skills[2]
         ]);
@@ -146,13 +170,25 @@ describe("CallFlowManagementSkills", () => {
           ...initialTableState,
           flashFilter: true
         }));
-        expect(ActionContainer.mock.calls[3][0].tableState.filteredList).toStrictEqual([
+        expect(ActionContainer.mock.calls[2][0].tableState.filteredList).toStrictEqual([
           initialTestState.skillContext.skills[2]
         ]);
       });
     });
+    describe("tablestate.discrepancyFilter === true", () => {
+      test("initial form renders as expected", () => {
+        render(<CallFlowManagementSkills />);
+        const setTableState = ActionContainer.mock.calls[0][0].setTableState;
+        act(() => setTableState({
+          ...initialTableState,
+          discrepancyFilter: true
+        }));
+        expect(ActionContainer.mock.calls[2][0].tableState.filteredList).toStrictEqual([
+          initialTestState.skillContext.skills[1]
+        ]);
+      });
+    });
   });
-
   describe("confirmationModalOpts.open === true", () => {
     test("CallFlowConfirmationModal should be rendered", () => {
       render(<CallFlowManagementSkills />);
@@ -164,7 +200,7 @@ describe("CallFlowManagementSkills", () => {
           open: true
         });
       });
-      render(Modal.mock.calls[2][0].children);
+      render(Modal.mock.calls[1][0].children);
       expect(CallFlowConfirmationModal.mock.calls.length).toBe(1);
       expectOnlyPassedProps(CallFlowConfirmationModal, {
         confirmationModalOpts: {

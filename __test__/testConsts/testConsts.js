@@ -388,7 +388,7 @@ export const skillsList = [
   },
   {
     name: "aisgL1",
-    discrepancies: [],
+    discrepancies: ["I dont match!"],
     ctmSkillId: 2,
     ctmSkillDisplayName: "aisg L1",
     skillGroups: [{
