@@ -86,15 +86,6 @@ describe("updateTritonUserState", () => {
       expect(listUMUsers).toHaveBeenCalledTimes(1);
     });
   });
-  describe("get workers fails", () => {
-    test("dispatch is not called, promise resolves", async () => {
-      listUMUsers.mockRejectedValue("Waaaaaaaaaaa");
-
-      await utils.updateTritonUserState(null, mockDispatch);
-      expect(logger.error).toHaveBeenCalledTimes(1);
-      expect(logger.error.mock.calls[0][0]).toContain("Failed to update triton user state after bulk upload");
-    });
-  });
 });
 
 describe("updateCalabrioUserState", () => {

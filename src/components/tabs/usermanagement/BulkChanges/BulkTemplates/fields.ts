@@ -263,7 +263,7 @@ export const FIELDS: Fields = {
     description: "Comma delimited list of skill/level pairings. Skills can be on their own or have a ':level' to represent the level. If left blank, no skills will be added to the user",
     example: "bscCommissions:3, blSalesL1:2, aisl1",
     options: (state: any, businessUnit: any, skillState: SkillState) => skillState.skills.map((s: any) => s.levels?.length > 0 ? `${s.name} Available levels: ${s.levels?.toString()}` : s.name).sort(),
-    validateFunction: (row: any, state: any): Promise<any> => {
+    validateFunction: (row: any, state: any, skillState: SkillState): Promise<any> => {
       const rowNumber = row.rowNumber;
       /*
         skills object: {
@@ -294,7 +294,7 @@ export const FIELDS: Fields = {
             defaultSkills.skills.push(key);
           });
 
-          const availableSkills = state.skillContext.skills;
+          const availableSkills = skillState.skills;
 
           defaultSkills.skills.forEach((ds: any) => {
             if (!availableSkills.some((as: any) => cleanupField(as.name, "string") === cleanupField(ds, "string"))) {
