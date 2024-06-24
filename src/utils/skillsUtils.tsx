@@ -93,9 +93,9 @@ export const identifyImpactedWorkers = (users: UMUser[], skills: Skill[]): Parti
     }
 
     skillNames.forEach(n => {
-      if (formattedWorker.attributes.routing?.levels) { formattedWorker.attributes.routing.levels[n]= null; }
-      if (formattedWorker.attributes.default_skills?.levels) { formattedWorker.attributes.default_skills.levels[n] = null; }
-      if( formattedWorker.attributes.disabled_skills?.levels) { formattedWorker.attributes.disabled_skills.levels[n] = null; }
+      if (formattedWorker.attributes.routing?.levels && formattedWorker.attributes.routing?.levels[n]) { formattedWorker.attributes.routing.levels[n]= null; }
+      if (formattedWorker.attributes.default_skills?.levels && formattedWorker.attributes.default_skills?.levels[n]) { formattedWorker.attributes.default_skills.levels[n] = null; }
+      if (formattedWorker.attributes.disabled_skills?.levels && formattedWorker.attributes.disabled_skills?.levels[n]) { formattedWorker.attributes.disabled_skills.levels[n] = null; }
     });
 
     return {
@@ -109,7 +109,7 @@ export const identifyImpactedWorkers = (users: UMUser[], skills: Skill[]): Parti
   };
 
   impactedWorkers = users.filter(w => skills.some(s => JSON.stringify(w).includes(s.name)));
-  console.log("BEFORE CLEANUP", impactedWorkers.slice());
+  console.warn("BEFORE CLEANUP", impactedWorkers.slice());
   return impactedWorkers.map(w => cleanupWorker(w));
 };
 

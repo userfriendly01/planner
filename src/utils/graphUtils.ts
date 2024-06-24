@@ -12,7 +12,8 @@ import {
 import {
   LIST_MANAGERS,
   LIST_OFFICES,
-  LIST_USERS
+  LIST_USERS,
+  LIST_SOFTPHONE_CONFIGURATIONS
 }from "globals/graphql";
 import {
   logger
@@ -28,6 +29,8 @@ export const getGraphData = (type: string) => {
       return LIST_MANAGERS;
     case "UMOffice":
       return LIST_OFFICES;
+    case "UMSoftphoneConfiguration":
+      return LIST_SOFTPHONE_CONFIGURATIONS;
     default:
       throw `Type of ${type} is not a valid list type`;
   }
