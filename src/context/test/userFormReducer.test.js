@@ -1497,6 +1497,31 @@ describe("userFormReducer", () => {
       expect(result).toStrictEqual(expectedFormState);
     });
   });
+  
+  describe("UPDATE_FTO_BACK_UP_WORKER", () => {
+    test("should update backup worker", () => {
+      const payload = {
+        backupWorkerRouting: ["Test1", "Test2"]
+      };
+      const action = {
+        type: userFormActions.SET_FTO_BACK_UP_WORKER,
+        payload
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        triton: {
+          ...initialUserFormState.triton,
+          routing: {
+            ...initialUserFormState.triton.routing,
+            backup_workers: payload.ftoBackupWorkerRouting,
+            updated: true
+          }
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
 
   describe("UPDATE_N_NUMBER", () => {
     test("should update nNumber", () => {

@@ -27,9 +27,16 @@ jest.mock("@mui/material",()=>({
   TextField: jest.fn()
 }));
 
+const props = {
+  field: 'sales_assoc_workers',
+  label: 'Sales Associate Worker',
+  routingAttribute: 'salesAssociateWorkerRouting',
+  type: 'SET_SALES_ASSOCIATE_WORKER'
+};
+
 const renderComponent = () => {
   return render(
-    <AutoCompleteContainer />
+    <AutoCompleteContainer {...props} />
   );
 };
 
