@@ -1,7 +1,6 @@
 import React from "react";
 import { AddEditForm }from "../AddEditForm";
 import {
-  act,
   expectOnlyPassedProps,
   initialSkillState,
   initialTestState,
@@ -13,11 +12,7 @@ import { CallflowSkillForm } from "callflowmanagement/CallflowSkillForm";
 import { GeneralSkillForm } from "callflowmanagement/GeneralSkillForm";
 import { ModalOverlay } from "components/ModalOverlay";
 import { StyledButton } from "components/StyledButton";
-import {
-  Tabs,
-  Tab,
-  Divider
-} from "@mui/material";
+import { Tab } from "@mui/material";
 import {
   useAdminState,
   useSkillState,
@@ -30,7 +25,9 @@ import {
   createSkill, loadConsolidatedSkills
 } from "services/skill";
 import { getTaskQueues } from "services/taskQueues";
-import { areVhFieldsValid, isSkillFormValid } from "utils/skillsUtils";
+import {
+  areVhFieldsValid, isSkillFormValid
+} from "utils/skillsUtils";
 
 jest.mock("@mui/material", () => ({
   Tab: jest.fn(),
@@ -44,10 +41,6 @@ jest.mock("context/appContext", () => ({
   useSkillState: jest.fn(),
   useSkillDispatch: jest.fn()
 }));
-
-// jest.mock("context/reducers/skillReducer", () => ({
-//   skillActions: jest.fn(),
-// }));
 
 jest.mock("callflowmanagement/CallflowSkillForm", () => ({
   CallflowSkillForm: jest.fn()

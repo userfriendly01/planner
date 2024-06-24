@@ -7,9 +7,6 @@ import {
   useAdminDispatch
 } from "context/appContext";
 import {
-  skillActions
-} from "context/reducers/skillReducer";
-import {
   FormRow,
   ModalContainer,
   ScrollingPaper,
@@ -19,12 +16,8 @@ import {
 } from "../Skills.Styles";
 import { timeouts } from "globals";
 import {
-  Checkbox,
   Divider
 } from "@mui/material";
-import {
-  deleteSkill, loadConsolidatedSkills
-} from "services/skill";
 import { formatErrorMessage } from "utils/_formatUtils";
 import { logger } from "utils/logger";
 import {
@@ -32,18 +25,20 @@ import {
   identifyImpactedWorkers
 } from "utils/skillsUtils";
 import {
-  FlexColumn, ModalOverlayStatuses,
-  UMUser
+  ModalOverlayStatuses, UMUser
 } from "globals/interfaces";
 import { ModalOverlay } from "components/core/ModalOverlay/ModalOverlay";
 import { TwilioQueue } from "../Skills.Interfaces";
 import { getTaskQueues } from "services/taskQueues";
 import {
+  deleteSkill, loadConsolidatedSkills
+} from "services/skill";
+import {
   listUMUsers, updateUser
 } from "services/user";
 import { handleConcurrentCalls } from "usermanagement/processingUtils";
 
-export const DeleteForm = (props: any) => {
+export const DeleteSkillForm = (props: any) => {
   const {
     closeModal, tableState, setAction, setTableState
   } = props;
@@ -60,7 +55,7 @@ export const DeleteForm = (props: any) => {
     targetWorkers: getTargetExpression(sk.name),
     matchingQueue: taskQueues.find(tq => tq.target_workers === getTargetExpression(sk.name))|| {} //Filter?
   }));
-  const [ shouldDeleteQueue, setShouldDeleteQueue ] = useState();
+  const [ shouldDeleteQueue, setShouldDeleteQueue ] = useState(false);
   const [ impactedWorkers, setImpactedWorkers ] = useState(identifyImpactedWorkers(state.workerContext.workers, formattedSkills));
   const [ saveResult, setSaveResult ] = useState<any>({
     status: null,
@@ -107,10 +102,12 @@ export const DeleteForm = (props: any) => {
       const results = await handleConcurrentCalls(3, deleteSkill, formattedSkills, shouldDeleteQueue);
       logger.info("Skill Deletion Results", { results });
 
-      const totalResults = [...results, ...userResults.map((r: any, i: number) => ({
-        ...r,
-        reason: [<div key={`${i} - userError`}><h2 style={{ fontWeight: "bold" }}>Error Removing Skill from Twilio Worker</h2> - {formatErrorMessage(r.reason)}</div>]
-      }))];
+
+      const totalResults = [...results, ...userResults.map((r: any, i: number) => (
+        r.status === "rejected" ? {
+          ...r,
+          reason: [<div key={`${i} - userError`}><h2 style={{ fontWeight: "bold" }}>Error Removing Skill from Twilio Worker</h2> - {formatErrorMessage(r.reason)}</div>]
+        } : r))];
 
       if(totalResults.every((r: any) => r.status === "fulfilled")){
         logger.info("Successfully deleted all skills", {
@@ -162,11 +159,10 @@ export const DeleteForm = (props: any) => {
       });
 
       setSaveResult({
-        message: "Request Failed",
+        message: `Failed to Delete Skills: ${formatErrorMessage(error)}`,
         status: ModalOverlayStatuses.FAIL
       });
     }
-
   };
 
   return (
@@ -216,9 +212,6 @@ export const DeleteForm = (props: any) => {
                 onClick={() => {
                   closeModal();
                   setAction(null);
-                  skillDispatch({
-                    type: skillActions.RESET_FORM
-                  });
                 }} >Close</StyledButton>
             </ButtonWrapper>
           </SkillsDetailWrapper>
@@ -285,9 +278,6 @@ export const DeleteForm = (props: any) => {
                 onClick={() => {
                   closeModal();
                   setAction(null);
-                  skillDispatch({
-                    type: skillActions.RESET_FORM
-                  });
                 }} >Cancel</StyledButton>
               {tableState.selected.length !== 0 &&
                   <StyledButton
