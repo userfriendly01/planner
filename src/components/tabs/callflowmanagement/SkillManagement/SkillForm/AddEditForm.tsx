@@ -38,6 +38,7 @@ import {
   areVhFieldsValid, isSkillFormValid
 } from "utils/skillsUtils";
 import { TwilioQueue } from "../Skills.Interfaces";
+import { formatErrorMessage } from "utils/_formatUtils";
 
 
 export const AddEditForm = (props: any) => {
@@ -145,7 +146,7 @@ export const AddEditForm = (props: any) => {
         skill: skillState.skillForm.name
       });
       setSaveResult({
-        message: `Failed to Create Skill: ${error.message.toString()}`,
+        message: `Failed to Create Skill: ${formatErrorMessage(error)}`,
         status: ModalOverlayStatuses.FAIL
       });
     }

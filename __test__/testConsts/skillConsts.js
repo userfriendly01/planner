@@ -292,7 +292,7 @@ export const skillGroups = [
 export const initialSkillState = {
   skills: skillsList,
   skillGroups: skillGroups,
-  taskQueue: mockTaskQueues,
+  taskQueues: mockTaskQueues,
   timeOfDays: mockTimeOfDays,
   applications: mockApplications,
   operatingUnits: operatingUnits,
