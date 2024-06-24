@@ -137,6 +137,27 @@ export const mockSkillFormState = {
   vhCallTarget: "hi"
 };
 
+export const initialSkillFormState = {
+  formMode: "insert",
+  name: "",
+  levels: {
+    min: null,
+    max: null
+  },
+  applicationId: null,
+  taskQueue: {
+    isNew: false,
+    target_workers: null,
+    sid: "",
+    friendly_name: null,
+    operating_unit_sid: null
+  },
+  profileIds: [],
+  vhCallTarget: "",
+  vhThreshold: "",
+  timeOfDays: []
+};
+
 export const skillsList = [
   {
     name: "lscOBDialer1",
@@ -296,5 +317,35 @@ export const initialSkillState = {
   timeOfDays: mockTimeOfDays,
   applications: mockApplications,
   operatingUnits: operatingUnits,
-  skillForm: mockSkillFormState
+  skillForm: initialSkillFormState,
+  daysOfWeek: {
+    sunday: {
+      label: "Sunday",
+      id: 1
+    },
+    monday: {
+      label: "Monday",
+      id: 2
+    },
+    tuesday: {
+      label: "Tuesday",
+      id: 3
+    },
+    wednesday: {
+      label: "Wednesday",
+      id: 4
+    },
+    thursday: {
+      label: "Thursday",
+      id: 5
+    },
+    friday: {
+      label: "Friday",
+      id: 6
+    },
+    saturday: {
+      label: "Saturday",
+      id: 7
+    }
+  }
 };

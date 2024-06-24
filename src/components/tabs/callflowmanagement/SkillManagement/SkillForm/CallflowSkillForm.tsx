@@ -1,5 +1,5 @@
-import { Dropdown } from "components/core/CustomDropdown/Dropdown";
-import { CustomInput } from "components/core/CustomInput/CustomInput";
+import { Dropdown } from "components/Dropdown";
+import { CustomInput } from "components/CustomInput";
 import { FormRow } from "callflowmanagement/Skills.Styles";
 import {
   useSkillState,
@@ -9,9 +9,7 @@ import { skillActions } from "context/reducers/skillReducer";
 import { FlexColumn } from "globals/interfaces";
 import React from "react";
 import {
-  Application, Day, SkillState,
-  TimeOfDay,
-  TimeOfDayRequestObject
+  Day, SkillState, TimeOfDayRequestObject
 } from "../Skills.Interfaces";
 
 export const CallflowSkillForm = (props: { missingFields: string[]}) => {
@@ -19,30 +17,29 @@ export const CallflowSkillForm = (props: { missingFields: string[]}) => {
 
   const skillState: SkillState = useSkillState();
   const skFormDispatch = useSkillDispatch();
+  const [ applicationOptions, setApplicationOptions ] = React.useState([]);
+  const [ timeOfDayOptions, setTimeOfDayOptions ] = React.useState([]);
   const [ tempField, setTempField ] = React.useState({
     vhThreshold: skillState.skillForm.vhThreshold,
     vhCallTarget: skillState.skillForm.vhCallTarget
   });
 
-  const getTimeOfDayOptions = (timeOfDays: TimeOfDay[]) => {
-    return timeOfDays.map(tod => {
+  React.useEffect(() => {
+    setTimeOfDayOptions(skillState.timeOfDays.map(tod => {
       const label = tod.openTime === "00:00:00" && tod.closeTime === "00:00:00" ? "Closed" : `${tod.openTime} - ${tod.closeTime}`;
       return {
         value: tod.timeOfDayId,
         label: label
       };
-    });
-  };
+    }));
+  }, [skillState.timeOfDays]);
 
-  const getApplicationOptions = (applications: Application[]) => {
-    return applications.map(a => ({
+  React.useEffect(() => {
+    setApplicationOptions(skillState.applications.map(a => ({
       value: a.applicationId,
       label: a.applicationName
-    }));
-  };
-
-  const timeOfDayOptions = getTimeOfDayOptions(skillState.timeOfDays);
-  const applicationOptions = getApplicationOptions(skillState.applications);
+    })));
+  }, [skillState.applications]);
 
   const inputStyles = {
     width: "230px",
@@ -60,7 +57,7 @@ export const CallflowSkillForm = (props: { missingFields: string[]}) => {
         <Dropdown
           key={`timeOfDay.${day.id}`}
           options={timeOfDayOptions}
-          value={timeOfDayOptions.find(tod => tod.value === value.timeOfDayId)}
+          value={timeOfDayOptions.find(tod => tod.value === value.timeOfDayId) || null}
           label={"Time Of Day *"}
           styles={{ width: "36%" }}
           updateValue={(e: any, newValue: any) => {
@@ -76,9 +73,8 @@ export const CallflowSkillForm = (props: { missingFields: string[]}) => {
         <Dropdown
           key={`vhTimeOfDay.${day.id}`}
           options={timeOfDayOptions}
-          error={missingFields.some((f: string) => f === `vhTimeOfDay.${day.id}`) &&
-          (!skillState.skillForm.timeOfDays.find(tod => tod.dayOfWeekId === day.id)?.vhTimeOfDayId)}
-          value={timeOfDayOptions.find(tod => tod.value === value.vhTimeOfDayId)}
+          error={missingFields.some((f: string) => f === `vhTimeOfDay.${day.id}`) && (!skillState.skillForm.timeOfDays.find(tod => tod.dayOfWeekId === day.id)?.vhTimeOfDayId)}
+          value={timeOfDayOptions.find(tod => tod.value === value.vhTimeOfDayId) || null}
           styles={{ width: "36%" }}
           label={"Virtual Hold Time Of Day (Optional)"}
           updateValue={(e: any, newValue: any) => {

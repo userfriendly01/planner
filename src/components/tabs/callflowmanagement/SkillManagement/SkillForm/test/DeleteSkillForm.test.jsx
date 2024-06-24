@@ -101,7 +101,7 @@ const renderComponent = () => {
   />);
 };
 
-describe("<AddEditForm />", () => {
+describe("<DeleteSkillForm />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     useAdminState.mockReturnValue(initialTestState);

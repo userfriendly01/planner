@@ -1,8 +1,6 @@
 import { formModes } from "globals";
 import { Action } from "globals/interfaces";
-import {
-  Application, SkillState, Skill, SkillGroup, TimeOfDay, TwilioQueue, SkillFormState
-} from "callflowmanagement/Skills.Interfaces";
+import { SkillState } from "callflowmanagement/Skills.Interfaces";
 import { formatSkillGroups } from "utils/skillsUtils";
 
 export const skillActions = {
