@@ -151,10 +151,7 @@ export const PhoneNumberPreviewModalColumnDef: GridColDef[] = [
     valueGetter: params => PhoneNumberRecordUtil.getPropertyValue(params.row, GREETING_MESSAGES) || "",
     valueSetter: params => ({
       ...params.row,
-      content: {
-        ...params.row.content || {},
-        greetingMessages: params.value
-      }
+      greetingMessages: params.value
     }),
     renderCell: (params: any) => (
       <Tooltip title={params.row.content?.greetingMessages || ""} >
