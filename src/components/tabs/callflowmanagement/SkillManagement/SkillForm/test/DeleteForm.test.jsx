@@ -1,5 +1,5 @@
 import React from "react";
-import { DeleteSkillForm }from "../DeleteSkillForm";
+import { DeleteForm }from "../DeleteForm";
 import {
   expectOnlyPassedProps,
   initialSkillState,
@@ -93,7 +93,7 @@ const mockSetTable = jest.fn();
 jest.useFakeTimers();
 
 const renderComponent = () => {
-  return render(<DeleteSkillForm
+  return render(<DeleteForm
     tableState={mockTableState}
     closeModal={mockCloseModal}
     setAction={mockSetAction}
@@ -101,7 +101,7 @@ const renderComponent = () => {
   />);
 };
 
-describe("<DeleteSkillForm />", () => {
+describe("<DeleteForm />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     useAdminState.mockReturnValue(initialTestState);
@@ -140,7 +140,7 @@ describe("<DeleteSkillForm />", () => {
     });
     describe("selected skills are empty", () => {
       test("should render select skills message", async () => {
-        const rendered = render(<DeleteSkillForm
+        const rendered = render(<DeleteForm
           tableState={{
             selected: []
           }}

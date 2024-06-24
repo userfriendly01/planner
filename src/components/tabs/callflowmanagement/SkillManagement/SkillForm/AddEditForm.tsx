@@ -107,12 +107,11 @@ export const AddEditForm = (props: any) => {
           status: ModalOverlayStatuses.SUCCESS
         });
 
+        await refreshState();
+
         skillDispatch({
           type: skillActions.RESET_FORM
         });
-
-        await refreshState();
-
         setTimeout(() => {
           closeModal();
           setAction(null);
@@ -133,11 +132,12 @@ export const AddEditForm = (props: any) => {
           message: response.messages,
           status: ModalOverlayStatuses.PARTIAL_FAIL
         });
+
+        await refreshState();
+
         skillDispatch({
           type: skillActions.RESET_FORM
         });
-
-        refreshState();
       }
     } catch (error) {
       logger.error("Error when adding Skill", {

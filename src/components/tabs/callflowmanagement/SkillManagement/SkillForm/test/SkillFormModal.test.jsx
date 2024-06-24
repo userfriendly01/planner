@@ -6,7 +6,7 @@ import {
   setupMockedComponents
 } from "testUtils";
 import { AddEditForm } from "callflowmanagement/AddEditForm";
-import { DeleteForm } from "callflowmanagement/DeleteSkillForm";
+import { DeleteForm } from "callflowmanagement/DeleteForm";
 import { ActionTypes } from "callflowmanagement/Skills.Interfaces";
 import { Modal } from "@mui/material";
 
@@ -18,7 +18,7 @@ jest.mock("callflowmanagement/AddEditForm", () => ({
   AddEditForm: jest.fn()
 }));
 
-jest.mock("callflowmanagement/DeleteSkillForm", () => ({
+jest.mock("callflowmanagement/DeleteForm", () => ({
   DeleteForm: jest.fn()
 }));
 

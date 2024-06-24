@@ -2,7 +2,7 @@
 import { Modal } from "@mui/material";
 import React from "react";
 import { AddEditForm } from "callflowmanagement/AddEditForm";
-import { DeleteSkillForm } from "callflowmanagement/DeleteSkillForm";
+import { DeleteForm } from "callflowmanagement/DeleteForm";
 import { ActionTypes } from "callflowmanagement/Skills.Interfaces";
 
 export const SkillFormModal = (props: any) => {
@@ -18,7 +18,7 @@ export const SkillFormModal = (props: any) => {
 
   return (
     <Modal open={showSkillModal}>
-      { action === ActionTypes.DELETE ? <DeleteSkillForm
+      { action === ActionTypes.DELETE ? <DeleteForm
         setAction={setAction}
         tableState={tableState}
         setTableState={setTableState}

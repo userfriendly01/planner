@@ -39,7 +39,7 @@ import {
 } from "services/user";
 import { handleConcurrentCalls } from "usermanagement/processingUtils";
 
-export const DeleteSkillForm = (props: any) => {
+export const DeleteForm = (props: any) => {
   const {
     closeModal, tableState, setAction, setTableState
   } = props;

@@ -186,16 +186,6 @@ describe("<AddEditForm />", () => {
       });
       describe("all service calls are successful", () => {
         test("form rerenders when saving and succeded", async () => {
-          useSkillState.mockReturnValue({
-            ...initialSkillState,
-            skillForm: {
-              ...initialSkillState.skillForm,
-              taskQueue: {
-                ...initialSkillState.skillForm.taskQueue,
-                isNew: false
-              }
-            }
-          });
           renderComponent();
           const submit = StyledButton.mock.calls[1][0].onClick;
           submit();
@@ -218,6 +208,16 @@ describe("<AddEditForm />", () => {
         });
         describe("new task queue is created", () => {
           test("LOAD_SKILL_OPTIONS is dispatched", async () => {
+            useSkillState.mockReturnValue({
+              ...initialSkillState,
+              skillForm: {
+                ...initialSkillState.skillForm,
+                taskQueue: {
+                  ...initialSkillState.skillForm.taskQueue,
+                  isNew: true
+                }
+              }
+            });
             renderComponent();
             const submit = StyledButton.mock.calls[1][0].onClick;
             submit();
@@ -254,6 +254,16 @@ describe("<AddEditForm />", () => {
           createSkill.mockResolvedValue({
             status: 206,
             messages: [error]
+          });
+          useSkillState.mockReturnValue({
+            ...initialSkillState,
+            skillForm: {
+              ...initialSkillState.skillForm,
+              taskQueue: {
+                ...initialSkillState.skillForm.taskQueue,
+                isNew: true
+              }
+            }
           });
         });
         test("error messages are displayed", async () => {
@@ -327,6 +337,16 @@ describe("<AddEditForm />", () => {
       });
       describe("refresh state error is thrown", () => {
         test("Success is still rendered", async () => {
+          useSkillState.mockReturnValue({
+            ...initialSkillState,
+            skillForm: {
+              ...initialSkillState.skillForm,
+              taskQueue: {
+                ...initialSkillState.skillForm.taskQueue,
+                isNew: true
+              }
+            }
+          });
           loadConsolidatedSkills.mockRejectedValue(error);
           renderComponent();
           const submit = StyledButton.mock.calls[1][0].onClick;
