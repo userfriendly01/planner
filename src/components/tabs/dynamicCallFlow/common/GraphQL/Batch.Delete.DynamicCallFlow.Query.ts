@@ -6,11 +6,24 @@ import {
 import { BatchResults } from "./Abstract.BatchRecords.Query";
 import { AbstractGraphQLQuery } from "./AbstractGraphQL.Query";
 
+/**
+ * This class is responsible for deleting dynamic phone number ***AND*** action records.  It is a subclass of AbstractBatchDeleteDynamicCallFlowQuery.
+ * The query definition here is shared between phone number and action.  The cicct-shared-graph-api project needs updated to rename the query to something
+ * more common between phone number and action.  As it stands now, it is a bit ambiguous to name it batchDeletePhoneNumber yet it deletes both phone number
+ * and action records.
+ */
 export abstract class AbstractBatchDeleteDynamicCallFlowQuery<RecordType> extends AbstractGraphQLQuery {
   protected queryName(): string {
     return "batchDeletePhoneNumber";
   }
 
+  /**
+   * This queryDefinition is used to delete both phone number and action records.  The cicct-shared-graph-api project needs updated to rename the query to
+   * something more common between phone number and action.  As it stands now, it is a bit ambiguous to name it batchDeletePhoneNumber yet it deletes both phone number
+   * and action records.
+   *
+   * @protected
+   */
   protected queryDefinition(): string {
     return `
       mutation ${this.queryName()}($input: CallFlowDeleteBatchInput!) {
@@ -25,10 +38,9 @@ export abstract class AbstractBatchDeleteDynamicCallFlowQuery<RecordType> extend
   protected abstract generateCallFlowDeleteInputs(records: Array<RecordType>): Array<CallFlowDeleteInput>;
 
   /**
-   * This method mimics the AbstractBatchRecordsQuery.buildResponse as this particular batch job cannot extend that abstract class
-   * since it bundles the ActionRecords into the subtypes of Announcement, Menu, MenuOptions, and Redirect.  We should look in to
-   * NOT bundling the records up in that manner and send all records to GraphQL and let GraphQL separate them by ActionType.  That
-   * would enable this batch job to extend the AbstractBatchRecordsQuery class and follow the pattern of the other batch jobs.
+   * This method iterates through the array CallFlowDeleteBatchInput(s) and executes the query for each entry and stores the
+   * GraphQLResponse<BatchCallFlowDeleteResponse>(es) as an array which is then used to build the BatchResults method response
+   *
    * @param {string} accessToken
    * @param {Array<RecordType>} records
    * @return {Promise<BatchResults<RecordType>>}
@@ -47,6 +59,14 @@ export abstract class AbstractBatchDeleteDynamicCallFlowQuery<RecordType> extend
     return this.buildResponse(batchGraphQLResponses);
   }
 
+  /**
+   * This method generates an array of CallFlowDeleteBatchInput.  It splices the records into batches of 25 CallFlowDeleteInput
+   * as that is the limit that GraphQL will accept.
+   *
+   * @param records
+   * @return {Array<CallFlowDeleteBatchInput>}
+   * @protected
+   */
   protected generateBatchOfGraphQLInputs(records: Array<RecordType>): Array<CallFlowDeleteBatchInput> {
     const batchOfCallFlowDeleteBatchInput: Array<CallFlowDeleteBatchInput> = [];
     const recordsCopy = [...records];

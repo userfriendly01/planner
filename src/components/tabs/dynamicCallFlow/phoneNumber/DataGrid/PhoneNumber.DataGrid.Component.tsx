@@ -120,7 +120,7 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
       loadDataGridMonitor.current.dataGridLoaded = true;
 
       setSourceRecords(sortedRecords);
-      setDataGridRecords(sortedRecords);
+      dataGridFilter.current.applyFilter(sortedRecords);
       setDataGridProps(prevState => ({
         ...prevState,
         ...updatedDataGridProps

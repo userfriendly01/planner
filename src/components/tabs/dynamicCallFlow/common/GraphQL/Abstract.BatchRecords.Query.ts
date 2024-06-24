@@ -77,7 +77,7 @@ export abstract class AbstractBatchRecordsQuery extends AbstractGraphQLQuery {
   }
 
   /**
-   * Consolidate all of the command responses in a batch into 1 response object
+   * Consolidate all the command responses in a batch into 1 response object
    * @param {Array<BatchGraphQLResponse>} batchGraphQLResponses - a set results from all of the operations
    * @returns {Promise<BatchResults>} a consolidated response object
    */

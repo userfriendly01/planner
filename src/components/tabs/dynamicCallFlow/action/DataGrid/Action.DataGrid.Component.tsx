@@ -6,10 +6,7 @@ import {
   DataGrid, GridCallbackDetails, GridPaginationModel, useGridApiRef
 } from "@mui/x-data-grid";
 import ActionDataGridColumnDef from "./Action.DataGrid.ColumnDef";
-import {
-  ActionRecord, ActionRecordType
-} from "../GraphQL/Action.Interfaces";
-import { batchCreateDynamicActionRecords } from "../GraphQL/Batch.Create.Action.Records.Query";
+import { ActionRecordType } from "../GraphQL/Action.Interfaces";
 import { GridApiCommunity } from "@mui/x-data-grid/internals";
 import { actionListRecords } from "../GraphQL/List.Action.Records.Query";
 import {
@@ -23,19 +20,15 @@ import { FieldConfigs } from "../../common/Form/Form.Field.Config";
 import { ActionFormFieldConfigs } from "../Form/ActionFieldsConfig";
 import { ActionPreviewModal } from "../PreviewModal/Action.Preview.Modal.Component";
 import {
-  AlertBarController,
-  AlertBarProps,
-  initialAlertBarProps
+  AlertBarController, AlertBarProps, initialAlertBarProps
 } from "../../common/AlertBar.Controller";
 import { DynamicCallFlowActionContext } from "../DynamicCallFlow.Action.Container";
 import { NotInUseModalType } from "../../common/Modal.Controller";
 import { ActionDataGridController } from "./Action.DataGrid.Controller";
 import { ActionDataGridFilter } from "./Action.DataGrid.Filter";
 import { CustomToast } from "components/CustomToast";
-import { ReactSetState } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
 import { ActionPreviewModalHandler } from "dynamicCallFlow/PreviewModal/Action.Preview.Modal.Handler";
 import { ActionDataGridFilterModal } from "dynamicCallFlow/DataGrid/Action.DataGrid.Filter.Modal";
-import { PhoneNumberModalTypeEnum } from "dynamicCallFlow/DynamicCallFlow.PhoneNumber.Container.Modal.Controller";
 
 const DYNAMIC_CALL_FLOW_ACTION_DATA_GRID_PAGE_NUMBER = "dynamicCallFlowActionDataGridPageNumber";
 const DYNAMIC_CALL_FLOW_ACTION_DATA_GRID_RECORDS_PER_PAGE = "dynamicCallFlowActionDataGridRecordsPerPage";
@@ -129,7 +122,7 @@ const ActionDataGridComponent = (): JSX.Element => {
     dataGridController.current.dataGridProps = dataGridProps;
   }, [dataGridProps]);
 
-  const handlePaginationModelChange = (model: GridPaginationModel, details: GridCallbackDetails<any>) =>{
+  const handlePaginationModelChange = (model: GridPaginationModel, details: GridCallbackDetails) =>{
     sessionStorage.setItem(DYNAMIC_CALL_FLOW_ACTION_DATA_GRID_PAGE_NUMBER, model.page.toString());
     sessionStorage.setItem(DYNAMIC_CALL_FLOW_ACTION_DATA_GRID_RECORDS_PER_PAGE, model.pageSize.toString());
     setPaginationModel(model);
