@@ -279,7 +279,7 @@ export const SkillGroupInputContainer = (props: any) => {
         });
 
         // refresh skill state
-        await loadConsolidatedSkills (skillDispatch);
+        await loadConsolidatedSkills(skillDispatch);
 
         setTimeout(() => {
           handleCloseConfirmation();

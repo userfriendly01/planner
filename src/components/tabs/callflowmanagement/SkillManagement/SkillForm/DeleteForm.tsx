@@ -54,7 +54,7 @@ export const DeleteForm = (props: any) => {
   const formattedSkills = tableState.selected.map((sk: any) => ({
     name: sk.name,
     targetWorkers: getTargetExpression(sk.name),
-    matchingQueue: taskQueues.find(tq => tq.target_workers === getTargetExpression(sk.name))|| {} //Filter?
+    matchingQueue: taskQueues.find(tq => tq.target_workers.includes(getTargetExpression(sk.name))) || {} //Filter?
   }));
   const [ shouldDeleteQueue, setShouldDeleteQueue ] = useState(false);
   const [ impactedWorkers, setImpactedWorkers ] = useState(identifyImpactedWorkers(state.workerContext.workers, formattedSkills));
@@ -182,32 +182,25 @@ export const DeleteForm = (props: any) => {
               <h2>The following errors were thrown</h2>
             </FormRow>
             <table>
-              <thead>
-                <tr>
-                  <th>Error</th>
-                </tr>
-              </thead>
-              <tbody>
-                {saveResult.message.map((result: any, index: number) => ((
-                  <>
-                    {typeof result.reason === "object" ?
-                      <div key={`${index}-row`}>
-                        {result.reason.map((reason: string) => ((
-                          <tr key={`${index}-row`}>
-                            <td key={`${index}-reason`}><CenteredDiv>{reason}</CenteredDiv></td>
-                          </tr>
-                        )))
-                        }
-                      </div>
-                      :
-                      <tr key={`${index}-row`}>
-                        <td><CenteredDiv>{result.reason}</CenteredDiv></td>
-                      </tr>
-                    }
-                  </>
-                )))
-                }
-              </tbody>
+              {saveResult.message.map((result: any, index: number) => ((
+                <>
+                  {typeof result.reason === "object" ?
+                    <div key={`${index}-row`}>
+                      {result.reason.map((reason: string) => ((
+                        <tr key={`${index}-row`}>
+                          <td key={`${index}-reason`}><CenteredDiv>{reason}</CenteredDiv></td>
+                        </tr>
+                      )))
+                      }
+                    </div>
+                    :
+                    <tr key={`${index}-row`}>
+                      <td><CenteredDiv>{result.reason}</CenteredDiv></td>
+                    </tr>
+                  }
+                </>
+              )))
+              }
             </table>
             <ButtonWrapper>
               <StyledButton
