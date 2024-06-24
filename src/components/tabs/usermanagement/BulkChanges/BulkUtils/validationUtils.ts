@@ -1,7 +1,7 @@
 import {
   cleanupField,
   formatErrorMessage
-} from "usermanagement/formatUtils";
+} from "utils/_formatUtils";
 import {
   getLowestConcurrencyLimit,
   handleConcurrentCalls,
@@ -11,6 +11,7 @@ import { FIELDS } from "usermanagement/fields";
 import { logger } from "utils/logger";
 import { getWfmPeople } from "utils/calabrioUtils";
 import { AppState } from "globals/interfaces";
+import { SkillState } from "components/tabs/callflowmanagement/SkillManagement/Skills.Interfaces";
 
 /**
  * Selected Templates is an array of templates to be processed on a bulk upload.
@@ -69,7 +70,8 @@ export const performValidations = async (
   selectedTemplates: any,
   consolidatedFieldsList: any,
   setProcessedRows: any,
-  state: any
+  state: any,
+  skillState: SkillState
 ): Promise<any> => {
   const finalErrors: any = [];
   let validationPromises;
@@ -80,7 +82,7 @@ export const performValidations = async (
     const otherFields = consolidatedFieldsList.filter((f: any) => f.field !== "nNumber");
 
     const nNumberPromises = await Promise.allSettled(nNumberFields.map((field: any) => {
-      return field.validateFunction(row, state);
+      return field.validateFunction(row, state, skillState);
     }));
 
     const fieldPromises = await Promise.allSettled(otherFields.map((field: any) => {

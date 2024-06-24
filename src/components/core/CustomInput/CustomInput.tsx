@@ -10,16 +10,21 @@ const StyledTextField = styled(TextField)<{styles?: any}>`
   && {
     margin: ${props => props.styles?.margin || "8px 0"};
   }
+  && .MuiFormHelperText-root {
+    position: absolute;
+    top: 60;
+  }
 `;
 
 interface CustomInputProps {
   disabled?: boolean,
   error?: boolean,
+  helperText?: string,
   label: string,
   maxLength?: string,
   name: string,
   styles?: any,
-  onBlur?: () => void,
+  onBlur?: (event?: any) => void,
   updateValue: (value: string) => void,
   validator?: (value: string) => boolean,
   validatedServiceCall?: (value: string) => Promise<any>,
@@ -30,6 +35,7 @@ export const CustomInput = (props: CustomInputProps) => {
   const {
     disabled,
     error,
+    helperText,
     label,
     maxLength,
     name,
@@ -70,6 +76,7 @@ export const CustomInput = (props: CustomInputProps) => {
         onChange={event => changeValidator(event.target.value)}
         variant="outlined"
         value={value}
+        helperText={helperText}
       />
       {loading ? <ModalFetchingRing data-testid="loading" /> : null}
     </>

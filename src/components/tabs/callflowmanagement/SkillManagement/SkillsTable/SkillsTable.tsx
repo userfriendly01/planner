@@ -8,14 +8,22 @@ import {
   TableText,
   TableIcon
 } from "../Skills.Styles";
-import { SkillsTableProps } from "../Skills.Interfaces";
+import {
+  SkillGroup, SkillsTableProps
+} from "../Skills.Interfaces";
 import { messageTypes } from "../ClosedFlashMessage/ClosedFlashMessage.Interfaces";
-import { Circle } from "@mui/icons-material";
+import {
+  Circle, ReportProblemOutlined
+} from "@mui/icons-material";
 import {
   Checkbox, Tooltip
 } from "@mui/material";
-import { Skill } from "globals/interfaces";
+import { Skill } from "callflowmanagement/Skills.Interfaces";
 import React, { ReactElement } from "react";
+import {
+  useAdminState,
+  useSkillState
+} from "context/appContext";
 
 export const SkillsTable = (props: SkillsTableProps) => {
   const {
@@ -25,14 +33,32 @@ export const SkillsTable = (props: SkillsTableProps) => {
 
   const allSkillsSelected = tableState.selected.length === tableState.filteredList.length && tableState.filteredList.length > 0;
 
-  // field is the key in the skills object to use  (ie, ctmSkillGroups, or profiles)
-  const getItemsDisplayForSkill = (skill: Skill, field: string, id: string, displayName: string, displayId: boolean) => {
+  // field is the key in the skills object to use  (ie, skillGroups, or profiles)
+  const getProfilesDisplayForSkill = (skill: Skill) => {
+    const { profiles } = useAdminState().profileContext;
+
     const itemDivs: ReactElement[] = [];
-    skill[field]?.map((p: any, index: number) => {
-      if(index !== skill[field].length - 1){
-        itemDivs.push(<div key={parseInt(p[id])}>{p[displayName]}{displayId ? ` - ${p[id]}, ` : ", "}</div>);
+    skill.profiles?.map((p: number, index: number) => {
+      const profile = profiles.find(pr => pr.profile_id === p) || { profile_nme: "Unknown" };
+      if(index !== skill.profiles.length - 1){
+        itemDivs.push(<div key={p}>{profile.profile_nme}{` - ${p}, `}</div>);
       } else {
-        itemDivs.push(<div key={parseInt(p[id])}>{p[displayName]}{displayId ? ` - ${p[id]}` : ""}</div>);
+        itemDivs.push(<div key={p}>{profile.profile_nme}{` - ${p}`}</div>);
+      }
+    });
+    return itemDivs;
+  };
+
+  const getSkillGroupDisplayForSkill = (skill: Skill) => {
+    const { skillGroups } = useSkillState();
+
+    const itemDivs: ReactElement[] = [];
+    skill.skillGroups?.map((g: SkillGroup, index: number) => {
+      const skillGroup = skillGroups.find(sg => sg.skillGroupId === g.skillGroupId) || { skillGroupNme: "Unknown" };
+      if(index !== skill.skillGroups.length - 1){
+        itemDivs.push(<div key={g.skillGroupId}>{skillGroup.skillGroupNme}{", "}</div>);
+      } else {
+        itemDivs.push(<div key={g.skillGroupId}>{skillGroup.skillGroupNme}{""}</div>);
       }
     });
     return itemDivs;
@@ -98,13 +124,21 @@ export const SkillsTable = (props: SkillsTableProps) => {
               }
             ><FilterWrapper active={tableState[messageTypes.CLOSED.filter]}>CLOSED</FilterWrapper>
             </CustomTableHeader>
+            <CustomTableHeader
+              onClick={() => setTableState({
+                ...tableState,
+                discrepancyFilter: !tableState.discrepancyFilter
+              })
+              }
+            ><FilterWrapper active={tableState.discrepancyFilter}>PROBLEMS</FilterWrapper>
+            </CustomTableHeader>
           </tr>
         </thead>
         <tbody>
           {tableState.filteredList.map((skill: Skill) => {
             const isSelected = tableState.selected.some((s: Skill) => s.name === skill.name);
             return (
-              <CustomTableRow key={skill.name}  selected={isSelected} onClick={() => handleSetSelected(skill, isSelected)}>
+              <CustomTableRow key={skill.name} selected={isSelected} onClick={() => handleSetSelected(skill, isSelected)}>
                 <CustomTableData><TableText>
                   <Checkbox
                     onClick={() => handleSetSelected(skill, isSelected)}
@@ -113,8 +147,8 @@ export const SkillsTable = (props: SkillsTableProps) => {
                   />
                 </TableText></CustomTableData>
                 <CustomTableData><TableText>{skill.name}</TableText></CustomTableData>
-                <CustomTableData><TableText>{getItemsDisplayForSkill(skill, "profiles", "profileId", "profileName", true).map((d: ReactElement) => d)}</TableText></CustomTableData>
-                <CustomTableData><TableText>{getItemsDisplayForSkill(skill, "ctmSkillGroups", "skillGroupId", "skillGroupNme", false).map((d: ReactElement) => d)}</TableText></CustomTableData>
+                <CustomTableData><TableText>{getProfilesDisplayForSkill(skill).map((d: ReactElement) => d)}</TableText></CustomTableData>
+                <CustomTableData><TableText>{getSkillGroupDisplayForSkill(skill).map((d: ReactElement) => d)}</TableText></CustomTableData>
                 <CustomTableData>
                   {skill.flashMessage &&
                     <Tooltip
@@ -130,6 +164,15 @@ export const SkillsTable = (props: SkillsTableProps) => {
                       placement="right"
                       title={<h1 style={{ fontSize: "15px" }}>{skill.closedMessage}</h1>}>
                       <TableIcon><Circle fontSize="small"/></TableIcon>
+                    </Tooltip>
+                  }
+                </CustomTableData>
+                <CustomTableData>
+                  {skill.discrepancies.length > 0 &&
+                    <Tooltip
+                      placement="right"
+                      title={<h1 style={{ fontSize: "15px" }}>{skill.discrepancies.toString()}</h1>}>
+                      <TableIcon><ReportProblemOutlined fontSize="small"/></TableIcon>
                     </Tooltip>
                   }
                 </CustomTableData>

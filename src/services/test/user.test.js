@@ -22,6 +22,8 @@ jest.mock("utils/graphUtils", () => ({
   mapWorkerToDbWorker: jest.fn()
 }));
 
+const dispatchMock = jest.fn();
+
 describe("user", () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -30,28 +32,39 @@ describe("user", () => {
   });
 
   describe("listUMUsers", () => {
-    test("should resolve with the first paint of data", async () => {
-      const dispatchMock = jest.fn();
+    test("should resolve and set loadStatus to Success", async () => {
 
       getPaginatedResults.mockResolvedValue("yay!");
 
       await listUMUsers(dispatchMock);
 
-      expect(dispatchMock).toHaveBeenCalledTimes(1);
+      expect(dispatchMock).toHaveBeenCalledTimes(2);
       expect(dispatchMock).toHaveBeenCalledWith({
         type: "setLoadingWorkers",
-        payload: true
+        payload: "loading"
+      });
+      expect(dispatchMock).toHaveBeenCalledWith({
+        type: "setLoadingWorkers",
+        payload: "success"
       });
     });
 
-    xtest("should reject if an error occurs in the listUMUsers", async () => {
+    test("should reject if an error occurs in the listUMUsers", async () => {
       const error = new Error("An Error");
 
       getPaginatedResults.mockRejectedValue(error);
 
       try {
-        listUMUsers(jest.fn());
+        await listUMUsers(jest.fn());
       } catch(err) {
+        expect(dispatchMock).toHaveBeenCalledWith({
+          type: "setLoadingWorkers",
+          payload: "loading"
+        });
+        expect(dispatchMock).toHaveBeenCalledWith({
+          type: "setLoadingWorkers",
+          payload: "fail"
+        });
         expect(logger.error).toHaveBeenCalledWith("Failed to fetch users from graph", { error });
         expect(err).toEqual({
           msg: "Failed to fetch users from graph"

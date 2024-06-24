@@ -8,7 +8,7 @@ import {
 } from "usermanagement/BulkChanges.Interfaces";
 import { DefaultSkillSelector } from "usermanagement/DefaultSkillSelector";
 import { Dropdown } from "components/Dropdown";
-import { useAdminState } from "context/appContext";
+import { useSkillState } from "context/appContext";
 import React from "react";
 
 export const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
@@ -44,7 +44,7 @@ export const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
     levels: {}
   });
 
-  const skills = useAdminState().skillContext.skills.slice().filter(s => s.levels);
+  const skills = useSkillState().skills.slice().filter(s => s.levels);
   const skillsDropdownOptions = skills.map( s => ({
     label: s.name,
     value: s.name

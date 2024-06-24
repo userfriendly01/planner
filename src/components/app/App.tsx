@@ -1,25 +1,24 @@
-import {
-  CircularProgress, Modal
-} from "@mui/material";
+import { Modal } from "@mui/material";
+import { getWorkerProfileId } from "authentication/authUtils";
+import { getFilteredPermissions } from "authentication/authenticationProfiles";
 import {
   AppWrapper,
   ErrorMessage,
   ErrorPayload,
   ErrorStatus,
-  ErrorWrapper,
-  Overlay,
-  LoadingMessage
+  ErrorWrapper
 } from "components/app/App.Styles";
 import ScrollToTop from "components/ScrollToTop";
-import { getWorkerProfileId } from "authentication/authUtils";
-import { getFilteredPermissions } from "authentication/authenticationProfiles";
+
 import Header from "components/Header";
 import NavTabs from "components/NavTabs";
 import NotificationModal from "components/NotificationModal";
+import { PageLoadSpinner } from "components/PageLoadSpinner";
+import { Overlay } from "components/PageLoadSpinner.Styles";
 import {
-  useAdminDispatch, useAdminState
+  useAdminDispatch, useAdminState,
+  useSkillDispatch
 } from "context/appContext";
-import { theme } from "globals/theme";
 import { env } from "globals/index";
 import { getRoutes } from "globals/routes";
 import React, {
@@ -46,6 +45,7 @@ const App = () => {
   });
   const [showModal, setShowModal] = useState(false);
   const dispatch = useAdminDispatch();
+  const skillDispatch = useSkillDispatch();
   const state = useAdminState();
 
   useEffect(() => {
@@ -76,7 +76,7 @@ const App = () => {
           });
 
           await Promise.all(
-            permissions.map(({ startup }) => startup.function(dispatch))
+            permissions.map(({ startup }) => startup.function(dispatch, skillDispatch))
           );
 
           setLoadResult({
@@ -203,10 +203,7 @@ const App = () => {
     }
   } else {
     return (
-      <Overlay>
-        <LoadingMessage>Loading...</LoadingMessage>
-        <CircularProgress size={theme.circularProgressSize} />
-      </Overlay>
+      <PageLoadSpinner />
     );
   }
 };

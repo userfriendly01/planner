@@ -8,7 +8,6 @@ import {
   formatCalabrioGroups,
   formatCalabrioRoles
 } from "utils/calabrioUtils";
-import { formatSkillGroups } from "utils/skillsUtils";
 
 export const initialState: AppState = {
   managerContext: {
@@ -20,17 +19,13 @@ export const initialState: AppState = {
   profileContext: {
     profiles: []
   },
-  skillContext: {
-    skills: [],
-    skillGroups: []
-  },
   userContext: {
     permissions: [],
     tokens: {}
   },
   workerContext: {
     workers: [],
-    isLoading: true
+    loadStatus: null
   },
   calabrioContext: {
     tenant: {},
@@ -42,7 +37,6 @@ export const initialState: AppState = {
     wfmOptions: [],
     wfmErrors: []
   },
-  resettingSkills: false,
   userManagementTableFilters: {
     managerFilter: null,
     profileFilterArray: [],
@@ -57,7 +51,7 @@ export const reducer = (state: AppState, action: Action): AppState => {
         ...state,
         workerContext: {
           ...state.workerContext,
-          isLoading: action.payload
+          loadStatus: action.payload
         }
       };
     case "loadPaginatedResults": {
@@ -216,22 +210,6 @@ export const reducer = (state: AppState, action: Action): AppState => {
         }
       };
     }
-    case "loadSkills":
-      return {
-        ...state,
-        skillContext: {
-          ...state.skillContext,
-          skills: action.payload
-        }
-      };
-    case "loadSkillGroups":
-      return {
-        ...state,
-        skillContext: {
-          ...state.skillContext,
-          skillGroups: formatSkillGroups(action.payload)
-        }
-      };
     case "loadUserData":
       return {
         ...state,
@@ -240,25 +218,12 @@ export const reducer = (state: AppState, action: Action): AppState => {
           ...action.payload
         }
       };
-    case "resettingSkills":
-      return {
-        ...state,
-        resettingSkills: action.payload
-      };
     case "updateWorker":
       return {
         ...state,
         workerContext: {
           ...state.workerContext,
           workers: [...state.workerContext.workers.filter(w => w.sid !== action.payload.sid), action.payload]
-        }
-      };
-    case "updateSkills":
-      return {
-        ...state,
-        skillContext: {
-          ...state.skillContext,
-          skills: action.payload
         }
       };
     case "updateManagerFilter":

@@ -22,16 +22,20 @@ import { ExportOptionsButton } from "usermanagement/ExportOptionsButton";
 import { ProcessingModal } from "usermanagement/ProcessingModal";
 import { checkIfBulkAdmin } from "authentication/authUtils";
 import { Dropdown } from "components/Dropdown";
-import { useAdminState } from "context/appContext";
+import {
+  useAdminState, useSkillState
+} from "context/appContext";
 import React from "react";
 import { Modal } from "@mui/material";
-import { CircularProgress } from "@mui/material";
-import { LoadingMessage } from "components/app/App.Styles";
-import { theme } from "globals/theme";
+import { PageLoadSpinner } from "components/PageLoadSpinner";
+import {
+  AppError, LoadStatuses
+} from "globals/interfaces";
 
 export const BulkChanges = () => {
 
   const state = useAdminState();
+  const skillState = useSkillState();
   const uploadButtonRef = React.useRef<HTMLInputElement>();
   const [view, setView] = React.useState(views.BULK_CREATE_USERS);
   const [showTemplates, setShowTemplates] = React.useState(true);
@@ -61,14 +65,21 @@ export const BulkChanges = () => {
     return areOptionsLoaded && isOrgLoaded;
   };
 
-  const { isLoading } = state.workerContext;
+  const { loadStatus } = state.workerContext;
 
-  if (isLoading && !showProcessingModal) {
+  if (loadStatus === LoadStatuses.LOADING && !showProcessingModal) {
     return (
       <BulkChangesWrapper>
-        <LoadingMessage>Loading Users, operations will be available once it completes</LoadingMessage>
-        <CircularProgress size={theme.circularProgressSize} />
+        <PageLoadSpinner message="Loading Users, operations will be available once it completes"/>
       </BulkChangesWrapper>
+    );
+  }
+
+  if (loadStatus === LoadStatuses.FAIL && !showProcessingModal) {
+    return (
+      <AppError>
+        An error was thrown loading users, please refresh Triton to try again
+      </AppError>
     );
   }
 
@@ -136,6 +147,7 @@ export const BulkChanges = () => {
                   <ExportOptionsButton
                     template={consolidatedTemplate}
                     state={state}
+                    skillState={skillState}
                     businessUnitId={businessUnitId}
                     disabled={
                       selectedTemplates.some((t: Template) => t.name === "CREATE_CALABRIO_WFM_PERSON") &&

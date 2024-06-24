@@ -73,7 +73,6 @@ describe("<Extension Input />", () => {
       expect(customInputProps.name).toBe("Extension");
       const ext = "1111";
       customInputProps.updateValue(ext);
-      //Faith update later
       customInputProps.onBlur();
       expect(mockOnBlur).toHaveBeenCalledWith();
       expect(customInputProps.value).toBe(extension);

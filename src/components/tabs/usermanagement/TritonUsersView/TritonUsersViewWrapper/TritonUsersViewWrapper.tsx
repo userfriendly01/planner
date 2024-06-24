@@ -5,10 +5,13 @@ import { Pagination } from "components/Pagination";
 import { TritonUsersHeader } from "usermanagement/TritonUsersHeader";
 import { TritonUserTable } from "usermanagement/TritonUserTable";
 import { useAdminState } from "context/appContext";
-import { UMUser } from "globals/interfaces";
+import {
+  LoadStatuses, UMUser, AppError
+} from "globals/interfaces";
 import React from "react";
 import { sortWorkersByFullName } from "utils/_sortUtils";
 import { filterWorkerSearch } from "utils/_filterUtils";
+import { PageLoadSpinner } from "components/PageLoadSpinner";
 
 export const TritonUsersViewWrapper: any = () => {
 
@@ -34,7 +37,9 @@ export const TritonUsersViewWrapper: any = () => {
     profileFilterArray,
     ouFilterArray
   } = state.userManagementTableFilters;
+  const { loadStatus } = state.workerContext;
   const [ tableState, setTableState ] = React.useState(defaultTableState);
+  const [ resettingSkills, setResettingSkills ] = React.useState(false);
 
   React.useEffect(() => {
     let filteredList = state.workerContext.workers.slice().sort(sortWorkersByFullName);
@@ -63,12 +68,10 @@ export const TritonUsersViewWrapper: any = () => {
       });
     }
 
-
     //filter by deltaFilter
     if(tableState.deltaFilter){
       filteredList = filteredList.filter(worker => worker.skillsDifferent);
     }
-
 
     //filter by searchBy
     const trimmedSearch = tableState.searchBy.trim();
@@ -80,7 +83,6 @@ export const TritonUsersViewWrapper: any = () => {
     const startingUserIndex = tableState.pagination.pageNumber !== 1 ? ((tableState.pagination.pageNumber - 1) * tableState.pagination.usersPerPage) : 0;
     const endingUserIndex = tableState.pagination.pageNumber * tableState.pagination.usersPerPage - 1;
     filteredList = filteredList.slice(startingUserIndex, endingUserIndex + 1);
-
 
     setTableState({
       ...tableState,
@@ -98,19 +100,32 @@ export const TritonUsersViewWrapper: any = () => {
   return (
     <ManagementContainer>
       <TritonUsersHeader
+        setResettingSkills={setResettingSkills}
         tableState={tableState}
         setTableState={setTableState}
       />
-      <StyledPaper elevation={3}>
-        <TritonUserTable
-          tableState={tableState}
-          setTableState={setTableState}
-        />
-      </StyledPaper>
-      <Pagination
-        tableState={tableState}
-        setTableState={setTableState}
-      />
+      {loadStatus === LoadStatuses.LOADING && <PageLoadSpinner/> }
+      {loadStatus === LoadStatuses.FAIL &&
+        <AppError>
+          An error was thrown loading users, please refresh Triton to try again
+        </AppError>
+      }
+      {loadStatus === LoadStatuses.SUCCESS &&
+        <>
+          <StyledPaper elevation={3}>
+            <TritonUserTable
+              resettingSkills={resettingSkills}
+              tableState={tableState}
+              setTableState={setTableState}
+            />
+
+          </StyledPaper>
+          <Pagination
+            tableState={tableState}
+            setTableState={setTableState}
+          />
+        </>
+      }
     </ManagementContainer>
   );
 };

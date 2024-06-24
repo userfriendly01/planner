@@ -1,11 +1,11 @@
 import {
   ModalOverlayStatuses,
   Activity,
-  Skill,
   CallTag,
   CallTagOptions,
   OperatingUnit
 } from "globals/interfaces";
+import { Skill } from "callflowmanagement/Skills.Interfaces";
 
 export interface ProfileEntryFormProps {
   handleClose: () => void

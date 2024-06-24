@@ -38,6 +38,7 @@ jest.mock("utils", () => ({
 
 const setMockForm = jest.fn();
 const axiosMock = new MockAdapter(myAxios);
+const mockResettingSkills = jest.fn();
 
 const selectedWorkers = [
   {
@@ -67,7 +68,7 @@ const convertedWorkers = [
 
 describe("ResetSkillsButton", () => {
 
-  const renderComponent = state => render(<ResetSkillsButton selected={selectedWorkers}/>, state);
+  const renderComponent = state => render(<ResetSkillsButton selected={selectedWorkers} setResettingSkills={mockResettingSkills}/>, state);
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -110,11 +111,7 @@ describe("ResetSkillsButton", () => {
           getMockedComponentProps(StyledButton).onClick();
           return Promise.resolve();
         }).then(() => {
-          expect(setMockForm).toHaveBeenCalledTimes(4);
-          expect(setMockForm).toHaveBeenCalledWith({
-            type: "resettingSkills",
-            payload: true
-          });
+          expect(setMockForm).toHaveBeenCalledTimes(2);
           expect(setMockForm).toHaveBeenCalledWith({
             type: "updateWorker",
             payload: mapWorkerFromTwilio(convertedWorkers[0])
@@ -122,10 +119,6 @@ describe("ResetSkillsButton", () => {
           expect(setMockForm).toHaveBeenCalledWith({
             type: "updateWorker",
             payload: mapWorkerFromTwilio(convertedWorkers[1])
-          });
-          expect(setMockForm).toHaveBeenCalledWith({
-            type: "resettingSkills",
-            payload: false
           });
           expect(ResetSkillsResultsModal.mock.calls[0][0].unsuccessfulWorkers).toEqual([]);
           done();
@@ -157,18 +150,10 @@ describe("ResetSkillsButton", () => {
           return Promise.resolve();
         }).then(() => {
           expectMockedComponent(rendered, { ResetSkillsResultsModal }, 1);
-          expect(setMockForm).toHaveBeenCalledTimes(3);
-          expect(setMockForm).toHaveBeenCalledWith({
-            type: "resettingSkills",
-            payload: true
-          });
+          expect(setMockForm).toHaveBeenCalledTimes(1);
           expect(setMockForm).toHaveBeenCalledWith({
             type: "updateWorker",
             payload: mapWorkerFromTwilio(convertedWorkers[0])
-          });
-          expect(setMockForm).toHaveBeenCalledWith({
-            type: "resettingSkills",
-            payload: false
           });
           expect(ResetSkillsResultsModal.mock.calls[0][0].unsuccessfulWorkers).toEqual([
             {
@@ -195,15 +180,6 @@ describe("ResetSkillsButton", () => {
           return Promise.resolve();
         }).then(() => {
           expectMockedComponent(rendered, { ResetSkillsResultsModal }, 1);
-          expect(setMockForm).toHaveBeenCalledTimes(2);
-          expect(setMockForm).toHaveBeenCalledWith({
-            type: "resettingSkills",
-            payload: true
-          });
-          expect(setMockForm).toHaveBeenCalledWith({
-            type: "resettingSkills",
-            payload: false
-          });
           expect(ResetSkillsResultsModal.mock.calls[0][0].error).toBe("An unexpected error occurred when trying to reset worker skills");
           act(() => ResetSkillsResultsModal.mock.calls[0][0].handleClose());
           expectMockedComponent(rendered, { ResetSkillsResultsModal }, 0);

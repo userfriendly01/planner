@@ -21,7 +21,8 @@ const defaultResetInformation: DefaultResetInformation = {
 
 export const ResetSkillsButton = (props: any) => {
   const {
-    selected
+    selected,
+    setResettingSkills
   } = props;
 
   const state = useAdminState();
@@ -31,11 +32,7 @@ export const ResetSkillsButton = (props: any) => {
   const [ resultsModalOpts, setResultsModalOpts ] = useState(defaultResetInformation);
 
   const resetWorkers = () => {
-    const dispatchResettingSkills = (bool: boolean) => dispatch({
-      type: "resettingSkills",
-      payload: bool
-    });
-    dispatchResettingSkills(true);
+    setResettingSkills(true);
     const workerSids = selected.map((worker: any) => worker.sid);
     myAxios
       .post(apiPaths.RESET_WORKER_SKILLS, { workerSids }).then(response => {
@@ -60,7 +57,7 @@ export const ResetSkillsButton = (props: any) => {
             });
           }
         });
-        dispatchResettingSkills(false);
+        setResettingSkills(false);
         setResultsModalOpts({
           ...resultsModalOpts,
           open: true,
@@ -79,7 +76,7 @@ export const ResetSkillsButton = (props: any) => {
           workerSids,
           nNumber
         });
-        dispatchResettingSkills(false);
+        setResettingSkills(false);
         setResultsModalOpts({
           ...resultsModalOpts,
           open: true,

@@ -74,7 +74,7 @@ const mockNavigate = jest.fn();
 const mockSetForm = jest.fn();
 const mockHandleClose = jest.fn();
 
-describe("<UserEntryForm />", () => {
+describe("<UserEntryFormWrapper />", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -192,7 +192,7 @@ describe("<UserEntryForm />", () => {
           container, unmount
         } = renderComponent();
         expect(ModalOverlay.mock.calls.length).toBe(0);
-        expect(container).toHaveTextContent("Discrepencies have been found for this worker. They will be corrected when you hit 'Save User' unless otherwise specified ");
+        expect(container).toHaveTextContent("Discrepencies have been found for this worker. They will be corrected when you hit `Save User` unless otherwise specified ");
         expect(container).toHaveTextContent("Missing Profile");
         act(() => unmount());
       });
@@ -271,7 +271,7 @@ describe("<UserEntryForm />", () => {
     });
     describe("check userFound boxes", () => {
       describe("triton checkbox", () => {
-        test("updates triton.userFound", async () => {
+        test("updates triton.userFound", () => {
           const { unmount } = renderComponent();
           const checkTritonBox = Checkbox.mock.calls[0][0].onChange;
           act(() => checkTritonBox({

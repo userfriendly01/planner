@@ -7,7 +7,8 @@ import {
   act,
   initialTestState,
   render,
-  setupMockedComponents
+  setupMockedComponents,
+  initialSkillState
 } from "testUtils";
 
 jest.mock("../../BulkChanges.Styles", () => ({
@@ -269,7 +270,6 @@ const expectedWFMCols = [
   }
 ];
 
-
 describe("ExportOptionsButton", () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -281,14 +281,14 @@ describe("ExportOptionsButton", () => {
   });
   describe("initial render", () => {
     test("component renders as expected", () => {
-      render(<ExportOptionsButton template={createTemplates.CREATE_TRITON_USER.fields} state={initialTestState} businessUnitId={"123-321"} />);
+      render(<ExportOptionsButton template={createTemplates.CREATE_TRITON_USER.fields} state={initialTestState} businessUnitId={"123-321"} skillState={initialSkillState}/>);
       render(Button.mock.calls[0][0].children[0]);
       expect(Button.mock.calls.length).toBe(1);
       expect(ExcelExport.mock.calls.length).toBe(2);
     });
     describe("teamplate === CREATE_CALABRIO_WFM_PERSON", () => {
       test("should render BU specific options", () => {
-        render(<ExportOptionsButton template={createTemplates.CREATE_CALABRIO_WFM_PERSON.fields} state={initialTestState} businessUnitId={"123-321"} />);
+        render(<ExportOptionsButton template={createTemplates.CREATE_CALABRIO_WFM_PERSON.fields} state={initialTestState} businessUnitId={"123-321"} skillState={initialSkillState}/>);
         render(Button.mock.calls[0][0].children[0]);
         const onClick = Button.mock.calls[0][0].onClick;
         act(() => onClick());
@@ -298,7 +298,7 @@ describe("ExportOptionsButton", () => {
     });
     describe("onClick", () => {
       test("handleExport is called", () => {
-        render(<ExportOptionsButton template={createTemplates.CREATE_TRITON_USER.fields} state={initialTestState} businessUnitId={"123-321"} />);
+        render(<ExportOptionsButton template={createTemplates.CREATE_TRITON_USER.fields} state={initialTestState} businessUnitId={"123-321"} skillState={initialSkillState}/>);
         render(Button.mock.calls[0][0].children[0]);
         const onClick = Button.mock.calls[0][0].onClick;
         act(() => onClick());
@@ -316,7 +316,7 @@ describe("ExportOptionsButton", () => {
               field: "empty options",
               options: () => []
             }
-          ]} state={initialTestState} />);
+          ]} state={initialTestState} skillState={initialSkillState} />);
           render(Button.mock.calls[0][0].children);
           const onClick = Button.mock.calls[0][0].onClick;
           act(() => onClick());
