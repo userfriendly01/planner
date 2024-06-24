@@ -13,11 +13,10 @@ import {
   useSkillDispatch
 } from "context/appContext";
 import { skillActions } from "context/reducers/skillReducer";
-import {
-  FlexColumn, DropdownOption
-} from "globals/interfaces";
+import { FlexColumn } from "globals/interfaces";
 import React from "react";
 import {
+  getTargetExpression,
   isTaskQueueError
 } from "utils/skillsUtils";
 
@@ -33,50 +32,45 @@ export const GeneralSkillForm = () => {
     newTaskQueue: skillState.skillForm.taskQueue.isNew ? skillState.skillForm.taskQueue.friendly_name : "",
     levelToggle: skillState.skillForm.levels.min || skillState.skillForm.levels.max ? true : false
   });
-  const taskQueues = skillState.taskQueues;
-  const levels = [];
+  const [ levels, setLevels ] = React.useState([]);
+  const [ ouOptions, setOuOptions ] = React.useState([]);
+  const [ profileOptions, setProfileOptions ] = React.useState([]);
 
-  for(let i = 1; i < 100; i++ ){
-    levels.push(i);
-  }
   const taskQueueError: boolean = isTaskQueueError(skillState.skillForm, tempField.name);
-  const taskQueueOptions = taskQueues.map(queue => {
-    return {
-      label: queue.friendly_name,
-      value: queue.sid,
-      ...queue
-    };
-  });
-  const workerExpression = skillState.skillForm.taskQueue.isNew ? `routing.skills HAS "${tempField.name}"` : skillState.skillForm.taskQueue.target_workers;
+  const workerExpression = skillState.skillForm.taskQueue.isNew ? getTargetExpression(tempField.name) : skillState.skillForm.taskQueue.target_workers;
   const nameDisplay = skillState.skillForm.taskQueue.isNew ? tempField.newTaskQueue : skillState.skillForm.taskQueue.friendly_name;
 
+  const [ taskQueueOptions, setTaskQueueOptions ] = React.useState([]);
   const [ filteredQueues, setFilteredQueues ] = React.useState(taskQueueOptions);
 
-  const taskQueueDropdownOptions: DropdownOption[] = [
-    {
-      label: "Show All",
-      value: "show-all"
-    },
-    {
-      label: "Add TaskQueue",
-      value: "add-taskqueue"
-    },
-    {
-      label: "divider",
-      value: "divider"
-    },
-    ...filteredQueues
-  ];
+  React.useEffect(() => {
+    const lvls = [];
+    for(let i = 1; i < 100; i++ ){ lvls.push({
+      label: i.toString(),
+      value: i
+    }); }
+    setLevels(lvls);
+    setOuOptions(skillState.operatingUnits.map(ou => ({
+      value: ou.ou_sid,
+      label: ou.ou_name
+    })));
+    setProfileOptions(profiles.map(p => ({
+      value: p.profile_id,
+      label: p.profile_nme
+    })));
+  }, []);
 
-  const ouOptions = skillState.operatingUnits.map(ou => ({
-    value: ou.ou_sid,
-    label: ou.ou_name
-  }));
-
-  const profileOptions = profiles.map(p => ({
-    value: p.profile_id,
-    label: p.profile_nme
-  }));
+  React.useEffect(() => {
+    const queues = skillState.taskQueues.map((queue: any) => {
+      return {
+        label: queue.friendly_name,
+        value: queue.sid,
+        ...queue
+      };
+    });
+    setTaskQueueOptions(queues);
+    setFilteredQueues(queues);
+  }, [skillState.taskQueues]);
 
   const inputStyles = {
     width: "330px",
@@ -140,7 +134,21 @@ export const GeneralSkillForm = () => {
       <FormRow>
         <FlexColumn style={{ maxWidth: "300px" }}>
           <Dropdown
-            options={taskQueueDropdownOptions}
+            options={[
+              {
+                label: "Show All",
+                value: "show-all"
+              },
+              {
+                label: "Add TaskQueue",
+                value: "add-taskqueue"
+              },
+              {
+                label: "divider",
+                value: "divider"
+              },
+              ...filteredQueues
+            ]}
             styles={inputStyles}
             value={skillState.skillForm.taskQueue.isNew && "Add TaskQueue" || taskQueueOptions.find((op:any) => op.value === skillState.skillForm.taskQueue.sid) || null}
             label="Task Queue *"
@@ -266,10 +274,7 @@ export const GeneralSkillForm = () => {
         {tempField.levelToggle &&
         <>
           <Dropdown
-            options={levels.map(l => ({
-              value: l,
-              label: l.toString()
-            }))}
+            options={levels}
             styles={{
               width: "200px",
               margin: "5px"
@@ -290,10 +295,7 @@ export const GeneralSkillForm = () => {
             }}
           />
           <Dropdown
-            options={levels.map(l => ({
-              value: l,
-              label: l.toString()
-            }))}
+            options={levels}
             styles={{
               width: "200px",
               margin: "5px"

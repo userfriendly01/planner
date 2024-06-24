@@ -16,7 +16,8 @@ import {
 } from "../Skills.Styles";
 import { timeouts } from "globals";
 import {
-  Divider
+  Divider,
+  Checkbox
 } from "@mui/material";
 import { formatErrorMessage } from "utils/_formatUtils";
 import { logger } from "utils/logger";
@@ -25,7 +26,7 @@ import {
   identifyImpactedWorkers
 } from "utils/skillsUtils";
 import {
-  ModalOverlayStatuses, UMUser
+  ModalOverlayStatuses, UMUser, FlexColumn
 } from "globals/interfaces";
 import { ModalOverlay } from "components/core/ModalOverlay/ModalOverlay";
 import { TwilioQueue } from "../Skills.Interfaces";
@@ -190,12 +191,14 @@ export const DeleteSkillForm = (props: any) => {
                 {saveResult.message.map((result: any, index: number) => ((
                   <>
                     {typeof result.reason === "object" ?
-                      <tr key={`${index}-row`}>
+                      <div key={`${index}-row`}>
                         {result.reason.map((reason: string) => ((
-                          <td key={`${index}-reason`}><CenteredDiv>{reason}</CenteredDiv></td>
+                          <tr key={`${index}-row`}>
+                            <td key={`${index}-reason`}><CenteredDiv>{reason}</CenteredDiv></td>
+                          </tr>
                         )))
                         }
-                      </tr>
+                      </div>
                       :
                       <tr key={`${index}-row`}>
                         <td><CenteredDiv>{result.reason}</CenteredDiv></td>
@@ -233,12 +236,8 @@ export const DeleteSkillForm = (props: any) => {
                 <FormRow>
                   <h4>These skills will also be removed from {impactedWorkers.length} workers that have this skill in either their default skills, routing skills & disabled skills</h4>
                 </FormRow>
-                {/* <FormRow> 
-                
-                // Deleting Task Queues is more involved than it seemed. 
-                Will discuss next steps with Kim before peeling code out. 
-                Task Queues need to be taken out of a workflow
-
+                {/* <FormRow>
+                    //This will be implemented in a separate story when we take workflows into consideration
                   <Checkbox
                     onChange={(e: any) => setShouldDeleteQueue(e.target.checked)}
                     checked={shouldDeleteQueue}
