@@ -76,6 +76,12 @@ describe("reducer", () => {
     });
     describe("type === UMUser", () => {
       test("should set workers to page results", () => {
+        const startingState = {
+          ...initialState,
+          workerContext: {
+            workers: [{ name: "I'm already here!" }]
+          }
+        };
         const payload = {
           type: "UMUser",
           results: [
@@ -86,8 +92,34 @@ describe("reducer", () => {
           type: "loadPaginatedResults",
           payload
         };
-        const result = reducer(initialState, action);
-        expect(result.workerContext.workers).toEqual(payload.results);
+        const result = reducer(startingState, action);
+        expect(result.workerContext.workers).toEqual([
+          { name: "I'm already here!" },
+          { name: "I'm a worker!" }
+        ]);
+      });
+      describe("isFirstPage === true", () => {
+        test("should set workers to page results", () => {
+          const startingState = {
+            ...initialState,
+            workerContext: {
+              workers: [{ name: "I'm already here!" }]
+            }
+          };
+          const payload = {
+            type: "UMUser",
+            isFirstPage: true,
+            results: [
+              { name: "I'm a worker!" }
+            ]
+          };
+          const action = {
+            type: "loadPaginatedResults",
+            payload
+          };
+          const result = reducer(startingState, action);
+          expect(result.workerContext.workers).toEqual(payload.results);
+        });
       });
     });
   });
