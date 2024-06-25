@@ -115,23 +115,17 @@ export const UPDATE_USER = gql`
   }
 `;
 
-export const LIST_OFFICES: GraphData = {
-  query: gql`
-    query listUMOffices($nextToken: String) {
-      offices: listUMOffices(nextToken: $nextToken) {
-        items {
-          pk
-          sk
-          item_type
-          office_num
-          office_name
-        }
-        nextToken
+export const GET_OFFICE = gql`
+    query getUMOffice($office_num: String) {
+      office: getUMOffice(office_num: $office_num) {
+        pk
+        sk
+        item_type
+        office_num
+        office_name
       }
     }
-`,
-  responsePath: "offices"
-};
+`;
 
 export const CREATE_OFFICE = gql`
   mutation createUMOffice($input: UMOfficeCreateInput!) {

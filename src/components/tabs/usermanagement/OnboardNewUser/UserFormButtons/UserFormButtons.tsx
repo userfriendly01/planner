@@ -33,7 +33,9 @@ import { wfmActivateExternalLogon } from "services/wfmActivateExternalLogon";
 import {
   createUser, updateUser
 } from "services/user";
-import { addOffice } from "services/office";
+import {
+  addOffice, getOffice
+} from "services/office";
 import {
   getNonOverflowSkills,
   getOverflowSkillFromProfile,
@@ -58,7 +60,6 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
     forwardToToggle,
     handleClose,
     loading,
-    offices,
     profiles,
     updateLoading,
     worker,
@@ -168,7 +169,8 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
         userNNumber
       });
 
-      if (!offices.some(o => newWorker.attributes.office_location_number === o.office_num)) {
+      const officeExists = await getOffice(newWorker.attributes.office_location_number);
+      if (!officeExists) {
         const newOffice = {
           office_name: newWorker.attributes.office_location_name,
           office_num: newWorker.attributes.office_location_number

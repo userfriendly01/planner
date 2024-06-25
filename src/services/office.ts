@@ -1,22 +1,24 @@
-import { getPaginatedResults } from "utils/graphUtils";
-import { CREATE_OFFICE } from "globals/graphql";
 import {
-  Action,
-  DBList,
+  CREATE_OFFICE, GET_OFFICE
+} from "globals/graphql";
+import {
   UMOffice
 }from "globals/interfaces";
 import { logger } from "utils/logger";
 import { apolloClient } from "../components/core/Auth/SharedGraphAPIProvider";
 
-export const listUMOffices = async (dispatch: (action: Action) => void): Promise<DBList<UMOffice>> => {
+export const getOffice = async (office_num: string): Promise<UMOffice> => {
   try {
-    await getPaginatedResults("UMOffice", dispatch);
-    return;
+    const { data }  = await apolloClient.query<{ office: UMOffice }>({
+      query: GET_OFFICE,
+      variables: {
+        office_num
+      }
+    });
+
+    return data.office;
   } catch(error) {
     logger.error("Failed to fetch offices from graph", { error });
-    throw ({
-      msg: "Failed to fetch offices from graph"
-    });
   }
 };
 

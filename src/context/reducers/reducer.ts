@@ -13,9 +13,6 @@ export const initialState: AppState = {
   managerContext: {
     managers: []
   },
-  officeContext: {
-    offices: []
-  },
   profileContext: {
     profiles: []
   },
@@ -59,21 +56,11 @@ export const reducer = (state: AppState, action: Action): AppState => {
       const pageResults: any[] = action.payload.results;
       const isFirstPage: boolean = action.payload.isFirstPage;
 
-      if(type === "UMSoftphoneConfiguration"){
-        console.log("PROFILES ", pageResults);
-      }
-
       return {
         ...state,
         managerContext: {
           ...state.managerContext,
           managers: (type === "UMManager" && !isFirstPage && state.managerContext.managers.concat(pageResults)) || (type === "UMManager" && pageResults) || state.managerContext.managers
-
-        },
-        officeContext: {
-          ...state.officeContext,
-          offices: (type === "UMOffice" && !isFirstPage && state.officeContext.offices.concat(pageResults)) || (type === "UMOffice" && pageResults) || state.officeContext.offices
-
         },
         workerContext: {
           ...state.workerContext,
@@ -99,14 +86,6 @@ export const reducer = (state: AppState, action: Action): AppState => {
         managerContext: {
           ...state.managerContext,
           managers: action.payload
-        }
-      };
-    case "addOffice":
-      return {
-        ...state,
-        officeContext: {
-          ...state.officeContext,
-          offices: [...state.officeContext.offices.slice(), action.payload]
         }
       };
     case "addWorkers":

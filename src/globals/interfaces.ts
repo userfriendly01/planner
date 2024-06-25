@@ -93,9 +93,6 @@ export interface AppState {
   managerContext: {
     managers: UMManager[]
   },
-  officeContext: {
-    offices: UMOffice[]
-  },
   profileContext: {
     profiles: UMSoftphoneConfiguration[]
   },

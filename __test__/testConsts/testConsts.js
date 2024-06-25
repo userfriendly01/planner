@@ -449,9 +449,6 @@ export const mockAggregateQueues = [
 ];
 
 export const initialTestState = {
-  officeContext: {
-    offices: officeMap
-  },
   profileContext: {
     profiles: profileList
   },

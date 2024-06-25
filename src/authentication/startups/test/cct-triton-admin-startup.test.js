@@ -10,7 +10,6 @@ import {
   getCalabrioOrg
 } from "services/calabrio";
 import { listUMManagers } from "services/manager";
-import { listUMOffices } from "services/office";
 import { listUMUsers } from "services/user";
 import { loadConsolidatedSkills } from "services/skill";
 import {
@@ -43,10 +42,6 @@ jest.mock("services/calabrio", () => ({
 
 jest.mock("services/manager", () => ({
   listUMManagers: jest.fn()
-}));
-
-jest.mock("services/office", () => ({
-  listUMOffices: jest.fn()
 }));
 
 jest.mock("services/user", () => ({
@@ -104,7 +99,6 @@ describe("cct-triton-admin-startup", () => {
     useAdminDispatch.mockReturnValue(mockAdminDispatch);
     listUMUsers.mockResolvedValue();
     listUMManagers.mockResolvedValue();
-    listUMOffices.mockResolvedValue();
     loadConsolidatedSkills.mockResolvedValue();
   });
 
@@ -198,20 +192,6 @@ describe("cct-triton-admin-startup", () => {
         describe("managers service call returned an error", () => {
           beforeEach(() => {
             listUMManagers.mockRejectedValue(error);
-          });
-          test("should return 'An error occurred while logging in.'", async () => {
-            try {
-              await runTritonAdminStartup(mockAdminDispatch);
-            } catch (err) {
-              expect(err).toBe(error);
-            }
-          });
-        });
-      });
-      describe(apiPaths.OFFICES, () => {
-        describe("offices service call returned an error", () => {
-          beforeEach(() => {
-            listUMOffices.mockRejectedValue(error);
           });
           test("should return 'An error occurred while logging in.'", async () => {
             try {

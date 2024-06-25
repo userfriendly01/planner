@@ -26,7 +26,9 @@ import { wfmActivateExternalLogon } from "services/wfmActivateExternalLogon";
 import {
   createUser, updateUser
 } from "services/user";
-import { addOffice } from "services/office";
+import {
+  addOffice, getOffice
+} from "services/office";
 import {
   act,
   fetchedUser,
@@ -105,7 +107,8 @@ jest.mock("services/user", () => ({
 }));
 
 jest.mock("services/office", () => ({
-  addOffice: jest.fn()
+  addOffice: jest.fn(),
+  getOffice: jest.fn()
 }));
 
 const worker = {
@@ -196,6 +199,7 @@ describe("<UserFormButtons />", () => {
     getCalabrioUsers.mockResolvedValue({ data: "yay!" });
     addWorkerToOrg.mockReturnValue(["newstateyay!"]);
     identifyFormErrors.mockReturnValue([]);
+    getOffice.mockResolvedValue("I'm an office");
     setupMockedComponents({
       StyledButton,
       Tooltip,

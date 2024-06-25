@@ -11,7 +11,6 @@ import {
 }from "globals/interfaces";
 import {
   LIST_MANAGERS,
-  LIST_OFFICES,
   LIST_USERS,
   LIST_SOFTPHONE_CONFIGS
 }from "globals/graphql";
@@ -27,8 +26,6 @@ export const getGraphData = (type: string) => {
       return LIST_USERS;
     case "UMManager":
       return LIST_MANAGERS;
-    case "UMOffice":
-      return LIST_OFFICES;
     case "UMSoftphoneConfiguration":
       return LIST_SOFTPHONE_CONFIGS;
     default:

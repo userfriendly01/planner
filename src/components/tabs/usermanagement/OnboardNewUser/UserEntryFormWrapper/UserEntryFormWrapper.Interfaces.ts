@@ -41,7 +41,6 @@ export interface UserFormButtonsProps {
   forwardToToggle: boolean,
   handleClose: () => void,
   loading: LoadingState,
-  offices: UMOffice[],
   profiles: UMSoftphoneConfiguration[],
   updateLoading: (payload: any) => void,
   worker: UMUser | null,

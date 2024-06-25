@@ -1,10 +1,7 @@
 import {
   addOffice,
-  listUMOffices
+  getOffice
 } from "../office";
-import {
-  getPaginatedResults
-} from "utils/graphUtils";
 import { apolloClient } from "../../components/core/Auth/SharedGraphAPIProvider";
 
 jest.mock("../../components/core/Auth/SharedGraphAPIProvider", () => ({
@@ -22,9 +19,10 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 
+const data = { office: "0022" };
+
 describe("addOffice", () => {
   describe("call succeeds", () => {
-    const data = { office: "0022" };
     beforeEach(() => apolloClient.mutate.mockReturnValue({ data }));
     test("should resolve with any successful response", done => {
       const newOffice = {
@@ -53,11 +51,11 @@ describe("addOffice", () => {
   });
 });
 
-describe("listUMOffices", () => {
+describe("getOffice", () => {
   describe("call succeeds", () => {
-    beforeEach(() => getPaginatedResults.mockResolvedValue("Yay"));
+    beforeEach(() => apolloClient.mutate.mockReturnValue({ data }));
     test("should resolve with any successful response", done => {
-      listUMOffices()
+      getOffice()
         .then(resolvedValue => {
           expect(resolvedValue).toEqual(undefined);
           done();
@@ -65,11 +63,10 @@ describe("listUMOffices", () => {
     });
   });
   describe("call fails", () => {
-    const badResponse = { wahh: "boo" };
-    beforeEach(() => getPaginatedResults.mockRejectedValue(badResponse));
+    beforeEach(() => apolloClient.mutate.mockReturnValue({ errors: [{ message: "boo" }]}));
     test("should reject with error", done => {
-      listUMOffices().catch(rejectedVal => {
-        expect(rejectedVal).toEqual({ msg: "Failed to fetch offices from graph" });
+      getOffice().then(rejectedVal => {
+        expect(rejectedVal).toEqual(null);
         done();
       });
     });

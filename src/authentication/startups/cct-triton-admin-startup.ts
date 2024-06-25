@@ -1,5 +1,4 @@
 import { getStartupProfiles } from "authentication/authenticationProfiles";
-import { apiPaths } from "globals";
 import { Action } from "globals/interfaces";
 import {
   getWfmBusinessUnits,
@@ -8,7 +7,6 @@ import {
   getCalabrioOrg as getCalabrioOrgServiceCall
 } from "services/calabrio";
 import { listUMManagers } from "services/manager";
-import { listUMOffices } from "services/office";
 import { listUMUsers } from "services/user";
 import { listUMSoftphoneConfigs } from "services/profile";
 import { loadConsolidatedSkills } from "services/skill";
@@ -86,7 +84,6 @@ export const runTritonAdminStartup = (dispatch:  (action: Action) => void, skill
   return Promise.all([
     Promise.resolve(getStartupProfiles().TRITON.name),
     listUMManagers(dispatch),
-    listUMOffices(dispatch),
     listUMSoftphoneConfigs(dispatch),
     loadConsolidatedSkills(skillDispatch),
     getCalabrioUsers(dispatch),

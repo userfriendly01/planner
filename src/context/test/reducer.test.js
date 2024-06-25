@@ -54,22 +54,6 @@ describe("reducer", () => {
         ]);
       });
     });
-    describe("type === UMOffice", () => {
-      test("should set offices to page results", () => {
-        const payload = {
-          type: "UMOffice",
-          results: [
-            { name: "I'm an office" }
-          ]
-        };
-        const action = {
-          type: "loadPaginatedResults",
-          payload
-        };
-        const result = reducer(initialState, action);
-        expect(result.officeContext.offices).toEqual(payload.results);
-      });
-    });
     describe("type === UMUser", () => {
       test("should set workers to page results", () => {
         const startingState = {
@@ -175,30 +159,6 @@ describe("reducer", () => {
       expect(result.managerContext.managers).toEqual(payload);
     });
   });
-  describe("addOffice", () => {
-    test("should add to the office map", () => {
-      const payload ={
-        office_nme: "The Dova",
-        office_num: "016D"
-      };
-      const action = {
-        type: "addOffice",
-        payload
-      };
-      const initialOffices = [{
-        office_nme: "Initial Office",
-        office_num: "024"
-      }];
-      const testState = {
-        ...initialState,
-        officeContext: {
-          offices: initialOffices
-        }
-      };
-      const result = reducer(testState, action);
-      expect(result.officeContext.offices).toEqual(initialOffices.concat([payload]));
-    });
-  });
   describe("addWorkers", () => {
     test("should update the workers array", () => {
       const initialWorkersList = [
@@ -273,7 +233,7 @@ describe("reducer", () => {
     });
   });
   describe("loadCalabrioOrg", () => {
-    test("should initialize a map from the offices map sent in", () => {
+    test("should initialize a map from the org map sent in", () => {
       const payload = [
         {
           groupLevel: "TENANT"
@@ -316,7 +276,7 @@ describe("reducer", () => {
     });
   });
   describe("addCalabrioTeam", () => {
-    test("should initialize a map from the offices map sent in", () => {
+    test("should initialize a map from the team map sent in", () => {
       const newCalabrioTeam = {
         name: "Yay team",
         parentGroupId: 12
@@ -342,7 +302,7 @@ describe("reducer", () => {
     });
   });
   describe("loadCalabrioUsers", () => {
-    test("should initialize a map from the offices map sent in", () => {
+    test("should initialize a map from the users map sent in", () => {
       const payload = [
         {
           firstName: "Faith",
@@ -372,7 +332,7 @@ describe("reducer", () => {
     });
   });
   describe("loadCalabrioRoles", () => {
-    test("should initialize a map from the offices map sent in", () => {
+    test("should initialize a map from the roles map sent in", () => {
       const payload = [
         {
           id: 1,
@@ -509,7 +469,7 @@ describe("reducer", () => {
     });
   });
   describe("loadWfmOptions", () => {
-    test("should initialize a map from the offices map sent in", () => {
+    test("should initialize a map from the options map sent in", () => {
       const payload = [
         {
           id: 1,
