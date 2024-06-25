@@ -53,7 +53,7 @@ export const getPaginatedResults = async (type: string, dispatch: (action: Actio
         payload: {
           type,
           results: formattedData,
-          isFirstQuery
+          isFirstPage: isFirstQuery
         }
       }));
 
