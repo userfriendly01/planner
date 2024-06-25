@@ -32,7 +32,7 @@ export const userFormActions = {
   SET_CALABRIO_TEAM: "SET_CALABRIO_TEAM",
   SET_CALABRIO_TIMEZONE: "SET_CALABRIO_TIMEZONE",
   SET_CALABRIO_ROLES: "SET_CALABRIO_ROLES",
-  SET_FTO_BACK_UP_WORKER: "SET_FTO_BACK_UP_WORKER",
+  SET_BACK_UP_WORKER: "SET_BACK_UP_WORKER",
   SET_CALLER_STATES: "SET_CALLER_STATES",
   SET_SALES_ASSOCIATE_WORKER: "SET_SALES_ASSOCIATE_WORKER",
   SET_DISCREPANCIES: "SET_DISCREPANCIES",
@@ -362,7 +362,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
           ...state.triton,
           routing: {
             ...state.triton.routing,
-            backup_workers_active: !state.triton.routing.backupWorkersActive,
+            backup_workers_active: !state.triton.routing.backup_workers_active,
             updated: true
           }
         }
@@ -465,15 +465,15 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
         }
       };
     }
-    case userFormActions.SET_FTO_BACK_UP_WORKER: {
-      const ftoBackupWorkerAttr = action.payload.ftoBackupWorkerRouting;
+    case userFormActions.SET_BACK_UP_WORKER: {
+      const backupWorkerAttr = action.payload.backupWorkerRouting;
       return {
         ...state,
         triton: {
           ...state.triton,
           routing: {
             ...state.triton.routing,
-            backup_workers: ftoBackupWorkerAttr,
+            backup_workers: backupWorkerAttr,
             updated: true
           }
         }

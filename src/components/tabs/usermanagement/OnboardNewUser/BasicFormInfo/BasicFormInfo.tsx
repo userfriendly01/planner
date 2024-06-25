@@ -326,7 +326,7 @@ export const BasicFormInfo = (props: BasicFormInfoProps) => {
         >
           <ToggleContainer>
             <Switch
-              checked={form.triton.routing.backupWorkersActive}
+              checked={form.triton.routing.backup_workers_active}
               onChange={() => {
                 setForm({ type: userFormActions.UPDATE_BACK_UP_WORKER_FLAG });
               }}

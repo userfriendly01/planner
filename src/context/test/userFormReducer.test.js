@@ -1498,13 +1498,13 @@ describe("userFormReducer", () => {
     });
   });
   
-  describe("SET_FTO_BACK_UP_WORKER", () => {
+  describe("SET_BACK_UP_WORKER", () => {
     test("should update backup worker", () => {
       const payload = {
-        ftoBackupWorkerRouting: ["Test1", "Test2"]
+        backupWorkerRouting: ["Test1", "Test2"]
       };
       const action = {
-        type: userFormActions.SET_FTO_BACK_UP_WORKER,
+        type: userFormActions.SET_BACK_UP_WORKER,
         payload
       };
       const result = userFormReducer(initialUserFormState, action);
@@ -1514,7 +1514,7 @@ describe("userFormReducer", () => {
           ...initialUserFormState.triton,
           routing: {
             ...initialUserFormState.triton.routing,
-            backup_workers: payload.ftoBackupWorkerRouting,
+            backup_workers: payload.backupWorkerRouting,
             updated: true
           }
         }
