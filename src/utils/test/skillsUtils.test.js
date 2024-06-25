@@ -1,7 +1,6 @@
 import {
   areSkillsDifferent,
   getValidSkillsObject,
-  formatSkillGroups,
   formatWorkerAttributeSkillsToHTML,
   formatWorkerAttributeSkillsToString,
   identifyImpactedWorkers
@@ -582,98 +581,6 @@ describe("skillsUtils", () => {
             skills: ["cool", "wow"]
           });
         });
-      });
-    });
-  });
-
-  describe("formatSkillGroups", () => {
-    describe("should take skills array return skill groups array containing any skills that are in the skill groups", () => {
-      test("If no skills contain skill groups, return empty array", () => {
-        const skillsArray = [{
-          name: "skill1",
-          skillGroups: []
-        },
-        {
-          name: "skill2",
-          skillGroups: []
-        }];
-        expect(formatSkillGroups(skillsArray)).toEqual([]);
-      });
-      test("A skill with more than one skill group will return an array with all skill groups", () => {
-        const skillsArray = [{
-          name: "skill1",
-          levels: [1, 2, 3],
-          ctmSkillId: 3,
-          skillGroups: [
-            {
-              skillGroupId: 1,
-              skillGroupNme: "I am a default skill group"
-            },
-            {
-              skillGroupId: 2,
-              skillGroupNme: "another skill group"
-            }
-          ]
-        }];
-        expect(formatSkillGroups(skillsArray)).toEqual([
-          {
-            skillGroupId: 1,
-            skillGroupNme: "I am a default skill group",
-            skills: [{
-              name: "skill1",
-              levels: [1, 2, 3],
-              ctmSkillId: 3
-            }]
-          },
-          {
-            skillGroupId: 2,
-            skillGroupNme: "another skill group",
-            skills: [{
-              name: "skill1",
-              levels: [1, 2, 3],
-              ctmSkillId: 3
-            }]
-          }
-        ]);
-      });
-      test("skills that share skill groups will be included within the same skill group", () => {
-        const skillsArray = [{
-          name: "skill1",
-          levels: [1, 2, 3],
-          ctmSkillId: 3,
-          skillGroups: [
-            {
-              skillGroupId: 1,
-              skillGroupNme: "I am a default skill group"
-            }
-          ]
-        }, {
-          name: "skill2",
-          levels: [1, 2, 3, 4, 5],
-          ctmSkillId: 4,
-          skillGroups: [
-            {
-              skillGroupId: 1,
-              skillGroupNme: "I am a default skill group"
-            }
-          ]
-        }];
-        expect(formatSkillGroups(skillsArray)).toEqual([{
-          skillGroupId: 1,
-          skillGroupNme: "I am a default skill group",
-          skills: [
-            {
-              name: "skill1",
-              levels: [1, 2, 3],
-              ctmSkillId: 3
-            },
-            {
-              name: "skill2",
-              levels: [1, 2, 3, 4, 5],
-              ctmSkillId: 4
-            }
-          ]
-        }]);
       });
     });
   });

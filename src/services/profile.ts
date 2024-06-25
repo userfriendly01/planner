@@ -11,10 +11,7 @@ import {
   UMSoftphoneConfiguration,
   DBList
 }from "globals/interfaces";
-import {
-  LIST_USER_RECORDS,
-  getSoftphoneConfigRelationshipsQuery
-} from "globals/graphql";
+import { getSoftphoneConfigRelationshipsQuery } from "globals/graphql";
 
 export const listUMSoftphoneConfigs = async (dispatch: (action: Action) => void): Promise<DBList<UMSoftphoneConfiguration>> => {
   try {
@@ -61,15 +58,15 @@ export const loadSoftphoneConfigRelationships = async (profiles: UMSoftphoneConf
 
         if(data?.accessGroup) { formattedProfile.accessGroup = data.accessGroup; }
         if(data?.activities?.items?.length) { formattedProfile.activities = [...formattedProfile.activities, ...data.activities.items]; }
-        if(data?.dialListNumbers?.items?.length) { formattedProfile.dialListNumbers = [...formattedProfile.dialListNumbers, ...data.dialListNumbers.items]; }
         if(data?.directoryNumbers?.items?.length) { formattedProfile.directoryNumbers = [...formattedProfile.directoryNumbers, ...data.directoryNumbers.items]; }
+        if(data?.dialListNumbers?.items?.length) { formattedProfile.dialListNumbers = [...formattedProfile.dialListNumbers, ...data.dialListNumbers.items]; }
 
         //Test Next Token functionality specifically in unit test
 
         if(errors?.length && !errors.every((e: any) => e.errorType === "NOT_FOUND")) { throw errors; }
 
-        if(data?.actvities?.nextToken || data?.directoryNextToken?.nextToken || data?.dialListNextToken?.nextToken){
-          return getPageResults(false, data.actvities.nextToken, data.directoryNextToken.nextToken, data.dialListNextToken.nextToken);
+        if(data?.actvities?.nextToken || data?.directoryNumbers?.nextToken || data?.dialListNumbers?.nextToken){
+          return getPageResults(false, data.actvities.nextToken, data.directoryNumbers.nextToken, data.dialListNumbers.nextToken);
         } else {
           return formattedProfile;
         }
@@ -90,7 +87,6 @@ export const loadSoftphoneConfigRelationships = async (profiles: UMSoftphoneConf
       isFirstPage: true
     }
   }));
-
 };
 
 export const createProfile = (profile: ProfilePayload): Promise<any> => myAxios.post(apiPaths.PROFILES, profile);

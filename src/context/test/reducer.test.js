@@ -4,10 +4,6 @@ import {
   reducer
 } from "../reducers/reducer";
 
-jest.mock("utils/skillsUtils", () => ({
-  formatSkillGroups: jest.fn()
-}));
-
 describe("reducer", () => {
   describe("invalid action", () => {
     test("should do nothing", () => {

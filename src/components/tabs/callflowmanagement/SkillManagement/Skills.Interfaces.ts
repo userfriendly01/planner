@@ -232,10 +232,14 @@ export interface CallFlowTimeOfDay {
 }
 
 export interface UMSkill {
-  skillId: number,
-  taskQueueSid: string,
-  taskQueueName: string,
-  levels: any[]
+  pk: string,
+  sk: string,
+  skill_id: string,
+  task_queue_sid: string,
+  task_queue_name: string,
+  levels: any[],
+  profile_ids?: number[],
+  skill_group_ids?: number[]
 }
 
 export interface Skill {
@@ -246,8 +250,7 @@ export interface Skill {
   profiles: number[],
   taskQueueSid: string,
   taskQueueName: string,
-  skillGroups: SkillGroup[],
-  ctmSkillId: number,
+  skillGroupIds?: number[]
   applicationId: number,
   closedMessage: string,
   flashMessage: string,

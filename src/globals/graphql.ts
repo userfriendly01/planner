@@ -212,6 +212,37 @@ export const DELETE_MANAGER = gql`
   }
 `;
 
+
+
+export const getUMSkills = (
+  skillsNextToken?: string,
+  skillProfilesNextToken?: string,
+  isFirstQuery?: boolean
+) => {
+  return gql`
+  query ListUMSkills {
+    skills: listUMSkills(nextToken: ${skillsNextToken}) @include(if:  ${ !!(skillsNextToken?.length || isFirstQuery) }) {
+      nextToken
+      items {
+        pk
+        sk
+        skill_id
+        task_queue_sid
+        task_queue_name
+        levels
+      }
+    }
+    skillProfiles: listUMSoftphoneConfigToSkillItems(nextToken: ${skillProfilesNextToken}) @include(if:  ${ !!(skillProfilesNextToken?.length || isFirstQuery) }) {
+      nextToken
+      items {
+        pk
+        skill_id
+      }
+    }
+  }
+`;
+};
+
 export const LIST_SOFTPHONE_CONFIGS: GraphData = {
   query: gql`
     query listUMSoftphoneConfigurations($nextToken: String) {
