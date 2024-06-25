@@ -1,9 +1,11 @@
 import { checkIfPO } from "authentication/authUtils";
 import { ProfileSettingsTable } from "components/tabs/orgmanagement/triton/ProfileSettingsTable/ProfileSettingsTable";
 import { ProfileEntryForm } from "orgmanagement/ProfileEntryForm";
+import { PageLoadSpinner } from "components/PageLoadSpinner";
 import {
   useAdminState,
-  ProfileEntryFormStateProvider
+  ProfileEntryFormStateProvider,
+  useSkillDispatch
 } from "context/appContext";
 import { Modal } from "@mui/material";
 import React, { useState } from "react";
@@ -14,6 +16,7 @@ import {
   ControlItem,
   CreateProfileButton
 } from "./ProfileSettingsContainer.Styles";
+import { loadSoftphoneConfigRelationships } from "services/profile";
 
 export const ProfileSettingsContainer = () => {
   const initialProfileModalState = {
@@ -23,41 +26,53 @@ export const ProfileSettingsContainer = () => {
   const [profileModalState, setProfileModalState] = useState(initialProfileModalState);
 
   const state = useAdminState();
+  const skillDispatch = useSkillDispatch();
   const { nNumber: loggedInUser } = state.userContext;
-  const profilesFromContext = state.profileContext.profiles;
+  const profiles = state.profileContext.profiles;
+  const [ isLoading, setIsLoading ] = React.useState(true);
 
   const createProfileOnClick = () => setProfileModalState({
     open: true
   });
 
+  React.useEffect(() => {
+    loadSoftphoneConfigRelationships(profiles, skillDispatch, () => setIsLoading(false));
+  }, []);
+
   return (
     <ProfileEntryFormStateProvider>
       <ProfileSettingsContainerDiv>
-        <Modal onClose={() => { return; }} open={profileModalState.open}>
+        {isLoading ?
+          <PageLoadSpinner />
+          :
           <>
-            <ProfileEntryForm
-              handleClose={() => setProfileModalState(initialProfileModalState)}
-            />
-          </>
-        </Modal>
-        <SettingsContainer>
-          {
-            checkIfPO(loggedInUser) ?
-              <ControlsWrapper>
-                <ControlItem>
-                  <CreateProfileButton onClick={createProfileOnClick} data-testid={"create-profile-button"}>
+            <Modal onClose={() => { return; }} open={profileModalState.open}>
+              <>
+                <ProfileEntryForm
+                  handleClose={() => setProfileModalState(initialProfileModalState)}
+                />
+              </>
+            </Modal>
+            <SettingsContainer>
+              {
+                checkIfPO(loggedInUser) ?
+                  <ControlsWrapper>
+                    <ControlItem>
+                      <CreateProfileButton onClick={createProfileOnClick} data-testid={"create-profile-button"}>
                       Create Profile
-                  </CreateProfileButton>
-                </ControlItem>
-              </ControlsWrapper>
-              : null
-          }
-          <ProfileSettingsTable
-            profileList={profilesFromContext}
-            setProfileModalState={setProfileModalState}
-            loggedInUser={loggedInUser}
-          />
-        </SettingsContainer>
+                      </CreateProfileButton>
+                    </ControlItem>
+                  </ControlsWrapper>
+                  : null
+              }
+              <ProfileSettingsTable
+                profileList={profiles}
+                setProfileModalState={setProfileModalState}
+                loggedInUser={loggedInUser}
+              />
+            </SettingsContainer>
+          </>
+        }
       </ProfileSettingsContainerDiv>
     </ProfileEntryFormStateProvider>
   );

@@ -212,7 +212,7 @@ export const DELETE_MANAGER = gql`
   }
 `;
 
-export const LIST_SOFTPHONE_CONFIGURATIONS: GraphData = {
+export const LIST_SOFTPHONE_CONFIGS: GraphData = {
   query: gql`
     query listUMSoftphoneConfigurations($nextToken: String) {
       profiles: listUMSoftphoneConfigurations(nextToken: $nextToken) {
@@ -256,64 +256,77 @@ export const LIST_SOFTPHONE_CONFIGURATIONS: GraphData = {
   responsePath: "profiles"
 };
 
-export const GET_SOFTPHONE_CONFIGURATION_RELATIONSHIPS: GraphData = (
-  profile_id: number,
-  accessGroupNextToken: string | null,
-  activityNextToken: string | null,
-  directoryListNextToken: string | null,
-  dialListListNextToken: string | null,
-  dialListListNextToken: string | null,
-
-  queryCount: number
-) => {
-  return gql`
-  query GetSoftphoneConfigurationRelationships {
-    getUMAccessGroupByProfile(profile_id: null) {
-        pk
-        sk
-        access_group_name
-        twilio_dashboard_url
-        item_type
-        id
-        viewable_profiles
-    }
-    queryUMActivitiesByProfile(profile_id: null) {
-      nextToken
-      items {
-        pk
-        sk
-        activity_name
-        activity_sid
-        available
-        item_type
-      }
-    }
-    queryUMDirectoryNumbersByProfile(profile_id: null, nextToken: null) {
-      nextToken
-      items {
-        pk
-        sk
-        item_type
-        id
-        directory_num
-        first_name
-        last_name
-        profile_id
-      }
-    }
-    queryUMQuickDialNumbersByProfile(profile_id: null, nextToken: null) {
-      nextToken
-      items {
-        pk
-        sk
-        profile_id
-        contact_num
-        item_type
-        contact_name
-        external_num
-        id
-      }
-    }
+export const getSoftphoneConfigRelationshipsQuery = (
+  profileId: number,
+  parameters: {
+    accessGroupNextToken?: string,
+    activityNextToken?: string,
+    directoryNextToken?: string,
+    dialListNextToken?: string,
+    skillsNextToken?: string,
+    isFirstQuery?: boolean
   }
-`;
+) => {
+
+  return gql`
+    query getSoftphoneConfigurationRelationships {
+      access_groups: getUMAccessGroupByProfile(profile_id: ${profileId}) @include(if: ${ !!(parameters.accessGroupNextToken?.length || parameters.isFirstQuery ? true : false) }) {
+          pk
+          sk
+          access_group_name
+          twilio_dashboard_url
+          item_type
+          id
+          viewable_profiles
+      }
+      activities: queryUMActivitiesByProfile(profile_id: ${profileId}) @include(if: ${ !!(parameters.activityNextToken?.length || parameters.isFirstQuery)}) {
+        nextToken
+        items {
+          pk
+          sk
+          activity_name
+          activity_sid
+          available
+          item_type
+        }
+      }
+      directoryNumbers: queryUMDirectoryNumbersByProfile(profile_id: ${profileId}, nextToken: ${parameters.directoryNextToken}) @include(if:  ${ !!(parameters.directoryNextToken?.length || parameters.isFirstQuery) }) {
+        nextToken
+        items {
+          pk
+          sk
+          item_type
+          id
+          directory_num
+          first_name
+          last_name
+          profile_id
+        }
+      }
+      dialListNumbers: queryUMQuickDialNumbersByProfile(profile_id: ${profileId}, nextToken: ${parameters.dialListNextToken}) @include(if: ${ !!(parameters.dialListNextToken?.length || parameters.isFirstQuery) }) {
+        nextToken
+        items {
+          pk
+          sk
+          profile_id
+          contact_num
+          item_type
+          contact_name
+          external_num
+          id
+        }
+      }
+      skills: queryUMSkillsByProfile(profile_id: ${profileId}) @include(if:  ${ !!(parameters.skillsNextToken || parameters.isFirstQuery)}) {
+        nextToken
+        items {
+            pk
+            sk
+            skill_id
+            task_queue_sid
+            task_queue_name
+            levels
+        }
+      }
+    }
+  `;
 };
