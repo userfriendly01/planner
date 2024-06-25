@@ -109,7 +109,7 @@ export const identifyImpactedWorkers = (users: UMUser[], skills: Skill[]): Parti
   };
 
   impactedWorkers = users.filter(w => skills.some(s => JSON.stringify(w).includes(s.name)));
-  console.warn("BEFORE CLEANUP", impactedWorkers.slice());
+  console.log("BEFORE CLEANUP", impactedWorkers.slice());
   return impactedWorkers.map(w => cleanupWorker(w));
 };
 
