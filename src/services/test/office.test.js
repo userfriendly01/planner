@@ -63,7 +63,10 @@ describe("getOffice", () => {
     });
   });
   describe("call fails", () => {
-    beforeEach(() => apolloClient.mutate.mockReturnValue({ errors: [{ message: "boo" }]}));
+    beforeEach(() => apolloClient.mutate.mockReturnValue({
+      data: null,
+      errors: [{ message: "boo" }]
+    }));
     test("should reject with error", done => {
       getOffice().then(rejectedVal => {
         expect(rejectedVal).toEqual(null);
