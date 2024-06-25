@@ -260,8 +260,10 @@ export const loadConsolidatedSkills = async (dispatch: (action: Action) => void)
 
         if(matchingTrSkill){
           const levels = [];
-          for (let i = matchingTrSkill.minimum; i <= matchingTrSkill.maximum; i++) {
-            levels.push(i);
+          if(matchingTrSkill.minimum && matchingTrSkill.maximum){
+            for (let i = matchingTrSkill.minimum; i <= matchingTrSkill.maximum; i++) {
+              levels.push(i);
+            }
           }
           skill.levels = levels;
           taskRouterSkills = taskRouterSkills.filter(trSkill => trSkill.name !== skill.name);
