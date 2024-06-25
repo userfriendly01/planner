@@ -97,7 +97,7 @@ export const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
       body.systems.push("QM");
     }
 
-    terminateUser(body)
+    terminateUser(state.userContext.tokens.adminService, body)
       .then(() => {
         resultMessage = `Successfully marked Triton worker for delete in ${body.systems}`;
         const overlayMessage = "Successfully Deleted User";

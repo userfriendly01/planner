@@ -11,6 +11,8 @@ const env = `window.env = {
   GRAPH_API_URL: "${process.env.GRAPH_API_URL}",
   GRAPH_CLIENT_ID: "${process.env.GRAPH_CLIENT_ID}",
   SOFTPHONE_SERVICE_URL: "${process.env.SOFTPHONE_SERVICE_URL}",
+  ADMIN_CLIENT_URL: "${process.env.ADMIN_CLIENT_URL}",
+  ADMIN_CLIENT_ID: "${process.env.ADMIN_CLIENT_ID}",
 };
 `;
 

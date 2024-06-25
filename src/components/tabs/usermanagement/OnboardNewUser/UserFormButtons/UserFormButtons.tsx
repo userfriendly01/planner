@@ -198,7 +198,7 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
       });
 
       try {
-        await wfmActivateExternalLogon({ workerNNumbers: [userNNumber]});
+        await wfmActivateExternalLogon(state.userContext.tokens.adminService, { workerNNumbers: [userNNumber]});
 
         logger.info("Successfully activated WFM external login", {
           nNumber,
@@ -555,7 +555,7 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
             }
           });
           try {
-            await wfmActivateExternalLogon({ workerNNumbers: [form.calabrio_wfm.EmploymentNumber]});
+            await wfmActivateExternalLogon(state.userContext.tokens.adminService, { workerNNumbers: [form.calabrio_wfm.EmploymentNumber]});
 
             logger.info("Successfully activated WFM external login", {
               nNumber,

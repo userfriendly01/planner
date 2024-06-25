@@ -6,6 +6,10 @@ export const fetchResetProfileDatadogLogs = async (nNumber: string): Promise<Axi
   return await myAxios.get(apiPaths.GET_RESET_PROFILE_DATADOG_LOGS(nNumber));
 };
 
-export const resetProfiles = async (nNumber: string, body: any): Promise<AxiosResponse> => {
-  return await myAxios.post(apiPaths.RESET_PROFILES(nNumber), body);
+export const resetProfiles = async (accessToken: string, nNumber: string, body: any): Promise<AxiosResponse> => {
+  return await myAxios.post(apiPaths.RESET_PROFILES(nNumber), body, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`
+    }
+  });
 };

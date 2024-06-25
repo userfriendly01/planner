@@ -19,12 +19,15 @@ export const env = {
   TROUX_ID: window.env.TROUX_ID,
   GRAPH_API_URL: window.env.GRAPH_API_URL,
   GRAPH_CLIENT_ID: window.env.GRAPH_CLIENT_ID,
-  SOFTPHONE_SERVICE_URL: window.env.SOFTPHONE_SERVICE_URL
+  SOFTPHONE_SERVICE_URL: window.env.SOFTPHONE_SERVICE_URL,
+  ADMIN_CLIENT_URL: window.env.ADMIN_CLIENT_URL,
+  ADMIN_CLIENT_ID: window.env.ADMIN_CLIENT_ID
 };
 
 const CONTACT_MANAGER_BASE_URI = `${env.SOFTPHONE_SERVICE_URL}/contact-manager`;
 const SERVICE_BASE_URI = env.SOFTPHONE_SERVICE_URL;
 const MS_GRAPH_URL = "https://graph.microsoft.com/v1.0";
+const ADMIN_CLIENT_URL = env.ADMIN_CLIENT_URL;
 
 export const nNumMatcher = /[n,N]\d{7}/g;
 export const extensionMatcher = /^\d{4,5}$/;
@@ -282,14 +285,14 @@ export const apiPaths = {
   GET_TIME_OF_DAYS: `${SERVICE_BASE_URI}/timeofday`,
   GET_RESET_PROFILE_DATADOG_LOGS: (nNumber: string): string => `${SERVICE_BASE_URI}/datadogresetprofileslogs/${nNumber}`,
   PROFILES: `${CONTACT_MANAGER_BASE_URI}/profiles`,
-  RESET_PROFILES: (nNumber: string): string => `${SERVICE_BASE_URI}/resetprofiles/${nNumber}`,
+  RESET_PROFILES: (nNumber: string): string => `${ADMIN_CLIENT_URL}/reset/${nNumber}`,
   RESET_WORKER_SKILLS: `${SERVICE_BASE_URI}/resetworkerskills`,
   SKILL_GROUPS: `${CONTACT_MANAGER_BASE_URI}/skillgroups`,
-  TERMINATE_WORKER: `${SERVICE_BASE_URI}/terminateworker`,
+  TERMINATE_WORKER: (nNumber: string): string => `${ADMIN_CLIENT_URL}/termination/entry/${nNumber}`,
   TFN_DATA: `${SERVICE_BASE_URI}/tfn`,
   UPDATE_CALABRIO_USER: (personId: number): any => `${SERVICE_BASE_URI}/calabrio-update-user/${personId}`,
   GET_AGGREGATE_QUEUES_TYPE: (aggregateQueueType: string): string => `${CONTACT_MANAGER_BASE_URI}/aggregatequeuestype/${aggregateQueueType}`,
-  WFM_ACTIVATE_EXTERNAL_LOGON: `${SERVICE_BASE_URI}/wfmexternallogon`
+  WFM_ACTIVATE_EXTERNAL_LOGON: `${ADMIN_CLIENT_URL}/externallogon`
 };
 
 export const authConfig = {
