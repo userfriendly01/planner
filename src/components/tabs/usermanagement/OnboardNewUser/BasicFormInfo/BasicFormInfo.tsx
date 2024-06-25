@@ -95,7 +95,7 @@ export const BasicFormInfo = (props: BasicFormInfoProps) => {
             margin: "8px 0px 5px 0px"
           }}
           onBlur={() => handleOnBlur("manager", "triton")}
-          options={managers.sort(sortManagersByName).map(manager => formatDropdownOption(manager.manager_n_num, `${manager.manager_first_name} ${manager.manager_last_name} - ${manager.manager_n_num}`, manager))}
+          options={[...managers].sort(sortManagersByName).map(manager => formatDropdownOption(manager.manager_n_num, `${manager.manager_first_name} ${manager.manager_last_name} - ${manager.manager_n_num}`, manager))}
           updateValue={(event: any, newValue: any) => {
             setForm({
               type: userFormActions.UPDATE_MANAGER,
