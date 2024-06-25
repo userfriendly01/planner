@@ -3,11 +3,133 @@ import {
   getValidSkillsObject,
   formatSkillGroups,
   formatWorkerAttributeSkillsToHTML,
-  formatWorkerAttributeSkillsToString
+  formatWorkerAttributeSkillsToString,
+  identifyImpactedWorkers
 } from "../skillsUtils";
 import { render } from "testUtils";
 
 describe("skillsUtils", () => {
+
+  describe("identifyImpactedWorkers", () => {
+    const workers = [
+      {
+        sid: "WK12342",
+        attributes: {
+          routing: {
+            skills: ["deleteSkill1", "deleteSkill2", "keepSkill"],
+            levels: { deleteSkill2: 4 }
+          },
+          default_skills: {
+            skills: [],
+            levels: {
+              deleteSkill2: 3,
+              keepSkill: 0
+            }
+          },
+          disabled_skills: {
+            skills: ["deleteSkill1"],
+            levels: { deleteSkill1: 4 }
+          }
+        }
+      },
+      {
+        sid: "WK12343",
+        attributes: {
+          routing: {
+            skills: [],
+            levels: {}
+          },
+          default_skills: {
+            skills: ["deleteSkill2", "deleteSkill3", "skillsShouldStay"],
+            levels: {}
+          },
+          disabled_skills: {
+            skills: [],
+            levels: {}
+          }
+        }
+      },
+      {
+        sid: "WK12344",
+        attributes: {
+          routing: {
+            skills: [],
+            levels: {}
+          },
+          default_skills: {
+            skills: [],
+            levels: {}
+          },
+          disabled_skills: {
+            skills: [],
+            levels: {}
+          }
+        }
+      },
+      {
+        sid: "WK12345",
+        attributes: {
+          routing: {
+            skills: ["skillsShouldStay"],
+            levels: { skillsShouldStay: 4 }
+          },
+          default_skills: {
+            skills: ["skillsShouldStay"],
+            levels: { skillsShouldStay: 6 }
+          },
+          disabled_skills: {
+            skills: ["skillsShouldStay"],
+            levels: { skillsShouldStay: 3 }
+          }
+        }
+      }
+    ];
+    test("should filter and format workers with skills in the skills list", () => {
+      expect(identifyImpactedWorkers(workers, [
+        { name: "deleteSkill1" },
+        { name: "deleteSkill2" },
+        { name: "deleteSkill3" }
+      ])).toStrictEqual([
+        {
+          attributes: {
+            default_skills: {
+              levels: {
+                deleteSkill2: null,
+                keepSkill: 0
+              },
+              skills: []
+            },
+            disabled_skills: {
+              levels: { deleteSkill1: null },
+              skills: []
+            },
+            routing: {
+              levels: { deleteSkill2: null },
+              skills: [ "keepSkill" ]
+            }
+          },
+          sid: "WK12342"
+        },
+        {
+          attributes: {
+            default_skills: {
+              levels: {},
+              skills: [ "skillsShouldStay" ]
+            },
+            disabled_skills: {
+              levels: {},
+              skills: []
+            },
+            routing: {
+              levels: {},
+              skills: []
+            }
+          },
+          sid: "WK12343"
+        }
+      ]);
+    });
+  });
 
   describe("formatWorkerAttributeSkillsToHTML()", () => {
 

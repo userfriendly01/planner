@@ -93,9 +93,9 @@ export const identifyImpactedWorkers = (users: UMUser[], skills: Skill[]): Parti
     }
 
     skillNames.forEach(n => {
-      if (formattedWorker.attributes.routing?.levels) { formattedWorker.attributes.routing.levels[n]= null; }
-      if (formattedWorker.attributes.default_skills?.levels) { formattedWorker.attributes.default_skills.levels[n] = null; }
-      if( formattedWorker.attributes.disabled_skills?.levels) { formattedWorker.attributes.disabled_skills.levels[n] = null; }
+      if (formattedWorker.attributes.routing?.levels && formattedWorker.attributes.routing?.levels[n]) { formattedWorker.attributes.routing.levels[n]= null; }
+      if (formattedWorker.attributes.default_skills?.levels && formattedWorker.attributes.default_skills?.levels[n]) { formattedWorker.attributes.default_skills.levels[n] = null; }
+      if (formattedWorker.attributes.disabled_skills?.levels && formattedWorker.attributes.disabled_skills?.levels[n]) { formattedWorker.attributes.disabled_skills.levels[n] = null; }
     });
 
     return {

@@ -57,20 +57,23 @@ export const reducer = (state: AppState, action: Action): AppState => {
     case "loadPaginatedResults": {
       const type: string = action.payload.type;
       const pageResults: any[] = action.payload.results;
+      const isFirstPage: boolean = action.payload.isFirstPage;
 
       return {
         ...state,
         managerContext: {
           ...state.managerContext,
-          managers: type === "UMManager" ? state.managerContext.managers.concat(pageResults) : state.managerContext.managers
+          managers: (type === "UMManager" && !isFirstPage && state.managerContext.managers.concat(pageResults)) || (type === "UMManager" && pageResults) || state.managerContext.managers
+
         },
         officeContext: {
           ...state.officeContext,
-          offices: type === "UMOffice" ? state.officeContext.offices.concat(pageResults) : state.officeContext.offices
+          offices: (type === "UMOffice" && !isFirstPage && state.officeContext.offices.concat(pageResults)) || (type === "UMOffice" && pageResults) || state.officeContext.offices
+
         },
         workerContext: {
           ...state.workerContext,
-          workers: type === "UMUser" ? state.workerContext.workers.concat(pageResults) : state.workerContext.workers
+          workers: (type === "UMUser" && !isFirstPage && state.workerContext.workers.concat(pageResults)) || (type === "UMUser" && pageResults) || state.workerContext.workers
         }
       };
     }

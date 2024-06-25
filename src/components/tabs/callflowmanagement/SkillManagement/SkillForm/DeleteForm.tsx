@@ -103,7 +103,6 @@ export const DeleteForm = (props: any) => {
       const results = await handleConcurrentCalls(3, deleteSkill, formattedSkills, shouldDeleteQueue);
       logger.info("Skill Deletion Results", { results });
 
-
       const totalResults = [...results, ...userResults.map((r: any, i: number) => (
         r.status === "rejected" ? {
           ...r,

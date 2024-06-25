@@ -81,6 +81,7 @@ describe("getPageResults", () => {
       expect(mockDispatch).toHaveBeenCalledWith({
         type: "loadPaginatedResults",
         payload: {
+          isFirstPage: true,
           type,
           results: results1
         }
@@ -94,6 +95,7 @@ describe("getPageResults", () => {
         expect(mockDispatch).toHaveBeenCalledWith({
           type: "loadPaginatedResults",
           payload: {
+            isFirstPage: true,
             type,
             results: "Formatted Results"
           }
@@ -136,21 +138,24 @@ describe("getPageResults", () => {
         type: "loadPaginatedResults",
         payload: {
           type,
-          results: results1
+          results: results1,
+          isFirstPage: true
         }
       });
       expect(mockDispatch).toHaveBeenCalledWith({
         type: "loadPaginatedResults",
         payload: {
           type,
-          results: results2
+          results: results2,
+          isFirstPage: false
         }
       });
       expect(mockDispatch).toHaveBeenCalledWith({
         type: "loadPaginatedResults",
         payload: {
           type,
-          results: results3
+          results: results3,
+          isFirstPage: false
         }
       });
       expect(apolloClient.query).toHaveBeenCalledTimes(3);
