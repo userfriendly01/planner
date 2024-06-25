@@ -395,6 +395,7 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
         team: form.triton.routing.team,
         caller_states: form.triton.routing.caller_states,
         backup_workers: form.triton.routing.backup_workers,
+        backup_workers_active: form.triton.routing.backup_workers_active,
         sales_assoc_workers: form.triton.routing.sales_assoc_workers,
         skills: form.triton.routing.skills,
         levels: form.triton.routing.levels
