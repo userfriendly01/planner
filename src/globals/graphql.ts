@@ -35,6 +35,7 @@ const userAttributes = `
       team
       caller_states
       sales_assoc_workers
+      backup_workers
     }
     default_skills {
       skills

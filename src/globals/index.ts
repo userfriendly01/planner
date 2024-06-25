@@ -216,6 +216,11 @@ export const exportColumns = [
     width: "100px"
   },
   {
+    field: "backup_workers",
+    title: "FTO Backup Workers",
+    width: "100px"
+  },
+  {
     field: "roles",
     title: "Roles",
     width: "100px"
