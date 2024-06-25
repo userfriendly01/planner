@@ -253,24 +253,6 @@ export const BasicFormInfo = (props: BasicFormInfoProps) => {
         </FormControlsPane>
         <Tooltip
           title={
-              "Backup User Enable/Disable" 
-          }
-          placement={"bottom-start"}
-        >
-          <ToggleContainer>
-            <Switch
-              disabled={form.formMode === formModes.UPDATE && worker?.did ? true : false || form.formMode === formModes.DELETE}
-              checked={form.triton.routing.backupWorkersActive}
-              onChange={() => {
-                setForm({ type: userFormActions.UPDATE_BACK_UP_WORKER_FLAG });
-              }}
-              inputProps={{ "aria-label": "toggle-backup-user" }}
-            />
-            <ToggleLabel>Backup User</ToggleLabel>
-          </ToggleContainer>
-        </Tooltip>
-        <Tooltip
-          title={
             form.formMode === formModes.UPDATE && worker?.did ?
               "Twilio DID can not be removed" : ""
           }
@@ -336,6 +318,23 @@ export const BasicFormInfo = (props: BasicFormInfoProps) => {
               <ToggleLabel>Self Service Indicator</ToggleLabel>
             </ToggleContainer>
           </Tooltip>) : null}
+          <Tooltip
+          title={
+              "Backup Workers Enable/Disable" 
+          }
+          placement={"bottom-start"}
+        >
+          <ToggleContainer>
+            <Switch
+              checked={form.triton.routing.backupWorkersActive}
+              onChange={() => {
+                setForm({ type: userFormActions.UPDATE_BACK_UP_WORKER_FLAG });
+              }}
+              inputProps={{ "aria-label": "toggle-backup-user" }}
+            />
+            <ToggleLabel>Backup Workers</ToggleLabel>
+          </ToggleContainer>
+        </Tooltip>
         <RoutingAttributes />
       </RightColumn>
     </FormControlsContainer>
