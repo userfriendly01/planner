@@ -26,19 +26,19 @@ export const ProfileAccessGroupField = (props: ProfileAccessGroupFieldProps) => 
     label: ""
   });
 
-  React.useEffect(() => {
-    getAccessGroup().then((agList: AccessGroup[]) => {
-      setAccessGroupList(agList);
-      setAccessGroupDropDownOptions(getAccessGroupOptions(agList));
-      if(accessGroupId){
-        const ag: AccessGroup = agList.find(accessGroup => accessGroup.access_group_id === accessGroupId);
-        setSelectedAccessGroup({
-          label: ag?.access_group_nme,
-          value: ag?.access_group_id
-        });
-      }
-    });
-  }, []);
+  // React.useEffect(() => {
+  //   getAccessGroup().then((agList: AccessGroup[]) => {
+  //     setAccessGroupList(agList);
+  //     setAccessGroupDropDownOptions(getAccessGroupOptions(agList));
+  //     if(accessGroupId){
+  //       const ag: AccessGroup = agList.find(accessGroup => accessGroup.access_group_id === accessGroupId);
+  //       setSelectedAccessGroup({
+  //         label: ag?.access_group_nme,
+  //         value: ag?.access_group_id
+  //       });
+  //     }
+  //   });
+  // }, []);
 
   React.useEffect(() => {
     if(!accessGroupId) {

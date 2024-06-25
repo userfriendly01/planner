@@ -270,7 +270,7 @@ export const getSoftphoneConfigRelationshipsQuery = (
 
   return gql`
     query getSoftphoneConfigurationRelationships {
-      access_groups: getUMAccessGroupByProfile(profile_id: ${profileId}) @include(if: ${ !!(parameters.accessGroupNextToken?.length || parameters.isFirstQuery ? true : false) }) {
+      accessGroup: getUMAccessGroupByProfile(profile_id: ${profileId}) @include(if: ${ !!(parameters.isFirstQuery) }) {
           pk
           sk
           access_group_name
@@ -314,17 +314,6 @@ export const getSoftphoneConfigRelationshipsQuery = (
           contact_name
           external_num
           id
-        }
-      }
-      skills: queryUMSkillsByProfile(profile_id: ${profileId}) @include(if:  ${ !!(parameters.skillsNextToken || parameters.isFirstQuery)}) {
-        nextToken
-        items {
-            pk
-            sk
-            skill_id
-            task_queue_sid
-            task_queue_name
-            levels
         }
       }
     }

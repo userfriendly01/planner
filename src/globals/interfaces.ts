@@ -180,10 +180,50 @@ export interface UMOffice {
   office_name: string
 }
 
+export interface AccessGroup {
+  pk: string,
+  sk: string,
+  item_type: string,
+  id: string,
+  activity_sid: string,
+  twilio_dashboard_url: string
+}
+
+export interface Activity {
+  pk: string,
+  sk: string,
+  item_type: string,
+  activity_name: string,
+  activity_sid: string,
+  available: boolean
+}
+
 export interface CallTag {
   display_name: string,
   options: string[]
   attribute_name: string
+}
+
+export interface DialListNumber {
+  pk: string,
+  sk: string,
+  id: string,
+  item_type: string,
+  contact_num: string,
+  contact_name: string,
+  external_num?: string,
+  profile_id: number
+}
+
+export interface DirectoryNumber {
+  pk: string,
+  sk: string,
+  id: string,
+  item_type: string,
+  directory_num: string,
+  first_name: string,
+  last_name?: string,
+  profile_id: number
 }
 
 export interface UMSoftphoneConfiguration {
@@ -213,7 +253,11 @@ export interface UMSoftphoneConfiguration {
     fwd_to_num: string,
     transfer_queues: string[],
     backup_workers: boolean,
-    call_tags: CallTag[]
+    call_tags: CallTag[],
+    accessGroup?: AccessGroup,
+    activities?: Activity[],
+    dialListNumbers?: DialListNumber[],
+    directoryNumbers?: DirectoryNumber[]
 }
 
 export interface ProfilePayload {
