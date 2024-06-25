@@ -97,7 +97,7 @@ export interface AppState {
     offices: UMOffice[]
   },
   profileContext: {
-    profiles: TritonProfile[]
+    profiles: UMSoftphoneConfiguration[]
   },
   userContext: {
     permissions: ADGroupPermission[];
@@ -178,33 +178,6 @@ export interface UMOffice {
   item_type: string,
   office_num: string,
   office_name: string
-}
-
-export interface TritonProfile {
-  acw_data_entry_i: MySqlBoolean,
-  acw_option_i: MySqlBoolean,
-  agent_assisted_pay_i: MySqlBoolean,
-  auto_answd_i: MySqlBoolean,
-  call_reason_i: MySqlBoolean,
-  click_to_dial_i: MySqlBoolean,
-  eft_authorization_i: MySqlBoolean,
-  claim_number_edit_i: MySqlBoolean,
-  manual_record_inbound_i: MySqlBoolean,
-  manual_recorded_i: MySqlBoolean,
-  otbnd_recorded_i: MySqlBoolean,
-  pmt_prcsg_i: MySqlBoolean,
-  policy_number_edit_i: MySqlBoolean,
-  voice_mail_transcription_i: MySqlBoolean,
-  profile_id: number,
-  profile_nme: string,
-  recorded_i: MySqlBoolean,
-  row_crtn_dtm: string,
-  row_updt_dtm: string,
-  overflow_skill: string,
-  activities: Array<Record<string, unknown>>,
-  callTags: string,
-  operating_unit_nme: string,
-  operating_unit_sid: string
 }
 
 export interface CallTag {

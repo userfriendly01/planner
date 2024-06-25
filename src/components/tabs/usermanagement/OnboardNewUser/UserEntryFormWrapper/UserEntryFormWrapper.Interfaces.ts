@@ -2,7 +2,7 @@ import {
   UMManager,
   ModalOverlayStatuses,
   UMOffice,
-  TritonProfile,
+  UMSoftphoneConfiguration,
   UMUser,
   WfmUser,
   UMTwilioAttributeSkills
@@ -31,7 +31,7 @@ export interface UserEntryFormProps {
 
 export interface BasicFormInfoProps {
   worker: UMUser | null,
-  profiles: TritonProfile[],
+  profiles: UMSoftphoneConfiguration[],
   managers: UMManager[],
   forwardToToggle: boolean,
   setForwardToToggle: (toggle: boolean) => void
@@ -42,7 +42,7 @@ export interface UserFormButtonsProps {
   handleClose: () => void,
   loading: LoadingState,
   offices: UMOffice[],
-  profiles: TritonProfile[],
+  profiles: UMSoftphoneConfiguration[],
   updateLoading: (payload: any) => void,
   worker: UMUser | null,
   setMissingFields: (missingFields: string[]) => void

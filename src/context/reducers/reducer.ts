@@ -58,6 +58,10 @@ export const reducer = (state: AppState, action: Action): AppState => {
       const type: string = action.payload.type;
       const pageResults: any[] = action.payload.results;
 
+      if(type === "UMSoftphoneConfiguration"){
+        console.log("PROFILES ", pageResults);
+      }
+
       return {
         ...state,
         managerContext: {
@@ -71,6 +75,10 @@ export const reducer = (state: AppState, action: Action): AppState => {
         workerContext: {
           ...state.workerContext,
           workers: type === "UMUser" ? state.workerContext.workers.concat(pageResults) : state.workerContext.workers
+        },
+        profileContext: {
+          ...state.profileContext,
+          profiles: type === "UMSoftphoneConfiguration" ? state.profileContext.profiles.concat(pageResults) : state.profileContext.profiles
         }
       };
     }

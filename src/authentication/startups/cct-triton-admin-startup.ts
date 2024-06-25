@@ -10,6 +10,7 @@ import {
 import { listUMManagers } from "services/manager";
 import { listUMOffices } from "services/office";
 import { listUMUsers } from "services/user";
+import { listUMSoftphoneConfigurations } from "services/profile";
 import { loadConsolidatedSkills } from "services/skill";
 import { getCalabrioWfmOptions } from "utils/calabrioUtils";
 import { logger } from "utils/logger";
@@ -113,6 +114,7 @@ export const runTritonAdminStartup = (dispatch:  (action: Action) => void, skill
     listUMManagers(dispatch),
     listUMOffices(dispatch),
     getProfiles(dispatch),
+    listUMSoftphoneConfigurations(dispatch),
     loadConsolidatedSkills(skillDispatch),
     getCalabrioUsers(dispatch),
     getCalabrioOrg(dispatch),

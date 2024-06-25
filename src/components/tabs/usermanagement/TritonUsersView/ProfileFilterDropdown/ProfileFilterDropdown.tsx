@@ -29,7 +29,7 @@ export const ProfileFilterDropdown = () => {
       value: "divider"
     },
     ...sortedProfiles.map(profile => ({
-      label: `${profile.profile_id} - ${profile.profile_nme}`,
+      label: `${profile.profile_id} - ${profile.profile_name}`,
       value: typeof profile.profile_id === "number" ? profile.profile_id.toString() : profile.profile_id
     }))
   ];

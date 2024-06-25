@@ -1,8 +1,8 @@
 import {
   UMManager,
-  TritonProfile,
   WfmUser,
-  UMUser
+  UMUser,
+  UMSoftphoneConfiguration
 } from "globals/interfaces";
 
 const sortLast = "zzzzzzzzzzz";
@@ -38,9 +38,9 @@ export const sortManagersByName = (a: UMManager, b: UMManager) => {
   return sortStrings(aName, bName);
 };
 
-export const sortProfilesById = (a: TritonProfile, b: TritonProfile) => sortNumbers(a.profile_id, b.profile_id);
+export const sortProfilesById = (a: UMSoftphoneConfiguration, b: UMSoftphoneConfiguration) => sortNumbers(a.profile_id, b.profile_id);
 
-export const sortProfilesByName = (a: TritonProfile, b: TritonProfile) => sortStrings(a.profile_nme, b.profile_nme);
+export const sortProfilesByName = (a: UMSoftphoneConfiguration, b: UMSoftphoneConfiguration) => sortStrings(a.profile_name, b.profile_name);
 
 export const sortCalabrioObject = (a: any, b: any) => sortStrings(a.name, b.name);
 

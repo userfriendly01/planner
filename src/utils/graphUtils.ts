@@ -36,7 +36,7 @@ export const getGraphData = (type: string) => {
   }
 };
 
-export const getPaginatedResults = async (type: string, dispatch: (action: Action) => void, formatResults?: (items: PaginationType[]) => PaginationType[], callBack?: VoidFunction): Promise<void> => {
+export const getPaginatedResults = async (type: string, dispatch: (action: Action) => void, formatResults?: (items: PaginationType[]) => PaginationType[], callBack?: any): Promise<void> => {
   const graph: GraphData = getGraphData(type);
 
   const getPageResults = async (nextToken?: string): Promise<VoidFunction> => {
@@ -74,7 +74,6 @@ export const getPaginatedResults = async (type: string, dispatch: (action: Actio
   };
 
   await getPageResults();
-
   return;
 };
 

@@ -144,7 +144,7 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
       attributes.routing.skills = [overflowSkill];
     }
 
-    const operatingUnitSid = profiles.find(profile => profile.profile_id === form.triton.profileId.value).operating_unit_sid;
+    const operatingUnitSid = profiles.find(profile => profile.profile_id === form.triton.profileId.value).ou_sid;
 
     const createUserReqBody = form.triton.did.value ?
       {
@@ -376,7 +376,7 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
 
     if (form.triton.profileId.updated) {
       attributes.profile_id = form.triton.profileId.value;
-      operatingUnitSid = profiles.find(profile => profile.profile_id === form.triton.profileId.value).operating_unit_sid;
+      operatingUnitSid = profiles.find(profile => profile.profile_id === form.triton.profileId.value).ou_sid;
     }
     if (form.triton.outgoing.updated) {
       attributes.caller_id = form.triton.outgoing.e164;

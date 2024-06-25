@@ -39,11 +39,11 @@ export const SkillsTable = (props: SkillsTableProps) => {
 
     const itemDivs: ReactElement[] = [];
     skill.profiles?.map((p: number, index: number) => {
-      const profile = profiles.find(pr => pr.profile_id === p) || { profile_nme: "Unknown" };
+      const profile = profiles.find(pr => pr.profile_id === p) || { profile_name: "Unknown" };
       if(index !== skill.profiles.length - 1){
-        itemDivs.push(<div key={p}>{profile.profile_nme}{` - ${p}, `}</div>);
+        itemDivs.push(<div key={p}>{profile.profile_name}{` - ${p}, `}</div>);
       } else {
-        itemDivs.push(<div key={p}>{profile.profile_nme}{` - ${p}`}</div>);
+        itemDivs.push(<div key={p}>{profile.profile_name}{` - ${p}`}</div>);
       }
     });
     return itemDivs;

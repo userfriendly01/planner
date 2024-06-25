@@ -14,7 +14,7 @@ import {
   useAdminState, useSkillState, useSkillDispatch
 } from "context/appContext";
 import { Skill } from "callflowmanagement/Skills.Interfaces";
-import { TritonProfile } from "globals/interfaces";
+import { UMSoftphoneConfiguration } from "globals/interfaces";
 import React from "react";
 import { filterSkillsByName } from "utils/_filterUtils";
 import { logger } from "utils/logger";
@@ -82,7 +82,7 @@ export const CallFlowManagementSkills = () => {
         filteredList = filteredList.filter((skill: Skill) => {
           let shouldReturn = false;
           skill.profiles?.forEach((p: number) => {
-            if(tableState.profiles.some((sp: TritonProfile) => sp.profile_id === p)){
+            if(tableState.profiles.some((sp: UMSoftphoneConfiguration) => sp.profile_id === p)){
               shouldReturn = true;
             }
           });

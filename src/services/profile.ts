@@ -9,7 +9,7 @@ import {
   DBList
 }from "globals/interfaces";
 
-export const listProfiles = async (dispatch: (action: Action) => void): Promise<DBList<UMSoftphoneConfiguration>> => {
+export const listUMSoftphoneConfigurations = async (dispatch: (action: Action) => void): Promise<DBList<UMSoftphoneConfiguration>> => {
   try {
     await getPaginatedResults("UMSoftphoneConfiguration", dispatch);
     return;

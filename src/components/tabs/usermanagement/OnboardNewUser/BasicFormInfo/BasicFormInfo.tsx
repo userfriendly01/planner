@@ -144,7 +144,7 @@ export const BasicFormInfo = (props: BasicFormInfoProps) => {
               setForm({ type: userFormActions.UPDATE_SELF_SERVICE_INDICATOR });
             }
           }}
-          value={(form.triton.profileId.value || form.triton.profileId.value === 0) ? `${profiles.find(p => p.profile_id === form.triton.profileId.value)?.profile_nme} - ${profiles.find(p => p.profile_id === form.triton.profileId.value)?.profile_id}` : ""}
+          value={(form.triton.profileId.value || form.triton.profileId.value === 0) ? `${profiles.find(p => p.profile_id === form.triton.profileId.value)?.profile_name} - ${profiles.find(p => p.profile_id === form.triton.profileId.value)?.profile_id}` : ""}
         />
         <NNumberInput
           disabled={

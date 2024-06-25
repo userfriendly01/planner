@@ -256,3 +256,8 @@ export const LIST_SOFTPHONE_CONFIGURATIONS: GraphData = {
 `,
   responsePath: "profiles"
 };
+
+// export const GET_CONFIGURATION_RELATIONSHIPS: GraphData = {
+//   query: gql``,
+//   responsePath: "profiles"
+// };
