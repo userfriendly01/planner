@@ -57,6 +57,7 @@ export const reducer = (state: AppState, action: Action): AppState => {
     case "loadPaginatedResults": {
       const type: string = action.payload.type;
       const pageResults: any[] = action.payload.results;
+      const isFirstPage: boolean = action.payload.isFirstPage;
 
       if(type === "UMSoftphoneConfiguration"){
         console.log("PROFILES ", pageResults);
@@ -66,19 +67,21 @@ export const reducer = (state: AppState, action: Action): AppState => {
         ...state,
         managerContext: {
           ...state.managerContext,
-          managers: type === "UMManager" ? state.managerContext.managers.concat(pageResults) : state.managerContext.managers
+          managers: (type === "UMManager" && !isFirstPage && state.managerContext.managers.concat(pageResults)) || (type === "UMManager" && pageResults) || state.managerContext.managers
+
         },
         officeContext: {
           ...state.officeContext,
-          offices: type === "UMOffice" ? state.officeContext.offices.concat(pageResults) : state.officeContext.offices
+          offices: (type === "UMOffice" && !isFirstPage && state.officeContext.offices.concat(pageResults)) || (type === "UMOffice" && pageResults) || state.officeContext.offices
+
         },
         workerContext: {
           ...state.workerContext,
-          workers: type === "UMUser" ? state.workerContext.workers.concat(pageResults) : state.workerContext.workers
+          workers: (type === "UMUser" && !isFirstPage && state.workerContext.workers.concat(pageResults)) || (type === "UMUser" && pageResults) || state.workerContext.workers
         },
         profileContext: {
           ...state.profileContext,
-          profiles: type === "UMSoftphoneConfiguration" ? state.profileContext.profiles.concat(pageResults) : state.profileContext.profiles
+          profiles: (type === "UMSoftphoneConfiguration" && !isFirstPage && state.profileContext.profiles.concat(pageResults)) || (type === "UMSoftphoneConfiguration" && pageResults) || state.profileContext.profiles
         }
       };
     }

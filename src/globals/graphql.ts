@@ -212,7 +212,6 @@ export const DELETE_MANAGER = gql`
   }
 `;
 
-
 export const LIST_SOFTPHONE_CONFIGURATIONS: GraphData = {
   query: gql`
     query listUMSoftphoneConfigurations($nextToken: String) {
