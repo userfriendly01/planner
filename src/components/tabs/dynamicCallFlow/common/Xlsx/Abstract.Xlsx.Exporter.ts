@@ -1,44 +1,34 @@
 import * as XLSX from "xlsx";
 
 export abstract class AbstractXlsxExporter<XlsxRowType, RecordType> {
-  generateWorkBooks(records: Array<RecordType>): Map<string, XLSX.WorkBook> {
-    const workBooks: Map<string, XLSX.WorkBook> = new Map<string, XLSX.WorkBook>();
-    const groupedRecords: Map<string, Array<RecordType>> = this.groupRecords(records);
+  private readonly workBooks: Map<string, XLSX.WorkBook> = new Map<string, XLSX.WorkBook>();
 
-    groupedRecords.forEach((groupRecords, groupKey) => {
-      const xlsxRows = this.convertRecordsToXlsxRows(groupRecords);
-      const workSheet = XLSX.utils.json_to_sheet(xlsxRows);
-      const workBook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workBook, workSheet, groupKey);
-      workBooks.set(groupKey, workBook);
-    });
+  async exportXlsxFiles(records: Array<RecordType>, fileName?: string): Promise<void> {
+    this.generateWorkBooks(records);
 
-    return workBooks;
-  }
-
-  async exportXlsxFiles(workBooks: Map<string, XLSX.WorkBook>): Promise<void> {
-    for (const [groupName, workBook] of workBooks) {
-      await XLSX.writeFileXLSX(workBook, `${groupName}.xlsx`);
+    for (const [workBookName, workBook] of this.workBooks) {
+      await XLSX.writeFileXLSX(workBook, `${fileName.concat("-") || ""}${workBookName}.xlsx`);
     }
   }
 
-  protected groupRecords(records: Array<RecordType>): Map<string, Array<RecordType>> {
-    const groupedRecords: Map<string, Array<RecordType>> = new Map<string, Array<RecordType>>();
+  generateWorkBooks(records: Array<RecordType>): Map<string, XLSX.WorkBook> {
+    const recordsGroupedByWorkBookNames: Map<string, Array<RecordType>> = this.groupRecordsByWorkBookNames(records);
 
-    records.forEach(record => {
-      const groupKey = record[this.getGroupKey() as keyof RecordType] as string;
-
-      if (!groupedRecords.has(groupKey)) {
-        groupedRecords.set(record[this.getGroupKey() as keyof RecordType] as string, []);
+    recordsGroupedByWorkBookNames.forEach((groupRecords, workBookName) => {
+      if (groupRecords.length > 0) {
+        const xlsxRows: Array<XlsxRowType> = this.convertRecordsToXlsxRows(groupRecords);
+        const workSheet = XLSX.utils.json_to_sheet(xlsxRows); // xlsxRows belong in a worksheet.
+        const workBook = XLSX.utils.book_new(); // worksheet belongs in a workbook.  The workbook will be the file generated.
+        // there is only one worksheet in a workbook in this case, therefore, the worksheet name and workbook name (which is what the file will be named) will be the same
+        XLSX.utils.book_append_sheet(workBook, workSheet, workBookName);
+        this.workBooks.set(workBookName, workBook);
       }
-
-      groupedRecords.get(groupKey).push(record);
     });
 
-    return groupedRecords;
+    return this.workBooks;
   }
 
-  protected abstract getGroupKey(): string;
+  protected abstract groupRecordsByWorkBookNames(records: Array<RecordType>): Map<string, Array<RecordType>>;
 
   protected abstract convertRecordsToXlsxRows(records: Array<RecordType>): Array<XlsxRowType>;
 }

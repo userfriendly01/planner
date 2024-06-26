@@ -26,7 +26,7 @@ import { PhoneNumberPreviewModal } from "../PreviewModal";
 import PhoneNumberDataGridColumnDef from "./PhoneNumber.DataGrid.ColumnDef";
 import { PhoneNumberDataGridToolBar } from "./PhoneNumber.DataGrid.ToolBar";
 import { PhoneNumberDataGridFilterModal } from "./PhoneNumber.DataGrid.Filter.Modal";
-import { FieldConfigs } from "../../common/Form/Form.Field.Config";
+import { FieldConfigs } from "../../common/Form/Form.Interfaces";
 import { PhoneNumberFormModal } from "../Form/PhoneNumber.Form.Modal";
 import { EditPhoneNumberFormHandler } from "../Form/Edit.PhoneNumber.Form.Handler";
 import { DynamicPhoneNumberFormFieldConfigs } from "../Form/Dynamic.PhoneNumber.Form.FieldConfigs";
@@ -36,20 +36,20 @@ import { listPhoneNumberRecords } from "../GraphQL/List.PhoneNumber.Records.Util
 import {
   DataGridStateProps,
   initializeDataGrid,
-  sortDataGrid
+  sortRecords
 } from "../../common/DataGrid/DynamicCallFlow.Common.DataGrid";
 import { AddPhoneNumberFormHandler } from "../Form/Add.PhoneNumber.Form.Handler";
 import {
   AlertBarController, AlertBarProps, initialAlertBarProps
 } from "../../common/AlertBar.Controller";
 import { DynamicCallFlowPhoneNumberContext } from "../DynamicCallFlow.PhoneNumber.Container";
-import { PhoneNumberModalTypeEnum } from "../DynamicCallFlow.PhoneNumber.Container.Modal.Controller";
 import { PhoneNumberDataGridFilter } from "./PhoneNumber.DataGrid.Filter";
 import { PhoneNumberDataGridController } from "./PhoneNumber.DataGrid.Controller";
 import { CustomToast } from "components/CustomToast";
 import { CctSharedCallFlowDb } from "dynamicCallFlow/GraphQL/Legacy.PhoneNumber.Interfaces";
 import { PhoneNumberDataGridProgressBar } from "dynamicCallFlow/DataGrid/PhoneNumber.DataGrid.ProgressBar";
-import { LoadDataGridMonitor } from "components/tabs/dynamicCallFlow/common/DataGrid/Load.DataGrid.Monitor";
+import LoadDataGridMonitor from "components/tabs/dynamicCallFlow/common/DataGrid/Load.DataGrid.Monitor";
+import { PhoneNumberModalTypeEnum } from "dynamicCallFlow/DynamicCallFlow.PhoneNumber.Interfaces";
 
 const DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_PAGE_NUMBER = "dynamicCallFlowPhoneNumberDataGridPageNumber";
 const DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_RECORDS_PER_PAGE = "dynamicCallFlowPhoneNumberDataGridRecordsPerPage";
@@ -111,7 +111,7 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
 
       try {
         const records = await listPhoneNumberRecords(accessTokenGraph, loadDataGridMonitor);
-        [sortedRecords, updatedDataGridProps] = sortDataGrid<PhoneNumberRecordType>(records);
+        [sortedRecords, updatedDataGridProps] = sortRecords<PhoneNumberRecordType>(records);
       } catch (error: unknown) {
         console.log(`Error loading call flow data: ${(error as Error)?.message}`);
         alertBarController.current.error("Errors loading data.  Please check the console logs.");
@@ -160,11 +160,6 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
     setPaginationModel(model);
   };
 
-  const exportDataFile = () => {
-    //TODO: update download csv function
-    // downloadCSV(EXPORT_FILE_PREFIX.FLOW, dataGridState.state.filteredData);
-  };
-
   const openEditFormModal = (recordToEdit: PhoneNumberRecordType): void => {
     setSelectedRecord(recordToEdit);
     dataGridController.current.sourceRecords = sourceRecords;
@@ -202,29 +197,6 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
     setSourceRecords([ ...dataGridController.current.sourceRecords ]);
     dataGridFilter.current.applyFilter(dataGridController.current.sourceRecords);
     modalController.current.closeModal();
-  };
-
-  /**
-   * When edit modal is open and a row is edited and the user clicks save, this method is called and the record in the edit modal replaces the record in the grid
-   * @param updatedPhoneNumberRecord
-   */
-  const postHandleOnUpdate = (updatedPhoneNumberRecord: PhoneNumberRecordType): void => {
-    setSourceRecords(sourceRecords.map(phoneNumberRecord => PhoneNumberRecordUtil.getPhoneNumber(phoneNumberRecord) !== PhoneNumberRecordUtil.getPhoneNumber(updatedPhoneNumberRecord) ? updatedPhoneNumberRecord : phoneNumberRecord));
-    setDataGridRecords(dataGridRecords.map(phoneNumberRecord => PhoneNumberRecordUtil.getPhoneNumber(phoneNumberRecord) !== PhoneNumberRecordUtil.getPhoneNumber(updatedPhoneNumberRecord) ? updatedPhoneNumberRecord : phoneNumberRecord));
-  };
-
-  const postHandleOnAdd = (newPhoneNumberRecord: PhoneNumberRecordType): void => {
-    setSourceRecords( prevState => [...prevState, newPhoneNumberRecord]);
-    setDataGridRecords(prevState => ([...prevState, newPhoneNumberRecord]));
-  };
-
-  /**
-   * When edit modal is open for a phone record and the delete button is clicked, this method is called and the row is removed from the grid
-   * @param deletedPhoneNumberRecord
-   */
-  const postHandleOnDelete = (deletedPhoneNumberRecord: PhoneNumberRecordType): void => {
-    setSourceRecords(sourceRecords.filter(phoneNumberRecord => PhoneNumberRecordUtil.getPhoneNumber(phoneNumberRecord) !== PhoneNumberRecordUtil.getPhoneNumber(deletedPhoneNumberRecord)));
-    setDataGridRecords(dataGridRecords.filter(phoneNumberRecord => PhoneNumberRecordUtil.getPhoneNumber(phoneNumberRecord) !== PhoneNumberRecordUtil.getPhoneNumber(deletedPhoneNumberRecord)));
   };
 
   const handleSelectionChanges = (gridRowSelectionModel: GridRowSelectionModel) =>{
@@ -275,8 +247,8 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
           <PhoneNumberDataGridToolBar
             isFilterModalOpen={currentOpenModal === PhoneNumberModalTypeEnum.Filter}
             dataGridFilter={dataGridFilter}
+            dataGridController={dataGridController}
             handlePreviewModalOpen={handlePreviewModalOpen}
-            exportDataFile={exportDataFile}
           />
           <DataGrid
             apiRef={dataGridApi}
@@ -311,8 +283,6 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
         }}
         selectedRow={selectedRecord}
         handleOnClone={handleOnClone}
-        postHandleOnSave={postHandleOnUpdate}
-        postHandleOnDelete={postHandleOnDelete}
         postFormHandler={postFormHandler}
       />
       <PhoneNumberFormModal
@@ -325,8 +295,6 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
         }}
         selectedRow={selectedRecord}
         handleOnClone={handleOnClone}
-        postHandleOnSave={postHandleOnAdd}
-        postHandleOnDelete={postHandleOnDelete}
         postFormHandler={postFormHandler}
       />
       <PhoneNumberFormModal
@@ -339,8 +307,6 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
         }}
         selectedRow={selectedRecord}
         handleOnClone={handleOnClone}
-        postHandleOnSave={postHandleOnUpdate}
-        postHandleOnDelete={postHandleOnDelete}
         postFormHandler={postFormHandler}
       />
       <PhoneNumberFormModal
@@ -353,8 +319,6 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
         }}
         selectedRow={selectedRecord}
         handleOnClone={handleOnClone}
-        postHandleOnSave={postHandleOnUpdate}
-        postHandleOnDelete={postHandleOnDelete}
         postFormHandler={postFormHandler}
       />
       <PhoneNumberDataGridFilterModal

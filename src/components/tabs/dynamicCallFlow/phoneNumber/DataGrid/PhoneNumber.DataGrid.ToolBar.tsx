@@ -15,33 +15,36 @@ import {
 import {
   Filter
 } from "../../common/DataGrid/Abstract.DataGrid.Filter";
-import { DynamicCallFlowPhoneNumberContext } from "../DynamicCallFlow.PhoneNumber.Container";
-import { PhoneNumberModalTypeEnum } from "../DynamicCallFlow.PhoneNumber.Container.Modal.Controller";
-import { DataGridFilterRef } from "../../common/DynamicCallFlow.Interfaces";
-import { PhoneNumberRecordType } from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
-import { readWriteAccess } from "utils/alohaConfigUtils";
 import {
-  userDoesNotHaveReadWriteAccess,
-  userHasReadWriteAccess
+  DYNAMIC_CALL_FLOW_PROFILE, DynamicCallFlowPhoneNumberContext
+} from "../DynamicCallFlow.PhoneNumber.Container";
+import {
+  DataGridControllerRef, DataGridFilterRef
+} from "../../common/DynamicCallFlow.Interfaces";
+import { PhoneNumberRecordType } from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
+import {
+  userDoesNotHaveReadWriteAccess
 } from "components/tabs/dynamicCallFlow/common/authentication";
+import { PhoneNumberXlsxExporter } from "dynamicCallFlow/Xlsx/Export/PhoneNumber.Xlsx.Exporter";
+import { PhoneNumberModalTypeEnum } from "dynamicCallFlow/DynamicCallFlow.PhoneNumber.Interfaces";
 
 interface PhoneNumberDataGridToolBarProps {
   isFilterModalOpen: boolean;
   dataGridFilter: DataGridFilterRef<PhoneNumberRecordType>;
+  dataGridController: DataGridControllerRef<PhoneNumberRecordType>;
   handlePreviewModalOpen: (event: any) => void;
-  exportDataFile: ()=> void;
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const PhoneNumberDataGridToolBar = ({
-  isFilterModalOpen, dataGridFilter, handlePreviewModalOpen, exportDataFile
+  isFilterModalOpen, dataGridFilter, dataGridController, handlePreviewModalOpen
 }: PhoneNumberDataGridToolBarProps) => {
   const {
     permissions,
     modalController
   } = useContext(DynamicCallFlowPhoneNumberContext);
 
-  const userHasPermission = useMemo(() => userHasReadWriteAccess(permissions,"aloha-flow"), []);
+  const userDoesNotHavePermission = useMemo(() => userDoesNotHaveReadWriteAccess(permissions,DYNAMIC_CALL_FLOW_PROFILE), []);
   const [localFilter, setLocalFilter] = useState<Filter>({} as Filter);
 
   useEffect(()=> {
@@ -51,6 +54,10 @@ const PhoneNumberDataGridToolBar = ({
   const removeFilterElement = (key: string) => {
     setLocalFilter(dataGridFilter.current.removeFilterElement(key));
     dataGridFilter.current.applyFilter();
+  };
+
+  const exportDataFile = async () => {
+    await PhoneNumberXlsxExporter.instance().exportXlsxFiles(dataGridController.current.dataGridRecords, dataGridFilter.current.filterToString());
   };
 
   return (
@@ -117,7 +124,7 @@ const PhoneNumberDataGridToolBar = ({
             }}
             label="Actions"
             value=""
-            disabled = {false} // TODO: change this to us !userHasPermission
+            disabled = {userDoesNotHavePermission}
             onChange={handlePreviewModalOpen}
             variant="filled"
             size="small"

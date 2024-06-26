@@ -2,7 +2,7 @@ import { AbstractPhoneNumberFormHandler } from "./Abstract.PhoneNumber.Form.Hand
 import { PhoneNumberRecordType } from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
 import { SingleCallFlowRecord } from "../GraphQL/Single.PhoneNumber.Record.Util";
 import { FormOnHandleResponse } from "../../common/Form/Abstract.Form.Handler";
-import { FieldConfigs } from "../../common/Form/Form.Field.Config";
+import { FieldConfigs } from "../../common/Form/Form.Interfaces";
 import { PhoneNumberRecordUtil } from "../GraphQL/PhoneNumber.Record.Util";
 
 const MODAL_NAME = "DynamicPhoneNumberFormAddHandler";

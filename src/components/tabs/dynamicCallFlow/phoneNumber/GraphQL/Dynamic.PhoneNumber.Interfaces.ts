@@ -94,22 +94,22 @@ export enum UserDestinationEnum {
 }
 
 export interface BasePhoneNumber {
-    brand?: BrandType;
-    callFlowTemplate?: string;
-    callTypeDescription?: string;
-    channel?: ChannelType;
-    dialedDescription?: string;
-    employeeId?: string;
-    internetPlacement?: string;
-    lineOfBusiness?: string;
-    marketingChannel?: string;
-    predictiveCaller?: boolean;
-    rangeIndicator?: string;
-    requestID?: string;
-    tfnRoutingGroup?: string;
-    tollFreeNumber?: string;
-    transferCode?: string;
-    whisper?: string;
+    brand: BrandType;
+    callFlowTemplate: string;
+    callTypeDescription: string;
+    channel: ChannelType;
+    dialedDescription: string;
+    employeeId: string;
+    internetPlacement: string;
+    lineOfBusiness: string;
+    marketingChannel: string;
+    predictiveCaller: boolean;
+    rangeIndicator: string;
+    requestID: string;
+    tfnRoutingGroup: string;
+    tollFreeNumber: string;
+    transferCode: string;
+    whisper: string;
 }
 
 export interface PhoneNumber extends BasePhoneNumber {

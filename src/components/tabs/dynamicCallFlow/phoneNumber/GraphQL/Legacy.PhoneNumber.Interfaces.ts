@@ -21,28 +21,28 @@ export enum LegacyPhoneNumberTypeEnum {
 }
 
 export interface FlowContent {
-    callIntent?: string;
-    callerType?: CallerType;
-    callFlowRoute?: string;
-    dataRequests?: Array<string>;
-    greetingMessages?: string;
-    languageOffer?: LanguageOfferType;
-    transferNumber?: string;
-    officeNumbers?: Array<string>;
+    callIntent: string;
+    callerType: CallerType;
+    callFlowRoute: string;
+    dataRequests: Array<string>;
+    greetingMessages: string;
+    languageOffer: LanguageOfferType;
+    transferNumber: string;
+    officeNumbers: Array<string>;
 }
 
 export interface CctSharedCallFlowDb extends BasePhoneNumber {
     pkey?: string;
-    accountManager?: string;
-    affinityVDN?: string;
-    agentId?: string;
-    callDetails1?: string;
-    callDetails2?: string;
+    accountManager: string;
+    affinityVDN: string;
+    agentId: string;
+    callDetails1: string;
+    callDetails2: string;
     content?: FlowContent;
     createTime?: string;
-    selfServiceIndicator?: boolean,
-    type?: LegacyPhoneNumberType;
+    selfServiceIndicator: boolean,
+    type: LegacyPhoneNumberType;
     updateTime?: string;
-    userDestination?: string;
+    userDestination: string;
 }
 

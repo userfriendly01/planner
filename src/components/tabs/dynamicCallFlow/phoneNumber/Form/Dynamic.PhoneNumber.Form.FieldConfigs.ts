@@ -36,14 +36,14 @@ import {
   WHISPER
 } from "./Dynamic.PhoneNumber.Form.Fields";
 import {
+  ControlEnum,
   FieldConditionCheckType,
   FieldConfig,
   FieldConfigs,
   FieldDataTypeEnum,
   USER_IS_ABLE_TO_CHANGE_CONTROL
-} from "../../common/Form/Form.Field.Config";
+} from "../../common/Form/Form.Interfaces";
 
-import { ControlEnum } from "../../common/Form/Form.Field.Control.Manager";
 import { Control } from "globals/interfaces";
 
 const drcFieldConditionCheck: FieldConditionCheckType = (phoneNumberRecord: PhoneNumber): boolean => {

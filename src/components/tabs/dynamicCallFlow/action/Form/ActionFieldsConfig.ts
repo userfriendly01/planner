@@ -1,14 +1,14 @@
 import {
+  ControlEnum,
   FieldConditionCheckType, FieldConfig, FieldConfigs, FieldDataTypeEnum
-} from "../../common/Form/Form.Field.Config";
-import { PhoneNumberRecordType } from "../../phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
-import { ControlEnum } from "../../common/Form/Form.Field.Control.Manager";
+} from "../../common/Form/Form.Interfaces";
 import { Control } from "globals/interfaces";
+import { ActionRecordType } from "dynamicCallFlow/GraphQL/Action.Interfaces";
 
 export const ActionFormFieldConfigs: FieldConfigs = {};
 export const RequiredActionFormFields: Array<string> = [];
 
-const defaultFieldConditionCheck: FieldConditionCheckType = (record: PhoneNumberRecordType): boolean => {
+const defaultFieldConditionCheck: FieldConditionCheckType = (record: ActionRecordType): boolean => {
   return true;
 };
 

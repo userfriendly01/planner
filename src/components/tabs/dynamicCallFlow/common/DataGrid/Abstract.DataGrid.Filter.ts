@@ -2,7 +2,6 @@ import { FieldOptions } from "../Form/AbstractFormFieldOptionsManager";
 import {
   DataGridFilterRef, ReactSetState
 } from "../DynamicCallFlow.Interfaces";
-import { PhoneNumberRecordType } from "dynamicCallFlow/GraphQL/Dynamic.PhoneNumber.Interfaces";
 
 const ID = "id";
 
@@ -23,7 +22,8 @@ export interface DataGridFilter<RecordType> {
   addFilterElement(key: string, value: string): Filter;
   removeFilterElement(key: string): Filter;
   getFilter(): Filter;
-  applyFilter(sourceRecords?: Array<PhoneNumberRecordType>, minId?: number, maxId?: number): void;
+  filterToString(): string;
+  applyFilter(sourceRecords?: Array<RecordType>, minId?: number, maxId?: number): void;
   resetFilter(): Filter;
 }
 
@@ -94,6 +94,13 @@ export abstract class AbstractDataGridFilter<RecordType> implements DataGridFilt
       console.error("Error in getting filter model from local storage", e);
       return {} as Filter;
     }
+  }
+
+  filterToString(): string {
+    const filter = this.getFilter();
+    return Object.keys(filter).length > 0 ?
+      Object.keys(filter).map(key => `${key}[${filter[key as keyof Filter]}]`).join(" ")
+      : "Unfiltered";
   }
 
   protected abstract getPropertyValue(record: RecordType, key: string): string | Array<string> | number | boolean | undefined;

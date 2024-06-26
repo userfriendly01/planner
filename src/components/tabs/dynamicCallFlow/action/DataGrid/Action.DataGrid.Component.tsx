@@ -12,11 +12,11 @@ import { actionListRecords } from "../GraphQL/List.Action.Records.Query";
 import {
   DataGridStateProps,
   initializeDataGrid,
-  sortDataGrid
+  sortRecords
 } from "../../common/DataGrid/DynamicCallFlow.Common.DataGrid";
 import { ActionFieldOptionsManager } from "../Form/ActionFieldOptionsManager";
 import { FieldOptions } from "../../common/Form/AbstractFormFieldOptionsManager";
-import { FieldConfigs } from "../../common/Form/Form.Field.Config";
+import { FieldConfigs } from "../../common/Form/Form.Interfaces";
 import { ActionFormFieldConfigs } from "../Form/ActionFieldsConfig";
 import { ActionPreviewModal } from "../PreviewModal/Action.Preview.Modal.Component";
 import {
@@ -83,7 +83,7 @@ const ActionDataGridComponent = (): JSX.Element => {
 
       try {
         const records: Array<ActionRecordType> = await actionListRecords(accessTokenGraph);
-        [sortedRecords, updatedDataGridProps] = sortDataGrid<ActionRecordType>(records);
+        [sortedRecords, updatedDataGridProps] = sortRecords<ActionRecordType>(records);
       } catch (error: unknown) {
         console.log(`Error loading dynamic call flow action data: ${(error as Error)?.message}`);
         alertBarController.current.error("Errors loading data.  Please check the console logs.");

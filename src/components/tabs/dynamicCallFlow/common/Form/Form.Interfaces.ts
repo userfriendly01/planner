@@ -1,4 +1,4 @@
-import { MultiFieldContainerFormProps } from "../../../../core/SharedComponents/MultiFieldContainer";
+import { MultiFieldContainerFormProps } from "components/MultiFieldContainer";
 import { Control } from "globals/interfaces";
 
 export type FieldDataType = string | Array<string> | boolean | number | undefined;
@@ -21,7 +21,7 @@ export interface Field {
   required?: boolean;
 }
 
-export type FieldConditionCheckType = <RecordType>(record: RecordType) => boolean;
+export type FieldConditionCheckType = (record: any) => boolean;
 export const USER_IS_ABLE_TO_CHANGE_CONTROL = true;
 export const USER_IS_NOT_ABLE_TO_CHANGE_CONTROL = false;
 export type ValueGetterFunctionType<T> = (record: T, key: string) => FieldDataType;
@@ -44,4 +44,14 @@ export interface FieldConfig {
 
 export interface FieldConfigs {
   [fieldKey: string]: FieldConfig;
+}
+
+export enum ControlEnum {
+  AutoComplete = "autoComplete",
+  Input = "input",
+  Select = "select",
+  Switch = "switch",
+  MultiField = "multiField",
+  MultiTextField = "multiTextField",
+  TimePicker = "timePicker"
 }

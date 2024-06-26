@@ -3,8 +3,10 @@ import {
   FieldConfig,
   FieldConfigs,
   FieldDataType, FieldDataTypeEnum
-} from "./Form.Field.Config";
-import { DataGridControllerRef, ReactStateAction } from "../DynamicCallFlow.Interfaces";
+} from "./Form.Interfaces";
+import {
+  DataGridControllerRef, ReactStateAction
+} from "../DynamicCallFlow.Interfaces";
 import { DataGridController } from "components/tabs/dynamicCallFlow/common/DataGrid/Abstract.DataGrid.Controller";
 
 export const VALID = true;

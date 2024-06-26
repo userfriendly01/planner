@@ -3,9 +3,9 @@ import { GridApiCommunity } from "@mui/x-data-grid/internals";
 import { AlertBarController } from "./AlertBar.Controller";
 import { DataGridFilter } from "./DataGrid/Abstract.DataGrid.Filter";
 import { DataGridController } from "./DataGrid/Abstract.DataGrid.Controller";
-import { ModalController } from "./Modal.Controller";
+import ModalController from "./Modal.Controller";
 import { ADGroupPermission } from "globals/interfaces";
-import { LoadDataGridMonitor } from "components/tabs/dynamicCallFlow/common/DataGrid/Load.DataGrid.Monitor";
+import LoadDataGridMonitor from "components/tabs/dynamicCallFlow/common/DataGrid/Load.DataGrid.Monitor";
 
 export type MutableRefObject<T> = React.MutableRefObject<T>;
 export type ReactGridApi = React.MutableRefObject<GridApiCommunity>;

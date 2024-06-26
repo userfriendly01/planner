@@ -84,7 +84,7 @@ export const getRoutes = () => [
     Component: DynamicCallFlowPhoneNumberContainer
   },
   {
-    path: "/triton-admin/dynamic-call-flow-action",
+    path: "/triton-admin/dynamic-call-flow-configuration",
     Component: DynamicCallFlowActionContainer
   },
   {

@@ -1,5 +1,5 @@
 import * as xlsx from "xlsx";
-import { PhoneNumberXlsxImporter } from "../PhoneNumber.Xlsx.Importer";
+import { PhoneNumberXlsxImporter } from "../Import/PhoneNumber.Xlsx.Importer";
 import { getXlsImporterResults } from "../../../common/Xlsx/test/Xlsx.Testing.Util";
 
 function getPhoneNumberXlsxImporterResults(fileName: string): xlsx.WorkSheet {

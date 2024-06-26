@@ -6,8 +6,9 @@ import {
   ViewList
 } from "@mui/icons-material";
 import React, { useState } from "react";
-import { FieldConfigs } from "./Form.Field.Config";
-import { ControlEnum } from "./Form.Field.Control.Manager";
+import {
+  ControlEnum, FieldConfigs
+} from "./Form.Interfaces";
 import { ReactStateAction } from "../DynamicCallFlow.Interfaces";
 
 export interface ViewListIconToggleFormProps {

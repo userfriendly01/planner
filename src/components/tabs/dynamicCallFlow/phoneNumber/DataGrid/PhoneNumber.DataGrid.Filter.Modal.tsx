@@ -115,8 +115,12 @@ export const PhoneNumberDataGridFilterModal = ({
                 required={false} />
             </Grid>
           </Grid>
+          <Grid container>
+            text
+          </Grid>
         </ModalBody>
         <ModalFooter >
+          more text
           <Button
             type="submit"
             value="Save Filter"

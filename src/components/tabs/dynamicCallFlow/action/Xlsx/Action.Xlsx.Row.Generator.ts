@@ -1,5 +1,5 @@
 import {
-  ActionXlsRowType, ActionXlsxCompleteRowType,
+  ActionXlsRowType, CombinedActionXlsxRowType,
   AnnouncementXlsxRow, CallerContextAttributes,
   MenuOptionXlsxRow,
   MenuXlsxRow,
@@ -12,8 +12,8 @@ import {
 } from "../GraphQL/Action.Interfaces";
 import { ActionTypeEnum } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
 
-export class ActionXlsxRecordGenerator {
-  static generateXlsxRows(actionRecords: Array<ActionRecordType>): Array<ActionXlsRowType> {
+export class ActionXlsxRowGenerator {
+  generateXlsxRows(actionRecords: Array<ActionRecordType>): Array<ActionXlsRowType> {
     const actionXlsxRows: Array<ActionXlsRowType> = [];
 
     actionRecords.forEach((actionRecord: ActionRecordType) => {
@@ -51,7 +51,7 @@ export class ActionXlsxRecordGenerator {
     return this.reorderXlsxRowForHeaders(actionXlsxRows);
   }
 
-  private static mapToAnnouncement(announcement: Announcement): Array<AnnouncementXlsxRow> {
+  private mapToAnnouncement(announcement: Announcement): Array<AnnouncementXlsxRow> {
     const announcementXlsxRow: AnnouncementXlsxRow = {
       speech: announcement.speech,
       nextActionId: announcement.nextActionId,
@@ -61,9 +61,9 @@ export class ActionXlsxRecordGenerator {
     return [announcementXlsxRow];
   }
 
-  private static mapToMenu(menu: Menu): Array<MenuXlsxRow> {
+  private mapToMenu(menu: Menu): Array<MenuXlsxRow> {
     let callerContextAttributes: CallerContextAttributes = {
-      reasonForReturning: "",
+      reasonForReturning: ""
     };
 
     if (menu.repeat?.callerContextAttributes) {
@@ -88,7 +88,7 @@ export class ActionXlsxRecordGenerator {
     return [menuXlsxRow];
   }
 
-  private static mapToMenuOptions(menuOptions: MenuOptions): Array<MenuOptionXlsxRow> {
+  private mapToMenuOptions(menuOptions: MenuOptions): Array<MenuOptionXlsxRow> {
     return menuOptions.options.map((menuOption: MenuOption) => {
       let callerContextAttributes: CallerContextAttributes = {
         reasonForReturning: "",
@@ -109,12 +109,12 @@ export class ActionXlsxRecordGenerator {
     });
   }
 
-  private static mapToRedirect(redirect: Redirect): Array<RedirectXlsxRow> {
+  private mapToRedirect(redirect: Redirect): Array<RedirectXlsxRow> {
     return [ { redirectUrl: redirect.url } as RedirectXlsxRow ];
   }
 
-  private static reorderXlsxRowForHeaders(xlsxRows: Array<ActionXlsRowType>): Array<ActionXlsRowType> {
-    return xlsxRows.map((xlsxRow: ActionXlsxCompleteRowType) => ( {
+  private reorderXlsxRowForHeaders(xlsxRows: Array<ActionXlsRowType>): Array<ActionXlsRowType> {
+    return xlsxRows.map((xlsxRow: CombinedActionXlsxRowType) => ( {
       actionId: xlsxRow.actionId,
       actionType: xlsxRow.actionType,
       callFlowName: xlsxRow.callFlowName,
@@ -136,6 +136,6 @@ export class ActionXlsxRecordGenerator {
       menuOptionReasonForReturning: xlsxRow.menuOptionReasonForReturning,
       menuOptionCallIntent: xlsxRow.menuOptionCallIntent,
       redirectUrl: xlsxRow.redirectUrl
-    } as ActionXlsxCompleteRowType));
+    } as CombinedActionXlsxRowType));
   }
 }

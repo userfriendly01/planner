@@ -5,13 +5,12 @@ import {
 
 import { RequiredPhoneNumberFormFields } from "../Form/Legacy.PhoneNumber.Form.FieldConfigs";
 
-import {
-  PhoneNumberModalType,
-  PhoneNumberModalTypeEnum
-} from "../DynamicCallFlow.PhoneNumber.Container.Modal.Controller";
 import { ComponentControl } from "components/ComponentControl";
 import { ReactGridApi } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
 import { FieldOptions } from "components/tabs/dynamicCallFlow/common/Form/AbstractFormFieldOptionsManager";
+import {
+  PhoneNumberModalType, PhoneNumberModalTypeEnum
+} from "dynamicCallFlow/DynamicCallFlow.PhoneNumber.Interfaces";
 
 
 const reconstructTableColumnDef = (modalType: PhoneNumberModalType, columnDef: Array<GridColDef>, previewModalGridApiRef: ReactGridApi, fieldOptions: FieldOptions): Array<GridColDef> =>{

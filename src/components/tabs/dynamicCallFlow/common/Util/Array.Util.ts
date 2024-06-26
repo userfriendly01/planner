@@ -34,7 +34,7 @@ export function elementExistsInArray<ElementType>(elementUniqueKey: string, elem
   return targetArrayToCheck.some(targetArrayElement => elementsMatch(elementUniqueKey, targetArrayElement, elementToCheckIfItExistsInArray));
 }
 
-function elementDoesNotExistInArray<ElementType>(elementUniqueKey: string, elementToCheckIfItDoesNotExistInArray: ElementType, targetArrayToCheck: any[]): boolean {
+export function elementDoesNotExistInArray<ElementType>(elementUniqueKey: string, elementToCheckIfItDoesNotExistInArray: ElementType, targetArrayToCheck: any[]): boolean {
   return !elementExistsInArray(elementUniqueKey, elementToCheckIfItDoesNotExistInArray, targetArrayToCheck);
 }
 

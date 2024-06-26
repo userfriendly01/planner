@@ -1,7 +1,7 @@
 
 export interface XlsxJSONRow {
   [key: string]: string | number | boolean | Array<string>;
-  xlsxId: string;
+  xlsxId?: string;
 }
 
 export interface XlsxImporterResults<XlsxRowType, RecordType> {

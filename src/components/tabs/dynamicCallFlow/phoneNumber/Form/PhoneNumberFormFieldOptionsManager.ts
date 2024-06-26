@@ -18,7 +18,7 @@ import {
 } from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
 import { LegacyPhoneNumberTypeEnum } from "../GraphQL/Legacy.PhoneNumber.Interfaces";
 import { PhoneNumberRecordUtil } from "../GraphQL/PhoneNumber.Record.Util";
-import { FieldDataType } from "../../common/Form/Form.Field.Config";
+import { FieldDataType } from "../../common/Form/Form.Interfaces";
 
 import { ActionTypeEnum } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
 

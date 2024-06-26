@@ -71,20 +71,6 @@ export const tabs = {
       }
     ]
   },
-  ALOHA_CALL_FLOW_MANAGEMENT: {
-    value: "aloha-callflow-management",
-    label: "Aloha Flow Management",
-    dropdown: [
-      {
-        route: "/triton-admin/aloha-flow",
-        label: "Call Flow"
-      },
-      {
-        route: "/triton-admin/dyn-flow",
-        label: "Dynamic Call Flow"
-      }
-    ]
-  },
   DYNAMIC_CALL_FLOW_MANAGEMENT: {
     value: "dynamic-call-flow-management",
     label: "Dynamic Call Flow",
@@ -94,8 +80,8 @@ export const tabs = {
         label: "Dynamic Call Flow Phone Number"
       },
       {
-        route: "/triton-admin/dynamic-call-flow-action",
-        label: "Dynamic Call Flow Action"
+        route: "/triton-admin/dynamic-call-flow-configuration",
+        label: "Dynamic Call Flow Configuration"
       }
     ]
   },

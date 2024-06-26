@@ -13,8 +13,7 @@ import {
   LANGUAGE_OFFER,
   TRANSFER_DESTINATION
 } from "dynamicCallFlow/Form/Dynamic.PhoneNumber.Form.Fields";
-import { PhoneNumber } from "google-libphonenumber";
-import { ControlEnum } from "components/tabs/dynamicCallFlow/common/Form/Form.Field.Control.Manager";
+
 export const PhoneNumberPreviewModalColumnDef: GridColDef[] = [
   {
     headerName: "Dialed",
@@ -88,7 +87,7 @@ export const PhoneNumberPreviewModalColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params => PhoneNumberRecordUtil.getPropertyStringArray(params.row, DATA_REQUESTS)?.join() || "",
+    valueGetter: params => PhoneNumberRecordUtil.getPropertyArrayValue(params.row, DATA_REQUESTS)?.join() || "",
     valueSetter: params => ({
       ...params.row,
       content: {

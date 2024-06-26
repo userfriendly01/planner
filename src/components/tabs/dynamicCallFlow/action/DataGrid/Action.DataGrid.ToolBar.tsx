@@ -11,14 +11,14 @@ import {
 import { DynamicCallFlowActionContext } from "../DynamicCallFlow.Action.Container";
 import { Filter } from "../../common/DataGrid/Abstract.DataGrid.Filter";
 import { ActionModalTypeEnum } from "dynamicCallFlow/DataGrid/Action.DataGrid.Component";
-import { userHasReadWriteAccess } from "components/tabs/dynamicCallFlow/common/authentication";
+import { userDoesNotHaveReadWriteAccess } from "components/tabs/dynamicCallFlow/common/authentication";
 import {
   DataGridControllerRef,
   DataGridFilterRef
 } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
 import { ActionRecordType } from "dynamicCallFlow/GraphQL/Action.Interfaces";
 import { ActionXlsxExporter } from "dynamicCallFlow/Xlsx/Action.Xlsx.Exporter";
-import * as XLSX from "xlsx";
+import { DYNAMIC_CALL_FLOW_PROFILE } from "dynamicCallFlow/DynamicCallFlow.PhoneNumber.Container";
 
 interface ActionDataGridToolBarProps {
   isFilterModalOpen: boolean;
@@ -36,7 +36,7 @@ export const ActionDataGridToolBar = ({
     modalController
   } = useContext(DynamicCallFlowActionContext);
 
-  const userHasPermission = useMemo(() => userHasReadWriteAccess(permissions,"aloha-flow"), []);
+  const userDoesNotHavePermission = useMemo(() => userDoesNotHaveReadWriteAccess(permissions, DYNAMIC_CALL_FLOW_PROFILE), []);
   const [localFilter, setLocalFilter] = useState<Filter>({} as Filter);
 
   useEffect(()=> {
@@ -49,10 +49,7 @@ export const ActionDataGridToolBar = ({
   };
 
   const exportDataFile = async () => {
-    const actionXlsxExporter = new ActionXlsxExporter();
-    const workbooks: Map<string, XLSX.WorkBook> = actionXlsxExporter.generateWorkBooks(dataGridController.current.dataGridRecords);
-
-    await actionXlsxExporter.exportXlsxFiles(workbooks);
+    await ActionXlsxExporter.instance().exportXlsxFiles(dataGridController.current.dataGridRecords);
   };
 
   return (
@@ -98,7 +95,7 @@ export const ActionDataGridToolBar = ({
               fontSize: "12px"
             }}
             aria-label="loadCallFlowConfigurationButton"
-            disabled={false} // TODO: change this to us !userHasPermission
+            disabled={userDoesNotHavePermission}
             onClick={handlePreviewModalOpen}>
             Import Call Flow Configuration
           </Button>

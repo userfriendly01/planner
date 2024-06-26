@@ -1,28 +1,23 @@
-import { FieldOptions } from "../common/Form/AbstractFormFieldOptionsManager";
+import { NotInUseModalType } from "components/tabs/dynamicCallFlow/common/Modal.Controller";
 
-export interface DynamicCallFlowPhoneNumberMasterData extends FieldOptions {
-    brand?: Array<string>;
-    callFlowName?: Array<string>;
-    callFlowRoute?: Array<string>;
-    callFlowTemplate?: Array<string>;
-    callFlowType?: Array<string>;
-    callerType?: Array<string>;
-    channel?: Array<string>;
-    dataRequests?: Array<string>;
-    pkey?: Array<string>;
-}
+export type PhoneNumberModalType =
+  "Add Dynamic Phone Number"
+  | "Edit Dynamic Phone Number"
+  | "Add Legacy Phone Number"
+  | "Edit Legacy Phone Number"
+  | "Bulk Delete"
+  | "Bulk Add"
+  | "Bulk Edit"
+  | "Filter"
+  | NotInUseModalType;
 
-export interface DynamicCallFlowPhoneNumberDropDownList {
-    brand: string[];
-    channel: string[];
-    languageOffer: string[];
-    userDestination: string[];
-    callFlowName: string[];
-    callFlowRoute:string[];
-    callFlowType: string[];
-    callerType: string[];
-    dataRequests: string[];
-    nextActionType: string[];
-    tfnRoutingGroup : string[];
-    phoneNumberType: string[];
+export enum PhoneNumberModalTypeEnum {
+  AddDynamicPhoneNumber = "Add Dynamic Phone Number",
+  EditDynamicPhoneNumber = "Edit Dynamic Phone Number",
+  AddLegacyPhoneNumber = "Add Legacy Phone Number",
+  EditLegacyPhoneNumber = "Edit Legacy Phone Number",
+  BulkDelete = "Bulk Delete",
+  BulkAdd = "Bulk Add",
+  BulkEdit = "Bulk Edit",
+  Filter = "Filter"
 }

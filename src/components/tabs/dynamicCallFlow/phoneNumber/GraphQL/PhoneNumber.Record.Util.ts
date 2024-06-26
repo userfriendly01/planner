@@ -10,7 +10,7 @@ import {
 import {
   isLegacyContentField, PKEY
 } from "../Form/Legacy.PhoneNumber.Form.Fields";
-import { FieldDataType } from "../../common/Form/Form.Field.Config";
+import { FieldDataType } from "../../common/Form/Form.Interfaces";
 
 export class PhoneNumberRecordUtil {
   public static getPkey(phoneNumberRecord: PhoneNumberRecordType): string {
@@ -41,8 +41,16 @@ export class PhoneNumberRecordUtil {
     return this.isLegacyPhoneNumberRecord(phoneNumberRecord) && isLegacyContentField(key);
   }
 
-  public static getPropertyStringArray(phoneNumberRecord: PhoneNumberRecordType, key: string): Array<string> {
+  public static getPropertyArrayValue(phoneNumberRecord: PhoneNumberRecordType, key: string): Array<string> {
     return this.getPropertyValue(phoneNumberRecord, key) as Array<string>;
+  }
+
+  public static getPropertyArrayValueAsString(phoneNumberRecord: PhoneNumberRecordType, key: string, delimiter = ", "): string {
+    return this.getPropertyArrayValue(phoneNumberRecord, key)?.join(delimiter) || "";
+  }
+
+  public static getPropertyStringValue(phoneNumberRecord: PhoneNumberRecordType, key: string): string {
+    return this.getPropertyValue(phoneNumberRecord, key) as string;
   }
 
   public static getPropertyValue(phoneNumberRecord: PhoneNumberRecordType, key: string): FieldDataType {
@@ -64,17 +72,36 @@ export class PhoneNumberRecordUtil {
     return value && !reg.test(value);
   }
 
+  public static setArrayPropertyValue(phoneNumberRecord: PhoneNumberRecordType, key: string, value: string, delimiter = ","): void {
+    this.setPropertyValue(phoneNumberRecord, key, value.split(delimiter) || []);
+  }
+
+  public static setStringValue(phoneNumberRecord: PhoneNumberRecordType, key: string, value: string): void {
+    this.setPropertyValue(phoneNumberRecord, key, value as string);
+  }
+
+  public static setNumberValue(phoneNumberRecord: PhoneNumberRecordType, key: string, value: string): void {
+    this.setPropertyValue(phoneNumberRecord, key, Number(value));
+  }
+
+  public static setBooleanValue(phoneNumberRecord: PhoneNumberRecordType, key: string, value: string): void {
+    this.setPropertyValue(phoneNumberRecord, key, (value && (value.toLowerCase() === "true" || value.toLowerCase() === "yes" )));
+  }
+
   public static setPropertyValue(phoneNumberRecord: PhoneNumberRecordType, key: string, value: FieldDataType): void {
     if (!phoneNumberRecord || !key || !value) {
       return;
     }
 
     if (this.isLegacyContentFieldKey(phoneNumberRecord, key)) {
-      // TODO: How to make ts happy trying to dynamically set a property
+      if (!(phoneNumberRecord as CctSharedCallFlowDb).content) {
+        (phoneNumberRecord as CctSharedCallFlowDb).content = {} as FlowContent;
+      }
+
+      // TODO: How to make ts happy trying to dynamically set content property
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       (phoneNumberRecord as CctSharedCallFlowDb).content[key] = value;
-
       return;
     }
 

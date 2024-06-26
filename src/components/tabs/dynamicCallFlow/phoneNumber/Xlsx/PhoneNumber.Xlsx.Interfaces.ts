@@ -1,9 +1,12 @@
-import { XlsxJSONRow } from "../../common/Xlsx/Xlsx.Interfaces";
-
-
-export interface PhoneNumberXlsxRow extends XlsxJSONRow {
+export interface PhoneNumberXlsxRow {
   dialedPhoneNumber: string;
+  accountManager: string;
+  affinityVDN: string;
+  agentId: string;
   brand: string;
+  employeeId: string;
+  callDetails1: string;
+  callDetails2: string;
   callFlowName: string;
   callFlowTemplate: string;
   callFlowType: string;
@@ -13,29 +16,24 @@ export interface PhoneNumberXlsxRow extends XlsxJSONRow {
   callIntent: string;
   callerType: string;
   dataRequests: string;
-  dialedDescription: string;
   greetingMessages: string;
-  internetPlacement: string;
   languageOffer: string;
+  officeNumbers: string;
+  transferDestination: string;
+  dialedDescription: string;
+  internetPlacement: string;
   lineOfBusiness: string;
   marketingChannel: string;
-  officeNumbers: string;
+  nextActionId: string;
+  nextActionType: string;
   phoneNumberType: string;
   predictiveCaller: string;
   rangeIndicator: string;
   requestID: string;
+  selfServiceIndicator: string;
   tfnRoutingGroup: string;
   tollFreeNumber: string;
   transferCode: string;
-  whisper: string;
-  nextActionId: string;
-  nextActionType: string;
-  transferDestination: string;
-  accountManager: string;
-  affinityVDN: string;
-  agentId: string;
-  callDetails1: string;
-  callDetails2: string;
-  selfServiceIndicator: string;
   userDestination: string;
+  whisper: string;
 }

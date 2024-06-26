@@ -3,8 +3,8 @@ import React, {
 } from "react";
 import ActionDataGridComponent, { ActionModalType } from "./DataGrid/Action.DataGrid.Component";
 import { useAdminState } from "context/appContext";
-import {
-  MODAL_NOT_IN_USE, ModalController
+import ModalController,{
+  MODAL_NOT_IN_USE
 } from "../common/Modal.Controller";
 import { DynamicCallFlowContextStore } from "../common/DynamicCallFlow.Interfaces";
 

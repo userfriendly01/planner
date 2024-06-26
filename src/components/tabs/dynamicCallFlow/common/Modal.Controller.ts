@@ -8,7 +8,7 @@ export interface ContainerModalController<ModalType> {
 export type NotInUseModalType = "Modal Not In Use";
 export const MODAL_NOT_IN_USE: NotInUseModalType = "Modal Not In Use";
 
-export class ModalController<ModalType> implements ContainerModalController<ModalType> {
+export default class ModalController<ModalType> implements ContainerModalController<ModalType> {
   private _openModal: (modalType: ModalType | NotInUseModalType) => void;
   private _closeModal: () => void;
 

@@ -8,7 +8,7 @@ import {
 } from "dynamicCallFlow/DataGrid/PhoneNumber.DataGrid.ProgressBar";
 import { ALERT_BAR_15_SECOND_DURATION } from "components/tabs/dynamicCallFlow/common/AlertBar.Controller";
 
-export class LoadDataGridMonitor {
+export default class LoadDataGridMonitor {
   private readonly _setRecordCount: ReactSetState<number>;
   private _recordCount = 0;
   private readonly _setDataGridLoaded: ReactSetState<boolean>;

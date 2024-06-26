@@ -7,15 +7,13 @@ import {
 import { runTritonAdminStartup } from "authentication/startups/cct-triton-admin-startup";
 import { runAlohaRoutingStartup } from "authentication/startups/cct-aloha-routing-startup";
 import { runAlohaFlowStartup } from "authentication/startups/cct-aloha-flow-startup";
+import { runDynamicCallFlowStartup } from "./startups/cct-dynamic-call-flow-startup";
 import { ADGroupPermission } from "globals/interfaces";
-import DynamicCallFlowPhoneNumberContainer
-  from "../components/tabs/dynamicCallFlow/phoneNumber/DynamicCallFlow.PhoneNumber.Container";
-import AlohaFlowContainer from "../components/tabs/alohaFlow/AlohaFlowContainer";
+import DynamicCallFlowPhoneNumberContainer from "../components/tabs/dynamicCallFlow/phoneNumber/DynamicCallFlow.PhoneNumber.Container";
 import {
   TritonUsersViewWrapper
 } from "../components/tabs/usermanagement/TritonUsersView/TritonUsersViewWrapper/TritonUsersViewWrapper";
 import AlohaRoutingContainer from "../components/tabs/alohaRouting/AlohaRoutingContainer";
-import { runDynamicCallFlowStartup } from "./startups/cct-dynamic-call-flow-startup";
 
 export const getAuthenticationProfileTemplates = (): AuthenticationProfileOptions => {
   const Tabs = getTabs();
@@ -36,14 +34,6 @@ export const getAuthenticationProfileTemplates = (): AuthenticationProfileOption
       permissionLevel: Permissions.READ,
       tabs: [
         Tabs.ALOHA_ROUTING_RULES
-      ]
-    },
-    ALOHA_FLOW: {
-      name: "Aloha Flow",
-      home: AlohaFlowContainer,
-      permissionLevel: Permissions.READ,
-      tabs: [
-        Tabs.ALOHA_CALL_FLOW_MANAGEMENT
       ]
     },
     DYNAMIC_CALL_FLOW: {
@@ -91,21 +81,6 @@ export const getAdGroupPermissionMapping = (): ADGroupPermission[] => {
       startup: startupProfiles.TRITON,
       description: descriptions.Triton,
       authenticationProfile: authenticationProfileTemplates.TRITON
-    },
-    {
-      roles: [
-        {
-          name: "FlowRead",
-          permissionLevel: Permissions.READ
-        },
-        {
-          name: "FlowReadWrite",
-          permissionLevel: Permissions.WRITE
-        }
-      ],
-      startup: startupProfiles.ALOHA_FLOW,
-      description: descriptions.Aloha_Flow,
-      authenticationProfile: authenticationProfileTemplates.ALOHA_FLOW
     },
     {
       roles: [
@@ -232,21 +207,6 @@ export const getTabs = (): any => {
         }
       ]
     },
-    ALOHA_CALL_FLOW_MANAGEMENT: {
-      value: "aloha-callflow-management",
-      label: "Call Flow DB Management",
-      route: "/triton-admin/aloha-flow",
-      dropdown: [
-        {
-          route: "/triton-admin/aloha-flow",
-          label: "Call Flow"
-        },
-        {
-          route: "/triton-admin/dyn-flow",
-          label: "Dynamic Call Flow"
-        }
-      ]
-    },
     DYNAMIC_CALL_FLOW_MANAGEMENT: {
       value: "dynamic-call-flow-management",
       label: "Dynamic Call Flow",
@@ -257,8 +217,8 @@ export const getTabs = (): any => {
           label: "Phone Number"
         },
         {
-          route: "/triton-admin/dynamic-call-flow-action",
-          label: "Action"
+          route: "/triton-admin/dynamic-call-flow-configuration",
+          label: "Call Flow Configuration"
         }
       ]
     },

@@ -1,4 +1,4 @@
-import { FieldConfigs } from "./Form.Field.Config";
+import { FieldConfigs } from "./Form.Interfaces";
 
 export interface FormFieldOptions<RecordType> {
   generateOptions(records: Array<RecordType>): void;

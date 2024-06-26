@@ -18,7 +18,7 @@ export function initializeDataGrid(): DataGridStateProps {
   } as DataGridStateProps;
 }
 
-export function sortDataGrid<RecordType>(records: Array<RecordType>): [Array<RecordType>, DataGridStateProps] {
+export function sortRecords<RecordType>(records: Array<RecordType>): [Array<RecordType>, DataGridStateProps] {
   let sortedRecords: Array<RecordType> = [];
 
   if (records?.length > 0) {
@@ -38,11 +38,6 @@ export function sortDataGrid<RecordType>(records: Array<RecordType>): [Array<Rec
       minId,
       maxId
     }];
-
-    //TODO: Apply filter records on an initial load?
-    // if (Object.keys(this.getFilter()).length > 0) {
-    //   this.filterRecords(records, minId, maxId);
-    // }
   } else {
     return [records, {
       fetching: false,

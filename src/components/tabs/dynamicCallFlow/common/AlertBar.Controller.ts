@@ -17,9 +17,9 @@ export enum AlertSeverityTypeEnum {
 }
 
 export interface AlertBarProps {
-  open: boolean;
-  msg: string;
-  severityType: AlertSeverityType;
+  open?: boolean;
+  msg?: string;
+  severityType?: AlertSeverityType;
   duration?: number
 }
 

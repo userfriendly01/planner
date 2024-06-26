@@ -15,18 +15,17 @@ import {
   PhoneNumberRecordType
 } from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
 
-import {
-  PhoneNumberModalType,
-  PhoneNumberModalTypeEnum
-} from "../DynamicCallFlow.PhoneNumber.Container.Modal.Controller";
 import { DynamicCallFlowPhoneNumberContext } from "../DynamicCallFlow.PhoneNumber.Container";
 import { PhoneNumberPreviewModalHandler } from "./PhoneNumber.Preview.Modal.Handler";
 import { DataGridControllerRef } from "../../common/DynamicCallFlow.Interfaces";
-import { PhoneNumberXlsxImporter } from "../Xlsx/PhoneNumber.Xlsx.Importer";
+import { PhoneNumberXlsxImporter } from "../Xlsx/Import/PhoneNumber.Xlsx.Importer";
 import { FieldOptions } from "components/tabs/dynamicCallFlow/common/Form/AbstractFormFieldOptionsManager";
 import { StyledButton } from "components/StyledButton";
 import { HANDLED_SUCCESSFULLY } from "components/tabs/dynamicCallFlow/common/Preview/Abstract.Preview.Modal.Handler";
 import { PhoneNumberRecordUtil } from "dynamicCallFlow/GraphQL/PhoneNumber.Record.Util";
+import {
+  PhoneNumberModalType, PhoneNumberModalTypeEnum
+} from "dynamicCallFlow/DynamicCallFlow.PhoneNumber.Interfaces";
 
 interface PreviewModalParameters<RecordType> {
     isOpen: boolean;

@@ -20,20 +20,19 @@ export abstract class AbstractListRecordsQuery extends AbstractGraphQLQuery {
   async getEntireList<RecordType>(accessToken: string, loadDataGridMonitor?: LoadDataGridMonitorRef): Promise<Array<RecordType>> {
     let nextToken: string = null;
     let entireList: Array<RecordType> = [];
-    const startTime = Date.now();
+    let loopCount = 0;
+
     try {
       do {
         const listResults = await this.getList<RecordType>(accessToken, 10000, nextToken);
         nextToken = listResults.nextToken;
         loadDataGridMonitor.current.addToRecordCount(listResults.items.length);
         entireList = entireList.concat(listResults.items);
-      } while (nextToken);
+      } while (nextToken && loopCount++ < 3);
     } catch (error) {
       console.error(`Error in getEntireList: ${error?.message}`, { error });
     }
 
-    const endTime = Date.now();
-    console.debug(`Time to retrieve ${entireList.length} records: ${endTime - startTime}ms`);
     return entireList;
   }
 

@@ -20,7 +20,7 @@ import {
 } from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
 import {
   FieldConfig, FieldConfigs
-} from "../../common/Form/Form.Field.Config";
+} from "../../common/Form/Form.Interfaces";
 import { PhoneNumberRecordUtil } from "../GraphQL/PhoneNumber.Record.Util";
 
 import {
@@ -29,11 +29,13 @@ import {
 import {
   AlertBarControllerRef, ReactStateAction
 } from "../../common/DynamicCallFlow.Interfaces";
-import { DynamicCallFlowPhoneNumberContext } from "../DynamicCallFlow.PhoneNumber.Container";
-import { PhoneNumberModalTypeEnum } from "../DynamicCallFlow.PhoneNumber.Container.Modal.Controller";
+import {
+  DYNAMIC_CALL_FLOW_PROFILE, DynamicCallFlowPhoneNumberContext
+} from "../DynamicCallFlow.PhoneNumber.Container";
 import { ComponentControl } from "components/ComponentControl";
-import { readWriteAccess } from "utils/alohaConfigUtils";
 import { CustomToast } from "components/CustomToast";
+import { PhoneNumberModalTypeEnum } from "dynamicCallFlow/DynamicCallFlow.PhoneNumber.Interfaces";
+import { userDoesNotHaveReadWriteAccess } from "components/tabs/dynamicCallFlow/common/authentication";
 
 export interface FormModalProps {
   isOpen: boolean;
@@ -42,13 +44,11 @@ export interface FormModalProps {
   selectedRow: PhoneNumberRecordType;
   fieldConfigsReactStateAction: ReactStateAction<FieldConfigs>;
   handleOnClone: () => void;
-  postHandleOnSave: (record: PhoneNumberRecordType) => void;
-  postHandleOnDelete: (record: PhoneNumberRecordType) => void;
   postFormHandler: () => void;
 }
 
 export const PhoneNumberFormModal = ({
-  isOpen, formHandler, alertBarController, selectedRow, fieldConfigsReactStateAction, handleOnClone, postHandleOnSave, postHandleOnDelete, postFormHandler
+  isOpen, formHandler, alertBarController, selectedRow, fieldConfigsReactStateAction, handleOnClone, postFormHandler
 }: FormModalProps): JSX.Element => {
   const {
     state: fieldConfigs
@@ -60,8 +60,7 @@ export const PhoneNumberFormModal = ({
     modalController
   } = useContext(DynamicCallFlowPhoneNumberContext);
 
-  // TODO: The enableFlow doesn't appear to be working.  Form Save, Clone, & Delete buttons are always disabled when referencing enableFlow.
-  const enableFlow = useMemo<boolean>(() => readWriteAccess(permissions,"dynamic-call-flow"), []);
+  const userDoesNotHavePermission = useMemo<boolean>(() => userDoesNotHaveReadWriteAccess(permissions, DYNAMIC_CALL_FLOW_PROFILE), []);
   const [formRecord, setFormRecord] = React.useState<PhoneNumberRecordType>({} as PhoneNumberRecordType);
   const [alertBarProps, setAlertBarProps] = useState<AlertBarProps>(initialAlertBarProps);
 
@@ -168,7 +167,7 @@ export const PhoneNumberFormModal = ({
             variant="contained"
             value="Save"
             color="primary"
-            disabled={false}
+            disabled={userDoesNotHavePermission}
             sx={{ marginRight: 2 }}
             aria-label="saveFlowRuleButton"
             onClick={handleOnSave}
@@ -179,7 +178,7 @@ export const PhoneNumberFormModal = ({
             variant="contained"
             value="Clone"
             color="primary"
-            disabled={false}
+            disabled={userDoesNotHavePermission}
             sx={{ marginRight: 2 }}
             aria-label="cloneFlowRuleButton"
             onClick={handleOnClone}
@@ -190,7 +189,7 @@ export const PhoneNumberFormModal = ({
             variant="contained"
             color="error"
             value="Delete"
-            disabled={false}
+            disabled={userDoesNotHavePermission}
             sx={{ marginRight: 2 }}
             aria-label="deleteFlowRuleButton"
             onClick={handleOnDelete}
