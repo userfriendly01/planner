@@ -27,6 +27,8 @@ import {
 } from "components/tabs/dynamicCallFlow/common/authentication";
 import { PhoneNumberXlsxExporter } from "dynamicCallFlow/Xlsx/Export/PhoneNumber.Xlsx.Exporter";
 import { PhoneNumberModalTypeEnum } from "dynamicCallFlow/DynamicCallFlow.PhoneNumber.Interfaces";
+import { FilterLabel } from "dynamicCallFlow/DataGrid/PhoneNumber.DataGrid.Filter.Modal";
+
 
 interface PhoneNumberDataGridToolBarProps {
   isFilterModalOpen: boolean;
@@ -73,7 +75,7 @@ const PhoneNumberDataGridToolBar = ({
                   key={key}
                   color="primary"
                   tabIndex={index}
-                  label={`${key.toLowerCase()} : ${localFilter[key]}`}
+                  label={`${FilterLabel.get(key) || key} : ${localFilter[key]}`}
                   onDelete={(event: any)=> { removeFilterElement(key); }}
                   sx={{ margin: 1 }}
                 />

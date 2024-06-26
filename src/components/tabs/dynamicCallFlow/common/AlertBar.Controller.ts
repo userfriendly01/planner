@@ -39,7 +39,7 @@ export class AlertBarController {
     this._setAlertBarProps = setAlertBarProps;
   }
 
-  error(message: string, duration = ALERT_BAR_15_SECOND_DURATION): void {
+  error(message: string, duration = ALERT_BAR_10_SECOND_DURATION): void {
     return this.setAlertBarPropsState(message, AlertSeverityTypeEnum.Error, duration, OPEN_ALERT_BAR);
   }
 
@@ -50,18 +50,18 @@ export class AlertBarController {
       message = message.concat("\n\t", error.message);
     });
 
-    return this.setAlertBarPropsState(message, AlertSeverityTypeEnum.Error, ALERT_BAR_15_SECOND_DURATION, OPEN_ALERT_BAR);
+    return this.setAlertBarPropsState(message, AlertSeverityTypeEnum.Error, ALERT_BAR_10_SECOND_DURATION, OPEN_ALERT_BAR);
   }
 
   warning(message: string, duration = ALERT_BAR_10_SECOND_DURATION): void {
     return this.setAlertBarPropsState(message, AlertSeverityTypeEnum.Warning, duration, OPEN_ALERT_BAR);
   }
 
-  info(message: string, duration = ALERT_BAR_10_SECOND_DURATION): void {
+  info(message: string, duration = ALERT_BAR_5_SECOND_DURATION): void {
     return this.setAlertBarPropsState(message, AlertSeverityTypeEnum.Info, duration, OPEN_ALERT_BAR);
   }
 
-  success(message: string, duration = ALERT_BAR_10_SECOND_DURATION): void {
+  success(message: string, duration = ALERT_BAR_5_SECOND_DURATION): void {
     return this.setAlertBarPropsState(message, AlertSeverityTypeEnum.Success, duration, OPEN_ALERT_BAR);
   }
 

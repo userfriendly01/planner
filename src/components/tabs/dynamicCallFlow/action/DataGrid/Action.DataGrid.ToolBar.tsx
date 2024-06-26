@@ -19,6 +19,7 @@ import {
 import { ActionRecordType } from "dynamicCallFlow/GraphQL/Action.Interfaces";
 import { ActionXlsxExporter } from "dynamicCallFlow/Xlsx/Action.Xlsx.Exporter";
 import { DYNAMIC_CALL_FLOW_PROFILE } from "dynamicCallFlow/DynamicCallFlow.PhoneNumber.Container";
+import { FilterLabel } from "dynamicCallFlow/DataGrid/Action.DataGrid.Filter.Modal";
 
 interface ActionDataGridToolBarProps {
   isFilterModalOpen: boolean;
@@ -49,7 +50,7 @@ export const ActionDataGridToolBar = ({
   };
 
   const exportDataFile = async () => {
-    await ActionXlsxExporter.instance().exportXlsxFiles(dataGridController.current.dataGridRecords);
+    await ActionXlsxExporter.instance().exportXlsxFiles(dataGridController.current.dataGridRecords, "CallFlowConfiguration");
   };
 
   return (
@@ -65,7 +66,7 @@ export const ActionDataGridToolBar = ({
                   key={key}
                   color="primary"
                   tabIndex={index}
-                  label={`${key.toLowerCase()} : ${localFilter[key]}`}
+                  label={`${FilterLabel.get(key)} : ${localFilter[key]}`}
                   onDelete={(event: any)=> { removeFilterElement(key); }}
                   sx={{ margin: 1 }}
                 />

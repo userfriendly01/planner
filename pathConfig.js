@@ -38,12 +38,6 @@ const paths = [
     ]
   },
   {
-    alias: "alohaFlow",
-    paths: [
-      "components/tabs/alohaFlow"
-    ]
-  },
-  {
     alias: "alohaRouting",
     paths: [
       "components/tabs/alohaRouting"
@@ -63,12 +57,6 @@ const paths = [
       "components/tabs/callflowmanagement/SkillManagement/AddEditSkill",
       "components/tabs/callflowmanagement/SkillManagement/ActionContainer",
       "components/tabs/callflowmanagement/SkillManagement/DefaultSkillGroups"
-    ]
-  },
-  {
-    alias: "dynamicFlow",
-    paths: [
-      "components/tabs/dynamicFlow"
     ]
   },
   {

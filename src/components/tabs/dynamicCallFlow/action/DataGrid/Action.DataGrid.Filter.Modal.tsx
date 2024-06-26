@@ -10,17 +10,18 @@ import {
   HeadingStyled, ModalSearchStyled
 } from "../../common/DynamicCallFlow.Styles";
 import SelectContainer from "../../../../core/SharedComponents/SelectContainer";
-import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import {
   DataGridFilterModalProps, Filter
 } from "../../common/DataGrid/Abstract.DataGrid.Filter";
-import {
-  ACTION_ID, ACTION_TYPE, CALL_FLOW_NAME
-} from "../Form/ActionFields";
+import { CALL_FLOW_NAME } from "../Form/ActionFields";
 import { ActionRecordType } from "../GraphQL/Action.Interfaces";
 import { DynamicCallFlowActionContext } from "../DynamicCallFlow.Action.Container";
+
+export const FilterLabel: Map<string, string> = new Map<string, string>([
+  ["callFlowName", "Call Flow Name"]
+]);
 
 //TODO:  This can be moved to a common location as most is the same as PhoneNumberDataGridFilterModal.  Just need to make the SelectContainers dynamic
 export const ActionDataGridFilterModal = ({

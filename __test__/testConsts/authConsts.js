@@ -1,13 +1,11 @@
 export const mockRunTritonStartup = jest.fn();
 export const mockRunAlohaRoutingStartup = jest.fn();
-export const mockRunAlohaFlowStartup = jest.fn();
-export const mockRunDynFlowStartup = jest.fn();
+export const mockRunDynamicCallFlowStartup = jest.fn();
 
 export const descriptions = {
   Triton: "Test Triton Description",
   Aloha_Routing: "Test Aloha Routing Description",
-  Aloha_Flow: "Test Aloha Flow Description",
-  Dyn_Flow: "Dynamic Flow Description"
+  Dynamic_Call_Flow: "Test Dynamic Call Flow Description"
 };
 
 export const tabs = {
@@ -101,13 +99,9 @@ export const startups = {
     name: "aloha-route",
     function: mockRunAlohaRoutingStartup
   },
-  ALOHA_FLOW: {
-    name: "aloha-flow",
-    function: mockRunAlohaFlowStartup
-  },
-  DYNAMIC_FLOW: {
-    name: "dyn-flow",
-    function: mockRunAlohaFlowStartup
+  DYNAMIC_CALL_FLOW: {
+    name: "dynamic-call-flow",
+    function: mockRunDynamicCallFlowStartup
   }
 };
 
@@ -128,13 +122,6 @@ export const authenticationProfileTemplates = {
     permissionLevel: "read",
     tabs: [
       tabs.ALOHA_ROUTING_RULES
-    ]
-  },
-  ALOHA_FLOW: {
-    name: "Aloha Flow",
-    permissionLevel: "read",
-    tabs: [
-      tabs.ALOHA_CALL_FLOW_MANAGEMENT
     ]
   },
   DYNAMIC_CALL_FLOW: {
@@ -169,24 +156,9 @@ export const adGroupPermissionMapping = [
         permissionLevel: "write"
       }
     ],
-    startup: startups.ALOHA_FLOW,
-    description: descriptions.Aloha_Flow,
-    authenticationProfile: authenticationProfileTemplates.ALOHA_FLOW
-  },
-  {
-    roles: [
-      {
-        name: "FlowRead",
-        permissionLevel: "read"
-      },
-      {
-        name: "FlowReadWrite",
-        permissionLevel: "write"
-      }
-    ],
-    startup: startups.DYNAMIC_FLOW,
-    description: descriptions.Dyn_Flow,
-    authenticationProfile: authenticationProfileTemplates.ALOHA_FLOW
+    startup: startups.DYNAMIC_CALL_FLOW,
+    description: descriptions.Dynamic_Call_Flow,
+    authenticationProfile: authenticationProfileTemplates.DYNAMIC_CALL_FLOW
   },
   {
     roles: [

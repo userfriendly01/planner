@@ -22,6 +22,14 @@ import { PKEY } from "../Form/Legacy.PhoneNumber.Form.Fields";
 import { DynamicCallFlowPhoneNumberContext } from "../DynamicCallFlow.PhoneNumber.Container";
 import { PhoneNumberRecordType } from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
 
+export const FilterLabel: Map<string, string> = new Map<string, string>([
+  ["brand", "Brand"],
+  ["channel", "Channel"],
+  ["pkey", "#Dialed"],
+  ["callFlowTemplate", "Call Flow Template"],
+  ["callFlowRoute", "Call Flow Route"]
+]);
+
 export const PhoneNumberDataGridFilterModal = ({
   isOpen, dataGridFilter
 }: DataGridFilterModalProps<PhoneNumberRecordType>):JSX.Element => {
@@ -115,12 +123,8 @@ export const PhoneNumberDataGridFilterModal = ({
                 required={false} />
             </Grid>
           </Grid>
-          <Grid container>
-            text
-          </Grid>
         </ModalBody>
         <ModalFooter >
-          more text
           <Button
             type="submit"
             value="Save Filter"
