@@ -7,7 +7,6 @@ import {
 } from "globals/interfaces";
 import { formModes } from "globals";
 import {
-  formatProfileBooleanDataTrueFalse,
   formatSimpleText
 } from "utils/profileUtils";
 
@@ -232,21 +231,21 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         formMode: action.payload.formMode,
         activitiesList,
         callTagsList,
-        autoAnswered: formatProfileBooleanDataTrueFalse(profile.auto_answd_i.data[0]),
-        inboundRecorded: formatProfileBooleanDataTrueFalse(profile.recorded_i.data[0]),
-        outboundRecorded: formatProfileBooleanDataTrueFalse(profile.otbnd_recorded_i.data[0]),
-        acwOption: formatProfileBooleanDataTrueFalse(profile.acw_option_i.data[0]),
-        manualRecorded: formatProfileBooleanDataTrueFalse(profile.manual_recorded_i.data[0]),
-        acwDataEntry: formatProfileBooleanDataTrueFalse(profile.acw_data_entry_i.data[0]),
-        manualRecordedInbound: formatProfileBooleanDataTrueFalse(profile.manual_record_inbound_i.data[0]),
-        agentAssistedPay: formatProfileBooleanDataTrueFalse(profile.agent_assisted_pay_i.data[0]),
-        paymentProcessing: formatProfileBooleanDataTrueFalse(profile.pmt_prcsg_i.data[0]),
-        policyNumberEdit: formatProfileBooleanDataTrueFalse(profile.policy_number_edit_i.data[0]),
-        voiceMailTranscription: formatProfileBooleanDataTrueFalse(profile.voice_mail_transcription_i.data[0]),
-        callReason: formatProfileBooleanDataTrueFalse(profile.call_reason_i.data[0]),
-        clickToDial: formatProfileBooleanDataTrueFalse(profile.click_to_dial_i.data[0]),
-        eftAuthorization: formatProfileBooleanDataTrueFalse(profile.eft_authorization_i.data[0]),
-        claimNumberEdit: formatProfileBooleanDataTrueFalse(profile.claim_number_edit_i.data[0]),
+        // autoAnswered: formatProfileBooleanDataTrueFalse(profile.auto_answd_i.data[0]),
+        // inboundRecorded: formatProfileBooleanDataTrueFalse(profile.recorded_i.data[0]),
+        // outboundRecorded: formatProfileBooleanDataTrueFalse(profile.otbnd_recorded_i.data[0]),
+        // acwOption: formatProfileBooleanDataTrueFalse(profile.acw_option_i.data[0]),
+        // manualRecorded: formatProfileBooleanDataTrueFalse(profile.manual_recorded_i.data[0]),
+        // acwDataEntry: formatProfileBooleanDataTrueFalse(profile.acw_data_entry_i.data[0]),
+        // manualRecordedInbound: formatProfileBooleanDataTrueFalse(profile.manual_record_inbound_i.data[0]),
+        // agentAssistedPay: formatProfileBooleanDataTrueFalse(profile.agent_assisted_pay_i.data[0]),
+        // paymentProcessing: formatProfileBooleanDataTrueFalse(profile.pmt_prcsg_i.data[0]),
+        // policyNumberEdit: formatProfileBooleanDataTrueFalse(profile.policy_number_edit_i.data[0]),
+        // voiceMailTranscription: formatProfileBooleanDataTrueFalse(profile.voice_mail_transcription_i.data[0]),
+        // callReason: formatProfileBooleanDataTrueFalse(profile.call_reason_i.data[0]),
+        // clickToDial: formatProfileBooleanDataTrueFalse(profile.click_to_dial_i.data[0]),
+        // eftAuthorization: formatProfileBooleanDataTrueFalse(profile.eft_authorization_i.data[0]),
+        // claimNumberEdit: formatProfileBooleanDataTrueFalse(profile.claim_number_edit_i.data[0]),
         overflowSkill: {
           value: formatSimpleText(profile.overflow_skill),
           valid: true

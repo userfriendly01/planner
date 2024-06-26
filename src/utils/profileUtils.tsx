@@ -6,7 +6,8 @@ import {
 } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import { logger } from "utils/logger";
-import { ProfileEntryFormState } from "components/tabs/orgmanagement/triton/ProfileEntryForm/ProfileEntryForm.Interfaces";
+import { ProfileEntryFormState } from "orgmanagement/ProfileEntryForm.Interfaces";
+import { TwilioQueue } from "components/tabs/callflowmanagement/SkillManagement/Skills.Interfaces";
 
 export const isProfileFormValid = (form: ProfileEntryFormState): boolean => {
   if (form.operatingUnit.ou_name && form.activitiesList.length
@@ -28,32 +29,19 @@ export const isOverflowSkillValid = (overflowSkill: string): boolean => {
   return !overflowSkill || (overflowSkill.length <= 80 && overflowSkill.match(overflowSkillRegEx)) ? true : false;
 };
 
-export const formatProfileBooleanData = (value: number) => {
-  if (value === 1) {
-    return <Check />;
-  }
-  return "";
-};
 
-export const formatProfileBooleanDataTrueFalse = (value: number) => {
-  if (value === 1) {
-    return { value: true };
-  }
-  return { value: false };
-};
-
-export const formatProfileACWDataEntry = (value: number, options: any, BubbleDiv: any, HighlightRed: any) => {
-  if (value === 1 && options.length) {
+export const formatProfileACWDataEntry = (value: boolean, options: any, BubbleDiv: any, HighlightRed: any) => {
+  if (value && options?.length) {
     return options.map((option: any) => {
       return <Tooltip key={option.wrkr_tsk_info_id} placement="top" title={option.options ? option.options.toString().replace(/,/g,", ") : ""}>
         <BubbleDiv key={option.wrkr_tsk_info_id}>{option.display_nme}</BubbleDiv>
       </Tooltip>;
     });
   }
-  if (value === 1 && !options.length) {
+  if (value && !options?.length) {
     return  <HighlightRed>{"Call tags not configured but feature enabled"}</HighlightRed>;
   }
-  if (value === 0 && options.length) {
+  if (value && options?.length) {
     return  <HighlightRed>{"Call tags configured but feature disabled"}</HighlightRed>;
   }
   return "";
@@ -84,13 +72,10 @@ export const formatSelfServiceIndicatorData = (profileId: number) => {
   return "";
 };
 
-export const formatAggregateQueues = (aggregateQueues: any[], BubbleDiv: any) => {
-  return aggregateQueues.map(queue => {
-    if (queue.aggregate_queues_type === "aggregate") {
-      return <BubbleDiv key={queue.aggregate_queues_nme}>{queue.aggregate_queues_nme} <AutoAwesomeMotion fontSize="small"/></BubbleDiv>;
-    } else {
-      return <BubbleDiv key={`${queue.aggregate_queues_nme}`}>{queue.aggregate_queues_nme}</BubbleDiv>;
-    }
+export const formatAggregateQueues = (transferQueueSids: string[], taskQueues: TwilioQueue[],  BubbleDiv: any) => {
+  return transferQueueSids?.map(sid => {
+    const taskQueue: Partial<TwilioQueue> = taskQueues.find(t => t.sid === sid) || { friendly_name: "Unknown" };
+    return <BubbleDiv key={`${taskQueue.sid}`}>{taskQueue.friendly_name}</BubbleDiv>;
   });
 };
 

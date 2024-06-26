@@ -1,5 +1,5 @@
 import { checkIfPO } from "authentication/authUtils";
-import { ProfileSettingsTable } from "components/tabs/orgmanagement/triton/ProfileSettingsTable/ProfileSettingsTable";
+import { ProfileSettingsTable } from "components/tabs/orgmanagement/triton/ProfileSettingsContainer/ProfileSettingsTable/ProfileSettingsTable";
 import { ProfileEntryForm } from "orgmanagement/ProfileEntryForm";
 import { PageLoadSpinner } from "components/PageLoadSpinner";
 import {
@@ -66,7 +66,6 @@ export const ProfileSettingsContainer = () => {
                   : null
               }
               <ProfileSettingsTable
-                profileList={profiles}
                 setProfileModalState={setProfileModalState}
                 loggedInUser={loggedInUser}
               />

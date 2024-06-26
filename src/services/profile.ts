@@ -152,6 +152,8 @@ export const loadSoftphoneConfigRelationships = async (profiles: UMSoftphoneConf
       isFirstPage: true
     }
   }));
+
+  callback();
 };
 
 export const createProfile = async (profile: ProfilePayload): Promise<any> => {

@@ -2,7 +2,7 @@ import { ProfileSettingsContainer } from "../ProfileSettingsContainer";
 import { checkIfPO } from "authentication/authUtils";
 import MockAdapter from "axios-mock-adapter";
 import { StyledButton } from "components/StyledButton";
-import { ProfileSettingsTable } from "components/tabs/orgmanagement/triton/ProfileSettingsTable/ProfileSettingsTable";
+import { ProfileSettingsTable } from "components/tabs/orgmanagement/triton/ProfileSettingsContainer/ProfileSettingsTable/ProfileSettingsTable";
 import { ProfileEntryForm } from "orgmanagement/ProfileEntryForm";
 import { Modal } from "@mui/material";
 import { useAdminState } from "context/appContext";

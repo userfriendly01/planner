@@ -17,34 +17,43 @@ import { sortProfilesById } from "utils/_sortUtils";
 import { formatTenDigitNumber } from "utils/numberUtils";
 import {
   formatAggregateQueues,
-  formatProfileBooleanData,
   formatProfileACWDataEntry,
-  formatSimpleText,
   formatActivityData,
   formatSelfServiceIndicatorData
 } from "utils/profileUtils";
 import { Tooltip } from "@mui/material";
-import { Edit } from "@mui/icons-material";
+import {
+  Check, Edit
+} from "@mui/icons-material";
 import {
   profileTableColumnHeader,
   formModes
 } from "globals";
-import { profileEntryFormDispatch } from "context/appContext";
+import {
+  profileEntryFormDispatch, useAdminState,
+  useSkillState
+} from "context/appContext";
 import { profileEntryFormActions } from "context/profileEntryFormReducer";
+import {
+  Activity, UMSoftphoneConfiguration
+} from "globals/interfaces";
 
 interface ProfileSettingsTableProps {
-  profileList: any[],
   setProfileModalState: (payload: any) => void,
   loggedInUser: any
 }
 export const ProfileSettingsTable = (props: ProfileSettingsTableProps) => {
   const {
-    profileList,
     setProfileModalState,
     loggedInUser
   } = props;
 
   const setForm = profileEntryFormDispatch();
+  const {
+    activities,
+    profiles
+  } = useAdminState().profileContext;
+  const { taskQueues } = useSkillState();
 
   const editButtonOnClick = (profile: any) => (event: any) => {
     event.stopPropagation();
@@ -79,7 +88,7 @@ export const ProfileSettingsTable = (props: ProfileSettingsTableProps) => {
           </thead>
           <tbody>
             {
-              profileList.sort(sortProfilesById).map(profile => {
+              profiles.sort(sortProfilesById).map((profile: UMSoftphoneConfiguration) => {
                 return(
                   <CustomTableRow key={profile.profile_id} data-testid="table-row">
                     <CustomTableData>
@@ -89,52 +98,52 @@ export const ProfileSettingsTable = (props: ProfileSettingsTableProps) => {
                       <TableText>{profile.profile_name}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatProfileBooleanData(profile.recorded_i.data[0])}</TableText>
+                      <TableText>{profile.inbnd_rec ? <Check /> : ""}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatProfileBooleanData(profile.auto_answd_i.data[0])}</TableText>
+                      <TableText>{profile.auto_ans ? <Check /> : ""}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatProfileBooleanData(profile.pmt_prcsg_i.data[0])}</TableText>
+                      <TableText>{profile.takes_paymnts ? <Check /> : ""}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatProfileBooleanData(profile.otbnd_recorded_i.data[0])}</TableText>
+                      <TableText>{profile.outbnd_rec ? <Check /> : ""}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatProfileBooleanData(profile.acw_option_i.data[0])}</TableText>
+                      <TableText>{profile.acw_option ? <Check /> : ""}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatProfileBooleanData(profile.manual_recorded_i.data[0])}</TableText>
+                      <TableText>{profile.man_outbnd_rec ? <Check /> : ""}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatProfileACWDataEntry(profile.acw_data_entry_i.data[0], profile.callTags.filter((data: any) => data.profile_id === profile.profile_id), BubbleDiv, HighlightRed)}</TableText>
+                      <TableText>{formatProfileACWDataEntry(profile.acw_option, profile.call_tags?.filter((data: any) => data.profile_id === profile.profile_id), BubbleDiv, HighlightRed)}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatProfileBooleanData(profile.manual_record_inbound_i.data[0])}</TableText>
+                      <TableText>{profile.man_inbnd_rec ? <Check /> : ""}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatProfileBooleanData(profile.agent_assisted_pay_i.data[0])}</TableText>
+                      <TableText>{profile.agnt_asst_pay ? <Check /> : ""}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatSimpleText(profile.overflow_skill)}</TableText>
+                      <TableText>{profile.overflow_skill || ""}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatProfileBooleanData(profile.policy_number_edit_i.data[0])}</TableText>
+                      <TableText>{profile.edt_policy_num ? <Check /> : ""}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatProfileBooleanData(profile.voice_mail_transcription_i.data[0])}</TableText>
+                      <TableText>{profile.voice_mail_trans ? <Check /> : ""}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatProfileBooleanData(profile.click_to_dial_i.data[0])}</TableText>
+                      <TableText>{profile.clk_to_dial ? <Check /> : ""}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatProfileBooleanData(profile.call_reason_i.data[0])}</TableText>
+                      <TableText>{profile.call_reason? <Check /> : ""}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatProfileBooleanData(profile.eft_authorization_i.data[0])}</TableText>
+                      <TableText>{profile.eft_auth ? <Check /> : ""}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatProfileBooleanData(profile.claim_number_edit_i.data[0])}</TableText>
+                      <TableText>{profile.edt_claim_num ? <Check /> : ""}</TableText>
                     </CustomTableData>
                     <CustomTableData>
                       <TableText>{formatSelfServiceIndicatorData(profile.profile_id)}</TableText>
@@ -142,7 +151,8 @@ export const ProfileSettingsTable = (props: ProfileSettingsTableProps) => {
                     <CustomTableData>
                       <TableDataFlex>
                         {
-                          profile.activities.map((activity: any) => {
+                          profile?.activities?.map((ac: any) => {
+                            const activity: Partial<Activity> = activities.find((a: Activity) => a.activity_sid ===  ac.activity_sid) || { activity_nme: "Unknown" };
                             return <div key={`${activity.activity_nme}`}>{formatActivityData(activity.activity_nme, BubbleDiv)}</div>;
                           })
                         }
@@ -150,14 +160,14 @@ export const ProfileSettingsTable = (props: ProfileSettingsTableProps) => {
                     </CustomTableData>
                     <CustomTableData>
                       <TableDataFlex>
-                        {formatAggregateQueues(profile.aggregateQueues, BubbleDiv)}
+                        {formatAggregateQueues(profile.transfer_queues, taskQueues, BubbleDiv)}
                       </TableDataFlex>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatSimpleText(profile?.access_group_nme)}</TableText>
+                      <TableText>{profile.accessGroup?.access_group_nme || ""}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{formatSimpleText(profile?.operating_unit_nme)}</TableText>
+                      <TableText>{profile.ou_name || ""}</TableText>
                     </CustomTableData>
                     <CustomTableData>
                       <TableText style={{ "textWrap": "nowrap" }}>{profile.fwd_to_num ? formatTenDigitNumber(profile.fwd_to_num) : ""}</TableText>

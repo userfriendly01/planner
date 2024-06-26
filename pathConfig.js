@@ -88,15 +88,13 @@ const paths = [
       "components/tabs/orgmanagement/calabrio/CalabrioOrgWrapper",
       "components/tabs/orgmanagement/calabrio/CalabrioRolesWrapper",
       "components/tabs/orgmanagement/calabrio/CalabrioTeamModal",
-      "components/tabs/orgmanagement/triton/DialListEntryForm",
-      "components/tabs/orgmanagement/triton/DialListTable",
-      "components/tabs/orgmanagement/triton/Directory",
-      "components/tabs/orgmanagement/triton/DirectoryEntryForm",
-      "components/tabs/orgmanagement/triton/PhoneNumberTable",
-      "components/tabs/orgmanagement/triton/ProfileDropDown",
-      "components/tabs/orgmanagement/triton/ProfileEntryForm",
+      "components/tabs/orgmanagement/triton/PhoneNumberContainer",
+      "components/tabs/orgmanagement/triton/PhoneNumberContainer/PhoneNumberTable",
+      "components/tabs/orgmanagement/triton/PhoneNumberContainer/PhoneNumberForm",
       "components/tabs/orgmanagement/triton/ProfileSettingsContainer",
-      "components/tabs/orgmanagement/triton/ProfileSettingsTable"
+      "components/tabs/orgmanagement/triton/ProfileSettingsContainer/ProfileDropDown",
+      "components/tabs/orgmanagement/triton/ProfileSettingsContainer/ProfileEntryForm",
+      "components/tabs/orgmanagement/triton/ProfileSettingsContainer/ProfileSettingsTable"
     ]
   },
   {

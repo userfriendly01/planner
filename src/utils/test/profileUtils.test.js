@@ -5,10 +5,7 @@ import {
 } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import {
-  formatProfileBooleanData,
-  formatProfileBooleanDataTrueFalse,
   formatProfileACWDataEntry,
-  formatSimpleText,
   formatActivityData,
   formatCallTagsName,
   formatAggregateQueues,
@@ -22,7 +19,7 @@ import {
 import {
   BubbleDiv,
   HighlightRed
-} from "orgmanagement/ProfileSettingsTable.Styles";
+} from "components/tabs/orgmanagement/triton/ProfileSettingsContainer/ProfileSettingsTable/ProfileSettingsTable.Styles";
 
 describe("profileUtils", () => {
   describe("isProfileNameValid", () => {
@@ -310,23 +307,6 @@ describe("profileUtils", () => {
       expect(result).toBe(true);
     });
   });
-  describe("formatProfileBooleanData", () => {
-    test("should return Check component", () => {
-      expect(formatProfileBooleanData(1)).toStrictEqual(<Check />);
-    });
-    test("should return empty string for non 1 value", () => {
-      expect(formatProfileBooleanData(0)).toBe("");
-    });
-  });
-
-  describe("formatProfileBooleanDataTrueFalse", () => {
-    test("should return true value object", () => {
-      expect(formatProfileBooleanDataTrueFalse(1)).toStrictEqual({ value: true });
-    });
-    test("should return false value object", () => {
-      expect(formatProfileBooleanDataTrueFalse(0)).toStrictEqual({ value: false });
-    });
-  });
 
   describe("formatProfileACWDataEntry", () => {
     test("should return multiple BubbleDivs with display names / tooltips inside", () => {
@@ -390,15 +370,6 @@ describe("profileUtils", () => {
         options: null
       }];
       expect(formatProfileACWDataEntry(0, options, BubbleDiv, HighlightRed)).toStrictEqual(<HighlightRed>{"Call tags configured but feature disabled"}</HighlightRed>);
-    });
-  });
-
-  describe("formatSimpleText", () => {
-    test("should return overflow skill", () => {
-      expect(formatSimpleText("OverflowSkill")).toBe("OverflowSkill");
-    });
-    test("should return empty string for null overflow skill", () => {
-      expect(formatSimpleText(null)).toBe("");
     });
   });
 
