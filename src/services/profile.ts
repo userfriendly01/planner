@@ -145,12 +145,8 @@ export const loadSoftphoneConfigRelationships = async (profiles: UMSoftphoneConf
   }));
 
   dispatch(({
-    type: "loadPaginatedResults",
-    payload: {
-      type: "UMSoftphoneConfiguration",
-      results: results.map((r: any) => r.value),
-      isFirstPage: true
-    }
+    type: "loadProfileOptions",
+    payload: { profiles: results.map((r: any) => r.value) }
   }));
 
   callback();

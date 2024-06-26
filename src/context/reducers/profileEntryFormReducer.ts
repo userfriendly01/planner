@@ -206,10 +206,10 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         };
       });
 
-      const activitiesList = profile.activities.map((activity: { activity_id: number; activity_nme: string; availability: number; }) => {
+      const activitiesList = profile.activities.map((activity: { activity_id: number; activity_name: string; availability: number; }) => {
         return {
           activity_id: activity.activity_id,
-          activity_nme: activity.activity_nme,
+          activity_name: activity.activity_name,
           available_i: {
             data: [activity.availability],
             type: "Buffer"

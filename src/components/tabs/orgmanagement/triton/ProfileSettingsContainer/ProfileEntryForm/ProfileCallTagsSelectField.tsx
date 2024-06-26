@@ -17,8 +17,7 @@ import {
 } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import {
-  CallTag,
-  CallTagOptions
+  CallTag
 } from "globals/interfaces";
 import { logger } from "utils/logger";
 import { sortCallTagByName } from "utils/_sortUtils";
@@ -36,11 +35,11 @@ export const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProp
   const [callTags, setCallTags] = React.useState([]);
   const [callTagOptions, setCallTagOptions] = React.useState([]);
 
-  const callTagsForDropDown = callTags.filter(callTag => {
-    return !callTagsList.find(item => {
-      return item.wrkr_tsk_info_id === callTag.wrkr_tsk_info_id;
-    });
-  });
+  // const callTagsForDropDown = callTags.filter(callTag => {
+  //   return !callTagsList.find(item => {
+  //     return item.wrkr_tsk_info_id === callTag.wrkr_tsk_info_id;
+  //   });
+  // });
 
   const callTagOptionsForDropdown = callTagOptions.filter(callTagOption => {
     return !callTagOptionsList.find(item => {
@@ -59,35 +58,35 @@ export const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProp
     setNewProfileCallTag(defaultNewCallTag);
   };
 
-  const removeCallTagClicked = (callTagToBeRemoved: CallTag) => {
-    const updatedCallTagsList = callTagsList.filter(callTag => callTag.wrkr_tsk_info_id !== callTagToBeRemoved.wrkr_tsk_info_id);
-    setCallTagsList(updatedCallTagsList);
-  };
+  // const removeCallTagClicked = (callTagToBeRemoved: CallTag) => {
+  //   const updatedCallTagsList = callTagsList.filter(callTag => callTag.wrkr_tsk_info_id !== callTagToBeRemoved.wrkr_tsk_info_id);
+  //   setCallTagsList(updatedCallTagsList);
+  // };
 
-  const getCallTagDropDownOptions = (optionsList: CallTag[]) => {
-    return optionsList.sort(sortCallTagByName).map(option => ({
-      value: option.wrkr_tsk_info_id,
-      label: formatCallTagsName(option.wrkr_tsk_info_nme)
-    }));
-  };
+  // const getCallTagDropDownOptions = (optionsList: CallTag[]) => {
+  //   return optionsList.sort(sortCallTagByName).map(option => ({
+  //     value: option.wrkr_tsk_info_id,
+  //     label: formatCallTagsName(option.wrkr_tsk_info_nme)
+  //   }));
+  // };
 
-  const getCallTagOptionsDropDownOptions = (optionsList: CallTagOptions[]) => {
-    return optionsList.map(option => ({
-      value: option.options_id,
-      label: option.options_id
-    }));
-  };
+  // const getCallTagOptionsDropDownOptions = (optionsList: CallTagOptions[]) => {
+  //   return optionsList.map(option => ({
+  //     value: option.options_id,
+  //     label: option.options_id
+  //   }));
+  // };
 
-  const callTagOptionsChanged = (inputCallTagOptions: { value: any; }, wrkr_tsk_info_id: number) => {
-    const updatedCallTagsList = callTagsList.map(callTag => {
-      if (callTag.wrkr_tsk_info_id === wrkr_tsk_info_id) {
-        callTag.options_id = inputCallTagOptions !== null ? inputCallTagOptions.value : null;
-        return callTag;
-      }
-      return callTag;
-    });
-    setCallTagsList(updatedCallTagsList);
-  };
+  // const callTagOptionsChanged = (inputCallTagOptions: { value: any; }, wrkr_tsk_info_id: number) => {
+  //   const updatedCallTagsList = callTagsList.map(callTag => {
+  //     if (callTag.wrkr_tsk_info_id === wrkr_tsk_info_id) {
+  //       callTag.options_id = inputCallTagOptions !== null ? inputCallTagOptions.value : null;
+  //       return callTag;
+  //     }
+  //     return callTag;
+  //   });
+  //   setCallTagsList(updatedCallTagsList);
+  // };
 
   return (
     <ProfileDropdownControlWrapper>
@@ -98,9 +97,9 @@ export const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProp
             styles={{
               "max-width": "380px"
             }}
-            options={getCallTagDropDownOptions(callTagsForDropDown)}
+            options={[]}
             multiple={true}
-            value={getCallTagDropDownOptions(newProfileCallTag)}
+            value={[]}
             updateValue={(event: any, newInputValue: Array<{ [index: string]: any; value: number; }>) => newCallTagChanged(newInputValue)} />
         </ProfileDropdownRowItem>
         <ProfileDropdownRowItem>
@@ -116,7 +115,7 @@ export const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProp
       </ProfileDropdownRow>
       <ProfileDropdownRowSeperator />
       <ProfileDropdownWrapper>
-        {callTagsList.map((callTag: CallTag, index: number) => {
+        {/* {callTagsList.map((callTag: CallTag, index: number) => {
           return (
             // @ts-ignore
             <ProfileDropdownRow highlightOnHover={true} key={`callTag-row-${index}`}>
@@ -138,7 +137,7 @@ export const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProp
               </ProfileDropdownRowItem>
             </ProfileDropdownRow>
           );
-        })}
+        })} */}
       </ProfileDropdownWrapper>
     </ProfileDropdownControlWrapper>
   );

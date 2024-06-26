@@ -96,7 +96,7 @@ describe("<ProfileActivitiesSelectField />", () => {
     beforeEach(() => {
       const mockNewActivity = [{
         activity_id: 1,
-        activity_nme: "Offline",
+        activity_name: "Offline",
         available_i: {
           data: [
             0
@@ -112,7 +112,7 @@ describe("<ProfileActivitiesSelectField />", () => {
     test("should render activities drop down with correct options", () => {
       const rendered = renderComponent([{
         activity_id: 2,
-        activity_nme: "Available",
+        activity_name: "Available",
         available_i: {
           type: "Buffer",
           data: [
@@ -131,7 +131,7 @@ describe("<ProfileActivitiesSelectField />", () => {
       expect(mockSetActivitiesList).toHaveBeenCalledWith([
         {
           activity_id: 2,
-          activity_nme: "Available",
+          activity_name: "Available",
           available_i: {
             data: [
               1
@@ -141,7 +141,7 @@ describe("<ProfileActivitiesSelectField />", () => {
         },
         {
           activity_id: 1,
-          activity_nme: "Offline",
+          activity_name: "Offline",
           available_i: {
             data: [
               0
@@ -157,7 +157,7 @@ describe("<ProfileActivitiesSelectField />", () => {
     beforeEach(() => {
       const mockNewActivity = [{
         activity_id: 1,
-        activity_nme: "Offline",
+        activity_name: "Offline",
         available_i: {
           data: [
             0
@@ -174,7 +174,7 @@ describe("<ProfileActivitiesSelectField />", () => {
       const rendered = renderComponent([
         {
           activity_id: 2,
-          activity_nme: "Available",
+          activity_name: "Available",
           available_i: {
             data: [
               1
@@ -184,7 +184,7 @@ describe("<ProfileActivitiesSelectField />", () => {
         },
         {
           activity_id: 1,
-          activity_nme: "Offline",
+          activity_name: "Offline",
           available_i: {
             data: [
               0
@@ -200,7 +200,7 @@ describe("<ProfileActivitiesSelectField />", () => {
       expect(mockSetActivitiesList).toHaveBeenCalledWith([
         {
           activity_id: 2,
-          activity_nme: "Available",
+          activity_name: "Available",
           available_i: {
             data: [
               1

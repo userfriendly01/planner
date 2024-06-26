@@ -45,7 +45,7 @@ export const sortProfilesByName = (a: UMSoftphoneConfiguration, b: UMSoftphoneCo
 export const sortCalabrioObject = (a: any, b: any) => sortStrings(a.name, b.name);
 
 export const sortActivityByName = (a: any, b: any) => {
-  const [aName, bName] = [a.activity_nme, b.activity_nme];
+  const [aName, bName] = [a.activity_name, b.activity_name];
   return sortStrings(aName, bName);
 };
 

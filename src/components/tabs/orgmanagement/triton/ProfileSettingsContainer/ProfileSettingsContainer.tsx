@@ -5,7 +5,9 @@ import { PageLoadSpinner } from "components/PageLoadSpinner";
 import {
   useAdminState,
   ProfileEntryFormStateProvider,
-  useAdminDispatch
+  useAdminDispatch,
+  useSkillState,
+  useSkillDispatch
 } from "context/appContext";
 import { Modal } from "@mui/material";
 import React, { useState } from "react";
@@ -17,6 +19,7 @@ import {
   CreateProfileButton
 } from "./ProfileSettingsContainer.Styles";
 import { loadSoftphoneConfigRelationships } from "services/profile";
+import { loadSkillOptions } from "services/skill";
 
 export const ProfileSettingsContainer = () => {
   const initialProfileModalState = {
@@ -26,7 +29,10 @@ export const ProfileSettingsContainer = () => {
   const [profileModalState, setProfileModalState] = useState(initialProfileModalState);
 
   const state = useAdminState();
+  const skillState = useSkillState();
   const adminDispatch = useAdminDispatch();
+  const skillDispatch = useSkillDispatch();
+
   const { nNumber: loggedInUser } = state.userContext;
   const profiles = state.profileContext.profiles;
   const [ isLoading, setIsLoading ] = React.useState(true);
@@ -37,6 +43,7 @@ export const ProfileSettingsContainer = () => {
 
   React.useEffect(() => {
     loadSoftphoneConfigRelationships(profiles, adminDispatch, () => setIsLoading(false));
+    loadSkillOptions(skillState.skills, skillDispatch, () => setIsLoading(false));
   }, []);
 
   return (

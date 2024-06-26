@@ -33,7 +33,7 @@ export const ProfileActivitiesSelectField = (props: ProfileActivitiesSelectField
 
   const profileActivitiesForDropDown = activities.filter(activity => {
     return !activitiesList.find(item => {
-      return item.activity_id === activity.activity_id;
+      return item.activity_sid === activity.activity_id;
     });
   });
 
@@ -49,14 +49,14 @@ export const ProfileActivitiesSelectField = (props: ProfileActivitiesSelectField
   };
 
   const removeProfileActivityClicked = (activityToBeRemoved: Activity) => {
-    const updatedActivitiesList = activitiesList.filter(activity => activity.activity_id !== activityToBeRemoved.activity_id);
+    const updatedActivitiesList = activitiesList.filter(activity => activity.activity_sid !== activityToBeRemoved.activity_sid);
     setActivitiesList(updatedActivitiesList);
   };
 
   const getDropDownOptions = (optionsList: Activity[]) => {
     return optionsList.sort(sortActivityByName).map(option => ({
-      value: option.activity_id,
-      label: option.activity_nme
+      value: option.activity_sid,
+      label: option.activity_name
     }));
   };
 
@@ -88,10 +88,10 @@ export const ProfileActivitiesSelectField = (props: ProfileActivitiesSelectField
             // @ts-ignore
             <ProfileDropdownRow highlightOnHover={true} key={`activity-row-${index}`}>
               <Tooltip
-                title={activity.available_i.data[0]? "Available": "Unavailable"}
+                title={activity.available ? "Available": "Unavailable"}
                 placement={"bottom"}
               >
-                <ProfileDropdownRowItem>{activity.activity_nme}</ProfileDropdownRowItem>
+                <ProfileDropdownRowItem>{activity.activity_name}</ProfileDropdownRowItem>
               </Tooltip>
               <ProfileDropdownRowItem>
                 <IconButtonWrapper onClick={() => removeProfileActivityClicked(activity)} data-testid="delete-activity-button">

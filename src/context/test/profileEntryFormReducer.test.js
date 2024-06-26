@@ -396,7 +396,7 @@ describe("profileEntryFormReducer", () => {
         activities: [{
           profile_id: 0,
           activity_id: 1,
-          activity_nme: "Offline",
+          activity_name: "Offline",
           availability: 0
         }],
         callTags: [{
@@ -491,7 +491,7 @@ describe("profileEntryFormReducer", () => {
         ...initialProfileEntryFormState,
         activitiesList: [{
           activity_id: 1,
-          activity_nme: "Offline",
+          activity_name: "Offline",
           available_i: {
             data: [
               0
@@ -668,7 +668,7 @@ describe("profileEntryFormReducer", () => {
         activities: [{
           profile_id: 0,
           activity_id: 1,
-          activity_nme: "Offline",
+          activity_name: "Offline",
           availability: 0
         }],
         callTags: [{
@@ -763,7 +763,7 @@ describe("profileEntryFormReducer", () => {
         ...initialProfileEntryFormState,
         activitiesList: [{
           activity_id: 1,
-          activity_nme: "Offline",
+          activity_name: "Offline",
           available_i: {
             data: [
               0
@@ -940,7 +940,7 @@ describe("profileEntryFormReducer", () => {
         activities: [{
           profile_id: 0,
           activity_id: 1,
-          activity_nme: "Offline",
+          activity_name: "Offline",
           availability: 0
         }],
         callTags: [{
@@ -1034,7 +1034,7 @@ describe("profileEntryFormReducer", () => {
         ...initialProfileEntryFormState,
         activitiesList: [{
           activity_id: 1,
-          activity_nme: "Offline",
+          activity_name: "Offline",
           available_i: {
             data: [
               0

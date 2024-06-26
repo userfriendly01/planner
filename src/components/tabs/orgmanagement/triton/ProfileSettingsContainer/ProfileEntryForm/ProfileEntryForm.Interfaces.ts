@@ -2,7 +2,6 @@ import {
   ModalOverlayStatuses,
   Activity,
   CallTag,
-  CallTagOptions,
   OperatingUnit
 } from "globals/interfaces";
 import { Skill } from "callflowmanagement/Skills.Interfaces";
@@ -48,7 +47,7 @@ export interface ProfileQueuesSelectFieldProps {
 
 export interface ProfileCallTagsSelectFieldProps {
   callTagsList: CallTag[],
-  callTagOptionsList: CallTagOptions[],
+  callTagOptionsList: any[],
   setCallTagsList: (callTagsList: CallTag[]) => void
 }
 
@@ -62,7 +61,7 @@ export interface ProfileEntryFormState {
   agentAssistedPay: FieldState,
   autoAnswered: FieldState,
   callReason: FieldState
-  callTagOptions: CallTagOptions[],
+  callTagOptions: any[],
   callTagsList: CallTag[],
   clickToDial: FieldState,
   eftAuthorization: FieldState,

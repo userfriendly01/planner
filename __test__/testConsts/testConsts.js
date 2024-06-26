@@ -360,7 +360,7 @@ export const mockActivities = [
     activity_id: 1,
     activity_sid: "WA98fb57313627153d707a17f549566046",
     workspace_sid: "WSde21cfcdde7bcb69cd82f1c060e5dba0",
-    activity_nme: "Offline",
+    activity_name: "Offline",
     activity_cde: "OFFLINE",
     available_i: {
       type: "Buffer",
@@ -376,7 +376,7 @@ export const mockActivities = [
     activity_id: 2,
     activity_sid: "WA82a8ca5773657c4d20f9fc20d909b14e",
     workspace_sid: "WSde21cfcdde7bcb69cd82f1c060e5dba0",
-    activity_nme: "Available",
+    activity_name: "Available",
     activity_cde: "AVAILABLE",
     available_i: {
       type: "Buffer",

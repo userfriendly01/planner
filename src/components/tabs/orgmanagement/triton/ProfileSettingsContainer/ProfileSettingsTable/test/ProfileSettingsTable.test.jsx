@@ -43,7 +43,7 @@ describe("<ProfileSettingsTable />", () => {
       activities: [{
         profile_id: 0,
         activity_id: 1,
-        activity_nme: "Offline",
+        activity_name: "Offline",
         availability: 0
       }],
       acw_data_entry_i: {

@@ -16,19 +16,16 @@ import {
 import { sortProfilesById } from "utils/_sortUtils";
 import { formatTenDigitNumber } from "utils/numberUtils";
 import {
-  formatAggregateQueues,
+  formatTransferQueues,
   formatProfileACWDataEntry,
-  formatActivityData,
-  formatSelfServiceIndicatorData
+  formatSelfServiceIndicatorData,
+  profileTableColumnHeader
 } from "utils/profileUtils";
 import { Tooltip } from "@mui/material";
 import {
   Check, Edit
 } from "@mui/icons-material";
-import {
-  profileTableColumnHeader,
-  formModes
-} from "globals";
+import { formModes } from "globals";
 import {
   profileEntryFormDispatch, useAdminState,
   useSkillState
@@ -98,7 +95,19 @@ export const ProfileSettingsTable = (props: ProfileSettingsTableProps) => {
                       <TableText>{profile.profile_name}</TableText>
                     </CustomTableData>
                     <CustomTableData>
+                      <TableText>{profile.ou_name || ""}</TableText>
+                    </CustomTableData>
+                    <CustomTableData>
                       <TableText>{profile.inbnd_rec ? <Check /> : ""}</TableText>
+                    </CustomTableData>
+                    <CustomTableData>
+                      <TableText>{profile.outbnd_rec ? <Check /> : ""}</TableText>
+                    </CustomTableData>
+                    <CustomTableData>
+                      <TableText>{profile.man_inbnd_rec ? <Check /> : ""}</TableText>
+                    </CustomTableData>
+                    <CustomTableData>
+                      <TableText>{profile.man_outbnd_rec ? <Check /> : ""}</TableText>
                     </CustomTableData>
                     <CustomTableData>
                       <TableText>{profile.auto_ans ? <Check /> : ""}</TableText>
@@ -107,25 +116,7 @@ export const ProfileSettingsTable = (props: ProfileSettingsTableProps) => {
                       <TableText>{profile.takes_paymnts ? <Check /> : ""}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{profile.outbnd_rec ? <Check /> : ""}</TableText>
-                    </CustomTableData>
-                    <CustomTableData>
-                      <TableText>{profile.acw_option ? <Check /> : ""}</TableText>
-                    </CustomTableData>
-                    <CustomTableData>
-                      <TableText>{profile.man_outbnd_rec ? <Check /> : ""}</TableText>
-                    </CustomTableData>
-                    <CustomTableData>
-                      <TableText>{formatProfileACWDataEntry(profile.acw_option, profile.call_tags?.filter((data: any) => data.profile_id === profile.profile_id), BubbleDiv, HighlightRed)}</TableText>
-                    </CustomTableData>
-                    <CustomTableData>
-                      <TableText>{profile.man_inbnd_rec ? <Check /> : ""}</TableText>
-                    </CustomTableData>
-                    <CustomTableData>
                       <TableText>{profile.agnt_asst_pay ? <Check /> : ""}</TableText>
-                    </CustomTableData>
-                    <CustomTableData>
-                      <TableText>{profile.overflow_skill || ""}</TableText>
                     </CustomTableData>
                     <CustomTableData>
                       <TableText>{profile.edt_policy_num ? <Check /> : ""}</TableText>
@@ -149,28 +140,34 @@ export const ProfileSettingsTable = (props: ProfileSettingsTableProps) => {
                       <TableText>{formatSelfServiceIndicatorData(profile.profile_id)}</TableText>
                     </CustomTableData>
                     <CustomTableData>
+                      <TableText>{profile.acw_option ? <Check /> : ""}</TableText>
+                    </CustomTableData>
+                    <CustomTableData>
+                      <TableText>{formatProfileACWDataEntry(profile.acw_tags, profile.call_tags, BubbleDiv, HighlightRed)}</TableText>
+                    </CustomTableData>
+                    <CustomTableData>
                       <TableDataFlex>
                         {
-                          profile?.activities?.map((ac: any) => {
-                            const activity: Partial<Activity> = activities.find((a: Activity) => a.activity_sid ===  ac.activity_sid) || { activity_nme: "Unknown" };
-                            return <div key={`${activity.activity_nme}`}>{formatActivityData(activity.activity_nme, BubbleDiv)}</div>;
+                          profile?.activities?.map((ac: Activity) => {
+                            const activity: Partial<Activity> = activities?.find((a: Activity) => a.activity_sid ===  ac.activity_sid) || { activity_name: "Unknown" };
+                            return <div key={`${activity.activity_name}`}>{<BubbleDiv>{activity.activity_name}</BubbleDiv>}</div>;
                           })
                         }
                       </TableDataFlex>
                     </CustomTableData>
                     <CustomTableData>
                       <TableDataFlex>
-                        {formatAggregateQueues(profile.transfer_queues, taskQueues, BubbleDiv)}
+                        {formatTransferQueues(profile.transfer_queues, taskQueues, BubbleDiv)}
                       </TableDataFlex>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{profile.accessGroup?.access_group_nme || ""}</TableText>
-                    </CustomTableData>
-                    <CustomTableData>
-                      <TableText>{profile.ou_name || ""}</TableText>
+                      <TableText>{profile.overflow_skill || ""}</TableText>
                     </CustomTableData>
                     <CustomTableData>
                       <TableText style={{ "textWrap": "nowrap" }}>{profile.fwd_to_num ? formatTenDigitNumber(profile.fwd_to_num) : ""}</TableText>
+                    </CustomTableData>
+                    <CustomTableData>
+                      <TableText>{profile.accessGroup?.access_group_nme || ""}</TableText>
                     </CustomTableData>
                     {
                       checkIfPO(loggedInUser) ?

@@ -326,15 +326,6 @@ export interface ProfilePayload {
   aggregateQueues: Array<number>
 }
 
-export interface Activity {
-  activity_id: number,
-  activity_nme: string,
-  available_i: {
-    data?: number[],
-    type?: string
-  }
-}
-
 export interface AggregateQueue {
   aggregate_queues_id: number,
   aggregate_queues_nme: string,
@@ -343,19 +334,6 @@ export interface AggregateQueue {
   worker_sid: string | null,
   row_crtn_dtm: string | null,
   row_updt_dtm: string | null
-}
-
-export interface CallTag {
-  wrkr_tsk_info_id: number,
-  profile_id: number,
-  display_nme: string,
-  options_id: number,
-  wrkr_tsk_info_nme: string
-}
-
-export interface CallTagOptions {
-  options_id: number,
-  options: string
 }
 
 export interface WfmBusinessUnit {

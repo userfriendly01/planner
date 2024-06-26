@@ -8,6 +8,7 @@ import { Tooltip } from "@mui/material";
 import { logger } from "utils/logger";
 import { ProfileEntryFormState } from "orgmanagement/ProfileEntryForm.Interfaces";
 import { TwilioQueue } from "components/tabs/callflowmanagement/SkillManagement/Skills.Interfaces";
+import { CallTag } from "globals/interfaces";
 
 export const isProfileFormValid = (form: ProfileEntryFormState): boolean => {
   if (form.operatingUnit.ou_name && form.activitiesList.length
@@ -30,18 +31,18 @@ export const isOverflowSkillValid = (overflowSkill: string): boolean => {
 };
 
 
-export const formatProfileACWDataEntry = (value: boolean, options: any, BubbleDiv: any, HighlightRed: any) => {
-  if (value && options?.length) {
-    return options.map((option: any) => {
-      return <Tooltip key={option.wrkr_tsk_info_id} placement="top" title={option.options ? option.options.toString().replace(/,/g,", ") : ""}>
-        <BubbleDiv key={option.wrkr_tsk_info_id}>{option.display_nme}</BubbleDiv>
+export const formatProfileACWDataEntry = (acwOption: boolean, callTags: CallTag[], BubbleDiv: any, HighlightRed: any) => {
+  if (acwOption && callTags) {
+    return callTags.map((callTag: CallTag) => {
+      return <Tooltip key={callTag.attribute_name} placement="top" title={callTag.options ? callTag.options.toString().replace(/,/g,", ") : ""}>
+        <BubbleDiv key={callTag.attribute_name}>{callTag.display_name}</BubbleDiv>
       </Tooltip>;
     });
   }
-  if (value && !options?.length) {
+  if (acwOption && !callTags) {
     return  <HighlightRed>{"Call tags not configured but feature enabled"}</HighlightRed>;
   }
-  if (value && options?.length) {
+  if (!acwOption && callTags) {
     return  <HighlightRed>{"Call tags configured but feature disabled"}</HighlightRed>;
   }
   return "";
@@ -52,13 +53,6 @@ export const formatSimpleText = (text?: string) => {
     return  "";
   }
   return text;
-};
-
-export const formatActivityData = (activity?: string, BubbleDiv?: any) => {
-  if (activity === null) {
-    return "";
-  }
-  return <BubbleDiv>{activity}</BubbleDiv>;
 };
 
 export const formatCallTagsName = (name: string) => {
@@ -72,7 +66,7 @@ export const formatSelfServiceIndicatorData = (profileId: number) => {
   return "";
 };
 
-export const formatAggregateQueues = (transferQueueSids: string[], taskQueues: TwilioQueue[],  BubbleDiv: any) => {
+export const formatTransferQueues = (transferQueueSids: string[], taskQueues: TwilioQueue[],  BubbleDiv: any) => {
   return transferQueueSids?.map(sid => {
     const taskQueue: Partial<TwilioQueue> = taskQueues.find(t => t.sid === sid) || { friendly_name: "Unknown" };
     return <BubbleDiv key={`${taskQueue.sid}`}>{taskQueue.friendly_name}</BubbleDiv>;
@@ -166,3 +160,103 @@ export const updateProfilePayload = (form: any) => {
   form.forwardToNum.updated ? payload.fwd_to_num = form.forwardToNum.unmaskedValue : null;
   return payload;
 };
+
+
+export const profileTableColumnHeader = [
+  {
+    COLUMN_NAME: "ID",
+    TOOLTIP: "Unique Profile Identification"
+  },
+  {
+    COLUMN_NAME: "Name",
+    TOOLTIP: "Profile Name"
+  },
+  {
+    COLUMN_NAME: "Operating Unit",
+    TOOLTIP: "Which OU a profile is assigned to"
+  },
+  {
+    COLUMN_NAME: "Inbound Recorded",
+    TOOLTIP: "All inbound calls are automatically recorded"
+  },
+  {
+    COLUMN_NAME: "Outbound Recorded",
+    TOOLTIP: "All outbound calls are automatically recorded"
+  },
+  {
+    COLUMN_NAME: "Manual Recorded Inbound",
+    TOOLTIP: "UI Feature: Manual recording button appears in call controls when enabled. User will have the ability to manually start and stop recordings on inbound calls"
+  },
+  {
+    COLUMN_NAME: "Manual Outbound Recorded",
+    TOOLTIP: "UI Feature: Manual recording button appears in call controls when enabled. User will have the ability to manually start and stop recordings"
+  },
+  {
+    COLUMN_NAME: "Auto Answered",
+    TOOLTIP: "Automatically accepts a call and routes to an agent"
+  },
+  {
+    COLUMN_NAME: "Payment Processing",
+    TOOLTIP: "UI Feature: Click for payment button is enabled to manually pause/resume call recordings"
+  },
+  {
+    COLUMN_NAME: "Agent Assisted Pay",
+    TOOLTIP: "Not a currently enabled UI feature"
+  },
+  {
+    COLUMN_NAME: "Policy Number Edit",
+    TOOLTIP: "UI Feature: An agent can capture and save a different policy number than what the IVR previously loaded"
+  },
+  {
+    COLUMN_NAME: "Voice Mail Transcription",
+    TOOLTIP: "Voice mail will be transcribed and sent within the notification email to the user"
+  },
+  {
+    COLUMN_NAME: "Click To Dial",
+    TOOLTIP: "Enable click-to-dial/transfer from external application"
+  },
+  {
+    COLUMN_NAME: "Call Reason",
+    TOOLTIP: "UI Feature: Allows agent to record call reason data."
+  },
+  {
+    COLUMN_NAME: "EFT Authorization",
+    TOOLTIP: "Enable EFT authorization tagging on recordings"
+  },
+  {
+    COLUMN_NAME: "Claim Number Edit",
+    TOOLTIP: "UI Feature: An agent can capture and save a different claim number than what the IVR previously loaded"
+  },
+  {
+    COLUMN_NAME: "Self Service Indicator",
+    TOOLTIP: "Self service indicator is applicable to profiles with an id of 39 and above, but is actually set at the worker attribute level"
+  },
+  {
+    COLUMN_NAME: "ACW Option",
+    TOOLTIP: "UI Feature: Agent has the choice to enable or disable after call work (wrap-up). Default setting is off"
+  },
+  {
+    COLUMN_NAME: "ACW Data Entry",
+    TOOLTIP: "UI Feature: If enabled, during wrap-up, call tagging toggle appears which gives an input form to the user"
+  },
+  {
+    COLUMN_NAME: "Activities",
+    TOOLTIP: "Profile Activities"
+  },
+  {
+    COLUMN_NAME: "Transfer Queues",
+    TOOLTIP: "UI Feature: Additional transfer queues that will appear in the Triton queue ticker"
+  },
+  {
+    COLUMN_NAME: "Overflow Skill",
+    TOOLTIP: "An agent misses a call and it is forwarded to the next available agent with the same manager"
+  },
+  {
+    COLUMN_NAME: "Forward to Number",
+    TOOLTIP: "Default forward to number to be used when no overflow skill exists"
+  },
+  {
+    COLUMN_NAME: "Access Group",
+    TOOLTIP: "Access Group Name for BPO profiles"
+  }
+];

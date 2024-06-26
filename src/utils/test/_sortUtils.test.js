@@ -165,19 +165,19 @@ describe("sortManagersByName", () => {
 
 describe("sortActivityByName", () => {
   const arr = [
-    { activity_nme: "bee" },
-    { activity_nme: "dee" },
-    { activity_nme: "cee" },
-    { activity_nme: "ay" },
-    { activity_nme: "ay" }
+    { activity_name: "bee" },
+    { activity_name: "dee" },
+    { activity_name: "cee" },
+    { activity_name: "ay" },
+    { activity_name: "ay" }
   ];
   test("should return array in alphabetical order", () => {
     expect(arr.sort(sortActivityByName)).toEqual([
-      { activity_nme: "ay" },
-      { activity_nme: "ay" },
-      { activity_nme: "bee" },
-      { activity_nme: "cee" },
-      { activity_nme: "dee" }
+      { activity_name: "ay" },
+      { activity_name: "ay" },
+      { activity_name: "bee" },
+      { activity_name: "cee" },
+      { activity_name: "dee" }
     ]);
   });
 });
