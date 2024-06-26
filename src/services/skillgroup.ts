@@ -6,7 +6,7 @@ import { apolloClient } from "../components/core/Auth/SharedGraphAPIProvider";
 import { apiPaths } from "globals";
 import { myAxios } from "utils/myAxios";
 import {
-  CREATE_SKILL_GROUP, UPDATE_SKILL_GROUP
+  CREATE_SKILL_GROUP, DELETE_SKILL_GROUP, UPDATE_SKILL_GROUP
 } from "globals/graphql";
 
 export const addSkillGroup = async (requestBody: AddEditSkillGroupBody): Promise<any> => {
@@ -26,8 +26,22 @@ export const addSkillGroup = async (requestBody: AddEditSkillGroupBody): Promise
   return data?.skillGroup;
 };
 
-export const deleteSkillGroup = (skillGroupId: string | number): Promise<any> =>
-  myAxios.delete(`${apiPaths.SKILL_GROUPS}/${skillGroupId}`).then(response => response.data);
+export const deleteSkillGroup = async (id: string): Promise<any> => {
+  const {
+    errors, data
+  }  = await apolloClient.mutate<{ skillGroup: SkillGroup }>({
+    mutation: DELETE_SKILL_GROUP,
+    variables: {
+      id
+    }
+  });
+
+  if (errors?.length) {
+    throw errors;
+  }
+
+  return data?.skillGroup;
+};
 
 export const updateSkillGroup = async (id: string, requestBody: AddEditSkillGroupBody): Promise<any> => {
   const {

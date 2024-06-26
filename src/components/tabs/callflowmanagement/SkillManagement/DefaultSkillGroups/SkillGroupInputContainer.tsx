@@ -165,7 +165,7 @@ export const SkillGroupInputContainer = (props: any) => {
       <ConfirmationSkillGroupsDiv>
       Are you sure you want to create the skill group <span style={{ textDecoration: "underline" }}>{skillGroupName}</span> containing the following skills?
         <ConfirmationSkillList>
-          {tableState.selected.map((skill: Skill) => <li key={skill.name}>{skill.name}</li>)}
+          {tableState.selected.map((skill: string) => <li key={skill}>{skill}</li>)}
         </ConfirmationSkillList>
       </ConfirmationSkillGroupsDiv>
     </>;
@@ -324,7 +324,7 @@ export const SkillGroupInputContainer = (props: any) => {
   };
 
   const generateBottomMsg = () => {
-    if (action === ActionTypes.ADD) {
+    if (action === ActionTypes.ADD && !tableState.selected.length) {
       return "Select skills to add to the default skill grouping";
     } else if (action === ActionTypes.EDIT) {
       return "Adjust the selected skills to add or remove them from the skill group";
