@@ -94,7 +94,10 @@ export interface AppState {
     managers: UMManager[]
   },
   profileContext: {
-    profiles: UMSoftphoneConfiguration[]
+    profiles: UMSoftphoneConfiguration[],
+    accessGroups: AccessGroup[],
+    screenPops: ScreenPop[]
+    activities: Activity[]
   },
   userContext: {
     permissions: ADGroupPermission[];
@@ -195,6 +198,15 @@ export interface Activity {
   available: boolean
 }
 
+export interface ScreenPop {
+  pk: string,
+  sk: string,
+  item_type: string,
+  id: string,
+  display_name: string,
+  attribute_name: boolean
+}
+
 export interface CallTag {
   display_name: string,
   options: string[]
@@ -255,6 +267,36 @@ export interface UMSoftphoneConfiguration {
     activities?: Activity[],
     dialListNumbers?: DialListNumber[],
     directoryNumbers?: DirectoryNumber[]
+}
+
+export interface AddEditSoftphoneConfigRequest {
+  profile_id: number,
+  ou_sid: string,
+  ou_name: string,
+  profile_name: string,
+  overflow_skill: string,
+  acw_option: boolean,
+  acw_tags: boolean,
+  agnt_asst_pay: boolean,
+  auto_ans: boolean,
+  edt_policy_num: boolean,
+  edt_claim_num: boolean,
+  call_reason: boolean,
+  clk_to_dial: boolean,
+  eft_auth: boolean,
+  inbnd_rec: boolean,
+  man_outbnd_rec: boolean,
+  man_inbnd_rec: boolean,
+  outbnd_rec: boolean,
+  takes_paymnts: boolean,
+  voice_mail_trans: boolean,
+  fwd_to_num: string,
+  transfer_queues: string[],
+  backup_workers: boolean,
+  call_tags: string[],
+  activity_sids: string[],
+  screenpop_ids: string[],
+  access_group_id: string[]
 }
 
 export interface ProfilePayload {

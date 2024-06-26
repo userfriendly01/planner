@@ -29,32 +29,6 @@ const ProfileDirectoryContainer = () => {
   const state = useAdminState();
   const profilesFromContext = state.profileContext.profiles;
 
-  const fetchProfileInformation = (profileId: string | number) => {
-    myAxios.get(apiPaths.GET_PROFILE_DATA(profileId))
-      .then(res => {
-        const directoryList = res.data.directories.sort(sortDirectoryListEntriesByName);
-        setProfileSettingsState({
-          directoryList,
-          message: null,
-          profileId
-        });
-      })
-      .catch(error => {
-        logger.error(
-          "Failed to fetch dial list for profile",
-          {
-            error,
-            profileId
-          },
-          false
-        );
-        setProfileSettingsState({
-          ...initialProfileState,
-          message: "Failed to fetch data for selected profile"
-        });
-      });
-  };
-
   const {
     directoryList,
     message,
@@ -66,7 +40,7 @@ const ProfileDirectoryContainer = () => {
       <ProfileDropDown
         availableProfiles={profilesFromContext}
         profileId={profileId}
-        updateProfile={fetchProfileInformation}
+        updateProfile={() => "Faith"}
       />
       {
         profileId !== null && profileId !== ""
@@ -75,7 +49,7 @@ const ProfileDirectoryContainer = () => {
             <Directory
               directory={directoryList}
               profileId={profileId}
-              refreshProfileData={() => fetchProfileInformation(profileId)}
+              refreshProfileData={() => "Faith"}
             />
           </div>
           :

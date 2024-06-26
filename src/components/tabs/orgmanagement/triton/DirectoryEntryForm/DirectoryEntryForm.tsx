@@ -12,12 +12,11 @@ import {
 } from "globals";
 import { ModalOverlayStatuses } from "globals/interfaces";
 import React, { useState } from "react";
-import {
-  insertDirectory,
-  updateDirectory
-} from "services/directory";
 import styled from "styled-components";
 import { useAdminState } from "context/appContext";
+import {
+  createDirectoryEntry, editDirectoryEntry
+} from "services/profile";
 
 const FlexRow = styled.div`
   display: flex;
@@ -143,14 +142,18 @@ export const DirectoryEntryForm = (props: DirectoryEntryFormProps) => {
       overlayMessage: "Adding directory entry...",
       saveStatus: ModalOverlayStatuses.SAVING
     });
-    insertDirectory(form.first_nme, form.last_nme, form.phone_num, profileId)
-      .then(() => {
-        logger.info(`Successfully inserted directory ${directoryState.directoryId}`, {
-          nNumber,
-          directoryId: directoryState.directoryId
-        });
-        updateStateFromService(true, true);
-      })
+    createDirectoryEntry({
+      directory_num: form.phone_num,
+      first_name: form.first_nme,
+      last_name: form.last_nme,
+      profile_id: typeof profileId === "string" ? parseInt(profileId) : profileId
+    }).then(() => {
+      logger.info(`Successfully inserted directory ${directoryState.directoryId}`, {
+        nNumber,
+        directoryId: directoryState.directoryId
+      });
+      updateStateFromService(true, true);
+    })
       .catch(() => {
         logger.info(`Failed to insert directory ${directoryState.directoryId}`, {
           nNumber,
@@ -165,7 +168,12 @@ export const DirectoryEntryForm = (props: DirectoryEntryFormProps) => {
       overlayMessage: "Updating directory entry...",
       saveStatus: ModalOverlayStatuses.SAVING
     });
-    updateDirectory(directoryState.directoryId, form.first_nme, form.last_nme, form.phone_num)
+    editDirectoryEntry("", typeof profileId === "string" ? parseInt(profileId) : profileId, {
+      directory_num: form.phone_num,
+      first_name: form.first_nme,
+      last_name: form.last_nme,
+      profile_id: typeof profileId === "string" ? parseInt(profileId) : profileId
+    })
       .then(() => {
         logger.info(`Successfully updated directory ${directoryState.directoryId}`, {
           nNumber,

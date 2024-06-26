@@ -3,8 +3,6 @@ import { ProfileQueuesSelectFieldProps } from "./ProfileEntryForm.Interfaces";
 import { Dropdown } from "components/Dropdown";
 import { useSkillState } from "context/appContext";
 import { logger } from "utils/logger";
-import { sortQueueByName } from "utils/_sortUtils";
-import { AggregateQueue } from "globals/interfaces";
 import { Skill } from "callflowmanagement/Skills.Interfaces";
 import {
   IconButtonWrapper,
@@ -19,7 +17,6 @@ import {
   Add,
   Delete
 } from "@mui/icons-material";
-import { getAggregateQueuesType } from "services/aggregateQueues";
 
 export const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) => {
   const {
@@ -31,28 +28,6 @@ export const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) =
   const [newProfileQueue, setNewProfileQueue] = React.useState<Skill[]>(defaultNewQueue);
   const queues = useSkillState().skills;
   const [filteredQueues, setFilteredQueues] = React.useState<Skill[]>(defaultNewQueue);
-  const [aggregateQueues, setAggregateQueues] = React.useState([]);
-  const aggregateQueuesType = "aggregate";
-
-  React.useEffect(() => {
-    if(!aggregateQueues.length) {
-      getAggregateQueuesType(aggregateQueuesType)
-        .then((allAggregateQueues: AggregateQueue[]) => {
-          const allQueues = queues.filter(queue => queue.name !== null).sort(sortQueueByName);
-          // eslint-disable-next-line prefer-spread
-          allQueues.unshift.apply(allQueues, allAggregateQueues.map(queue => {
-            return {
-              ctmSkillDisplayName: queue.aggregate_queues_nme,
-              // Aggregate queues need to be set to a negative ID in order to not clash with single transfer queues / skills
-              ctmSkillId: -Math.abs(queue.aggregate_queues_id)
-            };
-          }));
-          setFilteredQueues(allQueues);
-          setAggregateQueues(allAggregateQueues);
-        })
-        .catch((error: { msg: any; }) => logger.error(error.msg, { error }, false));
-    }
-  }, []);
 
   const profileQueuesForDropDown = filteredQueues.filter(queue => {
     return !transferQueues.find(item => {

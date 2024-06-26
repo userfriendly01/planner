@@ -161,32 +161,32 @@ export const DialListTable = (props: DialListTableProps) => {
         overlayMessage: "Deleting dial list entry...",
         saveStatus: ModalOverlayStatuses.SAVING
       });
-      myAxios.delete(apiPaths.DIAL_LIST_ENTRY(diallistId))
-        .then(res => {
-          logger.info(`Successfully deleted dial list entry with diallist_id ${diallistId}`, {
-            responseData: res.data,
-            nNumber
-          });
-          refreshProfileData();
-          setDialListTableState({
-            ...dialListTableState,
-            overlayMessage: "Successfully deleted dial list entry",
-            saveStatus: ModalOverlayStatuses.SUCCESS
-          });
-          waitAndHideOverlay();
-        })
-        .catch(error => {
-          logger.error(`Failed to delete dial list entry with diallist_id ${diallistId}`, {
-            error,
-            nNumber
-          });
-          setDialListTableState({
-            ...dialListTableState,
-            overlayMessage: "Failed to delete dial list entry",
-            saveStatus: ModalOverlayStatuses.FAIL
-          });
-          waitAndHideOverlay();
-        });
+      // myAxios.delete(apiPaths.DIAL_LIST_ENTRY(diallistId))
+      //   .then(res => {
+      //     logger.info(`Successfully deleted dial list entry with diallist_id ${diallistId}`, {
+      //       responseData: res.data,
+      //       nNumber
+      //     });
+      //     refreshProfileData();
+      //     setDialListTableState({
+      //       ...dialListTableState,
+      //       overlayMessage: "Successfully deleted dial list entry",
+      //       saveStatus: ModalOverlayStatuses.SUCCESS
+      //     });
+      //     waitAndHideOverlay();
+      //   })
+      //   .catch(error => {
+      //     logger.error(`Failed to delete dial list entry with diallist_id ${diallistId}`, {
+      //       error,
+      //       nNumber
+      //     });
+      //     setDialListTableState({
+      //       ...dialListTableState,
+      //       overlayMessage: "Failed to delete dial list entry",
+      //       saveStatus: ModalOverlayStatuses.FAIL
+      //     });
+      //     waitAndHideOverlay();
+      //   });
     }
   };
 

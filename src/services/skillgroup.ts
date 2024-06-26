@@ -3,8 +3,6 @@ import {
   SkillGroup
 } from "callflowmanagement/SkillManagement/Skills.Interfaces";
 import { apolloClient } from "../components/core/Auth/SharedGraphAPIProvider";
-import { apiPaths } from "globals";
-import { myAxios } from "utils/myAxios";
 import {
   CREATE_SKILL_GROUP, DELETE_SKILL_GROUP, UPDATE_SKILL_GROUP
 } from "globals/graphql";

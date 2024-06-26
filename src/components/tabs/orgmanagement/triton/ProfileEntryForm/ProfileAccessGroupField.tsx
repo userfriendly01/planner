@@ -1,6 +1,5 @@
 import React from "react";
 import { Dropdown } from "components/Dropdown";
-import { getAccessGroup } from "services/accessGroup";
 import { AccessGroup } from "globals/interfaces";
 import {
   AccessGroupDropdownRowItem,
@@ -25,20 +24,6 @@ export const ProfileAccessGroupField = (props: ProfileAccessGroupFieldProps) => 
     value: -1,
     label: ""
   });
-
-  // React.useEffect(() => {
-  //   getAccessGroup().then((agList: AccessGroup[]) => {
-  //     setAccessGroupList(agList);
-  //     setAccessGroupDropDownOptions(getAccessGroupOptions(agList));
-  //     if(accessGroupId){
-  //       const ag: AccessGroup = agList.find(accessGroup => accessGroup.access_group_id === accessGroupId);
-  //       setSelectedAccessGroup({
-  //         label: ag?.access_group_nme,
-  //         value: ag?.access_group_id
-  //       });
-  //     }
-  //   });
-  // }, []);
 
   React.useEffect(() => {
     if(!accessGroupId) {

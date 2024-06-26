@@ -22,7 +22,6 @@ export const env = {
   SOFTPHONE_SERVICE_URL: window.env.SOFTPHONE_SERVICE_URL
 };
 
-const CONTACT_MANAGER_BASE_URI = `${env.SOFTPHONE_SERVICE_URL}/contact-manager`;
 const SERVICE_BASE_URI = env.SOFTPHONE_SERVICE_URL;
 const MS_GRAPH_URL = "https://graph.microsoft.com/v1.0";
 
@@ -259,10 +258,6 @@ export const apiPaths = {
   CREATE_CALABRIO_WFM_PERSON: `${SERVICE_BASE_URI}/calabrio-api/wfm/person`,
   CLOSED_MESSAGE: `${SERVICE_BASE_URI}/closedmessage`,
   CREATE_SKILL: `${SERVICE_BASE_URI}/createskill`,
-  DIAL_LIST: `${CONTACT_MANAGER_BASE_URI}/diallist`,
-  DIAL_LIST_ENTRY: (dialListId: number): string => `${CONTACT_MANAGER_BASE_URI}/diallist/${dialListId}`,
-  DIRECTORY: `${CONTACT_MANAGER_BASE_URI}/directory`,
-  DIRECTORY_ENTRY: (directoryId: string | number): string => `${CONTACT_MANAGER_BASE_URI}/directory/${directoryId}`,
   EMPLOYEE_LOOKUP: (nNumber: string): string => `${MS_GRAPH_URL}/users?$filter=employeeId eq '${nNumber}'&$select=mail,givenName,surname,officeLocation,extension_128b6233d06d4df391d7de26c982b64e_extensionAttribute1,department,extension_128b6233d06d4df391d7de26c982b64e_extensionAttribute2,accountEnabled`,
   FLASH_MESSAGE: `${SERVICE_BASE_URI}/flashmessage`,
   GET_APPLICATIONS: `${SERVICE_BASE_URI}/applications`,
@@ -275,27 +270,18 @@ export const apiPaths = {
   GET_CALABRIO_ROLES: `${SERVICE_BASE_URI}/calabrio-get-roles`,
   GET_CALABRIO_USER: (personId: number): any => `${SERVICE_BASE_URI}/calabrio-get-user/${personId}`,
   GET_CALABRIO_USER_PROFILES: `${SERVICE_BASE_URI}/calabrio-api/qm-user-profiles`,
-  GET_PROFILE_DATA: (profileId: string | number): string => `${CONTACT_MANAGER_BASE_URI}/triton/${profileId}`,
-  GET_CALL_TAGS_OPTIONS: `${CONTACT_MANAGER_BASE_URI}/workertaskinfooptions`,
-  GET_CALL_TAGS: `${CONTACT_MANAGER_BASE_URI}/workertaskinfo`,
-  GET_ACTIVITIES: `${CONTACT_MANAGER_BASE_URI}/activities`,
-  GET_ACCESS_GROUP: `${CONTACT_MANAGER_BASE_URI}/accessgroup`,
   GET_SKILLS: `${SERVICE_BASE_URI}/consolidatedskills`,
   SKILLS_TASKROUTER: `${SERVICE_BASE_URI}/taskrouterskills`,
   SKILLS_CALLFLOW: `${SERVICE_BASE_URI}/callflowskills`,
-  SKILLS_CONTACT_MANAGER: `${CONTACT_MANAGER_BASE_URI}/skillswithprofiles`,
   GET_OU: `${SERVICE_BASE_URI}/operatingunit`,
   TASK_QUEUES: `${SERVICE_BASE_URI}/taskqueues`,
   GET_TIME_OF_DAYS: `${SERVICE_BASE_URI}/timeofday`,
   GET_RESET_PROFILE_DATADOG_LOGS: (nNumber: string): string => `${SERVICE_BASE_URI}/datadogresetprofileslogs/${nNumber}`,
-  PROFILES: `${CONTACT_MANAGER_BASE_URI}/profiles`,
   RESET_PROFILES: (nNumber: string): string => `${SERVICE_BASE_URI}/resetprofiles/${nNumber}`,
   RESET_WORKER_SKILLS: `${SERVICE_BASE_URI}/resetworkerskills`,
-  SKILL_GROUPS: `${CONTACT_MANAGER_BASE_URI}/skillgroups`,
   TERMINATE_WORKER: `${SERVICE_BASE_URI}/terminateworker`,
   TFN_DATA: `${SERVICE_BASE_URI}/tfn`,
   UPDATE_CALABRIO_USER: (personId: number): any => `${SERVICE_BASE_URI}/calabrio-update-user/${personId}`,
-  GET_AGGREGATE_QUEUES_TYPE: (aggregateQueueType: string): string => `${CONTACT_MANAGER_BASE_URI}/aggregatequeuestype/${aggregateQueueType}`,
   WFM_ACTIVATE_EXTERNAL_LOGON: `${SERVICE_BASE_URI}/wfmexternallogon`
 };
 

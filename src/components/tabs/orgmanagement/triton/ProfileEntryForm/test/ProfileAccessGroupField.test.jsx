@@ -1,5 +1,6 @@
 import { ProfileAccessGroupField } from "../ProfileAccessGroupField";
 import {
+  act,
   expectMockedComponent,
   render,
   setupMockedComponents,
@@ -14,8 +15,6 @@ import { ThemeProvider } from "styled-components";
 import { Tooltip } from "@mui/material";
 import { Info } from "@mui/icons-material";
 import React from "react";
-import { getAccessGroup } from "services/accessGroup";
-import { act } from "react-dom/test-utils";
 
 jest.mock("@mui/icons-material", () => ({
   Info: jest.fn()
@@ -32,24 +31,6 @@ jest.mock("components/Dropdown", () => ({
 jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
 }));
-
-jest.mock("services/accessGroup", () => ({
-  getAccessGroup: jest.fn()
-}));
-
-getAccessGroup.mockImplementation(() => { return Promise.resolve([{
-  access_group_nme: "test",
-  access_group_id: 123,
-  viewable_profiles: [{
-    profile_id: 23,
-    name: "Hello world"
-  }]
-},
-{
-  access_group_nme: "test no profile",
-  access_group_id: 234,
-  viewable_profiles: []
-}]); });
 
 const mockSetAccessGroupId = jest.fn();
 const renderComponent = agId => render(

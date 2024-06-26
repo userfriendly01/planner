@@ -21,18 +21,6 @@ import { logger } from "utils/logger";
 import { myAxios } from "utils/myAxios";
 import { sortActivityByName } from "utils/_sortUtils";
 
-const getActivities = () => new Promise((resolve, reject) => myAxios.get(apiPaths.GET_ACTIVITIES)
-  .then(res => {
-    resolve(res.data);
-  })
-  .catch(error => {
-    reject({
-      msg: "Failed to fetch activities from service",
-      error
-    });
-  })
-);
-
 export const ProfileActivitiesSelectField = (props: ProfileActivitiesSelectFieldProps) => {
   const {
     activitiesList,
@@ -42,16 +30,6 @@ export const ProfileActivitiesSelectField = (props: ProfileActivitiesSelectField
   const defaultNewActivity: Activity[] = [];
   const [newProfileActivity, setNewProfileActivity] = React.useState<Activity[]>(defaultNewActivity);
   const [activities, setActivities] = React.useState([]);
-
-  React.useEffect(() => {
-    if(!activities.length) {
-      getActivities()
-        .then((allActivities: Activity[]) => {
-          setActivities(allActivities);
-        })
-        .catch(error => logger.error(error.msg, { error }, false));
-    }
-  }, []);
 
   const profileActivitiesForDropDown = activities.filter(activity => {
     return !activitiesList.find(item => {

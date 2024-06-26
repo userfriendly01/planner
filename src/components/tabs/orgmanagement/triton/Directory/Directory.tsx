@@ -11,9 +11,9 @@ import {
 } from "globals";
 import { ModalOverlayStatuses } from "globals/interfaces";
 import React, { useState } from "react";
-import { deleteDirectory } from "services/directory";
 import styled from "styled-components";
 import { logger } from "utils/logger";
+import { deleteDirectoryEntry } from "services/profile";
 
 const AddContactButtonContainer = styled.div`
   display: flex;
@@ -78,7 +78,7 @@ export const Directory = (props: DirectoryProps) => {
           status: ModalOverlayStatuses.SAVING
         }
       });
-      deleteDirectory(directoryId)
+      deleteDirectoryEntry(directoryId.toString(), 3) //Faith
         .then(() => {
           logger.info(`Successfully deleted directory ${directoryId}`, {
             nNumber,
@@ -95,7 +95,7 @@ export const Directory = (props: DirectoryProps) => {
           });
           waitAndHideOverlay();
         })
-        .catch(error => {
+        .catch((error: any) => {
           logger.error(`Failed to delete directory entry with directoryId ${directoryId}`, {
             nNumber,
             directoryId,

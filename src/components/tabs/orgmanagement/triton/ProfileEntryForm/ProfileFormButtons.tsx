@@ -103,7 +103,7 @@ export const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
 
     const payload: Partial<ProfilePayload> = updateProfilePayload(form);
 
-    editProfile(payload).then(() => {
+    editProfile(payload.profile_id, payload).then(() => {
       logger.info(`Successfully updated profile ${form.profileName.value}`, {
         nNumber,
         profileId: payload?.profile_id

@@ -1,6 +1,10 @@
 import {
+  AccessGroup,
   Action,
-  AppState
+  Activity,
+  AppState,
+  ScreenPop,
+  UMSoftphoneConfiguration
 } from "globals/interfaces";
 import {
   formatCalabrioTeams,
@@ -14,7 +18,10 @@ export const initialState: AppState = {
     managers: []
   },
   profileContext: {
-    profiles: []
+    profiles: [],
+    screenPops: [],
+    accessGroups: [],
+    activities: []
   },
   userContext: {
     permissions: [],
@@ -65,10 +72,15 @@ export const reducer = (state: AppState, action: Action): AppState => {
         workerContext: {
           ...state.workerContext,
           workers: (type === "UMUser" && !isFirstPage && state.workerContext.workers.concat(pageResults)) || (type === "UMUser" && pageResults) || state.workerContext.workers
-        },
+        }
+      };
+    }
+    case "loadProfileOptions": {
+      return {
+        ...state,
         profileContext: {
-          ...state.profileContext,
-          profiles: (type === "UMSoftphoneConfiguration" && !isFirstPage && state.profileContext.profiles.concat(pageResults)) || (type === "UMSoftphoneConfiguration" && pageResults) || state.profileContext.profiles
+          ...state.profileContext.profiles,
+          ...action.payload
         }
       };
     }

@@ -156,32 +156,32 @@ export const DialListEntryForm = (props: DialListEntryFormProps) => {
       overlayMessage: "Adding dial list entry...",
       saveStatus: ModalOverlayStatuses.SAVING
     });
-    myAxios.post(apiPaths.DIAL_LIST, requestBody)
-      .then(res => {
-        logger.info("Successfully added dial list entry", {
-          responseData: res.data,
-          requestBody,
-          nNumber
-        });
-        refreshProfileData();
-        setLoading({
-          overlayMessage: "Successfully added dial list entry",
-          saveStatus: ModalOverlayStatuses.SUCCESS
-        });
-        waitAndHideOverlay(true);
-      })
-      .catch(error => {
-        logger.error("Failed to insert dial list entry", {
-          error,
-          requestBody,
-          nNumber
-        });
-        setLoading({
-          overlayMessage: "Failed to add dial list entry",
-          saveStatus: ModalOverlayStatuses.FAIL
-        });
-        waitAndHideOverlay();
-      });
+    // myAxios.post(apiPaths.DIAL_LIST, requestBody)
+    //   .then(res => {
+    //     logger.info("Successfully added dial list entry", {
+    //       responseData: res.data,
+    //       requestBody,
+    //       nNumber
+    //     });
+    //     refreshProfileData();
+    //     setLoading({
+    //       overlayMessage: "Successfully added dial list entry",
+    //       saveStatus: ModalOverlayStatuses.SUCCESS
+    //     });
+    //     waitAndHideOverlay(true);
+    //   })
+    //   .catch(error => {
+    //     logger.error("Failed to insert dial list entry", {
+    //       error,
+    //       requestBody,
+    //       nNumber
+    //     });
+    //     setLoading({
+    //       overlayMessage: "Failed to add dial list entry",
+    //       saveStatus: ModalOverlayStatuses.FAIL
+    //     });
+    //     waitAndHideOverlay();
+    //   });
   };
 
   const updateDialListEntry = () => {
@@ -194,32 +194,32 @@ export const DialListEntryForm = (props: DialListEntryFormProps) => {
       overlayMessage: "Updating dial list entry...",
       saveStatus: ModalOverlayStatuses.SAVING
     });
-    myAxios.put(apiPaths.DIAL_LIST_ENTRY(dialListTableState.dialListId), requestBody)
-      .then(res => {
-        logger.info(`Successfully updated dial list entry with diallist_id ${dialListTableState.dialListId}`, {
-          responseData: res.data,
-          requestBody,
-          nNumber
-        });
-        refreshProfileData();
-        setLoading({
-          overlayMessage: "Successfully updated dial list entry",
-          saveStatus: ModalOverlayStatuses.SUCCESS
-        });
-        waitAndHideOverlay(true);
-      })
-      .catch(error => {
-        logger.error(`Failed to update dial list entry with diallist_id ${dialListTableState.dialListId}`, {
-          error,
-          requestBody,
-          nNumber
-        });
-        setLoading({
-          overlayMessage: "Failed to update dial list entry",
-          saveStatus: ModalOverlayStatuses.FAIL
-        });
-        waitAndHideOverlay();
-      });
+    // myAxios.put(apiPaths.DIAL_LIST_ENTRY(dialListTableState.dialListId), requestBody)
+    //   .then(res => {
+    //     logger.info(`Successfully updated dial list entry with diallist_id ${dialListTableState.dialListId}`, {
+    //       responseData: res.data,
+    //       requestBody,
+    //       nNumber
+    //     });
+    //     refreshProfileData();
+    //     setLoading({
+    //       overlayMessage: "Successfully updated dial list entry",
+    //       saveStatus: ModalOverlayStatuses.SUCCESS
+    //     });
+    //     waitAndHideOverlay(true);
+    //   })
+    //   .catch(error => {
+    //     logger.error(`Failed to update dial list entry with diallist_id ${dialListTableState.dialListId}`, {
+    //       error,
+    //       requestBody,
+    //       nNumber
+    //     });
+    //     setLoading({
+    //       overlayMessage: "Failed to update dial list entry",
+    //       saveStatus: ModalOverlayStatuses.FAIL
+    //     });
+    //     waitAndHideOverlay();
+    //   });
   };
 
   return (

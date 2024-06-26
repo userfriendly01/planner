@@ -23,10 +23,6 @@ import {
 import { logger } from "utils/logger";
 import { sortCallTagByName } from "utils/_sortUtils";
 import { formatCallTagsName } from "utils/profileUtils";
-import {
-  getCallTags,
-  getCallTagOptions
-} from "services/callTags";
 
 export const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProps) => {
   const {
@@ -39,23 +35,6 @@ export const ProfileCallTagsSelectField = (props: ProfileCallTagsSelectFieldProp
   const [newProfileCallTag, setNewProfileCallTag] = React.useState<CallTag[]>(defaultNewCallTag);
   const [callTags, setCallTags] = React.useState([]);
   const [callTagOptions, setCallTagOptions] = React.useState([]);
-
-  React.useEffect(() => {
-    if(!callTags.length) {
-      getCallTags()
-        .then((allCallTags: CallTag[]) => {
-          setCallTags(allCallTags);
-        })
-        .catch(error => logger.error(error.msg, { error }, false));
-    }
-    if(!callTagOptions.length) {
-      getCallTagOptions()
-        .then((allCallTagOptions: CallTagOptions[]) => {
-          setCallTagOptions(allCallTagOptions);
-        })
-        .catch(error => logger.error(error.msg, { error }, false));
-    }
-  }, []);
 
   const callTagsForDropDown = callTags.filter(callTag => {
     return !callTagsList.find(item => {

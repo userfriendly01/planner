@@ -22,7 +22,6 @@ import { theme } from "globals/theme";
 import { apiPaths } from "globals";
 import { ThemeProvider } from "styled-components";
 import { act } from "react-dom/test-utils";
-import { getAggregateQueuesType } from "services/aggregateQueues";
 
 jest.mock("@mui/icons-material", () => ({
   Add: jest.fn(),
@@ -45,10 +44,6 @@ jest.mock("@mui/material", () => ({
   Tooltip: jest.fn()
 }));
 
-jest.mock("services/aggregateQueues", () => ({
-  getAggregateQueuesType: jest.fn()
-}));
-
 const mockSetQueueList = jest.fn();
 const renderComponent = mockTransferQueues => render(
   <ThemeProvider theme={theme}>
@@ -58,8 +53,6 @@ const renderComponent = mockTransferQueues => render(
     />
   </ThemeProvider>
 );
-
-getAggregateQueuesType.mockImplementation(() => { return Promise.resolve(200, { response: "success" } ); });
 
 const statusCode = 500;
 const axiosMock = new MockAdapter(myAxios);
