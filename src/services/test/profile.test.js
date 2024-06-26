@@ -162,7 +162,6 @@ describe("listUMSoftphoneConfigs", () => {
 });
 
 describe("loadSoftphoneConfigRelationships", () => {
-
   const profiles = [
     { profile_id: 1 },
     { profile_id: 2 },

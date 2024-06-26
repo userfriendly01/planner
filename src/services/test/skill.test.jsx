@@ -1,17 +1,25 @@
 import MockAdapter from "axios-mock-adapter";
 import { myAxios } from "utils/myAxios";
-import React from "react";
 import { apiPaths } from "globals";
 import {
-  createSkill, loadConsolidatedSkills, loadSkillOptions, deleteSkill
+  createSkill, loadConsolidatedSkills, loadSkillOptions, deleteSkill, getGraphSkills
 } from "../skill";
 import { getOperatingUnits } from "services/operatingUnits";
 import { getTaskQueues } from "services/taskQueues";
 import {
   mockApplications, mockOperatingUnits, mockSkillFormState, skillsList, mockTaskQueues, mockTimeOfDays
 } from "testUtils";
+import { apolloClient } from "components/core/Auth/SharedGraphAPIProvider";
+import { logger } from "utils/logger";
 
 const axiosMock = new MockAdapter(myAxios);
+
+jest.mock("components/core/Auth/SharedGraphAPIProvider", () => ({
+  apolloClient: {
+    mutate: jest.fn(),
+    query: jest.fn()
+  }
+}));
 
 jest.mock("services/operatingUnits", () => ({
   getOperatingUnits: jest.fn()
@@ -23,6 +31,42 @@ jest.mock("services/taskQueues", () => ({
 
 const mockDispatch = jest.fn();
 const mockCallback = jest.fn();
+
+const getGraphSkilllsResultNoTokens = {
+  skills: {
+    items: [{
+      pk: "Skill#skillio",
+      sk: "Skill#skillio",
+      skill_id: "skillio"
+    },
+    {
+      pk: "Skill#otherskill",
+      sk: "Skill#otherskill",
+      skill_id: "otherskill"
+    }]
+  },
+  skillProfiles: {
+    items: [{
+      pk: "Profile#0",
+      sk: "Skill#skillio",
+      skill_id: "skillio"
+    }]
+  },
+  skillGroups: {
+    items: [{
+      pk: "SkillGroup#123",
+      sk: "SkillGroup#123",
+      skill_id: "skillio"
+    }]
+  },
+  skillGroupProfiles: {
+    items: [{
+      pk: "SkillGroup#123",
+      sk: "Skill#skillio",
+      skill_id: "skillio"
+    }]
+  }
+};
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -307,6 +351,352 @@ describe("loadSkillOptions", () => {
   });
 });
 
+describe("getGraphSkills", () => {
+  test("successful queries, no nextTokens involved, queries all skill skillgroup and relationship items and dispatches reformatted skills", () => {
+    apolloClient.query.mockResolvedValue({ data: getGraphSkilllsResultNoTokens });
+    getGraphSkills(mockDispatch).then(resolvedValue => {
+      expect(apolloClient.query).toHaveBeenCalledTimes(1);
+      expect(mockDispatch).toHaveBeenCalledTimes(1);
+      expect(mockDispatch).toHaveBeenCalledWith({
+        type: "LOAD_SKILL_GROUPS",
+        payload: [{
+          pk: "SkillGroup#123",
+          sk: "SkillGroup#123",
+          skill_id: "skillio"
+        }]
+      });
+      expect(resolvedValue).toEqual([{
+        pk: "Skill#skillio",
+        sk: "Skill#skillio",
+        skill_id: "skillio",
+        profile_ids: [0],
+        skill_group_ids: ["123"]
+      },
+      {
+        pk: "Skill#otherskill",
+        sk: "Skill#otherskill",
+        skill_id: "otherskill",
+        profile_ids: [],
+        skill_group_ids: []
+      }]);
+      expect(logger.error).toHaveBeenCalledTimes(0);
+    });
+  });
+  test("successful queries, no nextTokens involved, some relationship items returns with no skill, logger is called", () => {
+    const skillsWithUnattachedItems = JSON.parse(JSON.stringify(getGraphSkilllsResultNoTokens));
+    skillsWithUnattachedItems.skillGroupProfiles.items.push({
+      pk: "SkillGroup#123",
+      sk: "Skill#badskill",
+      skill_id: "badskill"
+    });
+    skillsWithUnattachedItems.skillProfiles.items.push({
+      pk: "Profile#1",
+      sk: "Skill#badskill",
+      skill_id: "badskill"
+    });
+    apolloClient.query.mockResolvedValue({ data: skillsWithUnattachedItems });
+    getGraphSkills(mockDispatch).then(resolvedValue => {
+      expect(apolloClient.query).toHaveBeenCalledTimes(1);
+      expect(mockDispatch).toHaveBeenCalledTimes(1);
+      expect(mockDispatch).toHaveBeenCalledWith({
+        type: "LOAD_SKILL_GROUPS",
+        payload: [{
+          pk: "SkillGroup#123",
+          sk: "SkillGroup#123",
+          skill_id: "skillio"
+        }]
+      });
+      expect(resolvedValue).toEqual([{
+        pk: "Skill#skillio",
+        sk: "Skill#skillio",
+        skill_id: "skillio",
+        profile_ids: [0],
+        skill_group_ids: ["123"]
+      },
+      {
+        pk: "Skill#otherskill",
+        sk: "Skill#otherskill",
+        skill_id: "otherskill",
+        profile_ids: [],
+        skill_group_ids: []
+      }]);
+      expect(logger.warn).toHaveBeenCalledTimes(2);
+      expect(logger.warn).toHaveBeenCalledWith("Graph returned a profile/skill relationship but the skill was not found", {
+        record: {
+          pk: "Profile#1",
+          sk: "Skill#badskill",
+          skill_id: "badskill"
+        }
+      }, true);
+      expect(logger.warn).toHaveBeenCalledWith("Graph returned a profile/skill relationship but the skill was not found", {
+        record: {
+          pk: "SkillGroup#123",
+          sk: "Skill#badskill",
+          skill_id: "badskill"
+        }
+      }, true);
+    });
+  });
+  test("successful queries, nextTokens present on skills, queries all skill skillgroup and relationship items and dispatches reformatted skills", () => {
+    const graphRes = {
+      ...getGraphSkilllsResultNoTokens
+    };
+    graphRes.skills.nextToken = "hi";
+    apolloClient.query
+      .mockResolvedValueOnce({ data: graphRes })
+      .mockResolvedValueOnce({
+        data: {
+          skills: {
+            items: [{
+              pk: "Skill#anotherskill",
+              sk: "Skill#anotherskill",
+              skill_id: "anotherskill"
+            }]
+          }
+        }
+      });
+    getGraphSkills(mockDispatch).then(resolvedValue => {
+      expect(apolloClient.query).toHaveBeenCalledTimes(2);
+      expect(mockDispatch).toHaveBeenCalledTimes(1);
+      expect(mockDispatch).toHaveBeenCalledWith({
+        type: "LOAD_SKILL_GROUPS",
+        payload: [{
+          pk: "SkillGroup#123",
+          sk: "SkillGroup#123",
+          skill_id: "skillio"
+        }]
+      });
+      expect(resolvedValue).toEqual([{
+        pk: "Skill#skillio",
+        sk: "Skill#skillio",
+        skill_id: "skillio",
+        profile_ids: [0],
+        skill_group_ids: ["123"]
+      },
+      {
+        pk: "Skill#otherskill",
+        sk: "Skill#otherskill",
+        skill_id: "otherskill",
+        profile_ids: [],
+        skill_group_ids: []
+      },
+      {
+        pk: "Skill#anotherskill",
+        sk: "Skill#anotherskill",
+        skill_id: "anotherskill",
+        profile_ids: [],
+        skill_group_ids: []
+      }]);
+      expect(logger.warn).toHaveBeenCalledTimes(0);
+    });
+  });
+  test("successful queries, nextTokens present on skillProfiles, queries all skill skillgroup and relationship items and dispatches reformatted skills", () => {
+    const graphRes = {
+      ...getGraphSkilllsResultNoTokens
+    };
+    graphRes.skills.nextToken = null;
+    graphRes.skillProfiles.nextToken = "yo";
+    apolloClient.query
+      .mockResolvedValueOnce({ data: graphRes })
+      .mockResolvedValueOnce({
+        data: {
+          skillProfiles: {
+            items: [{
+              pk: "Profile#2",
+              sk: "Skill#skillio",
+              skill_id: "skillio"
+            }]
+          }
+        }
+      });
+    getGraphSkills(mockDispatch).then(resolvedValue => {
+      expect(apolloClient.query).toHaveBeenCalledTimes(2);
+      expect(mockDispatch).toHaveBeenCalledTimes(1);
+      expect(mockDispatch).toHaveBeenCalledWith({
+        type: "LOAD_SKILL_GROUPS",
+        payload: [{
+          pk: "SkillGroup#123",
+          sk: "SkillGroup#123",
+          skill_id: "skillio"
+        }]
+      });
+      expect(resolvedValue).toEqual([{
+        pk: "Skill#skillio",
+        sk: "Skill#skillio",
+        skill_id: "skillio",
+        profile_ids: [0, 2],
+        skill_group_ids: ["123"]
+      },
+      {
+        pk: "Skill#otherskill",
+        sk: "Skill#otherskill",
+        skill_id: "otherskill",
+        profile_ids: [],
+        skill_group_ids: []
+      }]);
+      expect(logger.warn).toHaveBeenCalledTimes(0);
+    });
+  });
+  test("apolloclient errors, error is logged and thrown", () => {
+    apolloClient.query.mockRejectedValueOnce("boo");
+    getGraphSkills(mockDispatch).catch(err => {
+      expect(mockDispatch).toHaveBeenCalledTimes(0);
+      expect(apolloClient.query).toHaveBeenCalledTimes(1);
+      expect(logger.error).toHaveBeenCalledTimes(1);
+      expect(logger.error).toHaveBeenCalledWith("Error thrown getting skills from the graph", "boo");
+      expect(err).toEqual("boo");
+    });
+  });
+  test("errors present on query response, error is logged and thrown", () => {
+    apolloClient.query.mockResolvedValueOnce({
+      data: null,
+      errors: [{ message: "oh no!" }]
+    });
+    getGraphSkills(mockDispatch).catch(err => {
+      expect(mockDispatch).toHaveBeenCalledTimes(0);
+      expect(apolloClient.query).toHaveBeenCalledTimes(1);
+      expect(logger.error).toHaveBeenCalledWith("Error thrown getting skills from the graph", [{ message: "oh no!" }]);
+      expect(err).toEqual([{ message: "oh no!" }]);
+    });
+  });
+  test("successful queries, but skillprofiles and skillgroups have weird data that triggers error in matching to skill, error logged", () => {
+    const weirdData = JSON.parse(JSON.stringify(getGraphSkilllsResultNoTokens));
+    weirdData.skillProfiles.items = [{
+      pk: null
+    }];
+    weirdData.skillGroupProfiles.items = [{
+      pk: null
+    }];
+    apolloClient.query.mockResolvedValue({ data: weirdData });
+    getGraphSkills(mockDispatch).then(resolvedValue => {
+      expect(apolloClient.query).toHaveBeenCalledTimes(1);
+      expect(mockDispatch).toHaveBeenCalledTimes(1);
+      expect(mockDispatch).toHaveBeenCalledWith({
+        type: "LOAD_SKILL_GROUPS",
+        payload: [{
+          pk: "SkillGroup#123",
+          sk: "SkillGroup#123",
+          skill_id: "skillio"
+        }]
+      });
+      expect(resolvedValue).toEqual([{
+        pk: "Skill#skillio",
+        sk: "Skill#skillio",
+        skill_id: "skillio",
+        profile_ids: [],
+        skill_group_ids: []
+      },
+      {
+        pk: "Skill#otherskill",
+        sk: "Skill#otherskill",
+        skill_id: "otherskill",
+        profile_ids: [],
+        skill_group_ids: []
+      }]);
+      expect(logger.error).toHaveBeenCalledTimes(2);
+    });
+  });
+});
+
 describe("loadConsolidatedSkills", () => {
-  //Bypassing tests until the graph is implemented to not die on the inside.. 
+  test("all calls successful, skills are missing from taskrouter and callflow, discrepancies appear on the skill", () => {
+    axiosMock.onGet(apiPaths.SKILLS_TASKROUTER).replyOnce(200, []);
+    axiosMock.onGet(apiPaths.SKILLS_CALLFLOW).replyOnce(200, [{ skillName: "dumbskill" }]);
+    apolloClient.query.mockResolvedValueOnce({ data: getGraphSkilllsResultNoTokens });
+    loadConsolidatedSkills(mockDispatch).then(() => {
+      expect(apolloClient.query).toHaveBeenCalledTimes(1);
+      expect(axiosMock.history.get.length).toEqual(2);
+
+      expect(mockDispatch).toHaveBeenLastCalledWith({
+        type: "LOAD_SKILLS",
+        payload: [
+          {
+            discrepancies: ["skillio is not in the Legacy Callflow Database", "skillio is not in the Flex Console"],
+            name: "skillio",
+            profileIds: [0],
+            skillGroupIds: ["123"],
+            taskQueueName: undefined,
+            taskQueueSid: undefined
+          },
+          {
+            discrepancies: ["Skill exists in the graph but has no relationship to a profile", "otherskill is not in the Legacy Callflow Database", "otherskill is not in the Flex Console"],
+            name: "otherskill",
+            profileIds: [],
+            skillGroupIds: [],
+            taskQueueName: undefined,
+            taskQueueSid: undefined
+          },
+          {
+            discrepancies: ["dumbskill is not in the User Management Database", "dumbskill is not in the Flex Console"],
+            name: "dumbskill"
+          }
+        ]
+      });
+      expect(mockDispatch).toHaveBeenCalledTimes(2); // called first in getGraphSkills
+    });
+  });
+  test("all calls successful, skills are all accounted for, skills are dispatched", () => {
+    axiosMock.onGet(apiPaths.SKILLS_TASKROUTER).replyOnce(200, [{
+      name: "skillio",
+      multivalue: true,
+      minimum: 1,
+      maximum: 3
+    }, {
+      name: "otherskill",
+      multivalue: true,
+      minimum: 1,
+      maximum: 1
+    }]);
+    axiosMock.onGet(apiPaths.SKILLS_CALLFLOW).replyOnce(200, [{
+      skillName: "skillio",
+      closedMessage: null,
+      flashMessage: "hi",
+      applicationId: 2
+    },
+    {
+      skillName: "otherskill",
+      closedMessage: null,
+      flashMessage: "hi",
+      applicationId: 6
+    }]);
+    apolloClient.query.mockResolvedValueOnce({ data: getGraphSkilllsResultNoTokens });
+    loadConsolidatedSkills(mockDispatch).then(() => {
+      expect(apolloClient.query).toHaveBeenCalledTimes(1);
+      expect(axiosMock.history.get.length).toEqual(2);
+
+      expect(mockDispatch).toHaveBeenLastCalledWith({
+        type: "LOAD_SKILLS",
+        payload: [
+          {
+            name: "skillio",
+            discrepancies: [],
+            profileIds: [0],
+            skillGroupIds: ["123"],
+            taskQueueName: undefined,
+            taskQueueSid: undefined,
+            applicationId: 2,
+            closedMessage: null,
+            flashMessage: "hi",
+            levels: [1,2,3],
+            skillName: "skillio"
+          },
+          {
+            discrepancies: ["Skill exists in the graph but has no relationship to a profile"],
+            name: "otherskill",
+            profileIds: [],
+            skillGroupIds: [],
+            taskQueueName: undefined,
+            taskQueueSid: undefined,
+            applicationId: 6,
+            closedMessage: null,
+            flashMessage: "hi",
+            levels: [1],
+            skillName: "otherskill"
+
+          }
+        ]
+      });
+      expect(mockDispatch).toHaveBeenCalledTimes(2); // called first in getGraphSkills
+    });
+  });
 });

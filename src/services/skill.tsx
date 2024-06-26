@@ -202,7 +202,7 @@ const getCallflowSkills = (): Promise<{ data: CallflowSkill[] }> => {
   return myAxios.get(apiPaths.SKILLS_CALLFLOW);
 };
 
-const getGraphSkills = async (dispatch: (action: Action) => void): Promise<UMSkill[]> => {
+export const getGraphSkills = async (dispatch: (action: Action) => void): Promise<UMSkill[]> => {
   let skills: UMSkill[] = [];
   let skillProfiles: UMSkill[] = [];
   let skillGroups: SkillGroup[] = [];
@@ -374,7 +374,7 @@ export const loadConsolidatedSkills = async (dispatch: (action: Action) => void)
     callflowSkills.map((cfSkill: CallflowSkill) => {
       const skill: Partial<Skill> = {
         discrepancies: [
-          `${cfSkill.skillName} is not in the Contact Manager Database`,
+          `${cfSkill.skillName} is not in the User Management Database`,
           `${cfSkill.skillName} is not in the Flex Console`
         ],
         name: cfSkill.skillName,
