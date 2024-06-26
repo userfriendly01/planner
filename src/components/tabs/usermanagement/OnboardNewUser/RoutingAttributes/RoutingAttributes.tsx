@@ -111,7 +111,7 @@ export const RoutingAttributes = (): JSX.Element => {
         <AutoCompleteContainer type={userFormActions.SET_SALES_ASSOCIATE_WORKER} field='sales_assoc_workers' label='Sales Associate Worker' routingAttribute='salesAssociateWorkerRouting'/>
       </AccordionDetails>
       <AccordionDetails>
-        <AutoCompleteContainer type={userFormActions.SET_FTO_BACK_UP_WORKER} field='backup_workers' label='FTO Backup Worker' routingAttribute='ftoBackupWorkerRouting'   />
+        <AutoCompleteContainer type={userFormActions.SET_BACK_UP_WORKER} field='backup_workers' label='Backup Workers' routingAttribute='backupWorkerRouting'   />
       </AccordionDetails>
     </Accordion>
   );

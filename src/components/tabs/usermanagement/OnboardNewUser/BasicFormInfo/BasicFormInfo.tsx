@@ -318,6 +318,23 @@ export const BasicFormInfo = (props: BasicFormInfoProps) => {
               <ToggleLabel>Self Service Indicator</ToggleLabel>
             </ToggleContainer>
           </Tooltip>) : null}
+          <Tooltip
+          title={
+              "Backup Workers Enable/Disable" 
+          }
+          placement={"bottom-start"}
+        >
+          <ToggleContainer>
+            <Switch
+              checked={form.triton.routing.backup_workers_active}
+              onChange={() => {
+                setForm({ type: userFormActions.UPDATE_BACK_UP_WORKER_FLAG });
+              }}
+              inputProps={{ "aria-label": "toggle-backup-user" }}
+            />
+            <ToggleLabel>Backup Workers</ToggleLabel>
+          </ToggleContainer>
+        </Tooltip>
         <RoutingAttributes />
       </RightColumn>
     </FormControlsContainer>
