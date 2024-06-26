@@ -374,6 +374,8 @@ export const listSoftphoneConfigs = (
   screenpopsNextToken?: string,
   accessGroupsNextToken?: string,
   activitiesNextToken?: string,
+  directoryNextToken?: string,
+  dialListNextToken?: string,
   isFirstQuery?: boolean
 ) => {
 
@@ -446,6 +448,32 @@ export const listSoftphoneConfigs = (
             activity_sid
             available
             item_type
+        }
+      }
+    directoryEntries: listUMDirectoryNumbers(nextToken: ${directoryNextToken}) @include(if:  ${ !!(directoryNextToken?.length || isFirstQuery) }) {
+      nextToken
+      items {
+          pk
+          sk
+          item_type
+          id
+          directory_num
+          first_name
+          last_name
+          profile_id
+      }
+    }
+    dialListEntries: listUMQuickDialNumbers(nextToken: ${dialListNextToken}) @include(if:  ${ !!(dialListNextToken?.length || isFirstQuery) }) {
+        nextToken
+        items {
+            pk
+            sk
+            profile_id
+            contact_num
+            item_type
+            contact_name
+            external_num
+            id
         }
       }
     }

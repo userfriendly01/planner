@@ -1,10 +1,6 @@
 import {
-  AccessGroup,
   Action,
-  Activity,
-  AppState,
-  ScreenPop,
-  UMSoftphoneConfiguration
+  AppState
 } from "globals/interfaces";
 import {
   formatCalabrioTeams,
@@ -19,9 +15,11 @@ export const initialState: AppState = {
   },
   profileContext: {
     profiles: [],
-    screenPops: [],
+    screenpops: [],
     accessGroups: [],
-    activities: []
+    activities: [],
+    directoryEntries: [],
+    dialListEntries: []
   },
   userContext: {
     permissions: [],

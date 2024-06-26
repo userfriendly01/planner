@@ -96,8 +96,10 @@ export interface AppState {
   profileContext: {
     profiles: UMSoftphoneConfiguration[],
     accessGroups: AccessGroup[],
-    screenPops: ScreenPop[]
-    activities: Activity[]
+    screenpops: Screenpop[]
+    activities: Activity[],
+    directoryEntries: DirectoryNumber[],
+    dialListEntries: DialListNumber[]
   },
   userContext: {
     permissions: ADGroupPermission[];
@@ -198,7 +200,7 @@ export interface Activity {
   available: boolean
 }
 
-export interface ScreenPop {
+export interface Screenpop {
   pk: string,
   sk: string,
   item_type: string,
