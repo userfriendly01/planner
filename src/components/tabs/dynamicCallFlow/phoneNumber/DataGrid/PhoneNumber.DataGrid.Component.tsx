@@ -131,7 +131,7 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
       setLegacyFieldConfigs(phoneNumberFormFieldOptionsManager.updateFieldOptionsOnFieldConfigs(legacyFieldConfigs));
       setDynamicFieldConfigs(phoneNumberFormFieldOptionsManager.updateFieldOptionsOnFieldConfigs(dynamicFieldConfigs));
 
-      alertBarController.current.success("Data has been successfully loaded.");
+      alertBarController.current.success("Dynamic Call Flow Phone Numbers have been successfully loaded.");
     };
 
     loadDataGrid();
