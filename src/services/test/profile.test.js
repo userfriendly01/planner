@@ -11,12 +11,8 @@ import {
   listUMSoftphoneConfigs,
   loadSoftphoneConfigRelationships
 } from "../profile";
-import MockAdapter from "axios-mock-adapter";
-import { myAxios } from "utils/myAxios";
 import { apolloClient } from "components/core/Auth/SharedGraphAPIProvider";
 import { logger } from "utils/logger";
-
-const axiosMock = new MockAdapter(myAxios);
 
 jest.mock("components/core/Auth/SharedGraphAPIProvider", () => ({
   apolloClient: {
@@ -29,7 +25,6 @@ const mockedDispatch = jest.fn();
 
 beforeEach(() => {
   jest.clearAllMocks();
-  axiosMock.reset();
 });
 
 const profileRes1 = {

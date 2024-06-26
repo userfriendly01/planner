@@ -1,93 +1,165 @@
-import MockAdapter from "axios-mock-adapter";
-import { myAxios } from "utils/myAxios";
 import {
   addSkillGroup, updateSkillGroup, deleteSkillGroup
 } from "../skillgroup";
-import { apiPaths } from "globals";
+import { apolloClient } from "components/core/Auth/SharedGraphAPIProvider";
 
-const axiosMock = new MockAdapter(myAxios);
+jest.mock("components/core/Auth/SharedGraphAPIProvider", () => ({
+  apolloClient: {
+    mutate: jest.fn(),
+    query: jest.fn()
+  }
+}));
 
 beforeEach(() => {
   jest.clearAllMocks();
-  axiosMock.reset();
 });
 
-
 describe("addSkillGroup", () => {
-  describe("call succeeds", () => {
-    const data = { cool: "beans" };
-    beforeEach(() => axiosMock.onPost(apiPaths.SKILL_GROUPS).replyOnce(200, data));
-    test("should resolve with successful response", done => {
-      addSkillGroup({ skill_group_nme: "new skill group" })
-        .then(resolvedValue => {
-          expect(JSON.parse(axiosMock.history.post[0].data)).toEqual({ skill_group_nme: "new skill group" });
-          expect(resolvedValue).toEqual(data);
-          done();
-        });
+  const entry = {
+    skill_group_name: "skill group 1"
+  };
+  test("query is successful, returns profile data", () => {
+    apolloClient.mutate.mockResolvedValueOnce({
+      data: {
+        skillGroup: {
+          keys: [
+            {
+              pk: "SkillGroup#1",
+              sk: "SkillGroup#1"
+            }
+          ]
+        }
+      }
+    });
+    addSkillGroup(entry).then(resolvedValue => {
+      expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
+      expect(resolvedValue).toEqual({
+        keys: [
+          {
+            pk: "SkillGroup#1",
+            sk: "SkillGroup#1"
+          }
+        ]
+      });
     });
   });
-  describe("call fails", () => {
-    const data = { no: "oops" };
-    beforeEach(() => axiosMock.onPost(apiPaths.SKILL_GROUPS).replyOnce(500, data));
-    test("should reject with error", done => {
-      addSkillGroup({ skill_group_nme: "new skill group" })
-        .catch(rejectVal => {
-          expect(JSON.parse(axiosMock.history.post[0].data)).toEqual({ skill_group_nme: "new skill group" });
-          expect(rejectVal).toEqual(new Error("Request failed with status code 500"));
-          done();
-        });
+  test("query contains errors, throws error", () => {
+    apolloClient.mutate.mockResolvedValueOnce({
+      data: null,
+      errors: [{ errorType: "BAD" }]
+    });
+    addSkillGroup(entry).catch(err => {
+      expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
+      expect(err).toEqual([{ errorType: "BAD" }]);
+    });
+  });
+  test("apolloClient query rejects, throws error", () => {
+    apolloClient.mutate.mockRejectedValueOnce("OH NO!");
+    addSkillGroup(entry).catch(err => {
+      expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
+      expect(err).toEqual("OH NO!");
     });
   });
 });
 
 describe("deleteSkillGroup", () => {
-  describe("call succeeds", () => {
-    const data = { cool: "beans" };
-    beforeEach(() => axiosMock.onDelete(`${apiPaths.SKILL_GROUPS}/2`).replyOnce(200, data));
-    test("should resolve with successful response", done => {
-      deleteSkillGroup(2)
-        .then(resolvedValue => {
-          expect(resolvedValue).toEqual(data);
-          done();
-        });
+  test("query is successful, returns profile data", () => {
+    apolloClient.mutate.mockResolvedValueOnce({
+      data: {
+        skillGroup: {
+          keys: [
+            {
+              pk: "SkillGroup#1",
+              sk: "SkillGroup#1"
+            }
+          ]
+        }
+      }
+    });
+    deleteSkillGroup("skillgroupid").then(resolvedValue => {
+      expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
+      expect(resolvedValue).toEqual({
+        keys: [
+          {
+            pk: "SkillGroup#1",
+            sk: "SkillGroup#1"
+          }
+        ]
+      });
     });
   });
-  describe("call fails", () => {
-    const data = { no: "oops" };
-    beforeEach(() => axiosMock.onDelete(`${apiPaths.SKILL_GROUPS}/2`).replyOnce(500, data));
-    test("should reject with error", done => {
-      deleteSkillGroup(2)
-        .catch(rejectVal => {
-          expect(rejectVal).toEqual(new Error("Request failed with status code 500"));
-          done();
-        });
+  test("query contains errors, throws error", () => {
+    apolloClient.mutate.mockResolvedValueOnce({
+      data: null,
+      errors: [{ errorType: "BAD" }]
+    });
+    deleteSkillGroup("skillgroupid").catch(err => {
+      expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
+      expect(err).toEqual([{ errorType: "BAD" }]);
+    });
+  });
+  test("apolloClient query rejects, throws error", () => {
+    apolloClient.mutate.mockRejectedValueOnce("OH NO!");
+    deleteSkillGroup("skillgroupid").catch(err => {
+      expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
+      expect(err).toEqual("OH NO!");
     });
   });
 });
 
 describe("updateSkillGroup", () => {
-  describe("call succeeds", () => {
-    const data = { cool: "beans" };
-    beforeEach(() => axiosMock.onPut(`${apiPaths.SKILL_GROUPS}/4`).replyOnce(200, data));
-    test("should resolve with successful response", done => {
-      updateSkillGroup(4, { skillGroupName: "new skill group1" })
-        .then(resolvedValue => {
-          expect(JSON.parse(axiosMock.history.put[0].data)).toEqual({ skillGroupName: "new skill group1" });
-          expect(resolvedValue).toEqual(data);
-          done();
-        });
+  const entry = {
+    skill_group_name: "skill group 1",
+    skill_ids: ["skill1"]
+  };
+  test("query is successful, returns profile data", () => {
+    apolloClient.mutate.mockResolvedValueOnce({
+      data: {
+        skillGroup: {
+          keys: [
+            {
+              pk: "SkillGroup#1",
+              sk: "SkillGroup#1"
+            },
+            {
+              pk: "SkillGroup#1",
+              sk: "Skill#skill1"
+            }
+          ]
+        }
+      }
+    });
+    updateSkillGroup("skillgroupid", entry).then(resolvedValue => {
+      expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
+      expect(resolvedValue).toEqual({
+        keys: [
+          {
+            pk: "SkillGroup#1",
+            sk: "SkillGroup#1"
+          },
+          {
+            pk: "SkillGroup#1",
+            sk: "Skill#skill1"
+          }
+        ]
+      });
     });
   });
-  describe("call fails", () => {
-    const data = { no: "oops" };
-    beforeEach(() => axiosMock.onPut(`${apiPaths.SKILL_GROUPS}/3`).replyOnce(500, data));
-    test("should reject with error", done => {
-      updateSkillGroup(3, { skillGroupName: "new skill group1" })
-        .catch(rejectVal => {
-          expect(JSON.parse(axiosMock.history.put[0].data)).toEqual({ skillGroupName: "new skill group1" });
-          expect(rejectVal).toEqual(new Error("Request failed with status code 500"));
-          done();
-        });
+  test("query contains errors, throws error", () => {
+    apolloClient.mutate.mockResolvedValueOnce({
+      data: null,
+      errors: [{ errorType: "BAD" }]
+    });
+    updateSkillGroup("skillgroupid", entry).catch(err => {
+      expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
+      expect(err).toEqual([{ errorType: "BAD" }]);
+    });
+  });
+  test("apolloClient query rejects, throws error", () => {
+    apolloClient.mutate.mockRejectedValueOnce("OH NO!");
+    updateSkillGroup("skillgroupid", entry).catch(err => {
+      expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
+      expect(err).toEqual("OH NO!");
     });
   });
 });
