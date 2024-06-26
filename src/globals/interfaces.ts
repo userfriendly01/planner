@@ -259,7 +259,7 @@ export interface UMSoftphoneConfiguration {
 
 export interface ProfilePayload {
   profile_id: null | number,
-  profile_nme: string,
+  profile_name: string,
   activities: Array<number>,
   recorded_i: boolean,
   auto_answd_i: boolean,

@@ -64,7 +64,7 @@ export const BulkUpdateHrSync = (props: BulkUpdateProps) => {
       return {
         ...profile,
         value: profile.profile_id,
-        label: `${profile.profile_nme} - ${profile.profile_id}`
+        label: `${profile.profile_name} - ${profile.profile_id}`
       };
     } else {
       return "";

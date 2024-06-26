@@ -39,15 +39,15 @@ jest.mock("context/appContext", () => ({
 
 const profileList = [
   {
-    profile_nme: "test1",
+    profile_name: "test1",
     profile_id: 1
   },
   {
-    profile_nme: "test2",
+    profile_name: "test2",
     profile_id: 2
   },
   {
-    profile_nme: "test3",
+    profile_name: "test3",
     profile_id: 3
   }
 ];

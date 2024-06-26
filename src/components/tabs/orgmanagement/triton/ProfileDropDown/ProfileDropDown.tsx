@@ -18,7 +18,7 @@ export const ProfileDropDown = (props: ProfileDropDownProps) => {
   const getValue = () => {
     const profile = availableProfiles.find(p => p.profile_id === profileId);
     return profile ? {
-      label: `${profile.profile_id} - ${profile.profile_nme}`,
+      label: `${profile.profile_id} - ${profile.profile_name}`,
       value: profileId
     } : "";
   };
@@ -28,7 +28,7 @@ export const ProfileDropDown = (props: ProfileDropDownProps) => {
       <Dropdown
         label={"Profile"}
         options={availableProfiles.sort(sortProfilesById).map(profile => ({
-          label: `${profile.profile_id} - ${profile.profile_nme}`,
+          label: `${profile.profile_id} - ${profile.profile_name}`,
           value: profile.profile_id,
           ...profile
         }))}

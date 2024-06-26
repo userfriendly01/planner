@@ -86,7 +86,7 @@ export const ProfileSettingsTable = (props: ProfileSettingsTableProps) => {
                       <TableText>{profile.profile_id}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{profile.profile_nme}</TableText>
+                      <TableText>{profile.profile_name}</TableText>
                     </CustomTableData>
                     <CustomTableData>
                       <TableText>{formatProfileBooleanData(profile.recorded_i.data[0])}</TableText>

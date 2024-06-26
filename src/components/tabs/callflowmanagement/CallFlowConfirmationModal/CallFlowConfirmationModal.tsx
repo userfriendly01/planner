@@ -9,6 +9,8 @@ import { ModalOverlay } from "components/ModalOverlay";
 import { PaperContainer } from "components/PaperContainer";
 import { ExportButton } from "callflowmanagement/ExportButton";
 import React from "react";
+import { useSkillState } from "context/appContext";
+import { Skill } from "../SkillManagement/Skills.Interfaces";
 
 export const CallFlowConfirmationModal = (props: CallFlowConfirmationModalProps) => {
   const {
@@ -17,8 +19,10 @@ export const CallFlowConfirmationModal = (props: CallFlowConfirmationModalProps)
     saveResult
   } = props;
 
+  const { skills } = useSkillState();
   const handleClose = confirmationModalOpts.callbackMethods.handleClose;
   const onConfirm = confirmationModalOpts.callbackMethods.onConfirm;
+  const selectedSkills = skills.filter((s: Skill) => tableState.selected.includes(s.name));
 
   return (
     <ModalContainer>
@@ -35,7 +39,7 @@ export const CallFlowConfirmationModal = (props: CallFlowConfirmationModalProps)
           <Button onClick={handleClose}>
             Cancel
           </Button>
-          { confirmationModalOpts.exportButton && <ExportButton selected={tableState.selected}/>}
+          { confirmationModalOpts.exportButton && <ExportButton selected={selectedSkills}/>}
           <Button onClick={onConfirm}>
             Confirm
           </Button>

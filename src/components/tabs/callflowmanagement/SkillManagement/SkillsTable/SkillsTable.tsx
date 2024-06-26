@@ -38,9 +38,9 @@ export const SkillsTable = (props: SkillsTableProps) => {
     const { profiles } = useAdminState().profileContext;
 
     const itemDivs: ReactElement[] = [];
-    skill.profiles?.map((p: number, index: number) => {
+    skill.profileIds?.map((p: number, index: number) => {
       const profile = profiles.find(pr => pr.profile_id === p) || { profile_name: "Unknown" };
-      if(index !== skill.profiles.length - 1){
+      if(index !== skill.profileIds.length - 1){
         itemDivs.push(<div key={p}>{profile.profile_name}{` - ${p}, `}</div>);
       } else {
         itemDivs.push(<div key={p}>{profile.profile_name}{` - ${p}`}</div>);
@@ -53,12 +53,12 @@ export const SkillsTable = (props: SkillsTableProps) => {
     const { skillGroups } = useSkillState();
 
     const itemDivs: ReactElement[] = [];
-    skill.skillGroups?.map((g: SkillGroup, index: number) => {
-      const skillGroup = skillGroups.find(sg => sg.skillGroupId === g.skillGroupId) || { skillGroupNme: "Unknown" };
-      if(index !== skill.skillGroups.length - 1){
-        itemDivs.push(<div key={g.skillGroupId}>{skillGroup.skillGroupNme}{", "}</div>);
+    skill.skillGroupIds?.map((g: string, index: number) => {
+      const skillGroup = skillGroups.find(sg => sg.id === g) || { skill_group_name: "Unknown" };
+      if(index !== skill.skillGroupIds.length - 1){
+        itemDivs.push(<div key={g}>{skillGroup.skill_group_name}{", "}</div>);
       } else {
-        itemDivs.push(<div key={g.skillGroupId}>{skillGroup.skillGroupNme}{""}</div>);
+        itemDivs.push(<div key={g}>{skillGroup.skill_group_name}{""}</div>);
       }
     });
     return itemDivs;
@@ -68,12 +68,12 @@ export const SkillsTable = (props: SkillsTableProps) => {
     if(isSelected){
       setTableState({
         ...tableState,
-        selected: tableState.selected.filter(s => s.name !== skill.name)
+        selected: tableState.selected.filter(s => s !== skill.name)
       });
     } else {
       setTableState({
         ...tableState,
-        selected: [...tableState.selected, skill ]
+        selected: [...tableState.selected, skill.name ]
       });
     }
   };
@@ -88,7 +88,7 @@ export const SkillsTable = (props: SkillsTableProps) => {
     } else {
       setTableState({
         ...tableState,
-        selected: tableState.filteredList
+        selected: tableState.filteredList.map((s: Skill) => s.name)
       });
     }
   };
@@ -136,7 +136,7 @@ export const SkillsTable = (props: SkillsTableProps) => {
         </thead>
         <tbody>
           {tableState.filteredList.map((skill: Skill) => {
-            const isSelected = tableState.selected.some((s: Skill) => s.name === skill.name);
+            const isSelected = tableState.selected.some((s: string) => s === skill.name);
             return (
               <CustomTableRow key={skill.name} selected={isSelected} onClick={() => handleSetSelected(skill, isSelected)}>
                 <CustomTableData><TableText>

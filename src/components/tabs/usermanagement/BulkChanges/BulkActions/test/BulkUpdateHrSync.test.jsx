@@ -78,7 +78,7 @@ describe("<BulkUpdateAttributes />", () => {
           return {
             ...p,
             value: p.profile_id,
-            label: `${p.profile_nme} - ${p.profile_id}`
+            label: `${p.profile_name} - ${p.profile_id}`
           };
         }));
       });
@@ -100,7 +100,7 @@ describe("<BulkUpdateAttributes />", () => {
         expect(Dropdown.mock.calls[1][0].value).toStrictEqual({
           ...selectedProfile,
           value: selectedProfile.profile_id,
-          label: `${selectedProfile.profile_nme} - ${selectedProfile.profile_id}`
+          label: `${selectedProfile.profile_name} - ${selectedProfile.profile_id}`
         });
         expect(mockReplaceTemplates).toHaveBeenCalledTimes(0);
         expect(mockRemoveTemplates).toHaveBeenCalledTimes(1);
@@ -143,7 +143,7 @@ describe("<BulkUpdateAttributes />", () => {
         expect(Dropdown.mock.calls[1][0].value).toStrictEqual({
           ...selectedProfile,
           value: selectedProfile.profile_id,
-          label: `${selectedProfile.profile_nme} - ${selectedProfile.profile_id}`
+          label: `${selectedProfile.profile_name} - ${selectedProfile.profile_id}`
         });
         expect(mockReplaceTemplates).toHaveBeenCalledTimes(1);
         expect(mockReplaceTemplates).toHaveBeenCalledWith(updateTemplates.SYNC_HR_ATTRIBUTES);

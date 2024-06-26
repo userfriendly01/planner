@@ -64,14 +64,14 @@ describe("<SkillsList />", () => {
   const skillGroups = [
     {
       skillGroupId: 1,
-      skillGroupNme: "skillgroupA",
+      skill_group_name: "skillgroupA",
       skills: [
         { name: "skill1" }
       ]
     },
     {
       skillGroupId: 2,
-      skillGroupNme: "skillgroupB",
+      skill_group_name: "skillgroupB",
       skills: [
         { name: "skill2" },
         { name: "skill1" }

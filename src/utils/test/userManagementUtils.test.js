@@ -53,17 +53,17 @@ const managerList = [
 ];
 const profileList = [
   {
-    profile_nme: "test1",
+    profile_name: "test1",
     profile_id: 1,
     overflow_skill: null
   },
   {
-    profile_nme: "test2",
+    profile_name: "test2",
     profile_id: 2,
     overflow_skill: "whateverOverflowSkill"
   },
   {
-    profile_nme: "test3",
+    profile_name: "test3",
     profile_id: 3,
     overflow_skill: "anotherOverflowSkill"
   }

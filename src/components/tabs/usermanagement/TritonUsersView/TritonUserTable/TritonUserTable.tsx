@@ -24,7 +24,9 @@ import {
 } from "context/appContext";
 import { userFormActions } from "context/userFormReducer";
 import { formModes } from "globals";
-import { ModalOverlayStatuses } from "globals/interfaces";
+import {
+  ModalOverlayStatuses, UMSoftphoneConfiguration
+} from "globals/interfaces";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { formatWorkerAttributeSkillsToHTML } from "utils/skillsUtils";
@@ -115,7 +117,7 @@ export const TritonUserTable = (props: TritonUserTableProps) => {
                 });
                 navigate("/triton-admin/user");
               };
-              const profile: any = state.profileContext.profiles.find((p: any) => p.profile_id === worker.attributes.profile_id) || {};
+              const profile: Partial<UMSoftphoneConfiguration> = state.profileContext.profiles.find((p: any) => p.profile_id === worker.attributes.profile_id) || {};
               return (
                 <CustomTableRow key={worker.sid} onClick={handleWorkerOnClick} selected={isSelected} data-testid="table-row">
                   <CustomTableData><TableText>{worker.attributes.emp_first_name} {worker.attributes.emp_last_name}</TableText></CustomTableData>
@@ -125,8 +127,8 @@ export const TritonUserTable = (props: TritonUserTableProps) => {
                     </TableText>
                   </CustomTableData>
                   <CustomTableData><TableText>{worker.attributes.extension}</TableText></CustomTableData>
-                  <CustomTableData><TableText>{profile.profile_nme} - {profile.profile_id}</TableText></CustomTableData>
-                  <CustomTableData><TableText>{profile.operating_unit_nme}</TableText></CustomTableData>
+                  <CustomTableData><TableText>{profile.profile_name} - {profile.profile_id}</TableText></CustomTableData>
+                  <CustomTableData><TableText>{profile.ou_name}</TableText></CustomTableData>
                   <CustomTableData><TableText>{worker.attributes.routing?.team || ""}</TableText></CustomTableData>
                   <CustomTableData><TableDataFlex>{formatWorkerAttributeSkillsToHTML(worker.attributes.routing)}</TableDataFlex></CustomTableData>
                   <CustomTableData><TableDataFlex>{formatWorkerAttributeSkillsToHTML(worker.attributes.default_skills)}</TableDataFlex></CustomTableData>

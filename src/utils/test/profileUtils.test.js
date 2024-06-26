@@ -626,7 +626,7 @@ describe("profileUtils", () => {
       pmt_prcsg_i: true,
       policy_number_edit_i: false,
       profile_id: null,
-      profile_nme: "UnitTestProfile",
+      profile_name: "UnitTestProfile",
       recorded_i: true,
       transferQueues: [
         {
@@ -808,7 +808,7 @@ describe("profileUtils", () => {
       pmt_prcsg_i: true,
       policy_number_edit_i: false,
       profile_id: 1,
-      profile_nme: "UnitTestProfile",
+      profile_name: "UnitTestProfile",
       recorded_i: true,
       transferQueues: [
         {

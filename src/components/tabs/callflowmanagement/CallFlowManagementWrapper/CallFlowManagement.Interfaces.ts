@@ -13,5 +13,5 @@ export interface TableState {
   filteredList: Skill[],
   profiles: UMSoftphoneConfiguration[],
   searchBy: string,
-  selected: Skill[]
+  selected: string[]
 }

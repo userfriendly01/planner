@@ -249,19 +249,19 @@ describe("sortProfilesById", () => {
 
 describe("sortProfilesByName", () => {
   const profiles = [
-    { profile_nme: "AISG" },
-    { profile_nme: "Premium Audit" },
-    { profile_nme: "CSO" },
-    { profile_nme: "GRS Claims" },
-    { profile_nme: "PAL1" }
+    { profile_name: "AISG" },
+    { profile_name: "Premium Audit" },
+    { profile_name: "CSO" },
+    { profile_name: "GRS Claims" },
+    { profile_name: "PAL1" }
   ];
   test("should return array in alphebetical order", () => {
     expect(profiles.sort(sortProfilesByName)).toEqual([
-      { profile_nme: "AISG" },
-      { profile_nme: "CSO" },
-      { profile_nme: "GRS Claims" },
-      { profile_nme: "PAL1" },
-      { profile_nme: "Premium Audit" }
+      { profile_name: "AISG" },
+      { profile_name: "CSO" },
+      { profile_name: "GRS Claims" },
+      { profile_name: "PAL1" },
+      { profile_name: "Premium Audit" }
     ]);
   });
 });

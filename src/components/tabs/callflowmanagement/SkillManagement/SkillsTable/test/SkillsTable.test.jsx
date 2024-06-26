@@ -72,19 +72,19 @@ const testState = {
     profiles: [
       {
         profile_id: 32,
-        profile_nme: "Licensed Sales Center"
+        profile_name: "Licensed Sales Center"
       },
       {
         profile_id: 4,
-        profile_nme: "AISG"
+        profile_name: "AISG"
       },
       {
         profile_id: 10,
-        profile_nme: "BSC"
+        profile_name: "BSC"
       },
       {
         profile_id: 12,
-        profile_nme: "BLST Billing"
+        profile_name: "BLST Billing"
       }
     ]
   }

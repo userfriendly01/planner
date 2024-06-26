@@ -9,7 +9,8 @@ import {
   UserFormButton
 } from "../ClosedFlashMessage/ClosedFlashMessage.Styles";
 import {
-  ActionTypes, AddEditSkillGroupBody
+  ActionTypes, AddEditSkillGroupBody,
+  SkillGroup
 } from "../Skills.Interfaces";
 import {
   addSkillGroup,
@@ -36,6 +37,8 @@ export const SkillGroupInputContainer = (props: any) => {
   const [ errorText, setErrorText ] = React.useState("");
   const [ skillGroupToEditDelete, setSkillGroupToEditDelete ] = React.useState(null);
 
+  console.log("FAITH skillGroupToEditDelete",skillGroupToEditDelete);
+
   const {
     action,
     tableState,
@@ -50,15 +53,14 @@ export const SkillGroupInputContainer = (props: any) => {
   const skillState = useSkillState();
   const skillDispatch = useSkillDispatch();
   const skillGroups = skillState.skillGroups.slice();
-  const skills = skillState.skills.slice();
   const { nNumber } = state.userContext;
 
   const getSkillGroupOptions = () => {
-    return skillGroups.map((skg: any) => {
+    return skillGroups.map((skg: SkillGroup) => {
       return {
-        label: skg.skillGroupNme,
-        value: skg.skillGroupId,
-        skills: skg.skills.map((sk: any) => sk.name)
+        label: skg.skill_group_name,
+        value: skg.id,
+        skills: skg.skills
       };
     });
   };
@@ -102,12 +104,13 @@ export const SkillGroupInputContainer = (props: any) => {
       return false;
     }
     if (action === ActionTypes.ADD) {
-      skillGroupNameExists = skillGroups.find((sg: any) => sg.skillGroupNme.toLowerCase() === skillGroupName.trim().toLowerCase()) ? true : false;
+      skillGroupNameExists = !!(skillGroups.find((sg: any) => sg.skill_group_name.toLowerCase() === skillGroupName.trim().toLowerCase()));
     } else if (action === ActionTypes.EDIT) {
       // it can have the same name as itself, but no other skillgroups
-      const allOtherSkillgroups = skillGroups.filter((sg: any) => sg.skillGroupId !== skillGroupToEditDelete.value);
-      skillGroupNameExists = allOtherSkillgroups.find((sg: any) => sg.skillGroupNme.toLowerCase() === skillGroupName.trim().toLowerCase()) ? true : false;
+      const allOtherSkillgroups = skillGroups.filter((sg: SkillGroup) => sg.id !== skillGroupToEditDelete.value);
+      skillGroupNameExists = !!(allOtherSkillgroups.find((sg: SkillGroup) => sg.skill_group_name.toLowerCase() === skillGroupName.trim().toLowerCase()));
     }
+
     return skillGroupNameExists;
   };
 
@@ -119,11 +122,11 @@ export const SkillGroupInputContainer = (props: any) => {
       });
 
       try {
-        const skillIds = tableState.selected.map((skill: Skill) => skill.ctmSkillId);
+        const skillIds = tableState.selected.map((skill: string) => skill);
 
         const requestBody: AddEditSkillGroupBody = {
-          skill_group_nme: escapeQuotes(skillGroupName.trim()),
-          skillIds
+          skill_group_name: escapeQuotes(skillGroupName.trim()),
+          skill_ids: skillIds
         };
         await addSkillGroup(requestBody);
 
@@ -181,21 +184,21 @@ export const SkillGroupInputContainer = (props: any) => {
   const handleEditSkillGroup = () => {
 
     const requestBody: AddEditSkillGroupBody = {
-      skill_group_nme: escapeQuotes(skillGroupName.trim())
+      skill_group_name: escapeQuotes(skillGroupName.trim())
     };
     let editConfirmationText;
 
     try {
-      const selectedSkills: number[] = tableState.selected.slice().map((sk: Skill) => sk.ctmSkillId);
-      requestBody.skillIds = selectedSkills;
+      const selectedSkills: string[] = tableState.selected.slice();
+      requestBody.skill_ids = selectedSkills;
 
       editConfirmationText = <>
         <ConfirmationSkillGroupsDiv>
         Are you sure you want to edit the skill group <span style={{ textDecoration: "underline" }}>{skillGroupToEditDelete?.label ? skillGroupToEditDelete?.label : ""}?</span>
-          {requestBody.skill_group_nme ? <>The name of this skill grouping will become <span style={{ textDecoration: "underline" }}>{skillGroupName}</span> </> : ""}
+          {requestBody.skill_group_name ? <>The name of this skill grouping will become <span style={{ textDecoration: "underline" }}>{skillGroupName}</span> </> : ""}
           This skill group will contain the following skills:
           <ConfirmationSkillList>
-            {tableState.selected.map((skill: Skill) => <li key={skill.name}>{skill.name}</li>)}
+            {tableState.selected.map((skill: string) => <li key={skill}>{skill}</li>)}
           </ConfirmationSkillList>
         </ConfirmationSkillGroupsDiv>
       </>;
@@ -227,7 +230,7 @@ export const SkillGroupInputContainer = (props: any) => {
           message: "Request Successfully Processed",
           status: ModalOverlayStatuses.SUCCESS
         });
-        // refresh skill state
+
         await loadConsolidatedSkills(skillDispatch);
         setTimeout(() => {
           handleCloseConfirmation();
@@ -278,7 +281,6 @@ export const SkillGroupInputContainer = (props: any) => {
           status: ModalOverlayStatuses.SUCCESS
         });
 
-        // refresh skill state
         await loadConsolidatedSkills(skillDispatch);
 
         setTimeout(() => {
@@ -341,7 +343,7 @@ export const SkillGroupInputContainer = (props: any) => {
             setSkillGroupName(val.label);
             setTableState({
               ...tableState,
-              selected: skills.filter((sk: any) => sk.skillGroups?.find((skg: any) => skg.skillGroupId === val.value))
+              selected: val.skills
             });
           }}
           styles={{

@@ -97,7 +97,7 @@ export const formatAggregateQueues = (aggregateQueues: any[], BubbleDiv: any) =>
 export const createProfilePayload = (form: any) => {
   return {
     profile_id: form.profileId,
-    profile_nme: form.profileName.value,
+    profile_name: form.profileName.value,
     activities: form.activitiesList.map((activity: any) => activity.activity_id),
     recorded_i: form.inboundRecorded.value,
     auto_answd_i: form.autoAnswered.value,
@@ -143,7 +143,7 @@ export const updateProfilePayload = (form: any) => {
     profile_id: form.profileId
   };
 
-  form.profileName.updated ? payload.profile_nme = form.profileName.value : null;
+  form.profileName.updated ? payload.profile_name = form.profileName.value : null;
   form.overflowSkill.updated ? payload.overflow_skill = form.overflowSkill.value || null : null;
   form.activitiesUpdated ? payload.activities = form.activitiesList.map((activity: any) => activity.activity_id) : null;
   form.queuesUpdated ? payload.transferQueues = form.transferQueues.filter((queue: any) => queue.ctmSkillId > 0).map((queue: any) => {

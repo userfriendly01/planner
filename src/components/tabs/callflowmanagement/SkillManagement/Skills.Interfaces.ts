@@ -107,8 +107,8 @@ export interface SkillsTableProps {
 }
 
 export interface AddEditSkillGroupBody {
-  skill_group_nme: string,
-  skillIds?: number[]
+  skill_group_name: string,
+  skill_ids?: string[]
 }
 
 export interface AddEditSkill {
@@ -239,7 +239,7 @@ export interface UMSkill {
   task_queue_name: string,
   levels: any[],
   profile_ids?: number[],
-  skill_group_ids?: number[]
+  skill_group_ids?: string[]
 }
 
 export interface Skill {
@@ -247,10 +247,10 @@ export interface Skill {
   discrepancies: string[],
   name: string,
   levels: number[],
-  profiles: number[],
+  profileIds: number[],
   taskQueueSid: string,
   taskQueueName: string,
-  skillGroupIds?: number[]
+  skillGroupIds: string[]
   applicationId: number,
   closedMessage: string,
   flashMessage: string,
@@ -260,7 +260,17 @@ export interface Skill {
 }
 
 export interface SkillGroup {
-  skillGroupId: number,
-  skillGroupNme: string,
-  skills: Skill[],
+  pk: string,
+  sk: string,
+  id: string,
+  skill_group_name: string,
+  skills?: Skill[],
+}
+
+export interface SkillGroupSkillShip {
+  pk: string,
+  sk: string,
+  skill_id: string,
+  skill_group_name: string,
+  skills?: Skill[],
 }

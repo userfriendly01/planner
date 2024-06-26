@@ -331,7 +331,7 @@ describe("profileEntryFormReducer", () => {
     test("should set edit prepopulated fields to state", () => {
       const profile = {
         profile_id: 0,
-        profile_nme: "Game of Phones",
+        profile_name: "Game of Phones",
         recorded_i: {
           type: "Buffer",
           data: [0]
@@ -603,7 +603,7 @@ describe("profileEntryFormReducer", () => {
     test("should set edit prepopulated fields to state, forwardToNum is populated if there is one on the profile", () => {
       const profile = {
         profile_id: 0,
-        profile_nme: "Game of Phones",
+        profile_name: "Game of Phones",
         recorded_i: {
           type: "Buffer",
           data: [0]
@@ -875,7 +875,7 @@ describe("profileEntryFormReducer", () => {
     test("should return accessGroup true, if access group id is present when editing pofile", () => {
       const profile = {
         profile_id: 0,
-        profile_nme: "Game of Phones",
+        profile_name: "Game of Phones",
         recorded_i: {
           type: "Buffer",
           data: [0]

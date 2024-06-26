@@ -133,7 +133,7 @@ describe("<ProfileSettingsTable />", () => {
         type: "Buffer"
       },
       profile_id: 1,
-      profile_nme: "Game of Phones",
+      profile_name: "Game of Phones",
       recorded_i: {
         data: [0],
         type: "Buffer"

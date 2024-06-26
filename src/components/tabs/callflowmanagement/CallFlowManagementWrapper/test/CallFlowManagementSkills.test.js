@@ -143,7 +143,7 @@ describe("CallFlowManagementSkills", () => {
         const setTableState = ActionContainer.mock.calls[0][0].setTableState;
         act(() => setTableState({
           ...initialTableState,
-          profiles: [{ profile_id: 32 }]
+          profileIds: [{ profile_id: 32 }]
         }));
         expect(ActionContainer.mock.calls[2][0].tableState.filteredList).toStrictEqual([skillsList[0]]);
       });

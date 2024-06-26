@@ -62,7 +62,7 @@ const skills = [
 const skillGroups = [
   {
     skillGroupId: 1,
-    skillGroupNme: "skillGroupA",
+    skill_group_name: "skillGroupA",
     skills: [
       {
         name: "skillA",

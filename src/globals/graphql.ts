@@ -207,11 +207,38 @@ export const DELETE_MANAGER = gql`
   }
 `;
 
+export const CREATE_SKILL_GROUP = gql`
+  mutation createUMSkillGroup($input: UMSkillGroupCreateInput!) {
+    skillGroup: createUMSkillGroup(input: $input) {
+        cancellationReasons
+        nextToken
+    }
+  }
+`;
 
+export const UPDATE_SKILL_GROUP = gql`
+  mutation updateUMSkillGroup($id: ID!, $input: UMSkilGroupUpdateInput!) {
+    skillGroup: updateUMSkillGroup(id: $id, input: $input) {
+        cancellationReasons
+        nextToken
+    }
+  }
+`;
+
+export const DELETE_SKILL_GROUP = gql`
+  mutation deleteUMSkillGroup($id: ID!) {
+    skillGroup: deleteUMSkillGroup(id: $id) {
+        cancellationReasons
+        nextToken
+    }
+  }
+`;
 
 export const getUMSkills = (
   skillsNextToken?: string,
   skillProfilesNextToken?: string,
+  skillGroupsNextToken?: string,
+  skillGroupsProfilesNextToken?: string,
   isFirstQuery?: boolean
 ) => {
   return gql`
@@ -232,6 +259,27 @@ export const getUMSkills = (
       items {
         pk
         skill_id
+      }
+    }
+    skillGroups: listUMSkillGroups(nextToken: ${skillGroupsNextToken}) @include(if:  ${ !!(skillGroupsNextToken?.length || isFirstQuery) }) {
+      nextToken
+      items {
+        pk
+        sk
+        skill_group_name
+        id
+        skills
+      }
+    }
+    skillGroupProfiles: listUMSkillGroupToSkillItems(nextToken: ${skillGroupsProfilesNextToken}) @include(if:  ${ !!(skillGroupsProfilesNextToken?.length || isFirstQuery) }) {
+      nextToken
+      items {
+        pk
+        sk
+        skill_id
+        task_queue_sid
+        task_queue_name
+        levels
       }
     }
   }

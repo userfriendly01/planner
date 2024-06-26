@@ -14,7 +14,9 @@ import {
 import { SkillsList } from "usermanagement/SkillsList";
 import { SkillLevels } from "usermanagement/SkillLevels";
 import { useSkillState } from "context/appContext";
-import { Skill } from "callflowmanagement/Skills.Interfaces";
+import {
+  Skill, SkillGroup
+} from "callflowmanagement/Skills.Interfaces";
 import React from "react";
 import {
   Add,
@@ -27,12 +29,12 @@ export const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
     setDefaultSkills
   } = props;
 
-  const skills = useSkillState().skills.slice().filter(s => s.levels);
+  const skills = useSkillState().skills;
   const skillGroups = useSkillState().skillGroups.slice();
 
   const skillsForDropDown = skills.filter((skillObj: Skill) => !defaultSkills.skills.includes(skillObj.name));
 
-  const skillGroupsForDropDown = skillGroups.filter((skillGr: any) => {
+  const skillGroupsForDropDown = skillGroups.filter((skillGr: SkillGroup) => {
     // if all skills in a skill group are in the defaultSkills, remove the skillGr from the dropdown list
     const allSkillsInGroupSelected = skillGr.skills.every((sk: Skill) => defaultSkills.skills.includes(sk.name));
     if (allSkillsInGroupSelected) {
@@ -49,11 +51,14 @@ export const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
 
   const [newSkill, setNewSkill] = React.useState<NewTwilioWorkerSkill>(defaultNewSkill);
 
+  console.log("Faith - New Skill", newSkill);
+
   const newSkillChanged = (skill: {
     [index: string]: any,
     value: string
   }) => {
-    const skillObj = skills.find(skillObj => skillObj.name === skill.value);
+    console.log("Faith - am I a skill?", skill);
+    const skillObj: Skill = skills.find(skillObj => skillObj.name === skill.value);
     if (skill.isSkillGroup) {
       setNewSkill({
         levels: [],
@@ -82,29 +87,34 @@ export const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
   };
 
   const addSkillClicked = () => {
-    const {
-      levelSelected,
-      skill,
-      skills
-    } = newSkill;
+    // const {
+    //   levelSelected,
+    //   skill,
+    //   skills
+    // } = newSkill;
     const updatedDefaultSkills = { ...defaultSkills };
+    console.log("faith newSkill", newSkill);
     // a skill group will have multiple skills to add, loop through those skills and add each
-    if (skills) {
-      skills.forEach((skill: any) => {
-        // don't add a duplicate skill
-        if (!updatedDefaultSkills.skills.find(s => s === skill.name)) {
-          updatedDefaultSkills.skills.push(skill.name);
-          if (skill.levels?.length) {
-            updatedDefaultSkills.levels[skill.name] = skill.levels[0];
+    if (newSkill.skills) {
+      newSkill.skills.forEach((skillName: string) => {
+        const skillObj: Skill = skills.find(skillObj => skillObj.name === skillName);
+        if (!updatedDefaultSkills.skills.find(s => s === skillName)) {
+          updatedDefaultSkills.skills.push(skillName);
+          if (skillObj.levels?.length) {
+            updatedDefaultSkills.levels[skillName] = skillObj.levels[0];
           }
         }
       });
     } else {
-      updatedDefaultSkills.skills.push(skill);
+      updatedDefaultSkills.skills.push(newSkill.skill);
     }
     if (newSkill.levelSelected) {
-      updatedDefaultSkills.levels[skill] = levelSelected;
+      updatedDefaultSkills.levels[newSkill.skill] = newSkill.levelSelected;
     }
+
+    console.log("faith updatedDefaultSkills", updatedDefaultSkills);
+    console.log("faith defaultNewSkill", defaultNewSkill);
+
     setDefaultSkills(updatedDefaultSkills);
     setNewSkill(defaultNewSkill);
   };

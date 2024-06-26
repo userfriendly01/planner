@@ -24,20 +24,20 @@ describe("<ProfileDropDown />", () => {
   const availableProfiles = [
     {
       profile_id: 1,
-      profile_nme: "First Profile",
+      profile_name: "First Profile",
       value: 1,
       label: "First Profile"
 
     },
     {
       profile_id: 2,
-      profile_nme: "Second Profile",
+      profile_name: "Second Profile",
       value: 2,
       label: "Second Profile"
     },
     {
       profile_id: 3,
-      profile_nme: "Third Profile",
+      profile_name: "Third Profile",
       value: 3,
       label: "Third Profile"
     }

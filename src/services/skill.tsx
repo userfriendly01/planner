@@ -6,9 +6,11 @@ import { logger } from "utils/logger";
 import { formatErrorMessage } from "utils/_formatUtils";
 import { getTaskQueues } from "services/taskQueues";
 import {
-  Application, Skill, TwilioSkill, CallflowSkill, CtmSkill,
+  Application, Skill, TwilioSkill, CallflowSkill,
   TimeOfDay, TwilioQueue, SkillFormState,
-  UMSkill
+  UMSkill,
+  SkillGroup,
+  SkillGroupSkillShip
 } from "callflowmanagement/SkillManagement/Skills.Interfaces";
 import {
   Action, OperatingUnit
@@ -200,24 +202,24 @@ const getCallflowSkills = (): Promise<{ data: CallflowSkill[] }> => {
   return myAxios.get(apiPaths.SKILLS_CALLFLOW);
 };
 
-const getContactManagerSkills= (): Promise<{ data: CtmSkill[] }> => {
-  return myAxios.get(apiPaths.SKILLS_CONTACT_MANAGER);
-};
-
 const getGraphSkills = async (dispatch: (action: Action) => void): Promise<UMSkill[]> => {
   let skills: UMSkill[] = [];
   let skillProfiles: UMSkill[] = [];
+  let skillGroups: SkillGroup[] = [];
+  let skillGroupProfiles: SkillGroupSkillShip[] = [];
 
   const getPageResults = async (
     isFirstQuery: boolean,
     skillsNextToken?: string,
-    skillProfilesNextToken?: string
+    skillProfilesNextToken?: string,
+    skillGroupsNextToken? : string,
+    skillGroupsProfilesNextToken? : string
   ): Promise<void> => {
     try {
       const {
         errors, data
       }: any = await apolloClient.query<{ results: any }>({
-        query: getUMSkills(skillsNextToken, skillProfilesNextToken, isFirstQuery),
+        query: getUMSkills(skillsNextToken, skillProfilesNextToken, skillGroupsNextToken, skillGroupsProfilesNextToken, isFirstQuery),
         variables: {}
       });
 
@@ -227,11 +229,14 @@ const getGraphSkills = async (dispatch: (action: Action) => void): Promise<UMSki
 
       const newSkills: UMSkill[] = data?.skills?.items.map((s: any) => ({
         ...s,
-        profile_ids: []
+        profile_ids: [],
+        skill_group_ids: []
       }));
 
       if(data?.skills?.items?.length) { skills = [...skills, ...newSkills]; }
       if(data?.skillProfiles?.items?.length) { skillProfiles = [...skillProfiles, ...data.skillProfiles.items]; }
+      if(data?.skillGroups?.items?.length) { skillGroups = [...skillGroups, ...data.skillGroups.items]; }
+      if(data?.skillGroupProfiles?.items?.length) { skillGroupProfiles = [...skillGroupProfiles, ...data.skillGroupProfiles.items]; }
 
       //Test Next Token functionality specifically in unit test
 
@@ -246,13 +251,11 @@ const getGraphSkills = async (dispatch: (action: Action) => void): Promise<UMSki
     }
   };
 
-  await getPageResults(true, null, null);
+  await getPageResults(true, null, null, null, null);
 
-  //add graph query for skill groups and add to this concatenation
-  //dispatchSkillGroups
   dispatch({
     type: "LOAD_SKILL_GROUPS",
-    payload: []
+    payload: skillGroups
   });
 
   skillProfiles.forEach((sp: UMSkill) => {
@@ -263,6 +266,20 @@ const getGraphSkills = async (dispatch: (action: Action) => void): Promise<UMSki
         matchingSkill.profile_ids.push(profileId);
       } else {
         logger.warn("Graph returned a profile/skill relationship but the skill was not found", { record: sp }, true);
+      }
+    } catch(error){
+      logger.error("Failed to format skill profile to skill", error);
+    }
+  });
+
+  skillGroupProfiles.forEach((sgp: SkillGroupSkillShip) => {
+    try {
+      const skillGroupId = sgp.pk.split("#")[1];
+      const matchingSkill = skills.find((s: UMSkill) => s.skill_id === sgp.skill_id);
+      if(matchingSkill) {
+        matchingSkill.skill_group_ids.push(skillGroupId);
+      } else {
+        logger.warn("Graph returned a profile/skill relationship but the skill was not found", { record: sgp }, true);
       }
     } catch(error){
       logger.error("Failed to format skill profile to skill", error);
@@ -295,8 +312,8 @@ export const loadConsolidatedSkills = async (dispatch: (action: Action) => void)
       let skill: Partial<Skill> = {
         discrepancies: graphSkill.profile_ids?.length ? [] : ["Skill exists in the graph but has no relationship to a profile"],
         name: graphSkill.skill_id,
-        profiles: graphSkill.profile_ids || [],
-        skillGroups: graphSkill.skill_group_ids || [],
+        profileIds: graphSkill.profile_ids || [],
+        skillGroupIds: graphSkill.skill_group_ids || [],
         taskQueueName: graphSkill.task_queue_name,
         taskQueueSid: graphSkill.task_queue_sid
       };

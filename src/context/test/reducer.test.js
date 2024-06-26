@@ -493,7 +493,7 @@ describe("reducer", () => {
       const payload = [
         {
           profile_id: 1,
-          profile_nme: "smith"
+          profile_name: "smith"
         }
       ];
       const action = {

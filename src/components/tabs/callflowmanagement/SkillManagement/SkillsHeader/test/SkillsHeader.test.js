@@ -104,7 +104,7 @@ describe("<SkillsHeader />", () => {
           options: initialTestState.profileContext.profiles.map(p => {
             return {
               ...p,
-              label: p.profile_nme,
+              label: p.profile_name,
               value: p.profile_id
             };
           })
@@ -126,7 +126,7 @@ describe("<SkillsHeader />", () => {
             updateValue(null, [
               {
                 ...profileList[1],
-                label: profileList[1].profile_nme,
+                label: profileList[1].profile_name,
                 value: profileList[1].profile_id
               }
             ]);
@@ -137,7 +137,7 @@ describe("<SkillsHeader />", () => {
             profiles: [
               {
                 ...profileList[1],
-                label: profileList[1].profile_nme,
+                label: profileList[1].profile_name,
                 value: profileList[1].profile_id
               }
             ]

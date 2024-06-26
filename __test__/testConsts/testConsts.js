@@ -36,13 +36,13 @@ export const officeMap = [
 
 export const profileList = [
   {
-    profile_nme: "test1",
+    profile_name: "test1",
     profile_id: 1,
     overflow_skill: null,
     operating_unit_sid: "operatingUnitSid1"
   },
   {
-    profile_nme: "test2",
+    profile_name: "test2",
     profile_id: 2,
     overflow_skill: "whateverOverflowSkill",
     operating_unit_nme: "operatingUnitName",
@@ -54,20 +54,20 @@ export const profileList = [
     ]
   },
   {
-    profile_nme: "test3",
+    profile_name: "test3",
     profile_id: 3,
     overflow_skill: "anotherOverflowSkill",
     operating_unit_sid: "operatingUnitSid2"
   },
   {
-    profile_nme: "test4",
+    profile_name: "test4",
     profile_id: 396,
     overflow_skill: "weirdNumberSkill",
     operating_unit_nme: "operatingUnitName",
     operating_unit_sid: "operatingUnitSid2"
   },
   {
-    profile_nme: "test5",
+    profile_name: "test5",
     profile_id: 12,
     overflow_skill: "anotherOverflowSkill",
     operating_unit_sid: "operatingUnitSid2",

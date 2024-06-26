@@ -252,7 +252,7 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
           valid: true
         },
         profileName: {
-          value: profile.profile_nme,
+          value: profile.profile_name,
           valid: true
         },
         transferQueues,

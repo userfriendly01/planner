@@ -280,7 +280,7 @@ describe("<BasicFormInfo />", () => {
       const expectedTeamProps = {
         label: "Team *",
         options: profileList.map(profile => ({
-          label: `${profile.profile_nme} - ${profile.profile_id}`,
+          label: `${profile.profile_name} - ${profile.profile_id}`,
           value: profile.profile_id,
           ...profile
         })),

@@ -166,7 +166,7 @@ export const skillsList = [
     ctmSkillId: 1,
     skillGroups: [{
       skillGroupId: 1,
-      skillGroupNme: "skillgroup1",
+      skill_group_name: "skillgroup1",
       skills: [{
         name: "lscOBDialer1",
         ctmSkillId: 1
@@ -177,7 +177,7 @@ export const skillsList = [
     },
     {
       skillGroupId: 2,
-      skillGroupNme: "skillgroup2"
+      skill_group_name: "skillgroup2"
     }],
     profiles: [32],
     flashMessage: "",
@@ -196,7 +196,7 @@ export const skillsList = [
     ctmSkillDisplayName: "aisg L1",
     skillGroups: [{
       skillGroupId: 1,
-      skillGroupNme: "skillgroup1",
+      skill_group_name: "skillgroup1",
       skills: [{
         name: "lscOBDialer1",
         ctmSkillId: 1
@@ -266,7 +266,7 @@ export const skillsList = [
 export const skillGroups = [
   {
     skillGroupId: 1,
-    skillGroupNme: "skillgroup1",
+    skill_group_name: "skillgroup1",
     skills: [{
       name: "lscOBDialer1",
       ctmSkillId: 1,
@@ -282,7 +282,7 @@ export const skillGroups = [
   },
   {
     skillGroupId: 2,
-    skillGroupNme: "skillgroup2",
+    skill_group_name: "skillgroup2",
     skills: [{
       name: "aisgL1",
       ctmSkillId: 2,

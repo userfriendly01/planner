@@ -6,7 +6,10 @@ import {
   MessageBoxWrapper,
   TextField
 } from "../ClosedFlashMessage.Styles";
-import { ActionTypes } from "../../Skills.Interfaces";
+import {
+  ActionTypes, Skill
+} from "../../Skills.Interfaces";
+import { useSkillState } from "context/appContext";
 
 export const MessageContainer = (props: MessageContainerProps) => {
   const {
@@ -21,6 +24,7 @@ export const MessageContainer = (props: MessageContainerProps) => {
   } = props;
 
   const [ text, setText ] = React.useState("");
+  const { skills } = useSkillState();
 
   React.useEffect(() => {
     const variable = messageType.variable;
@@ -28,7 +32,8 @@ export const MessageContainer = (props: MessageContainerProps) => {
     if(tableState.selected.length > 1 || tableState.selected.length === 0){
       setText("");
     } else {
-      const text = tableState.selected[0][variable] || "";
+      const skill = skills.find((s: Skill) => s.name === tableState.selected[0]);
+      const text = skill[variable] || "";
       setText(text);
     }
   }, [action, tableState.selected]);

@@ -27,8 +27,8 @@ export const SkillsList = (props: SkillDropdownProps) => {
     // skill groups
     skillGroups.forEach(option => {
       optionsList.push({
-        value: option.skillGroupId,
-        label: option.skillGroupNme,
+        value: option.id,
+        label: option.skill_group_name,
         isSkillGroup: true,
         skills: option.skills
       });
