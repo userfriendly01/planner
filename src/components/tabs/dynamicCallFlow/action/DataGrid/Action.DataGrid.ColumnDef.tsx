@@ -11,42 +11,42 @@ export const ActionDataGridColumnDef: GridColDef[] = [
     align: "left"
   },
   {
-    headerName: "actionId",
+    headerName: "Action Id",
     field: "actionId",
     sortable: true,
     width: 300,
     align: "left"
   },
   {
-    headerName: "action type",
+    headerName: "Action Type",
     field: "actionType",
     sortable: true,
     width: 150,
     align: "left"
   },
   {
-    headerName: "callFlowName",
+    headerName: "Call Flow Name",
     field: "callFlowName",
     sortable: true,
     width: 110,
     align: "left"
   },
   {
-    headerName: "next action id",
+    headerName: "Next Action Id",
     field: "nextActionId",
     sortable: true,
     width: 300,
     align: "left"
   },
   {
-    headerName: "next action type",
+    headerName: "Next Action Type",
     field: "nextActionType",
     sortable: true,
     width: 150,
     align: "left"
   },
   {
-    headerName: "speech",
+    headerName: "Speech",
     field: "speech",
     sortable: true,
     width: 300,
@@ -58,14 +58,14 @@ export const ActionDataGridColumnDef: GridColDef[] = [
     )
   },
   {
-    headerName: "timeout",
+    headerName: "Menu Timeout",
     field: "timeout",
     sortable: true,
     width: 110,
     align: "left"
   },
   {
-    headerName: "finishOnKey",
+    headerName: "Menu Finish On Key",
     field: "finishOnKey",
     sortable: true,
     width: 110,
@@ -108,6 +108,13 @@ export const ActionDataGridColumnDef: GridColDef[] = [
         <div>{JSON.stringify(params.row.repeat) || ""}</div>
       </Tooltip>
     )
+  },
+  {
+    headerName: "Redirect URL",
+    field: "url",
+    sortable: true,
+    width: 300,
+    align: "left"
   }
 ];
 
