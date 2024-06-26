@@ -131,12 +131,12 @@ export const loadSoftphoneConfigRelationships = async (profiles: UMSoftphoneConf
         if(errors?.length && !errors.every((e: any) => e.errorType === "NOT_FOUND")) { throw errors; }
 
         if(data?.activities?.nextToken || data?.directoryNumbers?.nextToken || data?.dialListNumbers?.nextToken){
-          return getPageResults(false, data.actvities.nextToken, data.directoryNumbers.nextToken, data.dialListNumbers.nextToken);
+          return getPageResults(false, data.activities.nextToken, data.directoryNumbers.nextToken, data.dialListNumbers.nextToken);
         } else {
           return formattedProfile;
         }
       } catch(error) {
-        logger.error(`Error thrown getting profile relationship items for ${p}`, error);
+        logger.error(`Error thrown getting profile relationship items for profile ${p.profile_id}`, error);
         return formattedProfile;
       }
     };
