@@ -202,7 +202,7 @@ const getCallflowSkills = (): Promise<{ data: CallflowSkill[] }> => {
   return myAxios.get(apiPaths.SKILLS_CALLFLOW);
 };
 
-export const getGraphSkills = async (dispatch: (action: Action) => void): Promise<UMSkill[]> => {
+const getGraphSkills = async (dispatch: (action: Action) => void): Promise<UMSkill[]> => {
   let skills: UMSkill[] = [];
   let skillProfiles: UMSkill[] = [];
   let skillGroups: SkillGroup[] = [];
