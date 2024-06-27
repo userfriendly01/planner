@@ -2,7 +2,7 @@ import MockAdapter from "axios-mock-adapter";
 import { myAxios } from "utils/myAxios";
 import { apiPaths } from "globals";
 import {
-  createSkill, loadConsolidatedSkills, loadSkillOptions, deleteSkill, getGraphSkills
+  createSkill, loadConsolidatedSkills, loadSkillOptions, deleteSkill
 } from "../skill";
 import { getOperatingUnits } from "services/operatingUnits";
 import { getTaskQueues } from "services/taskQueues";
@@ -697,6 +697,99 @@ describe("loadConsolidatedSkills", () => {
             {
               discrepancies: ["dumbskill is not in the User Management Database", "dumbskill is not in the Flex Console"],
               name: "dumbskill"
+            }
+          ]
+        });
+        expect(mockDispatch).toHaveBeenCalledTimes(2); // called first in getGraphSkills
+      });
+    });
+    test("all calls successful, skills are present in flex, but not the user management db or callflowdb, discrepancies appear on the skill", () => {
+      axiosMock.onGet(apiPaths.SKILLS_TASKROUTER).replyOnce(200, [{
+        name: "flexskill",
+        minimum: 1,
+        maximum: 2
+      }]);
+      axiosMock.onGet(apiPaths.SKILLS_CALLFLOW).replyOnce(200, []);
+
+      apolloClient.query.mockResolvedValueOnce({ data: getGraphSkilllsResultNoTokens });
+      loadConsolidatedSkills(mockDispatch).then(() => {
+        expect(apolloClient.query).toHaveBeenCalledTimes(1);
+        expect(axiosMock.history.get.length).toEqual(2);
+
+        expect(mockDispatch).toHaveBeenLastCalledWith({
+          type: "LOAD_SKILLS",
+          payload: [
+            {
+              discrepancies: ["skillio is not in the Legacy Callflow Database", "skillio is not in the Flex Console"],
+              name: "skillio",
+              profileIds: [0],
+              skillGroupIds: ["123"],
+              taskQueueName: undefined,
+              taskQueueSid: undefined
+            },
+            {
+              discrepancies: ["Skill exists in the graph but has no relationship to a profile", "otherskill is not in the Legacy Callflow Database", "otherskill is not in the Flex Console"],
+              name: "otherskill",
+              profileIds: [],
+              skillGroupIds: [],
+              taskQueueName: undefined,
+              taskQueueSid: undefined
+            },
+            {
+              discrepancies: ["flexskill is not in the User Management Database", "flexskill is not in the Legacy Callflow Database"],
+              name: "flexskill",
+              levels: [1,2]
+            }
+          ]
+        });
+        expect(mockDispatch).toHaveBeenCalledTimes(2); // called first in getGraphSkills
+      });
+    });
+    test("all calls successful, skills are present in flex and callflow, but not the user management db, discrepancies appear on the skill", () => {
+      axiosMock.onGet(apiPaths.SKILLS_TASKROUTER).replyOnce(200, [{
+        name: "flexskill",
+        minimum: 1,
+        maximum: 2
+      }]);
+      axiosMock.onGet(apiPaths.SKILLS_CALLFLOW).replyOnce(200, [{
+        skillName: "flexskill",
+        closedMessage: "go away",
+        flashMessage: "hi",
+        applicationId: 6
+      }]);
+
+      apolloClient.query.mockResolvedValueOnce({ data: getGraphSkilllsResultNoTokens });
+      loadConsolidatedSkills(mockDispatch).then(() => {
+        expect(apolloClient.query).toHaveBeenCalledTimes(1);
+        expect(axiosMock.history.get.length).toEqual(2);
+
+        expect(mockDispatch).toHaveBeenLastCalledWith({
+          type: "LOAD_SKILLS",
+          payload: [
+            {
+              discrepancies: ["skillio is not in the Legacy Callflow Database", "skillio is not in the Flex Console"],
+              name: "skillio",
+              profileIds: [0],
+              skillGroupIds: ["123"],
+              taskQueueName: undefined,
+              taskQueueSid: undefined
+            },
+            {
+              discrepancies: ["Skill exists in the graph but has no relationship to a profile", "otherskill is not in the Legacy Callflow Database", "otherskill is not in the Flex Console"],
+              name: "otherskill",
+              profileIds: [],
+              skillGroupIds: [],
+              taskQueueName: undefined,
+              taskQueueSid: undefined
+            },
+            {
+              discrepancies: ["flexskill is not in the User Management Database"],
+              name: "flexskill",
+              levels: [1,2],
+              closedMessage: "go away",
+              flashMessage: "hi",
+              applicationId: 6,
+              skillName: "flexskill"
             }
           ]
         });

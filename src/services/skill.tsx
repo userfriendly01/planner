@@ -352,7 +352,7 @@ export const loadConsolidatedSkills = async (dispatch: (action: Action) => void)
       }
       let skill: Partial<Skill> = {
         discrepancies: [
-          `${trSkill.name} is not in the Contact Manager Database`
+          `${trSkill.name} is not in the User Management Database`
         ],
         name: trSkill.name,
         levels
