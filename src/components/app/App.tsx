@@ -116,8 +116,8 @@ const App = () => {
           scopes: ["User.Read.All"],
           extraScopesToConsent: [
             // Add additional scopes that are needed here
-            `${env.GRAPH_CLIENT_ID}/uiaccess`,
-            `${env.ADMIN_CLIENT_ID}/uiaccess`
+            `${env.GRAPH_CLIENT_ID}/uiAccess`,
+            `${env.ADMIN_CLIENT_ID}/uiAccess`
           ]
         });
 
@@ -126,11 +126,11 @@ const App = () => {
         // Place any additional token requests here:
         const sharedGraph = await instance.acquireTokenSilent({
           account,
-          scopes: [`${env.GRAPH_CLIENT_ID}/uiaccess`]
+          scopes: [`${env.GRAPH_CLIENT_ID}/uiAccess`]
         });
         const adminService = await instance.acquireTokenSilent({
           account,
-          scopes: [`${env.ADMIN_CLIENT_ID}/uiaccess`]
+          scopes: [`${env.ADMIN_CLIENT_ID}/uiAccess`]
         });
 
         dispatch({
