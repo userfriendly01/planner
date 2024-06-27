@@ -285,14 +285,14 @@ export const apiPaths = {
   GET_TIME_OF_DAYS: `${SERVICE_BASE_URI}/timeofday`,
   GET_RESET_PROFILE_DATADOG_LOGS: (nNumber: string): string => `${SERVICE_BASE_URI}/datadogresetprofileslogs/${nNumber}`,
   PROFILES: `${CONTACT_MANAGER_BASE_URI}/profiles`,
-  RESET_PROFILES: (nNumber: string): string => `${ADMIN_CLIENT_URL}reset/${nNumber}`,
+  RESET_PROFILES: (nNumber: string): string => `${ADMIN_CLIENT_URL}/reset/${nNumber}`,
   RESET_WORKER_SKILLS: `${SERVICE_BASE_URI}/resetworkerskills`,
   SKILL_GROUPS: `${CONTACT_MANAGER_BASE_URI}/skillgroups`,
-  TERMINATE_WORKER: `${ADMIN_CLIENT_URL}termination`,
+  TERMINATE_WORKER: `${ADMIN_CLIENT_URL}/termination`,
   TFN_DATA: `${SERVICE_BASE_URI}/tfn`,
   UPDATE_CALABRIO_USER: (personId: number): any => `${SERVICE_BASE_URI}/calabrio-update-user/${personId}`,
   GET_AGGREGATE_QUEUES_TYPE: (aggregateQueueType: string): string => `${CONTACT_MANAGER_BASE_URI}/aggregatequeuestype/${aggregateQueueType}`,
-  WFM_ACTIVATE_EXTERNAL_LOGON: `${ADMIN_CLIENT_URL}externallogon`
+  WFM_ACTIVATE_EXTERNAL_LOGON: `${ADMIN_CLIENT_URL}/externalLogon`
 };
 
 export const authConfig = {

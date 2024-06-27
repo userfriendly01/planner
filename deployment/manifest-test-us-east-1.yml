@@ -18,7 +18,7 @@ applications:
     GRAPH_API_URL: https://bz5ilxf2ercznouchavqvh26nm.appsync-api.us-east-1.amazonaws.com/graphql
     GRAPH_CLIENT_ID: ${idp.cicct-softphone-admin-ui.resource.cct-shared-graph-api.test.appId}
     SOFTPHONE_SERVICE_URL: https://cicct-softphone-service-test.us-east-1.np.paas.lmig.com
-    ADMIN_CLIENT_URL: https://s73idfzwwg.execute-api.us-east-1.amazonaws.com/api/
+    ADMIN_CLIENT_URL: https://6mtmnu5sge.execute-api.us-east-1.amazonaws.com/api
     ADMIN_CLIENT_ID: ${idp.cicct-softphone-admin-ui.resource.cct-shared-admin-service-api-test.test.appId}
   services:
     - everyday-curfew
