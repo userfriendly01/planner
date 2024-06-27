@@ -288,7 +288,7 @@ export const apiPaths = {
   RESET_PROFILES: (nNumber: string): string => `${ADMIN_CLIENT_URL}reset/${nNumber}`,
   RESET_WORKER_SKILLS: `${SERVICE_BASE_URI}/resetworkerskills`,
   SKILL_GROUPS: `${CONTACT_MANAGER_BASE_URI}/skillgroups`,
-  TERMINATE_WORKER: (nNumber: string): string => `${ADMIN_CLIENT_URL}termination/entry/${nNumber}`,
+  TERMINATE_WORKER: `${ADMIN_CLIENT_URL}termination`,
   TFN_DATA: `${SERVICE_BASE_URI}/tfn`,
   UPDATE_CALABRIO_USER: (personId: number): any => `${SERVICE_BASE_URI}/calabrio-update-user/${personId}`,
   GET_AGGREGATE_QUEUES_TYPE: (aggregateQueueType: string): string => `${CONTACT_MANAGER_BASE_URI}/aggregatequeuestype/${aggregateQueueType}`,
