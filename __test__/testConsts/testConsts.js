@@ -355,176 +355,6 @@ export const calabrioContext = {
   wfmErrors: []
 };
 
-export const skillsList = [
-  {
-    name: "lscOBDialer1",
-    ctmSkillId: 1,
-    ctmSkillDisplayName: "lsc OB Dialer 1",
-    ctmSkillGroups: [{
-      skillGroupId: 1,
-      skillGroupNme: "skillgroup1",
-      skills: [{
-        name: "lscOBDialer1",
-        ctmSkillId: 1
-      }, {
-        name: "aisgL1",
-        ctmSkillId: 2
-      }]
-    }],
-    profiles: [{
-      profileName: "Licensed Sales Center",
-      profileId: 32
-    }],
-    flashMessage: "",
-    closedMessage: "",
-    levels: [1, 2, 3],
-    timeOfDays: [],
-    vhCallTarget: null,
-    vhCallerId: null,
-    vhThreshold: null
-  },
-  {
-    name: "aisgL1",
-    ctmSkillId: 2,
-    ctmSkillDisplayName: "aisg L1",
-    ctmSkillGroups: [{
-      skillGroupId: 1,
-      skillGroupNme: "skillgroup1",
-      skills: [{
-        name: "lscOBDialer1",
-        ctmSkillId: 1
-      }, {
-        name: "aisgL1",
-        ctmSkillId: 2
-      }]
-    }],
-    profiles: [{
-      profileName: "AISG",
-      profileId: 4
-    }],
-    flashMessage: "",
-    closedMessage: "Sorry, we're closed.",
-    levels: [],
-    timeOfDays: [],
-    vhCallTarget: null,
-    vhCallerId: null,
-    vhThreshold: null
-  },
-  {
-    name: "bscCommisssions",
-    ctmSkillId: 3,
-    ctmSkillDisplayName: "bsc Commisssions",
-    ctmSkillGroups: [],
-    profiles: [{
-      profileName: "BSC",
-      profileId: 10
-    }],
-    flashMessage: "OH NO WE'RE EXPLODING!! ",
-    closedMessage: "Sorry, we're closed.",
-    levels: [1, 2, 3, 4, 5, 6, 7],
-    timeOfDays: [],
-    vhCallTarget: null,
-    vhCallerId: null,
-    vhThreshold: null
-  },
-  {
-    name: "bscCbsL2",
-    ctmSkillId: 4,
-    ctmSkillDisplayName: "bsc Cbs L2",
-    ctmSkillGroups: [],
-    profiles: [
-      {
-        profileName: "BSC",
-        profileId: 10
-      },
-      {
-        profileName: "BLST Billing",
-        profileId: 12
-      }
-    ],
-    flashMessage: "",
-    closedMessage: "",
-    levels: [],
-    timeOfDays: [],
-    vhCallTarget: null,
-    vhCallerId: null,
-    vhThreshold: null
-  },
-  {
-    name: "lscUSAA",
-    ctmSkillId: 5,
-    ctmSkillDisplayName: "lsc USAA",
-    ctmSkillGroups: [],
-    profiles: [],
-    flashMessage: "",
-    closedMessage: "",
-    levels: [],
-    timeOfDays: [],
-    vhCallTarget: null,
-    vhCallerId: null,
-    vhThreshold: null
-  }
-];
-
-export const skillGroups = [
-  {
-    skillGroupId: 1,
-    skillGroupNme: "skillgroup1",
-    skills: [{
-      name: "lscOBDialer1",
-      ctmSkillId: 1,
-      ctmSkillDisplayName: "lsc OB Dialer 1",
-      profiles: [{
-        profileName: "Licensed Sales Center",
-        profileId: 32
-      }],
-      flashMessage: "",
-      closedMessage: "",
-      levels: [1, 2, 3],
-      timeOfDays: [],
-      vhCallTarget: null,
-      vhCallerId: null,
-      vhThreshold: null
-    }]
-  },
-  {
-    skillGroupId: 2,
-    skillGroupNme: "skillgroup2",
-    skills: [{
-      name: "aisgL1",
-      ctmSkillId: 2,
-      ctmSkillDisplayName: "aisg L1",
-      profiles: [{
-        profileName: "AISG",
-        profileId: 4
-      }],
-      flashMessage: "",
-      closedMessage: "Sorry, we're closed.",
-      levels: [],
-      timeOfDays: [],
-      vhCallTarget: null,
-      vhCallerId: null,
-      vhThreshold: null
-    },
-    {
-      name: "bscCommisssions",
-      ctmSkillId: 3,
-      ctmSkillDisplayName: "bsc Commisssions",
-      profiles: [{
-        profileName: "BSC",
-        profileId: 10
-      }],
-      flashMessage: "OH NO WE'RE EXPLODING!! ",
-      closedMessage: "Sorry, we're closed.",
-      levels: [1, 2, 3, 4, 5, 6, 7],
-      timeOfDays: [],
-      vhCallTarget: null,
-      vhCallerId: null,
-      vhThreshold: null
-    }]
-  }
-];
-
 export const mockActivities = [
   {
     activity_id: 1,
@@ -628,14 +458,13 @@ export const initialTestState = {
   managerContext: {
     managers: managerList
   },
-  skillContext: {
-    skills: skillsList,
-    skillGroups: skillGroups
-  },
   userContext: {
     nNumber: "n1234567",
     profileId: 10,
-    accessToken: "blaahahh",
+    tokens: {
+      msGraph: "Access Token",
+      sharedGraph: "Access Token"
+    },
     isAdmin: false,
     permissions: [
       {
@@ -658,6 +487,7 @@ export const initialTestState = {
       {
         skillsDifferent: true,
         sid: "wk049358",
+        isConsole: true,
         attributes: {
           full_name: "Faith Cuneo",
           emp_first_name: "Faith",
@@ -738,10 +568,9 @@ export const initialTestState = {
         sid: "WK1234"
       }
     ],
-    isLoading: false
+    loadStatus: null
   },
   calabrioContext,
-  resettingSkills: false,
   userManagementTableFilters: {
     managerFilter: null,
     profileFilterArray: [],

@@ -56,10 +56,8 @@ const config = {
   },
   resolve: {
     alias: {
-      /* */
       src: resolvePathInSrc(),
       ...getWebpackPaths(resolvePathInSrc),
-      // "styled-components": path.resolve(__dirname, "node_modules", "styled-components"),
       process: "process/browser.js"
     },
     fallback: {

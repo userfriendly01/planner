@@ -2,26 +2,25 @@ import {
   CallflowWrapper,
   MessageWrapper
 } from "./CallFlowManagement.Styles";
-import {
-  SkillProfile,
-  TableState
-} from "./CallFlowManagement.Interfaces";
+import { TableState } from "./CallFlowManagement.Interfaces";
 import {
   ConfirmationModalOptsProps,
   SaveResultProps
-} from "../CallFlowConfirmationModal/CallFlowConfirmationModal.Interfaces";
-import { CallFlowConfirmationModal } from "callflowmanagement/CallFlowConfirmationModal/CallFlowConfirmationModal";
+} from "callflowmanagement/CallFlowConfirmationModal.Interfaces";
+import { CallFlowConfirmationModal } from "callflowmanagement/CallFlowConfirmationModal";
 import { ActionContainer } from "callflowmanagement/ActionContainer";
 import { SkillsContainer } from "callflowmanagement/SkillsContainer";
-import { useAdminState } from "context/appContext";
 import {
-  Skill,
-  TritonProfile
-} from "globals/interfaces";
+  useAdminState, useSkillState, useSkillDispatch
+} from "context/appContext";
+import { Skill } from "callflowmanagement/Skills.Interfaces";
+import { TritonProfile } from "globals/interfaces";
 import React from "react";
 import { filterSkillsByName } from "utils/_filterUtils";
 import { logger } from "utils/logger";
 import { Modal } from "@mui/material";
+import { loadSkillOptions } from "services/skill";
+import { PageLoadSpinner } from "components/PageLoadSpinner";
 
 export const CallFlowManagementSkills = () => {
 
@@ -31,6 +30,7 @@ export const CallFlowManagementSkills = () => {
     profiles: [],
     closedFilter: false,
     flashFilter: false,
+    discrepancyFilter: false,
     filteredList: []
   };
 
@@ -50,6 +50,7 @@ export const CallFlowManagementSkills = () => {
   };
 
   const state = useAdminState();
+  const skillState = useSkillState();
 
   const {
     isAdmin,
@@ -62,15 +63,26 @@ export const CallFlowManagementSkills = () => {
 
   logger.log("CallFlowManagementSkills Filtered State: ", tableState);
 
+  const skillDispatch = useSkillDispatch();
+  const [ isLoading, setIsLoading ] = React.useState(true);
+
   React.useEffect(() => {
-    let filteredList = state.skillContext.skills.slice();
+    if(!skillState.timeOfDays.length || !skillState.applications.length || !skillState.taskQueues.length || !skillState.operatingUnits.length){
+      loadSkillOptions(skillState.skills, skillDispatch, () => setIsLoading(false));
+    } else {
+      setIsLoading(false);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    let filteredList = skillState.skills.slice();
     //filter by profile
     if(isAdmin) {
       if(tableState.profiles.length > 0){
         filteredList = filteredList.filter((skill: Skill) => {
           let shouldReturn = false;
-          skill.profiles.forEach((p: SkillProfile) => {
-            if(tableState.profiles.some((sp: TritonProfile) => sp.profile_id === p.profileId)){
+          skill.profiles?.forEach((p: number) => {
+            if(tableState.profiles.some((sp: TritonProfile) => sp.profile_id === p)){
               shouldReturn = true;
             }
           });
@@ -80,7 +92,7 @@ export const CallFlowManagementSkills = () => {
     } else {
       filteredList = filteredList.filter((skill: Skill) => {
         let shouldReturn = false;
-        if(skill.profiles.some((sp: SkillProfile) => sp.profileId === userProfileId)){
+        if(skill.profiles?.some((s: number) => s === userProfileId)){
           shouldReturn = true;
         }
         return shouldReturn;
@@ -100,36 +112,45 @@ export const CallFlowManagementSkills = () => {
       filteredList = filteredList.filter((skill: Skill) => skill.flashMessage);
     }
 
+    //filter by discrepancy
+    if(tableState.discrepancyFilter){
+      filteredList = filteredList.filter((skill: Skill) => skill.discrepancies.length > 0);
+    }
+
     setTableState({
       ...tableState,
       filteredList
     });
-  }, [tableState.searchBy, tableState.profiles, tableState.closedFilter, tableState.flashFilter, state.skillContext.skills]);
+  }, [tableState.searchBy, tableState.profiles, tableState.closedFilter, tableState.flashFilter, tableState.discrepancyFilter,  skillState.skills]);
 
   return (
     <CallflowWrapper>
-      <MessageWrapper>
-        <SkillsContainer
-          tableState={tableState}
-          setTableState={setTableState}
-        />
-        <ActionContainer
-          confirmationModalOpts={confirmationModalOpts}
-          tableState={tableState}
-          setConfirmationModalOpts={setConfirmationModalOpts}
-          setSaveResult={setSaveResult}
-          setTableState={setTableState}
-        />
-      </MessageWrapper>
-      <Modal open={confirmationModalOpts.open}>
-        <>
-          <CallFlowConfirmationModal
+      {isLoading ?
+        <PageLoadSpinner />
+        :
+        <MessageWrapper>
+          <SkillsContainer
             tableState={tableState}
-            confirmationModalOpts={confirmationModalOpts}
-            saveResult={saveResult}
+            setTableState={setTableState}
           />
-        </>
-      </Modal>
+          <ActionContainer
+            confirmationModalOpts={confirmationModalOpts}
+            tableState={tableState}
+            setConfirmationModalOpts={setConfirmationModalOpts}
+            setSaveResult={setSaveResult}
+            setTableState={setTableState}
+          />
+          <Modal open={confirmationModalOpts.open}>
+            <>
+              <CallFlowConfirmationModal
+                tableState={tableState}
+                confirmationModalOpts={confirmationModalOpts}
+                saveResult={saveResult}
+              />
+            </>
+          </Modal>
+        </MessageWrapper>
+      }
     </CallflowWrapper>
   );
 };

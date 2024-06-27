@@ -35,7 +35,7 @@ export const getGraphData = (type: string) => {
 
 export const getPaginatedResults = async (type: string, dispatch: (action: Action) => void, formatResults?: (items: PaginationType[]) => PaginationType[], callBack?: VoidFunction): Promise<void> => {
   const graph: GraphData = getGraphData(type);
-
+  let isFirstQuery = true;
   const getPageResults = async (nextToken?: string): Promise<VoidFunction> => {
     try {
       const { data }: any  = await apolloClient.query<{ results: DBList<PaginationType | null> }>({
@@ -52,11 +52,13 @@ export const getPaginatedResults = async (type: string, dispatch: (action: Actio
         type: "loadPaginatedResults",
         payload: {
           type,
-          results: formattedData
+          results: formattedData,
+          isFirstPage: isFirstQuery
         }
       }));
 
       if(data[graph.responsePath]?.nextToken){
+        isFirstQuery = false;
         return getPageResults(data[graph.responsePath]?.nextToken);
       } else {
         if(callBack) {

@@ -2,7 +2,7 @@ import React from "react";
 import {
   ToggleFormField
 } from "./ProfileEntryForm.Interfaces";
-import { formModes } from "globals/index";
+import { formModes } from "globals";
 import { OperatingUnit } from "globals/interfaces";
 import {
   FormControlsContainer,

@@ -10,6 +10,7 @@ import {
 import { listUMManagers } from "services/manager";
 import { listUMOffices } from "services/office";
 import { listUMUsers } from "services/user";
+import { loadConsolidatedSkills } from "services/skill";
 import { getCalabrioWfmOptions } from "utils/calabrioUtils";
 import { logger } from "utils/logger";
 import { myAxios } from "utils/myAxios";
@@ -78,28 +79,6 @@ const getProfiles = (dispatch: (action: Action) => void) =>
     })
   );
 
-export const getSkills = (dispatch: (action: Action) => void): Promise<boolean> =>
-  new Promise((resolve, reject) => myAxios.get(apiPaths.GET_SKILLS)
-    .then(res => {
-      dispatch({
-        type: "loadSkills",
-        payload: res.data.consolidatedSkills
-      });
-      dispatch({
-        type: "loadSkillGroups",
-        payload: res.data.consolidatedSkills
-      });
-      resolve(true);
-    })
-    .catch(error => {
-      logger.error("Failed to fetch skills from service", { error });
-
-      reject({
-        msg: "Failed to fetch skills from service",
-        error
-      });
-    })
-  );
 
 const getBusinessUnits = async (dispatch: (action: Action) => void) => {
   try {
@@ -123,21 +102,22 @@ const getBusinessUnits = async (dispatch: (action: Action) => void) => {
   }
 };
 
-export const runTritonAdminStartup = (dispatch:  (action: Action) => void): Promise<any[]> => {
+export const runTritonAdminStartup = (dispatch:  (action: Action) => void, skillDispatch:  (action: Action) => void): Promise<any[]> => {
   /* Please add new service calls to the end of this Promise.all,
   the existing order is important */
 
+  listUMUsers(dispatch); // We want to kick this off but not wait for the results
+
   return Promise.all([
     Promise.resolve(getStartupProfiles().TRITON.name),
-    // listUMUsers(dispatch),
-    // listUMManagers(dispatch),
-    // listUMOffices(dispatch),
-    // getProfiles(dispatch),
-    // getSkills(dispatch),
+    listUMManagers(dispatch),
+    listUMOffices(dispatch),
+    getProfiles(dispatch),
+    loadConsolidatedSkills(skillDispatch),
     getCalabrioUsers(dispatch),
     getCalabrioOrg(dispatch),
     getCalabrioRoles(dispatch),
-    // getBusinessUnits(dispatch),
-    // getCalabrioWfmOptions(dispatch)
+    getBusinessUnits(dispatch),
+    getCalabrioWfmOptions(dispatch)
   ]);
 };

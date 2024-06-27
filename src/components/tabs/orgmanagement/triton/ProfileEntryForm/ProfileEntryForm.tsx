@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { formModes } from "globals/index";
+import { formModes } from "globals";
 import {
   ProfileEntryFormProps,
   LoadingState

@@ -21,7 +21,9 @@ import {
 } from "context/appContext";
 import { userFormActions } from "context/userFormReducer";
 import { formModes } from "globals";
-import React, { useState } from "react";
+import React, {
+  useEffect, useState
+} from "react";
 import {
   getOverflowSkillFromProfile,
   isProfileIdValid,
@@ -38,14 +40,24 @@ export const BasicFormInfo = (props: BasicFormInfoProps) => {
   const {
     worker,
     profiles,
-    managers
+    managers,
+    forwardToToggle,
+    setForwardToToggle
   } = props;
 
   const form = useFormState();
   const setForm = useFormDispatch();
-
   const [autoUpdateOutgoing, setAutoUpdateOutgoing] = useState(form.triton.outgoing.value === form.triton.did.value || !form.triton.outgoing.value);
 
+  useEffect(() => {
+    if(form.triton.didUser && form.formMode === formModes.UPDATE && form.triton.did.updated
+      && form.triton.did.e164 !== worker?.did){
+      setForwardToToggle(true);
+    } else {
+      setForwardToToggle(false);
+    }
+
+  }, [form.triton.did]);
   const formatDropdownOption = (value: any, label: string, option: any) => {
     if(typeof option === "object"){
       return {
@@ -83,7 +95,7 @@ export const BasicFormInfo = (props: BasicFormInfoProps) => {
             margin: "8px 0px 5px 0px"
           }}
           onBlur={() => handleOnBlur("manager", "triton")}
-          options={managers.sort(sortManagersByName).map(manager => formatDropdownOption(manager.manager_n_num, `${manager.manager_first_name} ${manager.manager_last_name} - ${manager.manager_n_num}`, manager))}
+          options={[...managers].sort(sortManagersByName).map(manager => formatDropdownOption(manager.manager_n_num, `${manager.manager_first_name} ${manager.manager_last_name} - ${manager.manager_n_num}`, manager))}
           updateValue={(event: any, newValue: any) => {
             setForm({
               type: userFormActions.UPDATE_MANAGER,
@@ -200,21 +212,16 @@ export const BasicFormInfo = (props: BasicFormInfoProps) => {
               }}
             />
           )}
-          {form.triton.didUser
-            && form.formMode === formModes.UPDATE
-            && form.triton.did.updated
-            && form.triton.did.e164 !== worker?.did
-            && (
-              <ForwardToEntryForm
-                label={"Please choose a forward to option for the existing direct dial number"}
-                updateForwardTo={(value: string) => {
-                  setForm({
-                    type: userFormActions.UPDATE_INACTIVE_FORWARD_TO,
-                    payload: value
-                  });
-                }}
-              />
-            )
+          {forwardToToggle &&
+            <ForwardToEntryForm
+              label={"Please choose a forward to option for the existing direct dial number"}
+              updateForwardTo={(value: string) => {
+                setForm({
+                  type: userFormActions.UPDATE_INACTIVE_FORWARD_TO,
+                  payload: value
+                });
+              }}
+            />
           }
           <PhoneNumberInput
             disabled={form.formMode === formModes.DELETE}
@@ -311,6 +318,23 @@ export const BasicFormInfo = (props: BasicFormInfoProps) => {
               <ToggleLabel>Self Service Indicator</ToggleLabel>
             </ToggleContainer>
           </Tooltip>) : null}
+          <Tooltip
+          title={
+              "Backup Workers Enable/Disable" 
+          }
+          placement={"bottom-start"}
+        >
+          <ToggleContainer>
+            <Switch
+              checked={form.triton.routing.backup_workers_active}
+              onChange={() => {
+                setForm({ type: userFormActions.UPDATE_BACK_UP_WORKER_FLAG });
+              }}
+              inputProps={{ "aria-label": "toggle-backup-user" }}
+            />
+            <ToggleLabel>Backup Workers</ToggleLabel>
+          </ToggleContainer>
+        </Tooltip>
         <RoutingAttributes />
       </RightColumn>
     </FormControlsContainer>

@@ -162,9 +162,9 @@ export const getZeroOutEnabledFromProfile = (profiles: TritonProfile[], newProfi
 
 export const workerHasOverFlowSkill = (worker: UMUser, profiles: TritonProfile[]): boolean => worker?.attributes.routing?.skills.some(skill => getOverflowSkills(profiles).includes(skill));
 
-export const fetchUser = async (nNumber: string, setForm: any, errorMessage: string, errorType: string) => {
+export const fetchUser = async (accessToken: string, nNumber: string, setForm: any, errorMessage: string, errorType: string) => {
   try {
-    const fetchedUser = await fetchUserServiceCall(nNumber);
+    const fetchedUser = await fetchUserServiceCall(accessToken, nNumber);
     const nNumberPayload = {
       nNumber,
       fetchedUser
@@ -240,7 +240,7 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
     //set the nNumber & Triton/Calabrio users based off of the nNumber in the state
     const errorMessage = `Failed to fetch nNumber from HR database. ${form.nNumber.value}. 
     If this nNumber continues to fail, this user may no longer be active in the HR database or needs to reach out to the HR team to investigate the failure.`;
-    nNumberObject = await fetchUser(form.nNumber.value, setForm, errorMessage, discrepancyType.GENERAL);
+    nNumberObject = await fetchUser(state.userContext.tokens.msGraph, form.nNumber.value, setForm, errorMessage, discrepancyType.GENERAL);
   }
   if (primarySystem === "triton") {
     const acdId = form.triton.sid;
@@ -261,7 +261,7 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
       calabrioQmUser = findMatchingWorker(null, form.nNumber.value, form.nNumber.nNumberFetchedUser.email, calabrioQmUsers);
     } else if (!form.nNumber.nNumberFetchedUser && wfmNNumber && wfmNNumber.match(nNumMatcher)) {
       const errorMessage = `Failed to fetch nNumber from HR database. Value read from WFM User Record Employment Number field: ${wfmNNumber}. If this nNumber looks accurate and continues to fail, this user may no longer be active in the HR database or needs to reach out to the HR team to investigate the failure. If this nNumber does not look accurate, please correct the WFM Record Employment Number field and try again.`;
-      nNumberObject = await fetchUser(wfmNNumber, setForm, errorMessage, discrepancyType.CALABRIO_WFM);
+      nNumberObject = await fetchUser(state.userContext.tokens.msGraph, wfmNNumber, setForm, errorMessage, discrepancyType.CALABRIO_WFM);
       tritonWorker = findMatchingWorker(null, wfmNNumber, nNumberObject.fetchedUser?.email, tritonWorkers);
       calabrioQmUser = findMatchingWorker(null, wfmNNumber, nNumberObject.fetchedUser?.email, calabrioQmUsers);
     } else if (!form.nNumber.nNumberFetchedUser) {

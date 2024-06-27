@@ -1,13 +1,11 @@
 import React from "react";
 import { ProfileQueuesSelectFieldProps } from "./ProfileEntryForm.Interfaces";
 import { Dropdown } from "components/Dropdown";
-import { useAdminState } from "context/appContext";
+import { useSkillState } from "context/appContext";
 import { logger } from "utils/logger";
 import { sortQueueByName } from "utils/_sortUtils";
-import {
-  AggregateQueue, Skill
-} from "globals/interfaces";
-import { Tooltip } from "@mui/material";
+import { AggregateQueue } from "globals/interfaces";
+import { Skill } from "callflowmanagement/Skills.Interfaces";
 import {
   IconButtonWrapper,
   ProfileDropdownControlWrapper,
@@ -31,7 +29,7 @@ export const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) =
 
   const defaultNewQueue: Skill[] = [];
   const [newProfileQueue, setNewProfileQueue] = React.useState<Skill[]>(defaultNewQueue);
-  const queues = useAdminState().skillContext.skills;
+  const queues = useSkillState().skills;
   const [filteredQueues, setFilteredQueues] = React.useState<Skill[]>(defaultNewQueue);
   const [aggregateQueues, setAggregateQueues] = React.useState([]);
   const aggregateQueuesType = "aggregate";
@@ -40,7 +38,8 @@ export const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) =
     if(!aggregateQueues.length) {
       getAggregateQueuesType(aggregateQueuesType)
         .then((allAggregateQueues: AggregateQueue[]) => {
-          const allQueues = queues.filter(queue => queue.ctmSkillId !== null).sort(sortQueueByName);
+          const allQueues = queues.filter(queue => queue.name !== null).sort(sortQueueByName);
+          // eslint-disable-next-line prefer-spread
           allQueues.unshift.apply(allQueues, allAggregateQueues.map(queue => {
             return {
               ctmSkillDisplayName: queue.aggregate_queues_nme,
@@ -57,12 +56,12 @@ export const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) =
 
   const profileQueuesForDropDown = filteredQueues.filter(queue => {
     return !transferQueues.find(item => {
-      return item.ctmSkillId === queue.ctmSkillId;
+      return item.name === queue.name;
     });
   });
 
-  const newProfileQueueChanged = (profileQueue: Array<{[index: string]: any, value: number}>) => {
-    const selectedQueues = profileQueue.map(selectedQueue => filteredQueues.find(queue => selectedQueue.value === queue.ctmSkillId));
+  const newProfileQueueChanged = (profileQueue: Array<{[index: string]: any, value: string}>) => {
+    const selectedQueues = profileQueue.map(selectedQueue => filteredQueues.find(queue => selectedQueue.value === queue.name));
     setNewProfileQueue(selectedQueues);
   };
 
@@ -73,14 +72,14 @@ export const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) =
   };
 
   const removeProfileQueueClicked = (queueToBeRemoved: Skill) => {
-    const updatedQueueList = transferQueues.filter(queues => queues.ctmSkillId !== queueToBeRemoved.ctmSkillId);
+    const updatedQueueList = transferQueues.filter(queues => queues.name !== queueToBeRemoved.name);
     setQueueList(updatedQueueList);
   };
 
   const getDropDownOptions = (optionsList: Skill[]) => {
     return optionsList.map(option => ({
-      value: option.ctmSkillId,
-      label: option.ctmSkillDisplayName
+      value: option.name,
+      label: option.taskQueueName
     }));
   };
 
@@ -96,7 +95,7 @@ export const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) =
             options={getDropDownOptions(profileQueuesForDropDown)}
             multiple={true}
             value={getDropDownOptions(newProfileQueue)}
-            updateValue={(event: any, newInputValue: Array<{ [index: string]: any; value: number; }>) => newProfileQueueChanged(newInputValue)}
+            updateValue={(event: any, newInputValue: Array<{ [index: string]: any; value: string; }>) => newProfileQueueChanged(newInputValue)}
           />
         </ProfileDropdownRowItem>
         <ProfileDropdownRowItem>
@@ -109,17 +108,19 @@ export const ProfileQueuesSelectField = (props: ProfileQueuesSelectFieldProps) =
       <ProfileDropdownWrapper>
         {transferQueues.map((queue: Skill, index: number) => {
           return (
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             // Aggregate queues have a negative ID (ctmSkillId) in order not to clash with single transfer queues
             <ProfileDropdownRow highlightOnHover={true} key={`queue-row-${index}`}>
-              {queue.ctmSkillId < 0 ?
+              {/* {queue.ctmSkillId < 0 ?
                 <Tooltip
                   title={"Aggregate Queue"}
                   placement={"bottom"}
                 >
-                  <ProfileDropdownRowItem>{queue.ctmSkillDisplayName}</ProfileDropdownRowItem>
+                  <ProfileDropdownRowItem>{queue.taskQueueName}</ProfileDropdownRowItem>
                 </Tooltip>
-                : <ProfileDropdownRowItem>{queue.ctmSkillDisplayName}</ProfileDropdownRowItem>}
+                : */}
+              <ProfileDropdownRowItem>{queue.taskQueueName}</ProfileDropdownRowItem>
               <ProfileDropdownRowItem>
                 <IconButtonWrapper onClick={() => removeProfileQueueClicked(queue)} data-testid="delete-queue-button">
                   <Delete fontSize="inherit"/>

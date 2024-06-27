@@ -1,6 +1,6 @@
 import {
   Skill, SkillGroup
-} from "globals/interfaces";
+} from "callflowmanagement/Skills.Interfaces";
 
 export interface SkillDropdownProps {
   skill: {

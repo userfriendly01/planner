@@ -1,5 +1,5 @@
-import { apiPaths } from "globals/index";
-import { Skill } from "globals/interfaces";
+import { apiPaths } from "globals";
+import { Skill } from "callflowmanagement/Skills.Interfaces";
 import { AxiosResponse } from "axios";
 import { escapeQuotes } from "utils";
 import { myAxios } from "utils/myAxios";

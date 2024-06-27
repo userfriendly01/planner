@@ -2,7 +2,9 @@ import { CalabrioGroup } from "usermanagement/CallRecording.Interfaces";
 import {
   AuthenticationProfile, Permissions
 } from "authentication/authenticationInterfaces";
-import { AlertColor } from "@mui/material";
+import {
+  AlertColor
+} from "@mui/material";
 import styled from "styled-components";
 
 export const FlexColumn = styled.div`
@@ -14,6 +16,29 @@ export const FlexColumn = styled.div`
 export const FlexRow = styled.div`
   display: flex;
   flex: 1 1 auto;
+`;
+
+export const AppError = styled.div`
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  font-size: 30;
+  padding: 50;
+`;
+
+export const IconWrapper = styled.div`
+  border-radius: ${props => props.theme.tableRow.icon.hoverDiameter / 2}px;
+  color: ${props => props.theme.libertyDarkGray};
+  cursor: pointer;
+  display: flex;
+  font-size: ${props => props.theme.tableRow.icon.size}px;
+  height: ${props => props.theme.tableRow.icon.hoverDiameter}px;
+  justify-content: center;
+  width: ${props => props.theme.tableRow.icon.hoverDiameter}px;
+  &:hover {
+    background-color: ${props => props.theme.tableRow.selectedColor};
+    cursor: pointer;
+  }
 `;
 
 export interface GenericObject {
@@ -58,6 +83,12 @@ export interface Discrepancy {
   type: string
 }
 
+export enum LoadStatuses {
+  FAIL = "fail",
+  LOADING = "loading",
+  SUCCESS = "success"
+}
+
 export interface AppState {
   managerContext: {
     managers: UMManager[]
@@ -68,21 +99,18 @@ export interface AppState {
   profileContext: {
     profiles: TritonProfile[]
   },
-  skillContext: {
-    skills: Skill[],
-    skillGroups: SkillGroup[]
-  },
   userContext: {
-    permissions: ADGroupPermission[]
-    accessToken: string
-    accessTokenGraph: string
-    isAdmin?: boolean
-    profileId?: number
-    nNumber?: string
+    permissions: ADGroupPermission[];
+    tokens: {
+      [key: string]: string;
+    };
+    isAdmin?: boolean;
+    profileId?: number;
+    nNumber?: string;
   },
   workerContext: {
     workers: UMUser[],
-    isLoading: boolean;
+    loadStatus: LoadStatuses;
   },
   calabrioContext: {
     tenant: any,
@@ -94,7 +122,6 @@ export interface AppState {
     wfmOptions: any[],
     wfmErrors: any[]
   },
-  resettingSkills: false,
   userManagementTableFilters: {
     managerFilter: string,
     profileFilterArray: any[],
@@ -111,7 +138,7 @@ export interface ADGroupPermission {
     roles: ADGroupRole[];
     startup: {
       name: string;
-      function: (dispatch: any) => Promise<any>;
+      function: (dispatch: any, skillDispatch?: any) => Promise<any>;
     }
     description: string;
     authenticationProfile:  AuthenticationProfile
@@ -151,28 +178,6 @@ export interface UMOffice {
   item_type: string,
   office_num: string,
   office_name: string
-}
-
-export interface Skill {
-  [key: string]: any
-  ctmSkillId: number,
-  ctmSkillDisplayName: string,
-  ctmSkillGroups: SkillGroup[],
-  name: string,
-  profiles: any[],
-  closedMessage: string,
-  flashMessage: string,
-  levels: any[],
-  timeOfDays: any[],
-  vhCallTarget: string,
-  vhCallerId: string,
-  vhThreshold: number
-}
-
-export interface SkillGroup {
-  skillGroupId: number,
-  skillGroupNme: string,
-  skills: Skill[],
 }
 
 export interface TritonProfile {
@@ -376,6 +381,8 @@ export interface UMTwilioAttributeSkills {
   },
   skills: string[],
   team?:string,
+  backup_workers?: string[],
+  backup_workers_active?: boolean,
   caller_states?: string[],
   sales_assoc_workers?: string[]
 }

@@ -1,10 +1,11 @@
 import {
   ConfirmationModalOptsProps,
   SaveResultProps
-} from "../../CallFlowConfirmationModal/CallFlowConfirmationModal.Interfaces";
-import { TableState } from "../../CallFlowManagementWrapper/CallFlowManagement.Interfaces";
-import { ActionType } from "../Skills.Interfaces";
-import { Skill } from "globals/interfaces";
+} from "callflowmanagement/CallFlowConfirmationModal.Interfaces";
+import { TableState } from "callflowmanagement/CallFlowManagement.Interfaces";
+import {
+  ActionType, Skill
+} from "callflowmanagement/Skills.Interfaces";
 import {
   updateClosedMessage,
   updateFlashMessage

@@ -4,11 +4,12 @@ import {
   CircularProgress,
   Modal
 } from "@mui/material";
-import Header from "../../header/Header/Header";
-import NavTabs from "../../navigation/NavTabs";
+import Header from "components/Header";
+import NavTabs from "components/NavTabs";
 import NotificationModal from "components/NotificationModal";
 import {
-  useAdminDispatch, useAdminState
+  useAdminDispatch, useAdminState,
+  useSkillDispatch
 } from "context/appContext";
 import React from "react";
 import {
@@ -49,12 +50,12 @@ jest.mock("usermanagement/BulkChanges", () => ({
   BulkChanges: jest.fn()
 }));
 
-jest.mock("callflowmanagement/CallFlowManagementWrapper/CallFlowManagementSkills", () => ({
+jest.mock("callflowmanagement/CallFlowManagementSkills", () => ({
   __esModule: true,
   default: jest.fn()
 }));
 
-jest.mock("callflowmanagement/CallFlowManagementWrapper/CallFlowManagementTfn", () => ({
+jest.mock("callflowmanagement/CallFlowManagementTfn", () => ({
   CallFlowManagementTfn: jest.fn()
 }));
 
@@ -125,7 +126,8 @@ jest.mock("components/NotificationModal", () => ({
 
 jest.mock("context/appContext", () => ({
   useAdminState: jest.fn(),
-  useAdminDispatch: jest.fn()
+  useAdminDispatch: jest.fn(),
+  useSkillDispatch: jest.fn()
 }));
 
 jest.mock("@azure/msal-react");
@@ -135,6 +137,7 @@ jest.mock("utils", () => ({
 }));
 
 const mockAdminDispatch = jest.fn();
+const mockSkillDispatch = jest.fn();
 const permissions = [adGroupPermissionMapping[0]];
 
 describe("<App />", () => {
@@ -147,13 +150,14 @@ describe("<App />", () => {
     useAdminState.mockReturnValue({
       userContext: {
         permissions: [],
-        accessToken: ""
+        tokens: {}
       },
       workerContext: {
         workers: []
       }
     });
     useAdminDispatch.mockReturnValue(mockAdminDispatch);
+    useSkillDispatch.mockReturnValue(mockSkillDispatch);
     mockRunTritonStartup.mockResolvedValue("Things went well!");
     setupMockedComponents({
       CircularProgress,
@@ -207,8 +211,10 @@ describe("<App />", () => {
         expect(mockAdminDispatch).toHaveBeenCalledWith({
           type: "loadUserData",
           payload: {
-            accessToken: "Access Token",
-            accessTokenGraph: "Access Token"
+            tokens: {
+              msGraph: "Access Token",
+              sharedGraph: "Access Token"
+            }
           }
         });
       });
@@ -220,8 +226,10 @@ describe("<App />", () => {
       useAdminState.mockReturnValue({
         userContext: {
           permissions: [],
-          accessToken: "Access Token",
-          accessTokenGraph: "Access Token"
+          tokens: {
+            msGraph: "Access Token",
+            graph: "Access Token"
+          }
         },
         workerContext: {
           workers: []
@@ -259,7 +267,7 @@ describe("<App />", () => {
       expectMockedComponent(rendered, { CircularProgress }, 0);
       expect(rendered.container).not.toHaveTextContent("Loading...");
       expect(mockRunTritonStartup).toHaveBeenCalledTimes(1);
-      expect(mockRunTritonStartup).toHaveBeenCalledWith(mockAdminDispatch);
+      expect(mockRunTritonStartup).toHaveBeenCalledWith(mockAdminDispatch, mockSkillDispatch);
       expect(mockAdminDispatch).toHaveBeenCalledTimes(2);
       expect(mockAdminDispatch).toHaveBeenCalledWith({
         type: "loadUserData",
@@ -273,8 +281,10 @@ describe("<App />", () => {
       expect(mockAdminDispatch).toHaveBeenCalledWith({
         type: "loadUserData",
         payload: {
-          accessToken: "Access Token",
-          accessTokenGraph: "Access Token"
+          tokens: {
+            msGraph: "Access Token",
+            sharedGraph: "Access Token"
+          }
         }
       });
     });
@@ -284,8 +294,10 @@ describe("<App />", () => {
     test("User has no permissions", async () => {
       useAdminState.mockReturnValue({
         userContext: {
-          accessToken: "Access Token",
-          accessTokenGraph: "Access Token"
+          tokens: {
+            msGraph: "Access Token",
+            graph: "Access Token"
+          }
         },
         workerContext: {
           workers: []
@@ -303,8 +315,10 @@ describe("<App />", () => {
     test("Startup fails to run", async () => {
       useAdminState.mockReturnValue({
         userContext: {
-          accessToken: "Access Token",
-          accessTokenGraph: "Access Token"
+          tokens: {
+            msGraph: "Access Token",
+            graph: "Access Token"
+          }
         },
         workerContext: {
           workers: []
@@ -354,8 +368,10 @@ describe("<App />", () => {
       useAdminState.mockReturnValue({
         userContext: {
           permissions: [],
-          accessToken: "Access Token",
-          accessTokenGraph: "Access Token"
+          tokens: {
+            msGraph: "Access Token",
+            sharedGraph: "Access Token"
+          }
         },
         workerContext: {
           workers: []
@@ -390,8 +406,10 @@ describe("<App />", () => {
         expect(mockAdminDispatch).toHaveBeenCalledWith({
           type: "loadUserData",
           payload: {
-            accessToken: "Access Token",
-            accessTokenGraph: "Access Token"
+            tokens: {
+              msGraph: "Access Token",
+              sharedGraph: "Access Token"
+            }
           }
         });
       });

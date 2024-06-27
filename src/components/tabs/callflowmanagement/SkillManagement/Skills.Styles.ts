@@ -1,5 +1,9 @@
 import styled from "styled-components";
 import { StyledButton } from "components/StyledButton";
+import {
+  Paper, Tabs
+} from "@mui/material";
+import { FlexRow } from "globals/interfaces";
 
 const headerIconWidth = "10px";
 
@@ -54,13 +58,17 @@ export const CustomTableHeader = styled.th`
     width: 25%;
   }
   &:nth-child(4) {
-    width: 20%;
+    width: 15%;
   }
   &:nth-child(5) {
     width: ${headerIconWidth};
     text-align: -webkit-center;
   }
   &:nth-child(6) {
+    width: ${headerIconWidth};
+    text-align: -webkit-center;
+  }
+  &:nth-child(7) {
     width: ${headerIconWidth};
     text-align: -webkit-center;
   }
@@ -91,7 +99,7 @@ export const FormControlsContainer = styled.div`
   align-items: center;
   max-height: 650px;
   padding-top: 5px;
-  width: 40%;
+  width: 35%;
   overflow: hidden;
 `;
 
@@ -129,10 +137,89 @@ export const SkillsWrapper = styled.div`
   margin-top: 10px;
   align-items: center;
   flex-direction: column;
-  width: 60%;
+  width: 65%;
+`;
+
+export const SkillsDetailWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 50px;
 `;
 
 export const StyledExportButton = styled(StyledButton)<{ styles: any }>`
   height: 40px;
   width: ${props => props.styles && props.styles.width ? props.styles.width : "100px"};
+`;
+
+export const SkillTabs = styled(Tabs)`
+  && .MuiTabs-flexContainer {
+    justify-content: space-evenly;
+  }
+`;
+
+export const FormRow = styled(FlexRow)`
+  align-items: center;
+  justify-content: space-evenly;
+  margin: 5px;
+`;
+
+export const Wrapper = styled.div`
+  display: flex;
+  min-width: 100%;
+  position: relative;
+`;
+
+export const Label = styled.div`
+  display: flex;
+  width: 90%;
+  justify-content: center;
+  margin: 10px;
+  text-align: center;
+`;
+
+export const TaskQueueDisplay = styled(Paper)<{error?: string}>`
+  width: 330px;
+  min-height: 150px;
+  border: ${props => props.error === "true" ? "groove 2px red": "none"};
+  text-align: -webkit-center;
+  margin-left: 44px;
+`;
+
+export const ModalContainer = styled.div`
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  left: 50%;
+  padding: 2%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  height: 75%;
+`;
+
+export const ScrollingPaper = styled(Paper)`
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 400px;
+  padding: 2%;
+  position: relative;
+  overflow-y: auto;
+  max-height: 800px;
+`;
+
+export const CenteredDiv = styled.div`
+  align-self: center;
+  margin: 10px;
+  text-align: center;
+`;
+
+export const ButtonWrapper = styled(FlexRow)`
+  justify-content: space-around;
+  padding: 8px;
+  align-items: center;
+  max-height: 50;
+}
 `;

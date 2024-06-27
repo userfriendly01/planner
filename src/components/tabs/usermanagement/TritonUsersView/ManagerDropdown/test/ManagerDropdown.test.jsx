@@ -2,7 +2,6 @@ import { ManagerDropdown } from "../ManagerDropdown";
 import { ManagerModal } from "usermanagement/ManagerModal";
 import { ManagerDelete } from "usermanagement/ManagerDelete";
 import { Dropdown } from "components/Dropdown";
-import { IconWrapper } from "usermanagement/ManagerDropdown.Styles";
 import {
   useAdminState, useAdminDispatch
 } from "context/appContext";
@@ -18,6 +17,7 @@ import {
 } from "testUtils";
 import { theme } from "globals/theme";
 import { ThemeProvider } from "styled-components";
+import { IconWrapper } from "globals/interfaces";
 
 jest.mock("components/Dropdown", () => ({
   Dropdown: jest.fn()
@@ -36,10 +36,8 @@ jest.mock("context/appContext", () => ({
   useAdminDispatch: jest.fn()
 }));
 
-jest.mock("usermanagement/ManagerDropdown.Styles", () => ({
-  Label: jest.requireActual("../ManagerDropdown.Styles").Label,
-  IconWrapper: jest.fn(),
-  Wrapper: jest.requireActual("../ManagerDropdown.Styles").Wrapper
+jest.mock("globals/interfaces", () => ({
+  IconWrapper: jest.fn()
 }));
 
 jest.mock("@mui/material", () => ({

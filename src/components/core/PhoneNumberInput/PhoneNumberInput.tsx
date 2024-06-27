@@ -108,7 +108,7 @@ export const PhoneNumberInput = (props: PhoneNumberInputProps) => {
       InputProps={{
         inputComponent: useSevenDigitMask ? SevenDigitInputMask : TenDigitInputMask,
         style: {
-          flexGrow: 1
+          flexGrow: style?.flexGrow || 1
         },
         endAdornment: (icon)
       }}

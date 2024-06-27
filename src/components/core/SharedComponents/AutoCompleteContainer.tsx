@@ -1,13 +1,23 @@
+import {
+  Autocomplete,
+  Chip,
+  FormControl,
+  TextField
+} from "@mui/material";
 import React, { useState } from "react";
 import {
-  Chip, TextField, FormControl, Autocomplete
-} from "@mui/material";
-import {
-  useFormDispatch, useFormState
+  useFormDispatch,
+  useFormState
 } from "context/appContext";
-import { userFormActions } from "context/userFormReducer";
 
-export default function AutoCompleteContainer(): JSX.Element{
+interface AutoCompleteProps {
+  field: string;
+  label: string;
+  routingAttribute: string;
+  type: string;
+}
+
+export default function AutoCompleteContainer({ type, field, label, routingAttribute }: AutoCompleteProps): JSX.Element{
   const setForm = useFormDispatch();
   const form = useFormState();
   const [formValidations, setFormValidations]= useState({
@@ -15,14 +25,14 @@ export default function AutoCompleteContainer(): JSX.Element{
     errorMessage: ""
   });
   const setFormValue=(value:any)=>{
-    const salesAssociateWorkerArray:string[] =[];
+    const workerArray:string[] =[];
     for(let i=0; i<value?.length; i++){
-      salesAssociateWorkerArray.push(value[i]);
+      workerArray.push(value[i]);
     }
     setForm({
-      type: userFormActions.SET_SALES_ASSOCIATE_WORKER,
+      type,
       payload: {
-        salesAssociateWorkerRouting: salesAssociateWorkerArray
+        [routingAttribute]: workerArray
       }
     });
   };
@@ -63,13 +73,13 @@ export default function AutoCompleteContainer(): JSX.Element{
           options={[]}
           freeSolo = {true}
           multiple
-          value = {form.triton.routing?.sales_assoc_workers||[]}
+          value = {(form.triton.routing && form.triton.routing[field])||[]}
           renderTags={(value, props) =>
             value.map((option, index) => (
               <Chip key={index} label={option} {...props({ index })} />
             ))
           }
-          renderInput={params => <TextField label="Sales Associate Worker"  helperText={formValidations.errorMessage} {...params} />}
+          renderInput={params => <TextField label={label}  helperText={formValidations.errorMessage} {...params} />}
           onChange={(event: any, value: any) => handleChange(event, value)}
         />
       </FormControl>

@@ -1,19 +1,23 @@
 import { ActionContainer } from "../ActionContainer";
 import { Dropdown } from "components/Dropdown";
 import { MessageContainer } from "callflowmanagement/MessageContainer";
+import { SkillFormModal } from "callflowmanagement/SkillFormModal";
 import { SkillGroupInputContainer } from "callflowmanagement/SkillGroupInputContainer";
 import React from "react";
 import {
   act,
   expectOnlyPassedProps,
+  initialTestState,
   render,
   setupMockedComponents
 } from "testUtils";
+import { useAdminState } from "context/appContext";
 import {
   ActionTypes,
   propertyOptions
 } from "../../Skills.Interfaces";
 import { messageTypes } from "../../ClosedFlashMessage/ClosedFlashMessage.Interfaces";
+import { checkIfPO } from "authentication/authUtils";
 
 jest.mock("components/Dropdown", () => ({
   Dropdown: jest.fn()
@@ -23,12 +27,23 @@ jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
 }));
 
+jest.mock("callflowmanagement/SkillFormModal", () => ({
+  SkillFormModal: jest.fn()
+}));
+
 jest.mock("callflowmanagement/MessageContainer", () => ({
   MessageContainer: jest.fn()
 }));
 
 jest.mock("callflowmanagement/SkillGroupInputContainer", () => ({
   SkillGroupInputContainer: jest.fn()
+}));
+
+jest.mock("context/appContext", () => ({
+  useAdminState: jest.fn()
+}));
+jest.mock("authentication/authUtils", () => ({
+  checkIfPO: jest.fn()
 }));
 
 const confirmationModalOpts = "opts";
@@ -52,6 +67,8 @@ const renderComponent = () => {
 describe("<ActionContainer/>", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    useAdminState.mockReturnValue(initialTestState);
+    checkIfPO.mockReturnValue(true);
     setupMockedComponents({
       Dropdown,
       MessageContainer,
@@ -61,6 +78,28 @@ describe("<ActionContainer/>", () => {
   describe("initial render", () => {
     describe("propertySelection.label === propertyOptions.CLOSED_MESSAGE.label", () => {
       test("should render Closed Message View", () => {
+        renderComponent();
+        expect(Dropdown.mock.calls.length).toBe(2);
+        expectOnlyPassedProps(Dropdown, {
+          label: "What are you changing?",
+          value: propertyOptions.CLOSED_MESSAGE,
+          options: [
+            propertyOptions.CLOSED_MESSAGE,
+            propertyOptions.FLASH_MESSAGE,
+            propertyOptions.SKILL_GROUP,
+            propertyOptions.SKILLS
+          ]
+        }, 0);
+        expectOnlyPassedProps(MessageContainer, {
+          messageType: messageTypes.CLOSED
+        }, 0);
+      });
+    });
+  });
+  describe("initial render - non PO", () => {
+    describe("propertySelection.label === propertyOptions.CLOSED_MESSAGE.label", () => {
+      test("should render Closed Message View", () => {
+        checkIfPO.mockReturnValue(false);
         renderComponent();
         expect(Dropdown.mock.calls.length).toBe(2);
         expectOnlyPassedProps(Dropdown, {
@@ -113,6 +152,28 @@ describe("<ActionContainer/>", () => {
         expect(MessageContainer.mock.calls.length).toBe(1);
         expect(SkillGroupInputContainer.mock.calls.length).toBe(1);
         expectOnlyPassedProps(SkillGroupInputContainer, {
+          action: ActionTypes.ADD
+        }, 0);
+      });
+    });
+    describe("propertySelection.label === propertyOptions.SKILLS.label", () => {
+      test("should render Skill group View", async () => {
+        renderComponent();
+        const updateProperty = Dropdown.mock.calls[0][0].updateValue;
+        act(() => {
+          updateProperty(null, propertyOptions.SKILLS);
+        });
+        const updateAction = Dropdown.mock.calls[3][0].updateValue;
+        act(() => {
+          updateAction(null, ActionTypes.ADD);
+        });
+        expect(Dropdown.mock.calls.length).toBe(6);
+        expect(Dropdown.mock.calls[2][0].value).toBe(propertyOptions.SKILLS);
+        expect(Dropdown.mock.calls[3][0].options).toBe(propertyOptions.SKILLS.actions);
+        expect(Dropdown.mock.calls[5][0].value).toBe(ActionTypes.ADD);
+        expect(MessageContainer.mock.calls.length).toBe(1);
+        expect(SkillFormModal.mock.calls.length).toBe(1);
+        expectOnlyPassedProps(SkillFormModal, {
           action: ActionTypes.ADD
         }, 0);
       });

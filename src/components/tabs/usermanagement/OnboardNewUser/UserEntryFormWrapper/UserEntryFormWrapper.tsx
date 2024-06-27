@@ -41,7 +41,6 @@ export const UserEntryForm = () => {
   const setForm = useFormDispatch();
   const navigate = useNavigate();
 
-  const skills = state.skillContext.skills;
   const workers = state.workerContext.workers.sort(sortWorkersByFullName);
   const tritonWorker = workers.find((w: any) => w?.attributes?.n_number === form.nNumber?.value);
   const managers = state.managerContext.managers;
@@ -154,7 +153,7 @@ export const UserEntryForm = () => {
       {
         form.discrepancies.length > 0
           ? <DiscrepancyContainer>
-            <Header4>Discrepencies have been found for this worker. They will be corrected when you hit 'Save User' unless otherwise specified </Header4>
+            <Header4>Discrepencies have been found for this worker. They will be corrected when you hit `Save User` unless otherwise specified </Header4>
             {
               form.discrepancies.map((d: any, index: number) => {
                 return (
@@ -184,11 +183,11 @@ export const UserEntryForm = () => {
       </HeaderRow>
       {form.triton.userFound &&
         <BasicFormInfo
-          skills={skills}
           worker={tritonWorker}
-          workers={workers}
           profiles={profiles}
           managers={managers}
+          forwardToToggle={forwardToToggle}
+          setForwardToToggle={setForwardToToggle}
         />
       }
       <StyledDivider />

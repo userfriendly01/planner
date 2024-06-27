@@ -1,7 +1,6 @@
 import {
   PhoneNumberFormat,
-  PhoneNumberUtil,
-  PhoneNumberType
+  PhoneNumberUtil
 } from "google-libphonenumber";
 
 const phoneNumberUtil = PhoneNumberUtil.getInstance();
@@ -59,7 +58,7 @@ export const isValidPhoneNumber = (number: string) => {
  * valid in addition to ten digit numbers
  */
 // when true user is able to perform transfers using this number
-export const isNumberValid = (number: string, allowSevenDigitVdn: boolean) => {
+export const isNumberValid = (number: string, allowSevenDigitVdn?: boolean) => {
   if (allowSevenDigitVdn && isNumberVdn(number)) {
     return true;
   } else if (isNumberTenDigits(number) && isValidPhoneNumber(number)) {

@@ -1,5 +1,5 @@
 import { ExtensionSearchStatuses } from "usermanagement/OnboardNewUser/Extension/ExtensionInput/ExtensionInput.Interfaces";
-import { formModes } from "globals/index";
+import { formModes } from "globals";
 import {
   managerList,
   profileList
@@ -32,7 +32,9 @@ export const initialFormState = {
       skills: [],
       levels: {},
       caller_states: [],
-      sales_assoc_workers: []
+      sales_assoc_workers: [],
+      backup_workers: [],
+      backup_workers_active: false
     },
     defaultSkills: {},
     defaultSkillsUpdated: false,

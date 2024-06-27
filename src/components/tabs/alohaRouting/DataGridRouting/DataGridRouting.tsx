@@ -403,7 +403,7 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
     const selectedRowsData = response?.failure;
     setSelectedList(selectedRowsData);
     const filteredItems = state.filteredItems.map(x=> {
-      const fi = response.success.filter(r=> r.skey === x.skey);
+      const fi = response.success.filter((r: any)=> r.skey === x.skey);
       if(fi.length >0){
         return fi[0];
       }
@@ -411,8 +411,8 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
         return x;
       }
     });
-    const filteredData = state.data.map(x=> {
-      const fi = response.success.filter(r=> r.skey === x.skey);
+    const filteredData = state.data.map((x: any) => {
+      const fi = response.success.filter((r: any)=> r.skey === x.skey);
       if(fi.length >0){
         return fi[0];
       }
@@ -454,9 +454,9 @@ export const DataGridRouting = (props: AzureSPA ): JSX.Element => {
         severityType: "success"
       }));
     }
-    const selectedRowsData = response?.failure?.map(x=>state.filteredItems.find((row: CctSharedCallRoutingDb)=>row.id === x.id));
+    const selectedRowsData = response?.failure?.map((x: any)=>state.filteredItems.find((row: CctSharedCallRoutingDb)=>row.id === x.id));
     setSelectedList(selectedRowsData);
-    const deletedIds = response?.success?.map(x => x.id);
+    const deletedIds = response?.success?.map((x: any) => x.id);
     const filteredItems = state?.filteredItems?.filter(x=> deletedIds.indexOf(x.id) === -1);
     const filteredData = state?.data?.filter(x=> deletedIds.indexOf(x.id) === -1);
     setState({

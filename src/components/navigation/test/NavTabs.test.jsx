@@ -17,7 +17,8 @@ import {
 } from "testUtils";
 
 jest.mock("context/appContext", () => ({
-  useAdminState: jest.fn()
+  useAdminState: jest.fn(),
+  useSkillState: jest.fn()
 }));
 
 jest.mock("../NavTabs.Styles", () => ({

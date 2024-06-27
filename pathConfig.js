@@ -18,6 +18,11 @@ const paths = [
     alias: "components",
     paths: [
       "components",
+      "components/app",
+      "components/header/Header",
+      "components/header/Logo",
+      "components/header/UserCard",
+      "components/navigation",
       "components/core",
       "components/core/SearchBox",
       "components/core/SharedComponents",
@@ -31,6 +36,7 @@ const paths = [
       "components/core/ModalOverlay",
       "components/core/NNumberInput",
       "components/core/NotificationModal",
+      "components/core/PageLoadSpinner",
       "components/core/Pagination",
       "components/core/PaperContainer",
       "components/core/PhoneNumberInput",
@@ -47,6 +53,7 @@ const paths = [
     alias: "callflowmanagement",
     paths: [
       "components/tabs/callflowmanagement",
+      "components/tabs/callflowmanagement/SkillManagement",
       "components/tabs/callflowmanagement/SkillManagement/ClosedFlashMessage",
       "components/tabs/callflowmanagement/SkillManagement/ClosedFlashMessage/SaveButton",
       "components/tabs/callflowmanagement/SkillManagement/ClosedFlashMessage/MessageContainer",
@@ -54,9 +61,12 @@ const paths = [
       "components/tabs/callflowmanagement/SkillManagement/SkillsHeader",
       "components/tabs/callflowmanagement/SkillManagement/SkillsTable",
       "components/tabs/callflowmanagement/SkillManagement/SkillsContainer",
-      "components/tabs/callflowmanagement/SkillManagement/AddEditSkill",
+      "components/tabs/callflowmanagement/SkillManagement/SkillForm",
       "components/tabs/callflowmanagement/SkillManagement/ActionContainer",
-      "components/tabs/callflowmanagement/SkillManagement/DefaultSkillGroups"
+      "components/tabs/callflowmanagement/SkillManagement/DefaultSkillGroups",
+      "components/tabs/callflowmanagement/CallFlowConfirmationModal",
+      "components/tabs/callflowmanagement/CallFlowManagementWrapper",
+      "components/tabs/callflowmanagement/TfnActivation"
     ]
   },
   {

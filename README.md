@@ -47,6 +47,7 @@ window.env = {
   DATADOG_CLIENT_TOKEN: "<${secret.datadog.clientToken} in cloudforge>",
   AZURE_CLIENT_ID: "<${secret.cicct-softphone-admin-ui.id} in cloudforge>",
   AZURE_REDIRECT_URI: "http://localhost:8082/triton-admin",
+  GRAPH_CLIENT_ID: "5f9dbf83-0fb0-4c74-8efe-889cc745396c",
   TROUX_ID: "<${forge.troux_application_uuid} in cloudforge>",
   GRAPH_API_URL: "https://tgufpgkyxvacrntvgb75iuo3pi.appsync-api.us-east-1.amazonaws.com/graphql"
 };

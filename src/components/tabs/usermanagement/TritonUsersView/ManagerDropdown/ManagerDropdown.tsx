@@ -1,6 +1,5 @@
 import {
   Label,
-  IconWrapper,
   Wrapper
 } from "usermanagement/ManagerDropdown.Styles";
 import { ManagerModal } from "usermanagement/ManagerModal";
@@ -17,7 +16,9 @@ import {
   Delete
 } from "@mui/icons-material";
 import { Modal } from "@mui/material";
-import { DropdownOption } from "globals/interfaces";
+import {
+  DropdownOption, IconWrapper
+} from "globals/interfaces";
 
 export const ManagerDropdown = () => {
   const state = useAdminState();

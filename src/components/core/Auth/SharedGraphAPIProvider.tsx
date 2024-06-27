@@ -3,7 +3,7 @@ import {
   ApolloClient, ApolloProvider, InMemoryCache, createHttpLink
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
-import { env } from "globals/index";
+import { env } from "globals";
 import { useAdminState } from "context/appContext";
 
 interface Props {
@@ -26,7 +26,7 @@ export const SharedGraphAPIProvider = ({ children }: Props): ReactElement => {
   const authLink = setContext(async (_, { headers }) => ({
     headers: {
       ...headers,
-      Authorization: `Bearer ${state.userContext.accessTokenGraph}`
+      Authorization: `Bearer ${state.userContext.tokens.sharedGraph}`
     }
   }));
 

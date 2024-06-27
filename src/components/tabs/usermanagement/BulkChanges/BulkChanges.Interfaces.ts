@@ -1,3 +1,4 @@
+import { SkillState } from "components/tabs/callflowmanagement/SkillManagement/Skills.Interfaces";
 import {
   AppState, GenericObject
 } from "globals/interfaces";
@@ -8,8 +9,8 @@ interface Field {
   type: string,
   description: string,
   example: any,
-  options: null | ((state?: any, businessUnit?: string) => any[]),
-  validateFunction: (row: any, state?: any) => Promise<string>
+  options: null | ((state?: any, businessUnit?: string, skillsSate?: SkillState) => any[]),
+  validateFunction: (row: any, state?: any, skillState?: SkillState) => Promise<string>
 }
 
 export interface Fields {

@@ -2,7 +2,6 @@ import {
   UMManager,
   ModalOverlayStatuses,
   UMOffice,
-  Skill,
   TritonProfile,
   UMUser,
   WfmUser,
@@ -11,6 +10,7 @@ import {
 import { FetchUserResponse } from "services/fetchUser";
 import { ExtensionStatusProps } from "../Extension/ExtensionInput/ExtensionInput.Interfaces";
 import { CalabrioGroup } from "usermanagement/CallRecording.Interfaces";
+import { Skill } from "callflowmanagement/Skills.Interfaces";
 
 export interface LoadingState {
   lookupUser: boolean;
@@ -30,11 +30,11 @@ export interface UserEntryFormProps {
 }
 
 export interface BasicFormInfoProps {
-  skills: Skill[],
   worker: UMUser | null,
-  workers: UMUser[],
   profiles: TritonProfile[],
-  managers: UMManager[]
+  managers: UMManager[],
+  forwardToToggle: boolean,
+  setForwardToToggle: (toggle: boolean) => void
 }
 
 export interface UserFormButtonsProps {

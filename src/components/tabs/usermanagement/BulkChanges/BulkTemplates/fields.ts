@@ -1,7 +1,8 @@
 import {
   cleanupField,
-  toProperCase
-} from "usermanagement/formatUtils";
+  toProperCase,
+  formatDateFromExcelDate
+} from "utils/_formatUtils";
 import { fetchUser } from "services/fetchUser";
 import { generateExtension } from "services/checkExtension";
 import { getE164Number } from "utils/numberUtils";
@@ -10,10 +11,12 @@ import {
   calabrioAllowedRoles, calabrioTimeZones
 } from "utils/calabrioUtils";
 import { logger } from "utils/logger";
-import { formatDateFromExcelDate } from "usermanagement/formatUtils";
 import { allowedEmptyScheduleField } from "usermanagement/validationUtils";
 import { Fields } from "usermanagement/BulkChanges.Interfaces";
-import { UMManager } from "globals/interfaces";
+import {
+  AppState, UMManager
+} from "globals/interfaces";
+import { SkillState } from "components/tabs/callflowmanagement/SkillManagement/Skills.Interfaces";
 
 const rejectPromise = (error: string, rowNumber: number | string) => {
   return Promise.reject(JSON.stringify({
@@ -42,7 +45,7 @@ export const FIELDS: Fields = {
     description: "Agents N Number",
     example: "n0263786",
     options: null,
-    validateFunction: async (row: any, state: any): Promise<any> => {
+    validateFunction: async (row: any, state: AppState): Promise<any> => {
       const rowNumber = row.rowNumber;
       const fieldName = "N Number";
       const field = cleanupField(row[fieldName], "string");
@@ -58,7 +61,7 @@ export const FIELDS: Fields = {
         return rejectPromise(`${field} already has a record in Twilio/Worker Database row ${rowNumber}`, rowNumber);
       } else {
         try {
-          const fetchedUser = await fetchUser(field);
+          const fetchedUser = await fetchUser(state.userContext.tokens.msGraph, field);
 
           row.attributes.contact_uri = `client:${field.toLowerCase()}`;
           row.attributes.department_id = fetchedUser.departmentNumber;
@@ -127,7 +130,7 @@ export const FIELDS: Fields = {
     description: "Agents N Number",
     example: "n0263786",
     options: null,
-    validateFunction: async (row: any, state: any): Promise<any> => {
+    validateFunction: async (row: any, state: AppState): Promise<any> => {
       const fieldName = "N Number";
       const field = cleanupField(row[fieldName], "string");
 
@@ -140,7 +143,7 @@ export const FIELDS: Fields = {
         return rejectPromise(`${fieldName} is not in the valid n number format on Triton worker ${row.workerSid}`, "NA");
       } else {
         try {
-          const fetchedUser = await fetchUser(field);
+          const fetchedUser = await fetchUser(state.userContext.tokens.msGraph, field);
 
           row.attributes.contact_uri = `client:${field.toLowerCase()}`;
           row.attributes.department_id = fetchedUser.departmentNumber;
@@ -199,7 +202,7 @@ export const FIELDS: Fields = {
     description: "N Number of the Manager",
     example: "n0088625",
     options: null,
-    validateFunction: async (row: any, state: any): Promise<any> => {
+    validateFunction: async (row: any, state: AppState): Promise<any> => {
       const rowNumber = row.rowNumber;
       const fieldName = "Manager N Number";
       const field = cleanupField(row[fieldName], "string");
@@ -213,7 +216,7 @@ export const FIELDS: Fields = {
         return rejectPromise(`${fieldName} is already present for row ${rowNumber}`, rowNumber);
       } else {
         try {
-          const fetchedUser = await fetchUser(field);
+          const fetchedUser = await fetchUser(state.userContext.tokens.msGraph, field);
 
           row.attributes.manager_first_name = fetchedUser.firstName;
           row.attributes.manager_last_name = fetchedUser.lastName;
@@ -259,8 +262,8 @@ export const FIELDS: Fields = {
     type: "string",
     description: "Comma delimited list of skill/level pairings. Skills can be on their own or have a ':level' to represent the level. If left blank, no skills will be added to the user",
     example: "bscCommissions:3, blSalesL1:2, aisl1",
-    options: (state: any) => state.skillContext.skills.map((s: any) => s.levels?.length > 0 ? `${s.name} Available levels: ${s.levels?.toString()}` : s.name).sort(),
-    validateFunction: (row: any, state: any): Promise<any> => {
+    options: (state: any, businessUnit: any, skillState: SkillState) => skillState.skills.map((s: any) => s.levels?.length > 0 ? `${s.name} Available levels: ${s.levels?.toString()}` : s.name).sort(),
+    validateFunction: (row: any, state: any, skillState: SkillState): Promise<any> => {
       const rowNumber = row.rowNumber;
       /*
         skills object: {
@@ -291,7 +294,7 @@ export const FIELDS: Fields = {
             defaultSkills.skills.push(key);
           });
 
-          const availableSkills = state.skillContext.skills;
+          const availableSkills = skillState.skills;
 
           defaultSkills.skills.forEach((ds: any) => {
             if (!availableSkills.some((as: any) => cleanupField(as.name, "string") === cleanupField(ds, "string"))) {
@@ -495,7 +498,7 @@ export const FIELDS: Fields = {
     field: "outgoingNumber",
     name: "Outgoing Number",
     type: "string",
-    description: "Agent's Outgoing Number",
+    description: "Agent's Outgoing Number, this is required",
     example: "6038518288",
     options: null,
     validateFunction: async (row: any, state: any): Promise<any> => {

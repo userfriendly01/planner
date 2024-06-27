@@ -1,10 +1,14 @@
 import React from "react";
 import { CallFlowManagementSkills } from "../CallFlowManagementSkills";
 import { getAuthenticationProfileTemplates } from "authentication/authenticationProfiles";
-import { CallFlowConfirmationModal } from "callflowmanagement/CallFlowConfirmationModal/CallFlowConfirmationModal";
+import { CallFlowConfirmationModal } from "callflowmanagement/CallFlowConfirmationModal";
 import { ActionContainer } from "callflowmanagement/ActionContainer";
 import { SkillsContainer } from "callflowmanagement/SkillsContainer";
-import { useAdminState } from "context/appContext";
+import { PageLoadSpinner } from "components/PageLoadSpinner";
+import { loadSkillOptions } from "services/skill";
+import {
+  useAdminState, useSkillState
+} from "context/appContext";
 import {
   skillsList,
   render,
@@ -13,7 +17,11 @@ import {
   setupMockedComponents,
   initialTestState,
   act,
-  authenticationProfileTemplates
+  authenticationProfileTemplates,
+  mockTimeOfDays,
+  mockApplications,
+  mockTaskQueues,
+  mockOperatingUnits
 } from "testUtils";
 import { Modal } from "@mui/material";
 
@@ -21,7 +29,11 @@ jest.mock("authentication/authenticationProfiles", () => ({
   getAuthenticationProfileTemplates: jest.fn()
 }));
 
-jest.mock("callflowmanagement/CallFlowConfirmationModal/CallFlowConfirmationModal", () => ({
+jest.mock("components/PageLoadSpinner", () => ({
+  PageLoadSpinner: jest.fn()
+}));
+
+jest.mock("callflowmanagement/CallFlowConfirmationModal", () => ({
   CallFlowConfirmationModal: jest.fn()
 }));
 
@@ -33,18 +45,25 @@ jest.mock("callflowmanagement/SkillsContainer", () => ({
   SkillsContainer: jest.fn()
 }));
 
+jest.mock("services/skill", () => ({
+  loadSkillOptions: jest.fn()
+}));
+
 jest.mock("@mui/material", () => ({
   Modal: jest.fn()
 }));
 
 jest.mock("context/appContext", () => ({
-  useAdminState: jest.fn()
+  useAdminState: jest.fn(),
+  useSkillState: jest.fn(),
+  useSkillDispatch: jest.fn()
 }));
 
 const initialTableState = {
   closedFilter: false,
   filteredList: [skillsList[2], skillsList[3]],
   flashFilter: false,
+  discrepancyFilter: false,
   profiles: [],
   searchBy: "",
   selected: []
@@ -64,6 +83,13 @@ describe("CallFlowManagementSkills", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     getAuthenticationProfileTemplates.mockReturnValue(authenticationProfileTemplates);
+    useSkillState.mockReturnValue({
+      skills: skillsList,
+      timeOfDays: mockTimeOfDays,
+      applications: mockApplications,
+      taskQueues: mockTaskQueues,
+      operatingUnits: mockOperatingUnits
+    });
     useAdminState.mockReturnValue({
       ...initialTestState,
       userContext: {
@@ -76,15 +102,17 @@ describe("CallFlowManagementSkills", () => {
       CallFlowConfirmationModal,
       Modal,
       ActionContainer,
-      SkillsContainer
+      SkillsContainer,
+      PageLoadSpinner
     });
   });
   describe("initial render", () => {
     beforeEach(() => {
       useAdminState.mockReturnValue(initialTestState);
     });
-    test("initial form renders as expected", () => {
+    test("initial form renders as expected - state is already loaded", () => {
       render(<CallFlowManagementSkills />);
+      expect(PageLoadSpinner).toHaveBeenCalled();
       expectOnlyPassedProps(SkillsContainer, {
         tableState: initialTableState
       }, getLastInstanceCalled(SkillsContainer));
@@ -94,6 +122,18 @@ describe("CallFlowManagementSkills", () => {
       expectOnlyPassedProps(Modal, {
         open: false
       }, getLastInstanceCalled(Modal));
+      expect(loadSkillOptions).not.toHaveBeenCalled();
+    });
+    test("initial form renders as expected", () => {
+      useSkillState.mockReturnValue({
+        skills: [],
+        timeOfDays: [],
+        applications: [],
+        taskQueues: [],
+        operatingUnits: []
+      });
+      render(<CallFlowManagementSkills />);
+      expect(loadSkillOptions).toHaveBeenCalled();
     });
   });
   describe("setTableState is called", () => {
@@ -105,7 +145,7 @@ describe("CallFlowManagementSkills", () => {
           ...initialTableState,
           profiles: [{ profile_id: 32 }]
         }));
-        expect(ActionContainer.mock.calls[3][0].tableState.filteredList).toStrictEqual([initialTestState.skillContext.skills[0]]);
+        expect(ActionContainer.mock.calls[2][0].tableState.filteredList).toStrictEqual([skillsList[0]]);
       });
     });
     describe("tablestate.closedFilter === true", () => {
@@ -116,9 +156,9 @@ describe("CallFlowManagementSkills", () => {
           ...initialTableState,
           closedFilter: true
         }));
-        expect(ActionContainer.mock.calls[3][0].tableState.filteredList).toStrictEqual([
-          initialTestState.skillContext.skills[1],
-          initialTestState.skillContext.skills[2]
+        expect(ActionContainer.mock.calls[2][0].tableState.filteredList).toStrictEqual([
+          skillsList[1],
+          skillsList[2]
         ]);
       });
     });
@@ -130,13 +170,25 @@ describe("CallFlowManagementSkills", () => {
           ...initialTableState,
           flashFilter: true
         }));
-        expect(ActionContainer.mock.calls[3][0].tableState.filteredList).toStrictEqual([
-          initialTestState.skillContext.skills[2]
+        expect(ActionContainer.mock.calls[2][0].tableState.filteredList).toStrictEqual([
+          skillsList[2]
+        ]);
+      });
+    });
+    describe("tablestate.discrepancyFilter === true", () => {
+      test("initial form renders as expected", () => {
+        render(<CallFlowManagementSkills />);
+        const setTableState = ActionContainer.mock.calls[0][0].setTableState;
+        act(() => setTableState({
+          ...initialTableState,
+          discrepancyFilter: true
+        }));
+        expect(ActionContainer.mock.calls[2][0].tableState.filteredList).toStrictEqual([
+          skillsList[1]
         ]);
       });
     });
   });
-
   describe("confirmationModalOpts.open === true", () => {
     test("CallFlowConfirmationModal should be rendered", () => {
       render(<CallFlowManagementSkills />);
@@ -148,7 +200,7 @@ describe("CallFlowManagementSkills", () => {
           open: true
         });
       });
-      render(Modal.mock.calls[2][0].children);
+      render(Modal.mock.calls[1][0].children);
       expect(CallFlowConfirmationModal.mock.calls.length).toBe(1);
       expectOnlyPassedProps(CallFlowConfirmationModal, {
         confirmationModalOpts: {

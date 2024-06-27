@@ -29,10 +29,20 @@ export const ExportButton = (props: SkillsExportButtonProps) => {
         field: "flashMessage",
         title: "Flash Message",
         width: "200px"
+      },
+      {
+        field: "discrepancies",
+        title: "Problems",
+        width: "400px"
       }
     ];
+
+    const formattedColumns = selected.map(s => ({
+      ...s,
+      discrepancies: s.discrepancies.toString()
+    }));
     if (_export.current !== null) {
-      _export.current.save(selected, columns);
+      _export.current.save(formattedColumns, columns);
     }
   };
 

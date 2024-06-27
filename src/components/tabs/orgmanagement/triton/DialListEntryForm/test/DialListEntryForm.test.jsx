@@ -13,7 +13,7 @@ import {
   apiPaths,
   formModes,
   timeouts
-} from "globals/index";
+} from "globals";
 import {
   ModalOverlayStatuses
 } from "globals/interfaces";

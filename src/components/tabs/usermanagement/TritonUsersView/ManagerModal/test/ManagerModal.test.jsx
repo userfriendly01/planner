@@ -147,7 +147,10 @@ describe("<ManagerModal />", () => {
         ]
       },
       userContext: {
-        nNumber: "n0138110"
+        nNumber: "n0138110",
+        tokens: {
+          msGraph: "Access Token"
+        }
 
       },
       workerContext: {
@@ -425,7 +428,7 @@ describe("<ManagerModal />", () => {
         });
         const rendered = renderComponent(selectedManager);
         expect(rendered.container).toHaveTextContent("Edit Faith Cuneo");
-        expect(fetchUser).toHaveBeenCalledWith("n0263786");
+        expect(fetchUser).toHaveBeenCalledWith("Access Token", "n0263786");
         expect(StyledButton.mock.calls[0][0].children).toBe("Save");
         expect(StyledButton.mock.calls[0][0].disabled).toBe(true);
       });
@@ -436,7 +439,7 @@ describe("<ManagerModal />", () => {
         });
         const rendered = renderComponent(selectedManager);
         expect(rendered.container).toHaveTextContent("Edit Faith Cuneo");
-        expect(fetchUser).toHaveBeenCalledWith("n0263786");
+        expect(fetchUser).toHaveBeenCalledWith("Access Token", "n0263786");
         expect(StyledButton.mock.calls[0][0].children).toBe("Save");
         expect(StyledButton.mock.calls[0][0].disabled).toBe(true);
         await waitFor(() => {
@@ -457,7 +460,7 @@ describe("<ManagerModal />", () => {
           fetchUser.mockRejectedValueOnce("boo");
           const rendered = renderComponent(selectedManager);
           expect(rendered.container).toHaveTextContent("Edit Faith Cuneo");
-          expect(fetchUser).toHaveBeenCalledWith("n0263786");
+          expect(fetchUser).toHaveBeenCalledWith("Access Token", "n0263786");
           expect(StyledButton.mock.calls[0][0].children).toBe("Save");
           expect(StyledButton.mock.calls[0][0].disabled).toBe(true);
           await waitFor(() => {
@@ -476,7 +479,7 @@ describe("<ManagerModal />", () => {
             lastName: "blah"
           });
           renderComponent(selectedManagerWithProfile);
-          expect(fetchUser).toHaveBeenCalledWith("n0263786");
+          expect(fetchUser).toHaveBeenCalledWith("Access Token", "n0263786");
           expect(StyledButton.mock.calls[0][0].children).toBe("Save");
           expect(StyledButton.mock.calls[0][0].disabled).toBe(false);
           await waitFor(() => {
@@ -497,7 +500,7 @@ describe("<ManagerModal />", () => {
               });
               updateUser.mockResolvedValue("yay");
               renderComponent(selectedManagerWithProfile);
-              expect(fetchUser).toHaveBeenCalledWith("n0263786");
+              expect(fetchUser).toHaveBeenCalledWith("Access Token", "n0263786");
               expect(StyledButton.mock.calls[0][0].children).toBe("Save");
               expect(StyledButton.mock.calls[0][0].disabled).toBe(false);
               await waitFor(() => {
@@ -617,7 +620,7 @@ describe("<ManagerModal />", () => {
               updateUser.mockRejectedValue("boo");
 
               renderComponent(selectedManagerWithProfile);
-              expect(fetchUser).toHaveBeenCalledWith("n0263786");
+              expect(fetchUser).toHaveBeenCalledWith("Access Token", "n0263786");
               expect(StyledButton.mock.calls[0][0].children).toBe("Save");
               expect(StyledButton.mock.calls[0][0].disabled).toBe(false);
               await waitFor(() => {
@@ -678,7 +681,7 @@ describe("<ManagerModal />", () => {
               });
               editManager.mockRejectedValueOnce("boo");
               renderComponent(selectedManagerWithProfile);
-              expect(fetchUser).toHaveBeenCalledWith("n0263786");
+              expect(fetchUser).toHaveBeenCalledWith("Access Token", "n0263786");
               expect(StyledButton.mock.calls[0][0].children).toBe("Save");
               expect(StyledButton.mock.calls[0][0].disabled).toBe(false);
               await waitFor(() => {

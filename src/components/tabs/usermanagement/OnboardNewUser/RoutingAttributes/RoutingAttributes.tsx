@@ -18,7 +18,7 @@ export const RoutingAttributes = (): JSX.Element => {
   const setForm = useFormDispatch();
   const form = useFormState();
   const accordianExpansion= ()=>{
-    if(form.triton.routing.team || form.triton.routing?.caller_states?.length>0 || form.triton.routing?.sales_assoc_workers?.length>0){
+    if(form.triton.routing.team || form.triton.routing?.caller_states?.length>0 || form.triton.routing?.sales_assoc_workers?.length>0 || form.triton.routing?.backup_workers?.length>0){
       return true;
     }
     return false;
@@ -108,7 +108,10 @@ export const RoutingAttributes = (): JSX.Element => {
         />
       </AccordionDetails>
       <AccordionDetails>
-        <AutoCompleteContainer />
+        <AutoCompleteContainer type={userFormActions.SET_SALES_ASSOCIATE_WORKER} field='sales_assoc_workers' label='Sales Associate Worker' routingAttribute='salesAssociateWorkerRouting'/>
+      </AccordionDetails>
+      <AccordionDetails>
+        <AutoCompleteContainer type={userFormActions.SET_BACK_UP_WORKER} field='backup_workers' label='Backup Workers' routingAttribute='backupWorkerRouting'   />
       </AccordionDetails>
     </Accordion>
   );

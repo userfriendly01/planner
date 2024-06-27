@@ -1,4 +1,4 @@
-import { formModes } from "globals/index";
+import { formModes } from "globals";
 
 export const initialProfileEntryFormState = {
   profileId: null,

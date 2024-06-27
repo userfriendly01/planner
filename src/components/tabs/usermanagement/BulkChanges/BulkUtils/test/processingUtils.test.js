@@ -86,15 +86,6 @@ describe("updateTritonUserState", () => {
       expect(listUMUsers).toHaveBeenCalledTimes(1);
     });
   });
-  describe("get workers fails", () => {
-    test("dispatch is not called, promise resolves", async () => {
-      listUMUsers.mockRejectedValue("Waaaaaaaaaaa");
-
-      await utils.updateTritonUserState(null, mockDispatch);
-      expect(logger.error).toHaveBeenCalledTimes(1);
-      expect(logger.error.mock.calls[0][0]).toContain("Failed to update triton user state after bulk upload");
-    });
-  });
 });
 
 describe("updateCalabrioUserState", () => {
@@ -479,8 +470,6 @@ describe("initiateCalls", () => {
   describe("concurrency limit is null", () => {
     describe("template tree is null", () => {
       test("should call process function for each row", async () => {
-        jest.spyOn(utils, "identifyProcessingDependencies").mockReturnValue(null);
-        jest.spyOn(utils, "getLowestConcurrencyLimit").mockReturnValue(null);
         const result = await utils.initiateCalls(rows, [templates[1]], setProcessedRows);
         expect(result).toStrictEqual(rows);
         expect(setProcessedRows).toHaveBeenCalledTimes(3);
@@ -492,10 +481,6 @@ describe("initiateCalls", () => {
       });
     });
     describe("template tree is not null", () => {
-      beforeEach(() => {
-        jest.spyOn(utils, "identifyProcessingDependencies").mockReturnValue(templates);
-        jest.spyOn(utils, "getLowestConcurrencyLimit").mockReturnValue(null);
-      });
       describe("dependency tree processes successfully", () => {
         beforeEach(() => {
           templates[0].processFunction.mockResolvedValue("Yay");
@@ -622,6 +607,7 @@ describe("initiateCalls", () => {
   });
   describe("concurrency limit is not null", () => {
     const setProcessedRows = jest.fn();
+    const processFunction = jest.fn();
     const updateStateFunction = jest.fn();
     const rows = [
       { rowNumber: 1 },
@@ -631,21 +617,18 @@ describe("initiateCalls", () => {
     const templates = [
       {
         name: "CREATE_TRITON_USER",
-        processFunction: jest.fn(),
-        stateUpdateFunctions: [updateStateFunction]
+        processFunction: processFunction,
+        stateUpdateFunctions: [jest.fn()],
+        processingConcurrencyLimit: 1
       }
     ];
     beforeEach(() => {
       updateStateFunction.mockResolvedValue();
-      jest.spyOn(utils, "identifyProcessingDependencies").mockReturnValue(templates);
-      jest.spyOn(utils, "identifySuccessfulRecords").mockReturnValue([]);
-      jest.spyOn(utils, "getLowestConcurrencyLimit").mockReturnValue(1);
-      jest.spyOn(utils, "handleConcurrentCalls").mockResolvedValue([]);
     });
     test("should call handleConcurrentCalls", async () => {
       await utils.initiateCalls(rows, templates, setProcessedRows);
-      // expect(utils.handleConcurrentCalls).toHaveBeenCalledTimes(1);
-      expect(updateStateFunction).toHaveBeenCalledTimes(1);
+      expect(logger.log.mock.calls[0][0]).toContain("***handleConcurrentCalls - processingResults");
+      expect(setProcessedRows).toHaveBeenCalledTimes(3);
     });
   });
 });

@@ -1,7 +1,8 @@
 import React from "react";
 import {
   useAdminState,
-  useAdminDispatch
+  useSkillState,
+  useSkillDispatch
 } from "context/appContext";
 import { TextField } from "@mui/material";
 import {
@@ -15,18 +16,19 @@ import {
   deleteSkillGroup,
   updateSkillGroup
 } from "services/skillgroup";
-import { timeouts } from "globals/index";
-import {
-  Skill, ModalOverlayStatuses
-} from "globals/interfaces";
+import { timeouts } from "globals";
+import { ModalOverlayStatuses } from "globals/interfaces";
+import { Skill } from "callflowmanagement/Skills.Interfaces";
 import {
   ConfirmationSkillGroupsDiv,
   ConfirmationSkillList
 } from "./SkillGroup.Styles";
 import { Dropdown } from "components/Dropdown";
 import _ from "lodash";
-import { getSkills } from "authentication/startups/cct-triton-admin-startup";
+import { loadConsolidatedSkills } from "services/skill";
 import { logger } from "utils/logger";
+import { escapeQuotes } from "utils";
+
 
 
 export const SkillGroupInputContainer = (props: any) => {
@@ -45,9 +47,10 @@ export const SkillGroupInputContainer = (props: any) => {
   } = props;
 
   const state = useAdminState();
-  const dispatch = useAdminDispatch();
-  const skillGroups = state.skillContext.skillGroups.slice();
-  const skills = state.skillContext.skills.slice();
+  const skillState = useSkillState();
+  const skillDispatch = useSkillDispatch();
+  const skillGroups = skillState.skillGroups.slice();
+  const skills = skillState.skills.slice();
   const { nNumber } = state.userContext;
 
   const getSkillGroupOptions = () => {
@@ -119,7 +122,7 @@ export const SkillGroupInputContainer = (props: any) => {
         const skillIds = tableState.selected.map((skill: Skill) => skill.ctmSkillId);
 
         const requestBody: AddEditSkillGroupBody = {
-          skill_group_nme: skillGroupName.trim(),
+          skill_group_nme: escapeQuotes(skillGroupName.trim()),
           skillIds
         };
         await addSkillGroup(requestBody);
@@ -136,7 +139,7 @@ export const SkillGroupInputContainer = (props: any) => {
         });
 
         // refresh skill state
-        await getSkills(dispatch);
+        await loadConsolidatedSkills(skillDispatch);
 
         setTimeout(() => {
           handleCloseConfirmation();
@@ -178,7 +181,7 @@ export const SkillGroupInputContainer = (props: any) => {
   const handleEditSkillGroup = () => {
 
     const requestBody: AddEditSkillGroupBody = {
-      skill_group_nme: skillGroupName.trim()
+      skill_group_nme: escapeQuotes(skillGroupName.trim())
     };
     let editConfirmationText;
 
@@ -225,7 +228,7 @@ export const SkillGroupInputContainer = (props: any) => {
           status: ModalOverlayStatuses.SUCCESS
         });
         // refresh skill state
-        await getSkills(dispatch);
+        await loadConsolidatedSkills(skillDispatch);
         setTimeout(() => {
           handleCloseConfirmation();
           setAction(null);
@@ -276,7 +279,7 @@ export const SkillGroupInputContainer = (props: any) => {
         });
 
         // refresh skill state
-        await getSkills(dispatch);
+        await loadConsolidatedSkills(skillDispatch);
 
         setTimeout(() => {
           handleCloseConfirmation();
@@ -338,7 +341,7 @@ export const SkillGroupInputContainer = (props: any) => {
             setSkillGroupName(val.label);
             setTableState({
               ...tableState,
-              selected: skills.filter((sk: any) => sk.ctmSkillGroups.find((skg: any) => skg.skillGroupId === val.value))
+              selected: skills.filter((sk: any) => sk.skillGroups?.find((skg: any) => skg.skillGroupId === val.value))
             });
           }}
           styles={{
@@ -368,7 +371,9 @@ export const SkillGroupInputContainer = (props: any) => {
           (action === ActionTypes.DELETE && !skillGroupToEditDelete) ||
           (action === ActionTypes.EDIT && !skillGroupToEditDelete)
         }
-      >{action.label} Skill Group</UserFormButton>
+      >
+        {action.label} Skill Group
+      </UserFormButton>
       <div style={{ marginTop: "5px" }}>
         {generateBottomMsg()}
       </div>

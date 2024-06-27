@@ -1,6 +1,7 @@
 import { NNumberInput } from "../NNumberInput";
 import { CustomInput } from "components/CustomInput";
 import { ModalHelperText } from "components/ModalHelperText";
+import { useAdminState } from "context/appContext";
 import React from "react";
 import { fetchUser } from "services/fetchUser";
 import {
@@ -23,6 +24,10 @@ jest.mock("components/ModalHelperText", () => ({
 
 jest.mock("services/fetchUser", () => ({
   fetchUser: jest.fn()
+}));
+
+jest.mock("context/appContext", () => ({
+  useAdminState: jest.fn()
 }));
 
 const mockOnClear = jest.fn();
@@ -51,6 +56,15 @@ describe("<ModalNNumber />", () => {
       CustomInput,
       ModalHelperText
     });
+
+    useAdminState.mockReturnValue({
+      userContext: {
+        tokens: {
+          msGraph: "Access Token"
+        }
+      }
+    });
+
     jest.clearAllMocks();
   });
 
