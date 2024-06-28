@@ -18,5 +18,7 @@ applications:
     GRAPH_API_URL: https://3k2iegyjmnfwxheh65ugy2vjt4.appsync-api.us-east-1.amazonaws.com/graphql
     GRAPH_CLIENT_ID: ${idp.cicct-softphone-admin-ui.resource.cct-shared-graph-api.production.appId}
     SOFTPHONE_SERVICE_URL: https://cicct-softphone-service.us-east-1.paas.lmig.com
+    CALABRIO_SERVICE_URL: https://cctapis.us-east-1.libertymutual.com/calabrio-service
+    CALABRIO_SERVICE_CLIENT_ID: ${idp.cicct-softphone-admin-ui.resource.adcalser22-azure-api-production.production.appId}
   blue-green:
     health-check-endpoint: /health

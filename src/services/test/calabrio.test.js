@@ -34,7 +34,7 @@ describe("createCalabrioUser", () => {
     const data = { huzzah: "you are winner" };
     beforeEach(() => axiosMock.onPost(apiPaths.CREATE_CALABRIO_USER).replyOnce(200, data));
     test("should resolve with any successful response", done => {
-      createCalabrioUser(user)
+      createCalabrioUser("Access Token", user)
         .then(resolvedValue => {
           expect(JSON.parse(axiosMock.history.post[0].data)).toEqual(user);
           expect(resolvedValue.data).toEqual(data);
@@ -46,7 +46,7 @@ describe("createCalabrioUser", () => {
     const badResponse = { wahh: "boo" };
     beforeEach(() => axiosMock.onPost(apiPaths.CREATE_CALABRIO_USER).replyOnce(500, badResponse));
     test("should reject with error", done => {
-      createCalabrioUser(user).catch(rejectedVal => {
+      createCalabrioUser("Access Token", user).catch(rejectedVal => {
         expect(JSON.parse(axiosMock.history.post[0].data)).toEqual(user);
         expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
         done();
@@ -60,7 +60,7 @@ describe("createCalabrioTeam", () => {
     const data = { huzzah: "you are winner" };
     beforeEach(() => axiosMock.onPost(apiPaths.CREATE_CALABRIO_TEAM).replyOnce(200, data));
     test("should resolve with any successful response", done => {
-      createCalabrioTeam(user)
+      createCalabrioTeam("Access Token", user)
         .then(resolvedValue => {
           expect(JSON.parse(axiosMock.history.post[0].data)).toEqual(user);
           expect(resolvedValue.data).toEqual(data);
@@ -72,7 +72,7 @@ describe("createCalabrioTeam", () => {
     const badResponse = { wahh: "boo" };
     beforeEach(() => axiosMock.onPost(apiPaths.CREATE_CALABRIO_TEAM).replyOnce(500, badResponse));
     test("should reject with error", done => {
-      createCalabrioTeam(user).catch(rejectedVal => {
+      createCalabrioTeam("Access Token", user).catch(rejectedVal => {
         expect(JSON.parse(axiosMock.history.post[0].data)).toEqual(user);
         expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
         done();

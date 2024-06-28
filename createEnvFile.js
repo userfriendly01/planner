@@ -11,6 +11,8 @@ const env = `window.env = {
   GRAPH_API_URL: "${process.env.GRAPH_API_URL}",
   GRAPH_CLIENT_ID: "${process.env.GRAPH_CLIENT_ID}",
   SOFTPHONE_SERVICE_URL: "${process.env.SOFTPHONE_SERVICE_URL}",
+  CALABRIO_SERVICE_URL: "${process.env.CALABRIO_SERVICE_URL}",
+  CALABRIO_SERVICE_CLIENT_ID: "${process.env.CALABRIO_SERVICE_CLIENT_ID}"
 };
 `;
 

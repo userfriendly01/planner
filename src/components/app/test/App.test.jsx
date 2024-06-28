@@ -213,7 +213,8 @@ describe("<App />", () => {
           payload: {
             tokens: {
               msGraph: "Access Token",
-              sharedGraph: "Access Token"
+              sharedGraph: "Access Token",
+              calabrioService: "Access Token"
             }
           }
         });
@@ -283,7 +284,8 @@ describe("<App />", () => {
         payload: {
           tokens: {
             msGraph: "Access Token",
-            sharedGraph: "Access Token"
+            sharedGraph: "Access Token",
+            calabrioService: "Access Token"
           }
         }
       });
@@ -370,7 +372,8 @@ describe("<App />", () => {
           permissions: [],
           tokens: {
             msGraph: "Access Token",
-            sharedGraph: "Access Token"
+            sharedGraph: "Access Token",
+            calabrioService: "Access Token"
           }
         },
         workerContext: {
@@ -408,7 +411,8 @@ describe("<App />", () => {
           payload: {
             tokens: {
               msGraph: "Access Token",
-              sharedGraph: "Access Token"
+              sharedGraph: "Access Token",
+              calabrioService: "Access Token"
             }
           }
         });

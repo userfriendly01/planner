@@ -5,12 +5,20 @@ import {
 } from "usermanagement/CallRecording.Interfaces";
 import { myAxios } from "utils/myAxios";
 
-export const createCalabrioTeam = async (payload: any): Promise<CalabrioGroup[]> => {
-  return await myAxios.post(apiPaths.CREATE_CALABRIO_TEAM, payload);
+export const createCalabrioTeam = async (accessToken: string, payload: any): Promise<CalabrioGroup[]> => {
+  return await myAxios.post(apiPaths.CREATE_CALABRIO_TEAM, payload, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`
+    }
+  });
 };
 
-export const createCalabrioUser = async (payload: any): Promise<CalabrioGroup[]> => {
-  return await myAxios.post(apiPaths.CREATE_CALABRIO_USER, payload);
+export const createCalabrioUser = async (accessToken: string, payload: any): Promise<CalabrioGroup[]> => {
+  return await myAxios.post(apiPaths.CREATE_CALABRIO_USER, payload, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`
+    }
+  });
 };
 
 export const updateCalabrioUser = async (personId: number, payload: any): Promise<CalabrioUser> => {

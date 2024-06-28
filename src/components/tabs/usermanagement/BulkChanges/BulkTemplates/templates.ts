@@ -126,7 +126,7 @@ const processCreateCalabrioUser = async (row: any, state: AppState) => {
     body.roles = row.roles;
     body.scope = row.scope;
 
-    await createCalabrioUser(body);
+    await createCalabrioUser(state.userContext.tokens.calabrioService, body);
 
     const message = `User created in Calabrio for ${row.attributes.n_number} for row ${rowNumber}`;
 
@@ -255,7 +255,7 @@ const processCreateManager = async (row: any, state: AppState) => {
       const teamField = toProperCase(cleanupField(row[teamFieldName], "string"));
 
       try {
-        const response: any = await createCalabrioTeam({
+        const response: any = await createCalabrioTeam(state.userContext.tokens.calabrioService, {
           name: teamField,
           parentGroupId: row.parentGroupId
         });

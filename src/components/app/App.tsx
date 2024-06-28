@@ -116,7 +116,8 @@ const App = () => {
           scopes: ["User.Read.All"],
           extraScopesToConsent: [
             // Add additional scopes that are needed here
-            `${env.GRAPH_CLIENT_ID}/uiaccess`
+            `${env.GRAPH_CLIENT_ID}/uiaccess`,
+            `${env.CALABRIO_SERVICE_CLIENT_ID}/uiaccess`
           ]
         });
 
@@ -128,12 +129,18 @@ const App = () => {
           scopes: [`${env.GRAPH_CLIENT_ID}/uiaccess`]
         });
 
+        const calabrioService = await instance.acquireTokenSilent({
+          account,
+          scopes: [`${env.CALABRIO_SERVICE_CLIENT_ID}/uiaccess`]
+        });
+
         dispatch({
           type: "loadUserData",
           payload: {
             tokens: {
               msGraph: msGraph.accessToken,
-              sharedGraph: sharedGraph.accessToken
+              sharedGraph: sharedGraph.accessToken,
+              calabrioService: calabrioService.accessToken
             }
           }
         });

@@ -217,7 +217,7 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
       try {
         calabrioAttributes.acdId = newWorker.sid;
         await checkConflictingUsers(calabrioAttributes, users, roles, teams);
-        await createCalabrioUser(calabrioAttributes);
+        await createCalabrioUser(state.userContext.tokens.calabrioService, calabrioAttributes);
 
         logger.info("Successfully created Calabrio User", {
           nNumber,
@@ -501,7 +501,7 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
           });
         } else {
           await checkConflictingUsers(calabrioAttributes, users, roles, teams);
-          await createCalabrioUser(calabrioAttributes);
+          await createCalabrioUser(state.userContext.tokens.calabrioService, calabrioAttributes);
 
           logger.info("Successfully Created Calabrio user", {
             nNumber,

@@ -7,5 +7,7 @@ window.env = {
   TROUX_ID: "<${forge.troux_application_uuid} in cloudforge>",
   GRAPH_CLIENT_ID: "5f9dbf83-0fb0-4c74-8efe-889cc745396c",
   GRAPH_API_URL: "https://tgufpgkyxvacrntvgb75iuo3pi.appsync-api.us-east-1.amazonaws.com/graphql",
-  SOFTPHONE_SERVICE_URL: "https://cicct-softphone-service-development.us-east-1.np.paas.lmig.com"
+  SOFTPHONE_SERVICE_URL: "https://cicct-softphone-service-development.us-east-1.np.paas.lmig.com",
+  CALABRIO_SERVICE_URL: "https://develop.cctapis.us-east-1.libertymutual.com/calabrio-service",
+  CALABRIO_SERVICE_CLIENT_ID: "2a1a2acf-a8db-4b18-b8c1-3efce37e02cb"
 };

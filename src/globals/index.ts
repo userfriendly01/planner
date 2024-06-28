@@ -19,12 +19,15 @@ export const env = {
   TROUX_ID: window.env.TROUX_ID,
   GRAPH_API_URL: window.env.GRAPH_API_URL,
   GRAPH_CLIENT_ID: window.env.GRAPH_CLIENT_ID,
-  SOFTPHONE_SERVICE_URL: window.env.SOFTPHONE_SERVICE_URL
+  SOFTPHONE_SERVICE_URL: window.env.SOFTPHONE_SERVICE_URL,
+  CALABRIO_SERVICE_URL: window.env.CALABRIO_SERVICE_URL,
+  CALABRIO_SERVICE_CLIENT_ID: window.env.CALABRIO_SERVICE_CLIENT_ID
 };
 
 const CONTACT_MANAGER_BASE_URI = `${env.SOFTPHONE_SERVICE_URL}/contact-manager`;
 const SERVICE_BASE_URI = env.SOFTPHONE_SERVICE_URL;
 const MS_GRAPH_URL = "https://graph.microsoft.com/v1.0";
+const CALABRIO_SERVICE_BASE_URI = env.CALABRIO_SERVICE_URL;
 
 export const nNumMatcher = /[n,N]\d{7}/g;
 export const extensionMatcher = /^\d{4,5}$/;
@@ -254,8 +257,8 @@ export const exportColumns = [
 
 export const apiPaths = {
   CHECK_EXTENSION: `${SERVICE_BASE_URI}/checkextension`,
-  CREATE_CALABRIO_TEAM: `${SERVICE_BASE_URI}/calabrio-add-team`,
-  CREATE_CALABRIO_USER: `${SERVICE_BASE_URI}/calabrio-add-user`,
+  CREATE_CALABRIO_TEAM: `${CALABRIO_SERVICE_BASE_URI}/qm?api=Team`,
+  CREATE_CALABRIO_USER: `${CALABRIO_SERVICE_BASE_URI}/qm?api=User`,
   CREATE_CALABRIO_WFM_PERSON: `${SERVICE_BASE_URI}/calabrio-api/wfm/person`,
   CLOSED_MESSAGE: `${SERVICE_BASE_URI}/closedmessage`,
   CREATE_SKILL: `${SERVICE_BASE_URI}/createskill`,

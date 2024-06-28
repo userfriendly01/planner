@@ -174,7 +174,7 @@ describe("CREATE_CALABRIO_QM_USER", () => {
     test("should resolve", async () => {
       const results = await createCalabrioProcessFunction(row, initialTestState);
       expect(createCalabrioUser).toHaveBeenCalledTimes(1);
-      expect(createCalabrioUser).toHaveBeenCalledWith({
+      expect(createCalabrioUser).toHaveBeenCalledWith("Access Token", {
         acdId: "WK13248",
         adLogin: "LM\\n0263445",
         email: "e.mail@lm.com",
@@ -204,7 +204,7 @@ describe("CREATE_CALABRIO_QM_USER", () => {
         delete missingAcdId.acdId;
         const results = await createCalabrioProcessFunction(missingAcdId, initialTestState);
         expect(createCalabrioUser).toHaveBeenCalledTimes(1);
-        expect(createCalabrioUser).toHaveBeenCalledWith({
+        expect(createCalabrioUser).toHaveBeenCalledWith("Access Token", {
           acdId: "WK1234",
           adLogin: "LM\\n0000000",
           email: "e.mail@lm.com",
@@ -229,7 +229,7 @@ describe("CREATE_CALABRIO_QM_USER", () => {
         await createCalabrioProcessFunction(row, initialTestState);
       } catch (err) {
         expect(createCalabrioUser).toHaveBeenCalledTimes(1);
-        expect(createCalabrioUser).toHaveBeenCalledWith({
+        expect(createCalabrioUser).toHaveBeenCalledWith("Access Token", {
           acdId: "WK13248",
           adLogin: "LM\\n0263445",
           email: "e.mail@lm.com",
