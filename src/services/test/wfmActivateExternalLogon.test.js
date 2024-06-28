@@ -3,7 +3,7 @@ import MockAdapter from "axios-mock-adapter";
 import { myAxios } from "utils/myAxios";
 
 const axiosMock = new MockAdapter(myAxios);
-const externalLogonServiceEndpoint = "https://admin.service/externalLogon";
+const externalLogonServiceEndpoint = `${env.ADMIN_CLIENT_URL}/externalLogon`;
 
 beforeEach(() => {
   jest.clearAllMocks();

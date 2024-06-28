@@ -9,7 +9,7 @@ window.env = {
   APP_ENV: "APP_ENV",
   TROUX_ID: "TROUX_ID",
   SOFTPHONE_SERVICE_URL: "http://localhost:8080",
-  ADMIN_SERVICE_URL: "https://admin.service"
+  ADMIN_CLIENT_URL: "https://admin.service"
 };
 
 jest.mock("@azure/msal-react", () => ({
