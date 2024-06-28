@@ -34,7 +34,7 @@ export const fetchUser = async (accessToken: string, nNumber: string): Promise<F
 
   const activeUser =  data.value.length === 1
     ? data.value[0]
-    : data.value.find(account => account.accountEnabled);
+    : data.value.find(account => account.officeLocation && account.accountEnabled);
 
   if (activeUser) {
     return {
