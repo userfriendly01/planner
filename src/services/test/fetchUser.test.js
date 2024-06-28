@@ -57,6 +57,39 @@ describe("fetchUser", () => {
         done();
       });
     });
+    test("should resolve with correct formatted data when more than one value returned", done => {
+      const multipleValRes = {
+        value: [
+          {
+            mail: "email",
+            givenName: null,
+            surname: null,
+            officeLocation: null,
+            department: "Liberty Pending Worker",
+            accountEnabled: true
+          },
+          fetchUserRes.value[0]
+
+        ]
+      };
+      axiosMock.onGet("/service/employeelookup/n01234567").reply(200, multipleValRes);
+
+      const nNum = "n01234567";
+      fetchUser("", nNum).then(resolvedVal => {
+        expect(axiosMock.history.get[0].url).toBe("/service/employeelookup/n01234567");
+        expect(resolvedVal).toEqual({
+          email: fetchUserRes.value[0].mail,
+          firstName: fetchUserRes.value[0].givenName.trim(),
+          lastName: fetchUserRes.value[0].surname.trim(),
+          officeName: fetchUserRes.value[0].officeLocation,
+          officeNumber: fetchUserRes.value[0].extension_128b6233d06d4df391d7de26c982b64e_extensionAttribute1,
+          departmentName: fetchUserRes.value[0].department,
+          departmentNumber: fetchUserRes.value[0].extension_128b6233d06d4df391d7de26c982b64e_extensionAttribute2,
+          isTerminated: false
+        });
+        done();
+      });
+    });
   });
 
   describe("service call to EMPLOYEE_LOOKUP returns nothing", () => {
