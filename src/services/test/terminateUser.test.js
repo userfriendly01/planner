@@ -12,7 +12,7 @@ describe("deleteUser", () => {
   });
   describe("service call to DELETE_WORKER succeeds", () => {
     beforeEach(() => {
-      axiosMock.onPost("undefined/termination").reply(200, { wow: "Yay!" });
+      axiosMock.onPost("https://admin.service/termination").reply(200, { wow: "Yay!" });
     });
     test("should resolve with string", done => {
       const workerPayload = {
@@ -26,7 +26,7 @@ describe("deleteUser", () => {
         inactiveForwardTo: "+1603882224"
       };
       terminateUser(accessToken, workerPayload).then(resolvedVal => {
-        expect(axiosMock.history.post[0].url).toBe("undefined/termination");
+        expect(axiosMock.history.post[0].url).toBe("https://admin.service/termination");
         expect(JSON.parse(axiosMock.history.post[0].data)).toEqual(workerPayload);
         expect(resolvedVal.data).toEqual({ wow: "Yay!" });
         done();
@@ -47,11 +47,11 @@ describe("deleteUser", () => {
       inactiveForwardTo: "+1603882224"
     };
     beforeEach(() => {
-      axiosMock.onPost("undefined/termination").reply(status, badResponse);
+      axiosMock.onPost("https://admin.service/termination").reply(status, badResponse);
     });
     test("should reject with error", done => {
       terminateUser(accessToken, workerPayload).catch(rejectedVal => {
-        expect(axiosMock.history.post[0].url).toBe("undefined/termination");
+        expect(axiosMock.history.post[0].url).toBe("https://admin.service/termination");
         expect(JSON.parse(axiosMock.history.post[0].data)).toEqual(workerPayload);
         expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
         done();

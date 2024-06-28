@@ -117,7 +117,7 @@ const App = () => {
           extraScopesToConsent: [
             // Add additional scopes that are needed here
             `${env.GRAPH_CLIENT_ID}/uiaccess`,
-            `${env.ADMIN_CLIENT_ID}/uiaccess`
+            `${env.ADMIN_CLIENT_ID}/uiAccess`
           ]
         });
 
@@ -130,7 +130,7 @@ const App = () => {
         });
         const adminService = await instance.acquireTokenSilent({
           account,
-          scopes: [`${env.ADMIN_CLIENT_ID}/uiaccess`]
+          scopes: [`${env.ADMIN_CLIENT_ID}/uiAccess`]
         });
 
         dispatch({
