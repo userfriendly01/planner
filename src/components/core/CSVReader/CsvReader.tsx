@@ -3,7 +3,7 @@ import { flowFields } from "../../tabs/alohaFlow/CustomActions/FlowFieldsConfig"
 import { flowFields as dynamicFlowFields } from "../../tabs/dynamicFlow/CustomActions/FlowFieldsConfig";
 import { routingFields } from "utils/alohaRoutingUtils";
 import { AddPageFieldConfigProps as AddRoutingFieldConfigProps } from "alohaRouting/AlohaRouting.Interfaces";
-import { AddFlowFieldsConfigProps } from "alohaFlow/AlohaFlow.Interfaces";
+import { AddFlowFieldsConfigProps } from "../../tabs/alohaFlow/AlohaFlow.Interfaces";
 import {
   ActionPreview,
   AddDynamicFlowFieldsConfigProps,

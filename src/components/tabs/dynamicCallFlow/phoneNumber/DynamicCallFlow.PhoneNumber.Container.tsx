@@ -16,7 +16,9 @@ const DynamicCallFlowPhoneNumberContainer = () => {
   const {
     userContext: {
       permissions,
-      accessTokenGraph
+      tokens: {
+        sharedGraph
+      }
     }
   } = useAdminState();
 
@@ -38,7 +40,7 @@ const DynamicCallFlowPhoneNumberContainer = () => {
 
   return (
     <DynamicCallFlowPhoneNumberContext.Provider value={ {
-      accessTokenGraph,
+      accessTokenGraph: sharedGraph,
       permissions,
       currentOpenModal,
       modalController

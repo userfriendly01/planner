@@ -14,7 +14,9 @@ const DynamicCallFlowActionContainer = (): JSX.Element => {
   const {
     userContext: {
       permissions,
-      accessTokenGraph
+      tokens: {
+        sharedGraph
+      }
     }
   } = useAdminState();
 
@@ -36,7 +38,7 @@ const DynamicCallFlowActionContainer = (): JSX.Element => {
 
   return (
     <DynamicCallFlowActionContext.Provider value={ {
-      accessTokenGraph,
+      accessTokenGraph: sharedGraph,
       permissions,
       currentOpenModal,
       modalController

@@ -1,4 +1,4 @@
-import { FlowDropDownList } from "alohaFlow/AlohaFlow.Interfaces";
+import { FlowDropDownList } from "components/tabs/alohaFlow/AlohaFlow.Interfaces";
 
 export const flowDropDownList: FlowDropDownList = {
   "brand": [],

@@ -1,6 +1,7 @@
-import { CctSharedCallFlowDb } from "alohaFlow/AlohaFlow.Interfaces";
+import {
+  CctSharedCallFlowDb, FlowContent
+} from "components/tabs/alohaFlow/AlohaFlow.Interfaces";
 import { CctSharedCallRoutingDb } from "alohaRouting/AlohaRouting.Interfaces";
-import { FlowContent } from "alohaFlow/AlohaFlow.Interfaces";
 import { AlertBarProps } from "globals/interfaces";
 import {
   ADGroupPermission, BrandNameMap, GraphQLErrors
