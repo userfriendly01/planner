@@ -25,7 +25,6 @@ import { Tooltip } from "@mui/material";
 import {
   Check, Edit
 } from "@mui/icons-material";
-import { formModes } from "globals";
 import {
   profileEntryFormDispatch, useAdminState,
   useSkillState
@@ -34,6 +33,9 @@ import { profileEntryFormActions } from "context/profileEntryFormReducer";
 import {
   Activity, UMSoftphoneConfiguration
 } from "globals/interfaces";
+import {
+  Skill, TwilioQueue
+} from "components/tabs/callflowmanagement/SkillManagement/Skills.Interfaces";
 
 interface ProfileSettingsTableProps {
   setProfileModalState: (payload: any) => void,
@@ -50,15 +52,24 @@ export const ProfileSettingsTable = (props: ProfileSettingsTableProps) => {
     activities,
     profiles
   } = useAdminState().profileContext;
-  const { taskQueues } = useSkillState();
+  const {
+    taskQueues,
+    skills
+  } = useSkillState();
 
-  const editButtonOnClick = (profile: any) => (event: any) => {
-    event.stopPropagation();
+  const editButtonOnClick = (profile: any) => {
     setForm({
       type: profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE,
       payload: {
-        formMode: formModes.UPDATE,
-        profile
+        ...profile,
+        transfer_queues: profile.transfer_queues?.map((queue: string) => taskQueues.find((tq: TwilioQueue) => tq.sid === queue) || {
+          friendly_name: `Unknown Task Queue: ${queue}`,
+          sid: queue
+        }),
+        overflow_skill: profile.overflow_skill ? skills.find((skill: Skill) => skill.name === profile.overflow_skill) || {
+          label: `${profile.overflow_skill} is not valid`,
+          value: "invalid-skill"
+        } : ""
       }
     });
     setProfileModalState({
@@ -157,7 +168,7 @@ export const ProfileSettingsTable = (props: ProfileSettingsTableProps) => {
                     </CustomTableData>
                     <CustomTableData>
                       <TableDataFlex>
-                        {formatTransferQueues(profile.transfer_queues, taskQueues, BubbleDiv)}
+                        {taskQueues.length && formatTransferQueues(profile.transfer_queues, taskQueues, BubbleDiv)}
                       </TableDataFlex>
                     </CustomTableData>
                     <CustomTableData>
@@ -167,12 +178,12 @@ export const ProfileSettingsTable = (props: ProfileSettingsTableProps) => {
                       <TableText style={{ "textWrap": "nowrap" }}>{profile.fwd_to_num ? formatTenDigitNumber(profile.fwd_to_num) : ""}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{profile.accessGroup?.access_group_nme || ""}</TableText>
+                      <TableText>{profile.accessGroup?.access_group_name || ""}</TableText>
                     </CustomTableData>
                     {
                       checkIfPO(loggedInUser) ?
                         <CustomTableData>
-                          <IconWrapper onClick={editButtonOnClick(profile)} data-testid="edit-button">
+                          <IconWrapper onClick={() => editButtonOnClick(profile)} data-testid="edit-button">
                             <Edit fontSize={"inherit"}/>
                           </IconWrapper>
                         </CustomTableData>

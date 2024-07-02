@@ -2,9 +2,12 @@ import {
   ModalOverlayStatuses,
   Activity,
   CallTag,
-  OperatingUnit
+  OperatingUnit,
+  AccessGroup
 } from "globals/interfaces";
-import { Skill } from "callflowmanagement/Skills.Interfaces";
+import {
+  Skill, TwilioQueue
+} from "callflowmanagement/Skills.Interfaces";
 
 export interface ProfileEntryFormProps {
   handleClose: () => void
@@ -53,33 +56,32 @@ export interface ProfileCallTagsSelectFieldProps {
 
 export interface ProfileEntryFormState {
   [index: string]: any,
-  accessGroup: FieldState,
-  accessGroupId: number | null,
+  accessGroup: AccessGroup,
   activitiesList: Activity[],
-  acwDataEntry: FieldState,
-  acwOption: FieldState,
-  agentAssistedPay: FieldState,
-  autoAnswered: FieldState,
-  callReason: FieldState
-  callTagOptions: any[],
+  acwDataEntry: boolean,
+  acwOption: boolean,
+  agentAssistedPay: boolean,
+  autoAnswered: boolean,
+  callReason: boolean
   callTagsList: CallTag[],
-  clickToDial: FieldState,
-  eftAuthorization: FieldState,
-  claimNumberEdit: FieldState,
+  clickToDial: boolean,
+  eftAuthorization: boolean,
+  claimNumberEdit: boolean,
   formMode: string,
   forwardToNum: FieldState,
-  inboundRecorded: FieldState,
-  manualRecorded: FieldState,
-  manualRecordedInbound: FieldState,
+  inboundRecorded: boolean,
+  manualRecorded: boolean,
+  manualRecordedInbound: boolean,
+  backupWorkers: boolean,
   operatingUnit: OperatingUnit,
-  outboundRecorded: FieldState,
-  overflowSkill: FieldState,
-  paymentProcessing: FieldState,
-  policyNumberEdit: FieldState,
+  outboundRecorded: boolean,
+  overflowSkill: Skill,
+  paymentProcessing: boolean,
+  policyNumberEdit: boolean,
   profileId: number | null,
-  profileName: FieldState,
-  transferQueues: Skill[],
-  voiceMailTranscription: FieldState,
+  profileName: string,
+  transferQueues: TwilioQueue[],
+  voiceMailTranscription: boolean,
 }
 
 export interface ToggleFormField {

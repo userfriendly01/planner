@@ -25,6 +25,7 @@ export const env = {
 const SERVICE_BASE_URI = env.SOFTPHONE_SERVICE_URL;
 const MS_GRAPH_URL = "https://graph.microsoft.com/v1.0";
 
+export const numMatcher = /^[0-9]*$/;
 export const nNumMatcher = /[n,N]\d{7}/g;
 export const extensionMatcher = /^\d{4,5}$/;
 

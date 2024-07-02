@@ -1,6 +1,7 @@
 import { apolloClient } from "../components/core/Auth/SharedGraphAPIProvider";
 import {
   AccessGroup,
+  AccessGroupPayload,
   Activity,
   DialListNumber,
   DirectoryNumber,
@@ -13,6 +14,7 @@ import {
   UMSoftphoneConfiguration
 }from "globals/interfaces";
 import {
+  CREATE_ACCESS_GROUP,
   CREATE_DIAL_LIST_ENTRY,
   CREATE_DIRECTORY_ENTRY,
   CREATE_SOFTPHONE_CONFIG,
@@ -27,7 +29,7 @@ import {
 
 export const listUMSoftphoneConfigs = async (dispatch: (action: Action) => void): Promise<UMSoftphoneConfiguration[]> => {
   let profiles: UMSoftphoneConfiguration[] = [];
-  let screenPops: Screenpop[] = [];
+  let screenpops: Screenpop[] = [];
   let accessGroups: AccessGroup[] = [];
   let activities: Activity[] = [];
   let directoryEntries: DirectoryNumber[] = [];
@@ -55,16 +57,22 @@ export const listUMSoftphoneConfigs = async (dispatch: (action: Action) => void)
       }
 
       if(data?.profiles?.items?.length) { profiles = [...profiles, ...data?.profiles?.items]; }
-      if(data?.screenPops?.items?.length) { screenPops = [...screenPops, ...data.screenPops.items]; }
+      if(data?.screenpops?.items?.length) { screenpops = [...screenpops, ...data.screenpops.items]; }
       if(data?.accessGroups?.items?.length) { accessGroups = [...accessGroups, ...data.accessGroups.items]; }
       if(data?.activities?.items?.length) { activities = [...activities, ...data.activities.items]; }
       if(data?.directoryEntries?.items?.length) { directoryEntries = [...directoryEntries, ...data.directoryEntries.items]; }
       if(data?.dialListEntries?.items?.length) { dialListEntries = [...dialListEntries, ...data.dialListEntries.items]; }
 
-      //Test Next Token functionality specifically in unit test
+      const formattedProfileNextToken = data?.profiles?.nextToken ? `"${data.profiles?.nextToken}"` : null;
+      const formattedScreenpopNextToken = data?.screenpops?.nextToken ? `"${data.screenpops?.nextToken}"` : null;
+      const formattedAccessGroupNextToken = data?.accessGroups?.nextToken ? `"${data.accessGroups?.nextToken}"` : null;
+      const formattedActivityNextToken = data?.activities?.nextToken ? `"${data.activities?.nextToken}"` : null;
+      const formattedDirectoryNextToken = data?.directoryEntries?.nextToken ? `"${data.directoryEntries?.nextToken}"` : null;
+      const formattedDialListNextToken = data?.dialListEntries?.nextToken ? `"${data.dialListEntries?.nextToken}"` : null;
 
-      if(data?.profiles?.nextToken || data?.screenPops?.nextToken || data?.accessGroups?.nextToken || data?.activities?.nextToken){
-        return getPageResults(false, data.profiles.nextToken, data.screenPops.nextToken, data.accessGroups.nextToken, data.activities.nextToken);
+
+      if(formattedProfileNextToken || formattedScreenpopNextToken || formattedAccessGroupNextToken || formattedActivityNextToken || formattedDirectoryNextToken || formattedDialListNextToken){
+        return getPageResults(false, formattedProfileNextToken, formattedScreenpopNextToken, formattedAccessGroupNextToken, formattedActivityNextToken, formattedDirectoryNextToken, formattedDialListNextToken);
       } else {
         return;
       }
@@ -75,73 +83,41 @@ export const listUMSoftphoneConfigs = async (dispatch: (action: Action) => void)
   };
 
   await getPageResults(true, null, null, null, null, null, null);
+  const profileState = {
+    profiles,
+    screenpops,
+    accessGroups,
+    activities,
+    directoryEntries,
+    dialListEntries
+  };
 
   dispatch({
     type: "loadProfileOptions",
-    payload: {
-      profiles,
-      screenPops,
-      accessGroups,
-      activities,
-      directoryEntries,
-      dialListEntries
-    }
+    payload: profileState
   });
 
-  return;
+  return profileState.profiles;
 };
 
-export const loadSoftphoneConfigRelationships = async (profiles: UMSoftphoneConfiguration[], dispatch: (action: Action) => void, callback: () => void) => {
+export const loadSoftphoneConfigRelationships = async (profiles: UMSoftphoneConfiguration[], dispatch: (action: Action) => void, callback?: () => void) => {
   const results = await Promise.allSettled(profiles.map(async (p: UMSoftphoneConfiguration) => {
-    const formattedProfile: UMSoftphoneConfiguration =  {
-      ...p,
-      accessGroup: null,
-      activities: [],
-      dialListNumbers: [],
-      directoryNumbers: []
-    };
     const profileId = p.profile_id;
 
-    const getPageResults = async (
-      isFirstQuery: boolean,
-      activityNextToken?: string,
-      directoryNextToken?: string,
-      dialListNextToken?: string
-    ): Promise<UMSoftphoneConfiguration> => {
-      try {
-        const {
-          errors, data
-        }: any = await apolloClient.query<{ results: any }>({
-          query: getSoftphoneConfigRelationshipsQuery(profileId, {
-            activityNextToken,
-            directoryNextToken,
-            dialListNextToken,
-            isFirstQuery
-          }),
-          variables: {}
-        });
+    try {
+      const {
+        errors, data
+      }: any = await apolloClient.query<{ results: any }>({
+        query: getSoftphoneConfigRelationshipsQuery(profileId),
+        variables: {}
+      });
 
-        if(data?.accessGroup) { formattedProfile.accessGroup = data.accessGroup; }
-        if(data?.activities?.items?.length) { formattedProfile.activities = [...formattedProfile.activities, ...data.activities.items]; }
-        if(data?.directoryNumbers?.items?.length) { formattedProfile.directoryNumbers = [...formattedProfile.directoryNumbers, ...data.directoryNumbers.items]; }
-        if(data?.dialListNumbers?.items?.length) { formattedProfile.dialListNumbers = [...formattedProfile.dialListNumbers, ...data.dialListNumbers.items]; }
-
-        //Test Next Token functionality specifically in unit test
-
-        if(errors?.length && !errors.every((e: any) => e.errorType === "NOT_FOUND")) { throw errors; }
-
-        if(data?.activities?.nextToken || data?.directoryNumbers?.nextToken || data?.dialListNumbers?.nextToken){
-          return getPageResults(false, data.actvities.nextToken, data.directoryNumbers.nextToken, data.dialListNumbers.nextToken);
-        } else {
-          return formattedProfile;
-        }
-      } catch(error) {
-        logger.error(`Error thrown getting profile relationship items for ${p}`, error);
-        return formattedProfile;
-      }
-    };
-
-    return await getPageResults(true, null, null, null);
+      if(errors?.length && !errors.every((e: any) => e.errorType === "NOT_FOUND")) { throw errors; }
+      return data.profile;
+    } catch(error) {
+      logger.error(`Error thrown getting profile relationship items for ${p}`, error);
+      return {};
+    }
   }));
 
   dispatch(({
@@ -149,7 +125,7 @@ export const loadSoftphoneConfigRelationships = async (profiles: UMSoftphoneConf
     payload: { profiles: results.map((r: any) => r.value) }
   }));
 
-  callback();
+  if(callback) { callback(); }
 };
 
 export const createProfile = async (profile: ProfilePayload): Promise<any> => {
@@ -310,4 +286,21 @@ export const deleteDirectoryEntry = async (id: string, profile_id: number) => {
   }
 
   return data?.directoryEntry;
+};
+
+export const createAccessGroup = async (accessGroup: AccessGroupPayload): Promise<any> => {
+  const {
+    errors, data
+  }  = await apolloClient.mutate<{ accessGroup: UMSoftphoneConfiguration }>({
+    mutation: CREATE_ACCESS_GROUP,
+    variables: {
+      input: accessGroup
+    }
+  });
+
+  if (errors?.length) {
+    throw errors;
+  }
+
+  return data?.accessGroup;
 };

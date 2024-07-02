@@ -264,8 +264,10 @@ export const DELETE_SOFTPHONE_CONFIG = gql`
 export const CREATE_DIAL_LIST_ENTRY = gql`
   mutation createUMQuickDialNumber($input: UMQuickDialNumberCreateInput!) {
     dialListEntry: createUMQuickDialNumber(input: $input) {
-        cancellationReasons
-        nextToken
+        pk
+        sk
+        profile_id
+        id
     }
   }
 `;
@@ -273,8 +275,10 @@ export const CREATE_DIAL_LIST_ENTRY = gql`
 export const UPDATE_DIAL_LIST_ENTRY = gql`
   mutation updateUMQuickDialNumber($profile_id: Int!, $id: ID!, $input: UMQuickDialUpdateInput!) {
     dialListEntry: updateUMQuickDialNumber(profile_id: $profile_id, id: $id, input: $input) {
-        cancellationReasons
-        nextToken
+        pk
+        sk
+        profile_id
+        id
     }
   }
 `;
@@ -282,8 +286,10 @@ export const UPDATE_DIAL_LIST_ENTRY = gql`
 export const DELETE_DIAL_LIST_ENTRY = gql`
   mutation deleteUMQuickDialNumber($profile_id: Int!, $id: ID!) {
     dialListEntry: deleteUMQuickDialNumber(profile_id: $profile_id, id: $id) {
-        cancellationReasons
-        nextToken
+        pk
+        sk
+        profile_id
+        id
     }
   }
 `;
@@ -292,8 +298,10 @@ export const DELETE_DIAL_LIST_ENTRY = gql`
 export const CREATE_DIRECTORY_ENTRY = gql`
   mutation createUMDirectoryNumber($input: UMDirectoryNumberCreateInput!) {
     directoryEntry: createUMDirectoryNumber(input: $input) {
-        cancellationReasons
-        nextToken
+        pk
+        sk
+        profile_id
+        id
     }
   }
 `;
@@ -301,8 +309,10 @@ export const CREATE_DIRECTORY_ENTRY = gql`
 export const UPDATE_DIRECTORY_ENTRY = gql`
   mutation updateUMDirectoryNumber($profile_id: Int!, $id: ID!, $input: UMDirectoryNumberUpdateInput!) {
     directoryEntry: updateUMDirectoryNumber(profile_id: $profile_id, id: $id, input: $input) {
-        cancellationReasons
-        nextToken
+        pk
+        sk
+        profile_id
+        id
     }
   }
 `;
@@ -310,8 +320,23 @@ export const UPDATE_DIRECTORY_ENTRY = gql`
 export const DELETE_DIRECTORY_ENTRY = gql`
   mutation deleteUMDirectoryNumber($profile_id: Int!, $id: ID!) {
     directoryEntry: deleteUMDirectoryNumber(profile_id: $profile_id, id: $id) {
-        cancellationReasons
-        nextToken
+        pk
+        sk
+        profile_id
+        id
+    }
+  }
+`;
+
+export const CREATE_ACCESS_GROUP = gql`
+  mutation CreateUMAccessGroup($input: UMAccessGroupCreateInput!) {
+    accessGroup: createUMAccessGroup(input: $input) {
+        pk
+        sk
+        access_group_name
+        twilio_dashboard_url
+        item_type
+        id
     }
   }
 `;
@@ -417,7 +442,7 @@ export const listSoftphoneConfigs = (
             }
         }
       }
-      screenPops: listUMScreenpops(nextToken: ${screenpopsNextToken}) @include(if:  ${ !!(screenpopsNextToken?.length || isFirstQuery) }) {
+      screenpops: listUMScreenpops(nextToken: ${screenpopsNextToken}) @include(if:  ${ !!(screenpopsNextToken?.length || isFirstQuery) }) {
         nextToken
         items {
             pk
@@ -480,21 +505,36 @@ export const listSoftphoneConfigs = (
   `;
 };
 
-export const getSoftphoneConfigRelationshipsQuery = (
-  profileId: number,
-  parameters: {
-    accessGroupNextToken?: string,
-    activityNextToken?: string,
-    directoryNextToken?: string,
-    dialListNextToken?: string,
-    skillsNextToken?: string,
-    isFirstQuery?: boolean
-  }
-) => {
-
+export const getSoftphoneConfigRelationshipsQuery = (profileId: number) => {
   return gql`
-    query getSoftphoneConfigurationRelationships {
-      accessGroup: getUMAccessGroupByProfile(profile_id: ${profileId}) @include(if: ${ !!(parameters.isFirstQuery) }) {
+     query GetUMSoftphoneConfiguration {
+      profile: getUMSoftphoneConfiguration(profile_id: ${profileId}) {
+        pk
+        sk
+        item_type
+        profile_id
+        ou_sid
+        ou_name
+        profile_name
+        overflow_skill
+        acw_option
+        acw_tags
+        agnt_asst_pay
+        auto_ans
+        edt_policy_num
+        edt_claim_num
+        call_reason
+        clk_to_dial
+        eft_auth
+        inbnd_rec
+        man_outbnd_rec
+        man_inbnd_rec
+        outbnd_rec
+        takes_paymnts
+        voice_mail_trans
+        fwd_to_num
+        transfer_queues
+        access_group {
           pk
           sk
           access_group_name
@@ -502,10 +542,16 @@ export const getSoftphoneConfigRelationshipsQuery = (
           item_type
           id
           viewable_profiles
-      }
-      activities: queryUMActivitiesByProfile(profile_id: ${profileId}) @include(if: ${ !!(parameters.activityNextToken?.length || parameters.isFirstQuery)}) {
-        nextToken
-        items {
+        }
+        screenpops {
+          pk
+          sk
+          item_type
+          id
+          display_name
+          attribute_name
+        }
+        activities {
           pk
           sk
           activity_name
@@ -513,33 +559,12 @@ export const getSoftphoneConfigRelationshipsQuery = (
           available
           item_type
         }
-      }
-      directoryNumbers: queryUMDirectoryNumbersByProfile(profile_id: ${profileId}, nextToken: ${parameters.directoryNextToken}) @include(if:  ${ !!(parameters.directoryNextToken?.length || parameters.isFirstQuery) }) {
-        nextToken
-        items {
-          pk
-          sk
-          item_type
-          id
-          directory_num
-          first_name
-          last_name
-          profile_id
+        call_tags {
+          display_name
+          options
+          attribute_name
         }
-      }
-      dialListNumbers: queryUMQuickDialNumbersByProfile(profile_id: ${profileId}, nextToken: ${parameters.dialListNextToken}) @include(if: ${ !!(parameters.dialListNextToken?.length || parameters.isFirstQuery) }) {
-        nextToken
-        items {
-          pk
-          sk
-          profile_id
-          contact_num
-          item_type
-          contact_name
-          external_num
-          id
-        }
-      }
     }
-  `;
+  }
+`;
 };

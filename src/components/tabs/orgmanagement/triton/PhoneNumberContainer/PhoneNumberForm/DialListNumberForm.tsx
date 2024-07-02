@@ -7,9 +7,7 @@ import { ModalOverlay } from "components/ModalOverlay";
 import { PhoneNumberInput } from "components/PhoneNumberInput";
 import { PaperContainer } from "components/PaperContainer";
 import { StyledButton } from "components/StyledButton";
-import {
-  formModes, timeouts
-} from "globals";
+import { timeouts } from "globals";
 import {
   DialListNumber, ModalOverlayStatuses
 } from "globals/interfaces";
@@ -18,7 +16,9 @@ import {
   useAdminDispatch, useAdminState
 } from "context/appContext";
 import {
-  createDialListEntry, editDialListEntry
+  createDialListEntry, editDialListEntry,
+  listUMSoftphoneConfigs,
+  loadSoftphoneConfigRelationships
 } from "services/profile";
 import {
   PhoneNumberFormProps, DialListFormEntryProps
@@ -48,7 +48,6 @@ export const DialListNumberForm = (props: PhoneNumberFormProps) => {
     saveStatus: null
   });
 
-
   const [formDialListEntry, setFormDialListEntry] = React.useState<DialListFormEntryProps>({
     id: phoneNumberState.entry.id || null,
     contact_num: {
@@ -56,8 +55,8 @@ export const DialListNumberForm = (props: PhoneNumberFormProps) => {
       unmaskedValue: phoneNumberState.entry.contact_num || "",
       valid: false
     },
-    external_num: phoneNumberState.entry.external_num || "",
-    contact_name: phoneNumberState.entry.contact_name || "",
+    external_num: phoneNumberState.entry.external_num || null,
+    contact_name: phoneNumberState.entry.contact_name || null,
     updated: false
   });
 
@@ -66,17 +65,6 @@ export const DialListNumberForm = (props: PhoneNumberFormProps) => {
 
   const isFormValid = () => isNumberValid(phoneNumberState.entry.contact_num)
       && !isPhoneNumberTaken && isNameValid(phoneNumberState.entry.contact_name);
-
-  const refreshState = () => {
-    const filteredArray = state.profileContext.dialListEntries.filter((de: DialListNumber) => de.id !== phoneNumberState.entry.id);
-    dispatch({
-      type: "loadProfileOptions",
-      payload: {
-        ...state.profileContext,
-        dialListEntries: [...filteredArray, phoneNumberState.entry]
-      }
-    });
-  };
 
   const requestBody: Partial<DialListNumber> = {
     contact_num: formDialListEntry.contact_num.unmaskedValue,
@@ -98,7 +86,7 @@ export const DialListNumberForm = (props: PhoneNumberFormProps) => {
         dialListId: formDialListEntry.id,
         requestBody
       });
-      refreshState();
+      await listUMSoftphoneConfigs(dispatch);
       setLoading({
         overlayMessage: "Successfully created dial list entry",
         saveStatus: ModalOverlayStatuses.SUCCESS
@@ -129,13 +117,14 @@ export const DialListNumberForm = (props: PhoneNumberFormProps) => {
     });
 
     try {
+      delete requestBody.profile_id;
       await editDialListEntry(formDialListEntry.id, selectedProfile, requestBody);
       logger.info(`Successfully updated dial list ${formDialListEntry.contact_name}`, {
         nNumber,
         dialListId: formDialListEntry.id,
         requestBody
       });
-      refreshState();
+      await listUMSoftphoneConfigs(dispatch);
       setLoading({
         overlayMessage: "Successfully updated dial list entry",
         saveStatus: ModalOverlayStatuses.SUCCESS
@@ -167,14 +156,15 @@ export const DialListNumberForm = (props: PhoneNumberFormProps) => {
             message={loading.overlayMessage}
             status={loading.saveStatus}
           /> : null}
-        <Header>{phoneNumberState.formMode === formModes.INSERT ? "Add Dial List Entry" : "Edit Dial List Entry"}</Header>
+        <Header>{phoneNumberState.formMode === "Create" ? "Add Dial List Entry" : "Edit Dial List Entry"}</Header>
         <PhoneNumberInput
           allowSevenDigitVdn={true}
-          error={isPhoneNumberTaken}
-          helperText={isPhoneNumberTaken && "Number already exists in dial list" }
+          error={isPhoneNumberTaken && phoneNumberState.formMode === "Create"}
+          helperText={isPhoneNumberTaken && phoneNumberState.formMode === "Create" && "Number already exists in dial list" }
           id="transfer-number-input"
           label="Transfer Number"
           number={formDialListEntry.contact_num.maskedValue}
+          disabled={phoneNumberState.formMode !== "Create"}
           showError={formDialListEntry.updated}
           updateValue={(maskedValue, unmaskedValue, isValid) => {
             setFormDialListEntry({
@@ -189,8 +179,8 @@ export const DialListNumberForm = (props: PhoneNumberFormProps) => {
           }}
         />
         <TextField
-          error={isNameValid(formDialListEntry.contact_name)}
-          helperText={isNameValid(formDialListEntry.contact_name) && "Please enter a friendly name" }
+          error={!isNameValid(formDialListEntry.contact_name)}
+          helperText={!isNameValid(formDialListEntry.contact_name) && "Please enter a friendly name" }
           id="friendly-name-input"
           inputProps={{ maxLength: 80 }}
           label="Friendly Name"
@@ -229,7 +219,7 @@ export const DialListNumberForm = (props: PhoneNumberFormProps) => {
           </div>
         </ExternalNumberContainer>
         <ButtonWrapper>
-          <StyledButton disabled={!isFormValid} onClick={phoneNumberState.formMode === formModes.INSERT ? insertDialListEntry : updateDialListEntry}>
+          <StyledButton disabled={!isFormValid} onClick={phoneNumberState.formMode === "Create" ? insertDialListEntry : updateDialListEntry}>
             Save
           </StyledButton>
           <StyledButton onClick={closeModal}>

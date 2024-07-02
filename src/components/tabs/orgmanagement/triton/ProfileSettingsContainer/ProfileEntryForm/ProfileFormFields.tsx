@@ -1,15 +1,16 @@
 import React from "react";
 import {
-  ToggleFormField
-} from "./ProfileEntryForm.Interfaces";
-import { formModes } from "globals";
-import { OperatingUnit } from "globals/interfaces";
+  formModes, numMatcher
+} from "globals";
+import {
+  FlexColumn,
+  FlexRow
+} from "globals/interfaces";
 import {
   FormControlsContainer,
   FormControlsPane,
   ToggleContainer,
-  Label,
-  RightColumn
+  Label
 } from "./ProfileEntryForm.Styles";
 import {
   FormControlLabel,
@@ -18,226 +19,312 @@ import {
 } from "@mui/material";
 import {
   profileEntryFormDispatch,
-  profileEntryFormState
+  profileEntryFormState,
+  useAdminState,
+  useSkillState
 } from "context/appContext";
 import { profileEntryFormActions } from "context/profileEntryFormReducer";
-import { ProfileCallTagsSelectField } from "orgmanagement/ProfileCallTagsSelectField";
-import { ProfileAccessGroupField } from "orgmanagement/ProfileAccessGroupField";
-import { ProfileNameTextField } from "orgmanagement/ProfileNameTextField";
-import { ProfileActivitiesSelectField } from "orgmanagement/ProfileActivitiesSelectField";
-import { ProfileQueuesSelectField } from "orgmanagement/ProfileQueuesSelectField";
-import { ProfileOperatingUnitField } from "orgmanagement/ProfileOperatingUnitField";
-import { OverflowSkillTextField } from "orgmanagement/OverflowSkillTextField";
 import { PhoneNumberInput } from "components/PhoneNumberInput";
+import { CallTagFields } from "./CallTagFields";
+import { toggleControls } from "utils/profileUtils";
+import { formatDropdownOptions } from "utils/_formatUtils";
+import { Dropdown } from "components/core/CustomDropdown/Dropdown";
+import { CustomInput } from "components/core/CustomInput/CustomInput";
 
 export const ProfileFormFields = () => {
 
   const form = profileEntryFormState();
   const setForm = profileEntryFormDispatch();
 
-  const leftToggleControls: ToggleFormField[] = [
-    {
-      fieldKey: "inboundRecorded",
-      label: "Inbound Recorded"
-    },
-    {
-      fieldKey: "paymentProcessing",
-      label: "Payment Processing"
-    },
-    {
-      fieldKey: "acwOption",
-      label: "ACW Option"
-    },
-    {
-      fieldKey: "acwDataEntry",
-      label: "ACW Data Entry"
-    },
-    {
-      fieldKey: "agentAssistedPay",
-      label: "Agent Assisted Pay"
-    },
-    {
-      fieldKey: "voiceMailTranscription",
-      label: "Voice Mail Transcription"
-    },
-    {
-      fieldKey: "callReason",
-      label: "Call Reason"
-    },
-    {
-      fieldKey: "selfServiceInd",
-      label: "Self Service Indicator"
-    }
-  ];
+  const {
+    operatingUnits,
+    taskQueues,
+    skills
+  } = useSkillState();
 
-  const rightToggleControls: ToggleFormField[] = [
-    {
-      fieldKey: "autoAnswered",
-      label: "Auto Answered"
-    },
-    {
-      fieldKey: "outboundRecorded",
-      label: "Outbound Recorded"
-    },
-    {
-      fieldKey: "manualRecorded",
-      label: "Manual Recorded"
-    },
-    {
-      fieldKey: "manualRecordedInbound",
-      label: "Manual Recorded Inbound"
-    },
-    {
-      fieldKey: "policyNumberEdit",
-      label: "Policy Number Edit"
-    },
-    {
-      fieldKey: "clickToDial",
-      label: "Click To Dial"
-    },
-    {
-      fieldKey: "eftAuthorization",
-      label: "EFT Authorization"
-    },
-    {
-      fieldKey: "claimNumberEdit",
-      label: "Claim Number Edit"
+  const {
+    activities,
+    screenpops,
+    accessGroups
+  } = useAdminState().profileContext;
+
+  console.log("PROFILE FORM", form);
+
+  React.useEffect(() => {
+    if(!form.updated){
+      setForm({
+        type: profileEntryFormActions.SET_FORM_FIELD,
+        payload: {
+          key: "updated",
+          value: true
+        }
+      });
     }
-  ];
+  }, [form]);
+
+  const styles = {
+    width: "385px",
+    margin: "5px 0"
+  };
+
+  const subStyles = {
+    width: "300px",
+    margin: "5px 0",
+    alignSelf: "center"
+  };
 
   return (
     <FormControlsContainer>
-      <FormControlsPane>
-        {
-          form.formMode === formModes.INSERT ? "" : <Label>Profile ID: {form.profileId} <br /> Operating Unit: {form.operatingUnit.ou_name}</Label>
-        }
-        <ProfileNameTextField label="Profile Name *" />
-
-        {
-          form.formMode === formModes.INSERT ? <ProfileOperatingUnitField setOperatingUnit={(ou: OperatingUnit) => {
-            setForm({
-              type: profileEntryFormActions.SET_OPERATING_UINIT,
-              payload: ou
-            });
-          }} /> : ""
-        }
-
-        {
-          leftToggleControls.map((control, index) => (
-            control.fieldKey !== "selfServiceInd" ?
-              <ToggleContainer key={index}>
-                <FormControlLabel
-                  label={control.label}
-                  labelPlacement="end"
-                  control={<Switch
-                    inputProps={{ "aria-label": "toggle-zero-out" }}
-                    checked={form[control.fieldKey].value}
-                    onChange={() => setForm({
-                      type: profileEntryFormActions.TOGGLE,
-                      fieldKey: control.fieldKey
-                    })} />} />
-              </ToggleContainer> :
-              <Tooltip key={index} title={"Self service indicator is applicable to profiles with an id of 39 and above, but is actually set at the worker attribute level"}>
+      <FlexColumn>
+        <FlexRow>
+          <FlexColumn style={{ alignItems: "center" }}>
+            <FormControlsPane>
+              <CustomInput
+                disabled={form.formMode === formModes.UPDATE}
+                label={"Profile Id *"}
+                maxLength="80"
+                styles={styles}
+                name={form.profileId?.toString()}
+                value={form.profileId?.toString()}
+                updateValue={(value: any) => {
+                  if(value.match(numMatcher)){
+                    setForm({
+                      type: profileEntryFormActions.SET_FORM_FIELD,
+                      payload: {
+                        key: "profileId",
+                        value: parseInt(value)
+                      }
+                    });
+                  } }
+                }
+              />
+              <CustomInput
+                label={"Profile Name *"}
+                maxLength="80"
+                name={form.profileName}
+                value={form.profileName}
+                updateValue={(value: any) => setForm({
+                  type: profileEntryFormActions.SET_FORM_FIELD,
+                  payload: {
+                    key: "profileName",
+                    value
+                  }
+                })}
+              />
+              {
+                <Dropdown
+                  label="Operating Unit *"
+                  disabled={form.formMode === formModes.UPDATE}
+                  styles={styles}
+                  value={formatDropdownOptions([form.operatingUnit], "ou_name", "ou_sid")[0]}
+                  options={formatDropdownOptions(operatingUnits, "ou_name", "ou_sid")}
+                  multiple={false}
+                  updateValue={(e:any, value: any) => setForm({
+                    type: profileEntryFormActions.SET_FORM_FIELD,
+                    payload: {
+                      key: "operatingUnit",
+                      value
+                    }
+                  })}
+                />
+              }
+              <Dropdown
+                label="Overflow Skill"
+                value={formatDropdownOptions([form.overflowSkill], "name", "name")[0]}
+                options={formatDropdownOptions(skills, "name", "name")}
+                updateValue={(e:any, value: any) => setForm({
+                  type: profileEntryFormActions.SET_FORM_FIELD,
+                  payload: {
+                    key: "overflowSkill",
+                    value: value
+                  }
+                })}
+                styles={styles}
+              />
+              <Dropdown
+                label="Activities *"
+                value={formatDropdownOptions(form.activitiesList, "activity_name", "activity_sid")}
+                options={formatDropdownOptions(activities, "activity_name", "activity_sid")}
+                multiple={true}
+                updateValue={(e:any, values: any) => setForm({
+                  type: profileEntryFormActions.SET_FORM_FIELD,
+                  payload: {
+                    key: "activitiesList",
+                    value: values
+                  }
+                })}
+                styles={styles}
+              />
+              <Dropdown
+                label="Transfer Queues"
+                value={formatDropdownOptions(form.transferQueues, "friendly_name", "sid")}
+                options={formatDropdownOptions(taskQueues, "friendly_name", "sid")}
+                multiple={true}
+                updateValue={(e:any, values: any) => setForm({
+                  type: profileEntryFormActions.SET_FORM_FIELD,
+                  payload: {
+                    key: "transferQueues",
+                    value: values
+                  }
+                })}
+                styles={styles}
+              />
+              <Dropdown
+                label="Screenpops"
+                styles={styles}
+                value={formatDropdownOptions(form.screenpops, "display_name", "id")}
+                options={formatDropdownOptions(screenpops, "display_name", "id")}
+                multiple={true}
+                updateValue={(e:any, values: any) => setForm({
+                  type: profileEntryFormActions.SET_FORM_FIELD,
+                  payload: {
+                    key: "screenpops",
+                    value: values
+                  }
+                })}
+              />
+              <Dropdown
+                label="Access Group"
+                styles={styles}
+                options={[
+                  {
+                    label: "Create New Access Group",
+                    value: "create-new"
+                  },
+                  {
+                    label: "divider",
+                    value: "divider"
+                  },
+                  ...formatDropdownOptions(accessGroups, "access_group_name", "id")
+                ]}
+                multiple={false}
+                value={formatDropdownOptions([form.accessGroup], "access_group_name", "id")[0] || ""}
+                updateValue={(e:any, value: any) => {
+                  if(value?.value === "create-new"){
+                    setForm({
+                      type: profileEntryFormActions.SET_FORM_FIELD,
+                      payload: {
+                        key: "accessGroup",
+                        value: {
+                          isNew: true,
+                          label: "Create New Access Group",
+                          value: "create-new"
+                        }
+                      }
+                    });
+                  } else {
+                    setForm({
+                      type: profileEntryFormActions.SET_FORM_FIELD,
+                      payload: {
+                        key: "accessGroup",
+                        value: value
+                      }
+                    });
+                  }
+                }}
+              />
+              {form.accessGroup?.isNew &&
+          <>
+            <CustomInput
+              label={"New Access Group Name *"}
+              name={"New Access Group Name"}
+              maxLength="80"
+              styles={subStyles}
+              updateValue={value => {
+                setForm({
+                  type: profileEntryFormActions.SET_FORM_FIELD,
+                  payload: {
+                    key: "accessGroup",
+                    value: {
+                      ...form.accessGroup,
+                      access_group_name: value
+                    }
+                  }
+                });
+              }}
+              value={form.accessGroup?.access_group_name}
+            />
+            <CustomInput
+              label={"Twilio Dashboard Url *"}
+              name={"Twilio Dashboard Url"}
+              styles={subStyles}
+              updateValue={value => {
+                setForm({
+                  type: profileEntryFormActions.SET_FORM_FIELD,
+                  payload: {
+                    key: "accessGroup",
+                    value: {
+                      ...form.accessGroup,
+                      twilio_dashboard_url: value
+                    }
+                  }
+                });
+              }}
+              value={form.accessGroup?.twilio_dashboard_url}
+            />
+          </>
+              }
+              <PhoneNumberInput
+                allowSevenDigitVdn={false}
+                id="forward-to-num"
+                style={styles}
+                number={form.forwardToNum.value}
+                label="Forward To Number"
+                updateValue={(maskedValue: string, unmaskedValue: string, isValid: boolean, e164Number: string) => {
+                  setForm({
+                    type: profileEntryFormActions.SET_FORM_FIELD,
+                    payload: {
+                      key: "forwardToNum",
+                      value: {
+                        value: maskedValue,
+                        unmaskedValue,
+                        valid: isValid,
+                        e164Number
+                      }
+                    }
+                  });
+                }}
+              />
+            </FormControlsPane>
+          </FlexColumn>
+          <FlexColumn>
+            {
+              toggleControls.map((control, index) => (
                 <ToggleContainer key={index}>
                   <FormControlLabel
                     label={control.label}
                     labelPlacement="end"
                     control={<Switch
                       inputProps={{ "aria-label": "toggle-zero-out" }}
-                      checked={form.profileId && typeof form.profileId === "string" ? (parseInt(form.profileId) >= 39 ? true : false) : (form.profileId >= 39 ? true : false)}
-                      disabled={true} />} />
+                      checked={form[control.fieldKey]}
+                      onChange={() => setForm({
+                        type: profileEntryFormActions.SET_FORM_FIELD,
+                        payload: {
+                          key: control.fieldKey,
+                          value: !form[control.fieldKey]
+                        }
+                      })}
+                    />} />
                 </ToggleContainer>
-              </Tooltip>
-          ))
+              ))
+            }
+            <Tooltip title={"Self service indicator is applicable to profiles with an id of 39 and above, but is actually set at the worker attribute level"}>
+              <ToggleContainer>
+                <FormControlLabel
+                  label={"Self Service Indicator"}
+                  labelPlacement="end"
+                  control={<Switch
+                    inputProps={{ "aria-label": "toggle-zero-out" }}
+                    checked={form.profileId >= 39}
+                    disabled={true} />} />
+              </ToggleContainer>
+            </Tooltip>
+          </FlexColumn>
+        </FlexRow>
+        { form.acwDataEntry &&
+          <CallTagFields/>
         }
-        <OverflowSkillTextField label="Overflow Skill" />
-        <ProfileActivitiesSelectField
-          activitiesList={form.activitiesList}
-          setActivitiesList={activitiesList => {
-            setForm({
-              type: profileEntryFormActions.UPDATE_ACTIVITIES_LIST,
-              payload: activitiesList
-            });
-          }}
-        />
-        <ProfileQueuesSelectField
-          transferQueues={form.transferQueues}
-          setQueueList={transferQueues => {
-            setForm({
-              type: profileEntryFormActions.UPDATE_TRANSFER_QUEUES,
-              payload: transferQueues
-            });
-          }}
-        />
-        {
-          form["acwDataEntry"].value === false ? "" :
-            <ProfileCallTagsSelectField
-              callTagsList={form.callTagsList}
-              callTagOptionsList={form.callTagOptions}
-              setCallTagsList={callTagsList => {
-                setForm({
-                  type: profileEntryFormActions.UPDATE_CALL_TAGS_LIST,
-                  payload: callTagsList
-                });
-              }}
-            />
-        }
-      </FormControlsPane>
-      <RightColumn>
-        <div style={form.formMode === formModes.INSERT ? { height: "159px" } : { height: "149px" }}></div>
-        {
-          rightToggleControls.map((control, index) => (
-            <ToggleContainer key={index}>
-              <FormControlLabel
-                label={control.label}
-                labelPlacement="end"
-                control={<Switch
-                  inputProps={{ "aria-label": "toggle-zero-out" }}
-                  checked={form[control.fieldKey].value}
-                  onChange={() => setForm({
-                    type: profileEntryFormActions.TOGGLE,
-                    fieldKey: control.fieldKey
-                  })} />} />
-            </ToggleContainer>
-          ))
-        }
-        <ToggleContainer key="accessGroup">
-          <FormControlLabel
-            label="Access Group"
-            labelPlacement="end"
-            control={<Switch
-              inputProps={{ "aria-label": "toggle-zero-out" }}
-              checked={form["accessGroup"].value}
-              onChange={() => setForm({
-                type: profileEntryFormActions.UPDATE_ACCESS_GROUP,
-                fieldKey: "accessGroup"
-              })} />} />
-        </ToggleContainer>
-        <ProfileAccessGroupField enableDropDown={form["accessGroup"].value} accessGroupId={form["accessGroupId"]} setAccessGroupId={(accessGroupId: number) => {
-          setForm({
-            type: profileEntryFormActions.UPDATE_ACCESS_GROUP_ID,
-            payload: accessGroupId
-          });
-        }} />
-        <PhoneNumberInput
-          allowSevenDigitVdn={false}
-          id="forward-to-num"
-          number={form["forwardToNum"].value}
-          label="Forward To Number"
-          showError={form["forwardToNum"].value && !form["forwardToNum"].valid}
-          updateValue={(maskedValue: string, _unmaskedValue: string, isValid: boolean, e164Number: string) => {
-            setForm({
-              type: profileEntryFormActions.UPDATE_FORWARD_TO_NUM,
-              payload: {
-                maskedValue,
-                unmaskedValue: _unmaskedValue,
-                isValid,
-                e164Number
-              }
-            });
-          }}
-        />
-      </RightColumn>
+      </FlexColumn>
     </FormControlsContainer>
   );
 };

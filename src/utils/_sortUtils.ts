@@ -24,12 +24,12 @@ export const sortGraphObjectsByPk = (a: any, b: any) => {
 };
 
 export const sortDialListEntriesByName = (a: any, b: any) => {
-  const [aName, bName] = [a.contact_nme, b.contact_nme];
+  const [aName, bName] = [a.contact_name, b.contact_name];
   return sortStrings(aName, bName);
 };
 
 export const sortDirectoryListEntriesByName = (a: any, b: any) => {
-  const [aName, bName] = [`${a.last_nme}, ${a.first_nme}`, `${b.last_nme}, ${b.first_nme}`];
+  const [aName, bName] = [`${a.last_name}, ${a.first_name}`, `${b.last_name}, ${b.first_name}`];
   return sortStrings(aName, bName);
 };
 

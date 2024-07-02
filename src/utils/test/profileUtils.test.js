@@ -7,14 +7,11 @@ import { Tooltip } from "@mui/material";
 import {
   formatProfileACWDataEntry,
   formatActivityData,
-  formatCallTagsName,
   formatAggregateQueues,
   formatSelfServiceIndicatorData,
   createProfilePayload,
   updateProfilePayload,
-  isOverflowSkillValid,
-  isProfileFormValid,
-  isProfileNameValid
+  isProfileFormValid
 } from "../profileUtils";
 import {
   BubbleDiv,
@@ -22,48 +19,6 @@ import {
 } from "components/tabs/orgmanagement/triton/ProfileSettingsContainer/ProfileSettingsTable/ProfileSettingsTable.Styles";
 
 describe("profileUtils", () => {
-  describe("isProfileNameValid", () => {
-    test("should return true when valid profile name is entered", () => {
-      const result = isProfileNameValid("Test Value");
-      expect(result).toBe(true);
-    });
-    test("profile name is valid when it is alphanumeric with special characters", () => {
-      const result = isProfileNameValid("Te$t-Value (profile)");
-      expect(result).toBe(true);
-    });
-    test("should return false when profile name is over 80 characters", () => {
-      const result = isProfileNameValid("testprofiletestprofiletestprofiletestprofiletestprofiletestprofiletestprofiletestprofiletestprofile");
-      expect(result).toBe(false);
-    });
-    test("should return false when profile name is empty string", () => {
-      const result = isProfileNameValid("");
-      expect(result).toBe(false);
-    });
-  });
-
-  describe("isOverflowSkillValid", () => {
-    test("should return true when valid overflow skill is entered", () => {
-      const result = isOverflowSkillValid("skill23");
-      expect(result).toBe(true);
-    });
-    test("overflow skill is invalid when space is entered", () => {
-      const result = isOverflowSkillValid("test skill");
-      expect(result).toBe(false);
-    });
-    test("overflow skill is invalid when special character", () => {
-      const result = isOverflowSkillValid("test-skill");
-      expect(result).toBe(false);
-    });
-    test("overflow skill is invalid when over 80 characters", () => {
-      const result = isOverflowSkillValid("testoverflowskilltestoverflowskilltestoverflowskilltestoverflowskilltestoverflowskill");
-      expect(result).toBe(false);
-    });
-    test("empty overflow skill is valid", () => {
-      const result = isOverflowSkillValid("");
-      expect(result).toBe(true);
-    });
-  });
-
   describe("isProfileFormValid", () => {
     test("should return true when activitiesList, profileName, overflowSkill, acwDataEntry(disabled), callTagsList(empty) and accessGrouptoggle(true) are valid", () => {
       const form = {
@@ -379,18 +334,6 @@ describe("profileUtils", () => {
     });
     test("should return empty string for null activity", () => {
       expect(formatActivityData(null, BubbleDiv)).toBe("");
-    });
-  });
-
-  describe("formatCallTagsName", () => {
-    test("should return a formatted call tag with one underscore", () => {
-      expect(formatCallTagsName("claim_number")).toStrictEqual("Claim Number");
-    });
-    test("should return a formatted call tag with multiple underscores", () => {
-      expect(formatCallTagsName("aces_claim_number")).toStrictEqual("Aces Claim Number");
-    });
-    test("should return a formatted call tag with no underscores", () => {
-      expect(formatCallTagsName("notes")).toStrictEqual("Notes");
     });
   });
 

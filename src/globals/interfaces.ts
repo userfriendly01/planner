@@ -185,10 +185,11 @@ export interface UMOffice {
 export interface AccessGroup {
   pk: string,
   sk: string,
-  item_type: string,
   id: string,
-  activity_sid: string,
-  twilio_dashboard_url: string
+  item_type: string,
+  access_group_name: string,
+  twilio_dashboard_url: string,
+  isNew: boolean
 }
 
 export interface Activity {
@@ -268,7 +269,8 @@ export interface UMSoftphoneConfiguration {
     accessGroup?: AccessGroup,
     activities?: Activity[],
     dialListNumbers?: DialListNumber[],
-    directoryNumbers?: DirectoryNumber[]
+    directoryNumbers?: DirectoryNumber[],
+    screenpops?: Screenpop[]
 }
 
 export interface AddEditSoftphoneConfigRequest {
@@ -301,29 +303,38 @@ export interface AddEditSoftphoneConfigRequest {
   access_group_id: string[]
 }
 
+export interface AccessGroupPayload {
+  access_group_name: string,
+  twilio_dashboard_url: string
+}
+
 export interface ProfilePayload {
-  profile_id: null | number,
+  profile_id?: number
   profile_name: string,
-  activities: Array<number>,
-  recorded_i: boolean,
-  auto_answd_i: boolean,
-  pmt_prcsg_i: boolean,
-  otbnd_recorded_i: boolean,
-  acw_option_i: boolean,
-  callTags: Array<Record<string, unknown>>,
-  manual_recorded_i: boolean,
-  acw_data_entry_i: boolean,
-  manual_record_inbound_i: boolean,
-  agent_assisted_pay_i: boolean,
-  overflow_skill: string | null,
-  policy_number_edit_i: boolean,
-  voice_mail_transcription_i: boolean,
-  call_reason_i: boolean,
-  click_to_dial_i: boolean,
-  eft_authorization_i: boolean,
-  claim_number_edit_i: boolean,
-  transferQueues: Array<Record<string, unknown>>,
-  aggregateQueues: Array<number>
+  overflow_skill: string,
+  acw_option: boolean,
+  acw_tags: boolean,
+  agnt_asst_pay: boolean,
+  auto_ans: boolean,
+  edt_policy_num: boolean,
+  edt_claim_num: boolean,
+  call_reason: boolean,
+  clk_to_dial: boolean,
+  eft_auth: boolean,
+  inbnd_rec: boolean,
+  man_outbnd_rec: boolean,
+  man_inbnd_rec: boolean,
+  outbnd_rec: boolean,
+  takes_paymnts: boolean,
+  voice_mail_trans: boolean,
+  ou_name: string,
+  ou_sid: string,
+  fwd_to_num: string,
+  screenpop_ids: string[],
+  access_group_id: string,
+  activity_sids: string[],
+  call_tags: CallTag[],
+  transfer_queues: string[]
 }
 
 export interface AggregateQueue {
@@ -500,16 +511,6 @@ export interface TableStateProps {
 export interface OperatingUnit {
   ou_sid: string,
   ou_name: string
-}
-
-export interface AccessGroup {
-  access_group_id: number,
-  access_group_nme: string,
-  twilio_dashboard_url: string,
-  viewable_profiles: Array<{
-    profile_id: number,
-    name: string
-  }>
 }
 
 export type Control = "input" | "select" | "autoComplete" | "timePicker" | "multiField" | "multiTextField" | "switch";

@@ -21,6 +21,9 @@ import { formatTenDigitNumber } from "utils/numberUtils";
 import {
   DialListNumber, DirectoryNumber
 } from "globals/interfaces";
+import {
+  sortDialListEntriesByName, sortDirectoryListEntriesByName
+} from "utils/_sortUtils";
 
 export const PhoneNumberTable = (props: PhoneNumberTableProps) => {
   const {
@@ -54,32 +57,29 @@ export const PhoneNumberTable = (props: PhoneNumberTableProps) => {
               </thead>
               <tbody>
                 {type === "Directory" &&
-                <div>
-                  { filteredList.map((entry: DirectoryNumber) => ((
-                    <CustomTableRow key={entry.id} data-testid="table-row">
-                      <CustomTableData>
-                        <TableText>{`${entry.last_name}, ${entry.first_name}`}</TableText>
-                      </CustomTableData>
-                      <CustomTableData>
-                        <TableText>{formatTenDigitNumber(entry.directory_num)}</TableText>
-                      </CustomTableData>
-                      <CustomTableData>
-                        <IconWrapper onClick={() => editFunction(entry)}>
-                          <Edit fontSize={"inherit"} />
-                        </IconWrapper>
-                      </CustomTableData>
-                      <CustomTableData>
-                        <IconWrapper onClick={() => deleteFunction(entry)}>
-                          <Delete fontSize={"inherit"} />
-                        </IconWrapper>
-                      </CustomTableData>
-                    </CustomTableRow>
-                  )))
-                  }
-                </div>}
+                 filteredList.sort(sortDirectoryListEntriesByName).map((entry: DirectoryNumber) => ((
+                   <CustomTableRow key={entry.id} data-testid="table-row">
+                     <CustomTableData>
+                       <TableText>{`${entry.last_name}, ${entry.first_name}`}</TableText>
+                     </CustomTableData>
+                     <CustomTableData>
+                       <TableText>{formatTenDigitNumber(entry.directory_num)}</TableText>
+                     </CustomTableData>
+                     <CustomTableData>
+                       <IconWrapper onClick={() => editFunction(entry)}>
+                         <Edit fontSize={"inherit"} />
+                       </IconWrapper>
+                     </CustomTableData>
+                     <CustomTableData>
+                       <IconWrapper onClick={() => deleteFunction(entry)}>
+                         <Delete fontSize={"inherit"} />
+                       </IconWrapper>
+                     </CustomTableData>
+                   </CustomTableRow>
+                 )))
+                }
                 {type === "DialList" &&
-                 <div>
-                   { filteredList.map((entry: DialListNumber) => ((
+                   filteredList.sort(sortDialListEntriesByName).map((entry: DialListNumber) => ((
                      <CustomTableRow key={entry.id} data-testid="table-row">
                        <CustomTableData>
                          <TableText>{`${entry.contact_name}`}</TableText>
@@ -99,8 +99,7 @@ export const PhoneNumberTable = (props: PhoneNumberTableProps) => {
                        </CustomTableData>
                      </CustomTableRow>
                    )))
-                   }
-                 </div>}
+                }
               </tbody>
             </CustomTable>
           </StyledPaper>

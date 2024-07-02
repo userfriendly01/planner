@@ -34,7 +34,7 @@ export const ProfileDropDown = (props: ProfileDropDownProps) => {
           value: profile.profile_id,
           ...profile
         }))}
-        updateValue={(event: any, newInput: any) => setSelectedProfile(newInput.value)}
+        updateValue={(event: any, newInput: any) => setSelectedProfile(newInput?.value)}
         value={getValue()}
       />
     </div>

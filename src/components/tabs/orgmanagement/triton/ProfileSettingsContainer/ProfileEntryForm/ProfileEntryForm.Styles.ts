@@ -13,10 +13,9 @@ export const ModalContainer = styled.div<{theme: any}>`
   padding: 0 8px;
   position: absolute;
   right: 0;
-  top: 10vh;
+  top: 5vh;
   width: 100%;
-  min-height: 600px;
-  max-height: 80vh;
+  height: 90vh;
 `;
 
 export const Header1 = styled.h1`
@@ -40,18 +39,34 @@ export const FormControlsContainer = styled.div`
   flex-direction: row;
   width: 100%;
   justify-content: center;
-  max-height: 650px;
   padding-top: 5px;
-  overflow: overlay;
+  overflow-y: scroll;
+  align-items: baseline;
+  align-self: center;
+`;
+
+export const FormRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 40%;
+  justify-content: center;
+  padding-top: 5px;
+  align-items: center;
+  justify-content: space-evenly;
+  align-self: center;
 `;
 
 export const FormControlsPane = styled.div`
   display: flex;
   flex-direction: column;
-  min-width: 320px;
   padding: 0 8px;
+`;
+
+export const CallTagWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  max-width: 400px;
+  padding: 0 8px;
 `;
 
 export const ToggleContainer = styled.div`
@@ -70,12 +85,6 @@ export const Label = styled.p`
   line-height: 1.5;
   letter-spacing: 0.00938em;
   margin: 5px;
-`;
-
-export const RightColumn = styled(FormControlsPane)`
-  display: flex;
-  flex-direction: column;
-  margin-top: -20px;
 `;
 
 export const ProfileDropdownControlWrapper = styled.div`

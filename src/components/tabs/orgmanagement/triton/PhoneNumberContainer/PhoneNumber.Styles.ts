@@ -115,3 +115,19 @@ export const InfoOutlinedStyled = styled(InfoOutlined)`
   font-size: 1.5em;
 }
 `;
+
+
+export const AddContactButtonContainer = styled.div`
+  display: flex;
+  margin: 1em;
+  width: 100%;
+`;
+
+export const TableContainer = styled.div`
+  align-items: center;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  padding: 2%;
+  position: relative;
+`;

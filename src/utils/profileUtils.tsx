@@ -1,62 +1,37 @@
 import React from "react";
-import _ from "lodash";
-import {
-  Check,
-  AutoAwesomeMotion
-} from "@mui/icons-material";
+import { Check } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
-import { logger } from "utils/logger";
-import { ProfileEntryFormState } from "orgmanagement/ProfileEntryForm.Interfaces";
+import {
+  ProfileEntryFormState, ToggleFormField
+} from "orgmanagement/ProfileEntryForm.Interfaces";
 import { TwilioQueue } from "components/tabs/callflowmanagement/SkillManagement/Skills.Interfaces";
-import { CallTag } from "globals/interfaces";
+import {
+  Activity, CallTag, ProfilePayload, Screenpop
+} from "globals/interfaces";
+import {
+  formModes, numMatcher
+} from "globals/index";
 
 export const isProfileFormValid = (form: ProfileEntryFormState): boolean => {
-  if (form.operatingUnit.ou_name && form.activitiesList.length
-    && form.profileName.valid && form.overflowSkill.valid
-    && (form.forwardToNum.valid || !form.forwardToNum.unmaskedValue) // allow null
-    && ((form.acwDataEntry.value === true && form.callTagsList.length) || (form.acwDataEntry.value === false && !form.callTagsList.length))
-    && ((form.accessGroup.value === true && form.accessGroupId) || form.accessGroup.value === false)) {
-    return true;
-  }
-  return false;
+  const isAccessGroupValid = (form.accessGroup?.isNew && form.accessGroup?.access_group_name?.length && form.accessGroup?.twilio_dashboard_url?.length) || (!form.accessGroup?.isNew);
+  return !!(form.profileId?.toString().match(numMatcher) && form.forwardToNum.valid && form.operatingUnit &&
+  form.activitiesList.length && form.profileName && form.profileName.trim().length && form.updated && isAccessGroupValid);
 };
-
-export const isProfileNameValid = (profileName: string): boolean => {
-  return profileName.length && profileName.length <= 80 ? true : false;
-};
-
-export const isOverflowSkillValid = (overflowSkill: string): boolean => {
-  const overflowSkillRegEx = /^[0-9a-zA-Z]+$/;
-  return !overflowSkill || (overflowSkill.length <= 80 && overflowSkill.match(overflowSkillRegEx)) ? true : false;
-};
-
-
-export const formatProfileACWDataEntry = (acwOption: boolean, callTags: CallTag[], BubbleDiv: any, HighlightRed: any) => {
-  if (acwOption && callTags) {
+export const formatProfileACWDataEntry = (acwTags: boolean, callTags: CallTag[], BubbleDiv: any, HighlightRed: any) => {
+  if (acwTags && callTags?.length) {
     return callTags.map((callTag: CallTag) => {
       return <Tooltip key={callTag.attribute_name} placement="top" title={callTag.options ? callTag.options.toString().replace(/,/g,", ") : ""}>
         <BubbleDiv key={callTag.attribute_name}>{callTag.display_name}</BubbleDiv>
       </Tooltip>;
     });
   }
-  if (acwOption && !callTags) {
+  if (acwTags && !callTags?.length) {
     return  <HighlightRed>{"Call tags not configured but feature enabled"}</HighlightRed>;
   }
-  if (!acwOption && callTags) {
+  if (!acwTags && callTags?.length) {
     return  <HighlightRed>{"Call tags configured but feature disabled"}</HighlightRed>;
   }
   return "";
-};
-
-export const formatSimpleText = (text?: string) => {
-  if (text === null) {
-    return  "";
-  }
-  return text;
-};
-
-export const formatCallTagsName = (name: string) => {
-  return _.startCase(name);
 };
 
 export const formatSelfServiceIndicatorData = (profileId: number) => {
@@ -69,98 +44,47 @@ export const formatSelfServiceIndicatorData = (profileId: number) => {
 export const formatTransferQueues = (transferQueueSids: string[], taskQueues: TwilioQueue[],  BubbleDiv: any) => {
   return transferQueueSids?.map(sid => {
     const taskQueue: Partial<TwilioQueue> = taskQueues.find(t => t.sid === sid) || { friendly_name: "Unknown" };
-    return <BubbleDiv key={`${taskQueue.sid}`}>{taskQueue.friendly_name}</BubbleDiv>;
+    return <BubbleDiv key={`${sid}`}>{taskQueue.friendly_name}</BubbleDiv>;
   });
 };
 
-export const createProfilePayload = (form: any) => {
-  return {
-    profile_id: form.profileId,
-    profile_name: form.profileName.value,
-    activities: form.activitiesList.map((activity: any) => activity.activity_id),
-    recorded_i: form.inboundRecorded.value,
-    auto_answd_i: form.autoAnswered.value,
-    pmt_prcsg_i: form.paymentProcessing.value,
-    otbnd_recorded_i: form.outboundRecorded.value,
-    callTags: form.callTagsList.map((callTag: any) => {
-      return {
-        wrkr_tsk_info_id: callTag.wrkr_tsk_info_id,
-        display_nme: formatCallTagsName(callTag.wrkr_tsk_info_nme),
-        options_id: callTag.options_id
-      };
-    }),
-    acw_option_i: form.acwOption.value,
-    manual_recorded_i: form.manualRecorded.value,
-    acw_data_entry_i: form.acwDataEntry.value,
-    manual_record_inbound_i: form.manualRecordedInbound.value,
-    agent_assisted_pay_i: form.agentAssistedPay.value,
-    overflow_skill: form.overflowSkill.value || null,
-    policy_number_edit_i: form.policyNumberEdit.value,
-    voice_mail_transcription_i: form.voiceMailTranscription.value,
-    click_to_dial_i: form.clickToDial.value,
-    call_reason_i: form.callReason.value,
-    eft_authorization_i: form.eftAuthorization.value,
-    claim_number_edit_i: form.claimNumberEdit.value,
-    transferQueues: form.transferQueues.filter((queue: any) => queue.ctmSkillId > 0).map((queue: any) => {
-      return {
-        skill_id: queue.ctmSkillId,
-        skill_nme: queue.ctmSkillDisplayName
-      };
-    }),
-    access_group: form.accessGroup.value || null,
-    // Aggregate queues need to be set to a negative ID in order to not clash with single transfer queues / skills. In the payload we need to change that back to a positive integer
-    aggregateQueues: form.transferQueues.filter((queue: any) => queue.ctmSkillId < 0).map((queue: any) => Math.abs(queue.ctmSkillId)),
-    operating_unit_sid: form.operatingUnit.ou_sid,
-    operating_unit_nme: form.operatingUnit.ou_name,
-    access_group_id: form.accessGroup.value ? form.accessGroupId : null,
-    fwd_to_num: form.forwardToNum.unmaskedValue ? form.forwardToNum.unmaskedValue : null
-  };
-};
-
-export const updateProfilePayload = (form: any) => {
-  const payload: any = {
-    profile_id: form.profileId
+export const constructProfilePayload = (form: ProfileEntryFormState) => {
+  const payload: ProfilePayload = {
+    profile_name: form.profileName,
+    overflow_skill: form.overflowSkill?.name || null,
+    acw_option: form.acwOption,
+    acw_tags: form.acwDataEntry,
+    agnt_asst_pay: form.agentAssistedPay,
+    auto_ans: form.autoAnswered,
+    edt_policy_num: form.policyNumberEdit,
+    edt_claim_num: form.claimNumberEdit,
+    call_reason: form.callReason,
+    clk_to_dial: form.clickToDial,
+    eft_auth: form.eftAuthorization,
+    inbnd_rec: form.inboundRecorded,
+    man_outbnd_rec: form.manualRecorded,
+    man_inbnd_rec: form.manualRecordedInbound,
+    outbnd_rec: form.outboundRecorded,
+    takes_paymnts: form.paymentProcessing,
+    voice_mail_trans: form.voiceMailTranscription,
+    ou_name: form.operatingUnit?.ou_name,
+    ou_sid: form.operatingUnit?.ou_sid,
+    fwd_to_num: form.forwardToNum.unmaskedValue ? form.forwardToNum.unmaskedValue : null,
+    screenpop_ids: form.screenpops.map((pop: Screenpop) => pop.id),
+    access_group_id: form.accessGroup?.id || null,
+    activity_sids: form.activitiesList.map((activity: Activity) => activity.activity_sid),
+    call_tags: form.callTagsList.map((tag: CallTag) => ({
+      attribute_name: tag.attribute_name,
+      display_name: tag.display_name,
+      options: tag.options
+    })),
+    transfer_queues: form.transferQueues.map((queue: TwilioQueue) => queue.sid)
   };
 
-  form.profileName.updated ? payload.profile_name = form.profileName.value : null;
-  form.overflowSkill.updated ? payload.overflow_skill = form.overflowSkill.value || null : null;
-  form.activitiesUpdated ? payload.activities = form.activitiesList.map((activity: any) => activity.activity_id) : null;
-  form.queuesUpdated ? payload.transferQueues = form.transferQueues.filter((queue: any) => queue.ctmSkillId > 0).map((queue: any) => {
-    return {
-      skill_id: queue.ctmSkillId,
-      skill_nme: queue.ctmSkillDisplayName
-    };
-  }) : null;
-  // Aggregate queues need to be set to a negative ID in order to not clash with single transfer queues / skills. In the payload we need to change that back to a positive integer
-  form.queuesUpdated ? payload.aggregateQueues = form.transferQueues.filter((queue: any) => queue.ctmSkillId < 0).map((queue: any) => Math.abs(queue.ctmSkillId)) : null;
-  form.inboundRecorded.updated ? payload.recorded_i = form.inboundRecorded.value : null;
-  form.autoAnswered.updated ? payload.auto_answd_i = form.autoAnswered.value : null;
-  form.paymentProcessing.updated ? payload.pmt_prcsg_i = form.paymentProcessing.value : null;
-  form.outboundRecorded.updated ? payload.otbnd_recorded_i = form.outboundRecorded.value : null;
-  form.acwOption.updated ? payload.acw_option_i = form.acwOption.value : null;
-  form.manualRecorded.updated ? payload.manual_recorded_i = form.manualRecorded.value : null;
-  form.acwDataEntry.updated ? payload.acw_data_entry_i = form.acwDataEntry.value : null;
-  form.manualRecordedInbound.updated ? payload.manual_record_inbound_i = form.manualRecordedInbound.value : null;
-  form.agentAssistedPay.updated ? payload.agent_assisted_pay_i = form.agentAssistedPay.value : null;
-  form.policyNumberEdit.updated ? payload.policy_number_edit_i = form.policyNumberEdit.value : null;
-  form.voiceMailTranscription.updated ? payload.voice_mail_transcription_i = form.voiceMailTranscription.value : null;
-  form.callReason.updated ? payload.call_reason_i = form.callReason.value : null;
-  form.clickToDial.updated ? payload.click_to_dial_i = form.clickToDial.value : null;
-  form.eftAuthorization.updated ? payload.eft_authorization_i = form.eftAuthorization.value : null;
-  form.claimNumberEdit.updated ? payload.claim_number_edit_i = form.claimNumberEdit.value : null;
-  form.callTagsUpdated ? payload.callTags = form.callTagsList.map((callTag: any) => {
-    return {
-      wrkr_tsk_info_id: callTag.wrkr_tsk_info_id,
-      display_nme: formatCallTagsName(callTag.wrkr_tsk_info_nme),
-      options_id: callTag.options_id
-    };
-  }) : null;
-  logger.log(form.accessGroupIdUpdated,"****form.accessGroupId*****",form.accessGroupId);
-  form.accessGroupIdUpdated ? payload.access_group_id = form.accessGroupId : null;
-  form.forwardToNum.updated ? payload.fwd_to_num = form.forwardToNum.unmaskedValue : null;
+  if(form.formMode === formModes.INSERT) { payload.profile_id = form.profileId; }
+
   return payload;
 };
-
 
 export const profileTableColumnHeader = [
   {
@@ -258,5 +182,68 @@ export const profileTableColumnHeader = [
   {
     COLUMN_NAME: "Access Group",
     TOOLTIP: "Access Group Name for BPO profiles"
+  }
+];
+
+export const toggleControls: ToggleFormField[] = [
+  {
+    fieldKey: "inboundRecorded",
+    label: "Inbound Recorded"
+  },
+  {
+    fieldKey: "paymentProcessing",
+    label: "Payment Processing"
+  },
+  {
+    fieldKey: "acwOption",
+    label: "ACW Option"
+  },
+  {
+    fieldKey: "acwDataEntry",
+    label: "ACW Data Entry"
+  },
+  {
+    fieldKey: "agentAssistedPay",
+    label: "Agent Assisted Pay"
+  },
+  {
+    fieldKey: "voiceMailTranscription",
+    label: "Voice Mail Transcription"
+  },
+  {
+    fieldKey: "callReason",
+    label: "Call Reason"
+  },
+  {
+    fieldKey: "autoAnswered",
+    label: "Auto Answered"
+  },
+  {
+    fieldKey: "outboundRecorded",
+    label: "Outbound Recorded"
+  },
+  {
+    fieldKey: "manualRecorded",
+    label: "Manual Recorded"
+  },
+  {
+    fieldKey: "manualRecordedInbound",
+    label: "Manual Recorded Inbound"
+  },
+  {
+    fieldKey: "policyNumberEdit",
+    label: "Policy Number Edit"
+  },
+  {
+    fieldKey: "clickToDial",
+    label: "Click To Dial"
+  },
+  {
+    fieldKey: "eftAuthorization",
+    label: "EFT Authorization"
+  },
+  {
+    fieldKey: "claimNumberEdit",
+    label: "Claim Number Edit"
   }
 ];

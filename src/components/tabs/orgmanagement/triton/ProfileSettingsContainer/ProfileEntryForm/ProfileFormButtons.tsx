@@ -2,6 +2,7 @@ import React from "react";
 import {
   profileEntryFormDispatch,
   profileEntryFormState,
+  useAdminDispatch,
   useAdminState
 } from "context/appContext";
 import { profileEntryFormActions } from "context/profileEntryFormReducer";
@@ -14,18 +15,22 @@ import {
   formModes,timeouts
 } from "globals";
 import {
+  AccessGroupPayload,
   ModalOverlayStatuses, ProfilePayload
 } from "globals/interfaces";
-import { isProfileFormValid } from "utils/profileUtils";
-import { logger } from "utils/logger";
 import {
-  createProfilePayload, updateProfilePayload
+  isProfileFormValid, constructProfilePayload
 } from "utils/profileUtils";
+import { logger } from "utils/logger";
 import { wait } from "utils";
 import {
+  createAccessGroup,
   createProfile,
-  editProfile
+  editProfile,
+  listUMSoftphoneConfigs,
+  loadSoftphoneConfigRelationships
 } from "services/profile";
+import { formatErrorMessage } from "utils/_formatUtils";
 
 export const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
   const {
@@ -35,32 +40,50 @@ export const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
   } = props;
 
   const state = useAdminState();
+  const dispatch = useAdminDispatch();
   const { nNumber } = state.userContext;
   const form = profileEntryFormState();
   const setForm = profileEntryFormDispatch();
 
-  const doCreateProfile = () => {
+  const handleOnSave = async () => {
+    const isCreate = form.formMode === formModes.INSERT;
     updateLoading({
       ...loading,
-      overlayMessage: "Creating new profile...",
+      overlayMessage: `${isCreate ? "Creating" : "Updating"} new profile..`,
       saveStatus: ModalOverlayStatuses.SAVING,
       saveProfile: true
     });
 
-    const payload: ProfilePayload = createProfilePayload(form);
+    const payload: ProfilePayload = constructProfilePayload(form);
 
-    createProfile(payload).then(() => {
-      logger.info(`Successfully created profile ${form.profileName.value}`, {
+    try {
+      if(form.accessGroup?.isNew){
+        const accessGroupPayload: AccessGroupPayload = {
+          access_group_name: form.accessGroup.access_group_name,
+          twilio_dashboard_url: form.accessGroup.twilio_dashboard_url
+        };
+        const accessGroup = await createAccessGroup(accessGroupPayload);
+        payload.access_group_id = accessGroup.id;
+      }
+
+      if(isCreate){
+        await createProfile(payload);
+      } else {
+        await editProfile(form.profileId, payload);
+      }
+      logger.info(`Successfully ${isCreate ? "created" : "updated"} profile ${form.profileName}`, {
         nNumber,
-        profileId: payload?.profile_id
+        payload
       });
 
       updateLoading({
         ...loading,
-        overlayMessage: `Successfully created profile ${form.profileName.value}. Please notify the data office of this change.`,
+        overlayMessage: `Successfully ${isCreate ? "created" : "updated"} profile ${form.profileName}. ${isCreate && "Please notify the data office of this change."}`,
         saveStatus: ModalOverlayStatuses.SUCCESS,
         saveProfile: true
       });
+      const profiles = await listUMSoftphoneConfigs(dispatch);
+      loadSoftphoneConfigRelationships(profiles, dispatch);
       wait(() => {
         updateLoading({
           ...loading,
@@ -71,16 +94,16 @@ export const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
           type: profileEntryFormActions.RESET_FORM
         });
       }, timeouts.MODAL_OVERLAY_ATTENTION);
-    }).catch(error => {
-      logger.error(`Failed to create profile ${form.profileName.value}`, {
+    } catch(error){
+      logger.error(`Failed to  ${isCreate ? "creat" : "update"} profile ${form.profileName}`, {
         error,
         nNumber,
-        profileId: payload?.profile_id
+        payload
       });
 
       updateLoading({
         ...loading,
-        overlayMessage: `Error creating ${form.profileName.value}`,
+        overlayMessage: `Error ${isCreate ? "creating" : "updating"} profile ${form.profileName}: ${formatErrorMessage(error)}`,
         saveStatus: ModalOverlayStatuses.FAIL,
         saveProfile: true
       });
@@ -90,61 +113,7 @@ export const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
           saveProfile: false
         });
       }, timeouts.MODAL_OVERLAY);
-    });
-  };
-
-  const doUpdateProfile = () => {
-    updateLoading({
-      ...loading,
-      overlayMessage: `Updating ${form.profileName.value}...`,
-      saveStatus: ModalOverlayStatuses.SAVING,
-      saveProfile: true
-    });
-
-    const payload: Partial<ProfilePayload> = updateProfilePayload(form);
-
-    editProfile(payload.profile_id, payload).then(() => {
-      logger.info(`Successfully updated profile ${form.profileName.value}`, {
-        nNumber,
-        profileId: payload?.profile_id
-      });
-
-      updateLoading({
-        ...loading,
-        overlayMessage: `Successfully updated ${form.profileName.value}`,
-        saveStatus: ModalOverlayStatuses.SUCCESS,
-        saveProfile: true
-      });
-      wait(() => {
-        updateLoading({
-          ...loading,
-          saveProfile: false
-        });
-        handleClose();
-        setForm({
-          type: profileEntryFormActions.RESET_FORM
-        });
-      }, timeouts.MODAL_OVERLAY);
-    }).catch(error => {
-      logger.error(`Failed to create profile ${form.profileName.value}`, {
-        error,
-        nNumber,
-        profileId: payload?.profile_id
-      });
-
-      updateLoading({
-        ...loading,
-        overlayMessage: `Error updating ${form.profileName.value}`,
-        saveStatus: ModalOverlayStatuses.FAIL,
-        saveProfile: true
-      });
-      wait(() => {
-        updateLoading({
-          ...loading,
-          saveProfile: false
-        });
-      }, timeouts.MODAL_OVERLAY);
-    });
+    }
   };
 
   return (
@@ -159,7 +128,7 @@ export const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
       </FormButton>
       <FormButton
         disabled={!isProfileFormValid(form)}
-        onClick={form.formMode === formModes.INSERT ? doCreateProfile : doUpdateProfile}
+        onClick={handleOnSave}
       >
         {form.formMode === formModes.INSERT ? "Create Profile" : "Update Profile"}
       </FormButton>

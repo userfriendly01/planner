@@ -1,45 +1,34 @@
 import { Modal } from "@mui/material";
 import { DirectoryNumberForm } from "orgmanagement/DirectoryNumberForm";
-
 import { PhoneNumberTable } from "orgmanagement/PhoneNumberTable";
 import { StyledButton } from "components/StyledButton";
-import { useAdminState } from "context/appContext";
+import {
+  useAdminDispatch, useAdminState
+} from "context/appContext";
 import { timeouts } from "globals";
 import { ModalOverlayStatuses } from "globals/interfaces";
 import React, { useState } from "react";
-import styled from "styled-components";
 import { logger } from "utils/logger";
 import {
-  deleteDialListEntry, deleteDirectoryEntry
+  deleteDialListEntry, deleteDirectoryEntry,
+  listUMSoftphoneConfigs
 } from "services/profile";
 import { ProfileDropDown } from "../ProfileDropDown/ProfileDropDown";
 import { ProfileSettingsContainerDiv } from "../ProfileSettingsContainer/ProfileSettingsContainer.Styles";
 import { PhoneNumberStateProps } from "../PhoneNumberContainer/PhoneNumber.Interfaces";
 import { DialListNumberForm } from "./PhoneNumberForm/DialListNumberForm";
 import { useLocation } from "react-router-dom";
-
-const AddContactButtonContainer = styled.div`
-  display: flex;
-  margin-bottom: 1em;
-  width: 100%;
-`;
-
-const TableContainer = styled.div`
-  align-items: center;
-  display: flex;
-  flex: 1 1 auto;
-  flex-direction: column;
-  padding: 2%;
-  position: relative;
-`;
-
+import {
+  AddContactButtonContainer,
+  TableContainer
+} from "./PhoneNumber.Styles";
 
 export const PhoneNumberContainer = () => {
 
   const state = useAdminState();
+  const dispatch = useAdminDispatch();
   const params = useLocation();
   const type = params.pathname.includes("directory") ? "Directory" : "DialList";
-  console.log("FAITH type", type);
   const { nNumber } = state.userContext;
   const {
     dialListEntries,
@@ -61,6 +50,10 @@ export const PhoneNumberContainer = () => {
   const filteredList = selectedProfile ? (type === "Directory" ? directoryEntries.filter((e: any) => e.profile_id === selectedProfile) : dialListEntries.filter((e: any) => e.profile_id === selectedProfile)) : [];
   const deleteFunction = type === "Directory" ? deleteDirectoryEntry : deleteDialListEntry;
 
+  React.useEffect(() => {
+    setSelectedProfile(null);
+  }, [type]);
+
   const waitAndHideOverlay = () => setTimeout(() => {
     setPhoneNumberState({
       ...phoneNumberState,
@@ -71,7 +64,7 @@ export const PhoneNumberContainer = () => {
     });
   }, timeouts.MODAL_OVERLAY);
 
-  const deleteButtonOnClick = (entry: any) => () => {
+  const deleteButtonOnClick = async (entry: any) => {
     const popUp = confirm(`Are you sure you want to delete this ${type} entry?`);
     if (popUp === true) {
       setPhoneNumberState({
@@ -81,44 +74,43 @@ export const PhoneNumberContainer = () => {
           status: ModalOverlayStatuses.SAVING
         }
       });
-      deleteFunction(entry.id, entry.profile_id)
-        .then(() => {
-          logger.info(`Successfully deleted ${type} Entry`, {
-            nNumber,
-            type,
-            entry: phoneNumberState.entry
-          });
-
-          setPhoneNumberState({
-            ...phoneNumberState,
-            saveState: {
-              overlayMessage: `Successfully deleted ${type} entry`,
-              status: ModalOverlayStatuses.SUCCESS
-            }
-          });
-          waitAndHideOverlay();
-        })
-        .catch((error: any) => {
-          logger.error(`Failed to delete ${type} entry`, {
-            nNumber,
-            type,
-            entry: phoneNumberState.entry,
-            error
-          });
-
-          setPhoneNumberState({
-            ...phoneNumberState,
-            saveState: {
-              overlayMessage: "Failed to delete directory entry",
-              status: ModalOverlayStatuses.FAIL
-            }
-          });
-          waitAndHideOverlay();
+      try {
+        await deleteFunction(entry.id, entry.profile_id);
+        logger.info(`Successfully deleted ${type} Entry`, {
+          nNumber,
+          type,
+          entry: phoneNumberState.entry
         });
+        await listUMSoftphoneConfigs(dispatch);
+        setPhoneNumberState({
+          ...phoneNumberState,
+          saveState: {
+            overlayMessage: `Successfully deleted ${type} entry`,
+            status: ModalOverlayStatuses.SUCCESS
+          }
+        });
+        waitAndHideOverlay();
+      } catch(error){
+        logger.error(`Failed to delete ${type} entry`, {
+          nNumber,
+          type,
+          entry: phoneNumberState.entry,
+          error
+        });
+
+        setPhoneNumberState({
+          ...phoneNumberState,
+          saveState: {
+            overlayMessage: "Failed to delete directory entry",
+            status: ModalOverlayStatuses.FAIL
+          }
+        });
+        waitAndHideOverlay();
+      }
     }
   };
 
-  const editButtonOnClick = (entry: any) => () => {
+  const editButtonOnClick = (entry: any) => {
     setPhoneNumberState({
       ...phoneNumberState,
       entry,
@@ -145,11 +137,13 @@ export const PhoneNumberContainer = () => {
         selectedProfile={selectedProfile}
         setSelectedProfile={setSelectedProfile}
       />
+      {selectedProfile &&
       <AddContactButtonContainer>
         <StyledButton onClick={addContactButtonClicked}>
           Add {type} Entry
         </StyledButton>
       </AddContactButtonContainer>
+      }
       <Modal
         onClose={() => { return; }}
         open={phoneNumberState.isModalOpen}
@@ -179,21 +173,17 @@ export const PhoneNumberContainer = () => {
           }
         </>
       </Modal>
-      {
-        selectedProfile !== null
-          ?
-          <TableContainer>
-            <PhoneNumberTable
-              type={type}
-              filteredList={filteredList}
-              editFunction={editButtonOnClick}
-              deleteFunction={deleteButtonOnClick}
-              selectedProfile={selectedProfile}
-              saveState={phoneNumberState.saveState}
-            />
-          </TableContainer>
-          :
-          null
+      { selectedProfile &&
+        <TableContainer>
+          <PhoneNumberTable
+            type={type}
+            filteredList={filteredList}
+            editFunction={editButtonOnClick}
+            deleteFunction={deleteButtonOnClick}
+            selectedProfile={selectedProfile}
+            saveState={phoneNumberState.saveState}
+          />
+        </TableContainer>
       }
     </ProfileSettingsContainerDiv>
   );

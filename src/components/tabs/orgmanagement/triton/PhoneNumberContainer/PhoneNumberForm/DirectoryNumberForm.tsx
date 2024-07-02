@@ -5,9 +5,7 @@ import { ModalOverlay } from "components/ModalOverlay";
 import { PhoneNumberInput } from "components/PhoneNumberInput";
 import { PaperContainer } from "components/PaperContainer";
 import { StyledButton } from "components/StyledButton";
-import {
-  formModes, timeouts
-} from "globals";
+import { timeouts } from "globals";
 import {
   DirectoryNumber, ModalOverlayStatuses
 } from "globals/interfaces";
@@ -16,7 +14,9 @@ import {
   useAdminDispatch, useAdminState
 } from "context/appContext";
 import {
-  createDirectoryEntry, editDirectoryEntry
+  createDirectoryEntry, editDirectoryEntry,
+  listUMSoftphoneConfigs,
+  loadSoftphoneConfigRelationships
 } from "services/profile";
 import {
   PhoneNumberFormProps, DirectoryFormEntryProps
@@ -44,7 +44,6 @@ export const DirectoryNumberForm = (props: PhoneNumberFormProps) => {
     saveStatus: null
   });
 
-
   const [formDirectoryEntry, setFormDirectoryEntry] = React.useState<DirectoryFormEntryProps>({
     id: phoneNumberState.entry.id || null,
     directory_num: {
@@ -63,17 +62,6 @@ export const DirectoryNumberForm = (props: PhoneNumberFormProps) => {
   const isFormValid = () => isNumberValid(phoneNumberState.entry.directory_num)
       && !isPhoneNumberTaken && isNameValid(phoneNumberState.entry.first_name)
       && isNameValid(phoneNumberState.entry.last_name);
-
-  const refreshState = () => {
-    const filteredArray = state.profileContext.directoryEntries.filter((de: DirectoryNumber) => de.id !== phoneNumberState.entry.id);
-    dispatch({
-      type: "loadProfileOptions",
-      payload: {
-        ...state.profileContext,
-        directoryEntries: [...filteredArray, phoneNumberState.entry]
-      }
-    });
-  };
 
   const requestBody: Partial<DirectoryNumber> = {
     directory_num: formDirectoryEntry.directory_num.unmaskedValue,
@@ -95,7 +83,7 @@ export const DirectoryNumberForm = (props: PhoneNumberFormProps) => {
         directoryId: formDirectoryEntry.id,
         requestBody
       });
-      refreshState();
+      await listUMSoftphoneConfigs(dispatch);
       setLoading({
         overlayMessage: "Successfully created directory entry",
         saveStatus: ModalOverlayStatuses.SUCCESS
@@ -126,13 +114,14 @@ export const DirectoryNumberForm = (props: PhoneNumberFormProps) => {
     });
 
     try {
+      delete requestBody.profile_id;
       await editDirectoryEntry(formDirectoryEntry.id, selectedProfile, requestBody);
       logger.info(`Successfully updated directory ${formDirectoryEntry.directory_num}`, {
         nNumber,
         directoryId: formDirectoryEntry.id,
         requestBody
       });
-      refreshState();
+      await listUMSoftphoneConfigs(dispatch);
       setLoading({
         overlayMessage: "Successfully updated directory entry",
         saveStatus: ModalOverlayStatuses.SUCCESS
@@ -164,23 +153,24 @@ export const DirectoryNumberForm = (props: PhoneNumberFormProps) => {
             message={loading.overlayMessage}
             status={loading.saveStatus}
           /> : null}
-        <Header>{phoneNumberState.formMode === formModes.INSERT ? `Add ${phoneNumberState.type} Entry` : `Edit ${phoneNumberState.type} Entry`}</Header>
+        <Header>{phoneNumberState.formMode === "Create" ? `Add ${phoneNumberState.type} Entry` : `Edit ${phoneNumberState.type} Entry`}</Header>
         <PhoneNumberInput
           allowSevenDigitVdn={false}
-          error={isPhoneNumberTaken}
-          helperText={isPhoneNumberTaken && "Number already exists in directory"}
+          error={isPhoneNumberTaken && phoneNumberState.formMode === "Create"}
+          helperText={isPhoneNumberTaken && phoneNumberState.formMode === "Create" && "Number already exists in directory"}
           id="transfer-number-input"
           label="Transfer Number"
           number={formDirectoryEntry.directory_num.maskedValue}
           showError={formDirectoryEntry.updated}
+          disabled={phoneNumberState.formMode !== "Create"}
           updateValue={(maskedValue, unmaskedValue, isValid) => {
             setFormDirectoryEntry({
               ...formDirectoryEntry,
               updated: true,
               directory_num: {
                 ...formDirectoryEntry.directory_num,
-                maskedValue: unmaskedValue,
-                unmaskedValue: maskedValue,
+                maskedValue: maskedValue,
+                unmaskedValue: unmaskedValue,
                 valid: isValid
               }
             });
@@ -223,7 +213,7 @@ export const DirectoryNumberForm = (props: PhoneNumberFormProps) => {
           value={formDirectoryEntry.last_name}
         />
         <ButtonWrapper>
-          <StyledButton disabled={!isFormValid} onClick={phoneNumberState.formMode === formModes.INSERT ? insertDirectoryEntry : updateDirectoryEntry}>
+          <StyledButton disabled={!isFormValid} onClick={phoneNumberState.formMode === "Create" ? insertDirectoryEntry : updateDirectoryEntry}>
             Save
           </StyledButton>
           <StyledButton onClick={closeModal}>
