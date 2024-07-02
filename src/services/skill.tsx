@@ -352,7 +352,7 @@ export const loadConsolidatedSkills = async (dispatch: (action: Action) => void)
       }
       let skill: Partial<Skill> = {
         discrepancies: [
-          `${trSkill.name} is not in the Contact Manager Database`
+          `${trSkill.name} is not in the User Management Database`
         ],
         name: trSkill.name,
         levels
@@ -374,7 +374,7 @@ export const loadConsolidatedSkills = async (dispatch: (action: Action) => void)
     callflowSkills.map((cfSkill: CallflowSkill) => {
       const skill: Partial<Skill> = {
         discrepancies: [
-          `${cfSkill.skillName} is not in the Contact Manager Database`,
+          `${cfSkill.skillName} is not in the User Management Database`,
           `${cfSkill.skillName} is not in the Flex Console`
         ],
         name: cfSkill.skillName,
