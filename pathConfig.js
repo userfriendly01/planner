@@ -161,6 +161,12 @@ const paths = [
     ]
   },
   {
+    alias: "hooks",
+    paths: [
+      "hooks"
+    ]
+  },
+  {
     alias: "icons",
     paths: [
       "assets/icons"

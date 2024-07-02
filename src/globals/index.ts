@@ -17,7 +17,9 @@ export const env = {
   DATADOG_CLIENT_TOKEN: window.env.DATADOG_CLIENT_TOKEN,
   APP_ENV: window.env.APP_ENV,
   TROUX_ID: window.env.TROUX_ID,
-  GRAPH_API_URL: window.env.GRAPH_API_URL,
+  GRAPH_API_HOST: `${window.env.GRAPH_API_ID}.appsync-api.us-east-1.amazonaws.com`,
+  GRAPH_API_URL: `https://${window.env.GRAPH_API_ID}.appsync-api.us-east-1.amazonaws.com/graphql`,
+  GRAPH_API_WSS: `wss://${window.env.GRAPH_API_ID}.appsync-realtime-api.us-east-1.amazonaws.com/graphql`,
   GRAPH_CLIENT_ID: window.env.GRAPH_CLIENT_ID,
   SOFTPHONE_SERVICE_URL: window.env.SOFTPHONE_SERVICE_URL
 };

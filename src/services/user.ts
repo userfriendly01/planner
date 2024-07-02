@@ -39,12 +39,9 @@ export const listUMUsers = async (dispatch: (action: Action) => void): Promise<D
   const formatUsers = (users: UMUser[]) => {
     const newUsers = [] as UMUser[];
     users.forEach(user => {
-      if (!user?.inactiveDate && !user?.ttl && user?.attributes) {
+      if (!user?.inactive_date && !user?.ttl && user?.twilio_attributes) {
         newUsers.push(
-          mapWorkerFromDbWorker({
-            ...user,
-            isConsole: user.pk?.includes("Console")
-          })
+          mapWorkerFromDbWorker(user)
         );
       }
     });

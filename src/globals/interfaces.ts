@@ -326,67 +326,90 @@ export interface GraphData {
   responsePath: string
 }
 
-export interface UMUserTwilioAttributes {
-  contact_uri?: string,
-  default_skills?: UMTwilioAttributeSkills,
-  department_name?:string,
-  department_id?:string,
-  caller_id?: string,
-  disabled_skills?: UMTwilioAttributeSkills,
-  email?: string,
-  email_address?: string,
-  emp_first_name?: string,
-  emp_last_name?: string,
-  extension?: string,
-  full_name?: string,
-  location?:string,
-  manager_first_name?: string,
-  manager_last_name?: string,
-  manager_n_number?: string,
-  manager?:string,
-  n_number?: string,
-  office_location_name?: string,
-  office_location_number?: string,
-  primary_dept_name?: string,
-  primary_dept_number?: string,
-  profile_id?: number,
-  roles?: string[],
-  routing?: UMTwilioAttributeSkills,
-  unique_id?: string,
-  agent_id?: string,
+export interface UMTwilioAttributeSkills {
+  levels: {
+    [key: string]: number;
+  };
+  skills: string[];
 }
 
-export interface UMUser {
+interface UMTwilioAttributesRouting extends UMTwilioAttributeSkills {
+  team?: string;
+  backup_workers?: string[];
+  backup_workers_active?: boolean;
+  caller_states?: string[];
+  sales_assoc_workers?: string[];
+}
+
+export interface UMUserTwilioAttributes {
+  contact_uri?: string;
+  department_name?: string;
+  department_id?: string;
+  caller_id?: string,
+  email?: string;
+  email_address?: string;
+  emp_first_name?: string;
+  emp_last_name?: string;
+  extension?: string;
+  full_name?: string;
+  location?:string;
+  manager_first_name?: string;
+  manager_last_name?: string;
+  manager_n_number?: string;
+  manager?:string;
+  n_number?: string;
+  office_location_name?: string;
+  office_location_number?: string;
+  primary_dept_name?: string;
+  primary_dept_number?: string;
+  profile_id?: number;
+  roles?: string[];
+  unique_id?: string;
+  agent_id?: string;
+  disabled_skills?: UMTwilioAttributeSkills;
+  default_skills?: UMTwilioAttributeSkills;
+  routing?: UMTwilioAttributesRouting;
+}
+
+export interface UMUser extends BaseUMUser {
+  twilio_attributes: UMUserTwilioAttributes;
+}
+
+export interface UpdateOrCreateUMUser extends BaseUMUser {
+  twilio_attributes: string;
+}
+
+interface BaseUMUser {
   pk: string;
   ttl: number;
-  sid: string;                // mapped from --> worker_sid
+  subscription_update?: boolean;
+
   workerSid: string;          // mapped from --> worker_sid
+  sid: string;                // mapped from --> worker_sid
+  worker_sid: string;
+
   inactiveDate?: string;      // mapped from --> inactive_date
+  inactive_date?: string
+
   inactiveForwardTo: string;  // mapped from --> inactive_forward_to
+  inactive_forward_to?: string
+
   zeroOutEnabled: boolean;    // mapped from --> zero_out_enabled
+  zero_out_enabled?: boolean;
+
   selfServiceInd: boolean;    // mapped from --> self_service_ind
+  self_service_ind?: boolean
+
   operatingUnitSid: string;   // mapped from --> operating_unit_sid
+  operating_unit_sid?: string;
+
   did?: string;
-  twilio_attributes: string;  // Used for create and update
+  attributes: UMUserTwilioAttributes;  // mapped from --> twilio_attributes
 
   // Added by us
   skillsDifferent: boolean;
-  attributes: UMUserTwilioAttributes;  // mapped from --> twilio_attributes
   isConsole: boolean;                 // Will be true if pk contains Console
 }
-
-export interface UMTwilioAttributeSkills {
-  levels: {
-    [key: string]: number
-  },
-  skills: string[],
-  team?:string,
-  backup_workers?: string[],
-  backup_workers_active?: boolean,
-  caller_states?: string[],
-  sales_assoc_workers?: string[]
-}
-
 
 export interface AzureSPA {
   accessToken: string;

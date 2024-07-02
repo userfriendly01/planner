@@ -2,10 +2,7 @@ import { ResetSkillsButton } from "../ResetSkillsButton";
 import MockAdapter from "axios-mock-adapter";
 import { ResetSkillsResultsModal } from "usermanagement/ResetSkillsResultsModal";
 import { StyledButton } from "components/StyledButton";
-import {
-  useAdminState,
-  useAdminDispatch
-} from "context/appContext";
+import { useAdminState } from "context/appContext";
 import { initialState } from "context/reducer";
 import { apiPaths } from "globals";
 import React from "react";
@@ -16,7 +13,6 @@ import {
   render,
   setupMockedComponents
 } from "testUtils";
-import { mapWorkerFromTwilio } from "utils";
 import { myAxios } from "utils/myAxios";
 
 jest.mock("usermanagement/ResetSkillsResultsModal", () => ({
@@ -28,15 +24,9 @@ jest.mock("components/StyledButton", () => ({
 }));
 
 jest.mock("context/appContext", () => ({
-  useAdminDispatch: jest.fn(),
   useAdminState: jest.fn()
 }));
 
-jest.mock("utils", () => ({
-  mapWorkerFromTwilio: jest.fn()
-}));
-
-const setMockForm = jest.fn();
 const axiosMock = new MockAdapter(myAxios);
 const mockResettingSkills = jest.fn();
 
@@ -53,19 +43,6 @@ const selectedWorkers = [
   }
 ];
 
-const convertedWorkers = [
-  {
-    workerSid: selectedWorkers[0].sid,
-    name: selectedWorkers[0].name,
-    attributes: JSON.parse(selectedWorkers[0].attributes)
-  },
-  {
-    workerSid: selectedWorkers[1].sid,
-    name: selectedWorkers[1].name,
-    attributes: JSON.parse(selectedWorkers[1].attributes)
-  }
-];
-
 describe("ResetSkillsButton", () => {
 
   const renderComponent = state => render(<ResetSkillsButton selected={selectedWorkers} setResettingSkills={mockResettingSkills}/>, state);
@@ -73,7 +50,6 @@ describe("ResetSkillsButton", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     useAdminState.mockReturnValue(initialState);
-    useAdminDispatch.mockReturnValue(setMockForm);
     setupMockedComponents({
       ResetSkillsResultsModal,
       StyledButton
@@ -111,15 +87,6 @@ describe("ResetSkillsButton", () => {
           getMockedComponentProps(StyledButton).onClick();
           return Promise.resolve();
         }).then(() => {
-          expect(setMockForm).toHaveBeenCalledTimes(2);
-          expect(setMockForm).toHaveBeenCalledWith({
-            type: "updateWorker",
-            payload: mapWorkerFromTwilio(convertedWorkers[0])
-          });
-          expect(setMockForm).toHaveBeenCalledWith({
-            type: "updateWorker",
-            payload: mapWorkerFromTwilio(convertedWorkers[1])
-          });
           expect(ResetSkillsResultsModal.mock.calls[0][0].unsuccessfulWorkers).toEqual([]);
           done();
         });
@@ -150,11 +117,6 @@ describe("ResetSkillsButton", () => {
           return Promise.resolve();
         }).then(() => {
           expectMockedComponent(rendered, { ResetSkillsResultsModal }, 1);
-          expect(setMockForm).toHaveBeenCalledTimes(1);
-          expect(setMockForm).toHaveBeenCalledWith({
-            type: "updateWorker",
-            payload: mapWorkerFromTwilio(convertedWorkers[0])
-          });
           expect(ResetSkillsResultsModal.mock.calls[0][0].unsuccessfulWorkers).toEqual([
             {
               name: selectedWorkers[1].sid,

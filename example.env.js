@@ -6,6 +6,6 @@ window.env = {
   AZURE_REDIRECT_URI: "http://localhost:8082/triton-admin",
   TROUX_ID: "<${forge.troux_application_uuid} in cloudforge>",
   GRAPH_CLIENT_ID: "5f9dbf83-0fb0-4c74-8efe-889cc745396c",
-  GRAPH_API_URL: "https://tgufpgkyxvacrntvgb75iuo3pi.appsync-api.us-east-1.amazonaws.com/graphql",
+  GRAPH_API_ID: "tgufpgkyxvacrntvgb75iuo3pi",
   SOFTPHONE_SERVICE_URL: "https://cicct-softphone-service-development.us-east-1.np.paas.lmig.com"
 };

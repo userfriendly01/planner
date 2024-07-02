@@ -3,8 +3,7 @@ import { StyledButton } from "components/StyledButton";
 import {
   useAdminState,
   useSkillState,
-  useSkillDispatch,
-  useAdminDispatch
+  useSkillDispatch
 } from "context/appContext";
 import {
   FormRow,
@@ -35,7 +34,7 @@ import {
   deleteSkill, loadConsolidatedSkills
 } from "services/skill";
 import {
-  listUMUsers, updateUser
+  updateUser
 } from "services/user";
 import { handleConcurrentCalls } from "usermanagement/processingUtils";
 
@@ -48,7 +47,6 @@ export const DeleteForm = (props: any) => {
   const skillDispatch = useSkillDispatch();
 
   const state = useAdminState();
-  const adminDispatch = useAdminDispatch();
   const { nNumber } = state.userContext;
   const taskQueues = skillState.taskQueues;
   const formattedSkills = tableState.selected.map((sk: any) => ({
@@ -71,11 +69,10 @@ export const DeleteForm = (props: any) => {
 
     const refreshState = async () => {
       const taskQueuesPromise: Promise<{data: TwilioQueue[]}> = shouldDeleteQueue ? getTaskQueues() : Promise.resolve();
-      const usersPromise = impactedWorkers.length ? listUMUsers(adminDispatch) : Promise.resolve();
 
       const consolidatedSkillsPromise = loadConsolidatedSkills(skillDispatch);
 
-      const [ taskQueueResults ] = await Promise.allSettled([taskQueuesPromise, consolidatedSkillsPromise, usersPromise]);
+      const [ taskQueueResults ] = await Promise.allSettled([taskQueuesPromise, consolidatedSkillsPromise]);
 
       if(shouldDeleteQueue && taskQueueResults.status === "fulfilled"){
         skillDispatch({

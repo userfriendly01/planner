@@ -192,10 +192,6 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
             });
           });
       }
-      dispatch({
-        type: "addWorkers",
-        payload: [newWorker]
-      });
 
       try {
         await wfmActivateExternalLogon({ workerNNumbers: [userNNumber]});
@@ -453,17 +449,12 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
 
     const errors = [];
     try {
-      const updatedWorker = await updateUser(worker.sid, payload);
+      await updateUser(worker.sid, payload);
 
       logger.info("Successfully Updated Triton user", {
         nNumber,
         userNNumber: form.nNumber.value
       });
-
-      dispatch(({
-        type: "updateWorker",
-        payload: updatedWorker
-      }));
     } catch (err) {
       const error = err as ApolloError;
 

@@ -3,10 +3,11 @@ import { GraphData } from "globals/interfaces";
 
 const userAttributes = `
   pk
+  sk
   ttl
   did
-  sid: worker_sid
-  attributes: twilio_attributes {
+  worker_sid
+  twilio_attributes {
     unique_id
     agent_id
     contact_uri
@@ -48,11 +49,11 @@ const userAttributes = `
     }
     agent_attribute_1
   }
-  zeroOutEnabled: zero_out_enabled
-  selfServiceInd: self_service_ind
-  operatingUnitSid: operating_unit_sid
-  inactiveDate: inactive_date
-  inactiveForwardTo: inactive_forward_to
+  zero_out_enabled
+  self_service_ind
+  operating_unit_sid
+  inactive_date
+  inactive_forward_to
 `;
 
 export const GET_USER = gql`
@@ -105,6 +106,7 @@ export const CREATE_USER = gql`
   mutation createUMUser($input: UMUserCreateInput!) {
     user: createUMUser(input: $input) {
       ${userAttributes}
+      subscription_update
     }
   }
 `;
@@ -113,6 +115,34 @@ export const UPDATE_USER = gql`
   mutation updateUMUser($identifier: String!, $input: UMUserUpdateInput!, $options: UMUserUpdateOptionsInput) {
     user: updateUMUser(identifier: $identifier, input: $input, options: $options) {
       ${userAttributes}
+      subscription_update
+    }
+  }
+`;
+
+export const SUBSCRIBE_CREATE_USER = `
+  subscription SubscribeCreate {
+    item: onCreateUMUser {
+      ${userAttributes}
+      subscription_update
+    }
+  }
+`;
+
+export const SUBSCRIBE_UPDATE_USER = `
+  subscription SubscribeUpdate {
+    item: onUpdateUMUser(subscription_update: true) {
+      ${userAttributes}
+      subscription_update
+    }
+  }
+`;
+
+export const SUBSCRIBE_DELETE_USER = `
+  subscription SubscribeDelete {
+    item: onDeleteUMUser {
+      ${userAttributes}
+      subscription_update
     }
   }
 `;
