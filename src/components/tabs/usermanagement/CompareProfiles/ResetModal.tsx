@@ -20,6 +20,7 @@ import { Divider } from "@mui/material";
 import {
   fetchResetProfileDatadogLogs, resetProfiles
 } from "services/resetprofiles";
+import { useAdminState } from "context/appContext";
 import { logger } from "utils/logger";
 import util from "util";
 
@@ -41,6 +42,7 @@ export const ResetModal = (props: ResetModalProps) => {
   const [noAccess, setNoAccess] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
   const [results, setResults] = React.useState(null);
+  const state = useAdminState();
 
   React.useEffect(() => {
     if (progress >= totalWaitSeconds) {
@@ -82,7 +84,7 @@ export const ResetModal = (props: ResetModalProps) => {
       workerSid
     };
     try {
-      const res = await resetProfiles(nNumber, body);
+      const res = await resetProfiles(state.userContext.tokens.adminService, nNumber, body);
       setResults(res.data);
       setStatus(StatusOptions.SUCCESS);
     } catch (error) {

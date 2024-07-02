@@ -1,6 +1,5 @@
 import { useAdminState } from "context/appContext";
 import * as utils from "../processingUtils";
-import { listUMUsers } from "services/user";
 import { getCalabrioUsers } from "services/calabrio";
 import { listUMManagers } from "services/manager";
 import { wfmActivateExternalLogon } from "services/wfmActivateExternalLogon";
@@ -15,10 +14,6 @@ import * as XLSX from "xlsx";
 
 jest.mock("utils/calabrioUtils",() => ({
   getCalabrioWfmOrg: jest.fn()
-}));
-
-jest.mock("services/user",() => ({
-  listUMUsers: jest.fn()
 }));
 
 jest.mock("services/calabrio",() => ({
@@ -67,23 +62,6 @@ describe("updateManagerUserState", () => {
       await utils.updateManagerUserState(mockDispatch);
       expect(logger.error).toHaveBeenCalledTimes(1);
       expect(logger.error.mock.calls[0][0]).toContain("Failed to update manager state after bulk upload");
-    });
-  });
-});
-
-describe("updateTritonUserState", () => {
-  const mockDispatch = jest.fn();
-  beforeEach(() => {
-    jest.clearAllMocks();
-    jest.resetAllMocks();
-  });
-  describe("get workers succeeds", () => {
-    test("listUMUsers is called, promise resolves", async () => {
-
-      await utils.updateTritonUserState(null, mockDispatch);
-
-      expect(listUMUsers).toHaveBeenCalledWith(mockDispatch);
-      expect(listUMUsers).toHaveBeenCalledTimes(1);
     });
   });
 });

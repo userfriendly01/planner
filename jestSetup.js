@@ -5,14 +5,19 @@ window.env = {
   AZURE_REDIRECT_URI: "AZURE_REDIRECT_URI",
   DATADOG_APPLICATION_ID: "DATADOG_APPLICATION_ID",
   DATADOG_CLIENT_TOKEN: "DATADOG_CLIENT_TOKEN",
-  GRAPH_API_URL: "http://localhost:3000",
+  GRAPH_API_ID: "1234",
   APP_ENV: "APP_ENV",
   TROUX_ID: "TROUX_ID",
-  SOFTPHONE_SERVICE_URL: "http://localhost:8080"
+  SOFTPHONE_SERVICE_URL: "http://localhost:8080",
+  ADMIN_CLIENT_URL: "https://admin.service"
 };
 
 jest.mock("@azure/msal-react", () => ({
   useMsal: jest.fn()
+}));
+
+jest.mock("uuid", () => ({
+  v4: jest.fn()
 }));
 
 beforeAll(() => {

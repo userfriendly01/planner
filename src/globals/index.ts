@@ -17,13 +17,18 @@ export const env = {
   DATADOG_CLIENT_TOKEN: window.env.DATADOG_CLIENT_TOKEN,
   APP_ENV: window.env.APP_ENV,
   TROUX_ID: window.env.TROUX_ID,
-  GRAPH_API_URL: window.env.GRAPH_API_URL,
+  GRAPH_API_HOST: `${window.env.GRAPH_API_ID}.appsync-api.us-east-1.amazonaws.com`,
+  GRAPH_API_URL: `https://${window.env.GRAPH_API_ID}.appsync-api.us-east-1.amazonaws.com/graphql`,
+  GRAPH_API_WSS: `wss://${window.env.GRAPH_API_ID}.appsync-realtime-api.us-east-1.amazonaws.com/graphql`,
   GRAPH_CLIENT_ID: window.env.GRAPH_CLIENT_ID,
-  SOFTPHONE_SERVICE_URL: window.env.SOFTPHONE_SERVICE_URL
+  SOFTPHONE_SERVICE_URL: window.env.SOFTPHONE_SERVICE_URL,
+  ADMIN_CLIENT_URL: window.env.ADMIN_CLIENT_URL,
+  ADMIN_CLIENT_ID: window.env.ADMIN_CLIENT_ID
 };
 
 const SERVICE_BASE_URI = env.SOFTPHONE_SERVICE_URL;
 const MS_GRAPH_URL = "https://graph.microsoft.com/v1.0";
+const ADMIN_CLIENT_URL = env.ADMIN_CLIENT_URL;
 
 export const numMatcher = /^[0-9]*$/;
 export const nNumMatcher = /[n,N]\d{7}/g;
@@ -117,7 +122,7 @@ export const exportColumns = [
   },
   {
     field: "backup_workers",
-    title: "FTO Backup Workers",
+    title: "Backup Workers",
     width: "100px"
   },
   {
@@ -178,12 +183,12 @@ export const apiPaths = {
   TASK_QUEUES: `${SERVICE_BASE_URI}/taskqueues`,
   GET_TIME_OF_DAYS: `${SERVICE_BASE_URI}/timeofday`,
   GET_RESET_PROFILE_DATADOG_LOGS: (nNumber: string): string => `${SERVICE_BASE_URI}/datadogresetprofileslogs/${nNumber}`,
-  RESET_PROFILES: (nNumber: string): string => `${SERVICE_BASE_URI}/resetprofiles/${nNumber}`,
   RESET_WORKER_SKILLS: `${SERVICE_BASE_URI}/resetworkerskills`,
-  TERMINATE_WORKER: `${SERVICE_BASE_URI}/terminateworker`,
   TFN_DATA: `${SERVICE_BASE_URI}/tfn`,
   UPDATE_CALABRIO_USER: (personId: number): any => `${SERVICE_BASE_URI}/calabrio-update-user/${personId}`,
-  WFM_ACTIVATE_EXTERNAL_LOGON: `${SERVICE_BASE_URI}/wfmexternallogon`
+  RESET_PROFILES: (nNumber: string): string => `${ADMIN_CLIENT_URL}/reset/${nNumber}`,
+  TERMINATE_WORKER: `${ADMIN_CLIENT_URL}/termination`,
+  WFM_ACTIVATE_EXTERNAL_LOGON: `${ADMIN_CLIENT_URL}/externalLogon`
 };
 
 export const authConfig = {

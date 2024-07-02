@@ -159,47 +159,6 @@ describe("reducer", () => {
       expect(result.managerContext.managers).toEqual(payload);
     });
   });
-  describe("addWorkers", () => {
-    test("should update the workers array", () => {
-      const initialWorkersList = [
-        {
-          attributes: {
-            manager_first_name: "frank",
-            manager_last_name: "smith"
-          },
-          id: "n7685955"
-        }
-      ];
-      const testState = {
-        ...initialState,
-        workerContext: {
-          workers: initialWorkersList
-        }
-      };
-      const payload = [
-        {
-          attributes: {
-            manager_first_name: "test",
-            manager_last_name: "fun"
-          },
-          id: "n1234556"
-        },
-        {
-          attributes: {
-            manager_first_name: "Jason",
-            manager_last_name: "Kidd"
-          },
-          id: "3456789"
-        }
-      ];
-      const action = {
-        type: "addWorkers",
-        payload
-      };
-      const result = reducer(testState, action);
-      expect(result.workerContext.workers).toEqual(initialWorkersList.concat(payload));
-    });
-  });
   describe("deleteWorker", () => {
     test("should delete worker from the array", () => {
       const workerToDelete = {

@@ -7,7 +7,7 @@ import {
   UMManager,
   UMUser,
   GraphData,
-  UMUserTwilioAttributes
+  UpdateOrCreateUMUser
 }from "globals/interfaces";
 import {
   LIST_MANAGERS,
@@ -20,7 +20,7 @@ import {
 
 type PaginationType = UMOffice | UMManager | UMUser;
 
-export const getGraphData = (type: string) => {
+export const getGraphData = (type: string): GraphData => {
   switch (type) {
     case "UMUser":
       return LIST_USERS;
@@ -76,7 +76,7 @@ export const getPaginatedResults = async (type: string, dispatch: (action: Actio
 
 //The following functions are temporary until we align the app & reducers to the new graph
 
-export const mapWorkerToDbWorker = (worker: Partial<UMUser>): Partial<UMUser> => {
+export const mapWorkerToDbWorker = (worker: Partial<UMUser>): Partial<UpdateOrCreateUMUser> => {
   return {
     ...worker.attributes && {
       twilio_attributes: JSON.stringify({
@@ -106,39 +106,40 @@ export const mapWorkerToDbWorker = (worker: Partial<UMUser>): Partial<UMUser> =>
 };
 
 export const mapWorkerFromDbWorker = (dbWorker: UMUser): UMUser => {
-  if (!dbWorker.attributes) {
-    return {
-      ...dbWorker,
-      skillsDifferent: false
-    };
-  }
-
-  const parsedAttributes = {
-    ...dbWorker.attributes,
-    ...dbWorker.attributes.routing && {
-      routing: {
-        ...dbWorker.attributes.routing,
-        levels: JSON.parse(dbWorker.attributes.routing.levels as unknown as string)
-      }
-    },
-    ...dbWorker.attributes.default_skills && {
-      default_skills: {
-        ...dbWorker.attributes.default_skills,
-        levels: JSON.parse(dbWorker.attributes.default_skills.levels as unknown as string)
-      }
-    },
-    ...dbWorker.attributes.disabled_skills && {
-      disabled_skills: {
-        ...dbWorker.attributes.disabled_skills,
-        levels: JSON.parse(dbWorker.attributes.disabled_skills.levels as unknown as string)
+  const parsedAttributes = dbWorker.twilio_attributes
+    ? {
+      ...dbWorker.twilio_attributes,
+      ...dbWorker.twilio_attributes.routing && {
+        routing: {
+          ...dbWorker.twilio_attributes.routing,
+          levels: JSON.parse(dbWorker.twilio_attributes.routing.levels as unknown as string)
+        }
+      },
+      ...dbWorker.twilio_attributes.default_skills && {
+        default_skills: {
+          ...dbWorker.twilio_attributes.default_skills,
+          levels: JSON.parse(dbWorker.twilio_attributes.default_skills.levels as unknown as string)
+        }
+      },
+      ...dbWorker.twilio_attributes.disabled_skills && {
+        disabled_skills: {
+          ...dbWorker.twilio_attributes.disabled_skills,
+          levels: JSON.parse(dbWorker.twilio_attributes.disabled_skills.levels as unknown as string)
+        }
       }
     }
-  } as UMUserTwilioAttributes;
+    : null;
 
   const worker = {
     ...dbWorker,
+    sid: dbWorker.worker_sid,
     attributes: parsedAttributes,
-    skillsDifferent: parsedAttributes ? areSkillsDifferent(parsedAttributes) : false
+    operatingUnitSid: dbWorker.operating_unit_sid,
+    zeroOutEnabled: dbWorker.zero_out_enabled,
+    selfServiceInd: dbWorker.self_service_ind,
+    inactiveForwardTo: dbWorker.inactive_forward_to,
+    skillsDifferent: parsedAttributes ? areSkillsDifferent(parsedAttributes) : false,
+    isConsole: dbWorker.pk.includes("Console")
   };
 
   if (worker.attributes?.manager_n_number) {
@@ -148,5 +149,14 @@ export const mapWorkerFromDbWorker = (dbWorker: UMUser): UMUser => {
   if(worker.attributes?.emp_first_name && worker.attributes?.emp_last_name){
     worker.attributes.full_name = `${worker.attributes?.emp_first_name} ${worker.attributes?.emp_last_name}`;
   }
+
+  // Delete DB Props
+  delete worker.twilio_attributes;
+  delete worker.operating_unit_sid;
+  delete worker.zero_out_enabled;
+  delete worker.self_service_ind;
+  delete worker.inactive_forward_to;
+  delete worker.worker_sid;
+
   return worker;
 };

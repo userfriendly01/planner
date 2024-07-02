@@ -194,13 +194,9 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
             });
           });
       }
-      dispatch({
-        type: "addWorkers",
-        payload: [newWorker]
-      });
 
       try {
-        await wfmActivateExternalLogon({ workerNNumbers: [userNNumber]});
+        await wfmActivateExternalLogon(state.userContext.tokens.adminService, { workerNNumbers: [userNNumber]});
 
         logger.info("Successfully activated WFM external login", {
           nNumber,
@@ -397,6 +393,7 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
         team: form.triton.routing.team,
         caller_states: form.triton.routing.caller_states,
         backup_workers: form.triton.routing.backup_workers,
+        backup_workers_active: form.triton.routing.backup_workers_active,
         sales_assoc_workers: form.triton.routing.sales_assoc_workers,
         skills: form.triton.routing.skills,
         levels: form.triton.routing.levels
@@ -454,17 +451,12 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
 
     const errors = [];
     try {
-      const updatedWorker = await updateUser(worker.sid, payload);
+      await updateUser(worker.sid, payload);
 
       logger.info("Successfully Updated Triton user", {
         nNumber,
         userNNumber: form.nNumber.value
       });
-
-      dispatch(({
-        type: "updateWorker",
-        payload: updatedWorker
-      }));
     } catch (err) {
       const error = err as ApolloError;
 
@@ -558,7 +550,7 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
             }
           });
           try {
-            await wfmActivateExternalLogon({ workerNNumbers: [form.calabrio_wfm.EmploymentNumber]});
+            await wfmActivateExternalLogon(state.userContext.tokens.adminService, { workerNNumbers: [form.calabrio_wfm.EmploymentNumber]});
 
             logger.info("Successfully activated WFM external login", {
               nNumber,

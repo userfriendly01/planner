@@ -99,14 +99,6 @@ export const reducer = (state: AppState, action: Action): AppState => {
           managers: action.payload
         }
       };
-    case "addWorkers":
-      return {
-        ...state,
-        workerContext: {
-          ...state.workerContext,
-          workers: state.workerContext.workers.concat(action.payload)
-        }
-      };
     case "loadWfmOrg": {
       const org = Array.isArray(action.payload.org) ? action.payload.org : [];
       const errors = Array.isArray(action.payload.errors) ? action.payload.errors : [];

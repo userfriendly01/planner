@@ -32,7 +32,7 @@ export const userFormActions = {
   SET_CALABRIO_TEAM: "SET_CALABRIO_TEAM",
   SET_CALABRIO_TIMEZONE: "SET_CALABRIO_TIMEZONE",
   SET_CALABRIO_ROLES: "SET_CALABRIO_ROLES",
-  SET_FTO_BACK_UP_WORKER: "SET_FTO_BACK_UP_WORKER",
+  SET_BACK_UP_WORKER: "SET_BACK_UP_WORKER",
   SET_CALLER_STATES: "SET_CALLER_STATES",
   SET_SALES_ASSOCIATE_WORKER: "SET_SALES_ASSOCIATE_WORKER",
   SET_DISCREPANCIES: "SET_DISCREPANCIES",
@@ -72,7 +72,8 @@ export const userFormActions = {
   UPDATE_PHONE_NUMBER: "UPDATE_PHONE_NUMBER",
   UPDATE_TEAM: "UPDATE_TEAM",
   UPDATE_SELF_SERVICE_INDICATOR: "UPDATE_SELF_SERVICE_INDICATOR",
-  UPDATE_USER_FOUND: "UPDATE_USER_FOUND"
+  UPDATE_USER_FOUND: "UPDATE_USER_FOUND",
+  UPDATE_BACK_UP_WORKER_FLAG: "UPDATE_BACK_UP_WORKER_FLAG",
 };
 
 export const initialUserFormState: UserFormState = {
@@ -95,6 +96,7 @@ export const initialUserFormState: UserFormState = {
     routing: {
       team: "",
       backup_workers: [],
+      backup_workers_active: false,
       caller_states: [],
       sales_assoc_workers: [],
       skills: [],
@@ -353,6 +355,20 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
         }
       };
     }
+    case userFormActions.UPDATE_BACK_UP_WORKER_FLAG: {
+      return {
+        ...state,
+        triton: {
+          ...state.triton,
+          routing: {
+            ...state.triton.routing,
+            backup_workers_active: !state.triton.routing.backup_workers_active,
+            updated: true
+          }
+        }
+      };
+    }
+    
     case userFormActions.RESET_FORM: {
       return {
         ...initialUserFormState,
@@ -449,15 +465,15 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
         }
       };
     }
-    case userFormActions.SET_FTO_BACK_UP_WORKER: {
-      const ftoBackupWorkerAttr = action.payload.ftoBackupWorkerRouting;
+    case userFormActions.SET_BACK_UP_WORKER: {
+      const backupWorkerAttr = action.payload.backupWorkerRouting;
       return {
         ...state,
         triton: {
           ...state.triton,
           routing: {
             ...state.triton.routing,
-            backup_workers: ftoBackupWorkerAttr,
+            backup_workers: backupWorkerAttr,
             updated: true
           }
         }

@@ -11,9 +11,11 @@ import {
   act,
   render,
   setupMockedComponents,
+  initialTestState,
   waitFor
 } from "testUtils";
 import { ProgressBar } from "usermanagement/ProgressBar";
+import { useAdminState } from "context/appContext";
 
 jest.mock("usermanagement/ProgressBar", () => ({
   ProgressBar: jest.fn()
@@ -39,6 +41,10 @@ jest.mock("@mui/icons-material", () => ({
 jest.mock("services/resetprofiles", () => ({
   fetchResetProfileDatadogLogs: jest.fn(),
   resetProfiles: jest.fn()
+}));
+
+jest.mock("context/appContext", () => ({
+  useAdminState: jest.fn(),
 }));
 
 jest.useFakeTimers();
@@ -73,6 +79,7 @@ const datadogResults = {
 describe("ResetModal", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
       Divider,
       StyledButton,

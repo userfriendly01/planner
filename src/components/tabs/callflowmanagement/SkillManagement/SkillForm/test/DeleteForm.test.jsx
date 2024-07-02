@@ -17,9 +17,7 @@ import {
   useSkillDispatch
 } from "context/appContext";
 import { loadConsolidatedSkills } from "services/skill";
-import {
-  listUMUsers, updateUser
-} from "services/user";
+import { updateUser } from "services/user";
 import { getTaskQueues } from "services/taskQueues";
 import { identifyImpactedWorkers } from "utils/skillsUtils";
 import { handleConcurrentCalls } from "usermanagement/processingUtils";
@@ -51,8 +49,7 @@ jest.mock("services/skill", () => ({
 }));
 
 jest.mock("services/user", () => ({
-  updateUser: jest.fn(),
-  listUMUsers: jest.fn()
+  updateUser: jest.fn()
 }));
 
 jest.mock("services/taskQueues", () => ({
@@ -108,7 +105,6 @@ describe("<DeleteForm />", () => {
     useAdminDispatch.mockReturnValue(mockAdminlDispatch);
     useSkillState.mockReturnValue(initialSkillState);
     useSkillDispatch.mockReturnValue(mockSkillDispatch);
-    listUMUsers.mockResolvedValue(initialTestState.workerContext.workers);
     loadConsolidatedSkills.mockResolvedValue(success);
     getTaskQueues.mockResolvedValue(initialSkillState.taskQueues);
     handleConcurrentCalls.mockResolvedValue(resolvedPromise);

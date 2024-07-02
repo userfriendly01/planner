@@ -145,6 +145,8 @@ describe("<BasicFormInfo />", () => {
     render(overFlowToolTip.children);
     const selfServiceIndToolTip = Tooltip.mock.calls[2][0];
     render(selfServiceIndToolTip.children);
+    const backupWorkerToolTip = Tooltip.mock.calls[3][0];
+    render(backupWorkerToolTip.children);
   };
 
   describe("Manager dropdown", () => {
@@ -1004,6 +1006,35 @@ describe("<BasicFormInfo />", () => {
           });
         });
       });
+    });
+  });
+
+  describe("Backup Workers Fields", () => {
+    beforeEach(() => {
+      useFormState.mockReturnValue(initialFormState);
+    });
+    describe("Initial State", () => {
+      test("Should render the correct initial state", () => {
+        renderComponent();
+        const backupWorkerToolTip = Tooltip.mock.calls[1][0];
+        expect(backupWorkerToolTip.title).toBe("Backup Workers Enable/Disable");
+        expect(backupWorkerToolTip.placement).toBe("bottom-start");
+        const rendered = render(backupWorkerToolTip.children);
+        expect(rendered.container).toHaveTextContent("Backup Workers");
+      });
+    });
+    describe("Backup Worker Enable/Disable Switch", () => {
+      test("When onChange is called, setForm is called", () => {
+        renderComponent();
+        render(Tooltip.mock.calls[1][0].children);
+        act(() => {
+          const onChange = Switch.mock.calls[0][0].onChange;
+          onChange();
+        });
+        expect(mockSetForm).toHaveBeenCalledTimes(1);
+        expect(mockSetForm).toHaveBeenCalledWith({ type: userFormActions.UPDATE_BACK_UP_WORKER_FLAG });
+      });
+     
     });
   });
 });
