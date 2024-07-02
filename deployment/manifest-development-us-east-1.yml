@@ -15,7 +15,7 @@ applications:
     AZURE_CLIENT_ID: ${secret.cicct-softphone-admin-ui.id}
     TROUX_ID: ${forge.troux_application_uuid}
     AZURE_REDIRECT_URI: https://triton-dev.lmig.com/triton-admin
-    GRAPH_API_URL: https://tgufpgkyxvacrntvgb75iuo3pi.appsync-api.us-east-1.amazonaws.com/graphql
+    GRAPH_API_ID: tgufpgkyxvacrntvgb75iuo3pi
     GRAPH_CLIENT_ID: ${idp.cicct-softphone-admin-ui.resource.cct-shared-graph-api.development.appId}
     SOFTPHONE_SERVICE_URL: https://cicct-softphone-service-development.us-east-1.np.paas.lmig.com
     ADMIN_CLIENT_URL: https://6mtmnu5sge.execute-api.us-east-1.amazonaws.com/api

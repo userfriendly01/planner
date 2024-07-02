@@ -13,7 +13,6 @@ import { ForwardToEntryForm } from "usermanagement/ForwardToEntryForm";
 import {
   useAdminState,
   useFormState,
-  useAdminDispatch,
   useFormDispatch
 } from "context/appContext";
 import { userFormActions } from "context/userFormReducer";
@@ -39,7 +38,6 @@ export const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
 
   const state = useAdminState();
   const { nNumber } = state.userContext;
-  const dispatch = useAdminDispatch();
   const form = useFormState();
   const setForm = useFormDispatch();
 
@@ -108,10 +106,6 @@ export const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
           userNNumber: form.triton.attributes?.n_number
         });
 
-        dispatch({
-          type: "deleteWorker",
-          payload: form.triton.sid
-        });
         updateLoading({
           ...loading,
           overlayMessage: overlayMessage,
@@ -161,11 +155,6 @@ export const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
           });
 
           if (results[0]?.statusCode === 200) {
-            dispatch({
-              type: "deleteWorker",
-              payload: form.triton.sid
-            });
-
             updateLoading({
               ...loading,
               overlayMessage: resultMessage,

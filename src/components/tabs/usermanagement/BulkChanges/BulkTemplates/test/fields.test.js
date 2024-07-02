@@ -5,6 +5,7 @@ import {
 import { fetchUser } from "services/fetchUser";
 import { generateExtension } from "services/checkExtension";
 import {
+  initialSkillState,
   initialTestState
 } from "testUtils";
 
@@ -695,7 +696,7 @@ describe("fields.js", () => {
             rowNumber: 5,
             "Default Skills": ""
           };
-          const result = await defaultSkillValidation(row, initialTestState);
+          const result = await defaultSkillValidation(row, initialTestState, initialSkillState);
           expect(result).toEqual("Default Skills is empty but not required. Skipping validation for row 5");
           expect(row).toEqual({
             ...row,
@@ -712,7 +713,7 @@ describe("fields.js", () => {
             await defaultSkillValidation({
               rowNumber: 5,
               "Default Skills": "aisgL1:boo, lscOBDialer1:1"
-            }, initialTestState);
+            }, initialTestState, initialSkillState);
           } catch (e) {
             expect(e).toEqual(JSON.stringify({
               rowNumber: 5,
@@ -725,7 +726,7 @@ describe("fields.js", () => {
             await defaultSkillValidation({
               rowNumber: 5,
               "Default Skills": "aisgL1, fakeSkill"
-            }, initialTestState);
+            }, initialTestState, initialSkillState);
           } catch (e) {
             expect(e).toEqual(JSON.stringify({
               rowNumber: 5,
@@ -738,7 +739,7 @@ describe("fields.js", () => {
             await defaultSkillValidation({
               rowNumber: 5,
               "Default Skills": "aisgL1:3, lscOBDialer1:2"
-            }, initialTestState);
+            }, initialTestState, initialSkillState);
           } catch (e) {
             expect(e).toEqual(JSON.stringify({
               rowNumber: 5,
@@ -751,7 +752,7 @@ describe("fields.js", () => {
             rowNumber: 5,
             "Default Skills": "aisgL1, lscOBDialer1:2"
           };
-          const result = await defaultSkillValidation(row, initialTestState);
+          const result = await defaultSkillValidation(row, initialTestState, initialSkillState);
           expect(result).toEqual("Default Skills valid for row 5");
           expect(row).toEqual({
             ...row,
@@ -774,7 +775,7 @@ describe("fields.js", () => {
             "Default Skills": "aisgL1, lscOBDialer1:2",
             attributes: existingAttributes
           };
-          const result = await defaultSkillValidation(row, initialTestState);
+          const result = await defaultSkillValidation(row, initialTestState, initialSkillState);
           expect(result).toEqual("Default Skills valid for row 3");
           expect(row).toEqual({
             ...row,
@@ -809,7 +810,7 @@ describe("fields.js", () => {
       describe("options", () => {
         const optionsFunction = FIELDS.DEFAULT_SKILLS.options;
         test("returns the profile id options", () => {
-          const options = optionsFunction(initialTestState);
+          const options = optionsFunction(initialTestState, null, initialSkillState);
           expect(options).toEqual([
             "aisgL1",
             "bscCbsL2",

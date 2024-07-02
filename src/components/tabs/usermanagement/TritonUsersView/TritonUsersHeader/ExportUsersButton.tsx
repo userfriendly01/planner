@@ -21,6 +21,7 @@ export const ExportUsersButton = (props: ExportTritonUserProps) => {
       ...worker
     };
 
+    const backupWorkers = worker.attributes?.routing?.backup_workers;
     const caller_states = worker.attributes?.routing?.caller_states;
     const profile = state.profileContext.profiles.find((p: any) => String(p.profile_id) === String(worker.attributes.profile_id));
     const salesAssociateWorkers = worker.attributes?.routing?.sales_assoc_workers;
@@ -35,6 +36,7 @@ export const ExportUsersButton = (props: ExportTritonUserProps) => {
     workerObj.default_skills = formatWorkerAttributeSkillsToString(worker.attributes?.default_skills).toString();
     workerObj.disabled_skills = formatWorkerAttributeSkillsToString(worker.attributes?.disabled_skills).toString();
     workerObj.ou = profile ? profile.operating_unit_nme : "";
+    workerObj.backup_workers = backupWorkers ? backupWorkers.join(", ") : "";
     workerObj.sales_assoc_workers = salesAssociateWorkers ? salesAssociateWorkers.join(", ") : "";
     workerObj.outbound_number = workerObj.caller_id;
 

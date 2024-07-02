@@ -1,5 +1,6 @@
 import { Dropdown } from "components/Dropdown";
 import { MessageContainer } from "callflowmanagement/MessageContainer";
+import { SkillFormModal } from "callflowmanagement/SkillFormModal";
 import { SkillGroupInputContainer } from "callflowmanagement/SkillGroupInputContainer";
 import React from "react";
 import {
@@ -7,6 +8,8 @@ import {
   ActionContainerProps
 } from "../Skills.Interfaces";
 import { FormControlsContainer } from "../Skills.Styles";
+import { useAdminState } from "context/appContext";
+import { checkIfPO } from "authentication/authUtils";
 
 export const ActionContainer = (props: ActionContainerProps) => {
   const {
@@ -17,6 +20,7 @@ export const ActionContainer = (props: ActionContainerProps) => {
     setTableState
   } = props;
 
+  const { nNumber } = useAdminState().userContext;
   const [ propertySelection, setPropertySelection ] = React.useState(propertyOptions.CLOSED_MESSAGE);
   const [ action, setAction ] = React.useState(null);
 
@@ -57,6 +61,19 @@ export const ActionContainer = (props: ActionContainerProps) => {
           />;
         }
         return <div></div>;
+      case propertyOptions.SKILLS.label:
+        if (action && action.value) {
+          return <SkillFormModal
+            action={action}
+            setTableState={setTableState}
+            confirmationModalOpts={confirmationModalOpts}
+            setAction={setAction}
+            tableState={tableState}
+            setConfirmationModalOpts={setConfirmationModalOpts}
+            setSaveResult={setSaveResult}
+          />;
+        }
+        return null;
       default:
         return null;
     }
@@ -67,7 +84,7 @@ export const ActionContainer = (props: ActionContainerProps) => {
       <Dropdown
         label="What are you changing?"
         value={propertySelection}
-        options={Object.values(propertyOptions)}
+        options={checkIfPO(nNumber) ? Object.values(propertyOptions) : Object.values(propertyOptions).filter((op: any) => op.value.variable !== "skills")}
         updateValue={(event: any, property: any) => {
           setPropertySelection(property);
           if(action) { setAction(null); }

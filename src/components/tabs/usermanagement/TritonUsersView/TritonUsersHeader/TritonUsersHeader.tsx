@@ -16,7 +16,8 @@ import { Chip } from "@mui/material";
 export const TritonUsersHeader = (props: ManagementHeaderProps) => {
   const {
     tableState,
-    setTableState
+    setTableState,
+    setResettingSkills
   } = props;
 
   const state = useAdminState();
@@ -98,7 +99,7 @@ export const TritonUsersHeader = (props: ManagementHeaderProps) => {
       </ControlItem>
       <ControlItem>
         <ExportUsersButton selected={tableState.searchResults} label="Export"/>
-        <ResetSkillsButton selected={tableState.selected}/>
+        <ResetSkillsButton selected={tableState.selected} setResettingSkills={setResettingSkills}/>
       </ControlItem>
     </ControlsWrapper>
   );

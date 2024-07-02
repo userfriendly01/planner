@@ -1,9 +1,8 @@
+import { LoadStatuses } from "globals/interfaces";
 import {
   initialState,
   reducer
 } from "../reducers/reducer";
-import { skillsList } from "testUtils";
-import { formatSkillGroups } from "utils/skillsUtils";
 
 jest.mock("utils/skillsUtils", () => ({
   formatSkillGroups: jest.fn()
@@ -22,13 +21,13 @@ describe("reducer", () => {
   });
   describe("setLoadingWorkers", () => {
     test("should set workers loading boolean", () => {
-      const payload = true;
+      const payload = LoadStatuses.SUCCESS;
       const action = {
         type: "setLoadingWorkers",
         payload
       };
       const result = reducer(initialState, action);
-      expect(result.workerContext.isLoading).toEqual(true);
+      expect(result.workerContext.loadStatus).toEqual(LoadStatuses.SUCCESS);
     });
   });
   describe("loadPaginatedResults", () => {
@@ -77,6 +76,12 @@ describe("reducer", () => {
     });
     describe("type === UMUser", () => {
       test("should set workers to page results", () => {
+        const startingState = {
+          ...initialState,
+          workerContext: {
+            workers: [{ name: "I'm already here!" }]
+          }
+        };
         const payload = {
           type: "UMUser",
           results: [
@@ -87,8 +92,34 @@ describe("reducer", () => {
           type: "loadPaginatedResults",
           payload
         };
-        const result = reducer(initialState, action);
-        expect(result.workerContext.workers).toEqual(payload.results);
+        const result = reducer(startingState, action);
+        expect(result.workerContext.workers).toEqual([
+          { name: "I'm already here!" },
+          { name: "I'm a worker!" }
+        ]);
+      });
+      describe("isFirstPage === true", () => {
+        test("should set workers to page results", () => {
+          const startingState = {
+            ...initialState,
+            workerContext: {
+              workers: [{ name: "I'm already here!" }]
+            }
+          };
+          const payload = {
+            type: "UMUser",
+            isFirstPage: true,
+            results: [
+              { name: "I'm a worker!" }
+            ]
+          };
+          const action = {
+            type: "loadPaginatedResults",
+            payload
+          };
+          const result = reducer(startingState, action);
+          expect(result.workerContext.workers).toEqual(payload.results);
+        });
       });
     });
   });
@@ -170,47 +201,6 @@ describe("reducer", () => {
       };
       const result = reducer(testState, action);
       expect(result.officeContext.offices).toEqual(initialOffices.concat([payload]));
-    });
-  });
-  describe("addWorkers", () => {
-    test("should update the workers array", () => {
-      const initialWorkersList = [
-        {
-          attributes: {
-            manager_first_name: "frank",
-            manager_last_name: "smith"
-          },
-          id: "n7685955"
-        }
-      ];
-      const testState = {
-        ...initialState,
-        workerContext: {
-          workers: initialWorkersList
-        }
-      };
-      const payload = [
-        {
-          attributes: {
-            manager_first_name: "test",
-            manager_last_name: "fun"
-          },
-          id: "n1234556"
-        },
-        {
-          attributes: {
-            manager_first_name: "Jason",
-            manager_last_name: "Kidd"
-          },
-          id: "3456789"
-        }
-      ];
-      const action = {
-        type: "addWorkers",
-        payload
-      };
-      const result = reducer(testState, action);
-      expect(result.workerContext.workers).toEqual(initialWorkersList.concat(payload));
     });
   });
   describe("deleteWorker", () => {
@@ -517,96 +507,6 @@ describe("reducer", () => {
       expect(result.profileContext.profiles).toEqual(payload);
     });
   });
-  describe("loadSkills", () => {
-    test("should update skilContext.skills to payload", () => {
-      const payload = [
-        {
-          skill: "psu-l1",
-          levels: []
-        },
-        {
-          skill: "psu-l2",
-          levels: [1,2,3]
-        },
-        {
-          skill: "psu-l3",
-          levels: [1,2,3,4,5,6]
-        }
-      ];
-      const action = {
-        type: "loadSkills",
-        payload
-      };
-      const result = reducer(initialState, action);
-      expect(result.skillContext.skills).toEqual(payload);
-    });
-  });
-  describe("loadSkillGroupss", () => {
-    test("should update skilContext.skillGroups to payload", () => {
-      const payload = [
-        {
-          name: "lscOBDialer1",
-          ctmSkillId: 1,
-          ctmSkillDisplayName: "lsc OB Dialer 1",
-          ctmSkillGroups: [{
-            skillGroupId: 1,
-            skillGroupNme: "skillgroup1",
-            skills: [{
-              name: "lscOBDialer1",
-              ctmSkillId: 1
-            }, {
-              name: "aisgL1",
-              ctmSkillId: 2
-            }]
-          }],
-          profiles: [{
-            profileName: "Licensed Sales Center",
-            profileId: 32
-          }],
-          flashMessage: "",
-          closedMessage: "",
-          levels: [ 1, 2, 3],
-          timeOfDays: [],
-          vhCallTarget: null,
-          vhCallerId: null,
-          vhThreshold: null
-        },
-        {
-          name: "aisgL1",
-          ctmSkillId: 2,
-          ctmSkillDisplayName: "aisg L1",
-          ctmSkillGroups: [{
-            skillGroupId: 1,
-            skillGroupNme: "skillgroup1",
-            skills: [{
-              name: "lscOBDialer1",
-              ctmSkillId: 1
-            }, {
-              name: "aisgL1",
-              ctmSkillId: 2
-            }]
-          }],
-          profiles: [{
-            profileName: "AISG",
-            profileId: 4
-          }],
-          flashMessage: "",
-          closedMessage: "Sorry, we're closed.",
-          levels: [],
-          timeOfDays: [],
-          vhCallTarget: null,
-          vhCallerId: null,
-          vhThreshold: null
-        }
-      ];
-      const action = {
-        type: "loadSkillGroups",
-        payload
-      };
-      const result = reducer(initialState, action);
-      expect(result.skillContext.skillGroups).toEqual(formatSkillGroups(payload));
-    });
-  });
   describe("loadUserData", () => {
     test("should initialize or reinitialize the user data", () => {
       const payload = {
@@ -623,17 +523,6 @@ describe("reducer", () => {
         ...initialState.userContext,
         ...payload
       });
-    });
-  });
-  describe("resettingSkills", () => {
-    test("should set resettingSkills to payload", () => {
-      const payload = true;
-      const action = {
-        type: "resettingSkills",
-        payload
-      };
-      const result = reducer(initialState, action);
-      expect(result.resettingSkills).toEqual(payload);
     });
   });
   describe("updateWorker", () => {
@@ -672,22 +561,6 @@ describe("reducer", () => {
           attributes: "new"
         }
       ]);
-    });
-  });
-  describe("updateSkills", () => {
-    test("should set the skills array on skillContext", () => {
-      const action = {
-        type: "updateSkills",
-        payload: skillsList
-      };
-      const result = reducer(initialState, action);
-      expect(result).toEqual({
-        ...initialState,
-        skillContext: {
-          ...initialState.skillContext,
-          skills: skillsList
-        }
-      });
     });
   });
   describe("updateManageFilter", () => {

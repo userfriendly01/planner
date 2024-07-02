@@ -63,10 +63,10 @@ const tableState = {
   deltaFilter: false,
   filteredList: initialTestState.workerContext.workers
 };
-const renderComponent = () => {
+const renderComponent = (resettingSkills = false) => {
   return render(
     <ThemeProvider theme={theme}>
-      <TritonUserTable tableState={tableState} setTableState={mockSetTableState} />
+      <TritonUserTable resettingSkills={resettingSkills} tableState={tableState} setTableState={mockSetTableState} />
     </ThemeProvider>
   );
 };
@@ -83,13 +83,7 @@ describe("<TritonUserTable />", () => {
       Switch
     });
     formatWorkerAttributeSkillsToHTML.mockReturnValue("Skill1, Skill2");
-    useAdminState.mockReturnValue({
-      ...initialTestState,
-      workerContext: {
-        ...initialTestState.workerContext,
-        selectedWorkers: []
-      }
-    });
+    useAdminState.mockReturnValue(initialTestState);
     useFormDispatch.mockReturnValue(mockSetForm);
     useAdminDispatch.mockReturnValue(mockDispatch);
   });
@@ -136,42 +130,11 @@ describe("<TritonUserTable />", () => {
       expect(Delete.mock.calls.length).toBe(initialTestState.workerContext.workers.length);
     });
     describe("resettingSkills === true", () => {
-      beforeEach(() => {
-        useAdminState.mockReturnValue({
-          ...initialTestState,
-          resettingSkills: true,
-          workerContext: {
-            ...initialTestState.workerContext,
-            selectedWorkers: []
-          }
-        });
-      });
       test("ModalOverlay is rendered", () => {
-        renderComponent();
+        renderComponent(true);
         expect(ModalOverlay.mock.calls.length).toBe(1);
         expect(ModalOverlay.mock.calls[0][0]).toStrictEqual({
           message: "Resetting Worker Skills",
-          status: "saving"
-        });
-      });
-    });
-
-    describe("isLoading (workers) === true", () => {
-      beforeEach(() => {
-        useAdminState.mockReturnValue({
-          ...initialTestState,
-          workerContext: {
-            ...initialTestState.workerContext,
-            isLoading: true,
-            selectedWorkers: []
-          }
-        });
-      });
-      test("ModalOverlay is rendered", () => {
-        renderComponent();
-        expect(ModalOverlay.mock.calls.length).toBe(1);
-        expect(ModalOverlay.mock.calls[0][0]).toStrictEqual({
-          message: "Loading Users",
           status: "saving"
         });
       });

@@ -8,7 +8,6 @@ import {
   formatCalabrioGroups,
   formatCalabrioRoles
 } from "utils/calabrioUtils";
-import { formatSkillGroups } from "utils/skillsUtils";
 
 export const initialState: AppState = {
   managerContext: {
@@ -20,17 +19,13 @@ export const initialState: AppState = {
   profileContext: {
     profiles: []
   },
-  skillContext: {
-    skills: [],
-    skillGroups: []
-  },
   userContext: {
     permissions: [],
     tokens: {}
   },
   workerContext: {
     workers: [],
-    isLoading: true
+    loadStatus: null
   },
   calabrioContext: {
     tenant: {},
@@ -42,7 +37,6 @@ export const initialState: AppState = {
     wfmOptions: [],
     wfmErrors: []
   },
-  resettingSkills: false,
   userManagementTableFilters: {
     managerFilter: null,
     profileFilterArray: [],
@@ -57,26 +51,29 @@ export const reducer = (state: AppState, action: Action): AppState => {
         ...state,
         workerContext: {
           ...state.workerContext,
-          isLoading: action.payload
+          loadStatus: action.payload
         }
       };
     case "loadPaginatedResults": {
       const type: string = action.payload.type;
       const pageResults: any[] = action.payload.results;
+      const isFirstPage: boolean = action.payload.isFirstPage;
 
       return {
         ...state,
         managerContext: {
           ...state.managerContext,
-          managers: type === "UMManager" ? state.managerContext.managers.concat(pageResults) : state.managerContext.managers
+          managers: (type === "UMManager" && !isFirstPage && state.managerContext.managers.concat(pageResults)) || (type === "UMManager" && pageResults) || state.managerContext.managers
+
         },
         officeContext: {
           ...state.officeContext,
-          offices: type === "UMOffice" ? state.officeContext.offices.concat(pageResults) : state.officeContext.offices
+          offices: (type === "UMOffice" && !isFirstPage && state.officeContext.offices.concat(pageResults)) || (type === "UMOffice" && pageResults) || state.officeContext.offices
+
         },
         workerContext: {
           ...state.workerContext,
-          workers: type === "UMUser" ? state.workerContext.workers.concat(pageResults) : state.workerContext.workers
+          workers: (type === "UMUser" && !isFirstPage && state.workerContext.workers.concat(pageResults)) || (type === "UMUser" && pageResults) || state.workerContext.workers
         }
       };
     }
@@ -102,14 +99,6 @@ export const reducer = (state: AppState, action: Action): AppState => {
         officeContext: {
           ...state.officeContext,
           offices: [...state.officeContext.offices.slice(), action.payload]
-        }
-      };
-    case "addWorkers":
-      return {
-        ...state,
-        workerContext: {
-          ...state.workerContext,
-          workers: state.workerContext.workers.concat(action.payload)
         }
       };
     case "loadWfmOrg": {
@@ -216,22 +205,6 @@ export const reducer = (state: AppState, action: Action): AppState => {
         }
       };
     }
-    case "loadSkills":
-      return {
-        ...state,
-        skillContext: {
-          ...state.skillContext,
-          skills: action.payload
-        }
-      };
-    case "loadSkillGroups":
-      return {
-        ...state,
-        skillContext: {
-          ...state.skillContext,
-          skillGroups: formatSkillGroups(action.payload)
-        }
-      };
     case "loadUserData":
       return {
         ...state,
@@ -240,25 +213,12 @@ export const reducer = (state: AppState, action: Action): AppState => {
           ...action.payload
         }
       };
-    case "resettingSkills":
-      return {
-        ...state,
-        resettingSkills: action.payload
-      };
     case "updateWorker":
       return {
         ...state,
         workerContext: {
           ...state.workerContext,
           workers: [...state.workerContext.workers.filter(w => w.sid !== action.payload.sid), action.payload]
-        }
-      };
-    case "updateSkills":
-      return {
-        ...state,
-        skillContext: {
-          ...state.skillContext,
-          skills: action.payload
         }
       };
     case "updateManagerFilter":

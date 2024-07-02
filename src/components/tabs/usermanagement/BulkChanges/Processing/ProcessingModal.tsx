@@ -18,7 +18,8 @@ import { performValidations } from "usermanagement/validationUtils";
 import { ProgressBar } from "./ProgressBar";
 import {
   useAdminState,
-  useAdminDispatch
+  useAdminDispatch,
+  useSkillState
 } from "context/appContext";
 import React from "react";
 import { logger } from "utils/logger";
@@ -39,6 +40,7 @@ export const ProcessingModal = (props: ProcessingModalProps) => {
   });
 
   const state = useAdminState();
+  const skillState = useSkillState();
   const dispatch = useAdminDispatch();
   const [ status, setStatus ] = React.useState<PROCESSING_STATES>(PROCESSING_STATES.VALIDATING);
   const [ processedRows, setProcessedRows ] = React.useState(0);
@@ -53,7 +55,7 @@ export const ProcessingModal = (props: ProcessingModalProps) => {
   React.useEffect(() => {
     const initiateValidations = async () => {
       try {
-        await performValidations(uploadedForm, selectedTemplates, consolidatedFieldsList, setProcessedRows, state);
+        await performValidations(uploadedForm, selectedTemplates, consolidatedFieldsList, setProcessedRows, state, skillState);
         setResults({
           ...results,
           successfullyValidatedRows: uploadedForm

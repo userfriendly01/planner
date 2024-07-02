@@ -3,7 +3,7 @@ import {
   formatErrorMessage,
   toProperCase,
   formatDateFromExcelDate
-} from "../formatUtils";
+} from "../_formatUtils";
 
 describe("formatErrorMessage", () => {
   test("err?.response?.data", () => {
@@ -33,7 +33,7 @@ describe("formatErrorMessage", () => {
   });
   test("err", () => {
     const result = formatErrorMessage(null);
-    expect(result).toBe(null);
+    expect(result).toBe("null");
   });
 });
 

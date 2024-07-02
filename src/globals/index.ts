@@ -17,7 +17,9 @@ export const env = {
   DATADOG_CLIENT_TOKEN: window.env.DATADOG_CLIENT_TOKEN,
   APP_ENV: window.env.APP_ENV,
   TROUX_ID: window.env.TROUX_ID,
-  GRAPH_API_URL: window.env.GRAPH_API_URL,
+  GRAPH_API_HOST: `${window.env.GRAPH_API_ID}.appsync-api.us-east-1.amazonaws.com`,
+  GRAPH_API_URL: `https://${window.env.GRAPH_API_ID}.appsync-api.us-east-1.amazonaws.com/graphql`,
+  GRAPH_API_WSS: `wss://${window.env.GRAPH_API_ID}.appsync-realtime-api.us-east-1.amazonaws.com/graphql`,
   GRAPH_CLIENT_ID: window.env.GRAPH_CLIENT_ID,
   SOFTPHONE_SERVICE_URL: window.env.SOFTPHONE_SERVICE_URL,
   ADMIN_CLIENT_URL: window.env.ADMIN_CLIENT_URL,
@@ -219,6 +221,11 @@ export const exportColumns = [
     width: "100px"
   },
   {
+    field: "backup_workers",
+    title: "Backup Workers",
+    width: "100px"
+  },
+  {
     field: "roles",
     title: "Roles",
     width: "100px"
@@ -257,7 +264,6 @@ export const apiPaths = {
   CREATE_CALABRIO_WFM_PERSON: `${SERVICE_BASE_URI}/calabrio-api/wfm/person`,
   CLOSED_MESSAGE: `${SERVICE_BASE_URI}/closedmessage`,
   CREATE_SKILL: `${SERVICE_BASE_URI}/createskill`,
-  // DELETE_WORKER: (workerSid: string): string => `${SERVICE_BASE_URI}/deleteworker/${workerSid}`,
   DIAL_LIST: `${CONTACT_MANAGER_BASE_URI}/diallist`,
   DIAL_LIST_ENTRY: (dialListId: number): string => `${CONTACT_MANAGER_BASE_URI}/diallist/${dialListId}`,
   DIRECTORY: `${CONTACT_MANAGER_BASE_URI}/directory`,
@@ -280,8 +286,11 @@ export const apiPaths = {
   GET_ACTIVITIES: `${CONTACT_MANAGER_BASE_URI}/activities`,
   GET_ACCESS_GROUP: `${CONTACT_MANAGER_BASE_URI}/accessgroup`,
   GET_SKILLS: `${SERVICE_BASE_URI}/consolidatedskills`,
+  SKILLS_TASKROUTER: `${SERVICE_BASE_URI}/taskrouterskills`,
+  SKILLS_CALLFLOW: `${SERVICE_BASE_URI}/callflowskills`,
+  SKILLS_CONTACT_MANAGER: `${CONTACT_MANAGER_BASE_URI}/skillswithprofiles`,
   GET_OU: `${SERVICE_BASE_URI}/operatingunit`,
-  GET_TASK_QUEUES: `${SERVICE_BASE_URI}/taskqueues`,
+  TASK_QUEUES: `${SERVICE_BASE_URI}/taskqueues`,
   GET_TIME_OF_DAYS: `${SERVICE_BASE_URI}/timeofday`,
   GET_RESET_PROFILE_DATADOG_LOGS: (nNumber: string): string => `${SERVICE_BASE_URI}/datadogresetprofileslogs/${nNumber}`,
   PROFILES: `${CONTACT_MANAGER_BASE_URI}/profiles`,

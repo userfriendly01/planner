@@ -2,7 +2,9 @@ import { CalabrioGroup } from "usermanagement/CallRecording.Interfaces";
 import {
   AuthenticationProfile, Permissions
 } from "authentication/authenticationInterfaces";
-import { AlertColor } from "@mui/material";
+import {
+  AlertColor
+} from "@mui/material";
 import styled from "styled-components";
 
 export const FlexColumn = styled.div`
@@ -14,6 +16,29 @@ export const FlexColumn = styled.div`
 export const FlexRow = styled.div`
   display: flex;
   flex: 1 1 auto;
+`;
+
+export const AppError = styled.div`
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  font-size: 30;
+  padding: 50;
+`;
+
+export const IconWrapper = styled.div`
+  border-radius: ${props => props.theme.tableRow.icon.hoverDiameter / 2}px;
+  color: ${props => props.theme.libertyDarkGray};
+  cursor: pointer;
+  display: flex;
+  font-size: ${props => props.theme.tableRow.icon.size}px;
+  height: ${props => props.theme.tableRow.icon.hoverDiameter}px;
+  justify-content: center;
+  width: ${props => props.theme.tableRow.icon.hoverDiameter}px;
+  &:hover {
+    background-color: ${props => props.theme.tableRow.selectedColor};
+    cursor: pointer;
+  }
 `;
 
 export interface GenericObject {
@@ -58,6 +83,12 @@ export interface Discrepancy {
   type: string
 }
 
+export enum LoadStatuses {
+  FAIL = "fail",
+  LOADING = "loading",
+  SUCCESS = "success"
+}
+
 export interface AppState {
   managerContext: {
     managers: UMManager[]
@@ -67,10 +98,6 @@ export interface AppState {
   },
   profileContext: {
     profiles: TritonProfile[]
-  },
-  skillContext: {
-    skills: Skill[],
-    skillGroups: SkillGroup[]
   },
   userContext: {
     permissions: ADGroupPermission[];
@@ -83,7 +110,7 @@ export interface AppState {
   },
   workerContext: {
     workers: UMUser[],
-    isLoading: boolean;
+    loadStatus: LoadStatuses;
   },
   calabrioContext: {
     tenant: any,
@@ -95,7 +122,6 @@ export interface AppState {
     wfmOptions: any[],
     wfmErrors: any[]
   },
-  resettingSkills: false,
   userManagementTableFilters: {
     managerFilter: string,
     profileFilterArray: any[],
@@ -112,7 +138,7 @@ export interface ADGroupPermission {
     roles: ADGroupRole[];
     startup: {
       name: string;
-      function: (dispatch: any) => Promise<any>;
+      function: (dispatch: any, skillDispatch?: any) => Promise<any>;
     }
     description: string;
     authenticationProfile:  AuthenticationProfile
@@ -152,28 +178,6 @@ export interface UMOffice {
   item_type: string,
   office_num: string,
   office_name: string
-}
-
-export interface Skill {
-  [key: string]: any
-  ctmSkillId: number,
-  ctmSkillDisplayName: string,
-  ctmSkillGroups: SkillGroup[],
-  name: string,
-  profiles: any[],
-  closedMessage: string,
-  flashMessage: string,
-  levels: any[],
-  timeOfDays: any[],
-  vhCallTarget: string,
-  vhCallerId: string,
-  vhThreshold: number
-}
-
-export interface SkillGroup {
-  skillGroupId: number,
-  skillGroupNme: string,
-  skills: Skill[],
 }
 
 export interface TritonProfile {
@@ -322,65 +326,90 @@ export interface GraphData {
   responsePath: string
 }
 
-export interface UMUserTwilioAttributes {
-  contact_uri?: string,
-  default_skills?: UMTwilioAttributeSkills,
-  department_name?:string,
-  department_id?:string,
-  caller_id?: string,
-  disabled_skills?: UMTwilioAttributeSkills,
-  email?: string,
-  email_address?: string,
-  emp_first_name?: string,
-  emp_last_name?: string,
-  extension?: string,
-  full_name?: string,
-  location?:string,
-  manager_first_name?: string,
-  manager_last_name?: string,
-  manager_n_number?: string,
-  manager?:string,
-  n_number?: string,
-  office_location_name?: string,
-  office_location_number?: string,
-  primary_dept_name?: string,
-  primary_dept_number?: string,
-  profile_id?: number,
-  roles?: string[],
-  routing?: UMTwilioAttributeSkills,
-  unique_id?: string,
-  agent_id?: string,
+export interface UMTwilioAttributeSkills {
+  levels: {
+    [key: string]: number;
+  };
+  skills: string[];
 }
 
-export interface UMUser {
+interface UMTwilioAttributesRouting extends UMTwilioAttributeSkills {
+  team?: string;
+  backup_workers?: string[];
+  backup_workers_active?: boolean;
+  caller_states?: string[];
+  sales_assoc_workers?: string[];
+}
+
+export interface UMUserTwilioAttributes {
+  contact_uri?: string;
+  department_name?: string;
+  department_id?: string;
+  caller_id?: string,
+  email?: string;
+  email_address?: string;
+  emp_first_name?: string;
+  emp_last_name?: string;
+  extension?: string;
+  full_name?: string;
+  location?:string;
+  manager_first_name?: string;
+  manager_last_name?: string;
+  manager_n_number?: string;
+  manager?:string;
+  n_number?: string;
+  office_location_name?: string;
+  office_location_number?: string;
+  primary_dept_name?: string;
+  primary_dept_number?: string;
+  profile_id?: number;
+  roles?: string[];
+  unique_id?: string;
+  agent_id?: string;
+  disabled_skills?: UMTwilioAttributeSkills;
+  default_skills?: UMTwilioAttributeSkills;
+  routing?: UMTwilioAttributesRouting;
+}
+
+export interface UMUser extends BaseUMUser {
+  twilio_attributes: UMUserTwilioAttributes;
+}
+
+export interface UpdateOrCreateUMUser extends BaseUMUser {
+  twilio_attributes: string;
+}
+
+interface BaseUMUser {
   pk: string;
   ttl: number;
-  sid: string;                // mapped from --> worker_sid
+  subscription_update?: boolean;
+
   workerSid: string;          // mapped from --> worker_sid
+  sid: string;                // mapped from --> worker_sid
+  worker_sid: string;
+
   inactiveDate?: string;      // mapped from --> inactive_date
+  inactive_date?: string
+
   inactiveForwardTo: string;  // mapped from --> inactive_forward_to
+  inactive_forward_to?: string
+
   zeroOutEnabled: boolean;    // mapped from --> zero_out_enabled
+  zero_out_enabled?: boolean;
+
   selfServiceInd: boolean;    // mapped from --> self_service_ind
+  self_service_ind?: boolean
+
   operatingUnitSid: string;   // mapped from --> operating_unit_sid
+  operating_unit_sid?: string;
+
   did?: string;
-  twilio_attributes: string;  // Used for create and update
+  attributes: UMUserTwilioAttributes;  // mapped from --> twilio_attributes
 
   // Added by us
   skillsDifferent: boolean;
-  attributes: UMUserTwilioAttributes;  // mapped from --> twilio_attributes
   isConsole: boolean;                 // Will be true if pk contains Console
 }
-
-export interface UMTwilioAttributeSkills {
-  levels: {
-    [key: string]: number
-  },
-  skills: string[],
-  team?:string,
-  caller_states?: string[],
-  sales_assoc_workers?: string[]
-}
-
 
 export interface AzureSPA {
   accessToken: string;

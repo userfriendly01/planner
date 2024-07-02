@@ -1497,7 +1497,52 @@ describe("userFormReducer", () => {
       expect(result).toStrictEqual(expectedFormState);
     });
   });
-
+  
+  describe("SET_BACK_UP_WORKER", () => {
+    test("should update backup worker", () => {
+      const payload = {
+        backupWorkerRouting: ["Test1", "Test2"]
+      };
+      const action = {
+        type: userFormActions.SET_BACK_UP_WORKER,
+        payload
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        triton: {
+          ...initialUserFormState.triton,
+          routing: {
+            ...initialUserFormState.triton.routing,
+            backup_workers: payload.backupWorkerRouting,
+            updated: true
+          }
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+  
+  describe("UPDATE_BACK_UP_WORKER_FLAG", () => {
+    test("should update backup worker enable/disable flag", () => {
+      const action = {
+        type: userFormActions.UPDATE_BACK_UP_WORKER_FLAG
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        triton: {
+          ...initialUserFormState.triton,
+          routing: {
+            ...initialUserFormState.triton.routing,
+            backup_workers_active: !initialUserFormState.triton.routing.backup_workers_active,
+            updated: true
+          }
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
   describe("UPDATE_N_NUMBER", () => {
     test("should update nNumber", () => {
       const payload = "n0263786";

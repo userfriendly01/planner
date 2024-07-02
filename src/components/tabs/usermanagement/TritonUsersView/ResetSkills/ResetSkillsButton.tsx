@@ -1,14 +1,10 @@
 import { DefaultResetInformation } from "usermanagement/ResetSkills.Interfaces";
 import { ResetSkillsResultsModal } from "usermanagement/ResetSkillsResultsModal";
 import { StyledButton } from "components/StyledButton";
-import {
-  useAdminDispatch,
-  useAdminState
-} from "context/appContext";
+import { useAdminState } from "context/appContext";
 import { apiPaths } from "globals";
 import React, { useState } from "react";
 import { logger } from "utils/logger";
-import { mapWorkerFromTwilio } from "utils";
 import { myAxios } from "utils/myAxios";
 import { Modal } from "@mui/material";
 
@@ -21,21 +17,17 @@ const defaultResetInformation: DefaultResetInformation = {
 
 export const ResetSkillsButton = (props: any) => {
   const {
-    selected
+    selected,
+    setResettingSkills
   } = props;
 
   const state = useAdminState();
   const { nNumber } = state.userContext;
 
-  const dispatch = useAdminDispatch();
   const [ resultsModalOpts, setResultsModalOpts ] = useState(defaultResetInformation);
 
   const resetWorkers = () => {
-    const dispatchResettingSkills = (bool: boolean) => dispatch({
-      type: "resettingSkills",
-      payload: bool
-    });
-    dispatchResettingSkills(true);
+    setResettingSkills(true);
     const workerSids = selected.map((worker: any) => worker.sid);
     myAxios
       .post(apiPaths.RESET_WORKER_SKILLS, { workerSids }).then(response => {
@@ -45,11 +37,6 @@ export const ResetSkillsButton = (props: any) => {
           if (result.updated){
             result.worker.workerSid = result.workerSid;
             result.worker.attributes = JSON.parse(result.worker.attributes);
-            const updatedWorker = mapWorkerFromTwilio(result.worker);
-            dispatch({
-              type: "updateWorker",
-              payload: updatedWorker
-            });
             passedWorkers.push({
               name: selected.find((worker: any) => result.workerSid === worker.sid).sid
             });
@@ -60,7 +47,7 @@ export const ResetSkillsButton = (props: any) => {
             });
           }
         });
-        dispatchResettingSkills(false);
+        setResettingSkills(false);
         setResultsModalOpts({
           ...resultsModalOpts,
           open: true,
@@ -79,7 +66,7 @@ export const ResetSkillsButton = (props: any) => {
           workerSids,
           nNumber
         });
-        dispatchResettingSkills(false);
+        setResettingSkills(false);
         setResultsModalOpts({
           ...resultsModalOpts,
           open: true,

@@ -4,7 +4,9 @@ import {
 } from "@mui/material";
 import { Dropdown } from "components/Dropdown";
 import { PhoneNumberInput } from "components/PhoneNumberInput";
-import { useAdminState } from "context/appContext";
+import {
+  useAdminState, useSkillState
+} from "context/appContext";
 import React from "react";
 import styled from "styled-components";
 
@@ -56,7 +58,9 @@ export const ForwardToEntryForm = (props: ForwardToEntryFormProps) => {
   };
 
   const state = useAdminState();
-  const skills = state.skillContext.skills;
+  const skillState = useSkillState();
+
+  const skills = skillState.skills;
   const workers = state.workerContext.workers;
 
   const [ phoneNumber, setPhoneNumber ] = React.useState({

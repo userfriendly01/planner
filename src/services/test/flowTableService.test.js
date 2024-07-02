@@ -370,7 +370,7 @@ describe("flowTableService",()=>{
     test("Success",async()=>{
       const response = await flowBatchDelete(batchDeleteItemsList,"1233-3245");
       expect(response).toBe(batchDeleteResponse);
-      expect(window.fetch).toBeCalledWith("http://localhost:3000", {
+      expect(window.fetch).toBeCalledWith("https://1234.appsync-api.us-east-1.amazonaws.com/graphql", {
         "body": "{\"query\":\"\\n        mutation DeleteManyFlow {\\n          batchDeleteCctSharedCallFlowDb(input: {\\n            pkey: [\\\"pkey1\\\",\\\"pkey1\\\",\\\"pkey3\\\"]\\n            }) {\\n            items {\\n              pkey\\n            }\\n          }\\n        }\\n    \",\"variables\":{}}",
         "headers": {
           "Authorization": "Bearer 1233-3245",
@@ -431,7 +431,7 @@ describe("flowTableService",()=>{
       };
       const response = await batchFlowUpdate([{ ...jsonFlowData }],"1233-3245");
       expect(response).toEqual(batchUpdateResponse);
-      expect(window.fetch).toBeCalledWith("http://localhost:3000", {
+      expect(window.fetch).toBeCalledWith("https://1234.appsync-api.us-east-1.amazonaws.com/graphql", {
         "body": "{\"query\":\"\\n        mutation batchUpdateCctSharedCallFlowDb($input: CctSharedCallFlowDbBatchUpdateInput!) {\\n          batchUpdateCctSharedCallFlowDb(input: $input) {\\n            items {\\n              accountManager\\n              affinityVDN\\n              agentId\\n              brand\\n              callDetails1\\n              callDetails2\\n              callFlowTemplate\\n              callTypeDescription\\n              channel\\n              content {\\n                callFlowRoute\\n                callIntent\\n                callerType\\n                dataRequests\\n                greetingMessages\\n                languageOffer\\n                transferNumber\\n              }\\n              createTime\\n              dialedDescription\\n              employeeId\\n              internetPlacement\\n              lineOfBusiness\\n              marketingChannel\\n              pkey\\n              predictiveCaller\\n              rangeIndicator\\n              requestID\\n              selfServiceIndicator\\n              tollFreeNumber\\n              tfnRoutingGroup\\n              transferCode\\n              type\\n              userDestination\\n              whisper\\n            }\\n          }\\n        }\\n      \",\"variables\":{\"input\":{\"batchFlowUpdateInput\":[{\"pkey\":{\"value\":\"12345\"},\"agentId\":\"\",\"brand\":{\"value\":\"LM\"},\"callFlowTemplate\":{\"value\":\"temp\"},\"channel\":{\"value\":\"Test1 Channel\"},\"content\":{\"callIntent\":\"\",\"callFlowRoute\":\"\",\"callerType\":\"\",\"greetingMessages\":\"\",\"transferNumber\":\"\",\"languageOffer\":\"\"},\"createTime\":{\"value\":\"2022-01-08\"},\"updateTime\":\"2024-01-30T05:00:00.000Z\",\"dialedDescription\":{\"value\":\"test\"},\"accountManager\":\"\",\"affinityVDN\":\"\",\"callTypeDescription\":\"\",\"transferCode\":\"\",\"internetPlacement\":\"\",\"callDetails1\":\"\",\"callDetails2\":\"\",\"tollFreeNumber\":\"\",\"lineOfBusiness\":\"\",\"marketingChannel\":\"\",\"predictiveCaller\":false,\"selfServiceIndicator\":false,\"whisper\":\"\",\"requestID\":\"\",\"userDestination\":{\"value\":\"dest\"},\"rangeIndicator\":\"\",\"tfnRoutingGroup\":\"\",\"type\":\"\"}]}}}",
         "headers": {
           "Authorization": "Bearer 1233-3245",
@@ -451,7 +451,7 @@ describe("flowTableService",()=>{
       jest.spyOn(JSON, "stringify").mockImplementation(()=>{
         throw new Error();
       });
-      const response = await batchFlowUpdate([{ ...jsonFlowData }],"1233-3245","http://localhost:3000");
+      const response = await batchFlowUpdate([{ ...jsonFlowData }],"1233-3245","https://1234.appsync-api.us-east-1.amazonaws.com/graphql");
       expect(response.alertMsg).toEqual(batchUpdateResponse.alertMsg);
       expect(response.flag).toEqual(batchUpdateResponse.flag);
     });
@@ -494,7 +494,7 @@ describe("flowTableService",()=>{
       };
       const response = await batchFlowCreate([{ ...jsonFlowData }],"1233-3245");
       expect(response).toEqual(batchCreateResponse);
-      expect(window.fetch).toBeCalledWith("http://localhost:3000", {
+      expect(window.fetch).toBeCalledWith("https://1234.appsync-api.us-east-1.amazonaws.com/graphql", {
         "body": "{\"query\":\"\\n        mutation batchCreateCctSharedCallFlowDb($input: CctSharedCallFlowDbBatchCreateInput!) {\\n          batchCreateCctSharedCallFlowDb(input: $input) {\\n            items {\\n              accountManager\\n              affinityVDN\\n              agentId\\n              brand\\n              callDetails1\\n              callDetails2\\n              callFlowTemplate\\n              callTypeDescription\\n              channel\\n              content {\\n                callFlowRoute\\n                callIntent\\n                callerType\\n                dataRequests\\n                greetingMessages\\n                languageOffer\\n                transferNumber\\n              }\\n              createTime\\n              dialedDescription\\n              employeeId\\n              internetPlacement\\n              lineOfBusiness\\n              marketingChannel\\n              pkey\\n              predictiveCaller\\n              rangeIndicator\\n              requestID\\n              selfServiceIndicator\\n              tollFreeNumber\\n              transferCode\\n              type\\n              userDestination\\n              whisper\\n            }\\n          }\\n        }\\n      \",\"variables\":{\"input\":{\"batchFlowCreateInput\":[{\"pkey\":{\"value\":\"12345\"},\"agentId\":\"\",\"brand\":{\"value\":\"LM\"},\"callFlowTemplate\":{\"value\":\"temp\"},\"channel\":{\"value\":\"Test1 Channel\"},\"content\":{\"callIntent\":\"\",\"callFlowRoute\":\"\",\"callerType\":\"\",\"greetingMessages\":\"\",\"transferNumber\":\"\",\"languageOffer\":\"\"},\"createTime\":{\"value\":\"2022-01-08\"},\"dialedDescription\":{\"value\":\"test\"},\"accountManager\":\"\",\"affinityVDN\":\"\",\"callTypeDescription\":\"\",\"transferCode\":\"\",\"internetPlacement\":\"\",\"callDetails1\":\"\",\"callDetails2\":\"\",\"tollFreeNumber\":\"\",\"lineOfBusiness\":\"\",\"marketingChannel\":\"\",\"whisper\":\"\",\"requestID\":\"\",\"userDestination\":{\"value\":\"dest\"},\"rangeIndicator\":\"\",\"type\":\"\",\"predictiveCaller\":false,\"selfServiceIndicator\":false}]}}}",
         "headers": {
           "Authorization": "Bearer 1233-3245",
@@ -504,7 +504,7 @@ describe("flowTableService",()=>{
       });
     });
     test("empty records insertion",async()=>{
-      const response = await batchFlowCreate([],"1233-3245","http://localhost:3000");
+      const response = await batchFlowCreate([],"1233-3245","https://1234.appsync-api.us-east-1.amazonaws.com/graphql");
       expect(response.alertMsg).toEqual("");
     });
   });
@@ -841,7 +841,7 @@ describe("dynamicFlowTableService",()=> {
       const item = {
         pkey: 1
       };
-      const delDynamicFlow = await deleteDynamicFlowRule(item,"1233-3245","http://localhost:3000");
+      const delDynamicFlow = await deleteDynamicFlowRule(item,"1233-3245","https://1234.appsync-api.us-east-1.amazonaws.com/graphql");
       expect(delDynamicFlow).toBeDefined;
     });
     test("Testing the Delete DynamicFlowRule error",async()=>{
@@ -850,7 +850,7 @@ describe("dynamicFlowTableService",()=> {
       jest.spyOn(JSON, "stringify").mockImplementation(()=>{
         throw new Error();
       });
-      const delDynamicFlow = await deleteDynamicFlowRule(item,"1233-3245","http://localhost:3000");
+      const delDynamicFlow = await deleteDynamicFlowRule(item,"1233-3245","https://1234.appsync-api.us-east-1.amazonaws.com/graphql");
       expect(delDynamicFlow).toBeDefined;
     });
   });
@@ -877,7 +877,7 @@ describe("dynamicFlowTableService",()=> {
         pkey: 1,
         employeeId: "n123453"
       };
-      const updateDynamicFlow = await updateDynamicFlowDB(item,"1233-3245","http://localhost:3000");
+      const updateDynamicFlow = await updateDynamicFlowDB(item,"1233-3245","https://1234.appsync-api.us-east-1.amazonaws.com/graphql");
       expect(updateDynamicFlow).toBeTruthy();
     });
     test("Testing the Update DynamicFlowRule error",async()=>{
@@ -887,7 +887,7 @@ describe("dynamicFlowTableService",()=> {
       jest.spyOn(JSON, "stringify").mockImplementation(()=>{
         throw new Error();
       });
-      const updateDynamicFlow = await updateDynamicFlowDB(dynamicItem,"1233-3245","http://localhost:3000");
+      const updateDynamicFlow = await updateDynamicFlowDB(dynamicItem,"1233-3245","https://1234.appsync-api.us-east-1.amazonaws.com/graphql");
       expect(updateDynamicFlow).toBeUndefined();
     });
   });
@@ -905,9 +905,9 @@ describe("dynamicFlowTableService",()=> {
     });
     test("Success",async()=>{
       const batchDeleteDyamicItemsList = ["pkey1","pkey1","pkey3"];
-      const response = await flowDynamicBatchDelete(batchDeleteDyamicItemsList,"1233-3245","http://localhost:3000");
+      const response = await flowDynamicBatchDelete(batchDeleteDyamicItemsList,"1233-3245","https://1234.appsync-api.us-east-1.amazonaws.com/graphql");
       expect(response).toBe(batchDeleteResponse);
-      expect(window.fetch).toBeCalledWith("http://localhost:3000", {
+      expect(window.fetch).toBeCalledWith("https://1234.appsync-api.us-east-1.amazonaws.com/graphql", {
         "body": "{\"query\":\"\\n      mutation batchDeletePhoneNumber($input: CallFlowDeleteBatchInput!) {\\n        batchDeletePhoneNumber(input: $input) {\\n          items {\\n              id\\n          }\\n        }\\n      }\\n    \",\"variables\":{\"input\":{\"batchDeleteInput\":[{\"id\":\"pkey1\"},{\"id\":\"pkey1\"},{\"id\":\"pkey3\"}]}}}",
         "headers": {
           "Authorization": "Bearer 1233-3245",
@@ -918,16 +918,16 @@ describe("dynamicFlowTableService",()=> {
     });
     test("batch Dynamic Delete",async()=>{
       const batchDeleteDyamicItemsList = ["pkey1","pkey1","pkey3"];
-      await flowDynamicBatchDelete(batchDeleteDyamicItemsList,"1233-3245","http://localhost:3000");
-      const response=batchDynamicDeleteItems(batchDeleteDyamicItemsList,"3245","http://localhost:3000");
+      await flowDynamicBatchDelete(batchDeleteDyamicItemsList,"1233-3245","https://1234.appsync-api.us-east-1.amazonaws.com/graphql");
+      const response=batchDynamicDeleteItems(batchDeleteDyamicItemsList,"3245","https://1234.appsync-api.us-east-1.amazonaws.com/graphql");
       act(()=>{
         expect(response).toBeTruthy();
       });
     });
     test("batch Dynamic Delete with actionType",async()=>{
       const batchDeleteDyamicItemsList = ["actionType1","actionId1"];
-      await flowDynamicBatchDelete(batchDeleteDyamicItemsList,"1233-3245","http://localhost:3000");
-      const response=batchDynamicDeleteItems(batchDeleteDyamicItemsList,"3245","http://localhost:3000");
+      await flowDynamicBatchDelete(batchDeleteDyamicItemsList,"1233-3245","https://1234.appsync-api.us-east-1.amazonaws.com/graphql");
+      const response=batchDynamicDeleteItems(batchDeleteDyamicItemsList,"3245","https://1234.appsync-api.us-east-1.amazonaws.com/graphql");
       act(()=>{
         expect(response).toBeTruthy();
       });
@@ -937,7 +937,7 @@ describe("dynamicFlowTableService",()=> {
       jest.spyOn(JSON, "stringify").mockImplementation(()=>{
         throw new Error();
       });
-      const response = await flowDynamicBatchDelete(batchDeleteDyamicItemsList,"1233-3245","http://localhost:3000");
+      const response = await flowDynamicBatchDelete(batchDeleteDyamicItemsList,"1233-3245","https://1234.appsync-api.us-east-1.amazonaws.com/graphql");
       expect(response).toEqual(undefined);
     });
     test("Batch Delete Dynamic Error",async()=>{
@@ -945,8 +945,8 @@ describe("dynamicFlowTableService",()=> {
       jest.spyOn(JSON, "stringify").mockImplementation(()=>{
         throw new Error();
       });
-      await flowDynamicBatchDelete(batchDeleteItemsList,"1233-3245","http://localhost:3000");
-      const response = await batchDynamicDeleteItems(batchDeleteDyamicItemsList,"3245","http://localhost:3000");
+      await flowDynamicBatchDelete(batchDeleteItemsList,"1233-3245","https://1234.appsync-api.us-east-1.amazonaws.com/graphql");
+      const response = await batchDynamicDeleteItems(batchDeleteDyamicItemsList,"3245","https://1234.appsync-api.us-east-1.amazonaws.com/graphql");
       expect(response).toBeTruthy();
     });
   });
@@ -978,10 +978,10 @@ describe("dynamicFlowTableService",()=> {
         flag: false,
         success: [jsonDynamicFlowData]
       };
-      const response = await batchDynamicFlowUpdate([{ ...jsonDynamicFlowData }],"1233-3245","http://localhost:3000");
+      const response = await batchDynamicFlowUpdate([{ ...jsonDynamicFlowData }],"1233-3245","https://1234.appsync-api.us-east-1.amazonaws.com/graphql");
       expect(response).toEqual(batchUpdateResponse);
       const dateConversion = 1641600000;
-      expect(window.fetch).toBeCalledWith("http://localhost:3000", {
+      expect(window.fetch).toBeCalledWith("https://1234.appsync-api.us-east-1.amazonaws.com/graphql", {
         "body": "{\"query\":\"\\n        mutation batchCreatePhoneNumber($input: PhoneNumberCreateBatchInput!) {\\n          batchCreatePhoneNumber(input: $input) {\\n            items {\\n                phoneNumber\\n                callFlowName\\n                createTime\\n                updateTime\\n                nextActionType\\n                nextActionId\\n                callFlowTemplate\\n                dialedDescription\\n                phoneNumberType\\n                tfnRoutingGroup\\n                brand\\n                dataRequests\\n                greetingMessages\\n                languageOffer\\n                transferDestination\\n                callerType\\n                callFlowRoute\\n                callIntent\\n                callFlowType\\n                channel\\n                predictiveCaller\\n                employeeId\\n                callTypeDescription\\n                internetPlacement\\n                lineOfBusiness\\n                marketingChannel\\n                rangeIndicator\\n                requestID\\n                tollFreeNumber\\n                transferCode\\n                whisper\\n                officeNumbers\\n            }\\n          }\\n        }\\n      \",\"variables\":{\"input\":{\"batchPhoneNumberInput\":[{\"brand\":\"LM\",\"callFlowRoute\":\"test\",\"callIntent\":\"\",\"callerType\":\"test\",\"channel\":\"Test1 Channel\",\"createTime\":" + dateConversion + ",\"dataRequests\":\"test1,test2\",\"dialedDescription\":\"test\",\"employeeId\":\"n1234567\",\"greetingMessages\":\"Hello Test Message\",\"languageOffer\":\"English\",\"officeNumbers\":[],\"phoneNumber\":\"12345\",\"updateTime\":" + curTimeUnixEpoch + "}]}}}",
         "headers": {
           "Authorization": "Bearer 1233-3245",
@@ -1003,11 +1003,11 @@ describe("dynamicFlowTableService",()=> {
       jest.spyOn(JSON, "stringify").mockImplementation(()=>{
         throw new Error("oops");
       });
-      const response = await batchDynamicFlowUpdate([{ ...jsonDynamicFlowData }],"1233-3245","http://localhost:3000");
+      const response = await batchDynamicFlowUpdate([{ ...jsonDynamicFlowData }],"1233-3245","https://1234.appsync-api.us-east-1.amazonaws.com/graphql");
       expect(response).toEqual(batchUpdateResponse);
     });
     test("Call with an Empty List", async()=>{
-      const response = await batchDynamicFlowUpdate([],"1233-3245","http://localhost:3000");
+      const response = await batchDynamicFlowUpdate([],"1233-3245","https://1234.appsync-api.us-east-1.amazonaws.com/graphql");
       const errorResponse = {
         errors: [],
         flag: false,
@@ -1043,10 +1043,10 @@ describe("dynamicFlowTableService",()=> {
         "flag": false,
         "success": [jsonDynamicFlowData]
       };
-      const response = await batchDynamicFlowCreate([{ ...jsonDynamicFlowData }],"1233-3245","http://localhost:3000");
+      const response = await batchDynamicFlowCreate([{ ...jsonDynamicFlowData }],"1233-3245","https://1234.appsync-api.us-east-1.amazonaws.com/graphql");
 
       expect(response).toEqual(batchCreateResponse);
-      expect(window.fetch).toBeCalledWith("http://localhost:3000", {
+      expect(window.fetch).toBeCalledWith("https://1234.appsync-api.us-east-1.amazonaws.com/graphql", {
         "body": "{\"query\":\"\\n        mutation createCallFlowConfig($input: CallFlowConfigInput! ) {\\n          createCallFlowConfig(input: $input) {\\n              callFlowName\\n            }\\n          }\\n      \",\"variables\":{\"input\":{\"announcements\":[],\"menus\":[],\"menuOptions\":[]}}}",
         "headers": {
           "Authorization": "Bearer 1233-3245",
@@ -1056,7 +1056,7 @@ describe("dynamicFlowTableService",()=> {
       });
     });
     test("empty records insertion",async()=>{
-      const response = await batchDynamicFlowCreate([],"1233-3245","http://localhost:3000");
+      const response = await batchDynamicFlowCreate([],"1233-3245","https://1234.appsync-api.us-east-1.amazonaws.com/graphql");
       expect(response.alertMsg).toEqual("");
     });
   });

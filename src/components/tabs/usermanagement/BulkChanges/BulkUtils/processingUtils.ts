@@ -2,7 +2,6 @@ import {
   AppState,
   WfmBusinessUnit
 } from "globals/interfaces";
-import { listUMUsers } from "services/user";
 import { getCalabrioUsers } from "services/calabrio";
 import { listUMManagers } from "services/manager";
 import { wfmActivateExternalLogon } from "services/wfmActivateExternalLogon";
@@ -13,18 +12,6 @@ import {
 import { getCalabrioWfmOrg } from "utils/calabrioUtils";
 import { logger } from "utils/logger";
 import * as XLSX from "xlsx";
-
-/**
- * Refreshes the triton user state after a bulk update on users
- */
-export const updateTritonUserState = async (_state: AppState, dispatch: () => void): Promise<void> => {
-  try {
-    await listUMUsers(dispatch);
-  } catch (error) {
-    logger.error("Failed to update triton user state after bulk upload", { error }, false);
-  }
-  return Promise.resolve();
-};
 
 /**
  * Refreshes the calabrio user state after a bulk update on users

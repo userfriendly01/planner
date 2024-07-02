@@ -2,7 +2,8 @@ import App from "components/app/App";
 import { SharedGraphAPIProvider } from "components/core/Auth/SharedGraphAPIProvider";
 import {
   StateProvider,
-  FormStateProvider
+  FormStateProvider,
+  SkillStateProvider
 } from "context/appContext";
 import { authConfig } from "globals";
 import { theme } from "globals/theme";
@@ -44,11 +45,13 @@ root.render(
   <MsalProvider instance={msalInstance}>
     <StateProvider>
       <FormStateProvider>
-        <ThemeProvider theme={theme}>
-          <SharedGraphAPIProvider>
-            <App />
-          </SharedGraphAPIProvider>
-        </ThemeProvider>
+        <SkillStateProvider>
+          <ThemeProvider theme={theme}>
+            <SharedGraphAPIProvider>
+              <App />
+            </SharedGraphAPIProvider>
+          </ThemeProvider>
+        </SkillStateProvider>
       </FormStateProvider>
     </StateProvider>
   </MsalProvider>

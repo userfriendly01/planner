@@ -2,6 +2,7 @@ import { apolloClient } from "../components/core/Auth/SharedGraphAPIProvider";
 import {
   Action,
   DBList,
+  LoadStatuses,
   UMUser
 }from "globals/interfaces";
 import {
@@ -11,10 +12,10 @@ import {
   UPDATE_USER
 }from "globals/graphql";
 import {
+  getPaginatedResults,
   mapWorkerFromDbWorker,
   mapWorkerToDbWorker
 } from "utils/graphUtils";
-import { getPaginatedResults } from "utils/graphUtils";
 import {
   sortGraphObjectsByPk
 } from "utils/_sortUtils";
@@ -32,18 +33,15 @@ import { logger } from "utils/logger";
 export const listUMUsers = async (dispatch: (action: Action) => void): Promise<DBList<UMUser>> => {
   dispatch(({
     type: "setLoadingWorkers",
-    payload: true
+    payload: LoadStatuses.LOADING
   }));
 
   const formatUsers = (users: UMUser[]) => {
     const newUsers = [] as UMUser[];
     users.forEach(user => {
-      if (!user?.inactiveDate && !user?.ttl && user?.attributes) {
+      if (!user?.inactive_date && !user?.ttl && user?.twilio_attributes) {
         newUsers.push(
-          mapWorkerFromDbWorker({
-            ...user,
-            isConsole: user.pk?.includes("Console")
-          })
+          mapWorkerFromDbWorker(user)
         );
       }
     });
@@ -51,16 +49,17 @@ export const listUMUsers = async (dispatch: (action: Action) => void): Promise<D
   };
 
   try {
-    getPaginatedResults("UMUser", dispatch, formatUsers, () => dispatch(({
+    await getPaginatedResults("UMUser", dispatch, formatUsers);
+    dispatch(({
       type: "setLoadingWorkers",
-      payload: false
-    })));
+      payload: LoadStatuses.SUCCESS
+    }));
   } catch(error) {
     logger.error("Failed to fetch users from graph", { error });
-
-    throw ({
-      msg: "Failed to fetch users from graph"
-    });
+    dispatch(({
+      type: "setLoadingWorkers",
+      payload: LoadStatuses.FAIL
+    }));
   }
   return;
 };

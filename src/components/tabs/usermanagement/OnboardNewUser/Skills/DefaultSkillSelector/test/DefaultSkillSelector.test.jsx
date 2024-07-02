@@ -6,7 +6,7 @@ import {
 import { SkillsList } from "usermanagement/SkillsList";
 import { SkillLevels } from "usermanagement/SkillLevels";
 import {
-  useAdminState
+  useSkillState
 } from "context/appContext";
 import React from "react";
 
@@ -17,7 +17,6 @@ import {
   getMockedComponentProps,
   fireEvent,
   render,
-  initialTestState as initialState,
   setupMockedComponents
 } from "testUtils";
 import { theme } from "globals/theme";
@@ -37,14 +36,33 @@ jest.mock("usermanagement/SkillsList", () => ({
 }));
 
 jest.mock("context/appContext", () => ({
-  useAdminState: jest.fn()
+  useSkillState: jest.fn()
 }));
 
 const mockSetDefaultSkills = jest.fn();
 
-const initialTestState = {
-  ...initialState,
-  skillContext: {
+const skills = [
+  {
+    name: "skillA",
+    levels: []
+  },
+  {
+    name: "skillB",
+    levels: [ 1, 2, 3, 4 ]
+  },
+  {
+    name: "skillC",
+    levels: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+  },
+  {
+    name: "skillD",
+    levels: []
+  }
+];
+const skillGroups = [
+  {
+    skillGroupId: 1,
+    skillGroupNme: "skillGroupA",
     skills: [
       {
         name: "skillA",
@@ -53,34 +71,10 @@ const initialTestState = {
       {
         name: "skillB",
         levels: [ 1, 2, 3, 4 ]
-      },
-      {
-        name: "skillC",
-        levels: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
-      },
-      {
-        name: "skillD",
-        levels: []
-      }
-    ],
-    skillGroups: [
-      {
-        skillGroupId: 1,
-        skillGroupNme: "skillGroupA",
-        skills: [
-          {
-            name: "skillA",
-            levels: []
-          },
-          {
-            name: "skillB",
-            levels: [ 1, 2, 3, 4 ]
-          }
-        ]
       }
     ]
   }
-};
+];
 
 const getAddSkillButton = rendered => rendered.getByTestId("add-skill-button");
 const getDeleteSkillButton = (rendered, instance) => rendered.getAllByTestId("delete-skill-button")[instance];
@@ -92,7 +86,10 @@ describe("<DefaultSkillSelector />", () => {
     </ThemeProvider>
   );
   beforeEach(() => {
-    useAdminState.mockReturnValue(initialTestState);
+    useSkillState.mockReturnValue({
+      skills,
+      skillGroups
+    });
     setupMockedComponents({
       Add,
       Delete,
@@ -114,8 +111,8 @@ describe("<DefaultSkillSelector />", () => {
         expectMockedComponent(rendered, { Add });
         expectMockedComponent(rendered, { SkillLevels }, 0);
         expectOnlyPassedProps(SkillsList, {
-          skills: initialTestState.skillContext.skills,
-          skillGroups: initialTestState.skillContext.skillGroups
+          skills,
+          skillGroups
         });
       });
     });
@@ -243,7 +240,7 @@ describe("<DefaultSkillSelector />", () => {
             label: "skillGroupA",
             value: 1,
             isSkillGroup: true,
-            skills: initialTestState.skillContext.skillGroups[0].skills
+            skills: skillGroups[0].skills
           });
         });
         act(() => {
@@ -275,7 +272,7 @@ describe("<DefaultSkillSelector />", () => {
             label: "skillGroupA",
             value: 1,
             isSkillGroup: true,
-            skills: initialTestState.skillContext.skillGroups[0].skills
+            skills: skillGroups[0].skills
           });
         });
         act(() => {

@@ -32,7 +32,9 @@ export const initialFormState = {
       skills: [],
       levels: {},
       caller_states: [],
-      sales_assoc_workers: []
+      sales_assoc_workers: [],
+      backup_workers: [],
+      backup_workers_active: false
     },
     defaultSkills: {},
     defaultSkillsUpdated: false,

@@ -11,11 +11,14 @@ import { StyledButton } from "components/StyledButton";
 import React from "react";
 import {
   act,
+  initialSkillState,
   render,
   setupMockedComponents,
   waitFor
 } from "testUtils";
-import { useAdminDispatch } from "context/appContext";
+import {
+  useAdminDispatch, useSkillState
+} from "context/appContext";
 
 jest.mock("../ProgressBar", () => ({
   ProgressBar: jest.fn()
@@ -48,7 +51,8 @@ jest.mock("@mui/material", () => ({
 
 jest.mock("context/appContext", () => ({
   useAdminState: jest.fn(),
-  useAdminDispatch: jest.fn()
+  useAdminDispatch: jest.fn(),
+  useSkillState: jest.fn()
 }));
 
 const mockDispatch = jest.fn();
@@ -74,6 +78,7 @@ describe("<ProcessingModal />", () => {
   beforeEach(() => {
     useAdminDispatch.mockReturnValue(mockDispatch);
     performValidations.mockResolvedValue("yay!");
+    useSkillState.mockReturnValue(initialSkillState);
     jest.clearAllMocks();
     setupMockedComponents({
       ExportErrorsButton,
