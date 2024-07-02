@@ -19,7 +19,7 @@ export enum BrandTypeEnum {
     COMPARION = "Comparion"
 }
 
-export interface BrandNameMap{
+export interface BrandNameMap {
     [key:string]: "liberty" | "safeco"
 }
 
@@ -29,7 +29,7 @@ export const BrandName: BrandNameMap = {
 };
 
 export type CallFlowNameType = "LSC" | "AISG Main";
-export enum CallFlowNameEnum {
+export enum CallFlowNameTypeEnum {
     LSC = "LSC",
     AISG_MAIN = "AISG Main"
 }
@@ -46,14 +46,14 @@ export enum CallerTypeEnum {
 }
 
 export type ChannelType = "Sales" | "Service" | "Claims";
-export enum ChannelEnum {
+export enum ChannelTypeEnum {
     SALES = "Sales",
     SERVICE = "Service",
     CLAIMS = "Claims",
 }
 
 export type LanguageOfferType = "English" | "Spanish";
-export enum LanguageOfferEnum {
+export enum LanguageOfferTypeEnum {
     ENGLISH = "English",
     SPANISH = "Spanish",
 }
@@ -94,22 +94,22 @@ export enum UserDestinationEnum {
 }
 
 export interface BasePhoneNumber {
-    brand: BrandType;
-    callFlowTemplate: string;
-    callTypeDescription: string;
-    channel: ChannelType;
-    dialedDescription: string;
-    employeeId: string;
-    internetPlacement: string;
-    lineOfBusiness: string;
-    marketingChannel: string;
-    predictiveCaller: boolean;
-    rangeIndicator: string;
-    requestID: string;
-    tfnRoutingGroup: string;
-    tollFreeNumber: string;
-    transferCode: string;
-    whisper: string;
+    brand?: BrandType;
+    callFlowTemplate?: string;
+    callTypeDescription?: string;
+    channel?: ChannelType;
+    dialedDescription?: string;
+    employeeId?: string;
+    internetPlacement?: string;
+    lineOfBusiness?: string;
+    marketingChannel?: string;
+    predictiveCaller?: boolean;
+    rangeIndicator?: string;
+    requestID?: string;
+    tfnRoutingGroup?: string;
+    tollFreeNumber?: string;
+    transferCode?: string;
+    whisper?: string;
 }
 
 export interface PhoneNumber extends BasePhoneNumber {

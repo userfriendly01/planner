@@ -43,9 +43,9 @@ export abstract class AbstractDataGridController<RecordType> implements DataGrid
   private readonly _dataGridApi: ReactGridApi;
   private readonly _dataGridFilter: DataGridFilterRef<RecordType>;
   private readonly _alertBarController: AlertBarControllerRef;
-  private _sourceRecords: Array<RecordType>;
+  private _sourceRecords: Array<RecordType> = [];
   private _dataGridProps: DataGridStateProps;
-  private _dataGridRecords: Array<RecordType>;
+  private _dataGridRecords: Array<RecordType> = [];
 
   protected abstract recordKey(): string;
 
@@ -90,10 +90,6 @@ export abstract class AbstractDataGridController<RecordType> implements DataGrid
   }
 
   get sourceRecords(): Array<RecordType> {
-    if (!this._sourceRecords) {
-      throw Error("SourceRecords not initialized.");
-    }
-
     return this._sourceRecords;
   }
 
@@ -127,10 +123,6 @@ export abstract class AbstractDataGridController<RecordType> implements DataGrid
   }
 
   get dataGridRecords(): Array<RecordType> {
-    if (!this._dataGridRecords) {
-      throw Error("DataGridRecords not initialized.");
-    }
-
     return this._dataGridRecords;
   }
 

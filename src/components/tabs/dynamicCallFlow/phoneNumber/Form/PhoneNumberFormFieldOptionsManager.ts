@@ -11,8 +11,8 @@ import {
 } from "./Dynamic.PhoneNumber.Form.Fields";
 import { PKEY } from "./Legacy.PhoneNumber.Form.Fields";
 import {
-  CallFlowNameEnum, CallFlowTypeEnum,
-  LanguageOfferEnum,
+  CallFlowNameTypeEnum, CallFlowTypeEnum,
+  LanguageOfferTypeEnum,
   PhoneNumberRecordType, TfnRoutingGroupEnum,
   UserDestinationEnum
 } from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
@@ -51,9 +51,9 @@ export class PhoneNumberFormFieldOptionsManager extends AbstractFormFieldOptions
 
   protected getStaticFieldOptions(): FieldOptions {
     return {
-      languageOffer: Object.values<string>(LanguageOfferEnum),
+      languageOffer: Object.values<string>(LanguageOfferTypeEnum),
       userDestination: Object.values<string>(UserDestinationEnum),
-      callFlowName: Object.values<string>(CallFlowNameEnum),
+      callFlowName: Object.values<string>(CallFlowNameTypeEnum),
       callFlowType: Object.values<string>(CallFlowTypeEnum),
       nextActionType: Object.values<string>(ActionTypeEnum),
       tfnRoutingGroup: Object.values<string>(TfnRoutingGroupEnum),

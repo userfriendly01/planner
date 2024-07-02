@@ -36,7 +36,12 @@ jest.mock("@mui/material", () => ({
   Modal: jest.fn()
 }));
 
-jest.mock("alohaFlow/AlohaFlowContainer", () => ({
+jest.mock("dynamicCallFlow/DynamicCallFlow.Action.Container", () => ({
+  __esModule: true,
+  default: jest.fn()
+}));
+
+jest.mock("dynamicCallFlow/DynamicCallFlow.PhoneNumber.Container", () => ({
   __esModule: true,
   default: jest.fn()
 }));
@@ -61,11 +66,6 @@ jest.mock("callflowmanagement/CallFlowManagementTfn", () => ({
 
 jest.mock("usermanagement/CompareProfiles", () => ({
   CompareProfiles: jest.fn()
-}));
-
-jest.mock("dynamicFlow/DynamicFlowContainer", () => ({
-  __esModule: true,
-  default: jest.fn()
 }));
 
 jest.mock("orgmanagement/ProfileDirectoryContainer", () => ({

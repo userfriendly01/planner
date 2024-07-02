@@ -1,15 +1,16 @@
 import * as xlsx from "xlsx";
 import { PhoneNumberXlsxImporter } from "../Import/PhoneNumber.Xlsx.Importer";
-import { getXlsImporterResults } from "../../../common/Xlsx/test/Xlsx.Testing.Util";
+import { DYNAMIC_CALL_FLOW_PATH, getXlsImporterResults } from "../../../common/Xlsx/test/Xlsx.Testing.Util";
 
 function getPhoneNumberXlsxImporterResults(fileName: string): xlsx.WorkSheet {
   return getXlsImporterResults(new PhoneNumberXlsxImporter(), fileName);
 }
 
-describe("Action XLSX Importer", () => {
+const DYNAMIC_CALL_FLOW_PHONE_NUMBER_XLSX_TEST_PATH = DYNAMIC_CALL_FLOW_PATH.concat("/phoneNumber/Xlsx/test/");
+describe("Phone Number XLSX Importer", () => {
   test("dynamic happy path", () => {
     const xlsxImporterResults = getPhoneNumberXlsxImporterResults(
-      "./src/components/tabs/dynamicCallFlow/phoneNumber/Xlsx/test/dynamic-safeco.xlsx");
+      DYNAMIC_CALL_FLOW_PHONE_NUMBER_XLSX_TEST_PATH.concat("dynamic-safeco.xlsx"));
 
     expect(xlsxImporterResults).toBeDefined();
     expect(xlsxImporterResults.records.length).toBe(211);
@@ -18,7 +19,7 @@ describe("Action XLSX Importer", () => {
 
   test("legacy happy path", () => {
     const xlsxImporterResults = getPhoneNumberXlsxImporterResults(
-      "./src/components/tabs/dynamicCallFlow/phoneNumber/Xlsx/test/dynamic-safeco.xlsx");
+      DYNAMIC_CALL_FLOW_PHONE_NUMBER_XLSX_TEST_PATH.concat("Legacy-Comparion.xlsx"));
 
     expect(xlsxImporterResults).toBeDefined();
     expect(xlsxImporterResults.records.length).toBe(98);

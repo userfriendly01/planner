@@ -72,14 +72,6 @@ export const getRoutes = () => [
     Component: CallFlowManagementSkills
   },
   {
-    path: "/triton-admin/aloha-flow",
-    Component: AlohaFlowContainer
-  },
-  {
-    path: "/triton-admin/dyn-flow",
-    Component: DynamicFlowContainer
-  },
-  {
     path: "/triton-admin/dynamic-call-flow-phone-number",
     Component: DynamicCallFlowPhoneNumberContainer
   },

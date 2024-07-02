@@ -19,8 +19,24 @@ export class PhoneNumberXlsxImporter extends AbstractXlsxImporter<PhoneNumberXls
 
   protected generateRecords(phoneNumberXlsxRows: Array<PhoneNumberXlsxRow>): Array<PhoneNumberRecordType> {
     return [
-      ...this._legacyPhoneNumberXlsxRecordGenerator.generatePhoneNumberRecords(phoneNumberXlsxRows),
-      ...this._dynamicPhoneNumberXlsxRecordGenerator.generatePhoneNumberRecords(phoneNumberXlsxRows)
+      ...this._legacyPhoneNumberXlsxRecordGenerator.generatePhoneNumberRecords(this.filterLegacyPhoneNumberXlsRows(phoneNumberXlsxRows)),
+      ...this._dynamicPhoneNumberXlsxRecordGenerator.generatePhoneNumberRecords(this.filterDynamicPhoneNumberXlsRows(phoneNumberXlsxRows))
     ];
+  }
+
+  private filterDynamicPhoneNumberXlsRows(phoneNumberXlsxRows: Array<PhoneNumberXlsxRow>): Array<PhoneNumberXlsxRow> {
+    return phoneNumberXlsxRows.filter((phoneNumberXlsxRow: PhoneNumberXlsxRow) => this.isDynamicPhoneNumberXlsxRow(phoneNumberXlsxRow)) as Array<PhoneNumberXlsxRow>;
+  }
+
+  private filterLegacyPhoneNumberXlsRows(phoneNumberXlsxRows: Array<PhoneNumberXlsxRow>): Array<PhoneNumberXlsxRow> {
+    return phoneNumberXlsxRows.filter((phoneNumberXlsxRow: PhoneNumberXlsxRow) => this.isLegacyPhoneNumberXlsxRow(phoneNumberXlsxRow)) as Array<PhoneNumberXlsxRow>;
+  }
+
+  private isDynamicPhoneNumberXlsxRow(phoneNumberXlsxRow: PhoneNumberXlsxRow): boolean {
+    return phoneNumberXlsxRow && "nextActionId" in phoneNumberXlsxRow;
+  }
+
+  private isLegacyPhoneNumberXlsxRow(phoneNumberXlsxRow: PhoneNumberXlsxRow): boolean {
+    return !this.isDynamicPhoneNumberXlsxRow(phoneNumberXlsxRow);
   }
 }

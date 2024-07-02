@@ -10,11 +10,11 @@ import {
 } from "authentication/authenticationInterfaces";
 import { runTritonAdminStartup } from "authentication/startups/cct-triton-admin-startup";
 import { runAlohaRoutingStartup } from "authentication/startups/cct-aloha-routing-startup";
-import { runAlohaFlowStartup } from "authentication/startups/cct-aloha-flow-startup";
-import AlohaFlowContainer from "alohaFlow/AlohaFlowContainer";
+import { runDynamicCallFlowStartup } from "authentication/startups/cct-dynamic-call-flow-startup";
 import AlohaRoutingContainer from "alohaRouting/AlohaRoutingContainer";
 import { TritonUsersViewWrapper } from "usermanagement/TritonUsersViewWrapper";
 import { setupMockedComponents } from "testUtils";
+import DynamicCallFlowPhoneNumberContainer from "dynamicCallFlow/DynamicCallFlow.PhoneNumber.Container";
 
 jest.mock("authentication/startups/cct-triton-admin-startup", () => ({
   runTritonAdminStartup: jest.fn()
@@ -24,8 +24,8 @@ jest.mock("authentication/startups/cct-aloha-routing-startup", () => ({
   runAlohaRoutingStartup: jest.fn()
 }));
 
-jest.mock("authentication/startups/cct-aloha-flow-startup", () => ({
-  runAlohaFlowStartup: jest.fn()
+jest.mock("authentication/startups/cct-dynamic-call-flow-startup", () => ({
+  runDynamicCallFlowStartup: jest.fn()
 }));
 
 jest.mock("usermanagement/TritonUsersViewWrapper", () => ({
@@ -37,7 +37,7 @@ jest.mock("alohaRouting/AlohaRoutingContainer", () => ({
   default: jest.fn()
 }));
 
-jest.mock("alohaFlow/AlohaFlowContainer", () => ({
+jest.mock("dynamicCallFlow/DynamicCallFlow.PhoneNumber.Container", () => ({
   __esModule: true,
   default: jest.fn()
 }));
@@ -48,7 +48,7 @@ describe("authenticationProfiles", () => {
     setupMockedComponents({
       TritonUsersViewWrapper,
       AlohaRoutingContainer,
-      AlohaFlowContainer
+      DynamicCallFlowPhoneNumberContainer
     });
   });
   describe("getAuthenticationProfileTemplates", () => {
@@ -74,12 +74,12 @@ describe("authenticationProfiles", () => {
             Tabs.ALOHA_ROUTING_RULES
           ]
         },
-        ALOHA_FLOW: {
-          name: "Aloha Flow",
-          home: AlohaFlowContainer,
+        DYNAMIC_CALL_FLOW: {
+          name: "Dynamic Call Flow",
+          home: DynamicCallFlowPhoneNumberContainer,
           permissionLevel: Permissions.READ,
           tabs: [
-            Tabs.ALOHA_CALL_FLOW_MANAGEMENT
+            Tabs.DYNAMIC_CALL_FLOW_MANAGEMENT
           ]
         }
       });
@@ -113,9 +113,9 @@ describe("authenticationProfiles", () => {
               permissionLevel: Permissions.WRITE
             }
           ],
-          startup: startupProfiles.ALOHA_FLOW,
-          description: descriptions.Aloha_Flow,
-          authenticationProfile: authenticationProfileTemplates.ALOHA_FLOW
+          startup: startupProfiles.DYNAMIC_CALL_FLOW,
+          description: descriptions.Dynamic_Call_Flow,
+          authenticationProfile: authenticationProfileTemplates.DYNAMIC_CALL_FLOW
         },
         {
           roles: [
@@ -147,9 +147,9 @@ describe("authenticationProfiles", () => {
           name: "aloha-route",
           function: runAlohaRoutingStartup
         },
-        ALOHA_FLOW: {
-          name: "aloha-flow",
-          function: runAlohaFlowStartup
+        DYNAMIC_CALL_FLOW: {
+          name: "dynamic-call-flow",
+          function: runDynamicCallFlowStartup
         }
       });
     });
@@ -227,18 +227,18 @@ describe("authenticationProfiles", () => {
             }
           ]
         },
-        ALOHA_CALL_FLOW_MANAGEMENT: {
-          value: "aloha-callflow-management",
-          label: "Call Flow DB Management",
-          route: "/triton-admin/aloha-flow",
+        DYNAMIC_CALL_FLOW_MANAGEMENT: {
+          value: "dynamic-call-flow-management",
+          label: "Dynamic Call Flow",
+          route: "/triton-admin/dynamic-call-flow-phone-number",
           dropdown: [
             {
-              route: "/triton-admin/aloha-flow",
-              label: "Call Flow"
+              route: "/triton-admin/dynamic-call-flow-phone-number",
+              label: "Phone Number"
             },
             {
-              route: "/triton-admin/dyn-flow",
-              label: "Dynamic Call Flow"
+              route: "/triton-admin/dynamic-call-flow-configuration",
+              label: "Call Flow Configuration"
             }
           ]
         },

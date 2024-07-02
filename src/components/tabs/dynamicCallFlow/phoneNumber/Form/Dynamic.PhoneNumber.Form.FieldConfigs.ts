@@ -1,7 +1,7 @@
 import {
   BrandTypeEnum,
   CallFlowTypeEnum,
-  ChannelEnum, PhoneNumber,
+  ChannelTypeEnum, PhoneNumber,
   PhoneNumberRecordType,
   PhoneNumberTypeEnum
 } from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
@@ -48,7 +48,7 @@ import { Control } from "globals/interfaces";
 
 const drcFieldConditionCheck: FieldConditionCheckType = (phoneNumberRecord: PhoneNumber): boolean => {
   return phoneNumberRecord?.brand === BrandTypeEnum.LIBERTY_MUTUAL
-    && phoneNumberRecord?.channel === ChannelEnum.SALES;
+    && phoneNumberRecord?.channel === ChannelTypeEnum.SALES;
 };
 
 const didFieldConditionCheck: FieldConditionCheckType = (phoneNumberRecord: PhoneNumber): boolean => {

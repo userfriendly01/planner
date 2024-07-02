@@ -1,5 +1,10 @@
 import {
-  AlertBarController, AlertSeverityTypeEnum, ALERT_BAR_15_SECOND_DURATION, ALERT_BAR_10_SECOND_DURATION, initialAlertBarProps
+  AlertBarController,
+  AlertSeverityTypeEnum,
+  ALERT_BAR_15_SECOND_DURATION,
+  ALERT_BAR_10_SECOND_DURATION,
+  initialAlertBarProps,
+  ALERT_BAR_5_SECOND_DURATION
 } from "../AlertBar.Controller";
 import { GraphQLError } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
 import { ReactSetState } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
@@ -20,7 +25,7 @@ describe("AlertBarController", () => {
       msg: "Test error message",
       severityType: AlertSeverityTypeEnum.Error,
       open: true,
-      duration: ALERT_BAR_15_SECOND_DURATION
+      duration: ALERT_BAR_10_SECOND_DURATION
     });
   });
 
@@ -51,7 +56,7 @@ describe("AlertBarController", () => {
       msg: "Test info message",
       severityType: AlertSeverityTypeEnum.Info,
       open: true,
-      duration: ALERT_BAR_10_SECOND_DURATION
+      duration: ALERT_BAR_5_SECOND_DURATION
     });
   });
 
@@ -61,7 +66,7 @@ describe("AlertBarController", () => {
       msg: "Test success message",
       severityType: AlertSeverityTypeEnum.Success,
       open: true,
-      duration: ALERT_BAR_10_SECOND_DURATION
+      duration: ALERT_BAR_5_SECOND_DURATION
     });
   });
 

@@ -125,10 +125,6 @@ export const getStartupProfiles = () => {
       name: "aloha-route",
       function: runAlohaRoutingStartup
     },
-    ALOHA_FLOW: {
-      name: "aloha-flow",
-      function: runAlohaFlowStartup
-    },
     DYNAMIC_CALL_FLOW: {
       name: "dynamic-call-flow",
       function: runDynamicCallFlowStartup

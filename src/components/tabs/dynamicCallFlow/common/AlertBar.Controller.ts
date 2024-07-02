@@ -50,7 +50,7 @@ export class AlertBarController {
       message = message.concat("\n\t", error.message);
     });
 
-    return this.setAlertBarPropsState(message, AlertSeverityTypeEnum.Error, ALERT_BAR_10_SECOND_DURATION, OPEN_ALERT_BAR);
+    return this.setAlertBarPropsState(message, AlertSeverityTypeEnum.Error, ALERT_BAR_15_SECOND_DURATION, OPEN_ALERT_BAR);
   }
 
   warning(message: string, duration = ALERT_BAR_10_SECOND_DURATION): void {

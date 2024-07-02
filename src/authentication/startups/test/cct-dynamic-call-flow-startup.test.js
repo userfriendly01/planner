@@ -1,4 +1,4 @@
-import { runAlohaFlowStartup } from "../cct-aloha-flow-startup";
+import { runDynamicCallFlowStartup } from "../cct-dynamic-call-flow-startup";
 import MockAdapter from "axios-mock-adapter";
 import { useAdminDispatch } from "context/appContext";
 import { getStartupProfiles } from "authentication/authenticationProfiles";
@@ -17,7 +17,7 @@ jest.mock("context/appContext", () => ({
 
 const mockAdminDispatch = jest.fn();
 
-describe("cct-aloha-flow-startup", () => {
+describe("cct-dynamic-call-flow-startup", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     axiosMock.reset();
@@ -25,15 +25,15 @@ describe("cct-aloha-flow-startup", () => {
     useAdminDispatch.mockReturnValue(mockAdminDispatch);
   });
 
-  describe("runAlohaFlowStartup", () => {
+  describe("runDynamicCallFlowStartup", () => {
     beforeEach(() => {
 
     });
     describe("Service Calls are successful", () => {
       test("**MUST RETURN STARTUP NAME FIRST**", async () => {
-        const result = await runAlohaFlowStartup(mockAdminDispatch);
+        const result = await runDynamicCallFlowStartup(mockAdminDispatch);
         const firstResponse = result[0];
-        expect(firstResponse).toStrictEqual(startups.ALOHA_FLOW.name);
+        expect(firstResponse).toStrictEqual(startups.DYNAMIC_CALL_FLOW.name);
       });
     });
   });

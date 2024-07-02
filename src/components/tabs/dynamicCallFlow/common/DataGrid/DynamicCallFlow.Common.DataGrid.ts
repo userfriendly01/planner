@@ -18,18 +18,19 @@ export function initializeDataGrid(): DataGridStateProps {
   } as DataGridStateProps;
 }
 
-export function sortRecords<RecordType>(records: Array<RecordType>): [Array<RecordType>, DataGridStateProps] {
+export function sortRecords<RecordType>(records: Array<RecordType>, idKey?: string): [Array<RecordType>, DataGridStateProps] {
   let sortedRecords: Array<RecordType> = [];
+  const sortKey = idKey || ID;
 
   if (records?.length > 0) {
-    sortedRecords = records.sort((recordOne: RecordType, record2: RecordType) => ((recordOne[ID as keyof RecordType] as number) - (record2[ID as keyof RecordType] as number)));
+    sortedRecords = records.sort((recordOne: RecordType, record2: RecordType) => ((recordOne[sortKey as keyof RecordType] as number) - (record2[sortKey as keyof RecordType] as number)));
     sortedRecords = records.map((record: RecordType, index: number) => ({
       ...record,
       id: index + 1
     }));
 
-    const minId: number = sortedRecords[0][ID as keyof RecordType] as number;
-    const maxId: number = sortedRecords && sortedRecords.length > 0 ? sortedRecords[sortedRecords.length - 1][ID as keyof RecordType] as number : minId;
+    const minId: number = sortedRecords[0][sortKey as keyof RecordType] as number;
+    const maxId: number = sortedRecords && sortedRecords.length > 0 ? sortedRecords[sortedRecords.length - 1][sortKey as keyof RecordType] as number : minId;
 
     return [ sortedRecords, {
       fetching: false,

@@ -11,6 +11,7 @@ import { FieldOptions } from "components/tabs/dynamicCallFlow/common/Form/Abstra
 import {
   PhoneNumberModalType, PhoneNumberModalTypeEnum
 } from "dynamicCallFlow/DynamicCallFlow.PhoneNumber.Interfaces";
+import { OFFICE_NUMBERS, PREDICTIVE_CALLER } from "dynamicCallFlow/Form/Dynamic.PhoneNumber.Form.Fields";
 
 
 const reconstructTableColumnDef = (modalType: PhoneNumberModalType, columnDef: Array<GridColDef>, previewModalGridApiRef: ReactGridApi, fieldOptions: FieldOptions): Array<GridColDef> =>{
@@ -40,7 +41,7 @@ const manageEditColumnDef = (columnDef: Array<GridColDef>, previewModalGridApiRe
         }
       };
     }
-    if (columnDef.field === "officeNumbers") {
+    if (columnDef.field === OFFICE_NUMBERS) {
       return {
         ...columnDef,
         editable: true,
@@ -63,7 +64,7 @@ const manageEditColumnDef = (columnDef: Array<GridColDef>, previewModalGridApiRe
           />
       };
     }
-    if(["predictiveCaller"].includes(columnDef.field)){
+    if ([PREDICTIVE_CALLER].includes(columnDef.field)){
       return {
         ...columnDef,
         editable: true,

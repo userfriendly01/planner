@@ -29,6 +29,14 @@ export class PhoneNumberRecordUtil {
     }
   }
 
+  public static filterDynamicPhoneNumberRecords(phoneNumberRecords: Array<PhoneNumberRecordType>): Array<PhoneNumber> {
+    return phoneNumberRecords.filter((phoneNumberRecord: PhoneNumberRecordType) => this.isDynamicPhoneNumberRecord(phoneNumberRecord)) as Array<PhoneNumber>;
+  }
+
+  public static filterLegacyPhoneNumberRecords(phoneNumberRecords: Array<PhoneNumberRecordType>): Array<CctSharedCallFlowDb> {
+    return phoneNumberRecords.filter((phoneNumberRecord: PhoneNumberRecordType) => this.isLegacyPhoneNumberRecord(phoneNumberRecord)) as Array<CctSharedCallFlowDb>;
+  }
+
   public static isDynamicPhoneNumberRecord(phoneNumberRecord: PhoneNumberRecordType): boolean {
     return phoneNumberRecord && PHONE_NUMBER in phoneNumberRecord;
   }
