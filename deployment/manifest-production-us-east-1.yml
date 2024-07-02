@@ -18,5 +18,7 @@ applications:
     GRAPH_API_ID: 3k2iegyjmnfwxheh65ugy2vjt4
     GRAPH_CLIENT_ID: ${idp.cicct-softphone-admin-ui.resource.cct-shared-graph-api.production.appId}
     SOFTPHONE_SERVICE_URL: https://cicct-softphone-service.us-east-1.paas.lmig.com
+    ADMIN_CLIENT_URL: https://1x61vvhi31.execute-api.us-east-1.amazonaws.com/api
+    ADMIN_CLIENT_ID: ${idp.cicct-softphone-admin-ui.resource.cct-shared-admin-service-api-prod.production.appId}
   blue-green:
     health-check-endpoint: /health

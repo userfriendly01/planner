@@ -3,8 +3,7 @@ import MockAdapter from "axios-mock-adapter";
 import { myAxios } from "utils/myAxios";
 
 const axiosMock = new MockAdapter(myAxios);
-
-const externalLogonServiceEndpoint = "http://localhost:8080/wfmexternallogon";
+const externalLogonServiceEndpoint = `${env.ADMIN_CLIENT_URL}/externalLogon`;
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -20,10 +19,11 @@ describe("Call to activate external logon succeeds", () => {
     },
     failedActivations: {}
   };
+  const accessToken = 'Access Token';
   beforeEach(() => axiosMock.onPost(externalLogonServiceEndpoint).replyOnce(200, goodResponse));
 
   test("should resolve with successful activation", done => {
-    wfmActivateExternalLogon(payload).then(resolvedValue => {
+    wfmActivateExternalLogon(accessToken, payload).then(resolvedValue => {
       expect(resolvedValue.data).toEqual({
         successfulActivations: {
           message: "Some workers were successfully activated",
@@ -38,10 +38,11 @@ describe("Call to activate external logon succeeds", () => {
 
 describe("Call to activate external logon fails", () => {
   const payload = { workerNNumbers: "n1234567" };
+  const accessToken = 'Access Token';
   beforeEach(() => axiosMock.onPost(externalLogonServiceEndpoint).replyOnce(500, "wuh oh"));
 
   test("should reject with error", done => {
-    wfmActivateExternalLogon(payload).catch(rejectedValue => {
+    wfmActivateExternalLogon(accessToken, payload).catch(rejectedValue => {
       expect(rejectedValue).toEqual(new Error("Request failed with status code 500"));
       done();
     });

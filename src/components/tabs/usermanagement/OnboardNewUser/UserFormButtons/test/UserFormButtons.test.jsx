@@ -184,7 +184,10 @@ describe("<UserFormButtons />", () => {
     useAdminDispatch.mockReturnValue(mockDispatch);
     useAdminState.mockReturnValue({
       userContext: {
-        nNumber: "n1234567"
+        nNumber: "n1234567",
+        tokens: {
+          adminService: "token",
+        }
       },
       calabrioContext: {
         users: [],
@@ -961,7 +964,10 @@ describe("<UserFormButtons />", () => {
             env.APP_ENV = "production";
             useAdminState.mockReturnValue({
               userContext: {
-                nNumber: "n1234567"
+                nNumber: "n1234567",
+                tokens: {
+                  adminService: "token",
+                }
               },
               calabrioContext: {
                 users: [],
@@ -2164,7 +2170,10 @@ describe("<UserFormButtons />", () => {
             env.APP_ENV = "production";
             useAdminState.mockReturnValue({
               userContext: {
-                nNumber: "n1234567"
+                nNumber: "n1234567",
+                tokens: {
+                  adminService: "token",
+                }
               },
               calabrioContext: {
                 users: [],

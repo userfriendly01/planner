@@ -463,7 +463,8 @@ export const initialTestState = {
     profileId: 10,
     tokens: {
       msGraph: "Access Token",
-      sharedGraph: "Access Token"
+      sharedGraph: "Access Token",
+      adminService: "Access Token",
     },
     isAdmin: false,
     permissions: [

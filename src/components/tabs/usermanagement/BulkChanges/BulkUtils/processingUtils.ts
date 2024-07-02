@@ -382,7 +382,7 @@ export const handleWfmExternalLogon = async (state: AppState, dispatch: any, suc
       const processingNNumbers: any[] = wfmNNumbers.slice(currentIndex, endingIndex);
 
       try {
-        const results = await wfmActivateExternalLogon({
+        const results = await wfmActivateExternalLogon(state.userContext.tokens.adminService, {
           workerNNumbers: processingNNumbers
         });
 
