@@ -28,10 +28,9 @@ interface ActionDataGridToolBarProps {
   handlePreviewModalOpen: (event: any) => void;
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const ActionDataGridToolBar = ({
   handlePreviewModalOpen, isFilterModalOpen, dataGridFilter, dataGridController
-}: ActionDataGridToolBarProps) => {
+}: ActionDataGridToolBarProps): JSX.Element => {
   const {
     permissions,
     modalController
@@ -67,7 +66,7 @@ export const ActionDataGridToolBar = ({
                   color="primary"
                   tabIndex={index}
                   label={`${FilterLabel.get(key)} : ${localFilter[key]}`}
-                  onDelete={(event: any)=> { removeFilterElement(key); }}
+                  onDelete={()=> { removeFilterElement(key); }}
                   sx={{ margin: 1 }}
                 />
               ))
@@ -100,25 +99,6 @@ export const ActionDataGridToolBar = ({
             onClick={handlePreviewModalOpen}>
             Import Call Flow Configuration
           </Button>
-          {/*<InputLabel>Actions</InputLabel>*/}
-          {/*<Select*/}
-          {/*  inputProps={{*/}
-          {/*    sx: {*/}
-          {/*      width: 120*/}
-          {/*    }*/}
-          {/*  }}*/}
-          {/*  label="Actions"*/}
-          {/*  value=""*/}
-          {/*  disabled = {false}*/}
-          {/*  onChange={handleChange}*/}
-          {/*  variant="filled"*/}
-          {/*  size="small"*/}
-          {/*  displayEmpty*/}
-          {/*>*/}
-          {/*  <MenuItem key={ActionModalTypeEnum.BatchCreate} value={ActionModalTypeEnum.BatchCreate}>*/}
-          {/*    <PlaylistAdd />&nbsp;&nbsp; Multi Add*/}
-          {/*  </MenuItem>*/}
-          {/*</Select>*/}
         </FormControl>
       </Grid>
       <Grid item key = "Export Call Flow Configuration" xs={1} >
@@ -130,7 +110,6 @@ export const ActionDataGridToolBar = ({
             color = "primary"
             size = "large"
             sx ={{
-              // position: "relative",
               marginTop: "30px",
               marginLeft: "10px",
               ":hover": {

@@ -1,11 +1,5 @@
-/* eslint-disable react/prop-types */
-/* class-methods-use-this,
-   no-console,
-   react/jsx-props-no-spreading
-*/
 import {
   DataGrid,
-  GridCallbackDetails,
   GridPaginationModel,
   GridRenderCellParams,
   GridRowId,
@@ -154,7 +148,7 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
     dataGridController.current.dataGridProps = dataGridProps;
   }, [dataGridProps]);
 
-  const handlePaginationModelChange = (model: GridPaginationModel, gridCallbackDetails: GridCallbackDetails) =>{
+  const handlePaginationModelChange = (model: GridPaginationModel) =>{
     sessionStorage.setItem(DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_PAGE_NUMBER, model.page.toString());
     sessionStorage.setItem(DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_RECORDS_PER_PAGE, model.pageSize.toString());
     setPaginationModel(model);

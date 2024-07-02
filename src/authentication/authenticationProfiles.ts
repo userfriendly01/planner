@@ -6,13 +6,12 @@ import {
 } from "authentication/authenticationInterfaces";
 import { runTritonAdminStartup } from "authentication/startups/cct-triton-admin-startup";
 import { runAlohaRoutingStartup } from "authentication/startups/cct-aloha-routing-startup";
-import { runAlohaFlowStartup } from "authentication/startups/cct-aloha-flow-startup";
 import { runDynamicCallFlowStartup } from "./startups/cct-dynamic-call-flow-startup";
 import { ADGroupPermission } from "globals/interfaces";
 import DynamicCallFlowPhoneNumberContainer from "../components/tabs/dynamicCallFlow/phoneNumber/DynamicCallFlow.PhoneNumber.Container";
 import {
   TritonUsersViewWrapper
-} from "../components/tabs/usermanagement/TritonUsersView/TritonUsersViewWrapper/TritonUsersViewWrapper";
+} from "usermanagement/TritonUsersViewWrapper";
 import AlohaRoutingContainer from "../components/tabs/alohaRouting/AlohaRoutingContainer";
 
 export const getAuthenticationProfileTemplates = (): AuthenticationProfileOptions => {

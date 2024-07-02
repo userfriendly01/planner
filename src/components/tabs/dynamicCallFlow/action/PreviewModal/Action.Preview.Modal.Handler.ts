@@ -56,8 +56,7 @@ export class ActionPreviewModalHandler extends AbstractPreviewModalHandler<Actio
     return HANDLED_SUCCESSFULLY;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async handleOnDelete(accessToken: string, recordsToDelete: Array<ActionRecordType>): Promise<boolean> {
+  async handleOnDelete(): Promise<boolean> {
     throw new Error("Method is required for the interface but not implemented as it is not used.  Call Flow Configs are loaded as a batch and any unused records are deleted");
   }
 }

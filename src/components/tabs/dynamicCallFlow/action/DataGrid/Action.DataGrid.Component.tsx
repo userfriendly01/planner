@@ -3,7 +3,7 @@ import React, {
 } from "react";
 import { ActionDataGridToolBar } from "./Action.DataGrid.ToolBar";
 import {
-  DataGrid, GridCallbackDetails, GridPaginationModel, useGridApiRef
+  DataGrid, GridPaginationModel, useGridApiRef
 } from "@mui/x-data-grid";
 import ActionDataGridColumnDef from "./Action.DataGrid.ColumnDef";
 import { ActionRecordType } from "../GraphQL/Action.Interfaces";
@@ -29,6 +29,7 @@ import { ActionDataGridFilter } from "./Action.DataGrid.Filter";
 import { CustomToast } from "components/CustomToast";
 import { ActionPreviewModalHandler } from "dynamicCallFlow/PreviewModal/Action.Preview.Modal.Handler";
 import { ActionDataGridFilterModal } from "dynamicCallFlow/DataGrid/Action.DataGrid.Filter.Modal";
+import { logger } from "utils/logger";
 
 const DYNAMIC_CALL_FLOW_ACTION_DATA_GRID_PAGE_NUMBER = "dynamicCallFlowActionDataGridPageNumber";
 const DYNAMIC_CALL_FLOW_ACTION_DATA_GRID_RECORDS_PER_PAGE = "dynamicCallFlowActionDataGridRecordsPerPage";
@@ -85,7 +86,7 @@ const ActionDataGridComponent = (): JSX.Element => {
         const records: Array<ActionRecordType> = await actionListRecords(accessTokenGraph);
         [sortedRecords, updatedDataGridProps] = sortRecords<ActionRecordType>(records);
       } catch (error: unknown) {
-        console.log(`Error loading dynamic call flow action data: ${(error as Error)?.message}`);
+        logger.error(`Error loading dynamic call flow action data: ${(error as Error)?.message}`, { error });
         alertBarController.current.error("Errors loading data.  Please check the console logs.");
       }
 
@@ -122,7 +123,7 @@ const ActionDataGridComponent = (): JSX.Element => {
     dataGridController.current.dataGridProps = dataGridProps;
   }, [dataGridProps]);
 
-  const handlePaginationModelChange = (model: GridPaginationModel, details: GridCallbackDetails) =>{
+  const handlePaginationModelChange = (model: GridPaginationModel) =>{
     sessionStorage.setItem(DYNAMIC_CALL_FLOW_ACTION_DATA_GRID_PAGE_NUMBER, model.page.toString());
     sessionStorage.setItem(DYNAMIC_CALL_FLOW_ACTION_DATA_GRID_RECORDS_PER_PAGE, model.pageSize.toString());
     setPaginationModel(model);
@@ -132,7 +133,7 @@ const ActionDataGridComponent = (): JSX.Element => {
     setAlertBarProps(initialAlertBarProps);
   };
 
-  const handlePreviewModalOpen = (event: any) => {
+  const handlePreviewModalOpen = () => {
     dataGridController.current.sourceRecords = sourceRecords;
     dataGridController.current.dataGridRecords = dataGridRecords;
     modalController.current.openModal(ActionModalTypeEnum.BatchCreate);

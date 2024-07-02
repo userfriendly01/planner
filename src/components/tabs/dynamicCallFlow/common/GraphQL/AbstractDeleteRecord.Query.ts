@@ -1,7 +1,6 @@
 import {
   AbstractSingleRecordQuery, SingleRecordResults
 } from "./AbstractSingleRecord.Query";
-import { CallFlowDeleteInput } from "dynamicCallFlow/GraphQL/Dynamic.PhoneNumber.Interfaces";
 import { GraphQLInputVariables } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
 
 export abstract class AbstractDeleteRecordQuery extends AbstractSingleRecordQuery {

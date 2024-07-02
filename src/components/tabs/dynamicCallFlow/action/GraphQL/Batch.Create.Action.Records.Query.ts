@@ -5,10 +5,7 @@ import {
   MenuOptions, Redirect
 } from "./Action.Interfaces";
 import {
-  BatchGraphQLResponse,
-  BatchInput,
-  BatchResults,
-  BatchVariables
+  BatchResults
 } from "../../common/GraphQL/Abstract.BatchRecords.Query";
 import {
   AbstractGraphQLQuery
@@ -131,7 +128,7 @@ class BatchCreateActionRecordsQuery extends AbstractGraphQLQuery {
     const batchGraphQLResponses: Array<GraphQLResponse<CallFlowConfig>> = await Promise.all(
       batchOfGraphQLInputVariables.map(
         async graphQLInputVariables => {
-          return await this.query<GraphQLInputVariables<CallFlowConfig>, CallFlowConfig>(accessToken, graphQLInputVariables) as GraphQLResponse<CallFlowConfig>;;
+          return await this.query<GraphQLInputVariables<CallFlowConfig>, CallFlowConfig>(accessToken, graphQLInputVariables) as GraphQLResponse<CallFlowConfig>;
         }
       )
     );

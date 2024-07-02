@@ -95,10 +95,10 @@ const getBusinessUnits = async (dispatch: (action: Action) => void) => {
   } catch (error) {
     logger.error("Failed to fetch Calabrio Business Units", { error });
 
-    // throw ({
-    //   msg: "Failed to fetch Calabrio Business Units",
-    //   error
-    // });
+    throw ({
+      msg: "Failed to fetch Calabrio Business Units",
+      error
+    });
   }
 };
 
