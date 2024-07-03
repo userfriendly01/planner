@@ -122,7 +122,7 @@ describe("cct-triton-admin-startup", () => {
       });
     });
     describe("all service calls successful", () => {
-      test("**MUST RETURN STARTUP NAME FIRST**", async () => { // test.only
+      test("**MUST RETURN STARTUP NAME FIRST**", async () => {
         const result = await runTritonAdminStartup(mockAdminDispatch);
         const firstResponse = result[0];
         expect(firstResponse).toStrictEqual(startups.TRITON.name);
@@ -145,10 +145,6 @@ describe("cct-triton-admin-startup", () => {
               type: "loadCalabrioRoles",
               payload: []
             });
-            // expect(mockAdminDispatch).toHaveBeenCalledWith({ // This doesn't work - 'loadProfiles' exists only in the reducer
-            //   type: "loadProfiles",
-            //   payload: profiles
-            // });
             expect(mockAdminDispatch).toHaveBeenCalledWith({
               type: "loadWfmOrg",
               payload: {
@@ -228,10 +224,6 @@ describe("cct-triton-admin-startup", () => {
               type: "loadCalabrioRoles",
               payload: []
             });
-            // expect(mockAdminDispatch).toHaveBeenCalledWith({
-            //   type: "loadProfiles",
-            //   payload: profiles
-            // });
             expect(mockAdminDispatch).toHaveBeenCalledWith({
               type: "loadWfmOrg",
               payload: {
@@ -260,10 +252,6 @@ describe("cct-triton-admin-startup", () => {
               type: "loadCalabrioRoles",
               payload: []
             });
-            // expect(mockAdminDispatch).toHaveBeenCalledWith({
-            //   type: "loadProfiles",
-            //   payload: profiles
-            // });
             expect(mockAdminDispatch).toHaveBeenCalledWith({
               type: "loadWfmOrg",
               payload: {
@@ -292,10 +280,6 @@ describe("cct-triton-admin-startup", () => {
               type: "loadCalabrioOrg",
               payload: []
             });
-            // expect(mockAdminDispatch).toHaveBeenCalledWith({
-            //   type: "loadProfiles",
-            //   payload: profiles
-            // });
             expect(mockAdminDispatch).toHaveBeenCalledWith({
               type: "loadWfmOrg",
               payload: {
