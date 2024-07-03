@@ -30,10 +30,6 @@ jest.mock("orgmanagement/ProfileFormFields", () => ({
   ProfileFormFields: jest.fn()
 }));
 
-jest.mock("orgmanagement/ProfileNameTextField", () => ({
-  ProfileNameTextField: jest.fn()
-}));
-
 jest.mock("context/appContext", () => ({
   useAdminState: jest.fn(),
   profileEntryFormState: jest.fn(),

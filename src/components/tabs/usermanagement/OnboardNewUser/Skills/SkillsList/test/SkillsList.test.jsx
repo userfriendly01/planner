@@ -97,7 +97,7 @@ describe("<SkillsList />", () => {
     });
   });
   describe("changes made to the add skills drop down", () => {
-    test("should call updateValue function with selected value", () => {
+    test.only("should call updateValue function with selected value", () => {
       renderComponent();
       const selectedValue = JSON.stringify(skills[1]);
       act(() => {

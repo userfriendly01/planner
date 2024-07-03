@@ -53,17 +53,17 @@ describe("addOffice", () => {
 
 describe("getOffice", () => {
   describe("call succeeds", () => {
-    beforeEach(() => apolloClient.mutate.mockReturnValue({ data }));
+    beforeEach(() => apolloClient.query.mockReturnValue({ data }));
     test("should resolve with any successful response", done => {
       getOffice()
         .then(resolvedValue => {
-          expect(resolvedValue).toEqual(undefined);
+          expect(resolvedValue).toEqual("0022");
           done();
         });
     });
   });
   describe("call fails", () => {
-    beforeEach(() => apolloClient.mutate.mockReturnValue({
+    beforeEach(() => apolloClient.query.mockReturnValue({
       data: null,
       errors: [{ message: "boo" }]
     }));

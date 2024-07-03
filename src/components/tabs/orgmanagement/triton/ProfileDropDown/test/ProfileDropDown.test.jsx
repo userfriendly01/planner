@@ -1,16 +1,22 @@
 import { ProfileDropDown } from "../ProfileDropDown";
 import { Dropdown } from "components/Dropdown";
+import { useAdminState } from "context/appContext";
 import React from "react";
 import {
   expectMockedComponent,
   expectOnlyPassedProps,
   getMockedComponentProps,
+  initialTestState,
   render,
   setupMockedComponents
 } from "testUtils";
 
 jest.mock("components/Dropdown", () => ({
   Dropdown: jest.fn()
+}));
+
+jest.mock("context/appContext", () => ({
+  useAdminState: jest.fn()
 }));
 
 const updateProfile = jest.fn();
@@ -45,6 +51,7 @@ describe("<ProfileDropDown />", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({ Dropdown });
   });
   describe("a profile is selected", () => {
@@ -68,7 +75,7 @@ describe("<ProfileDropDown />", () => {
     });
   });
   describe("no profile is selected (profileID is null)", () => {
-    test("should render OutlinedSelect with correct props", () => {
+    test.only("should render OutlinedSelect with correct props", () => {
       const rendered = render(<ProfileDropDown
         availableProfiles={availableProfiles}
         profileId={null}

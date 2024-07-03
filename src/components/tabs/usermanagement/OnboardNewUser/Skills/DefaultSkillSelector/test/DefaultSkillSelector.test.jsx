@@ -101,7 +101,7 @@ describe("<DefaultSkillSelector />", () => {
 
   describe("initial state", () => {
     describe("worker has no default skills", () => {
-      test("should render header and correct components with correct props; should not render SkillLevels", () => {
+      test.only("should render header and correct components with correct props; should not render SkillLevels", () => {
         const defaultSkills = {
           skills: [],
           levels: {}

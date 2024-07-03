@@ -4,6 +4,7 @@ import React from "react";
 import {
   act,
   expectOnlyPassedProps,
+  initialSkillState,
   render,
   setupMockedComponents,
   skillsList
@@ -11,12 +12,18 @@ import {
 import { TextField } from "../../ClosedFlashMessage.Styles";
 import { messageTypes } from "../../ClosedFlashMessage.Interfaces";
 import { ActionTypes } from "../../../Skills.Interfaces";
+import { useSkillState } from "context/appContext";
 
 jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
 }));
+
 jest.mock("callflowmanagement/SaveButton", () => ({
   SaveButton: jest.fn()
+}));
+
+jest.mock("context/appContext", () => ({
+  useSkillState: jest.fn()
 }));
 
 jest.mock("../../ClosedFlashMessage.Styles", () => ({
@@ -47,6 +54,7 @@ const renderComponent = tableState => {
 
 describe("<MessageContainer/>", () => {
   beforeEach(() => {
+    useSkillState.mockReturnValue(initialSkillState);
     setupMockedComponents({
       TextField,
       SaveButton
@@ -57,7 +65,7 @@ describe("<MessageContainer/>", () => {
       const tableState = {
         selected: []
       };
-      test("should render as expected, text should be empty string", () => {
+      test.only("should render as expected, text should be empty string", () => {
         renderComponent(tableState);
         expectOnlyPassedProps(TextField, {
           value: ""

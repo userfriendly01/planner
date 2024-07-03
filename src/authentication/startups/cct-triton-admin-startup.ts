@@ -85,9 +85,9 @@ export const runTritonAdminStartup = (dispatch:  (action: Action) => void, skill
     Promise.resolve(getStartupProfiles().TRITON.name),
     listUMManagers(dispatch),
     listUMSoftphoneConfigs(dispatch),
-    loadConsolidatedSkills(skillDispatch)
-    // getCalabrioUsers(dispatch),
-    // getCalabrioOrg(dispatch),
-    // getCalabrioRoles(dispatch)
+    loadConsolidatedSkills(skillDispatch),
+    getCalabrioUsers(dispatch),
+    getCalabrioOrg(dispatch),
+    getCalabrioRoles(dispatch)
   ]);
 };

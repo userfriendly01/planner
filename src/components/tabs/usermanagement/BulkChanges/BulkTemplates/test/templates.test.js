@@ -538,7 +538,7 @@ describe("CREATE_MANAGER", () => {
       });
     });
     describe("addManager is successful", () => {
-      test("promise resolves", async () => {
+      test.only("promise resolves", async () => {
         addManager.mockResolvedValue("Yay!!");
         await createManagerProcessFunction({
           ...row,

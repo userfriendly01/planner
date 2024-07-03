@@ -5,10 +5,12 @@ import {
   act,
   expectMockedComponent,
   fireEvent,
+  initialSkillState,
+  initialTestState,
   render,
   setupMockedComponents
 } from "testUtils";
-import { profileEntryFormDispatch } from "context/appContext";
+import { profileEntryFormDispatch, useAdminDispatch, useAdminState, useSkillState } from "context/appContext";
 import { ProfileEntryForm } from "orgmanagement/ProfileEntryForm";
 
 jest.mock("authentication/authUtils", () => ({
@@ -20,6 +22,8 @@ jest.mock("orgmanagement/ProfileEntryForm", () => ({
 }));
 
 jest.mock("context/appContext", () => ({
+  useAdminState: jest.fn(),
+  useSkillState: jest.fn(),
   profileEntryFormDispatch: jest.fn(),
   profileEntryFormActions: { SET_UPDATE_PROFILE_FORM_STATE: "SET_UPDATE_PROFILE_FORM_STATE" }
 }));
@@ -30,6 +34,8 @@ const setProfileModalState = jest.fn();
 describe("<ProfileSettingsTable />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    useAdminState.mockReturnValue(initialTestState);
+    useSkillState.mockReturnValue(initialSkillState);
     checkIfPO.mockReturnValue(false);
     setupMockedComponents({
       ProfileEntryForm
@@ -188,7 +194,7 @@ describe("<ProfileSettingsTable />", () => {
       expect(tableHeaders.length).toBe(24);
     });
 
-    test("should render correct tooltips", async () => {
+    test.only("should render correct tooltips", async () => {
       const rendered = renderComponent(validNid, profiles);
       expect(rendered.getByLabelText("Unique Profile Identification")).toBeInTheDocument();
       expect(rendered.getByLabelText("Profile Name")).toBeInTheDocument();

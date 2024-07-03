@@ -26,6 +26,7 @@ import {
   UPDATE_SOFTPHONE_CONFIG,
   getSoftphoneConfigRelationshipsQuery, listSoftphoneConfigs
 } from "globals/graphql";
+import { formatErrorMessage } from "utils/_formatUtils";
 
 export const listUMSoftphoneConfigs = async (dispatch: (action: Action) => void): Promise<UMSoftphoneConfiguration[]> => {
   let profiles: UMSoftphoneConfiguration[] = [];
@@ -112,11 +113,11 @@ export const loadSoftphoneConfigRelationships = async (profiles: UMSoftphoneConf
         variables: {}
       });
 
-      if(errors?.length && !errors.every((e: any) => e.errorType === "NOT_FOUND")) { throw errors; }
+      if(errors?.length) { throw errors; }
       return data.profile;
     } catch(error) {
-      logger.error(`Error thrown getting profile relationship items for ${p}`, error);
-      return {};
+      logger.error(`Error thrown getting profile relationship items for profile ${p.profile_id}`, error);
+      return p;
     }
   }));
 

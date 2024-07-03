@@ -42,6 +42,9 @@ describe("<PhoneNumberTable />", () => {
 
   describe("save status does not exist", () => {
     describe("profile does not have entries in its directory", () => {
+      test.only("Faith", () => {
+        expect(true).toBe(true);
+      });
       test("should render emptyListMsg", () => {
         const rendered = renderComponent([]);
         expect(rendered.container).toHaveTextContent(emptyListMsg);

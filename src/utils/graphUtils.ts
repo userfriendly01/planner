@@ -11,8 +11,7 @@ import {
 }from "globals/interfaces";
 import {
   LIST_MANAGERS,
-  LIST_USERS,
-  listSoftphoneConfigs
+  LIST_USERS
 }from "globals/graphql";
 import {
   logger

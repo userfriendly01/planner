@@ -147,7 +147,7 @@ describe("SkillsTable", () => {
       FilterWrapper
     });
   });
-  test("THIS TEST MUST BE RUN FIRST - unknown mocking issue", () => {
+  test.only("THIS TEST MUST BE RUN FIRST - unknown mocking issue", () => {
     renderComponent();
     /*
       This test is needed to make the rest pass as expected

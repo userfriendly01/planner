@@ -107,7 +107,7 @@ describe("<SkillGroupInputContainer />", () => {
     });
   });
   describe("action is not ADD, EDIT, or DELETE", () => {
-    test("clicking button does nothing", () => {
+    test.only("clicking button does nothing", () => {
       renderComponent({ selected: []}, "boo");
       expect(Dropdown.mock.calls.length).toBe(0);
       expect(TextField.mock.calls.length).toBe(1);

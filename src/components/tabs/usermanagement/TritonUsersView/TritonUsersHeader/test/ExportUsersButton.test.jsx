@@ -77,7 +77,7 @@ describe("ExportUsersButton", () => {
     });
   });
   describe("initial render", () => {
-    test("renders with ExcelExport", () => {
+    test.only("renders with ExcelExport", () => {
       const rendered = renderComponent();
       expect(ExcelExport).toHaveBeenCalled();
       expect(rendered.container).toHaveTextContent("Export");

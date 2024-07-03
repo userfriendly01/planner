@@ -19,6 +19,7 @@ export const getOffice = async (office_num: string): Promise<UMOffice> => {
     return data.office;
   } catch(error) {
     logger.error("Failed to fetch offices from graph", { error });
+    return null;
   }
 };
 

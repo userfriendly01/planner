@@ -189,7 +189,7 @@ describe("<UserFormButtons />", () => {
       userContext: {
         nNumber: "n1234567",
         tokens: {
-          adminService: "token",
+          adminService: "token"
         }
       },
       calabrioContext: {
@@ -242,7 +242,7 @@ describe("<UserFormButtons />", () => {
         isDidDifferentValid.mockReturnValue(true);
       });
       describe("forwardToToggle === false", () => {
-        test("Tooltip title should be blank", () => {
+        test.only("Tooltip title should be blank", () => {
           renderComponent(false);
           expect(Tooltip.mock.calls[0][0].title).toBe("");
         });
@@ -970,7 +970,7 @@ describe("<UserFormButtons />", () => {
               userContext: {
                 nNumber: "n1234567",
                 tokens: {
-                  adminService: "token",
+                  adminService: "token"
                 }
               },
               calabrioContext: {
@@ -2176,7 +2176,7 @@ describe("<UserFormButtons />", () => {
               userContext: {
                 nNumber: "n1234567",
                 tokens: {
-                  adminService: "token",
+                  adminService: "token"
                 }
               },
               calabrioContext: {

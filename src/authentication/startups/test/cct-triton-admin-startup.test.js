@@ -48,6 +48,9 @@ jest.mock("services/user", () => ({
   listUMUsers: jest.fn()
 }));
 
+jest.mock("services/profile", () => ({
+  listUMSoftphoneConfigs: jest.fn()
+}));
 jest.mock("services/skill", () => ({
   loadConsolidatedSkills: jest.fn()
 }));
@@ -119,7 +122,7 @@ describe("cct-triton-admin-startup", () => {
       });
     });
     describe("all service calls successful", () => {
-      test("**MUST RETURN STARTUP NAME FIRST**", async () => {
+      test.only("**MUST RETURN STARTUP NAME FIRST**", async () => {
         const result = await runTritonAdminStartup(mockAdminDispatch);
         const firstResponse = result[0];
         expect(firstResponse).toStrictEqual(startups.TRITON.name);

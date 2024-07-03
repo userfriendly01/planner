@@ -17,6 +17,7 @@ export const isProfileFormValid = (form: ProfileEntryFormState): boolean => {
   return !!(form.profileId?.toString().match(numMatcher) && form.forwardToNum.valid && form.operatingUnit &&
   form.activitiesList.length && form.profileName && form.profileName.trim().length && form.updated && isAccessGroupValid);
 };
+
 export const formatProfileACWDataEntry = (acwTags: boolean, callTags: CallTag[], BubbleDiv: any, HighlightRed: any) => {
   if (acwTags && callTags?.length) {
     return callTags.map((callTag: CallTag) => {

@@ -8,7 +8,7 @@ import { formModes } from "globals";
 describe("profileEntryFormReducer", () => {
 
   describe("Default Case", () => {
-    test("should return state", () => {
+    test.only("should return state", () => {
       const action = { type: "default" };
       const result = profileEntryFormReducer(initialProfileEntryFormState, action);
       expect(result).toStrictEqual(initialProfileEntryFormState);

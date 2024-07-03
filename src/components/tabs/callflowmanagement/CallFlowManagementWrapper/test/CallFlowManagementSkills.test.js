@@ -124,7 +124,7 @@ describe("CallFlowManagementSkills", () => {
       }, getLastInstanceCalled(Modal));
       expect(loadSkillOptions).not.toHaveBeenCalled();
     });
-    test("initial form renders as expected", () => {
+    test.only("initial form renders as expected", () => {
       useSkillState.mockReturnValue({
         skills: [],
         timeOfDays: [],

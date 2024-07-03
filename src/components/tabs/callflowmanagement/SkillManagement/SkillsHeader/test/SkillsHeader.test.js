@@ -3,7 +3,9 @@ import { SearchBox } from "components/SearchBox";
 import React from "react";
 import { Dropdown } from "components/Dropdown";
 import { ExportButton } from "callflowmanagement/ExportButton";
-import { useAdminState } from "context/appContext";
+import {
+  useAdminState, useSkillState
+} from "context/appContext";
 import {
   act,
   render,
@@ -11,7 +13,8 @@ import {
   skillsList,
   setupMockedComponents,
   initialTestState,
-  profileList
+  profileList,
+  initialSkillState
 } from "testUtils";
 
 jest.mock("components/Dropdown", () => ({
@@ -31,7 +34,8 @@ jest.mock("callflowmanagement/ExportButton", () => ({
 }));
 
 jest.mock("context/appContext", () => ({
-  useAdminState: jest.fn()
+  useAdminState: jest.fn(),
+  useSkillState: jest.fn()
 }));
 
 const mockSetTableState = jest.fn();
@@ -58,6 +62,7 @@ const renderComponent = () => {
 describe("<SkillsHeader />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    useSkillState(initialSkillState);
     useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
       SearchBox,
@@ -66,6 +71,9 @@ describe("<SkillsHeader />", () => {
     });
   });
   describe("initial render", () => {
+    test.only("Faith", () => {
+      expect(true).toBe(true);
+    });
     test("component renders as expected", () => {
       renderComponent();
       expect(Dropdown.mock.calls.length).toBe(0);

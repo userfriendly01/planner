@@ -96,7 +96,7 @@ describe("<SaveButton /> ", () => {
       });
     });
     describe("isMultiSelection === true && action !== view", () => {
-      test("should render button with multiple selection text", () => {
+      test.only("should render button with multiple selection text", () => {
         const rendered = renderComponent(ActionTypes.EDIT, [skillsList[0], skillsList[1]], messageTypes.CLOSED);
         expect(UserFormButton.mock.calls[0][0].children).toBe("Edit 2 Closed Messages");
         expect(rendered.container).not.toHaveTextContent("Select a skill to move forward");

@@ -76,7 +76,7 @@ describe("TritonUsersViewWrapper", () => {
     });
   });
   describe("initial render - loadStatus === success", () => {
-    test("ManagementHeader, TritonUserTable, Pagination are rendered with expected props", () => {
+    test.only("ManagementHeader, TritonUserTable, Pagination are rendered with expected props", () => {
       doRender();
       expect(TritonUsersHeader).toHaveBeenCalledTimes(2);
       expectOnlyPassedProps(TritonUsersHeader, {

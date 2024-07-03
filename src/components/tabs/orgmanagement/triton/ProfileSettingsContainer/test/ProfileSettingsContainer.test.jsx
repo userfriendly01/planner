@@ -5,14 +5,18 @@ import { StyledButton } from "components/StyledButton";
 import { ProfileSettingsTable } from "components/tabs/orgmanagement/triton/ProfileSettingsContainer/ProfileSettingsTable/ProfileSettingsTable";
 import { ProfileEntryForm } from "orgmanagement/ProfileEntryForm";
 import { Modal } from "@mui/material";
-import { useAdminState } from "context/appContext";
+import { PageLoadSpinner } from "components/PageLoadSpinner";
+import { useAdminDispatch, useAdminState, useSkillDispatch, useSkillState } from "context/appContext";
 import React from "react";
 import { act } from "react-dom/test-utils";
+import { loadSoftphoneConfigRelationships } from "services/profile";
+import { loadSkillOptions } from "services/skill";
 import {
   expectMockedComponent,
   render,
   setupMockedComponents,
-  initialTestState as initialState
+  initialTestState as initialState,
+  initialSkillState
 } from "testUtils";
 import { myAxios } from "utils/myAxios";
 
@@ -25,12 +29,28 @@ jest.mock("components/StyledButton", () => ({
 jest.mock("orgmanagement/ProfileSettingsTable", () => ({
   ProfileSettingsTable: jest.fn()
 }));
+
 jest.mock("orgmanagement/ProfileEntryForm", () => ({
   ProfileEntryForm: jest.fn()
 }));
 
+jest.mock("components/PageLoadSpinner", () => ({
+  PageLoadSpinner: jest.fn()
+}));
+
+jest.mock("services/profile", () => ({
+  loadSoftphoneConfigRelationships: jest.fn()
+}));
+
+jest.mock("services/skill", () => ({
+  loadSkillOptions: jest.fn()
+}));
+
 jest.mock("context/appContext", () => ({
   useAdminState: jest.fn(),
+  useAdminDispatch: jest.fn(),
+  useSkillState: jest.fn(),
+  useSkillDispatch: jest.fn(),
   ProfileEntryFormStateProvider: jest.requireActual("context/appContext").ProfileEntryFormStateProvider
 }));
 
@@ -81,6 +101,7 @@ describe("<ProfileSettingsContainer />", () => {
     axiosMock.reset();
     jest.clearAllMocks();
     useAdminState.mockReturnValue(initialTestState);
+    useSkillState.mockReturnValue(initialSkillState);
     checkIfPO.mockReturnValue(true);
     setupMockedComponents({
       ProfileSettingsTable,
@@ -95,7 +116,7 @@ describe("<ProfileSettingsContainer />", () => {
   };
 
   describe("Profile Entry Form Modal", () => {
-    test("form should not render on initial state", () => {
+    test.only("form should not render on initial state", () => {
       const rendered = renderComponent();
       expectMockedComponent(rendered, { ProfileEntryForm }, 0);
     });

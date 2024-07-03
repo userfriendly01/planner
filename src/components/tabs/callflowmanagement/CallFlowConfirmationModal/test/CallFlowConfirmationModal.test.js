@@ -5,8 +5,11 @@ import { PaperContainer } from "components/PaperContainer";
 import { StyledButton } from "components/StyledButton";
 import { ExportButton } from "callflowmanagement/ExportButton";
 import { ModalOverlayStatuses } from "globals/interfaces";
+import { useSkillState } from "context/appContext";
+
 import {
   act,
+  initialSkillState,
   render,
   setupMockedComponents
 } from "testUtils";
@@ -25,6 +28,10 @@ jest.mock("components/StyledButton", () => ({
 
 jest.mock("callflowmanagement/ExportButton", () => ({
   ExportButton: jest.fn()
+}));
+
+jest.mock("context/appContext", () => ({
+  useSkillState: jest.fn()
 }));
 
 const mockOnConfirm = jest.fn();
@@ -55,6 +62,7 @@ const renderComponent = (saveResult, confirmationOpts) => {
 describe("CallFlowConfirmationModal",() => {
   beforeEach(() => {
     jest.clearAllMocks();
+    useSkillState.mockReturnValue(initialSkillState);
     setupMockedComponents({
       PaperContainer,
       ExportButton,

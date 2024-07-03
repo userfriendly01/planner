@@ -3,6 +3,7 @@ import React from "react";
 import {
   profileEntryFormDispatch,
   profileEntryFormState,
+  useAdminDispatch,
   useAdminState
 } from "context/appContext";
 import { profileEntryFormActions } from "context/profileEntryFormReducer";
@@ -32,7 +33,8 @@ jest.mock("components/StyledButton", () => ({
 jest.mock("context/appContext", () => ({
   profileEntryFormState: jest.fn(),
   profileEntryFormDispatch: jest.fn(),
-  useAdminState: jest.fn()
+  useAdminState: jest.fn(),
+  useAdminDispatch: jest.fn()
 }));
 
 jest.mock("@mui/material", () => ({
@@ -83,7 +85,7 @@ describe("<ProfileFormButtons />", () => {
 
     describe(`form.formMode === ${formModes.INSERT}`, () => {
       describe("Initial State", () => {
-        test("ProfileFormButtons should be called 'Create Profile'", () => {
+        test.only("ProfileFormButtons should be called 'Create Profile'", () => {
           renderComponent();
           expect(StyledButton.mock.calls[1][0].children).toBe("Create Profile");
         });

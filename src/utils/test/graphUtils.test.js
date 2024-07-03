@@ -7,7 +7,6 @@ import {
 import { apolloClient } from "../../components/core/Auth/SharedGraphAPIProvider";
 import {
   LIST_MANAGERS,
-  LIST_OFFICES,
   LIST_USERS
 }from "globals/graphql";
 import {
@@ -36,12 +35,6 @@ describe("getGraphData", () => {
     test("LIST_MANAGERS are returned", () => {
       const res = getGraphData("UMManager");
       expect(res).toBe(LIST_MANAGERS);
-    });
-  });
-  describe("Graph type is Office", () => {
-    test("LIST_OFFICES are returned", () => {
-      const res = getGraphData("UMOffice");
-      expect(res).toBe(LIST_OFFICES);
     });
   });
   describe("Graph type is Unknown", () => {

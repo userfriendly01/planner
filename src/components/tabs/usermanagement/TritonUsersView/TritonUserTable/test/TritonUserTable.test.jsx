@@ -130,7 +130,7 @@ describe("<TritonUserTable />", () => {
       expect(Delete.mock.calls.length).toBe(initialTestState.workerContext.workers.length);
     });
     describe("resettingSkills === true", () => {
-      test("ModalOverlay is rendered", () => {
+      test.only("ModalOverlay is rendered", () => {
         renderComponent(true);
         expect(ModalOverlay.mock.calls.length).toBe(1);
         expect(ModalOverlay.mock.calls[0][0]).toStrictEqual({

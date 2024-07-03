@@ -29,7 +29,7 @@ beforeEach(() => {
 
 const profileRes1 = {
   profiles: { items: [ { profile_id: 1 }]},
-  screenPops: { items: [{ sk: "Screenpop#1" }]},
+  screenpops: { items: [{ sk: "Screenpop#1" }]},
   accessGroups: { items: [{ sk: "AccessGroup#1" }]},
   activities: { items: [{ sk: "Activity#1" }]},
   directoryEntries: { items: [{ thing: "hi" }]},
@@ -37,7 +37,7 @@ const profileRes1 = {
 };
 
 describe("listUMSoftphoneConfigs", () => {
-  test("getPageResults is successful and returns no next token", async () => {
+  test("getPageResults is successful and returns no next token", done => {
     apolloClient.query.mockResolvedValueOnce({ data: profileRes1 });
     listUMSoftphoneConfigs(mockedDispatch).then(() => {
       expect(apolloClient.query).toHaveBeenCalledTimes(1);
@@ -45,16 +45,17 @@ describe("listUMSoftphoneConfigs", () => {
         type: "loadProfileOptions",
         payload: {
           profiles: [ { profile_id: 1 }],
-          screenPops: [{ sk: "Screenpop#1" }],
+          screenpops: [{ sk: "Screenpop#1" }],
           accessGroups: [{ sk: "AccessGroup#1" }],
           activities: [{ sk: "Activity#1" }],
           directoryEntries: [{ thing: "hi" }],
           dialListEntries: [{ cool: "beans" }]
         }
       });
+      done();
     });
   });
-  test("getPageResults is successful and returns next token on profiles", async () => {
+  test("getPageResults is successful and returns next token on profiles", done => {
     const nextOnProfiles = {
       ...profileRes1,
       profiles: {
@@ -73,34 +74,36 @@ describe("listUMSoftphoneConfigs", () => {
         type: "loadProfileOptions",
         payload: {
           profiles: [ { profile_id: 1 }, { profile_id: 2 }],
-          screenPops: [{ sk: "Screenpop#1" }],
+          screenpops: [{ sk: "Screenpop#1" }],
           accessGroups: [{ sk: "AccessGroup#1" }],
           activities: [{ sk: "Activity#1" }],
           dialListEntries: [{ cool: "beans" }],
           directoryEntries: [{ thing: "hi" }]
         }
       });
+      done();
     });
   });
-  test("getPageResults is successful and returns next token on screenpops", async () => {
+  test("getPageResults is successful and returns next token on screenpops", done => {
     const nextOnScreenpops = {
       ...profileRes1,
-      screenPops: {
-        ...profileRes1.screenPops,
+      screenpops: {
+        ...profileRes1.screenpops,
         nextToken: "nextToken"
       }
     };
     apolloClient.query.mockResolvedValueOnce({ data: nextOnScreenpops }).mockResolvedValueOnce({
       data: {
-        screenPops: { items: [{ sk: "Screenpop#2" }]}
+        screenpops: { items: [{ sk: "Screenpop#2" }]}
       }
     });
     listUMSoftphoneConfigs(mockedDispatch).then(() => {
       expect(apolloClient.query).toHaveBeenCalledTimes(2);
       expect(mockedDispatch).toHaveBeenCalledTimes(1);
+      done();
     });
   });
-  test("getPageResults is successful and returns next token on accessgroups", async () => {
+  test("getPageResults is successful and returns next token on accessgroups", done => {
     const nextOnAccessGroup = {
       ...profileRes1,
       accessGroups: {
@@ -116,9 +119,10 @@ describe("listUMSoftphoneConfigs", () => {
     listUMSoftphoneConfigs(mockedDispatch).then(() => {
       expect(apolloClient.query).toHaveBeenCalledTimes(2);
       expect(mockedDispatch).toHaveBeenCalledTimes(1);
+      done();
     });
   });
-  test("getPageResults is successful and returns next token on accessgroups", async () => {
+  test("getPageResults is successful and returns next token on accessgroups", done => {
     const nextOnActivities = {
       ...profileRes1,
       activities: {
@@ -134,9 +138,10 @@ describe("listUMSoftphoneConfigs", () => {
     listUMSoftphoneConfigs(mockedDispatch).then(() => {
       expect(apolloClient.query).toHaveBeenCalledTimes(2);
       expect(mockedDispatch).toHaveBeenCalledTimes(1);
+      done();
     });
   });
-  test("errors on query response, throws error", async () => {
+  test("errors on query response, throws error", done => {
     apolloClient.query.mockResolvedValueOnce({
       data: profileRes1,
       errors: [{ message: "oh no!" }]
@@ -147,15 +152,17 @@ describe("listUMSoftphoneConfigs", () => {
       }]);
       expect(mockedDispatch).toHaveBeenCalledTimes(0);
       expect(apolloClient.query).toHaveBeenCalledTimes(1);
+      done();
     });
 
   });
-  test("apollo throws an error, throws error", async () => {
+  test("apollo throws an error, throws error", done => {
     apolloClient.query.mockRejectedValueOnce("yikes!");
     listUMSoftphoneConfigs(mockedDispatch).catch(err => {
       expect(err).toEqual("yikes!");
       expect(mockedDispatch).toHaveBeenCalledTimes(0);
       expect(apolloClient.query).toHaveBeenCalledTimes(1);
+      done();
     });
 
   });
@@ -164,198 +171,51 @@ describe("listUMSoftphoneConfigs", () => {
 describe("loadSoftphoneConfigRelationships", () => {
   const profiles = [
     { profile_id: 1 },
-    { profile_id: 2 },
+    {
+      profile_id: 2
+    },
     { profile_id: 3 }
   ];
-  const profileData1 = {
-    accessGroup: {},
-    activities: {
-      items: [{ sk: "Activity#0" }],
-      nextToken: "nextToken"
-    },
-    directoryNumbers: {
-      items: [{ sk: "DirectoryNumber#0" }],
-      nextToken: "nextToken"
-    },
-    dialListNumbers: {
-      items: [{ sk: "QuickDialNumber#0" }],
-      nextToken: "nextToken"
+  const profileData2 = {
+    profile: {
+      accessGroup: null,
+      activities: [{ sk: "Activity#1" }],
+      directoryNumbers: [{ sk: "DirectoryNumber#1" }],
+      dialListNumbers: [{ sk: "QuickDialNumber#1" }]
     }
   };
-  const profileData2 = {
-    activities: { items: [{ sk: "Activity#1" }]},
-    directoryNumbers: { items: [{ sk: "DirectoryNumber#1" }]},
-    dialListNumbers: { items: [{ sk: "QuickDialNumber#1" }]}
-  };
-  test("successful queries, no nextTokens involved, queries all profiles and dispatches results", () => {
-    apolloClient.query.mockResolvedValue({ data: profileData2 });
-    loadSoftphoneConfigRelationships(profiles, mockedDispatch).then(() => {
-      expect(apolloClient.query).toHaveBeenCalledTimes(3);
-      expect(mockedDispatch).toHaveBeenCalledTimes(1);
-      expect(mockedDispatch).toHaveBeenCalledWith({
-        type: "loadPaginatedResults",
-        payload: {
-          type: "UMSoftphoneConfiguration",
-          results: [{
-            profile_id: 1,
-            accessGroup: null,
-            activities: [{ sk: "Activity#1" }],
-            directoryNumbers: [{ sk: "DirectoryNumber#1" }],
-            dialListNumbers: [{ sk: "QuickDialNumber#1" }]
-          },
-          {
-            profile_id: 2,
-            accessGroup: null,
-            activities: [{ sk: "Activity#1" }],
-            directoryNumbers: [{ sk: "DirectoryNumber#1" }],
-            dialListNumbers: [{ sk: "QuickDialNumber#1" }]
-          },
-          {
-            profile_id: 3,
-            accessGroup: null,
-            activities: [{ sk: "Activity#1" }],
-            directoryNumbers: [{ sk: "DirectoryNumber#1" }],
-            dialListNumbers: [{ sk: "QuickDialNumber#1" }]
-          }],
-          isFirstPage: true
+  test("successful queries, queries all profiles and dispatches results", done => {
+    apolloClient.query.mockResolvedValueOnce({
+      data: {
+        profile: {
+          ...profiles[0],
+          ...profileData2.profile
         }
-      });
-    });
-  });
-  test("successful queries, only one profile returns next token, queries all profiles and dispatches results", () => {
-    const profileWithAG = {
-      ...profileData1,
-      accessGroup: {
-        sk: "AccessGroup#1"
       }
-    };
-    apolloClient.query
-      .mockResolvedValueOnce({ data: profileWithAG })
-      .mockResolvedValue({ data: profileData2 });
-    loadSoftphoneConfigRelationships(profiles, mockedDispatch).then(() => {
-      expect(apolloClient.query).toHaveBeenCalledTimes(4);
-      expect(mockedDispatch).toHaveBeenCalledTimes(1);
-      expect(mockedDispatch).toHaveBeenCalledWith({
-        type: "loadPaginatedResults",
-        payload: {
-          type: "UMSoftphoneConfiguration",
-          results: [{
-            profile_id: 1,
-            accessGroup: { sk: "AccessGroup#1" },
-            activities: [{ sk: "Activity#0" }, { sk: "Activity#1" }],
-            directoryNumbers: [{ sk: "DirectoryNumber#0" }, { sk: "DirectoryNumber#1" }],
-            dialListNumbers: [{ sk: "QuickDialNumber#0" }, { sk: "QuickDialNumber#1" }]
-          },
-          {
-            profile_id: 2,
-            accessGroup: null,
-            activities: [{ sk: "Activity#1" }],
-            directoryNumbers: [{ sk: "DirectoryNumber#1" }],
-            dialListNumbers: [{ sk: "QuickDialNumber#1" }]
-          },
-          {
-            profile_id: 3,
-            accessGroup: null,
-            activities: [{ sk: "Activity#1" }],
-            directoryNumbers: [{ sk: "DirectoryNumber#1" }],
-            dialListNumbers: [{ sk: "QuickDialNumber#1" }]
-          }],
-          isFirstPage: true
+    });
+    apolloClient.query.mockResolvedValueOnce({
+      data: {
+        profile: {
+          ...profiles[1],
+          ...profileData2.profile
         }
-      });
+      }
     });
-  });
-  test("successful queries, nextTokens are present on activities, queries all profiles and dispatches results", () => {
-    const testData = {
-      ...profileData1
-    };
-    testData.dialListNumbers.nextToken = null;
-    testData.directoryNumbers.nextToken = null;
-    apolloClient.query
-      .mockResolvedValueOnce({ data: testData })
-      .mockResolvedValueOnce({ data: testData })
-      .mockResolvedValueOnce({ data: testData })
-      .mockResolvedValue({ data: { activities: { items: [{ sk: "Activity#1" }]}}});
-    loadSoftphoneConfigRelationships(profiles, mockedDispatch).then(() => {
-      expect(apolloClient.query).toHaveBeenCalledTimes(6);
-      expect(mockedDispatch).toHaveBeenCalledTimes(1);
-      expect(mockedDispatch).toHaveBeenCalledWith({
-        type: "loadPaginatedResults",
-        payload: {
-          type: "UMSoftphoneConfiguration",
-          results: [{
-            profile_id: 1,
-            accessGroup: {},
-            activities: [{ sk: "Activity#0" }, { sk: "Activity#1" }],
-            directoryNumbers: [{ sk: "DirectoryNumber#0" }],
-            dialListNumbers: [{ sk: "QuickDialNumber#0" }]
-          },
-          {
-            profile_id: 2,
-            accessGroup: {},
-            activities: [{ sk: "Activity#0" }, { sk: "Activity#1" }],
-            directoryNumbers: [{ sk: "DirectoryNumber#0" }],
-            dialListNumbers: [{ sk: "QuickDialNumber#0" }]
-          },
-          {
-            profile_id: 3,
-            accessGroup: {},
-            activities: [{ sk: "Activity#0" }, { sk: "Activity#1" }],
-            directoryNumbers: [{ sk: "DirectoryNumber#0" }],
-            dialListNumbers: [{ sk: "QuickDialNumber#0" }]
-          }],
-          isFirstPage: true
+    apolloClient.query.mockResolvedValueOnce({
+      data: {
+        profile: {
+          ...profiles[2],
+          ...profileData2.profile
         }
-      });
+      }
     });
-  });
-  test("successful queries, nextTokens are present on dialListNumbers, queries all profiles and dispatches results", () => {
-    const testData = {
-      ...profileData1
-    };
-    testData.activities.nextToken = null;
-    testData.dialListNumbers.nextToken = "token";
-    testData.directoryNumbers.nextToken = null;
-    apolloClient.query
-      .mockResolvedValueOnce({ data: testData })
-      .mockResolvedValueOnce({ data: testData })
-      .mockResolvedValueOnce({ data: testData })
-      .mockResolvedValueOnce({ data: { dialListNumbers: { items: [{ sk: "QuickDialNumber#1" }]}}});
-    loadSoftphoneConfigRelationships(profiles, mockedDispatch).then(() => {
-      expect(apolloClient.query).toHaveBeenCalledTimes(6);
-      expect(mockedDispatch).toHaveBeenCalledTimes(1);
-    });
-  });
-  test("successful queries, nextTokens are present on directoryNumbers, queries all profiles and dispatches results", () => {
-    const testData = {
-      ...profileData1
-    };
-    testData.activities.nextToken = null;
-    testData.directoryNumbers.nextToken = "nextToken";
-    testData.dialListNumbers.nextToken = null;
-    apolloClient.query
-      .mockResolvedValueOnce({ data: testData })
-      .mockResolvedValueOnce({ data: testData })
-      .mockResolvedValueOnce({ data: testData })
-      .mockResolvedValueOnce({ data: { directoryNumbers: { items: [{ sk: "DirectoryNumber#1" }]}}});
-    loadSoftphoneConfigRelationships(profiles, mockedDispatch).then(() => {
-      expect(apolloClient.query).toHaveBeenCalledTimes(6);
-      expect(mockedDispatch).toHaveBeenCalledTimes(1);
-    });
-  });
-  test("apolloclient query throws error, logs error, returns formated profile", () => {
-    apolloClient.query
-      .mockResolvedValueOnce({ data: profileData2 })
-      .mockRejectedValueOnce("error!")
-      .mockResolvedValueOnce({ data: profileData2 });
     loadSoftphoneConfigRelationships(profiles, mockedDispatch).then(() => {
       expect(apolloClient.query).toHaveBeenCalledTimes(3);
       expect(mockedDispatch).toHaveBeenCalledTimes(1);
       expect(mockedDispatch).toHaveBeenCalledWith({
-        type: "loadPaginatedResults",
+        type: "loadProfileOptions",
         payload: {
-          type: "UMSoftphoneConfiguration",
-          results: [{
+          profiles: [{
             profile_id: 1,
             accessGroup: null,
             activities: [{ sk: "Activity#1" }],
@@ -365,9 +225,9 @@ describe("loadSoftphoneConfigRelationships", () => {
           {
             profile_id: 2,
             accessGroup: null,
-            activities: [],
-            directoryNumbers: [],
-            dialListNumbers: []
+            activities: [{ sk: "Activity#1" }],
+            directoryNumbers: [{ sk: "DirectoryNumber#1" }],
+            dialListNumbers: [{ sk: "QuickDialNumber#1" }]
           },
           {
             profile_id: 3,
@@ -375,29 +235,37 @@ describe("loadSoftphoneConfigRelationships", () => {
             activities: [{ sk: "Activity#1" }],
             directoryNumbers: [{ sk: "DirectoryNumber#1" }],
             dialListNumbers: [{ sk: "QuickDialNumber#1" }]
-          }],
-          isFirstPage: true
+          }]
         }
       });
-      expect(logger.error).toHaveBeenCalledWith("Error thrown getting profile relationship items for profile 2", "error!");
+      done();
     });
   });
-  test("query has NOT_FOUND errors on response, ignores error, returns formatted profiles from queries", () => {
-    apolloClient.query
-      .mockResolvedValueOnce({ data: profileData2 })
-      .mockResolvedValueOnce({
-        data: profileData2,
-        errors: [{ errorType: "NOT_FOUND" }]
-      })
-      .mockResolvedValueOnce({ data: profileData2 });
+  test("apolloclient query throws error, logs error, returns formated profile", done => {
+    apolloClient.query.mockResolvedValueOnce({
+      data: {
+        profile: {
+          ...profiles[0],
+          ...profileData2.profile
+        }
+      }
+    });
+    apolloClient.query.mockRejectedValueOnce({ message: "error!" });
+    apolloClient.query.mockResolvedValueOnce({
+      data: {
+        profile: {
+          ...profiles[2],
+          ...profileData2.profile
+        }
+      }
+    });
     loadSoftphoneConfigRelationships(profiles, mockedDispatch).then(() => {
       expect(apolloClient.query).toHaveBeenCalledTimes(3);
       expect(mockedDispatch).toHaveBeenCalledTimes(1);
       expect(mockedDispatch).toHaveBeenCalledWith({
-        type: "loadPaginatedResults",
+        type: "loadProfileOptions",
         payload: {
-          type: "UMSoftphoneConfiguration",
-          results: [{
+          profiles: [{
             profile_id: 1,
             accessGroup: null,
             activities: [{ sk: "Activity#1" }],
@@ -405,11 +273,7 @@ describe("loadSoftphoneConfigRelationships", () => {
             dialListNumbers: [{ sk: "QuickDialNumber#1" }]
           },
           {
-            profile_id: 2,
-            accessGroup: null,
-            activities: [{ sk: "Activity#1" }],
-            directoryNumbers: [{ sk: "DirectoryNumber#1" }],
-            dialListNumbers: [{ sk: "QuickDialNumber#1" }]
+            profile_id: 2
           },
           {
             profile_id: 3,
@@ -417,33 +281,45 @@ describe("loadSoftphoneConfigRelationships", () => {
             activities: [{ sk: "Activity#1" }],
             directoryNumbers: [{ sk: "DirectoryNumber#1" }],
             dialListNumbers: [{ sk: "QuickDialNumber#1" }]
-          }],
-          isFirstPage: true
+          }]
         }
-      });
-      expect(logger.error).toHaveBeenCalledTimes(0);
+      } );
+      expect(logger.error).toHaveBeenCalledWith("Error thrown getting profile relationship items for profile 2", { message: "error!" });
+      done();
     });
   });
-  test("query has errors on response, logs error, returns formatted profile", () => {
+  test("query has errors on response, logs error, returns formatted profile", done => {
     const errors = [{
       message: "error!",
       errorType: "what"
     }];
-    apolloClient.query
-      .mockResolvedValueOnce({ data: profileData2 })
-      .mockResolvedValueOnce({
-        data: null,
-        errors
-      })
-      .mockResolvedValueOnce({ data: profileData2 });
+    apolloClient.query.mockResolvedValueOnce({
+      data: {
+        profile: {
+          ...profiles[0],
+          ...profileData2.profile
+        }
+      }
+    });
+    apolloClient.query.mockResolvedValueOnce({
+      data: null,
+      errors
+    });
+    apolloClient.query.mockResolvedValueOnce({
+      data: {
+        profile: {
+          ...profiles[2],
+          ...profileData2.profile
+        }
+      }
+    });
     loadSoftphoneConfigRelationships(profiles, mockedDispatch).then(() => {
       expect(apolloClient.query).toHaveBeenCalledTimes(3);
       expect(mockedDispatch).toHaveBeenCalledTimes(1);
       expect(mockedDispatch).toHaveBeenCalledWith({
-        type: "loadPaginatedResults",
+        type: "loadProfileOptions",
         payload: {
-          type: "UMSoftphoneConfiguration",
-          results: [{
+          profiles: [{
             profile_id: 1,
             accessGroup: null,
             activities: [{ sk: "Activity#1" }],
@@ -451,11 +327,7 @@ describe("loadSoftphoneConfigRelationships", () => {
             dialListNumbers: [{ sk: "QuickDialNumber#1" }]
           },
           {
-            profile_id: 2,
-            accessGroup: null,
-            activities: [],
-            directoryNumbers: [],
-            dialListNumbers: []
+            profile_id: 2
           },
           {
             profile_id: 3,
@@ -463,11 +335,11 @@ describe("loadSoftphoneConfigRelationships", () => {
             activities: [{ sk: "Activity#1" }],
             directoryNumbers: [{ sk: "DirectoryNumber#1" }],
             dialListNumbers: [{ sk: "QuickDialNumber#1" }]
-          }],
-          isFirstPage: true
+          }]
         }
       });
       expect(logger.error).toHaveBeenCalledWith("Error thrown getting profile relationship items for profile 2", errors);
+      done();
     });
   });
 });
@@ -477,7 +349,7 @@ describe("createProfile", () => {
     profile_id: 1,
     profile_name: "test profile"
   };
-  test("query is successful, returns profile data", () => {
+  test("query is successful, returns profile data", done => {
     apolloClient.mutate.mockResolvedValueOnce({
       data: {
         profile: {
@@ -495,9 +367,10 @@ describe("createProfile", () => {
         profile_id: 1,
         profile_name: "test profile"
       });
+      done();
     });
   });
-  test("query contains errors, throws error", () => {
+  test("query contains errors, throws error", done => {
     apolloClient.mutate.mockResolvedValueOnce({
       data: null,
       errors: [{ errorType: "BAD" }]
@@ -505,13 +378,15 @@ describe("createProfile", () => {
     createProfile(profileInput).catch(err => {
       expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
       expect(err).toEqual([{ errorType: "BAD" }]);
+      done();
     });
   });
-  test("apolloClient query rejects, throws error", () => {
+  test("apolloClient query rejects, throws error", done => {
     apolloClient.mutate.mockRejectedValueOnce("OH NO!");
     createProfile(profileInput).catch(err => {
       expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
       expect(err).toEqual("OH NO!");
+      done();
     });
   });
 });
@@ -520,7 +395,7 @@ describe("editProfile", () => {
   const profileInput = {
     profile_name: "New name"
   };
-  test("query is successful, returns profile data", () => {
+  test("query is successful, returns profile data", done  => {
     apolloClient.mutate.mockResolvedValueOnce({
       data: {
         profile: {
@@ -539,9 +414,10 @@ describe("editProfile", () => {
         profile_id: 1,
         profile_name: "New name"
       });
+      done();
     });
   });
-  test("query contains errors, throws error", () => {
+  test("query contains errors, throws error", done => {
     apolloClient.mutate.mockResolvedValueOnce({
       data: null,
       errors: [{ errorType: "BAD" }]
@@ -549,19 +425,21 @@ describe("editProfile", () => {
     editProfile(profileInput).catch(err => {
       expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
       expect(err).toEqual([{ errorType: "BAD" }]);
+      done();
     });
   });
-  test("apolloClient query rejects, throws error", () => {
+  test("apolloClient query rejects, throws error", done => {
     apolloClient.mutate.mockRejectedValueOnce("OH NO!");
     editProfile(profileInput).catch(err => {
       expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
       expect(err).toEqual("OH NO!");
+      done();
     });
   });
 });
 
 describe("deleteProfile", () => {
-  test("query is successful, returns profile data", () => {
+  test("query is successful, returns profile data", done => {
     apolloClient.mutate.mockResolvedValueOnce({
       data: {
         profile: {
@@ -580,9 +458,10 @@ describe("deleteProfile", () => {
         profile_id: 1,
         profile_name: "Coolest Profile"
       });
+      done();
     });
   });
-  test("query contains errors, throws error", () => {
+  test("query contains errors, throws error", done => {
     apolloClient.mutate.mockResolvedValueOnce({
       data: null,
       errors: [{ errorType: "BAD" }]
@@ -590,13 +469,15 @@ describe("deleteProfile", () => {
     deleteProfile(1).catch(err => {
       expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
       expect(err).toEqual([{ errorType: "BAD" }]);
+      done();
     });
   });
-  test("apolloClient query rejects, throws error", () => {
+  test("apolloClient query rejects, throws error", done => {
     apolloClient.mutate.mockRejectedValueOnce("OH NO!");
     deleteProfile(1).catch(err => {
       expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
       expect(err).toEqual("OH NO!");
+      done();
     });
   });
 });
@@ -606,7 +487,7 @@ describe("createDialListEntry", () => {
     profile_id: 1,
     contact_num: "1231231234"
   };
-  test("query is successful, returns profile data", () => {
+  test("query is successful, returns profile data", done => {
     apolloClient.mutate.mockResolvedValueOnce({
       data: {
         dialListEntry: {
@@ -623,9 +504,10 @@ describe("createDialListEntry", () => {
         sk: "QuickDialNumber#1",
         contact_num: "1231231234"
       });
+      done();
     });
   });
-  test("query contains errors, throws error", () => {
+  test("query contains errors, throws error", done => {
     apolloClient.mutate.mockResolvedValueOnce({
       data: null,
       errors: [{ errorType: "BAD" }]
@@ -633,13 +515,15 @@ describe("createDialListEntry", () => {
     createDialListEntry(entry).catch(err => {
       expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
       expect(err).toEqual([{ errorType: "BAD" }]);
+      done();
     });
   });
-  test("apolloClient query rejects, throws error", () => {
+  test("apolloClient query rejects, throws error", done => {
     apolloClient.mutate.mockRejectedValueOnce("OH NO!");
     createDialListEntry(entry).catch(err => {
       expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
       expect(err).toEqual("OH NO!");
+      done();
     });
   });
 });
@@ -648,7 +532,7 @@ describe("editDialListEntry", () => {
   const entry = {
     contact_num: "8675309"
   };
-  test("query is successful, returns profile data", () => {
+  test("query is successful, returns profile data", done => {
     apolloClient.mutate.mockResolvedValueOnce({
       data: {
         dialListEntry: {
@@ -665,9 +549,10 @@ describe("editDialListEntry", () => {
         sk: "QuickDialNumber#1",
         contact_num: "8675309"
       });
+      done();
     });
   });
-  test("query contains errors, throws error", () => {
+  test("query contains errors, throws error", done => {
     apolloClient.mutate.mockResolvedValueOnce({
       data: null,
       errors: [{ errorType: "BAD" }]
@@ -675,19 +560,21 @@ describe("editDialListEntry", () => {
     editDialListEntry("id", 1, entry).catch(err => {
       expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
       expect(err).toEqual([{ errorType: "BAD" }]);
+      done();
     });
   });
-  test("apolloClient query rejects, throws error", () => {
+  test("apolloClient query rejects, throws error", done => {
     apolloClient.mutate.mockRejectedValueOnce("OH NO!");
     editDialListEntry("id", 1, entry).catch(err => {
       expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
       expect(err).toEqual("OH NO!");
+      done();
     });
   });
 });
 
 describe("deleteDialListEntry", () => {
-  test("query is successful, returns profile data", () => {
+  test("query is successful, returns profile data", done => {
     apolloClient.mutate.mockResolvedValueOnce({
       data: {
         dialListEntry: {
@@ -704,9 +591,10 @@ describe("deleteDialListEntry", () => {
         sk: "QuickDialNumber#1",
         contact_num: "8675309"
       });
+      done();
     });
   });
-  test("query contains errors, throws error", () => {
+  test("query contains errors, throws error", done => {
     apolloClient.mutate.mockResolvedValueOnce({
       data: null,
       errors: [{ errorType: "BAD" }]
@@ -714,13 +602,15 @@ describe("deleteDialListEntry", () => {
     deleteDialListEntry("id", 1).catch(err => {
       expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
       expect(err).toEqual([{ errorType: "BAD" }]);
+      done();
     });
   });
-  test("apolloClient query rejects, throws error", () => {
+  test("apolloClient query rejects, throws error", done => {
     apolloClient.mutate.mockRejectedValueOnce("OH NO!");
     deleteDialListEntry("id", 1).catch(err => {
       expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
       expect(err).toEqual("OH NO!");
+      done();
     });
   });
 });
@@ -731,7 +621,7 @@ describe("createDirectoryEntry", () => {
     first_name: "Jenny",
     profile_id: 1
   };
-  test("query is successful, returns profile data", () => {
+  test("query is successful, returns profile data", done => {
     apolloClient.mutate.mockResolvedValueOnce({
       data: {
         directoryEntry: {
@@ -752,9 +642,10 @@ describe("createDirectoryEntry", () => {
         first_name: "Jenny",
         profile_id: 1
       });
+      done();
     });
   });
-  test("query contains errors, throws error", () => {
+  test("query contains errors, throws error", done => {
     apolloClient.mutate.mockResolvedValueOnce({
       data: null,
       errors: [{ errorType: "BAD" }]
@@ -762,13 +653,15 @@ describe("createDirectoryEntry", () => {
     createDirectoryEntry(entry).catch(err => {
       expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
       expect(err).toEqual([{ errorType: "BAD" }]);
+      done();
     });
   });
-  test("apolloClient query rejects, throws error", () => {
+  test("apolloClient query rejects, throws error", done => {
     apolloClient.mutate.mockRejectedValueOnce("OH NO!");
     createDirectoryEntry(entry).catch(err => {
       expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
       expect(err).toEqual("OH NO!");
+      done();
     });
   });
 });
@@ -779,7 +672,7 @@ describe("editDirectoryEntry", () => {
     first_name: "Michael",
     last_name: "Scott"
   };
-  test("query is successful, returns profile data", () => {
+  test("query is successful, returns profile data", done => {
     apolloClient.mutate.mockResolvedValueOnce({
       data: {
         directoryEntry: {
@@ -800,9 +693,10 @@ describe("editDirectoryEntry", () => {
         first_name: "Michael",
         last_name: "Scott"
       });
+      done();
     });
   });
-  test("query contains errors, throws error", () => {
+  test("query contains errors, throws error", done => {
     apolloClient.mutate.mockResolvedValueOnce({
       data: null,
       errors: [{ errorType: "BAD" }]
@@ -810,19 +704,21 @@ describe("editDirectoryEntry", () => {
     editDirectoryEntry("id", 1, entry).catch(err => {
       expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
       expect(err).toEqual([{ errorType: "BAD" }]);
+      done();
     });
   });
-  test("apolloClient query rejects, throws error", () => {
+  test("apolloClient query rejects, throws error", done => {
     apolloClient.mutate.mockRejectedValueOnce("OH NO!");
     editDirectoryEntry("id", 1, entry).catch(err => {
       expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
       expect(err).toEqual("OH NO!");
+      done();
     });
   });
 });
 
 describe("deleteDirectoryEntry", () => {
-  test("query is successful, returns profile data", () => {
+  test("query is successful, returns profile data", done => {
     apolloClient.mutate.mockResolvedValueOnce({
       data: {
         directoryEntry: {
@@ -843,9 +739,10 @@ describe("deleteDirectoryEntry", () => {
         first_name: "Michael",
         last_name: "Scott"
       });
+      done();
     });
   });
-  test("query contains errors, throws error", () => {
+  test("query contains errors, throws error", done => {
     apolloClient.mutate.mockResolvedValueOnce({
       data: null,
       errors: [{ errorType: "BAD" }]
@@ -853,13 +750,15 @@ describe("deleteDirectoryEntry", () => {
     deleteDirectoryEntry("id", 1).catch(err => {
       expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
       expect(err).toEqual([{ errorType: "BAD" }]);
+      done();
     });
   });
-  test("apolloClient query rejects, throws error", () => {
+  test("apolloClient query rejects, throws error", done => {
     apolloClient.mutate.mockRejectedValueOnce("OH NO!");
     deleteDirectoryEntry("id", 1).catch(err => {
       expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
       expect(err).toEqual("OH NO!");
+      done();
     });
   });
 });
