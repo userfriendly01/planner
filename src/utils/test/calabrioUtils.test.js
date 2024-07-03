@@ -667,7 +667,7 @@ describe("calabrioUtils", () => {
         adLogin: "LM\\n0260331"
       };
       test("should return", async () => {
-        await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
+        await checkConflictingUsers("token", user, users, calabrioContext.roles, calabrioContext.teams);
         expect(getCalabrioUser).toBeCalledTimes(0);
         expect(updateCalabrioUser).toBeCalledTimes(0);
       });
@@ -702,7 +702,7 @@ describe("calabrioUtils", () => {
           getCalabrioUser.mockRejectedValue({ boo: "aww" });
         });
         test("Error should be caught and logged", async () => {
-          await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
+          await checkConflictingUsers("token", user, users, calabrioContext.roles, calabrioContext.teams);
           expect(getCalabrioUser).toBeCalledTimes(1);
           expect(getCalabrioUser).toBeCalledWith("1");
           expect(logger.error).toBeCalledTimes(1);
@@ -727,7 +727,7 @@ describe("calabrioUtils", () => {
             adLogin: `xx-${users[0].id}-${users[0].adLogin}`,
             acdId: `xx-${users[0].acdId}`
           };
-          await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
+          await checkConflictingUsers("token", user, users, calabrioContext.roles, calabrioContext.teams);
           expect(getCalabrioUser).toBeCalledTimes(1);
           expect(getCalabrioUser).toBeCalledWith("1");
           expect(updateCalabrioUser).toBeCalledTimes(1);
@@ -754,7 +754,7 @@ describe("calabrioUtils", () => {
             adLogin: `xx-${users[0].id}-${users[0].adLogin}`,
             acdId: `xx-${users[0].acdId}`
           };
-          await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
+          await checkConflictingUsers("token", user, users, calabrioContext.roles, calabrioContext.teams);
           expect(getCalabrioUser).toBeCalledTimes(1);
           expect(getCalabrioUser).toBeCalledWith("1");
           expect(updateCalabrioUser).toBeCalledTimes(1);
@@ -780,7 +780,7 @@ describe("calabrioUtils", () => {
               acdId: `xx-${users[0].acdId}`,
               team: undefined
             };
-            await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
+            await checkConflictingUsers("token", user, users, calabrioContext.roles, calabrioContext.teams);
             expect(getCalabrioUser).toBeCalledTimes(1);
             expect(getCalabrioUser).toBeCalledWith("1");
             expect(updateCalabrioUser).toBeCalledTimes(1);
@@ -820,7 +820,7 @@ describe("calabrioUtils", () => {
           getCalabrioUser.mockRejectedValue({ boo: "aww" });
         });
         test("Error should be caught and logged", async () => {
-          await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
+          await checkConflictingUsers("token", user, users, calabrioContext.roles, calabrioContext.teams);
           expect(getCalabrioUser).toBeCalledTimes(1);
           expect(getCalabrioUser).toBeCalledWith("5");
           expect(logger.error).toBeCalledTimes(1);
@@ -845,7 +845,7 @@ describe("calabrioUtils", () => {
             adLogin: `xx-${users[4].id}-${users[4].adLogin}`,
             acdId: `xx-${users[4].acdId}`
           };
-          await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
+          await checkConflictingUsers("token", user, users, calabrioContext.roles, calabrioContext.teams);
           expect(getCalabrioUser).toBeCalledTimes(1);
           expect(getCalabrioUser).toBeCalledWith("5");
           expect(updateCalabrioUser).toBeCalledTimes(1);
@@ -872,7 +872,7 @@ describe("calabrioUtils", () => {
             adLogin: `xx-${users[4].id}-${users[4].adLogin}`,
             acdId: `xx-${users[4].acdId}`
           };
-          await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
+          await checkConflictingUsers("token", user, users, calabrioContext.roles, calabrioContext.teams);
           expect(getCalabrioUser).toBeCalledTimes(1);
           expect(getCalabrioUser).toBeCalledWith("5");
           expect(updateCalabrioUser).toBeCalledTimes(1);
@@ -898,7 +898,7 @@ describe("calabrioUtils", () => {
               acdId: `xx-${users[4].acdId}`,
               team: undefined
             };
-            await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
+            await checkConflictingUsers("token", user, users, calabrioContext.roles, calabrioContext.teams);
             expect(getCalabrioUser).toBeCalledTimes(1);
             expect(getCalabrioUser).toBeCalledWith("5");
             expect(updateCalabrioUser).toBeCalledTimes(1);
@@ -925,7 +925,7 @@ describe("calabrioUtils", () => {
               acdId: `xx-${users[4].acdId}`,
               roles: []
             };
-            await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
+            await checkConflictingUsers("token", user, users, calabrioContext.roles, calabrioContext.teams);
             expect(getCalabrioUser).toBeCalledTimes(1);
             expect(getCalabrioUser).toBeCalledWith("5");
             expect(updateCalabrioUser).toBeCalledTimes(1);
@@ -965,7 +965,7 @@ describe("calabrioUtils", () => {
           getCalabrioUser.mockRejectedValue({ boo: "aww" });
         });
         test("Error should be caught and logged", async () => {
-          await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
+          await checkConflictingUsers("token", user, users, calabrioContext.roles, calabrioContext.teams);
           expect(getCalabrioUser).toBeCalledTimes(1);
           expect(getCalabrioUser).toBeCalledWith("4");
           expect(logger.error).toBeCalledTimes(1);
@@ -990,7 +990,7 @@ describe("calabrioUtils", () => {
             adLogin: `SHELLUSER-${users[3].id}`,
             acdId: `SH-${users[3].acdId}`
           };
-          await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
+          await checkConflictingUsers("token", user, users, calabrioContext.roles, calabrioContext.teams);
           expect(getCalabrioUser).toBeCalledTimes(1);
           expect(getCalabrioUser).toBeCalledWith("4");
           expect(updateCalabrioUser).toBeCalledTimes(1);
@@ -1017,7 +1017,7 @@ describe("calabrioUtils", () => {
             adLogin: `SHELLUSER-${users[3].id}`,
             acdId: `SH-${users[3].acdId}`
           };
-          await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
+          await checkConflictingUsers("token", user, users, calabrioContext.roles, calabrioContext.teams);
           expect(getCalabrioUser).toBeCalledTimes(1);
           expect(getCalabrioUser).toBeCalledWith("4");
           expect(updateCalabrioUser).toBeCalledTimes(1);
@@ -1043,7 +1043,7 @@ describe("calabrioUtils", () => {
               acdId: `SH-${users[3].acdId}`,
               roles: []
             };
-            await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
+            await checkConflictingUsers("token", user, users, calabrioContext.roles, calabrioContext.teams);
             expect(getCalabrioUser).toBeCalledTimes(1);
             expect(getCalabrioUser).toBeCalledWith("4");
             expect(updateCalabrioUser).toBeCalledTimes(1);
@@ -1070,7 +1070,7 @@ describe("calabrioUtils", () => {
               acdId: `SH-${users[3].acdId}`,
               team: undefined
             };
-            await checkConflictingUsers(user, users, calabrioContext.roles, calabrioContext.teams);
+            await checkConflictingUsers("token", user, users, calabrioContext.roles, calabrioContext.teams);
             expect(getCalabrioUser).toBeCalledTimes(1);
             expect(getCalabrioUser).toBeCalledWith("4");
             expect(updateCalabrioUser).toBeCalledTimes(1);

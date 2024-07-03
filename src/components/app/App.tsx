@@ -76,7 +76,7 @@ const App = () => {
           });
 
           await Promise.all(
-            permissions.map(({ startup }) => startup.function(dispatch, skillDispatch))
+            permissions.map(({ startup }) => startup.function(dispatch, skillDispatch, state.userContext.tokens))
           );
 
           setLoadResult({

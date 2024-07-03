@@ -156,7 +156,7 @@ export const CallRecordingForm = (props: CallRecordingFormInterface) => {
       updated = true;
       logger.warn("Email does not match calabrio record", {}, false);
     }
-    getCalabrioUser(userRecord.id).then((res: any) => {
+    getCalabrioUser(state.userContext.tokens.calabrioService, userRecord.id).then((res: any) => {
       const userGroups: any[] = [];
       const userTeams: any[] = [];
       const fetchedUser = res.data;

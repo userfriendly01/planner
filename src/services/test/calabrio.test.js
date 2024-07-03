@@ -317,7 +317,7 @@ describe("getCalabrioUser", () => {
     const data = { huzzah: "you are winner" };
     beforeEach(() => axiosMock.onGet(apiPaths.GET_CALABRIO_USER(67)).replyOnce(200, data));
     test("should resolve with any successful response", done => {
-      getCalabrioUser(67)
+      getCalabrioUser("token", 67)
         .then(resolvedValue => {
           expect(axiosMock.history.get.length).toEqual(1);
           expect(resolvedValue.data).toEqual(data);
@@ -329,7 +329,7 @@ describe("getCalabrioUser", () => {
     const badResponse = { wahh: "boo" };
     beforeEach(() => axiosMock.onGet(apiPaths.GET_CALABRIO_USER(67)).replyOnce(500, badResponse));
     test("should reject with error", done => {
-      getCalabrioUser(67).catch(rejectedVal => {
+      getCalabrioUser("token", 67).catch(rejectedVal => {
         expect(axiosMock.history.get.length).toEqual(1);
         expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
         done();

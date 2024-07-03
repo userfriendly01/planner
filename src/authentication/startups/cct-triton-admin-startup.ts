@@ -15,9 +15,9 @@ import { getCalabrioWfmOptions } from "utils/calabrioUtils";
 import { logger } from "utils/logger";
 import { myAxios } from "utils/myAxios";
 
-const getCalabrioUsers = async (dispatch: (action: Action) => void) => {
+const getCalabrioUsers = async (dispatch: (action: Action) => void, tokens: any) => {
   try {
-    const users: any = await getCalabrioUsersServiceCall();
+    const users: any = await getCalabrioUsersServiceCall(tokens.calabrioService);
     logger.log("Calabrio Users", users);
     dispatch({
       type: "loadCalabrioUsers",
@@ -30,9 +30,9 @@ const getCalabrioUsers = async (dispatch: (action: Action) => void) => {
   }
 };
 
-const getCalabrioOrg = async (dispatch: (action: Action) => void) => {
+const getCalabrioOrg = async (dispatch: (action: Action) => void, tokens: any) => {
   try {
-    const org: any = await getCalabrioOrgServiceCall();
+    const org: any = await getCalabrioOrgServiceCall(tokens.calabrioService);
     logger.log("Calabrio Org", org);
     dispatch({
       type: "loadCalabrioOrg",
@@ -45,9 +45,9 @@ const getCalabrioOrg = async (dispatch: (action: Action) => void) => {
   }
 };
 
-const getCalabrioRoles = async (dispatch: (action: Action) => void) => {
+const getCalabrioRoles = async (dispatch: (action: Action) => void, tokens: any) => {
   try {
-    const roles: any = await getCalabrioRolesServiceCall();
+    const roles: any = await getCalabrioRolesServiceCall(tokens.calabrioService);
     logger.log("Calabrio Roles", roles);
     dispatch({
       type: "loadCalabrioRoles",
@@ -80,9 +80,9 @@ const getProfiles = (dispatch: (action: Action) => void) =>
   );
 
 
-const getBusinessUnits = async (dispatch: (action: Action) => void) => {
+const getBusinessUnits = async (dispatch: (action: Action) => void, tokens: any) => {
   try {
-    const response: any = await getWfmBusinessUnits();
+    const response: any = await getWfmBusinessUnits(tokens.calabrioService);
     dispatch({
       type: "loadWfmOrg",
       payload: {
@@ -102,7 +102,7 @@ const getBusinessUnits = async (dispatch: (action: Action) => void) => {
   }
 };
 
-export const runTritonAdminStartup = (dispatch:  (action: Action) => void, skillDispatch:  (action: Action) => void): Promise<any[]> => {
+export const runTritonAdminStartup = (dispatch:  (action: Action) => void, skillDispatch:  (action: Action) => void, tokens: unknown): Promise<any[]> => {
   /* Please add new service calls to the end of this Promise.all,
   the existing order is important */
 
@@ -114,10 +114,10 @@ export const runTritonAdminStartup = (dispatch:  (action: Action) => void, skill
     listUMOffices(dispatch),
     getProfiles(dispatch),
     loadConsolidatedSkills(skillDispatch),
-    getCalabrioUsers(dispatch),
-    getCalabrioOrg(dispatch),
-    getCalabrioRoles(dispatch),
-    getBusinessUnits(dispatch),
-    getCalabrioWfmOptions(dispatch)
+    getCalabrioUsers(dispatch, tokens),
+    getCalabrioOrg(dispatch, tokens),
+    getCalabrioRoles(dispatch, tokens),
+    getBusinessUnits(dispatch, tokens),
+    getCalabrioWfmOptions(dispatch, tokens)
   ]);
 };

@@ -1,4 +1,5 @@
 import {
+  Action,
   AppState,
   WfmBusinessUnit
 } from "globals/interfaces";
@@ -25,9 +26,9 @@ export const updateTritonUserState = async (_state: AppState, dispatch: () => vo
 /**
  * Refreshes the calabrio user state after a bulk update on users
  */
-export const updateCalabrioUserState = async (_state: AppState, dispatch: any): Promise<void> => {
+export const updateCalabrioUserState = async (state: AppState, dispatch: (action: Action) => void): Promise<void> => {
   try {
-    const users: any = await getCalabrioUsers();
+    const users: any = await getCalabrioUsers(state.userContext.tokens.calabrioService);
     dispatch({
       type: "loadCalabrioUsers",
       payload: users.data

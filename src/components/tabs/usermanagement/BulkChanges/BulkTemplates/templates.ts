@@ -416,7 +416,7 @@ const processUpdateManager = async (row: any, template: Template, state: AppStat
     if (userCalabrioRecord) {
       let fetchedCalabrioUser;
       try {
-        const res = await getCalabrioUser(userCalabrioRecord.id);
+        const res = await getCalabrioUser(state.userContext.tokens.calabrioService, userCalabrioRecord.id);
         fetchedCalabrioUser = res.data;
       } catch (error) {
         const errorMessage = `No updates made, Failed to fetch calabrio user for row ${rowNumber}. ${formatErrorMessage(error)}`;

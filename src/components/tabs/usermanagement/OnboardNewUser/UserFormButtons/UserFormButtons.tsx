@@ -75,6 +75,7 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
     teams
   } = state.calabrioContext;
   const { nNumber } = state.userContext;
+  const calabrioServiceToken = state.userContext.tokens.calabrioService;
 
   const doCreateUser = async () => {
     updateLoading({
@@ -216,8 +217,8 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
 
       try {
         calabrioAttributes.acdId = newWorker.sid;
-        await checkConflictingUsers(calabrioAttributes, users, roles, teams);
-        await createCalabrioUser(state.userContext.tokens.calabrioService, calabrioAttributes);
+        await checkConflictingUsers(calabrioServiceToken, calabrioAttributes, users, roles, teams);
+        await createCalabrioUser(calabrioServiceToken, calabrioAttributes);
 
         logger.info("Successfully created Calabrio User", {
           nNumber,
@@ -225,7 +226,7 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
         });
 
         try {
-          const updatedUsers: any = await getCalabrioUsers();
+          const updatedUsers: any = await getCalabrioUsers(state.userContext.tokens.calabrioService);
           dispatch({
             type: "loadCalabrioUsers",
             payload: updatedUsers.data
@@ -500,8 +501,8 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
             userNNumber: form.nNumber.value
           });
         } else {
-          await checkConflictingUsers(calabrioAttributes, users, roles, teams);
-          await createCalabrioUser(state.userContext.tokens.calabrioService, calabrioAttributes);
+          await checkConflictingUsers(calabrioServiceToken, calabrioAttributes, users, roles, teams);
+          await createCalabrioUser(calabrioServiceToken, calabrioAttributes);
 
           logger.info("Successfully Created Calabrio user", {
             nNumber,
@@ -509,7 +510,7 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
           });
         }
         try {
-          const updatedUsers: any = await getCalabrioUsers();
+          const updatedUsers: any = await getCalabrioUsers(state.userContext.tokens.calabrioService);
           dispatch({
             type: "loadCalabrioUsers",
             payload: updatedUsers.data

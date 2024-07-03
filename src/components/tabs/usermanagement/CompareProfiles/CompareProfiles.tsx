@@ -106,7 +106,7 @@ export const CompareProfiles = () => {
       if (teamInState) {
         return teamInState.Name;
       } else if (p.BusinessUnitId && p.TeamId) {
-        const res = await getWfmTeam(p.BusinessUnitId, p.TeamId);
+        const res = await getWfmTeam(state.userContext.tokens.calabrioService, p.BusinessUnitId, p.TeamId);
         if (res.data.Result.length > 0) {
           return res.data.Result[0].Name;
         } else {
@@ -186,8 +186,8 @@ export const CompareProfiles = () => {
 
         setTritonProfiles(matchingTritonProfiles);
 
-        const wfmUserPromise = isProduction ? getWfmUserByNNumber(nNumberDetails.nNumber) : Promise.resolve({ data: []});
-        const calabrioProfilesPromise = getQmUserProfiles(workerSid, nNumberDetails.nNumber, email);
+        const wfmUserPromise = isProduction ? getWfmUserByNNumber(state.userContext.tokens.calabrioService, nNumberDetails.nNumber) : Promise.resolve({ data: []});
+        const calabrioProfilesPromise = getQmUserProfiles(state.userContext.tokens.calabrioService, workerSid, nNumberDetails.nNumber, email);
 
         const [wfmResponse, calabrioProfilesResponse]: [any, any] = await Promise.all([wfmUserPromise, calabrioProfilesPromise]);
 
@@ -236,37 +236,37 @@ export const CompareProfiles = () => {
         messages={messages}
         updateMessages={updateMessages}
       />
-      {!isDevelopment &&
-        <>
-          <NNumberInput
-            disabled={false}
-            fetchedUser={nNumberDetails.fetchedUser}
-            label="N Number *"
-            onClear={resetForm}
-            onComplete={(fetchedUser: any, nNumber: any) => setNNumberDetails({
+      {/* {!isDevelopment && */}
+      <>
+        <NNumberInput
+          disabled={false}
+          fetchedUser={nNumberDetails.fetchedUser}
+          label="N Number *"
+          onClear={resetForm}
+          onComplete={(fetchedUser: any, nNumber: any) => setNNumberDetails({
+            nNumber,
+            fetchedUser
+          })}
+          onUpdate={(nNumber: string) => {
+            const isValid = nNumber.match(nNumMatcher) !== null;
+            if (!isValid) {
+              resetForm();
+            }
+            setNNumberDetails({
               nNumber,
-              fetchedUser
-            })}
-            onUpdate={(nNumber: string) => {
-              const isValid = nNumber.match(nNumMatcher) !== null;
-              if (!isValid) {
-                resetForm();
-              }
-              setNNumberDetails({
-                nNumber,
-                fetchedUser: null
-              });
-            }}
-            value={nNumberDetails.nNumber || ""}
-          />
-          {showResetButton &&
+              fetchedUser: null
+            });
+          }}
+          value={nNumberDetails.nNumber || ""}
+        />
+        {showResetButton &&
             <ResetButton
               sx={{ marginTop: "40px" }}
               onClick={() => setShowModal(true)}>
               Reset Profiles
             </ResetButton>}
-          {nNumberDetails.fetchedUser && !showColumns && <StyledLoadSpinner />}
-          {nNumberDetails.fetchedUser && showColumns &&
+        {nNumberDetails.fetchedUser && !showColumns && <StyledLoadSpinner />}
+        {nNumberDetails.fetchedUser && showColumns &&
             <ProfileColumnsWrapper>
               <ProfileColumn people={trimProfiles(tritonProfiles, "triton")} title="Triton" />
               <ProfileColumn people={trimProfiles(calabrioQMProfiles, "qm")} title="Calabrio QM" />
@@ -274,20 +274,20 @@ export const CompareProfiles = () => {
                 <ProfileColumn people={trimProfiles(calabrioWFMProfiles, "wfm")} title="Calabrio WFM" />
               }
             </ProfileColumnsWrapper>
-          }
-          <Modal onClose={() => { return; }} open={showModal}>
-            <>
-              <ResetModal
-                nNumber={nNumberDetails?.nNumber}
-                email={nNumberDetails?.fetchedUser?.email}
-                workerSid={tritonProfiles[0] && tritonProfiles[0].sid}
-                wfmPersonId={calabrioWFMProfiles[0] && calabrioWFMProfiles[0].Id}
-                onClose={resetForm}
-              />
-            </>
-          </Modal>
-        </>
-      }
+        }
+        <Modal onClose={() => { return; }} open={showModal}>
+          <>
+            <ResetModal
+              nNumber={nNumberDetails?.nNumber}
+              email={nNumberDetails?.fetchedUser?.email}
+              workerSid={tritonProfiles[0] && tritonProfiles[0].sid}
+              wfmPersonId={calabrioWFMProfiles[0] && calabrioWFMProfiles[0].Id}
+              onClose={resetForm}
+            />
+          </>
+        </Modal>
+      </>
+      {/* } */}
 
     </CompareProfilesWrapper>
   );
