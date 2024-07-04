@@ -8,9 +8,7 @@ import {
   TableText,
   TableIcon
 } from "../Skills.Styles";
-import {
-  SkillGroup, SkillsTableProps
-} from "../Skills.Interfaces";
+import { SkillsTableProps } from "../Skills.Interfaces";
 import { messageTypes } from "../ClosedFlashMessage/ClosedFlashMessage.Interfaces";
 import {
   Circle, ReportProblemOutlined

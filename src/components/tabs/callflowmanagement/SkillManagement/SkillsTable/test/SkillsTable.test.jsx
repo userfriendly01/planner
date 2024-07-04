@@ -147,7 +147,7 @@ describe("SkillsTable", () => {
       FilterWrapper
     });
   });
-  test.only("THIS TEST MUST BE RUN FIRST - unknown mocking issue", () => {
+  test("THIS TEST MUST BE RUN FIRST - unknown mocking issue", () => {
     renderComponent();
     /*
       This test is needed to make the rest pass as expected
@@ -253,7 +253,7 @@ describe("SkillsTable", () => {
         expect(mockSetTableState).toHaveBeenCalledTimes(1);
         expect(mockSetTableState).toHaveBeenCalledWith({
           ...defaultTableState,
-          selected: defaultTableState.filteredList
+          selected: defaultTableState.filteredList.map(s => s.name)
         });
       });
     });
@@ -325,13 +325,13 @@ describe("SkillsTable", () => {
         expect(mockSetTableState).toHaveBeenCalledTimes(1);
         expect(mockSetTableState).toHaveBeenCalledWith({
           ...defaultTableState,
-          selected: [skillsList[2]]
+          selected: [skillsList[2].name]
         });
       });
     });
     describe("skill is already in the selected array", () => {
       test("setTableState is called with array of existing skills minus selected skill", () => {
-        renderComponent([skillsList[1]]);
+        renderComponent([skillsList[1].name]);
         const rowTwoCheckBox = Checkbox.mock.calls[2][0].onClick;
         act(() => {
           rowTwoCheckBox();
@@ -355,7 +355,7 @@ describe("SkillsTable", () => {
         expect(mockSetTableState).toHaveBeenCalledTimes(1);
         expect(mockSetTableState).toHaveBeenCalledWith({
           ...defaultTableState,
-          selected: [skillsList[2]]
+          selected: [skillsList[2].name]
         });
       });
     });
