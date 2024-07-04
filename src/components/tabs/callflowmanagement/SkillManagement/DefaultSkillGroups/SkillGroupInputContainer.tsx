@@ -30,14 +30,10 @@ import { loadConsolidatedSkills } from "services/skill";
 import { logger } from "utils/logger";
 import { escapeQuotes } from "utils";
 
-
-
 export const SkillGroupInputContainer = (props: any) => {
   const [ skillGroupName, setSkillGroupName ] = React.useState("");
   const [ errorText, setErrorText ] = React.useState("");
   const [ skillGroupToEditDelete, setSkillGroupToEditDelete ] = React.useState(null);
-
-  console.log("FAITH skillGroupToEditDelete",skillGroupToEditDelete);
 
   const {
     action,
@@ -122,16 +118,15 @@ export const SkillGroupInputContainer = (props: any) => {
       });
 
       try {
-        const skillIds = tableState.selected.map((skill: string) => skill);
 
         const requestBody: AddEditSkillGroupBody = {
           skill_group_name: escapeQuotes(skillGroupName.trim()),
-          skill_ids: skillIds
+          skill_ids: tableState.selected
         };
         await addSkillGroup(requestBody);
 
         logger.info("Successfully created skill group(s)", {
-          skillIds,
+          skillIds: requestBody.skill_ids,
           skillGroupName: skillGroupName.trim(),
           nNumber
         });
@@ -301,6 +296,7 @@ export const SkillGroupInputContainer = (props: any) => {
       }
     };
 
+    console.warn(skillGroupToEditDelete);
     const deleteConfirmationText = <>
       <ConfirmationSkillGroupsDiv>
       You are about to delete the skill group <span style={{ textDecoration: "underline" }}>{skillGroupToEditDelete.label}</span> Doing this will not affect any users,
