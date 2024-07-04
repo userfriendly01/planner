@@ -41,7 +41,7 @@ jest.mock("context/appContext", () => ({
 const mockSetTableState = jest.fn();
 const tableState = {
   searchBy: "searchy",
-  selected: [skillsList[0]],
+  selected: [skillsList[0].name],
   profiles: [{
     label: "Profile 1",
     value: 1
@@ -62,7 +62,7 @@ const renderComponent = () => {
 describe("<SkillsHeader />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    useSkillState(initialSkillState);
+    useSkillState.mockReturnValue(initialSkillState);
     useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
       SearchBox,
@@ -71,9 +71,6 @@ describe("<SkillsHeader />", () => {
     });
   });
   describe("initial render", () => {
-    test.only("Faith", () => {
-      expect(true).toBe(true);
-    });
     test("component renders as expected", () => {
       renderComponent();
       expect(Dropdown.mock.calls.length).toBe(0);
@@ -83,7 +80,7 @@ describe("<SkillsHeader />", () => {
       });
       expect(ExportButton.mock.calls.length).toBe(1);
       expectOnlyPassedProps(ExportButton, {
-        selected: tableState.selected
+        selected: [skillsList[0]]
       });
     });
     describe("user is admin", () => {
@@ -100,7 +97,7 @@ describe("<SkillsHeader />", () => {
         renderComponent();
         expect(ExportButton.mock.calls.length).toBe(1);
         expectOnlyPassedProps(ExportButton, {
-          selected: tableState.selected
+          selected: [skillsList[0]]
         });
       });
       test("should render profile dropdown", () => {
@@ -123,7 +120,7 @@ describe("<SkillsHeader />", () => {
         });
         expect(ExportButton.mock.calls.length).toBe(1);
         expectOnlyPassedProps(ExportButton, {
-          selected: tableState.selected
+          selected: [skillsList[0]]
         });
       });
       describe("dropdown updateValue is called", () => {
@@ -172,7 +169,7 @@ describe("<SkillsHeader />", () => {
         });
         expect(ExportButton.mock.calls.length).toBe(1);
         expectOnlyPassedProps(ExportButton, {
-          selected: tableState.selected
+          selected: [skillsList[0]]
         });
       });
     });
