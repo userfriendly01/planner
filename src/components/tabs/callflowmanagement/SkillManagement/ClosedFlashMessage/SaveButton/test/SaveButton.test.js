@@ -90,21 +90,21 @@ describe("<SaveButton /> ", () => {
   describe("initial render", () => {
     describe("isSingleSelection === true && action !== view", () => {
       test("should render button with single selection text", () => {
-        const rendered = renderComponent(ActionTypes.EDIT, [skillsList[0]], messageTypes.CLOSED);
+        const rendered = renderComponent(ActionTypes.EDIT, [skillsList[0].name], messageTypes.CLOSED);
         expect(UserFormButton.mock.calls[0][0].children).toBe("Edit lscOBDialer1 Closed Message");
         expect(rendered.container).not.toHaveTextContent("Select a skill to move forward");
       });
     });
     describe("isMultiSelection === true && action !== view", () => {
-      test.only("should render button with multiple selection text", () => {
-        const rendered = renderComponent(ActionTypes.EDIT, [skillsList[0], skillsList[1]], messageTypes.CLOSED);
+      test("should render button with multiple selection text", () => {
+        const rendered = renderComponent(ActionTypes.EDIT, [skillsList[0].name, skillsList[1]], messageTypes.CLOSED);
         expect(UserFormButton.mock.calls[0][0].children).toBe("Edit 2 Closed Messages");
         expect(rendered.container).not.toHaveTextContent("Select a skill to move forward");
       });
     });
     describe("action === view", () => {
       test("button should not be rendered", () => {
-        const rendered = renderComponent(ActionTypes.VIEW, [skillsList[0], skillsList[1]], messageTypes.CLOSED);
+        const rendered = renderComponent(ActionTypes.VIEW, [skillsList[0].name, skillsList[1].name], messageTypes.CLOSED);
         expect(UserFormButton.mock.calls.length).toBe(0);
         expect(rendered.container).not.toHaveTextContent("Select a skill to move forward");
       });
@@ -121,7 +121,7 @@ describe("<SaveButton /> ", () => {
     describe("action === edit", () => {
       describe("messageType is FLASH", () => {
         test("confirmation modal options are set to expected properties", () => {
-          renderComponent(ActionTypes.EDIT, [skillsList[0]], messageTypes.FLASH);
+          renderComponent(ActionTypes.EDIT, [skillsList[0].name], messageTypes.FLASH);
           const saveButton = UserFormButton.mock.calls[0][0].onClick;
           act(() => {
             saveButton();
@@ -144,7 +144,7 @@ describe("<SaveButton /> ", () => {
               });
             });
             test("dispatch should be called for all resolved promises", async () => {
-              renderComponent(ActionTypes.EDIT, [skillsList[0], skillsList[1]], messageTypes.FLASH);
+              renderComponent(ActionTypes.EDIT, [skillsList[0].name, skillsList[1].name], messageTypes.FLASH);
               const saveButton = UserFormButton.mock.calls[0][0].onClick;
               act(() => {
                 saveButton();
@@ -195,7 +195,7 @@ describe("<SaveButton /> ", () => {
               updateFlashMessage.mockRejectedValueOnce("aww");
             });
             test("dispatch should be called resolved promises and modal overlay should display partial fail skills", async () => {
-              renderComponent(ActionTypes.EDIT, [skillsList[0], skillsList[1], skillsList[2]], messageTypes.FLASH);
+              renderComponent(ActionTypes.EDIT, [skillsList[0].name, skillsList[1].name, skillsList[2].name], messageTypes.FLASH);
               const saveButton = UserFormButton.mock.calls[0][0].onClick;
               act(() => {
                 saveButton();
@@ -231,7 +231,7 @@ describe("<SaveButton /> ", () => {
               updateFlashMessage.mockRejectedValueOnce("aww");
             });
             test("modal overlay should display as failed", async () => {
-              renderComponent(ActionTypes.EDIT, [skillsList[0], skillsList[2]], messageTypes.FLASH);
+              renderComponent(ActionTypes.EDIT, [skillsList[0].name, skillsList[2].name], messageTypes.FLASH);
               const saveButton = UserFormButton.mock.calls[0][0].onClick;
               act(() => {
                 saveButton();
@@ -266,7 +266,7 @@ describe("<SaveButton /> ", () => {
       });
       describe("messageType is CLOSED", () => {
         test("confirmation modal options are set to expected properties", () => {
-          renderComponent(ActionTypes.EDIT, [skillsList[0]], messageTypes.CLOSED);
+          renderComponent(ActionTypes.EDIT, [skillsList[0].name], messageTypes.CLOSED);
           const saveButton = UserFormButton.mock.calls[0][0].onClick;
           act(() => {
             saveButton();
@@ -290,7 +290,7 @@ describe("<SaveButton /> ", () => {
                 });
               });
               test("dispatch should be called for all resolved promises", async () => {
-                renderComponent(ActionTypes.EDIT, [skillsList[0], skillsList[1]], messageTypes.CLOSED);
+                renderComponent(ActionTypes.EDIT, [skillsList[0].name, skillsList[1].name], messageTypes.CLOSED);
                 const saveButton = UserFormButton.mock.calls[0][0].onClick;
                 act(() => {
                   saveButton();
@@ -342,7 +342,7 @@ describe("<SaveButton /> ", () => {
               updateClosedMessage.mockRejectedValueOnce("aww");
             });
             test("dispatch should be called resolved promises and modal overlay should display partial fail skills", async () => {
-              renderComponent(ActionTypes.EDIT, [skillsList[0], skillsList[1], skillsList[2]], messageTypes.CLOSED);
+              renderComponent(ActionTypes.EDIT, [skillsList[0].name, skillsList[1].name, skillsList[2].name], messageTypes.CLOSED);
               const saveButton = UserFormButton.mock.calls[0][0].onClick;
               act(() => {
                 saveButton();
@@ -378,7 +378,7 @@ describe("<SaveButton /> ", () => {
               updateClosedMessage.mockRejectedValueOnce("aww");
             });
             test("modal overlay should display as failed", async () => {
-              renderComponent(ActionTypes.EDIT, [skillsList[0], skillsList[2]], messageTypes.CLOSED);
+              renderComponent(ActionTypes.EDIT, [skillsList[0].name, skillsList[2].name], messageTypes.CLOSED);
               const saveButton = UserFormButton.mock.calls[0][0].onClick;
               act(() => {
                 saveButton();
@@ -414,7 +414,7 @@ describe("<SaveButton /> ", () => {
     describe("action === delete", () => {
       describe("messageType is FLASH", () => {
         test("confirmation modal options are set to expected properties", () => {
-          renderComponent(ActionTypes.DELETE, [skillsList[0]], messageTypes.FLASH);
+          renderComponent(ActionTypes.DELETE, [skillsList[0].name], messageTypes.FLASH);
           const saveButton = UserFormButton.mock.calls[0][0].onClick;
           act(() => {
             saveButton();
@@ -438,7 +438,7 @@ describe("<SaveButton /> ", () => {
                 });
               });
               test("dispatch should be called for all resolved promises", async () => {
-                renderComponent(ActionTypes.DELETE, [skillsList[0], skillsList[1]], messageTypes.FLASH);
+                renderComponent(ActionTypes.DELETE, [skillsList[0].name, skillsList[1].name], messageTypes.FLASH);
                 const saveButton = UserFormButton.mock.calls[0][0].onClick;
                 act(() => {
                   saveButton();
@@ -490,7 +490,7 @@ describe("<SaveButton /> ", () => {
               updateFlashMessage.mockRejectedValueOnce("aww");
             });
             test("dispatch should be called resolved promises and modal overlay should display partial fail skills", async () => {
-              renderComponent(ActionTypes.DELETE, [skillsList[0], skillsList[1], skillsList[2]], messageTypes.FLASH);
+              renderComponent(ActionTypes.DELETE, [skillsList[0].name, skillsList[1].name, skillsList[2].name], messageTypes.FLASH);
               const saveButton = UserFormButton.mock.calls[0][0].onClick;
               act(() => {
                 saveButton();
@@ -526,7 +526,7 @@ describe("<SaveButton /> ", () => {
               updateFlashMessage.mockRejectedValueOnce("aww");
             });
             test("modal overlay should display as failed", async () => {
-              renderComponent(ActionTypes.DELETE, [skillsList[0], skillsList[2]], messageTypes.FLASH);
+              renderComponent(ActionTypes.DELETE, [skillsList[0].name, skillsList[2].name], messageTypes.FLASH);
               const saveButton = UserFormButton.mock.calls[0][0].onClick;
               act(() => {
                 saveButton();
@@ -560,7 +560,7 @@ describe("<SaveButton /> ", () => {
       });
       describe("messageType is CLOSED", () => {
         test("confirmation modal options are set to expected properties", () => {
-          renderComponent(ActionTypes.DELETE, [skillsList[0]], messageTypes.CLOSED);
+          renderComponent(ActionTypes.DELETE, [skillsList[0].name], messageTypes.CLOSED);
           const saveButton = UserFormButton.mock.calls[0][0].onClick;
           act(() => {
             saveButton();
@@ -584,7 +584,7 @@ describe("<SaveButton /> ", () => {
                 });
               });
               test("dispatch should be called for all resolved promises", async () => {
-                renderComponent(ActionTypes.DELETE, [skillsList[0], skillsList[1]], messageTypes.CLOSED);
+                renderComponent(ActionTypes.DELETE, [skillsList[0].name, skillsList[1].name], messageTypes.CLOSED);
                 const saveButton = UserFormButton.mock.calls[0][0].onClick;
                 act(() => {
                   saveButton();
@@ -635,7 +635,7 @@ describe("<SaveButton /> ", () => {
               updateClosedMessage.mockRejectedValueOnce("aww");
             });
             test("dispatch should be called resolved promises and modal overlay should display partial fail skills", async () => {
-              renderComponent(ActionTypes.DELETE, [skillsList[0], skillsList[1], skillsList[2]], messageTypes.CLOSED);
+              renderComponent(ActionTypes.DELETE, [skillsList[0].name, skillsList[1].name, skillsList[2].name], messageTypes.CLOSED);
               const saveButton = UserFormButton.mock.calls[0][0].onClick;
               act(() => {
                 saveButton();
@@ -671,7 +671,7 @@ describe("<SaveButton /> ", () => {
               updateClosedMessage.mockRejectedValueOnce("aww");
             });
             test("modal overlay should display as failed", async () => {
-              renderComponent(ActionTypes.DELETE, [skillsList[0], skillsList[2]], messageTypes.CLOSED);
+              renderComponent(ActionTypes.DELETE, [skillsList[0].name, skillsList[2].name], messageTypes.CLOSED);
               const saveButton = UserFormButton.mock.calls[0][0].onClick;
               act(() => {
                 saveButton();
@@ -706,7 +706,7 @@ describe("<SaveButton /> ", () => {
     });
     describe("action is undefined", () => {
       test("nothing happens", () => {
-        renderComponent({ label: "Undefined Action" }, [skillsList[0]], messageTypes.CLOSED);
+        renderComponent({ label: "Undefined Action" }, [skillsList[0].name], messageTypes.CLOSED);
         expect(UserFormButton.mock.calls.length).toBe(1);
         const saveButton = UserFormButton.mock.calls[0][0].onClick;
         act(() => {

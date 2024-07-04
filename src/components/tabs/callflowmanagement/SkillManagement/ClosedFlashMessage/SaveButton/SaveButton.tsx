@@ -37,7 +37,7 @@ export const SaveButton = (props: SaveButtonProps) => {
   const { nNumber } = state.userContext;
   const isSingleSelection = tableState.selected.length === 1;
   const isMultiSelection = tableState.selected.length > 1;
-  const selectedSkills = tableState.selected.map((ss: string) => skillState.skills.find((s: Skill) => s.name === ss));
+  const selectedSkills: Partial<Skill>[] = tableState.selected.map((ss: string) => skillState.skills.find((s: Skill) => s.name === ss) || {});
 
   const handleOnSave = () => {
     switch(action){
@@ -132,10 +132,10 @@ export const SaveButton = (props: SaveButtonProps) => {
 
     results.forEach((r, index) => {
       if(r.status === "fulfilled"){
-        successfulPromiseSkills.push(tableState.selected[index]);
+        successfulPromiseSkills.push(selectedSkills[index]);
       }
       if(r.status === "rejected"){
-        rejectedPromiseSkills.push(tableState.selected[index]);
+        rejectedPromiseSkills.push(selectedSkills[index]);
       }
     });
 
