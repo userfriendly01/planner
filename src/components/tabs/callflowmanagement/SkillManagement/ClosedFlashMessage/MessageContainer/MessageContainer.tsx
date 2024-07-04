@@ -32,7 +32,7 @@ export const MessageContainer = (props: MessageContainerProps) => {
     if(tableState.selected.length > 1 || tableState.selected.length === 0){
       setText("");
     } else {
-      const skill = skills.find((s: Skill) => s.name === tableState.selected[0]);
+      const skill: Partial<Skill> = skills.find((s: Skill) => s.name === tableState.selected[0]) || {};
       const text = skill[variable] || "";
       setText(text);
     }

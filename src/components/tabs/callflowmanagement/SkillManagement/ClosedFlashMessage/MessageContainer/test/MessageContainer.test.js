@@ -65,7 +65,7 @@ describe("<MessageContainer/>", () => {
       const tableState = {
         selected: []
       };
-      test.only("should render as expected, text should be empty string", () => {
+      test("should render as expected, text should be empty string", () => {
         renderComponent(tableState);
         expectOnlyPassedProps(TextField, {
           value: ""
@@ -101,7 +101,7 @@ describe("<MessageContainer/>", () => {
     });
     describe("selected length === 1", () => {
       const tableState = {
-        selected: [skillsList[1]]
+        selected: [skillsList[1].name]
       };
       test("should render as expected, text should be closedMessage", () => {
         renderComponent(tableState);
@@ -118,7 +118,9 @@ describe("<MessageContainer/>", () => {
         });
       });
       test("should render as expected, text should be empty string if variable is not defined", () => {
-        delete tableState.selected[0].closedMessage;
+        const tableState = {
+          selected: [skillsList[0].name]
+        };
         renderComponent(tableState);
         expectOnlyPassedProps(TextField, {
           value: ""
