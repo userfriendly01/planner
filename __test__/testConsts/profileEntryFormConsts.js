@@ -1,287 +1,104 @@
 import { formModes } from "globals";
 
+export const activitiesList = [
+  {
+    activity_name: "Offline",
+    activity_sid: "5",
+    available: false
+  },
+  {
+    activity_name: "Petting Cats",
+    activity_sid: "7",
+    available: true
+  }
+];
+
+export const screenpops = [
+  {
+    id: "2hTaQUwxFmf2zanRlQ4lrnbkYaI",
+    display_name: "Intent",
+    attribute_name: "callIntent"
+  },
+  {
+    id: "2hTaUah5ZGZ1YcxskXiQkCac9zY",
+    display_name: "Claim Type",
+    attribute_name: "claimType"
+  }
+];
+
+export const callTagsList = [
+  {
+    display_name: "Negotiation Type",
+    attribute_name: "negotiation_type",
+    options: [
+      "Info Exchange",
+      "Bargaining",
+      "Closing"
+    ]
+  },
+  {
+    display_name: "Claim Number",
+    attribute_name: "claim_number",
+    options: null
+  }
+];
 export const initialProfileEntryFormState = {
-  profileId: null,
-  activitiesList: [],
-  callTagsList: [],
-  callTagOptions: [],
   formMode: formModes.INSERT,
-  autoAnswered: {
-    value: true
-  },
-  inboundRecorded: {
-    value: true
-  },
-  outboundRecorded: {
-    value: true
-  },
-  acwOption: {
-    value: false
-  },
-  manualRecorded: {
-    value: false
-  },
-  acwDataEntry: {
-    value: true
-  },
-  manualRecordedInbound: {
-    value: false
-  },
-  agentAssistedPay: {
-    value: false
-  },
-  voiceMailTranscription: {
-    value: false
-  },
-  paymentProcessing: {
-    value: false
-  },
-  policyNumberEdit: {
-    value: false
-  },
-  callReason: {
-    value: false
-  },
-  clickToDial: {
-    value: false
-  },
-  eftAuthorization: {
-    value: false
-  },
-  claimNumberEdit: {
-    value: false
-  },
-  overflowSkill: {
-    value: "",
-    updated: false,
-    valid: true
-  },
-  profileName: {
-    value: "",
-    updated: false,
-    valid: false
-  },
+  autoAnswered: true,
+  inboundRecorded: true,
+  outboundRecorded: true,
+  acwOption: false,
+  manualRecorded: false,
+  acwDataEntry: false,
+  manualRecordedInbound: false,
+  agentAssistedPay: false,
+  voiceMailTranscription: false,
+  paymentProcessing: false,
+  policyNumberEdit: false,
+  callReason: false,
+  clickToDial: false,
+  eftAuthorization: false,
+  claimNumberEdit: false,
+  overflowSkill: "",
+  profileName: "",
   transferQueues: [],
-  accessGroup: {
-    value: false
-  },
+  accessGroup: null,
   forwardToNum: {
     value: "",
     e164: "",
     unmaskedValue: null,
     updated: false,
     valid: false
-  }
+  },
+  profileId: null,
+  activitiesList: [],
+  callTagsList: [],
+  screenpops: []
 };
 
 export const validProfileEntryFormState = {
-  profileId: 40,
-  activitiesList: [5, 6],
-  callTagsList: [],
-  callTagOptions: [],
   formMode: formModes.INSERT,
-  autoAnswered: {
-    value: true
-  },
-  inboundRecorded: {
-    value: true
-  },
-  outboundRecorded: {
-    value: true
-  },
-  acwOption: {
-    value: false
-  },
-  manualRecorded: {
-    value: false
-  },
-  acwDataEntry: {
-    value: true,
-    updated: true
-  },
-  manualRecordedInbound: {
-    value: false
-  },
-  agentAssistedPay: {
-    value: false
-  },
-  voiceMailTranscription: {
-    value: false
-  },
-  paymentProcessing: {
-    value: false
-  },
-  policyNumberEdit: {
-    value: false
-  },
-  callReason: {
-    value: false
-  },
-  clickToDial: {
-    value: false
-  },
-  eftAuthorization: {
-    value: false
-  },
-  claimNumberEdit: {
-    value: false
-  },
-  overflowSkill: {
-    value: "validskill",
-    updated: true,
-    valid: true
-  },
-  profileName: {
-    value: "GRS Claims",
-    updated: true,
-    valid: true
-  },
-  transferQueues: [{
-    skill_id: 1,
-    skill_nme: "PSU Claims - Level 1"
-  },{
-    skill_id: 2,
-    skill_nme: "PSU Claims - Level 2"
-  }]
-};
-
-export const invalidProfileEntryFormState = {
+  updated: true,
   profileId: 40,
-  activitiesList: [5, 6],
-  callTagsList: [],
-  callTagOptions: [],
-  formMode: formModes.INSERT,
-  autoAnswered: {
-    value: true
-  },
-  inboundRecorded: {
-    value: true
-  },
-  outboundRecorded: {
-    value: true
-  },
-  acwOption: {
-    value: false
-  },
-  manualRecorded: {
-    value: false
-  },
-  acwDataEntry: {
-    value: true,
-    updated: true
-  },
-  manualRecordedInbound: {
-    value: false
-  },
-  agentAssistedPay: {
-    value: false
-  },
-  voiceMailTranscription: {
-    value: false
-  },
-  paymentProcessing: {
-    value: false
-  },
-  policyNumberEdit: {
-    value: false
-  },
-  callReason: {
-    value: false
-  },
-  clickToDial: {
-    value: false
-  },
-  eftAuthorization: {
-    value: false
-  },
-  claimNumberEdit: {
-    value: false
-  },
-  overflowSkill: {
-    value: "validskill$$",
-    updated: true,
-    valid: false
-  },
-  profileName: {
-    value: "",
-    updated: true,
-    valid: false
-  },
-  transferQueues: [{
-    skill_id: 1,
-    skill_nme: "PSU Claims - Level 1"
-  },{
-    skill_id: 2,
-    skill_nme: "PSU Claims - Level 2"
-  }]
-};
-
-export const initialProfileEditEntryFormState = {
-  profileId: 1,
-  activitiesList: [],
-  callTagsList: [],
-  callTagOptions: [],
-  formMode: formModes.UPDATE,
-  autoAnswered: {
-    value: true
-  },
-  inboundRecorded: {
-    value: true
-  },
-  outboundRecorded: {
-    value: true
-  },
-  acwOption: {
-    value: false
-  },
-  manualRecorded: {
-    value: false
-  },
-  acwDataEntry: {
-    value: true
-  },
-  manualRecordedInbound: {
-    value: false
-  },
-  agentAssistedPay: {
-    value: false
-  },
-  voiceMailTranscription: {
-    value: false
-  },
-  paymentProcessing: {
-    value: false
-  },
-  policyNumberEdit: {
-    value: false
-  },
-  callReason: {
-    value: false
-  },
-  clickToDial: {
-    value: false
-  },
-  eftAuthorization: {
-    value: false
-  },
-  claimNumberEdit: {
-    value: false
-  },
-  overflowSkill: {
-    value: "Overflow Skill",
-    updated: false,
-    valid: true
-  },
-  profileName: {
-    value: "Test Profile",
-    updated: false,
-    valid: true
-  },
-  transferQueues: [{
-    skill_id: 1,
-    skill_nme: "PSU Claims - Level 1"
-  },{
-    skill_id: 2,
-    skill_nme: "PSU Claims - Level 2"
-  }]
+  autoAnswered: true,
+  inboundRecorded: true,
+  outboundRecorded: true,
+  acwOption: false,
+  manualRecorded: true,
+  acwDataEntry: true,
+  manualRecordedInbound: false,
+  agentAssistedPay: false,
+  voiceMailTranscription: false,
+  paymentProcessing: false,
+  policyNumberEdit: false,
+  callReason: false,
+  clickToDial: false,
+  eftAuthorization: false,
+  claimNumberEdit: false,
+  overflowSkill: "lscOBDialer1",
+  profileName: "GRS Claims",
+  transferQueues: ["WQda5066ddff9e0eebf2f168e40d98cc19", "WQ9e7f40c067bb9006022f43266122a257"],
+  activitiesList,
+  callTagsList,
+  screenpops
 };

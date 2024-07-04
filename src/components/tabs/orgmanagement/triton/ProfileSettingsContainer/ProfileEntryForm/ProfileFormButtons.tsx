@@ -15,8 +15,7 @@ import {
   formModes,timeouts
 } from "globals";
 import {
-  AccessGroupPayload,
-  ModalOverlayStatuses, ProfilePayload
+  AccessGroupPayload, ModalOverlayStatuses, ProfilePayload
 } from "globals/interfaces";
 import {
   isProfileFormValid, constructProfilePayload
@@ -49,7 +48,7 @@ export const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
     const isCreate = form.formMode === formModes.INSERT;
     updateLoading({
       ...loading,
-      overlayMessage: `${isCreate ? "Creating" : "Updating"} new profile..`,
+      overlayMessage: `${isCreate ? "Creating new" : "Updating"} profile..`,
       saveStatus: ModalOverlayStatuses.SAVING,
       saveProfile: true
     });
@@ -78,7 +77,7 @@ export const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
 
       updateLoading({
         ...loading,
-        overlayMessage: `Successfully ${isCreate ? "created" : "updated"} profile ${form.profileName}. ${isCreate && "Please notify the data office of this change."}`,
+        overlayMessage: `Successfully ${isCreate ? "created" : "updated"} profile ${form.profileName}. ${isCreate ? "Please notify the data office of this change." : ""}`,
         saveStatus: ModalOverlayStatuses.SUCCESS,
         saveProfile: true
       });
@@ -95,7 +94,7 @@ export const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
         });
       }, timeouts.MODAL_OVERLAY_ATTENTION);
     } catch(error){
-      logger.error(`Failed to  ${isCreate ? "creat" : "update"} profile ${form.profileName}`, {
+      logger.error(`Failed to  ${isCreate ? "create" : "update"} profile ${form.profileName}`, {
         error,
         nNumber,
         payload
