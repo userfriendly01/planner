@@ -66,6 +66,8 @@ export const CallFlowManagementSkills = () => {
   const skillDispatch = useSkillDispatch();
   const [ isLoading, setIsLoading ] = React.useState(true);
 
+  console.warn("User", isAdmin);
+
   React.useEffect(() => {
     if(!skillState.timeOfDays.length || !skillState.applications.length || !skillState.taskQueues.length || !skillState.operatingUnits.length){
       loadSkillOptions(skillState.skills, skillDispatch, () => setIsLoading(false));

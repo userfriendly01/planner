@@ -1,3 +1,7 @@
+import {
+  Skill, SkillFormState, SkillGroup
+} from "callflowmanagement/Skills.Interfaces";
+
 export const mockTimeOfDays = [
   {
     "timeOfDayId": 1,
@@ -137,7 +141,7 @@ export const mockSkillFormState = {
   vhCallTarget: "hi"
 };
 
-export const initialSkillFormState = {
+export const initialSkillFormState: SkillFormState = {
   formMode: "insert",
   name: "",
   levels: {
@@ -158,28 +162,13 @@ export const initialSkillFormState = {
   timeOfDays: []
 };
 
-export const skillsList = [
+export const skillsList: Partial<Skill>[] = [
   {
     name: "lscOBDialer1",
     discrepancies: [],
     applicationId: 0,
-    ctmSkillId: 1,
-    skillGroups: [{
-      skillGroupId: 1,
-      skill_group_name: "skillgroup1",
-      skills: [{
-        name: "lscOBDialer1",
-        ctmSkillId: 1
-      }, {
-        name: "aisgL1",
-        ctmSkillId: 2
-      }]
-    },
-    {
-      skillGroupId: 2,
-      skill_group_name: "skillgroup2"
-    }],
-    profiles: [32],
+    skillGroupIds: ["1","2"],
+    profileIds: [32],
     flashMessage: "",
     closedMessage: "",
     levels: [1, 2, 3],
@@ -191,21 +180,12 @@ export const skillsList = [
   },
   {
     name: "aisgL1",
+    applicationId: 2,
     discrepancies: ["I dont match!"],
-    ctmSkillId: 2,
-    ctmSkillDisplayName: "aisg L1",
-    skillGroups: [{
-      skillGroupId: 1,
-      skill_group_name: "skillgroup1",
-      skills: [{
-        name: "lscOBDialer1",
-        ctmSkillId: 1
-      }, {
-        name: "aisgL1",
-        ctmSkillId: 2
-      }]
-    }],
-    profiles: [4],
+    taskQueueSid: "",
+    taskQueueName: "aisg L1",
+    skillGroupIds: ["1"],
+    profileIds: [4],
     flashMessage: "",
     closedMessage: "Sorry, we're closed.",
     levels: [],
@@ -217,11 +197,10 @@ export const skillsList = [
     name: "bscCommisssions",
     applicationId: 1,
     discrepancies: [],
-    ctmSkillId: 3,
     taskQueueSid: "",
     taskQueueName: "bsc Commisssions",
-    skillGroups: [],
-    profiles: [10],
+    skillGroupIds: [],
+    profileIds: [10],
     flashMessage: "OH NO WE'RE EXPLODING!! ",
     closedMessage: "Sorry, we're closed.",
     levels: [1, 2, 3, 4, 5, 6, 7],
@@ -233,11 +212,10 @@ export const skillsList = [
     name: "bscCbsL2",
     applicationId: 4,
     discrepancies: [],
-    ctmSkillId: 4,
     taskQueueSid: "",
     taskQueueName: "bsc Cbs L2",
-    skillGroups: [],
-    profiles: [10,12],
+    skillGroupIds: [],
+    profileIds: [10,12],
     flashMessage: "",
     closedMessage: "",
     levels: [],
@@ -249,11 +227,10 @@ export const skillsList = [
     name: "lscUSAA",
     discrepancies: [],
     applicationId: 1,
-    ctmSkillId: 5,
-    taskQueueSid: 1,
+    taskQueueSid: "1",
     taskQueueName: "lsc USAA",
-    skillGroups: [],
-    profiles: [],
+    skillGroupIds: [],
+    profileIds: [],
     flashMessage: "",
     closedMessage: "",
     levels: [],
@@ -263,31 +240,22 @@ export const skillsList = [
   }
 ];
 
-export const skillGroups = [
+export const skillGroups: Partial<SkillGroup>[] = [
   {
-    skillGroupId: 1,
-    skill_group_name: "skillgroup1",
-    skills: [{
-      name: "lscOBDialer1",
-      ctmSkillId: 1,
-      ctmSkillDisplayName: "lsc OB Dialer 1",
-      profiles: [32],
-      flashMessage: "",
-      closedMessage: "",
-      levels: [1, 2, 3],
-      timeOfDays: [],
-      vhCallTarget: null,
-      vhThreshold: null
-    }]
+    id: "1",
+    skill_group_name: "skillgroup1"
   },
   {
-    skillGroupId: 2,
+    id: "2",
     skill_group_name: "skillgroup2",
     skills: [{
       name: "aisgL1",
-      ctmSkillId: 2,
-      ctmSkillDisplayName: "aisg L1",
-      profiles: [4],
+      applicationId: 2,
+      discrepancies: ["I dont match!"],
+      taskQueueSid: "",
+      taskQueueName: "aisg L1",
+      skillGroupIds: ["1"],
+      profileIds: [4],
       flashMessage: "",
       closedMessage: "Sorry, we're closed.",
       levels: [],
@@ -297,9 +265,12 @@ export const skillGroups = [
     },
     {
       name: "bscCommisssions",
-      ctmSkillId: 3,
-      ctmSkillDisplayName: "bsc Commisssions",
-      profiles: [10],
+      applicationId: 1,
+      discrepancies: [],
+      taskQueueSid: "",
+      taskQueueName: "bsc Commisssions",
+      skillGroupIds: [],
+      profileIds: [10],
       flashMessage: "OH NO WE'RE EXPLODING!! ",
       closedMessage: "Sorry, we're closed.",
       levels: [1, 2, 3, 4, 5, 6, 7],

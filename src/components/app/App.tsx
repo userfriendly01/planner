@@ -139,7 +139,7 @@ const App = () => {
             tokens: {
               msGraph: msGraph.accessToken,
               sharedGraph: sharedGraph.accessToken,
-              adminService: adminService.accessToken,
+              adminService: adminService.accessToken
             }
           }
         });
