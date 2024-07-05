@@ -44,10 +44,10 @@ const areTimeOfDaysValid = (timeOfDays: TimeOfDayRequestObject[], virtualHold = 
 
 export const isSkillFormValid = (skills: Skill[], skillForm: SkillFormState): boolean => {
   const isNameValid = isNotEmptyString(skillForm.name) && !skills.some(s => s.name === skillForm.name);
-  const areProfilesSelected = skillForm.profileIds.length;
+  const areProfilesSelected = skillForm.profileIds.length > 0;
   const areLevelsValid = (skillForm.levels.min && skillForm.levels.max) || (!skillForm.levels.min && !skillForm.levels.max) ? true : false;
-  const isTaskQueueValid = skillForm.taskQueue.isNew ? isNotEmptyString(skillForm.taskQueue.friendly_name) &&
-  skillForm.taskQueue.operating_unit_sid : skillForm.taskQueue.sid && !isTaskQueueError(skillForm, skillForm.name);
+  const isTaskQueueValid = skillForm.taskQueue.isNew ? !!(isNotEmptyString(skillForm.taskQueue.friendly_name) &&
+  skillForm.taskQueue.operating_unit_sid) : !!(skillForm.taskQueue.sid && !isTaskQueueError(skillForm, skillForm.name));
   return isNameValid && areProfilesSelected && isTaskQueueValid && areTimeOfDaysValid(skillForm.timeOfDays) &&
   typeof skillForm.applicationId === "number" && areLevelsValid;
 };
