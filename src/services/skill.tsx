@@ -41,7 +41,7 @@ export const createSkill = async (skillForm: SkillFormState, updatedBy: string):
       const res = await myAxios.post(apiPaths.TASK_QUEUES, newTaskQueuebody);
       taskQueueSid = res.data.sid;
     } catch(error){
-      const message = `Task Queue failed to create: ${formatErrorMessage(error?.response?.data || error?.message)}`;
+      const message = `Task Queue failed to create: ${formatErrorMessage(error)}`;
       logger.error(message, error);
       messages.push(message);
     }
@@ -55,7 +55,7 @@ export const createSkill = async (skillForm: SkillFormState, updatedBy: string):
     }
     await myAxios.post(apiPaths.SKILLS_TASKROUTER, newFlexSkillBody);
   } catch(error){
-    const message = `Flex skill failed to create: ${formatErrorMessage(error?.response?.data || error?.message)}`;
+    const message = `Flex skill failed to create: ${formatErrorMessage(error)}`;
     logger.error(message, error);
     messages.push(message);
   }
@@ -72,7 +72,7 @@ export const createSkill = async (skillForm: SkillFormState, updatedBy: string):
 
     await myAxios.post(apiPaths.SKILLS_CALLFLOW, newCallflowSkillBody);
   } catch(error){
-    const message = `Callflow database failed to create skill: ${formatErrorMessage(error?.response?.data || error?.message)}`;
+    const message = `Callflow database failed to create skill: ${formatErrorMessage(error)}`;
     console.error(message, error);
     messages.push(message);
   }
@@ -130,7 +130,7 @@ export const deleteSkill = async (skill: any, deleteQueues: boolean): Promise<an
           const message = `Twilio was unable to delete the task queue. Please try to delete ${skill.matchingQueue?.friendly_name} from the Twilio console manually`;
           messages.push(<div><h2 style={{ fontWeight: "bold" }}>{errorSource}: {skillName}</h2> - {message}</div>);
         } else {
-          const message = formatErrorMessage(r.reason?.response?.data?.error) || formatErrorMessage(r.reason?.response?.data) || formatErrorMessage(r.reason);
+          const message = formatErrorMessage(r.reason?.response?.data?.error) || formatErrorMessage(r.reason);
           messages.push(<div><h2 style={{ fontWeight: "bold" }}>{errorSource}: {skillName}</h2> - {message}</div>);
         }
       }

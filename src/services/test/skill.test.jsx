@@ -131,12 +131,43 @@ describe("createSkill", () => {
           done();
         });
       });
+      it("no min and max on the new skill, calls the flex taskrouter with appropriate payload", done => {
+        axiosMock.onPost(apiPaths.SKILLS_TASKROUTER).replyOnce(200, { data: "yay" });
+        axiosMock.onPost(apiPaths.SKILLS_CALLFLOW).replyOnce(200, { data: "yay" });
+        const skillFormNonNewTaskQueue = {
+          ...mockSkillFormState,
+          levels: {},
+          taskQueue: {
+            sid: "taskqueuesid1",
+            isNew: false,
+            friendly_name: "TEST SKILL",
+            target_workers: "routing.skills HAS \"testskill\" ",
+            operating_unit_sid: "ou123"
+          }
+        };
+        createSkill(skillFormNonNewTaskQueue, "Kaleigh").then(resolvedValue => {
+          expect(axiosMock.history.post.length).toEqual(2);
+          expect(JSON.parse(axiosMock.history.post[0].data)).toEqual({
+            name: "testskill"
+          });
+          expect(JSON.parse(axiosMock.history.post[1].data)).toEqual({
+            skillNme: "testskill",
+            applicationId: 1,
+            vhThreshold: null,
+            vhCallTarget: null,
+            updatedBy: "Kaleigh",
+            timeOfDays: skillFormNonNewTaskQueue.timeOfDays
+          });
+          expect(resolvedValue).toEqual({ status: 200 });
+          done();
+        });
+      });
     });
   });
   describe("partial failure", () => {
     describe("create task queue fails, ", () => {
       it("still calls to create skill in flex and callflow, returns 206", done => {
-        axiosMock.onPost(apiPaths.TASK_QUEUES).replyOnce(500, { response: "boo" });
+        axiosMock.onPost(apiPaths.TASK_QUEUES).replyOnce(500, "boo");
         axiosMock.onPost(apiPaths.SKILLS_TASKROUTER).replyOnce(200, { data: "yay" });
         axiosMock.onPost(apiPaths.SKILLS_CALLFLOW).replyOnce(200, { data: "yay" });
         formatErrorMessage.mockReturnValueOnce("boo");
@@ -293,6 +324,22 @@ describe("deleteSkill", () => {
           expect(JSON.stringify(err[0])).toContain("Task Queue Deletion Error");
           expect(JSON.stringify(err[1])).toContain("Flex Console Skill Deletion Error");
           expect(JSON.stringify(err[2])).toContain("Callflow Database Skill Deletion Error");
+          done();
+        });
+    });
+    test("axios calls fail all with 404s, just returns", done => {
+      axiosMock.onDelete(`${apiPaths.TASK_QUEUES}/sidysidsid`).replyOnce(500, { error: { error: "Not Found" }});
+      axiosMock.onDelete(`${apiPaths.SKILLS_TASKROUTER}/testskill`).replyOnce(500, { error: { error: "Not Found" }});
+      axiosMock.onDelete(`${apiPaths.SKILLS_CALLFLOW}/testskill`).replyOnce(500, { error: { error: "Not Found" }});
+      deleteSkill({
+        matchingQueue: { sid: "sidysidsid" },
+        name: "testskill"
+      }, true)
+        .then(() => {
+          expect(axiosMock.history.delete.length).toEqual(3);
+          expect(axiosMock.history.delete[0].url).toEqual("http://localhost:8080/taskqueues/sidysidsid");
+          expect(axiosMock.history.delete[1].url).toEqual("http://localhost:8080/taskrouterskills/testskill");
+          expect(axiosMock.history.delete[2].url).toEqual("http://localhost:8080/callflowskills/testskill");
           done();
         });
     });
