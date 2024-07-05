@@ -101,7 +101,8 @@ describe("<DefaultSkillSelector />", () => {
 
   describe("initial state", () => {
     describe("worker has no default skills", () => {
-      test("should render header and correct components with correct props; should not render SkillLevels", () => {
+      //Kaleigh Halp
+      test.only("should render header and correct components with correct props; should not render SkillLevels", () => {
         const defaultSkills = {
           skills: [],
           levels: {}
@@ -258,7 +259,7 @@ describe("<DefaultSkillSelector />", () => {
           levels: { "skillB": 1 }
         });
       });
-      test.only(`should not render priority dropdown, add button enabled, 
+      test(`should not render priority dropdown, add button enabled, 
       should add rows for each skill (but should not add a duplicate) within skill group when add is clicked with priority dropdown defaulted to 1
       and remove button and should update default skills`, async () => {
         const defaultSkills = {
