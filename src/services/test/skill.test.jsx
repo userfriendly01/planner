@@ -1,5 +1,4 @@
 import MockAdapter from "axios-mock-adapter";
-import React from "react";
 import { myAxios } from "utils/myAxios";
 import { apiPaths } from "globals";
 import {
@@ -12,6 +11,7 @@ import {
 } from "testUtils";
 import { apolloClient } from "components/core/Auth/SharedGraphAPIProvider";
 import { logger } from "utils/logger";
+import { formatErrorMessage } from "utils/_formatUtils";
 
 const axiosMock = new MockAdapter(myAxios);
 
@@ -28,6 +28,10 @@ jest.mock("services/operatingUnits", () => ({
 
 jest.mock("services/taskQueues", () => ({
   getTaskQueues: jest.fn()
+}));
+
+jest.mock("utils/_formatUtils", () => ({
+  formatErrorMessage: jest.fn()
 }));
 
 const mockDispatch = jest.fn();
@@ -135,6 +139,7 @@ describe("createSkill", () => {
         axiosMock.onPost(apiPaths.TASK_QUEUES).replyOnce(500, { response: "boo" });
         axiosMock.onPost(apiPaths.SKILLS_TASKROUTER).replyOnce(200, { data: "yay" });
         axiosMock.onPost(apiPaths.SKILLS_CALLFLOW).replyOnce(200, { data: "yay" });
+        formatErrorMessage.mockReturnValueOnce("boo");
         createSkill(mockSkillFormState, "Kaleigh").then(resolvedValue => {
           expect(axiosMock.history.post.length).toEqual(3);
           expect(JSON.parse(axiosMock.history.post[0].data)).toEqual({
@@ -169,8 +174,16 @@ describe("createSkill", () => {
         axiosMock.onPost(apiPaths.TASK_QUEUES).replyOnce(200, { data: { sid: "123" }});
         axiosMock.onPost(apiPaths.SKILLS_TASKROUTER).replyOnce(500, { response: "boo" });
         axiosMock.onPost(apiPaths.SKILLS_CALLFLOW).replyOnce(200, { data: "yay" });
+        formatErrorMessage.mockReturnValueOnce("boo");
         createSkill(mockSkillFormState, "Kaleigh").then(resolvedValue => {
           expect(axiosMock.history.post.length).toEqual(3);
+          expect(axiosMock.history.post[1].data).toEqual(JSON.stringify({
+            name: "testskill",
+            multivalue: true,
+            minimum: 1,
+            maximum: 3
+          }));
+          expect(logger.error).toHaveBeenCalledWith("Flex skill failed to create: boo", Error("Request failed with status code 500"));
           expect(resolvedValue).toEqual({
             status: 206,
             messages: ["Flex skill failed to create: boo"]
@@ -184,6 +197,7 @@ describe("createSkill", () => {
         axiosMock.onPost(apiPaths.TASK_QUEUES).replyOnce(200, { data: { sid: "123" }});
         axiosMock.onPost(apiPaths.SKILLS_TASKROUTER).replyOnce(200, { data: "yay" });
         axiosMock.onPost(apiPaths.SKILLS_CALLFLOW).replyOnce(500, { response: "boo" });
+        formatErrorMessage.mockReturnValueOnce("boo");
         createSkill(mockSkillFormState, "Kaleigh").then(resolvedValue => {
           expect(axiosMock.history.post.length).toEqual(3);
           expect(resolvedValue).toEqual({
@@ -200,6 +214,10 @@ describe("createSkill", () => {
       axiosMock.onPost(apiPaths.TASK_QUEUES).replyOnce(500, { response: "boo1" });
       axiosMock.onPost(apiPaths.SKILLS_TASKROUTER).replyOnce(500, { response: "boo2" });
       axiosMock.onPost(apiPaths.SKILLS_CALLFLOW).replyOnce(500, { response: "boo3" });
+      formatErrorMessage
+        .mockReturnValueOnce("boo1")
+        .mockReturnValueOnce("boo2")
+        .mockReturnValueOnce("boo3");
       createSkill(mockSkillFormState, "Kaleigh").then(resolvedValue => {
         expect(axiosMock.history.post.length).toEqual(3);
         expect(resolvedValue).toEqual({
@@ -272,12 +290,9 @@ describe("deleteSkill", () => {
           expect(axiosMock.history.delete[0].url).toEqual("http://localhost:8080/taskqueues/sidysidsid");
           expect(axiosMock.history.delete[1].url).toEqual("http://localhost:8080/taskrouterskills/testskill");
           expect(axiosMock.history.delete[2].url).toEqual("http://localhost:8080/callflowskills/testskill");
-          expect(err[0]).toEqual(<div><h2 style={{ fontWeight: "bold" }}>{"Task Queue Deletion Error"}{": "}{"testskill"}</h2> - {"notcool"}</div>);
-          expect(err[1]).toEqual(<div><h2 style={{ fontWeight: "bold" }}>{"Flex Console Skill Deletion Error"}{": "}{"testskill"}</h2> - {JSON.stringify({ error: "boo" })}</div>);
-          expect(err[2]).toEqual(<div><h2 style={{ fontWeight: "bold" }}>{"Callflow Database Skill Deletion Error"}{": "}{"testskill"}</h2> - {"notcool"}</div>);
-          // expect(JSON.stringify(err[0])).toContain("Task Queue Deletion Error");
-          // expect(JSON.stringify(err[1])).toContain("Flex Console Skill Deletion Error");
-          // expect(JSON.stringify(err[2])).toContain("Callflow Database Skill Deletion Error");
+          expect(JSON.stringify(err[0])).toContain("Task Queue Deletion Error");
+          expect(JSON.stringify(err[1])).toContain("Flex Console Skill Deletion Error");
+          expect(JSON.stringify(err[2])).toContain("Callflow Database Skill Deletion Error");
           done();
         });
     });

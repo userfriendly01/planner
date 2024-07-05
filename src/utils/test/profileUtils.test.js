@@ -276,11 +276,13 @@ describe("profileUtils", () => {
         overflowSkill: {},
         forwardToNum: {
           unmaskedValue: null
-        }
+        },
+        accessGroup: {}
       };
       delete expectedResult.profile_id;
       expectedResult.fwd_to_num = null;
       expectedResult.overflow_skill = null;
+      expectedResult.access_group_id = null;
       const result = constructProfilePayload(notInsertProfileForm);
       expect(result).toEqual(expectedResult);
     });
