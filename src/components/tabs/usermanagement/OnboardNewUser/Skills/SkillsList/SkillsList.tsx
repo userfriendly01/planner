@@ -31,14 +31,6 @@ export const SkillsList = (props: SkillDropdownProps) => {
         width: "210px"
       }}
       CustomRender={({ option }: CustomRenderProps) => {
-        if (option.label === "divider") {
-          return (
-            <div>
-              <hr />
-            </div>
-          );
-        }
-
         return (
           <div>
             {option.isSkillGroup && (

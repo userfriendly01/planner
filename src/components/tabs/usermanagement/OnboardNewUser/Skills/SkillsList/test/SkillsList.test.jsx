@@ -96,13 +96,53 @@ describe("<SkillsList />", () => {
 
   describe("changes made to the add skills drop down", () => {
     test("should call updateValue function with selected value", () => {
+      const option = {
+        label: "divider",
+        value: "divider"
+      };
       renderComponent();
+      const rendered = render(Dropdown.mock.calls[0][0].CustomRender({ option }));
       const selectedValue = JSON.stringify(skills[1]);
+
+      expect(rendered.container).toHaveTextContent("divider");
+
       act(() => {
         const updateValue = Dropdown.mock.calls[0][0].updateValue;
         updateValue(null, selectedValue);
       });
       expect(mockUpdateSkill).toHaveBeenCalledWith(selectedValue);
     });
+  });
+  test("divider renders as expected", () => {
+    const option = {
+      label: "divider",
+      value: "divider"
+    };
+    renderComponent();
+    const rendered = render(Dropdown.mock.calls[0][0].CustomRender({ option }));
+    act(() => Dropdown.mock.calls[0][0].updateValue(null, option));
+    expect(rendered.container).toHaveTextContent("divider");
+  });
+  test("skill grouping renders as expected", () => {
+    const option = {
+      label: "Skill group 1",
+      value: "asdf",
+      isSkillGroup: true
+    };
+    renderComponent();
+    const rendered = render(Dropdown.mock.calls[0][0].CustomRender({ option }));
+    act(() => Dropdown.mock.calls[0][0].updateValue(null, option));
+    expect(rendered.container).toHaveTextContent("Default Skill Grouping");
+  });
+  test("non skill grouping renders as expected", () => {
+    const option = {
+      label: "testskill",
+      value: "asdf",
+      isSkillGroup: false
+    };
+    renderComponent();
+    const rendered = render(Dropdown.mock.calls[0][0].CustomRender({ option }));
+    act(() => Dropdown.mock.calls[0][0].updateValue(null, option));
+    expect(rendered.container).toHaveTextContent("testskill");
   });
 });

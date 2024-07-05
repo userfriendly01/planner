@@ -247,10 +247,10 @@ describe("profileUtils", () => {
       voice_mail_trans: false,
       ou_name: "Other",
       ou_sid: "OU123",
-      fwd_to_num: "1234567890",
+      fwd_to_num: "6038518200",
       screenpop_ids: ["2hTaQUwxFmf2zanRlQ4lrnbkYaI", "2hTaUah5ZGZ1YcxskXiQkCac9zY"],
-      access_group_id: null,
       activity_sids: ["5", "7"],
+      access_group_id: "2hTZxPiac4Bur9tn5pafmEjag1E",
       call_tags: [
         {
           attribute_name: "negotiation_type",

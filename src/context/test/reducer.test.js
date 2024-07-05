@@ -53,6 +53,29 @@ describe("reducer", () => {
           { name: "I'm a manager" }
         ]);
       });
+      describe("isFirstPage === true", () => {
+        test("should set managers to page results", () => {
+          const startingState = {
+            ...initialState,
+            managerContext: {
+              managers: [{ name: "I'm already here!" }]
+            }
+          };
+          const payload = {
+            type: "UMManager",
+            isFirstPage: true,
+            results: [
+              { name: "I'm a manager!" }
+            ]
+          };
+          const action = {
+            type: "loadPaginatedResults",
+            payload
+          };
+          const result = reducer(startingState, action);
+          expect(result.managerContext.managers).toEqual(payload.results);
+        });
+      });
     });
     describe("type === UMUser", () => {
       test("should set workers to page results", () => {
@@ -100,6 +123,32 @@ describe("reducer", () => {
           const result = reducer(startingState, action);
           expect(result.workerContext.workers).toEqual(payload.results);
         });
+      });
+    });
+  });
+  describe("loadProfileOptions", () => {
+    test("should update the profileContext with the payload", () => {
+      const payload = {
+        accessGroups: [
+          {
+            pk: "AccessGroup#1",
+            access_group_name: "Cool kids group"
+          },
+          {
+            pk: "AccessGroup#2",
+            access_group_name: "other cool kids group"
+          }
+        ]
+      };
+      const action = {
+        type: "loadProfileOptions",
+        payload
+      };
+
+      const result = reducer(initialState, action);
+      expect(result.profileContext).toEqual({
+        ...initialState.profileContext,
+        ...payload
       });
     });
   });
