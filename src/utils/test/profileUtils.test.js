@@ -4,6 +4,7 @@ import { Tooltip } from "@mui/material";
 import {
   formatProfileACWDataEntry,
   formatSelfServiceIndicatorData,
+  formatTransferQueues,
   constructProfilePayload,
   isProfileFormValid
 } from "../profileUtils";
@@ -11,6 +12,7 @@ import {
   BubbleDiv,
   HighlightRed
 } from "components/tabs/orgmanagement/triton/ProfileSettingsContainer/ProfileSettingsTable/ProfileSettingsTable.Styles";
+import { validProfileEntryFormState } from "testUtils";
 
 describe("profileUtils", () => {
   describe("isProfileFormValid", () => {
@@ -136,8 +138,7 @@ describe("profileUtils", () => {
   });
 
   describe("formatProfileACWDataEntry", () => {
-    //strict equal bug?
-    xtest("should return multiple BubbleDivs with display names / tooltips inside", () => {
+    test("should return multiple BubbleDivs with display names / tooltips inside", () => {
       const callTags = [
         {
           display_name: "Claim Number",
@@ -161,16 +162,16 @@ describe("profileUtils", () => {
           ]
         }
       ];
-      expect(formatProfileACWDataEntry(1, callTags, BubbleDiv, HighlightRed)).toStrictEqual(
+      expect(formatProfileACWDataEntry(1, callTags, BubbleDiv, HighlightRed)).toEqual(
         [
-          <Tooltip key={2} placement="top" title={""}>
-            <BubbleDiv key={2}>{"Claim Number"}</BubbleDiv>
+          <Tooltip key={"claim_number"} placement="top" title={""}>
+            <BubbleDiv key={"claim_number"}>{"Claim Number"}</BubbleDiv>
           </Tooltip>,
-          <Tooltip key={1} placement="top" title={""}>
-            <BubbleDiv key={1}>{"Call Type"}</BubbleDiv>
+          <Tooltip key={"call_type"} placement="top" title={""}>
+            <BubbleDiv key={"call_type"}>{"Call Type"}</BubbleDiv>
           </Tooltip>,
-          <Tooltip key={3} placement="top" title={"Info Exchange, Bargaining, Closing, N/A, Offer"}>
-            <BubbleDiv key={3}>{"Negotiation Type"}</BubbleDiv>
+          <Tooltip key={"negotiation_type"} placement="top" title={"Info Exchange, Bargaining, Closing, N/A, Offer"}>
+            <BubbleDiv key={"negotiation_type"}>{"Negotiation Type"}</BubbleDiv>
           </Tooltip>
         ]
       );
@@ -190,6 +191,9 @@ describe("profileUtils", () => {
       }];
       expect(formatProfileACWDataEntry(0, options, BubbleDiv, HighlightRed)).toStrictEqual(<HighlightRed>{"Call tags configured but feature disabled"}</HighlightRed>);
     });
+    test("returns empty string when no acwtags and no calltag length", () => {
+      expect(formatProfileACWDataEntry(0, [], BubbleDiv, HighlightRed)).toStrictEqual("");
+    });
   });
 
   describe("formatSelfServiceIndicatorData", () => {
@@ -201,6 +205,84 @@ describe("profileUtils", () => {
     });
     test("should return check, if correct profile is a string", () => {
       expect(formatSelfServiceIndicatorData("39")).toEqual(<Check />);
+    });
+  });
+  describe("formatTransferQueues", () => {
+    test("returns bubbleDiv with taskQueue friendly name", () => {
+      expect(formatTransferQueues(["123"], [{
+        sid: "123",
+        friendly_name: "cool queue"
+      }], BubbleDiv)).toEqual(
+        [<BubbleDiv key={"123"}>{"cool queue"}</BubbleDiv>]
+      );
+    });
+    test("returns bubbleDiv with taskQueue friendly name unknown", () => {
+      expect(formatTransferQueues(["123"], [{
+        sid: "",
+        friendly_name: "Unknown"
+      }], BubbleDiv)).toEqual(
+        [<BubbleDiv key={"123"}>{"Unknown"}</BubbleDiv>]
+      );
+    });
+  });
+  describe("constructProfilePayload", () => {
+    const expectedResult = {
+      profile_name: "GRS Claims",
+      profile_id: 40,
+      overflow_skill: "lscOBDialer1",
+      acw_option: false,
+      acw_tags: true,
+      agnt_asst_pay: false,
+      auto_ans: true,
+      edt_policy_num: false,
+      edt_claim_num: false,
+      call_reason: false,
+      clk_to_dial: false,
+      eft_auth: false,
+      inbnd_rec: true,
+      man_outbnd_rec: true,
+      man_inbnd_rec: false,
+      outbnd_rec: true,
+      takes_paymnts: false,
+      voice_mail_trans: false,
+      ou_name: "Other",
+      ou_sid: "OU123",
+      fwd_to_num: "1234567890",
+      screenpop_ids: ["2hTaQUwxFmf2zanRlQ4lrnbkYaI", "2hTaUah5ZGZ1YcxskXiQkCac9zY"],
+      access_group_id: null,
+      activity_sids: ["5", "7"],
+      call_tags: [
+        {
+          attribute_name: "negotiation_type",
+          display_name: "Negotiation Type",
+          options: ["Info Exchange", "Bargaining", "Closing"]
+        },
+        {
+          attribute_name: "claim_number",
+          display_name: "Claim Number",
+          options: null
+        }
+      ],
+      transfer_queues: ["WQda5066ddff9e0eebf2f168e40d98cc19", "WQ9e7f40c067bb9006022f43266122a257"]
+    };
+    test("returns formatted payload, sets profileId when formmode is insert", () => {
+      const result = constructProfilePayload(validProfileEntryFormState);
+      expect(result).toEqual(expectedResult);
+    });
+    test("returns formatted payload, does not set profileId when formmode is not insert", () => {
+      const notInsertProfileForm = {
+        ...validProfileEntryFormState,
+        formMode: "UPDATE",
+        overflowSkill: {},
+        forwardToNum: {
+          unmaskedValue: null
+        }
+      };
+      delete expectedResult.profile_id;
+      expectedResult.fwd_to_num = null;
+      expectedResult.overflow_skill = null;
+      const result = constructProfilePayload(notInsertProfileForm);
+      expect(result).toEqual(expectedResult);
     });
   });
 });

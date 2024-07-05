@@ -108,9 +108,16 @@ export const validProfileEntryFormState = {
   clickToDial: false,
   eftAuthorization: false,
   claimNumberEdit: false,
-  overflowSkill: "lscOBDialer1",
+  overflowSkill: { name: "lscOBDialer1" },
   profileName: "GRS Claims",
-  transferQueues: ["WQda5066ddff9e0eebf2f168e40d98cc19", "WQ9e7f40c067bb9006022f43266122a257"],
+  operatingUnit: {
+    ou_name: "Other",
+    ou_sid: "OU123"
+  },
+  forwardToNum: {
+    unmaskedValue: "1234567890"
+  },
+  transferQueues: [{ sid: "WQda5066ddff9e0eebf2f168e40d98cc19" },{ sid: "WQ9e7f40c067bb9006022f43266122a257" }],
   activitiesList: mockActivities,
   callTagsList: mockCallTags,
   screenpops: mockScreenpops
