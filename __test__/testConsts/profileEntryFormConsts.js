@@ -1,5 +1,21 @@
 import { formModes } from "globals";
 
+
+export const mockProfileOperatingUnits = [
+  {
+    ou_name: "Claims",
+    ou_sid: "OUe98d4f81e49ccf1ae16b29f8611d1b6c"
+  },
+  {
+    ou_name: "Service",
+    ou_sid: "OU94b0ff770f6278386fec5ef0b51fd021"
+  },
+  {
+    ou_name: "Direct Distribution",
+    ou_sid: "OU7e7b999348156438ba9cc09731276775"
+  }
+];
+
 export const mockActivities = [
   {
     activity_name: "Offline",
@@ -93,6 +109,8 @@ export const validProfileEntryFormState = {
   formMode: formModes.INSERT,
   updated: true,
   profileId: 40,
+  profileName: "GRS Claims",
+  operatingUnit: mockProfileOperatingUnits[0],
   autoAnswered: true,
   inboundRecorded: true,
   outboundRecorded: true,
@@ -116,7 +134,6 @@ export const validProfileEntryFormState = {
     valid: true
   },
   overflowSkill: "lscOBDialer1",
-  profileName: "GRS Claims",
   transferQueues: ["WQda5066ddff9e0eebf2f168e40d98cc19", "WQ9e7f40c067bb9006022f43266122a257"],
   activitiesList: mockActivities,
   callTagsList: mockCallTags,

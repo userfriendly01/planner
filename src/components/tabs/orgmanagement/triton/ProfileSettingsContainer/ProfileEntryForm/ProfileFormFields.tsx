@@ -81,7 +81,7 @@ export const ProfileFormFields = () => {
               <CustomInput
                 disabled={form.formMode === formModes.UPDATE}
                 label={"Profile Id *"}
-                maxLength="80"
+                maxLength="3"
                 styles={styles}
                 name={form.profileId?.toString()}
                 value={form.profileId?.toString()}
@@ -117,7 +117,6 @@ export const ProfileFormFields = () => {
                   styles={styles}
                   value={formatDropdownOptions([form.operatingUnit], "ou_name", "ou_sid")[0]}
                   options={formatDropdownOptions(operatingUnits, "ou_name", "ou_sid")}
-                  multiple={false}
                   updateValue={(e:any, value: any) => setForm({
                     type: profileEntryFormActions.SET_FORM_FIELD,
                     payload: {
@@ -196,7 +195,6 @@ export const ProfileFormFields = () => {
                   },
                   ...formatDropdownOptions(accessGroups, "access_group_name", "id")
                 ]}
-                multiple={false}
                 value={formatDropdownOptions([form.accessGroup], "access_group_name", "id")[0] || ""}
                 updateValue={(e:any, value: any) => {
                   if(value?.value === "create-new"){
@@ -226,9 +224,10 @@ export const ProfileFormFields = () => {
           <>
             <CustomInput
               label={"New Access Group Name *"}
-              name={"New Access Group Name"}
+              name={"New Access Group Name *"}
               maxLength="80"
               styles={subStyles}
+              value={form.accessGroup?.access_group_name}
               updateValue={value => {
                 setForm({
                   type: profileEntryFormActions.SET_FORM_FIELD,
@@ -241,12 +240,12 @@ export const ProfileFormFields = () => {
                   }
                 });
               }}
-              value={form.accessGroup?.access_group_name}
             />
             <CustomInput
               label={"Twilio Dashboard Url *"}
-              name={"Twilio Dashboard Url"}
+              name={"Twilio Dashboard Url *"}
               styles={subStyles}
+              value={form.accessGroup?.twilio_dashboard_url}
               updateValue={value => {
                 setForm({
                   type: profileEntryFormActions.SET_FORM_FIELD,
@@ -259,7 +258,6 @@ export const ProfileFormFields = () => {
                   }
                 });
               }}
-              value={form.accessGroup?.twilio_dashboard_url}
             />
           </>
               }

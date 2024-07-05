@@ -196,12 +196,12 @@ export const toggleControls: ToggleFormField[] = [
     label: "Outbound Recorded"
   },
   {
-    fieldKey: "manualRecorded",
-    label: "Manual Outbound Recorded"
-  },
-  {
     fieldKey: "manualRecordedInbound",
     label: "Manual Inbound Recorded"
+  },
+  {
+    fieldKey: "manualRecorded",
+    label: "Manual Outbound Recorded"
   },
   {
     fieldKey: "autoAnswered",

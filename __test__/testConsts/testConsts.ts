@@ -421,6 +421,9 @@ export const calabrioContext: any = {
 
 export const initialTestState: any = {
   profileContext: {
+    activities: mockActivities,
+    accessGroups: mockAccessGroups,
+    screenpops: mockScreenpops,
     profiles: mockProfiles
   },
   managerContext: {
