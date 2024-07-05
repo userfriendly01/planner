@@ -9,6 +9,7 @@ import {
   expectOnlyPassedProps,
   getLastInstanceCalled,
   initialTestState,
+  mockOperatingUnits,
   render,
   setupMockedComponents
 } from "testUtils";
@@ -76,7 +77,7 @@ describe("TritonUsersViewWrapper", () => {
     });
   });
   describe("initial render - loadStatus === success", () => {
-    test.only("ManagementHeader, TritonUserTable, Pagination are rendered with expected props", () => {
+    test("ManagementHeader, TritonUserTable, Pagination are rendered with expected props", () => {
       doRender();
       expect(TritonUsersHeader).toHaveBeenCalledTimes(2);
       expectOnlyPassedProps(TritonUsersHeader, {
@@ -188,10 +189,7 @@ describe("TritonUsersViewWrapper", () => {
         userManagementTableFilters: {
           managerFilter: null,
           profileFilterArray: [],
-          ouFilterArray: [{
-            label: "operatingUnitName",
-            value: "operatingUnitSid1"
-          }]
+          ouFilterArray: [{ value: mockOperatingUnits[1].ou_sid }]
         }
       };
       useAdminState.mockReturnValue(testState);
