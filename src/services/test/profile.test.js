@@ -1,4 +1,5 @@
 import {
+  createAccessGroup,
   createDialListEntry,
   createDirectoryEntry,
   createProfile,
@@ -122,7 +123,7 @@ describe("listUMSoftphoneConfigs", () => {
       done();
     });
   });
-  test("getPageResults is successful and returns next token on accessgroups", done => {
+  test("getPageResults is successful and returns next token on activities", done => {
     const nextOnActivities = {
       ...profileRes1,
       activities: {
@@ -133,6 +134,44 @@ describe("listUMSoftphoneConfigs", () => {
     apolloClient.query.mockResolvedValueOnce({ data: nextOnActivities }).mockResolvedValueOnce({
       data: {
         activities: { items: [{ sk: "Activity#2" }]}
+      }
+    });
+    listUMSoftphoneConfigs(mockedDispatch).then(() => {
+      expect(apolloClient.query).toHaveBeenCalledTimes(2);
+      expect(mockedDispatch).toHaveBeenCalledTimes(1);
+      done();
+    });
+  });
+  test("getPageResults is successful and returns next token on directory", done => {
+    const nextOnDirectories = {
+      ...profileRes1,
+      directoryEntries: {
+        ...profileRes1.directoryEntries,
+        nextToken: "nextToken"
+      }
+    };
+    apolloClient.query.mockResolvedValueOnce({ data: nextOnDirectories }).mockResolvedValueOnce({
+      data: {
+        directoryEntries: { items: [{ sk: "DirectoryNumber#2" }]}
+      }
+    });
+    listUMSoftphoneConfigs(mockedDispatch).then(() => {
+      expect(apolloClient.query).toHaveBeenCalledTimes(2);
+      expect(mockedDispatch).toHaveBeenCalledTimes(1);
+      done();
+    });
+  });
+  test("getPageResults is successful and returns next token on dialListEntries", done => {
+    const nextOnDialList = {
+      ...profileRes1,
+      dialListEntries: {
+        ...profileRes1.dialListEntries,
+        nextToken: "nextToken"
+      }
+    };
+    apolloClient.query.mockResolvedValueOnce({ data: nextOnDialList }).mockResolvedValueOnce({
+      data: {
+        dialListEntries: { items: [{ sk: "QuickDialNumber#2" }]}
       }
     });
     listUMSoftphoneConfigs(mockedDispatch).then(() => {
@@ -209,7 +248,8 @@ describe("loadSoftphoneConfigRelationships", () => {
         }
       }
     });
-    loadSoftphoneConfigRelationships(profiles, mockedDispatch).then(() => {
+    const mockCallback = jest.fn();
+    loadSoftphoneConfigRelationships(profiles, mockedDispatch, mockCallback).then(() => {
       expect(apolloClient.query).toHaveBeenCalledTimes(3);
       expect(mockedDispatch).toHaveBeenCalledTimes(1);
       expect(mockedDispatch).toHaveBeenCalledWith({
@@ -238,6 +278,7 @@ describe("loadSoftphoneConfigRelationships", () => {
           }]
         }
       });
+      expect(mockCallback).toHaveBeenCalled();
       done();
     });
   });
@@ -756,6 +797,54 @@ describe("deleteDirectoryEntry", () => {
   test("apolloClient query rejects, throws error", done => {
     apolloClient.mutate.mockRejectedValueOnce("OH NO!");
     deleteDirectoryEntry("id", 1).catch(err => {
+      expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
+      expect(err).toEqual("OH NO!");
+      done();
+    });
+  });
+});
+
+describe("createAccessGroup", () => {
+  const payload = {
+    access_group_name: "access group 1",
+    twilio_dashboard_url: "twilio.com"
+  };
+  test("query is successful, returns accessgroup data", done => {
+    apolloClient.mutate.mockResolvedValueOnce({
+      data: {
+        accessGroup: {
+          pk: "AccessGroup#1",
+          sk: "AccessGroup#1",
+          id: "123",
+          ...payload
+        }
+      }
+    });
+    createAccessGroup(payload).then(resolvedValue => {
+      expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
+      expect(resolvedValue).toEqual({
+        pk: "AccessGroup#1",
+        sk: "AccessGroup#1",
+        id: "123",
+        ...payload
+      });
+      done();
+    });
+  });
+  test("query res contains errors, throws errors", done => {
+    apolloClient.mutate.mockResolvedValueOnce({
+      data: null,
+      errors: [{ errorType: "BAD" }]
+    });
+    createAccessGroup(payload).catch(err => {
+      expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
+      expect(err).toEqual([{ errorType: "BAD" }]);
+      done();
+    });
+  });
+  test("apolloClient query rejects, throws error", done => {
+    apolloClient.mutate.mockRejectedValueOnce("OH NO!");
+    createAccessGroup().catch(err => {
       expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
       expect(err).toEqual("OH NO!");
       done();

@@ -20,6 +20,7 @@ import {
   sortGraphObjectsByPk
 } from "utils/_sortUtils";
 import { logger } from "utils/logger";
+import { formatUsers } from "utils/usermanagementUtils";
 
 /**
  * This helper function gets all the workers, which now that they are paginated, takes a little bit
@@ -35,18 +36,6 @@ export const listUMUsers = async (dispatch: (action: Action) => void): Promise<D
     type: "setLoadingWorkers",
     payload: LoadStatuses.LOADING
   }));
-
-  const formatUsers = (users: UMUser[]) => {
-    const newUsers = [] as UMUser[];
-    users.forEach(user => {
-      if (!user?.inactive_date && !user?.ttl && user?.twilio_attributes) {
-        newUsers.push(
-          mapWorkerFromDbWorker(user)
-        );
-      }
-    });
-    return newUsers;
-  };
 
   try {
     await getPaginatedResults("UMUser", dispatch, formatUsers);

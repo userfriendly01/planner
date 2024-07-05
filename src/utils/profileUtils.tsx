@@ -49,7 +49,7 @@ export const formatTransferQueues = (transferQueueSids: string[], taskQueues: Tw
   });
 };
 
-export const constructProfilePayload = (form: ProfileEntryFormState) => {
+export const constructProfilePayload = (form: ProfileEntryFormState): ProfilePayload => {
   const payload: ProfilePayload = {
     profile_name: form.profileName,
     overflow_skill: form.overflowSkill?.name || null,

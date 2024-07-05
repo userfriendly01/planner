@@ -1,12 +1,15 @@
 import {
   sortDialListEntriesByName,
   sortDirectoryListEntriesByName,
+  sortGraphObjectsByPk,
   sortManagersByName,
   sortActivityByName,
   sortCallTagByName,
   sortQueueByName,
   sortProfilesById,
-  sortProfilesByName
+  sortProfilesByName,
+  sortWorkersByFullName,
+  sortWfmWorkersByFullName
 } from "../_sortUtils";
 
 describe("sortDialListEntriesByName", () => {
@@ -78,6 +81,35 @@ describe("sortDirectoryListEntriesByName", () => {
       {
         first_name: "tom",
         last_name: "tom"
+      }
+    ]);
+  });
+});
+
+describe("sortGraphObjectsByPk", () => {
+  test("sorts by pk", () => {
+    const result = [
+      {
+        pk: "Kaleigh",
+        random: "data"
+      },
+      {
+        pk: "Faith"
+      },
+      {
+        pk: "What?"
+      }
+    ].sort(sortGraphObjectsByPk);
+    expect(result).toEqual([
+      {
+        pk: "Faith"
+      },
+      {
+        pk: "Kaleigh",
+        random: "data"
+      },
+      {
+        pk: "What?"
       }
     ]);
   });
@@ -216,6 +248,117 @@ describe("sortQueueByName", () => {
       { ctmSkillDisplayName: "bee" },
       { ctmSkillDisplayName: "cee" },
       { ctmSkillDisplayName: "dee" }
+    ]);
+  });
+});
+describe("sortWorkersByFullName", () => {
+  test("should return sorted array", () => {
+    const list = [
+      { attributes: { full_name: "Kaleigh Spurio" }},
+      { attributes: { full_name: "Faith Cuneo" }},
+      { attributes: { full_name: "Bob" }},
+      { attributes: { full_name: "Michael Scott" }}
+    ];
+    expect(list.sort(sortWorkersByFullName)).toEqual([
+      { attributes: { full_name: "Bob" }},
+      { attributes: { full_name: "Faith Cuneo" }},
+      { attributes: { full_name: "Kaleigh Spurio" }},
+      { attributes: { full_name: "Michael Scott" }}
+    ]);
+  });
+  test("When no name present, puts those last and should return sorted array", () => {
+    const list = [
+      { attributes: { full_name: "Kaleigh Spurio" }},
+      { attributes: { full_name: "Faith Cuneo" }},
+      { attributes: { full_name: "" }},
+      { attributes: { full_name: "Bob" }},
+      { attributes: { full_name: "Michael Scott" }}
+    ];
+    expect(list.sort(sortWorkersByFullName)).toEqual([
+      { attributes: { full_name: "Bob" }},
+      { attributes: { full_name: "Faith Cuneo" }},
+      { attributes: { full_name: "Kaleigh Spurio" }},
+      { attributes: { full_name: "Michael Scott" }},
+      { attributes: { full_name: "" }}
+    ]);
+  });
+});
+
+describe("sortWfmWorkersByFullName", () => {
+  test("should return sorted array by fullName", () => {
+    const list = [
+      {
+        FirstName: "Kaleigh",
+        LastName: "Spurio"
+      },
+      {
+        FirstName: "Michael",
+        LastName: "Scott"
+      },
+      {
+        FirstName: "Faith",
+        LastName: "Cuneo"
+      },
+      {
+        FirstName: "Michael",
+        LastName: "Scarn"
+      }
+    ];
+    expect(list.sort(sortWfmWorkersByFullName)).toEqual([
+      {
+        FirstName: "Faith",
+        LastName: "Cuneo"
+      },
+      {
+        FirstName: "Kaleigh",
+        LastName: "Spurio"
+      },
+      {
+        FirstName: "Michael",
+        LastName: "Scarn"
+      },
+      {
+        FirstName: "Michael",
+        LastName: "Scott"
+      }
+    ]);
+  });
+  test("should return sorted array by fullName", () => {
+    const list = [
+      {
+        FirstName: "Kaleigh",
+        LastName: "Spurio"
+      },
+      {
+        FirstName: "",
+        LastName: ""
+      },
+      {
+        FirstName: "Faith",
+        LastName: "Cuneo"
+      },
+      {
+        FirstName: "Michael",
+        LastName: "Scarn"
+      }
+    ];
+    expect(list.sort(sortWfmWorkersByFullName)).toEqual([
+      {
+        FirstName: "Faith",
+        LastName: "Cuneo"
+      },
+      {
+        FirstName: "Kaleigh",
+        LastName: "Spurio"
+      },
+      {
+        FirstName: "Michael",
+        LastName: "Scarn"
+      },
+      {
+        FirstName: "",
+        LastName: ""
+      }
     ]);
   });
 });

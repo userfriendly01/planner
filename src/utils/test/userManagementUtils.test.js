@@ -1,5 +1,6 @@
 import { formModes } from "globals";
 import {
+  formatUsers,
   identifyFormErrors,
   isProfileIdValid,
   isManagerValid,
@@ -30,6 +31,9 @@ import {
   mockProfiles,
   mockSkills
 } from "testUtils";
+import {
+  mapWorkerFromDbWorker
+} from "utils/graphUtils";
 
 jest.mock("services/fetchUser", () => ({
   fetchUser: jest.fn()
@@ -38,6 +42,11 @@ jest.mock("services/fetchUser", () => ({
 jest.mock("services/calabrio", () => ({
   getWfmUserByNNumber: jest.fn()
 }));
+
+jest.mock("utils/graphUtils", () => ({
+  mapWorkerFromDbWorker: jest.fn()
+}));
+
 
 const mockSetForm = jest.fn();
 
@@ -169,6 +178,46 @@ const mockWorkers = [
     }
   }
 ];
+describe("formatUsers", () => {
+  beforeEach(() => {
+    mapWorkerFromDbWorker.mockImplementation(data => data);
+  });
+  const users = [{
+    pk: "User:#n1111111",
+    ttl: null,
+    worker_sid: "asdf",
+    inactive_date: null,
+    twilio_attributes: {
+      profile_id: 1
+    }
+  },
+  {
+    pk: "User:#n2222222",
+    ttl: 9876986798,
+    worker_sid: "ghgh",
+    inactive_date: "07/05/2024",
+    twilio_attributes: {
+      profile_id: 1
+    }
+  },
+  {
+    pk: "User:#n3333333",
+    ttl: null,
+    worker_sid: ";lkj",
+    inactive_date: null,
+    twilio_attributes: {
+      profile_id: 1
+    }
+  }];
+  test("formats all active users with twilio attributes", () => {
+    const result = formatUsers(users);
+    expect(mapWorkerFromDbWorker).toHaveBeenCalledTimes(2);
+    expect(result).toEqual([
+      users[0],
+      users[2]
+    ]);
+  });
+});
 
 describe("isUnpopulatedField", () => {
   test("value is empty string - should return true", () => {
