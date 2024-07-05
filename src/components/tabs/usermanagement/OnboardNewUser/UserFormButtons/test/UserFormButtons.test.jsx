@@ -163,13 +163,14 @@ const workerAttributesAfterFormValid = {
 const newWorker = {
   attributes: {
     ...workerAttributesAfterFormValid,
-    office_location_number: "newOffice"
+    office_location_number: "newOffice",
+    office_location_name: "Springfield 012B"
   },
   sid: "WK1234",
   skillsDifferent: true
 };
 
-const validOperatingUnitId = "operatingUnitSid1";
+const validOperatingUnitId = "OUe98d4f81e49ccf1ae16b29f8611d1b6c";
 
 const mockHandleClose = jest.fn();
 const mockSetForm = jest.fn();
@@ -179,7 +180,10 @@ const mockSetMissingFields = jest.fn();
 
 describe("<UserFormButtons />", () => {
   beforeEach(() => {
-    addOffice.mockResolvedValue("Override me later");
+    getOffice.mockResolvedValue(null);
+    addOffice.mockResolvedValue({
+      office_location_number: "newOffice"
+    });
     jest.clearAllMocks();
     jest.useFakeTimers();
     useFormDispatch.mockReturnValue(mockSetForm);
@@ -202,7 +206,6 @@ describe("<UserFormButtons />", () => {
     getCalabrioUsers.mockResolvedValue({ data: "yay!" });
     addWorkerToOrg.mockReturnValue(["newstateyay!"]);
     identifyFormErrors.mockReturnValue([]);
-    getOffice.mockResolvedValue("I'm an office");
     setupMockedComponents({
       StyledButton,
       Tooltip,
@@ -242,7 +245,7 @@ describe("<UserFormButtons />", () => {
         isDidDifferentValid.mockReturnValue(true);
       });
       describe("forwardToToggle === false", () => {
-        test.only("Tooltip title should be blank", () => {
+        test("Tooltip title should be blank", () => {
           renderComponent(false);
           expect(Tooltip.mock.calls[0][0].title).toBe("");
         });
@@ -456,8 +459,8 @@ describe("<UserFormButtons />", () => {
               });
               expect(wfmActivateExternalLogon).toHaveBeenCalled();
               expect(mockSetForm).toHaveBeenCalledWith( { type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
-              expect(mockDispatch).toHaveBeenCalledTimes(1);
-              expect(mockDispatch.mock.calls[0][0]).toEqual({
+              expect(mockDispatch).toHaveBeenCalledTimes(2);
+              expect(mockDispatch.mock.calls[1][0]).toEqual({
                 type: "loadCalabrioUsers",
                 payload: ["agent1", "agent2"]
               });

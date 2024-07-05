@@ -36,7 +36,7 @@ export const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
 
   const skillGroupsForDropDown = skillGroups.filter((skillGr: SkillGroup) => {
     // if all skills in a skill group are in the defaultSkills, remove the skillGr from the dropdown list
-    const allSkillsInGroupSelected = skillGr.skills.every((sk: Skill) => defaultSkills.skills.includes(sk.name));
+    const allSkillsInGroupSelected = skillGr.skills?.every((sk: Skill) => defaultSkills.skills.includes(sk.name));
     if (allSkillsInGroupSelected) {
       return false;
     }
@@ -51,13 +51,10 @@ export const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
 
   const [newSkill, setNewSkill] = React.useState<NewTwilioWorkerSkill>(defaultNewSkill);
 
-  console.log("Faith - New Skill", newSkill);
-
   const newSkillChanged = (skill: {
     [index: string]: any,
     value: string
   }) => {
-    console.log("Faith - am I a skill?", skill);
     const skillObj: Skill = skills.find(skillObj => skillObj.name === skill.value);
     if (skill.isSkillGroup) {
       setNewSkill({
@@ -87,17 +84,11 @@ export const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
   };
 
   const addSkillClicked = () => {
-    // const {
-    //   levelSelected,
-    //   skill,
-    //   skills
-    // } = newSkill;
     const updatedDefaultSkills = { ...defaultSkills };
-    console.log("faith newSkill", newSkill);
     // a skill group will have multiple skills to add, loop through those skills and add each
     if (newSkill.skills) {
       newSkill.skills.forEach((skillName: string) => {
-        const skillObj: Skill = skills.find(skillObj => skillObj.name === skillName);
+        const skillObj: Partial<Skill> = skills.find(skillObj => skillObj.name === skillName) || {};
         if (!updatedDefaultSkills.skills.find(s => s === skillName)) {
           updatedDefaultSkills.skills.push(skillName);
           if (skillObj.levels?.length) {
@@ -111,9 +102,6 @@ export const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
     if (newSkill.levelSelected) {
       updatedDefaultSkills.levels[newSkill.skill] = newSkill.levelSelected;
     }
-
-    console.log("faith updatedDefaultSkills", updatedDefaultSkills);
-    console.log("faith defaultNewSkill", defaultNewSkill);
 
     setDefaultSkills(updatedDefaultSkills);
     setNewSkill(defaultNewSkill);
@@ -160,6 +148,8 @@ export const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
             name: skill,
             levels: []
           };
+
+          console.warn("Faith", defaultSkills);
           return (
             <SkillRow highlightOnHover={true} key={`default-skill-row-${index}`}>
               <SkillRowItem>{skill}</SkillRowItem>
