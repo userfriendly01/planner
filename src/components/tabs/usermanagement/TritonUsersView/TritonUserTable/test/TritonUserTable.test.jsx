@@ -108,7 +108,7 @@ describe("<TritonUserTable />", () => {
         const profile = initialTestState.profileContext.profiles.find(p => p.profile_id === w.attributes.profile_id);
         if(profile){
           expect(rendered.container).toHaveTextContent(`${profile.profile_name} - ${profile.profile_id}`);
-          expect(rendered.container).toHaveTextContent(profile.operating_unit_nme);
+          expect(rendered.container).toHaveTextContent(profile.ou_name);
         }
         if(w.attributes.office_location_name){
           expect(rendered.container).toHaveTextContent(w.attributes.office_location_name);
@@ -130,7 +130,7 @@ describe("<TritonUserTable />", () => {
       expect(Delete.mock.calls.length).toBe(initialTestState.workerContext.workers.length);
     });
     describe("resettingSkills === true", () => {
-      test.only("ModalOverlay is rendered", () => {
+      test("ModalOverlay is rendered", () => {
         renderComponent(true);
         expect(ModalOverlay.mock.calls.length).toBe(1);
         expect(ModalOverlay.mock.calls[0][0]).toStrictEqual({
