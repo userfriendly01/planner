@@ -9,8 +9,7 @@ import {
 import {
   FormControlsContainer,
   FormControlsPane,
-  ToggleContainer,
-  Label
+  ToggleContainer
 } from "./ProfileEntryForm.Styles";
 import {
   FormControlLabel,
@@ -25,11 +24,11 @@ import {
 } from "context/appContext";
 import { profileEntryFormActions } from "context/profileEntryFormReducer";
 import { PhoneNumberInput } from "components/PhoneNumberInput";
-import { CallTagFields } from "./CallTagFields";
+import { CallTagFields } from "orgmanagement/CallTagFields";
 import { toggleControls } from "utils/profileUtils";
 import { formatDropdownOptions } from "utils/_formatUtils";
-import { Dropdown } from "components/core/CustomDropdown/Dropdown";
-import { CustomInput } from "components/core/CustomInput/CustomInput";
+import { Dropdown } from "components/Dropdown";
+import { CustomInput } from "components/CustomInput";
 
 export const ProfileFormFields = () => {
 
@@ -87,7 +86,7 @@ export const ProfileFormFields = () => {
                 name={form.profileId?.toString()}
                 value={form.profileId?.toString()}
                 updateValue={(value: any) => {
-                  if(value.match(numMatcher)){
+                  if(value?.match(numMatcher)){
                     setForm({
                       type: profileEntryFormActions.SET_FORM_FIELD,
                       payload: {
@@ -129,19 +128,6 @@ export const ProfileFormFields = () => {
                 />
               }
               <Dropdown
-                label="Overflow Skill"
-                value={formatDropdownOptions([form.overflowSkill], "name", "name")[0]}
-                options={formatDropdownOptions(skills, "name", "name")}
-                updateValue={(e:any, value: any) => setForm({
-                  type: profileEntryFormActions.SET_FORM_FIELD,
-                  payload: {
-                    key: "overflowSkill",
-                    value: value
-                  }
-                })}
-                styles={styles}
-              />
-              <Dropdown
                 label="Activities *"
                 value={formatDropdownOptions(form.activitiesList, "activity_name", "activity_sid")}
                 options={formatDropdownOptions(activities, "activity_name", "activity_sid")}
@@ -151,6 +137,19 @@ export const ProfileFormFields = () => {
                   payload: {
                     key: "activitiesList",
                     value: values
+                  }
+                })}
+                styles={styles}
+              />
+              <Dropdown
+                label="Overflow Skill"
+                value={formatDropdownOptions([form.overflowSkill], "name", "name")[0]}
+                options={formatDropdownOptions(skills, "name", "name")}
+                updateValue={(e:any, value: any) => setForm({
+                  type: profileEntryFormActions.SET_FORM_FIELD,
+                  payload: {
+                    key: "overflowSkill",
+                    value: value
                   }
                 })}
                 styles={styles}
@@ -268,7 +267,7 @@ export const ProfileFormFields = () => {
                 allowSevenDigitVdn={false}
                 id="forward-to-num"
                 style={styles}
-                number={form.forwardToNum.value}
+                number={form.forwardToNum?.value}
                 label="Forward To Number"
                 updateValue={(maskedValue: string, unmaskedValue: string, isValid: boolean, e164Number: string) => {
                   setForm({

@@ -108,10 +108,18 @@ export const validProfileEntryFormState = {
   clickToDial: false,
   eftAuthorization: false,
   claimNumberEdit: false,
+  forwardToNum: {
+    value: "(603) 851-8200",
+    e164: "+16038518200",
+    unmaskedValue: "6038518200",
+    updated: false,
+    valid: true
+  },
   overflowSkill: "lscOBDialer1",
   profileName: "GRS Claims",
   transferQueues: ["WQda5066ddff9e0eebf2f168e40d98cc19", "WQ9e7f40c067bb9006022f43266122a257"],
   activitiesList: mockActivities,
   callTagsList: mockCallTags,
-  screenpops: mockScreenpops
+  screenpops: mockScreenpops,
+  accessGroup: mockAccessGroups[0]
 };
