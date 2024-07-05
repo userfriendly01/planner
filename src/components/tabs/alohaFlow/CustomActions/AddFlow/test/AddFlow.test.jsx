@@ -166,8 +166,9 @@ describe("<AddFlow />", () => {
     localStorage.removeItem(FLOW_MASTER_DATA);
   });
   describe("AddFlow ModalBlock",()=>{
-    test.only("Simulate Close Modal By Clicking Close Icon",()=>{
+    test.only("Simulate Close Modal By Clicking Close Icon", async ()=>{
       const { getByRole } = renderAddFlow(true);
+      await waitFor(() => getByRole("img", { name: "Close" }));
       const closeModalButton = getByRole("img", { name: "Close" });
       act(()=>{
         fireEvent.click(closeModalButton);
