@@ -11,18 +11,19 @@ export const SkillLevels = (props: PriorityDropdownProps) => {
 
   return (
     <Dropdown
+      disableClear
       styles={{
         small: true,
         noBorder: true,
         height: "40px"
       }}
       options={availablePriorities.map((priority: number) => ({
-        label: priority.toString(),
+        label: String(priority),
         value: priority
       }))}
-      updateValue={(event: any, selectedLevel: any) => updatePriority(selectedLevel.value)}
+      updateValue={(_event: any, selectedLevel: any) => updatePriority(selectedLevel.value)}
       value={{
-        label: priorityValue.toString(),
+        label: String(priorityValue),
         value: priorityValue
       }}
     />

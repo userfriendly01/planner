@@ -1,5 +1,5 @@
 import {
-  escapeQuotes, isErrorIn400s, wait
+  escapeQuotes, isErrorIn400s, isNotEmptyString, wait
 } from "../index";
 
 jest.useFakeTimers();
@@ -19,6 +19,17 @@ describe("wait", () => {
     wait(callback, waitTime);
     expect(setTimeout).toHaveBeenCalledTimes(1);
     expect(setTimeout).toHaveBeenLastCalledWith(callback, waitTime);
+  });
+});
+
+describe("isNotEmptyString", () => {
+  test("empty string is passed as value, returns false", () => {
+    const result = isNotEmptyString("");
+    expect(result).toBe(false);
+  });
+  test("legit string is passed as value, returns true", () => {
+    const result = isNotEmptyString("not empty");
+    expect(result).toBe(true);
   });
 });
 

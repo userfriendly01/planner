@@ -101,7 +101,7 @@ export const mockSkillFormState = {
     target_workers: "",
     operating_unit_sid: "ou123"
   },
-  profileIds: 0,
+  profileIds: [0],
   levels: {
     min: {
       value: 1
@@ -140,8 +140,8 @@ export const mockSkillFormState = {
       timeOfDayId: 1
     }
   ],
-  vhThreshold: "123",
-  vhCallTarget: "hi"
+  vhThreshold: "",
+  vhCallTarget: ""
 };
 
 export const initialSkillFormState: SkillFormState = {
