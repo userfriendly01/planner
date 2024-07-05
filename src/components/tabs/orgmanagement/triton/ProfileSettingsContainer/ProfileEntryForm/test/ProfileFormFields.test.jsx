@@ -122,7 +122,7 @@ describe("<ProfileFormFields />", () => {
       expect(CallTagFields).not.toHaveBeenCalled();
     });
   });
-  describe("Valid Update Form", () => {
+  describe("valid update Form", () => {
     beforeEach(() => {
       profileEntryFormState.mockReturnValue({
         ...validProfileEntryFormState,
@@ -605,8 +605,7 @@ describe("<ProfileFormFields />", () => {
       });
     });
   });
-
-  describe("initial form", () => {
+  describe("blank create form", () => {
     describe("Profile Id field", () => {
       test("initial values are as expected", () => {
         renderComponent();

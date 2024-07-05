@@ -29,10 +29,6 @@ export const CallTagFields = () => {
   const setForm = profileEntryFormDispatch();
 
   const [ callTags, setCallTags ] = React.useState(form.callTagsList);
-  /* Kaleigh - I asked the other day if local state will automatically update when the redux state is updated - I think I had this scenario in mind -
-   If you use a redux state to instantiate a local hook state - it wont automatically update */
-
-  console.log("PROFILE FORM", form);
 
   const styles = {
     width: "300px",
@@ -49,7 +45,7 @@ export const CallTagFields = () => {
             const newCallTagArray = [{
               attribute_name: "",
               display_name: "",
-              options: null
+              options: []
             }, ...callTags ];
             setCallTags(newCallTagArray);
             setForm({
@@ -58,13 +54,15 @@ export const CallTagFields = () => {
                 key: "callTagsList",
                 value: newCallTagArray
               }
-            }); }
-          }><Add/></IconButtonWrapper>
+            });
+          }}>
+            <Add/>
+          </IconButtonWrapper>
         </Tooltip>
       </FormRow>
       <CallTagWrapper>
-        { form.callTagsList.map((tag: CallTag) => {
-          const currentTagIndex = form.callTagsList.findIndex((ct: CallTag) => tag.attribute_name === ct.attribute_name);
+        { callTags.map((tag: CallTag) => {
+          const currentTagIndex = callTags.findIndex((ct: CallTag) => tag.attribute_name === ct.attribute_name);
           return (
             <FlexColumn key={tag.attribute_name}>
               <Divider style={{ marginTop: "10px" }}/>
@@ -76,12 +74,12 @@ export const CallTagFields = () => {
               }}>
                 <CustomInput
                   label={"Call Tag Name *"}
-                  name={"Call Tag Name"}
+                  name={"Call Tag Name *"}
                   styles={styles}
                   updateValue={value => {
-                    const newArray = form.callTagsList.slice();
+                    const newArray = callTags.slice();
                     newArray[currentTagIndex] = {
-                      ...form.callTagsList[currentTagIndex],
+                      ...callTags[currentTagIndex],
                       display_name: value
                     };
                     setCallTags(newArray);
@@ -97,12 +95,12 @@ export const CallTagFields = () => {
                 />
                 <CustomInput
                   label={"Call Tag Variable *"}
-                  name={"Call Tag Variable"}
+                  name={"Call Tag Variable *"}
                   styles={styles}
                   updateValue={value => {
-                    const newArray = form.callTagsList.slice();
+                    const newArray = callTags.slice();
                     newArray[currentTagIndex] = {
-                      ...form.callTagsList[currentTagIndex],
+                      ...callTags[currentTagIndex],
                       attribute_name: value
                     };
                     setCallTags(newArray);
@@ -118,7 +116,7 @@ export const CallTagFields = () => {
                 />
                 <Tooltip title={"Remove Call Tag"}>
                   <IconButtonWrapper onClick={() => {
-                    const newArray = form.callTagsList.slice();
+                    const newArray = callTags.slice();
                     newArray.splice(currentTagIndex, 1);
                     setCallTags(newArray);
                     setForm({
@@ -134,11 +132,11 @@ export const CallTagFields = () => {
               <FormRow>
                 <Tooltip title={"Add Call Tag Option"}>
                   <IconButtonWrapper onClick={() => {
-                    const existingOptions = form.callTagsList[currentTagIndex].options;
-                    const newArray = form.callTagsList.slice();
+                    const existingOptions = callTags[currentTagIndex].options;
+                    const newArray = callTags.slice();
                     const newOptions = existingOptions ? ["", ...existingOptions] : [""];
                     newArray[currentTagIndex] = {
-                      ...form.callTagsList[currentTagIndex],
+                      ...callTags[currentTagIndex],
                       options: newOptions
                     };
                     setCallTags(newArray);
@@ -154,18 +152,19 @@ export const CallTagFields = () => {
               </FormRow>
               {tag.options?.map((o: string) => {
                 const currentOptionIndex = tag.options.findIndex((op: string) => op === o);
+                const value = callTags[currentTagIndex]?.options[currentOptionIndex];
                 return (
                   <FormRow key={o}>
                     <CustomInput
                       label={"Option *"}
-                      name={"Option"}
+                      name={"Option *"}
                       styles={styles}
                       updateValue={value => {
                         const newOptions = tag.options.slice();
                         newOptions[currentOptionIndex] = value;
-                        const newArray = form.callTagsList.slice();
+                        const newArray = callTags.slice();
                         newArray[currentTagIndex] = {
-                          ...form.callTagsList[currentTagIndex],
+                          ...callTags[currentTagIndex],
                           options: newOptions
                         };
                         setCallTags(newArray);
@@ -177,15 +176,15 @@ export const CallTagFields = () => {
                           value: callTags
                         }
                       })}
-                      value={callTags[currentTagIndex]?.options[currentOptionIndex]}
+                      value={value}
                     />
                     <Tooltip title={"Remove Call Tag Option"}>
                       <IconButtonWrapper onClick={() => {
-                        const newArray = form.callTagsList.slice();
+                        const newArray = callTags.slice();
                         const newOptions = newArray[currentTagIndex].options.slice();
                         newOptions.splice(currentOptionIndex, 1);
                         newArray[currentTagIndex] = {
-                          ...form.callTagsList[currentTagIndex],
+                          ...callTags[currentTagIndex],
                           options: newOptions
                         };
                         setCallTags(newArray);
@@ -196,7 +195,9 @@ export const CallTagFields = () => {
                             value: newArray
                           }
                         }); }
-                      }><Delete/></IconButtonWrapper>
+                      }>
+                        <Delete/>
+                      </IconButtonWrapper>
                     </Tooltip>
                   </FormRow>
                 );
