@@ -4,7 +4,7 @@ import { Tooltip } from "@mui/material";
 import {
   ProfileEntryFormState, ToggleFormField
 } from "orgmanagement/ProfileEntryForm.Interfaces";
-import { TwilioQueue } from "components/tabs/callflowmanagement/SkillManagement/Skills.Interfaces";
+import { TwilioQueue } from "callflowmanagement/Skills.Interfaces";
 import {
   Activity, CallTag, ProfilePayload, Screenpop
 } from "globals/interfaces";
@@ -192,6 +192,22 @@ export const toggleControls: ToggleFormField[] = [
     label: "Inbound Recorded"
   },
   {
+    fieldKey: "outboundRecorded",
+    label: "Outbound Recorded"
+  },
+  {
+    fieldKey: "manualRecorded",
+    label: "Manual Recorded Outbound"
+  },
+  {
+    fieldKey: "manualRecordedInbound",
+    label: "Manual Recorded Inbound"
+  },
+  {
+    fieldKey: "autoAnswered",
+    label: "Auto Answered"
+  },
+  {
     fieldKey: "paymentProcessing",
     label: "Payment Processing"
   },
@@ -216,20 +232,8 @@ export const toggleControls: ToggleFormField[] = [
     label: "Call Reason"
   },
   {
-    fieldKey: "autoAnswered",
-    label: "Auto Answered"
-  },
-  {
-    fieldKey: "outboundRecorded",
-    label: "Outbound Recorded"
-  },
-  {
-    fieldKey: "manualRecorded",
-    label: "Manual Recorded"
-  },
-  {
-    fieldKey: "manualRecordedInbound",
-    label: "Manual Recorded Inbound"
+    fieldKey: "claimNumberEdit",
+    label: "Claim Number Edit"
   },
   {
     fieldKey: "policyNumberEdit",
@@ -242,9 +246,5 @@ export const toggleControls: ToggleFormField[] = [
   {
     fieldKey: "eftAuthorization",
     label: "EFT Authorization"
-  },
-  {
-    fieldKey: "claimNumberEdit",
-    label: "Claim Number Edit"
   }
 ];

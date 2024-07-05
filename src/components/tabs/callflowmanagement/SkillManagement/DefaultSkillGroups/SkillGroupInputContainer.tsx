@@ -296,7 +296,6 @@ export const SkillGroupInputContainer = (props: any) => {
       }
     };
 
-    console.warn(skillGroupToEditDelete);
     const deleteConfirmationText = <>
       <ConfirmationSkillGroupsDiv>
       You are about to delete the skill group <span style={{ textDecoration: "underline" }}>{skillGroupToEditDelete.label}</span> Doing this will not affect any users,

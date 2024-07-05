@@ -35,7 +35,7 @@ import {
   initialFormState,
   initialTestState,
   officeMap,
-  profileList,
+  mockProfiles,
   render,
   setupMockedComponents,
   validFormOptions,
@@ -218,7 +218,7 @@ describe("<UserFormButtons />", () => {
         handleClose={mockHandleClose}
         loading={""}
         updateLoading={mockUpdateLoading}
-        profiles={profileList}
+        profiles={mockProfiles}
         offices={officeMap}
         worker={customWorker ? customWorker : worker}
         forwardToToggle={forwardToToggle}
@@ -2349,7 +2349,7 @@ describe("<UserFormButtons />", () => {
           handleClose={mockHandleClose}
           loading={""}
           updateLoading={mockUpdateLoading}
-          profiles={profileList}
+          profiles={mockProfiles}
           offices={officeMap}
           worker={worker}
           forwardToToggle={true}

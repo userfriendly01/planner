@@ -1,6 +1,6 @@
 import { formModes } from "globals";
 
-export const activitiesList = [
+export const mockActivities = [
   {
     activity_name: "Offline",
     activity_sid: "5",
@@ -13,7 +13,20 @@ export const activitiesList = [
   }
 ];
 
-export const screenpops = [
+export const mockAccessGroups = [
+  {
+    access_group_name: "Canon",
+    twilio_dashboard_url: "https://analytics.ytica.com/dashboard.html#workspace=/gdc/workspaces/pdgson3f19xo7p6109q1v7ecfjyc5snb&dashboard=/gdc/md/pdgson3f19xo7p6109q1v7ecfjyc5snb/obj/10546934",
+    id: "2hTZxPiac4Bur9tn5pafmEjag1E"
+  },
+  {
+    access_group_name: "Comparion",
+    twilio_dashboard_url: "https://analytics.ytica.com/dashboard.html#workspace=/gdc/workspaces/pdgson3f19xo7p6109q1v7ecfjyc5snb&dashboard=/gdc/md/pdgson3f19xo7p6109q1v7ecfjyc5snb/obj/10546934",
+    id: "2hTZxaGxtyj53qsimUklk03smgI"
+  }
+];
+
+export const mockScreenpops = [
   {
     id: "2hTaQUwxFmf2zanRlQ4lrnbkYaI",
     display_name: "Intent",
@@ -26,7 +39,7 @@ export const screenpops = [
   }
 ];
 
-export const callTagsList = [
+export const mockCallTags = [
   {
     display_name: "Negotiation Type",
     attribute_name: "negotiation_type",
@@ -98,7 +111,7 @@ export const validProfileEntryFormState = {
   overflowSkill: "lscOBDialer1",
   profileName: "GRS Claims",
   transferQueues: ["WQda5066ddff9e0eebf2f168e40d98cc19", "WQ9e7f40c067bb9006022f43266122a257"],
-  activitiesList,
-  callTagsList,
-  screenpops
+  activitiesList: mockActivities,
+  callTagsList: mockCallTags,
+  screenpops: mockScreenpops
 };

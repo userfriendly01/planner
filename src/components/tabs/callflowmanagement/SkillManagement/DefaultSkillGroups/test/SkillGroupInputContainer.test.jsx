@@ -19,11 +19,11 @@ import {
   render,
   setupMockedComponents,
   expectOnlyPassedProps,
-  skillsList,
+  mockSkills,
   waitFor,
   act,
   getMockedComponentProps,
-  skillGroups
+  mockSkillGroups
 } from "testUtils";
 import { ActionTypes } from "../../Skills.Interfaces";
 import { Dropdown } from "components/Dropdown";
@@ -95,8 +95,8 @@ describe("<SkillGroupInputContainer />", () => {
     jest.clearAllMocks();
     jest.resetAllMocks();
     useSkillState.mockReturnValue({
-      skills: skillsList,
-      skillGroups: skillGroups
+      skills: mockSkills,
+      skillGroups: mockSkillGroups
     });
     useAdminDispatch.mockReturnValue(mockDispatch);
     useAdminState.mockReturnValue(initialTestState);
@@ -137,7 +137,7 @@ describe("<SkillGroupInputContainer />", () => {
       });
       describe("selected length === 1", () => {
         const tableState = {
-          selected: [skillsList[0]]
+          selected: [mockSkills[0]]
         };
         test("should render as expected with skillGroupName an empty string, button disabled", () => {
           renderComponent(tableState, ActionTypes.ADD);
@@ -151,7 +151,7 @@ describe("<SkillGroupInputContainer />", () => {
       });
       describe("selected length > 1", () => {
         const tableState = {
-          selected: [...skillsList]
+          selected: [...mockSkills]
         };
         test("should render as expected with skillGroupName an empty string, button disabled", () => {
           renderComponent(tableState, ActionTypes.ADD);
@@ -189,7 +189,7 @@ describe("<SkillGroupInputContainer />", () => {
       });
       describe("selected length === 1", () => {
         const tableState = {
-          selected: [skillsList[0]]
+          selected: [mockSkills[0]]
         };
         test("should render as expected with skillGroupName an empty string, button enabled", () => {
           renderComponent(tableState, ActionTypes.ADD);
@@ -212,7 +212,7 @@ describe("<SkillGroupInputContainer />", () => {
     });
     describe("Add button is clicked", () => {
       const tableState = {
-        selected: [skillsList[0].name, skillsList[1].name]
+        selected: [mockSkills[0].name, mockSkills[1].name]
       };
       test("Name is not unique, error message shows", async () => {
         renderComponent(tableState, ActionTypes.ADD);
@@ -438,7 +438,7 @@ describe("<SkillGroupInputContainer />", () => {
         act(() => dropdownOnChange({}, {
           label: "skillgroup2",
           value: "2",
-          ...skillGroups[1]
+          ...mockSkillGroups[1]
         }));
         expect(Dropdown.mock.calls.length).toBe(2);
         expectOnlyPassedProps(UserFormButton, {
@@ -545,7 +545,7 @@ describe("<SkillGroupInputContainer />", () => {
         });
         test("modal is cancelled", () => {
           const tableState = {
-            selected: [...skillsList]
+            selected: [...mockSkills]
           };
           renderComponent(tableState, ActionTypes.EDIT);
           expect(Dropdown).toHaveBeenCalled();
@@ -577,7 +577,7 @@ describe("<SkillGroupInputContainer />", () => {
         test("confirmation modal is confirmed, editskillgroup succeeds", async () => {
           updateSkillGroup.mockResolvedValueOnce("yay");
           const tableState = {
-            selected: skillsList.map(s => s.name)
+            selected: mockSkills.map(s => s.name)
           };
           renderComponent(tableState, ActionTypes.EDIT);
           expect(Dropdown).toHaveBeenCalled();
@@ -601,7 +601,7 @@ describe("<SkillGroupInputContainer />", () => {
             expect(updateSkillGroup).toHaveBeenCalledTimes(1);
             expect(updateSkillGroup).toHaveBeenCalledWith("1", {
               skill_group_name: "skillgroup1",
-              skill_ids: skillsList.map(s => s.name)
+              skill_ids: mockSkills.map(s => s.name)
             });
             expect(mockSetSaveResult).toHaveBeenCalledWith({
               message: "Processing...",
@@ -621,7 +621,7 @@ describe("<SkillGroupInputContainer />", () => {
         test("confirmation modal is confirmed, editskillgroup fails", async () => {
           updateSkillGroup.mockRejectedValueOnce("fail");
           const tableState = {
-            selected: skillsList.map(s => s.name)
+            selected: mockSkills.map(s => s.name)
           };
           renderComponent(tableState, ActionTypes.EDIT);
           expect(Dropdown).toHaveBeenCalled();
@@ -643,7 +643,7 @@ describe("<SkillGroupInputContainer />", () => {
             expect(addSkillGroup).toHaveBeenCalledTimes(0);
             expect(updateSkillGroup).toHaveBeenCalledTimes(1);
             expect(updateSkillGroup).toHaveBeenCalledWith("1", {
-              skill_ids: skillsList.map(s => s.name),
+              skill_ids: mockSkills.map(s => s.name),
               skill_group_name: "skillgroup1"
             });
             expect(mockSetSaveResult).toHaveBeenCalledWith({

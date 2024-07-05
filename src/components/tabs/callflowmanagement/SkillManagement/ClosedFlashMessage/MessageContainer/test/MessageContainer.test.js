@@ -7,7 +7,7 @@ import {
   initialSkillState,
   render,
   setupMockedComponents,
-  skillsList
+  mockSkills
 } from "testUtils";
 import { TextField } from "../../ClosedFlashMessage.Styles";
 import { messageTypes } from "../../ClosedFlashMessage.Interfaces";
@@ -82,7 +82,7 @@ describe("<MessageContainer/>", () => {
     });
     describe("selected length > 1", () => {
       const tableState = {
-        selected: skillsList
+        selected: mockSkills.map(skill => skill.name)
       };
       test("should render as expected, text should be empty string", () => {
         renderComponent(tableState);
@@ -101,7 +101,7 @@ describe("<MessageContainer/>", () => {
     });
     describe("selected length === 1", () => {
       const tableState = {
-        selected: [skillsList[1].name]
+        selected: [mockSkills[1].name]
       };
       test("should render as expected, text should be closedMessage", () => {
         renderComponent(tableState);
@@ -119,7 +119,7 @@ describe("<MessageContainer/>", () => {
       });
       test("should render as expected, text should be empty string if variable is not defined", () => {
         const tableState = {
-          selected: [skillsList[0].name]
+          selected: [mockSkills[0].name]
         };
         renderComponent(tableState);
         expectOnlyPassedProps(TextField, {

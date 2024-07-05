@@ -38,11 +38,11 @@ export const BulkUpdateHrSync = (props: BulkUpdateProps) => {
           rowNumber: index + 1,
           workerSid: w.sid,
           originalWorker: w
-        }
+        };
       });
       if (!templateFound) {
         replaceTemplate(template);
-      };
+      }
       setUploadedForm(nNumbers);
     } else {
       setShowTemplates(true);

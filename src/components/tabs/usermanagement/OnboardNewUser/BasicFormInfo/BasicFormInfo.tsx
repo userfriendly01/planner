@@ -318,9 +318,9 @@ export const BasicFormInfo = (props: BasicFormInfoProps) => {
               <ToggleLabel>Self Service Indicator</ToggleLabel>
             </ToggleContainer>
           </Tooltip>) : null}
-          <Tooltip
+        <Tooltip
           title={
-              "Backup Workers Enable/Disable" 
+            "Backup Workers Enable/Disable"
           }
           placement={"bottom-start"}
         >

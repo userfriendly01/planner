@@ -7,7 +7,7 @@ import {
   expectOnlyPassedProps,
   getMockedComponentProps,
   initialTestState,
-  profileList,
+  mockProfiles,
   render,
   setupMockedComponents
 } from "testUtils";
@@ -43,12 +43,12 @@ describe("<ProfileDropDown />", () => {
       expectOnlyPassedProps(Dropdown, {
         label: "Profile",
         value: {
-          label: "1 - test1",
+          label: "1 - USRM Billing & Collections",
           value: 1
         }
       });
       const { updateValue } = getMockedComponentProps(Dropdown);
-      updateValue(null, profileList[1]);
+      updateValue(null, mockProfiles[1]);
       expect(updateProfile).toHaveBeenCalledTimes(1);
     });
   });

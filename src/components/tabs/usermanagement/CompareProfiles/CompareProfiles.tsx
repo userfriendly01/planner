@@ -176,15 +176,16 @@ export const CompareProfiles = () => {
     const workers = state.workerContext.workers;
 
     try {
+
       const matchingTritonProfiles = workers.filter((w: UMUser) => w?.attributes?.n_number?.toLowerCase() === nNumberDetails?.nNumber?.toLowerCase());
       if (matchingTritonProfiles.length > 1) {
         updateMessages("add", null, messageConsts.MULTIPLE_TRITON_PROFILES, "error");
       } else if (matchingTritonProfiles.length === 0) {
         updateMessages("add", null, messageConsts.MISSING_TRITON_PROFILE, "error");
       } else {
+
         const workerSid = matchingTritonProfiles[0].sid;
         const email = nNumberDetails.fetchedUser.email;
-
         setTritonProfiles(matchingTritonProfiles);
 
         const wfmUserPromise = isProduction ? getWfmUserByNNumber(nNumberDetails.nNumber) : Promise.resolve({ data: []});

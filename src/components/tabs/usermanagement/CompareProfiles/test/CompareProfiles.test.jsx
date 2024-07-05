@@ -225,8 +225,8 @@ describe("CompareProfiles", () => {
           ...initialTestState,
           workerContext: {
             workers: [
-              initialTestState.workerContext.workers[0],
-              initialTestState.workerContext.workers[0],
+              initialTestState.workerContext.workers[3],
+              initialTestState.workerContext.workers[3],
               initialTestState.workerContext.workers[1]
             ]
           }
@@ -235,7 +235,7 @@ describe("CompareProfiles", () => {
           useAdminState.mockReturnValue(multipleTritonState);
         });
         test("updateMessages is called - process does not continue", () => {
-          const worker = initialTestState.workerContext.workers[0];
+          const worker = initialTestState.workerContext.workers[3];
           const fetchedUser = { email: worker.attributes.email };
           initiateResetProcess(worker.attributes.n_number, fetchedUser);
           expect(StyledButton).not.toHaveBeenCalled();
@@ -262,7 +262,7 @@ describe("CompareProfiles", () => {
           useAdminState.mockReturnValue(noTritonState);
         });
         test("updateMessages is called - process does not continue", () => {
-          const worker = initialTestState.workerContext.workers[0];
+          const worker = initialTestState.workerContext.workers[3];
           const fetchedUser = { email: worker.attributes.email };
           initiateResetProcess(worker.attributes.n_number, fetchedUser);
           expect(StyledButton).not.toHaveBeenCalled();
@@ -283,7 +283,7 @@ describe("CompareProfiles", () => {
             getQmUserProfiles.mockResolvedValue({});
           });
           test("messages are updated, triton and qm profiles are displayed, no reset button is rendered", async () => {
-            const worker = initialTestState.workerContext.workers[0];
+            const worker = initialTestState.workerContext.workers[3];
             const fetchedUser = { email: worker.attributes.email };
             initiateResetProcess(worker.attributes.n_number, fetchedUser);
             await waitFor(() => {
@@ -314,17 +314,19 @@ describe("CompareProfiles", () => {
             beforeEach(() => {
               useAdminState.mockReturnValue(initialTestState);
               getQmUserProfiles.mockResolvedValue({
-                data: [{
-                  id: 210,
-                  acdId: initialTestState.workerContext.workers[0].sid,
-                  adLogin: "LM\\n0263786",
-                  email: "faith.cuneo@libertymutual.com",
-                  firstName: "Faith",
-                  lastName: "Cuneo",
-                  groupId: 101,
-                  isSynchronized: true,
-                  deactivated: 32503593600000
-                }]
+                data: [
+                  {
+                    id: 209,
+                    acdId: initialTestState.workerContext.workers[3].sid,
+                    adLogin: "LM\\n2222222",
+                    email: "Andrew.VandeKamp@libertymutual.com",
+                    firstName: "Andrew",
+                    lastName: "VandeKamp",
+                    groupId: 101,
+                    isSynchronized: true,
+                    deactivated: 32503593600000
+                  }
+                ]
               });
               env.APP_ENV = "production";
             });
@@ -334,7 +336,7 @@ describe("CompareProfiles", () => {
                   getWfmUserByNNumber.mockRejectedValue({ message: "AWW WFM" });
                 });
                 test("process is cancelled, error is added to messages", async () => {
-                  const worker = initialTestState.workerContext.workers[0];
+                  const worker = initialTestState.workerContext.workers[3];
                   const fetchedUser = { email: worker.attributes.email };
                   initiateResetProcess(worker.attributes.n_number, fetchedUser);
                   await waitFor(() => {
@@ -359,7 +361,7 @@ describe("CompareProfiles", () => {
                   });
                 });
                 test("process is cancelled, error is added to messages", async () => {
-                  const worker = initialTestState.workerContext.workers[0];
+                  const worker = initialTestState.workerContext.workers[3];
                   const fetchedUser = { email: worker.attributes.email };
                   initiateResetProcess(worker.attributes.n_number, fetchedUser);
                   await waitFor(() => {
@@ -380,7 +382,7 @@ describe("CompareProfiles", () => {
                   getWfmUserByNNumber.mockRejectedValue("AWW WFM");
                 });
                 test("process is cancelled, error is added to messages", async () => {
-                  const worker = initialTestState.workerContext.workers[0];
+                  const worker = initialTestState.workerContext.workers[3];
                   const fetchedUser = { email: worker.attributes.email };
                   initiateResetProcess(worker.attributes.n_number, fetchedUser);
                   await waitFor(() => {
@@ -407,7 +409,7 @@ describe("CompareProfiles", () => {
                   });
                 });
                 test("process should continue, 2 columns rendered, messages added", async () => {
-                  const worker = initialTestState.workerContext.workers[0];
+                  const worker = initialTestState.workerContext.workers[3];
                   const fetchedUser = { email: worker.attributes.email };
                   initiateResetProcess(worker.attributes.n_number, fetchedUser);
                   await waitFor(() => {
@@ -434,7 +436,7 @@ describe("CompareProfiles", () => {
                   });
                 });
                 test("process should continue, 3 columns rendered, messages added", async () => {
-                  const worker = initialTestState.workerContext.workers[0];
+                  const worker = initialTestState.workerContext.workers[3];
                   const fetchedUser = { email: worker.attributes.email };
                   initiateResetProcess(worker.attributes.n_number, fetchedUser);
                   await waitFor(() => {
@@ -457,9 +459,9 @@ describe("CompareProfiles", () => {
                   ...initialTestState,
                   workerContext: {
                     workers: [{
-                      ...initialTestState.workerContext.workers[0],
+                      ...initialTestState.workerContext.workers[3],
                       attributes: {
-                        ...initialTestState.workerContext.workers[0].attributes,
+                        ...initialTestState.workerContext.workers[3].attributes,
                         manager_first_name: "Larry",
                         manager_last_name: "Bird",
                         email: "Faith.cuneo@libertymutual.com"
@@ -476,7 +478,7 @@ describe("CompareProfiles", () => {
                   });
                 });
                 test("process should continue, 3 columns rendered, messages added", async () => {
-                  const worker = initialTestState.workerContext.workers[0];
+                  const worker = initialTestState.workerContext.workers[3];
                   const fetchedUser = { email: worker.attributes.email };
                   initiateResetProcess(worker.attributes.n_number, fetchedUser);
                   await waitFor(() => {
@@ -490,28 +492,28 @@ describe("CompareProfiles", () => {
                       people: [{
                         "Active": true,
                         "Email": "Faith.cuneo@libertymutual.com",
-                        "First Name": "Faith",
-                        "Last Name": "Cuneo",
+                        "First Name": "Andrew",
+                        "Last Name": "VandeKamp",
                         "Manager First Name": "Larry",
                         "Manager Last Name": "Bird",
-                        "Manager N Number": "n023356",
-                        "N Number": "N0263786",
-                        "Profile Id": "12",
-                        "Profile Name": "test5",
-                        "Worker Sid": "wk049358"
+                        "Manager N Number": "n0260000",
+                        "N Number": "n2222222",
+                        "Profile Id": "0",
+                        "Profile Name": "Game of Phones",
+                        "Worker Sid": "WK66654654"
                       }]
                     });
                     expect(ProfileColumn.mock.calls[1][0]).toStrictEqual({
                       title: "Calabrio QM",
                       people: [{
-                        "Acd Id": "wk049358",
+                        "Acd Id": "WK66654654",
                         "Active": true,
-                        "Ad Login": "LM\\n0263786",
-                        "Email": "faith.cuneo@libertymutual.com",
-                        "First Name": "Faith",
-                        "Last Name": "Cuneo",
+                        "Ad Login": "LM\\n2222222",
+                        "Email": "Andrew.VandeKamp@libertymutual.com",
+                        "First Name": "Andrew",
+                        "Last Name": "VandeKamp",
                         "Team": "Hawaii Team 50",
-                        "User Id": 210
+                        "User Id": 209
                       }]
                     });
                     expect(ProfileColumn.mock.calls[2][0]).toStrictEqual({
@@ -531,7 +533,7 @@ describe("CompareProfiles", () => {
                   });
                 });
                 describe("Team name is fetched for WFM worker", () => {
-                  const worker = initialTestState.workerContext.workers[0];
+                  const worker = initialTestState.workerContext.workers[3];
                   const fetchedUser = { email: worker.attributes.email };
                   describe("Team exists in state already", () => {
                     test("should not call getWfmTeam", async () => {
@@ -657,9 +659,9 @@ describe("CompareProfiles", () => {
                   ...initialTestState,
                   workerContext: {
                     workers: [{
-                      sid: initialTestState.workerContext.workers[0].sid,
+                      sid: initialTestState.workerContext.workers[3].sid,
                       attributes: {
-                        n_number: initialTestState.workerContext.workers[0].attributes.n_number
+                        n_number: initialTestState.workerContext.workers[3].attributes.n_number
                       }
                     }]
                   }
@@ -670,7 +672,7 @@ describe("CompareProfiles", () => {
                     data: [
                       {
                         id: 210,
-                        acdId: initialTestState.workerContext.workers[0].sid,
+                        acdId: initialTestState.workerContext.workers[3].sid,
                         isSynchronized: true
                       },
                       {
@@ -685,7 +687,7 @@ describe("CompareProfiles", () => {
                   });
                 });
                 test("process should continue, 3 columns rendered, messages added", async () => {
-                  const worker = initialTestState.workerContext.workers[0];
+                  const worker = initialTestState.workerContext.workers[3];
                   const fetchedUser = { email: worker.attributes.email };
                   initiateResetProcess(worker.attributes.n_number, fetchedUser);
                   await waitFor(() => {
@@ -704,17 +706,17 @@ describe("CompareProfiles", () => {
                         "Manager First Name": "",
                         "Manager Last Name": "",
                         "Manager N Number": "",
-                        "N Number": "N0263786",
+                        "N Number": "n2222222",
                         "Profile Id": "",
                         "Profile Name": "",
-                        "Worker Sid": "wk049358"
+                        "Worker Sid": "WK66654654"
                       }]
                     });
                     expect(ProfileColumn.mock.calls[1][0]).toStrictEqual({
                       title: "Calabrio QM",
                       people: [
                         {
-                          "Acd Id": "wk049358",
+                          "Acd Id": "WK66654654",
                           "Active": false,
                           "Ad Login": "",
                           "Email": "",
@@ -764,7 +766,7 @@ describe("CompareProfiles", () => {
       getQmUserProfiles.mockResolvedValue({
         data: [{
           id: 210,
-          acdId: initialTestState.workerContext.workers[0].sid,
+          acdId: initialTestState.workerContext.workers[3].sid,
           isSynchronized: true
         }]
       });
@@ -780,7 +782,7 @@ describe("CompareProfiles", () => {
       });
 
       test("open === true, when closed = open === false", async () => {
-        const worker = initialTestState.workerContext.workers[0];
+        const worker = initialTestState.workerContext.workers[3];
         const fetchedUser = { email: "faith.cuneo@libertymutual.com" };
         initiateResetProcess(worker.attributes.n_number, fetchedUser);
         await waitFor(async () => {
@@ -797,9 +799,9 @@ describe("CompareProfiles", () => {
         act(() => modalOnClose());
         render(Modal.mock.calls[8][0].children);
         expect(ResetModal).toHaveBeenCalledTimes(1);
-        expect(ResetModal.mock.calls[0][0]).toHaveProperty("nNumber", "N0263786");
+        expect(ResetModal.mock.calls[0][0]).toHaveProperty("nNumber", "n2222222");
         expect(ResetModal.mock.calls[0][0]).toHaveProperty("email", "faith.cuneo@libertymutual.com");
-        expect(ResetModal.mock.calls[0][0]).toHaveProperty("workerSid", "wk049358");
+        expect(ResetModal.mock.calls[0][0]).toHaveProperty("workerSid", "WK66654654");
         expect(ResetModal.mock.calls[0][0]).toHaveProperty("wfmPersonId", "2341-1243");
         const onClose = ResetModal.mock.calls[0][0].onClose;
         act(() => onClose());

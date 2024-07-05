@@ -1,6 +1,22 @@
 import {
   Skill, SkillFormState, SkillGroup
 } from "callflowmanagement/Skills.Interfaces";
+// import { mockOperatingUnits } from "testUtils"; // This imports as undefined... wth?
+
+export const mockSkillOperatingUnits = [
+  {
+    ou_name: "Claims",
+    ou_sid: "OUe98d4f81e49ccf1ae16b29f8611d1b6c"
+  },
+  {
+    ou_name: "Service",
+    ou_sid: "OU94b0ff770f6278386fec5ef0b51fd021"
+  },
+  {
+    ou_name: "Direct Distribution",
+    ou_sid: "OU7e7b999348156438ba9cc09731276775"
+  }
+];
 
 export const mockTimeOfDays = [
   {
@@ -73,20 +89,7 @@ export const mockTaskQueues = [
   }
 ];
 
-export const operatingUnits = [
-  {
-    "ou_name": "Claims",
-    "ou_sid": "OUe98d4f81e49ccf1ae16b29f8611d1b6c"
-  },
-  {
-    "ou_name": "Service",
-    "ou_sid": "OU94b0ff770f6278386fec5ef0b51fd021"
-  },
-  {
-    "ou_name": "Direct Distribution",
-    "ou_sid": "OU7e7b999348156438ba9cc09731276775"
-  }
-];
+
 
 export const mockSkillFormState = {
   name: "testskill",
@@ -162,7 +165,7 @@ export const initialSkillFormState: SkillFormState = {
   timeOfDays: []
 };
 
-export const skillsList: Partial<Skill>[] = [
+export const mockSkills: Partial<Skill>[] = [
   {
     name: "lscOBDialer1",
     discrepancies: [],
@@ -240,7 +243,7 @@ export const skillsList: Partial<Skill>[] = [
   }
 ];
 
-export const skillGroups: Partial<SkillGroup>[] = [
+export const mockSkillGroups: Partial<SkillGroup>[] = [
   {
     id: "1",
     skill_group_name: "skillgroup1"
@@ -282,12 +285,12 @@ export const skillGroups: Partial<SkillGroup>[] = [
 ];
 
 export const initialSkillState = {
-  skills: skillsList,
-  skillGroups: skillGroups,
+  skills: mockSkills,
+  skillGroups: mockSkillGroups,
   taskQueues: mockTaskQueues,
   timeOfDays: mockTimeOfDays,
   applications: mockApplications,
-  operatingUnits: operatingUnits,
+  operatingUnits: mockSkillOperatingUnits,
   skillForm: initialSkillFormState,
   daysOfWeek: {
     sunday: {

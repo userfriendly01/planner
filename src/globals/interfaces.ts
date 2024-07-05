@@ -207,7 +207,7 @@ export interface Screenpop {
   item_type: string,
   id: string,
   display_name: string,
-  attribute_name: boolean
+  attribute_name: string
 }
 
 export interface CallTag {

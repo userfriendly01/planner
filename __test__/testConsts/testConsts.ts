@@ -1,3 +1,25 @@
+import {
+  mockTaskQueues, mockSkills
+} from "./skillConsts";
+import {
+  mockAccessGroups, mockActivities, mockScreenpops, mockCallTags
+} from "./profileEntryFormConsts";
+
+export const mockOperatingUnits = [
+  {
+    ou_name: "Claims",
+    ou_sid: "OUe98d4f81e49ccf1ae16b29f8611d1b6c"
+  },
+  {
+    ou_name: "Service",
+    ou_sid: "OU94b0ff770f6278386fec5ef0b51fd021"
+  },
+  {
+    ou_name: "Direct Distribution",
+    ou_sid: "OU7e7b999348156438ba9cc09731276775"
+  }
+];
+
 export const managerList = [
   {
     manager_first_name: "John",
@@ -11,12 +33,6 @@ export const managerList = [
     manager_last_name: "Manager",
     manager_n_num: "n7454853",
     manager_id: "02"
-  }
-];
-
-export const mockSkills = [
-  {
-    skill: "aisgl1"
   }
 ];
 
@@ -34,48 +50,96 @@ export const officeMap = [
   }
 ];
 
-export const profileList = [
+
+export const mockProfiles = [
   {
-    profile_name: "test1",
+    profile_id: 0,
+    ou_sid: mockOperatingUnits[0].ou_sid,
+    ou_name: mockOperatingUnits[0].ou_name,
+    profile_name: "Game of Phones",
+    overflow_skill: mockSkills[0].name,
+    acw_option: true,
+    acw_tags: true,
+    agnt_asst_pay: true,
+    auto_ans: true,
+    edt_policy_num: true,
+    edt_claim_num: true,
+    call_reason: true,
+    clk_to_dial: true,
+    eft_auth: true,
+    inbnd_rec: true,
+    man_outbnd_rec: true,
+    man_inbnd_rec: true,
+    outbnd_rec: true,
+    takes_paymnts: true,
+    voice_mail_trans: true,
+    fwd_to_num: "8665680296",
+    transfer_queues: [mockTaskQueues[0], mockTaskQueues[1]],
+    access_group: mockAccessGroups[0],
+    screenpops: [mockScreenpops[0]],
+    activities: [mockActivities[0], mockActivities[1]],
+    call_tags: mockCallTags
+  },
+  {
     profile_id: 1,
+    ou_sid: mockOperatingUnits[1].ou_sid,
+    ou_name: mockOperatingUnits[1].ou_name,
+    profile_name: "USRM Billing & Collections",
     overflow_skill: null,
-    operating_unit_sid: "operatingUnitSid1"
+    acw_option: false,
+    acw_tags: false,
+    agnt_asst_pay: false,
+    auto_ans: false,
+    edt_policy_num: false,
+    edt_claim_num: false,
+    call_reason: false,
+    clk_to_dial: false,
+    eft_auth: false,
+    inbnd_rec: false,
+    man_outbnd_rec: false,
+    man_inbnd_rec: false,
+    outbnd_rec: false,
+    takes_paymnts: false,
+    voice_mail_trans: false,
+    fwd_to_num: null,
+    transfer_queues: [],
+    access_group: null,
+    screenpops: [],
+    activities: [],
+    call_tags: []
   },
   {
-    profile_name: "test2",
     profile_id: 2,
-    overflow_skill: "whateverOverflowSkill",
-    operating_unit_nme: "operatingUnitName",
-    operating_unit_sid: "operatingUnitSid1",
-    routing_teams: [
-      {
-        routing_team_nme: "licencedCSC"
-      }
-    ]
-  },
-  {
-    profile_name: "test3",
-    profile_id: 3,
-    overflow_skill: "anotherOverflowSkill",
-    operating_unit_sid: "operatingUnitSid2"
-  },
-  {
-    profile_name: "test4",
-    profile_id: 396,
-    overflow_skill: "weirdNumberSkill",
-    operating_unit_nme: "operatingUnitName",
-    operating_unit_sid: "operatingUnitSid2"
-  },
-  {
-    profile_name: "test5",
-    profile_id: 12,
-    overflow_skill: "anotherOverflowSkill",
-    operating_unit_sid: "operatingUnitSid2",
-    operating_unit_nme: "Claims"
+    ou_sid: mockOperatingUnits[1].ou_sid,
+    ou_name: mockOperatingUnits[1].ou_name,
+    profile_name: "GRS Casualty",
+    overflow_skill: null,
+    acw_option: false,
+    acw_tags: false,
+    agnt_asst_pay: false,
+    auto_ans: false,
+    edt_policy_num: false,
+    edt_claim_num: false,
+    call_reason: false,
+    clk_to_dial: false,
+    eft_auth: false,
+    inbnd_rec: false,
+    man_outbnd_rec: false,
+    man_inbnd_rec: false,
+    outbnd_rec: false,
+    takes_paymnts: false,
+    voice_mail_trans: false,
+    fwd_to_num: null,
+    transfer_queues: [],
+    access_group: mockAccessGroups[1],
+    screenpops: [],
+    activities: [],
+    call_tags: []
   }
+
 ];
 
-export const calabrioContext = {
+export const calabrioContext: any = {
   groups: [
     {
       groupId: 100,
@@ -355,102 +419,9 @@ export const calabrioContext = {
   wfmErrors: []
 };
 
-export const mockActivities = [
-  {
-    activity_id: 1,
-    activity_sid: "WA98fb57313627153d707a17f549566046",
-    workspace_sid: "WSde21cfcdde7bcb69cd82f1c060e5dba0",
-    activity_name: "Offline",
-    activity_cde: "OFFLINE",
-    available_i: {
-      type: "Buffer",
-      data: [
-        0
-      ]
-    },
-    wfm_cde: "10",
-    row_crtn_dtm: "2019-10-24T12:58:48.000Z",
-    row_updt_dtm: "2019-10-24T12:58:48.000Z"
-  },
-  {
-    activity_id: 2,
-    activity_sid: "WA82a8ca5773657c4d20f9fc20d909b14e",
-    workspace_sid: "WSde21cfcdde7bcb69cd82f1c060e5dba0",
-    activity_name: "Available",
-    activity_cde: "AVAILABLE",
-    available_i: {
-      type: "Buffer",
-      data: [
-        1
-      ]
-    },
-    wfm_cde: "20",
-    row_crtn_dtm: "2019-10-24T12:58:48.000Z",
-    row_updt_dtm: "2019-10-24T12:58:48.000Z"
-  }
-];
-
-export const mockCallTags = [
-  {
-    wrkr_tsk_info_id: 1,
-    wrkr_tsk_info_nme: "call_type"
-  },
-  {
-    wrkr_tsk_info_id: 2,
-    wrkr_tsk_info_nme: "claim_number"
-  },
-  {
-    wrkr_tsk_info_id: 3,
-    wrkr_tsk_info_nme: "negotiation_type"
-  },
-  {
-    wrkr_tsk_info_id: 4,
-    wrkr_tsk_info_nme: "claimant_name"
-  },
-  {
-    wrkr_tsk_info_id: 5,
-    wrkr_tsk_info_nme: "event_number"
-  },
-  {
-    wrkr_tsk_info_id: 6,
-    wrkr_tsk_info_nme: "aces_claim_number"
-  },
-  {
-    wrkr_tsk_info_id: 7,
-    wrkr_tsk_info_nme: "claim_id"
-  },
-  {
-    wrkr_tsk_info_id: 8,
-    wrkr_tsk_info_nme: "notes"
-  }
-];
-
-export const mockCallTagOptions = [
-  {
-    options_id: 1,
-    options: "[\"Info Exchange\", \"Bargaining\", \"Closing\", \"N/A\", \"Offer\"]"
-  },
-  {
-    options_id: 2,
-    options: "[\"Recorded Interview\", \"Injured Worker\", \"Provider\", \"Customer\", \"Other\"]"
-  }
-];
-
-export const mockAggregateQueues = [
-  {
-    aggregate_queues_id: 4,
-    aggregate_queues_nme: "Licensed Sales Center",
-    aggregate_queues_type: "aggregate",
-    owner_type: "profile",
-    worker_sid: null,
-    row_crtn_dtm: "",
-    row_updt_dtm: null
-  }
-];
-
-export const initialTestState = {
+export const initialTestState: any = {
   profileContext: {
-    profiles: profileList
+    profiles: mockProfiles
   },
   managerContext: {
     managers: managerList
@@ -519,6 +490,7 @@ export const initialTestState = {
         }
       },
       {
+        sid: "WK66654654",
         attributes: {
           full_name: "Andrew VandeKamp",
           emp_first_name: "Andrew",
@@ -575,14 +547,3 @@ export const initialTestState = {
     ouFilterArray: []
   }
 };
-
-export const mockOperatingUnits = [
-  {
-    ou_name: "testname",
-    ou_sid: "testsid"
-  },
-  {
-    ou_name: "testname1",
-    ou_sid: "testsid1"
-  }
-];

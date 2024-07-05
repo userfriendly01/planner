@@ -10,7 +10,7 @@ import {
   useAdminState, useSkillState
 } from "context/appContext";
 import {
-  skillsList,
+  mockSkills,
   render,
   getLastInstanceCalled,
   expectOnlyPassedProps,
@@ -61,7 +61,7 @@ jest.mock("context/appContext", () => ({
 
 const initialTableState = {
   closedFilter: false,
-  filteredList: [skillsList[2], skillsList[3]],
+  filteredList: [mockSkills[2], mockSkills[3]],
   flashFilter: false,
   discrepancyFilter: false,
   profiles: [],
@@ -84,7 +84,7 @@ describe("CallFlowManagementSkills", () => {
     jest.clearAllMocks();
     getAuthenticationProfileTemplates.mockReturnValue(authenticationProfileTemplates);
     useSkillState.mockReturnValue({
-      skills: skillsList,
+      skills: mockSkills,
       timeOfDays: mockTimeOfDays,
       applications: mockApplications,
       taskQueues: mockTaskQueues,
@@ -146,7 +146,7 @@ describe("CallFlowManagementSkills", () => {
           profiles: [{ profile_id: 32 }]
         });
         await waitFor(() => expect(ActionContainer.mock.calls.length).toBe(3));
-        expect(ActionContainer.mock.calls[2][0].tableState.filteredList).toStrictEqual([skillsList[0]]);
+        expect(ActionContainer.mock.calls[2][0].tableState.filteredList).toStrictEqual([mockSkills[0]]);
       });
     });
     describe("tablestate.profiles length > 0", () => {
@@ -158,7 +158,7 @@ describe("CallFlowManagementSkills", () => {
           profiles: [{ profile_id: 32 }]
         });
         await waitFor(() => expect(ActionContainer.mock.calls.length).toBe(3));
-        expect(ActionContainer.mock.calls[2][0].tableState.filteredList).toStrictEqual([skillsList[0]]);
+        expect(ActionContainer.mock.calls[2][0].tableState.filteredList).toStrictEqual([mockSkills[0]]);
       });
     });
     describe("tablestate.closedFilter === true", () => {
@@ -171,8 +171,8 @@ describe("CallFlowManagementSkills", () => {
         });
         await waitFor(() => expect(ActionContainer.mock.calls.length).toBe(3));
         expect(ActionContainer.mock.calls[2][0].tableState.filteredList).toStrictEqual([
-          skillsList[1],
-          skillsList[2]
+          mockSkills[1],
+          mockSkills[2]
         ]);
       });
     });
@@ -186,7 +186,7 @@ describe("CallFlowManagementSkills", () => {
         });
         await waitFor(() => expect(ActionContainer.mock.calls.length).toBe(3));
         expect(ActionContainer.mock.calls[2][0].tableState.filteredList).toStrictEqual([
-          skillsList[2]
+          mockSkills[2]
         ]);
       });
     });
@@ -200,7 +200,7 @@ describe("CallFlowManagementSkills", () => {
         });
         await waitFor(() => expect(ActionContainer.mock.calls.length).toBe(3));
         expect(ActionContainer.mock.calls[2][0].tableState.filteredList).toStrictEqual([
-          skillsList[1]
+          mockSkills[1]
         ]);
       });
     });

@@ -5,7 +5,7 @@ import {
 import MockAdapter from "axios-mock-adapter";
 import { apiPaths } from "globals";
 import { myAxios } from "utils/myAxios";
-import { skillsList } from "testUtils";
+import { mockSkills } from "testUtils";
 
 const axiosMock = new MockAdapter(myAxios);
 
@@ -14,7 +14,7 @@ beforeEach(() => {
   axiosMock.reset();
 });
 
-const skill = skillsList[2];
+const skill = mockSkills[2];
 const nNumber = "n0263786";
 
 describe("updateFlashMessage", () => {

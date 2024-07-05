@@ -16,7 +16,8 @@ import {
   render,
   setupMockedComponents,
   initialTestState as initialState,
-  initialSkillState
+  initialSkillState,
+  mockProfiles
 } from "testUtils";
 import { myAxios } from "utils/myAxios";
 
@@ -70,25 +71,11 @@ jest.mock("authentication/authUtils", () => ({
   checkIfPO: jest.fn()
 }));
 
-const profileList = [
-  {
-    profile_name: "test1",
-    profile_id: 1
-  },
-  {
-    profile_name: "test2",
-    profile_id: 2
-  },
-  {
-    profile_name: "test3",
-    profile_id: 3
-  }
-];
 
 const initialTestState = {
   ...initialState,
   profileContext: {
-    profiles: profileList
+    profiles: mockProfiles
   },
   userContext: {
     nNumber: "n1234567"

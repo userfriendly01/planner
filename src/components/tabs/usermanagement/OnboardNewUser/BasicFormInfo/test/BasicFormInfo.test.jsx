@@ -13,6 +13,7 @@ import {
   useFormDispatch, useFormState
 } from "context/appContext";
 import { userFormActions } from "context/userFormReducer";
+import { sortProfilesByName } from "utils/_sortUtils";
 import { formModes } from "globals";
 import React from "react";
 import {
@@ -24,7 +25,7 @@ import {
   managerList,
   mockSkills,
   mockWorkers,
-  profileList,
+  mockProfiles,
   render,
   setupMockedComponents
 } from "testUtils";
@@ -129,7 +130,7 @@ describe("<BasicFormInfo />", () => {
         skills={mockSkills}
         worker={mockWorkers[2]}
         workers={mockWorkers}
-        profiles={profileList}
+        profiles={mockProfiles}
         managers={managerList}
         forwardToToggle={forwardToToggle}
         setForwardToToggle={mockSetForwardToToggle}
@@ -172,7 +173,7 @@ describe("<BasicFormInfo />", () => {
             skills={mockSkills}
             worker={mockWorkers[2]}
             workers={mockWorkers}
-            profiles={profileList}
+            profiles={mockProfiles}
             managers={["option"]}
             forwardToToggle={false}
             setForwardToToggle={mockSetForwardToToggle}
@@ -252,7 +253,7 @@ describe("<BasicFormInfo />", () => {
         type: userFormActions.UPDATE_TEAM,
         payload: {
           profileId: managerList[0].profile_id,
-          profiles: profileList
+          profiles: mockProfiles
         }
       });
     });
@@ -270,7 +271,7 @@ describe("<BasicFormInfo />", () => {
         type: userFormActions.UPDATE_TEAM,
         payload: {
           profileId: "",
-          profiles: profileList
+          profiles: mockProfiles
         }
       });
     });
@@ -281,7 +282,7 @@ describe("<BasicFormInfo />", () => {
       expectMockedComponent(rendered, { Dropdown }, 2);
       const expectedTeamProps = {
         label: "Team *",
-        options: profileList.map(profile => ({
+        options: mockProfiles.sort(sortProfilesByName).map(profile => ({
           label: `${profile.profile_name} - ${profile.profile_id}`,
           value: profile.profile_id,
           ...profile
@@ -342,13 +343,13 @@ describe("<BasicFormInfo />", () => {
       renderComponent(false);
       act(() => {
         const updateValue = Dropdown.mock.calls[1][0].updateValue;
-        updateValue(null, { value: profileList[0].profile_id });
+        updateValue(null, { value: mockProfiles[0].profile_id });
       });
       expect(mockSetForm).toBeCalledWith({
         type: userFormActions.UPDATE_TEAM,
         payload: {
-          profileId: profileList[0].profile_id,
-          profiles: profileList
+          profileId: mockProfiles[0].profile_id,
+          profiles: mockProfiles
         }
       });
     });
@@ -366,13 +367,13 @@ describe("<BasicFormInfo />", () => {
       renderComponent(false);
       act(() => {
         const updateValue = Dropdown.mock.calls[1][0].updateValue;
-        updateValue(null, { value: profileList[0].profile_id });
+        updateValue(null, { value: mockProfiles[0].profile_id });
       });
       expect(mockSetForm).toBeCalledWith({
         type: userFormActions.UPDATE_TEAM,
         payload: {
-          profileId: profileList[0].profile_id,
-          profiles: profileList
+          profileId: mockProfiles[0].profile_id,
+          profiles: mockProfiles
         }
       });
       expect(mockSetForm).toBeCalledWith({
@@ -1034,7 +1035,6 @@ describe("<BasicFormInfo />", () => {
         expect(mockSetForm).toHaveBeenCalledTimes(1);
         expect(mockSetForm).toHaveBeenCalledWith({ type: userFormActions.UPDATE_BACK_UP_WORKER_FLAG });
       });
-     
     });
   });
 });

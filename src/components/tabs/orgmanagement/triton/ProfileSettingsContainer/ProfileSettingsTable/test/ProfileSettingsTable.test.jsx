@@ -8,9 +8,12 @@ import {
   initialSkillState,
   initialTestState,
   render,
-  setupMockedComponents
+  setupMockedComponents,
+  mockProfiles
 } from "testUtils";
-import { profileEntryFormDispatch, useAdminDispatch, useAdminState, useSkillState } from "context/appContext";
+import {
+  profileEntryFormDispatch, useAdminDispatch, useAdminState, useSkillState
+} from "context/appContext";
 import { ProfileEntryForm } from "orgmanagement/ProfileEntryForm";
 
 jest.mock("authentication/authUtils", () => ({
@@ -44,127 +47,15 @@ describe("<ProfileSettingsTable />", () => {
   });
 
   const validNid = "n0138110";
-  const profiles = [
-    {
-      activities: [{
-        profile_id: 0,
-        activity_id: 1,
-        activity_name: "Offline",
-        availability: 0
-      }],
-      acw_data_entry_i: {
-        data: [1],
-        type: "Buffer"
-      },
-      acw_option_i: {
-        data: [0],
-        type: "Buffer"
-      },
-      agent_assisted_pay_i: {
-        data: [1],
-        type: "Buffer"
-      },
-      aggregateQueues: [
-        {
-          aggregate_queues_id: 0,
-          aggregate_queues_nme: "PGS - Gold Spanish",
-          aggregate_queues_type: "single",
-          owner_type: "profile",
-          profile_id: 0,
-          queues: [
-            {
-              skill_id: 106,
-              skill_nme: "PGS - Gold Spanish",
-              skill_num: "pgsGoldSpanish",
-              tsk_que_sid: "WQaae7385a70e4c4ef8d74f1f93ebd5c33"
-            }
-          ],
-          workerSid: null
-        }
-      ],
-      auto_answd_i: {
-        data: [0],
-        type: "Buffer"
-      },
-      callTags: [{
-        profile_id: 15,
-        display_nme: "Negotiation Type",
-        wrkr_tsk_info_id: 3,
-        wrkr_tsk_info_nme: "negotiation_type",
-        options_id: 1,
-        options: [
-          "Info Exchange",
-          "Bargaining",
-          "Closing",
-          "N/A",
-          "Offer"
-        ]
-      }],
-      call_reason_i: {
-        data: [1],
-        type: "Buffer"
-      },
-      click_to_dial_i: {
-        data: [1],
-        type: "Buffer"
-      },
-      eft_authorization_i: {
-        data: [1],
-        type: "Buffer"
-      },
-      claim_number_edit_i: {
-        data: [1],
-        type: "Buffer"
-      },
-      fwd_to_num: null,
-      manual_record_inbound_i: {
-        data: [1],
-        type: "Buffer"
-      },
-      manual_recorded_i: {
-        data: [1],
-        type: "Buffer"
-      },
-      otbnd_recorded_i: {
-        data: [1],
-        type: "Buffer"
-      },
-      overflow_skill: "Test Overflow Skill",
-      pmt_prcsg_i: {
-        data: [0],
-        type: "Buffer"
-      },
-      policy_number_edit_i: {
-        data: [0],
-        type: "Buffer"
-      },
-      profile_id: 1,
-      profile_name: "Game of Phones",
-      recorded_i: {
-        data: [0],
-        type: "Buffer"
-      },
-      skills: [{
-        profile_id: 12,
-        skill_id: 21,
-        skill_num: "bscCbs",
-        skill_nme: "BSC - CBS"
-      }],
-      voice_mail_transcription_i: {
-        data: [0],
-        type: "Buffer"
-      }
-    }
-  ];
 
-  const renderComponent = (Nid, profileList) => {
-    const rendered = render(<ProfileSettingsTable profileList={profileList} loggedInRep={Nid} setProfileModalState={setProfileModalState}/>);
+  const renderComponent = Nid => {
+    const rendered = render(<ProfileSettingsTable loggedInRep={Nid} setProfileModalState={setProfileModalState}/>);
     return rendered;
   };
 
   describe("profile settings table", () => {
     test("should render correct column headers and number of rows", async () => {
-      const rendered = renderComponent(validNid, profiles);
+      const rendered = renderComponent(validNid, mockProfiles);
       expect(rendered.getByText("ID", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Name", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Inbound Recorded", { selector: "th" })).toBeInTheDocument();
@@ -194,8 +85,8 @@ describe("<ProfileSettingsTable />", () => {
       expect(tableHeaders.length).toBe(24);
     });
 
-    test.only("should render correct tooltips", async () => {
-      const rendered = renderComponent(validNid, profiles);
+    test("should render correct tooltips", async () => {
+      const rendered = renderComponent(validNid, mockProfiles);
       expect(rendered.getByLabelText("Unique Profile Identification")).toBeInTheDocument();
       expect(rendered.getByLabelText("Profile Name")).toBeInTheDocument();
       expect(rendered.getByLabelText("All inbound calls are automatically recorded")).toBeInTheDocument();
@@ -222,15 +113,15 @@ describe("<ProfileSettingsTable />", () => {
     });
 
     test("should render row data", async () => {
-      const rendered = renderComponent(validNid, profiles);
+      const rendered = renderComponent(validNid, mockProfiles);
       expect(rendered.container).toHaveTextContent("1");
       expect(rendered.container).toHaveTextContent("Game of Phones");
       expect(rendered.container).toHaveTextContent("Test Overflow Skill");
     });
     test("should render row data, null fwd_to_num", async () => {
-      const noForwardTo = [...profiles];
+      const noForwardTo = [...mockProfiles];
       noForwardTo[0].fwd_to_num = "5555551234";
-      const rendered = renderComponent(validNid, profiles);
+      const rendered = renderComponent(validNid, mockProfiles);
       expect(rendered.container).toHaveTextContent("1");
       expect(rendered.container).toHaveTextContent("Game of Phones");
       expect(rendered.container).toHaveTextContent("Test Overflow Skill");
@@ -242,7 +133,7 @@ describe("<ProfileSettingsTable />", () => {
     describe("invalid NNumber", () => {
       test("does not render any edit icons for an invalidNid", () => {
         const invalidNid = "n0288362";
-        const rendered = renderComponent(invalidNid, profiles);
+        const rendered = renderComponent(invalidNid, mockProfiles);
         expect(rendered.queryAllByTestId("edit-button")).toHaveLength(0);
       });
     });
@@ -251,7 +142,7 @@ describe("<ProfileSettingsTable />", () => {
         checkIfPO.mockReturnValue(true);
       });
       test("when clicked in row should show ProfileEntryForm for corresponding profile", () => {
-        const rendered = renderComponent(validNid, profiles);
+        const rendered = renderComponent(validNid, mockProfiles);
         const editButtons = rendered.getAllByTestId("edit-button");
         expectMockedComponent(rendered, { ProfileEntryForm }, 0);
         const indexClicked = 0;
@@ -261,7 +152,7 @@ describe("<ProfileSettingsTable />", () => {
         });
       });
       test("renders an edit icon per profile for a validNid", () => {
-        const rendered = renderComponent(validNid, profiles);
+        const rendered = renderComponent(validNid, mockProfiles);
         expect(rendered.queryAllByTestId("edit-button")).toHaveLength(1);
       });
     });

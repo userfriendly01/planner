@@ -7,7 +7,7 @@ import {
 import { getOperatingUnits } from "services/operatingUnits";
 import { getTaskQueues } from "services/taskQueues";
 import {
-  mockApplications, mockOperatingUnits, mockSkillFormState, skillsList, mockTaskQueues, mockTimeOfDays
+  mockApplications, mockOperatingUnits, mockSkillFormState, mockSkills, mockTaskQueues, mockTimeOfDays
 } from "testUtils";
 import { apolloClient } from "components/core/Auth/SharedGraphAPIProvider";
 import { logger } from "utils/logger";
@@ -297,7 +297,7 @@ describe("loadSkillOptions", () => {
   });
   describe("all options load successfully", () => {
     test("should call setDispatch to load skills and skill options", async () => {
-      await loadSkillOptions(skillsList, mockDispatch, mockCallback);
+      await loadSkillOptions(mockSkills, mockDispatch, mockCallback);
       expect(mockDispatch).toHaveBeenCalledTimes(2);
       expect(mockDispatch).toHaveBeenCalledWith({
         type: "LOAD_SKILL_OPTIONS",
@@ -312,24 +312,24 @@ describe("loadSkillOptions", () => {
         type: "LOAD_SKILLS",
         payload: [
           {
-            ...skillsList[0],
-            discrepancies: [`Task Queue was not found with the expression routing.skills HAS "${skillsList[0].name}". (Case Sensitive)`]
+            ...mockSkills[0],
+            discrepancies: [`Task Queue was not found with the expression routing.skills HAS "${mockSkills[0].name}". (Case Sensitive)`]
           },
           {
-            ...skillsList[1],
+            ...mockSkills[1],
             discrepancies: [
               "I dont match!",
-              `Task Queue was not found with the expression routing.skills HAS "${skillsList[1].name}". (Case Sensitive)`
+              `Task Queue was not found with the expression routing.skills HAS "${mockSkills[1].name}". (Case Sensitive)`
             ]
           },
           {
-            ...skillsList[2],
-            discrepancies: [`Task Queue was not found with the expression routing.skills HAS "${skillsList[2].name}". (Case Sensitive)`]
+            ...mockSkills[2],
+            discrepancies: [`Task Queue was not found with the expression routing.skills HAS "${mockSkills[2].name}". (Case Sensitive)`]
           },
-          skillsList[3],
+          mockSkills[3],
           {
-            ...skillsList[4],
-            discrepancies: [`Task Queue was not found with the expression routing.skills HAS "${skillsList[4].name}". (Case Sensitive)`]
+            ...mockSkills[4],
+            discrepancies: [`Task Queue was not found with the expression routing.skills HAS "${mockSkills[4].name}". (Case Sensitive)`]
           }
         ]
       });
@@ -342,7 +342,7 @@ describe("loadSkillOptions", () => {
     });
     test("error logged & thrown", async () => {
       try {
-        await loadSkillOptions(skillsList, mockDispatch, mockCallback);
+        await loadSkillOptions(mockSkills, mockDispatch, mockCallback);
         expect(mockDispatch).toHaveBeenCalledTimes(2);
       } catch(err){
         expect(err).toBe("Skill Options Failed to Load - please refresh Triton and try again");
