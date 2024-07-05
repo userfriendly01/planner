@@ -29,9 +29,9 @@ const useRefSpy = jest.spyOn(React, "useRef");
 const mockSave = jest.fn();
 
 const fullWorker = {
-  ...initialTestState.workerContext.workers[1],
+  ...initialTestState.workerContext.workers[3],
   attributes: {
-    ...initialTestState.workerContext.workers[1].attributes,
+    ...initialTestState.workerContext.workers[3].attributes,
     caller_id: "6038518200",
     roles: ["agent"],
     routing: {
@@ -77,7 +77,7 @@ describe("ExportUsersButton", () => {
     });
   });
   describe("initial render", () => {
-    test.only("renders with ExcelExport", () => {
+    test("renders with ExcelExport", () => {
       const rendered = renderComponent();
       expect(ExcelExport).toHaveBeenCalled();
       expect(rendered.container).toHaveTextContent("Export");
@@ -90,19 +90,19 @@ describe("ExportUsersButton", () => {
       act(() => onClick());
       expect(mockSave).toHaveBeenCalledTimes(1);
       expect(mockSave).toHaveBeenCalledWith([{
-        "emp_first_name": "Gloria",
-        "emp_last_name": "Sake",
-        "extension": "2345",
-        "full_name": "Gloria Sake",
+        "emp_first_name": "Andrew",
+        "emp_last_name": "VandeKamp",
+        "extension": "7891",
+        "full_name": "Andrew VandeKamp",
         "caller_id": "6038518200",
         "outbound_number": "6038518200",
-        "manager_n_number": "n0263786",
-        "n_number": "n0000000",
+        "manager_n_number": "n0260000",
+        "n_number": "n2222222",
         "ou": "Claims",
-        "profile_id": "12",
+        "profile_id": 0,
         "sales_assoc_workers": "hi, there",
         "backup_workers": "n2222222, n1212121",
-        "sid": "WK1234",
+        "sid": "WK66654654",
         "current_skills": "psul1,466 - 1",
         "default_skills": "dsul1,4d66 - 1",
         "disabled_skills": "disul1,4di66 - 1",
@@ -136,20 +136,20 @@ describe("ExportUsersButton", () => {
       act(() => onClick());
       expect(mockSave).toHaveBeenCalledTimes(1);
       expect(mockSave).toHaveBeenCalledWith([{
-        "emp_first_name": "Gloria",
-        "emp_last_name": "Sake",
-        "extension": "2345",
-        "full_name": "Gloria Sake",
-        "manager_n_number": "n0263786",
-        "n_number": "n0000000",
+        "emp_first_name": "Andrew",
+        "emp_last_name": "VandeKamp",
+        "extension": "7891",
+        "full_name": "Andrew VandeKamp",
+        "manager_n_number": "n0260000",
+        "n_number": "n2222222",
         "ou": "Claims",
         "outbound_number": "6038518200",
-        "profile_id": "12",
+        "profile_id": 0,
         "sales_assoc_workers": "hi, there",
         "backup_workers": "n2222222, n1212121",
         "caller_id": "6038518200",
         "did": "603242345",
-        "sid": "WK1234",
+        "sid": "WK66654654",
         "current_skills": "psul1,466 - 1",
         "default_skills": "dsul1,4d66 - 1",
         "disabled_skills": "disul1,4di66 - 1",
