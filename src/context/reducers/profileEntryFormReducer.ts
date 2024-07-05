@@ -32,7 +32,6 @@ export const initialProfileEntryFormState: ProfileEntryFormState = {
   clickToDial: false,
   eftAuthorization: false,
   claimNumberEdit: false,
-  backupWorkers: false,
   overflowSkill: null,
   profileName: "",
   transferQueues: [],
@@ -91,7 +90,6 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         clickToDial: action.payload.clk_to_dial,
         eftAuthorization: action.payload.eft_auth,
         claimNumberEdit: action.payload.edt_claim_num,
-        backupWorkers: action.payload.backup_workers,
         overflowSkill: action.payload.overflow_skill,
         profileName: action.payload.profile_name,
         screenpops: action.payload.screenpops || [],
@@ -100,7 +98,7 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
           ou_name: action.payload.ou_name,
           ou_sid: action.payload.ou_sid
         },
-        accessGroup: action.payload.accessGroup,
+        accessGroup: action.payload.access_group,
         forwardToNum: {
           value: action.payload.fwd_to_num || "",
           unmaskedValue: action.payload.fwd_to_num || "",

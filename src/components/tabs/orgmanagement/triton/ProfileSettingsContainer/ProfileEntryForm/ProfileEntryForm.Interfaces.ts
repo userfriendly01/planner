@@ -72,7 +72,6 @@ export interface ProfileEntryFormState {
   inboundRecorded: boolean,
   manualRecorded: boolean,
   manualRecordedInbound: boolean,
-  backupWorkers: boolean,
   operatingUnit: OperatingUnit,
   outboundRecorded: boolean,
   overflowSkill: Skill,
