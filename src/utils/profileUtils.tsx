@@ -109,7 +109,7 @@ export const profileTableColumnHeader = [
     TOOLTIP: "All outbound calls are automatically recorded"
   },
   {
-    COLUMN_NAME: "Manual Recorded Inbound",
+    COLUMN_NAME: "Manual Inbound Recorded",
     TOOLTIP: "UI Feature: Manual recording button appears in call controls when enabled. User will have the ability to manually start and stop recordings on inbound calls"
   },
   {
@@ -197,11 +197,11 @@ export const toggleControls: ToggleFormField[] = [
   },
   {
     fieldKey: "manualRecorded",
-    label: "Manual Recorded Outbound"
+    label: "Manual Outbound Recorded"
   },
   {
     fieldKey: "manualRecordedInbound",
-    label: "Manual Recorded Inbound"
+    label: "Manual Inbound Recorded"
   },
   {
     fieldKey: "autoAnswered",

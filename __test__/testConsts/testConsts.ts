@@ -74,7 +74,7 @@ export const mockProfiles = [
     takes_paymnts: true,
     voice_mail_trans: true,
     fwd_to_num: "8665680296",
-    transfer_queues: [mockTaskQueues[0], mockTaskQueues[1]],
+    transfer_queues: [mockTaskQueues[0].sid, mockTaskQueues[1].sid],
     access_group: mockAccessGroups[0],
     screenpops: [mockScreenpops[0]],
     activities: [mockActivities[0], mockActivities[1]],

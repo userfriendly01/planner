@@ -12,13 +12,22 @@ import {
   mockProfiles
 } from "testUtils";
 import {
-  profileEntryFormDispatch, useAdminDispatch, useAdminState, useSkillState
+  profileEntryFormDispatch, useAdminState, useSkillState
 } from "context/appContext";
 import { ProfileEntryForm } from "orgmanagement/ProfileEntryForm";
+import {
+  Check, Edit
+} from "@mui/icons-material";
 
 jest.mock("authentication/authUtils", () => ({
   checkIfPO: jest.fn()
 }));
+
+jest.mock("@mui/icons-material", () => ({
+  Check: jest.fn(),
+  Edit: jest.fn()
+}));
+
 
 jest.mock("orgmanagement/ProfileEntryForm", () => ({
   ProfileEntryForm: jest.fn()
@@ -41,7 +50,9 @@ describe("<ProfileSettingsTable />", () => {
     useSkillState.mockReturnValue(initialSkillState);
     checkIfPO.mockReturnValue(false);
     setupMockedComponents({
-      ProfileEntryForm
+      ProfileEntryForm,
+      Edit,
+      Check
     });
     profileEntryFormDispatch.mockReturnValue(mockSetForm);
   });
@@ -63,9 +74,9 @@ describe("<ProfileSettingsTable />", () => {
       expect(rendered.getByText("Payment Processing", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Outbound Recorded", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("ACW Option", { selector: "th" })).toBeInTheDocument();
-      expect(rendered.getByText("Manual Recorded", { selector: "th" })).toBeInTheDocument();
+      expect(rendered.getByText("Manual Outbound Recorded", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("ACW Data Entry", { selector: "th" })).toBeInTheDocument();
-      expect(rendered.getByText("Manual Recorded Inbound", { selector: "th" })).toBeInTheDocument();
+      expect(rendered.getByText("Manual Inbound Recorded", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Agent Assisted Pay", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Overflow Skill", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Policy Number Edit", { selector: "th" })).toBeInTheDocument();
@@ -81,7 +92,7 @@ describe("<ProfileSettingsTable />", () => {
       expect(rendered.getByText("Operating Unit", { selector: "th" })).toBeInTheDocument();
       const tableRows = rendered.getAllByTestId("table-row");
       const tableHeaders = rendered.getAllByTestId("table-header");
-      expect(tableRows.length).toBe(1);
+      expect(tableRows.length).toBe(3);
       expect(tableHeaders.length).toBe(24);
     });
 
@@ -114,18 +125,18 @@ describe("<ProfileSettingsTable />", () => {
 
     test("should render row data", async () => {
       const rendered = renderComponent(validNid, mockProfiles);
-      expect(rendered.container).toHaveTextContent("1");
-      expect(rendered.container).toHaveTextContent("Game of Phones");
-      expect(rendered.container).toHaveTextContent("Test Overflow Skill");
-    });
-    test("should render row data, null fwd_to_num", async () => {
-      const noForwardTo = [...mockProfiles];
-      noForwardTo[0].fwd_to_num = "5555551234";
-      const rendered = renderComponent(validNid, mockProfiles);
-      expect(rendered.container).toHaveTextContent("1");
-      expect(rendered.container).toHaveTextContent("Game of Phones");
-      expect(rendered.container).toHaveTextContent("Test Overflow Skill");
-      expect(rendered.container).toHaveTextContent("(555) 555-1234");
+      expect(Check).toHaveBeenCalledTimes(14);
+      expect(Edit).toHaveBeenCalledTimes(0);
+      expect(rendered.container).toHaveTextContent("0"); // Profile Number
+      expect(rendered.container).toHaveTextContent("Game of Phones"); // Profile Name
+      expect(rendered.container).toHaveTextContent("lscOBDialer1"); // Overflow Skill
+      expect(rendered.container).toHaveTextContent("Claims"); //Operating Unit Name
+      expect(rendered.container).toHaveTextContent("(866) 568-0296"); // forward to num
+      expect(rendered.container).toHaveTextContent("NI Billing & Collections"); //task queue
+      expect(rendered.container).toHaveTextContent("PSU Claims - Level 1"); //task queue
+      expect(rendered.container).toHaveTextContent("Canon"); // Access Group Name
+      expect(rendered.container).toHaveTextContent("Negotiation Type"); //CallTag
+      expect(rendered.container).toHaveTextContent("Claim Number"); //CallTag
     });
   });
 
@@ -152,8 +163,8 @@ describe("<ProfileSettingsTable />", () => {
         });
       });
       test("renders an edit icon per profile for a validNid", () => {
-        const rendered = renderComponent(validNid, mockProfiles);
-        expect(rendered.queryAllByTestId("edit-button")).toHaveLength(1);
+        renderComponent(validNid, mockProfiles);
+        expect(Edit).toHaveBeenCalledTimes(3);
       });
     });
   });

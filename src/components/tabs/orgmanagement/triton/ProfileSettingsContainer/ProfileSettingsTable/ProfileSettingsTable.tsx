@@ -178,7 +178,7 @@ export const ProfileSettingsTable = (props: ProfileSettingsTableProps) => {
                       <TableText style={{ "textWrap": "nowrap" }}>{profile.fwd_to_num ? formatTenDigitNumber(profile.fwd_to_num) : ""}</TableText>
                     </CustomTableData>
                     <CustomTableData>
-                      <TableText>{profile.accessGroup?.access_group_name || ""}</TableText>
+                      <TableText>{profile.access_group?.access_group_name || ""}</TableText>
                     </CustomTableData>
                     {
                       checkIfPO(loggedInUser) ?
