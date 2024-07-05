@@ -1,8 +1,7 @@
 import { SkillsList } from "../SkillsList";
 import { Dropdown } from "components/Dropdown";
 import { useFormState } from "context/appContext";
-import React from "react";
-import { act } from "react-dom/test-utils";
+import React, { act } from "react";
 import {
   expectMockedComponent,
   expectOnlyPassedProps,
@@ -28,13 +27,11 @@ describe("<SkillsList />", () => {
 
   const options = [
     {
-      value: 1,
       label: "skillgroupA",
       isSkillGroup: true,
       skills: [{ name: "skill1"  }]
     },
     {
-      value: 2,
       label: "skillgroupB",
       isSkillGroup: true,
       skills: [{ name: "skill2" }, { name: "skill1" }]
@@ -96,9 +93,9 @@ describe("<SkillsList />", () => {
       });
     });
   });
+
   describe("changes made to the add skills drop down", () => {
-    //Kaleigh Halp
-    test.only("should call updateValue function with selected value", () => {
+    test("should call updateValue function with selected value", () => {
       renderComponent();
       const selectedValue = JSON.stringify(skills[1]);
       act(() => {

@@ -11,7 +11,6 @@ import {
   DefaultSkillSelectorProps,
   NewTwilioWorkerSkill
 } from "usermanagement/DefaultSkillSelector.Interfaces";
-import { SkillsList } from "usermanagement/SkillsList";
 import { SkillLevels } from "usermanagement/SkillLevels";
 import { useSkillState } from "context/appContext";
 import {
@@ -22,14 +21,15 @@ import {
   Add,
   Delete
 } from "@mui/icons-material";
+import { SkillsList } from "../SkillsList/SkillsList";
 
-export const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
+export const DefaultSkillSelector = (props: DefaultSkillSelectorProps): JSX.Element => {
   const {
     defaultSkills,
     setDefaultSkills
   } = props;
 
-  const skills = useSkillState().skills;
+  const { skills } = useSkillState();
   const skillGroups = useSkillState().skillGroups.slice();
 
   const skillsForDropDown = skills.filter((skillObj: Skill) => !defaultSkills.skills.includes(skillObj.name));
@@ -55,7 +55,6 @@ export const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
     [index: string]: any,
     value: string
   }) => {
-    const skillObj: Skill = skills.find(skillObj => skillObj.name === skill.value);
     if (skill.isSkillGroup) {
       setNewSkill({
         levels: [],
@@ -63,10 +62,15 @@ export const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
         skill: skill.label,
         skills: skill.skills
       });
-    } else if(skillObj){
+      return;
+    }
+
+    const skillObj: Skill = skills.find(sk => sk.name === skill.value);
+
+    if (skillObj) {
       setNewSkill({
         levels: skillObj.levels,
-        levelSelected: skillObj.levels.length > 0 ? skillObj.levels[0] : null,
+        levelSelected: skillObj.levels?.length ? skillObj.levels[0] : null,
         skill: skillObj.name
       });
     }
@@ -109,12 +113,15 @@ export const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
 
   const removeSkillClicked = (skill: string) => () => {
     const updatedDefaultSkills = { ...defaultSkills };
-    updatedDefaultSkills.skills = updatedDefaultSkills.skills.filter((existingSkill: string) => existingSkill !== skill);
     delete updatedDefaultSkills.levels[skill];
-    setDefaultSkills(updatedDefaultSkills);
+
+    setDefaultSkills({
+      ...updatedDefaultSkills,
+      skills: updatedDefaultSkills.skills.filter((existingSkill: string) => existingSkill !== skill)
+    });
   };
 
-  const skillHasPriorities = newSkill.levels.length > 0;
+  const skillHasPriorities = !!newSkill.levels?.length;
   const addSkillButtonDisabled = newSkill.skill === "" || (skillHasPriorities && !newSkill.levelSelected);
 
   return (
@@ -125,15 +132,18 @@ export const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
             skillGroups={skillGroupsForDropDown}
             skills={skillsForDropDown}
             skill={newSkill.skill}
-            updateSkill={newSkillChanged} />
+            updateSkill={newSkillChanged}
+          />
         </SkillRowItem>
         <SkillRowItem>
-          {skillHasPriorities ?
+          {skillHasPriorities && (
             <SkillLevels
               availablePriorities={newSkill.levels}
               priorityValue={newSkill.levelSelected}
               updatePriority={newSkillLevelChanged}
-            /> : DashDiv}
+            />
+          )}
+          {!skillHasPriorities && DashDiv}
         </SkillRowItem>
         <SkillRowItem>
           <IconButtonWrapper disabled={addSkillButtonDisabled} onClick={addSkillClicked} data-testid="add-skill-button">
@@ -143,23 +153,25 @@ export const DefaultSkillSelector = (props: DefaultSkillSelectorProps) => {
       </SkillRow>
       <SkillRowSeperator/>
       <SkillsWrapper>
-        {defaultSkills.skills.sort().map((skill: string, index: number) => {
+        {[...defaultSkills.skills].sort().map((skill: string, index: number) => {
           const taskrouterSkill: any = skills.find(skillObj => skillObj.name === skill) || {
             name: skill,
             levels: []
           };
+          const hasLevels = !!taskrouterSkill.levels?.length;
 
-          console.warn("Faith", defaultSkills);
           return (
             <SkillRow highlightOnHover={true} key={`default-skill-row-${index}`}>
               <SkillRowItem>{skill}</SkillRowItem>
               <SkillRowItem>
-                {defaultSkills.levels[skill] ?
+                {hasLevels && (
                   <SkillLevels
                     availablePriorities={taskrouterSkill.levels}
                     priorityValue={defaultSkills.levels[skill]}
                     updatePriority={existingSkillLevelChanged(skill)}
-                  /> : DashDiv}
+                  />
+                )}
+                {!hasLevels && DashDiv}
               </SkillRowItem>
               <SkillRowItem>
                 <IconButtonWrapper onClick={removeSkillClicked(skill)} data-testid="delete-skill-button">

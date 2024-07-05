@@ -115,10 +115,15 @@ export const validProfileEntryFormState = {
     ou_sid: "OU123"
   },
   forwardToNum: {
-    unmaskedValue: "1234567890"
+    value: "(603) 851-8200",
+    e164: "+16038518200",
+    unmaskedValue: "6038518200",
+    updated: false,
+    valid: true
   },
   transferQueues: [{ sid: "WQda5066ddff9e0eebf2f168e40d98cc19" },{ sid: "WQ9e7f40c067bb9006022f43266122a257" }],
   activitiesList: mockActivities,
   callTagsList: mockCallTags,
-  screenpops: mockScreenpops
+  screenpops: mockScreenpops,
+  accessGroup: mockAccessGroups[0]
 };

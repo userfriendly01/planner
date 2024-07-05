@@ -1,16 +1,20 @@
 // export const formatNextToken = () => 
 export const formatDropdownOptions = (options: any[], labelKey: string, valueKey: string) => {
-  return options.map((option: any) => {
-    if(option){
-      return {
-        ...option,
-        label: option[labelKey],
-        value: option[valueKey]
-      };
-    } else {
-      return null;
-    }
-  });
+  try {
+    return options.map((option: any) => {
+      if(option){
+        return {
+          ...option,
+          label: option[labelKey],
+          value: option[valueKey]
+        };
+      } else {
+        return null;
+      }
+    });
+  } catch(err){
+    return [];
+  }
 };
 
 /**

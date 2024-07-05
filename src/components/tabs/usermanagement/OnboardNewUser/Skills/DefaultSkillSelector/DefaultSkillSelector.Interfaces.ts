@@ -10,3 +10,10 @@ export interface NewTwilioWorkerSkill {
   skill: string,
   skills?: any[]
 }
+
+export interface CustomRenderProps {
+  option: {
+    label: string;
+    isSkillGroup?: boolean;
+  }
+}

@@ -8,9 +8,8 @@ import { SkillLevels } from "usermanagement/SkillLevels";
 import {
   useSkillState
 } from "context/appContext";
-import React from "react";
+import React, { act } from "react";
 import {
-  act,
   waitFor,
   expectMockedComponent,
   expectOnlyPassedProps,
@@ -101,8 +100,7 @@ describe("<DefaultSkillSelector />", () => {
 
   describe("initial state", () => {
     describe("worker has no default skills", () => {
-      //Kaleigh Halp
-      test.only("should render header and correct components with correct props; should not render SkillLevels", () => {
+      test("should render header and correct components with correct props; should not render SkillLevels", () => {
         const defaultSkills = {
           skills: [],
           levels: {}
@@ -241,7 +239,7 @@ describe("<DefaultSkillSelector />", () => {
             label: "skillGroupA",
             value: 1,
             isSkillGroup: true,
-            skills: skillGroups[0].skills
+            skills: skillGroups[0].skills.map(skill => skill.name)
           });
         });
         act(() => {
@@ -272,7 +270,7 @@ describe("<DefaultSkillSelector />", () => {
           label: "skillGroupA",
           value: 1,
           isSkillGroup: true,
-          skills: skillGroups[0].skills
+          skills: skillGroups[0].skills.map(skill => skill.name)
         });
         fireEvent.click(getAddSkillButton(rendered));
         expect(rendered.container).toHaveTextContent("skillA");
