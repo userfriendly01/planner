@@ -1,4 +1,7 @@
 import { formModes } from "globals";
+import {
+  mockSkills, mockTaskQueues
+} from "./skillConsts";
 
 
 export const mockProfileOperatingUnits = [
@@ -133,8 +136,8 @@ export const validProfileEntryFormState = {
     updated: false,
     valid: true
   },
-  overflowSkill: "lscOBDialer1",
-  transferQueues: ["WQda5066ddff9e0eebf2f168e40d98cc19", "WQ9e7f40c067bb9006022f43266122a257"],
+  overflowSkill: mockSkills[0],
+  transferQueues: [mockTaskQueues[0], mockTaskQueues[1]],
   activitiesList: mockActivities,
   callTagsList: mockCallTags,
   screenpops: mockScreenpops,
