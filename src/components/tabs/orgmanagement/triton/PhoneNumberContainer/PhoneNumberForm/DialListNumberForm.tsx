@@ -63,8 +63,6 @@ export const DialListNumberForm = (props: PhoneNumberFormProps) => {
 
   const isFormValid = isExternalNumberValid && !isPhoneNumberTaken && isNameValid && formDialListEntry.contact_num.valid;
 
-  console.warn("Faith", isPhoneNumberTaken, isExternalNumberValid, isNameValid, formDialListEntry.contact_num.valid, formDialListEntry);
-
   const requestBody: Partial<DialListNumber> = {
     contact_num: formDialListEntry.contact_num.unmaskedValue,
     contact_name: formDialListEntry.contact_name,

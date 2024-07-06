@@ -37,8 +37,7 @@ export interface DirectoryFormEntryProps {
     valid: boolean
   },
   first_name: string,
-  last_name: string,
-  updated: boolean
+  last_name: string
 }
 
 export interface DialListFormEntryProps {

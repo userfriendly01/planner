@@ -176,9 +176,14 @@ describe("<DialListNumberForm />", () => {
               }
             };
             renderComponent(tableState);
-            expect(StyledButton).toHaveBeenCalledTimes(2);
-            expect(StyledButton.mock.calls[1][0].disabled).toBe(false);
-            const save = StyledButton.mock.calls[1][0].onClick;
+            const maskedValue = "(603) 851-8200";
+            const unmaskedValue = "6038518200";
+            const isValid = true;
+            const updateValue = PhoneNumberInput.mock.calls[0][0].updateValue;
+            updateValue(maskedValue, unmaskedValue, isValid);
+            expect(StyledButton).toHaveBeenCalledTimes(4);
+            expect(StyledButton.mock.calls[3][0].disabled).toBe(false);
+            const save = StyledButton.mock.calls[3][0].onClick;
             save();
             await waitFor(() => expect(ModalOverlay).toHaveBeenCalledTimes(2));
             expectOnlyPassedProps(ModalOverlay, {
@@ -203,14 +208,22 @@ describe("<DialListNumberForm />", () => {
               formMode: "Create",
               entry: {
                 contact_name: "Faith Cuneo",
-                contact_num: "6038518200",
+                contact_num: {
+                  maskedValue: "6038518200",
+                  valid: true
+                },
                 external_num: "8005552434"
               }
             };
             renderComponent(tableState);
-            expect(StyledButton).toHaveBeenCalledTimes(2);
-            expect(StyledButton.mock.calls[1][0].disabled).toBe(false);
-            const save = StyledButton.mock.calls[1][0].onClick;
+            const maskedValue = "(603) 851-8200";
+            const unmaskedValue = "6038518200";
+            const isValid = true;
+            const updateValue = PhoneNumberInput.mock.calls[0][0].updateValue;
+            updateValue(maskedValue, unmaskedValue, isValid);
+            expect(StyledButton).toHaveBeenCalledTimes(4);
+            expect(StyledButton.mock.calls[3][0].disabled).toBe(false);
+            const save = StyledButton.mock.calls[3][0].onClick;
             save();
             await waitFor(() => expect(ModalOverlay).toHaveBeenCalledTimes(2));
             expectOnlyPassedProps(ModalOverlay, {

@@ -47,19 +47,16 @@ export const DirectoryNumberForm = (props: PhoneNumberFormProps) => {
     directory_num: {
       maskedValue: phoneNumberState.entry.directory_num || "",
       unmaskedValue: phoneNumberState.entry.directory_num || "",
-      valid: false
+      valid: phoneNumberState.formMode !== "Create"
     },
     first_name: phoneNumberState.entry.first_name || "",
-    last_name: phoneNumberState.entry.last_name || "",
-    updated: false
+    last_name: phoneNumberState.entry.last_name || ""
   });
 
-  const isPhoneNumberTaken = filteredList.some((fl: DirectoryNumber) => fl.directory_num === phoneNumberState.entry.directory_num);
+  const isPhoneNumberTaken = phoneNumberState.formMode === "Create" && filteredList.some((fl: DirectoryNumber) => fl.directory_num === formDirectoryEntry.directory_num.unmaskedValue);
   const isNameValid = (name: string) => !!name?.trim().length;
 
-  const isFormValid = () => isNumberValid(phoneNumberState.entry.directory_num)
-      && !isPhoneNumberTaken && isNameValid(phoneNumberState.entry.first_name)
-      && isNameValid(phoneNumberState.entry.last_name);
+  const isFormValid = formDirectoryEntry.directory_num.valid && !isPhoneNumberTaken && isNameValid(formDirectoryEntry.first_name) && isNameValid(formDirectoryEntry.last_name);
 
   const requestBody: Partial<DirectoryNumber> = {
     directory_num: formDirectoryEntry.directory_num.unmaskedValue,
@@ -159,12 +156,11 @@ export const DirectoryNumberForm = (props: PhoneNumberFormProps) => {
           id="transfer-number-input"
           label="Transfer Number *"
           number={formDirectoryEntry.directory_num.maskedValue}
-          showError={formDirectoryEntry.updated}
+          showError={!!formDirectoryEntry.directory_num.maskedValue.length}
           disabled={phoneNumberState.formMode !== "Create"}
           updateValue={(maskedValue, unmaskedValue, isValid) => {
             setFormDirectoryEntry({
               ...formDirectoryEntry,
-              updated: true,
               directory_num: {
                 ...formDirectoryEntry.directory_num,
                 maskedValue: maskedValue,
@@ -175,7 +171,7 @@ export const DirectoryNumberForm = (props: PhoneNumberFormProps) => {
           }}
         />
         <TextField
-          helperText={!isNameValid(formDirectoryEntry.first_name) || "Please enter a first name"}
+          helperText={!isNameValid(formDirectoryEntry.first_name) && "Please enter a first name"}
           id="first-name-input"
           inputProps={{ maxLength: 80 }}
           label="First Name *"
@@ -184,7 +180,6 @@ export const DirectoryNumberForm = (props: PhoneNumberFormProps) => {
             target: { value }
           }) => setFormDirectoryEntry({
             ...formDirectoryEntry,
-            updated: true,
             first_name: value
           })}
           margin="normal"
@@ -192,7 +187,7 @@ export const DirectoryNumberForm = (props: PhoneNumberFormProps) => {
           value={formDirectoryEntry.first_name}
         />
         <TextField
-          helperText={!isNameValid(formDirectoryEntry.last_name) || "Please enter a last name" }
+          helperText={!isNameValid(formDirectoryEntry.last_name) && "Please enter a last name" }
           id="last-name-input"
           inputProps={{ maxLength: 80 }}
           label="Last Name *"
@@ -201,7 +196,6 @@ export const DirectoryNumberForm = (props: PhoneNumberFormProps) => {
             target: { value }
           }) => setFormDirectoryEntry({
             ...formDirectoryEntry,
-            updated: true,
             last_name: value
           })}
           margin="normal"
@@ -212,7 +206,7 @@ export const DirectoryNumberForm = (props: PhoneNumberFormProps) => {
           <StyledButton onClick={closeModal}>
             Close
           </StyledButton>
-          <StyledButton disabled={!isFormValid()} onClick={phoneNumberState.formMode === "Create" ? insertDirectoryEntry : updateDirectoryEntry}>
+          <StyledButton disabled={!isFormValid} onClick={phoneNumberState.formMode === "Create" ? insertDirectoryEntry : updateDirectoryEntry}>
             Save
           </StyledButton>
         </ButtonWrapper>
