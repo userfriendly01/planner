@@ -13,10 +13,10 @@ import {
   deleteDialListEntry, deleteDirectoryEntry,
   listUMSoftphoneConfigs
 } from "services/profile";
-import { ProfileDropDown } from "../ProfileDropDown/ProfileDropDown";
+import { ProfileDropDown } from "orgmanagement/ProfileDropDown";
 import { ProfileSettingsContainerDiv } from "../ProfileSettingsContainer/ProfileSettingsContainer.Styles";
 import { PhoneNumberStateProps } from "../PhoneNumberContainer/PhoneNumber.Interfaces";
-import { DialListNumberForm } from "./PhoneNumberForm/DialListNumberForm";
+import { DialListNumberForm } from "orgmanagement/DialListNumberForm";
 import { useLocation } from "react-router-dom";
 import {
   AddContactButtonContainer,
@@ -57,8 +57,8 @@ export const PhoneNumberContainer = () => {
   const waitAndHideOverlay = () => setTimeout(() => {
     setPhoneNumberState({
       ...phoneNumberState,
-      overlayMessage: "",
       saveState: {
+        overlayMessage: "",
         status: null
       }
     });
@@ -70,7 +70,7 @@ export const PhoneNumberContainer = () => {
       setPhoneNumberState({
         ...phoneNumberState,
         saveState: {
-          overlayMessage: "Deleting directory entry...",
+          overlayMessage: `Deleting ${type} entry...`,
           status: ModalOverlayStatuses.SAVING
         }
       });
@@ -101,7 +101,7 @@ export const PhoneNumberContainer = () => {
         setPhoneNumberState({
           ...phoneNumberState,
           saveState: {
-            overlayMessage: "Failed to delete directory entry",
+            overlayMessage: `Failed to delete ${type} entry`,
             status: ModalOverlayStatuses.FAIL
           }
         });
@@ -119,13 +119,17 @@ export const PhoneNumberContainer = () => {
     });
   };
 
-  const addContactButtonClicked = () => {
+  const addButtonOnClick = () => {
     setPhoneNumberState({
       ...phoneNumberState,
-      entry: {
-        first_nme: "",
-        last_nme: "",
-        phone_num: ""
+      entry: type === "Directory" ? {
+        first_name: "",
+        last_name: "",
+        directory_num: ""
+      } : {
+        contact_name: "",
+        external_num: "",
+        contact_num: ""
       },
       isModalOpen: true
     });
@@ -139,7 +143,7 @@ export const PhoneNumberContainer = () => {
       />
       {selectedProfile &&
       <AddContactButtonContainer>
-        <StyledButton onClick={addContactButtonClicked}>
+        <StyledButton onClick={addButtonOnClick}>
           Add {type} Entry
         </StyledButton>
       </AddContactButtonContainer>

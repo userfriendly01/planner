@@ -89,6 +89,7 @@ const paths = [
       "components/tabs/orgmanagement/calabrio/CalabrioRolesWrapper",
       "components/tabs/orgmanagement/calabrio/CalabrioTeamModal",
       "components/tabs/orgmanagement/triton/PhoneNumberContainer",
+      "components/tabs/orgmanagement/triton/ProfileDropDown",
       "components/tabs/orgmanagement/triton/PhoneNumberContainer/PhoneNumberTable",
       "components/tabs/orgmanagement/triton/PhoneNumberContainer/PhoneNumberForm",
       "components/tabs/orgmanagement/triton/ProfileSettingsContainer",

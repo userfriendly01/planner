@@ -4,6 +4,9 @@ import {
 import {
   mockAccessGroups, mockActivities, mockScreenpops, mockCallTags
 } from "./profileEntryFormConsts";
+import {
+  DialListNumber, DirectoryNumber
+} from "globals/interfaces";
 
 export const mockOperatingUnits = [
   {
@@ -50,6 +53,60 @@ export const officeMap = [
   }
 ];
 
+export const mockDialList: Partial<DialListNumber>[] = [
+  {
+    profile_id: 1,
+    contact_num: "8008436446",
+    contact_name: "Ohio Casualty (OCAS Legacy)",
+    external_num: null,
+    id: "2hTa9wuALlic3Ze2oGFBUNO3RfP"
+  },
+  {
+    profile_id: 1,
+    contact_num: "8777512640",
+    contact_name: "Bond - Billing",
+    external_num: null,
+    id: "2hTa9xdNCFHTGaHQ60dM0VwTf8E"
+  },
+  {
+    profile_id: 1,
+    contact_num: "4122264562",
+    contact_name: "Global Risk Solutions - Sales",
+    external_num: "8774668029",
+    id: "2hTaATqcywqLZaczIhbvrBC98Hx"
+  },
+  {
+    profile_id: 2,
+    contact_num: "4127439935",
+    contact_name: "LNW Billing",
+    external_num: "8005381648",
+    id: "2hTa9yfOM8aEclEdQIXnbWhGaEh"
+  }
+];
+
+export const mockDirectoryList: Partial<DirectoryNumber>[] = [
+  {
+    id: "2hTZxO1GYOzL0Ewynop4nd2d3Ng",
+    directory_num: "6039709235",
+    first_name: "Mike",
+    last_name: "Ross",
+    profile_id: 0
+  },
+  {
+    id: "2hTZxaWxVVBut1hWII0zHvFcYxg",
+    directory_num: "7158706175",
+    first_name: "Billy Bob",
+    last_name: "Thorton",
+    profile_id: 2
+  },
+  {
+    id: "2hTZxcHS3DOIRfZggtol2h9xyOi",
+    directory_num: "6039709234",
+    first_name: "Jane",
+    last_name: "Catalfo",
+    profile_id: 2
+  }
+];
 
 export const mockProfiles = [
   {
@@ -424,7 +481,9 @@ export const initialTestState: any = {
     activities: mockActivities,
     accessGroups: mockAccessGroups,
     screenpops: mockScreenpops,
-    profiles: mockProfiles
+    profiles: mockProfiles,
+    directoryEntries: mockDirectoryList,
+    dialListEntries: mockDialList
   },
   managerContext: {
     managers: managerList
