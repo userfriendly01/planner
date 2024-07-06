@@ -19,14 +19,6 @@ import { getOperatingUnits } from "services/operatingUnits";
 import { getTargetExpression } from "utils/skillsUtils";
 import { getUMSkills } from "globals/graphql";
 
-
-/* FYI - In the interest of not having to bother to set up the softphone-service to interact with the graph,
-   The consolidation logic for skills will be here.
-
-   In a future story, we want to move this logic to the shared-admin-service
-   https://libertymutual.atlassian.net/browse/CCTP-13060
-*/
-
 export const createSkill = async (skillForm: SkillFormState, updatedBy: string): Promise<any> => {
   const messages: string[] = [];
   let taskQueueSid = skillForm.taskQueue.sid;
@@ -332,11 +324,15 @@ export const loadConsolidatedSkills = async (dispatch: (action: Action) => void)
       }
 
       if(matchingTrSkill){
-        const levels = [];
-        for (let i = matchingTrSkill.minimum; i <= matchingTrSkill.maximum; i++) {
-          levels.push(i);
+        if(matchingTrSkill.minimum && matchingTrSkill.maximum){
+          const levels = [];
+          for (let i = matchingTrSkill.minimum; i <= matchingTrSkill.maximum; i++) {
+            levels.push(i);
+          }
+          skill.levels = levels;
+        } else {
+          skill.levels = null;
         }
-        skill.levels = levels;
         taskRouterSkills = taskRouterSkills.filter(trSkill => trSkill.name !== skill.name);
       } else {
         skill.discrepancies.push(`${skill.name} is not in the Flex Console`);
