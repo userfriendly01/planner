@@ -43,11 +43,12 @@ export const PhoneNumberTable = (props: PhoneNumberTableProps) => {
           </NoListDiv>
         ) : (
           <StyledPaper elevation={3}>
-            {saveState.status ?
+            {saveState.status &&
               <ModalOverlay
                 message={saveState.overlayMessage}
                 status={saveState.status}
-              /> : null}
+              />
+            }
             <CustomTable>
               <thead>
                 <tr>

@@ -483,8 +483,8 @@ export const listSoftphoneConfigs = (
             display_name
             attribute_name
         }
-    }
-    accessGroups: listUMAccessGroups(nextToken: ${accessGroupsNextToken}) @include(if:  ${ !!(accessGroupsNextToken?.length || isFirstQuery) }) {
+     }
+     accessGroups: listUMAccessGroups(nextToken: ${accessGroupsNextToken}) @include(if:  ${ !!(accessGroupsNextToken?.length || isFirstQuery) }) {
         nextToken
         items {
             pk
@@ -494,8 +494,8 @@ export const listSoftphoneConfigs = (
             item_type
             id
         }
-    }
-    activities: listUMActivities(nextToken: ${activitiesNextToken}) @include(if:  ${ !!(activitiesNextToken?.length || isFirstQuery) }) {
+      }
+     activities: listUMActivities(nextToken: ${activitiesNextToken}) @include(if:  ${ !!(activitiesNextToken?.length || isFirstQuery) }) {
         nextToken
         items {
             pk

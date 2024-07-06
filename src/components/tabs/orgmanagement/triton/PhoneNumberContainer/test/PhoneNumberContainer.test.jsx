@@ -11,13 +11,13 @@ import {
 } from "testUtils";
 import {
   useAdminDispatch, useAdminState
-} from "context/appContext"; //
-import { DialListNumberForm } from "orgmanagement/DialListNumberForm";//
-import { ProfileDropDown } from "orgmanagement/ProfileDropDown"; //
-import { useLocation } from "react-router-dom"; //
+} from "context/appContext";
+import { DialListNumberForm } from "orgmanagement/DialListNumberForm";
+import { ProfileDropDown } from "orgmanagement/ProfileDropDown";
+import { useLocation } from "react-router-dom";
 import {
   deleteDialListEntry, deleteDirectoryEntry, listUMSoftphoneConfigs
-} from "services/profile";//
+} from "services/profile";
 import { Modal } from "@mui/material";
 import { DirectoryNumberForm } from "orgmanagement/DirectoryNumberForm";
 import { PhoneNumberTable } from "orgmanagement/PhoneNumberTable";
@@ -132,11 +132,7 @@ describe("<PhoneNumberContainer />", () => {
           filteredList: [mockDirectoryList[1], mockDirectoryList[2]],
           phoneNumberState: {
             type: "Directory",
-            entry: {
-              first_name: "",
-              last_name: "",
-              directory_num: ""
-            },
+            entry: {},
             formMode: "Create",
             isModalOpen: true,
             overlayMessage: "",
@@ -314,15 +310,19 @@ describe("<PhoneNumberContainer />", () => {
         expect(ProfileDropDown).toHaveBeenCalledTimes(1);
         const setSelectedProfile = ProfileDropDown.mock.calls[0][0].setSelectedProfile;
         setSelectedProfile(2);
-        expect(Modal).toHaveBeenCalledTimes(2);
-        render(Modal.mock.calls[1][0].children);
+        expect(StyledButton).toHaveBeenCalledTimes(1);
+        const clickCreate = StyledButton.mock.calls[0][0].onClick;
+        clickCreate();
+        expect(Modal).toHaveBeenCalledTimes(3);
+        expect(Modal.mock.calls[2][0].open).toBe(true);
+        render(Modal.mock.calls[2][0].children);
         expectOnlyPassedProps(DialListNumberForm, {
           filteredList: [mockDialList[3]],
           phoneNumberState: {
             type: "DialList",
-            entry: null,
+            entry: {},
             formMode: "Create",
-            isModalOpen: false,
+            isModalOpen: true,
             overlayMessage: "",
             saveState: {
               status: null

@@ -29,7 +29,7 @@ export const MessageContainer = (props: MessageContainerProps) => {
   React.useEffect(() => {
     const variable = messageType.variable;
 
-    if(tableState.selected.length > 1 || tableState.selected.length === 0){
+    if(tableState.selected.length !== 1){
       setText("");
     } else {
       const skill: Partial<Skill> = skills.find((s: Skill) => s.name === tableState.selected[0]) || {};

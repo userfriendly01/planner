@@ -26,7 +26,6 @@ import {
   UPDATE_SOFTPHONE_CONFIG,
   getSoftphoneConfigRelationshipsQuery, listSoftphoneConfigs
 } from "globals/graphql";
-import { formatErrorMessage } from "utils/_formatUtils";
 
 export const listUMSoftphoneConfigs = async (dispatch: (action: Action) => void): Promise<UMSoftphoneConfiguration[]> => {
   let profiles: UMSoftphoneConfiguration[] = [];

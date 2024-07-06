@@ -74,7 +74,6 @@ export const reducer = (state: AppState, action: Action): AppState => {
       };
     }
     case "loadProfileOptions": {
-      console.log("FAITH RELATIONSHIPS!",action.payload);
       return {
         ...state,
         profileContext: {

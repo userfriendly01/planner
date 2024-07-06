@@ -49,7 +49,6 @@ export interface DialListFormEntryProps {
     valid: boolean
   },
   external_num: string,
-  contact_name: string,
-  updated: boolean
+  contact_name: string
 }
 

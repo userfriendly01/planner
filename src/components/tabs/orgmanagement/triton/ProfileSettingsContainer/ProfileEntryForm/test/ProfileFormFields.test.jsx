@@ -258,7 +258,7 @@ describe("<ProfileFormFields />", () => {
         expectOnlyPassedProps(Dropdown, {
           label: "Overflow Skill",
           options: mockSkills,
-          value: mockSkills[0].name
+          value: mockSkills[0]
         }, 2);
       });
       describe("updateValue is called", () => {
@@ -286,7 +286,7 @@ describe("<ProfileFormFields />", () => {
           label: "Transfer Queues",
           multiple: true,
           options: mockTaskQueues,
-          value: [mockTaskQueues[0], mockTaskQueues[1]].map(queues => queues.sid)
+          value: [mockTaskQueues[0], mockTaskQueues[1]]
         }, 3);
       });
       describe("updateValue is called", () => {

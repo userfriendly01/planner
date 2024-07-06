@@ -35,7 +35,7 @@ export const PhoneNumberContainer = () => {
     directoryEntries
   } = state.profileContext;
 
-  const [phoneNumberState, setPhoneNumberState] = useState<PhoneNumberStateProps>({
+  const defaultPhoneNumberState: PhoneNumberStateProps = {
     type,
     entry: null,
     formMode: "Create",
@@ -44,7 +44,9 @@ export const PhoneNumberContainer = () => {
     saveState: {
       status: null
     }
-  });
+  };
+
+  const [phoneNumberState, setPhoneNumberState] = useState<PhoneNumberStateProps>(defaultPhoneNumberState);
 
   const [ selectedProfile, setSelectedProfile ] = React.useState(null);
   const filteredList = selectedProfile ? (type === "Directory" ? directoryEntries.filter((e: any) => e.profile_id === selectedProfile) : dialListEntries.filter((e: any) => e.profile_id === selectedProfile)) : [];
@@ -112,7 +114,7 @@ export const PhoneNumberContainer = () => {
 
   const editButtonOnClick = (entry: any) => {
     setPhoneNumberState({
-      ...phoneNumberState,
+      ...defaultPhoneNumberState,
       entry,
       formMode: "Edit",
       isModalOpen: true
@@ -121,16 +123,9 @@ export const PhoneNumberContainer = () => {
 
   const addButtonOnClick = () => {
     setPhoneNumberState({
-      ...phoneNumberState,
-      entry: type === "Directory" ? {
-        first_name: "",
-        last_name: "",
-        directory_num: ""
-      } : {
-        contact_name: "",
-        external_num: "",
-        contact_num: ""
-      },
+      ...defaultPhoneNumberState,
+      formMode: "Create",
+      entry: {},
       isModalOpen: true
     });
   };

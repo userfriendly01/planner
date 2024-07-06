@@ -29,6 +29,7 @@ import { toggleControls } from "utils/profileUtils";
 import { formatDropdownOptions } from "utils/_formatUtils";
 import { Dropdown } from "components/Dropdown";
 import { CustomInput } from "components/CustomInput";
+import { logger } from "utils/logger";
 
 export const ProfileFormFields = () => {
 
@@ -47,7 +48,7 @@ export const ProfileFormFields = () => {
     accessGroups
   } = useAdminState().profileContext;
 
-  console.log("PROFILE FORM", form);
+  logger.log("PROFILE FORM", form);
 
   React.useEffect(() => {
     if(!form.updated){
@@ -221,45 +222,45 @@ export const ProfileFormFields = () => {
                 }}
               />
               {form.accessGroup?.isNew &&
-          <>
-            <CustomInput
-              label={"New Access Group Name *"}
-              name={"New Access Group Name *"}
-              maxLength="80"
-              styles={subStyles}
-              value={form.accessGroup?.access_group_name}
-              updateValue={value => {
-                setForm({
-                  type: profileEntryFormActions.SET_FORM_FIELD,
-                  payload: {
-                    key: "accessGroup",
-                    value: {
-                      ...form.accessGroup,
-                      access_group_name: value
-                    }
-                  }
-                });
-              }}
-            />
-            <CustomInput
-              label={"Twilio Dashboard Url *"}
-              name={"Twilio Dashboard Url *"}
-              styles={subStyles}
-              value={form.accessGroup?.twilio_dashboard_url}
-              updateValue={value => {
-                setForm({
-                  type: profileEntryFormActions.SET_FORM_FIELD,
-                  payload: {
-                    key: "accessGroup",
-                    value: {
-                      ...form.accessGroup,
-                      twilio_dashboard_url: value
-                    }
-                  }
-                });
-              }}
-            />
-          </>
+                <>
+                  <CustomInput
+                    label={"New Access Group Name *"}
+                    name={"New Access Group Name *"}
+                    maxLength="80"
+                    styles={subStyles}
+                    value={form.accessGroup?.access_group_name}
+                    updateValue={value => {
+                      setForm({
+                        type: profileEntryFormActions.SET_FORM_FIELD,
+                        payload: {
+                          key: "accessGroup",
+                          value: {
+                            ...form.accessGroup,
+                            access_group_name: value
+                          }
+                        }
+                      });
+                    }}
+                  />
+                  <CustomInput
+                    label={"Twilio Dashboard Url *"}
+                    name={"Twilio Dashboard Url *"}
+                    styles={subStyles}
+                    value={form.accessGroup?.twilio_dashboard_url}
+                    updateValue={value => {
+                      setForm({
+                        type: profileEntryFormActions.SET_FORM_FIELD,
+                        payload: {
+                          key: "accessGroup",
+                          value: {
+                            ...form.accessGroup,
+                            twilio_dashboard_url: value
+                          }
+                        }
+                      });
+                    }}
+                  />
+                </>
               }
               <PhoneNumberInput
                 allowSevenDigitVdn={false}

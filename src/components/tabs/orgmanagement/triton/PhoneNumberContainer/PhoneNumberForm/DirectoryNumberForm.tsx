@@ -14,9 +14,7 @@ import {
   useAdminDispatch, useAdminState
 } from "context/appContext";
 import {
-  createDirectoryEntry, editDirectoryEntry,
-  listUMSoftphoneConfigs,
-  loadSoftphoneConfigRelationships
+  createDirectoryEntry, editDirectoryEntry, listUMSoftphoneConfigs
 } from "services/profile";
 import {
   PhoneNumberFormProps, DirectoryFormEntryProps
@@ -57,7 +55,7 @@ export const DirectoryNumberForm = (props: PhoneNumberFormProps) => {
   });
 
   const isPhoneNumberTaken = filteredList.some((fl: DirectoryNumber) => fl.directory_num === phoneNumberState.entry.directory_num);
-  const isNameValid = (name: string) => name?.trim().length;
+  const isNameValid = (name: string) => !!name?.trim().length;
 
   const isFormValid = () => isNumberValid(phoneNumberState.entry.directory_num)
       && !isPhoneNumberTaken && isNameValid(phoneNumberState.entry.first_name)
@@ -159,7 +157,7 @@ export const DirectoryNumberForm = (props: PhoneNumberFormProps) => {
           error={isPhoneNumberTaken && phoneNumberState.formMode === "Create"}
           helperText={isPhoneNumberTaken && phoneNumberState.formMode === "Create" && "Number already exists in directory"}
           id="transfer-number-input"
-          label="Transfer Number"
+          label="Transfer Number *"
           number={formDirectoryEntry.directory_num.maskedValue}
           showError={formDirectoryEntry.updated}
           disabled={phoneNumberState.formMode !== "Create"}
@@ -177,11 +175,10 @@ export const DirectoryNumberForm = (props: PhoneNumberFormProps) => {
           }}
         />
         <TextField
-          error={!isNameValid(formDirectoryEntry.first_name)}
           helperText={!isNameValid(formDirectoryEntry.first_name) || "Please enter a first name"}
           id="first-name-input"
           inputProps={{ maxLength: 80 }}
-          label="First Name"
+          label="First Name *"
           name="First Name"
           onChange={({
             target: { value }
@@ -195,12 +192,11 @@ export const DirectoryNumberForm = (props: PhoneNumberFormProps) => {
           value={formDirectoryEntry.first_name}
         />
         <TextField
-          error={!isNameValid(formDirectoryEntry.first_name)}
-          helperText={!isNameValid(formDirectoryEntry.first_name) || "Please enter a last name" }
+          helperText={!isNameValid(formDirectoryEntry.last_name) || "Please enter a last name" }
           id="last-name-input"
           inputProps={{ maxLength: 80 }}
-          label="Last Name"
-          name="Last Name"
+          label="Last Name *"
+          name="Last Name *"
           onChange={({
             target: { value }
           }) => setFormDirectoryEntry({
@@ -213,11 +209,11 @@ export const DirectoryNumberForm = (props: PhoneNumberFormProps) => {
           value={formDirectoryEntry.last_name}
         />
         <ButtonWrapper>
-          <StyledButton disabled={!isFormValid} onClick={phoneNumberState.formMode === "Create" ? insertDirectoryEntry : updateDirectoryEntry}>
-            Save
-          </StyledButton>
           <StyledButton onClick={closeModal}>
             Close
+          </StyledButton>
+          <StyledButton disabled={!isFormValid()} onClick={phoneNumberState.formMode === "Create" ? insertDirectoryEntry : updateDirectoryEntry}>
+            Save
           </StyledButton>
         </ButtonWrapper>
       </PaperContainer>

@@ -16,9 +16,7 @@ import {
   useAdminDispatch, useAdminState
 } from "context/appContext";
 import {
-  createDialListEntry, editDialListEntry,
-  listUMSoftphoneConfigs,
-  loadSoftphoneConfigRelationships
+  createDialListEntry, editDialListEntry, listUMSoftphoneConfigs
 } from "services/profile";
 import {
   PhoneNumberFormProps, DialListFormEntryProps
@@ -53,18 +51,19 @@ export const DialListNumberForm = (props: PhoneNumberFormProps) => {
     contact_num: {
       maskedValue: phoneNumberState.entry.contact_num || "",
       unmaskedValue: phoneNumberState.entry.contact_num || "",
-      valid: false
+      valid: phoneNumberState.formMode !== "Create"
     },
     external_num: phoneNumberState.entry.external_num || null,
-    contact_name: phoneNumberState.entry.contact_name || null,
-    updated: false
+    contact_name: phoneNumberState.entry.contact_name || null
   });
 
-  const isPhoneNumberTaken = filteredList.some((fl: DialListNumber) => fl.contact_num === phoneNumberState.entry.contact_num);
-  const isNameValid = (name: string) => !!name?.trim().length;
+  const isPhoneNumberTaken = phoneNumberState.formMode === "Create" && filteredList.some((fl: DialListNumber) => fl.contact_num === formDialListEntry.contact_num.unmaskedValue);
+  const isExternalNumberValid = formDialListEntry.external_num && isNumberValid(formDialListEntry.external_num) || !formDialListEntry.external_num;
+  const isNameValid = !!formDialListEntry.contact_name?.trim().length;
 
-  const isFormValid = () => isNumberValid(phoneNumberState.entry.contact_num)
-      && !isPhoneNumberTaken && isNameValid(phoneNumberState.entry.contact_name);
+  const isFormValid = isExternalNumberValid && !isPhoneNumberTaken && isNameValid && formDialListEntry.contact_num.valid;
+
+  console.warn("Faith", isPhoneNumberTaken, isExternalNumberValid, isNameValid, formDialListEntry.contact_num.valid, formDialListEntry);
 
   const requestBody: Partial<DialListNumber> = {
     contact_num: formDialListEntry.contact_num.unmaskedValue,
@@ -151,21 +150,21 @@ export const DialListNumberForm = (props: PhoneNumberFormProps) => {
   return (
     <ModalContainer>
       <PaperContainer>
-        {loading.saveStatus ?
+        {loading.saveStatus &&
           <ModalOverlay
             message={loading.overlayMessage}
             status={loading.saveStatus}
-          /> : null}
+          />}
         <Header>{phoneNumberState.formMode === "Create" ? "Add Dial List Entry" : "Edit Dial List Entry"}</Header>
         <PhoneNumberInput
           allowSevenDigitVdn={true}
           error={isPhoneNumberTaken && phoneNumberState.formMode === "Create"}
           helperText={isPhoneNumberTaken && phoneNumberState.formMode === "Create" && "Number already exists in dial list" }
           id="transfer-number-input"
-          label="Transfer Number"
+          label="Transfer Number *"
           number={formDialListEntry.contact_num.maskedValue}
           disabled={phoneNumberState.formMode !== "Create"}
-          showError={formDialListEntry.updated}
+          showError={!!formDialListEntry.contact_num.maskedValue.length}
           updateValue={(maskedValue, unmaskedValue, isValid) => {
             setFormDialListEntry({
               ...formDialListEntry,
@@ -179,11 +178,10 @@ export const DialListNumberForm = (props: PhoneNumberFormProps) => {
           }}
         />
         <TextField
-          error={!isNameValid(formDialListEntry.contact_name)}
-          helperText={!isNameValid(formDialListEntry.contact_name) && "Please enter a friendly name" }
+          helperText={!isNameValid && "Please enter a friendly name" }
           id="friendly-name-input"
           inputProps={{ maxLength: 80 }}
-          label="Friendly Name"
+          label="Friendly Name *"
           name="Friendly Name"
           onChange={({
             target: { value }
@@ -199,9 +197,10 @@ export const DialListNumberForm = (props: PhoneNumberFormProps) => {
           <div style={{ width: "100%" }}>
             <TextField
               fullWidth={true}
+              error={!!(!isExternalNumberValid && formDialListEntry.external_num.length)}
               id="external-number-input"
               inputProps={{ maxLength: 80 }}
-              label="External Number"
+              label="External Number (Optional)"
               name="External Number"
               onChange={event => setFormDialListEntry({
                 ...formDialListEntry,
@@ -219,11 +218,11 @@ export const DialListNumberForm = (props: PhoneNumberFormProps) => {
           </div>
         </ExternalNumberContainer>
         <ButtonWrapper>
-          <StyledButton disabled={!isFormValid} onClick={phoneNumberState.formMode === "Create" ? insertDialListEntry : updateDialListEntry}>
-            Save
-          </StyledButton>
           <StyledButton onClick={closeModal}>
             Close
+          </StyledButton>
+          <StyledButton disabled={!isFormValid} onClick={phoneNumberState.formMode === "Create" ? insertDialListEntry : updateDialListEntry}>
+            Save
           </StyledButton>
         </ButtonWrapper>
       </PaperContainer>
