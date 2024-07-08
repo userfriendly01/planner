@@ -199,7 +199,7 @@ const processWFMCreateUser = async (row: any, state: AppState) => {
     // completely optional
     body.OptionalColumns = row.wfmOptionalColumns;
     if (env.APP_ENV === "production") {
-      const result = await createCalabrioWFMPerson(body);
+      const result = await createCalabrioWFMPerson(state.userContext.tokens.calabrioService, body);
       row.Id = result?.data?.PersonId;
 
       const message = `Person created in Calabrio WFM for ${row.attributes.n_number} for row ${rowNumber}`;

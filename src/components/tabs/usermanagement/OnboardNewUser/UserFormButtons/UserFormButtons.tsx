@@ -224,7 +224,7 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
         });
 
         try {
-          const updatedUsers: any = await getCalabrioUsers(state.userContext.tokens.calabrioService);
+          const updatedUsers: any = await getCalabrioUsers(calabrioServiceToken);
           dispatch({
             type: "loadCalabrioUsers",
             payload: updatedUsers.data
@@ -264,7 +264,7 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
 
         if (env.APP_ENV === "production") {
           try {
-            const res = await createCalabrioWFMPerson(wfmBody);
+            const res = await createCalabrioWFMPerson(calabrioServiceToken, wfmBody);
 
             logger.info("Successfully created Calabrio WFM Person", {
               nNumber,
@@ -487,7 +487,7 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
         };
 
         if (form.calabrio_qm.id) {
-          await updateCalabrioUser(form.calabrio_qm.id, calabrioAttributes);
+          await updateCalabrioUser(calabrioServiceToken, form.calabrio_qm.id, calabrioAttributes);
 
           logger.info("Successfully Updated Calabrio user", {
             nNumber,
@@ -503,7 +503,7 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
           });
         }
         try {
-          const updatedUsers: any = await getCalabrioUsers(state.userContext.tokens.calabrioService);
+          const updatedUsers: any = await getCalabrioUsers(calabrioServiceToken);
           dispatch({
             type: "loadCalabrioUsers",
             payload: updatedUsers.data
@@ -532,7 +532,7 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
 
       if (env.APP_ENV === "production") {
         try {
-          const res = await createCalabrioWFMPerson(wfmBody);
+          const res = await createCalabrioWFMPerson(calabrioServiceToken, wfmBody);
 
           logger.info("Successfully created Calabrio WFM Person", {
             nNumber,

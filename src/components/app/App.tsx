@@ -160,6 +160,7 @@ const App = () => {
         wait(showModal, msGraph.expiresOn.getTime() - Date.now());
         wait(showModal, sharedGraph.expiresOn.getTime() - Date.now());
         wait(showModal, adminService.expiresOn.getTime() - Date.now());
+        wait(showModal, calabrioService.expiresOn.getTime() - Date.now());
       } catch (error) {
         logger.error("TOKEN_GET_FAILED", { error });
         setLoadResult({

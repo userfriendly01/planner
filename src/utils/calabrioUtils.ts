@@ -321,7 +321,7 @@ export const checkConflictingUsers = async (calabrioServiceToken: string, user: 
           dupUser.team = teams.find(team => team.name.toLowerCase().includes("default"))?.groupId;
         }
 
-        await updateCalabrioUser(dupUser.id, dupUser);
+        await updateCalabrioUser(calabrioServiceToken, dupUser.id, dupUser);
         return;
       }
 
@@ -342,7 +342,7 @@ export const checkConflictingUsers = async (calabrioServiceToken: string, user: 
         if (!dupUser.team) {
           dupUser.team = teams.find(team => team.name.toLowerCase().includes("default"))?.groupId;
         }
-        await updateCalabrioUser(dupUser.id, dupUser);
+        await updateCalabrioUser(calabrioServiceToken, dupUser.id, dupUser);
         return;
       }
     }));

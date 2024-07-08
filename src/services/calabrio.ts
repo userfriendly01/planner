@@ -21,8 +21,12 @@ export const createCalabrioUser = async (accessToken: string, payload: any): Pro
   });
 };
 
-export const updateCalabrioUser = async (personId: number, payload: any): Promise<CalabrioUser> => {
-  return await myAxios.put(apiPaths.UPDATE_CALABRIO_USER(personId), payload);
+export const updateCalabrioUser = async (accessToken: string, personId: number, payload: any): Promise<CalabrioUser> => {
+  return await myAxios.put(apiPaths.UPDATE_CALABRIO_USER(personId), payload, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`
+    }
+  });
 };
 
 export const getWfmOrg = async (accessToken: string, businessUnitId: string): Promise<CalabrioGroup[]> => {
@@ -80,8 +84,12 @@ export const getWfmBusinessUnits = async (accessToken: string): Promise<Calabrio
   });
 };
 
-export const createCalabrioWFMPerson = async (payload: any): Promise<any> => {
-  return await myAxios.post(apiPaths.CREATE_CALABRIO_WFM_PERSON, payload);
+export const createCalabrioWFMPerson = async (accessToken: string, payload: any): Promise<any> => {
+  return await myAxios.post(apiPaths.CREATE_CALABRIO_WFM_PERSON, payload, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`
+    }
+  });
 };
 
 // TODO: any chance that we may have to decompress the response?

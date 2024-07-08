@@ -57,16 +57,11 @@ jest.mock("services/skill", () => ({
 
 
 const axiosMock = new MockAdapter(myAxios);
-const profilesEndpoint = apiPaths.PROFILES;
 const skillsEndpoint = apiPaths.GET_SKILLS;
 const calabrioUsersEndpoint = apiPaths.GET_CALABRIO_USERS;
 const calabrioOrgEndpoint = apiPaths.getCalabrioOrg;
 const calabrioRolesEndpoint = apiPaths.getCalabrioRoles;
 
-const profiles = [
-  { cool: "neat" },
-  { wow: "amazing" }
-];
 
 const skills = {
   consolidatedSkills: [
@@ -86,6 +81,11 @@ const skills = {
 };
 
 const mockAdminDispatch = jest.fn();
+const mockSkillDispatch = jest.fn();
+const tokens = {
+  sharedGraph: "token",
+  calabrioService: "token"
+};
 const statusCode = 500;
 const error = {
   response: {
@@ -107,7 +107,6 @@ describe("cct-triton-admin-startup", () => {
 
   describe("runTritonAdminStartup", () => {
     beforeEach(() => {
-      axiosMock.onGet(profilesEndpoint).reply(200, profiles);
       axiosMock.onGet(skillsEndpoint).reply(200, skills);
       getCalabrioUsers.mockResolvedValue({ data: []});
       getCalabrioOrg.mockResolvedValue({ data: []});
@@ -123,7 +122,7 @@ describe("cct-triton-admin-startup", () => {
     });
     describe("all service calls successful", () => {
       test("**MUST RETURN STARTUP NAME FIRST**", async () => {
-        const result = await runTritonAdminStartup(mockAdminDispatch);
+        const result = await runTritonAdminStartup(mockAdminDispatch, mockSkillDispatch, tokens);
         const firstResponse = result[0];
         expect(firstResponse).toStrictEqual(startups.TRITON.name);
       });
@@ -131,7 +130,7 @@ describe("cct-triton-admin-startup", () => {
         test(
           "should render Header & NavTabs, should dispatch appropriate actions, Modal should not be open",
           async () => {
-            await runTritonAdminStartup(mockAdminDispatch);
+            await runTritonAdminStartup(mockAdminDispatch, mockSkillDispatch, tokens);
             expect(mockAdminDispatch).toHaveBeenCalledTimes(4);
             expect(mockAdminDispatch).toHaveBeenCalledWith({
               type: "loadCalabrioUsers",
@@ -159,20 +158,6 @@ describe("cct-triton-admin-startup", () => {
     });
 
     describe("service calls fail", () => {
-      describe(profilesEndpoint, () => {
-        describe("profiles service call returned an error", () => {
-          beforeEach(() => {
-            axiosMock.onGet(profilesEndpoint).reply(statusCode, { wahhhh: "oh noooo" });
-          });
-          test("should render error message 'Failed to fetch profiles from service'", async () => {
-            try {
-              await runTritonAdminStartup(mockAdminDispatch);
-            } catch (err) {
-              expect(err.msg).toBe("Failed to fetch profiles from service");
-            }
-          });
-        });
-      });
       describe(skillsEndpoint, () => {
         describe("skills service call returned an error", () => {
           beforeEach(() => {
@@ -180,7 +165,7 @@ describe("cct-triton-admin-startup", () => {
           });
           test("should return 'An error occurred while logging in.'", async () => {
             try {
-              await runTritonAdminStartup(mockAdminDispatch);
+              await runTritonAdminStartup(mockAdminDispatch, mockSkillDispatch, tokens);
             } catch (err) {
               expect(err.msg).toBe("Failed to fetch skills from service");
             }
@@ -194,7 +179,7 @@ describe("cct-triton-admin-startup", () => {
           });
           test("should return 'An error occurred while logging in.'", async () => {
             try {
-              await runTritonAdminStartup(mockAdminDispatch);
+              await runTritonAdminStartup(mockAdminDispatch, mockSkillDispatch, tokens);
             } catch (err) {
               expect(err).toBe(error);
             }
@@ -214,7 +199,7 @@ describe("cct-triton-admin-startup", () => {
             });
           });
           test("should still load triton admin", async () => {
-            await runTritonAdminStartup(mockAdminDispatch);
+            await runTritonAdminStartup(mockAdminDispatch, mockSkillDispatch, tokens);
             expect(mockAdminDispatch).toHaveBeenCalledTimes(3);
             expect(mockAdminDispatch).toHaveBeenCalledWith({
               type: "loadCalabrioOrg",
@@ -242,7 +227,7 @@ describe("cct-triton-admin-startup", () => {
             getCalabrioOrg.mockRejectedValue(error);
           });
           test("should still load triton admin", async () => {
-            await runTritonAdminStartup(mockAdminDispatch);
+            await runTritonAdminStartup(mockAdminDispatch, mockSkillDispatch, tokens);
             expect(mockAdminDispatch).toHaveBeenCalledTimes(3);
             expect(mockAdminDispatch).toHaveBeenCalledWith({
               type: "loadCalabrioUsers",
@@ -270,7 +255,7 @@ describe("cct-triton-admin-startup", () => {
             getCalabrioRoles.mockRejectedValue(error);
           });
           test("should still load triton admin", async () => {
-            await runTritonAdminStartup(mockAdminDispatch);
+            await runTritonAdminStartup(mockAdminDispatch, mockSkillDispatch, tokens);
             expect(mockAdminDispatch).toHaveBeenCalledTimes(3);
             expect(mockAdminDispatch).toHaveBeenCalledWith({
               type: "loadCalabrioUsers",
@@ -299,7 +284,7 @@ describe("cct-triton-admin-startup", () => {
           });
           test("should still load triton admin", async () => {
             try {
-              await runTritonAdminStartup(mockAdminDispatch);
+              await runTritonAdminStartup(mockAdminDispatch, mockSkillDispatch, tokens);
             } catch (err) {
               expect(err.msg).toBe("Failed to fetch Calabrio Business Units");
             }
@@ -312,7 +297,7 @@ describe("cct-triton-admin-startup", () => {
             getCalabrioWfmOptions.mockReturnValue(false);
           });
           test("should still load triton admin", async () => {
-            await runTritonAdminStartup(mockAdminDispatch);
+            await runTritonAdminStartup(mockAdminDispatch, mockSkillDispatch, tokens);
             expect(mockAdminDispatch).toHaveBeenCalledTimes(4);
             expect(getCalabrioWfmOptions).toHaveBeenCalledTimes(1);
           });
