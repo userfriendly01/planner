@@ -148,9 +148,11 @@ const App = () => {
         // we'll want to constantly refresh the token several times
         // then prompt the user to refresh or come up with a better way of refreshing
         // the data
-        wait(() => {
-          setShowModal(true);
-        }, msGraph.expiresOn.getTime() - Date.now());
+        const showModal = () => setShowModal(true);
+
+        wait(showModal, msGraph.expiresOn.getTime() - Date.now());
+        wait(showModal, sharedGraph.expiresOn.getTime() - Date.now());
+        wait(showModal, adminService.expiresOn.getTime() - Date.now());
       } catch (error) {
         logger.error("TOKEN_GET_FAILED", { error });
         setLoadResult({
