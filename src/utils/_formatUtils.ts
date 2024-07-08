@@ -1,4 +1,3 @@
-// export const formatNextToken = () => 
 export const formatDropdownOptions = (options: any[], labelKey: string, valueKey: string) => {
   try {
     return options.map((option: any) => {

@@ -248,7 +248,7 @@ export const CREATE_SKILL_GROUP = gql`
 `;
 
 export const UPDATE_SKILL_GROUP = gql`
-  mutation updateUMSkillGroup($id: ID!, $input: UMSkilGroupUpdateInput!) {
+  mutation updateUMSkillGroup($id: ID!, $input: UMSkillGroupUpdateInput!) {
     skillGroup: updateUMSkillGroup(id: $id, input: $input) {
         cancellationReasons
         nextToken

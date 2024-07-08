@@ -230,8 +230,6 @@ const getGraphSkills = async (dispatch: (action: Action) => void): Promise<UMSki
       if(data?.skillGroups?.items?.length) { skillGroups = [...skillGroups, ...data.skillGroups.items]; }
       if(data?.skillGroupProfiles?.items?.length) { skillGroupProfiles = [...skillGroupProfiles, ...data.skillGroupProfiles.items]; }
 
-      //Test Next Token functionality specifically in unit test
-
       if(data?.skills?.nextToken || data?.skillProfiles?.nextToken){
         return getPageResults(false, data.skills.nextToken, data.skillProfiles.nextToken);
       } else {
