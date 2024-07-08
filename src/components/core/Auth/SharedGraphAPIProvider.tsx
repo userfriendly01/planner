@@ -89,7 +89,12 @@ export const SharedGraphAPIProvider = ({ children }: Props): ReactElement => {
 
   apolloClient = new ApolloClient({
     link: authLink.concat(httpLink),
-    cache: new InMemoryCache()
+    cache: new InMemoryCache(),
+    defaultOptions: {
+      query: {
+        errorPolicy: "all"
+      }
+    }
   });
 
   return (

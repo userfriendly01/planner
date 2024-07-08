@@ -2,22 +2,17 @@ import { env } from "globals";
 import { listUMUserRecords } from "services/user";
 
 const productOwners = [
-  "n0138110", // Keith Teeter
   "n0116796", // Rebecca Miller
   "n0088625", // Kimberly Haynes
   "n0183277", // Jacob Radke
-  "n0196231", // Michael Wilcox
-  "n0197784", // Anthony Burke
-  "n0149889", // David Kahrer
-  "n0263786"  // Faith Cuneo
+  "n0196231" // Michael Wilcox
 ];
 
 const bulkAdmins = [
   ...productOwners,
-  "n0197784", // Anthony Burke
   "n0149889", // David Kahrer
-  "n0169879", // Stephanie Miller
-  "n0346287"  // Dustin Shumaker
+  "n0197784", // Anthony Burke
+  "n0169879" // Stephanie Miller
 ];
 
 export const checkIfAdmin = (profileId: number): boolean => {

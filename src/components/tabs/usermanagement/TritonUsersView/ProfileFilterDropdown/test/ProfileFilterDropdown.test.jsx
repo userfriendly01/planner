@@ -31,25 +31,25 @@ const mockAdminDispatch = jest.fn();
 
 const mockProfileData = [
   {
-    profile_nme: "test1",
+    profile_name: "test1",
     profile_id: 1,
     operating_unit_nme: "operatingUnitName1",
     operating_unit_sid: "operatingUnitSid1"
   },
   {
-    profile_nme: "test3",
+    profile_name: "test3",
     profile_id: 3,
     operating_unit_nme: "operatingUnitName3",
     operating_unit_sid: "operatingUnitSid1"
   },
   {
-    profile_nme: "test2",
+    profile_name: "test2",
     profile_id: 2,
     operating_unit_nme: "operatingUnitName2",
     operating_unit_sid: "operatingUnitSid2"
   },
   {
-    profile_nme: "test435",
+    profile_name: "test435",
     profile_id: 435,
     operating_unit_nme: "operatingUnitName435",
     operating_unit_sid: "operatingUnitSid435"
@@ -93,7 +93,7 @@ describe("<ProfileDropdown />", () => {
         value: "divider"
       },
       ...sortedProfiles.map(profile => ({
-        label: `${profile.profile_id} - ${profile.profile_nme}`,
+        label: `${profile.profile_id} - ${profile.profile_name}`,
         value: typeof profile.profile_id === "number" ? profile.profile_id.toString() : profile.profile_id
       }))
     ]);

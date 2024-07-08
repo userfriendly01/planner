@@ -1,16 +1,60 @@
 import {
-  AddEditSkillGroupBody
+  AddEditSkillGroupBody,
+  SkillGroup
 } from "callflowmanagement/SkillManagement/Skills.Interfaces";
-import { apiPaths } from "globals";
-import { myAxios } from "utils/myAxios";
+import { apolloClient } from "../components/core/Auth/SharedGraphAPIProvider";
+import {
+  CREATE_SKILL_GROUP, DELETE_SKILL_GROUP, UPDATE_SKILL_GROUP
+} from "globals/graphql";
 
-// requestBody should contain skill_group_nme and array of skillIds
-export const addSkillGroup = (requestBody: AddEditSkillGroupBody): Promise<any> =>
-  myAxios.post(apiPaths.SKILL_GROUPS, requestBody).then(response => response.data);
+export const addSkillGroup = async (requestBody: AddEditSkillGroupBody): Promise<any> => {
+  const {
+    errors, data
+  }  = await apolloClient.mutate<{ skillGroup: SkillGroup }>({
+    mutation: CREATE_SKILL_GROUP,
+    variables: {
+      input: requestBody
+    }
+  });
 
-export const deleteSkillGroup = (skillGroupId: string | number): Promise<any> =>
-  myAxios.delete(`${apiPaths.SKILL_GROUPS}/${skillGroupId}`).then(response => response.data);
+  if (errors?.length) {
+    throw errors;
+  }
 
-// edit the name of an existing skillgroup, and/or the skillIds it is associated with
-export const updateSkillGroup = (skillGroupId: number, requestBody: AddEditSkillGroupBody): Promise<any> =>
-  myAxios.put(`${apiPaths.SKILL_GROUPS}/${skillGroupId}`, requestBody).then(response => response.data);
+  return data?.skillGroup;
+};
+
+export const deleteSkillGroup = async (id: string): Promise<any> => {
+  const {
+    errors, data
+  }  = await apolloClient.mutate<{ skillGroup: SkillGroup }>({
+    mutation: DELETE_SKILL_GROUP,
+    variables: {
+      id
+    }
+  });
+
+  if (errors?.length) {
+    throw errors;
+  }
+
+  return data?.skillGroup;
+};
+
+export const updateSkillGroup = async (id: string, requestBody: AddEditSkillGroupBody): Promise<any> => {
+  const {
+    errors, data
+  }  = await apolloClient.mutate<{ skillGroup: SkillGroup }>({
+    mutation: UPDATE_SKILL_GROUP,
+    variables: {
+      id,
+      input: requestBody
+    }
+  });
+
+  if (errors?.length) {
+    throw errors;
+  }
+
+  return data?.skillGroup;
+};

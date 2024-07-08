@@ -33,7 +33,9 @@ import { wfmActivateExternalLogon } from "services/wfmActivateExternalLogon";
 import {
   createUser, updateUser
 } from "services/user";
-import { addOffice } from "services/office";
+import {
+  addOffice, getOffice
+} from "services/office";
 import {
   getNonOverflowSkills,
   getOverflowSkillFromProfile,
@@ -58,7 +60,6 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
     forwardToToggle,
     handleClose,
     loading,
-    offices,
     profiles,
     updateLoading,
     worker,
@@ -144,7 +145,7 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
       attributes.routing.skills = [overflowSkill];
     }
 
-    const operatingUnitSid = profiles.find(profile => profile.profile_id === form.triton.profileId.value).operating_unit_sid;
+    const operatingUnitSid = profiles.find(profile => profile.profile_id === form.triton.profileId.value).ou_sid;
 
     const createUserReqBody = form.triton.did.value ?
       {
@@ -168,7 +169,8 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
         userNNumber
       });
 
-      if (!offices.some(o => newWorker.attributes.office_location_number === o.office_num)) {
+      const officeExists = await getOffice(newWorker.attributes.office_location_number);
+      if (!officeExists) {
         const newOffice = {
           office_name: newWorker.attributes.office_location_name,
           office_num: newWorker.attributes.office_location_number
@@ -372,7 +374,7 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
 
     if (form.triton.profileId.updated) {
       attributes.profile_id = form.triton.profileId.value;
-      operatingUnitSid = profiles.find(profile => profile.profile_id === form.triton.profileId.value).operating_unit_sid;
+      operatingUnitSid = profiles.find(profile => profile.profile_id === form.triton.profileId.value).ou_sid;
     }
     if (form.triton.outgoing.updated) {
       attributes.caller_id = form.triton.outgoing.e164;

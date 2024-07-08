@@ -69,7 +69,7 @@ const processCreateTritonUser = async (row: any, state: AppState) => {
     }
 
     const profile = getTargetProfile(state.profileContext.profiles, body.attributes.profile_id);
-    body.operatingUnitSid = profile?.operating_unit_sid;
+    body.operatingUnitSid = profile?.ou_sid;
 
     const res = await createUser(body);
     const workerSid = res.sid;
@@ -327,7 +327,7 @@ const processUpdateWorkerAttribute = async (row: any, template: Template, state:
         profile_id: parseInt(value)
       };
       const profile = getTargetProfile(state.profileContext.profiles, value);
-      body.operatingUnitSid = profile?.operating_unit_sid;
+      body.operatingUnitSid = profile?.ou_sid;
     } else if (location) {
       if (typeof location === "string") {
         body[location] = newAttribute;

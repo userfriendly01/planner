@@ -9,6 +9,7 @@ import {
   expectOnlyPassedProps,
   getLastInstanceCalled,
   initialTestState,
+  mockOperatingUnits,
   render,
   setupMockedComponents
 } from "testUtils";
@@ -188,10 +189,7 @@ describe("TritonUsersViewWrapper", () => {
         userManagementTableFilters: {
           managerFilter: null,
           profileFilterArray: [],
-          ouFilterArray: [{
-            label: "operatingUnitName",
-            value: "operatingUnitSid1"
-          }]
+          ouFilterArray: [{ value: mockOperatingUnits[1].ou_sid }]
         }
       };
       useAdminState.mockReturnValue(testState);

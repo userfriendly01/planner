@@ -28,36 +28,28 @@ const expectedRows = [
   {
     defaultSkills: "aisgL1",
     managerNNumber: "n1234567",
-    profileId: 1
+    profileId: 0
   },
   {
     defaultSkills: "bscCbsL2",
     managerNNumber: "n7454853",
-    profileId: 2
+    profileId: 1
   },
   {
     defaultSkills: "bscCommisssions Available levels: 1,2,3,4,5,6,7",
-    profileId: 3
+    profileId: 2
   },
   {
-    defaultSkills: "lscOBDialer1 Available levels: 1,2,3",
-    profileId: 12
+    defaultSkills: "lscOBDialer1 Available levels: 1,2,3"
   },
   {
-    defaultSkills: "lscUSAA",
-    profileId: 396
+    defaultSkills: "lscUSAA"
   }
 ];
 const expectedColumns = [
   {
     field: "profileId",
-    options: [
-      1,
-      2,
-      3,
-      12,
-      396
-    ],
+    options: [0, 1, 2],
     textAlign: "center",
     title: "Profile Id",
     width: undefined,

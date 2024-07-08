@@ -26,11 +26,11 @@ export const env = {
   ADMIN_CLIENT_ID: window.env.ADMIN_CLIENT_ID
 };
 
-const CONTACT_MANAGER_BASE_URI = `${env.SOFTPHONE_SERVICE_URL}/contact-manager`;
 const SERVICE_BASE_URI = env.SOFTPHONE_SERVICE_URL;
 const MS_GRAPH_URL = "https://graph.microsoft.com/v1.0";
 const ADMIN_CLIENT_URL = env.ADMIN_CLIENT_URL;
 
+export const numMatcher = /^[0-9]*$/;
 export const nNumMatcher = /[n,N]\d{7}/g;
 export const extensionMatcher = /^\d{4,5}$/;
 
@@ -48,106 +48,6 @@ export const timeouts = {
 export const resetResponses = {
   SKILLS_WERE_EQUAL: "Worker default_skills is equal to currently assigned skills"
 };
-
-export const profileTableColumnHeader = [
-  {
-    COLUMN_NAME: "ID",
-    TOOLTIP: "Unique Profile Identification"
-  },
-  {
-    COLUMN_NAME: "Name",
-    TOOLTIP: "Profile Name"
-  },
-  {
-    COLUMN_NAME: "Inbound Recorded",
-    TOOLTIP: "All inbound calls are automatically recorded"
-  },
-  {
-    COLUMN_NAME: "Auto Answered",
-    TOOLTIP: "Automatically accepts a call and routes to an agent"
-  },
-  {
-    COLUMN_NAME: "Payment Processing",
-    TOOLTIP: "UI Feature: Click for payment button is enabled to manually pause/resume call recordings"
-  },
-  {
-    COLUMN_NAME: "Outbound Recorded",
-    TOOLTIP: "All outbound calls are automatically recorded"
-  },
-  {
-    COLUMN_NAME: "ACW Option",
-    TOOLTIP: "UI Feature: Agent has the choice to enable or disable after call work (wrap-up). Default setting is off"
-  },
-  {
-    COLUMN_NAME: "Manual Recorded",
-    TOOLTIP: "UI Feature: Manual recording button appears in call controls when enabled. User will have the ability to manually start and stop recordings"
-  },
-  {
-    COLUMN_NAME: "ACW Data Entry",
-    TOOLTIP: "UI Feature: If enabled, during wrap-up, call tagging toggle appears which gives an input form to the user"
-  },
-  {
-    COLUMN_NAME: "Manual Recorded Inbound",
-    TOOLTIP: "UI Feature: Manual recording button appears in call controls when enabled. User will have the ability to manually start and stop recordings on inbound calls"
-  },
-  {
-    COLUMN_NAME: "Agent Assisted Pay",
-    TOOLTIP: "Not a currently enabled UI feature"
-  },
-  {
-    COLUMN_NAME: "Overflow Skill",
-    TOOLTIP: "An agent misses a call and it is forwarded to the next available agent with the same manager"
-  },
-  {
-    COLUMN_NAME: "Policy Number Edit",
-    TOOLTIP: "UI Feature: An agent can capture and save a different policy number than what the IVR previously loaded"
-  },
-  {
-    COLUMN_NAME: "Voice Mail Transcription",
-    TOOLTIP: "Voice mail will be transcribed and sent within the notification email to the user"
-  },
-  {
-    COLUMN_NAME: "Click To Dial",
-    TOOLTIP: "Enable click-to-dial/transfer from external application"
-  },
-  {
-    COLUMN_NAME: "Call Reason",
-    TOOLTIP: "UI Feature: Allows agent to record call reason data."
-  },
-  {
-    COLUMN_NAME: "EFT Authorization",
-    TOOLTIP: "Enable EFT authorization tagging on recordings"
-  },
-
-  {
-    COLUMN_NAME: "Claim Number Edit",
-    TOOLTIP: "UI Feature: An agent can capture and save a different claim number than what the IVR previously loaded"
-  },
-  {
-    COLUMN_NAME: "Self Service Indicator",
-    TOOLTIP: "Self service indicator is applicable to profiles with an id of 39 and above, but is actually set at the worker attribute level"
-  },
-  {
-    COLUMN_NAME: "Activities",
-    TOOLTIP: "Profile Activities"
-  },
-  {
-    COLUMN_NAME: "Transfer Queues",
-    TOOLTIP: "UI Feature: Additional transfer queues that will appear in the Triton queue ticker"
-  },
-  {
-    COLUMN_NAME: "Access Group",
-    TOOLTIP: "Access Group Name for BPO profiles"
-  },
-  {
-    COLUMN_NAME: "Operating Unit",
-    TOOLTIP: "Which OU a profile is assigned to"
-  },
-  {
-    COLUMN_NAME: "Forward to Number",
-    TOOLTIP: "Default forward to number to be used when no overflow skill exists"
-  }
-];
 
 export const exportColumns = [
   {
@@ -264,10 +164,6 @@ export const apiPaths = {
   CREATE_CALABRIO_WFM_PERSON: `${SERVICE_BASE_URI}/calabrio-api/wfm/person`,
   CLOSED_MESSAGE: `${SERVICE_BASE_URI}/closedmessage`,
   CREATE_SKILL: `${SERVICE_BASE_URI}/createskill`,
-  DIAL_LIST: `${CONTACT_MANAGER_BASE_URI}/diallist`,
-  DIAL_LIST_ENTRY: (dialListId: number): string => `${CONTACT_MANAGER_BASE_URI}/diallist/${dialListId}`,
-  DIRECTORY: `${CONTACT_MANAGER_BASE_URI}/directory`,
-  DIRECTORY_ENTRY: (directoryId: string | number): string => `${CONTACT_MANAGER_BASE_URI}/directory/${directoryId}`,
   EMPLOYEE_LOOKUP: (nNumber: string): string => `${MS_GRAPH_URL}/users?$filter=employeeId eq '${nNumber}'&$select=mail,givenName,surname,officeLocation,extension_128b6233d06d4df391d7de26c982b64e_extensionAttribute1,department,extension_128b6233d06d4df391d7de26c982b64e_extensionAttribute2,accountEnabled`,
   FLASH_MESSAGE: `${SERVICE_BASE_URI}/flashmessage`,
   GET_APPLICATIONS: `${SERVICE_BASE_URI}/applications`,
@@ -280,27 +176,18 @@ export const apiPaths = {
   GET_CALABRIO_ROLES: `${SERVICE_BASE_URI}/calabrio-get-roles`,
   GET_CALABRIO_USER: (personId: number): any => `${SERVICE_BASE_URI}/calabrio-get-user/${personId}`,
   GET_CALABRIO_USER_PROFILES: `${SERVICE_BASE_URI}/calabrio-api/qm-user-profiles`,
-  GET_PROFILE_DATA: (profileId: string | number): string => `${CONTACT_MANAGER_BASE_URI}/triton/${profileId}`,
-  GET_CALL_TAGS_OPTIONS: `${CONTACT_MANAGER_BASE_URI}/workertaskinfooptions`,
-  GET_CALL_TAGS: `${CONTACT_MANAGER_BASE_URI}/workertaskinfo`,
-  GET_ACTIVITIES: `${CONTACT_MANAGER_BASE_URI}/activities`,
-  GET_ACCESS_GROUP: `${CONTACT_MANAGER_BASE_URI}/accessgroup`,
   GET_SKILLS: `${SERVICE_BASE_URI}/consolidatedskills`,
   SKILLS_TASKROUTER: `${SERVICE_BASE_URI}/taskrouterskills`,
   SKILLS_CALLFLOW: `${SERVICE_BASE_URI}/callflowskills`,
-  SKILLS_CONTACT_MANAGER: `${CONTACT_MANAGER_BASE_URI}/skillswithprofiles`,
   GET_OU: `${SERVICE_BASE_URI}/operatingunit`,
   TASK_QUEUES: `${SERVICE_BASE_URI}/taskqueues`,
   GET_TIME_OF_DAYS: `${SERVICE_BASE_URI}/timeofday`,
   GET_RESET_PROFILE_DATADOG_LOGS: (nNumber: string): string => `${SERVICE_BASE_URI}/datadogresetprofileslogs/${nNumber}`,
-  PROFILES: `${CONTACT_MANAGER_BASE_URI}/profiles`,
-  RESET_PROFILES: (nNumber: string): string => `${ADMIN_CLIENT_URL}/reset/${nNumber}`,
   RESET_WORKER_SKILLS: `${SERVICE_BASE_URI}/resetworkerskills`,
-  SKILL_GROUPS: `${CONTACT_MANAGER_BASE_URI}/skillgroups`,
-  TERMINATE_WORKER: `${ADMIN_CLIENT_URL}/termination`,
   TFN_DATA: `${SERVICE_BASE_URI}/tfn`,
   UPDATE_CALABRIO_USER: (personId: number): any => `${SERVICE_BASE_URI}/calabrio-update-user/${personId}`,
-  GET_AGGREGATE_QUEUES_TYPE: (aggregateQueueType: string): string => `${CONTACT_MANAGER_BASE_URI}/aggregatequeuestype/${aggregateQueueType}`,
+  RESET_PROFILES: (nNumber: string): string => `${ADMIN_CLIENT_URL}/reset/${nNumber}`,
+  TERMINATE_WORKER: `${ADMIN_CLIENT_URL}/termination`,
   WFM_ACTIVATE_EXTERNAL_LOGON: `${ADMIN_CLIENT_URL}/externalLogon`
 };
 

@@ -26,14 +26,16 @@ import { wfmActivateExternalLogon } from "services/wfmActivateExternalLogon";
 import {
   createUser, updateUser
 } from "services/user";
-import { addOffice } from "services/office";
+import {
+  addOffice, getOffice
+} from "services/office";
 import {
   act,
   fetchedUser,
   initialFormState,
   initialTestState,
   officeMap,
-  profileList,
+  mockProfiles,
   render,
   setupMockedComponents,
   validFormOptions,
@@ -105,7 +107,8 @@ jest.mock("services/user", () => ({
 }));
 
 jest.mock("services/office", () => ({
-  addOffice: jest.fn()
+  addOffice: jest.fn(),
+  getOffice: jest.fn()
 }));
 
 const worker = {
@@ -160,13 +163,14 @@ const workerAttributesAfterFormValid = {
 const newWorker = {
   attributes: {
     ...workerAttributesAfterFormValid,
-    office_location_number: "newOffice"
+    office_location_number: "newOffice",
+    office_location_name: "Springfield 012B"
   },
   sid: "WK1234",
   skillsDifferent: true
 };
 
-const validOperatingUnitId = "operatingUnitSid1";
+const validOperatingUnitId = "OUe98d4f81e49ccf1ae16b29f8611d1b6c";
 
 const mockHandleClose = jest.fn();
 const mockSetForm = jest.fn();
@@ -176,7 +180,10 @@ const mockSetMissingFields = jest.fn();
 
 describe("<UserFormButtons />", () => {
   beforeEach(() => {
-    addOffice.mockResolvedValue("Override me later");
+    getOffice.mockResolvedValue(null);
+    addOffice.mockResolvedValue({
+      office_location_number: "newOffice"
+    });
     jest.clearAllMocks();
     jest.useFakeTimers();
     useFormDispatch.mockReturnValue(mockSetForm);
@@ -186,7 +193,7 @@ describe("<UserFormButtons />", () => {
       userContext: {
         nNumber: "n1234567",
         tokens: {
-          adminService: "token",
+          adminService: "token"
         }
       },
       calabrioContext: {
@@ -214,7 +221,7 @@ describe("<UserFormButtons />", () => {
         handleClose={mockHandleClose}
         loading={""}
         updateLoading={mockUpdateLoading}
-        profiles={profileList}
+        profiles={mockProfiles}
         offices={officeMap}
         worker={customWorker ? customWorker : worker}
         forwardToToggle={forwardToToggle}
@@ -452,8 +459,8 @@ describe("<UserFormButtons />", () => {
               });
               expect(wfmActivateExternalLogon).toHaveBeenCalled();
               expect(mockSetForm).toHaveBeenCalledWith( { type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
-              expect(mockDispatch).toHaveBeenCalledTimes(1);
-              expect(mockDispatch.mock.calls[0][0]).toEqual({
+              expect(mockDispatch).toHaveBeenCalledTimes(2);
+              expect(mockDispatch.mock.calls[1][0]).toEqual({
                 type: "loadCalabrioUsers",
                 payload: ["agent1", "agent2"]
               });
@@ -966,7 +973,7 @@ describe("<UserFormButtons />", () => {
               userContext: {
                 nNumber: "n1234567",
                 tokens: {
-                  adminService: "token",
+                  adminService: "token"
                 }
               },
               calabrioContext: {
@@ -2172,7 +2179,7 @@ describe("<UserFormButtons />", () => {
               userContext: {
                 nNumber: "n1234567",
                 tokens: {
-                  adminService: "token",
+                  adminService: "token"
                 }
               },
               calabrioContext: {
@@ -2345,7 +2352,7 @@ describe("<UserFormButtons />", () => {
           handleClose={mockHandleClose}
           loading={""}
           updateLoading={mockUpdateLoading}
-          profiles={profileList}
+          profiles={mockProfiles}
           offices={officeMap}
           worker={worker}
           forwardToToggle={true}

@@ -10,7 +10,6 @@ import {
   getCalabrioOrg
 } from "services/calabrio";
 import { listUMManagers } from "services/manager";
-import { listUMOffices } from "services/office";
 import { listUMUsers } from "services/user";
 import { loadConsolidatedSkills } from "services/skill";
 import {
@@ -45,14 +44,13 @@ jest.mock("services/manager", () => ({
   listUMManagers: jest.fn()
 }));
 
-jest.mock("services/office", () => ({
-  listUMOffices: jest.fn()
-}));
-
 jest.mock("services/user", () => ({
   listUMUsers: jest.fn()
 }));
 
+jest.mock("services/profile", () => ({
+  listUMSoftphoneConfigs: jest.fn()
+}));
 jest.mock("services/skill", () => ({
   loadConsolidatedSkills: jest.fn()
 }));
@@ -104,7 +102,6 @@ describe("cct-triton-admin-startup", () => {
     useAdminDispatch.mockReturnValue(mockAdminDispatch);
     listUMUsers.mockResolvedValue();
     listUMManagers.mockResolvedValue();
-    listUMOffices.mockResolvedValue();
     loadConsolidatedSkills.mockResolvedValue();
   });
 
@@ -135,7 +132,7 @@ describe("cct-triton-admin-startup", () => {
           "should render Header & NavTabs, should dispatch appropriate actions, Modal should not be open",
           async () => {
             await runTritonAdminStartup(mockAdminDispatch);
-            expect(mockAdminDispatch).toHaveBeenCalledTimes(5);
+            expect(mockAdminDispatch).toHaveBeenCalledTimes(4);
             expect(mockAdminDispatch).toHaveBeenCalledWith({
               type: "loadCalabrioUsers",
               payload: []
@@ -147,10 +144,6 @@ describe("cct-triton-admin-startup", () => {
             expect(mockAdminDispatch).toHaveBeenCalledWith({
               type: "loadCalabrioRoles",
               payload: []
-            });
-            expect(mockAdminDispatch).toHaveBeenCalledWith({
-              type: "loadProfiles",
-              payload: profiles
             });
             expect(mockAdminDispatch).toHaveBeenCalledWith({
               type: "loadWfmOrg",
@@ -208,20 +201,6 @@ describe("cct-triton-admin-startup", () => {
           });
         });
       });
-      describe(apiPaths.OFFICES, () => {
-        describe("offices service call returned an error", () => {
-          beforeEach(() => {
-            listUMOffices.mockRejectedValue(error);
-          });
-          test("should return 'An error occurred while logging in.'", async () => {
-            try {
-              await runTritonAdminStartup(mockAdminDispatch);
-            } catch (err) {
-              expect(err).toBe(error);
-            }
-          });
-        });
-      });
       describe(calabrioUsersEndpoint, () => {
         describe("Calabrio org service call returned an error", () => {
           beforeEach(() => {
@@ -236,7 +215,7 @@ describe("cct-triton-admin-startup", () => {
           });
           test("should still load triton admin", async () => {
             await runTritonAdminStartup(mockAdminDispatch);
-            expect(mockAdminDispatch).toHaveBeenCalledTimes(4);
+            expect(mockAdminDispatch).toHaveBeenCalledTimes(3);
             expect(mockAdminDispatch).toHaveBeenCalledWith({
               type: "loadCalabrioOrg",
               payload: []
@@ -244,10 +223,6 @@ describe("cct-triton-admin-startup", () => {
             expect(mockAdminDispatch).toHaveBeenCalledWith({
               type: "loadCalabrioRoles",
               payload: []
-            });
-            expect(mockAdminDispatch).toHaveBeenCalledWith({
-              type: "loadProfiles",
-              payload: profiles
             });
             expect(mockAdminDispatch).toHaveBeenCalledWith({
               type: "loadWfmOrg",
@@ -268,7 +243,7 @@ describe("cct-triton-admin-startup", () => {
           });
           test("should still load triton admin", async () => {
             await runTritonAdminStartup(mockAdminDispatch);
-            expect(mockAdminDispatch).toHaveBeenCalledTimes(4);
+            expect(mockAdminDispatch).toHaveBeenCalledTimes(3);
             expect(mockAdminDispatch).toHaveBeenCalledWith({
               type: "loadCalabrioUsers",
               payload: []
@@ -276,10 +251,6 @@ describe("cct-triton-admin-startup", () => {
             expect(mockAdminDispatch).toHaveBeenCalledWith({
               type: "loadCalabrioRoles",
               payload: []
-            });
-            expect(mockAdminDispatch).toHaveBeenCalledWith({
-              type: "loadProfiles",
-              payload: profiles
             });
             expect(mockAdminDispatch).toHaveBeenCalledWith({
               type: "loadWfmOrg",
@@ -300,7 +271,7 @@ describe("cct-triton-admin-startup", () => {
           });
           test("should still load triton admin", async () => {
             await runTritonAdminStartup(mockAdminDispatch);
-            expect(mockAdminDispatch).toHaveBeenCalledTimes(4);
+            expect(mockAdminDispatch).toHaveBeenCalledTimes(3);
             expect(mockAdminDispatch).toHaveBeenCalledWith({
               type: "loadCalabrioUsers",
               payload: []
@@ -308,10 +279,6 @@ describe("cct-triton-admin-startup", () => {
             expect(mockAdminDispatch).toHaveBeenCalledWith({
               type: "loadCalabrioOrg",
               payload: []
-            });
-            expect(mockAdminDispatch).toHaveBeenCalledWith({
-              type: "loadProfiles",
-              payload: profiles
             });
             expect(mockAdminDispatch).toHaveBeenCalledWith({
               type: "loadWfmOrg",
@@ -346,7 +313,7 @@ describe("cct-triton-admin-startup", () => {
           });
           test("should still load triton admin", async () => {
             await runTritonAdminStartup(mockAdminDispatch);
-            expect(mockAdminDispatch).toHaveBeenCalledTimes(5);
+            expect(mockAdminDispatch).toHaveBeenCalledTimes(4);
             expect(getCalabrioWfmOptions).toHaveBeenCalledTimes(1);
           });
         });

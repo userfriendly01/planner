@@ -1,35 +1,38 @@
 import {
   sortDialListEntriesByName,
   sortDirectoryListEntriesByName,
+  sortGraphObjectsByPk,
   sortManagersByName,
   sortActivityByName,
   sortCallTagByName,
   sortQueueByName,
   sortProfilesById,
-  sortProfilesByName
+  sortProfilesByName,
+  sortWorkersByFullName,
+  sortWfmWorkersByFullName
 } from "../_sortUtils";
 
 describe("sortDialListEntriesByName", () => {
   const arr = [
-    { contact_nme: "cee" },
-    { contact_nme: "bee" },
-    { contact_nme: "ay" },
-    { contact_nme: "dee" },
-    { contact_nme: "ay" },
-    { contact_nme: "Cee again" },
-    { contact_nme: "B again" },
-    { contact_nme: "A caps" }
+    { contact_name: "cee" },
+    { contact_name: "bee" },
+    { contact_name: "ay" },
+    { contact_name: "dee" },
+    { contact_name: "ay" },
+    { contact_name: "Cee again" },
+    { contact_name: "B again" },
+    { contact_name: "A caps" }
   ];
   test("should return array in alphabetical order", () => {
     expect(arr.sort(sortDialListEntriesByName)).toEqual([
-      { contact_nme: "A caps" },
-      { contact_nme: "ay" },
-      { contact_nme: "ay" },
-      { contact_nme: "B again" },
-      { contact_nme: "bee" },
-      { contact_nme: "cee" },
-      { contact_nme: "Cee again" },
-      { contact_nme: "dee" }
+      { contact_name: "A caps" },
+      { contact_name: "ay" },
+      { contact_name: "ay" },
+      { contact_name: "B again" },
+      { contact_name: "bee" },
+      { contact_name: "cee" },
+      { contact_name: "Cee again" },
+      { contact_name: "dee" }
     ]);
   });
 });
@@ -37,47 +40,76 @@ describe("sortDialListEntriesByName", () => {
 describe("sortDirectoryListEntriesByName", () => {
   const arr = [
     {
-      first_nme: "fred",
-      last_nme: "savage"
+      first_name: "fred",
+      last_name: "savage"
     },
     {
-      first_nme: "cee",
-      last_nme: "bee"
+      first_name: "cee",
+      last_name: "bee"
     },
     {
-      first_nme: "zee",
-      last_nme: "fee"
+      first_name: "zee",
+      last_name: "fee"
     },
     {
-      first_nme: "fee",
-      last_nme: "fee"
+      first_name: "fee",
+      last_name: "fee"
     },
     {
-      first_nme: "tom",
-      last_nme: "tom"
+      first_name: "tom",
+      last_name: "tom"
     }
   ];
   test("should return array in alphabetical order, last name then first name", () => {
     expect(arr.sort(sortDirectoryListEntriesByName)).toEqual([
       {
-        first_nme: "cee",
-        last_nme: "bee"
+        first_name: "cee",
+        last_name: "bee"
       },
       {
-        first_nme: "fee",
-        last_nme: "fee"
+        first_name: "fee",
+        last_name: "fee"
       },
       {
-        first_nme: "zee",
-        last_nme: "fee"
+        first_name: "zee",
+        last_name: "fee"
       },
       {
-        first_nme: "fred",
-        last_nme: "savage"
+        first_name: "fred",
+        last_name: "savage"
       },
       {
-        first_nme: "tom",
-        last_nme: "tom"
+        first_name: "tom",
+        last_name: "tom"
+      }
+    ]);
+  });
+});
+
+describe("sortGraphObjectsByPk", () => {
+  test("sorts by pk", () => {
+    const result = [
+      {
+        pk: "Kaleigh",
+        random: "data"
+      },
+      {
+        pk: "Faith"
+      },
+      {
+        pk: "What?"
+      }
+    ].sort(sortGraphObjectsByPk);
+    expect(result).toEqual([
+      {
+        pk: "Faith"
+      },
+      {
+        pk: "Kaleigh",
+        random: "data"
+      },
+      {
+        pk: "What?"
       }
     ]);
   });
@@ -165,19 +197,19 @@ describe("sortManagersByName", () => {
 
 describe("sortActivityByName", () => {
   const arr = [
-    { activity_nme: "bee" },
-    { activity_nme: "dee" },
-    { activity_nme: "cee" },
-    { activity_nme: "ay" },
-    { activity_nme: "ay" }
+    { activity_name: "bee" },
+    { activity_name: "dee" },
+    { activity_name: "cee" },
+    { activity_name: "ay" },
+    { activity_name: "ay" }
   ];
   test("should return array in alphabetical order", () => {
     expect(arr.sort(sortActivityByName)).toEqual([
-      { activity_nme: "ay" },
-      { activity_nme: "ay" },
-      { activity_nme: "bee" },
-      { activity_nme: "cee" },
-      { activity_nme: "dee" }
+      { activity_name: "ay" },
+      { activity_name: "ay" },
+      { activity_name: "bee" },
+      { activity_name: "cee" },
+      { activity_name: "dee" }
     ]);
   });
 });
@@ -219,6 +251,117 @@ describe("sortQueueByName", () => {
     ]);
   });
 });
+describe("sortWorkersByFullName", () => {
+  test("should return sorted array", () => {
+    const list = [
+      { attributes: { full_name: "Kaleigh Spurio" }},
+      { attributes: { full_name: "Faith Cuneo" }},
+      { attributes: { full_name: "Bob" }},
+      { attributes: { full_name: "Michael Scott" }}
+    ];
+    expect(list.sort(sortWorkersByFullName)).toEqual([
+      { attributes: { full_name: "Bob" }},
+      { attributes: { full_name: "Faith Cuneo" }},
+      { attributes: { full_name: "Kaleigh Spurio" }},
+      { attributes: { full_name: "Michael Scott" }}
+    ]);
+  });
+  test("When no name present, puts those last and should return sorted array", () => {
+    const list = [
+      { attributes: { full_name: "Kaleigh Spurio" }},
+      { attributes: { full_name: "Faith Cuneo" }},
+      { attributes: { full_name: "" }},
+      { attributes: { full_name: "Bob" }},
+      { attributes: { full_name: "Michael Scott" }}
+    ];
+    expect(list.sort(sortWorkersByFullName)).toEqual([
+      { attributes: { full_name: "Bob" }},
+      { attributes: { full_name: "Faith Cuneo" }},
+      { attributes: { full_name: "Kaleigh Spurio" }},
+      { attributes: { full_name: "Michael Scott" }},
+      { attributes: { full_name: "" }}
+    ]);
+  });
+});
+
+describe("sortWfmWorkersByFullName", () => {
+  test("should return sorted array by fullName", () => {
+    const list = [
+      {
+        FirstName: "Kaleigh",
+        LastName: "Spurio"
+      },
+      {
+        FirstName: "Michael",
+        LastName: "Scott"
+      },
+      {
+        FirstName: "Faith",
+        LastName: "Cuneo"
+      },
+      {
+        FirstName: "Michael",
+        LastName: "Scarn"
+      }
+    ];
+    expect(list.sort(sortWfmWorkersByFullName)).toEqual([
+      {
+        FirstName: "Faith",
+        LastName: "Cuneo"
+      },
+      {
+        FirstName: "Kaleigh",
+        LastName: "Spurio"
+      },
+      {
+        FirstName: "Michael",
+        LastName: "Scarn"
+      },
+      {
+        FirstName: "Michael",
+        LastName: "Scott"
+      }
+    ]);
+  });
+  test("should return sorted array by fullName", () => {
+    const list = [
+      {
+        FirstName: "Kaleigh",
+        LastName: "Spurio"
+      },
+      {
+        FirstName: "",
+        LastName: ""
+      },
+      {
+        FirstName: "Faith",
+        LastName: "Cuneo"
+      },
+      {
+        FirstName: "Michael",
+        LastName: "Scarn"
+      }
+    ];
+    expect(list.sort(sortWfmWorkersByFullName)).toEqual([
+      {
+        FirstName: "Faith",
+        LastName: "Cuneo"
+      },
+      {
+        FirstName: "Kaleigh",
+        LastName: "Spurio"
+      },
+      {
+        FirstName: "Michael",
+        LastName: "Scarn"
+      },
+      {
+        FirstName: "",
+        LastName: ""
+      }
+    ]);
+  });
+});
 
 describe("sortProfilesById", () => {
   const profiles = [
@@ -249,19 +392,19 @@ describe("sortProfilesById", () => {
 
 describe("sortProfilesByName", () => {
   const profiles = [
-    { profile_nme: "AISG" },
-    { profile_nme: "Premium Audit" },
-    { profile_nme: "CSO" },
-    { profile_nme: "GRS Claims" },
-    { profile_nme: "PAL1" }
+    { profile_name: "AISG" },
+    { profile_name: "Premium Audit" },
+    { profile_name: "CSO" },
+    { profile_name: "GRS Claims" },
+    { profile_name: "PAL1" }
   ];
   test("should return array in alphebetical order", () => {
     expect(profiles.sort(sortProfilesByName)).toEqual([
-      { profile_nme: "AISG" },
-      { profile_nme: "CSO" },
-      { profile_nme: "GRS Claims" },
-      { profile_nme: "PAL1" },
-      { profile_nme: "Premium Audit" }
+      { profile_name: "AISG" },
+      { profile_name: "CSO" },
+      { profile_name: "GRS Claims" },
+      { profile_name: "PAL1" },
+      { profile_name: "Premium Audit" }
     ]);
   });
 });

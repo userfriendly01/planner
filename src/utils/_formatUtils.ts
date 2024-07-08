@@ -1,3 +1,21 @@
+export const formatDropdownOptions = (options: any[], labelKey: string, valueKey: string) => {
+  try {
+    return options.map((option: any) => {
+      if(option){
+        return {
+          ...option,
+          label: option[labelKey],
+          value: option[valueKey]
+        };
+      } else {
+        return null;
+      }
+    });
+  } catch(err){
+    return [];
+  }
+};
+
 /**
  * Formats a string to Proper Case;
  * @param field Field to format
@@ -7,11 +25,12 @@ export const formatErrorMessage = (err: any) => {
    To get the best message display we have to get pretty specific into all the different types of errors*/
   const stringify = (e: any) => (typeof e === "object" && JSON.stringify(e)) || (typeof e !== "string" && e.toString()) || e;
   try {
-    if(err?.message){
-      return stringify(err.message);
-    } else if(err?.response?.data){
+    console.log(err);
+    if(err?.response?.data){
       return stringify(err.response.data);
-    } else if(err?.response) {
+    } else if(err?.message) {
+      return stringify(err.message);
+    } else if (err?.response) {
       return stringify(err.response);
     } else {
       return stringify(err);

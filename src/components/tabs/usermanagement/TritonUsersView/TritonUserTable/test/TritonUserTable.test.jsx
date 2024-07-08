@@ -107,8 +107,8 @@ describe("<TritonUserTable />", () => {
         expect(rendered.container).toHaveTextContent(w.attributes.extension);
         const profile = initialTestState.profileContext.profiles.find(p => p.profile_id === w.attributes.profile_id);
         if(profile){
-          expect(rendered.container).toHaveTextContent(`${profile.profile_nme} - ${profile.profile_id}`);
-          expect(rendered.container).toHaveTextContent(profile.operating_unit_nme);
+          expect(rendered.container).toHaveTextContent(`${profile.profile_name} - ${profile.profile_id}`);
+          expect(rendered.container).toHaveTextContent(profile.ou_name);
         }
         if(w.attributes.office_location_name){
           expect(rendered.container).toHaveTextContent(w.attributes.office_location_name);

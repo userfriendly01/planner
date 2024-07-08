@@ -56,7 +56,7 @@ export const GeneralSkillForm = () => {
     })));
     setProfileOptions(profiles.map(p => ({
       value: p.profile_id,
-      label: p.profile_nme
+      label: p.profile_name
     })));
   }, []);
 

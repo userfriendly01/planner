@@ -1,5 +1,4 @@
 import { getStartupProfiles } from "authentication/authenticationProfiles";
-import { apiPaths } from "globals";
 import { Action } from "globals/interfaces";
 import {
   getWfmBusinessUnits,
@@ -8,12 +7,11 @@ import {
   getCalabrioOrg as getCalabrioOrgServiceCall
 } from "services/calabrio";
 import { listUMManagers } from "services/manager";
-import { listUMOffices } from "services/office";
 import { listUMUsers } from "services/user";
+import { listUMSoftphoneConfigs } from "services/profile";
 import { loadConsolidatedSkills } from "services/skill";
 import { getCalabrioWfmOptions } from "utils/calabrioUtils";
 import { logger } from "utils/logger";
-import { myAxios } from "utils/myAxios";
 
 const getCalabrioUsers = async (dispatch: (action: Action) => void) => {
   try {
@@ -26,7 +24,6 @@ const getCalabrioUsers = async (dispatch: (action: Action) => void) => {
   } catch (error) {
     logger.error("Failed to fetch Calabrio Users from service", { error });
     //We're not throwing an error here so that we can still load Triton Admin and use its other features if this fails
-    //Additionally - there can be local issues we have to work out when trying to call this 
   }
 };
 
@@ -41,7 +38,6 @@ const getCalabrioOrg = async (dispatch: (action: Action) => void) => {
   } catch (error) {
     logger.error("Failed to fetch Calabrio org from service", { error });
     //We're not throwing an error here so that we can still load Triton Admin and use its other features if this fails
-    //Additionally - there can be local issues we have to work out when trying to call this 
   }
 };
 
@@ -56,29 +52,8 @@ const getCalabrioRoles = async (dispatch: (action: Action) => void) => {
   } catch (error) {
     logger.error("Failed to fetch Calabrio Roles from service", { error });
     //We're not throwing an error here so that we can still load Triton Admin and use its other features if this fails
-    //Additionally - there can be local issues we have to work out when trying to call this 
   }
 };
-
-const getProfiles = (dispatch: (action: Action) => void) =>
-  new Promise((resolve, reject) => myAxios.get(apiPaths.PROFILES)
-    .then(res => {
-      dispatch({
-        type: "loadProfiles",
-        payload: res.data
-      });
-      resolve(true);
-    })
-    .catch(error => {
-      logger.error("Failed to fetch profiles from service", { error });
-
-      reject({
-        msg: "Failed to fetch profiles from service",
-        error
-      });
-    })
-  );
-
 
 const getBusinessUnits = async (dispatch: (action: Action) => void) => {
   try {
@@ -94,11 +69,7 @@ const getBusinessUnits = async (dispatch: (action: Action) => void) => {
     return response.data;
   } catch (error) {
     logger.error("Failed to fetch Calabrio Business Units", { error });
-
-    throw ({
-      msg: "Failed to fetch Calabrio Business Units",
-      error
-    });
+    //We're not throwing an error here so that we can still load Triton Admin and use its other features if this fails
   }
 };
 
@@ -106,18 +77,17 @@ export const runTritonAdminStartup = (dispatch:  (action: Action) => void, skill
   /* Please add new service calls to the end of this Promise.all,
   the existing order is important */
 
-  listUMUsers(dispatch); // We want to kick this off but not wait for the results
+  listUMUsers(dispatch); // We want to kick these off but not wait for the results
+  getBusinessUnits(dispatch);
+  getCalabrioWfmOptions(dispatch);
 
   return Promise.all([
     Promise.resolve(getStartupProfiles().TRITON.name),
     listUMManagers(dispatch),
-    listUMOffices(dispatch),
-    getProfiles(dispatch),
+    listUMSoftphoneConfigs(dispatch),
     loadConsolidatedSkills(skillDispatch),
     getCalabrioUsers(dispatch),
     getCalabrioOrg(dispatch),
-    getCalabrioRoles(dispatch),
-    getBusinessUnits(dispatch),
-    getCalabrioWfmOptions(dispatch)
+    getCalabrioRoles(dispatch)
   ]);
 };

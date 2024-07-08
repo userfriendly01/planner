@@ -4,7 +4,7 @@ import { StyledButton } from "components/StyledButton";
 import {
   act,
   render,
-  skillsList,
+  mockSkills,
   setupMockedComponents
 } from "testUtils";
 import { ExcelExport } from "@progress/kendo-react-excel-export";
@@ -17,7 +17,7 @@ jest.mock("@progress/kendo-react-excel-export", () => ({
   ExcelExport: jest.fn()
 }));
 
-const selected = [skillsList[0]];
+const selected = [mockSkills[0]];
 
 describe("<ExportButton />", () => {
   beforeEach(() => {

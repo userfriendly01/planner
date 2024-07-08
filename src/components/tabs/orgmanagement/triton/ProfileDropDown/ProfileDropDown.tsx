@@ -1,25 +1,27 @@
 import { Dropdown } from "components/Dropdown";
+import { useAdminState } from "context/appContext";
+import { UMSoftphoneConfiguration } from "globals/interfaces";
 import React from "react";
 import { sortProfilesById } from "utils/_sortUtils";
 
 interface ProfileDropDownProps {
-    availableProfiles: any[],
-    profileId: string | number,
-    updateProfile: (value: any) => void
+    selectedProfile: number,
+    setSelectedProfile: (value: number) => void
 }
 
 export const ProfileDropDown = (props: ProfileDropDownProps) => {
   const {
-    availableProfiles,
-    profileId,
-    updateProfile
+    selectedProfile,
+    setSelectedProfile
   } = props;
 
+  const { profiles } = useAdminState().profileContext;
+
   const getValue = () => {
-    const profile = availableProfiles.find(p => p.profile_id === profileId);
+    const profile: UMSoftphoneConfiguration = profiles.find(p => p.profile_id === selectedProfile);
     return profile ? {
-      label: `${profile.profile_id} - ${profile.profile_nme}`,
-      value: profileId
+      label: `${profile.profile_id} - ${profile.profile_name}`,
+      value: profile.profile_id
     } : "";
   };
 
@@ -27,12 +29,12 @@ export const ProfileDropDown = (props: ProfileDropDownProps) => {
     <div>
       <Dropdown
         label={"Profile"}
-        options={availableProfiles.sort(sortProfilesById).map(profile => ({
-          label: `${profile.profile_id} - ${profile.profile_nme}`,
+        options={profiles.sort(sortProfilesById).map(profile => ({
+          label: `${profile.profile_id} - ${profile.profile_name}`,
           value: profile.profile_id,
           ...profile
         }))}
-        updateValue={(event: any, newInput: any) => updateProfile(newInput.value)}
+        updateValue={(event: any, newInput: any) => setSelectedProfile(newInput?.value)}
         value={getValue()}
       />
     </div>

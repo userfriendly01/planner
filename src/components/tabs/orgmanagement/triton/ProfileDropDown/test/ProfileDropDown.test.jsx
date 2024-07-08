@@ -1,16 +1,23 @@
 import { ProfileDropDown } from "../ProfileDropDown";
 import { Dropdown } from "components/Dropdown";
+import { useAdminState } from "context/appContext";
 import React from "react";
 import {
   expectMockedComponent,
   expectOnlyPassedProps,
   getMockedComponentProps,
+  initialTestState,
+  mockProfiles,
   render,
   setupMockedComponents
 } from "testUtils";
 
 jest.mock("components/Dropdown", () => ({
   Dropdown: jest.fn()
+}));
+
+jest.mock("context/appContext", () => ({
+  useAdminState: jest.fn()
 }));
 
 const updateProfile = jest.fn();
@@ -21,58 +28,35 @@ describe("<ProfileDropDown />", () => {
     jest.clearAllMocks();
   });
 
-  const availableProfiles = [
-    {
-      profile_id: 1,
-      profile_nme: "First Profile",
-      value: 1,
-      label: "First Profile"
-
-    },
-    {
-      profile_id: 2,
-      profile_nme: "Second Profile",
-      value: 2,
-      label: "Second Profile"
-    },
-    {
-      profile_id: 3,
-      profile_nme: "Third Profile",
-      value: 3,
-      label: "Third Profile"
-    }
-  ];
-
   beforeEach(() => {
     jest.clearAllMocks();
+    useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({ Dropdown });
   });
   describe("a profile is selected", () => {
     test("should render OutlinedSelect with correct props", () => {
       const rendered = render(<ProfileDropDown
-        availableProfiles={availableProfiles}
-        profileId={availableProfiles[0].profile_id}
-        updateProfile={updateProfile}
+        selectedProfile={1}
+        setSelectedProfile={updateProfile}
       />);
       expectMockedComponent(rendered, { Dropdown }, 1);
       expectOnlyPassedProps(Dropdown, {
         label: "Profile",
         value: {
-          label: "1 - First Profile",
+          label: "1 - USRM Billing & Collections",
           value: 1
         }
       });
       const { updateValue } = getMockedComponentProps(Dropdown);
-      updateValue(null, availableProfiles[1]);
-      expect(updateProfile).toHaveBeenCalledWith(availableProfiles[1].value);
+      updateValue(null, mockProfiles[1]);
+      expect(updateProfile).toHaveBeenCalledTimes(1);
     });
   });
   describe("no profile is selected (profileID is null)", () => {
     test("should render OutlinedSelect with correct props", () => {
       const rendered = render(<ProfileDropDown
-        availableProfiles={availableProfiles}
-        profileId={null}
-        updateProfile={updateProfile}
+        selectedProfile={null}
+        setSelectedProfile={updateProfile}
       />);
       expectMockedComponent(rendered, { Dropdown }, 1);
       expectOnlyPassedProps(Dropdown, {

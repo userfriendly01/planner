@@ -11,7 +11,6 @@ import {
 }from "globals/interfaces";
 import {
   LIST_MANAGERS,
-  LIST_OFFICES,
   LIST_USERS
 }from "globals/graphql";
 import {
@@ -26,14 +25,12 @@ export const getGraphData = (type: string): GraphData => {
       return LIST_USERS;
     case "UMManager":
       return LIST_MANAGERS;
-    case "UMOffice":
-      return LIST_OFFICES;
     default:
       throw `Type of ${type} is not a valid list type`;
   }
 };
 
-export const getPaginatedResults = async (type: string, dispatch: (action: Action) => void, formatResults?: (items: PaginationType[]) => PaginationType[], callBack?: VoidFunction): Promise<void> => {
+export const getPaginatedResults = async (type: string, dispatch: (action: Action) => void, formatResults?: (items: PaginationType[]) => PaginationType[], callBack?: any): Promise<void> => {
   const graph: GraphData = getGraphData(type);
   let isFirstQuery = true;
   const getPageResults = async (nextToken?: string): Promise<VoidFunction> => {
@@ -73,7 +70,6 @@ export const getPaginatedResults = async (type: string, dispatch: (action: Actio
   };
 
   await getPageResults();
-
   return;
 };
 

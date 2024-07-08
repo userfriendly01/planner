@@ -97,7 +97,7 @@ export const DeleteForm = (props: any) => {
       const userResults = await Promise.allSettled(impactedWorkers.map((user: Partial<UMUser>) => updateUser(user.sid, { attributes: user.attributes })));
       logger.info("Worker Deletion Results", { userResults });
 
-      const results = await handleConcurrentCalls(3, deleteSkill, formattedSkills, shouldDeleteQueue);
+      const results = await handleConcurrentCalls(1, deleteSkill, formattedSkills, shouldDeleteQueue);
       logger.info("Skill Deletion Results", { results });
 
       const totalResults = [...results, ...userResults.map((r: any, i: number) => (

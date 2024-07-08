@@ -146,6 +146,7 @@ export const PhoneNumberInput = (props: PhoneNumberInputProps) => {
         <SwitchContainer>
           <div>7 Digit VDN</div>
           <Switch
+            disabled={disabled}
             checked={useSevenDigitMask}
             data-testid={"toggle-seven-digit"}
             onChange={toggleSwitch}

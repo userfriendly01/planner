@@ -4,6 +4,7 @@ import { useFormState } from "context/appContext";
 import { formModes } from "globals";
 import React from "react";
 import styled from "styled-components";
+import { CustomRenderProps } from "../DefaultSkillSelector/DefaultSkillSelector.Interfaces";
 
 const SubText = styled.div`
   font-size: 10px;
@@ -20,79 +21,59 @@ export const SkillsList = (props: SkillDropdownProps) => {
 
   const form = useFormState();
 
-
-  const getSkillAndSkillGroupOptions = () => {
-    const optionsList = [];
-
-    // skill groups
-    skillGroups.forEach(option => {
-      optionsList.push({
-        value: option.skillGroupId,
-        label: option.skillGroupNme,
-        isSkillGroup: true,
-        skills: option.skills
-      });
-    });
-
-    optionsList.push({
-      label: "divider",
-      value: "divider"
-    });
-    // skills
-    skills.forEach(skill => {
-      optionsList.push({
-        label: skill.name,
-        value: skill.name
-      });
-    });
-
-    return optionsList;
-  };
-
-  const DropdownOption = (props: any) => {
-    const {
-      option
-    } = props;
-
-    return (
-      <div>
-        {  option.label === "divider"
-          ? <hr /> :
-          !option.isSkillGroup ? (
-            <>
-              <div>
-                {option.label}
-              </div>
-            </>
-          )
-            :          <>
-              <div>
-                {option.label}
-              </div>
-              <SubText>
-                Default Skill Grouping
-              </SubText>
-            </>
-        }
-      </div>
-    );
-  };
-
   return (
     <Dropdown
+      disableClear
       disabled={form.formMode === formModes.DELETE}
       styles={{
         small: true,
         height: "40px",
         width: "210px"
       }}
-      CustomRender={DropdownOption}
-      options={[...getSkillAndSkillGroupOptions()]}
+      CustomRender={({ option }: CustomRenderProps) => {
+        return (
+          <div>
+            {option.isSkillGroup && (
+              <>
+                <div>
+                  {option.label}
+                </div>
+                <SubText>
+                  Default Skill Grouping
+                </SubText>
+              </>
+            )}
+            {!option.isSkillGroup && (
+              <div>
+                {option.label}
+              </div>
+            )}
+          </div>
+        );
+      }}
+      options={[
+        ...skillGroups
+          .map(option => ({
+            value: option.id,
+            label: option.skill_group_name,
+            isSkillGroup: true,
+            skills: option.skills
+          })),
+        {
+          label: "divider",
+          value: "divider"
+        },
+        ...skills
+          .map(skill => ({
+            label: skill.name,
+            value: skill.name
+          }))
+      ]}
       value={{
         label: skill,
         value: skill
       }}
-      updateValue={(event: any, newInputValue: any) => updateSkill(newInputValue)}
+      updateValue={(_event: any, newInputValue: any) => updateSkill(newInputValue)}
     />
   );
 };
