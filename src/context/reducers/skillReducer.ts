@@ -1,7 +1,6 @@
 import { formModes } from "globals";
 import { Action } from "globals/interfaces";
 import { SkillState } from "callflowmanagement/Skills.Interfaces";
-import { formatSkillGroups } from "utils/skillsUtils";
 
 export const skillActions = {
   RESET_FORM: "RESET_FORM",
@@ -82,7 +81,7 @@ export const skillReducer = (state: SkillState, action: Action): SkillState => {
     case skillActions.LOAD_SKILL_GROUPS:
       return {
         ...state,
-        skillGroups: formatSkillGroups(action.payload)
+        skillGroups: action.payload
       };
     case skillActions.LOAD_SKILL_OPTIONS:
       return {

@@ -117,7 +117,8 @@ const App = () => {
           extraScopesToConsent: [
             // Add additional scopes that are needed here
             `${env.GRAPH_CLIENT_ID}/uiaccess`,
-            `${env.CALABRIO_SERVICE_CLIENT_ID}/uiaccess`
+            `${env.CALABRIO_SERVICE_CLIENT_ID}/uiaccess`,
+            `${env.ADMIN_CLIENT_ID}/uiAccess`
           ]
         });
 
@@ -127,6 +128,10 @@ const App = () => {
         const sharedGraph = await instance.acquireTokenSilent({
           account,
           scopes: [`${env.GRAPH_CLIENT_ID}/uiaccess`]
+        });
+        const adminService = await instance.acquireTokenSilent({
+          account,
+          scopes: [`${env.ADMIN_CLIENT_ID}/uiAccess`]
         });
 
         const calabrioService = await instance.acquireTokenSilent({
@@ -140,7 +145,8 @@ const App = () => {
             tokens: {
               msGraph: msGraph.accessToken,
               sharedGraph: sharedGraph.accessToken,
-              calabrioService: calabrioService.accessToken
+              calabrioService: calabrioService.accessToken,
+              adminService: adminService.accessToken
             }
           }
         });
@@ -149,9 +155,11 @@ const App = () => {
         // we'll want to constantly refresh the token several times
         // then prompt the user to refresh or come up with a better way of refreshing
         // the data
-        wait(() => {
-          setShowModal(true);
-        }, msGraph.expiresOn.getTime() - Date.now());
+        const showModal = () => setShowModal(true);
+
+        wait(showModal, msGraph.expiresOn.getTime() - Date.now());
+        wait(showModal, sharedGraph.expiresOn.getTime() - Date.now());
+        wait(showModal, adminService.expiresOn.getTime() - Date.now());
       } catch (error) {
         logger.error("TOKEN_GET_FAILED", { error });
         setLoadResult({

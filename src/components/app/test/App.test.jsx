@@ -33,7 +33,10 @@ jest.useFakeTimers();
 
 jest.mock("@mui/material", () => ({
   CircularProgress: jest.fn(),
-  Modal: jest.fn()
+  Modal: jest.fn(),
+  Paper: jest.fn(),
+  Button: jest.fn(),
+  TextField: jest.fn()
 }));
 
 jest.mock("alohaFlow/AlohaFlowContainer", () => ({
@@ -68,17 +71,8 @@ jest.mock("dynamicFlow/DynamicFlowContainer", () => ({
   default: jest.fn()
 }));
 
-jest.mock("orgmanagement/ProfileDirectoryContainer", () => ({
-  __esModule: true,
-  default: jest.fn()
-}));
-
-jest.mock("orgmanagement/ProfileDialListContainer", () => ({
-  ProfileDialListContainer: jest.fn()
-}));
-
-jest.mock("orgmanagement/ProfileSettingsContainer", () => ({
-  ProfileSettingsContainer: jest.fn()
+jest.mock("orgmanagement/PhoneNumberContainer", () => ({
+  PhoneNumberContainer: jest.fn()
 }));
 
 jest.mock("usermanagement/TritonUsersViewWrapper", () => ({
@@ -214,7 +208,8 @@ describe("<App />", () => {
             tokens: {
               msGraph: "Access Token",
               sharedGraph: "Access Token",
-              calabrioService: "Access Token"
+              calabrioService: "Access Token",
+              adminService: "Access Token"
             }
           }
         });
@@ -285,7 +280,8 @@ describe("<App />", () => {
           tokens: {
             msGraph: "Access Token",
             sharedGraph: "Access Token",
-            calabrioService: "Access Token"
+            calabrioService: "Access Token",
+            adminService: "Access Token"
           }
         }
       });
@@ -373,7 +369,8 @@ describe("<App />", () => {
           tokens: {
             msGraph: "Access Token",
             sharedGraph: "Access Token",
-            calabrioService: "Access Token"
+            calabrioService: "Access Token",
+            adminService: "Access Token"
           }
         },
         workerContext: {
@@ -412,7 +409,8 @@ describe("<App />", () => {
             tokens: {
               msGraph: "Access Token",
               sharedGraph: "Access Token",
-              calabrioService: "Access Token"
+              calabrioService: "Access Token",
+              adminService: "Access Token"
             }
           }
         });

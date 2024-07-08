@@ -1,5 +1,6 @@
 import { formModes } from "globals";
 import {
+  formatUsers,
   identifyFormErrors,
   isProfileIdValid,
   isManagerValid,
@@ -26,8 +27,13 @@ import { getWfmUserByNNumber } from "services/calabrio";
 import {
   initialTestState,
   initialFormState,
-  validFormState
+  validFormState,
+  mockProfiles,
+  mockSkills
 } from "testUtils";
+import {
+  mapWorkerFromDbWorker
+} from "utils/graphUtils";
 
 jest.mock("services/fetchUser", () => ({
   fetchUser: jest.fn()
@@ -36,6 +42,11 @@ jest.mock("services/fetchUser", () => ({
 jest.mock("services/calabrio", () => ({
   getWfmUserByNNumber: jest.fn()
 }));
+
+jest.mock("utils/graphUtils", () => ({
+  mapWorkerFromDbWorker: jest.fn()
+}));
+
 
 const mockSetForm = jest.fn();
 
@@ -51,23 +62,7 @@ const managerList = [
     manager_n_number: "n7454853"
   }
 ];
-const profileList = [
-  {
-    profile_nme: "test1",
-    profile_id: 1,
-    overflow_skill: null
-  },
-  {
-    profile_nme: "test2",
-    profile_id: 2,
-    overflow_skill: "whateverOverflowSkill"
-  },
-  {
-    profile_nme: "test3",
-    profile_id: 3,
-    overflow_skill: "anotherOverflowSkill"
-  }
-];
+
 const validFormOptions = {
   calabrioUser: {
     team: 214,
@@ -90,7 +85,7 @@ const validFormOptions = {
   extension: "1234",
   manager: managerList[0],
   nNumber: "n1234567",
-  profileId: profileList[0].profile_id
+  profileId: mockProfiles[0].profile_id
 };
 const mockWorkers = [
   {
@@ -144,10 +139,10 @@ const mockWorkers = [
       manager_last_name: validFormOptions.manager.manager_last_name,
       manager_n_number: validFormOptions.manager.manager_n_number,
       office_location_name: "Jupiter",
-      profile_id: profileList[1].profile_id,
+      profile_id: mockProfiles[1].profile_id,
       routing: {
         skills: [
-          profileList[1].overflow_skill,
+          mockProfiles[1].overflow_skill,
           "whatever"
         ],
         levels: {
@@ -171,7 +166,7 @@ const mockWorkers = [
       manager_last_name: validFormOptions.manager.manager_last_name,
       manager_n_number: validFormOptions.manager.manager_n_number,
       office_location_name: "Pluto",
-      profile_id: profileList[1].profile_id,
+      profile_id: mockProfiles[1].profile_id,
       routing: {
         skills: [
           "payinBills"
@@ -183,6 +178,46 @@ const mockWorkers = [
     }
   }
 ];
+describe("formatUsers", () => {
+  beforeEach(() => {
+    mapWorkerFromDbWorker.mockImplementation(data => data);
+  });
+  const users = [{
+    pk: "User:#n1111111",
+    ttl: null,
+    worker_sid: "asdf",
+    inactive_date: null,
+    twilio_attributes: {
+      profile_id: 1
+    }
+  },
+  {
+    pk: "User:#n2222222",
+    ttl: 9876986798,
+    worker_sid: "ghgh",
+    inactive_date: "07/05/2024",
+    twilio_attributes: {
+      profile_id: 1
+    }
+  },
+  {
+    pk: "User:#n3333333",
+    ttl: null,
+    worker_sid: ";lkj",
+    inactive_date: null,
+    twilio_attributes: {
+      profile_id: 1
+    }
+  }];
+  test("formats all active users with twilio attributes", () => {
+    const result = formatUsers(users);
+    expect(mapWorkerFromDbWorker).toHaveBeenCalledTimes(2);
+    expect(result).toEqual([
+      users[0],
+      users[2]
+    ]);
+  });
+});
 
 describe("isUnpopulatedField", () => {
   test("value is empty string - should return true", () => {
@@ -427,30 +462,30 @@ describe("isDidDifferentValid", () => {
 
 describe("getTargetProfile", () => {
   test("should return profile when found in profile list", () => {
-    const result = getTargetProfile(profileList, "2");
-    expect(result).toStrictEqual(profileList[1]);
+    const result = getTargetProfile(mockProfiles, "2");
+    expect(result).toStrictEqual(mockProfiles[2]);
   });
   test("should return undefined if profile is not found", () => {
-    const result = getTargetProfile(profileList, "4");
+    const result = getTargetProfile(mockProfiles, "4");
     expect(result).toBe(undefined);
   });
 });
 
 describe("getOverflowSkillFromProfile", () => {
   test("should return skill if profile has overflow skill", () => {
-    const result = getOverflowSkillFromProfile(profileList, profileList[1].profile_id);
-    expect(result).toBe("whateverOverflowSkill");
+    const result = getOverflowSkillFromProfile(mockProfiles, mockProfiles[0].profile_id);
+    expect(result).toBe("lscOBDialer1");
   });
   test("should return undefined if profile does not have overflow skill", () => {
-    const result = getOverflowSkillFromProfile(profileList, profileList[0].profile_id);
+    const result = getOverflowSkillFromProfile(mockProfiles, mockProfiles[1].profile_id);
     expect(result).toBe(undefined);
   });
 });
 
 describe("getOverflowSkills", () => {
   test("should return overflow skills from profile list", () => {
-    const result = getOverflowSkills(profileList);
-    expect(result).toStrictEqual(["whateverOverflowSkill", "anotherOverflowSkill"]);
+    const result = getOverflowSkills(mockProfiles);
+    expect(result).toStrictEqual([mockSkills[0].name]);
   });
 });
 
@@ -459,11 +494,11 @@ describe("workerHasOverFlowSkill", () => {
     const worker = {
       attributes: {
         routing: {
-          skills: ["aisgL1", "whateverOverflowSkill"]
+          skills: ["aisgL1", mockSkills[0].name]
         }
       }
     };
-    const result = workerHasOverFlowSkill(worker, profileList);
+    const result = workerHasOverFlowSkill(worker, mockProfiles);
     expect(result).toBe(true);
   });
   test("should return false if worker does not have overflow skill", () => {
@@ -474,7 +509,7 @@ describe("workerHasOverFlowSkill", () => {
         }
       }
     };
-    const result = workerHasOverFlowSkill(worker, profileList);
+    const result = workerHasOverFlowSkill(worker, mockProfiles);
     expect(result).toBe(false);
   });
 });
@@ -488,7 +523,7 @@ describe("getNonOverflowSkills", () => {
         }
       }
     };
-    const result = getNonOverflowSkills(worker, profileList);
+    const result = getNonOverflowSkills(worker, mockProfiles);
     expect(result).toStrictEqual(["aisgL1"]);
   });
 });
@@ -1596,6 +1631,7 @@ describe("identifyUserProfiles", () => {
           payload: {
             formMode: "insert",
             worker: {
+              sid: "WK66654654",
               attributes: {
                 full_name: "Andrew VandeKamp",
                 emp_first_name: "Andrew",

@@ -56,7 +56,7 @@ const ouOptions = initialSkillState.operatingUnits.map(ou => ({
 }));
 const profileOptions = initialTestState.profileContext.profiles.map(p => ({
   value: p.profile_id,
-  label: p.profile_nme
+  label: p.profile_name
 }));
 const taskQueuePrefix = [
   {

@@ -17,12 +17,6 @@ export const SkillsContainer = (props: SkillsContainerProps) => {
     setTableState
   } = props;
 
-  const {
-    applications,
-    taskQueues,
-    timeOfDays
-  } = useSkillState();
-
   return (
     <SkillsWrapper>
       <SkillsHeader

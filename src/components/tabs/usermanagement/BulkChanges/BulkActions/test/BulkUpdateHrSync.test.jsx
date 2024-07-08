@@ -78,7 +78,7 @@ describe("<BulkUpdateAttributes />", () => {
           return {
             ...p,
             value: p.profile_id,
-            label: `${p.profile_nme} - ${p.profile_id}`
+            label: `${p.profile_name} - ${p.profile_id}`
           };
         }));
       });
@@ -100,7 +100,7 @@ describe("<BulkUpdateAttributes />", () => {
         expect(Dropdown.mock.calls[1][0].value).toStrictEqual({
           ...selectedProfile,
           value: selectedProfile.profile_id,
-          label: `${selectedProfile.profile_nme} - ${selectedProfile.profile_id}`
+          label: `${selectedProfile.profile_name} - ${selectedProfile.profile_id}`
         });
         expect(mockReplaceTemplates).toHaveBeenCalledTimes(0);
         expect(mockRemoveTemplates).toHaveBeenCalledTimes(1);
@@ -137,13 +137,13 @@ describe("<BulkUpdateAttributes />", () => {
         expect(mockSetUploadedForm).toHaveBeenCalledWith(null);
         expect(mockReplaceTemplates).toHaveBeenCalledTimes(0);
         const onProfileChange = Dropdown.mock.calls[0][0].updateValue;
-        const selectedProfile = initialTestState.profileContext.profiles.find(p => p.profile_id === 2);
+        const selectedProfile = initialTestState.profileContext.profiles.find(p => p.profile_id === 0);
         act(() => onProfileChange(null, selectedProfile));
         expect(Dropdown.mock.calls.length).toBe(2);
         expect(Dropdown.mock.calls[1][0].value).toStrictEqual({
           ...selectedProfile,
           value: selectedProfile.profile_id,
-          label: `${selectedProfile.profile_nme} - ${selectedProfile.profile_id}`
+          label: `${selectedProfile.profile_name} - ${selectedProfile.profile_id}`
         });
         expect(mockReplaceTemplates).toHaveBeenCalledTimes(1);
         expect(mockReplaceTemplates).toHaveBeenCalledWith(updateTemplates.SYNC_HR_ATTRIBUTES);
@@ -151,23 +151,41 @@ describe("<BulkUpdateAttributes />", () => {
         expect(mockSetShowTemplates).toHaveBeenCalledTimes(2);
         expect(mockSetShowTemplates.mock.calls[1][0]).toBe(false);
         expect(mockSetUploadedForm).toHaveBeenCalledTimes(2);
-        expect(mockSetUploadedForm.mock.calls[1][0]).toStrictEqual([{
-          "N Number": "n2223333",
-          "originalWorker": {
-            attributes: {
-              full_name: "Snowball Jones",
-              emp_first_name: "Snowball",
-              emp_last_name: "Jones",
-              extension: "7891",
-              n_number: "n2223333",
-              email: "snowball.jones@libertymutual.com",
-              profile_id: 2,
-              manager_n_number: "n0260000"
-            }
+        expect(mockSetUploadedForm.mock.calls[1][0]).toStrictEqual([
+          {
+            "N Number": "n2222222",
+            "originalWorker": {
+              attributes: {
+                full_name: "Andrew VandeKamp",
+                emp_first_name: "Andrew",
+                emp_last_name: "VandeKamp",
+                extension: "7891",
+                n_number: "n2222222",
+                profile_id: 0,
+                manager_n_number: "n0260000"
+              },
+              sid: "WK66654654"
+            },
+            "rowNumber": 1,
+            "workerSid": "WK66654654"
           },
-          "rowNumber": 1,
-          "workerSid": undefined
-        }]);
+          {
+            "N Number": "n222354",
+            "originalWorker": {
+              attributes: {
+                full_name: "Susan Delfino",
+                emp_first_name: "Susan",
+                emp_last_name: "Delfino",
+                extension: "7833",
+                n_number: "n222354",
+                profile_id: 0,
+                manager_n_number: "n0260000"
+              }
+            },
+            "rowNumber": 2,
+            "workerSid": undefined
+          }
+        ]);
       });
     });
     describe("Profile field is cleared", () => {
@@ -176,10 +194,10 @@ describe("<BulkUpdateAttributes />", () => {
         expect(Dropdown.mock.calls.length).toBe(1);
         expect(Dropdown.mock.calls[0][0].value).toBe("");
         const onProfileSelect = Dropdown.mock.calls[0][0].updateValue;
-        const selectedProfile = initialTestState.profileContext.profiles.find(p => p.profile_id === 2);
+        const selectedProfile = initialTestState.profileContext.profiles.find(p => p.profile_id === 1);
         act(() => onProfileSelect(null, selectedProfile));
         expect(Dropdown.mock.calls.length).toBe(2);
-        expect(Dropdown.mock.calls[1][0].value.profile_id).toBe(2);
+        expect(Dropdown.mock.calls[1][0].value.profile_id).toBe(1);
         expect(mockRemoveTemplates).toHaveBeenCalledTimes(1);
         const onProfileClear = Dropdown.mock.calls[1][0].updateValue;
         act(() => onProfileClear(null, null));

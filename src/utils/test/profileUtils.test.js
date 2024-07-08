@@ -1,103 +1,47 @@
 import React from "react";
-import {
-  Check,
-  AutoAwesomeMotion
-} from "@mui/icons-material";
+import { Check } from "@mui/icons-material";
 import { Tooltip } from "@mui/material";
 import {
-  formatProfileBooleanData,
-  formatProfileBooleanDataTrueFalse,
   formatProfileACWDataEntry,
-  formatSimpleText,
-  formatActivityData,
-  formatCallTagsName,
-  formatAggregateQueues,
   formatSelfServiceIndicatorData,
-  createProfilePayload,
-  updateProfilePayload,
-  isOverflowSkillValid,
-  isProfileFormValid,
-  isProfileNameValid
+  formatTransferQueues,
+  constructProfilePayload,
+  isProfileFormValid
 } from "../profileUtils";
 import {
   BubbleDiv,
   HighlightRed
-} from "orgmanagement/ProfileSettingsTable.Styles";
+} from "components/tabs/orgmanagement/triton/ProfileSettingsContainer/ProfileSettingsTable/ProfileSettingsTable.Styles";
+import { validProfileEntryFormState } from "testUtils";
 
 describe("profileUtils", () => {
-  describe("isProfileNameValid", () => {
-    test("should return true when valid profile name is entered", () => {
-      const result = isProfileNameValid("Test Value");
-      expect(result).toBe(true);
-    });
-    test("profile name is valid when it is alphanumeric with special characters", () => {
-      const result = isProfileNameValid("Te$t-Value (profile)");
-      expect(result).toBe(true);
-    });
-    test("should return false when profile name is over 80 characters", () => {
-      const result = isProfileNameValid("testprofiletestprofiletestprofiletestprofiletestprofiletestprofiletestprofiletestprofiletestprofile");
-      expect(result).toBe(false);
-    });
-    test("should return false when profile name is empty string", () => {
-      const result = isProfileNameValid("");
-      expect(result).toBe(false);
-    });
-  });
-
-  describe("isOverflowSkillValid", () => {
-    test("should return true when valid overflow skill is entered", () => {
-      const result = isOverflowSkillValid("skill23");
-      expect(result).toBe(true);
-    });
-    test("overflow skill is invalid when space is entered", () => {
-      const result = isOverflowSkillValid("test skill");
-      expect(result).toBe(false);
-    });
-    test("overflow skill is invalid when special character", () => {
-      const result = isOverflowSkillValid("test-skill");
-      expect(result).toBe(false);
-    });
-    test("overflow skill is invalid when over 80 characters", () => {
-      const result = isOverflowSkillValid("testoverflowskilltestoverflowskilltestoverflowskilltestoverflowskilltestoverflowskill");
-      expect(result).toBe(false);
-    });
-    test("empty overflow skill is valid", () => {
-      const result = isOverflowSkillValid("");
-      expect(result).toBe(true);
-    });
-  });
-
   describe("isProfileFormValid", () => {
-    test("should return true when activitiesList, profileName, overflowSkill, acwDataEntry(disabled), callTagsList(empty) and accessGrouptoggle(true) are valid", () => {
+    test("should return true when activitiesList, profileName, profile Id, operating unit are valid", () => {
       const form = {
+        updated: true,
         activitiesList: [2,3],
-        profileName: { valid: true },
-        overflowSkill: { valid: true },
-        acwDataEntry: { value: false },
+        profileId: "80",
+        profileName: "New Profile",
         callTagsList: [],
         operatingUnit: {
           ou_name: "nothing"
         },
         accessGroup: {
-          value: true,
-          updated: true
+          isNew: false
         },
-        accessGroupId: 2,
-        accessGroupIdUpdated: true,
         forwardToNum: {
-          unmaskedValue: "8005551212",
           valid: true
         }
       };
       const result = isProfileFormValid(form);
       expect(result).toBe(true);
     });
-    test("should return true when activitiesList, profileName, overflowSkill, acwDataEntry(enabled), callTagsList(not empty) and accessGrouptoggle(false) are valid", () => {
+    test("should return true when new access group is valid, callTagsList(not empty) and accessGrouptoggle(false) are valid", () => {
       const form = {
+        updated: true,
         activitiesList: [2,3],
-        profileName: { valid: true },
-        overflowSkill: { valid: true },
-        acwDataEntry: { value: true },
+        profileId: 1,
+        profileName: "Snowball",
         callTagsList: [{
           options_id: 1,
           wrkr_tsk_info_nme: "Negotiation Type",
@@ -107,33 +51,9 @@ describe("profileUtils", () => {
           ou_name: "nothing"
         },
         accessGroup: {
-          value: false,
-          updated: false
-        },
-        accessGroupId: null,
-        accessGroupIdUpdated: false,
-        forwardToNum: {
-          unmaskedValue: "8005551212",
-          valid: true
-        }
-      };
-      const result = isProfileFormValid(form);
-      expect(result).toBe(true);
-    });
-    test("should return form valid when profileId is null", () => {
-      const form = {
-        profileId: null,
-        activitiesList: [2,3],
-        profileName: { valid: true },
-        overflowSkill: { valid: true },
-        acwDataEntry: { value: false },
-        callTagsList: [],
-        operatingUnit: {
-          ou_name: "nothing"
-        },
-        accessGroup: {
-          value: false,
-          updated: false
+          isNew: true,
+          access_group_name: "new access group",
+          twilio_dashboard_url: "www.cats"
         },
         forwardToNum: {
           unmaskedValue: "8005551212",
@@ -215,144 +135,24 @@ describe("profileUtils", () => {
       const result = isProfileFormValid(form);
       expect(result).toBe(false);
     });
-    test("should return false when acwDataEntry is disbaled and callTagsList is not empty", () => {
-      const form = {
-        activitiesList: [2,3],
-        profileName: { valid: true },
-        overflowSkill: { valid: true },
-        acwDataEntry: { value: false },
-        callTagsList: [{
-          options_id: 1,
-          wrkr_tsk_info_nme: "Negotiation Type",
-          wrkr_tsk_info_id: 3
-        }],
-        operatingUnit: {
-          ou_name: "nothing"
-        },
-        forwardToNum: {
-          unmaskedValue: "8005551212",
-          valid: true
-        }
-      };
-      const result = isProfileFormValid(form);
-      expect(result).toBe(false);
-    });
-    test("should return false when accessGroup toggle is enabled and accessGroup dropdown is not selected", () => {
-      const form = {
-        activitiesList: [2,3],
-        profileName: { valid: true },
-        overflowSkill: { valid: true },
-        acwDataEntry: { value: true },
-        callTagsList: [],
-        operatingUnit: {
-          ou_name: "nothing"
-        },
-        accessGroup: {
-          value: true,
-          updated: true
-        },
-        accessGroupId: null,
-        accessGroupIdUpdated: true,
-        forwardToNum: {
-          unmaskedValue: "8005551212",
-          valid: true
-        }
-      };
-      const result = isProfileFormValid(form);
-      expect(result).toBe(false);
-    });
-    test("should return false when forwardToNum valid is false", () => {
-      const form = {
-        activitiesList: [2,3],
-        profileName: { valid: true },
-        overflowSkill: { valid: true },
-        acwDataEntry: { value: false },
-        callTagsList: [],
-        operatingUnit: {
-          ou_name: "nothing"
-        },
-        accessGroup: {
-          value: false,
-          updated: false
-        },
-        accessGroupId: null,
-        accessGroupIdUpdated: true,
-        forwardToNum: {
-          unmaskedValue: "blargh",
-          valid: false
-        }
-      };
-      const result = isProfileFormValid(form);
-      expect(result).toBe(false);
-    });
-    test("should return true when forwardToNum unmasked value is null", () => {
-      const form = {
-        activitiesList: [2,3],
-        profileName: { valid: true },
-        overflowSkill: { valid: true },
-        acwDataEntry: { value: false },
-        callTagsList: [],
-        operatingUnit: {
-          ou_name: "nothing"
-        },
-        accessGroup: {
-          value: false,
-          updated: false
-        },
-        accessGroupId: null,
-        accessGroupIdUpdated: true,
-        forwardToNum: {
-          unmaskedValue: null,
-          valid: false
-        }
-      };
-      const result = isProfileFormValid(form);
-      expect(result).toBe(true);
-    });
-  });
-  describe("formatProfileBooleanData", () => {
-    test("should return Check component", () => {
-      expect(formatProfileBooleanData(1)).toStrictEqual(<Check />);
-    });
-    test("should return empty string for non 1 value", () => {
-      expect(formatProfileBooleanData(0)).toBe("");
-    });
-  });
-
-  describe("formatProfileBooleanDataTrueFalse", () => {
-    test("should return true value object", () => {
-      expect(formatProfileBooleanDataTrueFalse(1)).toStrictEqual({ value: true });
-    });
-    test("should return false value object", () => {
-      expect(formatProfileBooleanDataTrueFalse(0)).toStrictEqual({ value: false });
-    });
   });
 
   describe("formatProfileACWDataEntry", () => {
     test("should return multiple BubbleDivs with display names / tooltips inside", () => {
-      const options = [
+      const callTags = [
         {
-          display_nme: "Claim Number",
-          wrkr_tsk_info_id: 2,
-          wrkr_tsk_info_nme: "claim_number",
-          profile_id: 15,
-          options_id: null,
+          display_name: "Claim Number",
+          attribute_name: "claim_number",
           options: null
         },
         {
-          display_nme: "Call Type",
-          wrkr_tsk_info_id: 1,
-          wrkr_tsk_info_nme: "call_type",
-          profile_id: 15,
-          options_id: null,
+          display_name: "Call Type",
+          attribute_name: "call_type",
           options: null
         },
         {
-          display_nme: "Negotiation Type",
-          wrkr_tsk_info_nme: "negotiation_type",
-          wrkr_tsk_info_id: 3,
-          profile_id: 15,
-          options_id: 1,
+          display_name: "Negotiation Type",
+          attribute_name: "negotiation_type",
           options: [
             "Info Exchange",
             "Bargaining",
@@ -362,16 +162,16 @@ describe("profileUtils", () => {
           ]
         }
       ];
-      expect(formatProfileACWDataEntry(1, options, BubbleDiv, HighlightRed)).toStrictEqual(
+      expect(formatProfileACWDataEntry(1, callTags, BubbleDiv, HighlightRed)).toEqual(
         [
-          <Tooltip key={2} placement="top" title={""}>
-            <BubbleDiv key={2}>{"Claim Number"}</BubbleDiv>
+          <Tooltip key={"claim_number"} placement="top" title={""}>
+            <BubbleDiv key={"claim_number"}>{"Claim Number"}</BubbleDiv>
           </Tooltip>,
-          <Tooltip key={1} placement="top" title={""}>
-            <BubbleDiv key={1}>{"Call Type"}</BubbleDiv>
+          <Tooltip key={"call_type"} placement="top" title={""}>
+            <BubbleDiv key={"call_type"}>{"Call Type"}</BubbleDiv>
           </Tooltip>,
-          <Tooltip key={3} placement="top" title={"Info Exchange, Bargaining, Closing, N/A, Offer"}>
-            <BubbleDiv key={3}>{"Negotiation Type"}</BubbleDiv>
+          <Tooltip key={"negotiation_type"} placement="top" title={"Info Exchange, Bargaining, Closing, N/A, Offer"}>
+            <BubbleDiv key={"negotiation_type"}>{"Negotiation Type"}</BubbleDiv>
           </Tooltip>
         ]
       );
@@ -391,35 +191,8 @@ describe("profileUtils", () => {
       }];
       expect(formatProfileACWDataEntry(0, options, BubbleDiv, HighlightRed)).toStrictEqual(<HighlightRed>{"Call tags configured but feature disabled"}</HighlightRed>);
     });
-  });
-
-  describe("formatSimpleText", () => {
-    test("should return overflow skill", () => {
-      expect(formatSimpleText("OverflowSkill")).toBe("OverflowSkill");
-    });
-    test("should return empty string for null overflow skill", () => {
-      expect(formatSimpleText(null)).toBe("");
-    });
-  });
-
-  describe("formatActivityData", () => {
-    test("should return activity within a BubbleDiv", () => {
-      expect(formatActivityData("Busy", BubbleDiv)).toStrictEqual(<BubbleDiv>{"Busy"}</BubbleDiv>);
-    });
-    test("should return empty string for null activity", () => {
-      expect(formatActivityData(null, BubbleDiv)).toBe("");
-    });
-  });
-
-  describe("formatCallTagsName", () => {
-    test("should return a formatted call tag with one underscore", () => {
-      expect(formatCallTagsName("claim_number")).toStrictEqual("Claim Number");
-    });
-    test("should return a formatted call tag with multiple underscores", () => {
-      expect(formatCallTagsName("aces_claim_number")).toStrictEqual("Aces Claim Number");
-    });
-    test("should return a formatted call tag with no underscores", () => {
-      expect(formatCallTagsName("notes")).toStrictEqual("Notes");
+    test("returns empty string when no acwtags and no calltag length", () => {
+      expect(formatProfileACWDataEntry(0, [], BubbleDiv, HighlightRed)).toStrictEqual("");
     });
   });
 
@@ -434,399 +207,84 @@ describe("profileUtils", () => {
       expect(formatSelfServiceIndicatorData("39")).toEqual(<Check />);
     });
   });
-
-  describe("formatAggregateQueues", () => {
-    test("test should return single queue ", () => {
-      const aggrQueue = [
-        {
-          profile_id: 0,
-          aggregate_queues_id: 1,
-          aggregate_queues_nme: "PSU Claims - Level 1",
-          aggregate_queues_type: "single",
-          owner_type: "profile",
-          worker_sid: null,
-          queues: [
-            {
-              skill_id: 1,
-              skill_num: "psu-l1",
-              skill_nme: "PSU Claims - Level 1",
-              tsk_que_sid: "WQ9e7f40c067bb9006022f43266122a257"
-            }
-          ]
-        }
-      ];
-      expect(formatAggregateQueues(aggrQueue, BubbleDiv)).toStrictEqual([<BubbleDiv key={"PSU Claims - Level 1"}>{"PSU Claims - Level 1"}</BubbleDiv>]);
+  describe("formatTransferQueues", () => {
+    test("returns bubbleDiv with taskQueue friendly name", () => {
+      expect(formatTransferQueues(["123"], [{
+        sid: "123",
+        friendly_name: "cool queue"
+      }], BubbleDiv)).toEqual(
+        [<BubbleDiv key={"123"}>{"cool queue"}</BubbleDiv>]
+      );
     });
-    test("test should return aggregated queue with icon", () => {
-      const aggrQueue = [
-        {
-          profile_id: 0,
-          aggregate_queues_id: 1,
-          aggregate_queues_nme: "PSU Claims - Level 1",
-          aggregate_queues_type: "aggregate",
-          owner_type: "profile",
-          worker_sid: null,
-          queues: [
-            {
-              skill_id: 1,
-              skill_num: "psu-l1",
-              skill_nme: "PSU Claims - Level 1",
-              tsk_que_sid: "WQ9e7f40c067bb9006022f43266122a257"
-            }
-          ]
-        }
-      ];
-      expect(formatAggregateQueues(aggrQueue, BubbleDiv)).toStrictEqual([<BubbleDiv key={"PSU Claims - Level 1"}>{"PSU Claims - Level 1"} <AutoAwesomeMotion fontSize="small" /></BubbleDiv>]);
-    });
-    test("no queues, test should be empty array", () => {
-      const aggrQueue = [];
-      expect(formatAggregateQueues(aggrQueue, BubbleDiv)).toStrictEqual([]);
+    test("returns bubbleDiv with taskQueue friendly name unknown", () => {
+      expect(formatTransferQueues(["123"], [{
+        sid: "",
+        friendly_name: "Unknown"
+      }], BubbleDiv)).toEqual(
+        [<BubbleDiv key={"123"}>{"Unknown"}</BubbleDiv>]
+      );
     });
   });
-
-  describe("createProfilePayload", () => {
-    const form = {
-      profileId: null,
-      activitiesList: [
+  describe("constructProfilePayload", () => {
+    const expectedResult = {
+      profile_name: "GRS Claims",
+      profile_id: 40,
+      overflow_skill: "lscOBDialer1",
+      acw_option: false,
+      acw_tags: true,
+      agnt_asst_pay: false,
+      auto_ans: true,
+      edt_policy_num: false,
+      edt_claim_num: false,
+      call_reason: false,
+      clk_to_dial: false,
+      eft_auth: false,
+      inbnd_rec: true,
+      man_outbnd_rec: true,
+      man_inbnd_rec: false,
+      outbnd_rec: true,
+      takes_paymnts: false,
+      voice_mail_trans: false,
+      ou_name: "Claims",
+      ou_sid: "OUe98d4f81e49ccf1ae16b29f8611d1b6c",
+      fwd_to_num: "6038518200",
+      screenpop_ids: ["2hTaQUwxFmf2zanRlQ4lrnbkYaI", "2hTaUah5ZGZ1YcxskXiQkCac9zY"],
+      activity_sids: ["5", "7"],
+      access_group_id: "2hTZxPiac4Bur9tn5pafmEjag1E",
+      call_tags: [
         {
-          activity_id: 1
+          attribute_name: "negotiation_type",
+          display_name: "Negotiation Type",
+          options: ["Info Exchange", "Bargaining", "Closing"]
         },
         {
-          activity_id: 7
-        },
-        {
-          activity_id: 12
+          attribute_name: "claim_number",
+          display_name: "Claim Number",
+          options: null
         }
       ],
-      callTagsList: [
-        {
-          wrkr_tsk_info_id: 1,
-          wrkr_tsk_info_nme: "claim_number",
-          options_id: 1
-        },
-        {
-          wrkr_tsk_info_id: 2,
-          wrkr_tsk_info_nme: "aces_claim_number",
-          options_id: 1
-        }
-      ],
-      autoAnswered: {
-        value: true
-      },
-      inboundRecorded: {
-        value: true
-      },
-      outboundRecorded: {
-        value: true
-      },
-      acwOption: {
-        value: false
-      },
-      manualRecorded: {
-        value: false
-      },
-      acwDataEntry: {
-        value: true
-      },
-      manualRecordedInbound: {
-        value: true
-      },
-      agentAssistedPay: {
-        value: true
-      },
-      voiceMailTranscription: {
-        value: false
-      },
-      paymentProcessing: {
-        value: true
-      },
-      policyNumberEdit: {
-        value: false
-      },
-      callReason: {
-        value: false
-      },
-      clickToDial: {
-        value: false
-      },
-      eftAuthorization: {
-        value: false
-      },
-      claimNumberEdit: {
-        value: false
-      },
-      overflowSkill: {
-        value: "OverflowTestSKill",
-        updated: false,
-        valid: true
-      },
-      profileName: {
-        value: "UnitTestProfile",
-        updated: false,
-        valid: false
-      },
-      transferQueues: [
-        {
-          ctmSkillId: 1,
-          ctmSkillDisplayName: "AISG"
-        },
-        {
-          ctmSkillId: 5,
-          ctmSkillDisplayName: "Gold"
-        },
-        {
-          ctmSkillId: -10,
-          ctmSkillDisplayName: "Licensed Sales Center"
-        }
-      ],
-      operatingUnit: {
-        ou_sid: "123",
-        ou_name: "hello"
-      },
-      accessGroup: {
-        value: true,
-        updated: true
-      },
-      accessGroupId: 2,
-      accessGroupIdUpdated: true,
-      forwardToNum: {
-        updated: true,
-        unmaskedValue: "5555551234"
-      }
+      transfer_queues: ["WQda5066ddff9e0eebf2f168e40d98cc19", "WQ9e7f40c067bb9006022f43266122a257"]
     };
-    const expected = {
-      activities: [1, 7, 12],
-      acw_data_entry_i: true,
-      acw_option_i: false,
-      agent_assisted_pay_i: true,
-      aggregateQueues: [10],
-      auto_answd_i: true,
-      callTags: [
-        {
-          display_nme: "Claim Number",
-          options_id: 1,
-          wrkr_tsk_info_id: 1
-        },
-        {
-          display_nme: "Aces Claim Number",
-          options_id: 1,
-          wrkr_tsk_info_id: 2
-        }
-      ],
-      call_reason_i: false,
-      click_to_dial_i: false,
-      eft_authorization_i: false,
-      claim_number_edit_i: false,
-      manual_record_inbound_i: true,
-      manual_recorded_i: false,
-      operating_unit_nme: "hello",
-      operating_unit_sid: "123",
-      otbnd_recorded_i: true,
-      overflow_skill: "OverflowTestSKill",
-      pmt_prcsg_i: true,
-      policy_number_edit_i: false,
-      profile_id: null,
-      profile_nme: "UnitTestProfile",
-      recorded_i: true,
-      transferQueues: [
-        {
-          skill_id: 1,
-          skill_nme: "AISG"
-        },
-        {
-          skill_id: 5,
-          skill_nme: "Gold"
-        }
-      ],
-      access_group: true,
-      voice_mail_transcription_i: false,
-      access_group_id: 2,
-      fwd_to_num: "5555551234"
-    };
-
-    test("should return a formatted call tag with one underscore", () => {
-      expect(createProfilePayload(form)).toStrictEqual(expected);
+    test("returns formatted payload, sets profileId when formmode is insert", () => {
+      const result = constructProfilePayload(validProfileEntryFormState);
+      expect(result).toEqual(expectedResult);
     });
-  });
-
-  describe("updateProfilePayload", () => {
-    const form = {
-      profileId: 1,
-      activitiesList: [
-        {
-          activity_id: 1
+    test("returns formatted payload, does not set profileId when formmode is not insert", () => {
+      const notInsertProfileForm = {
+        ...validProfileEntryFormState,
+        formMode: "UPDATE",
+        overflowSkill: {},
+        forwardToNum: {
+          unmaskedValue: null
         },
-        {
-          activity_id: 7
-        },
-        {
-          activity_id: 12
-        }
-      ],
-      activitiesUpdated: true,
-      callTagsList: [
-        {
-          wrkr_tsk_info_id: 1,
-          wrkr_tsk_info_nme: "claim_number",
-          options_id: 1
-        },
-        {
-          wrkr_tsk_info_id: 2,
-          wrkr_tsk_info_nme: "aces_claim_number",
-          options_id: 1
-        }
-      ],
-      callTagsUpdated: true,
-      autoAnswered: {
-        value: true,
-        updated: true
-      },
-      inboundRecorded: {
-        value: true,
-        updated: true
-      },
-      outboundRecorded: {
-        value: true,
-        updated: true
-      },
-      acwOption: {
-        value: false,
-        updated: true
-      },
-      manualRecorded: {
-        value: false,
-        updated: true
-      },
-      acwDataEntry: {
-        value: true,
-        updated: true
-      },
-      manualRecordedInbound: {
-        value: true,
-        updated: true
-      },
-      agentAssistedPay: {
-        value: true,
-        updated: true
-      },
-      voiceMailTranscription: {
-        value: false,
-        updated: true
-      },
-      paymentProcessing: {
-        value: true,
-        updated: true
-      },
-      policyNumberEdit: {
-        value: false,
-        updated: true
-      },
-      callReason: {
-        value: false,
-        updated: true
-      },
-      clickToDial: {
-        value: false,
-        updated: true
-      },
-      eftAuthorization: {
-        value: false,
-        updated: true
-      },
-      claimNumberEdit: {
-        value: false,
-        updated: true
-      },
-      overflowSkill: {
-        value: "OverflowTestSKill",
-        updated: true,
-        valid: true
-      },
-      profileName: {
-        value: "UnitTestProfile",
-        updated: true,
-        valid: false
-      },
-      transferQueues: [
-        {
-          ctmSkillId: 1,
-          ctmSkillDisplayName: "AISG"
-        },
-        {
-          ctmSkillId: 5,
-          ctmSkillDisplayName: "Gold"
-        },
-        {
-          ctmSkillId: -10,
-          ctmSkillDisplayName: "Licensed Sales Center"
-        }
-      ],
-      queuesUpdated: true,
-      operatingUnit: {
-        ou_name: "hello",
-        ou_sid: "123"
-      },
-      accessGroup: {
-        value: true,
-        updated: true
-      },
-      accessGroupId: 2,
-      accessGroupIdUpdated: true,
-      forwardToNum: {
-        updated: true,
-        unmaskedValue: "8881231234"
-      }
-    };
-
-    const expected = {
-      activities: [1, 7, 12],
-      acw_data_entry_i: true,
-      acw_option_i: false,
-      agent_assisted_pay_i: true,
-      aggregateQueues: [10],
-      auto_answd_i: true,
-      callTags: [
-        {
-          display_nme: "Claim Number",
-          options_id: 1,
-          wrkr_tsk_info_id: 1
-        },
-        {
-          display_nme: "Aces Claim Number",
-          options_id: 1,
-          wrkr_tsk_info_id: 2
-        }
-      ],
-      call_reason_i: false,
-      click_to_dial_i: false,
-      eft_authorization_i: false,
-      claim_number_edit_i: false,
-      manual_record_inbound_i: true,
-      manual_recorded_i: false,
-      otbnd_recorded_i: true,
-      overflow_skill: "OverflowTestSKill",
-      pmt_prcsg_i: true,
-      policy_number_edit_i: false,
-      profile_id: 1,
-      profile_nme: "UnitTestProfile",
-      recorded_i: true,
-      transferQueues: [
-        {
-          skill_id: 1,
-          skill_nme: "AISG"
-        },
-        {
-          skill_id: 5,
-          skill_nme: "Gold"
-        }
-      ],
-      voice_mail_transcription_i: false,
-      access_group_id: 2,
-      fwd_to_num: "8881231234"
-    };
-
-    test("should return a formatted call tag with one underscore", () => {
-      expect(updateProfilePayload(form)).toStrictEqual(expected);
+        accessGroup: {}
+      };
+      delete expectedResult.profile_id;
+      expectedResult.fwd_to_num = null;
+      expectedResult.overflow_skill = null;
+      expectedResult.access_group_id = null;
+      const result = constructProfilePayload(notInsertProfileForm);
+      expect(result).toEqual(expectedResult);
     });
   });
 });

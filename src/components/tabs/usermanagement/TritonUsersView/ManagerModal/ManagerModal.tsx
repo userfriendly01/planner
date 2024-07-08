@@ -408,11 +408,11 @@ export const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any
               margin: "10px 0px"
             }}
             options={state.profileContext.profiles.sort(sortProfilesByName).map((profile: any) => ({
-              label: profile.profile_nme,
+              label: profile.profile_name,
               value: profile.profile_id,
               ...profile
             }))}
-            value={profile && profile.profile_nme ? profile.profile_nme : ""}
+            value={profile && profile.profile_name ? profile.profile_name : ""}
             updateValue={(event: any, newValue: any) => setProfile(newValue)}
           />
           <Wrapper>

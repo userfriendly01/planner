@@ -7,7 +7,6 @@ import {
 import { apolloClient } from "../../components/core/Auth/SharedGraphAPIProvider";
 import {
   LIST_MANAGERS,
-  LIST_OFFICES,
   LIST_USERS
 }from "globals/graphql";
 import {
@@ -36,12 +35,6 @@ describe("getGraphData", () => {
     test("LIST_MANAGERS are returned", () => {
       const res = getGraphData("UMManager");
       expect(res).toBe(LIST_MANAGERS);
-    });
-  });
-  describe("Graph type is Office", () => {
-    test("LIST_OFFICES are returned", () => {
-      const res = getGraphData("UMOffice");
-      expect(res).toBe(LIST_OFFICES);
     });
   });
   describe("Graph type is Unknown", () => {
@@ -178,70 +171,94 @@ describe("getPageResults", () => {
 });
 
 describe("mapWorkerFromDbWorker", () => {
-  let attributes, dbWorker;
+  let twilio_attributes, dbWorker;
 
   beforeEach(() => {
-    attributes = {
+    twilio_attributes = {
       n_number: "n1234567",
       contact_uri: "client:n1234567"
     };
     dbWorker = {
-      attributes,
-      sid
+      pk: "NNum#n1234567",
+      twilio_attributes,
+      worker_sid: sid,
+      operating_unit_sid: "OU1234",
+      zero_out_enabled: false,
+      self_service_ind: false,
+      inactive_forward_to: null
     };
   });
 
   test("should return TwilioWorker object with attributes, sid & skillsDifferent", () => {
     expect(mapWorkerFromDbWorker(dbWorker)).toEqual({
-      attributes,
+      pk: "NNum#n1234567",
+      attributes: twilio_attributes,
       sid,
-      skillsDifferent: false
+      skillsDifferent: false,
+      operatingUnitSid: "OU1234",
+      zeroOutEnabled: false,
+      selfServiceInd: false,
+      inactiveForwardTo: null,
+      isConsole: false
     });
   });
 
   test("should return TwilioWorker object with {} attributes, sid & skillsDifferent", () => {
-    delete dbWorker.attributes;
+    delete dbWorker.twilio_attributes;
 
     expect(mapWorkerFromDbWorker(dbWorker)).toEqual({
-      attributes: undefined,
+      pk: "NNum#n1234567",
+      attributes: null,
       sid,
-      skillsDifferent: false
+      skillsDifferent: false,
+      operatingUnitSid: "OU1234",
+      zeroOutEnabled: false,
+      selfServiceInd: false,
+      inactiveForwardTo: null,
+      isConsole: false
     });
   });
 
   test("should lowercase manager_n_number and set full_name if it exists", () => {
-    dbWorker.attributes.manager_n_number = "N1234567";
-    dbWorker.attributes.emp_first_name = "Bob";
-    dbWorker.attributes.emp_last_name = "Smith";
-    dbWorker.attributes.full_name = "Blah blah blah";
+    dbWorker.twilio_attributes.manager_n_number = "N1234567";
+    dbWorker.twilio_attributes.emp_first_name = "Bob";
+    dbWorker.twilio_attributes.emp_last_name = "Smith";
+    dbWorker.twilio_attributes.full_name = "Blah blah blah";
 
     expect(mapWorkerFromDbWorker(dbWorker)).toEqual({
+      pk: "NNum#n1234567",
       attributes: {
-        ...attributes,
+        ...twilio_attributes,
         full_name: "Bob Smith",
         emp_first_name: "Bob",
         emp_last_name: "Smith",
         manager_n_number: "n1234567"
       },
       sid,
-      skillsDifferent: false
+      skillsDifferent: false,
+      operatingUnitSid: "OU1234",
+      zeroOutEnabled: false,
+      selfServiceInd: false,
+      inactiveForwardTo: null,
+      isConsole: false
     });
   });
 
   test("should parse levels when they exist on the user", () => {
-    dbWorker.attributes.routing = {
+    dbWorker.twilio_attributes.routing = {
       levels: "{}"
     };
-    dbWorker.attributes.default_skills = {
+    dbWorker.twilio_attributes.default_skills = {
       levels: "{}"
     };
-    dbWorker.attributes.disabled_skills = {
+    dbWorker.twilio_attributes.disabled_skills = {
       levels: "{}"
     };
 
     expect(mapWorkerFromDbWorker(dbWorker)).toEqual({
+      pk: "NNum#n1234567",
       attributes: {
-        ...attributes,
+        ...twilio_attributes,
         routing: {
           levels: {}
         },
@@ -253,7 +270,12 @@ describe("mapWorkerFromDbWorker", () => {
         }
       },
       sid,
-      skillsDifferent: false
+      skillsDifferent: false,
+      operatingUnitSid: "OU1234",
+      zeroOutEnabled: false,
+      selfServiceInd: false,
+      inactiveForwardTo: null,
+      isConsole: false
     });
   });
 });

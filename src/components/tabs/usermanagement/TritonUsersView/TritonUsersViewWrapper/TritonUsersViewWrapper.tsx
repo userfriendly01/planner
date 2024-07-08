@@ -62,7 +62,7 @@ export const TritonUsersViewWrapper: any = () => {
     if(ouFilterArray.length > 0){
       filteredList = filteredList.filter((worker: UMUser) => {
         const profile = state.profileContext.profiles.find(p => p.profile_id === worker.attributes.profile_id);
-        const ouSid = profile ? profile.operating_unit_sid : "";
+        const ouSid = profile ? profile.ou_sid : "";
         const ouFound = ouFilterArray.some((o:any) => o.value === ouSid);
         return ouFound;
       });

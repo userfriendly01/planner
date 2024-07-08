@@ -13,11 +13,13 @@ export const initialState: AppState = {
   managerContext: {
     managers: []
   },
-  officeContext: {
-    offices: []
-  },
   profileContext: {
-    profiles: []
+    profiles: [],
+    screenpops: [],
+    accessGroups: [],
+    activities: [],
+    directoryEntries: [],
+    dialListEntries: []
   },
   userContext: {
     permissions: [],
@@ -64,16 +66,19 @@ export const reducer = (state: AppState, action: Action): AppState => {
         managerContext: {
           ...state.managerContext,
           managers: (type === "UMManager" && !isFirstPage && state.managerContext.managers.concat(pageResults)) || (type === "UMManager" && pageResults) || state.managerContext.managers
-
-        },
-        officeContext: {
-          ...state.officeContext,
-          offices: (type === "UMOffice" && !isFirstPage && state.officeContext.offices.concat(pageResults)) || (type === "UMOffice" && pageResults) || state.officeContext.offices
-
         },
         workerContext: {
           ...state.workerContext,
           workers: (type === "UMUser" && !isFirstPage && state.workerContext.workers.concat(pageResults)) || (type === "UMUser" && pageResults) || state.workerContext.workers
+        }
+      };
+    }
+    case "loadProfileOptions": {
+      return {
+        ...state,
+        profileContext: {
+          ...state.profileContext,
+          ...action.payload
         }
       };
     }
@@ -91,22 +96,6 @@ export const reducer = (state: AppState, action: Action): AppState => {
         managerContext: {
           ...state.managerContext,
           managers: action.payload
-        }
-      };
-    case "addOffice":
-      return {
-        ...state,
-        officeContext: {
-          ...state.officeContext,
-          offices: [...state.officeContext.offices.slice(), action.payload]
-        }
-      };
-    case "addWorkers":
-      return {
-        ...state,
-        workerContext: {
-          ...state.workerContext,
-          workers: state.workerContext.workers.concat(action.payload)
         }
       };
     case "loadWfmOrg": {

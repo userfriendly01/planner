@@ -5,8 +5,7 @@ import { CallFlowManagementSkills } from "callflowmanagement/CallFlowManagementS
 import { CallFlowManagementTfn } from "callflowmanagement/CallFlowManagementTfn";
 import { CompareProfiles } from "usermanagement/CompareProfiles";
 import DynamicFlowContainer from "dynamicFlow/DynamicFlowContainer";
-import ProfileDirectoryContainer from "orgmanagement/ProfileDirectoryContainer";
-import { ProfileDialListContainer } from "orgmanagement/ProfileDialListContainer";
+import { PhoneNumberContainer } from "orgmanagement/PhoneNumberContainer";
 import { ProfileSettingsContainer } from "orgmanagement/ProfileSettingsContainer";
 import { TritonUsersViewWrapper } from "usermanagement/TritonUsersViewWrapper";
 import { UserEntryForm } from "usermanagement/UserEntryFormWrapper";
@@ -37,11 +36,11 @@ export const getRoutes = () => [
   },
   {
     path: "/triton-admin/profile-dial-list",
-    Component: ProfileDialListContainer
+    Component: PhoneNumberContainer
   },
   {
     path: "/triton-admin/profile-directory",
-    Component: ProfileDirectoryContainer
+    Component: PhoneNumberContainer
   },
   {
     path: "/triton-admin/profile-settings",

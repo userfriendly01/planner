@@ -9,6 +9,7 @@ const StyledTextField = styled(TextField)<{styles?: any}>`
   width: ${props => props.styles?.width || "385px"};
   && {
     margin: ${props => props.styles?.margin || "8px 0"};
+    align-self: ${props => props.styles?.alignSelf || null};
   }
   && .MuiFormHelperText-root {
     position: absolute;

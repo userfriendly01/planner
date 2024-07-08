@@ -38,11 +38,11 @@ export const BulkUpdateHrSync = (props: BulkUpdateProps) => {
           rowNumber: index + 1,
           workerSid: w.sid,
           originalWorker: w
-        }
+        };
       });
       if (!templateFound) {
         replaceTemplate(template);
-      };
+      }
       setUploadedForm(nNumbers);
     } else {
       setShowTemplates(true);
@@ -64,7 +64,7 @@ export const BulkUpdateHrSync = (props: BulkUpdateProps) => {
       return {
         ...profile,
         value: profile.profile_id,
-        label: `${profile.profile_nme} - ${profile.profile_id}`
+        label: `${profile.profile_name} - ${profile.profile_id}`
       };
     } else {
       return "";

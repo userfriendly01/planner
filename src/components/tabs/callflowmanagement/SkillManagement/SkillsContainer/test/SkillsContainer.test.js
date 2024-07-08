@@ -5,7 +5,7 @@ import { SkillsTable } from "callflowmanagement/SkillsTable";
 import {
   render,
   expectOnlyPassedProps,
-  skillsList,
+  mockSkills,
   setupMockedComponents,
   waitFor
 } from "testUtils";
@@ -28,7 +28,7 @@ jest.mock("components/StyledButton", () => ({
 }));
 
 const mockSetTableState = jest.fn();
-const tableState = { selected: skillsList[0] };
+const tableState = { selected: mockSkills[0] };
 
 const renderComponent = () => {
   return render(<SkillsContainer

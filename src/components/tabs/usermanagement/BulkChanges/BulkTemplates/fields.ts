@@ -463,7 +463,7 @@ export const FIELDS: Fields = {
                 row.attributes = {};
               }
               row.attributes.routing = {
-                skills: [cleanupField(overflowSkill, "string")],
+                skills: [overflowSkill.trim()],
                 levels: {}
               };
               row.zeroOutEnabled = true;

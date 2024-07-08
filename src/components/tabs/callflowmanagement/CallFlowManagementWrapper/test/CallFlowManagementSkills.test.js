@@ -10,18 +10,18 @@ import {
   useAdminState, useSkillState
 } from "context/appContext";
 import {
-  skillsList,
+  mockSkills,
   render,
   getLastInstanceCalled,
   expectOnlyPassedProps,
   setupMockedComponents,
   initialTestState,
-  act,
   authenticationProfileTemplates,
   mockTimeOfDays,
   mockApplications,
   mockTaskQueues,
-  mockOperatingUnits
+  mockOperatingUnits,
+  waitFor
 } from "testUtils";
 import { Modal } from "@mui/material";
 
@@ -61,7 +61,7 @@ jest.mock("context/appContext", () => ({
 
 const initialTableState = {
   closedFilter: false,
-  filteredList: [skillsList[2], skillsList[3]],
+  filteredList: [mockSkills[2], mockSkills[3]],
   flashFilter: false,
   discrepancyFilter: false,
   profiles: [],
@@ -84,7 +84,7 @@ describe("CallFlowManagementSkills", () => {
     jest.clearAllMocks();
     getAuthenticationProfileTemplates.mockReturnValue(authenticationProfileTemplates);
     useSkillState.mockReturnValue({
-      skills: skillsList,
+      skills: mockSkills,
       timeOfDays: mockTimeOfDays,
       applications: mockApplications,
       taskQueues: mockTaskQueues,
@@ -137,54 +137,70 @@ describe("CallFlowManagementSkills", () => {
     });
   });
   describe("setTableState is called", () => {
-    describe("tablestate.profiles length > 0", () => {
-      test("initial form renders as expected", () => {
+    describe("tablestate.profiles length > 0 - isAdmin", () => {
+      test("initial form renders as expected", async () => {
         render(<CallFlowManagementSkills />);
         const setTableState = ActionContainer.mock.calls[0][0].setTableState;
-        act(() => setTableState({
+        setTableState({
           ...initialTableState,
           profiles: [{ profile_id: 32 }]
-        }));
-        expect(ActionContainer.mock.calls[2][0].tableState.filteredList).toStrictEqual([skillsList[0]]);
+        });
+        await waitFor(() => expect(ActionContainer.mock.calls.length).toBe(3));
+        expect(ActionContainer.mock.calls[2][0].tableState.filteredList).toStrictEqual([mockSkills[0]]);
+      });
+    });
+    describe("tablestate.profiles length > 0", () => {
+      test("initial form renders as expected", async () => {
+        render(<CallFlowManagementSkills />);
+        const setTableState = ActionContainer.mock.calls[0][0].setTableState;
+        setTableState({
+          ...initialTableState,
+          profiles: [{ profile_id: 32 }]
+        });
+        await waitFor(() => expect(ActionContainer.mock.calls.length).toBe(3));
+        expect(ActionContainer.mock.calls[2][0].tableState.filteredList).toStrictEqual([mockSkills[0]]);
       });
     });
     describe("tablestate.closedFilter === true", () => {
-      test("initial form renders as expected", () => {
+      test("initial form renders as expected", async () => {
         render(<CallFlowManagementSkills />);
         const setTableState = ActionContainer.mock.calls[0][0].setTableState;
-        act(() => setTableState({
+        setTableState({
           ...initialTableState,
           closedFilter: true
-        }));
+        });
+        await waitFor(() => expect(ActionContainer.mock.calls.length).toBe(3));
         expect(ActionContainer.mock.calls[2][0].tableState.filteredList).toStrictEqual([
-          skillsList[1],
-          skillsList[2]
+          mockSkills[1],
+          mockSkills[2]
         ]);
       });
     });
     describe("tablestate.flashFilter === true", () => {
-      test("initial form renders as expected", () => {
+      test("initial form renders as expected", async () => {
         render(<CallFlowManagementSkills />);
         const setTableState = ActionContainer.mock.calls[0][0].setTableState;
-        act(() => setTableState({
+        setTableState({
           ...initialTableState,
           flashFilter: true
-        }));
+        });
+        await waitFor(() => expect(ActionContainer.mock.calls.length).toBe(3));
         expect(ActionContainer.mock.calls[2][0].tableState.filteredList).toStrictEqual([
-          skillsList[2]
+          mockSkills[2]
         ]);
       });
     });
     describe("tablestate.discrepancyFilter === true", () => {
-      test("initial form renders as expected", () => {
+      test("initial form renders as expected", async () => {
         render(<CallFlowManagementSkills />);
         const setTableState = ActionContainer.mock.calls[0][0].setTableState;
-        act(() => setTableState({
+        setTableState({
           ...initialTableState,
           discrepancyFilter: true
-        }));
+        });
+        await waitFor(() => expect(ActionContainer.mock.calls.length).toBe(3));
         expect(ActionContainer.mock.calls[2][0].tableState.filteredList).toStrictEqual([
-          skillsList[1]
+          mockSkills[1]
         ]);
       });
     });
@@ -194,11 +210,9 @@ describe("CallFlowManagementSkills", () => {
       render(<CallFlowManagementSkills />);
       const modalOpts = ActionContainer.mock.calls[0][0].confirmationModalOpts;
       const setModalOpts = ActionContainer.mock.calls[0][0].setConfirmationModalOpts;
-      act(() => {
-        setModalOpts({
-          ...modalOpts,
-          open: true
-        });
+      setModalOpts({
+        ...modalOpts,
+        open: true
       });
       render(Modal.mock.calls[1][0].children);
       expect(CallFlowConfirmationModal.mock.calls.length).toBe(1);

@@ -12,7 +12,8 @@ import { messageConsts } from "usermanagement/messages";
 import { ProfileColumn } from "usermanagement/ProfileColumn";
 import { ResetModal } from "usermanagement/ResetModal";
 import {
-  WfmUser, UMUser
+  WfmUser, UMUser,
+  UMSoftphoneConfiguration
 } from "globals/interfaces";
 import {
   env, nNumMatcher
@@ -134,7 +135,7 @@ export const CompareProfiles = () => {
           ["First Name"]: p.attributes?.emp_first_name || "",
           ["Last Name"]: p.attributes?.emp_last_name || "",
           ["Profile Id"]: p.attributes?.profile_id?.toString() || "",
-          ["Profile Name"]: profiles.find((prof: any) => prof.profile_id === p.attributes?.profile_id)?.profile_nme || "",
+          ["Profile Name"]: profiles.find((prof: UMSoftphoneConfiguration) => prof.profile_id === p.attributes?.profile_id)?.profile_name || "",
           ["Manager N Number"]: p.attributes?.manager_n_number || "",
           ["Manager First Name"]: p.attributes?.manager_first_name || "",
           ["Manager Last Name"]: p.attributes?.manager_last_name || "",
@@ -175,15 +176,16 @@ export const CompareProfiles = () => {
     const workers = state.workerContext.workers;
 
     try {
+
       const matchingTritonProfiles = workers.filter((w: UMUser) => w?.attributes?.n_number?.toLowerCase() === nNumberDetails?.nNumber?.toLowerCase());
       if (matchingTritonProfiles.length > 1) {
         updateMessages("add", null, messageConsts.MULTIPLE_TRITON_PROFILES, "error");
       } else if (matchingTritonProfiles.length === 0) {
         updateMessages("add", null, messageConsts.MISSING_TRITON_PROFILE, "error");
       } else {
+
         const workerSid = matchingTritonProfiles[0].sid;
         const email = nNumberDetails.fetchedUser.email;
-
         setTritonProfiles(matchingTritonProfiles);
 
         const wfmUserPromise = isProduction ? getWfmUserByNNumber(state.userContext.tokens.calabrioService, nNumberDetails.nNumber) : Promise.resolve({ data: []});

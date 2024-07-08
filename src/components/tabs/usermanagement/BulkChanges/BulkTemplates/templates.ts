@@ -22,7 +22,6 @@ import {
 import {
   handleWfmExternalLogon,
   updateCalabrioUserState,
-  updateTritonUserState,
   updateWFMPersonState,
   updateManagerUserState
 } from "usermanagement/processingUtils";
@@ -70,7 +69,7 @@ const processCreateTritonUser = async (row: any, state: AppState) => {
     }
 
     const profile = getTargetProfile(state.profileContext.profiles, body.attributes.profile_id);
-    body.operatingUnitSid = profile?.operating_unit_sid;
+    body.operatingUnitSid = profile?.ou_sid;
 
     const res = await createUser(body);
     const workerSid = res.sid;
@@ -328,7 +327,7 @@ const processUpdateWorkerAttribute = async (row: any, template: Template, state:
         profile_id: parseInt(value)
       };
       const profile = getTargetProfile(state.profileContext.profiles, value);
-      body.operatingUnitSid = profile?.operating_unit_sid;
+      body.operatingUnitSid = profile?.ou_sid;
     } else if (location) {
       if (typeof location === "string") {
         body[location] = newAttribute;
@@ -662,7 +661,7 @@ export const getCreateTemplates = (state: AppState): Templates => {
       name: "CREATE_TRITON_USER",
       data: {},
       processFunction: (row: any) => processCreateTritonUser(row, state),
-      stateUpdateFunctions: [updateTritonUserState, handleWfmExternalLogon],
+      stateUpdateFunctions: [handleWfmExternalLogon],
       multiRunDependencies: null,
       validationConcurrencyLimit: 500,
       processingConcurrencyLimit: 5,
@@ -765,7 +764,7 @@ export const getUpdateTemplates = (state: AppState): Templates => {
       name: "UPDATE_WORKER_ATTRIBUTE",
       data: {},
       processFunction: (row: any, template: Template) => processUpdateWorkerAttribute(row, template, state),
-      stateUpdateFunctions: [updateTritonUserState],
+      stateUpdateFunctions: [],
       multiRunDependencies: null,
       validationConcurrencyLimit: 500,
       processingConcurrencyLimit: 5,
@@ -777,7 +776,7 @@ export const getUpdateTemplates = (state: AppState): Templates => {
       name: "UPDATE_USERS_MANAGER",
       data: {},
       processFunction: (row: any, template: Template) => processUpdateManager(row, template, state),
-      stateUpdateFunctions: [updateTritonUserState, updateCalabrioUserState],
+      stateUpdateFunctions: [updateCalabrioUserState],
       multiRunDependencies: null,
       validationConcurrencyLimit: 500,
       processingConcurrencyLimit: 5,
@@ -789,7 +788,7 @@ export const getUpdateTemplates = (state: AppState): Templates => {
       name: "UPDATE_DEFAULT_SKILLS",
       data: {},
       processFunction: (row: any, template: Template) => processUpdateDefaultSkills(row, template, state),
-      stateUpdateFunctions: [updateTritonUserState],
+      stateUpdateFunctions: [],
       multiRunDependencies: null,
       validationConcurrencyLimit: 500,
       processingConcurrencyLimit: 5,
@@ -801,7 +800,7 @@ export const getUpdateTemplates = (state: AppState): Templates => {
       name: "UPDATE_CALLER_STATES",
       data: {},
       processFunction: (row: any, template: Template) => processUpdateCallerStates(row, template, state),
-      stateUpdateFunctions: [updateTritonUserState],
+      stateUpdateFunctions: [],
       multiRunDependencies: null,
       validationConcurrencyLimit: 500,
       processingConcurrencyLimit: 5,
@@ -813,7 +812,7 @@ export const getUpdateTemplates = (state: AppState): Templates => {
       name: "SYNC_HR_ATTRIBUTES",
       data: {},
       processFunction: (row: any, template: Template) => processSyncHrAttributes(row, template, state),
-      stateUpdateFunctions: [updateTritonUserState],
+      stateUpdateFunctions: [],
       multiRunDependencies: null,
       validationConcurrencyLimit: 500,
       processingConcurrencyLimit: 5,

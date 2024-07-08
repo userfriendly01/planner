@@ -1,9 +1,72 @@
 import {
   cleanupField,
+  formatDropdownOptions,
   formatErrorMessage,
   toProperCase,
   formatDateFromExcelDate
 } from "../_formatUtils";
+
+describe("formatDropdownOptions", () => {
+  test("options has nulls, just returns nulls for the nulls", () => {
+    const formattedOptions = formatDropdownOptions([null, {
+      thing1: "hi",
+      thing2: "i am value"
+    }, null], "thing1", "thing2");
+    expect(formattedOptions).toEqual([null, {
+      thing1: "hi",
+      thing2: "i am value",
+      label: "hi",
+      value: "i am value"
+    }, null]);
+  });
+  test("error occurs (option is not an obj) just returns empty array", () => {
+    const formattedOptions = formatDropdownOptions("wahhh");
+    expect(formattedOptions).toEqual([]);
+  });
+  test("returns formatted dropdown options with label and value", () => {
+    const options = [
+      {
+        animal: "kitties",
+        areGreat: true,
+        howManyDoYouWant: 4
+      },
+      {
+        animal: "puppies",
+        areGreat: true,
+        howManyDoYouWant: 12
+      },
+      {
+        animal: "hornets",
+        areGreat: false,
+        howManyDoYouWant: 0
+      }
+    ];
+    const formattedOptions = formatDropdownOptions(options, "animal", "howManyDoYouWant");
+    expect(formattedOptions).toEqual([
+      {
+        animal: "kitties",
+        areGreat: true,
+        howManyDoYouWant: 4,
+        label: "kitties",
+        value: 4
+      },
+      {
+        animal: "puppies",
+        areGreat: true,
+        howManyDoYouWant: 12,
+        label: "puppies",
+        value: 12
+      },
+      {
+        animal: "hornets",
+        areGreat: false,
+        howManyDoYouWant: 0,
+        label: "hornets",
+        value: 0
+      }
+    ]);
+  });
+});
 
 describe("formatErrorMessage", () => {
   test("err?.response?.data", () => {
