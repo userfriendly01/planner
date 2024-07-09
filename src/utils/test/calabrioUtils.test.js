@@ -731,7 +731,7 @@ describe("calabrioUtils", () => {
           expect(getCalabrioUser).toBeCalledTimes(1);
           expect(getCalabrioUser).toBeCalledWith("token", "1");
           expect(updateCalabrioUser).toBeCalledTimes(1);
-          expect(updateCalabrioUser).toBeCalledWith("token", "1", updatedUser);
+          expect(updateCalabrioUser).toBeCalledWith("token", updatedUser);
           expect(logger.error).toBeCalledTimes(1);
           expect(logger.error.mock.calls[0][0]).toContain("Error thrown trying to fetch and validate Conflicting Users");
         });
@@ -758,7 +758,7 @@ describe("calabrioUtils", () => {
           expect(getCalabrioUser).toBeCalledTimes(1);
           expect(getCalabrioUser).toBeCalledWith("token", "1");
           expect(updateCalabrioUser).toBeCalledTimes(1);
-          expect(updateCalabrioUser).toBeCalledWith("token", "1", updatedUser);
+          expect(updateCalabrioUser).toBeCalledWith("token", updatedUser);
           expect(logger.error).toBeCalledTimes(0);
         });
         describe("Dup User has no team", () => {
@@ -784,7 +784,7 @@ describe("calabrioUtils", () => {
             expect(getCalabrioUser).toBeCalledTimes(1);
             expect(getCalabrioUser).toBeCalledWith("token", "1");
             expect(updateCalabrioUser).toBeCalledTimes(1);
-            expect(updateCalabrioUser).toBeCalledWith("token", "1", updatedUser);
+            expect(updateCalabrioUser).toBeCalledWith("token", updatedUser);
             expect(logger.error).toBeCalledTimes(0);
           });
         });
@@ -849,7 +849,7 @@ describe("calabrioUtils", () => {
           expect(getCalabrioUser).toBeCalledTimes(1);
           expect(getCalabrioUser).toBeCalledWith("token", "5");
           expect(updateCalabrioUser).toBeCalledTimes(1);
-          expect(updateCalabrioUser).toBeCalledWith("token", "5", updatedUser);
+          expect(updateCalabrioUser).toBeCalledWith("token", updatedUser);
           expect(logger.error).toBeCalledTimes(1);
           expect(logger.error.mock.calls[0][0]).toContain("Error thrown trying to fetch and validate Conflicting Users");
         });
@@ -876,7 +876,7 @@ describe("calabrioUtils", () => {
           expect(getCalabrioUser).toBeCalledTimes(1);
           expect(getCalabrioUser).toBeCalledWith("token", "5");
           expect(updateCalabrioUser).toBeCalledTimes(1);
-          expect(updateCalabrioUser).toBeCalledWith("token", "5", updatedUser);
+          expect(updateCalabrioUser).toBeCalledWith("token", updatedUser);
           expect(logger.error).toBeCalledTimes(0);
         });
         describe("Dup User has no team", () => {
@@ -902,7 +902,7 @@ describe("calabrioUtils", () => {
             expect(getCalabrioUser).toBeCalledTimes(1);
             expect(getCalabrioUser).toBeCalledWith("token", "5");
             expect(updateCalabrioUser).toBeCalledTimes(1);
-            expect(updateCalabrioUser).toBeCalledWith("token", "5", updatedUser);
+            expect(updateCalabrioUser).toBeCalledWith("token", updatedUser);
             expect(logger.error).toBeCalledTimes(0);
           });
         });
@@ -929,7 +929,7 @@ describe("calabrioUtils", () => {
             expect(getCalabrioUser).toBeCalledTimes(1);
             expect(getCalabrioUser).toBeCalledWith("token", "5");
             expect(updateCalabrioUser).toBeCalledTimes(1);
-            expect(updateCalabrioUser).toBeCalledWith("token", "5", updatedUser);
+            expect(updateCalabrioUser).toBeCalledWith("token", updatedUser);
             expect(logger.error).toBeCalledTimes(0);
           });
         });
@@ -994,7 +994,7 @@ describe("calabrioUtils", () => {
           expect(getCalabrioUser).toBeCalledTimes(1);
           expect(getCalabrioUser).toBeCalledWith("token", "4");
           expect(updateCalabrioUser).toBeCalledTimes(1);
-          expect(updateCalabrioUser).toBeCalledWith("token", "4", updatedUser);
+          expect(updateCalabrioUser).toBeCalledWith("token", updatedUser);
           expect(logger.error).toBeCalledTimes(1);
           expect(logger.error.mock.calls[0][0]).toContain("Error thrown trying to fetch and validate Conflicting Users");
         });
@@ -1021,7 +1021,7 @@ describe("calabrioUtils", () => {
           expect(getCalabrioUser).toBeCalledTimes(1);
           expect(getCalabrioUser).toBeCalledWith("token", "4");
           expect(updateCalabrioUser).toBeCalledTimes(1);
-          expect(updateCalabrioUser).toBeCalledWith("token", "4", updatedUser);
+          expect(updateCalabrioUser).toBeCalledWith("token", updatedUser);
           expect(logger.error).toBeCalledTimes(0);
         });
         describe("Dup User has no roles", () => {
@@ -1047,7 +1047,7 @@ describe("calabrioUtils", () => {
             expect(getCalabrioUser).toBeCalledTimes(1);
             expect(getCalabrioUser).toBeCalledWith("token", "4");
             expect(updateCalabrioUser).toBeCalledTimes(1);
-            expect(updateCalabrioUser).toBeCalledWith("token", "4", updatedUser);
+            expect(updateCalabrioUser).toBeCalledWith("token", updatedUser);
             expect(logger.error).toBeCalledTimes(0);
           });
         });
@@ -1074,7 +1074,7 @@ describe("calabrioUtils", () => {
             expect(getCalabrioUser).toBeCalledTimes(1);
             expect(getCalabrioUser).toBeCalledWith("token", "4");
             expect(updateCalabrioUser).toBeCalledTimes(1);
-            expect(updateCalabrioUser).toBeCalledWith("token", "4", updatedUser);
+            expect(updateCalabrioUser).toBeCalledWith("token", updatedUser);
             expect(logger.error).toBeCalledTimes(0);
           });
         });

@@ -21,8 +21,9 @@ export const createCalabrioUser = async (accessToken: string, payload: any): Pro
   });
 };
 
-export const updateCalabrioUser = async (accessToken: string, personId: number, payload: any): Promise<CalabrioUser> => {
-  return await myAxios.put(apiPaths.UPDATE_CALABRIO_USER(personId), payload, {
+export const updateCalabrioUser = async (accessToken: string, payload: any): Promise<CalabrioUser> => {
+  // payload.id = personId;
+  return await myAxios.put(apiPaths.UPDATE_CALABRIO_USER, payload, {
     headers: {
       Authorization: `Bearer ${accessToken}`
     }

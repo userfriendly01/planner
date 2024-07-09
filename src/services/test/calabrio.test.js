@@ -341,7 +341,7 @@ describe("getCalabrioUser", () => {
 describe("updateCalabrioUser", () => {
   describe("call succeeds", () => {
     const data = { huzzah: "you are winner" };
-    beforeEach(() => axiosMock.onPut(apiPaths.UPDATE_CALABRIO_USER(67)).replyOnce(200, data));
+    beforeEach(() => axiosMock.onPut(apiPaths.UPDATE_CALABRIO_USER).replyOnce(200, data));
     test("should resolve with any successful response", done => {
       updateCalabrioUser("token", 67)
         .then(resolvedValue => {
@@ -353,7 +353,7 @@ describe("updateCalabrioUser", () => {
   });
   describe("call fails", () => {
     const badResponse = { wahh: "boo" };
-    beforeEach(() => axiosMock.onPut(apiPaths.UPDATE_CALABRIO_USER(67)).replyOnce(500, badResponse));
+    beforeEach(() => axiosMock.onPut(apiPaths.UPDATE_CALABRIO_USER).replyOnce(500, badResponse));
     test("should reject with error", done => {
       updateCalabrioUser("token", 67).catch(rejectedVal => {
         expect(axiosMock.history.put.length).toEqual(1);

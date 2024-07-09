@@ -888,7 +888,7 @@ describe("UPDATE_USERS_MANAGER", () => {
           }
         });
         expect(updateCalabrioUser).toHaveBeenCalledTimes(1);
-        expect(updateCalabrioUser).toHaveBeenCalledWith(200, {
+        expect(updateCalabrioUser).toHaveBeenCalledWith("Access Token", {
           id: 200,
           acdId: "WK1234",
           firstName: "Brittany",
@@ -933,7 +933,7 @@ describe("UPDATE_USERS_MANAGER", () => {
           }
         });
         expect(updateCalabrioUser).toHaveBeenCalledTimes(1);
-        expect(updateCalabrioUser).toHaveBeenCalledWith(200, {
+        expect(updateCalabrioUser).toHaveBeenCalledWith("Access Token", {
           id: 200,
           acdId: "WK1234",
           firstName: "Brittany",
@@ -981,7 +981,7 @@ describe("UPDATE_USERS_MANAGER", () => {
           }
         });
         expect(updateCalabrioUser).toHaveBeenCalledTimes(1);
-        expect(updateCalabrioUser).toHaveBeenCalledWith(200, {
+        expect(updateCalabrioUser).toHaveBeenCalledWith("Access Token", {
           id: 200,
           acdId: "WK1234",
           firstName: "Brittany",

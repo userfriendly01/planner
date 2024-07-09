@@ -17,7 +17,8 @@ import {
   WfmTeam,
   WfmUser,
   discrepancyType,
-  Action
+  Action,
+  Tokens
 } from "globals/interfaces";
 import { logger } from "utils/logger";
 
@@ -321,7 +322,7 @@ export const checkConflictingUsers = async (calabrioServiceToken: string, user: 
           dupUser.team = teams.find(team => team.name.toLowerCase().includes("default"))?.groupId;
         }
 
-        await updateCalabrioUser(calabrioServiceToken, dupUser.id, dupUser);
+        await updateCalabrioUser(calabrioServiceToken, dupUser);
         return;
       }
 
@@ -342,7 +343,7 @@ export const checkConflictingUsers = async (calabrioServiceToken: string, user: 
         if (!dupUser.team) {
           dupUser.team = teams.find(team => team.name.toLowerCase().includes("default"))?.groupId;
         }
-        await updateCalabrioUser(calabrioServiceToken, dupUser.id, dupUser);
+        await updateCalabrioUser(calabrioServiceToken, dupUser);
         return;
       }
     }));
@@ -400,7 +401,7 @@ export const findMatchingQmProfiles = (user: any, users: CalabrioQmUser[], setFo
   }
 };
 
-export const getCalabrioWfmOptions = async (dispatch: any, tokens: any) => {
+export const getCalabrioWfmOptions = async (dispatch: (action: Action) => void, tokens: Tokens): Promise<boolean> => {
   try {
     const res: any = await getWfmOptionsServiceCall(tokens.calabrioService);
     let optionsData: any = [];

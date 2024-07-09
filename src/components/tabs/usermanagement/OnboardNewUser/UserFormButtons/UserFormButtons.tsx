@@ -474,6 +474,7 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
       try {
         const calabrioAttributes: any = {};
         calabrioAttributes.acdId = form.calabrio_qm.acdId;
+        calabrioAttributes.id = form.calabrio_qm.id;
         calabrioAttributes.adLogin = `LM\\${form.nNumber.value.toLowerCase()}`;
         calabrioAttributes.email = form.nNumber.nNumberFetchedUser?.email;
         calabrioAttributes.firstName = form.nNumber.nNumberFetchedUser?.firstName;
@@ -487,7 +488,7 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
         };
 
         if (form.calabrio_qm.id) {
-          await updateCalabrioUser(calabrioServiceToken, form.calabrio_qm.id, calabrioAttributes);
+          await updateCalabrioUser(calabrioServiceToken, calabrioAttributes);
 
           logger.info("Successfully Updated Calabrio user", {
             nNumber,

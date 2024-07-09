@@ -188,8 +188,7 @@ export const apiPaths = {
   GET_RESET_PROFILE_DATADOG_LOGS: (nNumber: string): string => `${SERVICE_BASE_URI}/datadogresetprofileslogs/${nNumber}`,
   RESET_WORKER_SKILLS: `${SERVICE_BASE_URI}/resetworkerskills`,
   TFN_DATA: `${SERVICE_BASE_URI}/tfn`,
-  // TODO: still gotta switch this one over
-  UPDATE_CALABRIO_USER: (personId: number): any => `${SERVICE_BASE_URI}/calabrio-update-user/${personId}`,
+  UPDATE_CALABRIO_USER: `${CALABRIO_SERVICE_BASE_URI}/qm?api=User`,
   RESET_PROFILES: (nNumber: string): string => `${ADMIN_CLIENT_URL}/reset/${nNumber}`,
   TERMINATE_WORKER: `${ADMIN_CLIENT_URL}/termination`,
   WFM_ACTIVATE_EXTERNAL_LOGON: `${ADMIN_CLIENT_URL}/externalLogon`

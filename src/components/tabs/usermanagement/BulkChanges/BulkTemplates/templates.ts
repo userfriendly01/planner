@@ -443,7 +443,7 @@ const processUpdateManager = async (row: any, template: Template, state: AppStat
 
     const results = await Promise.allSettled([
       updateUser(row.workerSid, tritonBody),
-      calabrioFunction(calabrioBody.id, calabrioBody)
+      calabrioFunction(state.userContext.tokens.calabrioService, calabrioBody)
     ]);
 
     const errors: string[] = [];

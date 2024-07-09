@@ -1,5 +1,7 @@
 import { getStartupProfiles } from "authentication/authenticationProfiles";
-import { Action } from "globals/interfaces";
+import {
+  Action, Tokens
+} from "globals/interfaces";
 import {
   getWfmBusinessUnits,
   getCalabrioUsers as getCalabrioUsersServiceCall,
@@ -13,7 +15,7 @@ import { loadConsolidatedSkills } from "services/skill";
 import { getCalabrioWfmOptions } from "utils/calabrioUtils";
 import { logger } from "utils/logger";
 
-const getCalabrioUsers = async (dispatch: (action: Action) => void, tokens: any) => {
+const getCalabrioUsers = async (dispatch: (action: Action) => void, tokens: Tokens) => {
   try {
     const users: any = await getCalabrioUsersServiceCall(tokens.calabrioService);
     logger.log("Calabrio Users", users);
@@ -27,7 +29,7 @@ const getCalabrioUsers = async (dispatch: (action: Action) => void, tokens: any)
   }
 };
 
-const getCalabrioOrg = async (dispatch: (action: Action) => void, tokens: any) => {
+const getCalabrioOrg = async (dispatch: (action: Action) => void, tokens: Tokens) => {
   try {
     const org: any = await getCalabrioOrgServiceCall(tokens.calabrioService);
     logger.log("Calabrio Org", org);
@@ -41,7 +43,7 @@ const getCalabrioOrg = async (dispatch: (action: Action) => void, tokens: any) =
   }
 };
 
-const getCalabrioRoles = async (dispatch: (action: Action) => void, tokens: any) => {
+const getCalabrioRoles = async (dispatch: (action: Action) => void, tokens: Tokens) => {
   try {
     const roles: any = await getCalabrioRolesServiceCall(tokens.calabrioService);
     logger.log("Calabrio Roles", roles);
@@ -55,7 +57,7 @@ const getCalabrioRoles = async (dispatch: (action: Action) => void, tokens: any)
   }
 };
 
-const getBusinessUnits = async (dispatch: (action: Action) => void, tokens: any) => {
+const getBusinessUnits = async (dispatch: (action: Action) => void, tokens: Tokens) => {
   try {
     const response: any = await getWfmBusinessUnits(tokens.calabrioService);
     dispatch({
@@ -73,7 +75,7 @@ const getBusinessUnits = async (dispatch: (action: Action) => void, tokens: any)
   }
 };
 
-export const runTritonAdminStartup = (dispatch:  (action: Action) => void, skillDispatch:  (action: Action) => void, tokens: unknown): Promise<any[]> => {
+export const runTritonAdminStartup = (dispatch:  (action: Action) => void, skillDispatch:  (action: Action) => void, tokens: Tokens): Promise<any[]> => {
   /* Please add new service calls to the end of this Promise.all,
   the existing order is important */
 
