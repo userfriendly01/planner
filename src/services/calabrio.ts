@@ -22,7 +22,6 @@ export const createCalabrioUser = async (accessToken: string, payload: any): Pro
 };
 
 export const updateCalabrioUser = async (accessToken: string, payload: any): Promise<CalabrioUser> => {
-  // payload.id = personId;
   return await myAxios.put(apiPaths.UPDATE_CALABRIO_USER, payload, {
     headers: {
       Authorization: `Bearer ${accessToken}`
@@ -93,7 +92,6 @@ export const createCalabrioWFMPerson = async (accessToken: string, payload: any)
   });
 };
 
-// TODO: any chance that we may have to decompress the response?
 export const getCalabrioUsers = async (accessToken: string, includeInactive = false): Promise<any[]> => {
   return await myAxios.get(apiPaths.GET_CALABRIO_USERS, {
     params: {
