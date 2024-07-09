@@ -72,6 +72,13 @@ describe("updateCalabrioUserState", () => {
     jest.clearAllMocks();
     jest.resetAllMocks();
   });
+  const state = {
+    userContext: {
+      tokens: {
+        calabrioService: "token"
+      }
+    }
+  };
   describe("get users succeeds", () => {
     test("dispatch is called, promise resolves", async () => {
       const response = {
@@ -82,7 +89,7 @@ describe("updateCalabrioUserState", () => {
         }]
       };
       getCalabrioUsers.mockResolvedValue(response);
-      await utils.updateCalabrioUserState(null, mockDispatch);
+      await utils.updateCalabrioUserState(state, mockDispatch);
       expect(mockDispatch).toHaveBeenCalledTimes(1);
       expect(mockDispatch).toHaveBeenCalledWith({
         type: "loadCalabrioUsers",
@@ -93,7 +100,7 @@ describe("updateCalabrioUserState", () => {
   describe("get users fails", () => {
     test("dispatch is not called, promise resolves", async () => {
       getCalabrioUsers.mockRejectedValue("Aww");
-      await utils.updateCalabrioUserState(null, mockDispatch);
+      await utils.updateCalabrioUserState(state, mockDispatch);
       expect(logger.error).toHaveBeenCalledTimes(1);
       expect(logger.error.mock.calls[0][0]).toContain("Failed to update calabrio user state after bulk upload");
     });

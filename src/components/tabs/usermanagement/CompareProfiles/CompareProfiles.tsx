@@ -238,7 +238,7 @@ export const CompareProfiles = () => {
         messages={messages}
         updateMessages={updateMessages}
       />
-      {/* {!isDevelopment && */}
+      {!isDevelopment &&
       <>
         <NNumberInput
           disabled={false}
@@ -289,7 +289,7 @@ export const CompareProfiles = () => {
           </>
         </Modal>
       </>
-      {/* } */}
+      }
 
     </CompareProfilesWrapper>
   );

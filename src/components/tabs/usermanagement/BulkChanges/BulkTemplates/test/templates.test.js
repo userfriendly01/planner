@@ -337,7 +337,7 @@ describe("CREATE_CALABRIO_WFM_PERSON", () => {
 
       const result = await createTemplates.CREATE_CALABRIO_WFM_PERSON.processFunction(row);
       expect(createCalabrioWFMPerson).toHaveBeenCalledTimes(1);
-      expect(createCalabrioWFMPerson).toHaveBeenCalledWith({
+      expect(createCalabrioWFMPerson).toHaveBeenCalledWith("Access Token", {
         Email: "e.mail@lm.com",
         FirstName: "Michael",
         LastName: "Scott",
@@ -376,7 +376,7 @@ describe("CREATE_CALABRIO_WFM_PERSON", () => {
         await createWFMProcessFunction(row, initialTestState);
       } catch (err) {
         expect(createCalabrioWFMPerson).toHaveBeenCalledTimes(1);
-        expect(createCalabrioWFMPerson).toHaveBeenCalledWith({
+        expect(createCalabrioWFMPerson).toHaveBeenCalledWith("Access Token", {
           Email: "e.mail@lm.com",
           FirstName: "Michael",
           LastName: "Scott",
@@ -419,7 +419,7 @@ describe("CREATE_CALABRIO_WFM_PERSON", () => {
         await createWFMProcessFunction(row, initialTestState);
       } catch (err) {
         expect(createCalabrioWFMPerson).toHaveBeenCalledTimes(1);
-        expect(createCalabrioWFMPerson).toHaveBeenCalledWith({
+        expect(createCalabrioWFMPerson).toHaveBeenCalledWith("Access Token", {
           Email: "e.mail@lm.com",
           FirstName: "Michael",
           LastName: "Scott",

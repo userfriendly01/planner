@@ -704,7 +704,7 @@ describe("calabrioUtils", () => {
         test("Error should be caught and logged", async () => {
           await checkConflictingUsers("token", user, users, calabrioContext.roles, calabrioContext.teams);
           expect(getCalabrioUser).toBeCalledTimes(1);
-          expect(getCalabrioUser).toBeCalledWith("1");
+          expect(getCalabrioUser).toBeCalledWith("token", "1");
           expect(logger.error).toBeCalledTimes(1);
           expect(logger.error.mock.calls[0][0]).toContain("Error thrown trying to fetch and validate Conflicting Users");
         });
@@ -729,9 +729,9 @@ describe("calabrioUtils", () => {
           };
           await checkConflictingUsers("token", user, users, calabrioContext.roles, calabrioContext.teams);
           expect(getCalabrioUser).toBeCalledTimes(1);
-          expect(getCalabrioUser).toBeCalledWith("1");
+          expect(getCalabrioUser).toBeCalledWith("token", "1");
           expect(updateCalabrioUser).toBeCalledTimes(1);
-          expect(updateCalabrioUser).toBeCalledWith("1", updatedUser);
+          expect(updateCalabrioUser).toBeCalledWith("token", "1", updatedUser);
           expect(logger.error).toBeCalledTimes(1);
           expect(logger.error.mock.calls[0][0]).toContain("Error thrown trying to fetch and validate Conflicting Users");
         });
@@ -756,9 +756,9 @@ describe("calabrioUtils", () => {
           };
           await checkConflictingUsers("token", user, users, calabrioContext.roles, calabrioContext.teams);
           expect(getCalabrioUser).toBeCalledTimes(1);
-          expect(getCalabrioUser).toBeCalledWith("1");
+          expect(getCalabrioUser).toBeCalledWith("token", "1");
           expect(updateCalabrioUser).toBeCalledTimes(1);
-          expect(updateCalabrioUser).toBeCalledWith("1", updatedUser);
+          expect(updateCalabrioUser).toBeCalledWith("token", "1", updatedUser);
           expect(logger.error).toBeCalledTimes(0);
         });
         describe("Dup User has no team", () => {
@@ -782,9 +782,9 @@ describe("calabrioUtils", () => {
             };
             await checkConflictingUsers("token", user, users, calabrioContext.roles, calabrioContext.teams);
             expect(getCalabrioUser).toBeCalledTimes(1);
-            expect(getCalabrioUser).toBeCalledWith("1");
+            expect(getCalabrioUser).toBeCalledWith("token", "1");
             expect(updateCalabrioUser).toBeCalledTimes(1);
-            expect(updateCalabrioUser).toBeCalledWith("1", updatedUser);
+            expect(updateCalabrioUser).toBeCalledWith("token", "1", updatedUser);
             expect(logger.error).toBeCalledTimes(0);
           });
         });
@@ -822,7 +822,7 @@ describe("calabrioUtils", () => {
         test("Error should be caught and logged", async () => {
           await checkConflictingUsers("token", user, users, calabrioContext.roles, calabrioContext.teams);
           expect(getCalabrioUser).toBeCalledTimes(1);
-          expect(getCalabrioUser).toBeCalledWith("5");
+          expect(getCalabrioUser).toBeCalledWith("token", "5");
           expect(logger.error).toBeCalledTimes(1);
           expect(logger.error.mock.calls[0][0]).toContain("Error thrown trying to fetch and validate Conflicting Users");
         });
@@ -847,9 +847,9 @@ describe("calabrioUtils", () => {
           };
           await checkConflictingUsers("token", user, users, calabrioContext.roles, calabrioContext.teams);
           expect(getCalabrioUser).toBeCalledTimes(1);
-          expect(getCalabrioUser).toBeCalledWith("5");
+          expect(getCalabrioUser).toBeCalledWith("token", "5");
           expect(updateCalabrioUser).toBeCalledTimes(1);
-          expect(updateCalabrioUser).toBeCalledWith("5", updatedUser);
+          expect(updateCalabrioUser).toBeCalledWith("token", "5", updatedUser);
           expect(logger.error).toBeCalledTimes(1);
           expect(logger.error.mock.calls[0][0]).toContain("Error thrown trying to fetch and validate Conflicting Users");
         });
@@ -874,9 +874,9 @@ describe("calabrioUtils", () => {
           };
           await checkConflictingUsers("token", user, users, calabrioContext.roles, calabrioContext.teams);
           expect(getCalabrioUser).toBeCalledTimes(1);
-          expect(getCalabrioUser).toBeCalledWith("5");
+          expect(getCalabrioUser).toBeCalledWith("token", "5");
           expect(updateCalabrioUser).toBeCalledTimes(1);
-          expect(updateCalabrioUser).toBeCalledWith("5", updatedUser);
+          expect(updateCalabrioUser).toBeCalledWith("token", "5", updatedUser);
           expect(logger.error).toBeCalledTimes(0);
         });
         describe("Dup User has no team", () => {
@@ -900,9 +900,9 @@ describe("calabrioUtils", () => {
             };
             await checkConflictingUsers("token", user, users, calabrioContext.roles, calabrioContext.teams);
             expect(getCalabrioUser).toBeCalledTimes(1);
-            expect(getCalabrioUser).toBeCalledWith("5");
+            expect(getCalabrioUser).toBeCalledWith("token", "5");
             expect(updateCalabrioUser).toBeCalledTimes(1);
-            expect(updateCalabrioUser).toBeCalledWith("5", updatedUser);
+            expect(updateCalabrioUser).toBeCalledWith("token", "5", updatedUser);
             expect(logger.error).toBeCalledTimes(0);
           });
         });
@@ -927,9 +927,9 @@ describe("calabrioUtils", () => {
             };
             await checkConflictingUsers("token", user, users, calabrioContext.roles, calabrioContext.teams);
             expect(getCalabrioUser).toBeCalledTimes(1);
-            expect(getCalabrioUser).toBeCalledWith("5");
+            expect(getCalabrioUser).toBeCalledWith("token", "5");
             expect(updateCalabrioUser).toBeCalledTimes(1);
-            expect(updateCalabrioUser).toBeCalledWith("5", updatedUser);
+            expect(updateCalabrioUser).toBeCalledWith("token", "5", updatedUser);
             expect(logger.error).toBeCalledTimes(0);
           });
         });
@@ -967,7 +967,7 @@ describe("calabrioUtils", () => {
         test("Error should be caught and logged", async () => {
           await checkConflictingUsers("token", user, users, calabrioContext.roles, calabrioContext.teams);
           expect(getCalabrioUser).toBeCalledTimes(1);
-          expect(getCalabrioUser).toBeCalledWith("4");
+          expect(getCalabrioUser).toBeCalledWith("token", "4");
           expect(logger.error).toBeCalledTimes(1);
           expect(logger.error.mock.calls[0][0]).toContain("Error thrown trying to fetch and validate Conflicting Users");
         });
@@ -992,9 +992,9 @@ describe("calabrioUtils", () => {
           };
           await checkConflictingUsers("token", user, users, calabrioContext.roles, calabrioContext.teams);
           expect(getCalabrioUser).toBeCalledTimes(1);
-          expect(getCalabrioUser).toBeCalledWith("4");
+          expect(getCalabrioUser).toBeCalledWith("token", "4");
           expect(updateCalabrioUser).toBeCalledTimes(1);
-          expect(updateCalabrioUser).toBeCalledWith("4", updatedUser);
+          expect(updateCalabrioUser).toBeCalledWith("token", "4", updatedUser);
           expect(logger.error).toBeCalledTimes(1);
           expect(logger.error.mock.calls[0][0]).toContain("Error thrown trying to fetch and validate Conflicting Users");
         });
@@ -1019,9 +1019,9 @@ describe("calabrioUtils", () => {
           };
           await checkConflictingUsers("token", user, users, calabrioContext.roles, calabrioContext.teams);
           expect(getCalabrioUser).toBeCalledTimes(1);
-          expect(getCalabrioUser).toBeCalledWith("4");
+          expect(getCalabrioUser).toBeCalledWith("token", "4");
           expect(updateCalabrioUser).toBeCalledTimes(1);
-          expect(updateCalabrioUser).toBeCalledWith("4", updatedUser);
+          expect(updateCalabrioUser).toBeCalledWith("token", "4", updatedUser);
           expect(logger.error).toBeCalledTimes(0);
         });
         describe("Dup User has no roles", () => {
@@ -1045,9 +1045,9 @@ describe("calabrioUtils", () => {
             };
             await checkConflictingUsers("token", user, users, calabrioContext.roles, calabrioContext.teams);
             expect(getCalabrioUser).toBeCalledTimes(1);
-            expect(getCalabrioUser).toBeCalledWith("4");
+            expect(getCalabrioUser).toBeCalledWith("token", "4");
             expect(updateCalabrioUser).toBeCalledTimes(1);
-            expect(updateCalabrioUser).toBeCalledWith("4", updatedUser);
+            expect(updateCalabrioUser).toBeCalledWith("token", "4", updatedUser);
             expect(logger.error).toBeCalledTimes(0);
           });
         });
@@ -1072,9 +1072,9 @@ describe("calabrioUtils", () => {
             };
             await checkConflictingUsers("token", user, users, calabrioContext.roles, calabrioContext.teams);
             expect(getCalabrioUser).toBeCalledTimes(1);
-            expect(getCalabrioUser).toBeCalledWith("4");
+            expect(getCalabrioUser).toBeCalledWith("token", "4");
             expect(updateCalabrioUser).toBeCalledTimes(1);
-            expect(updateCalabrioUser).toBeCalledWith("4", updatedUser);
+            expect(updateCalabrioUser).toBeCalledWith("token", "4", updatedUser);
             expect(logger.error).toBeCalledTimes(0);
           });
         });
@@ -1197,6 +1197,9 @@ describe("calabrioUtils", () => {
     });
   });
   describe("getCalabrioWfmOptions", () => {
+    const tokens = {
+      calabrioService: "token"
+    };
     test("getWFMOptions succeeds, decompress succeeds, dispatches and returns true", async () => {
       const data = Buffer.from(JSON.stringify({ organization: { businessUnits: [{ Id: "123" }, { Id: "456" }]}}));
       getWfmOptions.mockResolvedValueOnce({
@@ -1209,7 +1212,7 @@ describe("calabrioUtils", () => {
       zlib.inflate.mockImplementationOnce((buffer, callback) => {
         callback(null, data);
       });
-      const result = await getCalabrioWfmOptions(mockDispatch);
+      const result = await getCalabrioWfmOptions(mockDispatch, tokens);
       expect(getWfmOptions).toHaveBeenCalledTimes(1);
       expect(mockDispatch).toHaveBeenCalledTimes(1);
       expect(mockDispatch).toHaveBeenLastCalledWith({
@@ -1228,7 +1231,7 @@ describe("calabrioUtils", () => {
       zlib.inflate.mockImplementationOnce(() => {
         throw new Error("boo");
       });
-      const result = await getCalabrioWfmOptions(mockDispatch);
+      const result = await getCalabrioWfmOptions(mockDispatch, tokens);
       expect(getWfmOptions).toHaveBeenCalledTimes(1);
       expect(mockDispatch).toHaveBeenCalledTimes(0);
       expect(result).toBe(false);
@@ -1240,7 +1243,7 @@ describe("calabrioUtils", () => {
           status: 500
         }
       });
-      const result = await getCalabrioWfmOptions(mockDispatch);
+      const result = await getCalabrioWfmOptions(mockDispatch, tokens);
       expect(getWfmOptions).toHaveBeenCalledTimes(1);
       expect(mockDispatch).toHaveBeenCalledTimes(0);
       expect(result).toBe(false);

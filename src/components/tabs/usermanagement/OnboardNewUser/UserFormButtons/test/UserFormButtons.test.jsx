@@ -994,7 +994,7 @@ describe("<UserFormButtons />", () => {
               });
               await waitFor(() => {
                 expect(createUser).toHaveBeenCalledTimes(1);
-                expect(createCalabrioWFMPerson).toHaveBeenCalledWith(wfmBody);
+                expect(createCalabrioWFMPerson).toHaveBeenCalledWith("token", wfmBody);
                 expect(wfmActivateExternalLogon).toHaveBeenCalled();
                 expect(mockDispatch).toHaveBeenCalledTimes(3);
                 expect(mockDispatch.mock.calls[0][0]).toEqual({
@@ -1047,7 +1047,7 @@ describe("<UserFormButtons />", () => {
               });
               await waitFor(() => {
                 expect(createUser).toHaveBeenCalledTimes(1);
-                expect(createCalabrioWFMPerson).toHaveBeenCalledWith(wfmBody);
+                expect(createCalabrioWFMPerson).toHaveBeenCalledWith("token", wfmBody);
                 expect(mockDispatch).toHaveBeenCalledTimes(2);
                 expect(mockDispatch.mock.calls[0][0]).toEqual({
                   type: "addOffice",
@@ -2201,7 +2201,7 @@ describe("<UserFormButtons />", () => {
               });
               await waitFor(() => {
                 expect(updateUser).toHaveBeenCalledTimes(1);
-                expect(createCalabrioWFMPerson).toHaveBeenCalledWith(wfmBody);
+                expect(createCalabrioWFMPerson).toHaveBeenCalledWith("token", wfmBody);
                 expect(wfmActivateExternalLogon).toHaveBeenCalled();
                 expect(mockDispatch).toHaveBeenCalledTimes(1);
                 expect(mockDispatch.mock.calls[0][0]).toEqual({
@@ -2244,7 +2244,7 @@ describe("<UserFormButtons />", () => {
                 });
                 await waitFor(() => {
                   expect(updateUser).toHaveBeenCalledTimes(1);
-                  expect(createCalabrioWFMPerson).toHaveBeenCalledWith(wfmBody);
+                  expect(createCalabrioWFMPerson).toHaveBeenCalledWith("token", wfmBody);
                   expect(wfmActivateExternalLogon).not.toHaveBeenCalled();
                   jest.runAllTimers();
                   expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
@@ -2278,7 +2278,7 @@ describe("<UserFormButtons />", () => {
                 });
                 await waitFor(() => {
                   expect(updateUser).toHaveBeenCalledTimes(1);
-                  expect(createCalabrioWFMPerson).toHaveBeenCalledWith(wfmBody);
+                  expect(createCalabrioWFMPerson).toHaveBeenCalledWith("token", wfmBody);
                   expect(wfmActivateExternalLogon).toHaveBeenCalled();
                   expect(mockDispatch).toHaveBeenCalledTimes(1);
                   expect(mockDispatch.mock.calls[0][0]).toEqual({
