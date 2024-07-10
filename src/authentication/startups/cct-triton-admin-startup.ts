@@ -4,7 +4,6 @@ import {
 } from "globals/interfaces";
 import {
   getWfmBusinessUnits,
-  getCalabrioUsers as getCalabrioUsersServiceCall,
   getCalabrioRoles as getCalabrioRolesServiceCall,
   getCalabrioOrg as getCalabrioOrgServiceCall
 } from "services/calabrio";
@@ -12,16 +11,18 @@ import { listUMManagers } from "services/manager";
 import { listUMUsers } from "services/user";
 import { listUMSoftphoneConfigs } from "services/profile";
 import { loadConsolidatedSkills } from "services/skill";
-import { getCalabrioWfmOptions } from "utils/calabrioUtils";
+import {
+  getCalabrioWfmOptions, getCalabrioQMUsers
+} from "utils/calabrioUtils";
 import { logger } from "utils/logger";
 
 const getCalabrioUsers = async (dispatch: (action: Action) => void, tokens: Tokens) => {
   try {
-    const users: any = await getCalabrioUsersServiceCall(tokens.calabrioService);
+    const users: any = await getCalabrioQMUsers(tokens.calabrioService);
     logger.log("Calabrio Users", users);
     dispatch({
       type: "loadCalabrioUsers",
-      payload: users.data
+      payload: users
     });
   } catch (error) {
     logger.error("Failed to fetch Calabrio Users from service", { error });

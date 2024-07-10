@@ -3,14 +3,15 @@ import {
   AppState,
   WfmBusinessUnit
 } from "globals/interfaces";
-import { getCalabrioUsers } from "services/calabrio";
 import { listUMManagers } from "services/manager";
 import { wfmActivateExternalLogon } from "services/wfmActivateExternalLogon";
 import {
   UploadedRow,
   Template
 } from "../BulkChanges.Interfaces";
-import { getCalabrioWfmOrg } from "utils/calabrioUtils";
+import {
+  getCalabrioWfmOrg, getCalabrioQMUsers
+} from "utils/calabrioUtils";
 import { logger } from "utils/logger";
 import * as XLSX from "xlsx";
 
@@ -19,10 +20,10 @@ import * as XLSX from "xlsx";
  */
 export const updateCalabrioUserState = async (state: AppState, dispatch: (action: Action) => void): Promise<void> => {
   try {
-    const users: any = await getCalabrioUsers(state.userContext.tokens.calabrioService);
+    const users: any = await getCalabrioQMUsers(state.userContext.tokens.calabrioService);
     dispatch({
       type: "loadCalabrioUsers",
-      payload: users.data
+      payload: users
     });
   } catch (error) {
     logger.error("Failed to update calabrio user state after bulk upload", { error }, false);

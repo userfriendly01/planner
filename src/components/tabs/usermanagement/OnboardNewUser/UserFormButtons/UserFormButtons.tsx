@@ -25,7 +25,6 @@ import {
 import React from "react";
 import {
   createCalabrioUser,
-  getCalabrioUsers,
   updateCalabrioUser,
   createCalabrioWFMPerson
 } from "services/calabrio";
@@ -49,7 +48,8 @@ import { logger } from "utils/logger";
 import { wait } from "utils";
 import {
   addWorkerToOrg,
-  checkConflictingUsers
+  checkConflictingUsers,
+  getCalabrioQMUsers
 } from "utils/calabrioUtils";
 import { Tooltip } from "@mui/material";
 import { ApolloError } from "@apollo/client";
@@ -224,10 +224,10 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
         });
 
         try {
-          const updatedUsers: any = await getCalabrioUsers(calabrioServiceToken);
+          const updatedUsers: any = await getCalabrioQMUsers(calabrioServiceToken);
           dispatch({
             type: "loadCalabrioUsers",
-            payload: updatedUsers.data
+            payload: updatedUsers
           });
         } catch (error) {
           logger.error(
@@ -504,10 +504,10 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
           });
         }
         try {
-          const updatedUsers: any = await getCalabrioUsers(calabrioServiceToken);
+          const updatedUsers: any = await getCalabrioQMUsers(calabrioServiceToken);
           dispatch({
             type: "loadCalabrioUsers",
-            payload: updatedUsers.data
+            payload: updatedUsers
           });
         } catch (error) {
           logger.error("Failed to reset state after conflict check & calabrio user add", { error });

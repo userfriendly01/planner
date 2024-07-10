@@ -1,6 +1,5 @@
 import { useAdminState } from "context/appContext";
 import * as utils from "../processingUtils";
-import { getCalabrioUsers } from "services/calabrio";
 import { listUMManagers } from "services/manager";
 import { wfmActivateExternalLogon } from "services/wfmActivateExternalLogon";
 import {
@@ -9,15 +8,14 @@ import {
   initialTestState
 } from "testUtils";
 import { logger } from "utils/logger";
-import { getCalabrioWfmOrg } from "utils/calabrioUtils";
+import {
+  getCalabrioWfmOrg, getCalabrioQMUsers
+} from "utils/calabrioUtils";
 import * as XLSX from "xlsx";
 
 jest.mock("utils/calabrioUtils",() => ({
-  getCalabrioWfmOrg: jest.fn()
-}));
-
-jest.mock("services/calabrio",() => ({
-  getCalabrioUsers: jest.fn()
+  getCalabrioWfmOrg: jest.fn(),
+  getCalabrioQMUsers: jest.fn()
 }));
 
 jest.mock("services/manager",() => ({
@@ -81,25 +79,23 @@ describe("updateCalabrioUserState", () => {
   };
   describe("get users succeeds", () => {
     test("dispatch is called, promise resolves", async () => {
-      const response = {
-        data: [{
-          attributes: {
-            yas: "girl"
-          }
-        }]
-      };
-      getCalabrioUsers.mockResolvedValue(response);
+      const response = [{
+        attributes: {
+          yas: "girl"
+        }
+      }];
+      getCalabrioQMUsers.mockResolvedValue(response);
       await utils.updateCalabrioUserState(state, mockDispatch);
       expect(mockDispatch).toHaveBeenCalledTimes(1);
       expect(mockDispatch).toHaveBeenCalledWith({
         type: "loadCalabrioUsers",
-        payload: response.data
+        payload: response
       });
     });
   });
   describe("get users fails", () => {
     test("dispatch is not called, promise resolves", async () => {
-      getCalabrioUsers.mockRejectedValue("Aww");
+      getCalabrioQMUsers.mockRejectedValue("Aww");
       await utils.updateCalabrioUserState(state, mockDispatch);
       expect(logger.error).toHaveBeenCalledTimes(1);
       expect(logger.error.mock.calls[0][0]).toContain("Failed to update calabrio user state after bulk upload");

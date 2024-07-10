@@ -1,12 +1,14 @@
 import {
   calabrioGroupLevels,
-  CalabrioGroup
+  CalabrioGroup,
+  CalabrioUser
 } from "usermanagement/CallRecording.Interfaces";
 import {
   getCalabrioUser,
   updateCalabrioUser,
   getWfmOptions as getWfmOptionsServiceCall,
-  getWfmOrg as getWfmOrgServiceCall
+  getWfmOrg as getWfmOrgServiceCall,
+  getCalabrioUsers
 } from "services/calabrio";
 import util from "util";
 import zlib from "zlib";
@@ -465,5 +467,15 @@ export const getCalabrioWfmOrg = async (businessUnitId: string, state: AppState,
         wfmOrg: [...strippedOrg, businessUnit]
       }
     };
+  }
+};
+
+export const getCalabrioQMUsers = async (accessToken: string, includeInactive = false): Promise<CalabrioUser[]> => {
+  const response: any = await getCalabrioUsers(accessToken, includeInactive);
+  if (response.data.compressed) {
+    const data = decompressResponse(response.data.data);
+    return data;
+  } else {
+    return response.data;
   }
 };

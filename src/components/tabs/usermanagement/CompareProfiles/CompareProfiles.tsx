@@ -239,56 +239,56 @@ export const CompareProfiles = () => {
         updateMessages={updateMessages}
       />
       {!isDevelopment &&
-      <>
-        <NNumberInput
-          disabled={false}
-          fetchedUser={nNumberDetails.fetchedUser}
-          label="N Number *"
-          onClear={resetForm}
-          onComplete={(fetchedUser: any, nNumber: any) => setNNumberDetails({
-            nNumber,
-            fetchedUser
-          })}
-          onUpdate={(nNumber: string) => {
-            const isValid = nNumber.match(nNumMatcher) !== null;
-            if (!isValid) {
-              resetForm();
-            }
-            setNNumberDetails({
+        <>
+          <NNumberInput
+            disabled={false}
+            fetchedUser={nNumberDetails.fetchedUser}
+            label="N Number *"
+            onClear={resetForm}
+            onComplete={(fetchedUser: any, nNumber: any) => setNNumberDetails({
               nNumber,
-              fetchedUser: null
-            });
-          }}
-          value={nNumberDetails.nNumber || ""}
-        />
-        {showResetButton &&
-            <ResetButton
-              sx={{ marginTop: "40px" }}
-              onClick={() => setShowModal(true)}>
-              Reset Profiles
-            </ResetButton>}
-        {nNumberDetails.fetchedUser && !showColumns && <StyledLoadSpinner />}
-        {nNumberDetails.fetchedUser && showColumns &&
-            <ProfileColumnsWrapper>
-              <ProfileColumn people={trimProfiles(tritonProfiles, "triton")} title="Triton" />
-              <ProfileColumn people={trimProfiles(calabrioQMProfiles, "qm")} title="Calabrio QM" />
-              {isProduction && calabrioWFMProfiles.length > 0 &&
-                <ProfileColumn people={trimProfiles(calabrioWFMProfiles, "wfm")} title="Calabrio WFM" />
+              fetchedUser
+            })}
+            onUpdate={(nNumber: string) => {
+              const isValid = nNumber.match(nNumMatcher) !== null;
+              if (!isValid) {
+                resetForm();
               }
-            </ProfileColumnsWrapper>
-        }
-        <Modal onClose={() => { return; }} open={showModal}>
-          <>
-            <ResetModal
-              nNumber={nNumberDetails?.nNumber}
-              email={nNumberDetails?.fetchedUser?.email}
-              workerSid={tritonProfiles[0] && tritonProfiles[0].sid}
-              wfmPersonId={calabrioWFMProfiles[0] && calabrioWFMProfiles[0].Id}
-              onClose={resetForm}
-            />
-          </>
-        </Modal>
-      </>
+              setNNumberDetails({
+                nNumber,
+                fetchedUser: null
+              });
+            }}
+            value={nNumberDetails.nNumber || ""}
+          />
+          {showResetButton &&
+              <ResetButton
+                sx={{ marginTop: "40px" }}
+                onClick={() => setShowModal(true)}>
+                Reset Profiles
+              </ResetButton>}
+          {nNumberDetails.fetchedUser && !showColumns && <StyledLoadSpinner />}
+          {nNumberDetails.fetchedUser && showColumns &&
+              <ProfileColumnsWrapper>
+                <ProfileColumn people={trimProfiles(tritonProfiles, "triton")} title="Triton" />
+                <ProfileColumn people={trimProfiles(calabrioQMProfiles, "qm")} title="Calabrio QM" />
+                {isProduction && calabrioWFMProfiles.length > 0 &&
+                  <ProfileColumn people={trimProfiles(calabrioWFMProfiles, "wfm")} title="Calabrio WFM" />
+                }
+              </ProfileColumnsWrapper>
+          }
+          <Modal onClose={() => { return; }} open={showModal}>
+            <>
+              <ResetModal
+                nNumber={nNumberDetails?.nNumber}
+                email={nNumberDetails?.fetchedUser?.email}
+                workerSid={tritonProfiles[0] && tritonProfiles[0].sid}
+                wfmPersonId={calabrioWFMProfiles[0] && calabrioWFMProfiles[0].Id}
+                onClose={resetForm}
+              />
+            </>
+          </Modal>
+        </>
       }
 
     </CompareProfilesWrapper>

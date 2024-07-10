@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import {
   addWorkerToOrg,
   findMatchingQmProfiles,
@@ -6,6 +7,7 @@ import {
   formatCalabrioGroups,
   formatCalabrioRoles,
   checkConflictingUsers,
+  getCalabrioQMUsers,
   getCalabrioWfmOptions,
   getCalabrioWfmOrg,
   getWfmBusinessUnits,
@@ -16,6 +18,7 @@ import {
 import { logger } from "utils/logger";
 import {
   getCalabrioUser,
+  getCalabrioUsers,
   updateCalabrioUser,
   getWfmOptions,
   getWfmOrg
@@ -33,6 +36,7 @@ jest.mock("zlib", () => ({
 
 jest.mock("services/calabrio", () => ({
   getCalabrioUser: jest.fn(),
+  getCalabrioUsers: jest.fn(),
   updateCalabrioUser: jest.fn(),
   getWfmOptions: jest.fn(),
   getWfmOrg: jest.fn()
@@ -1316,6 +1320,52 @@ describe("calabrioUtils", () => {
           }
         });
       }
+    });
+  });
+  describe("getCalabrioQMUsers", () => {
+    const tokens = {
+      calabrioService: "token"
+    };
+    test("getCalabrioQMUsers succeeds, decompress succeeds, returns data", async () => {
+      const data = Buffer.from(JSON.stringify([ { acdId: 123 }, { acdId: 456 }]));
+      getCalabrioUsers.mockResolvedValueOnce({
+        data: {
+          compressed: true,
+          data: "eJyrVkoqLc7MSy0uDs3LLClWsoquVvJMUbJSMjQyVqrVgXJMTM2UamNrAVp8Dd0="
+        }
+      });
+      zlib.inflate.mockImplementationOnce((buffer, callback) => {
+        callback(null, data);
+      });
+      const result = await getCalabrioQMUsers(tokens.calabrioService);
+      expect(getCalabrioUsers).toHaveBeenCalledTimes(1);
+      expect(result).toEqual([{ acdId: 123 }, { acdId: 456 }]);
+    });
+    test("getCalabrioQMUsers succeeds, decompress has an error, returns error", async () => {
+      getCalabrioUsers.mockResolvedValueOnce({
+        data: {
+          compressed: true,
+          data: "eJyrVkoqLc7MSy0uDs3LLClWsoquVvJMUbJSMjQyVqrVgXJMTM2UamNrAVp8Dd0="
+        }
+      });
+      zlib.inflate.mockImplementationOnce(() => {
+        throw new Error("boo");
+      });
+      try {
+        await getCalabrioQMUsers(tokens.calabrioService);
+      } catch (err) {
+        expect(getCalabrioUsers).toHaveBeenCalledTimes(1);
+        expect(err).toEqual(Error("boo"));
+      }
+    });
+    test("getCalabrioQMUsers call succeeds, data is not compressed, returns response.data", async () => {
+      getCalabrioUsers.mockResolvedValueOnce({
+        data: [{ acdId: 123 }, { acdId: 456 }]
+      });
+      const result = await getCalabrioQMUsers(mockDispatch, tokens);
+      expect(getCalabrioUsers).toHaveBeenCalledTimes(1);
+      expect(zlib.inflate).toHaveBeenCalledTimes(0);
+      expect(result).toEqual([{ acdId: 123 }, { acdId: 456 }]);
     });
   });
 });

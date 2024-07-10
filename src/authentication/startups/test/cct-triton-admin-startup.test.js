@@ -5,7 +5,6 @@ import { apiPaths } from "globals";
 import { getStartupProfiles } from "authentication/authenticationProfiles";
 import {
   getWfmBusinessUnits,
-  getCalabrioUsers,
   getCalabrioRoles,
   getCalabrioOrg
 } from "services/calabrio";
@@ -16,13 +15,15 @@ import {
   myAxios
 } from "utils/myAxios";
 import {
-  getCalabrioWfmOptions
+  getCalabrioWfmOptions,
+  getCalabrioQMUsers
 } from "utils/calabrioUtils";
 import { startups } from "testUtils";
 
 jest.mock("utils/calabrioUtils", () => ({
   getCalabrioWfmOptions: jest.fn(),
-  getCalabrioWfmOrg: jest.fn()
+  getCalabrioWfmOrg: jest.fn(),
+  getCalabrioQMUsers: jest.fn()
 }));
 
 jest.mock("authentication/authenticationProfiles", () => ({
@@ -35,7 +36,6 @@ jest.mock("context/appContext", () => ({
 
 jest.mock("services/calabrio", () => ({
   getWfmBusinessUnits: jest.fn(),
-  getCalabrioUsers: jest.fn(),
   getCalabrioRoles: jest.fn(),
   getCalabrioOrg: jest.fn()
 }));
@@ -108,7 +108,7 @@ describe("cct-triton-admin-startup", () => {
   describe("runTritonAdminStartup", () => {
     beforeEach(() => {
       axiosMock.onGet(skillsEndpoint).reply(200, skills);
-      getCalabrioUsers.mockResolvedValue({ data: []});
+      getCalabrioQMUsers.mockResolvedValue([]);
       getCalabrioOrg.mockResolvedValue({ data: []});
       getCalabrioRoles.mockResolvedValue({ data: []});
       getCalabrioWfmOptions.mockResolvedValue(true);
@@ -189,7 +189,7 @@ describe("cct-triton-admin-startup", () => {
       describe(calabrioUsersEndpoint, () => {
         describe("Calabrio org service call returned an error", () => {
           beforeEach(() => {
-            getCalabrioUsers.mockRejectedValue(error);
+            getCalabrioQMUsers.mockRejectedValue(error);
             getWfmBusinessUnits.mockResolvedValue({
               data: {
                 BusinessUnits: undefined,
