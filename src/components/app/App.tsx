@@ -160,11 +160,6 @@ const App = (): React.JSX.Element => {
           })
         );
 
-        const calabrioService = await instance.acquireTokenSilent({
-          account,
-          scopes: [`${env.CALABRIO_SERVICE_CLIENT_ID}/uiaccess`]
-        });
-
         dispatch({
           type: "loadUserData",
           payload: {
