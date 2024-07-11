@@ -34,7 +34,7 @@ describe("createCalabrioUser", () => {
     const data = { huzzah: "you are winner" };
     beforeEach(() => axiosMock.onPost(apiPaths.CREATE_CALABRIO_USER).replyOnce(200, data));
     test("should resolve with any successful response", done => {
-      createCalabrioUser(user)
+      createCalabrioUser("Access Token", user)
         .then(resolvedValue => {
           expect(JSON.parse(axiosMock.history.post[0].data)).toEqual(user);
           expect(resolvedValue.data).toEqual(data);
@@ -46,7 +46,7 @@ describe("createCalabrioUser", () => {
     const badResponse = { wahh: "boo" };
     beforeEach(() => axiosMock.onPost(apiPaths.CREATE_CALABRIO_USER).replyOnce(500, badResponse));
     test("should reject with error", done => {
-      createCalabrioUser(user).catch(rejectedVal => {
+      createCalabrioUser("Access Token", user).catch(rejectedVal => {
         expect(JSON.parse(axiosMock.history.post[0].data)).toEqual(user);
         expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
         done();
@@ -60,7 +60,7 @@ describe("createCalabrioTeam", () => {
     const data = { huzzah: "you are winner" };
     beforeEach(() => axiosMock.onPost(apiPaths.CREATE_CALABRIO_TEAM).replyOnce(200, data));
     test("should resolve with any successful response", done => {
-      createCalabrioTeam(user)
+      createCalabrioTeam("Access Token", user)
         .then(resolvedValue => {
           expect(JSON.parse(axiosMock.history.post[0].data)).toEqual(user);
           expect(resolvedValue.data).toEqual(data);
@@ -72,7 +72,7 @@ describe("createCalabrioTeam", () => {
     const badResponse = { wahh: "boo" };
     beforeEach(() => axiosMock.onPost(apiPaths.CREATE_CALABRIO_TEAM).replyOnce(500, badResponse));
     test("should reject with error", done => {
-      createCalabrioTeam(user).catch(rejectedVal => {
+      createCalabrioTeam("Access Token", user).catch(rejectedVal => {
         expect(JSON.parse(axiosMock.history.post[0].data)).toEqual(user);
         expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
         done();
@@ -86,7 +86,7 @@ describe("createCalabrioWFMPerson", () => {
     const data = { huzzah: "you are winner" };
     beforeEach(() => axiosMock.onPost(apiPaths.CREATE_CALABRIO_WFM_PERSON).replyOnce(200, data));
     test("should resolve with any successful response", done => {
-      createCalabrioWFMPerson(user)
+      createCalabrioWFMPerson("token", user)
         .then(resolvedValue => {
           expect(JSON.parse(axiosMock.history.post[0].data)).toEqual(user);
           expect(resolvedValue.data).toEqual(data);
@@ -98,7 +98,7 @@ describe("createCalabrioWFMPerson", () => {
     const badResponse = { wahh: "boo" };
     beforeEach(() => axiosMock.onPost(apiPaths.CREATE_CALABRIO_WFM_PERSON).replyOnce(500, badResponse));
     test("should reject with error", done => {
-      createCalabrioWFMPerson(user).catch(rejectedVal => {
+      createCalabrioWFMPerson("token", user).catch(rejectedVal => {
         expect(JSON.parse(axiosMock.history.post[0].data)).toEqual(user);
         expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
         done();
@@ -110,7 +110,7 @@ describe("createCalabrioWFMPerson", () => {
 describe("getWfmOrg", () => {
   const businessUnitId = "123-321";
   const fakeDate = "2023-07-01";
-  const url = `${apiPaths.GET_CALABRIO_WFM_ORG}/${businessUnitId}/${fakeDate}/${fakeDate}`;
+  const url = `https://calabrio-service.com/wfm/org/people?BusinessUnitId=${businessUnitId}&StartDate=${fakeDate}&EndDate=${fakeDate}`;
 
   beforeAll(() => {
     jest.useFakeTimers("modern");
@@ -125,7 +125,7 @@ describe("getWfmOrg", () => {
     const data = { huzzah: "you are winner" };
     beforeEach(() => axiosMock.onGet(url).replyOnce(200, data));
     test("should resolve with any successful response", done => {
-      getWfmOrg(businessUnitId)
+      getWfmOrg("token", businessUnitId)
         .then(resolvedValue => {
           expect(axiosMock.history.get.length).toEqual(1);
           expect(resolvedValue.data).toEqual(data);
@@ -137,7 +137,7 @@ describe("getWfmOrg", () => {
     const badResponse = { wahh: "boo" };
     beforeEach(() => axiosMock.onGet(url).replyOnce(500, badResponse));
     test("should reject with error", done => {
-      getWfmOrg(businessUnitId).catch(rejectedVal => {
+      getWfmOrg("token", businessUnitId).catch(rejectedVal => {
         expect(axiosMock.history.get.length).toEqual(1);
         expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
         done();
@@ -151,7 +151,7 @@ describe("getWfmOptions", () => {
     const data = { huzzah: "you are winner" };
     beforeEach(() => axiosMock.onGet(apiPaths.GET_CALABRIO_WFM_OPTIONS).replyOnce(200, data));
     test("should resolve with any successful response", done => {
-      getWfmOptions()
+      getWfmOptions("token")
         .then(resolvedValue => {
           expect(axiosMock.history.get.length).toEqual(1);
           expect(resolvedValue.data).toEqual(data);
@@ -163,7 +163,7 @@ describe("getWfmOptions", () => {
     const badResponse = { wahh: "boo" };
     beforeEach(() => axiosMock.onGet(apiPaths.GET_CALABRIO_WFM_OPTIONS).replyOnce(500, badResponse));
     test("should reject with error", done => {
-      getWfmOptions().catch(rejectedVal => {
+      getWfmOptions("token").catch(rejectedVal => {
         expect(axiosMock.history.get.length).toEqual(1);
         expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
         done();
@@ -177,7 +177,7 @@ describe("getCalabrioUsers", () => {
     const data = { huzzah: "you are winner" };
     beforeEach(() => axiosMock.onGet(apiPaths.GET_CALABRIO_USERS).replyOnce(200, data));
     test("should resolve with any successful response", done => {
-      getCalabrioUsers()
+      getCalabrioUsers("token")
         .then(resolvedValue => {
           expect(axiosMock.history.get.length).toEqual(1);
           expect(resolvedValue.data).toEqual(data);
@@ -189,7 +189,7 @@ describe("getCalabrioUsers", () => {
     const badResponse = { wahh: "boo" };
     beforeEach(() => axiosMock.onGet(apiPaths.GET_CALABRIO_USERS).replyOnce(500, badResponse));
     test("should reject with error", done => {
-      getCalabrioUsers().catch(rejectedVal => {
+      getCalabrioUsers("token").catch(rejectedVal => {
         expect(axiosMock.history.get.length).toEqual(1);
         expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
         done();
@@ -203,7 +203,7 @@ describe("getCalabrioOrg", () => {
     const data = { huzzah: "you are winner" };
     beforeEach(() => axiosMock.onGet(apiPaths.GET_CALABRIO_ORG).replyOnce(200, data));
     test("should resolve with any successful response", done => {
-      getCalabrioOrg()
+      getCalabrioOrg("token")
         .then(resolvedValue => {
           expect(axiosMock.history.get.length).toEqual(1);
           expect(resolvedValue.data).toEqual(data);
@@ -215,7 +215,7 @@ describe("getCalabrioOrg", () => {
     const badResponse = { wahh: "boo" };
     beforeEach(() => axiosMock.onGet(apiPaths.GET_CALABRIO_ORG).replyOnce(500, badResponse));
     test("should reject with error", done => {
-      getCalabrioOrg().catch(rejectedVal => {
+      getCalabrioOrg("token").catch(rejectedVal => {
         expect(axiosMock.history.get.length).toEqual(1);
         expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
         done();
@@ -229,7 +229,7 @@ describe("getWfmBusinessUnits", () => {
     const data = { huzzah: "you are winner" };
     beforeEach(() => axiosMock.onGet(apiPaths.GET_CALABRIO_WFM).replyOnce(200, data));
     test("should resolve with any successful response", done => {
-      getWfmBusinessUnits()
+      getWfmBusinessUnits("token")
         .then(resolvedValue => {
           expect(axiosMock.history.get.length).toEqual(1);
           expect(axiosMock.history.get[0].params).toStrictEqual({ api: "Business Units" });
@@ -242,7 +242,7 @@ describe("getWfmBusinessUnits", () => {
     const badResponse = { wahh: "boo" };
     beforeEach(() => axiosMock.onGet(apiPaths.GET_CALABRIO_WFM).replyOnce(500, badResponse));
     test("should reject with error", done => {
-      getWfmBusinessUnits().catch(rejectedVal => {
+      getWfmBusinessUnits("token").catch(rejectedVal => {
         expect(axiosMock.history.get.length).toEqual(1);
         expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
         done();
@@ -258,7 +258,7 @@ describe("getWfmTeam", () => {
     test("should resolve with any successful response", done => {
       const BusinessUnitId = "123-321";
       const TeamId = "987-456";
-      getWfmTeam(BusinessUnitId, TeamId)
+      getWfmTeam("token", BusinessUnitId, TeamId)
         .then(resolvedValue => {
           expect(axiosMock.history.get.length).toEqual(1);
           expect(axiosMock.history.get[0].params).toStrictEqual({
@@ -277,7 +277,7 @@ describe("getWfmTeam", () => {
     test("should reject with error", done => {
       const BusinessUnitId = "123-321";
       const TeamId = "987-456";
-      getWfmTeam(BusinessUnitId, TeamId).catch(rejectedVal => {
+      getWfmTeam("token", BusinessUnitId, TeamId).catch(rejectedVal => {
         expect(axiosMock.history.get.length).toEqual(1);
         expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
         done();
@@ -291,7 +291,7 @@ describe("getCalabrioRoles", () => {
     const data = { huzzah: "you are winner" };
     beforeEach(() => axiosMock.onGet(apiPaths.GET_CALABRIO_ROLES).replyOnce(200, data));
     test("should resolve with any successful response", done => {
-      getCalabrioRoles()
+      getCalabrioRoles("token")
         .then(resolvedValue => {
           expect(axiosMock.history.get.length).toEqual(1);
           expect(resolvedValue.data).toEqual(data);
@@ -303,7 +303,7 @@ describe("getCalabrioRoles", () => {
     const badResponse = { wahh: "boo" };
     beforeEach(() => axiosMock.onGet(apiPaths.GET_CALABRIO_ROLES).replyOnce(500, badResponse));
     test("should reject with error", done => {
-      getCalabrioRoles().catch(rejectedVal => {
+      getCalabrioRoles("token").catch(rejectedVal => {
         expect(axiosMock.history.get.length).toEqual(1);
         expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
         done();
@@ -317,7 +317,7 @@ describe("getCalabrioUser", () => {
     const data = { huzzah: "you are winner" };
     beforeEach(() => axiosMock.onGet(apiPaths.GET_CALABRIO_USER(67)).replyOnce(200, data));
     test("should resolve with any successful response", done => {
-      getCalabrioUser(67)
+      getCalabrioUser("token", 67)
         .then(resolvedValue => {
           expect(axiosMock.history.get.length).toEqual(1);
           expect(resolvedValue.data).toEqual(data);
@@ -329,7 +329,7 @@ describe("getCalabrioUser", () => {
     const badResponse = { wahh: "boo" };
     beforeEach(() => axiosMock.onGet(apiPaths.GET_CALABRIO_USER(67)).replyOnce(500, badResponse));
     test("should reject with error", done => {
-      getCalabrioUser(67).catch(rejectedVal => {
+      getCalabrioUser("token", 67).catch(rejectedVal => {
         expect(axiosMock.history.get.length).toEqual(1);
         expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
         done();
@@ -341,9 +341,9 @@ describe("getCalabrioUser", () => {
 describe("updateCalabrioUser", () => {
   describe("call succeeds", () => {
     const data = { huzzah: "you are winner" };
-    beforeEach(() => axiosMock.onPut(apiPaths.UPDATE_CALABRIO_USER(67)).replyOnce(200, data));
+    beforeEach(() => axiosMock.onPut(apiPaths.UPDATE_CALABRIO_USER).replyOnce(200, data));
     test("should resolve with any successful response", done => {
-      updateCalabrioUser(67)
+      updateCalabrioUser("token", 67)
         .then(resolvedValue => {
           expect(axiosMock.history.put.length).toEqual(1);
           expect(resolvedValue.data).toEqual(data);
@@ -353,9 +353,9 @@ describe("updateCalabrioUser", () => {
   });
   describe("call fails", () => {
     const badResponse = { wahh: "boo" };
-    beforeEach(() => axiosMock.onPut(apiPaths.UPDATE_CALABRIO_USER(67)).replyOnce(500, badResponse));
+    beforeEach(() => axiosMock.onPut(apiPaths.UPDATE_CALABRIO_USER).replyOnce(500, badResponse));
     test("should reject with error", done => {
-      updateCalabrioUser(67).catch(rejectedVal => {
+      updateCalabrioUser("token", 67).catch(rejectedVal => {
         expect(axiosMock.history.put.length).toEqual(1);
         expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
         done();
@@ -369,9 +369,9 @@ describe("getWfmUserByNNumber", () => {
 
   describe("call succeeds", () => {
     const data = { huzzah: "you are winner" };
-    beforeEach(() => axiosMock.onGet(apiPaths.GET_CALABRIO_WFM_USER_BY_NNUMBER(nNumber)).replyOnce(200, data));
+    beforeEach(() => axiosMock.onGet(apiPaths.GET_CALABRIO_WFM_USER_BY_NNUMBER(JSON.stringify([nNumber]))).replyOnce(200, data));
     test("should resolve with any successful response", done => {
-      getWfmUserByNNumber(nNumber)
+      getWfmUserByNNumber("token", nNumber)
         .then(resolvedValue => {
           expect(axiosMock.history.get.length).toEqual(1);
           expect(resolvedValue.data).toEqual(data);
@@ -381,9 +381,9 @@ describe("getWfmUserByNNumber", () => {
   });
   describe("call fails", () => {
     const badResponse = { wahh: "boo" };
-    beforeEach(() => axiosMock.onGet(apiPaths.GET_CALABRIO_WFM_USER_BY_NNUMBER(nNumber)).replyOnce(500, badResponse));
+    beforeEach(() => axiosMock.onGet(apiPaths.GET_CALABRIO_WFM_USER_BY_NNUMBER(JSON.stringify([nNumber]))).replyOnce(500, badResponse));
     test("should reject with error", done => {
-      getWfmUserByNNumber(nNumber).catch(rejectedVal => {
+      getWfmUserByNNumber("token", nNumber).catch(rejectedVal => {
         expect(axiosMock.history.get.length).toEqual(1);
         expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
         done();
@@ -399,15 +399,20 @@ describe("getQmUserProfiles", () => {
   const firstName = "Faith";
   const lastName = "Cuneo";
 
-  const axiosUrl = `${apiPaths.GET_CALABRIO_USER_PROFILES}/${workerSid}/${nNumber}/${email}`;
+  const axiosUrl = "https://calabrio-service.com/qm?api=Get%20All%20Profiles&includeInactive=true";
   describe("call succeeds", () => {
     const data = { huzzah: "you are winner" };
     beforeEach(() => axiosMock.onGet(axiosUrl).replyOnce(200, data));
     test("should resolve with any successful response", done => {
-      getQmUserProfiles(workerSid, nNumber, email)
+      getQmUserProfiles("Access token", workerSid, nNumber, email)
         .then(resolvedValue => {
           expect(axiosMock.history.get.length).toEqual(1);
           expect(resolvedValue.data).toEqual(data);
+          expect(axiosMock.history.get[0].params).toEqual({
+            acdId: workerSid,
+            email,
+            nNumber
+          });
           done();
         });
     });
@@ -416,10 +421,17 @@ describe("getQmUserProfiles", () => {
       const axiosUrl = `${apiPaths.GET_CALABRIO_USER_PROFILES}/${workerSid}/${nNumber}/${email}/Faith/Cuneo`;
       beforeEach(() => axiosMock.onGet(axiosUrl).replyOnce(200, data));
       test("should resolve with any successful response", done => {
-        getQmUserProfiles(workerSid, nNumber, email, firstName, lastName)
+        getQmUserProfiles("Access token", workerSid, nNumber, email, firstName, lastName)
           .then(resolvedValue => {
             expect(axiosMock.history.get.length).toEqual(1);
             expect(resolvedValue.data).toEqual(data);
+            expect(axiosMock.history.get[0].params).toEqual({
+              acdId: workerSid,
+              email,
+              nNumber,
+              firstName,
+              lastName
+            });
             done();
           });
       });
@@ -429,7 +441,7 @@ describe("getQmUserProfiles", () => {
     const badResponse = { wahh: "boo" };
     beforeEach(() => axiosMock.onGet(axiosUrl).replyOnce(500, badResponse));
     test("should reject with error", done => {
-      getQmUserProfiles(workerSid, nNumber, email).catch(rejectedVal => {
+      getQmUserProfiles("Access token", workerSid, nNumber, email).catch(rejectedVal => {
         expect(axiosMock.history.get.length).toEqual(1);
         expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
         done();

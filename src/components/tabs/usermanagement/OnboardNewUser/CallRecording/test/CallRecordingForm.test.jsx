@@ -576,7 +576,7 @@ describe("CallRecordingForm", () => {
         expect(Dropdown.mock.calls.length).toBe(3);
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(1);
-        expect(getCalabrioUser).toHaveBeenCalledWith(220);
+        expect(getCalabrioUser).toHaveBeenCalledWith("Access Token", 220);
         await waitFor(() => {
           expect(mockSetForm).toHaveBeenCalledTimes(2);
           expect(mockSetForm).toHaveBeenCalledWith({
@@ -745,7 +745,7 @@ describe("CallRecordingForm", () => {
         expect(Dropdown.mock.calls.length).toBe(3);
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(1);
-        expect(getCalabrioUser).toHaveBeenCalledWith(200);
+        expect(getCalabrioUser).toHaveBeenCalledWith("Access Token", 200);
         await waitFor(() => {
           expect(mockSetForm).toHaveBeenCalledTimes(4);
           expect(mockSetForm).toHaveBeenCalledWith({
@@ -866,7 +866,7 @@ describe("CallRecordingForm", () => {
         expect(Dropdown.mock.calls.length).toBe(3);
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(1);
-        expect(getCalabrioUser).toHaveBeenCalledWith(220);
+        expect(getCalabrioUser).toHaveBeenCalledWith("Access Token", 220);
         await waitFor(() => {
           expect(mockSetForm).toHaveBeenCalledTimes(2);
           expect(mockSetForm).toHaveBeenCalledWith(
@@ -976,7 +976,7 @@ describe("CallRecordingForm", () => {
         expect(Dropdown.mock.calls.length).toBe(3);
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(1);
-        expect(getCalabrioUser).toHaveBeenCalledWith(200);
+        expect(getCalabrioUser).toHaveBeenCalledWith("Access Token", 200);
         await waitFor(() => {
           expect(mockSetForm).toHaveBeenCalledTimes(2);
           expect(mockSetForm.mock.calls[0][0]).toStrictEqual(
@@ -1080,7 +1080,7 @@ describe("CallRecordingForm", () => {
         expect(Dropdown.mock.calls.length).toBe(3);
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(1);
-        expect(getCalabrioUser).toHaveBeenCalledWith(220);
+        expect(getCalabrioUser).toHaveBeenCalledWith("Access Token", 220);
         expect(mockSetForm).toHaveBeenCalledTimes(1);
         await waitFor(() => {
           //Mocking issue to fix

@@ -125,7 +125,7 @@ const processCreateCalabrioUser = async (row: any, state: AppState) => {
     body.roles = row.roles;
     body.scope = row.scope;
 
-    await createCalabrioUser(body);
+    await createCalabrioUser(state.userContext.tokens.calabrioService, body);
 
     const message = `User created in Calabrio for ${row.attributes.n_number} for row ${rowNumber}`;
 
@@ -199,7 +199,7 @@ const processWFMCreateUser = async (row: any, state: AppState) => {
     // completely optional
     body.OptionalColumns = row.wfmOptionalColumns;
     if (env.APP_ENV === "production") {
-      const result = await createCalabrioWFMPerson(body);
+      const result = await createCalabrioWFMPerson(state.userContext.tokens.calabrioService, body);
       row.Id = result?.data?.PersonId;
 
       const message = `Person created in Calabrio WFM for ${row.attributes.n_number} for row ${rowNumber}`;
@@ -254,7 +254,7 @@ const processCreateManager = async (row: any, state: AppState) => {
       const teamField = toProperCase(cleanupField(row[teamFieldName], "string"));
 
       try {
-        const response: any = await createCalabrioTeam({
+        const response: any = await createCalabrioTeam(state.userContext.tokens.calabrioService, {
           name: teamField,
           parentGroupId: row.parentGroupId
         });
@@ -415,7 +415,7 @@ const processUpdateManager = async (row: any, template: Template, state: AppStat
     if (userCalabrioRecord) {
       let fetchedCalabrioUser;
       try {
-        const res = await getCalabrioUser(userCalabrioRecord.id);
+        const res = await getCalabrioUser(state.userContext.tokens.calabrioService, userCalabrioRecord.id);
         fetchedCalabrioUser = res.data;
       } catch (error) {
         const errorMessage = `No updates made, Failed to fetch calabrio user for row ${rowNumber}. ${formatErrorMessage(error)}`;
@@ -443,7 +443,7 @@ const processUpdateManager = async (row: any, template: Template, state: AppStat
 
     const results = await Promise.allSettled([
       updateUser(row.workerSid, tritonBody),
-      calabrioFunction(calabrioBody.id, calabrioBody)
+      calabrioFunction(state.userContext.tokens.calabrioService, calabrioBody)
     ]);
 
     const errors: string[] = [];

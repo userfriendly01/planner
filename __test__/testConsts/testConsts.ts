@@ -494,6 +494,7 @@ export const initialTestState: any = {
     tokens: {
       msGraph: "Access Token",
       sharedGraph: "Access Token",
+      calabrioService: "Access Token",
       adminService: "Access Token"
     },
     isAdmin: false,

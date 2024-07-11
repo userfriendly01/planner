@@ -103,9 +103,7 @@ export interface AppState {
   },
   userContext: {
     permissions: ADGroupPermission[];
-    tokens: {
-      [key: string]: string;
-    };
+    tokens: Tokens;
     isAdmin?: boolean;
     profileId?: number;
     nNumber?: string;
@@ -131,6 +129,13 @@ export interface AppState {
   }
 }
 
+export interface Tokens {
+  msGraph?: string;
+  sharedGraph?: string;
+  calabrioService?: string;
+  adminService?: string;
+}
+
 export interface ADGroupRole {
   name: string;
   permissionLevel: Permissions;
@@ -140,7 +145,7 @@ export interface ADGroupPermission {
     roles: ADGroupRole[];
     startup: {
       name: string;
-      function: (dispatch: any, skillDispatch?: any) => Promise<any>;
+      function: (dispatch: any, skillDispatch?: any, tokens?: Tokens) => Promise<any>;
     }
     description: string;
     authenticationProfile:  AuthenticationProfile

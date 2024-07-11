@@ -1,8 +1,9 @@
 import { getStartupProfiles } from "authentication/authenticationProfiles";
-import { Action } from "globals/interfaces";
+import {
+  Action, Tokens
+} from "globals/interfaces";
 import {
   getWfmBusinessUnits,
-  getCalabrioUsers as getCalabrioUsersServiceCall,
   getCalabrioRoles as getCalabrioRolesServiceCall,
   getCalabrioOrg as getCalabrioOrgServiceCall
 } from "services/calabrio";
@@ -10,16 +11,18 @@ import { listUMManagers } from "services/manager";
 import { listUMUsers } from "services/user";
 import { listUMSoftphoneConfigs } from "services/profile";
 import { loadConsolidatedSkills } from "services/skill";
-import { getCalabrioWfmOptions } from "utils/calabrioUtils";
+import {
+  getCalabrioWfmOptions, getCalabrioQMUsers
+} from "utils/calabrioUtils";
 import { logger } from "utils/logger";
 
-const getCalabrioUsers = async (dispatch: (action: Action) => void) => {
+const getCalabrioUsers = async (dispatch: (action: Action) => void, tokens: Tokens) => {
   try {
-    const users: any = await getCalabrioUsersServiceCall();
+    const users: any = await getCalabrioQMUsers(tokens.calabrioService);
     logger.log("Calabrio Users", users);
     dispatch({
       type: "loadCalabrioUsers",
-      payload: users.data
+      payload: users
     });
   } catch (error) {
     logger.error("Failed to fetch Calabrio Users from service", { error });
@@ -27,9 +30,9 @@ const getCalabrioUsers = async (dispatch: (action: Action) => void) => {
   }
 };
 
-const getCalabrioOrg = async (dispatch: (action: Action) => void) => {
+const getCalabrioOrg = async (dispatch: (action: Action) => void, tokens: Tokens) => {
   try {
-    const org: any = await getCalabrioOrgServiceCall();
+    const org: any = await getCalabrioOrgServiceCall(tokens.calabrioService);
     logger.log("Calabrio Org", org);
     dispatch({
       type: "loadCalabrioOrg",
@@ -41,9 +44,9 @@ const getCalabrioOrg = async (dispatch: (action: Action) => void) => {
   }
 };
 
-const getCalabrioRoles = async (dispatch: (action: Action) => void) => {
+const getCalabrioRoles = async (dispatch: (action: Action) => void, tokens: Tokens) => {
   try {
-    const roles: any = await getCalabrioRolesServiceCall();
+    const roles: any = await getCalabrioRolesServiceCall(tokens.calabrioService);
     logger.log("Calabrio Roles", roles);
     dispatch({
       type: "loadCalabrioRoles",
@@ -55,9 +58,9 @@ const getCalabrioRoles = async (dispatch: (action: Action) => void) => {
   }
 };
 
-const getBusinessUnits = async (dispatch: (action: Action) => void) => {
+const getBusinessUnits = async (dispatch: (action: Action) => void, tokens: Tokens) => {
   try {
-    const response: any = await getWfmBusinessUnits();
+    const response: any = await getWfmBusinessUnits(tokens.calabrioService);
     dispatch({
       type: "loadWfmOrg",
       payload: {
@@ -73,21 +76,21 @@ const getBusinessUnits = async (dispatch: (action: Action) => void) => {
   }
 };
 
-export const runTritonAdminStartup = (dispatch:  (action: Action) => void, skillDispatch:  (action: Action) => void): Promise<any[]> => {
+export const runTritonAdminStartup = (dispatch:  (action: Action) => void, skillDispatch:  (action: Action) => void, tokens: Tokens): Promise<any[]> => {
   /* Please add new service calls to the end of this Promise.all,
   the existing order is important */
 
   listUMUsers(dispatch); // We want to kick these off but not wait for the results
-  getBusinessUnits(dispatch);
-  getCalabrioWfmOptions(dispatch);
+  getBusinessUnits(dispatch, tokens);
+  getCalabrioWfmOptions(dispatch, tokens);
 
   return Promise.all([
     Promise.resolve(getStartupProfiles().TRITON.name),
     listUMManagers(dispatch),
     listUMSoftphoneConfigs(dispatch),
     loadConsolidatedSkills(skillDispatch),
-    getCalabrioUsers(dispatch),
-    getCalabrioOrg(dispatch),
-    getCalabrioRoles(dispatch)
+    getCalabrioUsers(dispatch, tokens),
+    getCalabrioOrg(dispatch, tokens),
+    getCalabrioRoles(dispatch, tokens)
   ]);
 };

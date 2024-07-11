@@ -76,7 +76,7 @@ const App = (): React.JSX.Element => {
           });
 
           await Promise.all(
-            permissions.map(({ startup }) => startup.function(dispatch, skillDispatch))
+            permissions.map(({ startup }) => startup.function(dispatch, skillDispatch, state.userContext.tokens))
           );
 
           setLoadResult({
@@ -119,6 +119,11 @@ const App = (): React.JSX.Element => {
         {
           key: "adminService",
           scope: `${env.ADMIN_CLIENT_ID}/uiAccess`,
+          requiredRoles: ["Admin"]
+        },
+        {
+          key: "calabrioService",
+          scope: `${env.CALABRIO_SERVICE_CLIENT_ID}/uiaccess`,
           requiredRoles: ["Admin"]
         }
       ];

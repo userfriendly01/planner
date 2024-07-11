@@ -222,9 +222,9 @@ export const findMatchingWorker = (sid: string, nNumber: string, email: string, 
   return matchingWorker;
 };
 
-const findExistingWFMUser = async (nNumber: string): Promise<CalabrioUser> => {
+const findExistingWFMUser = async (calabrioServiceToken: string, nNumber: string): Promise<CalabrioUser> => {
   try {
-    const wfmUserRes = await getWfmUserByNNumber(nNumber);
+    const wfmUserRes = await getWfmUserByNNumber(calabrioServiceToken, nNumber);
     if (wfmUserRes?.data?.Result.length > 0) {
       const wfmUser: CalabrioUser = wfmUserRes.data.Result[0];
       return wfmUser;
@@ -259,7 +259,7 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
     const acdId = form.triton.sid;
     const nNumber = form.nNumber.value || form.triton.attributes?.n_number;
     const email = form.nNumber.nNumberFetchedUser?.email || form.triton.attributes?.email;
-    calabrioWfmUser = await findExistingWFMUser(nNumber);
+    calabrioWfmUser = await findExistingWFMUser(state.userContext.tokens.calabrioService, nNumber);
     calabrioQmUser = findMatchingWorker(acdId, nNumber, email, calabrioQmUsers);
   } else if (primarySystem === "calabrio_qm") {
     //This condition wont be in play until the calabrio qm table is in place

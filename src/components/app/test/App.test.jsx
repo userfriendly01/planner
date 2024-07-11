@@ -210,6 +210,7 @@ describe("<App />", () => {
             tokens: {
               msGraph: "Access Token",
               sharedGraph: "Access Token",
+              calabrioService: "Access Token",
               adminService: "Access Token"
             }
           }
@@ -225,7 +226,9 @@ describe("<App />", () => {
           permissions: [],
           tokens: {
             msGraph: "Access Token",
-            graph: "Access Token"
+            sharedGraph: "Access Token",
+            calabrioService: "Access Token",
+            adminService: "Access Token"
           }
         },
         workerContext: {
@@ -265,7 +268,12 @@ describe("<App />", () => {
       expectMockedComponent(rendered, { CircularProgress }, 0);
       expect(rendered.container).not.toHaveTextContent("Loading...");
       expect(mockRunTritonStartup).toHaveBeenCalledTimes(1);
-      expect(mockRunTritonStartup).toHaveBeenCalledWith(mockAdminDispatch, mockSkillDispatch);
+      expect(mockRunTritonStartup).toHaveBeenCalledWith(mockAdminDispatch, mockSkillDispatch, {
+        msGraph: "Access Token",
+        sharedGraph: "Access Token",
+        calabrioService: "Access Token",
+        adminService: "Access Token"
+      });
       expect(mockAdminDispatch).toHaveBeenCalledTimes(2);
       expect(mockAdminDispatch).toHaveBeenCalledWith({
         type: "loadUserData",
@@ -282,6 +290,7 @@ describe("<App />", () => {
           tokens: {
             msGraph: "Access Token",
             sharedGraph: "Access Token",
+            calabrioService: "Access Token",
             adminService: "Access Token"
           }
         }
@@ -420,6 +429,7 @@ describe("<App />", () => {
           tokens: {
             msGraph: "Access Token",
             sharedGraph: "Access Token",
+            calabrioService: "Access Token",
             adminService: "Access Token"
           }
         },
@@ -460,6 +470,7 @@ describe("<App />", () => {
             tokens: {
               msGraph: "Access Token",
               sharedGraph: "Access Token",
+              calabrioService: "Access Token",
               adminService: "Access Token"
             }
           }

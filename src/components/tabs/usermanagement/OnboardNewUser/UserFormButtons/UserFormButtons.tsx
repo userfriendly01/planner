@@ -25,7 +25,6 @@ import {
 import React from "react";
 import {
   createCalabrioUser,
-  getCalabrioUsers,
   updateCalabrioUser,
   createCalabrioWFMPerson
 } from "services/calabrio";
@@ -49,7 +48,8 @@ import { logger } from "utils/logger";
 import { wait } from "utils";
 import {
   addWorkerToOrg,
-  checkConflictingUsers
+  checkConflictingUsers,
+  getCalabrioQMUsers
 } from "utils/calabrioUtils";
 import { Tooltip } from "@mui/material";
 import { ApolloError } from "@apollo/client";
@@ -76,6 +76,7 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
     teams
   } = state.calabrioContext;
   const { nNumber } = state.userContext;
+  const calabrioServiceToken = state.userContext.tokens.calabrioService;
 
   const doCreateUser = async () => {
     updateLoading({
@@ -214,8 +215,8 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
 
       try {
         calabrioAttributes.acdId = newWorker.sid;
-        await checkConflictingUsers(calabrioAttributes, users, roles, teams);
-        await createCalabrioUser(calabrioAttributes);
+        await checkConflictingUsers(calabrioServiceToken, calabrioAttributes, users, roles, teams);
+        await createCalabrioUser(calabrioServiceToken, calabrioAttributes);
 
         logger.info("Successfully created Calabrio User", {
           nNumber,
@@ -223,10 +224,10 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
         });
 
         try {
-          const updatedUsers: any = await getCalabrioUsers();
+          const updatedUsers: any = await getCalabrioQMUsers(calabrioServiceToken);
           dispatch({
             type: "loadCalabrioUsers",
-            payload: updatedUsers.data
+            payload: updatedUsers
           });
         } catch (error) {
           logger.error(
@@ -263,7 +264,7 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
 
         if (env.APP_ENV === "production") {
           try {
-            const res = await createCalabrioWFMPerson(wfmBody);
+            const res = await createCalabrioWFMPerson(calabrioServiceToken, wfmBody);
 
             logger.info("Successfully created Calabrio WFM Person", {
               nNumber,
@@ -473,6 +474,7 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
       try {
         const calabrioAttributes: any = {};
         calabrioAttributes.acdId = form.calabrio_qm.acdId;
+        calabrioAttributes.id = form.calabrio_qm.id;
         calabrioAttributes.adLogin = `LM\\${form.nNumber.value.toLowerCase()}`;
         calabrioAttributes.email = form.nNumber.nNumberFetchedUser?.email;
         calabrioAttributes.firstName = form.nNumber.nNumberFetchedUser?.firstName;
@@ -486,15 +488,15 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
         };
 
         if (form.calabrio_qm.id) {
-          await updateCalabrioUser(form.calabrio_qm.id, calabrioAttributes);
+          await updateCalabrioUser(calabrioServiceToken, calabrioAttributes);
 
           logger.info("Successfully Updated Calabrio user", {
             nNumber,
             userNNumber: form.nNumber.value
           });
         } else {
-          await checkConflictingUsers(calabrioAttributes, users, roles, teams);
-          await createCalabrioUser(calabrioAttributes);
+          await checkConflictingUsers(calabrioServiceToken, calabrioAttributes, users, roles, teams);
+          await createCalabrioUser(calabrioServiceToken, calabrioAttributes);
 
           logger.info("Successfully Created Calabrio user", {
             nNumber,
@@ -502,10 +504,10 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
           });
         }
         try {
-          const updatedUsers: any = await getCalabrioUsers();
+          const updatedUsers: any = await getCalabrioQMUsers(calabrioServiceToken);
           dispatch({
             type: "loadCalabrioUsers",
-            payload: updatedUsers.data
+            payload: updatedUsers
           });
         } catch (error) {
           logger.error("Failed to reset state after conflict check & calabrio user add", { error });
@@ -531,7 +533,7 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
 
       if (env.APP_ENV === "production") {
         try {
-          const res = await createCalabrioWFMPerson(wfmBody);
+          const res = await createCalabrioWFMPerson(calabrioServiceToken, wfmBody);
 
           logger.info("Successfully created Calabrio WFM Person", {
             nNumber,

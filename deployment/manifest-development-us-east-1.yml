@@ -18,7 +18,9 @@ applications:
     GRAPH_API_ID: tgufpgkyxvacrntvgb75iuo3pi
     GRAPH_CLIENT_ID: ${idp.cicct-softphone-admin-ui.resource.cct-shared-graph-api.development.appId}
     SOFTPHONE_SERVICE_URL: https://cicct-softphone-service-development.us-east-1.np.paas.lmig.com
-    ADMIN_CLIENT_URL: https://6mtmnu5sge.execute-api.us-east-1.amazonaws.com/api
+    CALABRIO_SERVICE_URL: https://develop.cctapis.us-east-1.libertymutual.com/calabrio-service
+    CALABRIO_SERVICE_CLIENT_ID: ${idp.cicct-softphone-admin-ui.resource.adcalser22-azure-api-development.development.appId}
+    ADMIN_CLIENT_URL: https://develop.cctapis.us-east-1.libertymutual.com/shared-admin-service
     ADMIN_CLIENT_ID: ${idp.cicct-softphone-admin-ui.resource.cct-shared-admin-service-api-development.development.appId}
   services:
     - everyday-curfew
