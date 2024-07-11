@@ -5,13 +5,13 @@ const productOwners = [
   "n0116796", // Rebecca Miller
   "n0088625", // Kimberly Haynes
   "n0183277", // Jacob Radke
-  "n0196231" // Michael Wilcox
+  "n0196231", // Michael Wilcox,
+  "n0149889", // David Kahrer
+  "n0197784" // Anthony Burke
 ];
 
 const bulkAdmins = [
   ...productOwners,
-  "n0149889", // David Kahrer
-  "n0197784", // Anthony Burke
   "n0169879" // Stephanie Miller
 ];
 
