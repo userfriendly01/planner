@@ -1,0 +1,7 @@
+gate_policy: Enterprise Standard
+engines:
+  duplication:
+    exclude_paths:
+      - "bamboo-specs/**"
+      - "**/tests/**"
+      - "**/test/**"
