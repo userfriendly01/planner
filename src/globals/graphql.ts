@@ -238,27 +238,27 @@ export const DELETE_MANAGER = gql`
   }
 `;
 
-export const CREATE_SKILL_GROUP = gql`
-  mutation createUMSkillGroup($input: UMSkillGroupCreateInput!) {
-    skillGroup: createUMSkillGroup(input: $input) {
+export const CREATE_SKILL = gql`
+  mutation createUMSkill($input: UMSkillCreateInput!) {
+    skill: createUMSkill(input: $input) {
         cancellationReasons
         nextToken
     }
   }
 `;
 
-export const UPDATE_SKILL_GROUP = gql`
-  mutation updateUMSkillGroup($id: ID!, $input: UMSkilGroupUpdateInput!) {
-    skillGroup: updateUMSkillGroup(id: $id, input: $input) {
+export const UPDATE_SKILL = gql`
+  mutation updateUMSkill($id: ID!, $input: UMSkillUpdateInput!) {
+    skill: updateUMSkill(id: $id, input: $input) {
         cancellationReasons
         nextToken
     }
   }
 `;
 
-export const DELETE_SKILL_GROUP = gql`
-  mutation deleteUMSkillGroup($id: ID!) {
-    skillGroup: deleteUMSkillGroup(id: $id) {
+export const DELETE_SKILL = gql`
+  mutation deleteUMSkill($id: ID!) {
+    skill: deleteUMSkill(id: $id) {
         cancellationReasons
         nextToken
     }
