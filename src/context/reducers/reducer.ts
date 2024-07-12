@@ -19,7 +19,8 @@ export const initialState: AppState = {
     accessGroups: [],
     activities: [],
     directoryEntries: [],
-    dialListEntries: []
+    dialListEntries: [],
+    calltags: []
   },
   userContext: {
     permissions: [],

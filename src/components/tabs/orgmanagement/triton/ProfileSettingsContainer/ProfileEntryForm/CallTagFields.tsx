@@ -1,10 +1,9 @@
 import React from "react";
 import {
-  CallTag, FlexColumn,
-  FlexRow
+  CallTag, FlexColumn
 } from "globals/interfaces";
 import {
-  CallTagWrapper,
+  OptionsWrapper,
   Header1,
   IconButtonWrapper,
   FormRow
@@ -15,16 +14,20 @@ import {
 } from "@mui/material";
 import {
   profileEntryFormDispatch,
-  profileEntryFormState
+  profileEntryFormState,
+  useAdminState
 } from "context/appContext";
 import { profileEntryFormActions } from "context/profileEntryFormReducer";
 import { CustomInput } from "components/core/CustomInput/CustomInput";
 import {
   Add, Delete
 } from "@mui/icons-material";
+import { Dropdown } from "components/core/CustomDropdown/Dropdown";
+import { formatDropdownOptions } from "utils/_formatUtils";
 
 export const CallTagFields = () => {
 
+  const callTagOptions = useAdminState().profileContext.calltags;
   const form = profileEntryFormState();
   const setForm = profileEntryFormDispatch();
 
@@ -38,7 +41,11 @@ export const CallTagFields = () => {
 
   return (
     <FlexColumn>
-      <FormRow>
+      <FormRow style={{
+        width: "20%",
+        marginTop: "50px",
+        height: "10px"
+      }}>
         <Header1><h2>Call Tags</h2></Header1>
         <Tooltip title={"Add Call Tag"}>
           <IconButtonWrapper onClick={() => {
@@ -60,104 +67,77 @@ export const CallTagFields = () => {
           </IconButtonWrapper>
         </Tooltip>
       </FormRow>
-      <CallTagWrapper>
-        { callTags.map((tag: CallTag) => {
-          const currentTagIndex = callTags.findIndex((ct: CallTag) => tag.attribute_name === ct.attribute_name);
-          return (
-            <FlexColumn key={tag.attribute_name}>
-              <Divider style={{ marginTop: "10px" }}/>
-              <FlexRow style={{
-                justifyContent: "space-around",
-                margin: "20px",
-                alignItems: "center",
-                alignSelf: "center"
-              }}>
-                <CustomInput
-                  label={"Call Tag Name *"}
-                  name={"Call Tag Name *"}
-                  styles={styles}
-                  updateValue={value => {
-                    const newArray = callTags.slice();
-                    newArray[currentTagIndex] = {
-                      ...callTags[currentTagIndex],
-                      display_name: value
-                    };
-                    setCallTags(newArray);
-                  }}
-                  onBlur={() =>  setForm({
+      <FormRow>Add options if you want the calltag to have a dropdown vs an open text field.</FormRow>
+      { callTags.map((tag: CallTag, currentTagIndex: number) => {
+        return (
+          <FlexColumn key={`tag-${currentTagIndex}`}>
+            <Divider/>
+            <FormRow style={{ width: "45%" }}>
+              <Dropdown
+                label="CallTags"
+                value={formatDropdownOptions([tag], "display_name", "attribute_name")[0]}
+                options={formatDropdownOptions(callTagOptions, "display_name", "attribute_name")}
+                updateValue={(e:any, value: any) => {
+                  const newArray = callTags.slice();
+                  newArray[currentTagIndex] = {
+                    ...callTags[currentTagIndex],
+                    display_name: value.display_name,
+                    attribute_name: value.attribute_name
+                  };
+                  setCallTags(newArray);
+                  setForm({
                     type: profileEntryFormActions.SET_FORM_FIELD,
                     payload: {
                       key: "callTagsList",
-                      value: callTags
+                      value: newArray
                     }
-                  })}
-                  value={callTags[currentTagIndex]?.display_name}
-                />
-                <CustomInput
-                  label={"Call Tag Variable *"}
-                  name={"Call Tag Variable *"}
-                  styles={styles}
-                  updateValue={value => {
-                    const newArray = callTags.slice();
-                    newArray[currentTagIndex] = {
-                      ...callTags[currentTagIndex],
-                      attribute_name: value
-                    };
-                    setCallTags(newArray);
-                  }}
-                  value={callTags[currentTagIndex]?.attribute_name}
-                  onBlur={() => setForm({
+                  });
+                }}
+                styles={styles}
+              />
+              <Tooltip title={"Remove Call Tag"}>
+                <IconButtonWrapper onClick={() => {
+                  const newArray = callTags.slice();
+                  newArray.splice(currentTagIndex, 1);
+                  setCallTags(newArray);
+                  setForm({
                     type: profileEntryFormActions.SET_FORM_FIELD,
                     payload: {
                       key: "callTagsList",
-                      value: callTags
+                      value: newArray
                     }
-                  })}
-                />
-                <Tooltip title={"Remove Call Tag"}>
-                  <IconButtonWrapper onClick={() => {
-                    const newArray = callTags.slice();
-                    newArray.splice(currentTagIndex, 1);
-                    setCallTags(newArray);
-                    setForm({
-                      type: profileEntryFormActions.SET_FORM_FIELD,
-                      payload: {
-                        key: "callTagsList",
-                        value: newArray
-                      }
-                    }); }
-                  }><Delete/></IconButtonWrapper>
-                </Tooltip>
-              </FlexRow>
-              <FormRow>
-                <Tooltip title={"Add Call Tag Option"}>
-                  <IconButtonWrapper onClick={() => {
-                    const existingOptions = callTags[currentTagIndex].options;
-                    const newArray = callTags.slice();
-                    const newOptions = existingOptions ? ["", ...existingOptions] : [""];
-                    newArray[currentTagIndex] = {
-                      ...callTags[currentTagIndex],
-                      options: newOptions
-                    };
-                    setCallTags(newArray);
-                    setForm({
-                      type: profileEntryFormActions.SET_FORM_FIELD,
-                      payload: {
-                        key: "callTagsList",
-                        value: newArray
-                      }
-                    }); }
-                  }><Add/></IconButtonWrapper>
-                </Tooltip>
-              </FormRow>
-              {tag.options?.map((o: string) => {
-                const currentOptionIndex = tag.options.findIndex((op: string) => op === o);
-                const value = callTags[currentTagIndex]?.options[currentOptionIndex];
+                  }); }
+                }><Delete/></IconButtonWrapper>
+              </Tooltip>
+            </FormRow>
+            <FormRow style={{ margin: "0" }}>
+              <Tooltip title={"Add Call Tag Option"}>
+                <IconButtonWrapper onClick={() => {
+                  const existingOptions = callTags[currentTagIndex].options;
+                  const newArray = callTags.slice();
+                  const newOptions = existingOptions ? ["", ...existingOptions] : [""];
+                  newArray[currentTagIndex] = {
+                    ...callTags[currentTagIndex],
+                    options: newOptions
+                  };
+                  setCallTags(newArray);
+                  setForm({
+                    type: profileEntryFormActions.SET_FORM_FIELD,
+                    payload: {
+                      key: "callTagsList",
+                      value: newArray
+                    }
+                  }); }
+                }><Add/></IconButtonWrapper>
+              </Tooltip>
+            </FormRow>
+            <OptionsWrapper>
+              {tag.options?.map((o: string, currentOptionIndex: number) => {
                 return (
-                  <FormRow key={o}>
+                  <FormRow key={`option-${currentTagIndex}`} style={{ width: "30%" }}>
                     <CustomInput
-                      label={"Option *"}
-                      name={"Option *"}
+                      label={"Dropdown Option *"}
+                      name={"Dropdown Option *"}
                       styles={styles}
                       updateValue={value => {
                         const newOptions = tag.options.slice();
@@ -176,7 +156,7 @@ export const CallTagFields = () => {
                           value: callTags
                         }
                       })}
-                      value={value}
+                      value={o}
                     />
                     <Tooltip title={"Remove Call Tag Option"}>
                       <IconButtonWrapper onClick={() => {
@@ -203,11 +183,11 @@ export const CallTagFields = () => {
                 );
               })
               }
-            </FlexColumn>
-          );
-        })
-        }
-      </CallTagWrapper>
+            </OptionsWrapper>
+          </FlexColumn>
+        );
+      })
+      }
     </FlexColumn>
   );
 };

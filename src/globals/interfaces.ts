@@ -99,7 +99,8 @@ export interface AppState {
     screenpops: Screenpop[]
     activities: Activity[],
     directoryEntries: DirectoryNumber[],
-    dialListEntries: DialListNumber[]
+    dialListEntries: DialListNumber[],
+    calltags: Partial<CallTag>[]
   },
   userContext: {
     permissions: ADGroupPermission[];
@@ -189,6 +190,7 @@ export interface AccessGroup {
   item_type: string,
   access_group_name: string,
   twilio_dashboard_url: string,
+  viewable_profiles?: any[],
   isNew: boolean
 }
 

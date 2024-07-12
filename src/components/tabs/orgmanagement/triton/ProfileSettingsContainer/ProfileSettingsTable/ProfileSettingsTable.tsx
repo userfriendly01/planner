@@ -67,7 +67,8 @@ export const ProfileSettingsTable = (props: ProfileSettingsTableProps) => {
           sid: queue
         }),
         overflow_skill: profile.overflow_skill ? skills.find((skill: Skill) => skill.name === profile.overflow_skill) || {
-          label: `${profile.overflow_skill} is not valid`,
+          name: `${profile.overflow_skill} is not valid`,
+          error: true,
           value: "invalid-skill"
         } : ""
       }

@@ -3,6 +3,7 @@ import {
   AccessGroup,
   AccessGroupPayload,
   Activity,
+  CallTag,
   DialListNumber,
   DirectoryNumber,
   ProfilePayload,
@@ -26,6 +27,11 @@ import {
   UPDATE_SOFTPHONE_CONFIG,
   getSoftphoneConfigRelationshipsQuery, listSoftphoneConfigs
 } from "globals/graphql";
+
+const formatActivity = (activity: Activity): Activity => ({
+  ...activity,
+  activity_name: `${activity.activity_name} ${activity.available ? "(A)" : "(U)"}`
+});
 
 export const listUMSoftphoneConfigs = async (dispatch: (action: Action) => void): Promise<UMSoftphoneConfiguration[]> => {
   let profiles: UMSoftphoneConfiguration[] = [];
@@ -59,7 +65,7 @@ export const listUMSoftphoneConfigs = async (dispatch: (action: Action) => void)
       if(data?.profiles?.items?.length) { profiles = [...profiles, ...data?.profiles?.items]; }
       if(data?.screenpops?.items?.length) { screenpops = [...screenpops, ...data.screenpops.items]; }
       if(data?.accessGroups?.items?.length) { accessGroups = [...accessGroups, ...data.accessGroups.items]; }
-      if(data?.activities?.items?.length) { activities = [...activities, ...data.activities.items]; }
+      if(data?.activities?.items?.length) { activities = [...activities, ...data.activities.items.map((activity: Activity) => formatActivity(activity))]; }
       if(data?.directoryEntries?.items?.length) { directoryEntries = [...directoryEntries, ...data.directoryEntries.items]; }
       if(data?.dialListEntries?.items?.length) { dialListEntries = [...dialListEntries, ...data.dialListEntries.items]; }
 
@@ -100,7 +106,9 @@ export const listUMSoftphoneConfigs = async (dispatch: (action: Action) => void)
   return profileState.profiles;
 };
 
-export const loadSoftphoneConfigRelationships = async (profiles: UMSoftphoneConfiguration[], dispatch: (action: Action) => void, callback?: () => void) => {
+export const loadSoftphoneConfigRelationships = async (profileContext: any, dispatch: (action: Action) => void, callback?: () => void) => {
+  const profiles = profileContext.profiles;
+  const availableCallTags: Partial<CallTag>[] = [];
   const results = await Promise.allSettled(profiles.map(async (p: UMSoftphoneConfiguration) => {
     const profileId = p.profile_id;
 
@@ -113,16 +121,38 @@ export const loadSoftphoneConfigRelationships = async (profiles: UMSoftphoneConf
       });
 
       if(errors?.length) { throw errors; }
-      return data.profile;
+      data.profile.call_tags?.forEach((profileTag: CallTag) => {
+        if(!availableCallTags.some((tag: Partial<CallTag>) => tag.attribute_name === profileTag.attribute_name)){
+          availableCallTags.push({
+            attribute_name: profileTag.attribute_name,
+            display_name: profileTag.display_name
+          });
+        }
+      });
+      return {
+        ...data.profile,
+        activities: data.profile.activities?.map((a: Activity) => formatActivity(a))
+
+      };
     } catch(error) {
       logger.error(`Error thrown getting profile relationship items for profile ${p.profile_id}`, error);
       return p;
     }
   }));
 
+  const formattedProfiles = results.map((r: any) => r.value);
+  const formatAccessGroup = (accessGroup: AccessGroup): AccessGroup => ({
+    ...accessGroup,
+    viewable_profiles: formattedProfiles.filter((profile: UMSoftphoneConfiguration) => profile.access_group?.id === accessGroup.id).map((profile: UMSoftphoneConfiguration) => `${profile.profile_id}-${profile.profile_name}`)
+  });
+
   dispatch(({
     type: "loadProfileOptions",
-    payload: { profiles: results.map((r: any) => r.value) }
+    payload: {
+      profiles: formattedProfiles,
+      calltags: availableCallTags,
+      accessGroups: profileContext.accessGroups.map((accessGroup: AccessGroup) => formatAccessGroup(accessGroup))
+    }
   }));
 
   if(callback) { callback(); }
