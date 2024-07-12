@@ -20,10 +20,6 @@ jest.mock("utils/graphUtils", () => ({
   mapWorkerFromDbWorker: jest.fn()
 }));
 
-jest.mock("uuid", () => ({
-  v4: jest.fn()
-}));
-
 jest.mock("globals/graphql", () => ({
   SUBSCRIBE_CREATE_USER: "SUBSCRIBE_CREATE_USER",
   SUBSCRIBE_UPDATE_USER: "SUBSCRIBE_UPDATE_USER",

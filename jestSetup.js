@@ -17,6 +17,10 @@ jest.mock("@azure/msal-react", () => ({
   useMsal: jest.fn()
 }));
 
+jest.mock("uuid", () => ({
+  v4: jest.fn()
+}));
+
 beforeAll(() => {
   console.log = jest.fn();
   console.info = jest.fn();
