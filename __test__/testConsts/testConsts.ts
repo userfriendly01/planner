@@ -2,7 +2,8 @@ import {
   mockTaskQueues, mockSkills
 } from "./skillConsts";
 import {
-  mockAccessGroups, mockActivities, mockScreenpops, mockCallTags
+  mockAccessGroups, mockActivities, mockScreenpops, mockCallTags,
+  mockCallTagOptions
 } from "./profileEntryFormConsts";
 import {
   DialListNumber, DirectoryNumber
@@ -480,6 +481,7 @@ export const initialTestState: any = {
   profileContext: {
     activities: mockActivities,
     accessGroups: mockAccessGroups,
+    calltags: mockCallTagOptions,
     screenpops: mockScreenpops,
     profiles: mockProfiles,
     directoryEntries: mockDirectoryList,

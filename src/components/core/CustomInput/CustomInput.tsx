@@ -65,7 +65,7 @@ export const CustomInput = (props: CustomInputProps) => {
   return (
     <>
       <StyledTextField
-        // disabled={disabled || loading}
+        disabled={disabled || loading}
         error={error}
         id={name ? `outlined-${name}-input` : null}
         inputProps={maxLength ? { maxLength } : {}}

@@ -51,6 +51,10 @@ jest.mock("services/skill", () => ({
   loadSkillOptions: jest.fn()
 }));
 
+jest.mock("services/profile", () => ({
+  loadSoftphoneConfigRelationships: jest.fn()
+}));
+
 jest.mock("context/appContext", () => ({
   useAdminState: jest.fn(),
   useAdminDispatch: jest.fn(),

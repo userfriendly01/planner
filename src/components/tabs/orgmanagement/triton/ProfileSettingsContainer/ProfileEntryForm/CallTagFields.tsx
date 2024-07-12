@@ -18,11 +18,11 @@ import {
   useAdminState
 } from "context/appContext";
 import { profileEntryFormActions } from "context/profileEntryFormReducer";
-import { CustomInput } from "components/core/CustomInput/CustomInput";
+import { CustomInput } from "components/CustomInput";
 import {
   Add, Delete
 } from "@mui/icons-material";
-import { Dropdown } from "components/core/CustomDropdown/Dropdown";
+import { Dropdown } from "components/Dropdown";
 import { formatDropdownOptions } from "utils/_formatUtils";
 
 export const CallTagFields = () => {
@@ -80,7 +80,7 @@ export const CallTagFields = () => {
                 updateValue={(e:any, value: any) => {
                   const newArray = callTags.slice();
                   newArray[currentTagIndex] = {
-                    ...callTags[currentTagIndex],
+                    ...tag,
                     display_name: value.display_name,
                     attribute_name: value.attribute_name
                   };
@@ -115,7 +115,7 @@ export const CallTagFields = () => {
                 <IconButtonWrapper onClick={() => {
                   const existingOptions = callTags[currentTagIndex].options;
                   const newArray = callTags.slice();
-                  const newOptions = existingOptions ? ["", ...existingOptions] : [""];
+                  const newOptions = existingOptions.length ? ["", ...existingOptions] : [""];
                   newArray[currentTagIndex] = {
                     ...callTags[currentTagIndex],
                     options: newOptions
