@@ -513,7 +513,7 @@ describe("<ProfileFormFields />", () => {
         FormControlLabel.mock.calls.forEach(call => {
           render(call[0].control);
         });
-        expect(Switch).toHaveBeenCalledTimes(16);
+        expect(Switch).toHaveBeenCalledTimes(17);
         expect(FormControlLabel.mock.calls[0][0].label).toBe("Inbound Recorded");
         expect(Switch.mock.calls[0][0].checked).toBe(true);
         expect(FormControlLabel.mock.calls[1][0].label).toBe("Outbound Recorded");
@@ -544,7 +544,8 @@ describe("<ProfileFormFields />", () => {
         expect(Switch.mock.calls[13][0].checked).toBe(false);
         expect(FormControlLabel.mock.calls[14][0].label).toBe("EFT Authorization");
         expect(Switch.mock.calls[14][0].checked).toBe(false);
-        expect(FormControlLabel.mock.calls[15][0].label).toBe("Self Service Indicator");
+        expect(FormControlLabel.mock.calls[15][0].label).toBe("FTO Backup");
+        expect(FormControlLabel.mock.calls[16][0].label).toBe("Self Service Indicator");
         expect(CallTagFields).not.toHaveBeenCalled();
       });
       describe("self service indicator - profile >= 39", () => {
@@ -553,9 +554,9 @@ describe("<ProfileFormFields />", () => {
           FormControlLabel.mock.calls.forEach(call => {
             render(call[0].control);
           });
-          expect(FormControlLabel.mock.calls[15][0].label).toBe("Self Service Indicator");
-          expect(Switch.mock.calls[15][0].disabled).toBe(true);
-          expect(Switch.mock.calls[15][0].checked).toBe(true);
+          expect(FormControlLabel.mock.calls[16][0].label).toBe("Self Service Indicator");
+          expect(Switch.mock.calls[16][0].disabled).toBe(true);
+          expect(Switch.mock.calls[16][0].checked).toBe(true);
         });
       });
       describe("self service indicator - profile < 39", () => {
@@ -569,9 +570,9 @@ describe("<ProfileFormFields />", () => {
           FormControlLabel.mock.calls.forEach(call => {
             render(call[0].control);
           });
-          expect(FormControlLabel.mock.calls[15][0].label).toBe("Self Service Indicator");
-          expect(Switch.mock.calls[15][0].disabled).toBe(true);
-          expect(Switch.mock.calls[15][0].checked).toBe(false);
+          expect(FormControlLabel.mock.calls[16][0].label).toBe("Self Service Indicator");
+          expect(Switch.mock.calls[16][0].disabled).toBe(true);
+          expect(Switch.mock.calls[16][0].checked).toBe(false);
         });
       });
       describe("updateValue is called", () => {

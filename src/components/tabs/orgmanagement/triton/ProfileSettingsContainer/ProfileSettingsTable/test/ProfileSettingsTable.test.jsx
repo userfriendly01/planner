@@ -90,10 +90,11 @@ describe("<ProfileSettingsTable />", () => {
       expect(rendered.getByText("Transfer Queues", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Access Group", { selector: "th" })).toBeInTheDocument();
       expect(rendered.getByText("Operating Unit", { selector: "th" })).toBeInTheDocument();
+      expect(rendered.getByText("FTO Backup", { selector: "th" })).toBeInTheDocument();
       const tableRows = rendered.getAllByTestId("table-row");
       const tableHeaders = rendered.getAllByTestId("table-header");
       expect(tableRows.length).toBe(3);
-      expect(tableHeaders.length).toBe(24);
+      expect(tableHeaders.length).toBe(25);
     });
 
     test("should render correct tooltips", async () => {
@@ -121,6 +122,7 @@ describe("<ProfileSettingsTable />", () => {
       expect(rendered.getByLabelText("UI Feature: Additional transfer queues that will appear in the Triton queue ticker")).toBeInTheDocument();
       expect(rendered.getByLabelText("Which OU a profile is assigned to")).toBeInTheDocument();
       expect(rendered.getByLabelText("Default forward to number to be used when no overflow skill exists")).toBeInTheDocument();
+      expect(rendered.getByLabelText("Enable/Disable the FTO Backup Workers feature")).toBeInTheDocument();
     });
 
     test("should render row data", async () => {
