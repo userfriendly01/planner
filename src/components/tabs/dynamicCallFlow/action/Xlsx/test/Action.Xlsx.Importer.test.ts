@@ -1,7 +1,5 @@
 import { getActionXlsxImporterResults } from "dynamicCallFlow/Xlsx/test/Action.Xlsx.Test.Util";
 
-jest.mock("uuid", () => jest.requireActual("uuid"));
-
 describe("Action XLSX Importer", () => {
   test("happy path", () => {
     const xlsxImporterResults = getActionXlsxImporterResults("AISGMain.xlsx");
