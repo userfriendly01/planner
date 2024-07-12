@@ -19,8 +19,8 @@ import {
   initialTestState,
   render,
   setupMockedComponents,
-  skillGroups,
-  skillsList
+  mockSkills,
+  mockSkillGroups
 } from "testUtils";
 
 jest.mock("@mui/icons-material", () => ({
@@ -72,26 +72,26 @@ const testState = {
     profiles: [
       {
         profile_id: 32,
-        profile_nme: "Licensed Sales Center"
+        profile_name: "Licensed Sales Center"
       },
       {
         profile_id: 4,
-        profile_nme: "AISG"
+        profile_name: "AISG"
       },
       {
         profile_id: 10,
-        profile_nme: "BSC"
+        profile_name: "BSC"
       },
       {
         profile_id: 12,
-        profile_nme: "BLST Billing"
+        profile_name: "BLST Billing"
       }
     ]
   }
 };
 
 const defaultTableState = {
-  filteredList: skillsList,
+  filteredList: mockSkills,
   selected: [],
   closedFilter: false,
   flashFilter: false,
@@ -135,8 +135,8 @@ describe("SkillsTable", () => {
     jest.clearAllMocks();
     useAdminState.mockReturnValue(testState);
     useSkillState.mockReturnValue({
-      skills: skillsList,
-      skillGroups: skillGroups
+      skills: mockSkills,
+      skillGroups: mockSkillGroups
     });
     setupMockedComponents({
       Circle,
@@ -253,13 +253,13 @@ describe("SkillsTable", () => {
         expect(mockSetTableState).toHaveBeenCalledTimes(1);
         expect(mockSetTableState).toHaveBeenCalledWith({
           ...defaultTableState,
-          selected: defaultTableState.filteredList
+          selected: defaultTableState.filteredList.map(s => s.name)
         });
       });
     });
     describe("all skills are in selected array", () => {
       test("setTableState is called with empty array", () => {
-        renderComponent(skillsList);
+        renderComponent(mockSkills);
         const selectAll = Checkbox.mock.calls[0][0].onChange;
         act(() => {
           selectAll();
@@ -325,13 +325,13 @@ describe("SkillsTable", () => {
         expect(mockSetTableState).toHaveBeenCalledTimes(1);
         expect(mockSetTableState).toHaveBeenCalledWith({
           ...defaultTableState,
-          selected: [skillsList[2]]
+          selected: [mockSkills[2].name]
         });
       });
     });
     describe("skill is already in the selected array", () => {
       test("setTableState is called with array of existing skills minus selected skill", () => {
-        renderComponent([skillsList[1]]);
+        renderComponent([mockSkills[1].name]);
         const rowTwoCheckBox = Checkbox.mock.calls[2][0].onClick;
         act(() => {
           rowTwoCheckBox();
@@ -355,7 +355,7 @@ describe("SkillsTable", () => {
         expect(mockSetTableState).toHaveBeenCalledTimes(1);
         expect(mockSetTableState).toHaveBeenCalledWith({
           ...defaultTableState,
-          selected: [skillsList[2]]
+          selected: [mockSkills[2].name]
         });
       });
     });

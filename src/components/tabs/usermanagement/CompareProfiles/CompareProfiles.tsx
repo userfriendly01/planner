@@ -12,7 +12,8 @@ import { messageConsts } from "usermanagement/messages";
 import { ProfileColumn } from "usermanagement/ProfileColumn";
 import { ResetModal } from "usermanagement/ResetModal";
 import {
-  WfmUser, UMUser
+  WfmUser, UMUser,
+  UMSoftphoneConfiguration
 } from "globals/interfaces";
 import {
   env, nNumMatcher
@@ -106,7 +107,7 @@ export const CompareProfiles = () => {
       if (teamInState) {
         return teamInState.Name;
       } else if (p.BusinessUnitId && p.TeamId) {
-        const res = await getWfmTeam(p.BusinessUnitId, p.TeamId);
+        const res = await getWfmTeam(state.userContext.tokens.calabrioService, p.BusinessUnitId, p.TeamId);
         if (res.data.Result.length > 0) {
           return res.data.Result[0].Name;
         } else {
@@ -134,7 +135,7 @@ export const CompareProfiles = () => {
           ["First Name"]: p.attributes?.emp_first_name || "",
           ["Last Name"]: p.attributes?.emp_last_name || "",
           ["Profile Id"]: p.attributes?.profile_id?.toString() || "",
-          ["Profile Name"]: profiles.find((prof: any) => prof.profile_id === p.attributes?.profile_id)?.profile_nme || "",
+          ["Profile Name"]: profiles.find((prof: UMSoftphoneConfiguration) => prof.profile_id === p.attributes?.profile_id)?.profile_name || "",
           ["Manager N Number"]: p.attributes?.manager_n_number || "",
           ["Manager First Name"]: p.attributes?.manager_first_name || "",
           ["Manager Last Name"]: p.attributes?.manager_last_name || "",
@@ -175,19 +176,20 @@ export const CompareProfiles = () => {
     const workers = state.workerContext.workers;
 
     try {
+
       const matchingTritonProfiles = workers.filter((w: UMUser) => w?.attributes?.n_number?.toLowerCase() === nNumberDetails?.nNumber?.toLowerCase());
       if (matchingTritonProfiles.length > 1) {
         updateMessages("add", null, messageConsts.MULTIPLE_TRITON_PROFILES, "error");
       } else if (matchingTritonProfiles.length === 0) {
         updateMessages("add", null, messageConsts.MISSING_TRITON_PROFILE, "error");
       } else {
+
         const workerSid = matchingTritonProfiles[0].sid;
         const email = nNumberDetails.fetchedUser.email;
-
         setTritonProfiles(matchingTritonProfiles);
 
-        const wfmUserPromise = isProduction ? getWfmUserByNNumber(nNumberDetails.nNumber) : Promise.resolve({ data: []});
-        const calabrioProfilesPromise = getQmUserProfiles(workerSid, nNumberDetails.nNumber, email);
+        const wfmUserPromise = isProduction ? getWfmUserByNNumber(state.userContext.tokens.calabrioService, nNumberDetails.nNumber) : Promise.resolve({ data: []});
+        const calabrioProfilesPromise = getQmUserProfiles(state.userContext.tokens.calabrioService, workerSid, nNumberDetails.nNumber, email);
 
         const [wfmResponse, calabrioProfilesResponse]: [any, any] = await Promise.all([wfmUserPromise, calabrioProfilesPromise]);
 
@@ -260,20 +262,20 @@ export const CompareProfiles = () => {
             value={nNumberDetails.nNumber || ""}
           />
           {showResetButton &&
-            <ResetButton
-              sx={{ marginTop: "40px" }}
-              onClick={() => setShowModal(true)}>
-              Reset Profiles
-            </ResetButton>}
+              <ResetButton
+                sx={{ marginTop: "40px" }}
+                onClick={() => setShowModal(true)}>
+                Reset Profiles
+              </ResetButton>}
           {nNumberDetails.fetchedUser && !showColumns && <StyledLoadSpinner />}
           {nNumberDetails.fetchedUser && showColumns &&
-            <ProfileColumnsWrapper>
-              <ProfileColumn people={trimProfiles(tritonProfiles, "triton")} title="Triton" />
-              <ProfileColumn people={trimProfiles(calabrioQMProfiles, "qm")} title="Calabrio QM" />
-              {isProduction && calabrioWFMProfiles.length > 0 &&
-                <ProfileColumn people={trimProfiles(calabrioWFMProfiles, "wfm")} title="Calabrio WFM" />
-              }
-            </ProfileColumnsWrapper>
+              <ProfileColumnsWrapper>
+                <ProfileColumn people={trimProfiles(tritonProfiles, "triton")} title="Triton" />
+                <ProfileColumn people={trimProfiles(calabrioQMProfiles, "qm")} title="Calabrio QM" />
+                {isProduction && calabrioWFMProfiles.length > 0 &&
+                  <ProfileColumn people={trimProfiles(calabrioWFMProfiles, "wfm")} title="Calabrio WFM" />
+                }
+              </ProfileColumnsWrapper>
           }
           <Modal onClose={() => { return; }} open={showModal}>
             <>

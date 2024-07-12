@@ -4,10 +4,6 @@ import {
   reducer
 } from "../reducers/reducer";
 
-jest.mock("utils/skillsUtils", () => ({
-  formatSkillGroups: jest.fn()
-}));
-
 describe("reducer", () => {
   describe("invalid action", () => {
     test("should do nothing", () => {
@@ -57,21 +53,28 @@ describe("reducer", () => {
           { name: "I'm a manager" }
         ]);
       });
-    });
-    describe("type === UMOffice", () => {
-      test("should set offices to page results", () => {
-        const payload = {
-          type: "UMOffice",
-          results: [
-            { name: "I'm an office" }
-          ]
-        };
-        const action = {
-          type: "loadPaginatedResults",
-          payload
-        };
-        const result = reducer(initialState, action);
-        expect(result.officeContext.offices).toEqual(payload.results);
+      describe("isFirstPage === true", () => {
+        test("should set managers to page results", () => {
+          const startingState = {
+            ...initialState,
+            managerContext: {
+              managers: [{ name: "I'm already here!" }]
+            }
+          };
+          const payload = {
+            type: "UMManager",
+            isFirstPage: true,
+            results: [
+              { name: "I'm a manager!" }
+            ]
+          };
+          const action = {
+            type: "loadPaginatedResults",
+            payload
+          };
+          const result = reducer(startingState, action);
+          expect(result.managerContext.managers).toEqual(payload.results);
+        });
       });
     });
     describe("type === UMUser", () => {
@@ -120,6 +123,32 @@ describe("reducer", () => {
           const result = reducer(startingState, action);
           expect(result.workerContext.workers).toEqual(payload.results);
         });
+      });
+    });
+  });
+  describe("loadProfileOptions", () => {
+    test("should update the profileContext with the payload", () => {
+      const payload = {
+        accessGroups: [
+          {
+            pk: "AccessGroup#1",
+            access_group_name: "Cool kids group"
+          },
+          {
+            pk: "AccessGroup#2",
+            access_group_name: "other cool kids group"
+          }
+        ]
+      };
+      const action = {
+        type: "loadProfileOptions",
+        payload
+      };
+
+      const result = reducer(initialState, action);
+      expect(result.profileContext).toEqual({
+        ...initialState.profileContext,
+        ...payload
       });
     });
   });
@@ -179,71 +208,6 @@ describe("reducer", () => {
       expect(result.managerContext.managers).toEqual(payload);
     });
   });
-  describe("addOffice", () => {
-    test("should add to the office map", () => {
-      const payload ={
-        office_nme: "The Dova",
-        office_num: "016D"
-      };
-      const action = {
-        type: "addOffice",
-        payload
-      };
-      const initialOffices = [{
-        office_nme: "Initial Office",
-        office_num: "024"
-      }];
-      const testState = {
-        ...initialState,
-        officeContext: {
-          offices: initialOffices
-        }
-      };
-      const result = reducer(testState, action);
-      expect(result.officeContext.offices).toEqual(initialOffices.concat([payload]));
-    });
-  });
-  describe("addWorkers", () => {
-    test("should update the workers array", () => {
-      const initialWorkersList = [
-        {
-          attributes: {
-            manager_first_name: "frank",
-            manager_last_name: "smith"
-          },
-          id: "n7685955"
-        }
-      ];
-      const testState = {
-        ...initialState,
-        workerContext: {
-          workers: initialWorkersList
-        }
-      };
-      const payload = [
-        {
-          attributes: {
-            manager_first_name: "test",
-            manager_last_name: "fun"
-          },
-          id: "n1234556"
-        },
-        {
-          attributes: {
-            manager_first_name: "Jason",
-            manager_last_name: "Kidd"
-          },
-          id: "3456789"
-        }
-      ];
-      const action = {
-        type: "addWorkers",
-        payload
-      };
-      const result = reducer(testState, action);
-      expect(result.workerContext.workers).toEqual(initialWorkersList.concat(payload));
-    });
-  });
   describe("deleteWorker", () => {
     test("should delete worker from the array", () => {
       const workerToDelete = {
@@ -277,7 +241,7 @@ describe("reducer", () => {
     });
   });
   describe("loadCalabrioOrg", () => {
-    test("should initialize a map from the offices map sent in", () => {
+    test("should initialize a map from the org map sent in", () => {
       const payload = [
         {
           groupLevel: "TENANT"
@@ -320,7 +284,7 @@ describe("reducer", () => {
     });
   });
   describe("addCalabrioTeam", () => {
-    test("should initialize a map from the offices map sent in", () => {
+    test("should initialize a map from the team map sent in", () => {
       const newCalabrioTeam = {
         name: "Yay team",
         parentGroupId: 12
@@ -346,7 +310,7 @@ describe("reducer", () => {
     });
   });
   describe("loadCalabrioUsers", () => {
-    test("should initialize a map from the offices map sent in", () => {
+    test("should initialize a map from the users map sent in", () => {
       const payload = [
         {
           firstName: "Faith",
@@ -376,7 +340,7 @@ describe("reducer", () => {
     });
   });
   describe("loadCalabrioRoles", () => {
-    test("should initialize a map from the offices map sent in", () => {
+    test("should initialize a map from the roles map sent in", () => {
       const payload = [
         {
           id: 1,
@@ -513,7 +477,7 @@ describe("reducer", () => {
     });
   });
   describe("loadWfmOptions", () => {
-    test("should initialize a map from the offices map sent in", () => {
+    test("should initialize a map from the options map sent in", () => {
       const payload = [
         {
           id: 1,
@@ -537,7 +501,7 @@ describe("reducer", () => {
       const payload = [
         {
           profile_id: 1,
-          profile_nme: "smith"
+          profile_name: "smith"
         }
       ];
       const action = {

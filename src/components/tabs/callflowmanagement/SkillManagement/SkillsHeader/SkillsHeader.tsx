@@ -1,10 +1,14 @@
 import { Dropdown } from "components/Dropdown";
 import { ExportButton } from "callflowmanagement/ExportButton";
-import { SkillsHeaderProps } from "../Skills.Interfaces";
+import {
+  Skill, SkillsHeaderProps
+} from "../Skills.Interfaces";
 import { StyledHeader } from "../Skills.Styles";
 import { SearchBox } from "components/SearchBox";
-import { useAdminState } from "context/appContext";
-import { TritonProfile } from "globals/interfaces";
+import {
+  useAdminState, useSkillState
+} from "context/appContext";
+import { UMSoftphoneConfiguration } from "globals/interfaces";
 import React from "react";
 
 export const SkillsHeader = (props: SkillsHeaderProps) => {
@@ -15,13 +19,15 @@ export const SkillsHeader = (props: SkillsHeaderProps) => {
   } = props;
 
   const state = useAdminState();
+  const { skills } = useSkillState();
   const { isAdmin } = state.userContext;
+  const selectedSkills = skills.filter((s: Skill) => tableState.selected.includes(s.name));
 
   const getProfileOptions = () => {
-    return state.profileContext.profiles.map((p: TritonProfile) => {
+    return state.profileContext.profiles.map((p: UMSoftphoneConfiguration) => {
       return {
         ...p,
-        label: p.profile_nme,
+        label: p.profile_name,
         value: p.profile_id
       };
     });
@@ -35,7 +41,7 @@ export const SkillsHeader = (props: SkillsHeaderProps) => {
             multiple={true}
             value={tableState.profiles}
             options={getProfileOptions()}
-            updateValue={(event: any, checkedProfiles: TritonProfile[]) => setTableState({
+            updateValue={(event: any, checkedProfiles: UMSoftphoneConfiguration[]) => setTableState({
               ...tableState,
               profiles: checkedProfiles
             })}
@@ -53,7 +59,7 @@ export const SkillsHeader = (props: SkillsHeaderProps) => {
           });
         }}
       />
-      <ExportButton selected={tableState.selected}/>
+      <ExportButton selected={selectedSkills}/>
     </StyledHeader>
   );
 };

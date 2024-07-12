@@ -7,7 +7,7 @@ import { formModes } from "globals";
 import {
   managerList,
   mockWorkers,
-  profileList,
+  mockProfiles,
   validFormOptions,
   initialTestState
 } from "testUtils";
@@ -1497,7 +1497,7 @@ describe("userFormReducer", () => {
       expect(result).toStrictEqual(expectedFormState);
     });
   });
-  
+
   describe("SET_BACK_UP_WORKER", () => {
     test("should update backup worker", () => {
       const payload = {
@@ -1522,7 +1522,7 @@ describe("userFormReducer", () => {
       expect(result).toStrictEqual(expectedFormState);
     });
   });
-  
+
   describe("UPDATE_BACK_UP_WORKER_FLAG", () => {
     test("should update backup worker enable/disable flag", () => {
       const action = {
@@ -1776,8 +1776,8 @@ describe("userFormReducer", () => {
     describe("Profile is updated from a profile without a zero out skill to one with a zero out skill", () => {
       test("should update team and set zeroOutEnabled to true", () => {
         const payload = {
-          profileId: profileList[1].profile_id,
-          profiles: profileList
+          profileId: mockProfiles[0].profile_id,
+          profiles: mockProfiles
         };
         const action = {
           type: userFormActions.UPDATE_TEAM,
@@ -1789,7 +1789,7 @@ describe("userFormReducer", () => {
             ...initialUserFormState.triton,
             profileId: {
               ...initialUserFormState.triton.profileId,
-              value: profileList[0].profile_id
+              value: mockProfiles[0].profile_id
             }
           }
         };
@@ -1815,8 +1815,8 @@ describe("userFormReducer", () => {
     describe("Profile is updated from a profile with a zero out skill to one without", () => {
       test("should update team and set zeroOutEnabled to false", () => {
         const payload = {
-          profileId: profileList[0].profile_id,
-          profiles: profileList
+          profileId: mockProfiles[1].profile_id,
+          profiles: mockProfiles
         };
         const action = {
           type: userFormActions.UPDATE_TEAM,
@@ -1828,7 +1828,7 @@ describe("userFormReducer", () => {
             ...initialUserFormState.triton,
             profileId: {
               ...initialUserFormState.triton.profileId,
-              value: profileList[1].profile_id
+              value: mockProfiles[1].profile_id
             }
           }
         };

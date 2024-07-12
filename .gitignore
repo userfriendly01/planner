@@ -1,6 +1,5 @@
 jsconfig.json
 tsconfig.json
-package-lock.json
 coverage/*
 dist/*
 !dist/index.html

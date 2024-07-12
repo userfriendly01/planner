@@ -37,6 +37,7 @@ export const SaveButton = (props: SaveButtonProps) => {
   const { nNumber } = state.userContext;
   const isSingleSelection = tableState.selected.length === 1;
   const isMultiSelection = tableState.selected.length > 1;
+  const selectedSkills: Partial<Skill>[] = tableState.selected.map((ss: string) => skillState.skills.find((s: Skill) => s.name === ss) || {});
 
   const handleOnSave = () => {
     switch(action){
@@ -57,14 +58,14 @@ export const SaveButton = (props: SaveButtonProps) => {
         message: "Processing...",
         status: ModalOverlayStatuses.SAVING
       });
-      const results = await Promise.allSettled(tableState.selected.map((skill: Skill) => {
+      const results = await Promise.allSettled(selectedSkills.map((skill: Skill) => {
         return messageType.updateFunction(skill, text, nNumber);
       }));
       handleResults(results);
     };
     const confirmationText = <ConfirmationDiv>
-      {`Are you sure you want to update the ${messageType.name} for ${!isMultiSelection ? tableState.selected[0].name + "?" : tableState.selected.length + " skills?"}`}
-      {tableState.selected.some(s => s[messageType.variable]) &&
+      {`Are you sure you want to update the ${messageType.name} for ${!isMultiSelection ? tableState.selected[0] + "?" : tableState.selected.length + " skills?"}`}
+      {selectedSkills.some(s => s[messageType.variable]) &&
         <ConfirmationExportDiv>
           You will be overriding existing {messageType.name}s. Click the export button to save this data for future use.
         </ConfirmationExportDiv>
@@ -88,15 +89,15 @@ export const SaveButton = (props: SaveButtonProps) => {
         message: "Processing...",
         status: ModalOverlayStatuses.SAVING
       });
-      const results = await Promise.allSettled(tableState.selected.map((skill: Skill) => {
+      const results = await Promise.allSettled(selectedSkills.map((skill: Skill) => {
         return messageType.updateFunction(skill, "", nNumber);
       }));
       handleResults(results);
     };
 
     const confirmationText = <ConfirmationDiv>
-      {`Are you sure you want to delete the ${messageType.name} for ${!isMultiSelection ? tableState.selected[0].name + "?" : tableState.selected.length + " skills?"}`}
-      {tableState.selected.some(s => s[messageType.variable]) &&
+      {`Are you sure you want to delete the ${messageType.name} for ${!isMultiSelection ? tableState.selected[0] + "?" : tableState.selected.length + " skills?"}`}
+      {selectedSkills.some(s => s[messageType.variable]) &&
       <ConfirmationExportDiv>
         You will be deleting existing {messageType.name}s. Click the export button to save this data for future use.
       </ConfirmationExportDiv>
@@ -131,10 +132,10 @@ export const SaveButton = (props: SaveButtonProps) => {
 
     results.forEach((r, index) => {
       if(r.status === "fulfilled"){
-        successfulPromiseSkills.push(tableState.selected[index]);
+        successfulPromiseSkills.push(selectedSkills[index]);
       }
       if(r.status === "rejected"){
-        rejectedPromiseSkills.push(tableState.selected[index]);
+        rejectedPromiseSkills.push(selectedSkills[index]);
       }
     });
 
@@ -202,7 +203,7 @@ export const SaveButton = (props: SaveButtonProps) => {
         <UserFormButton onClick={handleOnSave}>
           { isMultiSelection ?
             `${action.label} ${tableState.selected.length} ${messageType.name}s`
-            : `${action.label} ${tableState.selected[0].name} ${messageType.name}`
+            : `${action.label} ${tableState.selected[0]} ${messageType.name}`
           }
         </UserFormButton>
       }

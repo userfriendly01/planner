@@ -25,7 +25,6 @@ import {
 import React from "react";
 import {
   createCalabrioUser,
-  getCalabrioUsers,
   updateCalabrioUser,
   createCalabrioWFMPerson
 } from "services/calabrio";
@@ -33,7 +32,9 @@ import { wfmActivateExternalLogon } from "services/wfmActivateExternalLogon";
 import {
   createUser, updateUser
 } from "services/user";
-import { addOffice } from "services/office";
+import {
+  addOffice, getOffice
+} from "services/office";
 import {
   getNonOverflowSkills,
   getOverflowSkillFromProfile,
@@ -47,7 +48,8 @@ import { logger } from "utils/logger";
 import { wait } from "utils";
 import {
   addWorkerToOrg,
-  checkConflictingUsers
+  checkConflictingUsers,
+  getCalabrioQMUsers
 } from "utils/calabrioUtils";
 import { Tooltip } from "@mui/material";
 import { ApolloError } from "@apollo/client";
@@ -58,7 +60,6 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
     forwardToToggle,
     handleClose,
     loading,
-    offices,
     profiles,
     updateLoading,
     worker,
@@ -75,6 +76,7 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
     teams
   } = state.calabrioContext;
   const { nNumber } = state.userContext;
+  const calabrioServiceToken = state.userContext.tokens.calabrioService;
 
   const doCreateUser = async () => {
     updateLoading({
@@ -144,7 +146,7 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
       attributes.routing.skills = [overflowSkill];
     }
 
-    const operatingUnitSid = profiles.find(profile => profile.profile_id === form.triton.profileId.value).operating_unit_sid;
+    const operatingUnitSid = profiles.find(profile => profile.profile_id === form.triton.profileId.value).ou_sid;
 
     const createUserReqBody = form.triton.did.value ?
       {
@@ -168,7 +170,8 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
         userNNumber
       });
 
-      if (!offices.some(o => newWorker.attributes.office_location_number === o.office_num)) {
+      const officeExists = await getOffice(newWorker.attributes.office_location_number);
+      if (!officeExists) {
         const newOffice = {
           office_name: newWorker.attributes.office_location_name,
           office_num: newWorker.attributes.office_location_number
@@ -192,13 +195,9 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
             });
           });
       }
-      dispatch({
-        type: "addWorkers",
-        payload: [newWorker]
-      });
 
       try {
-        await wfmActivateExternalLogon({ workerNNumbers: [userNNumber]});
+        await wfmActivateExternalLogon(state.userContext.tokens.adminService, { workerNNumbers: [userNNumber]});
 
         logger.info("Successfully activated WFM external login", {
           nNumber,
@@ -216,8 +215,8 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
 
       try {
         calabrioAttributes.acdId = newWorker.sid;
-        await checkConflictingUsers(calabrioAttributes, users, roles, teams);
-        await createCalabrioUser(calabrioAttributes);
+        await checkConflictingUsers(calabrioServiceToken, calabrioAttributes, users, roles, teams);
+        await createCalabrioUser(calabrioServiceToken, calabrioAttributes);
 
         logger.info("Successfully created Calabrio User", {
           nNumber,
@@ -225,10 +224,10 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
         });
 
         try {
-          const updatedUsers: any = await getCalabrioUsers();
+          const updatedUsers: any = await getCalabrioQMUsers(calabrioServiceToken);
           dispatch({
             type: "loadCalabrioUsers",
-            payload: updatedUsers.data
+            payload: updatedUsers
           });
         } catch (error) {
           logger.error(
@@ -265,7 +264,7 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
 
         if (env.APP_ENV === "production") {
           try {
-            const res = await createCalabrioWFMPerson(wfmBody);
+            const res = await createCalabrioWFMPerson(calabrioServiceToken, wfmBody);
 
             logger.info("Successfully created Calabrio WFM Person", {
               nNumber,
@@ -376,7 +375,7 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
 
     if (form.triton.profileId.updated) {
       attributes.profile_id = form.triton.profileId.value;
-      operatingUnitSid = profiles.find(profile => profile.profile_id === form.triton.profileId.value).operating_unit_sid;
+      operatingUnitSid = profiles.find(profile => profile.profile_id === form.triton.profileId.value).ou_sid;
     }
     if (form.triton.outgoing.updated) {
       attributes.caller_id = form.triton.outgoing.e164;
@@ -453,17 +452,12 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
 
     const errors = [];
     try {
-      const updatedWorker = await updateUser(worker.sid, payload);
+      await updateUser(worker.sid, payload);
 
       logger.info("Successfully Updated Triton user", {
         nNumber,
         userNNumber: form.nNumber.value
       });
-
-      dispatch(({
-        type: "updateWorker",
-        payload: updatedWorker
-      }));
     } catch (err) {
       const error = err as ApolloError;
 
@@ -480,6 +474,7 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
       try {
         const calabrioAttributes: any = {};
         calabrioAttributes.acdId = form.calabrio_qm.acdId;
+        calabrioAttributes.id = form.calabrio_qm.id;
         calabrioAttributes.adLogin = `LM\\${form.nNumber.value.toLowerCase()}`;
         calabrioAttributes.email = form.nNumber.nNumberFetchedUser?.email;
         calabrioAttributes.firstName = form.nNumber.nNumberFetchedUser?.firstName;
@@ -493,15 +488,15 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
         };
 
         if (form.calabrio_qm.id) {
-          await updateCalabrioUser(form.calabrio_qm.id, calabrioAttributes);
+          await updateCalabrioUser(calabrioServiceToken, calabrioAttributes);
 
           logger.info("Successfully Updated Calabrio user", {
             nNumber,
             userNNumber: form.nNumber.value
           });
         } else {
-          await checkConflictingUsers(calabrioAttributes, users, roles, teams);
-          await createCalabrioUser(calabrioAttributes);
+          await checkConflictingUsers(calabrioServiceToken, calabrioAttributes, users, roles, teams);
+          await createCalabrioUser(calabrioServiceToken, calabrioAttributes);
 
           logger.info("Successfully Created Calabrio user", {
             nNumber,
@@ -509,10 +504,10 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
           });
         }
         try {
-          const updatedUsers: any = await getCalabrioUsers();
+          const updatedUsers: any = await getCalabrioQMUsers(calabrioServiceToken);
           dispatch({
             type: "loadCalabrioUsers",
-            payload: updatedUsers.data
+            payload: updatedUsers
           });
         } catch (error) {
           logger.error("Failed to reset state after conflict check & calabrio user add", { error });
@@ -538,7 +533,7 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
 
       if (env.APP_ENV === "production") {
         try {
-          const res = await createCalabrioWFMPerson(wfmBody);
+          const res = await createCalabrioWFMPerson(calabrioServiceToken, wfmBody);
 
           logger.info("Successfully created Calabrio WFM Person", {
             nNumber,
@@ -557,7 +552,7 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
             }
           });
           try {
-            await wfmActivateExternalLogon({ workerNNumbers: [form.calabrio_wfm.EmploymentNumber]});
+            await wfmActivateExternalLogon(state.userContext.tokens.adminService, { workerNNumbers: [form.calabrio_wfm.EmploymentNumber]});
 
             logger.info("Successfully activated WFM external login", {
               nNumber,

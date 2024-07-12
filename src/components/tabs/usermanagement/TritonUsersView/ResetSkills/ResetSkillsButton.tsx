@@ -1,14 +1,10 @@
 import { DefaultResetInformation } from "usermanagement/ResetSkills.Interfaces";
 import { ResetSkillsResultsModal } from "usermanagement/ResetSkillsResultsModal";
 import { StyledButton } from "components/StyledButton";
-import {
-  useAdminDispatch,
-  useAdminState
-} from "context/appContext";
+import { useAdminState } from "context/appContext";
 import { apiPaths } from "globals";
 import React, { useState } from "react";
 import { logger } from "utils/logger";
-import { mapWorkerFromTwilio } from "utils";
 import { myAxios } from "utils/myAxios";
 import { Modal } from "@mui/material";
 
@@ -28,7 +24,6 @@ export const ResetSkillsButton = (props: any) => {
   const state = useAdminState();
   const { nNumber } = state.userContext;
 
-  const dispatch = useAdminDispatch();
   const [ resultsModalOpts, setResultsModalOpts ] = useState(defaultResetInformation);
 
   const resetWorkers = () => {
@@ -42,11 +37,6 @@ export const ResetSkillsButton = (props: any) => {
           if (result.updated){
             result.worker.workerSid = result.workerSid;
             result.worker.attributes = JSON.parse(result.worker.attributes);
-            const updatedWorker = mapWorkerFromTwilio(result.worker);
-            dispatch({
-              type: "updateWorker",
-              payload: updatedWorker
-            });
             passedWorkers.push({
               name: selected.find((worker: any) => result.workerSid === worker.sid).sid
             });

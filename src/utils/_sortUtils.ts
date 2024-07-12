@@ -1,8 +1,8 @@
 import {
   UMManager,
-  TritonProfile,
   WfmUser,
-  UMUser
+  UMUser,
+  UMSoftphoneConfiguration
 } from "globals/interfaces";
 
 const sortLast = "zzzzzzzzzzz";
@@ -24,12 +24,12 @@ export const sortGraphObjectsByPk = (a: any, b: any) => {
 };
 
 export const sortDialListEntriesByName = (a: any, b: any) => {
-  const [aName, bName] = [a.contact_nme, b.contact_nme];
+  const [aName, bName] = [a.contact_name, b.contact_name];
   return sortStrings(aName, bName);
 };
 
 export const sortDirectoryListEntriesByName = (a: any, b: any) => {
-  const [aName, bName] = [`${a.last_nme}, ${a.first_nme}`, `${b.last_nme}, ${b.first_nme}`];
+  const [aName, bName] = [`${a.last_name}, ${a.first_name}`, `${b.last_name}, ${b.first_name}`];
   return sortStrings(aName, bName);
 };
 
@@ -38,14 +38,14 @@ export const sortManagersByName = (a: UMManager, b: UMManager) => {
   return sortStrings(aName, bName);
 };
 
-export const sortProfilesById = (a: TritonProfile, b: TritonProfile) => sortNumbers(a.profile_id, b.profile_id);
+export const sortProfilesById = (a: UMSoftphoneConfiguration, b: UMSoftphoneConfiguration) => sortNumbers(a.profile_id, b.profile_id);
 
-export const sortProfilesByName = (a: TritonProfile, b: TritonProfile) => sortStrings(a.profile_nme, b.profile_nme);
+export const sortProfilesByName = (a: UMSoftphoneConfiguration, b: UMSoftphoneConfiguration) => sortStrings(a.profile_name, b.profile_name);
 
 export const sortCalabrioObject = (a: any, b: any) => sortStrings(a.name, b.name);
 
 export const sortActivityByName = (a: any, b: any) => {
-  const [aName, bName] = [a.activity_nme, b.activity_nme];
+  const [aName, bName] = [a.activity_name, b.activity_name];
   return sortStrings(aName, bName);
 };
 

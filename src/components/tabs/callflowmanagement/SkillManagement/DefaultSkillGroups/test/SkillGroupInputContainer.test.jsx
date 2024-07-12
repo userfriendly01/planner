@@ -6,8 +6,7 @@ import {
 import {
   useAdminState,
   useAdminDispatch,
-  useSkillState,
-  useSkillDispatch
+  useSkillState
 } from "context/appContext";
 import { TextField } from "@mui/material";
 import {
@@ -20,11 +19,11 @@ import {
   render,
   setupMockedComponents,
   expectOnlyPassedProps,
-  skillsList,
+  mockSkills,
   waitFor,
   act,
   getMockedComponentProps,
-  skillGroups
+  mockSkillGroups
 } from "testUtils";
 import { ActionTypes } from "../../Skills.Interfaces";
 import { Dropdown } from "components/Dropdown";
@@ -96,11 +95,12 @@ describe("<SkillGroupInputContainer />", () => {
     jest.clearAllMocks();
     jest.resetAllMocks();
     useSkillState.mockReturnValue({
-      skills: skillsList,
-      skillGroups: skillGroups
+      skills: mockSkills,
+      skillGroups: mockSkillGroups
     });
     useAdminDispatch.mockReturnValue(mockDispatch);
     useAdminState.mockReturnValue(initialTestState);
+    loadConsolidatedSkills.mockResolvedValue();
     setupMockedComponents({
       TextField,
       UserFormButton
@@ -137,7 +137,7 @@ describe("<SkillGroupInputContainer />", () => {
       });
       describe("selected length === 1", () => {
         const tableState = {
-          selected: [skillsList[0]]
+          selected: [mockSkills[0]]
         };
         test("should render as expected with skillGroupName an empty string, button disabled", () => {
           renderComponent(tableState, ActionTypes.ADD);
@@ -151,7 +151,7 @@ describe("<SkillGroupInputContainer />", () => {
       });
       describe("selected length > 1", () => {
         const tableState = {
-          selected: [...skillsList]
+          selected: [...mockSkills]
         };
         test("should render as expected with skillGroupName an empty string, button disabled", () => {
           renderComponent(tableState, ActionTypes.ADD);
@@ -189,7 +189,7 @@ describe("<SkillGroupInputContainer />", () => {
       });
       describe("selected length === 1", () => {
         const tableState = {
-          selected: [skillsList[0]]
+          selected: [mockSkills[0]]
         };
         test("should render as expected with skillGroupName an empty string, button enabled", () => {
           renderComponent(tableState, ActionTypes.ADD);
@@ -212,7 +212,7 @@ describe("<SkillGroupInputContainer />", () => {
     });
     describe("Add button is clicked", () => {
       const tableState = {
-        selected: [skillsList[0], skillsList[1]]
+        selected: [mockSkills[0].name, mockSkills[1].name]
       };
       test("Name is not unique, error message shows", async () => {
         renderComponent(tableState, ActionTypes.ADD);
@@ -311,8 +311,8 @@ describe("<SkillGroupInputContainer />", () => {
         await waitFor(() => {
           expect(addSkillGroup).toHaveBeenCalledTimes(1);
           expect(addSkillGroup).toHaveBeenCalledWith({
-            skill_group_nme: "new skill group",
-            skillIds: [1, 2]
+            skill_group_name: "new skill group",
+            skill_ids: ["lscOBDialer1", "aisgL1"]
           });
           expect(mockSetSaveResult).toHaveBeenCalledTimes(3);
           expect(mockSetSaveResult).toHaveBeenNthCalledWith(1, {
@@ -436,8 +436,9 @@ describe("<SkillGroupInputContainer />", () => {
         });
         const dropdownOnChange = Dropdown.mock.calls[0][0].updateValue;
         act(() => dropdownOnChange({}, {
-          label: "skillgroup1",
-          value: 1
+          label: "skillgroup2",
+          value: "2",
+          ...mockSkillGroups[1]
         }));
         expect(Dropdown.mock.calls.length).toBe(2);
         expectOnlyPassedProps(UserFormButton, {
@@ -455,7 +456,7 @@ describe("<SkillGroupInputContainer />", () => {
           status: "saving"
         });
         await waitFor(() => {
-          expect(deleteSkillGroup).toHaveBeenLastCalledWith(1);
+          expect(deleteSkillGroup).toHaveBeenLastCalledWith("2");
           expect(loadConsolidatedSkills).toHaveBeenCalledTimes(1);
           jest.runAllTimers();
           expect(mockSetAction).toHaveBeenCalledTimes(1);
@@ -516,22 +517,22 @@ describe("<SkillGroupInputContainer />", () => {
       describe("skill group name is not changed, only the selected skills, user form button is clicked", () => {
         test("error occurs when creating the request body, set save result occurs with failed message", async () => {
           const tableState = {
-            selected: {}  //object will cause error
+            selected: null
           };
           renderComponent(tableState, ActionTypes.EDIT);
           expect(Dropdown).toHaveBeenCalled();
           expect(TextField).toHaveBeenCalled();
           expect(UserFormButton).toHaveBeenCalled();
           const dropdownOnChange = Dropdown.mock.calls[0][0].updateValue;
-          act(() => dropdownOnChange({}, {
-            value: 1 ,
+          dropdownOnChange({}, {
+            value: "1" ,
             label: "skillgroup1"
-          }));
-          const userFormOnClick = UserFormButton.mock.calls[1][0].onClick;
-          act(() => userFormOnClick());
-          expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(1);
-
+          });
+          await waitFor(() => expect(UserFormButton.mock.calls.length).toBe(3));
+          const userFormOnClick = UserFormButton.mock.calls[2][0].onClick;
+          userFormOnClick();
           await waitFor(() => {
+            expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(1);
             expect(deleteSkillGroup).toHaveBeenCalledTimes(0);
             expect(addSkillGroup).toHaveBeenCalledTimes(0);
             expect(updateSkillGroup).toHaveBeenCalledTimes(0);
@@ -544,7 +545,7 @@ describe("<SkillGroupInputContainer />", () => {
         });
         test("modal is cancelled", () => {
           const tableState = {
-            selected: [...skillsList]
+            selected: [...mockSkills]
           };
           renderComponent(tableState, ActionTypes.EDIT);
           expect(Dropdown).toHaveBeenCalled();
@@ -576,30 +577,31 @@ describe("<SkillGroupInputContainer />", () => {
         test("confirmation modal is confirmed, editskillgroup succeeds", async () => {
           updateSkillGroup.mockResolvedValueOnce("yay");
           const tableState = {
-            selected: [...skillsList]
+            selected: mockSkills.map(s => s.name)
           };
           renderComponent(tableState, ActionTypes.EDIT);
           expect(Dropdown).toHaveBeenCalled();
           expect(TextField).toHaveBeenCalled();
           expect(UserFormButton).toHaveBeenCalled();
           const dropdownOnChange = Dropdown.mock.calls[0][0].updateValue;
-          act(() => dropdownOnChange({}, {
-            value: 1 ,
+          dropdownOnChange({}, {
+            value: "1" ,
             label: "skillgroup1"
-          }));
-          const userFormOnClick = UserFormButton.mock.calls[1][0].onClick;
-          act(() => userFormOnClick());
-          expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(1);
+          });
+          await waitFor(() => expect(UserFormButton.mock.calls.length).toBe(3));
+          const userFormOnClick = UserFormButton.mock.calls[2][0].onClick;
+          userFormOnClick();
+          await waitFor(() => expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(1));
           const onConfirm = mockSetConfirmationModalOpts.mock.calls[0][0].callbackMethods.onConfirm;
-          act(() => onConfirm());
+          onConfirm();
 
           await waitFor(() => {
             expect(deleteSkillGroup).toHaveBeenCalledTimes(0);
             expect(addSkillGroup).toHaveBeenCalledTimes(0);
             expect(updateSkillGroup).toHaveBeenCalledTimes(1);
-            expect(updateSkillGroup).toHaveBeenCalledWith(1, {
-              skill_group_nme: "skillgroup1",
-              skillIds: [1, 2, 3, 4, 5]
+            expect(updateSkillGroup).toHaveBeenCalledWith("1", {
+              skill_group_name: "skillgroup1",
+              skill_ids: mockSkills.map(s => s.name)
             });
             expect(mockSetSaveResult).toHaveBeenCalledWith({
               message: "Processing...",
@@ -619,30 +621,30 @@ describe("<SkillGroupInputContainer />", () => {
         test("confirmation modal is confirmed, editskillgroup fails", async () => {
           updateSkillGroup.mockRejectedValueOnce("fail");
           const tableState = {
-            selected: [...skillsList]
+            selected: mockSkills.map(s => s.name)
           };
           renderComponent(tableState, ActionTypes.EDIT);
           expect(Dropdown).toHaveBeenCalled();
           expect(TextField).toHaveBeenCalled();
           expect(UserFormButton).toHaveBeenCalled();
           const dropdownOnChange = Dropdown.mock.calls[0][0].updateValue;
-          act(() => dropdownOnChange({}, {
-            value: 1 ,
+          dropdownOnChange({}, {
+            value: "1" ,
             label: "skillgroup1"
-          }));
-          const userFormOnClick = UserFormButton.mock.calls[1][0].onClick;
-          act(() => userFormOnClick());
-          expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(1);
+          });
+          await waitFor(() => expect(UserFormButton.mock.calls.length).toBe(3));
+          const userFormOnClick = UserFormButton.mock.calls[2][0].onClick;
+          userFormOnClick();
+          await waitFor(() => expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(1));
           const onConfirm = mockSetConfirmationModalOpts.mock.calls[0][0].callbackMethods.onConfirm;
-          act(() => onConfirm());
-
+          onConfirm();
           await waitFor(() => {
             expect(deleteSkillGroup).toHaveBeenCalledTimes(0);
             expect(addSkillGroup).toHaveBeenCalledTimes(0);
             expect(updateSkillGroup).toHaveBeenCalledTimes(1);
-            expect(updateSkillGroup).toHaveBeenCalledWith(1, {
-              skillIds: [1, 2, 3, 4, 5],
-              skill_group_nme: "skillgroup1"
+            expect(updateSkillGroup).toHaveBeenCalledWith("1", {
+              skill_ids: mockSkills.map(s => s.name),
+              skill_group_name: "skillgroup1"
             });
             expect(mockSetSaveResult).toHaveBeenCalledWith({
               message: "Processing...",

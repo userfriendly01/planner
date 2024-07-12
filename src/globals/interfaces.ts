@@ -93,17 +93,17 @@ export interface AppState {
   managerContext: {
     managers: UMManager[]
   },
-  officeContext: {
-    offices: UMOffice[]
-  },
   profileContext: {
-    profiles: TritonProfile[]
+    profiles: UMSoftphoneConfiguration[],
+    accessGroups: AccessGroup[],
+    screenpops: Screenpop[]
+    activities: Activity[],
+    directoryEntries: DirectoryNumber[],
+    dialListEntries: DialListNumber[]
   },
   userContext: {
     permissions: ADGroupPermission[];
-    tokens: {
-      [key: string]: string;
-    };
+    tokens: Tokens;
     isAdmin?: boolean;
     profileId?: number;
     nNumber?: string;
@@ -129,6 +129,13 @@ export interface AppState {
   }
 }
 
+export interface Tokens {
+  msGraph?: string;
+  sharedGraph?: string;
+  calabrioService?: string;
+  adminService?: string;
+}
+
 export interface ADGroupRole {
   name: string;
   permissionLevel: Permissions;
@@ -138,7 +145,7 @@ export interface ADGroupPermission {
     roles: ADGroupRole[];
     startup: {
       name: string;
-      function: (dispatch: any, skillDispatch?: any) => Promise<any>;
+      function: (dispatch: any, skillDispatch?: any, tokens?: Tokens) => Promise<any>;
     }
     description: string;
     authenticationProfile:  AuthenticationProfile
@@ -180,65 +187,157 @@ export interface UMOffice {
   office_name: string
 }
 
-export interface TritonProfile {
-  acw_data_entry_i: MySqlBoolean,
-  acw_option_i: MySqlBoolean,
-  agent_assisted_pay_i: MySqlBoolean,
-  auto_answd_i: MySqlBoolean,
-  call_reason_i: MySqlBoolean,
-  click_to_dial_i: MySqlBoolean,
-  eft_authorization_i: MySqlBoolean,
-  claim_number_edit_i: MySqlBoolean,
-  manual_record_inbound_i: MySqlBoolean,
-  manual_recorded_i: MySqlBoolean,
-  otbnd_recorded_i: MySqlBoolean,
-  pmt_prcsg_i: MySqlBoolean,
-  policy_number_edit_i: MySqlBoolean,
-  voice_mail_transcription_i: MySqlBoolean,
-  profile_id: number,
-  profile_nme: string,
-  recorded_i: MySqlBoolean,
-  row_crtn_dtm: string,
-  row_updt_dtm: string,
-  overflow_skill: string,
-  activities: Array<Record<string, unknown>>,
-  callTags: string,
-  operating_unit_nme: string,
-  operating_unit_sid: string
-}
-
-export interface ProfilePayload {
-  profile_id: null | number,
-  profile_nme: string,
-  activities: Array<number>,
-  recorded_i: boolean,
-  auto_answd_i: boolean,
-  pmt_prcsg_i: boolean,
-  otbnd_recorded_i: boolean,
-  acw_option_i: boolean,
-  callTags: Array<Record<string, unknown>>,
-  manual_recorded_i: boolean,
-  acw_data_entry_i: boolean,
-  manual_record_inbound_i: boolean,
-  agent_assisted_pay_i: boolean,
-  overflow_skill: string | null,
-  policy_number_edit_i: boolean,
-  voice_mail_transcription_i: boolean,
-  call_reason_i: boolean,
-  click_to_dial_i: boolean,
-  eft_authorization_i: boolean,
-  claim_number_edit_i: boolean,
-  transferQueues: Array<Record<string, unknown>>,
-  aggregateQueues: Array<number>
+export interface AccessGroup {
+  pk: string,
+  sk: string,
+  id: string,
+  item_type: string,
+  access_group_name: string,
+  twilio_dashboard_url: string,
+  isNew: boolean
 }
 
 export interface Activity {
-  activity_id: number,
-  activity_nme: string,
-  available_i: {
-    data?: number[],
-    type?: string
-  }
+  pk: string,
+  sk: string,
+  item_type: string,
+  activity_name: string,
+  activity_sid: string,
+  available: boolean
+}
+
+export interface Screenpop {
+  pk: string,
+  sk: string,
+  item_type: string,
+  id: string,
+  display_name: string,
+  attribute_name: string
+}
+
+export interface CallTag {
+  display_name: string,
+  options: string[]
+  attribute_name: string
+}
+
+export interface DialListNumber {
+  pk: string,
+  sk: string,
+  id: string,
+  item_type: string,
+  contact_num: string,
+  contact_name: string,
+  external_num?: string,
+  profile_id: number
+}
+
+export interface DirectoryNumber {
+  pk: string,
+  sk: string,
+  id: string,
+  item_type: string,
+  directory_num: string,
+  first_name: string,
+  last_name?: string,
+  profile_id: number
+}
+
+export interface UMSoftphoneConfiguration {
+  pk: string,
+  sk: string,
+  item_type: string,
+  profile_id: number,
+  ou_sid: string,
+  ou_name: string,
+  profile_name: string,
+  overflow_skill: string,
+  acw_option: boolean,
+  acw_tags: boolean,
+  agnt_asst_pay: boolean,
+  auto_ans: boolean,
+  edt_policy_num: boolean,
+  edt_claim_num: boolean,
+  call_reason: boolean,
+  clk_to_dial: boolean,
+  eft_auth: boolean,
+  inbnd_rec: boolean,
+  man_outbnd_rec: boolean,
+  man_inbnd_rec: boolean,
+  outbnd_rec: boolean,
+  takes_paymnts: boolean,
+  voice_mail_trans: boolean,
+  fwd_to_num: string,
+  transfer_queues: string[],
+  backup_workers: boolean,
+  call_tags: CallTag[],
+  access_group?: AccessGroup,
+  activities?: Activity[],
+  screenpops?: Screenpop[]
+}
+
+export interface AddEditSoftphoneConfigRequest {
+  profile_id: number,
+  ou_sid: string,
+  ou_name: string,
+  profile_name: string,
+  overflow_skill: string,
+  acw_option: boolean,
+  acw_tags: boolean,
+  agnt_asst_pay: boolean,
+  auto_ans: boolean,
+  edt_policy_num: boolean,
+  edt_claim_num: boolean,
+  call_reason: boolean,
+  clk_to_dial: boolean,
+  eft_auth: boolean,
+  inbnd_rec: boolean,
+  man_outbnd_rec: boolean,
+  man_inbnd_rec: boolean,
+  outbnd_rec: boolean,
+  takes_paymnts: boolean,
+  voice_mail_trans: boolean,
+  fwd_to_num: string,
+  transfer_queues: string[],
+  backup_workers: boolean,
+  call_tags: string[],
+  activity_sids: string[],
+  screenpop_ids: string[],
+  access_group_id: string[]
+}
+
+export interface AccessGroupPayload {
+  access_group_name: string,
+  twilio_dashboard_url: string
+}
+
+export interface ProfilePayload {
+  profile_id?: number
+  profile_name: string,
+  overflow_skill: string,
+  acw_option: boolean,
+  acw_tags: boolean,
+  agnt_asst_pay: boolean,
+  auto_ans: boolean,
+  edt_policy_num: boolean,
+  edt_claim_num: boolean,
+  call_reason: boolean,
+  clk_to_dial: boolean,
+  eft_auth: boolean,
+  inbnd_rec: boolean,
+  man_outbnd_rec: boolean,
+  man_inbnd_rec: boolean,
+  outbnd_rec: boolean,
+  takes_paymnts: boolean,
+  voice_mail_trans: boolean,
+  ou_name: string,
+  ou_sid: string,
+  fwd_to_num: string,
+  screenpop_ids: string[],
+  access_group_id: string,
+  activity_sids: string[],
+  call_tags: CallTag[],
+  transfer_queues: string[]
 }
 
 export interface AggregateQueue {
@@ -249,19 +348,6 @@ export interface AggregateQueue {
   worker_sid: string | null,
   row_crtn_dtm: string | null,
   row_updt_dtm: string | null
-}
-
-export interface CallTag {
-  wrkr_tsk_info_id: number,
-  profile_id: number,
-  display_nme: string,
-  options_id: number,
-  wrkr_tsk_info_nme: string
-}
-
-export interface CallTagOptions {
-  options_id: number,
-  options: string
 }
 
 export interface WfmBusinessUnit {
@@ -326,67 +412,90 @@ export interface GraphData {
   responsePath: string
 }
 
-export interface UMUserTwilioAttributes {
-  contact_uri?: string,
-  default_skills?: UMTwilioAttributeSkills,
-  department_name?:string,
-  department_id?:string,
-  caller_id?: string,
-  disabled_skills?: UMTwilioAttributeSkills,
-  email?: string,
-  email_address?: string,
-  emp_first_name?: string,
-  emp_last_name?: string,
-  extension?: string,
-  full_name?: string,
-  location?:string,
-  manager_first_name?: string,
-  manager_last_name?: string,
-  manager_n_number?: string,
-  manager?:string,
-  n_number?: string,
-  office_location_name?: string,
-  office_location_number?: string,
-  primary_dept_name?: string,
-  primary_dept_number?: string,
-  profile_id?: number,
-  roles?: string[],
-  routing?: UMTwilioAttributeSkills,
-  unique_id?: string,
-  agent_id?: string,
+export interface UMTwilioAttributeSkills {
+  levels: {
+    [key: string]: number;
+  };
+  skills: string[];
 }
 
-export interface UMUser {
+interface UMTwilioAttributesRouting extends UMTwilioAttributeSkills {
+  team?: string;
+  backup_workers?: string[];
+  backup_workers_active?: boolean;
+  caller_states?: string[];
+  sales_assoc_workers?: string[];
+}
+
+export interface UMUserTwilioAttributes {
+  contact_uri?: string;
+  department_name?: string;
+  department_id?: string;
+  caller_id?: string,
+  email?: string;
+  email_address?: string;
+  emp_first_name?: string;
+  emp_last_name?: string;
+  extension?: string;
+  full_name?: string;
+  location?:string;
+  manager_first_name?: string;
+  manager_last_name?: string;
+  manager_n_number?: string;
+  manager?:string;
+  n_number?: string;
+  office_location_name?: string;
+  office_location_number?: string;
+  primary_dept_name?: string;
+  primary_dept_number?: string;
+  profile_id?: number;
+  roles?: string[];
+  unique_id?: string;
+  agent_id?: string;
+  disabled_skills?: UMTwilioAttributeSkills;
+  default_skills?: UMTwilioAttributeSkills;
+  routing?: UMTwilioAttributesRouting;
+}
+
+export interface UMUser extends BaseUMUser {
+  twilio_attributes: UMUserTwilioAttributes;
+}
+
+export interface UpdateOrCreateUMUser extends BaseUMUser {
+  twilio_attributes: string;
+}
+
+interface BaseUMUser {
   pk: string;
   ttl: number;
-  sid: string;                // mapped from --> worker_sid
+  subscription_update?: boolean;
+
   workerSid: string;          // mapped from --> worker_sid
+  sid: string;                // mapped from --> worker_sid
+  worker_sid: string;
+
   inactiveDate?: string;      // mapped from --> inactive_date
+  inactive_date?: string
+
   inactiveForwardTo: string;  // mapped from --> inactive_forward_to
+  inactive_forward_to?: string
+
   zeroOutEnabled: boolean;    // mapped from --> zero_out_enabled
+  zero_out_enabled?: boolean;
+
   selfServiceInd: boolean;    // mapped from --> self_service_ind
+  self_service_ind?: boolean
+
   operatingUnitSid: string;   // mapped from --> operating_unit_sid
+  operating_unit_sid?: string;
+
   did?: string;
-  twilio_attributes: string;  // Used for create and update
+  attributes: UMUserTwilioAttributes;  // mapped from --> twilio_attributes
 
   // Added by us
   skillsDifferent: boolean;
-  attributes: UMUserTwilioAttributes;  // mapped from --> twilio_attributes
   isConsole: boolean;                 // Will be true if pk contains Console
 }
-
-export interface UMTwilioAttributeSkills {
-  levels: {
-    [key: string]: number
-  },
-  skills: string[],
-  team?:string,
-  backup_workers?: string[],
-  backup_workers_active?: boolean,
-  caller_states?: string[],
-  sales_assoc_workers?: string[]
-}
-
 
 export interface AzureSPA {
   accessToken: string;
@@ -429,16 +538,6 @@ export interface TableStateProps {
 export interface OperatingUnit {
   ou_sid: string,
   ou_name: string
-}
-
-export interface AccessGroup {
-  access_group_id: number,
-  access_group_nme: string,
-  twilio_dashboard_url: string,
-  viewable_profiles: Array<{
-    profile_id: number,
-    name: string
-  }>
 }
 
 export type Control = "input" | "select" | "autoComplete" | "timePicker" | "multiField" | "multiTextField" | "switch";

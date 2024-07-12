@@ -50,7 +50,7 @@ export const CalabrioTeamModal = (props: TeamModalProps) => {
       setErrorMessage("Team Already Exists");
     } else {
       setSaveStatus(ModalOverlayStatuses.SAVING);
-      createCalabrioTeam({
+      createCalabrioTeam(state.userContext.tokens.calabrioService, {
         name: newTeam.name,
         parentGroupId: newTeam.parentGroupId.groupId
       }).then((res: any) => {

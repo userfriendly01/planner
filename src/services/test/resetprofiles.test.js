@@ -46,12 +46,13 @@ describe("resetProfiles", () => {
     workerSid: "WK2342",
     email: "faith.cuneo@libertymutual.com"
   };
+  const accessToken = "Access Token"  
 
   describe("call succeeds", () => {
     const data = { huzzah: "you are winner" };
     beforeEach(() => axiosMock.onPost(apiPaths.RESET_PROFILES(nNumber)).replyOnce(200, data));
     test("should resolve with any successful response", done => {
-      resetProfiles(nNumber, body)
+      resetProfiles(accessToken, nNumber, body)
         .then(resolvedValue => {
           expect(axiosMock.history.post.length).toEqual(1);
           expect(resolvedValue.data).toEqual(data);
@@ -64,7 +65,7 @@ describe("resetProfiles", () => {
     const badResponse = { wahh: "boo" };
     beforeEach(() => axiosMock.onPost(apiPaths.RESET_PROFILES(nNumber)).replyOnce(500, badResponse));
     test("should reject with error", done => {
-      resetProfiles(nNumber, body)
+      resetProfiles(accessToken, nNumber, body)
         .catch(rejectedVal => {
           expect(axiosMock.history.post.length).toEqual(1);
           expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));

@@ -69,7 +69,7 @@ describe("CREATE_TRITON_USER", () => {
             caller_id: "+16038518200",
             n_number: "n0263445"
           },
-          operatingUnitSid: "operatingUnitSid1",
+          operatingUnitSid: "OU94b0ff770f6278386fec5ef0b51fd021",
           did: "+16038518200",
           zeroOutEnabled: true,
           selfServiceInd: true
@@ -95,7 +95,7 @@ describe("CREATE_TRITON_USER", () => {
             profile_id: 1,
             n_number: "n0263445"
           },
-          operatingUnitSid: "operatingUnitSid1"
+          operatingUnitSid: "OU94b0ff770f6278386fec5ef0b51fd021"
         });
         expect(results).toBe("WK123456 created in Triton for n0263445 for row 2");
       });
@@ -122,7 +122,7 @@ describe("CREATE_TRITON_USER", () => {
             profile_id: 1,
             n_number: "n0263445"
           },
-          operatingUnitSid: "operatingUnitSid1"
+          operatingUnitSid: "OU94b0ff770f6278386fec5ef0b51fd021"
         });
         expect(err).toBe(JSON.stringify({
           rowNumber: 4,
@@ -174,7 +174,7 @@ describe("CREATE_CALABRIO_QM_USER", () => {
     test("should resolve", async () => {
       const results = await createCalabrioProcessFunction(row, initialTestState);
       expect(createCalabrioUser).toHaveBeenCalledTimes(1);
-      expect(createCalabrioUser).toHaveBeenCalledWith({
+      expect(createCalabrioUser).toHaveBeenCalledWith("Access Token", {
         acdId: "WK13248",
         adLogin: "LM\\n0263445",
         email: "e.mail@lm.com",
@@ -204,7 +204,7 @@ describe("CREATE_CALABRIO_QM_USER", () => {
         delete missingAcdId.acdId;
         const results = await createCalabrioProcessFunction(missingAcdId, initialTestState);
         expect(createCalabrioUser).toHaveBeenCalledTimes(1);
-        expect(createCalabrioUser).toHaveBeenCalledWith({
+        expect(createCalabrioUser).toHaveBeenCalledWith("Access Token", {
           acdId: "WK1234",
           adLogin: "LM\\n0000000",
           email: "e.mail@lm.com",
@@ -229,7 +229,7 @@ describe("CREATE_CALABRIO_QM_USER", () => {
         await createCalabrioProcessFunction(row, initialTestState);
       } catch (err) {
         expect(createCalabrioUser).toHaveBeenCalledTimes(1);
-        expect(createCalabrioUser).toHaveBeenCalledWith({
+        expect(createCalabrioUser).toHaveBeenCalledWith("Access Token", {
           acdId: "WK13248",
           adLogin: "LM\\n0263445",
           email: "e.mail@lm.com",
@@ -337,7 +337,7 @@ describe("CREATE_CALABRIO_WFM_PERSON", () => {
 
       const result = await createTemplates.CREATE_CALABRIO_WFM_PERSON.processFunction(row);
       expect(createCalabrioWFMPerson).toHaveBeenCalledTimes(1);
-      expect(createCalabrioWFMPerson).toHaveBeenCalledWith({
+      expect(createCalabrioWFMPerson).toHaveBeenCalledWith("Access Token", {
         Email: "e.mail@lm.com",
         FirstName: "Michael",
         LastName: "Scott",
@@ -376,7 +376,7 @@ describe("CREATE_CALABRIO_WFM_PERSON", () => {
         await createWFMProcessFunction(row, initialTestState);
       } catch (err) {
         expect(createCalabrioWFMPerson).toHaveBeenCalledTimes(1);
-        expect(createCalabrioWFMPerson).toHaveBeenCalledWith({
+        expect(createCalabrioWFMPerson).toHaveBeenCalledWith("Access Token", {
           Email: "e.mail@lm.com",
           FirstName: "Michael",
           LastName: "Scott",
@@ -419,7 +419,7 @@ describe("CREATE_CALABRIO_WFM_PERSON", () => {
         await createWFMProcessFunction(row, initialTestState);
       } catch (err) {
         expect(createCalabrioWFMPerson).toHaveBeenCalledTimes(1);
-        expect(createCalabrioWFMPerson).toHaveBeenCalledWith({
+        expect(createCalabrioWFMPerson).toHaveBeenCalledWith("Access Token", {
           Email: "e.mail@lm.com",
           FirstName: "Michael",
           LastName: "Scott",
@@ -566,7 +566,7 @@ describe("UPDATE_WORKER_ATTRIBUTE", () => {
       const template = {
         data: {
           key: "profile_id",
-          value: "3",
+          value: "1",
           location: "attributes"
         }
       };
@@ -579,10 +579,10 @@ describe("UPDATE_WORKER_ATTRIBUTE", () => {
         expect(updateUser).toHaveBeenCalledTimes(1);
         expect(updateUser).toHaveBeenCalledWith("WK1234", {
           attributes: {
-            agent_attribute_1: 3,
-            profile_id: 3
+            agent_attribute_1: 1,
+            profile_id: 1
           },
-          operatingUnitSid: "operatingUnitSid2"
+          operatingUnitSid: "OU94b0ff770f6278386fec5ef0b51fd021"
         });
         expect(result).toBe("WK1234 - Worker Attributes updated for row 4");
       });
@@ -607,7 +607,7 @@ describe("UPDATE_WORKER_ATTRIBUTE", () => {
             profile_id: 1,
             "agent_attribute_1": 1
           },
-          operatingUnitSid: "operatingUnitSid1"
+          operatingUnitSid: "OU94b0ff770f6278386fec5ef0b51fd021"
         });
         expect(result).toBe("WK1234 - Worker Attributes updated for row 4");
       });
@@ -888,7 +888,7 @@ describe("UPDATE_USERS_MANAGER", () => {
           }
         });
         expect(updateCalabrioUser).toHaveBeenCalledTimes(1);
-        expect(updateCalabrioUser).toHaveBeenCalledWith(200, {
+        expect(updateCalabrioUser).toHaveBeenCalledWith("Access Token", {
           id: 200,
           acdId: "WK1234",
           firstName: "Brittany",
@@ -933,7 +933,7 @@ describe("UPDATE_USERS_MANAGER", () => {
           }
         });
         expect(updateCalabrioUser).toHaveBeenCalledTimes(1);
-        expect(updateCalabrioUser).toHaveBeenCalledWith(200, {
+        expect(updateCalabrioUser).toHaveBeenCalledWith("Access Token", {
           id: 200,
           acdId: "WK1234",
           firstName: "Brittany",
@@ -981,7 +981,7 @@ describe("UPDATE_USERS_MANAGER", () => {
           }
         });
         expect(updateCalabrioUser).toHaveBeenCalledTimes(1);
-        expect(updateCalabrioUser).toHaveBeenCalledWith(200, {
+        expect(updateCalabrioUser).toHaveBeenCalledWith("Access Token", {
           id: 200,
           acdId: "WK1234",
           firstName: "Brittany",

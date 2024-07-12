@@ -130,7 +130,7 @@ export const BasicFormInfo = (props: BasicFormInfoProps) => {
             margin: "10px 0px"
           }}
           onBlur={() => handleOnBlur("profileId", "triton")}
-          options={profiles.sort(sortProfilesByName).map((profile: any) => formatDropdownOption(profile.profile_id, `${profile.profile_nme} - ${profile.profile_id}`, profile))}
+          options={[...profiles].sort(sortProfilesByName).map((profile: any) => formatDropdownOption(profile.profile_id, `${profile.profile_name} - ${profile.profile_id}`, profile))}
           updateValue={(event: any, newValue: any) => {
             setForm({
               type: userFormActions.UPDATE_TEAM,
@@ -144,7 +144,7 @@ export const BasicFormInfo = (props: BasicFormInfoProps) => {
               setForm({ type: userFormActions.UPDATE_SELF_SERVICE_INDICATOR });
             }
           }}
-          value={(form.triton.profileId.value || form.triton.profileId.value === 0) ? `${profiles.find(p => p.profile_id === form.triton.profileId.value)?.profile_nme} - ${profiles.find(p => p.profile_id === form.triton.profileId.value)?.profile_id}` : ""}
+          value={(form.triton.profileId.value || form.triton.profileId.value === 0) ? `${profiles.find(p => p.profile_id === form.triton.profileId.value)?.profile_name} - ${profiles.find(p => p.profile_id === form.triton.profileId.value)?.profile_id}` : ""}
         />
         <NNumberInput
           disabled={
@@ -318,9 +318,9 @@ export const BasicFormInfo = (props: BasicFormInfoProps) => {
               <ToggleLabel>Self Service Indicator</ToggleLabel>
             </ToggleContainer>
           </Tooltip>) : null}
-          <Tooltip
+        <Tooltip
           title={
-              "Backup Workers Enable/Disable" 
+            "Backup Workers Enable/Disable"
           }
           placement={"bottom-start"}
         >

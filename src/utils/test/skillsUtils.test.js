@@ -1,14 +1,260 @@
 import {
   areSkillsDifferent,
+  areVhFieldsValid,
   getValidSkillsObject,
-  formatSkillGroups,
   formatWorkerAttributeSkillsToHTML,
   formatWorkerAttributeSkillsToString,
-  identifyImpactedWorkers
+  identifyImpactedWorkers,
+  isSkillFormValid,
+  isTaskQueueError
 } from "../skillsUtils";
-import { render } from "testUtils";
+import {
+  mockSkillFormState, mockSkills, render
+} from "testUtils";
 
 describe("skillsUtils", () => {
+  describe("isTaskQueueError", () => {
+    test("Returns true when target expression with the skill name is unique", () => {
+      const skillFormState = {
+        ...mockSkillFormState,
+        taskQueue: {
+          ...mockSkillFormState.taskQueue,
+          sid: "TQ123"
+        }
+      };
+      const result = isTaskQueueError(skillFormState, "testskill");
+      expect(result).toEqual(true);
+    });
+    test("Returns false when no taskqueue sid on the skill form", () => {
+      const result = isTaskQueueError(mockSkillFormState, "testskill");
+      expect(result).toEqual(false);
+    });
+    test("Returns false when target expression is found with the skill name", () => {
+      const skillFormState = {
+        ...mockSkillFormState,
+        taskQueue: {
+          ...mockSkillFormState.taskQueue,
+          sid: "TQ123",
+          target_workers: "routing.skills HAS \"testskill\""
+        }
+      };
+      const result = isTaskQueueError(skillFormState, "testskill");
+      expect(result).toEqual(false);
+    });
+    test("Returns false when a skill name has no length skill name", () => {
+      const skillFormState = {
+        ...mockSkillFormState,
+        name: "",
+        taskQueue: {
+          ...mockSkillFormState.taskQueue,
+          sid: "TQ123"
+        }
+      };
+      const result = isTaskQueueError(skillFormState, "");
+      expect(result).toEqual(false);
+    });
+  });
+
+  describe("isSkillFormValid", () => {
+    describe("returns false", () => {
+      test("name is an empty string, returns false", () => {
+        const skillForm = {
+          ...mockSkillFormState,
+          name: ""
+        };
+        const isValid = isSkillFormValid(mockSkills, skillForm);
+        expect(isValid).toEqual(false);
+      });
+      test("skill name is the same as an existing skill, returns false", () => {
+        const skillForm = {
+          ...mockSkillFormState,
+          name: "aisgL1"
+        };
+        const isValid = isSkillFormValid(mockSkills, skillForm);
+        expect(isValid).toEqual(false);
+      });
+      test("no profile selected, returns false", () => {
+        const skillForm = {
+          ...mockSkillFormState,
+          profileIds: []
+        };
+        const isValid = isSkillFormValid(mockSkills, skillForm);
+        expect(isValid).toEqual(false);
+      });
+      test("min level selected, but no max, returns false", () => {
+        const skillForm = {
+          ...mockSkillFormState,
+          levels: {
+            min: 1,
+            max: ""
+          }
+        };
+        const isValid = isSkillFormValid(mockSkills, skillForm);
+        expect(isValid).toEqual(false);
+      });
+      test("max level selected, but no min, returns false", () => {
+        const skillForm = {
+          ...mockSkillFormState,
+          levels: {
+            min: null,
+            max: 3
+          }
+        };
+        const isValid = isSkillFormValid(mockSkills, skillForm);
+        expect(isValid).toEqual(false);
+      });
+      describe("taskqueue is new", () => {
+        test("friendly name is empty, returns false", () => {
+          const skillForm = {
+            ...mockSkillFormState,
+            taskQueue: {
+              ...mockSkillFormState.taskQueue,
+              friendly_name: ""
+            }
+          };
+          const isValid = isSkillFormValid(mockSkills, skillForm);
+          expect(isValid).toEqual(false);
+        });
+        test("no operating unit selected, returns false", () => {
+          const skillForm = {
+            ...mockSkillFormState,
+            taskQueue: {
+              ...mockSkillFormState.taskQueue,
+              friendly_name: "hi",
+              operating_unit_sid: null
+            }
+          };
+          const isValid = isSkillFormValid(mockSkills, skillForm);
+          expect(isValid).toEqual(false);
+        });
+      });
+      describe("task queue is not new", () => {
+        test("no taskqueue sid, returns false", () => {
+          const skillForm = {
+            ...mockSkillFormState,
+            taskQueue: {
+              ...mockSkillFormState.taskQueue,
+              isNew: false,
+              sid: ""
+            }
+          };
+          const isValid = isSkillFormValid(mockSkills, skillForm);
+          expect(isValid).toEqual(false);
+        });
+        test("there is a taskqueue error, returns false", () => {
+          const skillForm = {
+            ...mockSkillFormState,
+            name: "testskill",
+            taskQueue: {
+              ...mockSkillFormState.taskQueue,
+              isNew: false,
+              sid: "tq123",
+              target_workers: "routing.skills HAS \"boo\""
+            }
+          };
+          const isValid = isSkillFormValid(mockSkills, skillForm);
+          expect(isValid).toEqual(false);
+        });
+      });
+      test("time of days are janky", () => {
+        const skillForm = {
+          ...mockSkillFormState,
+          timeOfDays: mockSkillFormState.timeOfDays.slice(1,5)
+        };
+        const isValid = isSkillFormValid(mockSkills, skillForm);
+        expect(isValid).toEqual(false);
+      });
+      test("applicationId is not a number", () => {
+        const skillForm = {
+          ...mockSkillFormState,
+          applicationId: "NaN"
+        };
+        const isValid = isSkillFormValid(mockSkills, skillForm);
+        expect(isValid).toEqual(false);
+      });
+    });
+    describe("returns true", () => {
+      test("all required info is there, taskqueue is new, has a good name and ou is selected", () => {
+        const isValid = isSkillFormValid(mockSkills, mockSkillFormState);
+        expect(isValid).toEqual(true);
+      });
+      test("all required info is there, taskqueue is not new, has a sid and is not erroneous", () => {
+        const skillForm = {
+          ...mockSkillFormState,
+          taskQueue: {
+            isNew: false,
+            sid: "tq123",
+            target_workers: "routing.skills HAS \"testskill\""
+          }
+        };
+        const isValid = isSkillFormValid(mockSkills, skillForm);
+        expect(isValid).toEqual(true);
+      });
+    });
+  });
+
+  describe("areVhFieldsValid", () => {
+    const setMissingFieldsMock = jest.fn();
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    test("vhCallTarget, vhThreshold and vhTimeOfDayIds are all empty, calls setMissingFields wiht empty array", () => {
+      const result = areVhFieldsValid(mockSkillFormState, setMissingFieldsMock);
+      expect(setMissingFieldsMock).toBeCalledWith([]);
+      expect(result).toEqual(true);
+    });
+    test("vhCallTarget and vhThreshold have values, but no vhTimeOfDayIds, returns false adn setMissingFields is called with appropriate data", () => {
+      const skillForm = {
+        ...mockSkillFormState,
+        vhCallTarget: "hi",
+        vhThreshold: "wat"
+      };
+      const result = areVhFieldsValid(skillForm, setMissingFieldsMock);
+      expect(setMissingFieldsMock).toBeCalledWith([
+        "vhTimeOfDay.1",
+        "vhTimeOfDay.2",
+        "vhTimeOfDay.3",
+        "vhTimeOfDay.4",
+        "vhTimeOfDay.5",
+        "vhTimeOfDay.6",
+        "vhTimeOfDay.7"
+      ]);
+      expect(result).toEqual(false);
+    });
+    test("vhTimeOfDayIds and vhThreshold have values, but no vhCallTarget, returns false adn setMissingFields is called with appropriate data", () => {
+      const skillForm = {
+        ...mockSkillFormState,
+        vhCallTarget: null,
+        vhThreshold: "wat",
+        timeOfDays: mockSkillFormState.timeOfDays.map(x => {
+          x.vhTimeOfDayId = 1;
+          return x;
+        })
+      };
+      const result = areVhFieldsValid(skillForm, setMissingFieldsMock);
+      expect(setMissingFieldsMock).toBeCalledWith([
+        "vhCallTarget"
+      ]);
+      expect(result).toEqual(false);
+    });
+    test("vhCallTarget and vhTimeOfDayIds have values, but no vhThreshold, returns false adn setMissingFields is called with appropriate data", () => {
+      const skillForm = {
+        ...mockSkillFormState,
+        vhCallTarget: "yo!",
+        vhThreshold: null,
+        timeOfDays: mockSkillFormState.timeOfDays.map(x => {
+          x.vhTimeOfDayId = 1;
+          return x;
+        })
+      };
+      const result = areVhFieldsValid(skillForm, setMissingFieldsMock);
+      expect(setMissingFieldsMock).toBeCalledWith([
+        "vhThreshold"
+      ]);
+      expect(result).toEqual(false);
+    });
+  });
 
   describe("identifyImpactedWorkers", () => {
     const workers = [
@@ -582,98 +828,6 @@ describe("skillsUtils", () => {
             skills: ["cool", "wow"]
           });
         });
-      });
-    });
-  });
-
-  describe("formatSkillGroups", () => {
-    describe("should take skills array return skill groups array containing any skills that are in the skill groups", () => {
-      test("If no skills contain skill groups, return empty array", () => {
-        const skillsArray = [{
-          name: "skill1",
-          skillGroups: []
-        },
-        {
-          name: "skill2",
-          skillGroups: []
-        }];
-        expect(formatSkillGroups(skillsArray)).toEqual([]);
-      });
-      test("A skill with more than one skill group will return an array with all skill groups", () => {
-        const skillsArray = [{
-          name: "skill1",
-          levels: [1, 2, 3],
-          ctmSkillId: 3,
-          skillGroups: [
-            {
-              skillGroupId: 1,
-              skillGroupNme: "I am a default skill group"
-            },
-            {
-              skillGroupId: 2,
-              skillGroupNme: "another skill group"
-            }
-          ]
-        }];
-        expect(formatSkillGroups(skillsArray)).toEqual([
-          {
-            skillGroupId: 1,
-            skillGroupNme: "I am a default skill group",
-            skills: [{
-              name: "skill1",
-              levels: [1, 2, 3],
-              ctmSkillId: 3
-            }]
-          },
-          {
-            skillGroupId: 2,
-            skillGroupNme: "another skill group",
-            skills: [{
-              name: "skill1",
-              levels: [1, 2, 3],
-              ctmSkillId: 3
-            }]
-          }
-        ]);
-      });
-      test("skills that share skill groups will be included within the same skill group", () => {
-        const skillsArray = [{
-          name: "skill1",
-          levels: [1, 2, 3],
-          ctmSkillId: 3,
-          skillGroups: [
-            {
-              skillGroupId: 1,
-              skillGroupNme: "I am a default skill group"
-            }
-          ]
-        }, {
-          name: "skill2",
-          levels: [1, 2, 3, 4, 5],
-          ctmSkillId: 4,
-          skillGroups: [
-            {
-              skillGroupId: 1,
-              skillGroupNme: "I am a default skill group"
-            }
-          ]
-        }];
-        expect(formatSkillGroups(skillsArray)).toEqual([{
-          skillGroupId: 1,
-          skillGroupNme: "I am a default skill group",
-          skills: [
-            {
-              name: "skill1",
-              levels: [1, 2, 3],
-              ctmSkillId: 3
-            },
-            {
-              name: "skill2",
-              levels: [1, 2, 3, 4, 5],
-              ctmSkillId: 4
-            }
-          ]
-        }]);
       });
     });
   });

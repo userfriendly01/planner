@@ -73,7 +73,7 @@ export const userFormActions = {
   UPDATE_TEAM: "UPDATE_TEAM",
   UPDATE_SELF_SERVICE_INDICATOR: "UPDATE_SELF_SERVICE_INDICATOR",
   UPDATE_USER_FOUND: "UPDATE_USER_FOUND",
-  UPDATE_BACK_UP_WORKER_FLAG: "UPDATE_BACK_UP_WORKER_FLAG",
+  UPDATE_BACK_UP_WORKER_FLAG: "UPDATE_BACK_UP_WORKER_FLAG"
 };
 
 export const initialUserFormState: UserFormState = {
@@ -368,7 +368,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
         }
       };
     }
-    
+
     case userFormActions.RESET_FORM: {
       return {
         ...initialUserFormState,

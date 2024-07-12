@@ -1,4 +1,4 @@
-import { TritonProfile } from "globals/interfaces";
+import { UMSoftphoneConfiguration } from "globals/interfaces";
 import { Skill } from "callflowmanagement/Skills.Interfaces";
 
 export interface SkillProfile {
@@ -11,7 +11,7 @@ export interface TableState {
   flashFilter: boolean,
   discrepancyFilter: boolean,
   filteredList: Skill[],
-  profiles: TritonProfile[],
+  profiles: UMSoftphoneConfiguration[],
   searchBy: string,
-  selected: Skill[]
+  selected: string[]
 }

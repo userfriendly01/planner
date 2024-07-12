@@ -8,10 +8,9 @@ import { SkillLevels } from "usermanagement/SkillLevels";
 import {
   useSkillState
 } from "context/appContext";
-import React from "react";
-
+import React, { act } from "react";
 import {
-  act,
+  waitFor,
   expectMockedComponent,
   expectOnlyPassedProps,
   getMockedComponentProps,
@@ -62,7 +61,7 @@ const skills = [
 const skillGroups = [
   {
     skillGroupId: 1,
-    skillGroupNme: "skillGroupA",
+    skill_group_name: "skillGroupA",
     skills: [
       {
         name: "skillA",
@@ -240,7 +239,7 @@ describe("<DefaultSkillSelector />", () => {
             label: "skillGroupA",
             value: 1,
             isSkillGroup: true,
-            skills: skillGroups[0].skills
+            skills: skillGroups[0].skills.map(skill => skill.name)
           });
         });
         act(() => {
@@ -260,26 +259,22 @@ describe("<DefaultSkillSelector />", () => {
       });
       test(`should not render priority dropdown, add button enabled, 
       should add rows for each skill (but should not add a duplicate) within skill group when add is clicked with priority dropdown defaulted to 1
-      and remove button and should update default skills`, () => {
+      and remove button and should update default skills`, async () => {
         const defaultSkills = {
           skills: ["skillA"],
           levels: {}
         };
         const rendered = renderComponent(defaultSkills);
-        act(() => {
-          const updateSkill = SkillsList.mock.calls[0][0].updateSkill;
-          updateSkill({
-            label: "skillGroupA",
-            value: 1,
-            isSkillGroup: true,
-            skills: skillGroups[0].skills
-          });
+        const updateSkill = SkillsList.mock.calls[0][0].updateSkill;
+        updateSkill({
+          label: "skillGroupA",
+          value: 1,
+          isSkillGroup: true,
+          skills: skillGroups[0].skills.map(skill => skill.name)
         });
-        act(() => {
-          fireEvent.click(getAddSkillButton(rendered));
-        });
+        fireEvent.click(getAddSkillButton(rendered));
         expect(rendered.container).toHaveTextContent("skillA");
-        expect(rendered.container).toHaveTextContent("skillB");
+        await waitFor(() => expect(rendered.container).toHaveTextContent("skillB"));
         expectOnlyPassedProps(SkillLevels, {
           availablePriorities: [ 1, 2, 3, 4 ],
           priorityValue: 1

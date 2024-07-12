@@ -138,7 +138,7 @@ export const WfmForm = (props: WfmFormProps) => {
 
   const checkForWfmWorker = async () => {
     try {
-      const wfmUserRes = await getWfmUserByNNumber(form.nNumber.value);
+      const wfmUserRes = await getWfmUserByNNumber(state.userContext.tokens.calabrioService, form.nNumber.value);
       if (wfmUserRes?.data?.Result.length > 0) {
         const wfmUser: CalabrioUser = wfmUserRes.data.Result[0];
         setForm({

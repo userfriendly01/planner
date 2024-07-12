@@ -1,7 +1,7 @@
 import {
   AppState,
   discrepancyType,
-  TritonProfile,
+  UMSoftphoneConfiguration,
   UMUser
 } from "globals/interfaces";
 import {
@@ -19,6 +19,19 @@ import { fetchUser as fetchUserServiceCall } from "services/fetchUser";
 import { getWfmUserByNNumber } from "services/calabrio";
 import { logger } from "./logger";
 import { CalabrioUser } from "usermanagement/CallRecording.Interfaces";
+import { mapWorkerFromDbWorker } from "./graphUtils";
+
+export const formatUsers = (users: UMUser[]) => {
+  const newUsers = [] as UMUser[];
+  users.forEach(user => {
+    if (!user?.inactive_date && !user?.ttl && user?.twilio_attributes) {
+      newUsers.push(
+        mapWorkerFromDbWorker(user)
+      );
+    }
+  });
+  return newUsers;
+};
 
 export const isUnpopulatedField = (f: any) => (!f && f !== false && f !== 0) || f?.length === 0 || (typeof f === "object" && JSON.stringify(f) === JSON.stringify({}));
 
@@ -139,15 +152,15 @@ export const isProfileIdValid = (form: UserFormState): boolean => form.triton.pr
 
 export const isInactiveForwardToValid = (form: UserFormState, forwardToToggle: boolean): boolean => forwardToToggle === true ? form.triton.inactiveForwardTo.value !== null : true;
 
-export const getNonOverflowSkills = (worker: UMUser, profiles: TritonProfile[]): string[] => worker?.attributes.routing?.skills.filter((skill: string) => !getOverflowSkills(profiles).includes(skill));
+export const getNonOverflowSkills = (worker: UMUser, profiles: UMSoftphoneConfiguration[]): string[] => worker?.attributes.routing?.skills.filter((skill: string) => !getOverflowSkills(profiles).includes(skill));
 
-export const getOverflowSkills = (profiles: TritonProfile[]): string[] => {
+export const getOverflowSkills = (profiles: UMSoftphoneConfiguration[]): string[] => {
   const skills: string[] = [];
-  profiles.forEach((profile: TritonProfile) => profile.overflow_skill !== null && skills.push(profile.overflow_skill));
+  profiles.forEach((profile: UMSoftphoneConfiguration) => profile.overflow_skill !== null && skills.push(profile.overflow_skill));
   return skills;
 };
 
-export const getOverflowSkillFromProfile = (profiles: TritonProfile[], profileValue: string): string | undefined => {
+export const getOverflowSkillFromProfile = (profiles: UMSoftphoneConfiguration[], profileValue: string): string | undefined => {
   const profile = getTargetProfile(profiles, profileValue);
   if (!profile || profile?.overflow_skill === null || profile?.overflow_skill === "") {
     return undefined;
@@ -156,11 +169,11 @@ export const getOverflowSkillFromProfile = (profiles: TritonProfile[], profileVa
   }
 };
 
-export const getTargetProfile = (profiles: TritonProfile[], newProfileValue: string): TritonProfile => profiles.find((profile: TritonProfile) => profile.profile_id.toString() === newProfileValue.toString());
+export const getTargetProfile = (profiles: UMSoftphoneConfiguration[], newProfileValue: string): UMSoftphoneConfiguration => profiles.find((profile: UMSoftphoneConfiguration) => profile.profile_id.toString() === newProfileValue.toString());
 
-export const getZeroOutEnabledFromProfile = (profiles: TritonProfile[], newProfileValue: string): boolean => getTargetProfile(profiles, newProfileValue).overflow_skill !== null;
+export const getZeroOutEnabledFromProfile = (profiles: UMSoftphoneConfiguration[], newProfileValue: string): boolean => getTargetProfile(profiles, newProfileValue).overflow_skill !== null;
 
-export const workerHasOverFlowSkill = (worker: UMUser, profiles: TritonProfile[]): boolean => worker?.attributes.routing?.skills.some(skill => getOverflowSkills(profiles).includes(skill));
+export const workerHasOverFlowSkill = (worker: UMUser, profiles: UMSoftphoneConfiguration[]): boolean => worker?.attributes.routing?.skills.some(skill => getOverflowSkills(profiles).includes(skill));
 
 export const fetchUser = async (accessToken: string, nNumber: string, setForm: any, errorMessage: string, errorType: string) => {
   try {
@@ -209,9 +222,9 @@ export const findMatchingWorker = (sid: string, nNumber: string, email: string, 
   return matchingWorker;
 };
 
-const findExistingWFMUser = async (nNumber: string): Promise<CalabrioUser> => {
+const findExistingWFMUser = async (calabrioServiceToken: string, nNumber: string): Promise<CalabrioUser> => {
   try {
-    const wfmUserRes = await getWfmUserByNNumber(nNumber);
+    const wfmUserRes = await getWfmUserByNNumber(calabrioServiceToken, nNumber);
     if (wfmUserRes?.data?.Result.length > 0) {
       const wfmUser: CalabrioUser = wfmUserRes.data.Result[0];
       return wfmUser;
@@ -246,7 +259,7 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
     const acdId = form.triton.sid;
     const nNumber = form.nNumber.value || form.triton.attributes?.n_number;
     const email = form.nNumber.nNumberFetchedUser?.email || form.triton.attributes?.email;
-    calabrioWfmUser = await findExistingWFMUser(nNumber);
+    calabrioWfmUser = await findExistingWFMUser(state.userContext.tokens.calabrioService, nNumber);
     calabrioQmUser = findMatchingWorker(acdId, nNumber, email, calabrioQmUsers);
   } else if (primarySystem === "calabrio_qm") {
     //This condition wont be in play until the calabrio qm table is in place

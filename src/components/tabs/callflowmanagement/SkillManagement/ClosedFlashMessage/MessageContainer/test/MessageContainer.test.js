@@ -4,19 +4,26 @@ import React from "react";
 import {
   act,
   expectOnlyPassedProps,
+  initialSkillState,
   render,
   setupMockedComponents,
-  skillsList
+  mockSkills
 } from "testUtils";
 import { TextField } from "../../ClosedFlashMessage.Styles";
 import { messageTypes } from "../../ClosedFlashMessage.Interfaces";
 import { ActionTypes } from "../../../Skills.Interfaces";
+import { useSkillState } from "context/appContext";
 
 jest.mock("components/StyledButton", () => ({
   StyledButton: jest.fn()
 }));
+
 jest.mock("callflowmanagement/SaveButton", () => ({
   SaveButton: jest.fn()
+}));
+
+jest.mock("context/appContext", () => ({
+  useSkillState: jest.fn()
 }));
 
 jest.mock("../../ClosedFlashMessage.Styles", () => ({
@@ -47,6 +54,7 @@ const renderComponent = tableState => {
 
 describe("<MessageContainer/>", () => {
   beforeEach(() => {
+    useSkillState.mockReturnValue(initialSkillState);
     setupMockedComponents({
       TextField,
       SaveButton
@@ -74,7 +82,7 @@ describe("<MessageContainer/>", () => {
     });
     describe("selected length > 1", () => {
       const tableState = {
-        selected: skillsList
+        selected: mockSkills.map(skill => skill.name)
       };
       test("should render as expected, text should be empty string", () => {
         renderComponent(tableState);
@@ -93,7 +101,7 @@ describe("<MessageContainer/>", () => {
     });
     describe("selected length === 1", () => {
       const tableState = {
-        selected: [skillsList[1]]
+        selected: [mockSkills[1].name]
       };
       test("should render as expected, text should be closedMessage", () => {
         renderComponent(tableState);
@@ -110,7 +118,9 @@ describe("<MessageContainer/>", () => {
         });
       });
       test("should render as expected, text should be empty string if variable is not defined", () => {
-        delete tableState.selected[0].closedMessage;
+        const tableState = {
+          selected: [mockSkills[0].name]
+        };
         renderComponent(tableState);
         expectOnlyPassedProps(TextField, {
           value: ""

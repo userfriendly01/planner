@@ -44,10 +44,10 @@ const areTimeOfDaysValid = (timeOfDays: TimeOfDayRequestObject[], virtualHold = 
 
 export const isSkillFormValid = (skills: Skill[], skillForm: SkillFormState): boolean => {
   const isNameValid = isNotEmptyString(skillForm.name) && !skills.some(s => s.name === skillForm.name);
-  const areProfilesSelected = skillForm.profileIds.length;
+  const areProfilesSelected = !!skillForm.profileIds.length;
   const areLevelsValid = (skillForm.levels.min && skillForm.levels.max) || (!skillForm.levels.min && !skillForm.levels.max) ? true : false;
-  const isTaskQueueValid = skillForm.taskQueue.isNew ? isNotEmptyString(skillForm.taskQueue.friendly_name) &&
-  skillForm.taskQueue.operating_unit_sid : skillForm.taskQueue.sid && !isTaskQueueError(skillForm, skillForm.name);
+  const isTaskQueueValid = skillForm.taskQueue.isNew ? !!(isNotEmptyString(skillForm.taskQueue.friendly_name) &&
+  skillForm.taskQueue.operating_unit_sid) : !!(skillForm.taskQueue.sid && !isTaskQueueError(skillForm, skillForm.name));
   return isNameValid && areProfilesSelected && isTaskQueueValid && areTimeOfDaysValid(skillForm.timeOfDays) &&
   typeof skillForm.applicationId === "number" && areLevelsValid;
 };
@@ -166,27 +166,4 @@ export const getValidSkillsObject = (skillsObject?: UMTwilioAttributeSkills): UM
     }
   }
   return validObject;
-};
-
-export const formatSkillGroups = (skillsArray: Skill[]): any[] => {
-  // filter through the skills that have skillGroups and group them by skillGroup
-  const skillsWithGroups = skillsArray.filter(s => s.skillGroups?.length > 0);
-
-  const groups: any[] = [];
-  skillsWithGroups.forEach(sk => {
-    sk.skillGroups.forEach(group => {
-      const groupInGroupsArray = groups.find(g => g.skillGroupId === group.skillGroupId);
-      const skillCopy = JSON.parse(JSON.stringify(sk));
-      delete skillCopy.skillGroups; // take off the skillGroups from this layer or we'll have neverending data
-      if (groupInGroupsArray) {
-        groupInGroupsArray.skills.push(skillCopy);
-      } else {
-        const newGroup = group;
-        newGroup.skills = [skillCopy];
-        groups.push(newGroup);
-      }
-    });
-  });
-
-  return groups;
 };

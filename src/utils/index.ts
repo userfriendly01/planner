@@ -5,8 +5,8 @@ import { areSkillsDifferent } from "utils/skillsUtils";
 
 export const wait = (callback: () => void, waitTimeMs: number) => setTimeout(callback, waitTimeMs);
 
-export const isNotEmptyString = (value: string) => {
-  return value && value.trim().length > 0;
+export const isNotEmptyString = (value: string): boolean => {
+  return !!(value && value.trim().length > 0);
 };
 
 export const escapeQuotes = (payload: string): string => {

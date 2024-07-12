@@ -22,7 +22,6 @@ import {
 import {
   handleWfmExternalLogon,
   updateCalabrioUserState,
-  updateTritonUserState,
   updateWFMPersonState,
   updateManagerUserState
 } from "usermanagement/processingUtils";
@@ -70,7 +69,7 @@ const processCreateTritonUser = async (row: any, state: AppState) => {
     }
 
     const profile = getTargetProfile(state.profileContext.profiles, body.attributes.profile_id);
-    body.operatingUnitSid = profile?.operating_unit_sid;
+    body.operatingUnitSid = profile?.ou_sid;
 
     const res = await createUser(body);
     const workerSid = res.sid;
@@ -126,7 +125,7 @@ const processCreateCalabrioUser = async (row: any, state: AppState) => {
     body.roles = row.roles;
     body.scope = row.scope;
 
-    await createCalabrioUser(body);
+    await createCalabrioUser(state.userContext.tokens.calabrioService, body);
 
     const message = `User created in Calabrio for ${row.attributes.n_number} for row ${rowNumber}`;
 
@@ -200,7 +199,7 @@ const processWFMCreateUser = async (row: any, state: AppState) => {
     // completely optional
     body.OptionalColumns = row.wfmOptionalColumns;
     if (env.APP_ENV === "production") {
-      const result = await createCalabrioWFMPerson(body);
+      const result = await createCalabrioWFMPerson(state.userContext.tokens.calabrioService, body);
       row.Id = result?.data?.PersonId;
 
       const message = `Person created in Calabrio WFM for ${row.attributes.n_number} for row ${rowNumber}`;
@@ -255,7 +254,7 @@ const processCreateManager = async (row: any, state: AppState) => {
       const teamField = toProperCase(cleanupField(row[teamFieldName], "string"));
 
       try {
-        const response: any = await createCalabrioTeam({
+        const response: any = await createCalabrioTeam(state.userContext.tokens.calabrioService, {
           name: teamField,
           parentGroupId: row.parentGroupId
         });
@@ -328,7 +327,7 @@ const processUpdateWorkerAttribute = async (row: any, template: Template, state:
         profile_id: parseInt(value)
       };
       const profile = getTargetProfile(state.profileContext.profiles, value);
-      body.operatingUnitSid = profile?.operating_unit_sid;
+      body.operatingUnitSid = profile?.ou_sid;
     } else if (location) {
       if (typeof location === "string") {
         body[location] = newAttribute;
@@ -416,7 +415,7 @@ const processUpdateManager = async (row: any, template: Template, state: AppStat
     if (userCalabrioRecord) {
       let fetchedCalabrioUser;
       try {
-        const res = await getCalabrioUser(userCalabrioRecord.id);
+        const res = await getCalabrioUser(state.userContext.tokens.calabrioService, userCalabrioRecord.id);
         fetchedCalabrioUser = res.data;
       } catch (error) {
         const errorMessage = `No updates made, Failed to fetch calabrio user for row ${rowNumber}. ${formatErrorMessage(error)}`;
@@ -444,7 +443,7 @@ const processUpdateManager = async (row: any, template: Template, state: AppStat
 
     const results = await Promise.allSettled([
       updateUser(row.workerSid, tritonBody),
-      calabrioFunction(calabrioBody.id, calabrioBody)
+      calabrioFunction(state.userContext.tokens.calabrioService, calabrioBody)
     ]);
 
     const errors: string[] = [];
@@ -662,7 +661,7 @@ export const getCreateTemplates = (state: AppState): Templates => {
       name: "CREATE_TRITON_USER",
       data: {},
       processFunction: (row: any) => processCreateTritonUser(row, state),
-      stateUpdateFunctions: [updateTritonUserState, handleWfmExternalLogon],
+      stateUpdateFunctions: [handleWfmExternalLogon],
       multiRunDependencies: null,
       validationConcurrencyLimit: 500,
       processingConcurrencyLimit: 5,
@@ -765,7 +764,7 @@ export const getUpdateTemplates = (state: AppState): Templates => {
       name: "UPDATE_WORKER_ATTRIBUTE",
       data: {},
       processFunction: (row: any, template: Template) => processUpdateWorkerAttribute(row, template, state),
-      stateUpdateFunctions: [updateTritonUserState],
+      stateUpdateFunctions: [],
       multiRunDependencies: null,
       validationConcurrencyLimit: 500,
       processingConcurrencyLimit: 5,
@@ -777,7 +776,7 @@ export const getUpdateTemplates = (state: AppState): Templates => {
       name: "UPDATE_USERS_MANAGER",
       data: {},
       processFunction: (row: any, template: Template) => processUpdateManager(row, template, state),
-      stateUpdateFunctions: [updateTritonUserState, updateCalabrioUserState],
+      stateUpdateFunctions: [updateCalabrioUserState],
       multiRunDependencies: null,
       validationConcurrencyLimit: 500,
       processingConcurrencyLimit: 5,
@@ -789,7 +788,7 @@ export const getUpdateTemplates = (state: AppState): Templates => {
       name: "UPDATE_DEFAULT_SKILLS",
       data: {},
       processFunction: (row: any, template: Template) => processUpdateDefaultSkills(row, template, state),
-      stateUpdateFunctions: [updateTritonUserState],
+      stateUpdateFunctions: [],
       multiRunDependencies: null,
       validationConcurrencyLimit: 500,
       processingConcurrencyLimit: 5,
@@ -801,7 +800,7 @@ export const getUpdateTemplates = (state: AppState): Templates => {
       name: "UPDATE_CALLER_STATES",
       data: {},
       processFunction: (row: any, template: Template) => processUpdateCallerStates(row, template, state),
-      stateUpdateFunctions: [updateTritonUserState],
+      stateUpdateFunctions: [],
       multiRunDependencies: null,
       validationConcurrencyLimit: 500,
       processingConcurrencyLimit: 5,
@@ -813,7 +812,7 @@ export const getUpdateTemplates = (state: AppState): Templates => {
       name: "SYNC_HR_ATTRIBUTES",
       data: {},
       processFunction: (row: any, template: Template) => processSyncHrAttributes(row, template, state),
-      stateUpdateFunctions: [updateTritonUserState],
+      stateUpdateFunctions: [],
       multiRunDependencies: null,
       validationConcurrencyLimit: 500,
       processingConcurrencyLimit: 5,

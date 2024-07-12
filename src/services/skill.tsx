@@ -1,25 +1,23 @@
 import { apiPaths } from "globals";
 import React from "react";
 import { myAxios } from "utils/myAxios";
+import { apolloClient } from "../components/core/Auth/SharedGraphAPIProvider";
 import { logger } from "utils/logger";
 import { formatErrorMessage } from "utils/_formatUtils";
 import { getTaskQueues } from "services/taskQueues";
 import {
-  Application, Skill, TwilioSkill, CallflowSkill, CtmSkill,
-  TimeOfDay, TwilioQueue, SkillFormState
+  Application, Skill, TwilioSkill, CallflowSkill,
+  TimeOfDay, TwilioQueue, SkillFormState,
+  UMSkill,
+  SkillGroup,
+  SkillGroupSkillShip
 } from "callflowmanagement/SkillManagement/Skills.Interfaces";
 import {
   Action, OperatingUnit
 } from "globals/interfaces";
 import { getOperatingUnits } from "services/operatingUnits";
 import { getTargetExpression } from "utils/skillsUtils";
-
-/* FYI - In the interest of not having to bother to set up the softphone-service to interact with the graph,
-   The consolidation logic for skills will be here.
-
-   In a future story, we want to move this logic to the shared-admin-service
-   https://libertymutual.atlassian.net/browse/CCTP-13060
-*/
+import { getUMSkills } from "globals/graphql";
 
 export const createSkill = async (skillForm: SkillFormState, updatedBy: string): Promise<any> => {
   const messages: string[] = [];
@@ -35,7 +33,7 @@ export const createSkill = async (skillForm: SkillFormState, updatedBy: string):
       const res = await myAxios.post(apiPaths.TASK_QUEUES, newTaskQueuebody);
       taskQueueSid = res.data.sid;
     } catch(error){
-      const message = `Task Queue failed to create: ${formatErrorMessage(error?.response?.data || error?.message)}`;
+      const message = `Task Queue failed to create: ${formatErrorMessage(error)}`;
       logger.error(message, error);
       messages.push(message);
     }
@@ -49,7 +47,7 @@ export const createSkill = async (skillForm: SkillFormState, updatedBy: string):
     }
     await myAxios.post(apiPaths.SKILLS_TASKROUTER, newFlexSkillBody);
   } catch(error){
-    const message = `Flex skill failed to create: ${formatErrorMessage(error?.response?.data || error?.message)}`;
+    const message = `Flex skill failed to create: ${formatErrorMessage(error)}`;
     logger.error(message, error);
     messages.push(message);
   }
@@ -66,7 +64,7 @@ export const createSkill = async (skillForm: SkillFormState, updatedBy: string):
 
     await myAxios.post(apiPaths.SKILLS_CALLFLOW, newCallflowSkillBody);
   } catch(error){
-    const message = `Callflow database failed to create skill: ${formatErrorMessage(error?.response?.data || error?.message)}`;
+    const message = `Callflow database failed to create skill: ${formatErrorMessage(error)}`;
     console.error(message, error);
     messages.push(message);
   }
@@ -124,7 +122,7 @@ export const deleteSkill = async (skill: any, deleteQueues: boolean): Promise<an
           const message = `Twilio was unable to delete the task queue. Please try to delete ${skill.matchingQueue?.friendly_name} from the Twilio console manually`;
           messages.push(<div><h2 style={{ fontWeight: "bold" }}>{errorSource}: {skillName}</h2> - {message}</div>);
         } else {
-          const message = formatErrorMessage(r.reason?.response?.data?.error) || formatErrorMessage(r.reason?.response?.data) || formatErrorMessage(r.reason);
+          const message = formatErrorMessage(r.reason?.response?.data?.error) || formatErrorMessage(r.reason);
           messages.push(<div><h2 style={{ fontWeight: "bold" }}>{errorSource}: {skillName}</h2> - {message}</div>);
         }
       }
@@ -196,83 +194,149 @@ const getCallflowSkills = (): Promise<{ data: CallflowSkill[] }> => {
   return myAxios.get(apiPaths.SKILLS_CALLFLOW);
 };
 
-const getContactManagerSkills= (): Promise<{ data: CtmSkill[] }> => {
-  return myAxios.get(apiPaths.SKILLS_CONTACT_MANAGER);
+const getGraphSkills = async (dispatch: (action: Action) => void): Promise<UMSkill[]> => {
+  let skills: UMSkill[] = [];
+  let skillProfiles: UMSkill[] = [];
+  let skillGroups: SkillGroup[] = [];
+  let skillGroupProfiles: SkillGroupSkillShip[] = [];
+
+  const getPageResults = async (
+    isFirstQuery: boolean,
+    skillsNextToken?: string,
+    skillProfilesNextToken?: string,
+    skillGroupsNextToken? : string,
+    skillGroupsProfilesNextToken? : string
+  ): Promise<void> => {
+    try {
+      const {
+        errors, data
+      }: any = await apolloClient.query<{ results: any }>({
+        query: getUMSkills(skillsNextToken, skillProfilesNextToken, skillGroupsNextToken, skillGroupsProfilesNextToken, isFirstQuery),
+        variables: {}
+      });
+
+      if(errors?.length){
+        throw errors;
+      }
+
+      const newSkills: UMSkill[] = data?.skills?.items.map((s: any) => ({
+        ...s,
+        profile_ids: [],
+        skill_group_ids: []
+      }));
+
+      if(data?.skills?.items?.length) { skills = [...skills, ...newSkills]; }
+      if(data?.skillProfiles?.items?.length) { skillProfiles = [...skillProfiles, ...data.skillProfiles.items]; }
+      if(data?.skillGroups?.items?.length) { skillGroups = [...skillGroups, ...data.skillGroups.items]; }
+      if(data?.skillGroupProfiles?.items?.length) { skillGroupProfiles = [...skillGroupProfiles, ...data.skillGroupProfiles.items]; }
+
+      if(data?.skills?.nextToken || data?.skillProfiles?.nextToken){
+        return getPageResults(false, data.skills.nextToken, data.skillProfiles.nextToken);
+      } else {
+        return;
+      }
+    } catch(error) {
+      logger.error("Error thrown getting skills from the graph", error);
+      throw error;
+    }
+  };
+
+  await getPageResults(true, null, null, null, null);
+
+  dispatch({
+    type: "LOAD_SKILL_GROUPS",
+    payload: skillGroups
+  });
+
+  skillProfiles.forEach((sp: UMSkill) => {
+    try {
+      const profileId = parseInt(sp.pk.split("#")[1]);
+      const matchingSkill = skills.find((s: UMSkill) => s.skill_id === sp.skill_id);
+      if(matchingSkill) {
+        matchingSkill.profile_ids.push(profileId);
+      } else {
+        logger.warn("Graph returned a profile/skill relationship but the skill was not found", { record: sp }, true);
+      }
+    } catch(error){
+      logger.error("Failed to format skill profile to skill", error);
+    }
+  });
+
+  skillGroupProfiles.forEach((sgp: SkillGroupSkillShip) => {
+    try {
+      const skillGroupId = sgp.pk.split("#")[1];
+      const matchingSkill = skills.find((s: UMSkill) => s.skill_id === sgp.skill_id);
+      if(matchingSkill) {
+        matchingSkill.skill_group_ids.push(skillGroupId);
+      } else {
+        logger.warn("Graph returned a profile/skill relationship but the skill was not found", { record: sgp }, true);
+      }
+    } catch(error){
+      logger.error("Failed to format skill profile to skill", error);
+    }
+  });
+
+  return skills;
 };
 
 export const loadConsolidatedSkills = async (dispatch: (action: Action) => void): Promise<void> => {
   try  {
     const taskRouterSkillsPromise = getTaskRouterSkills();
     const callflowSkillsPromise = getCallflowSkills();
-    const contactManagerSkillsPromise = getContactManagerSkills();
+    const graphSkillsPromise = getGraphSkills(dispatch);
 
     const [
       taskRouterSkillsResponse,
       callflowSkillsResponse,
-      contactManagerSkillsResponse //when this comes from the graph, a many to many relationship will be available
-    ] = await Promise.all([ taskRouterSkillsPromise, callflowSkillsPromise, contactManagerSkillsPromise]);
+      graphSkillsResponse
+    ] = await Promise.all([ taskRouterSkillsPromise, callflowSkillsPromise, graphSkillsPromise]);
 
     const consolidatedSkills: Partial<Skill>[] = [];
 
-    const contactManagerSkills = contactManagerSkillsResponse.data.slice();
+    const graphSkills = graphSkillsResponse.slice();
     let taskRouterSkills = taskRouterSkillsResponse.data.slice();
     let callflowSkills = callflowSkillsResponse.data.slice();
 
-    contactManagerSkills.map((ctmSkill: CtmSkill) => {
-      const dupSkill = consolidatedSkills.find(sk => sk.name === ctmSkill.skill_num);
-      if(dupSkill){
-        const needsProfile = ctmSkill.profile_id && !dupSkill.profiles.includes(ctmSkill.profile_id);
-        const needsSkillGroup = ctmSkill.skill_group_id && !dupSkill.skillGroups.some(sg => sg.skillGroupId === ctmSkill.skill_group_id);
+    graphSkills.map((graphSkill: UMSkill) => {
 
-        needsProfile && dupSkill.profiles.push(ctmSkill.profile_id);
-        needsSkillGroup && dupSkill.skillGroups.push({
-          skillGroupId: ctmSkill.skill_group_id,
-          skillGroupNme: ctmSkill.skill_group_nme,
-          skills: []
-        });
+      let skill: Partial<Skill> = {
+        discrepancies: graphSkill.profile_ids?.length ? [] : ["Skill exists in the graph but has no relationship to a profile"],
+        name: graphSkill.skill_id,
+        profileIds: graphSkill.profile_ids || [],
+        skillGroupIds: graphSkill.skill_group_ids || [],
+        taskQueueName: graphSkill.task_queue_name,
+        taskQueueSid: graphSkill.task_queue_sid
+      };
 
-      } else {
-        let skill: Partial<Skill> = {
-          discrepancies: !ctmSkill.profile_id ? ["Skill exists in Contact Manager Database but has no relationship to a profile"] : [],
-          name: ctmSkill.skill_num,
-          ctmSkillId: ctmSkill.skill_id,
-          profiles: ctmSkill.profile_id ? [ctmSkill.profile_id] : [],
-          skillGroups: ctmSkill.skill_group_id ? [{
-            skillGroupId: ctmSkill.skill_group_id,
-            skillGroupNme: ctmSkill.skill_group_nme,
-            skills: []
-          }] : []
-          //Current CTM get doesnt send the Task Queue Sid - going to plug this in when we migrate to graph
+      const matchingCallFlowSkill = callflowSkills.find((cfSkill: CallflowSkill) => cfSkill.skillName === graphSkill.skill_id);
+      const matchingTrSkill = taskRouterSkills.find((trSkill: TwilioSkill) => trSkill.name === graphSkill.skill_id);
+
+      if(matchingCallFlowSkill){
+        skill = {
+          ...skill,
+          ...matchingCallFlowSkill
         };
+        callflowSkills = callflowSkills.filter(cfSkill => cfSkill.skillName !== skill.name);
+      } else {
+        skill.discrepancies.push(`${skill.name} is not in the Legacy Callflow Database`);
+      }
 
-        const matchingCallFlowSkill = callflowSkills.find((cfSkill: CallflowSkill) => cfSkill.skillName === ctmSkill.skill_num);
-        const matchingTrSkill = taskRouterSkills.find((trSkill: TwilioSkill) => trSkill.name === ctmSkill.skill_num);
-
-        if(matchingCallFlowSkill){
-          skill = {
-            ...skill,
-            ...matchingCallFlowSkill
-          };
-          callflowSkills = callflowSkills.filter(cfSkill => cfSkill.skillName !== skill.name);
-        } else {
-          skill.discrepancies.push(`${skill.name} is not in the Legacy Callflow Database`);
-        }
-
-        if(matchingTrSkill){
+      if(matchingTrSkill){
+        if(matchingTrSkill.minimum && matchingTrSkill.maximum){
           const levels = [];
-          if(matchingTrSkill.minimum && matchingTrSkill.maximum){
-            for (let i = matchingTrSkill.minimum; i <= matchingTrSkill.maximum; i++) {
-              levels.push(i);
-            }
+          for (let i = matchingTrSkill.minimum; i <= matchingTrSkill.maximum; i++) {
+            levels.push(i);
           }
           skill.levels = levels;
-          taskRouterSkills = taskRouterSkills.filter(trSkill => trSkill.name !== skill.name);
         } else {
-          skill.discrepancies.push(`${skill.name} is not in the Flex Console`);
+          skill.levels = null;
         }
-
-        consolidatedSkills.push(skill);
+        taskRouterSkills = taskRouterSkills.filter(trSkill => trSkill.name !== skill.name);
+      } else {
+        skill.discrepancies.push(`${skill.name} is not in the Flex Console`);
       }
+
+      consolidatedSkills.push(skill);
     });
 
     taskRouterSkills.map((trSkill: TwilioSkill) => {
@@ -282,7 +346,7 @@ export const loadConsolidatedSkills = async (dispatch: (action: Action) => void)
       }
       let skill: Partial<Skill> = {
         discrepancies: [
-          `${trSkill.name} is not in the Contact Manager Database`
+          `${trSkill.name} is not in the User Management Database`
         ],
         name: trSkill.name,
         levels
@@ -304,7 +368,7 @@ export const loadConsolidatedSkills = async (dispatch: (action: Action) => void)
     callflowSkills.map((cfSkill: CallflowSkill) => {
       const skill: Partial<Skill> = {
         discrepancies: [
-          `${cfSkill.skillName} is not in the Contact Manager Database`,
+          `${cfSkill.skillName} is not in the User Management Database`,
           `${cfSkill.skillName} is not in the Flex Console`
         ],
         name: cfSkill.skillName,
@@ -316,10 +380,6 @@ export const loadConsolidatedSkills = async (dispatch: (action: Action) => void)
 
     dispatch({
       type: "LOAD_SKILLS",
-      payload: consolidatedSkills
-    });
-    dispatch({
-      type: "LOAD_SKILL_GROUPS",
       payload: consolidatedSkills
     });
 

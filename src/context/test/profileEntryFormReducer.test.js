@@ -1,3 +1,4 @@
+import { mockProfiles } from "testUtils";
 import {
   profileEntryFormReducer,
   initialProfileEntryFormState,
@@ -30,247 +31,17 @@ describe("profileEntryFormReducer", () => {
     });
   });
 
-  describe("TOGGLE", () => {
-    test("should toggle passed fieldKey in form", () => {
+  describe("SET_FORM_FIELD", () => {
+    test("should set selected form field ", () => {
       const expectedState = {
         ...initialProfileEntryFormState,
-        policyNumberEdit: {
-          value: true,
-          updated: true
-        }
+        policyNumberEdit: true
       };
       const action = {
-        type: profileEntryFormActions.TOGGLE,
-        fieldKey: "policyNumberEdit"
-      };
-      const result = profileEntryFormReducer(initialProfileEntryFormState, action);
-      expect(result).toStrictEqual(expectedState);
-    });
-  });
-
-  describe("SET_PROFILE_ID", () => {
-    test("should set profileId to payload passed", () => {
-      const expectedState = {
-        ...initialProfileEntryFormState,
-        profileId: 40
-      };
-      const action = {
-        type: profileEntryFormActions.SET_PROFILE_ID,
-        payload: 40
-      };
-      const result = profileEntryFormReducer(initialProfileEntryFormState, action);
-      expect(result).toStrictEqual(expectedState);
-    });
-  });
-
-  describe("SET_PROFILE_NAME", () => {
-    test("should set profileName to payload passed", () => {
-      const expectedState = {
-        ...initialProfileEntryFormState,
-        profileName: {
-          value: "AISG",
-          valid: true,
-          updated: true
-        }
-      };
-      const action = {
-        type: profileEntryFormActions.SET_PROFILE_NAME,
+        type: profileEntryFormActions.SET_FORM_FIELD,
         payload: {
-          value: "AISG",
-          valid: true,
-          updated: true
-        }
-      };
-      const result = profileEntryFormReducer(initialProfileEntryFormState, action);
-      expect(result).toStrictEqual(expectedState);
-    });
-  });
-
-  describe("SET_OVERFLOW_SKILL", () => {
-    test("should set overflowSkill to payload passed", () => {
-      const expectedState = {
-        ...initialProfileEntryFormState,
-        overflowSkill: {
-          value: "overflowSkill",
-          valid: true,
-          updated: true
-        }
-      };
-      const action = {
-        type: profileEntryFormActions.SET_OVERFLOW_SKILL,
-        payload: {
-          value: "overflowSkill",
-          valid: true,
-          updated: true
-        }
-      };
-      const result = profileEntryFormReducer(initialProfileEntryFormState, action);
-      expect(result).toStrictEqual(expectedState);
-    });
-  });
-
-  describe("UPDATE_ACTIVITIES_LIST", () => {
-    test("should set activitiesList to payload passed", () => {
-      const expectedState = {
-        ...initialProfileEntryFormState,
-        activitiesList: [2, 3],
-        activitiesUpdated: true
-      };
-      const action = {
-        type: profileEntryFormActions.UPDATE_ACTIVITIES_LIST,
-        payload: [2, 3]
-      };
-      const result = profileEntryFormReducer(initialProfileEntryFormState, action);
-      expect(result).toStrictEqual(expectedState);
-    });
-  });
-
-  describe("UPDATE_TRANSFER_QUEUES", () => {
-    test("should set transferQueues to payload passed", () => {
-      const expectedState = {
-        ...initialProfileEntryFormState,
-        transferQueues: {
-          name: "466",
-          timeOfDays: [],
-          flashMessage: "Oh no! Something went wrong..",
-          closedMessage: null,
-          vhThreshold: 0,
-          vhCallTarget: null,
-          levels: [],
-          ctmSkillDisplayName: "NI Billing & Collections",
-          ctmSkillId: 7,
-          profiles: [
-            {
-              profileId: 1,
-              profileName: "NI Billing & Collections"
-            }
-          ]
-        },
-        queuesUpdated: true
-      };
-      const action = {
-        type: profileEntryFormActions.UPDATE_TRANSFER_QUEUES,
-        payload: {
-          name: "466",
-          timeOfDays: [],
-          flashMessage: "Oh no! Something went wrong..",
-          closedMessage: null,
-          vhThreshold: 0,
-          vhCallTarget: null,
-          levels: [],
-          ctmSkillDisplayName: "NI Billing & Collections",
-          ctmSkillId: 7,
-          profiles: [
-            {
-              profileId: 1,
-              profileName: "NI Billing & Collections"
-            }
-          ]
-        }
-      };
-      const result = profileEntryFormReducer(initialProfileEntryFormState, action);
-      expect(result).toStrictEqual(expectedState);
-    });
-  });
-
-  describe("SET_OPERATING_UINIT", () => {
-    test("should set ou to payload passed", () => {
-      const expectedState = {
-        ...initialProfileEntryFormState,
-        operatingUnit: {
-          ou_sid: "abc"
-        }
-      };
-      const action = {
-        type: profileEntryFormActions.SET_OPERATING_UINIT,
-        payload: {
-          ou_sid: "abc"
-        }
-      };
-      const result = profileEntryFormReducer(initialProfileEntryFormState, action);
-      expect(result).toStrictEqual(expectedState);
-    });
-  });
-
-  describe("UPDATE_ACCESS_GROUP", () => {
-    test("should update access group toggle state, and access group id to null, if toggle is off", () => {
-      const expectedState = {
-        ...initialProfileEntryFormState,
-        accessGroup: {
-          value: false,
-          updated: true
-        },
-        accessGroupIdUpdated: true,
-        accessGroupId: null
-      };
-      const action = {
-        type: profileEntryFormActions.UPDATE_ACCESS_GROUP,
-        "fieldKey": "accessGroup"
-      };
-      const result = profileEntryFormReducer({
-        ...initialProfileEntryFormState,
-        accessGroup: {
+          key: "policyNumberEdit",
           value: true
-        },
-        accessGroupId: 234
-      }, action);
-      expect(result).toStrictEqual(expectedState);
-    });
-    test("should update access group toggle state, and keep access group id unchanged, if toggle is on", () => {
-      const expectedState = {
-        ...initialProfileEntryFormState,
-        accessGroup: {
-          value: true,
-          updated: true
-        },
-        accessGroupIdUpdated: true,
-        accessGroupId: 123
-      };
-      const action = {
-        type: profileEntryFormActions.UPDATE_ACCESS_GROUP,
-        "fieldKey": "accessGroup"
-      };
-      const result = profileEntryFormReducer({
-        ...initialProfileEntryFormState,
-        accessGroupId: 123
-      }, action);
-      expect(result).toStrictEqual(expectedState);
-    });
-  });
-
-  describe("UPDATE_ACCESS_GROUP_ID", () => {
-    test("should update access group id as per payload", () => {
-      const expectedState = {
-        ...initialProfileEntryFormState,
-        accessGroupId: 234,
-        accessGroupIdUpdated: true
-      };
-      const action = {
-        type: profileEntryFormActions.UPDATE_ACCESS_GROUP_ID,
-        "payload": 234
-      };
-      const result = profileEntryFormReducer(initialProfileEntryFormState, action);
-      expect(result).toStrictEqual(expectedState);
-    });
-  });
-
-  describe("UPDATE_CALL_TAGS_LIST", () => {
-    test("should set callTagsList to payload passed", () => {
-      const expectedState = {
-        ...initialProfileEntryFormState,
-        callTagsList: {
-          wrkr_tsk_info_id: 2,
-          display_nme: "Claim Number",
-          options_id: 1
-        },
-        callTagsUpdated: true
-      };
-      const action = {
-        type: profileEntryFormActions.UPDATE_CALL_TAGS_LIST,
-        payload: {
-          wrkr_tsk_info_id: 2,
-          display_nme: "Claim Number",
-          options_id: 1
         }
       };
       const result = profileEntryFormReducer(initialProfileEntryFormState, action);
@@ -278,860 +49,145 @@ describe("profileEntryFormReducer", () => {
     });
   });
 
-  describe("UPDATE_FORWARD_TO_NUM", () => {
-    test("should update access group id as per payload when unmaskedValue is not null", () => {
-      const expectedState = {
+  describe("CLEAR_FORM_FIELD", () => {
+    test("should set selected form field to intial state", () => {
+      const initialState = {
         ...initialProfileEntryFormState,
-        forwardToNum: {
-          value: "(800) 555-0000",
-          e164: "+18005550000",
-          unmaskedValue: "8005550000",
-          updated: true,
-          valid: true
-        }
+        policyNumberEdit: true
       };
       const action = {
-        type: profileEntryFormActions.UPDATE_FORWARD_TO_NUM,
-        "payload": {
-          maskedValue: "(800) 555-0000",
-          e164Number: "+18005550000",
-          unmaskedValue: "8005550000",
-          isValid: true
-        }
+        type: profileEntryFormActions.CLEAR_FORM_FIELD,
+        payload: "policyNumberEdit"
       };
-      const result = profileEntryFormReducer(initialProfileEntryFormState, action);
-      expect(result).toStrictEqual(expectedState);
-    });
-    test("should update access group id as per payload when unmaskedValue IS empty", () => {
-      const expectedState = {
-        ...initialProfileEntryFormState,
-        forwardToNum: {
-          value: "",
-          e164: "",
-          unmaskedValue: null,
-          updated: true,
-          valid: false
-        }
-      };
-      const action = {
-        type: profileEntryFormActions.UPDATE_FORWARD_TO_NUM,
-        "payload": {
-          maskedValue: "",
-          e164Number: "",
-          unmaskedValue: "",
-          isValid: true
-        }
-      };
-      const result = profileEntryFormReducer(initialProfileEntryFormState, action);
-      expect(result).toStrictEqual(expectedState);
+      const result = profileEntryFormReducer(initialState, action);
+      expect(result).toStrictEqual(initialProfileEntryFormState);
     });
   });
 
   describe("SET_UPDATE_PROFILE_FORM_STATE", () => {
     test("should set edit prepopulated fields to state", () => {
-      const profile = {
-        profile_id: 0,
-        profile_nme: "Game of Phones",
-        recorded_i: {
-          type: "Buffer",
-          data: [0]
-        },
-        auto_answd_i: {
-          type: "Buffer",
-          data: [1]
-        },
-        pmt_prcsg_i: {
-          type: "Buffer",
-          data: [0]
-        },
-        otbnd_recorded_i: {
-          type: "Buffer",
-          data: [0]
-        },
-        acw_option_i: {
-          type: "Buffer",
-          data: [0]
-        },
-        manual_recorded_i: {
-          type: "Buffer",
-          data: [0]
-        },
-        acw_data_entry_i: {
-          type: "Buffer",
-          data: [0]
-        },
-        manual_record_inbound_i: {
-          type: "Buffer",
-          data: [0]
-        },
-        agent_assisted_pay_i: {
-          type: "Buffer",
-          data: [1]
-        },
-        overflow_skill: null,
-        policy_number_edit_i: {
-          type: "Buffer",
-          data: [0]
-        },
-        voice_mail_transcription_i: {
-          type: "Buffer",
-          data: [0]
-        },
-        call_reason_i: {
-          type: "Buffer",
-          data: [1]
-        },
-        click_to_dial_i: {
-          type: "Buffer",
-          data: [1]
-        },
-        eft_authorization_i: {
-          type: "Buffer",
-          data: [1]
-        },
-        claim_number_edit_i: {
-          type: "Buffer",
-          data: [1]
-        },
-        activities: [{
-          profile_id: 0,
-          activity_id: 1,
-          activity_nme: "Offline",
-          availability: 0
-        }],
-        callTags: [{
-          profile_id: 15,
-          display_nme: "Negotiation Type",
-          wrkr_tsk_info_id: 3,
-          wrkr_tsk_info_nme: "negotiation_type",
-          options_id: 1,
-          options: [
-            "Info Exchange",
-            "Bargaining",
-            "Closing",
-            "N/A",
-            "Offer"
-          ]
-        }],
-        aggregateQueues: [
-          {
-            aggregate_queues_id: 0,
-            aggregate_queues_nme: "PGS - Gold Spanish",
-            aggregate_queues_type: "single",
-            owner_type: "profile",
-            profile_id: 0,
-            queues: [
-              {
-                skill_id: 106,
-                skill_nme: "PGS - Gold Spanish",
-                skill_num: "pgsGoldSpanish",
-                tsk_que_sid: "WQaae7385a70e4c4ef8d74f1f93ebd5c33"
-              }
-            ],
-            workerSid: null
-          },
-          {
-            aggregate_queues_id: 1,
-            aggregate_queues_nme: "Liscensed Sales Center",
-            aggregate_queues_type: "aggregate",
-            owner_type: "profile",
-            profile_id: 0,
-            queues: [
-              {
-                skill_id: 106,
-                skill_nme: "Sales Queue",
-                skill_num: "salesQueue",
-                tsk_que_sid: "WQaae7385a70e4c4ef8d74f1f93ebd5c43"
-              },
-              {
-                skill_id: 134,
-                skill_nme: "Another Sales Queue",
-                skill_num: "anotherSalesQueue",
-                tsk_que_sid: "WQaae7385a70e4c4ef8d74f1f93ebd5c53"
-              }
-            ],
-            workerSid: null
-          },
-          {
-            aggregate_queues_id: 2,
-            aggregate_queues_nme: "Safeco Underwriting",
-            aggregate_queues_type: "aggregate",
-            owner_type: "profile",
-            profile_id: 0,
-            queues: [
-              {
-                skill_id: 44,
-                skill_nme: "PGS - Gold English",
-                skill_num: "pgsGoldEnglish",
-                tsk_que_sid: "WQaae7385a70e4c4ef8d74f1f93ebd5c32"
-              },
-              {
-                skill_id: 49,
-                skill_nme: "PGS - Gold Spanish",
-                skill_num: "pgsGoldSpanish",
-                tsk_que_sid: "WQaae7385a70e4c4ef8d74f1f93ebd5c31"
-              },
-              {
-                skill_id: 170,
-                skill_nme: "PGS - Gold French",
-                skill_num: "pgsGoldFrench",
-                tsk_que_sid: "WQaae7385a70e4c4ef8d74f1f93ebd5c30"
-              }
-            ],
-            workerSid: null
-          }
-        ],
-        operating_unit_sid: "123",
-        operating_unit_nme: "hello",
-        access_group_id: "testing",
-        fwd_to_num: null
-      };
-
       const expectedState = {
-        ...initialProfileEntryFormState,
-        activitiesList: [{
-          activity_id: 1,
-          activity_nme: "Offline",
-          available_i: {
-            data: [
-              0
-            ],
-            type: "Buffer"
-          }
-        }],
-        callTagsList: [{
-          options_id: 1,
-          wrkr_tsk_info_nme: "Negotiation Type",
-          wrkr_tsk_info_id: 3
-        }],
-        callTagOptions: [],
         formMode: formModes.UPDATE,
-        autoAnswered: {
-          value: true
-        },
-        inboundRecorded: {
-          value: false
-        },
-        outboundRecorded: {
-          value: false
-        },
-        acwOption: {
-          value: false
-        },
-        manualRecorded: {
-          value: false
-        },
-        acwDataEntry: {
-          value: false
-        },
-        manualRecordedInbound: {
-          value: false
-        },
-        agentAssistedPay: {
-          value: true
-        },
-        paymentProcessing: {
-          value: false
-        },
-        policyNumberEdit: {
-          value: false
-        },
-        voiceMailTranscription: {
-          value: false
-        },
-        callReason: {
-          value: true
-        },
-        clickToDial: {
-          value: true
-        },
-        eftAuthorization: {
-          value: true
-        },
-        claimNumberEdit: {
-          value: true
-        },
-        overflowSkill: {
-          value: "",
-          valid: true
-        },
         profileId: 0,
-        profileName: {
-          valid: true,
-          value: "Game of Phones"
-        },
-        transferQueues: [
+        activitiesList: [
           {
-            ctmSkillId: 106,
-            ctmSkillDisplayName: "PGS - Gold Spanish"
+            activity_name: "Offline",
+            activity_sid: "5",
+            available: false
           },
           {
-            ctmSkillId: -1,
-            ctmSkillDisplayName: "Liscensed Sales Center"
-          },
-          {
-            ctmSkillId: -2,
-            ctmSkillDisplayName: "Safeco Underwriting"
+            activity_name: "Petting Cats",
+            activity_sid: "7",
+            available: true
           }
         ],
+        callTagsList: [
+          {
+            display_name: "Negotiation Type",
+            attribute_name: "negotiation_type",
+            options: [
+              "Info Exchange",
+              "Bargaining",
+              "Closing"
+            ]
+          },
+          {
+            display_name: "Claim Number",
+            attribute_name: "claim_number",
+            options: null
+          }
+        ],
+        autoAnswered: true,
+        inboundRecorded: true,
+        outboundRecorded: true,
+        acwOption: true,
+        manualRecorded: true,
+        acwDataEntry: true,
+        manualRecordedInbound: true,
+        agentAssistedPay: true,
+        paymentProcessing: true,
+        policyNumberEdit: true,
+        voiceMailTranscription: true,
+        callReason: true,
+        clickToDial: true,
+        eftAuthorization: true,
+        claimNumberEdit: true,
+        overflowSkill: "lscOBDialer1",
+        profileName: "Game of Phones",
+        transferQueues: [
+          "WQda5066ddff9e0eebf2f168e40d98cc19",
+          "WQ9e7f40c067bb9006022f43266122a257"
+        ],
+        screenpops: [{
+          id: "2hTaQUwxFmf2zanRlQ4lrnbkYaI",
+          display_name: "Intent",
+          attribute_name: "callIntent"
+        }],
         operatingUnit: {
-          ou_name: "hello",
-          ou_sid: "123"
+          ou_name: "Claims",
+          ou_sid: "OUe98d4f81e49ccf1ae16b29f8611d1b6c"
         },
-        accessGroupId: "testing",
         accessGroup: {
-          value: true
+          access_group_name: "Canon",
+          twilio_dashboard_url: "https://analytics.ytica.com/dashboard.html#workspace=/gdc/workspaces/pdgson3f19xo7p6109q1v7ecfjyc5snb&dashboard=/gdc/md/pdgson3f19xo7p6109q1v7ecfjyc5snb/obj/10546934",
+          id: "2hTZxPiac4Bur9tn5pafmEjag1E"
         },
         forwardToNum: {
-          value: "",
+          value: "8665680296",
+          unmaskedValue: "8665680296",
           e164: "",
-          unmaskedValue: null,
           updated: false,
           valid: true
         }
       };
       const action = {
         type: profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE,
-        payload: {
-          formMode: formModes.UPDATE,
-          profile
-        }
+        payload: mockProfiles[0]
       };
       const result = profileEntryFormReducer(initialProfileEntryFormState, action);
       expect(result).toStrictEqual(expectedState);
     });
-    test("should set edit prepopulated fields to state, forwardToNum is populated if there is one on the profile", () => {
-      const profile = {
-        profile_id: 0,
-        profile_nme: "Game of Phones",
-        recorded_i: {
-          type: "Buffer",
-          data: [0]
-        },
-        auto_answd_i: {
-          type: "Buffer",
-          data: [1]
-        },
-        pmt_prcsg_i: {
-          type: "Buffer",
-          data: [0]
-        },
-        otbnd_recorded_i: {
-          type: "Buffer",
-          data: [0]
-        },
-        acw_option_i: {
-          type: "Buffer",
-          data: [0]
-        },
-        manual_recorded_i: {
-          type: "Buffer",
-          data: [0]
-        },
-        acw_data_entry_i: {
-          type: "Buffer",
-          data: [0]
-        },
-        manual_record_inbound_i: {
-          type: "Buffer",
-          data: [0]
-        },
-        agent_assisted_pay_i: {
-          type: "Buffer",
-          data: [1]
-        },
-        overflow_skill: null,
-        policy_number_edit_i: {
-          type: "Buffer",
-          data: [0]
-        },
-        voice_mail_transcription_i: {
-          type: "Buffer",
-          data: [0]
-        },
-        call_reason_i: {
-          type: "Buffer",
-          data: [1]
-        },
-        click_to_dial_i: {
-          type: "Buffer",
-          data: [1]
-        },
-        eft_authorization_i: {
-          type: "Buffer",
-          data: [1]
-        },
-        claim_number_edit_i: {
-          type: "Buffer",
-          data: [1]
-        },
-        activities: [{
-          profile_id: 0,
-          activity_id: 1,
-          activity_nme: "Offline",
-          availability: 0
-        }],
-        callTags: [{
-          profile_id: 15,
-          display_nme: "Negotiation Type",
-          wrkr_tsk_info_id: 3,
-          wrkr_tsk_info_nme: "negotiation_type",
-          options_id: 1,
-          options: [
-            "Info Exchange",
-            "Bargaining",
-            "Closing",
-            "N/A",
-            "Offer"
-          ]
-        }],
-        aggregateQueues: [
-          {
-            aggregate_queues_id: 0,
-            aggregate_queues_nme: "PGS - Gold Spanish",
-            aggregate_queues_type: "single",
-            owner_type: "profile",
-            profile_id: 0,
-            queues: [
-              {
-                skill_id: 106,
-                skill_nme: "PGS - Gold Spanish",
-                skill_num: "pgsGoldSpanish",
-                tsk_que_sid: "WQaae7385a70e4c4ef8d74f1f93ebd5c33"
-              }
-            ],
-            workerSid: null
-          },
-          {
-            aggregate_queues_id: 1,
-            aggregate_queues_nme: "Liscensed Sales Center",
-            aggregate_queues_type: "aggregate",
-            owner_type: "profile",
-            profile_id: 0,
-            queues: [
-              {
-                skill_id: 106,
-                skill_nme: "Sales Queue",
-                skill_num: "salesQueue",
-                tsk_que_sid: "WQaae7385a70e4c4ef8d74f1f93ebd5c43"
-              },
-              {
-                skill_id: 134,
-                skill_nme: "Another Sales Queue",
-                skill_num: "anotherSalesQueue",
-                tsk_que_sid: "WQaae7385a70e4c4ef8d74f1f93ebd5c53"
-              }
-            ],
-            workerSid: null
-          },
-          {
-            aggregate_queues_id: 2,
-            aggregate_queues_nme: "Safeco Underwriting",
-            aggregate_queues_type: "aggregate",
-            owner_type: "profile",
-            profile_id: 0,
-            queues: [
-              {
-                skill_id: 44,
-                skill_nme: "PGS - Gold English",
-                skill_num: "pgsGoldEnglish",
-                tsk_que_sid: "WQaae7385a70e4c4ef8d74f1f93ebd5c32"
-              },
-              {
-                skill_id: 49,
-                skill_nme: "PGS - Gold Spanish",
-                skill_num: "pgsGoldSpanish",
-                tsk_que_sid: "WQaae7385a70e4c4ef8d74f1f93ebd5c31"
-              },
-              {
-                skill_id: 170,
-                skill_nme: "PGS - Gold French",
-                skill_num: "pgsGoldFrench",
-                tsk_que_sid: "WQaae7385a70e4c4ef8d74f1f93ebd5c30"
-              }
-            ],
-            workerSid: null
-          }
-        ],
-        operating_unit_sid: "123",
-        operating_unit_nme: "hello",
-        access_group_id: "testing",
-        fwd_to_num: "5555551234"
-      };
-
+    test("should set edit prepopulated fields to state, null fields are handled", () => {
       const expectedState = {
-        ...initialProfileEntryFormState,
-        activitiesList: [{
-          activity_id: 1,
-          activity_nme: "Offline",
-          available_i: {
-            data: [
-              0
-            ],
-            type: "Buffer"
-          }
-        }],
-        callTagsList: [{
-          options_id: 1,
-          wrkr_tsk_info_nme: "Negotiation Type",
-          wrkr_tsk_info_id: 3
-        }],
-        callTagOptions: [],
         formMode: formModes.UPDATE,
-        autoAnswered: {
-          value: true
-        },
-        inboundRecorded: {
-          value: false
-        },
-        outboundRecorded: {
-          value: false
-        },
-        acwOption: {
-          value: false
-        },
-        manualRecorded: {
-          value: false
-        },
-        acwDataEntry: {
-          value: false
-        },
-        manualRecordedInbound: {
-          value: false
-        },
-        agentAssistedPay: {
-          value: true
-        },
-        paymentProcessing: {
-          value: false
-        },
-        policyNumberEdit: {
-          value: false
-        },
-        voiceMailTranscription: {
-          value: false
-        },
-        callReason: {
-          value: true
-        },
-        clickToDial: {
-          value: true
-        },
-        eftAuthorization: {
-          value: true
-        },
-        claimNumberEdit: {
-          value: true
-        },
-        overflowSkill: {
-          value: "",
-          valid: true
-        },
-        profileId: 0,
-        profileName: {
-          valid: true,
-          value: "Game of Phones"
-        },
-        transferQueues: [
-          {
-            ctmSkillId: 106,
-            ctmSkillDisplayName: "PGS - Gold Spanish"
-          },
-          {
-            ctmSkillId: -1,
-            ctmSkillDisplayName: "Liscensed Sales Center"
-          },
-          {
-            ctmSkillId: -2,
-            ctmSkillDisplayName: "Safeco Underwriting"
-          }
-        ],
+        profileId: 1,
+        activitiesList: [],
+        callTagsList: [],
+        autoAnswered: false,
+        inboundRecorded: false,
+        outboundRecorded: false,
+        acwOption: false,
+        manualRecorded: false,
+        acwDataEntry: false,
+        manualRecordedInbound: false,
+        agentAssistedPay: false,
+        paymentProcessing: false,
+        policyNumberEdit: false,
+        voiceMailTranscription: false,
+        callReason: false,
+        clickToDial: false,
+        eftAuthorization: false,
+        claimNumberEdit: false,
+        overflowSkill: null,
+        profileName: "USRM Billing & Collections",
+        transferQueues: [],
+        screenpops: [],
         operatingUnit: {
-          ou_name: "hello",
-          ou_sid: "123"
+          ou_name: "Service",
+          ou_sid: "OU94b0ff770f6278386fec5ef0b51fd021"
         },
-        accessGroupId: "testing",
-        accessGroup: {
-          value: true
-        },
+        accessGroup: null,
         forwardToNum: {
-          value: "5555551234",
-          e164: "+15555551234",
-          unmaskedValue: "5555551234",
+          value: "",
+          unmaskedValue: "",
+          e164: "",
           updated: false,
           valid: true
         }
       };
       const action = {
         type: profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE,
-        payload: {
-          formMode: formModes.UPDATE,
-          profile
-        }
-      };
-      const result = profileEntryFormReducer(initialProfileEntryFormState, action);
-      expect(result).toStrictEqual(expectedState);
-    });
-    test("should return accessGroup true, if access group id is present when editing pofile", () => {
-      const profile = {
-        profile_id: 0,
-        profile_nme: "Game of Phones",
-        recorded_i: {
-          type: "Buffer",
-          data: [0]
-        },
-        auto_answd_i: {
-          type: "Buffer",
-          data: [1]
-        },
-        pmt_prcsg_i: {
-          type: "Buffer",
-          data: [0]
-        },
-        otbnd_recorded_i: {
-          type: "Buffer",
-          data: [0]
-        },
-        acw_option_i: {
-          type: "Buffer",
-          data: [0]
-        },
-        manual_recorded_i: {
-          type: "Buffer",
-          data: [0]
-        },
-        acw_data_entry_i: {
-          type: "Buffer",
-          data: [0]
-        },
-        manual_record_inbound_i: {
-          type: "Buffer",
-          data: [0]
-        },
-        agent_assisted_pay_i: {
-          type: "Buffer",
-          data: [1]
-        },
-        overflow_skill: null,
-        policy_number_edit_i: {
-          type: "Buffer",
-          data: [0]
-        },
-        voice_mail_transcription_i: {
-          type: "Buffer",
-          data: [0]
-        },
-        call_reason_i: {
-          type: "Buffer",
-          data: [1]
-        },
-        click_to_dial_i: {
-          type: "Buffer",
-          data: [1]
-        },
-        eft_authorization_i: {
-          type: "Buffer",
-          data: [1]
-        },
-        claim_number_edit_i: {
-          type: "Buffer",
-          data: [1]
-        },
-        activities: [{
-          profile_id: 0,
-          activity_id: 1,
-          activity_nme: "Offline",
-          availability: 0
-        }],
-        callTags: [{
-          profile_id: 15,
-          display_nme: "Negotiation Type",
-          wrkr_tsk_info_id: 3,
-          wrkr_tsk_info_nme: "negotiation_type",
-          options_id: 1,
-          options: [
-            "Info Exchange",
-            "Bargaining",
-            "Closing",
-            "N/A",
-            "Offer"
-          ]
-        }],
-        aggregateQueues: [
-          {
-            aggregate_queues_id: 0,
-            aggregate_queues_nme: "PGS - Gold Spanish",
-            aggregate_queues_type: "single",
-            owner_type: "profile",
-            profile_id: 0,
-            queues: [
-              {
-                skill_id: 106,
-                skill_nme: "PGS - Gold Spanish",
-                skill_num: "pgsGoldSpanish",
-                tsk_que_sid: "WQaae7385a70e4c4ef8d74f1f93ebd5c33"
-              }
-            ],
-            workerSid: null
-          },
-          {
-            aggregate_queues_id: 1,
-            aggregate_queues_nme: "Liscensed Sales Center",
-            aggregate_queues_type: "aggregate",
-            owner_type: "profile",
-            profile_id: 0,
-            queues: [
-              {
-                skill_id: 106,
-                skill_nme: "Sales Queue",
-                skill_num: "salesQueue",
-                tsk_que_sid: "WQaae7385a70e4c4ef8d74f1f93ebd5c43"
-              },
-              {
-                skill_id: 134,
-                skill_nme: "Another Sales Queue",
-                skill_num: "anotherSalesQueue",
-                tsk_que_sid: "WQaae7385a70e4c4ef8d74f1f93ebd5c53"
-              }
-            ],
-            workerSid: null
-          },
-          {
-            aggregate_queues_id: 2,
-            aggregate_queues_nme: "Safeco Underwriting",
-            aggregate_queues_type: "aggregate",
-            owner_type: "profile",
-            profile_id: 0,
-            queues: [
-              {
-                skill_id: 44,
-                skill_nme: "PGS - Gold English",
-                skill_num: "pgsGoldEnglish",
-                tsk_que_sid: "WQaae7385a70e4c4ef8d74f1f93ebd5c32"
-              },
-              {
-                skill_id: 49,
-                skill_nme: "PGS - Gold Spanish",
-                skill_num: "pgsGoldSpanish",
-                tsk_que_sid: "WQaae7385a70e4c4ef8d74f1f93ebd5c31"
-              },
-              {
-                skill_id: 170,
-                skill_nme: "PGS - Gold French",
-                skill_num: "pgsGoldFrench",
-                tsk_que_sid: "WQaae7385a70e4c4ef8d74f1f93ebd5c30"
-              }
-            ],
-            workerSid: null
-          }
-        ],
-        operating_unit_sid: "123",
-        operating_unit_nme: "hello",
-        access_group_id: null
-      };
-
-      const expectedState = {
-        ...initialProfileEntryFormState,
-        activitiesList: [{
-          activity_id: 1,
-          activity_nme: "Offline",
-          available_i: {
-            data: [
-              0
-            ],
-            type: "Buffer"
-          }
-        }],
-        callTagsList: [{
-          options_id: 1,
-          wrkr_tsk_info_nme: "Negotiation Type",
-          wrkr_tsk_info_id: 3
-        }],
-        callTagOptions: [],
-        formMode: formModes.UPDATE,
-        autoAnswered: {
-          value: true
-        },
-        inboundRecorded: {
-          value: false
-        },
-        outboundRecorded: {
-          value: false
-        },
-        acwOption: {
-          value: false
-        },
-        manualRecorded: {
-          value: false
-        },
-        acwDataEntry: {
-          value: false
-        },
-        manualRecordedInbound: {
-          value: false
-        },
-        agentAssistedPay: {
-          value: true
-        },
-        paymentProcessing: {
-          value: false
-        },
-        policyNumberEdit: {
-          value: false
-        },
-        voiceMailTranscription: {
-          value: false
-        },
-        callReason: {
-          value: true
-        },
-        clickToDial: {
-          value: true
-        },
-        eftAuthorization: {
-          value: true
-        },
-        claimNumberEdit: {
-          value: true
-        },
-        overflowSkill: {
-          value: "",
-          valid: true
-        },
-        profileId: 0,
-        profileName: {
-          valid: true,
-          value: "Game of Phones"
-        },
-        transferQueues: [
-          {
-            ctmSkillId: 106,
-            ctmSkillDisplayName: "PGS - Gold Spanish"
-          },
-          {
-            ctmSkillId: -1,
-            ctmSkillDisplayName: "Liscensed Sales Center"
-          },
-          {
-            ctmSkillId: -2,
-            ctmSkillDisplayName: "Safeco Underwriting"
-          }
-        ],
-        operatingUnit: {
-          ou_name: "hello",
-          ou_sid: "123"
-        },
-        accessGroupId: null,
-        accessGroup: {
-          value: false
-        }
-      };
-      const action = {
-        type: profileEntryFormActions.SET_UPDATE_PROFILE_FORM_STATE,
-        payload: {
-          formMode: formModes.UPDATE,
-          profile
-        }
+        payload: mockProfiles[1]
       };
       const result = profileEntryFormReducer(initialProfileEntryFormState, action);
       expect(result).toStrictEqual(expectedState);

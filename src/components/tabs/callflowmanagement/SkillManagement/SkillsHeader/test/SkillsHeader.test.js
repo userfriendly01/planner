@@ -3,15 +3,18 @@ import { SearchBox } from "components/SearchBox";
 import React from "react";
 import { Dropdown } from "components/Dropdown";
 import { ExportButton } from "callflowmanagement/ExportButton";
-import { useAdminState } from "context/appContext";
+import {
+  useAdminState, useSkillState
+} from "context/appContext";
 import {
   act,
   render,
   expectOnlyPassedProps,
-  skillsList,
+  mockSkills,
   setupMockedComponents,
   initialTestState,
-  profileList
+  mockProfiles,
+  initialSkillState
 } from "testUtils";
 
 jest.mock("components/Dropdown", () => ({
@@ -31,13 +34,14 @@ jest.mock("callflowmanagement/ExportButton", () => ({
 }));
 
 jest.mock("context/appContext", () => ({
-  useAdminState: jest.fn()
+  useAdminState: jest.fn(),
+  useSkillState: jest.fn()
 }));
 
 const mockSetTableState = jest.fn();
 const tableState = {
   searchBy: "searchy",
-  selected: [skillsList[0]],
+  selected: [mockSkills[0].name],
   profiles: [{
     label: "Profile 1",
     value: 1
@@ -58,6 +62,7 @@ const renderComponent = () => {
 describe("<SkillsHeader />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    useSkillState.mockReturnValue(initialSkillState);
     useAdminState.mockReturnValue(initialTestState);
     setupMockedComponents({
       SearchBox,
@@ -75,7 +80,7 @@ describe("<SkillsHeader />", () => {
       });
       expect(ExportButton.mock.calls.length).toBe(1);
       expectOnlyPassedProps(ExportButton, {
-        selected: tableState.selected
+        selected: [mockSkills[0]]
       });
     });
     describe("user is admin", () => {
@@ -92,7 +97,7 @@ describe("<SkillsHeader />", () => {
         renderComponent();
         expect(ExportButton.mock.calls.length).toBe(1);
         expectOnlyPassedProps(ExportButton, {
-          selected: tableState.selected
+          selected: [mockSkills[0]]
         });
       });
       test("should render profile dropdown", () => {
@@ -104,7 +109,7 @@ describe("<SkillsHeader />", () => {
           options: initialTestState.profileContext.profiles.map(p => {
             return {
               ...p,
-              label: p.profile_nme,
+              label: p.profile_name,
               value: p.profile_id
             };
           })
@@ -115,7 +120,7 @@ describe("<SkillsHeader />", () => {
         });
         expect(ExportButton.mock.calls.length).toBe(1);
         expectOnlyPassedProps(ExportButton, {
-          selected: tableState.selected
+          selected: [mockSkills[0]]
         });
       });
       describe("dropdown updateValue is called", () => {
@@ -125,9 +130,9 @@ describe("<SkillsHeader />", () => {
           act(() => {
             updateValue(null, [
               {
-                ...profileList[1],
-                label: profileList[1].profile_nme,
-                value: profileList[1].profile_id
+                ...mockProfiles[1],
+                label: mockProfiles[1].profile_name,
+                value: mockProfiles[1].profile_id
               }
             ]);
           });
@@ -136,9 +141,9 @@ describe("<SkillsHeader />", () => {
             ...tableState,
             profiles: [
               {
-                ...profileList[1],
-                label: profileList[1].profile_nme,
-                value: profileList[1].profile_id
+                ...mockProfiles[1],
+                label: mockProfiles[1].profile_name,
+                value: mockProfiles[1].profile_id
               }
             ]
           });
@@ -164,7 +169,7 @@ describe("<SkillsHeader />", () => {
         });
         expect(ExportButton.mock.calls.length).toBe(1);
         expectOnlyPassedProps(ExportButton, {
-          selected: tableState.selected
+          selected: [mockSkills[0]]
         });
       });
     });

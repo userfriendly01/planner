@@ -45,7 +45,6 @@ export const UserEntryForm = () => {
   const tritonWorker = workers.find((w: any) => w?.attributes?.n_number === form.nNumber?.value);
   const managers = state.managerContext.managers;
   const profiles = state.profileContext.profiles;
-  const offices = state.officeContext.offices;
 
   const [forwardToToggle, setForwardToToggle] = React.useState(false);
   const [missingFields, setMissingFields] = React.useState([]);
@@ -233,7 +232,6 @@ export const UserEntryForm = () => {
         forwardToToggle={forwardToToggle}
         handleClose={handleResetForm}
         loading={loading}
-        offices={offices}
         profiles={profiles}
         updateLoading={updateLoading}
         worker={tritonWorker}

@@ -19,9 +19,9 @@ import {
   Action,
   AppState
 } from "globals/interfaces";
-import { UserFormState } from "components/tabs/usermanagement/OnboardNewUser/UserEntryFormWrapper/UserEntryFormWrapper.Interfaces";
+import { UserFormState } from "usermanagement/UserEntryFormWrapper.Interfaces";
 import React, { ReactElement } from "react";
-import { ProfileEntryFormState } from "components/tabs/orgmanagement/triton/ProfileEntryForm/ProfileEntryForm.Interfaces";
+import { ProfileEntryFormState } from "orgmanagement/ProfileEntryForm.Interfaces";
 import { SkillState } from "callflowmanagement/Skills.Interfaces";
 
 const StateContext = React.createContext(undefined);

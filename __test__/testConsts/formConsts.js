@@ -2,7 +2,7 @@ import { ExtensionSearchStatuses } from "usermanagement/OnboardNewUser/Extension
 import { formModes } from "globals";
 import {
   managerList,
-  profileList
+  mockProfiles
 } from "./testConsts";
 
 export const fetchedUser = {
@@ -171,7 +171,7 @@ export const validFormOptions = {
   manager: managerList[0],
   nNumber: "n1234567",
   nNumberFetchedUser: fetchedUser,
-  profileId: profileList[0].profile_id,
+  profileId: mockProfiles[0].profile_id,
   calabrioUser: {
     team: null,
     timezone: {
@@ -352,7 +352,7 @@ export const mockWorkers = [
       manager_last_name: validFormOptions.manager.manager_last_name,
       manager_n_number: validFormOptions.manager.manager_n_number,
       office_location_name: "Jupiter",
-      profile_id: profileList[1].profile_id,
+      profile_id: mockProfiles[1].profile_id,
       routing: {
         skills: [
           "466"
@@ -380,7 +380,7 @@ export const mockWorkers = [
       manager_last_name: validFormOptions.manager.manager_last_name,
       manager_n_number: validFormOptions.manager.manager_n_number,
       office_location_name: "Pluto",
-      profile_id: profileList[1].profile_id,
+      profile_id: mockProfiles[1].profile_id,
       routing: {
         skills: [
           "466"
@@ -407,7 +407,7 @@ export const mockWorkers = [
       manager_last_name: validFormOptions.manager.manager_last_name,
       manager_n_number: validFormOptions.manager.manager_n_number,
       office_location_name: "Pluto",
-      profile_id: profileList[1].profile_id,
+      profile_id: mockProfiles[1].profile_id,
       routing: {
         skills: [
           "466"

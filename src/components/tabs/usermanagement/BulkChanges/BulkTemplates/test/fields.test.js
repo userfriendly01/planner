@@ -508,9 +508,7 @@ describe("fields.js", () => {
         const optionsFunction = FIELDS.PROFILE_ID.options;
         test("returns the profile id options", () => {
           const options = optionsFunction(initialTestState);
-          expect(options).toEqual([
-            1, 2, 3, 12, 396
-          ]);
+          expect(options).toEqual(initialTestState.profileContext.profiles.map(profile => profile.profile_id));
         });
       });
 
@@ -1280,16 +1278,16 @@ describe("fields.js", () => {
             rowNumber: 4,
             "Did User": "Y",
             "Zero Out Enabled": "Y",
-            "Profile Id": 2
+            "Profile Id": 0
           };
           const result = await ZeroOutEnabledValidateFunction(row, initialTestState);
-          expect(result).toEqual("Zero Out Enabled whateverOverflowSkill set for row 4");
+          expect(result).toEqual("Zero Out Enabled lscOBDialer1 set for row 4");
           expect(row).toEqual({
             ...row,
             zeroOutEnabled: true,
             attributes: {
               routing: {
-                skills: ["whateveroverflowskill"],
+                skills: ["lscOBDialer1"],
                 levels: {}
               }
             }
@@ -1317,17 +1315,17 @@ describe("fields.js", () => {
             rowNumber: 6,
             "Did User": "Y",
             "Zero Out Enabled": "Y",
-            "Profile Id": 2,
+            "Profile Id": 0,
             attributes: existingAttributes
           };
           const result = await ZeroOutEnabledValidateFunction(row, initialTestState);
-          expect(result).toEqual("Zero Out Enabled whateverOverflowSkill set for row 6");
+          expect(result).toEqual("Zero Out Enabled lscOBDialer1 set for row 6");
           expect(row).toEqual({
             ...row,
             zeroOutEnabled: true,
             attributes: {
               routing: {
-                skills: ["whateveroverflowskill"],
+                skills: ["lscOBDialer1"],
                 levels: {}
               },
               ...existingAttributes
@@ -1654,6 +1652,23 @@ describe("fields.js", () => {
       });
     });
     describe("ROUTING_TEAM", () => {
+      const customTestState = {
+        ...initialTestState,
+        profileContext: {
+          ...initialTestState.profileContext,
+          profiles: [
+            initialTestState.profileContext.profiles[0],
+            {
+              ...initialTestState.profileContext.profiles[1],
+              routing_teams: [
+                {
+                  routing_team_nme: "licencedCSC"
+                }
+              ]
+            }
+          ]
+        }
+      }; // these are not yet part of the profile payload
       describe("validate function", () => {
         const routingTeamValidateFunction = FIELDS.ROUTING_TEAM.validateFunction;
         describe("profile is found in matching profiles", () => {
@@ -1661,11 +1676,11 @@ describe("fields.js", () => {
             const row = {
               rowNumber: 2,
               "Routing Team": null,
-              "Profile Id": 2
+              "Profile Id": 1
             };
             test("return rejected promise", async () => {
               try {
-                await routingTeamValidateFunction(row, initialTestState);
+                await routingTeamValidateFunction(row, customTestState);
               } catch (err) {
                 expect(err).toBe(JSON.stringify({
                   rowNumber: 2,
@@ -1678,11 +1693,11 @@ describe("fields.js", () => {
             const row = {
               rowNumber: 2,
               "Routing Team": "Butts",
-              "Profile Id": 2
+              "Profile Id": 1
             };
             test("return rejected promise", async () => {
               try {
-                await routingTeamValidateFunction(row, initialTestState);
+                await routingTeamValidateFunction(row, customTestState);
               } catch (err) {
                 expect(err).toBe(JSON.stringify({
                   rowNumber: 2,
@@ -1695,10 +1710,10 @@ describe("fields.js", () => {
             const row = {
               rowNumber: 2,
               "Routing Team": "licencedCsC",
-              "Profile Id": 2
+              "Profile Id": 1
             };
             test("return resolved promise & update row", async () => {
-              const res = await routingTeamValidateFunction(row, initialTestState);
+              const res = await routingTeamValidateFunction(row, customTestState);
               expect(res).toBe("Routing Team Valid for row 2");
               expect(row).toEqual({
                 ...row,
@@ -1717,7 +1732,7 @@ describe("fields.js", () => {
           };
           test("return rejected promise", async () => {
             try {
-              await routingTeamValidateFunction(row, initialTestState);
+              await routingTeamValidateFunction(row, customTestState);
             } catch (err) {
               expect(err).toBe(JSON.stringify({
                 rowNumber: 2,
@@ -1726,15 +1741,15 @@ describe("fields.js", () => {
             }
           });
         });
-        describe("profile not found and field is null", () => {
+        describe("profile found and field is null", () => {
           const row = {
             rowNumber: 2,
             "Routing Team": "",
-            "Profile Id": 1
+            "Profile Id": 0
           };
           test("return resolved promise", async () => {
-            const res = await routingTeamValidateFunction(row, initialTestState);
-            expect(res).toBe("Bypassing Routing Team. Unapplicable for profile id 1 for row 2");
+            const res = await routingTeamValidateFunction(row, customTestState);
+            expect(res).toBe("Bypassing Routing Team. Unapplicable for profile id 0 for row 2");
             expect(row).toEqual(row);
           });
         });
@@ -1745,11 +1760,11 @@ describe("fields.js", () => {
           const row = {
             rowNumber: 1,
             "Routing Team": "licencedCSC",
-            "Profile Id": 2,
+            "Profile Id": 1,
             attributes: existingAttributes
           };
           test("resolves with field is valid message", async () => {
-            const result = await routingTeamValidateFunction(row, initialTestState);
+            const result = await routingTeamValidateFunction(row, customTestState);
             expect(result).toEqual("Routing Team Valid for row 1");
             expect(row).toEqual({
               ...row,
@@ -1761,9 +1776,9 @@ describe("fields.js", () => {
       describe("options", () => {
         const optionsFunction = FIELDS.ROUTING_TEAM.options;
         test("returns the profiles with available Routing Teams", () => {
-          const options = optionsFunction(initialTestState);
+          const options = optionsFunction(customTestState);
           expect(options).toEqual([
-            "Profile 2: licencedCSC"
+            "Profile 1: licencedCSC"
           ]);
         });
       });

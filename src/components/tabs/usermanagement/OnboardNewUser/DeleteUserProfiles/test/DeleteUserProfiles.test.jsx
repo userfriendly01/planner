@@ -4,7 +4,6 @@ import { StyledButton } from "components/StyledButton";
 import {
   useAdminState,
   useFormState,
-  useAdminDispatch,
   useFormDispatch
 } from "context/appContext";
 import { userFormActions } from "context/userFormReducer";
@@ -29,7 +28,6 @@ jest.mock("components/StyledButton", () => ({
 jest.mock("context/appContext", () => ({
   useAdminState: jest.fn(),
   useFormState: jest.fn(),
-  useAdminDispatch: jest.fn(),
   useFormDispatch: jest.fn()
 }));
 
@@ -37,7 +35,6 @@ jest.mock("services/terminateUser", () => ({
   terminateUser: jest.fn()
 }));
 
-const mockDispatch = jest.fn();
 const mockFormDispatch = jest.fn();
 const mockHandleClose = jest.fn();
 const mockUpdateLoading = jest.fn();
@@ -68,7 +65,6 @@ describe("DeleteTritonUser", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.resetAllMocks();
-    useAdminDispatch.mockReturnValue(mockDispatch);
     useAdminState.mockReturnValue(initialTestState);
     useFormDispatch.mockReturnValue(mockFormDispatch);
     useFormState.mockReturnValue({
@@ -181,7 +177,8 @@ describe("DeleteTritonUser", () => {
         const confirmDelete = StyledButton.mock.calls[1][0].onClick;
         act(() => confirmDelete());
         expect(terminateUser).toHaveBeenCalledTimes(1);
-        expect(terminateUser.mock.calls[0][0]).toEqual(expectedTerminatePayload);
+        expect(terminateUser.mock.calls[0][0]).toEqual("Access Token");
+        expect(terminateUser.mock.calls[0][1]).toEqual(expectedTerminatePayload);
         jest.runAllTimers();
         await waitFor(() => {
           expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
@@ -197,11 +194,6 @@ describe("DeleteTritonUser", () => {
           });
           expect(mockUpdateLoading).toHaveBeenCalledWith({
             saveUser: false
-          });
-          expect(mockDispatch).toHaveBeenCalledTimes(1);
-          expect(mockDispatch).toHaveBeenCalledWith({
-            type: "deleteWorker",
-            payload: mockWorker.sid
           });
         });
       });
@@ -224,7 +216,8 @@ describe("DeleteTritonUser", () => {
             const confirmDelete = StyledButton.mock.calls[1][0].onClick;
             act(() => confirmDelete());
             expect(terminateUser).toHaveBeenCalledTimes(1);
-            expect(terminateUser.mock.calls[0][0]).toEqual(expectedTerminatePayload);
+            expect(terminateUser.mock.calls[0][0]).toEqual("Access Token");
+            expect(terminateUser.mock.calls[0][1]).toEqual(expectedTerminatePayload);
             await waitFor(() => {
               expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
               expect(mockUpdateLoading).toHaveBeenCalledWith({
@@ -237,7 +230,6 @@ describe("DeleteTritonUser", () => {
                 saveStatus: "fail",
                 saveUser: true
               });
-              expect(mockDispatch).toHaveBeenCalledTimes(0);
             });
           });
         });
@@ -259,7 +251,8 @@ describe("DeleteTritonUser", () => {
             const confirmDelete = StyledButton.mock.calls[1][0].onClick;
             act(() => confirmDelete());
             expect(terminateUser).toHaveBeenCalledTimes(1);
-            expect(terminateUser.mock.calls[0][0]).toEqual(expectedTerminatePayload);
+            expect(terminateUser.mock.calls[0][0]).toEqual("Access Token");
+            expect(terminateUser.mock.calls[0][1]).toEqual(expectedTerminatePayload);
             await waitFor(() => {
               expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
               expect(mockUpdateLoading).toHaveBeenCalledWith({
@@ -272,7 +265,6 @@ describe("DeleteTritonUser", () => {
                 saveStatus: "fail",
                 saveUser: true
               });
-              expect(mockDispatch).toHaveBeenCalledTimes(0);
             });
           });
         });
@@ -307,7 +299,8 @@ describe("DeleteTritonUser", () => {
               const confirmDelete = StyledButton.mock.calls[1][0].onClick;
               act(() => confirmDelete());
               expect(terminateUser).toHaveBeenCalledTimes(1);
-              expect(terminateUser.mock.calls[0][0]).toEqual(expectedTerminatePayload);
+              expect(terminateUser.mock.calls[0][0]).toEqual("Access Token");
+              expect(terminateUser.mock.calls[0][1]).toEqual(expectedTerminatePayload);
               await waitFor(() => {
                 expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
                 expect(mockUpdateLoading).toHaveBeenCalledWith({
@@ -324,11 +317,6 @@ describe("DeleteTritonUser", () => {
                   ],
                   saveStatus: "partial fail",
                   saveUser: true
-                });
-                expect(mockDispatch).toHaveBeenCalledTimes(1);
-                expect(mockDispatch).toHaveBeenCalledWith({
-                  type: "deleteWorker",
-                  payload: "WK1234"
                 });
               });
             });
@@ -360,7 +348,8 @@ describe("DeleteTritonUser", () => {
               const confirmDelete = StyledButton.mock.calls[1][0].onClick;
               act(() => confirmDelete());
               expect(terminateUser).toHaveBeenCalledTimes(1);
-              expect(terminateUser.mock.calls[0][0]).toEqual(expectedTerminatePayload);
+              expect(terminateUser.mock.calls[0][0]).toEqual("Access Token");
+              expect(terminateUser.mock.calls[0][1]).toEqual(expectedTerminatePayload);
               await waitFor(() => {
                 expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
                 expect(mockUpdateLoading).toHaveBeenCalledWith({
@@ -377,7 +366,6 @@ describe("DeleteTritonUser", () => {
                   saveStatus: "fail",
                   saveUser: true
                 });
-                expect(mockDispatch).toHaveBeenCalledTimes(0);
               });
             });
           });
@@ -425,7 +413,8 @@ describe("DeleteTritonUser", () => {
             expect(ForwardToEntryForm).toHaveBeenCalledTimes(0);
             act(() => confirmDelete());
             expect(terminateUser).toHaveBeenCalledTimes(1);
-            expect(terminateUser.mock.calls[0][0]).toEqual(expectedTerminatePayload);
+            expect(terminateUser.mock.calls[0][0]).toEqual("Access Token");
+            expect(terminateUser.mock.calls[0][1]).toEqual(expectedTerminatePayload);
             await waitFor(() => {
               expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
               expect(mockUpdateLoading).toHaveBeenCalledWith({
@@ -439,7 +428,6 @@ describe("DeleteTritonUser", () => {
                 saveStatus: null,
                 saveUser: false
               });
-              expect(mockDispatch).toHaveBeenCalledTimes(0);
               expect(rendered.container).not.toHaveTextContent("Confirm Delete to allow the system to identify the forward to option for this DID user.");
               expect(ForwardToEntryForm).toHaveBeenCalledTimes(2);
               expect(ForwardToEntryForm.mock.calls[1][0].label).toBe("The system failed to identify the DID's forward to option, please manually select it and try again.");
