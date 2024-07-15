@@ -112,6 +112,7 @@ describe("profileEntryFormReducer", () => {
         clickToDial: true,
         eftAuthorization: true,
         claimNumberEdit: true,
+        ftoBackup: true,
         overflowSkill: "lscOBDialer1",
         profileName: "Game of Phones",
         transferQueues: [
@@ -168,6 +169,7 @@ describe("profileEntryFormReducer", () => {
         clickToDial: false,
         eftAuthorization: false,
         claimNumberEdit: false,
+        ftoBackup: false,
         overflowSkill: null,
         profileName: "USRM Billing & Collections",
         transferQueues: [],

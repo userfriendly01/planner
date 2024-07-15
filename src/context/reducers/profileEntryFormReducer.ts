@@ -38,6 +38,7 @@ export const initialProfileEntryFormState: ProfileEntryFormState = {
   screenpops: [],
   operatingUnit: null,
   accessGroup: null,
+  ftoBackup: false,
   forwardToNum: {
     value: "",
     unmaskedValue: "",
@@ -92,6 +93,7 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         claimNumberEdit: action.payload.edt_claim_num,
         overflowSkill: action.payload.overflow_skill,
         profileName: action.payload.profile_name,
+        ftoBackup: action.payload.backup_workers,
         screenpops: action.payload.screenpops || [],
         transferQueues: action.payload.transfer_queues || [],
         operatingUnit: {

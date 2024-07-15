@@ -95,6 +95,7 @@ export const initialProfileEntryFormState = {
   profileName: "",
   transferQueues: [],
   accessGroup: null,
+  ftoBackup: false,
   forwardToNum: {
     value: "",
     e164: "",
@@ -129,6 +130,7 @@ export const validProfileEntryFormState = {
   clickToDial: false,
   eftAuthorization: false,
   claimNumberEdit: false,
+  ftoBackup: false,
   forwardToNum: {
     value: "(603) 851-8200",
     e164: "+16038518200",
