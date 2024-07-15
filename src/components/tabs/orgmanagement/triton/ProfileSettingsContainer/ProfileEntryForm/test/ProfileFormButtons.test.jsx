@@ -136,7 +136,7 @@ describe("<ProfileFormButtons />", () => {
             expect(mockHandleClose).toHaveBeenCalledTimes(1);
             expect(listUMSoftphoneConfigs).toHaveBeenCalledTimes(1);
             expect(loadSoftphoneConfigRelationships).toHaveBeenCalledTimes(1);
-            expect(loadSoftphoneConfigRelationships).toHaveBeenCalledWith(initialTestState.profileContext.profiles, mockAdminDispatch);
+            expect(loadSoftphoneConfigRelationships).toHaveBeenCalledWith(initialTestState.profileContext, mockAdminDispatch);
             expect(mockSetForm).toHaveBeenCalledTimes(1);
             expect(mockSetForm).toHaveBeenCalledWith({ type: profileEntryFormActions.RESET_FORM });
           });

@@ -151,7 +151,7 @@ export const loadSoftphoneConfigRelationships = async (profileContext: any, disp
     payload: {
       profiles: formattedProfiles,
       calltags: availableCallTags,
-      accessGroups: profileContext.accessGroups.map((accessGroup: AccessGroup) => formatAccessGroup(accessGroup))
+      accessGroups: profileContext.accessGroups?.map((accessGroup: AccessGroup) => formatAccessGroup(accessGroup))
     }
   }));
 
