@@ -35,7 +35,10 @@ import {
 import { ComponentControl } from "components/ComponentControl";
 import { CustomToast } from "components/CustomToast";
 import { PhoneNumberModalTypeEnum } from "dynamicCallFlow/DynamicCallFlow.PhoneNumber.Interfaces";
-import { userDoesNotHaveReadWriteAccess } from "components/tabs/dynamicCallFlow/common/authentication";
+import {
+  DYNAMIC_CALL_FLOW_ROLE,
+  userDoesNotHaveReadWriteAccess
+} from "components/tabs/dynamicCallFlow/common/authentication";
 
 export interface FormModalProps {
   isOpen: boolean;
@@ -60,7 +63,7 @@ export const PhoneNumberFormModal = ({
     modalController
   } = useContext(DynamicCallFlowPhoneNumberContext);
 
-  const userDoesNotHavePermission = useMemo<boolean>(() => userDoesNotHaveReadWriteAccess(permissions, DYNAMIC_CALL_FLOW_PROFILE), []);
+  const userDoesNotHavePermission = useMemo<boolean>(() => userDoesNotHaveReadWriteAccess(permissions, DYNAMIC_CALL_FLOW_ROLE), []);
   const [formRecord, setFormRecord] = React.useState<PhoneNumberRecordType>({} as PhoneNumberRecordType);
   const [alertBarProps, setAlertBarProps] = useState<AlertBarProps>(initialAlertBarProps);
 

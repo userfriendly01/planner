@@ -11,7 +11,10 @@ import {
 import { DynamicCallFlowActionContext } from "../DynamicCallFlow.Action.Container";
 import { Filter } from "../../common/DataGrid/Abstract.DataGrid.Filter";
 import { ActionModalTypeEnum } from "dynamicCallFlow/DataGrid/Action.DataGrid.Component";
-import { userDoesNotHaveReadWriteAccess } from "components/tabs/dynamicCallFlow/common/authentication";
+import {
+  DYNAMIC_CALL_FLOW_ROLE,
+  userDoesNotHaveReadWriteAccess
+} from "components/tabs/dynamicCallFlow/common/authentication";
 import {
   DataGridControllerRef,
   DataGridFilterRef
@@ -36,7 +39,7 @@ export const ActionDataGridToolBar = ({
     modalController
   } = useContext(DynamicCallFlowActionContext);
 
-  const userDoesNotHavePermission = useMemo(() => userDoesNotHaveReadWriteAccess(permissions, DYNAMIC_CALL_FLOW_PROFILE), []);
+  const userDoesNotHavePermission = useMemo(() => userDoesNotHaveReadWriteAccess(permissions, DYNAMIC_CALL_FLOW_ROLE), []);
   const [localFilter, setLocalFilter] = useState<Filter>({} as Filter);
 
   useEffect(()=> {

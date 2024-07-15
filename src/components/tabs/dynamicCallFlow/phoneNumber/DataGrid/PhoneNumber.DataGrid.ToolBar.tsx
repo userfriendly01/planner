@@ -23,6 +23,7 @@ import {
 } from "../../common/DynamicCallFlow.Interfaces";
 import { PhoneNumberRecordType } from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
 import {
+  DYNAMIC_CALL_FLOW_ROLE,
   userDoesNotHaveReadWriteAccess
 } from "components/tabs/dynamicCallFlow/common/authentication";
 import { PhoneNumberXlsxExporter } from "dynamicCallFlow/Xlsx/Export/PhoneNumber.Xlsx.Exporter";
@@ -46,7 +47,7 @@ const PhoneNumberDataGridToolBar = ({
     modalController
   } = useContext(DynamicCallFlowPhoneNumberContext);
 
-  const userDoesNotHavePermission = useMemo(() => userDoesNotHaveReadWriteAccess(permissions,DYNAMIC_CALL_FLOW_PROFILE), []);
+  const userDoesNotHavePermission = useMemo(() => userDoesNotHaveReadWriteAccess(permissions, DYNAMIC_CALL_FLOW_ROLE), []);
   const [localFilter, setLocalFilter] = useState<Filter>({} as Filter);
 
   useEffect(()=> {
