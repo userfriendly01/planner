@@ -183,6 +183,10 @@ export const profileTableColumnHeader = [
   {
     COLUMN_NAME: "Access Group",
     TOOLTIP: "Access Group Name for BPO profiles"
+  },
+  {
+    COLUMN_NAME: "FTO Backup",
+    TOOLTIP: "Enable/Disable the FTO Backup Workers feature"
   }
 ];
 
@@ -246,5 +250,9 @@ export const toggleControls: ToggleFormField[] = [
   {
     fieldKey: "eftAuthorization",
     label: "EFT Authorization"
+  },
+  {
+    fieldKey: "ftoBackup",
+    label: "FTO Backup"
   }
 ];
