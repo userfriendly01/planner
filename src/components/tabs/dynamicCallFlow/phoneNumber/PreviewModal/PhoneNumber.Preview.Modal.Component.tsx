@@ -52,7 +52,7 @@ export const PhoneNumberPreviewModal = ({
   const [htmlInputElements, setHtmlInputElements] = React.useState<Array<HTMLInputElement>>([]);
   const tableGridColumnDef: Array<GridColDef> = useMemo<Array<GridColDef>>(() => {
     return reconstructTableColumnDef(modalType, [...PhoneNumberPreviewModalColumnDef], previewModalGridApiRef, fieldOptions);
-  },[modalType]);
+  },[modalType, previewModalGridApiRef, fieldOptions]);
 
   useEffect(()=> {
     setModalRecords([ ...selectedRecords ]);
@@ -195,7 +195,7 @@ export const PhoneNumberPreviewModal = ({
             <StyledButton sx={{ marginRight: "15px" }} onClick={()=>{ handleOnDelete(); }}>Delete</StyledButton>
             }
             {modalType === PhoneNumberModalTypeEnum.BulkAdd &&
-            <StyledButton sx={{ marginRight: "15px" }} onClick={() => handleOnCreate() }>Save</StyledButton>
+            <StyledButton data-test-id="ScpANXily_jfK9JzNGaJf" sx={{ marginRight: "15px" }} onClick={() => handleOnCreate() }>Save</StyledButton>
             }
             <StyledButton onClick={()=>{ handleOnClose(); }}>Cancel</StyledButton>
           </Box>

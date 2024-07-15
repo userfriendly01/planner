@@ -47,7 +47,7 @@ const PhoneNumberDataGridToolBar = ({
     modalController
   } = useContext(DynamicCallFlowPhoneNumberContext);
 
-  const userDoesNotHavePermission = useMemo(() => userDoesNotHaveReadWriteAccess(permissions, DYNAMIC_CALL_FLOW_ROLE), []);
+  const userDoesNotHavePermission = useMemo(() => userDoesNotHaveReadWriteAccess(permissions, DYNAMIC_CALL_FLOW_ROLE), [permissions]);
   const [localFilter, setLocalFilter] = useState<Filter>({} as Filter);
 
   useEffect(()=> {

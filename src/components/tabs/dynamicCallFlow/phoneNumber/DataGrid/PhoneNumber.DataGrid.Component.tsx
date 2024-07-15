@@ -129,7 +129,7 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
     };
 
     loadDataGrid();
-  }, []);
+  });
 
   useEffect(() => {
     dataGridFilter.current.sourceRecords = sourceRecords;
@@ -228,8 +228,7 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
   }
 
   PhoneNumberDataGridColumnDef[0].renderCell = (gridRenderCellParams: GridRenderCellParams<PhoneNumberRecordType>) =>
-    (<a href="#" onClick={() => openEditFormModal(gridRenderCellParams.row)}>{`${gridRenderCellParams.value}`}</a>);
-
+    (<a data-test-id="GDR72LjjpPWsU1VoyXAo4" href="#" onClick={() => openEditFormModal(gridRenderCellParams.row)}>{`${gridRenderCellParams.value}`}</a>);
   return (
     <div className="data-grid-wrapper">
       <div className="data-grid-wrapper">
