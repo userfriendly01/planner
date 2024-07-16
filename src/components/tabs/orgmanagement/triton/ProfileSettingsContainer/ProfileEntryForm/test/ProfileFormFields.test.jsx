@@ -526,26 +526,28 @@ describe("<ProfileFormFields />", () => {
         expect(Switch.mock.calls[4][0].checked).toBe(true);
         expect(FormControlLabel.mock.calls[5][0].label).toBe("Payment Processing");
         expect(Switch.mock.calls[5][0].checked).toBe(false);
-        expect(FormControlLabel.mock.calls[6][0].label).toBe("ACW Option");
+        expect(FormControlLabel.mock.calls[6][0].label).toBe("FTO Backup");
         expect(Switch.mock.calls[6][0].checked).toBe(false);
-        expect(FormControlLabel.mock.calls[7][0].label).toBe("ACW Data Entry");
+        expect(FormControlLabel.mock.calls[7][0].label).toBe("ACW Option");
         expect(Switch.mock.calls[7][0].checked).toBe(false);
-        expect(FormControlLabel.mock.calls[8][0].label).toBe("Agent Assisted Pay");
+        expect(FormControlLabel.mock.calls[8][0].label).toBe("ACW Data Entry");
         expect(Switch.mock.calls[8][0].checked).toBe(false);
-        expect(FormControlLabel.mock.calls[9][0].label).toBe("Voice Mail Transcription");
+        expect(FormControlLabel.mock.calls[9][0].label).toBe("Agent Assisted Pay");
         expect(Switch.mock.calls[9][0].checked).toBe(false);
-        expect(FormControlLabel.mock.calls[10][0].label).toBe("Call Reason");
+        expect(FormControlLabel.mock.calls[10][0].label).toBe("Voice Mail Transcription");
         expect(Switch.mock.calls[10][0].checked).toBe(false);
-        expect(FormControlLabel.mock.calls[11][0].label).toBe("Claim Number Edit");
+        expect(FormControlLabel.mock.calls[11][0].label).toBe("Call Reason");
         expect(Switch.mock.calls[11][0].checked).toBe(false);
-        expect(FormControlLabel.mock.calls[12][0].label).toBe("Policy Number Edit");
+        expect(FormControlLabel.mock.calls[12][0].label).toBe("Claim Number Edit");
         expect(Switch.mock.calls[12][0].checked).toBe(false);
-        expect(FormControlLabel.mock.calls[13][0].label).toBe("Click To Dial");
+        expect(FormControlLabel.mock.calls[13][0].label).toBe("Policy Number Edit");
         expect(Switch.mock.calls[13][0].checked).toBe(false);
-        expect(FormControlLabel.mock.calls[14][0].label).toBe("EFT Authorization");
+        expect(FormControlLabel.mock.calls[14][0].label).toBe("Click To Dial");
         expect(Switch.mock.calls[14][0].checked).toBe(false);
-        expect(FormControlLabel.mock.calls[15][0].label).toBe("FTO Backup");
+        expect(FormControlLabel.mock.calls[15][0].label).toBe("EFT Authorization");
+        expect(Switch.mock.calls[15][0].checked).toBe(false);
         expect(FormControlLabel.mock.calls[16][0].label).toBe("Self Service Indicator");
+        expect(Switch.mock.calls[16][0].checked).toBe(true);
         expect(CallTagFields).not.toHaveBeenCalled();
       });
       describe("self service indicator - profile >= 39", () => {
@@ -581,9 +583,9 @@ describe("<ProfileFormFields />", () => {
           FormControlLabel.mock.calls.forEach(call => {
             render(call[0].control);
           });
-          expect(FormControlLabel.mock.calls[11][0].label).toBe("Claim Number Edit");
-          expect(Switch.mock.calls[11][0].checked).toBe(false);
-          const onChange = Switch.mock.calls[11][0].onChange;
+          expect(FormControlLabel.mock.calls[12][0].label).toBe("Claim Number Edit");
+          expect(Switch.mock.calls[12][0].checked).toBe(false);
+          const onChange = Switch.mock.calls[12][0].onChange;
           onChange();
           expect(mockSetForm).toHaveBeenCalledTimes(1);
           expect(mockSetForm).toHaveBeenCalledWith({
