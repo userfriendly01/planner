@@ -49,7 +49,6 @@ export const BasicFormInfo = (props: BasicFormInfoProps) => {
   const setForm = useFormDispatch();
   const [autoUpdateOutgoing, setAutoUpdateOutgoing] = useState(form.triton.outgoing.value === form.triton.did.value || !form.triton.outgoing.value);
 
-  console.log("Faith, worker", worker);
   useEffect(() => {
     if(form.triton.didUser && form.formMode === formModes.UPDATE && form.triton.did.updated
       && worker.did && form.triton.did.e164 !== worker.did){

@@ -35,11 +35,9 @@ export const formatUsers = (users: UMUser[]) => {
 
 export const isUnpopulatedField = (f: any) => (!f && f !== false && f !== 0) || f?.length === 0 || (typeof f === "object" && JSON.stringify(f) === JSON.stringify({}));
 
-// For a DID user, the outgoing number is tied to the did, if you change one you must change both in order for the form to be valid
 export const isDidDifferentValid = (form: UserFormState, worker: UMUser, forwardToToggle: boolean): boolean => {
   if (forwardToToggle === true) {
-    return removeNonNumericCharacters(form.triton.outgoing.value) !== formatE164PhoneNumber(worker?.attributes?.caller_id)
-      && removeNonNumericCharacters(form.triton.did.value) !== formatE164PhoneNumber(worker?.did);
+    return removeNonNumericCharacters(form.triton.did.value) !== formatE164PhoneNumber(worker?.did);
   } else {
     return true;
   }
