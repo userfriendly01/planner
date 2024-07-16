@@ -174,11 +174,7 @@ describe("ResetModal", () => {
         describe("progress hit its max", () => {
           beforeEach(() => {
             resetProfiles.mockRejectedValue({
-              response: {
-                data: {
-                  message: "read timed out"
-                }
-              }
+              message: 'network error'
             });
             fetchResetProfileDatadogLogs.mockResolvedValue({
               data: []
@@ -248,11 +244,7 @@ describe("ResetModal", () => {
         describe("error was thrown from Datadog", () => {
           beforeEach(() => {
             resetProfiles.mockRejectedValue({
-              response: {
-                data: {
-                  message: "read timed out"
-                }
-              }
+              message: "network error"
             });
             fetchResetProfileDatadogLogs.mockRejectedValue("Aww");
           });
