@@ -23,6 +23,7 @@ import {
 import { useAdminState } from "context/appContext";
 import { logger } from "utils/logger";
 import util from "util";
+import { formatErrorMessage } from "utils/_formatUtils";
 
 export const ResetModal = (props: ResetModalProps) => {
   const {
@@ -88,21 +89,12 @@ export const ResetModal = (props: ResetModalProps) => {
       setResults(res.data);
       setStatus(StatusOptions.SUCCESS);
     } catch (error) {
-      const err = {
-        error: (error.response && error.response.data) || error,
-        message: "Reset Profiles Failed"
-      }
-      logger.error("Reset Profiles Failed", {
-        level: "error",
-        error: err
-      });
-
       const isTimeout = error?.response?.data?.message?.toLowerCase().trim() === "read timed out" || error?.response?.data?.error?.message?.toLowerCase().trim() === "endpoint request timed out";
       if (isTimeout) {
         logger.warn("Call to reset profiles timed out. Trying to fetch datadog log", { nNumber });
         setStatus(StatusOptions.TIME_OUT);
       } else {
-        const errorString = error.message || error.response?.message || util.format(error);
+        const errorString = formatErrorMessage(error);
         const errorMessage = "Reset Profiles failed calling the Calabrio service";
         logger.error(errorMessage, {
           error,
