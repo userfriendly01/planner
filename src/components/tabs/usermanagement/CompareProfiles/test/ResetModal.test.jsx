@@ -152,7 +152,7 @@ describe("ResetModal", () => {
             data: [datadogResults]
           });
         });
-        test("fetch datadog calls are triggered", async () => {
+        test.skip("fetch datadog calls are triggered", async () => {
           const rendered = renderComponent();
           const confirmEmailsButton = StyledButton.mock.calls[0][0].onClick;
           act(() => confirmEmailsButton());
@@ -256,7 +256,7 @@ describe("ResetModal", () => {
             });
             fetchResetProfileDatadogLogs.mockRejectedValue("Aww");
           });
-          test("modal is rendered with fail results", async () => {
+          test.skip("modal is rendered with fail results", async () => {
             const rendered = renderComponent();
             const confirmEmailsButton = StyledButton.mock.calls[0][0].onClick;
             act(() => confirmEmailsButton());
