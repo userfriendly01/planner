@@ -21,27 +21,31 @@ import {
   deleteDynamicPhoneNumberRecord
 } from "dynamicCallFlowPhoneNumber/GraphQL/Query/Delete.Dynamic.PhoneNumber.Record.Query";
 
-export const createPhoneNumberRecord = async (accessToken: string, newPhoneNumberRecord: PhoneNumberRecordType): Promise<SingleRecordResults<PhoneNumberRecordType>> => {
-  if (PhoneNumberRecordUtil.isLegacyPhoneNumberRecord(newPhoneNumberRecord)) {
-    return createLegacyPhoneNumberRecord(accessToken, newPhoneNumberRecord as CctSharedCallFlowDb);
+export const createPhoneNumberRecord = async (accessToken: string, phoneNumberRecordToBeCreated: PhoneNumberRecordType): Promise<SingleRecordResults<PhoneNumberRecordType>> => {
+  PhoneNumberRecordUtil.removeTransientProperties(phoneNumberRecordToBeCreated);
+
+  if (PhoneNumberRecordUtil.isLegacyPhoneNumberRecord(phoneNumberRecordToBeCreated)) {
+    return createLegacyPhoneNumberRecord(accessToken, phoneNumberRecordToBeCreated as CctSharedCallFlowDb);
   } else {
-    return createDynamicPhoneNumberRecord(accessToken, newPhoneNumberRecord as PhoneNumber);
+    return createDynamicPhoneNumberRecord(accessToken, phoneNumberRecordToBeCreated as PhoneNumber);
   }
 };
 
-export const updatePhoneNumberRecord = async (accessToken: string, phoneNumberRecord: PhoneNumberRecordType): Promise<SingleRecordResults<PhoneNumberRecordType>> => {
-  if (PhoneNumberRecordUtil.isLegacyPhoneNumberRecord(phoneNumberRecord)) {
-    return updateLegacyPhoneNumberRecord(accessToken, phoneNumberRecord as CctSharedCallFlowDb);
+export const updatePhoneNumberRecord = async (accessToken: string, updatedPhoneNumberRecord: PhoneNumberRecordType): Promise<SingleRecordResults<PhoneNumberRecordType>> => {
+  PhoneNumberRecordUtil.removeTransientProperties(updatedPhoneNumberRecord);
+
+  if (PhoneNumberRecordUtil.isLegacyPhoneNumberRecord(updatedPhoneNumberRecord)) {
+    return updateLegacyPhoneNumberRecord(accessToken, updatedPhoneNumberRecord as CctSharedCallFlowDb);
   } else {
-    return updateDynamicPhoneNumberRecord(accessToken, phoneNumberRecord as PhoneNumber);
+    return updateDynamicPhoneNumberRecord(accessToken, updatedPhoneNumberRecord as PhoneNumber);
   }
 };
 
-export const deletePhoneNumberRecord = async (accessToken: string, phoneNumberRecord: PhoneNumberRecordType): Promise<SingleRecordResults<PhoneNumberRecordType>> => {
-  if (PhoneNumberRecordUtil.isLegacyPhoneNumberRecord(phoneNumberRecord)) {
-    return deleteLegacyPhoneNumberRecord(accessToken, phoneNumberRecord as CctSharedCallFlowDb);
+export const deletePhoneNumberRecord = async (accessToken: string, phoneNumberRecordToDelete: PhoneNumberRecordType): Promise<SingleRecordResults<PhoneNumberRecordType>> => {
+  if (PhoneNumberRecordUtil.isLegacyPhoneNumberRecord(phoneNumberRecordToDelete)) {
+    return deleteLegacyPhoneNumberRecord(accessToken, phoneNumberRecordToDelete as CctSharedCallFlowDb);
   } else {
-    return deleteDynamicPhoneNumberRecord(accessToken, phoneNumberRecord as PhoneNumber);
+    return deleteDynamicPhoneNumberRecord(accessToken, phoneNumberRecordToDelete as PhoneNumber);
   }
 };
 

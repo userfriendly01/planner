@@ -28,6 +28,8 @@ async function batchPhoneNumberRecords(
   batchLegacyPhoneNumberRecordQuery: BatchRecordQuery<PhoneNumberRecordType>,
   batchDynamicPhoneNumberRecordQuery: BatchRecordQuery<PhoneNumberRecordType>
 ): Promise<BatchResults<PhoneNumberRecordType>> {
+  PhoneNumberRecordUtil.batchRemoveTransientProperties(phoneNumberRecords);
+
   // Process batch jobs concurrently
   const [legacyBatchResults, dynamicBatchResults] =
     await Promise.all([

@@ -2,7 +2,7 @@ import {
   CallerTypeEnum,
   LanguageOfferTypeEnum
 } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
-import { BasePhoneNumberRecordMock } from "dynamicCallFlowPhoneNumber/GraphQL/_test/Dynamic.PhoneNumber.MockData";
+import { BasePhoneNumberRecordMock } from "dynamicCallFlowPhoneNumber/GraphQL/test/Dynamic.PhoneNumber.MockData";
 import {
   CctSharedCallFlowDb,
   LegacyPhoneNumberTypeEnum

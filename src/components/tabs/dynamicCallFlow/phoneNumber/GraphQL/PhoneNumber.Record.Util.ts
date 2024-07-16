@@ -1,11 +1,15 @@
 import { PhoneNumber, PhoneNumberRecordType } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 import { CctSharedCallFlowDb, FlowContent } from "dynamicCallFlowPhoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
 import {
-  CREATE_TIME,
+  CREATE_TIME, DynamicPhoneNumberFormFields,
   PHONE_NUMBER,
   UPDATE_TIME
 } from "dynamicCallFlowPhoneNumber/Form/Dynamic.PhoneNumber.Form.Fields";
-import { isLegacyContentField, PKEY } from "dynamicCallFlowPhoneNumber/Form/Legacy.PhoneNumber.Form.Fields";
+import {
+  isLegacyContentField,
+  LegacyPhoneNumberFormFields,
+  PKEY
+} from "dynamicCallFlowPhoneNumber/Form/Legacy.PhoneNumber.Form.Fields";
 import { FieldDataType } from "dynamicCallFlowCommon/Form/Form.Interfaces";
 
 export class PhoneNumberRecordUtil {
@@ -55,6 +59,10 @@ export class PhoneNumberRecordUtil {
 
   public static getPropertyStringValue(phoneNumberRecord: PhoneNumberRecordType, key: string): string {
     return this.getPropertyValue(phoneNumberRecord, key) as string;
+  }
+
+  public static getPropertyBooleanValue(phoneNumberRecord: PhoneNumberRecordType, key: string): boolean {
+    return this.getPropertyValue(phoneNumberRecord, key) as boolean;
   }
 
   public static getPropertyValue(phoneNumberRecord: PhoneNumberRecordType, key: string): FieldDataType {
@@ -137,5 +145,19 @@ export class PhoneNumberRecordUtil {
 
   public static setCreateTime(phoneNumberRecord: PhoneNumberRecordType): void {
     this.setTimeProperty(phoneNumberRecord, CREATE_TIME);
+  }
+
+  public static batchRemoveTransientProperties(phoneNumberRecords: Array<PhoneNumberRecordType>): void {
+    phoneNumberRecords.forEach((phoneNumberRecord: PhoneNumberRecordType) => this.removeTransientProperties(phoneNumberRecord));
+  }
+
+  public static removeTransientProperties(phoneNumberRecord: PhoneNumberRecordType): void {
+    let validKeys: Array<String> = PhoneNumberRecordUtil.isDynamicPhoneNumberRecord(phoneNumberRecord) ? DynamicPhoneNumberFormFields : LegacyPhoneNumberFormFields;
+
+    Object.keys(phoneNumberRecord).forEach((key: string) => {
+      if (!validKeys.includes(key)) {
+        delete phoneNumberRecord[key as keyof typeof phoneNumberRecord];
+      }
+    });
   }
 }

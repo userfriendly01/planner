@@ -61,4 +61,36 @@ describe("PhoneNumberRecordUtil", () => {
     PhoneNumberRecordUtil.setPropertyValue(mockLegacyPhoneNumberRecord, GREETING_MESSAGES, "Hi");
     expect(mockLegacyPhoneNumberRecord.content?.greetingMessages).toEqual("Hi");
   });
+
+  it("shouldRemoveTransientPropertiesForDynamicPhoneNumberRecord", () => {
+    const phoneNumberRecordWithTransientProperties = { ...mockPhoneNumberRecord, pkey: "somevalue", id: "someid" };
+
+    expect(phoneNumberRecordWithTransientProperties.pkey).toBeDefined();
+    expect(phoneNumberRecordWithTransientProperties.id).toBeDefined();
+
+    PhoneNumberRecordUtil.removeTransientProperties(phoneNumberRecordWithTransientProperties);
+
+    expect(phoneNumberRecordWithTransientProperties.pkey).toBeUndefined();
+    expect(phoneNumberRecordWithTransientProperties.id).toBeUndefined();
+  });
+
+  it("shouldRemoveTransientPropertiesForLegacyPhoneNumberRecord", () => {
+    const phoneNumberRecordWithTransientProperties = { ...mockLegacyPhoneNumberRecord, id: "someid" };
+
+    expect(phoneNumberRecordWithTransientProperties.pkey).toBeDefined();
+    expect(phoneNumberRecordWithTransientProperties.id).toBeDefined();
+
+    PhoneNumberRecordUtil.removeTransientProperties(phoneNumberRecordWithTransientProperties);
+
+    expect(phoneNumberRecordWithTransientProperties.pkey).toBeDefined();
+    expect(phoneNumberRecordWithTransientProperties.id).toBeUndefined();
+  });
+
+  it("shouldReturnTrueForIsDynamicPhoneNumberRecord", () => {
+    const phoneNumberRecord = {
+      phoneNumber: undefined
+    } as PhoneNumber;
+
+    expect(PhoneNumberRecordUtil.isDynamicPhoneNumberRecord(phoneNumberRecord)).toEqual(true);
+  });
 });

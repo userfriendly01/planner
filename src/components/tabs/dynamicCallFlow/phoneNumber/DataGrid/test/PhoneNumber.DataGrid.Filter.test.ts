@@ -7,8 +7,8 @@ import { ReactSetState } from "dynamicCallFlowCommon/DynamicCallFlow.Interfaces"
 import {
   DynamicPhoneNumberArray,
   mockDynamicPhoneNumberObject
-} from "dynamicCallFlowPhoneNumber/GraphQL/_test/Dynamic.PhoneNumber.MockData";
-import { LegacyPhoneNumberArray } from "dynamicCallFlowPhoneNumber/GraphQL/_test/Legacy.PhoneNumber.Record.MockData";
+} from "dynamicCallFlowPhoneNumber/GraphQL/test/Dynamic.PhoneNumber.MockData";
+import { LegacyPhoneNumberArray } from "dynamicCallFlowPhoneNumber/GraphQL/test/Legacy.PhoneNumber.Record.MockData";
 import { FieldOptions } from "dynamicCallFlowCommon/Form/AbstractFormFieldOptionsManager";
 import { BRAND } from "dynamicCallFlowPhoneNumber/Form/Dynamic.PhoneNumber.Form.Fields";
 

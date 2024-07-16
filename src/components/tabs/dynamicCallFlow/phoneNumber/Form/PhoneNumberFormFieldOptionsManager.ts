@@ -10,7 +10,6 @@ import {
   CHANNEL,
   DATA_REQUESTS
 } from "dynamicCallFlowPhoneNumber/Form/Dynamic.PhoneNumber.Form.Fields";
-import { PKEY } from "dynamicCallFlowPhoneNumber/Form/Legacy.PhoneNumber.Form.Fields";
 import {
   CallFlowNameTypeEnum,
   CallFlowTypeEnum,
@@ -44,7 +43,7 @@ export class PhoneNumberFormFieldOptionsManager extends AbstractFormFieldOptions
   }
 
   protected getDataDrivenOptionsFieldNames(): Array<string> {
-    return [BRAND, CALL_FLOW_ROUTE, CALL_FLOW_TEMPLATE, CALLER_TYPE, CHANNEL, DATA_REQUESTS, PKEY];
+    return [BRAND, CALL_FLOW_ROUTE, CALL_FLOW_TEMPLATE, CALLER_TYPE, CHANNEL, DATA_REQUESTS];
   }
 
   protected getDataDrivenOptionsFieldNamesWithList(): Array<string> {

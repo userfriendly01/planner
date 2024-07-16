@@ -81,7 +81,6 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
   const [selectedRecords, setSelectedRecords] = useState<Array<PhoneNumberRecordType>>([]);
   const [selectedRecord, setSelectedRecord] = useState<PhoneNumberRecordType>({} as PhoneNumberRecordType);
 
-
   const dataGridApi = useGridApiRef<GridApiCommunity>();
   const dataGridController = useRef(new PhoneNumberDataGridController(dataGridApi, dataGridFilter,
     alertBarController));
@@ -114,7 +113,7 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
 
       loadDataGridMonitor.current.dataGridLoaded = true;
 
-      setSourceRecords(sortedRecords);
+      setSourceRecords([ ...sortedRecords ]);
       dataGridFilter.current.applyFilter(sortedRecords);
       setDataGridProps(prevState => ({
         ...prevState,
@@ -125,12 +124,12 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
       setFieldOptions(phoneNumberFormFieldOptionsManager.generateOptions(sortedRecords));
       setLegacyFieldConfigs(phoneNumberFormFieldOptionsManager.updateFieldOptionsOnFieldConfigs(legacyFieldConfigs));
       setDynamicFieldConfigs(phoneNumberFormFieldOptionsManager.updateFieldOptionsOnFieldConfigs(dynamicFieldConfigs));
-
       alertBarController.current.success("Dynamic Call Flow Phone Numbers have been successfully loaded.");
     };
 
     loadDataGrid();
   }, []);
+
 
   useEffect(() => {
     dataGridFilter.current.sourceRecords = sourceRecords;
@@ -157,8 +156,6 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
 
   const openEditFormModal = (recordToEdit: PhoneNumberRecordType): void => {
     setSelectedRecord(recordToEdit);
-    dataGridController.current.sourceRecords = sourceRecords;
-    dataGridController.current.dataGridRecords = dataGridRecords;
 
     if (PhoneNumberRecordUtil.isLegacyPhoneNumberRecord(recordToEdit)) {
       modalController.current.openModal(PhoneNumberModalTypeEnum.EditLegacyPhoneNumber);
@@ -207,8 +204,6 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
   };
 
   const handlePreviewModalOpen = (event: any) => {
-    dataGridController.current.sourceRecords = sourceRecords;
-    dataGridController.current.dataGridRecords = dataGridRecords;
     modalController.current.openModal(event.target.value);
   };
 

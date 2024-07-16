@@ -13,7 +13,7 @@ import {
   DynamicPhoneNumberTwo,
   mockDynamicPhoneNumberArray,
   mockDynamicPhoneNumberObject
-} from "dynamicCallFlowPhoneNumber/GraphQL/_test/Dynamic.PhoneNumber.MockData";
+} from "dynamicCallFlowPhoneNumber/GraphQL/test/Dynamic.PhoneNumber.MockData";
 import { BrandTypeEnum } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 
 jest.mock("components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces");

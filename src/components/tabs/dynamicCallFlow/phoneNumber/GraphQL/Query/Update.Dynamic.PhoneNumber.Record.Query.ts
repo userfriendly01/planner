@@ -20,7 +20,7 @@ class UpdateDynamicPhoneNumberRecordQuery extends AbstractUpdateRecordQuery {
 
 const updateDynamicPhoneNumberRecordQuery = new UpdateDynamicPhoneNumberRecordQuery();
 
-export async function updateDynamicPhoneNumberRecord(accessToken: string, callFlowRecord: PhoneNumber): Promise<SingleRecordResults<PhoneNumber>> {
-  callFlowRecord.updateTime = Date.now();
-  return await updateDynamicPhoneNumberRecordQuery.update<PhoneNumber>(accessToken, callFlowRecord);
+export async function updateDynamicPhoneNumberRecord(accessToken: string, phoneNumberRecord: PhoneNumber): Promise<SingleRecordResults<PhoneNumber>> {
+  phoneNumberRecord.updateTime = Date.now();
+  return await updateDynamicPhoneNumberRecordQuery.update<PhoneNumber>(accessToken, phoneNumberRecord);
 }

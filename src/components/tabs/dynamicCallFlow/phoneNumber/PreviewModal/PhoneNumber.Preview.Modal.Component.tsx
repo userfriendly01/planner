@@ -9,7 +9,11 @@ import {
   PhoneNumberModalType,
   PhoneNumberModalTypeEnum
 } from "dynamicCallFlowPhoneNumber/DynamicCallFlow.PhoneNumber.Interfaces";
-import { PhoneNumberRecordType } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import {
+  BrandTypeEnum,
+  CallerTypeEnum, ChannelTypeEnum, LanguageOfferTypeEnum, PhoneNumber,
+  PhoneNumberRecordType
+} from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 import { DynamicCallFlowPhoneNumberContext } from "dynamicCallFlowPhoneNumber/DynamicCallFlow.PhoneNumber.Container";
 import {
   PhoneNumberPreviewModalHandler
@@ -20,6 +24,7 @@ import { reconstructTableColumnDef } from "dynamicCallFlowPhoneNumber/PreviewMod
 import { HANDLED_SUCCESSFULLY } from "dynamicCallFlowCommon/Preview/Abstract.Preview.Modal.Handler";
 import { PhoneNumberXlsxImporter } from "dynamicCallFlowPhoneNumber/Xlsx/Import/PhoneNumber.Xlsx.Importer";
 import { PhoneNumberRecordUtil } from "dynamicCallFlowPhoneNumber/GraphQL/PhoneNumber.Record.Util";
+import { CctSharedCallFlowDb, FlowContent } from "dynamicCallFlowPhoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
 
 interface PreviewModalParameters<RecordType> {
     isOpen: boolean;
@@ -76,45 +81,80 @@ export const PhoneNumberPreviewModal = ({
     }
   };
 
-  const createNewRecord = () => {
-    // phoneNumberRows.state = [{}];
-    //TODO: Add new record, should action type be passed in to create the proper record type (i.e. legacy or dynamic?
-    // phoneNumberRows.state =
-    //     {
-    //       pkey: "",
-    //       content: {
-    //         callIntent: "",
-    //         callFlowRoute: "",
-    //         callerType: "",
-    //         greetingMessages: "",
-    //         transferDestination: "",
-    //         languageOffer: "",
-    //         dataRequests: [],
-    //         officeNumbers: []
-    //       },
-    //       accountManager: "",
-    //       affinityVDN: "",
-    //       brand: "",
-    //       callDetails1: "",
-    //       callDetails2: "",
-    //       callFlowTemplate: "",
-    //       callTypeDescription: "",
-    //       channel: "",
-    //       createTime: "",
-    //       dialedDescription: "",
-    //       employeeId: "",
-    //       internetPlacement: "",
-    //       lineOfBusiness: "",
-    //       marketingChannel: "",
-    //       rangeIndicator: "",
-    //       requestID: "",
-    //       transferCode: "",
-    //       phoneNumberType: "",
-    //       userDestination: "",
-    //       whisper: ""
-    //     }
-    //   ]
-    // ));
+  const createDynamicPhoneNumberRecord = () => {
+    const dynamicPhoneNumberRecord = {
+      phoneNumber: "",
+      callIntent: "",
+      callFlowRoute: "",
+      callerType: CallerTypeEnum.CUSTOMER,
+      greetingMessages: "",
+      transferDestination: "",
+      languageOffer: LanguageOfferTypeEnum.ENGLISH,
+      dataRequests: [],
+      officeNumbers: [],
+      accountManager: "",
+      affinityVDN: "",
+      brand: undefined,
+      callFlowTemplate: "",
+      callTypeDescription: "",
+      channel: undefined,
+      dialedDescription: "",
+      employeeId: "",
+      internetPlacement: "",
+      lineOfBusiness: "",
+      marketingChannel: "",
+      rangeIndicator: "",
+      requestID: "",
+      transferCode: "",
+      phoneNumberType: "",
+      whisper: ""
+    } as PhoneNumber;
+
+    setModalRecords([
+      ...modalRecords,
+      dynamicPhoneNumberRecord
+    ]);
+  };
+
+  const createLegacyPhoneNumberRecord = () => {
+    const legacyPhoneNumberRecord = {
+      pkey: "",
+      content: {
+        callIntent: "",
+        callFlowRoute: "",
+        callerType: CallerTypeEnum.CUSTOMER,
+        greetingMessages: "",
+        transferDestination: "",
+        languageOffer: LanguageOfferTypeEnum.ENGLISH,
+        dataRequests: [],
+        officeNumbers: []
+      } as FlowContent,
+      accountManager: "",
+      affinityVDN: "",
+      brand: undefined,
+      callDetails1: "",
+      callDetails2: "",
+      callFlowTemplate: "",
+      callTypeDescription: "",
+      channel: undefined,
+      createTime: "",
+      dialedDescription: "",
+      employeeId: "",
+      internetPlacement: "",
+      lineOfBusiness: "",
+      marketingChannel: "",
+      rangeIndicator: "",
+      requestID: "",
+      transferCode: "",
+      phoneNumberType: "",
+      userDestination: "",
+      whisper: ""
+    } as CctSharedCallFlowDb;
+
+    setModalRecords([
+      ...modalRecords,
+      legacyPhoneNumberRecord
+    ]);
   };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>)=> {
@@ -150,15 +190,24 @@ export const PhoneNumberPreviewModal = ({
             marginRight: "10px",
             marginBottom: "10px"
           }}>
-            {modalType === PhoneNumberModalTypeEnum.BulkAdd &&
-                <StyledButton onClick={()=>{ createNewRecord(); }}>Add New +</StyledButton>
-            }
             <StyledButton sx={{
               marginRight: "10px",
               marginBottom: "10px"
             }}>
               <input type="file" accept=".xlsx" onChange={(event:React.ChangeEvent<HTMLInputElement>) => handleFileUpload(event)} />
             </StyledButton>
+            {modalType === PhoneNumberModalTypeEnum.BulkAdd &&
+              <StyledButton sx={{
+                marginRight: "10px",
+                marginBottom: "10px"
+              }} onClick={()=>{ createDynamicPhoneNumberRecord(); }}>Add Dynamic</StyledButton>
+            }
+            {modalType === PhoneNumberModalTypeEnum.BulkAdd &&
+              <StyledButton sx={{
+                marginRight: "10px",
+                marginBottom: "10px"
+              }} onClick={()=>{ createLegacyPhoneNumberRecord(); }}>Add Legacy</StyledButton>
+            }
           </Box>
           <DataGrid
             apiRef={previewModalGridApiRef}
@@ -188,8 +237,11 @@ export const PhoneNumberPreviewModal = ({
             {modalType === PhoneNumberModalTypeEnum.BulkDelete &&
             <StyledButton sx={{ marginRight: "15px" }} onClick={()=> handleOnDelete() }>Delete</StyledButton>
             }
-            {modalType === PhoneNumberModalTypeEnum.BulkAdd &&
+            {modalType === PhoneNumberModalTypeEnum.BulkAdd  &&
             <StyledButton data-test-id="ScpANXily_jfK9JzNGaJf" sx={{ marginRight: "15px" }} onClick={() => handleOnCreate() }>Save</StyledButton>
+            }
+            {modalType === PhoneNumberModalTypeEnum.BulkEdit  &&
+              <StyledButton data-test-id="ScpANXily_jfK9JzNGaJf" sx={{ marginRight: "15px" }} onClick={() => handleOnCreate() }>Save</StyledButton>
             }
             <StyledButton onClick={()=>{ handleOnClose(); }}>Cancel</StyledButton>
           </Box>

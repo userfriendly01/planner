@@ -103,6 +103,7 @@ const ActionDataGridComponent = (): JSX.Element => {
 
   useEffect(() => {
     dataGridFilter.current.sourceRecords = sourceRecords;
+    dataGridController.current.sourceRecords = sourceRecords;
   }, [sourceRecords]);
 
   useEffect(() => {
@@ -128,8 +129,6 @@ const ActionDataGridComponent = (): JSX.Element => {
   };
 
   const handlePreviewModalOpen = () => {
-    dataGridController.current.sourceRecords = sourceRecords;
-    dataGridController.current.dataGridRecords = dataGridRecords;
     modalController.current.openModal(ActionModalTypeEnum.BatchCreate);
   };
 
