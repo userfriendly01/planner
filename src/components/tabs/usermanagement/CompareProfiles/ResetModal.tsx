@@ -88,6 +88,15 @@ export const ResetModal = (props: ResetModalProps) => {
       setResults(res.data);
       setStatus(StatusOptions.SUCCESS);
     } catch (error) {
+      const err = {
+        error: (error.response && error.response.data) || error,
+        message: "Reset Profiles Failed"
+      }
+      logger.error("Reset Profiles Failed", {
+        level: "error",
+        error: err
+      });
+
       const isTimeout = error?.response?.data?.message?.toLowerCase().trim() === "read timed out" || error?.response?.data?.error?.message?.toLowerCase().trim() === "endpoint request timed out";
       if (isTimeout) {
         logger.warn("Call to reset profiles timed out. Trying to fetch datadog log", { nNumber });
@@ -113,6 +122,7 @@ export const ResetModal = (props: ResetModalProps) => {
         setStatus(StatusOptions.SUCCESS);
         setResults(res.data[res.data.length - 1].attributes.attributes.sharedAdminAPILog.results);
       }
+      logger.error('THIS IS THE RES DATA', res); // temp remove after
     } catch (error) {
       const errorString = error.message || error.response?.message || util.format(error);
       const errorMessage = "Reset Profiles failed calling Datadog";
