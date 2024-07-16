@@ -233,6 +233,7 @@ describe("profileUtils", () => {
       acw_option: false,
       acw_tags: true,
       agnt_asst_pay: false,
+      backup_workers: false,
       auto_ans: true,
       edt_policy_num: false,
       edt_claim_num: false,

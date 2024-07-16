@@ -152,6 +152,9 @@ export const ProfileSettingsTable = (props: ProfileSettingsTableProps) => {
                       <TableText>{formatSelfServiceIndicatorData(profile.profile_id)}</TableText>
                     </CustomTableData>
                     <CustomTableData>
+                      <TableText>{profile.backup_workers ? <Check /> : ""}</TableText>
+                    </CustomTableData>
+                    <CustomTableData>
                       <TableText>{profile.acw_option ? <Check /> : ""}</TableText>
                     </CustomTableData>
                     <CustomTableData>
