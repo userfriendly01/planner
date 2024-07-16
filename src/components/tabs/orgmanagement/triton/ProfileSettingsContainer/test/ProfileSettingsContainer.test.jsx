@@ -71,6 +71,7 @@ jest.mock("authentication/authUtils", () => ({
 const initialTestState = {
   ...initialState,
   profileContext: {
+    ...initialState.profileContext,
     profiles: mockProfiles
   },
   userContext: {

@@ -368,8 +368,8 @@ describe("<ProfileFormFields />", () => {
                 key: "accessGroup",
                 value: {
                   isNew: true,
-                  label: "Create New Access Group",
-                  value: "create-new"
+                  access_group_name: "",
+                  id: "create-new"
                 }
               }
             });

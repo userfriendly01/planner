@@ -48,12 +48,13 @@ export const FormControlsContainer = styled.div`
 export const FormRow = styled.div`
   display: flex;
   flex-direction: row;
-  width: 40%;
   justify-content: center;
   padding-top: 5px;
   align-items: center;
   justify-content: space-evenly;
   align-self: center;
+  margin: 10px;
+  width: 100%;
 `;
 
 export const FormControlsPane = styled.div`
@@ -62,11 +63,9 @@ export const FormControlsPane = styled.div`
   padding: 0 8px;
 `;
 
-export const CallTagWrapper = styled.div`
+export const OptionsWrapper = styled.div`
   display: flex;
-  flex-direction: column;
-  width: 100%;
-  padding: 0 8px;
+  flex-wrap: wrap;
 `;
 
 export const ToggleContainer = styled.div`
