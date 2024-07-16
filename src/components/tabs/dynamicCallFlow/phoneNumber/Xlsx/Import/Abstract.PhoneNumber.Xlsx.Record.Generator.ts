@@ -1,7 +1,9 @@
-import { PhoneNumberXlsxRow } from "../PhoneNumber.Xlsx.Interfaces";
+import { PhoneNumberXlsxRow } from "dynamicCallFlowPhoneNumber/Xlsx/PhoneNumber.Xlsx.Interfaces";
 import {
-  BrandType, ChannelType, PhoneNumberRecordType
-} from "../../GraphQL/Dynamic.PhoneNumber.Interfaces";
+  BrandType,
+  ChannelType,
+  PhoneNumberRecordType
+} from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 
 export abstract class AbstractPhoneNumberXlsxRecordGenerator {
   public generatePhoneNumberRecords(phoneNumberXlsxRows: Array<PhoneNumberXlsxRow>): Array<PhoneNumberRecordType> {

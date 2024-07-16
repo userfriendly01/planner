@@ -3,12 +3,9 @@ import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
 import { useEffect } from "react";
 import Typography from "@mui/material/Typography";
+import { DataGridProgressBarInfo } from "dynamicCallFlowCommon/DataGrid/Load.DataGrid.Monitor";
 
 export const PHONE_NUMBER_DATA_GRID_PROGRESS_BAR_CACHE_KEY = "PHONE_NUMBER_DATA_GRID_PROGRESS_BAR";
-
-export interface PhoneNumberDataGridProgressBarInfo {
-  previousRecordCount: number;
-}
 
 interface PhoneNumberDataGridProgressBarProps {
   recordCount: number;
@@ -23,7 +20,7 @@ export const PhoneNumberDataGridProgressBar = ({
   const [previousRecordCount, setPreviousRecordCount] = React.useState(0);
 
   useEffect(() => {
-    const phoneNumberDataGridProgressBarInfo = (JSON.parse(localStorage.getItem(PHONE_NUMBER_DATA_GRID_PROGRESS_BAR_CACHE_KEY)) || {}) as PhoneNumberDataGridProgressBarInfo;
+    const phoneNumberDataGridProgressBarInfo = (JSON.parse(localStorage.getItem(PHONE_NUMBER_DATA_GRID_PROGRESS_BAR_CACHE_KEY)) || {}) as DataGridProgressBarInfo;
     setPreviousRecordCount(phoneNumberDataGridProgressBarInfo.previousRecordCount || 25000);
   }, []);
 

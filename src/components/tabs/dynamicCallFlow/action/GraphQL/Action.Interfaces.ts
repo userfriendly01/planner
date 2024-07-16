@@ -1,6 +1,6 @@
 import {
   ActionType
-} from "../../common/GraphQL/DynamicCallFlow.Interfaces";
+} from "dynamicCallFlowCommon/GraphQL/DynamicCallFlow.Interfaces";
 
 export type ActionRecordType = Action | Announcement | Menu | MenuOptions | Redirect
 

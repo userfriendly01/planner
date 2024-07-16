@@ -1,4 +1,4 @@
-import { getActionXlsxImporterResults } from "dynamicCallFlow/Xlsx/test/Action.Xlsx.Test.Util";
+import { getActionXlsxImporterResults } from "dynamicCallFlowAction/Xlsx/test/Action.Xlsx.Test.Util";
 
 jest.mock("uuid", () => ({
   v4: jest.fn(() => "00000000-0000-0000-0000-000000000000"),

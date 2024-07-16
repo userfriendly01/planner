@@ -1,6 +1,6 @@
-import { CctSharedCallFlowDb } from "../Legacy.PhoneNumber.Interfaces";
-import { AbstractCreateRecordQuery } from "../../../common/GraphQL/Abstract.CreateRecord.Query";
-import { SingleRecordResults } from "../../../common/GraphQL/AbstractSingleRecord.Query";
+import { CctSharedCallFlowDb } from "dynamicCallFlowPhoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
+import { AbstractCreateRecordQuery } from "dynamicCallFlowCommon/GraphQL/Abstract.CreateRecord.Query";
+import { SingleRecordResults } from "dynamicCallFlowCommon/GraphQL/AbstractSingleRecord.Query";
 
 import { GraphQLInputVariables } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
 

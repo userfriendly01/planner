@@ -1,9 +1,9 @@
-import { AbstractXlsxImporter } from "../../../common/Xlsx/Abstract.Xlsx.Importer";
-import { PhoneNumberRecordType } from "../../GraphQL/Dynamic.PhoneNumber.Interfaces";
-import { LegacyPhoneNumberXlsxRecordGenerator } from "./Legacy.PhoneNumber.Xlsx.Record.Generator";
-import { PhoneNumberXlsxValueInspector } from "./PhoneNumber.Xlsx.Value.Inspector";
-import { DynamicPhoneNumberXlsxRecordGenerator } from "dynamicCallFlow/Xlsx/Import/Dynamic.PhoneNumber.Xlsx.Record.Generator";
-import { PhoneNumberXlsxRow } from "dynamicCallFlow/Xlsx/PhoneNumber.Xlsx.Interfaces";
+import { AbstractXlsxImporter } from "dynamicCallFlowCommon/Xlsx/Abstract.Xlsx.Importer";
+import { PhoneNumberRecordType } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { LegacyPhoneNumberXlsxRecordGenerator } from "dynamicCallFlowPhoneNumber/Xlsx/Import/Legacy.PhoneNumber.Xlsx.Record.Generator";
+import { PhoneNumberXlsxValueInspector } from "dynamicCallFlowPhoneNumber/Xlsx/Import/PhoneNumber.Xlsx.Value.Inspector";
+import { DynamicPhoneNumberXlsxRecordGenerator } from "dynamicCallFlowPhoneNumber/Xlsx/Import/Dynamic.PhoneNumber.Xlsx.Record.Generator";
+import { PhoneNumberXlsxRow } from "dynamicCallFlowPhoneNumber/Xlsx/PhoneNumber.Xlsx.Interfaces";
 
 export class PhoneNumberXlsxImporter extends AbstractXlsxImporter<PhoneNumberXlsxRow, PhoneNumberRecordType> {
   private readonly _phoneNumberValueInspector: PhoneNumberXlsxValueInspector = new PhoneNumberXlsxValueInspector();

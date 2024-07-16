@@ -1,14 +1,15 @@
-import { PhoneNumberXlsxRow } from "../PhoneNumber.Xlsx.Interfaces";
+import { PhoneNumberXlsxRow } from "dynamicCallFlowPhoneNumber/Xlsx/PhoneNumber.Xlsx.Interfaces";
 import {
   CallerType,
   CallFlowType,
   LanguageOfferType,
   PhoneNumber,
   PhoneNumberType
-} from "../../GraphQL/Dynamic.PhoneNumber.Interfaces";
-
-import { ActionType } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
-import { AbstractPhoneNumberXlsxRecordGenerator } from "dynamicCallFlow/Xlsx/Import/Abstract.PhoneNumber.Xlsx.Record.Generator";
+} from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { ActionType } from "dynamicCallFlowCommon/GraphQL/DynamicCallFlow.Interfaces";
+import {
+  AbstractPhoneNumberXlsxRecordGenerator
+} from "dynamicCallFlowPhoneNumber/Xlsx/Import/Abstract.PhoneNumber.Xlsx.Record.Generator";
 
 export class DynamicPhoneNumberXlsxRecordGenerator extends AbstractPhoneNumberXlsxRecordGenerator {
   protected mapPhoneNumberRecordTypeSpecificFields(phoneNumberXlsxRow: PhoneNumberXlsxRow): PhoneNumber {

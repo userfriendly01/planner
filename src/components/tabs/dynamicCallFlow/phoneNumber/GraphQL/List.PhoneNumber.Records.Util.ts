@@ -1,7 +1,7 @@
-import { PhoneNumberRecordType } from "./Dynamic.PhoneNumber.Interfaces";
-import { listDynamicPhoneNumberRecords } from "./Query/List.Dynamic.PhoneNumber.Records.Query";
-import { listLegacyPhoneNumberRecords } from "./Query/List.Legacy.PhoneNumber.Records.Query";
-import { LoadDataGridMonitorRef } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
+import { PhoneNumberRecordType } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { listDynamicPhoneNumberRecords } from "dynamicCallFlowPhoneNumber/GraphQL/Query/List.Dynamic.PhoneNumber.Records.Query";
+import { listLegacyPhoneNumberRecords } from "dynamicCallFlowPhoneNumber/GraphQL/Query/List.Legacy.PhoneNumber.Records.Query";
+import { LoadDataGridMonitorRef } from "dynamicCallFlowCommon/DynamicCallFlow.Interfaces";
 
 /**
  * This function is a single place to obtain both legacy and dynamic phone number records.  For the dynamic phone number, this simply

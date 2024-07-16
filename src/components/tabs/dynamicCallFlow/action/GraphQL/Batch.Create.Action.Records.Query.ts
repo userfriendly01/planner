@@ -2,18 +2,16 @@ import {
   ActionRecordType,
   Announcement,
   Menu,
-  MenuOptions, Redirect
-} from "./Action.Interfaces";
+  MenuOptions,
+  Redirect
+} from "dynamicCallFlowAction/GraphQL/Action.Interfaces";
+import { BatchResults } from "dynamicCallFlowCommon/GraphQL/Abstract.BatchRecords.Query";
+import { AbstractGraphQLQuery } from "dynamicCallFlowCommon/GraphQL/AbstractGraphQL.Query";
 import {
-  BatchResults
-} from "../../common/GraphQL/Abstract.BatchRecords.Query";
-import {
-  AbstractGraphQLQuery
-} from "components/tabs/dynamicCallFlow/common/GraphQL/AbstractGraphQL.Query";
-import {
-  ActionTypeEnum, GraphQLInputVariables,
+  ActionTypeEnum,
+  GraphQLInputVariables,
   GraphQLResponse
-} from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
+} from "dynamicCallFlowCommon/GraphQL/DynamicCallFlow.Interfaces";
 
 interface CallFlowConfig {
   callFlowName: string;

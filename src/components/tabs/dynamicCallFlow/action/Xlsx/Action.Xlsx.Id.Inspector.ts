@@ -1,11 +1,11 @@
 import {
-  ActionXlsRowType, AnnouncementXlsxRow, MenuOptionXlsxRow, MenuXlsxRow
-} from "./Action.Xlsx.Interfaces";
-import {
-  generateUuid, isValidUUID
-} from "../../common/GraphQL/GraphQL.Util";
-
-import { ActionTypeEnum } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
+  ActionXlsRowType,
+  AnnouncementXlsxRow,
+  MenuOptionXlsxRow,
+  MenuXlsxRow
+} from "dynamicCallFlowAction/Xlsx/Action.Xlsx.Interfaces";
+import { generateUuid, isValidUUID } from "dynamicCallFlowCommon/GraphQL/GraphQL.Util";
+import { ActionTypeEnum } from "dynamicCallFlowCommon/GraphQL/DynamicCallFlow.Interfaces";
 
 
 export class ActionXlsxIdInspector {

@@ -38,12 +38,12 @@ jest.mock("@mui/material", () => ({
   TextField: jest.fn()
 }));
 
-jest.mock("dynamicCallFlow/DynamicCallFlow.Action.Container", () => ({
+jest.mock("dynamicCallFlowAction/DynamicCallFlow.Action.Container", () => ({
   __esModule: true,
   default: jest.fn()
 }));
 
-jest.mock("dynamicCallFlow/DynamicCallFlow.PhoneNumber.Container", () => ({
+jest.mock("dynamicCallFlowPhoneNumber/DynamicCallFlow.PhoneNumber.Container", () => ({
   __esModule: true,
   default: jest.fn()
 }));

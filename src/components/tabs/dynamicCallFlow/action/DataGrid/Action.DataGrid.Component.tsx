@@ -1,34 +1,28 @@
-import React, {
-  useContext, useEffect, useRef, useState
-} from "react";
-import { ActionDataGridToolBar } from "./Action.DataGrid.ToolBar";
-import {
-  DataGrid, GridPaginationModel, useGridApiRef
-} from "@mui/x-data-grid";
-import ActionDataGridColumnDef from "./Action.DataGrid.ColumnDef";
-import { ActionRecordType } from "../GraphQL/Action.Interfaces";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { ActionDataGridToolBar } from "dynamicCallFlowAction/DataGrid/Action.DataGrid.ToolBar";
+import { DataGrid, GridPaginationModel, useGridApiRef } from "@mui/x-data-grid";
+import ActionDataGridColumnDef from "dynamicCallFlowAction/DataGrid/Action.DataGrid.ColumnDef";
+import { ActionRecordType } from "dynamicCallFlowAction/GraphQL/Action.Interfaces";
 import { GridApiCommunity } from "@mui/x-data-grid/internals";
-import { actionListRecords } from "../GraphQL/List.Action.Records.Query";
+import { actionListRecords } from "dynamicCallFlowAction/GraphQL/List.Action.Records.Query";
 import {
   DataGridStateProps,
   initializeDataGrid,
   sortRecords
-} from "../../common/DataGrid/DynamicCallFlow.Common.DataGrid";
-import { ActionFieldOptionsManager } from "../Form/ActionFieldOptionsManager";
-import { FieldOptions } from "../../common/Form/AbstractFormFieldOptionsManager";
-import { FieldConfigs } from "../../common/Form/Form.Interfaces";
-import { ActionFormFieldConfigs } from "../Form/ActionFieldsConfig";
-import { ActionPreviewModal } from "../PreviewModal/Action.Preview.Modal.Component";
-import {
-  AlertBarController, AlertBarProps, initialAlertBarProps
-} from "../../common/AlertBar.Controller";
-import { DynamicCallFlowActionContext } from "../DynamicCallFlow.Action.Container";
-import { NotInUseModalType } from "../../common/Modal.Controller";
-import { ActionDataGridController } from "./Action.DataGrid.Controller";
-import { ActionDataGridFilter } from "./Action.DataGrid.Filter";
+} from "dynamicCallFlowCommon/DataGrid/DynamicCallFlow.Common.DataGrid";
+import { ActionFieldOptionsManager } from "dynamicCallFlowAction/Form/ActionFieldOptionsManager";
+import { FieldOptions } from "dynamicCallFlowCommon/Form/AbstractFormFieldOptionsManager";
+import { FieldConfigs } from "dynamicCallFlowCommon/Form/Form.Interfaces";
+import { ActionFormFieldConfigs } from "dynamicCallFlowAction/Form/ActionFieldsConfig";
+import { ActionPreviewModal } from "dynamicCallFlowAction/PreviewModal/Action.Preview.Modal.Component";
+import { AlertBarController, AlertBarProps, initialAlertBarProps } from "dynamicCallFlowCommon/AlertBar.Controller";
+import { DynamicCallFlowActionContext } from "dynamicCallFlowAction/DynamicCallFlow.Action.Container";
+import { NotInUseModalType } from "dynamicCallFlowCommon/Modal.Controller";
+import { ActionDataGridController } from "dynamicCallFlowAction/DataGrid/Action.DataGrid.Controller";
+import { ActionDataGridFilter } from "dynamicCallFlowAction/DataGrid/Action.DataGrid.Filter";
 import { CustomToast } from "components/CustomToast";
-import { ActionPreviewModalHandler } from "dynamicCallFlow/PreviewModal/Action.Preview.Modal.Handler";
-import { ActionDataGridFilterModal } from "dynamicCallFlow/DataGrid/Action.DataGrid.Filter.Modal";
+import { ActionPreviewModalHandler } from "dynamicCallFlowAction/PreviewModal/Action.Preview.Modal.Handler";
+import { ActionDataGridFilterModal } from "dynamicCallFlowAction/DataGrid/Action.DataGrid.Filter.Modal";
 import { logger } from "utils/logger";
 
 const DYNAMIC_CALL_FLOW_ACTION_DATA_GRID_PAGE_NUMBER = "dynamicCallFlowActionDataGridPageNumber";

@@ -1,9 +1,9 @@
 import { AbstractXlsxExporter } from "components/tabs/dynamicCallFlow/common/Xlsx/Abstract.Xlsx.Exporter";
-import { PhoneNumberXlsxRow } from "dynamicCallFlow/Xlsx/PhoneNumber.Xlsx.Interfaces";
-import { PhoneNumberRecordType } from "dynamicCallFlow/GraphQL/Dynamic.PhoneNumber.Interfaces";
-import { LegacyPhoneNumberXlsxRowGenerator } from "dynamicCallFlow/Xlsx/Export/Legacy.PhoneNumber.Xlsx.Row.Generator";
-import { PhoneNumberRecordUtil } from "dynamicCallFlow/GraphQL/PhoneNumber.Record.Util";
-import { DynamicPhoneNumberXlsxRowGenerator } from "dynamicCallFlow/Xlsx/Export/Dynamic.PhoneNumber.Xlsx.Row.Generator";
+import { PhoneNumberXlsxRow } from "dynamicCallFlowPhoneNumber/Xlsx/PhoneNumber.Xlsx.Interfaces";
+import { PhoneNumberRecordType } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { LegacyPhoneNumberXlsxRowGenerator } from "dynamicCallFlowPhoneNumber/Xlsx/Export/Legacy.PhoneNumber.Xlsx.Row.Generator";
+import { PhoneNumberRecordUtil } from "dynamicCallFlowPhoneNumber/GraphQL/PhoneNumber.Record.Util";
+import { DynamicPhoneNumberXlsxRowGenerator } from "dynamicCallFlowPhoneNumber/Xlsx/Export/Dynamic.PhoneNumber.Xlsx.Row.Generator";
 
 const DYNAMIC_PHONE_NUMBER_WORKBOOK_NAME = "Dynamic Phone Numbers";
 const LEGACY_PHONE_NUMBER_WORKBOOK_NAME = "Legacy Phone Numbers";

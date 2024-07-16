@@ -1,14 +1,14 @@
-import { PhoneNumberRecordType } from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
+import {
+  AbstractPreviewModalHandler, HANDLED_SUCCESSFULLY,
+  HANDLED_UNSUCCESSFULLY
+} from "dynamicCallFlowCommon/Preview/Abstract.Preview.Modal.Handler";
+import { PhoneNumberRecordType } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 import {
   dynamicAndLegacyPhoneNumberRecordFilter,
-  generateMatchingRecordMessages,
-  pkeyAndEmployeeIdFilter
-} from "../GraphQL/Match.PhoneNumber.Records.Util";
-import { BatchPhoneNumberRecord } from "../GraphQL/Batch.PhoneNumber.Records.Util";
-import { deleteOppositeRows } from "../DataGrid/PhoneNumber.DataGrid.Util";
-import {
-  AbstractPreviewModalHandler, HANDLED_SUCCESSFULLY, HANDLED_UNSUCCESSFULLY
-} from "../../common/Preview/Abstract.Preview.Modal.Handler";
+  generateMatchingRecordMessages
+} from "dynamicCallFlowPhoneNumber/GraphQL/Match.PhoneNumber.Records.Util";
+import { BatchPhoneNumberRecord } from "dynamicCallFlowPhoneNumber/GraphQL/Batch.PhoneNumber.Records.Util";
+import { deleteOppositeRows } from "dynamicCallFlowPhoneNumber/DataGrid/PhoneNumber.DataGrid.Util";
 
 export class PhoneNumberPreviewModalHandler extends AbstractPreviewModalHandler<PhoneNumberRecordType> {
   //TODO: May need to check for matching records of the same record type since moving a phone number from legacy to dynamic is ok,

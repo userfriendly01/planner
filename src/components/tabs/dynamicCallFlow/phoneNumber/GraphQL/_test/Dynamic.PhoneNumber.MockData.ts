@@ -8,8 +8,8 @@ import {
   LanguageOfferTypeEnum,
   PhoneNumber,
   PhoneNumberTypeEnum
-} from "dynamicCallFlow/GraphQL/Dynamic.PhoneNumber.Interfaces";
-import { ActionTypeEnum } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
+} from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { ActionTypeEnum } from "dynamicCallFlowCommon/GraphQL/DynamicCallFlow.Interfaces";
 
 export const BasePhoneNumberRecordMock: BasePhoneNumber = {
   brand: BrandTypeEnum.SAFECO,

@@ -1,10 +1,11 @@
 import {
   BrandTypeEnum,
   CallFlowTypeEnum,
-  ChannelTypeEnum, PhoneNumber,
+  ChannelTypeEnum,
+  PhoneNumber,
   PhoneNumberRecordType,
   PhoneNumberTypeEnum
-} from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
+} from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 import {
   BRAND,
   CALL_FLOW_ROUTE,
@@ -34,7 +35,7 @@ import {
   TRANSFER_CODE,
   TRANSFER_DESTINATION,
   WHISPER
-} from "./Dynamic.PhoneNumber.Form.Fields";
+} from "dynamicCallFlowPhoneNumber/Form/Dynamic.PhoneNumber.Form.Fields";
 import {
   ControlEnum,
   FieldConditionCheckType,
@@ -42,7 +43,7 @@ import {
   FieldConfigs,
   FieldDataTypeEnum,
   USER_IS_ABLE_TO_CHANGE_CONTROL
-} from "../../common/Form/Form.Interfaces";
+} from "dynamicCallFlowCommon/Form/Form.Interfaces";
 
 import { Control } from "globals/interfaces";
 

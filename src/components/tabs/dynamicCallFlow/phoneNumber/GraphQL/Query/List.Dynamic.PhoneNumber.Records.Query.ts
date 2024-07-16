@@ -1,6 +1,6 @@
-import { AbstractListRecordsQuery } from "../../../common/GraphQL/AbstractListRecords.Query";
-import { PhoneNumber } from "../Dynamic.PhoneNumber.Interfaces";
-import { LoadDataGridMonitorRef } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
+import { AbstractListRecordsQuery } from "dynamicCallFlowCommon/GraphQL/AbstractListRecords.Query";
+import { PhoneNumber } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { LoadDataGridMonitorRef } from "dynamicCallFlowCommon/DynamicCallFlow.Interfaces";
 
 class ListDynamicPhoneNumberRecordsQuery extends AbstractListRecordsQuery {
   protected queryName(): string {

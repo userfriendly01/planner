@@ -1,4 +1,4 @@
-import { PhoneNumberXlsxRow } from "../PhoneNumber.Xlsx.Interfaces";
+import { PhoneNumberXlsxRow } from "dynamicCallFlowPhoneNumber/Xlsx/PhoneNumber.Xlsx.Interfaces";
 
 export class PhoneNumberXlsxValueInspector {
   private readonly phoneNumberValueInspectionErrors: Array<string> = [];

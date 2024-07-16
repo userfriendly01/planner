@@ -44,7 +44,7 @@ export abstract class AbstractFormFieldOptionsManager<RecordType> implements For
   }
 
   generateOptions(records: Array<RecordType>): FieldOptions {
-    records.forEach((record: RecordType) => this.getDataDrivenOptionsFieldNames().forEach((key: string) => {
+    records?.forEach((record: RecordType) => this.getDataDrivenOptionsFieldNames().forEach((key: string) => {
       const recordPropertyValue = this.getRecordKeyValue(record, key);
 
       if (!this._fieldOptions[key]) {

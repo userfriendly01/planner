@@ -1,6 +1,4 @@
-import {
-  NotInUseModalType
-} from "../common/Modal.Controller";
+import { NotInUseModalType } from "dynamicCallFlowCommon/Modal.Controller";
 
 export type ActionModalType =
   "Add Action"

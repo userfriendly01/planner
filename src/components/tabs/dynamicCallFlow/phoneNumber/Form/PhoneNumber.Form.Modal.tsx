@@ -1,44 +1,23 @@
-import {
-  Button, Grid
-} from "@mui/material";
-import React, {
-  ChangeEvent, useContext, useEffect, useMemo, useState
-} from "react";
-import { ViewListIconToggleForm } from "../../common/Form/ViewList.IconToggle.Form";
-import {
-  HeadingStyled, ModalBodyStyled, ModalFooterStyled
-} from "../../common/DynamicCallFlow.Styles";
-import {
-  FormHandler, FormOnHandleResponse, NOT_VALID
-} from "../../common/Form/Abstract.Form.Handler";
+import { Button, Grid } from "@mui/material";
+import React, { ChangeEvent, useContext, useEffect, useMemo, useState } from "react";
+import { ViewListIconToggleForm } from "dynamicCallFlowCommon/Form/ViewList.IconToggle.Form";
+import { HeadingStyled, ModalBodyStyled, ModalFooterStyled } from "dynamicCallFlowCommon/DynamicCallFlow.Styles";
+import { FormHandler, FormOnHandleResponse, NOT_VALID } from "dynamicCallFlowCommon/Form/Abstract.Form.Handler";
 import { FloatingHeader } from "@lmig/lmds-react-floating-header";
-import {
-  Modal, ModalHeader
-} from "@lmig/lmds-react-modal";
-import {
-  BrandName, PhoneNumberRecordType
-} from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
-import {
-  FieldConfig, FieldConfigs
-} from "../../common/Form/Form.Interfaces";
-import { PhoneNumberRecordUtil } from "../GraphQL/PhoneNumber.Record.Util";
-
-import {
-  AlertBarProps, initialAlertBarProps
-} from "../../common/AlertBar.Controller";
-import {
-  AlertBarControllerRef, ReactStateAction
-} from "../../common/DynamicCallFlow.Interfaces";
-import {
-  DYNAMIC_CALL_FLOW_PROFILE, DynamicCallFlowPhoneNumberContext
-} from "../DynamicCallFlow.PhoneNumber.Container";
+import { Modal, ModalHeader } from "@lmig/lmds-react-modal";
+import { BrandName, PhoneNumberRecordType } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { FieldConfig, FieldConfigs } from "dynamicCallFlowCommon/Form/Form.Interfaces";
+import { PhoneNumberRecordUtil } from "dynamicCallFlowPhoneNumber/GraphQL/PhoneNumber.Record.Util";
+import { AlertBarProps, initialAlertBarProps } from "dynamicCallFlowCommon/AlertBar.Controller";
+import { AlertBarControllerRef, ReactStateAction } from "dynamicCallFlowCommon/DynamicCallFlow.Interfaces";
+import { DynamicCallFlowPhoneNumberContext } from "dynamicCallFlowPhoneNumber/DynamicCallFlow.PhoneNumber.Container";
 import { ComponentControl } from "components/ComponentControl";
 import { CustomToast } from "components/CustomToast";
-import { PhoneNumberModalTypeEnum } from "dynamicCallFlow/DynamicCallFlow.PhoneNumber.Interfaces";
+import { PhoneNumberModalTypeEnum } from "dynamicCallFlowPhoneNumber/DynamicCallFlow.PhoneNumber.Interfaces";
 import {
   DYNAMIC_CALL_FLOW_ROLE,
   userDoesNotHaveReadWriteAccess
-} from "components/tabs/dynamicCallFlow/common/authentication";
+} from "dynamicCallFlowCommon/authentication";
 
 export interface FormModalProps {
   isOpen: boolean;

@@ -1,7 +1,5 @@
-import { FieldOptions } from "../Form/AbstractFormFieldOptionsManager";
-import {
-  DataGridFilterRef, ReactSetState
-} from "../DynamicCallFlow.Interfaces";
+import { FieldOptions } from "dynamicCallFlowCommon/Form/AbstractFormFieldOptionsManager";
+import { DataGridFilterRef, ReactSetState } from "dynamicCallFlowCommon/DynamicCallFlow.Interfaces";
 
 const ID = "id";
 

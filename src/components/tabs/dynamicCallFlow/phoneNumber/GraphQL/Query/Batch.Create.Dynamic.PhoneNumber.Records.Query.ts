@@ -1,9 +1,9 @@
 import {
-  AbstractBatchRecordsQuery, BatchRecordQuery, BatchResults
-} from "../../../common/GraphQL/Abstract.BatchRecords.Query";
-import {
-  PhoneNumber
-} from "../Dynamic.PhoneNumber.Interfaces";
+  AbstractBatchRecordsQuery,
+  BatchRecordQuery,
+  BatchResults
+} from "dynamicCallFlowCommon/GraphQL/Abstract.BatchRecords.Query";
+import { PhoneNumber } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 
 export class BatchCreateDynamicPhoneNumberRecordsQuery extends AbstractBatchRecordsQuery {
   protected batchInputName(): string {

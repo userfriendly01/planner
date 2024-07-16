@@ -1,12 +1,12 @@
-import { PhoneNumberRecordType } from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
-import { BatchPhoneNumberRecord } from "../GraphQL/Batch.PhoneNumber.Records.Util";
-import { NEXT_ACTION_ID } from "../Form/Dynamic.PhoneNumber.Form.Fields";
-import { BatchResults } from "../../common/GraphQL/Abstract.BatchRecords.Query";
+import { PhoneNumberRecordType } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { BatchPhoneNumberRecord } from "dynamicCallFlowPhoneNumber/GraphQL/Batch.PhoneNumber.Records.Util";
+import { NEXT_ACTION_ID } from "dynamicCallFlowPhoneNumber/Form/Dynamic.PhoneNumber.Form.Fields";
+import { BatchResults } from "dynamicCallFlowCommon/GraphQL/Abstract.BatchRecords.Query";
 
 /**
    * Since the UI grid loads phone number records from 2 tables, we should
-   * remove duplicates from the opposite table, since they shouldn't exist.  This 
-   * function will call batchDeleteItems, while toggling the nextActionId value so 
+   * remove duplicates from the opposite table, since they shouldn't exist.  This
+   * function will call batchDeleteItems, while toggling the nextActionId value so
    * it will delete the rows.
    * @param {string} accessToken - token to use while calling graphql query
    * @param {Array<PhoneNumberRecordType>} phoneNumberRecords - the rows just updated or created

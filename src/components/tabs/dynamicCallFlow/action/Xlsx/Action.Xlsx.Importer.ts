@@ -1,9 +1,9 @@
-import { AbstractXlsxImporter } from "../../common/Xlsx/Abstract.Xlsx.Importer";
-import { ActionRecordType } from "../GraphQL/Action.Interfaces";
-import { ActionXlsRowType } from "./Action.Xlsx.Interfaces";
-import { ActionXlsxValueInspector } from "./Action.Xlsx.Value.Inspector";
-import { ActionXlsxIdInspector } from "./Action.Xlsx.Id.Inspector";
-import { ActionXlsxRecordGenerator } from "./Action.Xlsx.Record.Generator";
+import { AbstractXlsxImporter } from "dynamicCallFlowCommon/Xlsx/Abstract.Xlsx.Importer";
+import { ActionRecordType } from "dynamicCallFlowAction/GraphQL/Action.Interfaces";
+import { ActionXlsRowType } from "dynamicCallFlowAction/Xlsx/Action.Xlsx.Interfaces";
+import { ActionXlsxValueInspector } from "dynamicCallFlowAction/Xlsx/Action.Xlsx.Value.Inspector";
+import { ActionXlsxIdInspector } from "dynamicCallFlowAction/Xlsx/Action.Xlsx.Id.Inspector";
+import { ActionXlsxRecordGenerator } from "dynamicCallFlowAction/Xlsx/Action.Xlsx.Record.Generator";
 
 export class ActionXlsxImporter extends AbstractXlsxImporter<ActionXlsRowType, ActionRecordType> {
   private readonly _actionIdXlsxInspector: ActionXlsxIdInspector = new ActionXlsxIdInspector();

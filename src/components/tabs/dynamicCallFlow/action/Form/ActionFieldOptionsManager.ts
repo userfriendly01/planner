@@ -1,12 +1,11 @@
 import {
-  AbstractFormFieldOptionsManager, FieldOptions
-} from "../../common/Form/AbstractFormFieldOptionsManager";
-import { FieldDataType } from "../../common/Form/Form.Interfaces";
-import {
-  ActionRecordType
-} from "../GraphQL/Action.Interfaces";
-import { ActionRecordUtil } from "../GraphQL/Action.Record.Util";
-import { CALL_FLOW_NAME } from "./ActionFields";
+  AbstractFormFieldOptionsManager,
+  FieldOptions
+} from "dynamicCallFlowCommon/Form/AbstractFormFieldOptionsManager";
+import { FieldDataType } from "dynamicCallFlowCommon/Form/Form.Interfaces";
+import { ActionRecordType } from "dynamicCallFlowAction/GraphQL/Action.Interfaces";
+import { ActionRecordUtil } from "dynamicCallFlowAction/GraphQL/Action.Record.Util";
+import { CALL_FLOW_NAME } from "dynamicCallFlowAction/Form/ActionFields";
 
 const DYNAMIC_CALL_FLOW_CALL_FLOW_CONFIGURATION_FORM_FIELD_OPTIONS = "DYNAMIC_CALL_FLOW_CALL_FLOW_CONFIGURATION_FORM_FIELD_OPTIONS";
 

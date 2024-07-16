@@ -1,7 +1,5 @@
-import {
-  RECORD_DATA_TYPE_NAME, RECORD_DATA_TYPE_NAME_ENUM
-} from "../../common/Xlsx/Abstract.Xlsx.Importer";
-import { CALLER_CONTEXT_ATTRIBUTES } from "../../action/Form/ActionFields";
+import { RECORD_DATA_TYPE_NAME, RECORD_DATA_TYPE_NAME_ENUM } from "dynamicCallFlowCommon/Xlsx/Abstract.Xlsx.Importer";
+import { CALLER_CONTEXT_ATTRIBUTES } from "dynamicCallFlowAction/Form/ActionFields";
 
 export const BRAND = "brand";
 export const CALL_FLOW_TEMPLATE = "callFlowTemplate";

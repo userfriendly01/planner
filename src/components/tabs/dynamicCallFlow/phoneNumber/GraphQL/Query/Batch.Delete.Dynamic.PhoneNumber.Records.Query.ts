@@ -1,13 +1,13 @@
 import {
   BatchRecordQuery, BatchResults
-} from "../../../common/GraphQL/Abstract.BatchRecords.Query";
+} from "dynamicCallFlowCommon/GraphQL/Abstract.BatchRecords.Query";
 import {
   CallFlowDeleteInput, PhoneNumber, PhoneNumberRecordType
-} from "../Dynamic.PhoneNumber.Interfaces";
+} from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 import {
   AbstractBatchDeleteDynamicCallFlowQuery
-} from "components/tabs/dynamicCallFlow/common/GraphQL/Batch.Delete.DynamicCallFlow.Query";
-import { PhoneNumberRecordUtil } from "dynamicCallFlow/GraphQL/PhoneNumber.Record.Util";
+} from "dynamicCallFlowCommon/GraphQL/Batch.Delete.DynamicCallFlow.Query";
+import { PhoneNumberRecordUtil } from "dynamicCallFlowPhoneNumber/GraphQL/PhoneNumber.Record.Util";
 
 /**
  * This class is responsible for deleting phone number records.  It is a subclass of AbstractBatchDeleteDynamicCallFlowQuery.  The query definition

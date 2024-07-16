@@ -1,31 +1,25 @@
-import React, {
-  useMemo, useEffect, useContext, useRef
-} from "react";
-import {
-  Modal,ModalHeader, ModalBody, ModalFooter
-} from "@lmig/lmds-react-modal";
-import {
-  DataGrid, GridColDef, useGridApiRef
-} from "@mui/x-data-grid";
-import { PhoneNumberPreviewModalColumnDef } from "./PhoneNumber.Preview.Modal.ColumnDef";
-import "./PhoneNumber.Preview.Modal.css";
+import React, { useContext, useEffect, useMemo, useRef } from "react";
+import { Modal, ModalBody, ModalFooter, ModalHeader } from "@lmig/lmds-react-modal";
+import { DataGrid, GridColDef, useGridApiRef } from "@mui/x-data-grid";
 import { Box } from "@mui/material";
-import { reconstructTableColumnDef } from "./PhoneNumber.Preview.Modal.Util";
-import {
-  PhoneNumberRecordType
-} from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
-
-import { DynamicCallFlowPhoneNumberContext } from "../DynamicCallFlow.PhoneNumber.Container";
-import { PhoneNumberPreviewModalHandler } from "./PhoneNumber.Preview.Modal.Handler";
-import { DataGridControllerRef } from "../../common/DynamicCallFlow.Interfaces";
-import { PhoneNumberXlsxImporter } from "../Xlsx/Import/PhoneNumber.Xlsx.Importer";
-import { FieldOptions } from "components/tabs/dynamicCallFlow/common/Form/AbstractFormFieldOptionsManager";
 import { StyledButton } from "components/StyledButton";
-import { HANDLED_SUCCESSFULLY } from "components/tabs/dynamicCallFlow/common/Preview/Abstract.Preview.Modal.Handler";
-import { PhoneNumberRecordUtil } from "dynamicCallFlow/GraphQL/PhoneNumber.Record.Util";
+import { DataGridControllerRef } from "dynamicCallFlowCommon/DynamicCallFlow.Interfaces";
+import { FieldOptions } from "dynamicCallFlowCommon/Form/AbstractFormFieldOptionsManager";
 import {
-  PhoneNumberModalType, PhoneNumberModalTypeEnum
-} from "dynamicCallFlow/DynamicCallFlow.PhoneNumber.Interfaces";
+  PhoneNumberModalType,
+  PhoneNumberModalTypeEnum
+} from "dynamicCallFlowPhoneNumber/DynamicCallFlow.PhoneNumber.Interfaces";
+import { PhoneNumberRecordType } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { DynamicCallFlowPhoneNumberContext } from "dynamicCallFlowPhoneNumber/DynamicCallFlow.PhoneNumber.Container";
+import {
+  PhoneNumberPreviewModalHandler
+} from "dynamicCallFlowPhoneNumber/PreviewModal/PhoneNumber.Preview.Modal.Handler";
+import PhoneNumberPreviewModalColumnDef
+  from "dynamicCallFlowPhoneNumber/PreviewModal/PhoneNumber.Preview.Modal.ColumnDef";
+import { reconstructTableColumnDef } from "dynamicCallFlowPhoneNumber/PreviewModal/PhoneNumber.Preview.Modal.Util";
+import { HANDLED_SUCCESSFULLY } from "dynamicCallFlowCommon/Preview/Abstract.Preview.Modal.Handler";
+import { PhoneNumberXlsxImporter } from "dynamicCallFlowPhoneNumber/Xlsx/Import/PhoneNumber.Xlsx.Importer";
+import { PhoneNumberRecordUtil } from "dynamicCallFlowPhoneNumber/GraphQL/PhoneNumber.Record.Util";
 
 interface PreviewModalParameters<RecordType> {
     isOpen: boolean;
@@ -192,7 +186,7 @@ export const PhoneNumberPreviewModal = ({
             justifyContent: "center"
           }}>
             {modalType === PhoneNumberModalTypeEnum.BulkDelete &&
-            <StyledButton sx={{ marginRight: "15px" }} onClick={()=>{ handleOnDelete(); }}>Delete</StyledButton>
+            <StyledButton sx={{ marginRight: "15px" }} onClick={()=> handleOnDelete() }>Delete</StyledButton>
             }
             {modalType === PhoneNumberModalTypeEnum.BulkAdd &&
             <StyledButton data-test-id="ScpANXily_jfK9JzNGaJf" sx={{ marginRight: "15px" }} onClick={() => handleOnCreate() }>Save</StyledButton>

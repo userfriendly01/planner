@@ -1,6 +1,6 @@
-import { AbstractListRecordsQuery } from "../../../common/GraphQL/AbstractListRecords.Query";
-import { CctSharedCallFlowDb } from "../Legacy.PhoneNumber.Interfaces";
-import { LoadDataGridMonitorRef } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
+import { AbstractListRecordsQuery } from "dynamicCallFlowCommon/GraphQL/AbstractListRecords.Query";
+import { CctSharedCallFlowDb } from "dynamicCallFlowPhoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
+import { LoadDataGridMonitorRef } from "dynamicCallFlowCommon/DynamicCallFlow.Interfaces";
 
 class ListLegacyPhoneNumberRecordsQuery extends AbstractListRecordsQuery {
   protected queryName(): string {

@@ -1,12 +1,8 @@
-import React, {
-  createContext, useEffect, useRef, useState
-} from "react";
-import ActionDataGridComponent, { ActionModalType } from "./DataGrid/Action.DataGrid.Component";
+import React, { createContext, useEffect, useRef, useState } from "react";
+import ActionDataGridComponent, { ActionModalType } from "dynamicCallFlowAction/DataGrid/Action.DataGrid.Component";
 import { useAdminState } from "context/appContext";
-import ModalController,{
-  MODAL_NOT_IN_USE
-} from "../common/Modal.Controller";
-import { DynamicCallFlowContextStore } from "../common/DynamicCallFlow.Interfaces";
+import ModalController, { MODAL_NOT_IN_USE } from "dynamicCallFlowCommon/Modal.Controller";
+import { DynamicCallFlowContextStore } from "dynamicCallFlowCommon/DynamicCallFlow.Interfaces";
 
 export const DynamicCallFlowActionContext = createContext<DynamicCallFlowContextStore<ActionModalType> | undefined>(undefined);
 

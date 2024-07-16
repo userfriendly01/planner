@@ -1,6 +1,6 @@
-import { AbstractUpdateRecordQuery } from "../../../common/GraphQL/AbstractUpdateRecord.Query";
-import { CctSharedCallFlowDb } from "../Legacy.PhoneNumber.Interfaces";
-import { SingleRecordResults } from "../../../common/GraphQL/AbstractSingleRecord.Query";
+import { AbstractUpdateRecordQuery } from "dynamicCallFlowCommon/GraphQL/AbstractUpdateRecord.Query";
+import { CctSharedCallFlowDb } from "dynamicCallFlowPhoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
+import { SingleRecordResults } from "dynamicCallFlowCommon/GraphQL/AbstractSingleRecord.Query";
 
 class UpdateLegacyPhoneNumberRecordQuery extends AbstractUpdateRecordQuery {
   protected queryName(): string {

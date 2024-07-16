@@ -1,13 +1,17 @@
-import { PhoneNumberXlsxRow } from "../PhoneNumber.Xlsx.Interfaces";
+import { PhoneNumberXlsxRow } from "dynamicCallFlowPhoneNumber/Xlsx/PhoneNumber.Xlsx.Interfaces";
 import {
-  CallerType, LanguageOfferType, UserDestinationType
-} from "../../GraphQL/Dynamic.PhoneNumber.Interfaces";
+  CallerType,
+  LanguageOfferType,
+  UserDestinationType
+} from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 import {
-  CctSharedCallFlowDb, FlowContent, LegacyPhoneNumberType
-} from "../../GraphQL/Legacy.PhoneNumber.Interfaces";
+  CctSharedCallFlowDb,
+  FlowContent,
+  LegacyPhoneNumberType
+} from "dynamicCallFlowPhoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
 import {
   AbstractPhoneNumberXlsxRecordGenerator
-} from "dynamicCallFlow/Xlsx/Import/Abstract.PhoneNumber.Xlsx.Record.Generator";
+} from "dynamicCallFlowPhoneNumber/Xlsx/Import/Abstract.PhoneNumber.Xlsx.Record.Generator";
 
 export class LegacyPhoneNumberXlsxRecordGenerator extends AbstractPhoneNumberXlsxRecordGenerator {
   protected mapPhoneNumberRecordTypeSpecificFields(phoneNumberXlsxRow: PhoneNumberXlsxRow): CctSharedCallFlowDb {

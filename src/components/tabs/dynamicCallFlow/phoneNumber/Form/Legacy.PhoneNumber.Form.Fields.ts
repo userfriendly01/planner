@@ -7,7 +7,7 @@ import {
   GREETING_MESSAGES,
   LANGUAGE_OFFER,
   OFFICE_NUMBERS
-} from "./Dynamic.PhoneNumber.Form.Fields";
+} from "dynamicCallFlowPhoneNumber/Form/Dynamic.PhoneNumber.Form.Fields";
 
 export const ACCOUNT_MANAGER = "accountManager";
 export const AFFINITY_VDN = "affinityVDN";

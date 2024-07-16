@@ -1,9 +1,7 @@
-import {
-  AbstractFormHandler, NOT_VALID
-} from "../../common/Form/Abstract.Form.Handler";
-import { PhoneNumberRecordType } from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
-import { GREETING_MESSAGES } from "./Dynamic.PhoneNumber.Form.Fields";
-import { FieldConfigs } from "../../common/Form/Form.Interfaces";
+import { AbstractFormHandler, NOT_VALID } from "dynamicCallFlowCommon/Form/Abstract.Form.Handler";
+import { PhoneNumberRecordType } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { GREETING_MESSAGES } from "dynamicCallFlowPhoneNumber/Form/Dynamic.PhoneNumber.Form.Fields";
+import { FieldConfigs } from "dynamicCallFlowCommon/Form/Form.Interfaces";
 
 export abstract class AbstractPhoneNumberFormHandler extends AbstractFormHandler<PhoneNumberRecordType> {
   /**

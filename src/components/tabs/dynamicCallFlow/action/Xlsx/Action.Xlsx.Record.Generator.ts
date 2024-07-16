@@ -1,16 +1,19 @@
 import {
   ActionXlsRowType,
-  AnnouncementXlsxRow, CallerContextAttributes,
+  AnnouncementXlsxRow,
+  CallerContextAttributes,
   MenuOptionXlsxRow,
   MenuXlsxRow,
   RedirectXlsxRow
-} from "./Action.Xlsx.Interfaces";
+} from "dynamicCallFlowAction/Xlsx/Action.Xlsx.Interfaces";
 import {
   ActionRecordType,
   Announcement,
-  Menu, MenuOptions, Redirect
-} from "../GraphQL/Action.Interfaces";
-import { ActionTypeEnum } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
+  Menu,
+  MenuOptions,
+  Redirect
+} from "dynamicCallFlowAction/GraphQL/Action.Interfaces";
+import { ActionTypeEnum } from "dynamicCallFlowCommon/GraphQL/DynamicCallFlow.Interfaces";
 
 export class ActionXlsxRecordGenerator {
   public generateActionRecords(actionXlsxRows: Array<ActionXlsRowType>): Array<ActionRecordType> {

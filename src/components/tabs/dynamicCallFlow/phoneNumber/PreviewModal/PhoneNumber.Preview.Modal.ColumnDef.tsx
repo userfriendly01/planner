@@ -1,18 +1,17 @@
 import { GridColDef } from "@mui/x-data-grid";
 import Tooltip from "@mui/material/Tooltip";
 import React from "react";
-import {
-  Chip, Switch
-} from "@mui/material";
-import { PhoneNumberRecordUtil } from "dynamicCallFlow/GraphQL/PhoneNumber.Record.Util";
-import { PhoneNumberRecordType } from "dynamicCallFlow/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { Chip, Switch } from "@mui/material";
+import { PhoneNumberRecordUtil } from "dynamicCallFlowPhoneNumber/GraphQL/PhoneNumber.Record.Util";
+import { PhoneNumberRecordType } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 import {
   CALL_FLOW_ROUTE,
   CALLER_TYPE,
-  DATA_REQUESTS, GREETING_MESSAGES,
+  DATA_REQUESTS,
+  GREETING_MESSAGES,
   LANGUAGE_OFFER,
   TRANSFER_DESTINATION
-} from "dynamicCallFlow/Form/Dynamic.PhoneNumber.Form.Fields";
+} from "dynamicCallFlowPhoneNumber/Form/Dynamic.PhoneNumber.Form.Fields";
 
 export const PhoneNumberPreviewModalColumnDef: GridColDef[] = [
   {

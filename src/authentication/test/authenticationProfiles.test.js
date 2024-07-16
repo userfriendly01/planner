@@ -14,7 +14,7 @@ import { runDynamicCallFlowStartup } from "authentication/startups/cct-dynamic-c
 import AlohaRoutingContainer from "alohaRouting/AlohaRoutingContainer";
 import { TritonUsersViewWrapper } from "usermanagement/TritonUsersViewWrapper";
 import { setupMockedComponents } from "testUtils";
-import DynamicCallFlowPhoneNumberContainer from "dynamicCallFlow/DynamicCallFlow.PhoneNumber.Container";
+import DynamicCallFlowPhoneNumberContainer from "dynamicCallFlowPhoneNumber//DynamicCallFlow.PhoneNumber.Container";
 
 jest.mock("authentication/startups/cct-triton-admin-startup", () => ({
   runTritonAdminStartup: jest.fn()
@@ -37,7 +37,7 @@ jest.mock("alohaRouting/AlohaRoutingContainer", () => ({
   default: jest.fn()
 }));
 
-jest.mock("dynamicCallFlow/DynamicCallFlow.PhoneNumber.Container", () => ({
+jest.mock("dynamicCallFlowPhoneNumber/DynamicCallFlow.PhoneNumber.Container", () => ({
   __esModule: true,
   default: jest.fn()
 }));

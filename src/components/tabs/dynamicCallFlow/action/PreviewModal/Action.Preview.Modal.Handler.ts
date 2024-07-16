@@ -1,13 +1,13 @@
-import { ActionRecordType } from "../GraphQL/Action.Interfaces";
+import { ActionRecordType } from "dynamicCallFlowAction/GraphQL/Action.Interfaces";
 import {
   AbstractPreviewModalHandler, HANDLED_SUCCESSFULLY,
   HANDLED_UNSUCCESSFULLY
-} from "../../common/Preview/Abstract.Preview.Modal.Handler";
-import { batchCreateDynamicActionRecords } from "../GraphQL/Batch.Create.Action.Records.Query";
-import { batchDeleteDynamicActionRecords } from "../GraphQL/Batch.Delete.Action.Records.Query";
-import { removeElementsFromArray } from "components/tabs/dynamicCallFlow/common/Util/Array.Util";
-import { ACTION_ID } from "dynamicCallFlow/Form/ActionFields";
-import { BatchResults } from "components/tabs/dynamicCallFlow/common/GraphQL/Abstract.BatchRecords.Query";
+} from "dynamicCallFlowCommon/Preview/Abstract.Preview.Modal.Handler";
+import { batchCreateDynamicActionRecords } from "dynamicCallFlowAction/GraphQL/Batch.Create.Action.Records.Query";
+import { batchDeleteDynamicActionRecords } from "dynamicCallFlowAction/GraphQL/Batch.Delete.Action.Records.Query";
+import { removeElementsFromArray } from "dynamicCallFlowCommon/Util/Array.Util";
+import { ACTION_ID } from "dynamicCallFlowAction/Form/ActionFields";
+import { BatchResults } from "dynamicCallFlowCommon/GraphQL/Abstract.BatchRecords.Query";
 
 export class ActionPreviewModalHandler extends AbstractPreviewModalHandler<ActionRecordType> {
 

@@ -1,26 +1,21 @@
 /* eslint-disable react/prop-types */
-import React, {
-  useEffect, useState, useContext
-} from "react";
-import {
-  ModalBody, ModalFooter, ModalHeader
-} from "@lmig/lmds-react-modal";
-import {
-  HeadingStyled, ModalSearchStyled
-} from "../../common/DynamicCallFlow.Styles";
-import SelectContainer from "../../../../core/SharedComponents/SelectContainer";
+import React, { useContext, useEffect, useState } from "react";
+import { ModalBody, ModalFooter, ModalHeader } from "@lmig/lmds-react-modal";
+import { HeadingStyled, ModalSearchStyled } from "dynamicCallFlowCommon/DynamicCallFlow.Styles";
+import SelectContainer from "components/SelectContainer";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import {
-  BRAND, CALL_FLOW_ROUTE, CALL_FLOW_TEMPLATE, CHANNEL
-} from "../Form/Dynamic.PhoneNumber.Form.Fields";
-import {
-  DataGridFilterModalProps, Filter
-} from "../../common/DataGrid/Abstract.DataGrid.Filter";
-import { PKEY } from "../Form/Legacy.PhoneNumber.Form.Fields";
-import { DynamicCallFlowPhoneNumberContext } from "../DynamicCallFlow.PhoneNumber.Container";
-import { PhoneNumberRecordType } from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
+  BRAND,
+  CALL_FLOW_ROUTE,
+  CALL_FLOW_TEMPLATE,
+  CHANNEL
+} from "dynamicCallFlowPhoneNumber/Form/Dynamic.PhoneNumber.Form.Fields";
+import { DataGridFilterModalProps, Filter } from "dynamicCallFlowCommon/DataGrid/Abstract.DataGrid.Filter";
+import { PKEY } from "dynamicCallFlowPhoneNumber/Form/Legacy.PhoneNumber.Form.Fields";
+import { DynamicCallFlowPhoneNumberContext } from "dynamicCallFlowPhoneNumber/DynamicCallFlow.PhoneNumber.Container";
+import { PhoneNumberRecordType } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 
 export const FilterLabel: Map<string, string> = new Map<string, string>([
   ["brand", "Brand"],

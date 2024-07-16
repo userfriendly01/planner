@@ -8,24 +8,24 @@ import {
 import {
   Modal, ModalBody, ModalFooter, ModalHeader
 } from "@lmig/lmds-react-modal";
-import "./Action.Preview.Modal.css";
+import "dynamicCallFlowAction/PreviewModal/Action.Preview.Modal.css";
 import { Box } from "@mui/material";
-import TableGridColumnDef from "./Action.Preview.Modal.ColumnDef";
-import { reconstructTableColumnDef } from "./Action.Preview.Modal.Util";
+import TableGridColumnDef from "dynamicCallFlowAction/PreviewModal/Action.Preview.Modal.ColumnDef";
+import { reconstructTableColumnDef } from "dynamicCallFlowAction/PreviewModal/Action.Preview.Modal.Util";
 import {
   ActionRecordType
-} from "../GraphQL/Action.Interfaces";
+} from "dynamicCallFlowAction/GraphQL/Action.Interfaces";
 import {
   ActionModalType, ActionModalTypeEnum
-} from "../DataGrid/Action.DataGrid.Component";
-import { ActionXlsxImporter } from "../Xlsx/Action.Xlsx.Importer";
+} from "dynamicCallFlowAction/DataGrid/Action.DataGrid.Component";
+import { ActionXlsxImporter } from "dynamicCallFlowAction/Xlsx/Action.Xlsx.Importer";
 import {
   DataGridControllerRef, MutableRefObject
-} from "../../common/DynamicCallFlow.Interfaces";
-import { DynamicCallFlowActionContext } from "../DynamicCallFlow.Action.Container";
-import { ActionPreviewModalHandler } from "./Action.Preview.Modal.Handler";
+} from "dynamicCallFlowCommon/DynamicCallFlow.Interfaces";
+import { DynamicCallFlowActionContext } from "dynamicCallFlowAction/DynamicCallFlow.Action.Container";
+import { ActionPreviewModalHandler } from "dynamicCallFlowAction/PreviewModal/Action.Preview.Modal.Handler";
 import { StyledButton } from "components/StyledButton";
-import { HANDLED_SUCCESSFULLY } from "components/tabs/dynamicCallFlow/common/Preview/Abstract.Preview.Modal.Handler";
+import { HANDLED_SUCCESSFULLY } from "dynamicCallFlowCommon/Preview/Abstract.Preview.Modal.Handler";
 
 interface PreviewModalParameters<RecordType> {
   isOpen: boolean;

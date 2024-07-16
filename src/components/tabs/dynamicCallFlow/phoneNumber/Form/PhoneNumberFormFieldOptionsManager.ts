@@ -1,6 +1,7 @@
 import {
-  AbstractFormFieldOptionsManager, FieldOptions
-} from "../../common/Form/AbstractFormFieldOptionsManager";
+  AbstractFormFieldOptionsManager,
+  FieldOptions
+} from "dynamicCallFlowCommon/Form/AbstractFormFieldOptionsManager";
 import {
   BRAND,
   CALL_FLOW_ROUTE,
@@ -8,19 +9,20 @@ import {
   CALLER_TYPE,
   CHANNEL,
   DATA_REQUESTS
-} from "./Dynamic.PhoneNumber.Form.Fields";
-import { PKEY } from "./Legacy.PhoneNumber.Form.Fields";
+} from "dynamicCallFlowPhoneNumber/Form/Dynamic.PhoneNumber.Form.Fields";
+import { PKEY } from "dynamicCallFlowPhoneNumber/Form/Legacy.PhoneNumber.Form.Fields";
 import {
-  CallFlowNameTypeEnum, CallFlowTypeEnum,
+  CallFlowNameTypeEnum,
+  CallFlowTypeEnum,
   LanguageOfferTypeEnum,
-  PhoneNumberRecordType, TfnRoutingGroupEnum,
+  PhoneNumberRecordType,
+  TfnRoutingGroupEnum,
   UserDestinationEnum
-} from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
-import { LegacyPhoneNumberTypeEnum } from "../GraphQL/Legacy.PhoneNumber.Interfaces";
-import { PhoneNumberRecordUtil } from "../GraphQL/PhoneNumber.Record.Util";
-import { FieldDataType } from "../../common/Form/Form.Interfaces";
-
-import { ActionTypeEnum } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
+} from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { LegacyPhoneNumberTypeEnum } from "dynamicCallFlowPhoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
+import { PhoneNumberRecordUtil } from "dynamicCallFlowPhoneNumber/GraphQL/PhoneNumber.Record.Util";
+import { FieldDataType } from "dynamicCallFlowCommon/Form/Form.Interfaces";
+import { ActionTypeEnum } from "dynamicCallFlowCommon/GraphQL/DynamicCallFlow.Interfaces";
 
 export class PhoneNumberFormFieldOptionsManager extends AbstractFormFieldOptionsManager<PhoneNumberRecordType> {
   protected getRecordKeyValue(phoneNumberRecord: PhoneNumberRecordType, key: string): string | Array<string> | undefined {

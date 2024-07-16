@@ -6,44 +6,45 @@ import {
   GridRowSelectionModel,
   useGridApiRef
 } from "@mui/x-data-grid";
-import React, {
-  useContext, useEffect, useRef, useState
-} from "react";
-import "./PhoneNumber.DataGrid.scss";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import "dynamicCallFlowPhoneNumber/DataGrid/PhoneNumber.DataGrid.scss";
 import { GridApiCommunity } from "@mui/x-data-grid/internals";
+import { PhoneNumber, PhoneNumberRecordType } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { PhoneNumberRecordUtil } from "dynamicCallFlowPhoneNumber/GraphQL/PhoneNumber.Record.Util";
 import {
-  PhoneNumber, PhoneNumberRecordType
-} from "../GraphQL/Dynamic.PhoneNumber.Interfaces";
-import { PhoneNumberRecordUtil } from "../GraphQL/PhoneNumber.Record.Util";
-import { LegacyPhoneNumberFormFieldConfigs } from "../Form/Legacy.PhoneNumber.Form.FieldConfigs";
-import { PhoneNumberPreviewModal } from "../PreviewModal";
-import PhoneNumberDataGridColumnDef from "./PhoneNumber.DataGrid.ColumnDef";
-import { PhoneNumberDataGridToolBar } from "./PhoneNumber.DataGrid.ToolBar";
-import { PhoneNumberDataGridFilterModal } from "./PhoneNumber.DataGrid.Filter.Modal";
-import { FieldConfigs } from "../../common/Form/Form.Interfaces";
-import { PhoneNumberFormModal } from "../Form/PhoneNumber.Form.Modal";
-import { EditPhoneNumberFormHandler } from "../Form/Edit.PhoneNumber.Form.Handler";
-import { DynamicPhoneNumberFormFieldConfigs } from "../Form/Dynamic.PhoneNumber.Form.FieldConfigs";
-import { PhoneNumberFormFieldOptionsManager } from "../Form/PhoneNumberFormFieldOptionsManager";
-import { FieldOptions } from "../../common/Form/AbstractFormFieldOptionsManager";
-import { listPhoneNumberRecords } from "../GraphQL/List.PhoneNumber.Records.Util";
+  LegacyPhoneNumberFormFieldConfigs
+} from "dynamicCallFlowPhoneNumber/Form/Legacy.PhoneNumber.Form.FieldConfigs";
+import { PhoneNumberPreviewModal } from "dynamicCallFlowPhoneNumber/PreviewModal/PhoneNumber.Preview.Modal.Component";
+import PhoneNumberDataGridColumnDef from "dynamicCallFlowPhoneNumber/DataGrid/PhoneNumber.DataGrid.ColumnDef";
+import { PhoneNumberDataGridToolBar } from "dynamicCallFlowPhoneNumber/DataGrid/PhoneNumber.DataGrid.ToolBar";
+import { PhoneNumberDataGridFilterModal } from "dynamicCallFlowPhoneNumber/DataGrid/PhoneNumber.DataGrid.Filter.Modal";
+import { FieldConfigs } from "dynamicCallFlowCommon/Form/Form.Interfaces";
+import { PhoneNumberFormModal } from "dynamicCallFlowPhoneNumber/Form/PhoneNumber.Form.Modal";
+import { EditPhoneNumberFormHandler } from "dynamicCallFlowPhoneNumber/Form/Edit.PhoneNumber.Form.Handler";
+import {
+  DynamicPhoneNumberFormFieldConfigs
+} from "dynamicCallFlowPhoneNumber/Form/Dynamic.PhoneNumber.Form.FieldConfigs";
+import { PhoneNumberFormFieldOptionsManager } from "dynamicCallFlowPhoneNumber/Form/PhoneNumberFormFieldOptionsManager";
+import { FieldOptions } from "dynamicCallFlowCommon/Form/AbstractFormFieldOptionsManager";
+import { listPhoneNumberRecords } from "dynamicCallFlowPhoneNumber/GraphQL/List.PhoneNumber.Records.Util";
 import {
   DataGridStateProps,
   initializeDataGrid,
   sortRecords
-} from "../../common/DataGrid/DynamicCallFlow.Common.DataGrid";
-import { AddPhoneNumberFormHandler } from "../Form/Add.PhoneNumber.Form.Handler";
-import {
-  AlertBarController, AlertBarProps, initialAlertBarProps
-} from "../../common/AlertBar.Controller";
-import { DynamicCallFlowPhoneNumberContext } from "../DynamicCallFlow.PhoneNumber.Container";
-import { PhoneNumberDataGridFilter } from "./PhoneNumber.DataGrid.Filter";
-import { PhoneNumberDataGridController } from "./PhoneNumber.DataGrid.Controller";
+} from "dynamicCallFlowCommon/DataGrid/DynamicCallFlow.Common.DataGrid";
+import { AddPhoneNumberFormHandler } from "dynamicCallFlowPhoneNumber/Form/Add.PhoneNumber.Form.Handler";
+import { AlertBarController, AlertBarProps, initialAlertBarProps } from "dynamicCallFlowCommon/AlertBar.Controller";
+import { DynamicCallFlowPhoneNumberContext } from "dynamicCallFlowPhoneNumber/DynamicCallFlow.PhoneNumber.Container";
+import { PhoneNumberDataGridFilter } from "dynamicCallFlowPhoneNumber/DataGrid/PhoneNumber.DataGrid.Filter";
+import { PhoneNumberDataGridController } from "dynamicCallFlowPhoneNumber/DataGrid/PhoneNumber.DataGrid.Controller";
 import { CustomToast } from "components/CustomToast";
-import { CctSharedCallFlowDb } from "dynamicCallFlow/GraphQL/Legacy.PhoneNumber.Interfaces";
-import { PhoneNumberDataGridProgressBar } from "dynamicCallFlow/DataGrid/PhoneNumber.DataGrid.ProgressBar";
-import LoadDataGridMonitor from "components/tabs/dynamicCallFlow/common/DataGrid/Load.DataGrid.Monitor";
-import { PhoneNumberModalTypeEnum } from "dynamicCallFlow/DynamicCallFlow.PhoneNumber.Interfaces";
+import { CctSharedCallFlowDb } from "dynamicCallFlowPhoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
+import {
+  PHONE_NUMBER_DATA_GRID_PROGRESS_BAR_CACHE_KEY,
+  PhoneNumberDataGridProgressBar
+} from "dynamicCallFlowPhoneNumber/DataGrid/PhoneNumber.DataGrid.ProgressBar";
+import LoadDataGridMonitor from "dynamicCallFlowCommon/DataGrid/Load.DataGrid.Monitor";
+import { PhoneNumberModalTypeEnum } from "dynamicCallFlowPhoneNumber/DynamicCallFlow.PhoneNumber.Interfaces";
 
 const DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_PAGE_NUMBER = "dynamicCallFlowPhoneNumberDataGridPageNumber";
 const DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_RECORDS_PER_PAGE = "dynamicCallFlowPhoneNumberDataGridRecordsPerPage";
@@ -67,7 +68,7 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
   const [dataGridRecords, setDataGridRecords] = useState<Array<PhoneNumberRecordType>>([]);
   const [recordCount, setRecordCount] = useState<number>(0);
   const [dataGridLoaded, setDataGridLoaded] = useState<boolean>(false);
-  const loadDataGridMonitor = useRef(new LoadDataGridMonitor(setRecordCount, setDataGridLoaded, alertBarController));
+  const loadDataGridMonitor = useRef(new LoadDataGridMonitor(PHONE_NUMBER_DATA_GRID_PROGRESS_BAR_CACHE_KEY, setRecordCount, setDataGridLoaded, alertBarController));
 
   // dataGridProps stores the state of fetching data, the min and max id, and the max id.
   const [dataGridProps, setDataGridProps] = useState<DataGridStateProps>(initializeDataGrid());
@@ -129,7 +130,7 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
     };
 
     loadDataGrid();
-  });
+  }, []);
 
   useEffect(() => {
     dataGridFilter.current.sourceRecords = sourceRecords;
@@ -229,6 +230,7 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
 
   PhoneNumberDataGridColumnDef[0].renderCell = (gridRenderCellParams: GridRenderCellParams<PhoneNumberRecordType>) =>
     (<a data-test-id="GDR72LjjpPWsU1VoyXAo4" href="#" onClick={() => openEditFormModal(gridRenderCellParams.row)}>{`${gridRenderCellParams.value}`}</a>);
+
   return (
     <div className="data-grid-wrapper">
       <div className="data-grid-wrapper">

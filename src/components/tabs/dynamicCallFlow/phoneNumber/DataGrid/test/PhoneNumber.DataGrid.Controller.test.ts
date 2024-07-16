@@ -1,17 +1,20 @@
-import { PhoneNumberDataGridController } from "../PhoneNumber.DataGrid.Controller";
-import { PKEY } from "../../Form/Legacy.PhoneNumber.Form.Fields";
-import { DataGridStateProps } from "components/tabs/dynamicCallFlow/common/DataGrid/DynamicCallFlow.Common.DataGrid";
+import { PhoneNumberDataGridController } from "dynamicCallFlowPhoneNumber/DataGrid/PhoneNumber.DataGrid.Controller";
+import { PKEY } from "dynamicCallFlowPhoneNumber/Form/Legacy.PhoneNumber.Form.Fields";
+import { DataGridStateProps } from "dynamicCallFlowCommon/DataGrid/DynamicCallFlow.Common.DataGrid";
 import {
   AlertBarControllerRef,
   DataGridFilterRef,
   ReactGridApi
-} from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
+} from "dynamicCallFlowCommon/DynamicCallFlow.Interfaces";
 
 import {
   DynamicPhoneNumberArray,
-  DynamicPhoneNumberOne, DynamicPhoneNumberTwo, mockDynamicPhoneNumberArray, mockDynamicPhoneNumberObject
-} from "dynamicCallFlow/GraphQL/_test/Dynamic.PhoneNumber.MockData";
-import { BrandTypeEnum } from "dynamicCallFlow/GraphQL/Dynamic.PhoneNumber.Interfaces";
+  DynamicPhoneNumberOne,
+  DynamicPhoneNumberTwo,
+  mockDynamicPhoneNumberArray,
+  mockDynamicPhoneNumberObject
+} from "dynamicCallFlowPhoneNumber/GraphQL/_test/Dynamic.PhoneNumber.MockData";
+import { BrandTypeEnum } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 
 jest.mock("components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces");
 jest.mock("@mui/x-data-grid/internals");

@@ -1,9 +1,9 @@
-import { ActionRecordType } from "./Action.Interfaces";
-import { BatchResults } from "../../common/GraphQL/Abstract.BatchRecords.Query";
-import { CallFlowDeleteInput } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
+import { ActionRecordType } from "dynamicCallFlowAction/GraphQL/Action.Interfaces";
+import { BatchResults } from "dynamicCallFlowCommon/GraphQL/Abstract.BatchRecords.Query";
+import { CallFlowDeleteInput } from "dynamicCallFlowCommon/GraphQL/DynamicCallFlow.Interfaces";
 import {
   AbstractBatchDeleteDynamicCallFlowQuery
-} from "components/tabs/dynamicCallFlow/common/GraphQL/Batch.Delete.DynamicCallFlow.Query";
+} from "dynamicCallFlowCommon/GraphQL/Batch.Delete.DynamicCallFlow.Query";
 
 class BatchDeleteActionRecordsQuery extends AbstractBatchDeleteDynamicCallFlowQuery<ActionRecordType> {
   protected generateCallFlowDeleteInputs(actionRecords: Array<ActionRecordType>): Array<CallFlowDeleteInput> {

@@ -1,15 +1,20 @@
-import { DataGridStateProps } from "./DynamicCallFlow.Common.DataGrid";
+import { DataGridStateProps } from "dynamicCallFlowCommon/DataGrid/DynamicCallFlow.Common.DataGrid";
 import {
-  AlertBarControllerRef, DataGridFilterRef, ReactGridApi
-} from "../DynamicCallFlow.Interfaces";
-import { AlertBarController } from "../AlertBar.Controller";
+  AlertBarControllerRef,
+  DataGridFilterRef,
+  ReactGridApi
+} from "dynamicCallFlowCommon/DynamicCallFlow.Interfaces";
+import { AlertBarController } from "dynamicCallFlowCommon/AlertBar.Controller";
 import { GridApiCommunity } from "@mui/x-data-grid/internals";
-import { DataGridFilter } from "./Abstract.DataGrid.Filter";
+import { DataGridFilter } from "dynamicCallFlowCommon/DataGrid/Abstract.DataGrid.Filter";
 import {
   addElementsToArray,
-  addElementToArray, removeElementFromArray, removeElementsFromArray,
-  updateElementInArray, updateElementsInArray
-} from "components/tabs/dynamicCallFlow/common/Util/Array.Util";
+  addElementToArray,
+  removeElementFromArray,
+  removeElementsFromArray,
+  updateElementInArray,
+  updateElementsInArray
+} from "dynamicCallFlowCommon/Util/Array.Util";
 
 /**
  * @typedef {RecordType} RecordType

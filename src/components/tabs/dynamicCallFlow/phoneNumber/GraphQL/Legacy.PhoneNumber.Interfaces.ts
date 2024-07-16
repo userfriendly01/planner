@@ -1,6 +1,8 @@
 import {
-  BasePhoneNumber, CallerType, LanguageOfferType
-} from "./Dynamic.PhoneNumber.Interfaces";
+    BasePhoneNumber,
+    CallerType,
+    LanguageOfferType
+} from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 
 export interface CctSharedCallFlowDbDelInput {
     pkey: string;

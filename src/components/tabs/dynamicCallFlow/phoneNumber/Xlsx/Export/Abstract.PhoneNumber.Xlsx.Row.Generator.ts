@@ -1,6 +1,6 @@
-import { PhoneNumberRecordType } from "dynamicCallFlow/GraphQL/Dynamic.PhoneNumber.Interfaces";
-import { PhoneNumberXlsxRow } from "dynamicCallFlow/Xlsx/PhoneNumber.Xlsx.Interfaces";
-import { PhoneNumberRecordUtil } from "dynamicCallFlow/GraphQL/PhoneNumber.Record.Util";
+import { PhoneNumberRecordType } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { PhoneNumberXlsxRow } from "dynamicCallFlowPhoneNumber/Xlsx/PhoneNumber.Xlsx.Interfaces";
+import { PhoneNumberRecordUtil } from "dynamicCallFlowPhoneNumber/GraphQL/PhoneNumber.Record.Util";
 import {
   BRAND,
   CALL_FLOW_ROUTE,
@@ -26,7 +26,7 @@ import {
   TOLL_FREE_NUMBER,
   TRANSFER_CODE,
   WHISPER
-} from "dynamicCallFlow/Form/Dynamic.PhoneNumber.Form.Fields";
+} from "dynamicCallFlowPhoneNumber/Form/Dynamic.PhoneNumber.Form.Fields";
 
 export abstract class AbstractPhoneNumberXlsxRowGenerator {
   protected groupRecordsByWorkBookNames(records: Array<PhoneNumberRecordType>): Map<string, Array<PhoneNumberRecordType>> {

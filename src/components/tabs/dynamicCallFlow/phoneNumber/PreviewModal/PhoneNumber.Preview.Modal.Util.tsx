@@ -3,15 +3,15 @@ import {
   GridCellParams, GridColDef
 } from "@mui/x-data-grid";
 
-import { RequiredPhoneNumberFormFields } from "../Form/Legacy.PhoneNumber.Form.FieldConfigs";
-
 import { ComponentControl } from "components/ComponentControl";
-import { ReactGridApi } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
-import { FieldOptions } from "components/tabs/dynamicCallFlow/common/Form/AbstractFormFieldOptionsManager";
 import {
-  PhoneNumberModalType, PhoneNumberModalTypeEnum
-} from "dynamicCallFlow/DynamicCallFlow.PhoneNumber.Interfaces";
-import { OFFICE_NUMBERS, PREDICTIVE_CALLER } from "dynamicCallFlow/Form/Dynamic.PhoneNumber.Form.Fields";
+  PhoneNumberModalType,
+  PhoneNumberModalTypeEnum
+} from "dynamicCallFlowPhoneNumber/DynamicCallFlow.PhoneNumber.Interfaces";
+import { ReactGridApi } from "dynamicCallFlowCommon/DynamicCallFlow.Interfaces";
+import { FieldOptions } from "dynamicCallFlowCommon/Form/AbstractFormFieldOptionsManager";
+import { RequiredPhoneNumberFormFields } from "dynamicCallFlowPhoneNumber/Form/Legacy.PhoneNumber.Form.FieldConfigs";
+import { OFFICE_NUMBERS, PREDICTIVE_CALLER } from "dynamicCallFlowPhoneNumber/Form/Dynamic.PhoneNumber.Form.Fields";
 
 
 const reconstructTableColumnDef = (modalType: PhoneNumberModalType, columnDef: Array<GridColDef>, previewModalGridApiRef: ReactGridApi, fieldOptions: FieldOptions): Array<GridColDef> =>{
@@ -41,6 +41,7 @@ const manageEditColumnDef = (columnDef: Array<GridColDef>, previewModalGridApiRe
         }
       };
     }
+
     if (columnDef.field === OFFICE_NUMBERS) {
       return {
         ...columnDef,
@@ -64,6 +65,7 @@ const manageEditColumnDef = (columnDef: Array<GridColDef>, previewModalGridApiRe
           />
       };
     }
+
     if ([PREDICTIVE_CALLER].includes(columnDef.field)){
       return {
         ...columnDef,
@@ -105,6 +107,7 @@ const manageEditColumnDef = (columnDef: Array<GridColDef>, previewModalGridApiRe
       }
     };
   });
+
   return updatedColDef;
 };
 
