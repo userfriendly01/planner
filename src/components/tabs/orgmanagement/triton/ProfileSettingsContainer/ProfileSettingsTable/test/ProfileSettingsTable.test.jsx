@@ -127,7 +127,7 @@ describe("<ProfileSettingsTable />", () => {
 
     test("should render row data", async () => {
       const rendered = renderComponent(validNid, mockProfiles);
-      expect(Check).toHaveBeenCalledTimes(14);
+      expect(Check).toHaveBeenCalledTimes(15);
       expect(Edit).toHaveBeenCalledTimes(0);
       expect(rendered.container).toHaveTextContent("0"); // Profile Number
       expect(rendered.container).toHaveTextContent("Game of Phones"); // Profile Name

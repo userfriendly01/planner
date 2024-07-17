@@ -72,6 +72,13 @@ export const ProfileFormFields = () => {
     margin: "5px 0",
     alignSelf: "center"
   };
+  const AccessGroupOption = ({ option }: any) => {
+    return (
+      <Tooltip title={option.viewable_profiles?.map((s: string) => <div key={s}>{s}</div>)}>
+        <div style={{ width: "100%" }}>{option.label}</div>
+      </Tooltip>
+    );
+  };
 
   return (
     <FormControlsContainer>
@@ -144,6 +151,7 @@ export const ProfileFormFields = () => {
               <Dropdown
                 label="Overflow Skill"
                 value={formatDropdownOptions([form.overflowSkill], "name", "name")[0]}
+                error={form.overflowSkill?.error}
                 options={formatDropdownOptions(skills, "name", "name")}
                 updateValue={(e:any, value: any) => setForm({
                   type: profileEntryFormActions.SET_FORM_FIELD,
@@ -185,6 +193,7 @@ export const ProfileFormFields = () => {
               <Dropdown
                 label="Access Group"
                 styles={styles}
+                CustomRender={AccessGroupOption}
                 options={[
                   {
                     label: "Create New Access Group",
@@ -205,8 +214,8 @@ export const ProfileFormFields = () => {
                         key: "accessGroup",
                         value: {
                           isNew: true,
-                          label: "Create New Access Group",
-                          value: "create-new"
+                          access_group_name: "",
+                          id: "create-new"
                         }
                       }
                     });
@@ -226,6 +235,7 @@ export const ProfileFormFields = () => {
                   <CustomInput
                     label={"New Access Group Name *"}
                     name={"New Access Group Name *"}
+                    error={!form.accessGroup?.access_group_name}
                     maxLength="80"
                     styles={subStyles}
                     value={form.accessGroup?.access_group_name}
@@ -243,9 +253,10 @@ export const ProfileFormFields = () => {
                     }}
                   />
                   <CustomInput
+                    styles={subStyles}
                     label={"Twilio Dashboard Url *"}
                     name={"Twilio Dashboard Url *"}
-                    styles={subStyles}
+                    error={!form.accessGroup?.twilio_dashboard_url}
                     value={form.accessGroup?.twilio_dashboard_url}
                     updateValue={value => {
                       setForm({
