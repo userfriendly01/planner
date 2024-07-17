@@ -8,6 +8,7 @@ import { myAxios } from "utils/myAxios";
 
 const axiosMock = new MockAdapter(myAxios);
 const nNumber = "n0263786";
+const accessToken = "Access Token" 
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -19,7 +20,7 @@ describe("fetchResetProfileDatadogLogs", () => {
     const data = { huzzah: "you are winner" };
     beforeEach(() => axiosMock.onGet(apiPaths.GET_RESET_PROFILE_DATADOG_LOGS(nNumber)).replyOnce(200, data));
     test("should resolve with any successful response", done => {
-      fetchResetProfileDatadogLogs(nNumber)
+      fetchResetProfileDatadogLogs(accessToken, nNumber)
         .then(resolvedValue => {
           expect(axiosMock.history.get.length).toEqual(1);
           expect(resolvedValue.data).toEqual(data);
@@ -31,7 +32,7 @@ describe("fetchResetProfileDatadogLogs", () => {
     const badResponse = { wahh: "boo" };
     beforeEach(() => axiosMock.onGet(apiPaths.GET_RESET_PROFILE_DATADOG_LOGS(nNumber)).replyOnce(500, badResponse));
     test("should reject with error", done => {
-      fetchResetProfileDatadogLogs(nNumber).catch(rejectedVal => {
+      fetchResetProfileDatadogLogs(accessToken, nNumber).catch(rejectedVal => {
         expect(axiosMock.history.get.length).toEqual(1);
         expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
         done();
@@ -45,8 +46,7 @@ describe("resetProfiles", () => {
   const body = {
     workerSid: "WK2342",
     email: "faith.cuneo@libertymutual.com"
-  };
-  const accessToken = "Access Token"  
+  }; 
 
   describe("call succeeds", () => {
     const data = { huzzah: "you are winner" };
