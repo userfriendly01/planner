@@ -3,7 +3,7 @@ import { apiPaths } from "globals";
 import { myAxios } from "utils/myAxios";
 
 export const fetchResetProfileDatadogLogs = async (accessToken: string, nNumber: string): Promise<AxiosResponse> => {
-  return await myAxios.get(apiPaths.GET_RESET_PROFILE_DATADOG_LOGS(nNumber), {
+  return await myAxios.get(apiPaths.RESET_PROFILES(nNumber), {
     headers: {
       Authorization: `Bearer ${accessToken}`
     }

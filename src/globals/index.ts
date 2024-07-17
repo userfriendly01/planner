@@ -185,7 +185,6 @@ export const apiPaths = {
   GET_OU: `${SERVICE_BASE_URI}/operatingunit`,
   TASK_QUEUES: `${SERVICE_BASE_URI}/taskqueues`,
   GET_TIME_OF_DAYS: `${SERVICE_BASE_URI}/timeofday`,
-  GET_RESET_PROFILE_DATADOG_LOGS: (nNumber: string): string => `${ADMIN_CLIENT_URL}/reset/${nNumber}`,
   RESET_WORKER_SKILLS: `${SERVICE_BASE_URI}/resetworkerskills`,
   TFN_DATA: `${SERVICE_BASE_URI}/tfn`,
   UPDATE_CALABRIO_USER: `${CALABRIO_SERVICE_BASE_URI}/qm?api=User`,

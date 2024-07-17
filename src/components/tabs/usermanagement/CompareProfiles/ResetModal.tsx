@@ -90,6 +90,7 @@ export const ResetModal = (props: ResetModalProps) => {
       setStatus(StatusOptions.SUCCESS);
     } catch (error) {
       const isTimeout = error?.message?.toLowerCase().trim() === "network error"
+      console.log(error.response);
       if (isTimeout) {
         logger.warn("Call to reset profiles timed out. Trying to fetch datadog log", { nNumber });
         setStatus(StatusOptions.TIME_OUT);

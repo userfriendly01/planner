@@ -18,7 +18,7 @@ beforeEach(() => {
 describe("fetchResetProfileDatadogLogs", () => {
   describe("call succeeds", () => {
     const data = { huzzah: "you are winner" };
-    beforeEach(() => axiosMock.onGet(apiPaths.GET_RESET_PROFILE_DATADOG_LOGS(nNumber)).replyOnce(200, data));
+    beforeEach(() => axiosMock.onGet(apiPaths.RESET_PROFILES(nNumber)).replyOnce(200, data));
     test("should resolve with any successful response", done => {
       fetchResetProfileDatadogLogs(accessToken, nNumber)
         .then(resolvedValue => {
@@ -30,7 +30,7 @@ describe("fetchResetProfileDatadogLogs", () => {
   });
   describe("call fails", () => {
     const badResponse = { wahh: "boo" };
-    beforeEach(() => axiosMock.onGet(apiPaths.GET_RESET_PROFILE_DATADOG_LOGS(nNumber)).replyOnce(500, badResponse));
+    beforeEach(() => axiosMock.onGet(apiPaths.RESET_PROFILES(nNumber)).replyOnce(500, badResponse));
     test("should reject with error", done => {
       fetchResetProfileDatadogLogs(accessToken, nNumber).catch(rejectedVal => {
         expect(axiosMock.history.get.length).toEqual(1);
