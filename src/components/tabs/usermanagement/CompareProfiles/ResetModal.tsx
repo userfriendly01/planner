@@ -114,7 +114,6 @@ export const ResetModal = (props: ResetModalProps) => {
         setStatus(StatusOptions.SUCCESS);
         setResults(res.data[res.data.length - 1].attributes.attributes.sharedAdminAPILog.results);
       }
-      logger.error('THIS IS THE RES DATA', res); // temp remove after
     } catch (error) {
       const errorString = error.message || error.response?.message || util.format(error);
       const errorMessage = "Reset Profiles failed calling Datadog";

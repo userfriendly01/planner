@@ -142,17 +142,13 @@ describe("ResetModal", () => {
       describe("status === Timeout", () => {
         beforeEach(() => {
           resetProfiles.mockRejectedValue({
-            response: {
-              data: {
-                message: "read timed out"
-              }
-            }
+            message: "network error"
           });
           fetchResetProfileDatadogLogs.mockResolvedValue({
             data: [datadogResults]
           });
         });
-        test.skip("fetch datadog calls are triggered", async () => {
+        test("fetch datadog calls are triggered", async () => {
           const rendered = renderComponent();
           const confirmEmailsButton = StyledButton.mock.calls[0][0].onClick;
           act(() => confirmEmailsButton());
@@ -187,7 +183,7 @@ describe("ResetModal", () => {
             expect(ProgressBar).toHaveBeenCalledTimes(1);
             await waitFor(() => {
               jest.advanceTimersByTime(6000);
-              // expect(fetchResetProfileDatadogLogs).toHaveBeenCalledTimes(35); // revert back
+              expect(fetchResetProfileDatadogLogs).toHaveBeenCalledTimes(35);
               expect(rendered.container).toHaveTextContent("Calabrio... is the worst we're sorry");
               expect(rendered.container).toHaveTextContent("We waited a while but the log was not found in datadog. We're unable to confirm this process succeeded. Please try again.");
             });
