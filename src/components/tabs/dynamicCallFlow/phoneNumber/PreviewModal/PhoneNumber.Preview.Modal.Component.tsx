@@ -3,28 +3,28 @@ import { Modal, ModalBody, ModalFooter, ModalHeader } from "@lmig/lmds-react-mod
 import { DataGrid, GridColDef, useGridApiRef } from "@mui/x-data-grid";
 import { Box } from "@mui/material";
 import { StyledButton } from "components/StyledButton";
-import { DataGridControllerRef } from "dynamicCallFlowCommon/DynamicCallFlow.Interfaces";
-import { FieldOptions } from "dynamicCallFlowCommon/Form/AbstractFormFieldOptionsManager";
+import { DataGridControllerRef } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
+import { FieldOptions } from "components/tabs/dynamicCallFlow/common/Form/AbstractFormFieldOptionsManager";
 import {
   PhoneNumberModalType,
   PhoneNumberModalTypeEnum
-} from "dynamicCallFlowPhoneNumber/DynamicCallFlow.PhoneNumber.Interfaces";
+} from "components/tabs/dynamicCallFlow/phoneNumber/DynamicCallFlow.PhoneNumber.Interfaces";
 import {
   BrandTypeEnum,
   CallerTypeEnum, ChannelTypeEnum, LanguageOfferTypeEnum, PhoneNumber,
   PhoneNumberRecordType
-} from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
-import { DynamicCallFlowPhoneNumberContext } from "dynamicCallFlowPhoneNumber/DynamicCallFlow.PhoneNumber.Container";
+} from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { DynamicCallFlowPhoneNumberContext } from "components/tabs/dynamicCallFlow/phoneNumber/DynamicCallFlow.PhoneNumber.Container";
 import {
   PhoneNumberPreviewModalHandler
-} from "dynamicCallFlowPhoneNumber/PreviewModal/PhoneNumber.Preview.Modal.Handler";
+} from "components/tabs/dynamicCallFlow/phoneNumber/PreviewModal/PhoneNumber.Preview.Modal.Handler";
 import PhoneNumberPreviewModalColumnDef
-  from "dynamicCallFlowPhoneNumber/PreviewModal/PhoneNumber.Preview.Modal.ColumnDef";
-import { reconstructTableColumnDef } from "dynamicCallFlowPhoneNumber/PreviewModal/PhoneNumber.Preview.Modal.Util";
-import { HANDLED_SUCCESSFULLY } from "dynamicCallFlowCommon/Preview/Abstract.Preview.Modal.Handler";
-import { PhoneNumberXlsxImporter } from "dynamicCallFlowPhoneNumber/Xlsx/Import/PhoneNumber.Xlsx.Importer";
-import { PhoneNumberRecordUtil } from "dynamicCallFlowPhoneNumber/GraphQL/PhoneNumber.Record.Util";
-import { CctSharedCallFlowDb, FlowContent } from "dynamicCallFlowPhoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
+  from "components/tabs/dynamicCallFlow/phoneNumber/PreviewModal/PhoneNumber.Preview.Modal.ColumnDef";
+import { reconstructTableColumnDef } from "components/tabs/dynamicCallFlow/phoneNumber/PreviewModal/PhoneNumber.Preview.Modal.Util";
+import { HANDLED_SUCCESSFULLY } from "components/tabs/dynamicCallFlow/common/Preview/Abstract.Preview.Modal.Handler";
+import { PhoneNumberXlsxImporter } from "components/tabs/dynamicCallFlow/phoneNumber/Xlsx/Import/PhoneNumber.Xlsx.Importer";
+import { PhoneNumberRecordUtil } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/PhoneNumber.Record.Util";
+import { CctSharedCallFlowDb, FlowContent } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
 
 interface PreviewModalParameters<RecordType> {
     isOpen: boolean;

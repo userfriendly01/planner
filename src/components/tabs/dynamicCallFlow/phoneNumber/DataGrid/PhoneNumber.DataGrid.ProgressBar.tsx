@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
 import { useEffect } from "react";
 import Typography from "@mui/material/Typography";
-import { DataGridProgressBarInfo } from "dynamicCallFlowCommon/DataGrid/Load.DataGrid.Monitor";
+import { DataGridProgressBarInfo } from "components/tabs/dynamicCallFlow/common/DataGrid/Load.DataGrid.Monitor";
 
 export const PHONE_NUMBER_DATA_GRID_PROGRESS_BAR_CACHE_KEY = "PHONE_NUMBER_DATA_GRID_PROGRESS_BAR";
 

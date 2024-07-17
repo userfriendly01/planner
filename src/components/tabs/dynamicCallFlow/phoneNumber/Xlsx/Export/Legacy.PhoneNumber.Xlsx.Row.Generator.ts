@@ -1,6 +1,6 @@
-import { PhoneNumberXlsxRow } from "dynamicCallFlowPhoneNumber/Xlsx/PhoneNumber.Xlsx.Interfaces";
-import { CctSharedCallFlowDb } from "dynamicCallFlowPhoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
-import { AbstractPhoneNumberXlsxRowGenerator } from "dynamicCallFlowPhoneNumber/Xlsx/Export/Abstract.PhoneNumber.Xlsx.Row.Generator";
+import { PhoneNumberXlsxRow } from "components/tabs/dynamicCallFlow/phoneNumber/Xlsx/PhoneNumber.Xlsx.Interfaces";
+import { CctSharedCallFlowDb } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
+import { AbstractPhoneNumberXlsxRowGenerator } from "components/tabs/dynamicCallFlow/phoneNumber/Xlsx/Export/Abstract.PhoneNumber.Xlsx.Row.Generator";
 
 export class LegacyPhoneNumberXlsxRowGenerator extends AbstractPhoneNumberXlsxRowGenerator {
   protected getPhoneNumberRecordType(): string {

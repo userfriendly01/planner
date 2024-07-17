@@ -4,14 +4,14 @@ import {
   Menu,
   MenuOptions,
   Redirect
-} from "dynamicCallFlowAction/GraphQL/Action.Interfaces";
-import { BatchResults } from "dynamicCallFlowCommon/GraphQL/Abstract.BatchRecords.Query";
-import { AbstractGraphQLQuery } from "dynamicCallFlowCommon/GraphQL/AbstractGraphQL.Query";
+} from "components/tabs/dynamicCallFlow/action/GraphQL/Action.Interfaces";
+import { BatchResults } from "components/tabs/dynamicCallFlow/common/GraphQL/Abstract.BatchRecords.Query";
+import { AbstractGraphQLQuery } from "components/tabs/dynamicCallFlow/common/GraphQL/AbstractGraphQL.Query";
 import {
   ActionTypeEnum,
   GraphQLInputVariables,
   GraphQLResponse
-} from "dynamicCallFlowCommon/GraphQL/DynamicCallFlow.Interfaces";
+} from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
 
 interface CallFlowConfig {
   callFlowName: string;

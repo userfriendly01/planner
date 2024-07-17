@@ -1,9 +1,9 @@
-import { AbstractPhoneNumberFormHandler } from "dynamicCallFlowPhoneNumber/Form/Abstract.PhoneNumber.Form.Handler";
-import { PhoneNumberRecordType } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
-import { PhoneNumberRecordUtil } from "dynamicCallFlowPhoneNumber/GraphQL/PhoneNumber.Record.Util";
-import { SingleCallFlowRecord } from "dynamicCallFlowPhoneNumber/GraphQL/Single.PhoneNumber.Record.Util";
-import { FormOnHandleResponse } from "dynamicCallFlowCommon/Form/Abstract.Form.Handler";
-import { FieldConfigs } from "dynamicCallFlowCommon/Form/Form.Interfaces";
+import { AbstractPhoneNumberFormHandler } from "components/tabs/dynamicCallFlow/phoneNumber/Form/Abstract.PhoneNumber.Form.Handler";
+import { PhoneNumberRecordType } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { PhoneNumberRecordUtil } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/PhoneNumber.Record.Util";
+import { SingleCallFlowRecord } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Single.PhoneNumber.Record.Util";
+import { FormOnHandleResponse } from "components/tabs/dynamicCallFlow/common/Form/Abstract.Form.Handler";
+import { FieldConfigs } from "components/tabs/dynamicCallFlow/common/Form/Form.Interfaces";
 
 const MODAL_NAME = "PhoneNumberFormEdit";
 const MODAL_LABEL = "Edit";

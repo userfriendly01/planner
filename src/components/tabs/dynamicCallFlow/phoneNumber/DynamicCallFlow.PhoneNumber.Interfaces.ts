@@ -1,4 +1,4 @@
-import { NotInUseModalType } from "dynamicCallFlowCommon//Modal.Controller";
+import { NotInUseModalType } from "components/tabs/dynamicCallFlow/common/Modal.Controller";
 
 export type PhoneNumberModalType =
   "Add Dynamic Phone Number"

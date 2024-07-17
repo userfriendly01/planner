@@ -1,6 +1,6 @@
-import { AbstractDeleteRecordQuery } from "dynamicCallFlowCommon/GraphQL/AbstractDeleteRecord.Query";
-import { SingleRecordResults } from "dynamicCallFlowCommon/GraphQL/AbstractSingleRecord.Query";
-import { CctSharedCallFlowDb, CctSharedCallFlowDbDelInput } from "dynamicCallFlowPhoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
+import { AbstractDeleteRecordQuery } from "components/tabs/dynamicCallFlow/common/GraphQL/AbstractDeleteRecord.Query";
+import { SingleRecordResults } from "components/tabs/dynamicCallFlow/common/GraphQL/AbstractSingleRecord.Query";
+import { CctSharedCallFlowDb, CctSharedCallFlowDbDelInput } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
 
 class DeleteLegacyPhoneNumberRecordQuery extends AbstractDeleteRecordQuery {
   protected queryName(): string {

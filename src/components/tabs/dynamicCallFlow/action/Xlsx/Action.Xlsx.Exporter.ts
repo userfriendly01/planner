@@ -1,7 +1,7 @@
-import { AbstractXlsxExporter } from "dynamicCallFlowCommon/Xlsx/Abstract.Xlsx.Exporter";
-import { ActionXlsxRow } from "dynamicCallFlowAction/Xlsx/Action.Xlsx.Interfaces";
-import { ActionRecordType } from "dynamicCallFlowAction/GraphQL/Action.Interfaces";
-import { ActionXlsxRowGenerator } from "dynamicCallFlowAction/Xlsx/Action.Xlsx.Row.Generator";
+import { AbstractXlsxExporter } from "components/tabs/dynamicCallFlow/common/Xlsx/Abstract.Xlsx.Exporter";
+import { ActionXlsxRow } from "components/tabs/dynamicCallFlow/action/Xlsx/Action.Xlsx.Interfaces";
+import { ActionRecordType } from "components/tabs/dynamicCallFlow/action/GraphQL/Action.Interfaces";
+import { ActionXlsxRowGenerator } from "components/tabs/dynamicCallFlow/action/Xlsx/Action.Xlsx.Row.Generator";
 
 export class ActionXlsxExporter extends AbstractXlsxExporter<ActionXlsxRow, ActionRecordType> {
   private readonly actionXlsxRowGenerator: ActionXlsxRowGenerator = new ActionXlsxRowGenerator();

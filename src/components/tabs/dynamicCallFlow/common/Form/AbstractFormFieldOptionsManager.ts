@@ -1,4 +1,6 @@
-import { FieldConfigs } from "./Form.Interfaces";
+import {
+  FieldConfigs, FieldDataType
+} from "components/tabs/dynamicCallFlow/common/Form/Form.Interfaces";
 
 export interface FormFieldOptions<RecordType> {
   generateOptions(records: Array<RecordType>): void;
@@ -25,7 +27,7 @@ export abstract class AbstractFormFieldOptionsManager<RecordType> implements For
     }
   }
 
-  protected abstract getRecordKeyValue(record: RecordType, key: string): string | Array<string> | undefined;
+  protected abstract getRecordPropertyValue(record: RecordType, key: string): FieldDataType;
 
   protected abstract getFieldOptionsCacheKey(): string;
 
@@ -45,7 +47,7 @@ export abstract class AbstractFormFieldOptionsManager<RecordType> implements For
 
   generateOptions(records: Array<RecordType>): FieldOptions {
     records?.forEach((record: RecordType) => this.getDataDrivenOptionsFieldNames().forEach((key: string) => {
-      const recordPropertyValue = this.getRecordKeyValue(record, key);
+      const recordPropertyValue = this.getRecordPropertyValue(record, key);
 
       if (!this._fieldOptions[key]) {
         this._fieldOptions[key] = [];

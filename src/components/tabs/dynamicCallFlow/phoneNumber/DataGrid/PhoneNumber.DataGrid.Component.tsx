@@ -7,44 +7,44 @@ import {
   useGridApiRef
 } from "@mui/x-data-grid";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import "dynamicCallFlowPhoneNumber/DataGrid/PhoneNumber.DataGrid.scss";
+import "components/tabs/dynamicCallFlow/phoneNumber/DataGrid/PhoneNumber.DataGrid.scss";
 import { GridApiCommunity } from "@mui/x-data-grid/internals";
-import { PhoneNumber, PhoneNumberRecordType } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
-import { PhoneNumberRecordUtil } from "dynamicCallFlowPhoneNumber/GraphQL/PhoneNumber.Record.Util";
+import { PhoneNumber, PhoneNumberRecordType } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { PhoneNumberRecordUtil } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/PhoneNumber.Record.Util";
 import {
   LegacyPhoneNumberFormFieldConfigs
-} from "dynamicCallFlowPhoneNumber/Form/Legacy.PhoneNumber.Form.FieldConfigs";
-import { PhoneNumberPreviewModal } from "dynamicCallFlowPhoneNumber/PreviewModal/PhoneNumber.Preview.Modal.Component";
-import PhoneNumberDataGridColumnDef from "dynamicCallFlowPhoneNumber/DataGrid/PhoneNumber.DataGrid.ColumnDef";
-import { PhoneNumberDataGridToolBar } from "dynamicCallFlowPhoneNumber/DataGrid/PhoneNumber.DataGrid.ToolBar";
-import { PhoneNumberDataGridFilterModal } from "dynamicCallFlowPhoneNumber/DataGrid/PhoneNumber.DataGrid.Filter.Modal";
-import { FieldConfigs } from "dynamicCallFlowCommon/Form/Form.Interfaces";
-import { PhoneNumberFormModal } from "dynamicCallFlowPhoneNumber/Form/PhoneNumber.Form.Modal";
-import { EditPhoneNumberFormHandler } from "dynamicCallFlowPhoneNumber/Form/Edit.PhoneNumber.Form.Handler";
+} from "components/tabs/dynamicCallFlow/phoneNumber/Form/Legacy.PhoneNumber.Form.FieldConfigs";
+import { PhoneNumberPreviewModal } from "components/tabs/dynamicCallFlow/phoneNumber/PreviewModal/PhoneNumber.Preview.Modal.Component";
+import PhoneNumberDataGridColumnDef from "components/tabs/dynamicCallFlow/phoneNumber/DataGrid/PhoneNumber.DataGrid.ColumnDef";
+import { PhoneNumberDataGridToolBar } from "components/tabs/dynamicCallFlow/phoneNumber/DataGrid/PhoneNumber.DataGrid.ToolBar";
+import { PhoneNumberDataGridFilterModal } from "components/tabs/dynamicCallFlow/phoneNumber/DataGrid/PhoneNumber.DataGrid.Filter.Modal";
+import { FieldConfigs } from "components/tabs/dynamicCallFlow/common/Form/Form.Interfaces";
+import { PhoneNumberFormModal } from "components/tabs/dynamicCallFlow/phoneNumber/Form/PhoneNumber.Form.Modal";
+import { EditPhoneNumberFormHandler } from "components/tabs/dynamicCallFlow/phoneNumber/Form/Edit.PhoneNumber.Form.Handler";
 import {
   DynamicPhoneNumberFormFieldConfigs
-} from "dynamicCallFlowPhoneNumber/Form/Dynamic.PhoneNumber.Form.FieldConfigs";
-import { PhoneNumberFormFieldOptionsManager } from "dynamicCallFlowPhoneNumber/Form/PhoneNumberFormFieldOptionsManager";
-import { FieldOptions } from "dynamicCallFlowCommon/Form/AbstractFormFieldOptionsManager";
-import { listPhoneNumberRecords } from "dynamicCallFlowPhoneNumber/GraphQL/List.PhoneNumber.Records.Util";
+} from "components/tabs/dynamicCallFlow/phoneNumber/Form/Dynamic.PhoneNumber.Form.FieldConfigs";
+import { PhoneNumberFormFieldOptionsManager } from "components/tabs/dynamicCallFlow/phoneNumber/Form/PhoneNumberFormFieldOptionsManager";
+import { FieldOptions } from "components/tabs/dynamicCallFlow/common/Form/AbstractFormFieldOptionsManager";
+import { listPhoneNumberRecords } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/List.PhoneNumber.Records.Util";
 import {
   DataGridStateProps,
   initializeDataGrid,
   sortRecords
-} from "dynamicCallFlowCommon/DataGrid/DynamicCallFlow.Common.DataGrid";
-import { AddPhoneNumberFormHandler } from "dynamicCallFlowPhoneNumber/Form/Add.PhoneNumber.Form.Handler";
-import { AlertBarController, AlertBarProps, initialAlertBarProps } from "dynamicCallFlowCommon/AlertBar.Controller";
-import { DynamicCallFlowPhoneNumberContext } from "dynamicCallFlowPhoneNumber/DynamicCallFlow.PhoneNumber.Container";
-import { PhoneNumberDataGridFilter } from "dynamicCallFlowPhoneNumber/DataGrid/PhoneNumber.DataGrid.Filter";
-import { PhoneNumberDataGridController } from "dynamicCallFlowPhoneNumber/DataGrid/PhoneNumber.DataGrid.Controller";
+} from "components/tabs/dynamicCallFlow/common/DataGrid/DynamicCallFlow.Common.DataGrid";
+import { AddPhoneNumberFormHandler } from "components/tabs/dynamicCallFlow/phoneNumber/Form/Add.PhoneNumber.Form.Handler";
+import { AlertBarController, AlertBarProps, initialAlertBarProps } from "components/tabs/dynamicCallFlow/common/AlertBar.Controller";
+import { DynamicCallFlowPhoneNumberContext } from "components/tabs/dynamicCallFlow/phoneNumber/DynamicCallFlow.PhoneNumber.Container";
+import { PhoneNumberDataGridFilter } from "components/tabs/dynamicCallFlow/phoneNumber/DataGrid/PhoneNumber.DataGrid.Filter";
+import { PhoneNumberDataGridController } from "components/tabs/dynamicCallFlow/phoneNumber/DataGrid/PhoneNumber.DataGrid.Controller";
 import { CustomToast } from "components/CustomToast";
-import { CctSharedCallFlowDb } from "dynamicCallFlowPhoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
+import { CctSharedCallFlowDb } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
 import {
   PHONE_NUMBER_DATA_GRID_PROGRESS_BAR_CACHE_KEY,
   PhoneNumberDataGridProgressBar
-} from "dynamicCallFlowPhoneNumber/DataGrid/PhoneNumber.DataGrid.ProgressBar";
-import LoadDataGridMonitor from "dynamicCallFlowCommon/DataGrid/Load.DataGrid.Monitor";
-import { PhoneNumberModalTypeEnum } from "dynamicCallFlowPhoneNumber/DynamicCallFlow.PhoneNumber.Interfaces";
+} from "components/tabs/dynamicCallFlow/phoneNumber/DataGrid/PhoneNumber.DataGrid.ProgressBar";
+import LoadDataGridMonitor from "components/tabs/dynamicCallFlow/common/DataGrid/Load.DataGrid.Monitor";
+import { PhoneNumberModalTypeEnum } from "components/tabs/dynamicCallFlow/phoneNumber/DynamicCallFlow.PhoneNumber.Interfaces";
 
 const DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_PAGE_NUMBER = "dynamicCallFlowPhoneNumberDataGridPageNumber";
 const DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_RECORDS_PER_PAGE = "dynamicCallFlowPhoneNumberDataGridRecordsPerPage";

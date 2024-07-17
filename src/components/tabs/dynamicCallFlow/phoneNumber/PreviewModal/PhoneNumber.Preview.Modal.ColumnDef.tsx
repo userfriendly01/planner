@@ -2,8 +2,8 @@ import { GridColDef, GridValueSetterParams } from "@mui/x-data-grid";
 import Tooltip from "@mui/material/Tooltip";
 import React from "react";
 import { Chip, Switch } from "@mui/material";
-import { PhoneNumberRecordUtil } from "dynamicCallFlowPhoneNumber/GraphQL/PhoneNumber.Record.Util";
-import { PhoneNumber, PhoneNumberRecordType } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { PhoneNumberRecordUtil } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/PhoneNumber.Record.Util";
+import { PhoneNumber, PhoneNumberRecordType } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 import {
   CALL_FLOW_NAME,
   CALL_FLOW_ROUTE,
@@ -24,15 +24,15 @@ import {
   TRANSFER_CODE,
   TRANSFER_DESTINATION,
   WHISPER
-} from "dynamicCallFlowPhoneNumber/Form/Dynamic.PhoneNumber.Form.Fields";
-import { FieldDataType } from "dynamicCallFlowCommon/Form/Form.Interfaces";
-import { CctSharedCallFlowDb } from "dynamicCallFlowPhoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
+} from "components/tabs/dynamicCallFlow/phoneNumber/Form/Dynamic.PhoneNumber.Form.Fields";
+import { FieldDataType } from "components/tabs/dynamicCallFlow/common/Form/Form.Interfaces";
+import { CctSharedCallFlowDb } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
 import {
   ACCOUNT_MANAGER, AFFINITY_VDN, CALL_DETAILS_1, CALL_DETAILS_2,
   TRANSFER_NUMBER,
   TYPE,
   USER_DESTINATION
-} from "dynamicCallFlowPhoneNumber/Form/Legacy.PhoneNumber.Form.Fields";
+} from "components/tabs/dynamicCallFlow/phoneNumber/Form/Legacy.PhoneNumber.Form.Fields";
 import { Phone } from "@mui/icons-material";
 
 export const PhoneNumberPreviewModalColumnDef: GridColDef[] = [

@@ -1,15 +1,15 @@
-import { PhoneNumberRecordType } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { PhoneNumberRecordType } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 import {
   batchCreateLegacyPhoneNumberRecords
-} from "dynamicCallFlowPhoneNumber/GraphQL/Query/Batch.Create.Legacy.PhoneNumber.Records.Query";
-import { BatchRecordQuery, BatchResults } from "dynamicCallFlowCommon/GraphQL/Abstract.BatchRecords.Query";
+} from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Query/Batch.Create.Legacy.PhoneNumber.Records.Query";
+import { BatchRecordQuery, BatchResults } from "components/tabs/dynamicCallFlow/common/GraphQL/Abstract.BatchRecords.Query";
 import {
   batchCreateDynamicPhoneNumberRecords
-} from "dynamicCallFlowPhoneNumber/GraphQL/Query/Batch.Create.Dynamic.PhoneNumber.Records.Query";
-import { PhoneNumberRecordUtil } from "dynamicCallFlowPhoneNumber/GraphQL/PhoneNumber.Record.Util";
+} from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Query/Batch.Create.Dynamic.PhoneNumber.Records.Query";
+import { PhoneNumberRecordUtil } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/PhoneNumber.Record.Util";
 import {
   batchDeleteLegacyPhoneNumberRecords
-} from "dynamicCallFlowPhoneNumber/GraphQL/Query/Batch.Delete.Legacy.PhoneNumber.Records.Query";
+} from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Query/Batch.Delete.Legacy.PhoneNumber.Records.Query";
 
 /**
  * This function separates the phone number record list into legacy and dynamic lists and executes the corresponding

@@ -1,6 +1,6 @@
-import { PhoneNumber } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
-import { AbstractUpdateRecordQuery } from "dynamicCallFlowCommon/GraphQL/AbstractUpdateRecord.Query";
-import { SingleRecordResults } from "dynamicCallFlowCommon/GraphQL/AbstractSingleRecord.Query";
+import { PhoneNumber } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { AbstractUpdateRecordQuery } from "components/tabs/dynamicCallFlow/common/GraphQL/AbstractUpdateRecord.Query";
+import { SingleRecordResults } from "components/tabs/dynamicCallFlow/common/GraphQL/AbstractSingleRecord.Query";
 
 class UpdateDynamicPhoneNumberRecordQuery extends AbstractUpdateRecordQuery {
   protected queryName(): string {

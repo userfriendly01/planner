@@ -5,15 +5,15 @@ import {
   MenuOptionXlsxRow,
   MenuXlsxRow,
   RedirectXlsxRow
-} from "dynamicCallFlowAction/Xlsx/Action.Xlsx.Interfaces";
+} from "components/tabs/dynamicCallFlow/action/Xlsx/Action.Xlsx.Interfaces";
 import {
   ActionRecordType,
   Announcement,
   Menu,
   MenuOptions,
   Redirect
-} from "dynamicCallFlowAction/GraphQL/Action.Interfaces";
-import { ActionTypeEnum } from "dynamicCallFlowCommon/GraphQL/DynamicCallFlow.Interfaces";
+} from "components/tabs/dynamicCallFlow/action/GraphQL/Action.Interfaces";
+import { ActionTypeEnum } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
 
 export class ActionXlsxRecordGenerator {
   public generateActionRecords(actionXlsxRows: Array<ActionXlsRowType>): Array<ActionRecordType> {

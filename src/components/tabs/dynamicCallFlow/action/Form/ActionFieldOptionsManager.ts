@@ -1,27 +1,17 @@
 import {
   AbstractFormFieldOptionsManager,
   FieldOptions
-} from "dynamicCallFlowCommon/Form/AbstractFormFieldOptionsManager";
-import { FieldDataType } from "dynamicCallFlowCommon/Form/Form.Interfaces";
-import { ActionRecordType } from "dynamicCallFlowAction/GraphQL/Action.Interfaces";
-import { ActionRecordUtil } from "dynamicCallFlowAction/GraphQL/Action.Record.Util";
-import { CALL_FLOW_NAME } from "dynamicCallFlowAction/Form/ActionFields";
+} from "components/tabs/dynamicCallFlow/common/Form/AbstractFormFieldOptionsManager";
+import { FieldDataType } from "components/tabs/dynamicCallFlow/common/Form/Form.Interfaces";
+import { ActionRecordType } from "components/tabs/dynamicCallFlow/action/GraphQL/Action.Interfaces";
+import { ActionRecordUtil } from "components/tabs/dynamicCallFlow/action/GraphQL/Action.Record.Util";
+import { CALL_FLOW_NAME } from "components/tabs/dynamicCallFlow/action/Form/ActionFields";
 
 const DYNAMIC_CALL_FLOW_CALL_FLOW_CONFIGURATION_FORM_FIELD_OPTIONS = "DYNAMIC_CALL_FLOW_CALL_FLOW_CONFIGURATION_FORM_FIELD_OPTIONS";
 
 export class ActionFieldOptionsManager extends AbstractFormFieldOptionsManager<ActionRecordType> {
-  protected getRecordKeyValue(actionRecord: ActionRecordType, key: string): string | Array<string> | undefined {
-    const keyValue: FieldDataType = ActionRecordUtil.getPropertyValue(actionRecord, key);
-
-    if (!keyValue) {
-      return undefined;
-    }
-
-    if (Array.isArray(keyValue)) {
-      return keyValue as Array<string>;
-    }
-
-    return keyValue as string;
+  protected getRecordPropertyValue(actionRecord: ActionRecordType, key: string): FieldDataType {
+    return ActionRecordUtil.getPropertyValue(actionRecord, key);
   }
 
   protected getFieldOptionsCacheKey(): string {

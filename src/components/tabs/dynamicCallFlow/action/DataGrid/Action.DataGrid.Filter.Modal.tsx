@@ -1,13 +1,21 @@
-import React, { useContext, useEffect, useState } from "react";
-import { ModalBody, ModalFooter, ModalHeader } from "@lmig/lmds-react-modal";
-import { HeadingStyled, ModalSearchStyled } from "dynamicCallFlowCommon/DynamicCallFlow.Styles";
+import React, {
+  useContext, useEffect, useState
+} from "react";
+import {
+  ModalBody, ModalFooter, ModalHeader
+} from "@lmig/lmds-react-modal";
+import {
+  HeadingStyled, ModalSearchStyled
+} from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Styles";
 import SelectContainer from "components/SelectContainer";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
-import { DataGridFilterModalProps, Filter } from "dynamicCallFlowCommon/DataGrid/Abstract.DataGrid.Filter";
-import { CALL_FLOW_NAME } from "dynamicCallFlowAction/Form/ActionFields";
-import { ActionRecordType } from "dynamicCallFlowAction/GraphQL/Action.Interfaces";
-import { DynamicCallFlowActionContext } from "dynamicCallFlowAction/DynamicCallFlow.Action.Container";
+import {
+  DataGridFilterModalProps, Filter
+} from "components/tabs/dynamicCallFlow/common/DataGrid/Abstract.DataGrid.Filter";
+import { CALL_FLOW_NAME } from "components/tabs/dynamicCallFlow/action/Form/ActionFields";
+import { ActionRecordType } from "components/tabs/dynamicCallFlow/action/GraphQL/Action.Interfaces";
+import { DynamicCallFlowActionContext } from "components/tabs/dynamicCallFlow/action/DynamicCallFlow.Action.Container";
 
 export const FilterLabel: Map<string, string> = new Map<string, string>([
   ["callFlowName", "Call Flow Name"]

@@ -1,4 +1,4 @@
-import { ActionRecordType } from "dynamicCallFlowAction/GraphQL/Action.Interfaces";
+import { ActionRecordType } from "components/tabs/dynamicCallFlow/action/GraphQL/Action.Interfaces";
 
 export class ActionRecordUtil {
   public static getPropertyValue(actionRecord: ActionRecordType, key: string): string | Array<string> | number | boolean {

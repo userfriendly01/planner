@@ -1,10 +1,10 @@
 import {
   CallFlowDeleteInput, PhoneNumber
-} from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+} from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 import {
   AbstractDeleteRecordQuery
-} from "dynamicCallFlowCommon/GraphQL/AbstractDeleteRecord.Query";
-import { SingleRecordResults } from "dynamicCallFlowCommon/GraphQL/AbstractSingleRecord.Query";
+} from "components/tabs/dynamicCallFlow/common/GraphQL/AbstractDeleteRecord.Query";
+import { SingleRecordResults } from "components/tabs/dynamicCallFlow/common/GraphQL/AbstractSingleRecord.Query";
 
 class DeleteDynamicPhoneNumberRecordQuery extends AbstractDeleteRecordQuery {
   protected queryName(): string {

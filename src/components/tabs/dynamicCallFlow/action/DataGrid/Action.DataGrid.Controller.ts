@@ -1,6 +1,6 @@
-import { AbstractDataGridController } from "dynamicCallFlowCommon/DataGrid/Abstract.DataGrid.Controller";
-import { ACTION_ID } from "dynamicCallFlowAction/Form/ActionFields";
-import { ActionRecordType } from "dynamicCallFlowAction/GraphQL/Action.Interfaces";
+import { AbstractDataGridController } from "components/tabs/dynamicCallFlow/common//DataGrid/Abstract.DataGrid.Controller";
+import { ACTION_ID } from "components/tabs/dynamicCallFlow/action//Form/ActionFields";
+import { ActionRecordType } from "components/tabs/dynamicCallFlow/action//GraphQL/Action.Interfaces";
 
 /**
  * Controller used to manage the Action.DataGrid.Component.

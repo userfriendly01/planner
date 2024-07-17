@@ -4,9 +4,9 @@ import {
   MenuOptionXlsxRow,
   MenuXlsxRow,
   RedirectXlsxRow
-} from "dynamicCallFlowAction/Xlsx/Action.Xlsx.Interfaces";
+} from "components/tabs/dynamicCallFlow/action/Xlsx/Action.Xlsx.Interfaces";
 
-import { ActionTypeEnum } from "dynamicCallFlowCommon/GraphQL/DynamicCallFlow.Interfaces";
+import { ActionTypeEnum } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
 
 export class ActionXlsxValueInspector {
   private readonly actionValueInspectionErrors: Array<string> = [];

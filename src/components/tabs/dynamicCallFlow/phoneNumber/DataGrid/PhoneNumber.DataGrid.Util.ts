@@ -1,7 +1,7 @@
-import { PhoneNumberRecordType } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
-import { BatchPhoneNumberRecord } from "dynamicCallFlowPhoneNumber/GraphQL/Batch.PhoneNumber.Records.Util";
-import { NEXT_ACTION_ID } from "dynamicCallFlowPhoneNumber/Form/Dynamic.PhoneNumber.Form.Fields";
-import { BatchResults } from "dynamicCallFlowCommon/GraphQL/Abstract.BatchRecords.Query";
+import { PhoneNumberRecordType } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { BatchPhoneNumberRecord } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Batch.PhoneNumber.Records.Util";
+import { NEXT_ACTION_ID } from "components/tabs/dynamicCallFlow/phoneNumber/Form/Dynamic.PhoneNumber.Form.Fields";
+import { BatchResults } from "components/tabs/dynamicCallFlow/common/GraphQL/Abstract.BatchRecords.Query";
 
 /**
    * Since the UI grid loads phone number records from 2 tables, we should

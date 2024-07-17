@@ -1,5 +1,5 @@
-import { AlertBarControllerRef, ReactSetState } from "dynamicCallFlowCommon/DynamicCallFlow.Interfaces";
-import { ALERT_BAR_15_SECOND_DURATION } from "dynamicCallFlowCommon/AlertBar.Controller";
+import { AlertBarControllerRef, ReactSetState } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
+import { ALERT_BAR_15_SECOND_DURATION } from "components/tabs/dynamicCallFlow/common/AlertBar.Controller";
 
 export interface DataGridProgressBarInfo {
   previousRecordCount: number;

@@ -1,12 +1,12 @@
 import {
   CallerTypeEnum,
   LanguageOfferTypeEnum
-} from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
-import { BasePhoneNumberRecordMock } from "dynamicCallFlowPhoneNumber/GraphQL/test/Dynamic.PhoneNumber.MockData";
+} from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { BasePhoneNumberRecordMock } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/test/Dynamic.PhoneNumber.MockData";
 import {
   CctSharedCallFlowDb,
   LegacyPhoneNumberTypeEnum
-} from "dynamicCallFlowPhoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
+} from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
 
 const LegacyPhoneNumberRecordMock: CctSharedCallFlowDb = {
   ...BasePhoneNumberRecordMock,

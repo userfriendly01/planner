@@ -1,28 +1,34 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { ActionDataGridToolBar } from "dynamicCallFlowAction/DataGrid/Action.DataGrid.ToolBar";
-import { DataGrid, GridPaginationModel, useGridApiRef } from "@mui/x-data-grid";
-import ActionDataGridColumnDef from "dynamicCallFlowAction/DataGrid/Action.DataGrid.ColumnDef";
-import { ActionRecordType } from "dynamicCallFlowAction/GraphQL/Action.Interfaces";
+import React, {
+  useContext, useEffect, useRef, useState
+} from "react";
+import { ActionDataGridToolBar } from "components/tabs/dynamicCallFlow/action/DataGrid/Action.DataGrid.ToolBar";
+import {
+  DataGrid, GridPaginationModel, useGridApiRef
+} from "@mui/x-data-grid";
+import ActionDataGridColumnDef from "components/tabs/dynamicCallFlow/action/DataGrid/Action.DataGrid.ColumnDef";
+import { ActionRecordType } from "components/tabs/dynamicCallFlow/action/GraphQL/Action.Interfaces";
 import { GridApiCommunity } from "@mui/x-data-grid/internals";
-import { actionListRecords } from "dynamicCallFlowAction/GraphQL/List.Action.Records.Query";
+import { actionListRecords } from "components/tabs/dynamicCallFlow/action/GraphQL/List.Action.Records.Query";
 import {
   DataGridStateProps,
   initializeDataGrid,
   sortRecords
-} from "dynamicCallFlowCommon/DataGrid/DynamicCallFlow.Common.DataGrid";
-import { ActionFieldOptionsManager } from "dynamicCallFlowAction/Form/ActionFieldOptionsManager";
-import { FieldOptions } from "dynamicCallFlowCommon/Form/AbstractFormFieldOptionsManager";
-import { FieldConfigs } from "dynamicCallFlowCommon/Form/Form.Interfaces";
-import { ActionFormFieldConfigs } from "dynamicCallFlowAction/Form/ActionFieldsConfig";
-import { ActionPreviewModal } from "dynamicCallFlowAction/PreviewModal/Action.Preview.Modal.Component";
-import { AlertBarController, AlertBarProps, initialAlertBarProps } from "dynamicCallFlowCommon/AlertBar.Controller";
-import { DynamicCallFlowActionContext } from "dynamicCallFlowAction/DynamicCallFlow.Action.Container";
-import { NotInUseModalType } from "dynamicCallFlowCommon/Modal.Controller";
-import { ActionDataGridController } from "dynamicCallFlowAction/DataGrid/Action.DataGrid.Controller";
-import { ActionDataGridFilter } from "dynamicCallFlowAction/DataGrid/Action.DataGrid.Filter";
+} from "components/tabs/dynamicCallFlow/common/DataGrid/DynamicCallFlow.Common.DataGrid";
+import { ActionFieldOptionsManager } from "components/tabs/dynamicCallFlow/action/Form/ActionFieldOptionsManager";
+import { FieldOptions } from "components/tabs/dynamicCallFlow/common/Form/AbstractFormFieldOptionsManager";
+import { FieldConfigs } from "components/tabs/dynamicCallFlow/common/Form/Form.Interfaces";
+import { ActionFormFieldConfigs } from "components/tabs/dynamicCallFlow/action/Form/ActionFieldsConfig";
+import { ActionPreviewModal } from "components/tabs/dynamicCallFlow/action/PreviewModal/Action.Preview.Modal.Component";
+import {
+  AlertBarController, AlertBarProps, initialAlertBarProps
+} from "components/tabs/dynamicCallFlow/common/AlertBar.Controller";
+import { DynamicCallFlowActionContext } from "components/tabs/dynamicCallFlow/action/DynamicCallFlow.Action.Container";
+import { NotInUseModalType } from "components/tabs/dynamicCallFlow/common/Modal.Controller";
+import { ActionDataGridController } from "components/tabs/dynamicCallFlow/action/DataGrid/Action.DataGrid.Controller";
+import { ActionDataGridFilter } from "components/tabs/dynamicCallFlow/action/DataGrid/Action.DataGrid.Filter";
 import { CustomToast } from "components/CustomToast";
-import { ActionPreviewModalHandler } from "dynamicCallFlowAction/PreviewModal/Action.Preview.Modal.Handler";
-import { ActionDataGridFilterModal } from "dynamicCallFlowAction/DataGrid/Action.DataGrid.Filter.Modal";
+import { ActionPreviewModalHandler } from "components/tabs/dynamicCallFlow/action/PreviewModal/Action.Preview.Modal.Handler";
+import { ActionDataGridFilterModal } from "components/tabs/dynamicCallFlow/action/DataGrid/Action.DataGrid.Filter.Modal";
 import { logger } from "utils/logger";
 
 const DYNAMIC_CALL_FLOW_ACTION_DATA_GRID_PAGE_NUMBER = "dynamicCallFlowActionDataGridPageNumber";

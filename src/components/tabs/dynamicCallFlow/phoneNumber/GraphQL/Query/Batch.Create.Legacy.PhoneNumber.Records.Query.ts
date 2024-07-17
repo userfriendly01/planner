@@ -2,8 +2,8 @@ import {
   AbstractBatchRecordsQuery,
   BatchResults,
   BatchRecordQuery
-} from "dynamicCallFlowCommon/GraphQL/Abstract.BatchRecords.Query";
-import { CctSharedCallFlowDb } from "dynamicCallFlowPhoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
+} from "components/tabs/dynamicCallFlow/common/GraphQL/Abstract.BatchRecords.Query";
+import { CctSharedCallFlowDb } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
 
 class BatchCreateLegacyPhoneNumberRecordsQuery extends AbstractBatchRecordsQuery {
   protected batchInputName(): string {

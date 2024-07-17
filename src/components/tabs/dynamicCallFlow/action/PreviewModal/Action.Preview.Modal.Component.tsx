@@ -8,24 +8,24 @@ import {
 import {
   Modal, ModalBody, ModalFooter, ModalHeader
 } from "@lmig/lmds-react-modal";
-import "dynamicCallFlowAction/PreviewModal/Action.Preview.Modal.css";
+import "components/tabs/dynamicCallFlow/action/PreviewModal/Action.Preview.Modal.css";
 import { Box } from "@mui/material";
-import TableGridColumnDef from "dynamicCallFlowAction/PreviewModal/Action.Preview.Modal.ColumnDef";
-import { reconstructTableColumnDef } from "dynamicCallFlowAction/PreviewModal/Action.Preview.Modal.Util";
+import TableGridColumnDef from "components/tabs/dynamicCallFlow/action/PreviewModal/Action.Preview.Modal.ColumnDef";
+import { reconstructTableColumnDef } from "components/tabs/dynamicCallFlow/action/PreviewModal/Action.Preview.Modal.Util";
 import {
   ActionRecordType
-} from "dynamicCallFlowAction/GraphQL/Action.Interfaces";
+} from "components/tabs/dynamicCallFlow/action/GraphQL/Action.Interfaces";
 import {
   ActionModalType, ActionModalTypeEnum
-} from "dynamicCallFlowAction/DataGrid/Action.DataGrid.Component";
-import { ActionXlsxImporter } from "dynamicCallFlowAction/Xlsx/Action.Xlsx.Importer";
+} from "components/tabs/dynamicCallFlow/action/DataGrid/Action.DataGrid.Component";
+import { ActionXlsxImporter } from "components/tabs/dynamicCallFlow/action/Xlsx/Action.Xlsx.Importer";
 import {
   DataGridControllerRef, MutableRefObject
-} from "dynamicCallFlowCommon/DynamicCallFlow.Interfaces";
-import { DynamicCallFlowActionContext } from "dynamicCallFlowAction/DynamicCallFlow.Action.Container";
-import { ActionPreviewModalHandler } from "dynamicCallFlowAction/PreviewModal/Action.Preview.Modal.Handler";
+} from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
+import { DynamicCallFlowActionContext } from "components/tabs/dynamicCallFlow/action/DynamicCallFlow.Action.Container";
+import { ActionPreviewModalHandler } from "components/tabs/dynamicCallFlow/action/PreviewModal/Action.Preview.Modal.Handler";
 import { StyledButton } from "components/StyledButton";
-import { HANDLED_SUCCESSFULLY } from "dynamicCallFlowCommon/Preview/Abstract.Preview.Modal.Handler";
+import { HANDLED_SUCCESSFULLY } from "components/tabs/dynamicCallFlow/common/Preview/Abstract.Preview.Modal.Handler";
 
 interface PreviewModalParameters<RecordType> {
   isOpen: boolean;

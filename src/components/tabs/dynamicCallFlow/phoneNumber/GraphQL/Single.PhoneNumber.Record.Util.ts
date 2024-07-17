@@ -1,25 +1,25 @@
-import { PhoneNumber, PhoneNumberRecordType } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
-import { SingleRecordResults } from "dynamicCallFlowCommon/GraphQL/AbstractSingleRecord.Query";
-import { CctSharedCallFlowDb } from "dynamicCallFlowPhoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
+import { PhoneNumber, PhoneNumberRecordType } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { SingleRecordResults } from "components/tabs/dynamicCallFlow/common/GraphQL/AbstractSingleRecord.Query";
+import { CctSharedCallFlowDb } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
 import {
   createDynamicPhoneNumberRecord
-} from "dynamicCallFlowPhoneNumber/GraphQL/Query/Create.Dynamic.PhoneNumber.Record.Query";
+} from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Query/Create.Dynamic.PhoneNumber.Record.Query";
 import {
   createLegacyPhoneNumberRecord
-} from "dynamicCallFlowPhoneNumber/GraphQL/Query/Create.Legacy.PhoneNumber.Record.Query";
-import { PhoneNumberRecordUtil } from "dynamicCallFlowPhoneNumber/GraphQL/PhoneNumber.Record.Util";
+} from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Query/Create.Legacy.PhoneNumber.Record.Query";
+import { PhoneNumberRecordUtil } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/PhoneNumber.Record.Util";
 import {
   updateLegacyPhoneNumberRecord
-} from "dynamicCallFlowPhoneNumber/GraphQL/Query/Update.Legacy.PhoneNumber.Record.Query";
+} from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Query/Update.Legacy.PhoneNumber.Record.Query";
 import {
   updateDynamicPhoneNumberRecord
-} from "dynamicCallFlowPhoneNumber/GraphQL/Query/Update.Dynamic.PhoneNumber.Record.Query";
+} from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Query/Update.Dynamic.PhoneNumber.Record.Query";
 import {
   deleteLegacyPhoneNumberRecord
-} from "dynamicCallFlowPhoneNumber/GraphQL/Query/Delete.Legacy.PhoneNumber.Record.Query";
+} from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Query/Delete.Legacy.PhoneNumber.Record.Query";
 import {
   deleteDynamicPhoneNumberRecord
-} from "dynamicCallFlowPhoneNumber/GraphQL/Query/Delete.Dynamic.PhoneNumber.Record.Query";
+} from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Query/Delete.Dynamic.PhoneNumber.Record.Query";
 
 export const createPhoneNumberRecord = async (accessToken: string, phoneNumberRecordToBeCreated: PhoneNumberRecordType): Promise<SingleRecordResults<PhoneNumberRecordType>> => {
   PhoneNumberRecordUtil.removeTransientProperties(phoneNumberRecordToBeCreated);

@@ -1,19 +1,19 @@
 import {
   PhoneNumberDataGridFilter, DYNAMIC_CALL_FLOW_PHONE_NUMBER_FILTER_CACHE_KEY
-} from "dynamicCallFlowPhoneNumber/DataGrid/PhoneNumber.DataGrid.Filter";
-import { BrandTypeEnum } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+} from "components/tabs/dynamicCallFlow/phoneNumber/DataGrid/PhoneNumber.DataGrid.Filter";
+import { BrandTypeEnum } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 
-import { ReactSetState } from "dynamicCallFlowCommon/DynamicCallFlow.Interfaces";
+import { ReactSetState } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
 import {
   DynamicPhoneNumberArray,
   mockDynamicPhoneNumberObject
-} from "dynamicCallFlowPhoneNumber/GraphQL/test/Dynamic.PhoneNumber.MockData";
-import { LegacyPhoneNumberArray } from "dynamicCallFlowPhoneNumber/GraphQL/test/Legacy.PhoneNumber.Record.MockData";
-import { FieldOptions } from "dynamicCallFlowCommon/Form/AbstractFormFieldOptionsManager";
-import { BRAND } from "dynamicCallFlowPhoneNumber/Form/Dynamic.PhoneNumber.Form.Fields";
+} from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/test/Dynamic.PhoneNumber.MockData";
+import { LegacyPhoneNumberArray } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/test/Legacy.PhoneNumber.Record.MockData";
+import { FieldOptions } from "components/tabs/dynamicCallFlow/common/Form/AbstractFormFieldOptionsManager";
+import { BRAND } from "components/tabs/dynamicCallFlow/phoneNumber/Form/Dynamic.PhoneNumber.Form.Fields";
 
-jest.mock("dynamicCallFlowPhoneNumber/Form/PhoneNumberFormFieldOptionsManager");
-jest.mock("dynamicCallFlowCommon/DynamicCallFlow.Interfaces");
+jest.mock("components/tabs/dynamicCallFlow/phoneNumber/Form/PhoneNumberFormFieldOptionsManager");
+jest.mock("components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces");
 
 describe("PhoneNumberDataGridFilter", () => {
   const mockSetDataGridRecords: ReactSetState<any> = jest.fn();

@@ -1,5 +1,5 @@
-import { AbstractListRecordsQuery } from "dynamicCallFlowCommon/GraphQL/AbstractListRecords.Query";
-import { ActionRecordType } from "dynamicCallFlowAction/GraphQL/Action.Interfaces";
+import { AbstractListRecordsQuery } from "components/tabs/dynamicCallFlow/common/GraphQL/AbstractListRecords.Query";
+import { ActionRecordType } from "components/tabs/dynamicCallFlow/action/GraphQL/Action.Interfaces";
 
 class ActionListRecordsQuery extends AbstractListRecordsQuery {
   protected queryName(): string {

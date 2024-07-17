@@ -1,6 +1,6 @@
-import { AbstractDataGridFilter } from "dynamicCallFlowCommon/DataGrid/Abstract.DataGrid.Filter";
-import { ActionRecordType } from "dynamicCallFlowAction/GraphQL/Action.Interfaces";
-import { ActionRecordUtil } from "dynamicCallFlowAction/GraphQL/Action.Record.Util";
+import { AbstractDataGridFilter } from "components/tabs/dynamicCallFlow/common/DataGrid/Abstract.DataGrid.Filter";
+import { ActionRecordType } from "components/tabs/dynamicCallFlow/action//GraphQL/Action.Interfaces";
+import { ActionRecordUtil } from "components/tabs/dynamicCallFlow/action//GraphQL/Action.Record.Util";
 
 export const DYNAMIC_CALL_FLOW_ACTION_FILTER_CACHE_KEY = "DYNAMIC_CALL_FLOW_ACTION_FILTER";
 

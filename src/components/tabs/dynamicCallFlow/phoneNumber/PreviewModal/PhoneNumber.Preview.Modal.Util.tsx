@@ -7,11 +7,11 @@ import { ComponentControl } from "components/ComponentControl";
 import {
   PhoneNumberModalType,
   PhoneNumberModalTypeEnum
-} from "dynamicCallFlowPhoneNumber/DynamicCallFlow.PhoneNumber.Interfaces";
-import { ReactGridApi } from "dynamicCallFlowCommon/DynamicCallFlow.Interfaces";
-import { FieldOptions } from "dynamicCallFlowCommon/Form/AbstractFormFieldOptionsManager";
-import { RequiredPhoneNumberFormFields } from "dynamicCallFlowPhoneNumber/Form/Legacy.PhoneNumber.Form.FieldConfigs";
-import { OFFICE_NUMBERS, PREDICTIVE_CALLER } from "dynamicCallFlowPhoneNumber/Form/Dynamic.PhoneNumber.Form.Fields";
+} from "components/tabs/dynamicCallFlow/phoneNumber/DynamicCallFlow.PhoneNumber.Interfaces";
+import { ReactGridApi } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
+import { FieldOptions } from "components/tabs/dynamicCallFlow/common/Form/AbstractFormFieldOptionsManager";
+import { RequiredPhoneNumberFormFields } from "components/tabs/dynamicCallFlow/phoneNumber/Form/Legacy.PhoneNumber.Form.FieldConfigs";
+import { OFFICE_NUMBERS, PREDICTIVE_CALLER } from "components/tabs/dynamicCallFlow/phoneNumber/Form/Dynamic.PhoneNumber.Form.Fields";
 
 
 const reconstructTableColumnDef = (modalType: PhoneNumberModalType, columnDef: Array<GridColDef>, previewModalGridApiRef: ReactGridApi, fieldOptions: FieldOptions): Array<GridColDef> =>{

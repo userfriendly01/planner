@@ -1,13 +1,13 @@
-import PhoneNumberDataGridComponent from "dynamicCallFlowPhoneNumber/DataGrid/PhoneNumber.DataGrid.Component";
+import PhoneNumberDataGridComponent from "components/tabs/dynamicCallFlow/phoneNumber/DataGrid/PhoneNumber.DataGrid.Component";
 import React, {
   createContext, useState, useRef, useEffect
 } from "react";
 import ModalController, {
   MODAL_NOT_IN_USE
-} from "dynamicCallFlowCommon/Modal.Controller";
-import { DynamicCallFlowContextStore } from "dynamicCallFlowCommon/DynamicCallFlow.Interfaces";
+} from "components/tabs/dynamicCallFlow/common/Modal.Controller";
+import { DynamicCallFlowContextStore } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
 import { useAdminState } from "context/appContext";
-import { PhoneNumberModalType } from "dynamicCallFlowPhoneNumber/DynamicCallFlow.PhoneNumber.Interfaces";
+import { PhoneNumberModalType } from "components/tabs/dynamicCallFlow/phoneNumber/DynamicCallFlow.PhoneNumber.Interfaces";
 
 export const DynamicCallFlowPhoneNumberContext = createContext<DynamicCallFlowContextStore<PhoneNumberModalType>>(undefined);
 

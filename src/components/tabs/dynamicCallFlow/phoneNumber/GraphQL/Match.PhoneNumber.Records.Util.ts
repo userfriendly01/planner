@@ -1,6 +1,6 @@
-import { findMatchingElements, MatchFilter } from "dynamicCallFlowCommon/Util/Array.Util";
-import { PhoneNumberRecordType } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
-import { PhoneNumberRecordUtil } from "dynamicCallFlowPhoneNumber/GraphQL/PhoneNumber.Record.Util";
+import { findMatchingElements, MatchFilter } from "components/tabs/dynamicCallFlow/common/Util/Array.Util";
+import { PhoneNumberRecordType } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { PhoneNumberRecordUtil } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/PhoneNumber.Record.Util";
 
 /**
  * Filter to match phone number records by pkey

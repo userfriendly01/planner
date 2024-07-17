@@ -1,16 +1,16 @@
-import { PhoneNumber, PhoneNumberRecordType } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
-import { CctSharedCallFlowDb, FlowContent } from "dynamicCallFlowPhoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
+import { PhoneNumber, PhoneNumberRecordType } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { CctSharedCallFlowDb, FlowContent } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
 import {
   CREATE_TIME, DynamicPhoneNumberFormFields,
   PHONE_NUMBER,
   UPDATE_TIME
-} from "dynamicCallFlowPhoneNumber/Form/Dynamic.PhoneNumber.Form.Fields";
+} from "components/tabs/dynamicCallFlow/phoneNumber/Form/Dynamic.PhoneNumber.Form.Fields";
 import {
   isLegacyContentField,
   LegacyPhoneNumberFormFields,
   PKEY
-} from "dynamicCallFlowPhoneNumber/Form/Legacy.PhoneNumber.Form.Fields";
-import { FieldDataType } from "dynamicCallFlowCommon/Form/Form.Interfaces";
+} from "components/tabs/dynamicCallFlow/phoneNumber/Form/Legacy.PhoneNumber.Form.Fields";
+import { FieldDataType } from "components/tabs/dynamicCallFlow/common/Form/Form.Interfaces";
 
 export class PhoneNumberRecordUtil {
   public static getPkey(phoneNumberRecord: PhoneNumberRecordType): string {

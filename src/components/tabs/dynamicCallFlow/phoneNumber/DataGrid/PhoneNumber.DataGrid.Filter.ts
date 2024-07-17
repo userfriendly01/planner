@@ -1,6 +1,6 @@
-import { PhoneNumberRecordType } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
-import { AbstractDataGridFilter } from "dynamicCallFlowCommon/DataGrid/Abstract.DataGrid.Filter";
-import { PhoneNumberRecordUtil } from "dynamicCallFlowPhoneNumber/GraphQL/PhoneNumber.Record.Util";
+import { PhoneNumberRecordType } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { AbstractDataGridFilter } from "components/tabs/dynamicCallFlow/common/DataGrid/Abstract.DataGrid.Filter";
+import { PhoneNumberRecordUtil } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/PhoneNumber.Record.Util";
 
 export const DYNAMIC_CALL_FLOW_PHONE_NUMBER_FILTER_CACHE_KEY = "DYNAMIC_CALL_FLOW_PHONE_NUMBER_FILTER";
 

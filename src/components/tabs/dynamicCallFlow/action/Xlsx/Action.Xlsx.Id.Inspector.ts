@@ -3,9 +3,9 @@ import {
   AnnouncementXlsxRow,
   MenuOptionXlsxRow,
   MenuXlsxRow
-} from "dynamicCallFlowAction/Xlsx/Action.Xlsx.Interfaces";
-import { generateUuid, isValidUUID } from "dynamicCallFlowCommon/GraphQL/GraphQL.Util";
-import { ActionTypeEnum } from "dynamicCallFlowCommon/GraphQL/DynamicCallFlow.Interfaces";
+} from "components/tabs/dynamicCallFlow/action/Xlsx/Action.Xlsx.Interfaces";
+import { generateUuid, isValidUUID } from "components/tabs/dynamicCallFlow/common/GraphQL/GraphQL.Util";
+import { ActionTypeEnum } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
 
 
 export class ActionXlsxIdInspector {
