@@ -109,7 +109,7 @@ export const ResetModal = (props: ResetModalProps) => {
 
   const fetchDatadogLog = async () => {
     try {
-      const res: any = await fetchResetProfileDatadogLogs(nNumber);
+      const res: any = await fetchResetProfileDatadogLogs(state.userContext.tokens.adminService, nNumber);
       if (res.data.length > 0) {
         setStatus(StatusOptions.SUCCESS);
         setResults(res.data[res.data.length - 1].attributes.attributes.sharedAdminAPILog.results);
