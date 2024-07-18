@@ -96,6 +96,7 @@ export const ResetModal = (props: ResetModalProps) => {
       console.log("THIS IS THE ERROR DATA", error.data);
       console.log("THIS IS THE ERROR CONFIG", error.config);
       console.log("THIS IS THE formatted error message", formatErrorMessage(error));
+      logger.error("THIS IS THE ERROR", {error});
       
       if (isTimeout) {
         logger.warn("Call to reset profiles timed out. Trying to fetch datadog log", { nNumber });
