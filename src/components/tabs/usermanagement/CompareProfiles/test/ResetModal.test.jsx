@@ -142,7 +142,9 @@ describe("ResetModal", () => {
       describe("status === Timeout", () => {
         beforeEach(() => {
           resetProfiles.mockRejectedValue({
-            message: "network error"
+            response: {
+              status: 504
+            }
           });
           fetchResetProfileDatadogLogs.mockResolvedValue({
             data: [datadogResults]
@@ -170,7 +172,9 @@ describe("ResetModal", () => {
         describe("progress hit its max", () => {
           beforeEach(() => {
             resetProfiles.mockRejectedValue({
-              message: 'network error'
+              response: {
+                status: 504
+              }
             });
             fetchResetProfileDatadogLogs.mockResolvedValue({
               data: []
@@ -240,7 +244,9 @@ describe("ResetModal", () => {
         describe("error was thrown from Datadog", () => {
           beforeEach(() => {
             resetProfiles.mockRejectedValue({
-              message: "network error"
+              response: {
+                status: 504
+              }
             });
             fetchResetProfileDatadogLogs.mockRejectedValue("Aww");
           });
