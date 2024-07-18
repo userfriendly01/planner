@@ -89,14 +89,7 @@ export const ResetModal = (props: ResetModalProps) => {
       setResults(res.data);
       setStatus(StatusOptions.SUCCESS);
     } catch (error) {
-      const isTimeout = error?.message?.toLowerCase().trim() === "network error"
-      console.log("THIS IS THE ERROR:", error)
-      console.log("THIS IS THE ERROR RESPONSE:" , error.response);
-      console.log("THIS IS THE ERROR STATUS:", error.status);
-      console.log("THIS IS THE ERROR DATA", error.data);
-      console.log("THIS IS THE ERROR CONFIG", error.config);
-      console.log("THIS IS THE formatted error message", formatErrorMessage(error));
-      logger.error("THIS IS THE ERROR", {error});
+      const isTimeout = error?.response?.status === 504
       
       if (isTimeout) {
         logger.warn("Call to reset profiles timed out. Trying to fetch datadog log", { nNumber });
