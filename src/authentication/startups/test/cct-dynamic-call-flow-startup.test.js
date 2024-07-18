@@ -1,4 +1,4 @@
-import { runDynamicCallFlowStartup } from "../cct-dynamic-call-flow-startup";
+import { runDynamicCallFlowStartup } from "authentication/startups/cct-dynamic-call-flow-startup";
 import MockAdapter from "axios-mock-adapter";
 import { useAdminDispatch } from "context/appContext";
 import { getStartupProfiles } from "authentication/authenticationProfiles";
