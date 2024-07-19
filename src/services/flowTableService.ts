@@ -1129,7 +1129,8 @@ const createFlowRunItem = async (items: any[], accessToken: string) =>{
         greetingMessages: item.content?.greetingMessages || "",
         transferNumber: item.content?.transferDestination || "",
         languageOffer: item.content?.languageOffer || "",
-        dataRequests: item.content?.dataRequests
+        dataRequests: item.content?.dataRequests,
+        officeNumbers: item.content?.officeNumbers
       },
       createTime: item.createTime,
       dialedDescription: item.dialedDescription,
