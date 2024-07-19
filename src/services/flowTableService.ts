@@ -856,6 +856,7 @@ const updateFlowBatchRun = async(items: any, accessToken: string) =>{
                 greetingMessages
                 languageOffer
                 transferNumber
+                officeNumbers
               }
               createTime
               dialedDescription
@@ -1182,6 +1183,7 @@ const createFlowRunItem = async (items: any[], accessToken: string) =>{
                 greetingMessages
                 languageOffer
                 transferNumber
+                officeNumbers
               }
               createTime
               dialedDescription
