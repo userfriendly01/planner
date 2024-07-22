@@ -51,12 +51,11 @@ export const BasicFormInfo = (props: BasicFormInfoProps) => {
 
   useEffect(() => {
     if(form.triton.didUser && form.formMode === formModes.UPDATE && form.triton.did.updated
-      && form.triton.did.e164 !== worker?.did){
+      && worker.did && form.triton.did.e164 !== worker.did){
       setForwardToToggle(true);
-    } else {
+    } else if(forwardToToggle) {
       setForwardToToggle(false);
     }
-
   }, [form.triton.did]);
   const formatDropdownOption = (value: any, label: string, option: any) => {
     if(typeof option === "object"){

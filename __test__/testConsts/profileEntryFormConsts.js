@@ -58,6 +58,17 @@ export const mockScreenpops = [
   }
 ];
 
+export const mockCallTagOptions = [
+  {
+    display_name: "Negotiation Type",
+    attribute_name: "negotiation_type"
+  },
+  {
+    display_name: "Claim Number",
+    attribute_name: "claim_number"
+  }
+];
+
 export const mockCallTags = [
   {
     display_name: "Negotiation Type",
@@ -95,6 +106,7 @@ export const initialProfileEntryFormState = {
   profileName: "",
   transferQueues: [],
   accessGroup: null,
+  ftoBackup: false,
   forwardToNum: {
     value: "",
     e164: "",
@@ -129,6 +141,7 @@ export const validProfileEntryFormState = {
   clickToDial: false,
   eftAuthorization: false,
   claimNumberEdit: false,
+  ftoBackup: false,
   forwardToNum: {
     value: "(603) 851-8200",
     e164: "+16038518200",

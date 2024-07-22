@@ -18,7 +18,6 @@ import {
 import React from "react";
 import {
   createCalabrioUser,
-  getCalabrioUsers,
   updateCalabrioUser,
   createCalabrioWFMPerson
 } from "services/calabrio";
@@ -44,7 +43,8 @@ import {
 } from "testUtils";
 import {
   addWorkerToOrg,
-  checkConflictingUsers
+  checkConflictingUsers,
+  getCalabrioQMUsers
 } from "utils/calabrioUtils";
 import {
   getNonOverflowSkills,
@@ -77,7 +77,8 @@ jest.mock("context/appContext", () => ({
 jest.mock("utils/calabrioUtils", () => ({
   addWorkerToOrg: jest.fn(),
   checkConflictingUsers: jest.fn(),
-  calabrioTimeZones: jest.requireActual("utils/calabrioUtils").calabrioTimeZones
+  calabrioTimeZones: jest.requireActual("utils/calabrioUtils").calabrioTimeZones,
+  getCalabrioQMUsers: jest.fn()
 }));
 
 jest.mock("utils/usermanagementUtils", () => ({
@@ -92,7 +93,6 @@ jest.mock("utils/usermanagementUtils", () => ({
 
 jest.mock("services/calabrio", () => ({
   createCalabrioUser: jest.fn(),
-  getCalabrioUsers: jest.fn(),
   updateCalabrioUser: jest.fn(),
   createCalabrioWFMPerson: jest.fn()
 }));
@@ -193,6 +193,7 @@ describe("<UserFormButtons />", () => {
       userContext: {
         nNumber: "n1234567",
         tokens: {
+          calabrioService: "token",
           adminService: "token"
         }
       },
@@ -203,7 +204,7 @@ describe("<UserFormButtons />", () => {
     });
     checkConflictingUsers.mockResolvedValue({ yay: "woot!" });
     createCalabrioUser.mockResolvedValue({ yay: "woot!" });
-    getCalabrioUsers.mockResolvedValue({ data: "yay!" });
+    getCalabrioQMUsers.mockResolvedValue("yay!");
     addWorkerToOrg.mockReturnValue(["newstateyay!"]);
     identifyFormErrors.mockReturnValue([]);
     setupMockedComponents({
@@ -301,7 +302,7 @@ describe("<UserFormButtons />", () => {
         useFormState.mockReturnValue(validFormState);
         checkConflictingUsers.mockResolvedValue("Yay!");
         updateCalabrioUser.mockResolvedValue("yay!");
-        getCalabrioUsers.mockResolvedValue({ data: ["agent1", "agent2"]});
+        getCalabrioQMUsers.mockResolvedValue(["agent1", "agent2"]);
         createCalabrioWFMPerson.mockResolvedValue({ data: "9dase-Owaaskm" });
         wfmActivateExternalLogon.mockResolvedValue();
       });
@@ -383,7 +384,7 @@ describe("<UserFormButtons />", () => {
               expect(mockSetForm).toHaveBeenCalledWith( { type: userFormActions.SET_USER_PREVIOUSLY_ADDED_TRUE });
               expect(checkConflictingUsers).toHaveBeenCalledTimes(1);
               expect(createCalabrioUser).toHaveBeenCalledTimes(1);
-              expect(getCalabrioUsers).toHaveBeenCalledTimes(1);
+              expect(getCalabrioQMUsers).toHaveBeenCalledTimes(1);
               expect(mockDispatch).toHaveBeenCalledTimes(2);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "addOffice",
@@ -888,7 +889,7 @@ describe("<UserFormButtons />", () => {
           });
         });
       });
-      describe("getCalabrioUsers fails", () => {
+      describe("getCalabrioQMUsers fails", () => {
         const nonDidValidFormState = {
           ...validFormState,
           triton: {
@@ -901,7 +902,7 @@ describe("<UserFormButtons />", () => {
         };
         beforeEach(() => {
           useFormState.mockReturnValue(nonDidValidFormState);
-          getCalabrioUsers.mockRejectedValue({ message: "bummer" });
+          getCalabrioQMUsers.mockRejectedValue({ message: "bummer" });
         });
         test("setForm should not be called", async () => {
           renderComponent(true);
@@ -973,6 +974,7 @@ describe("<UserFormButtons />", () => {
               userContext: {
                 nNumber: "n1234567",
                 tokens: {
+                  calabrioService: "token",
                   adminService: "token"
                 }
               },
@@ -992,7 +994,7 @@ describe("<UserFormButtons />", () => {
               });
               await waitFor(() => {
                 expect(createUser).toHaveBeenCalledTimes(1);
-                expect(createCalabrioWFMPerson).toHaveBeenCalledWith(wfmBody);
+                expect(createCalabrioWFMPerson).toHaveBeenCalledWith("token", wfmBody);
                 expect(wfmActivateExternalLogon).toHaveBeenCalled();
                 expect(mockDispatch).toHaveBeenCalledTimes(3);
                 expect(mockDispatch.mock.calls[0][0]).toEqual({
@@ -1045,7 +1047,7 @@ describe("<UserFormButtons />", () => {
               });
               await waitFor(() => {
                 expect(createUser).toHaveBeenCalledTimes(1);
-                expect(createCalabrioWFMPerson).toHaveBeenCalledWith(wfmBody);
+                expect(createCalabrioWFMPerson).toHaveBeenCalledWith("token", wfmBody);
                 expect(mockDispatch).toHaveBeenCalledTimes(2);
                 expect(mockDispatch.mock.calls[0][0]).toEqual({
                   type: "addOffice",
@@ -1122,7 +1124,7 @@ describe("<UserFormButtons />", () => {
         getNonOverflowSkills.mockReturnValue(["nonSkillL1"]);
         checkConflictingUsers.mockResolvedValue("Yay!");
         createCalabrioUser.mockResolvedValue("yay!");
-        getCalabrioUsers.mockResolvedValue({ data: ["agent1", "agent2"]});
+        getCalabrioQMUsers.mockResolvedValue(["agent1", "agent2"]);
       });
       describe("Initial State", () => {
         test("UserFormButton should be called 'Save User'", () => {
@@ -1225,7 +1227,7 @@ describe("<UserFormButtons />", () => {
               });
               expect(checkConflictingUsers).toBeCalledTimes(0);
               expect(updateCalabrioUser).toBeCalledTimes(1);
-              expect(getCalabrioUsers).toBeCalledTimes(1);
+              expect(getCalabrioQMUsers).toBeCalledTimes(1);
               expect(mockDispatch).toHaveBeenCalledTimes(1);
               expect(mockDispatch.mock.calls[0][0]).toEqual({
                 type: "loadCalabrioUsers",
@@ -2057,7 +2059,7 @@ describe("<UserFormButtons />", () => {
           });
         });
       });
-      describe("getCalabrioUsers fails", () => {
+      describe("getCalabrioQMUsers fails", () => {
         const form = {
           ...validFormState,
           formMode: formModes.UPDATE,
@@ -2072,7 +2074,7 @@ describe("<UserFormButtons />", () => {
           updateUser.mockResolvedValue("yay!");
           checkConflictingUsers.mockResolvedValue("yay");
           updateCalabrioUser.mockResolvedValue({ data: ["agent1", "agent2"]});
-          getCalabrioUsers.mockRejectedValue({ message: "bummer" });
+          getCalabrioQMUsers.mockRejectedValue({ message: "bummer" });
         });
         test("setForm should not be called", async () => {
           renderComponent(true);
@@ -2118,7 +2120,7 @@ describe("<UserFormButtons />", () => {
             expect(checkConflictingUsers).toHaveBeenCalledTimes(0);
             expect(updateCalabrioUser).toHaveBeenCalledTimes(0);
             expect(createCalabrioUser).toHaveBeenCalledTimes(0);
-            expect(getCalabrioUsers).toHaveBeenCalledTimes(0);
+            expect(getCalabrioQMUsers).toHaveBeenCalledTimes(0);
             expect(mockSetForm).toHaveBeenCalledTimes(1);
             jest.runAllTimers();
             expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
@@ -2179,6 +2181,7 @@ describe("<UserFormButtons />", () => {
               userContext: {
                 nNumber: "n1234567",
                 tokens: {
+                  calabrioService: "token",
                   adminService: "token"
                 }
               },
@@ -2198,7 +2201,7 @@ describe("<UserFormButtons />", () => {
               });
               await waitFor(() => {
                 expect(updateUser).toHaveBeenCalledTimes(1);
-                expect(createCalabrioWFMPerson).toHaveBeenCalledWith(wfmBody);
+                expect(createCalabrioWFMPerson).toHaveBeenCalledWith("token", wfmBody);
                 expect(wfmActivateExternalLogon).toHaveBeenCalled();
                 expect(mockDispatch).toHaveBeenCalledTimes(1);
                 expect(mockDispatch.mock.calls[0][0]).toEqual({
@@ -2241,7 +2244,7 @@ describe("<UserFormButtons />", () => {
                 });
                 await waitFor(() => {
                   expect(updateUser).toHaveBeenCalledTimes(1);
-                  expect(createCalabrioWFMPerson).toHaveBeenCalledWith(wfmBody);
+                  expect(createCalabrioWFMPerson).toHaveBeenCalledWith("token", wfmBody);
                   expect(wfmActivateExternalLogon).not.toHaveBeenCalled();
                   jest.runAllTimers();
                   expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
@@ -2275,7 +2278,7 @@ describe("<UserFormButtons />", () => {
                 });
                 await waitFor(() => {
                   expect(updateUser).toHaveBeenCalledTimes(1);
-                  expect(createCalabrioWFMPerson).toHaveBeenCalledWith(wfmBody);
+                  expect(createCalabrioWFMPerson).toHaveBeenCalledWith("token", wfmBody);
                   expect(wfmActivateExternalLogon).toHaveBeenCalled();
                   expect(mockDispatch).toHaveBeenCalledTimes(1);
                   expect(mockDispatch.mock.calls[0][0]).toEqual({
@@ -2369,7 +2372,7 @@ describe("<UserFormButtons />", () => {
         expect(createUser).toHaveBeenCalledTimes(0);
         expect(checkConflictingUsers).toHaveBeenCalledTimes(0);
         expect(createCalabrioUser).toHaveBeenCalledTimes(0);
-        expect(getCalabrioUsers).toHaveBeenCalledTimes(0);
+        expect(getCalabrioQMUsers).toHaveBeenCalledTimes(0);
         expect(wfmActivateExternalLogon).toHaveBeenCalledTimes(0);
         expect(createCalabrioWFMPerson).toHaveBeenCalledTimes(0);
         expect(mockDispatch).toHaveBeenCalledTimes(0);

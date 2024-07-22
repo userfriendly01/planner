@@ -9,5 +9,7 @@ window.env = {
   GRAPH_API_ID: "tgufpgkyxvacrntvgb75iuo3pi",
   SOFTPHONE_SERVICE_URL: "https://cicct-softphone-service-development.us-east-1.np.paas.lmig.com",
   ADMIN_CLIENT_URL: "https://6mtmnu5sge.execute-api.us-east-1.amazonaws.com/api",
-  ADMIN_CLIENT_ID: "a96ad235-cbca-4378-adaa-6d31367fb333"
+  ADMIN_CLIENT_ID: "a96ad235-cbca-4378-adaa-6d31367fb333",
+  CALABRIO_SERVICE_URL: "https://develop.cctapis.us-east-1.libertymutual.com/calabrio-service",
+  CALABRIO_SERVICE_CLIENT_ID: "2a1a2acf-a8db-4b18-b8c1-3efce37e02cb"
 };

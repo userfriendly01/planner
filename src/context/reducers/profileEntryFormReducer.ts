@@ -38,6 +38,7 @@ export const initialProfileEntryFormState: ProfileEntryFormState = {
   screenpops: [],
   operatingUnit: null,
   accessGroup: null,
+  ftoBackup: false,
   forwardToNum: {
     value: "",
     unmaskedValue: "",
@@ -80,7 +81,7 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         outboundRecorded: action.payload.outbnd_rec,
         acwOption: action.payload.acw_option,
         manualRecorded: action.payload.man_outbnd_rec,
-        acwDataEntry: action.payload.acw_tags, //is this what that is? Do we need this can we just infer it from call tags?
+        acwDataEntry: action.payload.acw_tags,
         manualRecordedInbound: action.payload.man_inbnd_rec,
         agentAssistedPay: action.payload.agnt_asst_pay,
         paymentProcessing: action.payload.takes_paymnts,
@@ -92,6 +93,7 @@ export const profileEntryFormReducer = (state: ProfileEntryFormState, action: Ac
         claimNumberEdit: action.payload.edt_claim_num,
         overflowSkill: action.payload.overflow_skill,
         profileName: action.payload.profile_name,
+        ftoBackup: action.payload.backup_workers,
         screenpops: action.payload.screenpops || [],
         transferQueues: action.payload.transfer_queues || [],
         operatingUnit: {

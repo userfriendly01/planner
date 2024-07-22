@@ -107,7 +107,7 @@ export const CompareProfiles = () => {
       if (teamInState) {
         return teamInState.Name;
       } else if (p.BusinessUnitId && p.TeamId) {
-        const res = await getWfmTeam(p.BusinessUnitId, p.TeamId);
+        const res = await getWfmTeam(state.userContext.tokens.calabrioService, p.BusinessUnitId, p.TeamId);
         if (res.data.Result.length > 0) {
           return res.data.Result[0].Name;
         } else {
@@ -188,8 +188,8 @@ export const CompareProfiles = () => {
         const email = nNumberDetails.fetchedUser.email;
         setTritonProfiles(matchingTritonProfiles);
 
-        const wfmUserPromise = isProduction ? getWfmUserByNNumber(nNumberDetails.nNumber) : Promise.resolve({ data: []});
-        const calabrioProfilesPromise = getQmUserProfiles(workerSid, nNumberDetails.nNumber, email);
+        const wfmUserPromise = isProduction ? getWfmUserByNNumber(state.userContext.tokens.calabrioService, nNumberDetails.nNumber) : Promise.resolve({ data: []});
+        const calabrioProfilesPromise = getQmUserProfiles(state.userContext.tokens.calabrioService, workerSid, nNumberDetails.nNumber, email);
 
         const [wfmResponse, calabrioProfilesResponse]: [any, any] = await Promise.all([wfmUserPromise, calabrioProfilesPromise]);
 
@@ -262,20 +262,20 @@ export const CompareProfiles = () => {
             value={nNumberDetails.nNumber || ""}
           />
           {showResetButton &&
-            <ResetButton
-              sx={{ marginTop: "40px" }}
-              onClick={() => setShowModal(true)}>
-              Reset Profiles
-            </ResetButton>}
+              <ResetButton
+                sx={{ marginTop: "40px" }}
+                onClick={() => setShowModal(true)}>
+                Reset Profiles
+              </ResetButton>}
           {nNumberDetails.fetchedUser && !showColumns && <StyledLoadSpinner />}
           {nNumberDetails.fetchedUser && showColumns &&
-            <ProfileColumnsWrapper>
-              <ProfileColumn people={trimProfiles(tritonProfiles, "triton")} title="Triton" />
-              <ProfileColumn people={trimProfiles(calabrioQMProfiles, "qm")} title="Calabrio QM" />
-              {isProduction && calabrioWFMProfiles.length > 0 &&
-                <ProfileColumn people={trimProfiles(calabrioWFMProfiles, "wfm")} title="Calabrio WFM" />
-              }
-            </ProfileColumnsWrapper>
+              <ProfileColumnsWrapper>
+                <ProfileColumn people={trimProfiles(tritonProfiles, "triton")} title="Triton" />
+                <ProfileColumn people={trimProfiles(calabrioQMProfiles, "qm")} title="Calabrio QM" />
+                {isProduction && calabrioWFMProfiles.length > 0 &&
+                  <ProfileColumn people={trimProfiles(calabrioWFMProfiles, "wfm")} title="Calabrio WFM" />
+                }
+              </ProfileColumnsWrapper>
           }
           <Modal onClose={() => { return; }} open={showModal}>
             <>

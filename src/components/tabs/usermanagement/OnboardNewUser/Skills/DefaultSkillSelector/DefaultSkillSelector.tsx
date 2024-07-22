@@ -123,8 +123,7 @@ export const DefaultSkillSelector = (props: DefaultSkillSelectorProps): JSX.Elem
 
   const skillHasPriorities = !!newSkill.levels?.length;
   const addSkillButtonDisabled = newSkill.skill === "" || (skillHasPriorities && !newSkill.levelSelected);
-  console.warn("Faith", addSkillButtonDisabled, newSkill);
-  console.warn("Faithhh", skillsForDropDown);
+
   return (
     <DefaultSkillsWrapper>
       <SkillRow>

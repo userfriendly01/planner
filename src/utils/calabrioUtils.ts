@@ -1,12 +1,14 @@
 import {
   calabrioGroupLevels,
-  CalabrioGroup
+  CalabrioGroup,
+  CalabrioUser
 } from "usermanagement/CallRecording.Interfaces";
 import {
   getCalabrioUser,
   updateCalabrioUser,
   getWfmOptions as getWfmOptionsServiceCall,
-  getWfmOrg as getWfmOrgServiceCall
+  getWfmOrg as getWfmOrgServiceCall,
+  getCalabrioUsers
 } from "services/calabrio";
 import util from "util";
 import zlib from "zlib";
@@ -16,7 +18,9 @@ import {
   WfmBusinessUnit,
   WfmTeam,
   WfmUser,
-  discrepancyType
+  discrepancyType,
+  Action,
+  Tokens
 } from "globals/interfaces";
 import { logger } from "utils/logger";
 
@@ -280,7 +284,7 @@ export const formatCalabrioRoles = (rolesArray: any[]): any[] => {
 /*
   https://forge.lmig.com/wiki/display/CICCT/Calabrio+Form
 */
-export const checkConflictingUsers = async (user: any, users: CalabrioQmUser[], roles: any[], teams: any[]): Promise<void> => {
+export const checkConflictingUsers = async (calabrioServiceToken: string, user: any, users: CalabrioQmUser[], roles: any[], teams: any[]): Promise<void> => {
   try {
     const {
       acdId
@@ -302,7 +306,7 @@ export const checkConflictingUsers = async (user: any, users: CalabrioQmUser[], 
       const dupUserLastName = toLowerCaseString(u.lastName);
 
       if (dupUserAdLogin === adLogin || dupUserEmail === email) {
-        const res: any = await getCalabrioUser(u.id);
+        const res: any = await getCalabrioUser(calabrioServiceToken, u.id);
         const dupUser = res.data;
 
         logger.warn("Conflicting User Found with Duplicate Email or Windows Login: ", { dupUser }, false);
@@ -320,12 +324,12 @@ export const checkConflictingUsers = async (user: any, users: CalabrioQmUser[], 
           dupUser.team = teams.find(team => team.name.toLowerCase().includes("default"))?.groupId;
         }
 
-        await updateCalabrioUser(dupUser.id, dupUser);
+        await updateCalabrioUser(calabrioServiceToken, dupUser);
         return;
       }
 
       if (!dupUserEmail && acdId && firstName === dupUserFirstName && lastName === dupUserLastName) {
-        const res: any = await getCalabrioUser(u.id);
+        const res: any = await getCalabrioUser(calabrioServiceToken, u.id);
         const dupUser = res.data;
 
         logger.warn("Conflicting User Found with First and Last Name: ", { dupUser }, false);
@@ -341,7 +345,7 @@ export const checkConflictingUsers = async (user: any, users: CalabrioQmUser[], 
         if (!dupUser.team) {
           dupUser.team = teams.find(team => team.name.toLowerCase().includes("default"))?.groupId;
         }
-        await updateCalabrioUser(dupUser.id, dupUser);
+        await updateCalabrioUser(calabrioServiceToken, dupUser);
         return;
       }
     }));
@@ -399,9 +403,9 @@ export const findMatchingQmProfiles = (user: any, users: CalabrioQmUser[], setFo
   }
 };
 
-export const getCalabrioWfmOptions = async (dispatch: any) => {
+export const getCalabrioWfmOptions = async (dispatch: (action: Action) => void, tokens: Tokens): Promise<boolean> => {
   try {
-    const res: any = await getWfmOptionsServiceCall();
+    const res: any = await getWfmOptionsServiceCall(tokens.calabrioService);
     let optionsData: any = [];
     try {
       if (res.data.compressed) {
@@ -425,7 +429,7 @@ export const getCalabrioWfmOptions = async (dispatch: any) => {
   }
 };
 
-export const getCalabrioWfmOrg = async (businessUnitId: string, state: AppState, dispatch: any) => {
+export const getCalabrioWfmOrg = async (businessUnitId: string, state: AppState, dispatch: (action: Action) => void): Promise<AppState> => {
   let businessUnit = state.calabrioContext.wfmOrg.find((bu: WfmBusinessUnit) => bu.Id === businessUnitId);
   if (businessUnit && businessUnit.Teams) {
     return state;
@@ -433,7 +437,7 @@ export const getCalabrioWfmOrg = async (businessUnitId: string, state: AppState,
     businessUnit = { ...businessUnit };
     const existingErrors = state.calabrioContext.wfmErrors;
 
-    const res: any = await getWfmOrgServiceCall(businessUnitId);
+    const res: any = await getWfmOrgServiceCall(state.userContext.tokens.calabrioService, businessUnitId);
     let org;
     let errors = [];
 
@@ -463,5 +467,15 @@ export const getCalabrioWfmOrg = async (businessUnitId: string, state: AppState,
         wfmOrg: [...strippedOrg, businessUnit]
       }
     };
+  }
+};
+
+export const getCalabrioQMUsers = async (accessToken: string, includeInactive = false): Promise<CalabrioUser[]> => {
+  const response: any = await getCalabrioUsers(accessToken, includeInactive);
+  if (response.data.compressed) {
+    const data = decompressResponse(response.data.data);
+    return data;
+  } else {
+    return response.data;
   }
 };

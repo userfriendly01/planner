@@ -5,14 +5,18 @@ import {
   setupMockedComponents,
   initialProfileEntryFormState,
   expectOnlyPassedProps,
-  validProfileEntryFormState
+  validProfileEntryFormState,
+  initialTestState,
+  mockCallTagOptions
 } from "testUtils";
 import { profileEntryFormActions } from "context/profileEntryFormReducer";
 import { IconButtonWrapper } from "../ProfileEntryForm.Styles";
+import { Dropdown } from "components/Dropdown";
 import { CustomInput } from "components/CustomInput";
 import {
   profileEntryFormDispatch,
-  profileEntryFormState
+  profileEntryFormState,
+  useAdminState
 } from "context/appContext";
 import {
   Divider,
@@ -29,7 +33,7 @@ jest.mock("@mui/material", () => ({
 }));
 
 jest.mock("../ProfileEntryForm.Styles", () => ({
-  CallTagWrapper: jest.requireActual("../ProfileEntryForm.Styles").CallTagWrapper,
+  OptionsWrapper: jest.requireActual("../ProfileEntryForm.Styles").OptionsWrapper,
   Header1: jest.requireActual("../ProfileEntryForm.Styles").Header1,
   FormRow: jest.requireActual("../ProfileEntryForm.Styles").FormRow,
   IconButtonWrapper: jest.fn()
@@ -44,9 +48,18 @@ jest.mock("components/CustomInput", () => ({
   CustomInput: jest.fn()
 }));
 
+jest.mock("components/Dropdown", () => ({
+  Dropdown: jest.fn()
+}));
+
 jest.mock("context/appContext", () => ({
+  useAdminState: jest.fn(),
   profileEntryFormState: jest.fn(),
   profileEntryFormDispatch: jest.fn()
+}));
+
+jest.mock("utils/_formatUtils", () => ({
+  formatDropdownOptions: jest.fn().mockImplementation(options => options)
 }));
 
 const mockSetForm = jest.fn();
@@ -66,10 +79,12 @@ const renderComponent = () => {
 describe("<CallTagFields />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    useAdminState.mockReturnValue(initialTestState);
     profileEntryFormDispatch.mockReturnValue(mockSetForm);
     setupMockedComponents({
       Divider,
       CustomInput,
+      Dropdown,
       IconButtonWrapper,
       Add,
       Delete,
@@ -90,7 +105,8 @@ describe("<CallTagFields />", () => {
         });
         expect(container).toHaveTextContent("Call Tags");
         expect(IconButtonWrapper).toHaveBeenCalledTimes(8);
-        expect(CustomInput).toHaveBeenCalledTimes(7);
+        expect(CustomInput).toHaveBeenCalledTimes(3);
+        expect(Dropdown).toHaveBeenCalledTimes(2);
 
         expect(Add).toHaveBeenCalledTimes(0);
         expect(Delete).toHaveBeenCalledTimes(0);
@@ -128,47 +144,49 @@ describe("<CallTagFields />", () => {
         render(IconButtonWrapper.mock.calls[7][0].children);
         expect(Add).toHaveBeenCalledTimes(3);
 
-        expectOnlyPassedProps(CustomInput, {
-          label: "Call Tag Name *",
-          name: "Call Tag Name *",
-          value: "Negotiation Type"
+        expectOnlyPassedProps(Dropdown, {
+          label: "CallTags",
+          options: mockCallTagOptions,
+          value: {
+            ...mockCallTagOptions[0],
+            options: [
+              "Info Exchange",
+              "Bargaining",
+              "Closing"
+            ]
+          }
         }, 0);
-        expectOnlyPassedProps(CustomInput, {
-          label: "Call Tag Variable *",
-          name: "Call Tag Variable *",
-          value: "negotiation_type"
+        expectOnlyPassedProps(Dropdown, {
+          label: "CallTags",
+          options: mockCallTagOptions,
+          value: {
+            ...mockCallTagOptions[1],
+            options: null
+          }
         }, 1);
         expectOnlyPassedProps(CustomInput, {
-          label: "Option *",
-          name: "Option *",
+          label: "Dropdown Option *",
+          name: "Dropdown Option *",
           value: "Info Exchange"
-        }, 2);
+        }, 0);
         expectOnlyPassedProps(CustomInput, {
-          label: "Option *",
-          name: "Option *",
+          label: "Dropdown Option *",
+          name: "Dropdown Option *",
           value: "Bargaining"
-        }, 3);
+        }, 1);
         expectOnlyPassedProps(CustomInput, {
-          label: "Option *",
-          name: "Option *",
+          label: "Dropdown Option *",
+          name: "Dropdown Option *",
           value: "Closing"
-        }, 4);
-        expectOnlyPassedProps(CustomInput, {
-          label: "Call Tag Name *",
-          name: "Call Tag Name *",
-          value: "Claim Number"
-        }, 5);
-        expectOnlyPassedProps(CustomInput, {
-          label: "Call Tag Variable *",
-          name: "Call Tag Variable *",
-          value: "claim_number"
-        }, 6);
+        }, 2);
       });
     });
     describe("call tag is added", () => {
       test("call tag is added to form call tags array", () => {
         renderComponent();
-        expect(CustomInput).toHaveBeenCalledTimes(7);
+        expect(CustomInput).toHaveBeenCalledTimes(3);
+        expect(Dropdown).toHaveBeenCalledTimes(2);
+
         const addCallTag = IconButtonWrapper.mock.calls[0][0].onClick;
         addCallTag();
         expect(mockSetForm).toHaveBeenCalledWith({
@@ -198,24 +216,45 @@ describe("<CallTagFields />", () => {
             ]
           }
         });
-        expect(CustomInput).toHaveBeenCalledTimes(16);
-        expectOnlyPassedProps(CustomInput, {
-          label: "Call Tag Name *",
-          name: "Call Tag Name *",
-          value: ""
-        }, 7);
-        expectOnlyPassedProps(CustomInput, {
-          label: "Call Tag Variable *",
-          name: "Call Tag Variable *",
-          value: ""
-        }, 8);
+        expect(CustomInput).toHaveBeenCalledTimes(6);
+        expect(Dropdown).toHaveBeenCalledTimes(5);
+        expectOnlyPassedProps(Dropdown, {
+          label: "CallTags",
+          options: mockCallTagOptions,
+          value: {
+            attribute_name: "",
+            display_name: "",
+            options: []
+          }
+        }, 2);
+        expectOnlyPassedProps(Dropdown, {
+          label: "CallTags",
+          options: mockCallTagOptions,
+          value: {
+            ...mockCallTagOptions[0],
+            options: [
+              "Info Exchange",
+              "Bargaining",
+              "Closing"
+            ]
+          }
+        }, 3);
+        expectOnlyPassedProps(Dropdown, {
+          label: "CallTags",
+          options: mockCallTagOptions,
+          value: {
+            ...mockCallTagOptions[1],
+            options: null
+          }
+        }, 4);
       });
     });
     describe("call tag option is added", () => {
       describe("call tag is added", () => {
         test("call tag option is added to the correct call tag", () => {
           renderComponent();
-          expect(CustomInput).toHaveBeenCalledTimes(7);
+          expect(CustomInput).toHaveBeenCalledTimes(3);
+          expect(Dropdown).toHaveBeenCalledTimes(2);
           const addCallTagOption = IconButtonWrapper.mock.calls[2][0].onClick;
           addCallTagOption();
           expect(mockSetForm).toHaveBeenCalledWith({
@@ -241,29 +280,34 @@ describe("<CallTagFields />", () => {
               ]
             }
           });
-          expect(CustomInput).toHaveBeenCalledTimes(15);
+          expect(CustomInput).toHaveBeenCalledTimes(7);
+          expect(Dropdown).toHaveBeenCalledTimes(4);
+          expectOnlyPassedProps(Dropdown, {
+            label: "CallTags",
+            options: mockCallTagOptions,
+            value: {
+              ...mockCallTagOptions[0],
+              options: [
+                "",
+                "Info Exchange",
+                "Bargaining",
+                "Closing"
+              ]
+            }
+          }, 2);
           expectOnlyPassedProps(CustomInput, {
-            label: "Call Tag Name *",
-            name: "Call Tag Name *",
-            value: "Negotiation Type"
-          }, 7);
-          expectOnlyPassedProps(CustomInput, {
-            label: "Call Tag Variable *",
-            name: "Call Tag Variable *",
-            value: "negotiation_type"
-          }, 8);
-          expectOnlyPassedProps(CustomInput, {
-            label: "Option *",
-            name: "Option *",
+            label: "Dropdown Option *",
+            name: "Dropdown Option *",
             value: ""
-          }, 9);
+          }, 3);
         });
       });
     });
     describe("call tag is removed", () => {
       test("call tag array is updated to exclude the removed calltag", () => {
         renderComponent();
-        expect(CustomInput).toHaveBeenCalledTimes(7);
+        expect(CustomInput).toHaveBeenCalledTimes(3);
+        expect(Dropdown).toHaveBeenCalledTimes(2);
         const deleteCallTag = IconButtonWrapper.mock.calls[1][0].onClick;
         deleteCallTag();
         expect(mockSetForm).toHaveBeenCalledWith({
@@ -279,25 +323,25 @@ describe("<CallTagFields />", () => {
             ]
           }
         });
-        expect(CustomInput).toHaveBeenCalledTimes(9);
-        expectOnlyPassedProps(CustomInput, {
-          label: "Call Tag Name *",
-          name: "Call Tag Name *",
-          value: "Claim Number"
-        }, 7);
-        expectOnlyPassedProps(CustomInput, {
-          label: "Call Tag Variable *",
-          name: "Call Tag Variable *",
-          value: "claim_number"
-        }, 8);
+        expect(CustomInput).toHaveBeenCalledTimes(3);
+        expect(Dropdown).toHaveBeenCalledTimes(3);
+        expectOnlyPassedProps(Dropdown, {
+          label: "CallTags",
+          options: mockCallTagOptions,
+          value: {
+            ...mockCallTagOptions[1],
+            options: null
+          }
+        }, 2);
       });
     });
     describe("call tag option is removed", () => {
       test("the correct call tag options array is updated to exclude the removed calltag", () => {
         renderComponent();
-        expect(CustomInput).toHaveBeenCalledTimes(7);
-        const deleteCallTag = IconButtonWrapper.mock.calls[3][0].onClick;
-        deleteCallTag();
+        expect(CustomInput).toHaveBeenCalledTimes(3);
+        expect(Dropdown).toHaveBeenCalledTimes(2);
+        const deleteCallTagOption = IconButtonWrapper.mock.calls[3][0].onClick;
+        deleteCallTagOption();
         expect(mockSetForm).toHaveBeenCalledWith({
           type: profileEntryFormActions.SET_FORM_FIELD,
           payload: {
@@ -319,22 +363,18 @@ describe("<CallTagFields />", () => {
             ]
           }
         });
-        expect(CustomInput).toHaveBeenCalledTimes(13);
+        expect(CustomInput).toHaveBeenCalledTimes(5);
+        expect(Dropdown).toHaveBeenCalledTimes(4);
         expectOnlyPassedProps(CustomInput, {
-          label: "Call Tag Name *",
-          name: "Call Tag Name *",
-          value: "Negotiation Type"
-        }, 7);
-        expectOnlyPassedProps(CustomInput, {
-          label: "Call Tag Variable *",
-          name: "Call Tag Variable *",
-          value: "negotiation_type"
-        }, 8);
-        expectOnlyPassedProps(CustomInput, {
-          label: "Option *",
-          name: "Option *",
+          label: "Dropdown Option *",
+          name: "Dropdown Option *",
           value: "Bargaining"
-        }, 9);
+        }, 3);
+        expectOnlyPassedProps(CustomInput, {
+          label: "Dropdown Option *",
+          name: "Dropdown Option *",
+          value: "Closing"
+        }, 4);
       });
     });
   });
@@ -351,6 +391,7 @@ describe("<CallTagFields />", () => {
       expect(container).toHaveTextContent("Call Tags");
       expect(IconButtonWrapper).toHaveBeenCalledTimes(1);
       expect(CustomInput).toHaveBeenCalledTimes(0);
+      expect(Dropdown).toHaveBeenCalledTimes(0);
 
       expect(Add).toHaveBeenCalledTimes(0);
       expect(Delete).toHaveBeenCalledTimes(0);
@@ -375,7 +416,7 @@ describe("<CallTagFields />", () => {
         const addCallTag = IconButtonWrapper.mock.calls[0][0].onClick;
         addCallTag();
 
-        expect(CustomInput).toHaveBeenCalledTimes(2);
+        expect(Dropdown).toHaveBeenCalledTimes(1);
         expect(Tooltip).toHaveBeenCalledTimes(4);
         render(Tooltip.mock.calls[1][0].children);
         render(Tooltip.mock.calls[2][0].children);
@@ -389,76 +430,70 @@ describe("<CallTagFields />", () => {
 
         const addCallTagOption = IconButtonWrapper.mock.calls[3][0].onClick;
         addCallTagOption();
-        expect(CustomInput).toHaveBeenCalledTimes(5);
+        expect(CustomInput).toHaveBeenCalledTimes(1);
+        expect(Dropdown).toHaveBeenCalledTimes(2);
 
-        let activeDisplayNameField = CustomInput.mock.calls[2][0];
-
-        expect(activeDisplayNameField.label).toBe("Call Tag Name *");
-        activeDisplayNameField.updateValue("Kitty Call Tag");
-        expect(CustomInput).toHaveBeenCalledTimes(8);
-        activeDisplayNameField = CustomInput.mock.calls[5][0];
-        expect(activeDisplayNameField.label).toBe("Call Tag Name *");
-        expect(activeDisplayNameField.value).toBe("Kitty Call Tag");
-        activeDisplayNameField.onBlur();
-        expect(mockSetForm).toHaveBeenCalledWith(
-          {
-            type: profileEntryFormActions.SET_FORM_FIELD,
-            payload: {
-              key: "callTagsList",
-              value: [{
-                attribute_name: "",
-                display_name: "Kitty Call Tag",
-                options: [
-                  ""
-                ]
-              }]
-            }
+        const selectCallTag = Dropdown.mock.calls[1][0].updateValue;
+        expectOnlyPassedProps(Dropdown, {
+          label: "CallTags",
+          options: mockCallTagOptions,
+          value: {
+            attribute_name: "",
+            display_name: "",
+            options: [""]
           }
-        );
-        expect(CustomInput).toHaveBeenCalledTimes(8);
+        }, 1);
 
-        let activeVariableField = CustomInput.mock.calls[6][0];
-        expect(activeVariableField.label).toBe("Call Tag Variable *");
-        activeVariableField.updateValue("kitty_call_tag");
-        expect(CustomInput).toHaveBeenCalledTimes(11);
-        activeVariableField = CustomInput.mock.calls[9][0];
-        expect(activeVariableField.label).toBe("Call Tag Variable *");
-        expect(activeVariableField.value).toBe("kitty_call_tag");
-        activeVariableField.onBlur();
+        selectCallTag(null, mockCallTagOptions[1]);
+
+        expect(CustomInput).toHaveBeenCalledTimes(2);
+        expect(Dropdown).toHaveBeenCalledTimes(3);
+
+        expectOnlyPassedProps(Dropdown, {
+          label: "CallTags",
+          options: mockCallTagOptions,
+          value: {
+            ...mockCallTagOptions[1],
+            options: [""]
+          }
+        }, 2);
         expect(mockSetForm).toHaveBeenCalledWith(
           {
             type: profileEntryFormActions.SET_FORM_FIELD,
             payload: {
               key: "callTagsList",
               value: [{
-                attribute_name: "kitty_call_tag",
-                display_name: "Kitty Call Tag",
-                options: [
-                  ""
-                ]
+                ...mockCallTagOptions[1],
+                options: [""]
               }]
             }
           }
         );
 
-        expect(CustomInput).toHaveBeenCalledTimes(11);
+        const updateOption = CustomInput.mock.calls[1][0].updateValue;
+        expectOnlyPassedProps(CustomInput, {
+          label: "Dropdown Option *",
+          name: "Dropdown Option *",
+          value: ""
+        }, 1);
+        updateOption("Snowball");
+        expect(CustomInput).toHaveBeenCalledTimes(3);
 
-        let activeOptionField = CustomInput.mock.calls[10][0];
-        expect(activeOptionField.label).toBe("Option *");
-        activeOptionField.updateValue("Snowball");
-        expect(CustomInput).toHaveBeenCalledTimes(14);
-        activeOptionField = CustomInput.mock.calls[13][0];
-        expect(activeOptionField.label).toBe("Option *");
-        expect(activeOptionField.value).toBe("Snowball");
-        activeOptionField.onBlur();
+        expectOnlyPassedProps(CustomInput, {
+          label: "Dropdown Option *",
+          name: "Dropdown Option *",
+          value: "Snowball"
+        }, 2);
+        const onBlur = CustomInput.mock.calls[2][0].onBlur;
+        onBlur();
         expect(mockSetForm).toHaveBeenCalledWith(
           {
             type: profileEntryFormActions.SET_FORM_FIELD,
             payload: {
               key: "callTagsList",
               value: [{
-                attribute_name: "kitty_call_tag",
-                display_name: "Kitty Call Tag",
+                attribute_name: "claim_number",
+                display_name: "Claim Number",
                 options: [
                   "Snowball"
                 ]
@@ -466,7 +501,6 @@ describe("<CallTagFields />", () => {
             }
           }
         );
-
       });
     });
   });

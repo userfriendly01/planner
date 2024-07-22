@@ -16,8 +16,7 @@ import styled from "styled-components";
 */
 
 const ListItem = styled.li<{ styles?: any }>`
-width: ${props => props.styles && props.styles.width ? props.styles.width : "250px"};
-font-size: ${props => props.styles && props.styles.fontSize ? props.styles.fontSize : "15px"};
+  font-size: ${props => props.styles && props.styles.fontSize ? props.styles.fontSize : "15px"};
 `;
 
 export const Dropdown = (props: any) => {

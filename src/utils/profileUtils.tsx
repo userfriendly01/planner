@@ -55,6 +55,7 @@ export const constructProfilePayload = (form: ProfileEntryFormState): ProfilePay
     overflow_skill: form.overflowSkill?.name || null,
     acw_option: form.acwOption,
     acw_tags: form.acwDataEntry,
+    backup_workers: form.ftoBackup,
     agnt_asst_pay: form.agentAssistedPay,
     auto_ans: form.autoAnswered,
     edt_policy_num: form.policyNumberEdit,
@@ -157,6 +158,10 @@ export const profileTableColumnHeader = [
     TOOLTIP: "Self service indicator is applicable to profiles with an id of 39 and above, but is actually set at the worker attribute level"
   },
   {
+    COLUMN_NAME: "FTO Backup",
+    TOOLTIP: "Enable/Disable the FTO Backup Workers feature"
+  },
+  {
     COLUMN_NAME: "ACW Option",
     TOOLTIP: "UI Feature: Agent has the choice to enable or disable after call work (wrap-up). Default setting is off"
   },
@@ -210,6 +215,10 @@ export const toggleControls: ToggleFormField[] = [
   {
     fieldKey: "paymentProcessing",
     label: "Payment Processing"
+  },
+  {
+    fieldKey: "ftoBackup",
+    label: "FTO Backup"
   },
   {
     fieldKey: "acwOption",

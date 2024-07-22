@@ -81,6 +81,7 @@ export interface ProfileEntryFormState {
   profileName: string,
   transferQueues: TwilioQueue[],
   voiceMailTranscription: boolean,
+  ftoBackup: boolean
 }
 
 export interface ToggleFormField {

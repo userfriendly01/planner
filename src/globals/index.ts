@@ -22,12 +22,15 @@ export const env = {
   GRAPH_API_WSS: `wss://${window.env.GRAPH_API_ID}.appsync-realtime-api.us-east-1.amazonaws.com/graphql`,
   GRAPH_CLIENT_ID: window.env.GRAPH_CLIENT_ID,
   SOFTPHONE_SERVICE_URL: window.env.SOFTPHONE_SERVICE_URL,
+  CALABRIO_SERVICE_URL: window.env.CALABRIO_SERVICE_URL,
+  CALABRIO_SERVICE_CLIENT_ID: window.env.CALABRIO_SERVICE_CLIENT_ID,
   ADMIN_CLIENT_URL: window.env.ADMIN_CLIENT_URL,
   ADMIN_CLIENT_ID: window.env.ADMIN_CLIENT_ID
 };
 
 const SERVICE_BASE_URI = env.SOFTPHONE_SERVICE_URL;
 const MS_GRAPH_URL = "https://graph.microsoft.com/v1.0";
+const CALABRIO_SERVICE_BASE_URI = env.CALABRIO_SERVICE_URL;
 const ADMIN_CLIENT_URL = env.ADMIN_CLIENT_URL;
 
 export const numMatcher = /^[0-9]*$/;
@@ -159,23 +162,23 @@ export const exportColumns = [
 
 export const apiPaths = {
   CHECK_EXTENSION: `${SERVICE_BASE_URI}/checkextension`,
-  CREATE_CALABRIO_TEAM: `${SERVICE_BASE_URI}/calabrio-add-team`,
-  CREATE_CALABRIO_USER: `${SERVICE_BASE_URI}/calabrio-add-user`,
-  CREATE_CALABRIO_WFM_PERSON: `${SERVICE_BASE_URI}/calabrio-api/wfm/person`,
+  CREATE_CALABRIO_TEAM: `${CALABRIO_SERVICE_BASE_URI}/qm?api=Team`,
+  CREATE_CALABRIO_USER: `${CALABRIO_SERVICE_BASE_URI}/qm?api=User`,
+  CREATE_CALABRIO_WFM_PERSON: `${CALABRIO_SERVICE_BASE_URI}/wfm/person`,
   CLOSED_MESSAGE: `${SERVICE_BASE_URI}/closedmessage`,
   CREATE_SKILL: `${SERVICE_BASE_URI}/createskill`,
   EMPLOYEE_LOOKUP: (nNumber: string): string => `${MS_GRAPH_URL}/users?$filter=employeeId eq '${nNumber}'&$select=mail,givenName,surname,officeLocation,extension_128b6233d06d4df391d7de26c982b64e_extensionAttribute1,department,extension_128b6233d06d4df391d7de26c982b64e_extensionAttribute2,accountEnabled`,
   FLASH_MESSAGE: `${SERVICE_BASE_URI}/flashmessage`,
   GET_APPLICATIONS: `${SERVICE_BASE_URI}/applications`,
-  GET_CALABRIO_WFM: `${SERVICE_BASE_URI}/calabrio-api/wfm`,
-  GET_CALABRIO_WFM_ORG: `${SERVICE_BASE_URI}/calabrio-api/wfm/org/people`,
-  GET_CALABRIO_WFM_OPTIONS: `${SERVICE_BASE_URI}/calabrio-api/wfm/org/options`,
-  GET_CALABRIO_WFM_USER_BY_NNUMBER: (nNumber: string): string => `${SERVICE_BASE_URI}/calabrio-api/wfm-people-by-nnumber/${nNumber}`,
-  GET_CALABRIO_USERS: `${SERVICE_BASE_URI}/calabrio-get-agents`,
-  GET_CALABRIO_ORG: `${SERVICE_BASE_URI}/calabrio-get-org`,
-  GET_CALABRIO_ROLES: `${SERVICE_BASE_URI}/calabrio-get-roles`,
-  GET_CALABRIO_USER: (personId: number): any => `${SERVICE_BASE_URI}/calabrio-get-user/${personId}`,
-  GET_CALABRIO_USER_PROFILES: `${SERVICE_BASE_URI}/calabrio-api/qm-user-profiles`,
+  GET_CALABRIO_WFM: `${CALABRIO_SERVICE_BASE_URI}/wfm`,
+  GET_CALABRIO_WFM_ORG: `${CALABRIO_SERVICE_BASE_URI}/wfm/org/people`,
+  GET_CALABRIO_WFM_OPTIONS: `${CALABRIO_SERVICE_BASE_URI}/wfm/org/options`,
+  GET_CALABRIO_WFM_USER_BY_NNUMBER: (nNumber: string): string => `${CALABRIO_SERVICE_BASE_URI}/wfm?api=People%20by%20Employment%20Ids&NNumbers=${nNumber}`,
+  GET_CALABRIO_USERS: `${CALABRIO_SERVICE_BASE_URI}/qm?api=Users`,
+  GET_CALABRIO_ORG: `${CALABRIO_SERVICE_BASE_URI}/qm?api=getOrg`,
+  GET_CALABRIO_ROLES: `${CALABRIO_SERVICE_BASE_URI}/qm?api=Roles`,
+  GET_CALABRIO_USER: (personId: number): any => `${CALABRIO_SERVICE_BASE_URI}/qm?api=User&userId=${personId}`,
+  GET_CALABRIO_USER_PROFILES: `${CALABRIO_SERVICE_BASE_URI}/qm?api=Get%20All%20Profiles&includeInactive=true`,
   GET_SKILLS: `${SERVICE_BASE_URI}/consolidatedskills`,
   SKILLS_TASKROUTER: `${SERVICE_BASE_URI}/taskrouterskills`,
   SKILLS_CALLFLOW: `${SERVICE_BASE_URI}/callflowskills`,
@@ -185,7 +188,7 @@ export const apiPaths = {
   GET_RESET_PROFILE_DATADOG_LOGS: (nNumber: string): string => `${SERVICE_BASE_URI}/datadogresetprofileslogs/${nNumber}`,
   RESET_WORKER_SKILLS: `${SERVICE_BASE_URI}/resetworkerskills`,
   TFN_DATA: `${SERVICE_BASE_URI}/tfn`,
-  UPDATE_CALABRIO_USER: (personId: number): any => `${SERVICE_BASE_URI}/calabrio-update-user/${personId}`,
+  UPDATE_CALABRIO_USER: `${CALABRIO_SERVICE_BASE_URI}/qm?api=User`,
   RESET_PROFILES: (nNumber: string): string => `${ADMIN_CLIENT_URL}/reset/${nNumber}`,
   TERMINATE_WORKER: `${ADMIN_CLIENT_URL}/termination`,
   WFM_ACTIVATE_EXTERNAL_LOGON: `${ADMIN_CLIENT_URL}/externalLogon`

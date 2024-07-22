@@ -35,7 +35,7 @@ import { wait } from "utils";
 const success = "success";
 const loading = "loading";
 
-const App = () => {
+const App = (): React.JSX.Element => {
   const { instance } = useMsal();
   const account = instance.getActiveAccount();
 
@@ -76,7 +76,7 @@ const App = () => {
           });
 
           await Promise.all(
-            permissions.map(({ startup }) => startup.function(dispatch, skillDispatch))
+            permissions.map(({ startup }) => startup.function(dispatch, skillDispatch, state.userContext.tokens))
           );
 
           setLoadResult({
@@ -110,37 +110,60 @@ const App = () => {
     const tokenManager = async () => {
       logger.log("*** MSAL: Getting new Token ***");
 
+      const extraScopesToConsent = [
+        {
+          key: "sharedGraph",
+          scope: `${env.GRAPH_CLIENT_ID}/uiaccess`,
+          requiredRoles: [] as string[]
+        },
+        {
+          key: "adminService",
+          scope: `${env.ADMIN_CLIENT_ID}/uiAccess`,
+          requiredRoles: ["Admin"]
+        },
+        {
+          key: "calabrioService",
+          scope: `${env.CALABRIO_SERVICE_CLIENT_ID}/uiaccess`,
+          requiredRoles: ["Admin"]
+        }
+      ];
+
       try {
         const msGraph = await instance.loginPopup({
           account,
           scopes: ["User.Read.All"],
-          extraScopesToConsent: [
-            // Add additional scopes that are needed here
-            `${env.GRAPH_CLIENT_ID}/uiaccess`,
-            `${env.ADMIN_CLIENT_ID}/uiAccess`
-          ]
+          extraScopesToConsent: extraScopesToConsent.map(scope => scope.scope)
         });
 
         logger.log(`*** MSAL: Token acquired, will expire at ${msGraph.expiresOn} ***`);
 
-        // Place any additional token requests here:
-        const sharedGraph = await instance.acquireTokenSilent({
-          account,
-          scopes: [`${env.GRAPH_CLIENT_ID}/uiaccess`]
-        });
-        const adminService = await instance.acquireTokenSilent({
-          account,
-          scopes: [`${env.ADMIN_CLIENT_ID}/uiAccess`]
-        });
+        const tokens = {
+          msGraph: msGraph.accessToken
+        } as { [key: string]: string };
+
+        const showModal = () => setShowModal(true);
+        await Promise.all(
+          extraScopesToConsent.map(async ({
+            scope, key, requiredRoles
+          }) => {
+            const shouldGetToken = !requiredRoles.length || requiredRoles.some(role => msGraph.account.idTokenClaims.roles?.includes(role));
+
+            if (shouldGetToken) {
+              const token = await instance.acquireTokenSilent({
+                account,
+                scopes: [scope]
+              });
+
+              wait(showModal, token.expiresOn.getTime() - Date.now());
+              tokens[key] = token.accessToken;
+            }
+          })
+        );
 
         dispatch({
           type: "loadUserData",
           payload: {
-            tokens: {
-              msGraph: msGraph.accessToken,
-              sharedGraph: sharedGraph.accessToken,
-              adminService: adminService.accessToken
-            }
+            tokens
           }
         });
 
@@ -148,9 +171,7 @@ const App = () => {
         // we'll want to constantly refresh the token several times
         // then prompt the user to refresh or come up with a better way of refreshing
         // the data
-        wait(() => {
-          setShowModal(true);
-        }, msGraph.expiresOn.getTime() - Date.now());
+        wait(showModal, msGraph.expiresOn.getTime() - Date.now());
       } catch (error) {
         logger.error("TOKEN_GET_FAILED", { error });
         setLoadResult({
@@ -165,6 +186,7 @@ const App = () => {
 
     tokenManager();
   }, []);
+
 
   if (loadResult.status && loadResult.status !== loading) {
     if (loadResult.status === success) {

@@ -9,6 +9,7 @@ window.env = {
   APP_ENV: "APP_ENV",
   TROUX_ID: "TROUX_ID",
   SOFTPHONE_SERVICE_URL: "http://localhost:8080",
+  CALABRIO_SERVICE_URL: "https://calabrio-service.com",
   ADMIN_CLIENT_URL: "https://admin.service"
 };
 

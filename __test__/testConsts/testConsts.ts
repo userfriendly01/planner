@@ -2,7 +2,8 @@ import {
   mockTaskQueues, mockSkills
 } from "./skillConsts";
 import {
-  mockAccessGroups, mockActivities, mockScreenpops, mockCallTags
+  mockAccessGroups, mockActivities, mockScreenpops, mockCallTags,
+  mockCallTagOptions
 } from "./profileEntryFormConsts";
 import {
   DialListNumber, DirectoryNumber
@@ -130,6 +131,7 @@ export const mockProfiles = [
     outbnd_rec: true,
     takes_paymnts: true,
     voice_mail_trans: true,
+    backup_workers: true,
     fwd_to_num: "8665680296",
     transfer_queues: [mockTaskQueues[0].sid, mockTaskQueues[1].sid],
     access_group: mockAccessGroups[0],
@@ -158,6 +160,7 @@ export const mockProfiles = [
     outbnd_rec: false,
     takes_paymnts: false,
     voice_mail_trans: false,
+    backup_workers: false,
     fwd_to_num: null,
     transfer_queues: [],
     access_group: null,
@@ -186,6 +189,7 @@ export const mockProfiles = [
     outbnd_rec: false,
     takes_paymnts: false,
     voice_mail_trans: false,
+    backup_workers: false,
     fwd_to_num: null,
     transfer_queues: [],
     access_group: mockAccessGroups[1],
@@ -480,6 +484,7 @@ export const initialTestState: any = {
   profileContext: {
     activities: mockActivities,
     accessGroups: mockAccessGroups,
+    calltags: mockCallTagOptions,
     screenpops: mockScreenpops,
     profiles: mockProfiles,
     directoryEntries: mockDirectoryList,
@@ -494,6 +499,7 @@ export const initialTestState: any = {
     tokens: {
       msGraph: "Access Token",
       sharedGraph: "Access Token",
+      calabrioService: "Access Token",
       adminService: "Access Token"
     },
     isAdmin: false,

@@ -34,7 +34,7 @@ export const ProfileSettingsContainer = () => {
   const skillDispatch = useSkillDispatch();
 
   const { nNumber: loggedInUser } = state.userContext;
-  const profiles = state.profileContext.profiles;
+  const profileContext = state.profileContext;
   const [ isLoading, setIsLoading ] = React.useState(true);
 
   const createProfileOnClick = () => setProfileModalState({
@@ -42,7 +42,7 @@ export const ProfileSettingsContainer = () => {
   });
 
   React.useEffect(() => {
-    loadSoftphoneConfigRelationships(profiles, adminDispatch, () => setIsLoading(false));
+    loadSoftphoneConfigRelationships(profileContext, adminDispatch, () => setIsLoading(false));
     loadSkillOptions(skillState.skills, skillDispatch, () => setIsLoading(false));
   }, []);
 

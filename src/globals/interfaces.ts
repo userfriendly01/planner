@@ -99,13 +99,12 @@ export interface AppState {
     screenpops: Screenpop[]
     activities: Activity[],
     directoryEntries: DirectoryNumber[],
-    dialListEntries: DialListNumber[]
+    dialListEntries: DialListNumber[],
+    calltags: Partial<CallTag>[]
   },
   userContext: {
     permissions: ADGroupPermission[];
-    tokens: {
-      [key: string]: string;
-    };
+    tokens: Tokens;
     isAdmin?: boolean;
     profileId?: number;
     nNumber?: string;
@@ -131,6 +130,13 @@ export interface AppState {
   }
 }
 
+export interface Tokens {
+  msGraph?: string;
+  sharedGraph?: string;
+  calabrioService?: string;
+  adminService?: string;
+}
+
 export interface ADGroupRole {
   name: string;
   permissionLevel: Permissions;
@@ -140,7 +146,7 @@ export interface ADGroupPermission {
     roles: ADGroupRole[];
     startup: {
       name: string;
-      function: (dispatch: any, skillDispatch?: any) => Promise<any>;
+      function: (dispatch: any, skillDispatch?: any, tokens?: Tokens) => Promise<any>;
     }
     description: string;
     authenticationProfile:  AuthenticationProfile
@@ -189,6 +195,7 @@ export interface AccessGroup {
   item_type: string,
   access_group_name: string,
   twilio_dashboard_url: string,
+  viewable_profiles?: any[],
   isNew: boolean
 }
 
@@ -281,6 +288,7 @@ export interface AddEditSoftphoneConfigRequest {
   acw_tags: boolean,
   agnt_asst_pay: boolean,
   auto_ans: boolean,
+  backup_workers: boolean,
   edt_policy_num: boolean,
   edt_claim_num: boolean,
   call_reason: boolean,
@@ -294,7 +302,6 @@ export interface AddEditSoftphoneConfigRequest {
   voice_mail_trans: boolean,
   fwd_to_num: string,
   transfer_queues: string[],
-  backup_workers: boolean,
   call_tags: string[],
   activity_sids: string[],
   screenpop_ids: string[],
@@ -314,6 +321,7 @@ export interface ProfilePayload {
   acw_tags: boolean,
   agnt_asst_pay: boolean,
   auto_ans: boolean,
+  backup_workers: boolean,
   edt_policy_num: boolean,
   edt_claim_num: boolean,
   call_reason: boolean,

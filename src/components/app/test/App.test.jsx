@@ -25,7 +25,6 @@ import {
 import { getWorkerProfileId } from "authentication/authUtils";
 import { getFilteredPermissions } from "authentication/authenticationProfiles";
 
-
 delete window.location;
 window.location = { reload: jest.fn() };
 document.getElementById = jest.fn();
@@ -134,6 +133,13 @@ const mockAdminDispatch = jest.fn();
 const mockSkillDispatch = jest.fn();
 const permissions = [adGroupPermissionMapping[0]];
 
+const mockAzureAccount = {
+  idTokenClaims: {
+    roles: ["Admin"],
+    employeeid: "n1234567"
+  }
+};
+
 describe("<App />", () => {
   let loginPopupFunc;
   let acquireTokenSilentFunc;
@@ -166,7 +172,8 @@ describe("<App />", () => {
 
     loginPopupFunc = jest.fn().mockReturnValue({
       accessToken: "Access Token",
-      expiresOn: new Date()
+      expiresOn: new Date(),
+      account: mockAzureAccount
     });
 
     acquireTokenSilentFunc = jest.fn().mockReturnValue({
@@ -176,12 +183,7 @@ describe("<App />", () => {
 
     useMsal.mockReturnValue({
       instance: {
-        getActiveAccount: jest.fn().mockReturnValue({
-          idTokenClaims: {
-            roles: ["Admin"],
-            employeeid: "n1234567"
-          }
-        }),
+        getActiveAccount: jest.fn().mockReturnValue(mockAzureAccount),
         loginPopup: loginPopupFunc,
         acquireTokenSilent: acquireTokenSilentFunc
       }
@@ -208,6 +210,7 @@ describe("<App />", () => {
             tokens: {
               msGraph: "Access Token",
               sharedGraph: "Access Token",
+              calabrioService: "Access Token",
               adminService: "Access Token"
             }
           }
@@ -223,7 +226,9 @@ describe("<App />", () => {
           permissions: [],
           tokens: {
             msGraph: "Access Token",
-            graph: "Access Token"
+            sharedGraph: "Access Token",
+            calabrioService: "Access Token",
+            adminService: "Access Token"
           }
         },
         workerContext: {
@@ -244,7 +249,8 @@ describe("<App />", () => {
           }),
           loginPopup: jest.fn().mockReturnValue({
             accessToken: "Access Token",
-            expiresOn: new Date(1704067201000)
+            expiresOn: new Date(1704067201000),
+            account: mockAzureAccount
           }),
           acquireTokenSilent: jest.fn().mockReturnValue({
             accessToken: "Access Token",
@@ -262,7 +268,12 @@ describe("<App />", () => {
       expectMockedComponent(rendered, { CircularProgress }, 0);
       expect(rendered.container).not.toHaveTextContent("Loading...");
       expect(mockRunTritonStartup).toHaveBeenCalledTimes(1);
-      expect(mockRunTritonStartup).toHaveBeenCalledWith(mockAdminDispatch, mockSkillDispatch);
+      expect(mockRunTritonStartup).toHaveBeenCalledWith(mockAdminDispatch, mockSkillDispatch, {
+        msGraph: "Access Token",
+        sharedGraph: "Access Token",
+        calabrioService: "Access Token",
+        adminService: "Access Token"
+      });
       expect(mockAdminDispatch).toHaveBeenCalledTimes(2);
       expect(mockAdminDispatch).toHaveBeenCalledWith({
         type: "loadUserData",
@@ -279,7 +290,58 @@ describe("<App />", () => {
           tokens: {
             msGraph: "Access Token",
             sharedGraph: "Access Token",
+            calabrioService: "Access Token",
             adminService: "Access Token"
+          }
+        }
+      });
+    });
+
+    test("should not get additional token if user roles does not contain 'Admin'", async () => {
+      useMsal.mockReturnValue({
+        instance: {
+          getActiveAccount: jest.fn().mockReturnValue({
+            idTokenClaims: {
+              roles: ["Not Admin"],
+              employeeid: "n1234567"
+            }
+          }),
+          loginPopup: jest.fn().mockReturnValue({
+            accessToken: "Access Token",
+            expiresOn: new Date(1704067201000),
+            account: {
+              idTokenClaims: {
+                roles: ["Not Admin"],
+                employeeid: "n1234567"
+              }
+            }
+          }),
+          acquireTokenSilent: jest.fn().mockReturnValue({
+            accessToken: "Access Token",
+            expiresOn: new Date(1704067201000)
+          })
+        }
+      });
+
+      const rendered = render(<App />);
+      await waitFor(() => rendered.getByTestId("app-wrapper"));
+
+      expect(mockAdminDispatch).toHaveBeenCalledTimes(2);
+      expect(mockAdminDispatch).toHaveBeenCalledWith({
+        type: "loadUserData",
+        payload: {
+          permissions,
+          isAdmin: false,
+          nNumber: "n1234567",
+          profileId: 0
+        }
+      });
+      expect(mockAdminDispatch).toHaveBeenCalledWith({
+        type: "loadUserData",
+        payload: {
+          tokens: {
+            msGraph: "Access Token",
+            sharedGraph: "Access Token"
           }
         }
       });
@@ -367,6 +429,7 @@ describe("<App />", () => {
           tokens: {
             msGraph: "Access Token",
             sharedGraph: "Access Token",
+            calabrioService: "Access Token",
             adminService: "Access Token"
           }
         },
@@ -379,7 +442,8 @@ describe("<App />", () => {
       Date.now.mockReturnValue(1704067200000);
       loginPopupFunc.mockReturnValue({
         accessToken: "Access Token",
-        expiresOn: new Date(1704067201000)
+        expiresOn: new Date(1704067201000),
+        account: mockAzureAccount
       });
     });
 
@@ -406,6 +470,7 @@ describe("<App />", () => {
             tokens: {
               msGraph: "Access Token",
               sharedGraph: "Access Token",
+              calabrioService: "Access Token",
               adminService: "Access Token"
             }
           }

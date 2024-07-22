@@ -256,6 +256,15 @@ export const UPDATE_SKILL = gql`
   }
 `;
 
+export const UPDATE_SKILL_GROUP = gql`
+  mutation updateUMSkillGroup($id: ID!, $input: UMSkillGroupUpdateInput!) {
+    skillGroup: updateUMSkillGroup(id: $id, input: $input) {
+        cancellationReasons
+        nextToken
+    }
+  }
+`;
+
 export const DELETE_SKILL = gql`
   mutation deleteUMSkill($id: ID!) {
     skill: deleteUMSkill(id: $id) {
@@ -552,6 +561,7 @@ export const getSoftphoneConfigRelationshipsQuery = (profileId: number) => {
         acw_tags
         agnt_asst_pay
         auto_ans
+        backup_workers
         edt_policy_num
         edt_claim_num
         call_reason

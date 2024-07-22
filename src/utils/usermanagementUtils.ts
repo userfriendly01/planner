@@ -35,11 +35,9 @@ export const formatUsers = (users: UMUser[]) => {
 
 export const isUnpopulatedField = (f: any) => (!f && f !== false && f !== 0) || f?.length === 0 || (typeof f === "object" && JSON.stringify(f) === JSON.stringify({}));
 
-// For a DID user, the outgoing number is tied to the did, if you change one you must change both in order for the form to be valid
 export const isDidDifferentValid = (form: UserFormState, worker: UMUser, forwardToToggle: boolean): boolean => {
   if (forwardToToggle === true) {
-    return removeNonNumericCharacters(form.triton.outgoing.value) !== formatE164PhoneNumber(worker?.attributes?.caller_id)
-      && removeNonNumericCharacters(form.triton.did.value) !== formatE164PhoneNumber(worker?.did);
+    return removeNonNumericCharacters(form.triton.did.value) !== formatE164PhoneNumber(worker?.did);
   } else {
     return true;
   }
@@ -222,9 +220,9 @@ export const findMatchingWorker = (sid: string, nNumber: string, email: string, 
   return matchingWorker;
 };
 
-const findExistingWFMUser = async (nNumber: string): Promise<CalabrioUser> => {
+const findExistingWFMUser = async (calabrioServiceToken: string, nNumber: string): Promise<CalabrioUser> => {
   try {
-    const wfmUserRes = await getWfmUserByNNumber(nNumber);
+    const wfmUserRes = await getWfmUserByNNumber(calabrioServiceToken, nNumber);
     if (wfmUserRes?.data?.Result.length > 0) {
       const wfmUser: CalabrioUser = wfmUserRes.data.Result[0];
       return wfmUser;
@@ -259,7 +257,7 @@ export const identifyUserProfiles = async (form: UserFormState, setForm: any, st
     const acdId = form.triton.sid;
     const nNumber = form.nNumber.value || form.triton.attributes?.n_number;
     const email = form.nNumber.nNumberFetchedUser?.email || form.triton.attributes?.email;
-    calabrioWfmUser = await findExistingWFMUser(nNumber);
+    calabrioWfmUser = await findExistingWFMUser(state.userContext.tokens.calabrioService, nNumber);
     calabrioQmUser = findMatchingWorker(acdId, nNumber, email, calabrioQmUsers);
   } else if (primarySystem === "calabrio_qm") {
     //This condition wont be in play until the calabrio qm table is in place
