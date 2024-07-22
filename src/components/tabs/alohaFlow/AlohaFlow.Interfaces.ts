@@ -59,6 +59,7 @@ export interface CctSharedCallFlowDb {
     id?: number;
     accountManager?: string;
     affinityVDN?: string;
+    agentId?: string;
     brand?: string;
     callDetails1?: string;
     callDetails2?: string;

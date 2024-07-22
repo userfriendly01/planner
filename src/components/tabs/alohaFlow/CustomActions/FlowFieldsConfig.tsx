@@ -440,6 +440,17 @@ const flowFields: AddFlowFieldsConfigProps[] = [
       ...newValue
     })
 
+  },
+  {
+    label: "Agent ID",
+    key: "agentId",
+    control: "input",
+    required: false,
+    valueGetter: (params: CctSharedCallFlowDb) => `${params?.agentId || ""}`,
+    valueSetter: (currentValue: CctSharedCallFlowDb, newValue: any) => ({
+      ...currentValue,
+      ...newValue
+    })
   }
 ];
 
