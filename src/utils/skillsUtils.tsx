@@ -53,13 +53,14 @@ export const isSkillFormValid = (skills: Skill[], skillForm: SkillFormState): bo
 };
 
 export const areVhFieldsValid = (skillForm: SkillFormState, setMissingFields: (fields: string[]) => void): boolean => {
-  const isVhFieldSelected = isNotEmptyString(skillForm.vhCallTarget) || isNotEmptyString(skillForm.vhThreshold) ||
+  const vhThreshold = skillForm.vhThreshold as string;
+  const isVhFieldSelected = isNotEmptyString(skillForm.vhCallTarget) || isNotEmptyString(vhThreshold) ||
   skillForm.timeOfDays.some(tod => tod.vhTimeOfDayId);
 
   const missingFields: string[] = [];
   if(isVhFieldSelected) {
     !isNotEmptyString(skillForm.vhCallTarget) && missingFields.push("vhCallTarget");
-    !isNotEmptyString(skillForm.vhThreshold) && missingFields.push("vhThreshold");
+    !isNotEmptyString(vhThreshold) && missingFields.push("vhThreshold");
 
     const requiredDays = [1, 2, 3, 4, 5, 6, 7];
 

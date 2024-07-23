@@ -12,7 +12,9 @@ import {
   Day, SkillState, TimeOfDayRequestObject
 } from "../Skills.Interfaces";
 
-export const CallflowSkillForm = (props: { missingFields: string[]}) => {
+export const CallflowSkillForm = (props: {
+  missingFields: string[]
+}) => {
   const { missingFields } = props;
 
   const skillState: SkillState = useSkillState();
@@ -20,7 +22,7 @@ export const CallflowSkillForm = (props: { missingFields: string[]}) => {
   const [ applicationOptions, setApplicationOptions ] = React.useState([]);
   const [ timeOfDayOptions, setTimeOfDayOptions ] = React.useState([]);
   const [ tempField, setTempField ] = React.useState({
-    vhThreshold: skillState.skillForm.vhThreshold,
+    vhThreshold: skillState.skillForm.vhThreshold as string,
     vhCallTarget: skillState.skillForm.vhCallTarget
   });
 

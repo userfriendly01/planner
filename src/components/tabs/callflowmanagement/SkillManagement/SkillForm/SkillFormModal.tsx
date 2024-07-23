@@ -6,8 +6,6 @@ import { DeleteForm } from "callflowmanagement/DeleteForm";
 import { ActionTypes } from "callflowmanagement/Skills.Interfaces";
 
 export const SkillFormModal = (props: any) => {
-  const [ showSkillModal, setShowSkillModal ] = React.useState(true);
-
   const {
     action,
     tableState,
@@ -17,13 +15,13 @@ export const SkillFormModal = (props: any) => {
   } = props;
 
   return (
-    <Modal open={showSkillModal}>
+    <Modal open={!!action}>
       { action === ActionTypes.DELETE ? <DeleteForm
         setAction={setAction}
         tableState={tableState}
         setTableState={setTableState}
         closeModal={() => {
-          setShowSkillModal(false);
+          setAction(null);
           setSaveResult({
             message: "",
             status: null
@@ -33,12 +31,14 @@ export const SkillFormModal = (props: any) => {
       /> :
         <AddEditForm
           closeModal={() => {
-            setShowSkillModal(false);
+            setAction(null);
             setSaveResult({
               message: "",
               status: null
             });
           }}
+          action={action}
+          tableState={tableState}
           setAction={setAction}
           setSaveResult={setSaveResult}
         />

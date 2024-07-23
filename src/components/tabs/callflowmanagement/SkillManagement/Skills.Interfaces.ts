@@ -69,6 +69,7 @@ export const propertyOptions: any = {
     },
     actions: [
       ActionTypes.ADD,
+      ActionTypes.EDIT,
       ActionTypes.DELETE
     ]
   }
@@ -117,7 +118,7 @@ export interface AddEditSkill {
   taskQueueSid: string,
   profileIds: number[],
   vhCallTarget: string | null,
-  vhThreshold: number | null,
+  vhThreshold?: number | string,
   updatedBy: string,
   timeOfDayIds: TimeOfDayRequestObject[]
 }
@@ -159,7 +160,7 @@ export interface SkillFormState {
     max: any
   },
   timeOfDays: TimeOfDayRequestObject[],
-  vhThreshold?: string,
+  vhThreshold?: number | string,
   vhCallTarget: string,
 }
 
@@ -188,6 +189,7 @@ export interface TwilioQueueRequest {
 */
 
 export interface TimeOfDay {
+  dayOfWeekId?: number,
   timeOfDayId: number,
   openTime: string,
   closeTime: string
@@ -256,7 +258,7 @@ export interface Skill {
   flashMessage: string,
   timeOfDays: any[],
   vhCallTarget: string,
-  vhThreshold: number
+  vhThreshold?: number | string
 }
 
 export interface SkillGroup {

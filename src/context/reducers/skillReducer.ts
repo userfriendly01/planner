@@ -1,6 +1,11 @@
 import { formModes } from "globals";
 import { Action } from "globals/interfaces";
-import { SkillState } from "callflowmanagement/Skills.Interfaces";
+import {
+  DayOfWeek,
+  Skill, SkillState,
+  TimeOfDay,
+  TwilioQueue
+} from "callflowmanagement/Skills.Interfaces";
 
 export const skillActions = {
   RESET_FORM: "RESET_FORM",
@@ -9,7 +14,8 @@ export const skillActions = {
   LOAD_SKILL_OPTIONS: "LOAD_SKILL_OPTIONS",
   SET_FORM_FIELD: "SET_FORM_FIELD",
   CLEAR_FORM_FIELD: "CLEAR_FORM_FIELD",
-  SET_TIME_OF_DAYS: "SET_TIME_OF_DAYS"
+  SET_TIME_OF_DAYS: "SET_TIME_OF_DAYS",
+  SET_UPDATE_SKILL_FORM: "SET_UPDATE_SKILL_FORM"
 };
 
 export const initialSkillState: SkillState = {
@@ -145,6 +151,45 @@ export const skillReducer = (state: SkillState, action: Action): SkillState => {
           }
         };
       }
+    }
+    case skillActions.SET_UPDATE_SKILL_FORM: {
+      const skill: Skill = action.payload.skill;
+      const taskQueue: TwilioQueue = action.payload.taskQueue;
+
+      console.log("Faith skill", skill);
+      console.log("Faith taskQueue", taskQueue);
+
+      return {
+        ...state,
+        skillForm: {
+          formMode: formModes.UPDATE,
+          name: skill.name,
+          levels: {
+            min: skill.levels[0] || null,
+            max: skill.levels && skill.levels[skill.levels.length - 1] || null
+          },
+          applicationId: skill.applicationId,
+          taskQueue: {
+            isNew: false,
+            target_workers: taskQueue.target_workers || "",
+            sid: taskQueue.sid || "",
+            friendly_name: taskQueue.friendly_name || null,
+            operating_unit_sid: taskQueue.operating_unit_sid
+          },
+          profileIds: skill.profileIds || [],
+          vhCallTarget: skill.vhCallTarget || "",
+          vhThreshold: skill.vhThreshold.toString() || "",
+          timeOfDays: Object.values(state.daysOfWeek).map((dow: any) => {
+            const dayOfWeekId = dow.id;
+            const dayOfWeekDetails = skill.timeOfDays.find((tod: any) => tod.dayOfWeekId === dayOfWeekId);
+            return {
+              dayOfWeekId,
+              timeOfDayId: dayOfWeekDetails.timeOfDayId,
+              vhTimeOfDayId: dayOfWeekDetails.vhTimeOfDayId
+            };
+          })
+        }
+      };
     }
     default: {
       return state;
