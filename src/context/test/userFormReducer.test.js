@@ -1543,6 +1543,28 @@ describe("userFormReducer", () => {
       expect(result).toStrictEqual(expectedFormState);
     });
   });
+
+  describe("RESET_BACK_UP_WORKER_FLAG", () => {
+    test("should reset backup worker enable/disable flag to false", () => {
+      const action = {
+        type: userFormActions.RESET_BACK_UP_WORKER_FLAG
+      };
+      const result = userFormReducer(initialUserFormState, action);
+      const expectedFormState = {
+        ...initialUserFormState,
+        triton: {
+          ...initialUserFormState.triton,
+          routing: {
+            ...initialUserFormState.triton.routing,
+            backup_workers_active: false,
+            updated: true
+          }
+        }
+      };
+      expect(result).toStrictEqual(expectedFormState);
+    });
+  });
+
   describe("UPDATE_N_NUMBER", () => {
     test("should update nNumber", () => {
       const payload = "n0263786";
