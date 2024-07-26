@@ -329,6 +329,7 @@ export const BasicFormInfo = (props: BasicFormInfoProps) => {
               onChange={() => {
                 setForm({ type: userFormActions.UPDATE_BACK_UP_WORKER_FLAG });
               }}
+              disabled={!form.triton.routing.backup_workers || form.triton.routing.backup_workers.length === 0}
               inputProps={{ "aria-label": "toggle-backup-user" }}
             />
             <ToggleLabel>Backup Workers</ToggleLabel>
