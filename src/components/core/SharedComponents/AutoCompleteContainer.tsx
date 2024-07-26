@@ -26,7 +26,22 @@ interface AutoCompleteProps {
 }
 
 
-export default function AutoCompleteContainer({ type, field, label, updateOnChange, routingAttribute }: AutoCompleteProps): JSX.Element{
+/**
+ * AutoCompleteContainer component
+ * 
+ * This component renders an autocomplete input field with various props to customize its behavior.
+ * 
+ * @param {Object} props - The properties passed to the component.
+ * @param {string} props.field - The field name for the autocomplete.
+ * @param {string} props.label - The label for the autocomplete input.
+ * @param {string} props.routingAttribute - The routing attribute for the autocomplete.
+ * @param {string} props.type - The type of action to be dispatched.
+ * @param {Function} props.onChange - The callback function to handle changes in the input.
+ * @param {Array} [props.options] - The options for the autocomplete dropdown.
+ * 
+ * @returns {JSX.Element} The rendered AutoCompleteContainer component.
+ */
+export default function AutoCompleteContainer({ type, field, label, updateOnChange, routingAttribute }: AutoCompleteProps){
   const setForm = useFormDispatch();
   const form = useFormState();
   const [formValidations, setFormValidations]= useState({
@@ -73,6 +88,8 @@ export default function AutoCompleteContainer({ type, field, label, updateOnChan
     }
   };
 
+  const handleCloseEvent = (event: any) => handleClose(event);
+
   const handleChange=(event: any, value: any)=>{
     if(event.key !== 'Enter'){
       setFormValue(value);
@@ -82,7 +99,7 @@ export default function AutoCompleteContainer({ type, field, label, updateOnChan
     } 
   };
   const validate=(value: any)=>{
-    const pattern = /^[nN][0-9]{7}$/;
+    const pattern = /^n\d{7}$/i;
     const input = value[value.length-1];
     const isDuplicate = value.filter((item: any) => item === input).length > 1;
     if (!input.match(pattern)){
@@ -118,7 +135,7 @@ export default function AutoCompleteContainer({ type, field, label, updateOnChan
           autoSelect={true}
           onKeyDown={() => updateFormValidations(false)}
           onChange={(event: any, value: any) => handleChange(event, value)}
-          onClose={(event: any) => handleClose(event)}
+          onClose={handleCloseEvent}
         />
       </FormControl>
     </div>
