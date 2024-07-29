@@ -122,7 +122,7 @@ export default function AutoCompleteContainer({ type, field, label, updateOnChan
           multiple
           value = {(form.triton.routing && form.triton.routing[field])||[]}
           renderTags={(value, props) =>
-            value.map((option = '', index) => (
+            value.map((option, index) => (
               <Chip key={index} label={option.toLowerCase()} {...props({ index })} />
             ))
           }
