@@ -319,7 +319,7 @@ export const BasicFormInfo = (props: BasicFormInfoProps) => {
           </Tooltip>) : null}
         <Tooltip
           title={
-            "Backup Workers Enable/Disable"
+            "Backup Workers active/inactive flag - To enable this feature, please add backup worker(s) in Routing Attributes section."
           }
           placement={"bottom-start"}
         >
