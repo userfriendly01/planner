@@ -34,7 +34,7 @@ export enum CallFlowNameTypeEnum {
 export type CallFlowType = "DTMF" | "SELFSERVICE";
 export enum CallFlowTypeEnum {
     DTMF = "DTMF",
-    SELFSERVICE = "Self Service",
+    SELFSERVICE = "SELFSERVICE",
 }
 
 export type CallerType = "Customer";
