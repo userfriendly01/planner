@@ -1,4 +1,6 @@
-import { RECORD_DATA_TYPE_NAME, RECORD_DATA_TYPE_NAME_ENUM } from "components/tabs/dynamicCallFlow/common/Xlsx/Abstract.Xlsx.Importer";
+import {
+  RECORD_DATA_TYPE_NAME, RECORD_DATA_TYPE_NAME_ENUM
+} from "components/tabs/dynamicCallFlow/common/Xlsx/Abstract.Xlsx.Importer";
 import { CALLER_CONTEXT_ATTRIBUTES } from "components/tabs/dynamicCallFlow/action/Form/ActionFields";
 
 export const BRAND = "brand";

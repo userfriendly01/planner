@@ -62,6 +62,7 @@ export class AddPhoneNumberFormHandler extends AbstractPhoneNumberFormHandler {
     };
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   handleOnDelete(accessToken: string, recordToDelete: PhoneNumberRecordType): Promise<FormOnHandleResponse<PhoneNumberRecordType>> {
     // Add handler does not have delete functionality, but interface requires it.  Just a nuane of having a delete button on the edit form but not shown on the add form.
     return undefined;

@@ -1,7 +1,3 @@
-import DynamicCallFlowPhoneNumberContainer from "dynamicCallFlowPhoneNumber/DynamicCallFlow.PhoneNumber.Container";
-import { Permissions } from "authentication/authenticationInterfaces";
-import { Tabs } from "@mui/material";
-
 interface ADMIN_UI_TAB_DROPDOWN {
   route: string;
   label: string;

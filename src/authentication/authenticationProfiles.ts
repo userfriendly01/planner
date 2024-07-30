@@ -97,7 +97,7 @@ export const getAdGroupPermissionMapping = (): ADGroupPermission[] => {
 };
 
 //TODO: Define interface for startup profiles
-export const getStartupProfiles = () => {
+export const getStartupProfiles = (): any => {
   return {
     TRITON: {
       name: "triton",

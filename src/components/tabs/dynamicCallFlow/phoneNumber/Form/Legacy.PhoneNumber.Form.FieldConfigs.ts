@@ -1,6 +1,5 @@
 import {
   BrandTypeEnum,
-  CallFlowTypeEnum,
   ChannelTypeEnum,
   PhoneNumberRecordType,
   PhoneNumberTypeEnum
@@ -24,7 +23,6 @@ import {
   LINE_OF_BUSINESS,
   MARKETING_CHANNEL,
   OFFICE_NUMBERS,
-  PHONE_NUMBER_TYPE,
   PREDICTIVE_CALLER,
   RANGE_INDICATOR,
   REQUEST_ID,
@@ -64,7 +62,7 @@ const didFieldConditionCheck: FieldConditionCheckType = (record: PhoneNumberReco
   return record[TYPE as keyof PhoneNumberRecordType] === PhoneNumberTypeEnum.DID;
 };
 
-const defaultFieldConditionCheck: FieldConditionCheckType = (record: PhoneNumberRecordType): boolean => {
+const defaultFieldConditionCheck: FieldConditionCheckType = (): boolean => {
   return true;
 };
 

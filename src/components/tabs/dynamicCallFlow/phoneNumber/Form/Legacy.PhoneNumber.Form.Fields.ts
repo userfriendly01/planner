@@ -8,8 +8,6 @@ import {
   LANGUAGE_OFFER,
   OFFICE_NUMBERS
 } from "components/tabs/dynamicCallFlow/phoneNumber/Form/Dynamic.PhoneNumber.Form.Fields";
-import { CallerType, LanguageOfferType } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
-import { languageOffer } from "utils/alohaFlowUtils";
 
 export const ACCOUNT_MANAGER = "accountManager";
 export const AFFINITY_VDN = "affinityVDN";
