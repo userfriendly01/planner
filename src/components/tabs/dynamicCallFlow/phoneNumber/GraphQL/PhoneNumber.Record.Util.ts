@@ -204,7 +204,7 @@ export class PhoneNumberRecordUtil {
   }
 
   public static setPropertyValue(phoneNumberRecord: PhoneNumberRecordType, key: string, value: FieldDataType): void {
-    if (!phoneNumberRecord || !key || !value) {
+    if (!phoneNumberRecord || !key) {
       return;
     }
 

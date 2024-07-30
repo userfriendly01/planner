@@ -28,7 +28,6 @@ export const UniqueLegacyPhoneNumberFormFields: Array<string> = [
   CALL_DETAILS_2,
   PKEY,
   SELF_SERVICE_INDICATOR,
-  TRANSFER_NUMBER,
   TYPE,
   USER_DESTINATION
 ];
