@@ -10,7 +10,7 @@ import { Filter } from "components/tabs/dynamicCallFlow/common/DataGrid/Abstract
 import { ActionModalTypeEnum } from "components/tabs/dynamicCallFlow/action/DataGrid/Action.DataGrid.Component";
 import {
   DYNAMIC_CALL_FLOW_ROLE, userDoesNotHaveReadWriteAccess
-} from "components/tabs/dynamicCallFlow/common/authentication";
+} from "dynamicCallFlowCommon/DynamicCallFlow.Authentication";
 import {
   DataGridControllerRef, DataGridFilterRef
 } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";

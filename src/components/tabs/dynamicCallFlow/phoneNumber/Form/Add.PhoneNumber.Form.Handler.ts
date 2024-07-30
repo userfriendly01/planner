@@ -4,6 +4,7 @@ import { SingleCallFlowRecord } from "components/tabs/dynamicCallFlow/phoneNumbe
 import { FormOnHandleResponse } from "components/tabs/dynamicCallFlow/common/Form/Abstract.Form.Handler";
 import { FieldConfigs } from "components/tabs/dynamicCallFlow/common/Form/Form.Interfaces";
 import { PhoneNumberRecordUtil } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/PhoneNumber.Record.Util";
+import { logger } from "utils/logger";
 
 const MODAL_NAME = "DynamicPhoneNumberFormAddHandler";
 const MODAL_LABEL = "Add";
@@ -36,14 +37,14 @@ export class AddPhoneNumberFormHandler extends AbstractPhoneNumberFormHandler {
 
       if (createRecordResults.errors?.length > 0) {
         const message = createRecordResults.errors.map<string>(error => (error.message)).join("; ");
-        console.error(message);
+        logger.error(message, { ...recordToCreate });
 
         return {
           errorMessage: message
         };
       }
     } catch (error) {
-      console.error(error?.message, error);
+      logger.error(error?.message, error);
 
       return {
         errorMessage: error?.message || JSON.stringify(error)

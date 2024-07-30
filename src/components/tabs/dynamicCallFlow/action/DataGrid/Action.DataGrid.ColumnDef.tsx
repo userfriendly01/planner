@@ -2,7 +2,7 @@ import { GridColDef } from "@mui/x-data-grid";
 import Tooltip from "@mui/material/Tooltip";
 import React from "react";
 
-export const ActionDataGridColumnDef: GridColDef[] = [
+export const ActionDataGridColumnDef: Array<GridColDef> = [
   {
     headerName: "",
     field: "",
@@ -117,5 +117,6 @@ export const ActionDataGridColumnDef: GridColDef[] = [
     align: "left"
   }
 ];
+Object.freeze(ActionDataGridColumnDef);
 
 export default ActionDataGridColumnDef;

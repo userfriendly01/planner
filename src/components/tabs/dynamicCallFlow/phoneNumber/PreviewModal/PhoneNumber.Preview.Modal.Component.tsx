@@ -1,6 +1,12 @@
-import React, { useContext, useEffect, useMemo, useRef } from "react";
-import { Modal, ModalBody, ModalFooter, ModalHeader } from "@lmig/lmds-react-modal";
-import { DataGrid, GridColDef, useGridApiRef } from "@mui/x-data-grid";
+import React, {
+  useContext, useEffect, useMemo, useRef
+} from "react";
+import {
+  Modal, ModalBody, ModalFooter, ModalHeader
+} from "@lmig/lmds-react-modal";
+import {
+  DataGrid, GridColDef, useGridApiRef
+} from "@mui/x-data-grid";
 import { Box } from "@mui/material";
 import { StyledButton } from "components/StyledButton";
 import { DataGridControllerRef } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
@@ -10,21 +16,31 @@ import {
   PhoneNumberModalTypeEnum
 } from "components/tabs/dynamicCallFlow/phoneNumber/DynamicCallFlow.PhoneNumber.Interfaces";
 import {
-  BrandTypeEnum,
-  CallerTypeEnum, ChannelTypeEnum, LanguageOfferTypeEnum, PhoneNumber,
+  CallerTypeEnum,
+  LanguageOfferTypeEnum,
+  PhoneNumber,
   PhoneNumberRecordType
 } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
-import { DynamicCallFlowPhoneNumberContext } from "components/tabs/dynamicCallFlow/phoneNumber/DynamicCallFlow.PhoneNumber.Container";
+import {
+  DynamicCallFlowPhoneNumberContext
+} from "components/tabs/dynamicCallFlow/phoneNumber/DynamicCallFlow.PhoneNumber.Container";
 import {
   PhoneNumberPreviewModalHandler
 } from "components/tabs/dynamicCallFlow/phoneNumber/PreviewModal/PhoneNumber.Preview.Modal.Handler";
 import PhoneNumberPreviewModalColumnDef
   from "components/tabs/dynamicCallFlow/phoneNumber/PreviewModal/PhoneNumber.Preview.Modal.ColumnDef";
-import { reconstructTableColumnDef } from "components/tabs/dynamicCallFlow/phoneNumber/PreviewModal/PhoneNumber.Preview.Modal.Util";
+import {
+  reconstructTableColumnDef
+} from "components/tabs/dynamicCallFlow/phoneNumber/PreviewModal/PhoneNumber.Preview.Modal.Util";
 import { HANDLED_SUCCESSFULLY } from "components/tabs/dynamicCallFlow/common/Preview/Abstract.Preview.Modal.Handler";
-import { PhoneNumberXlsxImporter } from "components/tabs/dynamicCallFlow/phoneNumber/Xlsx/Import/PhoneNumber.Xlsx.Importer";
+import {
+  PhoneNumberXlsxImporter
+} from "components/tabs/dynamicCallFlow/phoneNumber/Xlsx/Import/PhoneNumber.Xlsx.Importer";
 import { PhoneNumberRecordUtil } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/PhoneNumber.Record.Util";
-import { CctSharedCallFlowDb, FlowContent } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
+import {
+  CctSharedCallFlowDb,
+  FlowContent
+} from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
 
 interface PreviewModalParameters<RecordType> {
     isOpen: boolean;
@@ -46,12 +62,12 @@ export const PhoneNumberPreviewModal = ({
   } = useContext(DynamicCallFlowPhoneNumberContext);
 
   const previewModalHandler = useRef(new PhoneNumberPreviewModalHandler(dataGridController));
-  const previewModalGridApiRef = useGridApiRef();
+  const dataGridApi = useGridApiRef();
   const [modalRecords, setModalRecords] = React.useState<PhoneNumberRecordType[]>([]);
   const [htmlInputElements, setHtmlInputElements] = React.useState<Array<HTMLInputElement>>([]);
   const tableGridColumnDef: Array<GridColDef> = useMemo<Array<GridColDef>>(() => {
-    return reconstructTableColumnDef(modalType, [...PhoneNumberPreviewModalColumnDef], previewModalGridApiRef, fieldOptions);
-  },[modalType, previewModalGridApiRef, fieldOptions]);
+    return reconstructTableColumnDef(modalType, [...PhoneNumberPreviewModalColumnDef], dataGridApi, fieldOptions);
+  },[modalType, dataGridApi, fieldOptions]);
 
   useEffect(()=> {
     setModalRecords([ ...selectedRecords ]);
@@ -66,11 +82,15 @@ export const PhoneNumberPreviewModal = ({
     }
   }, [htmlInputElements]);
 
-  const handleOnCreate = async () =>{
-    if (await previewModalHandler.current.handleOnCreate(accessTokenGraph, modalRecords) === HANDLED_SUCCESSFULLY) {
+  const handleOnCreate = async (logicalUpdateOperation = false) => {
+    if (await previewModalHandler.current.handleOnCreate(accessTokenGraph, modalRecords, logicalUpdateOperation) === HANDLED_SUCCESSFULLY) {
       setModalRecords([]);
       onClose();
     }
+  };
+
+  const handleOnUpdate = async () => {
+    await handleOnCreate(true);
   };
 
   const handleOnDelete = async () => {
@@ -210,8 +230,8 @@ export const PhoneNumberPreviewModal = ({
             }
           </Box>
           <DataGrid
-            apiRef={previewModalGridApiRef}
-            rows={modalRecords}
+            apiRef={dataGridApi}
+            rows={modalRecords || []}
             columns={tableGridColumnDef}
             editMode="row"
             getRowId={getRowId}
@@ -238,10 +258,10 @@ export const PhoneNumberPreviewModal = ({
             <StyledButton sx={{ marginRight: "15px" }} onClick={()=> handleOnDelete() }>Delete</StyledButton>
             }
             {modalType === PhoneNumberModalTypeEnum.BulkAdd  &&
-            <StyledButton data-test-id="ScpANXily_jfK9JzNGaJf" sx={{ marginRight: "15px" }} onClick={() => handleOnCreate() }>Save</StyledButton>
+            <StyledButton data-test-id="ScpANXily_jfK9JzNGaJf" sx={{ marginRight: "15px" }} onClick={() => handleOnCreate() }>Create</StyledButton>
             }
             {modalType === PhoneNumberModalTypeEnum.BulkEdit  &&
-              <StyledButton data-test-id="ScpANXily_jfK9JzNGaJf" sx={{ marginRight: "15px" }} onClick={() => handleOnCreate() }>Save</StyledButton>
+              <StyledButton data-test-id="ScpANXily_jfK9JzNGaJf" sx={{ marginRight: "15px" }} onClick={() => handleOnUpdate() }>Update</StyledButton>
             }
             <StyledButton onClick={()=>{ handleOnClose(); }}>Cancel</StyledButton>
           </Box>

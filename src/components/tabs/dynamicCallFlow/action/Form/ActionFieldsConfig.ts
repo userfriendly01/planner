@@ -3,12 +3,11 @@ import {
   FieldConditionCheckType, FieldConfig, FieldConfigs, FieldDataTypeEnum
 } from "components/tabs/dynamicCallFlow/common/Form/Form.Interfaces";
 import { Control } from "globals/interfaces";
-import { ActionRecordType } from "components/tabs/dynamicCallFlow/action/GraphQL/Action.Interfaces";
 
 export const ActionFormFieldConfigs: FieldConfigs = {};
 export const RequiredActionFormFields: Array<string> = [];
 
-const defaultFieldConditionCheck: FieldConditionCheckType = (record: ActionRecordType): boolean => {
+const defaultFieldConditionCheck: FieldConditionCheckType = (): boolean => {
   return true;
 };
 

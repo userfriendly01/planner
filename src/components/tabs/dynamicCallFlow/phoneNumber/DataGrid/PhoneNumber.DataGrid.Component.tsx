@@ -6,11 +6,18 @@ import {
   GridRowSelectionModel,
   useGridApiRef
 } from "@mui/x-data-grid";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, {
+  useContext, useEffect, useRef, useState
+} from "react";
 import "components/tabs/dynamicCallFlow/phoneNumber/DataGrid/PhoneNumber.DataGrid.scss";
 import { GridApiCommunity } from "@mui/x-data-grid/internals";
-import { PhoneNumber, PhoneNumberRecordType } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
-import { PhoneNumberRecordUtil } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/PhoneNumber.Record.Util";
+import {
+  PhoneNumber, PhoneNumberRecordType
+} from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import {
+  newDynamicPhoneNumberRecord, newLegacyPhoneNumberRecord,
+  PhoneNumberRecordUtil
+} from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/PhoneNumber.Record.Util";
 import {
   LegacyPhoneNumberFormFieldConfigs
 } from "components/tabs/dynamicCallFlow/phoneNumber/Form/Legacy.PhoneNumber.Form.FieldConfigs";
@@ -33,7 +40,9 @@ import {
   sortRecords
 } from "components/tabs/dynamicCallFlow/common/DataGrid/DynamicCallFlow.Common.DataGrid";
 import { AddPhoneNumberFormHandler } from "components/tabs/dynamicCallFlow/phoneNumber/Form/Add.PhoneNumber.Form.Handler";
-import { AlertBarController, AlertBarProps, initialAlertBarProps } from "components/tabs/dynamicCallFlow/common/AlertBar.Controller";
+import {
+  AlertBarController, AlertBarProps, initialAlertBarProps
+} from "components/tabs/dynamicCallFlow/common/AlertBar.Controller";
 import { DynamicCallFlowPhoneNumberContext } from "components/tabs/dynamicCallFlow/phoneNumber/DynamicCallFlow.PhoneNumber.Container";
 import { PhoneNumberDataGridFilter } from "components/tabs/dynamicCallFlow/phoneNumber/DataGrid/PhoneNumber.DataGrid.Filter";
 import { PhoneNumberDataGridController } from "components/tabs/dynamicCallFlow/phoneNumber/DataGrid/PhoneNumber.DataGrid.Controller";
@@ -45,6 +54,10 @@ import {
 } from "components/tabs/dynamicCallFlow/phoneNumber/DataGrid/PhoneNumber.DataGrid.ProgressBar";
 import LoadDataGridMonitor from "components/tabs/dynamicCallFlow/common/DataGrid/Load.DataGrid.Monitor";
 import { PhoneNumberModalTypeEnum } from "components/tabs/dynamicCallFlow/phoneNumber/DynamicCallFlow.PhoneNumber.Interfaces";
+import { logger } from "utils/logger";
+import {
+  createDynamicPhoneNumberRecord
+} from "dynamicCallFlowPhoneNumber/GraphQL/Query/Create.Dynamic.PhoneNumber.Record.Query";
 
 const DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_PAGE_NUMBER = "dynamicCallFlowPhoneNumberDataGridPageNumber";
 const DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_RECORDS_PER_PAGE = "dynamicCallFlowPhoneNumberDataGridRecordsPerPage";
@@ -107,7 +120,7 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
         const records = await listPhoneNumberRecords(accessTokenGraph, loadDataGridMonitor);
         [sortedRecords, updatedDataGridProps] = sortRecords<PhoneNumberRecordType>(records);
       } catch (error: unknown) {
-        console.log(`Error loading call flow data: ${(error as Error)?.message}`);
+        logger.log(`Error loading call flow data: ${(error as Error)?.message}`, error);
         alertBarController.current.error("Errors loading data.  Please check the console logs.");
       }
 
@@ -205,6 +218,7 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
 
   const handlePreviewModalOpen = (event: any) => {
     modalController.current.openModal(event.target.value);
+
   };
 
   const handlePreviewModalOnClose = () =>{
@@ -239,6 +253,7 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
             dataGridFilter={dataGridFilter}
             dataGridController={dataGridController}
             handlePreviewModalOpen={handlePreviewModalOpen}
+            loading={dataGridProps.fetching}
           />
           <DataGrid
             apiRef={dataGridApi}
@@ -262,6 +277,8 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
             }}
           />
         </div>
+        <div>* Dynamic Only Field</div>
+        <div>** Legacy Only Field</div>
       </div>
       <PhoneNumberFormModal
         isOpen={currentOpenModal === PhoneNumberModalTypeEnum.EditLegacyPhoneNumber}
@@ -283,7 +300,7 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
           state: legacyFieldConfigs,
           setState: setLegacyFieldConfigs
         }}
-        selectedRow={selectedRecord}
+        selectedRow={newLegacyPhoneNumberRecord()}
         handleOnClone={handleOnClone}
         postFormHandler={postFormHandler}
       />
@@ -307,7 +324,7 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
           state: dynamicFieldConfigs,
           setState: setDynamicFieldConfigs
         }}
-        selectedRow={selectedRecord}
+        selectedRow={newDynamicPhoneNumberRecord()}
         handleOnClone={handleOnClone}
         postFormHandler={postFormHandler}
       />

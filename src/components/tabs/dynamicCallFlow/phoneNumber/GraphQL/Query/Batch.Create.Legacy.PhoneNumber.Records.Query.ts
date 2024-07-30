@@ -16,7 +16,7 @@ class BatchCreateLegacyPhoneNumberRecordsQuery extends AbstractBatchRecordsQuery
 
   protected queryDefinition(): string {
     return `
-      mutation ${this.queryName()}($input: CctSharedCallFlowDbBatchCreateInput!) {
+      mutation ${this.queryName()} ($input: CctSharedCallFlowDbBatchCreateInput!) {
         ${this.queryName()}(input: $input) {
           items {
             accountManager
@@ -54,7 +54,8 @@ class BatchCreateLegacyPhoneNumberRecordsQuery extends AbstractBatchRecordsQuery
             userDestination
             whisper
           }
-        }`;
+        }
+      }`;
   }
 }
 

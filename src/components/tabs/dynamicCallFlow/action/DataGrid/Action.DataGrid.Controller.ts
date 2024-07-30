@@ -6,7 +6,7 @@ import { ActionRecordType } from "components/tabs/dynamicCallFlow/action//GraphQ
  * Controller used to manage the Action.DataGrid.Component.
  */
 export class ActionDataGridController extends AbstractDataGridController<ActionRecordType> {
-  protected recordKey(): string {
+  recordKey(): string {
     return ACTION_ID;
   }
 }

@@ -17,7 +17,7 @@ import { PhoneNumberModalTypeEnum } from "components/tabs/dynamicCallFlow/phoneN
 import {
   DYNAMIC_CALL_FLOW_ROLE,
   userDoesNotHaveReadWriteAccess
-} from "components/tabs/dynamicCallFlow/common/authentication";
+} from "dynamicCallFlowCommon/DynamicCallFlow.Authentication";
 
 export interface FormModalProps {
   isOpen: boolean;
@@ -58,10 +58,8 @@ export const PhoneNumberFormModal = ({
   };
 
   const handleOnInputChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, fieldConfigsReactStateAction: ReactStateAction<FieldConfigs>, key: string, value?: string): void => {
-    setFormRecord(prevState => ({
-      ...prevState,
-      [key]: formHandler.getNewFieldValue(event, fieldConfigsReactStateAction, key, value)
-    }));
+    PhoneNumberRecordUtil.setPropertyValue(formRecord, key, formHandler.getHtmlInputElementValue(event, fieldConfigsReactStateAction, key, value));
+    setFormRecord({ ...formRecord });
   };
 
   const handleOnSave = async (): Promise<void> => {
@@ -90,6 +88,11 @@ export const PhoneNumberFormModal = ({
     return !(currentOpenModal === PhoneNumberModalTypeEnum.AddDynamicPhoneNumber || currentOpenModal === PhoneNumberModalTypeEnum.AddLegacyPhoneNumber);
   };
 
+  const handleOnClose = (): void => {
+    modalController.current.closeModal();
+    setFormRecord({} as PhoneNumberRecordType);
+  };
+
   return (
     <div>
       <Modal
@@ -97,7 +100,7 @@ export const PhoneNumberFormModal = ({
         size="large"
         takeover={["base", "sm", "md", "lg"]}
         className="route-table-modal-wrapper"
-        onClose={() => modalController.current.closeModal()}
+        onClose={handleOnClose}
       ><ModalHeader>
           {
             ["Liberty Mutual", "Safeco"].includes(formRecord?.brand)?

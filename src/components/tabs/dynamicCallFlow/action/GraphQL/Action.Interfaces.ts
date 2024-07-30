@@ -4,8 +4,6 @@ import {
 
 export type ActionRecordType = Action | Announcement | Menu | MenuOptions | Redirect
 
-export type ActionRecord = Action & Announcement & Menu & MenuOptions & Redirect
-
 export interface Action {
   actionId?: string;
   actionType?: ActionType;

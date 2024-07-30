@@ -16,7 +16,7 @@ export class BatchCreateDynamicPhoneNumberRecordsQuery extends AbstractBatchReco
 
   protected queryDefinition(): string {
     return `
-      mutation ${this.queryName()}($input: PhoneNumberCreateBatchInput!) {
+      mutation ${this.queryName()} ($input: PhoneNumberCreateBatchInput!) {
         ${this.queryName()}(input: $input) {
           items {
             phoneNumber

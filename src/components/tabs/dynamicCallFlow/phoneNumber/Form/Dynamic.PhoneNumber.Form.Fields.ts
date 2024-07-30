@@ -69,8 +69,7 @@ export const UniqueDynamicPhoneNumberFormFields: Array<string> = [
   NEXT_ACTION_ID,
   NEXT_ACTION_TYPE,
   PHONE_NUMBER,
-  PHONE_NUMBER_TYPE,
-  TRANSFER_DESTINATION
+  PHONE_NUMBER_TYPE
 ];
 Object.freeze(UniqueDynamicPhoneNumberFormFields);
 

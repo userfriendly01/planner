@@ -2,45 +2,51 @@ import { CctSharedCallFlowDb } from "components/tabs/dynamicCallFlow/phoneNumber
 import { AbstractCreateRecordQuery } from "components/tabs/dynamicCallFlow/common/GraphQL/Abstract.CreateRecord.Query";
 import { SingleRecordResults } from "components/tabs/dynamicCallFlow/common/GraphQL/AbstractSingleRecord.Query";
 
-import { GraphQLInputVariables } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
-
 class CreateLegacyPhoneNumberRecordQuery extends AbstractCreateRecordQuery {
   protected queryName(): string {
-    return "createCctSharedCallRoutingGlobalDb";
+    return "createCctSharedCallFlowDb";
   }
 
   protected queryDefinition(): string {
     return `
-      mutation ${this.queryName()} ($input: CreateCctSharedCallRoutingGlobalDbInput!) {
+      mutation ${this.queryName()} ($input: CctSharedCallFlowDbInput!) {
         ${this.queryName()}(input: $input) {
-          pkey
-          skey
+          agentId
           brand
-          callerState
-          callerType
-          callIntent
+          callFlowTemplate
           channel
-          dayOfWeek
-          endTime
-          percentOfCallers
-          policyType
-          startTime
-          transferDestination
-          transferMessage
-          twilioSkill
-          crcSkill
-          priority
-          alternateTransferDestination
+          content  {
+            callIntent
+            callerType
+            callFlowRoute
+            dataRequests
+            greetingMessages
+            languageOffer
+            transferNumber
+            officeNumbers
+          }
+          createTime
+          dialedDescription
+          employeeId
+          pkey
+          accountManager
+          affinityVDN
+          callTypeDescription
+          transferCode
+          internetPlacement
+          callDetails1
+          callDetails2
+          tollFreeNumber
+          lineOfBusiness
+          marketingChannel
+          predictiveCaller
+          whisper
+          requestID
+          selfServiceIndicator
+          userDestination
+          rangeIndicator
           tfnRoutingGroup
-          occupancyCheck {
-            percentage
-            team
-          }
-          routingSteps {
-            callerState
-            teams
-            time
-          }
+          type
         }
       }`;
   }

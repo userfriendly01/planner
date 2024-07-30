@@ -17,33 +17,44 @@ export class PhoneNumberPreviewModalHandler extends AbstractPreviewModalHandler<
     const matchingRecordMessages = generateMatchingRecordMessages(this.dataGridController.sourceRecords, recordsToMatchOn, dynamicAndLegacyPhoneNumberRecordFilter);
 
     if (matchingRecordMessages && matchingRecordMessages.length > 0) {
-      this.dataGridController.alertBarController.error(matchingRecordMessages.join("\n"));
+      this.dataGridController.alertBarController.error("Matching records found for: ".concat(matchingRecordMessages.join("\n")));
       return true;
     }
 
     return false;
   }
 
-  async handleOnCreate(accessToken: string, recordsToCreate: Array<PhoneNumberRecordType>): Promise<boolean> {
-    if (this.hasMatchingRecords(recordsToCreate)) {
+  async handleOnCreate(accessToken: string, phoneNumberRecords: Array<PhoneNumberRecordType>, logicalUpdateOperation = false): Promise<boolean> {
+    // There is no batch update in DynamicDB, update & create call the same operation in the backend.  However, we need to check for matching records if a new record is actually being created.
+    // If a record is being logically updated, we don't need to check for matching records.
+    if (!logicalUpdateOperation && this.hasMatchingRecords(phoneNumberRecords)) {
       return HANDLED_UNSUCCESSFULLY;
     }
 
-    const batchResults = await BatchPhoneNumberRecord.create(accessToken, recordsToCreate);
+    const batchResults = await BatchPhoneNumberRecord.create(accessToken, phoneNumberRecords);
 
     if (batchResults?.hasError) {
       this.dataGridController.alertBarController.graphQLError(batchResults.errors);
       return HANDLED_UNSUCCESSFULLY;
     }
 
-    const deleteOppositeRowsBatchResult = await deleteOppositeRows(accessToken, recordsToCreate);
+    // If a record is being logically updated, we don't need to delete the opposite rows.  If a record is being created, we need to delete the opposite rows if they exist.
+    // Meaning, if we create a dynamic phone number record, the legacy phone number record needs to be deleted.
+    if (!logicalUpdateOperation) {
+      const deleteOppositeRowsBatchResult = await deleteOppositeRows(accessToken, phoneNumberRecords);
 
-    if (deleteOppositeRowsBatchResult?.hasError) {
-      this.dataGridController.alertBarController.graphQLError(deleteOppositeRowsBatchResult.errors);
-      return HANDLED_UNSUCCESSFULLY;
+      if (deleteOppositeRowsBatchResult?.hasError) {
+        this.dataGridController.alertBarController.graphQLError(deleteOppositeRowsBatchResult.errors);
+        return HANDLED_UNSUCCESSFULLY;
+      }
     }
 
-    this.dataGridController.addRecordsToSourceRecords(recordsToCreate);
+    if (logicalUpdateOperation) {
+      this.dataGridController.updateRecordsInDataGrid(phoneNumberRecords);
+    } else {
+      this.dataGridController.addRecordsToSourceRecords(phoneNumberRecords);
+    }
+
     this.dataGridController.alertBarController.success("Phone Number Records successfully created.");
 
     return HANDLED_SUCCESSFULLY;

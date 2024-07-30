@@ -8,6 +8,7 @@ import {
   DataGridControllerRef, ReactStateAction
 } from "../DynamicCallFlow.Interfaces";
 import { DataGridController } from "components/tabs/dynamicCallFlow/common/DataGrid/Abstract.DataGrid.Controller";
+import { PhoneNumberRecordType } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 
 export const VALID = true;
 export const NOT_VALID = false;
@@ -19,7 +20,7 @@ export interface FormHandler<RecordType> {
   handleOnDelete: (accessToken: string, record: RecordType) => Promise<FormOnHandleResponse<RecordType>>;
   get modalLabel(): string;
   get modalName(): string;
-  getNewFieldValue(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, fieldConfigs: ReactStateAction<FieldConfigs>, keyPassed: string, valuePassed?: FieldDataType): FieldDataType;
+  getHtmlInputElementValue(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, fieldConfigs: ReactStateAction<FieldConfigs>, keyPassed: string, valuePassed?: FieldDataType): FieldDataType;
 }
 
 export interface FormOnHandleResponse<RecordType> {
@@ -48,7 +49,7 @@ export abstract class AbstractFormHandler<RecordType> implements FormHandler<Rec
   abstract handleOnSave(accessToken: string, record: RecordType, fieldConfigs: FieldConfigs): Promise<FormOnHandleResponse<RecordType>>;
   abstract handleOnDelete(accessToken: string, record: RecordType): Promise<FormOnHandleResponse<RecordType>>;
 
-  getNewFieldValue(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, fieldConfigsReactStateAction: ReactStateAction<FieldConfigs>, keyPassed: string, valuePassed?: FieldDataType): FieldDataType {
+  getHtmlInputElementValue(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, fieldConfigsReactStateAction: ReactStateAction<FieldConfigs>, keyPassed: string, valuePassed?: FieldDataType): FieldDataType {
     const {
       state: fieldConfigs,
       setState: setFieldConfigs
@@ -76,6 +77,8 @@ export abstract class AbstractFormHandler<RecordType> implements FormHandler<Rec
 
     return dataTypeConvertedValue;
   }
+
+  protected abstract getRecordPropertyValue(record: PhoneNumberRecordType, key: string): FieldDataType;
 
   private _fieldValidation(value: FieldDataType, fieldConfig: FieldConfig): boolean {
     if (!fieldConfig.required) {
@@ -116,8 +119,10 @@ export abstract class AbstractFormHandler<RecordType> implements FormHandler<Rec
 
     Object.keys(fieldConfigs).forEach((key: string) => {
       const fieldConfig = fieldConfigs[key];
-      if (this._fieldValidation(record[key as keyof RecordType] as FieldDataType, fieldConfig) === NOT_VALID
-        && fieldConfig.fieldConditionCheck(record) === VALID) { // may want to change field condition check naming to be clearer
+      const value = this.getRecordPropertyValue(record as PhoneNumberRecordType, key);
+
+      if (this._fieldValidation(value, fieldConfig) === NOT_VALID
+        && fieldConfig.fieldConditionCheck(record) === VALID) {
         fieldConfig.isValid = NOT_VALID;
         invlidFields.push(key);
       }

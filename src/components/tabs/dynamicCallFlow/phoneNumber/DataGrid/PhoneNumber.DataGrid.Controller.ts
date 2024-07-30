@@ -3,7 +3,7 @@ import { PhoneNumberRecordType } from "components/tabs/dynamicCallFlow/phoneNumb
 import { PKEY } from "components/tabs/dynamicCallFlow/phoneNumber/Form/Legacy.PhoneNumber.Form.Fields";
 
 export class PhoneNumberDataGridController extends AbstractDataGridController<PhoneNumberRecordType> {
-  protected recordKey(): string {
+  recordKey(): string {
     return PKEY;
   }
 }

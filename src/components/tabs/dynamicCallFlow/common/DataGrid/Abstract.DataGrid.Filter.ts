@@ -1,5 +1,8 @@
 import { FieldOptions } from "components/tabs/dynamicCallFlow/common/Form/AbstractFormFieldOptionsManager";
-import { DataGridFilterRef, ReactSetState } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
+import {
+  DataGridFilterRef, ReactSetState
+} from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
+import { logger } from "utils/logger";
 
 const ID = "id";
 
@@ -88,8 +91,8 @@ export abstract class AbstractDataGridFilter<RecordType> implements DataGridFilt
       });
 
       return filter;
-    } catch (e) {
-      console.error("Error in getting filter model from local storage", e);
+    } catch (error) {
+      logger.error("Error in getting filter model from local storage", error);
       return {} as Filter;
     }
   }

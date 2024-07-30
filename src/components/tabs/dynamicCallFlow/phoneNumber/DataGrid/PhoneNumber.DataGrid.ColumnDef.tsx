@@ -1,292 +1,343 @@
-import { GridColDef } from "@mui/x-data-grid";
+import {
+  GridColDef, GridRenderCellParams, GridValueGetterParams, GridValueSetterParams
+} from "@mui/x-data-grid";
 import Tooltip from "@mui/material/Tooltip";
 import React from "react";
-import { Box, Chip, Switch } from "@mui/material";
+import {
+  Box, Chip, Switch
+} from "@mui/material";
 import ModalOnHover from "components/ModalOnHover";
 import { PhoneNumberRecordUtil } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/PhoneNumber.Record.Util";
 import {
+  BRAND,
+  CALL_FLOW_NAME,
   CALL_FLOW_ROUTE,
-  CALL_INTENT,
-  CALLER_TYPE,
+  CALL_FLOW_TEMPLATE,
+  CALL_FLOW_TYPE,
+  CALL_INTENT, CALL_TYPE_DESCRIPTION,
+  CALLER_TYPE, CHANNEL,
   DATA_REQUESTS,
-  GREETING_MESSAGES,
-  LANGUAGE_OFFER
+  DIALED_DESCRIPTION, EMPLOYEE_ID,
+  GREETING_MESSAGES, INTERNET_PLACEMENT,
+  LANGUAGE_OFFER, LINE_OF_BUSINESS, MARKETING_CHANNEL,
+  NEXT_ACTION_ID,
+  NEXT_ACTION_TYPE,
+  OFFICE_NUMBERS, PHONE_NUMBER,
+  PHONE_NUMBER_TYPE,
+  PREDICTIVE_CALLER, RANGE_INDICATOR, REQUEST_ID, TFN_ROUTING_GROUP, TRANSFER_CODE,
+  TRANSFER_DESTINATION, WHISPER
 } from "components/tabs/dynamicCallFlow/phoneNumber/Form/Dynamic.PhoneNumber.Form.Fields";
-import { PhoneNumberRecordType } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import {
+  ACCOUNT_MANAGER,
+  AFFINITY_VDN, CALL_DETAILS_1,
+  CALL_DETAILS_2,
+  TRANSFER_NUMBER,
+  TYPE,
+  USER_DESTINATION
+} from "dynamicCallFlowPhoneNumber/Form/Legacy.PhoneNumber.Form.Fields";
+import { PhoneNumberRecordType } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { FieldDataType } from "dynamicCallFlowCommon/Form/Form.Interfaces";
 
 export const PhoneNumberDataGridColumnDef: GridColDef[] = [
   {
     headerName: "Dialed",
-    field: "pkey",
+    field: PHONE_NUMBER,
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params => PhoneNumberRecordUtil.getPkey(params.row as PhoneNumberRecordType)
+    valueGetter: ({ row: phoneNumberRecord }: GridValueGetterParams<PhoneNumberRecordType, FieldDataType>): FieldDataType => PhoneNumberRecordUtil.getPhoneNumber(phoneNumberRecord),
+    valueSetter: ({
+      row: phoneNumberRecord, value
+    }: GridValueSetterParams<PhoneNumberRecordType, string>): PhoneNumberRecordType => {
+      PhoneNumberRecordUtil.setPhoneNumber(phoneNumberRecord, value);
+      return { ...phoneNumberRecord };
+    }
   },
   {
     headerName: "Description",
-    field: "dialedDescription",
+    field: DIALED_DESCRIPTION,
     sortable: true,
     width: 150,
     align: "left",
-    renderCell: (params: any) => (
-      <Tooltip title={params.row.dialedDescription} >
-        <div className="table-cell-trucate">{params.row.dialedDescription}</div>
+    renderCell: ({ row: phoneNumberRecord }: GridRenderCellParams<PhoneNumberRecordType, FieldDataType>) => (
+      <Tooltip title={phoneNumberRecord.dialedDescription} >
+        <div className="table-cell-trucate">{phoneNumberRecord.dialedDescription}</div>
       </Tooltip>
     )
   },
   {
     headerName: "Template",
-    field: "callFlowTemplate",
+    field: CALL_FLOW_TEMPLATE,
     sortable: true,
     width: 110,
     align: "left",
-    renderCell: (params: any) => (
-      <Tooltip title={params.row.callFlowTemplate} >
-        <div className="table-cell-trucate">{params.row.callFlowTemplate}</div>
+    valueSetter: ({
+      row: phoneNumberRecord, value
+    }: GridValueSetterParams<PhoneNumberRecordType, FieldDataType>): PhoneNumberRecordType=> {
+      PhoneNumberRecordUtil.setPropertyValue(phoneNumberRecord, CALL_FLOW_TEMPLATE, value);
+
+      if (PhoneNumberRecordUtil.isDynamicPhoneNumberRecord(phoneNumberRecord)) {
+        PhoneNumberRecordUtil.setPropertyValue(phoneNumberRecord, CALL_FLOW_NAME, value);
+      }
+      return { ...phoneNumberRecord };
+    },
+    renderCell: ({ row: phoneNumberRecord }: GridRenderCellParams<PhoneNumberRecordType, FieldDataType>) => (
+      <Tooltip title={phoneNumberRecord.callFlowTemplate} >
+        <div className="table-cell-truncate">{phoneNumberRecord.callFlowTemplate}</div>
       </Tooltip>
     )
   },
   {
     headerName: "Channel",
-    field: "channel",
+    field: CHANNEL,
     sortable: true,
     width: 110,
     align: "left"
   },
   {
     headerName: "Brand",
-    field: "brand",
+    field: BRAND,
     sortable: true,
     width: 110,
     align: "left",
-    renderCell: (params: any) => (
-      <Tooltip title={params.row.brand} >
-        <div className="table-cell-trucate">{params.row.brand}</div>
+    renderCell: ( { row: phoneNumberRecord }: GridRenderCellParams<PhoneNumberRecordType, FieldDataType>) => (
+      <Tooltip title={phoneNumberRecord.brand} >
+        <div className="table-cell-trucate">{phoneNumberRecord.brand}</div>
       </Tooltip>
     )
   },
   {
     headerName: "Language Offer",
-    field: "languageOffer",
+    field: LANGUAGE_OFFER,
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params => PhoneNumberRecordUtil.getPropertyValue(params.row, LANGUAGE_OFFER) || ""
+    valueGetter: ({ row: phoneNumberRecord }: GridValueGetterParams<PhoneNumberRecordType, FieldDataType>): FieldDataType => PhoneNumberRecordUtil.getPropertyValue(phoneNumberRecord, LANGUAGE_OFFER) || "",
+    valueSetter: ({
+      row: phoneNumberRecord, value
+    }: GridValueSetterParams<PhoneNumberRecordType, FieldDataType>): PhoneNumberRecordType => {
+      PhoneNumberRecordUtil.setPropertyValue(phoneNumberRecord, LANGUAGE_OFFER, value);
+      return { ...phoneNumberRecord };
+    }
   },
   {
     headerName: "Data Requests",
-    field: "dataRequests",
+    field: DATA_REQUESTS,
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params => `${PhoneNumberRecordUtil.getPropertyValue(params.row, DATA_REQUESTS) || ""}`
+    valueGetter: ({ row: phoneNumberRecord }: GridValueGetterParams<PhoneNumberRecordType, FieldDataType>): FieldDataType => PhoneNumberRecordUtil.getPropertyArrayValue(phoneNumberRecord, DATA_REQUESTS)?.join() || "",
+    valueSetter: ({
+      row: phoneNumberRecord, value
+    }: GridValueSetterParams<PhoneNumberRecordType, string>): PhoneNumberRecordType => {
+      PhoneNumberRecordUtil.setArrayPropertyValue(phoneNumberRecord, DATA_REQUESTS, value);
+      return { ...phoneNumberRecord };
+    }
   },
   {
     headerName: "Caller Type",
-    field: "callerType",
+    field: CALLER_TYPE,
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params => `${PhoneNumberRecordUtil.getPropertyValue(params.row, CALLER_TYPE) || ""}`
+    valueGetter: ({ row: phoneNumberRecord }: GridValueGetterParams<PhoneNumberRecordType, FieldDataType>): FieldDataType => PhoneNumberRecordUtil.getPropertyValue(phoneNumberRecord, CALLER_TYPE) || "",
+    valueSetter: ({
+      row: phoneNumberRecord, value
+    }: GridValueSetterParams<PhoneNumberRecordType, FieldDataType>): PhoneNumberRecordType => {
+      PhoneNumberRecordUtil.setPropertyValue(phoneNumberRecord, CALLER_TYPE, value);
+      return { ...phoneNumberRecord };
+    }
   },
   {
-    headerName: "Transfer Destination",
-    field: "transferDestination",
+    headerName: "Transfer Destination/Number",
+    field: TRANSFER_DESTINATION,
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params => `${params.row.content?.transferDestination || ""}`
+    valueGetter: ({ row: phoneNumberRecord }: GridValueGetterParams<PhoneNumberRecordType, FieldDataType>): FieldDataType => {
+      return PhoneNumberRecordUtil.isDynamicPhoneNumberRecord(phoneNumberRecord) ?
+        PhoneNumberRecordUtil.getPropertyValue(phoneNumberRecord, TRANSFER_DESTINATION) || "" :
+        PhoneNumberRecordUtil.getPropertyValue(phoneNumberRecord, TRANSFER_NUMBER) || "";
+    },
+    valueSetter: ({
+      row: phoneNumberRecord, value
+    }: GridValueSetterParams<PhoneNumberRecordType, FieldDataType>): PhoneNumberRecordType => {
+      if (PhoneNumberRecordUtil.isDynamicPhoneNumberRecord(phoneNumberRecord)) {
+        PhoneNumberRecordUtil.setPropertyValue(phoneNumberRecord, TRANSFER_DESTINATION, value);
+      } else {
+        PhoneNumberRecordUtil.setPropertyValue(phoneNumberRecord, TRANSFER_NUMBER, value);
+      }
+
+      return { ...phoneNumberRecord };
+    }
   },
   {
     headerName: "Route",
-    field: "callFlowRoute",
+    field: CALL_FLOW_ROUTE,
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params => `${PhoneNumberRecordUtil.getPropertyValue(params.row, CALL_FLOW_ROUTE) || ""}`
+    valueGetter: ({ row: phoneNumberRecord }: GridValueGetterParams<PhoneNumberRecordType, FieldDataType>): FieldDataType => PhoneNumberRecordUtil.getPropertyValue(phoneNumberRecord, CALL_FLOW_ROUTE) || "",
+    valueSetter: ({
+      row: phoneNumberRecord, value
+    }: GridValueSetterParams<PhoneNumberRecordType, FieldDataType>): PhoneNumberRecordType => {
+      PhoneNumberRecordUtil.setPropertyValue(phoneNumberRecord, CALL_FLOW_ROUTE, value);
+      return { ...phoneNumberRecord };
+    }
   },
   {
     headerName: "Greeting",
-    field: "greetingMessages",
+    field: GREETING_MESSAGES,
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params => `${PhoneNumberRecordUtil.getPropertyValue(params.row, GREETING_MESSAGES) || ""}`,
-    renderCell: (params: any) => (
-      <Tooltip title={params.row.content?.greetingMessages || ""} >
-        <div className="table-cell-trucate">{params.row.content?.greetingMessages || ""}</div>
+    valueGetter: ({ row: phoneNumberRecord }: GridValueGetterParams<PhoneNumberRecordType, FieldDataType>): FieldDataType => PhoneNumberRecordUtil.getPropertyValue(phoneNumberRecord, GREETING_MESSAGES) || "",
+    valueSetter: ({
+      row: phoneNumberRecord, value
+    }: GridValueSetterParams<PhoneNumberRecordType, FieldDataType>): PhoneNumberRecordType => {
+      PhoneNumberRecordUtil.setPropertyValue(phoneNumberRecord, GREETING_MESSAGES, value);
+      return { ...phoneNumberRecord };
+    },
+    renderCell: ({ row: phoneNumberRecord }: GridRenderCellParams<PhoneNumberRecordType, FieldDataType>) => (
+      <Tooltip title={PhoneNumberRecordUtil.getPropertyValue(phoneNumberRecord, GREETING_MESSAGES) || ""} >
+        <div className="table-cell-trucate">{PhoneNumberRecordUtil.getPropertyValue(phoneNumberRecord, GREETING_MESSAGES) || ""}</div>
       </Tooltip>
     )
   },
-
   {
     headerName: "Employee ID",
-    field: "employeeId",
-    sortable: true,
-    width: 110,
-    align: "left"
-  },
-  {
-    headerName: "Create Time",
-    field: "createTime",
-    sortable: true,
-    width: 110,
-    align: "left"
-  },
-  {
-    headerName: "User Destination",
-    field: "userDestination",
+    field: EMPLOYEE_ID,
     sortable: true,
     width: 110,
     align: "left"
   },
   {
     headerName: "Phone Number Type",
-    field: "phoneNumberType",
+    field: PHONE_NUMBER_TYPE,
     sortable: true,
     width: 80,
-    align: "left"
-  },
-  {
-    headerName: "Account Manager",
-    field: "accountManager",
-    sortable: true,
-    width: 110,
     align: "left",
-    renderCell: (params: any) => (
-      <Tooltip title={params.row.accountManager || ""} >
-        <div className="table-cell-trucate">{params.row.accountManager || ""}</div>
-      </Tooltip>
-    )
-  },
-  {
-    headerName: "Affinity VDN",
-    field: "affinityVDN",
-    sortable: true,
-    width: 110,
-    align: "left"
+    valueGetter: ({ row: phoneNumberRecord }: GridValueGetterParams<PhoneNumberRecordType, FieldDataType>): FieldDataType => {
+      const key = PhoneNumberRecordUtil.isDynamicPhoneNumberRecord(phoneNumberRecord) ? PHONE_NUMBER_TYPE : TYPE;
+      return PhoneNumberRecordUtil.getPropertyValue(phoneNumberRecord, key) || "";
+    },
+    valueSetter: ({
+      row: phoneNumberRecord, value
+    }: GridValueSetterParams<PhoneNumberRecordType, FieldDataType>): PhoneNumberRecordType => {
+      const key = PhoneNumberRecordUtil.isDynamicPhoneNumberRecord(phoneNumberRecord) ? PHONE_NUMBER_TYPE : TYPE;
+      PhoneNumberRecordUtil.setPropertyValue(phoneNumberRecord, key, value);
+
+      return { ...phoneNumberRecord };
+    }
   },
   {
     headerName: "Transfer Code",
-    field: "transferCode",
+    field: TRANSFER_CODE,
     sortable: true,
     width: 110,
     align: "left"
   },
   {
     headerName: "Internet Placement",
-    field: "internetPlacement",
+    field: INTERNET_PLACEMENT,
     sortable: true,
     width: 110,
     align: "left",
-    renderCell: (params: any) => (
-      <Tooltip title={params.row.internetPlacement || ""} >
-        <div className="table-cell-trucate">{params.row.internetPlacement || ""}</div>
-      </Tooltip>
-    )
-  },
-  {
-    headerName: "Call Details1",
-    field: "callDetails1",
-    sortable: true,
-    width: 110,
-    align: "left",
-    renderCell: (params: any) => (
-      <Tooltip title={params.row.callDetails1 || ""} >
-        <div className="table-cell-trucate">{params.row.callDetails1 || ""}</div>
-      </Tooltip>
-    )
-  },
-  {
-    headerName: "Call Details2",
-    field: "callDetails2",
-    sortable: true,
-    width: 110,
-    align: "left",
-    renderCell: (params: any) => (
-      <Tooltip title={params.row.callDetails2 || ""} >
-        <div className="table-cell-trucate">{params.row.callDetails2 || ""}</div>
+    renderCell: ({ row: phoneNumberRecord }: GridRenderCellParams<PhoneNumberRecordType, FieldDataType>) => (
+      <Tooltip title={phoneNumberRecord.internetPlacement || ""} >
+        <div className="table-cell-trucate">{phoneNumberRecord.internetPlacement || ""}</div>
       </Tooltip>
     )
   },
   {
     headerName: "Call Type Description",
-    field: "callTypeDescription",
+    field: CALL_TYPE_DESCRIPTION,
     sortable: true,
     width: 110,
     align: "left",
-    renderCell: (params: any) => (
-      <Tooltip title={params.row.callTypeDescription || ""} >
-        <div className="table-cell-trucate">{params.row.callTypeDescription || ""}</div>
+    renderCell: ({ row: phoneNumberRecord }: GridRenderCellParams<PhoneNumberRecordType, FieldDataType>) => (
+      <Tooltip title={phoneNumberRecord.callTypeDescription || ""} >
+        <div className="table-cell-trucate">{phoneNumberRecord.callTypeDescription || ""}</div>
       </Tooltip>
     )
   },
   {
     headerName: "Line Of Business",
-    field: "lineOfBusiness",
+    field: LINE_OF_BUSINESS,
     sortable: true,
     width: 110,
     align: "left"
   },
   {
     headerName: "Marketing Channel",
-    field: "marketingChannel",
+    field: MARKETING_CHANNEL,
     sortable: true,
     width: 110,
     align: "left"
   },
   {
     headerName: "Whisper",
-    field: "whisper",
+    field: WHISPER,
     sortable: true,
     width: 110,
     align: "left"
   },
   {
     headerName: "Request ID",
-    field: "requestID",
+    field: REQUEST_ID,
     sortable: true,
     width: 110,
     align: "left"
   },
   {
     headerName: "Range Indicator",
-    field: "rangeIndicator",
+    field: RANGE_INDICATOR,
     sortable: true,
     width: 110,
     align: "left"
   },
   {
     headerName: "Call Intent",
-    field: "callIntent",
+    field: CALL_INTENT,
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: params => `${PhoneNumberRecordUtil.getPropertyValue(params.row, CALL_INTENT) || ""}`
+    valueGetter: ({ row: phoneNumberRecord }: GridValueGetterParams<PhoneNumberRecordType, FieldDataType>): FieldDataType => PhoneNumberRecordUtil.getPropertyValue(phoneNumberRecord, CALL_INTENT) || "",
+    valueSetter: ({
+      row: phoneNumberRecord, value
+    }: GridValueSetterParams<PhoneNumberRecordType, FieldDataType>): PhoneNumberRecordType => {
+      PhoneNumberRecordUtil.setPropertyValue(phoneNumberRecord, CALL_INTENT, value);
+      return { ...phoneNumberRecord };
+    }
   },
   {
     headerName: "Office Numbers",
-    field: "officeNumbers",
+    field: OFFICE_NUMBERS,
     sortable: true,
-    width: 110,
+    width: 220,
     align: "left",
-    valueGetter: params => params.row.content?.officeNumbers || [],
-    renderCell: (params: any) =>(
-      params.row.content?.officeNumbers && params.row.content?.officeNumbers.length===1?(
+    valueGetter: ({ row: phoneNumberRecord }: GridValueGetterParams<PhoneNumberRecordType, FieldDataType>): FieldDataType => PhoneNumberRecordUtil.getPropertyValue(phoneNumberRecord, OFFICE_NUMBERS) || [],
+    valueSetter: ({
+      row: phoneNumberRecord, value
+    }: GridValueSetterParams<PhoneNumberRecordType, FieldDataType>): PhoneNumberRecordType => {
+      PhoneNumberRecordUtil.setPropertyValue(phoneNumberRecord, OFFICE_NUMBERS, value);
+      return { ...phoneNumberRecord };
+    },
+    renderCell: ({ row: phoneNumberRecord }: GridRenderCellParams<PhoneNumberRecordType, FieldDataType>) => (
+      PhoneNumberRecordUtil.getPropertyArrayValue(phoneNumberRecord, OFFICE_NUMBERS) && PhoneNumberRecordUtil.getPropertyArrayValue(phoneNumberRecord, OFFICE_NUMBERS).length===1?(
         <Chip
-          key={`officeNumbers-${params.row.pkey}-${0}`}
+          key={`officeNumbers-${PhoneNumberRecordUtil.getPhoneNumber(phoneNumberRecord)}-${0}`}
           tabIndex={-1}
-          label={params.row.content?.officeNumbers[0]}
+          label={PhoneNumberRecordUtil.getPropertyArrayValue(phoneNumberRecord, OFFICE_NUMBERS)[0]}
         />
       ):
-        params.row.content?.officeNumbers && params.row.content?.officeNumbers.length!==0?(
+        PhoneNumberRecordUtil.getPropertyArrayValue(phoneNumberRecord, OFFICE_NUMBERS) && PhoneNumberRecordUtil.getPropertyArrayValue(phoneNumberRecord, OFFICE_NUMBERS).length!==0?(
           <ModalOnHover label="...">
             <Box sx={{ padding: "10px" }}>
               {
-                params.row.content?.officeNumbers && params.row.content?.officeNumbers.map((item: string, index: number)=>(
+                PhoneNumberRecordUtil.getPropertyArrayValue(phoneNumberRecord, OFFICE_NUMBERS) && PhoneNumberRecordUtil.getPropertyArrayValue(phoneNumberRecord, OFFICE_NUMBERS).map((item: string, index: number)=>(
                   <Chip
-                    key={`officeNumbers-${PhoneNumberRecordUtil.getPkey(params.row)}-${index}`}
+                    key={`officeNumbers-${PhoneNumberRecordUtil.getPhoneNumber(phoneNumberRecord)}-${index}`}
                     tabIndex={-1}
                     label={item}
                   />
@@ -298,63 +349,203 @@ export const PhoneNumberDataGridColumnDef: GridColDef[] = [
   },
   {
     headerName: "TFN Routing Group",
-    field: "tfnRoutingGroup",
+    field: TFN_ROUTING_GROUP,
     sortable: true,
     width: 110,
     align: "left",
-    renderCell: (params: any) => (
-      <Tooltip title={params.row.tfnRoutingGroup} >
-        <div className="table-cell-trucate">{params.row.tfnRoutingGroup}</div>
+    renderCell: ({ row: phoneNumberRecord }: GridRenderCellParams<PhoneNumberRecordType, FieldDataType>) => (
+      <Tooltip title={PhoneNumberRecordUtil.getPropertyValue(phoneNumberRecord, TFN_ROUTING_GROUP)} >
+        <div className="table-cell-trucate">{PhoneNumberRecordUtil.getPropertyValue(phoneNumberRecord, TFN_ROUTING_GROUP)}</div>
       </Tooltip>
     )
   },
   {
     headerName: "Predictive Caller",
-    field: "predictiveCaller",
-    sortable: false,
+    field: PREDICTIVE_CALLER,
+    sortable: true,
     width: 110,
     align: "center",
-    renderCell: (params: any) =>(
+    valueGetter: ({ row: phoneNumberRecord }: GridValueGetterParams<PhoneNumberRecordType, FieldDataType>): FieldDataType => PhoneNumberRecordUtil.getPropertyValue(phoneNumberRecord, PREDICTIVE_CALLER) || false,
+    renderCell: ({ row: phoneNumberRecord }: GridRenderCellParams<PhoneNumberRecordType, FieldDataType>) => (
       <Box>
-        <Switch checked={params.row?.predictiveCaller || false} defaultChecked={false} color="warning" disabled size="medium" />
+        <Switch checked={PhoneNumberRecordUtil.getPropertyBooleanValue(phoneNumberRecord, PREDICTIVE_CALLER) || false} defaultChecked={false} color="warning" disabled size="medium" />)
       </Box>
     )
   },
-  {
-    headerName: "Call Flow Name",
-    field: "callFlowName",
+  { // Dynamic Phone Number Type Only
+    headerName: "*Call Flow Name",
+    field: CALL_FLOW_NAME,
     sortable: true,
     width: 110,
     align: "left",
-    renderCell: (params: any) => (
-      <Tooltip title={params.row.callFlowName} >
-        <div className="table-cell-trucate">{params.row.callFlowName}</div>
+    valueSetter: ({
+      row: phoneNumberRecord, value
+    }: GridValueSetterParams<PhoneNumberRecordType, FieldDataType>): PhoneNumberRecordType => {
+      PhoneNumberRecordUtil.setPropertyValue(phoneNumberRecord, CALL_FLOW_NAME, value);
+      return { ...phoneNumberRecord };
+    },
+    renderCell: ({ row: phoneNumberRecord }: GridRenderCellParams<PhoneNumberRecordType, FieldDataType>) => (
+      <Tooltip title={PhoneNumberRecordUtil.getPropertyValue(phoneNumberRecord, CALL_FLOW_NAME)} >
+        <div className="table-cell-trucate">{PhoneNumberRecordUtil.getPropertyValue(phoneNumberRecord, CALL_FLOW_NAME)}</div>
       </Tooltip>
     )
   },
-  {
-    headerName: "Call Flow Type",
-    field: "callFlowType",
+  { // Dynamic Phone Number Type Only
+    headerName: "*Call Flow Type",
+    field: CALL_FLOW_TYPE,
     sortable: true,
     width: 110,
     align: "left",
-    renderCell: (params: any) => (
-      <Tooltip title={params.row.callFlowType} >
-        <div className="table-cell-trucate">{params.row.callFlowType}</div>
+    valueSetter: ({
+      row: phoneNumberRecord, value
+    }: GridValueSetterParams<PhoneNumberRecordType, FieldDataType>): PhoneNumberRecordType => {
+      PhoneNumberRecordUtil.setPropertyValue(phoneNumberRecord, CALL_FLOW_TYPE, value);
+      return { ...phoneNumberRecord };
+    },
+    renderCell: ({ row: phoneNumberRecord }: GridRenderCellParams<PhoneNumberRecordType, FieldDataType>) => (
+      <Tooltip title={PhoneNumberRecordUtil.getPropertyValue(phoneNumberRecord, CALL_FLOW_TYPE)} >
+        <div className="table-cell-trucate">{PhoneNumberRecordUtil.getPropertyValue(phoneNumberRecord, CALL_FLOW_TYPE)}</div>
       </Tooltip>
     )
-  },{
-    headerName: "Next Action ID",
-    field: "nextActionId",
+  },
+  { // Dynamic Phone Number Type Only
+    headerName: "*Next Action ID",
+    field: NEXT_ACTION_ID,
     sortable: true,
     width: 110,
-    align: "left"
-  },{
-    headerName: "Next Action Type",
-    field: "nextActionType",
+    align: "left",
+    valueSetter: ({
+      row: phoneNumberRecord, value
+    }: GridValueSetterParams<PhoneNumberRecordType, FieldDataType>): PhoneNumberRecordType => {
+      PhoneNumberRecordUtil.setPropertyValue(phoneNumberRecord, NEXT_ACTION_ID, value);
+      return { ...phoneNumberRecord };
+    }
+  },
+  { // Dynamic Phone Number Type Only
+    headerName: "*Next Action Type",
+    field: NEXT_ACTION_TYPE,
     sortable: true,
     width: 110,
-    align: "left"
+    align: "left",
+    valueSetter: ({
+      row: phoneNumberRecord, value
+    }: GridValueSetterParams<PhoneNumberRecordType, FieldDataType>): PhoneNumberRecordType => {
+      PhoneNumberRecordUtil.setPropertyValue(phoneNumberRecord, NEXT_ACTION_TYPE, value);
+      return { ...phoneNumberRecord };
+    }
+  },
+  { // Legacy Phone Number Type Only
+    headerName: "**Account Manager",
+    field: ACCOUNT_MANAGER,
+    sortable: true,
+    width: 110,
+    align: "left",
+    valueGetter: ({ row: phoneNumberRecord }: GridValueGetterParams<PhoneNumberRecordType, FieldDataType>): FieldDataType => {
+      return PhoneNumberRecordUtil.isLegacyPhoneNumberRecord(phoneNumberRecord) ?
+        PhoneNumberRecordUtil.getPropertyValue(phoneNumberRecord, ACCOUNT_MANAGER) || "" : undefined;
+    },
+    valueSetter: ({
+      row: phoneNumberRecord, value
+    }: GridValueSetterParams<PhoneNumberRecordType, FieldDataType>): PhoneNumberRecordType => {
+      if (PhoneNumberRecordUtil.isLegacyPhoneNumberRecord(phoneNumberRecord)) {
+        PhoneNumberRecordUtil.setPropertyValue(phoneNumberRecord, ACCOUNT_MANAGER, value);
+        return { ...phoneNumberRecord };
+      }
+
+      return phoneNumberRecord;
+    },
+    renderCell: ({ row: phoneNumberRecord }: GridRenderCellParams<PhoneNumberRecordType, FieldDataType>) => (
+      <Tooltip title={PhoneNumberRecordUtil.getPropertyValue(phoneNumberRecord, ACCOUNT_MANAGER) || ""} >
+        <div className="table-cell-trucate">{PhoneNumberRecordUtil.getPropertyValue(phoneNumberRecord, ACCOUNT_MANAGER) || ""}</div>
+      </Tooltip>
+    )
+  },
+  { // Legacy Phone Number Type Only
+    headerName: "**User Destination",
+    field: USER_DESTINATION,
+    sortable: true,
+    width: 110,
+    align: "left",
+    valueGetter: ({ row: phoneNumberRecord }: GridValueGetterParams<PhoneNumberRecordType, FieldDataType>): FieldDataType => {
+      return PhoneNumberRecordUtil.isLegacyPhoneNumberRecord(phoneNumberRecord) ?
+        PhoneNumberRecordUtil.getPropertyValue(phoneNumberRecord, USER_DESTINATION) || "" : undefined;
+    },
+    valueSetter: ({
+      row: phoneNumberRecord, value
+    }: GridValueSetterParams<PhoneNumberRecordType, FieldDataType>): PhoneNumberRecordType => {
+      if (PhoneNumberRecordUtil.isLegacyPhoneNumberRecord(phoneNumberRecord)) {
+        PhoneNumberRecordUtil.setPropertyValue(phoneNumberRecord, USER_DESTINATION, value);
+      }
+      return { ...phoneNumberRecord };
+    }
+  },
+  { // Legacy Phone Number Type Only
+    headerName: "**Affinity VDN",
+    field: AFFINITY_VDN,
+    sortable: true,
+    width: 110,
+    align: "left",
+    valueGetter: ({ row: phoneNumberRecord }: GridValueGetterParams<PhoneNumberRecordType, FieldDataType>): FieldDataType => {
+      return PhoneNumberRecordUtil.isLegacyPhoneNumberRecord(phoneNumberRecord) ?
+        PhoneNumberRecordUtil.getPropertyValue(phoneNumberRecord, AFFINITY_VDN) || "" : undefined;
+    },
+    valueSetter: ({
+      row: phoneNumberRecord, value
+    }: GridValueSetterParams<PhoneNumberRecordType, FieldDataType>): PhoneNumberRecordType => {
+      if (PhoneNumberRecordUtil.isLegacyPhoneNumberRecord(phoneNumberRecord)) {
+        PhoneNumberRecordUtil.setPropertyValue(phoneNumberRecord, AFFINITY_VDN, value);
+        return { ...phoneNumberRecord };
+      }
+
+      return phoneNumberRecord;
+    }
+  },
+  { // Legacy Phone Number Type Only
+    headerName: "**Call Details1",
+    field: CALL_DETAILS_1,
+    sortable: true,
+    width: 110,
+    align: "left",
+    valueGetter: ({ row: phoneNumberRecord }: GridValueGetterParams<PhoneNumberRecordType, FieldDataType>): FieldDataType => {
+      return PhoneNumberRecordUtil.isLegacyPhoneNumberRecord(phoneNumberRecord) ?
+        PhoneNumberRecordUtil.getPropertyValue(phoneNumberRecord, CALL_DETAILS_1) || "" : undefined;
+    },
+    valueSetter: ({
+      row: phoneNumberRecord, value
+    }: GridValueSetterParams<PhoneNumberRecordType, FieldDataType>): PhoneNumberRecordType => {
+      PhoneNumberRecordUtil.setPropertyValue(phoneNumberRecord, CALL_DETAILS_1, value);
+      return { ...phoneNumberRecord };
+    },
+    renderCell: ({ row: phoneNumberRecord }: GridRenderCellParams<PhoneNumberRecordType, FieldDataType>) => (
+      <Tooltip title={PhoneNumberRecordUtil.getPropertyValue(phoneNumberRecord, CALL_DETAILS_1) || ""} >
+        <div className="table-cell-trucate">{PhoneNumberRecordUtil.getPropertyValue(phoneNumberRecord, CALL_DETAILS_1) || ""}</div>
+      </Tooltip>
+    )
+  },
+  { // Legacy Phone Number Type Only
+    headerName: "**Call Details2",
+    field: CALL_DETAILS_2,
+    sortable: true,
+    width: 110,
+    align: "left",
+    valueGetter: ({ row: phoneNumberRecord }: GridValueGetterParams<PhoneNumberRecordType, FieldDataType>): FieldDataType => {
+      return PhoneNumberRecordUtil.isLegacyPhoneNumberRecord(phoneNumberRecord) ?
+        PhoneNumberRecordUtil.getPropertyValue(phoneNumberRecord, CALL_DETAILS_2) || "" : undefined;
+    },
+    valueSetter: ({
+      row: phoneNumberRecord, value
+    }: GridValueSetterParams<PhoneNumberRecordType, FieldDataType>): PhoneNumberRecordType => {
+      if (PhoneNumberRecordUtil.isLegacyPhoneNumberRecord(phoneNumberRecord)) {
+        PhoneNumberRecordUtil.setPropertyValue(phoneNumberRecord, CALL_DETAILS_2, value);
+        return { ...phoneNumberRecord };
+      }
+      return phoneNumberRecord;
+    },
+    renderCell: ({ row: phoneNumberRecord }: GridRenderCellParams<PhoneNumberRecordType, FieldDataType>) => (
+      <Tooltip title={PhoneNumberRecordUtil.getPropertyValue(phoneNumberRecord, CALL_DETAILS_2) || ""} >
+        <div className="table-cell-trucate">{PhoneNumberRecordUtil.getPropertyValue(phoneNumberRecord, CALL_DETAILS_2) || ""}</div>
+      </Tooltip>
+    )
   }
 ];
 

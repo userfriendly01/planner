@@ -23,12 +23,11 @@ export const pkeyAndEmployeeIdFilter: MatchFilter<PhoneNumberRecordType> = (phon
 };
 
 export const dynamicAndLegacyPhoneNumberRecordFilter: MatchFilter<PhoneNumberRecordType> = (phoneNumberRecord1: PhoneNumberRecordType, phoneNumberRecord2: PhoneNumberRecordType): boolean => {
-  return PhoneNumberRecordUtil.getPkey(phoneNumberRecord1) !== PhoneNumberRecordUtil.getPkey(phoneNumberRecord2)
+  return PhoneNumberRecordUtil.getPhoneNumber(phoneNumberRecord1) !== PhoneNumberRecordUtil.getPhoneNumber(phoneNumberRecord2)
       && phoneNumberRecord2.employeeId?.toLowerCase().startsWith("n")
       && phoneNumberRecord1.employeeId?.toLowerCase().startsWith("n")
       && phoneNumberRecord2.employeeId === phoneNumberRecord1.employeeId
-      && (PhoneNumberRecordUtil.isDynamicPhoneNumberRecord(phoneNumberRecord1) === PhoneNumberRecordUtil.isDynamicPhoneNumberRecord(phoneNumberRecord2)
-          || PhoneNumberRecordUtil.isLegacyPhoneNumberRecord(phoneNumberRecord1) === PhoneNumberRecordUtil.isLegacyPhoneNumberRecord(phoneNumberRecord2));
+      && PhoneNumberRecordUtil.isDynamicPhoneNumberRecord(phoneNumberRecord1) === PhoneNumberRecordUtil.isDynamicPhoneNumberRecord(phoneNumberRecord2);
 };
 
 /**

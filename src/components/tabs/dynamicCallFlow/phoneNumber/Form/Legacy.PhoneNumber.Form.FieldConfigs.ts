@@ -30,7 +30,6 @@ import {
   REQUEST_ID,
   TFN_ROUTING_GROUP,
   TRANSFER_CODE,
-  TRANSFER_DESTINATION,
   WHISPER
 } from "components/tabs/dynamicCallFlow/phoneNumber/Form/Dynamic.PhoneNumber.Form.Fields";
 import {
@@ -63,11 +62,6 @@ const drcFieldConditionCheck: FieldConditionCheckType = (record: PhoneNumberReco
 
 const didFieldConditionCheck: FieldConditionCheckType = (record: PhoneNumberRecordType): boolean => {
   return record[TYPE as keyof PhoneNumberRecordType] === PhoneNumberTypeEnum.DID;
-};
-
-const dtmfFieldConditionCheck: FieldConditionCheckType = (record: PhoneNumberRecordType): boolean => {
-  return record[CALL_FLOW_TYPE as keyof PhoneNumberRecordType] === CallFlowTypeEnum.DTMF ||
-    record[SELF_SERVICE_INDICATOR as keyof PhoneNumberRecordType] === true;
 };
 
 const defaultFieldConditionCheck: FieldConditionCheckType = (record: PhoneNumberRecordType): boolean => {
@@ -119,9 +113,7 @@ createFieldConfig("Language Offer", LANGUAGE_OFFER, ControlEnum.Select, true, fa
 createFieldConfig("Data Requests", DATA_REQUESTS, ControlEnum.AutoComplete, true, false, FieldDataTypeEnum.STRING_ARRAY, undefined, USER_IS_ABLE_TO_CHANGE_CONTROL, 10);
 createFieldConfig("Caller Type", CALLER_TYPE, ControlEnum.AutoComplete, true, false, FieldDataTypeEnum.STRING, undefined, USER_IS_ABLE_TO_CHANGE_CONTROL, 10);
 createFieldConfig("Phone Number Type", TYPE, ControlEnum.AutoComplete, false, false);
-createFieldConfig("Dynamic Phone Number Type", PHONE_NUMBER_TYPE, ControlEnum.AutoComplete);
 createFieldConfig("Transfer Number", TRANSFER_NUMBER, ControlEnum.Input, true, false);
-createFieldConfig("Dynamic Transfer Destination", TRANSFER_DESTINATION, ControlEnum.Input, true, false);
 createFieldConfig("Call Flow Route", CALL_FLOW_ROUTE, ControlEnum.AutoComplete, true, false, FieldDataTypeEnum.STRING, undefined, USER_IS_ABLE_TO_CHANGE_CONTROL, 10);
 createFieldConfig("Greeting", GREETING_MESSAGES, ControlEnum.Input, true, false);
 createFieldConfig("Employee ID", EMPLOYEE_ID, ControlEnum.Input);
@@ -144,7 +136,6 @@ createFieldConfig("TFN Routing Group", TFN_ROUTING_GROUP, ControlEnum.Select, fa
 createFieldConfig("Predictive Caller", PREDICTIVE_CALLER, ControlEnum.Switch, false, false, FieldDataTypeEnum.BOOLEAN, drcFieldConditionCheck);
 createFieldConfig("Call Flow Type", CALL_FLOW_TYPE, ControlEnum.AutoComplete, false, false, FieldDataTypeEnum.STRING);
 createFieldConfig("Self Service Indicator", SELF_SERVICE_INDICATOR, ControlEnum.AutoComplete, false, false, FieldDataTypeEnum.STRING);
-createFieldConfig("Call Flow Template", CALL_FLOW_TEMPLATE, ControlEnum.AutoComplete, false, false, FieldDataTypeEnum.STRING, dtmfFieldConditionCheck);
 
 Object.freeze(LegacyPhoneNumberFormFieldConfigs);
 

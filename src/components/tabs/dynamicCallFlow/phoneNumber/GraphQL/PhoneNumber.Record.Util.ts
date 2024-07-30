@@ -1,7 +1,12 @@
-import { PhoneNumber, PhoneNumberRecordType } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
-import { CctSharedCallFlowDb, FlowContent } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
 import {
-  CREATE_TIME, DynamicPhoneNumberFormFields,
+  CallerTypeEnum, CallFlowTypeEnum, LanguageOfferTypeEnum,
+  PhoneNumber, PhoneNumberRecordType
+} from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import {
+  CctSharedCallFlowDb, FlowContent
+} from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
+import {
+  CREATE_TIME, DynamicPhoneNumberFormFields, EMPLOYEE_ID,
   PHONE_NUMBER,
   UPDATE_TIME
 } from "components/tabs/dynamicCallFlow/phoneNumber/Form/Dynamic.PhoneNumber.Form.Fields";
@@ -11,6 +16,84 @@ import {
   PKEY
 } from "components/tabs/dynamicCallFlow/phoneNumber/Form/Legacy.PhoneNumber.Form.Fields";
 import { FieldDataType } from "components/tabs/dynamicCallFlow/common/Form/Form.Interfaces";
+import { logger } from "utils/logger";
+
+export const newDynamicPhoneNumberRecord = (): PhoneNumber => {
+  return {
+    phoneNumber: "",
+    brand: undefined,
+    callFlowName: "",
+    callFlowTemplate: "",
+    callFlowType: CallFlowTypeEnum.DTMF,
+    callTypeDescription: "",
+    channel: undefined,
+    employeeId: "",
+    callIntent: "",
+    callFlowRoute: "",
+    callerType: CallerTypeEnum.CUSTOMER,
+    dataRequests: [],
+    dialedDescription: "",
+    greetingMessages: "",
+    internetPlacement: "",
+    languageOffer: LanguageOfferTypeEnum.ENGLISH,
+    lineOfBusiness: "",
+    marketingChannel: "",
+    nextActionId: "",
+    nextActionType: undefined,
+    officeNumbers: [],
+    phoneNumberType: "",
+    predictiveCaller: false,
+    rangeIndicator: "",
+    requestID: "",
+    tfnRoutingGroup: "",
+    tollFreeNumber: "",
+    transferCode: "",
+    transferDestination: "",
+    whisper: ""
+  };
+};
+
+export const newLegacyPhoneNumberRecord = (): CctSharedCallFlowDb => {
+  return {
+    pkey: "",
+    content: {
+      callIntent: "",
+      callFlowRoute: "",
+      callerType: CallerTypeEnum.CUSTOMER,
+      dataRequests: [],
+      greetingMessages: "",
+      languageOffer: LanguageOfferTypeEnum.ENGLISH,
+      officeNumbers: [],
+      transferDestination: "",
+      transferNumber: ""
+    } as FlowContent,
+    accountManager: "",
+    affinityVDN: "",
+    agentId: "",
+    brand: undefined,
+    callDetails1: "",
+    callDetails2: "",
+    callFlowTemplate: "",
+    callTypeDescription: "",
+    channel: undefined,
+    createTime: "",
+    dialedDescription: "",
+    employeeId: "",
+    internetPlacement: "",
+    lineOfBusiness: "",
+    marketingChannel: "",
+    predictiveCaller: false,
+    selfServiceIndicator: undefined,
+    rangeIndicator: "",
+    requestID: "",
+    tfnRoutingGroup: "",
+    tollFreeNumber: "",
+    transferCode: "",
+    type: "",
+    userDestination: "",
+    whisper: ""
+  };
+};
 
 export class PhoneNumberRecordUtil {
   public static getPkey(phoneNumberRecord: PhoneNumberRecordType): string {
@@ -26,6 +109,18 @@ export class PhoneNumberRecordUtil {
       return (phoneNumberRecord as CctSharedCallFlowDb).pkey;
     } else {
       return (phoneNumberRecord as PhoneNumber).phoneNumber;
+    }
+  }
+
+  public static setPhoneNumber(phoneNumberRecord: PhoneNumberRecordType, phoneNumber: string): void {
+    if (!phoneNumberRecord) {
+      return;
+    }
+
+    if (this.isLegacyPhoneNumberRecord(phoneNumberRecord)) {
+      (phoneNumberRecord as CctSharedCallFlowDb).pkey = phoneNumber;
+    } else {
+      (phoneNumberRecord as PhoneNumber).phoneNumber = phoneNumber;
     }
   }
 
@@ -100,8 +195,23 @@ export class PhoneNumberRecordUtil {
     this.setPropertyValue(phoneNumberRecord, key, (value && (value.toLowerCase() === "true" || value.toLowerCase() === "yes" )));
   }
 
+  private static isValidPropertyForPhoneNumberRecordType(phoneNumberRecord: PhoneNumberRecordType, key: string): boolean {
+    if (this.isDynamicPhoneNumberRecord(phoneNumberRecord)) {
+      return DynamicPhoneNumberFormFields.includes(key);
+    } else {
+      return LegacyPhoneNumberFormFields.includes(key);
+    }
+  }
+
   public static setPropertyValue(phoneNumberRecord: PhoneNumberRecordType, key: string, value: FieldDataType): void {
     if (!phoneNumberRecord || !key || !value) {
+      return;
+    }
+
+    // Only set property if it is a valid property for the phoneNumberRecord type
+    if (!this.isValidPropertyForPhoneNumberRecordType(phoneNumberRecord, key)) {
+      logger.warn(`Invalid property key: ${key} for phoneNumberRecord: ${JSON.stringify(phoneNumberRecord)}`, {});
+      delete phoneNumberRecord[key as keyof typeof phoneNumberRecord];
       return;
     }
 
@@ -152,12 +262,18 @@ export class PhoneNumberRecordUtil {
   }
 
   public static removeTransientProperties(phoneNumberRecord: PhoneNumberRecordType): void {
-    let validKeys: Array<String> = PhoneNumberRecordUtil.isDynamicPhoneNumberRecord(phoneNumberRecord) ? DynamicPhoneNumberFormFields : LegacyPhoneNumberFormFields;
+    const validKeys: Array<string> = PhoneNumberRecordUtil.isDynamicPhoneNumberRecord(phoneNumberRecord) ? DynamicPhoneNumberFormFields : LegacyPhoneNumberFormFields;
 
     Object.keys(phoneNumberRecord).forEach((key: string) => {
-      if (!validKeys.includes(key)) {
+      if (key !== "content" && !validKeys.includes(key)) {
         delete phoneNumberRecord[key as keyof typeof phoneNumberRecord];
       }
     });
+  }
+
+  public static removeNonNullableKeys(phoneNumberRecord: PhoneNumberRecordType): void {
+    if (!phoneNumberRecord[EMPLOYEE_ID as keyof PhoneNumberRecordType]) {
+      delete phoneNumberRecord[EMPLOYEE_ID as keyof PhoneNumberRecordType];
+    }
   }
 }

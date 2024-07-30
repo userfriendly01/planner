@@ -1,4 +1,6 @@
-import { PhoneNumber, PhoneNumberRecordType } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import {
+  PhoneNumber, PhoneNumberRecordType
+} from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 import { SingleRecordResults } from "components/tabs/dynamicCallFlow/common/GraphQL/AbstractSingleRecord.Query";
 import { CctSharedCallFlowDb } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
 import {
@@ -23,7 +25,7 @@ import {
 
 export const createPhoneNumberRecord = async (accessToken: string, phoneNumberRecordToBeCreated: PhoneNumberRecordType): Promise<SingleRecordResults<PhoneNumberRecordType>> => {
   PhoneNumberRecordUtil.removeTransientProperties(phoneNumberRecordToBeCreated);
-
+  PhoneNumberRecordUtil.removeNonNullableKeys(phoneNumberRecordToBeCreated);
   if (PhoneNumberRecordUtil.isLegacyPhoneNumberRecord(phoneNumberRecordToBeCreated)) {
     return createLegacyPhoneNumberRecord(accessToken, phoneNumberRecordToBeCreated as CctSharedCallFlowDb);
   } else {
@@ -51,10 +53,12 @@ export const deletePhoneNumberRecord = async (accessToken: string, phoneNumberRe
 
 export class SingleCallFlowRecord {
   static async create(accessToken: string, newPhoneNumberRecord: PhoneNumberRecordType): Promise<SingleRecordResults<PhoneNumberRecordType>> {
+    PhoneNumberRecordUtil.removeNonNullableKeys(newPhoneNumberRecord);
     return createPhoneNumberRecord(accessToken, newPhoneNumberRecord);
   }
 
   static async update(accessToken: string, phoneNumberRecord: PhoneNumberRecordType): Promise<SingleRecordResults<PhoneNumberRecordType>> {
+    PhoneNumberRecordUtil.removeNonNullableKeys(phoneNumberRecord);
     return updatePhoneNumberRecord(accessToken, phoneNumberRecord);
   }
 

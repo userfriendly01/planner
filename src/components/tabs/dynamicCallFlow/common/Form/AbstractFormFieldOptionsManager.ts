@@ -1,6 +1,7 @@
 import {
   FieldConfigs, FieldDataType
 } from "components/tabs/dynamicCallFlow/common/Form/Form.Interfaces";
+import { logger } from "utils/logger";
 
 export interface FormFieldOptions<RecordType> {
   generateOptions(records: Array<RecordType>): void;
@@ -62,7 +63,8 @@ export abstract class AbstractFormFieldOptionsManager<RecordType> implements For
               }
             });
           } else {
-            console.log("Invalid data type for field: ", key, " in record: ", record, "expected type to be Array<string> but got: ", typeof (recordPropertyValue));
+            const message = `Invalid data type for field: ${key}  in record: ${record} expected type to be Array<string> but got: ${typeof (recordPropertyValue)}`;
+            logger.log(message, {});
           }
         } else if (this.isValidOption(key, recordPropertyValue as string)) {
           this._fieldOptions[key].push(recordPropertyValue as string);
@@ -72,7 +74,7 @@ export abstract class AbstractFormFieldOptionsManager<RecordType> implements For
 
     Object.keys(this._fieldOptions).forEach(key => {
       if (this._fieldOptions[key].length === 0) {
-        console.warn("No options found for field: ", key);
+        logger.warn("No options found for field: ", { key });
       }
       this._fieldOptions[key] = [...new Set(this._fieldOptions[key])].sort();
     });
@@ -88,7 +90,7 @@ export abstract class AbstractFormFieldOptionsManager<RecordType> implements For
       if (fieldConfigs[fieldOptionKey]) {
         fieldConfigs[fieldOptionKey].options = this._fieldOptions[fieldOptionKey];
       } else {
-        console.warn("Field option key not found in field configs: ", fieldOptionKey);
+        logger.warn("Field option key not found in field configs: ", { fieldOptionKey });
       }
     });
 

@@ -52,10 +52,9 @@ export abstract class AbstractDataGridController<RecordType> implements DataGrid
   private _dataGridProps: DataGridStateProps;
   private _dataGridRecords: Array<RecordType> = [];
 
-  protected abstract recordKey(): string;
+  abstract recordKey(): string;
 
   constructor(dataGridApi: ReactGridApi, dataGridFilter: DataGridFilterRef<RecordType>, alertBarController: AlertBarControllerRef) {
-
     this._dataGridApi = dataGridApi;
     this._dataGridFilter = dataGridFilter;
     this._alertBarController = alertBarController;

@@ -5,22 +5,24 @@ import { Filter } from "../../common/DataGrid/Abstract.DataGrid.Filter";
 import { DynamicCallFlowPhoneNumberContext } from "../DynamicCallFlow.PhoneNumber.Container";
 import { DataGridControllerRef, DataGridFilterRef } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
 import { PhoneNumberRecordType } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
-import { DYNAMIC_CALL_FLOW_ROLE, userDoesNotHaveReadWriteAccess } from "components/tabs/dynamicCallFlow/common/authentication";
+import { DYNAMIC_CALL_FLOW_ROLE, userDoesNotHaveReadWriteAccess } from "dynamicCallFlowCommon/DynamicCallFlow.Authentication";
 import { PhoneNumberXlsxExporter } from "components/tabs/dynamicCallFlow/phoneNumber/Xlsx/Export/PhoneNumber.Xlsx.Exporter";
 import { PhoneNumberModalTypeEnum } from "components/tabs/dynamicCallFlow/phoneNumber/DynamicCallFlow.PhoneNumber.Interfaces";
 import { FilterLabel } from "components/tabs/dynamicCallFlow/phoneNumber/DataGrid/PhoneNumber.DataGrid.Filter.Modal";
+import { ViewListIconToggleForm } from "dynamicCallFlowCommon/Form/ViewList.IconToggle.Form";
 
 
 interface PhoneNumberDataGridToolBarProps {
   isFilterModalOpen: boolean;
   dataGridFilter: DataGridFilterRef<PhoneNumberRecordType>;
   dataGridController: DataGridControllerRef<PhoneNumberRecordType>;
+  loading: boolean;
   handlePreviewModalOpen: (event: any) => void;
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const PhoneNumberDataGridToolBar = ({
-  isFilterModalOpen, dataGridFilter, dataGridController, handlePreviewModalOpen
+  isFilterModalOpen, dataGridFilter, dataGridController, handlePreviewModalOpen, loading
 }: PhoneNumberDataGridToolBarProps) => {
   const {
     permissions,
@@ -45,92 +47,95 @@ const PhoneNumberDataGridToolBar = ({
 
   return (
     <Grid container>
-      <Grid item key="phone-number-search-box" xs={9}>
-        <TextField
-          sx={{ marginLeft: 1 }}
-          placeholder="Click here to apply filter"
-          InputProps={{
-            startAdornment:
-              localFilter && Object.keys(localFilter).map((key: string, index: number) => (
-                <Chip
-                  key={key}
-                  color="primary"
-                  tabIndex={index}
-                  label={`${FilterLabel.get(key) || key} : ${localFilter[key]}`}
-                  onDelete={(event: any)=> { removeFilterElement(key); }}
-                  sx={{ margin: 1 }}
-                />
-              ))
-          }}
-          fullWidth
-          id="flow-SearchBox-input"
-          label="Search"
-          margin="normal"
-          name="flow-SearchBox-input"
-          variant="standard"
-          onClick={() => modalController.current.openModal(PhoneNumberModalTypeEnum.Filter)}
-        />
-      </Grid>
-      <Grid item key = "Export FlowUI" xs={1} >
-        <Tooltip title="Export Flow Records" placement="right-start"  sx={{
-          left: "calc(76%)"
-        }}>
-          <IconButton
-            onClick={exportDataFile}
-            color = "primary"
-            size = "small"
-            sx ={{
-              position: "relative",
-              marginTop: "36px",
-              marginLeft: "36px",
-              ":hover": {
-                backgroundColor: "grey",
-                color: "white"
-              }
+      {(!loading) ? (
+        <Grid item key="phone-number-search-box" xs={9}>
+          <TextField
+            sx={{ marginLeft: 1 }}
+            placeholder="Click here to apply filter"
+            InputProps={{
+              startAdornment:
+                localFilter && Object.keys(localFilter).map((key: string, index: number) => (
+                  <Chip
+                    key={key}
+                    color="primary"
+                    tabIndex={index}
+                    label={`${FilterLabel.get(key) || key} : ${localFilter[key]}`}
+                    onDelete={(event: any)=> { removeFilterElement(key); }}
+                    sx={{ margin: 1 }}
+                  />
+                ))
             }}
-          > <SaveAlt />
-          </IconButton>
-        </Tooltip>
-      </Grid>
-      <Grid item key="flow-action-box" xs={2}>
-        <FormControl sx={{
-          marginTop: "16px",
-          marginBottom: "8px",
-          marginLeft: "calc(40%)"
-        }}>
-          <InputLabel>Actions</InputLabel>
-          <Select
-            inputProps={{
-              sx: {
-                width: 120
-              }
-            }}
-            label="Actions"
-            value=""
-            disabled = {userDoesNotHavePermission}
-            onChange={handlePreviewModalOpen}
-            variant="filled"
-            size="small"
-            displayEmpty
-          >
-            <MenuItem key={PhoneNumberModalTypeEnum.AddLegacyPhoneNumber} value={PhoneNumberModalTypeEnum.AddLegacyPhoneNumber}>
-              <AddOutlined />&nbsp;&nbsp; Add Legacy Call Flow
-            </MenuItem>
-            <MenuItem key={PhoneNumberModalTypeEnum.AddDynamicPhoneNumber} value={PhoneNumberModalTypeEnum.AddDynamicPhoneNumber}>
-              <AddOutlined />&nbsp;&nbsp; Add Dynamic Call Flow
-            </MenuItem>
-            <MenuItem key={PhoneNumberModalTypeEnum.BulkDelete} value={PhoneNumberModalTypeEnum.BulkDelete}>
-              <DeleteSweepOutlined />&nbsp;&nbsp; Multi Delete Flow
-            </MenuItem>
-            <MenuItem key={PhoneNumberModalTypeEnum.BulkAdd} value={PhoneNumberModalTypeEnum.BulkAdd}>
-              <PlaylistAdd />&nbsp;&nbsp; Multi Add Flow
-            </MenuItem>
-            <MenuItem key={PhoneNumberModalTypeEnum.BulkEdit} value={PhoneNumberModalTypeEnum.BulkEdit}>
-              <EditNoteOutlined />&nbsp;&nbsp; Multi Edit Flow
-            </MenuItem>
-          </Select>
-        </FormControl>
-      </Grid>
+            fullWidth
+            id="flow-SearchBox-input"
+            label="Search"
+            margin="normal"
+            name="flow-SearchBox-input"
+            variant="standard"
+            onClick={() => modalController.current.openModal(PhoneNumberModalTypeEnum.Filter)}
+          />
+        </Grid>) : (<div></div>)}
+      {(!loading) ? (
+        <Grid item key = "Export FlowUI" xs={1} >
+          <Tooltip title="Export Flow Records" placement="right-start"  sx={{
+            left: "calc(76%)"
+          }}>
+            <IconButton
+              onClick={exportDataFile}
+              color = "primary"
+              size = "small"
+              sx ={{
+                position: "relative",
+                marginTop: "36px",
+                marginLeft: "36px",
+                ":hover": {
+                  backgroundColor: "grey",
+                  color: "white"
+                }
+              }}
+            > <SaveAlt />
+            </IconButton>
+          </Tooltip>
+        </Grid>) : (<div></div>)}
+      {(!loading) ? (
+        <Grid item key="flow-action-box" xs={2}>
+          <FormControl sx={{
+            marginTop: "16px",
+            marginBottom: "8px",
+            marginLeft: "calc(40%)"
+          }}>
+            <InputLabel>Actions</InputLabel>
+            <Select
+              inputProps={{
+                sx: {
+                  width: 120
+                }
+              }}
+              label="Actions"
+              value=""
+              disabled = {userDoesNotHavePermission}
+              onChange={handlePreviewModalOpen}
+              variant="filled"
+              size="small"
+              displayEmpty
+            >
+              <MenuItem key={PhoneNumberModalTypeEnum.AddLegacyPhoneNumber} value={PhoneNumberModalTypeEnum.AddLegacyPhoneNumber}>
+                <AddOutlined />&nbsp;&nbsp; Add Legacy Call Flow
+              </MenuItem>
+              <MenuItem key={PhoneNumberModalTypeEnum.AddDynamicPhoneNumber} value={PhoneNumberModalTypeEnum.AddDynamicPhoneNumber}>
+                <AddOutlined />&nbsp;&nbsp; Add Dynamic Call Flow
+              </MenuItem>
+              <MenuItem key={PhoneNumberModalTypeEnum.BulkDelete} value={PhoneNumberModalTypeEnum.BulkDelete}>
+                <DeleteSweepOutlined />&nbsp;&nbsp; Multi Delete Flow
+              </MenuItem>
+              <MenuItem key={PhoneNumberModalTypeEnum.BulkAdd} value={PhoneNumberModalTypeEnum.BulkAdd}>
+                <PlaylistAdd />&nbsp;&nbsp; Multi Add Flow
+              </MenuItem>
+              <MenuItem key={PhoneNumberModalTypeEnum.BulkEdit} value={PhoneNumberModalTypeEnum.BulkEdit}>
+                <EditNoteOutlined />&nbsp;&nbsp; Multi Edit Flow
+              </MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>) : (<div></div>)}
     </Grid>
   );
 };

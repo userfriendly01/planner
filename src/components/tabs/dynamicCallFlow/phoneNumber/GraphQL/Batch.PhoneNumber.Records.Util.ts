@@ -2,7 +2,9 @@ import { PhoneNumberRecordType } from "components/tabs/dynamicCallFlow/phoneNumb
 import {
   batchCreateLegacyPhoneNumberRecords
 } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Query/Batch.Create.Legacy.PhoneNumber.Records.Query";
-import { BatchRecordQuery, BatchResults } from "components/tabs/dynamicCallFlow/common/GraphQL/Abstract.BatchRecords.Query";
+import {
+  BatchRecordQuery, BatchResults
+} from "components/tabs/dynamicCallFlow/common/GraphQL/Abstract.BatchRecords.Query";
 import {
   batchCreateDynamicPhoneNumberRecords
 } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Query/Batch.Create.Dynamic.PhoneNumber.Records.Query";
@@ -10,6 +12,9 @@ import { PhoneNumberRecordUtil } from "components/tabs/dynamicCallFlow/phoneNumb
 import {
   batchDeleteLegacyPhoneNumberRecords
 } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Query/Batch.Delete.Legacy.PhoneNumber.Records.Query";
+import {
+  batchDeleteDynamicPhoneNumberRecords
+} from "dynamicCallFlowPhoneNumber/GraphQL/Query/Batch.Delete.Dynamic.PhoneNumber.Records.Query";
 
 /**
  * This function separates the phone number record list into legacy and dynamic lists and executes the corresponding
@@ -88,10 +93,11 @@ export class BatchPhoneNumberRecord {
    * @param {Array<PhoneNumberRecordType>} phoneNumberRecords
    */
   static async create(accessToken: string, phoneNumberRecords: Array<PhoneNumberRecordType>): Promise<BatchResults<PhoneNumberRecordType>> {
+    phoneNumberRecords.forEach( (phoneNumberRecord: PhoneNumberRecordType) => PhoneNumberRecordUtil.removeNonNullableKeys(phoneNumberRecord));
     return await batchPhoneNumberRecords(accessToken, phoneNumberRecords, batchCreateLegacyPhoneNumberRecords, batchCreateDynamicPhoneNumberRecords);
   }
 
   static async delete(accessToken: string, phoneNumberRecords: Array<PhoneNumberRecordType>): Promise<BatchResults<PhoneNumberRecordType>> {
-    return await batchPhoneNumberRecords(accessToken, phoneNumberRecords, batchDeleteLegacyPhoneNumberRecords, batchDeleteLegacyPhoneNumberRecords);
+    return await batchPhoneNumberRecords(accessToken, phoneNumberRecords, batchDeleteLegacyPhoneNumberRecords, batchDeleteDynamicPhoneNumberRecords);
   }
 }

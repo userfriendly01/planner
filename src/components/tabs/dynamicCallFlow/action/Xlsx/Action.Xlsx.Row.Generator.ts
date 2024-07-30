@@ -16,6 +16,7 @@ import {
   Redirect
 } from "components/tabs/dynamicCallFlow/action/GraphQL/Action.Interfaces";
 import { ActionTypeEnum } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
+import { logger } from "utils/logger";
 
 export class ActionXlsxRowGenerator {
   generateXlsxRows(actionRecords: Array<ActionRecordType>): Array<ActionXlsRowType> {
@@ -38,7 +39,7 @@ export class ActionXlsxRowGenerator {
           convertedActionXlsxRows = this.mapToRedirect(actionRecord as Redirect);
           break;
         default:
-          console.error(`Unknown action type: ${actionRecord.actionType}`);
+          logger.error(`Unknown action type: ${actionRecord.actionType}`, { ...actionRecord });
           return undefined;
       }
 

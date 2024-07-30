@@ -1,6 +1,6 @@
 import {
   userHasReadWriteAccess, userDoesNotHaveReadWriteAccess
-} from "../authentication";
+} from "../DynamicCallFlow.Authentication";
 import { ADGroupPermission } from "globals/interfaces";
 
 jest.mock("utils/alohaConfigUtils", () => ({

@@ -21,12 +21,10 @@ export default class ModalController<ModalType> implements ContainerModalControl
   }
 
   openModal(modalType: ModalType | NotInUseModalType): void {
-    console.info("######### setting currentOpenModal to: ", modalType);
     this._openModal(modalType);
   }
 
   closeModal(): void {
-    console.info("%%%%%% close modal");
     this._closeModal();
   }
 }
