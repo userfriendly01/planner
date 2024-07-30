@@ -31,7 +31,7 @@ export enum CallFlowNameTypeEnum {
     AISG_MAIN = "AISG Main"
 }
 
-export type CallFlowType ="DTMF" | "Self Service";
+export type CallFlowType = "DTMF" | "SELFSERVICE";
 export enum CallFlowTypeEnum {
     DTMF = "DTMF",
     SELFSERVICE = "Self Service",
