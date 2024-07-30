@@ -7,20 +7,18 @@ import React, {
 import {
   AddOutlined, DeleteSweepOutlined, EditNoteOutlined, PlaylistAdd, SaveAlt
 } from "@mui/icons-material";
-import { Filter } from "../../common/DataGrid/Abstract.DataGrid.Filter";
-import { DynamicCallFlowPhoneNumberContext } from "../DynamicCallFlow.PhoneNumber.Container";
+import { Filter } from "components/tabs/dynamicCallFlow/common/DataGrid/Abstract.DataGrid.Filter";
+import { DynamicCallFlowPhoneNumberContext } from "components/tabs/dynamicCallFlow/phoneNumber/DynamicCallFlow.PhoneNumber.Container";
 import {
   DataGridControllerRef, DataGridFilterRef
 } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
 import { PhoneNumberRecordType } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 import {
   DYNAMIC_CALL_FLOW_ROLE, userDoesNotHaveReadWriteAccess
-} from "dynamicCallFlowCommon/DynamicCallFlow.Authentication";
+} from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Authentication";
 import { PhoneNumberXlsxExporter } from "components/tabs/dynamicCallFlow/phoneNumber/Xlsx/Export/PhoneNumber.Xlsx.Exporter";
 import { PhoneNumberModalTypeEnum } from "components/tabs/dynamicCallFlow/phoneNumber/DynamicCallFlow.PhoneNumber.Interfaces";
 import { FilterLabel } from "components/tabs/dynamicCallFlow/phoneNumber/DataGrid/PhoneNumber.DataGrid.Filter.Modal";
-import { ViewListIconToggleForm } from "dynamicCallFlowCommon/Form/ViewList.IconToggle.Form";
-
 
 interface PhoneNumberDataGridToolBarProps {
   isFilterModalOpen: boolean;
@@ -70,7 +68,7 @@ const PhoneNumberDataGridToolBar = ({
                     color="primary"
                     tabIndex={index}
                     label={`${FilterLabel.get(key) || key} : ${localFilter[key]}`}
-                    onDelete={(event: any)=> { removeFilterElement(key); }}
+                    onDelete={()=> { removeFilterElement(key); }}
                     sx={{ margin: 1 }}
                   />
                 ))

@@ -34,9 +34,9 @@ import {
   TRANSFER_NUMBER,
   TYPE,
   USER_DESTINATION
-} from "dynamicCallFlowPhoneNumber/Form/Legacy.PhoneNumber.Form.Fields";
-import { PhoneNumberRecordType } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
-import { FieldDataType } from "dynamicCallFlowCommon/Form/Form.Interfaces";
+} from "components/tabs/dynamicCallFlow/phoneNumber/Form/Legacy.PhoneNumber.Form.Fields";
+import { PhoneNumberRecordType } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { FieldDataType } from "components/tabs/dynamicCallFlow/common/Form/Form.Interfaces";
 
 export const PhoneNumberDataGridColumnDef: GridColDef[] = [
   {

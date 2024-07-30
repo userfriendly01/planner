@@ -3,8 +3,8 @@ import {
   AlertBarControllerRef,
   DataGridFilterRef,
   ReactGridApi
-} from "dynamicCallFlowCommon/DynamicCallFlow.Interfaces";
-import { ACTION_ID } from "dynamicCallFlowAction/Form/ActionFields";
+} from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
+import { ACTION_ID } from "components/tabs/dynamicCallFlow/action/Form/ActionFields";
 
 
 jest.mock("components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces");

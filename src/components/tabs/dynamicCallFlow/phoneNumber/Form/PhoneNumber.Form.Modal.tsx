@@ -35,7 +35,7 @@ import { PhoneNumberModalTypeEnum } from "components/tabs/dynamicCallFlow/phoneN
 import {
   DYNAMIC_CALL_FLOW_ROLE,
   userDoesNotHaveReadWriteAccess
-} from "dynamicCallFlowCommon/DynamicCallFlow.Authentication";
+} from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Authentication";
 
 export interface FormModalProps {
   isOpen: boolean;

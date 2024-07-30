@@ -7,8 +7,8 @@ import { runDynamicCallFlowStartup } from "authentication/startups/cct-dynamic-c
 import {
   AuthenticationProfile, descriptions, Permissions
 } from "authentication/authenticationInterfaces";
-import DynamicCallFlowPhoneNumberContainer from "dynamicCallFlowPhoneNumber/DynamicCallFlow.PhoneNumber.Container";
-import { DYNAMIC_CALL_FLOW_TAB_CONFIGURATION } from "dynamicCallFlowCommon/DynamicCallFlow.Configuration";
+import DynamicCallFlowPhoneNumberContainer from "components/tabs/dynamicCallFlow/phoneNumber/DynamicCallFlow.PhoneNumber.Container";
+import { DYNAMIC_CALL_FLOW_TAB_CONFIGURATION } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Configuration";
 
 export const DYNAMIC_CALL_FLOW_ROLE = "FlowReadWrite";
 export const DYNAMIC_CALL_FLOW_STARTUP_PROFILE_NAME = "dynamic-call-flow";

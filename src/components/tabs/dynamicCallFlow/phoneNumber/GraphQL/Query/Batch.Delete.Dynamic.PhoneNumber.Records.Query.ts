@@ -6,7 +6,7 @@ import {
 } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 import {
   AbstractBatchDeleteDynamicCallFlowQuery
-} from "dynamicCallFlowCommon/GraphQL/Abstract.Batch.Delete.DynamicCallFlow.Query";
+} from "components/tabs/dynamicCallFlow/common/GraphQL/Abstract.Batch.Delete.DynamicCallFlow.Query";
 import { PhoneNumberRecordUtil } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/PhoneNumber.Record.Util";
 
 /**

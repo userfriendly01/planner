@@ -3,7 +3,7 @@ import { BatchResults } from "components/tabs/dynamicCallFlow/common/GraphQL/Abs
 import { CallFlowDeleteInput } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
 import {
   AbstractBatchDeleteDynamicCallFlowQuery
-} from "dynamicCallFlowCommon/GraphQL/Abstract.Batch.Delete.DynamicCallFlow.Query";
+} from "components/tabs/dynamicCallFlow/common/GraphQL/Abstract.Batch.Delete.DynamicCallFlow.Query";
 
 class BatchDeleteActionRecordsQuery extends AbstractBatchDeleteDynamicCallFlowQuery<ActionRecordType> {
   protected generateCallFlowDeleteInputs(actionRecords: Array<ActionRecordType>): Array<CallFlowDeleteInput> {

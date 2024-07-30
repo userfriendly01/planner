@@ -14,8 +14,8 @@ import AlohaRoutingContainer from "../components/tabs/alohaRouting/AlohaRoutingC
 import {
   DynamicCallFlowAuthenticationProfile, DynamicCallFlowADGroupPermission,
   DynamicCallFlowStartUpProfile
-} from "dynamicCallFlowCommon/DynamicCallFlow.Authentication";
-import { DYNAMIC_CALL_FLOW_TAB_CONFIGURATION } from "dynamicCallFlowCommon/DynamicCallFlow.Configuration";
+} from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Authentication";
+import { DYNAMIC_CALL_FLOW_TAB_CONFIGURATION } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Configuration";
 
 export const getAuthenticationProfileTemplates = (): AuthenticationProfileOptions => {
   const Tabs = getTabs();
