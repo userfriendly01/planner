@@ -7,7 +7,7 @@ export class PhoneNumberXlsxValueInspector {
     phoneNumberXlsxRows.forEach((phoneNumberXlsxRow: PhoneNumberXlsxRow) => {
       this.inspectCommonPhoneNumberFields(phoneNumberXlsxRow);
 
-      if (phoneNumberXlsxRow.nextActionId && phoneNumberXlsxRow.nextActionType) {
+      if ((phoneNumberXlsxRow.nextActionId && phoneNumberXlsxRow.nextActionType) || phoneNumberXlsxRow.migrateSelfServiceNumberToDynamic?.toLowerCase() === "true") {
         this.inspectDynamicPhoneNumberSpecificFields(phoneNumberXlsxRow);
       } else {
         this.inspectLegacyPhoneNumberSpecificFields(phoneNumberXlsxRow);

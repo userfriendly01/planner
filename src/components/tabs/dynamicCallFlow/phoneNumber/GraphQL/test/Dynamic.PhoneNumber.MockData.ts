@@ -37,6 +37,7 @@ const DynamicPhoneNumberRecordMock: PhoneNumber = {
   callFlowType: CallFlowTypeEnum.DTMF,
   callFlowRoute: "call flow route",
   callIntent: "call intent",
+  createTime: 1712756033000,
   dataRequests: ["data request"],
   greetingMessages: "Hello",
   languageOffer: LanguageOfferTypeEnum.ENGLISH,
@@ -45,7 +46,8 @@ const DynamicPhoneNumberRecordMock: PhoneNumber = {
   officeNumbers: ["office number"],
   phoneNumber: "8005551212",
   phoneNumberType: PhoneNumberTypeEnum.TFN,
-  transferDestination: "transfer destination"
+  transferDestination: "transfer destination",
+  updateTime: 1712756033000
 };
 
 export const DynamicPhoneNumberOne: PhoneNumber = mockDynamicPhoneNumber("8005550001");

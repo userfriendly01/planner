@@ -126,6 +126,6 @@ export interface PhoneNumber extends BasePhoneNumber {
     phoneNumberType?: PhoneNumberType;
     transferDestination?: string;
     updateTime?: number;
+    // This field will be removed once all self service numbers are migrated to dynamic call flow:
+    migrateSelfServiceNumberToDynamic?: boolean;
 }
-
-

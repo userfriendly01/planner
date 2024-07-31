@@ -33,7 +33,7 @@ export class PhoneNumberXlsxImporter extends AbstractXlsxImporter<PhoneNumberXls
   }
 
   private isDynamicPhoneNumberXlsxRow(phoneNumberXlsxRow: PhoneNumberXlsxRow): boolean {
-    return phoneNumberXlsxRow && "nextActionId" in phoneNumberXlsxRow;
+    return phoneNumberXlsxRow && ("nextActionId" in phoneNumberXlsxRow || phoneNumberXlsxRow.migrateSelfServiceNumberToDynamic?.toLowerCase() === "true");
   }
 
   private isLegacyPhoneNumberXlsxRow(phoneNumberXlsxRow: PhoneNumberXlsxRow): boolean {

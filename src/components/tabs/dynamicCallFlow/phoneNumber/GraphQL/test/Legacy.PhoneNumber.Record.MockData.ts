@@ -26,8 +26,10 @@ const LegacyPhoneNumberRecordMock: CctSharedCallFlowDb = {
     transferNumber: "transfer number",
     officeNumbers: ["office number"]
   },
+  createTime: "2024-04-10T13:33:53.000Z",
   selfServiceIndicator: false,
   type: LegacyPhoneNumberTypeEnum.TFN,
+  updateTime: "2024-04-10T13:33:53.000Z",
   userDestination: "user destination"
 };
 

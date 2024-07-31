@@ -16,7 +16,8 @@ export class LegacyPhoneNumberXlsxRowGenerator extends AbstractPhoneNumberXlsxRo
       callDetails1: legacyPhoneNumber.callDetails1,
       callDetails2: legacyPhoneNumber.callDetails2,
       selfServiceIndicator: legacyPhoneNumber.selfServiceIndicator ? "TRUE" : "FALSE",
-      userDestination: legacyPhoneNumber.userDestination
+      userDestination: legacyPhoneNumber.userDestination,
+      transferDestination: legacyPhoneNumber.content?.transferNumber
     } as PhoneNumberXlsxRow;
   }
 
@@ -52,6 +53,7 @@ export class LegacyPhoneNumberXlsxRowGenerator extends AbstractPhoneNumberXlsxRo
       tfnRoutingGroup: xlsxRow.tfnRoutingGroup,
       tollFreeNumber: xlsxRow.tollFreeNumber,
       transferCode: xlsxRow.transferCode,
+      transferDestination: xlsxRow.transferDestination,
       userDestination: xlsxRow.userDestination,
       whisper: xlsxRow.whisper
     } as PhoneNumberXlsxRow));

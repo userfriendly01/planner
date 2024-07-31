@@ -1,9 +1,12 @@
 import {
   CallerTypeEnum, CallFlowTypeEnum, LanguageOfferTypeEnum,
-  PhoneNumber, PhoneNumberRecordType
+  PhoneNumber, PhoneNumberRecordType,
+  PhoneNumberType,
+  PhoneNumberTypeEnum
 } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 import {
-  CctSharedCallFlowDb, FlowContent
+  CctSharedCallFlowDb, FlowContent,
+  LegacyPhoneNumberTypeEnum
 } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
 import {
   CREATE_TIME, DynamicPhoneNumberFormFields, EMPLOYEE_ID,
@@ -275,5 +278,105 @@ export class PhoneNumberRecordUtil {
     if (!phoneNumberRecord[EMPLOYEE_ID as keyof PhoneNumberRecordType]) {
       delete phoneNumberRecord[EMPLOYEE_ID as keyof PhoneNumberRecordType];
     }
+  }
+
+  /**
+   * Converts known properties from one phone number record type to another
+   * @param { PhoneNumberRecordType } phoneNumberRecord - phone number record to convert, can be either legacy or dynamic call flow
+   * @returns { CctSharedCallFlowDb | PhoneNumber } - converted phone number record
+   */
+  public static convertPhoneNumberRecord<T extends PhoneNumberRecordType>(phoneNumberRecord: PhoneNumberRecordType): T {
+    if (this.isDynamicPhoneNumberRecord(phoneNumberRecord)) {
+      return PhoneNumberRecordUtil.convertPhoneNumberToCctSharedCallFlowDb(phoneNumberRecord as PhoneNumber) as T;
+    }
+
+    return PhoneNumberRecordUtil.convertCctSharedCallFlowDbToPhoneNumber(phoneNumberRecord as CctSharedCallFlowDb) as T;
+  }
+
+  /**
+   * Converts known properties from legacy phone number records to dynamic call flow phone number records
+   * @param { CctSharedCallFlowDb } phoneNumberRecord - legacy phone number record
+   * @returns { PhoneNumber } - dynamic call flow phone number record
+   */
+  private static convertCctSharedCallFlowDbToPhoneNumber (phoneNumberRecord: CctSharedCallFlowDb): PhoneNumber {
+    return {
+      brand: phoneNumberRecord.brand,
+      callerType: phoneNumberRecord.content?.callerType,
+      callFlowName: "",
+      callFlowTemplate: phoneNumberRecord.callFlowTemplate,
+      callFlowType: phoneNumberRecord.selfServiceIndicator === true ? CallFlowTypeEnum.SELFSERVICE : CallFlowTypeEnum.DTMF,
+      callFlowRoute: phoneNumberRecord.content.callFlowRoute,
+      callIntent: phoneNumberRecord.content.callIntent,
+      callTypeDescription: phoneNumberRecord.callTypeDescription,
+      channel: phoneNumberRecord.channel,
+      createTime: Math.floor((phoneNumberRecord.createTime ? new Date(phoneNumberRecord.createTime) : new Date()).getTime() / 1000),
+      dataRequests: phoneNumberRecord.content.dataRequests,
+      dialedDescription: phoneNumberRecord.dialedDescription,
+      employeeId: phoneNumberRecord.employeeId,
+      greetingMessages: phoneNumberRecord.content.greetingMessages,
+      internetPlacement: phoneNumberRecord.internetPlacement,
+      languageOffer: phoneNumberRecord.content.languageOffer,
+      lineOfBusiness: phoneNumberRecord.lineOfBusiness,
+      marketingChannel: phoneNumberRecord.marketingChannel,
+      officeNumbers: phoneNumberRecord.content.officeNumbers,
+      phoneNumber: phoneNumberRecord.pkey,
+      phoneNumberType: Object.values(PhoneNumberTypeEnum).includes(phoneNumberRecord.type as PhoneNumberTypeEnum) ? phoneNumberRecord.type as PhoneNumberType : PhoneNumberTypeEnum.DID,
+      predictiveCaller: phoneNumberRecord.predictiveCaller,
+      rangeIndicator: phoneNumberRecord.rangeIndicator,
+      requestID: phoneNumberRecord.requestID,
+      tollFreeNumber: phoneNumberRecord.tollFreeNumber,
+      tfnRoutingGroup: phoneNumberRecord.tfnRoutingGroup,
+      transferCode: phoneNumberRecord.transferCode,
+      transferDestination: phoneNumberRecord.userDestination,
+      updateTime: Math.floor((phoneNumberRecord.createTime ? new Date(phoneNumberRecord.updateTime) : new Date()).getTime() / 1000),
+      whisper: phoneNumberRecord.whisper
+    };
+  }
+
+  /**
+   * Converts known properties from dynamic phone number record to legacy flow phone number records
+   * @param { PhoneNumber } phoneNumberRecord - dynamic call flow phone number record
+   * @returns { CctSharedCallFlowDb } - legacy phone number record
+   */
+  private static convertPhoneNumberToCctSharedCallFlowDb (phoneNumberRecord: PhoneNumber): CctSharedCallFlowDb {
+    return {
+      accountManager: "",
+      affinityVDN: "",
+      agentId: "",
+      brand: phoneNumberRecord.brand,
+      callDetails1: "",
+      callDetails2: "",
+      callFlowTemplate: phoneNumberRecord.callFlowTemplate,
+      callTypeDescription: phoneNumberRecord.callTypeDescription,
+      channel: phoneNumberRecord.channel,
+      content: {
+        callIntent: phoneNumberRecord.callIntent,
+        callerType: phoneNumberRecord.callerType,
+        callFlowRoute: phoneNumberRecord.callFlowRoute,
+        dataRequests: phoneNumberRecord.dataRequests,
+        greetingMessages: phoneNumberRecord.greetingMessages,
+        languageOffer: phoneNumberRecord.languageOffer,
+        transferNumber: "",
+        officeNumbers: phoneNumberRecord.officeNumbers
+      },
+      createTime: (phoneNumberRecord.createTime ? new Date(phoneNumberRecord.createTime) : new Date()).toISOString(),
+      dialedDescription: phoneNumberRecord.dialedDescription,
+      employeeId: phoneNumberRecord.employeeId,
+      internetPlacement: phoneNumberRecord.internetPlacement,
+      lineOfBusiness: phoneNumberRecord.lineOfBusiness,
+      marketingChannel: phoneNumberRecord.marketingChannel,
+      pkey: phoneNumberRecord.phoneNumber,
+      predictiveCaller: phoneNumberRecord.predictiveCaller,
+      rangeIndicator: phoneNumberRecord.rangeIndicator,
+      requestID: phoneNumberRecord.requestID,
+      selfServiceIndicator: phoneNumberRecord.callFlowType === CallFlowTypeEnum.SELFSERVICE,
+      tfnRoutingGroup: phoneNumberRecord.tfnRoutingGroup,
+      tollFreeNumber: phoneNumberRecord.tollFreeNumber,
+      transferCode: phoneNumberRecord.transferCode,
+      type: phoneNumberRecord.phoneNumberType as LegacyPhoneNumberTypeEnum,
+      updateTime: (phoneNumberRecord.updateTime ? new Date(phoneNumberRecord.updateTime) : new Date()).toISOString(),
+      userDestination: phoneNumberRecord.transferDestination,
+      whisper: phoneNumberRecord.whisper
+    };
   }
 }

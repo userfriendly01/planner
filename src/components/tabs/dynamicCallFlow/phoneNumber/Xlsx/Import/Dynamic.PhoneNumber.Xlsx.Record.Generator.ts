@@ -2,6 +2,7 @@ import { PhoneNumberXlsxRow } from "components/tabs/dynamicCallFlow/phoneNumber/
 import {
   CallerType,
   CallFlowType,
+  CallFlowTypeEnum,
   LanguageOfferType,
   PhoneNumber,
   PhoneNumberType
@@ -13,12 +14,14 @@ import {
 
 export class DynamicPhoneNumberXlsxRecordGenerator extends AbstractPhoneNumberXlsxRecordGenerator {
   protected mapPhoneNumberRecordTypeSpecificFields(phoneNumberXlsxRow: PhoneNumberXlsxRow): PhoneNumber {
+    const isSelfServiceNumberMigratingToDynamic = phoneNumberXlsxRow.migrateSelfServiceNumberToDynamic?.toLowerCase() === "true";
+
     return {
       phoneNumber: phoneNumberXlsxRow.dialedPhoneNumber,
       phoneNumberType: phoneNumberXlsxRow.phoneNumberType as PhoneNumberType,
-      callFlowType: phoneNumberXlsxRow.callFlowType as CallFlowType,
+      callFlowType: isSelfServiceNumberMigratingToDynamic ? CallFlowTypeEnum.SELFSERVICE : phoneNumberXlsxRow.callFlowType as CallFlowType,
       callerType: phoneNumberXlsxRow.callerType as CallerType,
-      callFlowName: phoneNumberXlsxRow.callFlowName,
+      callFlowName: isSelfServiceNumberMigratingToDynamic ? CallFlowTypeEnum.SELFSERVICE : phoneNumberXlsxRow.callFlowName,
       callFlowRoute: phoneNumberXlsxRow.callFlowRoute,
       callIntent: phoneNumberXlsxRow.callIntent,
       dataRequests: phoneNumberXlsxRow.dataRequests?.split(",") || [],
@@ -27,7 +30,9 @@ export class DynamicPhoneNumberXlsxRecordGenerator extends AbstractPhoneNumberXl
       nextActionId: phoneNumberXlsxRow.nextActionId,
       nextActionType: phoneNumberXlsxRow.nextActionType as ActionType,
       officeNumbers: phoneNumberXlsxRow.officeNumbers?.split(",") || [],
-      transferDestination: phoneNumberXlsxRow.transferDestination
+      transferDestination: phoneNumberXlsxRow.transferDestination,
+      // This field will be removed once all self service numbers are migrated to dynamic call flow:
+      migrateSelfServiceNumberToDynamic: isSelfServiceNumberMigratingToDynamic
     } as PhoneNumber;
   }
 }
