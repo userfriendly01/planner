@@ -15,12 +15,7 @@ import {
   PhoneNumberModalType,
   PhoneNumberModalTypeEnum
 } from "components/tabs/dynamicCallFlow/phoneNumber/DynamicCallFlow.PhoneNumber.Interfaces";
-import {
-  CallerTypeEnum,
-  LanguageOfferTypeEnum,
-  PhoneNumber,
-  PhoneNumberRecordType
-} from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { PhoneNumberRecordType } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 import {
   DynamicCallFlowPhoneNumberContext
 } from "components/tabs/dynamicCallFlow/phoneNumber/DynamicCallFlow.PhoneNumber.Container";
@@ -41,10 +36,6 @@ import {
   newLegacyPhoneNumberRecord,
   PhoneNumberRecordUtil
 } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/PhoneNumber.Record.Util";
-import {
-  CctSharedCallFlowDb,
-  FlowContent
-} from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
 
 interface PreviewModalParameters<RecordType> {
     isOpen: boolean;
@@ -118,7 +109,7 @@ export const PhoneNumberPreviewModal = ({
   const createDynamicPhoneNumberRecord = () => {
     setModalRecords([
       ...modalRecords,
-      newLegacyPhoneNumberRecord()
+      newDynamicPhoneNumberRecord()
     ]);
   };
 
