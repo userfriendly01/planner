@@ -14,7 +14,7 @@ import {
   CallFlowNameTypeEnum,
   CallFlowTypeEnum,
   LanguageOfferTypeEnum,
-  PhoneNumberRecordType,
+  PhoneNumberRecordType, PhoneNumberTypeEnum,
   TfnRoutingGroupEnum,
   UserDestinationEnum
 } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
@@ -48,7 +48,8 @@ export class PhoneNumberFormFieldOptionsManager extends AbstractFormFieldOptions
       callFlowType: Object.values<string>(CallFlowTypeEnum),
       nextActionType: Object.values<string>(ActionTypeEnum),
       tfnRoutingGroup: Object.values<string>(TfnRoutingGroupEnum),
-      phoneNumberType: Object.values<string>(LegacyPhoneNumberTypeEnum)
+      phoneNumberType: Object.values<string>(PhoneNumberTypeEnum),
+      type: Object.values<string>(LegacyPhoneNumberTypeEnum)
     } as FieldOptions;
   }
 }

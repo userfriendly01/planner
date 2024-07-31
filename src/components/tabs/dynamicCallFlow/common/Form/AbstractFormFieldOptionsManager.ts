@@ -22,8 +22,8 @@ export abstract class AbstractFormFieldOptionsManager<RecordType> implements For
     this._fieldOptions = this.getStaticFieldOptions();
     if (fieldOptionsCache && lastCachedDate) {
       this._fieldOptions = {
-        ...this._fieldOptions,
-        ...JSON.parse(fieldOptionsCache)
+        ...JSON.parse(fieldOptionsCache),
+        ...this._fieldOptions
       };
     }
   }

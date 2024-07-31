@@ -16,7 +16,7 @@ import {
   Modal, ModalHeader
 } from "@lmig/lmds-react-modal";
 import {
-  BrandName, PhoneNumberRecordType
+  BrandName, PhoneNumber, PhoneNumberRecordType
 } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 import {
   FieldConfig, FieldConfigs
@@ -36,19 +36,20 @@ import {
   DYNAMIC_CALL_FLOW_ROLE,
   userDoesNotHaveReadWriteAccess
 } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Authentication";
+import { CctSharedCallFlowDb } from "dynamicCallFlowPhoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
 
 export interface FormModalProps {
   isOpen: boolean;
   formHandler: FormHandler<PhoneNumberRecordType>;
   alertBarController: AlertBarControllerRef,
-  selectedRow: PhoneNumberRecordType;
+  record: PhoneNumberRecordType;
   fieldConfigsReactStateAction: ReactStateAction<FieldConfigs>;
   handleOnClone: () => void;
   postFormHandler: () => void;
 }
 
 export const PhoneNumberFormModal = ({
-  isOpen, formHandler, alertBarController, selectedRow, fieldConfigsReactStateAction, handleOnClone, postFormHandler
+  isOpen, formHandler, alertBarController, record, fieldConfigsReactStateAction, handleOnClone, postFormHandler
 }: FormModalProps): JSX.Element => {
   const {
     state: fieldConfigs
@@ -65,8 +66,8 @@ export const PhoneNumberFormModal = ({
   const [alertBarProps, setAlertBarProps] = useState<AlertBarProps>(initialAlertBarProps);
 
   useEffect(() => {
-    setFormRecord({ ...selectedRow });
-  }, [selectedRow]);
+    setFormRecord({ ...record });
+  }, [record]);
 
   const alertBarOnClose = () => {
     setAlertBarProps(prevState => ({

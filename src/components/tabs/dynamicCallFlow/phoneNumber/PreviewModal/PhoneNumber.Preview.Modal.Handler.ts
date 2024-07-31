@@ -9,6 +9,7 @@ import {
 } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Match.PhoneNumber.Records.Util";
 import { BatchPhoneNumberRecord } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Batch.PhoneNumber.Records.Util";
 import { deleteOppositeRows } from "components/tabs/dynamicCallFlow/phoneNumber/DataGrid/PhoneNumber.DataGrid.Util";
+import { map } from "lodash";
 
 export class PhoneNumberPreviewModalHandler extends AbstractPreviewModalHandler<PhoneNumberRecordType> {
   //TODO: May need to check for matching records of the same record type since moving a phone number from legacy to dynamic is ok,
@@ -49,11 +50,12 @@ export class PhoneNumberPreviewModalHandler extends AbstractPreviewModalHandler<
       }
     }
 
-    if (logicalUpdateOperation) {
-      this.dataGridController.updateRecordsInDataGrid(phoneNumberRecords);
-    } else {
-      this.dataGridController.addRecordsToSourceRecords(phoneNumberRecords);
-    }
+    // if (logicalUpdateOperation) {
+    //   const updatedRecords = phoneNumberRecords.map((updatedRecord: PhoneNumberRecordType) => ( { ...updatedRecord } ));
+    //   this.dataGridController.updateRecordsInSourceRecords(updatedRecords);
+    // } else {
+    //   this.dataGridController.addRecordsToSourceRecords(phoneNumberRecords);
+    // }
 
     this.dataGridController.alertBarController.success("Phone Number Records successfully created.");
 

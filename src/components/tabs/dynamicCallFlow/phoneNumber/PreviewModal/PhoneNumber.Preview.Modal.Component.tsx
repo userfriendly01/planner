@@ -36,7 +36,11 @@ import { HANDLED_SUCCESSFULLY } from "components/tabs/dynamicCallFlow/common/Pre
 import {
   PhoneNumberXlsxImporter
 } from "components/tabs/dynamicCallFlow/phoneNumber/Xlsx/Import/PhoneNumber.Xlsx.Importer";
-import { PhoneNumberRecordUtil } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/PhoneNumber.Record.Util";
+import {
+  newDynamicPhoneNumberRecord,
+  newLegacyPhoneNumberRecord,
+  PhoneNumberRecordUtil
+} from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/PhoneNumber.Record.Util";
 import {
   CctSharedCallFlowDb,
   FlowContent
@@ -46,6 +50,7 @@ interface PreviewModalParameters<RecordType> {
     isOpen: boolean;
     selectedRecords: Array<RecordType>;
     dataGridController: DataGridControllerRef<RecordType>;
+    updateSourceRecords: (sourceRecords: Array<RecordType>) => void;
     fieldOptions: FieldOptions;
     modalType: PhoneNumberModalType;
     maxId?: number;
@@ -55,7 +60,7 @@ interface PreviewModalParameters<RecordType> {
 // create handler to process batch jobs concurrently
 
 export const PhoneNumberPreviewModal = ({
-  isOpen, selectedRecords, onClose, dataGridController, fieldOptions, modalType, maxId, loading
+  isOpen, selectedRecords, updateSourceRecords, onClose, dataGridController, fieldOptions, modalType, maxId, loading
 }: PreviewModalParameters<PhoneNumberRecordType>): JSX.Element => {
   const {
     accessTokenGraph
@@ -83,8 +88,17 @@ export const PhoneNumberPreviewModal = ({
   }, [htmlInputElements]);
 
   const handleOnCreate = async (logicalUpdateOperation = false) => {
-    if (await previewModalHandler.current.handleOnCreate(accessTokenGraph, modalRecords, logicalUpdateOperation) === HANDLED_SUCCESSFULLY) {
+    const newRecords: Array<PhoneNumberRecordType> = [...modalRecords].map((row: PhoneNumberRecordType) => {
+      const updatedRecord: PhoneNumberRecordType = {};
+      Object.keys(row).forEach((key: string) => {
+        updatedRecord[key as keyof PhoneNumberRecordType] = dataGridApi.current.getCellValue(PhoneNumberRecordUtil.getPhoneNumber(row), key);
+      });
+      return updatedRecord;
+    });
+
+    if (await previewModalHandler.current.handleOnCreate(accessTokenGraph, newRecords, logicalUpdateOperation) === HANDLED_SUCCESSFULLY) {
       setModalRecords([]);
+      updateSourceRecords(newRecords);
       onClose();
     }
   };
@@ -220,13 +234,13 @@ export const PhoneNumberPreviewModal = ({
               <StyledButton sx={{
                 marginRight: "10px",
                 marginBottom: "10px"
-              }} onClick={()=>{ createDynamicPhoneNumberRecord(); }}>Add Dynamic</StyledButton>
+              }} onClick={()=>{ newDynamicPhoneNumberRecord(); }}>Add Dynamic</StyledButton>
             }
             {modalType === PhoneNumberModalTypeEnum.BulkAdd &&
               <StyledButton sx={{
                 marginRight: "10px",
                 marginBottom: "10px"
-              }} onClick={()=>{ createLegacyPhoneNumberRecord(); }}>Add Legacy</StyledButton>
+              }} onClick={()=>{ newLegacyPhoneNumberRecord(); }}>Add Legacy</StyledButton>
             }
           </Box>
           <DataGrid

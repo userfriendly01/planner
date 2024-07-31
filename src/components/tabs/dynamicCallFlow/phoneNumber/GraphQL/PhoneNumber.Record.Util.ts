@@ -64,7 +64,6 @@ export const newLegacyPhoneNumberRecord = (): CctSharedCallFlowDb => {
       greetingMessages: "",
       languageOffer: LanguageOfferTypeEnum.ENGLISH,
       officeNumbers: [],
-      transferDestination: "",
       transferNumber: ""
     } as FlowContent,
     accountManager: "",

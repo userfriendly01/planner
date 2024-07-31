@@ -1,6 +1,8 @@
 import { AbstractGraphQLQuery } from "./AbstractGraphQL.Query";
 import { LoadDataGridMonitorRef } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
 import { logger } from "utils/logger";
+import { Simulate } from "react-dom/test-utils";
+import error = Simulate.error;
 
 export interface ListVariables {
   id?: number;
@@ -21,15 +23,15 @@ export abstract class AbstractListRecordsQuery extends AbstractGraphQLQuery {
   async getEntireList<RecordType>(accessToken: string, loadDataGridMonitor?: LoadDataGridMonitorRef): Promise<Array<RecordType>> {
     let nextToken: string = null;
     let entireList: Array<RecordType> = [];
-    // let loopCounter = 0;
+    let loopCounter = 0;
     try {
       do {
-        // loopCounter++;
+        loopCounter++;
         const listResults = await this.getList<RecordType>(accessToken, 10000, nextToken);
         nextToken = listResults.nextToken;
         loadDataGridMonitor.current.addToRecordCount(listResults.items.length);
         entireList = entireList.concat(listResults.items);
-      } while (nextToken);
+      } while (nextToken && loopCounter < 3);
     } catch (error) {
       logger.error(`Error in getEntireList: ${error?.message}`, error );
     }

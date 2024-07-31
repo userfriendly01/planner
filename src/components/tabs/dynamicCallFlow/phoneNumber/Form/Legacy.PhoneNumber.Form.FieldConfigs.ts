@@ -132,7 +132,6 @@ createFieldConfig("Call Intent", CALL_INTENT, ControlEnum.Input);
 createFieldConfig("Office Numbers", OFFICE_NUMBERS, ControlEnum.MultiTextField, false, false, FieldDataTypeEnum.STRING_ARRAY);
 createFieldConfig("TFN Routing Group", TFN_ROUTING_GROUP, ControlEnum.Select, false, false, FieldDataTypeEnum.STRING);
 createFieldConfig("Predictive Caller", PREDICTIVE_CALLER, ControlEnum.Switch, false, false, FieldDataTypeEnum.BOOLEAN, drcFieldConditionCheck);
-createFieldConfig("Call Flow Type", CALL_FLOW_TYPE, ControlEnum.AutoComplete, false, false, FieldDataTypeEnum.STRING);
 createFieldConfig("Self Service Indicator", SELF_SERVICE_INDICATOR, ControlEnum.AutoComplete, false, false, FieldDataTypeEnum.STRING);
 
 Object.freeze(LegacyPhoneNumberFormFieldConfigs);

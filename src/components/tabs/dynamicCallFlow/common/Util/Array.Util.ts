@@ -17,8 +17,8 @@ export function updateElementInArray<ElementType>(elementKey: string, updatedEle
 }
 
 export function updateElementsInArray<ElementType>(elementKey: string, updatedElements: Array<ElementType>, targetArray: Array<ElementType>): Array<ElementType> {
-  return targetArray.map(targetElement =>
-    updatedElements.find(updatedElement => elementsMatch(elementKey, targetElement, updatedElement)) || targetElement);
+  return targetArray.map(existingElement =>
+    updatedElements.find(updatedElement => elementsMatch(elementKey, existingElement, updatedElement)) || existingElement);
 }
 
 export function removeElementFromArray<ElementType>(elementUniqueKey: string, elementToRemoveFromTargetArray: ElementType, targetArray: Array<ElementType>): Array<ElementType> {

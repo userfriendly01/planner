@@ -25,12 +25,12 @@ interface PhoneNumberDataGridToolBarProps {
   dataGridFilter: DataGridFilterRef<PhoneNumberRecordType>;
   dataGridController: DataGridControllerRef<PhoneNumberRecordType>;
   loading: boolean;
-  handlePreviewModalOpen: (event: any) => void;
+  handleModalOpen: (event: any) => void;
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const PhoneNumberDataGridToolBar = ({
-  isFilterModalOpen, dataGridFilter, dataGridController, handlePreviewModalOpen, loading
+  isFilterModalOpen, dataGridFilter, dataGridController, handleModalOpen, loading
 }: PhoneNumberDataGridToolBarProps) => {
   const {
     permissions,
@@ -121,7 +121,7 @@ const PhoneNumberDataGridToolBar = ({
               label="Actions"
               value=""
               disabled = {userDoesNotHavePermission}
-              onChange={handlePreviewModalOpen}
+              onChange={handleModalOpen}
               variant="filled"
               size="small"
               displayEmpty

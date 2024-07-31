@@ -24,13 +24,14 @@ export class LegacyPhoneNumberXlsxRecordGenerator extends AbstractPhoneNumberXls
       callDetails2: phoneNumberXlsxRow.callDetails2,
       userDestination: phoneNumberXlsxRow.userDestination as UserDestinationType,
       content: {
-        languageOffer: phoneNumberXlsxRow.languageOffer as LanguageOfferType,
-        dataRequests: phoneNumberXlsxRow.dataRequests?.split(",") || [],
         callerType: phoneNumberXlsxRow.callerType as CallerType,
         callFlowRoute: phoneNumberXlsxRow.callFlowRoute,
-        greetingMessages: phoneNumberXlsxRow.greetingMessages,
         callIntent: phoneNumberXlsxRow.callIntent,
-        officeNumbers: phoneNumberXlsxRow.officeNumbers?.split(",") || []
+        dataRequests: phoneNumberXlsxRow.dataRequests?.split(",") || [],
+        greetingMessages: phoneNumberXlsxRow.greetingMessages,
+        languageOffer: phoneNumberXlsxRow.languageOffer as LanguageOfferType,
+        officeNumbers: phoneNumberXlsxRow.officeNumbers?.split(",") || [],
+        transferNumber: phoneNumberXlsxRow.transferDestination
       } as FlowContent
     } as CctSharedCallFlowDb;
   }

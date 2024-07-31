@@ -106,7 +106,7 @@ export abstract class AbstractDataGridFilter<RecordType> implements DataGridFilt
 
   protected abstract getPropertyValue(record: RecordType, key: string): string | Array<string> | number | boolean | undefined;
 
-  applyFilter(sourceRecords?: Array<RecordType>,idStart?: number, idEnd?: number): Array<RecordType> {
+  applyFilter(sourceRecords?: Array<RecordType>, idStart?: number, idEnd?: number): Array<RecordType> {
     if (sourceRecords) {
       this._sourceRecords = sourceRecords;
     } else if (!this._sourceRecords) {
