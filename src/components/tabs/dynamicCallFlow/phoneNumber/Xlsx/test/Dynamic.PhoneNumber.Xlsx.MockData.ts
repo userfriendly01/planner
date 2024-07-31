@@ -1,0 +1,48 @@
+import {
+  BrandTypeEnum, CallFlowTypeEnum,
+  CallerTypeEnum,
+  ChannelTypeEnum,
+  LanguageOfferTypeEnum, PhoneNumberTypeEnum
+} from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { PhoneNumberXlsxRow } from "dynamicCallFlowPhoneNumber/Xlsx/PhoneNumber.Xlsx.Interfaces";
+
+export const testDynamicPhoneNumberXlsxRow: PhoneNumberXlsxRow = {
+  dialedPhoneNumber: "+12345678910",
+  accountManager: "",
+  affinityVDN: "",
+  agentId: "",
+  brand: BrandTypeEnum.LIBERTY_MUTUAL,
+  employeeId: "testDynamicEmployeeId",
+  callDetails1: "",
+  callDetails2: "",
+  callFlowName: "SELFSERVICE",
+  callFlowTemplate: "testDynamicCallFlowTemplate",
+  callFlowType: CallFlowTypeEnum.SELFSERVICE,
+  callTypeDescription: "testDynamicCallTypeDescription",
+  channel: ChannelTypeEnum.SERVICE,
+  callFlowRoute: "testDynamicCallFlowRoute",
+  callIntent: "testDynamicCallIntent",
+  callerType: CallerTypeEnum.CUSTOMER,
+  dataRequests: "testDynamicDataRequests",
+  greetingMessages: "testDynamicGreetingMessages",
+  languageOffer: LanguageOfferTypeEnum.ENGLISH,
+  officeNumbers: "officeNumbers",
+  transferDestination: "testDynamicTransferDestination",
+  dialedDescription: "testDynamicDialedDescription",
+  internetPlacement: "testDynamicInternetPlacement",
+  lineOfBusiness: "testDynamicLineOfBusiness",
+  marketingChannel: "testDynamicMarketingChannel",
+  nextActionId: "",
+  nextActionType: "",
+  phoneNumberType: PhoneNumberTypeEnum.TFN,
+  predictiveCaller: "false",
+  rangeIndicator: "testDynamicRangeIndicator",
+  requestID: "requestID",
+  selfServiceIndicator: "",
+  tfnRoutingGroup: "testDynamicTfnRoutingGroup",
+  tollFreeNumber: "testDynamicTollFreeNumber",
+  transferCode: "testDynamicTransferCode",
+  userDestination: "",
+  whisper: "testDynamicWhisper",
+  migrateSelfServiceNumberToDynamic: "true"
+};

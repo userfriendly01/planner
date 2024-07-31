@@ -1,0 +1,48 @@
+import {
+  BrandTypeEnum,
+  CallerTypeEnum,
+  ChannelTypeEnum,
+  LanguageOfferTypeEnum, PhoneNumberTypeEnum
+} from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { PhoneNumberXlsxRow } from "dynamicCallFlowPhoneNumber/Xlsx/PhoneNumber.Xlsx.Interfaces";
+
+export const testLegacyPhoneNumberXlsxRow: PhoneNumberXlsxRow = {
+  dialedPhoneNumber: "+10987654321",
+  accountManager: "testLegacyAccountManager",
+  affinityVDN: "testLegacyAffinityVDN",
+  agentId: "testLegacyAgentId",
+  brand: BrandTypeEnum.LIBERTY_MUTUAL,
+  employeeId: "testLegacyEmployeeId",
+  callDetails1: "testLegacyCallDetails1",
+  callDetails2: "testLegacyCallDetails2",
+  callFlowName: "",
+  callFlowTemplate: "testLegacyCallFlowTemplate",
+  callFlowType: "",
+  callTypeDescription: "testLegacyCallTypeDescription",
+  channel: ChannelTypeEnum.SERVICE,
+  callFlowRoute: "testLegacyCallFlowRoute",
+  callIntent: "testLegacyCallIntent",
+  callerType: CallerTypeEnum.CUSTOMER,
+  dataRequests: "testLegacyDataRequests",
+  greetingMessages: "testLegacyGreetingMessages",
+  languageOffer: LanguageOfferTypeEnum.ENGLISH,
+  officeNumbers: "officeNumbers",
+  transferDestination: "",
+  dialedDescription: "testLegacyDialedDescription",
+  internetPlacement: "testLegacyInternetPlacement",
+  lineOfBusiness: "testLegacyLineOfBusiness",
+  marketingChannel: "testLegacyMarketingChannel",
+  nextActionId: "",
+  nextActionType: "",
+  phoneNumberType: PhoneNumberTypeEnum.TFN,
+  predictiveCaller: "false",
+  rangeIndicator: "testLegacyRangeIndicator",
+  requestID: "requestID",
+  selfServiceIndicator: "true",
+  tfnRoutingGroup: "testLegacyTfnRoutingGroup",
+  tollFreeNumber: "testLegacyTollFreeNumber",
+  transferCode: "testLegacyTransferCode",
+  userDestination: "testLegacyUserDestination",
+  whisper: "testLegacyWhisper",
+  migrateSelfServiceNumberToDynamic: ""
+};

@@ -24,8 +24,8 @@ export interface PhoneNumberXlsxRow {
   internetPlacement: string;
   lineOfBusiness: string;
   marketingChannel: string;
-  nextActionId: string;
-  nextActionType: string;
+  nextActionId?: string;
+  nextActionType?: string;
   phoneNumberType: string;
   predictiveCaller: string;
   rangeIndicator: string;
@@ -36,4 +36,6 @@ export interface PhoneNumberXlsxRow {
   transferCode: string;
   userDestination: string;
   whisper: string;
+  // This field will be removed once all self service numbers are migrated to dynamic call flow:
+  migrateSelfServiceNumberToDynamic?: string;
 }

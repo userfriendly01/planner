@@ -78,6 +78,8 @@ function combineLegacyAndDynamicBatchResults(legacyBatchResults: BatchResults<Ph
   legacyBatchResults.errors = legacyBatchResults.errors.concat(dynamicBatchResults.errors);
   legacyBatchResults.failure = legacyBatchResults.failure.concat(dynamicBatchResults.failure);
   legacyBatchResults.success = legacyBatchResults.success.concat(dynamicBatchResults.success);
+  legacyBatchResults.hasError = dynamicBatchResults.hasError || legacyBatchResults.hasError;
+  legacyBatchResults.alertMsg =  `${dynamicBatchResults.alertMsg}${dynamicBatchResults.alertMsg && legacyBatchResults ? ", ": ""}${legacyBatchResults.alertMsg}`;
 
   return legacyBatchResults;
 }
