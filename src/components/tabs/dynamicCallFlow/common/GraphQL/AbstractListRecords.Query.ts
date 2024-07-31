@@ -1,8 +1,6 @@
 import { AbstractGraphQLQuery } from "./AbstractGraphQL.Query";
 import { LoadDataGridMonitorRef } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
 import { logger } from "utils/logger";
-import { Simulate } from "react-dom/test-utils";
-import error = Simulate.error;
 
 export interface ListVariables {
   id?: number;

@@ -9,7 +9,6 @@ import {
 } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Match.PhoneNumber.Records.Util";
 import { BatchPhoneNumberRecord } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Batch.PhoneNumber.Records.Util";
 import { deleteOppositeRows } from "components/tabs/dynamicCallFlow/phoneNumber/DataGrid/PhoneNumber.DataGrid.Util";
-import { map } from "lodash";
 
 export class PhoneNumberPreviewModalHandler extends AbstractPreviewModalHandler<PhoneNumberRecordType> {
   //TODO: May need to check for matching records of the same record type since moving a phone number from legacy to dynamic is ok,

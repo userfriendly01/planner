@@ -16,7 +16,7 @@ import {
   Modal, ModalHeader
 } from "@lmig/lmds-react-modal";
 import {
-  BrandName, PhoneNumber, PhoneNumberRecordType
+  BrandName, PhoneNumberRecordType
 } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 import {
   FieldConfig, FieldConfigs
@@ -36,7 +36,6 @@ import {
   DYNAMIC_CALL_FLOW_ROLE,
   userDoesNotHaveReadWriteAccess
 } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Authentication";
-import { CctSharedCallFlowDb } from "dynamicCallFlowPhoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
 
 export interface FormModalProps {
   isOpen: boolean;

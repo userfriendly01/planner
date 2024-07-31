@@ -116,78 +116,16 @@ export const PhoneNumberPreviewModal = ({
   };
 
   const createDynamicPhoneNumberRecord = () => {
-    const dynamicPhoneNumberRecord = {
-      phoneNumber: "",
-      callIntent: "",
-      callFlowRoute: "",
-      callerType: CallerTypeEnum.CUSTOMER,
-      greetingMessages: "",
-      transferDestination: "",
-      languageOffer: LanguageOfferTypeEnum.ENGLISH,
-      dataRequests: [],
-      officeNumbers: [],
-      accountManager: "",
-      affinityVDN: "",
-      brand: undefined,
-      callFlowTemplate: "",
-      callTypeDescription: "",
-      channel: undefined,
-      dialedDescription: "",
-      employeeId: "",
-      internetPlacement: "",
-      lineOfBusiness: "",
-      marketingChannel: "",
-      rangeIndicator: "",
-      requestID: "",
-      transferCode: "",
-      phoneNumberType: "",
-      whisper: ""
-    } as PhoneNumber;
-
     setModalRecords([
       ...modalRecords,
-      dynamicPhoneNumberRecord
+      newLegacyPhoneNumberRecord()
     ]);
   };
 
   const createLegacyPhoneNumberRecord = () => {
-    const legacyPhoneNumberRecord = {
-      pkey: "",
-      content: {
-        callIntent: "",
-        callFlowRoute: "",
-        callerType: CallerTypeEnum.CUSTOMER,
-        greetingMessages: "",
-        transferDestination: "",
-        languageOffer: LanguageOfferTypeEnum.ENGLISH,
-        dataRequests: [],
-        officeNumbers: []
-      } as FlowContent,
-      accountManager: "",
-      affinityVDN: "",
-      brand: undefined,
-      callDetails1: "",
-      callDetails2: "",
-      callFlowTemplate: "",
-      callTypeDescription: "",
-      channel: undefined,
-      createTime: "",
-      dialedDescription: "",
-      employeeId: "",
-      internetPlacement: "",
-      lineOfBusiness: "",
-      marketingChannel: "",
-      rangeIndicator: "",
-      requestID: "",
-      transferCode: "",
-      phoneNumberType: "",
-      userDestination: "",
-      whisper: ""
-    } as CctSharedCallFlowDb;
-
     setModalRecords([
       ...modalRecords,
-      legacyPhoneNumberRecord
+      newLegacyPhoneNumberRecord()
     ]);
   };
 
@@ -234,13 +172,13 @@ export const PhoneNumberPreviewModal = ({
               <StyledButton sx={{
                 marginRight: "10px",
                 marginBottom: "10px"
-              }} onClick={()=>{ newDynamicPhoneNumberRecord(); }}>Add Dynamic</StyledButton>
+              }} onClick={()=>{ createDynamicPhoneNumberRecord(); }}>Add Dynamic</StyledButton>
             }
             {modalType === PhoneNumberModalTypeEnum.BulkAdd &&
               <StyledButton sx={{
                 marginRight: "10px",
                 marginBottom: "10px"
-              }} onClick={()=>{ newLegacyPhoneNumberRecord(); }}>Add Legacy</StyledButton>
+              }} onClick={()=>{ createLegacyPhoneNumberRecord(); }}>Add Legacy</StyledButton>
             }
           </Box>
           <DataGrid
