@@ -2,19 +2,19 @@ import { readWriteAccess } from "utils/alohaConfigUtils";
 import {
   ADGroupPermission, ADGroupRole
 } from "globals/interfaces";
-import { env } from "globals/index";
 import { runDynamicCallFlowStartup } from "authentication/startups/cct-dynamic-call-flow-startup";
 import {
   AuthenticationProfile, descriptions, Permissions
 } from "authentication/authenticationInterfaces";
 import DynamicCallFlowPhoneNumberContainer from "components/tabs/dynamicCallFlow/phoneNumber/DynamicCallFlow.PhoneNumber.Container";
 import { DYNAMIC_CALL_FLOW_TAB_CONFIGURATION } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Configuration";
+import { IS_LOCAL_ENV } from "dynamicCallFlowCommon/Util/Environment.Util";
 
 export const DYNAMIC_CALL_FLOW_ROLE = "FlowReadWrite";
 export const DYNAMIC_CALL_FLOW_STARTUP_PROFILE_NAME = "dynamic-call-flow";
 
 export function userHasReadWriteAccess(permissions: Array<ADGroupPermission>, role: string): boolean {
-  return env.APP_ENV === "local" ? true : readWriteAccess(permissions, role);
+  return IS_LOCAL_ENV ? true : readWriteAccess(permissions, role);
 }
 
 export function userDoesNotHaveReadWriteAccess(permissions: Array<ADGroupPermission>, role: string): boolean {
