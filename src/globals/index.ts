@@ -161,7 +161,6 @@ export const exportColumns = [
 ];
 
 export const apiPaths = {
-  CHECK_EXTENSION: `${SERVICE_BASE_URI}/checkextension`,
   CREATE_CALABRIO_TEAM: `${CALABRIO_SERVICE_BASE_URI}/qm?api=Team`,
   CREATE_CALABRIO_USER: `${CALABRIO_SERVICE_BASE_URI}/qm?api=User`,
   CREATE_CALABRIO_WFM_PERSON: `${CALABRIO_SERVICE_BASE_URI}/wfm/person`,

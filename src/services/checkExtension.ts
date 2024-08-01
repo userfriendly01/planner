@@ -1,12 +1,5 @@
-import { apiPaths } from "globals";
 import { SearchParams } from "usermanagement/ExtensionSearchParams";
 import { logger } from "utils/logger";
-import { myAxios } from "utils/myAxios";
-
-export const checkExtension = (extension: string) => myAxios.post(apiPaths.CHECK_EXTENSION, { extension })
-  .then(res => {
-    return res.data.isValid !== undefined ? res.data.isValid : false;
-  });
 
 const pickANumber = () => {
   const searchParams = SearchParams.getValues();

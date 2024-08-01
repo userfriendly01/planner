@@ -16,9 +16,8 @@ import {
 import { userFormActions } from "context/userFormReducer";
 import { extensionMatcher } from "globals";
 import React from "react";
-import { checkExtension } from "services/checkExtension";
 import { SearchParams } from "../ExtensionSearchParams";
-import { logger } from "utils/logger";
+import { useAdminState } from "context/appContext";
 
 export const ExtensionInput = (props: ModalExtensionProps) => {
   const {
@@ -29,6 +28,7 @@ export const ExtensionInput = (props: ModalExtensionProps) => {
     onBlur
   } = props;
 
+  const state = useAdminState();
   const form = useFormState();
   const setForm = useFormDispatch();
   const searchParams = SearchParams.getValues();
@@ -79,43 +79,39 @@ export const ExtensionInput = (props: ModalExtensionProps) => {
       return;
     }
 
-    checkExtension(extNum)
-      .then(isExtensionAvailable => {
-        if (isExtensionAvailable) {
-          setForm({
-            type: userFormActions.UPDATE_EXTENSION,
-            payload: {
-              extension: extNum,
-              isValid: true
-            }
-          });
-        } else {
-          if (form.triton.extension.status.searchStatus === ExtensionSearchStatuses.PickANumber) {
-            setForm({
-              type: userFormActions.SET_EXTENSION_RETRIES
-            });
-          } else {
-            setForm({
-              type: userFormActions.SET_EXTENSION_MESSAGE,
-              payload: {
-                message: "Extension number already used in Twilio",
-                isError: true
-              }
-            });
-          }
-        }
-      })
-      .catch (error => {
-        logger.error("Failed to contact Twilio to check extension", { error });
-      });
+    // new check extension function
+    const workers = state.workerContext.workers;
+    let extensionIsAvailable = true;
 
-    setForm({
-      type: userFormActions.SET_EXTENSION_MESSAGE,
-      payload: {
-        message: "Checking Extension Number with Twilio",
-        isError: false
+    workers.forEach((worker) => {
+      if (worker.attributes?.extension === extNum) {
+        extensionIsAvailable = false;
       }
-    });
+    })
+
+    if (extensionIsAvailable) {
+      setForm({
+        type: userFormActions.UPDATE_EXTENSION,
+        payload: {
+          extension: extNum,
+          isValid: true
+        }
+      });
+    } else {
+      if (form.triton.extension.status.searchStatus === ExtensionSearchStatuses.PickANumber) {
+        setForm({
+          type: userFormActions.SET_EXTENSION_RETRIES
+        });
+      } else {
+        setForm({
+          type: userFormActions.SET_EXTENSION_MESSAGE,
+          payload: {
+            message: "Extension number already used in Twilio",
+            isError: true
+          }
+        });
+      }
+    }
   };
 
   let extensionButtonLabel = "Auto-Assign";
