@@ -4,7 +4,8 @@ import { ModalHelperText } from "components/ModalHelperText";
 import { UserFormButton } from "usermanagement/ExtensionInput.Styles";
 import {
   useFormState,
-  useFormDispatch
+  useFormDispatch,
+  useAdminState
 } from "context/appContext";
 import React from "react";
 import {
@@ -13,7 +14,6 @@ import {
   render,
   setupMockedComponents
 } from "testUtils";
-import { useAdminState } from "context/appContext";
 
 jest.mock("components/CustomInput", () => ({
   CustomInput: jest.fn()
@@ -34,9 +34,9 @@ jest.mock("context/appContext", () => ({
 }));
 
 
-// jest.mock("services/checkExtension", () => ({
-//   checkExtension: jest.fn()
-// }));
+jest.mock("services/checkExtension", () => ({
+  checkExtension: jest.fn()
+}));
 
 const mockOnBlur = jest.fn();
 const mockSetForm = jest.fn();
@@ -129,54 +129,6 @@ describe("<Extension Input />", () => {
         const ext = "91111";
         customInputProps.updateValue(ext);
       });
-      test.only("extension is available", () => {
-        useAdminState.mockReturnValue({
-          workerContext: {
-            workers: [{
-              attributes: {
-                extension: "1234"
-              }
-            }]
-          }
-        });
-        const disabled = false;
-        const ext = "1234";
-
-        renderComponent(disabled, ext);
-        const customInputProps = getMockedComponentProps(CustomInput);
-
-        expect(customInputProps.value).toBe(ext);
-
-        // const message = "Some info message";
-        // renderComponent(false, "1234");
-        // const props = getMockedComponentProps(CustomInput);
-        // expect(props.error).toBe(false);
-        // expect(props.value).toBe("3333s");
-        // // expect(props.message).toBe(message);
-        // expect(props).toBe(false)
-        // customInputProps.clearFunction();
       });
-    });
-  describe("check extension function", () => {
-    beforeEach(() => {
-      useAdminState.mockReturnValue({
-        workerContext: {
-          workers: [{
-            attributes: {
-              extension: "1234"
-            }
-          }]
-        }
-      });
-      test("extension is available", () => {
-        const message = "Some info message";
-        renderComponent(false, "1234", false, message);
-        const props = getMockedComponentProps(ModalHelperText);
-        expect(props.error).toBe(false);
-        expect(props.message).toBe(message);
-        props.clearFunction();
-      })
-    })
-})
   });
 });

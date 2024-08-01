@@ -1,6 +1,16 @@
+import { UMUser } from "globals/interfaces";
 import { SearchParams } from "usermanagement/ExtensionSearchParams";
 import { logger } from "utils/logger";
 
+export const checkExtension = (workers: UMUser[], extNum: string) : boolean => {
+  let res = true
+  workers.forEach((worker) => {
+    if (worker.attributes?.extension === extNum) {
+      res = false;
+    }
+  })
+  return res;
+}
 const pickANumber = () => {
   const searchParams = SearchParams.getValues();
   let extNum = null;

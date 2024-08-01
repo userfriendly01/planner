@@ -24,7 +24,6 @@ export const getAttributesToResetDefaultSkills = (attributes : UMUserTwilioAttri
   
     // remove from disabledSkills records that exist in defaultSkills
     const skillsToRemoveFromDisabledSkills = currentDisabledSkills.skills.filter((skill : string) => defaultSkills.skills.includes(skill));
-    console.log("skills to remove", skillsToRemoveFromDisabledSkills);
     disabledSkills.skills = currentDisabledSkills.skills.filter((skill : string) => !skillsToRemoveFromDisabledSkills.includes(skill));
     skillsToRemoveFromDisabledSkills.forEach((skill : string) => {
       delete disabledSkills.levels[skill];
@@ -67,8 +66,6 @@ export const getValidSkillsObject = (skillsObject : any) => {
 export const shouldWorkerBeUpdatedToDefaultSkills = (attributes : UMUserTwilioAttributes) => {
     const currentSkills = getValidSkillsObject(attributes.routing);
     const defaultSkills = getValidSkillsObject(attributes.default_skills);
-    console.log("current skills", currentSkills);
-    console.log("default skills", defaultSkills);
     if (defaultSkills.skills.length > 0) {
       if (_.isEqual(currentSkills.skills.sort(), defaultSkills.skills.sort()) && _.isEqual(currentSkills.levels, defaultSkills.levels)) {
         return {

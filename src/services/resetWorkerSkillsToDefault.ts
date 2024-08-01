@@ -14,7 +14,6 @@ export const resetWorkerSkillsToDefault = (workerSids : string[]) => {
                 reason,
                 shouldUpdate
             } = shouldWorkerBeUpdatedToDefaultSkills(currentWorkerAttributes);
-            console.log(reason, shouldUpdate);
             if (!shouldUpdate) {
                 resolve({
                 reason,

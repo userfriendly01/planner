@@ -18,6 +18,7 @@ import { extensionMatcher } from "globals";
 import React from "react";
 import { SearchParams } from "../ExtensionSearchParams";
 import { useAdminState } from "context/appContext";
+import { checkExtension } from "services/checkExtension";
 
 export const ExtensionInput = (props: ModalExtensionProps) => {
   const {
@@ -79,15 +80,8 @@ export const ExtensionInput = (props: ModalExtensionProps) => {
       return;
     }
 
-    // new check extension function
     const workers = state.workerContext.workers;
-    let extensionIsAvailable = true;
-
-    workers.forEach((worker) => {
-      if (worker.attributes?.extension === extNum) {
-        extensionIsAvailable = false;
-      }
-    })
+    let extensionIsAvailable = checkExtension(workers, extNum);
 
     if (extensionIsAvailable) {
       setForm({

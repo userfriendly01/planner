@@ -30,11 +30,9 @@ export const ResetSkillsButton = (props: any) => {
   const resetWorkers = () => {
     setResettingSkills(true);
     const workerSids = selected.map((worker: any) => worker.sid);
-    console.log(workerSids);
     resetWorkerSkillsToDefault(workerSids).then((response : any) => {
         const failedWorkers: any[] = [];
         const passedWorkers: any[] = [];
-        console.log("response data", response);
         response.forEach((result: any) => {
           if (result.updated){
             result.worker.workerSid = result.workerSid;
@@ -48,7 +46,6 @@ export const ResetSkillsButton = (props: any) => {
             });
           }
         });
-        console.log("WE GOT HERE AFTER RESPONSE DATA");
         setResettingSkills(false);
         setResultsModalOpts({
           ...resultsModalOpts,
