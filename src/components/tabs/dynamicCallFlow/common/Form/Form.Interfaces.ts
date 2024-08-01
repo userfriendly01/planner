@@ -1,7 +1,8 @@
 import { MultiFieldContainerFormProps } from "components/MultiFieldContainer";
 import { Control } from "globals/interfaces";
 
-export type FieldDataType = string | Array<string> | boolean | number | undefined;
+/** null is passed when the X (clear) is chosen on a drop-down field */
+export type FieldDataType = string | Array<string> | boolean | number | undefined | null;
 
 export enum FieldDataTypeEnum {
   STRING = "string",

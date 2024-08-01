@@ -55,12 +55,16 @@ export abstract class AbstractFormHandler<RecordType> implements FormHandler<Rec
       setState: setFieldConfigs
     } = fieldConfigsReactStateAction;
     let key : string;
-    let value: string;
+    let value: string | null;
 
-    if (valuePassed && typeof valuePassed === "string") {
+    if (valuePassed === null) {
+      // This is for when the X (clear) is chosen on a drop-down field
+      key = keyPassed;
+      value = null;
+    } else if (valuePassed && typeof valuePassed === "string") {
       key = keyPassed;
       value = valuePassed;
-    } else{
+    } else {
       key = event.target.name;
       value = event.target.value;
     }

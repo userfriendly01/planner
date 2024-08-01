@@ -124,10 +124,10 @@ createFieldConfig("Call Intent", CALL_INTENT, ControlEnum.Input, false, false);
 createFieldConfig("Office Numbers", OFFICE_NUMBERS, ControlEnum.MultiTextField, false, false);
 createFieldConfig("TFN Routing Group", TFN_ROUTING_GROUP, ControlEnum.Select, false, false);
 createFieldConfig("Predictive Caller", PREDICTIVE_CALLER, ControlEnum.Switch, false, false, FieldDataTypeEnum.STRING, drcFieldConditionCheck);
-createFieldConfig("Call Flow Type", CALL_FLOW_TYPE, ControlEnum.AutoComplete, false, false);
+createFieldConfig("Call Flow Type", CALL_FLOW_TYPE, ControlEnum.AutoComplete, true, false);
 createFieldConfig("Call Flow Template", CALL_FLOW_TEMPLATE, ControlEnum.AutoComplete, false, false,FieldDataTypeEnum.STRING);
-createFieldConfig("Next Action ID", NEXT_ACTION_ID, ControlEnum.Input, false, false);
-createFieldConfig("Next Action Type", NEXT_ACTION_TYPE, ControlEnum.AutoComplete, false, false);
+createFieldConfig("Next Action ID", NEXT_ACTION_ID, ControlEnum.Input, true, false);
+createFieldConfig("Next Action Type", NEXT_ACTION_TYPE, ControlEnum.AutoComplete, true, false);
 
 Object.freeze(DynamicPhoneNumberFormFieldConfigs);
 
