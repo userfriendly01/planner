@@ -44,11 +44,12 @@ export interface FormModalProps {
   formRecordReactStateAction: ReactStateAction<PhoneNumberRecordType>;
   fieldConfigsReactStateAction: ReactStateAction<FieldConfigs>;
   handleOnClone: () => void;
+  onClose: () => void;
   postFormHandler: () => void;
 }
 
 export const PhoneNumberFormModal = ({
-  isOpen, formHandler, alertBarController, formRecordReactStateAction, fieldConfigsReactStateAction, handleOnClone, postFormHandler
+  isOpen, formHandler, alertBarController, formRecordReactStateAction, fieldConfigsReactStateAction, handleOnClone, onClose, postFormHandler
 }: FormModalProps): JSX.Element => {
   const {
     state: fieldConfigs
@@ -60,8 +61,7 @@ export const PhoneNumberFormModal = ({
   const {
     accessTokenGraph,
     permissions,
-    currentOpenModal,
-    modalController
+    currentOpenModal
   } = useContext(DynamicCallFlowPhoneNumberContext);
 
   const userDoesNotHavePermission = useMemo<boolean>(() => userDoesNotHaveReadWriteAccess(permissions, DYNAMIC_CALL_FLOW_ROLE), []);
@@ -105,11 +105,6 @@ export const PhoneNumberFormModal = ({
     return !(currentOpenModal === PhoneNumberModalTypeEnum.AddDynamicPhoneNumber || currentOpenModal === PhoneNumberModalTypeEnum.AddLegacyPhoneNumber);
   };
 
-  const handleOnClose = (): void => {
-    modalController.current.closeModal();
-    setFormRecord({} as PhoneNumberRecordType);
-  };
-
   return (
     <div>
       <Modal
@@ -117,7 +112,7 @@ export const PhoneNumberFormModal = ({
         size="large"
         takeover={["base", "sm", "md", "lg"]}
         className="route-table-modal-wrapper"
-        onClose={handleOnClose}
+        onClose={onClose}
       ><ModalHeader>
           {
             ["Liberty Mutual", "Safeco"].includes(formRecord?.brand)?
@@ -203,7 +198,7 @@ export const PhoneNumberFormModal = ({
             variant="outlined"
             color="primary"
             aria-label="cancelEditFlowButton"
-            onClick={handleOnClose}
+            onClick={onClose}
           >
           Cancel
           </Button>
