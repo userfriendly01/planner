@@ -144,7 +144,7 @@ export const PhoneNumberPreviewModal = ({
       <Modal
         isOpen={isOpen}
         takeover={["base", "sm", "md", "lg"]}
-        onClose={()=>{ handleOnClose(); }}
+        onClose={handleOnClose}
         size="large"
       >
         <ModalHeader>{modalType?.toUpperCase()} Flow - {modalRecords?.length} rows selected</ModalHeader>
@@ -163,13 +163,13 @@ export const PhoneNumberPreviewModal = ({
               <StyledButton sx={{
                 marginRight: "10px",
                 marginBottom: "10px"
-              }} onClick={()=>{ createDynamicPhoneNumberRecord(); }}>Add Dynamic</StyledButton>
+              }} onClick={createDynamicPhoneNumberRecord}>Add Dynamic</StyledButton>
             }
             {modalType === PhoneNumberModalTypeEnum.BulkAdd &&
               <StyledButton sx={{
                 marginRight: "10px",
                 marginBottom: "10px"
-              }} onClick={()=>{ createLegacyPhoneNumberRecord(); }}>Add Legacy</StyledButton>
+              }} onClick={createLegacyPhoneNumberRecord}>Add Legacy</StyledButton>
             }
           </Box>
           <DataGrid
@@ -206,7 +206,7 @@ export const PhoneNumberPreviewModal = ({
             {modalType === PhoneNumberModalTypeEnum.BulkEdit  &&
               <StyledButton data-test-id="ScpANXily_jfK9JzNGaJf" sx={{ marginRight: "15px" }} onClick={() => handleOnUpdate() }>Update</StyledButton>
             }
-            <StyledButton onClick={()=>{ handleOnClose(); }}>Cancel</StyledButton>
+            <StyledButton onClick={handleOnClose}>Cancel</StyledButton>
           </Box>
         </ModalFooter>
       </Modal>

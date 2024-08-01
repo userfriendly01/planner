@@ -2,7 +2,7 @@ import {
   Button, Grid
 } from "@mui/material";
 import React, {
-  ChangeEvent, useContext, useEffect, useMemo, useState
+  ChangeEvent, useContext, useMemo, useState
 } from "react";
 import { ViewListIconToggleForm } from "components/tabs/dynamicCallFlow/common/Form/ViewList.IconToggle.Form";
 import {
@@ -41,18 +41,22 @@ export interface FormModalProps {
   isOpen: boolean;
   formHandler: FormHandler<PhoneNumberRecordType>;
   alertBarController: AlertBarControllerRef,
-  record: PhoneNumberRecordType;
+  formRecordReactStateAction: ReactStateAction<PhoneNumberRecordType>;
   fieldConfigsReactStateAction: ReactStateAction<FieldConfigs>;
   handleOnClone: () => void;
   postFormHandler: () => void;
 }
 
 export const PhoneNumberFormModal = ({
-  isOpen, formHandler, alertBarController, record, fieldConfigsReactStateAction, handleOnClone, postFormHandler
+  isOpen, formHandler, alertBarController, formRecordReactStateAction, fieldConfigsReactStateAction, handleOnClone, postFormHandler
 }: FormModalProps): JSX.Element => {
   const {
     state: fieldConfigs
   } = fieldConfigsReactStateAction;
+  const {
+    state: formRecord,
+    setState: setFormRecord
+  } = formRecordReactStateAction;
   const {
     accessTokenGraph,
     permissions,
@@ -61,12 +65,7 @@ export const PhoneNumberFormModal = ({
   } = useContext(DynamicCallFlowPhoneNumberContext);
 
   const userDoesNotHavePermission = useMemo<boolean>(() => userDoesNotHaveReadWriteAccess(permissions, DYNAMIC_CALL_FLOW_ROLE), []);
-  const [formRecord, setFormRecord] = React.useState<PhoneNumberRecordType>({} as PhoneNumberRecordType);
   const [alertBarProps, setAlertBarProps] = useState<AlertBarProps>(initialAlertBarProps);
-
-  useEffect(() => {
-    setFormRecord({ ...record });
-  }, [record]);
 
   const alertBarOnClose = () => {
     setAlertBarProps(prevState => ({
@@ -204,7 +203,7 @@ export const PhoneNumberFormModal = ({
             variant="outlined"
             color="primary"
             aria-label="cancelEditFlowButton"
-            onClick={() => modalController.current.closeModal()}
+            onClick={handleOnClose}
           >
           Cancel
           </Button>

@@ -90,7 +90,7 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
     page: sessionStorage.getItem(DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_PAGE_NUMBER) ? +sessionStorage.getItem(DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_PAGE_NUMBER) : 1
   });
   const [selectedRecords, setSelectedRecords] = useState<Array<PhoneNumberRecordType>>([]);
-  const [selectedRecord, setSelectedRecord] = useState<PhoneNumberRecordType>({} as PhoneNumberRecordType);
+  const [formRecord, setFormRecord] = useState<PhoneNumberRecordType>({} as PhoneNumberRecordType);
 
   const dataGridApi = useGridApiRef<GridApiCommunity>();
   const dataGridController = useRef(new PhoneNumberDataGridController(dataGridApi, dataGridFilter,
@@ -175,7 +175,7 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
   };
 
   const openEditFormModal = (recordToEdit: PhoneNumberRecordType): void => {
-    setSelectedRecord(recordToEdit);
+    setFormRecord(recordToEdit);
 
     if (PhoneNumberRecordUtil.isLegacyPhoneNumberRecord(recordToEdit)) {
       modalController.current.openModal(PhoneNumberModalTypeEnum.EditLegacyPhoneNumber);
@@ -185,16 +185,15 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
   };
 
   const handleOnClone = (): void => {
-    PhoneNumberRecordUtil.setPhoneNumber(selectedRecord, "");
+    const cloneRecord = { ...formRecord };
+    PhoneNumberRecordUtil.setPhoneNumber(cloneRecord, "");
 
-    setSelectedRecord({
-      ...selectedRecord
-    });
+    setFormRecord(cloneRecord);
 
     dataGridController.current.sourceRecords = sourceRecords;
     dataGridController.current.dataGridRecords = dataGridRecords;
 
-    if (PhoneNumberRecordUtil.isLegacyPhoneNumberRecord(selectedRecord)) {
+    if (PhoneNumberRecordUtil.isLegacyPhoneNumberRecord(cloneRecord)) {
       modalController.current.openModal(PhoneNumberModalTypeEnum.AddLegacyPhoneNumber);
     } else {
       modalController.current.openModal(PhoneNumberModalTypeEnum.AddDynamicPhoneNumber);
@@ -222,10 +221,10 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
   const handleModalOpen = (event: any) => {
     switch (event.target.value) {
       case PhoneNumberModalTypeEnum.AddLegacyPhoneNumber:
-        setSelectedRecord( { ...newLegacyPhoneNumberRecord() } );
+        setFormRecord( { ...newLegacyPhoneNumberRecord() } );
         break;
       case PhoneNumberModalTypeEnum.AddDynamicPhoneNumber:
-        setSelectedRecord( { ...newDynamicPhoneNumberRecord() } );
+        setFormRecord( { ...newDynamicPhoneNumberRecord() } );
         break;
       default:
         // do nothing
@@ -302,7 +301,10 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
           state: legacyFieldConfigs,
           setState: setLegacyFieldConfigs
         }}
-        record={selectedRecord}
+        formRecordReactStateAction={{
+          state: formRecord,
+          setState: setFormRecord
+        }}
         handleOnClone={handleOnClone}
         postFormHandler={postFormHandler}
       />
@@ -314,7 +316,10 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
           state: legacyFieldConfigs,
           setState: setLegacyFieldConfigs
         }}
-        record={selectedRecord}
+        formRecordReactStateAction={{
+          state: formRecord,
+          setState: setFormRecord
+        }}
         handleOnClone={handleOnClone}
         postFormHandler={postFormHandler}
       />
@@ -326,7 +331,10 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
           state: dynamicFieldConfigs,
           setState: setDynamicFieldConfigs
         }}
-        record={selectedRecord}
+        formRecordReactStateAction={{
+          state: formRecord,
+          setState: setFormRecord
+        }}
         handleOnClone={handleOnClone}
         postFormHandler={postFormHandler}
       />
@@ -338,7 +346,10 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
           state: dynamicFieldConfigs,
           setState: setDynamicFieldConfigs
         }}
-        record={selectedRecord}
+        formRecordReactStateAction={{
+          state: formRecord,
+          setState: setFormRecord
+        }}
         handleOnClone={handleOnClone}
         postFormHandler={postFormHandler}
       />
