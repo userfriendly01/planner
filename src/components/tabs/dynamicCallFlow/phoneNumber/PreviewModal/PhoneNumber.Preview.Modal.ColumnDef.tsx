@@ -370,7 +370,7 @@ export const PhoneNumberPreviewModalColumnDef: GridColDef[] = [
     valueGetter: ({ row: phoneNumberRecord }: GridValueGetterParams<PhoneNumberRecordType, FieldDataType>): FieldDataType => PhoneNumberRecordUtil.getPropertyValue(phoneNumberRecord, PREDICTIVE_CALLER) || false,
     renderCell: ({ row: phoneNumberRecord }: GridRenderCellParams<PhoneNumberRecordType, FieldDataType>) => (
       <Box>
-        <Switch checked={PhoneNumberRecordUtil.getPropertyBooleanValue(phoneNumberRecord, PREDICTIVE_CALLER) || false} defaultChecked={false} color="warning" disabled size="medium" />)
+        <Switch checked={PhoneNumberRecordUtil.getPropertyBooleanValue(phoneNumberRecord, PREDICTIVE_CALLER) || false} defaultChecked={false} color="warning" disabled size="medium" />
       </Box>
     )
   },
