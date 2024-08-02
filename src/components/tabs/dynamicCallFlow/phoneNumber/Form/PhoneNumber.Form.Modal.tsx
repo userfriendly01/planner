@@ -2,7 +2,7 @@ import {
   Button, Grid
 } from "@mui/material";
 import React, {
-  ChangeEvent, useContext, useEffect, useMemo, useState
+  ChangeEvent, useContext, useMemo, useState
 } from "react";
 import { ViewListIconToggleForm } from "components/tabs/dynamicCallFlow/common/Form/ViewList.IconToggle.Form";
 import {
@@ -41,32 +41,31 @@ export interface FormModalProps {
   isOpen: boolean;
   formHandler: FormHandler<PhoneNumberRecordType>;
   alertBarController: AlertBarControllerRef,
-  record: PhoneNumberRecordType;
+  formRecordReactStateAction: ReactStateAction<PhoneNumberRecordType>;
   fieldConfigsReactStateAction: ReactStateAction<FieldConfigs>;
   handleOnClone: () => void;
+  onClose: () => void;
   postFormHandler: () => void;
 }
 
 export const PhoneNumberFormModal = ({
-  isOpen, formHandler, alertBarController, record, fieldConfigsReactStateAction, handleOnClone, postFormHandler
+  isOpen, formHandler, alertBarController, formRecordReactStateAction, fieldConfigsReactStateAction, handleOnClone, onClose, postFormHandler
 }: FormModalProps): JSX.Element => {
   const {
     state: fieldConfigs
   } = fieldConfigsReactStateAction;
   const {
+    state: formRecord,
+    setState: setFormRecord
+  } = formRecordReactStateAction;
+  const {
     accessTokenGraph,
     permissions,
-    currentOpenModal,
-    modalController
+    currentOpenModal
   } = useContext(DynamicCallFlowPhoneNumberContext);
 
   const userDoesNotHavePermission = useMemo<boolean>(() => userDoesNotHaveReadWriteAccess(permissions, DYNAMIC_CALL_FLOW_ROLE), []);
-  const [formRecord, setFormRecord] = React.useState<PhoneNumberRecordType>({} as PhoneNumberRecordType);
   const [alertBarProps, setAlertBarProps] = useState<AlertBarProps>(initialAlertBarProps);
-
-  useEffect(() => {
-    setFormRecord({ ...record });
-  }, [record]);
 
   const alertBarOnClose = () => {
     setAlertBarProps(prevState => ({
@@ -106,11 +105,6 @@ export const PhoneNumberFormModal = ({
     return !(currentOpenModal === PhoneNumberModalTypeEnum.AddDynamicPhoneNumber || currentOpenModal === PhoneNumberModalTypeEnum.AddLegacyPhoneNumber);
   };
 
-  const handleOnClose = (): void => {
-    modalController.current.closeModal();
-    setFormRecord({} as PhoneNumberRecordType);
-  };
-
   return (
     <div>
       <Modal
@@ -118,7 +112,7 @@ export const PhoneNumberFormModal = ({
         size="large"
         takeover={["base", "sm", "md", "lg"]}
         className="route-table-modal-wrapper"
-        onClose={handleOnClose}
+        onClose={onClose}
       ><ModalHeader>
           {
             ["Liberty Mutual", "Safeco"].includes(formRecord?.brand)?
@@ -204,7 +198,7 @@ export const PhoneNumberFormModal = ({
             variant="outlined"
             color="primary"
             aria-label="cancelEditFlowButton"
-            onClick={() => modalController.current.closeModal()}
+            onClick={onClose}
           >
           Cancel
           </Button>

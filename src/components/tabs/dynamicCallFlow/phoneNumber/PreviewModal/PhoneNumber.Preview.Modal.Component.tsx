@@ -46,12 +46,11 @@ interface PreviewModalParameters<RecordType> {
     modalType: PhoneNumberModalType;
     maxId?: number;
     onClose: () => void;
-    loading?: boolean;
 }
 // create handler to process batch jobs concurrently
 
 export const PhoneNumberPreviewModal = ({
-  isOpen, selectedRecords, updateSourceRecords, onClose, dataGridController, fieldOptions, modalType, maxId, loading
+  isOpen, selectedRecords, updateSourceRecords, onClose, dataGridController, fieldOptions, modalType, maxId
 }: PreviewModalParameters<PhoneNumberRecordType>): JSX.Element => {
   const {
     accessTokenGraph
@@ -65,9 +64,13 @@ export const PhoneNumberPreviewModal = ({
     return reconstructTableColumnDef(modalType, [...PhoneNumberPreviewModalColumnDef], dataGridApi, fieldOptions);
   },[modalType, dataGridApi, fieldOptions]);
 
-  useEffect(()=> {
-    setModalRecords([ ...selectedRecords ]);
-  }, [selectedRecords]);
+  useEffect(() => {
+    if (isOpen) {
+      setModalRecords([ ...selectedRecords ]);
+    } else {
+      setModalRecords([]);
+    }
+  }, [isOpen]);
 
   useEffect(()=>{
     if (htmlInputElements.length > 0) {
@@ -130,11 +133,6 @@ export const PhoneNumberPreviewModal = ({
     }
   };
 
-  const handleOnClose =()=>{
-    setModalRecords([]);
-    onClose();
-  };
-
   function getRowId(row: PhoneNumberRecordType) {
     return PhoneNumberRecordUtil.getPhoneNumber(row);
   }
@@ -144,7 +142,7 @@ export const PhoneNumberPreviewModal = ({
       <Modal
         isOpen={isOpen}
         takeover={["base", "sm", "md", "lg"]}
-        onClose={()=>{ handleOnClose(); }}
+        onClose={onClose}
         size="large"
       >
         <ModalHeader>{modalType?.toUpperCase()} Flow - {modalRecords?.length} rows selected</ModalHeader>
@@ -163,13 +161,13 @@ export const PhoneNumberPreviewModal = ({
               <StyledButton sx={{
                 marginRight: "10px",
                 marginBottom: "10px"
-              }} onClick={()=>{ createDynamicPhoneNumberRecord(); }}>Add Dynamic</StyledButton>
+              }} onClick={createDynamicPhoneNumberRecord}>Add Dynamic</StyledButton>
             }
             {modalType === PhoneNumberModalTypeEnum.BulkAdd &&
               <StyledButton sx={{
                 marginRight: "10px",
                 marginBottom: "10px"
-              }} onClick={()=>{ createLegacyPhoneNumberRecord(); }}>Add Legacy</StyledButton>
+              }} onClick={createLegacyPhoneNumberRecord}>Add Legacy</StyledButton>
             }
           </Box>
           <DataGrid
@@ -178,7 +176,6 @@ export const PhoneNumberPreviewModal = ({
             columns={tableGridColumnDef}
             editMode="row"
             getRowId={getRowId}
-            loading = {loading}
             sx={{
               "& .MuiDataGrid-columnHeaderTitle": {
                 fontWeight: 600
@@ -206,7 +203,7 @@ export const PhoneNumberPreviewModal = ({
             {modalType === PhoneNumberModalTypeEnum.BulkEdit  &&
               <StyledButton data-test-id="ScpANXily_jfK9JzNGaJf" sx={{ marginRight: "15px" }} onClick={() => handleOnUpdate() }>Update</StyledButton>
             }
-            <StyledButton onClick={()=>{ handleOnClose(); }}>Cancel</StyledButton>
+            <StyledButton onClick={onClose}>Cancel</StyledButton>
           </Box>
         </ModalFooter>
       </Modal>

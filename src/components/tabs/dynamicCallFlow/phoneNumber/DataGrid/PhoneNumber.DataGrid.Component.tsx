@@ -2,8 +2,6 @@ import {
   DataGrid,
   GridPaginationModel,
   GridRenderCellParams,
-  GridRowId,
-  GridRowSelectionModel,
   useGridApiRef
 } from "@mui/x-data-grid";
 import React, {
@@ -90,7 +88,7 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
     page: sessionStorage.getItem(DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_PAGE_NUMBER) ? +sessionStorage.getItem(DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_PAGE_NUMBER) : 1
   });
   const [selectedRecords, setSelectedRecords] = useState<Array<PhoneNumberRecordType>>([]);
-  const [selectedRecord, setSelectedRecord] = useState<PhoneNumberRecordType>({} as PhoneNumberRecordType);
+  const [formRecord, setFormRecord] = useState<PhoneNumberRecordType>({} as PhoneNumberRecordType);
 
   const dataGridApi = useGridApiRef<GridApiCommunity>();
   const dataGridController = useRef(new PhoneNumberDataGridController(dataGridApi, dataGridFilter,
@@ -175,7 +173,7 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
   };
 
   const openEditFormModal = (recordToEdit: PhoneNumberRecordType): void => {
-    setSelectedRecord(recordToEdit);
+    setFormRecord(recordToEdit);
 
     if (PhoneNumberRecordUtil.isLegacyPhoneNumberRecord(recordToEdit)) {
       modalController.current.openModal(PhoneNumberModalTypeEnum.EditLegacyPhoneNumber);
@@ -185,16 +183,15 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
   };
 
   const handleOnClone = (): void => {
-    PhoneNumberRecordUtil.setPhoneNumber(selectedRecord, "");
+    const cloneRecord = { ...formRecord };
+    PhoneNumberRecordUtil.setPhoneNumber(cloneRecord, "");
 
-    setSelectedRecord({
-      ...selectedRecord
-    });
+    setFormRecord(cloneRecord);
 
     dataGridController.current.sourceRecords = sourceRecords;
     dataGridController.current.dataGridRecords = dataGridRecords;
 
-    if (PhoneNumberRecordUtil.isLegacyPhoneNumberRecord(selectedRecord)) {
+    if (PhoneNumberRecordUtil.isLegacyPhoneNumberRecord(cloneRecord)) {
       modalController.current.openModal(PhoneNumberModalTypeEnum.AddLegacyPhoneNumber);
     } else {
       modalController.current.openModal(PhoneNumberModalTypeEnum.AddDynamicPhoneNumber);
@@ -207,14 +204,6 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
     modalController.current.closeModal();
   };
 
-  const handleSelectionChanges = (gridRowSelectionModel: GridRowSelectionModel) =>{
-    const selectedRecords = gridRowSelectionModel.map<PhoneNumberRecordType>((id: GridRowId) =>
-      dataGridRecords.find((phoneNumberRecord: PhoneNumberRecordType)=>
-        PhoneNumberRecordUtil.getPhoneNumber(phoneNumberRecord) === id));
-
-    setSelectedRecords(selectedRecords);
-  };
-
   const handleCloseAlertBar = () => {
     setAlertBarProps(initialAlertBarProps);
   };
@@ -222,10 +211,15 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
   const handleModalOpen = (event: any) => {
     switch (event.target.value) {
       case PhoneNumberModalTypeEnum.AddLegacyPhoneNumber:
-        setSelectedRecord( { ...newLegacyPhoneNumberRecord() } );
+        setFormRecord( { ...newLegacyPhoneNumberRecord() } );
         break;
       case PhoneNumberModalTypeEnum.AddDynamicPhoneNumber:
-        setSelectedRecord( { ...newDynamicPhoneNumberRecord() } );
+        setFormRecord( { ...newDynamicPhoneNumberRecord() } );
+        break;
+      case PhoneNumberModalTypeEnum.BulkAdd:
+      case PhoneNumberModalTypeEnum.BulkEdit:
+      case PhoneNumberModalTypeEnum.BulkDelete:
+        setSelectedRecords(Array.from(dataGridApi.current.getSelectedRows().values()));
         break;
       default:
         // do nothing
@@ -234,15 +228,10 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
     modalController.current.openModal(event.target.value);
   };
 
-  const handlePreviewModalOnClose = () => {
+  const handleModalClose = (): void => {
     setSelectedRecords([]);
     dataGridApi.current.setRowSelectionModel([]);
-    // setSourceRecords([ ...sourceRecords ]);
-    // dataGridFilter.current.applyFilter(sourceRecords);
-    setDataGridProps( prevState => ({
-      ...prevState,
-      fetching: false
-    }));
+    setFormRecord({});
 
     modalController.current.closeModal();
   };
@@ -283,7 +272,7 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
             disableRowSelectionOnClick
             autoHeight
             getRowId={getRowId}
-            onRowSelectionModelChange={handleSelectionChanges}
+            // onRowSelectionModelChange={handleSelectionChanges}
             sx={{
               "& .MuiDataGrid-columnHeaderTitle": {
                 fontWeight: 600
@@ -294,6 +283,16 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
         <div>* Dynamic Only Field</div>
         <div>** Legacy Only Field</div>
       </div>
+      <PhoneNumberPreviewModal
+        isOpen={currentOpenModal === PhoneNumberModalTypeEnum.BulkAdd || currentOpenModal === PhoneNumberModalTypeEnum.BulkEdit || currentOpenModal === PhoneNumberModalTypeEnum.BulkDelete}
+        selectedRecords={selectedRecords}
+        dataGridController={dataGridController}
+        fieldOptions={fieldOptions}
+        onClose={handleModalClose}
+        updateSourceRecords={updateSourceRecords}
+        modalType={currentOpenModal}
+        maxId={dataGridProps.maxId}
+      />
       <PhoneNumberFormModal
         isOpen={currentOpenModal === PhoneNumberModalTypeEnum.EditLegacyPhoneNumber}
         formHandler={legacyPhoneNumberFormEditHandler}
@@ -302,8 +301,12 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
           state: legacyFieldConfigs,
           setState: setLegacyFieldConfigs
         }}
-        record={selectedRecord}
+        formRecordReactStateAction={{
+          state: formRecord,
+          setState: setFormRecord
+        }}
         handleOnClone={handleOnClone}
+        onClose={handleModalClose}
         postFormHandler={postFormHandler}
       />
       <PhoneNumberFormModal
@@ -314,8 +317,12 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
           state: legacyFieldConfigs,
           setState: setLegacyFieldConfigs
         }}
-        record={selectedRecord}
+        formRecordReactStateAction={{
+          state: formRecord,
+          setState: setFormRecord
+        }}
         handleOnClone={handleOnClone}
+        onClose={handleModalClose}
         postFormHandler={postFormHandler}
       />
       <PhoneNumberFormModal
@@ -326,8 +333,12 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
           state: dynamicFieldConfigs,
           setState: setDynamicFieldConfigs
         }}
-        record={selectedRecord}
+        formRecordReactStateAction={{
+          state: formRecord,
+          setState: setFormRecord
+        }}
         handleOnClone={handleOnClone}
+        onClose={handleModalClose}
         postFormHandler={postFormHandler}
       />
       <PhoneNumberFormModal
@@ -338,24 +349,17 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
           state: dynamicFieldConfigs,
           setState: setDynamicFieldConfigs
         }}
-        record={selectedRecord}
+        formRecordReactStateAction={{
+          state: formRecord,
+          setState: setFormRecord
+        }}
         handleOnClone={handleOnClone}
+        onClose={handleModalClose}
         postFormHandler={postFormHandler}
       />
       <PhoneNumberDataGridFilterModal
         isOpen={currentOpenModal === PhoneNumberModalTypeEnum.Filter}
         dataGridFilter={dataGridFilter}
-      />
-      <PhoneNumberPreviewModal
-        isOpen={currentOpenModal === PhoneNumberModalTypeEnum.BulkAdd || currentOpenModal === PhoneNumberModalTypeEnum.BulkEdit || currentOpenModal === PhoneNumberModalTypeEnum.BulkDelete}
-        selectedRecords={selectedRecords}
-        dataGridController={dataGridController}
-        fieldOptions={fieldOptions}
-        onClose={handlePreviewModalOnClose}
-        updateSourceRecords={updateSourceRecords}
-        modalType={currentOpenModal}
-        maxId={dataGridProps.maxId}
-        loading={dataGridProps.fetching}
       />
       <CustomToast
         open={alertBarProps.open}
