@@ -55,7 +55,7 @@ export abstract class AbstractFormHandler<RecordType> implements FormHandler<Rec
       setState: setFieldConfigs
     } = fieldConfigsReactStateAction;
     let key : string;
-    let value: string | null;
+    let value: string | null | string[];
 
     if (valuePassed === null) {
       // This is for when the X (clear) is chosen on a drop-down field
@@ -69,7 +69,13 @@ export abstract class AbstractFormHandler<RecordType> implements FormHandler<Rec
       value = event.target.value;
     }
 
-    const dataTypeConvertedValue = this.convertValueToDataType(value, fieldConfigs[key].dataType);
+    let stringValue = value as string;
+
+    if(value !== null && typeof value === "object" && value.join) {
+      //for some reason fields like Office Numbers are being passed as an array, so let's join them
+      stringValue = value.join(",");
+    }
+    const dataTypeConvertedValue = this.convertValueToDataType(stringValue, fieldConfigs[key].dataType);
 
     setFieldConfigs(prevState => ({
       ...prevState,
