@@ -43,13 +43,13 @@ export interface FormModalProps {
   alertBarController: AlertBarControllerRef,
   formRecordReactStateAction: ReactStateAction<PhoneNumberRecordType>;
   fieldConfigsReactStateAction: ReactStateAction<FieldConfigs>;
-  handleOnClone: () => void;
+  onClone: () => void;
   onClose: () => void;
   postFormHandler: () => void;
 }
 
 export const PhoneNumberFormModal = ({
-  isOpen, formHandler, alertBarController, formRecordReactStateAction, fieldConfigsReactStateAction, handleOnClone, onClose, postFormHandler
+  isOpen, formHandler, alertBarController, formRecordReactStateAction, fieldConfigsReactStateAction, onClone, onClose, postFormHandler
 }: FormModalProps): JSX.Element => {
   const {
     state: fieldConfigs
@@ -178,7 +178,7 @@ export const PhoneNumberFormModal = ({
             disabled={userDoesNotHavePermission}
             sx={{ marginRight: 2 }}
             aria-label="cloneFlowRuleButton"
-            onClick={handleOnClone}
+            onClick={onClone}
           >
           Clone
           </Button>:null}

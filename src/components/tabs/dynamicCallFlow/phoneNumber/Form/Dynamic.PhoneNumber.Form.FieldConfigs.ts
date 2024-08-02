@@ -105,7 +105,7 @@ createFieldConfig("Call Flow Template", CALL_FLOW_TEMPLATE, ControlEnum.Input, t
 createFieldConfig("Channel", CHANNEL, ControlEnum.Select, true, false);
 createFieldConfig("Brand", BRAND, ControlEnum.Select, true, false);
 createFieldConfig("Language Offer", LANGUAGE_OFFER, ControlEnum.Select, true, false);
-createFieldConfig("Data Requests", DATA_REQUESTS, ControlEnum.AutoComplete, true, false, FieldDataTypeEnum.STRING_ARRAY, undefined, USER_IS_ABLE_TO_CHANGE_CONTROL, 10);
+createFieldConfig("Data Requests", DATA_REQUESTS, ControlEnum.AutoComplete, true, false, FieldDataTypeEnum.ARRAY, undefined, USER_IS_ABLE_TO_CHANGE_CONTROL, 10);
 createFieldConfig("Caller Type", CALLER_TYPE, ControlEnum.AutoComplete, true, false, FieldDataTypeEnum.STRING, undefined, USER_IS_ABLE_TO_CHANGE_CONTROL, 10);
 createFieldConfig("Phone Number Type", PHONE_NUMBER_TYPE, ControlEnum.AutoComplete, false, false);
 createFieldConfig("Transfer Destination", TRANSFER_DESTINATION, ControlEnum.Input, true, false);

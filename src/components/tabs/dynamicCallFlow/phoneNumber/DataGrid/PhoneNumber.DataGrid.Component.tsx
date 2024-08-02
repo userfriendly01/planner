@@ -182,7 +182,7 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
     }
   };
 
-  const handleOnClone = (): void => {
+  const onClone = (): void => {
     const cloneRecord = { ...formRecord };
     PhoneNumberRecordUtil.setPhoneNumber(cloneRecord, "");
 
@@ -204,11 +204,11 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
     modalController.current.closeModal();
   };
 
-  const handleCloseAlertBar = () => {
+  const onCloseAlertBar = () => {
     setAlertBarProps(initialAlertBarProps);
   };
 
-  const handleModalOpen = (event: any) => {
+  const onOpenModal = (event: any) => {
     switch (event.target.value) {
       case PhoneNumberModalTypeEnum.AddLegacyPhoneNumber:
         setFormRecord( { ...newLegacyPhoneNumberRecord() } );
@@ -222,13 +222,14 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
         setSelectedRecords(Array.from(dataGridApi.current.getSelectedRows().values()));
         break;
       default:
-        // do nothing
+        alertBarController.current.warning(`Modal type ${event.target.value} is not setup to open.`);
+        return;
     }
 
     modalController.current.openModal(event.target.value);
   };
 
-  const handleModalClose = (): void => {
+  const onCloseModal = (): void => {
     setSelectedRecords([]);
     dataGridApi.current.setRowSelectionModel([]);
     setFormRecord({});
@@ -255,7 +256,7 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
             isFilterModalOpen={currentOpenModal === PhoneNumberModalTypeEnum.Filter}
             dataGridFilter={dataGridFilter}
             dataGridController={dataGridController}
-            handleModalOpen={handleModalOpen}
+            handleModalOpen={onOpenModal}
             loading={dataGridProps.fetching}
           />
           <DataGrid
@@ -288,7 +289,7 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
         selectedRecords={selectedRecords}
         dataGridController={dataGridController}
         fieldOptions={fieldOptions}
-        onClose={handleModalClose}
+        onClose={onCloseModal}
         updateSourceRecords={updateSourceRecords}
         modalType={currentOpenModal}
         maxId={dataGridProps.maxId}
@@ -305,8 +306,8 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
           state: formRecord,
           setState: setFormRecord
         }}
-        handleOnClone={handleOnClone}
-        onClose={handleModalClose}
+        onClone={onClone}
+        onClose={onCloseModal}
         postFormHandler={postFormHandler}
       />
       <PhoneNumberFormModal
@@ -321,8 +322,8 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
           state: formRecord,
           setState: setFormRecord
         }}
-        handleOnClone={handleOnClone}
-        onClose={handleModalClose}
+        onClone={onClone}
+        onClose={onCloseModal}
         postFormHandler={postFormHandler}
       />
       <PhoneNumberFormModal
@@ -337,8 +338,8 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
           state: formRecord,
           setState: setFormRecord
         }}
-        handleOnClone={handleOnClone}
-        onClose={handleModalClose}
+        onClone={onClone}
+        onClose={onCloseModal}
         postFormHandler={postFormHandler}
       />
       <PhoneNumberFormModal
@@ -353,8 +354,8 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
           state: formRecord,
           setState: setFormRecord
         }}
-        handleOnClone={handleOnClone}
-        onClose={handleModalClose}
+        onClone={onClone}
+        onClose={onCloseModal}
         postFormHandler={postFormHandler}
       />
       <PhoneNumberDataGridFilterModal
@@ -363,7 +364,7 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
       />
       <CustomToast
         open={alertBarProps.open}
-        onClose={handleCloseAlertBar}
+        onClose={onCloseAlertBar}
         msg={alertBarProps.msg}
         severityType={alertBarProps.severityType}
         duration={alertBarProps.duration}

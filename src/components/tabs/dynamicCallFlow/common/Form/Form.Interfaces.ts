@@ -6,7 +6,7 @@ export type FieldDataType = string | Array<string> | boolean | number | undefine
 
 export enum FieldDataTypeEnum {
   STRING = "string",
-  STRING_ARRAY = "string-array",
+  ARRAY = "string-array",
   BOOLEAN = "boolean",
   NUMBER = "number"
 }

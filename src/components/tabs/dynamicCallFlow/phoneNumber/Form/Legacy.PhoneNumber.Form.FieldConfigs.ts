@@ -107,7 +107,7 @@ createFieldConfig("Call Flow Template", CALL_FLOW_TEMPLATE, ControlEnum.Input, t
 createFieldConfig("Channel", CHANNEL, ControlEnum.Select, true, false, FieldDataTypeEnum.STRING);
 createFieldConfig("Brand", BRAND, ControlEnum.Select, true, false, FieldDataTypeEnum.STRING);
 createFieldConfig("Language Offer", LANGUAGE_OFFER, ControlEnum.Select, true, false, FieldDataTypeEnum.STRING);
-createFieldConfig("Data Requests", DATA_REQUESTS, ControlEnum.AutoComplete, true, false, FieldDataTypeEnum.STRING_ARRAY, undefined, USER_IS_ABLE_TO_CHANGE_CONTROL, 10);
+createFieldConfig("Data Requests", DATA_REQUESTS, ControlEnum.AutoComplete, true, false, FieldDataTypeEnum.ARRAY, undefined, USER_IS_ABLE_TO_CHANGE_CONTROL, 10);
 createFieldConfig("Caller Type", CALLER_TYPE, ControlEnum.AutoComplete, true, false, FieldDataTypeEnum.STRING, undefined, USER_IS_ABLE_TO_CHANGE_CONTROL, 10);
 createFieldConfig("Phone Number Type", TYPE, ControlEnum.AutoComplete, false, false);
 createFieldConfig("Transfer Number", TRANSFER_NUMBER, ControlEnum.Input, true, false);
@@ -128,7 +128,7 @@ createFieldConfig("Request ID", REQUEST_ID, ControlEnum.Input, false, false, Fie
 createFieldConfig("User Destination", USER_DESTINATION, ControlEnum.Select, false, false, FieldDataTypeEnum.STRING, didFieldConditionCheck);
 createFieldConfig("Range Indicator", RANGE_INDICATOR, ControlEnum.Input, false, false, FieldDataTypeEnum.STRING, drcFieldConditionCheck);
 createFieldConfig("Call Intent", CALL_INTENT, ControlEnum.Input);
-createFieldConfig("Office Numbers", OFFICE_NUMBERS, ControlEnum.MultiTextField, false, false, FieldDataTypeEnum.STRING_ARRAY);
+createFieldConfig("Office Numbers", OFFICE_NUMBERS, ControlEnum.MultiTextField, false, false, FieldDataTypeEnum.ARRAY);
 createFieldConfig("TFN Routing Group", TFN_ROUTING_GROUP, ControlEnum.Select, false, false, FieldDataTypeEnum.STRING);
 createFieldConfig("Predictive Caller", PREDICTIVE_CALLER, ControlEnum.Switch, false, false, FieldDataTypeEnum.BOOLEAN, drcFieldConditionCheck);
 createFieldConfig("Self Service Indicator", SELF_SERVICE_INDICATOR, ControlEnum.Switch, false, false, FieldDataTypeEnum.BOOLEAN, drcFieldConditionCheck);

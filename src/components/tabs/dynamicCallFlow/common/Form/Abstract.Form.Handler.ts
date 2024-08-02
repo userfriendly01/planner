@@ -9,6 +9,9 @@ import {
 } from "../DynamicCallFlow.Interfaces";
 import { DataGridController } from "components/tabs/dynamicCallFlow/common/DataGrid/Abstract.DataGrid.Controller";
 import { PhoneNumberRecordType } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import {
+  isNotArray, isNotBoolean
+} from "dynamicCallFlowCommon/Util/TypeCheck.Util";
 
 export const VALID = true;
 export const NOT_VALID = false;
@@ -55,27 +58,17 @@ export abstract class AbstractFormHandler<RecordType> implements FormHandler<Rec
       setState: setFieldConfigs
     } = fieldConfigsReactStateAction;
     let key : string;
-    let value: string | null | string[];
+    let value: FieldDataType;
 
-    if (valuePassed === null) {
-      // This is for when the X (clear) is chosen on a drop-down field
-      key = keyPassed;
-      value = null;
-    } else if (valuePassed && typeof valuePassed === "string") {
-      key = keyPassed;
-      value = valuePassed;
-    } else {
+    if (event?.target?.name && event?.target?.value) {
       key = event.target.name;
       value = event.target.value;
+    } else {
+      key = keyPassed;
+      value = valuePassed;
     }
 
-    let stringValue = value as string;
-
-    if(value !== null && typeof value === "object" && value.join) {
-      //for some reason fields like Office Numbers are being passed as an array, so let's join them
-      stringValue = value.join(",");
-    }
-    const dataTypeConvertedValue = this.convertValueToDataType(stringValue, fieldConfigs[key].dataType);
+    const dataTypeConvertedValue = this.convertValueToDataType(value, fieldConfigs[key].dataType);
 
     setFieldConfigs(prevState => ({
       ...prevState,
@@ -102,7 +95,7 @@ export abstract class AbstractFormHandler<RecordType> implements FormHandler<Rec
     switch(fieldConfig.dataType) {
       case FieldDataTypeEnum.STRING:
         return (value as string).toLowerCase() !== "null" || (value as string).trim().length > 0 ? VALID : NOT_VALID;
-      case FieldDataTypeEnum.STRING_ARRAY:
+      case FieldDataTypeEnum.ARRAY:
         return (value as Array<string>).length > 0 ? VALID : NOT_VALID;
       case FieldDataTypeEnum.BOOLEAN:
         return VALID;
@@ -111,17 +104,21 @@ export abstract class AbstractFormHandler<RecordType> implements FormHandler<Rec
     }
   }
 
-  private convertValueToDataType(value: string, fieldDataType: FieldDataTypeEnum): FieldDataType {
-    switch (fieldDataType) {
-      case FieldDataTypeEnum.STRING_ARRAY:
-        return value?.split(",")?.map(a => a.trim())?.filter(a => a.length > 0);
-      case FieldDataTypeEnum.BOOLEAN:
-        return value === "true";
-      case FieldDataTypeEnum.NUMBER:
-        return parseInt(value);
-      default:
-        return value;
+  private convertValueToDataType(value: FieldDataType, fieldDataType: FieldDataTypeEnum): FieldDataType {
+    // if null or undefined, then just return it.
+    if (!value) {
+      return value;
     }
+
+    if (fieldDataType === FieldDataTypeEnum.ARRAY && isNotArray(value) && typeof value === "string") {
+      return (value as string).split(",").map(a => a.trim()).filter(a => a.length > 0);
+    } else if (fieldDataType === FieldDataTypeEnum.BOOLEAN && isNotBoolean(value)) {
+      return Boolean(value);
+    } else if (fieldDataType === FieldDataTypeEnum.NUMBER && isNaN(value as any)) {
+      return Number(value);
+    }
+
+    return value;
   }
 
   validateForm(record: RecordType, fieldConfigs: FieldConfigs): void {
