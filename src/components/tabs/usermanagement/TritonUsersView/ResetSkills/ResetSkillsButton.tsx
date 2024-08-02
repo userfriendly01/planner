@@ -73,55 +73,6 @@ export const ResetSkillsButton = (props: any) => {
         });
       });
   };
-  
-  // const resetWorkers = () => {
-  //   setResettingSkills(true);
-  //   const workerSids = selected.map((worker: any) => worker.sid);
-  //   myAxios
-  //     .post(apiPaths.RESET_WORKER_SKILLS, { workerSids }).then(response => {
-  //       const failedWorkers: any[] = [];
-  //       const passedWorkers: any[] = [];
-  //       response.data.forEach((result: any) => {
-  //         if (result.updated){
-  //           result.worker.workerSid = result.workerSid;
-  //           result.worker.attributes = JSON.parse(result.worker.attributes);
-  //           passedWorkers.push({
-  //             name: selected.find((worker: any) => result.workerSid === worker.sid).sid
-  //           });
-  //         } else {
-  //           failedWorkers.push({
-  //             reason: result.reason,
-  //             name: selected.find((worker: any) => result.workerSid === worker.sid).sid
-  //           });
-  //         }
-  //       });
-  //       setResettingSkills(false);
-  //       setResultsModalOpts({
-  //         ...resultsModalOpts,
-  //         open: true,
-  //         successfulResets: passedWorkers,
-  //         unsuccessfulResets: failedWorkers
-  //       });
-
-  //       logger.info("Successfully reset worker skills", {
-  //         workerSids,
-  //         nNumber
-  //       });
-  //     })
-  //     .catch(error => {
-  //       logger.error("Failed to reset worker skills", {
-  //         error,
-  //         workerSids,
-  //         nNumber
-  //       });
-  //       setResettingSkills(false);
-  //       setResultsModalOpts({
-  //         ...resultsModalOpts,
-  //         open: true,
-  //         error: "An unexpected error occurred when trying to reset worker skills"
-  //       });
-  //     });
-  // };
 
   return (
     <div style={{
