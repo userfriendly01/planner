@@ -30,7 +30,7 @@ export class LegacyPhoneNumberXlsxRecordGenerator extends AbstractPhoneNumberXls
         dataRequests: phoneNumberXlsxRow.dataRequests?.split(",") || [],
         greetingMessages: phoneNumberXlsxRow.greetingMessages,
         languageOffer: phoneNumberXlsxRow.languageOffer as LanguageOfferType,
-        officeNumbers: phoneNumberXlsxRow.officeNumbers?.split(",") || [],
+        officeNumbers: phoneNumberXlsxRow.officeNumbers?.length > 0 ? phoneNumberXlsxRow.officeNumbers.split(",") : [],
         transferNumber: phoneNumberXlsxRow.transferDestination
       } as FlowContent
     } as CctSharedCallFlowDb;

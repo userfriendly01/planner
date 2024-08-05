@@ -29,7 +29,7 @@ export class DynamicPhoneNumberXlsxRecordGenerator extends AbstractPhoneNumberXl
       languageOffer: phoneNumberXlsxRow.languageOffer as LanguageOfferType,
       nextActionId: phoneNumberXlsxRow.nextActionId,
       nextActionType: phoneNumberXlsxRow.nextActionType as ActionType,
-      officeNumbers: phoneNumberXlsxRow.officeNumbers?.split(",") || [],
+      officeNumbers: phoneNumberXlsxRow.officeNumbers?.length > 0 ? phoneNumberXlsxRow.officeNumbers.split(",") : [],
       transferDestination: phoneNumberXlsxRow.transferDestination,
       // This field will be removed once all self service numbers are migrated to dynamic call flow:
       migrateSelfServiceNumberToDynamic: isSelfServiceNumberMigratingToDynamic
