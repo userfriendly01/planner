@@ -91,6 +91,18 @@ export class PhoneNumberXlsxValueInspector {
     if (!this.isBooleanXlsxValueValid(phoneNumberXlsxRow.migrateSelfServiceNumberToDynamic)) {
       phoneNumberXlsxRow.migrateSelfServiceNumberToDynamic = "false";
     }
+    if (phoneNumberXlsxRow.dialedPhoneNumber && !/^\+1\d+$/.test(phoneNumberXlsxRow.dialedPhoneNumber)) {
+      this.logPhoneNumberValidationError(phoneNumberXlsxRow, "dialedPhoneNumber must be in the format +###########.");
+    }
+    if (phoneNumberXlsxRow.greetingMessages) {
+      const xmlString = phoneNumberXlsxRow.greetingMessages.startsWith("<")? phoneNumberXlsxRow.greetingMessages : "<speak>" + phoneNumberXlsxRow.greetingMessages + "</speak>";
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(xmlString, "application/xml");
+      const errorNode = doc.querySelector("parsererror");
+      if (errorNode) {
+        this.logPhoneNumberValidationError(phoneNumberXlsxRow, "greetingMessage contains invalid content (like &)");
+      }
+    }
   }
 
   /**
