@@ -8,8 +8,7 @@ import {
 }from "globals/interfaces";
 
 import { logger } from "utils/logger";
-
-const _ = require("lodash");
+import _ from "lodash";
 
 export const getAttributesToResetDefaultSkills = (attributes : UMUserTwilioAttributes) => {
     const defaultSkills = getValidSkillsObject(attributes.default_skills);

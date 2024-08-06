@@ -1,10 +1,10 @@
-import { checkExtension } from "../checkExtension";
+import { checkExtension } from "../checkExtensionUtils";
 
 const mockWorkers = [{
     attributes: {
       extension: "1234"
     }
-  }]
+}]
 
 describe("checkExtension", () => {
 

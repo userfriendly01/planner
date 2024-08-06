@@ -34,8 +34,8 @@ jest.mock("context/appContext", () => ({
 }));
 
 
-jest.mock("services/checkExtension", () => ({
-  checkExtension: jest.fn()
+jest.mock("utils/checkExtensionUtils", () => ({
+  checkExtensionUtils: jest.fn()
 }));
 
 const mockOnBlur = jest.fn();
