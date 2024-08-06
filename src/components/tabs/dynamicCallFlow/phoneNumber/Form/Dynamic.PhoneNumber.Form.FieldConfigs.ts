@@ -118,7 +118,6 @@ createFieldConfig("Transfer Code", TRANSFER_CODE, ControlEnum.Input, false, fals
 createFieldConfig("Internet Placement", INTERNET_PLACEMENT, ControlEnum.Input, false, false);
 createFieldConfig("Line Of Business", LINE_OF_BUSINESS, ControlEnum.Input, false, false, FieldDataTypeEnum.STRING, drcFieldConditionCheck);
 createFieldConfig("Marketing Channel", MARKETING_CHANNEL, ControlEnum.Input, false, false, FieldDataTypeEnum.STRING, drcFieldConditionCheck);
-createFieldConfig("Migrate Self Service Number to Dynamic", MIGRATE_SELF_SERVICE_NUMBER_TO_DYNAMIC, ControlEnum.Switch, false, true, FieldDataTypeEnum.STRING);
 createFieldConfig("Whisper", WHISPER, ControlEnum.Input, false, false, FieldDataTypeEnum.STRING, drcFieldConditionCheck);
 createFieldConfig("Request ID", REQUEST_ID, ControlEnum.Input, false, false, FieldDataTypeEnum.STRING, drcFieldConditionCheck);
 createFieldConfig("Range Indicator", RANGE_INDICATOR, ControlEnum.Input, false, false, FieldDataTypeEnum.STRING, drcFieldConditionCheck);
