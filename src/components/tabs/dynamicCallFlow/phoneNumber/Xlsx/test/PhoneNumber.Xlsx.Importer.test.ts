@@ -1,6 +1,9 @@
 import * as xlsx from "xlsx";
+import {
+  DYNAMIC_CALL_FLOW_PATH,
+  getXlsImporterResults
+} from "components/tabs/dynamicCallFlow/common/Xlsx/test/Xlsx.Testing.Util";
 import { PhoneNumberXlsxImporter } from "components/tabs/dynamicCallFlow/phoneNumber/Xlsx/Import/PhoneNumber.Xlsx.Importer";
-import { DYNAMIC_CALL_FLOW_PATH, getXlsImporterResults } from "components/tabs/dynamicCallFlow/common/Xlsx/test/Xlsx.Testing.Util";
 
 function getPhoneNumberXlsxImporterResults(fileName: string): xlsx.WorkSheet {
   return getXlsImporterResults(new PhoneNumberXlsxImporter(), fileName);
