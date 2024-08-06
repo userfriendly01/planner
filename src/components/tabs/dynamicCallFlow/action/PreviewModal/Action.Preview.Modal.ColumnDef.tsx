@@ -15,7 +15,7 @@ export const TableGridColumnDef: GridColDef[] = [
     field: "actionType",
     sortable: true,
     width: 150,
-    align: "left",
+    align: "left"
   },
   {
     headerName: "Call Flow Name",

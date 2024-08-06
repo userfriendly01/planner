@@ -110,6 +110,7 @@ export const ActionPreviewModal = ({
           columns={tableGridColumnDef}
           getRowId={getRowId}
           loading = {loading}
+          isCellEditable = {() => false}
           sx={{
             "& .MuiDataGrid-columnHeaderTitle": {
               fontWeight: 600

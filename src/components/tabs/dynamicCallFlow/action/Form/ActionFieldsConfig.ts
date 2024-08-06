@@ -11,37 +11,32 @@ const defaultFieldConditionCheck: FieldConditionCheckType = (): boolean => {
   return true;
 };
 
-function createFieldConfig(fieldKey: string, label: string, control: Control, required: boolean, disableEdit: boolean, dataType = FieldDataTypeEnum.STRING, fieldConditionCheck?: FieldConditionCheckType, isUserAbleToChangeControl = false, gridSize?: number): void {
-  if (required) {
-    RequiredActionFormFields.push(fieldKey);
-  }
-
+function createFieldConfig(fieldKey: string, label: string, control: Control): void {
   ActionFormFieldConfigs[fieldKey] = {
     fieldKey: fieldKey,
     label,
     originalControl: control,
     currentControl: control,
-    isUserAbleToChangeControl: isUserAbleToChangeControl || false,
-    required,
-    disableEdit,
-    dataType,
-    fieldConditionCheck: fieldConditionCheck || defaultFieldConditionCheck,
-    gridSize
+    isUserAbleToChangeControl: false,
+    required: false,
+    disableEdit: true,
+    dataType: FieldDataTypeEnum.STRING,
+    fieldConditionCheck: defaultFieldConditionCheck
   } as FieldConfig;
 }
 
-createFieldConfig("actionId", "Action ID", ControlEnum.Input, true, false);
-createFieldConfig("actionType", "Action Type", ControlEnum.AutoComplete, true, false);
-createFieldConfig("allowBargeIn", "Allow Barge-in", ControlEnum.Input, false, false);
-createFieldConfig("callFlowName", "Call Flow Name", ControlEnum.Input, true, false);
-createFieldConfig("finishOnKey", "Finish on Key", ControlEnum.Input, false, false);
-createFieldConfig("maxDigits", "Max Digits", ControlEnum.Input, false, false);
-createFieldConfig("minDigits", "Min Digits", ControlEnum.Input, false, false);
-createFieldConfig("nextActionId", "Next Action ID", ControlEnum.Input, true, false);
-createFieldConfig("nextActionType", "Next Action Type", ControlEnum.AutoComplete, true, false);
-createFieldConfig("options", "Options", ControlEnum.Input, false, false);
-createFieldConfig("repeat", "Repeat", ControlEnum.Input, false, false);
-createFieldConfig("speech", "Speech", ControlEnum.Input, false, false);
-createFieldConfig("timeout", "Timeout", ControlEnum.Input, false, false);
+createFieldConfig("actionId", "Action ID", ControlEnum.Input);
+createFieldConfig("actionType", "Action Type", ControlEnum.AutoComplete);
+createFieldConfig("allowBargeIn", "Allow Barge-in", ControlEnum.Input);
+createFieldConfig("callFlowName", "Call Flow Name", ControlEnum.Input);
+createFieldConfig("finishOnKey", "Finish on Key", ControlEnum.Input);
+createFieldConfig("maxDigits", "Max Digits", ControlEnum.Input);
+createFieldConfig("minDigits", "Min Digits", ControlEnum.Input);
+createFieldConfig("nextActionId", "Next Action ID", ControlEnum.Input);
+createFieldConfig("nextActionType", "Next Action Type", ControlEnum.AutoComplete);
+createFieldConfig("options", "Options", ControlEnum.Input);
+createFieldConfig("repeat", "Repeat", ControlEnum.Input);
+createFieldConfig("speech", "Speech", ControlEnum.Input);
+createFieldConfig("timeout", "Timeout", ControlEnum.Input);
 
 Object.freeze(ActionFormFieldConfigs);
