@@ -123,7 +123,7 @@ export class PhoneNumberXlsxValueInspector {
     if ([phoneNumberXlsxRow.nextActionId, phoneNumberXlsxRow.nextActionType].filter(value => Boolean(value)).length === 1) {
       this.logPhoneNumberValidationError(phoneNumberXlsxRow, "nextActionId and nextActionType must be provided together.");
     }
-    if (Boolean(phoneNumberXlsxRow.nextActionType) && !Object.keys(ActionTypeEnum).includes(phoneNumberXlsxRow.nextActionType)) {
+    if (phoneNumberXlsxRow.nextActionType && !Object.keys(ActionTypeEnum).includes(phoneNumberXlsxRow.nextActionType)) {
       this.logPhoneNumberValidationError(phoneNumberXlsxRow, "invalid nextActionType.");
     }
   }
