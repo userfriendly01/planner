@@ -14,7 +14,7 @@ export class PhoneNumberXlsxImporter extends AbstractXlsxImporter<PhoneNumberXls
     return new PhoneNumberXlsxImporter();
   }
   protected inspectXlsxRows(phoneNumberXlsxRows: Array<PhoneNumberXlsxRow>): void {
-    this._phoneNumberValueInspector.inspectValues(phoneNumberXlsxRows);
+    this._xlsxImporterResults.errors.push(...this._phoneNumberValueInspector.inspectValues(phoneNumberXlsxRows));
   }
 
   protected generateRecords(phoneNumberXlsxRows: Array<PhoneNumberXlsxRow>): Array<PhoneNumberRecordType> {

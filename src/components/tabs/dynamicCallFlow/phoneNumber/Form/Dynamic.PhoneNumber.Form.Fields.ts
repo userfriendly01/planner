@@ -19,6 +19,7 @@ export const INTERNET_PLACEMENT = "internetPlacement";
 export const LANGUAGE_OFFER = "languageOffer";
 export const LINE_OF_BUSINESS = "lineOfBusiness";
 export const MARKETING_CHANNEL = "marketingChannel";
+export const MIGRATE_SELF_SERVICE_NUMBER_TO_DYNAMIC = "migrateSelfServiceNumberToDynamic";
 export const OFFICE_NUMBERS = "officeNumbers";
 export const PREDICTIVE_CALLER = "predictiveCaller";
 export const RANGE_INDICATOR = "rangeIndicator";

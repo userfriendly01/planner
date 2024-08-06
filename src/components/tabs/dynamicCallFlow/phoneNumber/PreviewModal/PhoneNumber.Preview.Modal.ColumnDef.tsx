@@ -23,6 +23,7 @@ import {
   LANGUAGE_OFFER,
   LINE_OF_BUSINESS,
   MARKETING_CHANNEL,
+  MIGRATE_SELF_SERVICE_NUMBER_TO_DYNAMIC,
   NEXT_ACTION_ID, NEXT_ACTION_TYPE, OFFICE_NUMBERS, PHONE_NUMBER,
   PHONE_NUMBER_TYPE, PREDICTIVE_CALLER,
   RANGE_INDICATOR,
@@ -411,6 +412,19 @@ export const PhoneNumberPreviewModalColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left"
+  },
+  { // Dynamic Phone Number Type Only
+    headerName: "*Migrate Self Service Number to Dynamic",
+    field: MIGRATE_SELF_SERVICE_NUMBER_TO_DYNAMIC,
+    sortable: true,
+    width: 110,
+    align: "center",
+    valueGetter: ({ row: phoneNumberRecord }: GridValueGetterParams<PhoneNumberRecordType, FieldDataType>): FieldDataType => PhoneNumberRecordUtil.getPropertyValue(phoneNumberRecord, MIGRATE_SELF_SERVICE_NUMBER_TO_DYNAMIC) || false,
+    renderCell: ({ row: phoneNumberRecord }: GridRenderCellParams<PhoneNumberRecordType, FieldDataType>) => (
+      <Box>
+        <Switch checked={PhoneNumberRecordUtil.getPropertyBooleanValue(phoneNumberRecord, MIGRATE_SELF_SERVICE_NUMBER_TO_DYNAMIC) || false} defaultChecked={false} color="warning" disabled size="medium" />
+      </Box>
+    )
   },
   { // Legacy Phone Number Type Only
     headerName: "**Account Manager",

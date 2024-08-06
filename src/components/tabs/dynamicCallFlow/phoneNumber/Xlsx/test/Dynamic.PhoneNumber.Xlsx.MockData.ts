@@ -12,7 +12,7 @@ export const testDynamicPhoneNumberXlsxRow: PhoneNumberXlsxRow = {
   affinityVDN: "",
   agentId: "",
   brand: BrandTypeEnum.LIBERTY_MUTUAL,
-  employeeId: "testDynamicEmployeeId",
+  employeeId: "n1234567",
   callDetails1: "",
   callDetails2: "",
   callFlowName: "SELFSERVICE",

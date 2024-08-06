@@ -21,7 +21,7 @@ describe("Dynamic Phone Number Xlsx Record Generator", () => {
         channel: "Service",
         dataRequests: ["testDynamicDataRequests"],
         dialedDescription: "testDynamicDialedDescription",
-        employeeId: "testDynamicEmployeeId",
+        employeeId: "n1234567",
         greetingMessages: "testDynamicGreetingMessages",
         internetPlacement: "testDynamicInternetPlacement",
         languageOffer: "English",

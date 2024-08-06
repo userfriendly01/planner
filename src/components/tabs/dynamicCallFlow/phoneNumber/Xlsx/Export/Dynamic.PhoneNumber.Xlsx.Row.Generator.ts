@@ -40,6 +40,7 @@ export class DynamicPhoneNumberXlsxRowGenerator extends AbstractPhoneNumberXlsxR
       internetPlacement: xlsxRow.internetPlacement,
       lineOfBusiness: xlsxRow.lineOfBusiness,
       marketingChannel: xlsxRow.marketingChannel,
+      migrateSelfServiceNumberToDynamic: xlsxRow.migrateSelfServiceNumberToDynamic,
       nextActionId: xlsxRow.nextActionId,
       nextActionType: xlsxRow.nextActionType,
       phoneNumberType: xlsxRow.phoneNumberType,

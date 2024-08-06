@@ -1,27 +1,24 @@
-import { PhoneNumberXlsxRow } from "components/tabs/dynamicCallFlow/phoneNumber/Xlsx/PhoneNumber.Xlsx.Interfaces";
+import { ActionType } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
 import {
   CallerType,
   CallFlowType,
-  CallFlowTypeEnum,
   LanguageOfferType,
   PhoneNumber,
   PhoneNumberType
 } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
-import { ActionType } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
 import {
   AbstractPhoneNumberXlsxRecordGenerator
 } from "components/tabs/dynamicCallFlow/phoneNumber/Xlsx/Import/Abstract.PhoneNumber.Xlsx.Record.Generator";
+import { PhoneNumberXlsxRow } from "components/tabs/dynamicCallFlow/phoneNumber/Xlsx/PhoneNumber.Xlsx.Interfaces";
 
 export class DynamicPhoneNumberXlsxRecordGenerator extends AbstractPhoneNumberXlsxRecordGenerator {
   protected mapPhoneNumberRecordTypeSpecificFields(phoneNumberXlsxRow: PhoneNumberXlsxRow): PhoneNumber {
-    const isSelfServiceNumberMigratingToDynamic = phoneNumberXlsxRow.migrateSelfServiceNumberToDynamic?.toLowerCase() === "true";
-
     return {
       phoneNumber: phoneNumberXlsxRow.dialedPhoneNumber,
       phoneNumberType: phoneNumberXlsxRow.phoneNumberType as PhoneNumberType,
-      callFlowType: isSelfServiceNumberMigratingToDynamic ? CallFlowTypeEnum.SELFSERVICE : phoneNumberXlsxRow.callFlowType as CallFlowType,
+      callFlowType: phoneNumberXlsxRow.callFlowType as CallFlowType,
       callerType: phoneNumberXlsxRow.callerType as CallerType,
-      callFlowName: isSelfServiceNumberMigratingToDynamic ? CallFlowTypeEnum.SELFSERVICE : phoneNumberXlsxRow.callFlowName,
+      callFlowName: phoneNumberXlsxRow.callFlowName,
       callFlowRoute: phoneNumberXlsxRow.callFlowRoute,
       callIntent: phoneNumberXlsxRow.callIntent,
       dataRequests: phoneNumberXlsxRow.dataRequests?.split(",") || [],
@@ -31,8 +28,7 @@ export class DynamicPhoneNumberXlsxRecordGenerator extends AbstractPhoneNumberXl
       nextActionType: phoneNumberXlsxRow.nextActionType as ActionType,
       officeNumbers: phoneNumberXlsxRow.officeNumbers?.length > 0 ? phoneNumberXlsxRow.officeNumbers.split(",") : [],
       transferDestination: phoneNumberXlsxRow.transferDestination,
-      // This field will be removed once all self service numbers are migrated to dynamic call flow:
-      migrateSelfServiceNumberToDynamic: isSelfServiceNumberMigratingToDynamic
+      migrateSelfServiceNumberToDynamic: phoneNumberXlsxRow.migrateSelfServiceNumberToDynamic?.toLowerCase() === "true"
     } as PhoneNumber;
   }
 }

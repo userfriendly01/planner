@@ -42,11 +42,13 @@ export enum CallerTypeEnum {
     CUSTOMER = "Customer"
 }
 
-export type ChannelType = "Sales" | "Service" | "Claims";
+export type ChannelType = "Sales" | "Service" | "Claims" | "Business Lines" | "Commercial";
 export enum ChannelTypeEnum {
     SALES = "Sales",
     SERVICE = "Service",
     CLAIMS = "Claims",
+    BUSINESS_LINES = "Business Lines",
+    COMMERCIAL = "Commercial",
 }
 
 export type LanguageOfferType = "English" | "Spanish";
@@ -55,11 +57,13 @@ export enum LanguageOfferTypeEnum {
     SPANISH = "Spanish",
 }
 
-export type PhoneNumberType = "" | "DID" | "TFN";
+export type PhoneNumberType = "" | "DID" | "TFN" | "DRC" | "LSC";
 export enum PhoneNumberTypeEnum {
     BLANK = "",
     DID = "DID",
-    TFN = "TFN"
+    TFN = "TFN",
+    DRC = "DRC",
+    LSC = "LSC",
 }
 
 export type TfnRoutingGroupType = TfnRoutingGroupEnum.PREMIER_PARTNERS | TfnRoutingGroupEnum.TRU_STAGE | TfnRoutingGroupEnum.TRU_STAGE_NAVY |
