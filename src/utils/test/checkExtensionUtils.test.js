@@ -1,4 +1,4 @@
-import { checkExtension } from "../checkExtensionUtils";
+import { checkExtension, generateExtension } from "../checkExtensionUtils";
 
 const mockWorkers = [{
     attributes: {
@@ -8,12 +8,12 @@ const mockWorkers = [{
 
 describe("checkExtension", () => {
 
-  test("returns true", () => {
+  test("should return true if extension is unused", () => {
     const res = checkExtension(mockWorkers, "8888")
     expect(res).toBe(true);
   })
 
-  test("returns false", () => {
+  test("should return false if extension is used", () => {
     const res = checkExtension(mockWorkers, "1234");
     expect(res).toBe(false);
   })
