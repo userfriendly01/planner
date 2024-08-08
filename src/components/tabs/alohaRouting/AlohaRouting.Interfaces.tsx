@@ -39,6 +39,33 @@ export interface CctSharedCallRoutingDb {
     alternateTransferDestination?: string;
     tfnRoutingGroup?: string;
 }
+export const getCctSharedCallRoutingDbShell = ():CctSharedCallRoutingDb => {
+  return {
+    all: "",
+    pkey: "",
+    skey: "",
+    brand: "",
+    callerState: "",
+    callerType: "",
+    callIntent: "",
+    channel: "",
+    dayOfWeek: "",
+    transferDestination: "",
+    transferMessage: "",
+    twilioSkill: "",
+    percentOfCallers: "",
+    policyType: "",
+    startTime: "",
+    endTime: "",
+    crcSkill: "",
+    priority: "",
+    alternateTransferDestination: "",
+    tfnRoutingGroup: "",
+    occupancyCheck: [] as Array<RoutingOccupancyCheck>,
+    routingSteps: [] as Array<RoutingStep>,
+    id: 0
+  };
+};
 export interface RoutingMasterData {
     channel?: Array<string>;
     brand?: Array<string>;

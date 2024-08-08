@@ -87,6 +87,49 @@ export interface CctSharedCallFlowDb {
     userDestination?: string;
     whisper?: string;
 }
+export const getCctSharedCallFlowDbShell = ():CctSharedCallFlowDb => {
+  return {
+    pkey: "",
+    accountManager: "",
+    affinityVDN: "",
+    agentId: "",
+    brand: "",
+    callDetails1: "",
+    callDetails2: "",
+    callFlowName: "",
+    callFlowTemplate: "",
+    callFlowType: "",
+    callTypeDescription: "",
+    channel: "",
+    content: {
+      callFlowRoute: "",
+      callIntent: "",
+      callerType: "",
+      dataRequests: [""],
+      greetingMessages: "",
+      languageOffer: "",
+      officeNumbers: [""],
+      transferDestination: ""
+    },
+    createTime: "",
+    dialedDescription: "",
+    employeeId: "",
+    internetPlacement: "",
+    lineOfBusiness: "",
+    marketingChannel: "",
+    nextActionId: "",
+    nextActionType: "",
+    phoneNumberType: "",
+    predictiveCaller: false,
+    rangeIndicator: "",
+    requestID: "",
+    tfnRoutingGroup: "",
+    transferCode: "",
+    userDestination: "",
+    whisper: "",
+    id: 0
+  };
+};
 export interface FlowKeys {
     accountManager?: string;
     affinityVDN?: string;
