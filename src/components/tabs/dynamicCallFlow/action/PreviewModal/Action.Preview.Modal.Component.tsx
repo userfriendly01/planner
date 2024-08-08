@@ -52,6 +52,10 @@ export const ActionPreviewModal = ({
     return reconstructTableColumnDef([...TableGridColumnDef], previewModalGridApiRef);
   },[modalType]);
 
+  useEffect(() => {
+    setModalRecords([]);
+  }, [isOpen]);
+
   useEffect(()=>{
     if (htmlInputElements.length > 0) {
       setHtmlInputElements(htmlInputElements.map((row: any, index:  number) => ({
@@ -78,7 +82,6 @@ export const ActionPreviewModal = ({
   };
 
   const handleOnClose =()=> {
-    setModalRecords([]);
     onClose();
   };
 
