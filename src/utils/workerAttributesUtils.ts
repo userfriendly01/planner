@@ -1,13 +1,4 @@
-import { apolloClient } from "../components/core/Auth/SharedGraphAPIProvider";
 import { UMUserTwilioAttributes } from 'globals/interfaces';
-import {
-    GET_USER_SKILLS,
-}from "globals/graphql";
-import {
-    UMUser
-}from "globals/interfaces";
-
-import { logger } from "utils/logger";
 import _ from "lodash";
 
 export const getAttributesToResetDefaultSkills = (attributes : UMUserTwilioAttributes) => {
@@ -83,23 +74,4 @@ export const shouldWorkerBeUpdatedToDefaultSkills = (attributes : UMUserTwilioAt
         shouldUpdate: false
       };
     }
-};
-
-
-export const getUserSkills = async (identifier: string): Promise<UMUser> => {
-    const {
-        errors, data
-    }  = await apolloClient.query<{ user: UMUser }>({
-        query: GET_USER_SKILLS,
-        variables: {
-        identifier
-        }
-    });
-
-    if (errors?.length) {
-        logger.error("Failed to fetch user from graph", { errors });
-        throw errors;
-    }
-
-    return data.user;
 };

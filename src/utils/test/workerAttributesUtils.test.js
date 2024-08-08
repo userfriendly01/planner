@@ -2,7 +2,7 @@ import {
     getAttributesToResetDefaultSkills,
     getValidSkillsObject,
     shouldWorkerBeUpdatedToDefaultSkills,
-} from "services/workerAttributes"
+} from "utils/workerAttributesUtils"
 
 jest.mock("../../components/core/Auth/SharedGraphAPIProvider", () => ({
     apolloClient: {

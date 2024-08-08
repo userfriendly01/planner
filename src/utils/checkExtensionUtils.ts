@@ -23,7 +23,7 @@ const pickANumber = () => {
     return extNum;
   };
 
-export const generateExtension = (workers: any[]) => {
+export const generateExtension = (workers: UMUser[]) => {
     const maxAttempts = 5;
   
     const validateGeneratedNumber = async (attemptNumber: number): Promise<any> => {

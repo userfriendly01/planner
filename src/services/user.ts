@@ -9,7 +9,8 @@ import {
   CREATE_USER,
   GET_USER,
   LIST_USER_RECORDS,
-  UPDATE_USER
+  UPDATE_USER,
+  GET_USER_SKILLS
 }from "globals/graphql";
 import {
   getPaginatedResults,
@@ -132,4 +133,22 @@ export const updateUser = async (identifier: string, user: Partial<UMUser>): Pro
   }
 
   return mapWorkerFromDbWorker(data.user);
+};
+
+export const getUserSkills = async (identifier: string): Promise<UMUser> => {
+  const {
+      errors, data
+  }  = await apolloClient.query<{ user: UMUser }>({
+      query: GET_USER_SKILLS,
+      variables: {
+      identifier
+      }
+  });
+
+  if (errors?.length) {
+      logger.error("Failed to fetch user from graph", { errors });
+      throw errors;
+  }
+
+  return data.user;
 };
