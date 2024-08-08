@@ -19,7 +19,7 @@ import {
   SUBSCRIBE_CREATE_USER,
   SUBSCRIBE_UPDATE_USER,
   SUBSCRIBE_DELETE_USER
-} from "globals/graphql";
+} from "globals/user";
 import { useSubscription } from "hooks/useSubscription";
 import { mapWorkerFromDbWorker } from "utils/graphUtils";
 import {
@@ -92,6 +92,9 @@ export const SharedGraphAPIProvider = ({ children }: Props): ReactElement => {
     cache: new InMemoryCache(),
     defaultOptions: {
       query: {
+        errorPolicy: "all"
+      },
+      mutate: {
         errorPolicy: "all"
       }
     }

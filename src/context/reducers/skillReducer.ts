@@ -154,7 +154,7 @@ export const skillReducer = (state: SkillState, action: Action): SkillState => {
     }
     case skillActions.SET_UPDATE_SKILL_FORM: {
       const skill: Skill = action.payload.skill;
-      const taskQueue: TwilioQueue = action.payload.taskQueue;
+      const taskQueue: Partial<TwilioQueue> = action.payload.taskQueue || {};
 
       console.log("Faith skill", skill);
       console.log("Faith taskQueue", taskQueue);
@@ -165,7 +165,7 @@ export const skillReducer = (state: SkillState, action: Action): SkillState => {
           formMode: formModes.UPDATE,
           name: skill.name,
           levels: {
-            min: skill.levels[0] || null,
+            min: skill.levels && skill.levels[0] || null,
             max: skill.levels && skill.levels[skill.levels.length - 1] || null
           },
           applicationId: skill.applicationId,
@@ -177,15 +177,15 @@ export const skillReducer = (state: SkillState, action: Action): SkillState => {
             operating_unit_sid: taskQueue.operating_unit_sid
           },
           profileIds: skill.profileIds || [],
-          vhCallTarget: skill.vhCallTarget || "",
-          vhThreshold: skill.vhThreshold.toString() || "",
+          vhCallTarget: skill.vhCallTarget || null,
+          vhThreshold: skill.vhThreshold?.toString() || null,
           timeOfDays: Object.values(state.daysOfWeek).map((dow: any) => {
             const dayOfWeekId = dow.id;
-            const dayOfWeekDetails = skill.timeOfDays.find((tod: any) => tod.dayOfWeekId === dayOfWeekId);
+            const dayOfWeekDetails = skill.timeOfDays?.find((tod: any) => tod.dayOfWeekId === dayOfWeekId);
             return {
               dayOfWeekId,
-              timeOfDayId: dayOfWeekDetails.timeOfDayId,
-              vhTimeOfDayId: dayOfWeekDetails.vhTimeOfDayId
+              timeOfDayId: dayOfWeekDetails?.timeOfDayId,
+              vhTimeOfDayId: dayOfWeekDetails?.vhTimeOfDayId
             };
           })
         }

@@ -91,6 +91,7 @@ export const GeneralSkillForm = () => {
       <FormRow>
         <CustomInput
           value={tempField.name}
+          disabled={skillState.skillForm.formMode !== formModes.INSERT}
           styles={inputStyles}
           maxLength="80"
           onBlur={() => {
@@ -121,7 +122,7 @@ export const GeneralSkillForm = () => {
               name: value
             });
           }}
-          helperText={skillState.skills.some(s => s.name === tempField.name) ? "This skill name already exists" : null}
+          helperText={skillState.skillForm.formMode === formModes.INSERT && skillState.skills.some(s => s.name === tempField.name) ? "This skill name already exists" : null}
         />
         <Dropdown
           options={profileOptions}

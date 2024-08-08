@@ -30,12 +30,12 @@ import {
   Divider
 } from "@mui/material";
 import {
-  createSkill, loadConsolidatedSkills
+  createSkill, editSkill, loadConsolidatedSkills
 } from "services/skill";
 import { getTaskQueues } from "services/taskQueues";
 import { logger } from "utils/logger";
 import {
-  areVhFieldsValid, isSkillFormValid
+  areVhFieldsValid, getSkillFormChanges, isSkillFormValid
 } from "utils/skillsUtils";
 import {
   ActionTypes, Skill, TwilioQueue
@@ -59,7 +59,7 @@ export const AddEditForm = (props: any) => {
   const skills = skillState.skills;
   const taskQueues = skillState.taskQueues;
 
-
+  const [ changes, setChanges ] = React.useState({});
   const [ selectedTab, setSelectedTab ] = React.useState(0);
   const [ missingFields, setMissingFields ] = React.useState<string[]>([]);
 
@@ -81,7 +81,16 @@ export const AddEditForm = (props: any) => {
     }
   }, []);
 
-  const addSkill = async () => {
+  React.useEffect(() => {
+    if(skillState.skillForm.formMode === formModes.UPDATE){
+      const originalSkill = skills.find((s: Skill) => s.name === tableState.selected[0]);
+      setChanges(getSkillFormChanges(originalSkill, skillState.skillForm));
+    }
+  }, [skillState.skillForm]);
+
+
+  const handleOnSave = async () => {
+    const isAdd = skillState.skillForm.formMode === formModes.INSERT;
 
     const refreshState = async () => {
       const reloadTaskQueues = skillState.skillForm.taskQueue.isNew;
@@ -113,17 +122,22 @@ export const AddEditForm = (props: any) => {
     });
 
     try {
-      const response = await createSkill(skillState.skillForm, nNumber);
+      let response;
+      if(isAdd){
+        response = await createSkill(skillState, nNumber);
+      }else {
+        response = await editSkill(changes, skillState, nNumber);
+      }
 
       if (response.status === 200) {
-        logger.info(`Successfully created new skill ${skillState.skillForm.name}`, {
+        logger.info(`Successfully ${isAdd ? "created" : "updated"} new skill ${skillState.skillForm.name}`, {
           nNumber,
           skillFriendlyName: skillState.skillForm.taskQueue.friendly_name,
           name: skillState.skillForm.name
         });
 
         setSaveResult({
-          message: "Skill Successfully Created",
+          message: `Skill Successfully ${isAdd ? "Created" : "Updated"}`,
           status: ModalOverlayStatuses.SUCCESS
         });
 
@@ -141,7 +155,7 @@ export const AddEditForm = (props: any) => {
           });
         }, timeouts.MODAL_OVERLAY);
       } else {
-        logger.warn(`Partially created new skill ${skillState.skillForm.name}`, {
+        logger.warn(`Partially ${isAdd ? "created" : "updated"} new skill ${skillState.skillForm.name}`, {
           nNumber,
           skillFriendlyName: skillState.skillForm.taskQueue.friendly_name,
           name: skillState.skillForm.name,
@@ -160,13 +174,13 @@ export const AddEditForm = (props: any) => {
         });
       }
     } catch (error) {
-      logger.error("Error when adding Skill", {
+      logger.error(`Error when ${isAdd ? "creating" : "updating"} Skill`, {
         error,
         nNumber,
         skill: skillState.skillForm.name
       });
       setSaveResult({
-        message: `Failed to Create Skill: ${formatErrorMessage(error)}`,
+        message: `Failed to ${isAdd ? "Create" : "Update"} Skill: ${formatErrorMessage(error)}`,
         status: ModalOverlayStatuses.FAIL
       });
     }
@@ -258,9 +272,9 @@ export const AddEditForm = (props: any) => {
                       });
                     }} >Cancel</StyledButton>
                   <StyledButton
-                    onClick={addSkill}
+                    onClick={handleOnSave}
                     style={{ width: "200px" }}
-                    disabled={!isSkillFormValid(skills, skillState.skillForm)}
+                    disabled={!isSkillFormValid(skills, skillState.skillForm, changes)}
                   >{skillState.skillForm.formMode === formModes.INSERT ? "Add " : "Update "}Skill</StyledButton>
                 </ButtonWrapper>
               </>

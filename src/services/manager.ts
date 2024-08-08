@@ -8,7 +8,7 @@ import {
   CREATE_MANAGER,
   DELETE_MANAGER,
   UPDATE_MANAGER
-}from "globals/graphql";
+}from "globals/manager";
 import { getPaginatedResults } from "utils/graphUtils";
 import { logger } from "utils/logger";
 

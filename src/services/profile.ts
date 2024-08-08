@@ -26,7 +26,7 @@ import {
   UPDATE_DIRECTORY_ENTRY,
   UPDATE_SOFTPHONE_CONFIG,
   getSoftphoneConfigRelationshipsQuery, listSoftphoneConfigs
-} from "globals/graphql";
+} from "globals/profile";
 
 const formatActivity = (activity: Activity): Activity => ({
   ...activity,

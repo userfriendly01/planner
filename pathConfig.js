@@ -150,7 +150,8 @@ const paths = [
   {
     alias: "globals",
     paths: [
-      "globals"
+      "globals",
+      "globals/graphql"
     ]
   },
   {

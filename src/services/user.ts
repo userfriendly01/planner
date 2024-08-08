@@ -10,7 +10,7 @@ import {
   GET_USER,
   LIST_USER_RECORDS,
   UPDATE_USER
-}from "globals/graphql";
+}from "globals/user";
 import {
   getPaginatedResults,
   mapWorkerFromDbWorker,

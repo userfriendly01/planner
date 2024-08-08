@@ -5,6 +5,7 @@ import {
 } from "globals/interfaces";
 import {
   Skill, SkillFormState,
+  TimeOfDay,
   TimeOfDayRequestObject
 } from "callflowmanagement/Skills.Interfaces";
 import _ from "lodash";
@@ -13,6 +14,7 @@ import React from "react";
 import styled from "styled-components";
 import { logger } from "utils/logger";
 import { isNotEmptyString } from "utils";
+import { formModes } from "globals/index";
 
 const Priority = styled.span`
   color: #28A3AF;
@@ -38,17 +40,49 @@ export const isTaskQueueError = (skillForm: SkillFormState, name: string): boole
     (name && name.length > 0) && skillForm.taskQueue.target_workers !== skillTargetExpression ? true : false;
 };
 
-const areTimeOfDaysValid = (timeOfDays: TimeOfDayRequestObject[], virtualHold = false) => {
-  return timeOfDays.length === 7 && timeOfDays.every(tod => tod.dayOfWeekId && tod.timeOfDayId) && (virtualHold ? timeOfDays.every(tod => tod.vhTimeOfDayId) : true);
+export const getSkillFormChanges = (originalSkill: Skill, skillForm: SkillFormState) => {
+  const changes: any = [];
+  if(JSON.stringify(originalSkill.profileIds?.sort()) !== JSON.stringify(skillForm.profileIds?.sort())) { changes["profileIds"] = skillForm.profileIds; }
+
+  if(originalSkill.taskQueueSid !== skillForm.taskQueue?.sid || skillForm.taskQueue.isNew) { changes["taskQueue"] = skillForm.taskQueue; }
+
+  if((originalSkill.levels && originalSkill.levels[0] || null) !== skillForm.levels?.min || (originalSkill.levels && originalSkill.levels[originalSkill.levels.length - 1] || null) !== skillForm.levels?.max) { changes["levels"] = skillForm.levels; }
+
+  if(originalSkill.applicationId !== skillForm.applicationId) { changes["applicationId"] = skillForm.applicationId; }
+
+  if(originalSkill.vhCallTarget !== skillForm.vhCallTarget) { changes["vhCallTarget"] = skillForm.vhCallTarget; }
+
+  if((originalSkill.vhThreshold?.toString() || null) !== skillForm.vhThreshold) { changes["vhThreshold"] = skillForm.vhThreshold; }
+
+  const timeOfDayChanges: TimeOfDayRequestObject[] = [];
+  skillForm.timeOfDays.forEach((formTod: TimeOfDayRequestObject) => {
+    const ogTod: Partial<TimeOfDayRequestObject> = skillForm.originalSkill?.find((tod: TimeOfDayRequestObject) => tod.dayOfWeekId === ogTod.dayOfWeekId) || {};
+    if((formTod.timeOfDayId !== ogTod.timeOfDayId || formTod.vhTimeOfDayId !== ogTod.vhTimeOfDayId)){
+      timeOfDayChanges.push(formTod);
+    }
+  });
+
+  if(timeOfDayChanges.length) { changes["timeOfDays"] = timeOfDayChanges; }
+
+  console.log("Edit Form Changes: ", changes);
+  return changes;
 };
 
-export const isSkillFormValid = (skills: Skill[], skillForm: SkillFormState): boolean => {
-  const isNameValid = isNotEmptyString(skillForm.name) && !skills.some(s => s.name === skillForm.name);
+const areTimeOfDaysValid = (timeOfDays: TimeOfDayRequestObject[], formMode: string) => {
+  const isVirtualHold = timeOfDays.some((tod: TimeOfDayRequestObject) => tod.vhTimeOfDayId);
+  const isLengthValid = formMode === formModes.INSERT ? timeOfDays.length === 7 : true;
+  return isLengthValid && timeOfDays.every(tod => tod.dayOfWeekId && tod.timeOfDayId) && (isVirtualHold ? timeOfDays.every(tod => tod.vhTimeOfDayId) : true);
+};
+
+export const isSkillFormValid = (skills: Skill[], skillForm: SkillFormState, changes: Partial<SkillFormState>): boolean => {
+  const isFormModeValid = skillForm.formMode === formModes.INSERT ? true : !!Object.keys(changes).length;
+  const isNameValid = skillForm.formMode === formModes.INSERT ? isNotEmptyString(skillForm.name) && !skills.some(s => s.name === skillForm.name) : isNotEmptyString(skillForm.name);
   const areProfilesSelected = !!skillForm.profileIds.length;
   const areLevelsValid = (skillForm.levels.min && skillForm.levels.max) || (!skillForm.levels.min && !skillForm.levels.max) ? true : false;
   const isTaskQueueValid = skillForm.taskQueue.isNew ? !!(isNotEmptyString(skillForm.taskQueue.friendly_name) &&
   skillForm.taskQueue.operating_unit_sid) : !!(skillForm.taskQueue.sid && !isTaskQueueError(skillForm, skillForm.name));
-  return isNameValid && areProfilesSelected && isTaskQueueValid && areTimeOfDaysValid(skillForm.timeOfDays) &&
+
+  return isFormModeValid && isNameValid && areProfilesSelected && isTaskQueueValid && areTimeOfDaysValid(skillForm.timeOfDays, skillForm.formMode) &&
   typeof skillForm.applicationId === "number" && areLevelsValid;
 };
 
