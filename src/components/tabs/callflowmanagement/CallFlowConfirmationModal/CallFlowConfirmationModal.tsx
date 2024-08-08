@@ -22,7 +22,7 @@ export const CallFlowConfirmationModal = (props: CallFlowConfirmationModalProps)
   const { skills } = useSkillState();
   const handleClose = confirmationModalOpts.callbackMethods.handleClose;
   const onConfirm = confirmationModalOpts.callbackMethods.onConfirm;
-  const selectedSkills = skills.filter((s: Skill) => tableState.selected.includes(s.name));
+  const selectedSkills = skills.filter((s: Skill) => tableState?.selected.includes(s.name));
 
   return (
     <ModalContainer>
