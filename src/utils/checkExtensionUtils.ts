@@ -23,13 +23,13 @@ const pickANumber = () => {
     return extNum;
   };
 
-export const generateExtension = (workers: UMUser[]) => {
+export const generateExtension = async (workers: UMUser[]): Promise<string> => {
     const maxAttempts = 5;
   
     const validateGeneratedNumber = async (attemptNumber: number): Promise<any> => {
       const extension = pickANumber();
       const validExtension = !workers.some(w => {
-        w.attributes.extension === extension.toString();
+        return w.attributes.extension === extension.toString();
       });
       if(validExtension){
         return Promise.resolve(extension);
@@ -41,6 +41,6 @@ export const generateExtension = (workers: UMUser[]) => {
       }
     };
   
-    return validateGeneratedNumber(1);
+    return await validateGeneratedNumber(1);
   };
   

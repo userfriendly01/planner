@@ -16,138 +16,148 @@ levels: {}
 };
 
 describe("getAttributesToResetDefaultSkills", () => {
-const doTest = (describeMsg, testMsg, attributesBefore, expectedPayload) => {
-    describe(describeMsg, () => 
-        test(testMsg, () =>
+    describe("all 3 attributes are default empty objects", () => {
+        test("should return routing and disabled_skills of empty skills and levels", () => {
+            const attributesBefore = {
+                default_skills: {
+                    skills: [],
+                    levels: {}
+                },
+                routing: {
+                    skills: [],
+                    levels: {}
+                },
+                disabled_skills: {
+                    skills: [],
+                    levels: {}
+                }
+            }
+            const expectedPayload = {
+                routing: {
+                    skills: [],
+                    levels: {}
+                },
+                disabled_skills: {
+                    skills: [],
+                    levels: {}
+                }
+            }
             expect(getAttributesToResetDefaultSkills(attributesBefore)).toEqual(expectedPayload)
-        )
-    );
-};
-doTest("all 3 attributes are default empty objects",
-    "should return routing and disabled_skills of empty skills and levels", {
-    default_skills: {
-        skills: [],
-        levels: {}
-    },
-    routing: {
-        skills: [],
-        levels: {}
-    },
-    disabled_skills: {
-        skills: [],
-        levels: {}
-    }
-    },
-    {
-    routing: {
-        skills: [],
-        levels: {}
-    },
-    disabled_skills: {
-        skills: [],
-        levels: {}
-    }
+        })
     });
-doTest("current skills contains skills and levels that are not in default skills and disabled_skills contains skills that are in default_skills", 
-    "should add routing skills not found in default to disabled and should remove from disabled skills any skills found in default skills", {
-    default_skills: {
-        skills: ["1","2","3"],
-        levels: {
-        "1": 1,
-        "2": 2
-        }
-    },
-    routing: {
-        skills: ["1","2","4","5"],
-        levels: {
-        "1": 1,
-        "2": 2,
-        "5": 5
-        }
-    },
-    disabled_skills: {
-        skills: ["3","6","7"],
-        levels: {
-        "3": 3,
-        "7": 7
-        }
-    }
-    },
-    {
-    routing: {
-        skills: ["1","2","3"],
-        levels: {
-        "1": 1,
-        "2": 2
-        }
-    },
-    disabled_skills: {
-        skills: ["6","7","4","5"],
-        levels: {
-        "5": 5,
-        "7": 7
-        }
-    }
+
+    describe("current skills contains skills and levels that are not in default skills and disabled_skills contains skills that are in default_skills", () => {
+        test("should add routing skills not found in default to disabled and should remove from disabled skills any skills found in default skills", () => {
+            const attributesBefore = {
+                default_skills: {
+                    skills: ["1","2","3"],
+                    levels: {
+                    "1": 1,
+                    "2": 2
+                    }
+                },
+                routing: {
+                    skills: ["1","2","4","5"],
+                    levels: {
+                    "1": 1,
+                    "2": 2,
+                    "5": 5
+                    }
+                },
+                disabled_skills: {
+                    skills: ["3","6","7"],
+                    levels: {
+                    "3": 3,
+                    "7": 7
+                    }
+                }
+            }
+            const expectedPayload = {
+                routing: {
+                    skills: ["1","2","3"],
+                    levels: {
+                    "1": 1,
+                    "2": 2
+                    }
+                },
+                disabled_skills: {
+                    skills: ["6","7","4","5"],
+                    levels: {
+                    "5": 5,
+                    "7": 7
+                    }
+                }
+            }
+            expect(getAttributesToResetDefaultSkills(attributesBefore)).toEqual(expectedPayload)
+        })
     });
-doTest("default_skills is empty and routing has skills",
-    "should add any skills in routing to disabled and should set routing to empty", {
-    default_skills: {
-        skills: [],
-        levels: {}
-    },
-    routing: {
-        skills: ["1","2","4","5"],
-        levels: {
-        "1": 1,
-        "2": 2,
-        "5": 5
-        }
-    },
-    disabled_skills: {
-        skills: ["3","6","7"],
-        levels: {
-        "3": 3,
-        "7": 7
-        }
-    }
-    },
-    {
-    routing: {
-        skills: [],
-        levels: {}
-    },
-    disabled_skills: {
-        skills: ["3","6","7","1","2","4","5"],
-        levels: {
-        "3": 3,
-        "7": 7,
-        "1": 1,
-        "2": 2,
-        "5": 5
-        }
-    }
+    describe("default_skills is empty and routing has skills", () => {
+        test("should add any skills in routing to disabled and should set routing to empty", () => {
+            const attributesBefore = {
+                default_skills: {
+                    skills: [],
+                    levels: {}
+                },
+                routing: {
+                    skills: ["1","2","4","5"],
+                    levels: {
+                    "1": 1,
+                    "2": 2,
+                    "5": 5
+                    }
+                },
+                disabled_skills: {
+                    skills: ["3","6","7"],
+                    levels: {
+                    "3": 3,
+                    "7": 7
+                    }
+                }
+            }
+            const expectedPayload = {
+                routing: {
+                    skills: [],
+                    levels: {}
+                },
+                disabled_skills: {
+                    skills: ["3","6","7","1","2","4","5"],
+                    levels: {
+                    "3": 3,
+                    "7": 7,
+                    "1": 1,
+                    "2": 2,
+                    "5": 5
+                    }
+                }
+            }
+            expect(getAttributesToResetDefaultSkills(attributesBefore)).toEqual(expectedPayload)
+        })
     });
-doTest("default_skills has skills and routing has skills and disabled_skills has skills but there are no levels",
-    "should add any skills in routing to disabled and should add empty levels object to routing and disabled_skills", {
-    default_skills: {
-        skills: ["1","2"]
-    },
-    routing: {
-        skills: ["3","4"]
-    },
-    disabled_skills: {
-        skills: ["1"]
-    }
-    },
-    {
-    routing: {
-        skills: ["1","2"],
-        levels: {}
-    },
-    disabled_skills: {
-        skills: ["3","4"],
-        levels: {}
-    }
+    describe("default_skills has skills and routing has skills and disabled_skills has skills but there are no levels", () => {
+        test("should add any skills in routing to disabled and should add empty levels object to routing and disabled_skills", () => {
+            const attributesBefore = {
+                default_skills: {
+                    skills: ["1","2"]
+                },
+                routing: {
+                    skills: ["3","4"]
+                },
+                disabled_skills: {
+                    skills: ["1"]
+                }
+                }
+            const expectedPayload = {
+                routing: {
+                    skills: ["1","2"],
+                    levels: {}
+                },
+                disabled_skills: {
+                    skills: ["3","4"],
+                    levels: {}
+                }
+            }
+            expect(getAttributesToResetDefaultSkills(attributesBefore)).toEqual(expectedPayload)
+        })
     });
 });
 
@@ -423,16 +433,7 @@ describe ("shouldWorkerBeUpdatedToDefaultSkills", () => {
         });
     });
 
-    const testTrue = attributes => {
-        test("should return true when default_skills differs from routing", () => {
-            expect(shouldWorkerBeUpdatedToDefaultSkills(attributes)).toEqual({
-                reason: "Worker default_skills differs from currently assigned skills",
-                shouldUpdate: true
-            });
-        });
-    };
-
-    testTrue({
+    test.each([[{
         default_skills: {
         skills: ["amazing", "wow", "socool"],
         levels: {
@@ -448,8 +449,7 @@ describe ("shouldWorkerBeUpdatedToDefaultSkills", () => {
             amazing: 3 // diff
         }
         }
-    });
-    testTrue({
+    }], [{
         default_skills: {
         skills: ["amazing", "wow", "socool"],
         levels: {
@@ -458,99 +458,111 @@ describe ("shouldWorkerBeUpdatedToDefaultSkills", () => {
         }
         // no routing
         }
-    });
-    testTrue({
-        default_skills: {
-        skills: ["amazing", "wow", "socool"],
-        levels: {
-            amazing: 2,
-            socool: 1
+    }], [
+        {
+            default_skills: {
+            skills: ["amazing", "wow", "socool"],
+            levels: {
+                amazing: 2,
+                socool: 1
+            }
+            },
+            routing: {
+            skills: 123456, // not valid array
+            routing: 123456 // not obj
+            }
         }
-        },
-        routing: {
-        skills: 123456, // not valid array
-        routing: 123456 // not obj
+    ], [
+        {
+            default_skills: {
+            skills: ["amazing", "wow", "socool"],
+            levels: {
+                amazing: 2,
+                socool: 1
+            }
+            },
+            routing: {
+            skills: ["amazing", "wow", "socool", "notindefault"], // contains skill not in default
+            levels: {
+                amazing: 2,
+                socool: 1
+            }
+            }
         }
-    });
-    testTrue({
-        default_skills: {
-        skills: ["amazing", "wow", "socool"],
-        levels: {
-            amazing: 2,
-            socool: 1
+    ],[
+        {
+            default_skills: {
+            skills: ["amazing", "wow", "socool", "notincurrent"], // not in current
+            levels: {
+                amazing: 2,
+                socool: 1
+            }
+            },
+            routing: {
+            skills: ["amazing", "wow", "socool"],
+            levels: {
+                amazing: 2,
+                socool: 1
+            }
+            }
         }
-        },
-        routing: {
-        skills: ["amazing", "wow", "socool", "notindefault"], // contains skill not in default
-        levels: {
-            amazing: 2,
-            socool: 1
+    ], [
+        {
+            default_skills: {
+            skills: ["amazing", "wow", "socool"],
+            levels: {
+                amazing: 2,
+                socool: 1,
+                notincurrent: 9 // not in current
+            }
+            },
+            routing: {
+            skills: ["amazing", "wow", "socool"],
+            levels: {
+                amazing: 2,
+                socool: 1
+            }
+            }
         }
+    ], [
+        {
+            default_skills: {
+            skills: ["amazing", "wow", "socool"],
+            levels: {
+                amazing: 2,
+                socool: 1
+            }
+            },
+            routing: {
+            skills: ["amazing", "wow", "socool"],
+            levels: {
+                amazing: 2,
+                socool: 1,
+                notindefault: 9 // not in default
+            }
+            }
         }
-    });
-    testTrue({
-        default_skills: {
-        skills: ["amazing", "wow", "socool", "notincurrent"], // not in current
-        levels: {
-            amazing: 2,
-            socool: 1
+    ], [
+        {
+            default_skills: {
+            skills: ["amazing"],
+            levels: {
+                amazing: 2
+            }
+            },
+            routing: {
+            skills: ["amazing", "wow", "socool"],
+            levels: {
+                amazing: 2,
+                socool: 1
+            }
+            }
         }
-        },
-        routing: {
-        skills: ["amazing", "wow", "socool"],
-        levels: {
-            amazing: 2,
-            socool: 1
-        }
-        }
-    });
-    testTrue({
-        default_skills: {
-        skills: ["amazing", "wow", "socool"],
-        levels: {
-            amazing: 2,
-            socool: 1,
-            notincurrent: 9 // not in current
-        }
-        },
-        routing: {
-        skills: ["amazing", "wow", "socool"],
-        levels: {
-            amazing: 2,
-            socool: 1
-        }
-        }
-    });
-    testTrue({
-        default_skills: {
-        skills: ["amazing", "wow", "socool"],
-        levels: {
-            amazing: 2,
-            socool: 1
-        }
-        },
-        routing: {
-        skills: ["amazing", "wow", "socool"],
-        levels: {
-            amazing: 2,
-            socool: 1,
-            notindefault: 9 // not in default
-        }
-        }
-    });
-    testTrue({
-        default_skills: {
-        skills: ["amazing"],
-        levels: {
-            amazing: 2
-        }
-        },
-        routing: {
-        skills: ["amazing", "wow", "socool"],
-        levels: {
-            amazing: 2,
-            socool: 1
-        }
-        }
-    });
+    ]])("should return true when default_skills differs from routing", (attributes) => {
+        expect(shouldWorkerBeUpdatedToDefaultSkills(attributes)).toEqual({
+            reason: "Worker default_skills differs from currently assigned skills",
+            shouldUpdate: true
+        });
+    })
+
 });
