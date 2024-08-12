@@ -14,8 +14,7 @@ import {
   SkillState
 } from "callflowmanagement/SkillManagement/Skills.Interfaces";
 import {
-  Action, OperatingUnit,
-  UMSoftphoneConfiguration
+  Action, OperatingUnit
 } from "globals/interfaces";
 import { getOperatingUnits } from "services/operatingUnits";
 import { getTargetExpression } from "utils/skillsUtils";
@@ -39,7 +38,7 @@ export const createSkill = async (skillState: SkillState, updatedBy: string): Pr
 
     try {
       const res = await myAxios.post(apiPaths.TASK_QUEUES, newTaskQueuebody);
-      taskQueueSid = res.data.sid;
+      taskQueueSid = res.data.data.sid;
     } catch(error){
       const message = `Task Queue failed to create: ${formatErrorMessage(error)}`;
       logger.error(message, error);
@@ -290,9 +289,9 @@ export const editSkill = async (changes: Partial<SkillFormState>, skillState: Sk
     try {
       updateCount ++;
       const updateCallflowSkillBody: any = { updatedBy };
-      if(changesInclude([changes.applicationId])){ updateCallflowSkillBody.applicationId = changes.applicationId; }
-      if(changesInclude([changes.vhThreshold])){ updateCallflowSkillBody.vhThreshold = changes.vhThreshold; }
-      if(changesInclude([changes.vhCallTarget])){ updateCallflowSkillBody.vhCallTarget = changes.vhCallTarget; }
+      if(changesInclude([changes.applicationId])){ updateCallflowSkillBody.application_id = changes.applicationId; }
+      if(changesInclude([changes.vhThreshold])){ updateCallflowSkillBody.vh_threshold_tme = changes.vhThreshold; }
+      if(changesInclude([changes.vhCallTarget])){ updateCallflowSkillBody.vh_call_target = changes.vhCallTarget; }
       if(changesInclude([changes.timeOfDays])){ updateCallflowSkillBody.timeOfDays = changes.timeOfDays; }
 
       await myAxios.put(`${apiPaths.SKILLS_CALLFLOW}/${skillName}`, updateCallflowSkillBody);
@@ -526,6 +525,7 @@ export const loadConsolidatedSkills = async (dispatch: (action: Action) => void)
     const callflowSkillsPromise = getCallflowSkills();
     const graphSkillsPromise = getGraphSkills(dispatch);
 
+    console.log("Faith do we get here?", graphSkillsPromise);
     const [
       taskRouterSkillsResponse,
       callflowSkillsResponse,

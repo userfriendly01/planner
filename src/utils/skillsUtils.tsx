@@ -41,13 +41,12 @@ export const isTaskQueueError = (skillForm: SkillFormState, name: string): boole
 };
 
 export const getSkillFormChanges = (originalSkill: Skill, skillForm: SkillFormState) => {
-  console.log("FAITH LEVELS", originalSkill.levels, skillForm.levels);
   const changes: any = [];
   if(JSON.stringify(originalSkill.profileIds?.sort()) !== JSON.stringify(skillForm.profileIds?.sort())) { changes["profileIds"] = skillForm.profileIds; }
 
   if(originalSkill.taskQueueSid !== skillForm.taskQueue?.sid || skillForm.taskQueue.isNew) { changes["taskQueue"] = skillForm.taskQueue; }
 
-  if((originalSkill.levels && originalSkill.levels[0] || null) !== skillForm.levels?.min.value || (originalSkill.levels && originalSkill.levels[originalSkill.levels.length - 1] || null) !== skillForm.levels?.max.value) { changes["levels"] = skillForm.levels; }
+  if((originalSkill.levels && originalSkill.levels[0] || null) !== skillForm.levels?.min?.value || (originalSkill.levels && originalSkill.levels[originalSkill.levels.length - 1] || null) !== skillForm.levels?.max?.value) { changes["levels"] = skillForm.levels; }
 
   if(originalSkill.applicationId !== skillForm.applicationId) { changes["applicationId"] = skillForm.applicationId; }
 
