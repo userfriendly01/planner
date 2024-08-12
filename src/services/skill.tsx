@@ -20,12 +20,10 @@ import {
 import { getOperatingUnits } from "services/operatingUnits";
 import { getTargetExpression } from "utils/skillsUtils";
 import {
-  CREATE_SKILL, getUMSkills,
+  CREATE_SKILL, DELETE_SKILL, getUMSkills,
   UPDATE_SKILL,
   UPDATE_SKILL_RELATIONSHIPS
 } from "globals/skill";
-import { ApolloError } from "@apollo/client";
-import { GraphQLError } from "graphql";
 
 export const createSkill = async (skillState: SkillState, updatedBy: string): Promise<any> => {
   const skillForm = skillState.skillForm;
@@ -55,7 +53,7 @@ export const createSkill = async (skillState: SkillState, updatedBy: string): Pr
       task_queue_sid: taskQueueSid,
       task_queue_name: taskQueueName
     };
-    if(skillForm.levels.min.value && skillForm.levels.max.value){
+    if(skillForm.levels?.min?.value && skillForm.levels?.max?.value){
       const levels = [];
       for (let i = skillForm.levels.min.value; i <= skillForm.levels.max.value; i++) {
         levels.push(i);
@@ -77,7 +75,7 @@ export const createSkill = async (skillState: SkillState, updatedBy: string): Pr
     }
 
     const profileResponse = await Promise.allSettled(skillForm.profileIds.map(((id: number) => {
-      const skillsOnProfile: string[] = skillState.skills.filter((s: Skill) => s.profileIds.includes(id)).map((s: Skill) => s.name);
+      const skillsOnProfile: string[] = skillState.skills.filter((s: Skill) => s.profileIds?.includes(id)).map((s: Skill) => s.name);
       return apolloClient.mutate<{ updateUMSoftphoneConfigSkills: any }>({
         mutation: UPDATE_SKILL_RELATIONSHIPS,
         variables: {
@@ -117,9 +115,9 @@ export const createSkill = async (skillState: SkillState, updatedBy: string): Pr
   try {
     const newCallflowSkillBody: any = {
       skillNme: skillForm.name,
-      applicationId: skillForm.applicationId,
-      vhThreshold: skillForm.vhThreshold || null,
-      vhCallTarget: skillForm.vhCallTarget || null,
+      application_id: skillForm.applicationId,
+      vh_threshold_tme: skillForm.vhThreshold || null,
+      vh_call_target: skillForm.vhCallTarget || null,
       updatedBy,
       timeOfDays: skillForm.timeOfDays
     };
@@ -167,8 +165,7 @@ export const editSkill = async (changes: Partial<SkillFormState>, skillState: Sk
     try {
       updateCount ++;
       const res = await myAxios.post(apiPaths.TASK_QUEUES, newTaskQueuebody);
-      taskQueueSid = res.data.sid;
-      console.log("HELLOOO", res.data);
+      taskQueueSid = res.data.data.sid;
     } catch(error){
       const message = `Task Queue failed to create: ${formatErrorMessage(error)}`;
       logger.error(message, error);
@@ -180,10 +177,10 @@ export const editSkill = async (changes: Partial<SkillFormState>, skillState: Sk
     try {
       updateCount ++;
       const updateGraphSkillBody: any = {};
-      console.log("whats dids", taskQueueSid);
+      console.log("whats dis", taskQueueSid);
       updateGraphSkillBody.task_queue_sid = taskQueueSid,
       updateGraphSkillBody.task_queue_name = taskQueueName;
-      if(changes.levels.min.value && changes.levels.max.value){
+      if(changes.levels?.min.value && changes.levels?.max.value){
         const levels = [];
         for (let i = changes.levels.min.value; i <= changes.levels.max.value; i++) {
           levels.push(i);
@@ -193,7 +190,6 @@ export const editSkill = async (changes: Partial<SkillFormState>, skillState: Sk
         updateGraphSkillBody.levels = null;
       }
 
-
       const { errors }  = await apolloClient.mutate<{ skill: any }>({
         mutation: UPDATE_SKILL,
         variables: {
@@ -202,10 +198,7 @@ export const editSkill = async (changes: Partial<SkillFormState>, skillState: Sk
         }
       });
 
-      console.log("Does this throw?", errors);
-
       if (errors?.length) {
-        console.log("FAITH ERRORS", errors);
         const combinedErrors = errors.slice();
         const nullSkill = errors.some((e: any) => e.message.includes("Record does not exist"));
         if(nullSkill){
@@ -341,8 +334,14 @@ export const deleteSkill = async (skill: any, deleteQueues: boolean): Promise<an
 
   const taskRouterSkillPromise = myAxios.delete(`${apiPaths.SKILLS_TASKROUTER}/${skillName}`);
   const callflowSkillPromise = myAxios.delete(`${apiPaths.SKILLS_CALLFLOW}/${skillName}`);
+  const graphSkillPromise = apolloClient.mutate<{ skill: any }>({
+    mutation: DELETE_SKILL,
+    variables: {
+      skill_id: skillName
+    }
+  });
 
-  const results = await Promise.allSettled([taskQueuePromise, taskRouterSkillPromise, callflowSkillPromise]);
+  const results = await Promise.allSettled([taskQueuePromise, taskRouterSkillPromise, callflowSkillPromise, graphSkillPromise]);
 
   logger.info("Delete Results", { results }, false);
 
@@ -355,7 +354,8 @@ export const deleteSkill = async (skill: any, deleteQueues: boolean): Promise<an
     results.forEach((r: any, index: number) => {
       const errorSource: string = (index === 0 && "Task Queue Deletion Error") ||
                           (index === 1 && "Flex Console Skill Deletion Error") ||
-                          (index === 2 && "Callflow Database Skill Deletion Error");
+                          (index === 2 && "Callflow Database Skill Deletion Error") ||
+                          (index === 3 && "Graph Skill Deletion Error");
 
       if(r.status === "rejected" && !is404(r.reason)){
         const taskQueueError = r.reason.response.data?.details?.toString().includes("400");

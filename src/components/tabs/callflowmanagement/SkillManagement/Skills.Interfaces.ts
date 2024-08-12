@@ -112,17 +112,6 @@ export interface AddEditSkillGroupBody {
   skill_ids?: string[]
 }
 
-export interface AddEditSkill {
-  name: string,
-  applicationId: number,
-  taskQueueSid: string,
-  profileIds: number[],
-  vhCallTarget: string | null,
-  vhThreshold?: number | string,
-  updatedBy: string,
-  timeOfDayIds: TimeOfDayRequestObject[]
-}
-
 export interface Application {
   applicationId: number,
   applicationName: string
@@ -212,9 +201,9 @@ export interface CallflowSkill {
   skillName: string,
   closedMessage: string,
   flashMessage: string,
-  applicationId: number,
-  vhThreshold: number,
-  vhCallTarget: string,
+  application_id: number,
+  vh_threshold_tme: number,
+  vh_call_target: string,
   timeOfDays: TimeOfDay[],
   updatedBy?: string
 }

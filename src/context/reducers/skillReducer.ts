@@ -165,8 +165,14 @@ export const skillReducer = (state: SkillState, action: Action): SkillState => {
           formMode: formModes.UPDATE,
           name: skill.name,
           levels: {
-            min: skill.levels && skill.levels[0] || null,
-            max: skill.levels && skill.levels[skill.levels.length - 1] || null
+            min: skill.levels && skill.levels[0] ? {
+              value: skill.levels[0],
+              label: skill.levels[0].toString()
+            } : null,
+            max: skill.levels && skill.levels[skill.levels.length - 1] ? {
+              value: skill.levels[skill.levels.length - 1],
+              label: skill.levels[skill.levels.length - 1].toString()
+            } : null
           },
           applicationId: skill.applicationId,
           taskQueue: {

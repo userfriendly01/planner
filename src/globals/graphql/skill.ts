@@ -27,8 +27,8 @@ export const UPDATE_SKILL_RELATIONSHIPS = gql`
 `;
 
 export const DELETE_SKILL = gql`
-  mutation deleteUMSkill($id: ID!) {
-    skill: deleteUMSkill(id: $id) {
+  mutation deleteUMSkill($skill_id: String!) {
+    skill: deleteUMSkill(skill_id: $skill_id) {
         cancellationReasons
         nextToken
     }
