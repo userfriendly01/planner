@@ -46,7 +46,8 @@ export const getSkillFormChanges = (originalSkill: Skill, skillForm: SkillFormSt
 
   if(originalSkill.taskQueueSid !== skillForm.taskQueue?.sid || skillForm.taskQueue.isNew) { changes["taskQueue"] = skillForm.taskQueue; }
 
-  if((originalSkill.levels && originalSkill.levels[0] || null) !== skillForm.levels?.min?.value || (originalSkill.levels && originalSkill.levels[originalSkill.levels.length - 1] || null) !== skillForm.levels?.max?.value) { changes["levels"] = skillForm.levels; }
+  if((!originalSkill.levels?.length && (skillForm.levels?.min?.value || skillForm.levels?.max?.value))) { changes["levels"] = skillForm.levels; }
+  if((originalSkill.levels?.length && originalSkill.levels[0] !== skillForm.levels?.min?.value) || (originalSkill.levels?.length && originalSkill.levels[originalSkill.levels.length - 1] !== skillForm.levels?.max?.value)) { changes["levels"] = skillForm.levels; }
 
   if(originalSkill.applicationId !== skillForm.applicationId) { changes["applicationId"] = skillForm.applicationId; }
 
@@ -63,6 +64,10 @@ export const getSkillFormChanges = (originalSkill: Skill, skillForm: SkillFormSt
   });
 
   if(timeOfDayChanges.length) { changes["timeOfDays"] = timeOfDayChanges; }
+
+  if(originalSkill.discrepancies.some((d: string) => d.includes("does not match the task queue"))){ changes["taskQueue"] = skillForm.taskQueue; }
+  if(originalSkill.discrepancies.some((d: string) => d.includes("is not in the Flex Console"))){ changes["levels"] = skillForm.levels; }
+
 
   console.log("Edit Form Changes: ", changes);
   return changes;

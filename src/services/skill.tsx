@@ -179,7 +179,7 @@ export const editSkill = async (changes: Partial<SkillFormState>, skillState: Sk
       console.log("whats dis", taskQueueSid);
       updateGraphSkillBody.task_queue_sid = taskQueueSid,
       updateGraphSkillBody.task_queue_name = taskQueueName;
-      if(changes.levels?.min.value && changes.levels?.max.value){
+      if(changes.levels?.min?.value && changes.levels?.max?.value){
         const levels = [];
         for (let i = changes.levels.min.value; i <= changes.levels.max.value; i++) {
           levels.push(i);
