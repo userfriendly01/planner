@@ -3,11 +3,11 @@ import { CctSharedCallFlowDb } from "components/tabs/dynamicCallFlow/phoneNumber
 import { SingleRecordResults } from "components/tabs/dynamicCallFlow/common/GraphQL/AbstractSingleRecord.Query";
 
 class UpdateLegacyPhoneNumberRecordQuery extends AbstractUpdateRecordQuery {
-  protected queryName(): string {
+  queryName(): string {
     return "updateCctSharedCallFlowDb";
   }
 
-  protected queryDefinition(): string {
+  queryDefinition(): string {
     return `
       mutation ${this.queryName()}($input: CctSharedCallFlowDbInputMod!) {
         updateCctSharedCallFlowDb(input:$input) {

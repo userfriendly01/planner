@@ -57,13 +57,12 @@ export enum LanguageOfferTypeEnum {
     SPANISH = "Spanish",
 }
 
-export type PhoneNumberType = "" | "DID" | "TFN" | "DRC" | "LSC";
+export type PhoneNumberType = "" | "DID" | "DRC" | "LSC" | "TFN";
 export enum PhoneNumberTypeEnum {
-    BLANK = "",
     DID = "DID",
-    TFN = "TFN",
     DRC = "DRC",
     LSC = "LSC",
+    TFN = "TFN"
 }
 
 export type TfnRoutingGroupType = TfnRoutingGroupEnum.PREMIER_PARTNERS | TfnRoutingGroupEnum.TRU_STAGE | TfnRoutingGroupEnum.TRU_STAGE_NAVY |

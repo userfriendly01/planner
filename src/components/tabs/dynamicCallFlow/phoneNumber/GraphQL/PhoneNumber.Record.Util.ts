@@ -5,8 +5,7 @@ import {
   PhoneNumberTypeEnum
 } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 import {
-  CctSharedCallFlowDb, FlowContent,
-  LegacyPhoneNumberTypeEnum
+  CctSharedCallFlowDb, FlowContent
 } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
 import {
   CREATE_TIME, DynamicPhoneNumberFormFields, EMPLOYEE_ID,
@@ -327,7 +326,7 @@ export class PhoneNumberRecordUtil {
       tfnRoutingGroup: phoneNumberRecord.tfnRoutingGroup,
       transferCode: phoneNumberRecord.transferCode,
       transferDestination: phoneNumberRecord.userDestination,
-      updateTime: Math.floor((phoneNumberRecord.createTime ? new Date(phoneNumberRecord.updateTime) : new Date()).getTime() / 1000),
+      updateTime: Math.floor((phoneNumberRecord.updateTime ? new Date(phoneNumberRecord.updateTime) : new Date()).getTime() / 1000),
       whisper: phoneNumberRecord.whisper
     };
   }
@@ -372,7 +371,7 @@ export class PhoneNumberRecordUtil {
       tfnRoutingGroup: phoneNumberRecord.tfnRoutingGroup,
       tollFreeNumber: phoneNumberRecord.tollFreeNumber,
       transferCode: phoneNumberRecord.transferCode,
-      type: phoneNumberRecord.phoneNumberType as LegacyPhoneNumberTypeEnum,
+      type: phoneNumberRecord.phoneNumberType,
       updateTime: (phoneNumberRecord.updateTime ? new Date(phoneNumberRecord.updateTime) : new Date()).toISOString(),
       userDestination: phoneNumberRecord.transferDestination,
       whisper: phoneNumberRecord.whisper

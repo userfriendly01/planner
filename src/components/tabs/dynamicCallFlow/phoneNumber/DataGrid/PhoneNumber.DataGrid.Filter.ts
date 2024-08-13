@@ -9,7 +9,7 @@ export class PhoneNumberDataGridFilter extends AbstractDataGridFilter<PhoneNumbe
     return DYNAMIC_CALL_FLOW_PHONE_NUMBER_FILTER_CACHE_KEY;
   }
 
-  protected getPropertyValue(phoneNumberRecord: PhoneNumberRecordType, key: string): string | Array<string> | number | boolean | undefined {
+  getPropertyValue(phoneNumberRecord: PhoneNumberRecordType, key: string): string | Array<string> | number | boolean | undefined {
     return PhoneNumberRecordUtil.getPropertyValue(phoneNumberRecord, key);
   }
 }

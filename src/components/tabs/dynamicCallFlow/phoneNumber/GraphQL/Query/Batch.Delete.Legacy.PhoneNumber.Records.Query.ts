@@ -5,15 +5,15 @@ import { CctSharedCallFlowDb } from "components/tabs/dynamicCallFlow/phoneNumber
 
 
 class BatchDeleteLegacyPhoneNumberRecordsQuery extends AbstractBatchRecordsQuery {
-  protected batchInputName(): string {
+  batchInputName(): string {
     return "pkey";
   }
 
-  protected queryName(): string {
+  queryName(): string {
     return "batchDeleteCctSharedCallFlowDb";
   }
 
-  protected queryDefinition(): string {
+  queryDefinition(): string {
     return `
       mutation ${this.queryName()}($input: CctSharedCallFlowDbBatchDelInput!) {
           ${this.queryName()}(input: $input) {

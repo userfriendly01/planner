@@ -1,22 +1,22 @@
 import { AbstractXlsxExporter } from "components/tabs/dynamicCallFlow/common//Xlsx/Abstract.Xlsx.Exporter";
 import { PhoneNumberXlsxRow } from "components/tabs/dynamicCallFlow/phoneNumber/Xlsx/PhoneNumber.Xlsx.Interfaces";
 import { PhoneNumberRecordType } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
-import { LegacyPhoneNumberXlsxRowGenerator } from "components/tabs/dynamicCallFlow/phoneNumber/Xlsx/Export/Legacy.PhoneNumber.Xlsx.Row.Generator";
+import { LegacyPhoneNumberXlsxExportRowGenerator } from "dynamicCallFlowPhoneNumber/Xlsx/Export/Legacy.PhoneNumber.Xlsx.Export.Row.Generator";
 import { PhoneNumberRecordUtil } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/PhoneNumber.Record.Util";
-import { DynamicPhoneNumberXlsxRowGenerator } from "components/tabs/dynamicCallFlow/phoneNumber/Xlsx/Export/Dynamic.PhoneNumber.Xlsx.Row.Generator";
+import { DynamicPhoneNumberXlsxExportRowGenerator } from "dynamicCallFlowPhoneNumber/Xlsx/Export/Dynamic.PhoneNumber.Xlsx.Export.Row.Generator";
 
 const DYNAMIC_PHONE_NUMBER_WORKBOOK_NAME = "Dynamic Phone Numbers";
 const LEGACY_PHONE_NUMBER_WORKBOOK_NAME = "Legacy Phone Numbers";
 
 export class PhoneNumberXlsxExporter extends AbstractXlsxExporter<PhoneNumberXlsxRow, PhoneNumberRecordType> {
-  private readonly _dynamicPhoneNumberXlsxRowGenerator: DynamicPhoneNumberXlsxRowGenerator = new DynamicPhoneNumberXlsxRowGenerator();
-  private readonly _legacyPhoneNumberXlsxRowGenerator: LegacyPhoneNumberXlsxRowGenerator = new LegacyPhoneNumberXlsxRowGenerator();
+  private readonly _dynamicPhoneNumberXlsxRowGenerator: DynamicPhoneNumberXlsxExportRowGenerator = new DynamicPhoneNumberXlsxExportRowGenerator();
+  private readonly _legacyPhoneNumberXlsxRowGenerator: LegacyPhoneNumberXlsxExportRowGenerator = new LegacyPhoneNumberXlsxExportRowGenerator();
 
   static instance(): PhoneNumberXlsxExporter {
     return new PhoneNumberXlsxExporter();
   }
 
-  protected convertRecordsToXlsxRows(records: Array<PhoneNumberRecordType>): Array<PhoneNumberXlsxRow> {
+  convertRecordsToXlsxRows(records: Array<PhoneNumberRecordType>): Array<PhoneNumberXlsxRow> {
     if (PhoneNumberRecordUtil.isDynamicPhoneNumberRecord(records[0])) {
       return this._dynamicPhoneNumberXlsxRowGenerator.convertRecordsToXlsxRows(records);
     } else {
@@ -24,7 +24,7 @@ export class PhoneNumberXlsxExporter extends AbstractXlsxExporter<PhoneNumberXls
     }
   }
 
-  protected groupRecordsByWorkBookNames(phoneNumberRecords: Array<PhoneNumberRecordType>): Map<string, Array<PhoneNumberRecordType>> {
+  groupRecordsByWorkBookNames(phoneNumberRecords: Array<PhoneNumberRecordType>): Map<string, Array<PhoneNumberRecordType>> {
     const groupedRecords: Map<string, Array<PhoneNumberRecordType>> = new Map<string, Array<PhoneNumberRecordType>>();
     groupedRecords.set(DYNAMIC_PHONE_NUMBER_WORKBOOK_NAME, []);
     groupedRecords.set(LEGACY_PHONE_NUMBER_WORKBOOK_NAME, []);

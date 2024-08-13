@@ -44,19 +44,19 @@ const DynamicPhoneNumberRecordMock: PhoneNumber = {
   nextActionId: "nextActionIdTwo",
   nextActionType: ActionTypeEnum.ANNOUNCEMENT,
   officeNumbers: ["office number"],
-  phoneNumber: "8005551212",
+  phoneNumber: "+18005551212",
   phoneNumberType: PhoneNumberTypeEnum.TFN,
   transferDestination: "transfer destination",
   updateTime: 1712756033000
 };
 
-export const DynamicPhoneNumberOne: PhoneNumber = mockDynamicPhoneNumber("8005550001");
+export const DynamicPhoneNumberOne: PhoneNumber = mockDynamicPhoneNumber("+18005550001");
 Object.freeze(DynamicPhoneNumberOne);
-export const DynamicPhoneNumberTwo: PhoneNumber = mockDynamicPhoneNumber("8005550002");
+export const DynamicPhoneNumberTwo: PhoneNumber = mockDynamicPhoneNumber("+18005550002");
 Object.freeze(DynamicPhoneNumberTwo);
-export const DynamicPhoneNumberThree: PhoneNumber = mockDynamicPhoneNumber("8005550003");
+export const DynamicPhoneNumberThree: PhoneNumber = mockDynamicPhoneNumber("+18005550003");
 Object.freeze(DynamicPhoneNumberThree);
-export const DynamicPhoneNumberFour: PhoneNumber = mockDynamicPhoneNumber("8005550004");
+export const DynamicPhoneNumberFour: PhoneNumber = mockDynamicPhoneNumber("+18005550004");
 Object.freeze(DynamicPhoneNumberFour);
 export const DynamicPhoneNumberArray: Array<PhoneNumber> = [
   DynamicPhoneNumberOne,

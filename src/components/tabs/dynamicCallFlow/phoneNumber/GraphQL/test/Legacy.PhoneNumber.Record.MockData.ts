@@ -1,16 +1,15 @@
 import {
   CallerTypeEnum,
-  LanguageOfferTypeEnum
+  LanguageOfferTypeEnum, PhoneNumberTypeEnum
 } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 import { BasePhoneNumberRecordMock } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/test/Dynamic.PhoneNumber.MockData";
 import {
-  CctSharedCallFlowDb,
-  LegacyPhoneNumberTypeEnum
+  CctSharedCallFlowDb
 } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
 
 const LegacyPhoneNumberRecordMock: CctSharedCallFlowDb = {
   ...BasePhoneNumberRecordMock,
-  pkey: "8882220001",
+  pkey: "+18882220001",
   accountManager: "n0000005",
   affinityVDN: "affinityVDN",
   agentId: "n0000006",
@@ -28,16 +27,16 @@ const LegacyPhoneNumberRecordMock: CctSharedCallFlowDb = {
   },
   createTime: "2024-04-10T13:33:53.000Z",
   selfServiceIndicator: false,
-  type: LegacyPhoneNumberTypeEnum.TFN,
+  type: PhoneNumberTypeEnum.TFN,
   updateTime: "2024-04-10T13:33:53.000Z",
   userDestination: "user destination"
 };
 
 
-export const LegacyPhoneNumberOne: CctSharedCallFlowDb = mockLegacyPhoneNumber("8004440001");
-export const LegacyPhoneNumberTwo: CctSharedCallFlowDb = mockLegacyPhoneNumber("8004440002");
-export const LegacyPhoneNumberThree: CctSharedCallFlowDb = mockLegacyPhoneNumber("8004440003");
-export const LegacyPhoneNumberFour: CctSharedCallFlowDb = mockLegacyPhoneNumber("8004440004");
+export const LegacyPhoneNumberOne: CctSharedCallFlowDb = mockLegacyPhoneNumber("+18004440001");
+export const LegacyPhoneNumberTwo: CctSharedCallFlowDb = mockLegacyPhoneNumber("+18004440002");
+export const LegacyPhoneNumberThree: CctSharedCallFlowDb = mockLegacyPhoneNumber("+18004440003");
+export const LegacyPhoneNumberFour: CctSharedCallFlowDb = mockLegacyPhoneNumber("+18004440004");
 export const LegacyPhoneNumberArray: Array<CctSharedCallFlowDb> = [
   LegacyPhoneNumberOne,
   LegacyPhoneNumberTwo,

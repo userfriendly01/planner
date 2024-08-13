@@ -13,7 +13,7 @@ import {
   GraphQLResponse
 } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
 
-interface CallFlowConfig {
+export interface CallFlowConfig {
   callFlowName: string;
   announcements: Array<Announcement>;
   menus: Array<Menu>;
@@ -21,12 +21,12 @@ interface CallFlowConfig {
   redirects: Array<Redirect>;
 }
 
-class BatchCreateActionRecordsQuery extends AbstractGraphQLQuery {
-  protected queryName(): string {
+export class BatchCreateActionRecordsQuery extends AbstractGraphQLQuery {
+  queryName(): string {
     return "createCallFlowConfig";
   }
 
-  protected queryDefinition(): string {
+  queryDefinition(): string {
     return `
       mutation createCallFlowConfig($input: CallFlowConfigInput! ) {
         createCallFlowConfig(input: $input) {
@@ -134,7 +134,7 @@ class BatchCreateActionRecordsQuery extends AbstractGraphQLQuery {
     return this.buildResponse(batchGraphQLResponses);
   }
 
-  private generateBatchOfGraphQLInputVariables(actionRecords: Array<ActionRecordType>): Array<GraphQLInputVariables<CallFlowConfig>> {
+  generateBatchOfGraphQLInputVariables(actionRecords: Array<ActionRecordType>): Array<GraphQLInputVariables<CallFlowConfig>> {
     const batchOfGraphQLInputVariables: Array<GraphQLInputVariables<CallFlowConfig>> = [];
     const actionRecordsCopy = [...actionRecords];
 
@@ -150,7 +150,7 @@ class BatchCreateActionRecordsQuery extends AbstractGraphQLQuery {
     return batchOfGraphQLInputVariables;
   }
 
-  private buildResponse(batchGraphQLResponses: Array<GraphQLResponse<CallFlowConfig>>): BatchResults<ActionRecordType> {
+  buildResponse(batchGraphQLResponses: Array<GraphQLResponse<CallFlowConfig>>): BatchResults<ActionRecordType> {
     const batchResults = {
       alertMsg: "",
       errors: [],

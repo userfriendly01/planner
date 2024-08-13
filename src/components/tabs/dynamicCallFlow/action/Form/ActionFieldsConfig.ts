@@ -7,11 +7,11 @@ import { Control } from "globals/interfaces";
 export const ActionFormFieldConfigs: FieldConfigs = {};
 export const RequiredActionFormFields: Array<string> = [];
 
-const defaultFieldConditionCheck: FieldConditionCheckType = (): boolean => {
+export const defaultFieldConditionCheck: FieldConditionCheckType = (): boolean => {
   return true;
 };
 
-function createFieldConfig(fieldKey: string, label: string, control: Control): void {
+export function createFieldConfig(fieldKey: string, label: string, control: Control): void {
   ActionFormFieldConfigs[fieldKey] = {
     fieldKey: fieldKey,
     label,

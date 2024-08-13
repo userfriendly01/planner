@@ -28,19 +28,19 @@ export abstract class AbstractFormFieldOptionsManager<RecordType> implements For
     }
   }
 
-  protected abstract getRecordPropertyValue(record: RecordType, key: string): FieldDataType;
+  abstract getRecordPropertyValue(record: RecordType, key: string): FieldDataType;
 
-  protected abstract getFieldOptionsCacheKey(): string;
+  abstract getFieldOptionsCacheKey(): string;
 
   private getFieldOptionsCacheKeyLastCachedDate(): string {
     return this.getFieldOptionsCacheKey().concat("_lastCachedDate");
   }
 
-  protected abstract getDataDrivenOptionsFieldNames(): Array<string>;
+  abstract getDataDrivenOptionsFieldNames(): Array<string>;
 
-  protected abstract getDataDrivenOptionsFieldNamesWithList(): Array<string>;
+  abstract getDataDrivenOptionsFieldNamesWithList(): Array<string>;
 
-  protected abstract getStaticFieldOptions(): FieldOptions;
+  abstract getStaticFieldOptions(): FieldOptions;
 
   private isValidOption(key: string, option: string): boolean {
     return typeof option === "string" && option.trim().length > 0 && option.toLowerCase() !== "null" && !this._fieldOptions[key].includes(option);

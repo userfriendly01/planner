@@ -9,7 +9,7 @@ import { GridApiCommunity } from "@mui/x-data-grid/internals";
 import { DataGridFilter } from "components/tabs/dynamicCallFlow/common/DataGrid/Abstract.DataGrid.Filter";
 import {
   addElementsToArray,
-  addElementToArray,
+  addElementToArray, MatchFilter,
   removeElementFromArray,
   removeElementsFromArray,
   updateElementInArray,
@@ -52,7 +52,7 @@ export abstract class AbstractDataGridController<RecordType> implements DataGrid
   private _dataGridProps: DataGridStateProps;
   private _dataGridRecords: Array<RecordType> = [];
 
-  abstract recordKey(): string;
+  abstract matchFilter(): MatchFilter<RecordType>;
 
   constructor(dataGridApi: ReactGridApi, dataGridFilter: DataGridFilterRef<RecordType>, alertBarController: AlertBarControllerRef) {
     this._dataGridApi = dataGridApi;
@@ -106,19 +106,19 @@ export abstract class AbstractDataGridController<RecordType> implements DataGrid
   }
 
   updateRecordInSourceRecords(updatedRecord: RecordType): void {
-    this._sourceRecords = updateElementInArray<RecordType>(this.recordKey(), updatedRecord, this._sourceRecords);
+    this._sourceRecords = updateElementInArray<RecordType>(this.matchFilter(), updatedRecord, this._sourceRecords);
   }
 
   updateRecordsInSourceRecords(updatedRecords: Array<RecordType>): void {
-    this._sourceRecords = updateElementsInArray<RecordType>(this.recordKey(), updatedRecords, this._sourceRecords);
+    this._sourceRecords = updateElementsInArray<RecordType>(this.matchFilter(), updatedRecords, this._sourceRecords);
   }
 
   removeRecordFromSourceRecords(recordToRemove: RecordType): void {
-    this._sourceRecords = removeElementFromArray<RecordType>(this.recordKey(), recordToRemove, this._sourceRecords);
+    this._sourceRecords = removeElementFromArray<RecordType>(this.matchFilter(), recordToRemove, this._sourceRecords);
   }
 
   removeRecordsFromSourceRecords(recordsToRemove: Array<RecordType>): void {
-    this._sourceRecords = removeElementsFromArray<RecordType>(this.recordKey(), recordsToRemove, this._sourceRecords);
+    this._sourceRecords = removeElementsFromArray<RecordType>(this.matchFilter(), recordsToRemove, this._sourceRecords);
   }
 
   // **************** dataGridRecords Functions **************** //
@@ -139,18 +139,18 @@ export abstract class AbstractDataGridController<RecordType> implements DataGrid
   }
 
   updateRecordInDataGrid(updatedRecord: RecordType): void {
-    this._dataGridRecords = updateElementInArray<RecordType>(this.recordKey(), updatedRecord, this._dataGridRecords);
+    this._dataGridRecords = updateElementInArray<RecordType>(this.matchFilter(), updatedRecord, this._dataGridRecords);
   }
 
   updateRecordsInDataGrid(updatedRecords: Array<RecordType>): void {
-    this._dataGridRecords = updateElementsInArray<RecordType>(this.recordKey(), updatedRecords, this._dataGridRecords);
+    this._dataGridRecords = updateElementsInArray<RecordType>(this.matchFilter(), updatedRecords, this._dataGridRecords);
   }
 
   removeRecordFromDataGrid(recordToRemove: RecordType): void {
-    this._dataGridRecords = removeElementFromArray<RecordType>(this.recordKey(), recordToRemove, this._dataGridRecords);
+    this._dataGridRecords = removeElementFromArray<RecordType>(this.matchFilter(), recordToRemove, this._dataGridRecords);
   }
 
   removeRecordsFromDataGrid(recordsToRemove: Array<RecordType>): void {
-    this._dataGridRecords = removeElementsFromArray<RecordType>(this.recordKey(), recordsToRemove, this._dataGridRecords);
+    this._dataGridRecords = removeElementsFromArray<RecordType>(this.matchFilter(), recordsToRemove, this._dataGridRecords);
   }
 }

@@ -1,5 +1,7 @@
-import { PhoneNumberDataGridController } from "components/tabs/dynamicCallFlow/phoneNumber/DataGrid/PhoneNumber.DataGrid.Controller";
-import { PKEY } from "components/tabs/dynamicCallFlow/phoneNumber/Form/Legacy.PhoneNumber.Form.Fields";
+import {
+  PhoneNumberDataGridController,
+  phoneNumberMatchFilter
+} from "components/tabs/dynamicCallFlow/phoneNumber/DataGrid/PhoneNumber.DataGrid.Controller";
 import { DataGridStateProps } from "components/tabs/dynamicCallFlow/common/DataGrid/DynamicCallFlow.Common.DataGrid";
 import {
   AlertBarControllerRef,
@@ -11,8 +13,7 @@ import {
   DynamicPhoneNumberArray,
   DynamicPhoneNumberOne,
   DynamicPhoneNumberTwo,
-  mockDynamicPhoneNumberArray,
-  mockDynamicPhoneNumberObject
+  mockDynamicPhoneNumberArray
 } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/test/Dynamic.PhoneNumber.MockData";
 import { BrandTypeEnum } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 
@@ -49,8 +50,8 @@ describe("PhoneNumberDataGridController", () => {
   });
 
   it("shouldReturnCorrectRecordKey", () => {
-    const recordKey = dataGridController["recordKey"]();
-    expect(recordKey).toEqual(PKEY);
+    const matchFilter = dataGridController["matchFilter"]();
+    expect(matchFilter).toEqual(phoneNumberMatchFilter);
   });
 
 
@@ -105,7 +106,10 @@ describe("PhoneNumberDataGridController", () => {
 
     it("shouldUpdateRecordInSourceRecords", () => {
       dataGridController.addRecordToSourceRecords(DynamicPhoneNumberOne);
-      const updatedRecord = mockDynamicPhoneNumberObject({ brand: BrandTypeEnum.LIBERTY_MUTUAL });
+      const updatedRecord = {
+        ...DynamicPhoneNumberOne,
+        brand: BrandTypeEnum.LIBERTY_MUTUAL
+      };
       dataGridController.updateRecordInSourceRecords(updatedRecord);
       expect(dataGridController.sourceRecords).toContain(updatedRecord);
     });
@@ -164,7 +168,10 @@ describe("PhoneNumberDataGridController", () => {
 
     it("shouldUpdateRecordInDataGrid", () => {
       dataGridController.addRecordToDataGrid(DynamicPhoneNumberOne);
-      const updatedRecord = mockDynamicPhoneNumberObject({ brand: BrandTypeEnum.LIBERTY_MUTUAL });
+      const updatedRecord = {
+        ...DynamicPhoneNumberOne,
+        brand: BrandTypeEnum.LIBERTY_MUTUAL
+      };
       dataGridController.updateRecordInDataGrid(updatedRecord);
       expect(dataGridController.dataGridRecords).toContain(updatedRecord);
     });

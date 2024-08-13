@@ -1,14 +1,16 @@
 import { AbstractDeleteRecordQuery } from "components/tabs/dynamicCallFlow/common/GraphQL/AbstractDeleteRecord.Query";
 import { SingleRecordResults } from "components/tabs/dynamicCallFlow/common/GraphQL/AbstractSingleRecord.Query";
-import { CctSharedCallFlowDb, CctSharedCallFlowDbDelInput } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
+import {
+  CctSharedCallFlowDb, CctSharedCallFlowDbDelInput
+} from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
 
 class DeleteLegacyPhoneNumberRecordQuery extends AbstractDeleteRecordQuery {
-  protected queryName(): string {
+  queryName(): string {
     return "deleteCctSharedCallFlowDb";
   }
 
   //TODO: Need to add more attributes on the delete
-  protected queryDefinition(): string {
+  queryDefinition(): string {
     return `
       mutation ${this.queryName()}($input:CctSharedCallFlowDbDelInput!) {
         ${this.queryName()}(input:$input ){

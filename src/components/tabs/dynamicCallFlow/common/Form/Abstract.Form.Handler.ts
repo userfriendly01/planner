@@ -9,9 +9,8 @@ import {
 } from "../DynamicCallFlow.Interfaces";
 import { DataGridController } from "components/tabs/dynamicCallFlow/common/DataGrid/Abstract.DataGrid.Controller";
 import { PhoneNumberRecordType } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
-import {
-  isNotArray, isNotBoolean
-} from "dynamicCallFlowCommon/Util/TypeCheck.Util";
+import { isNotArray } from "dynamicCallFlowCommon/Util/Array.Util";
+import { isNotBooleanType } from "dynamicCallFlowCommon/Util/Boolean.Util";
 
 export const VALID = true;
 export const NOT_VALID = false;
@@ -112,9 +111,9 @@ export abstract class AbstractFormHandler<RecordType> implements FormHandler<Rec
 
     if (fieldDataType === FieldDataTypeEnum.ARRAY && isNotArray(value) && typeof value === "string") {
       return (value as string).split(",").map(a => a.trim()).filter(a => a.length > 0);
-    } else if (fieldDataType === FieldDataTypeEnum.BOOLEAN && isNotBoolean(value)) {
+    } else if (fieldDataType === FieldDataTypeEnum.BOOLEAN && isNotBooleanType(value)) {
       return Boolean(value);
-    } else if (fieldDataType === FieldDataTypeEnum.NUMBER && isNaN(value as any)) {
+    } else if (fieldDataType === FieldDataTypeEnum.NUMBER && typeof value !== "number" && !isNaN(value as any)) {
       return Number(value);
     }
 

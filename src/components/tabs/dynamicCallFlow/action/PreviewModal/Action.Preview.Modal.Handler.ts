@@ -6,11 +6,10 @@ import {
 import { batchCreateDynamicActionRecords } from "components/tabs/dynamicCallFlow/action/GraphQL/Batch.Create.Action.Records.Query";
 import { batchDeleteDynamicActionRecords } from "components/tabs/dynamicCallFlow/action/GraphQL/Batch.Delete.Action.Records.Query";
 import { removeElementsFromArray } from "components/tabs/dynamicCallFlow/common/Util/Array.Util";
-import { ACTION_ID } from "components/tabs/dynamicCallFlow/action/Form/ActionFields";
 import { BatchResults } from "components/tabs/dynamicCallFlow/common/GraphQL/Abstract.BatchRecords.Query";
+import { actionMatchFilter } from "dynamicCallFlowAction/DataGrid/Action.DataGrid.Controller";
 
 export class ActionPreviewModalHandler extends AbstractPreviewModalHandler<ActionRecordType> {
-
   async handleOnCreate(accessToken: string, newCallFlowConfig: Array<ActionRecordType>): Promise<boolean> {
     if (newCallFlowConfig?.length > 0) {
       const callFlowName = newCallFlowConfig[0].callFlowName;
@@ -41,7 +40,7 @@ export class ActionPreviewModalHandler extends AbstractPreviewModalHandler<Actio
   async deleteUnusedCallFlowConfigRecords(accessToken: string, newCallFlowConfig: Array<ActionRecordType>, oldCallFlowConfig: Array<ActionRecordType>): Promise<boolean> {
     // pass a copy of oldCallFlowConfig to removeElementsFromArray to keep that array intact in case we need to add the oldCallFlowConfig
     // back to the sourceRecords in case of batch delete failure.
-    const unusedCallFlowConfigRecords: Array<ActionRecordType> = removeElementsFromArray(ACTION_ID, newCallFlowConfig, [ ...oldCallFlowConfig ]);
+    const unusedCallFlowConfigRecords: Array<ActionRecordType> = removeElementsFromArray(actionMatchFilter, newCallFlowConfig, [ ...oldCallFlowConfig ]);
 
     if (unusedCallFlowConfigRecords.length > 0) {
       const batchResults: BatchResults<ActionRecordType> = await batchDeleteDynamicActionRecords(accessToken, unusedCallFlowConfigRecords);

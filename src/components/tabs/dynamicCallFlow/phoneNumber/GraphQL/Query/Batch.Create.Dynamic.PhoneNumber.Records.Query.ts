@@ -6,15 +6,15 @@ import {
 import { PhoneNumber } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 
 export class BatchCreateDynamicPhoneNumberRecordsQuery extends AbstractBatchRecordsQuery {
-  protected batchInputName(): string {
+  batchInputName(): string {
     return "batchPhoneNumberInput";
   }
 
-  protected queryName(): string {
+  queryName(): string {
     return "batchCreatePhoneNumber";
   }
 
-  protected queryDefinition(): string {
+  queryDefinition(): string {
     return `
       mutation ${this.queryName()} ($input: PhoneNumberCreateBatchInput!) {
         ${this.queryName()}(input: $input) {

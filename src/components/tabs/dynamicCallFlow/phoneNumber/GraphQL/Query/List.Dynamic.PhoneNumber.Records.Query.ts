@@ -3,12 +3,12 @@ import { PhoneNumber } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL
 import { LoadDataGridMonitorRef } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
 
 class ListDynamicPhoneNumberRecordsQuery extends AbstractListRecordsQuery {
-  protected queryName(): string {
+  queryName(): string {
     return "listPhoneNumbers";
   }
 
   //TODO: Need to implement nextToken in shared-graph-api
-  protected queryDefinition(): string {
+  queryDefinition(): string {
     return `
       query ${this.queryName()}($limit: Int) { 
         ${this.queryName()}(limit: $limit) {

@@ -1,5 +1,12 @@
 import { XlsxJSONRow } from "components/tabs/dynamicCallFlow/common/Xlsx/Xlsx.Interfaces";
 import { ActionType } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
+import {
+  ACTION_ID,
+  ACTION_TYPE,
+  CALL_FLOW_NAME,
+  NEXT_ACTION_ID,
+  NEXT_ACTION_TYPE, SPEECH
+} from "dynamicCallFlowAction/Form/ActionFields";
 
 export interface CallerContextAttributes {
   reasonForReturning?: string;
@@ -47,3 +54,27 @@ export interface MenuOptionXlsxRow extends ActionXlsxRow {
 export interface RedirectXlsxRow extends ActionXlsxRow {
   redirectUrl: string;
 }
+
+export const ActionXlsxHeaders = [
+  ACTION_ID,
+  ACTION_TYPE,
+  CALL_FLOW_NAME,
+  NEXT_ACTION_ID,
+  NEXT_ACTION_TYPE,
+  SPEECH,
+  "menuAllowBargeIn",
+  "menuFinishOnKey",
+  "menuMinDigits",
+  "menuMaxDigits",
+  "menuTimeout",
+  "menuRepeatLoop",
+  "menuRepeatNextActionId",
+  "menuRepeatNextActionType",
+  "menuRepeatReasonForReturning",
+  "menuOptionDigit",
+  "menuOptionNextActionType",
+  "menuOptionNextActionId",
+  "menuOptionReasonForReturning",
+  "menuOptionCallIntent",
+  "redirectUrl"
+];

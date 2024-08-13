@@ -1,9 +1,49 @@
-import { sortRecords } from "../DynamicCallFlow.Common.DataGrid";
+import {
+  initializeDataGrid, sortRecords
+} from "../DynamicCallFlow.Common.DataGrid";
 
 interface TestRecord {
   id: number;
 }
 describe("sortRecords", () => {
+  describe("initializeDataGrid", () => {
+    it("shouldReturnDefaultDataGridStateProps", () => {
+      const result = initializeDataGrid();
+      expect(result).toEqual({
+        fetching: true,
+        idStart: 0,
+        idEnd: 0,
+        maxId: 0,
+        minId: 0
+      });
+    });
+
+    it("shouldReturnFetchingTrue", () => {
+      const result = initializeDataGrid();
+      expect(result.fetching).toBe(true);
+    });
+
+    it("shouldReturnIdStartZero", () => {
+      const result = initializeDataGrid();
+      expect(result.idStart).toBe(0);
+    });
+
+    it("shouldReturnIdEndZero", () => {
+      const result = initializeDataGrid();
+      expect(result.idEnd).toBe(0);
+    });
+
+    it("shouldReturnMaxIdZero", () => {
+      const result = initializeDataGrid();
+      expect(result.maxId).toBe(0);
+    });
+
+    it("shouldReturnMinIdZero", () => {
+      const result = initializeDataGrid();
+      expect(result.minId).toBe(0);
+    });
+  });
+
   it("shouldSortRecordsAndReturnCorrectDataGridStatePropsWhenRecordsExist", () => {
     const records: Array<TestRecord> = [{ id: 3 }, { id: 1 }, { id: 2 }];
     const [sortedRecords, dataGridStateProps] = sortRecords<TestRecord>(records);

@@ -6,13 +6,13 @@ import {
 } from "components/tabs/dynamicCallFlow/common/GraphQL/AbstractDeleteRecord.Query";
 import { SingleRecordResults } from "components/tabs/dynamicCallFlow/common/GraphQL/AbstractSingleRecord.Query";
 
-class DeleteDynamicPhoneNumberRecordQuery extends AbstractDeleteRecordQuery {
-  protected queryName(): string {
+export class DeleteDynamicPhoneNumberRecordQuery extends AbstractDeleteRecordQuery {
+  queryName(): string {
     return "deletePhoneNumber";
   }
 
   //TODO: Need to add more attributes on the delete
-  protected queryDefinition(): string {
+  queryDefinition(): string {
     return `
       mutation ${this.queryName()}($input:CallFlowDeleteInput!) {
             ${this.queryName()}(input:$input) {

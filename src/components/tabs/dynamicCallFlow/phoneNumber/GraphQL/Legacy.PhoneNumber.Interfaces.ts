@@ -1,7 +1,7 @@
 import {
   BasePhoneNumber,
   CallerType,
-  LanguageOfferType
+  LanguageOfferType, PhoneNumberType
 } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 
 export interface CctSharedCallFlowDbDelInput {
@@ -10,16 +10,6 @@ export interface CctSharedCallFlowDbDelInput {
 
 export interface CctSharedCallFlowDbBatchDelInput {
     pkey: Array<string>;
-}
-
-export type LegacyPhoneNumberType = "" | "DID" | "DRC" | "LSC" | "TFN";
-
-export enum LegacyPhoneNumberTypeEnum {
-    BLANK = "",
-    DID = "DID",
-    DRC = "DRC",
-    LSC = "LSC",
-    TFN = "TFN"
 }
 
 export interface FlowContent {
@@ -43,7 +33,7 @@ export interface CctSharedCallFlowDb extends BasePhoneNumber {
     content?: FlowContent;
     createTime?: string;
     selfServiceIndicator?: boolean,
-    type?: LegacyPhoneNumberType;
+    type?: PhoneNumberType;
     updateTime?: string;
     userDestination?: string;
 }

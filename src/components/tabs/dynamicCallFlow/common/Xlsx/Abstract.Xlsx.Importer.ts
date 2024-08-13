@@ -18,7 +18,8 @@ const XLSX_PARSING_OPTIONS: ParsingOptions = {
 };
 
 const SHEET_TO_JSON_OPTIONS: Sheet2JSONOpts = {
-  raw: false
+  raw: false,
+  defval: null // defult empty cell to an empty string, or else the json object for this row will not contain the key for this cell
 };
 
 export interface XlsxImporter<XlsxRowType, RecordType> {
@@ -28,6 +29,7 @@ export interface XlsxImporter<XlsxRowType, RecordType> {
 
 export abstract class AbstractXlsxImporter<XlsxRowType, RecordType> implements XlsxImporter<XlsxRowType, RecordType> {
   protected _xlsxImporterResults: XlsxImporterResults<XlsxRowType, RecordType> = {
+    headers: [],
     xlsxRows: [],
     records: [],
     errors: []
@@ -56,9 +58,15 @@ export abstract class AbstractXlsxImporter<XlsxRowType, RecordType> implements X
   processWorkSheet(workSheet: WorkSheet): XlsxImporterResults<XlsxRowType, RecordType> {
     try {
       const xlsxRows: Array<XlsxRowType> = XLSX.utils.sheet_to_json<XlsxRowType>(workSheet, SHEET_TO_JSON_OPTIONS);
-
-      this.inspectXlsxRows(xlsxRows);
-      this._xlsxImporterResults.records = this.generateRecords(xlsxRows);
+      if (xlsxRows.length === 0) {
+        this._xlsxImporterResults.errors.push("The file is empty.");
+      } else if (xlsxRows.length > 500) {
+        this._xlsxImporterResults.errors.push("The maximum number of phone numbers that can be imported at one time is 500.");
+      } else {
+        const headers: Array<string> = (XLSX.utils.sheet_to_json<Array<string>>(workSheet, { header: 1 }))[0];
+        this.inspectXlsx(headers, xlsxRows);
+        this._xlsxImporterResults.records = this.generateRecords(xlsxRows);
+      }
     } catch (error) {
       this._xlsxImporterResults.errors.push(error.message);
     }
@@ -66,7 +74,23 @@ export abstract class AbstractXlsxImporter<XlsxRowType, RecordType> implements X
     return this._xlsxImporterResults;
   }
 
-  protected abstract inspectXlsxRows(xlsxRows: Array<XlsxRowType>): void
+  protected hasValidXlsxHeaders(actualColumnHeaders: Array<string>, expectedColumnHeaders: Array<string>): boolean {
+    const missingColumnHeaders: Array<string> = [];
+
+    expectedColumnHeaders.forEach((header: string) => {
+      if (!actualColumnHeaders.includes(header)) {
+        missingColumnHeaders.push(header);
+      }
+    });
+
+    if (missingColumnHeaders.length > 0) {
+      this._xlsxImporterResults.errors.push(`Missing column headers: ${missingColumnHeaders.join(", ")}`);
+    }
+
+    return missingColumnHeaders.length === 0;
+  }
+
+  protected abstract inspectXlsx(headers: Array<string>, xlsxRows: Array<XlsxRowType>): void
 
   protected abstract generateRecords(xlsxRows: Array<XlsxRowType>): Array<RecordType>;
 }

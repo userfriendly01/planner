@@ -6,15 +6,15 @@ import {
 import { CctSharedCallFlowDb } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
 
 class BatchCreateLegacyPhoneNumberRecordsQuery extends AbstractBatchRecordsQuery {
-  protected batchInputName(): string {
+  batchInputName(): string {
     return "batchFlowCreateInput";
   }
 
-  protected queryName(): string {
+  queryName(): string {
     return "batchCreateCctSharedCallFlowDb";
   }
 
-  protected queryDefinition(): string {
+  queryDefinition(): string {
     return `
       mutation ${this.queryName()} ($input: CctSharedCallFlowDbBatchCreateInput!) {
         ${this.queryName()}(input: $input) {

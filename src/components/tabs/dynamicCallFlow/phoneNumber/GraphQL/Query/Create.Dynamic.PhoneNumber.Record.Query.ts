@@ -2,13 +2,13 @@ import { PhoneNumber } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL
 import { SingleRecordResults } from "components/tabs/dynamicCallFlow/common/GraphQL/AbstractSingleRecord.Query";
 import { AbstractCreateRecordQuery } from "components/tabs/dynamicCallFlow/common/GraphQL/Abstract.CreateRecord.Query";
 
-class CreateDynamicPhoneNumberRecordQuery extends AbstractCreateRecordQuery {
-  protected queryName(): string {
+export class CreateDynamicPhoneNumberRecordQuery extends AbstractCreateRecordQuery {
+  queryName(): string {
     return "createPhoneNumber";
   }
 
   //TODO: Need to add more attributes on the create
-  protected queryDefinition(): string {
+  queryDefinition(): string {
     return `
       mutation ${this.queryName()} ($input: PhoneNumberInput! ){
         ${this.queryName()}(input: $input) {

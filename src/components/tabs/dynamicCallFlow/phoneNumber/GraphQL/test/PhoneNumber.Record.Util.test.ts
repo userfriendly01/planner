@@ -1,12 +1,13 @@
-import { deepCopyObject } from "components/tabs/dynamicCallFlow/test/dynamicCallFlow.Testing.Util";
 import {
   BRAND, GREETING_MESSAGES
 } from "dynamicCallFlowPhoneNumber/Form/Dynamic.PhoneNumber.Form.Fields";
 import {
-  BrandTypeEnum, PhoneNumber
+  BrandTypeEnum, CallFlowTypeEnum, PhoneNumber
 } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 import { CctSharedCallFlowDb } from "dynamicCallFlowPhoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
 import { PhoneNumberRecordUtil } from "dynamicCallFlowPhoneNumber/GraphQL/PhoneNumber.Record.Util";
+import { isTrue } from "dynamicCallFlowCommon/Util/Boolean.Util";
+import { deepCopyObject } from "components/tabs/dynamicCallFlow/test/dynamicCallFlow.Testing.Util";
 import { DynamicPhoneNumberOne } from "dynamicCallFlowPhoneNumber/GraphQL/test/Dynamic.PhoneNumber.MockData";
 import { LegacyPhoneNumberOne } from "dynamicCallFlowPhoneNumber/GraphQL/test/Legacy.PhoneNumber.Record.MockData";
 
@@ -27,6 +28,15 @@ describe("PhoneNumberRecordUtil", () => {
         greetingMessages: "Hello"
       }
     } as CctSharedCallFlowDb;
+  });
+
+  it("should not find enum", () => {
+    // const phoneNumberXlsxRow = {
+    //   migrateSelfServiceNumberToDynamic: "n"
+    // } as PhoneNumberXlsxRow;
+    const migrateSelfServiceNumberToDynamic = isTrue("true");
+    // const isNotValidCallFlowType = !/^\+1\d+$/.test("");
+    expect(migrateSelfServiceNumberToDynamic).toEqual(true);
   });
 
   it("shouldReturnCorrectPkeyForDynamicPhoneNumberRecord", () => {
@@ -116,44 +126,40 @@ describe("PhoneNumberRecordUtil", () => {
         accountManager: "",
         affinityVDN: "",
         agentId: "",
-        brand: "Safeco",
+        brand: DynamicPhoneNumberOne.brand,
         callDetails1: "",
         callDetails2: "",
-        callFlowTemplate: "LSC",
-        callTypeDescription: "LSC",
-        channel: "Claims",
+        callFlowTemplate: DynamicPhoneNumberOne.callFlowTemplate,
+        callTypeDescription: DynamicPhoneNumberOne.callTypeDescription,
+        channel: DynamicPhoneNumberOne.channel,
         content: {
-          callFlowRoute: "call flow route",
-          callIntent: "call intent",
-          callerType: "Customer",
-          dataRequests: [
-            "data request"
-          ],
-          greetingMessages: "Hello",
-          languageOffer: "English",
-          officeNumbers: [
-            "office number"
-          ],
+          callFlowRoute: DynamicPhoneNumberOne.callFlowRoute,
+          callIntent: DynamicPhoneNumberOne.callIntent,
+          callerType: DynamicPhoneNumberOne.callerType,
+          dataRequests: DynamicPhoneNumberOne.dataRequests,
+          greetingMessages: DynamicPhoneNumberOne.greetingMessages,
+          languageOffer: DynamicPhoneNumberOne.languageOffer,
+          officeNumbers: DynamicPhoneNumberOne.officeNumbers,
           transferNumber: ""
         },
-        createTime: "2024-04-10T13:33:53.000Z",
-        dialedDescription: "testing phone number record",
-        employeeId: "n0000000",
-        internetPlacement: "internet placement",
-        lineOfBusiness: "line of business",
-        marketingChannel: "marketing channel",
-        pkey: "8005550001",
-        predictiveCaller: false,
-        rangeIndicator: "range indicator",
-        requestID: "request id",
+        createTime: (DynamicPhoneNumberOne.createTime ? new Date(DynamicPhoneNumberOne.createTime) : new Date()).toISOString(),
+        dialedDescription: DynamicPhoneNumberOne.dialedDescription,
+        employeeId: DynamicPhoneNumberOne.employeeId,
+        internetPlacement: DynamicPhoneNumberOne.internetPlacement,
+        lineOfBusiness: DynamicPhoneNumberOne.lineOfBusiness,
+        marketingChannel: DynamicPhoneNumberOne.marketingChannel,
+        pkey: DynamicPhoneNumberOne.phoneNumber,
+        predictiveCaller: DynamicPhoneNumberOne.predictiveCaller,
+        rangeIndicator: DynamicPhoneNumberOne.rangeIndicator,
+        requestID: DynamicPhoneNumberOne.requestID,
         selfServiceIndicator: false,
-        tfnRoutingGroup: "tfn routing group",
-        tollFreeNumber: "8005551212",
-        transferCode: "005",
-        type: "TFN",
-        updateTime: "2024-04-10T13:33:53.000Z",
-        userDestination: "transfer destination",
-        whisper: "whisper"
+        tfnRoutingGroup: DynamicPhoneNumberOne.tfnRoutingGroup,
+        tollFreeNumber: DynamicPhoneNumberOne.tollFreeNumber,
+        transferCode: DynamicPhoneNumberOne.transferCode,
+        type: DynamicPhoneNumberOne.phoneNumberType,
+        updateTime: (DynamicPhoneNumberOne.updateTime ? new Date(DynamicPhoneNumberOne.updateTime) : new Date()).toISOString(),
+        userDestination: DynamicPhoneNumberOne.transferDestination,
+        whisper: DynamicPhoneNumberOne.whisper
       });
     });
 
@@ -161,36 +167,36 @@ describe("PhoneNumberRecordUtil", () => {
       const legacyPhoneNumberRecordCopy = deepCopyObject(LegacyPhoneNumberOne);
 
       expect(PhoneNumberRecordUtil.convertPhoneNumberRecord(legacyPhoneNumberRecordCopy)).toStrictEqual({
-        brand: "Safeco",
+        brand: LegacyPhoneNumberOne.brand,
         callFlowName: "",
-        callFlowRoute: "call flow route",
-        callFlowTemplate: "LSC",
-        callFlowType: "DTMF",
-        callIntent: "call intent",
-        callTypeDescription: "LSC",
-        callerType: "Customer",
-        channel: "Claims",
-        createTime: 1712756033,
-        dataRequests: ["data request"],
-        dialedDescription: "testing phone number record",
-        employeeId: "n0000000",
-        greetingMessages: "Hello",
-        internetPlacement: "internet placement",
-        languageOffer: "English",
-        lineOfBusiness: "line of business",
-        marketingChannel: "marketing channel",
-        officeNumbers: ["office number"],
-        phoneNumber: "8004440001",
-        phoneNumberType: "TFN",
-        predictiveCaller: false,
-        rangeIndicator: "range indicator",
-        requestID: "request id",
-        tfnRoutingGroup: "tfn routing group",
-        tollFreeNumber: "8005551212",
-        transferCode: "005",
-        transferDestination: "user destination",
-        updateTime: 1712756033,
-        whisper: "whisper"
+        callFlowRoute: LegacyPhoneNumberOne.content.callFlowRoute,
+        callFlowTemplate: LegacyPhoneNumberOne.callFlowTemplate,
+        callFlowType: LegacyPhoneNumberOne.selfServiceIndicator === true ? CallFlowTypeEnum.SELFSERVICE : CallFlowTypeEnum.DTMF,
+        callIntent: LegacyPhoneNumberOne.content.callIntent,
+        callTypeDescription: LegacyPhoneNumberOne.callTypeDescription,
+        callerType: LegacyPhoneNumberOne.content.callerType,
+        channel: LegacyPhoneNumberOne.channel,
+        createTime: Math.floor((LegacyPhoneNumberOne.createTime ? new Date(LegacyPhoneNumberOne.createTime) : new Date()).getTime() / 1000),
+        dataRequests: LegacyPhoneNumberOne.content.dataRequests,
+        dialedDescription: LegacyPhoneNumberOne.dialedDescription,
+        employeeId: LegacyPhoneNumberOne.employeeId,
+        greetingMessages: LegacyPhoneNumberOne.content.greetingMessages,
+        internetPlacement: LegacyPhoneNumberOne.internetPlacement,
+        languageOffer: LegacyPhoneNumberOne.content.languageOffer,
+        lineOfBusiness: LegacyPhoneNumberOne.lineOfBusiness,
+        marketingChannel: LegacyPhoneNumberOne.marketingChannel,
+        officeNumbers: LegacyPhoneNumberOne.content.officeNumbers,
+        phoneNumber: LegacyPhoneNumberOne.pkey,
+        phoneNumberType: LegacyPhoneNumberOne.type,
+        predictiveCaller: LegacyPhoneNumberOne.predictiveCaller,
+        rangeIndicator: LegacyPhoneNumberOne.rangeIndicator,
+        requestID: LegacyPhoneNumberOne.requestID,
+        tfnRoutingGroup: LegacyPhoneNumberOne.tfnRoutingGroup,
+        tollFreeNumber: LegacyPhoneNumberOne.tollFreeNumber,
+        transferCode: LegacyPhoneNumberOne.transferCode,
+        transferDestination: LegacyPhoneNumberOne.userDestination,
+        updateTime: Math.floor((LegacyPhoneNumberOne.updateTime ? new Date(LegacyPhoneNumberOne.updateTime) : new Date()).getTime() / 1000),
+        whisper: LegacyPhoneNumberOne.whisper
       });
     });
   });

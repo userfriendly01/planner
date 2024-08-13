@@ -5,13 +5,13 @@ import {
   AbstractBatchDeleteDynamicCallFlowQuery
 } from "components/tabs/dynamicCallFlow/common/GraphQL/Abstract.Batch.Delete.DynamicCallFlow.Query";
 
-class BatchDeleteActionRecordsQuery extends AbstractBatchDeleteDynamicCallFlowQuery<ActionRecordType> {
-  protected generateCallFlowDeleteInputs(actionRecords: Array<ActionRecordType>): Array<CallFlowDeleteInput> {
-    return actionRecords.map( actionRecord =>
+export class BatchDeleteActionRecordsQuery extends AbstractBatchDeleteDynamicCallFlowQuery<ActionRecordType> {
+  generateCallFlowDeleteInputs(actionRecords: Array<ActionRecordType>): Array<CallFlowDeleteInput> {
+    return actionRecords?.map( actionRecord =>
       ({
         id: actionRecord.actionId,
         actionType: actionRecord.actionType
-      } as CallFlowDeleteInput));
+      } as CallFlowDeleteInput)) || [];
   }
 }
 

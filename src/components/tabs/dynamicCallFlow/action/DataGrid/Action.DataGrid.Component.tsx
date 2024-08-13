@@ -24,12 +24,18 @@ import {
 } from "components/tabs/dynamicCallFlow/common/AlertBar.Controller";
 import { DynamicCallFlowActionContext } from "components/tabs/dynamicCallFlow/action/DynamicCallFlow.Action.Container";
 import { NotInUseModalType } from "components/tabs/dynamicCallFlow/common/Modal.Controller";
-import { ActionDataGridController } from "components/tabs/dynamicCallFlow/action/DataGrid/Action.DataGrid.Controller";
+import {
+  ActionDataGridController,
+  actionMatchFilter
+} from "components/tabs/dynamicCallFlow/action/DataGrid/Action.DataGrid.Controller";
 import { ActionDataGridFilter } from "components/tabs/dynamicCallFlow/action/DataGrid/Action.DataGrid.Filter";
 import { CustomToast } from "components/CustomToast";
 import { ActionPreviewModalHandler } from "components/tabs/dynamicCallFlow/action/PreviewModal/Action.Preview.Modal.Handler";
 import { ActionDataGridFilterModal } from "components/tabs/dynamicCallFlow/action/DataGrid/Action.DataGrid.Filter.Modal";
 import { logger } from "utils/logger";
+import {
+  addElementsToArray, updateElementsInArray
+} from "dynamicCallFlowCommon/Util/Array.Util";
 
 const DYNAMIC_CALL_FLOW_ACTION_DATA_GRID_PAGE_NUMBER = "dynamicCallFlowActionDataGridPageNumber";
 const DYNAMIC_CALL_FLOW_ACTION_DATA_GRID_RECORDS_PER_PAGE = "dynamicCallFlowActionDataGridRecordsPerPage";
@@ -128,6 +134,14 @@ const ActionDataGridComponent = (): JSX.Element => {
     sessionStorage.setItem(DYNAMIC_CALL_FLOW_ACTION_DATA_GRID_PAGE_NUMBER, model.page.toString());
     sessionStorage.setItem(DYNAMIC_CALL_FLOW_ACTION_DATA_GRID_RECORDS_PER_PAGE, model.pageSize.toString());
     setPaginationModel(model);
+  };
+
+  const updateSourceRecords = (updatedSourceRecords: Array<ActionRecordType>): void => {
+    setSourceRecords([ ...updateElementsInArray(actionMatchFilter, updatedSourceRecords, sourceRecords) ]);
+  };
+
+  const addToSourceRecords = (newRecords: Array<ActionRecordType>): void => {
+    setSourceRecords(addElementsToArray(newRecords, sourceRecords));
   };
 
   const handleCloseAlertBar = () => {

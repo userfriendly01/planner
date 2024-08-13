@@ -113,6 +113,7 @@ const PhoneNumberDataGridToolBar = ({
           }}>
             <InputLabel>Actions</InputLabel>
             <Select
+
               inputProps={{
                 sx: {
                   width: 120

@@ -1,12 +1,12 @@
-export function dataFromLocalStorageHasExpired(fieldOptionsCacheKey: string, timeToLive = 86400000): boolean {
-  const lastCachedDate = localStorage.getItem(fieldOptionsCacheKey.concat("_lastCachedDate"));
+export function dataFromLocalStorageHasExpired(key: string, timeToLive = 86400000): boolean {
+  const lastCachedDate = localStorage.getItem(key.concat("_lastCachedDate"));
 
   return lastCachedDate ? new Date().getTime() - new Date(lastCachedDate).getTime() > timeToLive : true;
 }
 
-export function retrieveDataFromLocalStorage<DataType>(fieldOptionsCacheKey: string, timeToLive = 86400000): DataType {
-  const rawData = localStorage.getItem(fieldOptionsCacheKey);
+export function retrieveDataFromLocalStorage<DataType>(key: string, timeToLive = 86400000): DataType {
+  const rawData = localStorage.getItem(key);
   const data: DataType = rawData ? JSON.parse(rawData) as DataType : {} as DataType;
 
-  return dataFromLocalStorageHasExpired ? undefined : data;
+  return dataFromLocalStorageHasExpired(key, timeToLive) ? undefined : data;
 }

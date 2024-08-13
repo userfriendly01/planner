@@ -10,11 +10,11 @@ export class ActionXlsxExporter extends AbstractXlsxExporter<ActionXlsxRow, Acti
     return new ActionXlsxExporter();
   }
 
-  protected convertRecordsToXlsxRows(records: Array<ActionRecordType>): Array<ActionXlsxRow> {
+  convertRecordsToXlsxRows(records: Array<ActionRecordType>): Array<ActionXlsxRow> {
     return this.actionXlsxRowGenerator.generateXlsxRows(records);
   }
 
-  protected groupRecordsByWorkBookNames(actionRecords: Array<ActionRecordType>): Map<string, Array<ActionRecordType>> {
+  groupRecordsByWorkBookNames(actionRecords: Array<ActionRecordType>): Map<string, Array<ActionRecordType>> {
     const groupedRecords: Map<string, Array<ActionRecordType>> = new Map<string, Array<ActionRecordType>>();
 
     actionRecords.forEach(actionRecord => {

@@ -1,13 +1,13 @@
 import { AbstractListRecordsQuery } from "components/tabs/dynamicCallFlow/common/GraphQL/AbstractListRecords.Query";
 import { ActionRecordType } from "components/tabs/dynamicCallFlow/action/GraphQL/Action.Interfaces";
 
-class ActionListRecordsQuery extends AbstractListRecordsQuery {
-  protected queryName(): string {
+export class ActionListRecordsQuery extends AbstractListRecordsQuery {
+  queryName(): string {
     return "getCallFlowConfig";
   }
 
   //TODO: Need to implement nextToken in shared-graph-api
-  protected queryDefinition(): string {
+  queryDefinition(): string {
     return `
       query ${this.queryName()} {
         ${this.queryName()} {

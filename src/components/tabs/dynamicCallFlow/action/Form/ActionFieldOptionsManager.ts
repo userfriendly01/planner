@@ -10,23 +10,23 @@ import { CALL_FLOW_NAME } from "components/tabs/dynamicCallFlow/action/Form/Acti
 const DYNAMIC_CALL_FLOW_CALL_FLOW_CONFIGURATION_FORM_FIELD_OPTIONS = "DYNAMIC_CALL_FLOW_CALL_FLOW_CONFIGURATION_FORM_FIELD_OPTIONS";
 
 export class ActionFieldOptionsManager extends AbstractFormFieldOptionsManager<ActionRecordType> {
-  protected getRecordPropertyValue(actionRecord: ActionRecordType, key: string): FieldDataType {
+  getRecordPropertyValue(actionRecord: ActionRecordType, key: string): FieldDataType {
     return ActionRecordUtil.getPropertyValue(actionRecord, key);
   }
 
-  protected getFieldOptionsCacheKey(): string {
+  getFieldOptionsCacheKey(): string {
     return DYNAMIC_CALL_FLOW_CALL_FLOW_CONFIGURATION_FORM_FIELD_OPTIONS;
   }
 
-  protected getDataDrivenOptionsFieldNames(): Array<string> {
+  getDataDrivenOptionsFieldNames(): Array<string> {
     return [CALL_FLOW_NAME];
   }
 
-  protected getDataDrivenOptionsFieldNamesWithList(): Array<string> {
+  getDataDrivenOptionsFieldNamesWithList(): Array<string> {
     return [];
   }
 
-  protected getStaticFieldOptions(): FieldOptions {
+  getStaticFieldOptions(): FieldOptions {
     return {} as FieldOptions;
   }
 }

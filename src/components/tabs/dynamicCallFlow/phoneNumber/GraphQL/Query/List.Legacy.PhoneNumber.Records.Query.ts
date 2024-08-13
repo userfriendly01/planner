@@ -3,11 +3,11 @@ import { CctSharedCallFlowDb } from "components/tabs/dynamicCallFlow/phoneNumber
 import { LoadDataGridMonitorRef } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
 
 class ListLegacyPhoneNumberRecordsQuery extends AbstractListRecordsQuery {
-  protected queryName(): string {
+  queryName(): string {
     return "listCctSharedCallFlowDbs";
   }
 
-  protected queryDefinition(): string {
+  queryDefinition(): string {
     return `
       query ${this.queryName()}($limit: Int, $nextToken: String) {
         ${this.queryName()}(limit: $limit, nextToken: $nextToken) {

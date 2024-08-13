@@ -41,7 +41,10 @@ import {
 } from "components/tabs/dynamicCallFlow/common/AlertBar.Controller";
 import { DynamicCallFlowPhoneNumberContext } from "components/tabs/dynamicCallFlow/phoneNumber/DynamicCallFlow.PhoneNumber.Container";
 import { PhoneNumberDataGridFilter } from "components/tabs/dynamicCallFlow/phoneNumber/DataGrid/PhoneNumber.DataGrid.Filter";
-import { PhoneNumberDataGridController } from "components/tabs/dynamicCallFlow/phoneNumber/DataGrid/PhoneNumber.DataGrid.Controller";
+import {
+  PhoneNumberDataGridController,
+  phoneNumberMatchFilter
+} from "components/tabs/dynamicCallFlow/phoneNumber/DataGrid/PhoneNumber.DataGrid.Controller";
 import { CustomToast } from "components/CustomToast";
 import {
   PHONE_NUMBER_DATA_GRID_PROGRESS_BAR_CACHE_KEY,
@@ -53,7 +56,6 @@ import { logger } from "utils/logger";
 import {
   addElementsToArray, updateElementsInArray
 } from "dynamicCallFlowCommon/Util/Array.Util";
-import { PKEY } from "dynamicCallFlowPhoneNumber/Form/Legacy.PhoneNumber.Form.Fields";
 
 const DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_PAGE_NUMBER = "dynamicCallFlowPhoneNumberDataGridPageNumber";
 const DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_RECORDS_PER_PAGE = "dynamicCallFlowPhoneNumberDataGridRecordsPerPage";
@@ -165,7 +167,7 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
   };
 
   const updateSourceRecords = (updatedSourceRecords: Array<PhoneNumberRecordType>): void => {
-    setSourceRecords([ ...updateElementsInArray(PKEY, updatedSourceRecords, sourceRecords) ]);
+    setSourceRecords([ ...updateElementsInArray(phoneNumberMatchFilter, updatedSourceRecords, sourceRecords) ]);
   };
 
   const addToSourceRecords = (newRecords: Array<PhoneNumberRecordType>): void => {

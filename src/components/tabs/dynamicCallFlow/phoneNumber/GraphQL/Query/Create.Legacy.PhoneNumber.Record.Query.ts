@@ -3,11 +3,11 @@ import { AbstractCreateRecordQuery } from "components/tabs/dynamicCallFlow/commo
 import { SingleRecordResults } from "components/tabs/dynamicCallFlow/common/GraphQL/AbstractSingleRecord.Query";
 
 class CreateLegacyPhoneNumberRecordQuery extends AbstractCreateRecordQuery {
-  protected queryName(): string {
+  queryName(): string {
     return "createCctSharedCallFlowDb";
   }
 
-  protected queryDefinition(): string {
+  queryDefinition(): string {
     return `
       mutation ${this.queryName()} ($input: CctSharedCallFlowDbInput!) {
         ${this.queryName()}(input: $input) {

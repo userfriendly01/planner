@@ -4,46 +4,101 @@ export type MatchFilter<RecordType> = (record1: RecordType, record2: RecordType)
  * @typedef {ElementType} ElementType
  */
 
+export function stringToArray(value: string): string[] {
+  return typeof value === "string" && String(value).trim().length > 0 ? value?.split(",") : [];
+}
+
 export function addElementToArray<ElementType>(recordToAdd: ElementType, targetArray: Array<ElementType>): Array<ElementType> {
-  return [ ...targetArray, recordToAdd ];
+  return addElementsToArray([recordToAdd], targetArray);
 }
 
 export function addElementsToArray<ElementType>(newElements: Array<ElementType>, targetArray: Array<ElementType>): Array<ElementType> {
-  return [ ...targetArray, ...newElements ];
+  if (newElements && targetArray) {
+    return [ ...targetArray, ...newElements ];
+  } else if (!newElements) {
+    return targetArray;
+  } else if (!targetArray) {
+    return newElements;
+  }
+
+  return null;
 }
 
-export function updateElementInArray<ElementType>(elementKey: string, updatedElement: ElementType, targetArray: Array<ElementType>): Array<ElementType> {
-  return targetArray.map( existingElement => elementsMatch(elementKey, existingElement, updatedElement) ? updatedElement : existingElement);
+export function updateElementInArray<ElementType>(matchFilter: MatchFilter<ElementType>, updatedElement: ElementType, targetArray: Array<ElementType>): Array<ElementType> {
+  // return targetArray?.map( existingElement => elementsMatch(elementKey, existingElement, updatedElement) ? updatedElement : existingElement);
+  return updateElementsInArray(matchFilter, [updatedElement], targetArray);
 }
 
-export function updateElementsInArray<ElementType>(elementKey: string, updatedElements: Array<ElementType>, targetArray: Array<ElementType>): Array<ElementType> {
-  return targetArray.map(existingElement =>
-    updatedElements.find(updatedElement => elementsMatch(elementKey, existingElement, updatedElement)) || existingElement);
+export function updateElementsInArray<ElementType>(matchFilter: MatchFilter<ElementType>, updatedElements: Array<ElementType>, targetArray: Array<ElementType>): Array<ElementType> {
+  if (!updatedElements) {
+    return targetArray;
+  }
+
+  if (!targetArray) {
+    return updatedElements;
+  }
+
+  return targetArray?.map(existingElement =>
+    updatedElements?.find(updatedElement => elementsMatch(matchFilter, existingElement, updatedElement)) || existingElement);
 }
 
-export function removeElementFromArray<ElementType>(elementUniqueKey: string, elementToRemoveFromTargetArray: ElementType, targetArray: Array<ElementType>): Array<ElementType> {
-  return targetArray.filter( targetElement => elementsDoNotMatch(elementUniqueKey, targetElement, elementToRemoveFromTargetArray));
+export function removeElementFromArray<ElementType>(matchFilter: MatchFilter<ElementType>, elementToRemoveFromTargetArray: ElementType, targetArray: Array<ElementType>): Array<ElementType> {
+  if (!elementToRemoveFromTargetArray) {
+    return targetArray;
+  }
+
+  if (!targetArray) {
+    return [];
+  }
+
+  return targetArray?.filter( targetElement => elementsDoNotMatch(matchFilter, targetElement, elementToRemoveFromTargetArray));
 }
 
-export function removeElementsFromArray<ElementType>(elementUniqueKey: string, elementsToRemoveFromTargetArray: Array<ElementType>, targetArray: Array<ElementType>): Array<ElementType> {
+export function removeElementsFromArray<ElementType>(matchFilter: MatchFilter<ElementType>, elementsToRemoveFromTargetArray: Array<ElementType>, targetArray: Array<ElementType>): Array<ElementType> {
+  if (!elementsToRemoveFromTargetArray) {
+    return targetArray;
+  }
+
+  if (!targetArray) {
+    return [];
+  }
+
   // Filter the targetArray to keep targetElements that do not exist in the elementsToRemoveFromTargetArray, thus removing the elementsToRemoveFromTargetArray from the targetArray
-  return targetArray.filter( targetElement => elementDoesNotExistInArray(elementUniqueKey, targetElement, elementsToRemoveFromTargetArray));
+  return targetArray?.filter( targetElement => elementDoesNotExistInArray(matchFilter, targetElement, elementsToRemoveFromTargetArray));
 }
 
-export function elementExistsInArray<ElementType>(elementUniqueKey: string, elementToCheckIfItExistsInArray: ElementType, targetArrayToCheck: Array<ElementType>): boolean {
-  return targetArrayToCheck.some(targetArrayElement => elementsMatch(elementUniqueKey, targetArrayElement, elementToCheckIfItExistsInArray));
+export function elementExistsInArray<ElementType>(matchFilter: MatchFilter<ElementType>, elementToCheckIfItExistsInArray: ElementType, targetArrayToCheck: Array<ElementType>): boolean {
+  if (!matchFilter || !elementToCheckIfItExistsInArray || !targetArrayToCheck) {
+    return false;
+  }
+
+  return targetArrayToCheck?.some(targetArrayElement => matchFilter(targetArrayElement, elementToCheckIfItExistsInArray));
 }
 
-export function elementDoesNotExistInArray<ElementType>(elementUniqueKey: string, elementToCheckIfItDoesNotExistInArray: ElementType, targetArrayToCheck: any[]): boolean {
-  return !elementExistsInArray(elementUniqueKey, elementToCheckIfItDoesNotExistInArray, targetArrayToCheck);
+export function elementDoesNotExistInArray<ElementType>(matchFilter: MatchFilter<ElementType>, elementToCheckIfItDoesNotExistInArray: ElementType, targetArrayToCheck: any[]): boolean {
+  return !elementExistsInArray(matchFilter, elementToCheckIfItDoesNotExistInArray, targetArrayToCheck);
 }
 
-function elementsMatch(elementUniqueKey: string, elementOne: any, elementTwo: any): boolean {
-  return elementOne[elementUniqueKey as keyof typeof elementOne] === elementTwo[elementUniqueKey as keyof typeof elementTwo];
+/**
+ * Checks if two elements match based on a unique key.
+ *
+ * @param {MatchFilter<ElementType>} matchFilter - The unique key to compare the elements.
+ * @param {any} elementOne - The first element to compare.
+ * @param {any} elementTwo - The second element to compare.
+ * @returns {boolean} - Returns true if both elements match based on the unique key, false otherwise.
+ */
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export function elementsMatch<ElementType>(matchFilter: MatchFilter<ElementType>, elementOne: ElementType, elementTwo: ElementType): boolean {
+  if (!matchFilter || !elementOne || !elementTwo) {
+    return false;
+  }
+
+  return matchFilter(elementOne, elementTwo);
 }
 
-function elementsDoNotMatch(elementUniqueKey: string, elementOne: any, elementTwo: any): boolean {
-  return !elementsMatch(elementUniqueKey, elementOne, elementTwo);
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export function elementsDoNotMatch(matchFilter: MatchFilter<any>, elementOne: any, elementTwo: any): boolean {
+  return !elementsMatch(matchFilter, elementOne, elementTwo);
 }
 
 /**
@@ -55,7 +110,11 @@ function elementsDoNotMatch(elementUniqueKey: string, elementOne: any, elementTw
  * @return {Array<ElementType>} - List of matching phone number records
  */
 export function findMatchingElements<ElementType>(listToSearchIn: Array<ElementType>, elementsToMatch: Array<ElementType>, matchFilter: MatchFilter<ElementType>): Array<ElementType> {
-  return elementsToMatch.filter((elementToMatch: ElementType) => matchFound(listToSearchIn, elementToMatch, matchFilter));
+  if (!elementsToMatch || !listToSearchIn || !matchFilter) {
+    return [];
+  }
+
+  return elementsToMatch?.filter((elementToMatch: ElementType) => matchFound(listToSearchIn, elementToMatch, matchFilter));
 }
 
 /**
@@ -65,6 +124,19 @@ export function findMatchingElements<ElementType>(listToSearchIn: Array<ElementT
  * @param {MatchFilter} matchFilter - Filter to use to match records
  * @return {boolean} - True if matching record found, false otherwise
  */
-function matchFound<ElementType>(listToSearchIn: Array<ElementType>, elementToMatch: ElementType, matchFilter: MatchFilter<ElementType>): boolean {
-  return listToSearchIn.some( listToSearchInElement =>  matchFilter(listToSearchInElement, elementToMatch));
+export function matchFound<ElementType>(listToSearchIn: Array<ElementType>, elementToMatch: ElementType, matchFilter: MatchFilter<ElementType>): boolean {
+  if (!listToSearchIn || !elementToMatch || !matchFilter) {
+    return false;
+  }
+
+  return listToSearchIn && elementToMatch && matchFilter
+    && listToSearchIn.some( listToSearchInElement =>  matchFilter(listToSearchInElement, elementToMatch));
+}
+
+export function isArray(value: unknown): boolean {
+  return Array.isArray(value);
+}
+
+export function isNotArray(value: unknown): boolean {
+  return !isArray(value);
 }

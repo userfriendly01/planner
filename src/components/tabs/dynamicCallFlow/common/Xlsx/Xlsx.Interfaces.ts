@@ -5,6 +5,7 @@ export interface XlsxJSONRow {
 }
 
 export interface XlsxImporterResults<XlsxRowType, RecordType> {
+  headers?: Array<string>;
   xlsxRows?: Array<XlsxRowType>;
   records?: Array<RecordType>;
   errors: Array<string>;

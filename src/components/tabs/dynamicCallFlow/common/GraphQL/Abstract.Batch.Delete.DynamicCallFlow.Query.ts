@@ -13,7 +13,7 @@ import { AbstractGraphQLQuery } from "./AbstractGraphQL.Query";
  * and action records.
  */
 export abstract class AbstractBatchDeleteDynamicCallFlowQuery<RecordType> extends AbstractGraphQLQuery {
-  protected queryName(): string {
+  queryName(): string {
     return "batchDeletePhoneNumber";
   }
 
@@ -24,7 +24,7 @@ export abstract class AbstractBatchDeleteDynamicCallFlowQuery<RecordType> extend
    *
    * @protected
    */
-  protected queryDefinition(): string {
+  queryDefinition(): string {
     return `
       mutation ${this.queryName()}($input: CallFlowDeleteBatchInput!) {
         ${this.queryName()}(input: $input) {

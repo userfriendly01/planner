@@ -28,7 +28,7 @@ export abstract class AbstractXlsxExporter<XlsxRowType, RecordType> {
     return this.workBooks;
   }
 
-  protected abstract groupRecordsByWorkBookNames(records: Array<RecordType>): Map<string, Array<RecordType>>;
+  abstract groupRecordsByWorkBookNames(records: Array<RecordType>): Map<string, Array<RecordType>>;
 
-  protected abstract convertRecordsToXlsxRows(records: Array<RecordType>): Array<XlsxRowType>;
+  abstract convertRecordsToXlsxRows(records: Array<RecordType>): Array<XlsxRowType>;
 }

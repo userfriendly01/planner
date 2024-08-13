@@ -3,12 +3,12 @@ import { AbstractUpdateRecordQuery } from "components/tabs/dynamicCallFlow/commo
 import { SingleRecordResults } from "components/tabs/dynamicCallFlow/common/GraphQL/AbstractSingleRecord.Query";
 
 class UpdateDynamicPhoneNumberRecordQuery extends AbstractUpdateRecordQuery {
-  protected queryName(): string {
+  queryName(): string {
     return "updatePhoneNumber";
   }
 
   //TODO: Need to add more attributes on the update
-  protected queryDefinition(): string {
+  queryDefinition(): string {
     return `
       mutation ${this.queryName()}($input:PhoneNumberInput!) {
             ${this.queryName()}(input:$input) {

@@ -4,15 +4,15 @@ import {
 import { CctSharedCallFlowDb } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
 
 class BatchUpdateLegacyPhoneNumberRecordsQuery extends AbstractBatchRecordsQuery {
-  protected batchInputName(): string {
+  batchInputName(): string {
     return "batchFlowUpdateInput";
   }
 
-  protected queryName(): string {
+  queryName(): string {
     return "batchUpdateCctSharedCallFlowDb";
   }
 
-  protected queryDefinition(): string {
+  queryDefinition(): string {
     return `
       mutation ${this.queryName()}($input: CctSharedCallFlowDbBatchUpdateInput!) {
           ${this.queryName()}(input: $input) {

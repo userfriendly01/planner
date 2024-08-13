@@ -1,9 +1,9 @@
-import { env } from "../../../../../globals";
+import { env } from "globals/index";
 import { GraphQLResponse } from "./DynamicCallFlow.Interfaces";
 
 export abstract class AbstractGraphQLQuery {
-  protected abstract queryName(): string;
-  protected abstract queryDefinition(): string;
+  abstract queryName(): string;
+  abstract queryDefinition(): string;
 
   async query<VariableType, GraphQLDataType>(accessToken: string, variables: VariableType): Promise<GraphQLResponse<GraphQLDataType>> {
     const response: Response = await fetch(env.GRAPH_API_URL, {
