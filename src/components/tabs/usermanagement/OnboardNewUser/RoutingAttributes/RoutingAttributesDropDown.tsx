@@ -164,6 +164,30 @@ export const RoutingTeamAttrDropDownOptions: DropdownOption[] = [
   {
     label: "UnlicPartTTEC",
     value: "UnlicPartTTEC"
+  },
+  {
+    label: "SCLP1",
+    value: "SCLP1"
+  },
+  {
+    label: "SCLP2",
+    value: "SCLP2"
+  },
+  {
+    label: "SCLP3",
+    value: "SCLP3"
+  },
+  {
+    label: "SCLP4",
+    value: "SCLP4"
+  },
+  {
+    label: "SCLP5",
+    value: "SCLP5"
+  },
+  {
+    label: "SCLP6",
+    value: "SCLP6"
   }
 ];
 
