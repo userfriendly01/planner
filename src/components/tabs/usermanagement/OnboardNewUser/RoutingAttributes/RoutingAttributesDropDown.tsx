@@ -164,6 +164,10 @@ export const RoutingTeamAttrDropDownOptions: DropdownOption[] = [
   {
     label: "UnlicPartTTEC",
     value: "UnlicPartTTEC"
+  },
+  {
+    label: "Outbound",
+    value: "Outbound"
   }
 ];
 
