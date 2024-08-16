@@ -372,30 +372,6 @@ export const CREATE_ACCESS_GROUP = gql`
   }
 `;
 
-export const GET_USER_SKILLS = gql`
-query getUMUser($identifier: String!) {
-  user: getUMUser(identifier: $identifier) {
-    ttl
-    sid: worker_sid
-    twilio_attributes {
-      profile_id
-      routing {
-        skills
-        levels
-      }
-      default_skills {
-        skills
-        levels
-      }  
-      disabled_skills {
-        skills
-        levels
-      }
-    }
-  }
-}
-`;
-
 
 export const getUMSkills = (
   skillsNextToken?: string,

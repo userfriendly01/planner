@@ -9,8 +9,7 @@ import {
   CREATE_USER,
   GET_USER,
   LIST_USER_RECORDS,
-  UPDATE_USER,
-  GET_USER_SKILLS
+  UPDATE_USER
 }from "globals/graphql";
 import {
   getPaginatedResults,
