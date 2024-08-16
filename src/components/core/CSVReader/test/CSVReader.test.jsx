@@ -28,7 +28,7 @@ describe("CSV reader component", () => {
         self.onload(event);
       });
     });
-    CsvReader(event, mockSetUploadedForm, "FLOW");
+    CsvReader(event, mockSetUploadedForm);
     expect(event.preventDefault).toBeCalledTimes(1);
     expect(readAsArrayBufferMock).toBeCalledTimes(0);
     expect(mockSetUploadedForm).toBeCalledTimes(0);

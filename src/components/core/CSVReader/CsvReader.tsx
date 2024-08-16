@@ -2,9 +2,7 @@ import * as XLSX from "xlsx";
 import { routingFields } from "utils/alohaRoutingUtils";
 import { AddPageFieldConfigProps as AddRoutingFieldConfigProps } from "alohaRouting/AlohaRouting.Interfaces";
 
-type CSVFileType = "FLOW" | "ROUTING" | "DYNFLOW";
-
-const mapValuesToObj=(jsonValues:any, type?:CSVFileType):any=>{
+const mapValuesToObj=(jsonValues:any):any=>{
   let jsonRouteObj={};
   routingFields.map((value:AddRoutingFieldConfigProps)=>{
     if(value.key==="occupancyCheck" || value.key === "routingSteps"){
@@ -26,19 +24,8 @@ const mapValuesToObj=(jsonValues:any, type?:CSVFileType):any=>{
   return jsonRouteObj;
 };
 
-const checkRequiredFields = (requiredFields: string[], obj: any ): string[] => {
-  const errors: Array<string> = [];
-
-  requiredFields.forEach(x => {
-    if(!obj[x]) {
-      errors.push(`* Field ${x} is required.`);
-    }
-  });
-
-  return errors;
-};
-
-export const CsvReader = (e: React.ChangeEvent<HTMLInputElement>, setUploadedForm: any, flowType?:CSVFileType): void => {
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const CsvReader = (e: React.ChangeEvent<HTMLInputElement>, setUploadedForm: any): void => {
   e.preventDefault();
   if (e.target.files) {
     const reader = new FileReader();
@@ -56,7 +43,7 @@ export const CsvReader = (e: React.ChangeEvent<HTMLInputElement>, setUploadedFor
       const headerRows = 1;
       if(typeof json ==="object"){
         setUploadedForm(json.map((r:any) => {
-          const jsonMap = mapValuesToObj(r,flowType);
+          const jsonMap = mapValuesToObj(r);
           return {
             ...jsonMap,
             rowNumber: jsonMap[rowNum] + headerRows
