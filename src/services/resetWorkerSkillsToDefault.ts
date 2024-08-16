@@ -1,5 +1,5 @@
 import { UMUser } from 'globals/interfaces'
-import { updateUser, getUserSkills } from './user'
+import { updateUser } from './user'
 import {
     getAttributesToResetDefaultSkills,
     shouldWorkerBeUpdatedToDefaultSkills
