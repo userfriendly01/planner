@@ -1,13 +1,12 @@
-import {
-  CctSharedCallFlowDb, FlowContent
-} from "components/tabs/alohaFlow/AlohaFlow.Interfaces";
 import { CctSharedCallRoutingDb } from "alohaRouting/AlohaRouting.Interfaces";
 import { AlertBarProps } from "globals/interfaces";
 import {
   ADGroupPermission, BrandNameMap, GraphQLErrors
 } from "globals/interfaces";
 import { env } from "globals";
-import { DynamicAction } from "components/tabs/dynamicFlow/DynamicFlow.Interfaces";
+import {
+  CctSharedCallFlowDb, FlowContent
+} from "dynamicCallFlowPhoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
 
 export const initializedAlertBar: AlertBarProps = {
   open: false,
@@ -26,7 +25,7 @@ export const EXPORT_FILE_PREFIX: {
   ROUTING: "routing-rules"
 };
 
-const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb |CctSharedCallRoutingDb>, prefix: string): string => {
+const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb | CctSharedCallRoutingDb>, prefix: string): string => {
   let result: string;
   const columnDelimiter = ",";
   const lineDelimiter = "\n";
@@ -41,7 +40,7 @@ const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb |CctSharedCa
   let flag = false;
   for( let i=0; i<keys.length; i++){
     if(keys[i] === "content"){
-      const arrayStore:CctSharedCallFlowDb = array[0];
+      const arrayStore: CctSharedCallFlowDb = array[0] as CctSharedCallFlowDb;
       contentKeys= Object.keys(arrayStore.content);
       contentKeys.forEach(key=>{
         contentStore.push(key);
@@ -89,7 +88,7 @@ const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb |CctSharedCa
   return result;
 };
 
-export const  downloadCSV = (prefix: string, array:Array<CctSharedCallFlowDb |CctSharedCallRoutingDb | DynamicAction>): JSX.Element => {
+export const  downloadCSV = (prefix: string, array:Array<CctSharedCallFlowDb | CctSharedCallRoutingDb>): JSX.Element => {
   const link: HTMLAnchorElement = document.createElement("a");
   let csv: string = convertArrayOfObjectsToCSV(array, prefix);
   if (csv === null || csv===undefined) { return; }

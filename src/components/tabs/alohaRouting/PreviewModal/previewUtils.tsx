@@ -4,9 +4,8 @@ import {
   dayOfWeek,
   routingFields,
   priority,
-  tfnRoutingGroupAttr
+  tfnRoutingGroupAttr, languageOffer
 } from "utils/alohaRoutingUtils";
-import { languageOffer } from "utils/alohaFlowUtils";
 import {
   PreviewModalAction,
   RoutingDropDownList,
