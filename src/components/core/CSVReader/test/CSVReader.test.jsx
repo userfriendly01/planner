@@ -1,8 +1,5 @@
 import * as XLSX from "xlsx";
-import {
-  CsvReader,
-  validateActionRow
-} from "../CsvReader";
+import { CsvReader } from "../CsvReader";
 
 jest.mock("xlsx",() => ({
   read: jest.fn(),
