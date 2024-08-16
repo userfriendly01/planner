@@ -15,20 +15,24 @@ import {
 } from "context/appContext";
 import { FlexColumn } from "globals/interfaces";
 import { ModalOverlayStatuses } from "globals/interfaces";
+import { UMManager } from "globals/interfaces";
 import { timeouts } from "globals";
 import React, { useState } from "react";
 import { createCalabrioTeam } from "services/calabrio";
 import { logger } from "utils/logger";
+import { getCalabrioTeamName } from "utils/calabrioUtils";
 
 interface TeamModalProps {
-  handleClose: (res: any) => void
+  handleClose: (res: any) => void,
+  selectedManager: Partial<UMManager>,
 }
 
 export const CalabrioTeamModal = (props: TeamModalProps) => {
   const state = useAdminState();
   const dispatch = useAdminDispatch();
-
   const { nNumber } = state.userContext;
+  const calabrio_team_name = getCalabrioTeamName(props.selectedManager);
+
   const {
     groups,
     teams
@@ -36,7 +40,7 @@ export const CalabrioTeamModal = (props: TeamModalProps) => {
   const { handleClose } = props;
 
   const initialNewTeamState: any = {
-    name: null,
+    name: calabrio_team_name,
     parentGroupId: null
   };
   const [ newTeam, setNewTeam ] = useState(initialNewTeamState);
@@ -102,6 +106,7 @@ export const CalabrioTeamModal = (props: TeamModalProps) => {
         </HeaderAndCloseButtonWrapper>
         <FlexColumn>
           <TextField
+            disabled
             label={"New Team Name"}
             value={newTeam.name || ""}
             onChange={(event: any) => {

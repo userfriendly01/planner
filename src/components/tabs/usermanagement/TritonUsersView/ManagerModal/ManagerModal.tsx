@@ -435,7 +435,7 @@ export const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any
             />
             <Modal onClose={() => { return; }} open={isTeamModalOpen}>
               <>
-                <CalabrioTeamModal handleClose={handleCloseTeam}/>
+                <CalabrioTeamModal handleClose={handleCloseTeam} selectedManager={manager}/>
               </>
             </Modal>
           </Wrapper>
