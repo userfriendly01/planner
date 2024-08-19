@@ -188,6 +188,10 @@ export const RoutingTeamAttrDropDownOptions: DropdownOption[] = [
   {
     label: "SCLP6",
     value: "SCLP6"
+  },
+  {
+    label: "Outbound",
+    value: "Outbound"
   }
 ];
 
