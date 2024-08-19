@@ -4,7 +4,7 @@ import {
   formatDateFromExcelDate
 } from "utils/_formatUtils";
 import { fetchUser } from "services/fetchUser";
-import { generateExtension } from "services/checkExtension";
+import { generateExtension } from "utils/checkExtensionUtils";
 import { getE164Number } from "utils/numberUtils";
 import { getOverflowSkillFromProfile } from "utils/usermanagementUtils";
 import {
