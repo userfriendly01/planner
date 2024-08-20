@@ -5,7 +5,6 @@ import {
 } from "globals/interfaces";
 import {
   Skill, SkillFormState,
-  TimeOfDay,
   TimeOfDayRequestObject
 } from "callflowmanagement/Skills.Interfaces";
 import _ from "lodash";
@@ -36,8 +35,8 @@ export const getTargetExpression = (name: string): string => `routing.skills HAS
 export const isTaskQueueError = (skillForm: SkillFormState, name: string): boolean => {
   const skillTargetExpression = getTargetExpression(name);
 
-  return (skillForm.taskQueue.sid && skillForm.taskQueue.sid.length > 0) &&
-    (name && name.length > 0) && skillForm.taskQueue.target_workers !== skillTargetExpression ? true : false;
+  console.warn("FAITH", skillForm.taskQueue, skillTargetExpression);
+  return skillForm.taskQueue.sid?.length > 0 && name?.length > 0 && skillForm.taskQueue.target_workers !== skillTargetExpression;
 };
 
 export const getSkillFormChanges = (originalSkill: Skill, skillForm: SkillFormState) => {
@@ -87,6 +86,7 @@ export const isSkillFormValid = (skills: Skill[], skillForm: SkillFormState, cha
   const isTaskQueueValid = skillForm.taskQueue.isNew ? !!(isNotEmptyString(skillForm.taskQueue.friendly_name) &&
   skillForm.taskQueue.operating_unit_sid) : !!(skillForm.taskQueue.sid && !isTaskQueueError(skillForm, skillForm.name));
 
+  console.warn("Full", skillForm, isFormModeValid, isNameValid, areProfilesSelected, isTaskQueueValid);
   return isFormModeValid && isNameValid && areProfilesSelected && isTaskQueueValid && areTimeOfDaysValid(skillForm.timeOfDays, skillForm.formMode) &&
   typeof skillForm.applicationId === "number" && areLevelsValid;
 };

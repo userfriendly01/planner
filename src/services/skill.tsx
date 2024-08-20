@@ -24,6 +24,18 @@ import {
   UPDATE_SKILL_RELATIONSHIPS
 } from "globals/skill";
 
+const constructLevels = (minimum?: number, maximum?: number) => {
+  if(minimum && maximum){
+    const levels = [];
+    for (let i = minimum; i <= maximum; i++) {
+      levels.push(i);
+    }
+    return levels;
+  } else {
+    return null;
+  }
+};
+
 export const createSkill = async (skillState: SkillState, updatedBy: string): Promise<any> => {
   const skillForm = skillState.skillForm;
   const messages: string[] = [];
@@ -52,15 +64,8 @@ export const createSkill = async (skillState: SkillState, updatedBy: string): Pr
       task_queue_sid: taskQueueSid,
       task_queue_name: taskQueueName
     };
-    if(skillForm.levels?.min?.value && skillForm.levels?.max?.value){
-      const levels = [];
-      for (let i = skillForm.levels.min.value; i <= skillForm.levels.max.value; i++) {
-        levels.push(i);
-      }
-      newGraphSkillBody.levels = levels;
-    } else {
-      newGraphSkillBody.levels = null;
-    }
+
+    newGraphSkillBody.levels = constructLevels(skillForm.levels?.min?.value, skillForm.levels?.max?.value);
 
     const { errors }  = await apolloClient.mutate<{ skill: UMSkill }>({
       mutation: CREATE_SKILL,
@@ -179,15 +184,7 @@ export const editSkill = async (changes: Partial<SkillFormState>, skillState: Sk
       console.log("whats dis", taskQueueSid);
       updateGraphSkillBody.task_queue_sid = taskQueueSid,
       updateGraphSkillBody.task_queue_name = taskQueueName;
-      if(changes.levels?.min?.value && changes.levels?.max?.value){
-        const levels = [];
-        for (let i = changes.levels.min.value; i <= changes.levels.max.value; i++) {
-          levels.push(i);
-        }
-        updateGraphSkillBody.levels = levels;
-      } else {
-        updateGraphSkillBody.levels = null;
-      }
+      updateGraphSkillBody.levels = constructLevels(changes.levels?.min?.value, changes.levels?.max?.value);
 
       const { errors }  = await apolloClient.mutate<{ skill: any }>({
         mutation: UPDATE_SKILL,
@@ -525,7 +522,6 @@ export const loadConsolidatedSkills = async (dispatch: (action: Action) => void)
     const callflowSkillsPromise = getCallflowSkills();
     const graphSkillsPromise = getGraphSkills(dispatch);
 
-    console.log("Faith do we get here?", graphSkillsPromise);
     const [
       taskRouterSkillsResponse,
       callflowSkillsResponse,
@@ -577,7 +573,8 @@ export const loadConsolidatedSkills = async (dispatch: (action: Action) => void)
         discrepancies: [
           `${trSkill.name} is not in the User Management Database`
         ],
-        name: trSkill.name
+        name: trSkill.name,
+        levels: constructLevels(trSkill.minimum, trSkill.maximum)
       };
 
       const matchingCallFlowSkill = callflowSkills.find((cfSkill: CallflowSkill) => cfSkill.skillName === trSkill.name);

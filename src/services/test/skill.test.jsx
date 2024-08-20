@@ -37,17 +37,25 @@ jest.mock("utils/_formatUtils", () => ({
 const mockDispatch = jest.fn();
 const mockCallback = jest.fn();
 
+const mockSkillState = {
+  skillForm: mockSkillFormState,
+  skills: mockSkills
+};
+
+
 const getGraphSkilllsResultNoTokens = {
   skills: {
     items: [{
       pk: "Skill#skillio",
       sk: "Skill#skillio",
-      skill_id: "skillio"
+      skill_id: "skillio",
+      levels: [1,2]
     },
     {
       pk: "Skill#otherskill",
       sk: "Skill#otherskill",
-      skill_id: "otherskill"
+      skill_id: "otherskill",
+      levels: null
     }]
   },
   skillProfiles: {
@@ -83,9 +91,11 @@ describe("createSkill", () => {
     describe("taskqueue is new", () => {
       it("calls axios to create taskqueue, returns 200 status", done => {
         axiosMock.onPost(apiPaths.TASK_QUEUES).replyOnce(200, { data: { sid: "123" }});
+        apolloClient.mutate.mockResolvedValue({ data: "yay!" });
+        apolloClient.mutate.mockResolvedValue({ data: "yay!" });
         axiosMock.onPost(apiPaths.SKILLS_TASKROUTER).replyOnce(200, { data: "yay" });
         axiosMock.onPost(apiPaths.SKILLS_CALLFLOW).replyOnce(200, { data: "yay" });
-        createSkill(mockSkillFormState, "Kaleigh").then(resolvedValue => {
+        createSkill(mockSkillState, "Kaleigh").then(resolvedValue => {
           expect(axiosMock.history.post.length).toEqual(3);
           expect(JSON.parse(axiosMock.history.post[0].data)).toEqual({
             targetWorkers: "routing.skills HAS \"testskill\"",
@@ -111,7 +121,11 @@ describe("createSkill", () => {
             operating_unit_sid: "ou123"
           }
         };
-        createSkill(skillFormNonNewTaskQueue, "Kaleigh").then(resolvedValue => {
+        const skillStateNonNewTaskQueue = {
+          skillForm: skillFormNonNewTaskQueue,
+          skills: mockSkills
+        };
+        createSkill(skillStateNonNewTaskQueue, "Kaleigh").then(resolvedValue => {
           expect(axiosMock.history.post.length).toEqual(2);
           expect(JSON.parse(axiosMock.history.post[0].data)).toEqual({
             name: "testskill",
@@ -121,9 +135,9 @@ describe("createSkill", () => {
           });
           expect(JSON.parse(axiosMock.history.post[1].data)).toEqual({
             skillNme: "testskill",
-            applicationId: 1,
-            vhThreshold: null,
-            vhCallTarget: null,
+            application_id: 1,
+            vh_threshold_tme: null,
+            vh_call_target: null,
             updatedBy: "Kaleigh",
             timeOfDays: skillFormNonNewTaskQueue.timeOfDays
           });
@@ -145,16 +159,20 @@ describe("createSkill", () => {
             operating_unit_sid: "ou123"
           }
         };
-        createSkill(skillFormNonNewTaskQueue, "Kaleigh").then(resolvedValue => {
+        const skillStateNonNewTaskQueue = {
+          skillForm: skillFormNonNewTaskQueue,
+          skills: mockSkills
+        };
+        createSkill(skillStateNonNewTaskQueue, "Kaleigh").then(resolvedValue => {
           expect(axiosMock.history.post.length).toEqual(2);
           expect(JSON.parse(axiosMock.history.post[0].data)).toEqual({
             name: "testskill"
           });
           expect(JSON.parse(axiosMock.history.post[1].data)).toEqual({
             skillNme: "testskill",
-            applicationId: 1,
-            vhThreshold: null,
-            vhCallTarget: null,
+            application_id: 1,
+            vh_threshold_tme: null,
+            vh_call_target: null,
             updatedBy: "Kaleigh",
             timeOfDays: skillFormNonNewTaskQueue.timeOfDays
           });
@@ -171,7 +189,7 @@ describe("createSkill", () => {
         axiosMock.onPost(apiPaths.SKILLS_TASKROUTER).replyOnce(200, { data: "yay" });
         axiosMock.onPost(apiPaths.SKILLS_CALLFLOW).replyOnce(200, { data: "yay" });
         formatErrorMessage.mockReturnValueOnce("boo");
-        createSkill(mockSkillFormState, "Kaleigh").then(resolvedValue => {
+        createSkill(mockSkillState, "Kaleigh").then(resolvedValue => {
           expect(axiosMock.history.post.length).toEqual(3);
           expect(JSON.parse(axiosMock.history.post[0].data)).toEqual({
             targetWorkers: "routing.skills HAS \"testskill\"",
@@ -186,9 +204,9 @@ describe("createSkill", () => {
           });
           expect(JSON.parse(axiosMock.history.post[2].data)).toEqual({
             skillNme: "testskill",
-            applicationId: 1,
-            vhThreshold: null,
-            vhCallTarget: null,
+            application_id: 1,
+            vh_threshold_tme: null,
+            vh_call_target: null,
             updatedBy: "Kaleigh",
             timeOfDays: mockSkillFormState.timeOfDays
           });
@@ -203,10 +221,12 @@ describe("createSkill", () => {
     describe("create flex skill fails, ", () => {
       it("still calls to create skill in callflow, returns 206", done => {
         axiosMock.onPost(apiPaths.TASK_QUEUES).replyOnce(200, { data: { sid: "123" }});
+        apolloClient.mutate.mockResolvedValue({ data: "yay!" });
+        apolloClient.mutate.mockResolvedValue({ data: "yay!" });
         axiosMock.onPost(apiPaths.SKILLS_TASKROUTER).replyOnce(500, { response: "boo" });
         axiosMock.onPost(apiPaths.SKILLS_CALLFLOW).replyOnce(200, { data: "yay" });
         formatErrorMessage.mockReturnValueOnce("boo");
-        createSkill(mockSkillFormState, "Kaleigh").then(resolvedValue => {
+        createSkill(mockSkillState, "Kaleigh").then(resolvedValue => {
           expect(axiosMock.history.post.length).toEqual(3);
           expect(axiosMock.history.post[1].data).toEqual(JSON.stringify({
             name: "testskill",
@@ -226,10 +246,12 @@ describe("createSkill", () => {
     describe("callflow skill fails, ", () => {
       it("returns 206 and messages", done => {
         axiosMock.onPost(apiPaths.TASK_QUEUES).replyOnce(200, { data: { sid: "123" }});
+        apolloClient.mutate.mockResolvedValue({ data: "yay!" });
+        apolloClient.mutate.mockResolvedValue({ data: "yay!" });
         axiosMock.onPost(apiPaths.SKILLS_TASKROUTER).replyOnce(200, { data: "yay" });
         axiosMock.onPost(apiPaths.SKILLS_CALLFLOW).replyOnce(500, { response: "boo" });
         formatErrorMessage.mockReturnValueOnce("boo");
-        createSkill(mockSkillFormState, "Kaleigh").then(resolvedValue => {
+        createSkill(mockSkillState, "Kaleigh").then(resolvedValue => {
           expect(axiosMock.history.post.length).toEqual(3);
           expect(resolvedValue).toEqual({
             status: 206,
@@ -243,20 +265,23 @@ describe("createSkill", () => {
   describe("full failure", () => {
     it("returns 500 and messages", done => {
       axiosMock.onPost(apiPaths.TASK_QUEUES).replyOnce(500, { response: "boo1" });
-      axiosMock.onPost(apiPaths.SKILLS_TASKROUTER).replyOnce(500, { response: "boo2" });
-      axiosMock.onPost(apiPaths.SKILLS_CALLFLOW).replyOnce(500, { response: "boo3" });
+      apolloClient.mutate.mockResolvedValue({ errors: ["boo2"]});
+      axiosMock.onPost(apiPaths.SKILLS_TASKROUTER).replyOnce(500, { response: "boo3" });
+      axiosMock.onPost(apiPaths.SKILLS_CALLFLOW).replyOnce(500, { response: "boo4" });
       formatErrorMessage
         .mockReturnValueOnce("boo1")
         .mockReturnValueOnce("boo2")
-        .mockReturnValueOnce("boo3");
-      createSkill(mockSkillFormState, "Kaleigh").then(resolvedValue => {
+        .mockReturnValueOnce("boo3")
+        .mockReturnValueOnce("boo4");
+      createSkill(mockSkillState, "Kaleigh").then(resolvedValue => {
         expect(axiosMock.history.post.length).toEqual(3);
         expect(resolvedValue).toEqual({
           status: 500,
           messages: [
             "Task Queue failed to create: boo1",
-            "Flex skill failed to create: boo2",
-            "Callflow database failed to create skill: boo3"
+            "Graph failed to create skill: boo2",
+            "Flex skill failed to create: boo3",
+            "Callflow database failed to create skill: boo4"
           ]
         });
         done();
@@ -481,7 +506,7 @@ describe("loadConsolidatedSkills", () => {
               applicationId: 2,
               closedMessage: null,
               flashMessage: "hi",
-              levels: [1,2,3],
+              levels: [1,2],
               skillName: "skillio"
             },
             {
@@ -494,7 +519,7 @@ describe("loadConsolidatedSkills", () => {
               applicationId: 6,
               closedMessage: null,
               flashMessage: "hi",
-              levels: [1],
+              levels: null,
               skillName: "otherskill"
             }
           ]
@@ -540,7 +565,7 @@ describe("loadConsolidatedSkills", () => {
               applicationId: 2,
               closedMessage: null,
               flashMessage: "hi",
-              levels: [1,2,3],
+              levels: [1,2],
               skillName: "skillio"
             },
             {
@@ -553,7 +578,7 @@ describe("loadConsolidatedSkills", () => {
               applicationId: 6,
               closedMessage: null,
               flashMessage: "hi",
-              levels: [1],
+              levels: null,
               skillName: "otherskill"
             }
           ]
@@ -587,7 +612,8 @@ describe("loadConsolidatedSkills", () => {
               items: [{
                 pk: "Skill#anotherskill",
                 sk: "Skill#anotherskill",
-                skill_id: "anotherskill"
+                skill_id: "anotherskill",
+                levels: null
               }]
             }
           }
@@ -616,7 +642,7 @@ describe("loadConsolidatedSkills", () => {
               applicationId: 2,
               closedMessage: null,
               flashMessage: "hi",
-              levels: [1,2,3],
+              levels: [1,2],
               skillName: "skillio"
             },
             {
@@ -629,7 +655,7 @@ describe("loadConsolidatedSkills", () => {
               applicationId: 6,
               closedMessage: null,
               flashMessage: "hi",
-              levels: [1],
+              levels: null,
               skillName: "otherskill"
             },
             {
@@ -642,7 +668,8 @@ describe("loadConsolidatedSkills", () => {
               profileIds: [],
               skillGroupIds: [],
               taskQueueName: undefined,
-              taskQueueSid: undefined
+              taskQueueSid: undefined,
+              levels: null
             }
           ]
         });
@@ -691,7 +718,7 @@ describe("loadConsolidatedSkills", () => {
               applicationId: 2,
               closedMessage: null,
               flashMessage: "hi",
-              levels: [1,2,3],
+              levels: [1,2],
               skillName: "skillio"
             },
             {
@@ -704,7 +731,7 @@ describe("loadConsolidatedSkills", () => {
               applicationId: 6,
               closedMessage: null,
               flashMessage: "hi",
-              levels: [1],
+              levels: null,
               skillName: "otherskill"
             }
           ]
@@ -801,7 +828,8 @@ describe("loadConsolidatedSkills", () => {
               profileIds: [0],
               skillGroupIds: ["123"],
               taskQueueName: undefined,
-              taskQueueSid: undefined
+              taskQueueSid: undefined,
+              levels: [1,2]
             },
             {
               discrepancies: ["Skill exists in the graph but has no relationship to a profile", "otherskill is not in the Legacy Callflow Database", "otherskill is not in the Flex Console"],
@@ -809,7 +837,8 @@ describe("loadConsolidatedSkills", () => {
               profileIds: [],
               skillGroupIds: [],
               taskQueueName: undefined,
-              taskQueueSid: undefined
+              taskQueueSid: undefined,
+              levels: null
             },
             {
               discrepancies: ["dumbskill is not in the User Management Database", "dumbskill is not in the Flex Console"],
@@ -843,7 +872,8 @@ describe("loadConsolidatedSkills", () => {
               profileIds: [0],
               skillGroupIds: ["123"],
               taskQueueName: undefined,
-              taskQueueSid: undefined
+              taskQueueSid: undefined,
+              levels: [1,2]
             },
             {
               discrepancies: ["Skill exists in the graph but has no relationship to a profile", "otherskill is not in the Legacy Callflow Database", "otherskill is not in the Flex Console"],
@@ -851,7 +881,8 @@ describe("loadConsolidatedSkills", () => {
               profileIds: [],
               skillGroupIds: [],
               taskQueueName: undefined,
-              taskQueueSid: undefined
+              taskQueueSid: undefined,
+              levels: null
             },
             {
               discrepancies: ["flexskill is not in the User Management Database", "flexskill is not in the Legacy Callflow Database"],
@@ -890,6 +921,7 @@ describe("loadConsolidatedSkills", () => {
               name: "skillio",
               profileIds: [0],
               skillGroupIds: ["123"],
+              levels: [1,2],
               taskQueueName: undefined,
               taskQueueSid: undefined
             },
@@ -899,6 +931,7 @@ describe("loadConsolidatedSkills", () => {
               profileIds: [],
               skillGroupIds: [],
               taskQueueName: undefined,
+              levels: null,
               taskQueueSid: undefined
             },
             {

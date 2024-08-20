@@ -62,7 +62,7 @@ describe("skillsUtils", () => {
           ...mockSkillFormState,
           name: ""
         };
-        const isValid = isSkillFormValid(mockSkills, skillForm);
+        const isValid = isSkillFormValid(mockSkills, skillForm, {});
         expect(isValid).toEqual(false);
       });
       test("skill name is the same as an existing skill, returns false", () => {
@@ -70,7 +70,7 @@ describe("skillsUtils", () => {
           ...mockSkillFormState,
           name: "aisgL1"
         };
-        const isValid = isSkillFormValid(mockSkills, skillForm);
+        const isValid = isSkillFormValid(mockSkills, skillForm, {});
         expect(isValid).toEqual(false);
       });
       test("no profile selected, returns false", () => {
@@ -78,7 +78,7 @@ describe("skillsUtils", () => {
           ...mockSkillFormState,
           profileIds: []
         };
-        const isValid = isSkillFormValid(mockSkills, skillForm);
+        const isValid = isSkillFormValid(mockSkills, skillForm, {});
         expect(isValid).toEqual(false);
       });
       test("min level selected, but no max, returns false", () => {
@@ -89,7 +89,7 @@ describe("skillsUtils", () => {
             max: ""
           }
         };
-        const isValid = isSkillFormValid(mockSkills, skillForm);
+        const isValid = isSkillFormValid(mockSkills, skillForm, {});
         expect(isValid).toEqual(false);
       });
       test("max level selected, but no min, returns false", () => {
@@ -100,7 +100,7 @@ describe("skillsUtils", () => {
             max: 3
           }
         };
-        const isValid = isSkillFormValid(mockSkills, skillForm);
+        const isValid = isSkillFormValid(mockSkills, skillForm, {});
         expect(isValid).toEqual(false);
       });
       describe("taskqueue is new", () => {
@@ -112,7 +112,7 @@ describe("skillsUtils", () => {
               friendly_name: ""
             }
           };
-          const isValid = isSkillFormValid(mockSkills, skillForm);
+          const isValid = isSkillFormValid(mockSkills, skillForm, {});
           expect(isValid).toEqual(false);
         });
         test("no operating unit selected, returns false", () => {
@@ -124,7 +124,7 @@ describe("skillsUtils", () => {
               operating_unit_sid: null
             }
           };
-          const isValid = isSkillFormValid(mockSkills, skillForm);
+          const isValid = isSkillFormValid(mockSkills, skillForm, {});
           expect(isValid).toEqual(false);
         });
       });
@@ -138,7 +138,7 @@ describe("skillsUtils", () => {
               sid: ""
             }
           };
-          const isValid = isSkillFormValid(mockSkills, skillForm);
+          const isValid = isSkillFormValid(mockSkills, skillForm, {});
           expect(isValid).toEqual(false);
         });
         test("there is a taskqueue error, returns false", () => {
@@ -152,7 +152,7 @@ describe("skillsUtils", () => {
               target_workers: "routing.skills HAS \"boo\""
             }
           };
-          const isValid = isSkillFormValid(mockSkills, skillForm);
+          const isValid = isSkillFormValid(mockSkills, skillForm, {});
           expect(isValid).toEqual(false);
         });
       });
@@ -161,7 +161,7 @@ describe("skillsUtils", () => {
           ...mockSkillFormState,
           timeOfDays: mockSkillFormState.timeOfDays.slice(1,5)
         };
-        const isValid = isSkillFormValid(mockSkills, skillForm);
+        const isValid = isSkillFormValid(mockSkills, skillForm, {});
         expect(isValid).toEqual(false);
       });
       test("applicationId is not a number", () => {
@@ -169,13 +169,13 @@ describe("skillsUtils", () => {
           ...mockSkillFormState,
           applicationId: "NaN"
         };
-        const isValid = isSkillFormValid(mockSkills, skillForm);
+        const isValid = isSkillFormValid(mockSkills, skillForm, {});
         expect(isValid).toEqual(false);
       });
     });
     describe("returns true", () => {
       test("all required info is there, taskqueue is new, has a good name and ou is selected", () => {
-        const isValid = isSkillFormValid(mockSkills, mockSkillFormState);
+        const isValid = isSkillFormValid(mockSkills, mockSkillFormState, {});
         expect(isValid).toEqual(true);
       });
       test("all required info is there, taskqueue is not new, has a sid and is not erroneous", () => {
@@ -187,7 +187,7 @@ describe("skillsUtils", () => {
             target_workers: "routing.skills HAS \"testskill\""
           }
         };
-        const isValid = isSkillFormValid(mockSkills, skillForm);
+        const isValid = isSkillFormValid(mockSkills, skillForm, {});
         expect(isValid).toEqual(true);
       });
     });
@@ -440,7 +440,6 @@ describe("skillsUtils", () => {
   });
 
   describe ("areSkillsDifferent", () => {
-
     test("should return false when default_skills is not defined", () => {
       const attributes = {
         whatever: "cool",
@@ -632,7 +631,6 @@ describe("skillsUtils", () => {
   });
 
   describe("getValidSkillsObject", () => {
-
     const defaultObject = {
       skills: [],
       levels: {}

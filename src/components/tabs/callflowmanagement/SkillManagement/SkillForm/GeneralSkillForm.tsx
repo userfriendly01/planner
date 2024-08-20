@@ -30,7 +30,7 @@ export const GeneralSkillForm = () => {
   const [ tempField, setTempField ] = React.useState({
     name: skillState.skillForm.name,
     newTaskQueue: skillState.skillForm.taskQueue.isNew ? skillState.skillForm.taskQueue.friendly_name : "",
-    levelToggle: !!skillState.skillForm.levels.min || skillState.skillForm.levels.max
+    levelToggle: !!(skillState.skillForm.levels.min || skillState.skillForm.levels.max)
   });
   const [ levels, setLevels ] = React.useState([]);
   const [ ouOptions, setOuOptions ] = React.useState([]);
@@ -65,7 +65,7 @@ export const GeneralSkillForm = () => {
       setTempField({
         name: skillState.skillForm.name,
         newTaskQueue: skillState.skillForm.taskQueue.isNew ? skillState.skillForm.taskQueue.friendly_name : "",
-        levelToggle: !!skillState.skillForm.levels.min || skillState.skillForm.levels.max
+        levelToggle: !!(skillState.skillForm.levels.min || skillState.skillForm.levels.max)
       });
     }
   }, [skillState.skillForm.formMode]);

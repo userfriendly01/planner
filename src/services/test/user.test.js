@@ -1,5 +1,5 @@
 import {
-  createUser, listUMUsers, getUser, updateUser, listUMUserRecords
+  createUser, listUMUsers, updateUser, listUMUserRecords
 } from "services/user";
 import { apolloClient } from "../../components/core/Auth/SharedGraphAPIProvider";
 import {
@@ -128,12 +128,6 @@ describe("user", () => {
       gqlFunc: apolloClient.mutate,
       name: "createUser",
       args: [{ twilio_attributes: {}}]
-    },
-    {
-      func: getUser,
-      gqlFunc: apolloClient.query,
-      name: "getUser",
-      args: ["WK1234"]
     }
   ])("$name", ({
     func, gqlFunc, args

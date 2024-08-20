@@ -79,24 +79,6 @@ export const listUMUserRecords = async (n_number: string): Promise<UMUser[]> => 
     .sort(sortGraphObjectsByPk);
 };
 
-export const getUser = async (identifier: string): Promise<UMUser> => {
-  const {
-    errors, data
-  }  = await apolloClient.query<{ user: UMUser }>({
-    query: GET_USER,
-    variables: {
-      identifier
-    }
-  });
-
-  if (errors?.length) {
-    logger.error("Failed to fetch user from graph", { errors });
-    throw errors;
-  }
-
-  return data.user;
-};
-
 export const createUser = async (user: Partial<UMUser>): Promise<UMUser> => {
   const {
     errors, data

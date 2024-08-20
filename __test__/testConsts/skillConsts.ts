@@ -1,6 +1,7 @@
 import {
   Skill, SkillFormState, SkillGroup
 } from "callflowmanagement/Skills.Interfaces";
+import { formModes } from "globals/index";
 // import { mockOperatingUnits } from "testUtils"; // This imports as undefined... wth?
 
 export const mockSkillOperatingUnits = [
@@ -89,9 +90,8 @@ export const mockTaskQueues = [
   }
 ];
 
-
-
 export const mockSkillFormState = {
+  formMode: formModes.INSERT,
   name: "testskill",
   applicationId: 1,
   taskQueue: {
