@@ -67,5 +67,4 @@ export class AddPhoneNumberFormHandler extends AbstractPhoneNumberFormHandler {
     // Add handler does not have delete functionality, but interface requires it.  Just a nuane of having a delete button on the edit form but not shown on the add form.
     return undefined;
   }
-
 }

@@ -18,7 +18,9 @@ import {
 import {
   PhoneNumberXlsxImportValidator
 } from "dynamicCallFlowPhoneNumber/Xlsx/Import/PhoneNumber.Xlsx.Import.Interface";
-import { employeeIdIsNotValid, phoneNumberIsNotValid } from "dynamicCallFlowCommon/GraphQL/Field.Validation.GraphQL";
+import {
+  employeeIdIsNotValid, phoneNumberIsNotValid
+} from "dynamicCallFlowCommon/GraphQL/Field.Validation.GraphQL";
 
 export function buildErrorMessage(dialedPhoneNumber: string, message: string): string {
   return `Dialed Phone Number[${dialedPhoneNumber}] ${message}`;
@@ -96,8 +98,10 @@ export abstract class PhoneNumberXlsxImportAbstractValidator implements PhoneNum
     //   this.validateRequiredKey(phoneNumberXlsxRow, EMPLOYEE_ID);
     // }
 
-    if (phoneNumberXlsxRow.employeeId && employeeIdIsNotValid(phoneNumberXlsxRow.employeeId)) {
-      this.logInvalidValueMessage(phoneNumberXlsxRow.dialedPhoneNumber, EMPLOYEE_ID, phoneNumberXlsxRow.employeeId);
+    if (Object.keys(phoneNumberXlsxRow).includes(EMPLOYEE_ID) && phoneNumberXlsxRow.employeeId) {
+      if (employeeIdIsNotValid(phoneNumberXlsxRow.employeeId)) {
+        this.logInvalidValueMessage(phoneNumberXlsxRow.dialedPhoneNumber, EMPLOYEE_ID, phoneNumberXlsxRow.employeeId);
+      }
     }
   }
 

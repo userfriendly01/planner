@@ -13,7 +13,6 @@ import {
 } from "dynamicCallFlowPhoneNumber/GraphQL/test/Dynamic.PhoneNumber.MockData";
 import { LegacyPhoneNumberOne } from "dynamicCallFlowPhoneNumber/GraphQL/test/Legacy.PhoneNumber.Record.MockData";
 import { now } from "lodash";
-import { PKEY } from "dynamicCallFlowPhoneNumber/Form/Legacy.PhoneNumber.Form.Fields";
 
 describe("PhoneNumberRecordUtil", () => {
   let mockPhoneNumberRecord: PhoneNumber;
@@ -290,7 +289,7 @@ describe("PhoneNumberRecordUtil", () => {
 
     it("should return correct property value for legacy phone number record", () => {
       mockLegacyPhoneNumberRecord.content.greetingMessages = "Hello";
-      expect(PhoneNumberRecordUtil.getPropertyValue(mockLegacyPhoneNumberRecord, "greetingMessages")).toEqual("Hello");
+      expect(PhoneNumberRecordUtil.getPropertyValue(mockLegacyPhoneNumberRecord, GREETING_MESSAGES)).toEqual("Hello");
     });
 
     it("should validate greeting message to be true", () => {

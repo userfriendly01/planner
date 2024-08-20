@@ -59,18 +59,6 @@ describe("ActionDataGridColumnDef", () => {
   });
 
   describe("ActionDataGridColumnDef", () => {
-    it("shouldHaveSortableActionIdField", () => {
-      const actionIdColumn = ActionDataGridColumnDef.find((column: GridColDef) => column.field === "actionId");
-      expect(actionIdColumn?.sortable).toBe(true);
-    });
-
-    it("shouldHaveCorrectFieldForActionId", () => {
-      const actionIdColumn = ActionDataGridColumnDef.find((column: GridColDef) => column.field === "actionId");
-      expect(actionIdColumn?.field).toBe("actionId");
-    });
-  });
-
-  describe("ActionDataGridColumnDef", () => {
     it("shouldHaveCorrectFieldForActionId", () => {
       const actionIdColumn = ActionDataGridColumnDef.find((column: GridColDef) => column.field === "actionId");
       expect(actionIdColumn?.field).toBe("actionId");

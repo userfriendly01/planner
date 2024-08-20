@@ -1,4 +1,5 @@
 import {
+  idDuplicateEmployeeAssignment,
   PhoneNumberDataGridController,
   phoneNumberMatchFilter
 } from "components/tabs/dynamicCallFlow/phoneNumber/DataGrid/PhoneNumber.DataGrid.Controller";
@@ -13,7 +14,10 @@ import {
   DynamicPhoneNumberTwo,
   mockDynamicPhoneNumberArray
 } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/test/Dynamic.PhoneNumber.MockData";
-import { BrandTypeEnum } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import {
+  BrandTypeEnum,
+  PhoneNumberRecordType
+} from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 import { AlertBarControllerRef } from "dynamicCallFlowCommon/AlertBar.Controller";
 import { DataGridFilterRef } from "dynamicCallFlowCommon/DataGrid/Abstract.DataGrid.Filter";
 
@@ -201,6 +205,176 @@ describe("PhoneNumberDataGridController", () => {
       dataGridController.addRecordsToDataGrid(records);
       dataGridController.removeRecordsFromDataGrid(records);
       expect(dataGridController.dataGridRecords).not.toEqual(expect.arrayContaining(records));
+    });
+  });
+
+  describe("employeeId duplicate assignment", () => {
+    it("shouldReturnTrueWhenDuplicateEmployeeAssignmentExists", () => {
+      const record = {
+        pkey: "123",
+        employeeId: "n001",
+        phoneNumber: "1234567890"
+      } as PhoneNumberRecordType;
+      const sourceRecords = [
+        {
+          pkey: "456",
+          employeeId: "n001",
+          phoneNumber: "0987654321"
+        } as PhoneNumberRecordType
+      ];
+      const result = idDuplicateEmployeeAssignment(record, sourceRecords);
+      expect(result).toBe(true);
+    });
+
+    it("shouldReturnFalseWhenNoDuplicateEmployeeAssignmentExists", () => {
+      const record = {
+        pkey: "123",
+        employeeId: "n001",
+        phoneNumber: "1234567890"
+      } as PhoneNumberRecordType;
+      const sourceRecords = [
+        {
+          pkey: "456",
+          employeeId: "n002",
+          phoneNumber: "0987654321"
+        } as PhoneNumberRecordType
+      ];
+      const result = idDuplicateEmployeeAssignment(record, sourceRecords);
+      expect(result).toBe(false);
+    });
+
+    it("shouldReturnFalseWhenEmployeeIdKeyMissing", () => {
+      const record = {
+        pkey: "123",
+        phoneNumber: "1234567890"
+      } as PhoneNumberRecordType;
+      const sourceRecords = [
+        {
+          pkey: "456",
+          employeeId: "n002",
+          phoneNumber: "0987654321"
+        } as PhoneNumberRecordType
+      ];
+      const result = idDuplicateEmployeeAssignment(record, sourceRecords);
+      expect(result).toBe(false);
+    });
+
+    it("shouldReturnFalseWhenEmployeeIdUndefined", () => {
+      const record = {
+        pkey: "123",
+        employeeId: undefined,
+        phoneNumber: "1234567890"
+      } as PhoneNumberRecordType;
+      const sourceRecords = [
+        {
+          pkey: "456",
+          employeeId: "n002",
+          phoneNumber: "0987654321"
+        } as PhoneNumberRecordType
+      ];
+      const result = idDuplicateEmployeeAssignment(record, sourceRecords);
+      expect(result).toBe(false);
+    });
+
+    it("shouldReturnFalseWhenEmployeeIdNull", () => {
+      const record = {
+        pkey: "123",
+        employeeId: null,
+        phoneNumber: "1234567890"
+      } as PhoneNumberRecordType;
+      const sourceRecords = [
+        {
+          pkey: "456",
+          employeeId: "n002",
+          phoneNumber: "0987654321"
+        } as PhoneNumberRecordType
+      ];
+      const result = idDuplicateEmployeeAssignment(record, sourceRecords);
+      expect(result).toBe(false);
+    });
+
+    it("shouldReturnFalseWhenSourceRecordsIsEmpty", () => {
+      const record = {
+        pkey: "123",
+        employeeId: "n001",
+        phoneNumber: "1234567890"
+      } as PhoneNumberRecordType;
+      const sourceRecords: PhoneNumberRecordType[] = [];
+      const result = idDuplicateEmployeeAssignment(record, sourceRecords);
+      expect(result).toBe(false);
+    });
+
+    it("shouldReturnFalseWhenNoDuplicateEmployeeAssignmentExists", () => {
+      const record = {
+        pkey: "123",
+        employeeId: "n001",
+        phoneNumber: "1234567890"
+      } as PhoneNumberRecordType;
+      const differentRecord = {
+        pkey: "456",
+        employeeId: "n002",
+        phoneNumber: "0987654321"
+      } as PhoneNumberRecordType;
+      dataGridController.addRecordToSourceRecords(differentRecord);
+      const result = idDuplicateEmployeeAssignment(record, dataGridController.sourceRecords);
+      expect(result).toBe(false);
+    });
+
+    it("shouldReturnFalseWhen EmployeeId key missing", () => {
+      const record = {
+        pkey: "123",
+        phoneNumber: "1234567890"
+      } as PhoneNumberRecordType;
+      const differentRecord = {
+        pkey: "456",
+        employeeId: "n002",
+        phoneNumber: "0987654321"
+      } as PhoneNumberRecordType;
+      dataGridController.addRecordToSourceRecords(differentRecord);
+      const result = idDuplicateEmployeeAssignment(record, dataGridController.sourceRecords);
+      expect(result).toBe(false);
+    });
+
+    it("shouldReturnFalseWhen EmployeeId undefined", () => {
+      const record = {
+        pkey: "123",
+        employeeId: undefined,
+        phoneNumber: "1234567890"
+      } as PhoneNumberRecordType;
+      const differentRecord = {
+        pkey: "456",
+        employeeId: "n002",
+        phoneNumber: "0987654321"
+      } as PhoneNumberRecordType;
+      dataGridController.addRecordToSourceRecords(differentRecord);
+      const result = idDuplicateEmployeeAssignment(record, dataGridController.sourceRecords);
+      expect(result).toBe(false);
+    });
+
+    it("shouldReturnFalseWhen EmployeeId null", () => {
+      const record = {
+        pkey: "123",
+        employeeId: null,
+        phoneNumber: "1234567890"
+      } as PhoneNumberRecordType;
+      const differentRecord = {
+        pkey: "456",
+        employeeId: "n002",
+        phoneNumber: "0987654321"
+      } as PhoneNumberRecordType;
+      dataGridController.addRecordToSourceRecords(differentRecord);
+      const result = idDuplicateEmployeeAssignment(record, dataGridController.sourceRecords);
+      expect(result).toBe(false);
+    });
+
+    it("shouldReturnFalseWhenSourceRecordsIsEmpty", () => {
+      const record = {
+        pkey: "123",
+        employeeId: "n001",
+        phoneNumber: "1234567890"
+      } as PhoneNumberRecordType;
+      const result = idDuplicateEmployeeAssignment(record, dataGridController.sourceRecords);
+      expect(result).toBe(false);
     });
   });
 });

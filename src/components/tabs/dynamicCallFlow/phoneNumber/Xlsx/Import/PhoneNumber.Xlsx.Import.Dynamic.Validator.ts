@@ -15,7 +15,6 @@ import { isTrue } from "dynamicCallFlowCommon/Util/Boolean.Util";
 import { ActionTypeEnum } from "dynamicCallFlowCommon/GraphQL/DynamicCallFlow.Interfaces";
 
 export class PhoneNumberXlsxImportDynamicValidator extends PhoneNumberXlsxImportAbstractValidator {
-
   /**
    * Inspects and validates phone number fields specific to dynamic phone numbers.
    * @param dynamicPhoneNumberXlsxRow - The phone number row to inspect.

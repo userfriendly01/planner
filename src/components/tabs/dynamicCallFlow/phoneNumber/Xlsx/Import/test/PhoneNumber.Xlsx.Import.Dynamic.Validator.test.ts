@@ -1,31 +1,22 @@
 import {
-  PhoneNumberXlsxImportAbstractValidator, buildErrorMessage
-} from "dynamicCallFlowPhoneNumber/Xlsx/Import/PhoneNumber.Xlsx.Import.Abstract.Validator";
-import {
   testDynamicPhoneNumberXlsxRow,
-  testMigratingDynamicPhoneNumberXlsxRow, testSelfServiceDynamicPhoneNumberXlsxRow
+  testSelfServiceDynamicPhoneNumberXlsxRow
 } from "dynamicCallFlowPhoneNumber/Xlsx/test/PhoneNumber.Xlsx.MockData.Dynamic.Row";
-import { testLegacyPhoneNumberXlsxRow } from "dynamicCallFlowPhoneNumber/Xlsx/test/PhoneNumber.Xlsx.MockData.Legacy.Row";
 import { deepCopyObject } from "components/tabs/dynamicCallFlow/test/dynamicCallFlow.Testing.Util";
 import { CallFlowTypeEnum } from "../../../GraphQL/Dynamic.PhoneNumber.Interfaces";
-import { ActionTypeEnum } from "dynamicCallFlowCommon/GraphQL/DynamicCallFlow.Interfaces";
-import { PhoneNumberXlsxRow } from "dynamicCallFlowPhoneNumber/Xlsx/PhoneNumber.Xlsx.Interfaces";
 import {
-  BRAND, CALL_FLOW_NAME, CALL_FLOW_TEMPLATE, CALL_FLOW_TYPE,
-  CHANNEL, DIALED_DESCRIPTION,
-  EMPLOYEE_ID, GREETING_MESSAGES,
-  LANGUAGE_OFFER, NEXT_ACTION_ID, NEXT_ACTION_TYPE, PHONE_NUMBER_TYPE, TRANSFER_DESTINATION
+  CALL_FLOW_NAME,
+  CALL_FLOW_TYPE,
+  NEXT_ACTION_ID,
+  NEXT_ACTION_TYPE,
+  TRANSFER_DESTINATION
 } from "dynamicCallFlowPhoneNumber/Form/Dynamic.PhoneNumber.Form.Fields";
 import {
   PhoneNumberXlsxImportDynamicValidator
 } from "dynamicCallFlowPhoneNumber/Xlsx/Import/PhoneNumber.Xlsx.Import.Dynamic.Validator";
 import {
-  PhoneNumberXlsxImportLegacyValidator
-} from "dynamicCallFlowPhoneNumber/Xlsx/Import/PhoneNumber.Xlsx.Import.Legacy.Validator";
-import {
   PhoneNumberXlsxImportValidatorUtil
 } from "dynamicCallFlowPhoneNumber/Xlsx/Import/test/PhoneNumber.Xlsx.Import.Validator.Util";
-import { booleanAsString } from "dynamicCallFlowCommon/Util/Boolean.Util";
 import {
   PhoneNumberXlsxImportValidator
 } from "dynamicCallFlowPhoneNumber/Xlsx/Import/PhoneNumber.Xlsx.Import.Interface";

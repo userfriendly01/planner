@@ -16,6 +16,7 @@ import {
   greetingMessageIsNotValid,
   phoneNumberIsNotValid
 } from "dynamicCallFlowCommon/GraphQL/Field.Validation.GraphQL";
+import { idDuplicateEmployeeAssignment } from "dynamicCallFlowPhoneNumber/DataGrid/PhoneNumber.DataGrid.Controller";
 
 export abstract class AbstractPhoneNumberFormHandler extends AbstractFormHandler<PhoneNumberRecordType> {
   protected getRecordPropertyValue(record: PhoneNumberRecordType, key: string): FieldDataType {
@@ -25,12 +26,16 @@ export abstract class AbstractPhoneNumberFormHandler extends AbstractFormHandler
   protected validatePhoneNumberRecord(record: PhoneNumberRecordType, fieldConfigs: FieldConfigs): void {
     this.validateForm(record, fieldConfigs);
 
-    if (phoneNumberIsNotValid(record[PHONE_NUMBER as keyof PhoneNumberRecordType] as string)) {
+    if (phoneNumberIsNotValid(PhoneNumberRecordUtil.getPhoneNumber(record))) {
       throw new Error(`Phone number is not in the correct format +1##########: ${record[PHONE_NUMBER as keyof PhoneNumberRecordType]}`);
     }
 
-    if (record[EMPLOYEE_ID as keyof PhoneNumberRecordType] && employeeIdIsNotValid(record[EMPLOYEE_ID as keyof PhoneNumberRecordType] as string)) {
-      throw new Error(`Employee ID is not in the correct format n#######: ${record[EMPLOYEE_ID as keyof PhoneNumberRecordType]}`);
+    if (record.employeeId && employeeIdIsNotValid(record.employeeId)) {
+      throw new Error(`Employee ID is not in the correct format n#######: ${record.employeeId}`);
+    }
+
+    if (idDuplicateEmployeeAssignment(record, this.dataGridController.sourceRecords)) {
+      throw new Error(`Employee ID ${record[EMPLOYEE_ID as keyof PhoneNumberRecordType]} is already assigned to a phone number.`);
     }
 
     if (greetingMessageIsNotValid(record[GREETING_MESSAGES as keyof PhoneNumberRecordType] as string)) {

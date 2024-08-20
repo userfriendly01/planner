@@ -26,11 +26,13 @@ const elementOne: TestElement = {
   value: "value1"
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const elementOneNew: TestElement = {
   id: 1,
   value: "newValue"
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const elementOneOld: TestElement = {
   id: 1,
   value: "oldValue"
@@ -46,11 +48,13 @@ const elementThree: TestElement = {
   value: "value3"
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const elementThreeNew: TestElement = {
   id: 3,
   value: "newValue3"
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const elementThreeOld: TestElement = {
   id: 3,
   value: "oldValue3"
@@ -64,7 +68,6 @@ const testElementMatchFilter: MatchFilter<TestElement> = (testElement1: TestElem
 };
 
 describe("Array Util", () => {
-
   describe("stringToArray", () => {
     it("shouldConvertCommaSeparatedStringToArray", () => {
       const result = stringToArray("a,b,c");

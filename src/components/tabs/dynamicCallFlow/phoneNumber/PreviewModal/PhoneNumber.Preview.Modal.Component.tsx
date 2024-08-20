@@ -36,6 +36,8 @@ import {
   PhoneNumberRecordUtil
 } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/PhoneNumber.Record.Util";
 import { DataGridControllerRef } from "dynamicCallFlowCommon/DataGrid/Abstract.DataGrid.Controller";
+import { EMPLOYEE_ID } from "dynamicCallFlowPhoneNumber/Form/Dynamic.PhoneNumber.Form.Fields";
+import { idDuplicateEmployeeAssignment } from "dynamicCallFlowPhoneNumber/DataGrid/PhoneNumber.DataGrid.Controller";
 
 interface PreviewModalParameters<RecordType> {
     isOpen: boolean;
@@ -126,12 +128,28 @@ export const PhoneNumberPreviewModal = ({
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>)=> {
     const xlsxImporterResults = await PhoneNumberXlsxImporter.getInstance().processXlsxUpload(event);
 
+    xlsxImporterResults.errors.push(...checkForDuplicateEmployeeIdAssignments(xlsxImporterResults.records));
+
     if (xlsxImporterResults.errors.length > 0) {
       dataGridController.current.alertBarController.error(xlsxImporterResults.errors.join("\n"));
     } else {
       setModalRecords(xlsxImporterResults.records);
     }
   };
+
+  function checkForDuplicateEmployeeIdAssignments(records: Array<PhoneNumberRecordType>): Array<string> {
+    const errorMessages: Array<string> = [];
+
+    records.forEach((record: PhoneNumberRecordType) => {
+      if (PhoneNumberRecordUtil.getPropertyValue(record, EMPLOYEE_ID)) {
+        if (idDuplicateEmployeeAssignment(record, this.dataGridController.selectedRecords)) {
+          errorMessages.push(`Employee ID ${PhoneNumberRecordUtil.getPropertyValue(record, EMPLOYEE_ID)} is already assigned to a phone number.`);
+        }
+      }
+    });
+
+    return errorMessages;
+  }
 
   function getRowId(row: PhoneNumberRecordType) {
     return PhoneNumberRecordUtil.getPhoneNumber(row);
