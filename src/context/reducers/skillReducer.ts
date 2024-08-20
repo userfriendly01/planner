@@ -156,9 +156,6 @@ export const skillReducer = (state: SkillState, action: Action): SkillState => {
       const skill: Skill = action.payload.skill;
       const taskQueue: Partial<TwilioQueue> = action.payload.taskQueue || {};
 
-      console.log("Faith skill", skill);
-      console.log("Faith taskQueue", taskQueue);
-
       return {
         ...state,
         skillForm: {

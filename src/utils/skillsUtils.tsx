@@ -35,7 +35,6 @@ export const getTargetExpression = (name: string): string => `routing.skills HAS
 export const isTaskQueueError = (skillForm: SkillFormState, name: string): boolean => {
   const skillTargetExpression = getTargetExpression(name);
 
-  console.warn("FAITH", skillForm.taskQueue, skillTargetExpression);
   return skillForm.taskQueue.sid?.length > 0 && name?.length > 0 && skillForm.taskQueue.target_workers !== skillTargetExpression;
 };
 

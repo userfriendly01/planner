@@ -49,26 +49,19 @@ export const GeneralSkillForm = () => {
       label: i.toString(),
       value: i
     }); }
+
     setLevels(lvls);
+
     setOuOptions(skillState.operatingUnits.map(ou => ({
       value: ou.ou_sid,
       label: ou.ou_name
     })));
+
     setProfileOptions(profiles.map(p => ({
       value: p.profile_id,
       label: p.profile_name
     })));
   }, []);
-
-  React.useEffect(() => {
-    if(skillState.skillForm.formMode === formModes.UPDATE){
-      setTempField({
-        name: skillState.skillForm.name,
-        newTaskQueue: skillState.skillForm.taskQueue.isNew ? skillState.skillForm.taskQueue.friendly_name : "",
-        levelToggle: !!(skillState.skillForm.levels.min || skillState.skillForm.levels.max)
-      });
-    }
-  }, [skillState.skillForm.formMode]);
 
   React.useEffect(() => {
     const queues = skillState.taskQueues.map((queue: any) => {
