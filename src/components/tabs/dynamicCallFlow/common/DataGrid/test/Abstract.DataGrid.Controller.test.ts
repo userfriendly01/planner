@@ -1,24 +1,26 @@
-import { AbstractDataGridController } from "dynamicCallFlowCommon/DataGrid/Abstract.DataGrid.Controller";
 import {
-  AlertBarControllerRef,
-  DataGridFilterRef,
+  AbstractDataGridController,
+  DataGridController
+} from "dynamicCallFlowCommon/DataGrid/Abstract.DataGrid.Controller";
+import {
   ReactGridApi
 } from "dynamicCallFlowCommon/DynamicCallFlow.Interfaces";
-import { AlertBarController } from "dynamicCallFlowCommon/AlertBar.Controller";
+import {
+  AlertBarController, AlertBarControllerRef
+} from "dynamicCallFlowCommon/AlertBar.Controller";
+import { DataGridFilterRef } from "dynamicCallFlowCommon/DataGrid/Abstract.DataGrid.Filter";
 
 describe("AbstractDataGridController", () => {
+  const alertBarControllerRef: AlertBarControllerRef = {
+    current: new AlertBarController(jest.fn)
+  };
   let controller: AbstractDataGridController<any>;
   let mockApi: ReactGridApi;
   let mockFilter: DataGridFilterRef<any>;
-  let alertBarController: AlertBarController;
 
   beforeEach(() => {
     mockApi = { current: {}} as ReactGridApi;
     mockFilter = { current: {}} as DataGridFilterRef<any>;
-    alertBarController = new AlertBarController(jest.fn());
-    const alertBarControllerRef = {
-      current: alertBarController
-    } as AlertBarControllerRef;
     controller = new (class extends AbstractDataGridController<any> {
       matchFilter() {
         return (record: any) => record.id === 1;

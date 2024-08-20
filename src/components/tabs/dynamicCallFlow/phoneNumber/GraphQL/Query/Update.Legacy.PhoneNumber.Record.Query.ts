@@ -17,7 +17,7 @@ class UpdateLegacyPhoneNumberRecordQuery extends AbstractUpdateRecordQuery {
   }
 }
 
-const updateLegacyPhoneNumberRecordQuery = new UpdateLegacyPhoneNumberRecordQuery();
+export const updateLegacyPhoneNumberRecordQuery = new UpdateLegacyPhoneNumberRecordQuery();
 
 export async function updateLegacyPhoneNumberRecord(accessToken: string, legacyPhoneNumberRecord: CctSharedCallFlowDb): Promise<SingleRecordResults<CctSharedCallFlowDb>> {
   legacyPhoneNumberRecord.updateTime = new Date().toISOString();

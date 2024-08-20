@@ -13,7 +13,7 @@ import { deleteOppositeRows } from "components/tabs/dynamicCallFlow/phoneNumber/
 export class PhoneNumberPreviewModalHandler extends AbstractPreviewModalHandler<PhoneNumberRecordType> {
   //TODO: May need to check for matching records of the same record type since moving a phone number from legacy to dynamic is ok,
   // but creating a dynamic phone number record when a dynamic record already exists for that phone number is not ok.
-  private hasMatchingRecords(recordsToMatchOn: Array<PhoneNumberRecordType>): boolean {
+  hasMatchingRecords(recordsToMatchOn: Array<PhoneNumberRecordType>): boolean {
     const matchingRecordMessages = generateMatchingRecordMessages(this.dataGridController.sourceRecords, recordsToMatchOn, dynamicAndLegacyPhoneNumberRecordFilter);
 
     if (matchingRecordMessages && matchingRecordMessages.length > 0) {

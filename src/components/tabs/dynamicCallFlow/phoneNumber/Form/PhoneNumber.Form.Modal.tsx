@@ -23,10 +23,11 @@ import {
 } from "components/tabs/dynamicCallFlow/common/Form/Form.Interfaces";
 import { PhoneNumberRecordUtil } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/PhoneNumber.Record.Util";
 import {
+  AlertBarControllerRef,
   AlertBarProps, initialAlertBarProps
 } from "components/tabs/dynamicCallFlow/common/AlertBar.Controller";
 import {
-  AlertBarControllerRef, ReactStateAction
+  ReactStateAction
 } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
 import { DynamicCallFlowPhoneNumberContext } from "components/tabs/dynamicCallFlow/phoneNumber/DynamicCallFlow.PhoneNumber.Container";
 import { ComponentControl } from "components/ComponentControl";

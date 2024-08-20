@@ -1,6 +1,6 @@
 import { FieldOptions } from "components/tabs/dynamicCallFlow/common/Form/AbstractFormFieldOptionsManager";
 import {
-  DataGridFilterRef, ReactSetState
+  MutableRefObject, ReactSetState
 } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
 import { logger } from "utils/logger";
 
@@ -9,6 +9,8 @@ const ID = "id";
 export interface Filter {
   [key: string]: string | number | boolean | Array<string | number | boolean> | undefined | null | Record<string, any> | Record<string, any>[];
 }
+
+export type DataGridFilterRef<RecordType> = MutableRefObject<DataGridFilter<RecordType>>
 
 export interface DataGridFilterModalProps<RecordType> {
   isOpen: boolean;

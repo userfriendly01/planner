@@ -1,18 +1,18 @@
 import {
-  CreateDynamicPhoneNumberRecordQuery
+  createDynamicPhoneNumberRecord,
+  createDynamicPhoneNumberRecordQuery
 } from "dynamicCallFlowPhoneNumber/GraphQL/Query/Create.Dynamic.PhoneNumber.Record.Query";
-
-const accessToken = "testAccessToken";
+import { DynamicPhoneNumberOne } from "dynamicCallFlowPhoneNumber/GraphQL/test/Dynamic.PhoneNumber.MockData";
+import { SingleRecordResults } from "dynamicCallFlowCommon/GraphQL/AbstractSingleRecord.Query";
+import { PhoneNumber } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { GraphQLResponse } from "dynamicCallFlowCommon/GraphQL/DynamicCallFlow.Interfaces";
+import {
+  mockAccessToken, QUERY
+} from "dynamicCallFlowPhoneNumber/GraphQL/Query/test/GraphQL.Query.Testing.Util";
 
 describe("CreateDynamicPhoneNumberRecordQuery", () => {
-  let query: CreateDynamicPhoneNumberRecordQuery;
-
-  beforeAll(() => {
-    query = new CreateDynamicPhoneNumberRecordQuery();
-  });
-
   it("shouldReturnCorrectQueryName", () => {
-    expect(query.queryName()).toBe("createPhoneNumber");
+    expect(createDynamicPhoneNumberRecordQuery.queryName()).toBe("createPhoneNumber");
   });
 
   it("shouldReturnCorrectQueryDefinition", () => {
@@ -23,60 +23,30 @@ describe("CreateDynamicPhoneNumberRecordQuery", () => {
           phoneNumberType
         }
       }`;
-    expect(query.queryDefinition().replace(/\s+/g, " ")).toBe(expectedDefinition.replace(/\s+/g, " "));
+    expect(createDynamicPhoneNumberRecordQuery.queryDefinition().replace(/\s+/g, " ")).toBe(expectedDefinition.replace(/\s+/g, " "));
   });
 
-// describe("createDynamicPhoneNumberRecord", () => {
-//   it("shouldCreatePhoneNumberRecordSuccessfully", async () => {
-//     const spyOnCreate = jest.spyOn(CreateDynamicPhoneNumberRecordQuery.prototype, "create");
-//     const mockCreate = jest.spyOn(CreateDynamicPhoneNumberRecordQuery.prototype, "create").mockResolvedValue({
-//       record: {
-//         phoneNumber: "1234567890",
-//         phoneNumberType: "Mobile"
-//       }
-//     });
-//     const result = await createDynamicPhoneNumberRecord(accessToken, DynamicPhoneNumberOne);
-//     expect(result).toEqual({
-//       record: {
-//         phoneNumber: "1234567890",
-//         phoneNumberType: "Mobile"
-//       }
-//     });
-//     mockCreate.mockRestore();
-//   });
-//
-//   it("shouldHandleEmptyDataRequests", async () => {
-//     const mockCreate = jest.spyOn(CreateDynamicPhoneNumberRecordQuery.prototype, "create").mockResolvedValue({
-//       record: {
-//         phoneNumber: "1234567890",
-//         phoneNumberType: "Mobile"
-//       }
-//     });
-//     const result = await createDynamicPhoneNumberRecord(accessToken, DynamicPhoneNumberOne, []);
-//     expect(result).toEqual({
-//       record: {
-//         phoneNumber: "1234567890",
-//         phoneNumberType: "Mobile"
-//       }
-//     });
-//     mockCreate.mockRestore();
-//   });
-//
-//   it("shouldSetCreateTimeAndUpdateTime", async () => {
-//     const mockCreate = jest.spyOn(CreateDynamicPhoneNumberRecordQuery.prototype, "create").mockResolvedValue({
-//       record: {
-//         phoneNumber: "1234567890",
-//         phoneNumberType: "Mobile"
-//       }
-//     });
-//     const accessToken = "testAccessToken";
-//     const phoneNumberRecord = {
-//       phoneNumber: "1234567890",
-//       phoneNumberType: "Mobile"
-//     };
-//     const result = await createDynamicPhoneNumberRecord(accessToken, phoneNumberRecord);
-//     expect(phoneNumberRecord.createTime).toBeDefined();
-//     expect(phoneNumberRecord.updateTime).toBeDefined();
-//     mockCreate.mockRestore();
-//   });
+  it("shouldCreatePhoneNumberRecordSuccessfully", async () => {
+    jest.spyOn(createDynamicPhoneNumberRecordQuery, QUERY).mockReturnValue(Promise.resolve({
+      data: {
+        createPhoneNumber: {
+          phoneNumber: "1234567890",
+          phoneNumberType: "DID"
+        } as PhoneNumber
+      },
+      hasResults: true,
+      errors: []
+    } as GraphQLResponse<SingleRecordResults<PhoneNumber>>));
+
+    const result = await createDynamicPhoneNumberRecord(mockAccessToken, { ...DynamicPhoneNumberOne }, ["classify"]);
+    expect(result).toEqual({
+      alertMsg: "",
+      errors: [],
+      hasError: false,
+      record: {
+        phoneNumber: "1234567890",
+        phoneNumberType: "DID"
+      }
+    });
+  });
 });

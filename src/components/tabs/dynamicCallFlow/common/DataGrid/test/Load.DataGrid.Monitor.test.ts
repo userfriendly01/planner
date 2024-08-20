@@ -1,9 +1,9 @@
 import LoadDataGridMonitor, { DataGridProgressBarInfo } from "dynamicCallFlowCommon/DataGrid/Load.DataGrid.Monitor";
 import {
-  ALERT_BAR_15_SECOND_DURATION, AlertBarController
+  ALERT_BAR_15_SECOND_DURATION, AlertBarController, AlertBarControllerRef
 } from "dynamicCallFlowCommon/AlertBar.Controller";
 import {
-  AlertBarControllerRef, ReactSetState
+  ReactSetState
 } from "dynamicCallFlowCommon/DynamicCallFlow.Interfaces";
 import { MockLocalStorage } from "dynamicCallFlowCommon/test/Window.Mock.Testing.Util";
 

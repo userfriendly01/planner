@@ -25,7 +25,7 @@ class BatchDeleteLegacyPhoneNumberRecordsQuery extends AbstractBatchRecordsQuery
   }
 }
 
-const batchDeleteLegacyPhoneNumberRecordsQuery = new BatchDeleteLegacyPhoneNumberRecordsQuery();
+export const batchDeleteLegacyPhoneNumberRecordsQuery = new BatchDeleteLegacyPhoneNumberRecordsQuery();
 
 export const batchDeleteLegacyPhoneNumberRecords: BatchRecordQuery<CctSharedCallFlowDb> = async (accessToken: string, legacyPhoneNumberRecords: Array<CctSharedCallFlowDb>): Promise<BatchResults<CctSharedCallFlowDb>> => {
   return await batchDeleteLegacyPhoneNumberRecordsQuery.runBatch<string, CctSharedCallFlowDb>(accessToken, legacyPhoneNumberRecords.map((legacyPhoneNumberRecord: CctSharedCallFlowDb) => legacyPhoneNumberRecord.pkey));

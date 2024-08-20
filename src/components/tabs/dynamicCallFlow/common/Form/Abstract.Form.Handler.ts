@@ -5,9 +5,12 @@ import {
   FieldDataType, FieldDataTypeEnum
 } from "./Form.Interfaces";
 import {
-  DataGridControllerRef, ReactStateAction
+  ReactStateAction
 } from "../DynamicCallFlow.Interfaces";
-import { DataGridController } from "components/tabs/dynamicCallFlow/common/DataGrid/Abstract.DataGrid.Controller";
+import {
+  DataGridController,
+  DataGridControllerRef
+} from "components/tabs/dynamicCallFlow/common/DataGrid/Abstract.DataGrid.Controller";
 import { PhoneNumberRecordType } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 import { isNotArray } from "dynamicCallFlowCommon/Util/Array.Util";
 import { isNotBooleanType } from "dynamicCallFlowCommon/Util/Boolean.Util";

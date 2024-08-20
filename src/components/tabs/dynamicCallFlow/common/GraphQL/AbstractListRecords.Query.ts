@@ -1,6 +1,6 @@
 import { AbstractGraphQLQuery } from "./AbstractGraphQL.Query";
-import { LoadDataGridMonitorRef } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
 import { logger } from "utils/logger";
+import { LoadDataGridMonitorRef } from "dynamicCallFlowCommon/DataGrid/Load.DataGrid.Monitor";
 
 export interface ListVariables {
   id?: number;
@@ -29,10 +29,10 @@ export abstract class AbstractListRecordsQuery extends AbstractGraphQLQuery {
         loopCounter++; // used to limit the number of records fetched in local environment to make local testing faster
         const listResults = await this.getList<RecordType>(accessToken, 10000, nextToken);
         nextToken = listResults.nextToken;
-        loadDataGridMonitor.current.addToRecordCount(listResults.items.length);
+        loadDataGridMonitor?.current.addToRecordCount(listResults.items.length);
         entireList = entireList.concat(listResults.items);
-      } while (nextToken); // This can be set in local environment to limit the number of records fetched
-      // } while (nextToken & loopCounter < 3); // This can be set in local environment to limit the number of records fetched
+      } while (nextToken);
+      // } while (nextToken && loopCounter < 1);
     } catch (error) {
       logger.error(`Error in getEntireList: ${error?.message}`, error );
     }

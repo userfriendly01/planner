@@ -9,7 +9,6 @@ import {
 } from "@mui/x-data-grid";
 import { Box } from "@mui/material";
 import { StyledButton } from "components/StyledButton";
-import { DataGridControllerRef } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
 import { FieldOptions } from "components/tabs/dynamicCallFlow/common/Form/AbstractFormFieldOptionsManager";
 import {
   PhoneNumberModalType,
@@ -36,6 +35,7 @@ import {
   newLegacyPhoneNumberRecord,
   PhoneNumberRecordUtil
 } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/PhoneNumber.Record.Util";
+import { DataGridControllerRef } from "dynamicCallFlowCommon/DataGrid/Abstract.DataGrid.Controller";
 
 interface PreviewModalParameters<RecordType> {
     isOpen: boolean;

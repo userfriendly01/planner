@@ -21,7 +21,11 @@ export abstract class AbstractSingleRecordQuery extends AbstractGraphQLQuery {
     let record: RecordType;
 
     if (graphQLResponse.data) {
-      record = graphQLResponse.data[this.queryName() as keyof typeof graphQLResponse.data] as RecordType;
+      if (Object.keys(graphQLResponse.data).includes(this.queryName())) {
+        record = graphQLResponse.data[this.queryName() as keyof typeof graphQLResponse.data] as RecordType;
+      } else {
+        record = graphQLResponse.data as RecordType;
+      }
     }
 
     return this.buildResponse(record, graphQLResponse);

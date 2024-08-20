@@ -6,9 +6,6 @@ import {
   PhoneNumberTypeEnum
 } from "../../GraphQL/Dynamic.PhoneNumber.Interfaces";
 import {
-  employeeIdIsNotValid, phoneNumberIsNotValid
-} from "dynamicCallFlowCommon/GraphQL/Field.Validation.GraphQL";
-import {
   BRAND,
   CALL_FLOW_TEMPLATE,
   CHANNEL,
@@ -21,6 +18,7 @@ import {
 import {
   PhoneNumberXlsxImportValidator
 } from "dynamicCallFlowPhoneNumber/Xlsx/Import/PhoneNumber.Xlsx.Import.Interface";
+import { employeeIdIsNotValid, phoneNumberIsNotValid } from "dynamicCallFlowCommon/GraphQL/Field.Validation.GraphQL";
 
 export function buildErrorMessage(dialedPhoneNumber: string, message: string): string {
   return `Dialed Phone Number[${dialedPhoneNumber}] ${message}`;

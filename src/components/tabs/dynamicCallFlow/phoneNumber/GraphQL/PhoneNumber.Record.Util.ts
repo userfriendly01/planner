@@ -19,6 +19,7 @@ import {
 } from "components/tabs/dynamicCallFlow/phoneNumber/Form/Legacy.PhoneNumber.Form.Fields";
 import { FieldDataType } from "components/tabs/dynamicCallFlow/common/Form/Form.Interfaces";
 import { logger } from "utils/logger";
+import { booleanValue } from "dynamicCallFlowCommon/Util/Boolean.Util";
 
 export const newDynamicPhoneNumberRecord = (): PhoneNumber => {
   return {
@@ -177,7 +178,7 @@ export class PhoneNumberRecordUtil {
 
   public static isValidGreetingMessage(value: string): boolean {
     const reg = new RegExp("^[a-zA-Z0-9,@:=<>./\\-'\" ñáéíóú]+$");
-    return value && !reg.test(value);
+    return value && reg.test(value);
   }
 
   public static setArrayPropertyValue(phoneNumberRecord: PhoneNumberRecordType, key: string, value: string, delimiter = ","): void {
@@ -193,7 +194,7 @@ export class PhoneNumberRecordUtil {
   }
 
   public static setBooleanValue(phoneNumberRecord: PhoneNumberRecordType, key: string, value: string): void {
-    this.setPropertyValue(phoneNumberRecord, key, (value && (value.toLowerCase() === "true" || value.toLowerCase() === "yes" )));
+    this.setPropertyValue(phoneNumberRecord, key, booleanValue(value));
   }
 
   private static isValidPropertyForPhoneNumberRecordType(phoneNumberRecord: PhoneNumberRecordType, key: string): boolean {

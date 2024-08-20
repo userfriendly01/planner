@@ -4,11 +4,24 @@ import {
   ALERT_BAR_15_SECOND_DURATION,
   ALERT_BAR_10_SECOND_DURATION,
   initialAlertBarProps,
-  ALERT_BAR_5_SECOND_DURATION
+  ALERT_BAR_5_SECOND_DURATION, AlertBarControllerRef
 } from "../AlertBar.Controller";
 import { GraphQLError } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
-import { ReactSetState } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
+import {
+  ReactSetState
+} from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
 import { AlertBarProps } from "components/tabs/dynamicCallFlow/common/AlertBar.Controller";
+
+export const mockAlertBarControllerRef: AlertBarControllerRef = {
+  current: {
+    error: jest.fn(),
+    graphQLError: jest.fn(),
+    warning: jest.fn(),
+    info: jest.fn(),
+    success: jest.fn(),
+    closeAlertBar: jest.fn()
+  } as unknown as AlertBarController
+};
 
 describe("AlertBarController", () => {
   let mockSetAlertBarProps: ReactSetState<AlertBarProps>;

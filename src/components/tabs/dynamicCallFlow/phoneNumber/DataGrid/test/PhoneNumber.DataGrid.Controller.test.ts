@@ -4,8 +4,6 @@ import {
 } from "components/tabs/dynamicCallFlow/phoneNumber/DataGrid/PhoneNumber.DataGrid.Controller";
 import { DataGridStateProps } from "components/tabs/dynamicCallFlow/common/DataGrid/DynamicCallFlow.Common.DataGrid";
 import {
-  AlertBarControllerRef,
-  DataGridFilterRef,
   ReactGridApi
 } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
 
@@ -16,6 +14,8 @@ import {
   mockDynamicPhoneNumberArray
 } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/test/Dynamic.PhoneNumber.MockData";
 import { BrandTypeEnum } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+import { AlertBarControllerRef } from "dynamicCallFlowCommon/AlertBar.Controller";
+import { DataGridFilterRef } from "dynamicCallFlowCommon/DataGrid/Abstract.DataGrid.Filter";
 
 jest.mock("components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces");
 jest.mock("@mui/x-data-grid/internals");

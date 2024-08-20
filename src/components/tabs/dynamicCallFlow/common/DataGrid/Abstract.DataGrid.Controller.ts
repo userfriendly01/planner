@@ -1,15 +1,19 @@
 import { DataGridStateProps } from "components/tabs/dynamicCallFlow/common/DataGrid/DynamicCallFlow.Common.DataGrid";
 import {
-  AlertBarControllerRef,
-  DataGridFilterRef,
-  ReactGridApi
+  MutableRefObject, ReactGridApi
 } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
-import { AlertBarController } from "components/tabs/dynamicCallFlow/common/AlertBar.Controller";
+import {
+  AlertBarController, AlertBarControllerRef
+} from "components/tabs/dynamicCallFlow/common/AlertBar.Controller";
 import { GridApiCommunity } from "@mui/x-data-grid/internals";
-import { DataGridFilter } from "components/tabs/dynamicCallFlow/common/DataGrid/Abstract.DataGrid.Filter";
+import {
+  DataGridFilter,
+  DataGridFilterRef
+} from "components/tabs/dynamicCallFlow/common/DataGrid/Abstract.DataGrid.Filter";
 import {
   addElementsToArray,
-  addElementToArray, MatchFilter,
+  addElementToArray,
+  MatchFilter,
   removeElementFromArray,
   removeElementsFromArray,
   updateElementInArray,
@@ -154,3 +158,5 @@ export abstract class AbstractDataGridController<RecordType> implements DataGrid
     this._dataGridRecords = removeElementsFromArray<RecordType>(this.matchFilter(), recordsToRemove, this._dataGridRecords);
   }
 }
+
+export type DataGridControllerRef<RecordType> = MutableRefObject<DataGridController<RecordType>>;

@@ -22,7 +22,7 @@ export class BatchDeleteDynamicPhoneNumberRecordsQuery extends AbstractBatchDele
   }
 }
 
-const batchDeleteDynamicPhoneNumberRecordsQuery = new BatchDeleteDynamicPhoneNumberRecordsQuery();
+export const batchDeleteDynamicPhoneNumberRecordsQuery = new BatchDeleteDynamicPhoneNumberRecordsQuery();
 
 /**
  * This method simply calls the BatchDeletePhoneNumberQuery.runBatch.  It is here in case any common manipulation of the phone number

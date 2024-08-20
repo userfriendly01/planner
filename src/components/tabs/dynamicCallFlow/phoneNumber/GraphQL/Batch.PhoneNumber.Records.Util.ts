@@ -75,7 +75,7 @@ function filterPhoneNumberRecords(phoneNumberRecords: Array<PhoneNumberRecordTyp
  */
 function combineLegacyAndDynamicBatchResults(legacyBatchResults: BatchResults<PhoneNumberRecordType>, dynamicBatchResults: BatchResults<PhoneNumberRecordType>): BatchResults<PhoneNumberRecordType> {
   // Throwing all results into legacyBatchResults rather than creating a new object to copy all results into.  Some
-  legacyBatchResults.errors = legacyBatchResults.errors.concat(dynamicBatchResults.errors);
+  legacyBatchResults.errors = legacyBatchResults.errors?.concat(dynamicBatchResults.errors);
   legacyBatchResults.failure = legacyBatchResults.failure.concat(dynamicBatchResults.failure);
   legacyBatchResults.success = legacyBatchResults.success.concat(dynamicBatchResults.success);
   legacyBatchResults.hasError = dynamicBatchResults.hasError || legacyBatchResults.hasError;

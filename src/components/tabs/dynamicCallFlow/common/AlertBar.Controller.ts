@@ -1,4 +1,4 @@
-import { ReactSetState } from "./DynamicCallFlow.Interfaces";
+import { MutableRefObject, ReactSetState } from "./DynamicCallFlow.Interfaces";
 import { GraphQLError } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
 
 export const OPEN_ALERT_BAR = true;
@@ -78,3 +78,5 @@ export class AlertBarController {
     this._setAlertBarProps(initialAlertBarProps);
   }
 }
+
+export type AlertBarControllerRef = MutableRefObject<AlertBarController>

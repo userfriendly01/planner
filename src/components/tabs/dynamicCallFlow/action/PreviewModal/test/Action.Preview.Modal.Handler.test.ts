@@ -1,19 +1,17 @@
 import { ActionPreviewModalHandler } from "dynamicCallFlowAction/PreviewModal/Action.Preview.Modal.Handler";
 import { HANDLED_SUCCESSFULLY } from "dynamicCallFlowCommon/Preview/Abstract.Preview.Modal.Handler";
 import {
-  AlertBarControllerRef,
-  DataGridControllerRef,
-  DataGridFilterRef,
   ReactGridApi
 } from "dynamicCallFlowCommon/DynamicCallFlow.Interfaces";
 import { ActionRecordType } from "dynamicCallFlowAction/GraphQL/Action.Interfaces";
-import { DataGridController } from "dynamicCallFlowCommon/DataGrid/Abstract.DataGrid.Controller";
-import { AlertBarController } from "dynamicCallFlowCommon/AlertBar.Controller";
+import { DataGridController, DataGridControllerRef } from "dynamicCallFlowCommon/DataGrid/Abstract.DataGrid.Controller";
+import { AlertBarController, AlertBarControllerRef } from "dynamicCallFlowCommon/AlertBar.Controller";
 import { ActionDataGridController } from "dynamicCallFlowAction/DataGrid/Action.DataGrid.Controller";
 import * as batchCreateActionModule from "dynamicCallFlowAction/GraphQL/Batch.Create.Action.Records.Query";
 import { BatchResults } from "dynamicCallFlowCommon/GraphQL/Abstract.BatchRecords.Query";
 import { GraphQLError } from "dynamicCallFlowCommon/GraphQL/DynamicCallFlow.Interfaces";
 import { CallFlowConfigOne } from "dynamicCallFlowAction/GraphQL/test/Action.MockData";
+import { DataGridFilterRef } from "dynamicCallFlowCommon/DataGrid/Abstract.DataGrid.Filter";
 
 async function createMockBatchResults(alertMessage: string, errors: Array<string>, hasError = false): Promise<BatchResults<ActionRecordType>> {
   const graphQLErrors: GraphQLError[] = [];

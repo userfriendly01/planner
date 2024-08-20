@@ -58,7 +58,7 @@ class BatchUpdateLegacyPhoneNumberRecordsQuery extends AbstractBatchRecordsQuery
   }
 }
 
-const batchUpdateLegacyPhoneNumberRecordsQuery = new BatchUpdateLegacyPhoneNumberRecordsQuery();
+export const batchUpdateLegacyPhoneNumberRecordsQuery = new BatchUpdateLegacyPhoneNumberRecordsQuery();
 
 export const batchUpdateLegacyPhoneNumberRecords: BatchRecordQuery<CctSharedCallFlowDb> = async (accessToken: string, legacyPhoneNumberRecords: Array<CctSharedCallFlowDb>): Promise<BatchResults<CctSharedCallFlowDb>> => {
   return await batchUpdateLegacyPhoneNumberRecordsQuery.runBatch<CctSharedCallFlowDb, CctSharedCallFlowDb>(accessToken, legacyPhoneNumberRecords);

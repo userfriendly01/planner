@@ -20,7 +20,7 @@ class DeleteLegacyPhoneNumberRecordQuery extends AbstractDeleteRecordQuery {
   }
 }
 
-const deleteLegacyPhoneNumberRecordQuery = new DeleteLegacyPhoneNumberRecordQuery();
+export const deleteLegacyPhoneNumberRecordQuery = new DeleteLegacyPhoneNumberRecordQuery();
 
 export async function deleteLegacyPhoneNumberRecord(accessToken: string, legacyPhoneNumberRecord: CctSharedCallFlowDb): Promise<SingleRecordResults<CctSharedCallFlowDb>> {
   return await deleteLegacyPhoneNumberRecordQuery.delete<CctSharedCallFlowDbDelInput, CctSharedCallFlowDb>(accessToken, { pkey: legacyPhoneNumberRecord.pkey });

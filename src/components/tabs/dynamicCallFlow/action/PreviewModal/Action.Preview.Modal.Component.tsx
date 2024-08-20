@@ -20,12 +20,13 @@ import {
 } from "components/tabs/dynamicCallFlow/action/DataGrid/Action.DataGrid.Component";
 import { ActionXlsxImporter } from "components/tabs/dynamicCallFlow/action/Xlsx/Action.Xlsx.Importer";
 import {
-  DataGridControllerRef, MutableRefObject
+  MutableRefObject
 } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
 import { DynamicCallFlowActionContext } from "components/tabs/dynamicCallFlow/action/DynamicCallFlow.Action.Container";
 import { ActionPreviewModalHandler } from "components/tabs/dynamicCallFlow/action/PreviewModal/Action.Preview.Modal.Handler";
 import { StyledButton } from "components/StyledButton";
 import { HANDLED_SUCCESSFULLY } from "components/tabs/dynamicCallFlow/common/Preview/Abstract.Preview.Modal.Handler";
+import { DataGridControllerRef } from "dynamicCallFlowCommon/DataGrid/Abstract.DataGrid.Controller";
 
 interface PreviewModalParameters<RecordType> {
   isOpen: boolean;

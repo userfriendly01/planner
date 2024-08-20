@@ -3,8 +3,8 @@ import {
   fireEvent, render
 } from "@testing-library/react";
 import { ActionDataGridFilterModal } from "components/tabs/dynamicCallFlow/action/DataGrid/Action.DataGrid.Filter.Modal";
-import { DataGridFilterRef } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
 import { ActionRecordType } from "components/tabs/dynamicCallFlow/action/GraphQL/Action.Interfaces";
+import { DataGridFilterRef } from "dynamicCallFlowCommon/DataGrid/Abstract.DataGrid.Filter";
 
 jest.mock("components/tabs/dynamicCallFlow/action/DataGrid/Action.DataGrid.Filter", () => ({
   CustomToast: jest.fn()

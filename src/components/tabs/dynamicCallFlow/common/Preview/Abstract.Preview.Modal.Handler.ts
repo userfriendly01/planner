@@ -1,8 +1,7 @@
 // export interface DataGridController<RecordType> {
 //   set
 // }
-import { DataGridControllerRef } from "../../common/DynamicCallFlow.Interfaces";
-import { DataGridController } from "../../common/DataGrid/Abstract.DataGrid.Controller";
+import { DataGridController, DataGridControllerRef } from "../../common/DataGrid/Abstract.DataGrid.Controller";
 
 export const HANDLED_SUCCESSFULLY = true;
 export const HANDLED_UNSUCCESSFULLY = false;

@@ -57,7 +57,7 @@ export class BatchCreateDynamicPhoneNumberRecordsQuery extends AbstractBatchReco
   }
 }
 
-const batchCreateDynamicPhoneNumberRecordsQuery = new BatchCreateDynamicPhoneNumberRecordsQuery();
+export const batchCreateDynamicPhoneNumberRecordsQuery = new BatchCreateDynamicPhoneNumberRecordsQuery();
 
 /**
  * This method simply calls the BatchCreatePhoneNumberQuery.runBatch.  It is here in case any common manipulation of the phone number
@@ -68,16 +68,4 @@ const batchCreateDynamicPhoneNumberRecordsQuery = new BatchCreateDynamicPhoneNum
  */
 export const batchCreateDynamicPhoneNumberRecords: BatchRecordQuery<PhoneNumber> = async (accessToken: string, phoneNumberRecords: Array<PhoneNumber>): Promise<BatchResults<PhoneNumber>> => {
   return await batchCreateDynamicPhoneNumberRecordsQuery.runBatch<PhoneNumber, PhoneNumber>(accessToken, phoneNumberRecords);
-};
-
-/**
- * For dynamic phone number update, really we are just calling the batch create.  When a dynamic phone number is added
- * to DynamoDB, it will overwrite the existing record if there is one since the pkey is the phone number.  This method was
- * created simply for continuity
- * @param {string} accessToken
- * @param {Array<PhoneNumber>} phoneNumberRecords
- * @return {Promise<BatchResults<PhoneNumber>>}
- */
-export const batchUpdateDynamicPhoneNumberRecordsQuery: BatchRecordQuery<PhoneNumber> = async (accessToken: string, phoneNumberRecords: Array<PhoneNumber>): Promise<BatchResults<PhoneNumber>> => {
-  return await batchCreateDynamicPhoneNumberRecords(accessToken, phoneNumberRecords);
 };

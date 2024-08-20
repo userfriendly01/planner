@@ -18,7 +18,7 @@ class UpdateDynamicPhoneNumberRecordQuery extends AbstractUpdateRecordQuery {
   }
 }
 
-const updateDynamicPhoneNumberRecordQuery = new UpdateDynamicPhoneNumberRecordQuery();
+export const updateDynamicPhoneNumberRecordQuery = new UpdateDynamicPhoneNumberRecordQuery();
 
 export async function updateDynamicPhoneNumberRecord(accessToken: string, phoneNumberRecord: PhoneNumber): Promise<SingleRecordResults<PhoneNumber>> {
   phoneNumberRecord.updateTime = Date.now();

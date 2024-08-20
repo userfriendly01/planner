@@ -9,16 +9,14 @@ import {
   AbstractFormHandler, FormOnHandleResponse
 } from "dynamicCallFlowCommon/Form/Abstract.Form.Handler";
 import {
-  AlertBarControllerRef,
-  DataGridControllerRef,
-  DataGridFilterRef,
   ReactGridApi,
   ReactStateAction
 } from "dynamicCallFlowCommon/DynamicCallFlow.Interfaces";
-import { DataGridController } from "dynamicCallFlowCommon/DataGrid/Abstract.DataGrid.Controller";
-import { AlertBarController } from "dynamicCallFlowCommon/AlertBar.Controller";
+import { DataGridController, DataGridControllerRef } from "dynamicCallFlowCommon/DataGrid/Abstract.DataGrid.Controller";
+import { AlertBarController, AlertBarControllerRef } from "dynamicCallFlowCommon/AlertBar.Controller";
 import { ActionDataGridController } from "dynamicCallFlowAction/DataGrid/Action.DataGrid.Controller";
 import { PHONE_NUMBER } from "dynamicCallFlowPhoneNumber/Form/Dynamic.PhoneNumber.Form.Fields";
+import { DataGridFilterRef } from "dynamicCallFlowCommon/DataGrid/Abstract.DataGrid.Filter";
 
 describe("AbstractFormHandler", () => {
   let mockDataGridControllerRef: DataGridControllerRef<any>;

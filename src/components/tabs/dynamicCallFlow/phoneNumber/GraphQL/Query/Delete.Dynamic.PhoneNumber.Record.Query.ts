@@ -22,7 +22,7 @@ export class DeleteDynamicPhoneNumberRecordQuery extends AbstractDeleteRecordQue
   }
 }
 
-const deleteDynamicPhoneNumberRecordQuery = new DeleteDynamicPhoneNumberRecordQuery();
+export const deleteDynamicPhoneNumberRecordQuery = new DeleteDynamicPhoneNumberRecordQuery();
 
 export async function deleteDynamicPhoneNumberRecord(accessToken: string, dynamicPhoneNumber: PhoneNumber): Promise<SingleRecordResults<PhoneNumber>> {
   return await deleteDynamicPhoneNumberRecordQuery.delete<CallFlowDeleteInput, PhoneNumber>(accessToken, { id: dynamicPhoneNumber.phoneNumber });

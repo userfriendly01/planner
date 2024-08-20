@@ -5,8 +5,8 @@ import {
   DynamicPhoneNumberOne,
   mockDynamicPhoneNumberArray
 } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/test/Dynamic.PhoneNumber.MockData";
-import { DataGridControllerRef } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
 import { PhoneNumberRecordUtil } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/PhoneNumber.Record.Util";
+import { DataGridControllerRef } from "dynamicCallFlowCommon/DataGrid/Abstract.DataGrid.Controller";
 
 jest.mock("components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces");
 jest.mock("components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Single.PhoneNumber.Record.Util");

@@ -3,13 +3,12 @@ import {
   actionMatchFilter
 } from "components/tabs/dynamicCallFlow/action/DataGrid/Action.DataGrid.Controller";
 import {
-  AlertBarControllerRef,
-  DataGridFilterRef,
   ReactGridApi
 } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
 import { ACTION_ID } from "dynamicCallFlowAction/Form/ActionFields";
 import { ActionRecordType } from "dynamicCallFlowAction/GraphQL/Action.Interfaces";
-import { AlertBarController } from "dynamicCallFlowCommon/AlertBar.Controller";
+import { AlertBarController, AlertBarControllerRef } from "dynamicCallFlowCommon/AlertBar.Controller";
+import { DataGridFilterRef } from "dynamicCallFlowCommon/DataGrid/Abstract.DataGrid.Filter";
 
 jest.mock("components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces");
 jest.mock("@mui/x-data-grid/internals");

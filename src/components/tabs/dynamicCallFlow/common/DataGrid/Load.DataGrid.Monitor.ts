@@ -1,5 +1,10 @@
-import { AlertBarControllerRef, ReactSetState } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
-import { ALERT_BAR_15_SECOND_DURATION } from "components/tabs/dynamicCallFlow/common/AlertBar.Controller";
+import {
+  MutableRefObject, ReactSetState
+} from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
+import {
+  ALERT_BAR_15_SECOND_DURATION,
+  AlertBarControllerRef
+} from "components/tabs/dynamicCallFlow/common/AlertBar.Controller";
 
 export interface DataGridProgressBarInfo {
   previousRecordCount: number;
@@ -35,3 +40,4 @@ export default class LoadDataGridMonitor {
     }
   }
 }
+export type LoadDataGridMonitorRef = MutableRefObject<LoadDataGridMonitor>;

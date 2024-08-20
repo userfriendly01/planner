@@ -19,7 +19,7 @@ export class CreateDynamicPhoneNumberRecordQuery extends AbstractCreateRecordQue
   }
 }
 
-const createDynamicPhoneNumberRecordQuery = new CreateDynamicPhoneNumberRecordQuery();
+export const createDynamicPhoneNumberRecordQuery = new CreateDynamicPhoneNumberRecordQuery();
 
 //TODO: Check on why dataRequests is a parameter
 export async function createDynamicPhoneNumberRecord(accessToken: string, phoneNumberRecord: PhoneNumber, dataRequests: Array<string>=[]): Promise<SingleRecordResults<PhoneNumber>> {

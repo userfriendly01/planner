@@ -2,9 +2,10 @@ import { CctSharedCallFlowDb } from "components/tabs/dynamicCallFlow/phoneNumber
 import { AbstractCreateRecordQuery } from "components/tabs/dynamicCallFlow/common/GraphQL/Abstract.CreateRecord.Query";
 import { SingleRecordResults } from "components/tabs/dynamicCallFlow/common/GraphQL/AbstractSingleRecord.Query";
 
+export const CREATE_CCT_SHARED_CALL_FLOW_DB_QUERY = "createCctSharedCallFlowDb";
 class CreateLegacyPhoneNumberRecordQuery extends AbstractCreateRecordQuery {
   queryName(): string {
-    return "createCctSharedCallFlowDb";
+    return CREATE_CCT_SHARED_CALL_FLOW_DB_QUERY;
   }
 
   queryDefinition(): string {
@@ -52,7 +53,7 @@ class CreateLegacyPhoneNumberRecordQuery extends AbstractCreateRecordQuery {
   }
 }
 
-const createLegacyPhoneNumberRecordQuery = new CreateLegacyPhoneNumberRecordQuery();
+export const createLegacyPhoneNumberRecordQuery = new CreateLegacyPhoneNumberRecordQuery();
 
 //TODO: Check on why dataRequests is a parameter
 export async function createLegacyPhoneNumberRecord(accessToken: string, legacyPhoneNumberRecord: CctSharedCallFlowDb, dataRequests: Array<string>=[]): Promise<SingleRecordResults<CctSharedCallFlowDb>> {

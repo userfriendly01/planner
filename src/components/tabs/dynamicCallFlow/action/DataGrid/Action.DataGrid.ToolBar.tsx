@@ -6,17 +6,15 @@ import React, {
 } from "react";
 import { SaveAlt } from "@mui/icons-material";
 import { DynamicCallFlowActionContext } from "components/tabs/dynamicCallFlow/action/DynamicCallFlow.Action.Container";
-import { Filter } from "components/tabs/dynamicCallFlow/common/DataGrid/Abstract.DataGrid.Filter";
+import { DataGridFilterRef, Filter } from "components/tabs/dynamicCallFlow/common/DataGrid/Abstract.DataGrid.Filter";
 import { ActionModalTypeEnum } from "components/tabs/dynamicCallFlow/action/DataGrid/Action.DataGrid.Component";
 import {
   DYNAMIC_CALL_FLOW_ROLE, userDoesNotHaveReadWriteAccess
 } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Authentication";
-import {
-  DataGridControllerRef, DataGridFilterRef
-} from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
 import { ActionRecordType } from "components/tabs/dynamicCallFlow/action/GraphQL/Action.Interfaces";
 import { ActionXlsxExporter } from "components/tabs/dynamicCallFlow/action/Xlsx/Action.Xlsx.Exporter";
 import { FilterLabel } from "components/tabs/dynamicCallFlow/action/DataGrid/Action.DataGrid.Filter.Modal";
+import { DataGridControllerRef } from "dynamicCallFlowCommon/DataGrid/Abstract.DataGrid.Controller";
 
 interface ActionDataGridToolBarProps {
   isFilterModalOpen: boolean;
