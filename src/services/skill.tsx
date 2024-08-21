@@ -317,10 +317,7 @@ export const editSkill = async (changes: Partial<SkillFormState>, skillState: Sk
       messages
     };
   } else {
-    return {
-      status: 500,
-      messages
-    };
+    throw messages;
   }
 };
 
@@ -429,7 +426,6 @@ export const loadSkillOptions = async (skills: Skill[], dispatch: (action: Actio
 
     callback();
   } catch(err){
-    console.warn("err", err);
     logger.error("Skill Options Failed to Load", err);
     throw("Skill Options Failed to Load - please refresh Triton and try again");
   }

@@ -357,9 +357,9 @@ describe("editSkill", () => {
       }
     };
     describe("call to create task queue fails", () => {
-      it("returns status 500", done => {
+      it("throws 500", done => {
         axiosMock.onPost(apiPaths.TASK_QUEUES).replyOnce(500, "boo");
-        editSkill(changes, mockSkillState, "Kaleigh").then(resolvedValue => {
+        editSkill(changes, mockSkillState, "Kaleigh").catch(err => {
           expect(apolloClient.mutate).not.toHaveBeenCalled();
           expect(axiosMock.history.post.length).toEqual(1);
           expect(JSON.parse(axiosMock.history.post[0].data)).toEqual({
@@ -367,10 +367,7 @@ describe("editSkill", () => {
             operatingUnitSid: "OU1234",
             friendlyName: "Yay Task Queue"
           });
-          expect(resolvedValue).toEqual({
-            status: 500,
-            messages: ["Task Queue failed to create: boo"]
-          });
+          expect(err).toEqual(["Task Queue failed to create: boo"]);
           done();
         });
       });
@@ -464,14 +461,11 @@ describe("editSkill", () => {
       }
     };
     describe("call to update skill fails", () => {
-      it("returns status 500", done => {
+      it("throws 500", done => {
         apolloClient.mutate.mockResolvedValue({ errors: ["I failed for a legit reason"]});
-        editSkill(changes, mockSkillState, "Kaleigh").then(resolvedValue => {
+        editSkill(changes, mockSkillState, "Kaleigh").catch(err => {
           expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
-          expect(resolvedValue).toEqual({
-            status: 500,
-            messages: ["Graph failed to update skill: boo"]
-          });
+          expect(err).toEqual(["Graph failed to update skill: boo"]);
           done();
         });
       });
@@ -631,16 +625,13 @@ describe("editSkill", () => {
     describe("error thrown updating callflow skill", () => {
       it("returns status 500", done => {
         axiosMock.onPut(`${apiPaths.SKILLS_CALLFLOW}/testskill`).replyOnce(500, "boo");
-        editSkill(changes, mockSkillState, "Kaleigh").then(resolvedValue => {
+        editSkill(changes, mockSkillState, "Kaleigh").catch(err => {
           expect(apolloClient.mutate).toHaveBeenCalledTimes(0);
           expect(JSON.parse(axiosMock.history.put[0].data)).toEqual({
             application_id: 18,
             updatedBy: "Kaleigh"
           });
-          expect(resolvedValue).toEqual({
-            status: 500,
-            messages: ["Callflow database failed to update skill: boo"]
-          });
+          expect(err).toEqual(["Callflow database failed to update skill: boo"]);
           done();
         });
       });

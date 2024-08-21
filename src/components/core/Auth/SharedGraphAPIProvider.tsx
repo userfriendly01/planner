@@ -92,7 +92,8 @@ export const SharedGraphAPIProvider = ({ children }: Props): ReactElement => {
     cache: new InMemoryCache(),
     defaultOptions: {
       query: {
-        errorPolicy: "all"
+        errorPolicy: "all",
+        fetchPolicy: "no-cache"
       },
       mutate: {
         errorPolicy: "all"

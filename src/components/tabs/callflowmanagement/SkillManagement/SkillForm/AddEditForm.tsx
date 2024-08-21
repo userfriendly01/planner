@@ -125,7 +125,7 @@ export const AddEditForm = (props: any) => {
       let response;
       if(isAdd){
         response = await createSkill(skillState, nNumber);
-      }else {
+      } else {
         response = await editSkill(changes, skillState, nNumber);
       }
 
