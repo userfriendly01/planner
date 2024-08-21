@@ -111,7 +111,7 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
   useEffect(() => {
     const loadDataGrid = async()=> {
       alertBarController.current.info("Data loading in progress. Please wait for the complete set of data to be loaded.");
-      let sortedRecords: Array<PhoneNumberRecordType>;
+      let sortedRecords: Array<PhoneNumberRecordType> = [];
       let updatedDataGridProps: DataGridStateProps;
 
       try {

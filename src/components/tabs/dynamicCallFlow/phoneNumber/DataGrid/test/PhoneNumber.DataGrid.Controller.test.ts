@@ -1,13 +1,16 @@
+import { DataGridStateProps } from "components/tabs/dynamicCallFlow/common/DataGrid/DynamicCallFlow.Common.DataGrid";
+import {
+  ReactGridApi
+} from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
 import {
   idDuplicateEmployeeAssignment,
   PhoneNumberDataGridController,
   phoneNumberMatchFilter
 } from "components/tabs/dynamicCallFlow/phoneNumber/DataGrid/PhoneNumber.DataGrid.Controller";
-import { DataGridStateProps } from "components/tabs/dynamicCallFlow/common/DataGrid/DynamicCallFlow.Common.DataGrid";
-import {
-  ReactGridApi
-} from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
 
+import {
+  BrandTypeEnum, PhoneNumberRecordType
+} from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 import {
   DynamicPhoneNumberArray,
   DynamicPhoneNumberOne,
@@ -15,9 +18,9 @@ import {
   mockDynamicPhoneNumberArray
 } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/test/Dynamic.PhoneNumber.MockData";
 import {
-  BrandTypeEnum,
-  PhoneNumberRecordType
-} from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+  LegacyPhoneNumberOne, LegacyPhoneNumberTwo
+} from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/test/Legacy.PhoneNumber.Record.MockData";
+import { deepCopyObject } from "components/tabs/dynamicCallFlow/test/dynamicCallFlow.Testing.Util";
 import { AlertBarControllerRef } from "dynamicCallFlowCommon/AlertBar.Controller";
 import { DataGridFilterRef } from "dynamicCallFlowCommon/DataGrid/Abstract.DataGrid.Filter";
 
@@ -205,6 +208,32 @@ describe("PhoneNumberDataGridController", () => {
       dataGridController.addRecordsToDataGrid(records);
       dataGridController.removeRecordsFromDataGrid(records);
       expect(dataGridController.dataGridRecords).not.toEqual(expect.arrayContaining(records));
+    });
+  });
+
+  describe("phoneNumberMatchFilter", () => {
+    describe("Dynamic phone numbers", () => {
+      it("should return true if phoneNumbers match", () => {
+        expect(phoneNumberMatchFilter(deepCopyObject(DynamicPhoneNumberOne), deepCopyObject(DynamicPhoneNumberOne))).toBe(true);
+      });
+
+      it("should return true if phoneNumbers do not match", () => {
+        expect(phoneNumberMatchFilter(deepCopyObject(DynamicPhoneNumberOne), deepCopyObject(DynamicPhoneNumberTwo))).toBe(false);
+      });
+    });
+
+    describe("Legacy phone numbers", () => {
+      it("should return true if pkeys match", () => {
+        expect(phoneNumberMatchFilter(deepCopyObject(LegacyPhoneNumberOne), deepCopyObject(LegacyPhoneNumberOne))).toBe(true);
+      });
+
+      it("should return true if pkeys do not match", () => {
+        expect(phoneNumberMatchFilter(deepCopyObject(LegacyPhoneNumberOne), deepCopyObject(LegacyPhoneNumberTwo))).toBe(false);
+      });
+    });
+
+    it("should return false if phone numbers are different types", () => {
+      expect(phoneNumberMatchFilter({ pkey: "+10987654321" }, { phoneNumber: "+10987654321" } )).toBe(false);
     });
   });
 

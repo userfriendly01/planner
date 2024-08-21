@@ -1,23 +1,24 @@
-import * as React from "react";
-import Box from "@mui/material/Box";
-import LinearProgress from "@mui/material/LinearProgress";
-import { useEffect } from "react";
-import Typography from "@mui/material/Typography";
+import {
+  Box, LinearProgress, Typography
+} from "@mui/material";
 import { DataGridProgressBarInfo } from "components/tabs/dynamicCallFlow/common/DataGrid/Load.DataGrid.Monitor";
+import React, {
+  useEffect, useState
+} from "react";
 
 export const PHONE_NUMBER_DATA_GRID_PROGRESS_BAR_CACHE_KEY = "PHONE_NUMBER_DATA_GRID_PROGRESS_BAR";
 
 interface PhoneNumberDataGridProgressBarProps {
   recordCount: number;
-  dataGridLoaded: boolean;
+  dataGridLoaded?: boolean;
 }
 
 export const PhoneNumberDataGridProgressBar = ({
   recordCount,
   dataGridLoaded = false
 }: PhoneNumberDataGridProgressBarProps): JSX.Element => {
-  const [progress, setProgress] = React.useState(0);
-  const [previousRecordCount, setPreviousRecordCount] = React.useState(0);
+  const [progress, setProgress] = useState(0);
+  const [previousRecordCount, setPreviousRecordCount] = useState(0);
 
   useEffect(() => {
     const phoneNumberDataGridProgressBarInfo = (JSON.parse(localStorage.getItem(PHONE_NUMBER_DATA_GRID_PROGRESS_BAR_CACHE_KEY)) || {}) as DataGridProgressBarInfo;
