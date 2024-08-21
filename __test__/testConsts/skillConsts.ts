@@ -215,7 +215,7 @@ export const mockSkills: Partial<Skill>[] = [
     name: "bscCbsL2",
     applicationId: 4,
     discrepancies: [],
-    taskQueueSid: "",
+    taskQueueSid: "WQ6a319ba98220d95cae470f878bc0f4fe",
     taskQueueName: "bsc Cbs L2",
     skillGroupIds: [],
     profileIds: [10,12],

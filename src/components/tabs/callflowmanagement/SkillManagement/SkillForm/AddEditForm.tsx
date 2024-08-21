@@ -75,7 +75,7 @@ export const AddEditForm = (props: any) => {
         type: skillActions.SET_UPDATE_SKILL_FORM,
         payload: {
           skill,
-          taskQueue: taskQueues.find((t: TwilioQueue) => t.sid === skill.taskQueueSid)
+          taskQueue: taskQueues.find((t: TwilioQueue) => t.sid === skill?.taskQueueSid)
         }
       });
     }
