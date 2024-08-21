@@ -39,12 +39,12 @@ export const isTaskQueueError = (skillForm: SkillFormState, name: string): boole
 };
 
 export const getSkillFormChanges = (originalSkill: Skill, skillForm: SkillFormState) => {
-  const changes: any = [];
+  const changes: any = {};
   if(JSON.stringify(originalSkill.profileIds?.sort()) !== JSON.stringify(skillForm.profileIds?.sort())) { changes["profileIds"] = skillForm.profileIds; }
 
   if(originalSkill.taskQueueSid !== skillForm.taskQueue?.sid || skillForm.taskQueue.isNew) { changes["taskQueue"] = skillForm.taskQueue; }
 
-  if((!originalSkill.levels?.length && (skillForm.levels?.min?.value || skillForm.levels?.max?.value))) { changes["levels"] = skillForm.levels; }
+  if((!originalSkill.levels?.length && (skillForm.levels?.min?.value && skillForm.levels?.max?.value))) { changes["levels"] = skillForm.levels; }
   if((originalSkill.levels?.length && originalSkill.levels[0] !== skillForm.levels?.min?.value) || (originalSkill.levels?.length && originalSkill.levels[originalSkill.levels.length - 1] !== skillForm.levels?.max?.value)) { changes["levels"] = skillForm.levels; }
 
   if(originalSkill.applicationId !== skillForm.applicationId) { changes["applicationId"] = skillForm.applicationId; }
@@ -66,8 +66,6 @@ export const getSkillFormChanges = (originalSkill: Skill, skillForm: SkillFormSt
   if(originalSkill.discrepancies.some((d: string) => d.includes("does not match the task queue"))){ changes["taskQueue"] = skillForm.taskQueue; }
   if(originalSkill.discrepancies.some((d: string) => d.includes("is not in the Flex Console"))){ changes["levels"] = skillForm.levels; }
 
-
-  console.log("Edit Form Changes: ", changes);
   return changes;
 };
 
@@ -85,7 +83,6 @@ export const isSkillFormValid = (skills: Skill[], skillForm: SkillFormState, cha
   const isTaskQueueValid = skillForm.taskQueue.isNew ? !!(isNotEmptyString(skillForm.taskQueue.friendly_name) &&
   skillForm.taskQueue.operating_unit_sid) : !!(skillForm.taskQueue.sid && !isTaskQueueError(skillForm, skillForm.name));
 
-  console.warn("Full", skillForm, isFormModeValid, isNameValid, areProfilesSelected, isTaskQueueValid);
   return isFormModeValid && isNameValid && areProfilesSelected && isTaskQueueValid && areTimeOfDaysValid(skillForm.timeOfDays, skillForm.formMode) &&
   typeof skillForm.applicationId === "number" && areLevelsValid;
 };

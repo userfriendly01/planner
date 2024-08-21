@@ -6,10 +6,12 @@ import {
   formatWorkerAttributeSkillsToString,
   identifyImpactedWorkers,
   isSkillFormValid,
-  isTaskQueueError
+  isTaskQueueError,
+  getSkillFormChanges
 } from "../skillsUtils";
 import {
-  mockSkillFormState, mockSkills, render
+  initialSkillFormState,
+  mockSkillFormState, mockSkills, mockTaskQueues, render
 } from "testUtils";
 
 describe("skillsUtils", () => {
@@ -52,6 +54,229 @@ describe("skillsUtils", () => {
       };
       const result = isTaskQueueError(skillFormState, "");
       expect(result).toEqual(false);
+    });
+  });
+
+  describe("getSkillFormChanges", () => {
+    const taskQueue = mockTaskQueues[0];
+    const originalSkill = {
+      ...mockSkills[0],
+      taskQueueSid: taskQueue.sid,
+      taskQueueName: taskQueue.friendly_name
+    };
+    const skillForm = {
+      ...initialSkillFormState,
+      name: mockSkills[0],
+      levels: {
+        min: { value: 1 },
+        max: { value: 3 }
+      },
+      applicationId: 0,
+      taskQueue: {
+        isNew: false,
+        target_workers: taskQueue.target_workers,
+        sid: taskQueue.sid,
+        friendly_name: taskQueue.friendly_name,
+        operating_unit_sid: taskQueue.operating_unit_sid
+      },
+      profileIds: mockSkills[0].profileIds,
+      vhCallTarget: mockSkills[0].vhCallTarget,
+      vhThreshold: mockSkills[0].vhThreshold,
+      time: mockSkills[0].timeOfDays
+    };
+
+    describe("no changes", () => {
+      test("empty array is returned", () => {
+        const result = getSkillFormChanges(originalSkill, skillForm);
+        expect(result).toStrictEqual({});
+      });
+    });
+    describe("profile changes", () => {
+      test("should include profileIds on the changes array", () => {
+        const updatedSkillForm = {
+          ...skillForm,
+          profileIds: [14]
+        };
+        const result = getSkillFormChanges(originalSkill, updatedSkillForm);
+        expect(result).toStrictEqual({
+          profileIds: [14]
+        });
+      });
+    });
+    describe("taskQueue changes", () => {
+      describe("taskqueue sid doesnt match", () => {
+        test("should include taskQueue on the changes array", () => {
+          const updatedSkillForm = {
+            ...skillForm,
+            taskQueue: {
+              ...skillForm.taskQueue,
+              sid: "NewSid"
+            }
+          };
+          const result = getSkillFormChanges(originalSkill, updatedSkillForm);
+          expect(result).toStrictEqual({
+            taskQueue: {
+              ...skillForm.taskQueue,
+              sid: "NewSid"
+            }
+          });
+        });
+      });
+      describe("taskQueue isNew is true", () => {
+        test("should include taskQueue on the changes array", () => {
+          const updatedSkillForm = {
+            ...skillForm,
+            taskQueue: {
+              ...skillForm.taskQueue,
+              isNew: true
+            }
+          };
+          const result = getSkillFormChanges(originalSkill, updatedSkillForm);
+          expect(result).toStrictEqual({
+            taskQueue: {
+              ...skillForm.taskQueue,
+              isNew: true
+            }
+          });
+        });
+      });
+    });
+    describe("levels changes", () => {
+      describe("original skill has levels", () => {
+        test("should include taskQueue on the changes array", () => {
+          const updatedSkillForm = {
+            ...skillForm,
+            levels: {
+              min: { value: 1 },
+              max: { value: 8 }
+            }
+          };
+          const result = getSkillFormChanges(originalSkill, updatedSkillForm);
+          expect(result).toStrictEqual({
+            levels: {
+              min: { value: 1 },
+              max: { value: 8 }
+            }
+          });
+        });
+      });
+      describe("original skill does not have levels", () => {
+        test("should include taskQueue on the changes array", () => {
+          const updatedOriginalSkill = {
+            ...originalSkill,
+            levels: null
+          };
+          const updatedSkillForm = {
+            ...skillForm,
+            levels: {
+              min: { value: 1 },
+              max: { value: 8 }
+            }
+          };
+          const result = getSkillFormChanges(updatedOriginalSkill, updatedSkillForm);
+          expect(result).toStrictEqual({
+            levels: {
+              min: { value: 1 },
+              max: { value: 8 }
+            }
+          });
+        });
+      });
+    });
+    describe("applicationId changes", () => {
+      test("should include applicationId on the changes array", () => {
+        const updatedSkillForm = {
+          ...skillForm,
+          applicationId: 8
+        };
+        const result = getSkillFormChanges(originalSkill, updatedSkillForm);
+        expect(result).toStrictEqual({
+          applicationId: 8
+        });
+      });
+    });
+    describe("vhCallTarget changes", () => {
+      test("should include vhCallTarget on the changes array", () => {
+        const updatedSkillForm = {
+          ...skillForm,
+          vhCallTarget: "123456"
+        };
+        const result = getSkillFormChanges(originalSkill, updatedSkillForm);
+        expect(result).toStrictEqual({
+          vhCallTarget: "123456"
+        });
+      });
+    });
+    describe("vhThreshold changes", () => {
+      test("should include vhThreshold on the changes array", () => {
+        const updatedSkillForm = {
+          ...skillForm,
+          vhThreshold: "123456"
+        };
+        const result = getSkillFormChanges(originalSkill, updatedSkillForm);
+        expect(result).toStrictEqual({
+          vhThreshold: "123456"
+        });
+      });
+    });
+    describe("timeOfDays changes", () => {
+      test("should include timeOfDays on the changes array", () => {
+        const updatedSkillForm = {
+          ...skillForm,
+          timeOfDays: [
+            {
+              timeOfDayId: 1,
+              vhTimeOfDayId: 2,
+              dayOfWeekId: 1
+            }
+          ]
+        };
+        const result = getSkillFormChanges(originalSkill, updatedSkillForm);
+        expect(result).toStrictEqual({
+          timeOfDays: [
+            {
+              timeOfDayId: 1,
+              vhTimeOfDayId: 2,
+              dayOfWeekId: 1
+            }
+          ]
+        });
+      });
+    });
+    describe("discrepancies require changes", () => {
+      describe("taskQueue doesnt match", () => {
+        test("should include taskQueue on the changes array", () => {
+          const updatedOriginalSkill = {
+            ...originalSkill,
+            discrepancies: ["Skill does not match the task queue"]
+          };
+          const result = getSkillFormChanges(updatedOriginalSkill, skillForm);
+          expect(result).toStrictEqual({
+            taskQueue: {
+              isNew: false,
+              target_workers: "routing.skills HAS \"466\"",
+              sid: "WQda5066ddff9e0eebf2f168e40d98cc19",
+              friendly_name: "NI Billing & Collections",
+              operating_unit_sid: "OU64bd089e13818331f359af3ba668ac3c"
+            }
+          });
+        });
+      });
+      describe("skill isnt in the flex console", () => {
+        test("should include levels on the changes array", () => {
+          const updatedOriginalSkill = {
+            ...originalSkill,
+            discrepancies: ["Skill is not in the Flex Console"]
+          };
+          const result = getSkillFormChanges(updatedOriginalSkill, skillForm);
+          expect(result).toStrictEqual({
+            "levels": {
+              "max": { "value": 3 },
+              "min": { "value": 1 }
+            }
+          });
+        });
+      });
     });
   });
 

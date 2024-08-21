@@ -152,14 +152,13 @@ export const createSkill = async (skillState: SkillState, updatedBy: string): Pr
 
 export const editSkill = async (changes: Partial<SkillFormState>, skillState: SkillState, updatedBy: string): Promise<any> => {
   const messages: string[] = [];
-  const changesInclude = (change: any[]) => change.some((c: any) => c !== undefined);
   let updateCount = 0;
   const skillName = skillState.skillForm.name;
 
   let taskQueueSid = changes.taskQueue?.sid;
   const taskQueueName = changes.taskQueue?.friendly_name;
 
-  if(changesInclude([changes.taskQueue ]) && changes.taskQueue?.isNew){
+  if(changes.taskQueue && changes.taskQueue?.isNew){
     const newTaskQueuebody = {
       targetWorkers: getTargetExpression(skillState.skillForm.name),
       operatingUnitSid: changes.taskQueue.operating_unit_sid,
@@ -177,11 +176,10 @@ export const editSkill = async (changes: Partial<SkillFormState>, skillState: Sk
     }
   }
 
-  if(changesInclude([changes.taskQueue, changes.levels])){
+  if(changes.taskQueue || changes.levels){
     try {
       updateCount ++;
       const updateGraphSkillBody: any = {};
-      console.log("whats dis", taskQueueSid);
       updateGraphSkillBody.task_queue_sid = taskQueueSid,
       updateGraphSkillBody.task_queue_name = taskQueueName;
       updateGraphSkillBody.levels = constructLevels(changes.levels?.min?.value, changes.levels?.max?.value);
@@ -224,7 +222,7 @@ export const editSkill = async (changes: Partial<SkillFormState>, skillState: Sk
     }
   }
 
-  if(changesInclude([changes.profileIds])){
+  if(changes.profileIds){
     updateCount ++;
     const existingSkill = skillState.skills.find((s: Skill) => s.name === skillName);
     const newProfiles: number[] = changes.profileIds?.filter((id: number) => !existingSkill.profileIds?.includes(id)) || [];
@@ -261,7 +259,7 @@ export const editSkill = async (changes: Partial<SkillFormState>, skillState: Sk
     }
   }
 
-  if(changesInclude([changes.levels])){
+  if(changes.levels){
     try {
       updateCount ++;
       const updateFlexSkillBody: any = {};
@@ -282,14 +280,14 @@ export const editSkill = async (changes: Partial<SkillFormState>, skillState: Sk
     }
   }
 
-  if(changesInclude([changes.applicationId, changes.timeOfDays, changes.vhCallTarget, changes.vhThreshold]) ){
+  if(changes.applicationId || changes.timeOfDays || changes.vhCallTarget || changes.vhThreshold){
     try {
       updateCount ++;
       const updateCallflowSkillBody: any = { updatedBy };
-      if(changesInclude([changes.applicationId])){ updateCallflowSkillBody.application_id = changes.applicationId; }
-      if(changesInclude([changes.vhThreshold])){ updateCallflowSkillBody.vh_threshold_tme = changes.vhThreshold; }
-      if(changesInclude([changes.vhCallTarget])){ updateCallflowSkillBody.vh_call_target = changes.vhCallTarget; }
-      if(changesInclude([changes.timeOfDays])){ updateCallflowSkillBody.timeOfDays = changes.timeOfDays; }
+      if(changes.applicationId){ updateCallflowSkillBody.application_id = changes.applicationId; }
+      if(changes.vhThreshold){ updateCallflowSkillBody.vh_threshold_tme = changes.vhThreshold; }
+      if(changes.vhCallTarget){ updateCallflowSkillBody.vh_call_target = changes.vhCallTarget; }
+      if(changes.timeOfDays){ updateCallflowSkillBody.timeOfDays = changes.timeOfDays; }
 
       await myAxios.put(`${apiPaths.SKILLS_CALLFLOW}/${skillName}`, updateCallflowSkillBody);
     } catch(error){

@@ -63,6 +63,28 @@ export const GeneralSkillForm = () => {
     })));
   }, []);
 
+
+  /*
+  Looking for PR feedback, I dont like this. 
+    Details:
+      ~ When this form is rendered, it runs the reducer action to set the update form state.
+      ~ The initial render (useEffect above) races that form update and loses, the form is not updated yet on initial render and the name field is blank & formmode is defaulted to INSERT
+      ~ Since we're using these form fields inside a React useState default value (tempfields) they dont auto update when the state does.
+        It sets it to the initial default and then never sees any changes unless you call setTempStates
+      ~ Because of that ^ we have to add this use effect below, it waits for the formMode to be set, then the name is set, then it sets it to the temp field - fine works
+      ~ I accept that logic but wonder if there's another way to accomplish this
+      ~ The reason these are temp fields is because updating the form on each character change slows perfomance down to a noticable delay while typing
+  */
+  React.useEffect(() => {
+    if(skillState.skillForm.formMode === formModes.UPDATE){
+      setTempField({
+        name: skillState.skillForm.name,
+        newTaskQueue: skillState.skillForm.taskQueue.isNew ? skillState.skillForm.taskQueue.friendly_name : "",
+        levelToggle: !!(skillState.skillForm.levels.min || skillState.skillForm.levels.max)
+      });
+    }
+  }, [skillState.skillForm.formMode]);
+
   React.useEffect(() => {
     const queues = skillState.taskQueues.map((queue: any) => {
       return {

@@ -24,7 +24,7 @@ jest.mock("uuid", () => ({
 beforeAll(() => {
   console.log = jest.fn();
   console.info = jest.fn();
-  console.warn = jest.fn();
+  // console.warn = jest.fn();
   console.error = jest.fn();
 });
 
