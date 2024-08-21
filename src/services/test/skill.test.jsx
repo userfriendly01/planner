@@ -2,7 +2,8 @@ import MockAdapter from "axios-mock-adapter";
 import { myAxios } from "utils/myAxios";
 import { apiPaths } from "globals";
 import {
-  createSkill, loadConsolidatedSkills, loadSkillOptions, deleteSkill
+  createSkill, loadConsolidatedSkills, loadSkillOptions, deleteSkill,
+  editSkill
 } from "../skill";
 import { getOperatingUnits } from "services/operatingUnits";
 import { getTaskQueues } from "services/taskQueues";
@@ -218,6 +219,59 @@ describe("createSkill", () => {
         });
       });
     });
+    describe("graph skill fails, ", () => {
+      it("returns 206 and messages", done => {
+        axiosMock.onPost(apiPaths.TASK_QUEUES).replyOnce(200, { data: { sid: "123" }});
+        apolloClient.mutate.mockResolvedValue({ errors: ["boo"]});
+        axiosMock.onPost(apiPaths.SKILLS_TASKROUTER).replyOnce(200, { data: "yay" });
+        axiosMock.onPost(apiPaths.SKILLS_CALLFLOW).replyOnce(200, { data: "yay" });
+        formatErrorMessage.mockReturnValueOnce("boo");
+        createSkill(mockSkillState, "Kaleigh").then(resolvedValue => {
+          expect(axiosMock.history.post.length).toEqual(3);
+          expect(resolvedValue).toEqual({
+            status: 206,
+            messages: ["Graph failed to create skill: boo"]
+          });
+          done();
+        });
+      });
+    });
+    describe("graph profile/skill fails, ", () => {
+      it("returns 206 and messages", done => {
+        axiosMock.onPost(apiPaths.TASK_QUEUES).replyOnce(200, { data: { sid: "123" }});
+        apolloClient.mutate.mockResolvedValueOnce({ data: "yay!" });
+        apolloClient.mutate.mockRejectedValueOnce({ errors: ["boo"]});
+        axiosMock.onPost(apiPaths.SKILLS_TASKROUTER).replyOnce(200, { data: "yay" });
+        axiosMock.onPost(apiPaths.SKILLS_CALLFLOW).replyOnce(200, { data: "yay" });
+        formatErrorMessage.mockReturnValueOnce("boo");
+        createSkill(mockSkillState, "Kaleigh").then(resolvedValue => {
+          expect(axiosMock.history.post.length).toEqual(3);
+          expect(resolvedValue).toEqual({
+            status: 206,
+            messages: ["Graph threw an error creating skill/profile relationships: boo"]
+          });
+          done();
+        });
+      });
+    });
+    describe("graph profile/skill fails, ", () => {
+      it("returns 206 and messages", done => {
+        axiosMock.onPost(apiPaths.TASK_QUEUES).replyOnce(200, { data: { sid: "123" }});
+        apolloClient.mutate.mockResolvedValueOnce({ data: "yay!" });
+        apolloClient.mutate.mockResolvedValueOnce({ errors: ["boo"]});
+        axiosMock.onPost(apiPaths.SKILLS_TASKROUTER).replyOnce(200, { data: "yay" });
+        axiosMock.onPost(apiPaths.SKILLS_CALLFLOW).replyOnce(200, { data: "yay" });
+        formatErrorMessage.mockReturnValueOnce("boo");
+        createSkill(mockSkillState, "Kaleigh").then(resolvedValue => {
+          expect(axiosMock.history.post.length).toEqual(3);
+          expect(resolvedValue).toEqual({
+            status: 206,
+            messages: ["Graph threw an error creating skill/profile relationships: boo"]
+          });
+          done();
+        });
+      });
+    });
     describe("create flex skill fails, ", () => {
       it("still calls to create skill in callflow, returns 206", done => {
         axiosMock.onPost(apiPaths.TASK_QUEUES).replyOnce(200, { data: { sid: "123" }});
@@ -290,10 +344,386 @@ describe("createSkill", () => {
   });
 });
 
+describe("editSkill", () => {
+  beforeEach(() => {
+    formatErrorMessage.mockReturnValue("boo");
+  });
+  describe("changes.taskQueue && changes.taskQueue.isNew", () => {
+    const changes = {
+      taskQueue: {
+        isNew: true,
+        operating_unit_sid: "OU1234",
+        friendly_name: "Yay Task Queue"
+      }
+    };
+    describe("call to create task queue fails", () => {
+      it("returns status 500", done => {
+        axiosMock.onPost(apiPaths.TASK_QUEUES).replyOnce(500, "boo");
+        editSkill(changes, mockSkillState, "Kaleigh").then(resolvedValue => {
+          expect(apolloClient.mutate).not.toHaveBeenCalled();
+          expect(axiosMock.history.post.length).toEqual(1);
+          expect(JSON.parse(axiosMock.history.post[0].data)).toEqual({
+            targetWorkers: "routing.skills HAS \"testskill\"",
+            operatingUnitSid: "OU1234",
+            friendlyName: "Yay Task Queue"
+          });
+          expect(resolvedValue).toEqual({
+            status: 500,
+            messages: ["Task Queue failed to create: boo"]
+          });
+          done();
+        });
+      });
+    });
+    describe("call to update skill fails", () => {
+      it("returns status 206", done => {
+        axiosMock.onPost(apiPaths.TASK_QUEUES).replyOnce(200, { data: "yay" });
+        apolloClient.mutate.mockResolvedValue({ errors: [{ message: "I failed for a legit reason" }]});
+        editSkill(changes, mockSkillState, "Kaleigh").then(resolvedValue => {
+          expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
+          expect(axiosMock.history.post.length).toEqual(1);
+          expect(JSON.parse(axiosMock.history.post[0].data)).toEqual({
+            targetWorkers: "routing.skills HAS \"testskill\"",
+            operatingUnitSid: "OU1234",
+            friendlyName: "Yay Task Queue"
+          });
+          expect(resolvedValue).toEqual({
+            status: 206,
+            messages: ["Graph failed to update skill: boo"]
+          });
+          done();
+        });
+      });
+    });
+    describe("all calls are successful", () => {
+      it("returns status 200", done => {
+        axiosMock.onPost(apiPaths.TASK_QUEUES).replyOnce(200, { data: { sid: "new task sid" }});
+        apolloClient.mutate.mockResolvedValue({ data: "Yay!" });
+        editSkill(changes, mockSkillState, "Kaleigh").then(resolvedValue => {
+          expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
+          expect(apolloClient.mutate.mock.calls[0][0].variables.input.task_queue_sid).toBe("new task sid");
+          expect(axiosMock.history.post.length).toEqual(1);
+          expect(JSON.parse(axiosMock.history.post[0].data)).toEqual({
+            targetWorkers: "routing.skills HAS \"testskill\"",
+            operatingUnitSid: "OU1234",
+            friendlyName: "Yay Task Queue"
+          });
+          expect(resolvedValue).toEqual({ status: 200 });
+          done();
+        });
+      });
+    });
+    describe("skill doesnt exist in the graph", () => {
+      describe("call to create skill fails", () => {
+        it("returns status 206", done => {
+          axiosMock.onPost(apiPaths.TASK_QUEUES).replyOnce(200, { data: "yay" });
+          apolloClient.mutate.mockResolvedValueOnce({ errors: [{ message: "This Record does not exist" }]});
+          apolloClient.mutate.mockResolvedValueOnce({ errors: ["I failed for a legit reason"]});
+          editSkill(changes, mockSkillState, "Kaleigh").then(resolvedValue => {
+            expect(apolloClient.mutate).toHaveBeenCalledTimes(2);
+            expect(axiosMock.history.post.length).toEqual(1);
+            expect(JSON.parse(axiosMock.history.post[0].data)).toEqual({
+              targetWorkers: "routing.skills HAS \"testskill\"",
+              operatingUnitSid: "OU1234",
+              friendlyName: "Yay Task Queue"
+            });
+            expect(resolvedValue).toEqual({
+              status: 206,
+              messages: ["Skill was not found. Graph failed to create skill: boo"]
+            });
+            done();
+          });
+        });
+      });
+      describe("call to create skill is successful", () => {
+        it("returns status 200", done => {
+          axiosMock.onPost(apiPaths.TASK_QUEUES).replyOnce(200, { data: "yay" });
+          apolloClient.mutate.mockResolvedValueOnce({ errors: [{ message: "This Record does not exist" }]});
+          apolloClient.mutate.mockResolvedValueOnce({ data: "Yay" });
+          editSkill(changes, mockSkillState, "Kaleigh").then(resolvedValue => {
+            expect(apolloClient.mutate).toHaveBeenCalledTimes(2);
+            expect(axiosMock.history.post.length).toEqual(1);
+            expect(JSON.parse(axiosMock.history.post[0].data)).toEqual({
+              targetWorkers: "routing.skills HAS \"testskill\"",
+              operatingUnitSid: "OU1234",
+              friendlyName: "Yay Task Queue"
+            });
+            expect(resolvedValue).toEqual({ status: 200 });
+            done();
+          });
+        });
+      });
+    });
+  });
+  describe("changes.taskQueue && !changes.taskQueue.isNew", () => {
+    const changes = {
+      taskQueue: {
+        isNew: false,
+        operating_unit_sid: "OU1234",
+        friendly_name: "Yay Task Queue"
+      }
+    };
+    describe("call to update skill fails", () => {
+      it("returns status 500", done => {
+        apolloClient.mutate.mockResolvedValue({ errors: ["I failed for a legit reason"]});
+        editSkill(changes, mockSkillState, "Kaleigh").then(resolvedValue => {
+          expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
+          expect(resolvedValue).toEqual({
+            status: 500,
+            messages: ["Graph failed to update skill: boo"]
+          });
+          done();
+        });
+      });
+    });
+    describe("all calls are successful", () => {
+      it("returns status 200", done => {
+        apolloClient.mutate.mockResolvedValue({ data: "Yay!" });
+        editSkill(changes, mockSkillState, "Kaleigh").then(resolvedValue => {
+          expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
+          expect(resolvedValue).toEqual({ status: 200 });
+          done();
+        });
+      });
+    });
+  });
+  describe("changes.levels", () => {
+    const changes = {
+      levels: {
+        min: { value: 1 },
+        max: { value: 8 }
+      }
+    };
+    describe("call to update graph skill fails", () => {
+      it("returns status 206", done => {
+        axiosMock.onPut(`${apiPaths.SKILLS_TASKROUTER}/testskill`).replyOnce(200, { data: "Yay!" });
+        apolloClient.mutate.mockResolvedValue({ errors: ["I failed for a legit reason"]});
+        editSkill(changes, mockSkillState, "Kaleigh").then(resolvedValue => {
+          expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
+          expect(JSON.parse(axiosMock.history.put[0].data)).toEqual({
+            multivalue: true,
+            minimum: 1,
+            maximum: 8
+          });
+          expect(resolvedValue).toEqual({
+            status: 206,
+            messages: ["Graph failed to update skill: boo"]
+          });
+          done();
+        });
+      });
+    });
+    describe("call to update flex skill fails", () => {
+      it("returns status 206", done => {
+        axiosMock.onPut(apiPaths.SKILLS_TASKROUTER).replyOnce(500, "boo");
+        apolloClient.mutate.mockResolvedValue({ data: "Yay!" });
+        editSkill(changes, mockSkillState, "Kaleigh").then(resolvedValue => {
+          expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
+          expect(JSON.parse(axiosMock.history.put[0].data)).toEqual({
+            multivalue: true,
+            minimum: 1,
+            maximum: 8
+          });
+          expect(resolvedValue).toEqual({
+            status: 206,
+            messages: [ "Flex skill failed to update: boo"]
+          });
+          done();
+        });
+      });
+    });
+    describe("all calls are successful", () => {
+      it("returns status 206", done => {
+        axiosMock.onPut(`${apiPaths.SKILLS_TASKROUTER}/testskill`).replyOnce(200, { data: "Yay!" });
+        apolloClient.mutate.mockResolvedValue({ data: "Yay!" });
+        editSkill(changes, mockSkillState, "Kaleigh").then(resolvedValue => {
+          expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
+          expect(JSON.parse(axiosMock.history.put[0].data)).toEqual({
+            multivalue: true,
+            minimum: 1,
+            maximum: 8
+          });
+          expect(resolvedValue).toEqual({ status: 200 });
+          done();
+        });
+      });
+    });
+    describe("levels are null - all calls are successful", () => {
+      const changes = {
+        levels: {
+          min: null,
+          max: null
+        }
+      };
+      it("returns status 206", done => {
+        axiosMock.onPut(`${apiPaths.SKILLS_TASKROUTER}/testskill`).replyOnce(200, { data: "Yay!" });
+        apolloClient.mutate.mockResolvedValue({ data: "Yay!" });
+        editSkill(changes, mockSkillState, "Kaleigh").then(resolvedValue => {
+          expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
+          expect(JSON.parse(axiosMock.history.put[0].data)).toEqual({
+            multivalue: false,
+            minimum: null,
+            maximum: null
+          });
+          expect(resolvedValue).toEqual({ status: 200 });
+          done();
+        });
+      });
+    });
+  });
+  describe("changes.profileIds", () => {
+    const mockSkillState = {
+      skillForm: mockSkillFormState,
+      skills: [
+        ...mockSkills,
+        {
+          name: "testskill",
+          profileIds: [0]
+        }
+      ]
+    };
+    const changes = {
+      profileIds: [3]
+    };
+    describe("error thrown removing profile relationships", () => {
+      it("returns status 206", done => {
+        apolloClient.mutate.mockResolvedValueOnce({ data: "Yay!" });
+        apolloClient.mutate.mockResolvedValueOnce({ errors: "boo" });
+        editSkill(changes, mockSkillState, "Kaleigh").then(resolvedValue => {
+          expect(apolloClient.mutate).toHaveBeenCalledTimes(2);
+          expect(resolvedValue).toEqual({
+            status: 206,
+            messages: ["Graph threw an error updating skill/profile relationships: boo"]
+          });
+          done();
+        });
+      });
+    });
+    describe("error thrown adding profile relationships", () => {
+      it("returns status 206", done => {
+        apolloClient.mutate.mockResolvedValueOnce({ errors: "boo" });
+        apolloClient.mutate.mockResolvedValueOnce({ data: "Yay!" });
+        editSkill(changes, mockSkillState, "Kaleigh").then(resolvedValue => {
+          expect(apolloClient.mutate).toHaveBeenCalledTimes(2);
+          expect(resolvedValue).toEqual({
+            status: 206,
+            messages: ["Graph threw an error updating skill/profile relationships: boo"]
+          });
+          done();
+        });
+      });
+    });
+    describe("all profile/relationship calls successful", () => {
+      it("returns status 200", done => {
+        apolloClient.mutate.mockResolvedValue({ data: "Yay!" });
+        editSkill(changes, mockSkillState, "Kaleigh").then(resolvedValue => {
+          expect(apolloClient.mutate).toHaveBeenCalledTimes(2);
+          expect(resolvedValue).toEqual({ status: 200 });
+          done();
+        });
+      });
+    });
+  });
+  describe("changes.applicationId", () => {
+    const changes = {
+      applicationId: 18
+    };
+    describe("error thrown updating callflow skill", () => {
+      it("returns status 500", done => {
+        axiosMock.onPut(`${apiPaths.SKILLS_CALLFLOW}/testskill`).replyOnce(500, "boo");
+        editSkill(changes, mockSkillState, "Kaleigh").then(resolvedValue => {
+          expect(apolloClient.mutate).toHaveBeenCalledTimes(0);
+          expect(JSON.parse(axiosMock.history.put[0].data)).toEqual({
+            application_id: 18,
+            updatedBy: "Kaleigh"
+          });
+          expect(resolvedValue).toEqual({
+            status: 500,
+            messages: ["Callflow database failed to update skill: boo"]
+          });
+          done();
+        });
+      });
+    });
+    describe("callflow skill call successful", () => {
+      it("returns status 200", done => {
+        axiosMock.onPut(`${apiPaths.SKILLS_CALLFLOW}/testskill`).replyOnce(200, { data: "yay!" });
+        editSkill(changes, mockSkillState, "Kaleigh").then(resolvedValue => {
+          expect(apolloClient.mutate).toHaveBeenCalledTimes(0);
+          expect(JSON.parse(axiosMock.history.put[0].data)).toEqual({
+            application_id: 18,
+            updatedBy: "Kaleigh"
+          });
+          expect(resolvedValue).toEqual({ status: 200 });
+          done();
+        });
+      });
+    });
+  });
+  describe("changes.timeOfDays", () => {
+    const changes = {
+      timeOfDays: 18
+    };
+    describe("callflow skill call successful", () => {
+      it("returns status 200", done => {
+        axiosMock.onPut(`${apiPaths.SKILLS_CALLFLOW}/testskill`).replyOnce(200, { data: "yay!" });
+        editSkill(changes, mockSkillState, "Kaleigh").then(resolvedValue => {
+          expect(apolloClient.mutate).toHaveBeenCalledTimes(0);
+          expect(JSON.parse(axiosMock.history.put[0].data)).toEqual({
+            timeOfDays: 18,
+            updatedBy: "Kaleigh"
+          });
+          expect(resolvedValue).toEqual({ status: 200 });
+          done();
+        });
+      });
+    });
+  });
+  describe("changes.vhCallTarget", () => {
+    const changes = {
+      vhCallTarget: 18
+    };
+    describe("callflow skill call successful", () => {
+      it("returns status 200", done => {
+        axiosMock.onPut(`${apiPaths.SKILLS_CALLFLOW}/testskill`).replyOnce(200, { data: "yay!" });
+        editSkill(changes, mockSkillState, "Kaleigh").then(resolvedValue => {
+          expect(apolloClient.mutate).toHaveBeenCalledTimes(0);
+          expect(JSON.parse(axiosMock.history.put[0].data)).toEqual({
+            vh_call_target: 18,
+            updatedBy: "Kaleigh"
+          });
+          expect(resolvedValue).toEqual({ status: 200 });
+          done();
+        });
+      });
+    });
+  });
+  describe("changes.vhThreshold", () => {
+    const changes = {
+      vhThreshold: 18
+    };
+    describe("callflow skill call successful", () => {
+      it("returns status 200", done => {
+        axiosMock.onPut(`${apiPaths.SKILLS_CALLFLOW}/testskill`).replyOnce(200, { data: "yay!" });
+        editSkill(changes, mockSkillState, "Kaleigh").then(resolvedValue => {
+          expect(apolloClient.mutate).toHaveBeenCalledTimes(0);
+          expect(JSON.parse(axiosMock.history.put[0].data)).toEqual({
+            vh_threshold_tme: 18,
+            updatedBy: "Kaleigh"
+          });
+          expect(resolvedValue).toEqual({ status: 200 });
+          done();
+        });
+      });
+    });
+  });
+});
+
 describe("deleteSkill", () => {
   test("deleteQueues is false, does not call to delete the task queue, only deletes from callflow and taskrouter", done => {
     axiosMock.onDelete(`${apiPaths.SKILLS_TASKROUTER}/testskill`).replyOnce(200, { data: "cool" });
     axiosMock.onDelete(`${apiPaths.SKILLS_CALLFLOW}/testskill`).replyOnce(200, { data: "cool" });
+    apolloClient.mutate.mockResolvedValue({ data: "yay!" });
     deleteSkill({
       matchingQueue: { sid: null },
       name: "testskill"
@@ -331,6 +761,44 @@ describe("deleteSkill", () => {
         expect(resolvedValue).toEqual(undefined);
         done();
       });
+    });
+    test("graph call fails with 404, returns", done => {
+      axiosMock.onDelete(`${apiPaths.TASK_QUEUES}/sidysidsid`).replyOnce(200, { data: "cool" });
+      axiosMock.onDelete(`${apiPaths.SKILLS_TASKROUTER}/testskill`).replyOnce(200, { data: "cool" });
+      axiosMock.onDelete(`${apiPaths.SKILLS_CALLFLOW}/testskill`).replyOnce(200, { data: "cool" });
+      apolloClient.mutate.mockResolvedValueOnce({ errors: ["Record does not exist"]});
+      formatErrorMessage.mockReturnValue("boo");
+      deleteSkill({
+        matchingQueue: { sid: "sidysidsid" },
+        name: "testskill"
+      }, true).then(resolvedValue => {
+        expect(axiosMock.history.delete.length).toEqual(3);
+        expect(axiosMock.history.delete[0].url).toEqual("http://localhost:8080/taskqueues/sidysidsid");
+        expect(axiosMock.history.delete[1].url).toEqual("http://localhost:8080/taskrouterskills/testskill");
+        expect(axiosMock.history.delete[2].url).toEqual("http://localhost:8080/callflowskills/testskill");
+        expect(resolvedValue).toEqual(undefined);
+        done();
+      });
+    });
+    test("graph call fails with non 404, rejects with messages", done => {
+      axiosMock.onDelete(`${apiPaths.TASK_QUEUES}/sidysidsid`).replyOnce(200, { data: "cool" });
+      axiosMock.onDelete(`${apiPaths.SKILLS_TASKROUTER}/testskill`).replyOnce(200, { data: "cool" });
+      axiosMock.onDelete(`${apiPaths.SKILLS_CALLFLOW}/testskill`).replyOnce(200, { data: "cool" });
+      apolloClient.mutate.mockResolvedValueOnce({ errors: ["boo"]});
+      formatErrorMessage.mockReturnValue("boo");
+      deleteSkill({
+        matchingQueue: { sid: "sidysidsid" },
+        name: "testskill"
+      }, true)
+        .then(() => {
+        }).catch(err => {
+          expect(axiosMock.history.delete.length).toEqual(3);
+          expect(axiosMock.history.delete[0].url).toEqual("http://localhost:8080/taskqueues/sidysidsid");
+          expect(axiosMock.history.delete[1].url).toEqual("http://localhost:8080/taskrouterskills/testskill");
+          expect(axiosMock.history.delete[2].url).toEqual("http://localhost:8080/callflowskills/testskill");
+          expect(JSON.stringify(err[0])).toContain("Graph Skill Deletion Error");
+          done();
+        });
     });
     test("axios calls fail, rejects with messages", done => {
       axiosMock.onDelete(`${apiPaths.TASK_QUEUES}/sidysidsid`).replyOnce(500, { response: "notcool" });
@@ -399,7 +867,16 @@ describe("loadSkillOptions", () => {
   });
   describe("all options load successfully", () => {
     test("should call setDispatch to load skills and skill options", async () => {
-      await loadSkillOptions(mockSkills, mockDispatch, mockCallback);
+      const mockSkillsAltered =[
+        ...mockSkills,
+        {
+          name: "466",
+          discrepancies: [],
+          taskQueueSid: "WT12345",
+          taskQueueName: "something different"
+        }
+      ];
+      await loadSkillOptions(mockSkillsAltered, mockDispatch, mockCallback);
       expect(mockDispatch).toHaveBeenCalledTimes(2);
       expect(mockDispatch).toHaveBeenCalledWith({
         type: "LOAD_SKILL_OPTIONS",
@@ -414,24 +891,28 @@ describe("loadSkillOptions", () => {
         type: "LOAD_SKILLS",
         payload: [
           {
-            ...mockSkills[0],
-            discrepancies: [`Task Queue was not found with the expression routing.skills HAS "${mockSkills[0].name}". (Case Sensitive)`]
+            ...mockSkillsAltered[0],
+            discrepancies: [`Task Queue was not found with the expression routing.skills HAS "${mockSkillsAltered[0].name}". (Case Sensitive)`]
           },
           {
-            ...mockSkills[1],
+            ...mockSkillsAltered[1],
             discrepancies: [
               "I dont match!",
-              `Task Queue was not found with the expression routing.skills HAS "${mockSkills[1].name}". (Case Sensitive)`
+              `Task Queue was not found with the expression routing.skills HAS "${mockSkillsAltered[1].name}". (Case Sensitive)`
             ]
           },
           {
-            ...mockSkills[2],
-            discrepancies: [`Task Queue was not found with the expression routing.skills HAS "${mockSkills[2].name}". (Case Sensitive)`]
+            ...mockSkillsAltered[2],
+            discrepancies: [`Task Queue was not found with the expression routing.skills HAS "${mockSkillsAltered[2].name}". (Case Sensitive)`]
           },
-          mockSkills[3],
+          mockSkillsAltered[3],
           {
-            ...mockSkills[4],
-            discrepancies: [`Task Queue was not found with the expression routing.skills HAS "${mockSkills[4].name}". (Case Sensitive)`]
+            ...mockSkillsAltered[4],
+            discrepancies: [`Task Queue was not found with the expression routing.skills HAS "${mockSkillsAltered[4].name}". (Case Sensitive)`]
+          },
+          {
+            ...mockSkillsAltered[5],
+            discrepancies: [`Task Queue in the graph ${mockSkillsAltered[5].taskQueueName}: ${mockSkillsAltered[5].taskQueueSid} does not match the task queue with the matching target expression routing.skills HAS "${mockSkillsAltered[5].name}". (Case Sensitive)`]
           }
         ]
       });
