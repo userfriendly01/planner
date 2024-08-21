@@ -319,7 +319,7 @@ export const BasicFormInfo = (props: BasicFormInfoProps) => {
           </Tooltip>) : null}
         <Tooltip
           title={
-            "Backup Workers Enable/Disable"
+            "Backup Workers active/inactive flag - To enable this feature, please add backup worker(s) in Routing Attributes section."
           }
           placement={"bottom-start"}
         >
@@ -329,6 +329,7 @@ export const BasicFormInfo = (props: BasicFormInfoProps) => {
               onChange={() => {
                 setForm({ type: userFormActions.UPDATE_BACK_UP_WORKER_FLAG });
               }}
+              disabled={!form.triton.routing.backup_workers || form.triton.routing.backup_workers.length === 0}
               inputProps={{ "aria-label": "toggle-backup-user" }}
             />
             <ToggleLabel>Backup Workers</ToggleLabel>

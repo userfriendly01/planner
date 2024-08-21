@@ -161,7 +161,6 @@ export const exportColumns = [
 ];
 
 export const apiPaths = {
-  CHECK_EXTENSION: `${SERVICE_BASE_URI}/checkextension`,
   CREATE_CALABRIO_TEAM: `${CALABRIO_SERVICE_BASE_URI}/qm?api=Team`,
   CREATE_CALABRIO_USER: `${CALABRIO_SERVICE_BASE_URI}/qm?api=User`,
   CREATE_CALABRIO_WFM_PERSON: `${CALABRIO_SERVICE_BASE_URI}/wfm/person`,
@@ -185,7 +184,6 @@ export const apiPaths = {
   GET_OU: `${SERVICE_BASE_URI}/operatingunit`,
   TASK_QUEUES: `${SERVICE_BASE_URI}/taskqueues`,
   GET_TIME_OF_DAYS: `${SERVICE_BASE_URI}/timeofday`,
-  GET_RESET_PROFILE_DATADOG_LOGS: (nNumber: string): string => `${SERVICE_BASE_URI}/datadogresetprofileslogs/${nNumber}`,
   RESET_WORKER_SKILLS: `${SERVICE_BASE_URI}/resetworkerskills`,
   TFN_DATA: `${SERVICE_BASE_URI}/tfn`,
   UPDATE_CALABRIO_USER: `${CALABRIO_SERVICE_BASE_URI}/qm?api=User`,

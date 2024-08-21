@@ -23,6 +23,9 @@ const mapValuesToObj=(jsonValues:any, type?:CSVFileType):any=>{
       if(key === "pkey")
       {
         jsonValue = jsonValues["dialedPhoneNumber"];
+        if(/^\d{10,}$/.test(jsonValue)) {
+          jsonValue = "+" + jsonValue;
+        }
       }
       else if(key === "officeNumbers") {
         jsonValue = jsonValues[key]? jsonValues[key].split(",") : [];

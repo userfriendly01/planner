@@ -4,7 +4,8 @@ import { ModalHelperText } from "components/ModalHelperText";
 import { UserFormButton } from "usermanagement/ExtensionInput.Styles";
 import {
   useFormState,
-  useFormDispatch
+  useFormDispatch,
+  useAdminState
 } from "context/appContext";
 import React from "react";
 import {
@@ -28,11 +29,13 @@ jest.mock("components/StyledButton", () => ({
 
 jest.mock("context/appContext", () => ({
   useFormDispatch: jest.fn(),
-  useFormState: jest.fn()
+  useFormState: jest.fn(),
+  useAdminState: jest.fn(),
 }));
 
-jest.mock("services/checkExtension", () => ({
-  checkExtension: jest.fn()
+
+jest.mock("utils/checkExtensionUtils", () => ({
+  checkExtensionUtils: jest.fn()
 }));
 
 const mockOnBlur = jest.fn();
@@ -58,6 +61,11 @@ describe("<Extension Input />", () => {
     jest.clearAllMocks();
     useFormState.mockReturnValue(initialFormState);
     useFormDispatch.mockReturnValue(mockSetForm);
+    useAdminState.mockReturnValue({
+      workerContext: {
+        workers: []
+      }
+    });
   });
   describe("testing the CustomInput props", () => {
     test("the initial state should be just an empty text field, with the correct label, and no helper text", () => {
@@ -121,6 +129,6 @@ describe("<Extension Input />", () => {
         const ext = "91111";
         customInputProps.updateValue(ext);
       });
-    });
+      });
   });
 });

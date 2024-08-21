@@ -1,12 +1,15 @@
-import { CctSharedCallFlowDb } from "alohaFlow/AlohaFlow.Interfaces";
-import { CctSharedCallRoutingDb } from "alohaRouting/AlohaRouting.Interfaces";
-import { FlowContent } from "alohaFlow/AlohaFlow.Interfaces";
-import { AlertBarProps } from "globals/interfaces";
 import {
   ADGroupPermission, BrandNameMap, GraphQLErrors
 } from "globals/interfaces";
-import { env } from "globals";
+import {
+  CctSharedCallFlowDb, FlowContent, getCctSharedCallFlowDbShell
+} from "components/tabs/alohaFlow/AlohaFlow.Interfaces";
+import {
+  CctSharedCallRoutingDb, getCctSharedCallRoutingDbShell
+} from "alohaRouting/AlohaRouting.Interfaces";
+import { AlertBarProps } from "globals/interfaces";
 import { DynamicAction } from "components/tabs/dynamicFlow/DynamicFlow.Interfaces";
+import { env } from "globals";
 
 export const initializedAlertBar: AlertBarProps = {
   open: false,
@@ -32,7 +35,9 @@ const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb |CctSharedCa
   if(array.length ===0){
     return;
   }
-  let keys: string[] = Object.keys(array[0]);
+  const firstRowModel: CctSharedCallFlowDb |CctSharedCallRoutingDb = (array[0] as CctSharedCallRoutingDb).all ? getCctSharedCallRoutingDbShell() :  getCctSharedCallFlowDbShell();
+  let keys: string[] = Object.keys(firstRowModel);
+
   const contentStore : string[] =[];
   let contentKeys: string[] = [];
   const jsonFormatKeys: string[] = ["occupancyCheck", "routingSteps", "options", "repeat"];
@@ -76,7 +81,7 @@ const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb |CctSharedCa
       }
       else if(itemValue){
         itemValue = itemValue.toString().replaceAll(/"/g, "\"\"");
-        if (itemValue.includes(",") || itemValue.includes("\"")) {
+        if (itemValue.includes(",") || itemValue.includes("\"") || key === "pkey" || key === "officeNumbers") {
           itemValue = `"${itemValue}"`;
         }
       }

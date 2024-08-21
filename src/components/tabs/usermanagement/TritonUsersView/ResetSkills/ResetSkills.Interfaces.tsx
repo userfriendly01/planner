@@ -13,3 +13,14 @@ export interface ResultsModalProps {
   successfulWorkers: UMUser[],
   unsuccessfulWorkers: any[]
 }
+
+export interface ResetWorkerSkillsToDefaultResponse{
+  reason?: string;
+  updated: boolean;
+  workerSid: string;
+  worker?: UMUser;
+}
+export interface Worker{
+  name: string,
+  reason?: string
+}
