@@ -32,7 +32,7 @@ const constructLevels = (minimum?: number, maximum?: number) => {
     }
     return levels;
   } else {
-    return null;
+    return [];
   }
 };
 
