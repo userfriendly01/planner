@@ -508,19 +508,30 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: A
         skills: [...currentSkills, ...newSkills]
       };
     } else if (option.value === "DELETE") {
-      const skillToDelete = value.skills[0];
+      // todo: update for multiple skillz
+      const skillsToDelete = value;
       const currentSkills = row.attributes?.default_skills || {};
 
-      updatedDefaultSkills.skills = currentSkills.skills?.filter((s: any) => s !== skillToDelete);
+      console.log("JULIA - VALUE", value);
+      console.log("JULIA - SKILLS TO DELETE: ", skillsToDelete.skills);
+      console.log("JULIA - CURRENT SKILLS: ", currentSkills);
+
+      // updatedDefaultSkills.skills = currentSkills.skills?.filter((s: any) => s !== skillsToDelete); // wont work with multiple skills to delete
+      updatedDefaultSkills.skills = currentSkills.skills?.filter((s: any) => !skillsToDelete.skills.includes(s));
       updatedDefaultSkills.levels = {};
       if (currentSkills.levels) {
         for (const skillLevel in currentSkills.levels) {
-          if (skillLevel !== skillToDelete) {
+          console.log("JULIA - SKILLLEVEL", skillLevel);
+          console.log("JULIA - VALUE?? ", currentSkills.levels[skillLevel]);
+          if (!(skillsToDelete.levels[skillLevel] && currentSkills.levels[skillLevel] === skillsToDelete.levels[skillLevel])) {
+            // if skill isnt in skillsToDelete, re-add it to object
+            console.log("JULIA - FOUND SKILL TO DELETE IN CURRENT SKILLS", skillLevel, " ", currentSkills.levels[skillLevel]);
             updatedDefaultSkills.levels[skillLevel] = currentSkills.levels[skillLevel];
           }
         }
       }
     }
+    console.log("JULIA - UPDATED DEFAULT SKILLZ (to delete): ", updatedDefaultSkills);
 
     body.attributes = { "default_skills": updatedDefaultSkills };
 
@@ -529,7 +540,7 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: A
       body
     });
 
-    await updateUser(workerSid, body);
+    // await updateUser(workerSid, body);
 
     const message = `${workerSid} - Default Skills updated for row ${rowNumber}`;
 
