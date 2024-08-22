@@ -35,7 +35,7 @@ export const getTargetExpression = (name: string): string => `routing.skills HAS
 export const isTaskQueueError = (skillForm: SkillFormState, name: string): boolean => {
   const skillTargetExpression = getTargetExpression(name);
 
-  return skillForm.taskQueue.sid?.length > 0 && name?.length > 0 && skillForm.taskQueue.target_workers !== skillTargetExpression;
+  return !!(skillForm.taskQueue.sid?.length && name?.length && !skillForm.taskQueue.target_workers.includes(skillTargetExpression));
 };
 
 export const getSkillFormChanges = (originalSkill: Skill, skillForm: SkillFormState) => {
@@ -55,7 +55,7 @@ export const getSkillFormChanges = (originalSkill: Skill, skillForm: SkillFormSt
 
   const timeOfDayChanges: TimeOfDayRequestObject[] = [];
   skillForm.timeOfDays.forEach((formTod: TimeOfDayRequestObject) => {
-    const ogTod: Partial<TimeOfDayRequestObject> = originalSkill?.timeOfDays.find((tod: TimeOfDayRequestObject) => tod.dayOfWeekId === formTod.dayOfWeekId) || {};
+    const ogTod: Partial<TimeOfDayRequestObject> = originalSkill?.timeOfDays?.find((tod: TimeOfDayRequestObject) => tod.dayOfWeekId === formTod.dayOfWeekId) || {};
     if(formTod.timeOfDayId !== ogTod.timeOfDayId || formTod.vhTimeOfDayId !== ogTod.vhTimeOfDayId){
       timeOfDayChanges.push(formTod);
     }
