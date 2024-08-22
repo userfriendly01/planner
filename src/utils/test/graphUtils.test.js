@@ -5,10 +5,8 @@ import {
   mapWorkerToDbWorker
 } from "../graphUtils";
 import { apolloClient } from "../../components/core/Auth/SharedGraphAPIProvider";
-import {
-  LIST_MANAGERS,
-  LIST_USERS
-}from "globals/graphql";
+import { LIST_MANAGERS }from "globals/manager";
+import { LIST_USERS }from "globals/user";
 import {
   logger
 } from "utils/logger";

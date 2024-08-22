@@ -1,3 +1,4 @@
+import { mockTaskQueues } from "testUtils";
 import {
   skillActions,
   skillReducer,
@@ -175,6 +176,101 @@ describe("skillReducer", () => {
         }
       ];
       result = skillReducer(initialState, payload);
+      expect(result).toEqual(expectedResult);
+    });
+  });
+  describe("SET_UPDATE_SKILL_FORM", () => {
+    test("should set update form", () => {
+      const selectedSkill = {
+        name: "aisgL1",
+        applicationId: 2,
+        discrepancies: ["I dont match!"],
+        taskQueueSid: "WT123456",
+        taskQueueName: "aisg L1",
+        skillGroupIds: ["1"],
+        profileIds: [4],
+        levels: [1,2,3,4],
+        timeOfDays: [{
+          timeOfDayId: 1,
+          dayOfWeekId: 2,
+          vhTimeOfDayId: 1
+        }],
+        vhCallTarget: "12345",
+        vhThreshold: 123415
+      };
+      const payload = {
+        type: skillActions.SET_UPDATE_SKILL_FORM,
+        payload: {
+          skill: selectedSkill,
+          taskQueue: mockTaskQueues[0]
+        }
+      };
+      const expectedResult = {
+        ...initialSkillState,
+        skillForm: {
+          formMode: "update",
+          name: "aisgL1",
+          levels: {
+            min: {
+              value: 1,
+              label: "1"
+            },
+            max: {
+              value: 4,
+              label: "4"
+            }
+          },
+          applicationId: 2,
+          taskQueue: {
+            isNew: false,
+            target_workers: mockTaskQueues[0].target_workers,
+            sid: mockTaskQueues[0].sid,
+            friendly_name: mockTaskQueues[0].friendly_name,
+            operating_unit_sid: mockTaskQueues[0].operating_unit_sid
+          },
+          profileIds: [4],
+          vhCallTarget: "12345",
+          vhThreshold: "123415",
+          timeOfDays: [
+            {
+              "dayOfWeekId": 1,
+              "timeOfDayId": undefined,
+              "vhTimeOfDayId": undefined
+            },
+            {
+              "dayOfWeekId": 2,
+              "timeOfDayId": 1,
+              "vhTimeOfDayId": 1
+            },
+            {
+              "dayOfWeekId": 3,
+              "timeOfDayId": undefined,
+              "vhTimeOfDayId": undefined
+            },
+            {
+              "dayOfWeekId": 4,
+              "timeOfDayId": undefined,
+              "vhTimeOfDayId": undefined
+            },
+            {
+              "dayOfWeekId": 5,
+              "timeOfDayId": undefined,
+              "vhTimeOfDayId": undefined
+            },
+            {
+              "dayOfWeekId": 6,
+              "timeOfDayId": undefined,
+              "vhTimeOfDayId": undefined
+            },
+            {
+              "dayOfWeekId": 7,
+              "timeOfDayId": undefined,
+              "vhTimeOfDayId": undefined
+            }
+          ]
+        }
+      };
+      const result = skillReducer(initialSkillState, payload);
       expect(result).toEqual(expectedResult);
     });
   });

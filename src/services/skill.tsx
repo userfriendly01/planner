@@ -10,18 +10,37 @@ import {
   TimeOfDay, TwilioQueue, SkillFormState,
   UMSkill,
   SkillGroup,
-  SkillGroupSkillShip
+  SkillGroupSkillShip,
+  SkillState
 } from "callflowmanagement/SkillManagement/Skills.Interfaces";
 import {
   Action, OperatingUnit
 } from "globals/interfaces";
 import { getOperatingUnits } from "services/operatingUnits";
 import { getTargetExpression } from "utils/skillsUtils";
-import { getUMSkills } from "globals/graphql";
+import {
+  CREATE_SKILL, DELETE_SKILL, getUMSkills,
+  UPDATE_SKILL,
+  UPDATE_SKILL_RELATIONSHIPS
+} from "globals/skill";
 
-export const createSkill = async (skillForm: SkillFormState, updatedBy: string): Promise<any> => {
+const constructLevels = (minimum?: number, maximum?: number) => {
+  if(minimum && maximum){
+    const levels = [];
+    for (let i = minimum; i <= maximum; i++) {
+      levels.push(i);
+    }
+    return levels;
+  } else {
+    return null;
+  }
+};
+
+export const createSkill = async (skillState: SkillState, updatedBy: string): Promise<any> => {
+  const skillForm = skillState.skillForm;
   const messages: string[] = [];
   let taskQueueSid = skillForm.taskQueue.sid;
+  const taskQueueName = skillForm.taskQueue.friendly_name;
   if(skillForm.taskQueue.isNew){
     const newTaskQueuebody = {
       targetWorkers: getTargetExpression(skillForm.name),
@@ -31,13 +50,60 @@ export const createSkill = async (skillForm: SkillFormState, updatedBy: string):
 
     try {
       const res = await myAxios.post(apiPaths.TASK_QUEUES, newTaskQueuebody);
-      taskQueueSid = res.data.sid;
+      taskQueueSid = res.data.data.sid;
     } catch(error){
       const message = `Task Queue failed to create: ${formatErrorMessage(error)}`;
       logger.error(message, error);
       messages.push(message);
     }
   }
+
+  try {
+    const newGraphSkillBody: any = {
+      skill_id: skillForm.name,
+      task_queue_sid: taskQueueSid,
+      task_queue_name: taskQueueName
+    };
+
+    newGraphSkillBody.levels = constructLevels(skillForm.levels?.min?.value, skillForm.levels?.max?.value);
+
+    const { errors }  = await apolloClient.mutate<{ skill: UMSkill }>({
+      mutation: CREATE_SKILL,
+      variables: {
+        input: newGraphSkillBody
+      }
+    });
+
+    if (errors?.length) {
+      throw errors;
+    }
+
+    const profileResponse: any[] = await Promise.allSettled(skillForm.profileIds.map(((id: number) => {
+      const skillsOnProfile: string[] = skillState.skills.filter((s: Skill) => s.profileIds?.includes(id)).map((s: Skill) => s.name);
+      return apolloClient.mutate<{ updateUMSoftphoneConfigSkills: any }>({
+        mutation: UPDATE_SKILL_RELATIONSHIPS,
+        variables: {
+          profile_id: id,
+          input: { skill_ids: [...skillsOnProfile, skillForm.name]}
+        }
+      });
+    })));
+
+    const failedResponses: any[] = [];
+    failedResponses.push(...profileResponse.filter((r: any) => r.status === "rejected").map((r: any) => r.reason));
+    failedResponses.push(...profileResponse.filter((r: any) => r.value?.errors?.length).map((r: any) => r.value));
+    if(failedResponses.length){
+      const message = `Graph threw an error creating skill/profile relationships: ${formatErrorMessage(failedResponses)}`;
+      console.error(message, profileResponse);
+      messages.push(message);
+    }
+
+  } catch(error){
+    const message = `Graph failed to create skill: ${formatErrorMessage(error)}`;
+    console.error(message, error);
+    messages.push(message);
+  }
+
   try {
     const newFlexSkillBody: any = { name: skillForm.name };
     if(skillForm.levels.min && skillForm.levels.max){
@@ -55,11 +121,11 @@ export const createSkill = async (skillForm: SkillFormState, updatedBy: string):
   try {
     const newCallflowSkillBody: any = {
       skillNme: skillForm.name,
-      applicationId: skillForm.applicationId,
-      vhThreshold: skillForm.vhThreshold || null,
-      vhCallTarget: skillForm.vhCallTarget || null,
+      application_id: skillForm.applicationId,
+      vh_threshold_tme: skillForm.vhThreshold || null,
+      vh_call_target: skillForm.vhCallTarget || null,
       updatedBy,
-      timeOfDays: Object.values(skillForm.timeOfDays)
+      timeOfDays: skillForm.timeOfDays
     };
 
     await myAxios.post(apiPaths.SKILLS_CALLFLOW, newCallflowSkillBody);
@@ -73,7 +139,7 @@ export const createSkill = async (skillForm: SkillFormState, updatedBy: string):
     return {
       status: 200
     };
-  } else if(messages.length < 3){
+  } else if(messages.length < 4){
     return {
       status: 206,
       messages
@@ -83,6 +149,175 @@ export const createSkill = async (skillForm: SkillFormState, updatedBy: string):
       status: 500,
       messages
     };
+  }
+};
+
+export const editSkill = async (changes: Partial<SkillFormState>, skillState: SkillState, updatedBy: string): Promise<any> => {
+  const messages: string[] = [];
+  let updateCount = 0;
+  const skillName = skillState.skillForm.name;
+
+  let taskQueueSid = changes.taskQueue?.sid;
+  const taskQueueName = changes.taskQueue?.friendly_name;
+
+  const updateGraphSkill = async () => {
+    try {
+      updateCount ++;
+      const updateGraphSkillBody: any = {};
+      updateGraphSkillBody.task_queue_sid = taskQueueSid,
+      updateGraphSkillBody.task_queue_name = taskQueueName;
+      updateGraphSkillBody.levels = constructLevels(changes.levels?.min?.value, changes.levels?.max?.value);
+
+      const { errors }  = await apolloClient.mutate<{ skill: any }>({
+        mutation: UPDATE_SKILL,
+        variables: {
+          skill_id: skillName,
+          input: updateGraphSkillBody
+        }
+      });
+
+      if (errors?.length) {
+        const nullSkill = errors.some((e: any) => e.message && e.message.includes("Record does not exist"));
+        if(nullSkill){
+          const { errors: createErrors }  = await apolloClient.mutate<{ skill: UMSkill }>({
+            mutation: CREATE_SKILL,
+            variables: {
+              input: {
+                ...updateGraphSkillBody,
+                skill_id: skillName
+              }
+            }
+          });
+          if (createErrors?.length) {
+            const message = `Skill was not found. Graph failed to create skill: ${formatErrorMessage(createErrors)}`;
+            console.error(message, createErrors);
+            messages.push(message);
+          }
+        } else {
+          throw errors;
+        }
+      }
+
+    } catch(error){
+      const message = `Graph failed to update skill: ${formatErrorMessage(error)}`;
+      console.error(message, error);
+      messages.push(message);
+    }
+  };
+
+  if(changes.taskQueue && changes.taskQueue?.isNew){
+    const newTaskQueuebody = {
+      targetWorkers: getTargetExpression(skillState.skillForm.name),
+      operatingUnitSid: changes.taskQueue.operating_unit_sid,
+      friendlyName: changes.taskQueue.friendly_name
+    };
+
+    try {
+      updateCount ++;
+      const res = await myAxios.post(apiPaths.TASK_QUEUES, newTaskQueuebody);
+      taskQueueSid = res.data.data.sid;
+      await updateGraphSkill();
+    } catch(error){
+      const message = `Task Queue failed to create: ${formatErrorMessage(error)}`;
+      logger.error(message, error);
+      messages.push(message);
+    }
+  }
+
+  if((changes.taskQueue && !changes.taskQueue?.isNew) || changes.levels){
+    await updateGraphSkill();
+  }
+
+  if(changes.profileIds){
+    const existingSkill: Partial<Skill> = skillState.skills.find((s: Skill) => s.name === skillName) || {};
+    const newProfiles: number[] = changes.profileIds?.filter((id: number) => !existingSkill.profileIds?.includes(id)) || [];
+    const removedProfiles: number[] = existingSkill.profileIds?.filter((id: number) => !changes.profileIds?.includes(id)) || [];
+
+    const newProfileResponse = await Promise.allSettled(newProfiles.map(((id: number) => {
+      updateCount ++;
+      const skillsOnProfile: string[] = skillState.skills.filter((s: Skill) => s.profileIds?.includes(id)).map((s: Skill) => s.name);
+      return apolloClient.mutate<{ updateUMSoftphoneConfigSkills: any }>({
+        mutation: UPDATE_SKILL_RELATIONSHIPS,
+        variables: {
+          profile_id: id,
+          input: { skill_ids: [...skillsOnProfile, skillName]}
+        }
+      });
+    })));
+
+    const removedProfileResponse = await Promise.allSettled(removedProfiles.map(((id: number) => {
+      updateCount ++;
+      const skillsOnProfile: string[] = skillState.skills.filter((s: Skill) => s.profileIds?.includes(id)).map((s: Skill) => s.name);
+      return apolloClient.mutate<{ updateUMSoftphoneConfigSkills: any }>({
+        mutation: UPDATE_SKILL_RELATIONSHIPS,
+        variables: {
+          profile_id: id,
+          input: { skill_ids: skillsOnProfile.filter((s: string) => s !== skillName ) }
+        }
+      });
+    })));
+
+    const profileResponse = [...newProfileResponse, ...removedProfileResponse];
+    const failedResponses: any[] = [];
+    failedResponses.push(...profileResponse.filter((r: any) => r.status === "rejected").map((r: any) => r.reason));
+    failedResponses.push(...profileResponse.filter((r: any) => r.value?.errors?.length).map((r: any) => r.value));
+
+    if(failedResponses.length){
+      const message = `Graph threw an error updating skill/profile relationships: ${formatErrorMessage(failedResponses)}`;
+      console.error(message, profileResponse);
+      messages.push(message);
+    }
+  }
+
+  if(changes.levels){
+    try {
+      updateCount ++;
+      const updateFlexSkillBody: any = {};
+      if(changes.levels.min && changes.levels.max){
+        updateFlexSkillBody.multivalue = true;
+        updateFlexSkillBody.minimum = changes.levels.min.value;
+        updateFlexSkillBody.maximum = changes.levels.max.value;
+      } else {
+        updateFlexSkillBody.multivalue = false;
+        updateFlexSkillBody.minimum = null;
+        updateFlexSkillBody.maximum = null;
+      }
+      await myAxios.put(`${apiPaths.SKILLS_TASKROUTER}/${skillName}`, updateFlexSkillBody);
+    } catch(error){
+      const message = `Flex skill failed to update: ${formatErrorMessage(error)}`;
+      logger.error(message, error);
+      messages.push(message);
+    }
+  }
+
+  if(changes.applicationId || changes.timeOfDays || changes.vhCallTarget || changes.vhThreshold){
+    try {
+      updateCount ++;
+      const updateCallflowSkillBody: any = { updatedBy };
+      if(changes.applicationId){ updateCallflowSkillBody.application_id = changes.applicationId; }
+      if(changes.vhThreshold){ updateCallflowSkillBody.vh_threshold_tme = changes.vhThreshold; }
+      if(changes.vhCallTarget){ updateCallflowSkillBody.vh_call_target = changes.vhCallTarget; }
+      if(changes.timeOfDays){ updateCallflowSkillBody.timeOfDays = changes.timeOfDays; }
+
+      await myAxios.put(`${apiPaths.SKILLS_CALLFLOW}/${skillName}`, updateCallflowSkillBody);
+    } catch(error){
+      const message = `Callflow database failed to update skill: ${formatErrorMessage(error)}`;
+      console.error(message, error);
+      messages.push(message);
+    }
+  }
+
+  if(messages.length === 0){
+    return {
+      status: 200
+    };
+  } else if(messages.length < updateCount){
+    return {
+      status: 206,
+      messages
+    };
+  } else {
+    throw messages;
   }
 };
 
@@ -100,12 +335,18 @@ export const deleteSkill = async (skill: any, deleteQueues: boolean): Promise<an
 
   const taskRouterSkillPromise = myAxios.delete(`${apiPaths.SKILLS_TASKROUTER}/${skillName}`);
   const callflowSkillPromise = myAxios.delete(`${apiPaths.SKILLS_CALLFLOW}/${skillName}`);
+  const graphSkillPromise = apolloClient.mutate<{ skill: any }>({
+    mutation: DELETE_SKILL,
+    variables: {
+      skill_id: skillName
+    }
+  });
 
-  const results = await Promise.allSettled([taskQueuePromise, taskRouterSkillPromise, callflowSkillPromise]);
+  const results = await Promise.allSettled([taskQueuePromise, taskRouterSkillPromise, callflowSkillPromise, graphSkillPromise]);
 
   logger.info("Delete Results", { results }, false);
 
-  if(!results.every((r: any) => r.status === "fulfilled")){
+  if(!results.every((r: any) => r.status === "fulfilled") || results.some((r: any) => r.value?.errors?.length )){
     const is404 = (reason: any) => reason?.response?.data?.error?.error === "Not Found" ||
     reason?.response?.data?.error?.toString().includes("not found");
 
@@ -114,7 +355,8 @@ export const deleteSkill = async (skill: any, deleteQueues: boolean): Promise<an
     results.forEach((r: any, index: number) => {
       const errorSource: string = (index === 0 && "Task Queue Deletion Error") ||
                           (index === 1 && "Flex Console Skill Deletion Error") ||
-                          (index === 2 && "Callflow Database Skill Deletion Error");
+                          (index === 2 && "Callflow Database Skill Deletion Error") ||
+                          (index === 3 && "Graph Skill Deletion Error");
 
       if(r.status === "rejected" && !is404(r.reason)){
         const taskQueueError = r.reason.response.data?.details?.toString().includes("400");
@@ -125,6 +367,9 @@ export const deleteSkill = async (skill: any, deleteQueues: boolean): Promise<an
           const message = formatErrorMessage(r.reason?.response?.data?.error) || formatErrorMessage(r.reason);
           messages.push(<div><h2 style={{ fontWeight: "bold" }}>{errorSource}: {skillName}</h2> - {message}</div>);
         }
+      } else if(r.value?.errors && !r.value.errors?.toString().includes("Record does not exist")){
+        const message: string = formatErrorMessage(r.value.errors);
+        messages.push(<div><h2 style={{ fontWeight: "bold" }}>{errorSource}: {skillName}</h2> - {message}</div>);
       }
     });
     if(messages.length){
@@ -141,7 +386,6 @@ export const loadSkillOptions = async (skills: Skill[], dispatch: (action: Actio
     const taskQueuesPromise: Promise<{data: TwilioQueue[]}> = getTaskQueues();
     const operatingUnitPromise: Promise<OperatingUnit[]> = getOperatingUnits();
 
-
     const [
       timeOfDaysResponse,
       applicationsResponse,
@@ -156,12 +400,13 @@ export const loadSkillOptions = async (skills: Skill[], dispatch: (action: Actio
 
     const verifiedSkills = skills.map(skill => {
       const skillTargetExpression = `routing.skills HAS "${skill.name}"`;
-      const expressionFound = taskQueues.some(tq => tq.target_workers.includes(skillTargetExpression));
-      if(!expressionFound){
+      const expressionMatch = taskQueues.find(tq => tq.target_workers.includes(skillTargetExpression));
+      if(!expressionMatch){
         skill.discrepancies.push(`Task Queue was not found with the expression ${skillTargetExpression}. (Case Sensitive)`);
+      }else if(expressionMatch.sid !== skill.taskQueueSid){
+        skill.discrepancies.push(`Task Queue in the graph ${skill.taskQueueName}: ${skill.taskQueueSid} does not match the task queue with the matching target expression ${skillTargetExpression}. (Case Sensitive)`);
       }
       return skill;
-    //Enhance this after we swap to the graph to compare the task queue saved on the skill to the target expression
     });
 
     dispatch({
@@ -305,7 +550,8 @@ export const loadConsolidatedSkills = async (dispatch: (action: Action) => void)
         profileIds: graphSkill.profile_ids || [],
         skillGroupIds: graphSkill.skill_group_ids || [],
         taskQueueName: graphSkill.task_queue_name,
-        taskQueueSid: graphSkill.task_queue_sid
+        taskQueueSid: graphSkill.task_queue_sid,
+        levels: graphSkill.levels
       };
 
       const matchingCallFlowSkill = callflowSkills.find((cfSkill: CallflowSkill) => cfSkill.skillName === graphSkill.skill_id);
@@ -322,15 +568,6 @@ export const loadConsolidatedSkills = async (dispatch: (action: Action) => void)
       }
 
       if(matchingTrSkill){
-        if(matchingTrSkill.minimum && matchingTrSkill.maximum){
-          const levels = [];
-          for (let i = matchingTrSkill.minimum; i <= matchingTrSkill.maximum; i++) {
-            levels.push(i);
-          }
-          skill.levels = levels;
-        } else {
-          skill.levels = null;
-        }
         taskRouterSkills = taskRouterSkills.filter(trSkill => trSkill.name !== skill.name);
       } else {
         skill.discrepancies.push(`${skill.name} is not in the Flex Console`);
@@ -340,16 +577,12 @@ export const loadConsolidatedSkills = async (dispatch: (action: Action) => void)
     });
 
     taskRouterSkills.map((trSkill: TwilioSkill) => {
-      const levels = [];
-      for (let i = trSkill.minimum; i <= trSkill.maximum; i++) {
-        levels.push(i);
-      }
       let skill: Partial<Skill> = {
         discrepancies: [
           `${trSkill.name} is not in the User Management Database`
         ],
         name: trSkill.name,
-        levels
+        levels: constructLevels(trSkill.minimum, trSkill.maximum)
       };
 
       const matchingCallFlowSkill = callflowSkills.find((cfSkill: CallflowSkill) => cfSkill.skillName === trSkill.name);

@@ -56,13 +56,14 @@ describe("<SkillFormModal />", () => {
       test("should call mock functions", async () => {
         renderComponent(ActionTypes.ADD);
         const closeModal = AddEditForm.mock.calls[0][0].closeModal;
-        act(() => closeModal());
+        closeModal();
         expect(mockSetSaveResult).toHaveBeenCalledTimes(1);
         expect(mockSetSaveResult).toHaveBeenCalledWith({
           message: "",
           status: null
         });
-        expect(Modal.mock.calls[1][0].open).toBe(false);
+        expect(mockSetAction).toBeCalledTimes(1);
+        expect(mockSetAction).toBeCalledWith(null);
       });
     });
   });
@@ -82,7 +83,8 @@ describe("<SkillFormModal />", () => {
           message: "",
           status: null
         });
-        expect(Modal.mock.calls[1][0].open).toBe(false);
+        expect(mockSetAction).toBeCalledTimes(1);
+        expect(mockSetAction).toBeCalledWith(null);
       });
     });
   });

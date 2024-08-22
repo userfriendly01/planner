@@ -19,13 +19,11 @@ import {
 } from "services/skillgroup";
 import { timeouts } from "globals";
 import { ModalOverlayStatuses } from "globals/interfaces";
-import { Skill } from "callflowmanagement/Skills.Interfaces";
 import {
   ConfirmationSkillGroupsDiv,
   ConfirmationSkillList
 } from "./SkillGroup.Styles";
 import { Dropdown } from "components/Dropdown";
-import _ from "lodash";
 import { loadConsolidatedSkills } from "services/skill";
 import { logger } from "utils/logger";
 import { escapeQuotes } from "utils";

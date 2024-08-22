@@ -30,20 +30,25 @@ import {
   Divider
 } from "@mui/material";
 import {
-  createSkill, loadConsolidatedSkills
+  createSkill, editSkill, loadConsolidatedSkills
 } from "services/skill";
 import { getTaskQueues } from "services/taskQueues";
 import { logger } from "utils/logger";
 import {
-  areVhFieldsValid, isSkillFormValid
+  areVhFieldsValid, getSkillFormChanges, isSkillFormValid
 } from "utils/skillsUtils";
-import { TwilioQueue } from "../Skills.Interfaces";
+import {
+  ActionTypes, Skill, TwilioQueue
+} from "../Skills.Interfaces";
 import { formatErrorMessage } from "utils/_formatUtils";
 
 
 export const AddEditForm = (props: any) => {
   const {
-    closeModal, setAction
+    action,
+    tableState,
+    closeModal,
+    setAction
   } = props;
 
   const skillState = useSkillState();
@@ -52,7 +57,9 @@ export const AddEditForm = (props: any) => {
   const state = useAdminState();
   const { nNumber } = state.userContext;
   const skills = skillState.skills;
+  const taskQueues = skillState.taskQueues;
 
+  const [ changes, setChanges ] = React.useState({});
   const [ selectedTab, setSelectedTab ] = React.useState(0);
   const [ missingFields, setMissingFields ] = React.useState<string[]>([]);
 
@@ -61,7 +68,29 @@ export const AddEditForm = (props: any) => {
     message: null
   });
 
-  const addSkill = async () => {
+  React.useEffect(() => {
+    if(action === ActionTypes.EDIT && tableState.selected.length === 1){
+      const skill = skills.find((s: Skill) => s.name === tableState.selected[0]);
+      skillDispatch({
+        type: skillActions.SET_UPDATE_SKILL_FORM,
+        payload: {
+          skill,
+          taskQueue: taskQueues.find((t: TwilioQueue) => t.sid === skill?.taskQueueSid)
+        }
+      });
+    }
+  }, []);
+
+  React.useEffect(() => {
+    if(skillState.skillForm.formMode === formModes.UPDATE){
+      const originalSkill = skills.find((s: Skill) => s.name === tableState.selected[0]);
+      setChanges(getSkillFormChanges(originalSkill, skillState.skillForm));
+    }
+  }, [skillState.skillForm]);
+
+
+  const handleOnSave = async () => {
+    const isAdd = skillState.skillForm.formMode === formModes.INSERT;
 
     const refreshState = async () => {
       const reloadTaskQueues = skillState.skillForm.taskQueue.isNew;
@@ -93,17 +122,22 @@ export const AddEditForm = (props: any) => {
     });
 
     try {
-      const response = await createSkill(skillState.skillForm, nNumber);
+      let response;
+      if(isAdd){
+        response = await createSkill(skillState, nNumber);
+      } else {
+        response = await editSkill(changes, skillState, nNumber);
+      }
 
       if (response.status === 200) {
-        logger.info(`Successfully created new skill ${skillState.skillForm.name}`, {
+        logger.info(`Successfully ${isAdd ? "created" : "updated"} new skill ${skillState.skillForm.name}`, {
           nNumber,
           skillFriendlyName: skillState.skillForm.taskQueue.friendly_name,
           name: skillState.skillForm.name
         });
 
         setSaveResult({
-          message: "Skill Successfully Created",
+          message: `Skill Successfully ${isAdd ? "Created" : "Updated"}`,
           status: ModalOverlayStatuses.SUCCESS
         });
 
@@ -121,7 +155,7 @@ export const AddEditForm = (props: any) => {
           });
         }, timeouts.MODAL_OVERLAY);
       } else {
-        logger.warn(`Partially created new skill ${skillState.skillForm.name}`, {
+        logger.warn(`Partially ${isAdd ? "created" : "updated"} new skill ${skillState.skillForm.name}`, {
           nNumber,
           skillFriendlyName: skillState.skillForm.taskQueue.friendly_name,
           name: skillState.skillForm.name,
@@ -140,13 +174,13 @@ export const AddEditForm = (props: any) => {
         });
       }
     } catch (error) {
-      logger.error("Error when adding Skill", {
+      logger.error(`Error when ${isAdd ? "creating" : "updating"} Skill`, {
         error,
         nNumber,
         skill: skillState.skillForm.name
       });
       setSaveResult({
-        message: `Failed to Create Skill: ${formatErrorMessage(error)}`,
+        message: `Failed to ${isAdd ? "Create" : "Update"} Skill: ${formatErrorMessage(error)}`,
         status: ModalOverlayStatuses.FAIL
       });
     }
@@ -162,6 +196,7 @@ export const AddEditForm = (props: any) => {
             handleClose={closeModal}
           />
         }
+
         {saveResult.status === ModalOverlayStatuses.PARTIAL_FAIL ?
           <SkillsDetailWrapper>
             <FormRow>
@@ -196,36 +231,55 @@ export const AddEditForm = (props: any) => {
           </SkillsDetailWrapper>
           :
           <>
-            <CenteredDiv style={{ fontSize: "25px" }}>Add Skill</CenteredDiv>
-            <SkillTabs value={selectedTab}>
-              <Tab label="General Skill Settings" onClick={() => setSelectedTab(0)} />
-              <Tab label="Dynamic Routing" onClick={() => setSelectedTab(1)}/>
-              <Tab label="Legacy Callflow Database" onClick={() => setSelectedTab(2)} />
-            </SkillTabs>
-            <Divider/>
-            { selectedTab === 0 && <GeneralSkillForm/>}
-            { selectedTab === 1 && <FormRow>Dynamic Routing will be migrated over to use this skill in a future sprint</FormRow>}
-            { selectedTab === 2 && <CallflowSkillForm missingFields={missingFields}/>}
-            <Divider/>
-            <div style={{
-              textAlign: "center",
-              margin: "10px"
-            }}>Please review all tabs for required * fields</div>
-            <ButtonWrapper>
-              <StyledButton
-                style={{ width: "200px" }}
-                onClick={() => {
-                  closeModal();
-                  skillDispatch({
-                    type: skillActions.RESET_FORM
-                  });
-                }} >Cancel</StyledButton>
-              <StyledButton
-                onClick={addSkill}
-                style={{ width: "200px" }}
-                disabled={!isSkillFormValid(skills, skillState.skillForm)}
-              >{skillState.skillForm.formMode === formModes.INSERT ? "Add " : "Update "}Skill</StyledButton>
-            </ButtonWrapper>
+            { action === ActionTypes.EDIT && tableState.selected.length !== 1 ?
+              <SkillsDetailWrapper>
+                A single skill must be selected from the table to edit
+                <ButtonWrapper>
+                  <StyledButton
+                    style={{ width: "200px" }}
+                    onClick={() => {
+                      closeModal();
+                      skillDispatch({
+                        type: skillActions.RESET_FORM
+                      });
+                    }} >Close</StyledButton>
+                </ButtonWrapper>
+              </SkillsDetailWrapper>
+              :
+              <>
+                <CenteredDiv style={{ fontSize: "25px" }}>Add Skill</CenteredDiv>
+                <SkillTabs value={selectedTab}>
+                  <Tab label="General Skill Settings" onClick={() => setSelectedTab(0)} />
+                  <Tab label="Dynamic Routing" onClick={() => setSelectedTab(1)}/>
+                  <Tab label="Legacy Callflow Database" onClick={() => setSelectedTab(2)} />
+                </SkillTabs>
+                <Divider/>
+                { selectedTab === 0 && <GeneralSkillForm/>}
+                { selectedTab === 1 && <FormRow>Dynamic Routing will be migrated over to use this skill in a future sprint</FormRow>}
+                { selectedTab === 2 && <CallflowSkillForm missingFields={missingFields}/>}
+                <Divider/>
+                <div style={{
+                  textAlign: "center",
+                  margin: "10px"
+                }}>Please review all tabs for required * fields</div>
+                <ButtonWrapper>
+                  <StyledButton
+                    style={{ width: "200px" }}
+                    onClick={() => {
+                      closeModal();
+                      skillDispatch({
+                        type: skillActions.RESET_FORM
+                      });
+                    }} >Cancel</StyledButton>
+                  <StyledButton
+                    onClick={handleOnSave}
+                    style={{ width: "200px" }}
+                    disabled={!isSkillFormValid(skills, skillState.skillForm, changes)}
+                  >{skillState.skillForm.formMode === formModes.INSERT ? "Add " : "Update "}Skill</StyledButton>
+                </ButtonWrapper>
+              </>
+            }
+
           </>
         }
       </ScrollingPaper>
