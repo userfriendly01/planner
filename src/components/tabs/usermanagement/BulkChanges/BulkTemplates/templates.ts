@@ -525,13 +525,13 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: A
           console.log("JULIA - VALUE?? ", currentSkills.levels[skillLevel]);
           if (!(skillsToDelete.levels[skillLevel] && currentSkills.levels[skillLevel] === skillsToDelete.levels[skillLevel])) {
             // if skill isnt in skillsToDelete, re-add it to object
-            console.log("JULIA - FOUND SKILL TO DELETE IN CURRENT SKILLS", skillLevel, " ", currentSkills.levels[skillLevel]);
+            console.log("JULIA - KEEPING SKILL/LEVEL", skillLevel, " ", currentSkills.levels[skillLevel]);
             updatedDefaultSkills.levels[skillLevel] = currentSkills.levels[skillLevel];
           }
         }
       }
     }
-    console.log("JULIA - UPDATED DEFAULT SKILLZ (to delete): ", updatedDefaultSkills);
+    console.log("JULIA - UPDATED DEFAULT SKILLZ: ", updatedDefaultSkills);
 
     body.attributes = { "default_skills": updatedDefaultSkills };
 
@@ -540,7 +540,7 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: A
       body
     });
 
-    // await updateUser(workerSid, body);
+    await updateUser(workerSid, body);
 
     const message = `${workerSid} - Default Skills updated for row ${rowNumber}`;
 
