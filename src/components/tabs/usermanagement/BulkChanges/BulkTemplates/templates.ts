@@ -508,15 +508,13 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: A
         skills: [...currentSkills, ...newSkills]
       };
     } else if (option.value === "DELETE") {
-      // todo: update for multiple skillz
       const skillsToDelete = value;
       const currentSkills = row.attributes?.default_skills || {};
 
-      console.log("JULIA - VALUE", value);
+      console.log("JULIA - VALUE", value); //todo: cleanup
       console.log("JULIA - SKILLS TO DELETE: ", skillsToDelete.skills);
       console.log("JULIA - CURRENT SKILLS: ", currentSkills);
 
-      // updatedDefaultSkills.skills = currentSkills.skills?.filter((s: any) => s !== skillsToDelete); // wont work with multiple skills to delete
       updatedDefaultSkills.skills = currentSkills.skills?.filter((s: any) => !skillsToDelete.skills.includes(s));
       updatedDefaultSkills.levels = {};
       if (currentSkills.levels) {
@@ -524,9 +522,9 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: A
           console.log("JULIA - SKILLLEVEL", skillLevel);
           console.log("JULIA - VALUE?? ", currentSkills.levels[skillLevel]);
           if (!(skillsToDelete.levels[skillLevel] && currentSkills.levels[skillLevel] === skillsToDelete.levels[skillLevel])) {
-            // if skill isnt in skillsToDelete, re-add it to object
             console.log("JULIA - KEEPING SKILL/LEVEL", skillLevel, " ", currentSkills.levels[skillLevel]);
             updatedDefaultSkills.levels[skillLevel] = currentSkills.levels[skillLevel];
+            updatedDefaultSkills.skills.push(skillLevel);
           }
         }
       }
