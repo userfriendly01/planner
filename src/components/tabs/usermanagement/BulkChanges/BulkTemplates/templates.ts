@@ -516,15 +516,22 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: A
       console.log("JULIA - CURRENT SKILLS: ", currentSkills);
 
       updatedDefaultSkills.skills = currentSkills.skills?.filter((s: any) => !skillsToDelete.skills.includes(s));
-      updatedDefaultSkills.levels = {};
+      updatedDefaultSkills.levels = currentSkills.levels;
+
       if (currentSkills.levels) {
-        for (const skillLevel in currentSkills.levels) {
+        for (const skillLevel in updatedDefaultSkills.levels) {
           console.log("JULIA - SKILLLEVEL", skillLevel);
-          console.log("JULIA - VALUE?? ", currentSkills.levels[skillLevel]);
-          if (!(skillsToDelete.levels[skillLevel] && currentSkills.levels[skillLevel] === skillsToDelete.levels[skillLevel])) {
-            console.log("JULIA - KEEPING SKILL/LEVEL", skillLevel, " ", currentSkills.levels[skillLevel]);
-            updatedDefaultSkills.levels[skillLevel] = currentSkills.levels[skillLevel];
-            updatedDefaultSkills.skills.push(skillLevel);
+          console.log("JULIA - VALUE?? ", updatedDefaultSkills.levels[skillLevel]);
+          if (skillsToDelete.levels[skillLevel]){
+            if (updatedDefaultSkills.levels[skillLevel] === skillsToDelete.levels[skillLevel]) {
+              delete updatedDefaultSkills.levels[skillLevel];
+              console.log("JULIA - ", skillLevel, " matches level, set to null");
+            } else {
+              console.log("JULIA - ", skillLevel, " did not match, adding back to skills array");
+              updatedDefaultSkills.skills.push(skillLevel);
+            }
+          } else {
+            console.log("JULIA - SKILL DOES NOT EXISTS IN LEVELS");
           }
         }
       }
