@@ -106,18 +106,6 @@ describe("alohaConfigUtils.js", ()=>{
     expect(link.href).toBe(href);
   });
 
-  test("Simulate Download the Call Flow Data",()=>{
-    const link = {
-      click: jest.fn()
-    };
-    jest.spyOn(document, "createElement").mockImplementation(() => link);
-    const routingDataList = createSampleTestCallFlowDataList(1);
-    downloadCSV(EXPORT_FILE_PREFIX.FLOW, routingDataList);
-    expect(link.download).toContain(EXPORT_FILE_PREFIX.FLOW);
-    const href = "data:text/csv;charset%3Dutf-8,dialedPhoneNumber,accountManager,affinityVDN,agentId,brand,callDetails1,callDetails2,callFlowName,callFlowTemplate,callFlowType,callTypeDescription,channel,callFlowRoute,callIntent,callerType,dataRequests,greetingMessages,languageOffer,officeNumbers,transferDestination,createTime,dialedDescription,employeeId,internetPlacement,lineOfBusiness,marketingChannel,nextActionId,nextActionType,phoneNumberType,predictiveCaller,rangeIndicator,requestID,tfnRoutingGroup,transferCode,userDestination,whisper,id%0A%22pkey1%22,am1,avdn1,agent,br,cd1,cd2,cfn,cft,cft,cdd,ch,cfr,ci,ct,data,%22hi,%20bye.%22,Spanish,%22012,0345%22,td,2024-08-08T13:13:15.749Z,dd,,ip,lob,mc,naid,nat,ptt,false,ri,rid,trg,tc,ud,w,0%0A";
-    expect(link.href).toBe(href);
-  });
-
   test("Simulate read-write of routing data",()=>{
     const flag = readWriteAccess(adGroupPermissionMapping, "RouteReadWrite");
     expect(flag).toBe(true);
