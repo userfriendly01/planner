@@ -11,7 +11,9 @@ import {
 import { ReactGridApi } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
 import { FieldOptions } from "components/tabs/dynamicCallFlow/common/Form/AbstractFormFieldOptionsManager";
 import { RequiredPhoneNumberFormFields } from "components/tabs/dynamicCallFlow/phoneNumber/Form/Legacy.PhoneNumber.Form.FieldConfigs";
-import { OFFICE_NUMBERS, PREDICTIVE_CALLER } from "components/tabs/dynamicCallFlow/phoneNumber/Form/Dynamic.PhoneNumber.Form.Fields";
+import {
+  OFFICE_NUMBERS, PREDICTIVE_CALLER
+} from "components/tabs/dynamicCallFlow/phoneNumber/Form/Dynamic.PhoneNumber.Form.Fields";
 
 
 const reconstructTableColumnDef = (modalType: PhoneNumberModalType, columnDef: Array<GridColDef>, previewModalGridApiRef: ReactGridApi, fieldOptions: FieldOptions): Array<GridColDef> =>{
