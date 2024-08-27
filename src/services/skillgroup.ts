@@ -5,7 +5,7 @@ import {
 import { apolloClient } from "../components/core/Auth/SharedGraphAPIProvider";
 import {
   CREATE_SKILL_GROUP, DELETE_SKILL_GROUP, UPDATE_SKILL_GROUP
-} from "globals/graphql";
+} from "globals/skillGroup";
 
 export const addSkillGroup = async (requestBody: AddEditSkillGroupBody): Promise<any> => {
   const {

@@ -3,7 +3,7 @@ import {
   isDidUser
 } from "../fields";
 import { fetchUser } from "services/fetchUser";
-import { generateExtension } from "services/checkExtension";
+import { generateExtension } from "utils/checkExtensionUtils";
 import {
   initialSkillState,
   initialTestState
@@ -13,7 +13,7 @@ jest.mock("services/fetchUser", () => ({
   fetchUser: jest.fn()
 }));
 
-jest.mock("services/checkExtension", () => ({
+jest.mock("utils/checkExtensionUtils", () => ({
   generateExtension: jest.fn()
 }));
 

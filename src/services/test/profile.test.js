@@ -13,6 +13,9 @@ import {
   loadSoftphoneConfigRelationships
 } from "../profile";
 import { apolloClient } from "components/core/Auth/SharedGraphAPIProvider";
+import {
+  mockAccessGroups, mockCallTagOptions, mockCallTags
+} from "testUtils";
 import { logger } from "utils/logger";
 
 jest.mock("components/core/Auth/SharedGraphAPIProvider", () => ({
@@ -32,7 +35,13 @@ const profileRes1 = {
   profiles: { items: [ { profile_id: 1 }]},
   screenpops: { items: [{ sk: "Screenpop#1" }]},
   accessGroups: { items: [{ sk: "AccessGroup#1" }]},
-  activities: { items: [{ sk: "Activity#1" }]},
+  activities: {
+    items: [{
+      sk: "Activity#1",
+      activity_name: "Activity 1",
+      available: true
+    }]
+  },
   directoryEntries: { items: [{ thing: "hi" }]},
   dialListEntries: { items: [{ cool: "beans" }]}
 };
@@ -48,7 +57,11 @@ describe("listUMSoftphoneConfigs", () => {
           profiles: [ { profile_id: 1 }],
           screenpops: [{ sk: "Screenpop#1" }],
           accessGroups: [{ sk: "AccessGroup#1" }],
-          activities: [{ sk: "Activity#1" }],
+          activities: [{
+            sk: "Activity#1",
+            activity_name: "Activity 1 (A)",
+            available: true
+          }],
           directoryEntries: [{ thing: "hi" }],
           dialListEntries: [{ cool: "beans" }]
         }
@@ -77,7 +90,11 @@ describe("listUMSoftphoneConfigs", () => {
           profiles: [ { profile_id: 1 }, { profile_id: 2 }],
           screenpops: [{ sk: "Screenpop#1" }],
           accessGroups: [{ sk: "AccessGroup#1" }],
-          activities: [{ sk: "Activity#1" }],
+          activities: [{
+            sk: "Activity#1",
+            activity_name: "Activity 1 (A)",
+            available: true
+          }],
           dialListEntries: [{ cool: "beans" }],
           directoryEntries: [{ thing: "hi" }]
         }
@@ -209,16 +226,32 @@ describe("listUMSoftphoneConfigs", () => {
 
 describe("loadSoftphoneConfigRelationships", () => {
   const profiles = [
-    { profile_id: 1 },
     {
-      profile_id: 2
+      profile_id: 1,
+      profile_name: "BSC"
     },
-    { profile_id: 3 }
+    {
+      profile_id: 2,
+      profile_name: "AISG"
+    },
+    {
+      profile_id: 3,
+      profile_name: "BUTTS"
+    }
   ];
+  const profileContext = {
+    profiles,
+    accessGroups: mockAccessGroups
+  };
   const profileData2 = {
     profile: {
-      accessGroup: null,
-      activities: [{ sk: "Activity#1" }],
+      access_group: mockAccessGroups[0],
+      call_tags: mockCallTags,
+      activities: [{
+        sk: "Activity#1",
+        activity_name: "Activity 1",
+        available: true
+      }],
       directoryNumbers: [{ sk: "DirectoryNumber#1" }],
       dialListNumbers: [{ sk: "QuickDialNumber#1" }]
     }
@@ -249,30 +282,63 @@ describe("loadSoftphoneConfigRelationships", () => {
       }
     });
     const mockCallback = jest.fn();
-    loadSoftphoneConfigRelationships(profiles, mockedDispatch, mockCallback).then(() => {
+    loadSoftphoneConfigRelationships(profileContext, mockedDispatch, mockCallback).then(() => {
       expect(apolloClient.query).toHaveBeenCalledTimes(3);
       expect(mockedDispatch).toHaveBeenCalledTimes(1);
       expect(mockedDispatch).toHaveBeenCalledWith({
         type: "loadProfileOptions",
         payload: {
+          calltags: mockCallTagOptions,
+          accessGroups: [
+            {
+              ...mockAccessGroups[0],
+              viewable_profiles: [
+                "1-BSC",
+                "2-AISG",
+                "3-BUTTS"
+              ]
+            },
+            {
+              ...mockAccessGroups[1],
+              viewable_profiles: []
+            }
+          ],
           profiles: [{
             profile_id: 1,
-            accessGroup: null,
-            activities: [{ sk: "Activity#1" }],
+            profile_name: "BSC",
+            access_group: mockAccessGroups[0],
+            activities: [{
+              sk: "Activity#1",
+              activity_name: "Activity 1 (A)",
+              available: true
+            }],
+            call_tags: mockCallTags,
             directoryNumbers: [{ sk: "DirectoryNumber#1" }],
             dialListNumbers: [{ sk: "QuickDialNumber#1" }]
           },
           {
             profile_id: 2,
-            accessGroup: null,
-            activities: [{ sk: "Activity#1" }],
+            profile_name: "AISG",
+            access_group: mockAccessGroups[0],
+            activities: [{
+              sk: "Activity#1",
+              activity_name: "Activity 1 (A)",
+              available: true
+            }],
+            call_tags: mockCallTags,
             directoryNumbers: [{ sk: "DirectoryNumber#1" }],
             dialListNumbers: [{ sk: "QuickDialNumber#1" }]
           },
           {
             profile_id: 3,
-            accessGroup: null,
-            activities: [{ sk: "Activity#1" }],
+            profile_name: "BUTTS",
+            access_group: mockAccessGroups[0],
+            activities: [{
+              sk: "Activity#1",
+              activity_name: "Activity 1 (A)",
+              available: true
+            }],
+            call_tags: mockCallTags,
             directoryNumbers: [{ sk: "DirectoryNumber#1" }],
             dialListNumbers: [{ sk: "QuickDialNumber#1" }]
           }]
@@ -300,26 +366,53 @@ describe("loadSoftphoneConfigRelationships", () => {
         }
       }
     });
-    loadSoftphoneConfigRelationships(profiles, mockedDispatch).then(() => {
+    loadSoftphoneConfigRelationships(profileContext, mockedDispatch).then(() => {
       expect(apolloClient.query).toHaveBeenCalledTimes(3);
       expect(mockedDispatch).toHaveBeenCalledTimes(1);
       expect(mockedDispatch).toHaveBeenCalledWith({
         type: "loadProfileOptions",
         payload: {
+          calltags: mockCallTagOptions,
+          accessGroups: [
+            {
+              ...mockAccessGroups[0],
+              viewable_profiles: [
+                "1-BSC",
+                "3-BUTTS"
+              ]
+            },
+            {
+              ...mockAccessGroups[1],
+              viewable_profiles: []
+            }
+          ],
           profiles: [{
             profile_id: 1,
-            accessGroup: null,
-            activities: [{ sk: "Activity#1" }],
+            profile_name: "BSC",
+            access_group: mockAccessGroups[0],
+            call_tags: mockCallTags,
+            activities: [{
+              sk: "Activity#1",
+              activity_name: "Activity 1 (A)",
+              available: true
+            }],
             directoryNumbers: [{ sk: "DirectoryNumber#1" }],
             dialListNumbers: [{ sk: "QuickDialNumber#1" }]
           },
           {
-            profile_id: 2
+            profile_id: 2,
+            profile_name: "AISG"
           },
           {
             profile_id: 3,
-            accessGroup: null,
-            activities: [{ sk: "Activity#1" }],
+            profile_name: "BUTTS",
+            access_group: mockAccessGroups[0],
+            call_tags: mockCallTags,
+            activities: [{
+              sk: "Activity#1",
+              activity_name: "Activity 1 (A)",
+              available: true
+            }],
             directoryNumbers: [{ sk: "DirectoryNumber#1" }],
             dialListNumbers: [{ sk: "QuickDialNumber#1" }]
           }]
@@ -354,26 +447,53 @@ describe("loadSoftphoneConfigRelationships", () => {
         }
       }
     });
-    loadSoftphoneConfigRelationships(profiles, mockedDispatch).then(() => {
+    loadSoftphoneConfigRelationships(profileContext, mockedDispatch).then(() => {
       expect(apolloClient.query).toHaveBeenCalledTimes(3);
       expect(mockedDispatch).toHaveBeenCalledTimes(1);
       expect(mockedDispatch).toHaveBeenCalledWith({
         type: "loadProfileOptions",
         payload: {
+          accessGroups: [
+            {
+              ...mockAccessGroups[0],
+              viewable_profiles: [
+                "1-BSC",
+                "3-BUTTS"
+              ]
+            },
+            {
+              ...mockAccessGroups[1],
+              viewable_profiles: []
+            }
+          ],
+          calltags: mockCallTagOptions,
           profiles: [{
             profile_id: 1,
-            accessGroup: null,
-            activities: [{ sk: "Activity#1" }],
+            profile_name: "BSC",
+            access_group: mockAccessGroups[0],
+            activities: [{
+              sk: "Activity#1",
+              activity_name: "Activity 1 (A)",
+              available: true
+            }],
+            call_tags: mockCallTags,
             directoryNumbers: [{ sk: "DirectoryNumber#1" }],
             dialListNumbers: [{ sk: "QuickDialNumber#1" }]
           },
           {
-            profile_id: 2
+            profile_id: 2,
+            profile_name: "AISG"
           },
           {
             profile_id: 3,
-            accessGroup: null,
-            activities: [{ sk: "Activity#1" }],
+            profile_name: "BUTTS",
+            access_group: mockAccessGroups[0],
+            activities: [{
+              sk: "Activity#1",
+              activity_name: "Activity 1 (A)",
+              available: true
+            }],
+            call_tags: mockCallTags,
             directoryNumbers: [{ sk: "DirectoryNumber#1" }],
             dialListNumbers: [{ sk: "QuickDialNumber#1" }]
           }]

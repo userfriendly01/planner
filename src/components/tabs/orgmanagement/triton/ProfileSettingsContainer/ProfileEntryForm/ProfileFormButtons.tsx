@@ -82,7 +82,10 @@ export const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
         saveProfile: true
       });
       const profiles = await listUMSoftphoneConfigs(dispatch);
-      loadSoftphoneConfigRelationships(profiles, dispatch);
+      loadSoftphoneConfigRelationships({
+        ...state.profileContext,
+        profiles
+      }, dispatch);
       wait(() => {
         updateLoading({
           ...loading,

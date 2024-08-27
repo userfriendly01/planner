@@ -69,6 +69,7 @@ export const propertyOptions: any = {
     },
     actions: [
       ActionTypes.ADD,
+      ActionTypes.EDIT,
       ActionTypes.DELETE
     ]
   }
@@ -111,17 +112,6 @@ export interface AddEditSkillGroupBody {
   skill_ids?: string[]
 }
 
-export interface AddEditSkill {
-  name: string,
-  applicationId: number,
-  taskQueueSid: string,
-  profileIds: number[],
-  vhCallTarget: string | null,
-  vhThreshold: number | null,
-  updatedBy: string,
-  timeOfDayIds: TimeOfDayRequestObject[]
-}
-
 export interface Application {
   applicationId: number,
   applicationName: string
@@ -159,7 +149,7 @@ export interface SkillFormState {
     max: any
   },
   timeOfDays: TimeOfDayRequestObject[],
-  vhThreshold?: string,
+  vhThreshold?: number | string,
   vhCallTarget: string,
 }
 
@@ -188,6 +178,7 @@ export interface TwilioQueueRequest {
 */
 
 export interface TimeOfDay {
+  dayOfWeekId?: number,
   timeOfDayId: number,
   openTime: string,
   closeTime: string
@@ -210,9 +201,9 @@ export interface CallflowSkill {
   skillName: string,
   closedMessage: string,
   flashMessage: string,
-  applicationId: number,
-  vhThreshold: number,
-  vhCallTarget: string,
+  application_id: number,
+  vh_threshold_tme: number,
+  vh_call_target: string,
   timeOfDays: TimeOfDay[],
   updatedBy?: string
 }
@@ -256,7 +247,7 @@ export interface Skill {
   flashMessage: string,
   timeOfDays: any[],
   vhCallTarget: string,
-  vhThreshold: number
+  vhThreshold?: number | string
 }
 
 export interface SkillGroup {

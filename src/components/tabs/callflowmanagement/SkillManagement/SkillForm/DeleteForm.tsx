@@ -14,10 +14,7 @@ import {
   SkillsDetailWrapper
 } from "../Skills.Styles";
 import { timeouts } from "globals";
-import {
-  Divider,
-  Checkbox
-} from "@mui/material";
+import { Divider } from "@mui/material";
 import { formatErrorMessage } from "utils/_formatUtils";
 import { logger } from "utils/logger";
 import {
@@ -25,7 +22,7 @@ import {
   identifyImpactedWorkers
 } from "utils/skillsUtils";
 import {
-  ModalOverlayStatuses, UMUser, FlexColumn
+  ModalOverlayStatuses, UMUser
 } from "globals/interfaces";
 import { ModalOverlay } from "components/core/ModalOverlay/ModalOverlay";
 import { TwilioQueue } from "../Skills.Interfaces";
@@ -50,9 +47,9 @@ export const DeleteForm = (props: any) => {
   const { nNumber } = state.userContext;
   const taskQueues = skillState.taskQueues;
   const formattedSkills = tableState.selected.map((sk: any) => ({
-    name: sk.name,
-    targetWorkers: getTargetExpression(sk.name),
-    matchingQueue: taskQueues.find(tq => tq.target_workers.includes(getTargetExpression(sk.name))) || {} //Filter?
+    name: sk,
+    targetWorkers: getTargetExpression(sk),
+    matchingQueue: taskQueues.find(tq => tq.target_workers.includes(getTargetExpression(sk))) || {} //Filter?
   }));
   const [ shouldDeleteQueue, setShouldDeleteQueue ] = useState(false);
   const [ impactedWorkers, setImpactedWorkers ] = useState(identifyImpactedWorkers(state.workerContext.workers, formattedSkills));

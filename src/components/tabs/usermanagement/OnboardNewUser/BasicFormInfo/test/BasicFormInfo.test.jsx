@@ -1018,7 +1018,7 @@ describe("<BasicFormInfo />", () => {
       test("Should render the correct initial state", () => {
         renderComponent();
         const backupWorkerToolTip = Tooltip.mock.calls[1][0];
-        expect(backupWorkerToolTip.title).toBe("Backup Workers Enable/Disable");
+        expect(backupWorkerToolTip.title).toBe("Backup Workers active/inactive flag - To enable this feature, please add backup worker(s) in Routing Attributes section.");
         expect(backupWorkerToolTip.placement).toBe("bottom-start");
         const rendered = render(backupWorkerToolTip.children);
         expect(rendered.container).toHaveTextContent("Backup Workers");

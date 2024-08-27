@@ -1,12 +1,11 @@
-import { CctSharedCallRoutingDb } from "alohaRouting/AlohaRouting.Interfaces";
+import {
+  CctSharedCallRoutingDb, getCctSharedCallRoutingDbShell
+} from "alohaRouting/AlohaRouting.Interfaces";
 import { AlertBarProps } from "globals/interfaces";
 import {
   ADGroupPermission, BrandNameMap, GraphQLErrors
 } from "globals/interfaces";
 import { env } from "globals";
-import {
-  CctSharedCallFlowDb, FlowContent
-} from "dynamicCallFlowPhoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
 
 export const initializedAlertBar: AlertBarProps = {
   open: false,
@@ -25,31 +24,22 @@ export const EXPORT_FILE_PREFIX: {
   ROUTING: "routing-rules"
 };
 
-const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb | CctSharedCallRoutingDb>, prefix: string): string => {
+const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallRoutingDb>, prefix: string): string => {
   let result: string;
   const columnDelimiter = ",";
   const lineDelimiter = "\n";
   if(array.length ===0){
     return;
   }
-  let keys: string[] = Object.keys(array[0]);
+  const firstRowModel: CctSharedCallRoutingDb = getCctSharedCallRoutingDbShell();
+  let keys: string[] = Object.keys(firstRowModel);
+
   const contentStore : string[] =[];
-  let contentKeys: string[] = [];
   const jsonFormatKeys: string[] = ["occupancyCheck", "routingSteps", "options", "repeat"];
   const nullValueCheck = ["null", null, undefined];
-  let flag = false;
+  const flag = false;
   for( let i=0; i<keys.length; i++){
-    if(keys[i] === "content"){
-      const arrayStore: CctSharedCallFlowDb = array[0] as CctSharedCallFlowDb;
-      contentKeys= Object.keys(arrayStore.content);
-      contentKeys.forEach(key=>{
-        contentStore.push(key);
-      });
-      flag = true;
-    }
-    else{
-      contentStore.push(keys[i]);
-    }
+    contentStore.push(keys[i]);
   }
   if(flag){
     keys = contentStore;
@@ -58,25 +48,18 @@ const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb | CctSharedC
   const header = keys.map((key: string)=>key === "pkey" && prefix === EXPORT_FILE_PREFIX.FLOW? "dialedPhoneNumber": key);
   result += header.join(columnDelimiter);
   result += lineDelimiter;
-  array.forEach((item:CctSharedCallFlowDb & CctSharedCallRoutingDb) => {
+  array.forEach((item: CctSharedCallRoutingDb) => {
     let ctr = 0;
     keys.forEach(key => {
       if (ctr > 0) { result += columnDelimiter; }
-      let itemValue = item[key as keyof (CctSharedCallFlowDb | CctSharedCallRoutingDb)];
+      let itemValue = item[key as keyof (CctSharedCallRoutingDb)];
       itemValue = jsonFormatKeys.includes(key)?JSON.stringify(itemValue):itemValue;
-      if(contentKeys.includes(key)){
-        let contentItemVal:string|string[];
-        if(item.content){
-          contentItemVal = item.content[key as keyof FlowContent];
-          itemValue = contentItemVal?contentItemVal.toString():"";
-        }
-      }
-      if(typeof(itemValue)!==  "number" && nullValueCheck.includes(itemValue)){
+      if(typeof(itemValue)!==  "number" && nullValueCheck.includes(itemValue as string)){
         itemValue = "";
       }
       else if(itemValue){
         itemValue = itemValue.toString().replaceAll(/"/g, "\"\"");
-        if (itemValue.includes(",") || itemValue.includes("\"")) {
+        if (itemValue.includes(",") || itemValue.includes("\"") || key === "pkey" || key === "officeNumbers") {
           itemValue = `"${itemValue}"`;
         }
       }
@@ -88,7 +71,7 @@ const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb | CctSharedC
   return result;
 };
 
-export const  downloadCSV = (prefix: string, array:Array<CctSharedCallFlowDb | CctSharedCallRoutingDb>): JSX.Element => {
+export const  downloadCSV = (prefix: string, array:Array<CctSharedCallRoutingDb>): JSX.Element => {
   const link: HTMLAnchorElement = document.createElement("a");
   let csv: string = convertArrayOfObjectsToCSV(array, prefix);
   if (csv === null || csv===undefined) { return; }

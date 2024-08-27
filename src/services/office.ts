@@ -1,6 +1,6 @@
 import {
   CREATE_OFFICE, GET_OFFICE
-} from "globals/graphql";
+} from "globals/office";
 import {
   UMOffice
 }from "globals/interfaces";

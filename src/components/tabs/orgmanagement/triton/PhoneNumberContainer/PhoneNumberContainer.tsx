@@ -49,7 +49,8 @@ export const PhoneNumberContainer = () => {
   const [phoneNumberState, setPhoneNumberState] = useState<PhoneNumberStateProps>(defaultPhoneNumberState);
 
   const [ selectedProfile, setSelectedProfile ] = React.useState(null);
-  const filteredList = selectedProfile ? (type === "Directory" ? directoryEntries.filter((e: any) => e.profile_id === selectedProfile) : dialListEntries.filter((e: any) => e.profile_id === selectedProfile)) : [];
+  const isProfileSelected = selectedProfile || selectedProfile === 0;
+  const filteredList = isProfileSelected  ? (type === "Directory" ? directoryEntries.filter((e: any) => e.profile_id === selectedProfile) : dialListEntries.filter((e: any) => e.profile_id === selectedProfile)) : [];
   const deleteFunction = type === "Directory" ? deleteDirectoryEntry : deleteDialListEntry;
 
   React.useEffect(() => {
@@ -136,7 +137,7 @@ export const PhoneNumberContainer = () => {
         selectedProfile={selectedProfile}
         setSelectedProfile={setSelectedProfile}
       />
-      {selectedProfile &&
+      {isProfileSelected &&
       <AddContactButtonContainer>
         <StyledButton onClick={addButtonOnClick}>
           Add {type} Entry
@@ -172,7 +173,7 @@ export const PhoneNumberContainer = () => {
           }
         </>
       </Modal>
-      { selectedProfile &&
+      { isProfileSelected &&
         <TableContainer>
           <PhoneNumberTable
             type={type}

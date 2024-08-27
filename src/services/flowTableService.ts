@@ -788,7 +788,7 @@ const batchFlowUpdate = async(items: any, accessToken: string) =>{
  */
 const updateFlowBatchRun = async(items: any, accessToken: string) =>{
   const input = items.map((item: any)=>{
-    return {
+    const record = {
       pkey: item.pkey,
       agentId: item.agentId || "",
       brand: item.brand,
@@ -801,11 +801,13 @@ const updateFlowBatchRun = async(items: any, accessToken: string) =>{
         greetingMessages: item.content?.greetingMessages || "",
         transferNumber: item.content?.transferDestination || "",
         languageOffer: item.content?.languageOffer || "",
-        dataRequests: item.content?.dataRequests
+        dataRequests: item.content?.dataRequests,
+        officeNumbers: item.content?.officeNumbers
       },
       createTime: item.createTime,
       updateTime: new Date().toISOString(),
       dialedDescription: item.dialedDescription,
+      employeeId: item.employeeId || "",
       accountManager: item.accountManager || "",
       affinityVDN: item.affinityVDN || "",
       callTypeDescription: item.callTypeDescription || "",
@@ -825,6 +827,12 @@ const updateFlowBatchRun = async(items: any, accessToken: string) =>{
       tfnRoutingGroup: item.tfnRoutingGroup || "",
       type: item.phoneNumberType || ""
     };
+
+    if (!record.employeeId) {
+      delete record.employeeId;
+    }
+
+    return record;
   });
   try {
     const fetchResponse = await fetch(env.GRAPH_API_URL, {
@@ -855,6 +863,7 @@ const updateFlowBatchRun = async(items: any, accessToken: string) =>{
                 greetingMessages
                 languageOffer
                 transferNumber
+                officeNumbers
               }
               createTime
               dialedDescription
@@ -1115,7 +1124,7 @@ const createDynamicFlowRunItem = async(items: any, accessToken: string) =>{
 const createFlowRunItem = async (items: any[], accessToken: string) =>{
   let response;
   const input = items.map(item=>{
-    return {
+    const record = {
       pkey: item.pkey,
       agentId: item.agentId || "",
       brand: item.brand,
@@ -1128,10 +1137,12 @@ const createFlowRunItem = async (items: any[], accessToken: string) =>{
         greetingMessages: item.content?.greetingMessages || "",
         transferNumber: item.content?.transferDestination || "",
         languageOffer: item.content?.languageOffer || "",
-        dataRequests: item.content?.dataRequests
+        dataRequests: item.content?.dataRequests,
+        officeNumbers: item.content?.officeNumbers
       },
       createTime: item.createTime,
       dialedDescription: item.dialedDescription,
+      employeeId: item.employeeId || "",
       accountManager: item.accountManager || "",
       affinityVDN: item.affinityVDN || "",
       callTypeDescription: item.callTypeDescription || "",
@@ -1140,6 +1151,7 @@ const createFlowRunItem = async (items: any[], accessToken: string) =>{
       callDetails1: item.callDetails1 || "",
       callDetails2: item.callDetails2 || "",
       tollFreeNumber: item.tollFreeNumber || "",
+      tfnRoutingGroup: item.tfnRoutingGroup || "",
       lineOfBusiness: item.lineOfBusiness || "",
       marketingChannel: item.marketingChannel || "",
       whisper: item.whisper || "",
@@ -1150,6 +1162,12 @@ const createFlowRunItem = async (items: any[], accessToken: string) =>{
       predictiveCaller: item.predictiveCaller || false,
       selfServiceIndicator: item.selfServiceIndicator || false
     };
+
+    if (!record.employeeId) {
+      delete record.employeeId;
+    }
+
+    return record;
   });
   try {
     const fetchResponse = await fetch(env.GRAPH_API_URL, {
@@ -1180,6 +1198,7 @@ const createFlowRunItem = async (items: any[], accessToken: string) =>{
                 greetingMessages
                 languageOffer
                 transferNumber
+                officeNumbers
               }
               createTime
               dialedDescription

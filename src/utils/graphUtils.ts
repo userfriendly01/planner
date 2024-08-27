@@ -9,10 +9,8 @@ import {
   GraphData,
   UpdateOrCreateUMUser
 }from "globals/interfaces";
-import {
-  LIST_MANAGERS,
-  LIST_USERS
-}from "globals/graphql";
+import { LIST_MANAGERS }from "globals/manager";
+import { LIST_USERS }from "globals/user";
 import {
   logger
 } from "utils/logger";

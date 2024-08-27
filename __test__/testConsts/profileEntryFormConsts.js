@@ -58,6 +58,17 @@ export const mockScreenpops = [
   }
 ];
 
+export const mockCallTagOptions = [
+  {
+    display_name: "Negotiation Type",
+    attribute_name: "negotiation_type"
+  },
+  {
+    display_name: "Claim Number",
+    attribute_name: "claim_number"
+  }
+];
+
 export const mockCallTags = [
   {
     display_name: "Negotiation Type",

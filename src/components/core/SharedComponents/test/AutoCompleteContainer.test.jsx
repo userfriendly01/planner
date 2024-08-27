@@ -31,7 +31,8 @@ const props = {
   field: 'sales_assoc_workers',
   label: 'Sales Associate Worker',
   routingAttribute: 'salesAssociateWorkerRouting',
-  type: 'SET_SALES_ASSOCIATE_WORKER'
+  type: 'SET_SALES_ASSOCIATE_WORKER',
+  onChange: jest.fn(),
 };
 
 const renderComponent = () => {
