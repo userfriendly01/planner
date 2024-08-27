@@ -1,4 +1,5 @@
 import React, {
+  ReactElement,
   useContext, useEffect, useMemo, useRef
 } from "react";
 import {
@@ -53,7 +54,7 @@ interface PreviewModalParameters<RecordType> {
 
 export const PhoneNumberPreviewModal = ({
   isOpen, selectedRecords, updateSourceRecords, onClose, dataGridController, fieldOptions, modalType, maxId
-}: PreviewModalParameters<PhoneNumberRecordType>): JSX.Element => {
+}: PreviewModalParameters<PhoneNumberRecordType>): ReactElement => {
   const {
     accessTokenGraph
   } = useContext(DynamicCallFlowPhoneNumberContext);

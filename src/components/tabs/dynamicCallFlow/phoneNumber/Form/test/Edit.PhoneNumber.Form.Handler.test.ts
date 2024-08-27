@@ -82,7 +82,7 @@ describe("EditPhoneNumberFormHandler", () => {
     };
 
     const response = await handler.handleOnSave(mockAccessToken, invalidPhoneNumber, mockFieldConfigs);
-    expect(response.errorMessage).toEqual(`Phone number is not in the correct format +1##########: ${invalidPhoneNumber.phoneNumber}`);
+    expect(response.errorMessage).toEqual(`Phone number "${invalidPhoneNumber.phoneNumber}" is not in the correct format +1##########.`);
   });
 
   it("should fail from invalid employee id", async () => {
@@ -147,5 +147,29 @@ describe("EditPhoneNumberFormHandler", () => {
 
     const response = await handler.handleOnDelete(mockAccessToken, DynamicPhoneNumberOne);
     expect(response.successMessage).toEqual(`Phone Number ${PhoneNumberRecordUtil.getPhoneNumber(DynamicPhoneNumberOne)} has been successfully deleted.`);
+  });
+
+  it("should handle error on delete", async () => {
+    jest.spyOn(SingleCallFlowRecord, "delete").mockResolvedValue({
+      alertMsg: undefined,
+      errors: [{
+        message: "delete failed"
+      }],
+      record: undefined,
+      hasError: true
+    });
+
+    const response = await handler.handleOnDelete(mockAccessToken, DynamicPhoneNumberOne);
+    expect(response.errorMessage).toEqual("delete failed");
+  });
+
+  it("should handle exception thrown on delete", async () => {
+    jest.spyOn(SingleCallFlowRecord, "delete").mockRejectedValue(new Error("delete failed"));
+
+    try {
+      await handler.handleOnDelete(mockAccessToken, DynamicPhoneNumberOne);
+    } catch (error) {
+      expect(error.message).toEqual("delete failed");
+    }
   });
 });

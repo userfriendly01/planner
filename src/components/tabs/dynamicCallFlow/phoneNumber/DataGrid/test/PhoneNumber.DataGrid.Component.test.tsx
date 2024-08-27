@@ -3,18 +3,14 @@ import {
   GridPaginationModel,
   GridRenderCellParams
 } from "@mui/x-data-grid";
-import { Permissions } from "authentication/authenticationInterfaces";
 import { AlertBarController } from "components/tabs/dynamicCallFlow/common/AlertBar.Controller";
 import * as DynamicCallFlowCommonDataGrid from "components/tabs/dynamicCallFlow/common/DataGrid/DynamicCallFlow.Common.DataGrid";
 import ModalController from "components/tabs/dynamicCallFlow/common/Modal.Controller";
 import { updateElementsInArray } from "components/tabs/dynamicCallFlow/common/Util/Array.Util";
-import { Tokens } from "globals/interfaces";
-import React from "react";
+import React, { ReactElement } from "react";
 import {
   fireEvent,
-  render,
-  RenderResult,
-  waitFor
+  render
 } from "testUtils";
 import DynamicCallFlowPhoneNumberContainer from "../../DynamicCallFlow.PhoneNumber.Container";
 import {
@@ -32,6 +28,13 @@ import {
   mockDynamicPhoneNumber,
   mockLegacyPhoneNumber
 } from "./PhoneNumber.MockData";
+import {
+  DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_PAGE_NUMBER, DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_RECORDS_PER_PAGE
+} from "dynamicCallFlowPhoneNumber/DataGrid/PhoneNumber.DataGrid.Component";
+import {
+  mockContextAppContextMock,
+  waitForElementToRender
+} from "dynamicCallFlowCommon/test/DynamicCallFlow.Testing.Util";
 
 jest.mock("@mui/x-data-grid", () => ({
   DataGrid: jest.fn(),
@@ -71,54 +74,15 @@ jest.mock("../../GraphQL/List.PhoneNumber.Records.Util", () => ({
 jest.mock("components/tabs/dynamicCallFlow/common/Util/Array.Util", () => ({
   updateElementsInArray: jest.fn()
 }));
-const mockReadPermission = Permissions.READ;
+
 jest.mock("context/appContext", () => ({
   useAdminState: jest.fn().mockImplementation(() => {
-    return {
-      userContext: {
-        permissions: [{
-          roles: [{
-            name: "name",
-            permissionLevel: mockReadPermission
-          }],
-          startup: {
-            name: "name",
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            function: (dispatch: any, skillDispatch?: any, tokens?: Tokens) => Promise.resolve()
-          },
-          description: "description",
-          authenticationProfile: {
-            name: "name",
-            permissionLevel: mockReadPermission,
-            home: "home",
-            tabs: ["tabs"]
-          }
-        }],
-        tokens: {
-          sharedGraph: "accessTokenGraph"
-        }
-      }
-    };
+    return mockContextAppContextMock;
   })
 }));
 
-/**
- * Renders the phone number data grid via the container component as a child of DynamicCallFlowPhoneNumberContainer.
- * @returns { RenderResult } The rendered result from the render function.
- */
-const renderPhoneNumberDataGridComponentViaContainer = () => {
-  return render(<DynamicCallFlowPhoneNumberContainer />);
-};
-
-/**
- * Checks to make sure the data grid has loaded by looking for a specific element.
- * @param { RenderResult } rendered result from the render function.
- */
-const waitForPhoneNumberDataGridComponentToLoad = async (rendered: RenderResult) => {
-  await waitFor(() => {
-    expect(rendered.getByText("* Dynamic Only Field")).toBeDefined();
-  });
-};
+const DataGridComponentTestId = "phoneNumberDataGridComponent";
+const ContainerElement: ReactElement = <div data-testid={DataGridComponentTestId}><DynamicCallFlowPhoneNumberContainer data-testid={DataGridComponentTestId}/></div>;
 
 describe("PhoneNumber.DataGrid.Component", () => {
   let alertBarControllerInfoSpy: jest.SpyInstance;
@@ -142,7 +106,7 @@ describe("PhoneNumber.DataGrid.Component", () => {
   describe("initial load", () => {
     describe("successful path", () => {
       it("should fetch and sort phone numbers and then notify the user", async () => {
-        await waitForPhoneNumberDataGridComponentToLoad(renderPhoneNumberDataGridComponentViaContainer());
+        await waitForElementToRender(ContainerElement, DataGridComponentTestId);
 
         expect(listPhoneNumberRecords).toHaveBeenCalledTimes(1);
         expect(alertBarControllerInfoSpy).toHaveBeenCalledWith("Data loading in progress. Please wait for the complete set of data to be loaded.");
@@ -158,7 +122,7 @@ describe("PhoneNumber.DataGrid.Component", () => {
       });
 
       it("should notify the user when an error occurs", async () => {
-        await waitForPhoneNumberDataGridComponentToLoad(renderPhoneNumberDataGridComponentViaContainer());
+        await waitForElementToRender(ContainerElement, DataGridComponentTestId);
 
         expect(alertBarControllerErrorSpy).toHaveBeenCalledWith("Errors loading data.  Please check the console logs.");
       });
@@ -173,7 +137,7 @@ describe("PhoneNumber.DataGrid.Component", () => {
     });
 
     it("should store pagination data in sessionStorage", async () => {
-      await waitForPhoneNumberDataGridComponentToLoad(renderPhoneNumberDataGridComponentViaContainer());
+      await waitForElementToRender(ContainerElement, DataGridComponentTestId);
 
       // Access the onPaginationModelChange function passed to the DataGrid component:
       const handlePaginationModelChange: (model: GridPaginationModel) => void = (DataGrid as jest.Mock).mock.calls[0][0].onPaginationModelChange;
@@ -183,8 +147,8 @@ describe("PhoneNumber.DataGrid.Component", () => {
         pageSize: 25
       });
 
-      expect(sessionStorageSpy).toHaveBeenCalledWith("dynamicCallFlowPhoneNumberDataGridPageNumber", "1");
-      expect(sessionStorageSpy).toHaveBeenCalledWith("dynamicCallFlowPhoneNumberDataGridRecordsPerPage", "25");
+      expect(sessionStorageSpy).toHaveBeenCalledWith(DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_PAGE_NUMBER, "1");
+      expect(sessionStorageSpy).toHaveBeenCalledWith(DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_RECORDS_PER_PAGE, "25");
     });
   });
 
@@ -198,13 +162,12 @@ describe("PhoneNumber.DataGrid.Component", () => {
     });
 
     describe("dynamic phone number", () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         jest.spyOn(PhoneNumberRecordUtil, "isDynamicPhoneNumberRecord").mockReturnValue(true);
+        await waitForElementToRender(ContainerElement);
       });
 
-      it("should display dynamic phone number modals", async () => {
-        await waitForPhoneNumberDataGridComponentToLoad(renderPhoneNumberDataGridComponentViaContainer());
-
+      it("should display dynamic phone number modals", () => {
         // Access the handleModalOpen function passed to the PhoneNumberDataGridToolBar component:
         const onOpenModalFunction: (event: any) => void = (PhoneNumberDataGridToolBar as jest.Mock).mock.calls[0][0].handleModalOpen;
         // Simulate the opening of the add legacy phone number modal:
@@ -221,9 +184,7 @@ describe("PhoneNumber.DataGrid.Component", () => {
         }), {});
       });
 
-      it("should open a new dynamic phone number modal when a dynamic phonw number is cloned", async () => {
-        await waitForPhoneNumberDataGridComponentToLoad(renderPhoneNumberDataGridComponentViaContainer());
-
+      it("should open a new dynamic phone number modal when a dynamic phonw number is cloned", () => {
         // Access the handleModalOpen and onClone functions passed to the PhoneNumberDataGridToolBar and PhoneNumberFormModal components:
         const onOpenModalFunction: (event: any) => void = (PhoneNumberDataGridToolBar as jest.Mock).mock.calls[(PhoneNumberDataGridToolBar as jest.Mock).mock.calls.length - 1][0].handleModalOpen;
         const onCloneModalFunction: () => void = (PhoneNumberFormModal as jest.Mock).mock.calls[0][0].onClone;
@@ -244,9 +205,7 @@ describe("PhoneNumber.DataGrid.Component", () => {
         }), {});
       });
 
-      it("should open a new dynamic phone number edit modal when a dynamic phone number record is selected", async () => {
-        await waitForPhoneNumberDataGridComponentToLoad(renderPhoneNumberDataGridComponentViaContainer());
-
+      it("should open a new dynamic phone number edit modal when a dynamic phone number record is selected", () => {
         // Access the columns array passed to the DataGrid component:
         const phoneNumberDataGridColumnDefArray = (DataGrid as jest.Mock).mock.calls[0][0].columns;
         // The MUI DataGrid component should not be tested since it is from an external library and is therefore mocked (above).
@@ -277,7 +236,7 @@ describe("PhoneNumber.DataGrid.Component", () => {
       });
 
       it("should display legacy phone number modals", async () => {
-        await waitForPhoneNumberDataGridComponentToLoad(renderPhoneNumberDataGridComponentViaContainer());
+        await waitForElementToRender(ContainerElement, DataGridComponentTestId);
 
         // Access the handleModalOpen function passed to the PhoneNumberDataGridToolBar component:
         const onOpenModalFunction: (event: any) => void = (PhoneNumberDataGridToolBar as jest.Mock).mock.calls[0][0].handleModalOpen;
@@ -296,7 +255,7 @@ describe("PhoneNumber.DataGrid.Component", () => {
       });
 
       it("should open a new legacy phone number modal when a legacy phonw number is cloned", async () => {
-        await waitForPhoneNumberDataGridComponentToLoad(renderPhoneNumberDataGridComponentViaContainer());
+        await waitForElementToRender(ContainerElement, DataGridComponentTestId);
 
         // Access the handleModalOpen and onClone functions passed to the PhoneNumberDataGridToolBar and PhoneNumberFormModal components
         const onOpenModalFunction: (event: any) => void = (PhoneNumberDataGridToolBar as jest.Mock).mock.calls[0][0].handleModalOpen;
@@ -319,7 +278,7 @@ describe("PhoneNumber.DataGrid.Component", () => {
       });
 
       it("should open a new legacy phone number edit modal when a legacy phone number record is selected", async () => {
-        await waitForPhoneNumberDataGridComponentToLoad(renderPhoneNumberDataGridComponentViaContainer());
+        await waitForElementToRender(ContainerElement, DataGridComponentTestId);
 
         // Access the columns array passed to the DataGrid component:
         const phoneNumberDataGridColumnDefArray = (DataGrid as jest.Mock).mock.calls[0][0].columns;
@@ -346,7 +305,7 @@ describe("PhoneNumber.DataGrid.Component", () => {
     });
 
     it("should display bulk manipulation phone number modals", async () => {
-      await waitForPhoneNumberDataGridComponentToLoad(renderPhoneNumberDataGridComponentViaContainer());
+      await waitForElementToRender(ContainerElement, DataGridComponentTestId);
 
       // Access the handleModalOpen function passed to the PhoneNumberDataGridToolBar component:
       const onOpenModalFunction: (event: any) => void = (PhoneNumberDataGridToolBar as jest.Mock).mock.calls[0][0].handleModalOpen;
@@ -360,7 +319,7 @@ describe("PhoneNumber.DataGrid.Component", () => {
     });
 
     it("should alert for unrecognized modals", async () => {
-      await waitForPhoneNumberDataGridComponentToLoad(renderPhoneNumberDataGridComponentViaContainer());
+      await waitForElementToRender(ContainerElement, DataGridComponentTestId);
 
       // Access the handleModalOpen function passed to the PhoneNumberDataGridToolBar component:
       const onOpenModalFunction: (event: any) => void = (PhoneNumberDataGridToolBar as jest.Mock).mock.calls[0][0].handleModalOpen;
@@ -371,7 +330,7 @@ describe("PhoneNumber.DataGrid.Component", () => {
     });
 
     it("should close modals", async () => {
-      await waitForPhoneNumberDataGridComponentToLoad(renderPhoneNumberDataGridComponentViaContainer());
+      await waitForElementToRender(ContainerElement, DataGridComponentTestId);
 
       // Access the handleModalOpen and onClose functions passed to the PhoneNumberDataGridToolBar and PhoneNumberFormModal components:
       const onOpenModalFunction: (event: any) => void = (PhoneNumberDataGridToolBar as jest.Mock).mock.calls[0][0].handleModalOpen;
@@ -388,7 +347,7 @@ describe("PhoneNumber.DataGrid.Component", () => {
     });
 
     it("should close modals when form is submitted", async () => {
-      await waitForPhoneNumberDataGridComponentToLoad(renderPhoneNumberDataGridComponentViaContainer());
+      await waitForElementToRender(ContainerElement, DataGridComponentTestId);
 
       // Access the handleModalOpen and postFormHandler functions passed to the PhoneNumberDataGridToolBar and PhoneNumberFormModal components:
       const onOpenModalFunction: (event: any) => void = (PhoneNumberDataGridToolBar as jest.Mock).mock.calls[0][0].handleModalOpen;
@@ -411,7 +370,7 @@ describe("PhoneNumber.DataGrid.Component", () => {
     });
 
     it("should update update source records", async () => {
-      await waitForPhoneNumberDataGridComponentToLoad(renderPhoneNumberDataGridComponentViaContainer());
+      await waitForElementToRender(ContainerElement, DataGridComponentTestId);
 
       // Access the updateSourceRecords function passed to the PhoneNumberPreviewModal component:
       const updateSourceRecordsFunction: (updatedSourceRecords: Array<PhoneNumberRecordType>) => void = (PhoneNumberPreviewModal as jest.Mock).mock.calls[0][0].updateSourceRecords;

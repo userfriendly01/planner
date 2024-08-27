@@ -7,12 +7,13 @@ import {
 import { CctSharedCallFlowDb } from "dynamicCallFlowPhoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
 import { PhoneNumberRecordUtil } from "dynamicCallFlowPhoneNumber/GraphQL/PhoneNumber.Record.Util";
 import { isTrue } from "dynamicCallFlowCommon/Util/Boolean.Util";
-import { deepCopyObject } from "components/tabs/dynamicCallFlow/test/dynamicCallFlow.Testing.Util";
+import { deepCopyObject } from "dynamicCallFlowCommon/test/DynamicCallFlow.Testing.Util";
 import {
   DynamicPhoneNumberOne
 } from "dynamicCallFlowPhoneNumber/GraphQL/test/Dynamic.PhoneNumber.MockData";
 import { LegacyPhoneNumberOne } from "dynamicCallFlowPhoneNumber/GraphQL/test/Legacy.PhoneNumber.Record.MockData";
 import { now } from "lodash";
+import { PKEY } from "dynamicCallFlowPhoneNumber/Form/Legacy.PhoneNumber.Form.Fields";
 
 describe("PhoneNumberRecordUtil", () => {
   let mockPhoneNumberRecord: PhoneNumber;
@@ -292,14 +293,6 @@ describe("PhoneNumberRecordUtil", () => {
       expect(PhoneNumberRecordUtil.getPropertyValue(mockLegacyPhoneNumberRecord, GREETING_MESSAGES)).toEqual("Hello");
     });
 
-    it("should validate greeting message to be true", () => {
-      expect(PhoneNumberRecordUtil.isValidGreetingMessage("Hello")).toBe(true);
-    });
-
-    it("should validate greeting message to be false", () => {
-      expect(PhoneNumberRecordUtil.isValidGreetingMessage("Hello!")).toBe(false);
-    });
-
     it("should set property value for dynamic phone number record", () => {
       PhoneNumberRecordUtil.setPropertyValue(mockPhoneNumberRecord, BRAND, "Brand2");
       expect(mockPhoneNumberRecord.brand).toEqual("Brand2");
@@ -318,10 +311,10 @@ describe("PhoneNumberRecordUtil", () => {
       PhoneNumberRecordUtil.setPropertyValue(mockLegacyPhoneNumberRecord, GREETING_MESSAGES, "welcome");
     });
 
-    // it("should set phone number value for dynamic phone number record when pkey key", () => {
-    //   PhoneNumberRecordUtil.setPropertyValue(mockPhoneNumberRecord, PKEY, "+18008881234567");
-    //   expect(mockPhoneNumberRecord.phoneNumber).toEqual("+18008881234567");
-    // });
+    it("should set phone number value for dynamic phone number record when pkey key", () => {
+      PhoneNumberRecordUtil.setPropertyValue(mockPhoneNumberRecord, PKEY, "+18008881234");
+      expect(mockPhoneNumberRecord.phoneNumber).toEqual("+18008881234");
+    });
 
     it("should set array property value for legacy phone number record", () => {
       PhoneNumberRecordUtil.setArrayPropertyValue(mockLegacyPhoneNumberRecord, DATA_REQUESTS, "classify");

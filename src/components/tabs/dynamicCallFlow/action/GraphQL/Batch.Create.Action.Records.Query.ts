@@ -171,22 +171,8 @@ export class BatchCreateActionRecordsQuery extends AbstractGraphQLQuery {
   }
 }
 
-const batchCreateDynamicActionQuery = new BatchCreateActionRecordsQuery();
-
+export const batchCreateDynamicActionQuery = new BatchCreateActionRecordsQuery();
 
 export async function batchCreateDynamicActionRecords(accessToken: string, actionRecords: Array<ActionRecordType>): Promise<BatchResults<ActionRecordType>> {
   return await batchCreateDynamicActionQuery.batchQuery(accessToken, actionRecords);
-}
-
-/**
- * For dynamic action update, really we are just calling the batch create.  When a dynamic action is added
- * to DynamoDB, it will overwrite the existing record if there is one since the pkey is the phone number.  This method was
- * created simply for continuity
- * @param {string} accessToken
- * @param {Array<ActionRecordType>} actionRecords
- * @return {Promise<BatchResults<ActionRecordType>>}
- */
-export async function batchUpdateDynamicActionRecords(accessToken: string, actionRecords: Array<ActionRecordType>): Promise<BatchResults<ActionRecordType>> {
-  //Need to call the delete method first to remove the existing records and then add them again.
-  return await batchCreateDynamicActionRecords(accessToken, actionRecords);
 }

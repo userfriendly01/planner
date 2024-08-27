@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, {
+  ReactElement,
   useContext, useEffect, useState
 } from "react";
 import {
@@ -35,7 +36,7 @@ export const FilterLabel: Map<string, string> = new Map<string, string>([
 
 export const PhoneNumberDataGridFilterModal = ({
   isOpen, dataGridFilter
-}: DataGridFilterModalProps<PhoneNumberRecordType>):JSX.Element => {
+}: DataGridFilterModalProps<PhoneNumberRecordType>): ReactElement => {
   const { modalController } = useContext(DynamicCallFlowPhoneNumberContext);
 
   const [filter, setFilter] = useState<Filter>({} as Filter);

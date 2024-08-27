@@ -4,7 +4,7 @@ import {
   HANDLED_UNSUCCESSFULLY
 } from "components/tabs/dynamicCallFlow/common/Preview/Abstract.Preview.Modal.Handler";
 import { batchCreateDynamicActionRecords } from "components/tabs/dynamicCallFlow/action/GraphQL/Batch.Create.Action.Records.Query";
-import { batchDeleteDynamicActionRecords } from "components/tabs/dynamicCallFlow/action/GraphQL/Batch.Delete.Action.Records.Query";
+import { batchDeleteActionRecords } from "components/tabs/dynamicCallFlow/action/GraphQL/Batch.Delete.Action.Records.Query";
 import { removeElementsFromArray } from "components/tabs/dynamicCallFlow/common/Util/Array.Util";
 import { BatchResults } from "components/tabs/dynamicCallFlow/common/GraphQL/Abstract.BatchRecords.Query";
 import { actionMatchFilter } from "dynamicCallFlowAction/DataGrid/Action.DataGrid.Controller";
@@ -43,7 +43,7 @@ export class ActionPreviewModalHandler extends AbstractPreviewModalHandler<Actio
     const unusedCallFlowConfigRecords: Array<ActionRecordType> = removeElementsFromArray(actionMatchFilter, newCallFlowConfig, [ ...oldCallFlowConfig ]);
 
     if (unusedCallFlowConfigRecords.length > 0) {
-      const batchResults: BatchResults<ActionRecordType> = await batchDeleteDynamicActionRecords(accessToken, unusedCallFlowConfigRecords);
+      const batchResults: BatchResults<ActionRecordType> = await batchDeleteActionRecords(accessToken, unusedCallFlowConfigRecords);
 
       if (batchResults?.hasError) {
         this.dataGridController.alertBarController.graphQLError(batchResults.errors);

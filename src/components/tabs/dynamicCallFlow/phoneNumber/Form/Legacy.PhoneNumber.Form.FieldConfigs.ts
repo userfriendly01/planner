@@ -1,7 +1,6 @@
 import {
   BrandTypeEnum,
   ChannelTypeEnum,
-  PhoneNumberRecordType,
   PhoneNumberTypeEnum
 } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 import {
@@ -48,22 +47,18 @@ import {
 } from "components/tabs/dynamicCallFlow/common/Form/Form.Interfaces";
 
 import { Control } from "globals/interfaces";
+import { CctSharedCallFlowDb } from "dynamicCallFlowPhoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
+import { defaultFieldConditionCheck } from "dynamicCallFlowAction/Form/ActionFieldsConfig";
 
-
-const drcFieldConditionCheck: FieldConditionCheckType = (record: PhoneNumberRecordType): boolean => {
-  return record[BRAND as keyof PhoneNumberRecordType] === BrandTypeEnum.LIBERTY_MUTUAL
-    && record[CHANNEL as keyof PhoneNumberRecordType] === ChannelTypeEnum.SALES
-    && record[TYPE as keyof PhoneNumberRecordType] === PhoneNumberTypeEnum.DRC;
+export const legacyDrcFieldConditionCheck: FieldConditionCheckType = (record: CctSharedCallFlowDb): boolean => {
+  return record.brand === BrandTypeEnum.LIBERTY_MUTUAL
+    && record.channel === ChannelTypeEnum.SALES
+    && record.type === PhoneNumberTypeEnum.DRC;
 };
 
-const didFieldConditionCheck: FieldConditionCheckType = (record: PhoneNumberRecordType): boolean => {
-  return record[TYPE as keyof PhoneNumberRecordType] === PhoneNumberTypeEnum.DID;
+export const legacyDidFieldConditionCheck: FieldConditionCheckType = (record: CctSharedCallFlowDb): boolean => {
+  return record.type === PhoneNumberTypeEnum.DID;
 };
-
-const defaultFieldConditionCheck: FieldConditionCheckType = (): boolean => {
-  return true;
-};
-
 
 export const LegacyPhoneNumberFormFieldConfigs: FieldConfigs = {};
 export const RequiredPhoneNumberFormFields: Array<string> = [];
@@ -118,19 +113,19 @@ createFieldConfig("Affinity VDN", AFFINITY_VDN, ControlEnum.Input);
 createFieldConfig("Call Type Description", CALL_TYPE_DESCRIPTION, ControlEnum.Input);
 createFieldConfig("Transfer Code", TRANSFER_CODE, ControlEnum.Input);
 createFieldConfig("Internet Placement", INTERNET_PLACEMENT, ControlEnum.Input);
-createFieldConfig("Call Details 1", CALL_DETAILS_1, ControlEnum.Input, false, false, FieldDataTypeEnum.STRING, drcFieldConditionCheck);
-createFieldConfig("Call Details 2", CALL_DETAILS_2, ControlEnum.Input, false, false, FieldDataTypeEnum.STRING, drcFieldConditionCheck);
-createFieldConfig("Line Of Business", LINE_OF_BUSINESS, ControlEnum.Input, false, false, FieldDataTypeEnum.STRING, drcFieldConditionCheck);
-createFieldConfig("Marketing Channel", MARKETING_CHANNEL, ControlEnum.Input, false, false, FieldDataTypeEnum.STRING, drcFieldConditionCheck);
-createFieldConfig("Whisper", WHISPER, ControlEnum.Input, false, false, FieldDataTypeEnum.STRING, drcFieldConditionCheck);
-createFieldConfig("Request ID", REQUEST_ID, ControlEnum.Input, false, false, FieldDataTypeEnum.STRING, drcFieldConditionCheck);
-createFieldConfig("User Destination", USER_DESTINATION, ControlEnum.Select, false, false, FieldDataTypeEnum.STRING, didFieldConditionCheck);
-createFieldConfig("Range Indicator", RANGE_INDICATOR, ControlEnum.Input, false, false, FieldDataTypeEnum.STRING, drcFieldConditionCheck);
+createFieldConfig("Call Details 1", CALL_DETAILS_1, ControlEnum.Input, false, false, FieldDataTypeEnum.STRING, legacyDrcFieldConditionCheck);
+createFieldConfig("Call Details 2", CALL_DETAILS_2, ControlEnum.Input, false, false, FieldDataTypeEnum.STRING, legacyDrcFieldConditionCheck);
+createFieldConfig("Line Of Business", LINE_OF_BUSINESS, ControlEnum.Input, false, false, FieldDataTypeEnum.STRING, legacyDrcFieldConditionCheck);
+createFieldConfig("Marketing Channel", MARKETING_CHANNEL, ControlEnum.Input, false, false, FieldDataTypeEnum.STRING, legacyDrcFieldConditionCheck);
+createFieldConfig("Whisper", WHISPER, ControlEnum.Input, false, false, FieldDataTypeEnum.STRING, legacyDrcFieldConditionCheck);
+createFieldConfig("Request ID", REQUEST_ID, ControlEnum.Input, false, false, FieldDataTypeEnum.STRING, legacyDrcFieldConditionCheck);
+createFieldConfig("User Destination", USER_DESTINATION, ControlEnum.Select, false, false, FieldDataTypeEnum.STRING, legacyDidFieldConditionCheck);
+createFieldConfig("Range Indicator", RANGE_INDICATOR, ControlEnum.Input, false, false, FieldDataTypeEnum.STRING, legacyDrcFieldConditionCheck);
 createFieldConfig("Call Intent", CALL_INTENT, ControlEnum.Input);
 createFieldConfig("Office Numbers", OFFICE_NUMBERS, ControlEnum.MultiTextField, false, false, FieldDataTypeEnum.ARRAY);
 createFieldConfig("TFN Routing Group", TFN_ROUTING_GROUP, ControlEnum.Select, false, false, FieldDataTypeEnum.STRING);
-createFieldConfig("Predictive Caller", PREDICTIVE_CALLER, ControlEnum.Switch, false, false, FieldDataTypeEnum.BOOLEAN, drcFieldConditionCheck);
-createFieldConfig("Self Service Indicator", SELF_SERVICE_INDICATOR, ControlEnum.Switch, false, false, FieldDataTypeEnum.BOOLEAN, drcFieldConditionCheck);
+createFieldConfig("Predictive Caller", PREDICTIVE_CALLER, ControlEnum.Switch, false, false, FieldDataTypeEnum.BOOLEAN, legacyDrcFieldConditionCheck);
+createFieldConfig("Self Service Indicator", SELF_SERVICE_INDICATOR, ControlEnum.Switch, false, false, FieldDataTypeEnum.BOOLEAN, legacyDrcFieldConditionCheck);
 
 Object.freeze(LegacyPhoneNumberFormFieldConfigs);
 

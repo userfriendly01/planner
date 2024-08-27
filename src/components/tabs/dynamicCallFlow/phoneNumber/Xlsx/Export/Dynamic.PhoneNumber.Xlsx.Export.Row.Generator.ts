@@ -9,10 +9,6 @@ import { AbstractPhoneNumberXlsxExportRowGenerator } from "dynamicCallFlowPhoneN
 import { booleanAsString } from "dynamicCallFlowCommon/Util/Boolean.Util";
 
 export class DynamicPhoneNumberXlsxExportRowGenerator extends AbstractPhoneNumberXlsxExportRowGenerator {
-  protected getPhoneNumberRecordType(): string {
-    return "DynamicPhoneNumber";
-  }
-
   protected mapPhoneNumberRecordTypeSpecificFields(phoneNumber: PhoneNumber): PhoneNumberXlsxRow {
     return {
       callFlowName: phoneNumber.callFlowName,

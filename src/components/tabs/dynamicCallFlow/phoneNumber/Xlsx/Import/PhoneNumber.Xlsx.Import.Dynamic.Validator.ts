@@ -28,7 +28,7 @@ export class PhoneNumberXlsxImportDynamicValidator extends PhoneNumberXlsxImport
       this.validateRequiredKey(dynamicPhoneNumberXlsxRow, NEXT_ACTION_ID);
     }
 
-    if (dynamicPhoneNumberXlsxRow.nextActionId) {
+    if (dynamicPhoneNumberXlsxRow.nextActionId?.trim().length > 0) {
       if (CallFlowTypeEnum.SELFSERVICE === dynamicPhoneNumberXlsxRow.callFlowType) {
         this.logPhoneNumberValidationError(dynamicPhoneNumberXlsxRow.dialedPhoneNumber, `${NEXT_ACTION_ID} should not be set when ${CALL_FLOW_TYPE} is ${CallFlowTypeEnum.SELFSERVICE}.`);
       }
@@ -38,7 +38,7 @@ export class PhoneNumberXlsxImportDynamicValidator extends PhoneNumberXlsxImport
       this.validateRequiredKeyEnumType(dynamicPhoneNumberXlsxRow, NEXT_ACTION_TYPE, ActionTypeEnum);
     }
 
-    if (dynamicPhoneNumberXlsxRow.nextActionType) {
+    if (dynamicPhoneNumberXlsxRow.nextActionType?.trim().length > 0) {
       if (CallFlowTypeEnum.SELFSERVICE === dynamicPhoneNumberXlsxRow.callFlowType) {
         this.logPhoneNumberValidationError(dynamicPhoneNumberXlsxRow.dialedPhoneNumber, `${NEXT_ACTION_TYPE} should not be set when ${CALL_FLOW_TYPE} is ${CallFlowTypeEnum.SELFSERVICE}.`);
       }

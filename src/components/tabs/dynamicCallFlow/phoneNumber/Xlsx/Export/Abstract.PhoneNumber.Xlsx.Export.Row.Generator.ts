@@ -29,12 +29,6 @@ import {
 } from "components/tabs/dynamicCallFlow/phoneNumber/Form/Dynamic.PhoneNumber.Form.Fields";
 
 export abstract class AbstractPhoneNumberXlsxExportRowGenerator {
-  protected groupRecordsByWorkBookNames(records: Array<PhoneNumberRecordType>): Map<string, Array<PhoneNumberRecordType>> {
-    return new Map<string, Array<PhoneNumberRecordType>>([ [this.getPhoneNumberRecordType(), records ] ]);
-  }
-
-  protected abstract getPhoneNumberRecordType(): string;
-
   convertRecordsToXlsxRows(phoneNumberRecords: Array<PhoneNumberRecordType>): Array<PhoneNumberXlsxRow> {
     const phoneNumberXlsxRows: Array<PhoneNumberXlsxRow> = [];
 

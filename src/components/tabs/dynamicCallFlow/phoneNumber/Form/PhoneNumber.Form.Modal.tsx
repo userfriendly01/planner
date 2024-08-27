@@ -2,7 +2,7 @@ import {
   Button, Grid
 } from "@mui/material";
 import React, {
-  ChangeEvent, useContext, useMemo, useState
+  ChangeEvent, ReactElement, useContext, useMemo, useState
 } from "react";
 import { ViewListIconToggleForm } from "components/tabs/dynamicCallFlow/common/Form/ViewList.IconToggle.Form";
 import {
@@ -51,7 +51,7 @@ export interface FormModalProps {
 
 export const PhoneNumberFormModal = ({
   isOpen, formHandler, alertBarController, formRecordReactStateAction, fieldConfigsReactStateAction, onClone, onClose, postFormHandler
-}: FormModalProps): JSX.Element => {
+}: FormModalProps): ReactElement => {
   const {
     state: fieldConfigs
   } = fieldConfigsReactStateAction;

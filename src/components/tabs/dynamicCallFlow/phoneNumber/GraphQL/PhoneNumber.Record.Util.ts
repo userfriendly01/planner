@@ -8,9 +8,8 @@ import {
   CctSharedCallFlowDb, FlowContent
 } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
 import {
-  CREATE_TIME, DynamicPhoneNumberFormFields, EMPLOYEE_ID,
-  PHONE_NUMBER,
-  UPDATE_TIME
+  DynamicPhoneNumberFormFields, EMPLOYEE_ID,
+  PHONE_NUMBER
 } from "components/tabs/dynamicCallFlow/phoneNumber/Form/Dynamic.PhoneNumber.Form.Fields";
 import {
   isLegacyContentField,
@@ -98,10 +97,24 @@ export const newLegacyPhoneNumberRecord = (): CctSharedCallFlowDb => {
 };
 
 export class PhoneNumberRecordUtil {
+  /**
+   * Retrieves the primary key (pkey) of a phone number record.  Dynamic phone number records to not have a pkey, so
+   * the phone number is used as the primary key.  Both pkey and phoneNumber contain the, uh, phone number.
+   *
+   * @param {PhoneNumberRecordType} phoneNumberRecord - The phone number record.
+   * @returns {string} - The primary key of the phone number record.
+   */
   public static getPkey(phoneNumberRecord: PhoneNumberRecordType): string {
     return PhoneNumberRecordUtil.getPhoneNumber(phoneNumberRecord);
   }
 
+  /**
+   * Retrieves the phone number from a phone number record.  The key that holds the phone number in the record differs
+   * between legacy and dynamic records.
+   *
+   * @param {PhoneNumberRecordType} phoneNumberRecord - The phone number record.
+   * @returns {string} - The phone number.
+   */
   public static getPhoneNumber(phoneNumberRecord: PhoneNumberRecordType): string {
     if (!phoneNumberRecord) {
       return undefined;
@@ -114,6 +127,13 @@ export class PhoneNumberRecordUtil {
     }
   }
 
+  /**
+   * Sets the phone number in a phone number record.  The key that holds the phone number in the record differs
+   * between legacy and dynamic records.
+   *
+   * @param {PhoneNumberRecordType} phoneNumberRecord - The phone number record.
+   * @param {string} phoneNumber - The phone number to set.
+   */
   public static setPhoneNumber(phoneNumberRecord: PhoneNumberRecordType, phoneNumber: string): void {
     if (!phoneNumberRecord) {
       return;
@@ -126,42 +146,109 @@ export class PhoneNumberRecordUtil {
     }
   }
 
+  /**
+   * Filters dynamic phone number records from a list of phone number records.
+   *
+   * @param {Array<PhoneNumberRecordType>} phoneNumberRecords - The list of phone number records.
+   * @returns {Array<PhoneNumber>} - The filtered list of dynamic phone number records.
+   */
   public static filterDynamicPhoneNumberRecords(phoneNumberRecords: Array<PhoneNumberRecordType>): Array<PhoneNumber> {
     return phoneNumberRecords.filter((phoneNumberRecord: PhoneNumberRecordType) => this.isDynamicPhoneNumberRecord(phoneNumberRecord)) as Array<PhoneNumber>;
   }
 
+  /**
+   * Filters legacy phone number records from a list of phone number records.
+   *
+   * @param {Array<PhoneNumberRecordType>} phoneNumberRecords - The list of phone number records.
+   * @returns {Array<CctSharedCallFlowDb>} - The filtered list of legacy phone number records.
+   */
   public static filterLegacyPhoneNumberRecords(phoneNumberRecords: Array<PhoneNumberRecordType>): Array<CctSharedCallFlowDb> {
     return phoneNumberRecords.filter((phoneNumberRecord: PhoneNumberRecordType) => this.isLegacyPhoneNumberRecord(phoneNumberRecord)) as Array<CctSharedCallFlowDb>;
   }
 
+  /**
+   * Checks if a phone number record is a dynamic phone number record.
+   *
+   * @param {PhoneNumberRecordType} phoneNumberRecord - The phone number record.
+   * @returns {boolean} - True if the phone number record is dynamic, false otherwise.
+   */
   public static isDynamicPhoneNumberRecord(phoneNumberRecord: PhoneNumberRecordType): boolean {
     return phoneNumberRecord && PHONE_NUMBER in phoneNumberRecord;
   }
 
+  /**
+   * Checks if a phone number record is a legacy phone number record.
+   *
+   * @param {PhoneNumberRecordType} phoneNumberRecord - The phone number record.
+   * @returns {boolean} - True if the phone number record is legacy, false otherwise.
+   */
   public static isLegacyPhoneNumberRecord(phoneNumberRecord: PhoneNumberRecordType): boolean {
     return !this.isDynamicPhoneNumberRecord(phoneNumberRecord);
   }
 
+  /**
+   * Checks if a key is a legacy content field key for a phone number record.
+   *
+   * @param {PhoneNumberRecordType} phoneNumberRecord - The phone number record.
+   * @param {string} key - The key to check.
+   * @returns {boolean} - True if the key is a legacy content field key, false otherwise.
+   */
   public static isLegacyContentFieldKey(phoneNumberRecord: PhoneNumberRecordType, key: string): boolean {
     return this.isLegacyPhoneNumberRecord(phoneNumberRecord) && isLegacyContentField(key);
   }
 
+  /**
+   * Retrieves an array property value from a phone number record.
+   *
+   * @param {PhoneNumberRecordType} phoneNumberRecord - The phone number record.
+   * @param {string} key - The key of the property.
+   * @returns {Array<string>} - The array property value.
+   */
   public static getPropertyArrayValue(phoneNumberRecord: PhoneNumberRecordType, key: string): Array<string> {
     return this.getPropertyValue(phoneNumberRecord, key) as Array<string>;
   }
 
+  /**
+   * Retrieves an array property value as a string from a phone number record.
+   *
+   * @param {PhoneNumberRecordType} phoneNumberRecord - The phone number record.
+   * @param {string} key - The key of the property.
+   * @param {string} [delimiter=", "] - The delimiter to use for joining the array elements.
+   * @returns {string} - The array property value as a string.
+   */
   public static getPropertyArrayValueAsString(phoneNumberRecord: PhoneNumberRecordType, key: string, delimiter = ", "): string {
     return this.getPropertyArrayValue(phoneNumberRecord, key)?.join(delimiter) || "";
   }
 
+  /**
+   * Retrieves a string property value from a phone number record.
+   *
+   * @param {PhoneNumberRecordType} phoneNumberRecord - The phone number record.
+   * @param {string} key - The key of the property.
+   * @returns {string} - The string property value.
+   */
   public static getPropertyStringValue(phoneNumberRecord: PhoneNumberRecordType, key: string): string {
     return this.getPropertyValue(phoneNumberRecord, key) as string;
   }
 
+  /**
+   * Retrieves a boolean property value from a phone number record.
+   *
+   * @param {PhoneNumberRecordType} phoneNumberRecord - The phone number record.
+   * @param {string} key - The key of the property.
+   * @returns {boolean} - The boolean property value.
+   */
   public static getPropertyBooleanValue(phoneNumberRecord: PhoneNumberRecordType, key: string): boolean {
     return this.getPropertyValue(phoneNumberRecord, key) as boolean;
   }
 
+  /**
+   * Retrieves a property value from a phone number record.
+   *
+   * @param {PhoneNumberRecordType} phoneNumberRecord - The phone number record.
+   * @param {string} key - The key of the property.
+   * @returns {FieldDataType} - The property value.
+   */
   public static getPropertyValue(phoneNumberRecord: PhoneNumberRecordType, key: string): FieldDataType {
     let propertyValue: FieldDataType = undefined;
 
@@ -176,27 +263,58 @@ export class PhoneNumberRecordUtil {
     return propertyValue;
   }
 
-  public static isValidGreetingMessage(value: string): boolean {
-    const reg = new RegExp("^[a-zA-Z0-9,@:=<>./\\-'\" ñáéíóú]+$");
-    return value && reg.test(value);
-  }
-
+  /**
+   * Sets an array property value in a phone number record.
+   *
+   * @param {PhoneNumberRecordType} phoneNumberRecord - The phone number record.
+   * @param {string} key - The key of the property.
+   * @param {string} value - The value to set.
+   * @param {string} [delimiter=","] - The delimiter to use for splitting the value.
+   */
   public static setArrayPropertyValue(phoneNumberRecord: PhoneNumberRecordType, key: string, value: string, delimiter = ","): void {
     this.setPropertyValue(phoneNumberRecord, key, value.split(delimiter) || []);
   }
 
+  /**
+   * Sets a string property value in a phone number record.
+   *
+   * @param {PhoneNumberRecordType} phoneNumberRecord - The phone number record.
+   * @param {string} key - The key of the property.
+   * @param {string} value - The value to set.
+   */
   public static setStringValue(phoneNumberRecord: PhoneNumberRecordType, key: string, value: string): void {
     this.setPropertyValue(phoneNumberRecord, key, value as string);
   }
 
+  /**
+   * Sets a number property value in a phone number record.
+   *
+   * @param {PhoneNumberRecordType} phoneNumberRecord - The phone number record.
+   * @param {string} key - The key of the property.
+   * @param {string} value - The value to set.
+   */
   public static setNumberValue(phoneNumberRecord: PhoneNumberRecordType, key: string, value: string): void {
     this.setPropertyValue(phoneNumberRecord, key, Number(value));
   }
 
+  /**
+   * Sets a boolean property value in a phone number record.
+   *
+   * @param {PhoneNumberRecordType} phoneNumberRecord - The phone number record.
+   * @param {string} key - The key of the property.
+   * @param {string} value - The value to set.
+   */
   public static setBooleanValue(phoneNumberRecord: PhoneNumberRecordType, key: string, value: string): void {
     this.setPropertyValue(phoneNumberRecord, key, booleanValue(value));
   }
 
+  /**
+   * Checks if a property key is valid for a phone number record type.
+   *
+   * @param {PhoneNumberRecordType} phoneNumberRecord - The phone number record.
+   * @param {string} key - The key to check.
+   * @returns {boolean} - True if the key is valid, false otherwise.
+   */
   private static isValidPropertyForPhoneNumberRecordType(phoneNumberRecord: PhoneNumberRecordType, key: string): boolean {
     if (this.isDynamicPhoneNumberRecord(phoneNumberRecord)) {
       return DynamicPhoneNumberFormFields.includes(key);
@@ -205,13 +323,20 @@ export class PhoneNumberRecordUtil {
     }
   }
 
+  /**
+   * Sets a property value in a phone number record.
+   *
+   * @param {PhoneNumberRecordType} phoneNumberRecord - The phone number record.
+   * @param {string} key - The key of the property.
+   * @param {FieldDataType} value - The value to set.
+   */
   public static setPropertyValue(phoneNumberRecord: PhoneNumberRecordType, key: string, value: FieldDataType): void {
     if (!phoneNumberRecord || !key) {
       return;
     }
 
     // Only set property if it is a valid property for the phoneNumberRecord type
-    if (!this.isValidPropertyForPhoneNumberRecordType(phoneNumberRecord, key)) {
+    if (key !== PKEY && !this.isValidPropertyForPhoneNumberRecordType(phoneNumberRecord, key)) {
       logger.warn(`Invalid property key: ${key} for phoneNumberRecord: ${JSON.stringify(phoneNumberRecord)}`, {});
       delete phoneNumberRecord[key as keyof typeof phoneNumberRecord];
       return;
@@ -233,36 +358,25 @@ export class PhoneNumberRecordUtil {
       (phoneNumberRecord as PhoneNumber)[PHONE_NUMBER] = value as string;
     }
 
-    // const updatedPhoneNumberRecord = {
-    //   ...phoneNumberRecord,
-    //   [key]: value
-    // };
-    //
-    // return updatedPhoneNumberRecord;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     phoneNumberRecord[key] = value;
   }
 
-  private static setTimeProperty(phoneNumberRecord: PhoneNumberRecordType, key: string): void {
-    //TODO: figure out to make ts happy trying to dynamically set a property
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    phoneNumberRecord[key] = this.isLegacyPhoneNumberRecord(phoneNumberRecord) ? new Date().toISOString() : Date.now();
-  }
-
-  public static setUpdateTime(phoneNumberRecord: PhoneNumberRecordType): void {
-    this.setTimeProperty(phoneNumberRecord, UPDATE_TIME);
-  }
-
-  public static setCreateTime(phoneNumberRecord: PhoneNumberRecordType): void {
-    this.setTimeProperty(phoneNumberRecord, CREATE_TIME);
-  }
-
+  /**
+   * Removes transient properties from a list of phone number records.
+   *
+   * @param {Array<PhoneNumberRecordType>} phoneNumberRecords - The list of phone number records.
+   */
   public static batchRemoveTransientProperties(phoneNumberRecords: Array<PhoneNumberRecordType>): void {
     phoneNumberRecords.forEach((phoneNumberRecord: PhoneNumberRecordType) => this.removeTransientProperties(phoneNumberRecord));
   }
 
+  /**
+   * Removes transient properties from a phone number record.
+   *
+   * @param {PhoneNumberRecordType} phoneNumberRecord - The phone number record.
+   */
   public static removeTransientProperties(phoneNumberRecord: PhoneNumberRecordType): void {
     const validKeys: Array<string> = PhoneNumberRecordUtil.isDynamicPhoneNumberRecord(phoneNumberRecord) ? DynamicPhoneNumberFormFields : LegacyPhoneNumberFormFields;
 
@@ -273,7 +387,11 @@ export class PhoneNumberRecordUtil {
     });
   }
 
-  public static removeNonNullableKeys(phoneNumberRecord: PhoneNumberRecordType): void {
+  /**
+   * Removes non-nullable keys from a phone number record.
+   *
+   * @param {PhoneNumberRecordType} phoneNumberRecord - The phone number record.
+   */  public static removeNonNullableKeys(phoneNumberRecord: PhoneNumberRecordType): void {
     if (!phoneNumberRecord[EMPLOYEE_ID as keyof PhoneNumberRecordType]) {
       delete phoneNumberRecord[EMPLOYEE_ID as keyof PhoneNumberRecordType];
     }

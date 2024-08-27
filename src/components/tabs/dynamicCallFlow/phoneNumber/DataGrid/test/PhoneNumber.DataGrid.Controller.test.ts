@@ -20,7 +20,7 @@ import {
 import {
   LegacyPhoneNumberOne, LegacyPhoneNumberTwo
 } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/test/Legacy.PhoneNumber.Record.MockData";
-import { deepCopyObject } from "components/tabs/dynamicCallFlow/test/dynamicCallFlow.Testing.Util";
+import { deepCopyObject } from "dynamicCallFlowCommon/test/DynamicCallFlow.Testing.Util";
 import { AlertBarControllerRef } from "dynamicCallFlowCommon/AlertBar.Controller";
 import { DataGridFilterRef } from "dynamicCallFlowCommon/DataGrid/Abstract.DataGrid.Filter";
 

@@ -7,10 +7,6 @@ import { AbstractPhoneNumberXlsxExportRowGenerator } from "dynamicCallFlowPhoneN
 import { booleanAsString } from "dynamicCallFlowCommon/Util/Boolean.Util";
 
 export class LegacyPhoneNumberXlsxExportRowGenerator extends AbstractPhoneNumberXlsxExportRowGenerator {
-  protected getPhoneNumberRecordType(): string {
-    return "LegacyPhoneNumber";
-  }
-
   protected mapPhoneNumberRecordTypeSpecificFields(legacyPhoneNumber: CctSharedCallFlowDb): PhoneNumberXlsxRow {
     return {
       phoneNumberType: legacyPhoneNumber.type,

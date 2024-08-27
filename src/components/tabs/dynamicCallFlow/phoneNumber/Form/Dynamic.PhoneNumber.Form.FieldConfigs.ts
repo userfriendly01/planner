@@ -23,7 +23,6 @@ import {
   LANGUAGE_OFFER,
   LINE_OF_BUSINESS,
   MARKETING_CHANNEL,
-  MIGRATE_SELF_SERVICE_NUMBER_TO_DYNAMIC,
   NEXT_ACTION_ID,
   NEXT_ACTION_TYPE,
   OFFICE_NUMBERS,
@@ -48,21 +47,22 @@ import {
 
 import { Control } from "globals/interfaces";
 
-const drcFieldConditionCheck: FieldConditionCheckType = (phoneNumberRecord: PhoneNumber): boolean => {
+export const drcFieldConditionCheck: FieldConditionCheckType = (phoneNumberRecord: PhoneNumber): boolean => {
   return phoneNumberRecord?.brand === BrandTypeEnum.LIBERTY_MUTUAL
-    && phoneNumberRecord?.channel === ChannelTypeEnum.SALES;
+    && phoneNumberRecord?.channel === ChannelTypeEnum.SALES
+    && phoneNumberRecord?.phoneNumberType === PhoneNumberTypeEnum.DRC;
 };
 
-const didFieldConditionCheck: FieldConditionCheckType = (phoneNumberRecord: PhoneNumber): boolean => {
+export const didFieldConditionCheck: FieldConditionCheckType = (phoneNumberRecord: PhoneNumber): boolean => {
   return phoneNumberRecord?.phoneNumberType === PhoneNumberTypeEnum.DID;
 };
 
-const dtmfFieldConditionCheck: FieldConditionCheckType = (phoneNumberRecord: PhoneNumber): boolean => {
+export const dtmfFieldConditionCheck: FieldConditionCheckType = (phoneNumberRecord: PhoneNumber): boolean => {
   return phoneNumberRecord?.callFlowType === CallFlowTypeEnum.DTMF;
 };
 
-const defaultFieldConditionCheck: FieldConditionCheckType = (record: PhoneNumberRecordType): boolean => {
-  return true;
+export const defaultFieldConditionCheck: FieldConditionCheckType = (record: PhoneNumberRecordType): boolean => {
+  return !record ? false : true;
 };
 
 export const DynamicPhoneNumberFormFieldConfigs: FieldConfigs = {};

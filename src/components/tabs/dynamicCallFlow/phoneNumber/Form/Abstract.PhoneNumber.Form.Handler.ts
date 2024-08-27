@@ -2,15 +2,13 @@ import { AbstractFormHandler } from "components/tabs/dynamicCallFlow/common/Form
 import { PhoneNumberRecordType } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 import {
   EMPLOYEE_ID,
-  GREETING_MESSAGES,
-  PHONE_NUMBER
+  GREETING_MESSAGES
 } from "components/tabs/dynamicCallFlow/phoneNumber/Form/Dynamic.PhoneNumber.Form.Fields";
 import {
   FieldConfigs,
   FieldDataType
 } from "components/tabs/dynamicCallFlow/common/Form/Form.Interfaces";
 import { PhoneNumberRecordUtil } from "dynamicCallFlowPhoneNumber/GraphQL/PhoneNumber.Record.Util";
-// import { checkForDuplicatwePhoneNumberRecord } from "dynamicCallFlowPhoneNumber/GraphQL/Match.PhoneNumber.Records.Util";
 import {
   employeeIdIsNotValid,
   greetingMessageIsNotValid,
@@ -27,7 +25,7 @@ export abstract class AbstractPhoneNumberFormHandler extends AbstractFormHandler
     this.validateForm(record, fieldConfigs);
 
     if (phoneNumberIsNotValid(PhoneNumberRecordUtil.getPhoneNumber(record))) {
-      throw new Error(`Phone number is not in the correct format +1##########: ${record[PHONE_NUMBER as keyof PhoneNumberRecordType]}`);
+      throw new Error(`Phone number "${PhoneNumberRecordUtil.getPhoneNumber(record)}" is not in the correct format +1##########.`);
     }
 
     if (record.employeeId && employeeIdIsNotValid(record.employeeId)) {

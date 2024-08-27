@@ -1,4 +1,6 @@
-import React, { createContext, useEffect, useRef, useState } from "react";
+import React, {
+  createContext, ReactElement, useEffect, useRef, useState
+} from "react";
 import ActionDataGridComponent, { ActionModalType } from "components/tabs/dynamicCallFlow/action/DataGrid/Action.DataGrid.Component";
 import { useAdminState } from "context/appContext";
 import ModalController, { MODAL_NOT_IN_USE } from "components/tabs/dynamicCallFlow/common/Modal.Controller";
@@ -6,7 +8,7 @@ import { DynamicCallFlowContextStore } from "components/tabs/dynamicCallFlow/com
 
 export const DynamicCallFlowActionContext = createContext<DynamicCallFlowContextStore<ActionModalType> | undefined>(undefined);
 
-const DynamicCallFlowActionContainer = (): JSX.Element => {
+const DynamicCallFlowActionContainer = (): ReactElement => {
   const {
     userContext: {
       permissions,

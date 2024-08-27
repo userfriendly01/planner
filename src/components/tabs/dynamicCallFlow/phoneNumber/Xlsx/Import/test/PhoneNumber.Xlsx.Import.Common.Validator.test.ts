@@ -1,7 +1,7 @@
 import {
   testDynamicPhoneNumberXlsxRow
 } from "dynamicCallFlowPhoneNumber/Xlsx/test/PhoneNumber.Xlsx.MockData.Dynamic.Row";
-import { deepCopyObject } from "components/tabs/dynamicCallFlow/test/dynamicCallFlow.Testing.Util";
+import { deepCopyObject } from "dynamicCallFlowCommon/test/DynamicCallFlow.Testing.Util";
 import {
   BRAND,
   CALL_FLOW_TEMPLATE,
@@ -16,15 +16,15 @@ import {
   PhoneNumberXlsxImportDynamicValidator
 } from "dynamicCallFlowPhoneNumber/Xlsx/Import/PhoneNumber.Xlsx.Import.Dynamic.Validator";
 import {
-  PhoneNumberXlsxImportValidatorUtil
-} from "dynamicCallFlowPhoneNumber/Xlsx/Import/test/PhoneNumber.Xlsx.Import.Validator.Util";
+  PhoneNumberXlsxImportValidatorTestingUtil
+} from "dynamicCallFlowPhoneNumber/Xlsx/Import/test/PhoneNumber.Xlsx.Import.Validator.Testing.Util";
 import {
   PhoneNumberXlsxImportValidator
 } from "dynamicCallFlowPhoneNumber/Xlsx/Import/PhoneNumber.Xlsx.Import.Interface";
 
 describe("Phone Number XLSX Value Inspector", () => {
   const validator: PhoneNumberXlsxImportValidator = new PhoneNumberXlsxImportDynamicValidator();
-  const validatorUtil = new PhoneNumberXlsxImportValidatorUtil(validator);
+  const validatorUtil = new PhoneNumberXlsxImportValidatorTestingUtil(validator);
 
   describe("Happy path", () => {
     describe("Dynamic and Legacy", () => {
@@ -99,5 +99,24 @@ describe("Phone Number XLSX Value Inspector", () => {
     it(`should contain error when ${EMPLOYEE_ID} is present but invalid - length is over 9`, () => {
       validatorUtil.invalidElementTest(EMPLOYEE_ID, "n012345678", deepCopyObject(testDynamicPhoneNumberXlsxRow));
     });
+
+    it("shouldLogErrorWhenDialedPhoneNumberIsInvalid", () => {
+      // const xlsxRow = deepCopyObject(testDynamicPhoneNumberXlsxRow);
+      // xlsxRow.dialedPhoneNumber = "+123";
+      const overrideMessage = "Dialed Phone Number[+123] dialedPhoneNumber must be in the format +###########.";
+      validatorUtil.invalidElementTest("dialedPhoneNumber", "+123", deepCopyObject(testDynamicPhoneNumberXlsxRow), overrideMessage);
+    });
+
+    it("shouldNotLogErrorWhenDialedPhoneNumberIsValid", () => {
+      const xlsxRow = deepCopyObject(testDynamicPhoneNumberXlsxRow);
+      xlsxRow.dialedPhoneNumber = "+11234567890";
+      validatorUtil.shouldNotContainErrorMessageTest(xlsxRow);
+    });
+
+    // it("shouldLogErrorWhenDialedPhoneNumberIsMissing", () => {
+    //   const xlsxRow = deepCopyObject(testDynamicPhoneNumberXlsxRow);
+    //   xlsxRow.dialedPhoneNumber = "";
+    //   validatorUtil.elementShouldBeMissingTest("dialedPhoneNumber", xlsxRow, "missing dialedPhoneNumber.");
+    // });
   });
 });

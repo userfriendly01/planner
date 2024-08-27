@@ -13,6 +13,10 @@ import { AbstractGraphQLQuery } from "./AbstractGraphQL.Query";
  * and action records.
  */
 export abstract class AbstractBatchDeleteDynamicCallFlowQuery<RecordType> extends AbstractGraphQLQuery {
+  /**
+   * batchDeletePhoneNumber mutation is used for both dynamic phone numbers & actions. Should be refactored in GraphQL
+   * to be less ambiguous.  This name isn't clear that it is used for both types of records.
+   */
   queryName(): string {
     return "batchDeletePhoneNumber";
   }

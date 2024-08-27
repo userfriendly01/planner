@@ -3,6 +3,7 @@ import {
 } from "@mui/material";
 import { DataGridProgressBarInfo } from "components/tabs/dynamicCallFlow/common/DataGrid/Load.DataGrid.Monitor";
 import React, {
+  ReactElement,
   useEffect, useState
 } from "react";
 
@@ -16,7 +17,7 @@ interface PhoneNumberDataGridProgressBarProps {
 export const PhoneNumberDataGridProgressBar = ({
   recordCount,
   dataGridLoaded = false
-}: PhoneNumberDataGridProgressBarProps): JSX.Element => {
+}: PhoneNumberDataGridProgressBarProps): ReactElement => {
   const [progress, setProgress] = useState(0);
   const [previousRecordCount, setPreviousRecordCount] = useState(0);
 

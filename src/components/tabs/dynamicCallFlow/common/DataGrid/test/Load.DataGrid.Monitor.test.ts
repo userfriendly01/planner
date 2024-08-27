@@ -5,7 +5,8 @@ import {
 import {
   ReactSetState
 } from "dynamicCallFlowCommon/DynamicCallFlow.Interfaces";
-import { MockLocalStorage } from "dynamicCallFlowCommon/test/Window.Mock.Testing.Util";
+
+import { MockLocalStorage } from "dynamicCallFlowCommon/test/DynamicCallFlow.Testing.Util";
 
 describe("LoadDataGridMonitor", () => {
   Object.defineProperty(window, "localStorage", { value: MockLocalStorage });

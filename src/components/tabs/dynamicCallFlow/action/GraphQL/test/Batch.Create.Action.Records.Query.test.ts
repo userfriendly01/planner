@@ -1,32 +1,41 @@
 import {
-  ActionRecordType, Announcement, Menu
-} from "dynamicCallFlowAction/GraphQL/Action.Interfaces";
+  mockAccessToken, QUERY
+} from "dynamicCallFlowPhoneNumber/GraphQL/Query/test/GraphQL.Query.Testing.Util";
 import {
   ActionTypeEnum, GraphQLResponse
 } from "dynamicCallFlowCommon/GraphQL/DynamicCallFlow.Interfaces";
 import {
-  BatchCreateActionRecordsQuery,
+  ActionRecordType,
+  Announcement,
+  Menu,
+  MenuOption,
+  MenuOptions,
+  Redirect,
+  Repeat
+} from "dynamicCallFlowAction/GraphQL/Action.Interfaces";
+import {
+  batchCreateDynamicActionQuery,
+  batchCreateDynamicActionRecords,
   CallFlowConfig
 } from "dynamicCallFlowAction/GraphQL/Batch.Create.Action.Records.Query";
+import { MockCallFlowConfigOne } from "dynamicCallFlowAction/GraphQL/test/Action.MockData";
 
 describe("BatchCreateActionRecordsQuery", () => {
-  let query: BatchCreateActionRecordsQuery;
-
-  beforeEach(() => {
-    query = new BatchCreateActionRecordsQuery();
-  });
-
   it("shouldReturnCorrectQueryName", () => {
-    expect(query.queryName()).toBe("createCallFlowConfig");
+    expect(batchCreateDynamicActionQuery.queryName()).toEqual("createCallFlowConfig");
   });
 
   it("shouldReturnCorrectQueryDefinition", () => {
-    expect(query.queryDefinition().replace(/\s+/g, " ")).toBe(
-      " mutation createCallFlowConfig($input: CallFlowConfigInput! ) { createCallFlowConfig(input: $input) { callFlowName } }"
-    );
+    const expectedDefinition = `
+      mutation createCallFlowConfig($input: CallFlowConfigInput! ) {
+        createCallFlowConfig(input: $input) {
+            callFlowName
+          }
+        }`;
+    expect(batchCreateDynamicActionQuery.queryDefinition()).toEqual(expectedDefinition);
   });
 
-  it("shouldGenerateCorrectQueryVariables", () => {
+  it("shouldGenerateCorrectQueryVariablesForAnnouncements", () => {
     const actionRecords: Array<ActionRecordType> = [
       {
         actionId: "1",
@@ -35,26 +44,7 @@ describe("BatchCreateActionRecordsQuery", () => {
         speech: "Hello",
         nextActionType: ActionTypeEnum.MENU,
         nextActionId: "2"
-      } as Announcement,
-      {
-        actionId: "2",
-        actionType: ActionTypeEnum.MENU,
-        callFlowName: "TestFlow",
-        speech: "Press 1",
-        allowBargeIn: true,
-        finishOnKey: "#",
-        minDigits: 1,
-        maxDigits: 1,
-        timeout: 5,
-        repeat: {
-          callerContextAttributes: "{}",
-          loop: 3,
-          nextActionType: ActionTypeEnum.MENU,
-          nextActionId: "2"
-        },
-        nextActionType: ActionTypeEnum.REDIRECT,
-        nextActionId: "3"
-      } as Menu
+      } as Announcement
     ];
 
     const expectedVariables: CallFlowConfig = {
@@ -65,18 +55,52 @@ describe("BatchCreateActionRecordsQuery", () => {
           actionType: ActionTypeEnum.ANNOUNCEMENT,
           callFlowName: "TestFlow",
           createTime: undefined,
+          updateTime: undefined,
           speech: "Hello",
           nextActionType: ActionTypeEnum.MENU,
-          nextActionId: "2",
-          updateTime: undefined
+          nextActionId: "2"
         }
       ],
+      menus: [],
+      menuOptions: [],
+      redirects: []
+    };
+
+    expect(batchCreateDynamicActionQuery.generateQueryVariables(actionRecords)).toEqual(expectedVariables);
+  });
+
+  it("shouldGenerateCorrectQueryVariablesForMenus", () => {
+    const actionRecords: Array<ActionRecordType> = [
+      {
+        actionId: "1",
+        actionType: ActionTypeEnum.MENU,
+        callFlowName: "TestFlow",
+        speech: "Press 1",
+        allowBargeIn: true,
+        finishOnKey: "#",
+        minDigits: 1,
+        maxDigits: 1,
+        timeout: 5,
+        repeat: {
+          nextActionId: "2",
+          nextActionType: ActionTypeEnum.REDIRECT,
+          loop: 2
+        } as Repeat,
+        nextActionType: ActionTypeEnum.REDIRECT,
+        nextActionId: "3"
+      } as Menu
+    ];
+
+    const expectedVariables: CallFlowConfig = {
+      callFlowName: "TestFlow",
+      announcements: [],
       menus: [
         {
-          actionId: "2",
+          actionId: "1",
           actionType: ActionTypeEnum.MENU,
           callFlowName: "TestFlow",
           createTime: undefined,
+          updateTime: undefined,
           speech: "Press 1",
           allowBargeIn: true,
           finishOnKey: "#",
@@ -84,59 +108,134 @@ describe("BatchCreateActionRecordsQuery", () => {
           maxDigits: 1,
           timeout: 5,
           repeat: {
-            callerContextAttributes: "{}",
-            loop: 3,
-            nextActionType: ActionTypeEnum.MENU,
-            nextActionId: "2"
-          },
+            nextActionId: "2",
+            nextActionType: ActionTypeEnum.REDIRECT,
+            loop: 2
+          } as Repeat,
           nextActionType: ActionTypeEnum.REDIRECT,
-          nextActionId: "3",
-          updateTime: undefined
+          nextActionId: "3"
         }
       ],
       menuOptions: [],
       redirects: []
     };
 
-    expect(query.generateQueryVariables(actionRecords)).toEqual(expectedVariables);
+    expect(batchCreateDynamicActionQuery.generateQueryVariables(actionRecords)).toEqual(expectedVariables);
   });
 
-  it("shouldGenerateBatchOfGraphQLInputVariables", () => {
-    const actionRecords: Array<ActionRecordType> = Array(30).fill({
-      actionId: "1",
-      actionType: ActionTypeEnum.ANNOUNCEMENT,
+  it("shouldGenerateCorrectQueryVariablesForMenuOptions", () => {
+    const actionRecords: Array<ActionRecordType> = [
+      {
+        actionId: "1",
+        actionType: ActionTypeEnum.MENU_OPTIONS,
+        callFlowName: "TestFlow",
+        options: [
+          {
+            digit: "1",
+            callerContextAttributes: "",
+            nextActionId: "2",
+            nextActionType: ActionTypeEnum.REDIRECT
+          } as MenuOption,
+          {
+            digit: "2",
+            callerContextAttributes: "",
+            nextActionId: "2",
+            nextActionType: ActionTypeEnum.REDIRECT
+          } as MenuOption
+        ]
+      } as MenuOptions
+    ];
+
+    const expectedVariables: CallFlowConfig = {
       callFlowName: "TestFlow",
-      speech: "Hello",
-      nextActionType: ActionTypeEnum.MENU,
-      nextActionId: "2"
-    } as Announcement);
+      announcements: [],
+      menus: [],
+      menuOptions: [
+        {
+          actionId: "1",
+          actionType: ActionTypeEnum.MENU_OPTIONS,
+          callFlowName: "TestFlow",
+          createTime: undefined,
+          updateTime: undefined,
+          options: [
+            {
+              digit: "1",
+              callerContextAttributes: "" as MenuOption,
+              nextActionId: "2",
+              nextActionType: ActionTypeEnum.REDIRECT
+            } as MenuOption,
+            {
+              digit: "2",
+              callerContextAttributes: "" as MenuOption,
+              nextActionId: "2",
+              nextActionType: ActionTypeEnum.REDIRECT
+            } as MenuOption
+          ]
+        }
+      ],
+      redirects: []
+    };
 
-    const batchVariables = query.generateBatchOfGraphQLInputVariables(actionRecords);
-    expect(batchVariables.length).toBe(2);
-    expect(batchVariables[0].input.announcements.length).toBe(25);
-    expect(batchVariables[1].input.announcements.length).toBe(5);
+    expect(batchCreateDynamicActionQuery.generateQueryVariables(actionRecords)).toEqual(expectedVariables);
   });
 
-  it("shouldBuildResponseWithErrors", () => {
-    const batchGraphQLResponses: Array<GraphQLResponse<CallFlowConfig>> = [
-      { errors: [{ message: "Error 1" }]} as GraphQLResponse<CallFlowConfig>,
-      { errors: [{ message: "Error 2" }]} as GraphQLResponse<CallFlowConfig>
+  it("shouldGenerateCorrectQueryVariablesForRedirects", () => {
+    const actionRecords: Array<ActionRecordType> = [
+      {
+        actionId: "1",
+        actionType: ActionTypeEnum.REDIRECT,
+        callFlowName: "TestFlow",
+        url: "http://example.com"
+      } as Redirect
     ];
 
-    const result = query.buildResponse(batchGraphQLResponses);
-    expect(result.hasError).toBe(true);
-    expect(result.errors.length).toBe(2);
-    expect(result.alertMsg).toBe("Errors occurred processing createCallFlowConfig records");
+    const expectedVariables: CallFlowConfig = {
+      callFlowName: "TestFlow",
+      announcements: [],
+      menus: [],
+      menuOptions: [],
+      redirects: [
+        {
+          actionId: "1",
+          actionType: ActionTypeEnum.REDIRECT,
+          callFlowName: "TestFlow",
+          createTime: undefined,
+          updateTime: undefined,
+          url: "http://example.com"
+        }
+      ]
+    };
+
+    expect(batchCreateDynamicActionQuery.generateQueryVariables(actionRecords)).toEqual(expectedVariables);
   });
 
-  it("shouldBuildResponseWithoutErrors", () => {
-    const batchGraphQLResponses: Array<GraphQLResponse<CallFlowConfig>> = [
-      { data: { callFlowName: "TestFlow" }} as GraphQLResponse<CallFlowConfig>,
-      { data: { callFlowName: "TestFlow2" }} as GraphQLResponse<CallFlowConfig>
-    ];
+  it("should create action records successfully", async () => {
+    jest.spyOn(batchCreateDynamicActionQuery, QUERY).mockReturnValue(Promise.resolve({
+      data: {
+        createCallFlowConfig: {
+          items: MockCallFlowConfigOne
+        }
+      },
+      hasResults: true,
+      errors: []
+    } as GraphQLResponse<ActionRecordType>));
+    const result = await batchCreateDynamicActionRecords(mockAccessToken, MockCallFlowConfigOne);
+    expect(result.hasError).toEqual(false);
+  });
 
-    const result = query.buildResponse(batchGraphQLResponses);
-    expect(result.hasError).toBe(false);
-    expect(result.errors.length).toBe(0);
+  it("should handle error when creating action records", async () => {
+    jest.spyOn(batchCreateDynamicActionQuery, QUERY).mockReturnValue(Promise.resolve({
+      data: {
+        createCallFlowConfig: {
+          items: [] as Array<ActionRecordType>
+        }
+      },
+      hasResults: false,
+      errors: [{
+        message: "error creating records"
+      }]
+    } as GraphQLResponse<ActionRecordType>));
+    const result = await batchCreateDynamicActionRecords(mockAccessToken, MockCallFlowConfigOne);
+    expect(result.hasError).toEqual(true);
   });
 });

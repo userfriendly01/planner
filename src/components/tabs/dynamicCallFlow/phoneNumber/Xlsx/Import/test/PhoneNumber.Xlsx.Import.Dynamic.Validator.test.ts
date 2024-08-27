@@ -2,7 +2,7 @@ import {
   testDynamicPhoneNumberXlsxRow,
   testSelfServiceDynamicPhoneNumberXlsxRow
 } from "dynamicCallFlowPhoneNumber/Xlsx/test/PhoneNumber.Xlsx.MockData.Dynamic.Row";
-import { deepCopyObject } from "components/tabs/dynamicCallFlow/test/dynamicCallFlow.Testing.Util";
+import { deepCopyObject } from "dynamicCallFlowCommon/test/DynamicCallFlow.Testing.Util";
 import { CallFlowTypeEnum } from "../../../GraphQL/Dynamic.PhoneNumber.Interfaces";
 import {
   CALL_FLOW_NAME,
@@ -15,25 +15,25 @@ import {
   PhoneNumberXlsxImportDynamicValidator
 } from "dynamicCallFlowPhoneNumber/Xlsx/Import/PhoneNumber.Xlsx.Import.Dynamic.Validator";
 import {
-  PhoneNumberXlsxImportValidatorUtil
-} from "dynamicCallFlowPhoneNumber/Xlsx/Import/test/PhoneNumber.Xlsx.Import.Validator.Util";
+  PhoneNumberXlsxImportValidatorTestingUtil
+} from "dynamicCallFlowPhoneNumber/Xlsx/Import/test/PhoneNumber.Xlsx.Import.Validator.Testing.Util";
 import {
   PhoneNumberXlsxImportValidator
 } from "dynamicCallFlowPhoneNumber/Xlsx/Import/PhoneNumber.Xlsx.Import.Interface";
 
 describe("Dynamic Phone Number XLSX Value Validator", () => {
   const validator: PhoneNumberXlsxImportValidator = new PhoneNumberXlsxImportDynamicValidator();
-  const validatorUtil = new PhoneNumberXlsxImportValidatorUtil(validator);
+  const validatorUtil = new PhoneNumberXlsxImportValidatorTestingUtil(validator);
 
 
-  it("shouldLogErrorWhenNextActionIdIsSetForSelfServicePhoneNumber", () => {
+  it("should log error when NextActionIdIsSetForSelfServicePhoneNumber", () => {
     const xlsxRow = deepCopyObject(testDynamicPhoneNumberXlsxRow);
     xlsxRow.callFlowType = CallFlowTypeEnum.SELFSERVICE;
     xlsxRow.nextActionId = "someActionId";
     validatorUtil.elementShouldBeMissingTest(NEXT_ACTION_ID, xlsxRow,`${NEXT_ACTION_ID} should not be set when ${CALL_FLOW_TYPE} is ${CallFlowTypeEnum.SELFSERVICE}.`);
   });
 
-  it("shouldNotLogErrorWhenNextActionIdIsNotSetForSelfServicePhoneNumber", () => {
+  it("should not log error when NextActionIdIsNotSetForSelfServicePhoneNumber", () => {
     const xlsxRow = deepCopyObject(testDynamicPhoneNumberXlsxRow);
     xlsxRow.callFlowType = CallFlowTypeEnum.SELFSERVICE;
     xlsxRow.nextActionId = "";
@@ -41,7 +41,7 @@ describe("Dynamic Phone Number XLSX Value Validator", () => {
     validatorUtil.shouldNotContainErrorMessageTest(xlsxRow);
   });
 
-  it("shouldNotLogErrorWhenNextActionIdIsNotSetForMigratedSelfServicePhoneNumber", () => {
+  it("should not log error when NextActionIdIsNotSetForMigratedSelfServicePhoneNumber", () => {
     const xlsxRow = deepCopyObject(testSelfServiceDynamicPhoneNumberXlsxRow);
     validatorUtil.shouldNotContainErrorMessageTest(xlsxRow);
   });
@@ -83,5 +83,23 @@ describe("Dynamic Phone Number XLSX Value Validator", () => {
     it(`should return an array of errors when ${NEXT_ACTION_TYPE} is invalid`, () => {
       validatorUtil.invalidElementTest(NEXT_ACTION_TYPE, "REDIAL", deepCopyObject(testDynamicPhoneNumberXlsxRow));
     });
+  });
+
+  it("should log error when NextActionTypeIsSetForMigratedSelfServicePhoneNumber", () => {
+    const xlsxRow = deepCopyObject(testDynamicPhoneNumberXlsxRow);
+    xlsxRow.migrateSelfServiceNumberToDynamic = "true";
+    xlsxRow.nextActionType = "someActionType";
+    validatorUtil.elementShouldBeMissingTest(NEXT_ACTION_TYPE, xlsxRow, `${NEXT_ACTION_TYPE} should not be set for migrated self service phone numbers.`);
+  });
+
+  it("should not log error when NextActionType and ActionId IsNotSetForMigratedSelfServicePhoneNumber", () => {
+    const xlsxRow = deepCopyObject(testDynamicPhoneNumberXlsxRow);
+    xlsxRow.migrateSelfServiceNumberToDynamic = "true";
+    xlsxRow.nextActionType = "";
+    xlsxRow.nextActionId = "";
+    xlsxRow.callFlowName = CallFlowTypeEnum.SELFSERVICE;
+    xlsxRow.callFlowTemplate = CallFlowTypeEnum.SELFSERVICE;
+    xlsxRow.callFlowType = CallFlowTypeEnum.SELFSERVICE;
+    validatorUtil.shouldNotContainErrorMessageTest(xlsxRow);
   });
 });

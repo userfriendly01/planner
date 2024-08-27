@@ -2,6 +2,10 @@ import { AbstractListRecordsQuery } from "components/tabs/dynamicCallFlow/common
 import { ActionRecordType } from "components/tabs/dynamicCallFlow/action/GraphQL/Action.Interfaces";
 
 export class ActionListRecordsQuery extends AbstractListRecordsQuery {
+  /**
+   * Should probably be renamed in GraphQL to convey that it is returning all
+   * call flow configs, not just one.
+   */
   queryName(): string {
     return "getCallFlowConfig";
   }
@@ -67,13 +71,13 @@ export class ActionListRecordsQuery extends AbstractListRecordsQuery {
             }
           }
         }
-      }`.replace(/[\n\r]/g, "");
+      }`;
   }
 }
 
-const actionListRecordsQuery = new ActionListRecordsQuery();
+export const listActionRecordsQuery = new ActionListRecordsQuery();
 
-export async function actionListRecords(accessToken: string, nextToken: string = null): Promise<Array<ActionRecordType>> {
-  const listGraphQLData = await actionListRecordsQuery.getList<ActionRecordType>(accessToken, 10000, nextToken);
+export async function listActionRecords(accessToken: string, nextToken: string = null): Promise<Array<ActionRecordType>> {
+  const listGraphQLData = await listActionRecordsQuery.getList<ActionRecordType>(accessToken, 10000, nextToken);
   return listGraphQLData.items;
 }

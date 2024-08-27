@@ -1,4 +1,5 @@
 import React, {
+  ReactElement,
   useContext, useEffect, useState
 } from "react";
 import {
@@ -24,7 +25,7 @@ export const FilterLabel: Map<string, string> = new Map<string, string>([
 //TODO:  This can be moved to a common location as most is the same as PhoneNumberDataGridFilterModal.  Just need to make the SelectContainers dynamic
 export const ActionDataGridFilterModal = ({
   isOpen, dataGridFilter
-}: DataGridFilterModalProps<ActionRecordType>):JSX.Element => {
+}: DataGridFilterModalProps<ActionRecordType>): ReactElement => {
   const { modalController } = useContext(DynamicCallFlowActionContext);
 
   const [filter, setFilter] = useState<Filter>({} as Filter);

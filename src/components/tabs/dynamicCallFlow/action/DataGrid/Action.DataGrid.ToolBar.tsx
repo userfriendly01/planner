@@ -2,11 +2,14 @@ import {
   Button, Chip, FormControl, Grid, IconButton, TextField, Tooltip
 } from "@mui/material";
 import React, {
+  ReactElement,
   useContext, useEffect, useMemo, useState
 } from "react";
 import { SaveAlt } from "@mui/icons-material";
 import { DynamicCallFlowActionContext } from "components/tabs/dynamicCallFlow/action/DynamicCallFlow.Action.Container";
-import { DataGridFilterRef, Filter } from "components/tabs/dynamicCallFlow/common/DataGrid/Abstract.DataGrid.Filter";
+import {
+  DataGridFilterRef, Filter
+} from "components/tabs/dynamicCallFlow/common/DataGrid/Abstract.DataGrid.Filter";
 import { ActionModalTypeEnum } from "components/tabs/dynamicCallFlow/action/DataGrid/Action.DataGrid.Component";
 import {
   DYNAMIC_CALL_FLOW_ROLE, userDoesNotHaveReadWriteAccess
@@ -23,9 +26,11 @@ interface ActionDataGridToolBarProps {
   handlePreviewModalOpen: (event: any) => void;
 }
 
+export const ActionDataGridToolBarDataTestId = "ActionDataGridToolBar";
+
 export const ActionDataGridToolBar = ({
   handlePreviewModalOpen, isFilterModalOpen, dataGridFilter, dataGridController
-}: ActionDataGridToolBarProps): JSX.Element => {
+}: ActionDataGridToolBarProps): ReactElement => {
   const {
     permissions,
     modalController

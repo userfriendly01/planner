@@ -1,5 +1,5 @@
 import { testLegacyPhoneNumberXlsxRow } from "dynamicCallFlowPhoneNumber/Xlsx/test/PhoneNumber.Xlsx.MockData.Legacy.Row";
-import { deepCopyObject } from "components/tabs/dynamicCallFlow/test/dynamicCallFlow.Testing.Util";
+import { deepCopyObject } from "dynamicCallFlowCommon/test/DynamicCallFlow.Testing.Util";
 import {
   PhoneNumberXlsxImportLegacyValidator
 } from "dynamicCallFlowPhoneNumber/Xlsx/Import/PhoneNumber.Xlsx.Import.Legacy.Validator";

@@ -1,6 +1,6 @@
 import PhoneNumberDataGridComponent from "components/tabs/dynamicCallFlow/phoneNumber/DataGrid/PhoneNumber.DataGrid.Component";
 import React, {
-  createContext, useState, useRef, useEffect
+  createContext, useState, useRef, useEffect, ReactElement
 } from "react";
 import ModalController, {
   MODAL_NOT_IN_USE
@@ -11,7 +11,7 @@ import { PhoneNumberModalType } from "components/tabs/dynamicCallFlow/phoneNumbe
 
 export const DynamicCallFlowPhoneNumberContext = createContext<DynamicCallFlowContextStore<PhoneNumberModalType>>(undefined);
 
-const DynamicCallFlowPhoneNumberContainer = () => {
+const DynamicCallFlowPhoneNumberContainer = (): ReactElement => {
   const {
     userContext: {
       permissions,

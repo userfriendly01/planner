@@ -5,6 +5,7 @@ import {
   useGridApiRef
 } from "@mui/x-data-grid";
 import React, {
+  ReactElement,
   useContext, useEffect, useRef, useState
 } from "react";
 import "components/tabs/dynamicCallFlow/phoneNumber/DataGrid/PhoneNumber.DataGrid.scss";
@@ -57,10 +58,10 @@ import {
   addElementsToArray, updateElementsInArray
 } from "dynamicCallFlowCommon/Util/Array.Util";
 
-const DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_PAGE_NUMBER = "dynamicCallFlowPhoneNumberDataGridPageNumber";
-const DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_RECORDS_PER_PAGE = "dynamicCallFlowPhoneNumberDataGridRecordsPerPage";
+export const DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_PAGE_NUMBER = "dynamicCallFlowPhoneNumberDataGridPageNumber";
+export const DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_RECORDS_PER_PAGE = "dynamicCallFlowPhoneNumberDataGridRecordsPerPage";
 
-const PhoneNumberDataGridComponent = (): JSX.Element => {
+const PhoneNumberDataGridComponent = (): ReactElement => {
   const {
     accessTokenGraph,
     currentOpenModal,
@@ -170,9 +171,9 @@ const PhoneNumberDataGridComponent = (): JSX.Element => {
     setSourceRecords([ ...updateElementsInArray(phoneNumberMatchFilter, updatedSourceRecords, sourceRecords) ]);
   };
 
-  const addToSourceRecords = (newRecords: Array<PhoneNumberRecordType>): void => {
-    setSourceRecords(addElementsToArray(newRecords, sourceRecords));
-  };
+  // const addToSourceRecords = (newRecords: Array<PhoneNumberRecordType>): void => {
+  //   setSourceRecords(addElementsToArray(newRecords, sourceRecords));
+  // };
 
   const openEditFormModal = (recordToEdit: PhoneNumberRecordType): void => {
     setFormRecord(recordToEdit);

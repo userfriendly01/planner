@@ -15,7 +15,7 @@ export class BatchDeleteActionRecordsQuery extends AbstractBatchDeleteDynamicCal
   }
 }
 
-const batchCreateDynamicActionQuery = new BatchDeleteActionRecordsQuery();
+export const batchDeleteActionRecordsQuery = new BatchDeleteActionRecordsQuery();
 
 /**
  * This method simply calls the BatchDeleteActionRecordsQuery.runBatch.  It is here in case any common manipulation of the action
@@ -24,6 +24,6 @@ const batchCreateDynamicActionQuery = new BatchDeleteActionRecordsQuery();
  * @param {Array<ActionRecordType>} actionRecords
  * @return {Promise<BatchResults<ActionRecordType>>}
  */
-export async function batchDeleteDynamicActionRecords(accessToken: string, actionRecords: Array<ActionRecordType>): Promise<BatchResults<ActionRecordType>> {
-  return await batchCreateDynamicActionQuery.batchQuery(accessToken, actionRecords);
+export async function batchDeleteActionRecords(accessToken: string, actionRecords: Array<ActionRecordType>): Promise<BatchResults<ActionRecordType>> {
+  return await batchDeleteActionRecordsQuery.batchQuery(accessToken, actionRecords);
 }

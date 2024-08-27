@@ -49,4 +49,15 @@ describe("Phone Number XLSX Importer", () => {
     expect(xlsxImporterResults.errors.length).toBe(1);
     expect(xlsxImporterResults.errors[0]).toStrictEqual("The maximum number of phone numbers that can be imported at one time is 500.");
   });
+
+  it("shouldReturnInstanceOfPhoneNumberXlsxImporter", () => {
+    const instance = PhoneNumberXlsxImporter.getInstance();
+    expect(instance).toBeInstanceOf(PhoneNumberXlsxImporter);
+  });
+
+  it("shouldReturnNewInstanceEachTime", () => {
+    const instance1 = PhoneNumberXlsxImporter.getInstance();
+    const instance2 = PhoneNumberXlsxImporter.getInstance();
+    expect(instance1).not.toBe(instance2);
+  });
 });

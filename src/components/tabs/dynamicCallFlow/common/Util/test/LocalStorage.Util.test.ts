@@ -2,7 +2,8 @@ import {
   dataFromLocalStorageHasExpired,
   retrieveDataFromLocalStorage
 } from "dynamicCallFlowCommon/Util/LocalStorage.Util";
-import { MockLocalStorage } from "dynamicCallFlowCommon/test/Window.Mock.Testing.Util";
+
+import { MockLocalStorage } from "dynamicCallFlowCommon/test/DynamicCallFlow.Testing.Util";
 
 
 describe("LocalStorage.Util", () => {

@@ -2,12 +2,15 @@ import {
   Chip, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, TextField, Tooltip
 } from "@mui/material";
 import React, {
+  ReactElement,
   useContext, useEffect, useMemo, useState
 } from "react";
 import {
   AddOutlined, DeleteSweepOutlined, EditNoteOutlined, PlaylistAdd, SaveAlt
 } from "@mui/icons-material";
-import { DataGridFilterRef, Filter } from "components/tabs/dynamicCallFlow/common/DataGrid/Abstract.DataGrid.Filter";
+import {
+  DataGridFilterRef, Filter
+} from "components/tabs/dynamicCallFlow/common/DataGrid/Abstract.DataGrid.Filter";
 import { DynamicCallFlowPhoneNumberContext } from "components/tabs/dynamicCallFlow/phoneNumber/DynamicCallFlow.PhoneNumber.Container";
 import { PhoneNumberRecordType } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 import {
@@ -29,7 +32,7 @@ interface PhoneNumberDataGridToolBarProps {
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const PhoneNumberDataGridToolBar = ({
   isFilterModalOpen, dataGridFilter, dataGridController, handleModalOpen, loading
-}: PhoneNumberDataGridToolBarProps) => {
+}: PhoneNumberDataGridToolBarProps): ReactElement => {
   const {
     permissions,
     modalController
@@ -54,7 +57,7 @@ const PhoneNumberDataGridToolBar = ({
   return (
     <Grid container>
       {(!loading) ? (
-        <Grid item key="phone-number-search-box" xs={9}>
+        <Grid item key="phone-number-filter-grid" xs={9}>
           <TextField
             sx={{ marginLeft: 1 }}
             placeholder="Click here to apply filter"
@@ -72,20 +75,21 @@ const PhoneNumberDataGridToolBar = ({
                 ))
             }}
             fullWidth
-            id="flow-SearchBox-input"
+            id="phone-number-filter-text-field"
             label="Search"
             margin="normal"
-            name="flow-SearchBox-input"
+            name="dynamic-call-flow-phone-numberSearchBox-input"
             variant="standard"
             onClick={() => modalController.current.openModal(PhoneNumberModalTypeEnum.Filter)}
           />
         </Grid>) : (<div></div>)}
       {(!loading) ? (
-        <Grid item key = "Export FlowUI" xs={1} >
-          <Tooltip title="Export Flow Records" placement="right-start"  sx={{
+        <Grid item key = "Export Dynamic Call Flow Phone Number Records Grid" xs={1} >
+          <Tooltip title="Export Dynamic Call Flow Phone Number Records Tooltip" placement="right-start"  sx={{
             left: "calc(76%)"
           }}>
             <IconButton
+              aria-label="export-records-button"
               onClick={exportDataFile}
               color = "primary"
               size = "small"
@@ -103,7 +107,7 @@ const PhoneNumberDataGridToolBar = ({
           </Tooltip>
         </Grid>) : (<div></div>)}
       {(!loading) ? (
-        <Grid item key="flow-action-box" xs={2}>
+        <Grid item key="dynamic-call-flow-phone-numberaction-box" xs={2}>
           <FormControl sx={{
             marginTop: "16px",
             marginBottom: "8px",

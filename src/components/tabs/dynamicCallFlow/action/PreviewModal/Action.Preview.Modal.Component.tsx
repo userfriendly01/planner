@@ -1,4 +1,5 @@
 import React, {
+  ReactElement,
   useContext,
   useEffect, useMemo
 } from "react";
@@ -40,7 +41,7 @@ interface PreviewModalParameters<RecordType> {
 
 export const ActionPreviewModal = ({
   isOpen, onClose, dataGridController, previewModalHandler, modalType, maxId, loading
-}: PreviewModalParameters<ActionRecordType>): JSX.Element => {
+}: PreviewModalParameters<ActionRecordType>): ReactElement => {
   const {
     accessTokenGraph
   } = useContext(DynamicCallFlowActionContext);

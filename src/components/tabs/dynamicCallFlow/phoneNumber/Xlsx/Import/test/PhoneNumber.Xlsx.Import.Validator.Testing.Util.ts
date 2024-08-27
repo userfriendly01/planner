@@ -4,7 +4,7 @@ import {
 } from "dynamicCallFlowPhoneNumber/Xlsx/Import/PhoneNumber.Xlsx.Import.Interface";
 import { buildErrorMessage } from "dynamicCallFlowPhoneNumber/Xlsx/Import/PhoneNumber.Xlsx.Import.Abstract.Validator";
 
-export class PhoneNumberXlsxImportValidatorUtil {
+export class PhoneNumberXlsxImportValidatorTestingUtil {
   private readonly _validator: PhoneNumberXlsxImportValidator;
 
   constructor(validator: PhoneNumberXlsxImportValidator) {
@@ -34,7 +34,8 @@ export class PhoneNumberXlsxImportValidatorUtil {
     this.errorPathTest(key, "should not be here", xlsxRow, buildErrorMessage(xlsxRow.dialedPhoneNumber, message));
   }
 
-  invalidElementTest(key: string, value: string, xlsxRow: PhoneNumberXlsxRow): void {
-    this.errorPathTest(key, value, xlsxRow, `Dialed Phone Number[${xlsxRow.dialedPhoneNumber}] ${value} is an invalid ${key}.`);
+  invalidElementTest(key: string, value: string, xlsxRow: PhoneNumberXlsxRow, overrideMessage?: string): void {
+    const message = overrideMessage ? overrideMessage : `Dialed Phone Number[${xlsxRow.dialedPhoneNumber}] ${value} is an invalid ${key}.`;
+    this.errorPathTest(key, value, xlsxRow, message);
   }
 }

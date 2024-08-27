@@ -7,7 +7,7 @@ import {
 import ModalOnHover from "components/ModalOnHover";
 import { CALL_FLOW_NAME } from "components/tabs/dynamicCallFlow/action/Form/ActionFields";
 import { FieldDataType } from "components/tabs/dynamicCallFlow/common/Form/Form.Interfaces";
-import { deepCopyObject } from "components/tabs/dynamicCallFlow/test/dynamicCallFlow.Testing.Util";
+import { deepCopyObject } from "dynamicCallFlowCommon/test/DynamicCallFlow.Testing.Util";
 import React from "react";
 import { render } from "testUtils";
 import {

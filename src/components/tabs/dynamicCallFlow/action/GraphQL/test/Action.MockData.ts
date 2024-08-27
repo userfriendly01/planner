@@ -57,7 +57,7 @@ export const MenuOptionsOne: MenuOptions = {
   ]
 };
 
-export const CallFlowConfigOne = [
+export const MockCallFlowConfigOne = [
   AnnouncementOne,
   MenuOne,
   MenuOptionsOne

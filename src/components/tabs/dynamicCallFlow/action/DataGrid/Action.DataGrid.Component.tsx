@@ -1,4 +1,5 @@
 import React, {
+  ReactElement,
   useContext, useEffect, useRef, useState
 } from "react";
 import { ActionDataGridToolBar } from "components/tabs/dynamicCallFlow/action/DataGrid/Action.DataGrid.ToolBar";
@@ -8,7 +9,7 @@ import {
 import ActionDataGridColumnDef from "components/tabs/dynamicCallFlow/action/DataGrid/Action.DataGrid.ColumnDef";
 import { ActionRecordType } from "components/tabs/dynamicCallFlow/action/GraphQL/Action.Interfaces";
 import { GridApiCommunity } from "@mui/x-data-grid/internals";
-import { actionListRecords } from "components/tabs/dynamicCallFlow/action/GraphQL/List.Action.Records.Query";
+import { listActionRecords } from "components/tabs/dynamicCallFlow/action/GraphQL/List.Action.Records.Query";
 import {
   DataGridStateProps,
   initializeDataGrid,
@@ -24,21 +25,15 @@ import {
 } from "components/tabs/dynamicCallFlow/common/AlertBar.Controller";
 import { DynamicCallFlowActionContext } from "components/tabs/dynamicCallFlow/action/DynamicCallFlow.Action.Container";
 import { NotInUseModalType } from "components/tabs/dynamicCallFlow/common/Modal.Controller";
-import {
-  ActionDataGridController,
-  actionMatchFilter
-} from "components/tabs/dynamicCallFlow/action/DataGrid/Action.DataGrid.Controller";
+import { ActionDataGridController } from "components/tabs/dynamicCallFlow/action/DataGrid/Action.DataGrid.Controller";
 import { ActionDataGridFilter } from "components/tabs/dynamicCallFlow/action/DataGrid/Action.DataGrid.Filter";
 import { CustomToast } from "components/CustomToast";
 import { ActionPreviewModalHandler } from "components/tabs/dynamicCallFlow/action/PreviewModal/Action.Preview.Modal.Handler";
 import { ActionDataGridFilterModal } from "components/tabs/dynamicCallFlow/action/DataGrid/Action.DataGrid.Filter.Modal";
 import { logger } from "utils/logger";
-import {
-  addElementsToArray, updateElementsInArray
-} from "dynamicCallFlowCommon/Util/Array.Util";
 
-const DYNAMIC_CALL_FLOW_ACTION_DATA_GRID_PAGE_NUMBER = "dynamicCallFlowActionDataGridPageNumber";
-const DYNAMIC_CALL_FLOW_ACTION_DATA_GRID_RECORDS_PER_PAGE = "dynamicCallFlowActionDataGridRecordsPerPage";
+export const DYNAMIC_CALL_FLOW_ACTION_DATA_GRID_PAGE_NUMBER = "dynamicCallFlowActionDataGridPageNumber";
+export const DYNAMIC_CALL_FLOW_ACTION_DATA_GRID_RECORDS_PER_PAGE = "dynamicCallFlowActionDataGridRecordsPerPage";
 
 export type ActionModalType = "Add" | "Edit" | "Bulk Delete" | "Batch Create" | "Bulk Edit" | "Filter" | NotInUseModalType;
 
@@ -47,7 +42,7 @@ export enum ActionModalTypeEnum {
   Filter = "Filter"
 }
 
-const ActionDataGridComponent = (): JSX.Element => {
+const ActionDataGridComponent = (): ReactElement => {
   const {
     accessTokenGraph,
     currentOpenModal,
@@ -89,7 +84,7 @@ const ActionDataGridComponent = (): JSX.Element => {
       let updatedDataGridProps: DataGridStateProps;
 
       try {
-        const records: Array<ActionRecordType> = await actionListRecords(accessTokenGraph);
+        const records: Array<ActionRecordType> = await listActionRecords(accessTokenGraph);
         [sortedRecords, updatedDataGridProps] = sortRecords<ActionRecordType>(records);
       } catch (error: unknown) {
         logger.error(`Error loading dynamic call flow action data: ${(error as Error)?.message}`, { error });
@@ -136,13 +131,13 @@ const ActionDataGridComponent = (): JSX.Element => {
     setPaginationModel(model);
   };
 
-  const updateSourceRecords = (updatedSourceRecords: Array<ActionRecordType>): void => {
-    setSourceRecords([ ...updateElementsInArray(actionMatchFilter, updatedSourceRecords, sourceRecords) ]);
-  };
-
-  const addToSourceRecords = (newRecords: Array<ActionRecordType>): void => {
-    setSourceRecords(addElementsToArray(newRecords, sourceRecords));
-  };
+  // const updateSourceRecords = (updatedSourceRecords: Array<ActionRecordType>): void => {
+  //   setSourceRecords([ ...updateElementsInArray(actionMatchFilter, updatedSourceRecords, sourceRecords) ]);
+  // };
+  //
+  // const addToSourceRecords = (newRecords: Array<ActionRecordType>): void => {
+  //   setSourceRecords(addElementsToArray(newRecords, sourceRecords));
+  // };
 
   const handleCloseAlertBar = () => {
     setAlertBarProps(initialAlertBarProps);
