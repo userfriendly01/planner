@@ -22,8 +22,10 @@ export const phoneNumberMatchFilter: MatchFilter<PhoneNumberRecordType> = (recor
 
 export function idDuplicateEmployeeAssignment(record: PhoneNumberRecordType, sourceRecords: Array<PhoneNumberRecordType>): boolean {
   return sourceRecords.some((sourceRecord: PhoneNumberRecordType) => {
-    return PhoneNumberRecordUtil.getPropertyValue(sourceRecord, EMPLOYEE_ID) === PhoneNumberRecordUtil.getPropertyValue(record, EMPLOYEE_ID)
-      && PhoneNumberRecordUtil.getPhoneNumber(sourceRecord) !== PhoneNumberRecordUtil.getPhoneNumber(record);
+    const employeeId = PhoneNumberRecordUtil.getPropertyValue(record, EMPLOYEE_ID);
+    const phoneNumber = PhoneNumberRecordUtil.getPhoneNumber(record);
+    return employeeId && PhoneNumberRecordUtil.getPropertyValue(sourceRecord, EMPLOYEE_ID) === employeeId
+      && PhoneNumberRecordUtil.getPhoneNumber(sourceRecord) !== phoneNumber;
   });
 }
 

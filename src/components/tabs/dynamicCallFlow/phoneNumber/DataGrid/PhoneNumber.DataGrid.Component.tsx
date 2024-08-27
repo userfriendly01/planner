@@ -55,7 +55,7 @@ import LoadDataGridMonitor from "components/tabs/dynamicCallFlow/common/DataGrid
 import { PhoneNumberModalTypeEnum } from "components/tabs/dynamicCallFlow/phoneNumber/DynamicCallFlow.PhoneNumber.Interfaces";
 import { logger } from "utils/logger";
 import {
-  addElementsToArray, updateElementsInArray
+  updateElementsInArray
 } from "dynamicCallFlowCommon/Util/Array.Util";
 
 export const DYNAMIC_CALL_FLOW_PHONE_NUMBER_DATA_GRID_PAGE_NUMBER = "dynamicCallFlowPhoneNumberDataGridPageNumber";

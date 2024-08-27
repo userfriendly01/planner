@@ -30,9 +30,7 @@ export abstract class AbstractPhoneNumberFormHandler extends AbstractFormHandler
 
     if (record.employeeId && employeeIdIsNotValid(record.employeeId)) {
       throw new Error(`Employee ID is not in the correct format n#######: ${record.employeeId}`);
-    }
-
-    if (idDuplicateEmployeeAssignment(record, this.dataGridController.sourceRecords)) {
+    } else if (record.employeeId && idDuplicateEmployeeAssignment(record, this.dataGridController.sourceRecords)) {
       throw new Error(`Employee ID ${record[EMPLOYEE_ID as keyof PhoneNumberRecordType]} is already assigned to a phone number.`);
     }
 
