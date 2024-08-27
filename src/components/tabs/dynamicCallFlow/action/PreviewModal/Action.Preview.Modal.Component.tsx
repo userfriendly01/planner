@@ -98,7 +98,7 @@ export const ActionPreviewModal = ({
       onClose={()=>{ onClose(); }}
       size="large"
     >
-      <ModalHeader>{modalType?.toUpperCase()} Flow - {modalRecords?.length} rows selected</ModalHeader>
+      <ModalHeader>{modalType.toUpperCase()} Flow - {modalRecords.length} rows selected</ModalHeader>
       <ModalBody className="preview-grid-modal">
         <StyledButton sx={{
           marginRight: "10px",
