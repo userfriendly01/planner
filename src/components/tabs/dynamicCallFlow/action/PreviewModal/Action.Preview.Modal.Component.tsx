@@ -135,7 +135,7 @@ export const ActionPreviewModal = ({
           justifyContent: "center"
         }}>
           {modalType === ActionModalTypeEnum.BatchCreate &&
-            <StyledButton data-test-id="7TejSmswFOmbZApVNtsyT" sx={{ marginRight: "15px" }} onClick={()=>handleOnCreate()}>Load Call Flow Config Actions</StyledButton>
+            <StyledButton sx={{ marginRight: "15px" }} onClick={()=>handleOnCreate()}>Load Call Flow Config Actions</StyledButton>
           }
           <StyledButton onClick={handleOnClose}>Cancel</StyledButton>
         </Box>
