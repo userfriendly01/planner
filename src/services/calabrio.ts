@@ -13,6 +13,14 @@ export const createCalabrioTeam = async (accessToken: string, payload: any): Pro
   });
 };
 
+export const updateCalabrioTeam = async (accessToken: string, payload: any): Promise<CalabrioUser> => {
+  return await myAxios.put(`${apiPaths.UPDATE_CALABRIO_TEAM}&groupId=${payload.id}`, payload, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`
+    }
+  });
+};
+
 export const createCalabrioUser = async (accessToken: string, payload: any): Promise<CalabrioGroup[]> => {
   return await myAxios.post(apiPaths.CREATE_CALABRIO_USER, payload, {
     headers: {

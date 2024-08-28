@@ -134,7 +134,12 @@ describe("<ManagerModal />", () => {
         teams: [{
           groupId: 215,
           name: "Calabrio Group One"
-        }]
+        },
+        {
+          groupId: 216,
+          name: "Faith Cuneo - N0263786"
+        }
+        ]
       },
       managerContext: {
         managers: [
@@ -463,6 +468,7 @@ describe("<ManagerModal />", () => {
           expect(fetchUser).toHaveBeenCalledWith("Access Token", "n0263786");
           expect(StyledButton.mock.calls[0][0].children).toBe("Save");
           expect(StyledButton.mock.calls[0][0].disabled).toBe(true);
+          console.log(StyledButton.mock.calls);
           await waitFor(() => {
             expect(rendered.container).not.toHaveTextContent("A name change was detected for this manager.");
           });
