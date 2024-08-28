@@ -516,24 +516,30 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: A
       console.log("JULIA - CURRENT SKILLS: ", currentSkills);
 
       updatedDefaultSkills.skills = currentSkills.skills?.filter((s: any) => !skillsToDelete.skills.includes(s));
-      updatedDefaultSkills.levels = currentSkills.levels;
+      updatedDefaultSkills.levels = {};
 
       if (currentSkills.levels) {
-        for (const skillLevel in updatedDefaultSkills.levels) {
-          console.log("JULIA - SKILLLEVEL", skillLevel);
-          console.log("JULIA - VALUE?? ", updatedDefaultSkills.levels[skillLevel]);
-          if (skillsToDelete.levels[skillLevel]){
-            if (updatedDefaultSkills.levels[skillLevel] === skillsToDelete.levels[skillLevel]) {
-              delete updatedDefaultSkills.levels[skillLevel];
-              console.log("JULIA - ", skillLevel, " matches level, set to null");
-            } else {
-              console.log("JULIA - ", skillLevel, " did not match, adding back to skills array");
-              updatedDefaultSkills.skills.push(skillLevel);
-            }
-          } else {
-            console.log("JULIA - SKILL DOES NOT EXISTS IN LEVELS");
-          }
+        // NO LEVELS
+        for (const skillLevel in currentSkills.levels) {
+          if (!skillsToDelete.skills.includes(skillLevel)) {updatedDefaultSkills.levels[skillLevel] = currentSkills.levels[skillLevel]}
         }
+
+        // WITH LEVELS
+        // for (const skillLevel in updatedDefaultSkills.levels) {
+        //   console.log("JULIA - SKILLLEVEL", skillLevel);
+        //   console.log("JULIA - VALUE?? ", updatedDefaultSkills.levels[skillLevel]);
+        //   if (skillsToDelete.levels[skillLevel]){
+        //     if (updatedDefaultSkills.levels[skillLevel] === skillsToDelete.levels[skillLevel]) {
+        //       delete updatedDefaultSkills.levels[skillLevel];
+        //       console.log("JULIA - ", skillLevel, " matches level, removing");
+        //     } else {
+        //       console.log("JULIA - ", skillLevel, " did not match, adding back to skills array");
+        //       updatedDefaultSkills.skills.push(skillLevel);
+        //     }
+        //   } else {
+        //     console.log("JULIA - SKILL DOES NOT EXISTS IN LEVELS");
+        //   }
+        // }
       }
     }
     console.log("JULIA - UPDATED DEFAULT SKILLZ: ", updatedDefaultSkills);

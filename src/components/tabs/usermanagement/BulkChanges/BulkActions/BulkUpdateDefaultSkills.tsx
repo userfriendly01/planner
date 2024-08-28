@@ -44,6 +44,9 @@ export const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
     levels: {}
   });
 
+  // const skills = useSkillState().skills.slice().filter(s => s.levels);
+  // const skills = useSkillState().skills // .slice().filter(s => s.name);
+
   const skills = useSkillState().skills.slice().filter(s => s.levels);
   const skillsDropdownOptions = skills.map( s => ({
     label: s.name,
@@ -107,8 +110,8 @@ export const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
         }}
       />
 
-      {/* maybe this is enough for all three now? test l8r */}
-      { skillOption.value &&
+      {/* this is enough for all three now? */}
+      { (skillOption.value === "ADD" || skillOption.value === "OVERRIDE") &&
       <SkillSelectorContainer>
         <DefaultSkillSelector
           defaultSkills={updatedDefaultSkills}
@@ -117,6 +120,24 @@ export const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
           }}
         />
       </SkillSelectorContainer>
+      }
+      { skillOption.value === "DELETE" &&
+      <Dropdown
+          label="Skill to Delete"
+          value={updatedDefaultSkills[0]}
+          options={skillsDropdownOptions}
+          multiple={true}
+          updateValue={(event: any, s: any) => {
+            setUpdatedDefaultSkills({
+              skills: [s.value],
+              levels: {}
+            });
+          }}
+          styles={{
+            width: "230px",
+            margin: "10px 20px 0px 20px"
+          }}
+        />
       }
     </UpdateWrapper>
   );
