@@ -161,7 +161,7 @@ describe("<BulkUpdateDefaultSkills />", () => {
       });
     });
     describe("Options dropdown is updated to DELETE SKILL", () => {
-      test("DefaultSkillSelector is rendered", () => {
+      test("Multiselect dropdown is rendered", () => {
         renderComponent([]);
         expect(Dropdown.mock.calls.length).toBe(2);
         expect(Dropdown.mock.calls[0][0].value).toBe("");
@@ -170,15 +170,22 @@ describe("<BulkUpdateDefaultSkills />", () => {
         expect(Dropdown.mock.calls.length).toBe(4);
         expect(Dropdown.mock.calls[1][0].value).toBe("");
         expect(Dropdown.mock.calls[2][0].value).toBe("Delete Skills");
-        expect(DefaultSkillSelector.mock.calls[0][0].defaultSkills).toStrictEqual({
-          levels: {},
-          skills: []
-        });
+        expect(Dropdown.mock.calls[3][0].multiple).toBe(true);
+        expect(Dropdown.mock.calls[3][0].options).toEqual([
+          {
+            label: "skillz",
+            value: "skillz"
+          },
+          {
+            label: "noLevelsHere",
+            value: "noLevelsHere"
+          }
+        ]);
       });
       describe("skills are selected from Dropdown", () => {
         const selectedSkill = {
-          skills: ["skillz1", "skillz2"],
-          levels: {}
+          label: "skillz1",
+          value: "skillz1"
         };
         describe("template is not already in the selected templates list", () => {
           test("replace template is called", () => {
@@ -188,13 +195,13 @@ describe("<BulkUpdateDefaultSkills />", () => {
             const onOptionChange = Dropdown.mock.calls[0][0].updateValue;
             act(() => onOptionChange(null, dropdownOptions[1]));
             const setSkillToDelete = Dropdown.mock.calls[3][0].updateValue;
-            act(() => { setSkillToDelete(null, { value: "skillz1" }) });
+            act(() => { setSkillToDelete(null, [{ value: "skillz1", label: "skillz1" }]) });
             expect(mockReplaceTemplates).toHaveBeenCalledTimes(1);
             expect(mockReplaceTemplates).toHaveBeenCalledWith({
               ...updateTemplates.UPDATE_DEFAULT_SKILLS,
               data: {
                 key: "default_skills",
-                value: selectedSkill,
+                value: [selectedSkill],
                 option: dropdownOptions[1]
               }
             });
@@ -210,12 +217,12 @@ describe("<BulkUpdateDefaultSkills />", () => {
             expect(Dropdown.mock.calls[0][0].value).toBe("");
             const onOptionChange = Dropdown.mock.calls[0][0].updateValue;
             act(() => onOptionChange(null, dropdownOptions[1]));
-            const setDefaultSkills = DefaultSkillSelector.mock.calls[0][0].setDefaultSkills;
-            act(() => { setDefaultSkills(selectedSkill); });
+            const setSkillToDelete = Dropdown.mock.calls[2][0].updateValue;
+            act(() => { setSkillToDelete(null, [selectedSkill]) });
             expect(mockUpdateTemplates).toHaveBeenCalledTimes(1);
             expect(mockUpdateTemplates).toHaveBeenCalledWith(selectedTemplate, {
               key: "default_skills",
-              value: selectedSkill,
+              value: [selectedSkill],
               option: dropdownOptions[1]
             });
             expect(mockReplaceTemplates).toHaveBeenCalledTimes(0);

@@ -520,7 +520,6 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: A
         }
       }
     }
-    console.log("JULIA - UPDATED DEFAULT SKILLZ: ", updatedDefaultSkills);
 
     body.attributes = { "default_skills": updatedDefaultSkills };
 
@@ -529,7 +528,7 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: A
       body
     });
 
-    // await updateUser(workerSid, body);
+    await updateUser(workerSid, body);
 
     const message = `${workerSid} - Default Skills updated for row ${rowNumber}`;
 
