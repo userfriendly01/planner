@@ -19,6 +19,7 @@ const ListItem = styled.li<{ styles?: any }>`
   font-size: ${props => props.styles && props.styles.fontSize ? props.styles.fontSize : "15px"};
 `;
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const Dropdown = (props: any) => {
   const {
     CustomRender,
@@ -45,10 +46,14 @@ export const Dropdown = (props: any) => {
   };
 
   const handleCheckEqual = (option: any, value: any) => {
-    if(typeof value === "object") {
+    if(typeof option === "object" && typeof value === "object") {
       return option?.value === value?.value || value?.value === "";
-    } else {
+    } else if (typeof option === "object") {
       return option?.value === value || option?.label === value || value === "";
+    } else if (typeof value === "object") {
+      return option === value?.value || value?.value === "";
+    } else {
+      return option === value || value === "";
     }
   };
 

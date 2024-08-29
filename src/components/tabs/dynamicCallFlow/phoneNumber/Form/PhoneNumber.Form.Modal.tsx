@@ -145,7 +145,7 @@ export const PhoneNumberFormModal = ({
                       name={key}
                       label={label}
                       type="text"
-                      value={PhoneNumberRecordUtil.getPropertyValue(formRecord, key) || ""}
+                      value={PhoneNumberRecordUtil.getPropertyStringValue(formRecord, key) || ""}
                       error={isValid === NOT_VALID}
                       dropDownOptions={options || []}
                       onChange={(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, value?: string) => handleOnInputChange(event, fieldConfigsReactStateAction, key, value)}
