@@ -14,7 +14,10 @@ import {
   greetingMessageIsNotValid,
   phoneNumberIsNotValid
 } from "dynamicCallFlowCommon/GraphQL/Field.Validation.GraphQL";
-import { idDuplicateEmployeeAssignment } from "dynamicCallFlowPhoneNumber/DataGrid/PhoneNumber.DataGrid.Controller";
+import {
+  findPhoneNumberRecordAssignedToEmployee,
+  isEmployeeAlreadyAssigned
+} from "dynamicCallFlowPhoneNumber/DataGrid/PhoneNumber.DataGrid.Controller";
 
 export abstract class AbstractPhoneNumberFormHandler extends AbstractFormHandler<PhoneNumberRecordType> {
   protected getRecordPropertyValue(record: PhoneNumberRecordType, key: string): FieldDataType {
@@ -30,8 +33,9 @@ export abstract class AbstractPhoneNumberFormHandler extends AbstractFormHandler
 
     if (record.employeeId && employeeIdIsNotValid(record.employeeId)) {
       throw new Error(`Employee ID is not in the correct format n#######: ${record.employeeId}`);
-    } else if (record.employeeId && idDuplicateEmployeeAssignment(record, this.dataGridController.sourceRecords)) {
-      throw new Error(`Employee ID ${record[EMPLOYEE_ID as keyof PhoneNumberRecordType]} is already assigned to a phone number.`);
+    } else if (record.employeeId && isEmployeeAlreadyAssigned(record, this.dataGridController.sourceRecords)) {
+      const assignedRecord = findPhoneNumberRecordAssignedToEmployee(record.employeeId, this.dataGridController.sourceRecords);
+      throw new Error(`Employee ID ${record[EMPLOYEE_ID as keyof PhoneNumberRecordType]} is already assigned to ${PhoneNumberRecordUtil.getPhoneNumber(assignedRecord)}.`);
     }
 
     if (greetingMessageIsNotValid(record[GREETING_MESSAGES as keyof PhoneNumberRecordType] as string)) {

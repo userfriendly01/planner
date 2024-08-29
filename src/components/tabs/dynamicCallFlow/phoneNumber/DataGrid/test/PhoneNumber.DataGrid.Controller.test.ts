@@ -3,7 +3,7 @@ import {
   ReactGridApi
 } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Interfaces";
 import {
-  idDuplicateEmployeeAssignment,
+  isEmployeeAlreadyAssigned,
   PhoneNumberDataGridController,
   phoneNumberMatchFilter
 } from "components/tabs/dynamicCallFlow/phoneNumber/DataGrid/PhoneNumber.DataGrid.Controller";
@@ -251,7 +251,7 @@ describe("PhoneNumberDataGridController", () => {
           phoneNumber: "0987654321"
         } as PhoneNumberRecordType
       ];
-      const result = idDuplicateEmployeeAssignment(record, sourceRecords);
+      const result = isEmployeeAlreadyAssigned(record, sourceRecords);
       expect(result).toBe(true);
     });
 
@@ -268,7 +268,7 @@ describe("PhoneNumberDataGridController", () => {
           phoneNumber: "0987654321"
         } as PhoneNumberRecordType
       ];
-      const result = idDuplicateEmployeeAssignment(record, sourceRecords);
+      const result = isEmployeeAlreadyAssigned(record, sourceRecords);
       expect(result).toBe(false);
     });
 
@@ -284,7 +284,7 @@ describe("PhoneNumberDataGridController", () => {
           phoneNumber: "0987654321"
         } as PhoneNumberRecordType
       ];
-      const result = idDuplicateEmployeeAssignment(record, sourceRecords);
+      const result = isEmployeeAlreadyAssigned(record, sourceRecords);
       expect(result).toBe(false);
     });
 
@@ -301,7 +301,7 @@ describe("PhoneNumberDataGridController", () => {
           phoneNumber: "0987654321"
         } as PhoneNumberRecordType
       ];
-      const result = idDuplicateEmployeeAssignment(record, sourceRecords);
+      const result = isEmployeeAlreadyAssigned(record, sourceRecords);
       expect(result).toBe(false);
     });
 
@@ -318,7 +318,7 @@ describe("PhoneNumberDataGridController", () => {
           phoneNumber: "0987654321"
         } as PhoneNumberRecordType
       ];
-      const result = idDuplicateEmployeeAssignment(record, sourceRecords);
+      const result = isEmployeeAlreadyAssigned(record, sourceRecords);
       expect(result).toBe(false);
     });
 
@@ -329,7 +329,7 @@ describe("PhoneNumberDataGridController", () => {
         phoneNumber: "1234567890"
       } as PhoneNumberRecordType;
       const sourceRecords: PhoneNumberRecordType[] = [];
-      const result = idDuplicateEmployeeAssignment(record, sourceRecords);
+      const result = isEmployeeAlreadyAssigned(record, sourceRecords);
       expect(result).toBe(false);
     });
 
@@ -345,7 +345,7 @@ describe("PhoneNumberDataGridController", () => {
         phoneNumber: "0987654321"
       } as PhoneNumberRecordType;
       dataGridController.addRecordToSourceRecords(differentRecord);
-      const result = idDuplicateEmployeeAssignment(record, dataGridController.sourceRecords);
+      const result = isEmployeeAlreadyAssigned(record, dataGridController.sourceRecords);
       expect(result).toBe(false);
     });
 
@@ -360,7 +360,7 @@ describe("PhoneNumberDataGridController", () => {
         phoneNumber: "0987654321"
       } as PhoneNumberRecordType;
       dataGridController.addRecordToSourceRecords(differentRecord);
-      const result = idDuplicateEmployeeAssignment(record, dataGridController.sourceRecords);
+      const result = isEmployeeAlreadyAssigned(record, dataGridController.sourceRecords);
       expect(result).toBe(false);
     });
 
@@ -376,7 +376,7 @@ describe("PhoneNumberDataGridController", () => {
         phoneNumber: "0987654321"
       } as PhoneNumberRecordType;
       dataGridController.addRecordToSourceRecords(differentRecord);
-      const result = idDuplicateEmployeeAssignment(record, dataGridController.sourceRecords);
+      const result = isEmployeeAlreadyAssigned(record, dataGridController.sourceRecords);
       expect(result).toBe(false);
     });
 
@@ -392,7 +392,7 @@ describe("PhoneNumberDataGridController", () => {
         phoneNumber: "0987654321"
       } as PhoneNumberRecordType;
       dataGridController.addRecordToSourceRecords(differentRecord);
-      const result = idDuplicateEmployeeAssignment(record, dataGridController.sourceRecords);
+      const result = isEmployeeAlreadyAssigned(record, dataGridController.sourceRecords);
       expect(result).toBe(false);
     });
 
@@ -402,7 +402,7 @@ describe("PhoneNumberDataGridController", () => {
         employeeId: "n001",
         phoneNumber: "1234567890"
       } as PhoneNumberRecordType;
-      const result = idDuplicateEmployeeAssignment(record, dataGridController.sourceRecords);
+      const result = isEmployeeAlreadyAssigned(record, dataGridController.sourceRecords);
       expect(result).toBe(false);
     });
   });

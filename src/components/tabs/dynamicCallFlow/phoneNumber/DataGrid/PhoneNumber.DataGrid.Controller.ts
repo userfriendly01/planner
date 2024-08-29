@@ -7,7 +7,7 @@ import { MatchFilter } from "dynamicCallFlowCommon/Util/Array.Util";
 import { PhoneNumberRecordUtil } from "dynamicCallFlowPhoneNumber/GraphQL/PhoneNumber.Record.Util";
 import { CctSharedCallFlowDb } from "dynamicCallFlowPhoneNumber/GraphQL/Legacy.PhoneNumber.Interfaces";
 import {
-  EMPLOYEE_ID, PHONE_NUMBER
+  PHONE_NUMBER
 } from "dynamicCallFlowPhoneNumber/Form/Dynamic.PhoneNumber.Form.Fields";
 
 export const phoneNumberMatchFilter: MatchFilter<PhoneNumberRecordType> = (record1: PhoneNumberRecordType, record2: PhoneNumberRecordType): boolean => {
@@ -20,13 +20,12 @@ export const phoneNumberMatchFilter: MatchFilter<PhoneNumberRecordType> = (recor
   return false;
 };
 
-export function idDuplicateEmployeeAssignment(record: PhoneNumberRecordType, sourceRecords: Array<PhoneNumberRecordType>): boolean {
-  return sourceRecords.some((sourceRecord: PhoneNumberRecordType) => {
-    const employeeId = PhoneNumberRecordUtil.getPropertyValue(record, EMPLOYEE_ID);
-    const phoneNumber = PhoneNumberRecordUtil.getPhoneNumber(record);
-    return employeeId && PhoneNumberRecordUtil.getPropertyValue(sourceRecord, EMPLOYEE_ID) === employeeId
-      && PhoneNumberRecordUtil.getPhoneNumber(sourceRecord) !== phoneNumber;
-  });
+export function isEmployeeAlreadyAssigned(record: PhoneNumberRecordType, sourceRecords: Array<PhoneNumberRecordType>): boolean {
+  return ![undefined, null].includes(record.employeeId) && findPhoneNumberRecordAssignedToEmployee(record.employeeId, sourceRecords) !== undefined;
+}
+
+export function findPhoneNumberRecordAssignedToEmployee(employeeId: string, sourceRecords: Array<PhoneNumberRecordType>): PhoneNumberRecordType | undefined {
+  return employeeId ? sourceRecords.find((record: PhoneNumberRecordType) => record.employeeId && record.employeeId === employeeId) : undefined;
 }
 
 export class PhoneNumberDataGridController extends AbstractDataGridController<PhoneNumberRecordType> {
