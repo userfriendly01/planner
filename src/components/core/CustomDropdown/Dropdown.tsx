@@ -46,15 +46,10 @@ export const Dropdown = (props: any) => {
   };
 
   const handleCheckEqual = (option: any, value: any) => {
-    if(typeof option === "object" && typeof value === "object") {
-      return option?.value === value?.value || value?.value === "";
-    } else if (typeof option === "object") {
-      return option?.value === value || option?.label === value || value === "";
-    } else if (typeof value === "object") {
-      return option === value?.value || value?.value === "";
-    } else {
-      return option === value || value === "";
-    }
+    const optionValue = typeof option === "object" ? option?.value : option;
+    const selectedValue = typeof value === "object" ? value?.value : value;
+
+    return optionValue === selectedValue || selectedValue === "";
   };
 
   return (
