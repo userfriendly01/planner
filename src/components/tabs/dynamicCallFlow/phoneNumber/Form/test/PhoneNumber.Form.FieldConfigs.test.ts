@@ -5,10 +5,6 @@ import {
   PhoneNumberTypeEnum
 } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 import {
-  legacyDidFieldConditionCheck,
-  legacyDrcFieldConditionCheck
-} from "dynamicCallFlowPhoneNumber/Form/Legacy.PhoneNumber.Form.FieldConfigs";
-import {
   defaultFieldConditionCheck,
   didFieldConditionCheck, drcFieldConditionCheck, dtmfFieldConditionCheck
 } from "dynamicCallFlowPhoneNumber/Form/Dynamic.PhoneNumber.Form.FieldConfigs";
@@ -18,6 +14,7 @@ describe("PhoneNumberForm.FieldConfigs", () => {
   describe("Dynamic Phone Number Form Field Configs", () => {
     it("shouldReturnTrueForLibertyMutualSalesDRC", () => {
       const record = {
+        phoneNumber: "+18883334444",
         brand: BrandTypeEnum.LIBERTY_MUTUAL,
         channel: ChannelTypeEnum.SALES,
         phoneNumberType: PhoneNumberTypeEnum.DRC
@@ -27,6 +24,7 @@ describe("PhoneNumberForm.FieldConfigs", () => {
 
     it("shouldReturnFalseForNonLibertyMutualBrand", () => {
       const record = {
+        phoneNumber: "+18883334444",
         brand: BrandTypeEnum.SAFECO,
         channel: ChannelTypeEnum.SALES,
         phoneNumberType: PhoneNumberTypeEnum.DRC
@@ -36,6 +34,7 @@ describe("PhoneNumberForm.FieldConfigs", () => {
 
     it("shouldReturnFalseForNonSalesChannel", () => {
       const record = {
+        phoneNumber: "+18883334444",
         brand: BrandTypeEnum.LIBERTY_MUTUAL,
         channel: ChannelTypeEnum.CLAIMS,
         phoneNumberType: PhoneNumberTypeEnum.DRC
@@ -45,6 +44,7 @@ describe("PhoneNumberForm.FieldConfigs", () => {
 
     it("shouldReturnFalseForNonDRCType", () => {
       const record = {
+        phoneNumber: "+18883334444",
         brand: BrandTypeEnum.LIBERTY_MUTUAL,
         channel: ChannelTypeEnum.SALES,
         phoneNumberType: PhoneNumberTypeEnum.DID
@@ -54,6 +54,7 @@ describe("PhoneNumberForm.FieldConfigs", () => {
 
     it("shouldReturnTrueForDIDType", () => {
       const record = {
+        phoneNumber: "+18883334444",
         phoneNumberType: PhoneNumberTypeEnum.DID
       } as unknown as PhoneNumber;
       expect(didFieldConditionCheck(record)).toBe(true);
@@ -61,6 +62,7 @@ describe("PhoneNumberForm.FieldConfigs", () => {
 
     it("shouldReturnFalseForNonDIDType", () => {
       const record = {
+        phoneNumber: "+18883334444",
         phoneNumberType: PhoneNumberTypeEnum.DRC
       } as unknown as PhoneNumber;
       expect(didFieldConditionCheck(record)).toBe(false);
@@ -68,6 +70,7 @@ describe("PhoneNumberForm.FieldConfigs", () => {
 
     it("shouldReturnTrueForDTMFType", () => {
       const record = {
+        phoneNumber: "+18883334444",
         callFlowType: CallFlowTypeEnum.DTMF
       } as unknown as PhoneNumber;
       expect(dtmfFieldConditionCheck(record)).toBe(true);
@@ -75,6 +78,7 @@ describe("PhoneNumberForm.FieldConfigs", () => {
 
     it("shouldReturnFalseForNonDTMFType", () => {
       const record = {
+        phoneNumber: "+18883334444",
         callFlowType: CallFlowTypeEnum.SELFSERVICE
       } as unknown as PhoneNumber;
       expect(dtmfFieldConditionCheck(record)).toBe(false);
@@ -82,13 +86,13 @@ describe("PhoneNumberForm.FieldConfigs", () => {
   });
 
   describe("Legacy Phone Number Form Field Configs", () => {
-    it("should return true for LibertyMutualSalesDRC", () => {
+    it("should return true for LibertyMutual Sales DRC", () => {
       const record = {
         brand: BrandTypeEnum.LIBERTY_MUTUAL,
         channel: ChannelTypeEnum.SALES,
         type: PhoneNumberTypeEnum.DRC
       } as PhoneNumberRecordType;
-      expect(legacyDrcFieldConditionCheck(record)).toBe(true);
+      expect(drcFieldConditionCheck(record)).toBe(true);
     });
 
     it("shouldReturnFalseForNonLibertyMutualBrand", () => {
@@ -97,7 +101,7 @@ describe("PhoneNumberForm.FieldConfigs", () => {
         channel: ChannelTypeEnum.SALES,
         type: PhoneNumberTypeEnum.DRC
       } as PhoneNumberRecordType;
-      expect(legacyDrcFieldConditionCheck(record)).toBe(false);
+      expect(drcFieldConditionCheck(record)).toBe(false);
     });
 
     it("shouldReturnFalseForNonSalesChannel", () => {
@@ -106,7 +110,7 @@ describe("PhoneNumberForm.FieldConfigs", () => {
         channel: ChannelTypeEnum.CLAIMS,
         type: PhoneNumberTypeEnum.DRC
       } as PhoneNumberRecordType;
-      expect(legacyDrcFieldConditionCheck(record)).toBe(false);
+      expect(drcFieldConditionCheck(record)).toBe(false);
     });
 
     it("shouldReturnFalseForNonDRCType", () => {
@@ -115,21 +119,21 @@ describe("PhoneNumberForm.FieldConfigs", () => {
         channel: ChannelTypeEnum.SALES,
         type: PhoneNumberTypeEnum.DID
       } as PhoneNumberRecordType;
-      expect(legacyDrcFieldConditionCheck(record)).toBe(false);
+      expect(drcFieldConditionCheck(record)).toBe(false);
     });
 
     it("should return true for DIDType", () => {
       const record = {
         type: PhoneNumberTypeEnum.DID
       } as PhoneNumberRecordType;
-      expect(legacyDidFieldConditionCheck(record)).toBe(true);
+      expect(didFieldConditionCheck(record)).toBe(true);
     });
 
     it("shouldReturnFalseForNonDIDType", () => {
       const record = {
         type: PhoneNumberTypeEnum.DRC
       } as PhoneNumberRecordType;
-      expect(legacyDidFieldConditionCheck(record)).toBe(false);
+      expect(didFieldConditionCheck(record)).toBe(false);
     });
 
     it("should always returnTrueForDefaultCheck When Record is not undefined or null", () => {

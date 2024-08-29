@@ -3,41 +3,71 @@ import {
   CallFlowTypeEnum,
   ChannelTypeEnum,
   PhoneNumber,
-  PhoneNumberRecordType,
   PhoneNumberTypeEnum
 } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
 import {
   BRAND,
+  BRAND_LABEL,
   CALL_FLOW_ROUTE,
+  CALL_FLOW_ROUTE_LABEL,
   CALL_FLOW_TEMPLATE,
+  CALL_FLOW_TEMPLATE_LABEL,
   CALL_FLOW_TYPE,
+  CALL_FLOW_TYPE_LABEL,
   CALL_INTENT,
+  CALL_INTENT_LABEL,
   CALL_TYPE_DESCRIPTION,
+  CALL_TYPE_DESCRIPTION_LABEL,
   CALLER_TYPE,
+  CALLER_TYPE_LABEL,
   CHANNEL,
+  CHANNEL_LABEL,
   DATA_REQUESTS,
+  DATA_REQUESTS_LABEL,
   DIALED_DESCRIPTION,
+  DIALED_DESCRIPTION_LABEL,
   EMPLOYEE_ID,
+  EMPLOYEE_ID_LABEL,
   GREETING_MESSAGES,
+  GREETING_MESSAGES_LABEL,
   INTERNET_PLACEMENT,
+  INTERNET_PLACEMENT_LABEL,
   LANGUAGE_OFFER,
+  LANGUAGE_OFFER_LABEL,
   LINE_OF_BUSINESS,
+  LINE_OF_BUSINESS_LABEL,
   MARKETING_CHANNEL,
+  MARKETING_CHANNEL_LABEL,
   NEXT_ACTION_ID,
+  NEXT_ACTION_ID_LABEL,
   NEXT_ACTION_TYPE,
+  NEXT_ACTION_TYPE_LABEL,
   OFFICE_NUMBERS,
+  OFFICE_NUMBERS_LABEL,
   PHONE_NUMBER,
+  PHONE_NUMBER_LABEL,
   PHONE_NUMBER_TYPE,
   PREDICTIVE_CALLER,
+  PREDICTIVE_CALLER_LABEL,
   RANGE_INDICATOR,
+  RANGE_INDICATOR_LABEL,
   REQUEST_ID,
+  REQUEST_ID_LABEL,
   TFN_ROUTING_GROUP,
+  TFN_ROUTING_GROUP_LABEL,
   TRANSFER_CODE,
+  TRANSFER_CODE_LABEL,
   TRANSFER_DESTINATION,
-  WHISPER
+  TRANSFER_DESTINATION_LABEL,
+  WHISPER,
+  WHISPER_LABEL
 } from "components/tabs/dynamicCallFlow/phoneNumber/Form/Dynamic.PhoneNumber.Form.Fields";
 import {
   ControlEnum,
+  FIELD_IS_DISABLED,
+  FIELD_IS_NOT_DISABLED,
+  FIELD_IS_NOT_REQUIRED,
+  FIELD_IS_REQUIRED,
   FieldConditionCheckType,
   FieldConfig,
   FieldConfigs,
@@ -46,23 +76,24 @@ import {
 } from "components/tabs/dynamicCallFlow/common/Form/Form.Interfaces";
 
 import { Control } from "globals/interfaces";
+import { PhoneNumberRecordUtil } from "dynamicCallFlowPhoneNumber/GraphQL/PhoneNumber.Record.Util";
 
 export const drcFieldConditionCheck: FieldConditionCheckType = (phoneNumberRecord: PhoneNumber): boolean => {
   return phoneNumberRecord?.brand === BrandTypeEnum.LIBERTY_MUTUAL
     && phoneNumberRecord?.channel === ChannelTypeEnum.SALES
-    && phoneNumberRecord?.phoneNumberType === PhoneNumberTypeEnum.DRC;
+    && PhoneNumberRecordUtil.getPhoneNumberType(phoneNumberRecord) === PhoneNumberTypeEnum.DRC;
 };
 
 export const didFieldConditionCheck: FieldConditionCheckType = (phoneNumberRecord: PhoneNumber): boolean => {
-  return phoneNumberRecord?.phoneNumberType === PhoneNumberTypeEnum.DID;
+  return PhoneNumberRecordUtil.getPhoneNumberType(phoneNumberRecord) === PhoneNumberTypeEnum.DID;
 };
 
 export const dtmfFieldConditionCheck: FieldConditionCheckType = (phoneNumberRecord: PhoneNumber): boolean => {
   return phoneNumberRecord?.callFlowType === CallFlowTypeEnum.DTMF;
 };
 
-export const defaultFieldConditionCheck: FieldConditionCheckType = (record: PhoneNumberRecordType): boolean => {
-  return !record ? false : true;
+export const defaultFieldConditionCheck: FieldConditionCheckType = (): boolean => {
+  return true;
 };
 
 export const DynamicPhoneNumberFormFieldConfigs: FieldConfigs = {};
@@ -79,14 +110,15 @@ export const RequiredFieldsPhoneNumberForm: Array<string> = [];
  * @param {FieldConditionCheckType} fieldConditionCheck
  * @param {boolean} isUserAbleToChangeControl
  * @param {number} gridSize
- *
+ * @param requiredFields
+ * @param formFieldConfigs
  */
-function createFieldConfig(label: string, fieldKey: string, control: Control, required: boolean, disableEdit: boolean, dataType = FieldDataTypeEnum.STRING, fieldConditionCheck?: FieldConditionCheckType, isUserAbleToChangeControl = false, gridSize?: number): void {
+export function createFieldConfig(label: string, fieldKey: string, control: Control, required: boolean, disableEdit: boolean, dataType = FieldDataTypeEnum.STRING, fieldConditionCheck = defaultFieldConditionCheck, isUserAbleToChangeControl = false, gridSize?: number, requiredFields = RequiredFieldsPhoneNumberForm, formFieldConfigs = DynamicPhoneNumberFormFieldConfigs): void {
   if (required) {
-    RequiredFieldsPhoneNumberForm.push(fieldKey);
+    requiredFields.push(fieldKey);
   }
 
-  DynamicPhoneNumberFormFieldConfigs[fieldKey] = {
+  formFieldConfigs[fieldKey] = {
     label,
     fieldKey,
     originalControl: control,
@@ -95,40 +127,40 @@ function createFieldConfig(label: string, fieldKey: string, control: Control, re
     required,
     disableEdit,
     dataType,
-    fieldConditionCheck: fieldConditionCheck || defaultFieldConditionCheck,
+    fieldConditionCheck: fieldConditionCheck,
     gridSize
   } as FieldConfig;
 }
 
-createFieldConfig("Dialed Phone Number", PHONE_NUMBER, ControlEnum.Input, true, true);
-createFieldConfig("Description", DIALED_DESCRIPTION, ControlEnum.Input, true, false);
-createFieldConfig("Call Flow Template", CALL_FLOW_TEMPLATE, ControlEnum.Input, true, false);
-createFieldConfig("Channel", CHANNEL, ControlEnum.Select, true, false);
-createFieldConfig("Brand", BRAND, ControlEnum.Select, true, false);
-createFieldConfig("Language Offer", LANGUAGE_OFFER, ControlEnum.Select, true, false);
-createFieldConfig("Data Requests", DATA_REQUESTS, ControlEnum.AutoComplete, true, false, FieldDataTypeEnum.ARRAY, undefined, USER_IS_ABLE_TO_CHANGE_CONTROL, 10);
-createFieldConfig("Caller Type", CALLER_TYPE, ControlEnum.AutoComplete, true, false, FieldDataTypeEnum.STRING, undefined, USER_IS_ABLE_TO_CHANGE_CONTROL, 10);
-createFieldConfig("Phone Number Type", PHONE_NUMBER_TYPE, ControlEnum.AutoComplete, false, false);
-createFieldConfig("Transfer Destination", TRANSFER_DESTINATION, ControlEnum.Input, true, false);
-createFieldConfig("Call Flow Route", CALL_FLOW_ROUTE, ControlEnum.AutoComplete, true, false, FieldDataTypeEnum.STRING, undefined, USER_IS_ABLE_TO_CHANGE_CONTROL, 10);
-createFieldConfig("Greeting", GREETING_MESSAGES, ControlEnum.Input, true, false);
-createFieldConfig("Employee ID", EMPLOYEE_ID, ControlEnum.Input, false, false);
-createFieldConfig("Call Type Description", CALL_TYPE_DESCRIPTION, ControlEnum.Input, false, false);
-createFieldConfig("Transfer Code", TRANSFER_CODE, ControlEnum.Input, false, false);
-createFieldConfig("Internet Placement", INTERNET_PLACEMENT, ControlEnum.Input, false, false);
-createFieldConfig("Line Of Business", LINE_OF_BUSINESS, ControlEnum.Input, false, false, FieldDataTypeEnum.STRING, drcFieldConditionCheck);
-createFieldConfig("Marketing Channel", MARKETING_CHANNEL, ControlEnum.Input, false, false, FieldDataTypeEnum.STRING, drcFieldConditionCheck);
-createFieldConfig("Whisper", WHISPER, ControlEnum.Input, false, false, FieldDataTypeEnum.STRING, drcFieldConditionCheck);
-createFieldConfig("Request ID", REQUEST_ID, ControlEnum.Input, false, false, FieldDataTypeEnum.STRING, drcFieldConditionCheck);
-createFieldConfig("Range Indicator", RANGE_INDICATOR, ControlEnum.Input, false, false, FieldDataTypeEnum.STRING, drcFieldConditionCheck);
-createFieldConfig("Call Intent", CALL_INTENT, ControlEnum.Input, false, false);
-createFieldConfig("Office Numbers", OFFICE_NUMBERS, ControlEnum.MultiTextField, false, false);
-createFieldConfig("TFN Routing Group", TFN_ROUTING_GROUP, ControlEnum.Select, false, false);
-createFieldConfig("Predictive Caller", PREDICTIVE_CALLER, ControlEnum.Switch, false, false, FieldDataTypeEnum.STRING, drcFieldConditionCheck);
-createFieldConfig("Call Flow Type", CALL_FLOW_TYPE, ControlEnum.AutoComplete, true, false);
-createFieldConfig("Call Flow Template", CALL_FLOW_TEMPLATE, ControlEnum.AutoComplete, false, false,FieldDataTypeEnum.STRING);
-createFieldConfig("Next Action ID", NEXT_ACTION_ID, ControlEnum.Input, true, false);
-createFieldConfig("Next Action Type", NEXT_ACTION_TYPE, ControlEnum.AutoComplete, true, false);
+createFieldConfig(PHONE_NUMBER_LABEL, PHONE_NUMBER, ControlEnum.Input, FIELD_IS_REQUIRED, FIELD_IS_DISABLED);
+createFieldConfig(DIALED_DESCRIPTION_LABEL, DIALED_DESCRIPTION, ControlEnum.Input, FIELD_IS_REQUIRED, FIELD_IS_NOT_DISABLED);
+createFieldConfig(CALL_FLOW_TEMPLATE_LABEL, CALL_FLOW_TEMPLATE, ControlEnum.Input, FIELD_IS_REQUIRED, FIELD_IS_NOT_DISABLED);
+createFieldConfig(CHANNEL_LABEL, CHANNEL, ControlEnum.Select, FIELD_IS_REQUIRED, FIELD_IS_NOT_DISABLED);
+createFieldConfig(BRAND_LABEL, BRAND, ControlEnum.Select, FIELD_IS_REQUIRED, FIELD_IS_NOT_DISABLED);
+createFieldConfig(LANGUAGE_OFFER_LABEL, LANGUAGE_OFFER, ControlEnum.Select, FIELD_IS_REQUIRED, FIELD_IS_NOT_DISABLED);
+createFieldConfig(DATA_REQUESTS_LABEL, DATA_REQUESTS, ControlEnum.AutoComplete, FIELD_IS_REQUIRED, FIELD_IS_NOT_DISABLED, FieldDataTypeEnum.ARRAY, undefined, USER_IS_ABLE_TO_CHANGE_CONTROL, 10);
+createFieldConfig(CALLER_TYPE_LABEL, CALLER_TYPE, ControlEnum.AutoComplete, FIELD_IS_REQUIRED, FIELD_IS_NOT_DISABLED, FieldDataTypeEnum.STRING, undefined, USER_IS_ABLE_TO_CHANGE_CONTROL, 10);
+createFieldConfig(PHONE_NUMBER_TYPE, PHONE_NUMBER_TYPE, ControlEnum.AutoComplete, FIELD_IS_NOT_REQUIRED, FIELD_IS_NOT_DISABLED);
+createFieldConfig(TRANSFER_DESTINATION_LABEL, TRANSFER_DESTINATION, ControlEnum.Input, FIELD_IS_REQUIRED, FIELD_IS_NOT_DISABLED);
+createFieldConfig(CALL_FLOW_ROUTE_LABEL, CALL_FLOW_ROUTE, ControlEnum.AutoComplete, FIELD_IS_REQUIRED, FIELD_IS_NOT_DISABLED, FieldDataTypeEnum.STRING, undefined, USER_IS_ABLE_TO_CHANGE_CONTROL, 10);
+createFieldConfig(GREETING_MESSAGES_LABEL, GREETING_MESSAGES, ControlEnum.Input, FIELD_IS_REQUIRED, FIELD_IS_NOT_DISABLED);
+createFieldConfig(EMPLOYEE_ID_LABEL, EMPLOYEE_ID, ControlEnum.Input, FIELD_IS_NOT_REQUIRED, FIELD_IS_NOT_DISABLED);
+createFieldConfig(CALL_TYPE_DESCRIPTION_LABEL, CALL_TYPE_DESCRIPTION, ControlEnum.Input, FIELD_IS_NOT_REQUIRED, FIELD_IS_NOT_DISABLED);
+createFieldConfig(TRANSFER_CODE_LABEL, TRANSFER_CODE, ControlEnum.Input, FIELD_IS_NOT_REQUIRED, FIELD_IS_NOT_DISABLED);
+createFieldConfig(INTERNET_PLACEMENT_LABEL, INTERNET_PLACEMENT, ControlEnum.Input, FIELD_IS_NOT_REQUIRED, FIELD_IS_NOT_DISABLED);
+createFieldConfig(LINE_OF_BUSINESS_LABEL, LINE_OF_BUSINESS, ControlEnum.Input, FIELD_IS_NOT_REQUIRED, FIELD_IS_NOT_DISABLED, FieldDataTypeEnum.STRING, drcFieldConditionCheck);
+createFieldConfig(MARKETING_CHANNEL_LABEL, MARKETING_CHANNEL, ControlEnum.Input, FIELD_IS_NOT_REQUIRED, FIELD_IS_NOT_DISABLED, FieldDataTypeEnum.STRING, drcFieldConditionCheck);
+createFieldConfig(WHISPER_LABEL, WHISPER, ControlEnum.Input, FIELD_IS_NOT_REQUIRED, FIELD_IS_NOT_DISABLED, FieldDataTypeEnum.STRING, drcFieldConditionCheck);
+createFieldConfig(REQUEST_ID_LABEL, REQUEST_ID, ControlEnum.Input, FIELD_IS_NOT_REQUIRED, FIELD_IS_NOT_DISABLED, FieldDataTypeEnum.STRING, drcFieldConditionCheck);
+createFieldConfig(RANGE_INDICATOR_LABEL, RANGE_INDICATOR, ControlEnum.Input, FIELD_IS_NOT_REQUIRED, FIELD_IS_NOT_DISABLED, FieldDataTypeEnum.STRING, drcFieldConditionCheck);
+createFieldConfig(CALL_INTENT_LABEL, CALL_INTENT, ControlEnum.Input, FIELD_IS_NOT_REQUIRED, FIELD_IS_NOT_DISABLED);
+createFieldConfig(OFFICE_NUMBERS_LABEL, OFFICE_NUMBERS, ControlEnum.MultiTextField, FIELD_IS_NOT_REQUIRED, FIELD_IS_NOT_DISABLED);
+createFieldConfig(TFN_ROUTING_GROUP_LABEL, TFN_ROUTING_GROUP, ControlEnum.Select, FIELD_IS_NOT_REQUIRED, FIELD_IS_NOT_DISABLED);
+createFieldConfig(PREDICTIVE_CALLER_LABEL, PREDICTIVE_CALLER, ControlEnum.Switch, FIELD_IS_NOT_REQUIRED, FIELD_IS_NOT_DISABLED, FieldDataTypeEnum.STRING, drcFieldConditionCheck);
+createFieldConfig(CALL_FLOW_TYPE_LABEL, CALL_FLOW_TYPE, ControlEnum.AutoComplete, FIELD_IS_REQUIRED, FIELD_IS_NOT_DISABLED);
+createFieldConfig(CALL_FLOW_TEMPLATE_LABEL, CALL_FLOW_TEMPLATE, ControlEnum.AutoComplete, FIELD_IS_NOT_REQUIRED, FIELD_IS_NOT_DISABLED,FieldDataTypeEnum.STRING);
+createFieldConfig(NEXT_ACTION_ID_LABEL, NEXT_ACTION_ID, ControlEnum.Input, FIELD_IS_REQUIRED, FIELD_IS_NOT_DISABLED);
+createFieldConfig(NEXT_ACTION_TYPE_LABEL, NEXT_ACTION_TYPE, ControlEnum.AutoComplete, FIELD_IS_REQUIRED, FIELD_IS_NOT_DISABLED);
 
 Object.freeze(DynamicPhoneNumberFormFieldConfigs);
 

@@ -23,15 +23,15 @@ import {
 } from "dynamicCallFlowCommon/GraphQL/Field.Validation.GraphQL";
 
 export function buildErrorMessage(dialedPhoneNumber: string, message: string): string {
-  return `Dialed Phone Number[${dialedPhoneNumber}] ${message}`;
+  return `Record[${dialedPhoneNumber}] ${message}`;
 }
 
 export function invalidValueMessage(key: string, value: string): string {
-  return `${value} is an invalid ${key}.`;
+  return `${value} is an invalid ${key}`;
 }
 
 export function missingValueMessage(key: string): string {
-  return `missing ${key}.`;
+  return `missing ${key}`;
 }
 
 /**
@@ -75,7 +75,7 @@ export abstract class PhoneNumberXlsxImportAbstractValidator implements PhoneNum
   private validateCommonPhoneNumberFields(phoneNumberXlsxRow: PhoneNumberXlsxRow): void {
     this.validateRequiredKey(phoneNumberXlsxRow, "dialedPhoneNumber");
     if (phoneNumberXlsxRow.dialedPhoneNumber && phoneNumberIsNotValid(phoneNumberXlsxRow.dialedPhoneNumber)) {
-      this.logPhoneNumberValidationError(phoneNumberXlsxRow.dialedPhoneNumber, "dialedPhoneNumber must be in the format +###########.");
+      this.logPhoneNumberValidationError(phoneNumberXlsxRow.dialedPhoneNumber, "dialedPhoneNumber must be in the format +###########");
     }
 
     this.validateRequiredKeyEnumType(phoneNumberXlsxRow, BRAND, BrandTypeEnum);
@@ -93,15 +93,9 @@ export abstract class PhoneNumberXlsxImportAbstractValidator implements PhoneNum
     this.validateRequiredKeyEnumType(phoneNumberXlsxRow, PHONE_NUMBER_TYPE, PhoneNumberTypeEnum);
 
 
-    //TODO: Uncomment when we have a better way to validate employeeId
-    // if (PhoneNumberTypeEnum.DID === phoneNumberXlsxRow.phoneNumberType) { // Required for COMPARION brand:
-    //   this.validateRequiredKey(phoneNumberXlsxRow, EMPLOYEE_ID);
-    // }
-
-    if (Object.keys(phoneNumberXlsxRow).includes(EMPLOYEE_ID) && phoneNumberXlsxRow.employeeId) {
-      if (employeeIdIsNotValid(phoneNumberXlsxRow.employeeId)) {
-        this.logInvalidValueMessage(phoneNumberXlsxRow.dialedPhoneNumber, EMPLOYEE_ID, phoneNumberXlsxRow.employeeId);
-      }
+    if ((Object.keys(phoneNumberXlsxRow).includes(EMPLOYEE_ID) && phoneNumberXlsxRow.employeeId)
+      && employeeIdIsNotValid(phoneNumberXlsxRow.employeeId)) {
+      this.logInvalidValueMessage(phoneNumberXlsxRow.dialedPhoneNumber, EMPLOYEE_ID, phoneNumberXlsxRow.employeeId);
     }
   }
 

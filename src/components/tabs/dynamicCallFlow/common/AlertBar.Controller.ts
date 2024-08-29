@@ -1,4 +1,6 @@
-import { MutableRefObject, ReactSetState } from "./DynamicCallFlow.Interfaces";
+import {
+  MutableRefObject, ReactSetState
+} from "./DynamicCallFlow.Interfaces";
 import { GraphQLError } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
 
 export const OPEN_ALERT_BAR = true;
@@ -7,6 +9,7 @@ export const CLOSE_ALERT_BAR = false;
 export const ALERT_BAR_5_SECOND_DURATION = 5000;
 export const ALERT_BAR_10_SECOND_DURATION = 10000;
 export const ALERT_BAR_15_SECOND_DURATION = 15000;
+export const ALERT_BAR_30_SECOND_DURATION = 30000;
 
 export type AlertSeverityType = "success" | "info" | "warning" | "error";
 export enum AlertSeverityTypeEnum {

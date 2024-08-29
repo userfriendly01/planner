@@ -42,6 +42,7 @@ import {
   findPhoneNumberRecordAssignedToEmployee,
   isEmployeeAlreadyAssigned
 } from "dynamicCallFlowPhoneNumber/DataGrid/PhoneNumber.DataGrid.Controller";
+import { ALERT_BAR_30_SECOND_DURATION } from "dynamicCallFlowCommon/AlertBar.Controller";
 
 interface PreviewModalParameters<RecordType> {
     isOpen: boolean;
@@ -135,7 +136,11 @@ export const PhoneNumberPreviewModal = ({
     xlsxImporterResults.errors.push(...checkForDuplicateEmployeeIdAssignments(xlsxImporterResults.records));
 
     if (xlsxImporterResults.errors.length > 0) {
-      dataGridController.current.alertBarController.error(xlsxImporterResults.errors.join("\n"));
+      const message = xlsxImporterResults.errors.reduce(
+        (accumulator: string, currentValue: string, currentIndex: number) =>
+          accumulator.concat(`{  ${(currentIndex || 0) + 1} - ${currentValue}.  }  `), `${xlsxImporterResults.errors.length} Errors Occurred: `);
+      dataGridController.current.alertBarController.error(message, ALERT_BAR_30_SECOND_DURATION);
+      onClose();
     } else {
       setModalRecords(xlsxImporterResults.records);
     }
@@ -145,11 +150,9 @@ export const PhoneNumberPreviewModal = ({
     const errorMessages: Array<string> = [];
 
     records.forEach((record: PhoneNumberRecordType) => {
-      if (PhoneNumberRecordUtil.getPropertyValue(record, EMPLOYEE_ID)) {
-        if (isEmployeeAlreadyAssigned(record, this.dataGridController.selectedRecords)) {
-          const assignedRecord = findPhoneNumberRecordAssignedToEmployee(record.employeeId, this.dataGridController.selectedRecords);
-          errorMessages.push(`Employee ID ${PhoneNumberRecordUtil.getPropertyValue(record, EMPLOYEE_ID)} is already assigned to ${PhoneNumberRecordUtil.getPhoneNumber(assignedRecord)}.`);
-        }
+      if (isEmployeeAlreadyAssigned(record, dataGridController.current.sourceRecords)) {
+        const assignedRecord = findPhoneNumberRecordAssignedToEmployee(record.employeeId, dataGridController.current.sourceRecords);
+        errorMessages.push(`Record[${PhoneNumberRecordUtil.getPhoneNumber(record)}] Employee ID ${PhoneNumberRecordUtil.getPropertyValue(record, EMPLOYEE_ID)} is already assigned to ${PhoneNumberRecordUtil.getPhoneNumber(assignedRecord)}`);
       }
     });
 

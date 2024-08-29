@@ -127,6 +127,14 @@ export class PhoneNumberRecordUtil {
     }
   }
 
+  public static getPhoneNumberType(phoneNumberRecord: PhoneNumberRecordType): PhoneNumberType {
+    if (this.isDynamicPhoneNumberRecord(phoneNumberRecord)) {
+      return (phoneNumberRecord as PhoneNumber).phoneNumberType;
+    } else {
+      return (phoneNumberRecord as CctSharedCallFlowDb).type;
+    }
+  }
+
   /**
    * Sets the phone number in a phone number record.  The key that holds the phone number in the record differs
    * between legacy and dynamic records.

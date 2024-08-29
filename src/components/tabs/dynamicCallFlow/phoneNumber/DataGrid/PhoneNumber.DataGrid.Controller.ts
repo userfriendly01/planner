@@ -21,7 +21,20 @@ export const phoneNumberMatchFilter: MatchFilter<PhoneNumberRecordType> = (recor
 };
 
 export function isEmployeeAlreadyAssigned(record: PhoneNumberRecordType, sourceRecords: Array<PhoneNumberRecordType>): boolean {
-  return ![undefined, null].includes(record.employeeId) && findPhoneNumberRecordAssignedToEmployee(record.employeeId, sourceRecords) !== undefined;
+  //this record does not have an employeeId so there's nothing to check
+  if (!record.employeeId) {
+    return false;
+  }
+
+  const recordAssignedToEmployee = findPhoneNumberRecordAssignedToEmployee(record.employeeId, sourceRecords);
+
+  //the employee id is not assigned to another record
+  if (!recordAssignedToEmployee) {
+    return false;
+  }
+
+  //check that the phone numbers on the two records are not the same.
+  return PhoneNumberRecordUtil.getPhoneNumber(record) !== PhoneNumberRecordUtil.getPhoneNumber(recordAssignedToEmployee);
 }
 
 export function findPhoneNumberRecordAssignedToEmployee(employeeId: string, sourceRecords: Array<PhoneNumberRecordType>): PhoneNumberRecordType | undefined {

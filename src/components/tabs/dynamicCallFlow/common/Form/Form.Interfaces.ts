@@ -27,6 +27,12 @@ export const USER_IS_ABLE_TO_CHANGE_CONTROL = true;
 export const USER_IS_NOT_ABLE_TO_CHANGE_CONTROL = false;
 export type ValueGetterFunctionType<T> = (record: T, key: string) => FieldDataType;
 
+export const FIELD_IS_REQUIRED = true;
+export const FIELD_IS_NOT_REQUIRED = false;
+
+export const FIELD_IS_DISABLED = true;
+export const FIELD_IS_NOT_DISABLED = false;
+
 export interface FieldConfig {
   fieldKey: string;
   label: string;
