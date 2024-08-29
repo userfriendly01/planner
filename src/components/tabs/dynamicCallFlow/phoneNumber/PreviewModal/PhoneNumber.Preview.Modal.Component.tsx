@@ -38,7 +38,10 @@ import {
 } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/PhoneNumber.Record.Util";
 import { DataGridControllerRef } from "dynamicCallFlowCommon/DataGrid/Abstract.DataGrid.Controller";
 import { EMPLOYEE_ID } from "dynamicCallFlowPhoneNumber/Form/Dynamic.PhoneNumber.Form.Fields";
-import { idDuplicateEmployeeAssignment } from "dynamicCallFlowPhoneNumber/DataGrid/PhoneNumber.DataGrid.Controller";
+import {
+  findPhoneNumberRecordAssignedToEmployee,
+  isEmployeeAlreadyAssigned
+} from "dynamicCallFlowPhoneNumber/DataGrid/PhoneNumber.DataGrid.Controller";
 
 interface PreviewModalParameters<RecordType> {
     isOpen: boolean;
@@ -143,8 +146,9 @@ export const PhoneNumberPreviewModal = ({
 
     records.forEach((record: PhoneNumberRecordType) => {
       if (PhoneNumberRecordUtil.getPropertyValue(record, EMPLOYEE_ID)) {
-        if (idDuplicateEmployeeAssignment(record, this.dataGridController.selectedRecords)) {
-          errorMessages.push(`Employee ID ${PhoneNumberRecordUtil.getPropertyValue(record, EMPLOYEE_ID)} is already assigned to a phone number.`);
+        if (isEmployeeAlreadyAssigned(record, this.dataGridController.selectedRecords)) {
+          const assignedRecord = findPhoneNumberRecordAssignedToEmployee(record.employeeId, this.dataGridController.selectedRecords);
+          errorMessages.push(`Employee ID ${PhoneNumberRecordUtil.getPropertyValue(record, EMPLOYEE_ID)} is already assigned to ${PhoneNumberRecordUtil.getPhoneNumber(assignedRecord)}.`);
         }
       }
     });
