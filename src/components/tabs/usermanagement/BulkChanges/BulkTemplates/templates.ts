@@ -508,38 +508,16 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: A
         skills: [...currentSkills, ...newSkills]
       };
     } else if (option.value === "DELETE") {
-      const skillsToDelete = value;
+      const skillsToDelete = value.map((item: any) => item.value);
       const currentSkills = row.attributes?.default_skills || {};
 
-      console.log("JULIA - VALUE", value); //todo: cleanup
-      console.log("JULIA - SKILLS TO DELETE: ", skillsToDelete.skills);
-      console.log("JULIA - CURRENT SKILLS: ", currentSkills);
-
-      updatedDefaultSkills.skills = currentSkills.skills?.filter((s: any) => !skillsToDelete.skills.includes(s));
+      updatedDefaultSkills.skills = currentSkills.skills?.filter((s: any) => !skillsToDelete.includes(s));
       updatedDefaultSkills.levels = {};
 
       if (currentSkills.levels) {
-        // NO LEVELS
         for (const skillLevel in currentSkills.levels) {
-          if (!skillsToDelete.skills.includes(skillLevel)) {updatedDefaultSkills.levels[skillLevel] = currentSkills.levels[skillLevel]}
+          if (!skillsToDelete.includes(skillLevel)) {updatedDefaultSkills.levels[skillLevel] = currentSkills.levels[skillLevel]}
         }
-
-        // WITH LEVELS
-        // for (const skillLevel in updatedDefaultSkills.levels) {
-        //   console.log("JULIA - SKILLLEVEL", skillLevel);
-        //   console.log("JULIA - VALUE?? ", updatedDefaultSkills.levels[skillLevel]);
-        //   if (skillsToDelete.levels[skillLevel]){
-        //     if (updatedDefaultSkills.levels[skillLevel] === skillsToDelete.levels[skillLevel]) {
-        //       delete updatedDefaultSkills.levels[skillLevel];
-        //       console.log("JULIA - ", skillLevel, " matches level, removing");
-        //     } else {
-        //       console.log("JULIA - ", skillLevel, " did not match, adding back to skills array");
-        //       updatedDefaultSkills.skills.push(skillLevel);
-        //     }
-        //   } else {
-        //     console.log("JULIA - SKILL DOES NOT EXISTS IN LEVELS");
-        //   }
-        // }
       }
     }
     console.log("JULIA - UPDATED DEFAULT SKILLZ: ", updatedDefaultSkills);
@@ -551,7 +529,7 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: A
       body
     });
 
-    await updateUser(workerSid, body);
+    // await updateUser(workerSid, body);
 
     const message = `${workerSid} - Default Skills updated for row ${rowNumber}`;
 
