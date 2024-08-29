@@ -1036,7 +1036,8 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
               ...state.triton.extension.status,
               message,
               searchStatus: ExtensionSearchStatuses.Idle,
-              retriesRemaining: searchParams.MaxRetries
+              retriesRemaining: searchParams.MaxRetries,
+              isError: false
             }
           }
         }

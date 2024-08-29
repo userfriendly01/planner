@@ -12,7 +12,9 @@ import {
   Day, SkillState, TimeOfDayRequestObject
 } from "../Skills.Interfaces";
 
-export const CallflowSkillForm = (props: { missingFields: string[]}) => {
+export const CallflowSkillForm = (props: {
+  missingFields: string[]
+}) => {
   const { missingFields } = props;
 
   const skillState: SkillState = useSkillState();
@@ -20,7 +22,7 @@ export const CallflowSkillForm = (props: { missingFields: string[]}) => {
   const [ applicationOptions, setApplicationOptions ] = React.useState([]);
   const [ timeOfDayOptions, setTimeOfDayOptions ] = React.useState([]);
   const [ tempField, setTempField ] = React.useState({
-    vhThreshold: skillState.skillForm.vhThreshold,
+    vhThreshold: skillState.skillForm.vhThreshold as string,
     vhCallTarget: skillState.skillForm.vhCallTarget
   });
 
@@ -109,7 +111,7 @@ export const CallflowSkillForm = (props: { missingFields: string[]}) => {
           }}
         />
         <CustomInput
-          value={tempField.vhThreshold}
+          value={tempField.vhThreshold || ""}
           error={missingFields.some((f: string) => f === "vhThreshold") && !tempField.vhThreshold}
           styles={inputStyles}
           onBlur={() => skFormDispatch({
@@ -124,15 +126,22 @@ export const CallflowSkillForm = (props: { missingFields: string[]}) => {
           label="VH Threshold (Optional)"
           name="vhThreshold"
           updateValue={value => {
-            setTempField({
-              ...tempField,
-              vhThreshold: value?.trim()
-            });
+            if(value?.length){
+              setTempField({
+                ...tempField,
+                vhThreshold: value.trim()
+              });
+            } else {
+              setTempField({
+                ...tempField,
+                vhThreshold: null
+              });
+            }
           }}
         />
         <CustomInput
           key={"vhCallTarget"}
-          value={tempField.vhCallTarget}
+          value={tempField.vhCallTarget || ""}
           error={missingFields.some((f: string) => f === "vhCallTarget") && !tempField.vhCallTarget}
           styles={inputStyles}
           maxLength="9"
@@ -140,20 +149,27 @@ export const CallflowSkillForm = (props: { missingFields: string[]}) => {
             type: skillActions.SET_FORM_FIELD,
             payload: {
               key: "vhCallTarget",
-              value: tempField.vhCallTarget.trim()
+              value: tempField.vhCallTarget
             }
           })}
           label="VH Call Target (Optional)"
           name="vhCallTarget"
           updateValue={value => {
-            setTempField({
-              ...tempField,
-              vhCallTarget: value?.trim()
-            });
+            if(value?.length){
+              setTempField({
+                ...tempField,
+                vhCallTarget: value.trim()
+              });
+            } else {
+              setTempField({
+                ...tempField,
+                vhCallTarget: null
+              });
+            }
           }}
         />
       </FormRow>
-      <FlexColumn style={{ overflow: "scroll" }}>
+      <FlexColumn style={{ overflowY: "scroll" }}>
         {Object.values(skillState.daysOfWeek).map(dow => ((
           <TimeOfDayDropdowns key={dow.id} day={dow} />
         )))

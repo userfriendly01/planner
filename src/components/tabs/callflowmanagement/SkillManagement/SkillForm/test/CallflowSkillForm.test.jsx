@@ -123,40 +123,83 @@ describe("<CallflowSkillForm/>", () => {
     });
   });
   describe("vhThreshold field", () => {
-    test("should call skillDispatch", async () => {
-      renderComponent([]);
-      const value = "vthld";
-      const updateValue = CustomInput.mock.calls[2][0].updateValue;
-      updateValue(value);
-      expect(CustomInput.mock.calls[4][0].value).toBe(value);
-      const onBlur = CustomInput.mock.calls[4][0].onBlur;
-      expect(mockSkillDispatch).not.toHaveBeenCalled();
-      onBlur();
-      expect(mockSkillDispatch).toHaveBeenCalledWith({
-        type: skillActions.SET_FORM_FIELD,
-        payload: {
-          key: "vhThreshold",
-          value
-        }
+    describe("value/length > 0", () => {
+      test("should call skillDispatch", async () => {
+        renderComponent([]);
+        const value = "vthld";
+        const updateValue = CustomInput.mock.calls[2][0].updateValue;
+        updateValue(value);
+        expect(CustomInput.mock.calls[4][0].value).toBe(value);
+        const onBlur = CustomInput.mock.calls[4][0].onBlur;
+        expect(mockSkillDispatch).not.toHaveBeenCalled();
+        onBlur();
+        expect(mockSkillDispatch).toHaveBeenCalledWith({
+          type: skillActions.SET_FORM_FIELD,
+          payload: {
+            key: "vhThreshold",
+            value
+          }
+        });
       });
     });
+    describe("value.length === 0", () => {
+      test("should call skillDispatch", async () => {
+        renderComponent([]);
+        const value = "";
+        const updateValue = CustomInput.mock.calls[2][0].updateValue;
+        updateValue(value);
+        expect(CustomInput.mock.calls[4][0].value).toBe(value);
+        const onBlur = CustomInput.mock.calls[4][0].onBlur;
+        expect(mockSkillDispatch).not.toHaveBeenCalled();
+        onBlur();
+        expect(mockSkillDispatch).toHaveBeenCalledWith({
+          type: skillActions.SET_FORM_FIELD,
+          payload: {
+            key: "vhThreshold",
+            value: null
+          }
+        });
+      });
+    });
+
   });
   describe("vhCallTarget field", () => {
-    test("should call skillDispatch", async () => {
-      renderComponent([]);
-      const value = "clltrgt";
-      const updateValue = CustomInput.mock.calls[3][0].updateValue;
-      updateValue(value);
-      expect(CustomInput.mock.calls[5][0].value).toBe(value);
-      const onBlur = CustomInput.mock.calls[5][0].onBlur;
-      expect(mockSkillDispatch).not.toHaveBeenCalled();
-      onBlur();
-      expect(mockSkillDispatch).toHaveBeenCalledWith({
-        type: skillActions.SET_FORM_FIELD,
-        payload: {
-          key: "vhCallTarget",
-          value
-        }
+    describe("value.length > 0", () => {
+      test("should call skillDispatch", async () => {
+        renderComponent([]);
+        const value = "clltrgt";
+        const updateValue = CustomInput.mock.calls[3][0].updateValue;
+        updateValue(value);
+        expect(CustomInput.mock.calls[5][0].value).toBe(value);
+        const onBlur = CustomInput.mock.calls[5][0].onBlur;
+        expect(mockSkillDispatch).not.toHaveBeenCalled();
+        onBlur();
+        expect(mockSkillDispatch).toHaveBeenCalledWith({
+          type: skillActions.SET_FORM_FIELD,
+          payload: {
+            key: "vhCallTarget",
+            value
+          }
+        });
+      });
+    });
+    describe("value.length === 0", () => {
+      test("should call skillDispatch", async () => {
+        renderComponent([]);
+        const value = "";
+        const updateValue = CustomInput.mock.calls[3][0].updateValue;
+        updateValue(value);
+        expect(CustomInput.mock.calls[5][0].value).toBe(value);
+        const onBlur = CustomInput.mock.calls[5][0].onBlur;
+        expect(mockSkillDispatch).not.toHaveBeenCalled();
+        onBlur();
+        expect(mockSkillDispatch).toHaveBeenCalledWith({
+          type: skillActions.SET_FORM_FIELD,
+          payload: {
+            key: "vhCallTarget",
+            value: null
+          }
+        });
       });
     });
   });

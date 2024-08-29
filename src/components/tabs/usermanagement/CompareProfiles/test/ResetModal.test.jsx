@@ -143,9 +143,7 @@ describe("ResetModal", () => {
         beforeEach(() => {
           resetProfiles.mockRejectedValue({
             response: {
-              data: {
-                message: "read timed out"
-              }
+              status: 504
             }
           });
           fetchResetProfileDatadogLogs.mockResolvedValue({
@@ -175,9 +173,7 @@ describe("ResetModal", () => {
           beforeEach(() => {
             resetProfiles.mockRejectedValue({
               response: {
-                data: {
-                  message: "read timed out"
-                }
+                status: 504
               }
             });
             fetchResetProfileDatadogLogs.mockResolvedValue({
@@ -249,9 +245,7 @@ describe("ResetModal", () => {
           beforeEach(() => {
             resetProfiles.mockRejectedValue({
               response: {
-                data: {
-                  message: "read timed out"
-                }
+                status: 504
               }
             });
             fetchResetProfileDatadogLogs.mockRejectedValue("Aww");

@@ -77,9 +77,7 @@ const rejectedPromise = {
 };
 
 const mockTableState = {
-  selected: [
-    { name: "bscCbsL2" }
-  ]
+  selected: ["bscCbsL2"]
 };
 const mockCloseModal = jest.fn();
 const mockSetAction = jest.fn();

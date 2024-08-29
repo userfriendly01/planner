@@ -1,10 +1,8 @@
 import { ResetSkillsButton } from "../ResetSkillsButton";
-import MockAdapter from "axios-mock-adapter";
 import { ResetSkillsResultsModal } from "usermanagement/ResetSkillsResultsModal";
 import { StyledButton } from "components/StyledButton";
 import { useAdminState } from "context/appContext";
 import { initialState } from "context/reducer";
-import { apiPaths } from "globals";
 import React from "react";
 import {
   act,
@@ -13,7 +11,7 @@ import {
   render,
   setupMockedComponents
 } from "testUtils";
-import { myAxios } from "utils/myAxios";
+import { resetWorkerSkillsToDefault } from "services/resetWorkerSkillsToDefault";
 
 jest.mock("usermanagement/ResetSkillsResultsModal", () => ({
   ResetSkillsResultsModal: jest.fn()
@@ -27,7 +25,10 @@ jest.mock("context/appContext", () => ({
   useAdminState: jest.fn()
 }));
 
-const axiosMock = new MockAdapter(myAxios);
+jest.mock("services/resetWorkerSkillsToDefault", () => ({
+  resetWorkerSkillsToDefault: jest.fn()
+}));
+
 const mockResettingSkills = jest.fn();
 
 const selectedWorkers = [
@@ -66,7 +67,7 @@ describe("ResetSkillsButton", () => {
   describe("When the reset button is pressed, it should fire a call to reset the selected worker skills", () => {
     describe("when all those resets are successful", () => {
       beforeEach(() => {
-        axiosMock.onPost(apiPaths.RESET_WORKER_SKILLS).reply(200, [
+        resetWorkerSkillsToDefault.mockResolvedValue([
           {
             updated: true,
             workerSid: selectedWorkers[0].sid,
@@ -94,7 +95,7 @@ describe("ResetSkillsButton", () => {
     });
     describe("when some resets fail", () => {
       beforeEach(() => {
-        axiosMock.onPost(apiPaths.RESET_WORKER_SKILLS).reply(200, [
+        resetWorkerSkillsToDefault.mockResolvedValue([
           {
             updated: true,
             workerSid: selectedWorkers[0].sid,
@@ -131,7 +132,7 @@ describe("ResetSkillsButton", () => {
     });
     describe("when service throws an error", () => {
       beforeEach(() => {
-        axiosMock.onPost(apiPaths.RESET_WORKER_SKILLS).reply(500, "wahhhhhh");
+        resetWorkerSkillsToDefault.mockResolvedValue("wahhhhhh");
       });
       test("we should dispatch only resettingWorkers actions. Results modal should recieve the error message", done => {
         const state = { ...initialState };

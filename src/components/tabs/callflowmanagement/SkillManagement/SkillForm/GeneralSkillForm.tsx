@@ -19,9 +19,9 @@ import {
   getTargetExpression,
   isTaskQueueError
 } from "utils/skillsUtils";
+import { formModes } from "globals/index";
 
 export const GeneralSkillForm = () => {
-
   const skillState: SkillState = useSkillState();
   const skFormDispatch = useSkillDispatch();
 
@@ -30,7 +30,7 @@ export const GeneralSkillForm = () => {
   const [ tempField, setTempField ] = React.useState({
     name: skillState.skillForm.name,
     newTaskQueue: skillState.skillForm.taskQueue.isNew ? skillState.skillForm.taskQueue.friendly_name : "",
-    levelToggle: skillState.skillForm.levels.min || skillState.skillForm.levels.max ? true : false
+    levelToggle: !!(skillState.skillForm.levels.min || skillState.skillForm.levels.max)
   });
   const [ levels, setLevels ] = React.useState([]);
   const [ ouOptions, setOuOptions ] = React.useState([]);
@@ -49,16 +49,29 @@ export const GeneralSkillForm = () => {
       label: i.toString(),
       value: i
     }); }
+
     setLevels(lvls);
+
     setOuOptions(skillState.operatingUnits.map(ou => ({
       value: ou.ou_sid,
       label: ou.ou_name
     })));
+
     setProfileOptions(profiles.map(p => ({
       value: p.profile_id,
       label: p.profile_name
     })));
   }, []);
+
+  React.useEffect(() => {
+    if(skillState.skillForm.formMode === formModes.UPDATE){
+      setTempField({
+        name: skillState.skillForm.name,
+        newTaskQueue: skillState.skillForm.taskQueue.isNew ? skillState.skillForm.taskQueue.friendly_name : "",
+        levelToggle: !!(skillState.skillForm.levels.min || skillState.skillForm.levels.max)
+      });
+    }
+  }, [skillState.skillForm.formMode]);
 
   React.useEffect(() => {
     const queues = skillState.taskQueues.map((queue: any) => {
@@ -81,6 +94,7 @@ export const GeneralSkillForm = () => {
       <FormRow>
         <CustomInput
           value={tempField.name}
+          disabled={skillState.skillForm.formMode !== formModes.INSERT}
           styles={inputStyles}
           maxLength="80"
           onBlur={() => {
@@ -111,7 +125,7 @@ export const GeneralSkillForm = () => {
               name: value
             });
           }}
-          helperText={skillState.skills.some(s => s.name === tempField.name) ? "This skill name already exists" : null}
+          helperText={skillState.skillForm.formMode === formModes.INSERT && skillState.skills.some(s => s.name === tempField.name) ? "This skill name already exists" : null}
         />
         <Dropdown
           options={profileOptions}
