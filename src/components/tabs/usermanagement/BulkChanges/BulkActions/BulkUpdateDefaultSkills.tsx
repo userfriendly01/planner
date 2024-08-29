@@ -84,6 +84,7 @@ export const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
         skills: [],
         levels: {}
       });
+      setSkillsToDelete([]);
     }
   }, [selectedTemplates]);
 
