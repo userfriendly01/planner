@@ -103,7 +103,7 @@ describe("Phone Number XLSX Value Inspector", () => {
     it("shouldLogErrorWhenDialedPhoneNumberIsInvalid", () => {
       // const xlsxRow = deepCopyObject(testDynamicPhoneNumberXlsxRow);
       // xlsxRow.dialedPhoneNumber = "+123";
-      const overrideMessage = "Dialed Phone Number[+123] dialedPhoneNumber must be in the format +###########.";
+      const overrideMessage = "Record[+123] dialedPhoneNumber must be in the format +###########";
       validatorUtil.invalidElementTest("dialedPhoneNumber", "+123", deepCopyObject(testDynamicPhoneNumberXlsxRow), overrideMessage);
     });
 

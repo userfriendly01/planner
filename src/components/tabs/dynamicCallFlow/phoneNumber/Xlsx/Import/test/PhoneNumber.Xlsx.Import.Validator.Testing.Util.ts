@@ -27,7 +27,7 @@ export class PhoneNumberXlsxImportValidatorTestingUtil {
   }
 
   missingElementTest(key: string, xlsxRow: PhoneNumberXlsxRow): void {
-    this.errorPathTest(key, "", xlsxRow, `Dialed Phone Number[${xlsxRow.dialedPhoneNumber}] missing ${key}.`);
+    this.errorPathTest(key, "", xlsxRow, `Record[${xlsxRow.dialedPhoneNumber}] missing ${key}`);
   }
 
   elementShouldBeMissingTest(key: string, xlsxRow: PhoneNumberXlsxRow, message: string): void {
@@ -35,7 +35,7 @@ export class PhoneNumberXlsxImportValidatorTestingUtil {
   }
 
   invalidElementTest(key: string, value: string, xlsxRow: PhoneNumberXlsxRow, overrideMessage?: string): void {
-    const message = overrideMessage ? overrideMessage : `Dialed Phone Number[${xlsxRow.dialedPhoneNumber}] ${value} is an invalid ${key}.`;
+    const message = overrideMessage ? overrideMessage : `Record[${xlsxRow.dialedPhoneNumber}] ${value} is an invalid ${key}`;
     this.errorPathTest(key, value, xlsxRow, message);
   }
 }

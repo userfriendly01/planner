@@ -136,13 +136,8 @@ describe("PhoneNumberForm.FieldConfigs", () => {
       expect(didFieldConditionCheck(record)).toBe(false);
     });
 
-    it("should always returnTrueForDefaultCheck When Record is not undefined or null", () => {
+    it("should always return true for defaultFieldConditionCheck", () => {
       expect(defaultFieldConditionCheck({} as PhoneNumberRecordType)).toBe(true);
-    });
-
-    it("should always return false For DefaultCheck When Record is undefined or null", () => {
-      const record: PhoneNumberRecordType = undefined;
-      expect(defaultFieldConditionCheck(record)).toBe(false);
     });
   });
 });
