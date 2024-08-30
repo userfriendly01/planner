@@ -516,7 +516,9 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: A
 
       if (currentSkills.levels) {
         for (const skillLevel in currentSkills.levels) {
-          if (!skillsToDelete.includes(skillLevel)) {updatedDefaultSkills.levels[skillLevel] = currentSkills.levels[skillLevel]}
+          if (!skillsToDelete.includes(skillLevel)) {
+            updatedDefaultSkills.levels[skillLevel] = currentSkills.levels[skillLevel]
+          }
         }
       }
     }

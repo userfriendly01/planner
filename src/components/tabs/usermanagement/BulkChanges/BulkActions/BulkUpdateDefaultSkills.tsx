@@ -10,7 +10,7 @@ import { DefaultSkillSelector } from "usermanagement/DefaultSkillSelector";
 import { Dropdown } from "components/Dropdown";
 import { useSkillState } from "context/appContext";
 import React from "react";
-import { DropdownOption } from "globals/interfaces";
+import { updateDefaultSkillOptions } from "../BulkTemplates/consts";
 
 export const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
   const {
@@ -21,20 +21,7 @@ export const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
     removeTemplate
   } = props;
 
-  const dropdownOptions: DropdownOption[] = [
-    {
-      label: "Add Skills",
-      value: "ADD"
-    },
-    {
-      label: "Delete Skills",
-      value: "DELETE"
-    },
-    {
-      label: "Override Skills",
-      value: "OVERRIDE"
-    }
-  ];
+  const dropdownOptions = updateDefaultSkillOptions;
 
   const [ skillOption, setSkillOption ] = React.useState<any>({
     value: "",
