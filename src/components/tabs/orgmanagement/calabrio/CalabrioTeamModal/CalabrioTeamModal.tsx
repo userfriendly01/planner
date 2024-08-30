@@ -108,7 +108,7 @@ export const CalabrioTeamModal = (props: TeamModalProps) => {
           <TextField
             disabled
             label={"New Team Name"}
-            value={newTeam.name || ""}
+            value={newTeam.name}
             onChange={(event: any) => {
               setNewTeam({
                 ...newTeam,

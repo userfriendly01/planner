@@ -99,20 +99,15 @@ export const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any
 
   const getCalabrioTeamsContainingNNumber = async (manager_n_num: string) => {
     const calabrioTeamsWithManagerNNumber: CalabrioGroup[] = state.calabrioContext.teams.filter(team => team.name.toLowerCase().includes(manager_n_num.toLowerCase()));
-    // console.log("NNUM:", manager_n_num);
-    // console.log("NUM TEAMS:", calabrioTeamsWithManagerNNumber.length);
-    // setNumCalabrioTeams(calabrioTeamsWithManagerNNumber.length);
     if (calabrioTeamsWithManagerNNumber.length === 0) {
       setCalabrioTeamOverlayMessage(`No Calabrio Team found for ${selectedManager.manager_first_name} ${selectedManager.manager_last_name} - ${selectedManager.manager_n_num.toUpperCase()}. Please create one now.`);
       setCalabrioTeamOverlayStatus(ModalOverlayStatuses.PARTIAL_FAIL);
       setShowCalabrioTeamsOverlay(true);
       setTimeout(() => setShowCalabrioTeamsOverlay(false), 6000);
-
       await sleep(6000);
       setAddCalabrioTeam(true);
     } else if (calabrioTeamsWithManagerNNumber.length === 1) {
       if (getCalabrioTeamName(selectedManager) !== calabrioTeamsWithManagerNNumber[0].name) {
-        console.log("CALABRIO TEAM NAME CHANGE NEEDED:", calabrioTeamsWithManagerNNumber[0].name, " SHOULD BE ", getCalabrioTeamName(selectedManager));
         updateCalabrioTeam(state.userContext.tokens.calabrioService, {
           id: calabrioTeamsWithManagerNNumber[0].groupId,
           name: getCalabrioTeamName(selectedManager)

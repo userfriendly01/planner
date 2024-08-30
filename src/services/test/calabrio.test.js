@@ -12,6 +12,7 @@ import {
   getWfmOptions,
   getWfmUserByNNumber,
   updateCalabrioUser,
+  updateCalabrioTeam,
   getWfmTeam
 } from "../calabrio";
 import MockAdapter from "axios-mock-adapter";
@@ -450,3 +451,33 @@ describe("getQmUserProfiles", () => {
   });
 });
 
+describe("updateCalabrioTeam", () => {
+  const groupId = 123;
+  const payload = {
+    id: 123,
+    name: "Dwight Schrute - N1234567"
+  };
+  describe("call succeeds", () => {
+    const data = { huzzah: "you are winner again" };
+    beforeEach(() => axiosMock.onPut(`${apiPaths.UPDATE_CALABRIO_TEAM}&groupId=${groupId}`).replyOnce(200, data));
+    test("should resolve with any successful response", done => {
+      updateCalabrioTeam("token", payload)
+        .then(resolvedValue => {
+          expect(axiosMock.history.put.length).toEqual(1);
+          expect(resolvedValue.data).toEqual(data);
+          done();
+        });
+    });
+  });
+  describe("call fails", () => {
+    const badResponse = { wahh: "boo" };
+    beforeEach(() => axiosMock.onPut(`${apiPaths.UPDATE_CALABRIO_TEAM}&groupId=${groupId}`).replyOnce(500, badResponse));
+    test("should reject with error", done => {
+      updateCalabrioTeam("token", payload).catch(rejectedVal => {
+        expect(axiosMock.history.put.length).toEqual(1);
+        expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
+        done();
+      });
+    });
+  });
+});

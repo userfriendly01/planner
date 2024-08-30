@@ -485,7 +485,6 @@ export const getCalabrioTeamName = (manager: Partial<UMManager>): string => {
   const truncated_name = (manager.manager_last_name + "," + manager.manager_first_name).substring(0,49).trim();
   const manager_name_array = truncated_name.split(",");
 
-  console.log(manager_name_array);
   return (
     manager_name_array.length === 1
       ? manager_name_array[0]
