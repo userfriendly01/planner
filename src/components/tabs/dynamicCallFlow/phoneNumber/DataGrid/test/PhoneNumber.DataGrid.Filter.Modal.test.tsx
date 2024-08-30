@@ -4,30 +4,19 @@ import {
 } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Styles";
 import ModalController from "components/tabs/dynamicCallFlow/common/Modal.Controller";
 import React, {
-  ReactElement, useState
+  ReactElement
 } from "react";
-import { PhoneNumberModalType } from "../../DynamicCallFlow.PhoneNumber.Interfaces";
+import {
+  PhoneNumberModalType, PhoneNumberModalTypeEnum
+} from "../../DynamicCallFlow.PhoneNumber.Interfaces";
 import { PhoneNumberDataGridFilter } from "../PhoneNumber.DataGrid.Filter";
 import { PhoneNumberDataGridFilterModal } from "../PhoneNumber.DataGrid.Filter.Modal";
 
-import { waitForElementToRender } from "dynamicCallFlowCommon/test/DynamicCallFlow.Testing.Util";
+import {
+  mockContextAppContextMock, waitForElementToRender
+} from "dynamicCallFlowCommon/test/DynamicCallFlow.Testing.Util";
+import { DynamicCallFlowPhoneNumberContext } from "../../DynamicCallFlow.PhoneNumber.Container";
 
-const mockModalController = new ModalController<PhoneNumberModalType>();
-jest.mock("react", () => {
-  const originalFunctionality = jest.requireActual("react");
-  return {
-    ...originalFunctionality,
-    useState: jest.fn().mockReturnValue([{}, jest.fn()]),
-    useContext: jest.fn().mockImplementation(() => {
-      mockModalController.setCloseModalRef(jest.fn());
-      return {
-        modalController: {
-          current: mockModalController
-        }
-      };
-    })
-  };
-});
 jest.mock("@mui/material", () => {
   const originalFunctionality = jest.requireActual("@mui/material");
 
@@ -37,16 +26,29 @@ jest.mock("@mui/material", () => {
     TextField: jest.fn()
   };
 });
-const mockContent = "Mock Content";
 jest.mock("components/tabs/dynamicCallFlow/common/DynamicCallFlow.Styles", () => ({
-  ModalSearchStyled: jest.fn().mockImplementation(() => <div>{mockContent}</div>)
+  ModalSearchStyled: jest.fn()
 }));
 
 export const PhoneNumberDataGridFilterModalDataTestId = "phoneNumberDataGridFilterModal";
-const DataGridFilterModalElement: ReactElement = <div data-testid={PhoneNumberDataGridFilterModalDataTestId}><PhoneNumberDataGridFilterModal
-  isOpen={true}
-  dataGridFilter={{ current: new PhoneNumberDataGridFilter(jest.fn()) }}
-/></div>;
+function createPhoneNumberDataGridFilterModalElement(): ReactElement {
+  const modalController = new ModalController<PhoneNumberModalType>();
+  modalController.setCloseModalRef(jest.fn());
+  return (
+    <div data-testid={PhoneNumberDataGridFilterModalDataTestId}>
+      <DynamicCallFlowPhoneNumberContext.Provider value={ {
+        accessTokenGraph: mockContextAppContextMock.userContext.tokens.sharedGraph,
+        permissions: mockContextAppContextMock.userContext.permissions,
+        currentOpenModal: PhoneNumberModalTypeEnum.Filter,
+        modalController: { current: modalController }
+      } }>
+        <PhoneNumberDataGridFilterModal
+          isOpen={true}
+          dataGridFilter={{ current: new PhoneNumberDataGridFilter(jest.fn()) }}
+        />
+      </DynamicCallFlowPhoneNumberContext.Provider>
+    </div>);
+}
 
 describe("PhoneNumber.DataGrid.Filter.Modal.Component", () => {
   const mockSetFilter = jest.fn();
@@ -58,7 +60,6 @@ describe("PhoneNumber.DataGrid.Filter.Modal.Component", () => {
   };
 
   beforeEach(() => {
-    (useState as jest.Mock).mockReturnValueOnce([{}, mockSetFilter]);
     modalControllerCloseModalSpy = jest.spyOn(ModalController.prototype, "closeModal");
   });
 
@@ -70,11 +71,12 @@ describe("PhoneNumber.DataGrid.Filter.Modal.Component", () => {
     let dataGridFilterGetFilterSpy: jest.SpyInstance;
 
     beforeEach(() => {
+      jest.spyOn(React, "useState").mockReturnValueOnce([{}, mockSetFilter]);
       dataGridFilterGetFilterSpy = jest.spyOn(PhoneNumberDataGridFilter.prototype, "getFilter").mockReturnValue(mockFilter);
     });
 
     it("should set the filter state to the filter returned from the instance of PhoneNumberDataGridFilter", async () => {
-      await waitForElementToRender(DataGridFilterModalElement, PhoneNumberDataGridFilterModalDataTestId);
+      await waitForElementToRender(createPhoneNumberDataGridFilterModalElement(), PhoneNumberDataGridFilterModalDataTestId);
 
       expect(dataGridFilterGetFilterSpy).toHaveBeenCalled();
       expect(mockSetFilter).toHaveBeenCalledWith(mockFilter);
@@ -89,7 +91,7 @@ describe("PhoneNumber.DataGrid.Filter.Modal.Component", () => {
     });
 
     it("should call the applyFilter method on the instance of PhoneNumberDataGridFilter and close the modal", async () => {
-      await waitForElementToRender(DataGridFilterModalElement, PhoneNumberDataGridFilterModalDataTestId);
+      await waitForElementToRender(createPhoneNumberDataGridFilterModalElement(), PhoneNumberDataGridFilterModalDataTestId);
 
       // Access the applyFilter function passed to the first button component rendered as a child of ModalSearchStyled:
       const applyFilterFunction: () => void = (ModalSearchStyled as unknown as jest.Mock).mock.calls[0][0].children[2].props.children[0].props.onClick;
@@ -105,11 +107,12 @@ describe("PhoneNumber.DataGrid.Filter.Modal.Component", () => {
     let dataGridFilterAddFilterElementSpy: jest.SpyInstance;
 
     beforeEach(() => {
+      jest.spyOn(React, "useState").mockReturnValueOnce([{}, mockSetFilter]);
       dataGridFilterAddFilterElementSpy = jest.spyOn(PhoneNumberDataGridFilter.prototype, "addFilterElement").mockReturnValue(mockFilter);
     });
 
     it("should call setFilter with the returned filter from PhoneNumberDataGridFilter.addFilterElement when a change event occurs", async () => {
-      await waitForElementToRender(DataGridFilterModalElement, PhoneNumberDataGridFilterModalDataTestId);
+      await waitForElementToRender(createPhoneNumberDataGridFilterModalElement(), PhoneNumberDataGridFilterModalDataTestId);
 
       // Access the onChange function passed to the SelectContainer component rendered as a child of ModalSearchStyled:
       const handleChangeFunction: (event: any) => void = (ModalSearchStyled as unknown as jest.Mock).mock.calls[0][0].children[1].props.children.props.children[0].props.children.props.onChange;
@@ -130,11 +133,12 @@ describe("PhoneNumber.DataGrid.Filter.Modal.Component", () => {
     let dataGridFilterResetFilterSpy: jest.SpyInstance;
 
     beforeEach(() => {
+      jest.spyOn(React, "useState").mockReturnValueOnce([{}, mockSetFilter]);
       dataGridFilterResetFilterSpy = jest.spyOn(PhoneNumberDataGridFilter.prototype, "resetFilter").mockReturnValue(mockFilter);
     });
 
     it("should call setFilter with the returned filter from PhoneNumberDataGridFilter.resetFilter and close the modal", async () => {
-      await waitForElementToRender(DataGridFilterModalElement, PhoneNumberDataGridFilterModalDataTestId);
+      await waitForElementToRender(createPhoneNumberDataGridFilterModalElement(), PhoneNumberDataGridFilterModalDataTestId);
 
       // Access the resetFilterAndClose function passed to the Button component rendered as a child of ModalSearchStyled:
       const resetFilterFunction: () => void = (ModalSearchStyled as unknown as jest.Mock).mock.calls[0][0].children[2].props.children[1].props.onClick;
@@ -149,7 +153,7 @@ describe("PhoneNumber.DataGrid.Filter.Modal.Component", () => {
 
   describe("Filter search modal closure", () => {
     it("should call setFilter with the returned filter from PhoneNumberDataGridFilter.resetFilter and close the modal", async () => {
-      await waitForElementToRender(DataGridFilterModalElement, PhoneNumberDataGridFilterModalDataTestId);
+      await waitForElementToRender(createPhoneNumberDataGridFilterModalElement(), PhoneNumberDataGridFilterModalDataTestId);
 
       // Access the onClose function passed to the ModalSearchStyled component:
       const modalSearchStyledOnCloseFunction: () => void = (ModalSearchStyled as unknown as jest.Mock).mock.calls[0][0].onClose;

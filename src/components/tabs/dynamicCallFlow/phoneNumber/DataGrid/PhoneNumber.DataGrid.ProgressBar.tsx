@@ -4,7 +4,7 @@ import {
 import { DataGridProgressBarInfo } from "components/tabs/dynamicCallFlow/common/DataGrid/Load.DataGrid.Monitor";
 import React, {
   ReactElement,
-  useEffect, useState
+  useEffect
 } from "react";
 
 export const PHONE_NUMBER_DATA_GRID_PROGRESS_BAR_CACHE_KEY = "PHONE_NUMBER_DATA_GRID_PROGRESS_BAR";
@@ -18,8 +18,8 @@ export const PhoneNumberDataGridProgressBar = ({
   recordCount,
   dataGridLoaded = false
 }: PhoneNumberDataGridProgressBarProps): ReactElement => {
-  const [progress, setProgress] = useState(0);
-  const [previousRecordCount, setPreviousRecordCount] = useState(0);
+  const [progress, setProgress] = React.useState(0);
+  const [previousRecordCount, setPreviousRecordCount] = React.useState(0);
 
   useEffect(() => {
     const phoneNumberDataGridProgressBarInfo = (JSON.parse(localStorage.getItem(PHONE_NUMBER_DATA_GRID_PROGRESS_BAR_CACHE_KEY)) || {}) as DataGridProgressBarInfo;

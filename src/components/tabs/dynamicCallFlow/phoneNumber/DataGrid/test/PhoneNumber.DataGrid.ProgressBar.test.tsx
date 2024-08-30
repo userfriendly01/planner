@@ -1,19 +1,10 @@
 import { Box } from "@mui/material";
-import React, {
-  useState
-} from "react";
+import React from "react";
 import {
   render, RenderResult, waitFor
 } from "testUtils";
 import { PhoneNumberDataGridProgressBar } from "../PhoneNumber.DataGrid.ProgressBar";
 
-jest.mock("react", () => {
-  const originalModule = jest.requireActual("react");
-  return {
-    ...originalModule,
-    useState: jest.fn().mockReturnValue([0, jest.fn()])
-  };
-});
 const mockContent = "Mock Content";
 jest.mock("@mui/material", () => {
   const originalModule = jest.requireActual("@mui/material");
@@ -53,6 +44,18 @@ const waitForPhoneNumberDataGridProgressBarToLoad = async (rendered: RenderResul
   });
 };
 
+/**
+ * Allows for spying on state setters by mocking the useState hook.
+ * @param { Jest.Mock } mockSetProgress setProgress mock setter
+ * @param { Jest.Mock } mockSetPreviousRecordCount setPreviousRecordCount mock setter
+ */
+const mockUseState = (mockSetProgress: jest.Mock, mockSetPreviousRecordCount: jest.Mock) => {
+  jest.spyOn(React, "useState").mockReturnValueOnce([0, mockSetProgress]);
+  jest.spyOn(React, "useState").mockReturnValueOnce([3, mockSetPreviousRecordCount]);
+  jest.spyOn(React, "useState").mockReturnValueOnce([0, mockSetProgress]);
+  jest.spyOn(React, "useState").mockReturnValueOnce([3, mockSetPreviousRecordCount]);
+};
+
 describe("PhoneNumber.DataGrid.ProgressBar", () => {
   let localStorageGetItemSpy: jest.SpyInstance;
   const mockSetProgress = jest.fn();
@@ -61,10 +64,6 @@ describe("PhoneNumber.DataGrid.ProgressBar", () => {
   beforeEach(() => {
     localStorageGetItemSpy = jest.spyOn(Storage.prototype, "getItem").mockReturnValue(JSON.stringify({ previousRecordCount: 3 }));
     Storage.prototype.setItem = jest.fn();
-    (useState as jest.Mock).mockReturnValueOnce([0, mockSetProgress]);
-    (useState as jest.Mock).mockReturnValueOnce([3, mockSetPreviousRecordCount]);
-    (useState as jest.Mock).mockReturnValueOnce([0, mockSetProgress]);
-    (useState as jest.Mock).mockReturnValueOnce([3, mockSetPreviousRecordCount]);
   });
 
   afterEach(() => {
@@ -73,6 +72,7 @@ describe("PhoneNumber.DataGrid.ProgressBar", () => {
 
   describe("initial load", () => {
     it("should set the previous record count to the value stored in localStorage", async () => {
+      mockUseState(mockSetProgress, mockSetPreviousRecordCount);
       const dataGridLoaded = false;
       await waitForPhoneNumberDataGridProgressBarToLoad(renderPhoneNumberDataGridProgressBar(dataGridLoaded), dataGridLoaded);
 
@@ -104,6 +104,10 @@ describe("PhoneNumber.DataGrid.ProgressBar", () => {
   });
 
   describe("Progress calculation", () => {
+    beforeEach(() => {
+      mockUseState(mockSetProgress, mockSetPreviousRecordCount);
+    });
+
     it("should set the progress bar progress to 100 if the data grid has already loaded", async () => {
       const initialDataGridLoad = false;
       await waitForPhoneNumberDataGridProgressBarToLoad(renderPhoneNumberDataGridProgressBar(initialDataGridLoad), initialDataGridLoad);

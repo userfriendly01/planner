@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, {
   ReactElement,
-  useContext, useEffect, useState
+  useContext, useEffect
 } from "react";
 import {
   ModalBody, ModalFooter, ModalHeader
@@ -39,7 +39,7 @@ export const PhoneNumberDataGridFilterModal = ({
 }: DataGridFilterModalProps<PhoneNumberRecordType>): ReactElement => {
   const { modalController } = useContext(DynamicCallFlowPhoneNumberContext);
 
-  const [filter, setFilter] = useState<Filter>({} as Filter);
+  const [filter, setFilter] = React.useState<Filter>({} as Filter);
 
   useEffect(() => {
     setFilter(dataGridFilter.current.getFilter());

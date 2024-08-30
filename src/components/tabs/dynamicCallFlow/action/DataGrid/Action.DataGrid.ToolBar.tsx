@@ -3,7 +3,7 @@ import {
 } from "@mui/material";
 import React, {
   ReactElement,
-  useContext, useEffect, useMemo, useState
+  useContext, useEffect, useMemo
 } from "react";
 import { SaveAlt } from "@mui/icons-material";
 import { DynamicCallFlowActionContext } from "components/tabs/dynamicCallFlow/action/DynamicCallFlow.Action.Container";
@@ -37,7 +37,7 @@ export const ActionDataGridToolBar = ({
   } = useContext(DynamicCallFlowActionContext);
 
   const userDoesNotHavePermission = useMemo(() => userDoesNotHaveReadWriteAccess(permissions, DYNAMIC_CALL_FLOW_ROLE), []);
-  const [localFilter, setLocalFilter] = useState<Filter>({} as Filter);
+  const [localFilter, setLocalFilter] = React.useState<Filter>({} as Filter);
 
   useEffect(()=> {
     setLocalFilter(dataGridFilter.current.getFilter());

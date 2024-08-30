@@ -3,7 +3,7 @@ import {
 } from "@mui/material";
 import React, {
   ReactElement,
-  useContext, useEffect, useMemo, useState
+  useContext, useEffect, useMemo
 } from "react";
 import {
   AddOutlined, DeleteSweepOutlined, EditNoteOutlined, PlaylistAdd, SaveAlt
@@ -39,7 +39,7 @@ const PhoneNumberDataGridToolBar = ({
   } = useContext(DynamicCallFlowPhoneNumberContext);
 
   const userDoesNotHavePermission = useMemo(() => userDoesNotHaveReadWriteAccess(permissions, DYNAMIC_CALL_FLOW_ROLE), [permissions]);
-  const [localFilter, setLocalFilter] = useState<Filter>({} as Filter);
+  const [localFilter, setLocalFilter] = React.useState<Filter>({} as Filter);
 
   useEffect(()=> {
     setLocalFilter(dataGridFilter.current.getFilter());

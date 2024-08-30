@@ -1,66 +1,31 @@
 import { Grid } from "@mui/material";
 import { GridApiCommunity } from "@mui/x-data-grid/models/api/gridApiCommunity";
-import { Permissions } from "authentication/authenticationInterfaces";
 import { AlertBarController } from "components/tabs/dynamicCallFlow/common/AlertBar.Controller";
 import { Filter } from "components/tabs/dynamicCallFlow/common/DataGrid/Abstract.DataGrid.Filter";
 import ModalController from "components/tabs/dynamicCallFlow/common/Modal.Controller";
-import { Tokens } from "globals/interfaces";
-import React, {
-  ReactElement, useState
-} from "react";
+import {
+  ActionModalType, ActionModalTypeEnum
+} from "dynamicCallFlowAction/DataGrid/Action.DataGrid.Component";
 import { ActionDataGridController } from "dynamicCallFlowAction/DataGrid/Action.DataGrid.Controller";
 import { ActionDataGridFilter } from "dynamicCallFlowAction/DataGrid/Action.DataGrid.Filter";
 import {
   ActionDataGridToolBar
 } from "dynamicCallFlowAction/DataGrid/Action.DataGrid.ToolBar";
-import { ActionRecordType } from "dynamicCallFlowAction/GraphQL/Action.Interfaces";
 import { CALL_FLOW_NAME } from "dynamicCallFlowAction/Form/ActionFields";
-import { ActionModalTypeEnum } from "dynamicCallFlowAction/DataGrid/Action.DataGrid.Component";
+import {
+  mockContextAppContextMock, waitForElementToRender
+} from "dynamicCallFlowCommon/test/DynamicCallFlow.Testing.Util";
 import { CallFlowNameTypeEnum } from "dynamicCallFlowPhoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
-import { waitForElementToRender } from "dynamicCallFlowCommon/test/DynamicCallFlow.Testing.Util";
+import React, {
+  ReactElement
+} from "react";
+import { DynamicCallFlowActionContext } from "../../DynamicCallFlow.Action.Container";
 
-const mockModalController = new ModalController<ActionRecordType>();
-const mockReadPermission = Permissions.READ;
-jest.mock("react", () => {
-  const originalFunctionality = jest.requireActual("react");
-  return {
-    ...originalFunctionality,
-    useState: jest.fn().mockReturnValue([{}, jest.fn()]),
-    useContext: jest.fn().mockImplementation(() => {
-      mockModalController.setOpenModalRef(jest.fn());
-      return {
-        modalController: {
-          current: mockModalController
-        },
-        permissions: [{
-          roles: [{
-            name: "name",
-            permissionLevel: mockReadPermission
-          }],
-          startup: {
-            name: "name",
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            function: (dispatch: any, skillDispatch?: any, tokens?: Tokens) => Promise.resolve()
-          },
-          description: "description",
-          authenticationProfile: {
-            name: "name",
-            permissionLevel: mockReadPermission,
-            home: "home",
-            tabs: ["tabs"]
-          }
-        }]
-      };
-    })
-  };
-});
-
-const mockContent = "Mock Content";
 jest.mock("@mui/material", () => {
   const originalFunctionality = jest.requireActual("@mui/material");
   return {
     ...originalFunctionality,
-    Grid: jest.fn().mockImplementation(() => <div>{mockContent}</div>),
+    Grid: jest.fn(),
     Chip: jest.fn(),
     FormControl: jest.fn(),
     IconButton: jest.fn(),
@@ -79,42 +44,33 @@ jest.mock("components/tabs/dynamicCallFlow/common/DynamicCallFlow.Authentication
   };
 });
 
-
+const DataGridComponentTestId = "phoneNumberDataGridComponent";
 function createActionDataGridToolBarElement(): ReactElement {
-  const actionDataGridController = new ActionDataGridController(
-    { current: jest.fn() as unknown as GridApiCommunity },
-    { current: new ActionDataGridFilter(jest.fn()) },
-    { current: new AlertBarController(jest.fn()) }
-  );
-  return <ActionDataGridToolBar
-    isFilterModalOpen={false}
-    dataGridFilter={{ current: new ActionDataGridFilter(jest.fn()) }}
-    dataGridController={{
-      current: actionDataGridController
-    }}
-    handlePreviewModalOpen={jest.fn()}
-  />;
+  const modalController = new ModalController<ActionModalType>();
+  modalController.setOpenModalRef(jest.fn());
+  return (
+    <div data-testid={DataGridComponentTestId}>
+      <DynamicCallFlowActionContext.Provider value={ {
+        accessTokenGraph: mockContextAppContextMock.userContext.tokens.sharedGraph,
+        permissions: mockContextAppContextMock.userContext.permissions,
+        currentOpenModal: ActionModalTypeEnum.Filter,
+        modalController: { current: modalController }
+      } }>
+        <ActionDataGridToolBar
+          isFilterModalOpen={false}
+          dataGridFilter={{ current: new ActionDataGridFilter(jest.fn()) }}
+          dataGridController={{
+            current: new ActionDataGridController(
+              { current: jest.fn() as unknown as GridApiCommunity },
+              { current: new ActionDataGridFilter(jest.fn()) },
+              { current: new AlertBarController(jest.fn()) }
+            )
+          }}
+          handlePreviewModalOpen={jest.fn()}
+        />
+      </DynamicCallFlowActionContext.Provider>
+    </div>);
 }
-
-// /**
-//  * Renders the phone number data grid too bar component.
-//  * @param { Boolean } loading The boolean value to determine if most of the component should render.
-//  * @returns { RenderResult } The rendered result from the render function.
-//  */
-// const renderActionDataGridToolBar = (loading: boolean): RenderResult => {
-//
-//   return render();
-// };
-
-// /**
-//  * Checks to make sure the phone number data grid filter modal has loaded by looking for a specific element.
-//  * @param { RenderResult } rendered result from the render function.
-//  */
-// const waitForPhoneNumberDataGridToolBarToLoad = async (rendered: RenderResult) => {
-//   await waitFor(() => {
-//     expect(rendered.getByText(mockContent)).toBeDefined();
-//   });
-// };
 
 describe("Action.DataGrid.ToolBar", () => {
   const mockSetLocalFilter = jest.fn();
@@ -132,9 +88,9 @@ describe("Action.DataGrid.ToolBar", () => {
     let dataGridFilterGetFilterSpy: jest.SpyInstance;
 
     beforeEach(async () => {
-      (useState as jest.Mock).mockReturnValue([{}, mockSetLocalFilter]);
+      jest.spyOn(React, "useState").mockReturnValue([{}, mockSetLocalFilter]);
       dataGridFilterGetFilterSpy = jest.spyOn(ActionDataGridFilter.prototype, "getFilter").mockReturnValue(mockFilter);
-      await waitForElementToRender(createActionDataGridToolBarElement());
+      await waitForElementToRender(createActionDataGridToolBarElement(), DataGridComponentTestId);
     });
 
     it("should set filter state to the filter returned from the instance of ActionDataGridFilter", () => {
@@ -149,10 +105,10 @@ describe("Action.DataGrid.ToolBar", () => {
     let dataGridFilterApplyFilterSpy: jest.SpyInstance;
 
     beforeEach(async () => {
-      (useState as jest.Mock).mockReturnValue([mockFilter, mockSetLocalFilter]);
+      jest.spyOn(React, "useState").mockReturnValue([mockFilter, mockSetLocalFilter]);
       dataGridFilterRemoveFilterElementSpy = jest.spyOn(ActionDataGridFilter.prototype, "removeFilterElement");
       dataGridFilterApplyFilterSpy = jest.spyOn(ActionDataGridFilter.prototype, "applyFilter");
-      await waitForElementToRender(createActionDataGridToolBarElement());
+      await waitForElementToRender(createActionDataGridToolBarElement(), DataGridComponentTestId);
     });
 
     it("should remove the filter element from the filter state and apply the filter", () => {
@@ -172,7 +128,7 @@ describe("Action.DataGrid.ToolBar", () => {
 
     beforeEach(async () => {
       modalControllerOpenModalSpy = jest.spyOn(ModalController.prototype, "openModal");
-      await waitForElementToRender(createActionDataGridToolBarElement());
+      await waitForElementToRender(createActionDataGridToolBarElement(), DataGridComponentTestId);
     });
 
     it("should open the filter modal when the search box is clicked", () => {
