@@ -16,7 +16,8 @@ import { StyledButton } from "components/StyledButton";
 import { CalabrioTeamModal } from "orgmanagement/CalabrioTeamModal";
 import { PaperContainer } from "components/PaperContainer";
 import {
-  useAdminDispatch, useAdminState
+  useAdminDispatch,
+  useAdminState
 } from "context/appContext";
 import {
   FlexColumn, ModalOverlayStatuses, UMManager, UMUser
@@ -84,7 +85,6 @@ export const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
   const [hasNameDiscrepancy, setHasNameDiscrepancy] = useState<boolean>(false);
   const [ showCalabrioTeamsOverlay, setShowCalabrioTeamsOverlay] = useState<boolean>(false);
-  // const [ numCalabrioTeams, setNumCalabrioTeams ] = useState<number>(0);
   const [ calabrioTeamOverlayMessage, setCalabrioTeamOverlayMessage] = useState<string>(null);
   const [ calabrioTeamOverlayStatus, setCalabrioTeamOverlayStatus] = useState<ModalOverlayStatuses>(null);
   const [ addCalabrioTeam, setAddCalabrioTeam ] = useState<boolean>(false);

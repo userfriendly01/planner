@@ -3,7 +3,6 @@ import {
   initialState,
   reducer
 } from "../reducers/reducer";
-import {calabrioContext} from "testUtils";
 
 describe("reducer", () => {
   describe("invalid action", () => {
