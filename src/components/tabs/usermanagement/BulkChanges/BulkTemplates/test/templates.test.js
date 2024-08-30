@@ -1093,12 +1093,12 @@ describe("UPDATE_DEFAULT_SKILLS", () => {
       const template = {
         data: {
           key: "default_skills",
-          value: {
-            skills: ["deleteThis"],
-            levels: {
-              deleteThis: 1
+          value: [
+            {
+              label: "deleteThis",
+              value: "deleteThis"
             }
-          },
+          ],
           option: {
             label: "Delete Skill",
             value: "DELETE"
@@ -1140,12 +1140,12 @@ describe("UPDATE_DEFAULT_SKILLS", () => {
     const template = {
       data: {
         key: "default_skills",
-        value: {
-          skills: ["deleteThis"],
-          levels: {
-            deleteThis: 1
+        value: [
+          {
+            label: "deleteThis",
+            value: "deleteThis"
           }
-        },
+        ],
         option: {
           label: "Delete Skill",
           value: "DELETE"

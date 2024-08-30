@@ -508,15 +508,16 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: A
         skills: [...currentSkills, ...newSkills]
       };
     } else if (option.value === "DELETE") {
-      const skillToDelete = value.skills[0];
+      const skillsToDelete = value.map((item: any) => item.value);
       const currentSkills = row.attributes?.default_skills || {};
 
-      updatedDefaultSkills.skills = currentSkills.skills?.filter((s: any) => s !== skillToDelete);
+      updatedDefaultSkills.skills = currentSkills.skills?.filter((s: any) => !skillsToDelete.includes(s));
       updatedDefaultSkills.levels = {};
+
       if (currentSkills.levels) {
         for (const skillLevel in currentSkills.levels) {
-          if (skillLevel !== skillToDelete) {
-            updatedDefaultSkills.levels[skillLevel] = currentSkills.levels[skillLevel];
+          if (!skillsToDelete.includes(skillLevel)) {
+            updatedDefaultSkills.levels[skillLevel] = currentSkills.levels[skillLevel]
           }
         }
       }

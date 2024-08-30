@@ -10,6 +10,7 @@ import { DefaultSkillSelector } from "usermanagement/DefaultSkillSelector";
 import { Dropdown } from "components/Dropdown";
 import { useSkillState } from "context/appContext";
 import React from "react";
+import { updateDefaultSkillOptions } from "../BulkTemplates/consts";
 
 export const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
   const {
@@ -20,20 +21,7 @@ export const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
     removeTemplate
   } = props;
 
-  const dropdownOptions = [
-    {
-      label: "Add Skills",
-      value: "ADD"
-    },
-    {
-      label: "Delete Skill",
-      value: "DELETE"
-    },
-    {
-      label: "Override Skills",
-      value: "OVERRIDE"
-    }
-  ];
+  const dropdownOptions = updateDefaultSkillOptions;
 
   const [ skillOption, setSkillOption ] = React.useState<any>({
     value: "",
@@ -43,6 +31,7 @@ export const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
     skills: [],
     levels: {}
   });
+  const [ skillsToDelete, setSkillsToDelete ] = React.useState<any>([]);
 
   const skills = useSkillState().skills.slice().filter(s => s.levels);
   const skillsDropdownOptions = skills.map( s => ({
@@ -51,21 +40,21 @@ export const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
   }));
 
   React.useEffect(() => {
-    if (updatedDefaultSkills.skills.length) {
+    if (updatedDefaultSkills.skills.length || skillsToDelete.length) {
       const templateFound = selectedTemplates.find((t: Template) => t.name === template.name);
       if (!templateFound) {
         replaceTemplate({
           ...template,
           data: {
             key: "default_skills",
-            value: updatedDefaultSkills,
+            value: updatedDefaultSkills.skills.length ? updatedDefaultSkills : skillsToDelete,
             option: skillOption
           }
         });
       } else {
         updateTemplate(templateFound, {
           key: "default_skills",
-          value: updatedDefaultSkills,
+          value: updatedDefaultSkills.skills.length ? updatedDefaultSkills : skillsToDelete,
           option: skillOption
         });
       }
@@ -74,7 +63,7 @@ export const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
         removeTemplate(template);
       }
     }
-  }, [updatedDefaultSkills]);
+  }, [updatedDefaultSkills, skillsToDelete]);
 
   React.useEffect(() => {
     if(selectedTemplates.length === 0){
@@ -82,6 +71,7 @@ export const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
         skills: [],
         levels: {}
       });
+      setSkillsToDelete([]);
     }
   }, [selectedTemplates]);
 
@@ -107,17 +97,7 @@ export const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
         }}
       />
 
-      { skillOption.value === "OVERRIDE" &&
-      <SkillSelectorContainer>
-        <DefaultSkillSelector
-          defaultSkills={updatedDefaultSkills}
-          setDefaultSkills={(updatedDefaultSkills: any) => {
-            setUpdatedDefaultSkills(updatedDefaultSkills);
-          }}
-        />
-      </SkillSelectorContainer>
-      }
-      { skillOption.value === "ADD" &&
+      { (skillOption.value === "ADD" || skillOption.value === "OVERRIDE") &&
       <SkillSelectorContainer>
         <DefaultSkillSelector
           defaultSkills={updatedDefaultSkills}
@@ -128,15 +108,13 @@ export const BulkUpdateDefaultSkills = (props: BulkUpdateProps) => {
       </SkillSelectorContainer>
       }
       { skillOption.value === "DELETE" &&
-        <Dropdown
-          label="Skill to Delete"
-          value={updatedDefaultSkills[0]}
+      <Dropdown
+          label="Skills to Delete"
+          value={skillsToDelete}
           options={skillsDropdownOptions}
+          multiple={true}
           updateValue={(event: any, s: any) => {
-            setUpdatedDefaultSkills({
-              skills: [s.value],
-              levels: {}
-            });
+            setSkillsToDelete(s)
           }}
           styles={{
             width: "230px",

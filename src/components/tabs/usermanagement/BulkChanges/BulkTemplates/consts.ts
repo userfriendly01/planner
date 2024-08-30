@@ -1,5 +1,6 @@
 import { isNumberValid } from "utils/numberUtils";
 import { RoutingTeamAttrDropDownOptions } from "../../OnboardNewUser/RoutingAttributes/RoutingAttributesDropDown";
+import { DropdownOption } from "globals/interfaces";
 
 //Not all worker attribute fields would logically be bulk updated. 
 //Future stories will bulk update routing and default skills in addition to inactive fields to bulk disable users
@@ -44,6 +45,21 @@ export const availableAttributes: any = {
     location: ["attributes","routing"]
   }
 };
+
+export const updateDefaultSkillOptions: DropdownOption[] = [
+  {
+    label: "Add Skills",
+    value: "ADD"
+  },
+  {
+    label: "Delete Skills",
+    value: "DELETE"
+  },
+  {
+    label: "Override Skills",
+    value: "OVERRIDE"
+  }
+];
 
 export const jokes: string[] = [
   "What do you call a sleeping bull? A bulldozer.",
