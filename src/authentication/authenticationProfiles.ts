@@ -6,11 +6,16 @@ import {
 } from "authentication/authenticationInterfaces";
 import { runTritonAdminStartup } from "authentication/startups/cct-triton-admin-startup";
 import { runAlohaRoutingStartup } from "authentication/startups/cct-aloha-routing-startup";
-import { runAlohaFlowStartup } from "authentication/startups/cct-aloha-flow-startup";
-import AlohaFlowContainer from "alohaFlow/AlohaFlowContainer";
-import AlohaRoutingContainer from "alohaRouting/AlohaRoutingContainer";
-import { TritonUsersViewWrapper } from "usermanagement/TritonUsersViewWrapper";
 import { ADGroupPermission } from "globals/interfaces";
+import {
+  TritonUsersViewWrapper
+} from "usermanagement/TritonUsersViewWrapper";
+import AlohaRoutingContainer from "../components/tabs/alohaRouting/AlohaRoutingContainer";
+import {
+  DynamicCallFlowAuthenticationProfile, DynamicCallFlowADGroupPermission,
+  DynamicCallFlowStartUpProfile
+} from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Authentication";
+import { DYNAMIC_CALL_FLOW_TAB_CONFIGURATION } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Configuration";
 
 export const getAuthenticationProfileTemplates = (): AuthenticationProfileOptions => {
   const Tabs = getTabs();
@@ -33,14 +38,7 @@ export const getAuthenticationProfileTemplates = (): AuthenticationProfileOption
         Tabs.ALOHA_ROUTING_RULES
       ]
     },
-    ALOHA_FLOW: {
-      name: "Aloha Flow",
-      home: AlohaFlowContainer,
-      permissionLevel: Permissions.READ,
-      tabs: [
-        Tabs.ALOHA_CALL_FLOW_MANAGEMENT
-      ]
-    }
+    DYNAMIC_CALL_FLOW: DynamicCallFlowAuthenticationProfile
   };
 };
 
@@ -79,21 +77,7 @@ export const getAdGroupPermissionMapping = (): ADGroupPermission[] => {
       description: descriptions.Triton,
       authenticationProfile: authenticationProfileTemplates.TRITON
     },
-    {
-      roles: [
-        {
-          name: "FlowRead",
-          permissionLevel: Permissions.READ
-        },
-        {
-          name: "FlowReadWrite",
-          permissionLevel: Permissions.WRITE
-        }
-      ],
-      startup: startupProfiles.ALOHA_FLOW,
-      description: descriptions.Aloha_Flow,
-      authenticationProfile: authenticationProfileTemplates.ALOHA_FLOW
-    },
+    DynamicCallFlowADGroupPermission,
     {
       roles: [
         {
@@ -112,7 +96,8 @@ export const getAdGroupPermissionMapping = (): ADGroupPermission[] => {
   ];
 };
 
-export const getStartupProfiles = () => {
+//TODO: Define interface for startup profiles
+export const getStartupProfiles = (): any => {
   return {
     TRITON: {
       name: "triton",
@@ -122,13 +107,11 @@ export const getStartupProfiles = () => {
       name: "aloha-route",
       function: runAlohaRoutingStartup
     },
-    ALOHA_FLOW: {
-      name: "aloha-flow",
-      function: runAlohaFlowStartup
-    }
+    DYNAMIC_CALL_FLOW: DynamicCallFlowStartUpProfile
   };
 };
 
+//TODO: Define interface for tabs
 export const getTabs = (): any => {
   return {
     TRITON_USER_MANAGEMENT: {
@@ -200,21 +183,7 @@ export const getTabs = (): any => {
         }
       ]
     },
-    ALOHA_CALL_FLOW_MANAGEMENT: {
-      value: "aloha-callflow-management",
-      label: "Call Flow DB Management",
-      route: "/triton-admin/aloha-flow",
-      dropdown: [
-        {
-          route: "/triton-admin/aloha-flow",
-          label: "Call Flow"
-        },
-        {
-          route: "/triton-admin/dyn-flow",
-          label: "Dynamic Call Flow"
-        }
-      ]
-    },
+    DYNAMIC_CALL_FLOW_MANAGEMENT: DYNAMIC_CALL_FLOW_TAB_CONFIGURATION,
     ALOHA_ROUTING_RULES: {
       value: "aloha-routing-rules",
       label: "Routing Rules",

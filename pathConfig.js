@@ -1,9 +1,9 @@
 /****** For importing files into this codebase, alias's are used for most of our folder paths. ********
-  
+
   If you are creating new folders, add them to the paths array below and this file will appropriately
   update the jsconfig, tsconfig, webpack aliases & the jestConfig
 
-  For these changes to take effect, you can run a fresh install or manually run the command: 
+  For these changes to take effect, you can run a fresh install or manually run the command:
                             npm run-script "generate-config"
 */
 
@@ -44,12 +44,6 @@ const paths = [
     ]
   },
   {
-    alias: "alohaFlow",
-    paths: [
-      "components/tabs/alohaFlow"
-    ]
-  },
-  {
     alias: "alohaRouting",
     paths: [
       "components/tabs/alohaRouting"
@@ -76,9 +70,21 @@ const paths = [
     ]
   },
   {
-    alias: "dynamicFlow",
+    alias: "dynamicCallFlowAction",
     paths: [
-      "components/tabs/dynamicFlow"
+      "components/tabs/dynamicCallFlow/action",
+    ]
+  },
+  {
+    alias: "dynamicCallFlowCommon",
+    paths: [
+      "components/tabs/dynamicCallFlow/common"
+    ]
+  },
+  {
+    alias: "dynamicCallFlowPhoneNumber",
+    paths: [
+      "components/tabs/dynamicCallFlow/phoneNumber"
     ]
   },
   {

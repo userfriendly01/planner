@@ -52,7 +52,7 @@ const state = {
     {
       authenticationProfile: {
         tabs: [
-          tabs.ALOHA_CALL_FLOW_MANAGEMENT
+          tabs.DYNAMIC_CALL_FLOW_MANAGEMENT
 
         ]
       }
@@ -77,7 +77,7 @@ describe("NavTabs", () => {
       expect(StyledTab.mock.calls[0][0].children).toBe("User Management");
       expect(StyledTab.mock.calls[1][0].children).toBe("Org Management");
       expect(StyledTab.mock.calls[2][0].children).toBe("Call Flow Management");
-      expect(StyledTab.mock.calls[3][0].children).toBe("Aloha Flow Management");
+      expect(StyledTab.mock.calls[3][0].children).toBe("Dynamic Call Flow");
       expect(Link.mock.calls.length).toBe(0);
     });
   });

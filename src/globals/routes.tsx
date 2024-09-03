@@ -1,17 +1,17 @@
-import AlohaFlowContainer from "alohaFlow/AlohaFlowContainer";
 import AlohaRoutingContainer from "alohaRouting/AlohaRoutingContainer";
-import { BulkChanges } from "usermanagement/BulkChanges";
 import { CallFlowManagementSkills } from "callflowmanagement/CallFlowManagementSkills";
 import { CallFlowManagementTfn } from "callflowmanagement/CallFlowManagementTfn";
-import { CompareProfiles } from "usermanagement/CompareProfiles";
-import DynamicFlowContainer from "dynamicFlow/DynamicFlowContainer";
+import DynamicCallFlowActionContainer from "components/tabs/dynamicCallFlow/action/DynamicCallFlow.Action.Container";
+import DynamicCallFlowPhoneNumberContainer from "components/tabs/dynamicCallFlow/phoneNumber/DynamicCallFlow.PhoneNumber.Container";
+import CalabrioOrgWrapper from "orgmanagement/CalabrioOrgWrapper";
+import CalabrioRolesWrapper from "orgmanagement/CalabrioRolesWrapper";
 import { PhoneNumberContainer } from "orgmanagement/PhoneNumberContainer";
 import { ProfileSettingsContainer } from "orgmanagement/ProfileSettingsContainer";
+import { BulkChanges } from "usermanagement/BulkChanges";
+import { CompareProfiles } from "usermanagement/CompareProfiles";
 import { TritonUsersViewWrapper } from "usermanagement/TritonUsersViewWrapper";
 import { UserEntryForm } from "usermanagement/UserEntryFormWrapper";
 import { WfmUsersViewWrapper } from "usermanagement/WfmUsersViewWrapper";
-import CalabrioOrgWrapper from "orgmanagement/CalabrioOrgWrapper";
-import CalabrioRolesWrapper from "orgmanagement/CalabrioRolesWrapper";
 
 export const getRoutes = () => [
   {
@@ -63,12 +63,12 @@ export const getRoutes = () => [
     Component: CallFlowManagementSkills
   },
   {
-    path: "/triton-admin/aloha-flow",
-    Component: AlohaFlowContainer
+    path: "/triton-admin/dynamic-call-flow-phone-number",
+    Component: DynamicCallFlowPhoneNumberContainer
   },
   {
-    path: "/triton-admin/dyn-flow",
-    Component: DynamicFlowContainer
+    path: "/triton-admin/dynamic-call-flow-configuration",
+    Component: DynamicCallFlowActionContainer
   },
   {
     path: "/triton-admin/aloha-routing",
