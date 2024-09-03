@@ -108,13 +108,17 @@ export const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any
       setAddCalabrioTeam(true);
     } else if (calabrioTeamsWithManagerNNumber.length === 1) {
       if (getCalabrioTeamName(selectedManager) !== calabrioTeamsWithManagerNNumber[0].name) {
-        updateCalabrioTeam(state.userContext.tokens.calabrioService, {
-          id: calabrioTeamsWithManagerNNumber[0].groupId,
-          name: getCalabrioTeamName(selectedManager)
-        }).then((res: any) => {
+        try{
+          const updateResponse = await updateCalabrioTeam(state.userContext.tokens.calabrioService, {
+            id: calabrioTeamsWithManagerNNumber[0].groupId,
+            name: getCalabrioTeamName(selectedManager)
+          });
           dispatch({
             type: "updateCalabrioTeam",
-            payload: res.data
+            payload: {
+              groupId: updateResponse.groupId,
+              name: updateResponse.name
+            }
           });
           setCalabrioTeamOverlayMessage(`Calabrio Team name changed from ${calabrioTeamsWithManagerNNumber[0].name} to ${getCalabrioTeamName(selectedManager)}`);
           setCalabrioTeamOverlayStatus(ModalOverlayStatuses.SUCCESS);
@@ -122,7 +126,8 @@ export const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any
             const newlist= [...selectedCalabrioTeams, calabrioTeamsWithManagerNNumber[0].groupId];
             setSelectedCalabrioTeams(newlist.map((team:number) => team));
           }
-        }).catch(error => {
+
+        } catch (error) {
           const msg = "Unable to Update Calabrio Team";
 
           logger.error(msg, {
@@ -131,7 +136,7 @@ export const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any
           });
           setCalabrioTeamOverlayMessage(msg);
           setCalabrioTeamOverlayStatus(ModalOverlayStatuses.FAIL);
-        });
+        }
         setShowCalabrioTeamsOverlay(true);
         setTimeout(() => setShowCalabrioTeamsOverlay(false), 6000);
       }
