@@ -31,7 +31,7 @@ export const CalabrioTeamModal = (props: TeamModalProps) => {
   const state = useAdminState();
   const dispatch = useAdminDispatch();
   const { nNumber } = state.userContext;
-  const calabrio_team_name = getCalabrioTeamName(props.selectedManager);
+  const calabrioTeamName = getCalabrioTeamName(props.selectedManager);
 
   const {
     groups,
@@ -40,7 +40,7 @@ export const CalabrioTeamModal = (props: TeamModalProps) => {
   const { handleClose } = props;
 
   const initialNewTeamState: any = {
-    name: calabrio_team_name,
+    name: calabrioTeamName,
     parentGroupId: null
   };
   const [ newTeam, setNewTeam ] = useState(initialNewTeamState);
