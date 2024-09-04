@@ -109,12 +109,6 @@ export const CalabrioTeamModal = (props: TeamModalProps) => {
             disabled
             label={"New Team Name"}
             value={newTeam.name}
-            onChange={(event: any) => {
-              setNewTeam({
-                ...newTeam,
-                name: event.target.value
-              });
-            }}
           />
           <Dropdown
             label={"Parent Group ID"}

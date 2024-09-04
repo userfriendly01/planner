@@ -64,7 +64,13 @@ const mockAdminDispatch = jest.fn();
 const mockManager = {
   manager_first_name: "Mary",
   manager_last_name: "Smith",
-  manager_n_num: "n1234567",
+  manager_n_num: "n7654321"
+};
+
+const mockNewManager = {
+  manager_first_name: "Joe",
+  manager_last_name: "Schmoe",
+  manager_n_num: "n1234567"
 };
 
 describe("<CalabrioTeamModal />", () => {
@@ -93,7 +99,7 @@ describe("<CalabrioTeamModal />", () => {
       expect(TextField.mock.calls.length).toBe(1);
       expectOnlyPassedProps(TextField, {
         label: "New Team Name",
-        value: "Mary Smith - N1234567"
+        value: "Mary Smith - N7654321"
       });
 
       expect(Dropdown.mock.calls.length).toBe(1);
@@ -136,33 +142,21 @@ describe("<CalabrioTeamModal />", () => {
         render(<CalabrioTeamModal handleClose={mockHandleClose} selectedManager={mockManager}/>);
         render(PaperContainer.mock.calls[0][0].children);
 
-        const updateNameField = TextField.mock.calls[0][0].onChange;
-        const newName = initialTestState.calabrioContext.teams[0].name;
-
-        act(() => {
-          updateNameField({
-            target: {
-              value: newName
-            }
-          });
-        });
-
-        render(PaperContainer.mock.calls[1][0].children);
-        const updateParentTeamDropdown = Dropdown.mock.calls[1][0].updateValue;
+        const updateParentTeamDropdown = Dropdown.mock.calls[0][0].updateValue;
         const selection = {
           ...initialTestState.calabrioContext.groups[0]
         };
         act(() => {
           updateParentTeamDropdown(null, selection);
         });
-        render(PaperContainer.mock.calls[2][0].children);
-        expect(StyledButton.mock.calls[2][0].disabled).toBe(false);
+        render(PaperContainer.mock.calls[1][0].children);
+        expect(StyledButton.mock.calls[1][0].disabled).toBe(false);
 
-        const onSubmit = StyledButton.mock.calls[2][0].onClick;
+        const onSubmit = StyledButton.mock.calls[1][0].onClick;
         act(() => {
           onSubmit();
         });
-        const rendered = render(PaperContainer.mock.calls[3][0].children);
+        const rendered = render(PaperContainer.mock.calls[2][0].children);
         expect(rendered.container).toHaveTextContent("ModalOverlay");
         expect(ModalOverlay).toHaveBeenCalledTimes(1);
         expectOnlyPassedProps(ModalOverlay, {
@@ -173,7 +167,7 @@ describe("<CalabrioTeamModal />", () => {
         act(() => {
           closeOverlay(null);
         });
-        const lastrender = render(PaperContainer.mock.calls[4][0].children);
+        const lastrender = render(PaperContainer.mock.calls[3][0].children);
         expect(lastrender.container).not.toHaveTextContent("ModalOverlay");
       });
     });
@@ -184,32 +178,20 @@ describe("<CalabrioTeamModal />", () => {
         });
       });
       test("Dispatch and handleClose are called ", async () => {
-        render(<CalabrioTeamModal handleClose={mockHandleClose} selectedManager={mockManager}/>);
+        render(<CalabrioTeamModal handleClose={mockHandleClose} selectedManager={mockNewManager}/>);
         render(PaperContainer.mock.calls[0][0].children);
 
-        const updateNameField = TextField.mock.calls[0][0].onChange;
-        const newName = "I'm a new team!";
-
-        act(() => {
-          updateNameField({
-            target: {
-              value: newName
-            }
-          });
-        });
-
-        render(PaperContainer.mock.calls[1][0].children);
-        const updateParentTeamDropdown = Dropdown.mock.calls[1][0].updateValue;
+        const updateParentTeamDropdown = Dropdown.mock.calls[0][0].updateValue;
         const selection = {
           ...initialTestState.calabrioContext.groups[0]
         };
         act(() => {
           updateParentTeamDropdown(null, selection);
         });
-        render(PaperContainer.mock.calls[2][0].children);
-        expect(StyledButton.mock.calls[2][0].disabled).toBe(false);
+        render(PaperContainer.mock.calls[1][0].children);
+        expect(StyledButton.mock.calls[1][0].disabled).toBe(false);
 
-        const onSubmit = StyledButton.mock.calls[2][0].onClick;
+        const onSubmit = StyledButton.mock.calls[1][0].onClick;
         act(() => {
           onSubmit();
         });
@@ -229,22 +211,10 @@ describe("<CalabrioTeamModal />", () => {
         createCalabrioTeam.mockRejectedValue("aww!");
       });
       test("Dispatch and handleClose are called ", async () => {
-        render(<CalabrioTeamModal handleClose={mockHandleClose} selectedManager={mockManager}/>);
+        render(<CalabrioTeamModal handleClose={mockHandleClose} selectedManager={mockNewManager}/>);
         render(PaperContainer.mock.calls[0][0].children);
 
-        const updateNameField = TextField.mock.calls[0][0].onChange;
-        const newName = "I'm a new team!";
-
-        act(() => {
-          updateNameField({
-            target: {
-              value: newName
-            }
-          });
-        });
-
-        render(PaperContainer.mock.calls[1][0].children);
-        const updateParentTeamDropdown = Dropdown.mock.calls[1][0].updateValue;
+        const updateParentTeamDropdown = Dropdown.mock.calls[0][0].updateValue;
         const selection = {
           ...initialTestState.calabrioContext.groups[0]
         };
@@ -252,10 +222,10 @@ describe("<CalabrioTeamModal />", () => {
         act(() => {
           updateParentTeamDropdown(null, selection);
         });
-        render(PaperContainer.mock.calls[2][0].children);
-        expect(StyledButton.mock.calls[2][0].disabled).toBe(false);
+        render(PaperContainer.mock.calls[1][0].children);
+        expect(StyledButton.mock.calls[1][0].disabled).toBe(false);
 
-        const onSubmit = StyledButton.mock.calls[2][0].onClick;
+        const onSubmit = StyledButton.mock.calls[1][0].onClick;
         act(() => {
           onSubmit();
         });
