@@ -177,7 +177,7 @@ describe("<CalabrioTeamModal />", () => {
           data: "yay!"
         });
       });
-      test("Dispatch and handleClose are called, new team message displayed ", async () => {
+      test("Dispatch and handleClose are called, new team message displayed", async () => {
         render(<CalabrioTeamModal handleClose={mockHandleClose} selectedManager={mockNewManager} displayNewTeamMessage={true}/>);
         const rendered = render(PaperContainer.mock.calls[0][0].children);
 
