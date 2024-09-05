@@ -26,6 +26,12 @@ export const Header4 = styled.h4`
   color: red;
 `;
 
+export const Header5 = styled.h5`
+  align-self: center;
+  margin: 5px;
+  color: green;
+`;
+
 export const CloseButtonContainer = styled.div`
   display: flex;
   justify-content: flex-end

@@ -845,6 +845,37 @@ describe("<ManagerModal />", () => {
             expect(StyledButton.mock.calls[0][0].children).toBe("Save");
             expect(StyledButton.mock.calls[0][0].disabled).toBe(true);
           });
+          test("team format is incorrect - update successful, team in selected calabrio teams list", () => {
+            const selectedManager = {
+              manager_first_name: "Mary",
+              manager_last_name: "Smith",
+              manager_n_num: "n7654321",
+              profile_id: null,
+              calabrio_team_ids: [123]
+            };
+
+            fetchUser.mockResolvedValue({
+              firstName: "Mary",
+              lastName: "Smith"
+            });
+
+            updateCalabrioTeam.mockResolvedValue({
+              groupId: 123,
+              name: "Mary Smith - N7654321",
+              displayId: null,
+              parentGroupId: 111,
+              parentGroupName: "Default Group",
+              groupLevel: ""
+            });
+
+            const rendered = renderComponent(selectedManager);
+            expect(rendered.container).toHaveTextContent("Edit Mary Smith");
+            expect(fetchUser).toHaveBeenCalledWith("Access Token", "n7654321");
+            expect(updateCalabrioTeam).toHaveBeenCalledTimes(1);
+            expect(StyledButton.mock.calls[0][0].children).toBe("Save");
+            expect(StyledButton.mock.calls[0][0].disabled).toBe(true);
+          });
+
           test("team format is incorrect - update fails", () => {
             const selectedManager = {
               manager_first_name: "Mary",

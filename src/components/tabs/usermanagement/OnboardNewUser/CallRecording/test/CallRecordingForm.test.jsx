@@ -48,6 +48,49 @@ const twilioWorker = {
   sid: "WK5678"
 };
 
+const expectedTeams = [{
+  checked: false,
+  groupId: 101,
+  name: "Hawaii Team 50",
+  parentGroupId: 100
+}, {
+  checked: false,
+  groupId: 102,
+  name: "Hawaii Specialty Team",
+  parentGroupId: 100
+}, {
+  checked: true,
+  groupId: 201,
+  name: "FNOL Team",
+  parentGroupId: 200
+}, {
+  checked: false,
+  groupId: 301,
+  name: "Mary Smith - N7654321",
+  parentGroupId: 200
+}];
+
+const expectedTeamsCheckedFalse = [{
+  checked: false,
+  groupId: 101,
+  name: "Hawaii Team 50",
+  parentGroupId: 100
+}, {
+  checked: false,
+  groupId: 102,
+  name: "Hawaii Specialty Team",
+  parentGroupId: 100
+}, {
+  checked: false,
+  groupId: 201,
+  name: "FNOL Team",
+  parentGroupId: 200
+}, {
+  checked: false,
+  groupId: 301,
+  name: "Mary Smith - N7654321",
+  parentGroupId: 200
+}];
 describe("CallRecordingForm", () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -83,22 +126,7 @@ describe("CallRecordingForm", () => {
               partial: false
             }
           ],
-          teams: [{
-            checked: false,
-            groupId: 101,
-            name: "Hawaii Team 50",
-            parentGroupId: 100
-          }, {
-            checked: false,
-            groupId: 102,
-            name: "Hawaii Specialty Team",
-            parentGroupId: 100
-          }, {
-            checked: false,
-            groupId: 201,
-            name: "FNOL Team",
-            parentGroupId: 200
-          }]
+          teams: expectedTeamsCheckedFalse
         }
       };
       describe("groups length is 0 while groups > 0", () => {
@@ -234,6 +262,11 @@ describe("CallRecordingForm", () => {
                   checked: false,
                   groupId: 201,
                   name: "FNOL Team",
+                  parentGroupId: 200
+                }, {
+                  checked: false,
+                  groupId: 301,
+                  name: "Mary Smith - N7654321",
                   parentGroupId: 200
                 }]
               },
@@ -485,7 +518,7 @@ describe("CallRecordingForm", () => {
           render(<CallRecordingForm twilioWorker={twilioWorker} missingFields={[]} />);
           expect(Dropdown.mock.calls.length).toBe(3);
           expect(Dropdown.mock.calls[1][0].label).toBe("Team *");
-          expect(Dropdown.mock.calls[1][0].options.length).toBe(3);
+          expect(Dropdown.mock.calls[1][0].options.length).toBe(4);
 
           const updateTeam = Dropdown.mock.calls[1][0].updateValue;
           act(() => {
@@ -608,22 +641,7 @@ describe("CallRecordingForm", () => {
                   name: "No Teams Group",
                   partial: false
                 }],
-                teams: [{
-                  checked: false,
-                  groupId: 101,
-                  name: "Hawaii Team 50",
-                  parentGroupId: 100
-                }, {
-                  checked: false,
-                  groupId: 102,
-                  name: "Hawaii Specialty Team",
-                  parentGroupId: 100
-                }, {
-                  checked: true,
-                  groupId: 201,
-                  name: "FNOL Team",
-                  parentGroupId: 200
-                }]
+                teams: expectedTeams
               },
               team: {
                 groupId: 201,
@@ -788,22 +806,7 @@ describe("CallRecordingForm", () => {
                   name: "No Teams Group",
                   partial: false
                 }],
-                teams: [{
-                  checked: false,
-                  groupId: 101,
-                  name: "Hawaii Team 50",
-                  parentGroupId: 100
-                }, {
-                  checked: false,
-                  groupId: 102,
-                  name: "Hawaii Specialty Team",
-                  parentGroupId: 100
-                }, {
-                  checked: true,
-                  groupId: 201,
-                  name: "FNOL Team",
-                  parentGroupId: 200
-                }]
+                teams: expectedTeams
               },
               team: {
                 groupId: 201,
@@ -906,22 +909,7 @@ describe("CallRecordingForm", () => {
                   name: "No Teams Group",
                   partial: false
                 }],
-                teams: [{
-                  checked: false,
-                  groupId: 101,
-                  name: "Hawaii Team 50",
-                  parentGroupId: 100
-                }, {
-                  checked: false,
-                  groupId: 102,
-                  name: "Hawaii Specialty Team",
-                  parentGroupId: 100
-                }, {
-                  checked: true,
-                  groupId: 201,
-                  name: "FNOL Team",
-                  parentGroupId: 200
-                }]
+                teams: expectedTeams
               },
               team: {
                 groupId: 201,
@@ -1016,22 +1004,7 @@ describe("CallRecordingForm", () => {
                   name: "No Teams Group",
                   partial: false
                 }],
-                teams: [{
-                  checked: false,
-                  groupId: 101,
-                  name: "Hawaii Team 50",
-                  parentGroupId: 100
-                }, {
-                  checked: false,
-                  groupId: 102,
-                  name: "Hawaii Specialty Team",
-                  parentGroupId: 100
-                }, {
-                  checked: true,
-                  groupId: 201,
-                  name: "FNOL Team",
-                  parentGroupId: 200
-                }]
+                teams: expectedTeams
               },
               team: {
                 groupId: 201,

@@ -89,7 +89,7 @@ describe("<CalabrioTeamModal />", () => {
   });
   describe("Initial Render", () => {
     test("CalabrioTeamModal Renders as expected", () => {
-      render(<CalabrioTeamModal handleClose={mockHandleClose} selectedManager={mockManager}/>);
+      render(<CalabrioTeamModal handleClose={mockHandleClose} selectedManager={mockManager} displayNewTeamMessage={false}/>);
       render(PaperContainer.mock.calls[0][0].children);
       expect(CloseButton.mock.calls.length).toBe(1);
       expectOnlyPassedProps(CloseButton, {
@@ -120,7 +120,7 @@ describe("<CalabrioTeamModal />", () => {
   });
   describe("Parent Group Dropdown is updated", () => {
     test("Dropdown value === selection", () => {
-      render(<CalabrioTeamModal handleClose={mockHandleClose} selectedManager={mockManager}/>);
+      render(<CalabrioTeamModal handleClose={mockHandleClose} selectedManager={mockManager} displayNewTeamMessage={false}/>);
       render(PaperContainer.mock.calls[0][0].children);
       expect(Dropdown.mock.calls.length).toBe(1);
       expect(Dropdown.mock.calls[0][0].value).toBe("");
@@ -139,7 +139,7 @@ describe("<CalabrioTeamModal />", () => {
   describe("Submit button is clicked", () => {
     describe("team name already exists", () => {
       test("should update modal overlay to fail and message to Team Already Exists", async () => {
-        render(<CalabrioTeamModal handleClose={mockHandleClose} selectedManager={mockManager}/>);
+        render(<CalabrioTeamModal handleClose={mockHandleClose} selectedManager={mockManager} displayNewTeamMessage={false}/>);
         render(PaperContainer.mock.calls[0][0].children);
 
         const updateParentTeamDropdown = Dropdown.mock.calls[0][0].updateValue;
@@ -177,9 +177,9 @@ describe("<CalabrioTeamModal />", () => {
           data: "yay!"
         });
       });
-      test("Dispatch and handleClose are called ", async () => {
-        render(<CalabrioTeamModal handleClose={mockHandleClose} selectedManager={mockNewManager}/>);
-        render(PaperContainer.mock.calls[0][0].children);
+      test("Dispatch and handleClose are called, new team message displayed ", async () => {
+        render(<CalabrioTeamModal handleClose={mockHandleClose} selectedManager={mockNewManager} displayNewTeamMessage={true}/>);
+        const rendered = render(PaperContainer.mock.calls[0][0].children);
 
         const updateParentTeamDropdown = Dropdown.mock.calls[0][0].updateValue;
         const selection = {
@@ -190,6 +190,38 @@ describe("<CalabrioTeamModal />", () => {
         });
         render(PaperContainer.mock.calls[1][0].children);
         expect(StyledButton.mock.calls[1][0].disabled).toBe(false);
+
+        expect(rendered.container).toHaveTextContent(`No Calabrio Team found for ${mockNewManager.manager_first_name} ${mockNewManager.manager_last_name}`);
+
+        const onSubmit = StyledButton.mock.calls[1][0].onClick;
+        act(() => {
+          onSubmit();
+        });
+        await waitFor(() => {
+          expect(mockAdminDispatch).toHaveBeenCalledTimes(1);
+          expect(mockAdminDispatch).toHaveBeenCalledWith({
+            type: "addCalabrioTeam",
+            payload: "yay!"
+          });
+          jest.runAllTimers();
+          expect(mockHandleClose).toHaveBeenCalledTimes(1);
+        });
+      });
+      test("Dispatch and handleClose are called, new team message not displayed ", async () => {
+        render(<CalabrioTeamModal handleClose={mockHandleClose} selectedManager={mockNewManager} displayNewTeamMessage={false}/>);
+        const rendered = render(PaperContainer.mock.calls[0][0].children);
+
+        const updateParentTeamDropdown = Dropdown.mock.calls[0][0].updateValue;
+        const selection = {
+          ...initialTestState.calabrioContext.groups[0]
+        };
+        act(() => {
+          updateParentTeamDropdown(null, selection);
+        });
+        render(PaperContainer.mock.calls[1][0].children);
+        expect(StyledButton.mock.calls[1][0].disabled).toBe(false);
+
+        expect(rendered.container).not.toHaveTextContent(`No Calabrio Team found for ${mockNewManager.manager_first_name} ${mockNewManager.manager_last_name}`);
 
         const onSubmit = StyledButton.mock.calls[1][0].onClick;
         act(() => {
@@ -211,7 +243,7 @@ describe("<CalabrioTeamModal />", () => {
         createCalabrioTeam.mockRejectedValue("aww!");
       });
       test("Dispatch and handleClose are called ", async () => {
-        render(<CalabrioTeamModal handleClose={mockHandleClose} selectedManager={mockNewManager}/>);
+        render(<CalabrioTeamModal handleClose={mockHandleClose} selectedManager={mockNewManager} displayNewTeamMessage={false}/>);
         render(PaperContainer.mock.calls[0][0].children);
 
         const updateParentTeamDropdown = Dropdown.mock.calls[0][0].updateValue;
@@ -238,7 +270,7 @@ describe("<CalabrioTeamModal />", () => {
   });
   describe("Close button is clicked", () => {
     test("handleClose is called but dispatch is not ", () => {
-      render(<CalabrioTeamModal handleClose={mockHandleClose} selectedManager={mockManager}/>);
+      render(<CalabrioTeamModal handleClose={mockHandleClose} selectedManager={mockManager} displayNewTeamMessage={false}/>);
       render(PaperContainer.mock.calls[0][0].children);
       expect(CloseButton.mock.calls.length).toBe(1);
       const handleClose = CloseButton.mock.calls[0][0].onClick;

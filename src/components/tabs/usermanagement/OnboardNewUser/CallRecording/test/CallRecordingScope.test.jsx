@@ -474,7 +474,7 @@ describe("<CallRecordingScope", () => {
             }
           });
         });
-        expect(mockSetForm).toBeCalledTimes(9);
+        expect(mockSetForm).toBeCalledTimes(10);
       });
     });
     describe("only some teams/groups are checked", () => {

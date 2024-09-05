@@ -88,6 +88,7 @@ export const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any
   const [ calabrioTeamOverlayMessage, setCalabrioTeamOverlayMessage] = useState<string>(null);
   const [ calabrioTeamOverlayStatus, setCalabrioTeamOverlayStatus] = useState<ModalOverlayStatuses>(null);
   const [ addCalabrioTeam, setAddCalabrioTeam ] = useState<boolean>(false);
+  const [ displayNewTeamMessage, setDisplayNewTeamMessage ] = useState<boolean>(false);
   const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
 
   useEffect(() => {
@@ -100,11 +101,7 @@ export const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any
   const getCalabrioTeamsContainingNNumber = async (manager_n_num: string) => {
     const calabrioTeamsWithManagerNNumber: CalabrioGroup[] = state.calabrioContext.teams.filter(team => team.name.toLowerCase().includes(manager_n_num.toLowerCase()));
     if (calabrioTeamsWithManagerNNumber.length === 0) {
-      setCalabrioTeamOverlayMessage(`No Calabrio Team found for ${selectedManager.manager_first_name} ${selectedManager.manager_last_name} - ${selectedManager.manager_n_num.toUpperCase()}. Please create one now.`);
-      setCalabrioTeamOverlayStatus(ModalOverlayStatuses.PARTIAL_FAIL);
-      setShowCalabrioTeamsOverlay(true);
-      setTimeout(() => setShowCalabrioTeamsOverlay(false), 6000);
-      await sleep(6000);
+      setDisplayNewTeamMessage(true);
       setAddCalabrioTeam(true);
     } else if (calabrioTeamsWithManagerNNumber.length === 1) {
       if (getCalabrioTeamName(selectedManager) !== calabrioTeamsWithManagerNNumber[0].name) {
@@ -113,12 +110,10 @@ export const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any
             id: calabrioTeamsWithManagerNNumber[0].groupId,
             name: getCalabrioTeamName(selectedManager)
           });
+          console.log(updateResponse);
           dispatch({
             type: "updateCalabrioTeam",
-            payload: {
-              groupId: updateResponse.groupId,
-              name: updateResponse.name
-            }
+            payload: updateResponse.data
           });
           setCalabrioTeamOverlayMessage(`Calabrio Team name changed from ${calabrioTeamsWithManagerNNumber[0].name} to ${getCalabrioTeamName(selectedManager)}`);
           setCalabrioTeamOverlayStatus(ModalOverlayStatuses.SUCCESS);
@@ -499,7 +494,7 @@ export const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any
             />
             <Modal onClose={() => { return; }} open={isTeamModalOpen || addCalabrioTeam}>
               <>
-                <CalabrioTeamModal handleClose={handleCloseTeam} selectedManager={manager}/>
+                <CalabrioTeamModal handleClose={handleCloseTeam} selectedManager={manager} displayNewTeamMessage={displayNewTeamMessage}/>
               </>
             </Modal>
           </Wrapper>
