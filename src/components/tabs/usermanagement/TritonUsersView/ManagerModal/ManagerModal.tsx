@@ -89,7 +89,6 @@ export const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any
   const [ calabrioTeamOverlayStatus, setCalabrioTeamOverlayStatus] = useState<ModalOverlayStatuses>(null);
   const [ addCalabrioTeam, setAddCalabrioTeam ] = useState<boolean>(false);
   const [ displayNewTeamMessage, setDisplayNewTeamMessage ] = useState<boolean>(false);
-  const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
 
   useEffect(() => {
     if (selectedManager) {
