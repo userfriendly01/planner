@@ -137,7 +137,10 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
       scope: {
         groups: form.calabrio_qm.scope?.groups.filter((group: any) => group.checked).map((g: any) => g.groupId),
         teams: form.calabrio_qm.scope?.teams.filter((team: any) => team.checked).map((g: any) => g.groupId)
-      }
+      },
+      qmViews: form.calabrio_qm.qmViews.length ? form.calabrio_qm.qmViews.map(view => {
+        return { id: view.id };
+      }) : null
     };
 
     const overflowSkill = getOverflowSkillFromProfile(profiles, form.triton.profileId.value);
@@ -486,6 +489,9 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
           groups: form.calabrio_qm.scope?.groups.filter((group: any) => group.checked).map((g: any) => g.groupId),
           teams: form.calabrio_qm.scope?.teams.filter((team: any) => team.checked).map((g: any) => g.groupId)
         };
+        calabrioAttributes.qmViews = form.calabrio_qm.qmViews.map(view => {
+          return { id: view.id };
+        });
 
         if (form.calabrio_qm.id) {
           await updateCalabrioUser(calabrioServiceToken, calabrioAttributes);

@@ -23,6 +23,7 @@ import {
   Tokens
 } from "globals/interfaces";
 import { logger } from "utils/logger";
+import { checkIfLowerEnv } from "authentication/authUtils";
 
 const inflate = util.promisify(zlib.inflate);
 
@@ -71,6 +72,34 @@ export const calabrioAllowedRoles = [
   "EXL_Genpact",
   "QM Agent_No Live Monitoring"
 ];
+
+const calabrioGroupsWithQMFNOLView = [
+  819, // USRM PL APD
+  820, // USRM PL Salvage
+  823, // USRM PL Property
+  824, // USRM PL Subrogation
+  825, // USRM PL Casualty
+  827, // USRM PL No Fault Medical
+  1894, // USRM Mitigation Unit
+  2184 // USRM Mitigation Unit Support
+];
+
+const getCalabrioGroupsWithQMFNOLView = (): number[] => {
+  return checkIfLowerEnv() ? [
+    380  // Team Kaleigh in test env
+  ] : calabrioGroupsWithQMFNOLView;
+};
+
+export const shouldHaveFNOLQMView = (team: CalabrioGroup | undefined, scope: {groups: CalabrioGroup[], teams: CalabrioGroup[]}): boolean => {
+  // Don't add a QMView if user has scope, as it will override their scope
+  const hasScopeGroups = scope.groups.some(g => g.checked);
+  const hasScopeTeams = scope.teams.some(t => t.checked);
+
+  if (team && team.parentGroupId && !hasScopeGroups && !hasScopeTeams && getCalabrioGroupsWithQMFNOLView().includes(team.parentGroupId)) {
+    return true;
+  }
+  return false;
+};
 
 export const daysOfTheWeekOptions = [
   {

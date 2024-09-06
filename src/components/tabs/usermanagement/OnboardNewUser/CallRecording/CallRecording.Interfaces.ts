@@ -23,10 +23,12 @@ export interface CalabrioFetchedUser {
     isAdminDefault: boolean,
     isSupervisorDefault: boolean
   }],
-  scope: {
-    groups: number[],
-    teams: number[]
-  }
+  scope: CalabrioScope
+}
+
+export interface CalabrioScope {
+  groups: number[],
+  teams: number[]
 }
 export interface CalabrioGroup {
   groupId: number,
@@ -36,10 +38,17 @@ export interface CalabrioGroup {
   parentGroupName: string,
   groupLevel: string,
   users?: CalabrioUser[]
+  checked?: boolean
 }
 export interface CalabrioGroupLevel {
   GROUP: string,
   TEAM: string
+}
+
+export interface CalabrioQMView {
+  id: number,
+  name: string,
+  mainView?: boolean
 }
 
 export interface CalabrioUser {

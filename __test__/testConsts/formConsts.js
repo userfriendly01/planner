@@ -111,7 +111,8 @@ export const initialFormState = {
         groupId: 2,
         checked: true
       }]
-    }
+    },
+    qmViews: []
   },
   calabrio_wfm: {
     userFound: false,
@@ -272,7 +273,7 @@ export const validFormState = {
   calabrio_qm: {
     userFound: true,
     updated: false,
-    team: 225,
+    team: { groupId: 225},
     timezone: {
       label: "EST",
       value: 173
@@ -290,7 +291,11 @@ export const validFormState = {
         groupId: 2,
         checked: true
       }]
-    }
+    },
+    qmViews: [{
+      id: 1,
+      name: "FNOL"
+    }]
   },
   calabrio_wfm: {
     userFound: false

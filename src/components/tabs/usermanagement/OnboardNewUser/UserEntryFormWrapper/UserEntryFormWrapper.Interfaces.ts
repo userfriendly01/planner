@@ -1,7 +1,6 @@
 import {
   UMManager,
   ModalOverlayStatuses,
-  UMOffice,
   UMSoftphoneConfiguration,
   UMUser,
   WfmUser,
@@ -9,7 +8,9 @@ import {
 } from "globals/interfaces";
 import { FetchUserResponse } from "services/fetchUser";
 import { ExtensionStatusProps } from "../Extension/ExtensionInput/ExtensionInput.Interfaces";
-import { CalabrioGroup } from "usermanagement/CallRecording.Interfaces";
+import {
+  CalabrioGroup, CalabrioQMView
+} from "usermanagement/CallRecording.Interfaces";
 
 export interface LoadingState {
   lookupUser: boolean;
@@ -91,7 +92,8 @@ export interface UserFormState {
     scope: {
       groups: CalabrioGroup[],
       teams: CalabrioGroup[]
-    }
+    },
+    qmViews: CalabrioQMView[]
   },
   calabrio_wfm: CALABRIO_WFM
 }

@@ -13,7 +13,8 @@ import {
   getWfmBusinessUnits,
   getWfmTeams,
   getWfmPeople,
-  getWfmOptions as getWfmOptionsUtil
+  getWfmOptions as getWfmOptionsUtil,
+  shouldHaveFNOLQMView
 } from "../calabrioUtils";
 import { logger } from "utils/logger";
 import {
@@ -33,6 +34,10 @@ Date.now = jest.fn();
 jest.mock("zlib", () => ({
   inflate: jest.fn()
 }));
+
+jest.mock("authentication/authUtils", () => ({
+  checkIfLowerEnv: jest.fn()
+}))
 
 jest.mock("services/calabrio", () => ({
   getCalabrioUser: jest.fn(),
@@ -170,6 +175,29 @@ describe("calabrioUtils", () => {
     jest.resetAllMocks(),
     jest.clearAllMocks(),
     Date.now.mockReturnValue("Right Now");
+  });
+
+  describe("shouldHaveFNOLQMView", () => {
+    test("Team is undefined, returns false", () => {
+      const result = shouldHaveFNOLQMView(undefined, { groups: [], teams: []});
+      expect(result).toBe(false)
+    });
+    test("team is defined and has a scope group checked, returns false", () => {
+      const result = shouldHaveFNOLQMView({ groupId: 1, parentGroupId: 824 }, { groups: [{ checked: true }], teams: []});
+      expect(result).toBe(false)
+    });
+    test("team is defined, and has a scope team checked, returns false", () => {
+      const result = shouldHaveFNOLQMView({ groupId: 1, parentGroupId: 824 }, { groups: [], teams: [{ checked: true }]});
+      expect(result).toBe(false)
+    });
+    test("team is defined, no scope, but team parent group is not in the FNOL view list, returns false", () => {
+      const result = shouldHaveFNOLQMView({ groupId: 1, parentGroupId: 4 }, { groups: [], teams: [{ checked: true }]});
+      expect(result).toBe(false)
+    });
+    test("No scopes, team is defined and has parent group that is in the FNOL view list, returns true", () => {
+      const result = shouldHaveFNOLQMView({ groupId: 1, parentGroupId: 824 }, { groups: [], teams: []});
+      expect(result).toBe(true)
+    });
   });
 
   describe("addWorkerToOrg", () => {
