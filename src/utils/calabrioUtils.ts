@@ -86,10 +86,11 @@ const calabrioGroupsWithQMFNOLView = [
 
 const getCalabrioGroupsWithQMFNOLView = (): number[] => {
   return checkIfLowerEnv() ? [
-    380  // Team Kaleigh in test env
+    380  // Test Group 1 in test env
   ] : calabrioGroupsWithQMFNOLView;
 };
 
+// Only users that are in teams within particular Parent Groups should have FNOL view, and they should only have the FNOL QM View if they are not managers (ie, people with FNOL view should not have scopes)
 export const shouldHaveFNOLQMView = (team: CalabrioGroup | undefined, scope: {groups: CalabrioGroup[], teams: CalabrioGroup[]}): boolean => {
   // Don't add a QMView if user has scope, as it will override their scope
   const hasScopeGroups = scope.groups.some(g => g.checked);
