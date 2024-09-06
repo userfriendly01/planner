@@ -35,10 +35,6 @@ jest.mock("zlib", () => ({
   inflate: jest.fn()
 }));
 
-jest.mock("authentication/authUtils", () => ({
-  checkIfLowerEnv: jest.fn()
-}))
-
 jest.mock("services/calabrio", () => ({
   getCalabrioUser: jest.fn(),
   getCalabrioUsers: jest.fn(),

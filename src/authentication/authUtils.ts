@@ -1,5 +1,5 @@
-import { env } from "globals";
 import { listUMUserRecords } from "services/user";
+import { checkIfLowerEnv } from "utils";
 
 const productOwners = [
   "n0116796", // Rebecca Miller
@@ -18,10 +18,6 @@ const bulkAdmins = [
 
 export const checkIfAdmin = (profileId: number): boolean => {
   return profileId === 0;
-};
-
-export const checkIfLowerEnv = (): boolean => {
-  return ["local", "development", "test", "staging"].includes(env.APP_ENV);
 };
 
 export const checkIfBulkAdmin = (nNumber: string): boolean => {

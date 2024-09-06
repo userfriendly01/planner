@@ -23,7 +23,7 @@ import {
   Tokens
 } from "globals/interfaces";
 import { logger } from "utils/logger";
-import { checkIfLowerEnv } from "authentication/authUtils";
+import { checkIfLowerEnv } from "utils";
 
 const inflate = util.promisify(zlib.inflate);
 
