@@ -552,17 +552,15 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
       const shouldHaveQMView = shouldHaveFNOLQMView(action.payload, state.calabrio_qm.scope);
       const qmViews = shouldHaveQMView ? [FNOL_QM_VIEW] : [];
 
-      {
-        return {
-          ...state,
-          calabrio_qm: {
-            ...state.calabrio_qm,
-            team: action.payload,
-            qmViews,
-            updated: true
-          }
-        };
-      }
+      return {
+        ...state,
+        calabrio_qm: {
+          ...state.calabrio_qm,
+          team: action.payload,
+          qmViews,
+          updated: true
+        }
+      };
     }
     case userFormActions.SET_CALABRIO_TIMEZONE: {
       return {

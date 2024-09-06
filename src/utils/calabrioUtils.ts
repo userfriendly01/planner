@@ -96,10 +96,7 @@ export const shouldHaveFNOLQMView = (team: CalabrioGroup | undefined, scope: {gr
   const hasScopeGroups = scope.groups.some(g => g.checked);
   const hasScopeTeams = scope.teams.some(t => t.checked);
 
-  if (team && team.parentGroupId && !hasScopeGroups && !hasScopeTeams && getCalabrioGroupsWithQMFNOLView().includes(team.parentGroupId)) {
-    return true;
-  }
-  return false;
+  return !!(team && team.parentGroupId && !hasScopeGroups && !hasScopeTeams && getCalabrioGroupsWithQMFNOLView().includes(team.parentGroupId));
 };
 
 export const daysOfTheWeekOptions = [
