@@ -575,7 +575,7 @@ describe("CallRecordingForm", () => {
         useFormState.mockReturnValue(formState);
       });
       test("Form is rendered as expected", async () => {
-        const rendered = render(<CallRecordingForm twilioWorker={twilioWorker} missingFields={[]} />);
+        render(<CallRecordingForm twilioWorker={twilioWorker} missingFields={[]} />);
         expect(Dropdown.mock.calls.length).toBe(3);
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(1);

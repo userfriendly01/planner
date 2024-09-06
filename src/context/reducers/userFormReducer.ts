@@ -11,6 +11,11 @@ import {
 } from "utils/calabrioUtils";
 import { getValidSkillsObject } from "utils/skillsUtils";
 import { getZeroOutEnabledFromProfile } from "utils/usermanagementUtils";
+// Note: hardcoding the Production Calabrio QMView since it is the only one
+const FNOL_QM_VIEW = {
+  id: 1,
+  name: "FNOL"
+};
 
 const searchParams = SearchParams.getValues();
 
@@ -205,12 +210,6 @@ export const initialUserFormState: UserFormState = {
     FirstDayOfWeek: null,
     ParentTeam: null
   }
-};
-
-// Note: hardcoding the Production Calabrio QMView since it is the only one
-const FNOL_QM_VIEW = {
-  id: 1,
-  name: "FNOL"
 };
 
 export const userFormReducer = (state: any, action: Action): UserFormState => {
