@@ -2,13 +2,10 @@ import {
   DataGrid, GridColDef, useGridApiRef
 } from "@mui/x-data-grid";
 import React, {
-  useMemo, useState, useEffect
+  useEffect, useMemo, useState
 } from "react";
 import {
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter
+  Modal, ModalBody, ModalFooter, ModalHeader
 } from "@lmig/lmds-react-modal";
 import { StyledButton } from "components/StyledButton";
 import { CsvReader } from "components/CSVReader/CsvReader";
@@ -136,7 +133,7 @@ export const PreviewModal = (props: PreviewModalProps): JSX.Element => {
   };
 
   const handleUploadedFile = (event: React.ChangeEvent<HTMLInputElement>) =>{
-    CsvReader(event, setUploadedForm, "ROUTING");
+    CsvReader(event, setUploadedForm);
   };
 
   const handleOnClose = () =>{

@@ -8,8 +8,9 @@ import {
   PreviewModalAction,
   RoutingFilter
 } from "../AlohaRouting.Interfaces";
-import { CACHE_FILTER_ROUTING } from "utils/alohaRoutingUtils";
-import { getAdvanceFilter } from "utils/alohaFlowUtils";
+import {
+  CACHE_FILTER_ROUTING, getAdvanceFilter
+} from "utils/alohaRoutingUtils";
 import { readWriteAccess } from "utils/alohaConfigUtils";
 import {
   PlaylistAdd,

@@ -1,14 +1,10 @@
 import {
-  ADGroupPermission, BrandNameMap, GraphQLErrors
-} from "globals/interfaces";
-import {
-  CctSharedCallFlowDb, FlowContent, getCctSharedCallFlowDbShell
-} from "components/tabs/alohaFlow/AlohaFlow.Interfaces";
-import {
   CctSharedCallRoutingDb, getCctSharedCallRoutingDbShell
 } from "alohaRouting/AlohaRouting.Interfaces";
 import { AlertBarProps } from "globals/interfaces";
-import { DynamicAction } from "components/tabs/dynamicFlow/DynamicFlow.Interfaces";
+import {
+  ADGroupPermission, BrandNameMap, GraphQLErrors
+} from "globals/interfaces";
 import { env } from "globals";
 
 export const initializedAlertBar: AlertBarProps = {
@@ -28,33 +24,22 @@ export const EXPORT_FILE_PREFIX: {
   ROUTING: "routing-rules"
 };
 
-const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb |CctSharedCallRoutingDb>, prefix: string): string => {
+const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallRoutingDb>, prefix: string): string => {
   let result: string;
   const columnDelimiter = ",";
   const lineDelimiter = "\n";
   if(array.length ===0){
     return;
   }
-  const firstRowModel: CctSharedCallFlowDb |CctSharedCallRoutingDb = (array[0] as CctSharedCallRoutingDb).all ? getCctSharedCallRoutingDbShell() :  getCctSharedCallFlowDbShell();
+  const firstRowModel: CctSharedCallRoutingDb = getCctSharedCallRoutingDbShell();
   let keys: string[] = Object.keys(firstRowModel);
 
   const contentStore : string[] =[];
-  let contentKeys: string[] = [];
   const jsonFormatKeys: string[] = ["occupancyCheck", "routingSteps", "options", "repeat"];
   const nullValueCheck = ["null", null, undefined];
-  let flag = false;
+  const flag = false;
   for( let i=0; i<keys.length; i++){
-    if(keys[i] === "content"){
-      const arrayStore:CctSharedCallFlowDb = array[0];
-      contentKeys= Object.keys(arrayStore.content);
-      contentKeys.forEach(key=>{
-        contentStore.push(key);
-      });
-      flag = true;
-    }
-    else{
-      contentStore.push(keys[i]);
-    }
+    contentStore.push(keys[i]);
   }
   if(flag){
     keys = contentStore;
@@ -63,20 +48,13 @@ const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb |CctSharedCa
   const header = keys.map((key: string)=>key === "pkey" && prefix === EXPORT_FILE_PREFIX.FLOW? "dialedPhoneNumber": key);
   result += header.join(columnDelimiter);
   result += lineDelimiter;
-  array.forEach((item:CctSharedCallFlowDb & CctSharedCallRoutingDb) => {
+  array.forEach((item: CctSharedCallRoutingDb) => {
     let ctr = 0;
     keys.forEach(key => {
       if (ctr > 0) { result += columnDelimiter; }
-      let itemValue = item[key as keyof (CctSharedCallFlowDb | CctSharedCallRoutingDb)];
+      let itemValue = item[key as keyof (CctSharedCallRoutingDb)];
       itemValue = jsonFormatKeys.includes(key)?JSON.stringify(itemValue):itemValue;
-      if(contentKeys.includes(key)){
-        let contentItemVal:string|string[];
-        if(item.content){
-          contentItemVal = item.content[key as keyof FlowContent];
-          itemValue = contentItemVal?contentItemVal.toString():"";
-        }
-      }
-      if(typeof(itemValue)!==  "number" && nullValueCheck.includes(itemValue)){
+      if(typeof(itemValue)!==  "number" && nullValueCheck.includes(itemValue as string)){
         itemValue = "";
       }
       else if(itemValue){
@@ -93,7 +71,7 @@ const convertArrayOfObjectsToCSV = (array:Array<CctSharedCallFlowDb |CctSharedCa
   return result;
 };
 
-export const  downloadCSV = (prefix: string, array:Array<CctSharedCallFlowDb |CctSharedCallRoutingDb | DynamicAction>): JSX.Element => {
+export const  downloadCSV = (prefix: string, array:Array<CctSharedCallRoutingDb>): JSX.Element => {
   const link: HTMLAnchorElement = document.createElement("a");
   let csv: string = convertArrayOfObjectsToCSV(array, prefix);
   if (csv === null || csv===undefined) { return; }
@@ -135,7 +113,7 @@ export const readWriteAccess = (permissions: ADGroupPermission[], role: string):
   return false;
 };
 
-export const BrandName:BrandNameMap={
+export const BrandName:BrandNameMap = {
   "Liberty Mutual": "liberty",
   "Safeco": "safeco"
 };

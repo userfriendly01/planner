@@ -3,6 +3,8 @@ import {
 } from "../components/tabs/alohaRouting/AlohaRouting.Interfaces";
 import { FormValidationRule } from "globals/interfaces";
 
+export const languageOffer = ["English", "Spanish"];
+
 export const ROUTING_CACHE_MASTER_DATA = "ROUTING_MASTER_DATA";
 
 export const CACHE_FILTER_ROUTING = "SEARCH_FILTER_ROUTING";
@@ -25,6 +27,22 @@ export const tfnRoutingGroupAttr = ["Premier Partners", "TruStage", "TruStageNav
   "LSCAgentSales", "LSCBookTransfer", "LSCDirectSales", "LSCHomeInsDotCom", "LSCPriorityAgent", "LSCPriorityCampaigns", "LSCUSAA"];
 
 export const LAST_ROUTING_MASTER_DATA_CACHED_DATE="LAST_ROUTING_MASTER_DATA_CACHED_DATE";
+
+export const getAdvanceFilter = (storageKeyName: string): { [key: string]: undefined; } => {
+  let advanceFilter: { [key: string]: undefined; };
+  try {
+    const cachedFilter = localStorage.getItem(storageKeyName);
+    advanceFilter = JSON.parse(cachedFilter) || {};
+    Object.keys(advanceFilter).forEach(key => {
+      if (advanceFilter[key] === "" || advanceFilter[key] === null) {
+        delete advanceFilter[key];
+      }
+    });
+  } catch (e) {
+    advanceFilter = {};
+  }
+  return advanceFilter;
+};
 
 export const routingDropDownList: RoutingDropDownList = {
   brand: [],

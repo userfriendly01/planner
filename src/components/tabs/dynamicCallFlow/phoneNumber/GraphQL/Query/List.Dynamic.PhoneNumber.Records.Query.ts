@@ -1,0 +1,61 @@
+import { AbstractListRecordsQuery } from "components/tabs/dynamicCallFlow/common/GraphQL/AbstractListRecords.Query";
+import { PhoneNumber } from "components/tabs/dynamicCallFlow/phoneNumber/GraphQL/Dynamic.PhoneNumber.Interfaces";
+
+import { LoadDataGridMonitorRef } from "dynamicCallFlowCommon/DataGrid/Load.DataGrid.Monitor";
+
+class ListDynamicPhoneNumberRecordsQuery extends AbstractListRecordsQuery {
+  queryName(): string {
+    return "listPhoneNumbers";
+  }
+
+  //TODO: Need to implement nextToken in shared-graph-api
+  queryDefinition(): string {
+    return `
+      query ${this.queryName()}($limit: Int) { 
+        ${this.queryName()}(limit: $limit) {
+          nextToken
+          items {
+            pkey: phoneNumber
+            brand
+            callFlowName
+            callFlowRoute
+            callFlowTemplate
+            callFlowType
+            callIntent
+            callTypeDescription
+            callerType
+            channel
+            createTime
+            dataRequests
+            dialedDescription
+            employeeId
+            greetingMessages
+            internetPlacement
+            languageOffer
+            lineOfBusiness
+            marketingChannel
+            nextActionId
+            nextActionType
+            officeNumbers
+            phoneNumber
+            phoneNumberType
+            predictiveCaller
+            rangeIndicator
+            requestID
+            tfnRoutingGroup
+            tollFreeNumber
+            transferCode
+            transferDestination
+            updateTime
+            whisper
+          }
+        }
+      }`;
+  }
+}
+
+export const listDynamicPhoneNumberRecordsQuery = new ListDynamicPhoneNumberRecordsQuery();
+
+export async function listDynamicPhoneNumberRecords(accessToken: string, loadDataGridMonitor?: LoadDataGridMonitorRef): Promise<Array<PhoneNumber>> {
+  return await listDynamicPhoneNumberRecordsQuery.getEntireList<PhoneNumber>(accessToken, loadDataGridMonitor);
+}
