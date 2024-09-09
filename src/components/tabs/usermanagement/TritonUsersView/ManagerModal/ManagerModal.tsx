@@ -109,7 +109,6 @@ export const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any
             id: calabrioTeamsWithManagerNNumber[0].groupId,
             name: getCalabrioTeamName(selectedManager)
           });
-          console.log(updateResponse);
           dispatch({
             type: "updateCalabrioTeam",
             payload: updateResponse.data
