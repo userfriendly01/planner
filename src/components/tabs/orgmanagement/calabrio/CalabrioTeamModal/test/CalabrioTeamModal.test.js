@@ -207,7 +207,7 @@ describe("<CalabrioTeamModal />", () => {
           expect(mockHandleClose).toHaveBeenCalledTimes(1);
         });
       });
-      test("Dispatch and handleClose are called, new team message not displayed ", async () => {
+      test("Dispatch and handleClose are called, new team message not displayed", async () => {
         render(<CalabrioTeamModal handleClose={mockHandleClose} selectedManager={mockNewManager} displayNewTeamMessage={false}/>);
         const rendered = render(PaperContainer.mock.calls[0][0].children);
 
