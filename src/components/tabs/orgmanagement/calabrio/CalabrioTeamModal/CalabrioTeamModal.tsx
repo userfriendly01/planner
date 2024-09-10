@@ -112,7 +112,7 @@ export const CalabrioTeamModal = (props: TeamModalProps) => {
         {displayNewTeamMessage && (
           <Header5>No Calabrio Team found for {props.selectedManager.manager_first_name} {props.selectedManager.manager_last_name}
             <br/>
-            Please create one now.
+            Please create one now or cancel to select existing teams.
             <br/>
             <br/>
           </ Header5>)}
