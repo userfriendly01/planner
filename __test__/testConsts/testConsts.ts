@@ -230,6 +230,11 @@ export const calabrioContext: any = {
       groupId: 201,
       parentGroupId: 200,
       name: "FNOL Team"
+    },
+    {
+      groupId: 301,
+      parentGroupId: 200,
+      name: "Mary Smith - N7654321"
     }
   ],
   roles: [

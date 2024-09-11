@@ -187,6 +187,7 @@ export const apiPaths = {
   RESET_WORKER_SKILLS: `${SERVICE_BASE_URI}/resetworkerskills`,
   TFN_DATA: `${SERVICE_BASE_URI}/tfn`,
   UPDATE_CALABRIO_USER: `${CALABRIO_SERVICE_BASE_URI}/qm?api=User`,
+  UPDATE_CALABRIO_TEAM: `${CALABRIO_SERVICE_BASE_URI}/qm?api=Team`,
   RESET_PROFILES: (nNumber: string): string => `${ADMIN_CLIENT_URL}/reset/${nNumber}`,
   TERMINATE_WORKER: `${ADMIN_CLIENT_URL}/termination`,
   WFM_ACTIVATE_EXTERNAL_LOGON: `${ADMIN_CLIENT_URL}/externalLogon`

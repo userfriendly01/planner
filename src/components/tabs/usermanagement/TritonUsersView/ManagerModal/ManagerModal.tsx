@@ -1,15 +1,13 @@
 import {
-  ManagerModalButtonWrapper,
-  Header,
   CloseButtonContainer,
+  Header,
+  Header4,
+  ManagerModalButtonWrapper,
   ModalContainer,
-  Wrapper,
-  Header4
+  Wrapper
 } from "usermanagement/ManagerModal.Styles";
 import {
-  defaultNNumber,
-  DropdownOption,
-  ManagerModalProps
+  defaultNNumber, DropdownOption, ManagerModalProps
 } from "usermanagement/ManagerModal.Interfaces";
 import { Dropdown } from "components/Dropdown";
 import { NNumberInput } from "components/NNumberInput";
@@ -22,30 +20,29 @@ import {
   useAdminState
 } from "context/appContext";
 import {
-  UMManager,
-  ModalOverlayStatuses,
-  UMUser
+  FlexColumn, ModalOverlayStatuses, UMManager, UMUser
 } from "globals/interfaces";
-import { FlexColumn } from "globals/interfaces";
 import React, {
-  useState, useEffect
+  useEffect, useState
 } from "react";
 import { updateUser } from "services/user";
+import { updateCalabrioTeam } from "services/calabrio";
 import {
   addManager, editManager
 } from "services/manager";
 import {
-  FetchUserResponse, fetchUser
+  fetchUser, FetchUserResponse
 } from "services/fetchUser";
 import { sortProfilesByName } from "utils/_sortUtils";
 import { logger } from "utils/logger";
 import {
-  IconButton,
-  Modal
+  IconButton, Modal
 } from "@mui/material";
 import { CloseRounded } from "@mui/icons-material";
 import { StyledExportButton } from "callflowmanagement/SkillManagement/Skills.Styles";
 import { ExcelExport } from "@progress/kendo-react-excel-export";
+import { CalabrioGroup } from "usermanagement/CallRecording.Interfaces";
+import { getCalabrioTeamName } from "utils/calabrioUtils";
 
 export const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any => {
   const {
@@ -87,13 +84,66 @@ export const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any
   const [isTeamModalOpen, setIsTeamModalOpen] = useState<boolean>(false);
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
   const [hasNameDiscrepancy, setHasNameDiscrepancy] = useState<boolean>(false);
+  const [ showCalabrioTeamsOverlay, setShowCalabrioTeamsOverlay] = useState<boolean>(false);
+  const [ calabrioTeamOverlayMessage, setCalabrioTeamOverlayMessage] = useState<string>(null);
+  const [ calabrioTeamOverlayStatus, setCalabrioTeamOverlayStatus] = useState<ModalOverlayStatuses>(null);
+  const [ addCalabrioTeam, setAddCalabrioTeam ] = useState<boolean>(false);
+  const [ displayNewTeamMessage, setDisplayNewTeamMessage ] = useState<boolean>(false);
 
   useEffect(() => {
     if (selectedManager) {
       checkForNameChange();
+      getCalabrioTeamsContainingNNumber(selectedManager.manager_n_num);
     }
-  }, []);
+  }, [selectedManager]);
 
+  const getCalabrioTeamsContainingNNumber = async (manager_n_num: string) => {
+    const calabrioTeamsWithManagerNNumber: CalabrioGroup[] = state.calabrioContext.teams.filter(team => team.name.toLowerCase().includes(manager_n_num.toLowerCase()));
+    if (calabrioTeamsWithManagerNNumber.length === 0) {
+      setDisplayNewTeamMessage(true);
+      setAddCalabrioTeam(true);
+    } else if (calabrioTeamsWithManagerNNumber.length === 1) {
+      if (getCalabrioTeamName(selectedManager) !== calabrioTeamsWithManagerNNumber[0].name) {
+        try{
+          const updateResponse = await updateCalabrioTeam(state.userContext.tokens.calabrioService, {
+            id: calabrioTeamsWithManagerNNumber[0].groupId,
+            name: getCalabrioTeamName(selectedManager)
+          });
+          dispatch({
+            type: "updateCalabrioTeam",
+            payload: updateResponse.data
+          });
+          setCalabrioTeamOverlayMessage(`Calabrio Team name changed from ${calabrioTeamsWithManagerNNumber[0].name} to ${getCalabrioTeamName(selectedManager)}`);
+          setCalabrioTeamOverlayStatus(ModalOverlayStatuses.SUCCESS);
+          if (! selectedCalabrioTeams.includes(calabrioTeamsWithManagerNNumber[0].groupId)) {
+            const newlist= [...selectedCalabrioTeams, calabrioTeamsWithManagerNNumber[0].groupId];
+            setSelectedCalabrioTeams(newlist.map((team:number) => team));
+          }
+
+        } catch (error) {
+          const msg = "Unable to Update Calabrio Team";
+
+          logger.error(msg, {
+            error,
+            nNumber
+          });
+          setCalabrioTeamOverlayMessage(msg);
+          setCalabrioTeamOverlayStatus(ModalOverlayStatuses.FAIL);
+        }
+        setShowCalabrioTeamsOverlay(true);
+        setTimeout(() => setShowCalabrioTeamsOverlay(false), 6000);
+      }
+    } else {
+      let calabrioTeamOverlayMessage = `Multiple Calabrio Teams found for manager ${selectedManager.manager_first_name} ${selectedManager.manager_last_name} `;
+      for (let i = 0; i < calabrioTeamsWithManagerNNumber.length; i++) {
+        calabrioTeamOverlayMessage += (calabrioTeamsWithManagerNNumber[i].name).concat(" ");
+      }
+      setCalabrioTeamOverlayMessage(calabrioTeamOverlayMessage);
+      setCalabrioTeamOverlayStatus(ModalOverlayStatuses.FAIL);
+      setShowCalabrioTeamsOverlay(true);
+      setTimeout(() => setShowCalabrioTeamsOverlay(false), 6000);
+    }
+  };
   const checkForNameChange = () => {
     fetchUser(tokens.msGraph, selectedManager.manager_n_num)
       .then(newlyFetchedManager => {
@@ -135,6 +185,7 @@ export const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any
       setSelectedCalabrioTeams(newlist.map((team:number) => team));
     }
     setIsTeamModalOpen(false);
+    setAddCalabrioTeam(false);
   };
 
   const handleExport = (selected: UMUser[]) => {
@@ -362,6 +413,12 @@ export const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any
   return (
     <ModalContainer ref={ref}>
       <PaperContainer>
+        {showCalabrioTeamsOverlay ?
+          <ModalOverlay
+            message={calabrioTeamOverlayMessage}
+            status={calabrioTeamOverlayStatus}
+            handleClose={handleClose}
+          /> : null}
         {saveStatus ?
           <ModalOverlay
             message={overlayMessage}
@@ -433,9 +490,9 @@ export const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any
                 }
               }}
             />
-            <Modal onClose={() => { return; }} open={isTeamModalOpen}>
+            <Modal onClose={() => { return; }} open={isTeamModalOpen || addCalabrioTeam}>
               <>
-                <CalabrioTeamModal handleClose={handleCloseTeam}/>
+                <CalabrioTeamModal handleClose={handleCloseTeam} selectedManager={manager} displayNewTeamMessage={displayNewTeamMessage}/>
               </>
             </Modal>
           </Wrapper>

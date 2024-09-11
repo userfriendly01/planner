@@ -194,6 +194,14 @@ export const reducer = (state: AppState, action: Action): AppState => {
           teams: [...state.calabrioContext.teams.slice(), action.payload]
         }
       };
+    case "updateCalabrioTeam":
+      return {
+        ...state,
+        calabrioContext: {
+          ...state.calabrioContext,
+          teams: [...state.calabrioContext.teams.filter(t => t.groupId !== action.payload.id), action.payload]
+        }
+      };
     case "loadProfiles":{
       return {
         ...state,

@@ -2075,7 +2075,8 @@ describe("fields.js", () => {
           expect(options).toEqual([
             "FNOL Team",
             "Hawaii Specialty Team",
-            "Hawaii Team 50"
+            "Hawaii Team 50",
+            "Mary Smith - N7654321"
           ]);
         });
       });
@@ -2149,7 +2150,8 @@ describe("fields.js", () => {
           expect(options).toEqual([
             "FNOL Team",
             "Hawaii Specialty Team",
-            "Hawaii Team 50"
+            "Hawaii Team 50",
+            "Mary Smith - N7654321"
           ]);
         });
       });

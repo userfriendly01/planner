@@ -13,22 +13,31 @@ import {
   useAdminDispatch,
   useAdminState
 } from "context/appContext";
-import { FlexColumn } from "globals/interfaces";
-import { ModalOverlayStatuses } from "globals/interfaces";
+import {
+  FlexColumn,
+  ModalOverlayStatuses,
+  UMManager
+} from "globals/interfaces";
 import { timeouts } from "globals";
 import React, { useState } from "react";
 import { createCalabrioTeam } from "services/calabrio";
 import { logger } from "utils/logger";
+import { getCalabrioTeamName } from "utils/calabrioUtils";
+import { Header5 } from "usermanagement/ManagerModal.Styles";
 
 interface TeamModalProps {
-  handleClose: (res: any) => void
+  handleClose: (res: any) => void,
+  selectedManager: Partial<UMManager>,
+  displayNewTeamMessage: boolean,
 }
 
 export const CalabrioTeamModal = (props: TeamModalProps) => {
   const state = useAdminState();
   const dispatch = useAdminDispatch();
-
   const { nNumber } = state.userContext;
+  const calabrioTeamName = getCalabrioTeamName(props.selectedManager);
+  const displayNewTeamMessage = props.displayNewTeamMessage;
+
   const {
     groups,
     teams
@@ -36,7 +45,7 @@ export const CalabrioTeamModal = (props: TeamModalProps) => {
   const { handleClose } = props;
 
   const initialNewTeamState: any = {
-    name: null,
+    name: calabrioTeamName,
     parentGroupId: null
   };
   const [ newTeam, setNewTeam ] = useState(initialNewTeamState);
@@ -100,16 +109,18 @@ export const CalabrioTeamModal = (props: TeamModalProps) => {
           <h1>Add a Calabrio Team</h1>
           <CloseButton onClick={handleClose}/>
         </HeaderAndCloseButtonWrapper>
+        {displayNewTeamMessage && (
+          <Header5>No Calabrio Team found for {props.selectedManager.manager_first_name} {props.selectedManager.manager_last_name}
+            <br/>
+            Please create one now or cancel to select existing teams.
+            <br/>
+            <br/>
+          </ Header5>)}
         <FlexColumn>
           <TextField
+            disabled
             label={"New Team Name"}
-            value={newTeam.name || ""}
-            onChange={(event: any) => {
-              setNewTeam({
-                ...newTeam,
-                name: event.target.value
-              });
-            }}
+            value={newTeam.name}
           />
           <Dropdown
             label={"Parent Group ID"}

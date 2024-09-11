@@ -309,6 +309,47 @@ describe("reducer", () => {
       expect(result.calabrioContext).toEqual(expectedResults);
     });
   });
+  describe("updateCalabrioTeam", () => {
+    const updatedCalabrioTeam = {
+      groupId: 123,
+      id: 123,
+      name: "purple team!"
+    };
+    test("should update a single team in the calabrio context", () => {
+      const state = {
+        ...initialState,
+        calabrioContext: {
+          ...initialState.calabrioContext,
+          teams: [
+            {
+              groupId: 123,
+              name: "red team!"
+            },
+            {
+              groupId: 456,
+              name: "blue team!"
+            }
+          ]
+        }
+      };
+
+      const action = {
+        type: "updateCalabrioTeam",
+        payload: updatedCalabrioTeam
+      };
+      expect(reducer(state, action).calabrioContext.teams).toEqual([
+        {
+          groupId: 456,
+          name: "blue team!"
+        },
+        {
+          groupId: 123,
+          id: 123,
+          name: "purple team!"
+        }
+      ]);
+    });
+  });
   describe("loadCalabrioUsers", () => {
     test("should initialize a map from the users map sent in", () => {
       const payload = [

@@ -15,6 +15,8 @@ import { act } from "react-dom/test-utils";
 import { Modal } from "@mui/material";
 import { fetchUser } from "services/fetchUser";
 import { updateUser } from "services/user";
+import { updateCalabrioTeam } from "services/calabrio";
+
 import {
   addManager, editManager
 } from "services/manager";
@@ -62,6 +64,10 @@ jest.mock("@mui/x-date-pickers/TimePicker", () => ({
 
 jest.mock("services/user", () => ({
   updateUser: jest.fn()
+}));
+
+jest.mock("services/calabrio", () => ({
+  updateCalabrioTeam: jest.fn()
 }));
 
 jest.mock("services/manager", () => ({
@@ -134,6 +140,22 @@ describe("<ManagerModal />", () => {
         teams: [{
           groupId: 215,
           name: "Calabrio Group One"
+        },
+        {
+          groupId: 216,
+          name: "Faith Cuneo - N0263786"
+        },
+        {
+          groupId: 123,
+          name: "Smith, Mary - N7654321"
+        },
+        {
+          groupId: 456,
+          name: "Joe Schmoe - N1234567"
+        },
+        {
+          groupId: 789,
+          name: "Schmoe, Joe - N1234567"
         }]
       },
       managerContext: {
@@ -142,7 +164,13 @@ describe("<ManagerModal />", () => {
             manager_n_num: "n0263786"
           },
           {
+            manager_n_num: "n1511886"
+          },
+          {
             manager_n_num: "n0262226"
+          },
+          {
+            manager_n_num: "n7654321"
           }
         ]
       },
@@ -176,6 +204,17 @@ describe("<ManagerModal />", () => {
               n_number: "n1541381"
             },
             sid: "sid456"
+          },
+          {
+            attributes: {
+              emp_first_name: "Joe",
+              emp_last_name: "Schmoe",
+              manager_n_number: "n1511886",
+              manager_first_name: "Eric",
+              manager_last_name: "Doblosky",
+              n_number: "n1234567"
+            },
+            sid: "sid789"
           }
         ]
       }
@@ -533,7 +572,13 @@ describe("<ManagerModal />", () => {
                       profile_id: 4
                     },
                     {
+                      manager_n_num: "n1511886"
+                    },
+                    {
                       manager_n_num: "n0262226"
+                    },
+                    {
+                      manager_n_num: "n7654321"
                     }
                   ]
                 });
@@ -563,6 +608,17 @@ describe("<ManagerModal />", () => {
                         n_number: "n1541381"
                       },
                       sid: "sid456"
+                    },
+                    {
+                      attributes: {
+                        emp_first_name: "Joe",
+                        emp_last_name: "Schmoe",
+                        manager_n_number: "n1511886",
+                        manager_first_name: "Eric",
+                        manager_last_name: "Doblosky",
+                        n_number: "n1234567"
+                      },
+                      sid: "sid789"
                     }
                   ]
                 });
@@ -653,7 +709,13 @@ describe("<ManagerModal />", () => {
                       profile_id: 4
                     },
                     {
+                      manager_n_num: "n1511886"
+                    },
+                    {
                       manager_n_num: "n0262226"
+                    },
+                    {
+                      manager_n_num: "n7654321"
                     }
                   ]
                 });
@@ -713,6 +775,154 @@ describe("<ManagerModal />", () => {
           });
         });
       });
+      describe("Calabrio Team Test Scenarios", () => {
+        describe("there are no Calabrio teams containing manager nNumber", () => {
+          test("no Calabrio teams containing manager nNumber", () => {
+            const selectedManager = {
+              manager_first_name: "Eric",
+              manager_last_name: "Doblosky",
+              manager_n_num: "n1511886",
+              profile_id: null,
+              calabrio_team_ids: []
+            };
+            fetchUser.mockResolvedValue({
+              firstName: "Joe",
+              lastName: "Schmoe"
+            });
+            const rendered = renderComponent(selectedManager);
+            expect(rendered.container).toHaveTextContent("Edit Eric Doblosky");
+            expect(fetchUser).toHaveBeenCalledWith("Access Token", "n1511886");
+            expect(StyledButton.mock.calls[0][0].children).toBe("Save");
+            expect(StyledButton.mock.calls[0][0].disabled).toBe(true);
+          });
+        });
+        describe("there is one Calabrio team containing manager nNumber", () => {
+          test("team format is correct", async() => {
+            const selectedManager = {
+              manager_first_name: "Faith",
+              manager_last_name: "Cuneo",
+              manager_n_num: "n0263786",
+              profile_id: null,
+              calabrio_team_ids: [215, 225]
+            };
+            fetchUser.mockResolvedValue({
+              firstName: "Faith",
+              lastName: "Cuneo"
+            });
+            const rendered = renderComponent(selectedManager);
+            expect(rendered.container).toHaveTextContent("Edit Faith Cuneo");
+            expect(fetchUser).toHaveBeenCalledWith("Access Token", "n0263786");
+            expect(StyledButton.mock.calls[0][0].children).toBe("Save");
+            expect(StyledButton.mock.calls[0][0].disabled).toBe(true);
+          });
+          test("team format is incorrect - update successful", () => {
+            const selectedManager = {
+              manager_first_name: "Mary",
+              manager_last_name: "Smith",
+              manager_n_num: "n7654321",
+              profile_id: null,
+              calabrio_team_ids: []
+            };
+
+            fetchUser.mockResolvedValue({
+              firstName: "Mary",
+              lastName: "Smith"
+            });
+
+            updateCalabrioTeam.mockResolvedValue({
+              groupId: 123,
+              name: "Mary Smith - N7654321",
+              displayId: null,
+              parentGroupId: 111,
+              parentGroupName: "Default Group",
+              groupLevel: ""
+            });
+
+            const rendered = renderComponent(selectedManager);
+            expect(rendered.container).toHaveTextContent("Edit Mary Smith");
+            expect(fetchUser).toHaveBeenCalledWith("Access Token", "n7654321");
+            expect(updateCalabrioTeam).toHaveBeenCalledTimes(1);
+            expect(StyledButton.mock.calls[0][0].children).toBe("Save");
+            expect(StyledButton.mock.calls[0][0].disabled).toBe(true);
+          });
+          test("team format is incorrect - update successful, team in selected calabrio teams list", () => {
+            const selectedManager = {
+              manager_first_name: "Mary",
+              manager_last_name: "Smith",
+              manager_n_num: "n7654321",
+              profile_id: null,
+              calabrio_team_ids: [123]
+            };
+
+            fetchUser.mockResolvedValue({
+              firstName: "Mary",
+              lastName: "Smith"
+            });
+
+            updateCalabrioTeam.mockResolvedValue({
+              groupId: 123,
+              name: "Mary Smith - N7654321",
+              displayId: null,
+              parentGroupId: 111,
+              parentGroupName: "Default Group",
+              groupLevel: ""
+            });
+
+            const rendered = renderComponent(selectedManager);
+            expect(rendered.container).toHaveTextContent("Edit Mary Smith");
+            expect(fetchUser).toHaveBeenCalledWith("Access Token", "n7654321");
+            expect(updateCalabrioTeam).toHaveBeenCalledTimes(1);
+            expect(StyledButton.mock.calls[0][0].children).toBe("Save");
+            expect(StyledButton.mock.calls[0][0].disabled).toBe(true);
+          });
+
+          test("team format is incorrect - update fails", () => {
+            const selectedManager = {
+              manager_first_name: "Mary",
+              manager_last_name: "Smith",
+              manager_n_num: "n7654321",
+              profile_id: null,
+              calabrio_team_ids: []
+            };
+
+            fetchUser.mockResolvedValue({
+              firstName: "Mary",
+              lastName: "Smith"
+            });
+
+            updateCalabrioTeam.mockRejectedValueOnce("doh!");
+
+            const rendered = renderComponent(selectedManager);
+            expect(rendered.container).toHaveTextContent("Edit Mary Smith");
+            expect(fetchUser).toHaveBeenCalledWith("Access Token", "n7654321");
+            expect(updateCalabrioTeam).toHaveBeenCalledTimes(1);
+            expect(StyledButton.mock.calls[0][0].children).toBe("Save");
+            expect(StyledButton.mock.calls[0][0].disabled).toBe(true);
+          });
+
+        });
+        describe("there are multiple Calabrio teams containing manager nNumber", () => {
+          test("mutliple Calabrio teams containing manager nNumber", () => {
+            const selectedManager = {
+              manager_first_name: "Joe",
+              manager_last_name: "Schmoe",
+              manager_n_num: "n1234567",
+              profile_id: null,
+              calabrio_team_ids: []
+            };
+            fetchUser.mockResolvedValue({
+              firstName: "Joe",
+              lastName: "Schmoe"
+            });
+            const rendered = renderComponent(selectedManager);
+            expect(rendered.container).toHaveTextContent("Edit Joe Schmoe");
+            expect(fetchUser).toHaveBeenCalledWith("Access Token", "n1234567");
+            expect(StyledButton.mock.calls[0][0].children).toBe("Save");
+            expect(StyledButton.mock.calls[0][0].disabled).toBe(true);
+          });
+        });
+
+      });
       describe("Manager and Profile are selected and selectedCalabrioTeam Length !== 0", () => {
         test("Save Button should be enabled", () => {
           renderComponent(selectedManager);
@@ -762,7 +972,13 @@ describe("<ManagerModal />", () => {
                     profile_id: 4
                   },
                   {
+                    manager_n_num: "n1511886"
+                  },
+                  {
                     manager_n_num: "n0262226"
+                  },
+                  {
+                    manager_n_num: "n7654321"
                   }
                 ]
               });

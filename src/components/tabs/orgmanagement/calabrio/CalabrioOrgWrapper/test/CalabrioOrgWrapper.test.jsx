@@ -76,7 +76,7 @@ describe("CalabrioOrgWrapper", () => {
       const onClick = Group.mock.calls[1][0].onClick;
       act(() => onClick());
       expect(Group.mock.calls[4][0].selected).toBe(true);
-      expect(Team.mock.calls.length).toBe(3);
+      expect(Team.mock.calls.length).toBe(4);
       expect(Team.mock.calls[2][0].children).toBe("FNOL Team");
     });
   });

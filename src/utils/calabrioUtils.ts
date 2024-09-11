@@ -20,7 +20,8 @@ import {
   WfmUser,
   discrepancyType,
   Action,
-  Tokens
+  Tokens,
+  UMManager,
 } from "globals/interfaces";
 import { logger } from "utils/logger";
 import { checkIfLowerEnv } from "utils";
@@ -505,4 +506,14 @@ export const getCalabrioQMUsers = async (accessToken: string, includeInactive = 
   } else {
     return response.data;
   }
+};
+
+export const getCalabrioTeamName = (manager: Partial<UMManager>): string => {
+  const truncated_name = (manager.manager_last_name + "," + manager.manager_first_name).substring(0,49).trim();
+  const manager_name_array = truncated_name.split(",");
+
+  return (
+    (manager_name_array.length === 1 ? manager_name_array[0] : manager_name_array[1] + " " + manager_name_array[0])
+    + " - " + manager.manager_n_num.toUpperCase()
+  ).trim();
 };
