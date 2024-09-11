@@ -1371,31 +1371,44 @@ describe("calabrioUtils", () => {
   });
   describe("getCalabrioTeamName", () => {
     test("getCalabrioTeamName succeeds, returns team name not truncated", async () => {
-      const manager= {
+      const manager = {
         manager_first_name: "Mary",
         manager_last_name: "Smith",
         manager_n_num: "n1234567"
       };
       const result = await getCalabrioTeamName(manager);
       expect(result).toEqual("Mary Smith - N1234567");
+      expect(result).toContain(manager.manager_n_num.toUpperCase());
     });
     test("getCalabrioTeamName succeeds, returns truncated team name", async () => {
-      const manager= {
+      const manager = {
         manager_first_name: "Hubert Blaine",
         manager_last_name: "Wolfeschlegelsteinhausenbergerdorff Sr.",
         manager_n_num: "n1234567"
       };
       const result = await getCalabrioTeamName(manager);
       expect(result).toEqual("Hubert Bl Wolfeschlegelsteinhausenbergerdorff Sr. - N1234567");
+      expect(result).toContain(manager.manager_n_num.toUpperCase());
     });
     test("getCalabrioTeamName succeeds, returns truncated team name", async () => {
-      const manager= {
+      const manager = {
         manager_first_name: "Bob",
         manager_last_name: "Enraejakavarapantiyacuppiramaniyakattepammutuair",
         manager_n_num: "n1234567"
       };
       const result = await getCalabrioTeamName(manager);
       expect(result).toEqual("Enraejakavarapantiyacuppiramaniyakattepammutuair - N1234567");
+      expect(result).toContain(manager.manager_n_num.toUpperCase());
+    });
+    test("getCalabrioTeamName succeeds, returns truncated team name - truncated name exactly 49 characters", async () => {
+      const manager = {
+        manager_first_name: "Francisco",
+        manager_last_name: "FortyNineCharacterManagerLastNameIsVeryUnlikely!!",
+        manager_n_num: "n1234567"
+      };
+      const result = await getCalabrioTeamName(manager);
+      expect(result).toEqual("FortyNineCharacterManagerLastNameIsVeryUnlikely!! - N1234567");
+      expect(result).toContain(manager.manager_n_num.toUpperCase());
     });
 
   });

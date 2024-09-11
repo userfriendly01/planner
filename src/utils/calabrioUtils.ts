@@ -486,9 +486,7 @@ export const getCalabrioTeamName = (manager: Partial<UMManager>): string => {
   const manager_name_array = truncated_name.split(",");
 
   return (
-    manager_name_array.length === 1
-      ? manager_name_array[0]
-      : manager_name_array[1] + " " + manager_name_array[0]
-          + " - " + manager.manager_n_num.toUpperCase()
+    (manager_name_array.length === 1 ? manager_name_array[0] : manager_name_array[1] + " " + manager_name_array[0])
+    + " - " + manager.manager_n_num.toUpperCase()
   ).trim();
 };
