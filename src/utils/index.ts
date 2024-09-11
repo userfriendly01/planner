@@ -1,7 +1,12 @@
+import { env } from "globals";
 import {
   UMUser
 } from "globals/interfaces";
 import { areSkillsDifferent } from "utils/skillsUtils";
+
+export const checkIfLowerEnv = (): boolean => {
+  return ["local", "development", "test", "staging"].includes(env.APP_ENV);
+};
 
 export const wait = (callback: () => void, waitTimeMs: number) => setTimeout(callback, waitTimeMs);
 

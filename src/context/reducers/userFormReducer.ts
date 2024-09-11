@@ -6,10 +6,16 @@ import { UserFormState } from "usermanagement/UserEntryFormWrapper.Interfaces";
 import { ExtensionSearchStatuses } from "usermanagement/ExtensionInput.Interfaces";
 import { SearchParams } from "usermanagement/ExtensionSearchParams";
 import { formatE164PhoneNumber } from "utils/numberUtils";
-import { calabrioTimeZones } from "utils/calabrioUtils";
+import {
+  calabrioTimeZones, getWfmOptions, shouldHaveFNOLQMView
+} from "utils/calabrioUtils";
 import { getValidSkillsObject } from "utils/skillsUtils";
 import { getZeroOutEnabledFromProfile } from "utils/usermanagementUtils";
-import { getWfmOptions } from "utils/calabrioUtils";
+// Note: hardcoding the Production Calabrio QMView since it is the only one
+const FNOL_QM_VIEW = {
+  id: 1,
+  name: "FNOL"
+};
 
 const searchParams = SearchParams.getValues();
 
@@ -166,7 +172,8 @@ export const initialUserFormState: UserFormState = {
     scope: {
       groups: [],
       teams: []
-    }
+    },
+    qmViews: []
   },
   calabrio_wfm: {
     userFound: false,
@@ -225,6 +232,8 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
     }
     case userFormActions.CHECK_CALABRIO_GROUP: {
       state.calabrio_qm.scope.groups[action.payload.index][action.payload.boxType] = action.payload.checked;
+
+      const qmViews = shouldHaveFNOLQMView(state.calabrio_qm.team, state.calabrio_qm.scope) ? [FNOL_QM_VIEW] : [];
       return {
         ...state,
         calabrio_qm: {
@@ -233,12 +242,15 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
             ...state.calabrio_qm.scope,
             groups: state.calabrio_qm.scope.groups
           },
+          qmViews,
           updated: true
         }
       };
     }
     case userFormActions.CHECK_CALABRIO_TEAM: {
       state.calabrio_qm.scope.teams[action.payload.index].checked = action.payload.checked;
+
+      const qmViews = shouldHaveFNOLQMView(state.calabrio_qm.team, state.calabrio_qm.scope) ? [FNOL_QM_VIEW] : [];
       return {
         ...state,
         calabrio_qm: {
@@ -247,6 +259,7 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
             ...state.calabrio_qm.scope,
             teams: state.calabrio_qm.scope.teams
           },
+          qmViews,
           updated: true
         }
       };
@@ -536,11 +549,15 @@ export const userFormReducer = (state: any, action: Action): UserFormState => {
       };
     }
     case userFormActions.SET_CALABRIO_TEAM: {
+      const shouldHaveQMView = shouldHaveFNOLQMView(action.payload, state.calabrio_qm.scope);
+      const qmViews = shouldHaveQMView ? [FNOL_QM_VIEW] : [];
+
       return {
         ...state,
         calabrio_qm: {
           ...state.calabrio_qm,
           team: action.payload,
+          qmViews,
           updated: true
         }
       };

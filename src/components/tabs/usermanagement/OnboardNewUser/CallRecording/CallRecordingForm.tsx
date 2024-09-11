@@ -206,7 +206,8 @@ export const CallRecordingForm = (props: CallRecordingFormInterface) => {
           scope: {
             groups: userGroups,
             teams: userTeams
-          }
+          },
+          qmViews: fetchedUser.qmViews
         }
       });
     }).catch(error => {
@@ -305,6 +306,7 @@ export const CallRecordingForm = (props: CallRecordingFormInterface) => {
           })}
           styles={{ width: "300px" }}
         />
+        <div data-testid="qm-view"> QM View: {form.calabrio_qm.qmViews.map(v => v.name).join(", ") || "Default"}</div>
       </FormControlsPane>
       <CallRecordingScope
         calabrioUser={form.calabrio_qm}

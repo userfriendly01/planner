@@ -1,6 +1,8 @@
 import {
-  escapeQuotes, isErrorIn400s, isNotEmptyString, wait
+  checkIfLowerEnv, escapeQuotes, isErrorIn400s, isNotEmptyString, wait
 } from "../index";
+import { env } from "globals";
+
 
 jest.useFakeTimers();
 
@@ -11,6 +13,18 @@ describe("escapeQuotes", () => {
     expect(result).toBe("I\\'m \\\"a\\\" sentence");
   });
 });
+
+  describe("checkIfLowerEnv", () => {
+    test("should return true if APP_ENV=test", () => {
+      env.APP_ENV = "test";
+      expect(checkIfLowerEnv("test")).toBe(true);
+    });
+    test("should return false if APP_ENV=production", () => {
+      env.APP_ENV = "production";
+
+      expect(checkIfLowerEnv("production")).toBe(false);
+    });
+  });
 
 describe("wait", () => {
   const callback = jest.fn();

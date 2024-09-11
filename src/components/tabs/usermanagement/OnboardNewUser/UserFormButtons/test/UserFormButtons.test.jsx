@@ -1152,7 +1152,8 @@ describe("<UserFormButtons />", () => {
             calabrio_qm: {
               ...updateFormState.calabrio_qm,
               updated: true,
-              id: 1
+              id: 1,
+              acdId: 123
             },
             triton: {
               ...updateFormState.triton,
@@ -1227,6 +1228,22 @@ describe("<UserFormButtons />", () => {
               });
               expect(checkConflictingUsers).toBeCalledTimes(0);
               expect(updateCalabrioUser).toBeCalledTimes(1);
+              expect(updateCalabrioUser).toHaveBeenCalledWith("token", {
+                acdId: 123,
+                adLogin: "LM\\n1234567",
+                email: "test@abc.com",
+                firstName: "Frank",
+                groupId: 225,
+                id: 1,
+                lastName: "Rizzo",
+                qmViews: [{id: 1}],
+                roles: [],
+                scope: {
+                  groups: [1],
+                  teams: [2]
+                },
+                timeZone: 173
+              });
               expect(getCalabrioQMUsers).toBeCalledTimes(1);
               expect(mockDispatch).toHaveBeenCalledTimes(1);
               expect(mockDispatch.mock.calls[0][0]).toEqual({

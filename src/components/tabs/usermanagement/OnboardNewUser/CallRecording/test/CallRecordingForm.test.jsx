@@ -237,6 +237,7 @@ describe("CallRecordingForm", () => {
                   parentGroupId: 200
                 }]
               },
+              qmViews: [],
               team: null,
               timezone: {
                 label: "EST",
@@ -314,7 +315,7 @@ describe("CallRecordingForm", () => {
               name: "Group 1",
               id: 2
             }]
-          }
+          },
         }
       };
       beforeEach(() => {
@@ -418,7 +419,8 @@ describe("CallRecordingForm", () => {
             scope: {
               teams: [],
               groups: []
-            }
+            },
+            qmViews: []
           }
         };
         beforeEach(() => {
@@ -551,7 +553,8 @@ describe("CallRecordingForm", () => {
         scope: {
           groups: [200],
           teams: [201]
-        }
+        },
+        qmViews: []
       };
       const formState = {
         ...initialFormState,
@@ -633,7 +636,8 @@ describe("CallRecordingForm", () => {
               timezone: {
                 label: "EST",
                 value: 173
-              }
+              },
+              qmViews:[]
             }
           });
         });
@@ -949,7 +953,8 @@ describe("CallRecordingForm", () => {
           groups: [200],
           teams: [201]
         },
-        adLogin: "LM\n0223786"
+        adLogin: "LM\n0223786",
+        qmViews: []
       };
       const formState = {
         ...initialFormState,
@@ -1033,6 +1038,7 @@ describe("CallRecordingForm", () => {
                   parentGroupId: 200
                 }]
               },
+              qmViews: [],
               team: {
                 groupId: 201,
                 name: "FNOL Team",
@@ -1051,6 +1057,7 @@ describe("CallRecordingForm", () => {
       const formState = {
         ...initialFormState,
         calabrio_qm: {
+          ...initialFormState.calabrio_qm,
           team: {
             value: 225,
             label: "Team 1"
@@ -1087,6 +1094,80 @@ describe("CallRecordingForm", () => {
           expect(logger.error.mock.calls.length).toBe(1);
         });
       });
+    });
+    describe("QM View", () => {
+      const user = {
+        acdId: "WK1234",
+        groupId: 201,
+        roles: [{
+          id: 2,
+          name: "Agent"
+        }],
+        scope: {
+          groups: [200],
+          teams: [201]
+        },
+        adLogin: "LM\n0223786",
+        qmViews: []
+      };
+      const formState = {
+        ...initialFormState,
+        formMode: "update",
+        nNumber: {
+          value: "n0222444",
+          nNumberFetchedUser: {
+            email: "faith.cuneo@libertymutual.com",
+            firstName: "Faith",
+            lastName: "Cuneo"
+          }
+        },
+        calabrio_qm: {
+          ...initialFormState.calabrio_qm,
+          team: 824, 
+          qmViews: [{
+            id: 1,
+            name: "FNOL"
+          }]
+        }
+      };
+      beforeEach(() => {
+
+      });
+      test("User has a qm view, qm View displays in the form", () => {
+        getCalabrioUser.mockResolvedValue({
+          data: user
+        });
+        useFormState.mockReturnValue(formState);
+
+        const rendered = render(<CallRecordingForm twilioWorker={twilioWorker} missingFields={[]} />);
+        expect(Dropdown.mock.calls.length).toBe(3);
+        expect(CallRecordingScope.mock.calls.length).toBe(1);
+        expect(getCalabrioUser).toHaveBeenCalledTimes(1);
+        expect(getCalabrioUser).toHaveBeenCalledWith("Access Token", 220);
+        expect(rendered.getByTestId('qm-view')).toHaveTextContent("QM View: FNOL")
+        expect(mockSetForm).toHaveBeenCalledTimes(1);
+      });
+      test("User has a NO qm view, qm View displays as default in the form", () => {
+        const form = {
+          ...formState,
+          calabrio_qm: {
+            ...formState.calabrio_qm,
+            qmViews: []
+          }
+        }
+        getCalabrioUser.mockResolvedValue({
+          data: user
+        });
+        useFormState.mockReturnValue(form);
+
+        const rendered = render(<CallRecordingForm twilioWorker={twilioWorker} missingFields={[]} />);
+        expect(Dropdown.mock.calls.length).toBe(3);
+        expect(CallRecordingScope.mock.calls.length).toBe(1);
+        expect(getCalabrioUser).toHaveBeenCalledTimes(1);
+        expect(getCalabrioUser).toHaveBeenCalledWith("Access Token", 220);
+        expect(rendered.getByTestId('qm-view')).toHaveTextContent("QM View: Default")
+        expect(mockSetForm).toHaveBeenCalledTimes(1);
+      })
     });
   });
 });

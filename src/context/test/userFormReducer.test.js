@@ -13,9 +13,16 @@ import {
 } from "testUtils";
 import { getValidSkillsObject } from "utils/skillsUtils";
 import { formatE164PhoneNumber } from "utils/numberUtils";
+import { shouldHaveFNOLQMView } from "utils/calabrioUtils";
 import { ExtensionSearchStatuses } from "usermanagement/ExtensionInput.Interfaces";
 import { SearchParams } from "usermanagement/ExtensionSearchParams";
 const searchParams = SearchParams.getValues();
+
+jest.mock('../../utils/calabrioUtils', () => ({
+  shouldHaveFNOLQMView: jest.fn(),
+  calabrioTimeZones: jest.requireActual('../../utils/calabrioUtils').calabrioTimeZones,
+  getWfmOptions: jest.requireActual('../../utils/calabrioUtils').getWfmOptions
+}))
 
 describe("userFormReducer", () => {
 
@@ -806,26 +813,56 @@ describe("userFormReducer", () => {
   });
 
   describe("SET_CALABRIO_TEAM", () => {
-    test("should set Calabrio User Roles to Payload", () => {
-      const payload = { team: "new" };
-      const action = {
-        type: userFormActions.SET_CALABRIO_TEAM,
-        payload
-      };
-      const result = userFormReducer(initialUserFormState, action);
-      const expectedFormState = {
-        ...initialUserFormState,
-        calabrio_qm: {
-          ...initialUserFormState.calabrio_qm,
-          updated: true,
-          team: payload
-        }
-      };
-      expect(result).toStrictEqual(expectedFormState);
-    });
+    describe("payload includes team with a parentId that is flagged for FNOL QMView", () => {
+      test("should update the team with the payload AND the qmViews with the FNOL qm view", () => {
+        shouldHaveFNOLQMView.mockReturnValueOnce(true);
+
+        const payload = { team: "new", parentGroupId: 824 };
+        const action = {
+          type: userFormActions.SET_CALABRIO_TEAM,
+          payload
+        };
+        const result = userFormReducer(initialUserFormState, action);
+        const expectedFormState = {
+          ...initialUserFormState,
+          calabrio_qm: {
+            ...initialUserFormState.calabrio_qm,
+            updated: true,
+            team: payload,
+            qmViews: [{
+              id: 1,
+              name: "FNOL"
+            }]
+          }
+        };
+        expect(result).toStrictEqual(expectedFormState);
+      })
+    })
+    describe("payload includes team with a parentId that is NOT flagged for FNOL QMView", () => {
+      test("should just update the team with the payload", () => {
+        shouldHaveFNOLQMView.mockReturnValueOnce(false);
+
+        const payload = { team: "new", parentGroupId: 4 };
+        const action = {
+          type: userFormActions.SET_CALABRIO_TEAM,
+          payload
+        };
+        const result = userFormReducer(initialUserFormState, action);
+        const expectedFormState = {
+          ...initialUserFormState,
+          calabrio_qm: {
+            ...initialUserFormState.calabrio_qm,
+            updated: true,
+            team: payload,
+            qmViews: []
+          }
+        };
+        expect(result).toStrictEqual(expectedFormState);
+      });
+    })
   });
 
-  describe("SET_CALABRIO_TEAM", () => {
+  describe("SET_CALABRIO_TIMEZONE", () => {
     test("should set Calabrio User Roles to Payload", () => {
       const payload = { timezone: "EST" };
       const action = {
