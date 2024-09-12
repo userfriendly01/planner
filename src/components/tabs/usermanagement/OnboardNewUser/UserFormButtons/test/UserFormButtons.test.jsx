@@ -808,6 +808,42 @@ describe("<UserFormButtons />", () => {
               });
             });
           });
+
+          test("should not add user and should update loading with error array content", async () => {
+            createUser.mockRejectedValue([
+              {
+                message: "Error 1"
+              }, {
+                message: "Another error"
+              }
+            ]);
+            renderComponent(true);
+            render(Tooltip.mock.calls[0][0].children);
+            act(() => {
+              const onClick = StyledButton.mock.calls[2][0].onClick;
+              onClick();
+            });
+            await waitFor(() => {
+              expect(createUser).toHaveBeenCalledWith({
+                attributes: createWorkerAttributesAfterFormValid,
+                operatingUnitSid: validOperatingUnitId
+              });
+              expect(mockSetForm).toHaveBeenCalledTimes(0);
+              expect(mockDispatch).toHaveBeenCalledTimes(0);
+              jest.runAllTimers();
+              expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
+              expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
+                overlayMessage: "Adding new user...",
+                saveStatus: "saving",
+                saveUser: true
+              });
+              expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
+                overlayMessage: "Error 1, Another error",
+                saveStatus: "fail",
+                saveUser: true
+              });
+            });
+          });
         });
       });
       describe("checkConflictingUsers fails", () => {
@@ -1236,7 +1272,7 @@ describe("<UserFormButtons />", () => {
                 groupId: 225,
                 id: 1,
                 lastName: "Rizzo",
-                qmViews: [{id: 1}],
+                qmViews: [{ id: 1 }],
                 roles: [],
                 scope: {
                   groups: [1],
@@ -1968,6 +2004,61 @@ describe("<UserFormButtons />", () => {
             });
             expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
               overlayMessage: "The following errors occurred: Failed to update Triton Worker. bummer",
+              saveStatus: "partial fail",
+              saveUser: true
+            });
+          });
+        });
+
+        test("should still update calabrio user and should update loading with errors from errors array", async () => {
+          updateUser.mockRejectedValue([
+            {
+              message: "bummer"
+            },
+            {
+              message: "bummer but down here"
+            }
+          ]);
+          renderComponent(true);
+          render(Tooltip.mock.calls[0][0].children);
+          act(() => {
+            const onClick = StyledButton.mock.calls[1][0].onClick;
+            onClick();
+          });
+          await waitFor(() => {
+            expect(updateUser).toHaveBeenCalledWith(worker.sid, {
+              zeroOutEnabled: false,
+              selfServiceInd: false,
+              inactiveForwardTo: validFormOptions.inactiveForwardTo,
+              attributes: {
+                ...updateWorkerAttributesAfterFormValid,
+                routing: {
+                  skills: [],
+                  levels: {},
+                  team: "Sample1",
+                  caller_states: validFormOptions.routing.caller_states
+                }
+              },
+              operatingUnitSid: validOperatingUnitId
+            });
+            expect(mockSetForm).toHaveBeenCalledTimes(0);
+            expect(mockDispatch).toHaveBeenCalledTimes(1);
+            expect(mockDispatch).toBeCalledWith({
+              type: "loadCalabrioUsers",
+              payload: [
+                "agent1",
+                "agent2"
+              ]
+            });
+            jest.runAllTimers();
+            expect(mockUpdateLoading).toHaveBeenCalledTimes(2);
+            expect(mockUpdateLoading.mock.calls[0][0]).toEqual({
+              overlayMessage: "Updating user: Faith Cuneo",
+              saveStatus: "saving",
+              saveUser: true
+            });
+            expect(mockUpdateLoading.mock.calls[1][0]).toEqual({
+              overlayMessage: "The following errors occurred: Failed to update Triton Worker. bummer, bummer but down here",
               saveStatus: "partial fail",
               saveUser: true
             });

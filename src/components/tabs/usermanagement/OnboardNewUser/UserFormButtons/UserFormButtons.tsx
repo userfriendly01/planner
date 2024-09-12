@@ -52,6 +52,7 @@ import {
   getCalabrioQMUsers
 } from "utils/calabrioUtils";
 import { Tooltip } from "@mui/material";
+import { GraphQLFormattedError } from "graphql";
 import { ApolloError } from "@apollo/client";
 
 export const UserFormButtons = (props: UserFormButtonsProps) => {
@@ -336,19 +337,22 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
         });
       }
     } catch (error) {
-      const apolloError = error as ApolloError;
+      const typedError = error as GraphQLFormattedError[] | ApolloError;
+      const message = Array.isArray(typedError)
+        ? typedError.map(e => e.message).join(", ")
+        : typedError.message;
 
       logger.error("Errors thrown creating a new user",
         {
           error,
-          data: apolloError.message,
+          data: message,
           nNumber
         },
         false
       );
       updateLoading({
         ...loading,
-        overlayMessage: apolloError.message || "Failed to add new user.",
+        overlayMessage: message || "Failed to add new user.",
         saveStatus: ModalOverlayStatuses.FAIL,
         saveUser: true
       });
@@ -461,8 +465,11 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
         nNumber,
         userNNumber: form.nNumber.value
       });
-    } catch (err) {
-      const error = err as ApolloError;
+    } catch (error) {
+      const typedError = error as GraphQLFormattedError[] | ApolloError;
+      const overlayMessage = Array.isArray(typedError)
+        ? typedError.map(e => e.message).join(", ")
+        : typedError.message;
 
       logger.error("Failed to update Triton Worker", {
         error,
@@ -470,7 +477,7 @@ export const UserFormButtons = (props: UserFormButtonsProps) => {
         userNNumber: form.nNumber.value
       });
 
-      errors.push(`Failed to update Triton Worker. ${error.message}`);
+      errors.push(`Failed to update Triton Worker. ${overlayMessage}`);
     }
 
     if (form.calabrio_qm.updated) {
