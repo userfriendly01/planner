@@ -39,7 +39,7 @@ import { FieldDataType } from "components/tabs/dynamicCallFlow/common/Form/Form.
 
 /**
  * Returns a Tooltop with a title
- * @param { String } title 
+ * @param { String } title
  * @returns { JSX.Element }
  */
 const GridColTooltip = (title: string): JSX.Element => (
@@ -120,7 +120,7 @@ export const PhoneNumberDataGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: ({ row: phoneNumberRecord }: GridValueGetterParams<PhoneNumberRecordType, FieldDataType>): FieldDataType => PhoneNumberRecordUtil.getPropertyArrayValue(phoneNumberRecord, DATA_REQUESTS)?.join() || "",
+    valueGetter: ({ row: phoneNumberRecord }: GridValueGetterParams<PhoneNumberRecordType, FieldDataType>): FieldDataType => PhoneNumberRecordUtil.getPropertyArrayValueAsString(phoneNumberRecord, DATA_REQUESTS),
     valueSetter: ({
       row: phoneNumberRecord, value
     }: GridValueSetterParams<PhoneNumberRecordType, string>): PhoneNumberRecordType => {

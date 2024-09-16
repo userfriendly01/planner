@@ -213,7 +213,12 @@ export class PhoneNumberRecordUtil {
    * @returns {Array<string>} - The array property value.
    */
   public static getPropertyArrayValue(phoneNumberRecord: PhoneNumberRecordType, key: string): Array<string> {
+    const value = this.getPropertyValue(phoneNumberRecord, key);
+    if (!Array.isArray(value)) {
+      logger.warn(`Property value for ${key} is not an array: ${value}`, { ...phoneNumberRecord });
+    }
     return this.getPropertyValue(phoneNumberRecord, key) as Array<string>;
+
   }
 
   /**
@@ -225,6 +230,13 @@ export class PhoneNumberRecordUtil {
    * @returns {string} - The array property value as a string.
    */
   public static getPropertyArrayValueAsString(phoneNumberRecord: PhoneNumberRecordType, key: string, delimiter = ", "): string {
+    const propertyValue = this.getPropertyValue(phoneNumberRecord, key);
+
+    if (!Array.isArray(propertyValue)) {
+      logger.warn(`Property value for ${key} is expected to be an array, but is not`, { ...phoneNumberRecord });
+      return typeof propertyValue === "string" ? propertyValue : "";
+    }
+
     return this.getPropertyArrayValue(phoneNumberRecord, key)?.join(delimiter) || "";
   }
 
@@ -280,7 +292,7 @@ export class PhoneNumberRecordUtil {
    * @param {string} [delimiter=","] - The delimiter to use for splitting the value.
    */
   public static setArrayPropertyValue(phoneNumberRecord: PhoneNumberRecordType, key: string, value: string, delimiter = ","): void {
-    this.setPropertyValue(phoneNumberRecord, key, value.split(delimiter) || []);
+    this.setPropertyValue(phoneNumberRecord, key, !value ? [] : value.split(delimiter));
   }
 
   /**

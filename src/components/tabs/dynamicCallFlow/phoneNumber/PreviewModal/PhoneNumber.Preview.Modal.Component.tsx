@@ -89,6 +89,7 @@ export const PhoneNumberPreviewModal = ({
   }, [htmlInputElements]);
 
   const handleOnCreate = async (logicalUpdateOperation = false) => {
+    dataGridController.current.alertBarController.info("Updating records...");
     const newRecords: Array<PhoneNumberRecordType> = [...modalRecords].map((row: PhoneNumberRecordType) => {
       const updatedRecord: PhoneNumberRecordType = {};
       Object.keys(row).forEach((key: string) => {
