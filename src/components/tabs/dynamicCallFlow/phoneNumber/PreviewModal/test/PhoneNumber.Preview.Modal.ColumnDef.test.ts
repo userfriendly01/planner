@@ -142,16 +142,17 @@ describe("PhoneNumberPreviewModalColumnDef", () => {
     });
   });
   describe("Data Requests", () => {
-    const MOCK_REQUESTS = "Classify";
+    const MOCK_DATA_REQUESTS_STRING = "Classify";
+
     describe("getter", () => {
-      beforeEach(() => {
-        spyOn(PhoneNumberRecordUtil, "getPropertyArrayValue").and.returnValue([MOCK_REQUESTS]);
-      });
       it("should return data requests", () => {
         expect(PhoneNumberPreviewModalColumnDef[6].headerName).toBe("Data Requests");
         expect(PhoneNumberPreviewModalColumnDef[6].valueGetter({
-          row: { dataRequests }
-        } as GridValueGetterParams<PhoneNumberRecordType, FieldDataType>)).toBe(MOCK_REQUESTS);
+          row: {
+            phoneNumber: "+18883334444",
+            dataRequests
+          }
+        } as unknown as GridValueGetterParams<PhoneNumberRecordType, FieldDataType>)).toBe(MOCK_DATA_REQUESTS_STRING);
       });
     });
     describe("setter", () => {
@@ -163,7 +164,7 @@ describe("PhoneNumberPreviewModalColumnDef", () => {
         const gridValue = { dataRequests };
         expect(PhoneNumberPreviewModalColumnDef[6].valueSetter({
           row: gridValue,
-          value: MOCK_REQUESTS
+          value: MOCK_DATA_REQUESTS_STRING
         } as GridValueGetterParams<PhoneNumberRecordType, FieldDataType>)).toEqual({
           ...gridValue
         });
