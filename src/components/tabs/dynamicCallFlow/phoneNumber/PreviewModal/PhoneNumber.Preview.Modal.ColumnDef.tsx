@@ -129,7 +129,7 @@ export const PhoneNumberPreviewModalColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left",
-    valueGetter: ({ row: phoneNumberRecord }: GridValueGetterParams<PhoneNumberRecordType, FieldDataType>): FieldDataType => PhoneNumberRecordUtil.getPropertyArrayValue(phoneNumberRecord, DATA_REQUESTS)?.join() || "",
+    valueGetter: ({ row: phoneNumberRecord }: GridValueGetterParams<PhoneNumberRecordType, FieldDataType>): FieldDataType => PhoneNumberRecordUtil.getPropertyArrayValueAsString(phoneNumberRecord, DATA_REQUESTS),
     valueSetter: ({
       row: phoneNumberRecord, value
     }: GridValueSetterParams<PhoneNumberRecordType, string>): PhoneNumberRecordType => {
