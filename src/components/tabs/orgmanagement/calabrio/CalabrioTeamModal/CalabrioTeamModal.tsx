@@ -19,7 +19,9 @@ import {
   UMManager
 } from "globals/interfaces";
 import { timeouts } from "globals";
-import React, { useState } from "react";
+import React, {
+  useState
+} from "react";
 import { createCalabrioTeam } from "services/calabrio";
 import { logger } from "utils/logger";
 import { getCalabrioTeamName } from "utils/calabrioUtils";
@@ -35,7 +37,9 @@ export const CalabrioTeamModal = (props: TeamModalProps) => {
   const state = useAdminState();
   const dispatch = useAdminDispatch();
   const { nNumber } = state.userContext;
-  const calabrioTeamName = getCalabrioTeamName(props.selectedManager);
+  const calabrioTeamName = !props.selectedManager.is_calabrio_team_exception
+    ? getCalabrioTeamName(props.selectedManager)
+    : "";
   const displayNewTeamMessage = props.displayNewTeamMessage;
 
   const {
@@ -118,9 +122,15 @@ export const CalabrioTeamModal = (props: TeamModalProps) => {
           </ Header5>)}
         <FlexColumn>
           <TextField
-            disabled
+            disabled={!props.selectedManager.is_calabrio_team_exception}
             label={"New Team Name"}
             value={newTeam.name}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+              setNewTeam({
+                ...newTeam,
+                name: event.target.value
+              })
+            }
           />
           <Dropdown
             label={"Parent Group ID"}

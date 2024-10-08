@@ -167,6 +167,7 @@ export interface UMManager {
   profile_id: number,
   manager_n_num: string,
   calabrio_team_ids: number[],
+  is_calabrio_team_exception: boolean;
 }
 
 export enum ModalOverlayStatuses {

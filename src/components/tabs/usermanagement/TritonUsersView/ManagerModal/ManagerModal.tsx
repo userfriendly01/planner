@@ -23,7 +23,7 @@ import {
   FlexColumn, ModalOverlayStatuses, UMManager, UMUser
 } from "globals/interfaces";
 import React, {
-  useEffect, useState
+  useEffect, useMemo, useState
 } from "react";
 import { updateUser } from "services/user";
 import { updateCalabrioTeam } from "services/calabrio";
@@ -36,13 +36,20 @@ import {
 import { sortProfilesByName } from "utils/_sortUtils";
 import { logger } from "utils/logger";
 import {
-  IconButton, Modal
+  FormControlLabel,
+  IconButton,
+  Modal,
+  Switch,
+  Tooltip
 } from "@mui/material";
-import { CloseRounded } from "@mui/icons-material";
+import {
+  CloseRounded, Info
+} from "@mui/icons-material";
 import { StyledExportButton } from "callflowmanagement/SkillManagement/Skills.Styles";
 import { ExcelExport } from "@progress/kendo-react-excel-export";
 import { CalabrioGroup } from "usermanagement/CallRecording.Interfaces";
 import { getCalabrioTeamName } from "utils/calabrioUtils";
+import { checkIfManagerConfigurer } from "authentication/authUtils";
 
 export const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any): any => {
   const {
@@ -90,8 +97,10 @@ export const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any
   const [ addCalabrioTeam, setAddCalabrioTeam ] = useState<boolean>(false);
   const [ displayNewTeamMessage, setDisplayNewTeamMessage ] = useState<boolean>(false);
 
+  const isManagerConfigurer = useMemo(() => checkIfManagerConfigurer(nNumber), [nNumber]);
+
   useEffect(() => {
-    if (selectedManager) {
+    if (selectedManager && !selectedManager.is_calabrio_team_exception) {
       checkForNameChange();
       getCalabrioTeamsContainingNNumber(selectedManager.manager_n_num);
     }
@@ -176,7 +185,9 @@ export const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any
   const dispatch = useAdminDispatch();
 
   const handleOpenTeam = () => {
-    setIsTeamModalOpen(true);
+    if ((manager?.manager_first_name && manager?.manager_last_name) || manager?.is_calabrio_team_exception) {
+      setIsTeamModalOpen(true);
+    }
   };
 
   const handleCloseTeam = (newTeam: any) => {
@@ -247,7 +258,8 @@ export const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any
       manager_last_name: manager.manager_last_name.replace("'", "\\'"),
       manager_n_num: manager.manager_n_num,
       profile_id: profileId,
-      calabrio_team_ids: selectedCalabrioTeams
+      calabrio_team_ids: selectedCalabrioTeams,
+      is_calabrio_team_exception: !!manager.is_calabrio_team_exception
     })
       .then((res: any) => {
         dispatch(({
@@ -296,7 +308,8 @@ export const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any
         manager_first_name: manager.manager_first_name,
         manager_last_name: manager.manager_last_name,
         profile_id: profileId,
-        calabrio_team_ids: selectedCalabrioTeams
+        calabrio_team_ids: selectedCalabrioTeams,
+        is_calabrio_team_exception: !!manager.is_calabrio_team_exception
       });
       const successes: UMUser[] = [];
       const failures: UMUser[] = [];
@@ -417,7 +430,7 @@ export const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any
           <ModalOverlay
             message={calabrioTeamOverlayMessage}
             status={calabrioTeamOverlayStatus}
-            handleClose={handleClose}
+            handleClose={() => setShowCalabrioTeamsOverlay(false)}
           /> : null}
         {saveStatus ?
           <ModalOverlay
@@ -426,8 +439,8 @@ export const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any
             handleClose={handleClose}
           /> : null}
         <CloseButtonContainer>
-          <IconButton>
-            <CloseRounded data-testid="close-button" onClick={handleClose} />
+          <IconButton onClick={handleClose}>
+            <CloseRounded data-testid="close-button" />
           </IconButton>
         </CloseButtonContainer>
         {selectedManager
@@ -442,16 +455,18 @@ export const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any
             label="N Number"
             onComplete={(fetchedUser, newNNumber) => {
               setManagerNNumber(newNNumber);
-              setManager({
+              setManager(prev => ({
+                ...prev,
                 manager_n_num: newNNumber.toLowerCase(),
                 manager_first_name: fetchedUser.firstName,
                 manager_last_name: fetchedUser.lastName
-              });
+              }));
               setFetchedUser(fetchedUser);
             }}
             onClear={() => {
               setManagerNNumber(defaultNNumber);
               setManager(null);
+              setFetchedUser(null);
             }}
             onUpdate={newNNumber => {
               setManagerNNumber(newNNumber);
@@ -470,7 +485,7 @@ export const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any
               ...profile
             }))}
             value={profile && profile.profile_name ? profile.profile_name : ""}
-            updateValue={(event: any, newValue: any) => setProfile(newValue)}
+            updateValue={(_event: any, newValue: any) => setProfile(newValue)}
           />
           <Wrapper>
             <Dropdown
@@ -482,7 +497,7 @@ export const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any
               }}
               options={options}
               value={selectedCalabrioTeams.map((teamId:any) => getCalabrioOption(teamId))}
-              updateValue={(event: any, newInputValue: any) => {
+              updateValue={(_event: any, newInputValue: any) => {
                 if(newInputValue.some((t: any) => t.value === "add-team")){
                   handleOpenTeam();
                 } else {
@@ -496,16 +511,48 @@ export const ManagerModal = React.forwardRef((props: ManagerModalProps, ref: any
               </>
             </Modal>
           </Wrapper>
+          <Wrapper>
+            <FormControlLabel
+              control={
+                <Switch
+                  disabled={!isManagerConfigurer}
+                  checked={!!manager?.is_calabrio_team_exception}
+                  onChange={() => {
+                    setManager(prev => ({
+                      ...prev,
+                      is_calabrio_team_exception: !prev?.is_calabrio_team_exception
+                    }));
+                  }}
+                />
+              }
+              label="Team Name Exceptions"
+            />
+            <Tooltip title="Allow exceptions for managers that includes having no Calabrio Teams, more than one Calabrio Team, or a team name that does not follow the format 'First Last - N0000000'">
+              <IconButton>
+                <Info color="primary" />
+              </IconButton>
+            </Tooltip>
+          </Wrapper>
         </FlexColumn>
         <ManagerModalButtonWrapper>
-          { selectedManager ?
-            <StyledButton disabled={!manager || !profile || selectedCalabrioTeams.length === 0} onClick={editManagerClicked} data-testid={"edit-manager-button"}>
-                Save
+          {selectedManager && (
+            <StyledButton
+              disabled={!manager || !profile || (selectedCalabrioTeams.length === 0 && !manager.is_calabrio_team_exception)}
+              onClick={editManagerClicked}
+              data-testid={"edit-manager-button"}
+            >
+              Save
             </StyledButton>
-            : <StyledButton disabled={!manager || !profile || selectedCalabrioTeams.length === 0 || isDisabled} onClick={addManagerClicked} data-testid={"add-manager-button"}>
-                Add Manager
+          )}
+          {!selectedManager && (
+            <StyledButton
+              disabled={!manager || !profile || (selectedCalabrioTeams.length === 0 && !manager.is_calabrio_team_exception) || isDisabled}
+              onClick={addManagerClicked}
+              data-testid={"add-manager-button"}
+            >
+              Add Manager
             </StyledButton>
-          }
+          )}
         </ManagerModalButtonWrapper>
       </PaperContainer>
     </ModalContainer>

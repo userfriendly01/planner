@@ -1,23 +1,25 @@
 import { FilterModal } from "../FilterModal";
-import React from "react";
+import React, { act } from "react";
 import {
   expectMockedComponent,
   getMockedComponentProps,
   render,
-  setupMockedComponents,
-  act
+  setupMockedComponents
 } from "testUtils";
 import { PaperContainer } from "components/PaperContainer";
 import { StyledButton } from "components/StyledButton";
 import { ProfileFilterDropdown } from "usermanagement/ProfileFilterDropdown";
 import { OuFilterDropdown } from "usermanagement/OuFilterDropdown";
 import { ManagerDropdown } from "usermanagement/ManagerDropdown";
-import { CloseRounded } from "@mui/icons-material";
+import { IconButton } from "@mui/material";
+
+jest.mock("@mui/material", () => ({
+  IconButton: jest.fn()
+}));
 
 jest.mock("@mui/icons-material", () => ({
   CloseRounded: jest.fn()
 }));
-
 
 jest.mock("components/PaperContainer", () => ({
   PaperContainer: jest.fn()
@@ -48,7 +50,7 @@ describe("<FilterModal />", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     setupMockedComponents({
-      CloseRounded,
+      IconButton,
       StyledButton,
       ProfileFilterDropdown,
       ManagerDropdown,
@@ -61,9 +63,9 @@ describe("<FilterModal />", () => {
   });
 
   describe("initial state of the modal", () => {
-    test("should render StyledButtons, CloseRounded, ProfileFilterDropdown, ManagerDropdown & OuFilterDropdown once each", () => {
+    test("should render StyledButtons, IconButton, ProfileFilterDropdown, ManagerDropdown & OuFilterDropdown once each", () => {
       const rendered = renderComponent();
-      expectMockedComponent(rendered, { CloseRounded });
+      expectMockedComponent(rendered, { IconButton });
       expectMockedComponent(rendered, { ManagerDropdown });
       expect(ManagerDropdown.mock.calls.length).toBe(1);
       expectMockedComponent(rendered, { ProfileFilterDropdown });
@@ -78,13 +80,13 @@ describe("<FilterModal />", () => {
   describe("close behaviour", () => {
     test("should render whenever modal is open", () => {
       const rendered = renderComponent();
-      expectMockedComponent(rendered, { CloseRounded }, 1);
+      expectMockedComponent(rendered, { IconButton }, 1);
       expect(StyledButton.mock.calls[0][0].children).toBe("Done");
     });
     describe("when clicked", () => {
       test("close rounded button should close the modal", () => {
         renderComponent();
-        const { onClick } = getMockedComponentProps(CloseRounded);
+        const { onClick } = getMockedComponentProps(IconButton);
         act(() => onClick());
         expect(mockHandleClose).toBeCalled();
       });

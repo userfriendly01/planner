@@ -9,10 +9,9 @@ import {
   useAdminState,
   useAdminDispatch
 } from "context/appContext";
-import React from "react";
+import React, { act } from "react";
 import { createCalabrioTeam } from "services/calabrio";
 import {
-  act,
   initialTestState,
   expectOnlyPassedProps,
   render,
@@ -88,7 +87,7 @@ describe("<CalabrioTeamModal />", () => {
     });
   });
   describe("Initial Render", () => {
-    test("CalabrioTeamModal Renders as expected", () => {
+    test("CalabrioTeamModal Renders as expected with disabled team name edit", () => {
       render(<CalabrioTeamModal handleClose={mockHandleClose} selectedManager={mockManager} displayNewTeamMessage={false}/>);
       render(PaperContainer.mock.calls[0][0].children);
       expect(CloseButton.mock.calls.length).toBe(1);
@@ -99,7 +98,48 @@ describe("<CalabrioTeamModal />", () => {
       expect(TextField.mock.calls.length).toBe(1);
       expectOnlyPassedProps(TextField, {
         label: "New Team Name",
-        value: "Mary Smith - N7654321"
+        value: "Mary Smith - N7654321",
+        disabled: true
+      });
+
+      expect(Dropdown.mock.calls.length).toBe(1);
+      expectOnlyPassedProps(Dropdown, {
+        label: "Parent Group ID",
+        options: initialTestState.calabrioContext.groups.map(g => ({
+          label: g.name,
+          value: g.groupId,
+          ...g
+        })),
+        value: ""
+      });
+      expect(StyledButton.mock.calls.length).toBe(1);
+      expectOnlyPassedProps(StyledButton, {
+        disabled: true
+      });
+    });
+
+    test("CalabrioTeamModal Renders as expected with enabled team name edit when is_calabrio_team_exception is true", () => {
+      render(
+        <CalabrioTeamModal
+          handleClose={mockHandleClose}
+          selectedManager={{
+            ...mockManager,
+            is_calabrio_team_exception: true
+          }}
+          displayNewTeamMessage={false}
+        />
+      );
+      render(PaperContainer.mock.calls[0][0].children);
+      expect(CloseButton.mock.calls.length).toBe(1);
+      expectOnlyPassedProps(CloseButton, {
+        onClick: mockHandleClose
+      });
+
+      expect(TextField.mock.calls.length).toBe(1);
+      expectOnlyPassedProps(TextField, {
+        label: "New Team Name",
+        value: "",
+        disabled: false
       });
 
       expect(Dropdown.mock.calls.length).toBe(1);
@@ -118,6 +158,33 @@ describe("<CalabrioTeamModal />", () => {
       });
     });
   });
+  describe("Team Name is updated", () => {
+    test("should allow and update team name when is_calabrio_team_exception is true", () => {
+      render(
+        <CalabrioTeamModal
+          handleClose={mockHandleClose}
+          selectedManager={{
+            ...mockManager,
+            is_calabrio_team_exception: true
+          }}
+          displayNewTeamMessage={false}
+        />
+      );
+      render(PaperContainer.mock.calls[0][0].children);
+      expect(Dropdown.mock.calls.length).toBe(1);
+      expect(Dropdown.mock.calls[0][0].value).toBe("");
+      act(() => {
+        TextField.mock.calls[0][0].onChange({
+          target: {
+            value: "LARRY'S SUPER SWAG TEAM"
+          }
+        });
+      });
+      render(PaperContainer.mock.calls[1][0].children);
+      expect(TextField.mock.calls[1][0].value).toBe("LARRY'S SUPER SWAG TEAM");
+    });
+  });
+
   describe("Parent Group Dropdown is updated", () => {
     test("Dropdown value === selection", () => {
       render(<CalabrioTeamModal handleClose={mockHandleClose} selectedManager={mockManager} displayNewTeamMessage={false}/>);

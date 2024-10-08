@@ -1,6 +1,7 @@
 import {
   checkIfAdmin,
   checkIfBulkAdmin,
+  checkIfManagerConfigurer,
   checkIfPO,
   getWorkerProfileId
 } from "../authUtils";
@@ -13,7 +14,7 @@ jest.mock("services/user", () => ({
 
 jest.mock("utils", () => ({
   checkIfLowerEnv: jest.fn()
-}))
+}));
 
 describe("authUtils", () => {
   beforeEach(() => {
@@ -45,14 +46,14 @@ describe("authUtils", () => {
     });
     describe("n# is not a GOP PO", () => {
       test("should return false", () => {
-        checkIfLowerEnv.mockReturnValueOnce(false)
+        checkIfLowerEnv.mockReturnValueOnce(false);
 
         expect(checkIfPO("n0288362")).toBe(false);
       });
     });
     describe("n# is not a GOP PO, but it's a lower environment", () => {
       test("should return true", () => {
-        checkIfLowerEnv.mockReturnValueOnce(true)
+        checkIfLowerEnv.mockReturnValueOnce(true);
 
 
         expect(checkIfPO("n0288362")).toBe(true);
@@ -62,19 +63,19 @@ describe("authUtils", () => {
   describe("checkIfBulkAdmin", () => {
     describe("n# is a GOP PO", () => {
       test("should return true for n0183277", () => {
-        checkIfLowerEnv.mockReturnValueOnce(false)
+        checkIfLowerEnv.mockReturnValueOnce(false);
 
 
         expect(checkIfBulkAdmin("n0183277")).toBe(true);
       });
       test("should return true for n0116796", () => {
-        checkIfLowerEnv.mockReturnValueOnce(false)
+        checkIfLowerEnv.mockReturnValueOnce(false);
 
 
         expect(checkIfBulkAdmin("n0116796")).toBe(true);
       });
       test("should return true for N0116796 (All CAPS)", () => {
-        checkIfLowerEnv.mockReturnValueOnce(false)
+        checkIfLowerEnv.mockReturnValueOnce(false);
 
 
         expect(checkIfBulkAdmin("N0116796")).toBe(true);
@@ -82,19 +83,19 @@ describe("authUtils", () => {
     });
     describe("n# is a Bulk Admin", () => {
       test("should return true for n0197784", () => {
-        checkIfLowerEnv.mockReturnValueOnce(false)
+        checkIfLowerEnv.mockReturnValueOnce(false);
 
 
         expect(checkIfBulkAdmin("n0197784")).toBe(true);
       });
       test("should return true for n0149889", () => {
-        checkIfLowerEnv.mockReturnValueOnce(false)
+        checkIfLowerEnv.mockReturnValueOnce(false);
 
 
         expect(checkIfBulkAdmin("n0149889")).toBe(true);
       });
       test("should return true for N0169879 (All CAPS)", () => {
-        checkIfLowerEnv.mockReturnValueOnce(false)
+        checkIfLowerEnv.mockReturnValueOnce(false);
 
 
         expect(checkIfBulkAdmin("N0169879")).toBe(true);
@@ -102,7 +103,7 @@ describe("authUtils", () => {
     });
     describe("n# is not a GOP PO or a Bulk Admin and it's a production environment", () => {
       test("should return false", () => {
-        checkIfLowerEnv.mockReturnValueOnce(false)
+        checkIfLowerEnv.mockReturnValueOnce(false);
 
 
         expect(checkIfBulkAdmin("n0288362")).toBe(false);
@@ -110,9 +111,67 @@ describe("authUtils", () => {
     });
     describe("n# is not a GOP PO or a Bulk Admin, but it's a lower environment", () => {
       test("should return true", () => {
-        checkIfLowerEnv.mockReturnValueOnce(true)
+        checkIfLowerEnv.mockReturnValueOnce(true);
 
         expect(checkIfBulkAdmin("n0288362")).toBe(true);
+      });
+    });
+  });
+
+  describe("checkIfManagerConfigurer", () => {
+    describe("n# is a GOP PO", () => {
+      test("should return true for n0183277", () => {
+        checkIfLowerEnv.mockReturnValueOnce(false);
+
+
+        expect(checkIfManagerConfigurer("n0183277")).toBe(true);
+      });
+      test("should return true for n0116796", () => {
+        checkIfLowerEnv.mockReturnValueOnce(false);
+
+
+        expect(checkIfManagerConfigurer("n0116796")).toBe(true);
+      });
+      test("should return true for N0116796 (All CAPS)", () => {
+        checkIfLowerEnv.mockReturnValueOnce(false);
+
+
+        expect(checkIfManagerConfigurer("N0116796")).toBe(true);
+      });
+    });
+    describe("n# is a Manager Configurer", () => {
+      test("should return true for n0197784", () => {
+        checkIfLowerEnv.mockReturnValueOnce(false);
+
+
+        expect(checkIfManagerConfigurer("n0197784")).toBe(true);
+      });
+      test("should return true for n0149889", () => {
+        checkIfLowerEnv.mockReturnValueOnce(false);
+
+
+        expect(checkIfManagerConfigurer("n0149889")).toBe(true);
+      });
+      test("should return true for N0169879 (All CAPS)", () => {
+        checkIfLowerEnv.mockReturnValueOnce(false);
+
+
+        expect(checkIfManagerConfigurer("N0169879")).toBe(true);
+      });
+    });
+    describe("n# is not a GOP PO or a Manager Configurer and it's a production environment", () => {
+      test("should return false", () => {
+        checkIfLowerEnv.mockReturnValueOnce(false);
+
+
+        expect(checkIfManagerConfigurer("n0288362")).toBe(false);
+      });
+    });
+    describe("n# is not a GOP PO or a Manager Configurer, but it's a lower environment", () => {
+      test("should return true", () => {
+        checkIfLowerEnv.mockReturnValueOnce(true);
+
+        expect(checkIfManagerConfigurer("n0288362")).toBe(true);
       });
     });
   });

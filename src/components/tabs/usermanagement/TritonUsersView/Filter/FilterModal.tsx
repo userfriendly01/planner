@@ -29,8 +29,8 @@ export const FilterModal = (props: FilterModalProps) => {
     <ModalContainer>
       <PaperContainer>
         <CloseButtonContainer>
-          <IconButton>
-            <CloseRounded data-testid="close-button" onClick={handleClose}/>
+          <IconButton onClick={handleClose}>
+            <CloseRounded data-testid="close-button" />
           </IconButton>
         </CloseButtonContainer>
         <Header>Filters</Header>

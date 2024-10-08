@@ -16,6 +16,11 @@ const bulkAdmins = [
   "n0169879" // Stephanie Miller
 ];
 
+const managerConfigurers = [
+  ...productOwners,
+  "n0169879" // Stephanie Miller
+];
+
 export const checkIfAdmin = (profileId: number): boolean => {
   return profileId === 0;
 };
@@ -26,6 +31,10 @@ export const checkIfBulkAdmin = (nNumber: string): boolean => {
   }
 
   return bulkAdmins.includes(nNumber.toLowerCase());
+};
+
+export const checkIfManagerConfigurer = (nNumber: string): boolean => {
+  return checkIfLowerEnv() || managerConfigurers.includes(nNumber.toLowerCase());
 };
 
 export const checkIfPO = (nNumber: string): boolean => {

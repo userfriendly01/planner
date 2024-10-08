@@ -14,6 +14,7 @@ export const LIST_MANAGERS: GraphData = {
           profile_id
           manager_n_num
           calabrio_team_ids
+          is_calabrio_team_exception
         }
         nextToken
       }
@@ -33,6 +34,7 @@ export const CREATE_MANAGER = gql`
       profile_id
       manager_n_num
       calabrio_team_ids
+      is_calabrio_team_exception
     }
   }
 `;
@@ -49,6 +51,7 @@ export const UPDATE_MANAGER = gql`
       profile_id
       manager_n_num
       calabrio_team_ids
+      is_calabrio_team_exception
     }
   }
 `;
@@ -64,6 +67,7 @@ export const DELETE_MANAGER = gql`
       profile_id
       manager_n_num
       calabrio_team_ids
+      is_calabrio_team_exception
     }
   }
 `;
