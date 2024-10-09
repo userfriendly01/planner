@@ -3,6 +3,10 @@ import { gql } from "@apollo/client";
 export const CREATE_SKILL_GROUP = gql`
   mutation createUMSkillGroup($input: UMSkillGroupCreateInput!) {
     skillGroup: createUMSkillGroup(input: $input) {
+        keys {
+          pk
+          sk
+        }
         cancellationReasons
         nextToken
     }
@@ -12,6 +16,10 @@ export const CREATE_SKILL_GROUP = gql`
 export const UPDATE_SKILL_GROUP = gql`
   mutation updateUMSkillGroup($id: ID!, $input: UMSkillGroupUpdateInput!) {
     skillGroup: updateUMSkillGroup(id: $id, input: $input) {
+        keys {
+          pk
+          sk
+        }
         cancellationReasons
         nextToken
     }

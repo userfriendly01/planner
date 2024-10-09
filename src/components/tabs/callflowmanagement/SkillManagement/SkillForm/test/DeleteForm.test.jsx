@@ -16,7 +16,7 @@ import {
   useSkillState,
   useSkillDispatch
 } from "context/appContext";
-import { loadConsolidatedSkills } from "services/skill";
+import { loadSkillState } from "services/skill";
 import { updateUser } from "services/user";
 import { getTaskQueues } from "services/taskQueues";
 import { identifyImpactedWorkers } from "utils/skillsUtils";
@@ -45,7 +45,7 @@ jest.mock("components/StyledButton", () => ({
 
 jest.mock("services/skill", () => ({
   createSkill: jest.fn(),
-  loadConsolidatedSkills: jest.fn()
+  loadSkillState: jest.fn()
 }));
 
 jest.mock("services/user", () => ({
@@ -103,7 +103,7 @@ describe("<DeleteForm />", () => {
     useAdminDispatch.mockReturnValue(mockAdminlDispatch);
     useSkillState.mockReturnValue(initialSkillState);
     useSkillDispatch.mockReturnValue(mockSkillDispatch);
-    loadConsolidatedSkills.mockResolvedValue(success);
+    loadSkillState.mockResolvedValue(success);
     getTaskQueues.mockResolvedValue(initialSkillState.taskQueues);
     handleConcurrentCalls.mockResolvedValue(resolvedPromise);
     identifyImpactedWorkers.mockReturnValue([
@@ -159,7 +159,7 @@ describe("<DeleteForm />", () => {
     describe("all service calls are successful", () => {
       beforeEach(() => {
         handleConcurrentCalls.mockResolvedValue([resolvedPromise]);
-        loadConsolidatedSkills.mockResolvedValue(success);
+        loadSkillState.mockResolvedValue(success);
         getTaskQueues.mockResolvedValue(initialSkillState.taskQueues);
       });
       test("form rerenders when saving and succeded", async () => {
@@ -175,7 +175,7 @@ describe("<DeleteForm />", () => {
           message: "Skills Successfully Deleted",
           status: "success"
         }, 1);
-        await waitFor(() => expect(loadConsolidatedSkills).toHaveBeenCalled());
+        await waitFor(() => expect(loadSkillState).toHaveBeenCalled());
         jest.runAllTimers();
         expect(mockSetAction).toHaveBeenCalledWith(null);
         expect(getTaskQueues).not.toHaveBeenCalledTimes(1);
@@ -195,7 +195,7 @@ describe("<DeleteForm />", () => {
             message: "Processing...",
             status: "saving"
           }, 0);
-          await waitFor(() => expect(loadConsolidatedSkills).toHaveBeenCalled());
+          await waitFor(() => expect(loadSkillState).toHaveBeenCalled());
           jest.runAllTimers();
           expect(rendered.container).toHaveTextContent("The following errors were thrown");
           expect(rendered.container).toHaveTextContent(error);
@@ -212,7 +212,7 @@ describe("<DeleteForm />", () => {
             message: "Processing...",
             status: "saving"
           }, 0);
-          await waitFor(() => expect(loadConsolidatedSkills).toHaveBeenCalled());
+          await waitFor(() => expect(loadSkillState).toHaveBeenCalled());
           jest.runAllTimers();
           expect(rendered.container).toHaveTextContent("The following errors were thrown");
           expect(rendered.container).toHaveTextContent(error);
@@ -238,7 +238,7 @@ describe("<DeleteForm />", () => {
             message: "Processing...",
             status: "saving"
           }, 0);
-          await waitFor(() => expect(loadConsolidatedSkills).toHaveBeenCalled());
+          await waitFor(() => expect(loadSkillState).toHaveBeenCalled());
           jest.runAllTimers();
           expect(rendered.container).toHaveTextContent("The following errors were thrown");
           const closeModal = StyledButton.mock.calls[4][0].onClick;
@@ -262,14 +262,14 @@ describe("<DeleteForm />", () => {
           message: "Failed to Delete Skills: Aww",
           status: "fail"
         }, 1);
-        expect(loadConsolidatedSkills).not.toHaveBeenCalled();
+        expect(loadSkillState).not.toHaveBeenCalled();
         expect(getTaskQueues).not.toHaveBeenCalledTimes(1);
       });
     });
     describe("refresh state error is thrown", () => {
       beforeEach(() => {
         handleConcurrentCalls.mockResolvedValue([resolvedPromise]);
-        loadConsolidatedSkills.mockRejectedValue(error);
+        loadSkillState.mockRejectedValue(error);
         getTaskQueues.mockResolvedValue(initialSkillState.taskQueues);
       });
       test("Success is still rendered", async () => {
@@ -285,7 +285,7 @@ describe("<DeleteForm />", () => {
           message: "Skills Successfully Deleted",
           status: "success"
         }, 1);
-        await waitFor(() => expect(loadConsolidatedSkills).toHaveBeenCalled());
+        await waitFor(() => expect(loadSkillState).toHaveBeenCalled());
         jest.runAllTimers();
         expect(mockSetAction).toHaveBeenCalledWith(null);
       });

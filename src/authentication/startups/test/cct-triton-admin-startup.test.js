@@ -10,7 +10,7 @@ import {
 } from "services/calabrio";
 import { listUMManagers } from "services/manager";
 import { listUMUsers } from "services/user";
-import { loadConsolidatedSkills } from "services/skill";
+import { loadSkillState } from "services/skill";
 import {
   myAxios
 } from "utils/myAxios";
@@ -52,7 +52,7 @@ jest.mock("services/profile", () => ({
   listUMSoftphoneConfigs: jest.fn()
 }));
 jest.mock("services/skill", () => ({
-  loadConsolidatedSkills: jest.fn()
+  loadSkillState: jest.fn()
 }));
 
 
@@ -102,7 +102,7 @@ describe("cct-triton-admin-startup", () => {
     useAdminDispatch.mockReturnValue(mockAdminDispatch);
     listUMUsers.mockResolvedValue();
     listUMManagers.mockResolvedValue();
-    loadConsolidatedSkills.mockResolvedValue();
+    loadSkillState.mockResolvedValue();
   });
 
   describe("runTritonAdminStartup", () => {

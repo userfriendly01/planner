@@ -23,7 +23,7 @@ import {
   skillActions
 } from "context/reducers/skillReducer";
 import {
-  createSkill, editSkill, loadConsolidatedSkills
+  createSkill, editSkill, loadSkillState
 } from "services/skill";
 import { getTaskQueues } from "services/taskQueues";
 import {
@@ -63,7 +63,7 @@ jest.mock("components/StyledButton", () => ({
 jest.mock("services/skill", () => ({
   createSkill: jest.fn(),
   editSkill: jest.fn(),
-  loadConsolidatedSkills: jest.fn()
+  loadSkillState: jest.fn()
 }));
 
 jest.mock("services/taskQueues", () => ({
@@ -181,7 +181,7 @@ describe("<AddEditForm />", () => {
             status: 200,
             messages: [success]
           });
-          loadConsolidatedSkills.mockResolvedValue(success);
+          loadSkillState.mockResolvedValue(success);
           getTaskQueues.mockResolvedValue(initialSkillState.taskQueues);
         });
         describe("all service calls are successful", () => {
@@ -201,7 +201,7 @@ describe("<AddEditForm />", () => {
             expect(mockSkillDispatch).toHaveBeenCalledWith({
               type: skillActions.RESET_FORM
             });
-            await waitFor(() => expect(loadConsolidatedSkills).toHaveBeenCalled());
+            await waitFor(() => expect(loadSkillState).toHaveBeenCalled());
             jest.runAllTimers();
             expect(mockSetAction).toHaveBeenCalledWith(null);
             expect(getTaskQueues).not.toHaveBeenCalledTimes(1);
@@ -233,7 +233,7 @@ describe("<AddEditForm />", () => {
               expect(mockSkillDispatch).toHaveBeenCalledWith({
                 type: skillActions.RESET_FORM
               });
-              await waitFor(() => expect(loadConsolidatedSkills).toHaveBeenCalled());
+              await waitFor(() => expect(loadSkillState).toHaveBeenCalled());
               jest.runAllTimers();
               expect(mockSetAction).toHaveBeenCalledWith(null);
               expect(getTaskQueues).toHaveBeenCalledTimes(1);
@@ -278,7 +278,7 @@ describe("<AddEditForm />", () => {
             expect(mockSkillDispatch).toHaveBeenCalledWith({
               type: skillActions.RESET_FORM
             });
-            await waitFor(() => expect(loadConsolidatedSkills).toHaveBeenCalled());
+            await waitFor(() => expect(loadSkillState).toHaveBeenCalled());
             jest.runAllTimers();
             expect(rendered.container).toHaveTextContent("The following errors were thrown");
             expect(rendered.container).toHaveTextContent(error);
@@ -306,7 +306,7 @@ describe("<AddEditForm />", () => {
               expect(mockSkillDispatch).toHaveBeenCalledWith({
                 type: skillActions.RESET_FORM
               });
-              await waitFor(() => expect(loadConsolidatedSkills).toHaveBeenCalled());
+              await waitFor(() => expect(loadSkillState).toHaveBeenCalled());
               jest.runAllTimers();
               expect(rendered.container).toHaveTextContent("The following errors were thrown");
               const closeModal = StyledButton.mock.calls[4][0].onClick;
@@ -331,7 +331,7 @@ describe("<AddEditForm />", () => {
               message: "Failed to Create Skill: Aww",
               status: "fail"
             }, 1);
-            expect(loadConsolidatedSkills).not.toHaveBeenCalled();
+            expect(loadSkillState).not.toHaveBeenCalled();
             expect(getTaskQueues).not.toHaveBeenCalledTimes(1);
           });
         });
@@ -347,7 +347,7 @@ describe("<AddEditForm />", () => {
                 }
               }
             });
-            loadConsolidatedSkills.mockRejectedValue(error);
+            loadSkillState.mockRejectedValue(error);
             renderComponent();
             const submit = StyledButton.mock.calls[1][0].onClick;
             submit();
@@ -363,7 +363,7 @@ describe("<AddEditForm />", () => {
             expect(mockSkillDispatch).toHaveBeenCalledWith({
               type: skillActions.RESET_FORM
             });
-            await waitFor(() => expect(loadConsolidatedSkills).toHaveBeenCalled());
+            await waitFor(() => expect(loadSkillState).toHaveBeenCalled());
             jest.runAllTimers();
             expect(mockSetAction).toHaveBeenCalledWith(null);
             expect(getTaskQueues).toHaveBeenCalledTimes(1);
@@ -491,7 +491,7 @@ describe("<AddEditForm />", () => {
           status: 200,
           messages: [success]
         });
-        loadConsolidatedSkills.mockResolvedValue(success);
+        loadSkillState.mockResolvedValue(success);
         getTaskQueues.mockResolvedValue(initialSkillState.taskQueues);
       });
       describe("all service calls are successful", () => {
@@ -511,7 +511,7 @@ describe("<AddEditForm />", () => {
           expect(mockSkillDispatch).toHaveBeenCalledWith({
             type: skillActions.RESET_FORM
           });
-          await waitFor(() => expect(loadConsolidatedSkills).toHaveBeenCalled());
+          await waitFor(() => expect(loadSkillState).toHaveBeenCalled());
           jest.runAllTimers();
           expect(mockSetAction).toHaveBeenCalledWith(null);
           expect(getTaskQueues).toHaveBeenCalledTimes(1);
@@ -543,7 +543,7 @@ describe("<AddEditForm />", () => {
             expect(mockSkillDispatch).toHaveBeenCalledWith({
               type: skillActions.RESET_FORM
             });
-            await waitFor(() => expect(loadConsolidatedSkills).toHaveBeenCalled());
+            await waitFor(() => expect(loadSkillState).toHaveBeenCalled());
             jest.runAllTimers();
             expect(mockSetAction).toHaveBeenCalledWith(null);
             expect(getTaskQueues).toHaveBeenCalledTimes(1);
@@ -588,7 +588,7 @@ describe("<AddEditForm />", () => {
           expect(mockSkillDispatch).toHaveBeenCalledWith({
             type: skillActions.RESET_FORM
           });
-          await waitFor(() => expect(loadConsolidatedSkills).toHaveBeenCalled());
+          await waitFor(() => expect(loadSkillState).toHaveBeenCalled());
           jest.runAllTimers();
           expect(rendered.container).toHaveTextContent("The following errors were thrown");
           expect(rendered.container).toHaveTextContent(error);
@@ -616,7 +616,7 @@ describe("<AddEditForm />", () => {
             expect(mockSkillDispatch).toHaveBeenCalledWith({
               type: skillActions.RESET_FORM
             });
-            await waitFor(() => expect(loadConsolidatedSkills).toHaveBeenCalled());
+            await waitFor(() => expect(loadSkillState).toHaveBeenCalled());
             jest.runAllTimers();
             expect(rendered.container).toHaveTextContent("The following errors were thrown");
             const closeModal = StyledButton.mock.calls[4][0].onClick;
@@ -641,13 +641,13 @@ describe("<AddEditForm />", () => {
             message: "Failed to Update Skill: Aww",
             status: "fail"
           }, 1);
-          expect(loadConsolidatedSkills).not.toHaveBeenCalled();
+          expect(loadSkillState).not.toHaveBeenCalled();
           expect(getTaskQueues).toHaveBeenCalledTimes(0);
         });
       });
       describe("refresh state error is thrown", () => {
         test("Success is still rendered", async () => {
-          loadConsolidatedSkills.mockRejectedValue(error);
+          loadSkillState.mockRejectedValue(error);
           renderComponent();
           const submit = StyledButton.mock.calls[1][0].onClick;
           submit();
@@ -663,7 +663,7 @@ describe("<AddEditForm />", () => {
           expect(mockSkillDispatch).toHaveBeenCalledWith({
             type: skillActions.RESET_FORM
           });
-          await waitFor(() => expect(loadConsolidatedSkills).toHaveBeenCalled());
+          await waitFor(() => expect(loadSkillState).toHaveBeenCalled());
           jest.runAllTimers();
           expect(mockSetAction).toHaveBeenCalledWith(null);
           expect(getTaskQueues).toHaveBeenCalledTimes(1);

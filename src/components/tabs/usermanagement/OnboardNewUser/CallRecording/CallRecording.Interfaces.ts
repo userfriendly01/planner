@@ -4,32 +4,6 @@ export const calabrioGroupLevels: any = {
   TEAM: "TEAM"
 };
 
-export interface CalabrioFetchedUser {
-  [key: string]: any,
-  acdId: string,
-  personId: number,
-  firstName: string,
-  lastName: string,
-  groupId: number,
-  tenantId: number,
-  email: string,
-  timezone: string,
-  adLogin: string,
-  roles: [{
-    id: number,
-    label: string,
-    name: string,
-    isAgentDefault: boolean,
-    isAdminDefault: boolean,
-    isSupervisorDefault: boolean
-  }],
-  scope: CalabrioScope
-}
-
-export interface CalabrioScope {
-  groups: number[],
-  teams: number[]
-}
 export interface CalabrioGroup {
   groupId: number,
   name: string,
@@ -39,10 +13,6 @@ export interface CalabrioGroup {
   groupLevel: string,
   users?: CalabrioUser[]
   checked?: boolean
-}
-export interface CalabrioGroupLevel {
-  GROUP: string,
-  TEAM: string
 }
 
 export interface CalabrioQMView {

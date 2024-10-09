@@ -27,7 +27,7 @@ import {
 } from "testUtils";
 import { ActionTypes } from "../../Skills.Interfaces";
 import { Dropdown } from "components/Dropdown";
-import { loadConsolidatedSkills } from "services/skill";
+import { loadSkillState } from "services/skill";
 
 jest.mock("context/appContext", () => ({
   useAdminDispatch: jest.fn(),
@@ -65,7 +65,7 @@ jest.mock("services/skillgroup", () => ({
 }));
 
 jest.mock("services/skill", () => ({
-  loadConsolidatedSkills: jest.fn()
+  loadSkillState: jest.fn()
 }));
 
 jest.useFakeTimers();
@@ -100,7 +100,7 @@ describe("<SkillGroupInputContainer />", () => {
     });
     useAdminDispatch.mockReturnValue(mockDispatch);
     useAdminState.mockReturnValue(initialTestState);
-    loadConsolidatedSkills.mockResolvedValue();
+    loadSkillState.mockResolvedValue();
     setupMockedComponents({
       TextField,
       UserFormButton
@@ -327,7 +327,7 @@ describe("<SkillGroupInputContainer />", () => {
             message: "",
             status: null
           });
-          expect(loadConsolidatedSkills).toHaveBeenCalledTimes(1);
+          expect(loadSkillState).toHaveBeenCalledTimes(1);
         });
       });
       test("SkillGroup failes to add successfully", async () => {
@@ -457,7 +457,7 @@ describe("<SkillGroupInputContainer />", () => {
         });
         await waitFor(() => {
           expect(deleteSkillGroup).toHaveBeenLastCalledWith("2");
-          expect(loadConsolidatedSkills).toHaveBeenCalledTimes(1);
+          expect(loadSkillState).toHaveBeenCalledTimes(1);
           jest.runAllTimers();
           expect(mockSetAction).toHaveBeenCalledTimes(1);
           expect(mockSetConfirmationModalOpts).toHaveBeenCalledWith({
@@ -491,7 +491,7 @@ describe("<SkillGroupInputContainer />", () => {
         });
         await waitFor(() => {
           expect(deleteSkillGroup).toHaveBeenLastCalledWith(1);
-          expect(loadConsolidatedSkills).toHaveBeenCalledTimes(0);
+          expect(loadSkillState).toHaveBeenCalledTimes(0);
           expect(mockSetAction).toHaveBeenCalledTimes(0);
           expect(mockSetSaveResult).toHaveBeenCalledWith({
             message: "Request Failed",
@@ -611,7 +611,7 @@ describe("<SkillGroupInputContainer />", () => {
               message: "Request Successfully Processed",
               status: "success"
             });
-            expect(loadConsolidatedSkills).toHaveBeenCalledTimes(1);
+            expect(loadSkillState).toHaveBeenCalledTimes(1);
             expect(mockSetConfirmationModalOpts).toHaveBeenLastCalledWith({
               ...confirmationModalOpts,
               open: false
@@ -654,7 +654,7 @@ describe("<SkillGroupInputContainer />", () => {
               message: "Request Failed",
               status: "fail"
             });
-            expect(loadConsolidatedSkills).toHaveBeenCalledTimes(0);
+            expect(loadSkillState).toHaveBeenCalledTimes(0);
           });
         });
       });

@@ -57,7 +57,7 @@ export interface AlertBarProps {
     duration?: number
 }
 
-export interface FormValidationProps {
+interface FormValidationProps {
     error?: boolean;
     value?: any;
     required?: boolean;
@@ -175,10 +175,6 @@ export enum ModalOverlayStatuses {
   SAVING = "saving",
   SUCCESS = "success"
 }
-export interface MySqlBoolean {
-  data: [0 | 1],
-  type: "Buffer"
-}
 
 export interface UMOffice {
   pk: string,
@@ -278,36 +274,6 @@ export interface UMSoftphoneConfiguration {
   screenpops?: Screenpop[]
 }
 
-export interface AddEditSoftphoneConfigRequest {
-  profile_id: number,
-  ou_sid: string,
-  ou_name: string,
-  profile_name: string,
-  overflow_skill: string,
-  acw_option: boolean,
-  acw_tags: boolean,
-  agnt_asst_pay: boolean,
-  auto_ans: boolean,
-  backup_workers: boolean,
-  edt_policy_num: boolean,
-  edt_claim_num: boolean,
-  call_reason: boolean,
-  clk_to_dial: boolean,
-  eft_auth: boolean,
-  inbnd_rec: boolean,
-  man_outbnd_rec: boolean,
-  man_inbnd_rec: boolean,
-  outbnd_rec: boolean,
-  takes_paymnts: boolean,
-  voice_mail_trans: boolean,
-  fwd_to_num: string,
-  transfer_queues: string[],
-  call_tags: string[],
-  activity_sids: string[],
-  screenpop_ids: string[],
-  access_group_id: string[]
-}
-
 export interface AccessGroupPayload {
   access_group_name: string,
   twilio_dashboard_url: string
@@ -341,16 +307,6 @@ export interface ProfilePayload {
   activity_sids: string[],
   call_tags: CallTag[],
   transfer_queues: string[]
-}
-
-export interface AggregateQueue {
-  aggregate_queues_id: number,
-  aggregate_queues_nme: string,
-  aggregate_queues_type: string,
-  owner_type: string,
-  worker_sid: string | null,
-  row_crtn_dtm: string | null,
-  row_updt_dtm: string | null
 }
 
 export interface WfmBusinessUnit {
@@ -550,10 +506,6 @@ export interface GraphQLErrors {
   message:string;
 }
 
-export interface DuplicateCheck{
-  isDuplicate: boolean;
-  message: string;
-}
 export interface BrandNameMap{
   [key:string]: "liberty" | "safeco"
 }

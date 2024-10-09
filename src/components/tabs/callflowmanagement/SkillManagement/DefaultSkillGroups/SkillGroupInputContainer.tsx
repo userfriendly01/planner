@@ -9,13 +9,14 @@ import {
   UserFormButton
 } from "../ClosedFlashMessage/ClosedFlashMessage.Styles";
 import {
-  ActionTypes, AddEditSkillGroupBody,
+  ActionTypes,
   SkillGroup
 } from "../Skills.Interfaces";
 import {
-  addSkillGroup,
+  createSkillGroup,
   deleteSkillGroup,
-  updateSkillGroup
+  updateSkillGroup,
+  UpdateSkillGroupBody
 } from "services/skillgroup";
 import { timeouts } from "globals";
 import { ModalOverlayStatuses } from "globals/interfaces";
@@ -24,9 +25,8 @@ import {
   ConfirmationSkillList
 } from "./SkillGroup.Styles";
 import { Dropdown } from "components/Dropdown";
-import { loadConsolidatedSkills } from "services/skill";
 import { logger } from "utils/logger";
-import { escapeQuotes } from "utils";
+import { formatErrorMessage } from "utils/_formatUtils";
 
 export const SkillGroupInputContainer = (props: any) => {
   const [ skillGroupName, setSkillGroupName ] = React.useState("");
@@ -117,11 +117,11 @@ export const SkillGroupInputContainer = (props: any) => {
 
       try {
 
-        const requestBody: AddEditSkillGroupBody = {
-          skill_group_name: escapeQuotes(skillGroupName.trim()),
+        const requestBody = {
+          skill_group_name: skillGroupName.trim(),
           skill_ids: tableState.selected
         };
-        await addSkillGroup(requestBody);
+        await createSkillGroup(requestBody, skillDispatch);
 
         logger.info("Successfully created skill group(s)", {
           skillIds: requestBody.skill_ids,
@@ -134,23 +134,27 @@ export const SkillGroupInputContainer = (props: any) => {
           status: ModalOverlayStatuses.SUCCESS
         });
 
-        // refresh skill state
-        await loadConsolidatedSkills(skillDispatch);
-
         setTimeout(() => {
           handleCloseConfirmation();
           setAction(null);
         }, timeouts.MODAL_OVERLAY);
-      } catch (error) {
+      } catch (errors) {
         logger.error("Failed to created skill group(s)", {
           nNumber,
-          error
+          errors
         });
 
-        setSaveResult({
-          message: "Request Failed",
-          status: ModalOverlayStatuses.FAIL
-        });
+        if(JSON.stringify(errors).includes("Not all specified Skills exist.")){
+          setSaveResult({
+            message: `Request Partially Failed ${formatErrorMessage(errors)}`,
+            status: ModalOverlayStatuses.PARTIAL_FAIL
+          });
+        } else {
+          setSaveResult({
+            message: `Request Failed ${formatErrorMessage(errors)}`,
+            status: ModalOverlayStatuses.FAIL
+          });
+        }
       }
     };
 
@@ -176,8 +180,8 @@ export const SkillGroupInputContainer = (props: any) => {
 
   const handleEditSkillGroup = () => {
 
-    const requestBody: AddEditSkillGroupBody = {
-      skill_group_name: escapeQuotes(skillGroupName.trim())
+    const requestBody: UpdateSkillGroupBody = {
+      skill_group_name: skillGroupName.trim()
     };
     let editConfirmationText;
 
@@ -195,15 +199,23 @@ export const SkillGroupInputContainer = (props: any) => {
           </ConfirmationSkillList>
         </ConfirmationSkillGroupsDiv>
       </>;
-    } catch (error) {
+    } catch (errors) {
       logger.error("Failed to update skillGroup", {
-        error,
+        errors,
         nNumber
       });
-      setSaveResult({
-        message: "Request Failed",
-        status: ModalOverlayStatuses.FAIL
-      });
+
+      if(JSON.stringify(errors).includes("Not all specified Skills exist.")){
+        setSaveResult({
+          message: `Request Partially Failed ${formatErrorMessage(errors)}`,
+          status: ModalOverlayStatuses.PARTIAL_FAIL
+        });
+      } else {
+        setSaveResult({
+          message: `Request Failed ${formatErrorMessage(errors)}`,
+          status: ModalOverlayStatuses.FAIL
+        });
+      }
     }
 
     const onConfirmEdit = async () => {
@@ -212,7 +224,7 @@ export const SkillGroupInputContainer = (props: any) => {
         status: ModalOverlayStatuses.SAVING
       });
       try {
-        await updateSkillGroup(skillGroupToEditDelete.value, requestBody);
+        await updateSkillGroup(skillGroupToEditDelete.value, requestBody, skillDispatch);
 
         logger.info("Successfully updated skill group", {
           skillGroupName: skillGroupName.trim(),
@@ -224,7 +236,6 @@ export const SkillGroupInputContainer = (props: any) => {
           status: ModalOverlayStatuses.SUCCESS
         });
 
-        await loadConsolidatedSkills(skillDispatch);
         setTimeout(() => {
           handleCloseConfirmation();
           setAction(null);
@@ -262,7 +273,7 @@ export const SkillGroupInputContainer = (props: any) => {
         status: ModalOverlayStatuses.SAVING
       });
       try {
-        await deleteSkillGroup(skillGroupToEditDelete.value);
+        await deleteSkillGroup(skillGroupToEditDelete.value, skillDispatch);
 
         logger.info("Successfully deleted skill group(s)", {
           skillGroup: skillGroupToEditDelete.value,
@@ -273,8 +284,6 @@ export const SkillGroupInputContainer = (props: any) => {
           message: "Request Successfully Processed",
           status: ModalOverlayStatuses.SUCCESS
         });
-
-        await loadConsolidatedSkills(skillDispatch);
 
         setTimeout(() => {
           handleCloseConfirmation();

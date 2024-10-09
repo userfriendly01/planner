@@ -8,7 +8,7 @@ import { Modal } from "@mui/material";
 import { PageLoadSpinner } from "components/PageLoadSpinner";
 import { apolloClient } from "components/core/Auth/SharedGraphAPIProvider";
 import {
-  useAdminDispatch, useAdminState, useSkillState
+  useAdminDispatch, useAdminState
 } from "context/appContext";
 import React from "react";
 import {
@@ -16,7 +16,6 @@ import {
   render,
   setupMockedComponents,
   initialTestState as initialState,
-  initialSkillState,
   mockProfiles,
   waitFor
 } from "testUtils";
@@ -45,10 +44,6 @@ jest.mock("components/core/Auth/SharedGraphAPIProvider", () => ({
     mutate: jest.fn(),
     query: jest.fn()
   }
-}));
-
-jest.mock("services/skill", () => ({
-  loadSkillOptions: jest.fn()
 }));
 
 jest.mock("context/appContext", () => ({
@@ -87,7 +82,6 @@ describe("<ProfileSettingsContainer />", () => {
     jest.clearAllMocks();
     useAdminState.mockReturnValue(initialTestState);
     useAdminDispatch.mockReturnValue(mockDispatch);
-    useSkillState.mockReturnValue(initialSkillState);
     apolloClient.query.mockResolvedValue();
     checkIfPO.mockReturnValue(true);
     setupMockedComponents({

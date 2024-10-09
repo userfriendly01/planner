@@ -11,7 +11,8 @@ import {
   ScrollingPaper,
   ButtonWrapper,
   CenteredDiv,
-  SkillsDetailWrapper
+  SkillsDetailWrapper,
+  DeleteMessageWrapper
 } from "../Skills.Styles";
 import { timeouts } from "globals";
 import { Divider } from "@mui/material";
@@ -25,15 +26,10 @@ import {
   ModalOverlayStatuses, UMUser
 } from "globals/interfaces";
 import { ModalOverlay } from "components/core/ModalOverlay/ModalOverlay";
-import { TwilioQueue } from "../Skills.Interfaces";
-import { getTaskQueues } from "services/taskQueues";
-import {
-  deleteSkill, loadConsolidatedSkills
-} from "services/skill";
+import { deleteSkills } from "services/skill";
 import {
   updateUser
 } from "services/user";
-import { handleConcurrentCalls } from "usermanagement/processingUtils";
 
 export const DeleteForm = (props: any) => {
   const {
@@ -44,7 +40,9 @@ export const DeleteForm = (props: any) => {
   const skillDispatch = useSkillDispatch();
 
   const state = useAdminState();
-  const { nNumber } = state.userContext;
+  const {
+    nNumber, tokens
+  } = state.userContext;
   const taskQueues = skillState.taskQueues;
   const formattedSkills = tableState.selected.map((sk: any) => ({
     name: sk,
@@ -62,29 +60,7 @@ export const DeleteForm = (props: any) => {
     setImpactedWorkers(identifyImpactedWorkers(state.workerContext.workers, formattedSkills));
   },[state.workerContext.workers]);
 
-  const deleteSkills = async () => {
-
-    const refreshState = async () => {
-      const taskQueuesPromise: Promise<{data: TwilioQueue[]}> = shouldDeleteQueue ? getTaskQueues() : Promise.resolve();
-
-      const consolidatedSkillsPromise = loadConsolidatedSkills(skillDispatch);
-
-      const [ taskQueueResults ] = await Promise.allSettled([taskQueuesPromise, consolidatedSkillsPromise]);
-
-      if(shouldDeleteQueue && taskQueueResults.status === "fulfilled"){
-        skillDispatch({
-          type: "LOAD_SKILL_OPTIONS",
-          payload: {
-            applications: skillState.applications,
-            timeOfDays: skillState.timeOfDays,
-            taskQueues: taskQueueResults.value.data,
-            operatingUnits: skillState.operatingUnits
-          }
-        });
-      }
-      return;
-    };
-
+  const handleDeleteSkills = async () => {
     setSaveResult({
       message: "Processing...",
       status: ModalOverlayStatuses.SAVING
@@ -94,7 +70,14 @@ export const DeleteForm = (props: any) => {
       const userResults = await Promise.allSettled(impactedWorkers.map((user: Partial<UMUser>) => updateUser(user.sid, { attributes: user.attributes })));
       logger.info("Worker Deletion Results", { userResults });
 
-      const results = await handleConcurrentCalls(1, deleteSkill, formattedSkills, shouldDeleteQueue);
+      const skillsRequestPayload = formattedSkills.map((s: any) => ({
+        skill: s.name,
+        taskQueueSid: s.matchingQueue.sid,
+        taskQueueName: s.matchingQueue.friendly_name,
+        deleteQueues: shouldDeleteQueue,
+        updatedBy: nNumber
+      }));
+      const results = await deleteSkills(tokens, skillsRequestPayload, skillDispatch);
       logger.info("Skill Deletion Results", { results });
 
       const totalResults = [...results, ...userResults.map((r: any, i: number) => (
@@ -103,14 +86,12 @@ export const DeleteForm = (props: any) => {
           reason: [<div key={`${i} - userError`}><h2 style={{ fontWeight: "bold" }}>Error Removing Skill from Twilio Worker</h2> - {formatErrorMessage(r.reason)}</div>]
         } : r))];
 
-      if(totalResults.every((r: any) => r.status === "fulfilled")){
+      if(totalResults.every((r: any) => r.status === "fulfilled" && r.value.status === 200)){
         logger.info("Successfully deleted all skills", {
           skills: formattedSkills.map((sk: any) => sk.name),
           taskQueuesDeleted: shouldDeleteQueue ? formattedSkills.map((sk: any) => sk.taskQueue?.friendly_name) : "TaskQueue deletion bypassed",
           nNumber
         });
-
-        await refreshState();
 
         setSaveResult({
           message: "Skills Successfully Deleted",
@@ -126,25 +107,43 @@ export const DeleteForm = (props: any) => {
           }));
         }, timeouts.MODAL_OVERLAY);
       } else {
-        const successfullyDeletedSkills = totalResults.filter((r: any) => r.status === "fulfilled");
-        const failedSkills = totalResults.filter((r: any) => r.status === "rejected");
+        const successfullyDeletedSkills = totalResults.filter((r: any) => r.status === "fulfilled" && r.value.status === 200);
+        const errorMessages: any[] = [];
+        totalResults.filter((r: any) => !(r.status === "fulfilled" && r.value.status === 200)).forEach((r: any) => {
+          if(r.value?.messages && r.value.messages[0]){
+            r.value.messages.forEach((v: string) => {
+              const splitMessage = formatErrorMessage(v).split("-");
+              errorMessages.push({ reason: [<DeleteMessageWrapper key={splitMessage[0]}><h3 style={{ fontWeight: "bold" }}></h3><h4>{splitMessage[0]}</h4> - {splitMessage[1]}</DeleteMessageWrapper> ]});
+            });
+          } else if(r.reason?.messages && r.reason.messages[0]){
+            r.reason.messages.forEach((v: string) => {
+              const splitMessage = formatErrorMessage(v).split("-");
+              errorMessages.push({ reason: [<DeleteMessageWrapper key={splitMessage[0]}><h3 style={{ fontWeight: "bold" }}></h3><h4>{splitMessage[0]}</h4> - {splitMessage[1]}</DeleteMessageWrapper> ]});
+            });
+          } else if(r.reason) {
+            errorMessages.push({ reason: [JSON.stringify(r.reason)]});
+          } else if(r.value) {
+            errorMessages.push({ reason: [JSON.stringify(r.value)]});
+          }
+        });
         const final = {
           successfullyDeletedSkills,
-          failedSkills
+          failedSkills: errorMessages
         };
-        logger.error("Errors thrown deleted skills", {
+        logger.error("Skills partially deleted", {
           ...final,
           nNumber
         });
-        await refreshState();
         setTableState({
           ...tableState,
           selected: []
         });
         setSaveResult({
-          message: failedSkills,
+          message: errorMessages,
           status: ModalOverlayStatuses.PARTIAL_FAIL
         });
+        logger.log("FAITH FAILED SKILLS", errorMessages);
+
       }
     } catch (error) {
       logger.error("Failed to delete skills", {
@@ -266,7 +265,7 @@ export const DeleteForm = (props: any) => {
                 }} >Cancel</StyledButton>
               {tableState.selected.length !== 0 &&
                   <StyledButton
-                    onClick={deleteSkills}
+                    onClick={handleDeleteSkills}
                     style={{ width: "300px" }}
                   >Delete Skills
                   </StyledButton>

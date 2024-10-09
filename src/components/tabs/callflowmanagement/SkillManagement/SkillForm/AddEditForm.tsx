@@ -24,15 +24,16 @@ import {
   formModes,
   timeouts
 } from "globals";
-import { ModalOverlayStatuses } from "globals/interfaces";
+import {
+  FlexColumn, ModalOverlayStatuses
+} from "globals/interfaces";
 import {
   Tab,
   Divider
 } from "@mui/material";
 import {
-  createSkill, editSkill, loadConsolidatedSkills
+  createSkill, updateSkill
 } from "services/skill";
-import { getTaskQueues } from "services/taskQueues";
 import { logger } from "utils/logger";
 import {
   areVhFieldsValid, getSkillFormChanges, isSkillFormValid
@@ -55,7 +56,9 @@ export const AddEditForm = (props: any) => {
   const skillDispatch = useSkillDispatch();
 
   const state = useAdminState();
-  const { nNumber } = state.userContext;
+  const {
+    nNumber, tokens
+  } = state.userContext;
   const skills = skillState.skills;
   const taskQueues = skillState.taskQueues;
 
@@ -92,26 +95,6 @@ export const AddEditForm = (props: any) => {
   const handleOnSave = async () => {
     const isAdd = skillState.skillForm.formMode === formModes.INSERT;
 
-    const refreshState = async () => {
-      const reloadTaskQueues = skillState.skillForm.taskQueue.isNew;
-      const taskQueuesPromise: Promise<{data: TwilioQueue[]}> = reloadTaskQueues ? getTaskQueues() : Promise.resolve();
-      const consolidatedSkillsPromise = loadConsolidatedSkills(skillDispatch);
-
-      const [ taskQueueResults ] = await Promise.allSettled([taskQueuesPromise, consolidatedSkillsPromise]);
-
-      if(reloadTaskQueues && taskQueueResults.status === "fulfilled"){
-        skillDispatch({
-          type: "LOAD_SKILL_OPTIONS",
-          payload: {
-            applications: skillState.applications,
-            timeOfDays: skillState.timeOfDays,
-            taskQueues: taskQueueResults.value.data,
-            operatingUnits: skillState.operatingUnits
-          }
-        });
-      }
-    };
-
     if(!areVhFieldsValid(skillState.skillForm, setMissingFields)) {
       return;
     }
@@ -124,9 +107,18 @@ export const AddEditForm = (props: any) => {
     try {
       let response;
       if(isAdd){
-        response = await createSkill(skillState, nNumber);
+        response = await createSkill(tokens, {
+          skills: skillState.skills,
+          skillForm: skillState.skillForm,
+          updatedBy: nNumber
+        }, skillDispatch);
       } else {
-        response = await editSkill(changes, skillState, nNumber);
+        response = await updateSkill(tokens, {
+          skillName: skillState.skillForm.name,
+          skills: skillState.skills,
+          changes: changes,
+          updatedBy: nNumber
+        }, skillDispatch);
       }
 
       if (response.status === 200) {
@@ -140,8 +132,6 @@ export const AddEditForm = (props: any) => {
           message: `Skill Successfully ${isAdd ? "Created" : "Updated"}`,
           status: ModalOverlayStatuses.SUCCESS
         });
-
-        await refreshState();
 
         skillDispatch({
           type: skillActions.RESET_FORM
@@ -166,8 +156,6 @@ export const AddEditForm = (props: any) => {
           message: response.messages,
           status: ModalOverlayStatuses.PARTIAL_FAIL
         });
-
-        await refreshState();
 
         skillDispatch({
           type: skillActions.RESET_FORM
@@ -199,10 +187,8 @@ export const AddEditForm = (props: any) => {
 
         {saveResult.status === ModalOverlayStatuses.PARTIAL_FAIL ?
           <SkillsDetailWrapper>
-            <FormRow>
-              <h2>The following errors were thrown</h2>
-            </FormRow>
-            <table>
+            <h2>The following errors were thrown</h2>
+            <table style={{ textAlign: "center" }}>
               <thead>
                 <tr>
                   <th>Error</th>
@@ -215,6 +201,7 @@ export const AddEditForm = (props: any) => {
                   </tr>
                 )))
                 }
+                <p>Refresh Triton to see your partial skill</p>
               </tbody>
             </table>
             <ButtonWrapper>

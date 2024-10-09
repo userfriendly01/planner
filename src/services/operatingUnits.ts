@@ -1,9 +1,16 @@
 import { apiPaths } from "globals";
-import { OperatingUnit } from "globals/interfaces";
+import {
+  OperatingUnit, Tokens
+} from "globals/interfaces";
 import { myAxios } from "utils/myAxios";
 
-export const getOperatingUnits = (): Promise<OperatingUnit[]> =>
-  myAxios.get(apiPaths.GET_OU).then(response => {
+export const getOperatingUnits = (tokens: Tokens): Promise<OperatingUnit[]> => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${tokens.adminService}`
+    }
+  };
+  return myAxios.get(apiPaths.OPERATING_UNITS, config).then(response => {
     return response.data.map((ou: { friendly_name: string; sid: string; }) => {
       const operatingunit: OperatingUnit = {} as OperatingUnit;
       operatingunit.ou_name = ou.friendly_name;
@@ -11,3 +18,4 @@ export const getOperatingUnits = (): Promise<OperatingUnit[]> =>
       return operatingunit;
     });
   });
+};

@@ -2,7 +2,7 @@ import MockAdapter from "axios-mock-adapter";
 import { myAxios } from "utils/myAxios";
 import { apiPaths } from "globals";
 import {
-  createSkill, loadConsolidatedSkills, loadSkillOptions, deleteSkill,
+  createSkill, loadSkillState, deleteSkill,
   editSkill
 } from "../skill";
 import { getOperatingUnits } from "services/operatingUnits";
@@ -849,83 +849,7 @@ describe("deleteSkill", () => {
   });
 });
 
-describe("loadSkillOptions", () => {
-  beforeEach(() => {
-    axiosMock.onGet(apiPaths.GET_TIME_OF_DAYS).replyOnce(200,  mockTimeOfDays);
-    axiosMock.onGet(apiPaths.GET_APPLICATIONS).replyOnce(200, mockApplications);
-    getTaskQueues.mockResolvedValue({ data: mockTaskQueues });
-    getOperatingUnits.mockResolvedValue(mockOperatingUnits);
-  });
-  describe("all options load successfully", () => {
-    test("should call setDispatch to load skills and skill options", async () => {
-      const mockSkillsAltered =[
-        ...mockSkills,
-        {
-          name: "466",
-          discrepancies: [],
-          taskQueueSid: "WT12345",
-          taskQueueName: "something different"
-        }
-      ];
-      await loadSkillOptions(mockSkillsAltered, mockDispatch, mockCallback);
-      expect(mockDispatch).toHaveBeenCalledTimes(2);
-      expect(mockDispatch).toHaveBeenCalledWith({
-        type: "LOAD_SKILL_OPTIONS",
-        payload: {
-          applications: mockApplications,
-          timeOfDays: mockTimeOfDays,
-          taskQueues: mockTaskQueues,
-          operatingUnits: mockOperatingUnits
-        }
-      });
-      expect(mockDispatch).toHaveBeenCalledWith({
-        type: "LOAD_SKILLS",
-        payload: [
-          {
-            ...mockSkillsAltered[0],
-            discrepancies: [`Task Queue was not found with the expression routing.skills HAS "${mockSkillsAltered[0].name}". (Case Sensitive)`]
-          },
-          {
-            ...mockSkillsAltered[1],
-            discrepancies: [
-              "I dont match!",
-              `Task Queue was not found with the expression routing.skills HAS "${mockSkillsAltered[1].name}". (Case Sensitive)`
-            ]
-          },
-          {
-            ...mockSkillsAltered[2],
-            discrepancies: [`Task Queue was not found with the expression routing.skills HAS "${mockSkillsAltered[2].name}". (Case Sensitive)`]
-          },
-          mockSkillsAltered[3],
-          {
-            ...mockSkillsAltered[4],
-            discrepancies: [`Task Queue was not found with the expression routing.skills HAS "${mockSkillsAltered[4].name}". (Case Sensitive)`]
-          },
-          {
-            ...mockSkillsAltered[5],
-            discrepancies: [`Task Queue in the graph ${mockSkillsAltered[5].taskQueueName}: ${mockSkillsAltered[5].taskQueueSid} does not match the task queue with the matching target expression routing.skills HAS "${mockSkillsAltered[5].name}". (Case Sensitive)`]
-          }
-        ]
-      });
-
-    });
-  });
-  describe("error thrown fetching options", () => {
-    beforeEach(() => {
-      getOperatingUnits.mockRejectedValue("booo");
-    });
-    test("error logged & thrown", async () => {
-      try {
-        await loadSkillOptions(mockSkills, mockDispatch, mockCallback);
-        expect(mockDispatch).toHaveBeenCalledTimes(2);
-      } catch(err){
-        expect(err).toBe("Skill Options Failed to Load - please refresh Triton and try again");
-      }
-    });
-  });
-});
-
-describe("loadConsolidatedSkills", () => {
+describe("loadSkillState", () => {
   describe("GETGRAPHSKILLS test scenarios", () => {
     beforeEach(() => {
       axiosMock.onGet(apiPaths.SKILLS_TASKROUTER).replyOnce(200, [{
@@ -954,7 +878,7 @@ describe("loadConsolidatedSkills", () => {
     });
     test("successful queries, no nextTokens involved, queries all skill skillgroup and relationship items and dispatches reformatted skills", done => {
       apolloClient.query.mockResolvedValue({ data: getGraphSkilllsResultNoTokens });
-      loadConsolidatedSkills(mockDispatch).then(() => {
+      loadSkillState(mockDispatch).then(() => {
         expect(apolloClient.query).toHaveBeenCalledTimes(1);
         expect(mockDispatch).toHaveBeenCalledTimes(2);
         expect(mockDispatch).toHaveBeenCalledWith({
@@ -1013,7 +937,7 @@ describe("loadConsolidatedSkills", () => {
         skill_id: "badskill"
       });
       apolloClient.query.mockResolvedValue({ data: skillsWithUnattachedItems });
-      loadConsolidatedSkills(mockDispatch).then(() => {
+      loadSkillState(mockDispatch).then(() => {
         expect(apolloClient.query).toHaveBeenCalledTimes(1);
         expect(mockDispatch).toHaveBeenCalledTimes(2);
         expect(mockDispatch).toHaveBeenCalledWith({
@@ -1090,7 +1014,7 @@ describe("loadConsolidatedSkills", () => {
             }
           }
         });
-      loadConsolidatedSkills(mockDispatch).then(() => {
+      loadSkillState(mockDispatch).then(() => {
         expect(apolloClient.query).toHaveBeenCalledTimes(2);
         expect(mockDispatch).toHaveBeenCalledTimes(2);
         expect(mockDispatch).toHaveBeenCalledWith({
@@ -1166,7 +1090,7 @@ describe("loadConsolidatedSkills", () => {
             }
           }
         });
-      loadConsolidatedSkills(mockDispatch).then(() => {
+      loadSkillState(mockDispatch).then(() => {
         expect(apolloClient.query).toHaveBeenCalledTimes(2);
         expect(mockDispatch).toHaveBeenCalledTimes(2);
         expect(mockDispatch).toHaveBeenCalledWith({
@@ -1214,7 +1138,7 @@ describe("loadConsolidatedSkills", () => {
     });
     test("apolloclient errors, error is logged and thrown", done => {
       apolloClient.query.mockRejectedValueOnce("boo");
-      loadConsolidatedSkills(mockDispatch).catch(err => {
+      loadSkillState(mockDispatch).catch(err => {
         expect(mockDispatch).toHaveBeenCalledTimes(0);
         expect(apolloClient.query).toHaveBeenCalledTimes(1);
         expect(logger.error).toHaveBeenCalledTimes(2);
@@ -1232,7 +1156,7 @@ describe("loadConsolidatedSkills", () => {
         data: null,
         errors: [{ message: "oh no!" }]
       });
-      loadConsolidatedSkills(mockDispatch).catch(err => {
+      loadSkillState(mockDispatch).catch(err => {
         expect(mockDispatch).toHaveBeenCalledTimes(0);
         expect(apolloClient.query).toHaveBeenCalledTimes(1);
         expect(logger.error).toHaveBeenCalledTimes(2);
@@ -1255,7 +1179,7 @@ describe("loadConsolidatedSkills", () => {
         }
       };
       apolloClient.query.mockResolvedValueOnce({ data: badData });
-      loadConsolidatedSkills(mockDispatch).then(() => {
+      loadSkillState(mockDispatch).then(() => {
         expect(apolloClient.query).toHaveBeenCalledTimes(1);
         expect(logger.error).toHaveBeenCalledTimes(1);
         expect(logger.error).toHaveBeenCalledWith("Failed to format skill profile to skill", TypeError("Cannot read properties of undefined (reading 'split')"));
@@ -1272,7 +1196,7 @@ describe("loadConsolidatedSkills", () => {
         }
       };
       apolloClient.query.mockResolvedValueOnce({ data: badData });
-      loadConsolidatedSkills(mockDispatch).then(() => {
+      loadSkillState(mockDispatch).then(() => {
         expect(apolloClient.query).toHaveBeenCalledTimes(1);
         expect(logger.error).toHaveBeenCalledTimes(1);
         expect(logger.error).toHaveBeenCalledWith("Failed to format skill profile to skill", TypeError("Cannot read properties of undefined (reading 'split')"));
@@ -1281,13 +1205,13 @@ describe("loadConsolidatedSkills", () => {
     });
   });
 
-  describe("getGraphSkills happypath, This tests the functionality of the rest of loadConsolidatedSkills", () => {
+  describe("getGraphSkills happypath, This tests the functionality of the rest of loadSkillState", () => {
     test("all calls successful, skills are missing from taskrouter and callflow, discrepancies appear on the skill", done => {
       axiosMock.onGet(apiPaths.SKILLS_TASKROUTER).replyOnce(200, []);
       axiosMock.onGet(apiPaths.SKILLS_CALLFLOW).replyOnce(200, [{ skillName: "dumbskill" }]);
 
       apolloClient.query.mockResolvedValueOnce({ data: getGraphSkilllsResultNoTokens });
-      loadConsolidatedSkills(mockDispatch).then(() => {
+      loadSkillState(mockDispatch).then(() => {
         expect(apolloClient.query).toHaveBeenCalledTimes(1);
         expect(axiosMock.history.get.length).toEqual(2);
 
@@ -1331,7 +1255,7 @@ describe("loadConsolidatedSkills", () => {
       axiosMock.onGet(apiPaths.SKILLS_CALLFLOW).replyOnce(200, []);
 
       apolloClient.query.mockResolvedValueOnce({ data: getGraphSkilllsResultNoTokens });
-      loadConsolidatedSkills(mockDispatch).then(() => {
+      loadSkillState(mockDispatch).then(() => {
         expect(apolloClient.query).toHaveBeenCalledTimes(1);
         expect(axiosMock.history.get.length).toEqual(2);
 
@@ -1381,7 +1305,7 @@ describe("loadConsolidatedSkills", () => {
       }]);
 
       apolloClient.query.mockResolvedValueOnce({ data: getGraphSkilllsResultNoTokens });
-      loadConsolidatedSkills(mockDispatch).then(() => {
+      loadSkillState(mockDispatch).then(() => {
         expect(apolloClient.query).toHaveBeenCalledTimes(1);
         expect(axiosMock.history.get.length).toEqual(2);
 

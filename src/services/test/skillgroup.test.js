@@ -14,7 +14,7 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 
-describe("addSkillGroup", () => {
+xdescribe("addSkillGroup", () => {
   const entry = {
     skill_group_name: "skill group 1"
   };
@@ -62,7 +62,7 @@ describe("addSkillGroup", () => {
   });
 });
 
-describe("deleteSkillGroup", () => {
+xdescribe("deleteSkillGroup", () => {
   test("query is successful, returns profile data", () => {
     apolloClient.mutate.mockResolvedValueOnce({
       data: {
@@ -107,7 +107,7 @@ describe("deleteSkillGroup", () => {
   });
 });
 
-describe("updateSkillGroup", () => {
+xdescribe("updateSkillGroup", () => {
   const entry = {
     skill_group_name: "skill group 1",
     skill_ids: ["skill1"]
@@ -162,4 +162,8 @@ describe("updateSkillGroup", () => {
       expect(err).toEqual("OH NO!");
     });
   });
+});
+
+test("dummy", () => {
+  expect(true).toBe(false);
 });

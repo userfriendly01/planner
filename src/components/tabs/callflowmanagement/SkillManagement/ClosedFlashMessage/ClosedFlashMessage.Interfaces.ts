@@ -4,13 +4,17 @@ import {
 } from "callflowmanagement/CallFlowConfirmationModal.Interfaces";
 import { TableState } from "callflowmanagement/CallFlowManagement.Interfaces";
 import {
-  ActionType, Skill
+  ActionType
 } from "callflowmanagement/Skills.Interfaces";
 import {
   updateClosedMessage,
-  updateFlashMessage
+  updateFlashMessage,
+  UpdateMessageRequestBody
 } from "services/message";
 import { AxiosResponse } from "axios";
+import {
+  Action, Tokens
+} from "globals/interfaces";
 
 export interface MessageContainerProps {
   action: ActionType,
@@ -39,7 +43,7 @@ interface MessageType {
   name: string,
   filter: string,
   variable: string,
-  updateFunction: (skill: Skill, message: string, nNumber: string) => Promise<AxiosResponse<any>>
+  updateFunction: (payload: UpdateMessageRequestBody, tokens: Tokens, dispatch: (action: Action) => void) => Promise<AxiosResponse<any>>
 }
 
 export const messageTypes:{ [key: string]: MessageType} = {

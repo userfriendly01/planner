@@ -145,6 +145,15 @@ export const SkillsDetailWrapper = styled.div`
   align-items: center;
   flex-direction: column;
   margin-top: 50px;
+  align-items: center;
+  height: 100%;
+  justify-content: space-between;
+`;
+
+export const DeleteMessageWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  white-space: break-spaces;
 `;
 
 export const StyledExportButton = styled(StyledButton)<{ styles: any }>`
@@ -162,12 +171,6 @@ export const FormRow = styled(FlexRow)`
   align-items: center;
   justify-content: space-evenly;
   margin: 5px;
-`;
-
-export const Wrapper = styled.div`
-  display: flex;
-  min-width: 100%;
-  position: relative;
 `;
 
 export const Label = styled.div`

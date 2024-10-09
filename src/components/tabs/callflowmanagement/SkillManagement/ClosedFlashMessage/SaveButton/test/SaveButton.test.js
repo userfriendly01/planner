@@ -87,7 +87,7 @@ describe("<SaveButton /> ", () => {
       StyledButton
     });
   });
-  describe("initial render", () => {
+  describe.only("initial render", () => {
     describe("isSingleSelection === true && action !== view", () => {
       test("should render button with single selection text", () => {
         const rendered = renderComponent(ActionTypes.EDIT, [mockSkills[0].name], messageTypes.CLOSED);

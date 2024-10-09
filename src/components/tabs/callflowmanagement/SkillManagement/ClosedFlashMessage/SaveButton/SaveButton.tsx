@@ -34,7 +34,9 @@ export const SaveButton = (props: SaveButtonProps) => {
   const state = useAdminState();
   const skillState = useSkillState();
   const skillDispatch = useSkillDispatch();
-  const { nNumber } = state.userContext;
+  const {
+    nNumber, tokens
+  } = state.userContext;
   const isSingleSelection = tableState.selected.length === 1;
   const isMultiSelection = tableState.selected.length > 1;
   const selectedSkills: Partial<Skill>[] = tableState.selected.map((ss: string) => skillState.skills.find((s: Skill) => s.name === ss) || {});
@@ -59,7 +61,11 @@ export const SaveButton = (props: SaveButtonProps) => {
         status: ModalOverlayStatuses.SAVING
       });
       const results = await Promise.allSettled(selectedSkills.map((skill: Skill) => {
-        return messageType.updateFunction(skill, text, nNumber);
+        return messageType.updateFunction({
+          skillName: skill.name,
+          message: text,
+          nNumber
+        }, tokens, skillDispatch);
       }));
       handleResults(results);
     };
@@ -90,7 +96,11 @@ export const SaveButton = (props: SaveButtonProps) => {
         status: ModalOverlayStatuses.SAVING
       });
       const results = await Promise.allSettled(selectedSkills.map((skill: Skill) => {
-        return messageType.updateFunction(skill, "", nNumber);
+        return messageType.updateFunction({
+          skillName: skill.name,
+          message: "",
+          nNumber
+        }, tokens, skillDispatch);
       }));
       handleResults(results);
     };

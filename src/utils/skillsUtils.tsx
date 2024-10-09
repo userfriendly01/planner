@@ -4,6 +4,7 @@ import {
   UMUserTwilioAttributes
 } from "globals/interfaces";
 import {
+  ConsolidatedSkill,
   Skill, SkillFormState,
   TimeOfDayRequestObject
 } from "callflowmanagement/Skills.Interfaces";
@@ -29,6 +30,18 @@ const SkillsDiv = styled.div`
   margin: 2;
   padding: 1 3;
 `;
+
+export const constructLevels = (minimum?: number, maximum?: number) => {
+  if(minimum && maximum){
+    const levels = [];
+    for (let i = minimum; i <= maximum; i++) {
+      levels.push(i);
+    }
+    return levels;
+  } else {
+    return [];
+  }
+};
 
 export const getTargetExpression = (name: string): string => `routing.skills HAS "${name}"`;
 
@@ -66,6 +79,7 @@ export const getSkillFormChanges = (originalSkill: Skill, skillForm: SkillFormSt
   if(originalSkill.discrepancies.some((d: string) => d.includes("does not match the task queue"))){ changes["taskQueue"] = skillForm.taskQueue; }
   if(originalSkill.discrepancies.some((d: string) => d.includes("is not in the Flex Console"))){ changes["levels"] = skillForm.levels; }
 
+  logger.log("Skill Form Changes", changes);
   return changes;
 };
 
@@ -107,7 +121,9 @@ export const areVhFieldsValid = (skillForm: SkillFormState, setMissingFields: (f
 
   setMissingFields(missingFields);
 
-  logger.error("Early Return on Missing Fields", { missingFields }, false);
+  if(missingFields.length){
+    logger.error("Early Return on Missing Fields", { missingFields }, false);
+  }
   return !missingFields.length;
 };
 
@@ -145,7 +161,6 @@ export const identifyImpactedWorkers = (users: UMUser[], skills: Skill[]): Parti
   };
 
   impactedWorkers = users.filter(w => skills.some(s => JSON.stringify(w).includes(s.name)));
-  console.log("BEFORE CLEANUP", impactedWorkers.slice());
   return impactedWorkers.map(w => cleanupWorker(w));
 };
 

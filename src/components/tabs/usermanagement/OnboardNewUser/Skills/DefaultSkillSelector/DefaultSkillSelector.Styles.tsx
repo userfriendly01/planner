@@ -78,8 +78,3 @@ export const SkillsWrapper = styled.div`
     border: 1px solid #aaa;
   }
 `;
-
-export const SubText = styled.div`
-  font-size: 10px;
-  font-weight: bold
-`;

@@ -5,7 +5,6 @@ import { CallFlowConfirmationModal } from "callflowmanagement/CallFlowConfirmati
 import { ActionContainer } from "callflowmanagement/ActionContainer";
 import { SkillsContainer } from "callflowmanagement/SkillsContainer";
 import { PageLoadSpinner } from "components/PageLoadSpinner";
-import { loadSkillOptions } from "services/skill";
 import {
   useAdminState, useSkillState
 } from "context/appContext";
@@ -43,10 +42,6 @@ jest.mock("callflowmanagement/ActionContainer", () => ({
 
 jest.mock("callflowmanagement/SkillsContainer", () => ({
   SkillsContainer: jest.fn()
-}));
-
-jest.mock("services/skill", () => ({
-  loadSkillOptions: jest.fn()
 }));
 
 jest.mock("@mui/material", () => ({
@@ -122,7 +117,6 @@ describe("CallFlowManagementSkills", () => {
       expectOnlyPassedProps(Modal, {
         open: false
       }, getLastInstanceCalled(Modal));
-      expect(loadSkillOptions).not.toHaveBeenCalled();
     });
     test("initial form renders as expected", () => {
       useSkillState.mockReturnValue({
@@ -133,7 +127,6 @@ describe("CallFlowManagementSkills", () => {
         operatingUnits: []
       });
       render(<CallFlowManagementSkills />);
-      expect(loadSkillOptions).toHaveBeenCalled();
     });
   });
   describe("setTableState is called", () => {

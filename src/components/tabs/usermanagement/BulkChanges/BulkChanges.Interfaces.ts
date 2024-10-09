@@ -97,10 +97,6 @@ export interface WorkerAttribute {
   location: null | string
 }
 
-export interface WorkerAttributes {
-  [key: string]: WorkerAttribute
-}
-
 export interface View {
   [key: string]: {
     value: string,
@@ -122,15 +118,3 @@ export const views: any = {
     label: "Create Managers"
   }
 };
-
-export enum ErrorTypes {
-  NO_ERRORS = "No Errors",
-  VALIDATION = "Validation",
-  PROCESSING = "Processing"
-}
-
-export enum LoadingStatus {
-  LOADING = "loading",
-  FAILED = "failed",
-  SUCCESS = "success"
-}
