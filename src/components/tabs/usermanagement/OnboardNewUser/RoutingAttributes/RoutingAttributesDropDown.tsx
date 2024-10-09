@@ -192,6 +192,34 @@ export const RoutingTeamAttrDropDownOptions: DropdownOption[] = [
   {
     label: "Outbound",
     value: "Outbound"
+  },
+  {
+    label: "SafecoAgency",
+    value: "SafecoAgency"
+  },
+  {
+    label: "SafecoAgencyNH",
+    value: "SafecoAgencyNH"
+  },
+  {
+    label: "SafecoCW",
+    value: "SafecoCW"
+  },
+  {
+    label: "SafecoTTEC",
+    value: "SafecoTTEC"
+  },
+  {
+    label: "SafecoGold",
+    value: "SafecoGold"
+  },
+  {
+    label: "SafecoGoldSpanish",
+    value: "SafecoGoldSpanish"
+  },
+  {
+    label: "SafecoGoldNH",
+    value: "SafecoGoldNH"
   }
 ];
 
