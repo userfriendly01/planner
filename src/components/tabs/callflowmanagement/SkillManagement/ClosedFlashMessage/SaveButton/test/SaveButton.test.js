@@ -87,7 +87,7 @@ describe("<SaveButton /> ", () => {
       StyledButton
     });
   });
-  describe.only("initial render", () => {
+  describe("initial render", () => {
     describe("isSingleSelection === true && action !== view", () => {
       test("should render button with single selection text", () => {
         const rendered = renderComponent(ActionTypes.EDIT, [mockSkills[0].name], messageTypes.CLOSED);
@@ -154,8 +154,16 @@ describe("<SaveButton /> ", () => {
                 onConfirm();
               });
               expect(updateFlashMessage).toHaveBeenCalledTimes(2);
-              expect(updateFlashMessage).toHaveBeenCalledWith(mockSkills[0], text, nNumber);
-              expect(updateFlashMessage).toHaveBeenCalledWith(mockSkills[1], text, nNumber);
+              expect(updateFlashMessage).toHaveBeenCalledWith({
+                skillName: mockSkills[0].name,
+                message: text,
+                nNumber
+              }, initialTestState.userContext.tokens, mockDispatch);
+              expect(updateFlashMessage).toHaveBeenCalledWith({
+                skillName: mockSkills[1].name,
+                message: text,
+                nNumber
+              }, initialTestState.userContext.tokens, mockDispatch);
 
               jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
               await waitFor(() => {
@@ -197,18 +205,25 @@ describe("<SaveButton /> ", () => {
             test("dispatch should be called resolved promises and modal overlay should display partial fail skills", async () => {
               renderComponent(ActionTypes.EDIT, [mockSkills[0].name, mockSkills[1].name, mockSkills[2].name], messageTypes.FLASH);
               const saveButton = UserFormButton.mock.calls[0][0].onClick;
-              act(() => {
-                saveButton();
-              });
+              saveButton();
               const onConfirm = mockSetConfirmationModalOpts.mock.calls[0][0].callbackMethods.onConfirm;
-              act(() => {
-                onConfirm();
-              });
+              onConfirm();
               expect(updateFlashMessage).toHaveBeenCalledTimes(3);
-              expect(updateFlashMessage).toHaveBeenCalledWith(mockSkills[0], text, nNumber);
-              expect(updateFlashMessage).toHaveBeenCalledWith(mockSkills[1], text, nNumber);
-              expect(updateFlashMessage).toHaveBeenCalledWith(mockSkills[2], text, nNumber);
-
+              expect(updateFlashMessage).toHaveBeenCalledWith({
+                skillName: mockSkills[0].name,
+                message: text,
+                nNumber
+              }, initialTestState.userContext.tokens, mockDispatch);
+              expect(updateFlashMessage).toHaveBeenCalledWith({
+                skillName: mockSkills[1].name,
+                message: text,
+                nNumber
+              }, initialTestState.userContext.tokens, mockDispatch);
+              expect(updateFlashMessage).toHaveBeenCalledWith({
+                skillName: mockSkills[2].name,
+                message: text,
+                nNumber
+              }, initialTestState.userContext.tokens, mockDispatch);
               jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
               await waitFor(() => {
                 expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(1);
@@ -237,13 +252,18 @@ describe("<SaveButton /> ", () => {
                 saveButton();
               });
               const onConfirm = mockSetConfirmationModalOpts.mock.calls[0][0].callbackMethods.onConfirm;
-              act(() => {
-                onConfirm();
-              });
+              onConfirm();
               expect(updateFlashMessage).toHaveBeenCalledTimes(2);
-              expect(updateFlashMessage).toHaveBeenCalledWith(mockSkills[0], text, nNumber);
-              expect(updateFlashMessage).toHaveBeenCalledWith(mockSkills[2], text, nNumber);
-
+              expect(updateFlashMessage).toHaveBeenCalledWith({
+                skillName: mockSkills[0].name,
+                message: text,
+                nNumber
+              }, initialTestState.userContext.tokens, mockDispatch);
+              expect(updateFlashMessage).toHaveBeenCalledWith({
+                skillName: mockSkills[2].name,
+                message: text,
+                nNumber
+              }, initialTestState.userContext.tokens, mockDispatch);
               jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
               await waitFor(() => {
                 expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(1);
@@ -300,8 +320,16 @@ describe("<SaveButton /> ", () => {
                   onConfirm();
                 });
                 expect(updateClosedMessage).toHaveBeenCalledTimes(2);
-                expect(updateClosedMessage).toHaveBeenCalledWith(mockSkills[0], text, nNumber);
-                expect(updateClosedMessage).toHaveBeenCalledWith(mockSkills[1], text, nNumber);
+                expect(updateClosedMessage).toHaveBeenCalledWith({
+                  skillName: mockSkills[0].name,
+                  message: text,
+                  nNumber
+                }, initialTestState.userContext.tokens, mockDispatch);
+                expect(updateClosedMessage).toHaveBeenCalledWith({
+                  skillName: mockSkills[1].name,
+                  message: text,
+                  nNumber
+                }, initialTestState.userContext.tokens, mockDispatch);
 
                 jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
                 await waitFor(() => {
@@ -352,9 +380,21 @@ describe("<SaveButton /> ", () => {
                 onConfirm();
               });
               expect(updateClosedMessage).toHaveBeenCalledTimes(3);
-              expect(updateClosedMessage).toHaveBeenCalledWith(mockSkills[0], text, nNumber);
-              expect(updateClosedMessage).toHaveBeenCalledWith(mockSkills[1], text, nNumber);
-              expect(updateClosedMessage).toHaveBeenCalledWith(mockSkills[2], text, nNumber);
+              expect(updateClosedMessage).toHaveBeenCalledWith({
+                skillName: mockSkills[0].name,
+                message: text,
+                nNumber
+              }, initialTestState.userContext.tokens, mockDispatch);
+              expect(updateClosedMessage).toHaveBeenCalledWith({
+                skillName: mockSkills[1].name,
+                message: text,
+                nNumber
+              }, initialTestState.userContext.tokens, mockDispatch);
+              expect(updateClosedMessage).toHaveBeenCalledWith({
+                skillName: mockSkills[2].name,
+                message: text,
+                nNumber
+              }, initialTestState.userContext.tokens, mockDispatch);
 
               jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
               await waitFor(() => {
@@ -388,9 +428,16 @@ describe("<SaveButton /> ", () => {
                 onConfirm();
               });
               expect(updateClosedMessage).toHaveBeenCalledTimes(2);
-              expect(updateClosedMessage).toHaveBeenCalledWith(mockSkills[0], text, nNumber);
-              expect(updateClosedMessage).toHaveBeenCalledWith(mockSkills[2], text, nNumber);
-
+              expect(updateClosedMessage).toHaveBeenCalledWith({
+                skillName: mockSkills[0].name,
+                message: text,
+                nNumber
+              }, initialTestState.userContext.tokens, mockDispatch);
+              expect(updateClosedMessage).toHaveBeenCalledWith({
+                skillName: mockSkills[2].name,
+                message: text,
+                nNumber
+              }, initialTestState.userContext.tokens, mockDispatch);
               jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
               await waitFor(() => {
                 expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(1);
@@ -448,8 +495,16 @@ describe("<SaveButton /> ", () => {
                   onConfirm();
                 });
                 expect(updateFlashMessage).toHaveBeenCalledTimes(2);
-                expect(updateFlashMessage).toHaveBeenCalledWith(mockSkills[0], "", nNumber);
-                expect(updateFlashMessage).toHaveBeenCalledWith(mockSkills[1], "", nNumber);
+                expect(updateFlashMessage).toHaveBeenCalledWith({
+                  skillName: mockSkills[0].name,
+                  message: "",
+                  nNumber
+                }, initialTestState.userContext.tokens, mockDispatch);
+                expect(updateFlashMessage).toHaveBeenCalledWith({
+                  skillName: mockSkills[1].name,
+                  message: "",
+                  nNumber
+                }, initialTestState.userContext.tokens, mockDispatch);
 
                 jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
                 await waitFor(() => {
@@ -471,7 +526,6 @@ describe("<SaveButton /> ", () => {
                     status: null
                   });
                   expect(mockDispatch).toHaveBeenCalledTimes(1);
-
                 });
               });
             });
@@ -499,11 +553,21 @@ describe("<SaveButton /> ", () => {
               act(() => {
                 onConfirm();
               });
-              expect(updateFlashMessage).toHaveBeenCalledTimes(3);
-              expect(updateFlashMessage).toHaveBeenCalledWith(mockSkills[0], "", nNumber);
-              expect(updateFlashMessage).toHaveBeenCalledWith(mockSkills[1], "", nNumber);
-              expect(updateFlashMessage).toHaveBeenCalledWith(mockSkills[2], "", nNumber);
-
+              expect(updateFlashMessage).toHaveBeenCalledWith({
+                skillName: mockSkills[0].name,
+                message: "",
+                nNumber
+              }, initialTestState.userContext.tokens, mockDispatch);
+              expect(updateFlashMessage).toHaveBeenCalledWith({
+                skillName: mockSkills[1].name,
+                message: "",
+                nNumber
+              }, initialTestState.userContext.tokens, mockDispatch);
+              expect(updateFlashMessage).toHaveBeenCalledWith({
+                skillName: mockSkills[2].name,
+                message: "",
+                nNumber
+              }, initialTestState.userContext.tokens, mockDispatch);
               jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
               await waitFor(() => {
                 expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(1);
@@ -536,8 +600,16 @@ describe("<SaveButton /> ", () => {
                 onConfirm();
               });
               expect(updateFlashMessage).toHaveBeenCalledTimes(2);
-              expect(updateFlashMessage).toHaveBeenCalledWith(mockSkills[0], "", nNumber);
-              expect(updateFlashMessage).toHaveBeenCalledWith(mockSkills[2], "", nNumber);
+              expect(updateFlashMessage).toHaveBeenCalledWith({
+                skillName: mockSkills[0].name,
+                message: "",
+                nNumber
+              }, initialTestState.userContext.tokens, mockDispatch);
+              expect(updateFlashMessage).toHaveBeenCalledWith({
+                skillName: mockSkills[2].name,
+                message: "",
+                nNumber
+              }, initialTestState.userContext.tokens, mockDispatch);
 
               jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
               await waitFor(() => {
@@ -562,9 +634,7 @@ describe("<SaveButton /> ", () => {
         test("confirmation modal options are set to expected properties", () => {
           renderComponent(ActionTypes.DELETE, [mockSkills[0].name], messageTypes.CLOSED);
           const saveButton = UserFormButton.mock.calls[0][0].onClick;
-          act(() => {
-            saveButton();
-          });
+          saveButton();
           expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(1);
           const confirmationDiv = render(mockSetConfirmationModalOpts.mock.calls[0][0].confirmationText).container;
           expect(confirmationDiv).toHaveTextContent("Are you sure you want to delete the Closed Message for lscOBDialer1?");
@@ -586,17 +656,20 @@ describe("<SaveButton /> ", () => {
               test("dispatch should be called for all resolved promises", async () => {
                 renderComponent(ActionTypes.DELETE, [mockSkills[0].name, mockSkills[1].name], messageTypes.CLOSED);
                 const saveButton = UserFormButton.mock.calls[0][0].onClick;
-                act(() => {
-                  saveButton();
-                });
+                saveButton();
                 const onConfirm = mockSetConfirmationModalOpts.mock.calls[0][0].callbackMethods.onConfirm;
-                act(() => {
-                  onConfirm();
-                });
+                onConfirm();
                 expect(updateClosedMessage).toHaveBeenCalledTimes(2);
-                expect(updateClosedMessage).toHaveBeenCalledWith(mockSkills[0], "", nNumber);
-                expect(updateClosedMessage).toHaveBeenCalledWith(mockSkills[1], "", nNumber);
-
+                expect(updateClosedMessage).toHaveBeenCalledWith({
+                  skillName: mockSkills[0].name,
+                  message: "",
+                  nNumber
+                }, initialTestState.userContext.tokens, mockDispatch);
+                expect(updateClosedMessage).toHaveBeenCalledWith({
+                  skillName: mockSkills[1].name,
+                  message: "",
+                  nNumber
+                }, initialTestState.userContext.tokens, mockDispatch);
                 jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
                 await waitFor(() => {
                   expect(mockSetAction).toHaveBeenCalledTimes(1);
@@ -645,10 +718,21 @@ describe("<SaveButton /> ", () => {
                 onConfirm();
               });
               expect(updateClosedMessage).toHaveBeenCalledTimes(3);
-              expect(updateClosedMessage).toHaveBeenCalledWith(mockSkills[0], "", nNumber);
-              expect(updateClosedMessage).toHaveBeenCalledWith(mockSkills[1], "", nNumber);
-              expect(updateClosedMessage).toHaveBeenCalledWith(mockSkills[2], "", nNumber);
-
+              expect(updateClosedMessage).toHaveBeenCalledWith({
+                skillName: mockSkills[0].name,
+                message: "",
+                nNumber
+              }, initialTestState.userContext.tokens, mockDispatch);
+              expect(updateClosedMessage).toHaveBeenCalledWith({
+                skillName: mockSkills[1].name,
+                message: "",
+                nNumber
+              }, initialTestState.userContext.tokens, mockDispatch);
+              expect(updateClosedMessage).toHaveBeenCalledWith({
+                skillName: mockSkills[2].name,
+                message: "",
+                nNumber
+              }, initialTestState.userContext.tokens, mockDispatch);
               jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
               await waitFor(() => {
                 expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(1);
@@ -673,16 +757,20 @@ describe("<SaveButton /> ", () => {
             test("modal overlay should display as failed", async () => {
               renderComponent(ActionTypes.DELETE, [mockSkills[0].name, mockSkills[2].name], messageTypes.CLOSED);
               const saveButton = UserFormButton.mock.calls[0][0].onClick;
-              act(() => {
-                saveButton();
-              });
+              saveButton();
               const onConfirm = mockSetConfirmationModalOpts.mock.calls[0][0].callbackMethods.onConfirm;
-              act(() => {
-                onConfirm();
-              });
+              onConfirm();
               expect(updateClosedMessage).toHaveBeenCalledTimes(2);
-              expect(updateClosedMessage).toHaveBeenCalledWith(mockSkills[0], "", nNumber);
-              expect(updateClosedMessage).toHaveBeenCalledWith(mockSkills[2], "", nNumber);
+              expect(updateClosedMessage).toHaveBeenCalledWith({
+                skillName: mockSkills[0].name,
+                message: "",
+                nNumber
+              }, initialTestState.userContext.tokens, mockDispatch);
+              expect(updateClosedMessage).toHaveBeenCalledWith({
+                skillName: mockSkills[2].name,
+                message: "",
+                nNumber
+              }, initialTestState.userContext.tokens, mockDispatch);
 
               jest.advanceTimersByTime(timeouts.MODAL_OVERLAY);
               await waitFor(() => {
@@ -709,9 +797,7 @@ describe("<SaveButton /> ", () => {
         renderComponent({ label: "Undefined Action" }, [mockSkills[0].name], messageTypes.CLOSED);
         expect(UserFormButton.mock.calls.length).toBe(1);
         const saveButton = UserFormButton.mock.calls[0][0].onClick;
-        act(() => {
-          saveButton();
-        });
+        saveButton();
         expect(mockSetConfirmationModalOpts).toHaveBeenCalledTimes(0);
       });
     });
