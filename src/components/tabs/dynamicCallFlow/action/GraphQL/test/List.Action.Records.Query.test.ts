@@ -71,6 +71,21 @@ describe("ListActionRecordsQuery", () => {
               url
               updateTime
             }
+            ... on Capture {
+              actionId
+              actionType
+              callFlowName
+              createTime
+              endpoint
+              parameter
+              updateTime
+              validLengths
+              outcomes {
+                outcomeType
+                nextActionId
+                nextActionType
+              }
+            }
           }
         }
       }`;
