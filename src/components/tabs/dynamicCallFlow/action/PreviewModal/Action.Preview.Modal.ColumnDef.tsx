@@ -69,28 +69,28 @@ export const TableGridColumnDef: GridColDef[] = [
     align: "left"
   },
   {
-    headerName: "Endpoint",
+    headerName: "Capture Endpoint",
     field: ENDPOINT,
     sortable: true,
     width: 110,
     align: "left"
   },
   {
-    headerName: "Parameter",
+    headerName: "Capture Parameter",
     field: PARAMETER,
     sortable: true,
     width: 110,
     align: "left"
   },
   {
-    headerName: "Valid Lengths",
+    headerName: "Capture Valid Lengths",
     field: VALID_LENGTHS,
     sortable: true,
     width: 110,
     align: "left"
   },
   {
-    headerName: "Outcomes",
+    headerName: "Capture Outcomes",
     field: OUTCOMES,
     sortable: true,
     width: 330,

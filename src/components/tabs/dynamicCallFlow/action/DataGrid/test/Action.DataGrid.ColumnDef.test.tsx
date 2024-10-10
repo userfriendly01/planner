@@ -57,7 +57,7 @@ describe("ActionDataGridColumnDef", () => {
   it("shouldHaveCorrectHeaderNames", () => {
     const headerNames = ActionDataGridColumnDef.map((column: GridColDef) => column.headerName);
     expect(headerNames).toEqual([
-      "", "Action Id", "Action Type", "Call Flow Name", "Next Action Id", "Next Action Type", "Speech", "Menu Timeout", "Menu Finish On Key", "Menu Min Digits", "Menu Max Digits", "Endpoint", "Parameter", "Valid Lengths", "Outcomes", "Menu Options", "Menu Repeat", "Redirect URL"
+      "", "Action Id", "Action Type", "Call Flow Name", "Next Action Id", "Next Action Type", "Speech", "Menu Timeout", "Menu Finish On Key", "Menu Min Digits", "Menu Max Digits", "Capture Endpoint", "Capture Parameter", "Capture Valid Lengths", "Capture Outcomes", "Menu Options", "Menu Repeat", "Redirect URL"
     ]);
   });
 
