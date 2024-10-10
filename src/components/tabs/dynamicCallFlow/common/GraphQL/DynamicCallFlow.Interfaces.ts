@@ -1,6 +1,6 @@
 //This is interface name matches what is defined in GraphQL schema
 
-export type ActionType = "ANNOUNCEMENT" | "MENU" | "MENUOPTIONS" | "REDIRECT" | "TRANSFER" | "HANGUP";
+export type ActionType = "ANNOUNCEMENT" | "MENU" | "MENUOPTIONS" | "REDIRECT" | "TRANSFER" | "HANGUP" ;
 
 export enum ActionTypeEnum {
   ANNOUNCEMENT = "ANNOUNCEMENT",
