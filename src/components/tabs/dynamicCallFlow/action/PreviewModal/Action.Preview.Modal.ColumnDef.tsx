@@ -1,4 +1,4 @@
-import { ENDPOINT, OUTCOMES, PARAMETER, VALID_LENGTHS } from "../Form/ActionFields";
+import { ENDPOINT, OUTCOMES, PARAMETER, VALID_LENGTHS } from "components/tabs/dynamicCallFlow/action/Form/ActionFields";
 
 import { GridColDef } from "@mui/x-data-grid";
 import React from "react";
