@@ -1,6 +1,7 @@
 import {
-  addSkillGroup, updateSkillGroup, deleteSkillGroup
+  createSkillGroup, updateSkillGroup, deleteSkillGroup
 } from "../skillgroup";
+import { skillActions } from "context/reducers/skillReducer";
 import { apolloClient } from "components/core/Auth/SharedGraphAPIProvider";
 
 jest.mock("components/core/Auth/SharedGraphAPIProvider", () => ({
@@ -14,156 +15,226 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 
-xdescribe("addSkillGroup", () => {
-  const entry = {
-    skill_group_name: "skill group 1"
-  };
-  test("query is successful, returns profile data", () => {
-    apolloClient.mutate.mockResolvedValueOnce({
-      data: {
-        skillGroup: {
-          keys: [
-            {
-              pk: "SkillGroup#1",
-              sk: "SkillGroup#1"
-            }
-          ]
-        }
-      }
-    });
-    addSkillGroup(entry).then(resolvedValue => {
-      expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
-      expect(resolvedValue).toEqual({
-        keys: [
-          {
-            pk: "SkillGroup#1",
-            sk: "SkillGroup#1"
-          }
-        ]
-      });
-    });
-  });
-  test("query contains errors, throws error", () => {
-    apolloClient.mutate.mockResolvedValueOnce({
-      data: null,
-      errors: [{ errorType: "BAD" }]
-    });
-    addSkillGroup(entry).catch(err => {
-      expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
-      expect(err).toEqual([{ errorType: "BAD" }]);
-    });
-  });
-  test("apolloClient query rejects, throws error", () => {
-    apolloClient.mutate.mockRejectedValueOnce("OH NO!");
-    addSkillGroup(entry).catch(err => {
-      expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
-      expect(err).toEqual("OH NO!");
-    });
-  });
-});
+const mockDispatch = jest.fn();
 
-xdescribe("deleteSkillGroup", () => {
-  test("query is successful, returns profile data", () => {
-    apolloClient.mutate.mockResolvedValueOnce({
+describe("skillGroup", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+  describe("createSkillGroup", () => {
+    const response = {
       data: {
         skillGroup: {
           keys: [
             {
-              pk: "SkillGroup#1",
-              sk: "SkillGroup#1"
-            }
-          ]
-        }
-      }
-    });
-    deleteSkillGroup("skillgroupid").then(resolvedValue => {
-      expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
-      expect(resolvedValue).toEqual({
-        keys: [
-          {
-            pk: "SkillGroup#1",
-            sk: "SkillGroup#1"
-          }
-        ]
-      });
-    });
-  });
-  test("query contains errors, throws error", () => {
-    apolloClient.mutate.mockResolvedValueOnce({
-      data: null,
-      errors: [{ errorType: "BAD" }]
-    });
-    deleteSkillGroup("skillgroupid").catch(err => {
-      expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
-      expect(err).toEqual([{ errorType: "BAD" }]);
-    });
-  });
-  test("apolloClient query rejects, throws error", () => {
-    apolloClient.mutate.mockRejectedValueOnce("OH NO!");
-    deleteSkillGroup("skillgroupid").catch(err => {
-      expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
-      expect(err).toEqual("OH NO!");
-    });
-  });
-});
-
-xdescribe("updateSkillGroup", () => {
-  const entry = {
-    skill_group_name: "skill group 1",
-    skill_ids: ["skill1"]
-  };
-  test("query is successful, returns profile data", () => {
-    apolloClient.mutate.mockResolvedValueOnce({
-      data: {
-        skillGroup: {
-          keys: [
-            {
-              pk: "SkillGroup#1",
-              sk: "SkillGroup#1"
+              pk: "SkillGroup#2j0ldLD2Zwa0PhNniY5GJXqKYr9",
+              sk: "Skill#466"
             },
             {
-              pk: "SkillGroup#1",
-              sk: "Skill#skill1"
+              pk: "SkillGroup#2j0ldLD2Zwa0PhNniY5GJXqKYr9",
+              sk: "SkillGroup#2j0ldLD2Zwa0PhNniY5GJXqKYr9"
             }
           ]
         }
       }
+    };
+    const payload = {
+      id: "2j0ldLD2Zwa0PhNniY5GJXqKYr9",
+      skill_group_name: "skillGroup",
+      skill_ids: ["skill"]
+    };
+    describe("All successful", () => {
+      beforeEach(() => {
+        apolloClient.mutate.mockResolvedValue(response);
+      });
+      describe("taskqueue is new", () => {
+        test("should return with new task queue and call dispatch", async () => {
+          const res = await createSkillGroup(payload, mockDispatch);
+          expect(mockDispatch).toHaveBeenCalledWith({
+            type: skillActions.ADD_SKILL_GROUP,
+            payload: {
+              skill_group_name: payload.skill_group_name,
+              skills: payload.skill_ids,
+              id: payload.id,
+              pk: "SkillGroup#2j0ldLD2Zwa0PhNniY5GJXqKYr9",
+              sk: "SkillGroup#2j0ldLD2Zwa0PhNniY5GJXqKYr9"
+            }
+          });
+          expect(res).toStrictEqual(response.data.skillGroup);
+        });
+      });
     });
-    updateSkillGroup("skillgroupid", entry).then(resolvedValue => {
-      expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
-      expect(resolvedValue).toEqual({
-        keys: [
-          {
-            pk: "SkillGroup#1",
-            sk: "SkillGroup#1"
-          },
-          {
-            pk: "SkillGroup#1",
-            sk: "Skill#skill1"
-          }
-        ]
+    describe("errors.length", () => {
+      const errors = {
+        errors: [ { message: "aww" }]
+      };
+      beforeEach(() => {
+        apolloClient.mutate.mockResolvedValue(errors);
+      });
+      test("should return and not call dispatch", async () => {
+        try {
+          await createSkillGroup(payload, mockDispatch);
+        } catch(err) {
+          expect(mockDispatch).not.toHaveBeenCalled();
+          expect(err).toStrictEqual(["aww"]);
+        }
+      });
+    });
+    describe("full failure", () => {
+      beforeEach(() => {
+        apolloClient.mutate.mockRejectedValue("AWWW");
+      });
+      test("should throw error and not call dispatch", async () => {
+        try {
+          await createSkillGroup(payload, mockDispatch);
+        } catch(err) {
+          expect(mockDispatch).not.toHaveBeenCalled();
+          expect(err).toStrictEqual("AWWW");
+        }
       });
     });
   });
-  test("query contains errors, throws error", () => {
-    apolloClient.mutate.mockResolvedValueOnce({
-      data: null,
-      errors: [{ errorType: "BAD" }]
+  describe("updateSkillGroup", () => {
+    const response = {
+      data: {
+        skillGroup: {
+          keys: [
+            {
+              pk: "SkillGroup#2j0ldLD2Zwa0PhNniY5GJXqKYr9",
+              sk: "Skill#466"
+            },
+            {
+              pk: "SkillGroup#2j0ldLD2Zwa0PhNniY5GJXqKYr9",
+              sk: "SkillGroup#2j0ldLD2Zwa0PhNniY5GJXqKYr9"
+            }
+          ]
+        }
+      }
+    };
+    const payload = {
+      id: "2j0ldLD2Zwa0PhNniY5GJXqKYr9",
+      skill_group_name: "skillGroup",
+      skill_ids: ["skill"]
+    };
+    describe("All successful", () => {
+      beforeEach(() => {
+        apolloClient.mutate.mockResolvedValue(response);
+      });
+      describe("taskqueue is new", () => {
+        test("should return with new task queue and call dispatch", async () => {
+          const res = await updateSkillGroup(payload.id, payload, mockDispatch);
+          expect(mockDispatch).toHaveBeenCalledWith({
+            type: skillActions.UPDATE_SKILL_GROUP,
+            payload: {
+              skillGroup: {
+                skill_group_name: payload.skill_group_name,
+                skills: payload.skill_ids,
+                id: payload.id,
+                pk: "SkillGroup#2j0ldLD2Zwa0PhNniY5GJXqKYr9",
+                sk: "SkillGroup#2j0ldLD2Zwa0PhNniY5GJXqKYr9"
+              },
+              id: payload.id
+            }
+          });
+          expect(res).toStrictEqual(response.data.skillGroup);
+        });
+      });
     });
-    updateSkillGroup("skillgroupid", entry).catch(err => {
-      expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
-      expect(err).toEqual([{ errorType: "BAD" }]);
+    describe("errors.length", () => {
+      const errors = {
+        errors: [ { message: "aww" }]
+      };
+      beforeEach(() => {
+        apolloClient.mutate.mockResolvedValue(errors);
+      });
+      test("should return and not call dispatch", async () => {
+        try {
+          await updateSkillGroup(payload.id, payload, mockDispatch);
+        } catch(err) {
+          expect(mockDispatch).not.toHaveBeenCalled();
+          expect(err).toStrictEqual(["aww"]);
+        }
+      });
+    });
+    describe("full failure", () => {
+      beforeEach(() => {
+        apolloClient.mutate.mockRejectedValue("AWWW");
+      });
+      test("should throw error and not call dispatch", async () => {
+        try {
+          await updateSkillGroup(payload.id, payload, mockDispatch);
+        } catch(err) {
+          expect(mockDispatch).not.toHaveBeenCalled();
+          expect(err).toStrictEqual("AWWW");
+        }
+      });
     });
   });
-  test("apolloClient query rejects, throws error", () => {
-    apolloClient.mutate.mockRejectedValueOnce("OH NO!");
-    updateSkillGroup("skillgroupid", entry).catch(err => {
-      expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
-      expect(err).toEqual("OH NO!");
+  describe("updateSkillGroup", () => {
+    const response = {
+      data: {
+        skillGroup: {
+          keys: [
+            {
+              pk: "SkillGroup#2j0ldLD2Zwa0PhNniY5GJXqKYr9",
+              sk: "Skill#466"
+            },
+            {
+              pk: "SkillGroup#2j0ldLD2Zwa0PhNniY5GJXqKYr9",
+              sk: "SkillGroup#2j0ldLD2Zwa0PhNniY5GJXqKYr9"
+            }
+          ]
+        }
+      }
+    };
+    const payload = {
+      id: "2j0ldLD2Zwa0PhNniY5GJXqKYr9",
+      skill_group_name: "skillGroup",
+      skill_ids: ["skill"]
+    };
+    describe("All successful", () => {
+      beforeEach(() => {
+        apolloClient.mutate.mockResolvedValue(response);
+      });
+      describe("taskqueue is new", () => {
+        test("should return with new task queue and call dispatch", async () => {
+          const res = await deleteSkillGroup(payload.id, mockDispatch);
+          expect(mockDispatch).toHaveBeenCalledWith({
+            type: skillActions.DELETE_SKILL_GROUP,
+            payload: payload.id
+          });
+          expect(res).toStrictEqual(response.data.skillGroup);
+        });
+      });
+    });
+    describe("errors.length", () => {
+      const errors = {
+        errors: [ { message: "aww" }]
+      };
+      beforeEach(() => {
+        apolloClient.mutate.mockResolvedValue(errors);
+      });
+      test("should return and not call dispatch", async () => {
+        try {
+          await deleteSkillGroup(payload.id, mockDispatch);
+        } catch(err) {
+          expect(mockDispatch).not.toHaveBeenCalled();
+          expect(err).toStrictEqual(["aww"]);
+        }
+      });
+    });
+    describe("full failure", () => {
+      beforeEach(() => {
+        apolloClient.mutate.mockRejectedValue("AWWW");
+      });
+      test("should throw error and not call dispatch", async () => {
+        try {
+          await deleteSkillGroup(payload.id, mockDispatch);
+        } catch(err) {
+          expect(mockDispatch).not.toHaveBeenCalled();
+          expect(err).toStrictEqual("AWWW");
+        }
+      });
     });
   });
-});
-
-test("dummy", () => {
-  expect(true).toBe(false);
 });

@@ -1,5 +1,5 @@
 import { SkillGroup } from "callflowmanagement/SkillManagement/Skills.Interfaces";
-import { apolloClient } from "../components/core/Auth/SharedGraphAPIProvider";
+import { apolloClient } from "components/core/Auth/SharedGraphAPIProvider";
 import {
   CREATE_SKILL_GROUP, DELETE_SKILL_GROUP, UPDATE_SKILL_GROUP
 } from "globals/skillGroup";
@@ -30,6 +30,7 @@ export const createSkillGroup = async (payload: AddSkillGroupBody, dispatch: (ac
 
     const graphSkillGroup = data.skillGroup.keys.find((k => k.pk === k.sk));
     const graphSkillGroupId = graphSkillGroup.pk.split("#");
+
     dispatch({
       type: skillActions.ADD_SKILL_GROUP,
       payload: {
@@ -108,7 +109,7 @@ export const deleteSkillGroup = async (id: string, dispatch: (action: Action) =>
     });
 
     if (errors?.length) {
-      throw errors;
+      throw errors.map(e => e.message);
     }
 
     dispatch({
