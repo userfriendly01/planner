@@ -45,7 +45,7 @@ export const createSkill = async (tokens: Tokens, payload: CreateSkillRequestBod
           ...payload.skillForm,
           taskQueue: payload.skillForm.taskQueue.isNew ? {
             isNew: true,
-            ...response.data.data.taskQueue
+            taskQueue: response.data.data.taskQueue
           } : payload.skillForm.taskQueue
         }
       });
@@ -110,7 +110,7 @@ interface DeleteSkillResponseBody {
   status: number;
   messages?: string[];
 }
-export const deleteSkill = async (tokens: Tokens, params: DeleteSkillRequestParams, dispatch: (action: Action) => void): Promise<any> => {
+const deleteSkill = async (tokens: Tokens, params: DeleteSkillRequestParams, dispatch: (action: Action) => void): Promise<any> => {
   try {
     const response: AxiosResponse<DeleteSkillResponseBody> =  await myAxios.delete(apiPaths.SKILL, {
       headers: {
@@ -167,6 +167,7 @@ export const deleteSkills = async (
   };
 
   await processBatch();
+  console.warn("hmm", processingResults);
   logger.log("***deleteSkillsConcurrently - processingResults", processingResults.slice());
   return processingResults;
 };
