@@ -167,7 +167,6 @@ export const deleteSkills = async (
   };
 
   await processBatch();
-  console.warn("hmm", processingResults);
   logger.log("***deleteSkillsConcurrently - processingResults", processingResults.slice());
   return processingResults;
 };
