@@ -24,9 +24,7 @@ import {
   formModes,
   timeouts
 } from "globals";
-import {
-  FlexColumn, ModalOverlayStatuses
-} from "globals/interfaces";
+import { ModalOverlayStatuses } from "globals/interfaces";
 import {
   Tab,
   Divider

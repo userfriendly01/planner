@@ -23,9 +23,8 @@ import {
   skillActions
 } from "context/reducers/skillReducer";
 import {
-  createSkill, editSkill, loadSkillState
+  createSkill, updateSkill
 } from "services/skill";
-import { getTaskQueues } from "services/taskQueues";
 import {
   areVhFieldsValid, isSkillFormValid, getSkillFormChanges
 } from "utils/skillsUtils";
@@ -62,12 +61,7 @@ jest.mock("components/StyledButton", () => ({
 
 jest.mock("services/skill", () => ({
   createSkill: jest.fn(),
-  editSkill: jest.fn(),
-  loadSkillState: jest.fn()
-}));
-
-jest.mock("services/taskQueues", () => ({
-  getTaskQueues: jest.fn()
+  updateSkill: jest.fn()
 }));
 
 jest.mock("utils/skillsUtils", () => ({
@@ -181,8 +175,6 @@ describe("<AddEditForm />", () => {
             status: 200,
             messages: [success]
           });
-          loadSkillState.mockResolvedValue(success);
-          getTaskQueues.mockResolvedValue(initialSkillState.taskQueues);
         });
         describe("all service calls are successful", () => {
           test("form rerenders when saving and succeded", async () => {
@@ -201,52 +193,8 @@ describe("<AddEditForm />", () => {
             expect(mockSkillDispatch).toHaveBeenCalledWith({
               type: skillActions.RESET_FORM
             });
-            await waitFor(() => expect(loadSkillState).toHaveBeenCalled());
             jest.runAllTimers();
             expect(mockSetAction).toHaveBeenCalledWith(null);
-            expect(getTaskQueues).not.toHaveBeenCalledTimes(1);
-          });
-          describe("new task queue is created", () => {
-            test("LOAD_SKILL_OPTIONS is dispatched", async () => {
-              useSkillState.mockReturnValue({
-                ...initialSkillState,
-                skillForm: {
-                  ...initialSkillState.skillForm,
-                  taskQueue: {
-                    ...initialSkillState.skillForm.taskQueue,
-                    isNew: true
-                  }
-                }
-              });
-              renderComponent();
-              const submit = StyledButton.mock.calls[1][0].onClick;
-              submit();
-              await waitFor(() => expect(ModalOverlay).toHaveBeenCalledTimes(2));
-              expectOnlyPassedProps(ModalOverlay, {
-                message: "Processing...",
-                status: "saving"
-              }, 0);
-              expectOnlyPassedProps(ModalOverlay, {
-                message: "Skill Successfully Created",
-                status: "success"
-              }, 1);
-              expect(mockSkillDispatch).toHaveBeenCalledWith({
-                type: skillActions.RESET_FORM
-              });
-              await waitFor(() => expect(loadSkillState).toHaveBeenCalled());
-              jest.runAllTimers();
-              expect(mockSetAction).toHaveBeenCalledWith(null);
-              expect(getTaskQueues).toHaveBeenCalledTimes(1);
-              expect(mockSkillDispatch).toHaveBeenCalledWith({
-                type: "LOAD_SKILL_OPTIONS",
-                payload: {
-                  applications: initialSkillState.applications,
-                  timeOfDays: initialSkillState.timeOfDays,
-                  taskQueues: initialSkillState.taskQueueResults,
-                  operatingUnits: initialSkillState.operatingUnits
-                }
-              });
-            });
           });
         });
         describe("partial error is thrown creating new skill", () => {
@@ -278,20 +226,9 @@ describe("<AddEditForm />", () => {
             expect(mockSkillDispatch).toHaveBeenCalledWith({
               type: skillActions.RESET_FORM
             });
-            await waitFor(() => expect(loadSkillState).toHaveBeenCalled());
             jest.runAllTimers();
             expect(rendered.container).toHaveTextContent("The following errors were thrown");
             expect(rendered.container).toHaveTextContent(error);
-            expect(getTaskQueues).toHaveBeenCalledTimes(1);
-            expect(mockSkillDispatch).toHaveBeenCalledWith({
-              type: "LOAD_SKILL_OPTIONS",
-              payload: {
-                applications: initialSkillState.applications,
-                timeOfDays: initialSkillState.timeOfDays,
-                taskQueues: initialSkillState.taskQueueResults,
-                operatingUnits: initialSkillState.operatingUnits
-              }
-            });
           });
           describe("close button is clicked", () => {
             test("close modal and skill dispatch are called", async () => {
@@ -306,7 +243,6 @@ describe("<AddEditForm />", () => {
               expect(mockSkillDispatch).toHaveBeenCalledWith({
                 type: skillActions.RESET_FORM
               });
-              await waitFor(() => expect(loadSkillState).toHaveBeenCalled());
               jest.runAllTimers();
               expect(rendered.container).toHaveTextContent("The following errors were thrown");
               const closeModal = StyledButton.mock.calls[4][0].onClick;
@@ -331,8 +267,6 @@ describe("<AddEditForm />", () => {
               message: "Failed to Create Skill: Aww",
               status: "fail"
             }, 1);
-            expect(loadSkillState).not.toHaveBeenCalled();
-            expect(getTaskQueues).not.toHaveBeenCalledTimes(1);
           });
         });
         describe("refresh state error is thrown", () => {
@@ -347,7 +281,6 @@ describe("<AddEditForm />", () => {
                 }
               }
             });
-            loadSkillState.mockRejectedValue(error);
             renderComponent();
             const submit = StyledButton.mock.calls[1][0].onClick;
             submit();
@@ -363,19 +296,8 @@ describe("<AddEditForm />", () => {
             expect(mockSkillDispatch).toHaveBeenCalledWith({
               type: skillActions.RESET_FORM
             });
-            await waitFor(() => expect(loadSkillState).toHaveBeenCalled());
             jest.runAllTimers();
             expect(mockSetAction).toHaveBeenCalledWith(null);
-            expect(getTaskQueues).toHaveBeenCalledTimes(1);
-            expect(mockSkillDispatch).toHaveBeenCalledWith({
-              type: "LOAD_SKILL_OPTIONS",
-              payload: {
-                applications: initialSkillState.applications,
-                timeOfDays: initialSkillState.timeOfDays,
-                taskQueues: initialSkillState.taskQueueResults,
-                operatingUnits: initialSkillState.operatingUnits
-              }
-            });
           });
         });
       });
@@ -487,12 +409,10 @@ describe("<AddEditForm />", () => {
         isSkillFormValid.mockReturnValue(true);
         areVhFieldsValid.mockReturnValue(true);
         getSkillFormChanges.mockReturnValue(formChanges);
-        editSkill.mockResolvedValue({
+        updateSkill.mockResolvedValue({
           status: 200,
           messages: [success]
         });
-        loadSkillState.mockResolvedValue(success);
-        getTaskQueues.mockResolvedValue(initialSkillState.taskQueues);
       });
       describe("all service calls are successful", () => {
         test("form rerenders when saving and succeded", async () => {
@@ -511,52 +431,8 @@ describe("<AddEditForm />", () => {
           expect(mockSkillDispatch).toHaveBeenCalledWith({
             type: skillActions.RESET_FORM
           });
-          await waitFor(() => expect(loadSkillState).toHaveBeenCalled());
           jest.runAllTimers();
           expect(mockSetAction).toHaveBeenCalledWith(null);
-          expect(getTaskQueues).toHaveBeenCalledTimes(1);
-        });
-        describe("new task queue is created", () => {
-          test("LOAD_SKILL_OPTIONS is dispatched", async () => {
-            useSkillState.mockReturnValue({
-              ...initialSkillState,
-              skillForm: {
-                ...initialSkillState.skillForm,
-                taskQueue: {
-                  ...initialSkillState.skillForm.taskQueue,
-                  isNew: true
-                }
-              }
-            });
-            renderComponent();
-            const submit = StyledButton.mock.calls[1][0].onClick;
-            submit();
-            await waitFor(() => expect(ModalOverlay).toHaveBeenCalledTimes(2));
-            expectOnlyPassedProps(ModalOverlay, {
-              message: "Processing...",
-              status: "saving"
-            }, 0);
-            expectOnlyPassedProps(ModalOverlay, {
-              message: "Skill Successfully Created",
-              status: "success"
-            }, 1);
-            expect(mockSkillDispatch).toHaveBeenCalledWith({
-              type: skillActions.RESET_FORM
-            });
-            await waitFor(() => expect(loadSkillState).toHaveBeenCalled());
-            jest.runAllTimers();
-            expect(mockSetAction).toHaveBeenCalledWith(null);
-            expect(getTaskQueues).toHaveBeenCalledTimes(1);
-            expect(mockSkillDispatch).toHaveBeenCalledWith({
-              type: "LOAD_SKILL_OPTIONS",
-              payload: {
-                applications: initialSkillState.applications,
-                timeOfDays: initialSkillState.timeOfDays,
-                taskQueues: initialSkillState.taskQueueResults,
-                operatingUnits: initialSkillState.operatingUnits
-              }
-            });
-          });
         });
       });
       describe("partial error is thrown creating new skill", () => {
@@ -588,20 +464,9 @@ describe("<AddEditForm />", () => {
           expect(mockSkillDispatch).toHaveBeenCalledWith({
             type: skillActions.RESET_FORM
           });
-          await waitFor(() => expect(loadSkillState).toHaveBeenCalled());
           jest.runAllTimers();
           expect(rendered.container).toHaveTextContent("The following errors were thrown");
           expect(rendered.container).toHaveTextContent(error);
-          expect(getTaskQueues).toHaveBeenCalledTimes(1);
-          expect(mockSkillDispatch).toHaveBeenCalledWith({
-            type: "LOAD_SKILL_OPTIONS",
-            payload: {
-              applications: initialSkillState.applications,
-              timeOfDays: initialSkillState.timeOfDays,
-              taskQueues: initialSkillState.taskQueueResults,
-              operatingUnits: initialSkillState.operatingUnits
-            }
-          });
         });
         describe("close button is clicked", () => {
           test("close modal and skill dispatch are called", async () => {
@@ -616,7 +481,6 @@ describe("<AddEditForm />", () => {
             expect(mockSkillDispatch).toHaveBeenCalledWith({
               type: skillActions.RESET_FORM
             });
-            await waitFor(() => expect(loadSkillState).toHaveBeenCalled());
             jest.runAllTimers();
             expect(rendered.container).toHaveTextContent("The following errors were thrown");
             const closeModal = StyledButton.mock.calls[4][0].onClick;
@@ -628,7 +492,7 @@ describe("<AddEditForm />", () => {
       });
       describe("full error is thrown creating new skill", () => {
         test("error messages are displayed", async () => {
-          editSkill.mockRejectedValue(error);
+          updateSkill.mockRejectedValue(error);
           renderComponent();
           const submit = StyledButton.mock.calls[1][0].onClick;
           submit();
@@ -641,13 +505,10 @@ describe("<AddEditForm />", () => {
             message: "Failed to Update Skill: Aww",
             status: "fail"
           }, 1);
-          expect(loadSkillState).not.toHaveBeenCalled();
-          expect(getTaskQueues).toHaveBeenCalledTimes(0);
         });
       });
       describe("refresh state error is thrown", () => {
         test("Success is still rendered", async () => {
-          loadSkillState.mockRejectedValue(error);
           renderComponent();
           const submit = StyledButton.mock.calls[1][0].onClick;
           submit();
@@ -663,19 +524,8 @@ describe("<AddEditForm />", () => {
           expect(mockSkillDispatch).toHaveBeenCalledWith({
             type: skillActions.RESET_FORM
           });
-          await waitFor(() => expect(loadSkillState).toHaveBeenCalled());
           jest.runAllTimers();
           expect(mockSetAction).toHaveBeenCalledWith(null);
-          expect(getTaskQueues).toHaveBeenCalledTimes(1);
-          expect(mockSkillDispatch).toHaveBeenCalledWith({
-            type: "LOAD_SKILL_OPTIONS",
-            payload: {
-              applications: initialSkillState.applications,
-              timeOfDays: initialSkillState.timeOfDays,
-              taskQueues: initialSkillState.taskQueueResults,
-              operatingUnits: initialSkillState.operatingUnits
-            }
-          });
         });
       });
     });

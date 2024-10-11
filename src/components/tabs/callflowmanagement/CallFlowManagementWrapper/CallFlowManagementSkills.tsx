@@ -112,7 +112,6 @@ export const CallFlowManagementSkills = () => {
 
   return (
     <CallflowWrapper>
-
       <MessageWrapper>
         <SkillsContainer
           tableState={tableState}

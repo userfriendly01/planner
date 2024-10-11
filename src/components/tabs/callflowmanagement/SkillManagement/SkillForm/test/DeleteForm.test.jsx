@@ -16,11 +16,9 @@ import {
   useSkillState,
   useSkillDispatch
 } from "context/appContext";
-import { loadSkillState } from "services/skill";
+import { deleteSkills } from "services/skill";
 import { updateUser } from "services/user";
-import { getTaskQueues } from "services/taskQueues";
 import { identifyImpactedWorkers } from "utils/skillsUtils";
-import { handleConcurrentCalls } from "usermanagement/processingUtils";
 
 jest.mock("@mui/material", () => ({
   Divider: jest.fn(),
@@ -44,16 +42,11 @@ jest.mock("components/StyledButton", () => ({
 }));
 
 jest.mock("services/skill", () => ({
-  createSkill: jest.fn(),
-  loadSkillState: jest.fn()
+  deleteSkills: jest.fn()
 }));
 
 jest.mock("services/user", () => ({
   updateUser: jest.fn()
-}));
-
-jest.mock("services/taskQueues", () => ({
-  getTaskQueues: jest.fn()
 }));
 
 jest.mock("utils/skillsUtils", () => ({
@@ -61,16 +54,33 @@ jest.mock("utils/skillsUtils", () => ({
   identifyImpactedWorkers: jest.fn()
 }));
 
-jest.mock("usermanagement/processingUtils", () => ({
-  handleConcurrentCalls: jest.fn()
-}));
+const error = {
+  status: 500,
+  messages: [
+    "Error - Aww"
+  ]
+};
 
-const error = "Aww";
-const success = "Yay!";
+const partialError = {
+  status: 206,
+  messages: [
+    "Error - Aww"
+  ]
+};
+const success = {
+  status: 200,
+  messages: ["Yay!"]
+};
 const resolvedPromise = {
   status: "fulfilled",
   value: success
 };
+
+const resolved206Promise = {
+  status: "fulfilled",
+  value: partialError
+};
+
 const rejectedPromise = {
   status: "rejected",
   reason: error
@@ -103,9 +113,7 @@ describe("<DeleteForm />", () => {
     useAdminDispatch.mockReturnValue(mockAdminlDispatch);
     useSkillState.mockReturnValue(initialSkillState);
     useSkillDispatch.mockReturnValue(mockSkillDispatch);
-    loadSkillState.mockResolvedValue(success);
-    getTaskQueues.mockResolvedValue(initialSkillState.taskQueues);
-    handleConcurrentCalls.mockResolvedValue(resolvedPromise);
+    deleteSkills.mockResolvedValue(resolvedPromise);
     identifyImpactedWorkers.mockReturnValue([
       {
         sid: "firstworker",
@@ -158,9 +166,7 @@ describe("<DeleteForm />", () => {
   describe("submit button is clicked", () => {
     describe("all service calls are successful", () => {
       beforeEach(() => {
-        handleConcurrentCalls.mockResolvedValue([resolvedPromise]);
-        loadSkillState.mockResolvedValue(success);
-        getTaskQueues.mockResolvedValue(initialSkillState.taskQueues);
+        deleteSkills.mockResolvedValue([resolvedPromise]);
       });
       test("form rerenders when saving and succeded", async () => {
         renderComponent();
@@ -175,15 +181,21 @@ describe("<DeleteForm />", () => {
           message: "Skills Successfully Deleted",
           status: "success"
         }, 1);
-        await waitFor(() => expect(loadSkillState).toHaveBeenCalled());
         jest.runAllTimers();
         expect(mockSetAction).toHaveBeenCalledWith(null);
-        expect(getTaskQueues).not.toHaveBeenCalledTimes(1);
       });
     });
-    describe("partial error is thrown creating new skill", () => {
+    describe("partial error is thrown deleting new skill", () => {
       beforeEach(() => {
-        handleConcurrentCalls.mockResolvedValue([resolvedPromise, rejectedPromise, resolvedPromise]);
+        deleteSkills.mockResolvedValue([resolvedPromise, rejectedPromise, resolved206Promise,
+          {
+            status: "rejected",
+            reason: { oh: "no" }
+          },
+          {
+            status: "fulfilled",
+            value: { oh: "no" }
+          }]);
       });
       describe("delete task queues is not selected ", () => {
         test("error messages are displayed", async () => {
@@ -195,11 +207,10 @@ describe("<DeleteForm />", () => {
             message: "Processing...",
             status: "saving"
           }, 0);
-          await waitFor(() => expect(loadSkillState).toHaveBeenCalled());
           jest.runAllTimers();
           expect(rendered.container).toHaveTextContent("The following errors were thrown");
-          expect(rendered.container).toHaveTextContent(error);
-          expect(getTaskQueues).not.toHaveBeenCalledTimes(1);
+          expect(rendered.container).toHaveTextContent(rejectedPromise.reason.messages);
+          expect(rendered.container).toHaveTextContent(resolved206Promise.value.messages);
           expect(mockSkillDispatch).not.toHaveBeenCalledWith();
         });
         xtest("error messages are displayed", async () => {
@@ -212,20 +223,9 @@ describe("<DeleteForm />", () => {
             message: "Processing...",
             status: "saving"
           }, 0);
-          await waitFor(() => expect(loadSkillState).toHaveBeenCalled());
           jest.runAllTimers();
           expect(rendered.container).toHaveTextContent("The following errors were thrown");
           expect(rendered.container).toHaveTextContent(error);
-          expect(getTaskQueues).toHaveBeenCalledTimes(1);
-          expect(mockSkillDispatch).toHaveBeenCalledWith({
-            type: "LOAD_SKILL_OPTIONS",
-            payload: {
-              applications: initialSkillState.applications,
-              timeOfDays: initialSkillState.timeOfDays,
-              taskQueues: initialSkillState.taskQueueResults,
-              operatingUnits: initialSkillState.operatingUnits
-            }
-          });
         });
       });
       describe("close button is clicked", () => {
@@ -238,7 +238,6 @@ describe("<DeleteForm />", () => {
             message: "Processing...",
             status: "saving"
           }, 0);
-          await waitFor(() => expect(loadSkillState).toHaveBeenCalled());
           jest.runAllTimers();
           expect(rendered.container).toHaveTextContent("The following errors were thrown");
           const closeModal = StyledButton.mock.calls[4][0].onClick;
@@ -249,7 +248,7 @@ describe("<DeleteForm />", () => {
     });
     describe("full error is thrown deleting new skill", () => {
       test("error messages are displayed", async () => {
-        handleConcurrentCalls.mockRejectedValue(error);
+        deleteSkills.mockRejectedValue(error);
         renderComponent();
         const submit = StyledButton.mock.calls[1][0].onClick;
         submit();
@@ -259,35 +258,9 @@ describe("<DeleteForm />", () => {
           status: "saving"
         }, 0);
         expectOnlyPassedProps(ModalOverlay, {
-          message: "Failed to Delete Skills: Aww",
+          message: `Failed to Delete Skills: ${JSON.stringify(error)}`,
           status: "fail"
         }, 1);
-        expect(loadSkillState).not.toHaveBeenCalled();
-        expect(getTaskQueues).not.toHaveBeenCalledTimes(1);
-      });
-    });
-    describe("refresh state error is thrown", () => {
-      beforeEach(() => {
-        handleConcurrentCalls.mockResolvedValue([resolvedPromise]);
-        loadSkillState.mockRejectedValue(error);
-        getTaskQueues.mockResolvedValue(initialSkillState.taskQueues);
-      });
-      test("Success is still rendered", async () => {
-        renderComponent();
-        const submit = StyledButton.mock.calls[1][0].onClick;
-        submit();
-        await waitFor(() => expect(ModalOverlay).toHaveBeenCalledTimes(2));
-        expectOnlyPassedProps(ModalOverlay, {
-          message: "Processing...",
-          status: "saving"
-        }, 0);
-        expectOnlyPassedProps(ModalOverlay, {
-          message: "Skills Successfully Deleted",
-          status: "success"
-        }, 1);
-        await waitFor(() => expect(loadSkillState).toHaveBeenCalled());
-        jest.runAllTimers();
-        expect(mockSetAction).toHaveBeenCalledWith(null);
       });
     });
   });

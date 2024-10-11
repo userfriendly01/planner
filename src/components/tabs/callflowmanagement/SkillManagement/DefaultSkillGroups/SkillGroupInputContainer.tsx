@@ -240,18 +240,25 @@ export const SkillGroupInputContainer = (props: any) => {
           handleCloseConfirmation();
           setAction(null);
         }, timeouts.MODAL_OVERLAY);
-      } catch (error) {
+      } catch (errors) {
         logger.error("Failed to edit skill group(s)", {
           skillGroupName: skillGroupName.trim(),
           nNumber,
           requestBody,
-          error
+          errors
         });
 
-        setSaveResult({
-          message: "Request Failed",
-          status: ModalOverlayStatuses.FAIL
-        });
+        if(JSON.stringify(errors).includes("Not all specified Skills exist.")){
+          setSaveResult({
+            message: `Request Partially Failed ${formatErrorMessage(errors)}`,
+            status: ModalOverlayStatuses.PARTIAL_FAIL
+          });
+        } else {
+          setSaveResult({
+            message: `Request Failed ${formatErrorMessage(errors)}`,
+            status: ModalOverlayStatuses.FAIL
+          });
+        }
       }
     };
 
