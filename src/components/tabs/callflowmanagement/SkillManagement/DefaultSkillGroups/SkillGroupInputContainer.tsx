@@ -205,17 +205,10 @@ export const SkillGroupInputContainer = (props: any) => {
         nNumber
       });
 
-      if(JSON.stringify(errors).includes("Not all specified Skills exist.")){
-        setSaveResult({
-          message: `Request Partially Failed ${formatErrorMessage(errors)}`,
-          status: ModalOverlayStatuses.PARTIAL_FAIL
-        });
-      } else {
-        setSaveResult({
-          message: `Request Failed ${formatErrorMessage(errors)}`,
-          status: ModalOverlayStatuses.FAIL
-        });
-      }
+      setSaveResult({
+        message: `Request Failed ${formatErrorMessage(errors)}`,
+        status: ModalOverlayStatuses.FAIL
+      });
     }
 
     const onConfirmEdit = async () => {

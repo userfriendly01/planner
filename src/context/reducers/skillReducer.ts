@@ -1,9 +1,7 @@
 import { formModes } from "globals";
 import { Action } from "globals/interfaces";
 import {
-  DayOfWeek,
   Skill, SkillFormState, SkillState,
-  TimeOfDay,
   TwilioQueue
 } from "callflowmanagement/Skills.Interfaces";
 import { constructLevels } from "utils/skillsUtils";
@@ -150,7 +148,7 @@ export const skillReducer = (state: SkillState, action: Action): SkillState => {
     }
     case skillActions.ADD_SKILL_GROUP: {
       const skillGroup = action.payload;
-      const skills = state.skills.slice().map(s => {
+      const skills = JSON.parse(JSON.stringify(state.skills)).slice().map((s: Skill) => {
         if(skillGroup.skills.includes(s.name)){
           if(s.skillGroupIds){
             s.skillGroupIds.push(skillGroup.id);
