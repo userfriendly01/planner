@@ -19,7 +19,7 @@ export interface MenuOption {
   nextActionId?: string
 }
 
-export interface Outcomes {
+export interface Outcome {
   outcomeType?: string
   nextActionType?: ActionType
   nextActionId?: string
@@ -34,8 +34,9 @@ export interface Announcement extends Action {
 export interface Capture extends Action {
   endpoint?: string
   parameter?: string
+  captureTimeout: number
   validLengths?: number[]
-  outcomes?: Outcomes[]
+  outcomes?: Outcome[]
 }
 
 export interface MenuOptions extends Action {

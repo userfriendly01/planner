@@ -2,6 +2,7 @@ import {
   ACTION_ID,
   ACTION_TYPE,
   CALL_FLOW_NAME,
+  CAPTURE_TIMEOUT,
   ENDPOINT,
   FINISH_ON_KEY,
   MAX_DIGITS,
@@ -108,14 +109,14 @@ export const ActionDataGridColumnDef: Array<GridColDef> = [
     headerName: "Capture Endpoint",
     field: ENDPOINT,
     sortable: true,
-    width: 110,
+    width: 220,
     align: "left"
   },
   {
     headerName: "Capture Parameter",
     field: PARAMETER,
     sortable: true,
-    width: 110,
+    width: 170,
     align: "left"
   },
   {
@@ -125,7 +126,13 @@ export const ActionDataGridColumnDef: Array<GridColDef> = [
     width: 110,
     align: "left"
   },
-
+  {
+    headerName: "Capture Timeout",
+    field: CAPTURE_TIMEOUT,
+    sortable: true,
+    width: 110,
+    align: "left"
+  },
   {
     headerName: "Capture Outcomes",
     field: OUTCOMES,

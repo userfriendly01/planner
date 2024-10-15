@@ -13,6 +13,8 @@ export const ENDPOINT = "endpoint";
 export const PARAMETER = "parameter";
 export const OUTCOMES = "outcomes";
 export const VALID_LENGTHS = "validLengths";
+export const CAPTURE_TIMEOUT = "captureTimeout";
+
 
 
 // Menu Fields

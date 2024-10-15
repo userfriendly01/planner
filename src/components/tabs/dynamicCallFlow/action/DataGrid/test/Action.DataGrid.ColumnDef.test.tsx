@@ -9,13 +9,13 @@ import { GridColDef } from "@mui/x-data-grid";
 
 describe("ActionDataGridColumnDef", () => {
   it("shouldHaveCorrectLength", () => {
-    expect(ActionDataGridColumnDef.length).toEqual(18);
+    expect(ActionDataGridColumnDef.length).toEqual(19);
   });
 
   it("shouldHaveCorrectFields", () => {
     const fields = ActionDataGridColumnDef.map((column: GridColDef) => column.field);
     expect(fields).toEqual([
-      "", "actionId", "actionType", "callFlowName", "nextActionId", "nextActionType", "speech", "timeout", "finishOnKey", "minDigits", "maxDigits", "endpoint", "parameter", "validLengths", "outcomes", "options", "repeat", "url"
+      "", "actionId", "actionType", "callFlowName", "nextActionId", "nextActionType", "speech", "timeout", "finishOnKey", "minDigits", "maxDigits", "endpoint", "parameter", "validLengths", "captureTimeout", "outcomes", "options", "repeat", "url"
     ]);
   });
 
@@ -36,7 +36,7 @@ describe("ActionDataGridColumnDef", () => {
 
   it("shouldHaveCorrectWidthForColumns", () => {
     const widths = ActionDataGridColumnDef.map((column: GridColDef) => column.width);
-    expect(widths).toEqual([50, 300, 150, 110, 300, 150, 300, 110, 110, 110, 110, 110, 110, 110, 300, 300, 300, 300]);
+    expect(widths).toEqual([50, 300, 150, 110, 300, 150, 300, 110, 110, 110, 110, 220, 170, 110, 110, 300, 300, 300, 300]);
   });
 
   it("shouldHaveTooltipForSpeechField", () => {
@@ -57,7 +57,7 @@ describe("ActionDataGridColumnDef", () => {
   it("shouldHaveCorrectHeaderNames", () => {
     const headerNames = ActionDataGridColumnDef.map((column: GridColDef) => column.headerName);
     expect(headerNames).toEqual([
-      "", "Action Id", "Action Type", "Call Flow Name", "Next Action Id", "Next Action Type", "Speech", "Menu Timeout", "Menu Finish On Key", "Menu Min Digits", "Menu Max Digits", "Capture Endpoint", "Capture Parameter", "Capture Valid Lengths", "Capture Outcomes", "Menu Options", "Menu Repeat", "Redirect URL"
+      "", "Action Id", "Action Type", "Call Flow Name", "Next Action Id", "Next Action Type", "Speech", "Menu Timeout", "Menu Finish On Key", "Menu Min Digits", "Menu Max Digits", "Capture Endpoint", "Capture Parameter", "Capture Valid Lengths", "Capture Timeout", "Capture Outcomes", "Menu Options", "Menu Repeat", "Redirect URL"
     ]);
   });
 

@@ -78,6 +78,7 @@ export class ActionListRecordsQuery extends AbstractListRecordsQuery {
               parameter
               updateTime
               validLengths
+              captureTimeout
               outcomes {
                 outcomeType
                 nextActionId

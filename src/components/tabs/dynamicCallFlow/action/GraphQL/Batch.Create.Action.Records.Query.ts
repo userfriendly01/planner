@@ -1,21 +1,24 @@
 import {
   ActionRecordType,
   Announcement,
+  Capture,
   Menu,
   MenuOptions,
   Redirect
 } from "components/tabs/dynamicCallFlow/action/GraphQL/Action.Interfaces";
-import { BatchResults } from "components/tabs/dynamicCallFlow/common/GraphQL/Abstract.BatchRecords.Query";
-import { AbstractGraphQLQuery } from "components/tabs/dynamicCallFlow/common/GraphQL/AbstractGraphQL.Query";
 import {
   ActionTypeEnum,
   GraphQLInputVariables,
   GraphQLResponse
 } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
 
+import { AbstractGraphQLQuery } from "components/tabs/dynamicCallFlow/common/GraphQL/AbstractGraphQL.Query";
+import { BatchResults } from "components/tabs/dynamicCallFlow/common/GraphQL/Abstract.BatchRecords.Query";
+
 export interface CallFlowConfig {
   callFlowName: string;
   announcements: Array<Announcement>;
+  captures: Array<Capture>;
   menus: Array<Menu>;
   menuOptions: Array<MenuOptions>;
   redirects: Array<Redirect>;
@@ -37,6 +40,7 @@ export class BatchCreateActionRecordsQuery extends AbstractGraphQLQuery {
 
   generateQueryVariables(actionRecords: Array<ActionRecordType>): CallFlowConfig {
     const announcements: Array<Announcement> = [];
+    const captures: Array<Capture> = [];
     const menus: Array<Menu> = [];
     const menuOptions: Array<MenuOptions> = [];
     const redirects: Array<Redirect> = [];
@@ -56,6 +60,20 @@ export class BatchCreateActionRecordsQuery extends AbstractGraphQLQuery {
             nextActionType: (actionRecord as Announcement).nextActionType,
             nextActionId: (actionRecord as Announcement).nextActionId
           } as Announcement);
+          break;
+        case ActionTypeEnum.CAPTURE:
+          captures.push({
+            actionId: actionRecord.actionId,
+            actionType: actionRecord.actionType,
+            callFlowName: actionRecord.callFlowName,
+            createTime: actionRecord.createTime,
+            updateTime: actionRecord.updateTime,
+            endpoint: (actionRecord as Capture).endpoint,
+            parameter: (actionRecord as Capture).parameter,
+            captureTimeout: (actionRecord as Capture).captureTimeout,
+            validLengths: (actionRecord as Capture).validLengths,
+            outcomes: (actionRecord as Capture).outcomes
+          } as Capture);
           break;
         case ActionTypeEnum.MENU:
           menus.push({
@@ -106,6 +124,7 @@ export class BatchCreateActionRecordsQuery extends AbstractGraphQLQuery {
       callFlowName,
       announcements,
       menus,
+      captures,
       menuOptions,
       redirects
     } as CallFlowConfig;

@@ -1,12 +1,15 @@
 import {
-  listActionRecords, listActionRecordsQuery
-} from "dynamicCallFlowAction/GraphQL/List.Action.Records.Query";
-import {
-  mockAccessToken, QUERY
+  QUERY,
+  mockAccessToken
 } from "dynamicCallFlowPhoneNumber/GraphQL/Query/test/GraphQL.Query.Testing.Util";
-import { MockCallFlowConfigOne } from "dynamicCallFlowAction/GraphQL/test/Action.MockData";
-import { GraphQLResponse } from "dynamicCallFlowCommon/GraphQL/DynamicCallFlow.Interfaces";
+import {
+  listActionRecords,
+  listActionRecordsQuery
+} from "dynamicCallFlowAction/GraphQL/List.Action.Records.Query";
+
 import { ActionRecordType } from "dynamicCallFlowAction/GraphQL/Action.Interfaces";
+import { GraphQLResponse } from "dynamicCallFlowCommon/GraphQL/DynamicCallFlow.Interfaces";
+import { MockCallFlowConfigOne } from "dynamicCallFlowAction/GraphQL/test/Action.MockData";
 
 describe("ListActionRecordsQuery", () => {
   it("shouldReturnCorrectQueryName", () => {
@@ -80,6 +83,7 @@ describe("ListActionRecordsQuery", () => {
               parameter
               updateTime
               validLengths
+              captureTimeout
               outcomes {
                 outcomeType
                 nextActionId
