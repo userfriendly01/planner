@@ -2,6 +2,7 @@ import { formModes } from "globals";
 import { Action } from "globals/interfaces";
 import {
   Skill, SkillFormState, SkillState,
+  TimeOfDay,
   TwilioQueue
 } from "callflowmanagement/Skills.Interfaces";
 import { constructLevels } from "utils/skillsUtils";
@@ -121,6 +122,11 @@ export const skillReducer = (state: SkillState, action: Action): SkillState => {
         changes.taskQueueName = taskQueue.friendly_name;
         changes.taskQueueSid = taskQueue.sid;
         delete changes.taskQueue;
+      }
+
+      if(changes.timeOfDays){
+        const timeOfDayCopy = skillsCopy[skillIndex].timeOfDays.slice();
+        changes.timeOfDays = timeOfDayCopy.map(tod => changes.timeOfDays.find((t: TimeOfDay) => t.dayOfWeekId === tod.dayOfWeekId) || tod);
       }
 
       skillsCopy[skillIndex] = {

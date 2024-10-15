@@ -45,7 +45,7 @@ export const createSkill = async (tokens: Tokens, payload: CreateSkillRequestBod
           ...payload.skillForm,
           taskQueue: payload.skillForm.taskQueue.isNew ? {
             isNew: true,
-            taskQueue: response.data.data.taskQueue
+            ...response.data.data.taskQueue
           } : payload.skillForm.taskQueue
         }
       });

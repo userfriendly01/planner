@@ -61,7 +61,7 @@ describe("createSkill", () => {
           payload: {
             taskQueue: {
               isNew: true,
-              taskQueue: response.data.taskQueue
+              ...response.data.taskQueue
             }
           }
         });

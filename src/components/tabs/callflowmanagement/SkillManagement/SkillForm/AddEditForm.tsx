@@ -232,7 +232,7 @@ export const AddEditForm = (props: any) => {
               </SkillsDetailWrapper>
               :
               <>
-                <CenteredDiv style={{ fontSize: "25px" }}>Add Skill</CenteredDiv>
+                <CenteredDiv style={{ fontSize: "25px" }}>{skillState.skillForm.formMode === formModes.INSERT ? "Add Skill" : "Edit Skill"}</CenteredDiv>
                 <SkillTabs value={selectedTab}>
                   <Tab label="General Skill Settings" onClick={() => setSelectedTab(0)} />
                   <Tab label="Dynamic Routing" onClick={() => setSelectedTab(1)}/>

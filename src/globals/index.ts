@@ -185,7 +185,6 @@ export const apiPaths = {
   RESET_PROFILES: (nNumber: string): string => `${ADMIN_CLIENT_URL}/reset/${nNumber}`,
   TERMINATE_WORKER: `${ADMIN_CLIENT_URL}/termination`,
   WFM_ACTIVATE_EXTERNAL_LOGON: `${ADMIN_CLIENT_URL}/externalLogon`,
-  RESET_WORKER_SKILLS: `${SERVICE_BASE_URI}/resetworkerskills`,
   TFN_DATA: `${SERVICE_BASE_URI}/tfn`,
   EMPLOYEE_LOOKUP: (nNumber: string): string => `${MS_GRAPH_URL}/users?$filter=employeeId eq '${nNumber}'&$select=mail,givenName,surname,officeLocation,extension_128b6233d06d4df391d7de26c982b64e_extensionAttribute1,department,extension_128b6233d06d4df391d7de26c982b64e_extensionAttribute2,accountEnabled`
 };

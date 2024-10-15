@@ -1,7 +1,6 @@
 import {
   Action,
   AppState,
-  Tokens,
   WfmBusinessUnit
 } from "globals/interfaces";
 import { listUMManagers } from "services/manager";
