@@ -160,6 +160,20 @@ export const exportColumns = [
   }
 ];
 
+export const termedUserExportColumns = [
+  ...exportColumns,
+  {
+    field: "inactive_date",
+    title: "Inactive Date",
+    width: "100px"
+  },
+  {
+    field: "inactive_forward_to",
+    title: "Inactive Forward To",
+    width: "100px"
+  }
+];
+
 export const apiPaths = {
   CREATE_CALABRIO_TEAM: `${CALABRIO_SERVICE_BASE_URI}/qm?api=Team`,
   CREATE_CALABRIO_USER: `${CALABRIO_SERVICE_BASE_URI}/qm?api=User`,

@@ -125,6 +125,54 @@ describe("reducer", () => {
         });
       });
     });
+    describe("type === InactiveUMUser", () => {
+      test("should set workers to page results", () => {
+        const startingState = {
+          ...initialState,
+          workerContext: {
+            inactive_workers: [{ name: "I'm already here!" }]
+          }
+        };
+        const payload = {
+          type: "InactiveUMUser",
+          results: [
+            { name: "I'm a worker!" }
+          ]
+        };
+        const action = {
+          type: "loadPaginatedResults",
+          payload
+        };
+        const result = reducer(startingState, action);
+        expect(result.workerContext.inactive_workers).toEqual([
+          { name: "I'm already here!" },
+          { name: "I'm a worker!" }
+        ]);
+      });
+      describe("isFirstPage === true", () => {
+        test("should set workers to page results", () => {
+          const startingState = {
+            ...initialState,
+            workerContext: {
+              inactive_workers: [{ name: "I'm already here!" }]
+            }
+          };
+          const payload = {
+            type: "InactiveUMUser",
+            isFirstPage: true,
+            results: [
+              { name: "I'm a worker!" }
+            ]
+          };
+          const action = {
+            type: "loadPaginatedResults",
+            payload
+          };
+          const result = reducer(startingState, action);
+          expect(result.workerContext.inactive_workers).toEqual(payload.results);
+        });
+      });
+    });
   });
   describe("loadProfileOptions", () => {
     test("should update the profileContext with the payload", () => {

@@ -53,6 +53,16 @@ export const listUMUsers = async (dispatch: (action: Action) => void): Promise<D
   return;
 };
 
+export const listInactiveUMUsers = async (dispatch: (action: Action) => void): Promise<UMUser[]> => {
+  try {
+    const results = await getPaginatedResults("InactiveUMUser", dispatch, formatUsers);
+    return results as unknown as UMUser[];
+  } catch(error) {
+    logger.error("Failed to fetch inactive users from graph", { error });
+  }
+  return;
+};
+
 export const listUMUserRecords = async (n_number: string): Promise<UMUser[]> => {
 
   const {

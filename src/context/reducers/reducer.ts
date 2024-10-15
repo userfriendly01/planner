@@ -28,6 +28,7 @@ export const initialState: AppState = {
   },
   workerContext: {
     workers: [],
+    inactive_workers: [],
     loadStatus: null
   },
   calabrioContext: {
@@ -61,7 +62,7 @@ export const reducer = (state: AppState, action: Action): AppState => {
       const type: string = action.payload.type;
       const pageResults: any[] = action.payload.results;
       const isFirstPage: boolean = action.payload.isFirstPage;
-
+      console.log("KALEIGH HERE", type, pageResults);
       return {
         ...state,
         managerContext: {
@@ -70,7 +71,8 @@ export const reducer = (state: AppState, action: Action): AppState => {
         },
         workerContext: {
           ...state.workerContext,
-          workers: (type === "UMUser" && !isFirstPage && state.workerContext.workers.concat(pageResults)) || (type === "UMUser" && pageResults) || state.workerContext.workers
+          workers: (type === "UMUser" && !isFirstPage && state.workerContext.workers.concat(pageResults)) || (type === "UMUser" && pageResults) || state.workerContext.workers,
+          inactive_workers: (type === "InactiveUMUser" && !isFirstPage && state.workerContext.inactive_workers.concat(pageResults)) || (type === "InactiveUMUser" && pageResults) || state.workerContext.inactive_workers
         }
       };
     }

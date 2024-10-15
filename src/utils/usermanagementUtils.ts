@@ -21,16 +21,14 @@ import { logger } from "./logger";
 import { CalabrioUser } from "usermanagement/CallRecording.Interfaces";
 import { mapWorkerFromDbWorker } from "./graphUtils";
 
-export const formatUsers = (users: UMUser[]) => {
-  const newUsers = [] as UMUser[];
+export const formatUsers = (users: UMUser[]): UMUser[] => {
+  const formattedUsers = [] as UMUser[];
   users.forEach(user => {
-    if (!user?.inactive_date && !user?.ttl && user?.twilio_attributes) {
-      newUsers.push(
-        mapWorkerFromDbWorker(user)
-      );
-    }
+    formattedUsers.push(
+      mapWorkerFromDbWorker(user)
+    );
   });
-  return newUsers;
+  return formattedUsers;
 };
 
 export const isUnpopulatedField = (f: any) => (!f && f !== false && f !== 0) || f?.length === 0 || (typeof f === "object" && JSON.stringify(f) === JSON.stringify({}));
