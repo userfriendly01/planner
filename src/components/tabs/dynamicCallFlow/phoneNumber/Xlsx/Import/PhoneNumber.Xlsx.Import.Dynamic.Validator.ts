@@ -4,7 +4,6 @@ import {
 import { DynamicPhoneNumberXlsxRow } from "dynamicCallFlowPhoneNumber/Xlsx/PhoneNumber.Xlsx.Interfaces";
 import {
   CALL_FLOW_NAME,
-  CALL_FLOW_TEMPLATE,
   CALL_FLOW_TYPE,
   NEXT_ACTION_ID,
   NEXT_ACTION_TYPE,
@@ -55,10 +54,6 @@ export class PhoneNumberXlsxImportDynamicValidator extends PhoneNumberXlsxImport
 
       if (dynamicPhoneNumberXlsxRow.callFlowName !== CallFlowTypeEnum.SELFSERVICE) {
         this.logPhoneNumberValidationError(dynamicPhoneNumberXlsxRow.dialedPhoneNumber, `${CALL_FLOW_NAME} must be SELFSERVICE for migrated self service phone numbers.`);
-      }
-
-      if (dynamicPhoneNumberXlsxRow.callFlowTemplate !== CallFlowTypeEnum.SELFSERVICE) {
-        this.logPhoneNumberValidationError(dynamicPhoneNumberXlsxRow.dialedPhoneNumber, `${CALL_FLOW_TEMPLATE} must be SELFSERVICE for migrated self service phone numbers.`);
       }
     }
   }

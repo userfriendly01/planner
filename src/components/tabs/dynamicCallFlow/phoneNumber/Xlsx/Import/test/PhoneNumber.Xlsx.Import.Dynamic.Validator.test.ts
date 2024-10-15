@@ -92,6 +92,17 @@ describe("Dynamic Phone Number XLSX Value Validator", () => {
     validatorUtil.elementShouldBeMissingTest(NEXT_ACTION_TYPE, xlsxRow, `${NEXT_ACTION_TYPE} should not be set for migrated self service phone numbers.`);
   });
 
+  it("should not log error for a self service phone number being migrated has a callFlowTemplate not set to SELFSERVICE", () => {
+    const xlsxRow = deepCopyObject(testDynamicPhoneNumberXlsxRow);
+    xlsxRow.migrateSelfServiceNumberToDynamic = "true";
+    xlsxRow.nextActionType = "";
+    xlsxRow.nextActionId = "";
+    xlsxRow.callFlowName = CallFlowTypeEnum.SELFSERVICE;
+    xlsxRow.callFlowType = CallFlowTypeEnum.SELFSERVICE;
+    xlsxRow.callFlowTemplate = "someCallFlowTemplate";
+    validatorUtil.shouldNotContainErrorMessageTest(xlsxRow);
+  });
+
   it("should not log error when NextActionType and ActionId IsNotSetForMigratedSelfServicePhoneNumber", () => {
     const xlsxRow = deepCopyObject(testDynamicPhoneNumberXlsxRow);
     xlsxRow.migrateSelfServiceNumberToDynamic = "true";
