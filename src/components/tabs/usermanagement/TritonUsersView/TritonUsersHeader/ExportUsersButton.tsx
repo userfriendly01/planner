@@ -68,11 +68,11 @@ export const ExportUsersButton = (props: ExportTritonUserProps) => {
     return rows;
   };
 
-  const handleActiveUserExport = () => {
-    const rows = generateRows(selected);
+  const handleExport = (usersToExport: UMUser[], columns: unknown[]) => {
+    const rows = generateRows(usersToExport);
 
     if (_export.current !== null) {
-      _export.current.save(rows, exportColumns);
+      _export.current.save(rows, columns);
     }
 
     handleCloseModal();
@@ -88,18 +88,6 @@ export const ExportUsersButton = (props: ExportTritonUserProps) => {
       setError("Error fetching inactive users");
     }
     setIsLoadingTermedUsers(false);
-  };
-
-  const handleTermedUserExport = async () => {
-    const rows = generateRows(inactiveWorkers);
-
-    console.log("rows", rows);
-    console.log("_export", _export);
-    if (_export.current !== null) {
-      _export.current.save(rows, termedUserExportColumns);
-    }
-
-    handleCloseModal();
   };
 
   const handleCloseModal = () => {
@@ -126,7 +114,7 @@ export const ExportUsersButton = (props: ExportTritonUserProps) => {
                   <>
                     <Text>Successfully retrieved Inactive Triton Users.  Click the button to Export</Text>
                     <br/>
-                    <StyledButton onClick={handleTermedUserExport}>
+                    <StyledButton onClick={() => handleExport(inactiveWorkers, termedUserExportColumns)}>
                       <ExcelExport ref={_export}/>Export Inactive Users
                     </StyledButton>
                   </>
@@ -136,7 +124,7 @@ export const ExportUsersButton = (props: ExportTritonUserProps) => {
                     <Text>Do you want to export active Triton Users, or Inactive/terminated Users?</Text>
                     <br/>
                     <ButtonWrapper>
-                      <StyledButton onClick={handleActiveUserExport}>
+                      <StyledButton onClick={() => handleExport(selected, exportColumns)}>
                         <ExcelExport ref={_export}/>Export Active Users
                       </StyledButton>
                       <StyledButton onClick={fetchTermedUsers}>

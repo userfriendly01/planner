@@ -62,7 +62,7 @@ export const reducer = (state: AppState, action: Action): AppState => {
       const type: string = action.payload.type;
       const pageResults: any[] = action.payload.results;
       const isFirstPage: boolean = action.payload.isFirstPage;
-      console.log("KALEIGH HERE", type, pageResults);
+
       return {
         ...state,
         managerContext: {
