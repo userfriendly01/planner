@@ -67,7 +67,3 @@ export const CustomTableData = styled.div`
     vertical-align: middle;
   }
 `;
-
-export const Text = styled.div`
-  margin: 0px 0px 5px 10px;
-`;

@@ -11,7 +11,7 @@ import { CallFlowConfirmationModal } from "callflowmanagement/CallFlowConfirmati
 import { ActionContainer } from "callflowmanagement/ActionContainer";
 import { SkillsContainer } from "callflowmanagement/SkillsContainer";
 import {
-  useAdminState, useSkillState, useSkillDispatch
+  useAdminState, useSkillState
 } from "context/appContext";
 import { Skill } from "callflowmanagement/Skills.Interfaces";
 import { UMSoftphoneConfiguration } from "globals/interfaces";
@@ -19,8 +19,6 @@ import React from "react";
 import { filterSkillsByName } from "utils/_filterUtils";
 import { logger } from "utils/logger";
 import { Modal } from "@mui/material";
-import { loadSkillOptions } from "services/skill";
-import { PageLoadSpinner } from "components/PageLoadSpinner";
 
 export const CallFlowManagementSkills = () => {
 
@@ -62,17 +60,6 @@ export const CallFlowManagementSkills = () => {
   const [ saveResult, setSaveResult ] = React.useState(defaultSaveResult);
 
   logger.log("CallFlowManagementSkills Filtered State: ", tableState);
-
-  const skillDispatch = useSkillDispatch();
-  const [ isLoading, setIsLoading ] = React.useState(true);
-
-  React.useEffect(() => {
-    if(!skillState.timeOfDays.length || !skillState.applications.length || !skillState.taskQueues.length || !skillState.operatingUnits.length){
-      loadSkillOptions(skillState.skills, skillDispatch, () => setIsLoading(false));
-    } else {
-      setIsLoading(false);
-    }
-  }, []);
 
   React.useEffect(() => {
     let filteredList = skillState.skills.slice();
@@ -125,32 +112,28 @@ export const CallFlowManagementSkills = () => {
 
   return (
     <CallflowWrapper>
-      {isLoading ?
-        <PageLoadSpinner />
-        :
-        <MessageWrapper>
-          <SkillsContainer
-            tableState={tableState}
-            setTableState={setTableState}
-          />
-          <ActionContainer
-            confirmationModalOpts={confirmationModalOpts}
-            tableState={tableState}
-            setConfirmationModalOpts={setConfirmationModalOpts}
-            setSaveResult={setSaveResult}
-            setTableState={setTableState}
-          />
-          <Modal open={confirmationModalOpts.open}>
-            <>
-              <CallFlowConfirmationModal
-                tableState={tableState}
-                confirmationModalOpts={confirmationModalOpts}
-                saveResult={saveResult}
-              />
-            </>
-          </Modal>
-        </MessageWrapper>
-      }
+      <MessageWrapper>
+        <SkillsContainer
+          tableState={tableState}
+          setTableState={setTableState}
+        />
+        <ActionContainer
+          confirmationModalOpts={confirmationModalOpts}
+          tableState={tableState}
+          setConfirmationModalOpts={setConfirmationModalOpts}
+          setSaveResult={setSaveResult}
+          setTableState={setTableState}
+        />
+        <Modal open={confirmationModalOpts.open}>
+          <>
+            <CallFlowConfirmationModal
+              tableState={tableState}
+              confirmationModalOpts={confirmationModalOpts}
+              saveResult={saveResult}
+            />
+          </>
+        </Modal>
+      </MessageWrapper>
     </CallflowWrapper>
   );
 };

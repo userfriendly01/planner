@@ -20,10 +20,11 @@ export const OuFilterDropdown = () => {
   const [operatingUnitList, setOperatingUnitList] = React.useState([]);
 
   const filterBy = useAdminState().userManagementTableFilters.ouFilterArray;
+  const tokens = useAdminState().userContext.tokens;
   const dispatch = useAdminDispatch();
 
   if(!operatingUnitList.length) {
-    getOperatingUnits().then((allOUs: OperatingUnit[])  => {
+    getOperatingUnits(tokens).then((allOUs: OperatingUnit[])  => {
       setOperatingUnitList(allOUs);
     }).catch(error => logger.error(error.msg, { error }, false));
   }

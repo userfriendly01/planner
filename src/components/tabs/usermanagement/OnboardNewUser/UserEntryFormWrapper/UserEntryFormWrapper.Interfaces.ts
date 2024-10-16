@@ -19,16 +19,6 @@ export interface LoadingState {
   saveUser: boolean;
 }
 
-export interface UserSystem {
-  triton: boolean,
-  calabrio_qm: boolean,
-  calabrio_wfm: boolean
-}
-
-export interface UserEntryFormProps {
-  handleClose: () => void
-}
-
 export interface BasicFormInfoProps {
   worker: UMUser | null,
   profiles: UMSoftphoneConfiguration[],

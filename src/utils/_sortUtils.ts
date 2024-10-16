@@ -7,11 +7,11 @@ import {
 
 const sortLast = "zzzzzzzzzzz";
 
-export const sortNumbers = (a: number, b: number) => {
+const sortNumbers = (a: number, b: number) => {
   return a - b;
 };
 
-export const sortStrings = (a: string, b: string) => {
+const sortStrings = (a: string, b: string) => {
   const _a = a.toLowerCase();
   const _b = b.toLowerCase();
   if (_a < _b) { return -1; }

@@ -6,11 +6,6 @@ export const ProfileSettingsContainerDiv = styled.div`
   padding: 1%;
 `;
 
-export const ProfileSettingsMessage = styled.div`
-  margin-top: 25vh;
-  text-align: center;
-`;
-
 export const SettingsContainer = styled.div`
   display: flex;
   flex-direction: column;

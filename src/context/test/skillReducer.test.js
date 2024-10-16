@@ -1,14 +1,11 @@
-import { mockTaskQueues } from "testUtils";
+import {
+  mockSkills, mockTaskQueues
+} from "testUtils";
 import {
   skillActions,
   skillReducer,
   initialSkillState
 } from "../reducers/skillReducer";
-import { formatSkillGroups } from "utils/skillsUtils";
-
-jest.mock("utils/skillsUtils", () => ({
-  formatSkillGroups: jest.fn()
-}));
 
 describe("skillReducer", () => {
   describe("default case", () => {
@@ -17,56 +14,352 @@ describe("skillReducer", () => {
       expect(result).toEqual(initialSkillState);
     });
   });
-  describe("LOAD_SKILLS", () => {
+  describe("ADD_SKILL", () => {
+    const skillForm = {
+      formMode: "INSERT",
+      name: "newSkill",
+      applicationId: 2,
+      profileIds: [15,3],
+      levels: {
+        min: null,
+        max: null
+      },
+      timeOfDays: {
+        timeOfDayId: 9,
+        dayOfWeekId: 3,
+        vhTimeOfDayId: 4
+      },
+      vhThreshold: 880,
+      vhCallTarget: 321325
+    };
+    test("should add new skill to array of skills", () => {
+      const payload = {
+        ...skillForm,
+        taskQueue: {
+          isNew: false,
+          sid: "TQ32158846",
+          friendly_name: "Existing Task Queue"
+        }
+      };
+      const result = skillReducer(initialSkillState, {
+        type: skillActions.ADD_SKILL,
+        payload
+      });
+      const expectedPayload = {
+        ...initialSkillState,
+        skills: [...initialSkillState.skills, {
+          discrepancies: [],
+          name: payload.name,
+          levels: [],
+          profileIds: payload.profileIds,
+          taskQueueSid: payload.taskQueue.sid,
+          taskQueueName: payload.taskQueue.friendly_name,
+          skillGroupIds: [],
+          applicationId: payload.applicationId,
+          closedMessage: null,
+          flashMessage: null,
+          timeOfDays: payload.timeOfDays,
+          vhCallTarget: payload.vhCallTarget,
+          vhThreshold: payload.vhThreshold
+        }]
+      };
+      expect(result).toEqual(expectedPayload);
+    });
+    describe("task queue is new", () => {
+      test("should update skills and task queues", () => {
+        const payload = {
+          ...skillForm,
+          levels: {
+            min: { value: 2 },
+            max: { value: 4 }
+          },
+          taskQueue: {
+            isNew: true,
+            sid: "TQ32158846",
+            friendly_name: "New Task Queue"
+          }
+        };
+        const result = skillReducer(initialSkillState, {
+          type: skillActions.ADD_SKILL,
+          payload
+        });
+        const expectedPayload = {
+          ...initialSkillState,
+          skills: [...initialSkillState.skills, {
+            discrepancies: [],
+            name: payload.name,
+            levels: [2,3,4],
+            profileIds: payload.profileIds,
+            taskQueueSid: payload.taskQueue.sid,
+            taskQueueName: payload.taskQueue.friendly_name,
+            skillGroupIds: [],
+            applicationId: payload.applicationId,
+            closedMessage: null,
+            flashMessage: null,
+            timeOfDays: payload.timeOfDays,
+            vhCallTarget: payload.vhCallTarget,
+            vhThreshold: payload.vhThreshold
+          }],
+          taskQueues: [...initialSkillState.taskQueues, payload.taskQueue]
+        };
+        expect(result).toEqual(expectedPayload);
+      });
+    });
+  });
+  describe("UPDATE_SKILL", () => {
+    test("should add new skill to array of skills", () => {
+      const payload = {
+        skillName: mockSkills[0].name,
+        changes: {
+          taskQueue: {
+            sid: "TQ32158846",
+            friendly_name: "Existing Task Queue"
+          },
+          levels: {
+            min: null,
+            max: null
+          }
+        },
+        taskQueue: {
+          sid: "TQ32158846",
+          friendly_name: "Existing Task Queue"
+        }
+      };
+      const result = skillReducer({
+        ...initialSkillState,
+        skills: [ mockSkills[0], mockSkills[1]]
+      }, {
+        type: skillActions.UPDATE_SKILL,
+        payload
+      });
+      const expectedPayload = {
+        ...initialSkillState,
+        taskQueues: [payload.taskQueue],
+        skills: [
+          {
+            ...mockSkills[0],
+            levels: [],
+            taskQueueSid: "TQ32158846",
+            taskQueueName: "Existing Task Queue"
+          },
+          mockSkills[1]
+        ]
+      };
+      expect(result).toEqual(expectedPayload);
+    });
+    describe("task queue is new", () => {
+      test("should update skills and task queues", () => {
+        const payload = {
+          skillName: mockSkills[0].name,
+          changes: {
+            levels: {
+              min: { value: 2 },
+              max: { value: 4 }
+            }
+          },
+          taskQueue: null
+        };
+        const result = skillReducer({
+          ...initialSkillState,
+          skills: [ mockSkills[0], mockSkills[1]]
+        }, {
+          type: skillActions.UPDATE_SKILL,
+          payload
+        });
+        const expectedPayload = {
+          ...initialSkillState,
+          skills: [
+            {
+              ...mockSkills[0],
+              levels: [2,3,4]
+            },
+            mockSkills[1]
+          ]
+        };
+        expect(result).toEqual(expectedPayload);
+      });
+    });
+  });
+  describe("DELETE_SKILL", () => {
+    test("should add new skill to array of skills", () => {
+      const payload = {
+        skillName: mockSkills[0].name,
+        taskQueue: mockTaskQueues[0].sid
+      };
+      const result = skillReducer({
+        ...initialSkillState,
+        skills: [ mockSkills[0], mockSkills[1]],
+        taskQueues: [ mockTaskQueues[0], mockTaskQueues[1]]
+      }, {
+        type: skillActions.DELETE_SKILL,
+        payload
+      });
+      const expectedPayload = {
+        ...initialSkillState,
+        taskQueues: [mockTaskQueues[1]],
+        skills: [mockSkills[1]]
+      };
+      expect(result).toEqual(expectedPayload);
+    });
+    describe("task queue is populated", () => {
+      test("should add new skill to array of skills", () => {
+        const payload = {
+          skillName: mockSkills[0].name
+        };
+        const result = skillReducer({
+          ...initialSkillState,
+          skills: [ mockSkills[0], mockSkills[1]]
+        }, {
+          type: skillActions.DELETE_SKILL,
+          payload
+        });
+        const expectedPayload = {
+          ...initialSkillState,
+          skills: [mockSkills[1]]
+        };
+        expect(result).toEqual(expectedPayload);
+      });
+    });
+  });
+  describe("ADD_SKILL_GROUP", () => {
+    test("should add skill group to selected skills", () => {
+      const noSkillGroups = {
+        name: "noSkillGroups"
+      };
+
+      const payload = {
+        id: "mockSkillGroupId",
+        skills: [mockSkills[0].name, noSkillGroups.name]
+      };
+
+      const result = skillReducer({
+        ...initialSkillState,
+        skills: [ mockSkills[0], mockSkills[1], noSkillGroups]
+      }, {
+        type: skillActions.ADD_SKILL_GROUP,
+        payload
+      });
+      const expectedPayload = {
+        ...initialSkillState,
+        skillGroups: [payload],
+        skills: [
+          {
+            ...mockSkills[0],
+            skillGroupIds: [
+              ...mockSkills[0].skillGroupIds,
+              payload.id
+            ]
+          },
+          mockSkills[1],
+          {
+            ...noSkillGroups,
+            skillGroupIds: [payload.id]
+          }
+        ]
+      };
+      expect(result).toEqual(expectedPayload);
+    });
+  });
+  describe("UPDATE_SKILL_GROUP", () => {
+    test("should add skill group to selected skills", () => {
+      const skillNoGroupToGroup = {
+        name: "skillNoGroupToGroup",
+        skillGroupIds: []
+      };
+
+      const payload = {
+        id: "mockSkillGroupId",
+        skillGroup: {
+          id: "mockSkillGroupId",
+          skills: [skillNoGroupToGroup.name]
+        }
+      };
+
+      const skillGroupToNoGroup = {
+        name: "skillGroupToNoGroup",
+        skillGroupIds: [payload.skillGroup.id]
+      };
+
+      const result = skillReducer({
+        ...initialSkillState,
+        skills: [skillNoGroupToGroup, skillGroupToNoGroup],
+        skillGroups: [{
+          id: "mockSkillGroupId",
+          skills: [skillGroupToNoGroup.name]
+        }]
+      }, {
+        type: skillActions.UPDATE_SKILL_GROUP,
+        payload
+      });
+      const expectedPayload = {
+        ...initialSkillState,
+        skillGroups: [payload.skillGroup],
+        skills: [
+          {
+            ...skillNoGroupToGroup,
+            skillGroupIds: [payload.id]
+          },
+          {
+            ...skillGroupToNoGroup,
+            skillGroupIds: []
+          }
+        ]
+      };
+      expect(result).toEqual(expectedPayload);
+    });
+  });
+  describe("DELETE_SKILL_GROUP", () => {
+    test("should add new skill to array of skills", () => {
+      const skillGroupId = "butts";
+
+      const testSkill = {
+        skillGroupIds: [skillGroupId]
+      };
+
+      const result = skillReducer({
+        ...initialSkillState,
+        skills: [ testSkill ],
+        skillGroups: [ { id: skillGroupId }]
+      }, {
+        type: skillActions.DELETE_SKILL_GROUP,
+        payload: skillGroupId
+      });
+      const expectedPayload = {
+        ...initialSkillState,
+        skillGroups: [],
+        skills: [{
+          ...testSkill,
+          skillGroupIds: []
+        }]
+      };
+      expect(result).toEqual(expectedPayload);
+    });
+  });
+  describe("LOAD_SKILL_STATE", () => {
     test("should load skills", () => {
       const skills = [{ "name": "skillId" }];
-      const result = skillReducer(initialSkillState, {
-        type: skillActions.LOAD_SKILLS,
-        payload: skills
-      });
-      expect(result).toEqual({
-        ...initialSkillState,
-        skills
-      });
-    });
-  });
-  describe("LOAD_SKILL_GROUPS", () => {
-    beforeEach(() => {
-      formatSkillGroups.mockImplementation(sg => sg);
-    });
-    test("should load skill groups", () => {
-      const skillGroups = [{ "name": "groupId" }];
-      const result = skillReducer(initialSkillState, {
-        type: skillActions.LOAD_SKILL_GROUPS,
-        payload: skillGroups
-      });
-      expect(result).toEqual({
-        ...initialSkillState,
-        skillGroups
-      });
-    });
-  });
-  describe("LOAD_SKILL_OPTIONS", () => {
-    test("should load skill options", () => {
-      const applications = [{ "name": "applicationId" }];
-      const timeOfDays = [{ "name": "todId" }];
-      const taskQueues = [{ "name": "queueId" }];
-      const operatingUnits = [{ "name": "ouId" }];
-      const result = skillReducer(initialSkillState, {
-        type: skillActions.LOAD_SKILL_OPTIONS,
-        payload: {
-          applications,
-          timeOfDays,
-          taskQueues,
-          operatingUnits
-        }
-      });
-      expect(result).toEqual({
-        ...initialSkillState,
+      const skillGroups = [{ "name": "skillGroup" }];
+      const applications = [{ "name": "applications" }];
+      const timeOfDays = [{ "name": "timeOfDays" }];
+      const taskQueues = [{ "name": "taskQueues" }];
+      const operatingUnits = [{ "name": "operatingUnits" }];
+
+      const payload = {
+        skills,
+        skillGroups,
         applications,
         timeOfDays,
         taskQueues,
         operatingUnits
+      };
+
+      const result = skillReducer(initialSkillState, {
+        type: skillActions.LOAD_SKILL_STATE,
+        payload
+      });
+      expect(result).toEqual({
+        ...initialSkillState,
+        ...payload
       });
     });
   });
