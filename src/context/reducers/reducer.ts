@@ -28,7 +28,6 @@ export const initialState: AppState = {
   },
   workerContext: {
     workers: [],
-    inactive_workers: [],
     loadStatus: null
   },
   calabrioContext: {

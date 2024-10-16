@@ -111,7 +111,6 @@ export interface AppState {
   },
   workerContext: {
     workers: UMUser[],
-    inactive_workers: UMUser[],
     loadStatus: LoadStatuses;
   },
   calabrioContext: {
