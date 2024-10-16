@@ -1,6 +1,6 @@
 import { ExportUsersButton } from "../ExportUsersButton";
 import {
-  ModalWrapper, StyledExportButton, ButtonWrapper
+  ModalWrapper, StyledExportButton, ButtonWrapper, Text
 } from "usermanagement/TritonUsersHeader.Styles";
 import React from "react";
 import { ExcelExport } from "@progress/kendo-react-excel-export";
@@ -41,7 +41,8 @@ jest.mock("context/appContext", () => ({
 jest.mock("usermanagement/TritonUsersHeader.Styles", () => ({
   StyledExportButton: jest.fn(),
   ModalWrapper: jest.fn(),
-  ButtonWrapper: jest.fn()
+  ButtonWrapper: jest.fn(),
+  Text: jest.fn()
 }));
 
 jest.mock("components/StyledButton", () => ({
@@ -120,7 +121,8 @@ describe("ExportUsersButton", () => {
       StyledButton,
       CircularProgress,
       ModalWrapper,
-      ButtonWrapper
+      ButtonWrapper,
+      Text
     });
   });
   describe("initial render", () => {
@@ -279,6 +281,38 @@ describe("ExportUsersButton", () => {
       }], termedUserExportColumns);
 
       expect(Modal.mock.calls[5][0].open).toEqual(false);
+    });
+    test("renders modal, fetch of inactive users fails and returns undefined, displays error", async () => {
+      listInactiveUMUsers.mockResolvedValue(undefined);
+      const rendered = renderComponent();
+      expect(StyledExportButton).toHaveBeenCalled();
+      expect(rendered.container).toHaveTextContent("Export");
+      const onClick = StyledExportButton.mock.calls[0][0].onClick;
+      act(() => onClick());
+      expect(Modal.mock.calls.length).toEqual(2);
+      expect(Modal.mock.calls[1][0].open).toEqual(true);
+      render(Modal.mock.calls[1][0].children);
+
+      render(ModalWrapper.mock.calls[0][0].children);
+      render(ButtonWrapper.mock.calls[0][0].children);
+
+      expect(StyledButton).toHaveBeenCalledTimes(2);
+      const termedUserFetchButton = StyledButton.mock.calls[1][0];
+      render(termedUserFetchButton.children);
+      const fetchActiveClick = termedUserFetchButton.onClick;
+      act(() => fetchActiveClick());
+      expect(listInactiveUMUsers).toHaveBeenCalledTimes(1);
+      await waitFor(() => {
+        // modal rerenders with the loading message
+        render(Modal.mock.calls[3][0].children);
+        render(ModalWrapper.mock.calls[2][0].children);
+        expect(CircularProgress).toHaveBeenCalledTimes(1);
+      });
+      expect(Modal.mock.calls.length).toBe(5);
+      render(Modal.mock.calls[4][0].children);
+      render(ModalWrapper.mock.calls[3][0].children);
+      expect(Text.mock.calls[1][0].children[0]).toBe("Error fetching inactive users");
+
     });
   });
 });

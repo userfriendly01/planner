@@ -1,6 +1,6 @@
 
 import {
-  ButtonWrapper, ModalWrapper, StyledExportButton
+  ButtonWrapper, ModalWrapper, StyledExportButton, Text
 } from "usermanagement/TritonUsersHeader.Styles";
 import { ExportTritonUserProps } from "usermanagement/TritonUsersHeader.Interfaces";
 import React, { useState } from "react";
@@ -33,6 +33,7 @@ export const ExportUsersButton = (props: ExportTritonUserProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoadingTermedUsers, setIsLoadingTermedUsers] = useState(false);
   const [inactiveWorkers, setInactiveWorkers] = useState([]);
+  const [error, setError] = useState(undefined);
 
   const _export = React.useRef(null);
 
@@ -80,19 +81,12 @@ export const ExportUsersButton = (props: ExportTritonUserProps) => {
   const fetchTermedUsers = async () => {
     setIsLoadingTermedUsers(true);
     const inactiveUsers = await listInactiveUMUsers(dispatch);
-
-    setInactiveWorkers(inactiveUsers);
-    // just putting a test rando worker in so I don't need to keep the graph deployed
-    // setInactiveWorkers([
-    //   {
-    //     did: "1234567890",
-    //     attributes: {},
-    //     isConsole: false,
-    //     inactiveForwardTo: "s;ldkjfasldjf",
-    //     inactive_date: "2024-10-10",
-    //     sid: "workersid123"
-    //   }
-    // ]);
+    if (inactiveUsers) {
+      setInactiveWorkers(inactiveUsers);
+      setError(undefined);
+    } else {
+      setError("Error fetching inactive users");
+    }
     setIsLoadingTermedUsers(false);
   };
 
@@ -128,22 +122,25 @@ export const ExportUsersButton = (props: ExportTritonUserProps) => {
               </>
               :
               <>
-                {inactiveWorkers.length > 0 ?
+                {inactiveWorkers?.length > 0 ?
                   <>
-                    <div>Successfully retrieved Inactive Triton Users.  Click the button to Export</div>
+                    <Text>Successfully retrieved Inactive Triton Users.  Click the button to Export</Text>
+                    <br/>
                     <StyledButton onClick={handleTermedUserExport}>
                       <ExcelExport ref={_export}/>Export Inactive Users
                     </StyledButton>
                   </>
                   :
                   <>
-                    <div>Do you want to export active Triton Users, or Inactive/terminated Users?</div>
+                    {error && <Text color="red">{error}<br/></Text>}
+                    <Text>Do you want to export active Triton Users, or Inactive/terminated Users?</Text>
+                    <br/>
                     <ButtonWrapper>
                       <StyledButton onClick={handleActiveUserExport}>
-                        <ExcelExport ref={_export}/>Active Users
+                        <ExcelExport ref={_export}/>Export Active Users
                       </StyledButton>
                       <StyledButton onClick={fetchTermedUsers}>
-                      Fetch Inactive Users for Export
+                        Fetch Inactive Users for Export
                       </StyledButton>
                     </ButtonWrapper>
                   </>

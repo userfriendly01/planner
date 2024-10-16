@@ -34,8 +34,8 @@ export const ModalWrapper = styled(Paper)<{position?: string}>`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: 900px;
-  height: 400px;
+  width: 800px;
+  height: 300px;
   position: ${props => props.position || "absolute"};
   left: 32vw;
   top: 30vh;
@@ -45,4 +45,11 @@ export const ButtonWrapper = styled.div`
   display: flex;
   width: 100%;
   justify-content: space-evenly;
+`;
+
+export const Text = styled.p<{color?: any}>`
+  color: ${props => props.color || "black"};
+  font-size: 20px;
+  margin: 10px;
+  padding: 10px;
 `;
