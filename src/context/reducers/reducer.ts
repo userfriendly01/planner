@@ -71,8 +71,7 @@ export const reducer = (state: AppState, action: Action): AppState => {
         },
         workerContext: {
           ...state.workerContext,
-          workers: (type === "UMUser" && !isFirstPage && state.workerContext.workers.concat(pageResults)) || (type === "UMUser" && pageResults) || state.workerContext.workers,
-          inactive_workers: (type === "InactiveUMUser" && !isFirstPage && state.workerContext.inactive_workers.concat(pageResults)) || (type === "InactiveUMUser" && pageResults) || state.workerContext.inactive_workers
+          workers: (type === "UMUser" && !isFirstPage && state.workerContext.workers.concat(pageResults)) || (type === "UMUser" && pageResults) || state.workerContext.workers
         }
       };
     }

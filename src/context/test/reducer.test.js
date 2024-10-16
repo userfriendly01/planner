@@ -126,11 +126,11 @@ describe("reducer", () => {
       });
     });
     describe("type === InactiveUMUser", () => {
-      test("should set workers to page results", () => {
+      test("should be ignored workers to page results", () => {
         const startingState = {
           ...initialState,
           workerContext: {
-            inactive_workers: [{ name: "I'm already here!" }]
+            workers: [{ name: "bob!" }]
           }
         };
         const payload = {
@@ -144,32 +144,10 @@ describe("reducer", () => {
           payload
         };
         const result = reducer(startingState, action);
-        expect(result.workerContext.inactive_workers).toEqual([
-          { name: "I'm already here!" },
-          { name: "I'm a worker!" }
-        ]);
-      });
-      describe("isFirstPage === true", () => {
-        test("should set workers to page results", () => {
-          const startingState = {
-            ...initialState,
-            workerContext: {
-              inactive_workers: [{ name: "I'm already here!" }]
-            }
-          };
-          const payload = {
-            type: "InactiveUMUser",
-            isFirstPage: true,
-            results: [
-              { name: "I'm a worker!" }
-            ]
-          };
-          const action = {
-            type: "loadPaginatedResults",
-            payload
-          };
-          const result = reducer(startingState, action);
-          expect(result.workerContext.inactive_workers).toEqual(payload.results);
+        expect(result.workerContext).toEqual({
+          workers: [
+            { name: "bob!" }
+          ]
         });
       });
     });
