@@ -168,7 +168,7 @@ export const termedUserExportColumns = [
     width: "100px"
   },
   {
-    field: "inactive_forward_to",
+    field: "inactiveForwardTo",
     title: "Inactive Forward To",
     width: "100px"
   }
