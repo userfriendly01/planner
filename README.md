@@ -72,7 +72,7 @@ the Admin UI.
 npm start
 ```
 
-You should now have 3 running applications, on these ports:
+You should now have 2 running applications, on these ports:
 ```
 cicct-user-gateway        8082
 cicct-softphone-admin-ui  8084
@@ -88,8 +88,7 @@ to the [TIPS readme file](./documentation/TIPS.md)
 #### Authentication
 
 This app uses Azure authentication in a deployed state when `NODE_ENV=production`.
-When running locally you should have `NODE_ENV=development` and the application will simply bypass 
-the authentication middleware in the `cicct-softphone-service` application.
+When running locally you should have `NODE_ENV=development`
 
 ## Running the tests
 
