@@ -51,7 +51,6 @@ window.env = {
   GRAPH_CLIENT_ID: "5f9dbf83-0fb0-4c74-8efe-889cc745396c",
   GRAPH_API_ID: "tgufpgkyxvacrntvgb75iuo3pi",
   GRAPH_API_URL: "https://tgufpgkyxvacrntvgb75iuo3pi.appsync-api.us-east-1.amazonaws.com/graphql",
-  SOFTPHONE_SERVICE_URL: "http://localhost:8080",
   ADMIN_CLIENT_ID: "a96ad235-cbca-4378-adaa-6d31367fb333",
   ADMIN_CLIENT_URL: "https://develop.cctapis.us-east-1.libertymutual.com/shared-admin-service",
   CALABRIO_SERVICE_CLIENT_ID: "2a1a2acf-a8db-4b18-b8c1-3efce37e02cb",
@@ -64,7 +63,6 @@ Get the secret values from CloudForge and replace the <> items above. Now you're
 ### Running the Admin UI Locally
 Running locally requires that you also have locally running instances of two other repositories:
 * [cicct-user-gateway](https://github.com/lmigtech/cicct-user-gateway)
-* [cicct-softphone-service](https://github.com/lmigtech/cicct-softphone-service)
 
 Download, build, and run these services as described in their respective readme files, before starting
 the Admin UI. 
@@ -78,7 +76,6 @@ You should now have 3 running applications, on these ports:
 ```
 cicct-user-gateway        8082
 cicct-softphone-admin-ui  8084
-cicct-softphone-service   8080
 ```
 
 #### Connecting to the Admin UI
