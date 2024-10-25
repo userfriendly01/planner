@@ -21,14 +21,12 @@ export const env = {
   GRAPH_API_URL: `https://${window.env.GRAPH_API_ID}.appsync-api.us-east-1.amazonaws.com/graphql`,
   GRAPH_API_WSS: `wss://${window.env.GRAPH_API_ID}.appsync-realtime-api.us-east-1.amazonaws.com/graphql`,
   GRAPH_CLIENT_ID: window.env.GRAPH_CLIENT_ID,
-  SOFTPHONE_SERVICE_URL: window.env.SOFTPHONE_SERVICE_URL,
   CALABRIO_SERVICE_URL: window.env.CALABRIO_SERVICE_URL,
   CALABRIO_SERVICE_CLIENT_ID: window.env.CALABRIO_SERVICE_CLIENT_ID,
   ADMIN_CLIENT_URL: window.env.ADMIN_CLIENT_URL,
   ADMIN_CLIENT_ID: window.env.ADMIN_CLIENT_ID
 };
 
-const SERVICE_BASE_URI = env.SOFTPHONE_SERVICE_URL;
 const MS_GRAPH_URL = "https://graph.microsoft.com/v1.0";
 const CALABRIO_SERVICE_BASE_URI = env.CALABRIO_SERVICE_URL;
 const ADMIN_CLIENT_URL = env.ADMIN_CLIENT_URL;
@@ -185,7 +183,7 @@ export const apiPaths = {
   RESET_PROFILES: (nNumber: string): string => `${ADMIN_CLIENT_URL}/reset/${nNumber}`,
   TERMINATE_WORKER: `${ADMIN_CLIENT_URL}/termination`,
   WFM_ACTIVATE_EXTERNAL_LOGON: `${ADMIN_CLIENT_URL}/externalLogon`,
-  TFN_DATA: `${SERVICE_BASE_URI}/tfn`,
+  TFN_DATA: `${ADMIN_CLIENT_URL}/tfn`,
   EMPLOYEE_LOOKUP: (nNumber: string): string => `${MS_GRAPH_URL}/users?$filter=employeeId eq '${nNumber}'&$select=mail,givenName,surname,officeLocation,extension_128b6233d06d4df391d7de26c982b64e_extensionAttribute1,department,extension_128b6233d06d4df391d7de26c982b64e_extensionAttribute2,accountEnabled`
 };
 

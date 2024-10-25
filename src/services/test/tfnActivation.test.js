@@ -32,7 +32,7 @@ describe("getTfn", () => {
     const data = { huzzah: "you are winner" };
     beforeEach(() => axiosMock.onGet(`${endpoint}/${phoneNumber}`).replyOnce(200, data));
     test("should resolve with any successful response", done => {
-      getTfn(phoneNumber)
+      getTfn(phoneNumber, "admintoken")
         .then(resolvedValue => {
           expect(resolvedValue.data).toEqual(data);
           done();
@@ -43,7 +43,7 @@ describe("getTfn", () => {
     const badResponse = { wahh: "boo" };
     beforeEach(() => axiosMock.onGet(`${endpoint}/${phoneNumber}`).replyOnce(500, badResponse));
     test("should reject with error", done => {
-      getTfn(phoneNumber).catch(rejectedVal => {
+      getTfn(phoneNumber, "admintoken").catch(rejectedVal => {
         expect(rejectedVal).toEqual(new Error("Request failed with status code 500"));
         done();
       });
@@ -56,7 +56,7 @@ describe("updateTfn", () => {
     const data = { huzzah: "you are winner" };
     beforeEach(() => axiosMock.onPost(endpoint).replyOnce(200, data));
     test("should resolve with any successful response", done => {
-      updateTfn(phoneNumber, tfnState, nNumber)
+      updateTfn(phoneNumber, tfnState, nNumber, "admin token")
         .then(resolvedValue => {
           expect(JSON.parse(axiosMock.history.post[0].data)).toEqual({
             phone_number: phoneNumber,
@@ -78,7 +78,7 @@ describe("updateTfn", () => {
           entryMessage: "I'm an \"entry\" message. ",
           displayName: "Look at all these '''"
         };
-        updateTfn(phoneNumber, quoteTfnState, nNumber)
+        updateTfn(phoneNumber, quoteTfnState, nNumber, "admin token")
           .then(resolvedValue => {
             expect(JSON.parse(axiosMock.history.post[0].data)).toEqual({
               phone_number: phoneNumber,
