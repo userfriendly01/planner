@@ -19,11 +19,17 @@ import {
 import { deleteSkills } from "services/skill";
 import { updateUser } from "services/user";
 import { identifyImpactedWorkers } from "utils/skillsUtils";
+import { Checkbox } from "@mui/material";
 
 jest.mock("@mui/material", () => ({
   Divider: jest.fn(),
   Paper: jest.requireActual("@mui/material").Paper,
-  Tabs: jest.fn()
+  Tabs: jest.fn(),
+  Checkbox: jest.fn()
+}));
+
+jest.mock("@mui/icons-material", () => ({
+  Warning: jest.fn()
 }));
 
 jest.mock("context/appContext", () => ({
@@ -127,7 +133,8 @@ describe("<DeleteForm />", () => {
     updateUser.mockResolvedValue(success);
     setupMockedComponents({
       ModalOverlay,
-      StyledButton
+      StyledButton,
+      Checkbox
     });
   });
   describe("initial render", () => {
@@ -170,6 +177,7 @@ describe("<DeleteForm />", () => {
       });
       test("form rerenders when saving and succeded", async () => {
         renderComponent();
+        expect(Checkbox).toHaveBeenCalledTimes(2);
         const submit = StyledButton.mock.calls[1][0].onClick;
         submit();
         await waitFor(() => expect(ModalOverlay).toHaveBeenCalledTimes(2));
@@ -183,6 +191,40 @@ describe("<DeleteForm />", () => {
         }, 1);
         jest.runAllTimers();
         expect(mockSetAction).toHaveBeenCalledWith(null);
+        expect(deleteSkills).toHaveBeenCalledTimes(1);
+        expect(deleteSkills.mock.calls[0][1]).toStrictEqual([{
+          deleteQueues: false,
+          skill: "bscCbsL2",
+          taskQueueName: "BSC - CBS L2",
+          taskQueueSid: "WQ6a319ba98220d95cae470f878bc0f4fe",
+          updatedBy: "n1234567"
+        }]);
+      });
+      describe("delete task queues is checked", () => {
+        test("form rerenders when saving and succeded", async () => {
+          renderComponent();
+          expect(Checkbox).toHaveBeenCalledTimes(2);
+          const selectDeleteQueues = Checkbox.mock.calls[0][0].onChange;
+          selectDeleteQueues({ target: { checked: true }});
+          expect(Checkbox).toHaveBeenCalledTimes(4);
+          const confirmDelete = Checkbox.mock.calls[3][0].onChange;
+          confirmDelete({ target: { checked: true }});
+          expect(StyledButton).toHaveBeenCalledTimes(6);
+          const submit = StyledButton.mock.calls[5][0].onClick;
+          submit();
+          await waitFor(() => expect(ModalOverlay).toHaveBeenCalledTimes(2));
+          jest.runAllTimers();
+          expect(mockSetAction).toHaveBeenCalledWith(null);
+          expect(deleteSkills).toHaveBeenCalledTimes(1);
+          expect(deleteSkills).toHaveBeenCalledTimes(1);
+          expect(deleteSkills.mock.calls[0][1]).toStrictEqual([{
+            deleteQueues: true,
+            skill: "bscCbsL2",
+            taskQueueName: "BSC - CBS L2",
+            taskQueueSid: "WQ6a319ba98220d95cae470f878bc0f4fe",
+            updatedBy: "n1234567"
+          }]);
+        });
       });
     });
     describe("partial error is thrown deleting new skill", () => {
@@ -197,36 +239,34 @@ describe("<DeleteForm />", () => {
             value: { oh: "no" }
           }]);
       });
-      describe("delete task queues is not selected ", () => {
-        test("error messages are displayed", async () => {
-          const rendered = renderComponent();
-          const submit = StyledButton.mock.calls[1][0].onClick;
-          submit();
-          await waitFor(() => expect(ModalOverlay).toHaveBeenCalledTimes(1));
-          expectOnlyPassedProps(ModalOverlay, {
-            message: "Processing...",
-            status: "saving"
-          }, 0);
-          jest.runAllTimers();
-          expect(rendered.container).toHaveTextContent("The following errors were thrown");
-          expect(rendered.container).toHaveTextContent(rejectedPromise.reason.messages);
-          expect(rendered.container).toHaveTextContent(resolved206Promise.value.messages);
-          expect(mockSkillDispatch).not.toHaveBeenCalledWith();
-        });
-        xtest("error messages are displayed", async () => {
-          //test for if we use the task queue functionality
-          const rendered = renderComponent();
-          const submit = StyledButton.mock.calls[1][0].onClick;
-          submit();
-          await waitFor(() => expect(ModalOverlay).toHaveBeenCalledTimes(1));
-          expectOnlyPassedProps(ModalOverlay, {
-            message: "Processing...",
-            status: "saving"
-          }, 0);
-          jest.runAllTimers();
-          expect(rendered.container).toHaveTextContent("The following errors were thrown");
-          expect(rendered.container).toHaveTextContent(error);
-        });
+
+      test("error messages are displayed", async () => {
+        const rendered = renderComponent();
+        const submit = StyledButton.mock.calls[1][0].onClick;
+        submit();
+        await waitFor(() => expect(ModalOverlay).toHaveBeenCalledTimes(1));
+        expectOnlyPassedProps(ModalOverlay, {
+          message: "Processing...",
+          status: "saving"
+        }, 0);
+        jest.runAllTimers();
+        expect(rendered.container).toHaveTextContent("The following errors were thrown");
+        expect(rendered.container).toHaveTextContent(rejectedPromise.reason.messages);
+        expect(rendered.container).toHaveTextContent(resolved206Promise.value.messages);
+        expect(mockSkillDispatch).not.toHaveBeenCalledWith();
+      });
+      test("error messages are displayed", async () => {
+        const rendered = renderComponent();
+        const submit = StyledButton.mock.calls[1][0].onClick;
+        submit();
+        await waitFor(() => expect(ModalOverlay).toHaveBeenCalledTimes(1));
+        expectOnlyPassedProps(ModalOverlay, {
+          message: "Processing...",
+          status: "saving"
+        }, 0);
+        jest.runAllTimers();
+        expect(rendered.container).toHaveTextContent("The following errors were thrown");
+        expect(rendered.container).toHaveTextContent(error.messages);
       });
       describe("close button is clicked", () => {
         test("close modal and skill dispatch are called", async () => {
