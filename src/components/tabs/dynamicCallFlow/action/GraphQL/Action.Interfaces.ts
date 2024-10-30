@@ -2,7 +2,7 @@ import {
   ActionType
 } from "components/tabs/dynamicCallFlow/common/GraphQL/DynamicCallFlow.Interfaces";
 
-export type ActionRecordType = Action | Announcement | Menu | MenuOptions | Redirect
+export type ActionRecordType = Action | Capture | Announcement | Menu | MenuOptions | Redirect
 
 export interface Action {
   actionId?: string;
@@ -19,10 +19,24 @@ export interface MenuOption {
   nextActionId?: string
 }
 
+export interface Outcome {
+  outcomeType?: string
+  nextActionType?: ActionType
+  nextActionId?: string
+}
+
 export interface Announcement extends Action {
   speech?: string
   nextActionType?: ActionType
   nextActionId?: string
+}
+
+export interface Capture extends Action {
+  endpoint?: string
+  parameter?: string
+  captureTimeout: number
+  validLengths?: number[]
+  outcomes?: Outcome[]
 }
 
 export interface MenuOptions extends Action {

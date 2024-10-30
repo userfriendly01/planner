@@ -2,6 +2,7 @@ import {
   ActionXlsRowType,
   AnnouncementXlsxRow,
   CallerContextAttributes,
+  CaptureXlsxRow,
   CombinedActionXlsxRowType,
   MenuOptionXlsxRow,
   MenuXlsxRow,
@@ -10,6 +11,7 @@ import {
 import {
   ActionRecordType,
   Announcement,
+  Capture,
   Menu,
   MenuOption,
   MenuOptions,
@@ -28,6 +30,9 @@ export class ActionXlsxRowGenerator {
       switch (actionRecord.actionType) {
         case ActionTypeEnum.ANNOUNCEMENT:
           convertedActionXlsxRows = this.mapToAnnouncement(actionRecord as Announcement);
+          break;
+        case ActionTypeEnum.CAPTURE:
+          convertedActionXlsxRows = this.mapToCapture(actionRecord as Capture);
           break;
         case ActionTypeEnum.MENU:
           convertedActionXlsxRows = this.mapToMenu(actionRecord as Menu);
@@ -65,6 +70,22 @@ export class ActionXlsxRowGenerator {
     } as AnnouncementXlsxRow;
 
     return [announcementXlsxRow];
+  }
+
+  private mapToCapture(capture: Capture): Array<CaptureXlsxRow> {
+    const timeoutInSeconds = capture.captureTimeout ? capture.captureTimeout / 1000 : 0;
+    const captureXlsxRow: CaptureXlsxRow = {
+      captureValidLengths: JSON.stringify(capture.validLengths),
+      captureEndpoint: capture.endpoint,
+      captureParameter: capture.parameter,
+      captureTimeout: timeoutInSeconds.toString()
+    } as CaptureXlsxRow;
+
+    if (capture.outcomes) {
+      captureXlsxRow.captureOutcomes = JSON.stringify(capture.outcomes);
+    }
+
+    return [captureXlsxRow];
   }
 
   private mapToMenu(menu: Menu): Array<MenuXlsxRow> {
@@ -141,7 +162,12 @@ export class ActionXlsxRowGenerator {
       menuOptionNextActionId: xlsxRow.menuOptionNextActionId,
       menuOptionReasonForReturning: xlsxRow.menuOptionReasonForReturning,
       menuOptionCallIntent: xlsxRow.menuOptionCallIntent,
-      redirectUrl: xlsxRow.redirectUrl
+      redirectUrl: xlsxRow.redirectUrl,
+      captureValidLengths: xlsxRow.captureValidLengths,
+      captureEndpoint: xlsxRow.captureEndpoint,
+      captureParameter: xlsxRow.captureParameter,
+      captureTimeout: xlsxRow.captureTimeout,
+      captureOutcomes: xlsxRow.captureOutcomes
     } as CombinedActionXlsxRowType));
   }
 }

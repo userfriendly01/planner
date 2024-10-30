@@ -72,29 +72,6 @@ export const ToggleContainer = styled.div`
   display: flex;
 `;
 
-export const ToggleLabel = styled.div`
-  align-self: center;
-  font-weight: 400;
-  font-size: 1rem;
-`;
-
-export const Label = styled.p`
-  font-weight: 400;
-  font-size: 1rem;
-  line-height: 1.5;
-  letter-spacing: 0.00938em;
-  margin: 5px;
-`;
-
-export const ProfileDropdownControlWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  font-size: 0.9em;
-  min-height: 350px;
-  z-index: 2;
-  margin-top: 20px;
-`;
-
 export const IconButtonWrapper = styled.button`
   all: unset;
   align-items: center;
@@ -108,73 +85,5 @@ export const IconButtonWrapper = styled.button`
   &:hover:enabled {
     border-radius: ${props => props.theme.button.icon.diameter/2}px;
     background-color: ${props => props.theme.button.icon.backgroundHoverColor};
-  }
-`;
-
-export const ProfileDropdownRow = styled.div`
-  align-items: center;
-  display: flex;
-  &:hover { ${/* @ts-ignore */""}
-    background-color: ${props => props.highlightOnHover ? props.theme.tableRow.hoverColor : null}
-  }
-`;
-
-export const ProfileDropdownRowItem = styled.div`
-  &:nth-child(1) {
-    display: flex;
-    padding-right: 8px;
-    width: 60%;
-  }
-  &:nth-child(2) {
-    display: flex;
-    justify-content: center;
-    width: 20%;
-  }
-  &:nth-child(3) {
-    display: flex;
-    justify-content: flex-end;
-    width: 20%;
-  }
-`;
-
-export const AccessGroupDropdownRowItem = styled.div`
-  &:nth-child(1) {
-    display: flex;
-    padding-right: 8px;
-    padding-top: 1.5px;
-    width: 90%;
-  }
-  &:nth-child(2) {
-    display: flex;
-    justify-content: center;
-    width: 10%;
-  }
-`;
-
-export const ProfileDropdownRowSeperator = styled.div`
-  border-bottom: 1px solid ${props => props.theme.lineSeperatorColor};
-  margin-top: 8px;
-`;
-
-export const ProfileDropdownWrapper = styled.div`
-  max-height: 50vh;
-  overflow-y: auto;
-  padding: 15px 10px;
-
-  &::-webkit-scrollbar {
-    background-color: #F5F5F5;
-    width: 6px;
-  }
-
-  &::-webkit-scrollbar-track {
-    border-radius: 6px;
-    background: rgba(0,0,0,0.1);
-    border: 1px solid #ccc;
-  }
-  
-  &::-webkit-scrollbar-thumb {
-    border-radius: 6px;
-    background: #aaa;
-    border: 1px solid #aaa;
   }
 `;

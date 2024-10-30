@@ -1,13 +1,26 @@
-import { GridColDef } from "@mui/x-data-grid";
-import Tooltip from "@mui/material/Tooltip";
-import React from "react";
 import {
   ACTION_ID,
   ACTION_TYPE,
-  CALL_FLOW_NAME, FINISH_ON_KEY, MAX_DIGITS, MIN_DIGITS,
+  CALL_FLOW_NAME,
+  CAPTURE_TIMEOUT,
+  ENDPOINT,
+  FINISH_ON_KEY,
+  MAX_DIGITS,
+  MIN_DIGITS,
   NEXT_ACTION_ID,
-  NEXT_ACTION_TYPE, OPTIONS, REPEAT, SPEECH, TIMEOUT
+  NEXT_ACTION_TYPE,
+  OPTIONS,
+  OUTCOMES,
+  PARAMETER,
+  REPEAT,
+  SPEECH,
+  TIMEOUT,
+  VALID_LENGTHS
 } from "dynamicCallFlowAction/Form/ActionFields";
+
+import { GridColDef } from "@mui/x-data-grid";
+import React from "react";
+import Tooltip from "@mui/material/Tooltip";
 
 export const ActionDataGridColumnDef: Array<GridColDef> = [
   {
@@ -92,6 +105,47 @@ export const ActionDataGridColumnDef: Array<GridColDef> = [
     width: 110,
     align: "left"
   },
+  {
+    headerName: "Capture Endpoint",
+    field: ENDPOINT,
+    sortable: true,
+    width: 220,
+    align: "left"
+  },
+  {
+    headerName: "Capture Parameter",
+    field: PARAMETER,
+    sortable: true,
+    width: 170,
+    align: "left"
+  },
+  {
+    headerName: "Capture Valid Lengths",
+    field: VALID_LENGTHS,
+    sortable: true,
+    width: 110,
+    align: "left"
+  },
+  {
+    headerName: "Capture Timeout",
+    field: CAPTURE_TIMEOUT,
+    sortable: true,
+    width: 110,
+    align: "left"
+  },
+  {
+    headerName: "Capture Outcomes",
+    field: OUTCOMES,
+    sortable: true,
+    width: 300,
+    align: "left",
+    renderCell: (params: any) =>  (
+      <Tooltip title={JSON.stringify(params.row.outcomes) || ""} >
+        <div>{JSON.stringify(params.row.outcomes) || ""}</div>
+      </Tooltip>
+    )
+  },
+  
   {
     headerName: "Menu Options",
     field: OPTIONS,

@@ -34,26 +34,6 @@ interface FieldState {
   unmaskedValue?: string,
 }
 
-export interface TextFieldProps {
-  label: string
-}
-
-export interface ProfileActivitiesSelectFieldProps {
-  activitiesList: Activity[],
-  setActivitiesList: (activitiesList: Activity[]) => void
-}
-
-export interface ProfileQueuesSelectFieldProps {
-  transferQueues: Skill[],
-  setQueueList: (transferQueues: Skill[]) => void
-}
-
-export interface ProfileCallTagsSelectFieldProps {
-  callTagsList: CallTag[],
-  callTagOptionsList: any[],
-  setCallTagsList: (callTagsList: CallTag[]) => void
-}
-
 export interface ProfileEntryFormState {
   [index: string]: any,
   accessGroup: AccessGroup,
@@ -87,14 +67,4 @@ export interface ProfileEntryFormState {
 export interface ToggleFormField {
   fieldKey: string,
   label: string
-}
-
-export interface ProfileOperatingUnitFieldProps {
-  setOperatingUnit: (ou: OperatingUnit) => void
-}
-
-export interface ProfileAccessGroupFieldProps {
-  enableDropDown: boolean,
-  accessGroupId: number,
-  setAccessGroupId: (accessGroupId: number) => void
 }

@@ -1,6 +1,7 @@
 import {
   ActionXlsRowType,
   AnnouncementXlsxRow,
+  CaptureXlsxRow,
   MenuOptionXlsxRow,
   MenuXlsxRow,
   RedirectXlsxRow
@@ -28,6 +29,9 @@ export class ActionXlsxImportValidator {
       switch (actionXlsxRow.actionType) {
         case ActionTypeEnum.ANNOUNCEMENT:
           this.inspectAnnouncementValues(actionXlsxRow as AnnouncementXlsxRow);
+          break;
+        case ActionTypeEnum.CAPTURE:
+          this.inspectCaptureValues(actionXlsxRow as CaptureXlsxRow);
           break;
         case ActionTypeEnum.MENU:
           this.inspectMenuValues(actionXlsxRow as MenuXlsxRow);
@@ -59,6 +63,28 @@ export class ActionXlsxImportValidator {
       this.logActionValidationError(announcementXlsxRow, "missing nextActionId.");
     }
 
+  }
+
+  inspectCaptureValues(captureXlsxRow: CaptureXlsxRow): void {
+    if (!captureXlsxRow.captureValidLengths) {
+      this.logActionValidationError(captureXlsxRow, "missing valid lengths.");
+    }
+
+    if (!captureXlsxRow.captureEndpoint) {
+      this.logActionValidationError(captureXlsxRow, "missing endpoint.");
+    }
+
+    if (!captureXlsxRow.captureParameter) {
+      this.logActionValidationError(captureXlsxRow, "missing parameter.");
+    }
+
+    if (!captureXlsxRow.captureTimeout) {
+      this.logActionValidationError(captureXlsxRow, "missing timeout.");
+    }
+
+    if (!captureXlsxRow.captureOutcomes) {
+      this.logActionValidationError(captureXlsxRow, "missing outcomes.");
+    }
   }
 
   inspectMenuValues(menuXlsxRow: MenuXlsxRow): void {

@@ -1,6 +1,8 @@
-import { Tooltip } from "@mui/material";
+import { CAPTURE_TIMEOUT, ENDPOINT, OUTCOMES, PARAMETER, VALID_LENGTHS } from "components/tabs/dynamicCallFlow/action/Form/ActionFields";
+
 import { GridColDef } from "@mui/x-data-grid";
 import React from "react";
+import { Tooltip } from "@mui/material";
 
 export const TableGridColumnDef: GridColDef[] = [
   {
@@ -65,6 +67,46 @@ export const TableGridColumnDef: GridColDef[] = [
     sortable: true,
     width: 110,
     align: "left"
+  },
+  {
+    headerName: "Capture Endpoint",
+    field: ENDPOINT,
+    sortable: true,
+    width: 220,
+    align: "left"
+  },
+  {
+    headerName: "Capture Parameter",
+    field: PARAMETER,
+    sortable: true,
+    width: 170,
+    align: "left"
+  },
+  {
+    headerName: "Capture Valid Lengths",
+    field: VALID_LENGTHS,
+    sortable: true,
+    width: 110,
+    align: "left"
+  },
+  {
+    headerName: "Capture Timeout",
+    field: CAPTURE_TIMEOUT,
+    sortable: true,
+    width: 110,
+    align: "left"
+  },
+  {
+    headerName: "Capture Outcomes",
+    field: OUTCOMES,
+    sortable: true,
+    width: 330,
+    align: "left",
+    renderCell: (params: any) =>  (
+      <Tooltip title={JSON.stringify(params.row.outcomes) || ""} >
+        <div>{JSON.stringify(params.row.outcomes) || ""}</div>
+      </Tooltip>
+    )
   },
   {
     headerName: "Menu Options",

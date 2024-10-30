@@ -2,7 +2,7 @@ import TableGridColumnDef from "dynamicCallFlowAction/PreviewModal/Action.Previe
 
 describe("TableGridColumnDef", () => {
   it("shouldContainCorrectNumberOfColumns", () => {
-    expect(TableGridColumnDef.length).toBe(13);
+    expect(TableGridColumnDef.length).toBe(18);
   });
 
   it("shouldContainCorrectColumnHeaders", () => {
@@ -17,6 +17,11 @@ describe("TableGridColumnDef", () => {
       "Menu Finish on Key",
       "Menu Max Digits",
       "Menu Min Digits",
+      "Capture Endpoint",
+      "Capture Parameter",
+      "Capture Valid Lengths",
+      "Capture Timeout",
+      "Capture Outcomes",
       "Menu Options",
       "Repeat",
       "Speech",
@@ -36,6 +41,11 @@ describe("TableGridColumnDef", () => {
       "finishOnKey",
       "maxDigits",
       "minDigits",
+      "endpoint",
+      "parameter",
+      "validLengths",
+      "captureTimeout",
+      "outcomes",
       "options",
       "repeat",
       "speech",
@@ -45,19 +55,19 @@ describe("TableGridColumnDef", () => {
 
   it("shouldContainSortableColumns", () => {
     const sortableColumns = TableGridColumnDef.filter(col => col.sortable);
-    expect(sortableColumns.length).toBe(13);
+    expect(sortableColumns.length).toBe(18);
   });
 
   it("shouldContainCorrectWidths", () => {
     const widths = TableGridColumnDef.map(col => col.width);
     expect(widths).toEqual([
-      220, 150, 110, 220, 150, 110, 110, 110, 110, 330, 110, 330, 110
+      220, 150, 110, 220, 150, 110, 110, 110, 110, 220, 170, 110, 110, 330, 330, 110, 330, 110
     ]);
   });
 
   it("shouldContainCorrectAlignments", () => {
     const alignments = TableGridColumnDef.map(col => col.align);
-    expect(alignments).toEqual(Array(13).fill("left"));
+    expect(alignments).toEqual(Array(18).fill("left"));
   });
 
   it("shouldRenderCellForMenuOptions", () => {

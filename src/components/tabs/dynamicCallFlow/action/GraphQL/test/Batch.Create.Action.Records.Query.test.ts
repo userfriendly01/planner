@@ -1,10 +1,4 @@
 import {
-  mockAccessToken, QUERY
-} from "dynamicCallFlowPhoneNumber/GraphQL/Query/test/GraphQL.Query.Testing.Util";
-import {
-  ActionTypeEnum, GraphQLResponse
-} from "dynamicCallFlowCommon/GraphQL/DynamicCallFlow.Interfaces";
-import {
   ActionRecordType,
   Announcement,
   Menu,
@@ -14,10 +8,19 @@ import {
   Repeat
 } from "dynamicCallFlowAction/GraphQL/Action.Interfaces";
 import {
+  ActionTypeEnum,
+  GraphQLResponse
+} from "dynamicCallFlowCommon/GraphQL/DynamicCallFlow.Interfaces";
+import {
+  CallFlowConfig,
   batchCreateDynamicActionQuery,
-  batchCreateDynamicActionRecords,
-  CallFlowConfig
+  batchCreateDynamicActionRecords
 } from "dynamicCallFlowAction/GraphQL/Batch.Create.Action.Records.Query";
+import {
+  QUERY,
+  mockAccessToken
+} from "dynamicCallFlowPhoneNumber/GraphQL/Query/test/GraphQL.Query.Testing.Util";
+
 import { MockCallFlowConfigOne } from "dynamicCallFlowAction/GraphQL/test/Action.MockData";
 
 describe("BatchCreateActionRecordsQuery", () => {
@@ -61,6 +64,7 @@ describe("BatchCreateActionRecordsQuery", () => {
           nextActionId: "2"
         }
       ],
+      captures: [],
       menus: [],
       menuOptions: [],
       redirects: []
@@ -94,6 +98,7 @@ describe("BatchCreateActionRecordsQuery", () => {
     const expectedVariables: CallFlowConfig = {
       callFlowName: "TestFlow",
       announcements: [],
+      captures: [],
       menus: [
         {
           actionId: "1",
@@ -149,6 +154,7 @@ describe("BatchCreateActionRecordsQuery", () => {
     const expectedVariables: CallFlowConfig = {
       callFlowName: "TestFlow",
       announcements: [],
+      captures: [],
       menus: [],
       menuOptions: [
         {
@@ -192,6 +198,7 @@ describe("BatchCreateActionRecordsQuery", () => {
     const expectedVariables: CallFlowConfig = {
       callFlowName: "TestFlow",
       announcements: [],
+      captures: [],
       menus: [],
       menuOptions: [],
       redirects: [

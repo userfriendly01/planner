@@ -8,6 +8,15 @@ export const UPDATE_TIME = "updateTime";
 // Announcement Fields
 export const SPEECH = "speech";
 
+// Capture Fields
+export const ENDPOINT = "endpoint";
+export const PARAMETER = "parameter";
+export const OUTCOMES = "outcomes";
+export const VALID_LENGTHS = "validLengths";
+export const CAPTURE_TIMEOUT = "captureTimeout";
+
+
+
 // Menu Fields
 export const ALLOW_BARGE_IN = "allowBargeIn";
 export const FINISH_ON_KEY = "finishOnKey";

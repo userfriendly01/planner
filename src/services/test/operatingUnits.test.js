@@ -10,14 +10,18 @@ beforeEach(() => {
   axiosMock.reset();
 });
 
+const tokens = {
+  adminService: "pstpstpst"
+};
+
 describe("call to GET_OU succeeds", () => {
   const data = [{
     sid: "abc",
     friendly_name: "test"
   }];
-  beforeEach(() => axiosMock.onGet(apiPaths.GET_OU).reply(200, data));
+  beforeEach(() => axiosMock.onGet(apiPaths.OPERATING_UNITS).reply(200, data));
   test("should resolve with ou data", done => {
-    getOperatingUnits()
+    getOperatingUnits(tokens)
       .then(resolvedValue => {
         expect(resolvedValue).toEqual([{
           ou_sid: "abc",
@@ -29,9 +33,9 @@ describe("call to GET_OU succeeds", () => {
 });
 
 describe("call to GET_OU fails", () => {
-  beforeEach(() => axiosMock.onGet(apiPaths.GET_OU).replyOnce(500, "uh oh"));
+  beforeEach(() => axiosMock.onGet(apiPaths.OPERATING_UNITS).replyOnce(500, "uh oh"));
   test("should reject with error", done => {
-    getOperatingUnits()
+    getOperatingUnits(tokens)
       .catch(rejectedValue => {
         expect(rejectedValue).toEqual(new Error("Request failed with status code 500"));
         done();

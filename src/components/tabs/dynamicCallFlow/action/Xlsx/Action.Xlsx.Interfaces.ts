@@ -13,8 +13,8 @@ export interface CallerContextAttributes {
   callIntent?: string;
 }
 
-export type CombinedActionXlsxRowType = ActionXlsxRow & AnnouncementXlsxRow & MenuXlsxRow & MenuOptionXlsxRow & RedirectXlsxRow;
-export type ActionXlsRowType = ActionXlsxRow | AnnouncementXlsxRow | MenuXlsxRow | MenuOptionXlsxRow | RedirectXlsxRow;
+export type CombinedActionXlsxRowType = ActionXlsxRow & AnnouncementXlsxRow & CaptureXlsxRow & MenuXlsxRow & MenuOptionXlsxRow & RedirectXlsxRow;
+export type ActionXlsRowType = ActionXlsxRow | AnnouncementXlsxRow | CaptureXlsxRow | MenuXlsxRow | MenuOptionXlsxRow | RedirectXlsxRow;
 
 export interface ActionXlsxRow extends XlsxJSONRow {
   actionId: string;
@@ -26,6 +26,14 @@ export interface AnnouncementXlsxRow extends ActionXlsxRow {
   nextActionId: string;
   nextActionType: ActionType;
   speech: string;
+}
+
+export interface CaptureXlsxRow extends ActionXlsxRow {
+  captureValidLengths: string;
+  captureEndpoint: string;
+  captureParameter: string;
+  captureTimeout: string;
+  captureOutcomes: string
 }
 
 export interface MenuXlsxRow extends ActionXlsxRow {
@@ -76,5 +84,10 @@ export const ActionXlsxHeaders = [
   "menuOptionNextActionId",
   "menuOptionReasonForReturning",
   "menuOptionCallIntent",
-  "redirectUrl"
+  "redirectUrl",
+  "captureValidLengths",
+  "captureEndpoint",
+  "captureParameter",
+  "captureTimeout",
+  "captureOutcomes"
 ];

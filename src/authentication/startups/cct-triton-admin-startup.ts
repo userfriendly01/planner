@@ -10,7 +10,7 @@ import {
 import { listUMManagers } from "services/manager";
 import { listUMUsers } from "services/user";
 import { listUMSoftphoneConfigs } from "services/profile";
-import { loadConsolidatedSkills } from "services/skill";
+import { loadSkillState } from "services/skill";
 import {
   getCalabrioWfmOptions, getCalabrioQMUsers
 } from "utils/calabrioUtils";
@@ -88,7 +88,7 @@ export const runTritonAdminStartup = (dispatch:  (action: Action) => void, skill
     Promise.resolve(getStartupProfiles().TRITON.name),
     listUMManagers(dispatch),
     listUMSoftphoneConfigs(dispatch),
-    loadConsolidatedSkills(skillDispatch),
+    loadSkillState(tokens, skillDispatch),
     getCalabrioUsers(dispatch, tokens),
     getCalabrioOrg(dispatch, tokens),
     getCalabrioRoles(dispatch, tokens)

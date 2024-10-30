@@ -69,6 +69,22 @@ export class ActionListRecordsQuery extends AbstractListRecordsQuery {
               url
               updateTime
             }
+            ... on Capture {
+              actionId
+              actionType
+              callFlowName
+              createTime
+              endpoint
+              parameter
+              updateTime
+              validLengths
+              captureTimeout
+              outcomes {
+                outcomeType
+                nextActionId
+                nextActionType
+              }
+            }
           }
         }
       }`;

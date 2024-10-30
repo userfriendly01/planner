@@ -17,7 +17,6 @@ applications:
     TROUX_ID: ${forge.troux_application_uuid}
     GRAPH_API_ID: 3k2iegyjmnfwxheh65ugy2vjt4
     GRAPH_CLIENT_ID: ${idp.cicct-softphone-admin-ui.resource.cct-shared-graph-api.production.appId}
-    SOFTPHONE_SERVICE_URL: https://cicct-softphone-service.us-east-1.paas.lmig.com
     CALABRIO_SERVICE_URL: https://cctapis.us-east-1.libertymutual.com/calabrio-service
     CALABRIO_SERVICE_CLIENT_ID: ${idp.cicct-softphone-admin-ui.resource.adcalser22-azure-api-production.production.appId}
     ADMIN_CLIENT_URL: https://cctapis.us-east-1.libertymutual.com/shared-admin-service

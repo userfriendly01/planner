@@ -2,6 +2,7 @@ import {
   ActionXlsRowType,
   AnnouncementXlsxRow,
   CallerContextAttributes,
+  CaptureXlsxRow,
   MenuOptionXlsxRow,
   MenuXlsxRow,
   RedirectXlsxRow
@@ -9,6 +10,7 @@ import {
 import {
   ActionRecordType,
   Announcement,
+  Capture,
   Menu,
   MenuOptions,
   Redirect
@@ -26,6 +28,9 @@ export class ActionXlsxImportRecordGenerator {
       switch (actionXlsxRow.actionType) {
         case ActionTypeEnum.ANNOUNCEMENT:
           actionRecord = this.mapToAnnouncement(actionXlsxRow as AnnouncementXlsxRow);
+          break;
+        case ActionTypeEnum.CAPTURE:
+          actionRecord = this.mapToCapture(actionXlsxRow as CaptureXlsxRow);
           break;
         case ActionTypeEnum.MENU:
           actionRecord = this.mapToMenu(actionXlsxRow as MenuXlsxRow);
@@ -49,7 +54,7 @@ export class ActionXlsxImportRecordGenerator {
       }
     });
 
-    return this.consolidateMenuOptions(actionRecords);
+    return this.consolidateArrays(actionRecords);
   }
 
   private mapToAnnouncement(announcementXlsxRow: AnnouncementXlsxRow): Announcement {
@@ -58,6 +63,24 @@ export class ActionXlsxImportRecordGenerator {
       nextActionId: announcementXlsxRow.nextActionId,
       nextActionType: announcementXlsxRow.nextActionType
     } as Announcement;
+  }
+
+  private mapToCapture(captureXlsxRow: CaptureXlsxRow): Capture {
+    let validLengths = JSON.parse(captureXlsxRow.captureValidLengths);
+    if (!validLengths || !Array.isArray(validLengths)) {
+      validLengths = [];
+    }
+    let timeoutInSeconds = parseInt(captureXlsxRow.captureTimeout);
+    if (isNaN(timeoutInSeconds)) {
+      timeoutInSeconds = 5;
+    }
+    return {
+      validLengths: validLengths,
+      endpoint: captureXlsxRow.captureEndpoint,
+      parameter: captureXlsxRow.captureParameter,
+      captureTimeout: timeoutInSeconds * 1000,
+      outcomes: JSON.parse(captureXlsxRow.captureOutcomes)
+    };
   }
 
   private mapToMenu(menuXlsxRow: MenuXlsxRow): Menu {
@@ -114,8 +137,9 @@ export class ActionXlsxImportRecordGenerator {
     };
   }
 
-  private consolidateMenuOptions(actionRecords: Array<ActionRecordType>): Array<ActionRecordType> {
+  private consolidateArrays(actionRecords: Array<ActionRecordType>): Array<ActionRecordType> {
     const menuOptionsMap: Map<string, MenuOptions> = new Map<string, MenuOptions>();
+    const captureOutcomesMap: Map<string, Capture> = new Map<string, Capture>();
 
     actionRecords.forEach((actionRecord: ActionRecordType) => {
       if (actionRecord.actionType === ActionTypeEnum.MENU_OPTIONS) {
@@ -126,10 +150,21 @@ export class ActionXlsxImportRecordGenerator {
           menuOptionsMap.set(menuOptions.actionId, menuOptions);
         }
       }
+      if (actionRecord.actionType === ActionTypeEnum.CAPTURE) {
+        const capture: Capture = actionRecord as Capture;
+        if (captureOutcomesMap.has(capture.actionId)) {
+          captureOutcomesMap.get(capture.actionId).outcomes.push(capture.outcomes[0]);
+        } else {
+          captureOutcomesMap.set(capture.actionId, capture);
+        }
+      }
     });
 
-    const updatedActionRecords = actionRecords.filter((actionRecord: ActionRecordType) => !menuOptionsMap.has(actionRecord.actionId));
+    const updatedActionRecords = actionRecords.filter((actionRecord: ActionRecordType) => {
+      return !menuOptionsMap.has(actionRecord.actionId) && !captureOutcomesMap.has(actionRecord.actionId);
+    });
     updatedActionRecords.push(...menuOptionsMap.values());
+    updatedActionRecords.push(...captureOutcomesMap.values());
 
     return updatedActionRecords;
   }

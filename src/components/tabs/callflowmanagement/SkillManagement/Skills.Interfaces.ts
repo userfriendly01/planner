@@ -97,19 +97,9 @@ export interface SkillsHeaderProps {
   setTableState: (tableState: TableState) => void
 }
 
-export interface SkillEntryFormModalProps {
-  closeModal: () => void,
-  setSaveResult: (saveResult: SaveResultProps) => void
-}
-
 export interface SkillsTableProps {
   tableState: TableState,
   setTableState: (tableState: TableState) => void
-}
-
-export interface AddEditSkillGroupBody {
-  skill_group_name: string,
-  skill_ids?: string[]
 }
 
 export interface Application {
@@ -162,21 +152,6 @@ export interface TwilioQueue {
   operating_unit_sid: null //this can only be accesses using axios, the twilioClient does not have access to OUs
 }
 
-export interface TwilioQueueRequest {
-  taskQueueSid?: string,
-  url?: string,
-  friendlyName: string,
-  targetWorkers: string, //ie '(skills HAS "support") AND (languages HAS "english")'
-  operatingUnitSid: null //this can only be accesses using axios, the twilioClient does not have access to OUs
-}
-/*
-  These attributes are on the payload from the callflow api but after inspection of the DB, there are no "vh" versions of these fields.
-  the vhTimeOfDayId on the TimeOfDayRequestObject represents a general timeOfDayId 
-      * vhTimeOfDayId: number,
-      * vhOpenTime: string,
-      * vhCloseTime: string,
-*/
-
 export interface TimeOfDay {
   dayOfWeekId?: number,
   timeOfDayId: number,
@@ -190,47 +165,20 @@ export interface TimeOfDayRequestObject {
   vhTimeOfDayId?: number
 }
 
-export interface TwilioSkill {
-  name: string,
-  multivalue: boolean,
-  minimum: number,
-  maximum: number
-}
-
-export interface CallflowSkill {
-  skillName: string,
-  closedMessage: string,
-  flashMessage: string,
-  application_id: number,
-  vh_threshold_tme: number,
-  vh_call_target: string,
-  timeOfDays: TimeOfDay[],
-  updatedBy?: string
-}
-
-export interface CtmSkill {
-  skill_num: string,
-  skill_id: number,
-  profile_id: number,
-  skill_group_id: number,
-  skill_group_nme: string,
-}
-
-export interface CallFlowTimeOfDay {
-  timeOfDayId: number,
-  dayId: number,
-  vhTimeOfDayId?: number
-}
-
-export interface UMSkill {
-  pk: string,
-  sk: string,
-  skill_id: string,
-  task_queue_sid: string,
-  task_queue_name: string,
-  levels: any[],
-  profile_ids?: number[],
-  skill_group_ids?: string[]
+export interface ConsolidatedSkill {
+  discrepancies: string[];
+  name: string;
+  levels: number[];
+  profileIds: number[];
+  taskQueueSid?: string;
+  taskQueueName?: string;
+  skillGroupIds: string[];
+  applicationId: number;
+  closedMessage: string;
+  flashMessage: string;
+  timeOfDays: TimeOfDay[];
+  vhCallTarget: string | null;
+  vhThreshold?: number | string | null;
 }
 
 export interface Skill {
@@ -254,14 +202,6 @@ export interface SkillGroup {
   pk: string,
   sk: string,
   id: string,
-  skill_group_name: string,
-  skills?: Skill[],
-}
-
-export interface SkillGroupSkillShip {
-  pk: string,
-  sk: string,
-  skill_id: string,
   skill_group_name: string,
   skills?: Skill[],
 }

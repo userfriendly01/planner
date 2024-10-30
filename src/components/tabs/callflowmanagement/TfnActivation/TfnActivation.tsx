@@ -45,7 +45,7 @@ export const TfnActivation = (props: TfnActivationProps) => {
 
   React.useEffect(() => {
     if(tfnState.number.valid){
-      getTfn(tfnState.number.e164).then((res: any) => {
+      getTfn(tfnState.number.e164, state.userContext.tokens.adminService).then((res: any) => {
         const matchingGroup = Object.values(tfnActivationGroups).find(g => g.callflowId === res.data?.callflow_id);
         const fetchedTfnState = {
           ...tfnState,
@@ -109,7 +109,7 @@ export const TfnActivation = (props: TfnActivationProps) => {
       message: "Processing...",
       status: ModalOverlayStatuses.SAVING
     });
-    updateTfn(tfnState.number.e164, tfnState, nNumber).then(() => {
+    updateTfn(tfnState.number.e164, tfnState, nNumber, state.userContext.tokens.adminService).then(() => {
       logger.info(`Successfully updated TFN, ${tfnState.number.e164}`, {
         tfnState,
         nNumber

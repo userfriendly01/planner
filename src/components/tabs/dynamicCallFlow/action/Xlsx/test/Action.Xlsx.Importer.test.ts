@@ -19,4 +19,11 @@ describe("Action XLSX Importer", () => {
     expect(xlsxImporterResults).toBeDefined();
     expect(xlsxImporterResults.errors.length).toBe(2);
   });
+
+  test("capture action", () => {
+    const xlsxImporterResults = getActionXlsxImporterResults("CaptureTest.xlsx");
+
+    expect(xlsxImporterResults).toBeDefined();
+    expect(xlsxImporterResults.errors.length).toBe(0);
+  });
 });
