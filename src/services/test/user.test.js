@@ -1,5 +1,5 @@
 import {
-  createUser, listUMUsers, updateUser, listUMUserRecords
+  createUser, listUMUsers, updateUser, listInactiveUMUsers, listUMUserRecords
 } from "services/user";
 import { apolloClient } from "../../components/core/Auth/SharedGraphAPIProvider";
 import {
@@ -70,6 +70,21 @@ describe("user", () => {
           msg: "Failed to fetch users from graph"
         });
       }
+    });
+  });
+  describe("listInactiveUMUsers", () => {
+    test("should resolve and return users", async () => {
+      getPaginatedResults.mockResolvedValue([{ pk: "n0263786" }]);
+
+      const result = await listInactiveUMUsers(dispatchMock);
+
+      expect(result).toEqual([{ pk: "n0263786" }]);
+    });
+    test("should reject if an error occurs in the listInactiveUMUsers", async () => {
+      getPaginatedResults.mockRejectedValueOnce("Boo");
+
+      await listInactiveUMUsers(jest.fn());
+      expect(logger.error).toHaveBeenCalledWith("Failed to fetch inactive users from graph", { error: "Boo" });
     });
   });
   describe("listUMUserRecords", () => {

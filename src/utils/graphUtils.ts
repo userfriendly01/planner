@@ -10,7 +10,9 @@ import {
   UpdateOrCreateUMUser
 }from "globals/interfaces";
 import { LIST_MANAGERS }from "globals/manager";
-import { LIST_USERS }from "globals/user";
+import {
+  LIST_INACTIVE_USERS, LIST_USERS
+}from "globals/user";
 import {
   logger
 } from "utils/logger";
@@ -21,6 +23,8 @@ export const getGraphData = (type: string): GraphData => {
   switch (type) {
     case "UMUser":
       return LIST_USERS;
+    case "InactiveUMUser":
+      return LIST_INACTIVE_USERS;
     case "UMManager":
       return LIST_MANAGERS;
     default:
@@ -28,9 +32,10 @@ export const getGraphData = (type: string): GraphData => {
   }
 };
 
-export const getPaginatedResults = async (type: string, dispatch: (action: Action) => void, formatResults?: (items: PaginationType[]) => PaginationType[], callBack?: any): Promise<void> => {
+export const getPaginatedResults = async (type: string, dispatch: (action: Action) => void, formatResults?: (items: PaginationType[]) => PaginationType[], callBack?: any): Promise<PaginationType[]> => {
   const graph: GraphData = getGraphData(type);
   let isFirstQuery = true;
+  const finalResults: PaginationType[] = [];
   const getPageResults = async (nextToken?: string): Promise<VoidFunction> => {
     try {
       const { data }: any  = await apolloClient.query<{ results: DBList<PaginationType | null> }>({
@@ -42,7 +47,7 @@ export const getPaginatedResults = async (type: string, dispatch: (action: Actio
 
       const items = data[graph.responsePath]?.items;
       const formattedData = formatResults ? formatResults(items) : items;
-
+      finalResults.push(...formattedData);
       dispatch(({
         type: "loadPaginatedResults",
         payload: {
@@ -68,7 +73,7 @@ export const getPaginatedResults = async (type: string, dispatch: (action: Actio
   };
 
   await getPageResults();
-  return;
+  return finalResults;
 };
 
 //The following functions are temporary until we align the app & reducers to the new graph

@@ -125,6 +125,32 @@ describe("reducer", () => {
         });
       });
     });
+    describe("type === InactiveUMUser", () => {
+      test("should be ignored workers to page results", () => {
+        const startingState = {
+          ...initialState,
+          workerContext: {
+            workers: [{ name: "bob!" }]
+          }
+        };
+        const payload = {
+          type: "InactiveUMUser",
+          results: [
+            { name: "I'm a worker!" }
+          ]
+        };
+        const action = {
+          type: "loadPaginatedResults",
+          payload
+        };
+        const result = reducer(startingState, action);
+        expect(result.workerContext).toEqual({
+          workers: [
+            { name: "bob!" }
+          ]
+        });
+      });
+    });
   });
   describe("loadProfileOptions", () => {
     test("should update the profileContext with the payload", () => {
