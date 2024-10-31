@@ -146,7 +146,6 @@ export const SkillsDetailWrapper = styled.div`
   flex-direction: column;
   margin-top: 50px;
   align-items: center;
-  height: 100%;
   justify-content: space-between;
 `;
 
@@ -200,6 +199,7 @@ export const ModalContainer = styled.div`
   transform: translate(-50%, -50%);
   width: 80%;
   height: 75%;
+  justify-content: space-between;
 `;
 
 export const ScrollingPaper = styled(Paper)`
@@ -221,7 +221,7 @@ export const CenteredDiv = styled.div`
 
 export const ButtonWrapper = styled(FlexRow)`
   justify-content: space-around;
-  padding: 8px;
+  padding-top: 8px;
   align-items: center;
   max-height: 50;
 }
