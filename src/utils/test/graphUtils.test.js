@@ -123,7 +123,7 @@ describe("getPageResults", () => {
       });
     });
     test("apolloClient is called 3 times", async () => {
-      await getPaginatedResults(type, mockDispatch);
+      const results = await getPaginatedResults(type, mockDispatch);
       expect(mockDispatch).toHaveBeenCalledTimes(3);
       expect(mockDispatch).toHaveBeenCalledWith({
         type: "loadPaginatedResults",
@@ -150,6 +150,7 @@ describe("getPageResults", () => {
         }
       });
       expect(apolloClient.query).toHaveBeenCalledTimes(3);
+      expect(results).toEqual([...results1, ...results2, ...results3]);
     });
   });
   describe("errors are thrown calling the graph", () => {

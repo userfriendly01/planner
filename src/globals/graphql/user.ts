@@ -102,6 +102,20 @@ export const LIST_USERS: GraphData = {
   responsePath: "users"
 };
 
+export const LIST_INACTIVE_USERS: GraphData = {
+  query: gql`
+    query listUMUsers($nextToken: String) {
+      users: listUMUsers(termed_users: true, nextToken: $nextToken) {
+        items {
+          ${userAttributes}
+        }
+        nextToken
+      }
+    }
+  `,
+  responsePath: "users"
+};
+
 export const CREATE_USER = gql`
   mutation createUMUser($input: UMUserCreateInput!) {
     user: createUMUser(input: $input) {

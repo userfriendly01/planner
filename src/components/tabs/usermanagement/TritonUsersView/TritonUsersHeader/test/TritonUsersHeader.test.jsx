@@ -36,7 +36,8 @@ jest.mock("usermanagement/ExportUsersButton", () => ({
 }));
 
 jest.mock("@mui/material", () => ({
-  Chip: jest.fn()
+  Chip: jest.fn(),
+  Paper: jest.fn()
 }));
 
 jest.mock("context/appContext", () => ({

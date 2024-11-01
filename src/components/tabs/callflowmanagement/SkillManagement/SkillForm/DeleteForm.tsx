@@ -15,7 +15,9 @@ import {
   DeleteMessageWrapper
 } from "../Skills.Styles";
 import { timeouts } from "globals";
-import { Divider } from "@mui/material";
+import {
+  Checkbox, Divider
+} from "@mui/material";
 import { formatErrorMessage } from "utils/_formatUtils";
 import { logger } from "utils/logger";
 import {
@@ -23,6 +25,7 @@ import {
   identifyImpactedWorkers
 } from "utils/skillsUtils";
 import {
+  FlexColumn,
   ModalOverlayStatuses, UMUser
 } from "globals/interfaces";
 import { ModalOverlay } from "components/core/ModalOverlay/ModalOverlay";
@@ -30,6 +33,7 @@ import { deleteSkills } from "services/skill";
 import {
   updateUser
 } from "services/user";
+import { Warning } from "@mui/icons-material";
 
 export const DeleteForm = (props: any) => {
   const {
@@ -50,6 +54,8 @@ export const DeleteForm = (props: any) => {
     matchingQueue: taskQueues.find(tq => tq.target_workers.includes(getTargetExpression(sk))) || {} //Filter?
   }));
   const [ shouldDeleteQueue, setShouldDeleteQueue ] = useState(false);
+  const [ deleteConfirmed, setDeleteConfirmed ] = useState(false);
+
   const [ impactedWorkers, setImpactedWorkers ] = useState(identifyImpactedWorkers(state.workerContext.workers, formattedSkills));
   const [ saveResult, setSaveResult ] = useState<any>({
     status: null,
@@ -142,8 +148,6 @@ export const DeleteForm = (props: any) => {
           message: errorMessages,
           status: ModalOverlayStatuses.PARTIAL_FAIL
         });
-        logger.log("FAITH FAILED SKILLS", errorMessages);
-
       }
     } catch (error) {
       logger.error("Failed to delete skills", {
@@ -221,17 +225,28 @@ export const DeleteForm = (props: any) => {
                 <FormRow>
                   <h4>These skills will also be removed from {impactedWorkers.length} workers that have this skill in either their default skills, routing skills & disabled skills</h4>
                 </FormRow>
-                {/* <FormRow>
-                    //This will be implemented in a separate story when we take workflows into consideration
+                <FormRow style={{ width: "80%" }}>
                   <Checkbox
                     onChange={(e: any) => setShouldDeleteQueue(e.target.checked)}
                     checked={shouldDeleteQueue}
                   />
                   <FlexColumn>
-                    <h4 style={{ margin: 0 }}>By checking this box, all task queues with the matching targetWorkerExpression will be deleted along with the skill</h4>
-                    <h4 style={{ margin: 0 }}>If you leave it unchecked, only the skill will be removed from Twilio & all applicable databases</h4>
+                    <p style={{
+                      margin: 0,
+                      textWrap: "wrap"
+                    }}><h4>Optional </h4>By checking this box, all task queues with the matching targetWorkerExpression will be deleted along with the skill. Workflows will also be cleaned up to remove all references to the task queue.</p>
+                    <p style={{ margin: 0 }}>If you leave it unchecked, only the skill will be deleted.<Warning/></p>
                   </FlexColumn>
-                </FormRow> */}
+                </FormRow>
+                <FormRow style={{ width: "80%" }}>
+                  <Checkbox
+                    onChange={(e: any) => setDeleteConfirmed(e.target.checked)}
+                    checked={deleteConfirmed}
+                  />
+                  <FlexColumn>
+                    <p style={{ margin: 0 }}><h4>Required </h4>Check this box to confirm you already checked Triton Admin that the skills & task queues being deleted are NOT part of routing or phone numbers. </p>
+                  </FlexColumn>
+                </FormRow>
               </SkillsDetailWrapper>
             }
             <SkillsDetailWrapper>
@@ -267,6 +282,7 @@ export const DeleteForm = (props: any) => {
                   <StyledButton
                     onClick={handleDeleteSkills}
                     style={{ width: "300px" }}
+                    disabled={!deleteConfirmed}
                   >Delete Skills
                   </StyledButton>
               }

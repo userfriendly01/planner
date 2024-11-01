@@ -209,11 +209,12 @@ describe("formatUsers", () => {
       profile_id: 1
     }
   }];
-  test("formats all active users with twilio attributes", () => {
+  test("formats all users with twilio attributes", () => {
     const result = formatUsers(users);
-    expect(mapWorkerFromDbWorker).toHaveBeenCalledTimes(2);
+    expect(mapWorkerFromDbWorker).toHaveBeenCalledTimes(3);
     expect(result).toEqual([
       users[0],
+      users[1],
       users[2]
     ]);
   });
