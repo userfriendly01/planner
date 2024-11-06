@@ -12,10 +12,23 @@ import {
   formModes, numMatcher
 } from "globals/index";
 
+const validCallTagOptions = (callTagsList: CallTag[]) => {
+  if (!callTagsList?.length) { return true; }
+
+  let isValid = true;
+  callTagsList.forEach(tag => {
+    if (tag.options.length && !tag.options.every((option: string) => option.trim().length)) {
+      isValid = false;
+    }
+  });
+  return isValid;
+};
+
 export const isProfileFormValid = (form: ProfileEntryFormState): boolean => {
+  const areCallTagOptionsValid = validCallTagOptions(form.callTagsList);
   const isAccessGroupValid = (form.accessGroup?.isNew && form.accessGroup?.access_group_name?.length && form.accessGroup?.twilio_dashboard_url?.length) || (!form.accessGroup?.isNew);
   return !!(form.profileId?.toString().match(numMatcher) && form.forwardToNum.valid && form.operatingUnit &&
-  form.activitiesList.length && form.profileName && form.profileName.trim().length && form.updated && isAccessGroupValid);
+  form.activitiesList.length && form.profileName && form.profileName.trim().length && form.updated && isAccessGroupValid && areCallTagOptionsValid);
 };
 
 export const formatProfileACWDataEntry = (acwTags: boolean, callTags: CallTag[], BubbleDiv: any, HighlightRed: any) => {
@@ -75,13 +88,16 @@ export const constructProfilePayload = (form: ProfileEntryFormState): ProfilePay
     screenpop_ids: form.screenpops.map((pop: Screenpop) => pop.id),
     access_group_id: form.accessGroup?.id || null,
     activity_sids: form.activitiesList.map((activity: Activity) => activity.activity_sid),
-    call_tags: form.callTagsList.map((tag: CallTag) => ({
-      attribute_name: tag.attribute_name,
-      display_name: tag.display_name,
-      options: tag.options
-    })),
     transfer_queues: form.transferQueues.map((queue: TwilioQueue) => queue.sid)
   };
+
+  if (form.callTagsList.length) {
+    payload.call_tags = form.callTagsList.map((tag: CallTag) => ({
+      attribute_name: tag.attribute_name,
+      display_name: tag.display_name,
+      options: tag.options?.length ? tag.options : null
+    }));
+  }
 
   if(form.formMode === formModes.INSERT) { payload.profile_id = form.profileId; }
 

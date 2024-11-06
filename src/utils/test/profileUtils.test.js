@@ -43,9 +43,9 @@ describe("profileUtils", () => {
         profileId: 1,
         profileName: "Snowball",
         callTagsList: [{
-          options_id: 1,
-          wrkr_tsk_info_nme: "Negotiation Type",
-          wrkr_tsk_info_id: 3
+          options: ["stuff", "things"],
+          display_name: "Negotiation Type",
+          attribute_name: "negotiation_type"
         }],
         operatingUnit: {
           ou_name: "nothing"
@@ -62,6 +62,33 @@ describe("profileUtils", () => {
       };
       const result = isProfileFormValid(form);
       expect(result).toBe(true);
+    });
+    test("should return false when callTagsList options are not valid", () => {
+      const form = {
+        updated: true,
+        activitiesList: [2,3],
+        profileId: 1,
+        profileName: "Snowball",
+        callTagsList: [{
+          options: ["", ""],
+          display_name: "Negotiation Type",
+          attribute_name: "negotiation_type"
+        }],
+        operatingUnit: {
+          ou_name: "nothing"
+        },
+        accessGroup: {
+          isNew: true,
+          access_group_name: "new access group",
+          twilio_dashboard_url: "www.cats"
+        },
+        forwardToNum: {
+          unmaskedValue: "8005551212",
+          valid: true
+        }
+      };
+      const result = isProfileFormValid(form);
+      expect(result).toBe(false);
     });
     test("should return false when profileName is invalid", () => {
       const form = {
