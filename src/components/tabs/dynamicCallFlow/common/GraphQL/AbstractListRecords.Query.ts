@@ -31,8 +31,8 @@ export abstract class AbstractListRecordsQuery extends AbstractGraphQLQuery {
         nextToken = listResults.nextToken;
         loadDataGridMonitor?.current.addToRecordCount(listResults.items.length);
         entireList = entireList.concat(listResults.items);
-      } while (nextToken);
-      // } while (nextToken && loopCounter < 1);
+      // } while (nextToken);
+      } while (nextToken && loopCounter < 1);
     } catch (error) {
       logger.error(`Error in getEntireList: ${error?.message}`, error );
     }
