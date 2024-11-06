@@ -13,8 +13,6 @@ import {
 } from "globals/index";
 
 const validCallTagOptions = (callTagsList: CallTag[]) => {
-  if (!callTagsList?.length) { return true; }
-
   let isValid = true;
   callTagsList.forEach(tag => {
     if (tag.options.length && !tag.options.every((option: string) => option.trim().length)) {
