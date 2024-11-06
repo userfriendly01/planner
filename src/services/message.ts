@@ -1,5 +1,6 @@
 import { apiPaths } from "globals";
 import { AxiosResponse } from "axios";
+import { apolloClient } from "../components/core/Auth/SharedGraphAPIProvider";
 import { escapeQuotes } from "utils";
 import { myAxios } from "utils/myAxios";
 import {
@@ -7,12 +8,17 @@ import {
 } from "globals/interfaces";
 import { logger } from "utils/logger";
 import { skillActions } from "context/reducers/skillReducer";
+import {
+  UPDATE_SKILL,
+  DELETE_SKILL
+} from "../globals/graphql/skill";
 
 export interface UpdateMessageRequestBody {
   skillName: string;
   message: string;
   nNumber: string;
 }
+
 export const updateFlashMessage = async (payload: UpdateMessageRequestBody, tokens: Tokens, dispatch: (action: Action) => void): Promise<AxiosResponse<any>> => {
   const req = {
     skill: payload.skillName,
@@ -24,6 +30,7 @@ export const updateFlashMessage = async (payload: UpdateMessageRequestBody, toke
       Authorization: `Bearer ${tokens.adminService}`
     }
   };
+  // ToDo: Create GraphQL string to update the Flash Message
   try {
     await myAxios.put(apiPaths.FLASH_MESSAGE, req, config);
     dispatch({
@@ -35,9 +42,14 @@ export const updateFlashMessage = async (payload: UpdateMessageRequestBody, toke
         }
       }
     });
-    return;
+    try {
+      // ToDo: 
+      return;
+    } catch (err) {
+      logger.error("Failed to update Flash message in UMUser storage", err);
+    }
   } catch(err){
-    logger.error("updateFlashMessage - Error thrown", err);
+    logger.error("Failed to update Flash message in Shared Admin storage", err);
     throw err;
   }
 };
@@ -53,6 +65,7 @@ export const updateClosedMessage = async (payload: UpdateMessageRequestBody, tok
       Authorization: `Bearer ${tokens.adminService}`
     }
   };
+  // ToDo: Create GraphQL string to update the Closed Message
   try {
     await myAxios.put(apiPaths.CLOSED_MESSAGE, req, config);
     dispatch({
@@ -64,9 +77,28 @@ export const updateClosedMessage = async (payload: UpdateMessageRequestBody, tok
         }
       }
     });
-    return;
-  } catch(err){
-    logger.error("updateClosedMessage - Error thrown", err);
+    try {
+      // ToDo:  Call the shared graph api
+      console.log("wsx updateClosedMessage():", payload);
+      // const {
+      //   errors, data
+      // }  = await apolloClient.mutate<{ skillGroup: { keys: { pk: string, sk: string}[]} }>({
+      //   mutation: UPDATE_SKILL,
+      //   variables: {
+      //     input: payload
+      //   }
+      // });
+
+      if (errors?.length) {
+        throw errors.map(e => e.message);
+      }
+      return;
+    } catch (err) {
+      logger.error("Failed to update Closed message in UMSkill storage", err);
+      throw err;
+    }
+  } catch(err) {
+    logger.error("Failed to update Closed message in Shared Admin storage", err);
     throw err;
   }
 };
