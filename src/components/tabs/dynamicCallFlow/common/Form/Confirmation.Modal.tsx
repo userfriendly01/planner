@@ -1,18 +1,20 @@
 import React, { ReactElement } from "react";
-import { Modal, ModalHeader } from "@lmig/lmds-react-modal";
+import {
+  Modal, ModalHeader
+} from "@lmig/lmds-react-modal";
 import styled from "styled-components";
 import { ModalFooterStyled } from "dynamicCallFlowCommon/DynamicCallFlow.Styles";
 import { Button } from "@mui/material";
 
 const ConfirmationMessage = styled.h2`
-  display: flex;
-  font-size: 18px;
-  padding: 0px 10px 0px 10px;
-  text-align: center;
-  align-items: center;
-  align-self: center;
-  line-height: 2;
-  min-height: 150px;
+    display: flex;
+    font-size: 18px;
+    padding: 0 10px 0 10px;
+    text-align: center;
+    align-items: center;
+    align-self: center;
+    line-height: 2;
+    min-height: 150px;
 `;
 
 export interface ConfirmationModalProps {
