@@ -97,9 +97,9 @@ export const PhoneNumberFormModal = ({
   };
 
   const handleOnDelete = async (): Promise<void> => {
-    // const formOnHandleResponse = await formHandler.handleOnDelete(accessTokenGraph, formRecord);
-    //
-    // postHandleAction(formOnHandleResponse);
+    const formOnHandleResponse = await formHandler.handleOnDelete(accessTokenGraph, formRecord);
+
+    postHandleAction(formOnHandleResponse);
     postFormHandler();
 
     alertBarController.current.info("Phone number deletion confirmed");
