@@ -297,6 +297,21 @@ describe("profileUtils", () => {
       const result = constructProfilePayload(validProfileEntryFormState);
       expect(result).toEqual(expectedResult);
     });
+    test("returns formatted payload, sets call_tags and transfer_queues to null when array is empty", () => {
+      const emptyCallTagsAndTQs = {
+        ...validProfileEntryFormState,
+        callTagsList: [],
+        transferQueues: []
+      };
+      const nullsExpectedResult = {
+        ...expectedResult,
+        call_tags: null,
+        transfer_queues: null
+      };
+
+      const result = constructProfilePayload(emptyCallTagsAndTQs);
+      expect(result).toEqual(nullsExpectedResult);
+    });
     test("returns formatted payload, does not set profileId when formmode is not insert", () => {
       const notInsertProfileForm = {
         ...validProfileEntryFormState,
