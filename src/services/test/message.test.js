@@ -2,13 +2,21 @@ import {
   updateFlashMessage,
   updateClosedMessage
 } from "../message";
-import MockAdapter from "axios-mock-adapter";
+import AxMockAdapter from "axios-mock-adapter";
 import { apiPaths } from "globals";
 import { myAxios } from "utils/myAxios";
 import { mockSkills } from "testUtils";
 import { skillActions } from "context/reducers/skillReducer";
+import { apolloClient } from "../../components/core/Auth/SharedGraphAPIProvider";
 
-const axiosMock = new MockAdapter(myAxios);
+jest.mock("../../components/core/Auth/SharedGraphAPIProvider", () => ({
+  apolloClient: {
+    mutate: jest.fn(),
+    query: jest.fn()
+  }
+}));
+
+const axiosMock = new AxMockAdapter(myAxios);
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -22,12 +30,13 @@ const tokens = {
   adminService: "pstpstpst"
 };
 
-describe("updateFlashMessage", () => {
+describe("UpdateFlashMessage", () => {
   const endpoint = apiPaths.FLASH_MESSAGE;
   const message = "I'm a new flash message!";
-  describe("call succeeds", () => {
+  describe("Calls succeed", () => {
     const data = { huzzah: "you are winner" };
     beforeEach(() => axiosMock.onPut(endpoint).replyOnce(200, data));
+    beforeEach(() => apolloClient.mutate.mockResolvedValue({}));
     test("should resolve with any successful response", async () => {
       await updateFlashMessage({
         skillName: skill.name,
@@ -48,12 +57,17 @@ describe("updateFlashMessage", () => {
           }
         }
       });
+      expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
+      // expect(apolloClient.mutate).toHaveBeenCalledWith("a"); wsx
     });
   });
-  describe("call fails", () => {
+  describe("Calls fail", () => {
     const badResponse = { wahh: "boo" };
-    beforeEach(() => axiosMock.onPut(endpoint).replyOnce(500, badResponse));
-    test("should reject with error", async () => {
+    const endpoint = apiPaths.FLASH_MESSAGE;
+    const data = { huzzah: "you are winner" };
+  
+    test("Axios call should fail", async () => {
+      axiosMock.onPut(endpoint).replyOnce(500, badResponse)
       try {
         await updateFlashMessage({
           skillName: skill.name,
@@ -67,19 +81,39 @@ describe("updateFlashMessage", () => {
           updatedBy: nNumber
         });
         expect(mockDispatch).not.toHaveBeenCalled();
+        expect(apolloClient.mutate).not.toHaveBeenCalled();
         expect(err).toEqual(new Error("Request failed with status code 500"));
       }
     });
+    test("Shared Graph call should fail", async () => {
+      axiosMock.onPut(endpoint).replyOnce(200, data);
+      const errMessages = [{ message: "This operation failed miserably"}];
+      apolloClient.mutate.mockResolvedValueOnce({ errors: errMessages });
+      let errResult = null;
+      try {
+        await updateFlashMessage({
+          skillName: skill.name,
+          message,
+          nNumber
+        }, tokens, mockDispatch);
+      } catch (err) {
+        errResult = err;
+      }
+      expect(errResult).toEqual(errMessages.map(er => er.message));
+      expect(mockDispatch).not.toHaveBeenCalled();
+      expect(apolloClient.mutate).toHaveBeenCalled();
+    })
   });
 });
 
 describe("updateClosedMessage", () => {
   const endpoint = apiPaths.CLOSED_MESSAGE;
   const message = "I'm a new closed message!";
-  describe("call succeeds", () => {
+  describe("calls succeed", () => {
     const data = { huzzah: "you are winner" };
-    beforeEach(() => axiosMock.onPut(endpoint).replyOnce(200, data));
-    test("should resolve with any successful response", async () => {
+    test("Should resolve with any successful response", async () => {
+      axiosMock.onPut(endpoint).replyOnce(200, data);
+      apolloClient.mutate.mockResolvedValue({});
       await updateClosedMessage({
         skillName: skill.name,
         message,
@@ -99,12 +133,14 @@ describe("updateClosedMessage", () => {
           }
         }
       });
+      expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
     });
   });
-  describe("call fails", () => {
+  describe("Calls fail", () => {
+    const data = { huzzah: "you are winner" };
     const badResponse = { wahh: "boo" };
-    beforeEach(() => axiosMock.onPut(endpoint).replyOnce(500, badResponse));
     test("should reject with error", async () => {
+      axiosMock.onPut(endpoint).replyOnce(500, badResponse);
       try {
         await updateClosedMessage({
           skillName: skill.name,
@@ -118,8 +154,27 @@ describe("updateClosedMessage", () => {
           updatedBy: nNumber
         });
         expect(mockDispatch).not.toHaveBeenCalled();
+        expect(apolloClient.mutate).not.toHaveBeenCalled();
         expect(err).toEqual(new Error("Request failed with status code 500"));
       }
     });
+    test("Shared Graph call should fail", async () => {
+      axiosMock.onPut(endpoint).replyOnce(200, data);
+      const errMessages = [{ message: "This operation failed miserably"}];
+      apolloClient.mutate.mockResolvedValueOnce({ errors: errMessages });
+      let errResult = null;
+      try {
+        await updateClosedMessage({
+          skillName: skill.name,
+          message,
+          nNumber
+        }, tokens, mockDispatch);
+      } catch (err) {
+        errResult = err;
+      }
+      expect(errResult).toEqual(errMessages.map(er => er.message));
+      expect(mockDispatch).not.toHaveBeenCalled();
+      expect(apolloClient.mutate).toHaveBeenCalled();
+    })
   });
 });
