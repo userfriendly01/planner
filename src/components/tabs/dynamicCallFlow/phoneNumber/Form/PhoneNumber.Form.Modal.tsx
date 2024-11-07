@@ -101,8 +101,6 @@ export const PhoneNumberFormModal = ({
 
     postHandleAction(formOnHandleResponse);
     postFormHandler();
-
-    alertBarController.current.info("Phone number deletion confirmed");
   };
 
   const postHandleAction = (formOnHandleResponse: FormOnHandleResponse<PhoneNumberRecordType>): void => {
