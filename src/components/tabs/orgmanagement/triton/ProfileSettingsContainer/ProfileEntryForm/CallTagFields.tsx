@@ -134,7 +134,7 @@ export const CallTagFields = () => {
             <OptionsWrapper>
               {tag.options?.map((o: string, currentOptionIndex: number) => {
                 return (
-                  <FormRow key={`option-${currentTagIndex}`} style={{ width: "30%" }}>
+                  <FormRow key={`option-${currentTagIndex}-${currentOptionIndex}`} style={{ width: "30%" }}>
                     <CustomInput
                       label={"Dropdown Option *"}
                       name={"Dropdown Option *"}

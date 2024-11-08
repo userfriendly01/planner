@@ -306,7 +306,7 @@ export interface ProfilePayload {
   screenpop_ids: string[],
   access_group_id: string,
   activity_sids: string[],
-  call_tags: CallTag[],
+  call_tags?: CallTag[],
   transfer_queues: string[]
 }
 
