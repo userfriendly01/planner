@@ -9,8 +9,7 @@ import {
 import { logger } from "utils/logger";
 import { skillActions } from "context/reducers/skillReducer";
 import {
-  UPDATE_SKILL,
-  DELETE_SKILL
+  UPDATE_SKILL
 } from "../globals/graphql/skill";
 import { UMSkill } from "../globals/interfaces";
 
@@ -20,8 +19,7 @@ export interface UpdateMessageRequestBody {
   nNumber: string;
 }
 
-const updateSharedGraph = async (skill_id: string, input: UMSkill) => {
-  console.log("wsx updateSharedGraph():", skill_id, input);
+const updateSharedGraphSkill = async (skill_id: string, input: UMSkill) => {
   const { errors }  = await apolloClient.mutate<{ skill: UMSkill}>({
     mutation: UPDATE_SKILL,
     variables: {
@@ -50,8 +48,8 @@ export const updateFlashMessage = async (payload: UpdateMessageRequestBody, toke
   try {
     await myAxios.put(apiPaths.FLASH_MESSAGE, req, config);
 
-    try { // flash_message custom_closed_message
-      await updateSharedGraph(payload.skillName, { flash_message: payload.message });
+    try {
+      await updateSharedGraphSkill(payload.skillName, { flash_message: payload.message });
       dispatch({
         type: skillActions.UPDATE_SKILL,
         payload: {
@@ -61,7 +59,6 @@ export const updateFlashMessage = async (payload: UpdateMessageRequestBody, toke
           }
         }
       });
-      console.log("wsx Successfully updated flash_message");
       return;
     } catch (err) {
       logger.error("Failed to update Flash message on UMSkill", err);
@@ -86,11 +83,10 @@ export const updateClosedMessage = async (payload: UpdateMessageRequestBody, tok
     }
   };
   try {
-    console.log("wsx payload.message:", payload.message);
     await myAxios.put(apiPaths.CLOSED_MESSAGE, req, config);
 
-    try { // flash_message custom_closed_message
-      await updateSharedGraph(payload.skillName, { custom_closed_message: payload.message });
+    try {
+      await updateSharedGraphSkill(payload.skillName, { custom_closed_message: payload.message });
       dispatch({
         type: skillActions.UPDATE_SKILL,
         payload: {
@@ -100,7 +96,6 @@ export const updateClosedMessage = async (payload: UpdateMessageRequestBody, tok
           }
         }
       });
-      console.log("wsx Successfully updated custom_closed_message");
       return;
     } catch (err) {
       logger.error("Failed to update Closed message on UMSkill", err);

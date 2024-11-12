@@ -8,6 +8,7 @@ import { myAxios } from "utils/myAxios";
 import { mockSkills } from "testUtils";
 import { skillActions } from "context/reducers/skillReducer";
 import { apolloClient } from "../../components/core/Auth/SharedGraphAPIProvider";
+import { logger } from "utils/logger";
 
 jest.mock("../../components/core/Auth/SharedGraphAPIProvider", () => ({
   apolloClient: {
@@ -58,16 +59,15 @@ describe("UpdateFlashMessage", () => {
         }
       });
       expect(apolloClient.mutate).toHaveBeenCalledTimes(1);
-      // expect(apolloClient.mutate).toHaveBeenCalledWith("a"); wsx
     });
   });
   describe("Calls fail", () => {
     const badResponse = { wahh: "boo" };
     const endpoint = apiPaths.FLASH_MESSAGE;
     const data = { huzzah: "you are winner" };
-  
+
     test("Axios call should fail", async () => {
-      axiosMock.onPut(endpoint).replyOnce(500, badResponse)
+      axiosMock.onPut(endpoint).replyOnce(500, badResponse);
       try {
         await updateFlashMessage({
           skillName: skill.name,
@@ -87,7 +87,7 @@ describe("UpdateFlashMessage", () => {
     });
     test("Shared Graph call should fail", async () => {
       axiosMock.onPut(endpoint).replyOnce(200, data);
-      const errMessages = [{ message: "This operation failed miserably"}];
+      const errMessages = [{ message: "This operation failed miserably" }];
       apolloClient.mutate.mockResolvedValueOnce({ errors: errMessages });
       let errResult = null;
       try {
@@ -102,7 +102,8 @@ describe("UpdateFlashMessage", () => {
       expect(errResult).toEqual(errMessages.map(er => er.message));
       expect(mockDispatch).not.toHaveBeenCalled();
       expect(apolloClient.mutate).toHaveBeenCalled();
-    })
+      expect(logger.error).toHaveBeenNthCalledWith(1, "Failed to update Flash message on UMSkill", ["This operation failed miserably"]);
+    });
   });
 });
 
@@ -160,7 +161,7 @@ describe("updateClosedMessage", () => {
     });
     test("Shared Graph call should fail", async () => {
       axiosMock.onPut(endpoint).replyOnce(200, data);
-      const errMessages = [{ message: "This operation failed miserably"}];
+      const errMessages = [{ message: "This operation failed miserably" }];
       apolloClient.mutate.mockResolvedValueOnce({ errors: errMessages });
       let errResult = null;
       try {
@@ -175,6 +176,7 @@ describe("updateClosedMessage", () => {
       expect(errResult).toEqual(errMessages.map(er => er.message));
       expect(mockDispatch).not.toHaveBeenCalled();
       expect(apolloClient.mutate).toHaveBeenCalled();
-    })
+      expect(logger.error).toHaveBeenNthCalledWith(1, "Failed to update Closed message on UMSkill", ["This operation failed miserably"]);
+    });
   });
 });

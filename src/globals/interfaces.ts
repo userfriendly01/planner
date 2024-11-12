@@ -520,7 +520,7 @@ export interface UMQueueSteps {
   action: string
   length: number
   speech: string
-  actionUrl: string
+  action_url: string
 }
 
 export interface UMSkill {
