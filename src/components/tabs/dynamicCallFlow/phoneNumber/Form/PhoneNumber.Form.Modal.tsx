@@ -37,6 +37,7 @@ import {
   DYNAMIC_CALL_FLOW_ROLE,
   userDoesNotHaveReadWriteAccess
 } from "components/tabs/dynamicCallFlow/common/DynamicCallFlow.Authentication";
+import { ConfirmationModal } from "dynamicCallFlowCommon/Form/Confirmation.Modal";
 
 export interface FormModalProps {
   isOpen: boolean;
@@ -67,6 +68,7 @@ export const PhoneNumberFormModal = ({
 
   const userDoesNotHavePermission = useMemo<boolean>(() => userDoesNotHaveReadWriteAccess(permissions, DYNAMIC_CALL_FLOW_ROLE), []);
   const [alertBarProps, setAlertBarProps] = useState<AlertBarProps>(initialAlertBarProps);
+  const [deleteConfirmationModalOpen, setDeleteConfirmationModalOpen] = useState<boolean>(false);
 
   const alertBarOnClose = () => {
     setAlertBarProps(prevState => ({
@@ -86,10 +88,19 @@ export const PhoneNumberFormModal = ({
     postHandleAction(formOnHandleResponse);
   };
 
+  const handleOnCloseDeleteConfirmation = (): void => {
+    setDeleteConfirmationModalOpen(false);
+  };
+
+  const handleOnDeleteConfirmation = (): void => {
+    setDeleteConfirmationModalOpen(true);
+  };
+
   const handleOnDelete = async (): Promise<void> => {
     const formOnHandleResponse = await formHandler.handleOnDelete(accessTokenGraph, formRecord);
 
     postHandleAction(formOnHandleResponse);
+    postFormHandler();
   };
 
   const postHandleAction = (formOnHandleResponse: FormOnHandleResponse<PhoneNumberRecordType>): void => {
@@ -190,7 +201,7 @@ export const PhoneNumberFormModal = ({
             disabled={userDoesNotHavePermission}
             sx={{ marginRight: 2 }}
             aria-label="deleteFlowRuleButton"
-            onClick={handleOnDelete}
+            onClick={handleOnDeleteConfirmation}
           >
           Delete
           </Button>:null}
@@ -205,6 +216,12 @@ export const PhoneNumberFormModal = ({
           </Button>
         </ModalFooterStyled>
       </Modal>
+      <ConfirmationModal
+        confirmationAction={handleOnDelete}
+        closeConfirmationModal={handleOnCloseDeleteConfirmation}
+        isOpen={deleteConfirmationModalOpen}
+        confirmationMessage={`Are you sure you want to delete ${PhoneNumberRecordUtil.getPhoneNumber(formRecord)}?  You CANNOT undo this action!`}
+      />
       <CustomToast
         open={alertBarProps.open}
         onClose={ alertBarOnClose }
