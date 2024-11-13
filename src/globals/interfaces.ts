@@ -507,6 +507,40 @@ export interface GraphQLErrors {
   message:string;
 }
 
-export interface BrandNameMap{
+export interface BrandNameMap {
   [key:string]: "liberty" | "safeco"
+}
+
+export interface UMQueueOption {
+  digits: string
+  action: string
+}
+
+export interface UMQueueSteps {
+  action: string
+  length: number
+  speech: string
+  action_url: string
+}
+
+export interface UMSkill {
+  task_queue_sid?: string
+  task_queue_name?: string
+  levels?: [number]
+  flash_message?: string
+  custom_closed_message?: string
+  workflow_name?: string
+  queue_options?: [UMQueueOption]
+  agent_available_check?: boolean
+  agent_available_activities?: [string]
+  no_agent_available_action_type?: string
+  no_agent_available_action_id?: string
+  queue_agent_available_check?: boolean
+  estimated_wait_time_ind?: boolean
+  virtual_hold_enabled?: boolean
+  virtual_hold_threshold?: number
+  virtual_hold_call_target?: string
+  voicemail_email_address?: string
+  no_agent_available_queue_action_type?: string
+  queue_steps?: [UMQueueSteps]
 }

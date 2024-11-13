@@ -1,5 +1,6 @@
 import { apiPaths } from "globals";
 import { AxiosResponse } from "axios";
+import { apolloClient } from "../components/core/Auth/SharedGraphAPIProvider";
 import { escapeQuotes } from "utils";
 import { myAxios } from "utils/myAxios";
 import {
@@ -7,12 +8,32 @@ import {
 } from "globals/interfaces";
 import { logger } from "utils/logger";
 import { skillActions } from "context/reducers/skillReducer";
+import {
+  UPDATE_SKILL
+} from "../globals/graphql/skill";
+import { UMSkill } from "../globals/interfaces";
 
 export interface UpdateMessageRequestBody {
   skillName: string;
   message: string;
   nNumber: string;
 }
+
+const updateSharedGraphSkill = async (skill_id: string, input: UMSkill) => {
+  const { errors }  = await apolloClient.mutate<{ skill: UMSkill}>({
+    mutation: UPDATE_SKILL,
+    variables: {
+      skill_id,
+      input
+    }
+  });
+
+  if (errors?.length) {
+    throw errors.map(e => e.message);
+  }
+  return;
+};
+
 export const updateFlashMessage = async (payload: UpdateMessageRequestBody, tokens: Tokens, dispatch: (action: Action) => void): Promise<AxiosResponse<any>> => {
   const req = {
     skill: payload.skillName,
@@ -26,18 +47,26 @@ export const updateFlashMessage = async (payload: UpdateMessageRequestBody, toke
   };
   try {
     await myAxios.put(apiPaths.FLASH_MESSAGE, req, config);
-    dispatch({
-      type: skillActions.UPDATE_SKILL,
-      payload: {
-        skillName: payload.skillName,
-        changes: {
-          flashMessage: payload.message
+
+    try {
+      await updateSharedGraphSkill(payload.skillName, { flash_message: payload.message });
+      dispatch({
+        type: skillActions.UPDATE_SKILL,
+        payload: {
+          skillName: payload.skillName,
+          changes: {
+            flashMessage: payload.message
+          }
         }
-      }
-    });
-    return;
+      });
+      return;
+    } catch (err) {
+      logger.error("Failed to update Flash message on UMSkill", err);
+      throw err;
+    }
+
   } catch(err){
-    logger.error("updateFlashMessage - Error thrown", err);
+    logger.error("Failed to update Flash message in Shared Admin storage", err);
     throw err;
   }
 };
@@ -55,18 +84,26 @@ export const updateClosedMessage = async (payload: UpdateMessageRequestBody, tok
   };
   try {
     await myAxios.put(apiPaths.CLOSED_MESSAGE, req, config);
-    dispatch({
-      type: skillActions.UPDATE_SKILL,
-      payload: {
-        skillName: payload.skillName,
-        changes: {
-          closedMessage: payload.message
+
+    try {
+      await updateSharedGraphSkill(payload.skillName, { custom_closed_message: payload.message });
+      dispatch({
+        type: skillActions.UPDATE_SKILL,
+        payload: {
+          skillName: payload.skillName,
+          changes: {
+            closedMessage: payload.message
+          }
         }
-      }
-    });
-    return;
-  } catch(err){
-    logger.error("updateClosedMessage - Error thrown", err);
+      });
+      return;
+    } catch (err) {
+      logger.error("Failed to update Closed message on UMSkill", err);
+      throw err;
+    }
+
+  } catch(err) {
+    logger.error("Failed to update Closed message in Shared Admin storage", err);
     throw err;
   }
 };
