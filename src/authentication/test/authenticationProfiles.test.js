@@ -172,6 +172,10 @@ describe("authenticationProfiles", () => {
               label: "WFM User Management"
             },
             {
+              label: "Twilio Console Management",
+              route: "triton-admin/twilio-console"
+            },
+            {
               route: "triton-admin/user",
               label: "Onboard New User"
             },

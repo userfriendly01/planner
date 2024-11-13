@@ -1,0 +1,29 @@
+.twilio-console-users-page {
+  padding: 20px;
+  margin: 20px;
+
+  .table-container {
+    border-radius: 3px;
+    margin-bottom: 3rem;
+    margin-top: 16px;
+    padding: 32px 32px 0 32px;
+    border: 1px solid #c0bfc0;
+
+    .pagination-container {
+      padding: 10px;
+    }
+
+    .inner-table-spacing {
+      width: 40%;
+    }
+
+    .role-container {
+      display: flex;
+
+      .extra-roles {
+        display: flex;
+        flex-wrap: wrap;
+      }
+    }
+  }
+}

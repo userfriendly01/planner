@@ -185,6 +185,7 @@ export const apiPaths = {
   GET_CALABRIO_ROLES: `${CALABRIO_SERVICE_BASE_URI}/qm?api=Roles`,
   GET_CALABRIO_USER: (personId: number): any => `${CALABRIO_SERVICE_BASE_URI}/qm?api=User&userId=${personId}`,
   GET_CALABRIO_USER_PROFILES: `${CALABRIO_SERVICE_BASE_URI}/qm?api=Get%20All%20Profiles&includeInactive=true`,
+  GET_TWILIO_CONSOLE_USERS: `${ADMIN_CLIENT_URL}/twilio/org/users`,
   UPDATE_CALABRIO_USER: `${CALABRIO_SERVICE_BASE_URI}/qm?api=User`,
   UPDATE_CALABRIO_TEAM: `${CALABRIO_SERVICE_BASE_URI}/qm?api=Team`,
   APPLICATIONS: `${ADMIN_CLIENT_URL}/skills/applications`,
@@ -198,7 +199,8 @@ export const apiPaths = {
   TERMINATE_WORKER: `${ADMIN_CLIENT_URL}/termination`,
   WFM_ACTIVATE_EXTERNAL_LOGON: `${ADMIN_CLIENT_URL}/externalLogon`,
   TFN_DATA: `${ADMIN_CLIENT_URL}/tfn`,
-  EMPLOYEE_LOOKUP: (nNumber: string): string => `${MS_GRAPH_URL}/users?$filter=employeeId eq '${nNumber}'&$select=mail,givenName,surname,officeLocation,extension_128b6233d06d4df391d7de26c982b64e_extensionAttribute1,department,extension_128b6233d06d4df391d7de26c982b64e_extensionAttribute2,accountEnabled`
+  EMPLOYEE_LOOKUP: (nNumber: string): string => `${MS_GRAPH_URL}/users?$filter=employeeId eq '${nNumber}'&$select=mail,givenName,surname,officeLocation,extension_128b6233d06d4df391d7de26c982b64e_extensionAttribute1,department,extension_128b6233d06d4df391d7de26c982b64e_extensionAttribute2,accountEnabled`,
+  EMPLOYEE_LOOKUP_BY_EMAIL: (email: string): string => `${MS_GRAPH_URL}/users/${email}?$select=mail,givenName,surname,officeLocation,extension_128b6233d06d4df391d7de26c982b64e_extensionAttribute1,department,extension_128b6233d06d4df391d7de26c982b64e_extensionAttribute2,accountEnabled`
 };
 
 export const authConfig = {

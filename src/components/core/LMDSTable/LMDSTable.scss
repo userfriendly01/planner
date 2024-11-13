@@ -1,0 +1,36 @@
+.lmds-table {
+  td[id$="actions"] {
+    width: 100px;
+  }
+
+  td[id$="expand"]  {
+    width: 32px;
+    --lmig-Table-body-row-bottom-border-color: none;
+  }
+
+  .table-no-data {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+    max-width: none;
+  }
+
+  .expanded-cell {
+    background-color: #f5f5f5;
+    padding-right: 0;
+    --lmig-Table-header-cell-tick-color: none;
+    --lmig-Table-row-border-left-width: 0;
+
+    .lmig-Table-header {
+      border-top: none;
+      --lmig-Table-header-cell-tick-color: #C0BFC0;
+    }
+
+    .lmig-Table-body {
+      :last-child {
+        border-bottom: none;
+      }
+    }
+  }
+}

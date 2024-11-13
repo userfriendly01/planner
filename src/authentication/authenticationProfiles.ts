@@ -128,6 +128,10 @@ export const getTabs = (): any => {
           label: "WFM User Management"
         },
         {
+          route: "triton-admin/twilio-console",
+          label: "Twilio Console Management"
+        },
+        {
           route: "triton-admin/user",
           label: "Onboard New User"
         },

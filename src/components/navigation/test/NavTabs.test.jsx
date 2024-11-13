@@ -90,9 +90,9 @@ describe("NavTabs", () => {
         const dropdownActionDivs = rendered.getAllByTestId("dropdown-action");
         expect(dropdownActionDivs.length).toBe(4);
         act(() => fireEvent.mouseEnter(dropdownActionDivs[0]));
-        expect(Link.mock.calls.length).toBe(3);
+        expect(Link.mock.calls.length).toBe(4);
         act(() => fireEvent.mouseLeave(dropdownActionDivs[0]));
-        expect(Link.mock.calls.length).toBe(3);
+        expect(Link.mock.calls.length).toBe(4);
       });
     });
     describe("dropdown is null", () => {

@@ -511,6 +511,11 @@ export interface BrandNameMap {
   [key:string]: "liberty" | "safeco"
 }
 
+export interface Pagination {
+  pageIndex: number;
+  pageSize: number;
+}
+
 export interface UMQueueOption {
   digits: string
   action: string
