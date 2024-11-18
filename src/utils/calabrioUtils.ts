@@ -21,7 +21,7 @@ import {
   discrepancyType,
   Action,
   Tokens,
-  UMManager,
+  UMManager
 } from "globals/interfaces";
 import { logger } from "utils/logger";
 import { checkIfLowerEnv } from "utils";
@@ -82,7 +82,8 @@ const calabrioGroupsWithQMFNOLView = [
   825, // USRM PL Casualty
   827, // USRM PL No Fault Medical
   1894, // USRM Mitigation Unit
-  2184 // USRM Mitigation Unit Support
+  2184, // USRM Mitigation Unit Support
+  3021 // USRM Allcat - Property
 ];
 
 const getCalabrioGroupsWithQMFNOLView = (): number[] => {
