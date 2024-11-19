@@ -95,8 +95,8 @@ const getCalabrioGroupsWithQMFNOLView = (): number[] => {
 // Only users that are in teams within particular Parent Groups should have FNOL view, and they should only have the FNOL QM View if they are not managers (ie, people with FNOL view should not have scopes)
 export const shouldHaveFNOLQMView = (team: CalabrioGroup | undefined, scope: {groups: CalabrioGroup[], teams: CalabrioGroup[]}): boolean => {
   // Don't add a QMView if user has scope, as it will override their scope
-  const hasScopeGroups = scope.groups.some(g => g.checked);
-  const hasScopeTeams = scope.teams.some(t => t.checked);
+  const hasScopeGroups = scope.groups.length === 0 ? false : scope.groups.some(g => g.checked);
+  const hasScopeTeams = scope.teams.length === 0 ? false : scope.teams.some(t => t.checked);
 
   return !!(team && team.parentGroupId && !hasScopeGroups && !hasScopeTeams && getCalabrioGroupsWithQMFNOLView().includes(team.parentGroupId));
 };
