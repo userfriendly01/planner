@@ -42,13 +42,14 @@ export enum CallerTypeEnum {
     CUSTOMER = "Customer"
 }
 
-export type ChannelType = "Sales" | "Service" | "Claims" | "Business Lines" | "Commercial";
+export type ChannelType = "Sales" | "Service" | "Claims" | "Business Lines" | "Commercial" | "GRS";
 export enum ChannelTypeEnum {
     SALES = "Sales",
     SERVICE = "Service",
     CLAIMS = "Claims",
     BUSINESS_LINES = "Business Lines",
     COMMERCIAL = "Commercial",
+    GRS = "GRS"
 }
 
 export type LanguageOfferType = "English" | "Spanish";
