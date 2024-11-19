@@ -2076,7 +2076,8 @@ describe("fields.js", () => {
             "FNOL Team",
             "Hawaii Specialty Team",
             "Hawaii Team 50",
-            "Mary Smith - N7654321"
+            "Mary Smith - N7654321",
+            "Teammmmmmm"
           ]);
         });
       });
@@ -2151,7 +2152,8 @@ describe("fields.js", () => {
             "FNOL Team",
             "Hawaii Specialty Team",
             "Hawaii Team 50",
-            "Mary Smith - N7654321"
+            "Mary Smith - N7654321",
+            "Teammmmmmm"
           ]);
         });
       });
