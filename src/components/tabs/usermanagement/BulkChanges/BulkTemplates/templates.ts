@@ -39,7 +39,7 @@ import {
   AppState, UMManager
 } from "globals/interfaces";
 import { env } from "globals";
-import { SkillState } from "components/tabs/callflowmanagement/SkillManagement/Skills.Interfaces";
+import { shouldHaveFNOLQMView } from "utils/calabrioUtils";
 
 const rejectPromise = (error: string, rowNumber: number) => {
   return Promise.reject(JSON.stringify({
@@ -124,6 +124,12 @@ const processCreateCalabrioUser = async (row: any, state: AppState) => {
     body.timeZone = row.timeZone;
     body.roles = row.roles;
     body.scope = row.scope;
+
+    // find the full calabrio team object so we can check the parentGroupId
+    const calabrioTeam = state.calabrioContext.teams.find((t: any) => t.groupId === row.groupId);
+    if (shouldHaveFNOLQMView(calabrioTeam, row.scope)) {
+      body.qmViews = [{ id: 1 }];
+    }
 
     await createCalabrioUser(state.userContext.tokens.calabrioService, body);
 
@@ -517,7 +523,7 @@ const processUpdateDefaultSkills = async (row: any, template: Template, state: A
       if (currentSkills.levels) {
         for (const skillLevel in currentSkills.levels) {
           if (!skillsToDelete.includes(skillLevel)) {
-            updatedDefaultSkills.levels[skillLevel] = currentSkills.levels[skillLevel]
+            updatedDefaultSkills.levels[skillLevel] = currentSkills.levels[skillLevel];
           }
         }
       }

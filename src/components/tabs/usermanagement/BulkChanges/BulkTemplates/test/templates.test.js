@@ -186,7 +186,36 @@ describe("CREATE_CALABRIO_QM_USER", () => {
         scope: {
           groups: [],
           teams: [102]
+        },
+        qmViews: []
+      });
+      expect(results).toBe("User created in Calabrio for n0263445 for row 2");
+    });
+    test.only("user is on a calabrio team that gets FNOL qm View and has no scope, should resolve with appropriate body", async () => {
+      const fnolRow = {
+        ...row,
+        groupId: 201,
+        scope: {
+          groups: [],
+          teams: []
         }
+      };
+      const results = await createCalabrioProcessFunction(fnolRow, initialTestState);
+      expect(createCalabrioUser).toHaveBeenCalledTimes(1);
+      expect(createCalabrioUser).toHaveBeenCalledWith("Access Token", {
+        acdId: "WK13248",
+        adLogin: "LM\\n0263445",
+        email: "e.mail@lm.com",
+        firstName: "Michael",
+        lastName: "Scott",
+        groupId: 201,
+        timeZone: "Americas",
+        roles: [{ name: "role1" }],
+        scope: {
+          groups: [],
+          teams: []
+        },
+        qmViews: [{ id: 1 }]
       });
       expect(results).toBe("User created in Calabrio for n0263445 for row 2");
     });
@@ -216,7 +245,8 @@ describe("CREATE_CALABRIO_QM_USER", () => {
           scope: {
             groups: [],
             teams: [102]
-          }
+          },
+          qmViews: []
         });
         expect(results).toBe("User created in Calabrio for n0000000 for row 2");
       });
@@ -241,7 +271,8 @@ describe("CREATE_CALABRIO_QM_USER", () => {
           scope: {
             groups: [],
             teams: [102]
-          }
+          },
+          qmViews: []
         });
         expect(err).toBe(JSON.stringify({
           rowNumber: 2,
