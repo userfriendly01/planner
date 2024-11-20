@@ -68,6 +68,11 @@ const expectedTeams = [{
   groupId: 301,
   name: "Mary Smith - N7654321",
   parentGroupId: 200
+}, {
+  checked: false,
+  groupId: 401,
+  name: "Teammmmmmm",
+  parentGroupId: 3021
 }];
 
 const expectedTeamsCheckedFalse = [{
@@ -90,6 +95,11 @@ const expectedTeamsCheckedFalse = [{
   groupId: 301,
   name: "Mary Smith - N7654321",
   parentGroupId: 200
+}, {
+  checked: false,
+  groupId: 401,
+  name: "Teammmmmmm",
+  parentGroupId: 3021
 }];
 describe("CallRecordingForm", () => {
   beforeEach(() => {
@@ -268,6 +278,11 @@ describe("CallRecordingForm", () => {
                   groupId: 301,
                   name: "Mary Smith - N7654321",
                   parentGroupId: 200
+                }, {
+                  checked: false,
+                  groupId: 401,
+                  name: "Teammmmmmm",
+                  parentGroupId: 3021
                 }]
               },
               qmViews: [],
@@ -348,7 +363,7 @@ describe("CallRecordingForm", () => {
               name: "Group 1",
               id: 2
             }]
-          },
+          }
         }
       };
       beforeEach(() => {
@@ -520,7 +535,7 @@ describe("CallRecordingForm", () => {
           render(<CallRecordingForm twilioWorker={twilioWorker} missingFields={[]} />);
           expect(Dropdown.mock.calls.length).toBe(3);
           expect(Dropdown.mock.calls[1][0].label).toBe("Team *");
-          expect(Dropdown.mock.calls[1][0].options.length).toBe(4);
+          expect(Dropdown.mock.calls[1][0].options.length).toBe(5);
 
           const updateTeam = Dropdown.mock.calls[1][0].updateValue;
           act(() => {
@@ -655,7 +670,7 @@ describe("CallRecordingForm", () => {
                 label: "EST",
                 value: 173
               },
-              qmViews:[]
+              qmViews: []
             }
           });
         });
@@ -1096,7 +1111,7 @@ describe("CallRecordingForm", () => {
         },
         calabrio_qm: {
           ...initialFormState.calabrio_qm,
-          team: 824, 
+          team: 824,
           qmViews: [{
             id: 1,
             name: "FNOL"
@@ -1117,7 +1132,7 @@ describe("CallRecordingForm", () => {
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(1);
         expect(getCalabrioUser).toHaveBeenCalledWith("Access Token", 220);
-        expect(rendered.getByTestId('qm-view')).toHaveTextContent("QM View: FNOL")
+        expect(rendered.getByTestId("qm-view")).toHaveTextContent("QM View: FNOL");
         expect(mockSetForm).toHaveBeenCalledTimes(1);
       });
       test("User has a NO qm view, qm View displays as default in the form", () => {
@@ -1127,7 +1142,7 @@ describe("CallRecordingForm", () => {
             ...formState.calabrio_qm,
             qmViews: []
           }
-        }
+        };
         getCalabrioUser.mockResolvedValue({
           data: user
         });
@@ -1138,9 +1153,9 @@ describe("CallRecordingForm", () => {
         expect(CallRecordingScope.mock.calls.length).toBe(1);
         expect(getCalabrioUser).toHaveBeenCalledTimes(1);
         expect(getCalabrioUser).toHaveBeenCalledWith("Access Token", 220);
-        expect(rendered.getByTestId('qm-view')).toHaveTextContent("QM View: Default")
+        expect(rendered.getByTestId("qm-view")).toHaveTextContent("QM View: Default");
         expect(mockSetForm).toHaveBeenCalledTimes(1);
-      })
+      });
     });
   });
 });

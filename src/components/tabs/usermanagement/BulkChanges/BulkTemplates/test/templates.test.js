@@ -190,6 +190,34 @@ describe("CREATE_CALABRIO_QM_USER", () => {
       });
       expect(results).toBe("User created in Calabrio for n0263445 for row 2");
     });
+    test("user is on a calabrio team that gets FNOL qm View and has no scope, should resolve with appropriate body", async () => {
+      const fnolRow = {
+        ...row,
+        groupId: 401,
+        scope: {
+          groups: [],
+          teams: []
+        }
+      };
+      const results = await createCalabrioProcessFunction(fnolRow, initialTestState);
+      expect(createCalabrioUser).toHaveBeenCalledTimes(1);
+      expect(createCalabrioUser).toHaveBeenCalledWith("Access Token", {
+        acdId: "WK13248",
+        adLogin: "LM\\n0263445",
+        email: "e.mail@lm.com",
+        firstName: "Michael",
+        lastName: "Scott",
+        groupId: 401,
+        timeZone: "Americas",
+        roles: [{ name: "role1" }],
+        scope: {
+          groups: [],
+          teams: []
+        },
+        qmViews: [{ id: 1 }]
+      });
+      expect(results).toBe("User created in Calabrio for n0263445 for row 2");
+    });
     describe("acdId is not on row but triton worker is found", () => {
       beforeEach(() => createUser.mockResolvedValue({ workerSid: "WK123456" }));
       test("should resolve", async () => {
