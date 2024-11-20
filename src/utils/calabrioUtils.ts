@@ -109,12 +109,9 @@ export const shouldHaveFNOLQMView = (team: CalabrioGroup | undefined, scope: {gr
     });
     return arr;
   };
-  const scopeGroups = standardizeScopeTeamAndGroup(scope.groups);
-  const scopeTeams = standardizeScopeTeamAndGroup(scope.teams);
-
   // Don't add a QMView if user has scope, as it will override their scope
-  const hasScopeGroups = scopeGroups.length > 0;
-  const hasScopeTeams = scopeTeams.length > 0;
+  const hasScopeGroups = standardizeScopeTeamAndGroup(scope.groups).length > 0;
+  const hasScopeTeams = standardizeScopeTeamAndGroup(scope.teams).length > 0;
 
   return !!(team && team.parentGroupId && !hasScopeGroups && !hasScopeTeams && getCalabrioGroupsWithQMFNOLView().includes(team.parentGroupId));
 };
