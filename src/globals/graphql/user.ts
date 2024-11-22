@@ -9,6 +9,7 @@ const userAttributes = `
   worker_sid
   twilio_attributes {
     unique_id
+    roles
     agent_id
     contact_uri
     n_number
