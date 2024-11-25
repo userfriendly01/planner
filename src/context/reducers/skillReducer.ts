@@ -119,7 +119,7 @@ export const skillReducer = (state: SkillState, action: Action): SkillState => {
       }
 
       if(changes.taskQueue){
-        changes.taskQueueName = taskQueue.friendly_name;
+        changes.taskQueueName = taskQueue?.friendly_name;
         changes.taskQueueSid = taskQueue.sid;
         delete changes.taskQueue;
       }

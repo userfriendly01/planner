@@ -190,10 +190,10 @@ describe("<AddEditForm />", () => {
               message: "Skill Successfully Created",
               status: "success"
             }, 1);
+            jest.runAllTimers();
             expect(mockSkillDispatch).toHaveBeenCalledWith({
               type: skillActions.RESET_FORM
             });
-            jest.runAllTimers();
             expect(mockSetAction).toHaveBeenCalledWith(null);
           });
         });
@@ -293,10 +293,10 @@ describe("<AddEditForm />", () => {
               message: "Skill Successfully Created",
               status: "success"
             }, 1);
+            jest.runAllTimers();
             expect(mockSkillDispatch).toHaveBeenCalledWith({
               type: skillActions.RESET_FORM
             });
-            jest.runAllTimers();
             expect(mockSetAction).toHaveBeenCalledWith(null);
           });
         });
@@ -428,10 +428,10 @@ describe("<AddEditForm />", () => {
             message: "Skill Successfully Updated",
             status: "success"
           }, 1);
+          jest.runAllTimers();
           expect(mockSkillDispatch).toHaveBeenCalledWith({
             type: skillActions.RESET_FORM
           });
-          jest.runAllTimers();
           expect(mockSetAction).toHaveBeenCalledWith(null);
         });
       });
@@ -521,6 +521,8 @@ describe("<AddEditForm />", () => {
             message: "Skill Successfully Updated",
             status: "success"
           }, 1);
+          jest.runAllTimers();
+
           expect(mockSkillDispatch).toHaveBeenCalledWith({
             type: skillActions.RESET_FORM
           });

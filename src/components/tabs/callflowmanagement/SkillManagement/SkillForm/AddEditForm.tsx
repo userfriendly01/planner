@@ -131,10 +131,10 @@ export const AddEditForm = (props: any) => {
           status: ModalOverlayStatuses.SUCCESS
         });
 
-        skillDispatch({
-          type: skillActions.RESET_FORM
-        });
         setTimeout(() => {
+          skillDispatch({
+            type: skillActions.RESET_FORM
+          });
           closeModal();
           setAction(null);
           setSaveResult({
