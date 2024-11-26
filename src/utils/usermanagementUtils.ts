@@ -52,7 +52,7 @@ export const isFormUpdated = (form: UserFormState): boolean => form.triton.defau
 export const identifyFormErrors = (form: UserFormState) => {
   let erroredFields: any[] = [];
   const qmErrors = isQMUserValid(form);
-  const wfmErrors = isWfmUserValid(form);
+  const wfmErrors = form.formMode === formModes.UPDATE ? [] : isWfmUserValid(form);
   erroredFields = [
     ...qmErrors,
     ...wfmErrors
@@ -152,7 +152,7 @@ export const getNonOverflowSkills = (worker: UMUser, profiles: UMSoftphoneConfig
 
 export const getOverflowSkills = (profiles: UMSoftphoneConfiguration[]): string[] => {
   const skills: string[] = [];
-  profiles.forEach((profile: UMSoftphoneConfiguration) => profile.overflow_skill !== null && skills.push(profile.overflow_skill));
+  profiles.forEach((profile: UMSoftphoneConfiguration) => profile?.overflow_skill !== null && skills.push(profile?.overflow_skill));
   return skills;
 };
 
@@ -167,7 +167,7 @@ export const getOverflowSkillFromProfile = (profiles: UMSoftphoneConfiguration[]
 
 export const getTargetProfile = (profiles: UMSoftphoneConfiguration[], newProfileValue: string): UMSoftphoneConfiguration => profiles.find((profile: UMSoftphoneConfiguration) => profile.profile_id.toString() === newProfileValue.toString());
 
-export const getZeroOutEnabledFromProfile = (profiles: UMSoftphoneConfiguration[], newProfileValue: string): boolean => getTargetProfile(profiles, newProfileValue).overflow_skill !== null;
+export const getZeroOutEnabledFromProfile = (profiles: UMSoftphoneConfiguration[], newProfileValue: string): boolean => getTargetProfile(profiles, newProfileValue)?.overflow_skill !== null;
 
 export const workerHasOverFlowSkill = (worker: UMUser, profiles: UMSoftphoneConfiguration[]): boolean => worker?.attributes.routing?.skills.some(skill => getOverflowSkills(profiles).includes(skill));
 

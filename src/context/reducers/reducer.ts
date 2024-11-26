@@ -30,6 +30,11 @@ export const initialState: AppState = {
     workers: [],
     loadStatus: null
   },
+  rulesContext: {
+    rules: [],
+    applications: [],
+    ruleRelationships: []
+  },
   calabrioContext: {
     tenant: {},
     teams: [],
@@ -71,6 +76,12 @@ export const reducer = (state: AppState, action: Action): AppState => {
         workerContext: {
           ...state.workerContext,
           workers: (type === "UMUser" && !isFirstPage && state.workerContext.workers.concat(pageResults)) || (type === "UMUser" && pageResults) || state.workerContext.workers
+        },
+        rulesContext: {
+          ...state.rulesContext,
+          rules: (type === "Rule" && !isFirstPage && state.rulesContext.rules.concat(pageResults)) || (type === "Rule" && pageResults) || state.rulesContext.rules,
+          applications: (type === "Application" && !isFirstPage && state.rulesContext.applications.concat(pageResults)) || (type === "Application" && pageResults) || state.rulesContext.applications,
+          ruleRelationships: (type === "RuleRelationship" && !isFirstPage && state.rulesContext.ruleRelationships.concat(pageResults)) || (type === "RuleRelationship" && pageResults) || state.rulesContext.ruleRelationships
         }
       };
     }

@@ -6,6 +6,9 @@ import {
   AlertColor
 } from "@mui/material";
 import styled from "styled-components";
+import {
+  Application, Rule, ApplicationToRule
+} from "@lmig/cct-shared-rules-sdk";
 
 export const FlexColumn = styled.div`
   display: flex;
@@ -113,6 +116,11 @@ export interface AppState {
     workers: UMUser[],
     loadStatus: LoadStatuses;
   },
+  rulesContext: {
+    rules: Rule[],
+    applications: Application[],
+    ruleRelationships: ApplicationToRule[]
+  }
   calabrioContext: {
     tenant: any,
     teams: CalabrioGroup[],

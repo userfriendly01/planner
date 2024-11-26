@@ -27,7 +27,8 @@ export const getAuthenticationProfileTemplates = (): AuthenticationProfileOption
       tabs: [
         Tabs.TRITON_USER_MANAGEMENT,
         Tabs.ORG_MANAGEMENT,
-        Tabs.TRITON_CALL_FLOW_MANAGEMENT
+        Tabs.TRITON_CALL_FLOW_MANAGEMENT,
+        Tabs.RULES
       ]
     },
     ALOHA_ROUTE: {
@@ -35,7 +36,8 @@ export const getAuthenticationProfileTemplates = (): AuthenticationProfileOption
       home: AlohaRoutingContainer,
       permissionLevel: Permissions.READ,
       tabs: [
-        Tabs.ALOHA_ROUTING_RULES
+        Tabs.ALOHA_ROUTING_RULES,
+        Tabs.RULES
       ]
     },
     DYNAMIC_CALL_FLOW: DynamicCallFlowAuthenticationProfile
@@ -184,6 +186,17 @@ export const getTabs = (): any => {
         {
           route: "triton-admin/tfn-activation",
           label: "TFN Activation"
+        }
+      ]
+    },
+    RULES: {
+      value: "rules",
+      label: "Automation Rules",
+      route: "triton-admin/rules",
+      dropdown: [
+        {
+          route: "triton-admin/rules",
+          label: "Rules Table"
         }
       ]
     },

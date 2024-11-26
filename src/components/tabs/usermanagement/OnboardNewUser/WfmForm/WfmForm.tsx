@@ -80,6 +80,7 @@ export const WfmForm = (props: WfmFormProps) => {
         checkForWfmWorker();
       } else {
         setStatus(ModalOverlayStatuses.SUCCESS);
+        console.log("FAITH here!");
       }
     }
   }, [form.calabrio_wfm.userFound]);
@@ -149,6 +150,7 @@ export const WfmForm = (props: WfmFormProps) => {
             state
           }
         });
+        setStatus(ModalOverlayStatuses.SUCCESS);
       }
     } catch (err) {
       console.error("Error thrown fetching WFM user", err);

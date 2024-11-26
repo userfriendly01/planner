@@ -28,7 +28,10 @@ export const CallflowSkillForm = (props: {
 
   React.useEffect(() => {
     setTimeOfDayOptions(skillState.timeOfDays.map(tod => {
-      const label = tod.openTime === "00:00:00" && tod.closeTime === "00:00:00" ? "Closed" : `${tod.openTime} - ${tod.closeTime}`;
+      const label =
+        (tod.openTime === "00:00:00" && tod.closeTime === "00:00:00" && "Closed") ||
+        (tod.openTime === "00:00:00" && tod.closeTime === "23:59:59" && "Always Open") ||
+        `${tod.openTime} - ${tod.closeTime}`;
       return {
         value: tod.timeOfDayId,
         label: label

@@ -11,6 +11,9 @@ import {
 }from "globals/interfaces";
 import { LIST_MANAGERS }from "globals/manager";
 import {
+  LIST_APPLICATIONS, LIST_RULE_RELATIONSHIPS, LIST_RULES
+} from "globals/rules";
+import {
   LIST_INACTIVE_USERS, LIST_USERS
 }from "globals/user";
 import {
@@ -27,6 +30,12 @@ export const getGraphData = (type: string): GraphData => {
       return LIST_INACTIVE_USERS;
     case "UMManager":
       return LIST_MANAGERS;
+    case "Rule":
+      return LIST_RULES;
+    case "Application":
+      return LIST_APPLICATIONS;
+    case "RuleRelationship":
+      return LIST_RULE_RELATIONSHIPS;
     default:
       throw `Type of ${type} is not a valid list type`;
   }
