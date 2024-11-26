@@ -80,7 +80,6 @@ export const WfmForm = (props: WfmFormProps) => {
         checkForWfmWorker();
       } else {
         setStatus(ModalOverlayStatuses.SUCCESS);
-        console.log("FAITH here!");
       }
     }
   }, [form.calabrio_wfm.userFound]);

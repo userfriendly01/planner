@@ -7,6 +7,7 @@ import {
 import {
   CREATE_MANAGER,
   DELETE_MANAGER,
+  LIST_MANAGERS,
   UPDATE_MANAGER
 }from "globals/manager";
 import { getPaginatedResults } from "utils/graphUtils";
@@ -22,7 +23,7 @@ import { logger } from "utils/logger";
 
 export const listUMManagers = async (dispatch: (action: Action) => void): Promise<DBList<UMManager>> => {
   try {
-    await getPaginatedResults("UMManager", dispatch);
+    await getPaginatedResults(LIST_MANAGERS.type, dispatch);
     return;
   } catch(error) {
     logger.error("Failed to fetch managers from graph", { error });

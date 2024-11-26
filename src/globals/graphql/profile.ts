@@ -1,4 +1,5 @@
 import { gql } from "@apollo/client";
+import { GraphData } from "globals/interfaces";
 
 export const CREATE_DIAL_LIST_ENTRY = gql`
   mutation createUMQuickDialNumber($input: UMQuickDialNumberCreateInput!) {
@@ -108,66 +109,72 @@ export const DELETE_SOFTPHONE_CONFIG = gql`
   }
 `;
 
-export const listSoftphoneConfigs = (
-  profilesNextToken?: string,
-  screenpopsNextToken?: string,
-  accessGroupsNextToken?: string,
-  activitiesNextToken?: string,
-  directoryNextToken?: string,
-  dialListNextToken?: string,
-  isFirstQuery?: boolean
-) => {
 
-  return gql`
-    query listUMSoftphoneConfigurations {
-      profiles: listUMSoftphoneConfigurations(nextToken: ${profilesNextToken}) @include(if:  ${ !!(profilesNextToken?.length || isFirstQuery) }) {
-        nextToken
-        items {
-          pk
-            sk
-            item_type
-            profile_id
-            ou_sid
-            ou_name
-            profile_name
-            overflow_skill
-            acw_option
-            acw_tags
-            agnt_asst_pay
-            auto_ans
-            edt_policy_num
-            edt_claim_num
-            call_reason
-            clk_to_dial
-            eft_auth
-            inbnd_rec
-            man_outbnd_rec
-            man_inbnd_rec
-            outbnd_rec
-            takes_paymnts
-            voice_mail_trans
-            fwd_to_num
-            transfer_queues
-            backup_workers
-            call_tags {
-                display_name
-                options
-                attribute_name
-            }
-        }
+export const LIST_SOFTPHONE_CONFIG: GraphData = {
+  type: "UMSoftphoneConfig",
+  query: gql`
+  query listUMSoftphoneConfigurations(
+    $profilesBool: Boolean!,
+    $profilesNextToken: String,
+    $screenpopsBool: Boolean!,
+    $screenpopsNextToken: String,
+    $accessGroupsBool: Boolean!,
+    $accessGroupsNextToken: String,
+    $activitiesBool: Boolean!,
+    $activitiesNextToken: String,
+    $directoryBool: Boolean!,
+    $directoryNextToken: String,
+    $dialListBool: Boolean!,
+    $dialListNextToken: String,
+  ) {
+    profiles: listUMSoftphoneConfigurations(nextToken: $profilesNextToken) @include(if: $profilesBool) {
+      nextToken
+      items {
+        pk
+          sk
+          item_type
+          profile_id
+          ou_sid
+          ou_name
+          profile_name
+          overflow_skill
+          acw_option
+          acw_tags
+          agnt_asst_pay
+          auto_ans
+          edt_policy_num
+          edt_claim_num
+          call_reason
+          clk_to_dial
+          eft_auth
+          inbnd_rec
+          man_outbnd_rec
+          man_inbnd_rec
+          outbnd_rec
+          takes_paymnts
+          voice_mail_trans
+          fwd_to_num
+          transfer_queues
+          backup_workers
+          call_tags {
+              display_name
+              options
+              attribute_name
+          }
       }
-      screenpops: listUMScreenpops(nextToken: ${screenpopsNextToken}) @include(if:  ${ !!(screenpopsNextToken?.length || isFirstQuery) }) {
-        nextToken
-        items {
-            pk
-            sk
-            item_type
-            id
-            display_name
-            attribute_name
-        }
-     }
-     accessGroups: listUMAccessGroups(nextToken: ${accessGroupsNextToken}) @include(if:  ${ !!(accessGroupsNextToken?.length || isFirstQuery) }) {
+    }
+    screenpops: listUMScreenpops(nextToken: $screenpopsNextToken) @include(if: $screenpopsBool) {
+      nextToken
+      items {
+          pk
+          sk
+          item_type
+          id
+          display_name
+          attribute_name
+      }
+    }
+    accessGroups: listUMAccessGroups(nextToken: $accessGroupsNextToken) @include(if: $accessGroupsBool) {
         nextToken
         items {
             pk
@@ -178,7 +185,7 @@ export const listSoftphoneConfigs = (
             id
         }
       }
-     activities: listUMActivities(nextToken: ${activitiesNextToken}) @include(if:  ${ !!(activitiesNextToken?.length || isFirstQuery) }) {
+    activities: listUMActivities(nextToken: $activitiesNextToken) @include(if: $activitiesBool) {
         nextToken
         items {
             pk
@@ -189,7 +196,7 @@ export const listSoftphoneConfigs = (
             item_type
         }
       }
-    directoryEntries: listUMDirectoryNumbers(nextToken: ${directoryNextToken}) @include(if:  ${ !!(directoryNextToken?.length || isFirstQuery) }) {
+    directory: listUMDirectoryNumbers(nextToken: $directoryNextToken) @include(if: $directoryBool) {
       nextToken
       items {
           pk
@@ -202,7 +209,7 @@ export const listSoftphoneConfigs = (
           profile_id
       }
     }
-    dialListEntries: listUMQuickDialNumbers(nextToken: ${dialListNextToken}) @include(if:  ${ !!(dialListNextToken?.length || isFirstQuery) }) {
+    dialList: listUMQuickDialNumbers(nextToken: $dialListNextToken) @include(if: $dialListBool) {
         nextToken
         items {
             pk
@@ -216,7 +223,15 @@ export const listSoftphoneConfigs = (
         }
       }
     }
-  `;
+  `,
+  responsePaths: [
+    "profiles",
+    "screenpops",
+    "accessGroups",
+    "activities",
+    "directory",
+    "dialList"
+  ]
 };
 
 export const getSoftphoneConfigRelationshipsQuery = (profileId: number) => {

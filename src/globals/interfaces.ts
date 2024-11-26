@@ -101,8 +101,8 @@ export interface AppState {
     accessGroups: AccessGroup[],
     screenpops: Screenpop[]
     activities: Activity[],
-    directoryEntries: DirectoryNumber[],
-    dialListEntries: DialListNumber[],
+    directory: DirectoryNumber[],
+    dialList: DialListNumber[],
     calltags: Partial<CallTag>[]
   },
   userContext: {
@@ -376,8 +376,9 @@ export interface DBList<TItem> {
 }
 
 export interface GraphData {
+  type: string,
   query: any,
-  responsePath: string
+  responsePaths?: string[]
 }
 
 export interface UMTwilioAttributeSkills {

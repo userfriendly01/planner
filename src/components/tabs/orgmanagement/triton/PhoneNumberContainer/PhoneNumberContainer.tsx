@@ -10,8 +10,7 @@ import { ModalOverlayStatuses } from "globals/interfaces";
 import React, { useState } from "react";
 import { logger } from "utils/logger";
 import {
-  deleteDialListEntry, deleteDirectoryEntry,
-  listUMSoftphoneConfigs
+  deleteDialListEntry, deleteDirectoryEntry
 } from "services/profile";
 import { ProfileDropDown } from "orgmanagement/ProfileDropDown";
 import { ProfileSettingsContainerDiv } from "../ProfileSettingsContainer/ProfileSettingsContainer.Styles";
@@ -22,6 +21,8 @@ import {
   AddContactButtonContainer,
   TableContainer
 } from "./PhoneNumber.Styles";
+import { getPaginatedResults } from "utils/graphUtils";
+import { LIST_SOFTPHONE_CONFIG } from "globals/graphql/profile";
 
 export const PhoneNumberContainer = () => {
 
@@ -31,8 +32,8 @@ export const PhoneNumberContainer = () => {
   const type = params.pathname.includes("directory") ? "Directory" : "DialList";
   const { nNumber } = state.userContext;
   const {
-    dialListEntries,
-    directoryEntries
+    dialList,
+    directory
   } = state.profileContext;
 
   const defaultPhoneNumberState: PhoneNumberStateProps = {
@@ -50,7 +51,7 @@ export const PhoneNumberContainer = () => {
 
   const [ selectedProfile, setSelectedProfile ] = React.useState(null);
   const isProfileSelected = selectedProfile || selectedProfile === 0;
-  const filteredList = isProfileSelected  ? (type === "Directory" ? directoryEntries.filter((e: any) => e.profile_id === selectedProfile) : dialListEntries.filter((e: any) => e.profile_id === selectedProfile)) : [];
+  const filteredList = isProfileSelected  ? (type === "Directory" ? directory.filter((e: any) => e.profile_id === selectedProfile) : dialList.filter((e: any) => e.profile_id === selectedProfile)) : [];
   const deleteFunction = type === "Directory" ? deleteDirectoryEntry : deleteDialListEntry;
 
   React.useEffect(() => {
@@ -84,7 +85,7 @@ export const PhoneNumberContainer = () => {
           type,
           entry: phoneNumberState.entry
         });
-        await listUMSoftphoneConfigs(dispatch);
+        await getPaginatedResults(LIST_SOFTPHONE_CONFIG.type, dispatch);
         setPhoneNumberState({
           ...phoneNumberState,
           saveState: {

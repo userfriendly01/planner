@@ -10,69 +10,82 @@ import {
   UpdateOrCreateUMUser
 }from "globals/interfaces";
 import { LIST_MANAGERS }from "globals/manager";
-import {
-  LIST_APPLICATIONS, LIST_RULE_RELATIONSHIPS, LIST_RULES
-} from "globals/rules";
+import { LIST_RULES } from "globals/rules";
 import {
   LIST_INACTIVE_USERS, LIST_USERS
 }from "globals/user";
 import {
   logger
 } from "utils/logger";
-
-type PaginationType = UMOffice | UMManager | UMUser;
+import { LIST_SOFTPHONE_CONFIG } from "globals/graphql/profile";
 
 export const getGraphData = (type: string): GraphData => {
   switch (type) {
-    case "UMUser":
+    case LIST_USERS.type:
       return LIST_USERS;
-    case "InactiveUMUser":
+    case LIST_INACTIVE_USERS.type:
       return LIST_INACTIVE_USERS;
-    case "UMManager":
+    case LIST_MANAGERS.type:
       return LIST_MANAGERS;
-    case "Rule":
+    case LIST_RULES.type:
       return LIST_RULES;
-    case "Application":
-      return LIST_APPLICATIONS;
-    case "RuleRelationship":
-      return LIST_RULE_RELATIONSHIPS;
+    case LIST_SOFTPHONE_CONFIG.type:
+      return LIST_SOFTPHONE_CONFIG;
     default:
       throw `Type of ${type} is not a valid list type`;
   }
 };
 
-export const getPaginatedResults = async (type: string, dispatch: (action: Action) => void, formatResults?: (items: PaginationType[]) => PaginationType[], callBack?: any): Promise<PaginationType[]> => {
+export const getPaginatedResults = async (
+  type: string,
+  dispatch: (action: Action) => void,
+  formatResults?: {[key: string]: (items: unknown[]) => unknown[]}
+): Promise<unknown[]> => {
   const graph: GraphData = getGraphData(type);
-  let isFirstQuery = true;
-  const finalResults: PaginationType[] = [];
-  const getPageResults = async (nextToken?: string): Promise<VoidFunction> => {
+  let isFirstPage = true;
+  const finalResults: unknown[] = [];
+  const variables: {[key: string]: boolean | string} = {};
+
+  graph.responsePaths?.forEach((v => {
+    variables[`${v}Bool`] = true;
+    variables[`${v}NextToken`] = null;
+  }));
+
+
+  const getPageResults = async (): Promise<VoidFunction> => {
     try {
-      const { data }: any  = await apolloClient.query<{ results: DBList<PaginationType | null> }>({
+      const { data }: any  = await apolloClient.query<{ results: DBList<unknown | null> }>({
         query: graph.query,
-        variables: {
-          nextToken
-        }
+        variables
       });
 
-      const items = data[graph.responsePath]?.items;
-      const formattedData = formatResults ? formatResults(items) : items;
-      finalResults.push(...formattedData);
-      dispatch(({
-        type: "loadPaginatedResults",
-        payload: {
-          type,
-          results: formattedData,
-          isFirstPage: isFirstQuery
+      const finalResult: { [key: string]: unknown[]} = {};
+      graph.responsePaths.forEach(((v: string) => {
+        if(data[v]){
+          const items: unknown[] = data[v].items.slice();
+          if(formatResults && formatResults[v]){
+            finalResult[v] = formatResults[v](items);
+          } else {
+            finalResult[v] = items;
+          }
+          dispatch(({
+            type: `loadPaginatedResults${type}`,
+            payload: {
+              results: finalResult,
+              isFirstPage
+            }
+          }));
         }
       }));
 
-      if(data[graph.responsePath]?.nextToken){
-        isFirstQuery = false;
-        return getPageResults(data[graph.responsePath]?.nextToken);
+      if(graph.responsePaths?.some(p => data[p]?.nextToken)){
+        graph.responsePaths?.forEach((v => {
+          variables[`${v}Bool`] = !!data[v]?.nextToken;
+          variables[`${v}NextToken`] = data[v]?.nextToken || null;
+        }));
+        isFirstPage = false;
+        return getPageResults();
       } else {
-        if(callBack) {
-          callBack();
-        }
         return;
       }
     } catch(error) {
@@ -84,6 +97,7 @@ export const getPaginatedResults = async (type: string, dispatch: (action: Actio
   await getPageResults();
   return finalResults;
 };
+
 
 //The following functions are temporary until we align the app & reducers to the new graph
 

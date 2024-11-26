@@ -17,7 +17,7 @@ import {
 import { Pagination } from "globals/interfaces";
 import { logger } from "utils/logger";
 import "./RulesTable.scss";
-import { loadRulesState } from "services/rules";
+import { listRules } from "services/rules";
 import { Rule } from "./interfaces";
 
 export const RulesTable = (): ReactElement => {
@@ -38,7 +38,7 @@ export const RulesTable = (): ReactElement => {
 
   useEffect(() => {
     try {
-      loadRulesState(dispatch);
+      listRules(dispatch);
     } catch(error){
       const message = `Error thrown loading rules state: ${error.message}`;
       logger.error(message, error);

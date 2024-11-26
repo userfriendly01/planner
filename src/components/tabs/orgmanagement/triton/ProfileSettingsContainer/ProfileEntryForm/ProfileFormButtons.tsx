@@ -26,10 +26,11 @@ import {
   createAccessGroup,
   createProfile,
   editProfile,
-  listUMSoftphoneConfigs,
   loadSoftphoneConfigRelationships
 } from "services/profile";
 import { formatErrorMessage } from "utils/_formatUtils";
+import { getPaginatedResults } from "utils/graphUtils";
+import { LIST_SOFTPHONE_CONFIG } from "globals/graphql/profile";
 
 export const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
   const {
@@ -81,12 +82,9 @@ export const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
         saveStatus: ModalOverlayStatuses.SUCCESS,
         saveProfile: true
       });
-      const profiles = await listUMSoftphoneConfigs(dispatch);
-      loadSoftphoneConfigRelationships({
-        ...state.profileContext,
-        profiles
-      }, dispatch);
+      await getPaginatedResults(LIST_SOFTPHONE_CONFIG.type, dispatch);
       wait(() => {
+        loadSoftphoneConfigRelationships(state.profileContext, dispatch);
         updateLoading({
           ...loading,
           saveProfile: false
@@ -95,7 +93,7 @@ export const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
         setForm({
           type: profileEntryFormActions.RESET_FORM
         });
-      }, timeouts.MODAL_OVERLAY_ATTENTION);
+      }, timeouts.MODAL_OVERLAY);
     } catch(error){
       logger.error(`Failed to  ${isCreate ? "create" : "update"} profile ${form.profileName}`, {
         error,
@@ -137,3 +135,7 @@ export const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
     </ButtonWrapper>
   );
 };
+
+function listUMSoftphoneConfigs(dispatch: (action: import("globals/interfaces").Action) => VoidFunction) {
+  throw new Error("Function not implemented.");
+}

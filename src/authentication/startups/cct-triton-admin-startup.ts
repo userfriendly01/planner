@@ -9,12 +9,13 @@ import {
 } from "services/calabrio";
 import { listUMManagers } from "services/manager";
 import { listUMUsers } from "services/user";
-import { listUMSoftphoneConfigs } from "services/profile";
 import { loadSkillState } from "services/skill";
 import {
   getCalabrioWfmOptions, getCalabrioQMUsers
 } from "utils/calabrioUtils";
 import { logger } from "utils/logger";
+import { getPaginatedResults } from "utils/graphUtils";
+import { LIST_SOFTPHONE_CONFIG } from "globals/graphql/profile";
 
 const getCalabrioUsers = async (dispatch: (action: Action) => void, tokens: Tokens) => {
   try {
@@ -87,7 +88,8 @@ export const runTritonAdminStartup = (dispatch:  (action: Action) => void, skill
   return Promise.all([
     Promise.resolve(getStartupProfiles().TRITON.name),
     listUMManagers(dispatch),
-    listUMSoftphoneConfigs(dispatch),
+    // listUMSoftphoneConfigs(dispatch),
+    getPaginatedResults(LIST_SOFTPHONE_CONFIG.type, dispatch),
     loadSkillState(tokens, skillDispatch),
     getCalabrioUsers(dispatch, tokens),
     getCalabrioOrg(dispatch, tokens),

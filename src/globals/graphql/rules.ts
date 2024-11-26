@@ -2,9 +2,17 @@ import { gql } from "@apollo/client";
 import { GraphData } from "globals/interfaces";
 
 export const LIST_RULES: GraphData = {
+  type: "rules",
   query: gql`
-   query ListRules($nextToken: String) {
-    rules: listRules(nextToken: $nextToken) {
+   query ListRules(
+    $rulesBool: Boolean!,
+    $rulesNextToken: String,
+    $applicationsBool: Boolean!,
+    $applicationsNextToken: String,
+    $ruleRelationshipsBool: Boolean!,
+    $ruleRelationshipsNextToken: String,
+   ) {
+    rules: listRules(nextToken: $rulesNextToken) @include(if: $rulesBool) {
       nextToken
       items {
         pk
@@ -22,32 +30,16 @@ export const LIST_RULES: GraphData = {
         }
       }
     }
-  }
-`,
-  responsePath: "rules"
-};
-
-export const LIST_APPLICATIONS: GraphData = {
-  query: gql`
-   query ListApplications($nextToken: String) {
-    applications: listApplications(nextToken: $nextToken) {
-        nextToken
-        items {
-          pk
-          sk
-          azure_app_id
-          name
+    applications: listApplications(nextToken: $applicationsNextToken) @include(if: $applicationsBool) {
+      nextToken
+      items {
+        pk
+        sk
+        azure_app_id
+        name
       }
     }
-  }
-`,
-  responsePath: "applications"
-};
-
-export const LIST_RULE_RELATIONSHIPS: GraphData = {
-  query: gql`
-   query ListRulesToApplications($nextToken: String) {
-    relationships: listRulesToApplications(nextToken: $nextToken) {
+    ruleRelationships: listRulesToApplications(nextToken: $ruleRelationshipsNextToken) @include(if: $ruleRelationshipsBool) {
       nextToken
       items {
         pk
@@ -57,5 +49,5 @@ export const LIST_RULE_RELATIONSHIPS: GraphData = {
     }
   }
 `,
-  responsePath: "relationships"
+  responsePaths: ["rules", "applications", "ruleRelationships"]
 };
