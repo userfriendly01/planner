@@ -6,8 +6,7 @@ import {
   CallTag,
   DialListNumber,
   DirectoryNumber,
-  ProfilePayload,
-  Screenpop
+  ProfilePayload
 } from "globals/interfaces";
 import { logger } from "utils/logger";
 import {

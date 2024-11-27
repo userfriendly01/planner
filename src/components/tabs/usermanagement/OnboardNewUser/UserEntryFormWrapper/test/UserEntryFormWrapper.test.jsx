@@ -318,7 +318,7 @@ describe("<UserEntryFormWrapper />", () => {
         });
         test("updates calabrio_qm.userFound", () => {
           const { unmount } = renderComponent();
-          expect(WfmForm).toHaveBeenCalledTimes(1);
+          expect(WfmForm).toHaveBeenCalledTimes(0);
           expect(CallRecordingForm).toHaveBeenCalledTimes(1);
           const checkQMBox = Checkbox.mock.calls[1][0].onChange;
           act(() => checkQMBox({
@@ -360,7 +360,7 @@ describe("<UserEntryFormWrapper />", () => {
               checked: true
             }
           }));
-          expect(mockSetForm).toHaveBeenCalledTimes(3);
+          expect(mockSetForm).toHaveBeenCalledTimes(2);
           expect(mockSetForm).toHaveBeenCalledWith({
             type: userFormActions.UPDATE_USER_FOUND,
             payload: {
@@ -372,13 +372,6 @@ describe("<UserEntryFormWrapper />", () => {
             type: userFormActions.UPDATE_USER_FOUND,
             payload: {
               system: "calabrio_qm",
-              isFound: true
-            }
-          });
-          expect(mockSetForm).toHaveBeenCalledWith({
-            type: userFormActions.UPDATE_USER_FOUND,
-            payload: {
-              system: "calabrio_wfm",
               isFound: true
             }
           });

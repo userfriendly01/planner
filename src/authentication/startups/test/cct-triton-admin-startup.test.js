@@ -48,9 +48,10 @@ jest.mock("services/user", () => ({
   listUMUsers: jest.fn()
 }));
 
-jest.mock("services/profile", () => ({
-  listUMSoftphoneConfigs: jest.fn()
+jest.mock("utils/graphUtils", () => ({
+  getPaginatedResults: jest.fn()
 }));
+
 jest.mock("services/skill", () => ({
   loadSkillState: jest.fn()
 }));

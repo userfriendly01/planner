@@ -3,8 +3,6 @@ import { areSkillsDifferent } from "utils/skillsUtils";
 import {
   Action,
   DBList,
-  UMOffice,
-  UMManager,
   UMUser,
   GraphData,
   UpdateOrCreateUMUser
@@ -14,9 +12,7 @@ import { LIST_RULES } from "globals/rules";
 import {
   LIST_INACTIVE_USERS, LIST_USERS
 }from "globals/user";
-import {
-  logger
-} from "utils/logger";
+import { logger } from "utils/logger";
 import { LIST_SOFTPHONE_CONFIG } from "globals/graphql/profile";
 
 export const getGraphData = (type: string): GraphData => {
@@ -43,7 +39,7 @@ export const getPaginatedResults = async (
 ): Promise<unknown[]> => {
   const graph: GraphData = getGraphData(type);
   let isFirstPage = true;
-  const finalResults: unknown[] = [];
+  // const finalResults: unknown[] = [];
   const variables: {[key: string]: boolean | string} = {};
 
   graph.responsePaths?.forEach((v => {
@@ -95,11 +91,8 @@ export const getPaginatedResults = async (
   };
 
   await getPageResults();
-  return finalResults;
+  return;
 };
-
-
-//The following functions are temporary until we align the app & reducers to the new graph
 
 export const mapWorkerToDbWorker = (worker: Partial<UMUser>): Partial<UpdateOrCreateUMUser> => {
   return {

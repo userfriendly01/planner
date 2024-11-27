@@ -25,13 +25,13 @@ const mockFormatResults = jest.fn().mockImplementation(() => "Formatted Results"
 describe("getGraphData", () => {
   describe("Graph type is User", () => {
     test("LIST_USERS are returned", () => {
-      const res = getGraphData("UMUser");
+      const res = getGraphData(LIST_USERS.type);
       expect(res).toBe(LIST_USERS);
     });
   });
   describe("Graph type is Manager", () => {
     test("LIST_MANAGERS are returned", () => {
-      const res = getGraphData("UMManager");
+      const res = getGraphData(LIST_MANAGERS.type);
       expect(res).toBe(LIST_MANAGERS);
     });
   });
@@ -51,7 +51,7 @@ describe("getPageResults", () => {
   const results1 = [{ name: "result1" }];
   const results2 = [{ name: "result2" }];
   const results3 = [{ name: "result3" }];
-  const type = "UMUser";
+  const type = LIST_USERS.type;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -70,25 +70,23 @@ describe("getPageResults", () => {
       await getPaginatedResults(type, mockDispatch);
       expect(mockDispatch).toHaveBeenCalledTimes(1);
       expect(mockDispatch).toHaveBeenCalledWith({
-        type: "loadPaginatedResults",
+        type: "loadPaginatedResultsusers",
         payload: {
           isFirstPage: true,
-          type,
-          results: results1
+          results: { users: results1 }
         }
       });
       expect(apolloClient.query).toHaveBeenCalledTimes(1);
     });
     describe("custom formatting was passed through", () => {
       test("formatted results are saved on dispatch", async () => {
-        await getPaginatedResults(type, mockDispatch, mockFormatResults);
+        await getPaginatedResults(type, mockDispatch, { users: mockFormatResults });
         expect(mockDispatch).toHaveBeenCalledTimes(1);
         expect(mockDispatch).toHaveBeenCalledWith({
-          type: "loadPaginatedResults",
+          type: "loadPaginatedResultsusers",
           payload: {
             isFirstPage: true,
-            type,
-            results: "Formatted Results"
+            results: { users: "Formatted Results" }
           }
         });
         expect(apolloClient.query).toHaveBeenCalledTimes(1);
@@ -123,34 +121,30 @@ describe("getPageResults", () => {
       });
     });
     test("apolloClient is called 3 times", async () => {
-      const results = await getPaginatedResults(type, mockDispatch);
+      await getPaginatedResults(type, mockDispatch);
       expect(mockDispatch).toHaveBeenCalledTimes(3);
       expect(mockDispatch).toHaveBeenCalledWith({
-        type: "loadPaginatedResults",
+        type: "loadPaginatedResultsusers",
         payload: {
-          type,
-          results: results1,
+          results: { users: results1 },
           isFirstPage: true
         }
       });
       expect(mockDispatch).toHaveBeenCalledWith({
-        type: "loadPaginatedResults",
+        type: "loadPaginatedResultsusers",
         payload: {
-          type,
-          results: results2,
+          results: { users: results2 },
           isFirstPage: false
         }
       });
       expect(mockDispatch).toHaveBeenCalledWith({
-        type: "loadPaginatedResults",
+        type: "loadPaginatedResultsusers",
         payload: {
-          type,
-          results: results3,
+          results: { users: results3 },
           isFirstPage: false
         }
       });
       expect(apolloClient.query).toHaveBeenCalledTimes(3);
-      expect(results).toEqual([...results1, ...results2, ...results3]);
     });
   });
   describe("errors are thrown calling the graph", () => {
@@ -160,10 +154,10 @@ describe("getPageResults", () => {
     });
     test("Error is logged and throw up", async () => {
       try {
-        await getPaginatedResults(type, mockDispatch);
+        await getPaginatedResults(LIST_USERS.type, mockDispatch);
       } catch(err) {
         expect(mockDispatch).toHaveBeenCalledTimes(0);
-        expect(logger.error).toBeCalledWith("Error thrown getting paginated results for UMUser", error);
+        expect(logger.error).toBeCalledWith("Error thrown getting paginated results for users", error);
       }
     });
   });

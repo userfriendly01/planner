@@ -492,8 +492,8 @@ export const initialTestState: any = {
     calltags: mockCallTagOptions,
     screenpops: mockScreenpops,
     profiles: mockProfiles,
-    directoryEntries: mockDirectoryList,
-    dialListEntries: mockDialList
+    directory: mockDirectoryList,
+    dialList: mockDialList
   },
   managerContext: {
     managers: managerList

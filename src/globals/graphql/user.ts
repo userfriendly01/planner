@@ -105,10 +105,10 @@ export const LIST_USERS: GraphData = {
 };
 
 export const LIST_INACTIVE_USERS: GraphData = {
-  type: "users",
+  type: "inactiveusers",
   query: gql`
     query listUMUsers($nextToken: String) {
-      users: listUMUsers(termed_users: true, nextToken: $nextToken) {
+      inactiveusers: listUMUsers(termed_users: true, nextToken: $nextToken) {
         items {
           ${userAttributes}
         }
@@ -116,7 +116,7 @@ export const LIST_INACTIVE_USERS: GraphData = {
       }
     }
   `,
-  responsePaths: ["users"]
+  responsePaths: ["inactiveusers"]
 };
 
 export const CREATE_USER = gql`
