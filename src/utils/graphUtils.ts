@@ -7,46 +7,22 @@ import {
   GraphData,
   UpdateOrCreateUMUser
 }from "globals/interfaces";
-import { LIST_MANAGERS }from "globals/manager";
-import { LIST_RULES } from "globals/rules";
-import {
-  LIST_INACTIVE_USERS, LIST_USERS
-}from "globals/user";
 import { logger } from "utils/logger";
-import { LIST_SOFTPHONE_CONFIG } from "globals/graphql/profile";
 
-export const getGraphData = (type: string): GraphData => {
-  switch (type) {
-    case LIST_USERS.type:
-      return LIST_USERS;
-    case LIST_INACTIVE_USERS.type:
-      return LIST_INACTIVE_USERS;
-    case LIST_MANAGERS.type:
-      return LIST_MANAGERS;
-    case LIST_RULES.type:
-      return LIST_RULES;
-    case LIST_SOFTPHONE_CONFIG.type:
-      return LIST_SOFTPHONE_CONFIG;
-    default:
-      throw `Type of ${type} is not a valid list type`;
-  }
-};
 
 export const getPaginatedResults = async (
-  type: string,
+  graph: GraphData,
   dispatch: (action: Action) => void,
   formatResults?: {[key: string]: (items: unknown[]) => unknown[]}
-): Promise<unknown[]> => {
-  const graph: GraphData = getGraphData(type);
+): Promise<unknown> => {
   let isFirstPage = true;
-  // const finalResults: unknown[] = [];
+  const finalResults: { [key: string]: unknown[]} = {};
   const variables: {[key: string]: boolean | string} = {};
 
   graph.responsePaths?.forEach((v => {
     variables[`${v}Bool`] = true;
     variables[`${v}NextToken`] = null;
   }));
-
 
   const getPageResults = async (): Promise<VoidFunction> => {
     try {
@@ -55,22 +31,23 @@ export const getPaginatedResults = async (
         variables
       });
 
-      const finalResult: { [key: string]: unknown[]} = {};
+      const pageResults: { [key: string]: unknown[]} = {};
       graph.responsePaths.forEach(((v: string) => {
         if(data[v]){
           const items: unknown[] = data[v].items.slice();
           if(formatResults && formatResults[v]){
-            finalResult[v] = formatResults[v](items);
+            pageResults[v] = formatResults[v](items);
           } else {
-            finalResult[v] = items;
+            pageResults[v] = items;
           }
           dispatch(({
-            type: `loadPaginatedResults${type}`,
+            type: `loadPaginatedResults${graph.type}`,
             payload: {
-              results: finalResult,
+              results: pageResults,
               isFirstPage
             }
           }));
+          finalResults[v] = pageResults[v]?.concat(items) || items;
         }
       }));
 
@@ -85,13 +62,13 @@ export const getPaginatedResults = async (
         return;
       }
     } catch(error) {
-      logger.error(`Error thrown getting paginated results for ${type}`, error);
+      logger.error(`Error thrown getting paginated results for ${graph.type}`, error);
       return Promise.reject(error);
     }
   };
 
   await getPageResults();
-  return;
+  return finalResults;
 };
 
 export const mapWorkerToDbWorker = (worker: Partial<UMUser>): Partial<UpdateOrCreateUMUser> => {

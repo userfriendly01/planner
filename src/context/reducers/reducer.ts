@@ -95,7 +95,6 @@ export const reducer = (state: AppState, action: Action): AppState => {
     case `loadPaginatedResults${LIST_USERS.type}`: {
       const pageResults: { [key:string]: any[] } = action.payload.results;
       const isFirstPage: boolean = action.payload.isFirstPage;
-
       return {
         ...state,
         workerContext: {

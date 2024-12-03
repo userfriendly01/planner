@@ -1,11 +1,9 @@
 import {
-  getGraphData,
   getPaginatedResults,
   mapWorkerFromDbWorker,
   mapWorkerToDbWorker
 } from "../graphUtils";
 import { apolloClient } from "../../components/core/Auth/SharedGraphAPIProvider";
-import { LIST_MANAGERS }from "globals/manager";
 import { LIST_USERS }from "globals/user";
 import {
   logger
@@ -22,36 +20,11 @@ const sid = "WK123123123";
 const mockDispatch = jest.fn();
 const mockFormatResults = jest.fn().mockImplementation(() => "Formatted Results");
 
-describe("getGraphData", () => {
-  describe("Graph type is User", () => {
-    test("LIST_USERS are returned", () => {
-      const res = getGraphData(LIST_USERS.type);
-      expect(res).toBe(LIST_USERS);
-    });
-  });
-  describe("Graph type is Manager", () => {
-    test("LIST_MANAGERS are returned", () => {
-      const res = getGraphData(LIST_MANAGERS.type);
-      expect(res).toBe(LIST_MANAGERS);
-    });
-  });
-  describe("Graph type is Unknown", () => {
-    test("Error is thrown", () => {
-      try {
-        getGraphData("UMButts");
-      } catch(error){
-        expect(error).toBe("Type of UMButts is not a valid list type");
-      }
-
-    });
-  });
-});
-
 describe("getPageResults", () => {
   const results1 = [{ name: "result1" }];
   const results2 = [{ name: "result2" }];
   const results3 = [{ name: "result3" }];
-  const type = LIST_USERS.type;
+  const type = LIST_USERS;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -154,7 +127,7 @@ describe("getPageResults", () => {
     });
     test("Error is logged and throw up", async () => {
       try {
-        await getPaginatedResults(LIST_USERS.type, mockDispatch);
+        await getPaginatedResults(LIST_USERS, mockDispatch);
       } catch(err) {
         expect(mockDispatch).toHaveBeenCalledTimes(0);
         expect(logger.error).toBeCalledWith("Error thrown getting paginated results for users", error);

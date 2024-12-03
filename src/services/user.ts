@@ -10,6 +10,7 @@ import {
   GET_USER,
   LIST_INACTIVE_USERS,
   LIST_USER_RECORDS,
+  LIST_USERS,
   UPDATE_USER
 }from "globals/user";
 import {
@@ -39,7 +40,7 @@ export const listUMUsers = async (dispatch: (action: Action) => void): Promise<D
   }));
 
   try {
-    await getPaginatedResults(LIST_INACTIVE_USERS.type, dispatch, { users: formatUsers });
+    await getPaginatedResults(LIST_USERS, dispatch, { users: formatUsers });
     dispatch(({
       type: "setLoadingWorkers",
       payload: LoadStatuses.SUCCESS
@@ -56,7 +57,7 @@ export const listUMUsers = async (dispatch: (action: Action) => void): Promise<D
 
 export const listInactiveUMUsers = async (dispatch: (action: Action) => void): Promise<UMUser[]> => {
   try {
-    const results = await getPaginatedResults(LIST_INACTIVE_USERS.type, dispatch, { users: formatUsers });
+    const results = await getPaginatedResults(LIST_INACTIVE_USERS, dispatch, { users: formatUsers });
     return results as unknown as UMUser[];
   } catch(error) {
     logger.error("Failed to fetch inactive users from graph", { error });

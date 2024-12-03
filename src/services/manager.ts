@@ -23,7 +23,7 @@ import { logger } from "utils/logger";
 
 export const listUMManagers = async (dispatch: (action: Action) => void): Promise<DBList<UMManager>> => {
   try {
-    await getPaginatedResults(LIST_MANAGERS.type, dispatch);
+    await getPaginatedResults(LIST_MANAGERS, dispatch);
     return;
   } catch(error) {
     logger.error("Failed to fetch managers from graph", { error });

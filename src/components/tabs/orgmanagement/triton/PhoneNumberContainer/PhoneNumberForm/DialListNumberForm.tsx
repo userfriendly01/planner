@@ -85,7 +85,7 @@ export const DialListNumberForm = (props: PhoneNumberFormProps) => {
         dialListId: formDialListEntry.id,
         requestBody
       });
-      await getPaginatedResults(LIST_SOFTPHONE_CONFIG.type, dispatch);
+      await getPaginatedResults(LIST_SOFTPHONE_CONFIG, dispatch);
       setLoading({
         overlayMessage: "Successfully created dial list entry",
         saveStatus: ModalOverlayStatuses.SUCCESS
@@ -123,7 +123,7 @@ export const DialListNumberForm = (props: PhoneNumberFormProps) => {
         dialListId: formDialListEntry.id,
         requestBody
       });
-      await getPaginatedResults(LIST_SOFTPHONE_CONFIG.type, dispatch);
+      await getPaginatedResults(LIST_SOFTPHONE_CONFIG, dispatch);
       setLoading({
         overlayMessage: "Successfully updated dial list entry",
         saveStatus: ModalOverlayStatuses.SUCCESS

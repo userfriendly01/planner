@@ -17,7 +17,7 @@ import { logger } from "utils/logger";
 
 export const listRules = async (dispatch: (action: Action) => void): Promise<DBList<Rule>> => {
   try {
-    await getPaginatedResults(LIST_RULES.type, dispatch);
+    await getPaginatedResults(LIST_RULES, dispatch);
     return;
   } catch(error) {
     logger.error("Failed to fetch rules from graph", { error });

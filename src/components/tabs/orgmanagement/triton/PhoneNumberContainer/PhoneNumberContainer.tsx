@@ -85,7 +85,7 @@ export const PhoneNumberContainer = () => {
           type,
           entry: phoneNumberState.entry
         });
-        await getPaginatedResults(LIST_SOFTPHONE_CONFIG.type, dispatch);
+        await getPaginatedResults(LIST_SOFTPHONE_CONFIG, dispatch);
         setPhoneNumberState({
           ...phoneNumberState,
           saveState: {

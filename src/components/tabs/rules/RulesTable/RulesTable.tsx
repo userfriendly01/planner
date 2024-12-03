@@ -28,7 +28,7 @@ export const RulesTable = (): ReactElement => {
   } = useAdminState().rulesContext;
   const dispatch = useAdminDispatch();
 
-  const [displayRules, setDisplayRules] = useState<Rule[]>(null);
+  const [displayRules, setDisplayRules] = useState<Rule[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [pagination, setPagination] = useState<Pagination>({
@@ -37,13 +37,17 @@ export const RulesTable = (): ReactElement => {
   });
 
   useEffect(() => {
-    try {
-      listRules(dispatch);
-    } catch(error){
-      const message = `Error thrown loading rules state: ${error.message}`;
-      logger.error(message, error);
-      setError(message);
-    }
+    const loadRules = async () => {
+      try {
+        await listRules(dispatch);
+      } catch(error){
+        setIsLoading(false);
+        const message = `Error thrown loading rules state: ${error.message}`;
+        logger.error(message, error);
+        setError(message);
+      }
+    };
+    loadRules();
   }, []);
 
   useEffect(() => {
@@ -85,7 +89,7 @@ export const RulesTable = (): ReactElement => {
         />
         <div className="pagination-container">
           <LMDSPagination
-            itemCount={rules.length || 1}
+            itemCount={displayRules.length || 1}
             withWords={false}
             onChange={e => {
               setPagination({

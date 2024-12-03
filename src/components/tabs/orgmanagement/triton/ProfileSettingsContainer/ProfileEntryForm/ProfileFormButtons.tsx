@@ -82,7 +82,7 @@ export const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
         saveStatus: ModalOverlayStatuses.SUCCESS,
         saveProfile: true
       });
-      await getPaginatedResults(LIST_SOFTPHONE_CONFIG.type, dispatch);
+      await getPaginatedResults(LIST_SOFTPHONE_CONFIG, dispatch);
       wait(() => {
         loadSoftphoneConfigRelationships(state.profileContext, dispatch);
         updateLoading({

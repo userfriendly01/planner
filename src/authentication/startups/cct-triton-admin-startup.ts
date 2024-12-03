@@ -88,7 +88,7 @@ export const runTritonAdminStartup = (dispatch:  (action: Action) => void, skill
   return Promise.all([
     Promise.resolve(getStartupProfiles().TRITON.name),
     listUMManagers(dispatch),
-    getPaginatedResults(LIST_SOFTPHONE_CONFIG.type, dispatch),
+    getPaginatedResults(LIST_SOFTPHONE_CONFIG, dispatch),
     loadSkillState(tokens, skillDispatch),
     getCalabrioUsers(dispatch, tokens),
     getCalabrioOrg(dispatch, tokens),

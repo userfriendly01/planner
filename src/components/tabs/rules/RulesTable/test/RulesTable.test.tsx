@@ -1,22 +1,20 @@
 import React from "react";
-import { useAdminState } from "context/appContext";
 import {
-  render, waitFor
+  useAdminDispatch, useAdminState
+} from "context/appContext";
+import {
+  initialTestState,
+  render, rules, waitFor
 } from "testUtils";
 import { RulesTable } from "../RulesTable";
 import { LMDSTable } from "components/core/LMDSTable/LMDSTable";
-import { getTwilioConsoleUsers } from "services/twilioConsoleUsers";
+import { listRules } from "services/rules";
 import {
   Notification, Pagination
 } from "@lmig/lmds-react";
-import { fetchUserByEmail } from "services/fetchUser";
 
-jest.mock("services/twilioConsoleUsers", () => ({
-  getTwilioConsoleUsers: jest.fn()
-}));
-
-jest.mock("services/fetchUser", () => ({
-  fetchUserByEmail: jest.fn()
+jest.mock("services/rules", () => ({
+  listRules: jest.fn()
 }));
 
 jest.mock("@lmig/lmds-react", () => ({
@@ -25,7 +23,8 @@ jest.mock("@lmig/lmds-react", () => ({
 }));
 
 jest.mock("context/appContext", () => ({
-  useAdminState: jest.fn()
+  useAdminState: jest.fn(),
+  useAdminDispatch: jest.fn()
 }));
 
 jest.mock("components/core/LMDSTable/LMDSTable", () => ({
@@ -33,8 +32,8 @@ jest.mock("components/core/LMDSTable/LMDSTable", () => ({
 }));
 
 jest.mock("../columns", () => ({
-  twilioConsoleUsersColumns: [],
-  twilioConsoleUsersRolesColumns: []
+  rulesColumns: [],
+  mappingColumns: []
 }));
 
 const mockUsers = [
@@ -63,144 +62,148 @@ const mockUsers = [
   }
 ];
 
-describe("TwilioConsoleUsersView", () => {
+describe("RulesTable", () => {
   beforeEach(() => {
     jest.resetAllMocks();
-
-    (useAdminState as jest.Mock).mockReturnValue({
-      userContext: {
-        tokens: {
-          adminService: "adminService",
-          msGraph: "msGraph"
-        }
-      }
-    });
-    (getTwilioConsoleUsers as jest.Mock).mockResolvedValue([]);
+    jest.clearAllMocks();
+    (useAdminState as jest.Mock).mockReturnValue(initialTestState);
+    (listRules as jest.Mock).mockResolvedValue([]);
   });
 
-  test("initial render", async () => {
-    render(<RulesTable />);
+  describe("initial render", () => {
+    test("should initiate loading and render empty table", async () => {
+      render(<RulesTable />);
 
-    expect(LMDSTable).toHaveBeenCalled();
-    expect(Pagination).toHaveBeenCalled();
+      expect(LMDSTable).toHaveBeenCalled();
+      expect(Pagination).toHaveBeenCalled();
 
-    expect((LMDSTable as jest.Mock).mock.calls[0][0]).toEqual(
-      expect.objectContaining({
-        isLoading: true,
-        data: []
-      })
-    );
-    expect((Pagination as jest.Mock).mock.calls[0][0]).toEqual(
-      expect.objectContaining({
-        itemCount: 1,
-        page: 0,
-        itemsPerPage: 10
-      })
-    );
+      expect((LMDSTable as jest.Mock).mock.calls[0][0]).toEqual(
+        expect.objectContaining({
+          isLoading: true,
+          data: [],
+          tableName: "Rules"
+        })
+      );
+      expect((Pagination as jest.Mock).mock.calls[0][0]).toEqual(
+        expect.objectContaining({
+          itemCount: 1,
+          page: 0,
+          itemsPerPage: 10
+        })
+      );
+    });
+    test("should call LMDSTable with data and isLoading false when it's done loading the data", async () => {
+      (listRules as jest.Mock).mockResolvedValue(rules);
+
+      render(<RulesTable />);
+      expect((LMDSTable as jest.Mock).mock.calls[0][0]).toEqual(
+        expect.objectContaining({
+          isLoading: true,
+          data: [],
+          tableName: "Rules"
+        })
+      );
+
+      await waitFor(() => {
+        expect(listRules).toHaveBeenCalled();
+      });
+
+      expect((LMDSTable as jest.Mock).mock.calls[1][0]).toEqual(
+        expect.objectContaining({
+          isLoading: false,
+          data: [expect.objectContaining({
+            applications: [],
+            children: expect.not.objectContaining(null),
+            ...rules[0]
+          }), expect.objectContaining({
+            applications: ["Triton Admin"],
+            children: expect.not.objectContaining(null),
+            ...rules[1]
+          })]
+        })
+      );
+
+      expect((Pagination as jest.Mock).mock.calls[1][0]).toEqual(
+        expect.objectContaining({
+          itemCount: 2
+        })
+      );
+
+      (LMDSTable as jest.Mock).mock.calls[1][0].data.forEach((d: { children: any }) => { render(d.children); });
+      expect((LMDSTable as jest.Mock).mock.calls.length).toBe(4);
+
+      expect((LMDSTable as jest.Mock).mock.calls[2][0]).toEqual(
+        expect.objectContaining({
+          data: rules[0].mappings
+        })
+      );
+
+      expect((LMDSTable as jest.Mock).mock.calls[3][0]).toEqual(
+        expect.objectContaining({
+          data: rules[1].mappings
+        })
+      );
+    });
   });
 
-  test("should call LMDSTable with data and isLoading false when it's done loading the data", async () => {
-    (getTwilioConsoleUsers as jest.Mock).mockResolvedValue(mockUsers);
-    (fetchUserByEmail as jest.Mock)
-      .mockResolvedValueOnce({
-        isTerminated: false
-      })
-      .mockResolvedValueOnce(null);
+  describe("pagination", () => {
+    test("should change pagination when onChange is called on Pagination", async () => {
+      render(<RulesTable />);
 
+      const { onChange } = (Pagination as jest.Mock).mock.calls[0][0];
 
-    render(<RulesTable />);
-
-    expect((LMDSTable as jest.Mock).mock.calls[0][0]).toEqual(
-      expect.objectContaining({
-        isLoading: true,
-        data: []
-      })
-    );
-
-    await waitFor(() => {
-      expect(getTwilioConsoleUsers).toHaveBeenCalled();
-    });
-
-    await waitFor(() => {
-      expect(fetchUserByEmail).toHaveBeenCalledTimes(2);
-    });
-
-    expect((LMDSTable as jest.Mock).mock.calls[2][0]).toEqual(
-      expect.objectContaining({
-        isLoading: false,
-        data: [
-          {
-            ...mockUsers[0],
-            hrActive: true,
-            children: expect.not.objectContaining(null)
-          },
-          {
-            ...mockUsers[1],
-            hrActive: false,
-            children: null
-          }
-        ]
-      })
-    );
-
-    expect((Pagination as jest.Mock).mock.calls[2][0]).toEqual(
-      expect.objectContaining({
-        itemCount: 2
-      })
-    );
-
-    render((LMDSTable as jest.Mock).mock.calls[2][0].data[0].children);
-    expect((LMDSTable as jest.Mock).mock.calls[3][0]).toEqual(
-      expect.objectContaining({
-        data: mockUsers[0].roles
-      })
-    );
-  });
-
-  test("should set loading to false and display error when an error occurs fetching the data", async () => {
-    (getTwilioConsoleUsers as jest.Mock).mockRejectedValue(new Error("Whoopsies"));
-
-    render(<RulesTable />);
-
-    expect((LMDSTable as jest.Mock).mock.calls[0][0]).toEqual(
-      expect.objectContaining({
-        isLoading: true,
-        data: []
-      })
-    );
-
-    await waitFor(() => {
-      expect(getTwilioConsoleUsers).toHaveBeenCalled();
-    });
-
-    expect((LMDSTable as jest.Mock).mock.calls[2][0]).toEqual(
-      expect.objectContaining({
-        isLoading: false,
-        data: []
-      })
-    );
-    expect((Notification as jest.Mock).mock.calls[0][0]).toEqual(
-      expect.objectContaining({
-        alert: "Error fetching Twilio Console Users: Whoopsies"
-      })
-    );
-  });
-
-  test("should change pagination when onChange is called on Pagination", async () => {
-    render(<RulesTable />);
-
-    const { onChange } = (Pagination as jest.Mock).mock.calls[0][0];
-
-    onChange({
-      page: 1,
-      itemsPerPage: 20
-    });
-
-    expect((Pagination as jest.Mock).mock.calls[1][0]).toEqual(
-      expect.objectContaining({
+      onChange({
         page: 1,
         itemsPerPage: 20
-      })
-    );
+      });
+
+      expect((Pagination as jest.Mock).mock.calls[2][0]).toEqual(
+        expect.objectContaining({
+          page: 1,
+          itemsPerPage: 20
+        })
+      );
+    });
+  });
+
+  describe("error thrown loading page", () => {
+    beforeEach(() => {
+      (useAdminState as jest.Mock).mockReturnValue({
+        ...initialTestState,
+        rulesContext: {
+          rules: [],
+          applications: [],
+          ruleRelationships: []
+        }
+      });
+      (listRules as jest.Mock).mockRejectedValue(new Error("Whoopsies"));
+    });
+
+    test("should set loading to false and display error when an error occurs fetching the data", async () => {
+      render(<RulesTable />);
+
+      expect((LMDSTable as jest.Mock).mock.calls[0][0]).toEqual(
+        expect.objectContaining({
+          isLoading: true,
+          data: []
+        })
+      );
+
+      await waitFor(() => {
+        expect(listRules).toHaveBeenCalled();
+      });
+
+      expect((LMDSTable as jest.Mock).mock.calls[1][0]).toEqual(
+        expect.objectContaining({
+          isLoading: false,
+          data: []
+        })
+      );
+      expect((Notification as jest.Mock).mock.calls[0][0]).toEqual(
+        expect.objectContaining({
+          alert: "Error thrown loading rules state: Whoopsies"
+        })
+      );
+    });
   });
 });

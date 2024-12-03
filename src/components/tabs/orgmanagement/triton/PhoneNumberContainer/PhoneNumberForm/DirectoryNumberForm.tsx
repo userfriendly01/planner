@@ -79,7 +79,7 @@ export const DirectoryNumberForm = (props: PhoneNumberFormProps) => {
         directoryId: formDirectoryEntry.id,
         requestBody
       });
-      await getPaginatedResults(LIST_SOFTPHONE_CONFIG.type, dispatch);
+      await getPaginatedResults(LIST_SOFTPHONE_CONFIG, dispatch);
       setLoading({
         overlayMessage: "Successfully created directory entry",
         saveStatus: ModalOverlayStatuses.SUCCESS
@@ -117,7 +117,7 @@ export const DirectoryNumberForm = (props: PhoneNumberFormProps) => {
         directoryId: formDirectoryEntry.id,
         requestBody
       });
-      await getPaginatedResults(LIST_SOFTPHONE_CONFIG.type, dispatch);
+      await getPaginatedResults(LIST_SOFTPHONE_CONFIG, dispatch);
       setLoading({
         overlayMessage: "Successfully updated directory entry",
         saveStatus: ModalOverlayStatuses.SUCCESS

@@ -14,13 +14,12 @@ import {
   Action,
   Logic,
   Mapping,
-  RuleHandler,
-  Variables
+  RuleHandler
 } from "@lmig/cct-shared-rules-sdk";
 import { Rule } from "./interfaces";
 
-
 const columnHelperRules = createColumnHelper<Rule>();
+
 export const rulesColumns = [
   columnHelperRules.display({
     id: "expand",
@@ -37,6 +36,7 @@ export const rulesColumns = [
       );
     }
   }),
+
   columnHelperRules.accessor(row => row.id, {
     id: "id",
     header: "Name",

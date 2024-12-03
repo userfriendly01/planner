@@ -485,6 +485,136 @@ export const calabrioContext: any = {
   wfmErrors: []
 };
 
+export const rules = [
+  {
+    "pk": "Rule#Access#VoiceRecordingTableAccess",
+    "sk": "Rule#Access#VoiceRecordingTableAccess",
+    "id": "VoiceRecordingTableAccess",
+    "item_type": "rule",
+    "description": "Determines the level of access to the Voice Recording table based on AD groups and hierarchy",
+    "variables": "{\"hierarchy\":\"string\",\"roles\":\"string[]\"}",
+    "mappings": [
+      {
+        "logic": "{\"and\":[{\"data_type\":\"string\",\"operation\":\"CONTAINS\",\"value\":\"DEFAULT\",\"key\":\"hierarchy\"},{\"not\":{\"data_type\":\"string\",\"operation\":\"CONTAINS\",\"value\":\"QMLiteAdmin\",\"key\":\"roles\"}},{\"not\":{\"data_type\":\"string\",\"operation\":\"CONTAINS\",\"value\":\"QMLiteAnalyst\",\"key\":\"roles\"}}]}",
+        "actions": [
+          {
+            "key": "cct-shared-voice-recording-db.access",
+            "value": "BOOLEAN"
+          }
+        ]
+      },
+      {
+        "logic": "{\"and\":[{\"data_type\":\"string\",\"operation\":\"EQUALS\",\"value\":\"LEVEL_1\",\"key\":\"hierarchy\"},{\"not\":{\"data_type\":\"string\",\"operation\":\"CONTAINS\",\"value\":\"QMLiteAdmin\",\"key\":\"roles\"}},{\"not\":{\"data_type\":\"string\",\"operation\":\"CONTAINS\",\"value\":\"QMLiteAnalyst\",\"key\":\"roles\"}}]}",
+        "actions": [
+          {
+            "key": "cct-shared-voice-recording-db.access",
+            "value": "BOOLEAN"
+          }
+        ]
+      },
+      {
+        "logic": "{\"and\":[{\"data_type\":\"string\",\"operation\":\"EQUALS\",\"value\":\"LEVEL_2\",\"key\":\"hierarchy\"},{\"not\":{\"data_type\":\"string\",\"operation\":\"CONTAINS\",\"value\":\"QMLiteAdmin\",\"key\":\"roles\"}},{\"not\":{\"data_type\":\"string\",\"operation\":\"CONTAINS\",\"value\":\"QMLiteAnalyst\",\"key\":\"roles\"}}]}",
+        "actions": [
+          {
+            "key": "cct-shared-voice-recording-db.access",
+            "value": "BOOLEAN"
+          }
+        ]
+      },
+      {
+        "logic": "{\"and\":[{\"data_type\":\"string\",\"operation\":\"CONTAINS\",\"value\":\"QMLiteAnalyst\",\"key\":\"roles\"},{\"not\":{\"data_type\":\"string\",\"operation\":\"CONTAINS\",\"value\":\"QMLiteAdmin\",\"key\":\"roles\"}}]}",
+        "actions": [
+          {
+            "key": "cct-shared-voice-recording-db.access",
+            "value": "BOOLEAN"
+          }
+        ]
+      },
+      {
+        "logic": "{\"or\":[{\"data_type\":\"string\",\"operation\":\"EQUALS\",\"value\":\"MAX_LEVEL\",\"key\":\"hierarchy\"},{\"data_type\":\"string\",\"operation\":\"CONTAINS\",\"value\":\"QMLiteAdmin\",\"key\":\"roles\"}]}",
+        "actions": [
+          {
+            "key": "cct-shared-voice-recording-db.access",
+            "value": "BOOLEAN"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "pk": "Rule#Access#test_rule_2",
+    "sk": "Rule#Access#test_rule_2",
+    "id": "test_rule_2",
+    "item_type": "rule",
+    "description": "I'm Faith's test rule 2 hehehe",
+    "variables": "{\"hierarchy\":\"string\",\"roles\":\"string[]\"}",
+    "mappings": [
+      {
+        "logic": "{\"and\":[{\"data_type\":\"string\",\"operation\":\"EQUALS\",\"value\":\"DEFAULT\",\"key\":\"hierarchy\"},{\"not\":{\"data_type\":\"string\",\"operation\":\"CONTAINS\",\"value\":\"QMLiteAdmin\",\"key\":\"roles\"}},{\"not\":{\"data_type\":\"string\",\"operation\":\"CONTAINS\",\"value\":\"QMLiteAnalyst\",\"key\":\"roles\"}}]}",
+        "actions": [
+          {
+            "key": "cct-shared-voice-recording-db.access",
+            "value": "BOOLEAN"
+          }
+        ]
+      },
+      {
+        "logic": "{\"and\":[{\"data_type\":\"string\",\"operation\":\"EQUALS\",\"value\":\"LEVEL_1\",\"key\":\"hierarchy\"},{\"not\":{\"data_type\":\"string\",\"operation\":\"CONTAINS\",\"value\":\"QMLiteAdmin\",\"key\":\"roles\"}},{\"not\":{\"data_type\":\"string\",\"operation\":\"CONTAINS\",\"value\":\"QMLiteAnalyst\",\"key\":\"roles\"}}]}",
+        "actions": [
+          {
+            "key": "cct-shared-voice-recording-db.access",
+            "value": "BOOLEAN"
+          }
+        ]
+      },
+      {
+        "logic": "{\"and\":[{\"data_type\":\"string\",\"operation\":\"EQUALS\",\"value\":\"LEVEL_2\",\"key\":\"hierarchy\"},{\"not\":{\"data_type\":\"string\",\"operation\":\"CONTAINS\",\"value\":\"QMLiteAdmin\",\"key\":\"roles\"}},{\"not\":{\"data_type\":\"string\",\"operation\":\"CONTAINS\",\"value\":\"QMLiteAnalyst\",\"key\":\"roles\"}}]}",
+        "actions": [
+          {
+            "key": "cct-shared-voice-recording-db.access",
+            "value": "BOOLEAN"
+          }
+        ]
+      },
+      {
+        "logic": "{\"and\":[{\"data_type\":\"string\",\"operation\":\"CONTAINS\",\"value\":\"QMLiteAnalyst\",\"key\":\"roles\"},{\"not\":{\"data_type\":\"string\",\"operation\":\"CONTAINS\",\"value\":\"QMLiteAdmin\",\"key\":\"roles\"}}]}",
+        "actions": [
+          {
+            "key": "cct-shared-voice-recording-db.access",
+            "value": "BOOLEAN"
+          }
+        ]
+      },
+      {
+        "logic": "{\"or\":[{\"data_type\":\"string\",\"operation\":\"EQUALS\",\"value\":\"MAX_LEVEL\",\"key\":\"hierarchy\"},{\"data_type\":\"string\",\"operation\":\"CONTAINS\",\"value\":\"QMLiteAdmin\",\"key\":\"roles\"}]}",
+        "actions": [
+          {
+            "key": "cct-shared-voice-recording-db.access",
+            "value": "BOOLEAN"
+          }
+        ]
+      }
+    ]
+  }
+];
+
+export const applications = [
+  {
+    "pk": "Application#cc2d6284-c9c4-43fe-9164-4ee0cb8fac50",
+    "sk": "Application#cc2d6284-c9c4-43fe-9164-4ee0cb8fac50",
+    "azure_app_id": "cc2d6284-c9c4-43fe-9164-4ee0cb8fac50",
+    "name": "Triton Admin"
+  }
+];
+
+export const ruleRelationships = [
+  {
+    "pk": "Application#cc2d6284-c9c4-43fe-9164-4ee0cb8fac50",
+    "sk": "Rule#Business#test_rule_2",
+    "id": "test_rule_2"
+  }
+];
+
 export const initialTestState: any = {
   profileContext: {
     activities: mockActivities,
@@ -523,6 +653,11 @@ export const initialTestState: any = {
         }
       }
     ]
+  },
+  rulesContext: {
+    rules,
+    applications,
+    ruleRelationships
   },
   workerContext: {
     workers: [
