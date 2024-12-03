@@ -124,7 +124,8 @@ export const AddEditForm = (props: any) => {
           requestDetails: {
             nNumber,
             taskQueueFriendlyName: skillState.skillForm.taskQueue.friendly_name,
-            name: skillState.skillForm.name
+            name: skillState.skillForm.name,
+            changes
           }
         });
 
@@ -150,7 +151,8 @@ export const AddEditForm = (props: any) => {
             nNumber,
             taskQueueFriendlyName: skillState.skillForm.taskQueue.friendly_name,
             name: skillState.skillForm.name,
-            errors: response.messages
+            errors: response.messages,
+            changes
           }
         });
 

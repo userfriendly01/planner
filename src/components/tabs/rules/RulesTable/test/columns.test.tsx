@@ -19,7 +19,6 @@ import {
 import {
   render, setupMockedComponents
 } from "testUtils";
-// import { rulesColumns } from "../columns";
 
 jest.mock("@tanstack/react-table", () => ({
   ColumnDef: jest.requireActual("@tanstack/react-table").ColumnDef,

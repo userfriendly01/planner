@@ -28,12 +28,12 @@ import { logger } from "utils/logger";
  *        - `${v}Bool`
           - `${v}NextToken`
  * Create a reducer function that follows the naming pattern `loadPaginatedResults${graph.type}`. 
- *     - This will revieve an object with each of the response paths listed in the Graph Data
+ *     - This will receive an object with each of the response paths listed in the Graph Data
  *       with the paginated data
  * Call this function with your GraphData object and dispatch function to call your new reducer
  * 
  * @example
- * Example GraphData. Make sure your these all match!!
+ * Example GraphData. Make sure these all match!!
  *    - nextToken prefix (2 each)
  *    - query response variables
  *    - response paths array
