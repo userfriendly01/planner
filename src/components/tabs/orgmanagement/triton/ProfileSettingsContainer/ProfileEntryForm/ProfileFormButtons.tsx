@@ -135,7 +135,3 @@ export const ProfileFormButtons = (props: ProfileFormButtonsProps) => {
     </ButtonWrapper>
   );
 };
-
-function listUMSoftphoneConfigs(dispatch: (action: import("globals/interfaces").Action) => VoidFunction) {
-  throw new Error("Function not implemented.");
-}
