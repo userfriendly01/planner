@@ -121,9 +121,11 @@ export const AddEditForm = (props: any) => {
 
       if (response.status === 200) {
         logger.info(`Successfully ${isAdd ? "created" : "updated"} new skill ${skillState.skillForm.name}`, {
-          nNumber,
-          skillFriendlyName: skillState.skillForm.taskQueue.friendly_name,
-          name: skillState.skillForm.name
+          requestDetails: {
+            nNumber,
+            taskQueueFriendlyName: skillState.skillForm.taskQueue.friendly_name,
+            name: skillState.skillForm.name
+          }
         });
 
         setSaveResult({
@@ -144,10 +146,12 @@ export const AddEditForm = (props: any) => {
         }, timeouts.MODAL_OVERLAY);
       } else {
         logger.warn(`Partially ${isAdd ? "created" : "updated"} new skill ${skillState.skillForm.name}`, {
-          nNumber,
-          skillFriendlyName: skillState.skillForm.taskQueue.friendly_name,
-          name: skillState.skillForm.name,
-          errors: response.messages
+          requestDetails: {
+            nNumber,
+            taskQueueFriendlyName: skillState.skillForm.taskQueue.friendly_name,
+            name: skillState.skillForm.name,
+            errors: response.messages
+          }
         });
 
         setSaveResult({
