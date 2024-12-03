@@ -9,7 +9,61 @@ import {
 }from "globals/interfaces";
 import { logger } from "utils/logger";
 
-
+/**
+ * 
+ * @param graph 
+ * @param dispatch 
+ * @param formatResults 
+ * @returns an object containing the final graph results for each of your response paths as keys
+ * 
+ * @description
+ * This function is meant to be used for all graph calls and will incorporate the next token dynamically.
+ * It requires a GraphData type and dispatch function.
+ * 
+ * @implementation
+ * Create a Graph Data Object to pass into the method. 
+ *     - The 'type' will represent the collection of graph queries listed within the query.
+ *     - The response paths MUST match the response variables set within the query.
+ *     - Your query should include 2 variables for each response path Next Token following the below format
+ *        - `${v}Bool`
+          - `${v}NextToken`
+ * Create a reducer function that follows the naming pattern `loadPaginatedResults${graph.type}`. 
+ *     - This will revieve an object with each of the response paths listed in the Graph Data
+ *       with the paginated data
+ * Call this function with your GraphData object and dispatch function to call your new reducer
+ * 
+ * @example
+ * Example GraphData. Make sure your these all match!!
+ *    - nextToken prefix (2 each)
+ *    - query response variables
+ *    - response paths array
+ * 
+ * export LIST_ANIMALS: GraphData = {
+ *  type: "animals",
+ *  query: ggl`
+*     query listAnimals(
+*       $dogsBool: Boolean!,
+        $dogsNextToken: String,
+        $catsBool: Boolean!,
+        $catsNextToken: String,
+*     ) {
+          dogs: listDogs() {
+            items {
+              pk
+            }
+            nextToken
+          }
+          cats: listCats() {
+            items {
+              pk
+            }
+            nextToken
+          }
+        }
+ *    `,
+    responsePaths: ["cats", "dogs"]
+ * }
+ */
 export const getPaginatedResults = async (
   graph: GraphData,
   dispatch: (action: Action) => void,
