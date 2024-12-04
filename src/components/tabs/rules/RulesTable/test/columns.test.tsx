@@ -1,6 +1,4 @@
-import React from "react";
 import {
-  ColumnDef,
   createColumnHelper
 } from "@tanstack/react-table";
 import {
@@ -11,9 +9,6 @@ import {
   IconTrash
 } from "@lmig/lmds-react";
 import {
-  Action,
-  Logic,
-  Mapping,
   RuleHandler
 } from "@lmig/cct-shared-rules-sdk";
 import {
@@ -174,10 +169,10 @@ describe("columns", () => {
       getValue: getValue,
       original: {
         logic: JSON.stringify({ and: "Here lies the secret sauce" }),
-        actions: [{
+        actions: [JSON.stringify({
           key: "attribute",
           value: "do me!"
-        }]
+        })]
       }
     };
     test("columns are generated", () => {
@@ -201,5 +196,4 @@ describe("columns", () => {
       expect(row.getValue).toHaveBeenCalledWith("actions");
     });
   });
-
 });

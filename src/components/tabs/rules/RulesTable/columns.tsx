@@ -116,11 +116,13 @@ export const mappingColumns = [
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
-      return (row.getValue("actions") as Action[]).map((action, i) => (
-        <div key={i}>
-          {action.key} : {action.value?.toString()}
-        </div>
-      ));
+      return (row.getValue("actions") as Action[]).map((action, i) => {
+        const parsed = JSON.parse(action as unknown as string);
+        return (
+          <div key={i}>
+            {parsed.key} : {parsed.value?.toString()}
+          </div>
+        ); });
     }
   })
 ] as ColumnDef<Mapping>[];

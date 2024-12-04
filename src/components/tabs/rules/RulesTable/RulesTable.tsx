@@ -50,6 +50,8 @@ export const RulesTable = (): ReactElement => {
     loadRules();
   }, []);
 
+
+
   useEffect(() => {
     const getApplicationName = (id: string) => applications.find(app => app.azure_app_id === id)?.name;
 

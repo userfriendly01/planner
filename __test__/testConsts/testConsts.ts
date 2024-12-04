@@ -492,7 +492,6 @@ export const rules = [
     "id": "VoiceRecordingTableAccess",
     "item_type": "rule",
     "description": "Determines the level of access to the Voice Recording table based on AD groups and hierarchy",
-    "variables": "{\"hierarchy\":\"string\",\"roles\":\"string[]\"}",
     "mappings": [
       {
         "logic": "{\"and\":[{\"data_type\":\"string\",\"operation\":\"CONTAINS\",\"value\":\"DEFAULT\",\"key\":\"hierarchy\"},{\"not\":{\"data_type\":\"string\",\"operation\":\"CONTAINS\",\"value\":\"QMLiteAdmin\",\"key\":\"roles\"}},{\"not\":{\"data_type\":\"string\",\"operation\":\"CONTAINS\",\"value\":\"QMLiteAnalyst\",\"key\":\"roles\"}}]}",
@@ -547,7 +546,6 @@ export const rules = [
     "id": "test_rule_2",
     "item_type": "rule",
     "description": "I'm Faith's test rule 2 hehehe",
-    "variables": "{\"hierarchy\":\"string\",\"roles\":\"string[]\"}",
     "mappings": [
       {
         "logic": "{\"and\":[{\"data_type\":\"string\",\"operation\":\"EQUALS\",\"value\":\"DEFAULT\",\"key\":\"hierarchy\"},{\"not\":{\"data_type\":\"string\",\"operation\":\"CONTAINS\",\"value\":\"QMLiteAdmin\",\"key\":\"roles\"}},{\"not\":{\"data_type\":\"string\",\"operation\":\"CONTAINS\",\"value\":\"QMLiteAnalyst\",\"key\":\"roles\"}}]}",

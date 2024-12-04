@@ -20,13 +20,9 @@ export const LIST_RULES: GraphData = {
         id
         item_type
         description
-        variables
         mappings {
           logic
-          actions {
-              key
-              value
-          }
+          actions
         }
       }
     }
