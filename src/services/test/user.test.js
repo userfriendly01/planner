@@ -74,7 +74,7 @@ describe("user", () => {
   });
   describe("listInactiveUMUsers", () => {
     test("should resolve and return users", async () => {
-      getPaginatedResults.mockResolvedValue([{ pk: "n0263786" }]);
+      getPaginatedResults.mockResolvedValue({ inactiveusers: [{ pk: "n0263786" }]});
 
       const result = await listInactiveUMUsers(dispatchMock);
 
