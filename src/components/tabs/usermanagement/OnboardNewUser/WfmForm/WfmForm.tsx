@@ -149,6 +149,7 @@ export const WfmForm = (props: WfmFormProps) => {
             state
           }
         });
+        setStatus(ModalOverlayStatuses.SUCCESS);
       }
     } catch (err) {
       console.error("Error thrown fetching WFM user", err);

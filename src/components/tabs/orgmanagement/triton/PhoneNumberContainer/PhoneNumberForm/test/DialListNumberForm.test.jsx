@@ -15,11 +15,12 @@ import {
   useAdminDispatch, useAdminState
 } from "context/appContext";
 import {
-  createDialListEntry, editDialListEntry, listUMSoftphoneConfigs
+  createDialListEntry, editDialListEntry
 } from "services/profile";
 import {
   TextField, Tooltip
 } from "@mui/material";
+import { getPaginatedResults } from "utils/graphUtils";
 
 jest.mock("@mui/material", () => ({
   TextField: jest.fn(),
@@ -41,8 +42,11 @@ jest.mock("components/StyledButton", () => ({
 
 jest.mock("services/profile", () => ({
   createDialListEntry: jest.fn(),
-  editDialListEntry: jest.fn(),
-  listUMSoftphoneConfigs: jest.fn()
+  editDialListEntry: jest.fn()
+}));
+
+jest.mock("utils/graphUtils", () => ({
+  getPaginatedResults: jest.fn()
 }));
 
 jest.mock("context/appContext", () => ({
@@ -62,7 +66,7 @@ describe("<DialListNumberForm />", () => {
     jest.resetAllMocks();
     useAdminState.mockReturnValue(initialTestState);
     useAdminDispatch.mockReturnValue(mockAdminDispatch);
-    listUMSoftphoneConfigs.mockResolvedValue("Yay");
+    getPaginatedResults.mockResolvedValue("Yay");
     setupMockedComponents({
       ModalOverlay,
       PhoneNumberInput,
@@ -194,7 +198,7 @@ describe("<DialListNumberForm />", () => {
               message: "Successfully created dial list entry",
               status: "success"
             }, 1);
-            expect(listUMSoftphoneConfigs).toHaveBeenCalledTimes(1);
+            expect(getPaginatedResults).toHaveBeenCalledTimes(1);
             jest.runAllTimers();
             await waitFor(() => expect(mockHandleClose).toHaveBeenCalledTimes(1));
           });
@@ -234,7 +238,7 @@ describe("<DialListNumberForm />", () => {
               message: "Failed to create dial list entry",
               status: "fail"
             }, 1);
-            expect(listUMSoftphoneConfigs).not.toHaveBeenCalled();
+            expect(getPaginatedResults).not.toHaveBeenCalled();
           });
         });
       });
@@ -320,7 +324,7 @@ describe("<DialListNumberForm />", () => {
               message: "Successfully updated dial list entry",
               status: "success"
             }, 1);
-            expect(listUMSoftphoneConfigs).toHaveBeenCalledTimes(1);
+            expect(getPaginatedResults).toHaveBeenCalledTimes(1);
             await waitFor(() => {
               jest.runAllTimers();
               expect(mockHandleClose).toHaveBeenCalledTimes(1);
@@ -354,7 +358,7 @@ describe("<DialListNumberForm />", () => {
               message: "Failed to update dial list entry",
               status: "fail"
             }, 1);
-            expect(listUMSoftphoneConfigs).not.toHaveBeenCalled();
+            expect(getPaginatedResults).not.toHaveBeenCalled();
           });
         });
       });

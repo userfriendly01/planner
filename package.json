@@ -73,6 +73,7 @@
     "@datadog/datadog-api-client": "^1.17.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@lmig/cct-shared-rules-sdk": "^1.1.0",
     "@lmig/lmds-react": "^4.4.0",
     "@lmig/lmds-react-floating-header": "^1.0.17",
     "@lmig/lmds-react-modal": "^2.8.5",

@@ -70,9 +70,15 @@ const paths = [
     ]
   },
   {
+    alias: "rules",
+    paths: [
+      "components/tabs/rules/RulesTable"
+    ]
+  },
+  {
     alias: "dynamicCallFlowAction",
     paths: [
-      "components/tabs/dynamicCallFlow/action",
+      "components/tabs/dynamicCallFlow/action"
     ]
   },
   {

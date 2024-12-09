@@ -6,8 +6,7 @@ import {
   CallTag,
   DialListNumber,
   DirectoryNumber,
-  ProfilePayload,
-  Screenpop
+  ProfilePayload
 } from "globals/interfaces";
 import { logger } from "utils/logger";
 import {
@@ -25,86 +24,13 @@ import {
   UPDATE_DIAL_LIST_ENTRY,
   UPDATE_DIRECTORY_ENTRY,
   UPDATE_SOFTPHONE_CONFIG,
-  getSoftphoneConfigRelationshipsQuery, listSoftphoneConfigs
+  getSoftphoneConfigRelationshipsQuery
 } from "globals/profile";
 
 const formatActivity = (activity: Activity): Activity => ({
   ...activity,
   activity_name: `${activity.activity_name} ${activity.available ? "(A)" : "(U)"}`
 });
-
-export const listUMSoftphoneConfigs = async (dispatch: (action: Action) => void): Promise<UMSoftphoneConfiguration[]> => {
-  let profiles: UMSoftphoneConfiguration[] = [];
-  let screenpops: Screenpop[] = [];
-  let accessGroups: AccessGroup[] = [];
-  let activities: Activity[] = [];
-  let directoryEntries: DirectoryNumber[] = [];
-  let dialListEntries: DialListNumber[] = [];
-
-  const getPageResults = async (
-    isFirstQuery: boolean,
-    profilesNextToken?: string,
-    screenpopsNextToken?: string,
-    accessGroupsNextToken?: string,
-    activitiesNextToken?: string,
-    directoryNextToken?: string,
-    dialListNextToken?: string
-  ): Promise<void> => {
-    try {
-      const {
-        errors, data
-      }: any = await apolloClient.query<{ results: any }>({
-        query: listSoftphoneConfigs(profilesNextToken, screenpopsNextToken, accessGroupsNextToken, activitiesNextToken, directoryNextToken, dialListNextToken, isFirstQuery),
-        variables: {}
-      });
-
-      if(errors?.length){
-        throw errors;
-      }
-
-      if(data?.profiles?.items?.length) { profiles = [...profiles, ...data?.profiles?.items]; }
-      if(data?.screenpops?.items?.length) { screenpops = [...screenpops, ...data.screenpops.items]; }
-      if(data?.accessGroups?.items?.length) { accessGroups = [...accessGroups, ...data.accessGroups.items]; }
-      if(data?.activities?.items?.length) { activities = [...activities, ...data.activities.items.map((activity: Activity) => formatActivity(activity))]; }
-      if(data?.directoryEntries?.items?.length) { directoryEntries = [...directoryEntries, ...data.directoryEntries.items]; }
-      if(data?.dialListEntries?.items?.length) { dialListEntries = [...dialListEntries, ...data.dialListEntries.items]; }
-
-      const formattedProfileNextToken = data?.profiles?.nextToken ? `"${data.profiles?.nextToken}"` : null;
-      const formattedScreenpopNextToken = data?.screenpops?.nextToken ? `"${data.screenpops?.nextToken}"` : null;
-      const formattedAccessGroupNextToken = data?.accessGroups?.nextToken ? `"${data.accessGroups?.nextToken}"` : null;
-      const formattedActivityNextToken = data?.activities?.nextToken ? `"${data.activities?.nextToken}"` : null;
-      const formattedDirectoryNextToken = data?.directoryEntries?.nextToken ? `"${data.directoryEntries?.nextToken}"` : null;
-      const formattedDialListNextToken = data?.dialListEntries?.nextToken ? `"${data.dialListEntries?.nextToken}"` : null;
-
-
-      if(formattedProfileNextToken || formattedScreenpopNextToken || formattedAccessGroupNextToken || formattedActivityNextToken || formattedDirectoryNextToken || formattedDialListNextToken){
-        return getPageResults(false, formattedProfileNextToken, formattedScreenpopNextToken, formattedAccessGroupNextToken, formattedActivityNextToken, formattedDirectoryNextToken, formattedDialListNextToken);
-      } else {
-        return;
-      }
-    } catch(error) {
-      logger.error("Error thrown getting skills from the graph", error);
-      throw error;
-    }
-  };
-
-  await getPageResults(true, null, null, null, null, null, null);
-  const profileState = {
-    profiles,
-    screenpops,
-    accessGroups,
-    activities,
-    directoryEntries,
-    dialListEntries
-  };
-
-  dispatch({
-    type: "loadProfileOptions",
-    payload: profileState
-  });
-
-  return profileState.profiles;
-};
 
 export const loadSoftphoneConfigRelationships = async (profileContext: any, dispatch: (action: Action) => void, callback?: () => void) => {
   const profiles = profileContext.profiles;

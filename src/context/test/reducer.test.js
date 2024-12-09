@@ -3,6 +3,12 @@ import {
   initialState,
   reducer
 } from "../reducers/reducer";
+import { LIST_RULES } from "globals/graphql/rules";
+import {
+  LIST_INACTIVE_USERS, LIST_USERS
+} from "globals/graphql/user";
+import { LIST_MANAGERS } from "globals/graphql/manager";
+import { LIST_SOFTPHONE_CONFIG } from "globals/graphql/profile";
 
 describe("reducer", () => {
   describe("invalid action", () => {
@@ -26,58 +32,93 @@ describe("reducer", () => {
       expect(result.workerContext.loadStatus).toEqual(LoadStatuses.SUCCESS);
     });
   });
-  describe("loadPaginatedResults", () => {
-    describe("type === UMManager", () => {
-      test("should set managers to page results", () => {
-        const payload = {
-          type: "UMManager",
-          results: [
-            { name: "I'm a manager" }
+  describe(`loadPaginatedResults${LIST_MANAGERS.type}`, () => {
+    test("should set managers to page results", () => {
+      const payload = {
+        results: { managers: [{ name: "I'm a manager" }]}
+      };
+      const action = {
+        type: `loadPaginatedResults${LIST_MANAGERS.type}`,
+        payload
+      };
+      const testState = {
+        ...initialState,
+        managerContext: {
+          managers: [
+            { name: "I'm a control freak" }
           ]
-        };
-        const action = {
-          type: "loadPaginatedResults",
-          payload
-        };
-        const testState = {
+        }
+      };
+      const result = reducer(testState, action);
+      expect(result.managerContext.managers).toEqual([
+        { name: "I'm a control freak" },
+        { name: "I'm a manager" }
+      ]);
+    });
+    describe("isFirstPage === true", () => {
+      test("should set managers to page results", () => {
+        const startingState = {
           ...initialState,
           managerContext: {
-            managers: [
-              { name: "I'm a control freak" }
-            ]
+            managers: [{ name: "I'm already here!" }]
           }
         };
-        const result = reducer(testState, action);
-        expect(result.managerContext.managers).toEqual([
-          { name: "I'm a control freak" },
-          { name: "I'm a manager" }
-        ]);
+        const payload = {
+          isFirstPage: true,
+          results: { managers: [{ name: "I'm a manager!" }]}
+        };
+        const action = {
+          type: `loadPaginatedResults${LIST_MANAGERS.type}`,
+          payload
+        };
+        const result = reducer(startingState, action);
+        expect(result.managerContext.managers).toEqual(payload.results.managers);
       });
-      describe("isFirstPage === true", () => {
-        test("should set managers to page results", () => {
-          const startingState = {
-            ...initialState,
-            managerContext: {
-              managers: [{ name: "I'm already here!" }]
-            }
-          };
-          const payload = {
-            type: "UMManager",
-            isFirstPage: true,
-            results: [
-              { name: "I'm a manager!" }
-            ]
-          };
-          const action = {
-            type: "loadPaginatedResults",
-            payload
-          };
-          const result = reducer(startingState, action);
-          expect(result.managerContext.managers).toEqual(payload.results);
+    });
+    describe("results are missing the expected key", () => {
+      test("should set to initial state", () => {
+        const startingState = {
+          ...initialState,
+          managerContext: {
+            managers: [{ name: "I'm already here!" }]
+          }
+        };
+        const payload = {
+          results: {}
+        };
+        const action = {
+          type: `loadPaginatedResults${LIST_MANAGERS.type}`,
+          payload
+        };
+        const result = reducer(startingState, action);
+        expect(result.managerContext).toEqual({
+          managers: [{ name: "I'm already here!" }]
         });
       });
     });
-    describe("type === UMUser", () => {
+  });
+  describe(`loadPaginatedResults${LIST_USERS.type}`, () => {
+    test("should set workers to page results", () => {
+      const startingState = {
+        ...initialState,
+        workerContext: {
+          workers: [{ name: "I'm already here!" }]
+        }
+      };
+      const payload = {
+        results: { users: [{ name: "I'm a worker!" }]}
+      };
+      const action = {
+        type: `loadPaginatedResults${LIST_USERS.type}`,
+        payload
+      };
+      const result = reducer(startingState, action);
+      expect(result.workerContext.workers).toEqual([
+        { name: "I'm already here!" },
+        { name: "I'm a worker!" }
+      ]);
+    });
+    describe("isFirstPage === true", () => {
       test("should set workers to page results", () => {
         const startingState = {
           ...initialState,
@@ -86,68 +127,316 @@ describe("reducer", () => {
           }
         };
         const payload = {
-          type: "UMUser",
-          results: [
-            { name: "I'm a worker!" }
-          ]
+          isFirstPage: true,
+          results: {
+            users: [
+              { name: "I'm a worker!" }
+            ]
+          }
         };
         const action = {
-          type: "loadPaginatedResults",
+          type: `loadPaginatedResults${LIST_USERS.type}`,
           payload
         };
         const result = reducer(startingState, action);
-        expect(result.workerContext.workers).toEqual([
-          { name: "I'm already here!" },
-          { name: "I'm a worker!" }
-        ]);
-      });
-      describe("isFirstPage === true", () => {
-        test("should set workers to page results", () => {
-          const startingState = {
-            ...initialState,
-            workerContext: {
-              workers: [{ name: "I'm already here!" }]
-            }
-          };
-          const payload = {
-            type: "UMUser",
-            isFirstPage: true,
-            results: [
-              { name: "I'm a worker!" }
-            ]
-          };
-          const action = {
-            type: "loadPaginatedResults",
-            payload
-          };
-          const result = reducer(startingState, action);
-          expect(result.workerContext.workers).toEqual(payload.results);
-        });
+        expect(result.workerContext.workers).toEqual(payload.results.users);
       });
     });
-    describe("type === InactiveUMUser", () => {
-      test("should be ignored workers to page results", () => {
+    describe("results are missing the expected key", () => {
+      test("should set to initial state", () => {
         const startingState = {
           ...initialState,
-          workerContext: {
-            workers: [{ name: "bob!" }]
+          userContext: {
+            users: [{ name: "I'm already here!" }]
           }
         };
         const payload = {
-          type: "InactiveUMUser",
-          results: [
-            { name: "I'm a worker!" }
-          ]
+          results: {}
         };
         const action = {
-          type: "loadPaginatedResults",
+          type: `loadPaginatedResults${LIST_USERS.type}`,
           payload
         };
         const result = reducer(startingState, action);
-        expect(result.workerContext).toEqual({
-          workers: [
-            { name: "bob!" }
+        expect(result.userContext).toEqual({
+          users: [{ name: "I'm already here!" }]
+        });
+      });
+    });
+  });
+  describe(`loadPaginatedResults${LIST_INACTIVE_USERS.type}`, () => {
+    test("should be ignored workers to page results", () => {
+      const startingState = {
+        ...initialState,
+        workerContext: {
+          workers: [{ name: "bob!" }]
+        }
+      };
+      const payload = {
+        results: {
+          users: [
+            { name: "I'm a worker!" }
           ]
+        }
+      };
+      const action = {
+        type: `loadPaginatedResults${LIST_INACTIVE_USERS.type}`,
+        payload
+      };
+      const result = reducer(startingState, action);
+      expect(result.workerContext).toEqual({
+        workers: [
+          { name: "bob!" }
+        ]
+      });
+    });
+  });
+  describe(`loadPaginatedResults${LIST_RULES.type}`, () => {
+    test("should set workers to page results", () => {
+      const startingState = {
+        ...initialState,
+        rulesContext: {
+          rules: [{ name: "I'm already here!" }],
+          applications: [{ name: "I'm already here!" }],
+          ruleRelationships: [{ name: "I'm already here!" }]
+        }
+      };
+      const payload = {
+        results: {
+          rules: [{ name: "I'm new!" }],
+          applications: [{ name: "I'm new!" }],
+          ruleRelationships: [{ name: "I'm new!" }]
+        }
+      };
+      const action = {
+        type: `loadPaginatedResults${LIST_RULES.type}`,
+        payload
+      };
+      const result = reducer(startingState, action);
+      expect(result.rulesContext).toEqual({
+        rules: [
+          { name: "I'm already here!" },
+          { name: "I'm new!" }
+        ],
+        applications: [
+          { name: "I'm already here!" },
+          { name: "I'm new!" }
+        ],
+        ruleRelationships: [
+          { name: "I'm already here!" },
+          { name: "I'm new!" }
+        ]
+      });
+    });
+    describe("isFirstPage === true", () => {
+      test("should set workers to page results", () => {
+        const startingState = {
+          ...initialState,
+          rulesContext: {
+            rules: [{ name: "I'm already here!" }],
+            applications: [{ name: "I'm already here!" }],
+            ruleRelationships: [{ name: "I'm already here!" }]
+          }
+        };
+        const payload = {
+          isFirstPage: true,
+          results: {
+            rules: [{ name: "I'm new!" }],
+            applications: [{ name: "I'm new!" }],
+            ruleRelationships: [{ name: "I'm new!" }]
+          }
+        };
+        const action = {
+          type: `loadPaginatedResults${LIST_RULES.type}`,
+          payload
+        };
+        const result = reducer(startingState, action);
+        expect(result.rulesContext).toEqual({
+          rules: [
+            { name: "I'm new!" }
+          ],
+          applications: [
+            { name: "I'm new!" }
+          ],
+          ruleRelationships: [
+            { name: "I'm new!" }
+          ]
+        });
+      });
+    });
+    describe("results are missing the expected key", () => {
+      test("should set to initial state", () => {
+        const startingState = {
+          ...initialState,
+          rulesContext: {
+            rules: [{ name: "I'm already here!" }],
+            applications: [{ name: "I'm already here!" }],
+            ruleRelationships: [{ name: "I'm already here!" }]
+          }
+        };
+        const payload = {
+          results: {}
+        };
+        const action = {
+          type: `loadPaginatedResults${LIST_RULES.type}`,
+          payload
+        };
+        const result = reducer(startingState, action);
+        expect(result.rulesContext).toEqual({
+          rules: [{ name: "I'm already here!" }],
+          applications: [{ name: "I'm already here!" }],
+          ruleRelationships: [{ name: "I'm already here!" }]
+        });
+      });
+    });
+  });
+  describe(`loadPaginatedResults${LIST_SOFTPHONE_CONFIG.type}`, () => {
+    test("should set workers to page results", () => {
+      const startingState = {
+        ...initialState,
+        profileContext: {
+          profiles: [{ name: "I'm already here!" }],
+          activities: [{ name: "I'm already here!" }],
+          screenpops: [{ name: "I'm already here!" }],
+          calltags: [{ name: "I'm already here!" }],
+          accessGroups: [{ name: "I'm already here!" }],
+          dialList: [{ name: "I'm already here!" }],
+          directory: [{ name: "I'm already here!" }]
+        }
+      };
+      const payload = {
+        results: {
+          profiles: [{ name: "I'm new!" }],
+          activities: [{ name: "I'm new!" }],
+          screenpops: [{ name: "I'm new!" }],
+          calltags: [{ name: "I'm new!" }],
+          accessGroups: [{ name: "I'm new!" }],
+          dialList: [{ name: "I'm new!" }],
+          directory: [{ name: "I'm new!" }]
+        }
+      };
+      const action = {
+        type: `loadPaginatedResults${LIST_SOFTPHONE_CONFIG.type}`,
+        payload
+      };
+      const result = reducer(startingState, action);
+      expect(result.profileContext).toEqual({
+        profiles: [
+          { name: "I'm already here!" },
+          { name: "I'm new!" }
+        ],
+        activities: [
+          { name: "I'm already here!" },
+          { name: "I'm new!" }
+        ],
+        screenpops: [
+          { name: "I'm already here!" },
+          { name: "I'm new!" }
+        ],
+        calltags: [
+          { name: "I'm already here!" },
+          { name: "I'm new!" }
+        ],
+        accessGroups: [
+          { name: "I'm already here!" },
+          { name: "I'm new!" }
+        ],
+        dialList: [
+          { name: "I'm already here!" },
+          { name: "I'm new!" }
+        ],
+        directory: [
+          { name: "I'm already here!" },
+          { name: "I'm new!" }
+        ]
+      });
+    });
+    describe("isFirstPage === true", () => {
+      test("should set workers to page results", () => {
+        const startingState = {
+          ...initialState,
+          profileContext: {
+            profiles: [{ name: "I'm already here!" }],
+            activities: [{ name: "I'm already here!" }],
+            screenpops: [{ name: "I'm already here!" }],
+            calltags: [{ name: "I'm already here!" }],
+            accessGroups: [{ name: "I'm already here!" }],
+            dialList: [{ name: "I'm already here!" }],
+            directory: [{ name: "I'm already here!" }]
+          }
+        };
+        const payload = {
+          isFirstPage: true,
+          results: {
+            profiles: [{ name: "I'm new!" }],
+            activities: [{ name: "I'm new!" }],
+            screenpops: [{ name: "I'm new!" }],
+            calltags: [{ name: "I'm new!" }],
+            accessGroups: [{ name: "I'm new!" }],
+            dialList: [{ name: "I'm new!" }],
+            directory: [{ name: "I'm new!" }]
+          }
+        };
+        const action = {
+          type: `loadPaginatedResults${LIST_SOFTPHONE_CONFIG.type}`,
+          payload
+        };
+        const result = reducer(startingState, action);
+        expect(result.profileContext).toEqual({
+          profiles: [
+            { name: "I'm new!" }
+          ],
+          activities: [
+            { name: "I'm new!" }
+          ],
+          screenpops: [
+            { name: "I'm new!" }
+          ],
+          calltags: [
+            { name: "I'm new!" }
+          ],
+          accessGroups: [
+            { name: "I'm new!" }
+          ],
+          dialList: [
+            { name: "I'm new!" }
+          ],
+          directory: [
+            { name: "I'm new!" }
+          ]
+        });
+      });
+    });
+    describe("results are missing the expected key", () => {
+      test("should set to initial state", () => {
+        const startingState = {
+          ...initialState,
+          profileContext: {
+            profiles: [{ name: "I'm already here!" }],
+            activities: [{ name: "I'm already here!" }],
+            screenpops: [{ name: "I'm already here!" }],
+            calltags: [{ name: "I'm already here!" }],
+            accessGroups: [{ name: "I'm already here!" }],
+            dialList: [{ name: "I'm already here!" }],
+            directory: [{ name: "I'm already here!" }]
+          }
+        };
+        const payload = {
+          results: {}
+        };
+        const action = {
+          type: `loadPaginatedResults${LIST_SOFTPHONE_CONFIG.type}`,
+          payload
+        };
+        const result = reducer(startingState, action);
+        expect(result.profileContext).toEqual({
+          profiles: [{ name: "I'm already here!" }],
+          activities: [{ name: "I'm already here!" }],
+          screenpops: [{ name: "I'm already here!" }],
+          calltags: [{ name: "I'm already here!" }],
+          accessGroups: [{ name: "I'm already here!" }],
+          dialList: [{ name: "I'm already here!" }],
+          directory: [{ name: "I'm already here!" }]
         });
       });
     });

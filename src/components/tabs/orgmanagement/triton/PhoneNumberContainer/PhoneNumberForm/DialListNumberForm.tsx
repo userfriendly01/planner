@@ -16,7 +16,7 @@ import {
   useAdminDispatch, useAdminState
 } from "context/appContext";
 import {
-  createDialListEntry, editDialListEntry, listUMSoftphoneConfigs
+  createDialListEntry, editDialListEntry
 } from "services/profile";
 import {
   PhoneNumberFormProps, DialListFormEntryProps
@@ -28,6 +28,8 @@ import {
   ExternalNumberContainer,
   InfoOutlinedStyled
 } from "../PhoneNumber.Styles";
+import { getPaginatedResults } from "utils/graphUtils";
+import { LIST_SOFTPHONE_CONFIG } from "globals/graphql/profile";
 
 export const DialListNumberForm = (props: PhoneNumberFormProps) => {
   const {
@@ -83,7 +85,7 @@ export const DialListNumberForm = (props: PhoneNumberFormProps) => {
         dialListId: formDialListEntry.id,
         requestBody
       });
-      await listUMSoftphoneConfigs(dispatch);
+      await getPaginatedResults(LIST_SOFTPHONE_CONFIG, dispatch);
       setLoading({
         overlayMessage: "Successfully created dial list entry",
         saveStatus: ModalOverlayStatuses.SUCCESS
@@ -121,7 +123,7 @@ export const DialListNumberForm = (props: PhoneNumberFormProps) => {
         dialListId: formDialListEntry.id,
         requestBody
       });
-      await listUMSoftphoneConfigs(dispatch);
+      await getPaginatedResults(LIST_SOFTPHONE_CONFIG, dispatch);
       setLoading({
         overlayMessage: "Successfully updated dial list entry",
         saveStatus: ModalOverlayStatuses.SUCCESS

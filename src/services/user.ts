@@ -8,7 +8,9 @@ import {
 import {
   CREATE_USER,
   GET_USER,
+  LIST_INACTIVE_USERS,
   LIST_USER_RECORDS,
+  LIST_USERS,
   UPDATE_USER
 }from "globals/user";
 import {
@@ -38,7 +40,7 @@ export const listUMUsers = async (dispatch: (action: Action) => void): Promise<D
   }));
 
   try {
-    await getPaginatedResults("UMUser", dispatch, formatUsers);
+    await getPaginatedResults(LIST_USERS, dispatch, { users: formatUsers });
     dispatch(({
       type: "setLoadingWorkers",
       payload: LoadStatuses.SUCCESS
@@ -55,8 +57,8 @@ export const listUMUsers = async (dispatch: (action: Action) => void): Promise<D
 
 export const listInactiveUMUsers = async (dispatch: (action: Action) => void): Promise<UMUser[]> => {
   try {
-    const results = await getPaginatedResults("InactiveUMUser", dispatch, formatUsers);
-    return results as unknown as UMUser[];
+    const { inactiveusers } = await getPaginatedResults(LIST_INACTIVE_USERS, dispatch, { inactiveusers: formatUsers }) as { inactiveusers: UMUser[]};
+    return inactiveusers;
   } catch(error) {
     logger.error("Failed to fetch inactive users from graph", { error });
   }
@@ -84,7 +86,7 @@ export const listUMUserRecords = async (n_number: string): Promise<UMUser[]> => 
   a console worker, they will work just fine
   */
 
-  return data[LIST_USER_RECORDS.responsePath]?.items
+  return data[LIST_USER_RECORDS.responsePaths[0]]?.items
     .filter((i: UMUser) => !i.inactiveDate)
     .sort(sortGraphObjectsByPk);
 };

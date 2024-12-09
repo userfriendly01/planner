@@ -15,11 +15,12 @@ import {
   useAdminDispatch, useAdminState
 } from "context/appContext";
 import {
-  createDirectoryEntry, editDirectoryEntry, listUMSoftphoneConfigs
+  createDirectoryEntry, editDirectoryEntry
 } from "services/profile";
 import {
   TextField, Tooltip
 } from "@mui/material";
+import { getPaginatedResults } from "utils/graphUtils";
 
 jest.mock("@mui/material", () => ({
   TextField: jest.fn(),
@@ -41,8 +42,11 @@ jest.mock("components/StyledButton", () => ({
 
 jest.mock("services/profile", () => ({
   createDirectoryEntry: jest.fn(),
-  editDirectoryEntry: jest.fn(),
-  listUMSoftphoneConfigs: jest.fn()
+  editDirectoryEntry: jest.fn()
+}));
+
+jest.mock("utils/graphUtils", () => ({
+  getPaginatedResults: jest.fn()
 }));
 
 jest.mock("context/appContext", () => ({
@@ -62,7 +66,7 @@ describe("<DirectoryNumberForm />", () => {
     jest.resetAllMocks();
     useAdminState.mockReturnValue(initialTestState);
     useAdminDispatch.mockReturnValue(mockAdminDispatch);
-    listUMSoftphoneConfigs.mockResolvedValue("Yay");
+    getPaginatedResults.mockResolvedValue("Yay");
     setupMockedComponents({
       ModalOverlay,
       PhoneNumberInput,
@@ -194,7 +198,7 @@ describe("<DirectoryNumberForm />", () => {
               message: "Successfully created directory entry",
               status: "success"
             }, 1);
-            expect(listUMSoftphoneConfigs).toHaveBeenCalledTimes(1);
+            expect(getPaginatedResults).toHaveBeenCalledTimes(1);
             jest.runAllTimers();
             await waitFor(() => expect(mockHandleClose).toHaveBeenCalledTimes(1));
           });
@@ -231,7 +235,7 @@ describe("<DirectoryNumberForm />", () => {
               message: "Failed to create directory entry",
               status: "fail"
             }, 1);
-            expect(listUMSoftphoneConfigs).not.toHaveBeenCalled();
+            expect(getPaginatedResults).not.toHaveBeenCalled();
           });
         });
       });
@@ -317,7 +321,7 @@ describe("<DirectoryNumberForm />", () => {
               message: "Successfully updated directory entry",
               status: "success"
             }, 1);
-            expect(listUMSoftphoneConfigs).toHaveBeenCalledTimes(1);
+            expect(getPaginatedResults).toHaveBeenCalledTimes(1);
             await waitFor(() => {
               jest.runAllTimers();
               expect(mockHandleClose).toHaveBeenCalledTimes(1);
@@ -351,7 +355,7 @@ describe("<DirectoryNumberForm />", () => {
               message: "Failed to update directory entry",
               status: "fail"
             }, 1);
-            expect(listUMSoftphoneConfigs).not.toHaveBeenCalled();
+            expect(getPaginatedResults).not.toHaveBeenCalled();
           });
         });
       });

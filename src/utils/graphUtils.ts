@@ -3,71 +3,120 @@ import { areSkillsDifferent } from "utils/skillsUtils";
 import {
   Action,
   DBList,
-  UMOffice,
-  UMManager,
   UMUser,
   GraphData,
   UpdateOrCreateUMUser
 }from "globals/interfaces";
-import { LIST_MANAGERS }from "globals/manager";
-import {
-  LIST_INACTIVE_USERS, LIST_USERS
-}from "globals/user";
-import {
-  logger
-} from "utils/logger";
+import { logger } from "utils/logger";
 
-type PaginationType = UMOffice | UMManager | UMUser;
-
-export const getGraphData = (type: string): GraphData => {
-  switch (type) {
-    case "UMUser":
-      return LIST_USERS;
-    case "InactiveUMUser":
-      return LIST_INACTIVE_USERS;
-    case "UMManager":
-      return LIST_MANAGERS;
-    default:
-      throw `Type of ${type} is not a valid list type`;
-  }
-};
-
-export const getPaginatedResults = async (type: string, dispatch: (action: Action) => void, formatResults?: (items: PaginationType[]) => PaginationType[], callBack?: any): Promise<PaginationType[]> => {
-  const graph: GraphData = getGraphData(type);
-  let isFirstQuery = true;
-  const finalResults: PaginationType[] = [];
-  const getPageResults = async (nextToken?: string): Promise<VoidFunction> => {
-    try {
-      const { data }: any  = await apolloClient.query<{ results: DBList<PaginationType | null> }>({
-        query: graph.query,
-        variables: {
-          nextToken
+/**
+ * 
+ * @param graph 
+ * @param dispatch 
+ * @param formatResults 
+ * @returns an object containing the final graph results for each of your response paths as keys
+ * 
+ * @description
+ * This function is meant to be used for all graph calls and will incorporate the next token dynamically.
+ * It requires a GraphData type and dispatch function.
+ * 
+ * @implementation
+ * Create a Graph Data Object to pass into the method. 
+ *     - The 'type' will represent the collection of graph queries listed within the query.
+ *     - The response paths MUST match the response variables set within the query.
+ *     - Your query should include 2 variables for each response path Next Token following the below format
+ *        - `${v}Bool`
+          - `${v}NextToken`
+ * Create a reducer function that follows the naming pattern `loadPaginatedResults${graph.type}`. 
+ *     - This will receive an object with each of the response paths listed in the Graph Data
+ *       with the paginated data
+ * Call this function with your GraphData object and dispatch function to call your new reducer
+ * 
+ * @example
+ * Example GraphData. Make sure these all match!!
+ *    - nextToken prefix (2 each)
+ *    - query response variables
+ *    - response paths array
+ * 
+ * export LIST_ANIMALS: GraphData = {
+ *  type: "animals",
+ *  query: ggl`
+*     query listAnimals(
+*       $dogsBool: Boolean!,
+        $dogsNextToken: String,
+        $catsBool: Boolean!,
+        $catsNextToken: String,
+*     ) {
+          dogs: listDogs() {
+            items {
+              pk
+            }
+            nextToken
+          }
+          cats: listCats() {
+            items {
+              pk
+            }
+            nextToken
+          }
         }
+ *    `,
+    responsePaths: ["cats", "dogs"]
+ * }
+ */
+export const getPaginatedResults = async (
+  graph: GraphData,
+  dispatch: (action: Action) => void,
+  formatResults?: {[key: string]: (items: unknown[]) => unknown[]}
+): Promise<unknown> => {
+  let isFirstPage = true;
+  const finalResults: { [key: string]: unknown[]} = {};
+  const variables: {[key: string]: boolean | string} = {};
+
+  graph.responsePaths?.forEach((v => {
+    variables[`${v}Bool`] = true;
+    variables[`${v}NextToken`] = null;
+  }));
+
+  const getPageResults = async (): Promise<VoidFunction> => {
+    try {
+      const { data }: any  = await apolloClient.query<{ results: DBList<unknown | null> }>({
+        query: graph.query,
+        variables
       });
 
-      const items = data[graph.responsePath]?.items;
-      const formattedData = formatResults ? formatResults(items) : items;
-      finalResults.push(...formattedData);
-      dispatch(({
-        type: "loadPaginatedResults",
-        payload: {
-          type,
-          results: formattedData,
-          isFirstPage: isFirstQuery
+      const pageResults: { [key: string]: unknown[]} = {};
+      graph.responsePaths.forEach(((v: string) => {
+        if(data[v]){
+          const items: unknown[] = data[v].items.slice();
+          if(formatResults && formatResults[v]){
+            pageResults[v] = formatResults[v](items);
+          } else {
+            pageResults[v] = items;
+          }
+          dispatch(({
+            type: `loadPaginatedResults${graph.type}`,
+            payload: {
+              results: pageResults,
+              isFirstPage
+            }
+          }));
+          finalResults[v] = pageResults[v]?.concat(items) || items;
         }
       }));
 
-      if(data[graph.responsePath]?.nextToken){
-        isFirstQuery = false;
-        return getPageResults(data[graph.responsePath]?.nextToken);
+      if(graph.responsePaths?.some(p => data[p]?.nextToken)){
+        graph.responsePaths?.forEach((v => {
+          variables[`${v}Bool`] = !!data[v]?.nextToken;
+          variables[`${v}NextToken`] = data[v]?.nextToken || null;
+        }));
+        isFirstPage = false;
+        return getPageResults();
       } else {
-        if(callBack) {
-          callBack();
-        }
         return;
       }
     } catch(error) {
-      logger.error(`Error thrown getting paginated results for ${type}`, error);
+      logger.error(`Error thrown getting paginated results for ${graph.type}`, error);
       return Promise.reject(error);
     }
   };
@@ -75,8 +124,6 @@ export const getPaginatedResults = async (type: string, dispatch: (action: Actio
   await getPageResults();
   return finalResults;
 };
-
-//The following functions are temporary until we align the app & reducers to the new graph
 
 export const mapWorkerToDbWorker = (worker: Partial<UMUser>): Partial<UpdateOrCreateUMUser> => {
   return {

@@ -4,6 +4,7 @@ import { CallFlowManagementTfn } from "callflowmanagement/CallFlowManagementTfn"
 import DynamicCallFlowActionContainer from "components/tabs/dynamicCallFlow/action/DynamicCallFlow.Action.Container";
 import DynamicCallFlowPhoneNumberContainer from "components/tabs/dynamicCallFlow/phoneNumber/DynamicCallFlow.PhoneNumber.Container";
 import { TwilioConsoleUsersView } from "components/tabs/usermanagement/TwilioConsoleUsersView/TwilioConsoleUsersView";
+import { RulesTable } from "rules/RulesTable";
 import CalabrioOrgWrapper from "orgmanagement/CalabrioOrgWrapper";
 import CalabrioRolesWrapper from "orgmanagement/CalabrioRolesWrapper";
 import { PhoneNumberContainer } from "orgmanagement/PhoneNumberContainer";
@@ -26,6 +27,10 @@ export const getRoutes = () => [
   {
     path: "/triton-admin/twilio-console",
     Component: TwilioConsoleUsersView
+  },
+  {
+    path: "/triton-admin/rules",
+    Component: RulesTable
   },
   {
     path: "/triton-admin/user",

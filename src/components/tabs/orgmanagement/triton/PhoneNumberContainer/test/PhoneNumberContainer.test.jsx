@@ -16,12 +16,14 @@ import { DialListNumberForm } from "orgmanagement/DialListNumberForm";
 import { ProfileDropDown } from "orgmanagement/ProfileDropDown";
 import { useLocation } from "react-router-dom";
 import {
-  deleteDialListEntry, deleteDirectoryEntry, listUMSoftphoneConfigs
+  deleteDialListEntry, deleteDirectoryEntry
 } from "services/profile";
 import { Modal } from "@mui/material";
 import { DirectoryNumberForm } from "orgmanagement/DirectoryNumberForm";
 import { PhoneNumberTable } from "orgmanagement/PhoneNumberTable";
 import { StyledButton } from "components/StyledButton";
+import { getPaginatedResults } from "utils/graphUtils";
+
 
 jest.mock("react-router-dom", () => ({
   useLocation: jest.fn()
@@ -54,8 +56,11 @@ jest.mock("orgmanagement/ProfileDropDown", () => ({
 
 jest.mock("services/profile", () => ({
   deleteDialListEntry: jest.fn(),
-  deleteDirectoryEntry: jest.fn(),
-  listUMSoftphoneConfigs: jest.fn()
+  deleteDirectoryEntry: jest.fn()
+}));
+
+jest.mock("utils/graphUtils", () => ({
+  getPaginatedResults: jest.fn()
 }));
 
 jest.mock("context/appContext", () => ({
@@ -71,7 +76,7 @@ describe("<PhoneNumberContainer />", () => {
     jest.clearAllMocks();
     useAdminState.mockReturnValue(initialTestState);
     useAdminDispatch.mockReturnValue(mockDispatch);
-    listUMSoftphoneConfigs.mockResolvedValue("Yay");
+    getPaginatedResults.mockResolvedValue("Yay");
     useLocation.mockReturnValue();
     setupMockedComponents({
       Modal,
@@ -214,7 +219,7 @@ describe("<PhoneNumberContainer />", () => {
               status: "saving"
             });
             await waitFor(() => expect(PhoneNumberTable).toHaveBeenCalledTimes(3));
-            expect(listUMSoftphoneConfigs).toHaveBeenCalled();
+            expect(getPaginatedResults).toHaveBeenCalled();
             expect(PhoneNumberTable.mock.calls[2][0].saveState).toStrictEqual({
               overlayMessage: "Successfully deleted Directory entry",
               status: "success"
@@ -243,7 +248,7 @@ describe("<PhoneNumberContainer />", () => {
               status: "saving"
             });
             await waitFor(() => expect(PhoneNumberTable).toHaveBeenCalledTimes(3));
-            expect(listUMSoftphoneConfigs).not.toHaveBeenCalled();
+            expect(getPaginatedResults).not.toHaveBeenCalled();
             expect(PhoneNumberTable.mock.calls[2][0].saveState).toStrictEqual({
               overlayMessage: "Failed to delete Directory entry",
               status: "fail"
@@ -402,7 +407,7 @@ describe("<PhoneNumberContainer />", () => {
               status: "saving"
             });
             await waitFor(() => expect(PhoneNumberTable).toHaveBeenCalledTimes(3));
-            expect(listUMSoftphoneConfigs).toHaveBeenCalled();
+            expect(getPaginatedResults).toHaveBeenCalled();
             expect(PhoneNumberTable.mock.calls[2][0].saveState).toStrictEqual({
               overlayMessage: "Successfully deleted DialList entry",
               status: "success"
@@ -431,7 +436,7 @@ describe("<PhoneNumberContainer />", () => {
               status: "saving"
             });
             await waitFor(() => expect(PhoneNumberTable).toHaveBeenCalledTimes(3));
-            expect(listUMSoftphoneConfigs).not.toHaveBeenCalled();
+            expect(getPaginatedResults).not.toHaveBeenCalled();
             expect(PhoneNumberTable.mock.calls[2][0].saveState).toStrictEqual({
               overlayMessage: "Failed to delete DialList entry",
               status: "fail"

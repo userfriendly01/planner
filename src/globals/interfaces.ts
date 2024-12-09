@@ -6,6 +6,9 @@ import {
   AlertColor
 } from "@mui/material";
 import styled from "styled-components";
+import {
+  Application, Rule, ApplicationToRule
+} from "@lmig/cct-shared-rules-sdk";
 
 export const FlexColumn = styled.div`
   display: flex;
@@ -98,8 +101,8 @@ export interface AppState {
     accessGroups: AccessGroup[],
     screenpops: Screenpop[]
     activities: Activity[],
-    directoryEntries: DirectoryNumber[],
-    dialListEntries: DialListNumber[],
+    directory: DirectoryNumber[],
+    dialList: DialListNumber[],
     calltags: Partial<CallTag>[]
   },
   userContext: {
@@ -113,6 +116,11 @@ export interface AppState {
     workers: UMUser[],
     loadStatus: LoadStatuses;
   },
+  rulesContext: {
+    rules: Rule[],
+    applications: Application[],
+    ruleRelationships: ApplicationToRule[]
+  }
   calabrioContext: {
     tenant: any,
     teams: CalabrioGroup[],
@@ -368,8 +376,9 @@ export interface DBList<TItem> {
 }
 
 export interface GraphData {
+  type: string,
   query: any,
-  responsePath: string
+  responsePaths?: string[]
 }
 
 export interface UMTwilioAttributeSkills {

@@ -1,4 +1,3 @@
-import { isNumberValid } from "utils/numberUtils";
 import { logger } from "utils/logger";
 import { TextField } from "@mui/material";
 import { ModalOverlay } from "components/ModalOverlay";
@@ -14,7 +13,7 @@ import {
   useAdminDispatch, useAdminState
 } from "context/appContext";
 import {
-  createDirectoryEntry, editDirectoryEntry, listUMSoftphoneConfigs
+  createDirectoryEntry, editDirectoryEntry
 } from "services/profile";
 import {
   PhoneNumberFormProps, DirectoryFormEntryProps
@@ -24,6 +23,8 @@ import {
   Header,
   ButtonWrapper
 } from "../PhoneNumber.Styles";
+import { LIST_SOFTPHONE_CONFIG } from "globals/graphql/profile";
+import { getPaginatedResults } from "utils/graphUtils";
 
 export const DirectoryNumberForm = (props: PhoneNumberFormProps) => {
   const {
@@ -78,7 +79,7 @@ export const DirectoryNumberForm = (props: PhoneNumberFormProps) => {
         directoryId: formDirectoryEntry.id,
         requestBody
       });
-      await listUMSoftphoneConfigs(dispatch);
+      await getPaginatedResults(LIST_SOFTPHONE_CONFIG, dispatch);
       setLoading({
         overlayMessage: "Successfully created directory entry",
         saveStatus: ModalOverlayStatuses.SUCCESS
@@ -116,7 +117,7 @@ export const DirectoryNumberForm = (props: PhoneNumberFormProps) => {
         directoryId: formDirectoryEntry.id,
         requestBody
       });
-      await listUMSoftphoneConfigs(dispatch);
+      await getPaginatedResults(LIST_SOFTPHONE_CONFIG, dispatch);
       setLoading({
         overlayMessage: "Successfully updated directory entry",
         saveStatus: ModalOverlayStatuses.SUCCESS

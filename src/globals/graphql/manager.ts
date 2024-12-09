@@ -2,6 +2,7 @@ import { gql } from "@apollo/client";
 import { GraphData } from "globals/interfaces";
 
 export const LIST_MANAGERS: GraphData = {
+  type: "managers",
   query: gql`
     query listUMManagers($nextToken: String) {
       managers: listUMManagers(nextToken: $nextToken) {
@@ -20,7 +21,7 @@ export const LIST_MANAGERS: GraphData = {
       }
     }
 `,
-  responsePath: "managers"
+  responsePaths: ["managers"]
 };
 
 export const CREATE_MANAGER = gql`

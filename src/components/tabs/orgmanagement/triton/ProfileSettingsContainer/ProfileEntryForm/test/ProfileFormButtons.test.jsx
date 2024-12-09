@@ -25,9 +25,10 @@ import {
   createAccessGroup,
   createProfile,
   editProfile,
-  listUMSoftphoneConfigs,
   loadSoftphoneConfigRelationships
 } from "services/profile";
+import { getPaginatedResults } from "utils/graphUtils";
+
 jest.useFakeTimers();
 
 jest.mock("components/StyledButton", () => ({
@@ -50,8 +51,11 @@ jest.mock("services/profile", () => ({
   createAccessGroup: jest.fn(),
   createProfile: jest.fn(),
   editProfile: jest.fn(),
-  listUMSoftphoneConfigs: jest.fn(),
   loadSoftphoneConfigRelationships: jest.fn()
+}));
+
+jest.mock("utils/graphUtils", () => ({
+  getPaginatedResults: jest.fn()
 }));
 
 const profilePayload = { profile: "yay" };
@@ -71,7 +75,7 @@ describe("<ProfileFormButtons />", () => {
     createProfile.mockResolvedValue({ response: "success" });
     editProfile.mockResolvedValue({ response: "success" });
     constructProfilePayload.mockReturnValue(profilePayload);
-    listUMSoftphoneConfigs.mockResolvedValue(initialTestState.profileContext.profiles);
+    getPaginatedResults.mockResolvedValue(initialTestState.profileContext.profiles);
     loadSoftphoneConfigRelationships.mockResolvedValue();
     setupMockedComponents({
       StyledButton
@@ -134,7 +138,7 @@ describe("<ProfileFormButtons />", () => {
             });
             expect(mockUpdateLoading).toHaveBeenCalledTimes(3);
             expect(mockHandleClose).toHaveBeenCalledTimes(1);
-            expect(listUMSoftphoneConfigs).toHaveBeenCalledTimes(1);
+            expect(getPaginatedResults).toHaveBeenCalledTimes(1);
             expect(loadSoftphoneConfigRelationships).toHaveBeenCalledTimes(1);
             expect(loadSoftphoneConfigRelationships).toHaveBeenCalledWith(initialTestState.profileContext, mockAdminDispatch);
             expect(mockSetForm).toHaveBeenCalledTimes(1);

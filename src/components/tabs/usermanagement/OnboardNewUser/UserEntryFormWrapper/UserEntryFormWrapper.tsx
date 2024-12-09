@@ -46,6 +46,7 @@ export const UserEntryForm = () => {
   const managers = state.managerContext.managers;
   const profiles = state.profileContext.profiles;
 
+  const [showWfmForm, setShowWfmForm] = React.useState(false);
   const [forwardToToggle, setForwardToToggle] = React.useState(false);
   const [missingFields, setMissingFields] = React.useState([]);
   const [loading, updateLoading] = React.useState<LoadingState>({
@@ -209,12 +210,12 @@ export const UserEntryForm = () => {
         <h2>Calabrio Work Force Management User Settings</h2>
         {form.formMode !== formModes.DELETE &&
           <Checkbox
-            checked={form.calabrio_wfm.userFound}
-            onChange={(event: any) => handleCheckbox(event.target.checked, "calabrio_wfm")}
+            checked={showWfmForm}
+            onChange={(event: any) => setShowWfmForm(event.target.checked)}
           />
         }
       </HeaderRow>
-      {form.calabrio_wfm.userFound &&
+      {showWfmForm &&
         <WfmForm
           missingFields={missingFields}
           setMissingFields={setMissingFields}

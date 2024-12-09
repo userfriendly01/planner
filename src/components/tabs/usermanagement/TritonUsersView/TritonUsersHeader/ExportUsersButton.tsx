@@ -43,20 +43,21 @@ export const ExportUsersButton = (props: ExportTritonUserProps) => {
         ...worker
       };
 
-      const backupWorkers = worker.attributes?.routing?.backup_workers;
-      const caller_states = worker.attributes?.routing?.caller_states;
-      const profile = state.profileContext.profiles.find((p: any) => String(p.profile_id) === String(worker.attributes.profile_id));
-      const salesAssociateWorkers = worker.attributes?.routing?.sales_assoc_workers;
+      const attributes = worker.attributes || {};
+      const backupWorkers = attributes.routing?.backup_workers;
+      const caller_states = attributes.routing?.caller_states;
+      const profile = state.profileContext.profiles.find((p: any) => String(p.profile_id) === String(attributes.profile_id));
+      const salesAssociateWorkers = attributes.routing?.sales_assoc_workers;
 
-      Object.keys(worker.attributes).forEach((key: any) => {
-        workerObj[key] = worker.attributes[key];
+      Object.keys(attributes).forEach((key: any) => {
+        workerObj[key] = attributes[key];
       });
-      workerObj.roles = worker.attributes?.roles?.toString();
-      workerObj.routing_team = worker.attributes?.routing?.team;
+      workerObj.roles = attributes.roles?.toString();
+      workerObj.routing_team = attributes.routing?.team;
       workerObj.routing_caller_states = caller_states ? caller_states.join(", ") : "";
-      workerObj.current_skills = formatWorkerAttributeSkillsToString(worker.attributes?.routing).toString();
-      workerObj.default_skills = formatWorkerAttributeSkillsToString(worker.attributes?.default_skills).toString();
-      workerObj.disabled_skills = formatWorkerAttributeSkillsToString(worker.attributes?.disabled_skills).toString();
+      workerObj.current_skills = formatWorkerAttributeSkillsToString(attributes.routing).toString();
+      workerObj.default_skills = formatWorkerAttributeSkillsToString(attributes.default_skills).toString();
+      workerObj.disabled_skills = formatWorkerAttributeSkillsToString(attributes.disabled_skills).toString();
       workerObj.ou = profile ? profile.ou_name : "";
       workerObj.backup_workers = backupWorkers ? backupWorkers.join(", ") : "";
       workerObj.sales_assoc_workers = salesAssociateWorkers ? salesAssociateWorkers.join(", ") : "";

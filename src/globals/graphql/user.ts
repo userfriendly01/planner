@@ -70,6 +70,7 @@ export const GET_USER = gql`
 `;
 
 export const LIST_USER_RECORDS: GraphData = {
+  type: "listUMUserRecords",
   query: gql`
     query listUMUserRecords($n_number: String) {
       listUMUserRecords: listUMUserRecords(n_number: $n_number) {
@@ -86,10 +87,11 @@ export const LIST_USER_RECORDS: GraphData = {
       }
     }
   `,
-  responsePath: "listUMUserRecords"
+  responsePaths: ["listUMUserRecords"]
 };
 
 export const LIST_USERS: GraphData = {
+  type: "users",
   query: gql`
     query listUMUsers($nextToken: String) {
       users: listUMUsers(nextToken: $nextToken) {
@@ -100,13 +102,14 @@ export const LIST_USERS: GraphData = {
       }
     }
   `,
-  responsePath: "users"
+  responsePaths: ["users"]
 };
 
 export const LIST_INACTIVE_USERS: GraphData = {
+  type: "inactiveusers",
   query: gql`
     query listUMUsers($nextToken: String) {
-      users: listUMUsers(termed_users: true, nextToken: $nextToken) {
+      inactiveusers: listUMUsers(termed_users: true, nextToken: $nextToken) {
         items {
           ${userAttributes}
         }
@@ -114,7 +117,7 @@ export const LIST_INACTIVE_USERS: GraphData = {
       }
     }
   `,
-  responsePath: "users"
+  responsePaths: ["inactiveusers"]
 };
 
 export const CREATE_USER = gql`

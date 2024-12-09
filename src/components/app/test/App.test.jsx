@@ -82,6 +82,10 @@ jest.mock("usermanagement/UserEntryFormWrapper", () => ({
   UserEntryForm: jest.fn()
 }));
 
+jest.mock("rules/RulesTable", () => ({
+  RulesTable: jest.fn()
+}));
+
 jest.mock("usermanagement/WfmUsersViewWrapper", () => ({
   WfmUsersViewWrapper: jest.fn()
 }));
