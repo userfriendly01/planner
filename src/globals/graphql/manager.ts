@@ -4,8 +4,11 @@ import { GraphData } from "globals/interfaces";
 export const LIST_MANAGERS: GraphData = {
   type: "managers",
   query: gql`
-    query listUMManagers($nextToken: String) {
-      managers: listUMManagers(nextToken: $nextToken) {
+    query listUMManagers(
+      $managersBool: Boolean!,
+      $managersNextToken: String,
+    ) {
+      managers: listUMManagers(nextToken: $managersNextToken) @include(if: $managersBool) {
         items {
           pk
           sk

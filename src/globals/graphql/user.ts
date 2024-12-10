@@ -92,8 +92,11 @@ export const LIST_USER_RECORDS: GraphData = {
 export const LIST_USERS: GraphData = {
   type: "users",
   query: gql`
-    query listUMUsers($nextToken: String) {
-      users: listUMUsers(nextToken: $nextToken) {
+    query listUMUsers(
+      $usersBool: Boolean!,
+      $usersNextToken: String,
+    ) {
+      users: listUMUsers(nextToken: $usersNextToken) @include(if: $usersBool)  {
         items {
           ${userAttributes}
         }
@@ -107,8 +110,11 @@ export const LIST_USERS: GraphData = {
 export const LIST_INACTIVE_USERS: GraphData = {
   type: "inactiveusers",
   query: gql`
-    query listUMUsers($nextToken: String) {
-      inactiveusers: listUMUsers(termed_users: true, nextToken: $nextToken) {
+    query listUMUsers(
+      $inactiveusersBool: Boolean!,
+      $inactiveusersNextToken: String,
+    ) {
+      inactiveusers: listUMUsers(termed_users: true, nextToken: $inactiveusersNextToken)  @include(if: $inactiveusersBool)  {
         items {
           ${userAttributes}
         }

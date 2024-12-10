@@ -9,6 +9,59 @@ import {
 }from "globals/interfaces";
 import { logger } from "utils/logger";
 
+interface GqlQuery {
+  definitions: {
+    variableDefinitions: {
+     variable: {
+      name: {
+        value: string
+      }
+     }
+    }[]
+    selectionSet: {
+      selections: {
+        alias: {
+          value: string
+        }
+      }[]
+    }
+  }[]
+}
+const validatePaginatedGraphRequest = (graphData: GraphData, expectedVariables: string[]) => {
+  const gqlQuery: GqlQuery = graphData.query;
+  const aliases = gqlQuery.definitions[0].selectionSet.selections.map(s => s.alias.value);
+
+  if(aliases.sort().toString() !== graphData.responsePaths.sort().toString()){
+    const message = "Please review your graph gql query. The responsePath variables do not match the query aliases.";
+    const details = {
+      type: graphData.type,
+      queryAliases: aliases,
+      responsePaths: graphData.responsePaths
+    };
+    logger.error(message, details);
+    throw {
+      message,
+      details
+    };
+  }
+
+  const variables = gqlQuery.definitions[0].variableDefinitions.map(v => v.variable.name.value);
+
+  if(variables.sort().toString() !== expectedVariables.sort().toString()){
+    const message = "Please review your graph gql query. The nextTokens are not setup as expected.";
+    const details = {
+      type: graphData.type,
+      graphNextTokens: variables,
+      expectedNextTokens: expectedVariables
+    };
+    logger.error(message, details);
+    throw {
+      message,
+      details
+    };
+  }
+};
+
 /**
  * 
  * @param graph 
@@ -78,9 +131,11 @@ export const getPaginatedResults = async (
     variables[`${v}NextToken`] = null;
   }));
 
+  validatePaginatedGraphRequest(graph, Object.keys(variables));
+
   const getPageResults = async (): Promise<VoidFunction> => {
     try {
-      const { data }: any  = await apolloClient.query<{ results: DBList<unknown | null> }>({
+      const { data = {}}: any  = await apolloClient.query<{ results: DBList<unknown | null> }>({
         query: graph.query,
         variables
       });
