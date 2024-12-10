@@ -120,6 +120,101 @@ describe("getPageResults", () => {
       expect(apolloClient.query).toHaveBeenCalledTimes(3);
     });
   });
+  describe("errors are found in query data", () => {
+    test("nextTokens are not as expected", async () => {
+      const incorrectQuery = {
+        type: "dummyType",
+        responsePaths: ["butts"],
+        query: {
+          definitions: [
+            {
+              variableDefinitions: [
+                {
+                  kind: "VariableDefinition",
+                  variable: {
+                    name: {
+                      value: "nextToken"
+                    }
+                  }
+                }
+              ],
+              selectionSet: {
+                kind: "SelectionSet",
+                selections: [
+                  {
+                    alias: {
+                      value: "butts"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      };
+      try {
+        await getPaginatedResults(incorrectQuery, mockDispatch);
+      } catch(err) {
+        expect(mockDispatch).toHaveBeenCalledTimes(0);
+        expect(logger.error).toBeCalledWith("Please review your graph gql query. The nextTokens are not setup as expected.",
+          {
+            expectedNextTokens: ["buttsBool", "buttsNextToken"],
+            graphNextTokens: ["nextToken"],
+            type: "dummyType"
+          });
+      }
+    });
+    test("responsePaths are not as expected", async () => {
+      const incorrectQuery = {
+        type: "dummyType",
+        responsePaths: ["butts"],
+        query: {
+          definitions: [
+            {
+              variableDefinitions: [
+                {
+                  kind: "VariableDefinition",
+                  variable: {
+                    name: {
+                      value: "buttsBool"
+                    }
+                  }
+                },
+                {
+                  kind: "VariableDefinition",
+                  variable: {
+                    name: {
+                      value: "buttsNextToken"
+                    }
+                  }
+                }
+              ],
+              selectionSet: {
+                kind: "SelectionSet",
+                selections: [
+                  {
+                    alias: {
+                      value: "notButts"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      };
+      try {
+        await getPaginatedResults(incorrectQuery, mockDispatch);
+      } catch(err) {
+        expect(mockDispatch).toHaveBeenCalledTimes(0);
+        expect(logger.error).toBeCalledWith("Please review your graph gql query. The responsePath variables do not match the query aliases.", {
+          queryAliases: ["notButts"],
+          responsePaths: ["butts"],
+          type: "dummyType"
+        });
+      }
+    });
+  });
   describe("errors are thrown calling the graph", () => {
     const error = "Ohh Noo!";
     beforeEach(() => {
