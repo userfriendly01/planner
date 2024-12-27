@@ -95,26 +95,12 @@ describe("getPageResults", () => {
     });
     test("apolloClient is called 3 times", async () => {
       await getPaginatedResults(type, mockDispatch);
-      expect(mockDispatch).toHaveBeenCalledTimes(3);
+      expect(mockDispatch).toHaveBeenCalledTimes(1);
       expect(mockDispatch).toHaveBeenCalledWith({
         type: "loadPaginatedResultsusers",
         payload: {
-          results: { users: results1 },
+          results: { users: [...results1, ...results2, ...results3]},
           isFirstPage: true
-        }
-      });
-      expect(mockDispatch).toHaveBeenCalledWith({
-        type: "loadPaginatedResultsusers",
-        payload: {
-          results: { users: results2 },
-          isFirstPage: false
-        }
-      });
-      expect(mockDispatch).toHaveBeenCalledWith({
-        type: "loadPaginatedResultsusers",
-        payload: {
-          results: { users: results3 },
-          isFirstPage: false
         }
       });
       expect(apolloClient.query).toHaveBeenCalledTimes(3);

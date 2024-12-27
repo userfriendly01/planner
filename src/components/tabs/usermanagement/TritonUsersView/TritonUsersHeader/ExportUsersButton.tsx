@@ -111,7 +111,7 @@ export const ExportUsersButton = (props: ExportTritonUserProps) => {
               </>
               :
               <>
-                {inactiveWorkers?.length > 0 ?
+                {inactiveWorkers.length && !isLoadingTermedUsers ?
                   <>
                     <Text>Successfully retrieved Inactive Triton Users.  Click the button to Export</Text>
                     <br/>

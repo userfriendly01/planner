@@ -65,7 +65,7 @@ export const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
     }
   };
 
-  const handleDeleteUser = () => {
+  const handleDeleteUser = async () => {
     const tritonWorkerName = form.triton.attributes ? `${form.triton.attributes?.emp_first_name} ${form.triton.attributes?.emp_last_name}` : null;
     const workerName = tritonWorkerName || form.triton.displayId || form.triton.DisplayName;
     const termDate = new Date().toISOString().split("T")[0];
@@ -95,82 +95,81 @@ export const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
       body.systems.push("QM");
     }
 
-    terminateUser(state.userContext.tokens.adminService, body)
-      .then(() => {
-        resultMessage = `Successfully marked Triton worker for delete in ${body.systems}`;
-        const overlayMessage = "Successfully Deleted User";
+    try {
+      await terminateUser(state.userContext.tokens.adminService, body);
+      resultMessage = `Successfully marked Triton worker for delete in ${body.systems}`;
+      const overlayMessage = "Successfully Deleted User";
 
-        logger.info(resultMessage, {
-          nNumber,
-          workerSid: form.triton.sid,
-          userNNumber: form.triton.attributes?.n_number
-        });
+      logger.info(resultMessage, {
+        nNumber,
+        workerSid: form.triton.sid,
+        userNNumber: form.triton.attributes?.n_number
+      });
 
+      updateLoading({
+        ...loading,
+        overlayMessage: overlayMessage,
+        saveStatus: ModalOverlayStatuses.SUCCESS,
+        saveUser: true
+      });
+      wait(() => {
         updateLoading({
           ...loading,
-          overlayMessage: overlayMessage,
-          saveStatus: ModalOverlayStatuses.SUCCESS,
-          saveUser: true
+          saveUser: false
         });
-        wait(() => {
+        handleClose();
+      }, timeouts.MODAL_OVERLAY_ATTENTION);
+    } catch(error){
+      const resultDivs = [<div key="title">Failed to Terminate Worker. </div>];
+      const results = error.response?.data?.results || [];
+      const forwardToFailure = results.length && results[0] && JSON.parse(results[0].body).forwardToFailure;
+
+      if (forwardToFailure) {
+        setRequireForwardTo(true);
+        setForwardToError(true);
+        updateLoading({
+          lookupUser: false,
+          overlayMessage: "",
+          saveStatus: null,
+          saveUser: false
+        });
+      } else {
+        if (results.length > 0) {
+          results.forEach((r: any) => {
+            if (typeof r === "object") {
+              const body = JSON.parse(r.body) || "";
+              if (body)
+              { resultDivs.push(<div>{body.message}</div>); }
+            } else {
+              resultDivs.push(<div>{r}</div>);
+            }
+          });
+        }
+        resultMessage = resultDivs;
+
+        logger.error(results, {
+          error,
+          nNumber,
+          tritonWorker: form.triton
+        });
+
+        if (results[0]?.statusCode === 200) {
           updateLoading({
             ...loading,
-            saveUser: false
-          });
-          handleClose();
-        }, timeouts.MODAL_OVERLAY_ATTENTION);
-      })
-      .catch(error => {
-        const resultDivs = [<div>Failed to Terminate Worker. </div>];
-        let results = error.response?.data?.error?.results;
-        results = typeof results === "object" ? results : [];
-        const forwardToFailure = results[0] && JSON.parse(results[0].body).forwardToFailure;
-        if (forwardToFailure) {
-          setRequireForwardTo(true);
-          setForwardToError(true);
-          updateLoading({
-            lookupUser: false,
-            overlayMessage: "",
-            saveStatus: null,
-            saveUser: false
+            overlayMessage: resultMessage,
+            saveStatus: ModalOverlayStatuses.PARTIAL_FAIL,
+            saveUser: true
           });
         } else {
-          if (results.length > 0) {
-            results.forEach((r: any) => {
-              if (typeof r === "object") {
-                const body = JSON.parse(r.body) || "";
-                if (body)
-                { resultDivs.push(<div>{body.message}</div>); }
-              } else {
-                resultDivs.push(<div>{r}</div>);
-              }
-            });
-          }
-          resultMessage = resultDivs;
-
-          logger.error(results, {
-            error,
-            nNumber,
-            tritonWorker: form.triton
+          updateLoading({
+            ...loading,
+            overlayMessage: resultMessage,
+            saveStatus: ModalOverlayStatuses.FAIL,
+            saveUser: true
           });
-
-          if (results[0]?.statusCode === 200) {
-            updateLoading({
-              ...loading,
-              overlayMessage: resultMessage,
-              saveStatus: ModalOverlayStatuses.PARTIAL_FAIL,
-              saveUser: true
-            });
-          } else {
-            updateLoading({
-              ...loading,
-              overlayMessage: resultMessage,
-              saveStatus: ModalOverlayStatuses.FAIL,
-              saveUser: true
-            });
-          }
         }
-      });
+      }
+    }
   };
 
   return (
@@ -214,8 +213,17 @@ export const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
             </>
           }
           {(requireForwardTo || forwardToError) &&
+          <>
+            {
+              forwardToError ?
+                <h3 style={{
+                  color: "red",
+                  textAlign: "center"
+                }}>The system failed to identify the DIDs forward to option, please manually select it and try again.</h3>
+                : <h3>This user has a direct dial number. Please choose a forward to option before confirming.</h3>
+            }
             <ForwardToEntryForm
-              label={forwardToError ? "The system failed to identify the DID's forward to option, please manually select it and try again." : "This user has a direct dial number. Please choose a forward to option before confirming."}
+              label={""}
               updateForwardTo={
                 (inactiveForwardTo: string) => {
                   setForm({
@@ -225,6 +233,7 @@ export const DeleteTritonUser = (props: DeleteTritonUserProps): any => {
                 }
               }
             />
+          </>
           }
         </>
         : null

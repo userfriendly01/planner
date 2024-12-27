@@ -120,9 +120,9 @@ const validatePaginatedGraphRequest = (graphData: GraphData, expectedVariables: 
 export const getPaginatedResults = async (
   graph: GraphData,
   dispatch: (action: Action) => void,
-  formatResults?: {[key: string]: (items: unknown[]) => unknown[]}
-): Promise<unknown> => {
-  let isFirstPage = true;
+  formatResults?: {[key: string]: (items: unknown[]) => unknown[]},
+  callback?: (results: { [key: string]: unknown[]}) => void
+): Promise<{ [key: string]: unknown[]} > => {
   const finalResults: { [key: string]: unknown[]} = {};
   const variables: {[key: string]: boolean | string} = {};
 
@@ -140,23 +140,14 @@ export const getPaginatedResults = async (
         variables
       });
 
-      const pageResults: { [key: string]: unknown[]} = {};
-      graph.responsePaths.forEach(((v: string) => {
+      graph.responsePaths.map(((v: string) => {
         if(data[v]){
           const items: unknown[] = data[v].items.slice();
           if(formatResults && formatResults[v]){
-            pageResults[v] = formatResults[v](items);
+            finalResults[v] = finalResults[v]?.concat(formatResults[v](items)) || formatResults[v](items);
           } else {
-            pageResults[v] = items;
+            finalResults[v] = finalResults[v]?.concat(items) || items;
           }
-          dispatch(({
-            type: `loadPaginatedResults${graph.type}`,
-            payload: {
-              results: pageResults,
-              isFirstPage
-            }
-          }));
-          finalResults[v] = pageResults[v]?.concat(items) || items;
         }
       }));
 
@@ -165,7 +156,6 @@ export const getPaginatedResults = async (
           variables[`${v}Bool`] = !!data[v]?.nextToken;
           variables[`${v}NextToken`] = data[v]?.nextToken || null;
         }));
-        isFirstPage = false;
         return getPageResults();
       } else {
         return;
@@ -177,6 +167,17 @@ export const getPaginatedResults = async (
   };
 
   await getPageResults();
+
+  dispatch(({
+    type: `loadPaginatedResults${graph.type}`,
+    payload: {
+      results: finalResults,
+      isFirstPage: true
+    }
+  }));
+
+  if(callback) { callback(finalResults); }
+
   return finalResults;
 };
 

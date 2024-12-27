@@ -204,9 +204,7 @@ describe("DeleteTritonUser", () => {
           beforeEach(() => {
             terminateUser.mockRejectedValue({
               response: {
-                data: {
-                  error: "Boo"
-                }
+                data: "Boo"
               }
             });
           });
@@ -226,7 +224,7 @@ describe("DeleteTritonUser", () => {
                 saveUser: true
               });
               expect(mockUpdateLoading).toHaveBeenCalledWith({
-                overlayMessage: [<div>Failed to Terminate Worker. </div>],
+                overlayMessage: [<div key="title">Failed to Terminate Worker. </div>],
                 saveStatus: "fail",
                 saveUser: true
               });
@@ -238,9 +236,7 @@ describe("DeleteTritonUser", () => {
             terminateUser.mockRejectedValue({
               response: {
                 data: {
-                  error: {
-                    boo: "Boo"
-                  }
+                  boo: "Boo"
                 }
               }
             });
@@ -261,7 +257,7 @@ describe("DeleteTritonUser", () => {
                 saveUser: true
               });
               expect(mockUpdateLoading).toHaveBeenCalledWith({
-                overlayMessage: [<div>Failed to Terminate Worker. </div>],
+                overlayMessage: [<div key="title">Failed to Terminate Worker. </div>],
                 saveStatus: "fail",
                 saveUser: true
               });
@@ -276,19 +272,17 @@ describe("DeleteTritonUser", () => {
               terminateUser.mockRejectedValue({
                 response: {
                   data: {
-                    error: {
-                      results: [
-                        {
-                          body: JSON.stringify({ message: "Worker API Succeeded" }),
-                          statusCode: 200
-                        },
-                        "WFM was bypassed",
-                        {
-                          body: JSON.stringify({ message: "QM deletion failed" }),
-                          statusCode: 500
-                        }
-                      ]
-                    }
+                    results: [
+                      {
+                        body: JSON.stringify({ message: "Worker API Succeeded" }),
+                        statusCode: 200
+                      },
+                      "WFM was bypassed",
+                      {
+                        body: JSON.stringify({ message: "QM deletion failed" }),
+                        statusCode: 500
+                      }
+                    ]
                   }
                 }
               });
@@ -310,7 +304,7 @@ describe("DeleteTritonUser", () => {
                 });
                 expect(mockUpdateLoading).toHaveBeenCalledWith({
                   overlayMessage: [
-                    <div>Failed to Terminate Worker. </div>,
+                    <div key="title">Failed to Terminate Worker. </div>,
                     <div>Worker API Succeeded</div>,
                     <div>WFM was bypassed</div>,
                     <div>QM deletion failed</div>
@@ -326,18 +320,16 @@ describe("DeleteTritonUser", () => {
               terminateUser.mockRejectedValue({
                 response: {
                   data: {
-                    error: {
-                      results: [
-                        {
-                          body: JSON.stringify({ message: "Worker API Succeeded" }),
-                          statusCode: 500
-                        },
-                        {
-                          body: JSON.stringify({ message: "QM deletion failed" }),
-                          statusCode: 500
-                        }
-                      ]
-                    }
+                    results: [
+                      {
+                        body: JSON.stringify({ message: "Worker API Succeeded" }),
+                        statusCode: 500
+                      },
+                      {
+                        body: JSON.stringify({ message: "QM deletion failed" }),
+                        statusCode: 500
+                      }
+                    ]
                   }
                 }
               });
@@ -358,11 +350,7 @@ describe("DeleteTritonUser", () => {
                   saveUser: true
                 });
                 expect(mockUpdateLoading).toHaveBeenCalledWith({
-                  overlayMessage: [
-                    <div>Failed to Terminate Worker. </div>,
-                    <div>Worker API Succeeded</div>,
-                    <div>QM deletion failed</div>
-                  ],
+                  overlayMessage: [<div key="title">Failed to Terminate Worker. </div>, <div>Worker API Succeeded</div>, <div>QM deletion failed</div>],
                   saveStatus: "fail",
                   saveUser: true
                 });
@@ -389,17 +377,15 @@ describe("DeleteTritonUser", () => {
             terminateUser.mockRejectedValue({
               response: {
                 data: {
-                  error: {
-                    results: [
-                      {
-                        body: JSON.stringify({
-                          message: "Worker API Succeeded",
-                          forwardToFailure: true
-                        }),
-                        statusCode: 500
-                      }
-                    ]
-                  }
+                  results: [
+                    {
+                      body: JSON.stringify({
+                        message: "Worker API Succeeded",
+                        forwardToFailure: true
+                      }),
+                      statusCode: 500
+                    }
+                  ]
                 }
               }
             });
@@ -430,7 +416,7 @@ describe("DeleteTritonUser", () => {
               });
               expect(rendered.container).not.toHaveTextContent("Confirm Delete to allow the system to identify the forward to option for this DID user.");
               expect(ForwardToEntryForm).toHaveBeenCalledTimes(2);
-              expect(ForwardToEntryForm.mock.calls[1][0].label).toBe("The system failed to identify the DID's forward to option, please manually select it and try again.");
+              expect(rendered.container).toHaveTextContent("The system failed to identify the DIDs forward to option, please manually select it and try again.");
             });
           });
         });
