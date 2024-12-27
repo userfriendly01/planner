@@ -169,10 +169,7 @@ export const getPaginatedResults = async (
 
   dispatch(({
     type: `loadPaginatedResults${graph.type}`,
-    payload: {
-      results: finalResults,
-      isFirstPage: true
-    }
+    payload: finalResults
   }));
 
   return finalResults;
