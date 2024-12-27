@@ -67,57 +67,52 @@ export const reducer = (state: AppState, action: Action): AppState => {
         }
       };
     case `loadPaginatedResults${LIST_RULES.type}`: {
-      const pageResults: { [key:string]: any[] } = action.payload.results;
-      const isFirstPage: boolean = action.payload.isFirstPage;
+      const pageResults: { [key:string]: any[] } = action.payload;
 
       return {
         ...state,
         rulesContext: {
           ...state.rulesContext,
-          rules: (isFirstPage && pageResults.rules) || (pageResults.rules && state.rulesContext.rules.concat(pageResults.rules)) || state.rulesContext.rules,
-          applications: (isFirstPage && pageResults.applications) || (pageResults.applications && state.rulesContext.applications.concat(pageResults.applications)) || state.rulesContext.applications,
-          ruleRelationships: (isFirstPage && pageResults.ruleRelationships) || (pageResults.ruleRelationships && state.rulesContext.ruleRelationships.concat(pageResults.ruleRelationships)) || state.rulesContext.ruleRelationships
+          rules: pageResults.rules ? state.rulesContext.rules.concat(pageResults.rules) : state.rulesContext.rules,
+          applications: pageResults.applications ? state.rulesContext.applications.concat(pageResults.applications) : state.rulesContext.applications,
+          ruleRelationships: pageResults.ruleRelationships ? state.rulesContext.ruleRelationships.concat(pageResults.ruleRelationships) : state.rulesContext.ruleRelationships
         }
       };
     }
     case `loadPaginatedResults${LIST_MANAGERS.type}`: {
-      const pageResults: { [key:string]: any[] } = action.payload.results;
-      const isFirstPage: boolean = action.payload.isFirstPage;
+      const pageResults: { [key:string]: any[] } = action.payload;
 
       return {
         ...state,
         managerContext: {
           ...state.managerContext,
-          managers: (isFirstPage && pageResults.managers) || (pageResults.managers && state.managerContext.managers.concat(pageResults.managers)) || state.managerContext.managers
+          managers: pageResults.managers ? state.managerContext.managers.concat(pageResults.managers) : state.managerContext.managers
         }
       };
     }
     case `loadPaginatedResults${LIST_USERS.type}`: {
-      const pageResults: { [key:string]: any[] } = action.payload.results;
-      const isFirstPage: boolean = action.payload.isFirstPage;
+      const pageResults: { [key:string]: any[] } = action.payload;
       return {
         ...state,
         workerContext: {
           ...state.workerContext,
-          workers: (isFirstPage && pageResults.users) || (pageResults.users && state.workerContext.workers.concat(pageResults.users)) || state.workerContext.workers
+          workers: pageResults.users ? state.workerContext.workers.concat(pageResults.users) : state.workerContext.workers
         }
       };
     }
     case `loadPaginatedResults${LIST_SOFTPHONE_CONFIG.type}`: {
-      const pageResults: { [key:string]: any[] } = action.payload.results;
-      const isFirstPage: boolean = action.payload.isFirstPage;
-
+      const pageResults: { [key:string]: any[] } = action.payload;
       return {
         ...state,
         profileContext: {
           ...state.profileContext,
-          profiles: (isFirstPage && pageResults.profiles) || (pageResults.profiles && state.profileContext.profiles.concat(pageResults.profiles)) || state.profileContext.profiles,
-          activities: (isFirstPage && pageResults.activities) || (pageResults.activities && state.profileContext.activities.concat(pageResults.activities)) || state.profileContext.activities,
-          screenpops: (isFirstPage && pageResults.screenpops) || (pageResults.screenpops && state.profileContext.screenpops.concat(pageResults.screenpops)) || state.profileContext.screenpops,
-          calltags: (isFirstPage && pageResults.calltags) || (pageResults.calltags && state.profileContext.calltags.concat(pageResults.calltags)) || state.profileContext.calltags,
-          accessGroups: (isFirstPage && pageResults.accessGroups) || (pageResults.accessGroups && state.profileContext.accessGroups.concat(pageResults.accessGroups)) || state.profileContext.accessGroups,
-          dialList: (isFirstPage && pageResults.dialList) || (pageResults.dialList && state.profileContext.dialList.concat(pageResults.dialList)) || state.profileContext.dialList,
-          directory: (isFirstPage && pageResults.directory) || (pageResults.directory && state.profileContext.directory.concat(pageResults.directory)) || state.profileContext.directory
+          profiles: pageResults.profiles ? state.profileContext.profiles.concat(pageResults.profiles) : state.profileContext.profiles,
+          activities: pageResults.activities ? state.profileContext.activities.concat(pageResults.activities) : state.profileContext.activities,
+          screenpops: pageResults.screenpops ? state.profileContext.screenpops.concat(pageResults.screenpops) : state.profileContext.screenpops,
+          calltags: pageResults.calltags ? state.profileContext.calltags.concat(pageResults.calltags) : state.profileContext.calltags,
+          accessGroups: pageResults.accessGroups ? state.profileContext.accessGroups.concat(pageResults.accessGroups) : state.profileContext.accessGroups,
+          dialList: pageResults.dialList ? state.profileContext.dialList.concat(pageResults.dialList) : state.profileContext.dialList,
+          directory: pageResults.directory ? state.profileContext.directory.concat(pageResults.directory) : state.profileContext.directory
         }
       };
     }
