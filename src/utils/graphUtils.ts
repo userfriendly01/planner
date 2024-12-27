@@ -120,8 +120,7 @@ const validatePaginatedGraphRequest = (graphData: GraphData, expectedVariables: 
 export const getPaginatedResults = async (
   graph: GraphData,
   dispatch: (action: Action) => void,
-  formatResults?: {[key: string]: (items: unknown[]) => unknown[]},
-  callback?: (results: { [key: string]: unknown[]}) => void
+  formatResults?: {[key: string]: (items: unknown[]) => unknown[]}
 ): Promise<{ [key: string]: unknown[]} > => {
   const finalResults: { [key: string]: unknown[]} = {};
   const variables: {[key: string]: boolean | string} = {};
@@ -175,8 +174,6 @@ export const getPaginatedResults = async (
       isFirstPage: true
     }
   }));
-
-  if(callback) { callback(finalResults); }
 
   return finalResults;
 };
