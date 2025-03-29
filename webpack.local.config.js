@@ -11,7 +11,7 @@ const localConfig = merge(
         directory: path.join(__dirname, "dist")
       },
       hot: true,
-      port: 8084,
+      port: 8080,
       historyApiFallback: true
     }
   }
