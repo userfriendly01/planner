@@ -3,7 +3,6 @@ const ESLintPlugin = require("eslint-webpack-plugin");
 const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 const webpack = require("webpack");
 const path = require("path");
-const { getWebpackPaths } = require("./pathConfig");
 
 const resolvePathInSrc = resourceInSrc => {
   return resourceInSrc
@@ -12,9 +11,10 @@ const resolvePathInSrc = resourceInSrc => {
 };
 
 const config = {
+  mode: 'development',
   entry: resolvePathInSrc("index"),
   output: {
-    filename: "admin-ui.js",
+    filename: "planner.js",
     path: path.resolve(__dirname, "dist")
   },
   plugins: [
@@ -57,12 +57,10 @@ const config = {
   resolve: {
     alias: {
       src: resolvePathInSrc(),
-      ...getWebpackPaths(resolvePathInSrc),
       process: "process/browser.js"
     },
     fallback: {
       zlib: require.resolve("browserify-zlib"),
-      util: require.resolve("util/"),
       assert: require.resolve("assert"),
       stream: require.resolve("stream-browserify"),
       buffer: require.resolve("buffer/")
