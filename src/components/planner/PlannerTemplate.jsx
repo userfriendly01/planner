@@ -36,8 +36,8 @@ const Binder = styled.img`
 `;
 
 export const PlannerTemplate = () => {
-  const CurrentLeftPage = () => <Routine side="L"/>;
-  const CurrentRightPage = () => <Routine side="R"/>;
+  const CurrentLeftPage = () => <Daily side="L"/>;
+  const CurrentRightPage = () => <Daily side="R"/>;
   return (
     <PageWrapper>
       <Page>
@@ -47,7 +47,6 @@ export const PlannerTemplate = () => {
       <Binder alt="Binder" src={binder} />
       <Page>
         <RightTopNav/>
-        <RightSideNav/>
         <CurrentRightPage/>
       </Page>
     </PageWrapper>

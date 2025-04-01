@@ -13,7 +13,7 @@ export const LeftTopNav = () => {
   return (
     <Wrapper>
       <HorizontalTab color="#e1c4f8" label="INDEX"/>
-      <HorizontalTab color="#d5f4fe" label="TO DO"/>
+      <HorizontalTab color="#d5f4fe" label="MONTH VIEW"/>
       <HorizontalTab color="#d3d2ff" label="CALENDAR"/>
       <HorizontalTab color="#cae4fd" label="GOALS"/>
     </Wrapper>

@@ -10,7 +10,7 @@ import { CheckBoxOutlineBlank } from "@mui/icons-material";
 const Text = styled.div`
   font-family: Optima, sans-serif;
   display: flex;
-  margin: 5px 1px 15px 8px;
+  margin: 15px 1px 15px 8px;
   text-align: center;
   font-size: 13px;
 `;
@@ -29,7 +29,7 @@ const DayMarker = () => ((
   <>
     <Bookmark sx={{
       position: "absolute",
-      color: colors[6],
+      color: colors[0],
       fontSize: "117px",
       left: "0",
       top: "-15px"
@@ -81,11 +81,10 @@ const FoodHeaderRow = ({
     alignContent: "center",
     width: "100%",
     fontFamily: "Optima, sans-serif",
-    marginBottom: "9px"
+    margin: "0px 15px"
   }}>
     <div style={{
-      margin: "0px 10px",
-      width: "60%",
+      width: "42%",
       fontSize: "13px"
     }}> {meal} </div>
     {includeHeaders &&
@@ -93,121 +92,83 @@ const FoodHeaderRow = ({
       <MiniHeader>Calories</MiniHeader>
       <MiniHeader>Protein</MiniHeader>
       <MiniHeader>Carbs</MiniHeader>
+      <MiniHeader>Sugar</MiniHeader>
       <MiniHeader>Fat</MiniHeader>
+      <MiniHeader>Sodium</MiniHeader>
     </>
     }
   </div>
 ));
 
-const TotalsRow = () => ((
+const DrinkHeaderRow = ({
+  meal, includeHeaders = false
+}) => ((
   <div style={{
     display: "flex",
     alignContent: "center",
     width: "100%",
-    fontFamily: "Optima, sans-serif"
+    fontFamily: "Optima, sans-serif",
+    marginRight: "100px"
   }}>
     <div style={{
-      margin: "0px 10px",
       width: "60%",
       fontSize: "13px"
-    }}> Totals</div>
-    <Divider style={{
-      margin: "10px 5px",
-      width: "7%"
-    }}/>
-    <Divider style={{
-      margin: "10px 5px",
-      width: "7%"
-    }}/>
-    <Divider style={{
-      margin: "10px 5px",
-      width: "7%"
-    }}/>
-    <Divider style={{
-      margin: "10px 5px",
-      width: "7%"
-    }}/>
+    }}> {meal} </div>
+    {includeHeaders &&
+    <>
+      <MiniHeader>Martinis</MiniHeader>
+      <MiniHeader>Beers</MiniHeader>
+      <MiniHeader>Mixed</MiniHeader>
+      <MiniHeader>Wine</MiniHeader>
+    </>
+    }
   </div>
 ));
 
-const StepsHeaderRow = () => ((
+const EntryRow = ({ text, extra }) => {
+  return (
   <div style={{
     display: "flex",
-    alignContent: "center",
     width: "100%",
-    fontFamily: "Optima, sans-serif"
+    fontFamily: "Optima, sans-serif",
   }}>
     <div style={{
-      margin: "0px 10px",
-      width: "60%",
-      fontSize: "13px"
-    }}> Steps </div>
-    <MiniHeader>Count</MiniHeader>
+      margin: extra ? "10px" : "10px 50px 10px 10px",
+      width: "38%",
+      textAlign: "center"
+    }}>
+      {text}
+    </div>
+    <Divider style={{
+      margin: "10px 5px",
+      width: "7%"
+    }}/>
+    <Divider style={{
+      margin: "10px 5px",
+      width: "7%"
+    }}/>
+    <Divider style={{
+      margin: "10px 5px",
+      width: "7%"
+    }}/>
+    <Divider style={{
+      margin: "10px 5px",
+      width: "7%"
+    }}/>
+     {extra && 
+      <>
+      <Divider style={{
+      margin: "10px 5px",
+      width: "7%"
+    }}/>
+      <Divider style={{
+        margin: "10px 5px",
+        width: "7%"
+      }}/>
+    </>
+    }
   </div>
-));
-
-const WorkoutHeaderRow = () => ((
-  <div style={{
-    display: "flex",
-    alignContent: "center",
-    width: "100%",
-    fontFamily: "Optima, sans-serif"
-  }}>
-    <div style={{
-      margin: "0px 10px",
-      width: "60%",
-      fontSize: "13px"
-    }}> Workouts </div>
-    <MiniHeader>Time</MiniHeader>
-    <MiniHeader>Weight</MiniHeader>
-    <MiniHeader>Reps</MiniHeader>
-    <MiniHeader>Sets</MiniHeader>
-  </div>
-));
-
-const EntryRow = () => ((
-  <div style={{
-    display: "flex",
-    width: "100%"
-  }}>
-    <Divider style={{
-      margin: "10px",
-      width: "60%"
-    }}/>
-    <Divider style={{
-      margin: "10px 5px",
-      width: "7%"
-    }}/>
-    <Divider style={{
-      margin: "10px 5px",
-      width: "7%"
-    }}/>
-    <Divider style={{
-      margin: "10px 5px",
-      width: "7%"
-    }}/>
-    <Divider style={{
-      margin: "10px 5px",
-      width: "7%"
-    }}/>
-  </div>
-));
-
-const StepsEntryRow = () => ((
-  <div style={{
-    display: "flex",
-    width: "100%"
-  }}>
-    <Divider style={{
-      margin: "10px",
-      width: "60%"
-    }}/>
-    <Divider style={{
-      margin: "10px 5px",
-      width: "7%"
-    }}/>
-  </div>
-));
+)};
 
 const Line = () => ((
   <div style={{
@@ -247,19 +208,9 @@ export const Daily = ({ side }) => {
         </WakeupRow>
         <Text>FOOD LOG</Text>
         <FoodHeaderRow meal="" includeHeaders={true}/>
-        <FoodHeaderRow meal="Breakfast"/>
-        <EntryRow/>
-        <FoodHeaderRow meal="Lunch"/>
-        <EntryRow/>
-        <FoodHeaderRow meal="Dinner"/>
-        <EntryRow/>
-        <FoodHeaderRow meal="Snacks"/>
-        <EntryRow/>
-        <EntryRow/>
-        <FoodHeaderRow meal="Drinks"/>
-        <EntryRow/>
-        <EntryRow/>
-        <TotalsRow/>
+        <EntryRow text="Meals" extra={true}/>
+        <DrinkHeaderRow meal="" includeHeaders={true}/>
+        <EntryRow text="Drinks"/>
         <Text style={{ marginTop: "20px" }}>EXERCISE LOG</Text>
         <div style={{ display: "flex" }}>
           <WakeupRow style={{ marginTop: 0 }}>
@@ -319,31 +270,6 @@ export const Daily = ({ side }) => {
             </SingleHeader>
           </WakeupRow>
         </div>
-      </Page>
-    );
-  }
-
-  if(side === "R"){
-    return (
-      <Page>
-        <div style={{
-          height: "61px"
-        }}/>
-        <Text>DREAMS</Text>
-        <Line/>
-        <Line/>
-        <Line/>
-        <Line/>
-        <Line/>
-        <Line/>
-        <Line/>
-        <Text>NOTES</Text>
-        <Line/>
-        <Line/>
-        <Line/>
-        <Line/>
-        <Line/>
-        <Line/>
         <Text>SUMMARY</Text>
         <div style={{ display: "flex" }}>
           <WakeupRow style={{ marginTop: 0 }}>
@@ -379,6 +305,38 @@ export const Daily = ({ side }) => {
         </div>
         <SubText>MOOD</SubText>
         <div style={{ height: "60px" }}></div>
+      </Page>
+    );
+  }
+
+  if(side === "R"){
+    return (
+      <Page>
+        <div style={{
+          height: "61px"
+        }}/>
+        <Text>DREAMS</Text>
+        <Line/>
+        <Line/>
+        <Line/>
+        <Line/>
+        <Line/>
+        <Line/>
+        <Line/>
+        <Line/>
+        <Line/>
+        <Line/>
+        <Text>NOTES</Text>
+        <Line/>
+        <Line/>
+        <Line/>
+        <Line/>
+        <Line/>
+        <Line/>
+        <Line/>
+        <Line/>
+        <Line/>
+        <div style={{ height: "30px" }}></div>
         <WakeupRow style={{ marginTop: 0 }}>
           <SingleHeader style={{
             fontSize: "10px",
